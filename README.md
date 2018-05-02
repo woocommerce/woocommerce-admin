@@ -4,7 +4,7 @@ This is a feature plugin for a modern, javascript-driven dashboard for WooCommer
 
 ## Prerequisites
 
-[Gutenberg](https://wordpress.org/plugins/gutenberg/) should be installed prior to activating the WooCommerce Dashboard feature plugin.
+[Gutenberg](https://wordpress.org/plugins/gutenberg/) and [WooCommerce](https://wordpress.org/plugins/woocommerce/) should be installed prior to activating the WooCommerce Dashboard feature plugin.
 
 ## Development
 
