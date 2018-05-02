@@ -46,6 +46,14 @@ function woo_dash_plugins_loaded() {
 	// Register script files
 	require_once dirname( __FILE__ ) . '/lib/client-assets.php';
 
+	// Load the extension api
+	require_once dirname( __FILE__ ) . '/extension-api/common.php';
+	require_once dirname( __FILE__ ) . '/extension-api/api-controller.php';
+
+	// Load example hooks
+	require_once dirname( __FILE__ ) . '/extension-api/example.php';
+
+
 	// Create the Admin pages
 	require_once dirname( __FILE__ ) . '/lib/admin.php';
 }

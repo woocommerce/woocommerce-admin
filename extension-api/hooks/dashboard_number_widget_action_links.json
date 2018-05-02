@@ -1,0 +1,16 @@
+{
+	"name": "dashboard_number_widget_action_links",
+	"description": "Allows adding additional action links to the dashboard numbers example.",
+	"props": [
+		{
+			"name": "href",
+			"description": "Link the action button leads to",
+			"type": "string"
+		},
+		{
+			"name": "label",
+			"description": "Button label",
+			"type": "string"
+		}
+	]
+}
