@@ -9,9 +9,27 @@
 	background: white;
 	border: 1px solid rgba( black, 0.2 );
 	padding: 2em;
+
+	.woo-dash__widget {
+		margin-bottom: 20px;
+
+		& + .woo-dash__widget {
+			border-top: 1px solid rgba( black, 0.2 );
+			padding-top: 20px;
+		}
+	}
 }
 
-.woo-dash__widget {
+.woo-dash__primary {
+	.woo-dash__widget {
+		background: white;
+		border: 1px solid rgba( black, 0.2 );
+		padding: 2em;
+		margin-bottom: 20px;
+	}
+}
+
+.woo-dash__widget-numbers {
 	display: flex;
 	align-items: center;
 	text-align: center;
