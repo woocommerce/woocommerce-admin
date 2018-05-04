@@ -5,9 +5,17 @@
  */
 function woo_dash_register_script() {
 	wp_register_script(
+		'woo-dash-registration',
+		woo_dash_url( 'dist/registration.js' ),
+		[ 'wp-blocks', 'wp-element', 'wp-i18n' ],
+		filemtime( woo_dash_dir_path( 'dist/registration.js' ) ),
+		true
+	);
+
+	wp_register_script(
 		WOO_DASH_APP,
 		woo_dash_url( 'dist/index.js' ),
-		[ 'wp-components', 'wp-blocks', 'wp-element', 'wp-i18n' ],
+		[ 'wp-components', 'wp-blocks', 'wp-element', 'wp-i18n', 'woo-dash-registration' ],
 		filemtime( woo_dash_dir_path( 'dist/index.js' ) ),
 		true
 	);

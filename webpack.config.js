@@ -37,6 +37,10 @@ const coreGlobals = [
 	'api-request',
 ];
 
+const woodashGlobals = [
+	'registration',
+];
+
 const externals = {
 	react: 'React',
 	'react-dom': 'ReactDOM',
@@ -51,10 +55,17 @@ coreGlobals.forEach( ( name ) => {
 	};
 } );
 
+woodashGlobals.forEach( ( name ) => {
+	externals[ `@woodash/${ name }` ] = {
+		this: [ 'wp', 'woodash', camelCaseDash( name ) ],
+	};
+} );
+
 const webpackConfig = {
 	mode: NODE_ENV,
 	entry: {
 		index: './js/src/index.js',
+		registration: './js/src/registration.js',
 	},
 	output: {
 		path: path.resolve( 'dist' ),
