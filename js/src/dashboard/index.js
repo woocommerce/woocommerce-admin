@@ -1,6 +1,6 @@
 /** @format */
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { Component } from '@wordpress/element';
 
@@ -8,6 +8,7 @@ import { Component } from '@wordpress/element';
  * Internal dependencies
  */
 import './style.scss';
+import BlockList from '../components/block-list';
 import WidgetNumbers from './widgets/numbers';
 import ActivityList from './widgets/activity';
 
@@ -17,10 +18,12 @@ export default class extends Component {
 			<div className="woo-dashboard">
 				<div className="woo-dash__primary">
 					<WidgetNumbers />
+					<BlockList location="dashboard" />
 				</div>
 
 				<div className="woo-dash__secondary">
 					<ActivityList />
+					<BlockList location="sidebar" />
 				</div>
 			</div>
 		);
