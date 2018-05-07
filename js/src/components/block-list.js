@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 /**
  * WordPress dependencies
  */
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { DASHBOARD_LOCATIONS, getBlockTypesByLocation } from '@woodash/registration';
 
 /**
@@ -20,11 +20,7 @@ export default class BlockList extends Component {
 		const { location } = this.props;
 		const blocks = getBlockTypesByLocation( location );
 
-		return (
-			<Fragment>
-				{ blocks.map( ( b, i ) => <Block key={ i } { ...b } /> ) }
-			</Fragment>
-		);
+		return blocks.map( ( block, i ) => <Block key={ i } name={ block.name } /> );
 	}
 }
 
