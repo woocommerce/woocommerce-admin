@@ -57,7 +57,7 @@ coreGlobals.forEach( ( name ) => {
 
 woodashGlobals.forEach( ( name ) => {
 	externals[ `@woodash/${ name }` ] = {
-		this: [ 'wp', 'woodash', camelCaseDash( name ) ],
+		this: [ 'wc', camelCaseDash( name ) ],
 	};
 } );
 
