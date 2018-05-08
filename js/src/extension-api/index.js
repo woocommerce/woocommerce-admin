@@ -20,7 +20,7 @@ import { Button, withAPIData } from '@wordpress/components';
  *
  * @return {Function} Higher-order component factory.
  */
-export function withWcHooks( hookName ) {
+export function withHooks( hookName ) {
 	const hookNames = isArray( hookName ) ? hookName : [ hookName ];
 	return function( OriginalComponent ) {
 		return withAPIData( () => ( {
@@ -37,7 +37,7 @@ export function withWcHooks( hookName ) {
 }
 
 // TODO Make it so the hooks prop/data doesn't need to be passed into renderHook
-export function renderWcHook( hooks, hook_name, callback ) {
+export function renderHook( hooks, hook_name, callback ) {
 	if ( ! hooks || hooks.length ) {
 		return;
 	}
@@ -50,11 +50,11 @@ export function renderWcHook( hooks, hook_name, callback ) {
 
 // This is a simplified version of a component renderer
 // TODO Validation
-export function renderWcComponent( component ) {
+export function renderComponent( component ) {
 	const { type, props, children } = component;
 	const output = [];
 	const childrenOutput = children && children.map( child => {
-		return renderWcComponent( child );
+		return renderComponent( child );
 	} ) || null;
 
 	switch ( type ) {

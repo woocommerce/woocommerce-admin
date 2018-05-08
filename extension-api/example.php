@@ -6,9 +6,7 @@ function example_woodash_add_pending_orders() {
 	) );
 
 	return array(
-		'count'           => count( $pending_orders ),
-		'singular_string' => 'pending order',
-		'plural_string'   => 'pending orders',
+		'item' => sprintf( _n( '%s pending order', '%s pending orders', count( $pending_orders ), 'woo-dash' ), count( $pending_orders ) ),
 	);
 }
 
@@ -24,27 +22,25 @@ function example_woodash_add_action_link() {
 add_woocommerce_hook( 'dashboard_number_widget_action_links', 'example_woodash_add_action_link' );
 
 function example_woodash_extension_upsell() {
-	$card = new WooComemrce_Component_Card( 'Recommended Extensions' );
+	$card = new WooCommerce_Component_Card( 'Recommended Extensions' );
 	
-	$bookings_button = new WooComemrce_Component_Button(
+	$bookings_button = new WooCommerce_Component_Button(
 		'https://woocommerce.com/products/woocommerce-bookings/',
-		'Check out WooCommerce Bookings'
+		'Check out WooCommerce Bookings',
+		array(
+			'isPrimary' => true,
+		)
 	);
-
-	$bookings_button->set_props( array( 
-		'isPrimary' => true,
-	) );
 
 	$card->add( $bookings_button );
 	
-	$memberships_button = new WooComemrce_Component_Button(
+	$memberships_button = new WooCommerce_Component_Button(
 		'https://woocommerce.com/products/woocommerce-memberships/',
-		'Check out WooCommerce Memberships'
+		'Check out WooCommerce Memberships',
+		array(
+			'isPrimary' => true,
+		)
 	);
-
-	$memberships_button->set_props( array( 
-		'isPrimary' => true,
-	) );
 
 	$card->add( $memberships_button );
 

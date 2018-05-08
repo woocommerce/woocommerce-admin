@@ -9,7 +9,7 @@ import { Component, compose } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { withWcHooks, renderWcHook } from '../../extension-api';
+import { withHooks, renderHook } from '../../extension-api';
 
 class WidgetNumbers extends Component {
 	render() {
@@ -28,18 +28,17 @@ class WidgetNumbers extends Component {
 					{ sprintf( _n( '%d Product', '%d Products', totalProducts, 'woo-dash' ), totalProducts ) }
 				</div>
 
-				{ renderWcHook( hooks, 'dashboard_number_widget_items', function( args ) {
-					const { count, singular_string, plural_string } = args;
+				{ renderHook( hooks, 'dashboard_number_widget_items', function( { item } ) {
 					return (
 						<div className="wd_widget-item">
-							{ sprintf( _n( '%s ' + singular_string, '%s ' + plural_string, count, 'woo-dash' ), count ) }
+							{ item }
 						</div>
 					);
 				} ) }
 
 				<div className="woo-dash__widget-item">
 					<Button isPrimary href="#">{ __( 'View Orders', 'woo-dash' ) }</Button>
-					{ renderWcHook( hooks, 'dashboard_number_widget_action_links', function( { href, label } ) {
+					{ renderHook( hooks, 'dashboard_number_widget_action_links', function( { href, label } ) {
 						return (
 							<p><Button href={ href }>{ label }</Button></p>
 						);
@@ -55,7 +54,7 @@ export default compose( [
 		orders: '/wc/v2/orders?status=processing',
 		products: '/wc/v2/products',
 	} ) ),
-	withWcHooks( [
+	withHooks( [
 		'dashboard_number_widget_items',
 		'dashboard_number_widget_action_links',
 	] ),

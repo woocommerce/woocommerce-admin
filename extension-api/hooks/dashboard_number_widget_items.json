@@ -3,18 +3,8 @@
 	"description": "Allows adding additional widgets to the dashboard numbers example.",
 	"props": [
 		{
-			"name": "count",
-			"description": "Number of items being returned",
-			"type": "number"
-		},
-		{
-			"name": "singular_string",
-			"description": "Singular form of item being returned (example: product)",
-			"type": "string"
-		},
-		{
-			"name": "plural_string",
-			"description": "Plural form of item being returned (example: products)",
+			"name": "item",
+			"description": "Combined label/value string (i.e. 0 products OR 1 product OR 3 products)",
 			"type": "string"
 		}
 	]

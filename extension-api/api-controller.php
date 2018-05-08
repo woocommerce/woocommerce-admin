@@ -47,13 +47,15 @@ class WooCommerce_Extension_API_Controller {
 	 * Gets hook data from JSON definition
 	 */
 	function get_hook_definition( $hook_name ) {
+		// TODO Make directory paths pluggable so complex extensions can register their own hooks
+		$hook_file = woo_dash_dir_path( 'extension-api/hooks/' . $hook_name . '.json' );
 
-		if ( ! file_exists( dirname( __FILE__ ) . '/hooks/' . $hook_name . '.json' ) ) {
+		if ( ! file_exists( $hook_file ) ) {
 			return false;
 		}
 
-		// TODO Make directory paths pluggable so complex extensions can register their own hooks
-		$hook = json_decode( file_get_contents( dirname( __FILE__ ) . '/hooks/' . $hook_name . '.json' ) );
+
+		$hook = json_decode( file_get_contents( $hook_file ) );
 
 		if ( empty ( $hook->name ) ) {
 			return false;
@@ -63,7 +65,7 @@ class WooCommerce_Extension_API_Controller {
 	}
 
 	/**
-	 * Returns all of the registered hooks for a specific hook name
+	 * Returns all of the registered hooks for the hooks in this request.
 	 */
 	function get_registered_hooks( $request ) {
 		$hooks = explode( ',', $request['hooks'] );

@@ -10,7 +10,7 @@ import { Component, compose } from '@wordpress/element';
 import './style.scss';
 import WidgetNumbers from './widgets/numbers';
 import ActivityList from './widgets/activity';
-import { withWcHooks, renderWcHook, renderWcComponent } from '../extension-api';
+import { withHooks, renderHook, renderComponent } from '../extension-api';
 
 class Dashboard extends Component {
 	render() {
@@ -19,10 +19,10 @@ class Dashboard extends Component {
 			<div className="woo-dashboard">
 				<div className="woo-dash__primary">
 					<WidgetNumbers />
-					{ renderWcHook( hooks, 'dashboard_widgets_primary', function( { component } ) {
+					{ renderHook( hooks, 'dashboard_widgets_primary', function( { component } ) {
 						return (
 							<div>
-								{ renderWcComponent( component ) }
+								{ renderComponent( component ) }
 							</div>
 						);
 					} ) }
@@ -37,7 +37,7 @@ class Dashboard extends Component {
 }
 
 export default compose( [
-	withWcHooks( [
+	withHooks( [
 		'dashboard_widgets_primary',
 	] ),
 ] )( Dashboard );

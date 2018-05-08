@@ -48,6 +48,9 @@ function woo_dash_plugins_loaded() {
 
 	// Load the extension api
 	require_once dirname( __FILE__ ) . '/extension-api/common.php';
+	require_once dirname( __FILE__ ) . '/extension-api/components/base.php';
+	require_once dirname( __FILE__ ) . '/extension-api/components/button.php';
+	require_once dirname( __FILE__ ) . '/extension-api/components/card.php';
 	require_once dirname( __FILE__ ) . '/extension-api/api-controller.php';
 
 	// Load example hooks
