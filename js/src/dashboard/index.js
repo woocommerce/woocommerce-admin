@@ -18,12 +18,11 @@ export default class extends Component {
 			<div className="woo-dashboard">
 				<div className="woo-dash__primary">
 					<WidgetNumbers />
-					<BlockList location="dashboard" />
+					<BlockList />
 				</div>
 
 				<div className="woo-dash__secondary">
 					<ActivityList />
-					<BlockList location="sidebar" />
 				</div>
 			</div>
 		);

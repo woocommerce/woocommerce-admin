@@ -2,28 +2,18 @@
 /**
  * External dependencies
  */
-import PropTypes from 'prop-types';
-
-/**
- * WordPress dependencies
- */
 import { Component } from '@wordpress/element';
-import { DASHBOARD_LOCATIONS, getBlocksByLocation } from '@woocommerce/registration';
 
 /**
  * Internal dependencies
  */
 import Block from './block';
+import { getBlocks } from '@woocommerce/registration';
 
 export default class BlockList extends Component {
 	render() {
-		const { location } = this.props;
-		const blocks = getBlocksByLocation( location );
+		const blocks = getBlocks();
 
 		return blocks.map( ( block, i ) => <Block key={ i } name={ block.name } /> );
 	}
 }
-
-BlockList.propTypes = {
-	location: PropTypes.oneOf( DASHBOARD_LOCATIONS ),
-};
