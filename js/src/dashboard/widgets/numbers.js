@@ -12,7 +12,7 @@ class WidgetNumbers extends Component {
 		const totalOrders = orders.data && orders.data.length || 0;
 		const totalProducts = products.data && products.data.length || 0;
 		return (
-			<div className="woo-dash__widget">
+			<div className="woo-dash__widget woo-dash__widget-numbers">
 				<div className="woo-dash__widget-item">
 					{ sprintf( _n( '%d New Customer', '%d New Customers', 4, 'woo-dash' ), 4 ) }
 				</div>
