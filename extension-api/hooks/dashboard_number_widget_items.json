@@ -1,0 +1,11 @@
+{
+	"name": "dashboard_number_widget_items",
+	"description": "Allows adding additional widgets to the dashboard numbers example.",
+	"props": [
+		{
+			"name": "item",
+			"description": "Combined label/value string (i.e. 0 products OR 1 product OR 3 products)",
+			"type": "string"
+		}
+	]
+}

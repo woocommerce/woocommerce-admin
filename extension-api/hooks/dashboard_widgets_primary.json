@@ -1,0 +1,11 @@
+{
+	"name": "dashboard_widgets_primary",
+	"description": "Allows adding an entire new widget area to the dashboard demo.",
+	"props": [
+		{
+			"name": "component",
+			"description": "Root component to be rendered by the dashboard. May contain children components.",
+			"type": "component"
+		}
+	]
+}
