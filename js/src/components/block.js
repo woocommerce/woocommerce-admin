@@ -8,7 +8,7 @@ import { omit } from 'lodash';
 /**
  * WordPress dependencies
  */
-import { getBlock } from '@woodash/registration';
+import { getBlock } from '@woocommerce/registration';
 import { withFilters } from '@wordpress/components';
 
 export const Block = props => {

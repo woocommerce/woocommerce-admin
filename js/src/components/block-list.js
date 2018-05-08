@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
  * WordPress dependencies
  */
 import { Component } from '@wordpress/element';
-import { DASHBOARD_LOCATIONS, getBlocksByLocation } from '@wc/registration';
+import { DASHBOARD_LOCATIONS, getBlocksByLocation } from '@woocommerce/registration';
 
 /**
  * Internal dependencies
