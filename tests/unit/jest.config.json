@@ -1,0 +1,10 @@
+{
+  "rootDir": "../../",
+  "preset": "@wordpress/jest-preset-default",
+  "setupFiles": [
+    "<rootDir>/tests/unit/setup-wp-aliases.js"
+  ],
+  "testPathIgnorePatterns": [
+    "/node_modules/"
+  ]
+}
