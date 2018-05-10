@@ -1,4 +1,4 @@
-Card
+Header
 ====
 
 A basic component for the app header. The header outputs breadcrumbs via the `sections` prop (required) and access to the timeline via the `showTimeline` prop (optional).
