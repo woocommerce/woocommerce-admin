@@ -18,7 +18,8 @@
     "start": "webpack --watch",
     "lint": "npm run -s install-if-deps-outdated && eslint js/src --ext=js,jsx",
     "i18n": "pot-to-php ./languages/woo-dash.pot ./languages/woo-dash.php woo-dash && grunt i18n",
-    "precommit": "npm run -s install-if-no-packages && node bin/pre-commit-hook.js"
+    "precommit": "npm run -s install-if-no-packages && node bin/pre-commit-hook.js",
+    "prepush": "npm run -s install-if-no-packages && node bin/pre-push-hook.js"
   },
   "devDependencies": {
     "@wordpress/babel-plugin-makepot": "^1.0.0",
