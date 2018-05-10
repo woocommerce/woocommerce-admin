@@ -10,7 +10,7 @@ import { Component, Fragment } from '@wordpress/element';
  */
 import './style.scss';
 import ActivityList from './widgets/activity';
-import Header from '../components/header';
+import Header from 'components/header';
 import WidgetNumbers from './widgets/numbers';
 
 export default class extends Component {
