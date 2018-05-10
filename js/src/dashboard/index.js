@@ -10,7 +10,6 @@ import { Component, Fragment } from '@wordpress/element';
  */
 import './style.scss';
 import ActivityList from './widgets/activity';
-import Card from '../components/card';
 import Header from '../components/header';
 import WidgetNumbers from './widgets/numbers';
 
@@ -21,9 +20,7 @@ export default class extends Component {
 				<Header sections={ [ __( 'Dashboard', 'woo-dash' ) ] } />
 				<div className="woo-dashboard">
 					<div className="woo-dash__primary">
-						<Card title={ __( 'Store Performance', 'woo-dash' ) }>
-							<WidgetNumbers />
-						</Card>
+						<WidgetNumbers />
 					</div>
 
 					<div className="woo-dash__secondary">
