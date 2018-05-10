@@ -6,6 +6,11 @@ import { Component } from '@wordpress/element';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
+/**
+ * Internal dependencies
+ */
+import './style.scss';
+
 // Will be removed when EllipsisMenu is created
 function EllipsisMenu() {}
 
@@ -16,15 +21,14 @@ class Card extends Component {
 			'has-menu': !! menu,
 			'has-action': !! action,
 		} );
-
 		return (
 			<div className={ className }>
 				<div className="woo-dash__card-header">
-					<h2>{ title }</h2>
+					<h2 className="woo-dash__card-title">{ title }</h2>
 					{ action && <div className="woo-dash__card-action">{ action }</div> }
-					{ menu }
+					{ menu && <div className="woo-dash__card-menu">{ menu }</div> }
 				</div>
-				{ children }
+				<div className="woo-dash__card-body">{ children }</div>
 			</div>
 		);
 	}
