@@ -13,7 +13,7 @@
         "jQuery": true,
         "wp": true,
         "wpApiSettings": true,
-        "wcWpAdminUrl": true
+        "wcSettings": true
     },
     "rules": {
         "camelcase": 0,

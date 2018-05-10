@@ -2,9 +2,8 @@
 /**
  * External dependencies
  */
-import { Fragment } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -18,7 +17,7 @@ export default class extends Component {
 	render() {
 		return (
 			<Fragment>
-				<Header section={ __( 'Dashboard', 'woo-dash' ) } />
+				<Header sections={ [ __( 'Dashboard', 'woo-dash' ) ] } />
 				<div className="woo-dashboard">
 					<div className="woo-dash__primary">
 						<WidgetNumbers />

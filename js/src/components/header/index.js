@@ -13,10 +13,10 @@ import { getAdminLink } from '../../lib/nav-utils';
 
 // TODO Implement timeline icon
 
-const Header = ( { section, showTimeline } ) => {
+const Header = ( { sections, showTimeline } ) => {
 	const renderBreadcrumbs = () => {
-		const sections = isArray( section ) ? section : [ section ];
-		const crumbs = sections.map( ( subSection, i ) => <span key={ i }>{ subSection }</span> );
+		const _sections = isArray( sections ) ? sections : [ sections ];
+		const crumbs = _sections.map( ( subSection, i ) => <span key={ i }>{ subSection }</span> );
 		return (
 			<h1>
 				<span><a href={ getAdminLink( 'admin.php?page=woodash' ) }>WooCommerce</a></span>
@@ -36,7 +36,7 @@ const Header = ( { section, showTimeline } ) => {
 };
 
 Header.propTypes = {
-	section: PropTypes.node,
+	sections: PropTypes.node.isRequired,
 	showTimeline: PropTypes.bool,
 };
 

@@ -27,12 +27,6 @@ function woo_dash_enqueue_script( $hook ){
 
 	wp_enqueue_script( WOO_DASH_APP );
 	wp_enqueue_style( WOO_DASH_APP );
-
-	wp_add_inline_script(
-		WOO_DASH_APP,
-		sprintf( 'var wcWpAdminUrl = "%s";', admin_url() ),
-		'before'
-	);
 }
 add_action( 'admin_enqueue_scripts', 'woo_dash_enqueue_script' );
 

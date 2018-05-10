@@ -7,5 +7,5 @@
  * @return {String} Full admin URL.
  */
 export const getAdminLink = ( path ) => {
-	return wcWpAdminUrl + path;
+	return wcSettings.adminUrl + path;
 };
