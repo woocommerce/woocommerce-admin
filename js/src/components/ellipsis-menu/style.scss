@@ -1,0 +1,24 @@
+/** @format */
+
+.woo-dash__ellipsis-menu-toggle .dashicon {
+	transform: rotate(90deg);
+}
+
+.woo-dash__ellipsis-menu-popover {
+	&:before,
+	&:after {
+		margin-left: 2px;
+	}
+
+	.components-popover__content {
+		width: 182px;
+	}
+
+	.woo-dash__ellipsis-menu-content {
+		width: 100%;
+	}
+
+	.woo-dash__ellipsis-menu-item {
+		padding: 8px;
+	}
+}
