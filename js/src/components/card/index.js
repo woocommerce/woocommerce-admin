@@ -37,7 +37,9 @@ class Card extends Component {
 Card.propTypes = {
 	action: PropTypes.node,
 	className: PropTypes.string,
-	menu: PropTypes.instanceOf( EllipsisMenu ),
+	menu: PropTypes.shape( {
+		type: PropTypes.oneOf( [ EllipsisMenu ] ),
+	} ),
 	title: PropTypes.string.isRequired,
 };
 
