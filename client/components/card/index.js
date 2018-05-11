@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import './style.scss';
-import EllipsisMenu from '../ellipsis-menu';
+import { EllipsisMenu } from '../ellipsis-menu';
 
 class Card extends Component {
 	render() {

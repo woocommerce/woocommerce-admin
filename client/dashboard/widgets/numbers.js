@@ -10,8 +10,7 @@ import { Component, compose } from '@wordpress/element';
  * Internal dependencies
  */
 import Card from 'components/card';
-import EllipsisMenu from 'components/ellipsis-menu';
-import MenuItem from 'components/ellipsis-menu/menu-item';
+import { EllipsisMenu, MenuItem, MenuTitle } from 'components/ellipsis-menu';
 
 class WidgetNumbers extends Component {
 	constructor() {
@@ -33,7 +32,8 @@ class WidgetNumbers extends Component {
 
 	renderMenu() {
 		return (
-			<EllipsisMenu label={ __( 'Filter stats' ) }>
+			<EllipsisMenu label={ __( 'Choose which analytics to display', 'woo-dash' ) }>
+				<MenuTitle>{ __( 'Display Stats:', 'woo-dash' ) }</MenuTitle>
 				<MenuItem onInvoke={ this.toggle( 'showCustomers' ) }>
 					<ToggleControl
 						label="Show Customers"
