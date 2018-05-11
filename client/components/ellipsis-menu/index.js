@@ -13,64 +13,39 @@ import PropTypes from 'prop-types';
 import './style.scss';
 
 class EllipsisMenu extends Component {
-	constructor() {
-		super( ...arguments );
-		this.state = {
-			isFocused: false,
-		};
-
-		this.onFocus = this.onFocus.bind( this );
-		this.onBlur = this.onBlur.bind( this );
-	}
-
-	onFocus() {
-		this.setState( {
-			isFocused: true,
-		} );
-	}
-
-	onBlur() {
-		this.setState( {
-			isFocused: false,
-		} );
-	}
-
 	render() {
-		const { children, label, isHidden } = this.props;
-		const { isFocused } = this.state;
+		const { children, label } = this.props;
 		if ( ! children ) {
 			return null;
 		}
 
+		const renderToggle = ( { onToggle, isOpen } ) => {
+			const toggleClassname = classnames( 'woo-dash__ellipsis-menu-toggle', {
+				'is-opened': isOpen,
+			} );
+
+			return (
+				<IconButton
+					className={ toggleClassname }
+					onClick={ onToggle }
+					icon="ellipsis"
+					label={ label }
+					aria-expanded={ isOpen }
+				/>
+			);
+		};
+
+		const renderContent = () => (
+			<NavigableMenu className="woo-dash__ellipsis-menu-content">{ children }</NavigableMenu>
+		);
+
 		return (
-			<div
-				className={ classnames( 'woo-dash__ellipsis-menu', {
-					'is-visible': isFocused || ! isHidden,
-				} ) }
-			>
+			<div className="woo-dash__ellipsis-menu">
 				<Dropdown
 					contentClassName="woo-dash__ellipsis-menu-popover"
 					position="bottom left"
-					renderToggle={ ( { onToggle, isOpen } ) => {
-						const toggleClassname = classnames( 'woo-dash__ellipsis-menu-toggle', {
-							'is-opened': isOpen,
-						} );
-
-						return (
-							<IconButton
-								className={ toggleClassname }
-								onClick={ onToggle }
-								icon="ellipsis"
-								label={ label }
-								aria-expanded={ isOpen }
-								onFocus={ this.onFocus }
-								onBlur={ this.onBlur }
-							/>
-						);
-					} }
-					renderContent={ () => (
-						<NavigableMenu className="woo-dash__ellipsis-menu-content">{ children }</NavigableMenu>
-					) }
+					renderToggle={ renderToggle }
+					renderContent={ renderContent }
 				/>
 			</div>
 		);
