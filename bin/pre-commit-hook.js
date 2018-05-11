@@ -43,7 +43,7 @@ const files = parseGitDiffToPathArray( 'git diff --cached --name-only --diff-fil
 
 // run prettier for any files in the commit that have @format within their first docblock
 files.forEach( file => {
-	if ( 0 === file.indexOf( 'bin/' ) ) {
+	if ( 0 === file.indexOf( 'bin/' ) || 0 === file.indexOf( 'webpack.config.js' ) ) {
 		return;
 	}
 	const text = fs.readFileSync( file, 'utf8' );
