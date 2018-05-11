@@ -36,21 +36,21 @@ class WidgetNumbers extends Component {
 				<MenuTitle>{ __( 'Display Stats:', 'woo-dash' ) }</MenuTitle>
 				<MenuItem onInvoke={ this.toggle( 'showCustomers' ) }>
 					<ToggleControl
-						label="Show Customers"
+						label={ __( 'Show Customers', 'woo-dash' ) }
 						checked={ this.state.showCustomers }
 						onChange={ this.toggle( 'showCustomers' ) }
 					/>
 				</MenuItem>
 				<MenuItem onInvoke={ this.toggle( 'showProducts' ) }>
 					<ToggleControl
-						label="Show Products"
+						label={ __( 'Show Products', 'woo-dash' ) }
 						checked={ this.state.showProducts }
 						onChange={ this.toggle( 'showProducts' ) }
 					/>
 				</MenuItem>
 				<MenuItem onInvoke={ this.toggle( 'showOrders' ) }>
 					<ToggleControl
-						label="Show Orders"
+						label={ __( 'Show Orders', 'woo-dash' ) }
 						checked={ this.state.showOrders }
 						onChange={ this.toggle( 'showOrders' ) }
 					/>
