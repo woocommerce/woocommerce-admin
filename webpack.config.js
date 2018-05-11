@@ -80,7 +80,7 @@ const webpackConfig = {
 							loader: 'sass-loader',
 							query: {
 								includePaths: [ 'client/stylesheets' ],
-								data: '@import "./colors"; @import "./breakpoints"; @import "./wpadmin-reset";',
+								data: '@import "_colors"; @import "_breakpoints"; @import "_wpadmin-reset";',
 							},
 						},
 					],
