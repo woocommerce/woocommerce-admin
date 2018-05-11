@@ -22,7 +22,8 @@
     "prepush": "npm run -s install-if-no-packages && node bin/pre-push-hook.js",
     "test:help": "wp-scripts test-unit-js --help",
     "test-unit": "wp-scripts test-unit-js --config tests/unit/jest.config.json",
-    "test-unit:watch": "npm run test-unit -- --watch"
+    "test-unit:watch": "npm run test-unit -- --watch",
+    "install-gutenberg": "node bin/install-gutenberg-dependency"
   },
   "devDependencies": {
     "@wordpress/babel-plugin-makepot": "^1.0.0",
