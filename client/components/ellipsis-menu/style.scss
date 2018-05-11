@@ -7,9 +7,9 @@
 .woo-dash__ellipsis-menu-popover {
 	text-align: left;
 
-	&:before,
-	&:after {
-		margin-left: 2px;
+	&:not(.is-mobile):before,
+	&:not(.is-mobile):after {
+		margin-left: -16px;
 	}
 
 	.components-popover__content {
