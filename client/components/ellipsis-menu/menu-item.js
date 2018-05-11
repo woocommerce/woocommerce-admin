@@ -48,7 +48,7 @@ class MenuItem extends Component {
 MenuItem.propTypes = {
 	children: PropTypes.node,
 	isClickable: PropTypes.bool,
-	onInvoke: PropTypes.func,
+	onInvoke: PropTypes.func.isRequired,
 };
 
 MenuItem.defaultProps = {
