@@ -4,6 +4,9 @@
   "setupFiles": [
     "<rootDir>/tests/unit/setup-wp-aliases.js"
   ],
+  "modulePaths": [
+    "<rootDir>/js/src"
+  ],
   "testPathIgnorePatterns": [
     "/node_modules/"
   ]
