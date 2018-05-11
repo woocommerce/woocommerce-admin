@@ -10,16 +10,18 @@ import { pick } from 'lodash';
 /**
  * Internal dependencies
  */
+import './main.scss';
 import Dashboard from './dashboard';
 
 render(
-	createElement( APIProvider, {
-		...wpApiSettings,
-		...pick( wp.api, [
-			'postTypeRestBaseMapping',
-			'taxonomyRestBaseMapping',
-		] ),
-	}, createElement( Dashboard ) ),
+	createElement(
+		APIProvider,
+		{
+			...wpApiSettings,
+			...pick( wp.api, [ 'postTypeRestBaseMapping', 'taxonomyRestBaseMapping' ] ),
+		},
+		createElement( Dashboard )
+	),
 	document.getElementById( 'root' )
 );
 
