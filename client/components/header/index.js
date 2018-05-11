@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
+import './style.scss';
 import { getAdminLink } from '../../lib/nav-utils';
 
 // TODO Implement timeline icon

@@ -6,6 +6,11 @@ import { Component } from '@wordpress/element';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
+/**
+ * Internal dependencies
+ */
+import './style.scss';
+
 // Will be removed when EllipsisMenu is created
 function EllipsisMenu() {}
 

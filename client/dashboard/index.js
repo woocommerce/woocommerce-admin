@@ -8,6 +8,7 @@ import { Component, Fragment } from '@wordpress/element';
 /**
  * Internal dependencies
  */
+import './style.scss';
 import ActivityList from './widgets/activity';
 import Header from 'components/header';
 import WidgetNumbers from './widgets/numbers';

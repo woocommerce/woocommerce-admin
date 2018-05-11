@@ -10,7 +10,6 @@ import { pick } from 'lodash';
 /**
  * Internal dependencies
  */
-import './main.scss';
 import Dashboard from './dashboard';
 
 render(

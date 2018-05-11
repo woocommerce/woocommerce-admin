@@ -74,7 +74,16 @@ const webpackConfig = {
 				test: /\.scss$/,
 				use: ExtractTextPlugin.extract( {
 					fallback: 'style-loader',
-					use: [ 'css-loader', 'sass-loader' ],
+					use: [
+						'css-loader',
+						{
+							loader: 'sass-loader',
+							query: {
+								includePaths: [ 'client/stylesheets' ],
+								data: '@import "./colors"; @import "./breakpoints"; @import "./wpadmin-reset";',
+							},
+						},
+					],
 				} ),
 			},
 		],
