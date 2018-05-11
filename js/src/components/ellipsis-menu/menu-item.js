@@ -22,8 +22,8 @@ class MenuItem extends Component {
 	}
 
 	onKeyDown( event ) {
-		event.preventDefault();
 		if ( event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE ) {
+			event.preventDefault();
 			this.props.onInvoke();
 		}
 	}
