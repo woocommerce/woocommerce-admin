@@ -2,6 +2,11 @@
 
 const https = require( 'https' );
 const fs = require( 'fs' );
+var dir = 'built-assets';
+
+if ( !fs.existsSync( dir ) ) {
+	fs.mkdirSync( dir );
+}
 
 https.get( 'https://downloads.wordpress.org/plugin/gutenberg.2.8.0.zip', function( response ) {
 	response.on( 'data', function( data ) {
