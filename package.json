@@ -23,7 +23,7 @@
     "test:help": "wp-scripts test-unit-js --help",
     "test-unit": "wp-scripts test-unit-js --config tests/unit/jest.config.json",
     "test-unit:watch": "npm run test-unit -- --watch",
-    "install-gutenberg": "node bin/install-gutenberg-dependency"
+    "prepare-tests": "webpack --config webpack.test.config.js"
   },
   "devDependencies": {
     "@wordpress/babel-plugin-makepot": "^1.0.0",
