@@ -1,0 +1,14 @@
+{
+  "rootDir": "../../",
+  "preset": "@wordpress/jest-preset-default",
+  "modulePaths": [
+    "<rootDir>/js/src",
+    "<rootDir>/tests"
+  ],
+  "moduleNameMapper": {
+    "@wordpress\\/(blocks|components|date|editor|element|data|utils|edit-post|viewport|plugins|core-data|core-blocks)": "unit/gutenberg/$1/index.js"
+  },
+  "testPathIgnorePatterns": [
+    "/node_modules/"
+  ]
+}
