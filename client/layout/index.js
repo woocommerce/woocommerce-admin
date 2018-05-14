@@ -9,9 +9,10 @@ import { Component, Fragment } from '@wordpress/element';
  * Internal dependencies
  */
 import './style.scss';
-import ActivityList from './widgets/activity';
 import Header from 'components/header';
-import WidgetNumbers from './widgets/numbers';
+import Notices from './notices';
+import Main from './main';
+import Sidebar from './sidebar';
 
 export default class extends Component {
 	render() {
@@ -20,12 +21,11 @@ export default class extends Component {
 				<Header sections={ [ __( 'Dashboard', 'woo-dash' ) ] } />
 				<div className="woo-dashboard">
 					<div className="woo-dash__primary">
-						<WidgetNumbers />
+						<Notices />
+						<Main />
 					</div>
 
-					<div className="woo-dash__secondary">
-						<ActivityList />
-					</div>
+					<Sidebar />
 				</div>
 			</Fragment>
 		);
