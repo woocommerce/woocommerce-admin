@@ -11,3 +11,5 @@ node_modules/
 dist
 languages/*
 !languages/README.md
+tests/unit/built-assets
+.idea
