@@ -101,7 +101,7 @@ add_action( 'admin_notices', 'woo_dash_admin_after_notices', PHP_INT_MAX );
 function woo_dash_page(){
 	?>
 	<div class="wrap">
-		<div id="root"></div>
+		<div id="root" class="woo-dashboard"></div>
 	</div>
 <?php
 }

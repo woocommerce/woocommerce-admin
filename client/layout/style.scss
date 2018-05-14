@@ -1,15 +1,26 @@
 /** @format */
 .woo-dashboard {
 	display: grid;
-	grid-template-columns: auto 300px;
+	grid-template-columns: auto 36.7%;
 	grid-gap: 0 40px;
-	margin: 10px 20px 0 2px;
-	padding-left: 20px;
+	margin: 0;
+	padding: 0;
+}
+
+.woo-dash__header {
+	grid-column: 1/span 2;
+	min-height: 47px;
+	margin: 0;
+	padding: 8px 16px 8px 16px;
+}
+
+.woo-dash__primary {
+	margin: 20px 0 0 20px;
 }
 
 .woo-dash__secondary {
 	background: $white;
-	border: 1px solid $gray;
+	border-left: 1px solid $gray;
 	padding: 2em;
 }
 

@@ -19,14 +19,12 @@ export default class extends Component {
 		return (
 			<Fragment>
 				<Header sections={ [ __( 'Dashboard', 'woo-dash' ) ] } />
-				<div className="woo-dashboard">
-					<div className="woo-dash__primary">
-						<Notices />
-						<Main />
-					</div>
-
-					<Sidebar />
+				<div className="woo-dash__primary">
+					<Notices />
+					<Main />
 				</div>
+
+				<Sidebar />
 			</Fragment>
 		);
 	}
