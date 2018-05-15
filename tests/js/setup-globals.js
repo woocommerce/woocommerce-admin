@@ -8,7 +8,6 @@ global.wp = {
 };
 
 [
-	'element',
 	'components',
 	'utils',
 	'blocks',
@@ -23,4 +22,8 @@ global.wp = {
 	Object.defineProperty( global.wp, entryPointName, {
 		get: () => require( 'gutenberg/' + entryPointName ),
 	} );
+} );
+
+Object.defineProperty( global.wp, 'element', {
+	get: () => require( 'gutenberg/packages/element' ),
 } );
