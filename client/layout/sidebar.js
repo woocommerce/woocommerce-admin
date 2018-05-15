@@ -2,18 +2,15 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { TabPanel } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
+import './style.scss';
 import Activity from 'dashboard/widgets/activity';
-
-const onSelect = tabName => {
-	console.log( 'Selecting tab', tabName );
-};
 
 const Count = ( { value } ) => {
 	return <span>{ value }</span>;
@@ -21,48 +18,40 @@ const Count = ( { value } ) => {
 
 class Sidebar extends Component {
 	getTitle( str, count ) {
+		const title = __( str.charAt( 0 ).toUpperCase() + str.slice( 1 ), 'woo-dash' );
 		return (
 			<h2>
-				{ str } <Count value={ count } />
+				{ title } <Count value={ count } />
 			</h2>
 		);
 	}
 
 	getTabs() {
-		return [
-			{
-				name: 'insights',
-				title: this.getTitle( __( 'Insights', 'woo-dash' ), 3 ),
-				className: 'my-class',
-			},
-			{
-				name: 'orders',
-				title: this.getTitle( __( 'Orders', 'woo-dash' ), 0 ),
-				className: 'my-class',
-			},
-			{
-				name: 'reviews',
-				title: this.getTitle( __( 'Reviews', 'woo-dash' ), 21 ),
-				className: 'my-class',
-			},
-		];
+		return [ 'insights', 'orders', 'reviews' ].map( name => {
+			return {
+				name,
+				title: this.getTitle( name, 3 ),
+				className: 'woo-dash__sidebar-tab',
+			};
+		} );
 	}
 
 	render() {
 		const tabs = this.getTabs();
+		console.log( tabs );
 		return (
 			<div className="woo-dash__secondary">
-				<TabPanel
-					className="my-tab-panel"
-					activeClass="active-tab"
-					onSelect={ onSelect }
-					tabs={ tabs }
-				>
+				<TabPanel className="woo-dash__sidebar-tabs" activeClass="is-active" tabs={ tabs }>
 					{ tabName => {
-						return <p>${ tabName }</p>;
+						return (
+							<Fragment>
+								<h3>Here are your { tabName }</h3>
+								<p>-------------------</p>
+								<Activity />
+							</Fragment>
+						);
 					} }
 				</TabPanel>
-				<Activity />
 			</div>
 		);
 	}
