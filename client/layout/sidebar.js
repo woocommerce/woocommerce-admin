@@ -11,17 +11,14 @@ import { TabPanel } from '@wordpress/components';
  */
 import './style.scss';
 import Activity from 'dashboard/widgets/activity';
-
-const Count = ( { value } ) => {
-	return <span>{ value }</span>;
-};
+import Count from 'components/count';
 
 class Sidebar extends Component {
 	getTitle( str, count ) {
 		const title = __( str.charAt( 0 ).toUpperCase() + str.slice( 1 ), 'woo-dash' );
 		return (
 			<h2>
-				{ title } <Count value={ count } />
+				{ title } <Count count={ count } />
 			</h2>
 		);
 	}
@@ -38,14 +35,13 @@ class Sidebar extends Component {
 
 	render() {
 		const tabs = this.getTabs();
-		console.log( tabs );
 		return (
 			<div className="woo-dash__secondary">
 				<TabPanel className="woo-dash__sidebar-tabs" activeClass="is-active" tabs={ tabs }>
-					{ tabName => {
+					{ selectedTabName => {
 						return (
 							<Fragment>
-								<h3>Here are your { tabName }</h3>
+								<h3>Section: { selectedTabName }</h3>
 								<p>-------------------</p>
 								<Activity />
 							</Fragment>
