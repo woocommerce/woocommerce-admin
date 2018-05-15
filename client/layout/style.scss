@@ -1,7 +1,7 @@
 /** @format */
 .woo-dashboard {
 	display: grid;
-	grid-template-columns: auto 36.7%;
+	grid-template-columns: auto 360px;
 	grid-gap: 0 40px;
 	margin: 0;
 	padding: 0;
@@ -16,6 +16,11 @@
 
 .woo-dash__primary {
 	margin: 20px 0 0 20px;
+
+	.woo-dash__main {
+		margin: 0 auto;
+		max-width: 640px;
+	}
 }
 
 .woo-dash__secondary {
