@@ -11,12 +11,12 @@ import { find } from 'lodash';
  */
 import Analytics from 'analytics';
 import AnalyticsReport from 'analytics/report';
-import Numbers from 'dashboard/numbers';
+import Dashboard from 'dashboard';
 
 const getPages = () => {
 	const pages = [
 		{
-			container: Numbers,
+			container: Dashboard,
 			path: '/',
 			wpMenu: 'toplevel_page_woodash',
 		},

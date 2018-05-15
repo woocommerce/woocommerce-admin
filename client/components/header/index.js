@@ -4,6 +4,7 @@
  */
 import { isArray } from 'lodash';
 import PropTypes from 'prop-types';
+import { Fill } from 'react-slot-fill';
 
 /**
  * Internal dependencies
@@ -28,10 +29,12 @@ const Header = ( { sections, showTimeline } ) => {
 	};
 
 	return (
-		<div className="woo-dash__header">
-			{ renderBreadcrumbs() }
-			{ showTimeline && <div /> }
-		</div>
+		<Fill name="header">
+			<div className="woo-dash__header">
+				{ renderBreadcrumbs() }
+				{ showTimeline && <div /> }
+			</div>
+		</Fill>
 	);
 };
 

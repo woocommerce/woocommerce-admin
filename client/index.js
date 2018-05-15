@@ -4,8 +4,9 @@
  */
 import { addFilter } from '@wordpress/hooks';
 import { APIProvider } from '@wordpress/components';
-import { render } from '@wordpress/element';
 import { pick } from 'lodash';
+import { render } from '@wordpress/element';
+import { Provider as SlotFillProvider } from 'react-slot-fill';
 
 /**
  * Internal dependencies
@@ -18,7 +19,9 @@ render(
 		{ ...wpApiSettings }
 		{ ...pick( wp.api, [ 'postTypeRestBaseMapping', 'taxonomyRestBaseMapping' ] ) }
 	>
-		<Layout />
+		<SlotFillProvider>
+			<Layout />
+		</SlotFillProvider>
 	</APIProvider>,
 	document.getElementById( 'root' )
 );
