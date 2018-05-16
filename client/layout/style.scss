@@ -1,0 +1,35 @@
+/** @format */
+
+.woo-dash__secondary {
+	background-color: lightyellow;
+}
+
+.woo-dash__sidebar-tabs {
+	.components-tab-panel__tabs {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-column-gap: 10px;
+		padding: 2em 2em 0;
+		background-color: transparent;
+	}
+
+	.components-tab-panel__tab-content {
+		background-color: lightseagreen;
+		padding: 2em;
+	}
+
+	.woo-dash__sidebar-tab {
+		border: none;
+		outline: none;
+		cursor: pointer;
+		background-color: transparent;
+
+		&.is-active {
+			background-color: lightseagreen;
+		}
+
+		h2 {
+			font-size: 1.2em;
+		}
+	}
+}
