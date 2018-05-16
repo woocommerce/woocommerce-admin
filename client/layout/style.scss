@@ -10,6 +10,7 @@
 
 	@include breakpoint( '<782px' ) {
 		min-height: calc(100vh - 46px);
+		display: block;
 	}
 }
 
@@ -33,6 +34,19 @@
 	background: $white;
 	border-left: 1px solid $gray;
 	padding: 2em;
+
+	@include breakpoint( '<782px' ) {
+		position: absolute;
+		top: 60px;
+		left: 0;
+		width: 100%;
+		transform: translate(100%, 0);
+		transition: transform cubic-bezier(0.4, 0, 1, 1) 1s;
+
+		&.is-visible {
+			transform: translate(0, 0);
+		}
+	}
 }
 
 .woo-dash__widget {
