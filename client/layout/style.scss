@@ -2,9 +2,15 @@
 .woo-dashboard {
 	display: grid;
 	grid-template-columns: auto 360px;
+	grid-template-rows: 47px auto;
 	grid-gap: 0 40px;
 	margin: 0;
 	padding: 0;
+	min-height: calc(100vh - 32px);
+
+	@include breakpoint( '<782px' ) {
+		min-height: calc(100vh - 46px);
+	}
 }
 
 .woo-dash__header {
