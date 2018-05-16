@@ -12,29 +12,20 @@ import { Fill } from 'react-slot-fill';
 import './style.scss';
 import { getAdminLink } from 'lib/nav-utils';
 
-// TODO Implement timeline icon
+const Header = ( { sections, showTimeline, onToggle } ) => {
+	const _sections = isArray( sections ) ? sections : [ sections ];
 
-const Header = ( { sections, showTimeline } ) => {
-	const renderBreadcrumbs = () => {
-		const _sections = isArray( sections ) ? sections : [ sections ];
-		const crumbs = _sections.map( ( subSection, i ) => <span key={ i }>{ subSection }</span> );
-		return (
+	return (
+		<div className="woo-dash__header">
 			<h1>
 				<span>
 					<a href={ getAdminLink( '/' ) }>WooCommerce</a>
 				</span>
-				{ crumbs }
+				{ _sections.map( ( subSection, i ) => <span key={ i }>{ subSection }</span> ) }
 			</h1>
-		);
-	};
-
-	return (
-		<Fill name="header">
-			<div className="woo-dash__header">
-				{ renderBreadcrumbs() }
-				{ showTimeline && <div /> }
-			</div>
-		</Fill>
+			{ showTimeline && <div /> }
+			<button onClick={ onToggle }>Show Sidebar</button>
+		</div>
 	);
 };
 
@@ -47,4 +38,10 @@ Header.defaultProps = {
 	showTimeline: true,
 };
 
-export default Header;
+export default function( props ) {
+	return (
+		<Fill name="header">
+			<Header { ...props } />
+		</Fill>
+	);
+}

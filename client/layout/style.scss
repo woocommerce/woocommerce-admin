@@ -43,7 +43,7 @@
 		transform: translate(100%, 0);
 		transition: transform cubic-bezier(0.4, 0, 1, 1) 1s;
 
-		&.is-visible {
+		&.is-opened {
 			transform: translate(0, 0);
 		}
 	}
