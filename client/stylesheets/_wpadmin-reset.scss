@@ -10,6 +10,7 @@
 	#wpcontent,
 	#wpbody-content {
 		padding: 0;
+		overflow-x: hidden !important;
 	}
 
 	@include breakpoint( '<782px' ) {

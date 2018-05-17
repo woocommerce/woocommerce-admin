@@ -19,16 +19,19 @@ const getPages = () => {
 			container: Dashboard,
 			path: '/',
 			wpMenu: 'toplevel_page_woodash',
+			hasOpenSidebar: true,
 		},
 		{
 			container: Analytics,
 			path: '/analytics',
 			wpMenu: 'toplevel_page_woodash--analytics',
+			hasOpenSidebar: false,
 		},
 		{
 			container: AnalyticsReport,
 			path: '/analytics/:report',
 			wpMenu: 'toplevel_page_woodash--analytics',
+			hasOpenSidebar: false,
 		},
 	];
 

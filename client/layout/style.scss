@@ -1,21 +1,52 @@
 /** @format */
 .woo-dashboard {
+	margin: 0;
+	padding: 0;
+	min-height: calc(100vh - 32px);
+	overflow: hidden;
+
+	@include breakpoint( '<782px' ) {
+		min-height: calc(100vh - 46px);
+	}
+}
+
+.woo-dashboard.has-visible-sidebar {
 	display: grid;
 	grid-template-columns: auto 360px;
 	grid-template-rows: 47px auto;
 	grid-gap: 0 40px;
-	margin: 0;
-	padding: 0;
-	min-height: calc(100vh - 32px);
 
 	@include breakpoint( '<782px' ) {
-		min-height: calc(100vh - 46px);
 		display: block;
+	}
+
+	.woo-dash__header {
+		grid-column: 1/span 2;
 	}
 }
 
+@mixin hidden-sidebar() {
+	position: fixed;
+	top: 32px;
+	right: 0;
+	width: 100%;
+	max-width: 400px;
+	height: calc(100vh - 32px);
+	overflow-x: hidden;
+	overflow-y: scroll;
+	transform: translate3d( 100%, 0, 0 );
+	transition: transform 0.15s ease-in-out;
+
+	&.is-opened {
+		transform: translate3d( 0, 0, 0 );
+	}
+}
+
+.woo-dashboard.has-hidden-sidebar .woo-dash__secondary {
+	@include hidden-sidebar;
+}
+
 .woo-dash__header {
-	grid-column: 1/span 2;
 	min-height: 47px;
 	margin: 0;
 	padding: 8px 16px 8px 16px;
@@ -36,16 +67,10 @@
 	padding: 2em;
 
 	@include breakpoint( '<782px' ) {
-		position: absolute;
-		top: 60px;
-		left: 0;
-		width: 100%;
-		transform: translate(100%, 0);
-		transition: transform cubic-bezier(0.4, 0, 1, 1) 1s;
+		@include hidden-sidebar;
 
-		&.is-opened {
-			transform: translate(0, 0);
-		}
+		top: 46px;
+		height: calc(100vh - 46px);
 	}
 }
 

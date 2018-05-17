@@ -2,18 +2,21 @@
 /**
  * External dependencies
  */
-import { Component, Fragment } from '@wordpress/element';
+import classnames from 'classnames';
+import { Component } from '@wordpress/element';
+import { find } from 'lodash';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Slot } from 'react-slot-fill';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
+import { Controller, getPages } from './controller';
 import Notices from './notices';
-import Main from './main';
 import Sidebar from './sidebar';
 
-export default class extends Component {
+class Layout extends Component {
 	constructor() {
 		super( ...arguments );
 		this.toggleSidebar = this.toggleSidebar.bind( this );
@@ -27,16 +30,42 @@ export default class extends Component {
 	}
 
 	render() {
+		const { path } = this.props.match;
+		const page = find( getPages(), { path } );
+		const className = classnames( {
+			'woo-dashboard': true,
+			'has-visible-sidebar': page.hasOpenSidebar,
+			'has-hidden-sidebar': ! page.hasOpenSidebar,
+		} );
 		return (
-			<Fragment>
+			<div className={ className }>
 				<Slot name="header" fillChildProps={ { onToggle: this.toggleSidebar } } />
 				<div className="woo-dash__primary">
 					<Notices />
-					<Main />
+					<div className="woo-dash__main">
+						<Controller { ...this.props } />
+					</div>
 				</div>
 
 				<Sidebar isOpen={ this.state.isSidebarOpen } />
-			</Fragment>
+			</div>
+		);
+	}
+}
+
+export default class extends Component {
+	render() {
+		return (
+			<Router>
+				<Switch>
+					{ getPages().map( page => {
+						return (
+							<Route key={ page.path } path={ page.path } exact component={ Layout } />
+						);
+					} ) }
+					<Route component={ Layout } />
+				</Switch>
+			</Router>
 		);
 	}
 }
