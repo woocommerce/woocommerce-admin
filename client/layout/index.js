@@ -37,9 +37,14 @@ class Layout extends Component {
 			'has-visible-sidebar': page.hasOpenSidebar,
 			'has-hidden-sidebar': ! page.hasOpenSidebar,
 		} );
+		const headerProps = {
+			onToggle: this.toggleSidebar,
+			isSidebarOpen: this.state.isSidebarOpen,
+		};
+
 		return (
 			<div className={ className }>
-				<Slot name="header" fillChildProps={ { onToggle: this.toggleSidebar } } />
+				<Slot name="header" fillChildProps={ headerProps } />
 				<div className="woo-dash__primary">
 					<Notices />
 					<div className="woo-dash__main">
@@ -47,7 +52,7 @@ class Layout extends Component {
 					</div>
 				</div>
 
-				<Sidebar isOpen={ this.state.isSidebarOpen } />
+				<Sidebar isOpen={ this.state.isSidebarOpen } onToggle={ this.toggleSidebar } />
 			</div>
 		);
 	}
@@ -59,9 +64,7 @@ export default class extends Component {
 			<Router>
 				<Switch>
 					{ getPages().map( page => {
-						return (
-							<Route key={ page.path } path={ page.path } exact component={ Layout } />
-						);
+						return <Route key={ page.path } path={ page.path } exact component={ Layout } />;
 					} ) }
 					<Route component={ Layout } />
 				</Switch>

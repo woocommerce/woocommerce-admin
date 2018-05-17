@@ -2,9 +2,11 @@
 /**
  * External dependencies
  */
-import { isArray } from 'lodash';
-import PropTypes from 'prop-types';
+import { __ } from '@wordpress/i18n';
 import { Fill } from 'react-slot-fill';
+import { isArray, noop } from 'lodash';
+import { IconButton } from '@wordpress/components';
+import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
@@ -12,7 +14,7 @@ import { Fill } from 'react-slot-fill';
 import './style.scss';
 import { getAdminLink } from 'lib/nav-utils';
 
-const Header = ( { sections, showTimeline, onToggle } ) => {
+const Header = ( { sections, onToggle, isSidebarOpen } ) => {
 	const _sections = isArray( sections ) ? sections : [ sections ];
 
 	return (
@@ -23,20 +25,28 @@ const Header = ( { sections, showTimeline, onToggle } ) => {
 				</span>
 				{ _sections.map( ( subSection, i ) => <span key={ i }>{ subSection }</span> ) }
 			</h1>
-			{ showTimeline && <div /> }
-			<button onClick={ onToggle }>Show Sidebar</button>
+			<div className="woo-dash__header-toggle">
+				<IconButton
+					className="woo-dash__header-button"
+					onClick={ onToggle }
+					icon="clock"
+					label={ __( 'Show Sidebar', 'woo-dash' ) }
+					aria-expanded={ isSidebarOpen }
+				/>
+			</div>
 		</div>
 	);
 };
 
 Header.propTypes = {
 	sections: PropTypes.node.isRequired,
-	showTimeline: PropTypes.bool,
+	onToggle: PropTypes.func.isRequired,
+	isSidebarOpen: PropTypes.bool,
 };
 
 Header.defaultProps = {
-	showTimeline: true,
-};
+	onToggle: noop,
+}
 
 export default function( props ) {
 	return (

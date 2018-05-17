@@ -21,4 +21,5 @@ render: function() {
 ## Props
 
 * `sections` (required): Used to generate breadcrumbs. Accepts a single node/elemnt or an array of nodes.
-* `showTimeline` (default: true): The header provides access to the WooCommerce timeline from any page. Passing `false` to this prop will hide the timeline icon.
+* `onToggle` (required): The toggle callback when "open sidebar" button is clicked.
+* `isSidebarOpen`: Boolean describing whether the sidebar is toggled visible.
