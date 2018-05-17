@@ -67,6 +67,7 @@
 	background: $white;
 	border-left: 1px solid $gray;
 	padding: 2em;
+	min-height: calc(100vh - 32px);
 
 	@include breakpoint( '<782px' ) {
 		@include hidden-sidebar;
