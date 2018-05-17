@@ -3,11 +3,11 @@ Agenda
 
 This widget displays agenda items for WooCommerce (i.e. orders that need fulfilled, reviews to moderate, etc).
 
-An `Agenda` widget is made up of multiple `AgendaAccordion` components, each with their own `AgendaItem`.
+An `Agenda` widget is made up of multiple `AgendaGroup` components, each with their own `AgendaItem`.
 
 `Agenda` acts as a wrapper widget, and will be responsible for pulling in agenda data from the API.
 
-`AgendaAccordion` displays multiple `AgendaItem` child components. All `AgendaItem`s under an `AgendaAccordion` should relate to the same task at hand (example: "Orders to fulfill").
+`AgendaGroup` displays multiple `AgendaItem` child components. All `AgendaItem`s under an `AgendaGroup` should relate to the same task at hand (example: "Orders to fulfill"). Alternatively, a link can be passed and `AgendaGroup` will act as a link instead.
 
 `AgendaItem` contains information to each individual item (i.e. order number, date, etc). It will output an action button for acting on each item.
 
@@ -28,34 +28,55 @@ render: function() {
 ## How to use `AgendaAccordion` and `AgendaItem`:
 
 ```jsx
-import { AgendaAccordion } from 'dashboard/widgets/agenda/accordion';
+import { AgendaGroup } from 'dashboard/widgets/agenda/group';
 import { AgendaItem } from 'dashboard/widgets/agenda/item';
+import { getWpAdminLink } from 'lib/nav-utils';
+import { noop } from 'lodash';
 
 render: function() {
 	return (
-		<AgendaAccordion count={ 2 } title="Orders need to be fulfilled">
-			<AgendaItem actionLabel={ __( 'Fulfill', 'woo-dash' ) }>
-				Order #99
-			</AgendaItem>
-			<AgendaItem actionLabel={ __( 'Fulfill', 'woo-dash' ) }>
-				Order #101
-			</AgendaItem>
-		</AgendaAccordion>
+		<div>
+			<AgendaGroup
+				count={ 2 }
+				title={ _n(
+					'Order needs to be fulfilled',
+					'Orders need to be fulfilled',
+					2,
+					'woo-dash'
+				) }
+			>
+				<AgendaItem onClick={ noop } actionLabel={ __( 'Fulfill', 'woo-dash' ) }>Order #99</AgendaItem>
+				<AgendaItem
+					href={ getWpAdminLink( '/edit.php?post_type=shop_order' ) }
+					actionLabel={ __( 'Fulfill', 'woo-dash' ) }
+				>
+					Order #101
+				</AgendaItem>
+			</AgendaGroup>
+			<AgendaGroup
+				count={ 1 }
+				title={ _n( 'Order awaiting payment', 'Orders awaiting payment', 1, 'woo-dash' ) }
+				href={ getWpAdminLink( '/edit.php?post_status=wc-pending&post_type=shop_order' ) }
+			/>
+		</div>
 	);
 }
 ```
 
 
-## `AgendaAccordion` Props
+## `AgendaGroup` Props
 
 * `title` (required): A title that describes the associated agenda items.
 * `count` (required): Number of agenda items that need taken care of.
-* `children`: A list of AgendaItem components
-* `className`: Optional extra CSS.
-* `initialOpen` (default: false): Initial open status of the accordion.
+* `children`: A list of AgendaItem components.
+* `href`: If a href is passed, the AgendaGroup will not be expandable, and will instead link to the destination.
+* `className`: Optional extra class name.
+* `initialOpen` (default: false): Initial open status of the accordion (if not passing an href).
 
 ## `AgendaItem` Props
 
-* `action` (required): A function called when the action button is clicked.
+* `onClick`: A function called when the action button is clicked.
+* `href`: A link when the action button is clicked.
 * `actionLabel` (required): A string to be used for the action button.
-* `className`: Optional extra CSS.
+* `className`: Optional extra class name.
+* `children`: Information about the agenda item.

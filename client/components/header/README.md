@@ -7,11 +7,12 @@ A basic component for the app header. The header outputs breadcrumbs via the `se
 
 ```jsx
 import Header from 'components/header';
+import { getWcLink } from 'lib/nav-utils';
 
 render: function() {
 	return (
 		<Header sections={ [
-			<a href={ getAdminLink( 'admin.php?page=wooanalytics' ) }>{ __( 'Analytics', 'woo-dash' ) }</a>,
+			<a href={ getWcLink( '/analytics' ) }>{ __( 'Analytics', 'woo-dash' ) }</a>,
 			__( 'Report Title', 'woo-dash' ),
 		] } />
   	);
