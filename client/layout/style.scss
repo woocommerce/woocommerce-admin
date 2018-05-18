@@ -29,7 +29,7 @@
 	display: grid;
 	grid-template-columns: auto 360px;
 	grid-template-rows: 47px auto;
-	grid-gap: 0 40px;
+	grid-gap: 0 20px;
 
 	@include breakpoint( '<782px' ) {
 		display: block;
