@@ -3,11 +3,11 @@ Agenda
 
 This widget displays agenda items for WooCommerce (i.e. orders that need fulfilled, reviews to moderate, etc).
 
-An `Agenda` widget is made up of multiple `AgendaGroup` components, each with their own `AgendaItem`.
+An `Agenda` widget is made up of multiple `AgendaHeader` components, each with their own `AgendaItem`.
 
 `Agenda` acts as a wrapper widget, and will be responsible for pulling in agenda data from the API.
 
-`AgendaGroup` displays multiple `AgendaItem` child components. All `AgendaItem`s under an `AgendaGroup` should relate to the same task at hand (example: "Orders to fulfill"). Alternatively, a link can be passed and `AgendaGroup` will act as a link instead.
+`AgendaHeader` displays multiple `AgendaItem` child components. All `AgendaItem`s under an `AgendaHeader` should relate to the same task at hand (example: "Orders to fulfill"). Alternatively, a link can be passed and `AgendaHeader` will act as a link instead.
 
 `AgendaItem` contains information to each individual item (i.e. order number, date, etc). It will output an action button for acting on each item.
 
@@ -25,10 +25,10 @@ render: function() {
 }
 ```
 
-## How to use `AgendaAccordion` and `AgendaItem`:
+## How to use `AgendaHeader` and `AgendaItem`:
 
 ```jsx
-import { AgendaGroup } from 'dashboard/widgets/agenda/group';
+import { AgendaHeader } from 'dashboard/widgets/agenda/header';
 import { AgendaItem } from 'dashboard/widgets/agenda/item';
 import { getWpAdminLink } from 'lib/nav-utils';
 import { noop } from 'lodash';
@@ -36,7 +36,7 @@ import { noop } from 'lodash';
 render: function() {
 	return (
 		<div>
-			<AgendaGroup
+			<AgendaHeader
 				count={ 2 }
 				title={ _n(
 					'Order needs to be fulfilled',
@@ -52,8 +52,8 @@ render: function() {
 				>
 					Order #101
 				</AgendaItem>
-			</AgendaGroup>
-			<AgendaGroup
+			</AgendaHeader>
+			<AgendaHeader
 				count={ 1 }
 				title={ _n( 'Order awaiting payment', 'Orders awaiting payment', 1, 'woo-dash' ) }
 				href={ getWpAdminLink( '/edit.php?post_status=wc-pending&post_type=shop_order' ) }
@@ -64,12 +64,12 @@ render: function() {
 ```
 
 
-## `AgendaGroup` Props
+## `AgendaHeader` Props
 
 * `title` (required): A title that describes the associated agenda items.
 * `count` (required): Number of agenda items that need taken care of.
 * `children`: A list of AgendaItem components.
-* `href`: If a href is passed, the AgendaGroup will not be expandable, and will instead link to the destination.
+* `href`: If a href is passed, the AgendaHeader will not be expandable, and will instead link to the destination.
 * `className`: Optional extra class name.
 * `initialOpen` (default: false): Initial open status of the accordion (if not passing an href).
 

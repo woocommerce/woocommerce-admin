@@ -9,10 +9,10 @@ import { noop } from 'lodash';
 /**
  * Internal dependencies
  */
-import AgendaGroup from './group';
+import AgendaHeader from './header';
 import AgendaItem from './item';
 import Card from 'components/card';
-import { getWpAdminLink } from 'lib/nav-utils';
+import { getAdminLink } from 'lib/nav-utils';
 
 import './style.scss';
 
@@ -21,7 +21,7 @@ class Agenda extends Component {
 	render() {
 		return (
 			<Card title={ __( 'Your agenda', 'woo-dash' ) } className="woo-dash__agenda-card">
-				<AgendaGroup
+				<AgendaHeader
 					count={ 2 }
 					title={ _n(
 						'Order needs to be fulfilled',
@@ -34,16 +34,16 @@ class Agenda extends Component {
 						Order #99
 					</AgendaItem>
 					<AgendaItem
-						href={ getWpAdminLink( '/edit.php?post_type=shop_order' ) }
+						href={ getAdminLink( '/edit.php?post_type=shop_order' ) }
 						actionLabel={ __( 'Fulfill', 'woo-dash' ) }
 					>
 						Order #101
 					</AgendaItem>
-				</AgendaGroup>
-				<AgendaGroup
+				</AgendaHeader>
+				<AgendaHeader
 					count={ 1 }
 					title={ _n( 'Order awaiting payment', 'Orders awaiting payment', 1, 'woo-dash' ) }
-					href={ getWpAdminLink( '/edit.php?post_status=wc-pending&post_type=shop_order' ) }
+					href={ getAdminLink( '/edit.php?post_status=wc-pending&post_type=shop_order' ) }
 				/>
 			</Card>
 		);

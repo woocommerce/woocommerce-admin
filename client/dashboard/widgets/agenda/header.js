@@ -2,12 +2,12 @@
 /**
  * External dependencies
  */
-import { Button, Dashicon } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
+import { IconButton } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
-class AgendaGroup extends Component {
+class AgendaHeader extends Component {
 	constructor( props ) {
 		super( ...arguments );
 		this.state = {
@@ -30,41 +30,52 @@ class AgendaGroup extends Component {
 		}
 	}
 
-	render() {
-		const { title, children, opened, className, count, href } = this.props;
-		const isOpened = opened === undefined ? this.state.opened : opened;
-		const mode = href ? 'link' : 'accordion';
-
-		const classes = classnames( 'woo-dash__agenda-group-wrapper', className, {
-			'is-opened': isOpened && 'accordion' === mode,
-		} );
-
-		const toggleClasses = classnames( 'woo-dash__agenda-group-toggle', {
-			'is-link': 'link' === mode,
-			'is-accordion': 'accordion' === mode,
-		} );
-
-		let icon, divProps, buttonProps;
-		if ( 'link' === mode ) {
-			icon = 'arrow-right-alt2';
-			divProps = {};
-			buttonProps = { href };
-		} else {
-			icon = `arrow-${ isOpened ? 'up-alt2' : 'down-alt2' }`;
-			divProps = { onClick: this.toggle };
-			buttonProps = { ...divProps, 'aria-expanded': isOpened };
-		}
+	renderLink() {
+		const { title, className, count, href } = this.props;
+		const classes = classnames( 'woo-dash__agenda-group-wrapper', className );
 
 		return (
-			<div className={ classes }>
-				<div { ...divProps } className={ toggleClasses }>
+			<a className={ classes } href={ href }>
+				<div className="woo-dash__agenda-group-title is-link">
 					<h3>
 						<span>{ count }</span>
 						{ title }
 					</h3>
-					<Button { ...buttonProps }>
-						<Dashicon icon={ icon } />
-					</Button>
+					<IconButton
+						href={ href }
+						icon="arrow-right-alt2"
+					/>
+				</div>
+			</a>
+		);
+	}
+
+	render() {
+		const { title, children, opened, className, count, href } = this.props;
+
+		// Render a link instead of an accordion if `href` is passed.
+		if ( href ) {
+			return this.renderLink();
+		}
+
+		const isOpened = opened === undefined ? this.state.opened : opened;
+		const classes = classnames( 'woo-dash__agenda-group-wrapper', className, {
+			'is-opened': isOpened,
+		} );
+		const icon = `arrow-${ isOpened ? 'up-alt2' : 'down-alt2' }`;
+
+		return (
+			<div className={ classes }>
+				<div onClick={ this.toggle } className="woo-dash__agenda-group-title is-accordion">
+					<h3>
+						<span>{ count }</span>
+						{ title }
+					</h3>
+					<IconButton
+						onClick={ this.toggle }
+						aria-expanded={ isOpened }
+						icon={ icon }
+					/>
 				</div>
 
 				{ isOpened &&
@@ -74,7 +85,7 @@ class AgendaGroup extends Component {
 	}
 }
 
-AgendaGroup.propTypes = {
+AgendaHeader.propTypes = {
 	title: PropTypes.string.isRequired,
 	className: PropTypes.string,
 	count: PropTypes.number.isRequired,
@@ -83,4 +94,4 @@ AgendaGroup.propTypes = {
 	href: PropTypes.string,
 };
 
-export default AgendaGroup;
+export default AgendaHeader;

@@ -7,6 +7,8 @@
 .woo-dash__agenda-group-wrapper {
 	background: #f9f9f9;
 	font-size: 13px;
+	text-decoration: none;
+	display: block;
 
 	h3 {
 		font-size: 13px;
@@ -27,7 +29,7 @@
 	padding: 16px;
 }
 
-.woo-dash__agenda-group-toggle {
+.woo-dash__agenda-group-title {
 	height: 60px;
 	padding: 20px 0px 0px 20px;
 	display: flex;
@@ -50,6 +52,11 @@
 		text-align: right;
 		border: none;
 		box-shadow: none;
+		color: #444;
+	}
+
+	.components-icon-button {
+		overflow: visible;
 	}
 
 	.components-button:not(:disabled):not([aria-disabled='true']):focus {
@@ -58,6 +65,10 @@
 		.dashicon {
 			box-shadow: inset 0 0 0 1px $gray-darken-10, inset 0 0 0 2px $white;
 		}
+	}
+
+	.components-button:not(:disabled):not([aria-disabled='true']):hover {
+		box-shadow: none;
 	}
 
 	&.is-link {
