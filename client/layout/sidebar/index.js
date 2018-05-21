@@ -11,7 +11,9 @@ import { uniqueId } from 'lodash';
 /**
  * Internal dependencies
  */
+import './style.scss';
 import Activity from 'dashboard/activity';
+import Separator from './separator';
 
 class Sidebar extends Component {
 	render() {
@@ -37,7 +39,9 @@ class Sidebar extends Component {
 					</div>
 				</header>
 
+				<Separator label={ __( 'Today', 'woo-dash' ) } />
 				<Activity />
+
 			</aside>
 		);
 	}
