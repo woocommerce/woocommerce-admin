@@ -38,13 +38,10 @@ class AgendaHeader extends Component {
 			<a className={ classes } href={ href }>
 				<div className="woo-dash__agenda-group-title is-link">
 					<h3>
-						<span>{ count }</span>
+						{ count && <span>{ count }</span> }
 						{ title }
 					</h3>
-					<IconButton
-						href={ href }
-						icon="arrow-right-alt2"
-					/>
+					<IconButton href={ href } icon="arrow-right-alt2" />
 				</div>
 			</a>
 		);
@@ -64,31 +61,31 @@ class AgendaHeader extends Component {
 		} );
 		const icon = `arrow-${ isOpened ? 'up-alt2' : 'down-alt2' }`;
 
+		/* eslint-disable jsx-a11y/click-events-have-key-events */
+		/* eslint-disable jsx-a11y/no-static-element-interactions */
 		return (
 			<div className={ classes }>
 				<div onClick={ this.toggle } className="woo-dash__agenda-group-title is-accordion">
 					<h3>
-						<span>{ count }</span>
+						{ count && <span>{ count }</span> }
 						{ title }
 					</h3>
-					<IconButton
-						onClick={ this.toggle }
-						aria-expanded={ isOpened }
-						icon={ icon }
-					/>
+					<IconButton onClick={ this.toggle } aria-expanded={ isOpened } icon={ icon } />
 				</div>
 
 				{ isOpened &&
 					children && <div className="woo-dash__agenda-group-content"> { children } </div> }
 			</div>
 		);
+		/* eslint-enable jsx-a11y/click-events-have-key-events */
+		/* eslint-enable jsx-a11y/no-static-element-interactions */
 	}
 }
 
 AgendaHeader.propTypes = {
 	title: PropTypes.string.isRequired,
 	className: PropTypes.string,
-	count: PropTypes.number.isRequired,
+	count: PropTypes.number,
 	initialOpen: PropTypes.bool,
 	children: PropTypes.node,
 	href: PropTypes.string,

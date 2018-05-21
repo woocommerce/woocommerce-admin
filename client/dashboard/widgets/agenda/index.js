@@ -45,6 +45,10 @@ class Agenda extends Component {
 					title={ _n( 'Order awaiting payment', 'Orders awaiting payment', 1, 'woo-dash' ) }
 					href={ getAdminLink( '/edit.php?post_status=wc-pending&post_type=shop_order' ) }
 				/>
+				<AgendaHeader
+					title={ __( 'Extensions', 'woo-dash' ) }
+					href={ getAdminLink( '/admin.php?page=wc-addons' ) }
+				/>
 			</Card>
 		);
 	}

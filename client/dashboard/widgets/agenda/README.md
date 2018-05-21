@@ -67,7 +67,7 @@ render: function() {
 ## `AgendaHeader` Props
 
 * `title` (required): A title that describes the associated agenda items.
-* `count` (required): Number of agenda items that need taken care of.
+* `count`: Number of agenda items that need taken care of.
 * `children`: A list of AgendaItem components.
 * `href`: If a href is passed, the AgendaHeader will not be expandable, and will instead link to the destination.
 * `className`: Optional extra class name.
