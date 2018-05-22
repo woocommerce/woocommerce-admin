@@ -37,6 +37,14 @@ function woo_dash_register_script() {
 		"jQuery( '#toplevel_page_woodash a' ).attr( 'href', 'admin.php?page=woodash#/' );",
 		'before'
 	);
+
+	// Resets lodash to wp-admin's version of lodash
+	wp_add_inline_script(
+		WOO_DASH_APP,
+		'_.noConflict();',
+		'after'
+	);
+
 }
 add_action( 'init', 'woo_dash_register_script' );
 
