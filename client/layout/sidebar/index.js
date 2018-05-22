@@ -13,7 +13,7 @@ import { uniqueId } from 'lodash';
  */
 import './style.scss';
 import Activity from 'dashboard/activity';
-import Separator from './separator';
+import SidebarHeader from './header';
 
 class Sidebar extends Component {
 	render() {
@@ -25,7 +25,7 @@ class Sidebar extends Component {
 
 		return (
 			<aside className={ className } aria-labelledby={ headerId }>
-				<header className="woo-dash__sidebar-header">
+				<header className="woo-dash__sidebar-top">
 					<h2 className="woo-dash__sidebar-title" id={ headerId }>
 						{ __( 'Store Activity', 'woo-dash' ) }
 					</h2>
@@ -39,9 +39,8 @@ class Sidebar extends Component {
 					</div>
 				</header>
 
-				<Separator label={ __( 'Today', 'woo-dash' ) } />
+				<SidebarHeader label={ __( 'Today', 'woo-dash' ) } />
 				<Activity />
-
 			</aside>
 		);
 	}
