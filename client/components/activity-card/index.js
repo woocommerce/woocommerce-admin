@@ -7,6 +7,11 @@ import classnames from 'classnames';
 import { cloneElement, Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
+/**
+ * Internal dependencies
+ */
+import './style.scss';
+
 // @TODO Use @wordpress/date to format the date
 
 class ActivityCard extends Component {
@@ -18,8 +23,10 @@ class ActivityCard extends Component {
 			<section className={ className }>
 				<header className="woo-dash__activity-card-header">
 					<span className="woo-dash__activity-card-icon">{ icon }</span>
-					<h3 className="woo-dash__activity-card-label">{ label }</h3>
-					{ date && <span className="woo-dash__activity-card-date">{ date }</span> }
+					<h3 className="woo-dash__activity-card-label">
+						{ label }
+						{ date && <span className="woo-dash__activity-card-date">{ date }</span> }
+					</h3>
 					{ menu && <div className="woo-dash__activity-card-menu">{ menu }</div> }
 				</header>
 				<div className="woo-dash__activity-card-content">
