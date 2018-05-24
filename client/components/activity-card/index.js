@@ -5,12 +5,14 @@
 // import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { cloneElement, Component } from '@wordpress/element';
+import { Dashicon } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
+import { EllipsisMenu } from '../ellipsis-menu';
 
 // @TODO Use @wordpress/date to format the date
 
@@ -44,9 +46,19 @@ class ActivityCard extends Component {
 }
 
 ActivityCard.propTypes = {
+	actions: PropTypes.oneOfType( [ PropTypes.array, PropTypes.element ] ),
 	children: PropTypes.node,
+	date: PropTypes.string,
+	icon: PropTypes.node,
+	image: PropTypes.node,
+	label: PropTypes.string.isRequired,
+	menu: PropTypes.shape( {
+		type: PropTypes.oneOf( [ EllipsisMenu ] ),
+	} ),
 };
 
-// ActivityCard.defaultProps = {};
+ActivityCard.defaultProps = {
+	icon: <Dashicon icon="warning" />,
+};
 
 export default ActivityCard;
