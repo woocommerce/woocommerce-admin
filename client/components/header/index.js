@@ -26,7 +26,11 @@ const Header = ( { sections, onToggle, isSidebarOpen } ) => {
 		.join( ' &lsaquo; ' );
 
 	document.title = decodeEntities(
-		sprintf( '%1$s &lsaquo; %2$s &#8212; WooCommerce', documentTitle, wpApiSettings.schema.name )
+		sprintf(
+			__( '%1$s &lsaquo; %2$s &#8212; WooCommerce', 'woo-dash' ),
+			documentTitle,
+			wpApiSettings.schema.name
+		)
 	);
 
 	return (
