@@ -25,13 +25,13 @@ class ActivityCard extends Component {
 					<span className="woo-dash__activity-card-icon">{ icon }</span>
 					<h3 className="woo-dash__activity-card-label">
 						{ label }
-						{ date && <span className="woo-dash__activity-card-date">{ date }</span> }
+						{ date && <span className="woo-dash__activity-card-date">– { date }</span> }
 					</h3>
 					{ menu && <div className="woo-dash__activity-card-menu">{ menu }</div> }
 				</header>
-				<div className="woo-dash__activity-card-content">
-					{ children }
-					{ image }
+				<div className="woo-dash__activity-card-body">
+					<div className="woo-dash__activity-card-content">{ children }</div>
+					{ image && <div className="woo-dash__activity-card-image">{ image }</div> }
 				</div>
 				{ actions && (
 					<footer className="woo-dash__activity-card-actions">

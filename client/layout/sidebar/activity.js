@@ -31,6 +31,7 @@ class ActivityList extends Component {
 					icon={ <Dashicon icon="search" /> }
 					date="30 minutes ago"
 					actions={ [ <a href="/">Action link</a>, <a href="/">Action link 2</a> ] }
+					image={ <Dashicon icon="palmtree" /> }
 				>
 					Insight content goes in this area here. It will probably be a couple of lines long and may
 					include an accompanying image. We might consider color-coding the icon for quicker
@@ -42,6 +43,9 @@ class ActivityList extends Component {
 					date="1 hour ago"
 					menu={ exampleEllipsisMenu }
 					actions={ [ <a href="/">View referral analytics</a> ] }
+					image={
+						<img src="https://vagrant.local/content/uploads/2017/05/beanie-150x150.jpg" alt="" />
+					}
 				>
 					You’re receiving a lot of traffic from the following Reddit topic…
 				</ActivityCard>

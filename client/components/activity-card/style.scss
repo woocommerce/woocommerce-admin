@@ -1,3 +1,5 @@
+/** @format */
+
 .woo-dash__activity-card {
 	background: $white;
 	border: 1px solid $gray;
@@ -37,8 +39,29 @@
 	}
 }
 
-.woo-dash__activity-card-content {
+.woo-dash__activity-card-body {
 	padding: 0 $spacing $spacing;
+	display: flex;
+
+	.woo-dash__activity-card-content {
+		flex: 1;
+	}
+
+	.woo-dash__activity-card-image {
+		border-radius: 50%;
+		overflow: hidden;
+		width: 60px;
+		align-self: flex-end;
+		border: 1px solid $gray;
+		background: #f8f8f8;
+
+		img,
+		.dashicon {
+			vertical-align: middle;
+			width: 100%;
+			height: auto;
+		}
+	}
 }
 
 .woo-dash__activity-card-actions {
