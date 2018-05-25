@@ -3,25 +3,29 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { Button, ToggleControl, withAPIData } from '@wordpress/components';
+import { Button, withAPIData } from '@wordpress/components';
 import { Component, compose } from '@wordpress/element';
+import { Link } from 'react-router-dom';
 
 /**
  * Internal dependencies
  */
 import Card from 'components/card';
-import { EllipsisMenu, MenuItem, MenuTitle } from 'components/ellipsis-menu';
+import Tabs from 'components/tabs';
+import TabItem from 'components/tabs/item';
 
-class WidgetNumbers extends Component {
+class Performance extends Component {
 	constructor() {
 		super( ...arguments );
 		this.state = {
 			showCustomers: true,
 			showProducts: true,
 			showOrders: true,
+			period: 'day',
 		};
 
 		this.toggle = this.toggle.bind( this );
+		this.selectPeriod = this.selectPeriod.bind( this );
 	}
 
 	toggle( type ) {
@@ -30,32 +34,19 @@ class WidgetNumbers extends Component {
 		};
 	}
 
-	renderMenu() {
+	selectPeriod( period ) {
+		this.setState( () => ( { period } ) );
+		// TODO Update charts based on new time period.
+	}
+
+	renderTabPanel() {
+		const { period } = this.state;
 		return (
-			<EllipsisMenu label={ __( 'Choose which analytics to display', 'woo-dash' ) }>
-				<MenuTitle>{ __( 'Display Stats:', 'woo-dash' ) }</MenuTitle>
-				<MenuItem onInvoke={ this.toggle( 'showCustomers' ) }>
-					<ToggleControl
-						label={ __( 'Show Customers', 'woo-dash' ) }
-						checked={ this.state.showCustomers }
-						onChange={ this.toggle( 'showCustomers' ) }
-					/>
-				</MenuItem>
-				<MenuItem onInvoke={ this.toggle( 'showProducts' ) }>
-					<ToggleControl
-						label={ __( 'Show Products', 'woo-dash' ) }
-						checked={ this.state.showProducts }
-						onChange={ this.toggle( 'showProducts' ) }
-					/>
-				</MenuItem>
-				<MenuItem onInvoke={ this.toggle( 'showOrders' ) }>
-					<ToggleControl
-						label={ __( 'Show Orders', 'woo-dash' ) }
-						checked={ this.state.showOrders }
-						onChange={ this.toggle( 'showOrders' ) }
-					/>
-				</MenuItem>
-			</EllipsisMenu>
+			<Tabs selectedTab={ period } onSelect={ this.selectPeriod }>
+				<TabItem name="day">Today</TabItem>
+				<TabItem name="week">This Week</TabItem>
+				<TabItem name="month">This Month</TabItem>
+			</Tabs>
 		);
 	}
 
@@ -65,8 +56,9 @@ class WidgetNumbers extends Component {
 		const totalProducts = ( products.data && products.data.length ) || 0;
 		const { showCustomers, showProducts, showOrders } = this.state;
 
+		// TODO Chart display.
 		return (
-			<Card title={ __( 'Store Performance', 'woo-dash' ) } menu={ this.renderMenu() }>
+			<Card title={ ( <Link to="/analytics">{ __( 'Store Performance', 'woo-dash' ) }</Link> ) } settings={ this.renderTabPanel() }>
 				<div className="woo-dash__widget">
 					{ showCustomers && (
 						<div className="woo-dash__widget-item">
@@ -105,4 +97,4 @@ export default compose( [
 		orders: '/wc/v2/orders?status=processing',
 		products: '/wc/v2/products',
 	} ) ),
-] )( WidgetNumbers );
+] )( Performance );

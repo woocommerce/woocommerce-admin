@@ -11,6 +11,7 @@
 	border-bottom: 1px solid $gray;
 	display: grid;
 	align-items: center;
+	height: 60px;
 
 	.has-action & {
 		grid-template-columns: 1fr 1fr;
@@ -20,8 +21,16 @@
 		grid-template-columns: 1fr 50px;
 	}
 
+	.has-tabs & {
+		grid-template-columns: 1fr auto;
+	}
+
 	.has-menu.has-action & {
 		grid-template-columns: 1fr 1fr 50px;
+	}
+
+	.has-tabs.has-action & {
+		grid-template-columns: 1fr 125px auto;
 	}
 
 	h2 {
@@ -29,8 +38,50 @@
 	}
 }
 
+.woo-dash__card.has-tabs {
+	h2 {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding-bottom: 20px;
+	}
+
+	.woo-dash__tabs-item {
+		padding-bottom: 20px;
+	}
+}
+
+@include breakpoint( '<600px' ) {
+	.woo-dash__card-header {
+		grid-template-columns: unset;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.woo-dash__card.has-tabs {
+		h2 {
+			overflow: visible;
+			padding-bottom: 0px;
+			margin-top: -14px;
+		}
+
+		.woo-dash__tabs-item {
+			padding-bottom: 8px;
+		}
+	}
+
+	.woo-dash__card-settings {
+		margin-top: 8px;
+	}
+
+	.woo-dash__card-action {
+		position: absolute;
+		right: 5px;
+	}
+}
+
 .woo-dash__card-action,
-.woo-dash__card-menu {
+.woo-dash__card-settings {
 	text-align: right;
 }
 
