@@ -1,0 +1,19 @@
+/** @format */
+
+.woo-dash__tabs-item {
+	font-weight: 500;
+	border: 0;
+	cursor: pointer;
+	padding: 0;
+	margin-left: 16px;
+
+	&:focus {
+		outline: none;
+		border-bottom: 3px solid $purple-light-30;
+	}
+
+	&.is-selected {
+		border-bottom: 3px solid $purple;
+		color: $gray-text;
+	}
+}

@@ -20,6 +20,6 @@ render: function() {
 ## Props
 
 * `title` (required): The title to use for this card.
-* `action`: One "primary" action for this card, appears in the card header
+* `action`: One "primary" action for this card, appears in the card header.
 * `className`: You can add classes to the card container.
-* `menu`: An EllipsisMenu, with filters used to control the content visible in this card
+* `settings`: An EllipsisMenu, with filters used to control the content visible in this card, or a Tab component with a list of tabs.

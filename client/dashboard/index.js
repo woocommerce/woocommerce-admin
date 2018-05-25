@@ -10,14 +10,14 @@ import { Component, Fragment } from '@wordpress/element';
  */
 import Agenda from './widgets/agenda';
 import Header from 'components/header';
-import Numbers from './numbers';
+import Performance from './widgets/performance';
 
 export default class Dashboard extends Component {
 	render() {
 		return (
 			<Fragment>
 				<Header sections={ [ __( 'Dashboard', 'woo-dash' ) ] } />
-				<Numbers />
+				<Performance />
 				<Agenda />
 			</Fragment>
 		);
