@@ -18,11 +18,11 @@ import { EllipsisMenu } from '../ellipsis-menu';
 
 class ActivityCard extends Component {
 	render() {
-		const { actions, date, icon, image, label, menu, children } = this.props;
-		const className = classnames( 'woo-dash__activity-card' );
+		const { actions, className, date, icon, image, label, menu, children } = this.props;
+		const cardClassName = classnames( 'woo-dash__activity-card', className );
 
 		return (
-			<section className={ className }>
+			<section className={ cardClassName }>
 				<header className="woo-dash__activity-card-header">
 					<span className="woo-dash__activity-card-icon">{ icon }</span>
 					<h3 className="woo-dash__activity-card-label">
@@ -47,7 +47,8 @@ class ActivityCard extends Component {
 
 ActivityCard.propTypes = {
 	actions: PropTypes.oneOfType( [ PropTypes.array, PropTypes.element ] ),
-	children: PropTypes.node,
+	className: PropTypes.string,
+	children: PropTypes.node.isRequired,
 	date: PropTypes.string,
 	icon: PropTypes.node,
 	image: PropTypes.node,

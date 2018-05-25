@@ -43,9 +43,7 @@ class ActivityList extends Component {
 					date="1 hour ago"
 					menu={ exampleEllipsisMenu }
 					actions={ [ <a href="/">View referral analytics</a> ] }
-					image={
-						<img src="https://vagrant.local/content/uploads/2017/05/beanie-150x150.jpg" alt="" />
-					}
+					image={ <img src="https://ps.w.org/woocommerce/assets/icon-128x128.png" alt="" /> }
 				>
 					You’re receiving a lot of traffic from the following Reddit topic…
 				</ActivityCard>
