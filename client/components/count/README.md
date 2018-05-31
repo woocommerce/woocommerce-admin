@@ -22,4 +22,4 @@ export default function myCount() {
 Name | Type | Default | Description
 --- | --- | --- | ---
 `count`* | `number` | none | Value of the number to be displayed
-
+`label` | `string` | "Total" | Label for this number, read by screen readers (hidden visually)
