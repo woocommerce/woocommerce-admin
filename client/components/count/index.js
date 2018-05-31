@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 /**
  * Internal dependencies
@@ -10,9 +10,13 @@ import PropTypes from 'prop-types';
 import './style.scss';
 
 const Count = ( { count, label } ) => {
+	if ( ! label ) {
+		label = sprintf( __( 'Total %d', 'woo-dash' ), count );
+	}
+
 	return (
-		<span className="woocommerce-count">
-			<span className="screen-reader-text">{ label }</span> { count }
+		<span className="woocommerce-count" aria-label={ label }>
+			{ count }
 		</span>
 	);
 };
@@ -23,7 +27,7 @@ Count.propTypes = {
 };
 
 Count.defaultProps = {
-	label: __( 'Total', 'woo-dash' ),
+	label: '',
 };
 
 export default Count;
