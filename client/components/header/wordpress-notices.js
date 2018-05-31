@@ -28,7 +28,7 @@ class WordPressNotices extends Component {
 		const noticesOpen = notices.classList.contains( 'woocommerce__admin-notice-list-show' );
 
 		// See https://reactjs.org/docs/react-component.html#componentdidmount
-		this.setState( Object.assign( {}, { count, notices, noticesOpen } ) ); // eslint-disable-line react/no-did-mount-set-state
+		this.setState( { count, notices, noticesOpen } ); // eslint-disable-line react/no-did-mount-set-state
 
 		// Move WordPress notifications into the main WooDash body
 		const primary = document.getElementById( 'woocommerce-layout__primary' );
@@ -45,12 +45,12 @@ class WordPressNotices extends Component {
 			dismissNotices[ key ].removeEventListener( 'click', this.updateCount );
 		}, this );
 
-		this.setState( Object.assign( {}, { noticesOpen: false, hasEventListeners: false } ) );
+		this.setState( { noticesOpen: false, hasEventListeners: false } );
 		this.hideNotices();
 	}
 
 	updateCount() {
-		this.setState( Object.assign( {}, { count: this.state.count - 1 } ) );
+		this.setState( { count: this.state.count - 1 } );
 	}
 
 	maybeAddDismissEvents() {
@@ -63,7 +63,7 @@ class WordPressNotices extends Component {
 			dismiss[ key ].addEventListener( 'click', this.updateCount );
 		}, this );
 
-		this.setState( Object.assign( {}, { hasEventListeners: true } ) );
+		this.setState( { hasEventListeners: true } );
 	}
 
 	showNotices() {
@@ -84,7 +84,7 @@ class WordPressNotices extends Component {
 			this.maybeAddDismissEvents();
 		}
 
-		this.setState( Object.assign( {}, { noticesOpen: ! noticesOpen } ) );
+		this.setState( { noticesOpen: ! noticesOpen } );
 	}
 
 	render() {
