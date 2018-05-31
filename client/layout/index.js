@@ -33,7 +33,7 @@ class Layout extends Component {
 		const { path } = this.props.match;
 		const page = find( getPages(), { path } );
 		const className = classnames( {
-			'woo-dashboard': true,
+			'woocommerce-layout': true,
 			'has-visible-sidebar': page.hasOpenSidebar,
 			'has-hidden-sidebar': ! page.hasOpenSidebar,
 		} );

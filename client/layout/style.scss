@@ -1,5 +1,5 @@
 /** @format */
-.woo-dashboard {
+.woocommerce-layout {
 	margin: 0;
 	padding: 0;
 	min-height: calc(100vh - 32px);
@@ -25,7 +25,7 @@
 	}
 }
 
-.woo-dashboard.has-visible-sidebar {
+.woocommerce-layout.has-visible-sidebar {
 	display: grid;
 	grid-template-columns: auto 360px;
 	grid-template-rows: 47px auto;
@@ -59,7 +59,7 @@
 	}
 }
 
-.woo-dashboard.has-hidden-sidebar .woocommerce-layout__secondary {
+.woocommerce-layout.has-hidden-sidebar .woocommerce-layout__secondary {
 	@include hidden-sidebar;
 }
 
@@ -83,8 +83,8 @@
 
 // Hide the toggle buttons on larger screens (if the sidebar should be visible)
 @include breakpoint( '>782px' ) {
-	.woo-dashboard.has-visible-sidebar .woocommerce-header__toggle,
-	.woo-dashboard.has-visible-sidebar .woocommerce-layout__sidebar-toggle {
+	.woocommerce-layout.has-visible-sidebar .woocommerce-header__toggle,
+	.woocommerce-layout.has-visible-sidebar .woocommerce-layout__sidebar-toggle {
 		display: none;
 	}
 }
