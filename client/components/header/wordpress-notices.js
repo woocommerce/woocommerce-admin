@@ -2,9 +2,9 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { IconButton } from '@wordpress/components';
+import { sprintf, _n } from '@wordpress/i18n';
 
 class WordPressNotices extends Component {
 	constructor() {
@@ -98,7 +98,10 @@ class WordPressNotices extends Component {
 			<IconButton
 				onClick={ this.onToggle }
 				icon="wordpress-alt"
-				label={ sprintf( __( 'View %d WordPress Notices', 'woo-dash' ), count ) }
+				label={ sprintf(
+					_n( 'View %d WordPress Notice', 'View %d WordPress Notices', count, 'woo-dash' ),
+					count
+				) }
 				aria-expanded={ noticesOpen }
 			/>
 		);
