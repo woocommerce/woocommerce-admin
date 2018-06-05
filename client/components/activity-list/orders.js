@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, compose } from '@wordpress/element';
 import { Dashicon, withAPIData } from '@wordpress/components';
 import PropTypes from 'prop-types';
@@ -33,7 +33,7 @@ class OrdersList extends Component {
 			>
 				<div>{ sprintf( __( '%s placed order #%d', 'woo-dash' ), name, order.id ) }</div>
 				<div>
-					<span>{ sprintf( __( '%d products' ), productsCount ) }</span>
+					<span>{ sprintf( _n( '%d product', '%d products', productsCount, 'woo-dash' ), productsCount ) }</span>
 					{ ' ' }
 					{ refundValue ? (
 						<span>
