@@ -16,8 +16,9 @@ class ActivityList extends Component {
 
 		switch ( section ) {
 			case 'orders':
-			default:
 				return <OrdersList />;
+			default:
+				return <p>Coming soon…</p>;
 		}
 	}
 }
