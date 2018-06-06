@@ -10,7 +10,6 @@ import {
 	getOrderShippingTax,
 	getOrderSubtotalTax,
 	getOrderTotalTax,
-	getOrderShippingMethod,
 } from '../tax';
 import orderWithTax from './fixtures/order';
 import orderWithoutTax from './fixtures/order-no-tax';
@@ -123,15 +122,5 @@ describe( 'getOrderTotalTax', () => {
 
 	test( 'should get the correct tax amount with multiple coupons', () => {
 		expect( getOrderTotalTax( orderWithCoupons ) ).toBe( 5.3618 );
-	} );
-} );
-
-describe( 'getOrderShippingMethod', () => {
-	test( 'should get the correct shipping method name', () => {
-		expect( getOrderShippingMethod( orderWithTax ) ).toBe( 'USPS' );
-	} );
-
-	test( 'should return false if there is no shipping method', () => {
-		expect( getOrderShippingMethod( orderWithoutTax ) ).toBe( false );
 	} );
 } );

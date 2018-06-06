@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { find, get, reduce } from 'lodash';
+import { find, get } from 'lodash';
 
 /**
  * Get the total for the discount value
@@ -12,7 +12,7 @@ import { find, get, reduce } from 'lodash';
  */
 export function getOrderDiscountTotal( order ) {
 	const coupons = get( order, 'coupon_lines', [] );
-	const total = reduce( coupons, ( sum, value ) => sum + parseFloat( value.discount ), 0 );
+	const total = coupons.reduce( ( sum, value ) => sum + parseFloat( value.discount ), 0 );
 	return parseFloat( total ) || 0;
 }
 
@@ -39,7 +39,8 @@ export function getOrderFeeCost( order, id ) {
  */
 export function getOrderFeeTotal( order ) {
 	const fees = get( order, 'fee_lines', [] );
-	return reduce( fees, ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	const total = fees.reduce( ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	return parseFloat( total ) || 0;
 }
 
 /**
@@ -64,7 +65,8 @@ export function getOrderItemCost( order, id ) {
  */
 export function getOrderRefundTotal( order ) {
 	const refunds = get( order, 'refunds', [] );
-	return reduce( refunds, ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	const total = refunds.reduce( ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	return parseFloat( total ) || 0;
 }
 
 /**
@@ -75,7 +77,8 @@ export function getOrderRefundTotal( order ) {
  */
 export function getOrderShippingTotal( order ) {
 	const shipping = get( order, 'shipping_lines', [] );
-	return reduce( shipping, ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	const total = shipping.reduce( ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	return parseFloat( total ) || 0;
 }
 
 /**
@@ -86,7 +89,8 @@ export function getOrderShippingTotal( order ) {
  */
 export function getOrderSubtotal( order ) {
 	const items = get( order, 'line_items', [] );
-	return reduce( items, ( sum, value ) => sum + parseFloat( value.subtotal ), 0 );
+	const total = items.reduce( ( sum, value ) => sum + parseFloat( value.subtotal ), 0 );
+	return parseFloat( total ) || 0;
 }
 
 /**

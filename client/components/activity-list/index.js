@@ -2,7 +2,6 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
 /**
@@ -10,16 +9,12 @@ import PropTypes from 'prop-types';
  */
 import OrdersList from './orders';
 
-class ActivityList extends Component {
-	render() {
-		const { section } = this.props;
-
-		switch ( section ) {
-			case 'orders':
-				return <OrdersList />;
-			default:
-				return <p>Coming soon…</p>;
-		}
+function ActivityList( { section } ) {
+	switch ( section ) {
+		case 'orders':
+			return <OrdersList />;
+		default:
+			return <p>Coming soon…</p>;
 	}
 }
 
