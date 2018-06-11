@@ -40,6 +40,12 @@ class WordPressNotices extends Component {
 
 		// Move WordPress notifications into the main WooDash body
 		primary.insertAdjacentElement( 'afterbegin', notices );
+
+		// Some existing WooCommerce pages already have a wp-header-end appended. Remove it.
+		const headerEnds = document.getElementsByClassName( 'wp-header-end' );
+		if ( headerEnds[ 1 ] ) {
+			headerEnds[ 1 ].remove();
+		}
 	}
 
 	componentWillUnmount() {

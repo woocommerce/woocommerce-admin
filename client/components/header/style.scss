@@ -9,9 +9,12 @@
 	box-sizing: border-box;
 	background: $white;
 	border-bottom: 1px solid $gray;
+	padding: 2px 2px 2px 12px;
+	height: 47px;
 
 	.woocommerce-header__breadcrumbs {
 		font-size: 13px;
+		font-weight: normal;
 
 		span {
 			display: inline-block;

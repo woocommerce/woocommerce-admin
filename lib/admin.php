@@ -12,6 +12,20 @@ function woo_dash_is_admin_page() {
 }
 
 /**
+ * Returns true if we are on a "classic" (non JS app) powered admin page.
+ * `wc_get_screen_ids` will also return IDs for extensions that have properly registered themselves.
+ * TODO: Our new JS pages will eventually get added to `wc_screen_ids`, so we'll need to array diff here.
+ */
+function woo_dash_is_classic_wc_page() {
+	$screen    = get_current_screen();
+	$screen_id = $screen ? $screen->id : '';
+	if ( in_array( $screen_id, wc_get_screen_ids() ) ) {
+		return true;
+	}
+	return false;
+}
+
+/**
  * Register menu pages for the Dashboard and Analytics sections
  */
 function woo_dash_register_pages(){
@@ -100,7 +114,7 @@ add_action( 'admin_head', 'woo_dash_link_structure', 20 );
  * Load the assets on the Dashboard page
  */
 function woo_dash_enqueue_script(){
-	if ( ! woo_dash_is_admin_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_classic_wc_page() ) {
 		return;
 	}
 
@@ -112,12 +126,15 @@ add_action( 'admin_enqueue_scripts', 'woo_dash_enqueue_script' );
 function woo_dash_admin_body_class( $admin_body_class = '' ) {
 	global $hook_suffix;
 
-	if ( ! woo_dash_is_admin_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_classic_wc_page() ) {
 		return $admin_body_class;
 	}
 
 	$classes = explode( ' ', trim( $admin_body_class ) );
 	$classes[] = 'woocommerce-page';
+	if ( woo_dash_is_classic_wc_page() ) {
+		$classes[] = 'woocommerce-classic-page';
+	}
 	$admin_body_class = implode( ' ', array_unique( $classes ) );
 	return " $admin_body_class ";
 }
@@ -125,7 +142,7 @@ add_filter( 'admin_body_class', 'woo_dash_admin_body_class' );
 
 
 function woo_dash_admin_before_notices() {
-	if ( ! woo_dash_is_admin_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_classic_wc_page() ) {
 		return;
 	}
 	echo '<div class="woocommerce__admin-notice-list-hide" id="wpadmin-notice-list">';
@@ -134,15 +151,15 @@ function woo_dash_admin_before_notices() {
 add_action( 'admin_notices', 'woo_dash_admin_before_notices', 0 );
 
 function woo_dash_admin_after_notices() {
-	if ( ! woo_dash_is_admin_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_classic_wc_page() ) {
 		return;
 	}
 	echo '</div>';
 }
 add_action( 'admin_notices', 'woo_dash_admin_after_notices', PHP_INT_MAX );
 
-
 // TODO Can we do some URL rewriting so we can figure out which page they are on server side?
+// TODO Handle classic titles
 function woo_dash_admin_title( $admin_title ) {
 	if ( ! woo_dash_is_admin_page() ) {
 		return $admin_title;
@@ -161,3 +178,17 @@ function woo_dash_page(){
 	</div>
 <?php
 }
+
+/**
+ * Set up a div for the header embed to render into.
+ */
+function woocommerce_header() {
+	if ( woo_dash_is_admin_page() ) {
+		return; // Don't embed the header on new js powered woo dash pages
+	}
+	?>
+	<div id="woocommerce-header"></div>
+	<?php
+}
+
+add_action( 'in_admin_header', 'woocommerce_header' );

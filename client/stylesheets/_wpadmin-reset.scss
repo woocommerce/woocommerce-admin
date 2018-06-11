@@ -46,6 +46,22 @@
 	}
 }
 
+.woocommerce-classic-page {
+	.wrap {
+		padding: 20px;
+	}
+
+	#screen-meta {
+		margin: 8px 20px -8px 20px;
+		border-top: 1px solid #ddd;
+	}
+
+	#screen-meta-links .screen-meta-toggle {
+		border-top: 1px solid #ddd;
+		margin-top: 8px;
+	}
+}
+
 .woocommerce-layout * {
 	box-sizing: border-box;
 }
@@ -64,6 +80,11 @@
 
 .wp-header-end {
 	margin: 0;
+}
+
+.woocommerce__admin-notice-list-show .jitm-card {
+	margin: 5px 15px 2px;
+	padding: 1px 12px;
 }
 
 #wpfooter {

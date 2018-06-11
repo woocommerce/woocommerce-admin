@@ -7,7 +7,7 @@ import { decodeEntities } from '@wordpress/utils';
 import { Fill } from 'react-slot-fill';
 import { isArray, noop } from 'lodash';
 import { IconButton } from '@wordpress/components';
-import { Link } from 'react-router-dom';
+import Link from 'components/link';
 import PropTypes from 'prop-types';
 
 /**
@@ -74,6 +74,10 @@ Header.propTypes = {
 Header.defaultProps = {
 	onToggle: noop,
 };
+
+export function HeaderNoFill( props ) {
+	return <Header { ...props } />;
+}
 
 export default function( props ) {
 	return (
