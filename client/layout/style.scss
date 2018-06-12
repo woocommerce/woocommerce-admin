@@ -63,6 +63,10 @@
 	@include hidden-sidebar;
 }
 
+.woocommerce-layout.has-hidden-sidebar .woocommerce-layout__main {
+	max-width: 1100px;
+}
+
 .woocommerce-layout__secondary {
 	background: $gray;
 	border-left: 1px solid $gray;
