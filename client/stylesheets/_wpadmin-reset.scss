@@ -47,6 +47,11 @@
 }
 
 .woocommerce-classic-page {
+	#wpcontent,
+	#wpbody-content {
+		overflow-x: initial !important;
+	}
+
 	.wrap {
 		padding: 20px;
 	}

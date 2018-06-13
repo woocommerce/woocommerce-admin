@@ -28,6 +28,17 @@
 	}
 }
 
+#woocommerce-header {
+	@include breakpoint( '<600px' ) {
+		margin-top: 46px;
+	}
+}
+
+.woocommerce-classic-page .notice {
+	margin: 5px 15px 2px;
+	padding: 1px 12px;
+}
+
 .woocommerce-header__buttons {
 	display: flex;
 	flex-direction: row;
