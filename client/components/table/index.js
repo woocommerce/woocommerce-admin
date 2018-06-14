@@ -85,7 +85,6 @@ class Table extends Component {
 										'is-sorted': sortedBy === i,
 									} ) }
 								>
-									{ header }
 									{ sortable && (
 										<IconButton
 											icon={ sortDir !== 'ascending' ? 'arrow-up' : 'arrow-down' }
@@ -97,6 +96,7 @@ class Table extends Component {
 											onClick={ () => this.sortBy( i ) }
 										/>
 									) }
+									{ header }
 								</th>
 							) ) }
 						</tr>
