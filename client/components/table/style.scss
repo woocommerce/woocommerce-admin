@@ -1,0 +1,27 @@
+/** @format */
+
+.woocommerce-table {
+	overflow-x: auto;
+}
+
+.woocommerce-table__table {
+	border-collapse: collapse;
+}
+
+.woocommerce-table__header,
+.woocommerce-table__item {
+	border-bottom: 1px solid $gray;
+	padding: 0.75rem;
+	text-align: left;
+}
+
+.woocommerce-table__header {
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.woocommerce-table__caption {
+	margin-bottom: 0.5rem;
+	font-style: italic;
+	text-align: left;
+}
