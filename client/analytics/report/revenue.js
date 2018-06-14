@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
+import Card from 'components/card';
 import DatePicker from 'components/date-picker';
 import { getAdminLink } from 'lib/nav-utils';
 import { getCurrencyFormatString } from 'lib/currency';
@@ -82,7 +83,11 @@ class RevenueReport extends Component {
 					<SummaryNumber value={ '$49.90' } label={ __( 'Coupons', 'woo-dash' ) } delta={ 15 } />
 					<SummaryNumber value={ '$66.39' } label={ __( 'Taxes', 'woo-dash' ) } />
 				</SummaryList>
-				<Table rows={ rows } headers={ headers } caption={ __( 'Revenue Last Week' ) } />
+				<Card title={ __( 'Gross Revenue' ) }>
+					<p>Graph here</p>
+					<hr />
+					<Table rows={ rows } headers={ headers } caption={ __( 'Revenue Last Week' ) } />
+				</Card>
 			</Fragment>
 		);
 	}
