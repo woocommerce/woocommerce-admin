@@ -55,8 +55,22 @@ class Table extends Component {
 		/* eslint-enable react/no-did-mount-set-state */
 	}
 
+	isColSortable( col ) {
+		const { sortable, rows: [ first ] } = this.props;
+		if ( ! first ) {
+			return false;
+		}
+
+		// The table is not set to be sortable, we don't need to check cols.
+		if ( ! sortable ) {
+			return false;
+		}
+
+		return 'object' !== typeof first[ col ];
+	}
+
 	render() {
-		const { caption, classNames, headers, rowHeader, sortable } = this.props;
+		const { caption, classNames, headers, rowHeader } = this.props;
 		const { rows, sortedBy, sortDir, tabIndex } = this.state;
 		const classes = classnames( 'woocommerce-table', classNames );
 
@@ -85,7 +99,7 @@ class Table extends Component {
 										'is-sorted': sortedBy === i,
 									} ) }
 								>
-									{ sortable && (
+									{ this.isColSortable( i ) && (
 										<IconButton
 											icon={ sortDir !== ASC ? 'arrow-up' : 'arrow-down' }
 											label={
