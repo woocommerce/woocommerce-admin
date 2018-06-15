@@ -14,6 +14,9 @@ import { uniqueId } from 'lodash';
  */
 import './style.scss';
 
+const ASC = 'ascending';
+const DESC = 'descending';
+
 class Table extends Component {
 	constructor( props ) {
 		super( props );
@@ -28,21 +31,18 @@ class Table extends Component {
 		this.captionID = uniqueId( 'caption-' );
 	}
 
-	sortBy( i ) {
-		let sortDir;
-		const ascending = this.state.sortDir === 'ascending';
-		if ( i === this.state.sortedBy ) {
-			sortDir = ! ascending ? 'ascending' : 'descending';
-		} else {
-			sortDir = 'ascending';
-		}
-		this.setState( prevState => ( {
-			rows: prevState.rows
-				.slice( 0 )
-				.sort( ( a, b ) => ( sortDir === 'ascending' ? a[ i ] > b[ i ] : a[ i ] < b[ i ] ) ),
-			sortedBy: i,
-			sortDir: sortDir,
-		} ) );
+	sortBy( col ) {
+		this.setState( prevState => {
+			// Set the sort direction as inverse of current state
+			const sortDir = prevState.sortDir === ASC ? DESC : ASC;
+			return {
+				rows: prevState.rows
+					.slice( 0 )
+					.sort( ( a, b ) => ( sortDir === ASC ? a[ col ] > b[ col ] : a[ col ] < b[ col ] ) ),
+				sortedBy: col,
+				sortDir,
+			};
+		} );
 	}
 
 	componentDidMount() {
@@ -87,9 +87,9 @@ class Table extends Component {
 								>
 									{ sortable && (
 										<IconButton
-											icon={ sortDir !== 'ascending' ? 'arrow-up' : 'arrow-down' }
+											icon={ sortDir !== ASC ? 'arrow-up' : 'arrow-down' }
 											label={
-												sortDir !== 'ascending'
+												sortDir !== ASC
 													? sprintf( __( 'Sort by %s in ascending order', 'woo-dash' ), header )
 													: sprintf( __( 'Sort by %s in descending order', 'woo-dash' ), header )
 											}
