@@ -1,7 +1,7 @@
-Card
-====
+Table
+=====
 
-A basic card component with a header. The header can contain a title (required), an action (optional), and an `EllipsisMenu` menu (optional).
+This is an accessible, sortable, and scrollable table for displaying tabular data (like revenue and other analytics data). It accepts `headers` for column headers, and `rows` for the table content. `rowHeader` can be used to define the index of the row header (or false if no header). Sortability is enabled by default (and can be turned off), however only string and number columns are sortable.
 
 ## How to use:
 
