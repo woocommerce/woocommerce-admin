@@ -33,7 +33,7 @@ class Pagination extends Component {
 		this.previousPage = this.previousPage.bind( this );
 		this.nextPage = this.nextPage.bind( this );
 		this.selectPage = this.selectPage.bind( this );
-		this.selectPageListner = keyListener.bind( this, 'selectPage' );
+		this.selectPageListener = keyListener.bind( this, 'selectPage' );
 		this.onPageValueChange = this.onPageValueChange.bind( this );
 		this.perPageChange = this.perPageChange.bind( this );
 	}
@@ -104,7 +104,11 @@ class Pagination extends Component {
 
 		return (
 			<div className="woocommerce-pagination__page-arrows">
-				<span className="woocommerce-pagination__page-arrows-label">
+				<span
+					className="woocommerce-pagination__page-arrows-label"
+					role="status"
+					aria-live="polite"
+				>
 					{ sprintf( __( 'Page %d of %d', 'woo-dash' ), page, this.pageCount ) }
 				</span>
 				<div className="woocommerce-pagination__page-arrows-buttons">
@@ -130,9 +134,11 @@ class Pagination extends Component {
 	}
 
 	renderPagePicker() {
+		const isError = this.state.pageInputValue < 1 || this.state.pageInputValue > this.pageCount;
 		const inputClass = classNames( 'woocommerce-pagination__page-picker-input', {
-			'has-error': this.state.pageInputValue < 1 || this.state.pageInputValue > this.pageCount,
+			'has-error': isError,
 		} );
+
 		const instanceId = uniqueId( 'woocommerce-pagination-page-picker-' );
 		return (
 			<div className="woocommerce-pagination__page-picker">
@@ -141,9 +147,10 @@ class Pagination extends Component {
 					<input
 						id={ instanceId }
 						className={ inputClass }
+						aria-invalid={ isError }
 						type="number"
 						onChange={ this.onPageValueChange }
-						onKeyDown={ this.selectPageListner }
+						onKeyDown={ this.selectPageListener }
 						onBlur={ this.selectPage }
 						value={ this.state.pageInputValue }
 						min={ 1 }
