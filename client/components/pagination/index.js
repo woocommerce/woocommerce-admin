@@ -116,7 +116,7 @@ class Pagination extends Component {
 						className={ previousLinkClass }
 						disabled={ ! ( page > 1 ) }
 						onClick={ this.previousPage }
-						icon="arrow-left"
+						icon="arrow-left-alt2"
 						label={ __( 'Previous Page', 'woo-dash' ) }
 						size={ 18 }
 					/>
@@ -124,7 +124,7 @@ class Pagination extends Component {
 						className={ nextLinkClass }
 						disabled={ ! ( page < this.pageCount ) }
 						onClick={ this.nextPage }
-						icon="arrow-right"
+						icon="arrow-right-alt2"
 						label={ __( 'Next Page', 'woo-dash' ) }
 						size={ 18 }
 					/>
@@ -143,7 +143,7 @@ class Pagination extends Component {
 		return (
 			<div className="woocommerce-pagination__page-picker">
 				<label htmlFor={ instanceId } className="woocommerce-pagination__page-picker-label">
-					{ __( 'Go to page:', 'woo-dash' ) }
+					{ __( 'Go to page', 'woo-dash' ) }
 					<input
 						id={ instanceId }
 						className={ inputClass }
@@ -166,7 +166,7 @@ class Pagination extends Component {
 		return (
 			<div className="woocommerce-pagination__per-page-picker">
 				<SelectControl
-					label={ __( 'Rows:', 'woo-dash' ) }
+					label={ __( 'Rows per page', 'woo-dash' ) }
 					value={ this.props.perPage }
 					onChange={ this.perPageChange }
 					options={ [

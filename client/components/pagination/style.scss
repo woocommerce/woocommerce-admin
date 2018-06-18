@@ -20,12 +20,21 @@
 .woocommerce-pagination__page-arrows-buttons {
 	display: inline-flex;
 	align-items: baseline;
-	border: 1px solid $gray-light-10;
+	border: 1px solid $button-border;
+	border-bottom: 2px solid $button-border;
 	border-radius: 4px;
-	background: $white;
+	background: $button;
+
+	.components-button:not(:disabled):not([aria-disabled='true']) {
+		color: $black;
+	}
+
+	.components-icon-button:not(:disabled):not([aria-disabled='true']):hover {
+		color: $gray-darken-40;
+	}
 
 	button:first-child {
-		border-right: 1px solid $gray-light-10;
+		border-right: 2px solid darken($button, 10%);
 	}
 
 	.woocommerce-pagination__link {
@@ -48,7 +57,7 @@
 }
 
 .woocommerce-pagination__per-page-picker {
-	margin-left: $spacing;
+	margin-left: $spacing / 2;
 
 	.components-base-control {
 		margin-bottom: 0;
@@ -57,6 +66,10 @@
 		display: flex;
 		flex-direction: row;
 		align-items: baseline;
+	}
+
+	.components-select-control__input {
+		width: 60px;
 	}
 
 	.components-base-control__label {
