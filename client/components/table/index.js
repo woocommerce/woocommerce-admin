@@ -85,7 +85,7 @@ class Table extends Component {
 				<table className="woocommerce-table__table">
 					<caption id={ this.captionID } className="woocommerce-table__caption">
 						{ caption }
-						{ tabIndex === '0' && <small>(scroll to see more)</small> }
+						{ tabIndex === '0' && <small>{ __( '(scroll to see more)', 'woo-dash' ) }</small> }
 					</caption>
 					<tbody>
 						<tr>
