@@ -46,7 +46,9 @@ class Layout extends Component {
 			<div className={ className }>
 				<Slot name="header" fillChildProps={ headerProps } />
 				<div className="woocommerce-layout__primary" id="woocommerce-layout__primary">
+					<div id="woocommerce-wp-notices" />
 					<Notices />
+
 					<div className="woocommerce-layout__main">
 						<Controller { ...this.props } />
 					</div>

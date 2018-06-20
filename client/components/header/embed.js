@@ -9,6 +9,7 @@ import { Component } from '@wordpress/element';
  * Internal dependencies
  */
 import './style.scss';
+import '../../layout/style.scss';
 
 import Sidebar from '../../layout/sidebar';
 import { HeaderNoFill } from './index';
@@ -40,8 +41,8 @@ export default class HeaderEmbed extends Component {
 		return (
 			<div className={ className }>
 				<HeaderNoFill { ...headerProps } />
-				<div className="woocommerce-layout__primary" id="woocommerce-layout__primary" />
 				<Sidebar isOpen={ this.state.isSidebarOpen } onToggle={ this.toggleSidebar } />
+				<div id="woocommerce-wp-notices" />
 			</div>
 		);
 	}

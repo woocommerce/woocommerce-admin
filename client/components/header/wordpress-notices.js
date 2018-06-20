@@ -9,6 +9,7 @@ import { sprintf, _n } from '@wordpress/i18n';
 class WordPressNotices extends Component {
 	constructor() {
 		super();
+
 		this.state = {
 			count: 0,
 			notices: null,
@@ -20,32 +21,55 @@ class WordPressNotices extends Component {
 		this.updateCount = this.updateCount.bind( this );
 		this.showNotices = this.showNotices.bind( this );
 		this.hideNotices = this.hideNotices.bind( this );
+		this.onToggle = this.onToggle.bind( this );
+		this.initialize = this.initialize.bind( this );
 	}
 
 	componentDidMount() {
-		const notices = document.getElementById( 'wpadmin-notice-list' );
-		let count = notices.children.length - 1; // Subtract 1 for the wp-header-end div, used to show notices
-		const noticesOpen = notices.classList.contains( 'woocommerce__admin-notice-list-show' );
-		const primary = document.getElementById( 'woocommerce-layout__primary' );
+		this.removeExtraWpHeaderEnds();
 
-		// Move JITM notices out of the wp toggle
-		const jitmPlaceholder = notices.getElementsByClassName( 'jetpack-jitm-message' );
-		if ( jitmPlaceholder.length > 0 ) {
-			count = count - 1; // Container div
-			primary.insertAdjacentElement( 'afterbegin', jitmPlaceholder[ 0 ] );
+		// Wait until the document is fully loaded to make sure all notices have been injected correctly
+		if ( 'complete' === document.readyState ) {
+			this.initialize();
+		} else {
+			window.addEventListener( 'DOMContentLoaded', this.initialize );
 		}
+	}
 
-		// See https://reactjs.org/docs/react-component.html#componentdidmount
-		this.setState( { count, notices, noticesOpen } ); // eslint-disable-line react/no-did-mount-set-state
+	// Some existing WooCommerce pages already have a wp-header-end appended. This can cause multiple notice areas to display.
+	removeExtraWpHeaderEnds() {
+		const headerEnds = document.getElementsByClassName( 'wp-header-end' );
+		for ( let i = 1; i <= headerEnds.length; i++ ) {
+			if ( headerEnds[ i ] ) {
+				headerEnds[ i ].remove();
+			}
+		}
+	}
+
+	initialize() {
+		const notices = document.getElementById( 'wpadmin-notice-list' );
+		const noticesOpen = notices.classList.contains( 'woocommerce__admin-notice-list-show' );
+		const targetArea = document.getElementById( 'woocommerce-wp-notices' );
+
+		let count = 0;
+		for ( let i = 0; i <= notices.children.length; i++ ) {
+			const notice = notices.children[ i ];
+			if ( ! notice ) {
+				continue;
+			}
+
+			if ( ! this.shouldCollapseNotice( notice ) ) {
+				targetArea.insertAdjacentElement( 'afterbegin', notice );
+			} else {
+				count++;
+			}
+		}
+		count = count - 1; // Remove 1 for `wp-header-end`
+
+		this.setState( { count, notices, noticesOpen } );
 
 		// Move WordPress notifications into the main WooDash body
-		primary.insertAdjacentElement( 'afterbegin', notices );
-
-		// Some existing WooCommerce pages already have a wp-header-end appended. Remove it.
-		const headerEnds = document.getElementsByClassName( 'wp-header-end' );
-		if ( headerEnds[ 1 ] ) {
-			headerEnds[ 1 ].remove();
-		}
+		targetArea.insertAdjacentElement( 'afterbegin', notices );
 	}
 
 	componentWillUnmount() {
@@ -60,6 +84,23 @@ class WordPressNotices extends Component {
 
 		this.setState( { noticesOpen: false, hasEventListeners: false } );
 		this.hideNotices();
+	}
+
+	// Some messages should not be displayed in the toggle, like Jetpack JITM messages or update/success messages
+	shouldCollapseNotice( element ) {
+		if ( element.classList.contains( 'jetpack-jitm-message' ) ) {
+			return false;
+		}
+
+		if ( element.classList.contains( 'hidden' ) ) {
+			return false;
+		}
+
+		if ( 'message' === element.id && element.classList.contains( 'notice' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	updateCount() {
