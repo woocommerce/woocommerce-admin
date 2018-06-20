@@ -52,18 +52,23 @@
 		overflow-x: initial !important;
 	}
 
+	#wpbody-content .notice {
+		margin-top: 15px;
+	}
+
 	.wrap {
 		padding: 20px;
+		padding-top: 0;
 	}
 
 	#screen-meta {
-		margin: 8px 20px -8px 20px;
-		border-top: 1px solid #ddd;
+		border-right: 0;
+		margin: 0;
 	}
 
-	#screen-meta-links .screen-meta-toggle {
-		border-top: 1px solid #ddd;
-		margin-top: 8px;
+	#wp-always-show-notifications {
+		visibility: hidden;
+		margin: -2px 0 0;
 	}
 }
 
@@ -81,10 +86,17 @@
 	opacity: 1;
 	height: auto;
 	transition: all 1s ease-in-out;
+	margin-top: 0px;
+
+	&.has-screen-meta-links {
+		margin-top: 30px;
+	}
 }
 
-.wp-header-end {
-	margin: 0;
+#wpadmin-notice-list {
+	padding: 10px;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 .woocommerce__admin-notice-list-show .jitm-card {

@@ -5,7 +5,7 @@
 }
 
 .woocommerce-header {
-	min-height: 47px;
+	min-height: 81px;
 	margin: 0;
 	padding: 8px 16px 8px 16px;
 }
@@ -22,7 +22,7 @@
 .woocommerce-layout.has-visible-sidebar {
 	display: grid;
 	grid-template-columns: auto 360px;
-	grid-template-rows: 47px auto;
+	grid-template-rows: 81px auto;
 	grid-gap: 0 $spacing;
 
 	@include breakpoint( '<782px' ) {

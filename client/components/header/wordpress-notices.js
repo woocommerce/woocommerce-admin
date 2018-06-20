@@ -26,9 +26,7 @@ class WordPressNotices extends Component {
 	}
 
 	componentDidMount() {
-		this.removeExtraWpHeaderEnds();
-
-		// Wait until the document is fully loaded to make sure all notices have been injected correctly
+		this.handleClassicWooCommercePage();
 		if ( 'complete' === document.readyState ) {
 			this.initialize();
 		} else {
@@ -36,12 +34,21 @@ class WordPressNotices extends Component {
 		}
 	}
 
-	// Some existing WooCommerce pages already have a wp-header-end appended. This can cause multiple notice areas to display.
-	removeExtraWpHeaderEnds() {
+	handleClassicWooCommercePage() {
+		if ( ! document.body.classList.contains( 'woocommerce-classic-page' ) ) {
+			return;
+		}
+
+		// Existing WooCommerce pages already have a designted area for notices, using wp-header-end
+		// See https://github.com/WordPress/WordPress/blob/f6a37e7d39e2534d05b9e542045174498edfe536/wp-admin/js/common.js#L737
+		// We want to move most notices, but keep displaying others (like success notice) where they already are
+		// this renames the element in-line, so we can target it later.
 		const headerEnds = document.getElementsByClassName( 'wp-header-end' );
-		for ( let i = 1; i <= headerEnds.length; i++ ) {
-			if ( headerEnds[ i ] ) {
-				headerEnds[ i ].remove();
+		for ( let i = 0; i < headerEnds.length; i++ ) {
+			const headerEnd = headerEnds.item( i );
+			if ( 'woocommerce-wp-notice-catcher' !== headerEnd.id ) {
+				headerEnd.className = '';
+				headerEnd.id = 'wp-always-show-notifications';
 			}
 		}
 	}
@@ -49,27 +56,38 @@ class WordPressNotices extends Component {
 	initialize() {
 		const notices = document.getElementById( 'wpadmin-notice-list' );
 		const noticesOpen = notices.classList.contains( 'woocommerce__admin-notice-list-show' );
-		const targetArea = document.getElementById( 'woocommerce-wp-notices' );
+
+		// On existing classic WooCommerce pages, screen links like "help" and "screen options" display, and need to be displayed
+		// along side the notifications expansion.
+		const screenLinks = document.getElementById( 'screen-meta-links' );
+		if ( screenLinks ) {
+			notices.classList.add( 'has-screen-meta-links' );
+		}
+
+		const collapsedTargetArea = screenLinks || document.getElementById( 'woocommerce-wp-notices' );
+		const alwaysTargetArea =
+			document.getElementById( 'wp-always-show-notifications' ) ||
+			screenLinks ||
+			document.getElementById( 'woocommerce-wp-notices' );
 
 		let count = 0;
 		for ( let i = 0; i <= notices.children.length; i++ ) {
 			const notice = notices.children[ i ];
 			if ( ! notice ) {
 				continue;
-			}
-
-			if ( ! this.shouldCollapseNotice( notice ) ) {
-				targetArea.insertAdjacentElement( 'afterbegin', notice );
+			} else if ( ! this.shouldCollapseNotice( notice ) ) {
+				alwaysTargetArea.insertAdjacentElement( 'afterend', notice );
 			} else {
 				count++;
 			}
 		}
-		count = count - 1; // Remove 1 for `wp-header-end`
+
+		count = count - 1; // Remove 1 for `wp-header-end` which is a child of wpadmin-notice-list
 
 		this.setState( { count, notices, noticesOpen } );
 
-		// Move WordPress notifications into the main WooDash body
-		targetArea.insertAdjacentElement( 'afterbegin', notices );
+		// Move collapsed WordPress notifications into the main WooDash body
+		collapsedTargetArea.insertAdjacentElement( 'afterend', notices );
 	}
 
 	componentWillUnmount() {
@@ -121,11 +139,13 @@ class WordPressNotices extends Component {
 	}
 
 	showNotices() {
-		this.state.notices.className = 'woocommerce__admin-notice-list-show';
+		this.state.notices.classList.add( 'woocommerce__admin-notice-list-show' );
+		this.state.notices.classList.remove( 'woocommerce__admin-notice-list-hide' );
 	}
 
 	hideNotices() {
-		this.state.notices.className = 'woocommerce__admin-notice-list-hide';
+		this.state.notices.classList.add( 'woocommerce__admin-notice-list-hide' );
+		this.state.notices.classList.remove( 'woocommerce__admin-notice-list-show' );
 	}
 
 	onToggle() {

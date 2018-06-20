@@ -146,7 +146,7 @@ function woo_dash_admin_before_notices() {
 		return;
 	}
 	echo '<div class="woocommerce__admin-notice-list-hide" id="wpadmin-notice-list">';
-	echo '<div class="wp-header-end"></div>'; // https://github.com/WordPress/WordPress/blob/f6a37e7d39e2534d05b9e542045174498edfe536/wp-admin/js/common.js#L737
+	echo '<div class="wp-header-end" id="woocommerce-wp-notice-catcher"></div>'; // https://github.com/WordPress/WordPress/blob/f6a37e7d39e2534d05b9e542045174498edfe536/wp-admin/js/common.js#L737
 }
 add_action( 'admin_notices', 'woo_dash_admin_before_notices', 0 );
 
@@ -181,13 +181,23 @@ function woo_dash_page(){
 
 /**
  * Set up a div for the header embed to render into.
+ * The initial contents here are meant as a place loader for when the PHP page initialy loads.
+ * TODO Better Breadcrumbs
+ * TODO Icon Placeholders for the ActivityPanel
  */
 function woocommerce_header() {
 	if ( woo_dash_is_admin_page() ) {
 		return; // Don't embed the header on new js powered woo dash pages
 	}
 	?>
-	<div id="woocommerce-header"></div>
+	<div id="woocommerce-header">
+		<div class="woocommerce-header is-loading">
+			<h1>
+				<span><a href="<?php echo esc_url( admin_url( 'admin.php?page=woodash#/' ) ); ?>">WooCommerce</a></span>
+				<span><?php echo woo_dash_get_breadcrumb_sections() ?></span>
+			</h1>
+		</div>
+	</div>
 	<?php
 }
 

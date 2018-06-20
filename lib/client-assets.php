@@ -4,9 +4,6 @@
  * Registers the JS & CSS for the Dashboard
  */
 function woo_dash_register_script() {
-	global $title, $self;
-	error_log($self);
-
 	// Are we displaying the full React app or just embedding the header on a classic screen?
 	$screen    = get_current_screen();
 	$screen_id = $screen ? $screen->id : '';
@@ -41,18 +38,10 @@ function woo_dash_register_script() {
 	wp_enqueue_script( 'wp-api' );
 	gutenberg_extend_wp_api_backbone_client();
 
-	// TODO This is used for the breadcrumb text on "classic" screens.
-	// it is naive, and if we move forward with this idea we should have a better way of registering sections and maybe use this as a fallback.
-	$initial_page_title = $title;
-	if ( substr( $initial_page_title, 0, 12 ) === 'WooCommerce ' ) {
-		$initial_page_title = substr( $initial_page_title, 12 );
-		$initial_page_title = ucfirst( $initial_page_title );
-	}
-
 	// Settings and variables can be passed here for access in the app
 	$settings = array(
 		'adminUrl' => admin_url(),
-		'initialPageTitle' => $initial_page_title,
+		'initialPageTitle' => woo_dash_get_breadcrumb_sections(),
 	);
 
 	wp_add_inline_script(
