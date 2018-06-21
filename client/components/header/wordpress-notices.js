@@ -67,6 +67,7 @@ class WordPressNotices extends Component {
 		const collapsedTargetArea = screenLinks || document.getElementById( 'woocommerce-wp-notices' );
 		const alwaysTargetArea =
 			document.getElementById( 'wp-always-show-notifications' ) ||
+			document.getElementById( 'ajax-response' ) ||
 			screenLinks ||
 			document.getElementById( 'woocommerce-wp-notices' );
 
@@ -110,6 +111,10 @@ class WordPressNotices extends Component {
 			return false;
 		}
 
+		if ( 'woocommerce_errors' === element.id ) {
+			return false;
+		}
+
 		if ( element.classList.contains( 'hidden' ) ) {
 			return false;
 		}
@@ -118,6 +123,9 @@ class WordPressNotices extends Component {
 			return false;
 		}
 
+		if ( 'message' === element.id && 'updated' === element.className ) {
+			return false;
+		}
 		return true;
 	}
 

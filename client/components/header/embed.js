@@ -35,7 +35,8 @@ export default class HeaderEmbed extends Component {
 		const headerProps = {
 			onToggle: this.toggleSidebar,
 			isSidebarOpen: this.state.isSidebarOpen,
-			sections: [ wcSettings.initialPageTitle ],
+			sections: wcSettings.classicBreadcrumbs,
+			isClassicPage: true,
 		};
 
 		return (

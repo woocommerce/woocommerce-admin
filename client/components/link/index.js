@@ -13,16 +13,18 @@ import { getAdminLink } from 'lib/nav-utils';
 
 class Link extends Component {
 	render() {
-		const { children, to, ...props } = this.props;
-		if ( this.context.router ) {
+		const { children, to, wpAdmin, ...props } = this.props;
+		if ( this.context.router && ! wpAdmin ) {
 			return (
 				<RouterLink to={ to } { ...props }>
 					{ children }
 				</RouterLink>
 			);
 		}
+
+		const path = wpAdmin ? getAdminLink( to ) : getAdminLink( 'admin.php?page=woodash#' + to );
 		return (
-			<a href={ getAdminLink( 'admin.php?page=woodash#' + to ) } { ...props }>
+			<a href={ path } { ...props }>
 				{ children }
 			</a>
 		);
@@ -31,6 +33,11 @@ class Link extends Component {
 
 Link.propTypes = {
 	to: PropTypes.string,
+	wpAdmin: PropTypes.bool,
+};
+
+Link.defaultProps = {
+	wpAdmin: false,
 };
 
 Link.contextTypes = {

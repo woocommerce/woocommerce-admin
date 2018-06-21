@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import WordPressNotices from './wordpress-notices';
 
-const Header = ( { sections, onToggle, isSidebarOpen } ) => {
+const Header = ( { sections, onToggle, isSidebarOpen, isClassicPage } ) => {
 	const _sections = isArray( sections ) ? sections : [ sections ];
 
 	const documentTitle = _sections
@@ -42,7 +42,10 @@ const Header = ( { sections, onToggle, isSidebarOpen } ) => {
 				</span>
 				{ _sections.map( ( section, i ) => {
 					const sectionPiece = isArray( section ) ? (
-						<Link to={ section[ 0 ] }> { section[ 1 ] }</Link>
+						<Link to={ section[ 0 ] } wpAdmin={ isClassicPage }>
+							{' '}
+							{ section[ 1 ] }
+						</Link>
 					) : (
 						section
 					);
@@ -69,10 +72,12 @@ Header.propTypes = {
 	sections: PropTypes.node.isRequired,
 	onToggle: PropTypes.func.isRequired,
 	isSidebarOpen: PropTypes.bool,
+	isClassicPage: PropTypes.bool,
 };
 
 Header.defaultProps = {
 	onToggle: noop,
+	isClassicPage: false,
 };
 
 export function HeaderNoFill( props ) {

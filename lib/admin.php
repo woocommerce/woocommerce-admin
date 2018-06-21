@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Returns true if we are on a JS powered admin page.
  */
@@ -14,12 +13,16 @@ function woo_dash_is_admin_page() {
 /**
  * Returns true if we are on a "classic" (non JS app) powered admin page.
  * `wc_get_screen_ids` will also return IDs for extensions that have properly registered themselves.
- * TODO: Our new JS pages will eventually get added to `wc_screen_ids`, so we'll need to array diff here.
  */
 function woo_dash_is_classic_wc_page() {
-	$screen    = get_current_screen();
-	$screen_id = $screen ? $screen->id : '';
-	if ( in_array( $screen_id, wc_get_screen_ids() ) ) {
+	$screen_id = woo_dash_get_current_screen_id();
+	if ( ! $screen_id ) {
+		return false;
+	}
+
+	$screens = woo_dash_get_classic_screen_ids();
+
+	if ( in_array( $screen_id, $screens ) ) {
 		return true;
 	}
 	return false;
@@ -182,23 +185,31 @@ function woo_dash_page(){
 /**
  * Set up a div for the header embed to render into.
  * The initial contents here are meant as a place loader for when the PHP page initialy loads.
- * TODO Better Breadcrumbs
- * TODO Icon Placeholders for the ActivityPanel
+
+ * TODO Icon Placeholders for the ActivityPanel, when we implement the new designs.
  */
-function woocommerce_header() {
-	if ( woo_dash_is_admin_page() ) {
-		return; // Don't embed the header on new js powered woo dash pages
+function woocommerce_classic_page_header() {
+	if ( ! woo_dash_is_classic_wc_page() ) {
+		return;
+	}
+
+	$sections    = woo_dash_get_classic_breadcrumbs();
+	$sections    = is_array( $sections ) ? $sections : array( $sections );
+	$breadcrumbs = '';
+	foreach ( $sections as $section ) {
+		$piece = is_array( $section ) ? '<a href="' . esc_url( admin_url( $section[ 0 ] ) ) .'">' . $section[ 1 ] . '</a>' : $section;
+		$breadcrumbs .= '<span>' . $piece . '</span>';
 	}
 	?>
 	<div id="woocommerce-header">
 		<div class="woocommerce-header is-loading">
-			<h1>
+			<h1 class="woocommerce-header__breadcrumbs">
 				<span><a href="<?php echo esc_url( admin_url( 'admin.php?page=woodash#/' ) ); ?>">WooCommerce</a></span>
-				<span><?php echo woo_dash_get_breadcrumb_sections() ?></span>
+				<span><?php echo $breadcrumbs; ?></span>
 			</h1>
 		</div>
 	</div>
 	<?php
 }
 
-add_action( 'in_admin_header', 'woocommerce_header' );
+add_action( 'in_admin_header', 'woocommerce_classic_page_header' );
