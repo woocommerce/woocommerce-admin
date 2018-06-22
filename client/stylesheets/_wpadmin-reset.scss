@@ -46,7 +46,7 @@
 	}
 }
 
-.woocommerce-classic-page {
+.woocommerce-embed-page {
 	#wpcontent,
 	#wpbody-content {
 		overflow-x: initial !important;
@@ -66,9 +66,17 @@
 		margin: 0;
 	}
 
-	#wp-always-show-notifications {
-		visibility: hidden;
-		margin: -2px 0 0;
+	.notice {
+		margin: 5px 15px 2px;
+		padding: 1px 12px;
+	}
+
+	#wpbody-content #wp__notice-list {
+		margin-top: 8px;
+	}
+
+	.woocommerce-layout__primary {
+		margin: 0;
 	}
 }
 
@@ -76,30 +84,40 @@
 	box-sizing: border-box;
 }
 
-.woocommerce__admin-notice-list-hide {
+.woocommerce-layout__notice-list-hide {
 	opacity: 0;
 	height: 0;
 	overflow: hidden;
 }
 
-.woocommerce__admin-notice-list-show {
+.woocommerce-layout__notice-list-show {
 	opacity: 1;
 	height: auto;
 	transition: all 1s ease-in-out;
 	margin-top: 0px;
 
 	&.has-screen-meta-links {
-		margin-top: 30px;
+		display: inline-block;
+		width: 100%;
 	}
 }
 
-#wpadmin-notice-list {
-	padding: 10px;
-	padding-left: 0;
-	padding-right: 0;
+#woocommerce-embedded-root {
+	@include breakpoint( '<600px' ) {
+		margin-top: 46px;
+	}
 }
 
-.woocommerce__admin-notice-list-show .jitm-card {
+#wp__notice-list-uncollapsed {
+	visibility: hidden;
+	margin: -2px 0 0;
+}
+
+#wp__notice-list {
+	padding: 10px;
+}
+
+.woocommerce-layout__notice-list .jitm-card {
 	margin: 5px 15px 2px;
 	padding: 1px 12px;
 }

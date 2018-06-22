@@ -26,7 +26,7 @@ class WordPressNotices extends Component {
 	}
 
 	componentDidMount() {
-		this.handleClassicWooCommercePage();
+		this.handleWooCommerceEmbedPage();
 		if ( 'complete' === document.readyState ) {
 			this.initialize();
 		} else {
@@ -34,8 +34,8 @@ class WordPressNotices extends Component {
 		}
 	}
 
-	handleClassicWooCommercePage() {
-		if ( ! document.body.classList.contains( 'woocommerce-classic-page' ) ) {
+	handleWooCommerceEmbedPage() {
+		if ( ! document.body.classList.contains( 'woocommerce-embed-page' ) ) {
 			return;
 		}
 
@@ -46,30 +46,35 @@ class WordPressNotices extends Component {
 		const headerEnds = document.getElementsByClassName( 'wp-header-end' );
 		for ( let i = 0; i < headerEnds.length; i++ ) {
 			const headerEnd = headerEnds.item( i );
-			if ( 'woocommerce-wp-notice-catcher' !== headerEnd.id ) {
+			if ( 'woocommerce-layout__notice-catcher' !== headerEnd.id ) {
 				headerEnd.className = '';
-				headerEnd.id = 'wp-always-show-notifications';
+				headerEnd.id = 'wp__notice-list-uncollapsed';
 			}
 		}
 	}
 
 	initialize() {
-		const notices = document.getElementById( 'wpadmin-notice-list' );
-		const noticesOpen = notices.classList.contains( 'woocommerce__admin-notice-list-show' );
+		const notices = document.getElementById( 'wp__notice-list' );
+		const noticesOpen = notices.classList.contains( 'woocommerce-layout__notice-list-show' );
 
 		// On existing classic WooCommerce pages, screen links like "help" and "screen options" display, and need to be displayed
 		// along side the notifications expansion.
 		const screenLinks = document.getElementById( 'screen-meta-links' );
 		if ( screenLinks ) {
 			notices.classList.add( 'has-screen-meta-links' );
+			document
+				.getElementById( 'woocommerce-layout__notice-list' )
+				.insertAdjacentElement( 'beforebegin', document.getElementById( 'screen-meta' ) );
+			document
+				.getElementById( 'woocommerce-layout__notice-list' )
+				.insertAdjacentElement( 'beforebegin', screenLinks );
 		}
 
-		const collapsedTargetArea = screenLinks || document.getElementById( 'woocommerce-wp-notices' );
+		const collapsedTargetArea = document.getElementById( 'woocommerce-layout__notice-list' );
 		const alwaysTargetArea =
-			document.getElementById( 'wp-always-show-notifications' ) ||
+			document.getElementById( 'wp__notice-list-uncollapsed' ) ||
 			document.getElementById( 'ajax-response' ) ||
-			screenLinks ||
-			document.getElementById( 'woocommerce-wp-notices' );
+			document.getElementById( 'woocommerce-layout__notice-list' );
 
 		let count = 0;
 		for ( let i = 0; i <= notices.children.length; i++ ) {
@@ -83,12 +88,12 @@ class WordPressNotices extends Component {
 			}
 		}
 
-		count = count - 1; // Remove 1 for `wp-header-end` which is a child of wpadmin-notice-list
+		count = count - 1; // Remove 1 for `wp-header-end` which is a child of wp__notice-list
 
 		this.setState( { count, notices, noticesOpen } );
 
 		// Move collapsed WordPress notifications into the main WooDash body
-		collapsedTargetArea.insertAdjacentElement( 'afterend', notices );
+		collapsedTargetArea.insertAdjacentElement( 'beforeend', notices );
 	}
 
 	componentWillUnmount() {
@@ -147,13 +152,13 @@ class WordPressNotices extends Component {
 	}
 
 	showNotices() {
-		this.state.notices.classList.add( 'woocommerce__admin-notice-list-show' );
-		this.state.notices.classList.remove( 'woocommerce__admin-notice-list-hide' );
+		this.state.notices.classList.add( 'woocommerce-layout__notice-list-show' );
+		this.state.notices.classList.remove( 'woocommerce-layout__notice-list-hide' );
 	}
 
 	hideNotices() {
-		this.state.notices.classList.add( 'woocommerce__admin-notice-list-hide' );
-		this.state.notices.classList.remove( 'woocommerce__admin-notice-list-show' );
+		this.state.notices.classList.add( 'woocommerce-layout__notice-list-hide' );
+		this.state.notices.classList.remove( 'woocommerce-layout__notice-list-show' );
 	}
 
 	onToggle() {

@@ -75,7 +75,7 @@ const webpackConfig = {
 	mode: NODE_ENV,
 	entry: {
 		index: './client/index.js',
-		header: './client/header.js',
+		embedded: './client/embedded.js',
 	},
 	output: {
 		path: path.resolve( 'dist' ),

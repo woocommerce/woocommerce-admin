@@ -48,9 +48,9 @@ function woo_dash_get_current_screen_id() {
 /**
  * Returns breadcrumbs for the current page.
  *
- * TODO When merging to core, we should explore a better API for defining breadcrumbs.
+ * TODO When merging to core, we should explore a better API for defining breadcrumbs, instead of just defining an array.
  */
-function woo_dash_get_classic_breadcrumbs() {
+function woo_dash_get_embed_breadcrumbs() {
 	$current_screen_id = woo_dash_get_current_screen_id();
 
 	// If a page has a tab, we can append that to the screen ID and show another pagination level
@@ -197,12 +197,12 @@ function woo_dash_get_classic_breadcrumbs() {
 }
 
 /**
-  * `woo_dash_get_core_screen_ids`,  `woo_dash_get_registered_plugin_screen_ids`,
-  * `woo_dash_get_screen_ids` should be considered temporary functions for the feature plugin.
+  * `woo_dash_get_embed_enabled_screen_ids`,  `woo_dash_get_embed_enabled_plugin_screen_ids`,
+  * `woo_dash_get_embed_enabled_screen_ids` should be considered temporary functions for the feature plugin.
   *  This is separate from WC's screen_id functions so that extensions explictly have to opt-in to the feature plugin.
   *  TODO When merging to core, we should explore a better API for opting into the new header for extensions.
  */
-function woo_dash_get_classic_core_screen_ids() {
+function woo_dash_get_embed_enabled_core_screen_ids() {
 	$screens = array(
 		'edit-shop_order',
 		'shop_order',
@@ -223,21 +223,21 @@ function woo_dash_get_classic_core_screen_ids() {
 		'edit-product_tag',
 		'product_page_product_attributes',
 	);
-	return apply_filters( 'woo_dash_get_classic_core_screens_ids', $screens );
+	return apply_filters( 'woo_dash_get_embed_enabled_core_screens_ids', $screens );
 }
 
 /**
  * If any extensions want to show the new header, they can register their screen ids.
  * Separate so extensions can register support for the feature plugin separately.
  */
-function woo_dash_get_classic_plugin_screen_ids() {
+function woo_dash_get_embed_enabled_plugin_screen_ids() {
 	$screens = array();
-	return apply_filters( 'woo_dash_get_classic_plugin_screens_ids', $screens );
+	return apply_filters( 'woo_dash_get_embed_enabled_plugin_screens_ids', $screens );
 }
 
 /**
  * Returns core and plugin screen IDs for a list of screens the new header should be enabled on.
  */
-function woo_dash_get_classic_screen_ids() {
-	return array_merge( woo_dash_get_classic_core_screen_ids(), woo_dash_get_classic_plugin_screen_ids() );
+function woo_dash_get_embed_enabled_screen_ids() {
+	return array_merge( woo_dash_get_embed_enabled_core_screen_ids(), woo_dash_get_embed_enabled_plugin_screen_ids() );
 }

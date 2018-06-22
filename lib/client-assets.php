@@ -6,9 +6,9 @@ function woo_dash_register_script() {
 	// Are we displaying the full React app or just embedding the header on a classic screen?
 	$screen_id = woo_dash_get_current_screen_id();
 
-	if ( in_array( $screen_id, woo_dash_get_classic_screen_ids() ) ) {
-		$js_entry = 'dist/header.js';
-		$css_entry = 'dist/css/header.css';
+	if ( in_array( $screen_id, woo_dash_get_embed_enabled_screen_ids() ) ) {
+		$js_entry = 'dist/embedded.js';
+		$css_entry = 'dist/css/embedded.css';
 	} else {
 		$js_entry = 'dist/index.js';
 		$css_entry = 'dist/css/index.css';
@@ -40,7 +40,7 @@ function woo_dash_register_script() {
 	// Settings and variables can be passed here for access in the app
 	$settings = array(
 		'adminUrl'           => admin_url(),
-		'classicBreadcrumbs' => woo_dash_get_classic_breadcrumbs(),
+		'embedBreadcrumbs'   => woo_dash_get_embed_breadcrumbs(),
 	);
 
 	wp_add_inline_script(

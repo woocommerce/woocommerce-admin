@@ -11,7 +11,7 @@ import { Provider as SlotFillProvider } from 'react-slot-fill';
  * Internal dependencies
  */
 import './stylesheets/_wpadmin-reset.scss';
-import Layout from './layout';
+import { PageLayout } from './layout';
 
 render(
 	<APIProvider
@@ -19,7 +19,7 @@ render(
 		{ ...pick( wp.api, [ 'postTypeRestBaseMapping', 'taxonomyRestBaseMapping' ] ) }
 	>
 		<SlotFillProvider>
-			<Layout />
+			<PageLayout />
 		</SlotFillProvider>
 	</APIProvider>,
 	document.getElementById( 'root' )

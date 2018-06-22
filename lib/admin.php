@@ -14,13 +14,13 @@ function woo_dash_is_admin_page() {
  * Returns true if we are on a "classic" (non JS app) powered admin page.
  * `wc_get_screen_ids` will also return IDs for extensions that have properly registered themselves.
  */
-function woo_dash_is_classic_wc_page() {
+function woo_dash_is_embed_enabled_wc_page() {
 	$screen_id = woo_dash_get_current_screen_id();
 	if ( ! $screen_id ) {
 		return false;
 	}
 
-	$screens = woo_dash_get_classic_screen_ids();
+	$screens = woo_dash_get_embed_enabled_screen_ids();
 
 	if ( in_array( $screen_id, $screens ) ) {
 		return true;
@@ -117,7 +117,7 @@ add_action( 'admin_head', 'woo_dash_link_structure', 20 );
  * Load the assets on the Dashboard page
  */
 function woo_dash_enqueue_script(){
-	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_classic_wc_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_embed_enabled_wc_page() ) {
 		return;
 	}
 
@@ -129,14 +129,14 @@ add_action( 'admin_enqueue_scripts', 'woo_dash_enqueue_script' );
 function woo_dash_admin_body_class( $admin_body_class = '' ) {
 	global $hook_suffix;
 
-	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_classic_wc_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_embed_enabled_wc_page() ) {
 		return $admin_body_class;
 	}
 
 	$classes = explode( ' ', trim( $admin_body_class ) );
 	$classes[] = 'woocommerce-page';
-	if ( woo_dash_is_classic_wc_page() ) {
-		$classes[] = 'woocommerce-classic-page';
+	if ( woo_dash_is_embed_enabled_wc_page() ) {
+		$classes[] = 'woocommerce-embed-page';
 	}
 	$admin_body_class = implode( ' ', array_unique( $classes ) );
 	return " $admin_body_class ";
@@ -145,16 +145,16 @@ add_filter( 'admin_body_class', 'woo_dash_admin_body_class' );
 
 
 function woo_dash_admin_before_notices() {
-	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_classic_wc_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_embed_enabled_wc_page() ) {
 		return;
 	}
-	echo '<div class="woocommerce__admin-notice-list-hide" id="wpadmin-notice-list">';
-	echo '<div class="wp-header-end" id="woocommerce-wp-notice-catcher"></div>'; // https://github.com/WordPress/WordPress/blob/f6a37e7d39e2534d05b9e542045174498edfe536/wp-admin/js/common.js#L737
+	echo '<div class="woocommerce-layout__notice-list-hide" id="wp__notice-list">';
+	echo '<div class="wp-header-end" id="woocommerce-layout__notice-catcher"></div>'; // https://github.com/WordPress/WordPress/blob/f6a37e7d39e2534d05b9e542045174498edfe536/wp-admin/js/common.js#L737
 }
 add_action( 'admin_notices', 'woo_dash_admin_before_notices', 0 );
 
 function woo_dash_admin_after_notices() {
-	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_classic_wc_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_embed_enabled_wc_page() ) {
 		return;
 	}
 	echo '</div>';
@@ -162,7 +162,6 @@ function woo_dash_admin_after_notices() {
 add_action( 'admin_notices', 'woo_dash_admin_after_notices', PHP_INT_MAX );
 
 // TODO Can we do some URL rewriting so we can figure out which page they are on server side?
-// TODO Handle classic titles
 function woo_dash_admin_title( $admin_title ) {
 	if ( ! woo_dash_is_admin_page() ) {
 		return $admin_title;
@@ -188,12 +187,12 @@ function woo_dash_page(){
 
  * TODO Icon Placeholders for the ActivityPanel, when we implement the new designs.
  */
-function woocommerce_classic_page_header() {
-	if ( ! woo_dash_is_classic_wc_page() ) {
+function woocommerce_embed_page_header() {
+	if ( ! woo_dash_is_embed_enabled_wc_page() ) {
 		return;
 	}
 
-	$sections    = woo_dash_get_classic_breadcrumbs();
+	$sections    = woo_dash_get_embed_breadcrumbs();
 	$sections    = is_array( $sections ) ? $sections : array( $sections );
 	$breadcrumbs = '';
 	foreach ( $sections as $section ) {
@@ -201,15 +200,20 @@ function woocommerce_classic_page_header() {
 		$breadcrumbs .= '<span>' . $piece . '</span>';
 	}
 	?>
-	<div id="woocommerce-header">
-		<div class="woocommerce-header is-loading">
-			<h1 class="woocommerce-header__breadcrumbs">
-				<span><a href="<?php echo esc_url( admin_url( 'admin.php?page=woodash#/' ) ); ?>">WooCommerce</a></span>
-				<span><?php echo $breadcrumbs; ?></span>
-			</h1>
+	<div id="woocommerce-embedded-root">
+		<div class="woocommerce-layout has-hidden-sidebar">
+			<div class="woocommerce-header is-loading">
+				<h1 class="woocommerce-header__breadcrumbs">
+					<span><a href="<?php echo esc_url( admin_url( 'admin.php?page=woodash#/' ) ); ?>">WooCommerce</a></span>
+					<span><?php echo $breadcrumbs; ?></span>
+				</h1>
+			</div>
+		</div>
+		<div class="woocommerce-layout__primary" id="woocommerce-layout__primary">
+			<div id="woocommerce-layout__notice-list" class="woocommerce-layout__notice-list"></div>
 		</div>
 	</div>
 	<?php
 }
 
-add_action( 'in_admin_header', 'woocommerce_classic_page_header' );
+add_action( 'in_admin_header', 'woocommerce_embed_page_header' );
