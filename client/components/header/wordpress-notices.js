@@ -9,7 +9,6 @@ import { sprintf, _n } from '@wordpress/i18n';
 class WordPressNotices extends Component {
 	constructor() {
 		super();
-
 		this.state = {
 			count: 0,
 			notices: null,
@@ -71,7 +70,7 @@ class WordPressNotices extends Component {
 		}
 
 		const collapsedTargetArea = document.getElementById( 'woocommerce-layout__notice-list' );
-		const alwaysTargetArea =
+		const uncollapsedTargetArea =
 			document.getElementById( 'wp__notice-list-uncollapsed' ) ||
 			document.getElementById( 'ajax-response' ) ||
 			document.getElementById( 'woocommerce-layout__notice-list' );
@@ -82,7 +81,7 @@ class WordPressNotices extends Component {
 			if ( ! notice ) {
 				continue;
 			} else if ( ! this.shouldCollapseNotice( notice ) ) {
-				alwaysTargetArea.insertAdjacentElement( 'afterend', notice );
+				uncollapsedTargetArea.insertAdjacentElement( 'afterend', notice );
 			} else {
 				count++;
 			}

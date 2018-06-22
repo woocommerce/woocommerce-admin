@@ -163,10 +163,26 @@ add_action( 'admin_notices', 'woo_dash_admin_after_notices', PHP_INT_MAX );
 
 // TODO Can we do some URL rewriting so we can figure out which page they are on server side?
 function woo_dash_admin_title( $admin_title ) {
-	if ( ! woo_dash_is_admin_page() ) {
+	if ( ! woo_dash_is_admin_page() && ! woo_dash_is_embed_enabled_wc_page() ) {
 		return $admin_title;
 	}
-	return sprintf( __( '%1$s &lsaquo; %2$s &#8212; WooCommerce' ), __( 'Dashboard', 'woo-dash' ), get_bloginfo( 'name' ) );
+
+	if ( woo_dash_is_embed_enabled_wc_page() ) {
+		$sections = woo_dash_get_embed_breadcrumbs();
+		$sections = is_array( $sections ) ? $sections : array( $sections );
+		$pieces   = array();
+
+		foreach ( $sections as $section ) {
+			$pieces[] = is_array( $section ) ? $section[ 1 ] : $section;
+		}
+
+		$pieces = array_reverse( $pieces );
+		$title = implode( ' &lsaquo; ', $pieces );
+	} else {
+		$title = __( 'Dashboard', 'woo-dash' );
+	}
+
+	return sprintf( __( '%1$s &lsaquo; %2$s &#8212; WooCommerce' ), $title, get_bloginfo( 'name' ) );
 }
 add_filter( 'admin_title',  'woo_dash_admin_title' );
 

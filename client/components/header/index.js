@@ -43,7 +43,6 @@ const Header = ( { sections, onToggle, isSidebarOpen, isEmbedded } ) => {
 				{ _sections.map( ( section, i ) => {
 					const sectionPiece = isArray( section ) ? (
 						<Link to={ section[ 0 ] } wpAdmin={ isEmbedded }>
-							{' '}
 							{ section[ 1 ] }
 						</Link>
 					) : (

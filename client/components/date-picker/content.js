@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import ComparePeriods from './compare-periods';
-
 import { H, Section } from 'layout/section';
 import PresetPeriods from './preset-periods';
 import Link from 'components/link';
