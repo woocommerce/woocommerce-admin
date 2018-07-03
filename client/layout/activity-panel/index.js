@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import Gridicon from 'gridicons';
 import { IconButton } from '@wordpress/components';
-import { partial } from 'lodash';
+import { partial, bind } from 'lodash';
 
 /**
  * Internal dependencies
@@ -27,7 +27,20 @@ class ActivityPanel extends Component {
 			isPanelOpen: false,
 			mobileOpen: false,
 			currentTab: '',
+			tabSwitched: false,
 		};
+	}
+
+	componentDidUpdate( prevProps, prevState ) {
+		// Remove the tabSwitched flag so that we can trigger the CSS animation multiple times.
+		if ( ! prevState.tabSwitched && this.state.tabSwitched ) {
+			setTimeout(
+				bind( function() {
+					this.setState( { tabSwitched: false } );
+				}, this ),
+				500
+			);
+		}
 	}
 
 	togglePanel( tabName ) {
@@ -54,7 +67,7 @@ class ActivityPanel extends Component {
 					mobileOpen: ! state.isPanelOpen,
 				};
 			}
-			return { currentTab: tabName };
+			return { currentTab: tabName, tabSwitched: true };
 		} );
 	}
 
@@ -67,52 +80,55 @@ class ActivityPanel extends Component {
 		} ) );
 	}
 
-	// TODO Replace with correct icons
+	// TODO Pull in dynamic unread status/count
 	getTabs() {
 		return [
 			{
 				name: 'inbox',
 				title: __( 'Inbox', 'woo-dash' ),
 				icon: <Gridicon icon="mail" />,
+				unread: true,
 			},
 			{
 				name: 'orders',
 				title: __( 'Orders', 'woo-dash' ),
 				icon: <Gridicon icon="pages" />,
+				unread: false,
 			},
 			{
 				name: 'stock',
 				title: __( 'Stock', 'woo-dash' ),
 				icon: <Gridicon icon="clipboard" />,
+				unread: true,
 			},
 			{
 				name: 'reviews',
 				title: __( 'Reviews', 'woo-dash' ),
 				icon: <Gridicon icon="star" />,
+				unread: true,
 			},
 		];
 	}
 
-	renderPanel() {
-		const { isPanelOpen, currentTab } = this.state;
-
-		if ( ! isPanelOpen ) {
-			return null;
-		}
-
-		let panelContent;
-
-		switch ( currentTab ) {
+	getPanelContent( tab ) {
+		switch ( tab ) {
 			case 'orders':
-				panelContent = <OrdersList />;
-				break;
+				return <OrdersList />;
 			default:
-				panelContent = <p>Coming soon…</p>;
+				return <p>Coming soon…</p>;
 		}
+	}
+
+	renderPanel() {
+		const { isPanelOpen, currentTab, tabSwitched } = this.state;
+		const classNames = classnames( 'woocommerce-layout__activity-panel-content', {
+			'is-open': isPanelOpen,
+			'is-tab-switch': tabSwitched,
+		} );
 
 		return (
-			<Section component="div" className="woocommerce-layout__activity-panel-content">
-				{ panelContent }
+			<Section component="div" className={ classNames }>
+				{ ( isPanelOpen && this.getPanelContent( currentTab ) ) || null }
 			</Section>
 		);
 	}
@@ -121,6 +137,7 @@ class ActivityPanel extends Component {
 		const { currentTab } = this.state;
 		const className = classnames( 'woocommerce-layout__activity-panel-tab', {
 			'is-active': tab.name === currentTab,
+			'has-unread': tab.unread,
 		} );
 
 		return (
@@ -148,8 +165,8 @@ class ActivityPanel extends Component {
 			<Fragment>
 				<IconButton
 					onClick={ this.toggleMobile }
-					icon={ mobileOpen ? <Gridicon icon="cross-small" /> : 'admin-generic' }
-					label={ __( 'View Activity Panel' ) }
+					icon={ mobileOpen ? <Gridicon icon="cross-small" /> : <Gridicon icon="cog" /> }
+					label={ mobileOpen ? __( 'Close Activity Panel' ) : __( 'View Activity Panel' ) }
 					aria-expanded={ mobileOpen }
 					tooltip={ false }
 					className="woocommerce-layout__activity-panel-mobile-toggle"
