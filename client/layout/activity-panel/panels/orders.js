@@ -4,7 +4,8 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { compose, Fragment } from '@wordpress/element';
-import { Button, withAPIData } from '@wordpress/components';
+import { Button } from '@wordpress/components';
+import { MINUTE, withApiClient } from 'fresh-data';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 
@@ -23,7 +24,8 @@ import OrderStatus from 'components/order-status';
 import { Section } from 'layout/section';
 
 function OrdersPanel( { orders } ) {
-	const { data = [], isLoading } = orders;
+	// TODO: Add support in fresh-data for status like requesting, etc.
+	const isLoading = ! orders || orders.length === 0;
 
 	const menu = (
 		<EllipsisMenu label="Demo Menu">
@@ -49,14 +51,14 @@ function OrdersPanel( { orders } ) {
 					<p>Loading</p>
 				) : (
 					<Fragment>
-						{ data.map( ( order, i ) => {
-							// We want the billing address, but shipping can be used as a fallback.
-							const address = { ...order.shipping, ...order.billing };
-							const name = `${ address.first_name } ${ address.last_name }`;
-							const productsCount = order.line_items.reduce(
-								( total, line ) => total + line.quantity,
-								0
-							);
+					{ orders.map( ( order, i ) => {
+						// We want the billing address, but shipping can be used as a fallback.
+						const address = { ...order.shipping, ...order.billing };
+						const name = `${ address.first_name } ${ address.last_name }`;
+						const productsCount = order.line_items.reduce(
+							( total, line ) => total + line.quantity,
+							0
+						);
 
 							const total = order.total;
 							const refundValue = getOrderRefundTotal( order );
@@ -108,11 +110,22 @@ function OrdersPanel( { orders } ) {
 }
 
 OrdersPanel.propTypes = {
-	orders: PropTypes.object.isRequired,
+	orders: PropTypes.array, // TODO: Add `isRequired` back after withApiClient supports it.
 };
 
-export default compose( [
-	withAPIData( () => ( {
-		orders: '/wc/v3/orders',
-	} ) ),
-] )( OrdersPanel );
+function getClientKey() {
+	return 'wpsite'; // TODO: support an empty client key.
+}
+
+function mapSelectorsToProps( selectors ) {
+	const { getOrdersPage } = selectors;
+	// TODO: Add pagination support for this component.
+	const orders = getOrdersPage( { freshness: 5 * MINUTE }, 1, 10 );
+	return {
+		orders,
+	};
+}
+
+export default compose( [ withApiClient( 'woocommerce', { getClientKey, mapSelectorsToProps } ) ] )(
+	OrdersPanel
+);
