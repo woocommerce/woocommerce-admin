@@ -16,7 +16,10 @@ import { partial } from 'lodash';
 import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
 import { Section } from 'layout/section';
-import OrdersList from './orders';
+import InboxPanel from './inbox';
+import OrdersPanel from './orders';
+import StockPanel from './stock';
+import ReviewsPanel from './reviews';
 import WordPressNotices from './wordpress-notices';
 
 class ActivityPanel extends Component {
@@ -109,10 +112,16 @@ class ActivityPanel extends Component {
 
 	getPanelContent( tab ) {
 		switch ( tab ) {
+			case 'inbox':
+				return <InboxPanel />;
 			case 'orders':
-				return <OrdersList />;
+				return <OrdersPanel />;
+			case 'stock':
+				return <StockPanel />;
+			case 'reviews':
+				return <ReviewsPanel />;
 			default:
-				return <p>Coming soon…</p>;
+				return null;
 		}
 	}
 
