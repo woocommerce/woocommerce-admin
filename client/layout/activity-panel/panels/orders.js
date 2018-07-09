@@ -5,7 +5,7 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { compose, Fragment } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { MINUTE, withApiClient } from 'fresh-data';
+import { MINUTE, withApiClient } from '@fresh-data/framework';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 

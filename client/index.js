@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { APIProvider } from '@wordpress/components';
-import { FreshDataProvider } from 'fresh-data';
+import { FreshDataProvider } from '@fresh-data/framework';
 import { pick } from 'lodash';
 import { render } from '@wordpress/element';
 import { Provider as ReduxProvider } from 'react-redux';

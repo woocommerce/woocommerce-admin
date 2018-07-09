@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { FreshDataApi } from 'fresh-data';
+import { FreshDataApi } from '@fresh-data/framework';
 
 /**
  * Internal dependencies
