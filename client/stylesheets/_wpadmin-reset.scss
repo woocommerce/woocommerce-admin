@@ -177,6 +177,13 @@
 	}
 }
 
+@include breakpoint( '<600px' ) {
+	#wpadminbar,
+	.jetpack-masterbar #wpadminbar {
+		position: fixed;
+	}
+}
+
 // Temporary fix for compability with the Jetpack masterbar
 // See https://github.com/Automattic/jetpack/issues/9608
 // !important rules overwrite some existing !important rules

@@ -6,6 +6,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { compose, Fragment } from '@wordpress/element';
 import { Dashicon, withAPIData } from '@wordpress/components';
 import PropTypes from 'prop-types';
+import { noop } from 'lodash';
 
 /**
  * Internal dependencies
@@ -23,7 +24,7 @@ function OrdersPanel( { orders } ) {
 	const menu = (
 		<EllipsisMenu label="Demo Menu">
 			<MenuTitle>Test</MenuTitle>
-			<MenuItem>Test</MenuItem>
+			<MenuItem onInvoke={ noop }>Test</MenuItem>
 		</EllipsisMenu>
 	);
 
