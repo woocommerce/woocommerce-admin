@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { compact } from 'lodash';
+import { compact, pick } from 'lodash';
 import { getResourceName, getResourceIdentifier, isResourcePrefix } from './utils';
 
 const operations = {
@@ -20,8 +20,11 @@ function readPagesOperation( get, resourceNames ) {
 			if ( isResourcePrefix( resourceName, 'orders-page' ) ) {
 				const params = getResourceIdentifier( resourceName );
 
+				// Filter the parameters sent to the api.
+				const apiParams = pick( params, [ 'page', 'per_page' ] );
+
 				// Do a get for each page.
-				return get( [ 'orders' ], params ).then( responseData => {
+				return get( [ 'orders' ], apiParams ).then( responseData => {
 					// Store each order separately so it can be used by the rest of the app.
 					const ordersById = responseData.reduce( ( orders, data ) => {
 						orders[ getResourceName( 'order', data.id ) ] = { data };
@@ -71,8 +74,11 @@ const mutations = {
 };
 
 const selectors = {
-	getOrdersPage: ( getData, requireData ) => ( requirement, page = 1, perPage = 10 ) => {
-		const resourceName = getResourceName( 'orders-page', { page: page, per_page: perPage } );
+	getOrdersPage: ( getData, requireData ) => (
+		requirement,
+		params = { page: 1, per_page: 10 }
+	) => {
+		const resourceName = getResourceName( 'orders-page', params );
 		requireData( requirement, resourceName );
 		const pageIds = getData( resourceName ) || [];
 		const pageOrders = pageIds.map( id => getData( getResourceName( 'order', id ) ) || {} );

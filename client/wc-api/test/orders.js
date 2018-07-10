@@ -133,7 +133,10 @@ describe( 'orders', () => {
 
 				const requirement = { freshness: 5000 };
 
-				const result = getOrdersPage( getData, requireData )( requirement, 1, 3 );
+				const result = getOrdersPage( getData, requireData )( requirement, {
+					page: 1,
+					per_page: 3,
+				} );
 
 				expect( result ).toEqual( [
 					{ id: 52, status: 'processing' },
@@ -157,7 +160,10 @@ describe( 'orders', () => {
 			it( 'should return an empty array for a page that does not yet exist.', () => {
 				const requirement = { freshness: 5000 };
 
-				const result = getOrdersPage( getData, requireData )( requirement, 1, 3 );
+				const result = getOrdersPage( getData, requireData )( requirement, {
+					page: 1,
+					per_page: 3,
+				} );
 
 				expect( result ).toEqual( [] );
 

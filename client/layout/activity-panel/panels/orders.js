@@ -134,7 +134,7 @@ function getClientKey() {
 function mapSelectorsToProps( selectors ) {
 	const { getOrdersPage } = selectors;
 	// TODO: Add pagination support for this component.
-	const orders = getOrdersPage( { freshness: 5 * MINUTE }, 1, 10 );
+	const orders = getOrdersPage( { freshness: 5 * MINUTE }, { page: 1, per_page: 100 } );
 	return {
 		orders,
 	};
