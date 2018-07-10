@@ -7,8 +7,13 @@ import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
+<<<<<<< HEAD
 import { IconButton } from '@wordpress/components';
 import { partial, uniqueId } from 'lodash';
+=======
+import { IconButton, NavigableMenu } from '@wordpress/components';
+import { partial } from 'lodash';
+>>>>>>> Fix Accessibility issues: tabpanel behavior, and reduced motion setting
 
 /**
  * Internal dependencies
@@ -139,6 +144,8 @@ class ActivityPanel extends Component {
 						key={ 'activity-panel-' + currentTab }
 						id={ 'activity-panel-' + currentTab }
 						role="tabpanel"
+						tabindex={ 0 }
+						aria-labelledby={ 'activity-panel-tab' + currentTab }
 					>
 						{ this.getPanelContent( currentTab ) }
 					</div>
@@ -148,20 +155,33 @@ class ActivityPanel extends Component {
 		);
 	}
 
-	renderTab( tab ) {
-		const { currentTab } = this.state;
+	renderTab( tab, i ) {
+		const { currentTab, isPanelOpen } = this.state;
 		const className = classnames( 'woocommerce-layout__activity-panel-tab', {
 			'is-active': tab.name === currentTab,
 			'has-unread': tab.unread,
 		} );
 
+		const selected = tab.name === currentTab;
+		let tabIndex = -1;
+
+		// Only make this item tabbable if it is the currently selected item, or the panel is closed and the item is the first item (Inbox)
+		// If wpnotices is currently selected, tabindex below should be  -1 and <WordPressNotices /> will become the tabbed element.
+		if ( selected || ( ! isPanelOpen && i === 0 && 'wpnotices' !== currentTab ) ) {
+			tabIndex = null;
+		}
+
 		return (
 			<IconButton
-				key={ tab.name }
+				role="tab"
 				className={ className }
+				tabIndex={ tabIndex }
+				aria-selected={ selected }
+				aria-controls={ 'activity-panel-' + tab.name }
+				key={ 'activity-panel-tab-' + tab.name }
+				id={ 'activity-panel-tab-' + tab.name }
 				onClick={ partial( this.togglePanel, tab.name ) }
 				icon={ tab.icon }
-				aria-controls={ 'activity-panel-' + tab.name }
 			>
 				{ tab.title }
 			</IconButton>
@@ -196,13 +216,17 @@ class ActivityPanel extends Component {
 						className="woocommerce-layout__activity-panel-mobile-toggle"
 					/>
 					<div className={ panelClasses }>
-						<div className="woocommerce-layout__activity-panel-tabs" role="tablist">
-							{ tabs && tabs.map( this.renderTab ) }
-							<WordPressNotices
-								showNotices={ 'wpnotices' === currentTab }
-								togglePanel={ this.togglePanel }
-							/>
-						</div>
+					<NavigableMenu
+						role="tablist"
+						orientation="horizontal"
+						className="woocommerce-layout__activity-panel-tabs"
+					>
+						{ tabs && tabs.map( this.renderTab ) }
+						<WordPressNotices
+							showNotices={ 'wpnotices' === currentTab }
+							togglePanel={ this.togglePanel }
+						/>
+					</NavigableMenu>
 						{ this.renderPanel() }
 					</div>
 				</Section>
