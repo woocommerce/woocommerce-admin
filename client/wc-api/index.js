@@ -7,7 +7,7 @@ import { FreshDataApi } from '@fresh-data/framework';
 /**
  * Internal dependencies
  */
-import apiRequestMethods from './apirequest-methods';
+import apiRequestMethods from './methods';
 import orders from './orders';
 
 export function createApi( apiMethods ) {

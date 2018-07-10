@@ -2,9 +2,9 @@
 /**
  * Internal dependencies
  */
-import { createMethods, URL_PREFIX } from '../apirequest-methods';
+import { createMethods, URL_PREFIX } from '../methods';
 
-describe( 'apirequest-methods', () => {
+describe( 'methods', () => {
 	describe( '#get', () => {
 		it( 'should perform a get request with no query string', () => {
 			const responseData = {};
