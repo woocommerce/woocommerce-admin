@@ -180,13 +180,17 @@ class ActivityPanel extends Component {
 		return (
 			<Fragment>
 				<H id={ headerId } className="screen-reader-text">
-					{ __( 'Store Activity', 'woo-dash' ) }
+					{ __( 'Store Activity', 'wc-admin' ) }
 				</H>
 				<Section component="aside" id="woocommerce-activity-panel" aria-labelledby={ headerId }>
 					<IconButton
 						onClick={ this.toggleMobile }
 						icon={ mobileOpen ? <Gridicon icon="cross-small" /> : <ActivityPanelToggleBubble /> }
-						label={ mobileOpen ? __( 'Close Activity Panel' ) : __( 'View Activity Panel' ) }
+						label={
+							mobileOpen
+								? __( 'Close Activity Panel', 'wc-admin' )
+								: __( 'View Activity Panel', 'wc-admin' )
+						}
 						aria-expanded={ mobileOpen }
 						tooltip={ false }
 						className="woocommerce-layout__activity-panel-mobile-toggle"
