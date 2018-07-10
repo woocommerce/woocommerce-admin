@@ -23,7 +23,20 @@ import Flag from 'components/flag';
 import OrderStatus from 'components/order-status';
 import { Section } from 'layout/section';
 
-function OrdersPanel( { orders } ) {
+function renderActionButtons( order, doFulfill ) {
+	if ( 'processing' === order.status ) {
+		return (
+			<div>
+				<Button isDefault value={ order.id } onClick={ doFulfill }>
+					Begin fulfillment
+				</Button>
+			</div>
+		);
+	}
+	return null;
+}
+
+function OrdersPanel( { orders, doFulfill } ) {
 	// TODO: Add support in fresh-data for status like requesting, etc.
 	const isLoading = ! orders || orders.length === 0;
 
@@ -59,6 +72,11 @@ function OrdersPanel( { orders } ) {
 							( total, line ) => total + line.quantity,
 							0
 						);
+						const title = sprintf(
+							__( '%s placed order #%d', 'wc-admin' ),
+							name,
+							order.id,
+						);
 
 							const total = order.total;
 							const refundValue = getOrderRefundTotal( order );
@@ -68,7 +86,7 @@ function OrdersPanel( { orders } ) {
 							<ActivityCard
 								key={ i }
 								className="woocommerce-order-activity-card"
-								title={ sprintf( __( '%s placed order #%d', 'wc-admin' ), name, order.id ) }
+								title={ title }
 								icon={ gravatarWithFlag( order, address ) }
 								date={ order.date_created }
 								subtitle={
@@ -89,11 +107,7 @@ function OrdersPanel( { orders } ) {
 										) }
 									</div>
 								}
-								actions={
-									<Button isDefault onClick={ noop }>
-										Begin fulfillment
-									</Button>
-								}
+								actions={ renderActionButtons( order, doFulfill ) }
 							>
 								<OrderStatus order={ order } />
 							</ActivityCard>
@@ -126,6 +140,17 @@ function mapSelectorsToProps( selectors ) {
 	};
 }
 
-export default compose( [ withApiClient( 'woocommerce', { getClientKey, mapSelectorsToProps } ) ] )(
-	OrdersPanel
-);
+function mapMutationsToProps( mutations ) {
+	const doFulfill = event => {
+		const id = event.target.value;
+		mutations.fulfillOrder( id );
+	};
+
+	return {
+		doFulfill,
+	};
+}
+
+export default compose( [
+	withApiClient( 'woocommerce', { getClientKey, mapSelectorsToProps, mapMutationsToProps } ),
+] )( OrdersPanel );

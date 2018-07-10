@@ -16,8 +16,11 @@ export function createApi( apiMethods ) {
 	WooCommerceRestApi.methods = apiMethods;
 
 	WooCommerceRestApi.operations = {
-		read: methods => resourceNames => {
-			return [ ...orders.operations.read( methods )( resourceNames ) ];
+		read: methods => ( resourceNames, resourceData ) => {
+			return [ ...orders.operations.read( methods )( resourceNames, resourceData ) ];
+		},
+		update: methods => ( resourceNames, resourceData ) => {
+			return [ ...orders.operations.update( methods )( resourceNames, resourceData ) ];
 		},
 	};
 
