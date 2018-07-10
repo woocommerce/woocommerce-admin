@@ -2,7 +2,8 @@
 /**
  * External dependencies
  */
-import { compact, startsWith } from 'lodash';
+import { compact } from 'lodash';
+import { getResourceName, getResourceIdentifier, isResourcePrefix } from './utils';
 
 const operations = {
 	read: ( { get } ) => resourceNames => {
@@ -16,15 +17,14 @@ const operations = {
 function readPagesOperation( get, resourceNames ) {
 	return compact(
 		resourceNames.map( resourceName => {
-			if ( startsWith( resourceName, 'orders-page:' ) ) {
-				const [ , paramString ] = resourceName.split( 'orders-page:' );
-				const params = JSON.parse( paramString );
+			if ( isResourcePrefix( resourceName, 'orders-page' ) ) {
+				const params = getResourceIdentifier( resourceName );
 
 				// Do a get for each page.
 				return get( [ 'orders' ], params ).then( responseData => {
 					// Store each order separately so it can be used by the rest of the app.
 					const ordersById = responseData.reduce( ( orders, data ) => {
-						orders[ `order:${ data.id }` ] = { data };
+						orders[ getResourceName( 'order', data.id ) ] = { data };
 						return orders;
 					}, {} );
 
@@ -41,8 +41,8 @@ function readPagesOperation( get, resourceNames ) {
 function updateOrdersOperation( post, resourceNames, resourceData ) {
 	return compact(
 		resourceNames.map( resourceName => {
-			if ( startsWith( resourceName, 'order:' ) ) {
-				const [ , id ] = resourceName.split( 'order:' );
+			if ( isResourcePrefix( resourceName, 'order' ) ) {
+				const id = getResourceIdentifier( resourceName );
 				const data = resourceData[ resourceName ];
 
 				// Do a post for each order update.
@@ -55,7 +55,7 @@ function updateOrdersOperation( post, resourceNames, resourceData ) {
 }
 
 const updateOrder = ( { update } ) => data => {
-	const resourceName = `order:${ data.id }`;
+	const resourceName = getResourceName( 'order', data.id );
 	const resourceData = { [ resourceName ]: data };
 	return update( [ resourceName ], resourceData );
 };
@@ -72,10 +72,10 @@ const mutations = {
 
 const selectors = {
 	getOrdersPage: ( getData, requireData ) => ( requirement, page = 1, perPage = 10 ) => {
-		const resourceName = `orders-page:{"page":${ page },"per_page":${ perPage }}`;
+		const resourceName = getResourceName( 'orders-page', { page: page, per_page: perPage } );
 		requireData( requirement, resourceName );
 		const pageIds = getData( resourceName ) || [];
-		const pageOrders = pageIds.map( id => getData( `order:${ id }` ) || {} );
+		const pageOrders = pageIds.map( id => getData( getResourceName( 'order', id ) ) || {} );
 		return pageOrders;
 	},
 };

@@ -64,10 +64,10 @@ describe( 'orders', () => {
 				Promise.all( update( methods )( resourceNames, resourceData ) ).then( () => {
 					expect( methods.get ).not.toHaveBeenCalled();
 					expect( methods.post ).toHaveBeenCalledTimes( 2 );
-					expect( methods.post ).toHaveBeenCalledWith( [ 'orders', '6' ], {
+					expect( methods.post ).toHaveBeenCalledWith( [ 'orders', 6 ], {
 						data: { name: 'six' },
 					} );
-					expect( methods.post ).toHaveBeenCalledWith( [ 'orders', '42' ], {
+					expect( methods.post ).toHaveBeenCalledWith( [ 'orders', 42 ], {
 						data: { name: 'forty-two' },
 					} );
 				} );
