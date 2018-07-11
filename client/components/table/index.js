@@ -31,6 +31,16 @@ class Table extends Component {
 		this.captionID = uniqueId( 'caption-' );
 	}
 
+	componentDidMount() {
+		const { scrollWidth, clientWidth } = this.container.current;
+		const scrollable = scrollWidth > clientWidth;
+		/* eslint-disable react/no-did-mount-set-state */
+		this.setState( {
+			tabIndex: scrollable ? '0' : null,
+		} );
+		/* eslint-enable react/no-did-mount-set-state */
+	}
+
 	sortBy( col ) {
 		this.setState( prevState => {
 			// Set the sort direction as inverse of current state
@@ -43,16 +53,6 @@ class Table extends Component {
 				sortDir,
 			};
 		} );
-	}
-
-	componentDidMount() {
-		const { scrollWidth, clientWidth } = this.container.current;
-		const scrollable = scrollWidth > clientWidth;
-		/* eslint-disable react/no-did-mount-set-state */
-		this.setState( {
-			tabIndex: scrollable ? '0' : null,
-		} );
-		/* eslint-enable react/no-did-mount-set-state */
 	}
 
 	isColSortable( col ) {
