@@ -7,13 +7,9 @@ import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
-<<<<<<< HEAD
-import { IconButton } from '@wordpress/components';
-import { partial, uniqueId } from 'lodash';
-=======
+
 import { IconButton, NavigableMenu } from '@wordpress/components';
-import { partial } from 'lodash';
->>>>>>> Fix Accessibility issues: tabpanel behavior, and reduced motion setting
+import { partial, uniqueId, find } from 'lodash';
 
 /**
  * Internal dependencies
@@ -136,22 +132,26 @@ class ActivityPanel extends Component {
 			'is-open': isPanelOpen,
 		} );
 
+		const tab = find( this.getTabs(), { name: currentTab } );
+		if ( ! tab ) {
+			return null;
+		}
+
 		return (
-			<div className={ classNames }>
+			<Section component="div" className={ classNames } tabindex={ 0 }>
 				{ ( isPanelOpen && (
 					<div
 						className="woocommerce-layout__activity-panel-content"
 						key={ 'activity-panel-' + currentTab }
 						id={ 'activity-panel-' + currentTab }
 						role="tabpanel"
-						tabindex={ 0 }
-						aria-labelledby={ 'activity-panel-tab' + currentTab }
+						aria-label={ tab.title }
 					>
 						{ this.getPanelContent( currentTab ) }
 					</div>
 				) ) ||
 					null }
-			</div>
+			</Section>
 		);
 	}
 
