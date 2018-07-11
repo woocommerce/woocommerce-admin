@@ -7,7 +7,7 @@ import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { IconButton } from '@wordpress/components';
 import PropTypes from 'prop-types';
-import { uniqueId } from 'lodash';
+import { isEqual, uniqueId } from 'lodash';
 
 /**
  * Internal dependencies
@@ -29,6 +29,16 @@ class Table extends Component {
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
 		this.captionID = uniqueId( 'caption-' );
+	}
+
+	componentDidUpdate( prevProps ) {
+		if ( ! isEqual( this.props.rows, prevProps.rows ) ) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( {
+				rows: this.props.rows,
+			} );
+			/* eslint-enable react/no-did-update-set-state */
+		}
 	}
 
 	componentDidMount() {
