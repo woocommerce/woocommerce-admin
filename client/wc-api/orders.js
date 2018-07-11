@@ -64,7 +64,7 @@ const updateOrder = ( { update } ) => data => {
 };
 
 const fulfillOrder = ops => id => {
-	const data = { id, status: 'completed' };
+	const data = { id: Number( id ), status: 'completed' };
 	return updateOrder( ops )( data );
 };
 

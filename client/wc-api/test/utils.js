@@ -37,6 +37,7 @@ describe( '#getResourceIdentifier', () => {
 	it( 'should parse a numeric id.', () => {
 		const identifier = getResourceIdentifier( 'order:24' );
 		expect( identifier ).toBe( 24 );
+		expect( typeof identifier ).toBe( 'number' );
 	} );
 
 	it( 'should parse a JSON identifier.', () => {
