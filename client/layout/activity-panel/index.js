@@ -5,7 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
 import { IconButton } from '@wordpress/components';
 import { partial, uniqueId } from 'lodash';
@@ -178,7 +178,7 @@ class ActivityPanel extends Component {
 
 		// TODO Replace the mobile toggle with the Woo bubble Gridicon once it has been added.
 		return (
-			<Fragment>
+			<div>
 				<H id={ headerId } className="screen-reader-text">
 					{ __( 'Store Activity', 'wc-admin' ) }
 				</H>
@@ -206,7 +206,7 @@ class ActivityPanel extends Component {
 						{ this.renderPanel() }
 					</div>
 				</Section>
-			</Fragment>
+			</div>
 		);
 	}
 }
