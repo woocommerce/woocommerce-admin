@@ -98,7 +98,7 @@ const D3Chart = ( { className, data, height, margin, type, xFormat, yFormat, wid
 
 D3Chart.propTypes = {
 	className: PropTypes.string,
-	data: PropTypes.array,
+	data: PropTypes.array.isRequired,
 	height: PropTypes.number,
 	margin: PropTypes.shape( {
 		bottom: PropTypes.number,

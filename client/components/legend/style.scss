@@ -1,0 +1,71 @@
+/**
+ * /* The container
+ *
+ * @format
+ */
+
+.container {
+	display: block;
+	position: relative;
+	padding-left: 20px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 13px;
+	user-select: none;
+
+	/* On mouse-over, add a grey background color */
+	&:hover {
+		input {
+			~ .checkmark {
+				background-color: #ccc;
+			}
+		}
+	}
+
+	/* Create a custom checkbox */
+	.checkmark {
+		/* Create the checkmark/indicator (hidden when not checked) */
+		&:after {
+			left: 4px;
+			top: 2px;
+			width: 2px;
+			height: 5px;
+			border: solid white;
+			border-width: 0 2px 2px 0;
+			transform: rotate(45deg);
+		}
+	}
+
+	/* Hide the browser's default checkbox */
+	input {
+		position: absolute;
+		opacity: 0;
+		cursor: pointer;
+
+		/* When the checkbox is checked, add a blue background */
+		&:checked {
+			~ .checkmark {
+				background-color: #2196f3;
+
+				&:after {
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+.checkmark {
+	position: absolute;
+	top: 3px;
+	left: 0;
+	height: 12px;
+	width: 12px;
+	background-color: #eee;
+
+	&:after {
+		content: '';
+		position: absolute;
+		display: none;
+	}
+}
