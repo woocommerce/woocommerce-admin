@@ -26,44 +26,36 @@ class Legend extends Component {
 		return (
 			<ul>
 				{ data.map( ( row, i ) => (
-						<li
-							id={ row.key }
-							onClick={ handleLegendToggle }
-							onMouseOver={ handleLegendHover }
-							onMouseOut={ handleLegendHover }
-							onBlur={ handleLegendHover }
-							onFocus={ handleLegendHover }
-						>
-							<label
-								className="container"
-								htmlFor={ row.key }
+					<li
+						id={ row.key }
+						onMouseOver={ handleLegendHover }
+						onMouseOut={ handleLegendHover }
+						onBlur={ handleLegendHover }
+						onFocus={ handleLegendHover }
+					>
+						<label className="container" htmlFor={ row.key } id={ row.key }>
+							<div className="legend" style={ { width: `${ width }px` } } id={ row.key }>
+								<span className="key" id={ row.key }>
+									{ row.key }
+								</span>
+								<span className="total" id={ row.key }>
+									{ formatCurrency( row.total ) }
+								</span>
+							</div>
+							<input
 								id={ row.key }
-							>
-								<div className="legend"
-									style={ { width: `${ width }px` } }
-									id={ row.key }
-								>
-									<span className="key" id={ row.key }>
-										{ row.key }
-									</span>
-									<span className="total" id={ row.key }>
-										{ formatCurrency( row.total ) }
-									</span>
-								</div>
-								<input
-									id={ row.key }
-									type="checkbox"
-									checked={ row.visible }
-								/>
-								<span
-									class="checkmark"
-									id={ row.key }
-									style={ { 'background-color': d3InterpolateViridis( d3Color( i ) ) } }
-								/>
-							</label>
-						</li>
-					)
-				) }
+								type="checkbox"
+								checked={ row.visible }
+								onChange={ handleLegendToggle }
+							/>
+							<span
+								class="checkmark"
+								id={ row.key }
+								style={ { 'background-color': d3InterpolateViridis( d3Color( i ) ) } }
+							/>
+						</label>
+					</li>
+				) ) }
 			</ul>
 		);
 	}
