@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
-
 import { IconButton, NavigableMenu } from '@wordpress/components';
 import { partial, uniqueId, find } from 'lodash';
 
@@ -138,20 +137,18 @@ class ActivityPanel extends Component {
 		}
 
 		return (
-			<Section component="div" className={ classNames } tabindex={ 0 }>
+			<div className={ classNames } tabIndex={ 0 } role="tabpanel" aria-label={ tab.title }>
 				{ ( isPanelOpen && (
 					<div
 						className="woocommerce-layout__activity-panel-content"
 						key={ 'activity-panel-' + currentTab }
 						id={ 'activity-panel-' + currentTab }
-						role="tabpanel"
-						aria-label={ tab.title }
 					>
 						{ this.getPanelContent( currentTab ) }
 					</div>
 				) ) ||
 					null }
-			</Section>
+			</div>
 		);
 	}
 
@@ -216,17 +213,17 @@ class ActivityPanel extends Component {
 						className="woocommerce-layout__activity-panel-mobile-toggle"
 					/>
 					<div className={ panelClasses }>
-					<NavigableMenu
-						role="tablist"
-						orientation="horizontal"
-						className="woocommerce-layout__activity-panel-tabs"
-					>
-						{ tabs && tabs.map( this.renderTab ) }
-						<WordPressNotices
-							showNotices={ 'wpnotices' === currentTab }
-							togglePanel={ this.togglePanel }
-						/>
-					</NavigableMenu>
+						<NavigableMenu
+							role="tablist"
+							orientation="horizontal"
+							className="woocommerce-layout__activity-panel-tabs"
+						>
+							{ tabs && tabs.map( this.renderTab ) }
+							<WordPressNotices
+								showNotices={ 'wpnotices' === currentTab }
+								togglePanel={ this.togglePanel }
+							/>
+						</NavigableMenu>
 						{ this.renderPanel() }
 					</div>
 				</Section>
