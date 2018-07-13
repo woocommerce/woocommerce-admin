@@ -74,14 +74,15 @@ const mutations = {
 };
 
 const selectors = {
-	getOrdersPage: ( getData, requireData ) => (
+	getOrdersPage: ( getResource, requireResource ) => (
 		requirement,
 		params = { page: 1, per_page: 10 }
 	) => {
 		const resourceName = getResourceName( 'orders-page', params );
-		requireData( requirement, resourceName );
-		const pageIds = getData( resourceName ) || [];
-		const pageOrders = pageIds.map( id => getData( getResourceName( 'order', id ) ) || {} );
+		const pageIds = requireResource( requirement, resourceName ).data || [];
+		const pageOrders = pageIds.map(
+			id => getResource( getResourceName( 'order', id ) ).data || {}
+		);
 		return pageOrders;
 	},
 };

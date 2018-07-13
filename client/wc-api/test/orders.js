@@ -116,24 +116,24 @@ describe( 'orders', () => {
 	describe( 'selectors', () => {
 		const { getOrdersPage } = orders.selectors;
 
-		let getData;
-		let requireData;
+		let getResource;
+		let requireResource;
 
 		beforeEach( () => {
-			getData = jest.fn();
-			requireData = jest.fn();
+			getResource = jest.fn();
+			requireResource = jest.fn();
 		} );
 
 		describe( 'getOrdersPage', () => {
 			it( 'should get and require data for a given orders page.', () => {
-				getData.mockReturnValueOnce( [ 52, 42, 32 ] );
-				getData.mockReturnValueOnce( { id: 52, status: 'processing' } );
-				getData.mockReturnValueOnce( { id: 42, status: 'completed' } );
-				getData.mockReturnValueOnce( { id: 32, status: 'on-hold' } );
+				requireResource.mockReturnValueOnce( { data: [ 52, 42, 32 ] } );
+				getResource.mockReturnValueOnce( { data: { id: 52, status: 'processing' } } );
+				getResource.mockReturnValueOnce( { data: { id: 42, status: 'completed' } } );
+				getResource.mockReturnValueOnce( { data: { id: 32, status: 'on-hold' } } );
 
 				const requirement = { freshness: 5000 };
 
-				const result = getOrdersPage( getData, requireData )( requirement, {
+				const result = getOrdersPage( getResource, requireResource )( requirement, {
 					page: 1,
 					per_page: 3,
 				} );
@@ -144,34 +144,33 @@ describe( 'orders', () => {
 					{ id: 32, status: 'on-hold' },
 				] );
 
-				expect( getData ).toHaveBeenCalledTimes( 4 );
-				expect( getData ).toHaveBeenCalledWith( 'orders-page:{"page":1,"per_page":3}' );
-				expect( getData ).toHaveBeenCalledWith( 'order:52' );
-				expect( getData ).toHaveBeenCalledWith( 'order:42' );
-				expect( getData ).toHaveBeenCalledWith( 'order:32' );
+				expect( getResource ).toHaveBeenCalledTimes( 3 );
+				expect( getResource ).toHaveBeenCalledWith( 'order:52' );
+				expect( getResource ).toHaveBeenCalledWith( 'order:42' );
+				expect( getResource ).toHaveBeenCalledWith( 'order:32' );
 
-				expect( requireData ).toHaveBeenCalledTimes( 1 );
-				expect( requireData ).toHaveBeenCalledWith(
+				expect( requireResource ).toHaveBeenCalledTimes( 1 );
+				expect( requireResource ).toHaveBeenCalledWith(
 					requirement,
 					'orders-page:{"page":1,"per_page":3}'
 				);
 			} );
 
 			it( 'should return an empty array for a page that does not yet exist.', () => {
+				requireResource.mockReturnValueOnce( {} );
 				const requirement = { freshness: 5000 };
 
-				const result = getOrdersPage( getData, requireData )( requirement, {
+				const result = getOrdersPage( getResource, requireResource )( requirement, {
 					page: 1,
 					per_page: 3,
 				} );
 
 				expect( result ).toEqual( [] );
 
-				expect( getData ).toHaveBeenCalledTimes( 1 );
-				expect( getData ).toHaveBeenCalledWith( 'orders-page:{"page":1,"per_page":3}' );
+				expect( getResource ).not.toHaveBeenCalled();
 
-				expect( requireData ).toHaveBeenCalledTimes( 1 );
-				expect( requireData ).toHaveBeenCalledWith(
+				expect( requireResource ).toHaveBeenCalledTimes( 1 );
+				expect( requireResource ).toHaveBeenCalledWith(
 					requirement,
 					'orders-page:{"page":1,"per_page":3}'
 				);

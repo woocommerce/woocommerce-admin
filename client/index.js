@@ -18,10 +18,11 @@ import reducer from 'state/reducer';
 import './stylesheets/_wpadmin-reset.scss';
 import { PageLayout } from './layout';
 import WooCommerceRestApi from './wc-api';
+import apiRequestMethods from './wc-api/methods';
 
 const store = createStore( reducer );
 const apis = {
-	woocommerce: new WooCommerceRestApi(),
+	woocommerce: new WooCommerceRestApi( apiRequestMethods ),
 };
 
 render(

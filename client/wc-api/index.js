@@ -7,32 +7,28 @@ import { FreshDataApi } from '@fresh-data/framework';
 /**
  * Internal dependencies
  */
-import apiRequestMethods from './methods';
 import orders from './orders';
 
-export function createApi( apiMethods ) {
-	class WooCommerceRestApi extends FreshDataApi {}
+export default class WooCommerceRestApi extends FreshDataApi {
+	constructor( apiMethods ) {
+		super();
+		this.methods = apiMethods;
 
-	WooCommerceRestApi.methods = apiMethods;
+		this.operations = {
+			read: methods => ( resourceNames, resourceData ) => {
+				return [ ...orders.operations.read( methods )( resourceNames, resourceData ) ];
+			},
+			update: methods => ( resourceNames, resourceData ) => {
+				return [ ...orders.operations.update( methods )( resourceNames, resourceData ) ];
+			},
+		};
 
-	WooCommerceRestApi.operations = {
-		read: methods => ( resourceNames, resourceData ) => {
-			return [ ...orders.operations.read( methods )( resourceNames, resourceData ) ];
-		},
-		update: methods => ( resourceNames, resourceData ) => {
-			return [ ...orders.operations.update( methods )( resourceNames, resourceData ) ];
-		},
-	};
+		this.mutations = {
+			...orders.mutations,
+		};
 
-	WooCommerceRestApi.mutations = {
-		...orders.mutations,
-	};
-
-	WooCommerceRestApi.selectors = {
-		...orders.selectors,
-	};
-
-	return WooCommerceRestApi;
+		this.selectors = {
+			...orders.selectors,
+		};
+	}
 }
-
-export default createApi( apiRequestMethods );
