@@ -52,9 +52,14 @@ describe( 'ActivityCard', () => {
 		expect( card ).toMatchSnapshot();
 	} );
 
-	xtest( 'should render a timestamp on a card', () => {
+	test( 'should render a timestamp on a card', () => {
+		// We're generating this via moment to ensure it's always "3 days ago".
+		const threeDaysAgo = wp.date
+			.moment()
+			.subtract( 3, 'days' )
+			.format();
 		const card = shallow(
-			<ActivityCard title="Inbox message" date="2018-07-10T00:00:00Z">
+			<ActivityCard title="Inbox message" date={ threeDaysAgo }>
 				This card has some content
 			</ActivityCard>
 		);
