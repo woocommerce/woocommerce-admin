@@ -204,3 +204,11 @@
 		animation-duration: 300ms;
 	}
 }
+
+.woocommerce-order-activity-card {
+	.woocommerce-activity-card__subtitle {
+		span + span:before {
+			content: ' \2022 ';
+		}
+	}
+}
