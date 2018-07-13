@@ -31,7 +31,7 @@ class Legend extends Component {
 							<input
 								id={ row.key }
 								type="checkbox"
-								checked={ row.checked }
+								checked={ row.visible }
 								onChange={ handleLegendToggle }
 							/>
 							<span

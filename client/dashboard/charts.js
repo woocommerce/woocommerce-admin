@@ -16,24 +16,22 @@ import Legend from 'components/legend';
 class WidgetCharts extends Component {
 	constructor() {
 		super( ...arguments );
-		this.getLegendData = this.getLegendData.bind( this );
+		this.getOrderedKeys = this.getOrderedKeys.bind( this );
 		this.handleLegendToggle = this.handleLegendToggle.bind( this );
 		this.state = {
-			legend: this.getLegendData( dummyOrders ).map( d => ( { ...d, checked: true } ) ),
+			orderedKeys: this.getOrderedKeys( dummyOrders ).map( d => ( { ...d, visible: true } ) ),
 		};
 	}
 
-	getLegendData( data ) {
-		const uniqueKeys = [
+	getOrderedKeys( data ) {
+		return [
 			...new Set(
 				data.reduce( ( accum, curr ) => {
 					Object.keys( curr ).forEach( key => key !== 'date' && accum.push( key ) );
 					return accum;
 				}, [] )
 			),
-		];
-		return uniqueKeys
-			.map( key => ( {
+		].map( key => ( {
 				key,
 				total: data.reduce( ( a, c ) => a + c[ key ], 0 ),
 			} ) )
@@ -42,9 +40,9 @@ class WidgetCharts extends Component {
 
 	handleLegendToggle( event ) {
 		this.setState( {
-			legend: this.state.legend.map( d => ( {
+			orderedKeys: this.state.orderedKeys.map( d => ( {
 				...d,
-				checked: d.key === event.target.id ? ! d.checked : d.checked,
+				visible: d.key === event.target.id ? ! d.visible : d.visible,
 			} ) ),
 		} );
 	}
@@ -52,13 +50,14 @@ class WidgetCharts extends Component {
 	render() {
 		return (
 			<Card title={ __( 'Store Charts', 'wc-admin' ) }>
-				<Legend data={ this.state.legend } handleLegendToggle={ this.handleLegendToggle } />
+				<Legend data={ this.state.orderedKeys } handleLegendToggle={ this.handleLegendToggle } />
 				<div className="woocommerce-dashboard__widget">
 					<D3Chart
 						className="woocommerce-dashboard__widget-bar-chart"
 						data={ dummyOrders }
 						height={ 300 }
 						legend={ this.state.legend }
+						orderedKeys={ this.state.orderedKeys }
 						type={ 'line' }
 						width={ 1042 }
 					/>
@@ -69,6 +68,7 @@ class WidgetCharts extends Component {
 						data={ dummyOrders }
 						height={ 300 }
 						legend={ this.state.legend }
+						orderedKeys={ this.state.orderedKeys }
 						type={ 'bar' }
 						width={ 1042 }
 					/>

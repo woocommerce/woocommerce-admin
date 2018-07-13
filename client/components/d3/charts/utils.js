@@ -47,24 +47,24 @@ export const getOrderedKeys = ( data, uniqueKeys ) =>
 		.map( key => ( {
 			key,
 			total: data.reduce( ( a, c ) => a + c[ key ], 0 ),
+			visible: true,
 		} ) )
-		.sort( ( a, b ) => b.total - a.total )
-		.map( d => d.key );
+		.sort( ( a, b ) => b.total - a.total );
 
 /**
  * Describes `getLineData`
  * @param {array} data - The chart component's `data` prop.
  * @param {array} orderedKeys - from `getOrderedKeys`.
- * @param {array} legend - an array of keys (categories) and checked = `true` or `false`
  * @returns {array} an array objects with a category `key` and an array of `values` with `date` and `value` properties
  */
-export const getLineData = ( data, legend, orderedKeys ) =>
-	orderedKeys.map( key => ( {
-		key,
-		visible: legend.find( l => l.key === key ).checked ? true : false,
+export const getLineData = ( data, orderedKeys ) =>
+	orderedKeys.map( row => ( {
+		key: row.key,
+		visible: row.visible,
 		values: data.map( d => ( {
 			date: d.date,
-			value: d[ key ],
+			value: d[ row.key ],
+			visible: row.visible,
 		} ) ),
 	} ) );
 
@@ -104,7 +104,7 @@ export const getXScale = ( uniqueDates, width ) =>
  */
 export const getXGroupScale = ( orderedKeys, xScale ) =>
 	d3ScaleBand()
-		.domain( orderedKeys )
+		.domain( orderedKeys.map( d => d.key ) )
 		.rangeRound( [ 0, xScale.bandwidth() ] )
 		.padding( 0.07 );
 
@@ -254,13 +254,13 @@ const showTooltip = ( node, params, d ) => {
 	xPosition = xPosition > chartCoords.width - 200 ? xPosition - 200 : xPosition + 20;
 	yPosition = yPosition > chartCoords.height - 150 ? yPosition - 200 : yPosition + 20;
 	const keys = params.orderedKeys.map(
-		( key, i ) => `
+		( row, i ) => `
 		<li>
 			<span class="key-colour" style="background-color:${ d3InterpolateViridis(
 				params.colorScale( i )
 			) }"></span>
-			<span class="key-key">${ key }:</span>
-			<span class="key-value">${ d3Format( ',.0f' )( d[ key ] ) }</span>
+			<span class="key-key">${ row.key }:</span>
+			<span class="key-value">${ d3Format( ',.0f' )( d[ row.key ] ) }</span>
 		</li>`
 	);
 	node
@@ -399,7 +399,7 @@ export const drawBars = ( node, data, params ) => {
 
 	barGroup
 		.selectAll( '.bar' )
-		.data( d => params.orderedKeys.map( key => ( { key: key, value: d[ key ] } ) ) )
+		.data( d => params.orderedKeys.map( row => ( { key: row.key, value: d[ row.key ], visible: row.visible } ) ) )
 		.enter()
 		.append( 'rect' )
 		.attr( 'class', 'bar' )
@@ -407,7 +407,8 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'y', d => params.yScale( d.value ) )
 		.attr( 'width', params.xGroupScale.bandwidth() )
 		.attr( 'height', d => params.height - params.yScale( d.value ) )
-		.attr( 'fill', ( d, i ) => d3InterpolateViridis( params.colorScale( i ) ) );
+		.attr( 'fill', ( d, i ) => d3InterpolateViridis( params.colorScale( i ) ) )
+		.style( 'opacity', d => ( d.visible ? 1 : 0 ) );
 
 	barGroup
 		.append( 'rect' )

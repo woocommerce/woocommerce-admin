@@ -34,7 +34,7 @@ import {
 	getYTickOffset,
 } from './utils';
 
-const D3Chart = ( { className, data, height, legend, margin, type, xFormat, yFormat, width } ) => {
+const D3Chart = ( { className, data, height, margin, orderedKeys, type, xFormat, yFormat, width } ) => {
 	const drawChart = ( node, params ) => {
 		const g = node
 			.select( 'svg' )
@@ -60,8 +60,8 @@ const D3Chart = ( { className, data, height, legend, margin, type, xFormat, yFor
 		const adjHeight = calculatedHeight - margin.top - margin.bottom;
 		const adjWidth = calculatedWidth - margin.left - margin.right;
 		const uniqueKeys = getUniqueKeys( data );
-		const orderedKeys = getOrderedKeys( data, uniqueKeys );
-		const lineData = getLineData( data, legend, orderedKeys );
+		const newOrderedKeys = orderedKeys ? orderedKeys : getOrderedKeys( data, uniqueKeys );
+		const lineData = getLineData( data, orderedKeys );
 		const yMax = getYMax( lineData );
 		const yScale = getYScale( adjHeight, yMax );
 		const uniqueDates = getUniqueDates( lineData );
@@ -74,7 +74,7 @@ const D3Chart = ( { className, data, height, legend, margin, type, xFormat, yFor
 			line: getLine( data, xLineScale, yScale ),
 			lineData,
 			margin,
-			orderedKeys,
+			orderedKeys: newOrderedKeys,
 			scale,
 			type,
 			uniqueDates,
@@ -107,6 +107,7 @@ D3Chart.propTypes = {
 		right: PropTypes.number,
 		top: PropTypes.number,
 	} ),
+	orderedKeys: PropTypes.array,
 	type: PropTypes.oneOf( [ 'bar', 'line' ] ),
 	width: PropTypes.number,
 	xFormat: PropTypes.string,
