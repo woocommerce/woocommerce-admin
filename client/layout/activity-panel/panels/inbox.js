@@ -8,7 +8,7 @@ import { Component } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import ActivityHeader from './activity-header';
+import ActivityHeader from '../activity-header';
 
 class InboxPanel extends Component {
 	render() {
