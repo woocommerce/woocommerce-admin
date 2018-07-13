@@ -17,9 +17,12 @@ class WidgetCharts extends Component {
 	constructor() {
 		super( ...arguments );
 		this.getOrderedKeys = this.getOrderedKeys.bind( this );
+		this.handleLegendHover = this.handleLegendHover.bind( this );
 		this.handleLegendToggle = this.handleLegendToggle.bind( this );
 		this.state = {
-			orderedKeys: this.getOrderedKeys( dummyOrders ).map( d => ( { ...d, visible: true } ) ),
+			orderedKeys: this.getOrderedKeys( dummyOrders ).map( d => (
+				{ ...d, visible: true, focus: true }
+			) ),
 		};
 	}
 
@@ -47,16 +50,28 @@ class WidgetCharts extends Component {
 		} );
 	}
 
+	handleLegendHover( event ) {
+		this.setState( {
+			orderedKeys: this.state.orderedKeys.map( d => ( {
+				...d,
+				focus: d.key !== event.target.id ? ! d.focus : d.focus,
+			} ) ),
+		} );
+	}
+
 	render() {
 		return (
 			<Card title={ __( 'Store Charts', 'wc-admin' ) }>
-				<Legend data={ this.state.orderedKeys } handleLegendToggle={ this.handleLegendToggle } />
+				<Legend
+					data={ this.state.orderedKeys }
+					handleLegendHover={ this.handleLegendHover }
+					handleLegendToggle={ this.handleLegendToggle }
+				/>
 				<div className="woocommerce-dashboard__widget">
 					<D3Chart
 						className="woocommerce-dashboard__widget-bar-chart"
 						data={ dummyOrders }
 						height={ 300 }
-						legend={ this.state.legend }
 						orderedKeys={ this.state.orderedKeys }
 						type={ 'line' }
 						width={ 1042 }
@@ -67,7 +82,6 @@ class WidgetCharts extends Component {
 						className="woocommerce-dashboard__widget-bar-chart"
 						data={ dummyOrders }
 						height={ 300 }
-						legend={ this.state.legend }
 						orderedKeys={ this.state.orderedKeys }
 						type={ 'bar' }
 						width={ 1042 }

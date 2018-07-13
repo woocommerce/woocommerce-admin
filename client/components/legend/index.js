@@ -20,27 +20,50 @@ class Legend extends Component {
 	}
 
 	render() {
-		const { data, handleLegendToggle } = this.props;
+		const { data, handleLegendHover, handleLegendToggle } = this.props;
 		const d3Color = d3ScaleOrdinal().range( d3Range( 0, 1.1, 100 / ( data.length - 1 ) / 100 ) );
+		const width = data.length <= 2 ? 240 : 320;
 		return (
 			<ul>
 				{ data.map( ( row, i ) => (
-					<li key={ i }>
-						<label className="container" htmlFor={ row.key }>
-							{ row.key } - { formatCurrency( row.total ) }
-							<input
+						<li
+							id={ row.key }
+							onClick={ handleLegendToggle }
+							onMouseOver={ handleLegendHover }
+							onMouseOut={ handleLegendHover }
+							onBlur={ handleLegendHover }
+							onFocus={ handleLegendHover }
+						>
+							<label
+								className="container"
+								htmlFor={ row.key }
 								id={ row.key }
-								type="checkbox"
-								checked={ row.visible }
-								onChange={ handleLegendToggle }
-							/>
-							<span
-								class="checkmark"
-								style={ { 'background-color': d3InterpolateViridis( d3Color( i ) ) } }
-							/>
-						</label>
-					</li>
-				) ) }
+							>
+								<div className="legend"
+									style={ { width: `${ width }px` } }
+									id={ row.key }
+								>
+									<span className="key" id={ row.key }>
+										{ row.key }
+									</span>
+									<span className="total" id={ row.key }>
+										{ formatCurrency( row.total ) }
+									</span>
+								</div>
+								<input
+									id={ row.key }
+									type="checkbox"
+									checked={ row.visible }
+								/>
+								<span
+									class="checkmark"
+									id={ row.key }
+									style={ { 'background-color': d3InterpolateViridis( d3Color( i ) ) } }
+								/>
+							</label>
+						</li>
+					)
+				) }
 			</ul>
 		);
 	}
@@ -49,6 +72,7 @@ class Legend extends Component {
 Legend.propTypes = {
 	data: PropTypes.array.isRequired,
 	handleLegendToggle: PropTypes.function,
+	handleLegendHover: PropTypes.function,
 };
 
 export default Legend;

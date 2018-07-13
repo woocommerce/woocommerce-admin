@@ -46,6 +46,7 @@ export const getOrderedKeys = ( data, uniqueKeys ) =>
 	uniqueKeys
 		.map( key => ( {
 			key,
+			focus: true,
 			total: data.reduce( ( a, c ) => a + c[ key ], 0 ),
 			visible: true,
 		} ) )
@@ -60,9 +61,11 @@ export const getOrderedKeys = ( data, uniqueKeys ) =>
 export const getLineData = ( data, orderedKeys ) =>
 	orderedKeys.map( row => ( {
 		key: row.key,
+		focus: row.focus,
 		visible: row.visible,
 		values: data.map( d => ( {
 			date: d.date,
+			focus: row.focus,
 			value: d[ row.key ],
 			visible: row.visible,
 		} ) ),
@@ -357,7 +360,10 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'stroke-linejoin', 'round' )
 		.attr( 'stroke-linecap', 'round' )
 		.attr( 'stroke', ( d, i ) => d3InterpolateViridis( params.colorScale( i ) ) )
-		.style( 'opacity', d => ( d.visible ? 1 : 0 ) )
+		.style( 'opacity', d => {
+			const opacity = d.focus ? 1 : 0.1;
+			return d.visible ? opacity : 0;
+		} )
 		.attr( 'd', d => params.line( d.values ) );
 
 	series
@@ -369,7 +375,10 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'fill', '#fff' )
 		.attr( 'stroke', d => d3InterpolateViridis( params.colorScale( d.i ) ) )
 		.attr( 'stroke-width', 3 )
-		.style( 'opacity', d => ( d.visible ? 1 : 0 ) )
+		.style( 'opacity', d => {
+			const opacity = d.focus ? 1 : 0.1;
+			return d.visible ? opacity : 0;
+		} )
 		.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
 		.attr( 'cy', d => params.yScale( d.value ) );
 };
@@ -399,7 +408,14 @@ export const drawBars = ( node, data, params ) => {
 
 	barGroup
 		.selectAll( '.bar' )
-		.data( d => params.orderedKeys.map( row => ( { key: row.key, value: d[ row.key ], visible: row.visible } ) ) )
+		.data( d =>
+			params.orderedKeys.map( row => ( {
+				key: row.key,
+				focus: row.focus,
+				value: d[ row.key ],
+				visible: row.visible,
+			} ) )
+		)
 		.enter()
 		.append( 'rect' )
 		.attr( 'class', 'bar' )
@@ -408,7 +424,10 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'width', params.xGroupScale.bandwidth() )
 		.attr( 'height', d => params.height - params.yScale( d.value ) )
 		.attr( 'fill', ( d, i ) => d3InterpolateViridis( params.colorScale( i ) ) )
-		.style( 'opacity', d => ( d.visible ? 1 : 0 ) );
+		.style( 'opacity', d => {
+			const opacity = d.focus ? 1 : 0.1;
+			return d.visible ? opacity : 0;
+		} );
 
 	barGroup
 		.append( 'rect' )
