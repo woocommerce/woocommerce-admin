@@ -34,7 +34,7 @@ import {
 	getYTickOffset,
 } from './utils';
 
-const D3Chart = ( { className, data, height, margin, type, xFormat, yFormat, width } ) => {
+const D3Chart = ( { className, data, height, legend, margin, type, xFormat, yFormat, width } ) => {
 	const drawChart = ( node, params ) => {
 		const g = node
 			.select( 'svg' )
@@ -61,7 +61,7 @@ const D3Chart = ( { className, data, height, margin, type, xFormat, yFormat, wid
 		const adjWidth = calculatedWidth - margin.left - margin.right;
 		const uniqueKeys = getUniqueKeys( data );
 		const orderedKeys = getOrderedKeys( data, uniqueKeys );
-		const lineData = getLineData( data, orderedKeys );
+		const lineData = getLineData( data, legend, orderedKeys );
 		const yMax = getYMax( lineData );
 		const yScale = getYScale( adjHeight, yMax );
 		const uniqueDates = getUniqueDates( lineData );
@@ -100,6 +100,7 @@ D3Chart.propTypes = {
 	className: PropTypes.string,
 	data: PropTypes.array.isRequired,
 	height: PropTypes.number,
+	legend: PropTypes.array,
 	margin: PropTypes.shape( {
 		bottom: PropTypes.number,
 		left: PropTypes.number,

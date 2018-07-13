@@ -17,6 +17,10 @@ class WidgetCharts extends Component {
 	constructor() {
 		super( ...arguments );
 		this.getLegendData = this.getLegendData.bind( this );
+		this.handleLegendToggle = this.handleLegendToggle.bind( this );
+		this.state = {
+			legend: this.getLegendData( dummyOrders ).map( d => ( { ...d, checked: true } ) ),
+		};
 	}
 
 	getLegendData( data ) {
@@ -36,15 +40,25 @@ class WidgetCharts extends Component {
 			.sort( ( a, b ) => b.total - a.total );
 	}
 
+	handleLegendToggle( event ) {
+		this.setState( {
+			legend: this.state.legend.map( d => ( {
+				...d,
+				checked: d.key === event.target.id ? ! d.checked : d.checked,
+			} ) ),
+		} );
+	}
+
 	render() {
 		return (
 			<Card title={ __( 'Store Charts', 'wc-admin' ) }>
-				<Legend data={ this.getLegendData( dummyOrders ) } />
+				<Legend data={ this.state.legend } handleLegendToggle={ this.handleLegendToggle } />
 				<div className="woocommerce-dashboard__widget">
 					<D3Chart
 						className="woocommerce-dashboard__widget-bar-chart"
 						data={ dummyOrders }
 						height={ 300 }
+						legend={ this.state.legend }
 						type={ 'line' }
 						width={ 1042 }
 					/>
@@ -54,6 +68,7 @@ class WidgetCharts extends Component {
 						className="woocommerce-dashboard__widget-bar-chart"
 						data={ dummyOrders }
 						height={ 300 }
+						legend={ this.state.legend }
 						type={ 'bar' }
 						width={ 1042 }
 					/>

@@ -55,11 +55,13 @@ export const getOrderedKeys = ( data, uniqueKeys ) =>
  * Describes `getLineData`
  * @param {array} data - The chart component's `data` prop.
  * @param {array} orderedKeys - from `getOrderedKeys`.
+ * @param {array} legend - an array of keys (categories) and checked = `true` or `false`
  * @returns {array} an array objects with a category `key` and an array of `values` with `date` and `value` properties
  */
-export const getLineData = ( data, orderedKeys ) =>
+export const getLineData = ( data, legend, orderedKeys ) =>
 	orderedKeys.map( key => ( {
 		key,
+		visible: legend.find( l => l.key === key ).checked ? true : false,
 		values: data.map( d => ( {
 			date: d.date,
 			value: d[ key ],
@@ -355,17 +357,19 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'stroke-linejoin', 'round' )
 		.attr( 'stroke-linecap', 'round' )
 		.attr( 'stroke', ( d, i ) => d3InterpolateViridis( params.colorScale( i ) ) )
+		.style( 'opacity', d => ( d.visible ? 1 : 0 ) )
 		.attr( 'd', d => params.line( d.values ) );
 
 	series
 		.selectAll( 'circle' )
-		.data( ( d, i ) => d.values.map( row => ( { ...row, i } ) ) )
+		.data( ( d, i ) => d.values.map( row => ( { ...row, i, visible: d.visible } ) ) )
 		.enter()
 		.append( 'circle' )
 		.attr( 'r', 3.5 )
 		.attr( 'fill', '#fff' )
 		.attr( 'stroke', d => d3InterpolateViridis( params.colorScale( d.i ) ) )
 		.attr( 'stroke-width', 3 )
+		.style( 'opacity', d => ( d.visible ? 1 : 0 ) )
 		.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
 		.attr( 'cy', d => params.yScale( d.value ) );
 };

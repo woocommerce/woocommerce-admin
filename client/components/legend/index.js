@@ -20,16 +20,20 @@ class Legend extends Component {
 	}
 
 	render() {
-		const { data } = this.props;
+		const { data, handleLegendToggle } = this.props;
 		const d3Color = d3ScaleOrdinal().range( d3Range( 0, 1.1, 100 / ( data.length - 1 ) / 100 ) );
-
 		return (
 			<ul>
 				{ data.map( ( row, i ) => (
 					<li key={ i }>
 						<label className="container" htmlFor={ row.key }>
 							{ row.key } - { formatCurrency( row.total ) }
-							<input id={ row.key } type="checkbox" checked="checked" />
+							<input
+								id={ row.key }
+								type="checkbox"
+								checked={ row.checked }
+								onChange={ handleLegendToggle }
+							/>
 							<span
 								class="checkmark"
 								style={ { 'background-color': d3InterpolateViridis( d3Color( i ) ) } }
@@ -44,6 +48,7 @@ class Legend extends Component {
 
 Legend.propTypes = {
 	data: PropTypes.array.isRequired,
+	handleLegendToggle: PropTypes.function,
 };
 
 export default Legend;
