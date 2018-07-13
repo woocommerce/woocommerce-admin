@@ -8,7 +8,6 @@ $gray-darken-10: darken($gray, 10%);
 $gray-darken-20: darken($gray, 20%);
 $gray-darken-30: darken($gray, 30%);
 $gray-darken-40: darken($gray, 40%);
-$gray-text: $gray-darken-40;
 $gray-light-10: lighten($gray, 10%);
 
 // Greys
@@ -30,6 +29,8 @@ $core-grey-dark-600: #40464d;
 $core-grey-dark-700: #32373c;
 $core-grey-dark-800: #23282d;
 $core-grey-dark-900: #191e23;
+
+$gray-text: $core-grey-dark-500;
 
 // wp-admin
 $wp-admin-background: #f1f1f1;

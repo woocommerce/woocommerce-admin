@@ -5,6 +5,8 @@
 	padding: $gutter;
 	background: $white;
 	border-bottom: 1px solid $core-grey-light-400;
+	color: $gray-text;
+	@include font-size( 13 );
 	display: grid;
 	grid-template-columns: 84px 1fr;
 	grid-template-areas:
@@ -43,7 +45,7 @@
 	.woocommerce-activity-card__title {
 		grid-area: title;
 		margin: 0;
-		@include font-size( 14 );
+		@include font-size( 13 );
 	}
 
 	.woocommerce-activity-card__date {
