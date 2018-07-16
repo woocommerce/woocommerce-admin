@@ -74,16 +74,20 @@ const mutations = {
 };
 
 const selectors = {
-	getOrdersPage: ( getResource, requireResource ) => (
-		requirement,
-		params = { page: 1, per_page: 10 }
-	) => {
+	getOrdersPage: ( getResource, requireResource ) => {
+		return ( requirement, params = { page: 1, per_page: 10 } ) => {
+			const resourceName = getResourceName( 'orders-page', params );
+			const pageIds = requireResource( requirement, resourceName ).data || [];
+			const pageOrders = pageIds.map(
+				id => getResource( getResourceName( 'order', id ) ).data || {}
+			);
+			return pageOrders;
+		};
+	},
+	isOrdersPageLoading: getResource => ( params = { page: 1, per_page: 10 } ) => {
 		const resourceName = getResourceName( 'orders-page', params );
-		const pageIds = requireResource( requirement, resourceName ).data || [];
-		const pageOrders = pageIds.map(
-			id => getResource( getResourceName( 'order', id ) ).data || {}
-		);
-		return pageOrders;
+		const { data, lastRequested, lastReceived } = getResource( resourceName );
+		return ! data || ( lastRequested && lastRequested > lastReceived );
 	},
 };
 
