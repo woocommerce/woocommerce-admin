@@ -225,6 +225,8 @@
 }
 
 .woocommerce-layout__activity-panel-avatar-flag-overlay {
+	position: relative;
+	top: -$gap-small;
 	.woocommerce-flag {
 		position: relative;
 		top: 16px;
