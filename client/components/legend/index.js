@@ -24,12 +24,12 @@ class Legend extends Component {
 		const d3Color = d3ScaleOrdinal().range( d3Range( 0, 1.1, 100 / ( data.length - 1 ) / 100 ) );
 		const width = data.length <= 2 ? 240 : 320;
 		return (
-			<ul>
+			<ul className="woocommerce-legend">
 				{ data.map( ( row, i ) => (
 					<li
 						id={ row.key }
-						onMouseOver={ handleLegendHover }
-						onMouseOut={ handleLegendHover }
+						onMouseEnter={ handleLegendHover }
+						onMouseLeave={ handleLegendHover }
 						onBlur={ handleLegendHover }
 						onFocus={ handleLegendHover }
 					>

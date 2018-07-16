@@ -4,11 +4,14 @@
  * @format
  */
 
+.woocommerce-legend li {
+	margin: 0;
+}
+
 .container {
 	display: block;
 	position: relative;
-	padding-left: 20px;
-	margin-bottom: 12px;
+	padding: 3px 0 3px 20px;
 	cursor: pointer;
 	font-size: 13px;
 	user-select: none;
@@ -69,7 +72,7 @@
 
 .checkmark {
 	position: absolute;
-	top: 3px;
+	top: 6px;
 	left: 0;
 	height: 12px;
 	width: 12px;

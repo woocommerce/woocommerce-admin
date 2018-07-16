@@ -20,9 +20,11 @@ class WidgetCharts extends Component {
 		this.handleLegendHover = this.handleLegendHover.bind( this );
 		this.handleLegendToggle = this.handleLegendToggle.bind( this );
 		this.state = {
-			orderedKeys: this.getOrderedKeys( dummyOrders ).map( d => (
-				{ ...d, visible: true, focus: true }
-			) ),
+			orderedKeys: this.getOrderedKeys( dummyOrders ).map( d => ( {
+				...d,
+				visible: true,
+				focus: true,
+			} ) ),
 		};
 	}
 
@@ -34,7 +36,8 @@ class WidgetCharts extends Component {
 					return accum;
 				}, [] )
 			),
-		].map( key => ( {
+		]
+			.map( key => ( {
 				key,
 				total: data.reduce( ( a, c ) => a + c[ key ], 0 ),
 			} ) )
@@ -52,10 +55,13 @@ class WidgetCharts extends Component {
 
 	handleLegendHover( event ) {
 		this.setState( {
-			orderedKeys: this.state.orderedKeys.map( d => ( {
-				...d,
-				focus: d.key !== event.target.id ? ! d.focus : d.focus,
-			} ) ),
+			orderedKeys: this.state.orderedKeys.map( d => {
+				const enterFocus = d.key === event.target.id ? true : false;
+				return {
+					...d,
+					focus: event.type === 'mouseleave' || event.type === 'blur' ? true : enterFocus,
+				};
+			} ),
 		} );
 	}
 
