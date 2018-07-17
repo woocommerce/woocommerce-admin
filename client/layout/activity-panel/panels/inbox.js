@@ -11,6 +11,7 @@ import Gridicon from 'gridicons';
  * Internal dependencies
  */
 import ActivityCard from '../activity-card';
+import ActivityCardPlaceholder from '../activity-card/placeholder';
 import ActivityHeader from '../activity-header';
 import { getAdminLink } from 'lib/nav-utils';
 import { Section } from 'layout/section';
@@ -97,21 +98,26 @@ class InboxPanel extends Component {
 			<Fragment>
 				<ActivityHeader title={ __( 'Inbox', 'wc-admin' ) } />
 				<Section>
-					{ loading
-						? 'Loading'
-						: notices.map( note => (
-								<ActivityCard
-									key={ note.id }
-									className="woocommerce-inbox-activity-card"
-									title={ note.title }
-									date={ note.date_created }
-									icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
-									unread={ 'unread' === note.status }
-									actions={ getButtonsFromActions( note.actions ) }
-								>
-									{ note.content }
-								</ActivityCard>
-							) ) }
+					{ loading ? (
+						<ActivityCardPlaceholder className="woocommerce-inbox-activity-card" hasAction hasDate>
+							<span className="is-placeholder" />
+							<span className="is-placeholder" />
+						</ActivityCardPlaceholder>
+					) : (
+						notices.map( note => (
+							<ActivityCard
+								key={ note.id }
+								className="woocommerce-inbox-activity-card"
+								title={ note.title }
+								date={ note.date_created }
+								icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
+								unread={ 'unread' === note.status }
+								actions={ getButtonsFromActions( note.actions ) }
+							>
+								{ note.content }
+							</ActivityCard>
+						) )
+					) }
 				</Section>
 			</Fragment>
 		);
