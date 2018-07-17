@@ -68,12 +68,20 @@ class InboxPanel extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
-			notices: demoNotices,
+			loading: true,
+			notices: [],
 		};
+
+		setTimeout( () => {
+			this.setState( {
+				loading: false,
+				notices: demoNotices,
+			} );
+		}, 5000 );
 	}
 
 	render() {
-		const { notices = [] } = this.state;
+		const { loading = true, notices = [] } = this.state;
 		const getButtonsFromActions = actions => {
 			if ( ! actions ) {
 				return [];
@@ -89,19 +97,21 @@ class InboxPanel extends Component {
 			<Fragment>
 				<ActivityHeader title={ __( 'Inbox', 'wc-admin' ) } />
 				<Section>
-					{ notices.map( note => (
-						<ActivityCard
-							key={ note.id }
-							className="woocommerce-inbox-activity-card"
-							title={ note.title }
-							date={ note.date_created }
-							icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
-							unread={ 'unread' === note.status }
-							actions={ getButtonsFromActions( note.actions ) }
-						>
-							{ note.content }
-						</ActivityCard>
-					) ) }
+					{ loading
+						? 'Loading'
+						: notices.map( note => (
+								<ActivityCard
+									key={ note.id }
+									className="woocommerce-inbox-activity-card"
+									title={ note.title }
+									date={ note.date_created }
+									icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
+									unread={ 'unread' === note.status }
+									actions={ getButtonsFromActions( note.actions ) }
+								>
+									{ note.content }
+								</ActivityCard>
+							) ) }
 				</Section>
 			</Fragment>
 		);
