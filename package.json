@@ -26,6 +26,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "devDependencies": {
+    "@fresh-data/framework": "^0.2.0",
     "@wordpress/babel-plugin-makepot": "^1.0.1",
     "@wordpress/babel-preset-default": "^1.2.1",
     "@wordpress/i18n": "^1.1.1",
@@ -37,6 +38,7 @@
     "babel-plugin-transform-async-generator-functions": "^6.24.1",
     "chalk": "^2.4.1",
     "css-loader": "^0.28.11",
+    "debug": "^3.1.0",
     "eslint": "^4.18.2",
     "eslint-config-wpcalypso": "^4.0.0",
     "eslint-loader": "^2.0.0",
@@ -53,13 +55,15 @@
     "husky": "^0.14.3",
     "node-sass": "^4.9.0",
     "prettier": "github:automattic/calypso-prettier#c56b4251",
-    "prop-types": "^15.6.1",
+    "prop-types": "^15.6.2",
     "react": "^16.3.2",
     "react-click-outside": "2.3.1",
     "react-dom": "^16.3.2",
+    "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
     "react-world-flags": "^1.2.4",
     "readline-sync": "^1.4.9",
+    "redux": "^4.0.0",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
     "webpack": "^4.8.3",
@@ -76,7 +80,6 @@
     "d3-shape": "^1.2.0",
     "d3-time-format": "^2.1.1",
     "lodash": "^4.17.10",
-    "prop-types": "^15.6.1",
     "react-dates": "^16.7.0",
     "react-slot-fill": "^2.0.1"
   }
