@@ -10,8 +10,7 @@ import Gridicon from 'gridicons';
 /**
  * Internal dependencies
  */
-import ActivityCard from '../activity-card';
-import ActivityCardPlaceholder from '../activity-card/placeholder';
+import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import { getAdminLink } from 'lib/nav-utils';
 import { Section } from 'layout/section';

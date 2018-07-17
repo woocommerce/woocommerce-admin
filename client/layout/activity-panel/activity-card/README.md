@@ -6,7 +6,7 @@ A card designed for use in the activity panel. This is a very structured compone
 ## How to use:
 
 ```jsx
-import ActivityCard from 'components/activity-card';
+import { ActivityCard } from 'components/activity-card';
 
 render: function() {
   return (
