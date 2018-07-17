@@ -89,11 +89,7 @@ class OrdersPanel extends Component {
 								( total, line ) => total + line.quantity,
 								0
 							);
-							const title = sprintf(
-								__( '%s placed order #%d', 'wc-admin' ),
-								name,
-								order.id,
-							);
+							const title = sprintf( __( '%s placed order #%d', 'wc-admin' ), name, order.id );
 
 							const total = order.total;
 							const refundValue = getOrderRefundTotal( order );
@@ -124,7 +120,7 @@ class OrdersPanel extends Component {
 											) }
 										</div>
 									}
-									actions={ renderActionButtons( editedOrder ) }
+									actions={ this.renderActionButtons( editedOrder ) }
 								>
 									<OrderStatus order={ editedOrder } />
 								</ActivityCard>
