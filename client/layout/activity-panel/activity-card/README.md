@@ -33,3 +33,31 @@ render: function() {
 * `date`: The timestamp associated with this activity.
 * `icon`: An icon or avatar used to identify this activity. Defaults to Gridicon "notice-outline".
 * `unread`: If this prop is present, the card has a small red bubble indicating an "unread" item. Defaults to false.
+
+ActivityCardPlaceholder
+=======================
+
+This component is similar to `ActivityCard` in output, but renders no real content, just loading placeholders. This is also hidden from any interaction with screen readers using `aria-hidden`.
+
+It does expect `children`, which should be spans with class `is-placeholder`. This will let you define how many lines of placeholder content you want to show.
+
+## How to use:
+
+```jsx
+import { ActivityCardPlaceholder } from 'components/activity-card';
+
+render: function() {
+  return (
+    <ActivityCardPlaceholder hasDate>
+      <span className="is-placeholder" />
+    </ActivityCardPlaceholder>
+  );
+}
+```
+
+## Props
+
+* `children`: Content used in the body of the action card (required).
+* `hasAction`: Boolean. If true, shows a placeholder block for an action. Default false.
+* `hasDate`: Boolean. If true, shows a placeholder block for the date. Default false.
+* `hasSubtitle`: Boolean. If true, shows a placeholder block for the subtitle. Default false.
