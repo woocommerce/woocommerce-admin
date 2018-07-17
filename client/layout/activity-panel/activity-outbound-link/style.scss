@@ -7,17 +7,13 @@
 	height: 50px;
 	background: $core-grey-light-200;
 	border-bottom: 1px solid $core-grey-light-400;
-	padding: $gap;
+	padding: $gap $gutter;
 	font-size: 13px;
 	font-weight: 500;
 	line-height: 18px;
 	margin: 0;
 	color: $woocommerce;
 	text-decoration: none;
-
-	@include breakpoint( '>782px' ) {
-		padding: $gap $gap-large $gap $gap-large;
-	}
 
 	.gridicon {
 		display: none;

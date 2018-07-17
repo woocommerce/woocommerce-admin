@@ -1,7 +1,7 @@
-ActivityPanelOutboundLink
+ActivityOutboundLink
 ============
 
-`ActivityPanelOutboundLink` creates a styled link for use in the Activity Panel.
+`ActivityOutboundLink` creates a styled link for use in the Activity Panel.
 
 ## How to use:
 
