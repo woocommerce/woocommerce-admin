@@ -98,10 +98,12 @@ class InboxPanel extends Component {
 				<ActivityHeader title={ __( 'Inbox', 'wc-admin' ) } />
 				<Section>
 					{ loading ? (
-						<ActivityCardPlaceholder className="woocommerce-inbox-activity-card" hasAction hasDate>
-							<span className="is-placeholder" />
-							<span className="is-placeholder" />
-						</ActivityCardPlaceholder>
+						<ActivityCardPlaceholder
+							className="woocommerce-inbox-activity-card"
+							hasAction
+							hasDate
+							lines={ 2 }
+						/>
 					) : (
 						notices.map( note => (
 							<ActivityCard

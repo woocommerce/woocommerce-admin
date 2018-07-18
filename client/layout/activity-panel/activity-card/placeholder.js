@@ -5,10 +5,11 @@
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
+import { range } from 'lodash';
 
 class ActivityCardPlaceholder extends Component {
 	render() {
-		const { className, children, hasAction, hasDate, hasSubtitle } = this.props;
+		const { className, hasAction, hasDate, hasSubtitle, lines } = this.props;
 		const cardClassName = classnames( 'woocommerce-activity-card is-loading', className );
 
 		return (
@@ -25,7 +26,9 @@ class ActivityCardPlaceholder extends Component {
 						</div>
 					) }
 				</div>
-				<div className="woocommerce-activity-card__body">{ children }</div>
+				<div className="woocommerce-activity-card__body">
+					{ range( lines ).map( i => <span className="is-placeholder" key={ i } /> ) }
+				</div>
 				{ hasAction && (
 					<div className="woocommerce-activity-card__actions">
 						<span className="is-placeholder" />
@@ -38,16 +41,17 @@ class ActivityCardPlaceholder extends Component {
 
 ActivityCardPlaceholder.propTypes = {
 	className: PropTypes.string,
-	children: PropTypes.node.isRequired,
 	hasAction: PropTypes.bool,
 	hasDate: PropTypes.bool,
 	hasSubtitle: PropTypes.bool,
+	lines: PropTypes.number,
 };
 
 ActivityCardPlaceholder.defaultProps = {
 	hasAction: false,
 	hasDate: false,
 	hasSubtitle: false,
+	lines: 1,
 };
 
 export default ActivityCardPlaceholder;
