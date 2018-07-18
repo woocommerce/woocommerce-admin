@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
 import { IconButton } from '@wordpress/components';
-import { partial } from 'lodash';
+import { partial, noop } from 'lodash';
 import PropTypes from 'prop-types';
 
 class WordPressNotices extends Component {
@@ -210,6 +210,11 @@ WordPressNotices.propTypes = {
 	showNotices: PropTypes.bool,
 	togglePanel: PropTypes.func,
 	onCountUpdate: PropTypes.func,
+};
+
+WordPressNotices.defaultProps = {
+	togglePanel: noop,
+	onCountUpdate: noop,
 };
 
 export default WordPressNotices;
