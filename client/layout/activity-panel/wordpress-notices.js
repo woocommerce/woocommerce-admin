@@ -20,6 +20,8 @@ class WordPressNotices extends Component {
 			screenMeta: null,
 			noticesOpen: false,
 			hasEventListeners: false,
+			isClassicPage: false,
+			isInitialized: false,
 		};
 
 		this.updateCount = this.updateCount.bind( this );
@@ -52,6 +54,8 @@ class WordPressNotices extends Component {
 		if ( ! document.body.classList.contains( 'woocommerce-embed-page' ) ) {
 			return;
 		}
+
+		this.setState( { isClassicPage: true } );
 
 		// Existing WooCommerce pages already have a designted area for notices, using wp-header-end
 		// See https://github.com/WordPress/WordPress/blob/f6a37e7d39e2534d05b9e542045174498edfe536/wp-admin/js/common.js#L737
@@ -91,10 +95,8 @@ class WordPressNotices extends Component {
 			}
 		}
 
-		count = count - 1; // Remove 1 for `wp-header-end` which is a child of wp__notice-list
-
 		this.props.onCountUpdate( count );
-		this.setState( { count, notices, noticesOpen, screenMeta, screenLinks } );
+		this.setState( { count, notices, noticesOpen, screenMeta, screenLinks, isInitialized: true } );
 
 		// Move collapsed WordPress notifications into the main wc-admin body
 		collapsedTargetArea.insertAdjacentElement( 'beforeend', notices );
@@ -178,12 +180,19 @@ class WordPressNotices extends Component {
 	}
 
 	render() {
-		const { count } = this.state;
+		const { count, isClassicPage, isInitialized } = this.state;
 		const { showNotices, togglePanel } = this.props;
+		const hasCount = count > 1;
 
-		if ( count < 1 ) {
+		// On classic WP pages, keep the button displaying
+		// otherwise there can be flash between the initial PHP page load and the JS loading
+		if ( ! hasCount && ( ( isClassicPage && isInitialized ) || ! isClassicPage ) ) {
 			return null;
 		}
+
+		const unreadLabel = hasCount && (
+			<span className="screen-reader-text">{ __( 'unread activity', 'wc-admin' ) }</span>
+		);
 
 		const className = classnames( 'woocommerce-layout__activity-panel-tab', {
 			'woocommerce-layout__activity-panel-tab-wordpress-notices': true,
@@ -199,8 +208,7 @@ class WordPressNotices extends Component {
 				role="tab"
 				tabIndex={ showNotices ? null : -1 }
 			>
-				{ __( 'Notices', 'wc-admin' ) }{' '}
-				<span className="screen-reader-text">{ __( 'unread activity', 'wc-admin' ) }</span>
+				{ __( 'Notices', 'wc-admin' ) } { unreadLabel }
 			</IconButton>
 		);
 	}
