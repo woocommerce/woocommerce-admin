@@ -95,7 +95,7 @@ class ActivityPanel extends Component {
 				name: 'inbox',
 				title: __( 'Inbox', 'wc-admin' ),
 				icon: <Gridicon icon="mail" />,
-				unread: false,
+				unread: true,
 			},
 			{
 				name: 'orders',
@@ -188,7 +188,10 @@ class ActivityPanel extends Component {
 				onClick={ partial( this.togglePanel, tab.name ) }
 				icon={ tab.icon }
 			>
-				{ tab.title }
+				{ tab.title }{' '}
+				{ tab.unread && (
+					<span className="screen-reader-text">{ __( 'unread activity', 'wc-admin' ) }</span>
+				) }
 			</IconButton>
 		);
 	}
@@ -202,6 +205,9 @@ class ActivityPanel extends Component {
 		} );
 
 		const hasUnread = hasWordPressNotices || tabs.some( tab => tab.unread );
+		const viewLabel = hasUnread
+			? __( 'View Activity Panel, you have unread activity', 'wc-admin' )
+			: __( 'View Activity Panel', 'wc-admin' );
 
 		return (
 			<div>
@@ -218,11 +224,7 @@ class ActivityPanel extends Component {
 								<ActivityPanelToggleBubble hasUnread={ hasUnread } />
 							)
 						}
-						label={
-							mobileOpen
-								? __( 'Close Activity Panel', 'wc-admin' )
-								: __( 'View Activity Panel', 'wc-admin' )
-						}
+						label={ mobileOpen ? __( 'Close Activity Panel', 'wc-admin' ) : viewLabel }
 						aria-expanded={ mobileOpen }
 						tooltip={ false }
 						className="woocommerce-layout__activity-panel-mobile-toggle"
