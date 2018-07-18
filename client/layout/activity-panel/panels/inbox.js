@@ -71,13 +71,19 @@ class InboxPanel extends Component {
 			loading: true,
 			notices: [],
 		};
+	}
 
-		setTimeout( () => {
+	componentDidMount() {
+		this.interval = setTimeout( () => {
 			this.setState( {
 				loading: false,
 				notices: demoNotices,
 			} );
 		}, 5000 );
+	}
+
+	componentWillUnmount() {
+		clearTimeout( this.interval );
 	}
 
 	render() {
