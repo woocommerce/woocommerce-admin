@@ -24,6 +24,7 @@ exports[`ActivityCardPlaceholder should render a card placeholder with action pl
   >
     <span
       className="is-placeholder"
+      key="0"
     />
   </div>
   <div
@@ -70,6 +71,7 @@ exports[`ActivityCardPlaceholder should render a card placeholder with all optio
   >
     <span
       className="is-placeholder"
+      key="0"
     />
   </div>
   <div
@@ -113,6 +115,45 @@ exports[`ActivityCardPlaceholder should render a card placeholder with date plac
   >
     <span
       className="is-placeholder"
+      key="0"
+    />
+  </div>
+</div>
+`;
+
+exports[`ActivityCardPlaceholder should render a card placeholder with multiple lines of content 1`] = `
+<div
+  aria-hidden={true}
+  className="woocommerce-activity-card is-loading"
+>
+  <span
+    className="woocommerce-activity-card__icon"
+  >
+    <span
+      className="is-placeholder"
+    />
+  </span>
+  <div
+    className="woocommerce-activity-card__header"
+  >
+    <div
+      className="woocommerce-activity-card__title is-placeholder"
+    />
+  </div>
+  <div
+    className="woocommerce-activity-card__body"
+  >
+    <span
+      className="is-placeholder"
+      key="0"
+    />
+    <span
+      className="is-placeholder"
+      key="1"
+    />
+    <span
+      className="is-placeholder"
+      key="2"
     />
   </div>
 </div>
@@ -145,6 +186,7 @@ exports[`ActivityCardPlaceholder should render a card placeholder with subtitle 
   >
     <span
       className="is-placeholder"
+      key="0"
     />
   </div>
 </div>
@@ -174,6 +216,7 @@ exports[`ActivityCardPlaceholder should render a default placeholder 1`] = `
   >
     <span
       className="is-placeholder"
+      key="0"
     />
   </div>
 </div>
