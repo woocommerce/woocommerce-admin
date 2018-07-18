@@ -39,4 +39,9 @@ describe( 'ActivityCardPlaceholder', () => {
 		const card = shallow( <ActivityCardPlaceholder lines={ 3 } /> );
 		expect( card ).toMatchSnapshot();
 	} );
+
+	test( 'should render a card placeholder with no content', () => {
+		const card = shallow( <ActivityCardPlaceholder lines={ 0 } /> );
+		expect( card ).toMatchSnapshot();
+	} );
 } );
