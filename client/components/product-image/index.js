@@ -15,6 +15,7 @@ const ProductImage = ( { product, alt, width, height, className, ...props } ) =>
 	// The first returned image from the API is the featured/product image.
 	const productImage = product && product.images && product.images[ 0 ];
 	const src = ( productImage && productImage.src ) || false;
+	const altText = alt || ( productImage && productImage.alt ) || '';
 
 	const classes = classnames( 'woocommerce-product-image', className, {
 		'is-placeholder': ! src,
@@ -26,7 +27,7 @@ const ProductImage = ( { product, alt, width, height, className, ...props } ) =>
 			src={ src || wcSettings.wcAssetUrl + 'images/placeholder.png' }
 			width={ width }
 			height={ height }
-			alt={ alt }
+			alt={ altText }
 			{ ...props }
 		/>
 	);
@@ -44,7 +45,6 @@ ProductImage.defaultProps = {
 	width: 60,
 	height: 60,
 	className: '',
-	alt: '',
 };
 
 export default ProductImage;

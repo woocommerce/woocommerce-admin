@@ -10,9 +10,36 @@ import { shallow } from 'enzyme';
 import ProductImage from '../';
 
 describe( 'ProductImage', () => {
-	test( 'should have correct alt text', () => {
-		const image = <ProductImage alt="testing" />;
-		expect( image.props.alt ).toBe( 'testing' );
+	test( 'should render the passed alt prop', () => {
+		const image = shallow( <ProductImage alt="testing" /> );
+		expect( image ).toMatchSnapshot();
+	} );
+
+	test( 'should fallback to product alt text', () => {
+		const product = {
+			name: 'Test Product',
+			images: [
+				{
+					src: 'https://i.cloudup.com/pt4DjwRB84-3000x3000.png',
+					alt: 'hello world',
+				},
+			],
+		};
+		const image = shallow( <ProductImage product={ product } /> );
+		expect( image ).toMatchSnapshot();
+	} );
+
+	test( 'should fallback to empty alt attribute if not passed via prop or product object', () => {
+		const product = {
+			name: 'Test Product',
+			images: [
+				{
+					src: 'https://i.cloudup.com/pt4DjwRB84-3000x3000.png',
+				},
+			],
+		};
+		const image = shallow( <ProductImage product={ product } /> );
+		expect( image ).toMatchSnapshot();
 	} );
 
 	test( 'should have the correct width and height', () => {
@@ -30,8 +57,8 @@ describe( 'ProductImage', () => {
 				},
 			],
 		};
-		const card = shallow( <ProductImage product={ product } /> );
-		expect( card ).toMatchSnapshot();
+		const image = shallow( <ProductImage product={ product } /> );
+		expect( image ).toMatchSnapshot();
 	} );
 
 	test( 'should render a placeholder image if no product images are found', () => {
@@ -39,7 +66,7 @@ describe( 'ProductImage', () => {
 		const product = {
 			name: 'Test Product',
 		};
-		const card = shallow( <ProductImage product={ product } /> );
-		expect( card ).toMatchSnapshot();
+		const image = shallow( <ProductImage product={ product } /> );
+		expect( image ).toMatchSnapshot();
 	} );
 } );
