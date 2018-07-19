@@ -35,6 +35,7 @@ global.wp = {
 	'dom',
 	'keycodes',
 	'deprecated',
+	'htmlEntities',
 ].forEach( packageName => {
 	Object.defineProperty( global.wp, packageName, {
 		get: () => require( 'gutenberg/packages/' + packageName ),
