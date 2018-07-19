@@ -10,6 +10,7 @@ import { Component, Fragment } from '@wordpress/element';
  */
 import ActivityHeader from '../activity-header';
 import ProductImage from 'components/product-image';
+import Rating from 'components/rating';
 
 class ReviewsPanel extends Component {
 	render() {
@@ -27,6 +28,8 @@ class ReviewsPanel extends Component {
 						],
 					} }
 				/>
+				<Rating rating={ 2.5 } totalStars={ 5 } />
+				<Rating rating={ 2.5 } totalStars={ 6 } />
 			</Fragment>
 		);
 	}
