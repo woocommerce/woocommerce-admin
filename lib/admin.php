@@ -206,6 +206,40 @@ function wc_admin_page(){
 <?php
 }
 
+function wc_admin_tab_icon( $tab ) {
+	switch ( $tab ) {
+		case 'inbox':
+			echo '<svg class="gridicon gridicons-mail" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M20 4H4c-1.105 0-2 .895-2 2v12c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2V6c0-1.105-.895-2-2-2zm0 4.236l-8 4.882-8-4.882V6h16v2.236z"></path></g></svg>';
+			break;
+		case 'orders':
+			echo '<svg class="gridicon gridicons-pages" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M16 8H8V6h8v2zm0 2H8v2h8v-2zm4-6v12l-6 6H6c-1.105 0-2-.895-2-2V4c0-1.105.895-2 2-2h12c1.105 0 2 .895 2 2zm-2 10V4H6v16h6v-4c0-1.105.895-2 2-2h4z"></path></g></svg>';
+			break;
+		case 'stock':
+			echo '<svg class="gridicon gridicons-clipboard" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M16 18H8v-2h8v2zm0-6H8v2h8v-2zm2-9h-2v2h2v15H6V5h2V3H6c-1.105 0-2 .895-2 2v15c0 1.105.895 2 2 2h12c1.105 0 2-.895 2-2V5c0-1.105-.895-2-2-2zm-4 2V4c0-1.105-.895-2-2-2s-2 .895-2 2v1c-1.105 0-2 .895-2 2v1h8V7c0-1.105-.895-2-2-2z"></path></g></svg>';
+			break;
+		case 'reviews':
+			echo '<svg class="gridicon gridicons-star" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M12 2l2.582 6.953L22 9.257l-5.822 4.602L18.18 21 12 16.89 5.82 21l2.002-7.14L2 9.256l7.418-.304"></path></g></svg>';
+			break;
+		case 'wpnotices':
+			echo '<svg class="gridicon gridicons-my-sites" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zM3.5 12c0-1.232.264-2.402.736-3.46L8.29 19.65C5.456 18.272 3.5 15.365 3.5 12zm8.5 8.5c-.834 0-1.64-.12-2.4-.345l2.55-7.41 2.613 7.157c.017.042.038.08.06.117-.884.31-1.833.48-2.823.48zm1.172-12.485c.512-.027.973-.08.973-.08.458-.055.404-.728-.054-.702 0 0-1.376.108-2.265.108-.835 0-2.24-.107-2.24-.107-.458-.026-.51.674-.053.7 0 0 .434.055.892.082l1.324 3.63-1.86 5.578-3.096-9.208c.512-.027.973-.08.973-.08.458-.055.403-.728-.055-.702 0 0-1.376.108-2.265.108-.16 0-.347-.003-.547-.01C6.418 5.025 9.03 3.5 12 3.5c2.213 0 4.228.846 5.74 2.232-.037-.002-.072-.007-.11-.007-.835 0-1.427.727-1.427 1.51 0 .7.404 1.292.835 1.993.323.566.7 1.293.7 2.344 0 .727-.28 1.572-.646 2.748l-.848 2.833-3.072-9.138zm3.1 11.332l2.597-7.506c.484-1.212.645-2.18.645-3.044 0-.313-.02-.603-.057-.874.664 1.21 1.042 2.6 1.042 4.078 0 3.136-1.7 5.874-4.227 7.347z"></path></g></svg>';
+			break;
+		case 'woo':
+			echo '<svg height="24" width="24" viewBox="0 0 24 24"><path d="M18.9 2H5.1C3.4 2 2 3.4 2 5.1v10.7C2 17.6 3.4 19 5.1 19H9l6 3-1-3h4.9c1.7 0 3.1-1.4 3.1-3.1V5.1C22 3.4 20.6 2 18.9 2zm-1.5 4.5c-.4.8-.8 2.1-1 3.9-.3 1.8-.4 3.1-.3 4.1 0 .3 0 .5-.1.7-.1.2-.3.4-.6.4s-.6-.1-.9-.4c-1-1-1.8-2.6-2.4-4.6-.7 1.4-1.2 2.4-1.6 3.1-.6 1.2-1.2 1.8-1.6 1.9-.3 0-.5-.2-.8-.7-.5-1.4-1.1-4.2-1.7-8.2 0-.3 0-.5.2-.7.1-.2.4-.3.7-.4.5 0 .9.2.9.8.3 2.3.7 4.2 1.1 5.7l2.4-4.5c.2-.4.4-.6.8-.6.5 0 .8.3.9.9.3 1.4.6 2.6 1 3.7.3-2.7.8-4.7 1.4-5.9.2-.3.4-.5.7-.5.2 0 .5.1.7.2.2.2.3.4.3.6 0 .2 0 .4-.1.5z"></path></svg>';
+			break;
+	}
+}
+
+// TODO Update this function to be dynamic and reuse logic from the actual update indicator code
+function wc_admin_tab_has_unread( $tab ) {
+	$tabs = array(
+		'inbox'     => true,
+		'orders'    => false,
+		'stock'     => false,
+		'reviews'   => false,
+	);
+	return ! empty( $tabs [ $tab ] ) ? $tabs [ $tab ] : false;
+}
+
 /**
  * Set up a div for the header embed to render into.
  * The initial contents here are meant as a place loader for when the PHP page initialy loads.
@@ -232,6 +266,34 @@ function woocommerce_embed_page_header() {
 					<span><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-admin#/' ) ); ?>">WooCommerce</a></span>
 					<?php echo $breadcrumbs; ?>
 				</h1>
+				<div>
+					<div id="woocommerce-activity-panel">
+						<button type="button" class="components-button components-icon-button woocommerce-layout__activity-panel-mobile-toggle">
+							<div class="woocommerce-layout__activity-panel-toggle-bubble">
+								<?php wc_admin_tab_icon( 'woo' ); ?>
+							</div>
+						</button>
+						<div class="woocommerce-layout__activity-panel">
+							<div class="woocommerce-layout__activity-panel-tabs">
+								<button type="button" class="components-button components-icon-button woocommerce-layout__activity-panel-tab <?php if ( wc_admin_tab_has_unread( 'inbox' ) ) {  echo 'has-unread'; } ?>">
+									<?php wc_admin_tab_icon( 'inbox' ); ?><?php _e( 'Inbox', 'wc-admin' ) ?>
+								</button>
+								<button type="button" class="components-button components-icon-button woocommerce-layout__activity-panel-tab <?php if ( wc_admin_tab_has_unread( 'orders' ) ) {  echo 'has-unread'; } ?>">
+									<?php wc_admin_tab_icon( 'orders' ); ?><?php _e( 'Orders', 'wc-admin' ) ?>
+								</button>
+								<button type="button" class="components-button components-icon-button woocommerce-layout__activity-panel-tab  <?php if ( wc_admin_tab_has_unread( 'stock' ) ) {  echo 'has-unread'; } ?>">
+									<?php wc_admin_tab_icon( 'stock' ); ?><?php _e( 'Stock', 'wc-admin' ) ?>
+								</button>
+								<button type="button" class="components-button components-icon-button woocommerce-layout__activity-panel-tab  <?php if ( wc_admin_tab_has_unread( 'reviews' ) ) {  echo 'has-unread'; } ?>">
+									<?php wc_admin_tab_icon( 'reviews' ); ?><?php _e( 'Reviews', 'wc-admin' ) ?>
+								</button>
+								<button type="button" class="components-button components-icon-button woocommerce-layout__activity-panel-tab woocommerce-layout__activity-panel-tab-wordpress-notices">
+									<?php wc_admin_tab_icon( 'wpnotices' ); ?><?php _e( 'Notices', 'wc-admin' ) ?>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="woocommerce-layout__primary is-embed-loading" id="woocommerce-layout__primary">
