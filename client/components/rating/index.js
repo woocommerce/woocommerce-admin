@@ -3,6 +3,7 @@
 /**
  * External dependencies
  */
+import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
@@ -38,8 +39,9 @@ class Rating extends Component {
 			width: Math.round( perStar * rating ) + '%',
 		};
 
+		const label = sprintf( __( '%1$s out of %2$s stars.', 'wc-admin' ), rating, totalStars );
 		return (
-			<div className={ classes }>
+			<div className={ classes } aria-label={ label }>
 				{ this.stars() }
 				<div className="woocommerce-rating__star-outline" style={ outlineStyles }>
 					{ this.stars() }
@@ -62,4 +64,6 @@ Rating.defaultProps = {
 	size: 18,
 };
 
-export default Rating;
+export { Rating };
+export { default as ProductRating } from './product';
+export { default as ReviewRating } from './review';
