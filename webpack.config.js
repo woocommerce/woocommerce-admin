@@ -40,6 +40,7 @@ const gutenbergPackages = [
 	'element',
 	'keycodes',
 	'deprecated',
+	'htmlEntities',
 ];
 
 const wordPressPackages = [
