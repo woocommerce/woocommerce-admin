@@ -1,10 +1,16 @@
 /** @format */
 
+// Set up some local color variables to make the CSS more clear
+$outer-border: $core-grey-light-700;
+$inner-border: $core-grey-light-500;
+
 .woocommerce-summary {
 	display: grid;
-	border-width: 0 1px 1px 1px;
+	border-width: 1px 0 0 1px;
 	border-style: solid;
-	border-color: $core-grey-light-700;
+	border-color: $outer-border;
+	background-color: $core-grey-light-300;
+	box-shadow: inset -1px -1px 0 $outer-border;
 
 	.woocommerce-summary__item-data {
 		display: flex;
@@ -28,23 +34,38 @@
 
 	&.has-2-items {
 		grid-template-columns: repeat(2, 1fr);
+
+		.woocommerce-summary__item:nth-of-type(2n) {
+			border-right-color: $outer-border;
+		}
 	}
 
-	&.has-3-items,
-	&.has-9-items {
+	&.has-3-items {
 		grid-template-columns: repeat(3, 1fr);
+
+		.woocommerce-summary__item:nth-of-type(3n) {
+			border-right-color: $outer-border;
+		}
 	}
 
 	&.has-4-items,
 	&.has-7-items,
 	&.has-8-items {
 		grid-template-columns: repeat(4, 1fr);
+
+		.woocommerce-summary__item:nth-of-type(4n) {
+			border-right-color: $outer-border;
+		}
 	}
 
 	&.has-5-items,
 	&.has-9-items,
 	&.has-10-items {
 		grid-template-columns: repeat(5, 1fr);
+
+		.woocommerce-summary__item:nth-of-type(5n) {
+			border-right-color: $outer-border;
+		}
 
 		.woocommerce-summary__item-value,
 		.woocommerce-summary__item-delta {
@@ -54,6 +75,10 @@
 
 	&.has-6-items {
 		grid-template-columns: repeat(6, 1fr);
+
+		.woocommerce-summary__item:nth-of-type(6n) {
+			border-right-color: $outer-border;
+		}
 
 		.woocommerce-summary__item-value,
 		.woocommerce-summary__item-delta {
@@ -71,17 +96,13 @@
 			}
 		}
 
-		&.has-6-items {
-			grid-template-columns: repeat(3, 1fr);
-
-			.woocommerce-summary__item-value,
-			.woocommerce-summary__item-delta {
-				min-width: auto;
-			}
-		}
-
+		&.has-6-items,
 		&.has-9-items {
 			grid-template-columns: repeat(3, 1fr);
+
+			.woocommerce-summary__item:nth-of-type(3n) {
+				border-right-color: $outer-border;
+			}
 
 			.woocommerce-summary__item-value,
 			.woocommerce-summary__item-delta {
@@ -91,6 +112,17 @@
 
 		&.has-10-items {
 			grid-template-columns: repeat(4, 1fr);
+
+			.woocommerce-summary__item:nth-of-type(4n) {
+				border-right-color: $outer-border;
+			}
+		}
+
+		&.has-9-items,
+		&.has-10-items {
+			.woocommerce-summary__item:nth-of-type(5n) {
+				border-right-color: $inner-border;
+			}
 		}
 	}
 }
@@ -100,8 +132,13 @@
 	padding: $spacing;
 	width: 100%;
 	background: $core-grey-light-100;
-	border-top: 1px solid $core-grey-light-700;
-	border-left: 1px solid $core-grey-light-500;
+	border-bottom: 1px solid $outer-border;
+	border-right: 1px solid $inner-border;
+
+	&:last-of-type {
+		// Make sure the last item always uses the outer-border color.
+		border-right-color: $outer-border !important;
+	}
 
 	&.is-selected {
 		background: $white;
