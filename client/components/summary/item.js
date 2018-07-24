@@ -7,9 +7,11 @@ import classnames from 'classnames';
 import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 
-const SummaryNumber = ( { delta, label, prevLabel, prevValue, selected, value } ) => {
+const SummaryNumber = ( { delta, label, prevLabel, prevValue, reverseTrend, selected, value } ) => {
 	const classes = classnames( 'woocommerce-summary__item', {
 		'is-selected': selected,
+		'is-good-trend': reverseTrend ? delta < 0 : delta > 0,
+		'is-bad-trend': reverseTrend ? delta > 0 : delta < 0,
 	} );
 
 	return (
@@ -47,11 +49,13 @@ SummaryNumber.propTypes = {
 	prevLabel: PropTypes.string,
 	prevValue: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 	selected: PropTypes.bool,
+	reverseTrend: PropTypes.bool,
 	value: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
 };
 
 SummaryNumber.defaultProps = {
 	prevLabel: __( 'Previous Period:', 'wc-admin' ),
+	reverseTrend: false,
 };
 
 export default SummaryNumber;

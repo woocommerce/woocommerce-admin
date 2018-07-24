@@ -47,6 +47,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
+						reverseTrend
 						selected
 					/>
 				</SummaryList>
@@ -65,6 +66,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
+						reverseTrend
 						selected
 					/>
 					<SummaryNumber
@@ -89,6 +91,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
+						reverseTrend
 						selected
 					/>
 					<SummaryNumber
@@ -119,6 +122,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
+						reverseTrend
 						selected
 					/>
 					<SummaryNumber
@@ -155,6 +159,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
+						reverseTrend
 						selected
 					/>
 					<SummaryNumber
@@ -197,6 +202,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
+						reverseTrend
 						selected
 					/>
 					<SummaryNumber
@@ -245,6 +251,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
+						reverseTrend
 						selected
 					/>
 					<SummaryNumber
@@ -299,6 +306,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
+						reverseTrend
 						selected
 					/>
 					<SummaryNumber
@@ -359,7 +367,7 @@ export default class extends Component {
 						value={ '$24.00' }
 						prevValue={ '$26.40' }
 						delta={ -10 }
-						selected
+						reverseTrend
 					/>
 					<SummaryNumber
 						label={ __( 'Coupons', 'wc-admin' ) }
@@ -378,6 +386,7 @@ export default class extends Component {
 						value={ '$25.00' }
 						prevValue={ '$30.00' }
 						delta={ -20 }
+						selected
 					/>
 					<SummaryNumber
 						label={ __( 'Shipping', 'wc-admin' ) }
