@@ -29,5 +29,7 @@ render: function() {
 * `label` (required): A string description of this value, ex "Revenue", or "New Customers"
 * `value` (required): A string or number value to display - a string is allowed so we can accept currency formatting.
 * `delta`: A number to represent the percentage change since the last comparison period - positive numbers will show a green up arrow, negative numbers will show a red down arrow. If omitted, no change value will display.
-* `context`: A string label for the comparison period.
-* `selected`: A boolean used to show a highlight style on this number.
+* `prevLabel`: A string description of the previous value's timeframe, ex "Previous Year:". Defaults to "Previous Period:".
+* `prevValue`: A string or number value to display - a string is allowed so we can accept currency formatting. If omitted, this section won't display.
+* `selected`: A boolean used to show a highlight style on this number. Defaults to false.
+* `reverseTrend`: A boolean used to indicate that a negative delta is "good", and should be styled like a positive (and vice-versa). Defaults to false.

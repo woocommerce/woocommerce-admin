@@ -90,12 +90,7 @@ export default class extends Component {
 						reverseTrend
 						selected
 					/>
-					<SummaryNumber
-						label={ __( 'Coupons', 'wc-admin' ) }
-						value={ '$40.00' }
-						prevValue={ '$40.00' }
-						delta={ 0 }
-					/>
+					<SummaryNumber label={ __( 'Coupons', 'wc-admin' ) } value={ '$45.00' } />
 					<SummaryNumber
 						label={ __( 'Taxes', 'wc-admin' ) }
 						value={ '$84.73' }
