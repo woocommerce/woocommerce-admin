@@ -122,9 +122,9 @@ $inner-border: $core-grey-light-500;
 	}
 
 	&.is-selected {
+		margin-top: -1px;
 		background: $white;
 		box-shadow: inset 0 4px 0 $woocommerce;
-		border-top: none;
 	}
 
 	.woocommerce-summary__item-label {
