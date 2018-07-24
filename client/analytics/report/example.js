@@ -29,6 +29,7 @@ export default class extends Component {
 						value={ '$829.40' }
 						prevValue={ '$785.90' }
 						delta={ 5.5 }
+						selected
 					/>
 				</SummaryList>
 
@@ -393,7 +394,7 @@ export default class extends Component {
 					<SummaryNumber
 						label={ __( 'Taxes', 'wc-admin' ) }
 						value={ '$84.73' }
-						prevValue={ '$92.30' }
+						prevValue={ '$304,803,048.30' }
 						delta={ -8.9 }
 					/>
 					<SummaryNumber

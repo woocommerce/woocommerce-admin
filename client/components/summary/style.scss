@@ -109,9 +109,7 @@
 		border-top: none;
 	}
 
-	.woocommerce-summary__item-label,
-	.woocommerce-summary__item-prev-label,
-	.woocommerce-summary__item-prev-value {
+	.woocommerce-summary__item-label {
 		display: block;
 	}
 
@@ -148,6 +146,10 @@
 		&.gridicons-arrow-down {
 			transform: rotate(-45deg);
 		}
+	}
+
+	.woocommerce-summary__item-prev-label {
+		margin-right: $gap-smallest;
 	}
 
 	.woocommerce-summary__item-prev-label,

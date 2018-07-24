@@ -34,6 +34,7 @@ const SummaryNumber = ( { delta, label, prevLabel, prevValue, selected, value } 
 				) }
 			</span>
 			{ prevLabel && <span className="woocommerce-summary__item-prev-label">{ prevLabel }</span> }
+			{ ' ' /* Add a real space so the line breaks here, and not in the label text. */ }
 			{ prevValue && <span className="woocommerce-summary__item-prev-value">{ prevValue }</span> }
 		</li>
 	);
@@ -50,7 +51,7 @@ SummaryNumber.propTypes = {
 };
 
 SummaryNumber.defaultProps = {
-	prevLabel: __( 'Previous Period', 'wc-admin' ),
+	prevLabel: __( 'Previous Period:', 'wc-admin' ),
 };
 
 export default SummaryNumber;
