@@ -22,7 +22,6 @@ export default class extends Component {
 					] }
 				/>
 				<h2>One Data Point</h2>
-				<p>Should be full width</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -34,7 +33,6 @@ export default class extends Component {
 				</SummaryList>
 
 				<h2>Two Data Points</h2>
-				<p>Should be 2-up</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -53,7 +51,6 @@ export default class extends Component {
 				</SummaryList>
 
 				<h2>Three Data Points</h2>
-				<p>Should be 3-up</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -78,7 +75,6 @@ export default class extends Component {
 				</SummaryList>
 
 				<h2>Four Data Points</h2>
-				<p>Should be 4-up, percentage wrapped on lt 1365</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -109,7 +105,6 @@ export default class extends Component {
 				</SummaryList>
 
 				<h2>Five Data Points</h2>
-				<p>Should be 5-up, percentage wrapped</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -146,7 +141,6 @@ export default class extends Component {
 				</SummaryList>
 
 				<h2>Six Data Points</h2>
-				<p>On lt 1365, do 3-up percentage one line, 1365+ be 6-up, percentage wrapped</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -189,7 +183,6 @@ export default class extends Component {
 				</SummaryList>
 
 				<h2>Seven Data Points</h2>
-				<p>4-up x 2</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -238,7 +231,6 @@ export default class extends Component {
 				</SummaryList>
 
 				<h2>Eight Data Points</h2>
-				<p>4-up x 2</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -293,7 +285,6 @@ export default class extends Component {
 				</SummaryList>
 
 				<h2>Nine Data Points</h2>
-				<p>3-up x 3; 5-up</p>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
@@ -353,8 +344,7 @@ export default class extends Component {
 					/>
 				</SummaryList>
 
-				<h2>Ten Data Points</h2>
-				<p>4-up x 3; 5-up</p>
+				<h2>Ten or More Data Points</h2>
 				<SummaryList>
 					<SummaryNumber
 						label={ __( 'Gross Revenue', 'wc-admin' ) }
