@@ -15,8 +15,12 @@ const SummaryList = ( { children, label } ) => {
 	if ( ! label ) {
 		label = __( 'Performance Indicators', 'wc-admin' );
 	}
-	const hasItemsClass =
-		children && children.length ? `has-${ children.length }-items` : 'has-one-item';
+	// We default to "one" because we can't have empty children. If `children` is just one item,
+	// it's not an array and .length is undefined.
+	let hasItemsClass = 'has-one-item';
+	if ( children && children.length ) {
+		hasItemsClass = children.length < 10 ? `has-${ children.length }-items` : 'has-10-items';
+	}
 	const classes = classnames( 'woocommerce-summary', hasItemsClass );
 
 	return (
