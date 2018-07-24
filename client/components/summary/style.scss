@@ -4,6 +4,15 @@
 $outer-border: $core-grey-light-700;
 $inner-border: $core-grey-light-500;
 
+// A local mixin to generate the grid template and border logic
+@mixin make-cols( $i ) {
+	grid-template-columns: repeat($i, 1fr);
+
+	.woocommerce-summary__item:nth-of-type(#{$i}n) {
+		border-right-color: $outer-border;
+	}
+}
+
 .woocommerce-summary {
 	display: grid;
 	border-width: 1px 0 0 1px;
@@ -33,39 +42,23 @@ $inner-border: $core-grey-light-500;
 	}
 
 	&.has-2-items {
-		grid-template-columns: repeat(2, 1fr);
-
-		.woocommerce-summary__item:nth-of-type(2n) {
-			border-right-color: $outer-border;
-		}
+		@include make-cols( 2 );
 	}
 
 	&.has-3-items {
-		grid-template-columns: repeat(3, 1fr);
-
-		.woocommerce-summary__item:nth-of-type(3n) {
-			border-right-color: $outer-border;
-		}
+		@include make-cols( 3 );
 	}
 
 	&.has-4-items,
 	&.has-7-items,
 	&.has-8-items {
-		grid-template-columns: repeat(4, 1fr);
-
-		.woocommerce-summary__item:nth-of-type(4n) {
-			border-right-color: $outer-border;
-		}
+		@include make-cols( 4 );
 	}
 
 	&.has-5-items,
 	&.has-9-items,
 	&.has-10-items {
-		grid-template-columns: repeat(5, 1fr);
-
-		.woocommerce-summary__item:nth-of-type(5n) {
-			border-right-color: $outer-border;
-		}
+		@include make-cols( 5 );
 
 		.woocommerce-summary__item-value,
 		.woocommerce-summary__item-delta {
@@ -74,11 +67,7 @@ $inner-border: $core-grey-light-500;
 	}
 
 	&.has-6-items {
-		grid-template-columns: repeat(6, 1fr);
-
-		.woocommerce-summary__item:nth-of-type(6n) {
-			border-right-color: $outer-border;
-		}
+		@include make-cols( 6 );
 
 		.woocommerce-summary__item-value,
 		.woocommerce-summary__item-delta {
@@ -98,11 +87,7 @@ $inner-border: $core-grey-light-500;
 
 		&.has-6-items,
 		&.has-9-items {
-			grid-template-columns: repeat(3, 1fr);
-
-			.woocommerce-summary__item:nth-of-type(3n) {
-				border-right-color: $outer-border;
-			}
+			@include make-cols( 3 );
 
 			.woocommerce-summary__item-value,
 			.woocommerce-summary__item-delta {
@@ -111,11 +96,7 @@ $inner-border: $core-grey-light-500;
 		}
 
 		&.has-10-items {
-			grid-template-columns: repeat(4, 1fr);
-
-			.woocommerce-summary__item:nth-of-type(4n) {
-				border-right-color: $outer-border;
-			}
+			@include make-cols( 4 );
 		}
 
 		&.has-9-items,
