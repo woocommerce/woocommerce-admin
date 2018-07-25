@@ -25,9 +25,9 @@ const SummaryList = ( { children, label } ) => {
 	const classes = classnames( 'woocommerce-summary', hasItemsClass );
 
 	return (
-		<ul className={ classes } aria-label={ label }>
-			{ children }
-		</ul>
+		<nav aria-label={ label }>
+			<ul className={ classes }>{ children }</ul>
+		</nav>
 	);
 };
 
