@@ -11,9 +11,9 @@ import { SummaryList, SummaryNumber } from 'components/summary';
 render: function() {
   return (
     <SummaryList>
-      <SummaryNumber value={ '$829.40' } label={ __( 'Gross Revenue', 'wc-admin' ) } delta={ 29 } />
-      <SummaryNumber value={ '$24.00' } label={ __( 'Refunds', 'wc-admin' ) } delta={ -10 } selected />
-      <SummaryNumber value={ '$49.90' } label={ __( 'Coupons', 'wc-admin' ) } />
+      <SummaryNumber value={ '$829.40' } label={ __( 'Gross Revenue', 'wc-admin' ) } delta={ 29 } href="/analytics/report" />
+      <SummaryNumber value={ '$24.00' } label={ __( 'Refunds', 'wc-admin' ) } delta={ -10 } href="/analytics/report" selected />
+      <SummaryNumber value={ '$49.90' } label={ __( 'Coupons', 'wc-admin' ) } href="/analytics/report" />
     </SummaryList>
   );
 }
