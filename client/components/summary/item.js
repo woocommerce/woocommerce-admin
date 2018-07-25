@@ -33,9 +33,13 @@ const SummaryNumber = ( { delta, label, prevLabel, prevValue, reverseTrend, sele
 					</span>
 				) }
 			</span>
-			{ prevValue && <span className="woocommerce-summary__item-prev-label">{ prevLabel }</span> }
-			{ ' ' /* Add a real space so the line breaks here, and not in the label text. */ }
-			{ prevValue && <span className="woocommerce-summary__item-prev-value">{ prevValue }</span> }
+			{ ! isUndefined( prevValue ) && (
+				<span className="woocommerce-summary__item-prev">
+					<span className="woocommerce-summary__item-prev-label">{ prevLabel }</span>
+					{ ' ' /* Add a real space so the line breaks here, and not in the label text. */ }
+					<span className="woocommerce-summary__item-prev-value">{ prevValue }</span>
+				</span>
+			) }
 		</li>
 	);
 };
