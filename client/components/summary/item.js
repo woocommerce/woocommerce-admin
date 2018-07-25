@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import Gridicon from 'gridicons';
 import { isUndefined } from 'lodash';
@@ -16,7 +16,8 @@ const SummaryNumber = ( { delta, label, prevLabel, prevValue, reverseTrend, sele
 	} );
 
 	let icon = delta > 0 ? 'arrow-up' : 'arrow-down';
-	if ( delta === 0 ) {
+	if ( ! delta ) {
+		// delta is zero or falsey
 		icon = 'arrow-right';
 	}
 
@@ -26,20 +27,20 @@ const SummaryNumber = ( { delta, label, prevLabel, prevValue, reverseTrend, sele
 
 			<span className="woocommerce-summary__item-data">
 				<span className="woocommerce-summary__item-value">{ value }</span>
-				{ ! isUndefined( delta ) && (
-					<span className="woocommerce-summary__item-delta">
-						<Gridicon className="woocommerce-summary__item-delta-icon" icon={ icon } size={ 18 } />
-						<span className="woocommerce-summary__item-delta-value">{ delta }%</span>
+				<span className="woocommerce-summary__item-delta">
+					<Gridicon className="woocommerce-summary__item-delta-icon" icon={ icon } size={ 18 } />
+					<span className="woocommerce-summary__item-delta-value">
+						{ ! isUndefined( delta )
+							? sprintf( __( '%d%%', 'wc-admin' ), delta )
+							: __( 'N/A', 'wc-admin' ) }
 					</span>
-				) }
-			</span>
-			{ ! isUndefined( prevValue ) && (
-				<span className="woocommerce-summary__item-prev">
-					<span className="woocommerce-summary__item-prev-label">{ prevLabel }</span>
-					{ ' ' /* Add a real space so the line breaks here, and not in the label text. */ }
-					<span className="woocommerce-summary__item-prev-value">{ prevValue }</span>
 				</span>
-			) }
+			</span>
+			<span className="woocommerce-summary__item-prev-label">{ prevLabel }</span>
+			{ ' ' /* Add a real space so the line breaks here, and not in the label text. */ }
+			<span className="woocommerce-summary__item-prev-value">
+				{ ! isUndefined( prevValue ) ? prevValue : __( 'N/A', 'wc-admin' ) }
+			</span>
 		</li>
 	);
 };
