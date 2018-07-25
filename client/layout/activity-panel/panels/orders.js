@@ -4,6 +4,8 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
+import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import { Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
@@ -23,7 +25,7 @@ import OrderStatus from 'components/order-status';
 import { Section } from 'layout/section';
 
 function OrdersPanel( { orders } ) {
-	const { data = [], isLoading } = orders;
+	const isLoading = false; // TODO: re-add this state.
 
 	const menu = (
 		<EllipsisMenu label="Demo Menu">
@@ -49,7 +51,7 @@ function OrdersPanel( { orders } ) {
 					<p>Loading</p>
 				) : (
 					<Fragment>
-						{ data.map( ( order, i ) => {
+						{ orders.map( ( order, i ) => {
 							// We want the billing address, but shipping can be used as a fallback.
 							const address = { ...order.shipping, ...order.billing };
 							const name = `${ address.first_name } ${ address.last_name }`;
@@ -108,7 +110,7 @@ function OrdersPanel( { orders } ) {
 }
 
 OrdersPanel.propTypes = {
-	orders: PropTypes.object.isRequired,
+	orders: PropTypes.array.isRequired,
 };
 
 OrdersPanel.defaultProps = {
@@ -118,4 +120,12 @@ OrdersPanel.defaultProps = {
 	},
 };
 
-export default OrdersPanel;
+export default compose( [
+	withSelect( select => {
+		const { getOrders } = select( 'wc-admin' );
+		const orders = getOrders();
+		return {
+			orders,
+		};
+	} ),
+] )( OrdersPanel );

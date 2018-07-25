@@ -13,7 +13,7 @@ import 'react-dates/initialize';
  */
 import './stylesheets/_index.scss';
 import { PageLayout } from './layout';
-import 'store';
+import 'wc-api-store';
 
 render(
 	<APIProvider
