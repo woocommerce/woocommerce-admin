@@ -28,6 +28,7 @@ render: function() {
 
 * `label` (required): A string description of this value, ex "Revenue", or "New Customers"
 * `value` (required): A string or number value to display - a string is allowed so we can accept currency formatting.
+* `href` (required): An internal link to the report focused on this number.
 * `delta`: A number to represent the percentage change since the last comparison period - positive numbers will show a green up arrow, negative numbers will show a red down arrow. If omitted, no change value will display.
 * `prevLabel`: A string description of the previous value's timeframe, ex "Previous Year:". Defaults to "Previous Period:".
 * `prevValue`: A string or number value to display - a string is allowed so we can accept currency formatting. If omitted, this section won't display.
