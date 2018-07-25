@@ -149,7 +149,7 @@ $inner-border: $core-grey-light-500;
 	.woocommerce-summary__item-delta {
 		margin-bottom: $gap-small;
 		@include font-size( 18 );
-		color: $woocommerce;
+		color: $core-grey-dark-500;
 	}
 
 	&.is-good-trend .woocommerce-summary__item-delta {
@@ -163,7 +163,6 @@ $inner-border: $core-grey-light-500;
 	.woocommerce-summary__item-delta-icon {
 		vertical-align: middle;
 		margin-right: 3px;
-		margin-top: -3px;
 		fill: currentColor;
 
 		&.gridicons-arrow-up {

@@ -17,7 +17,7 @@ const SummaryNumber = ( { delta, label, prevLabel, prevValue, reverseTrend, sele
 
 	let icon = delta > 0 ? 'arrow-up' : 'arrow-down';
 	if ( delta === 0 ) {
-		icon = 'minus';
+		icon = 'arrow-right';
 	}
 
 	return (
@@ -28,7 +28,7 @@ const SummaryNumber = ( { delta, label, prevLabel, prevValue, reverseTrend, sele
 				<span className="woocommerce-summary__item-value">{ value }</span>
 				{ ! isUndefined( delta ) && (
 					<span className="woocommerce-summary__item-delta">
-						<Gridicon className="woocommerce-summary__item-delta-icon" icon={ icon } />
+						<Gridicon className="woocommerce-summary__item-delta-icon" icon={ icon } size={ 18 } />
 						<span className="woocommerce-summary__item-delta-value">{ delta }%</span>
 					</span>
 				) }
