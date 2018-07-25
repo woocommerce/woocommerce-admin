@@ -19,7 +19,8 @@ const SummaryList = ( { children, label } ) => {
 	// it's not an array and .length is undefined.
 	let hasItemsClass = 'has-one-item';
 	if ( children && children.length ) {
-		hasItemsClass = children.length < 10 ? `has-${ children.length }-items` : 'has-10-items';
+		const length = children.filter( Boolean ).length;
+		hasItemsClass = length < 10 ? `has-${ length }-items` : 'has-10-items';
 	}
 	const classes = classnames( 'woocommerce-summary', hasItemsClass );
 

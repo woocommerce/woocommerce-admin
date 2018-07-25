@@ -37,7 +37,8 @@ $inner-border: $core-grey-light-500;
 		flex-wrap: none;
 	}
 
-	&.has-one-item {
+	&.has-one-item,
+	&.has-1-items {
 		grid-template-columns: 1fr;
 	}
 
