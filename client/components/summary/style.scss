@@ -180,3 +180,19 @@ $inner-border: $core-grey-light-500;
 		color: $core-grey-dark-500;
 	}
 }
+
+.woocommerce-card {
+	.woocommerce-summary {
+		background-color: $core-grey-light-100;
+		border: none;
+	}
+
+	.woocommerce-summary__item {
+		background-color: $white;
+	}
+
+	.woocommerce-summary__item.is-selected {
+		margin-top: 0;
+		box-shadow: none;
+	}
+}
