@@ -5,6 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { uniqueId } from 'lodash';
 
 /**
  * Internal dependencies
@@ -24,8 +25,12 @@ const SummaryList = ( { children, label } ) => {
 	}
 	const classes = classnames( 'woocommerce-summary', hasItemsClass );
 
+	const instanceId = uniqueId( 'woocommerce-summary-helptext-' );
 	return (
-		<nav aria-label={ label }>
+		<nav aria-label={ label } aria-describedby={ instanceId }>
+			<p id={ instanceId } className="screen-reader-text">
+				{ __( 'View the report for the selected data point.', 'wc-admin' ) }
+			</p>
 			<ul className={ classes }>{ children }</ul>
 		</nav>
 	);
