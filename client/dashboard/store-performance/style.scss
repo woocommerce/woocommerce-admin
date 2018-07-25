@@ -4,6 +4,10 @@
 	border-bottom: 0;
 	border-right: 0;
 
+	.woocommerce-card__header {
+		border-right: 1px solid $core-grey-light-700;
+	}
+
 	.woocommerce-card__body {
 		padding: 0;
 	}
