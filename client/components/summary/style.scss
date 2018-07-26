@@ -143,8 +143,6 @@ $inner-border: $core-grey-light-500;
 	&.is-selected {
 		margin-top: -1px;
 		height: calc(100% + 1px); // Hack to avoid double border
-		background: $white;
-		box-shadow: inset 0 4px 0 $woocommerce;
 
 		&:focus {
 			box-shadow: inset -2px -2px 0 $black, inset 2px 2px 0 $black, inset 0 4px 0 $woocommerce;
@@ -153,9 +151,6 @@ $inner-border: $core-grey-light-500;
 
 	.woocommerce-summary__item-label {
 		display: block;
-	}
-
-	.woocommerce-summary__item-label {
 		margin-bottom: $gap;
 		@include font-size( 11 );
 		text-transform: uppercase;
@@ -165,14 +160,28 @@ $inner-border: $core-grey-light-500;
 	.woocommerce-summary__item-value {
 		margin-bottom: $gap-smallest;
 		@include font-size( 18 );
-		font-weight: 600;
+		font-weight: 500;
 		color: $core-grey-dark-900;
 	}
 
 	.woocommerce-summary__item-delta {
 		margin-bottom: $gap-small;
 		@include font-size( 18 );
+		font-weight: 300;
 		color: $core-grey-dark-500;
+	}
+
+	&.is-selected {
+		background: $white;
+		box-shadow: inset 0 4px 0 $woocommerce;
+
+		.woocommerce-summary__item-value {
+			font-weight: 600;
+		}
+
+		.woocommerce-summary__item-delta {
+			font-weight: 400;
+		}
 	}
 
 	&.is-good-trend .woocommerce-summary__item-delta {
