@@ -13,6 +13,30 @@ $inner-border: $core-grey-light-500;
 	}
 }
 
+@mixin wrap-contents() {
+	.woocommerce-summary__item-value,
+	.woocommerce-summary__item-delta {
+		min-width: 100%;
+	}
+
+	.woocommerce-summary__item-prev-label,
+	.woocommerce-summary__item-prev-value {
+		display: block;
+	}
+}
+
+@mixin reset-wrap() {
+	.woocommerce-summary__item-value,
+	.woocommerce-summary__item-delta {
+		min-width: auto;
+	}
+
+	.woocommerce-summary__item-prev-label,
+	.woocommerce-summary__item-prev-value {
+		display: inline;
+	}
+}
+
 .woocommerce-summary {
 	display: grid;
 	border-width: 1px 0 0 1px;
@@ -60,40 +84,25 @@ $inner-border: $core-grey-light-500;
 	&.has-9-items,
 	&.has-10-items {
 		@include make-cols( 5 );
-
-		.woocommerce-summary__item-value,
-		.woocommerce-summary__item-delta {
-			min-width: 100%;
-		}
+		@include wrap-contents;
 	}
 
 	&.has-6-items {
 		@include make-cols( 6 );
-
-		.woocommerce-summary__item-value,
-		.woocommerce-summary__item-delta {
-			min-width: 100%;
-		}
+		@include wrap-contents;
 	}
 
 	@include breakpoint( '<1365px' ) {
 		&.has-4-items,
 		&.has-7-items,
 		&.has-8-items {
-			.woocommerce-summary__item-value,
-			.woocommerce-summary__item-delta {
-				min-width: 100%;
-			}
+			@include wrap-contents;
 		}
 
 		&.has-6-items,
 		&.has-9-items {
 			@include make-cols( 3 );
-
-			.woocommerce-summary__item-value,
-			.woocommerce-summary__item-delta {
-				min-width: auto;
-			}
+			@include reset-wrap;
 		}
 
 		&.has-10-items {
