@@ -8,7 +8,7 @@ $inner-border: $core-grey-light-500;
 @mixin make-cols( $i ) {
 	grid-template-columns: repeat($i, 1fr);
 
-	.woocommerce-summary__item:nth-of-type(#{$i}n) {
+	.woocommerce-summary__item-container:nth-of-type(#{$i}n) .woocommerce-summary__item {
 		border-right-color: $outer-border;
 	}
 }
@@ -102,7 +102,7 @@ $inner-border: $core-grey-light-500;
 
 		&.has-9-items,
 		&.has-10-items {
-			.woocommerce-summary__item:nth-of-type(5n) {
+			.woocommerce-summary__item-container:nth-of-type(5n) .woocommerce-summary__item {
 				border-right-color: $inner-border;
 			}
 		}
@@ -112,6 +112,11 @@ $inner-border: $core-grey-light-500;
 .woocommerce-summary__item-container {
 	margin-bottom: 0;
 	width: 100%;
+
+	&:last-of-type .woocommerce-summary__item {
+		// Make sure the last item always uses the outer-border color.
+		border-right-color: $outer-border !important;
+	}
 }
 
 .woocommerce-summary__item {
@@ -133,11 +138,6 @@ $inner-border: $core-grey-light-500;
 
 	&:focus {
 		box-shadow: inset -2px -2px 0 $black, inset 2px 2px 0 $black;
-	}
-
-	&:last-of-type {
-		// Make sure the last item always uses the outer-border color.
-		border-right-color: $outer-border !important;
 	}
 
 	&.is-selected {
