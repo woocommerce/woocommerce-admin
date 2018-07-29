@@ -5,7 +5,7 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
+import { withResources, MINUTE } from '@wordpress/data';
 import { Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
@@ -24,8 +24,8 @@ import Flag from 'components/flag';
 import OrderStatus from 'components/order-status';
 import { Section } from 'layout/section';
 
-function OrdersPanel( { orders } ) {
-	const isLoading = false; // TODO: re-add this state.
+function OrdersPanel( { orders, isPageLoading } ) {
+	const isLoading = isPageLoading;
 
 	const menu = (
 		<EllipsisMenu label="Demo Menu">
@@ -121,11 +121,18 @@ OrdersPanel.defaultProps = {
 };
 
 export default compose( [
-	withSelect( select => {
-		const { getOrders } = select( 'wc-admin' );
-		const orders = getOrders();
+	withResources( 'wc-api', selectors => {
+		const { getOrdersPage, isOrdersPageLoading } = selectors;
+
+		// TODO: Actually support pagination.
+		const pageParams = { page: 1, per_page: 100 };
+
+		const orders = getOrdersPage( { freshness: 5 * MINUTE }, pageParams );
+		const isPageLoading = isOrdersPageLoading( pageParams );
+
 		return {
 			orders,
+			isPageLoading,
 		};
 	} ),
 ] )( OrdersPanel );

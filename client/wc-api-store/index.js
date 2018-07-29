@@ -2,31 +2,22 @@
 /**
  * External dependencies
  */
-import { registerStore } from '@wordpress/data';
-import { combineReducers } from 'redux';
+import { registerApi } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { applyMiddleware, addThunks } from './middleware';
+import apiFetchMethods from './api-fetch-methods';
 import orders from './orders';
 
-const store = registerStore( 'wc-admin', {
-	reducer: combineReducers( {
-		orders: orders.reducer,
-	} ),
-
-	actions: {
-		...orders.actions,
+registerApi( 'wc-api', {
+	methods: apiFetchMethods,
+	operations: {
+		read: methods => ( resourceNames, resourceData ) => [
+			...orders.operations.read( methods )( resourceNames, resourceData ),
+		],
 	},
-
 	selectors: {
 		...orders.selectors,
 	},
-
-	resolvers: {
-		...orders.resolvers,
-	},
 } );
-
-applyMiddleware( store, [ addThunks ] );

@@ -9,6 +9,7 @@ const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const externals = {
+	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
 	'@wordpress/blocks': { this: [ 'wp', 'blocks' ] },
 	'@wordpress/components': { this: [ 'wp', 'components' ] },
 	'@wordpress/compose': { this: [ 'wp', 'compose' ] },
