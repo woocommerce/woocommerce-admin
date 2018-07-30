@@ -19,7 +19,16 @@ import TableSummary from './summary';
 
 // @todo Handle toggling columns
 
-const TableCard = ( { title, rows, summary, headers, onQueryChange, onClickDownload, query } ) => {
+const TableCard = ( {
+	headers,
+	onClickDownload,
+	onQueryChange,
+	query,
+	rows,
+	rowHeader,
+	summary,
+	title,
+} ) => {
 	return (
 		<Card
 			className="woocommerce-table"
@@ -43,9 +52,9 @@ const TableCard = ( { title, rows, summary, headers, onQueryChange, onClickDownl
 			}
 		>
 			{ /* @todo Switch a placeholder view if we don't have rows */ }
-			<Table rows={ rows } headers={ headers } caption={ __( 'Revenue Last Week' ) } />
+			<Table rows={ rows } headers={ headers } rowHeader={ rowHeader } caption={ title } />
 
-			<TableSummary data={ summary } />
+			{ summary && <TableSummary data={ summary } /> }
 
 			<Pagination
 				page={ parseInt( query.page ) || 1 }
@@ -63,11 +72,12 @@ TableCard.propTypes = {
 	onQueryChange: PropTypes.func,
 	onClickDownload: PropTypes.func,
 	query: PropTypes.object,
+	rowHeader: PropTypes.oneOfType( [ PropTypes.number, PropTypes.bool ] ),
 	rows: PropTypes.arrayOf(
 		PropTypes.arrayOf(
 			PropTypes.shape( {
 				display: PropTypes.node,
-				value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ),
+				value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number, PropTypes.bool ] ),
 			} )
 		)
 	).isRequired,
