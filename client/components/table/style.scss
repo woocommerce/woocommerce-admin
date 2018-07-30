@@ -1,8 +1,6 @@
 /** @format */
 
 .woocommerce-table {
-	overflow-x: auto;
-
 	.woocommerce-card__body {
 		padding: 0;
 		padding-bottom: $gap;
@@ -20,6 +18,7 @@
 }
 
 .woocommerce-table__table {
+	overflow-x: auto;
 	margin-bottom: $gap;
 
 	table {
