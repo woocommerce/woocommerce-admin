@@ -50,6 +50,15 @@ class Table extends Component {
 		/* eslint-enable react/no-did-mount-set-state */
 	}
 
+	isColSortable( col ) {
+		const { rows: [ first ] } = this.props;
+		if ( ! first || ! first[ col ] ) {
+			return false;
+		}
+
+		return false !== first[ col ].value;
+	}
+
 	sortBy( col ) {
 		this.setState( prevState => {
 			// Set the sort direction as inverse of current state
@@ -89,36 +98,44 @@ class Table extends Component {
 					</caption>
 					<tbody>
 						<tr>
-							{ headers.map( ( header, i ) => (
-								<th
-									role="columnheader"
-									scope="col"
-									key={ i }
-									aria-sort={ sortedBy === i ? sortDir : 'none' }
-									className={ classnames( 'woocommerce-table__header', {
-										'is-sorted': sortedBy === i,
-									} ) }
-								>
-									<IconButton
-										icon={
-											sortDir === ASC ? (
-												<Gridicon size={ 18 } icon="chevron-up" />
-											) : (
-												<Gridicon size={ 18 } icon="chevron-down" />
-											)
-										}
-										label={
-											sortDir !== ASC
-												? sprintf( __( 'Sort by %s in ascending order', 'wc-admin' ), header )
-												: sprintf( __( 'Sort by %s in descending order', 'wc-admin' ), header )
-										}
-										onClick={ () => this.sortBy( i ) }
-										isDefault
+							{ headers.map( ( header, i ) => {
+								const isSortable = this.isColSortable( i );
+								return (
+									<th
+										role="columnheader"
+										scope="col"
+										key={ i }
+										aria-sort={ sortedBy === i ? sortDir : 'none' }
+										className={ classnames( 'woocommerce-table__header', {
+											'is-sortable': isSortable,
+											'is-sorted': sortedBy === i,
+										} ) }
 									>
-										{ header }
-									</IconButton>
-								</th>
-							) ) }
+										{ isSortable ? (
+											<IconButton
+												icon={
+													sortDir === ASC ? (
+														<Gridicon size={ 18 } icon="chevron-up" />
+													) : (
+														<Gridicon size={ 18 } icon="chevron-down" />
+													)
+												}
+												label={
+													sortDir !== ASC
+														? sprintf( __( 'Sort by %s in ascending order', 'wc-admin' ), header )
+														: sprintf( __( 'Sort by %s in descending order', 'wc-admin' ), header )
+												}
+												onClick={ () => this.sortBy( i ) }
+												isDefault
+											>
+												{ header }
+											</IconButton>
+										) : (
+											header
+										) }
+									</th>
+								);
+							} ) }
 						</tr>
 						{ rows.map( ( row, i ) => (
 							<tr key={ i }>
@@ -151,18 +168,16 @@ Table.propTypes = {
 		PropTypes.arrayOf(
 			PropTypes.shape( {
 				display: PropTypes.node,
-				value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ),
+				value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number, PropTypes.bool ] ),
 			} )
 		)
 	).isRequired,
 	rowHeader: PropTypes.oneOfType( [ PropTypes.number, PropTypes.bool ] ),
-	sortable: PropTypes.bool,
 };
 
 Table.defaultProps = {
 	headers: [],
 	rowHeader: 0,
-	sortable: true,
 };
 
 export default Table;

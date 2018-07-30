@@ -41,7 +41,7 @@ th.woocommerce-table__item {
 }
 
 .woocommerce-table__header {
-	padding: 0;
+	padding: $gap-smaller $gap-large;
 	background-color: #f8f9fa;
 	border-bottom: 1px solid $core-grey-light-700;
 
@@ -59,11 +59,6 @@ th.woocommerce-table__item {
 		background: transparent;
 		box-shadow: none !important;
 
-		.gridicon {
-			visibility: hidden;
-			margin-left: $gap-smallest;
-		}
-
 		// @todo Add interactive styles
 		&:hover {
 			box-shadow: none !important;
@@ -74,11 +69,20 @@ th.woocommerce-table__item {
 		}
 	}
 
-	&.is-sorted .components-button,
-	.components-button:hover,
-	.components-button:focus {
+	&.is-sortable {
+		padding: 0;
+
 		.gridicon {
-			visibility: visible;
+			visibility: hidden;
+			margin-left: $gap-smallest;
+		}
+
+		&.is-sorted .components-button,
+		.components-button:hover,
+		.components-button:focus {
+			.gridicon {
+				visibility: visible;
+			}
 		}
 	}
 }
