@@ -91,9 +91,10 @@ TableCard.propTypes = {
 };
 
 TableCard.defaultProps = {
-	rows: [],
 	onQueryChange: noop,
 	query: {},
+	rowHeader: 0,
+	rows: [],
 };
 
 export { TableCard, Table, TableSummary };

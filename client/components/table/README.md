@@ -7,6 +7,8 @@ This is an accessible, sortable, and scrollable table for displaying tabular dat
 
 `Table` itself can be used outside of the Card + filtering context for displaying any tabular data.
 
+`TableSummary` can also be used alone, and will display the list of data passed in on a single line.
+
 ## How to use:
 
 ```jsx
@@ -31,12 +33,12 @@ render: function() {
 ### `TableCard` props
 
 * `headers`: An array of column headers
-* `onQueryChange`: A function which returns a callback function to update the query string for a given `param`
-* `onClickDownload`: A callback function which handles then "download" button press.
-* `query`: An object of the query parameters passed to the page, ex `{ page: 2, per_page: 5 }`;
-* `rows` (required): An array of arrays of renderable elements, strings or numbers are best for sorting
+* `onQueryChange`: A function which returns a callback function to update the query string for a given `param`.
+* `onClickDownload`: A callback function which handles then "download" button press. Optional, if not used, the button won't appear.
+* `query`: An object of the query parameters passed to the page, ex `{ page: 2, per_page: 5 }`.
+* `rows` (required): An array of arrays of display/value object pairs. `display` is used for rendering, strings or elements are best here. `value` is used for sorting, and should be a string or number. A column with `false` value will not be sortable.
 * `rowHeader`: Which column should be the row header, defaults to the first item (`0`) (but could be set to `1`, if the first col is checkboxes, for example). Set to false to disable row headers.
-* `summary`: An array of objects with `label` & `value` properties, which display in a line under the table.
+* `summary`: An array of objects with `label` & `value` properties, which display in a line under the table. Optional, can be left off to show no summary.
 * `title` (required): The title used in the card header, also used as the caption for the content in this table
 
 
