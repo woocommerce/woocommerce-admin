@@ -63,6 +63,7 @@ class RevenueReport extends Component {
 
 	getHeadersContent() {
 		return [
+			__( 'Select', 'wc-admin' ),
 			__( 'Date', 'wc-admin' ),
 			__( 'Orders', 'wc-admin' ),
 			__( 'Gross Revenue', 'wc-admin' ),
@@ -94,6 +95,10 @@ class RevenueReport extends Component {
 				</a>
 			);
 			return [
+				{
+					display: <input type="checkbox" />,
+					value: false,
+				},
 				{
 					display: formatDate( 'm/d/Y', row.date_start ),
 					value: row.date_start,
@@ -202,6 +207,7 @@ class RevenueReport extends Component {
 				<TableCard
 					title={ __( 'Revenue Last Week', 'wc-admin' ) }
 					rows={ rows }
+					rowHeader={ 1 }
 					headers={ headers }
 					onClickDownload={ noop }
 					onQueryChange={ this.onQueryChange }
