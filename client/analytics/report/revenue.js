@@ -135,7 +135,7 @@ class RevenueReport extends Component {
 		} );
 	}
 
-	getSummaryContent( data = [] ) {
+	getSummaryContent( data = {} ) {
 		return [
 			{
 				label: __( 'gross revenue', 'wc-admin' ),
@@ -166,7 +166,7 @@ class RevenueReport extends Component {
 
 	render() {
 		const { path, query } = this.props;
-		const { totals = [], intervals = {} } = this.state.stats;
+		const { totals = {}, intervals = [] } = this.state.stats;
 		const summary = this.getSummaryContent( totals ) || [];
 		const rows = this.getRowsContent( intervals ) || [];
 		const headers = this.getHeadersContent();
