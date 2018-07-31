@@ -5,6 +5,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import Gridicon from 'gridicons';
+import { IconButton } from '@wordpress/components';
 import { isUndefined } from 'lodash';
 import PropTypes from 'prop-types';
 
@@ -17,12 +18,16 @@ const SummaryNumber = ( {
 	delta,
 	href,
 	label,
+	onToggle,
 	prevLabel,
 	prevValue,
 	reverseTrend,
 	selected,
 	value,
 } ) => {
+	const liClasses = classnames( 'woocommerce-summary__item-container', {
+		'is-dropdown-button': onToggle,
+	} );
 	const classes = classnames( 'woocommerce-summary__item', {
 		'is-selected': selected,
 		'is-good-trend': reverseTrend ? delta < 0 : delta > 0,
@@ -40,9 +45,11 @@ const SummaryNumber = ( {
 		screenReaderLabel = sprintf( __( 'No change from %s', 'wc-admin' ), prevLabel );
 	}
 
+	const Container = onToggle ? 'div' : Link;
+
 	return (
-		<li className="woocommerce-summary__item-container">
-			<Link className={ classes } href={ href } role="menuitem">
+		<li className={ liClasses }>
+			<Container className={ classes } href={ href } role="menuitem">
 				<span className="woocommerce-summary__item-label">{ label }</span>
 
 				<span className="woocommerce-summary__item-data">
@@ -65,7 +72,16 @@ const SummaryNumber = ( {
 				<span className="woocommerce-summary__item-prev-value">
 					{ ! isUndefined( prevValue ) ? prevValue : __( 'N/A', 'wc-admin' ) }
 				</span>
-			</Link>
+
+				{ onToggle ? (
+					<IconButton
+						className="woocommerce-summary__toggle-button"
+						onClick={ onToggle }
+						icon={ <Gridicon icon="chevron-down" size={ 36 } /> }
+						label={ __( 'Open data point list', 'wc-admin' ) }
+					/>
+				) : null }
+			</Container>
 		</li>
 	);
 };
@@ -74,6 +90,7 @@ SummaryNumber.propTypes = {
 	delta: PropTypes.number,
 	href: PropTypes.string.isRequired,
 	label: PropTypes.string.isRequired,
+	onToggle: PropTypes.func,
 	prevLabel: PropTypes.string,
 	prevValue: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 	reverseTrend: PropTypes.bool,

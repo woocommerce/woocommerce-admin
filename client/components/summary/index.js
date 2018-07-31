@@ -4,7 +4,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { NavigableMenu } from '@wordpress/components';
+import { Children, cloneElement } from '@wordpress/element';
+import { Dropdown, NavigableMenu } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
 
@@ -18,17 +19,15 @@ const SummaryList = ( { children, label } ) => {
 	if ( ! label ) {
 		label = __( 'Performance Indicators', 'wc-admin' );
 	}
-	// We default to "one" because we can't have empty children. If `children` is just one item,
-	// it's not an array and .length is undefined.
-	let hasItemsClass = 'has-one-item';
-	if ( children && children.length ) {
-		const length = children.filter( Boolean ).length;
-		hasItemsClass = length < 10 ? `has-${ length }-items` : 'has-10-items';
-	}
-	const classes = classnames( 'woocommerce-summary', hasItemsClass );
+	// We default to "one" because we can't have empty children.
+	const itemCount = Children.count( children ) || 1;
+	const hasItemsClass = itemCount < 10 ? `has-${ itemCount }-items` : 'has-10-items';
+	const classes = classnames( 'woocommerce-summary', {
+		[ hasItemsClass ]: ! isMobileViewport(),
+	} );
 
 	const instanceId = uniqueId( 'woocommerce-summary-helptext-' );
-	return (
+	const menu = (
 		<NavigableMenu
 			aria-label={ label }
 			aria-describedby={ instanceId }
@@ -44,6 +43,27 @@ const SummaryList = ( { children, label } ) => {
 			</p>
 			<ul className={ classes }>{ children }</ul>
 		</NavigableMenu>
+	);
+
+	// On large screens, or if there are not multiple SummaryNumbers, we'll display the plain list.
+	if ( ! isMobileViewport() || itemCount < 2 ) {
+		return menu;
+	}
+
+	const items = Children.toArray( children );
+	const selected = items.find( item => !! item.props.selected );
+	if ( ! selected ) {
+		return menu;
+	}
+
+	return (
+		<Dropdown
+			className="woocommerce-summary"
+			position="bottom"
+			expandOnMobile
+			renderToggle={ ( { onToggle } ) => cloneElement( selected, { onToggle } ) }
+			renderContent={ () => menu }
+		/>
 	);
 };
 
