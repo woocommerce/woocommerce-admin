@@ -42,7 +42,7 @@ const SummaryNumber = ( {
 
 	return (
 		<li className="woocommerce-summary__item-container">
-			<Link className={ classes } href={ href }>
+			<Link className={ classes } href={ href } role="menuitem">
 				<span className="woocommerce-summary__item-label">{ label }</span>
 
 				<span className="woocommerce-summary__item-data">

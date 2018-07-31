@@ -4,12 +4,14 @@
  */
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
+import { NavigableMenu } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
 
 /**
  * Internal dependencies
  */
+import { isMobileViewport } from 'lib/ui';
 import './style.scss';
 
 const SummaryList = ( { children, label } ) => {
@@ -27,12 +29,21 @@ const SummaryList = ( { children, label } ) => {
 
 	const instanceId = uniqueId( 'woocommerce-summary-helptext-' );
 	return (
-		<nav aria-label={ label } aria-describedby={ instanceId }>
+		<NavigableMenu
+			aria-label={ label }
+			aria-describedby={ instanceId }
+			orientation={ isMobileViewport() ? 'vertical' : 'horizontal' }
+			stopNavigationEvents
+		>
 			<p id={ instanceId } className="screen-reader-text">
-				{ __( 'View the report for the selected data point.', 'wc-admin' ) }
+				{ __(
+					'List of data points available for filtering. Use arrow keys to cycle through ' +
+						'the list. Click a data point for a detailed report.',
+					'wc-admin'
+				) }
 			</p>
 			<ul className={ classes }>{ children }</ul>
-		</nav>
+		</NavigableMenu>
 	);
 };
 
