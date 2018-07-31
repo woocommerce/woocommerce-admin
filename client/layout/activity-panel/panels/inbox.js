@@ -4,8 +4,9 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import { Component, Fragment } from '@wordpress/element';
+import { Component, Fragment, compose } from '@wordpress/element';
 import Gridicon from 'gridicons';
+import { withSelect, withDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -15,6 +16,7 @@ import ActivityHeader from '../activity-header';
 import { getAdminLink } from 'lib/nav-utils';
 import { Section } from 'layout/section';
 
+const demoDateCreated = new Date().toISOString();
 const demoNotices = [
 	{
 		id: 1,
@@ -27,7 +29,7 @@ const demoNotices = [
 		icon: 'customize',
 		status: 'unread',
 		source: 'woocommerce-core',
-		date_created: '2018-07-12T16:23:08Z',
+		date_created: demoDateCreated,
 	},
 	{
 		id: 2,
@@ -70,14 +72,26 @@ class InboxPanel extends Component {
 		this.state = {
 			loading: true,
 			notices: [],
+			lastRead: null,
 		};
 	}
 
 	componentDidMount() {
+		// @TODO Temporary
+		// When we start pulling reviews from the actual API, we'll want to show a loading indicator
+		// while both results load (using isRequestingCurrentUser and a isRequestinReviews), and also wait to
+		// mark the last opened date until after review results load.
 		this.interval = setTimeout( () => {
+			// We store lastRead time in state, so we can keep indiciators around, even after we update our meta value.
+			const { inboxLastOpened } = this.props;
 			this.setState( {
 				loading: false,
 				notices: demoNotices,
+				lastRead: inboxLastOpened,
+			} );
+			const date = new Date();
+			this.props.updateWoocommerceUserMeta( {
+				inbox_last_opened: date.toISOString(),
 			} );
 		}, 5000 );
 	}
@@ -87,7 +101,7 @@ class InboxPanel extends Component {
 	}
 
 	render() {
-		const { loading = true, notices = [] } = this.state;
+		const { loading = true, notices = [], lastRead } = this.state;
 		const getButtonsFromActions = actions => {
 			if ( ! actions ) {
 				return [];
@@ -98,7 +112,6 @@ class InboxPanel extends Component {
 				</Button>
 			) );
 		};
-
 		return (
 			<Fragment>
 				<ActivityHeader title={ __( 'Inbox', 'wc-admin' ) } />
@@ -118,7 +131,7 @@ class InboxPanel extends Component {
 								title={ note.title }
 								date={ note.date_created }
 								icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
-								unread={ 'unread' === note.status }
+								unread={ note.date_created > lastRead }
 								actions={ getButtonsFromActions( note.actions ) }
 							>
 								{ note.content }
@@ -131,4 +144,18 @@ class InboxPanel extends Component {
 	}
 }
 
-export default InboxPanel;
+export default compose(
+	withSelect( select => {
+		const { getCurrentUser } = select( 'wc-admin' );
+		const user = getCurrentUser();
+		const wcMeta = user.woocommerce_meta || {};
+		return {
+			inboxLastOpened: wcMeta.inbox_last_opened || null,
+		};
+	} ),
+	withDispatch( dispatch => {
+		return {
+			updateWoocommerceUserMeta: dispatch( 'wc-admin' ).updateWoocommerceUserMeta,
+		};
+	} )
+)( InboxPanel );
