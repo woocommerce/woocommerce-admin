@@ -12,6 +12,7 @@ import { getSettings } from '@wordpress/date';
  */
 import { presetValues } from 'components/date-picker/preset-periods';
 import { compareValues } from 'components/date-picker/compare-periods';
+import { QueryException } from 'components/query-boundary-error/exceptions';
 
 /**
  * DateValue Object
@@ -217,6 +218,42 @@ function getDateValue( period, compare, after, before ) {
 	}
 }
 
+export const isInvalidDateQuery = ( { period, compare, after, before } ) => {
+	if ( ! period && ! compare && ! after && ! before ) {
+		return false;
+	}
+
+	const validPeriod = find( presetValues, item => item.value === period );
+	const validCompare = find( compareValues, item => item.value === compare );
+	const resetQuery = {};
+	const params = [ 'period', 'compare', 'before', 'after' ];
+
+	if ( period && ! validPeriod ) {
+		return { msg: 'invalid period parameter', resetQuery, params };
+	}
+	if ( compare && ! validCompare ) {
+		return { msg: 'invalid compare parameter', resetQuery, params };
+	}
+	if ( validPeriod && validPeriod.value === 'custom' ) {
+		if ( ! before || ! after ) {
+			return { msg: 'invalid date range for custom period', resetQuery, params };
+		}
+		const validAfter = validateDateInputForRange( 'after', after, before, after, isoDateFormat );
+		const validBefore = validateDateInputForRange( 'before', before, before, after, isoDateFormat );
+		if ( validAfter.error ) {
+			return { msg: validAfter.error, resetQuery, params };
+		}
+		if ( validBefore.error ) {
+			return { msg: validBefore.error, resetQuery, params };
+		}
+		return false;
+	}
+	if ( before || after ) {
+		return { msg: null, resetQuery: { period, compare }, params };
+	}
+	return false;
+};
+
 /**
  * Add default date-related parameters to a query object
  *
@@ -227,6 +264,10 @@ function getDateValue( period, compare, after, before ) {
  * @return {DateParams} - date parameters derived from query parameters with added defaults
  */
 export const getDateParamsFromQuery = ( { period, compare, after, before } ) => {
+	const invalidQuery = isInvalidDateQuery( { period, compare, after, before } );
+	if ( invalidQuery ) {
+		throw new QueryException( invalidQuery );
+	}
 	return {
 		period: period || 'today',
 		compare: compare || 'previous_period',

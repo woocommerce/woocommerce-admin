@@ -18,7 +18,10 @@ import {
 	getCurrentDates,
 	validateDateInputForRange,
 	dateValidationMessages,
+	isInvalidDateQuery,
 } from 'lib/date';
+
+const dateFormat = 'YYYY-MM-DD';
 
 describe( 'toMoment', () => {
 	it( 'should pass through a valid Moment object as an argument', () => {
@@ -595,8 +598,6 @@ describe( 'getCurrentDates', () => {
 } );
 
 describe( 'validateDateInputForRange', () => {
-	const dateFormat = 'YYYY-MM-DD';
-
 	it( 'should return a valid date in Moment object', () => {
 		const validated = validateDateInputForRange( 'after', '2018-04-15', null, null, dateFormat );
 		expect( moment.isMoment( validated.date ) ).toBe( true );
@@ -665,5 +666,87 @@ describe( 'validateDateInputForRange', () => {
 		const validated = validateDateInputForRange( 'before', value, null, start, dateFormat );
 		expect( validated.date ).toBe( null );
 		expect( validated.error ).toBe( dateValidationMessages.endBeforeStart );
+	} );
+} );
+
+describe( 'isInvalidDateQuery', () => {
+	it( 'should return false for no query params', () => {
+		const invalidQuery = isInvalidDateQuery( {} );
+		expect( invalidQuery ).toBe( false );
+	} );
+
+	it( 'should return false for just a valid period besides "custom"', () => {
+		const invalidQuery = isInvalidDateQuery( { period: 'week' } );
+		expect( invalidQuery ).toBe( false );
+	} );
+
+	it( 'should return invalid for an invalid period', () => {
+		const invalidQuery = isInvalidDateQuery( { period: 'tacos' } );
+		expect( invalidQuery ).toMatchObject( {
+			msg: 'invalid period parameter',
+			resetQuery: {},
+		} );
+	} );
+
+	it( 'should return false for just a valid compare', () => {
+		const invalidQuery = isInvalidDateQuery( { compare: 'previous_period' } );
+		expect( invalidQuery ).toBe( false );
+	} );
+
+	it( 'should return invalid for an invalid compare', () => {
+		const invalidQuery = isInvalidDateQuery( { compare: 'enchiladas' } );
+		expect( invalidQuery ).toMatchObject( {
+			msg: 'invalid compare parameter',
+			resetQuery: {},
+		} );
+	} );
+
+	it( 'should return invalid for a custom period with no before or after', () => {
+		const invalidQuery = isInvalidDateQuery( { period: 'custom' } );
+		expect( invalidQuery ).toMatchObject( {
+			msg: 'invalid date range for custom period',
+			resetQuery: {},
+		} );
+	} );
+
+	it( 'should return invalid for a custom period with a inverted before and after', () => {
+		const invalidQuery = isInvalidDateQuery( {
+			period: 'custom',
+			after: '2018-04-15',
+			before: '2017-04-15',
+		} );
+		expect( invalidQuery ).toMatchObject( {
+			msg: dateValidationMessages.startAfterEnd,
+			resetQuery: {},
+		} );
+	} );
+
+	it( 'should return invalid for a custom period with a date after today', () => {
+		const invalidQuery = isInvalidDateQuery( {
+			period: 'custom',
+			after: '2018-04-15',
+			before: moment()
+				.add( 1, 'months' )
+				.format( dateFormat ),
+		} );
+		expect( invalidQuery ).toMatchObject( {
+			msg: dateValidationMessages.future,
+			resetQuery: {},
+		} );
+	} );
+
+	it( 'should return invalid for a non-custom period with a before or after', () => {
+		const invalidQuery = isInvalidDateQuery( {
+			period: 'week',
+			compare: 'previous_period',
+			after: '2018-04-15',
+		} );
+		expect( invalidQuery ).toMatchObject( {
+			msg: null,
+			resetQuery: {
+				period: 'week',
+				compare: 'previous_period',
+			},
+		} );
 	} );
 } );
