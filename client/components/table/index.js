@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
  */
 import './style.scss';
 import Card from 'components/card';
-import { EllipsisMenu, MenuItem, MenuTitle } from 'components/ellipsis-menu';
+import { IconMenu, MenuItem, MenuTitle } from 'components/icon-menu';
 import Pagination from 'components/pagination';
 import Table from './table';
 import TableSummary from './summary';
@@ -76,7 +76,7 @@ class TableCard extends Component {
 					)
 				}
 				menu={
-					<EllipsisMenu label={ __( 'Choose which values to display', 'wc-admin' ) }>
+					<IconMenu icon="ellipsis" label={ __( 'Choose which values to display', 'wc-admin' ) }>
 						<MenuTitle>{ __( 'Columns:', 'wc-admin' ) }</MenuTitle>
 						{ allHeaders.map( ( { label, required }, i ) => {
 							if ( required ) {
@@ -92,7 +92,7 @@ class TableCard extends Component {
 								</MenuItem>
 							);
 						} ) }
-					</EllipsisMenu>
+					</IconMenu>
 				}
 			>
 				{ /* @todo Switch a placeholder view if we don't have rows */ }

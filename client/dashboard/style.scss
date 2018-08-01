@@ -19,3 +19,14 @@
 .woocommerce-dashboard__widget-item {
 	flex: 1;
 }
+
+.woocommerce-dashboard__screen-settings {
+	padding: $gap 0 $gap 0;
+	flex-direction: row;
+	justify-content: flex-end;
+	display: flex;
+
+	.woocommerce-icon-menu {
+		max-width: 200px;
+	}
+}

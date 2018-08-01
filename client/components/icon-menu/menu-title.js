@@ -5,7 +5,7 @@
 import PropTypes from 'prop-types';
 
 const MenuTitle = ( { children } ) => {
-	return <div className="woocommerce-ellipsis-menu__title">{ children }</div>;
+	return <div className="woocommerce-icon-menu__title">{ children }</div>;
 };
 
 MenuTitle.propTypes = {

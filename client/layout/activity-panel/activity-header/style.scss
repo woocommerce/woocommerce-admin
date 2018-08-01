@@ -20,8 +20,8 @@
 		padding: 0;
 	}
 
-	.woocommerce-ellipsis-menu__toggle.components-button:not(:disabled):not([aria-disabled='true']):focus,
-	.woocommerce-ellipsis-menu__toggle.components-button:not(:disabled):not([aria-disabled='true']):hover {
+	.woocommerce-icon-menu__toggle.components-button:not(:disabled):not([aria-disabled='true']):focus,
+	.woocommerce-icon-menu__toggle.components-button:not(:disabled):not([aria-disabled='true']):hover {
 		box-shadow: none;
 		border-radius: 10px;
 		background: $core-grey-light-700;

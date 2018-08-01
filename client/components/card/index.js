@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import './style.scss';
-import { EllipsisMenu } from '../ellipsis-menu';
+import { IconMenu } from '../icon-menu';
 import { H, Section } from 'layout/section';
 
 class Card extends Component {
@@ -37,7 +37,7 @@ Card.propTypes = {
 	action: PropTypes.node,
 	className: PropTypes.string,
 	menu: PropTypes.shape( {
-		type: PropTypes.oneOf( [ EllipsisMenu ] ),
+		type: PropTypes.oneOf( [ IconMenu ] ),
 	} ),
 	title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ).isRequired,
 };

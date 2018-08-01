@@ -14,7 +14,7 @@ import { noop } from 'lodash';
 import { ActivityCard } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
-import { EllipsisMenu, MenuTitle, MenuItem } from 'components/ellipsis-menu';
+import { IconMenu, MenuTitle, MenuItem } from 'components/icon-menu';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getOrderRefundTotal } from 'lib/order-values';
 import Gravatar from 'components/gravatar';
@@ -26,10 +26,10 @@ function OrdersPanel( { orders } ) {
 	const { data = [], isLoading } = orders;
 
 	const menu = (
-		<EllipsisMenu label="Demo Menu">
+		<IconMenu icon="ellipsis" label="Demo Menu">
 			<MenuTitle>Test</MenuTitle>
 			<MenuItem onInvoke={ noop }>Test</MenuItem>
-		</EllipsisMenu>
+		</IconMenu>
 	);
 
 	const gravatarWithFlag = ( order, address ) => {
