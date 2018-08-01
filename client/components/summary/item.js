@@ -46,10 +46,15 @@ const SummaryNumber = ( {
 	}
 
 	const Container = onToggle ? 'div' : Link;
+	const containerProps = { className: classes };
+	if ( ! onToggle ) {
+		containerProps.href = href;
+		containerProps.role = 'menuitem';
+	}
 
 	return (
 		<li className={ liClasses }>
-			<Container className={ classes } href={ href } role="menuitem">
+			<Container { ...containerProps }>
 				<span className="woocommerce-summary__item-label">{ label }</span>
 
 				<span className="woocommerce-summary__item-data">
