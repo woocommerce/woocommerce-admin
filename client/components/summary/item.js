@@ -3,9 +3,9 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
 import classnames from 'classnames';
 import Gridicon from 'gridicons';
-import { IconButton } from '@wordpress/components';
 import { isUndefined } from 'lodash';
 import PropTypes from 'prop-types';
 
@@ -45,11 +45,16 @@ const SummaryNumber = ( {
 		screenReaderLabel = sprintf( __( 'No change from %s', 'wc-admin' ), prevLabel );
 	}
 
-	const Container = onToggle ? 'div' : Link;
-	const containerProps = { className: classes };
+	const Container = onToggle ? Button : Link;
+	const containerProps = {
+		className: classes,
+		'aria-current': selected ? 'page' : null,
+	};
 	if ( ! onToggle ) {
 		containerProps.href = href;
 		containerProps.role = 'menuitem';
+	} else {
+		containerProps.onClick = onToggle;
 	}
 
 	return (
@@ -79,12 +84,7 @@ const SummaryNumber = ( {
 				</span>
 
 				{ onToggle ? (
-					<IconButton
-						className="woocommerce-summary__toggle-button"
-						onClick={ onToggle }
-						icon={ <Gridicon icon="chevron-down" size={ 36 } /> }
-						label={ __( 'Open data point list', 'wc-admin' ) }
-					/>
+					<Gridicon className="woocommerce-summary__toggle" icon="chevron-down" size={ 36 } />
 				) : null }
 			</Container>
 		</li>

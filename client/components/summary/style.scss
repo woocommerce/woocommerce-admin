@@ -138,8 +138,11 @@ $inner-border: $core-grey-light-500;
 
 	&.is-dropdown-button {
 		padding: 0;
-		text-align: left;
 		list-style: none;
+
+		.components-button {
+			text-align: left;
+		}
 
 		.woocommerce-summary__item {
 			width: 100%;
@@ -242,7 +245,7 @@ $inner-border: $core-grey-light-500;
 		color: $core-grey-dark-500;
 	}
 
-	.woocommerce-summary__toggle-button {
+	.woocommerce-summary__toggle {
 		position: absolute;
 		top: 50px;
 		right: $gap;
