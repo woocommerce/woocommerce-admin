@@ -125,6 +125,19 @@ $inner-border: $core-grey-light-500;
 			}
 		}
 	}
+
+	@include breakpoint( '<782px' ) {
+		.woocommerce-summary__item-container:only-child {
+			margin-left: -16px;
+			margin-right: -16px;
+			width: auto;
+
+			& .woocommerce-summary__item {
+				// Remove the border when the button is edge-to-edge
+				border-right: none;
+			}
+		}
+	}
 }
 
 .woocommerce-summary__item-container {
@@ -179,9 +192,10 @@ $inner-border: $core-grey-light-500;
 	}
 
 	.is-dropdown-button & {
+		position: relative;
 		width: 100%;
 		padding-right: 2 * $gap + 24px;
-		position: relative;
+		border-right: none;
 	}
 
 	.woocommerce-summary__item-label {
