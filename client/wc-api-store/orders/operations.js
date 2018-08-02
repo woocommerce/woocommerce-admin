@@ -36,8 +36,24 @@ function readPages( methods, resourceNames ) {
 	return filteredNames.map( name => readPage( methods, name ) );
 }
 
+function updateOrder( methods, resourceName, data ) {
+	const id = getResourceIdentifier( resourceName );
+
+	return methods.update( [ 'orders', id ], { data } ).then( responseData => {
+		return { [ resourceName ]: { data: responseData } };
+	} );
+}
+
+function updateOrders( methods, resourceNames, resourceData ) {
+	const filteredNames = resourceNames.filter( name => isResourcePrefix( name, 'order' ) );
+	return filteredNames.map( name => updateOrder( methods, name, resourceData[ name ] ) );
+}
+
 export default {
 	read: methods => resourceNames => {
 		return [ ...readPages( methods, resourceNames ) ];
+	},
+	update: methods => ( resourceNames, resourceData ) => {
+		return [ ...updateOrders( methods, resourceNames, resourceData ) ];
 	},
 };

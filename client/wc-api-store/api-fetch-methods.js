@@ -25,4 +25,17 @@ export default {
 			throw error;
 		}
 	},
+	update: () => async ( path, params ) => {
+		try {
+			const urlPath = path.join( '/' );
+			const { data } = params;
+			const url = `${ URL_PREFIX }/${ urlPath }`;
+			const responseData = await apiFetch( { path: url, method: 'POST', data } );
+			// TODO: Update general API health metrics.
+			return responseData;
+		} catch ( error ) {
+			// TODO: Update general API errror state.
+			throw error;
+		}
+	},
 };
