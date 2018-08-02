@@ -143,12 +143,6 @@ $inner-border: $core-grey-light-500;
 		.components-button {
 			text-align: left;
 		}
-
-		.woocommerce-summary__item {
-			width: 100%;
-			position: relative;
-			@include wrap-contents;
-		}
 	}
 }
 
@@ -170,7 +164,8 @@ $inner-border: $core-grey-light-500;
 	}
 
 	&:focus {
-		box-shadow: inset -2px -2px 0 $black, inset 2px 2px 0 $black;
+		// !important to override button styles
+		box-shadow: inset -2px -2px 0 $black, inset 2px 2px 0 $black !important;
 	}
 
 	&.is-selected {
@@ -178,8 +173,15 @@ $inner-border: $core-grey-light-500;
 		height: calc(100% + 1px); // Hack to avoid double border
 
 		&:focus {
-			box-shadow: inset -2px -2px 0 $black, inset 2px 2px 0 $black, inset 0 4px 0 $woocommerce;
+			// !important to override button styles
+			box-shadow: inset -2px -2px 0 $black, inset 2px 2px 0 $black, inset 0 4px 0 $woocommerce !important;
 		}
+	}
+
+	.is-dropdown-button & {
+		width: 100%;
+		padding-right: 2 * $gap + 24px;
+		position: relative;
 	}
 
 	.woocommerce-summary__item-label {

@@ -84,7 +84,7 @@ const SummaryNumber = ( {
 				</span>
 
 				{ onToggle ? (
-					<Gridicon className="woocommerce-summary__toggle" icon="chevron-down" size={ 36 } />
+					<Gridicon className="woocommerce-summary__toggle" icon="chevron-down" size={ 24 } />
 				) : null }
 			</Container>
 		</li>
