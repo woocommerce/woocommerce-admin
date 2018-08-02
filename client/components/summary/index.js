@@ -60,6 +60,7 @@ const SummaryList = ( { children, label } ) => {
 		<Dropdown
 			className="woocommerce-summary"
 			position="bottom"
+			headerTitle={ label }
 			expandOnMobile
 			renderToggle={ ( { onToggle } ) => cloneElement( selected, { onToggle } ) }
 			renderContent={ () => menu }
