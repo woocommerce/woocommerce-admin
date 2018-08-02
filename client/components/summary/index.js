@@ -12,18 +12,20 @@ import { uniqueId } from 'lodash';
 /**
  * Internal dependencies
  */
-import { isMobileViewport } from 'lib/ui';
+import { isMobileViewport, isTabletViewport } from 'lib/ui';
 import './style.scss';
 
 const SummaryList = ( { children, label } ) => {
 	if ( ! label ) {
 		label = __( 'Performance Indicators', 'wc-admin' );
 	}
+	const isDropdownBreakpoint = isTabletViewport() || isMobileViewport();
+
 	// We default to "one" because we can't have empty children.
 	const itemCount = Children.count( children ) || 1;
 	const hasItemsClass = itemCount < 10 ? `has-${ itemCount }-items` : 'has-10-items';
 	const classes = classnames( 'woocommerce-summary', {
-		[ hasItemsClass ]: ! isMobileViewport(),
+		[ hasItemsClass ]: ! isDropdownBreakpoint,
 	} );
 
 	const instanceId = uniqueId( 'woocommerce-summary-helptext-' );
@@ -31,7 +33,7 @@ const SummaryList = ( { children, label } ) => {
 		<NavigableMenu
 			aria-label={ label }
 			aria-describedby={ instanceId }
-			orientation={ isMobileViewport() ? 'vertical' : 'horizontal' }
+			orientation={ isDropdownBreakpoint ? 'vertical' : 'horizontal' }
 			stopNavigationEvents
 		>
 			<p id={ instanceId } className="screen-reader-text">
@@ -46,7 +48,7 @@ const SummaryList = ( { children, label } ) => {
 	);
 
 	// On large screens, or if there are not multiple SummaryNumbers, we'll display the plain list.
-	if ( ! isMobileViewport() || itemCount < 2 ) {
+	if ( ! isDropdownBreakpoint || itemCount < 2 ) {
 		return menu;
 	}
 

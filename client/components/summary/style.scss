@@ -195,7 +195,10 @@ $inner-border: $core-grey-light-500;
 		position: relative;
 		width: 100%;
 		padding-right: 2 * $gap + 24px;
-		border-right: none;
+
+		@include breakpoint( '<782px' ) {
+			border-right: none;
+		}
 	}
 
 	.woocommerce-summary__item-label {
