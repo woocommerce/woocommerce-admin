@@ -100,6 +100,7 @@ class Table extends Component {
 						<tr>
 							{ headers.map( ( header, i ) => {
 								const isSortable = this.isColSortable( i );
+								const { label } = header;
 								return (
 									<th
 										role="columnheader"
@@ -122,16 +123,16 @@ class Table extends Component {
 												}
 												label={
 													sortDir !== ASC
-														? sprintf( __( 'Sort by %s in ascending order', 'wc-admin' ), header )
-														: sprintf( __( 'Sort by %s in descending order', 'wc-admin' ), header )
+														? sprintf( __( 'Sort by %s in ascending order', 'wc-admin' ), label )
+														: sprintf( __( 'Sort by %s in descending order', 'wc-admin' ), label )
 												}
 												onClick={ () => this.sortBy( i ) }
 												isDefault
 											>
-												{ header }
+												{ label }
 											</IconButton>
 										) : (
-											header
+											label
 										) }
 									</th>
 								);
@@ -163,7 +164,15 @@ class Table extends Component {
 Table.propTypes = {
 	caption: PropTypes.string.isRequired,
 	className: PropTypes.string,
-	headers: PropTypes.arrayOf( PropTypes.node ),
+	headers: PropTypes.arrayOf(
+		PropTypes.shape( {
+			defaultSort: PropTypes.bool,
+			isSortable: PropTypes.bool,
+			key: PropTypes.string,
+			label: PropTypes.string,
+			required: PropTypes.bool,
+		} )
+	),
 	rows: PropTypes.arrayOf(
 		PropTypes.arrayOf(
 			PropTypes.shape( {

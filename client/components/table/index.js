@@ -103,7 +103,15 @@ class TableCard extends Component {
 }
 
 TableCard.propTypes = {
-	headers: PropTypes.arrayOf( PropTypes.node ),
+	headers: PropTypes.arrayOf(
+		PropTypes.shape( {
+			defaultSort: PropTypes.bool,
+			isSortable: PropTypes.bool,
+			key: PropTypes.string,
+			label: PropTypes.string,
+			required: PropTypes.bool,
+		} )
+	),
 	onQueryChange: PropTypes.func,
 	onClickDownload: PropTypes.func,
 	query: PropTypes.object,
