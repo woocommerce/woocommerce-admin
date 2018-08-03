@@ -34,7 +34,7 @@ class TableCard extends Component {
 			if ( query.order_by ) {
 				const sortBy = findIndex( headers, { key: query.order_by } );
 				if ( sortBy === selected ) {
-					const defaultSort = find( headers, { defaultSort: true } );
+					const defaultSort = find( headers, { defaultSort: true } ) || first( headers ) || {};
 					onQueryChange( 'sort' )( defaultSort.key, 'desc' );
 				}
 			}
