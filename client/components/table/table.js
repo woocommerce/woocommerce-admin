@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Component, createRef } from '@wordpress/element';
+import { Component, createRef, Fragment } from '@wordpress/element';
 import classnames from 'classnames';
 import { IconButton } from '@wordpress/components';
 import { find, get, isEqual, noop, uniqueId } from 'lodash';
@@ -24,6 +24,7 @@ class Table extends Component {
 		};
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
+		this.headersID = uniqueId( 'header-' );
 		this.captionID = uniqueId( 'caption-' );
 	}
 
@@ -106,20 +107,25 @@ class Table extends Component {
 								return (
 									<th role="columnheader" scope="col" key={ i } { ...thProps }>
 										{ isSortable ? (
-											<IconButton
-												icon={
-													sortDir === ASC ? (
-														<Gridicon size={ 18 } icon="chevron-up" />
-													) : (
-														<Gridicon size={ 18 } icon="chevron-down" />
-													)
-												}
-												label={ iconLabel }
-												onClick={ this.sortBy( key ) }
-												isDefault
-											>
-												{ label }
-											</IconButton>
+											<Fragment>
+												<IconButton
+													icon={
+														sortDir === ASC ? (
+															<Gridicon size={ 18 } icon="chevron-up" />
+														) : (
+															<Gridicon size={ 18 } icon="chevron-down" />
+														)
+													}
+													aria-describedby={ `${ this.headersID }-${ i }` }
+													onClick={ this.sortBy( key ) }
+													isDefault
+												>
+													{ label }
+												</IconButton>
+												<span className="screen-reader-text" id={ `${ this.headersID }-${ i }` }>
+													{ iconLabel }
+												</span>
+											</Fragment>
 										) : (
 											label
 										) }
