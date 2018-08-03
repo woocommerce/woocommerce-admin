@@ -90,7 +90,7 @@ class TableCard extends Component {
 					rowHeader={ rowHeader }
 					caption={ title }
 					query={ query }
-					onSort={ onQueryChange( 'order_by' ) }
+					onSort={ onQueryChange( 'sort' ) }
 				/>
 
 				{ summary && <TableSummary data={ summary } /> }

@@ -54,11 +54,17 @@ class RevenueReport extends Component {
 
 	/**
 	 * This function returns an event handler for the given `param`
+	 * @todo Move handling of this to a library?
 	 * @param {string} param The parameter in the querystring which should be updated (ex `page`, `per_page`)
 	 * @return {function} A callback which will update `param` to the passed value when called.
 	 */
 	onQueryChange( param ) {
-		return value => updateQueryString( { [ param ]: value } );
+		switch ( param ) {
+			case 'sort':
+				return ( key, dir ) => updateQueryString( { order_by: key, order: dir } );
+			default:
+				return value => updateQueryString( { [ param ]: value } );
+		}
 	}
 
 	getHeadersContent() {

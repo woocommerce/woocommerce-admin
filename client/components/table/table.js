@@ -11,7 +11,7 @@ import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 
 const ASC = 'asc';
-// const DESC = 'desc';
+const DESC = 'desc';
 
 const getDisplay = cell => cell.display || null;
 
@@ -48,7 +48,17 @@ class Table extends Component {
 	}
 
 	sortBy( key ) {
-		return () => this.props.onSort( key );
+		const { headers, query } = this.props;
+		return () => {
+			const currentKey =
+				query.order_by || get( find( headers, { defaultSort: true } ), 'key', false );
+			const currentDir = query.order || DESC;
+			let dir = DESC;
+			if ( key === currentKey ) {
+				dir = DESC === currentDir ? ASC : DESC;
+			}
+			this.props.onSort( key, dir );
+		};
 	}
 
 	render() {
@@ -56,7 +66,7 @@ class Table extends Component {
 		const { rows, tabIndex } = this.state;
 		const classes = classnames( 'woocommerce-table__table', classNames );
 		const sortedBy = query.order_by || get( find( headers, { defaultSort: true } ), 'key', false );
-		const sortDir = ASC; // @todo bring back asc/desc
+		const sortDir = query.order || DESC;
 
 		return (
 			<div
@@ -82,12 +92,17 @@ class Table extends Component {
 									} ),
 								};
 								if ( isSortable ) {
-									thProps[ 'aria-sort' ] = sortedBy === i ? sortDir : 'none';
+									thProps[ 'aria-sort' ] = 'none';
+									if ( sortedBy === key ) {
+										thProps[ 'aria-sort' ] = sortDir === ASC ? 'ascending' : 'descending';
+									}
 								}
+								// We only sort by ascending if the col is already sorted descending
 								const iconLabel =
-									sortDir !== ASC
+									sortedBy === key && sortDir !== ASC
 										? sprintf( __( 'Sort by %s in ascending order', 'wc-admin' ), label )
 										: sprintf( __( 'Sort by %s in descending order', 'wc-admin' ), label );
+
 								return (
 									<th role="columnheader" scope="col" key={ i } { ...thProps }>
 										{ isSortable ? (
@@ -99,7 +114,7 @@ class Table extends Component {
 														<Gridicon size={ 18 } icon="chevron-down" />
 													)
 												}
-												aria-label={ iconLabel }
+												label={ iconLabel }
 												onClick={ this.sortBy( key ) }
 												isDefault
 											>
