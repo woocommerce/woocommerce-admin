@@ -8,13 +8,11 @@ import classnames from 'classnames';
 import { IconButton } from '@wordpress/components';
 import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
-import { isEqual, uniqueId } from 'lodash';
+import { isEqual, uniqueId, noop } from 'lodash';
 
 const ASC = 'ascending';
-const DESC = 'descending';
 
 const getDisplay = cell => cell.display || null;
-const getValue = cell => cell.value || 0;
 
 class Table extends Component {
 	constructor( props ) {
@@ -22,8 +20,6 @@ class Table extends Component {
 		this.state = {
 			tabIndex: null,
 			rows: props.rows || [],
-			sortedBy: null,
-			sortDir: 'none',
 		};
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
@@ -50,32 +46,8 @@ class Table extends Component {
 		/* eslint-enable react/no-did-mount-set-state */
 	}
 
-	isColSortable( col ) {
-		const { rows: [ first ] } = this.props;
-		if ( ! first || ! first[ col ] ) {
-			return false;
-		}
-
-		return false !== first[ col ].value;
-	}
-
-	sortBy( col ) {
-		this.setState( prevState => {
-			// Set the sort direction as inverse of current state
-			const sortDir = prevState.sortDir === ASC ? DESC : ASC;
-			return {
-				rows: prevState.rows
-					.slice( 0 )
-					.sort(
-						( a, b ) =>
-							sortDir === ASC
-								? getValue( a[ col ] ) > getValue( b[ col ] )
-								: getValue( a[ col ] ) < getValue( b[ col ] )
-					),
-				sortedBy: col,
-				sortDir,
-			};
-		} );
+	sortBy( key ) {
+		return () => this.props.onSort( key );
 	}
 
 	render() {
@@ -99,19 +71,22 @@ class Table extends Component {
 					<tbody>
 						<tr>
 							{ headers.map( ( header, i ) => {
-								const isSortable = this.isColSortable( i );
-								const { label } = header;
+								const { isSortable, key, label } = header;
+								const thProps = {
+									className: classnames( 'woocommerce-table__header', {
+										'is-sortable': isSortable,
+										'is-sorted': sortedBy === i,
+									} ),
+								};
+								if ( isSortable ) {
+									thProps[ 'aria-sort' ] = sortedBy === i ? sortDir : 'none';
+								}
+								const iconLabel =
+									sortDir !== ASC
+										? sprintf( __( 'Sort by %s in ascending order', 'wc-admin' ), label )
+										: sprintf( __( 'Sort by %s in descending order', 'wc-admin' ), label );
 								return (
-									<th
-										role="columnheader"
-										scope="col"
-										key={ i }
-										aria-sort={ sortedBy === i ? sortDir : 'none' }
-										className={ classnames( 'woocommerce-table__header', {
-											'is-sortable': isSortable,
-											'is-sorted': sortedBy === i,
-										} ) }
-									>
+									<th role="columnheader" scope="col" key={ i } { ...thProps }>
 										{ isSortable ? (
 											<IconButton
 												icon={
@@ -121,12 +96,8 @@ class Table extends Component {
 														<Gridicon size={ 18 } icon="chevron-down" />
 													)
 												}
-												label={
-													sortDir !== ASC
-														? sprintf( __( 'Sort by %s in ascending order', 'wc-admin' ), label )
-														: sprintf( __( 'Sort by %s in descending order', 'wc-admin' ), label )
-												}
-												onClick={ () => this.sortBy( i ) }
+												aria-label={ iconLabel }
+												onClick={ this.sortBy( key ) }
 												isDefault
 											>
 												{ label }
@@ -173,6 +144,7 @@ Table.propTypes = {
 			required: PropTypes.bool,
 		} )
 	),
+	onSort: PropTypes.func,
 	rows: PropTypes.arrayOf(
 		PropTypes.arrayOf(
 			PropTypes.shape( {
@@ -186,6 +158,7 @@ Table.propTypes = {
 
 Table.defaultProps = {
 	headers: [],
+	onSort: noop,
 	rowHeader: 0,
 };
 
