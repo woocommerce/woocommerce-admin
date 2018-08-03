@@ -6,11 +6,12 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { IconButton } from '@wordpress/components';
+import { find, get, isEqual, noop, uniqueId } from 'lodash';
 import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
-import { isEqual, uniqueId, noop } from 'lodash';
 
-const ASC = 'ascending';
+const ASC = 'asc';
+// const DESC = 'desc';
 
 const getDisplay = cell => cell.display || null;
 
@@ -51,9 +52,11 @@ class Table extends Component {
 	}
 
 	render() {
-		const { caption, classNames, headers, rowHeader } = this.props;
-		const { rows, sortedBy, sortDir, tabIndex } = this.state;
+		const { caption, classNames, headers, query, rowHeader } = this.props;
+		const { rows, tabIndex } = this.state;
 		const classes = classnames( 'woocommerce-table__table', classNames );
+		const sortedBy = query.order_by || get( find( headers, { defaultSort: true } ), 'key', false );
+		const sortDir = ASC; // @todo bring back asc/desc
 
 		return (
 			<div
@@ -75,7 +78,7 @@ class Table extends Component {
 								const thProps = {
 									className: classnames( 'woocommerce-table__header', {
 										'is-sortable': isSortable,
-										'is-sorted': sortedBy === i,
+										'is-sorted': sortedBy === key,
 									} ),
 								};
 								if ( isSortable ) {
@@ -145,6 +148,7 @@ Table.propTypes = {
 		} )
 	),
 	onSort: PropTypes.func,
+	query: PropTypes.object,
 	rows: PropTypes.arrayOf(
 		PropTypes.arrayOf(
 			PropTypes.shape( {
@@ -159,6 +163,7 @@ Table.propTypes = {
 Table.defaultProps = {
 	headers: [],
 	onSort: noop,
+	query: {},
 	rowHeader: 0,
 };
 

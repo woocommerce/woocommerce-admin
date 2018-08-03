@@ -84,7 +84,7 @@ class TableCard extends Component {
 					headers={ headers }
 					rowHeader={ rowHeader }
 					caption={ title }
-					sort={ query.order_by }
+					query={ query }
 					onSort={ onQueryChange( 'order_by' ) }
 				/>
 
