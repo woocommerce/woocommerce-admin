@@ -1,0 +1,27 @@
+/** @format */
+
+// Import gutenberg SCSS so that we can apply our theme colors.
+@import './gutenberg-components.scss';
+
+// By using CSS variables, we can switch the spacing rhythm using a single media query.
+:root {
+	--main-gap: 24px;
+}
+@media (max-width: 782px) {
+	:root {
+		--main-gap: 16px;
+	}
+}
+
+// Set up animation
+@keyframes loading-fade {
+	0% {
+		opacity: 0.7;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.7;
+	}
+}

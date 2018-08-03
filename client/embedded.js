@@ -11,6 +11,7 @@ import { Provider as SlotFillProvider } from 'react-slot-fill';
  * Internal dependencies
  */
 import './stylesheets/_wpadmin-reset.scss';
+import './stylesheets/_global.scss';
 import { EmbedLayout } from './layout';
 
 render(
