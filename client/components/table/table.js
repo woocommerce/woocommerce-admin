@@ -110,7 +110,7 @@ class Table extends Component {
 											<Fragment>
 												<IconButton
 													icon={
-														sortedBy === key && sortDir !== ASC ? (
+														sortedBy === key && sortDir === ASC ? (
 															<Gridicon size={ 18 } icon="chevron-up" />
 														) : (
 															<Gridicon size={ 18 } icon="chevron-down" />
