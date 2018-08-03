@@ -1,8 +1,5 @@
 /** @format */
 
-// Import gutenberg SCSS so that we can apply our theme colors.
-@import './gutenberg-components.scss';
-
 // By using CSS variables, we can switch the spacing rhythm using a single media query.
 :root {
 	--main-gap: 24px;
