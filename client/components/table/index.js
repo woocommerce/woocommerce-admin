@@ -66,15 +66,20 @@ class TableCard extends Component {
 				menu={
 					<EllipsisMenu label={ __( 'Choose which values to display', 'wc-admin' ) }>
 						<MenuTitle>{ __( 'Columns:', 'wc-admin' ) }</MenuTitle>
-						{ allHeaders.map( ( label, i ) => (
-							<MenuItem key={ i } onInvoke={ this.toggleCols( i ) }>
-								<ToggleControl
-									label={ label }
-									checked={ !! showCols[ i ] }
-									onChange={ this.toggleCols( i ) }
-								/>
-							</MenuItem>
-						) ) }
+						{ allHeaders.map( ( { label, required }, i ) => {
+							if ( required ) {
+								return null;
+							}
+							return (
+								<MenuItem key={ i } onInvoke={ this.toggleCols( i ) }>
+									<ToggleControl
+										label={ label }
+										checked={ !! showCols[ i ] }
+										onChange={ this.toggleCols( i ) }
+									/>
+								</MenuItem>
+							);
+						} ) }
 					</EllipsisMenu>
 				}
 			>
