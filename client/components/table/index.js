@@ -5,7 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { IconButton, ToggleControl } from '@wordpress/components';
-import { fill, isArray, first, noop } from 'lodash';
+import { fill, find, findIndex, first, isArray, noop } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -27,10 +27,22 @@ class TableCard extends Component {
 		this.toggleCols = this.toggleCols.bind( this );
 	}
 
-	toggleCols( col ) {
+	toggleCols( selected ) {
+		const { headers, query, onQueryChange } = this.props;
 		return () => {
+			// Handle hiding a sorted column
+			if ( query.order_by ) {
+				const sortBy = findIndex( headers, { key: query.order_by } );
+				if ( sortBy === selected ) {
+					const defaultSort = find( headers, { defaultSort: true } );
+					onQueryChange( 'sort' )( defaultSort.key, 'desc' );
+				}
+			}
+
 			this.setState( prevState => ( {
-				showCols: prevState.showCols.map( ( toggled, i ) => ( col === i ? ! toggled : toggled ) ),
+				showCols: prevState.showCols.map(
+					( toggled, i ) => ( selected === i ? ! toggled : toggled )
+				),
 			} ) );
 		};
 	}
