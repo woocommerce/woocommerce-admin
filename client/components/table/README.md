@@ -51,7 +51,7 @@ render: function() {
 * `headers`: An array of column headers, as objects with the following properties:
   * `headers[].defaultSort`: Boolean, true if this column is the default for sorting. Only one column should have this set.
   * `headers[].isSortable`: Boolean, true if this column is sortable.
-  * `headers[].key`: The API parameter name for this column, passed to `order_by` when sorting via API.
+  * `headers[].key`: The API parameter name for this column, passed to `orderby` when sorting via API.
   * `headers[].label`: The display label for this column.
   * `headers[].required`: Boolean, true if this column should always display in the table (not shown in toggle-able list).
 * `onSort`: A function called when sortable table headers are clicked, gets the `header.key` as argument.

@@ -31,8 +31,8 @@ class TableCard extends Component {
 		const { headers, query, onQueryChange } = this.props;
 		return () => {
 			// Handle hiding a sorted column
-			if ( query.order_by ) {
-				const sortBy = findIndex( headers, { key: query.order_by } );
+			if ( query.orderby ) {
+				const sortBy = findIndex( headers, { key: query.orderby } );
 				if ( sortBy === selected ) {
 					const defaultSort = find( headers, { defaultSort: true } ) || first( headers ) || {};
 					onQueryChange( 'sort' )( defaultSort.key, 'desc' );

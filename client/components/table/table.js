@@ -52,7 +52,7 @@ class Table extends Component {
 		const { headers, query } = this.props;
 		return () => {
 			const currentKey =
-				query.order_by || get( find( headers, { defaultSort: true } ), 'key', false );
+				query.orderby || get( find( headers, { defaultSort: true } ), 'key', false );
 			const currentDir = query.order || DESC;
 			let dir = DESC;
 			if ( key === currentKey ) {
@@ -66,7 +66,7 @@ class Table extends Component {
 		const { caption, classNames, headers, query, rowHeader } = this.props;
 		const { rows, tabIndex } = this.state;
 		const classes = classnames( 'woocommerce-table__table', classNames );
-		const sortedBy = query.order_by || get( find( headers, { defaultSort: true } ), 'key', false );
+		const sortedBy = query.orderby || get( find( headers, { defaultSort: true } ), 'key', false );
 		const sortDir = query.order || DESC;
 
 		return (

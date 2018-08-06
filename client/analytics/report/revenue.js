@@ -61,7 +61,7 @@ class RevenueReport extends Component {
 	onQueryChange( param ) {
 		switch ( param ) {
 			case 'sort':
-				return ( key, dir ) => updateQueryString( { order_by: key, order: dir } );
+				return ( key, dir ) => updateQueryString( { orderby: key, order: dir } );
 			default:
 				return value => updateQueryString( { [ param ]: value } );
 		}
