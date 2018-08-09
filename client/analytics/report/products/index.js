@@ -12,7 +12,6 @@ import Header from 'layout/header';
 import DatePicker from 'components/date-picker';
 import FilterPicker from 'components/filter-picker';
 import { filters, filterPaths } from './constants';
-import QueryBoundaryError from 'components/query-boundary-error';
 import './style.scss';
 
 export default class extends Component {
@@ -27,17 +26,15 @@ export default class extends Component {
 						__( 'Products', 'wc-admin' ),
 					] }
 				/>
-				<QueryBoundaryError query={ query } path={ path } key={ queryKey }>
-					<div className="woocommerce-products__pickers">
-						<DatePicker query={ query } path={ path } key={ queryKey } />
-						<FilterPicker
-							query={ query }
-							path={ path }
-							filters={ filters }
-							filterPaths={ filterPaths }
-						/>
-					</div>
-				</QueryBoundaryError>
+				<div className="woocommerce-products__pickers">
+					<DatePicker query={ query } path={ path } key={ queryKey } />
+					<FilterPicker
+						query={ query }
+						path={ path }
+						filters={ filters }
+						filterPaths={ filterPaths }
+					/>
+				</div>
 			</Fragment>
 		);
 	}

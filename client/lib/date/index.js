@@ -227,16 +227,17 @@ export const isInvalidDateQuery = ( { period, compare, after, before } ) => {
 	const validCompare = find( compareValues, item => item.value === compare );
 	const resetQuery = {};
 	const params = [ 'period', 'compare', 'before', 'after' ];
+	const invalidParamMessage = __( 'Invalid query parameter', 'wc-admin' );
 
 	if ( period && ! validPeriod ) {
-		return { msg: 'invalid period parameter', resetQuery, params };
+		return { msg: invalidParamMessage, resetQuery, params };
 	}
 	if ( compare && ! validCompare ) {
-		return { msg: 'invalid compare parameter', resetQuery, params };
+		return { msg: invalidParamMessage, resetQuery, params };
 	}
 	if ( validPeriod && validPeriod.value === 'custom' ) {
 		if ( ! before || ! after ) {
-			return { msg: 'invalid date range for custom period', resetQuery, params };
+			return { msg: __( 'Invalid date range for custom period', 'wc-admin' ), resetQuery, params };
 		}
 		const validAfter = validateDateInputForRange( 'after', after, before, after, isoDateFormat );
 		const validBefore = validateDateInputForRange( 'before', before, before, after, isoDateFormat );
