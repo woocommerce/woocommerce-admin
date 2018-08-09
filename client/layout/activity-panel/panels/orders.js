@@ -5,7 +5,7 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { withResources, MINUTE } from '@wordpress/data';
+import { withResources, plugins } from '@wordpress/data';
 import { Component, Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
@@ -23,6 +23,8 @@ import Gravatar from 'components/gravatar';
 import Flag from 'components/flag';
 import OrderStatus from 'components/order-status';
 import { Section } from 'layout/section';
+
+const { MINUTE } = plugins.freshData;
 
 class OrdersPanel extends Component {
 	constructor() {
@@ -73,7 +75,7 @@ class OrdersPanel extends Component {
 			<Fragment>
 				<ActivityHeader title={ __( 'Orders', 'wc-admin' ) } menu={ menu } />
 				<Section>
-					{ isPageLoading ? (
+					{ isPageLoading && ! orders ? (
 						<p>Loading</p>
 					) : (
 						<Fragment>
@@ -138,10 +140,8 @@ OrdersPanel.propTypes = {
 };
 
 OrdersPanel.defaultProps = {
-	orders: {
-		data: [],
-		isLoading: false,
-	},
+	orders: [],
+	isPageLoading: false,
 };
 
 export default compose( [
@@ -167,9 +167,12 @@ export default compose( [
 
 				// Set optimistic interim "edit" state.
 				setEdits( { [ id ]: { status: 'completed' } } );
+
 				mutations
 					.fulfillOrder( id )
-					.then( () => {} )
+					.then( () => {
+						// TODO: Display confirmation notification?
+					} )
 					.catch( error => {
 						// Clear optimistic interim state.
 						setEdits( { [ id ]: undefined } );

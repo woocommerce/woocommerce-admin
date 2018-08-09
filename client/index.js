@@ -6,6 +6,7 @@ import { APIProvider } from '@wordpress/components';
 import { pick } from 'lodash';
 import { render } from '@wordpress/element';
 import { Provider as SlotFillProvider } from 'react-slot-fill';
+import { plugins, use, RegistryProvider } from '@wordpress/data';
 import 'react-dates/initialize';
 
 /**
@@ -13,16 +14,22 @@ import 'react-dates/initialize';
  */
 import './stylesheets/_index.scss';
 import { PageLayout } from './layout';
-import 'wc-api-store';
+import wcApiSpec from 'wc-api-spec';
+
+const registry = use( plugins.freshData );
+
+registry.registerStore( 'wc-api', { apiSpec: wcApiSpec } );
 
 render(
-	<APIProvider
-		{ ...wpApiSettings }
-		{ ...pick( wp.api, [ 'postTypeRestBaseMapping', 'taxonomyRestBaseMapping' ] ) }
-	>
-		<SlotFillProvider>
-			<PageLayout />
-		</SlotFillProvider>
-	</APIProvider>,
+	<RegistryProvider value={ registry }>
+		<APIProvider
+			{ ...wpApiSettings }
+			{ ...pick( wp.api, [ 'postTypeRestBaseMapping', 'taxonomyRestBaseMapping' ] ) }
+		>
+			<SlotFillProvider>
+				<PageLayout />
+			</SlotFillProvider>
+		</APIProvider>
+	</RegistryProvider>,
 	document.getElementById( 'root' )
 );

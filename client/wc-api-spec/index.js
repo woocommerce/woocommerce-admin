@@ -1,16 +1,11 @@
 /** @format */
 /**
- * External dependencies
- */
-import { registerApi } from '@wordpress/data';
-
-/**
  * Internal dependencies
  */
 import apiFetchMethods from './api-fetch-methods';
 import orders from './orders';
 
-registerApi( 'wc-api', {
+export default {
 	methods: apiFetchMethods,
 	operations: {
 		read: methods => ( resourceNames, resourceData ) => [
@@ -26,4 +21,4 @@ registerApi( 'wc-api', {
 	selectors: {
 		...orders.selectors,
 	},
-} );
+};
