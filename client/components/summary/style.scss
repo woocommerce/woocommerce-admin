@@ -319,6 +319,12 @@ $inner-border: $core-grey-light-500;
 		top: 44px;
 		right: $gap;
 	}
+
+	.is-dropdown-expanded & {
+		.woocommerce-summary__toggle {
+			transform: rotate( 180deg );
+		}
+	}
 }
 
 .woocommerce-card {
