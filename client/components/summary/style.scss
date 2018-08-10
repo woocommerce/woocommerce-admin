@@ -322,7 +322,24 @@ $inner-border: $core-grey-light-500;
 
 	.is-dropdown-expanded & {
 		.woocommerce-summary__toggle {
-			transform: rotate( 180deg );
+			transform: rotate(180deg);
+		}
+	}
+
+	.components-popover__content & {
+		.woocommerce-summary__item-label {
+			margin-bottom: 0;
+		}
+
+		.woocommerce-summary__item-value,
+		.woocommerce-summary__item-delta {
+			@include font-size( 13 );
+			margin-bottom: 0;
+		}
+
+		.woocommerce-summary__item-prev-label,
+		.woocommerce-summary__item-prev-value {
+			@include font-size( 11 );
 		}
 	}
 }
