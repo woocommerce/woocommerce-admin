@@ -25,6 +25,11 @@
 		border-collapse: collapse;
 		width: 100%;
 	}
+
+	tr:hover,
+	tr:focus-within {
+		background-color: $core-grey-light-200;
+	}
 }
 
 .woocommerce-table__header,
