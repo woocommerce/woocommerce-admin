@@ -80,9 +80,6 @@ class Header extends Component {
 		return (
 			<div className={ className }>
 				<h1 className="woocommerce-layout__header-breadcrumbs">
-					<span>
-						<Link href="/">WooCommerce</Link>
-					</span>
 					{ _sections.map( ( section, i ) => {
 						const sectionPiece = isArray( section ) ? (
 							<Link href={ section[ 0 ] } type={ isEmbedded ? 'wp-admin' : 'wc-admin' }>

@@ -1,22 +1,17 @@
 /** @format */
 
 .woocommerce-layout__header {
-	background: $white;
+	background: transparent;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: row;
 	box-sizing: border-box;
-	border-bottom: 1px solid $white;
 	padding: 0px;
-	height: 80px;
+	height: 47px;
 	position: fixed;
 	width: 100%;
-	top: 32px;
+	top: 0px;
 	z-index: 99999; /* component-popover is 99990 */
-
-	&.is-scrolled {
-		box-shadow: 0 8px 8px 0 rgba(85, 93, 102, 0.3);
-	}
 
 	@include breakpoint( '<782px' ) {
 		top: 46px;
@@ -33,28 +28,17 @@
 		font-weight: normal;
 		padding: 0 0 0 $gutter-large;
 		flex: 1 auto;
-		height: 50px;
-		line-height: 50px;
-		background: $white;
-
-		@include breakpoint( '782px-1100px' ) {
-			height: 60px;
-			line-height: 60px;
-		}
-
-		@include breakpoint( '>1100px' ) {
-			height: 80px;
-			line-height: 80px;
-		}
+		line-height: 47px;
+		color: $white;
 
 		span + span::before {
 			content: ' / ';
-			color: $gray-text;
+			color: $white;
 			margin: 0 2px 0 2px;
 		}
 
 		a {
-			color: $woocommerce;
+			color: $white;
 		}
 	}
 }

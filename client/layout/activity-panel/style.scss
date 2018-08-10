@@ -6,7 +6,6 @@
 	align-items: center;
 	position: fixed;
 	right: 0;
-	height: 80px;
 
 	@include breakpoint( '<782px' ) {
 		position: relative;
@@ -16,13 +15,11 @@
 		top: -3px;
 		width: 100vw;
 		display: none;
-		height: 60px;
 		flex: 1 100%;
 	}
 
 	@include breakpoint( '782px-1100px' ) {
 		max-width: 280px;
-		height: 60px;
 	}
 
 	@include breakpoint( '>1100px' ) {
@@ -37,11 +34,7 @@
 .woocommerce-layout__activity-panel-tabs {
 	width: 100%;
 	display: flex;
-	height: 60px;
-
-	@include breakpoint( '>1100px' ) {
-		height: 80px;
-	}
+	height: 47px;
 
 	.dashicon,
 	.gridicon {
@@ -49,13 +42,8 @@
 	}
 
 	svg {
-		width: 18px;
-		height: 18px;
-
-		@include breakpoint( '>1100px' ) {
-			width: 24px;
-			height: 24px;
-		}
+		width: 16px;
+		height: 16px;
 	}
 
 	.components-icon-button {
@@ -67,26 +55,19 @@
 		border: none;
 		outline: none;
 		cursor: pointer;
-		background-color: $white;
-		color: $core-grey-dark-500;
+		background-color: transparent;
+		color: $white;
 		width: 100%;
-		height: 60px;
-		border-bottom: 3px solid $white;
-
-		@include breakpoint( '>1100px' ) {
-			height: 80px;
-		}
+		height: 46px;
+		border-bottom: 3px solid #5b3452;
 
 		&.is-active {
-			color: $core-grey-dark-700;
+			color: $white;
 			border-bottom: 3px solid $woocommerce;
 			box-shadow: none;
 		}
 
 		font-size: 11px;
-		@include breakpoint( '>1100px' ) {
-			font-size: 13px;
-		}
 
 		&.has-unread:after,
 		&.woocommerce-layout__activity-panel-tab-wordpress-notices:after {
@@ -110,8 +91,8 @@
 			}
 
 			@include breakpoint( '>1100px' ) {
-				top: 16px;
-				right: 28px;
+				top: 6px;
+				right: 26px;
 				left: initial;
 				margin-left: 0;
 			}
@@ -187,15 +168,15 @@
 }
 
 .woocommerce-layout__activity-panel-wrapper {
-	height: calc(100vh - 80px);
-	min-height: calc(100vh - 80px);
+	height: calc(100vh - 47px);
+	min-height: calc(100vh - 47px);
 	background: $core-grey-light-200;
 	box-shadow: 0 12px 12px 0 rgba(85, 93, 102, 0.3);
 	width: 0px;
 	@include activity-panel-slide();
 	position: fixed;
 	right: 0px;
-	top: 92px;
+	top: 46px;
 	z-index: 1000;
 	overflow-x: hidden;
 	overflow-y: scroll;
@@ -206,12 +187,7 @@
 		padding-bottom: $gap-small;
 	}
 	@include breakpoint( '>1100px' ) {
-		top: 112px;
 		padding-bottom: $gap * 2;
-	}
-
-	@include breakpoint( '<782px' ) {
-		top: 153px;
 	}
 
 	&.is-open {

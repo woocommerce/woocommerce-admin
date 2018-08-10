@@ -46,6 +46,9 @@ function wc_admin_plugins_loaded() {
 	// Register script files
 	require_once dirname( __FILE__ ) . '/lib/client-assets.php';
 
+	// Update wp-admin navigation
+	require_once dirname( __FILE__ ) . '/lib/menu.php';
+
 	// Create the Admin pages
 	require_once dirname( __FILE__ ) . '/lib/admin.php';
 }
