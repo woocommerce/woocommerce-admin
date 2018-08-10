@@ -37,6 +37,16 @@
 	padding: $gap $gap-large;
 	border-bottom: 1px solid $core-grey-light-500;
 	text-align: left;
+
+	a {
+		display: block;
+		margin: ($gap*-1) ($gap-large*-1);
+		padding: $gap $gap-large;
+
+		&:focus {
+			box-shadow: none;
+		}
+	}
 }
 
 .woocommerce-table__header,
