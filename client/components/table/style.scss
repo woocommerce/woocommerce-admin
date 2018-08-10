@@ -52,6 +52,14 @@
 			box-shadow: none;
 		}
 	}
+
+	&.is-numeric {
+		text-align: right;
+
+		button {
+			justify-content: flex-end;
+		}
+	}
 }
 
 .woocommerce-table__header,
@@ -70,9 +78,9 @@ th.woocommerce-table__item {
 	}
 
 	.components-button.is-button {
-		padding: $gap-smaller $gap $gap-smaller 0;
 		height: auto;
 		width: 100%;
+		padding: $gap-smaller $gap-large $gap-smaller 0;
 		vertical-align: middle;
 		line-height: 1;
 		border: none;
