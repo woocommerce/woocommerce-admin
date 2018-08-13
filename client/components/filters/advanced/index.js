@@ -12,7 +12,7 @@ import Gridicon from 'gridicons';
 /**
  * Internal dependencies
  */
-import Card from 'components/card';
+import { Card } from 'components/card';
 import './style.scss';
 
 const matches = [

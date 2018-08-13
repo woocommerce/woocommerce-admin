@@ -7,7 +7,9 @@ import { shallow } from 'enzyme';
 /**
  * Internal dependencies
  */
-import { ReviewRating, ProductRating, Rating } from '../';
+import Rating from '../';
+import ProductRating from '../product';
+import ReviewRating from '../review';
 
 describe( 'Rating', () => {
 	test( 'should render the passed rating prop', () => {

@@ -8,8 +8,7 @@ import { Component, Fragment } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import Card from 'components/card';
-import Chart from 'components/chart';
+import { Card, Chart } from 'components';
 import dummyOrders from './test/fixtures/dummy';
 
 class WidgetCharts extends Component {
