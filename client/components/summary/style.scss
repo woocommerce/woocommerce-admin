@@ -318,11 +318,12 @@ $inner-border: $core-grey-light-500;
 		position: absolute;
 		top: 44px;
 		right: $gap;
+		transition: transform ease 0.2s;
 	}
 
 	.is-dropdown-expanded & {
 		.woocommerce-summary__toggle {
-			transform: rotate(180deg);
+			transform: rotate(-180deg);
 		}
 	}
 
