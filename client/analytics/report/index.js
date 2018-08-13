@@ -8,24 +8,34 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
+import QueryBoundaryError from 'components/query-boundary-error';
 import ExampleReport from './example';
 import RevenueReport from './revenue';
 import ProductsReport from './products';
 import OrdersReport from './orders/';
 
 class Report extends Component {
-	render() {
-		const { params } = this.props;
-		switch ( params.report ) {
+	getReportType( report ) {
+		switch ( report ) {
 			case 'revenue':
-				return <RevenueReport { ...this.props } />;
+				return RevenueReport;
 			case 'products':
-				return <ProductsReport { ...this.props } />;
+				return ProductsReport;
 			case 'orders':
-				return <OrdersReport { ...this.props } />;
+				return OrdersReport;
 			default:
-				return <ExampleReport />;
+				return ExampleReport;
 		}
+	}
+
+	render() {
+		const { params, query, path } = this.props;
+		const ReportType = this.getReportType( params.report );
+		return (
+			<QueryBoundaryError query={ query } path={ path }>
+				<ReportType { ...this.props } />
+			</QueryBoundaryError>
+		);
 	}
 }
 

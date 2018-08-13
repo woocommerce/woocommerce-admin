@@ -17,7 +17,7 @@ import './style.scss';
 export default class extends Component {
 	render() {
 		const { query, path } = this.props;
-
+		const queryKey = JSON.stringify( query );
 		return (
 			<Fragment>
 				<Header
@@ -27,7 +27,7 @@ export default class extends Component {
 					] }
 				/>
 				<div className="woocommerce-products__pickers">
-					<DatePicker query={ query } path={ path } key={ JSON.stringify( query ) } />
+					<DatePicker query={ query } path={ path } key={ queryKey } />
 					<FilterPicker
 						query={ query }
 						path={ path }
