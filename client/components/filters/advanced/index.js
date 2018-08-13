@@ -4,7 +4,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment, createRef } from '@wordpress/element';
-import { SelectControl, Button, FormTokenField, Dropdown, IconButton } from '@wordpress/components';
+import { SelectControl, Button, Dropdown, IconButton } from '@wordpress/components';
 import { partial, findIndex, find, difference } from 'lodash';
 import PropTypes from 'prop-types';
 import Gridicon from 'gridicons';
@@ -13,6 +13,7 @@ import Gridicon from 'gridicons';
  * Internal dependencies
  */
 import Card from 'components/card';
+import FilterSearch from './search';
 import './style.scss';
 
 const matches = [
@@ -103,12 +104,13 @@ class AdvancedFilters extends Component {
 				/>
 			);
 		}
-		if ( 'FormTokenField' === input.component ) {
+		if ( 'FilterSearch' === input.component ) {
 			return (
-				<FormTokenField
+				<FilterSearch
+					filterKey={ filter.key }
 					value={ filter.value }
-					onChange={ partial( this.onFilterChange, filter.key, 'value' ) }
-					placeholder={ sprintf( __( 'Add %s', 'wc-admin' ), filterConfig.label ) }
+					onFilterChange={ this.onFilterChange }
+					config={ filterConfig }
 				/>
 			);
 		}

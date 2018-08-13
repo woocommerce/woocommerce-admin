@@ -62,22 +62,27 @@ export const advancedFilterConfig = {
 			{ value: 'is-not', label: __( 'Is Not', 'wc-admin' ) },
 		],
 		input: {
-			component: 'FormTokenField',
+			component: 'FilterSearch',
+			searchFn: 'getProducts',
+			requestingFn: 'isProductsRequesting',
+			errorFn: 'isProductsError',
+			getPath: 'name',
 		},
 	},
-	coupon: {
-		label: __( 'Coupon Code', 'wc-admin' ),
-		addLabel: __( 'Coupon Codes', 'wc-admin' ),
-		rules: [
-			{ value: 'includes', label: __( 'Includes', 'wc-admin' ) },
-			{ value: 'excludes', label: __( 'Excludes', 'wc-admin' ) },
-			{ value: 'is', label: __( 'Is', 'wc-admin' ) },
-			{ value: 'is-not', label: __( 'Is Not', 'wc-admin' ) },
-		],
-		input: {
-			component: 'FormTokenField',
-		},
-	},
+	// Comment out for now until a pattern emerges
+	// coupon: {
+	// 	label: __( 'Coupon Code', 'wc-admin' ),
+	// 	addLabel: __( 'Coupon Codes', 'wc-admin' ),
+	// 	rules: [
+	// 		{ value: 'includes', label: __( 'Includes', 'wc-admin' ) },
+	// 		{ value: 'excludes', label: __( 'Excludes', 'wc-admin' ) },
+	// 		{ value: 'is', label: __( 'Is', 'wc-admin' ) },
+	// 		{ value: 'is-not', label: __( 'Is Not', 'wc-admin' ) },
+	// 	],
+	// 	input: {
+	// 		component: 'FormTokenField',
+	// 	},
+	// },
 	customer: {
 		label: __( 'Customer is', 'wc-admin' ),
 		addLabel: __( 'Customer Type', 'wc-admin' ),
