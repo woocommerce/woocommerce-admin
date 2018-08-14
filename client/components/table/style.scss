@@ -10,6 +10,11 @@
 	.woocommerce-card__menu {
 		justify-self: flex-end;
 	}
+
+	&.is-placeholder {
+		animation: loading-fade 1.6s ease-in-out infinite;
+		background-color: $core-grey-light-200;
+	}
 }
 
 .woocommerce-table__caption {

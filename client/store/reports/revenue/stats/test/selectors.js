@@ -35,20 +35,20 @@ describe( 'getReportRevenueStats()', () => {
 				orders_count: 10,
 				num_items_sold: 9,
 			},
-			interval: [ 0, 1, 2 ],
+			intervals: [ 0, 1, 2 ],
 		};
 		const state = deepFreeze( {
 			reports: {
 				revenue: {
 					stats: {
 						queries: {
-							'{}': { ...report },
+							'{}': { data: { ...report } },
 						},
 					},
 				},
 			},
 		} );
-		expect( getReportRevenueStats( state ) ).toEqual( report );
+		expect( getReportRevenueStats( state ) ).toEqual( { data: { ...report } } );
 	} );
 } );
 

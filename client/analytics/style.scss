@@ -1,0 +1,14 @@
+/** @format */
+
+.woocommerce-analytics__report-table-card {
+	&.is-requesting {
+		animation: loading-fade 1.6s ease-in-out infinite;
+		background-color: $core-grey-light-100;
+	}
+}
+
+.woocommerce-analytics__report-table-error {
+	background: $white;
+	padding: $gap;
+	border: 1px solid $alert-red;
+}

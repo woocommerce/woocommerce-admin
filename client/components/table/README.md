@@ -37,10 +37,11 @@ render: function() {
 * `onClickDownload`: A callback function which handles then "download" button press. Optional, if not used, the button won't appear.
 * `query`: An object of the query parameters passed to the page, ex `{ page: 2, per_page: 5 }`.
 * `rows` (required): An array of arrays of display/value object pairs (see `Table` props).
+* `totalRows` (required): The total number of results for the query. Used for the Pagination component.
 * `rowHeader`: Which column should be the row header, defaults to the first item (`0`) (see `Table` props).
 * `summary`: An array of objects with `label` & `value` properties, which display in a line under the table. Optional, can be left off to show no summary.
 * `title` (required): The title used in the card header, also used as the caption for the content in this table
-
+* `className`: Additional CSS classes.
 
 `rows`, `headers`, `rowHeader`, and `title` are passed through to `<Table />`. `summary` is passed through as `data` to `<TableSummary />`. `query.page`, `query.per_page`, and `onQueryChange` are passed through to `<Pagination />`.
 

@@ -38,9 +38,13 @@ describe( 'reportsRevenueStatsReducer()', () => {
 			type: 'SET_REPORT_REVENUE_STATS',
 			query,
 			report,
+			totalResults: 3,
 		} );
 
-		expect( state.queries[ JSON.stringify( query ) ] ).toEqual( report );
+		expect( state.queries[ JSON.stringify( query ) ] ).toEqual( {
+			data: { ...report },
+			totalResults: 3,
+		} );
 	} );
 
 	it( 'returns with received error data', () => {

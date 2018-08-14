@@ -8,6 +8,7 @@ import { Component, Fragment } from '@wordpress/element';
 /**
  * Internal dependencies
  */
+import './style.scss';
 import Header from 'layout/header';
 
 export default class extends Component {

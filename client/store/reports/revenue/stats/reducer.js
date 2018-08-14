@@ -9,6 +9,7 @@ import { get } from 'lodash';
  * Internal dependencies
  */
 import { ERROR } from 'store/constants';
+import { serializeQuery } from 'store/utils';
 
 const DEFAULT_STATE = {
 	queries: {},
@@ -17,11 +18,14 @@ const DEFAULT_STATE = {
 export default function reportRevenueStatsReducer( state = DEFAULT_STATE, action ) {
 	if ( 'SET_REPORT_REVENUE_STATS' === action.type ) {
 		const prevQueries = get( state, 'queries', {} );
-		const query = JSON.stringify( action.query, Object.keys( action.query ).sort() );
+		const query = serializeQuery( action.query );
 		const queries = {
 			...prevQueries,
 			[ query ]: {
-				...action.report,
+				data: {
+					...action.report,
+				},
+				totalResults: action.totalResults,
 			},
 		};
 
@@ -33,7 +37,7 @@ export default function reportRevenueStatsReducer( state = DEFAULT_STATE, action
 
 	if ( 'SET_REPORT_REVENUE_STATS_ERROR' === action.type ) {
 		const prevQueries = get( state, 'queries', {} );
-		const query = JSON.stringify( action.query, Object.keys( action.query ).sort() );
+		const query = serializeQuery( action.query );
 		const queries = {
 			...prevQueries,
 			[ query ]: ERROR,
