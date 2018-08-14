@@ -18,7 +18,7 @@ import ProductsReport from './products';
 import RevenueReport from './revenue';
 import useFilters from 'components/higher-order/use-filters';
 
-const REPORTS_FILTER = 'woocommerce-report';
+const REPORTS_FILTER = 'woocommerce-reports-list';
 
 const getReports = () => {
 	const reports = applyFilters( REPORTS_FILTER, [
@@ -48,7 +48,28 @@ const getReports = () => {
 };
 
 class Report extends Component {
+	constructor() {
+		super( ...arguments );
+
+		this.state = {
+			hasError: false,
+		};
+	}
+
+	componentDidCatch( error ) {
+		this.setState( {
+			hasError: true,
+		} );
+		/* eslint-disable no-console */
+		console.warn( error );
+		/* eslint-enable no-console */
+	}
+
 	render() {
+		if ( this.state.hasError ) {
+			return null;
+		}
+
 		const { params } = this.props;
 		const report = find( getReports(), { report: params.report } );
 		if ( ! report ) {
