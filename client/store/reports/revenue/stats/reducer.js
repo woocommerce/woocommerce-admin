@@ -16,7 +16,7 @@ const DEFAULT_STATE = {
 
 export default function reportRevenueStatsReducer( state = DEFAULT_STATE, action ) {
 	if ( 'SET_REPORT_REVENUE_STATS' === action.type ) {
-		const prevQueries = get( state, 'queries', [] );
+		const prevQueries = get( state, 'queries', {} );
 		const query = JSON.stringify( action.query );
 		const queries = {
 			...prevQueries,
@@ -32,7 +32,7 @@ export default function reportRevenueStatsReducer( state = DEFAULT_STATE, action
 	}
 
 	if ( 'SET_REPORT_REVENUE_STATS_ERROR' === action.type ) {
-		const prevQueries = get( state, 'queries', [] );
+		const prevQueries = get( state, 'queries', {} );
 		const query = JSON.stringify( action.query );
 		const queries = {
 			...prevQueries,

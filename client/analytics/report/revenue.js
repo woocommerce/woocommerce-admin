@@ -4,11 +4,9 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
 import { map, noop } from 'lodash';
 import PropTypes from 'prop-types';
-//import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -274,22 +272,4 @@ RevenueReport.propTypes = {
 	query: PropTypes.object.isRequired,
 };
 
-export default compose()( RevenueReport );
-/*withSelect( select => {
-		const { getReportRevenueStats, isReportRevenueStatsRequesting, isReportRevenueStatsError } = select( 'wc-admin' );
-
-		const args = {
-			interval2: 'day',
-			after: '2018-01-04T00:00:00+00:00',
-			before: '2018-07-14T00:00:00+00:00',
-		};
-		const report = getReportRevenueStats( args );
-
-		console.log( report );
-		console.log( 'isRequesting' );
-		console.log( isReportRevenueStatsRequesting( args ) );
-		console.log( 'isError' );
-		console.log( isReportRevenueStatsError( args ) );
-
-		return {};
-	} )*/
+export default RevenueReport;
