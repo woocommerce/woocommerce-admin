@@ -137,6 +137,9 @@ class Table extends Component {
 						{ rows.map( ( row, i ) => (
 							<tr key={ i }>
 								{ row.map( ( cell, j ) => {
+									if ( ! headers[ j ] ) {
+										return false;
+									}
 									const { isNumeric } = headers[ j ];
 									const Cell = rowHeader === j ? 'th' : 'td';
 									const cellClasses = classnames( 'woocommerce-table__item', {
