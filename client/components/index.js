@@ -1,7 +1,12 @@
 /** @format */
 
-// Simple components
+/**
+ * External Dependencies
+ */
+// Turn on react-dates classes/styles, see https://github.com/airbnb/react-dates#initialize
+import 'react-dates/initialize';
 
+// Simple components
 export { default as Card } from './card';
 export { default as Count } from './count';
 export { default as DropdownButton } from './dropdown-button';
@@ -15,7 +20,6 @@ export { default as SegmentedSelection } from './segmented-selection';
 export { default as SplitButton } from './split-button';
 
 // Complex components
-
 export { default as AnimationSlider } from './animation-slider';
 export { DateRange } from './calendar';
 export { default as Chart } from './chart';
