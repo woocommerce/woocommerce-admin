@@ -9,7 +9,14 @@ import { Component } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { Card, EllipsisMenu, MenuItem, MenuTitle, SummaryList, SummaryNumber } from 'components';
+import {
+	Card,
+	EllipsisMenu,
+	MenuItem,
+	MenuTitle,
+	SummaryList,
+	SummaryNumber,
+} from '@woocommerce/components';
 import './style.scss';
 
 class StorePerformance extends Component {

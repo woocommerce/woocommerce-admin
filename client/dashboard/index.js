@@ -9,7 +9,7 @@ import { Component, Fragment } from '@wordpress/element';
  * Internal dependencies
  */
 import './style.scss';
-import { Card } from 'components';
+import { Card } from '@woocommerce/components';
 import ChartExample from 'components/chart/example';
 import Header from 'layout/header';
 import StorePerformance from './store-performance';

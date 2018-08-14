@@ -14,7 +14,14 @@ import { noop } from 'lodash';
 import { ActivityCard } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
-import { EllipsisMenu, Gravatar, Flag, MenuTitle, MenuItem, OrderStatus } from 'components';
+import {
+	EllipsisMenu,
+	Gravatar,
+	Flag,
+	MenuTitle,
+	MenuItem,
+	OrderStatus,
+} from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getOrderRefundTotal } from 'lib/order-values';
 import { Section } from 'layout/section';

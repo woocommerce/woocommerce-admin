@@ -17,7 +17,7 @@ import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getAdminLink, updateQueryString } from 'lib/nav-utils';
 import { getReportData } from 'lib/swagger';
 import Header from 'layout/header';
-import { ReportFilters, SummaryList, SummaryNumber, TableCard } from 'components';
+import { ReportFilters, SummaryList, SummaryNumber, TableCard } from '@woocommerce/components';
 
 // Mock data until we fetch from an API
 import rawData from './mock-data';

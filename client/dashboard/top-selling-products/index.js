@@ -9,7 +9,7 @@ import { map } from 'lodash';
 /**
  * Internal dependencies
  */
-import { Card, Table } from 'components';
+import { Card, Table } from '@woocommerce/components';
 import { getAdminLink } from 'lib/nav-utils';
 import { numberFormat } from 'lib/number';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';

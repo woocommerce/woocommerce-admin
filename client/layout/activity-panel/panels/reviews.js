@@ -13,7 +13,7 @@ import { noop } from 'lodash';
  */
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
-import { Gravatar, Link, ProductImage, ReviewRating, SplitButton } from 'components';
+import { Gravatar, Link, ProductImage, ReviewRating, SplitButton } from '@woocommerce/components';
 import { Section } from 'layout/section';
 
 // TODO Pull proper data from the API
