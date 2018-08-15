@@ -20,7 +20,8 @@ import { ERROR } from 'store/constants';
  */
 function getReportRevenueStats( state, query ) {
 	const queries = get( state, 'reports.revenue.stats.queries', {} );
-	return queries[ JSON.stringify( query || {} ) ] || null;
+	const _query = query || {};
+	return queries[ JSON.stringify( _query, Object.keys( _query ).sort() ) ] || null;
 }
 
 export default {

@@ -22,9 +22,9 @@ describe( 'reportsRevenueStatsReducer()', () => {
 	it( 'returns with received report data', () => {
 		const originalState = deepFreeze( {} );
 		const query = {
-			interval: 'day',
 			after: '2018-01-04T00:00:00+00:00',
 			before: '2018-07-14T00:00:00+00:00',
+			interval: 'day',
 		};
 		const report = {
 			totals: {
@@ -46,9 +46,9 @@ describe( 'reportsRevenueStatsReducer()', () => {
 	it( 'returns with received error data', () => {
 		const originalState = deepFreeze( {} );
 		const query = {
-			interval: 'day',
 			after: '2018-01-04T00:00:00+00:00',
 			before: '2018-07-14T00:00:00+00:00',
+			interval: 'day',
 		};
 
 		const state = reportsRevenueStatsReducer( originalState, {
