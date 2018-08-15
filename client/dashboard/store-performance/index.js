@@ -10,7 +10,7 @@ import { Component } from '@wordpress/element';
  * Internal dependencies
  */
 import Card from 'components/card';
-import { EllipsisMenu, MenuItem, MenuTitle } from 'components/ellipsis-menu';
+import { IconMenu, MenuItem, MenuTitle } from 'components/icon-menu';
 import { SummaryList, SummaryNumber } from 'components/summary';
 import './style.scss';
 
@@ -34,7 +34,7 @@ class StorePerformance extends Component {
 
 	renderMenu() {
 		return (
-			<EllipsisMenu label={ __( 'Choose which analytics to display', 'wc-admin' ) }>
+			<IconMenu icon="ellipsis" label={ __( 'Choose which analytics to display', 'wc-admin' ) }>
 				<MenuTitle>{ __( 'Display Stats:', 'wc-admin' ) }</MenuTitle>
 				<MenuItem onInvoke={ this.toggle( 'showCustomers' ) }>
 					<ToggleControl
@@ -57,7 +57,7 @@ class StorePerformance extends Component {
 						onChange={ this.toggle( 'showOrders' ) }
 					/>
 				</MenuItem>
-			</EllipsisMenu>
+			</IconMenu>
 		);
 	}
 

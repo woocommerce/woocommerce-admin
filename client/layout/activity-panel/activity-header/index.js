@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import './style.scss';
-import { EllipsisMenu } from 'components/ellipsis-menu';
+import { IconMenu } from 'components/icon-menu';
 import { H } from 'layout/section';
 
 class ActivityHeader extends Component {
@@ -31,7 +31,7 @@ ActivityHeader.propTypes = {
 	className: PropTypes.string,
 	title: PropTypes.string.isRequired,
 	menu: PropTypes.shape( {
-		type: PropTypes.oneOf( [ EllipsisMenu ] ),
+		type: PropTypes.oneOf( [ IconMenu ] ),
 	} ),
 };
 

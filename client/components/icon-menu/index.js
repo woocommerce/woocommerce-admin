@@ -12,15 +12,15 @@ import PropTypes from 'prop-types';
  */
 import './style.scss';
 
-class EllipsisMenu extends Component {
+class IconMenu extends Component {
 	render() {
-		const { children, label } = this.props;
+		const { children, label, icon, showLabel, position } = this.props;
 		if ( ! children ) {
 			return null;
 		}
 
 		const renderToggle = ( { onToggle, isOpen } ) => {
-			const toggleClassname = classnames( 'woocommerce-ellipsis-menu__toggle', {
+			const toggleClassname = classnames( 'woocommerce-icon-menu__toggle', {
 				'is-opened': isOpen,
 			} );
 
@@ -28,22 +28,24 @@ class EllipsisMenu extends Component {
 				<IconButton
 					className={ toggleClassname }
 					onClick={ onToggle }
-					icon="ellipsis"
+					icon={ icon }
 					label={ label }
 					aria-expanded={ isOpen }
-				/>
+				>
+					{ showLabel && label }
+				</IconButton>
 			);
 		};
 
 		const renderContent = () => (
-			<NavigableMenu className="woocommerce-ellipsis-menu__content">{ children }</NavigableMenu>
+			<NavigableMenu className="woocommerce-icon-menu__content">{ children }</NavigableMenu>
 		);
 
 		return (
-			<div className="woocommerce-ellipsis-menu">
+			<div className="woocommerce-icon-menu">
 				<Dropdown
-					contentClassName="woocommerce-ellipsis-menu__popover"
-					position="bottom left"
+					contentClassName="woocommerce-icon-menu__popover"
+					position={ position }
 					renderToggle={ renderToggle }
 					renderContent={ renderContent }
 				/>
@@ -52,10 +54,18 @@ class EllipsisMenu extends Component {
 	}
 }
 
-EllipsisMenu.propTypes = {
+IconMenu.propTypes = {
+	icon: PropTypes.oneOfType( [ PropTypes.node, PropTypes.string ] ).isRequired,
 	label: PropTypes.string.isRequired,
+	position: PropTypes.string,
+	showLabel: PropTypes.bool,
 };
 
-export { EllipsisMenu };
+IconMenu.defaultProps = {
+	showLabel: false,
+	position: 'bottom left',
+};
+
+export { IconMenu };
 export { default as MenuItem } from './menu-item';
 export { default as MenuTitle } from './menu-title';
