@@ -10,6 +10,7 @@ import { select } from '@wordpress/data';
  * Internal dependencies
  */
 import { ERROR } from 'store/constants';
+import { serializeQuery } from 'store/utils';
 
 /**
  * Returns revenue report details for a specific report query.
@@ -20,8 +21,7 @@ import { ERROR } from 'store/constants';
  */
 function getReportRevenueStats( state, query ) {
 	const queries = get( state, 'reports.revenue.stats.queries', {} );
-	const _query = query || {};
-	return queries[ JSON.stringify( _query, Object.keys( _query ).sort() ) ] || null;
+	return queries[ serializeQuery( query || {} ) ] || null;
 }
 
 export default {

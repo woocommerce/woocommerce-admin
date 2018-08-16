@@ -4,6 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
+import classnames from 'classnames';
 import { IconButton, ToggleControl } from '@wordpress/components';
 import { fill, find, findIndex, first, isArray, noop } from 'lodash';
 import PropTypes from 'prop-types';
@@ -17,6 +18,7 @@ import { EllipsisMenu, MenuItem, MenuTitle } from 'components/ellipsis-menu';
 import Pagination from 'components/pagination';
 import Table from './table';
 import TableSummary from './summary';
+import TableCardPlaceholder from './placeholder';
 
 class TableCard extends Component {
 	constructor( props ) {
@@ -58,7 +60,16 @@ class TableCard extends Component {
 	}
 
 	render() {
-		const { onClickDownload, onQueryChange, query, rowHeader, summary, title } = this.props;
+		const {
+			onClickDownload,
+			onQueryChange,
+			query,
+			rowHeader,
+			summary,
+			title,
+			totalRows,
+			className,
+		} = this.props;
 		const { showCols } = this.state;
 		const allHeaders = this.props.headers;
 		const headers = this.filterCols( this.props.headers );
@@ -66,7 +77,7 @@ class TableCard extends Component {
 
 		return (
 			<Card
-				className="woocommerce-table"
+				className={ classnames( 'woocommerce-table', className ) }
 				title={ title }
 				action={
 					onClickDownload && (
@@ -110,7 +121,7 @@ class TableCard extends Component {
 				<Pagination
 					page={ parseInt( query.page ) || 1 }
 					perPage={ parseInt( query.per_page ) || 25 }
-					total={ 5000 }
+					total={ totalRows }
 					onPageChange={ onQueryChange( 'page' ) }
 					onPerPageChange={ onQueryChange( 'per_page' ) }
 				/>
@@ -141,6 +152,7 @@ TableCard.propTypes = {
 			} )
 		)
 	).isRequired,
+	totalRows: PropTypes.number.isRequired,
 	summary: PropTypes.arrayOf(
 		PropTypes.shape( {
 			label: PropTypes.node,
@@ -148,6 +160,7 @@ TableCard.propTypes = {
 		} )
 	),
 	title: PropTypes.string.isRequired,
+	className: PropTypes.string,
 };
 
 TableCard.defaultProps = {
@@ -157,4 +170,4 @@ TableCard.defaultProps = {
 	rows: [],
 };
 
-export { TableCard, Table, TableSummary };
+export { TableCard, Table, TableSummary, TableCardPlaceholder };

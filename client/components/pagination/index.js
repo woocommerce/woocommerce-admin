@@ -153,8 +153,6 @@ class Pagination extends Component {
 						{ value: '50', label: '50' },
 						{ value: '75', label: '75' },
 						{ value: '100', label: '100' },
-						{ value: '250', label: '250' },
-						{ value: '500', label: '500' },
 					] }
 				/>
 			</div>

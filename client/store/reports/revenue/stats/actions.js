@@ -1,10 +1,11 @@
 /** @format */
 
 export default {
-	setReportRevenueStats( report, query ) {
+	setReportRevenueStats( query, report, totalResults ) {
 		return {
 			type: 'SET_REPORT_REVENUE_STATS',
 			report,
+			totalResults,
 			query: query || {},
 		};
 	},

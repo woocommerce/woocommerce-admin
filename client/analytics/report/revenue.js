@@ -4,9 +4,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
+import classnames from 'classnames';
 import { format as formatDate } from '@wordpress/date';
 import { map, noop } from 'lodash';
 import PropTypes from 'prop-types';
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -17,7 +20,8 @@ import { getReportData } from 'lib/swagger';
 import Header from 'layout/header';
 import { ReportFilters } from 'components/filters';
 import { SummaryList, SummaryNumber } from 'components/summary';
-import { TableCard } from 'components/table';
+import { TableCard, TableCardPlaceholder } from 'components/table';
+import { isReportDataEmpty, generateReportTableRequest } from 'store/reports/utils';
 
 // Mock data until we fetch from an API
 import rawData from './mock-data';
@@ -71,7 +75,7 @@ class RevenueReport extends Component {
 		return [
 			{
 				label: __( 'Date', 'wc-admin' ),
-				key: 'date_start',
+				key: 'date',
 				required: true,
 				defaultSort: true,
 				isSortable: true,
@@ -142,7 +146,11 @@ class RevenueReport extends Component {
 			// @TODO How to create this per-report? Can use `w`, `year`, `m` to build time-specific order links
 			// we need to know which kind of report this is, and parse the `label` to get this row's date
 			const orderLink = (
-				<a href={ getAdminLink( '/edit.php?post_type=shop_order&w=4&year=2018' ) }>
+				<a
+					href={ getAdminLink(
+						'/edit.php?post_type=shop_order&m=' + formatDate( 'Ymd', row.date_start )
+					) }
+				>
 					{ orders_count }
 				</a>
 			);
@@ -212,13 +220,68 @@ class RevenueReport extends Component {
 		];
 	}
 
-	render() {
-		const { path, query } = this.props;
-		const { totals = {}, intervals = [] } = this.state.stats;
-		const summary = this.getSummaryContent( totals ) || [];
-		const rows = this.getRowsContent( intervals ) || [];
+	renderTable() {
+		const {
+			tableData,
+			isTableDataRequesting,
+			isTableDataError,
+			query,
+			previousTableData,
+		} = this.props;
 		const headers = this.getHeadersContent();
 
+		if ( isTableDataRequesting && isReportDataEmpty( previousTableData ) ) {
+			return (
+				<TableCardPlaceholder
+					rows={ 10 }
+					headers={ headers }
+					title={ __( 'Revenue Last Week', 'wc-admin' ) }
+				/>
+			);
+		}
+
+		// TODO Update Error Display
+		if ( isTableDataError ) {
+			return (
+				<div className="woocommerce-analytics__report-table-error">
+					{ __( 'There was an error retrieving your revenue summary. Please try again.' ) }
+				</div>
+			);
+		}
+
+		if ( isReportDataEmpty( tableData ) && ! isTableDataRequesting ) {
+			// TODO Return empty content component once it is built.
+			return null;
+		}
+
+		const data = isTableDataRequesting ? previousTableData : tableData;
+		const { totals = {}, intervals = [] } = ( data && data.data ) || {};
+		const { totalResults } = data;
+		const summary = this.getSummaryContent( totals ) || [];
+		const rows = this.getRowsContent( intervals ) || [];
+
+		const className = classnames( 'woocommerce-analytics__report-table-card', {
+			'is-requesting': isTableDataRequesting,
+		} );
+
+		return (
+			<TableCard
+				title={ __( 'Revenue Last Week', 'wc-admin' ) }
+				rows={ rows }
+				totalRows={ totalResults }
+				headers={ headers }
+				onClickDownload={ noop }
+				onQueryChange={ this.onQueryChange }
+				query={ query }
+				summary={ summary }
+				className={ className }
+			/>
+		);
+	}
+
+	render() {
+		const { path, query } = this.props;
+		const { totals = {} } = this.state.stats;
 		return (
 			<Fragment>
 				<Header
@@ -251,16 +314,7 @@ class RevenueReport extends Component {
 						label={ __( 'Taxes', 'wc-admin' ) }
 					/>
 				</SummaryList>
-
-				<TableCard
-					title={ __( 'Revenue Last Week', 'wc-admin' ) }
-					rows={ rows }
-					headers={ headers }
-					onClickDownload={ noop }
-					onQueryChange={ this.onQueryChange }
-					query={ query }
-					summary={ summary }
-				/>
+				{ this.renderTable() }
 			</Fragment>
 		);
 	}
@@ -272,4 +326,27 @@ RevenueReport.propTypes = {
 	query: PropTypes.object.isRequired,
 };
 
-export default RevenueReport;
+export default compose(
+	withSelect( ( select, props ) => {
+		const {
+			getReportRevenueStats,
+			isReportRevenueStatsRequesting,
+			isReportRevenueStatsError,
+		} = select( 'wc-admin' );
+		const { query, previousQuery } = props;
+
+		const args = generateReportTableRequest( query );
+
+		const tableData = getReportRevenueStats( args );
+		const isTableDataError = isReportRevenueStatsError( args );
+		const isTableDataRequesting = isReportRevenueStatsRequesting( args );
+		const previousTableData = getReportRevenueStats( generateReportTableRequest( previousQuery ) );
+
+		return {
+			tableData,
+			isTableDataRequesting,
+			isTableDataError,
+			previousTableData,
+		};
+	} )
+)( RevenueReport );
