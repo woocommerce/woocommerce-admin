@@ -6,7 +6,7 @@ import { APIProvider } from '@wordpress/components';
 import { pick } from 'lodash';
 import { render } from '@wordpress/element';
 import { Provider as SlotFillProvider } from 'react-slot-fill';
-import { plugins, use, RegistryProvider } from '@wordpress/data';
+import { use, RegistryProvider } from '@wordpress/data';
 import 'react-dates/initialize';
 
 /**
@@ -14,9 +14,10 @@ import 'react-dates/initialize';
  */
 import './stylesheets/_index.scss';
 import { PageLayout } from './layout';
+import freshDataPlugin from './fresh-data-plugin';
 import wcApiSpec from 'wc-api-spec';
 
-const registry = use( plugins.freshData );
+const registry = use( freshDataPlugin );
 
 registry.registerStore( 'wc-api', { apiSpec: wcApiSpec } );
 

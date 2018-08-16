@@ -5,7 +5,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { withResources, plugins } from '@wordpress/data';
 import { Component, Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
@@ -23,8 +22,7 @@ import Gravatar from 'components/gravatar';
 import Flag from 'components/flag';
 import OrderStatus from 'components/order-status';
 import { Section } from 'layout/section';
-
-const { MINUTE } = plugins.freshData;
+import { MINUTE, withResources } from 'fresh-data-plugin';
 
 class OrdersPanel extends Component {
 	constructor() {
