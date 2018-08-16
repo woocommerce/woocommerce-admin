@@ -75,7 +75,7 @@ class OrdersPanel extends Component {
 			<Fragment>
 				<ActivityHeader title={ __( 'Orders', 'wc-admin' ) } menu={ menu } />
 				<Section>
-					{ isPageLoading && ! orders ? (
+					{ isPageLoading ? (
 						<p>Loading</p>
 					) : (
 						<Fragment>
@@ -172,6 +172,8 @@ export default compose( [
 					.fulfillOrder( id )
 					.then( () => {
 						// TODO: Display confirmation notification?
+						// Clear optimistic interim state.
+						setEdits( { [ id ]: undefined } );
 					} )
 					.catch( error => {
 						// Clear optimistic interim state.

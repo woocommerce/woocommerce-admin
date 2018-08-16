@@ -17,6 +17,6 @@ export default {
 	isOrdersPageLoading: getResource => params => {
 		const resourceName = getResourceName( 'orders-page', params );
 		const { data, lastRequested, lastReceived } = getResource( resourceName );
-		return ! data || ( lastRequested && lastRequested > lastReceived );
+		return ! data || ( lastRequested && ! lastReceived );
 	},
 };
