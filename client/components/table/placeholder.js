@@ -29,7 +29,6 @@ class TablePlaceholder extends Component {
 									const thProps = {
 										className: classnames( 'woocommerce-table__header' ),
 									};
-
 									return (
 										<th role="columnheader" scope="col" key={ i } { ...thProps }>
 											{ label }
@@ -40,11 +39,9 @@ class TablePlaceholder extends Component {
 							{ range( rows ).map( i => {
 								return (
 									<tr key={ i }>
-										{ headers.map( ( header, j ) => {
-											const Cell = 0 === j ? 'th' : 'td';
-											const cellClasses = classnames( 'woocommerce-table__item' );
-											return <Cell scope="row" key={ j } className={ cellClasses } />;
-										} ) }
+										{ headers.map( ( header, j ) => (
+											<td key={ j } className="woocommerce-table__item" />
+										) ) }
 									</tr>
 								);
 							} ) }

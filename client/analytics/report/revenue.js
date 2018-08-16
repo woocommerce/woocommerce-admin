@@ -240,6 +240,7 @@ class RevenueReport extends Component {
 			);
 		}
 
+		// TODO Update Error Display
 		if ( isTableDataError ) {
 			return (
 				<div className="woocommerce-analytics__report-table-error">
