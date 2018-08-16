@@ -13,7 +13,7 @@ import Gridicon from 'gridicons';
  * Internal dependencies
  */
 import Card from 'components/card';
-import FilterSearch from './search';
+import ProductSearch from './product-search';
 import './style.scss';
 
 const matches = [
@@ -104,9 +104,9 @@ class AdvancedFilters extends Component {
 				/>
 			);
 		}
-		if ( 'FilterSearch' === input.component ) {
+		if ( 'ProductSearch' === input.component ) {
 			return (
-				<FilterSearch
+				<ProductSearch
 					filterKey={ filter.key }
 					value={ filter.value }
 					onFilterChange={ this.onFilterChange }

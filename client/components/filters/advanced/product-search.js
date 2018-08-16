@@ -5,13 +5,14 @@
 import { Component } from '@wordpress/element';
 import { debounce, partial } from 'lodash';
 import { __, sprintf } from '@wordpress/i18n';
+import { select } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import Search from 'components/search';
 
-class FilterSearch extends Component {
+class ProductSearch extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
@@ -24,25 +25,33 @@ class FilterSearch extends Component {
 		this.setState( { search } );
 	}
 
+	mapProductsToSuggestions( products, error ) {
+		return products && ! error ? products.map( product => product.name ) : null;
+	}
+
 	render() {
 		const { filterKey, value, onFilterChange, config } = this.props;
-		const { input, label } = config;
+		const query = {
+			search: this.state.search,
+			per_page: 20,
+			orderby: 'popularity',
+		};
+		const { getProducts, isProductsRequesting, isProductsError } = select( 'wc-admin' );
+
 		return (
 			<Search
 				value={ value }
 				onChange={ partial( onFilterChange, filterKey, 'value' ) }
-				placeholder={ sprintf( __( 'Add %s', 'wc-admin' ), label ) }
+				placeholder={ sprintf( __( 'Add %s', 'wc-admin' ), config.label ) }
 				onInputChange={ debounce( this.onInputChange, 200 ) }
-				search={ this.state.search }
-				searchFn={ input.searchFn }
-				requestingFn={ input.requestingFn }
-				errorFn={ input.errorFn }
-				getPath={ input.getPath }
-				perPage={ 20 }
-				orderby="popularity"
+				query={ query }
+				selector={ getProducts }
+				isRequesting={ isProductsRequesting }
+				isError={ isProductsError }
+				getSuggestions={ this.mapProductsToSuggestions }
 			/>
 		);
 	}
 }
 
-export default FilterSearch;
+export default ProductSearch;

@@ -4,7 +4,6 @@
  */
 import { Component } from '@wordpress/element';
 import { FormTokenField, Spinner } from '@wordpress/components';
-import { get } from 'lodash';
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
@@ -23,9 +22,9 @@ class Search extends Component {
 			onInputChange,
 			requesting,
 			suggestions,
-			search,
+			query,
 		} = this.props;
-		const showSpinner = requesting || ( search && ! suggestions );
+		const showSpinner = requesting || ( query.search && ! suggestions );
 		return (
 			<div className="woocommerce-search">
 				<FormTokenField
@@ -45,41 +44,25 @@ class Search extends Component {
 	}
 }
 
-const getSuggestions = ( data, path, error ) => {
-	return data && ! error ? data.map( d => get( d, path ) ) : null;
-};
-
 Search.propTypes = {
 	value: PropTypes.array,
 	onChange: PropTypes.func.isRequired,
 	placeholder: PropTypes.string,
 	onInputChange: PropTypes.func.isRequired,
-	search: PropTypes.string,
-	searchFn: PropTypes.string.isRequired,
-	requestingFn: PropTypes.string.isRequired,
-	errorFn: PropTypes.string.isRequired,
-	getPath: PropTypes.string,
-	perPage: PropTypes.number,
-	orderb: PropTypes.string,
+	query: PropTypes.object.isRequired,
+	selector: PropTypes.func.isRequired,
+	isRequesting: PropTypes.func.isRequired,
+	isError: PropTypes.func.isRequired,
+	getSuggestions: PropTypes.func.isRequired,
 };
 
 export default compose(
-	withSelect(
-		( select, { search, searchFn, requestingFn, errorFn, getPath, perPage, orderby } ) => {
-			const selectors = select( 'wc-admin' );
-			const query = {
-				search,
-				per_page: perPage,
-				orderby,
-			};
-			const error = selectors[ errorFn ]( query );
-			return {
-				requesting: selectors[ requestingFn ]( query ),
-				error,
-				suggestions: search
-					? getSuggestions( selectors[ searchFn ]( query ), getPath, error )
-					: null,
-			};
-		}
-	)
+	withSelect( ( select, { query, selector, isRequesting, isError, getSuggestions } ) => {
+		const error = isError( query );
+		return {
+			requesting: isRequesting( query ),
+			error,
+			suggestions: query.search ? getSuggestions( selector( query ), error ) : null,
+		};
+	} )
 )( Search );

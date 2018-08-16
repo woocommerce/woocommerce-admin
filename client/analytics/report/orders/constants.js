@@ -62,11 +62,7 @@ export const advancedFilterConfig = {
 			{ value: 'is-not', label: __( 'Is Not', 'wc-admin' ) },
 		],
 		input: {
-			component: 'FilterSearch',
-			searchFn: 'getProducts',
-			requestingFn: 'isProductsRequesting',
-			errorFn: 'isProductsError',
-			getPath: 'name',
+			component: 'ProductSearch',
 		},
 	},
 	// Comment out for now until a pattern emerges
