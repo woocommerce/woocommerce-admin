@@ -202,9 +202,11 @@ $inner-border: $core-grey-light-500;
 	&.is-dropdown-button {
 		padding: 0;
 		list-style: none;
+		border-bottom: 1px solid $outer-border;
 
 		.components-button {
 			text-align: left;
+			display: block;
 		}
 	}
 }
