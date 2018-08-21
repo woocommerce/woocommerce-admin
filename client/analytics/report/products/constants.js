@@ -5,11 +5,10 @@
 import { __ } from '@wordpress/i18n';
 
 export const filters = [
-	{ label: __( 'All Products', 'wc-admin' ), value: 'all', path: [] },
+	{ label: __( 'All Products', 'wc-admin' ), value: 'all' },
 	{
 		label: __( 'Single Product', 'wc-admin' ),
 		value: 'single',
-		path: [],
 		subFilters: [
 			{
 				label: __( 'Single Product', 'wc-admin' ),
@@ -19,7 +18,7 @@ export const filters = [
 			},
 		],
 	},
-	{ label: __( 'Top Products by Items Sold', 'wc-admin' ), value: 'top_items', path: [] },
-	{ label: __( 'Top Products by Gross Sales', 'wc-admin' ), value: 'top_sales', path: [] },
-	{ label: __( 'Comparison', 'wc-admin' ), value: 'compare', path: [] },
+	{ label: __( 'Top Products by Items Sold', 'wc-admin' ), value: 'top_items' },
+	{ label: __( 'Top Products by Gross Sales', 'wc-admin' ), value: 'top_sales' },
+	{ label: __( 'Comparison', 'wc-admin' ), value: 'compare' },
 ];

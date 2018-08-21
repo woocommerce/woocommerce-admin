@@ -23,7 +23,7 @@ class FilterPicker extends Component {
 	constructor( props ) {
 		super( props );
 
-		const { path } = this.getFilter( props );
+		const { path = [] } = this.getFilter( props );
 		this.state = {
 			nav: path,
 			animate: null,
@@ -42,9 +42,9 @@ class FilterPicker extends Component {
 
 	getSelectedFilter() {
 		const { filters } = this.props;
-		const filter = this.getFilter( this.props );
-		const visibleFilters = this.getVisibleFilters( filters, [ ...filter.path ] );
-		return find( visibleFilters, { value: filter.value } );
+		const { path = [], value } = this.getFilter( this.props );
+		const visibleFilters = this.getVisibleFilters( filters, [ ...path ] );
+		return find( visibleFilters, { value } );
 	}
 
 	getLabels( selectedFilter ) {

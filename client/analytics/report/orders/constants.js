@@ -5,11 +5,10 @@
 import { __ } from '@wordpress/i18n';
 
 export const filters = [
-	{ label: __( 'All Orders', 'wc-admin' ), value: 'all', path: [] },
+	{ label: __( 'All Orders', 'wc-admin' ), value: 'all' },
 	{
 		label: __( 'Single Order', 'wc-admin' ),
 		value: 'single',
-		path: [],
 		subFilters: [
 			{
 				label: __( 'Single Order', 'wc-admin' ),
@@ -19,9 +18,9 @@ export const filters = [
 			},
 		],
 	},
-	{ label: __( 'Top Orders by Items Sold', 'wc-admin' ), value: 'top_items', path: [] },
-	{ label: __( 'Top Orders by Gross Sales', 'wc-admin' ), value: 'top_sales', path: [] },
-	{ label: __( 'Advanced Filters', 'wc-admin' ), value: 'advanced', path: [] },
+	{ label: __( 'Top Orders by Items Sold', 'wc-admin' ), value: 'top_items' },
+	{ label: __( 'Top Orders by Gross Sales', 'wc-admin' ), value: 'top_sales' },
+	{ label: __( 'Advanced Filters', 'wc-admin' ), value: 'advanced' },
 ];
 
 export const advancedFilterConfig = {
