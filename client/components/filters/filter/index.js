@@ -3,10 +3,10 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
-import { Dropdown, Button, Dashicon } from '@wordpress/components';
-import { find, partial } from 'lodash';
+import { Button, Dashicon, Dropdown } from '@wordpress/components';
 import classnames from 'classnames';
+import { Component, Fragment } from '@wordpress/element';
+import { find, partial } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -23,9 +23,9 @@ class FilterPicker extends Component {
 	constructor( props ) {
 		super( props );
 
-		const { filterPaths } = props;
+		const { path } = this.getFilter( props );
 		this.state = {
-			nav: filterPaths[ this.getFilterValue( props ) ],
+			nav: path,
 			animate: null,
 		};
 
@@ -35,16 +35,16 @@ class FilterPicker extends Component {
 		this.goBack = this.goBack.bind( this );
 	}
 
-	getFilterValue( { query } ) {
-		return query.filter || DEFAULT_FILTER;
+	getFilter( { filters, query } ) {
+		const value = query.filter || DEFAULT_FILTER;
+		return find( filters, { value } ) || {};
 	}
 
 	getSelectedFilter() {
-		const { filters, filterPaths } = this.props;
-		const value = this.getFilterValue( this.props );
-		const filterPath = filterPaths[ value ];
-		const visibleFilters = this.getVisibleFilters( filters, [ ...filterPath ] );
-		return find( visibleFilters, filter => filter.value === value );
+		const { filters } = this.props;
+		const filter = this.getFilter( this.props );
+		const visibleFilters = this.getVisibleFilters( filters, [ ...filter.path ] );
+		return find( visibleFilters, { value: filter.value } );
 	}
 
 	getLabels( selectedFilter ) {
@@ -52,25 +52,21 @@ class FilterPicker extends Component {
 		return selectedFilter ? [ selectedFilter.label ] : [];
 	}
 
-	selectSubFilters( value ) {
-		const nav = [ ...this.state.nav ];
-		nav.push( value );
-		this.setState( { nav, animate: 'left' } );
-	}
-
 	getVisibleFilters( filters, nav ) {
 		if ( nav.length === 0 ) {
 			return filters;
 		}
 		const value = nav.shift();
-		const nextFilters = find( filters, filter => value === filter.value );
+		const nextFilters = find( filters, { value } );
 		return this.getVisibleFilters( nextFilters && nextFilters.subFilters, nav );
 	}
 
+	selectSubFilters( value ) {
+		this.setState( prevState => ( { nav: [ ...prevState.nav, value ], animate: 'left' } ) );
+	}
+
 	goBack() {
-		const nav = [ ...this.state.nav ];
-		nav.pop();
-		this.setState( { nav, animate: 'right' } );
+		this.setState( prevState => ( { nav: prevState.nav.slice( 1 ), animate: 'right' } ) );
 	}
 
 	renderButton( filter, onClose ) {
@@ -163,7 +159,6 @@ class FilterPicker extends Component {
 
 FilterPicker.propTypes = {
 	filters: PropTypes.array.isRequired,
-	filterPaths: PropTypes.object.isRequired,
 	path: PropTypes.string.isRequired,
 	query: PropTypes.object,
 };
