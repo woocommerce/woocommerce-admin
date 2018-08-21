@@ -10,6 +10,7 @@ import { select } from '@wordpress/data';
  * Internal dependencies
  */
 import { ERROR } from 'store/constants';
+import { getJsonString } from 'store/util';
 
 /**
  * Returns report stats details for a specific endpoint query.
@@ -19,10 +20,9 @@ import { ERROR } from 'store/constants';
  * @param  {Object} query     Report query paremters
  * @return {Object}           Report details
  */
-function getReportStats( state, endpoint, query ) {
+function getReportStats( state, endpoint, query = {} ) {
 	const queries = get( state, [ 'reports', 'stats', endpoint ], {} );
-	const _query = query || {};
-	return queries[ JSON.stringify( _query, Object.keys( _query ).sort() ) ] || null;
+	return queries[ getJsonString( query ) ] || null;
 }
 
 export default {

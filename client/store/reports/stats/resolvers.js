@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-const { apiFetch } = wp;
+import apiFetch from '@wordpress/api-fetch';
 import { dispatch } from '@wordpress/data';
 
 /**
@@ -14,9 +14,16 @@ import { NAMESPACE } from 'store/constants';
 
 export default {
 	async getReportStats( state, endpoint, query ) {
+		const statEndpoints = [ 'orders', 'revenue', 'products' ];
+		let apiPath = endpoint;
+
+		if ( statEndpoints.indexOf( endpoint ) >= 0 ) {
+			apiPath = NAMESPACE + 'reports/' + endpoint + '/stats' + stringifyQuery( query );
+		}
+
 		try {
 			const report = await apiFetch( {
-				path: NAMESPACE + 'reports/' + endpoint + '/stats' + stringifyQuery( query ),
+				path: apiPath,
 			} );
 			dispatch( 'wc-admin' ).setReportStats( endpoint, report, query );
 		} catch ( error ) {

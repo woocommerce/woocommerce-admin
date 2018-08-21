@@ -6,6 +6,6 @@
  * @return {String}       Query Key
  */
 
-export function getQueryKey( query = {} ) {
+export function getJsonString( query = {} ) {
 	return JSON.stringify( query, Object.keys( query ).sort() );
 }
