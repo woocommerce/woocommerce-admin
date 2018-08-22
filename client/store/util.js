@@ -1,7 +1,8 @@
+/** @format */
+
 /**
  * Returns a string representation of a sorted query object.
  *
- * @format
  * @param {Object} query Current state
  * @return {String}       Query Key
  */
