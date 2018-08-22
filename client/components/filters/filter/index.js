@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, Dashicon, Dropdown } from '@wordpress/components';
+import { Button, Dropdown, IconButton } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { find, omit, partial } from 'lodash';
@@ -48,10 +48,10 @@ class FilterPicker extends Component {
 		return allFilters;
 	}
 
-	getFilter() {
+	getFilter( value = false ) {
 		const { filters, query } = this.props;
 		const allFilters = this.getAllFilters( filters );
-		const value = query.filter || DEFAULT_FILTER;
+		value = value || query.filter || DEFAULT_FILTER;
 		return find( allFilters, { value } ) || {};
 	}
 
@@ -94,13 +94,7 @@ class FilterPicker extends Component {
 		if ( filter.component ) {
 			return (
 				<Fragment>
-					<Button
-						className="woocommerce-filters-filter__button has-parent-nav"
-						onClick={ this.goBack }
-					>
-						<Dashicon icon="arrow-left-alt2" />
-						{ filter.label }
-					</Button>
+					<span className="woocommerce-filters-filter__button">{ filter.label }</span>
 					<input
 						type="text"
 						style={ { width: '100%', margin: '0' } }
@@ -127,6 +121,7 @@ class FilterPicker extends Component {
 		const { filters } = this.props;
 		const { nav, animate } = this.state;
 		const visibleFilters = this.getVisibleFilters( filters, nav );
+		const parentFilter = nav.length ? this.getFilter( nav[ nav.length - 1 ] ) : false;
 		const selectedFilter = this.getFilter();
 		return (
 			<div className="woocommerce-filters-filter">
@@ -147,6 +142,17 @@ class FilterPicker extends Component {
 						<AnimationSlider animationKey={ nav } animate={ animate } focusOnChange>
 							{ () => (
 								<ul className="woocommerce-filters-filter__content-list">
+									{ parentFilter && (
+										<li className="woocommerce-filters-filter__content-list-item">
+											<IconButton
+												className="woocommerce-filters-filter__button"
+												onClick={ this.goBack }
+												icon="arrow-left-alt2"
+											>
+												{ parentFilter.label }
+											</IconButton>
+										</li>
+									) }
 									{ visibleFilters.map( filter => (
 										<li
 											key={ filter.value }
