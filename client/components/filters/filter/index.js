@@ -94,7 +94,9 @@ class FilterPicker extends Component {
 		if ( filter.component ) {
 			return (
 				<Fragment>
-					<span className="woocommerce-filters-filter__button">{ filter.label }</span>
+					{ filter.label && (
+						<span className="woocommerce-filters-filter__button">{ filter.label }</span>
+					) }
 					<input
 						type="text"
 						style={ { width: '100%', margin: '0' } }

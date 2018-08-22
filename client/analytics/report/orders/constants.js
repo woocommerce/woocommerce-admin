@@ -11,7 +11,6 @@ export const filters = [
 		value: 'single',
 		subFilters: [
 			{
-				label: __( 'Single Order', 'wc-admin' ),
 				component: 'Search',
 				value: 'single_order',
 				path: [ 'single' ],
