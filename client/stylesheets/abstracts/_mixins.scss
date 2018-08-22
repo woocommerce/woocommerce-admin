@@ -28,6 +28,11 @@
 	}
 }
 
+// Adds animation to transforms
+@mixin animate-transform( $duration: 0.2s ) {
+	transition: transform ease 0.2s;
+}
+
 // Gutenberg Button variables. These are temporary until Gutenberg's variables are exposed.
 @mixin button-style__focus-active() {
 	background-color: $white;
