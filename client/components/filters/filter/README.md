@@ -47,3 +47,13 @@ const renderFilterPicker = () => {
 * `filters` (required): An array of filters and subFilters to construct the menu
 * `path` (required): The `path` parameter supplied by React-Router
 * `query`: The query string represented in object form
+
+### `filters` structure
+
+The `filters` prop is an array of filter objects. Each filter object should have the following format:
+
+* `label`: The label for this filter. Optional only for custom component filters.
+* `subFilters`: An array of more filter objects that act as "children" to this item. This set of filters is shown if the parent filter is clicked.
+* `value` (required): The value for this filter, used to set the `filter` query param when clicked, if there are no `subFilters`.
+* `path`: An array representing the "path" to this filter, if nested. See the Lunch > Pescatarian > Snapper example above.
+* `component`: A custom component used instead of a button, might have special handling for filtering. TBD, not yet implemented.
