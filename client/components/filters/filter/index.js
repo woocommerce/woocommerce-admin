@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, Dashicon, Dropdown } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
-import { find, partial } from 'lodash';
+import { find, omit, partial } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -23,28 +23,36 @@ class FilterPicker extends Component {
 	constructor( props ) {
 		super( props );
 
-		const { path = [] } = this.getFilter( props );
+		const { path = [] } = this.getFilter();
 		this.state = {
 			nav: path,
 			animate: null,
 		};
 
-		this.getSelectedFilter = this.getSelectedFilter.bind( this );
 		this.selectSubFilters = this.selectSubFilters.bind( this );
 		this.getVisibleFilters = this.getVisibleFilters.bind( this );
 		this.goBack = this.goBack.bind( this );
 	}
 
-	getFilter( { filters, query } ) {
-		const value = query.filter || DEFAULT_FILTER;
-		return find( filters, { value } ) || {};
+	getAllFilters( filters ) {
+		const allFilters = [];
+		filters.forEach( f => {
+			if ( ! f.subFilters ) {
+				allFilters.push( f );
+			} else {
+				allFilters.push( omit( f, 'subFilters' ) );
+				const subFilters = this.getAllFilters( f.subFilters );
+				allFilters.push( ...subFilters );
+			}
+		} );
+		return allFilters;
 	}
 
-	getSelectedFilter() {
-		const { filters } = this.props;
-		const { path = [], value } = this.getFilter( this.props );
-		const visibleFilters = this.getVisibleFilters( filters, [ ...path ] );
-		return find( visibleFilters, { value } );
+	getFilter() {
+		const { filters, query } = this.props;
+		const allFilters = this.getAllFilters( filters );
+		const value = query.filter || DEFAULT_FILTER;
+		return find( allFilters, { value } ) || {};
 	}
 
 	getLabels( selectedFilter ) {
@@ -56,17 +64,19 @@ class FilterPicker extends Component {
 		if ( nav.length === 0 ) {
 			return filters;
 		}
-		const value = nav.shift();
+		const value = nav[ 0 ];
 		const nextFilters = find( filters, { value } );
-		return this.getVisibleFilters( nextFilters && nextFilters.subFilters, nav );
+		return this.getVisibleFilters( nextFilters && nextFilters.subFilters, nav.slice( 1 ) );
 	}
 
 	selectSubFilters( value ) {
+		// Add the value onto the nav path
 		this.setState( prevState => ( { nav: [ ...prevState.nav, value ], animate: 'left' } ) );
 	}
 
 	goBack() {
-		this.setState( prevState => ( { nav: prevState.nav.slice( 1 ), animate: 'right' } ) );
+		// Remove the last item from the nav path
+		this.setState( prevState => ( { nav: prevState.nav.slice( 0, -1 ), animate: 'right' } ) );
 	}
 
 	renderButton( filter, onClose ) {
@@ -116,8 +126,8 @@ class FilterPicker extends Component {
 	render() {
 		const { filters } = this.props;
 		const { nav, animate } = this.state;
-		const visibleFilters = this.getVisibleFilters( filters, [ ...nav ] );
-		const selectedFilter = this.getSelectedFilter();
+		const visibleFilters = this.getVisibleFilters( filters, nav );
+		const selectedFilter = this.getFilter();
 		return (
 			<div className="woocommerce-filters-filter">
 				<p>{ __( 'Show', 'wc-admin' ) }:</p>
