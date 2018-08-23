@@ -1,0 +1,31 @@
+/** @format */
+
+.woocommerce-search {
+	position: relative;
+
+	.components-form-token-field {
+		position: relative;
+	}
+	.components-form-token-field__suggestions-list {
+		position: absolute;
+		width: 100%;
+		outline: 1px solid $core-grey-light-700;
+		z-index: 1;
+	}
+}
+
+.woocommerce-search__requesting {
+	position: absolute;
+	width: 100%;
+	border: 1px solid $core-grey-light-700;
+	background-color: $white;
+	padding: $gap-large $gap-small;
+	border-radius: 3px;
+	border-top: 1px solid $core-grey-dark-300;
+
+	.spinner {
+		float: none;
+		margin: 0 auto;
+		display: block;
+	}
+}
