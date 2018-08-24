@@ -1,0 +1,41 @@
+/** @format */
+
+.woocommerce-search {
+	position: relative;
+
+	.woocommerce-search__input {
+		padding: $gap-small;
+		border: 1px solid $core-grey-light-700;
+	}
+
+	.components-autocomplete__results {
+		padding: 0;
+	}
+
+	// This a single `button` in the autocomplete popover
+	.components-autocomplete__result {
+		padding: $gap-small;
+		color: $woocommerce;
+		text-decoration: underline; // @todo Not actually a link, should underline?
+		background: $core-grey-light-100;
+		border-bottom: 1px solid $core-grey-light-500;
+
+		&:hover {
+			box-shadow: none;
+			color: $woocommerce;
+			background: $core-grey-light-200;
+		}
+
+		&.is-selected,
+		&:focus,
+		&:active {
+			box-shadow: none;
+			color: $woocommerce;
+			outline: 1px dotted $black;
+		}
+
+		.woocommerce-search__result-thumbnail {
+			margin-right: $gap-small;
+		}
+	}
+}
