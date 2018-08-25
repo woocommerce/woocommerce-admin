@@ -57,6 +57,6 @@ export default {
 			id: product.id,
 			label: product.name,
 		};
-		return { action: 'replace', value };
+		return value;
 	},
 };

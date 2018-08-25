@@ -3,7 +3,6 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Autocomplete } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { findIndex, noop } from 'lodash';
 import PropTypes from 'prop-types';
@@ -11,8 +10,9 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import { product } from './autocompleters';
+import Autocomplete from './autocomplete';
 import Tag from 'components/tag';
+import { product } from './autocompleters';
 import './style.scss';
 
 class Search extends Component {
@@ -20,17 +20,18 @@ class Search extends Component {
 		super( props );
 		this.state = {
 			selected: [],
+			value: '',
 		};
 
 		this.selectResult = this.selectResult.bind( this );
 		this.removeResult = this.removeResult.bind( this );
 		this.triggerChange = this.triggerChange.bind( this );
+		this.updateSearch = this.updateSearch.bind( this );
 	}
 
 	selectResult( value ) {
-		// Note: `value` is an array
 		this.setState(
-			( { selected } ) => ( { selected: [ ...selected, ...value ] } ),
+			( { selected } ) => ( { selected: [ ...selected, value ], value: '' } ),
 			this.triggerChange
 		);
 	}
@@ -49,34 +50,39 @@ class Search extends Component {
 		onChange( this.state.selected );
 	}
 
+	updateSearch( onChange ) {
+		return event => {
+			const value = event.target.value || '';
+			this.setState( { value } );
+			onChange( event );
+		};
+	}
+
 	getAutocompleter() {
 		switch ( this.props.type ) {
 			case 'products':
-				return [ product ];
+				return product;
 			default:
-				return [];
+				return {};
 		}
 	}
 
 	render() {
 		const autocompleter = this.getAutocompleter();
-		const { selected = [] } = this.state;
+		const { selected = [], value = '' } = this.state;
 		return (
 			<div className="woocommerce-search">
-				<Autocomplete completers={ autocompleter } onReplace={ this.selectResult }>
-					{ /* eslint-disable jsx-a11y/aria-activedescendant-has-tabindex */ }
-					{ ( { isExpanded, listBoxId, activeId } ) => (
-						<div
+				<Autocomplete completer={ autocompleter } onSelect={ this.selectResult }>
+					{ ( { listBoxId, activeId, onChange } ) => (
+						<input
+							type="search"
+							value={ value }
 							className="woocommerce-search__input"
-							contentEditable
-							suppressContentEditableWarning
-							aria-autocomplete="list"
-							aria-expanded={ isExpanded }
+							onChange={ this.updateSearch( onChange ) }
 							aria-owns={ listBoxId }
 							aria-activedescendant={ activeId }
 						/>
 					) }
-					{ /* eslint-enable jsx-a11y/aria-activedescendant-has-tabindex */ }
 				</Autocomplete>
 				{ selected.length ? (
 					<div className="woocommerce-search__token-list">
