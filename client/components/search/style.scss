@@ -2,6 +2,7 @@
 
 .woocommerce-search {
 	position: relative;
+	max-width: 600px;
 
 	.woocommerce-search__input {
 		width: 100%;
@@ -13,6 +14,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
+		border: 1px solid $core-grey-light-700;
 
 		&:empty {
 			display: none;
@@ -33,6 +35,10 @@
 		text-align: left;
 		background: $core-grey-light-100;
 		border-bottom: 1px solid $core-grey-light-500;
+
+		&:last-of-type {
+			border-bottom: none;
+		}
 
 		&:hover {
 			box-shadow: none;

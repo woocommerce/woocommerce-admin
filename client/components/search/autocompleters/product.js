@@ -24,6 +24,7 @@ export default {
 		if ( search ) {
 			const query = {
 				search: encodeURIComponent( search ),
+				per_page: 10,
 				orderby: 'popularity',
 			};
 			payload = '?' + stringify( query );

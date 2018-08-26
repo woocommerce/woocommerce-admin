@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { Button, Popover, withFocusOutside, withSpokenMessages } from '@wordpress/components';
+import { Button, withFocusOutside, withSpokenMessages } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { escapeRegExp, map, debounce } from 'lodash';
@@ -163,7 +163,9 @@ export class Autocomplete extends Component {
 				filteredOptions,
 				selectedIndex,
 			} );
-			this.announce( filteredOptions );
+			if ( query ) {
+				this.announce( filteredOptions );
+			}
 		} ) );
 	}
 
@@ -183,7 +185,7 @@ export class Autocomplete extends Component {
 			}
 		}
 		// create a regular expression to filter the options
-		const search = new RegExp( '(?:\\b|\\s|^)' + escapeRegExp( query ), 'i' );
+		const search = new RegExp( escapeRegExp( query ), 'i' );
 		// filter the options we already have
 		const filteredOptions = filterOptions( search, this.state.options );
 		// update the state
@@ -270,35 +272,24 @@ export class Autocomplete extends Component {
 			<div ref={ this.bindNode } className="woocommerce-search__autocomplete">
 				{ children( { isExpanded, listBoxId, activeId, onChange: this.search } ) }
 				{ isExpanded && (
-					<Popover
-						focusOnMount={ false }
-						onClose={ this.reset }
-						position="top right"
-						className="woocommerce-search__autocomplete-popover"
-					>
-						<div
-							id={ listBoxId }
-							role="listbox"
-							className="woocommerce-search__autocomplete-results"
-						>
-							{ isExpanded &&
-								map( filteredOptions, ( option, index ) => (
-									<Button
-										key={ option.key }
-										id={ `woocommerce-search__autocomplete-${ instanceId }-${ option.key }` }
-										role="option"
-										aria-selected={ index === selectedIndex }
-										disabled={ option.isDisabled }
-										className={ classnames( 'woocommerce-search__autocomplete-result', className, {
-											'is-selected': index === selectedIndex,
-										} ) }
-										onClick={ () => this.select( option ) }
-									>
-										{ option.label }
-									</Button>
-								) ) }
-						</div>
-					</Popover>
+					<div id={ listBoxId } role="listbox" className="woocommerce-search__autocomplete-results">
+						{ isExpanded &&
+							map( filteredOptions, ( option, index ) => (
+								<Button
+									key={ option.key }
+									id={ `woocommerce-search__autocomplete-${ instanceId }-${ option.key }` }
+									role="option"
+									aria-selected={ index === selectedIndex }
+									disabled={ option.isDisabled }
+									className={ classnames( 'woocommerce-search__autocomplete-result', className, {
+										'is-selected': index === selectedIndex,
+									} ) }
+									onClick={ () => this.select( option ) }
+								>
+									{ option.label }
+								</Button>
+							) ) }
+					</div>
 				) }
 			</div>
 		);
