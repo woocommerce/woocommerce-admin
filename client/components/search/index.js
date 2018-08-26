@@ -11,8 +11,8 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import Autocomplete from './autocomplete';
-import Tag from 'components/tag';
 import { product } from './autocompleters';
+import Tag from 'components/tag';
 import './style.scss';
 
 class Search extends Component {

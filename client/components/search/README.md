@@ -1,7 +1,7 @@
 Search
 ======
 
-A search box for tokenized form field
+A search box which autocompletes results while typing, allowing for the user to select an existing object (product, order, customer, etc). Currently only products are supported.
 
 ## Usage
 

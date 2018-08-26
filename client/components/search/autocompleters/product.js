@@ -25,6 +25,7 @@ const computeSuggestionMatch = ( suggestion, query ) => {
 
 /**
  * A products completer.
+ * See https://github.com/WordPress/gutenberg/tree/master/packages/components/src/autocomplete#the-completer-interface
  *
  * @type {Completer}
  */
@@ -71,6 +72,8 @@ export default {
 	allowNode() {
 		return true;
 	},
+	// This is slightly different than gutenberg/Autocomplete, we don't support different methods
+	// of replace/insertion, so we can just return the value.
 	getOptionCompletion( product ) {
 		const value = {
 			id: product.id,
