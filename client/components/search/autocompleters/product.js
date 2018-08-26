@@ -32,7 +32,6 @@ const computeSuggestionMatch = ( suggestion, query ) => {
 export default {
 	name: 'products',
 	className: 'woocommerce-search__product-result',
-	triggerPrefix: '',
 	options( search ) {
 		let payload = '';
 		if ( search ) {
@@ -68,9 +67,6 @@ export default {
 				{ match.suggestionAfterMatch }
 			</span>,
 		];
-	},
-	allowNode() {
-		return true;
 	},
 	// This is slightly different than gutenberg/Autocomplete, we don't support different methods
 	// of replace/insertion, so we can just return the value.
