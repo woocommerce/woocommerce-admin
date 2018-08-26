@@ -30,10 +30,14 @@ class Search extends Component {
 	}
 
 	selectResult( value ) {
-		this.setState(
-			( { selected } ) => ( { selected: [ ...selected, value ], value: '' } ),
-			this.triggerChange
-		);
+		// Check if this is already selected
+		const isSelected = findIndex( this.state.selected, { id: value.id } );
+		if ( -1 === isSelected ) {
+			this.setState(
+				( { selected } ) => ( { selected: [ ...selected, value ], value: '' } ),
+				this.triggerChange
+			);
+		}
 	}
 
 	removeResult( id ) {
