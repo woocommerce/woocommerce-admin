@@ -150,7 +150,7 @@ export class Autocomplete extends Component {
 			const keyedOptions = optionsData.map( ( optionData, optionIndex ) => ( {
 				key: optionIndex,
 				value: optionData,
-				label: completer.getOptionLabel( optionData ),
+				label: completer.getOptionLabel( optionData, query ),
 				keywords: completer.getOptionKeywords ? completer.getOptionKeywords( optionData ) : [],
 				isDisabled: completer.isOptionDisabled ? completer.isOptionDisabled( optionData ) : false,
 			} ) );

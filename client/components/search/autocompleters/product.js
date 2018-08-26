@@ -10,6 +10,19 @@ import { stringify } from 'qs';
  */
 import ProductImage from 'components/product-image';
 
+const computeSuggestionMatch = ( suggestion, query ) => {
+	if ( ! query ) {
+		return null;
+	}
+	const indexOfMatch = suggestion.toLocaleLowerCase().indexOf( query.toLocaleLowerCase() );
+
+	return {
+		suggestionBeforeMatch: suggestion.substring( 0, indexOfMatch ),
+		suggestionMatch: suggestion.substring( indexOfMatch, indexOfMatch + query.length ),
+		suggestionAfterMatch: suggestion.substring( indexOfMatch + query.length ),
+	};
+};
+
 /**
  * A products completer.
  *
@@ -35,7 +48,8 @@ export default {
 	getOptionKeywords( product ) {
 		return [ product.name ];
 	},
-	getOptionLabel( product ) {
+	getOptionLabel( product, query ) {
+		const match = computeSuggestionMatch( product.name, query ) || {};
 		return [
 			<ProductImage
 				key="thumbnail"
@@ -45,8 +59,12 @@ export default {
 				height={ 18 }
 				alt=""
 			/>,
-			<span key="name" className="woocommerce-search__result-name">
-				{ product.name }
+			<span key="name" className="woocommerce-search__result-name" aria-label={ product.name }>
+				{ match.suggestionBeforeMatch }
+				<strong className="components-form-token-field__suggestion-match">
+					{ match.suggestionMatch }
+				</strong>
+				{ match.suggestionAfterMatch }
 			</span>,
 		];
 	},
