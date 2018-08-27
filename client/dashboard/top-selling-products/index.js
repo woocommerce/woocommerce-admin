@@ -18,7 +18,7 @@ import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { NAMESPACE } from 'store/constants';
 import './style.scss';
 
-class TopSellingProducts extends Component {
+export class TopSellingProducts extends Component {
 	getHeadersContent() {
 		return [
 			{
@@ -97,7 +97,7 @@ class TopSellingProducts extends Component {
 }
 
 export default compose(
-	withSelect( ( select ) => {
+	withSelect( select => {
 		const { getReportStats } = select( 'wc-admin' );
 
 		const data = getReportStats( NAMESPACE + 'reports/products', { orderby: 'items_sold' } );
