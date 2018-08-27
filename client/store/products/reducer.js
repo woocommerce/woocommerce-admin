@@ -10,13 +10,13 @@ import { get } from 'lodash';
 import { ERROR } from 'store/constants';
 import { getJsonString } from 'store/util';
 
-const DEFAULT_STATE = {
+export const DEFAULT_STATE = {
 	queries: {},
 };
 
 export default function productsReducer( state = DEFAULT_STATE, action ) {
 	if ( 'SET_PRODUCTS' === action.type ) {
-		const prevQueries = get( state, 'queries', [] );
+		const prevQueries = get( state, 'queries', {} );
 		const queryKey = getJsonString( action.query );
 		const queries = {
 			...prevQueries,
@@ -28,7 +28,7 @@ export default function productsReducer( state = DEFAULT_STATE, action ) {
 		};
 	}
 	if ( 'SET_PRODUCTS_ERROR' === action.type ) {
-		const prevQueries = get( state, 'queries', [] );
+		const prevQueries = get( state, 'queries', {} );
 		const queryKey = getJsonString( action.query );
 		const queries = {
 			...prevQueries,
