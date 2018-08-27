@@ -5,6 +5,8 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { map } from 'lodash';
+import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -13,10 +15,8 @@ import { Card, Table } from '@woocommerce/components';
 import { getAdminLink } from 'lib/nav-utils';
 import { numberFormat } from 'lib/number';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
+import { NAMESPACE } from 'store/constants';
 import './style.scss';
-
-// Mock data until we fetch from an API
-import mockData from './mock-data';
 
 class TopSellingProducts extends Component {
 	getHeadersContent() {
@@ -82,7 +82,9 @@ class TopSellingProducts extends Component {
 	}
 
 	render() {
-		const rows = this.getRowsContent( mockData ) || [];
+		const { data } = this.props;
+		// TODO: need a loading/empty data indicator
+		const rows = this.getRowsContent( data ) || [];
 		const headers = this.getHeadersContent();
 		const title = __( 'Top Selling Products', 'wc-admin' );
 
@@ -94,4 +96,12 @@ class TopSellingProducts extends Component {
 	}
 }
 
-export default TopSellingProducts;
+export default compose(
+	withSelect( ( select ) => {
+		const { getReportStats } = select( 'wc-admin' );
+
+		const data = getReportStats( NAMESPACE + 'reports/products', { orderby: 'items_sold' } );
+
+		return { data };
+	} )
+)( TopSellingProducts );
