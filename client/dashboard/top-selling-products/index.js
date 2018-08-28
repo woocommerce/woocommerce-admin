@@ -51,7 +51,7 @@ export class TopSellingProducts extends Component {
 		];
 	}
 
-	getRowsContent( data = [] ) {
+	getRowsContent( data ) {
 		return map( data, row => {
 			const { product_id, items_sold, gross_revenue, orders_count } = row;
 
@@ -82,9 +82,10 @@ export class TopSellingProducts extends Component {
 	}
 
 	render() {
-		const { data } = this.props;
+		const { data, isRequesting, isError } = this.props;
+
 		// TODO: need a loading/empty data indicator
-		const rows = this.getRowsContent( data ) || [];
+		const rows = isRequesting || isError ? [] : this.getRowsContent( data );
 		const headers = this.getHeadersContent();
 		const title = __( 'Top Selling Products', 'wc-admin' );
 
@@ -98,10 +99,14 @@ export class TopSellingProducts extends Component {
 
 export default compose(
 	withSelect( select => {
-		const { getReportStats } = select( 'wc-admin' );
+		const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
+		const endpoint = NAMESPACE + 'reports/products';
+		const query = { orderby: 'items_sold' };
 
-		const data = getReportStats( NAMESPACE + 'reports/products', { orderby: 'items_sold' } );
+		const data = getReportStats( endpoint, query );
+		const isRequesting = isReportStatsRequesting( endpoint, query );
+		const isError = isReportStatsError( endpoint, query );
 
-		return { data };
+		return { data, isRequesting, isError };
 	} )
 )( TopSellingProducts );

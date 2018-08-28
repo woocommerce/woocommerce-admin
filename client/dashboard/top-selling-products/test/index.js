@@ -39,11 +39,15 @@ describe( 'TopSellingProducts', () => {
 
 	test( 'should load report stats from API', () => {
 		const getReportStatsMock = jest.fn().mockReturnValue( mockData );
+		const isReportStatsRequestingMock = jest.fn().mockReturnValue( false );
+		const isReportStatsErrorMock = jest.fn().mockReturnValue( false );
 		const registry = createRegistry();
 		registry.registerStore( 'wc-admin', {
 			reducer: () => {},
 			selectors: {
 				getReportStats: getReportStatsMock,
+				isReportStatsRequesting: isReportStatsRequestingMock,
+				isReportStatsError: isReportStatsErrorMock,
 			},
 		} );
 		const topSellingProductsWrapper = TestRenderer.create(
@@ -53,9 +57,15 @@ describe( 'TopSellingProducts', () => {
 		);
 		const topSellingProducts = topSellingProductsWrapper.root.findByType( TopSellingProducts );
 
-		expect( getReportStatsMock ).toBeCalledWith( {}, '/wc/v3/reports/products', {
-			orderby: 'items_sold',
-		} );
+		const endpoint = '/wc/v3/reports/products';
+		const query = { orderby: 'items_sold' };
+
+		expect( getReportStatsMock.mock.calls[ 0 ][ 1 ] ).toBe( endpoint );
+		expect( getReportStatsMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
+		expect( isReportStatsRequestingMock.mock.calls[ 0 ][ 1 ] ).toBe( endpoint );
+		expect( isReportStatsRequestingMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
+		expect( isReportStatsErrorMock.mock.calls[ 0 ][ 1 ] ).toBe( endpoint );
+		expect( isReportStatsErrorMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
 		expect( topSellingProducts.props.data ).toBe( mockData );
 	} );
 } );
