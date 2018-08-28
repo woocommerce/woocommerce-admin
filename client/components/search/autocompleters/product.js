@@ -3,12 +3,12 @@
  * External dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
-import { stringify } from 'qs';
 
 /**
  * Internal dependencies
  */
 import ProductImage from 'components/product-image';
+import { stringifyQuery } from 'lib/nav-utils';
 
 const computeSuggestionMatch = ( suggestion, query ) => {
 	if ( ! query ) {
@@ -40,7 +40,7 @@ export default {
 				per_page: 10,
 				orderby: 'popularity',
 			};
-			payload = '?' + stringify( query );
+			payload = stringifyQuery( query );
 		}
 		return apiFetch( { path: '/wc/v3/products' + payload } );
 	},
