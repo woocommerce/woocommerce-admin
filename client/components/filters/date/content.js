@@ -95,7 +95,7 @@ class DatePickerContent extends Component {
 										after={ after }
 										before={ before }
 										onUpdate={ onUpdate }
-										inValidDays="future"
+										invalidDays="future"
 										focusedInput={ focusedInput }
 										afterText={ afterText }
 										beforeText={ beforeText }
