@@ -84,7 +84,7 @@ export class TopSellingProducts extends Component {
 	render() {
 		const { data, isRequesting, isError } = this.props;
 
-		// TODO: need a loading/empty data indicator
+		// @TODO We will need to update it with a loading/empty data indicator
 		const rows = isRequesting || isError ? [] : this.getRowsContent( data );
 		const headers = this.getHeadersContent();
 		const title = __( 'Top Selling Products', 'wc-admin' );
@@ -101,6 +101,8 @@ export default compose(
 	withSelect( select => {
 		const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
 		const endpoint = NAMESPACE + 'reports/products';
+		// @TODO We will need to add the date parameters from the Date Picker
+		// { after: '2018-04-22', before: '2018-05-06' }
 		const query = { orderby: 'items_sold' };
 
 		const data = getReportStats( endpoint, query );
