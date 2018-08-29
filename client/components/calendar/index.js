@@ -185,4 +185,4 @@ DateRange.propTypes = {
 	shortDateFormat: PropTypes.string.isRequired,
 };
 
-export { DateRange };
+export default DateRange;

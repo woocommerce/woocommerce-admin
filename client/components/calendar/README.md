@@ -6,7 +6,7 @@ This is wrapper for a [react-dates](https://github.com/airbnb/react-dates) power
 ## How to use:
 
 ```jsx
-import { DateRange } from 'components/calendar';
+import { DateRange } from '@woocommerce/components';
 
 render: function() {
   return (

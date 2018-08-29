@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import './style.scss';
-import { EllipsisMenu } from 'components/ellipsis-menu';
+import EllipsisMenu from 'components/ellipsis-menu';
 import { H, Section } from 'layout/section';
 import { validateComponent } from 'lib/proptype-validator';
 
