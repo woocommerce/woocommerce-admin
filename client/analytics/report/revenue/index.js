@@ -5,7 +5,8 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
-import { map, noop } from 'lodash';
+import { get, map } from 'lodash';
+import { saveAs } from 'browser-filesaver';
 import PropTypes from 'prop-types';
 
 /**
@@ -24,7 +25,7 @@ import { getAdminLink, getNewPath, updateQueryString } from 'lib/nav-utils';
 import { getReportData } from 'lib/swagger';
 
 // Mock data until we fetch from an API
-import rawData from './mock-data';
+import mockData from './__mocks__/mock-data';
 import testData from './data';
 const charts = {
 	gross_revenue: {
@@ -48,6 +49,7 @@ const charts = {
 class RevenueReport extends Component {
 	constructor() {
 		super();
+		this.onDownload = this.onDownload.bind( this );
 		this.onQueryChange = this.onQueryChange.bind( this );
 
 		// TODO remove this when we implement real endpoints
@@ -70,9 +72,35 @@ class RevenueReport extends Component {
 
 			response.json().then( () => {
 				// Ignore data, just use our fake data once we have a response
-				this.setState( { stats: rawData } );
+				this.setState( { stats: mockData } );
 			} );
 		} );
+	}
+
+	getCSVHeaders( headers = [] ) {
+		return headers.map( header => header.label ).join( ',' );
+	}
+
+	getCSVRows( rows = [] ) {
+		return rows.map( row => row.map( rowItem => rowItem.value ).join( ',' ) ).join( '\n' );
+	}
+
+	getCSVTotals( headers = [], totals = [] ) {
+		return headers.map( header => get( totals, header.key, '-' ) ).join( ',' );
+	}
+
+	onDownload( headers, rows, totals ) {
+		return () => {
+			const csvData = [
+				this.getCSVHeaders( headers ),
+				this.getCSVRows( rows ),
+				this.getCSVTotals( headers, totals ),
+			].join( '\n' );
+
+			const blob = new Blob( [ csvData ], { type: 'text/csv;charset=utf-8' } );
+
+			saveAs( blob, 'data.csv' );
+		};
 	}
 
 	/**
@@ -300,7 +328,7 @@ class RevenueReport extends Component {
 					title={ __( 'Revenue Last Week', 'wc-admin' ) }
 					rows={ rows }
 					headers={ headers }
-					onClickDownload={ noop }
+					onClickDownload={ this.onDownload( headers, rows, totals ) }
 					onQueryChange={ this.onQueryChange }
 					query={ query }
 					summary={ summary }
