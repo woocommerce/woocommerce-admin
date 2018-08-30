@@ -28,7 +28,7 @@ deleteExistingDocs();
 // Read components file to get a list of exported files, convert that to a list of absolute paths to public components.
 const files = getRealFilePaths( getExportedFileList( filePath ) );
 
-// Build the documentation by reading each file. We use partial here because we don't have access to the file path otherwise.
+// Build the documentation by reading each file.
 files.forEach( file => {
 	try {
 		const content = fs.readFileSync( file );
