@@ -201,7 +201,7 @@ FilterPicker.propTypes = {
 			 * An array of more filter objects that act as "children" to this item.
 			 * This set of filters is shown if the parent filter is clicked.
 			 */
-			subFilters: PropTypes.string,
+			subFilters: PropTypes.array,
 			/**
 			 * The value for this filter, used to set the `filter` query param when clicked, if there are no `subFilters`.
 			 */
