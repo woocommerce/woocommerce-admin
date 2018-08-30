@@ -4,6 +4,7 @@
  * @format
  */
 import { shallow } from 'enzyme';
+import moment from 'moment';
 import fetch from 'node-fetch';
 import { saveAs } from 'browser-filesaver';
 
@@ -34,6 +35,9 @@ describe( 'RevenueReport', () => {
 
 		const blob = new Blob( [ mockCSV ], { type: 'text/csv;charset=utf-8' } );
 
-		expect( saveAs ).toHaveBeenCalledWith( blob, 'data.csv' );
+		expect( saveAs ).toHaveBeenCalledWith(
+			blob,
+			'revenue-' + moment().format( 'YYYY-MM-DD' ) + '.csv'
+		);
 	} );
 } );

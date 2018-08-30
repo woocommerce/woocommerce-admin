@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { get, map } from 'lodash';
+import moment from 'moment';
 import { saveAs } from 'browser-filesaver';
 import PropTypes from 'prop-types';
 
@@ -89,7 +90,19 @@ class RevenueReport extends Component {
 		return headers.map( header => get( totals, header.key, '-' ) ).join( ',' );
 	}
 
-	onDownload( headers, rows, totals ) {
+	generateCSVFileName( query ) {
+		const fileNameSections = [
+			'revenue',
+			moment().format( 'YYYY-MM-DD' ),
+			Object.keys( query )
+				.map( key => key + '-' + query[ key ] )
+				.join( '-' ),
+		].filter( text => text.length );
+
+		return fileNameSections.join( '-' ) + '.csv';
+	}
+
+	onDownload( headers, rows, totals, query ) {
 		return () => {
 			const csvData = [
 				this.getCSVHeaders( headers ),
@@ -98,8 +111,9 @@ class RevenueReport extends Component {
 			].join( '\n' );
 
 			const blob = new Blob( [ csvData ], { type: 'text/csv;charset=utf-8' } );
+			const fileName = this.generateCSVFileName( query );
 
-			saveAs( blob, 'data.csv' );
+			saveAs( blob, fileName );
 		};
 	}
 
@@ -328,7 +342,7 @@ class RevenueReport extends Component {
 					title={ __( 'Revenue Last Week', 'wc-admin' ) }
 					rows={ rows }
 					headers={ headers }
-					onClickDownload={ this.onDownload( headers, rows, totals ) }
+					onClickDownload={ this.onDownload( headers, rows, totals, query ) }
 					onQueryChange={ this.onQueryChange }
 					query={ query }
 					summary={ summary }
