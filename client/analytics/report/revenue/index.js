@@ -5,9 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
-import { get, map } from 'lodash';
-import moment from 'moment';
-import { saveAs } from 'browser-filesaver';
+import { map } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -21,6 +19,7 @@ import {
 	SummaryNumber,
 	TableCard,
 } from '@woocommerce/components';
+import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getAdminLink, getNewPath, updateQueryString } from 'lib/nav-utils';
 import { getReportData } from 'lib/swagger';
@@ -78,42 +77,12 @@ class RevenueReport extends Component {
 		} );
 	}
 
-	getCSVHeaders( headers = [] ) {
-		return headers.map( header => header.label ).join( ',' );
-	}
-
-	getCSVRows( rows = [] ) {
-		return rows.map( row => row.map( rowItem => rowItem.value ).join( ',' ) ).join( '\n' );
-	}
-
-	getCSVTotals( headers = [], totals = [] ) {
-		return headers.map( header => get( totals, header.key, '-' ) ).join( ',' );
-	}
-
-	generateCSVFileName( query ) {
-		const fileNameSections = [
-			'revenue',
-			moment().format( 'YYYY-MM-DD' ),
-			Object.keys( query )
-				.map( key => key + '-' + query[ key ] )
-				.join( '-' ),
-		].filter( text => text.length );
-
-		return fileNameSections.join( '-' ) + '.csv';
-	}
-
 	onDownload( headers, rows, totals, query ) {
 		return () => {
-			const csvData = [
-				this.getCSVHeaders( headers ),
-				this.getCSVRows( rows ),
-				this.getCSVTotals( headers, totals ),
-			].join( '\n' );
-
-			const blob = new Blob( [ csvData ], { type: 'text/csv;charset=utf-8' } );
-			const fileName = this.generateCSVFileName( query );
-
-			saveAs( blob, fileName );
+			downloadCSVFile(
+				generateCSVFileName( 'revenue', query ),
+				generateCSVDataFromTable( headers, rows, totals )
+			);
 		};
 	}
 

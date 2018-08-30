@@ -3,21 +3,22 @@
  *
  * @format
  */
-import { shallow } from 'enzyme';
-import moment from 'moment';
 import fetch from 'node-fetch';
-import { saveAs } from 'browser-filesaver';
+import moment from 'moment';
+import { shallow } from 'enzyme';
+import { TableCard } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import RevenueReport from '../';
-import { TableCard } from '@woocommerce/components';
 import mockData from '../__mocks__/mock-data';
 import mockCSV from '../__mocks__/mock-csv';
+import { downloadCSVFile } from 'lib/csv';
 
-jest.mock( 'browser-filesaver', () => ( {
-	saveAs: jest.fn(),
+jest.mock( 'lib/csv', () => ( {
+	...require.requireActual( 'lib/csv' ),
+	downloadCSVFile: jest.fn(),
 } ) );
 
 window.fetch = fetch;
@@ -33,11 +34,9 @@ describe( 'RevenueReport', () => {
 		const tableCard = revenueReport.find( TableCard );
 		tableCard.props().onClickDownload();
 
-		const blob = new Blob( [ mockCSV ], { type: 'text/csv;charset=utf-8' } );
-
-		expect( saveAs ).toHaveBeenCalledWith(
-			blob,
-			'revenue-' + moment().format( 'YYYY-MM-DD' ) + '.csv'
+		expect( downloadCSVFile ).toHaveBeenCalledWith(
+			'revenue-' + moment().format( 'YYYY-MM-DD' ) + '.csv',
+			mockCSV
 		);
 	} );
 } );
