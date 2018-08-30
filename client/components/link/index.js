@@ -28,7 +28,7 @@ class Link extends Component {
 		} else if ( 'external' === type ) {
 			path = href;
 		} else {
-			path = getAdminLink( 'admin.php?page=wc-admin#' + href );
+			path = getAdminLink( 'admin.php?page=woocommerce#' + href );
 		}
 
 		return (

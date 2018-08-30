@@ -13,6 +13,7 @@ import { Provider as SlotFillProvider } from 'react-slot-fill';
 import './stylesheets/_index.scss';
 import { PageLayout } from './layout';
 import 'store';
+import Menu from './menu';
 
 render(
 	<APIProvider
@@ -24,4 +25,16 @@ render(
 		</SlotFillProvider>
 	</APIProvider>,
 	document.getElementById( 'root' )
+);
+
+render(
+	<APIProvider
+		{ ...wpApiSettings }
+		{ ...pick( wp.api, [ 'postTypeRestBaseMapping', 'taxonomyRestBaseMapping' ] ) }
+	>
+		<SlotFillProvider>
+			<Menu />
+		</SlotFillProvider>
+	</APIProvider>,
+	document.getElementById( 'adminmenuwrap' )
 );

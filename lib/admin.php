@@ -1,153 +1,134 @@
 <?php
 /**
- * Returns true if we are on a JS powered admin page.
- */
-function wc_admin_is_admin_page() {
-	global $hook_suffix;
-	if ( in_array( $hook_suffix, array( 'woocommerce_page_wc-admin' ) ) ) {
-		return true;
-	}
-	return false;
-}
-
-/**
- * Returns true if we are on a "classic" (non JS app) powered admin page.
- * `wc_get_screen_ids` will also return IDs for extensions that have properly registered themselves.
- */
-function wc_admin_is_embed_enabled_wc_page() {
-	$screen_id = wc_admin_get_current_screen_id();
-	if ( ! $screen_id ) {
-		return false;
-	}
-
-	$screens = wc_admin_get_embed_enabled_screen_ids();
-
-	if ( in_array( $screen_id, $screens ) ) {
-		return true;
-	}
-	return false;
-}
-
-/**
- * Add a single page to a given parent top-level-item.
- *
- * @param array $options {
- *     Array describing the menu item.
- *
- *     @type string $title Menu title
- *     @type string $parent Parent path or menu ID
- *     @type string $path Path for this page, full path in app context; ex /analytics/report
- * }
- */
-function wc_admin_register_page( $options ) {
-	$defaults = array(
-		'parent' => '/analytics',
-	);
-	$options  = wp_parse_args( $options, $defaults );
-	add_submenu_page(
-		'/' === $options['parent'][0] ? "wc-admin#{$options['parent']}" : $options['parent'],
-		$options['title'],
-		$options['title'],
-		'manage_options',
-		"wc-admin#{$options['path']}",
-		'wc_admin_page'
-	);
-}
-
-/**
  * Register menu pages for the Dashboard and Analytics sections.
  */
 function wc_admin_register_pages() {
 	global $menu, $submenu;
 
-	add_submenu_page(
-		'woocommerce',
-		__( 'WooCommerce Dashboard', 'wc-admin' ),
-		__( 'Dashboard', 'wc-admin' ),
-		'manage_options',
-		'wc-admin',
-		'wc_admin_page'
-	);
-
-	add_menu_page(
-		__( 'WooCommerce Analytics', 'wc-admin' ),
-		__( 'Analytics', 'wc-admin' ),
-		'manage_options',
-		'wc-admin#/analytics',
-		'wc_admin_page',
-		'dashicons-chart-bar',
-		56 // After WooCommerce & Product menu items.
-	);
+	wc_admin_add_menu_link( array(
+		'id' => 'analytics',
+		'title' => __( 'Analytics', 'wc-admin' ),
+		'path'  => '/analytics',
+		'js_page' => true,
+	) );
 
 	wc_admin_register_page( array(
+		'id'     => 'analytics-report-test',
 		'title'  => __( 'Report Title', 'wc-admin' ),
-		'parent' => '/analytics',
+		'parent' => 'analytics',
 		'path'   => '/analytics/test',
 	) );
 
 	wc_admin_register_page( array(
+		'id'     => 'analytics-report-revenue',
 		'title'  => __( 'Revenue', 'wc-admin' ),
-		'parent' => '/analytics',
+		'parent' => 'analytics',
 		'path'   => '/analytics/revenue',
 	) );
 
 	wc_admin_register_page( array(
+		'id'     => 'analytics-report-products',
 		'title'  => __( 'Products', 'wc-admin' ),
-		'parent' => '/analytics',
+		'parent' => 'analytics',
 		'path'   => '/analytics/products',
 	) );
 
 	wc_admin_register_page( array(
+		'id'     => 'analytics-report-orders',
 		'title'  => __( 'Orders', 'wc-admin' ),
-		'parent' => '/analytics',
+		'parent' => 'analytics',
 		'path'   => '/analytics/orders',
+	) );
+
+	wc_admin_connect_page( array(
+		'id'     => 'coupons',
+		'path'   => 'edit.php?post_type=shop_coupon',
+		'title'  => __( 'Coupons', 'wc-admin' ),
+		'screen_id' => 'edit-shop_coupon',
+	) );
+
+	wc_admin_connect_page( array(
+		'id'          => 'coupons-add',
+		'parent'      => 'coupons',
+		'path'        => 'post-new.php?post_type=shop_coupon',
+		'title'       => __( 'Add New', 'wc-admin' ),
+		'screen_id'   => 'add-shop_coupon',
+	) );
+
+	wc_admin_connect_page( array(
+		'id'        => 'products',
+		'parent'    => null,
+		'path'      => 'edit.php?post_type=product',
+		'title'     => __( 'Products', 'wc-admin' ),
+		'screen_id' => 'edit-product',
+	) );
+
+	wc_admin_add_menu_link( array(
+		'id'     => 'products-all',
+		'title'  => __( 'All Products', 'wc-admin' ),
+		'parent' => 'products',
+		'path'   => 'edit.php?post_type=product',
+	) );
+
+	wc_admin_connect_page( array(
+		'id'     => 'products-add',
+		'title'  => __( 'Add New', 'wc-admin' ),
+		'parent' => 'products',
+		'path'   => 'post-new.php?post_type=product',
+		'screen_id' => 'add-product',
+	) );
+
+	wc_admin_add_menu_link( array(
+		'id'     => 'coupons-test',
+		'title'  => __( 'Test Link', 'wc-admin' ),
+		'parent' => 'coupons-add',
+		'path'   => '#test',
+	) );
+
+	wc_admin_add_menu_link( array(
+		'id'     => 'coupons-test',
+		'title'  => __( 'Test Link', 'wc-admin' ),
+		'parent' => 'coupons-add',
+		'path'   => '#test',
+	) );
+
+	wc_admin_connect_page( array(
+		'id'           => 'edit-coupon',
+		'title'        => __( 'Edit Coupon', 'wc-admin' ),
+		'parent'       => 'coupons',
+		'screen_id'    => 'shop_coupon',
+		'show_in_menu' => false,
+	) );
+
+	wc_admin_connect_page( array(
+		'id'        => 'settings',
+		'title'     => __( 'Settings', 'wc-admin' ),
+		'screen_id' => 'woocommerce_page_wc-settings-general',
+		'path'      => 'admin.php?page=wc-settings',
+	) );
+
+	wc_admin_add_menu_link( array(
+		'id'     => 'settings-general',
+		'title'  => __( 'General', 'wc-admin' ),
+		'parent' => 'settings',
+		'path'   => 'admin.php?page=wc-settings&tab=general',
+	) );
+
+	wc_admin_connect_page( array(
+		'id'        => 'settings-products',
+		'title'     => __( 'Products', 'wc-admin' ),
+		'parent'    => 'settings',
+		'screen_id' => 'woocommerce_page_wc-settings-products',
+		'path'      => 'admin.php?page=wc-settings&tab=products',
 	) );
 }
 add_action( 'admin_menu', 'wc_admin_register_pages' );
 
 /**
- * This method is temporary while this is a feature plugin. As a part of core,
- * we can integrate this better with wc-admin-menus.
- *
- * It makes dashboard the top level link for 'WooCommerce' and renames the first Analytics menu item.
- */
-function wc_admin_link_structure() {
-	global $submenu;
-	// User does not have capabilites to see the submenu.
-	if ( ! current_user_can( 'manage_woocommerce' ) ) {
-		return;
-	}
-
-	$wc_admin_key = null;
-	foreach ( $submenu['woocommerce'] as $submenu_key => $submenu_item ) {
-		if ( 'wc-admin' === $submenu_item[2] ) {
-			$wc_admin_key = $submenu_key;
-			break;
-		}
-	}
-
-	if ( ! $wc_admin_key ) {
-		return;
-	}
-
-	$menu = $submenu['woocommerce'][ $wc_admin_key ];
-
-	// Move menu item to top of array.
-	unset( $submenu['woocommerce'][ $wc_admin_key ] );
-	array_unshift( $submenu['woocommerce'], $menu );
-
-	// Rename "Analytics" to Overview (otherwise this reads Analytics > Analytics).
-	$submenu['wc-admin#/analytics'][0][0] = __( 'Overview', 'wc-admin' );
-}
-
-// priority is 20 to run after https://github.com/woocommerce/woocommerce/blob/a55ae325306fc2179149ba9b97e66f32f84fdd9c/includes/admin/class-wc-admin-menus.php#L165.
-add_action( 'admin_head', 'wc_admin_link_structure', 20 );
-
-/**
  * Load the assets on the admin pages
  */
 function wc_admin_enqueue_script() {
-	if ( ! wc_admin_is_admin_page() && ! wc_admin_is_embed_enabled_wc_page() ) {
+	if ( ! is_wc_admin_page() ) {
 		return;
 	}
 
@@ -159,13 +140,13 @@ add_action( 'admin_enqueue_scripts', 'wc_admin_enqueue_script' );
 function wc_admin_admin_body_class( $admin_body_class = '' ) {
 	global $hook_suffix;
 
-	if ( ! wc_admin_is_admin_page() && ! wc_admin_is_embed_enabled_wc_page() ) {
+	if ( ! is_wc_admin_page() ) {
 		return $admin_body_class;
 	}
 
 	$classes = explode( ' ', trim( $admin_body_class ) );
 	$classes[] = 'woocommerce-page';
-	if ( wc_admin_is_embed_enabled_wc_page() ) {
+	if ( is_wc_admin_embed_page() ) {
 		$classes[] = 'woocommerce-embed-page';
 	}
 	$admin_body_class = implode( ' ', array_unique( $classes ) );
@@ -175,7 +156,7 @@ add_filter( 'admin_body_class', 'wc_admin_admin_body_class' );
 
 
 function wc_admin_admin_before_notices() {
-	if ( ! wc_admin_is_admin_page() && ! wc_admin_is_embed_enabled_wc_page() ) {
+	if ( ! is_wc_admin_page() ) {
 		return;
 	}
 	echo '<div class="woocommerce-layout__notice-list-hide" id="wp__notice-list">';
@@ -184,7 +165,7 @@ function wc_admin_admin_before_notices() {
 add_action( 'admin_notices', 'wc_admin_admin_before_notices', 0 );
 
 function wc_admin_admin_after_notices() {
-	if ( ! wc_admin_is_admin_page() && ! wc_admin_is_embed_enabled_wc_page() ) {
+	if ( ! is_wc_admin_page() ) {
 		return;
 	}
 	echo '</div>';
@@ -193,12 +174,12 @@ add_action( 'admin_notices', 'wc_admin_admin_after_notices', PHP_INT_MAX );
 
 // TODO Can we do some URL rewriting so we can figure out which page they are on server side?
 function wc_admin_admin_title( $admin_title ) {
-	if ( ! wc_admin_is_admin_page() && ! wc_admin_is_embed_enabled_wc_page() ) {
+	if ( ! is_wc_admin_page() ) {
 		return $admin_title;
 	}
 
-	if ( wc_admin_is_embed_enabled_wc_page() ) {
-		$sections = wc_admin_get_embed_breadcrumbs();
+	if ( is_wc_admin_embed_page() ) {
+		$sections = wc_admin_get_breadcrumbs();
 		$sections = is_array( $sections ) ? $sections : array( $sections );
 		$pieces   = array();
 
@@ -228,17 +209,17 @@ function wc_admin_page(){
 }
 
 /**
- * Set up a div for the header embed to render into.
+ * Set up a div for the embedded header to render into.
  * The initial contents here are meant as a place loader for when the PHP page initialy loads.
 
  * TODO Icon Placeholders for the ActivityPanel, when we implement the new designs.
  */
-function woocommerce_embed_page_header() {
-	if ( ! wc_admin_is_embed_enabled_wc_page() ) {
+function wc_admin_embed_page_header() {
+	if ( ! is_wc_admin_embed_page() ) {
 		return;
 	}
 
-	$sections    = wc_admin_get_embed_breadcrumbs();
+	$sections    = wc_admin_get_breadcrumbs();
 	$sections    = is_array( $sections ) ? $sections : array( $sections );
 	$breadcrumbs = '';
 	foreach ( $sections as $section ) {
@@ -250,7 +231,7 @@ function woocommerce_embed_page_header() {
 		<div class="woocommerce-layout">
 			<div class="woocommerce-layout__header is-embed-loading">
 				<h1 class="woocommerce-layout__header-breadcrumbs">
-					<span><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-admin#/' ) ); ?>">WooCommerce</a></span>
+					<span><a href="<?php echo esc_url( admin_url( 'admin.php?page=woocommerce#/' ) ); ?>">WooCommerce</a></span>
 					<?php echo $breadcrumbs; ?>
 				</h1>
 			</div>
@@ -262,4 +243,4 @@ function woocommerce_embed_page_header() {
 	<?php
 }
 
-add_action( 'in_admin_header', 'woocommerce_embed_page_header' );
+add_action( 'in_admin_header', 'wc_admin_embed_page_header' );

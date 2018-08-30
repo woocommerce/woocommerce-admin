@@ -1,6 +1,23 @@
 /** @format */
 // css resets some wp-admin specific rules so that the app fits better in the extension container
+
 .woocommerce-page {
+	#collapse-menu {
+		display: none;
+	}
+
+	#adminmenu .wp-submenu {
+		position: relative;
+		z-index: 3;
+		top: auto;
+		left: auto;
+		right: auto;
+		bottom: auto;
+		border: 0 none;
+		margin-top: 0;
+		box-shadow: none;
+	}
+
 	.wrap {
 		margin: 0;
 	}
