@@ -56,10 +56,10 @@ Props
 ### `config`
 
 - **Required**
-- Type: Object 
+- Type: Object
   - label: String
   - addLabel: String
-  - rules: Array 
+  - rules: Array
 Object
   - input: Object
 - Default: null
@@ -134,12 +134,13 @@ Props
 ### `filters`
 
 - **Required**
-- Type: Array 
-  - component: String
-  - label: String
-  - path: String
-  - subFilters: Array
-  - value: String
+- Type: Array
+  - component: String - A custom component used instead of a button, might have special handling for filtering. TBD, not yet implemented.
+  - label: String - The label for this filter. Optional only for custom component filters.
+  - path: String - An array representing the "path" to this filter, if nested.
+  - subFilters: Array - An array of more filter objects that act as "children" to this item.
+This set of filters is shown if the parent filter is clicked.
+  - value: String - The value for this filter, used to set the `filter` query param when clicked, if there are no `subFilters`.
 - Default: null
 
 
@@ -163,4 +164,3 @@ The `path` parameter supplied by React-Router.
 
 
 The query string represented in object form.
-

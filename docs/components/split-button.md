@@ -58,8 +58,8 @@ Label to display for the menu of actions, used as a heading on the mobile popove
 - **Required**
 - Type: Array 
   - icon: One of type: string, element
-  - label: String
-  - onClick: Function
+  - label: String - Label displayed for this button.
+  - onClick: Function - Click handler for this button.
 - Default: null
 
 

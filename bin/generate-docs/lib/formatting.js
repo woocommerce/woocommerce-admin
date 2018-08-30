@@ -124,7 +124,7 @@ function getPropType( type ) {
 			value = 'One of type: ' + type.value.map( v => v.name ).join( ', ' );
 			break;
 		default:
-			value = labels[ type.name ] || type.name;
+			value = ( labels[ type.name ] || type.name ) + ( type.description ? ` - ${ type.description }` : '' );
 	}
 
 	return value;

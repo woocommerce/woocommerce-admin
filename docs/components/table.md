@@ -142,12 +142,12 @@ Additional CSS classes.
 ### `headers`
 
 - Type: Array 
-  - defaultSort: Boolean
-  - isNumeric: Boolean
-  - isSortable: Boolean
-  - key: String
-  - label: String
-  - required: Boolean
+  - defaultSort: Boolean - Boolean, true if this column is the default for sorting. Only one column should have this set.
+  - isNumeric: Boolean - Boolean, true if this column is a number value.
+  - isSortable: Boolean - Boolean, true if this column is sortable.
+  - key: String - The API parameter name for this column, passed to `orderby` when sorting via API.
+  - label: String - The display label for this column.
+  - required: Boolean - Boolean, true if this column should always display in the table (not shown in toggle-able list).
 - Default: `[]`
 
 
@@ -177,7 +177,7 @@ docs
 - **Required**
 - Type: Array 
 Array 
-  - display: ReactNode
+  - display: ReactNode - Display value, used for rendering- strings or elements are best here.
   - value: One of type: string, number, bool
 - Default: null
 
