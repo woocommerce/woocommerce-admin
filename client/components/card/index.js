@@ -43,7 +43,7 @@ Card.propTypes = {
 	 */
 	action: PropTypes.node,
 	/**
-	 * Additional classnames for the container.
+	 * Additional CSS classes.
 	 */
 	className: PropTypes.string,
 	/**

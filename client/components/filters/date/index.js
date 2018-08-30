@@ -18,6 +18,9 @@ import './style.scss';
 
 const shortDateFormat = __( 'MM/DD/YYYY', 'wc-admin' );
 
+/**
+ * Select a range of dates or single dates.
+ */
 class DatePicker extends Component {
 	constructor( props ) {
 		super( props );
@@ -148,7 +151,17 @@ class DatePicker extends Component {
 }
 
 DatePicker.propTypes = {
+	/**
+	 * Force a recalculation or reset of internal state when this key changes. Useful for a url change, for instance.
+	 */
+	key: PropTypes.string.isRequired,
+	/**
+	 * The `path` parameter supplied by React-Router.
+	 */
 	path: PropTypes.string.isRequired,
+	/**
+	 * The query string represented in object form.
+	 */
 	query: PropTypes.object,
 };
 
