@@ -1,0 +1,196 @@
+`TableCard` (component)
+=======================
+
+This is an accessible, sortable, and scrollable table for displaying tabular data (like revenue and other analytics data).
+It accepts `headers` for column headers, and `rows` for the table content.
+`rowHeader` can be used to define the index of the row header (or false if no header).
+
+`TableCard` serves as Card wrapper & contains a card header, `<Table />`, `<TableSummary />`, and `<Pagination />`.
+This includes filtering and comparison functionality for report pages.
+
+Props
+-----
+
+### `headers`
+
+- Type: Array 
+  - defaultSort: Boolean
+  - isSortable: Boolean
+  - key: String
+  - label: String
+  - required: Boolean
+- Default: null
+
+
+An array of column headers (see `Table` props).
+
+
+### `onQueryChange`
+
+- Type: Function
+- Default: `noop`
+
+
+A function which returns a callback function to update the query string for a given `param`.
+
+
+### `onClickDownload`
+
+- Type: Function
+- Default: null
+
+
+A callback function which handles then "download" button press. Optional, if not used, the button won't appear.
+
+
+### `query`
+
+- Type: Object
+- Default: `{}`
+
+
+An object of the query parameters passed to the page, ex `{ page: 2, per_page: 5 }`.
+
+
+### `rowHeader`
+
+- Type: One of type: number, bool
+- Default: `0`
+
+
+An array of arrays of display/value object pairs (see `Table` props).
+
+
+### `rows`
+
+- Type: Array 
+Array 
+  - display: ReactNode
+  - value: One of type: string, number, bool
+- Default: `[]`
+
+
+Which column should be the row header, defaults to the first item (`0`) (see `Table` props).
+
+
+### `summary`
+
+- Type: Array 
+  - label: ReactNode
+  - value: One of type: string, number
+- Default: null
+
+
+An array of objects with `label` & `value` properties, which display in a line under the table.
+Optional, can be left off to show no summary.
+
+
+### `title`
+
+- **Required**
+- Type: String
+- Default: null
+
+
+The title used in the card header, also used as the caption for the content in this table.
+
+`TableSummary` (component)
+==========================
+
+A component to display summarized table data - the list of data passed in on a single line.
+
+
+
+Props
+-----
+
+### `data`
+
+- Type: Array
+- Default: null
+
+
+An array of objects with `label` & `value` properties, which display on a single line.
+
+`Table` (component)
+===================
+
+A table component, without the Card wrapper. This is a basic table display, sortable, but no default filtering.
+
+Props
+-----
+
+### `caption`
+
+- **Required**
+- Type: String
+- Default: null
+
+
+A label for the content in this table
+
+
+### `className`
+
+- Type: String
+- Default: null
+
+
+Additional CSS classes.
+
+
+### `headers`
+
+- Type: Array 
+  - defaultSort: Boolean
+  - isNumeric: Boolean
+  - isSortable: Boolean
+  - key: String
+  - label: String
+  - required: Boolean
+- Default: `[]`
+
+
+An array of column headers, as objects.
+
+
+### `onSort`
+
+- Type: Function
+- Default: `noop`
+
+
+A function called when sortable table headers are clicked, gets the `header.key` as argument.
+
+
+### `query`
+
+- Type: Object
+- Default: `{}`
+
+
+docs
+
+
+### `rows`
+
+- **Required**
+- Type: Array 
+Array 
+  - display: ReactNode
+  - value: One of type: string, number, bool
+- Default: null
+
+
+An array of arrays of display/value object pairs.
+
+
+### `rowHeader`
+
+- Type: One of type: number, bool
+- Default: `0`
+
+
+Which column should be the row header, defaults to the first item (`0`) (but could be set to `1`, if the first col
+is checkboxes, for example). Set to false to disable row headers.
+
