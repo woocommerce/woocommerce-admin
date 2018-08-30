@@ -214,6 +214,14 @@
 		top: 153px;
 	}
 
+	.calypsoify & {
+		top: 107px;
+
+		@include breakpoint( '>1100px' ) {
+			top: 127px;
+		}
+	}
+
 	&.is-open {
 		@include activity-panel-slide();
 		width: 510px;
