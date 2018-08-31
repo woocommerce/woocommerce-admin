@@ -5,7 +5,7 @@
 const { map } = require( 'lodash' );
 
 /**
- * Given a string, returns a new string with dash separators converedd to
+ * Given a string, returns a new string with dash separators converted to
  * camel-case equivalent. This is not as aggressive as `_.camelCase` in
  * converting to uppercase, where Lodash will convert letters following
  * numbers.

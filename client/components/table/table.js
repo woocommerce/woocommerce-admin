@@ -201,7 +201,7 @@ Table.propTypes = {
 	 */
 	onSort: PropTypes.func,
 	/**
-	 * docs
+	 * The query string represented in object form
 	 */
 	query: PropTypes.object,
 	/**

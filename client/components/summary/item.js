@@ -101,9 +101,9 @@ const SummaryNumber = ( {
 
 SummaryNumber.propTypes = {
 	/**
-	 * A number to represent the percentage change since the last comparison period -
-	 * positive numbers will show a green up arrow, negative numbers will show a
-	 * red down arrow. If omitted, no change value will display.
+	 * A number to represent the percentage change since the last comparison period - positive numbers will show
+	 * a green up arrow, negative numbers will show a red down arrow, and zero will show a flat right arrow.
+	 * If omitted, no change value will display.
 	 */
 	delta: PropTypes.number,
 	/**
