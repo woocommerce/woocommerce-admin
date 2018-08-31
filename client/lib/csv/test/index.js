@@ -18,6 +18,10 @@ jest.mock( 'browser-filesaver', () => ( {
 } ) );
 
 describe( 'generateCSVDataFromTable', () => {
+	it( 'should not crash when parameters are not arrays', () => {
+		expect( generateCSVDataFromTable( null, null ) ).toBe( '' );
+	} );
+
 	it( 'should generate a CSV string from table contents', () => {
 		expect( generateCSVDataFromTable( mockHeaders, mockRows ) ).toBe( mockCSVData );
 	} );

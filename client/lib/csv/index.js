@@ -6,22 +6,26 @@ import moment from 'moment';
 import { saveAs } from 'browser-filesaver';
 
 function getCSVHeaders( headers ) {
-	return headers.map( header => header.label ).join( ',' );
+	return Array.isArray( headers ) ? headers.map( header => header.label ).join( ',' ) : [];
 }
 
 function getCSVRows( rows ) {
-	return rows.map( row => row.map( rowItem => rowItem.value ).join( ',' ) ).join( '\n' );
+	return Array.isArray( rows )
+		? rows.map( row => row.map( rowItem => rowItem.value ).join( ',' ) ).join( '\n' )
+		: [];
 }
 
 /**
  * Generates a CSV string from table contents
  *
- * @param   {Array.<Object>}        [headers=[]]    Object with table header information
- * @param   {Array.Array.<Object>}  [rows=[]]       Object with table rows information
- * @returns {String}                                Table contents in a CSV format
+ * @param   {Array.<Object>}        headers    Object with table header information
+ * @param   {Array.Array.<Object>}  rows       Object with table rows information
+ * @returns {String}                           Table contents in a CSV format
  */
-export function generateCSVDataFromTable( headers = [], rows = [] ) {
-	return [ getCSVHeaders( headers ), getCSVRows( rows ) ].join( '\n' );
+export function generateCSVDataFromTable( headers, rows ) {
+	return [ getCSVHeaders( headers ), getCSVRows( rows ) ]
+		.filter( text => text.length )
+		.join( '\n' );
 }
 
 /**
