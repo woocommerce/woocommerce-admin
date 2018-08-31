@@ -12,15 +12,12 @@ Props
 - Type: String
 - Default: null
 
-
 The label shown when hovering/focusing on the icon button.
-
 
 ### `children`
 
 - Type: ReactNode
 - Default: null
-
 
 A list of `MenuTitle`/`MenuItem` components
 
@@ -39,26 +36,21 @@ Props
 - Type: ReactNode
 - Default: null
 
-
 A renderable component (or string) which will be displayed as the content of this item. Generally a `ToggleControl`.
-
 
 ### `isClickable`
 
 - Type: Boolean
 - Default: `false`
 
-
 Boolean to control whether the MenuItem should handle the click event. Defaults to false, assuming your child component
 handles the click event.
-
 
 ### `onInvoke`
 
 - **Required**
 - Type: Function
 - Default: null
-
 
 A function called when this item is activated via keyboard ENTER or SPACE; or when the item is clicked
 (only if `isClickable` is set).
@@ -78,7 +70,6 @@ Props
 
 - Type: ReactNode
 - Default: null
-
 
 A renderable component (or string) which will be displayed as the content of this item.
 

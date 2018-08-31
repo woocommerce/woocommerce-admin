@@ -12,16 +12,13 @@ Props
 - Type: Function
 - Default: `noop`
 
-
 Function called when selected results change, passed result list.
-
 
 ### `type`
 
 - **Required**
 - Type: One of: 'products', 'orders', 'customers'
 - Default: null
-
 
 The object type to be used in searching.
 

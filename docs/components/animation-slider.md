@@ -13,9 +13,7 @@ Props
 - Type: Function
 - Default: null
 
-
 A function returning rendered content with argument status, reflecting `CSSTransition` status.
-
 
 ### `animationKey`
 
@@ -23,24 +21,19 @@ A function returning rendered content with argument status, reflecting `CSSTrans
 - Type: *
 - Default: null
 
-
 A unique identifier for each slideable page.
-
 
 ### `animate`
 
 - Type: One of: null, 'left', 'right'
 - Default: null
 
-
 null, 'left', 'right', to designate which direction to slide on a change.
-
 
 ### `focusOnChange`
 
 - Type: Boolean
 - Default: null
-
 
 When set to true, the first focusable element will be focused after an animation has finished.
 

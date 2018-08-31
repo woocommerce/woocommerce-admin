@@ -14,15 +14,12 @@ Props
 - Type: Object
 - Default: null
 
-
 The order to display a status for.
-
 
 ### `className`
 
 - Type: String
 - Default: null
-
 
 Additional CSS classes.
 

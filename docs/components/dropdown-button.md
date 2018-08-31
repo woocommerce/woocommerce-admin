@@ -15,15 +15,12 @@ Props
 - Type: Array
 - Default: null
 
-
 An array of elements to be rendered as the content of the button.
-
 
 ### `isOpen`
 
 - Type: Boolean
 - Default: null
-
 
 Boolean describing if the dropdown in open or not.
 

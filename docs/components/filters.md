@@ -14,18 +14,14 @@ Props
 - Type: Object
 - Default: `{}`
 
-
 Config option passed through to `AdvancedFilters`
-
 
 ### `filters`
 
 - Type: Array
 - Default: `[]`
 
-
 Config option passed through to `FilterPicker` - if not used, `FilterPicker` is not displayed.
-
 
 ### `path`
 
@@ -33,15 +29,12 @@ Config option passed through to `FilterPicker` - if not used, `FilterPicker` is 
 - Type: String
 - Default: null
 
-
 The `path` parameter supplied by React-Router
-
 
 ### `query`
 
 - Type: Object
 - Default: `{}`
-
 
 The query string represented in object form
 
@@ -64,9 +57,7 @@ Object
   - input: Object
 - Default: null
 
-
 The configuration object required to render filters.
-
 
 ### `filterTitle`
 
@@ -74,9 +65,7 @@ The configuration object required to render filters.
 - Type: String
 - Default: null
 
-
 Name of this filter, used in translations.
-
 
 ### `path`
 
@@ -84,15 +73,12 @@ Name of this filter, used in translations.
 - Type: String
 - Default: null
 
-
 The `path` parameter supplied by React-Router.
-
 
 ### `query`
 
 - Type: Object
 - Default: `{}`
-
 
 The query string represented in object form.
 
@@ -110,15 +96,12 @@ Props
 - Type: String
 - Default: null
 
-
 The `path` parameter supplied by React-Router.
-
 
 ### `query`
 
 - Type: Object
 - Default: `{}`
-
 
 The query string represented in object form.
 
@@ -143,9 +126,7 @@ This set of filters is shown if the parent filter is clicked.
   - value: String - The value for this filter, used to set the `filter` query param when clicked, if there are no `subFilters`.
 - Default: null
 
-
 An array of filters and subFilters to construct the menu.
-
 
 ### `path`
 
@@ -153,14 +134,12 @@ An array of filters and subFilters to construct the menu.
 - Type: String
 - Default: null
 
-
 The `path` parameter supplied by React-Router.
-
 
 ### `query`
 
 - Type: Object
 - Default: `{}`
 
-
 The query string represented in object form.
+

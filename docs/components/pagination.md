@@ -13,18 +13,14 @@ Props
 - Type: Number
 - Default: null
 
-
 The current page of the collection.
-
 
 ### `onPageChange`
 
 - Type: Function
 - Default: `noop`
 
-
 A function to execute when the page is changed.
-
 
 ### `perPage`
 
@@ -32,18 +28,14 @@ A function to execute when the page is changed.
 - Type: Number
 - Default: null
 
-
 The amount of results that are being displayed per page.
-
 
 ### `onPerPageChange`
 
 - Type: Function
 - Default: `noop`
 
-
 A function to execute when the per page option is changed.
-
 
 ### `total`
 
@@ -51,15 +43,12 @@ A function to execute when the per page option is changed.
 - Type: Number
 - Default: null
 
-
 The total number of results.
-
 
 ### `className`
 
 - Type: String
 - Default: null
-
 
 Additional classNames.
 

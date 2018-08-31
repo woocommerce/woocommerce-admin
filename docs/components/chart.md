@@ -11,15 +11,12 @@ Props
 - Type: Array
 - Default: `[]`
 
-
 An array of data.
-
 
 ### `title`
 
 - Type: String
 - Default: null
-
 
 A title describing this chart.
 
@@ -36,49 +33,39 @@ Props
 - Type: String
 - Default: null
 
-
 Additional CSS classes.
-
 
 ### `colorScheme`
 
 - Type: Function
 - Default: null
 
-
 A chromatic color function to be passed down to d3.
-
 
 ### `data`
 
 - Type: Array
 - Default: `[]`
 
-
 An array of data.
-
 
 ### `height`
 
 - Type: Number
 - Default: `200`
 
-
 Relative viewpoirt height of the `svg`.
-
 
 ### `legend`
 
 - Type: Array
 - Default: null
 
-
 @todo Remove – not used?
-
 
 ### `margin`
 
-- Type: Object 
+- Type: Object
   - bottom: Number
   - left: Number
   - right: Number
@@ -90,51 +77,40 @@ Relative viewpoirt height of the `svg`.
     top: 20,
 }`
 
-
 Margins for axis and chart padding.
-
 
 ### `orderedKeys`
 
 - Type: Array
 - Default: null
 
-
 The list of labels for this chart.
-
 
 ### `type`
 
 - Type: One of: 'bar', 'line'
 - Default: `'line'`
 
-
 Chart type of either `line` or `bar`.
-
 
 ### `width`
 
 - Type: Number
 - Default: `600`
 
-
 Relative viewport width of the `svg`.
-
 
 ### `xFormat`
 
 - Type: String
 - Default: `'%Y-%m-%d'`
 
-
 A datetime formatting string, passed to d3TimeFormat.
-
 
 ### `yFormat`
 
 - Type: String
 - Default: `',.0f'`
-
 
 A number formatting string, passed to d3Format.
 
@@ -151,18 +127,14 @@ Props
 - Type: String
 - Default: null
 
-
 Additional CSS classes.
-
 
 ### `colorScheme`
 
 - Type: Function
 - Default: null
 
-
 A chromatic color function to be passed down to d3.
-
 
 ### `data`
 
@@ -170,33 +142,26 @@ A chromatic color function to be passed down to d3.
 - Type: Array
 - Default: null
 
-
 An array of `orderedKeys`.
-
 
 ### `handleLegendToggle`
 
 - Type: Function
 - Default: null
 
-
 Handles `onClick` event.
-
 
 ### `handleLegendHover`
 
 - Type: Function
 - Default: null
 
-
 Handles `onMouseEnter`/`onMouseLeave` events.
-
 
 ### `legendDirection`
 
 - Type: One of: 'row', 'column'
 - Default: `'row'`
-
 
 Display legend items as a `row` or `column` inside a flex-box.
 
