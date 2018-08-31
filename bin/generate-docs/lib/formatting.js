@@ -2,8 +2,7 @@
 /**
  * External dependencies
  */
-const { map, template } = require( 'lodash' );
-const renderTitle = template( '### `<%= propName %>`\n' );
+const { map } = require( 'lodash' );
 
 /**
  * Given a string, returns a new string with dash separators converedd to
@@ -40,7 +39,7 @@ function getDescription( description = '' ) {
  * @return { string } Formatted string.
  */
 function getProp( propName, prop ) {
-	const lines = [ renderTitle( { propName } ) ];
+	const lines = [ '### `' + propName + '`\n' ];
 	prop.required && lines.push( '- **Required**' );
 	lines.push( '- Type: ' + getPropType( prop.type, propName ) );
 	lines.push( '- Default: ' + getPropDefaultValue( prop.defaultValue ) );
