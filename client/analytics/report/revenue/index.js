@@ -77,11 +77,11 @@ class RevenueReport extends Component {
 		} );
 	}
 
-	onDownload( headers, rows, totals, query ) {
+	onDownload( headers, rows, query ) {
 		return () => {
 			downloadCSVFile(
 				generateCSVFileName( 'revenue', query ),
-				generateCSVDataFromTable( headers, rows, totals )
+				generateCSVDataFromTable( headers, rows )
 			);
 		};
 	}
@@ -311,7 +311,7 @@ class RevenueReport extends Component {
 					title={ __( 'Revenue Last Week', 'wc-admin' ) }
 					rows={ rows }
 					headers={ headers }
-					onClickDownload={ this.onDownload( headers, rows, totals, query ) }
+					onClickDownload={ this.onDownload( headers, rows, query ) }
 					onQueryChange={ this.onQueryChange }
 					query={ query }
 					summary={ summary }

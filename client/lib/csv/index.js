@@ -2,7 +2,6 @@
 /**
  * External dependencies
  */
-import { get } from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'browser-filesaver';
 
@@ -14,22 +13,15 @@ function getCSVRows( rows ) {
 	return rows.map( row => row.map( rowItem => rowItem.value ).join( ',' ) ).join( '\n' );
 }
 
-function getCSVTotals( headers, totals ) {
-	return headers.map( header => get( totals, header.key, '-' ) ).join( ',' );
-}
-
 /**
  * Generates a CSV string from table contents
  *
  * @param   {Array.<Object>}        [headers=[]]    Object with table header information
  * @param   {Array.Array.<Object>}  [rows=[]]       Object with table rows information
- * @param   {Object}                [totals=[]]     Object with totals information
  * @returns {String}                                Table contents in a CSV format
  */
-export function generateCSVDataFromTable( headers = [], rows = [], totals = [] ) {
-	return [ getCSVHeaders( headers ), getCSVRows( rows ), getCSVTotals( headers, totals ) ].join(
-		'\n'
-	);
+export function generateCSVDataFromTable( headers = [], rows = [] ) {
+	return [ getCSVHeaders( headers ), getCSVRows( rows ) ].join( '\n' );
 }
 
 /**

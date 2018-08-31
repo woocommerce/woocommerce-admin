@@ -12,7 +12,6 @@ import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from '
 import mockCSVData from '../__mocks__/mock-csv-data';
 import mockHeaders from '../__mocks__/mock-headers';
 import mockRows from '../__mocks__/mock-rows';
-import mockTotals from '../__mocks__/mock-totals';
 
 jest.mock( 'browser-filesaver', () => ( {
 	saveAs: jest.fn(),
@@ -20,7 +19,7 @@ jest.mock( 'browser-filesaver', () => ( {
 
 describe( 'generateCSVDataFromTable', () => {
 	it( 'should generate a CSV string from table contents', () => {
-		expect( generateCSVDataFromTable( mockHeaders, mockRows, mockTotals ) ).toBe( mockCSVData );
+		expect( generateCSVDataFromTable( mockHeaders, mockRows ) ).toBe( mockCSVData );
 	} );
 } );
 
