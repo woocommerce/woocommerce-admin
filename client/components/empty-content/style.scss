@@ -1,0 +1,10 @@
+/** @format */
+
+.woocommerce-empty-content {
+	text-align: center;
+
+	.woocommerce-empty-content__action.is-primary {
+		color: $white;
+		margin-right: $gap;
+	}
+}
