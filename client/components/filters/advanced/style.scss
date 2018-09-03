@@ -116,7 +116,7 @@
 .woocommerce-filters-advanced__controls {
 	padding: $gap-smaller $gap;
 
-	& > button {
+	.components-button {
 		margin-right: $gap;
 	}
 }
@@ -144,8 +144,6 @@
 }
 
 .woocommerce-filters-advanced__list-selector {
-	padding: 0 0 0 $gap-smaller;
-
 	@include breakpoint( '<782px' ) {
 		padding: $gap-smallest 0;
 	}
@@ -154,5 +152,13 @@
 .woocommerce-filters-advanced__list-specifier {
 	@include breakpoint( '<782px' ) {
 		padding: $gap-smallest 0;
+	}
+
+	& + .woocommerce-filters-advanced__list-selector {
+		padding: 0 0 0 $gap-smaller;
+
+		@include breakpoint( '<782px' ) {
+			padding: $gap-smallest 0;
+		}
 	}
 }

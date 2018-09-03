@@ -26,6 +26,7 @@ import './style.scss';
  */
 const ReportFilters = ( { advancedConfig, filters, query, path } ) => {
 	let advancedCard = false;
+	const queryKey = JSON.stringify( query );
 	switch ( query.filter ) {
 		case 'compare':
 			advancedCard = (
@@ -48,6 +49,7 @@ const ReportFilters = ( { advancedConfig, filters, query, path } ) => {
 		case 'advanced':
 			advancedCard = (
 				<AdvancedFilters
+					key={ queryKey }
 					config={ advancedConfig }
 					filterTitle={ __( 'Orders', 'wc-admin' ) }
 					path={ path }
@@ -62,7 +64,7 @@ const ReportFilters = ( { advancedConfig, filters, query, path } ) => {
 			<H className="screen-reader-text">{ __( 'Filters', 'wc-admin' ) }</H>
 			<Section component="div" className="woocommerce-filters">
 				<div className="woocommerce-filters__basic-filters">
-					<DatePicker key={ JSON.stringify( query ) } query={ query } path={ path } />
+					<DatePicker key={ queryKey } query={ query } path={ path } />
 					{ !! filters.length && (
 						<FilterPicker filters={ filters } query={ query } path={ path } />
 					) }

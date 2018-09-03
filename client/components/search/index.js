@@ -121,7 +121,7 @@ Search.propTypes = {
 	 */
 	type: PropTypes.oneOf( [ 'products', 'orders', 'customers' ] ).isRequired,
 	/**
-	 * An array of objects describing selected values
+	 * An array of objects describing selected values.
 	 */
 	selected: PropTypes.arrayOf(
 		PropTypes.shape( {
