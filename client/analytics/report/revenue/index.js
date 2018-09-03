@@ -16,10 +16,13 @@ import { withSelect } from '@wordpress/data';
 import {
 	Card,
 	Chart,
+	ChartPlaceholder,
 	ReportFilters,
 	SummaryList,
+	SummaryListPlaceholder,
 	SummaryNumber,
 	TableCard,
+	TablePlaceholder,
 } from '@woocommerce/components';
 import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
@@ -328,7 +331,11 @@ export class RevenueReport extends Component {
 
 		const headers = this.getHeadersContent();
 
-		const tableQuery = { ...query, orderby: query.orderby || 'date_start', order: query.order || 'asc' };
+		const tableQuery = {
+			...query,
+			orderby: query.orderby || 'date_start',
+			order: query.order || 'asc',
+		};
 		return (
 			<TableCard
 				title={ __( 'Revenue', 'wc-admin' ) }
@@ -341,6 +348,25 @@ export class RevenueReport extends Component {
 				query={ tableQuery }
 				summary={ null }
 			/>
+		);
+	}
+
+	renderPlaceholder() {
+		const { path, query } = this.props;
+		const headers = this.getHeadersContent();
+		const charts = this.getCharts();
+		return (
+			<Fragment>
+				<ReportFilters query={ query } path={ path } />
+				<SummaryListPlaceholder numberOfItems={ charts.length } />
+				<ChartPlaceholder />
+				<Card
+					title={ __( 'Revenue', 'wc-admin' ) }
+					className="woocommerce-analytics__table-placeholder"
+				>
+					<TablePlaceholder caption={ __( 'Revenue', 'wc-admin' ) } headers={ headers } />
+				</Card>
+			</Fragment>
 		);
 	}
 
@@ -358,12 +384,12 @@ export class RevenueReport extends Component {
 			);
 		};
 
-		if ( isReportDataEmpty( primaryData ) ) {
-			return tempMessage( 'Empty Data' );
+		if ( primaryData.isRequesting || secondaryData.isRequesting ) {
+			return this.renderPlaceholder();
 		}
 
-		if ( primaryData.isRequesting || secondaryData.isRequesting ) {
-			return tempMessage( 'Loading...' );
+		if ( isReportDataEmpty( primaryData ) ) {
+			return tempMessage( 'Empty Data' );
 		}
 
 		if ( primaryData.isError || secondaryData.isError ) {
