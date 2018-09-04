@@ -98,7 +98,7 @@ $inner-border: $core-grey-light-500;
 	}
 
 	.woocommerce-summary__item-delta {
-		flex: 0;
+		flex: 0 1 auto;
 		display: flex;
 		flex-wrap: none;
 	}
