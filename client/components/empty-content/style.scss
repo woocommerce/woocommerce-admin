@@ -3,8 +3,9 @@
 .woocommerce-empty-content {
 	text-align: center;
 
-	.woocommerce-empty-content__action.is-primary {
-		color: $white;
-		margin-right: $gap;
+	.woocommerce-empty-content__actions {
+		.components-button + .components-button {
+			margin-left: $gap;
+		}
 	}
 }

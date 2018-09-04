@@ -39,11 +39,13 @@ class EmptyContent extends Component {
 		const actionCallback =
 			'secondary' === type ? this.props.secondaryActionCallback : this.props.actionCallback;
 
+		const isPrimary = 'secondary' === type ? false : true;
+
 		if ( actionURL && actionCallback ) {
 			return (
 				<Button
 					className="woocommerce-empty-content__action"
-					isPrimary
+					isPrimary={ isPrimary }
 					onClick={ actionCallback }
 					href={ actionURL }
 				>
@@ -52,13 +54,21 @@ class EmptyContent extends Component {
 			);
 		} else if ( actionURL ) {
 			return (
-				<Button className="woocommerce-empty-content__action" isPrimary href={ actionURL }>
+				<Button
+					className="woocommerce-empty-content__action"
+					isPrimary={ isPrimary }
+					href={ actionURL }
+				>
 					{ actionLabel }
 				</Button>
 			);
 		} else if ( actionCallback ) {
 			return (
-				<Button className="woocommerce-empty-content__action" isPrimary onClick={ actionCallback }>
+				<Button
+					className="woocommerce-empty-content__action"
+					isPrimary={ isPrimary }
+					onClick={ actionCallback }
+				>
 					{ actionLabel }
 				</Button>
 			);
@@ -103,15 +113,15 @@ EmptyContent.propTypes = {
 	/**
 	 * The url string of an image path. Prefix with `/` to load an image relative to the plugin directory.
 	 */
-	illustration: PropTypes.string.isRequired,
+	illustration: PropTypes.string,
 	/**
 	 * Height to use for the illustration.
 	 */
-	illustrationHeight: PropTypes.number.isRequired,
+	illustrationHeight: PropTypes.number,
 	/**
 	 * Width to use for the illustration.
 	 */
-	illustrationWidth: PropTypes.number.isRequired,
+	illustrationWidth: PropTypes.number,
 	/**
 	 * Label to be used for the primary action button.
 	 */
@@ -140,6 +150,12 @@ EmptyContent.propTypes = {
 	 * Additional CSS classes.
 	 */
 	className: PropTypes.string,
+};
+
+EmptyContent.defaultProps = {
+	illustration: '/empty-content.svg',
+	illustrationHeight: 400,
+	illustrationWidth: 400,
 };
 
 export default EmptyContent;

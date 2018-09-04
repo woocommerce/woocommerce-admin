@@ -4,7 +4,6 @@
  */
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
-import { startsWith } from 'lodash';
 
 /**
  * A component that loads an image, allowing images to be loaded relative to the main asset/plugin folder.
@@ -15,7 +14,7 @@ class ImageAsset extends Component {
 		const { src, alt, ...restOfProps } = this.props;
 		let illustrationSrc = src;
 
-		if ( startsWith( illustrationSrc, '/' ) ) {
+		if ( illustrationSrc.indexOf( '/' ) === 0 ) {
 			illustrationSrc = illustrationSrc.substring( 1 );
 			illustrationSrc = wcSettings.wcAdminAssetUrl + illustrationSrc;
 		}

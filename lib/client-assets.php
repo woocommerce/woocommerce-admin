@@ -59,7 +59,7 @@ function wc_admin_register_script() {
 
 	/**
 	 * TODO: On merge, once plugin images are added to core WooCommerce, `wcAdminAssetUrl` can be retired, and 
-	 * wcAdminAssetUrl can be used in its place throughout the codebase.
+	 * `wcAssetUrl` can be used in its place throughout the codebase.
 	 */
 
 	// Settings and variables can be passed here for access in the app.
