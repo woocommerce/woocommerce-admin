@@ -9,7 +9,7 @@ import { Component } from '@wordpress/element';
  */
 class ChartPlaceholder extends Component {
 	render() {
-		return <div className="woocommerce-chart is-placeholder" />;
+		return <div className="woocommerce-chart is-placeholder" aria-hidden="true" />;
 	}
 }
 

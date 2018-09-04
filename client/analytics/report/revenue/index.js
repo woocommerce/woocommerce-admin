@@ -358,6 +358,11 @@ export class RevenueReport extends Component {
 		return (
 			<Fragment>
 				<ReportFilters query={ query } path={ path } />
+
+				<span className="screen-reader-text">
+					{ __( 'Your requested data is loading', 'wc-admin' ) }
+				</span>
+
 				<SummaryListPlaceholder numberOfItems={ charts.length } />
 				<ChartPlaceholder />
 				<Card

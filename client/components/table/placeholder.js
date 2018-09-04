@@ -36,7 +36,7 @@ class TablePlaceholder extends Component {
 
 TablePlaceholder.propTypes = {
 	/**
-	 * A label for the content in this table
+	 * A label for the content in this table.
 	 */
 	caption: PropTypes.string.isRequired,
 	/**
@@ -52,7 +52,7 @@ TablePlaceholder.propTypes = {
 		} )
 	),
 	/**
-	 * An integer with the number of rows to display. Defaults to 5.
+	 * An integer with the number of rows to display.
 	 */
 	numberOfRows: PropTypes.number,
 };

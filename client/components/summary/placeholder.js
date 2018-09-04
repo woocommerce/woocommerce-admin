@@ -3,24 +3,35 @@
  * External dependencies
  */
 import { Component } from '@wordpress/element';
+import classnames from 'classnames';
 import { range } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
  */
-import SummaryList from './index';
+import { isMobileViewport, isTabletViewport } from 'lib/ui';
 
 /**
  * `SummaryListPlaceholder` behaves like `SummaryList` but displays placeholder summary items instead of data.
- * This can be used while loading.
+ * This can be used while loading data.
  */
 class SummaryListPlaceholder extends Component {
 	render() {
-		const { numberOfItems } = this.props;
+		const isDropdownBreakpoint = isTabletViewport() || isMobileViewport();
+		const numberOfItems = isDropdownBreakpoint ? 1 : this.props.numberOfItems;
+
+		const hasItemsClass = numberOfItems < 10 ? `has-${ numberOfItems }-items` : 'has-10-items';
+		const classes = classnames( 'woocommerce-summary', {
+			[ hasItemsClass ]: ! isDropdownBreakpoint,
+		} );
+		const containerClasses = classnames( 'woocommerce-summary__item-container', {
+			'is-placeholder': true,
+		} );
+
 		const rows = range( numberOfItems ).map( i => {
 			return (
-				<li className="woocommerce-summary__item-container is-placeholder" key={ i }>
+				<li className={ containerClasses } key={ i }>
 					<span className="woocommerce-summary__item">
 						<span className="woocommerce-summary__item-label" />
 						<span className="woocommerce-summary__item-data">
@@ -36,13 +47,17 @@ class SummaryListPlaceholder extends Component {
 			);
 		} );
 
-		return <SummaryList>{ rows }</SummaryList>;
+		return (
+			<ul className={ classes } aria-hidden="true">
+				{ rows }
+			</ul>
+		);
 	}
 }
 
 SummaryListPlaceholder.propTypes = {
 	/**
-	 * An integer with the number of summary items to display. Defaults to 5.
+	 * An integer with the number of summary items to display.
 	 */
 	numberOfItems: PropTypes.number.isRequired,
 };
