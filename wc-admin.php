@@ -46,6 +46,9 @@ function wc_admin_plugins_loaded() {
 	// Register script files
 	require_once dirname( __FILE__ ) . '/lib/client-assets.php';
 
+	// wc-admin page controller
+	require_once dirname( __FILE__ ) . '/lib/page-controller.php';
+
 	// Create the Admin pages
 	require_once dirname( __FILE__ ) . '/lib/admin.php';
 }

@@ -9,10 +9,7 @@
  * Registers the JS & CSS for the admin and admin embed
  */
 function wc_admin_register_script() {
-	// Are we displaying the full React app or just embedding the header on a classic screen?
-	$screen_id = wc_admin_get_current_screen_id();
-
-	if ( in_array( $screen_id, wc_admin_get_embed_enabled_screen_ids() ) ) {
+	if ( is_wc_admin_embed_page() ) {
 		$js_entry  = 'dist/embedded.js';
 		$css_entry = 'dist/css/embedded.css';
 	} else {
@@ -61,7 +58,7 @@ function wc_admin_register_script() {
 	$settings = array(
 		'adminUrl'         => admin_url(),
 		'wcAssetUrl'       => plugins_url( 'assets/', WC_PLUGIN_FILE ),
-		'embedBreadcrumbs' => wc_admin_get_embed_breadcrumbs(),
+		'embedBreadcrumbs' => wc_admin_get_breadcrumbs(),
 		'siteLocale'       => esc_attr( get_bloginfo( 'language' ) ),
 		'currency'         => wc_admin_currency_settings(),
 		'date'             => array(
@@ -69,6 +66,7 @@ function wc_admin_register_script() {
 		),
 		'orderStatuses'    => wc_get_order_statuses(),
 		'siteTitle'        => get_bloginfo( 'name' ),
+		'menuData'         => wc_admin_menu_json(),
 	);
 
 	wp_add_inline_script(
