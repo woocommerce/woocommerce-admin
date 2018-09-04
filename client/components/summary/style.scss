@@ -103,6 +103,7 @@ $inner-border: $core-grey-light-500;
 		flex-wrap: none;
 	}
 
+	&,
 	&.has-one-item,
 	&.has-1-items {
 		grid-template-columns: 1fr;
@@ -212,6 +213,43 @@ $inner-border: $core-grey-light-500;
 
 		@include breakpoint( '<782px' ) {
 			border-right: none;
+		}
+	}
+}
+
+// IE11 doesn't auto-position grid children, so their position must be set manually
+@mixin set-grid-positions( $breakpoints ) {
+	@for $i from 1 through length( $breakpoints ) {
+		$number_of_items: $i;
+		$breakpoint: nth($breakpoints, $i);
+		@for $j from 1 through $number_of_items {
+			.has-#{$number_of_items}-items > .woocommerce-summary__item-container:nth-child(#{$j}) {
+				grid-column-start: #{($j - 1) % $breakpoint + 1};
+				grid-column-end: #{($j - 1) % $breakpoint + 2};
+				grid-row-start: #{floor(($j - 1) / $breakpoint) + 1};
+				grid-row-end: #{floor(($j - 1) / $breakpoint) + 2};
+			}
+		}
+	}
+}
+
+// These arrays can be read like this:
+// When there are 9 items, the breakpoint appears after the 5th item in large screens
+// and after the 3rd one when the screen is <1365px. On screens smaller than 1100px,
+// all items are displayed one below the other.
+@include set-grid-positions( ( 1, 2, 3, 4, 5, 6, 4, 4, 5, 5 ) );
+
+@include breakpoint( '<1365px' ) {
+	@include set-grid-positions( ( 1, 2, 3, 4, 5, 3, 4, 4, 3, 4 ) );
+}
+
+@include breakpoint( '<1100px' ) {
+	@for $i from 1 through 10 {
+		.woocommerce-summary > .woocommerce-summary__item-container:nth-child(#{$i}) {
+			grid-column-start: 1;
+			grid-column-end: 2;
+			grid-row-start: #{$i};
+			grid-row-end: #{$i+1};
 		}
 	}
 }
