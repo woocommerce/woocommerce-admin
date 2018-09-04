@@ -14,6 +14,7 @@
     "install-if-no-packages": "node bin/install-if-no-packages.js",
     "prebuild": "npm run -s install-if-deps-outdated",
     "build": "cross-env NODE_ENV=production webpack",
+    "postbuild": "npm run -s i18n",
     "prestart": "npm run -s install-if-deps-outdated",
     "start": "webpack --watch",
     "lint": "npm run -s install-if-deps-outdated && eslint client --ext=js,jsx",
