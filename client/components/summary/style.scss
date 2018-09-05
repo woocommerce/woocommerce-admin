@@ -46,6 +46,16 @@ $inner-border: $core-grey-light-500;
 	background-color: $core-grey-light-300;
 	box-shadow: inset -1px -1px 0 $outer-border;
 
+	@include breakpoint( '<782px' ) {
+		&.is-placeholder {
+			border-top: 0;
+		}
+
+		.woocommerce-summary__item-container.is-placeholder {
+			border-top: 1px solid $outer-border;
+		}
+	}
+
 	// Specificity
 	.components-popover.components-popover {
 		// !important to override element-level styles

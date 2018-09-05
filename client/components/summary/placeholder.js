@@ -24,14 +24,12 @@ class SummaryListPlaceholder extends Component {
 		const hasItemsClass = numberOfItems < 10 ? `has-${ numberOfItems }-items` : 'has-10-items';
 		const classes = classnames( 'woocommerce-summary', {
 			[ hasItemsClass ]: ! isDropdownBreakpoint,
-		} );
-		const containerClasses = classnames( 'woocommerce-summary__item-container', {
 			'is-placeholder': true,
 		} );
 
 		const rows = range( numberOfItems ).map( i => {
 			return (
-				<li className={ containerClasses } key={ i }>
+				<li className="woocommerce-summary__item-container is-placeholder" key={ i }>
 					<span className="woocommerce-summary__item">
 						<span className="woocommerce-summary__item-label" />
 						<span className="woocommerce-summary__item-data">
