@@ -17,6 +17,7 @@ import {
 	Card,
 	Chart,
 	ChartPlaceholder,
+	EmptyContent,
 	ReportFilters,
 	SummaryList,
 	SummaryListPlaceholder,
@@ -378,27 +379,36 @@ export class RevenueReport extends Component {
 	render() {
 		const { path, query, primaryData, secondaryData } = this.props;
 
-		// TODO The loading, error, and empty messages below are all temporary.
-		// So we need to use an actual EmptyState components and add in a loading indicator.
-		const tempMessage = message => {
-			return (
-				<div>
-					<ReportFilters query={ query } path={ path } />
-					<p>{ message }</p>
-				</div>
-			);
-		};
-
 		if ( primaryData.isRequesting || secondaryData.isRequesting ) {
 			return this.renderPlaceholder();
 		}
 
-		if ( isReportDataEmpty( primaryData ) ) {
-			return tempMessage( 'Empty Data' );
-		}
+		if ( isReportDataEmpty( primaryData ) || primaryData.isError || secondaryData.isError ) {
+			let title, actionLabel, actionURL, actionCallback;
+			if ( primaryData.isError || secondaryData.isError ) {
+				title = __( 'There was an error getting your stats. Please try again.', 'wc-admin' );
+				actionLabel = __( 'Reload', 'wc-admin' );
+				actionCallback = () => {
+					// TODO Add tracking for how often an error is displayed, and the reload action is clicked.
+					window.location.reload();
+				};
+			} else {
+				title = __( 'No results could be found for this date range.', 'wc-admin' );
+				actionLabel = __( 'View Orders', 'wc-admin' );
+				actionURL = getAdminLink( 'edit.php?post_type=shop_order' );
+			}
 
-		if ( primaryData.isError || secondaryData.isError ) {
-			return tempMessage( 'Error' );
+			return (
+				<Fragment>
+					<ReportFilters query={ query } path={ path } />
+					<EmptyContent
+						title={ title }
+						actionLabel={ actionLabel }
+						actionURL={ actionURL }
+						actionCallback={ actionCallback }
+					/>
+				</Fragment>
+			);
 		}
 
 		return (
