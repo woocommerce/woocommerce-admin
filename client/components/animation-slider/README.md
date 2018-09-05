@@ -1,14 +1,7 @@
-AnimationSlider
-============
-
-This component creates slideable content controlled by an animate prop to direct the contents to slide left or right
-
-## How to use:
-
 ```jsx
-import AnimationSlider from 'components/animation-slider';
+import { AnimationSlider } from '@woocommerce/components';
 
-class MySlider extends Component {
+class MyAnimationSlider extends Component {
 	constructor() {
 		super();
 		this.state = {
@@ -58,12 +51,3 @@ class MySlider extends Component {
 	}
 }
 ```
-
-## `AnimationSlider` Props
-
-* `children` (required): A function returning rendered content with argument status, reflecting `CSSTransition` status
-* `animationKey` (required): A unique identifier for each slideable page
-* `animate`: null, 'left', 'right', to designate which direction to slide on a change
-* `focusOnChange`: When set to true, the first focusable element will be focused after an animation has finished
-
-All other props are passed to `CSSTransition`. More info at http://reactcommunity.org/react-transition-group/css-transition

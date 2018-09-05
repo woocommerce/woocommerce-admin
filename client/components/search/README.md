@@ -1,16 +1,9 @@
-Search
-======
-
-A search box which autocompletes results while typing, allowing for the user to select an existing object (product, order, customer, etc). Currently only products are supported.
-
-## Usage
-
 ```jsx
 import { Search } from '@woocommerce/components';
 
-class MySearchBox extends Component {
+class MySearch extends Component {
 	updateLocalValue( results ) {
-		// Do whatever with results.
+		// Do something with results.
 	}
 	render() {
 		return (
@@ -19,7 +12,3 @@ class MySearchBox extends Component {
 	}
 }
 ```
-
-- `onChange`: Function called when selected results change, passed result list.
-- `type` (required): Which object type to search, can be one of `customers`, `orders`, or `products`.
-- `selected`: An array of objects describing selected values.
