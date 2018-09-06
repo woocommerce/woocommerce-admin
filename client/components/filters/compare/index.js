@@ -31,6 +31,15 @@ class CompareFilter extends Component {
 		}
 	}
 
+	componentDidUpdate( { param } ) {
+		if ( param !== this.props.param ) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( { selected: [] } );
+			updateQueryString( { [ param ]: '' }, this.props.path, this.props.query );
+			/* eslint-enable react/no-did-update-set-state */
+		}
+	}
+
 	updateLabels( data ) {
 		const selected = data.map( p => ( { id: p.id, label: p.name } ) );
 		this.setState( { selected } );
