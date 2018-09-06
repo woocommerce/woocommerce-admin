@@ -48,26 +48,14 @@
 	outline-offset: -2px;
 }
 
-// Sets grid positions for children of grid elements.
-@mixin set-item-grid-position( $breakpoint, $items_class, $number_of_items ) {
-	@for $i from 1 through $number_of_items {
-		.#{$items_class}:nth-child(#{$i}) {
-			grid-column-start: #{($i - 1) % $breakpoint + 1};
-			grid-column-end: #{($i - 1) % $breakpoint + 2};
-			grid-row-start: #{floor(($i - 1) / $breakpoint) + 1};
-			grid-row-end: #{floor(($i - 1) / $breakpoint) + 2};
-		}
-	}
-}
-
-// Sets grid positions for children of grid elements which can have an unknown
-// number of children, which is added to the parent element as a class `.has-X-items`.
-@mixin set-grid-positions( $breakpoints, $items_class ) {
-	@for $i from 1 through length( $breakpoints ) {
-		$number_of_items: $i;
-		$breakpoint: nth($breakpoints, $i);
-		.has-#{$number_of_items}-items {
-			@include set-item-grid-position( $breakpoint, $items_class, $number_of_items );
+// Sets positions for children of grid elements
+@mixin set-grid-item-position( $wrap-after, $number-of-items ) {
+	@for $i from 1 through $number-of-items {
+		&:nth-child(#{$i}) {
+			grid-column-start: #{($i - 1) % $wrap-after + 1};
+			grid-column-end: #{($i - 1) % $wrap-after + 2};
+			grid-row-start: #{floor(($i - 1) / $wrap-after) + 1};
+			grid-row-end: #{floor(($i - 1) / $wrap-after) + 2};
 		}
 	}
 }

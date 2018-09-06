@@ -218,14 +218,56 @@ $inner-border: $core-grey-light-500;
 }
 
 // IE11 doesn't auto-position grid children, so their position must be set manually
-// These arrays can be read like this:
-// When there are 9 items, the breakpoint appears after the 5th item in large screens
-// and after the 3rd one when the screen is <1365px. On screens smaller than 1100px,
-// all items are displayed one below the other.
-@include set-grid-positions( ( 1, 2, 3, 4, 5, 6, 4, 4, 5, 5 ), 'woocommerce-summary__item-container' );
+.has-1-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 1, 1 );
+}
 
-@include breakpoint( '<1365px' ) {
-	@include set-grid-positions( ( 1, 2, 3, 4, 5, 3, 4, 4, 3, 4 ), 'woocommerce-summary__item-container' );
+.has-2-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 2, 2 );
+}
+
+.has-3-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 3, 3 );
+}
+
+.has-4-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 4, 4 );
+}
+
+.has-5-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 5, 5 );
+}
+
+.has-6-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 6, 6 );
+
+	@include breakpoint( '<1365px' ) {
+		@include set-grid-item-position( 3, 6 );
+	}
+}
+
+.has-7-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 4, 7 );
+}
+
+.has-8-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 4, 8 );
+}
+
+.has-9-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 5, 9 );
+
+	@include breakpoint( '<1365px' ) {
+		@include set-grid-item-position( 3, 9 );
+	}
+}
+
+.has-10-items .woocommerce-summary__item-container {
+	@include set-grid-item-position( 5, 10 );
+
+	@include breakpoint( '<1365px' ) {
+		@include set-grid-item-position( 4, 10 );
+	}
 }
 
 @include breakpoint( '<1100px' ) {
