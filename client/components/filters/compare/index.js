@@ -14,7 +14,7 @@ import Search from 'components/search';
 import { updateQueryString } from 'lib/nav-utils';
 
 /**
- * @TODO Compare filter.
+ * Displays a card + search used to filter results as a comparison between objects.
  */
 class CompareFilter extends Component {
 	constructor( { getLabels, param, query } ) {
