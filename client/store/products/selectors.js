@@ -47,4 +47,8 @@ export default {
 	isProductsError( state, query ) {
 		return ERROR === getProducts( state, query );
 	},
+
+	getProductById( state, id ) {
+		return get( state, 'products.products', id );
+	},
 };

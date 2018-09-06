@@ -9,6 +9,7 @@ import { Component } from '@wordpress/element';
 import { escapeRegExp, map, debounce } from 'lodash';
 import { ENTER, ESCAPE, UP, DOWN, LEFT, TAB, RIGHT } from '@wordpress/keycodes';
 import { withInstanceId, compose } from '@wordpress/compose';
+import { dispatch } from '@wordpress/data';
 
 function filterOptions( search, options = [], maxResults = 10 ) {
 	const filtered = [];
@@ -142,6 +143,8 @@ export class Autocomplete extends Component {
 		const promise = ( this.activePromise = Promise.resolve(
 			typeof options === 'function' ? options( query ) : options
 		).then( optionsData => {
+			dispatch( 'wc-admin' ).setProducts( optionsData, query );
+
 			if ( promise !== this.activePromise ) {
 				// Another promise has become active since this one was asked to resolve, so do nothing,
 				// or else we might end triggering a race condition updating the state.

@@ -2,6 +2,7 @@
 
 export default {
 	setProducts( products, query ) {
+		console.log( products );
 		return {
 			type: 'SET_PRODUCTS',
 			products,

@@ -12,15 +12,21 @@ import { getJsonString } from 'store/utils';
 
 export const DEFAULT_STATE = {
 	queries: {},
+	products: {},
 };
 
 export default function productsReducer( state = DEFAULT_STATE, action ) {
 	if ( 'SET_PRODUCTS' === action.type ) {
 		const prevQueries = get( state, 'queries', {} );
 		const queryKey = getJsonString( action.query );
+		const productsMap = action.products.reduce( ( map, product ) => {
+			map[ product.id ] = product;
+			return map;
+		}, {} );
 		const queries = {
 			...prevQueries,
 			[ queryKey ]: [ ...action.products ],
+			products: { ...state.products, ...productsMap },
 		};
 		return {
 			...state,
