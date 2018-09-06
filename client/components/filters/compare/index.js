@@ -2,8 +2,6 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
@@ -13,10 +11,13 @@ import PropTypes from 'prop-types';
  */
 import Card from 'components/card';
 import Search from 'components/search';
-import { stringifyQuery, updateQueryString } from 'lib/nav-utils';
+import { updateQueryString } from 'lib/nav-utils';
 
+/**
+ * @TODO Compare filter.
+ */
 class CompareFilter extends Component {
-	constructor( { query } ) {
+	constructor( { getLabels, param, query } ) {
 		super( ...arguments );
 		this.state = {
 			selected: [],
@@ -25,16 +26,8 @@ class CompareFilter extends Component {
 		this.updateQuery = this.updateQuery.bind( this );
 		this.updateLabels = this.updateLabels.bind( this );
 
-		if ( query.products ) {
-			const idList = query.products
-				.split( ',' )
-				.map( id => parseInt( id, 10 ) )
-				.filter( Boolean );
-			const payload = stringifyQuery( {
-				include: idList.join( ',' ),
-				per_page: idList.length,
-			} );
-			apiFetch( { path: '/wc/v3/products' + payload } ).then( this.updateLabels );
+		if ( query[ param ] ) {
+			getLabels( query[ param ] ).then( this.updateLabels );
 		}
 	}
 
@@ -51,12 +44,13 @@ class CompareFilter extends Component {
 	}
 
 	render() {
+		const { labels, type } = this.props;
 		const { selected } = this.state;
 		return (
-			<Card title={ __( 'Compare Products', 'wc-admin' ) } className="woocommerce-filters__compare">
+			<Card title={ labels.title } className="woocommerce-filters__compare">
 				<div className="woocommerce-filters__compare-body">
 					<Search
-						type="products"
+						type={ type }
 						selected={ selected }
 						onChange={ value => {
 							this.setState( { selected: value } );
@@ -65,7 +59,7 @@ class CompareFilter extends Component {
 				</div>
 				<div className="woocommerce-filters__compare-footer">
 					<Button onClick={ this.updateQuery } isDefault>
-						{ __( 'Compare', 'wc-admin' ) }
+						{ labels.update }
 					</Button>
 				</div>
 			</Card>
@@ -75,6 +69,23 @@ class CompareFilter extends Component {
 
 CompareFilter.propTypes = {
 	/**
+	 * Object of localized labels.
+	 */
+	labels: PropTypes.shape( {
+		/**
+		 * Label for the card title.
+		 */
+		title: PropTypes.string,
+		/**
+		 * Label for button which updates the URL/report.
+		 */
+		update: PropTypes.string,
+	} ),
+	/**
+	 * The parameter to use in the querystring.
+	 */
+	param: PropTypes.string.isRequired,
+	/**
 	 * The `path` parameter supplied by React-Router
 	 */
 	path: PropTypes.string.isRequired,
@@ -82,9 +93,14 @@ CompareFilter.propTypes = {
 	 * The query string represented in object form
 	 */
 	query: PropTypes.object,
+	/**
+	 * Which type of autocompleter should be used in the Search
+	 */
+	type: PropTypes.string.isRequired,
 };
 
 CompareFilter.defaultProps = {
+	labels: {},
 	query: {},
 };
 

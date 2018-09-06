@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { find } from 'lodash';
 import { Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
@@ -26,7 +27,9 @@ const ReportFilters = ( { advancedConfig, filters, query, path } ) => {
 	let advancedCard = false;
 	switch ( query.filter ) {
 		case 'compare':
-			advancedCard = <CompareFilter path={ path } query={ query } />;
+			const filter = find( filters, { value: 'compare' } );
+			const { settings = {} } = filter;
+			advancedCard = <CompareFilter path={ path } query={ query } { ...settings } />;
 			break;
 		case 'advanced':
 			advancedCard = (
