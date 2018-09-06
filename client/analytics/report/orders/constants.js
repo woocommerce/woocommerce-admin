@@ -55,6 +55,16 @@ export const advancedFilterConfig = {
 		input: {
 			component: 'Search',
 			type: 'products',
+			getValues: ( filterValues, select ) => {
+				const { getProductById } = select( 'wc-admin' );
+				return filterValues.map( id => {
+					const product = getProductById( id );
+					return {
+						id: parseInt( id, 10 ),
+						label: ( product && product.name ) || id.toString(),
+					};
+				} );
+			},
 		},
 	},
 	code: {
@@ -69,6 +79,17 @@ export const advancedFilterConfig = {
 		input: {
 			component: 'Search',
 			type: 'products', // For now. "coupons" autocompleter required
+			getValues: ( filterValues, select ) => {
+				// Again, for now
+				const { getProductById } = select( 'wc-admin' );
+				return filterValues.map( id => {
+					const product = getProductById( id );
+					return {
+						id: parseInt( id, 10 ),
+						label: ( product && product.name ) || id.toString(),
+					};
+				} );
+			},
 		},
 	},
 	customer: {

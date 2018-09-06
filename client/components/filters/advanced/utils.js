@@ -22,7 +22,7 @@ export const getUrlKey = ( key, rule ) => {
  * Convert url values to array of objects for <Search /> component
  *
  * @param {string} str - url query parameter value
- * @return {{id: Number, label: String}[]} - array of Search tags
+ * @return {array} - array of Search values
  */
 export const getSearchFilterValue = str => {
 	return str.length ? str.split( ',' ) : [];

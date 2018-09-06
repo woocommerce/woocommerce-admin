@@ -6,7 +6,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, withFocusOutside, withSpokenMessages } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import { escapeRegExp, map, debounce } from 'lodash';
+import { escapeRegExp, map, debounce, noop } from 'lodash';
 import { ENTER, ESCAPE, UP, DOWN, LEFT, TAB, RIGHT } from '@wordpress/keycodes';
 import { withInstanceId, compose } from '@wordpress/compose';
 import { dispatch } from '@wordpress/data';
@@ -127,7 +127,7 @@ export class Autocomplete extends Component {
 	 * @param {string}    query     The query, if any.
 	 */
 	loadOptions( completer, query ) {
-		const { options } = completer;
+		const { options, saveAction } = completer;
 
 		/*
 		 * We support both synchronous and asynchronous retrieval of completer options
@@ -143,7 +143,8 @@ export class Autocomplete extends Component {
 		const promise = ( this.activePromise = Promise.resolve(
 			typeof options === 'function' ? options( query ) : options
 		).then( optionsData => {
-			dispatch( 'wc-admin' ).setProducts( optionsData, query );
+			const saveFn = dispatch( 'wc-admin' )[ saveAction ] || noop;
+			saveFn( optionsData, query );
 
 			if ( promise !== this.activePromise ) {
 				// Another promise has become active since this one was asked to resolve, so do nothing,

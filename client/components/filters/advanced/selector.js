@@ -26,7 +26,7 @@ class Selector extends Component {
 	}
 
 	render() {
-		const { filter, config, onFilterChange, searchValue } = this.props;
+		const { filter, config, onFilterChange, searchValues } = this.props;
 		const filterConfig = config[ filter.key ];
 		const { input } = filterConfig;
 		if ( ! input ) {
@@ -45,7 +45,7 @@ class Selector extends Component {
 		}
 		if ( 'Search' === input.component ) {
 			return (
-				<Search onChange={ this.onSearchChange } type={ input.type } selected={ searchValue } />
+				<Search onChange={ this.onSearchChange } type={ input.type } selected={ searchValues } />
 			);
 		}
 		return null;
@@ -53,19 +53,10 @@ class Selector extends Component {
 }
 
 export default withSelect( ( select, props ) => {
-	const { filter } = props;
-	// const filterConfig = config[ filter.key ];
-	// const { input } = filterConfig;
-	if ( Array.isArray( filter.value ) ) {
-		const { getProductById } = select( 'wc-admin' );
-		return {
-			searchValue: filter.value.map( id => {
-				const product = getProductById( id );
-				return {
-					id: parseInt( id, 10 ),
-					label: ( product && product.name ) || id.toString(),
-				};
-			} ),
-		};
-	}
+	const { filter, config } = props;
+	const filterConfig = config[ filter.key ];
+	const { input } = filterConfig;
+	return {
+		searchValues: 'Search' === input.component ? input.getValues( filter.value, select ) : [],
+	};
 } )( Selector );
