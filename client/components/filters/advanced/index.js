@@ -13,8 +13,8 @@ import Gridicon from 'gridicons';
  * Internal dependencies
  */
 import Card from 'components/card';
-import Search from 'components/search';
 import Link from 'components/link';
+import Selector from './selector';
 import { getActiveFiltersFromQuery, getQueryFromActiveFilters } from './utils';
 import { getNewPath } from 'lib/nav-utils';
 import './style.scss';
@@ -41,7 +41,6 @@ class AdvancedFilters extends Component {
 
 		this.onMatchChange = this.onMatchChange.bind( this );
 		this.onFilterChange = this.onFilterChange.bind( this );
-		this.getSelector = this.getSelector.bind( this );
 		this.getAvailableFilterKeys = this.getAvailableFilterKeys.bind( this );
 		this.addFilter = this.addFilter.bind( this );
 		this.removeFilter = this.removeFilter.bind( this );
@@ -89,35 +88,6 @@ class AdvancedFilters extends Component {
 				<span>{ __( 'Filters', 'wc-admin' ) }</span>
 			</Fragment>
 		);
-	}
-
-	getSelector( filter ) {
-		const filterConfig = this.props.config[ filter.key ];
-		const { input } = filterConfig;
-		if ( ! input ) {
-			return null;
-		}
-		if ( 'SelectControl' === input.component ) {
-			return (
-				<SelectControl
-					className="woocommerce-filters-advanced__list-select"
-					options={ input.options }
-					value={ filter.value }
-					onChange={ partial( this.onFilterChange, filter.key, 'value' ) }
-					aria-label={ sprintf( __( 'Select %s', 'wc-admin' ), filterConfig.label ) }
-				/>
-			);
-		}
-		if ( 'Search' === input.component ) {
-			return (
-				<Search
-					onChange={ partial( this.onFilterChange, filter.key, 'value' ) }
-					type={ input.type }
-					selected={ filter.value }
-				/>
-			);
-		}
-		return null;
 	}
 
 	getAvailableFilterKeys() {
@@ -197,7 +167,11 @@ class AdvancedFilters extends Component {
 											/>
 										) }
 										<div className="woocommerce-filters-advanced__list-selector">
-											{ this.getSelector( filter ) }
+											<Selector
+												filter={ filter }
+												config={ config }
+												onFilterChange={ this.onFilterChange }
+											/>
 										</div>
 									</div>
 								</fieldset>

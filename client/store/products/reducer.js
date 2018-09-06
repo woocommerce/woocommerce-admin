@@ -26,11 +26,11 @@ export default function productsReducer( state = DEFAULT_STATE, action ) {
 		const queries = {
 			...prevQueries,
 			[ queryKey ]: [ ...action.products ],
-			products: { ...state.products, ...productsMap },
 		};
 		return {
 			...state,
 			queries,
+			products: { ...state.products, ...productsMap },
 		};
 	}
 	if ( 'SET_PRODUCTS_ERROR' === action.type ) {

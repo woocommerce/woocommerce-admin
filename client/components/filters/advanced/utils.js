@@ -25,10 +25,7 @@ export const getUrlKey = ( key, rule ) => {
  * @return {{id: Number, label: String}[]} - array of Search tags
  */
 export const getSearchFilterValue = str => {
-	if ( str.length ) {
-		return str.split( ',' ).map( value => ( { id: parseInt( value, 10 ), label: value } ) );
-	}
-	return [];
+	return str.length ? str.split( ',' ) : [];
 };
 
 /**
@@ -88,7 +85,7 @@ export const getActiveFiltersFromQuery = ( query, config ) => {
  */
 export const getUrlValue = value => {
 	if ( Array.isArray( value ) ) {
-		return value.length ? value.map( v => v.id ).join( ',' ) : null;
+		return value.length ? value.join( ',' ) : null;
 	}
 	return 'string' === typeof value ? value : null;
 };

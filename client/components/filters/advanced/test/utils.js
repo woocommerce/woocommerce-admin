@@ -34,9 +34,9 @@ describe( 'getSearchFilterValue', () => {
 		const str = '1,2,3';
 		const values = getSearchFilterValue( str );
 		expect( Array.isArray( values ) ).toBeTruthy();
-		expect( 'number' === typeof values[ 0 ].id ).toBeTruthy();
-		expect( values[ 0 ].id ).toBe( 1 );
-		expect( values[ 0 ].label ).toBe( '1' );
+		expect( values[ 0 ] ).toBe( '1' );
+		expect( values[ 1 ] ).toBe( '2' );
+		expect( values[ 2 ] ).toBe( '3' );
 	} );
 
 	it( 'should convert an empty string into an empty array', () => {
@@ -135,12 +135,8 @@ describe( 'getUrlValue', () => {
 		expect( value ).toBeNull();
 	} );
 
-	it( 'should return an array of concatenated ids given an array of objects', () => {
-		const value = getUrlValue( [
-			{ id: 1, label: 'one' },
-			{ id: 2, label: 'one' },
-			{ id: 3, label: 'one' },
-		] );
+	it( 'should return comma separated values when given an array', () => {
+		const value = getUrlValue( [ 1, 2, 3 ] );
 		expect( value ).toBe( '1,2,3' );
 	} );
 } );
@@ -152,7 +148,7 @@ describe( 'getQueryFromActiveFilters', () => {
 			{
 				key: 'things',
 				rule: 'includes',
-				value: [ { id: 1 }, { id: 2 }, { id: 3 } ],
+				value: [ 1, 2, 3 ],
 			},
 			{ key: 'customer', value: 'new' },
 		];
@@ -170,7 +166,7 @@ describe( 'getQueryFromActiveFilters', () => {
 			{
 				key: 'things',
 				rule: 'includes',
-				value: [ { id: 1 }, { id: 2 }, { id: 3 } ],
+				value: [ 1, 2, 3 ],
 			},
 			{ key: 'customer', value: 'new' },
 		];

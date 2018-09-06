@@ -49,6 +49,6 @@ export default {
 	},
 
 	getProductById( state, id ) {
-		return get( state, 'products.products', id );
+		return get( state, 'products.products', {} )[ id ];
 	},
 };
