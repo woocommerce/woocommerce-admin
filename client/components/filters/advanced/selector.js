@@ -22,7 +22,7 @@ class Selector extends Component {
 	onSearchChange( values ) {
 		const { filter, onFilterChange } = this.props;
 		const nextValues = values.map( value => value.id );
-		onFilterChange( nextValues, filter.key, 'value' );
+		onFilterChange( filter.key, 'value', nextValues );
 	}
 
 	render() {
