@@ -45,12 +45,12 @@ class OrdersReport extends Component {
 				<Card title="Orders">
 					<table style={ { width: '100%' } }>
 						<thead>
-							<tr style={ { textAlign: 'left' } }>
-								<th>Id</th>
-								<th>Date</th>
-								<th>Total</th>
-								<th>Status</th>
-								<th>Action</th>
+							<tr>
+								<th style={ { textAlign: 'left' } }>Id</th>
+								<th style={ { textAlign: 'left' } }>Date</th>
+								<th style={ { textAlign: 'left' } }>Total</th>
+								<th style={ { textAlign: 'left' } }>Status</th>
+								<th style={ { textAlign: 'left' } }>Action</th>
 							</tr>
 						</thead>
 						<tbody>
