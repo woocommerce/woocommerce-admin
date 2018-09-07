@@ -23,10 +23,8 @@ export const filters = [
 			},
 		],
 	},
-	{ label: __( 'Top Products by Items Sold', 'wc-admin' ), value: 'top_items' },
-	{ label: __( 'Top Products by Gross Sales', 'wc-admin' ), value: 'top_sales' },
 	{
-		label: __( 'Compare Products', 'wc-admin' ),
+		label: __( 'Product Comparison', 'wc-admin' ),
 		value: 'compare-product',
 		settings: {
 			type: 'products',
@@ -49,7 +47,7 @@ export const filters = [
 		},
 	},
 	{
-		label: __( 'Compare Product Categories', 'wc-admin' ),
+		label: __( 'Product Category Comparison', 'wc-admin' ),
 		value: 'compare-product_cat',
 		settings: {
 			type: 'product_cats',
@@ -71,4 +69,6 @@ export const filters = [
 			},
 		},
 	},
+	{ label: __( 'Top Products by Items Sold', 'wc-admin' ), value: 'top_items' },
+	{ label: __( 'Top Products by Gross Sales', 'wc-admin' ), value: 'top_sales' },
 ];
