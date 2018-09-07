@@ -78,6 +78,10 @@ class CompareFilter extends Component {
 
 CompareFilter.propTypes = {
 	/**
+	 * Function used to fetch object labels via an API request, returns a Promise.
+	 */
+	getLabels: PropTypes.func.isRequired,
+	/**
 	 * Object of localized labels.
 	 */
 	labels: PropTypes.shape( {
