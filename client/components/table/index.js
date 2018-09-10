@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import Card from 'components/card';
 import EllipsisMenu from 'components/ellipsis-menu';
+import { getIdsFromQuery } from 'lib/nav-utils';
 import MenuItem from 'components/ellipsis-menu/menu-item';
 import MenuTitle from 'components/ellipsis-menu/menu-title';
 import Pagination from 'components/pagination';
@@ -31,9 +32,10 @@ import TableSummary from './summary';
 class TableCard extends Component {
 	constructor( props ) {
 		super( props );
+		const { compareBy, query } = props;
 		this.state = {
 			showCols: fill( Array( props.headers.length ), true ),
-			selectedRows: [],
+			selectedRows: getIdsFromQuery( query[ compareBy ] ),
 		};
 		this.toggleCols = this.toggleCols.bind( this );
 		this.onCompare = this.onCompare.bind( this );
