@@ -3,8 +3,8 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { Button, IconButton, ToggleControl } from '@wordpress/components';
 import { Component } from '@wordpress/element';
-import { IconButton, ToggleControl } from '@wordpress/components';
 import { fill, find, findIndex, first, noop, partial, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 
@@ -36,6 +36,7 @@ class TableCard extends Component {
 			selectedRows: [],
 		};
 		this.toggleCols = this.toggleCols.bind( this );
+		this.onCompare = this.onCompare.bind( this );
 		this.selectRow = this.selectRow.bind( this );
 		this.selectAllRows = this.selectAllRows.bind( this );
 	}
@@ -58,6 +59,14 @@ class TableCard extends Component {
 				),
 			} ) );
 		};
+	}
+
+	onCompare() {
+		const { compareBy, onQueryChange } = this.props;
+		const { selectedRows } = this.state;
+		if ( compareBy ) {
+			onQueryChange( 'compare' )( compareBy, selectedRows.join( ',' ) );
+		}
 	}
 
 	filterCols( rows = [] ) {
@@ -155,13 +164,18 @@ class TableCard extends Component {
 			<Card
 				className="woocommerce-table"
 				title={ title }
-				action={
+				action={ [
+					compareBy && (
+						<Button onClick={ this.onCompare } isDefault>
+							{ __( 'Compare', 'wc-admin' ) }
+						</Button>
+					),
 					onClickDownload && (
 						<IconButton onClick={ onClickDownload } icon="arrow-down" size={ 18 } isDefault>
 							{ __( 'Download', 'wc-admin' ) }
 						</IconButton>
-					)
-				}
+					),
+				] }
 				menu={
 					<EllipsisMenu label={ __( 'Choose which values to display', 'wc-admin' ) }>
 						<MenuTitle>{ __( 'Columns:', 'wc-admin' ) }</MenuTitle>
