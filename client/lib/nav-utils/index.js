@@ -1,10 +1,17 @@
 /** @format */
-
 /**
  * External dependencies
  */
 import history from 'lib/history';
 import { parse, stringify } from 'qs';
+
+/**
+ * Returns a string with the site's wp-admin URL appended. JS version of `admin_url`.
+ *
+ * @param {String} path Relative path.
+ * @return {String} Full admin URL.
+ */
+export const getAdminLink = path => wcSettings.adminUrl + path;
 
 /**
  * Get the current path from history.
@@ -14,25 +21,25 @@ import { parse, stringify } from 'qs';
 export const getPath = () => history.location.pathname;
 
 /**
- * Get the current query string, parsed into an object, from history.
+ * Converts a query object to a query string.
  *
- * @return {Object}  Current query object, defaults to empty object.
+ * @param {Object} query parameters to be converted.
+ * @return {String} Query string.
  */
-export function getQuery() {
-	const search = history.location.search;
-	if ( search.length ) {
-		return parse( search.substring( 1 ) ) || {};
-	}
-	return {};
-}
+export const stringifyQuery = query => ( query ? '?' + stringify( query ) : '' );
 
 /**
- * Returns a string with the site's wp-admin URL appended. JS version of `admin_url`.
+ * Get an array of IDs from a comma-separated query parameter.
  *
- * @param {String} path Relative path.
- * @return {String} Full admin URL.
+ * @param {string} queryString string value extracted from URL.
+ * @return {Array} List of IDs converted to numbers.
  */
-export const getAdminLink = path => wcSettings.adminUrl + path;
+export function getIdsFromQuery( queryString ) {
+	return queryString
+		.split( ',' )
+		.map( id => parseInt( id, 10 ) )
+		.filter( Boolean );
+}
 
 /**
  * Converts a query object to a query string.
@@ -55,6 +62,19 @@ export const stringifyQuery = query => {
 export function getNewPath( query, path = getPath(), currentQuery = getQuery() ) {
 	const queryString = stringifyQuery( { ...currentQuery, ...query } );
 	return `${ path }${ queryString }`;
+}
+
+/**
+ * Get the current query string, parsed into an object, from history.
+ *
+ * @return {Object}  Current query object, defaults to empty object.
+ */
+export function getQuery() {
+	const search = history.location.search;
+	if ( search.length ) {
+		return parse( search.substring( 1 ) ) || {};
+	}
+	return {};
 }
 
 /**
