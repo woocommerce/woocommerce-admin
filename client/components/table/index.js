@@ -5,7 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, IconButton, ToggleControl } from '@wordpress/components';
 import { Component } from '@wordpress/element';
-import { fill, find, findIndex, first, noop, partial, uniq } from 'lodash';
+import { fill, find, findIndex, first, isEqual, noop, partial, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -41,6 +41,17 @@ class TableCard extends Component {
 		this.onCompare = this.onCompare.bind( this );
 		this.selectRow = this.selectRow.bind( this );
 		this.selectAllRows = this.selectAllRows.bind( this );
+	}
+
+	componentDidUpdate( { query: prevQuery } ) {
+		const { compareBy, query } = this.props;
+		const prevIds = getIdsFromQuery( prevQuery[ compareBy ] );
+		const currentIds = getIdsFromQuery( query[ compareBy ] );
+		if ( ! isEqual( prevIds.sort(), currentIds.sort() ) ) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( { selectedRows: currentIds } );
+			/* eslint-enable react/no-did-update-set-state */
+		}
 	}
 
 	toggleCols( selected ) {
