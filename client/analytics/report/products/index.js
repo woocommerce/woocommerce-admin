@@ -11,7 +11,7 @@ import { map, noop } from 'lodash';
  */
 import { filters } from './config';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
-import { getAdminLink } from 'lib/nav-utils';
+import { getAdminLink, onQueryChange } from 'lib/nav-utils';
 import { ReportFilters, TableCard } from '@woocommerce/components';
 import './style.scss';
 
@@ -139,7 +139,7 @@ export default class extends Component {
 				rowsPerPage={ rowsPerPage }
 				headers={ headers }
 				onClickDownload={ noop }
-				onQueryChange={ noop }
+				onQueryChange={ onQueryChange }
 				query={ tableQuery }
 				summary={ null }
 			/>

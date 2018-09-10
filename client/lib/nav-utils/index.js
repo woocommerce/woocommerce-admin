@@ -11,9 +11,7 @@ import { parse, stringify } from 'qs';
  *
  * @return {String}  Current path.
  */
-export function getPath() {
-	return history.location.pathname;
-}
+export const getPath = () => history.location.pathname;
 
 /**
  * Get the current query string, parsed into an object, from history.
@@ -34,9 +32,7 @@ export function getQuery() {
  * @param {String} path Relative path.
  * @return {String} Full admin URL.
  */
-export const getAdminLink = path => {
-	return wcSettings.adminUrl + path;
-};
+export const getAdminLink = path => wcSettings.adminUrl + path;
 
 /**
  * Converts a query object to a query string.
@@ -56,10 +52,30 @@ export const stringifyQuery = query => {
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
  * @return {String}  Updated URL merging query params into existing params.
  */
-export const getNewPath = ( query, path = getPath(), currentQuery = getQuery() ) => {
+export function getNewPath( query, path = getPath(), currentQuery = getQuery() ) {
 	const queryString = stringifyQuery( { ...currentQuery, ...query } );
 	return `${ path }${ queryString }`;
-};
+}
+
+/**
+ * This function returns an event handler for the given `param`
+ *
+ * @param {string} param The parameter in the querystring which should be updated (ex `page`, `per_page`)
+ * @param {string} path Relative path (defaults to current path).
+ * @param {string} query object of current query params (defaults to current querystring).
+ * @return {function} A callback which will update `param` to the passed value when called.
+ */
+export function onQueryChange( param, path = getPath(), query = getQuery() ) {
+	switch ( param ) {
+		case 'sort':
+			return ( key, dir ) => updateQueryString( { orderby: key, order: dir }, path, query );
+		case 'compare':
+			return ( key, ids ) =>
+				updateQueryString( { filter: `compare-${ key }`, [ key ]: ids }, path, query );
+		default:
+			return value => updateQueryString( { [ param ]: value }, path, query );
+	}
+}
 
 /**
  * Updates the query parameters of the current page.
@@ -68,7 +84,7 @@ export const getNewPath = ( query, path = getPath(), currentQuery = getQuery() )
  * @param {String} path Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
  */
-export const updateQueryString = ( query, path = getPath(), currentQuery = getQuery() ) => {
+export function updateQueryString( query, path = getPath(), currentQuery = getQuery() ) {
 	const newPath = getNewPath( query, path, currentQuery );
 	history.push( newPath );
-};
+}
