@@ -378,25 +378,26 @@ export const drawLines = ( node, data, params ) => {
 		} )
 		.attr( 'd', d => params.line( d.values ) );
 
-	series
-		.selectAll( 'circle' )
-		.data( ( d, i ) => d.values.map( row => ( { ...row, i, visible: d.visible, key: d.key } ) ) )
-		.enter()
-		.append( 'circle' )
-		.attr( 'r', 6 )
-		.attr( 'fill', d => getColor( d.key, params ) )
-		.attr( 'stroke', '#fff' )
-		.attr( 'stroke-width', 3 )
-		.style( 'opacity', d => {
-			const opacity = d.focus ? 1 : 0.1;
-			return d.visible ? opacity : 0;
-		} )
-		.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
-		.attr( 'cy', d => params.yScale( d.value ) )
-		.on( 'mouseover', ( d, i, nodes ) =>
-			handleMouseOverLineChart( d, i, nodes, node, data, params )
-		)
-		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+	params.uniqueDates.length < 50 &&
+		series
+			.selectAll( 'circle' )
+			.data( ( d, i ) => d.values.map( row => ( { ...row, i, visible: d.visible, key: d.key } ) ) )
+			.enter()
+			.append( 'circle' )
+			.attr( 'r', 6 )
+			.attr( 'fill', d => getColor( d.key, params ) )
+			.attr( 'stroke', '#fff' )
+			.attr( 'stroke-width', 3 )
+			.style( 'opacity', d => {
+				const opacity = d.focus ? 1 : 0.1;
+				return d.visible ? opacity : 0;
+			} )
+			.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
+			.attr( 'cy', d => params.yScale( d.value ) )
+			.on( 'mouseover', ( d, i, nodes ) =>
+				handleMouseOverLineChart( d, i, nodes, node, data, params )
+			)
+			.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
 
 	const focus = node
 		.append( 'g' )
