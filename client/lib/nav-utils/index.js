@@ -34,7 +34,7 @@ export const stringifyQuery = query => ( query ? '?' + stringify( query ) : '' )
  * @param {string} queryString string value extracted from URL.
  * @return {Array} List of IDs converted to numbers.
  */
-export function getIdsFromQuery( queryString ) {
+export function getIdsFromQuery( queryString = '' ) {
 	return queryString
 		.split( ',' )
 		.map( id => parseInt( id, 10 ) )
