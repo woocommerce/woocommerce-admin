@@ -4,6 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button, IconButton, ToggleControl } from '@wordpress/components';
+import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { fill, find, findIndex, first, isEqual, noop, partial, uniq } from 'lodash';
 import PropTypes from 'prop-types';
@@ -173,15 +174,23 @@ class TableCard extends Component {
 			headers = [ this.getAllCheckbox(), ...headers ];
 		}
 
+		const className = classnames( {
+			'woocommerce-table': true,
+			'has-compare': !! compareBy,
+		} );
+
 		return (
 			<Card
-				className="woocommerce-table"
+				className={ className }
 				title={ title }
 				action={ [
 					compareBy && (
 						<Button onClick={ this.onCompare } isDefault>
 							{ __( 'Compare', 'wc-admin' ) }
 						</Button>
+					),
+					compareBy && (
+						<div style={ { padding: '4px 12px', color: '#6c7781' } }>Placeholder for search</div>
 					),
 					onClickDownload && (
 						<IconButton onClick={ onClickDownload } icon="arrow-down" size={ 18 } isDefault>
