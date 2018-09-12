@@ -29,6 +29,7 @@
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-async-to-generator": "^7.0.0",
+    "@babel/runtime-corejs2": "^7.0.0",
     "@wordpress/api-fetch": "^2.0.0",
     "@wordpress/babel-plugin-import-jsx-pragma": "^1.1.0",
     "@wordpress/babel-plugin-makepot": "^2.1.0",
@@ -50,6 +51,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "chalk": "^2.4.1",
     "core-js": "^2.5.7",
     "css-loader": "^1.0.0",
