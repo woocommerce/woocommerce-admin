@@ -11,6 +11,7 @@ import { map, noop } from 'lodash';
  */
 import { filters } from './config';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
+import { numberFormat } from 'lib/number';
 import { getAdminLink, onQueryChange } from 'lib/nav-utils';
 import { ReportFilters, TableCard } from '@woocommerce/components';
 import './style.scss';
@@ -103,7 +104,7 @@ export default class extends Component {
 					value: false,
 				},
 				{
-					display: variations.length + '',
+					display: numberFormat( variations.length ),
 					value: false,
 				},
 				{
@@ -111,7 +112,7 @@ export default class extends Component {
 					value: false,
 				},
 				{
-					display: stock_quantity + '',
+					display: numberFormat( stock_quantity ),
 					value: Number( stock_quantity ),
 				},
 			];
@@ -133,7 +134,7 @@ export default class extends Component {
 		};
 		return (
 			<TableCard
-				title={ __( 'Revenue', 'wc-admin' ) }
+				title={ __( 'Products', 'wc-admin' ) }
 				rows={ rows }
 				totalRows={ 500 }
 				rowsPerPage={ rowsPerPage }
