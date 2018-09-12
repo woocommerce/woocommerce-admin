@@ -42,16 +42,6 @@ export function getIdsFromQuery( queryString = '' ) {
 }
 
 /**
- * Converts a query object to a query string.
- *
- * @param {Object} query parameters to be converted.
- * @return {String} Query string.
- */
-export const stringifyQuery = query => {
-	return query ? '?' + stringify( query ) : '';
-};
-
-/**
  * Return a URL with set query parameters.
  *
  * @param {Object} query object of params to be updated.
