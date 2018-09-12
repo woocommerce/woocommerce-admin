@@ -188,6 +188,36 @@ export const getLine = ( xLineScale, yScale ) =>
 		.y( d => yScale( d.value ) );
 
 /**
+ * Describes getXTicks
+ * @param {integer} width - calculated page width
+ * @param {string} layout - standard, comparison or compact chart types
+ * @returns {integer} number of x-axis ticks based on width and chart layout
+ */
+export const getXTicks = ( width, layout ) => {
+	if ( width < 783 ) {
+		return 7;
+	} else if ( width >= 783 && width < 1129 ) {
+		return 12;
+	} else if ( width >= 1130 && width < 1365 ) {
+		if ( layout === 'standard' ) {
+			return 16;
+		} else if ( layout === 'comparison' ) {
+			return 12;
+		} else if ( layout === 'compact' ) {
+			return 7;
+		}
+	} else if ( width >= 1365 ) {
+		if ( layout === 'standard' ) {
+			return 31;
+		} else if ( layout === 'comparison' ) {
+			return 16;
+		} else if ( layout === 'compact' ) {
+			return 12;
+		}
+	}
+};
+
+/**
  * Describes getDateSpaces
  * @param {array} uniqueDates - from `getUniqueDates`
  * @param {number} width - calculated width of the charting space
@@ -223,13 +253,18 @@ export const drawAxis = ( node, params ) => {
 		yGrids.push( i / 3 * params.yMax );
 	}
 
+	let ticks = params.uniqueDates.map( d => ( params.type === 'line' ? new Date( d ) : d ) );
+	while ( ticks.length >= params.xTicks ) {
+		ticks = ticks.filter( ( x, i ) => i % 2 || i === 0 || i === ticks.length - 1 );
+	}
+
 	node
 		.append( 'g' )
 		.attr( 'class', 'axis' )
 		.attr( 'transform', `translate(0,${ params.height })` )
 		.call(
 			d3AxisBottom( xScale )
-				.tickValues( params.uniqueDates.map( d => ( params.type === 'line' ? new Date( d ) : d ) ) )
+				.tickValues( ticks )
 				.tickFormat( d => params.xFormat( d instanceof Date ? d : new Date( d ) ) )
 		);
 
@@ -239,7 +274,7 @@ export const drawAxis = ( node, params ) => {
 		.attr( 'transform', `translate(3, ${ params.height + 20 })` )
 		.call(
 			d3AxisBottom( xScale )
-				.tickValues( params.uniqueDates.map( d => ( params.type === 'line' ? new Date( d ) : d ) ) )
+				.tickValues( ticks )
 				.tickFormat( ( d, i ) => {
 					const monthDate = d instanceof Date ? d : new Date( d );
 					return monthDate.getDate() === 1 || i === 0 ? params.x2Format( monthDate ) : '';

@@ -293,7 +293,7 @@ Chart.propTypes = {
 	/**
 	 * `standard` (default) legend layout in the header or `comparison` moves legend layout to the left
 	 */
-	layout: PropTypes.oneOf( [ 'standard', 'comparison' ] ),
+	layout: PropTypes.oneOf( [ 'standard', 'comparison', 'compact' ] ),
 	/**
 	 * A title describing this chart.
 	 */
