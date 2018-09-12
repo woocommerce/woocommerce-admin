@@ -56,7 +56,7 @@
     "core-js": "^2.5.7",
     "css-loader": "^1.0.0",
     "deep-freeze": "^0.0.1",
-    "docsify-cli": "^4.2.1",
+    "docsify-cli": "github:docsifyjs/docsify-cli#5df38996",
     "eslint": "^5.5.0",
     "eslint-config-wpcalypso": "^4.0.0",
     "eslint-loader": "^2.0.0",
