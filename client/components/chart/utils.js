@@ -400,7 +400,6 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'fill', d => getColor( d.key, params ) )
 		.attr( 'stroke', '#fff' )
 		.attr( 'stroke-width', 3 )
-		.attr( 'tabindex', '0' )
 		.style( 'opacity', d => {
 			const opacity = d.focus ? 1 : 0.1;
 			return d.visible ? opacity : 0;
@@ -410,11 +409,7 @@ export const drawLines = ( node, data, params ) => {
 		.on( 'mouseover', ( d, i, nodes ) =>
 			handleMouseOverLineChart( d, i, nodes, node, data, params )
 		)
-		.on( 'focus', ( d, i, nodes ) => {
-			const position = calculatePositionInChart( d3Event.target, node.node() );
-			handleMouseOverLineChart( d, i, nodes, node, data, params, position );
-		} )
-		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
 
 	const focus = node
 		.append( 'g' )
@@ -442,10 +437,15 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'width', d => d.width )
 		.attr( 'height', params.height )
 		.attr( 'opacity', 0 )
+		.attr( 'tabindex', '0' )
 		.on( 'mouseover', ( d, i, nodes ) =>
 			handleMouseOverLineChart( d, i, nodes, node, data, params )
 		)
-		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+		.on( 'focus', ( d, i, nodes ) => {
+			const position = calculatePositionInChart( d3Event.target, node.node() );
+			handleMouseOverLineChart( d, i, nodes, node, data, params, position );
+		} )
+		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
 };
 
 export const drawBars = ( node, data, params ) => {
