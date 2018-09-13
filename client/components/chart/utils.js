@@ -342,7 +342,7 @@ export const drawAxis = ( node, params ) => {
 		.attr( 'transform', `translate(0, ${ params.height })` )
 		.call(
 			d3AxisBottom( xScale )
-				.tickValues( params.uniqueDates.map( d => ( params.type === 'line' ? new Date( d ) : d ) ) )
+				.tickValues( ticks )
 				.tickSize( 5 )
 				.tickFormat( '' )
 		);
