@@ -362,6 +362,12 @@ const handleMouseOutLineChart = ( d, i, nodes, params ) => {
 	params.tooltip.style( 'display', 'none' );
 };
 
+const calculatePositionInChart = ( element, chart ) => {
+	const elementCoords = element.getBoundingClientRect();
+	const chartCoords = chart.getBoundingClientRect();
+	return [ elementCoords.x - chartCoords.x, elementCoords.y - chartCoords.y ];
+};
+
 export const drawLines = ( node, data, params ) => {
 	const series = node
 		.append( 'g' )
@@ -405,9 +411,7 @@ export const drawLines = ( node, data, params ) => {
 			handleMouseOverLineChart( d, i, nodes, node, data, params )
 		)
 		.on( 'focus', ( d, i, nodes ) => {
-			const circleBox = d3Event.target.getBoundingClientRect();
-			const graphBox = node.node().getBoundingClientRect();
-			const position = [ circleBox.x - graphBox.x, circleBox.y - graphBox.y ];
+			const position = calculatePositionInChart( d3Event.target, node.node() );
 			handleMouseOverLineChart( d, i, nodes, node, data, params, position );
 		} )
 		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
@@ -504,9 +508,7 @@ export const drawBars = ( node, data, params ) => {
 			handleMouseOverBarChart( d, i, nodes, node, data, params )
 		)
 		.on( 'focus', ( d, i, nodes ) => {
-			const rectangleBox = d3Event.target.getBoundingClientRect();
-			const graphBox = node.node().getBoundingClientRect();
-			const position = [ rectangleBox.x - graphBox.x, rectangleBox.y - graphBox.y ];
+			const position = calculatePositionInChart( d3Event.target, node.node() );
 			handleMouseOverBarChart( d, i, nodes, node, data, params, position );
 		} )
 		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
