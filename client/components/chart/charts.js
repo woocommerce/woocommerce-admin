@@ -122,7 +122,7 @@ class D3Chart extends Component {
 		const uniqueDates = getUniqueDates( lineData, parseDate );
 		const xLineScale = getXLineScale( uniqueDates, adjWidth );
 		const xScale = getXScale( uniqueDates, adjWidth );
-		const xTicks = getXTicks( adjWidth, layout );
+		const xTicks = getXTicks( uniqueDates, adjWidth, layout );
 		return {
 			colorScheme,
 			dateSpaces: getDateSpaces( uniqueDates, adjWidth, xLineScale ),

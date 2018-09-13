@@ -21,6 +21,24 @@ import { line as d3Line } from 'd3-shape';
 import { formatCurrency } from 'lib/currency';
 
 /**
+ * Describes `smallestFactor`
+ * @param {number} inputNum - any double or integer
+ * @returns {integer} smallest factor of num
+ */
+export const getFactors = inputNum => {
+	const num = Math.round( inputNum );
+	const num_factors = [];
+	for ( let i = 1; i <= Math.floor( Math.sqrt( num ) ); i += 1 ) {
+		if ( num % i === 0 ) {
+			num_factors.push( i );
+			num / i !== i && num_factors.push( num / i );
+		}
+	}
+	num_factors.sort( ( x, y ) => x - y ); // numeric sort
+	return num_factors;
+};
+
+/**
  * Describes `getUniqueKeys`
  * @param {array} data - The chart component's `data` prop.
  * @returns {array} of unique category keys
@@ -189,32 +207,67 @@ export const getLine = ( xLineScale, yScale ) =>
 
 /**
  * Describes getXTicks
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
  * @param {integer} width - calculated page width
  * @param {string} layout - standard, comparison or compact chart types
  * @returns {integer} number of x-axis ticks based on width and chart layout
  */
-export const getXTicks = ( width, layout ) => {
+export const getXTicks = ( uniqueDates, width, layout ) => {
+	// caluclate the maximum number of ticks allowed in the x-axis based on the width
+	// and layout of the chart
+	let ticks = 16;
 	if ( width < 783 ) {
-		return 7;
+		ticks = 7;
 	} else if ( width >= 783 && width < 1129 ) {
-		return 12;
+		ticks = 12;
 	} else if ( width >= 1130 && width < 1365 ) {
 		if ( layout === 'standard' ) {
-			return 16;
+			ticks = 16;
 		} else if ( layout === 'comparison' ) {
-			return 12;
+			ticks = 12;
 		} else if ( layout === 'compact' ) {
-			return 7;
+			ticks = 7;
 		}
 	} else if ( width >= 1365 ) {
 		if ( layout === 'standard' ) {
-			return 31;
+			ticks = 31;
 		} else if ( layout === 'comparison' ) {
-			return 16;
+			ticks = 16;
 		} else if ( layout === 'compact' ) {
-			return 12;
+			ticks = 12;
 		}
 	}
+	let factors = [];
+	let i = 0;
+	//  first we get all the factors of the length of the uniqieDates array
+	// if the number is a prime number or near prime (with 3 factors) then we
+	// step down by 1 integer and try again
+	while ( factors.length <= 3 ) {
+		factors = getFactors( uniqueDates.length - ( 1 + i ) );
+		i += 1;
+	}
+	let newTicks = [];
+	let factorIndex = 0;
+	// newTicks is the first tick plus the smallest factor (initiallY) etc.
+	// however, if we still end up with too many ticks we look at the next factor
+	// and try again unttil we have fewer ticks than the max
+	while ( newTicks.length > ticks || newTicks.length === 0 ) {
+		if ( newTicks.length > ticks ) {
+			factorIndex += 1;
+			newTicks = [];
+		}
+		for ( let idx = 0; idx < uniqueDates.length; idx = idx + factors[ factorIndex ] ) {
+			newTicks.push( uniqueDates[ idx ] );
+		}
+	}
+	// if, for some reason, the first or last date is missing from the newTicks array, add it back in
+	if ( newTicks[ 0 ] !== uniqueDates[ 0 ] ) {
+		newTicks.unshift( uniqueDates[ 0 ] );
+	}
+	if ( newTicks[ newTicks.length - 1 ] !== uniqueDates[ uniqueDates.length - 1 ] ) {
+		newTicks.push( uniqueDates[ uniqueDates.length - 1 ] );
+	}
+	return newTicks;
 };
 
 /**
@@ -253,10 +306,7 @@ export const drawAxis = ( node, params ) => {
 		yGrids.push( i / 3 * params.yMax );
 	}
 
-	let ticks = params.uniqueDates.map( d => ( params.type === 'line' ? new Date( d ) : d ) );
-	while ( ticks.length >= params.xTicks ) {
-		ticks = ticks.filter( ( x, i ) => i % 2 || i === 0 || i === ticks.length - 1 );
-	}
+	const ticks = params.xTicks.map( d => ( params.type === 'line' ? new Date( d ) : d ) );
 
 	node
 		.append( 'g' )
