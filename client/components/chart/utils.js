@@ -345,7 +345,7 @@ const handleMouseOutBarChart = ( d, i, nodes, params ) => {
 	d3Select( nodes[ i ].parentNode )
 		.select( '.barfocus' )
 		.attr( 'opacity', '0' );
-	params.tooltip.style( 'display', 'flex' );
+	params.tooltip.style( 'display', 'none' );
 };
 
 const handleMouseOverLineChart = ( d, i, nodes, node, data, params ) => {
