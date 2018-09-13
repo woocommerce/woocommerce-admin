@@ -1,8 +1,10 @@
 /** @format */
 .woocommerce-chart {
+	margin-top: -$gap;
 	margin-bottom: $gap-large;
 	background: white;
 	border: 1px solid $core-grey-light-700;
+	border-top: 0;
 
 	@include breakpoint( '<782px' ) {
 		margin-left: -16px;
