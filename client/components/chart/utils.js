@@ -26,12 +26,11 @@ import { formatCurrency } from 'lib/currency';
  * @returns {integer} smallest factor of num
  */
 export const getFactors = inputNum => {
-	const num = Math.round( inputNum );
 	const num_factors = [];
-	for ( let i = 1; i <= Math.floor( Math.sqrt( num ) ); i += 1 ) {
-		if ( num % i === 0 ) {
+	for ( let i = 1; i <= Math.floor( Math.sqrt( inputNum ) ); i += 1 ) {
+		if ( inputNum % i === 0 ) {
 			num_factors.push( i );
-			num / i !== i && num_factors.push( num / i );
+			inputNum / i !== i && num_factors.push( inputNum / i );
 		}
 	}
 	num_factors.sort( ( x, y ) => x - y ); // numeric sort
@@ -236,6 +235,9 @@ export const getXTicks = ( uniqueDates, width, layout ) => {
 		} else if ( layout === 'compact' ) {
 			ticks = 12;
 		}
+	}
+	if ( uniqueDates.length <= ticks ) {
+		return uniqueDates;
 	}
 	let factors = [];
 	let i = 0;

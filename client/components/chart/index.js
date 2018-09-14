@@ -291,7 +291,8 @@ Chart.propTypes = {
 	 */
 	yFormat: PropTypes.string,
 	/**
-	 * `standard` (default) legend layout in the header or `comparison` moves legend layout to the left
+	 * `standard` (default) legend layout in the header or `comparison` moves legend layout
+	 * to the left or 'compact' has the legend below
 	 */
 	layout: PropTypes.oneOf( [ 'standard', 'comparison', 'compact' ] ),
 	/**
