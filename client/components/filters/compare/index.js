@@ -45,9 +45,6 @@ class CompareFilter extends Component {
 		const prevIds = getIdsFromQuery( prevQuery[ param ] );
 		const currentIds = getIdsFromQuery( query[ param ] );
 		if ( ! isEqual( prevIds.sort(), currentIds.sort() ) ) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( { selected: currentIds } );
-			/* eslint-enable react/no-did-update-set-state */
 			getLabels( query[ param ] ).then( this.updateLabels );
 		}
 	}
