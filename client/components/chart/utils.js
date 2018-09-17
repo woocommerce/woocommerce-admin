@@ -466,8 +466,7 @@ const calculatePositionInChart = ( element, chart ) => {
 
 const formatVoiceDate = ( params, d ) => {
 	const date = d instanceof Date ? d : new Date( d );
-	// @TODO probably we want a specific date format for dates read by TTS software
-	return params.xFormat( date ) + ' ' + params.x2Format( date );
+	return params.tooltipFormat( date );
 };
 
 export const drawLines = ( node, data, params ) => {
