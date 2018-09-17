@@ -77,7 +77,6 @@ class D3Chart extends Component {
 		const { data, margin, type } = this.props;
 		const g = node
 			.attr( 'id', 'chart' )
-			.attr( 'role', 'table' )
 			.append( 'g' )
 			.attr( 'transform', `translate(${ margin.left },${ margin.top })` );
 
