@@ -434,7 +434,7 @@ const handleMouseOverBarChart = ( d, i, nodes, node, data, params, position ) =>
 	d3Select( nodes[ i ].parentNode )
 		.select( '.barfocus' )
 		.attr( 'opacity', '0.1' );
-	showTooltip( node, params, d, position );
+	showTooltip( node, params, data.find( e => e.date === d.date ), position );
 };
 
 const handleMouseOutBarChart = ( d, i, nodes, params ) => {
@@ -511,11 +511,19 @@ export const drawLines = ( node, data, params ) => {
 			} )
 			.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
 			.attr( 'cy', d => params.yScale( d.value ) )
-			.attr( 'aria-label', d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value ) )
+			.attr( 'tabindex', '0' )
+			.attr(
+				'aria-label',
+				d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value )
+			)
 			.on( 'mouseover', ( d, i, nodes ) =>
 				handleMouseOverLineChart( d, i, nodes, node, data, params )
 			)
-			.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+			.on( 'focus', ( d, i, nodes ) => {
+				const position = calculatePositionInChart( d3Event.target, node.node() );
+				handleMouseOverLineChart( d, i, nodes, node, data, params, position );
+			} )
+			.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
 
 	const focus = node
 		.append( 'g' )
@@ -543,15 +551,10 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'width', d => d.width )
 		.attr( 'height', params.height )
 		.attr( 'opacity', 0 )
-		.attr( 'tabindex', '0' )
 		.on( 'mouseover', ( d, i, nodes ) =>
 			handleMouseOverLineChart( d, i, nodes, node, data, params )
 		)
-		.on( 'focus', ( d, i, nodes ) => {
-			const position = calculatePositionInChart( d3Event.target, node.node() );
-			handleMouseOverLineChart( d, i, nodes, node, data, params, position );
-		} )
-		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
 };
 
 export const drawBars = ( node, data, params ) => {
@@ -584,6 +587,7 @@ export const drawBars = ( node, data, params ) => {
 				focus: row.focus,
 				value: d[ row.key ].value,
 				visible: row.visible,
+				date: d.date,
 			} ) )
 		)
 		.enter()
@@ -594,7 +598,11 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'width', params.xGroupScale.bandwidth() )
 		.attr( 'height', d => params.height - params.yScale( d.value ) )
 		.attr( 'fill', d => getColor( d.key, params ) )
-		.attr( 'aria-label', d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value ) )
+		.attr( 'tabindex', '0' )
+		.attr(
+			'aria-label',
+			d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value )
+		)
 		.style( 'opacity', d => {
 			const opacity = d.focus ? 1 : 0.1;
 			return d.visible ? opacity : 0;
@@ -602,7 +610,11 @@ export const drawBars = ( node, data, params ) => {
 		.on( 'mouseover', ( d, i, nodes ) =>
 			handleMouseOverBarChart( d, i, nodes, node, data, params )
 		)
-		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
+		.on( 'focus', ( d, i, nodes ) => {
+			const position = calculatePositionInChart( d3Event.target, node.node() );
+			handleMouseOverBarChart( d, i, nodes, node, data, params, position );
+		} )
+		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
 
 	barGroup
 		.append( 'rect' )
@@ -612,13 +624,8 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'width', params.xGroupScale.range()[ 1 ] )
 		.attr( 'height', params.height )
 		.attr( 'opacity', '0' )
-		.attr( 'tabindex', '0' )
 		.on( 'mouseover', ( d, i, nodes ) =>
 			handleMouseOverBarChart( d, i, nodes, node, data, params )
 		)
-		.on( 'focus', ( d, i, nodes ) => {
-			const position = calculatePositionInChart( d3Event.target, node.node() );
-			handleMouseOverBarChart( d, i, nodes, node, data, params, position );
-		} )
-		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
+		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
 };
