@@ -219,12 +219,15 @@ class Chart extends Component {
 					<span className="woocommerce-chart__title">{ title }</span>
 					{ width > WIDE_BREAKPOINT && legendDirection === 'row' && legend }
 					{ this.renderIntervalSelector() }
-					<div className="woocommerce-chart__types">
+					<div className="woocommerce-chart__types" role="radiogroup">
 						<IconButton
 							className={ classNames( 'woocommerce-chart__type-button', {
 								'woocommerce-chart__type-button-selected': type === 'line',
 							} ) }
 							icon={ <Gridicon icon="line-graph" /> }
+							title={ __( 'Line chart', 'wc-admin' ) }
+							aria-checked={ type === 'line' }
+							role="radio"
 							onClick={ partial( this.handleTypeToggle, 'line' ) }
 						/>
 						<IconButton
@@ -232,6 +235,9 @@ class Chart extends Component {
 								'woocommerce-chart__type-button-selected': type === 'bar',
 							} ) }
 							icon={ <Gridicon icon="stats-alt" /> }
+							title={ __( 'Bar chart', 'wc-admin' ) }
+							aria-checked={ type === 'bar' }
+							role="radio"
 							onClick={ partial( this.handleTypeToggle, 'bar' ) }
 						/>
 					</div>
