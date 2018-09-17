@@ -79,7 +79,10 @@ class Table extends Component {
 				role="group"
 			>
 				<table>
-					<caption id={ `caption-${ instanceId }` } className="woocommerce-table__caption screen-reader-text">
+					<caption
+						id={ `caption-${ instanceId }` }
+						className="woocommerce-table__caption screen-reader-text"
+					>
 						{ caption }
 						{ tabIndex === '0' && <small>{ __( '(scroll to see more)', 'wc-admin' ) }</small> }
 					</caption>
@@ -198,7 +201,7 @@ Table.propTypes = {
 			/**
 			 * The display label for this column.
 			 */
-			label: PropTypes.string,
+			label: PropTypes.node,
 			/**
 			 * Boolean, true if this column should always display in the table (not shown in toggle-able list).
 			 */

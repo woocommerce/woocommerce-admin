@@ -185,15 +185,23 @@ class TableCard extends Component {
 				title={ title }
 				action={ [
 					compareBy && (
-						<Button onClick={ this.onCompare } isDefault>
+						<Button key="compare" onClick={ this.onCompare } isDefault>
 							{ __( 'Compare', 'wc-admin' ) }
 						</Button>
 					),
 					compareBy && (
-						<div style={ { padding: '4px 12px', color: '#6c7781' } }>Placeholder for search</div>
+						<div key="search" style={ { padding: '4px 12px', color: '#6c7781' } }>
+							Placeholder for search
+						</div>
 					),
 					onClickDownload && (
-						<IconButton onClick={ onClickDownload } icon="arrow-down" size={ 18 } isDefault>
+						<IconButton
+							key="download"
+							onClick={ onClickDownload }
+							icon="arrow-down"
+							size={ 18 }
+							isDefault
+						>
 							{ __( 'Download', 'wc-admin' ) }
 						</IconButton>
 					),
@@ -259,7 +267,7 @@ TableCard.propTypes = {
 		} )
 	),
 	/**
-	 * A list of IDs, matching to the row list so that id[ 0 ] contains the object ID for the object displayed in row[ 0 ].
+	 * A list of IDs, matching to the row list so that ids[ 0 ] contains the object ID for the object displayed in row[ 0 ].
 	 */
 	ids: PropTypes.arrayOf( PropTypes.number ),
 	/**
