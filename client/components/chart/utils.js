@@ -396,6 +396,11 @@ export const drawAxis = ( node, params ) => {
 const getTooltipRowLabel = ( d, row, params ) =>
 	d[ row.key ].labelDate ? formatDate( params.pointLabelFormat, d[ row.key ].labelDate ) : row.key;
 
+const getTooltipDate = ( params, d ) => {
+	const date = d instanceof Date ? d : new Date( d );
+	return params.tooltipFormat( date );
+};
+
 const showTooltip = ( node, params, d, position ) => {
 	const chartCoords = node.node().getBoundingClientRect();
 	let [ xPosition, yPosition ] = position ? position : d3Mouse( node.node() );
@@ -464,11 +469,6 @@ const calculatePositionInChart = ( element, chart ) => {
 	return [ elementCoords.x - chartCoords.x, elementCoords.y - chartCoords.y ];
 };
 
-const formatVoiceDate = ( params, d ) => {
-	const date = d instanceof Date ? d : new Date( d );
-	return params.tooltipFormat( date );
-};
-
 export const drawLines = ( node, data, params ) => {
 	const series = node
 		.append( 'g' )
@@ -513,7 +513,7 @@ export const drawLines = ( node, data, params ) => {
 			.attr( 'tabindex', '0' )
 			.attr(
 				'aria-label',
-				d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value )
+				d => getTooltipDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value )
 			)
 			.on( 'focus', ( d, i, nodes ) => {
 				const position = calculatePositionInChart( d3Event.target, node.node() );
@@ -564,7 +564,7 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'transform', d => `translate(${ params.xScale( d.date ) },0)` )
 		.attr( 'class', 'bargroup' )
 		.attr( 'role', 'region' )
-		.attr( 'aria-label', d => formatVoiceDate( params, d.date ) );
+		.attr( 'aria-label', d => getTooltipDate( params, d.date ) );
 
 	barGroup
 		.append( 'rect' )
@@ -597,7 +597,7 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'tabindex', '0' )
 		.attr(
 			'aria-label',
-			d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value )
+			d => getTooltipDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value )
 		)
 		.style( 'opacity', d => {
 			const opacity = d.focus ? 1 : 0.1;
