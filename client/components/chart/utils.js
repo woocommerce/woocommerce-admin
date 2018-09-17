@@ -516,14 +516,11 @@ export const drawLines = ( node, data, params ) => {
 				'aria-label',
 				d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value )
 			)
-			.on( 'mouseover', ( d, i, nodes ) =>
-				handleMouseOverLineChart( d, i, nodes, node, data, params )
-			)
 			.on( 'focus', ( d, i, nodes ) => {
 				const position = calculatePositionInChart( d3Event.target, node.node() );
 				handleMouseOverLineChart( d, i, nodes, node, data, params, position );
 			} )
-			.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+			.on( 'blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
 
 	const focus = node
 		.append( 'g' )
@@ -607,14 +604,11 @@ export const drawBars = ( node, data, params ) => {
 			const opacity = d.focus ? 1 : 0.1;
 			return d.visible ? opacity : 0;
 		} )
-		.on( 'mouseover', ( d, i, nodes ) =>
-			handleMouseOverBarChart( d, i, nodes, node, data, params )
-		)
 		.on( 'focus', ( d, i, nodes ) => {
 			const position = calculatePositionInChart( d3Event.target, node.node() );
 			handleMouseOverBarChart( d, i, nodes, node, data, params, position );
 		} )
-		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
+		.on( 'blur', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
 
 	barGroup
 		.append( 'rect' )
