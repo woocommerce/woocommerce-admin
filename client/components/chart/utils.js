@@ -430,29 +430,29 @@ const showTooltip = ( node, params, d, position ) => {
 		` );
 };
 
-const handleMouseOverBarChart = ( d, i, nodes, node, data, params, position ) => {
-	d3Select( nodes[ i ].parentNode )
+const handleMouseOverBarChart = ( date, parentNode, node, data, params, position ) => {
+	d3Select( parentNode )
 		.select( '.barfocus' )
 		.attr( 'opacity', '0.1' );
-	showTooltip( node, params, data.find( e => e.date === d.date ), position );
+	showTooltip( node, params, data.find( e => e.date === date ), position );
 };
 
-const handleMouseOutBarChart = ( d, i, nodes, params ) => {
-	d3Select( nodes[ i ].parentNode )
+const handleMouseOutBarChart = ( parentNode, params ) => {
+	d3Select( parentNode )
 		.select( '.barfocus' )
 		.attr( 'opacity', '0' );
 	params.tooltip.style( 'display', 'none' );
 };
 
-const handleMouseOverLineChart = ( d, i, nodes, node, data, params, position ) => {
-	d3Select( nodes[ i ].parentNode )
+const handleMouseOverLineChart = ( date, parentNode, node, data, params, position ) => {
+	d3Select( parentNode )
 		.select( '.focus-grid' )
 		.attr( 'opacity', '1' );
-	showTooltip( node, params, data.find( e => e.date === d.date ), position );
+	showTooltip( node, params, data.find( e => e.date === date ), position );
 };
 
-const handleMouseOutLineChart = ( d, i, nodes, params ) => {
-	d3Select( nodes[ i ].parentNode )
+const handleMouseOutLineChart = ( parentNode, params ) => {
+	d3Select( parentNode )
 		.select( '.focus-grid' )
 		.attr( 'opacity', '0' );
 	params.tooltip.style( 'display', 'none' );
@@ -518,9 +518,9 @@ export const drawLines = ( node, data, params ) => {
 			)
 			.on( 'focus', ( d, i, nodes ) => {
 				const position = calculatePositionInChart( d3Event.target, node.node() );
-				handleMouseOverLineChart( d, i, nodes, node, data, params, position );
+				handleMouseOverLineChart( d.date, nodes[ i ].parentNode, node, data, params, position );
 			} )
-			.on( 'blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+			.on( 'blur', ( d, i, nodes ) => handleMouseOutLineChart( nodes[ i ].parentNode, params ) );
 
 	const focus = node
 		.append( 'g' )
@@ -549,9 +549,9 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'height', params.height )
 		.attr( 'opacity', 0 )
 		.on( 'mouseover', ( d, i, nodes ) =>
-			handleMouseOverLineChart( d, i, nodes, node, data, params )
+			handleMouseOverLineChart( d.date, nodes[ i ].parentNode, node, data, params )
 		)
-		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( nodes[ i ].parentNode, params ) );
 };
 
 export const drawBars = ( node, data, params ) => {
@@ -606,9 +606,9 @@ export const drawBars = ( node, data, params ) => {
 		} )
 		.on( 'focus', ( d, i, nodes ) => {
 			const position = calculatePositionInChart( d3Event.target, node.node() );
-			handleMouseOverBarChart( d, i, nodes, node, data, params, position );
+			handleMouseOverBarChart( d.date, nodes[ i ].parentNode, node, data, params, position );
 		} )
-		.on( 'blur', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
+		.on( 'blur', ( d, i, nodes ) => handleMouseOutBarChart( nodes[ i ].parentNode, params ) );
 
 	barGroup
 		.append( 'rect' )
@@ -619,7 +619,7 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'height', params.height )
 		.attr( 'opacity', '0' )
 		.on( 'mouseover', ( d, i, nodes ) =>
-			handleMouseOverBarChart( d, i, nodes, node, data, params )
+			handleMouseOverBarChart( d.date, nodes[ i ].parentNode, node, data, params )
 		)
-		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
+		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutBarChart( nodes[ i ].parentNode, params ) );
 };
