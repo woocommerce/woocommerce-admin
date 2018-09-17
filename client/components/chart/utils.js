@@ -324,6 +324,7 @@ export const drawAxis = ( node, params ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'axis axis-month' )
+		.attr( 'aria-hidden', 'true' )
 		.attr( 'transform', `translate(3, ${ params.height + 20 })` )
 		.call(
 			d3AxisBottom( xScale )
@@ -371,6 +372,7 @@ export const drawAxis = ( node, params ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'axis y-axis' )
+		.attr( 'aria-hidden', 'true' )
 		.attr( 'transform', 'translate(-50, 0)' )
 		.attr( 'text-anchor', 'start' )
 		.call(
@@ -462,6 +464,12 @@ const calculatePositionInChart = ( element, chart ) => {
 	return [ elementCoords.x - chartCoords.x, elementCoords.y - chartCoords.y ];
 };
 
+const formatVoiceDate = ( params, d ) => {
+	const date = d instanceof Date ? d : new Date( d );
+	// @TODO probably we want a specific date format for dates read by TTS software
+	return params.xFormat( date ) + ' ' + params.x2Format( date );
+};
+
 export const drawLines = ( node, data, params ) => {
 	const series = node
 		.append( 'g' )
@@ -470,7 +478,9 @@ export const drawLines = ( node, data, params ) => {
 		.data( params.lineData.filter( d => d.visible ) )
 		.enter()
 		.append( 'g' )
-		.attr( 'class', 'line-g' );
+		.attr( 'class', 'line-g' )
+		.attr( 'role', 'region' )
+		.attr( 'aria-label', d => d.key );
 
 	series
 		.append( 'path' )
@@ -501,6 +511,7 @@ export const drawLines = ( node, data, params ) => {
 			} )
 			.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
 			.attr( 'cy', d => params.yScale( d.value ) )
+			.attr( 'aria-label', d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value ) )
 			.on( 'mouseover', ( d, i, nodes ) =>
 				handleMouseOverLineChart( d, i, nodes, node, data, params )
 			)
@@ -552,7 +563,9 @@ export const drawBars = ( node, data, params ) => {
 		.enter()
 		.append( 'g' )
 		.attr( 'transform', d => `translate(${ params.xScale( d.date ) },0)` )
-		.attr( 'class', 'bargroup' );
+		.attr( 'class', 'bargroup' )
+		.attr( 'role', 'region' )
+		.attr( 'aria-label', d => formatVoiceDate( params, d.date ) );
 
 	barGroup
 		.append( 'rect' )
@@ -581,6 +594,7 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'width', params.xGroupScale.bandwidth() )
 		.attr( 'height', d => params.height - params.yScale( d.value ) )
 		.attr( 'fill', d => getColor( d.key, params ) )
+		.attr( 'aria-label', d => formatVoiceDate( params, d.date ) + ' ' + d.key + ' ' + formatCurrency( d.value ) )
 		.style( 'opacity', d => {
 			const opacity = d.focus ? 1 : 0.1;
 			return d.visible ? opacity : 0;
