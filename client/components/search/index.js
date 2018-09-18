@@ -5,6 +5,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { findIndex, noop } from 'lodash';
+import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 
 /**
@@ -74,6 +75,7 @@ class Search extends Component {
 		const { value = '' } = this.state;
 		return (
 			<div className="woocommerce-search">
+				<Gridicon className="woocommerce-search__icon" icon="search" />
 				<Autocomplete completer={ autocompleter } onSelect={ this.selectResult }>
 					{ ( { listBoxId, activeId, onChange } ) => (
 						<input
