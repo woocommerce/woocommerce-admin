@@ -314,6 +314,7 @@ export const drawAxis = ( node, params ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'axis' )
+		.attr( 'aria-hidden', 'true' )
 		.attr( 'transform', `translate(0,${ params.height })` )
 		.call(
 			d3AxisBottom( xScale )
