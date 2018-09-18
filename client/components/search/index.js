@@ -70,7 +70,7 @@ class Search extends Component {
 
 	render() {
 		const autocompleter = this.getAutocompleter();
-		const { selected } = this.props;
+		const { placeholder, selected } = this.props;
 		const { value = '' } = this.state;
 		return (
 			<div className="woocommerce-search">
@@ -79,6 +79,7 @@ class Search extends Component {
 						<input
 							type="search"
 							value={ value }
+							placeholder={ placeholder }
 							className="woocommerce-search__input"
 							onChange={ this.updateSearch( onChange ) }
 							aria-owns={ listBoxId }
@@ -122,6 +123,10 @@ Search.propTypes = {
 	 * The object type to be used in searching.
 	 */
 	type: PropTypes.oneOf( [ 'products', 'product_cats', 'orders', 'customers' ] ).isRequired,
+	/**
+	 * A placeholder for the search input.
+	 */
+	placeholder: PropTypes.string,
 	/**
 	 * An array of objects describing selected values.
 	 */
