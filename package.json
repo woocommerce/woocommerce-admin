@@ -6,8 +6,8 @@
   "license": "GPL-2.0-or-later",
   "repository": "",
   "engines": {
-    "node": "8.11.0",
-    "npm": "5.6.0"
+    "node": ">=8.0.0",
+    "npm": ">=6.0.0"
   },
   "scripts": {
     "install-if-deps-outdated": "node bin/install-if-deps-outdated.js",
