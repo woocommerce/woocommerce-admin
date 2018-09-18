@@ -56,6 +56,7 @@ export const filters = [
 			param: 'product',
 			getLabels: getProductLabelsById,
 			labels: {
+				placeholder: __( 'Search products', 'wc-admin' ),
 				title: __( 'Compare Products', 'wc-admin' ),
 				update: __( 'Compare', 'wc-admin' ),
 			},
@@ -69,6 +70,7 @@ export const filters = [
 			param: 'product_cat',
 			getLabels: getCategoryLabelsById,
 			labels: {
+				placeholder: __( 'Search product categories', 'wc-admin' ),
 				title: __( 'Compare Product Categories', 'wc-admin' ),
 				update: __( 'Compare', 'wc-admin' ),
 			},

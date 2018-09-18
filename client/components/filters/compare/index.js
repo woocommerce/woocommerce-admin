@@ -70,6 +70,7 @@ class CompareFilter extends Component {
 					<Search
 						type={ type }
 						selected={ selected }
+						placeholder={ labels.placeholder }
 						onChange={ value => {
 							this.setState( { selected: value } );
 						} }
@@ -94,6 +95,10 @@ CompareFilter.propTypes = {
 	 * Object of localized labels.
 	 */
 	labels: PropTypes.shape( {
+		/**
+		 * Label for the search placeholder.
+		 */
+		placeholder: PropTypes.string,
 		/**
 		 * Label for the card title.
 		 */
