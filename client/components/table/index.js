@@ -163,7 +163,7 @@ class TableCard extends Component {
 			title,
 			totalRows,
 		} = this.props;
-		const { showCols } = this.state;
+		const { selectedRows, showCols } = this.state;
 		const allHeaders = this.props.headers;
 		let headers = this.filterCols( this.props.headers );
 		let rows = this.filterCols( this.props.rows );
@@ -185,7 +185,12 @@ class TableCard extends Component {
 				title={ title }
 				action={ [
 					compareBy && (
-						<Button key="compare" onClick={ this.onCompare } isDefault>
+						<Button
+							key="compare"
+							isDefault
+							onClick={ this.onCompare }
+							disabled={ selectedRows.length < 2 }
+						>
 							{ __( 'Compare', 'wc-admin' ) }
 						</Button>
 					),

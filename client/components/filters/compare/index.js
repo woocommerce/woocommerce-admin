@@ -76,7 +76,7 @@ class CompareFilter extends Component {
 					/>
 				</div>
 				<div className="woocommerce-filters__compare-footer">
-					<Button onClick={ this.updateQuery } isDefault>
+					<Button isDefault onClick={ this.updateQuery } disabled={ selected.length < 2 }>
 						{ labels.update }
 					</Button>
 				</div>
