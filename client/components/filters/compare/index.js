@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
+import { Button, Tooltip } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
@@ -85,9 +85,19 @@ class CompareFilter extends Component {
 					/>
 				</div>
 				<div className="woocommerce-filters__compare-footer">
-					<Button isDefault onClick={ this.updateQuery } disabled={ selected.length < 2 }>
-						{ labels.update }
-					</Button>
+					{ selected.length < 2 ? (
+						<Tooltip text={ __( 'Select at least 2 items to compare', 'wc-admin' ) }>
+							<span>
+								<Button isDefault onClick={ this.updateQuery } disabled={ true }>
+									{ labels.update }
+								</Button>
+							</span>
+						</Tooltip>
+					) : (
+						<Button isDefault onClick={ this.updateQuery }>
+							{ labels.update }
+						</Button>
+					) }
 					<Link type="wc-admin" href={ this.clearQuery() }>
 						{ __( 'Clear all', 'wc-admin' ) }
 					</Link>

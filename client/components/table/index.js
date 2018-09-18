@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, IconButton, ToggleControl } from '@wordpress/components';
+import { Button, IconButton, ToggleControl, Tooltip } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { fill, find, findIndex, first, isEqual, noop, partial, uniq } from 'lodash';
@@ -179,21 +179,27 @@ class TableCard extends Component {
 			'has-compare': !! compareBy,
 		} );
 
+		const compareButton =
+			selectedRows.length < 2 ? (
+				<Tooltip text={ __( 'Select at least 2 items to compare', 'wc-admin' ) }>
+					<span>
+						<Button isDefault onClick={ this.onCompare } disabled={ true }>
+							{ __( 'Compare', 'wc-admin' ) }
+						</Button>
+					</span>
+				</Tooltip>
+			) : (
+				<Button isDefault onClick={ this.onCompare }>
+					{ __( 'Compare', 'wc-admin' ) }
+				</Button>
+			);
+
 		return (
 			<Card
 				className={ className }
 				title={ title }
 				action={ [
-					compareBy && (
-						<Button
-							key="compare"
-							isDefault
-							onClick={ this.onCompare }
-							disabled={ selectedRows.length < 2 }
-						>
-							{ __( 'Compare', 'wc-admin' ) }
-						</Button>
-					),
+					compareBy && compareButton,
 					compareBy && (
 						<div key="search" style={ { padding: '4px 12px', color: '#6c7781' } }>
 							Placeholder for search
