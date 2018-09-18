@@ -3,7 +3,6 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, Tooltip } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
@@ -12,6 +11,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import Card from 'components/card';
+import CompareButton from './button';
 import Link from 'components/link';
 import { getIdsFromQuery, getNewPath, updateQueryString } from 'lib/nav-utils';
 import Search from 'components/search';
@@ -85,19 +85,13 @@ class CompareFilter extends Component {
 					/>
 				</div>
 				<div className="woocommerce-filters__compare-footer">
-					{ selected.length < 2 ? (
-						<Tooltip text={ __( 'Select at least 2 items to compare', 'wc-admin' ) }>
-							<span>
-								<Button isDefault onClick={ this.updateQuery } disabled={ true }>
-									{ labels.update }
-								</Button>
-							</span>
-						</Tooltip>
-					) : (
-						<Button isDefault onClick={ this.updateQuery }>
-							{ labels.update }
-						</Button>
-					) }
+					<CompareButton
+						count={ selected.length }
+						helpText={ __( 'Select at least 2 items to compare', 'wc-admin' ) }
+						onClick={ this.updateQuery }
+					>
+						{ labels.update }
+					</CompareButton>
 					<Link type="wc-admin" href={ this.clearQuery() }>
 						{ __( 'Clear all', 'wc-admin' ) }
 					</Link>
