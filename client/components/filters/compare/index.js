@@ -2,6 +2,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { isEqual } from 'lodash';
@@ -11,7 +12,8 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import Card from 'components/card';
-import { getIdsFromQuery, updateQueryString } from 'lib/nav-utils';
+import Link from 'components/link';
+import { getIdsFromQuery, getNewPath, updateQueryString } from 'lib/nav-utils';
 import Search from 'components/search';
 
 /**
@@ -24,6 +26,7 @@ class CompareFilter extends Component {
 			selected: [],
 		};
 
+		this.clearQuery = this.clearQuery.bind( this );
 		this.updateQuery = this.updateQuery.bind( this );
 		this.updateLabels = this.updateLabels.bind( this );
 
@@ -47,6 +50,11 @@ class CompareFilter extends Component {
 		if ( ! isEqual( prevIds.sort(), currentIds.sort() ) ) {
 			getLabels( query[ param ] ).then( this.updateLabels );
 		}
+	}
+
+	clearQuery() {
+		const { param, path, query } = this.props;
+		return getNewPath( { [ param ]: '' }, path, query );
 	}
 
 	updateLabels( data ) {
@@ -80,6 +88,9 @@ class CompareFilter extends Component {
 					<Button isDefault onClick={ this.updateQuery } disabled={ selected.length < 2 }>
 						{ labels.update }
 					</Button>
+					<Link type="wc-admin" href={ this.clearQuery() }>
+						{ __( 'Clear all', 'wc-admin' ) }
+					</Link>
 				</div>
 			</Card>
 		);
