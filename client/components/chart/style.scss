@@ -309,6 +309,7 @@
 				}
 
 				.woocommerce-legend__item-checkmark {
+					border: 1px solid $core-grey-light-700;
 					position: absolute;
 					top: 2px;
 					left: 0;
@@ -323,10 +324,13 @@
 					}
 
 					&.woocommerce-legend__item-checkmark-checked {
+						background-color: currentColor;
+						border-color: currentColor;
+
 						&:after {
 							display: block;
-							left: 6px;
-							top: 4px;
+							left: 5px;
+							top: 2px;
 							width: 3px;
 							height: 6px;
 							border: solid $white;
