@@ -514,7 +514,7 @@ export const drawLines = ( node, data, params ) => {
 			.attr( 'tabindex', '0' )
 			.attr(
 				'aria-label',
-				d => `${ getTooltipDate( params, d.date ) } ${ d.key } ${ formatCurrency( d.value ) }`
+				d => `${ getTooltipDate( params, d.date ) } ${ formatCurrency( d.value ) }`
 			)
 			.on( 'focus', ( d, i, nodes ) => {
 				const position = calculatePositionInChart( d3Event.target, node.node() );
@@ -598,7 +598,7 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'tabindex', '0' )
 		.attr(
 			'aria-label',
-			d => `${ getTooltipDate( params, d.date ) } ${ d.key } ${ formatCurrency( d.value ) }`
+			d => `${ getTooltipDate( params, d.date ) } ${ formatCurrency( d.value ) }`
 		)
 		.style( 'opacity', d => {
 			const opacity = d.focus ? 1 : 0.1;
