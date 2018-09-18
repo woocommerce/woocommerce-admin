@@ -87,7 +87,7 @@ class CompareFilter extends Component {
 				<div className="woocommerce-filters__compare-footer">
 					<CompareButton
 						count={ selected.length }
-						helpText={ __( 'Select at least 2 items to compare', 'wc-admin' ) }
+						helpText={ labels.helpText }
 						onClick={ this.updateQuery }
 					>
 						{ labels.update }

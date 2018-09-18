@@ -189,7 +189,7 @@ class TableCard extends Component {
 						<CompareButton
 							key="compare"
 							count={ selectedRows.length }
-							helpText={ __( 'Select at least 2 items to compare', 'wc-admin' ) }
+							helpText={ __( 'Select at least two items to compare', 'wc-admin' ) }
 							onClick={ this.onCompare }
 						>
 							{ __( 'Compare', 'wc-admin' ) }
