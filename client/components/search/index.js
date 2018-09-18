@@ -70,7 +70,7 @@ class Search extends Component {
 
 	render() {
 		const autocompleter = this.getAutocompleter();
-		const { placeholder, selected } = this.props;
+		const { ariaLabelledby, placeholder, selected } = this.props;
 		const { value = '' } = this.state;
 		return (
 			<div className="woocommerce-search">
@@ -82,6 +82,7 @@ class Search extends Component {
 							placeholder={ placeholder }
 							className="woocommerce-search__input"
 							onChange={ this.updateSearch( onChange ) }
+							aria-labelledby={ ariaLabelledby }
 							aria-owns={ listBoxId }
 							aria-activedescendant={ activeId }
 						/>
