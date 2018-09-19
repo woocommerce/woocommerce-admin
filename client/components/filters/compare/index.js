@@ -54,7 +54,7 @@ class CompareFilter extends Component {
 
 	clearQuery() {
 		const { param, path, query } = this.props;
-		return getNewPath( { [ param ]: '' }, path, query );
+		return getNewPath( { [ param ]: undefined }, path, query );
 	}
 
 	updateLabels( data ) {
