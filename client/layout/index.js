@@ -43,7 +43,7 @@ class Layout extends Component {
 		}
 
 		// Remove leading slash, and camel case remaining pathname
-		let path = pathname.substring( 1 ).replace( /\//, '_' );
+		let path = pathname.substring( 1 ).replace( /\//g, '_' );
 
 		// When pathname is `/` we are on the dashboard
 		if ( path.length === 0 ) {
