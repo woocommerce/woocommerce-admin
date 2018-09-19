@@ -284,10 +284,6 @@
 			border: none;
 			padding: 0;
 
-			&:focus {
-				outline: none;
-			}
-
 			.woocommerce-legend__item-container {
 				display: flex;
 				flex-direction: row;
@@ -342,6 +338,16 @@
 
 				.woocommerce-legend__item-total {
 					font-weight: bold;
+				}
+			}
+
+			&:focus {
+				outline: none;
+
+				.woocommerce-legend__item-container {
+					.woocommerce-legend__item-checkmark {
+						outline: 2px solid $core-grey-light-900;
+					}
 				}
 			}
 		}
