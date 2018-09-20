@@ -85,7 +85,6 @@ export const getLineData = ( data, orderedKeys ) =>
 			focus: row.focus,
 			value: get( d, [ row.key, 'value' ], 0 ),
 			visible: row.visible,
-			tooltipLabel: get( d, [ row.key, 'label' ], '' ),
 		} ) ),
 	} ) );
 
