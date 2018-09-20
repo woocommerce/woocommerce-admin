@@ -51,7 +51,7 @@ Name | Type | Default | Description
 `dateParser` | `string` | `%Y-%m-%dT%H:%M:%S` | Format to parse datetimes in the data
 `type`* | `string` | `line` | Chart type of either `line` or `bar`
 `title` | `string` | none | Chart title
-`tooltipFormat` | `string` | `%Y-%m-%d` | Title and format of the tooltip title date if `tooltipTitle` is missing
+`tooltipFormat` | `string` | `%B %d, %Y` | Title and format of the tooltip title date if `tooltipTitle` is missing
 `tooltipTitle` | `string` | `` | Title and format of the tooltip title
 `xFormat` | `string` | `%Y-%m-%d` | d3TimeFormat of the x-axis values
 `yFormat` | `string` | `.3s` | d3Format of the y-axis values
