@@ -41,7 +41,7 @@ function getOrderedKeys( props ) {
 		),
 	].map( key => ( {
 		key,
-		total: props.data.reduce( ( a, c ) => a + c[ key ], 0 ),
+		total: props.data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 		visible: true,
 		focus: true,
 	} ) );
