@@ -221,11 +221,11 @@ D3Chart.propTypes = {
 	orderedKeys: PropTypes.array,
 	/**
 	 * A datetime formatting string to format the date displayed as the title of the toolip
-	 * if tooltipTitle is missing, passed to d3TimeFormat.
+	 * if `tooltipTitle` is missing, passed to d3TimeFormat.
 	 */
 	tooltipFormat: PropTypes.string,
 	/**
-	 * A string to use as a title for the tooltip. Takes preference over tooltipFormat.
+	 * A string to use as a title for the tooltip. Takes preference over `tooltipFormat`.
 	 */
 	tooltipTitle: PropTypes.string,
 	/**
