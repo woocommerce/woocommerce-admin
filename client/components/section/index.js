@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { createContext } from '@wordpress/element';
+import PropTypes from 'prop-types';
 
 /**
  * Context container for heading level. We start at 2 because the `h1` is defined in <Header />
@@ -11,6 +12,30 @@ import { createContext } from '@wordpress/element';
  */
 const Level = createContext( 2 );
 
+/**
+ * These components are used to frame out the page content for accessible heading hierarchy. Instead of defining fixed heading levels
+ * (`h2`, `h3`, …) you can use `<H />` to create "section headings", which look to the parent `<Section />`s for the appropriate
+ * heading level.
+ *
+ * @param { object } props -
+ * @return { object } -
+ */
+export function H( props ) {
+	return (
+		<Level.Consumer>
+			{ level => {
+				const Heading = 'h' + Math.min( level, 6 );
+				return <Heading { ...props } />;
+			} }
+		</Level.Consumer>
+	);
+}
+
+/**
+ * The section wrapper, used to indicate a sub-section (and change the header level context).
+ *
+ * @return { object } -
+ */
 export function Section( { component, children, ...props } ) {
 	const Component = component || 'div';
 	return (
@@ -24,13 +49,14 @@ export function Section( { component, children, ...props } ) {
 	);
 }
 
-export function H( props ) {
-	return (
-		<Level.Consumer>
-			{ level => {
-				const Heading = 'h' + Math.min( level, 6 );
-				return <Heading { ...props } />;
-			} }
-		</Level.Consumer>
-	);
-}
+Section.propTypes = {
+	/**
+	 * The wrapper component for this section. Optional, defaults to `div`. If passed false, no wrapper is used. Additional props
+	 * passed to Section are passed on to the component.
+	 */
+	component: PropTypes.oneOfType( [ PropTypes.func, PropTypes.string, PropTypes.bool ] ),
+	/**
+	 * The children inside this section, rendered in the `component`. This increases the context level for the next heading used.
+	 */
+	children: PropTypes.node,
+};
