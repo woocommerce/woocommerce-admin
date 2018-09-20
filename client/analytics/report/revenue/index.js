@@ -315,9 +315,14 @@ export class RevenueReport extends Component {
 						} );
 			return {
 				date: formatDate( 'Y-m-d\\TH:i:s', interval.date_start ),
-				[ primaryKey ]: interval.subtotals[ selectedChart.key ] || 0,
-				[ secondaryKey ]:
-					( secondaryInterval && secondaryInterval.subtotals[ selectedChart.key ] ) || 0,
+				[ primaryKey ]: {
+					label: formatDate( 'Y m d', secondaryDate ),
+					value: interval.subtotals[ selectedChart.key ] || 0,
+				},
+				[ secondaryKey ]: {
+					label: formatDate( 'Y m d', interval.date_start ),
+					value: ( secondaryInterval && secondaryInterval.subtotals[ selectedChart.key ] ) || 0,
+				},
 			};
 		} );
 

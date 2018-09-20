@@ -64,7 +64,7 @@ export const getOrderedKeys = ( data, uniqueKeys ) =>
 		.map( key => ( {
 			key,
 			focus: true,
-			total: data.reduce( ( a, c ) => a + c[ key ], 0 ),
+			total: data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 			visible: true,
 		} ) )
 		.sort( ( a, b ) => b.total - a.total );
@@ -83,8 +83,9 @@ export const getLineData = ( data, orderedKeys ) =>
 		values: data.map( d => ( {
 			date: d.date,
 			focus: row.focus,
-			value: d[ row.key ],
+			value: d[ row.key ].value,
 			visible: row.visible,
+			tooltipLabel: d[ row.key ].label,
 		} ) ),
 	} ) );
 
@@ -400,9 +401,9 @@ const showTooltip = ( node, params, d, position ) => {
 				<li class="key-row">
 					<div class="key-container">
 						<span class="key-color" style="background-color:${ getColor( row.key, params ) }"></span>
-						<span class="key-key">${ row.key }:</span>
+						<span class="key-key">${ d[ row.key ].label ? d[ row.key ].label : row.key }:</span>
 					</div>
-					<span class="key-value">${ formatCurrency( d[ row.key ] ) }</span>
+					<span class="key-value">${ formatCurrency( d[ row.key ].value ) }</span>
 				</li>
 			`
 	);
@@ -561,7 +562,7 @@ export const drawBars = ( node, data, params ) => {
 			params.orderedKeys.filter( row => row.visible ).map( row => ( {
 				key: row.key,
 				focus: row.focus,
-				value: d[ row.key ],
+				value: d[ row.key ].value,
 				visible: row.visible,
 			} ) )
 		)
