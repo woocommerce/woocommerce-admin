@@ -4,7 +4,7 @@
  * External dependencies
  */
 
-import { findIndex } from 'lodash';
+import { findIndex, get } from 'lodash';
 import { max as d3Max } from 'd3-array';
 import { axisBottom as d3AxisBottom, axisLeft as d3AxisLeft } from 'd3-axis';
 import { format as d3Format } from 'd3-format';
@@ -83,9 +83,9 @@ export const getLineData = ( data, orderedKeys ) =>
 		values: data.map( d => ( {
 			date: d.date,
 			focus: row.focus,
-			value: d[ row.key ].value,
+			value: get( d, [ row.key, 'value' ], 0 ),
 			visible: row.visible,
-			tooltipLabel: d[ row.key ].label,
+			tooltipLabel: get( d, [ row.key, 'label' ], '' ),
 		} ) ),
 	} ) );
 
