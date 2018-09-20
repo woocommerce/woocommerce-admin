@@ -22,8 +22,8 @@ This component accepts timeseries `data` prop in the following format (with date
 [
 	{
 		date: '%Y-%m-%d', // string in `dateParser` format (see below)
-		category1: value, // number
-		category2: value, // number
+		category1: { label: 'label', value: value }, // string (optional), number
+		category2: { value: value }, // number
 		...
 	},
 	...
@@ -34,8 +34,8 @@ For example:
 [
 	{
 		date: '2018-06-25',
-		category1: 1234.56,
-		category2: 9876,
+		category1: { label: 'Tooltip label', value: 1234.56 },
+		category2: { value: 9876 },
 		...
 	},
 	...
@@ -47,7 +47,7 @@ Required props are marked with `*`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-`data`* | `array` | none | An array of data as specified above(below)
+`data`* | `array` | none | An array of data as specified above
 `dateParser` | `string` | `%Y-%m-%dT%H:%M:%S` | Format to parse datetimes in the data
 `type`* | `string` | `line` | Chart type of either `line` or `bar`
 `title` | `string` | none | Chart title
