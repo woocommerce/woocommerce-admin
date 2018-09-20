@@ -332,7 +332,7 @@ export class RevenueReport extends Component {
 				title={ selectedChart.label }
 				interval={ currentInterval }
 				allowedIntervals={ allowedIntervals }
-				tooltipFormat={ formats.tooltipFormat }
+				tooltipTitle={ selectedChart.label }
 				xFormat={ formats.xFormat }
 				x2Format={ formats.x2Format }
 				dateParser={ '%Y-%m-%dT%H:%M:%S' }

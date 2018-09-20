@@ -408,12 +408,16 @@ const showTooltip = ( node, params, d, position ) => {
 			`
 	);
 
+	const tooltipTitle = params.tooltipTitle
+		? params.tooltipTitle
+		: params.tooltipFormat( d.date instanceof Date ? d.date : new Date( d.date ) );
+
 	params.tooltip
 		.style( 'left', xPosition + 'px' )
 		.style( 'top', yPosition + 'px' )
 		.style( 'display', 'flex' ).html( `
 			<div>
-				<h4>${ params.tooltipFormat( d.date instanceof Date ? d.date : new Date( d.date ) ) }</h4>
+				<h4>${ tooltipTitle }</h4>
 				<ul>
 				${ keys.join( '' ) }
 				</ul>
