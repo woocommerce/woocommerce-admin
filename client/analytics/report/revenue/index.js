@@ -316,11 +316,11 @@ export class RevenueReport extends Component {
 			return {
 				date: formatDate( 'Y-m-d\\TH:i:s', interval.date_start ),
 				[ primaryKey ]: {
-					label: formatDate( 'F j, Y', interval.date_start ),
+					label: formatDate( formats.pointLabelFormat, interval.date_start ),
 					value: interval.subtotals[ selectedChart.key ] || 0,
 				},
 				[ secondaryKey ]: {
-					label: formatDate( 'F j, Y', secondaryDate ),
+					label: formatDate( formats.pointLabelFormat, secondaryDate ),
 					value: ( secondaryInterval && secondaryInterval.subtotals[ selectedChart.key ] ) || 0,
 				},
 			};
