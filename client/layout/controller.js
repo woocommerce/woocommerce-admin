@@ -12,12 +12,23 @@ import { find } from 'lodash';
 import Analytics from 'analytics';
 import AnalyticsReport from 'analytics/report';
 import Dashboard from 'dashboard';
+import DevDocs from 'devdocs';
 
 const getPages = () => {
 	const pages = [
 		{
 			container: Dashboard,
 			path: '/',
+			wpMenu: 'toplevel_page_woocommerce',
+		},
+		{
+			container: DevDocs,
+			path: '/devdocs',
+			wpMenu: 'toplevel_page_woocommerce',
+		},
+		{
+			container: DevDocs,
+			path: '/devdocs/:component',
 			wpMenu: 'toplevel_page_woocommerce',
 		},
 		{
