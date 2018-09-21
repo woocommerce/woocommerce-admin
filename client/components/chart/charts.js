@@ -126,7 +126,7 @@ class D3Chart extends Component {
 		const xTicks = getXTicks( uniqueDates, adjWidth, layout );
 		return {
 			colorScheme,
-			dateSpaces: getDateSpaces( uniqueDates, adjWidth, xLineScale ),
+			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
 			height: calculatedHeight,
 			line: getLine( xLineScale, yScale ),
 			lineData,
