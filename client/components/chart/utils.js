@@ -3,7 +3,6 @@
 /**
  * External dependencies
  */
-
 import { findIndex, get } from 'lodash';
 import { max as d3Max } from 'd3-array';
 import { axisBottom as d3AxisBottom, axisLeft as d3AxisLeft } from 'd3-axis';
@@ -16,6 +15,10 @@ import {
 import { event as d3Event, mouse as d3Mouse, select as d3Select } from 'd3-selection';
 import { line as d3Line } from 'd3-shape';
 import { format as formatDate } from '@wordpress/date';
+<<<<<<< HEAD
+=======
+
+>>>>>>> Set different ARIA properties depending on chart mode (time or item comparison)
 /**
  * Internal dependencies
  */
@@ -84,6 +87,7 @@ export const getLineData = ( data, orderedKeys ) =>
 		values: data.map( d => ( {
 			date: d.date,
 			focus: row.focus,
+			label: get( d, [ row.key, 'label' ], 0 ),
 			value: get( d, [ row.key, 'value' ], 0 ),
 			visible: row.visible,
 		} ) ),
@@ -397,11 +401,6 @@ export const drawAxis = ( node, params ) => {
 const getTooltipRowLabel = ( d, row, params ) =>
 	d[ row.key ].labelDate ? formatDate( params.pointLabelFormat, d[ row.key ].labelDate ) : row.key;
 
-const getTooltipDate = ( params, d ) => {
-	const date = d instanceof Date ? d : new Date( d );
-	return params.tooltipFormat( date );
-};
-
 const showTooltip = ( node, params, d, position ) => {
 	const chartCoords = node.node().getBoundingClientRect();
 	let [ xPosition, yPosition ] = position ? position : d3Mouse( node.node() );
@@ -512,10 +511,12 @@ export const drawLines = ( node, data, params ) => {
 			.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
 			.attr( 'cy', d => params.yScale( d.value ) )
 			.attr( 'tabindex', '0' )
-			.attr(
-				'aria-label',
-				d => `${ getTooltipDate( params, d.date ) } ${ formatCurrency( d.value ) }`
-			)
+			.attr( 'aria-label', d => {
+				const label = d.label
+					? d.label
+					: formatDate( 'F j, Y', d.date instanceof Date ? d.date : new Date( d.date ) );
+				return `${ label } ${ formatCurrency( d.value ) }`;
+			} )
 			.on( 'focus', ( d, i, nodes ) => {
 				const position = calculatePositionInChart( d3Event.target, node.node() );
 				handleMouseOverLineChart( d.date, nodes[ i ].parentNode, node, data, params, position );
@@ -565,7 +566,13 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'transform', d => `translate(${ params.xScale( d.date ) },0)` )
 		.attr( 'class', 'bargroup' )
 		.attr( 'role', 'region' )
-		.attr( 'aria-label', d => getTooltipDate( params, d.date ) );
+		.attr(
+			'aria-label',
+			d =>
+				params.mode === 'item-comparison'
+					? params.tooltipFormat( d.date instanceof Date ? d.date : new Date( d.date ) )
+					: null
+		);
 
 	barGroup
 		.append( 'rect' )
@@ -582,7 +589,8 @@ export const drawBars = ( node, data, params ) => {
 			params.orderedKeys.filter( row => row.visible ).map( row => ( {
 				key: row.key,
 				focus: row.focus,
-				value: d[ row.key ].value,
+				value: get( d, [ row.key, 'value' ], 0 ),
+				label: get( d, [ row.key, 'label' ], '' ),
 				visible: row.visible,
 				date: d.date,
 			} ) )
@@ -596,10 +604,10 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'height', d => params.height - params.yScale( d.value ) )
 		.attr( 'fill', d => getColor( d.key, params ) )
 		.attr( 'tabindex', '0' )
-		.attr(
-			'aria-label',
-			d => `${ getTooltipDate( params, d.date ) } ${ formatCurrency( d.value ) }`
-		)
+		.attr( 'aria-label', d => {
+			const label = params.mode === 'time-comparison' && d.label ? d.label : d.key;
+			return `${ label } ${ formatCurrency( d.value ) }`;
+		} )
 		.style( 'opacity', d => {
 			const opacity = d.focus ? 1 : 0.1;
 			return d.visible ? opacity : 0;
