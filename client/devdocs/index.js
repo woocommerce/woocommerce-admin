@@ -63,7 +63,7 @@ export default class extends Component {
 									<Link href={ `/devdocs/${ filePath }` }>{ componentName }</Link>
 								)
 							}
-							action={ component ? <Link href={ '/devdocs/' }>Full list</Link> : null }
+							action={ component ? <Link href={ '/devdocs' }>Full list</Link> : null }
 						>
 							<ComponentExample
 								asyncName={ componentName }
