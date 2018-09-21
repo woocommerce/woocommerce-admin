@@ -1,8 +1,6 @@
 /** @format */
 
 .woocommerce_devdocs {
-	margin-top: -60px;
-
 	@include breakpoint( '>1100px' ) {
 		&.is-list {
 			column-gap: $gap-large;
