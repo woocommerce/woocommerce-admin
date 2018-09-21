@@ -1,26 +1,38 @@
 ```jsx
 import { D3Chart, Legend } from '@woocommerce/components';
 
-class MyChart extends Component {
-	render: function() {
-		return (
-			<div>
-				<Legend
-					className="woocommerce-legend"
-					data={ data }
-					handleLegendHover={ this.handleLegendHover }
-					handleLegendToggle={ this.handleLegendToggle }
-					legendDirection={ legendDirection }
-				/>
-				<D3Chart
-					data={ timeseries }
-					height={ 200 }
-					margin={ { bottom: 30, left: 40, right: 0, top: 20 } }
-					type={ 'bar' }
-					width={ 600 }
-				/>
-			</div>
-		);
-	}
-}
+const noop = () => {};
+
+const data =  [
+	{
+		date: '2018-05-30T00:00:00',
+		Hoodie: { value: 21599 },
+		Sunglasses: { value: 38537 },
+		Cap: { value: 106010 },
+	},
+	{
+		date: '2018-05-31T00:00:00',
+		Hoodie: { value: 14205 },
+		Sunglasses: { value: 24721 },
+		Cap: { value: 70131 },
+	},
+	{
+		date: '2018-06-01T00:00:00',
+		Hoodie: { value: 10581 },
+		Sunglasses: { value: 19991 },
+		Cap: { value: 53552 },
+	},
+	{
+		date: '2018-06-02T00:00:00',
+		Hoodie: { value: 9250 },
+		Sunglasses: { value: 16072 },
+		Cap: { value: 47821 },
+	},
+];
+
+const MyChart = () => (
+	<div>
+		<Chart data={ data } title="Example Chart" layout="comparison" />
+	</div>
+);
 ```
