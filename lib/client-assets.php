@@ -57,8 +57,7 @@ function wc_admin_register_script() {
 
 	// Add Tracks script to the DOM if tracking is opted in, and Jetpack is installed/activated.
 	$tracking_enabled = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
-	$jetpack_active = is_plugin_active( 'jetpack/jetpack.php' );
-	if ( $tracking_enabled && $jetpack_active ) {
+	if ( $tracking_enabled && defined( 'JETPACK__VERSION' ) ) {
 		$tracking_script  = "var wc_tracking_script = document.createElement( 'script' );\n";
 		$tracking_script .= "wc_tracking_script.src = '//stats.wp.com/w.js';\n"; // TODO Version/cache buster.
 		$tracking_script .= "wc_tracking_script.type = 'text/javascript';\n";
