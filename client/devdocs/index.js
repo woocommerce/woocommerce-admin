@@ -4,7 +4,7 @@
  */
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import { get, filter } from 'lodash';
+import { filter, get } from 'lodash';
 
 /**
  * Internal dependencies
@@ -48,10 +48,14 @@ export default class extends Component {
 			<div className={ className }>
 				{ exampleList.map( example => {
 					const { componentName, filePath, render } = getExampleData( example );
+					const cardClasses = classnames(
+						'woocommerce-devdocs__card',
+						`woocommerce-devdocs__card--${ filePath }`
+					);
 					return (
 						<Card
 							key={ componentName }
-							className={ 'woocommerce-devdocs__card' }
+							className={ cardClasses }
 							title={
 								component ? (
 									componentName

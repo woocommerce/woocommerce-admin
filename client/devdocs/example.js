@@ -2,10 +2,8 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import codeBlocks from 'gfm-code-blocks';
 import { Component } from '@wordpress/element';
-import { kebabCase } from 'lodash';
 import { LiveError, LivePreview, LiveProvider } from 'react-live';
 // Used to provide scope in LivePreview
 import { addFilter } from '@wordpress/hooks';
@@ -56,13 +54,14 @@ class Example extends Component {
 			addFilter,
 			Gridicon,
 		};
-		const className = classnames(
-			'woocommerce-devdocs__example',
-			`woocommerce-devdocs__example--${ kebabCase( this.props.component ) }`
-		);
 
 		return code ? (
-			<LiveProvider code={ code } scope={ scope } className={ className } noInline={ true }>
+			<LiveProvider
+				code={ code }
+				scope={ scope }
+				className="woocommerce-devdocs__example"
+				noInline={ true }
+			>
 				<LiveError />
 				<LivePreview />
 			</LiveProvider>
