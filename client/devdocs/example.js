@@ -7,13 +7,13 @@ import codeBlocks from 'gfm-code-blocks';
 import { Component } from '@wordpress/element';
 import { kebabCase } from 'lodash';
 import { LiveError, LivePreview, LiveProvider } from 'react-live';
-import PropTypes from 'prop-types';
 // Used to provide scope in LivePreview
 import { addFilter } from '@wordpress/hooks';
 import { withState } from '@wordpress/compose';
 import { getSettings } from '@wordpress/date';
 import * as wpComponents from '@wordpress/components';
 import Gridicon from 'gridicons';
+import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies

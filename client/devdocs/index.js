@@ -3,23 +3,24 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { Component, Fragment } from '@wordpress/element';
-import { get } from 'lodash';
+import { Component } from '@wordpress/element';
+import { get, filter } from 'lodash';
 
 /**
  * Internal dependencies
  */
 import ComponentExample from './example';
-import { H, Section } from '@woocommerce/components';
+import ComponentDocs from './docs';
+import { Card, Link } from '@woocommerce/components';
 import examples from './examples.json';
+
+const camelCaseToSlug = name => {
+	return name.replace( /\.?([A-Z])/g, ( x, y ) => '-' + y.toLowerCase() ).replace( /^-/, '' );
+};
 
 const getExampleData = example => {
 	const componentName = get( example, 'component' );
-	const filePath = get(
-		example,
-		'filePath',
-		componentName.replace( /\.?([A-Z])/g, ( x, y ) => '-' + y.toLowerCase() ).replace( /^-/, '' )
-	);
+	const filePath = get( example, 'filePath', camelCaseToSlug( componentName ) );
 	const render = get( example, 'render', `My${ componentName }` );
 
 	return {
@@ -31,29 +32,45 @@ const getExampleData = example => {
 
 export default class extends Component {
 	render() {
-		const { component } = this.props;
-
+		const { params: { component } } = this.props;
 		const className = classnames( 'woocommerce_devdocs', {
 			'is-single': component,
 			'is-list': ! component,
 		} );
 
+		let exampleList = examples;
+		if ( component ) {
+			exampleList = filter( examples, ex => component === camelCaseToSlug( ex.component ) );
+		}
+
 		return (
 			<div className={ className }>
-				{ examples.map( example => {
+				{ exampleList.map( example => {
 					const { componentName, filePath, render } = getExampleData( example );
 					return (
-						<Fragment key={ componentName }>
-							<H>{ componentName }</H>
-							<Section>
-								<ComponentExample
-									asyncName={ componentName }
-									component={ componentName }
-									filePath={ filePath }
-									render={ render }
-								/>
-							</Section>
-						</Fragment>
+						<Card
+							key={ componentName }
+							className={ 'woocommerce-devdocs__card' }
+							title={
+								component ? (
+									componentName
+								) : (
+									<Link href={ `/devdocs/${ filePath }` }>{ componentName }</Link>
+								)
+							}
+							action={ component ? <Link href={ '/devdocs/' }>Full list</Link> : null }
+						>
+							<ComponentExample
+								asyncName={ componentName }
+								component={ componentName }
+								filePath={ filePath }
+								render={ render }
+							/>
+
+							{ component && (
+								<ComponentDocs componentName={ componentName } filePath={ filePath } />
+							) }
+						</Card>
 					);
 				} ) }
 			</div>
