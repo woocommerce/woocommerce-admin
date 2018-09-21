@@ -15,10 +15,7 @@ import {
 import { event as d3Event, mouse as d3Mouse, select as d3Select } from 'd3-selection';
 import { line as d3Line } from 'd3-shape';
 import { format as formatDate } from '@wordpress/date';
-<<<<<<< HEAD
-=======
 
->>>>>>> Set different ARIA properties depending on chart mode (time or item comparison)
 /**
  * Internal dependencies
  */
@@ -87,7 +84,7 @@ export const getLineData = ( data, orderedKeys ) =>
 		values: data.map( d => ( {
 			date: d.date,
 			focus: row.focus,
-			label: get( d, [ row.key, 'label' ], 0 ),
+			label: get( d, [ row.key, 'label' ], '' ),
 			value: get( d, [ row.key, 'value' ], 0 ),
 			visible: row.visible,
 		} ) ),
