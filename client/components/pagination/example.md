@@ -1,13 +1,16 @@
 ```jsx
 import { Pagination } from '@woocommerce/components';
 
-const MyPagination = () => (
+const MyPagination = withState( {
+	page: 2,
+	perPage: 50,
+} )( ( { page, perPage, setState } ) => (
 	<Pagination
-		page={ this.state.page }
-		perPage={ this.state.perPage }
-		total={ 5000 }
-		onPageChange={ this.onPageChange }
-		onPerPageChange={ this.onPerPageChange }
+		page={ page }
+		perPage={ perPage }
+		total={ 500 }
+		onPageChange={ ( page ) => setState( { page } ) }
+		onPerPageChange={ ( perPage ) => setState( { perPage } ) }
 	/>
-);
+) );
 ```

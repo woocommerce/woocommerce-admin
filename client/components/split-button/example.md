@@ -1,7 +1,7 @@
 ```jsx
 import { SplitButton } from '@woocommerce/components';
 
-const MySplitButton => () => (
+const MySplitButton = () => (
 	<div>
 		<SplitButton
 			isPrimary
@@ -50,6 +50,7 @@ const MySplitButton => () => (
 					onClick: () => alert( 'Icon Only Down clicked' ),
 				},
 				{
+					label: 'Left',
 					icon: <Gridicon icon="arrow-left" />,
 					onClick: () => alert( 'Icon Only Left clicked' ),
 				},

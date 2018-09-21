@@ -1,4 +1,19 @@
 [
+  { "component": "AnimationSlider" },
+  { "component": "Calendar", "render": "MyDateRange" },
   { "component": "Card" },
-  { "component": "Count" }
+  { "component": "Count" },
+  { "component": "DropdownButton" },
+  { "component": "EllipsisMenu" },
+  { "component": "Flag" },
+  { "component": "Gravatar" },
+  { "component": "Link" },
+  { "component": "OrderStatus" },
+  { "component": "Pagination" },
+  { "component": "ProductImage" },
+  { "component": "Rating" },
+  { "component": "Search" },
+  { "component": "SegmentedSelection" },
+  { "component": "SplitButton" },
+  { "component": "Summary", "render": "MySummaryList" }
 ]

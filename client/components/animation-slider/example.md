@@ -10,7 +10,7 @@ class MyAnimationSlider extends Component {
 			animate: null,
 		};
 		this.forward = this.forward.bind( this );
-		this.back = this.forward.back( this );
+		this.back = this.forward.bind( this );
 	}
 
 	forward() {
@@ -29,23 +29,28 @@ class MyAnimationSlider extends Component {
 
 	render() {
 		const { page, pages, animate } = this.state;
+		const style = {
+			margin: '16px 0',
+			padding: '8px 16px',
+			color: 'white',
+			fontWeight: 'bold',
+			backgroundColor: '#246EB9',
+		};
 		return (
 			<div>
+				<AnimationSlider animationKey={ page } animate={ animate }>
+					{ status => (
+						<div style={ style }>
+							{ pages[ page ] }
+						</div>
+					) }
+				</AnimationSlider>
 				<button onClick={ this.back } disabled={ page === 0 }>
 					Back
 				</button>
 				<button onClick={ this.forward } disabled={ page === pages.length + 1 }>
 					Forward
 				</button>
-				<AnimationSlider animationKey={ page } animate={ animate }>
-					{ status => (
-						<img
-							className={ `my-slider my-slider-${ status }` }
-							src={ `/pages/${ pages[ page ] }` }
-							alt={ pages[ page ] }
-						/>
-					) }
-				</AnimationSlider>
 			</div>
 		);
 	}
