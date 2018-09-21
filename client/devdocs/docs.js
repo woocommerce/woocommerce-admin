@@ -30,7 +30,10 @@ class Docs extends Component {
 
 	render() {
 		const { readme } = this.state;
-		return readme || null;
+		if ( ! readme ) {
+			return null;
+		}
+		return <div className="woocommerce-devdocs__docs">{ readme }</div>;
 	}
 }
 

@@ -13,6 +13,7 @@ import ComponentExample from './example';
 import ComponentDocs from './docs';
 import { Card, Link } from '@woocommerce/components';
 import examples from './examples.json';
+import './style.scss';
 
 const camelCaseToSlug = name => {
 	return name.replace( /\.?([A-Z])/g, ( x, y ) => '-' + y.toLowerCase() ).replace( /^-/, '' );

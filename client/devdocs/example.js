@@ -57,8 +57,8 @@ class Example extends Component {
 			Gridicon,
 		};
 		const className = classnames(
-			'devdocs__gutenberg-components-example',
-			`devdocs__gutenberg-components-example--${ kebabCase( this.props.component ) }`
+			'woocommerce-devdocs__example',
+			`woocommerce-devdocs__example--${ kebabCase( this.props.component ) }`
 		);
 
 		return code ? (
