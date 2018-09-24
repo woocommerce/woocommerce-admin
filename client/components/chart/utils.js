@@ -511,7 +511,7 @@ export const drawLines = ( node, data, params ) => {
 			.attr( 'aria-label', d => {
 				const label = d.label
 					? d.label
-					: formatDate( 'F j, Y', d.date instanceof Date ? d.date : new Date( d.date ) );
+					: params.tooltipFormat( d.date instanceof Date ? d.date : new Date( d.date ) );
 				return `${ label } ${ formatCurrency( d.value ) }`;
 			} )
 			.on( 'focus', ( d, i, nodes ) => {
