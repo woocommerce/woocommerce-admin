@@ -418,6 +418,7 @@ const showTooltip = ( params, d, position ) => {
 	params.tooltip
 		.style( 'left', position.x + 'px' )
 		.style( 'top', position.y + 'px' )
+		.style( 'visibility', 'visible' )
 		.style( 'display', 'flex' ).html( `
 			<div>
 				<h4>${ tooltipTitle }</h4>
@@ -439,7 +440,7 @@ const handleMouseOutBarChart = ( parentNode, params ) => {
 	d3Select( parentNode )
 		.select( '.barfocus' )
 		.attr( 'opacity', '0' );
-	params.tooltip.style( 'display', 'none' );
+	params.tooltip.style( 'visibility', 'hidden' );
 };
 
 const handleMouseOverLineChart = ( date, parentNode, node, data, params, position ) => {
@@ -453,17 +454,18 @@ const handleMouseOutLineChart = ( parentNode, params ) => {
 	d3Select( parentNode )
 		.select( '.focus-grid' )
 		.attr( 'opacity', '0' );
-	params.tooltip.style( 'display', 'none' );
+	params.tooltip.style( 'visibility', 'hidden' );
 };
 
 const calculateTooltipPosition = ( element, chart, elementWidthRatio = 1 ) => {
 	const elementCoords = element.getBoundingClientRect();
 	const chartCoords = chart.getBoundingClientRect();
-	const tooltipMargin = 24;
+	const tooltipBox = d3Select( '.tooltip' ).node().getBoundingClientRect();
 	const tooltipSize = {
-		height: 204,
-		width: 324,
+		height: tooltipBox.height || 204,
+		width: tooltipBox.width || 324,
 	};
+	const tooltipMargin = 24;
 	let xPosition =
 		elementCoords.x + elementCoords.width * elementWidthRatio - chartCoords.x + tooltipMargin;
 	let yPosition = elementCoords.y - chartCoords.y + tooltipMargin;
