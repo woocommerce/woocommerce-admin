@@ -628,7 +628,8 @@ export const drawBars = ( node, data, params ) => {
 			return d.visible ? opacity : 0;
 		} )
 		.on( 'focus', ( d, i, nodes ) => {
-			const position = calculateTooltipPosition( d3Event.target, node.node() );
+			const targetNode = d.value > 0 ? d3Event.target : d3Event.target.parentNode;
+			const position = calculateTooltipPosition( targetNode, node.node() );
 			handleMouseOverBarChart( d.date, nodes[ i ].parentNode, node, data, params, position );
 		} )
 		.on( 'blur', ( d, i, nodes ) => handleMouseOutBarChart( nodes[ i ].parentNode, params ) );
