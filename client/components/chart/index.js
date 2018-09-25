@@ -19,6 +19,7 @@ import Gridicon from 'gridicons';
  */
 import D3Chart from './charts';
 import Legend from './legend';
+import { H, Section } from 'components/section';
 import { gap, gaplarge } from 'stylesheets/abstracts/_variables.scss';
 import { updateQueryString } from 'lib/nav-utils';
 
@@ -217,9 +218,9 @@ class Chart extends Component {
 			top: 0,
 		};
 		return (
-			<div className="woocommerce-chart" ref={ this.chartRef }>
+			<Section className="woocommerce-chart" ref={ this.chartRef }>
 				<div className="woocommerce-chart__header">
-					<span className="woocommerce-chart__title">{ title }</span>
+					<H className="woocommerce-chart__title">{ title }</H>
 					{ width >= WIDE_BREAKPOINT && legendDirection === 'row' && legend }
 					{ this.renderIntervalSelector() }
 					<NavigableMenu
@@ -278,7 +279,7 @@ class Chart extends Component {
 					/>
 				</div>
 				{ width < WIDE_BREAKPOINT && <div className="woocommerce-chart__footer">{ legend }</div> }
-			</div>
+			</Section>
 		);
 	}
 }
