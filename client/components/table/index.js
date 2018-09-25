@@ -155,6 +155,7 @@ class TableCard extends Component {
 	render() {
 		const {
 			compareBy,
+			labels,
 			onClickDownload,
 			onQueryChange,
 			query,
@@ -189,15 +190,17 @@ class TableCard extends Component {
 						<CompareButton
 							key="compare"
 							count={ selectedRows.length }
-							helpText={ __( 'Select at least two items to compare', 'wc-admin' ) }
+							helpText={
+								labels.helpText || __( 'Select at least two items to compare', 'wc-admin' )
+							}
 							onClick={ this.onCompare }
 						>
-							{ __( 'Compare', 'wc-admin' ) }
+							{ labels.compareButton || __( 'Compare', 'wc-admin' ) }
 						</CompareButton>
 					),
 					compareBy && (
 						<div key="search" style={ { padding: '4px 12px', color: '#6c7781' } }>
-							Placeholder for search
+							{ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
 						</div>
 					),
 					onClickDownload && (
@@ -208,7 +211,7 @@ class TableCard extends Component {
 							size={ 18 }
 							isDefault
 						>
-							{ __( 'Download', 'wc-admin' ) }
+							{ labels.downloadButton || __( 'Download', 'wc-admin' ) }
 						</IconButton>
 					),
 				] }
@@ -272,6 +275,15 @@ TableCard.propTypes = {
 			required: PropTypes.bool,
 		} )
 	),
+	/**
+	 * Custom labels for table header actions.
+	 */
+	labels: PropTypes.shape( {
+		compareButton: PropTypes.string,
+		downloadButton: PropTypes.string,
+		helpText: PropTypes.string,
+		placeholder: PropTypes.string,
+	} ),
 	/**
 	 * A list of IDs, matching to the row list so that ids[ 0 ] contains the object ID for the object displayed in row[ 0 ].
 	 */
