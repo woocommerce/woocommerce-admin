@@ -459,7 +459,7 @@ const handleMouseOutLineChart = ( parentNode, params ) => {
 const calculateTooltipPosition = ( element, chart, elementWidthRatio = 1 ) => {
 	const elementCoords = element.getBoundingClientRect();
 	const chartCoords = chart.getBoundingClientRect();
-	const tooltipMargin = 30;
+	const tooltipMargin = 24;
 	const tooltipSize = {
 		height: 204,
 		width: 324,
