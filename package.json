@@ -18,7 +18,7 @@
     "prestart": "npm run -s install-if-deps-outdated",
     "start": "webpack --watch",
     "lint": "npm run -s install-if-deps-outdated && eslint client --ext=js,jsx",
-    "i18n:js": "cross-env NODE_ENV=production babel client > /dev/null",
+    "i18n:js": "cross-env NODE_ENV=production babel client -o /dev/null",
     "i18n:php": "pot-to-php ./languages/wc-admin.pot ./languages/wc-admin.php wc-admin",
     "i18n:pot": "grunt makepot",
     "i18n": "npm run -s i18n:js && npm run -s i18n:php && npm run -s i18n:pot",
