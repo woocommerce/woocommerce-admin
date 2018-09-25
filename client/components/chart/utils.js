@@ -418,8 +418,7 @@ const showTooltip = ( params, d, position ) => {
 	params.tooltip
 		.style( 'left', position.x + 'px' )
 		.style( 'top', position.y + 'px' )
-		.style( 'visibility', 'visible' )
-		.style( 'display', 'flex' ).html( `
+		.style( 'visibility', 'visible' ).html( `
 			<div>
 				<h4>${ tooltipTitle }</h4>
 				<ul>
@@ -460,22 +459,23 @@ const handleMouseOutLineChart = ( parentNode, params ) => {
 const calculateTooltipPosition = ( element, chart, elementWidthRatio = 1 ) => {
 	const elementCoords = element.getBoundingClientRect();
 	const chartCoords = chart.getBoundingClientRect();
-	const tooltipBox = d3Select( '.tooltip' ).node().getBoundingClientRect();
-	const tooltipSize = {
-		height: tooltipBox.height || 204,
-		width: tooltipBox.width || 324,
-	};
+	const tooltipSize = d3Select( '.tooltip' )
+		.node()
+		.getBoundingClientRect();
 	const tooltipMargin = 24;
+
 	let xPosition =
-		elementCoords.x + elementCoords.width * elementWidthRatio - chartCoords.x + tooltipMargin;
-	let yPosition = elementCoords.y - chartCoords.y + tooltipMargin;
+		elementCoords.x + elementCoords.width * elementWidthRatio + tooltipMargin - chartCoords.x;
+	let yPosition = elementCoords.y + tooltipMargin - chartCoords.y;
 	if ( xPosition + tooltipSize.width + tooltipMargin > chartCoords.width ) {
-		xPosition = Math.max( 0,
+		xPosition = Math.max(
+			0,
 			elementCoords.x +
-			elementCoords.width * ( 1 - elementWidthRatio ) -
-			tooltipSize.width -
-			tooltipMargin -
-			chartCoords.x );
+				elementCoords.width * ( 1 - elementWidthRatio ) -
+				tooltipSize.width -
+				tooltipMargin -
+				chartCoords.x
+		);
 	}
 	if ( yPosition + tooltipSize.height + tooltipMargin > chartCoords.height ) {
 		yPosition = Math.max( 0, elementCoords.y - tooltipSize.height - tooltipMargin - chartCoords.y );
