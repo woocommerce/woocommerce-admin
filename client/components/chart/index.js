@@ -218,7 +218,7 @@ class Chart extends Component {
 			top: 0,
 		};
 		return (
-			<Section className="woocommerce-chart" ref={ this.chartRef }>
+			<div className="woocommerce-chart" ref={ this.chartRef }>
 				<div className="woocommerce-chart__header">
 					<H className="woocommerce-chart__title">{ title }</H>
 					{ width >= WIDE_BREAKPOINT && legendDirection === 'row' && legend }
@@ -252,34 +252,36 @@ class Chart extends Component {
 						/>
 					</NavigableMenu>
 				</div>
-				<div
-					className={ classNames(
-						'woocommerce-chart__body',
-						`woocommerce-chart__body-${ chartDirection }`
-					) }
-				>
-					{ width >= WIDE_BREAKPOINT && legendDirection === 'column' && legend }
-					<D3Chart
-						colorScheme={ d3InterpolateViridis }
-						data={ visibleData }
-						dateParser={ dateParser }
-						height={ 300 }
-						margin={ margin }
-						mode={ mode }
-						orderedKeys={ orderedKeys }
-						pointLabelFormat={ pointLabelFormat }
-						tooltipFormat={ tooltipFormat }
-						tooltipTitle={ tooltipTitle }
-						type={ type }
-						interval={ interval }
-						width={ chartDirection === 'row' ? width - 320 : width }
-						xFormat={ xFormat }
-						x2Format={ x2Format }
-						yFormat={ yFormat }
-					/>
-				</div>
-				{ width < WIDE_BREAKPOINT && <div className="woocommerce-chart__footer">{ legend }</div> }
-			</Section>
+				<Section component={ false }>
+					<div
+						className={ classNames(
+							'woocommerce-chart__body',
+							`woocommerce-chart__body-${ chartDirection }`
+						) }
+					>
+						{ width >= WIDE_BREAKPOINT && legendDirection === 'column' && legend }
+						<D3Chart
+							colorScheme={ d3InterpolateViridis }
+							data={ visibleData }
+							dateParser={ dateParser }
+							height={ 300 }
+							margin={ margin }
+							mode={ mode }
+							orderedKeys={ orderedKeys }
+							pointLabelFormat={ pointLabelFormat }
+							tooltipFormat={ tooltipFormat }
+							tooltipTitle={ tooltipTitle }
+							type={ type }
+							interval={ interval }
+							width={ chartDirection === 'row' ? width - 320 : width }
+							xFormat={ xFormat }
+							x2Format={ x2Format }
+							yFormat={ yFormat }
+						/>
+					</div>
+					{ width < WIDE_BREAKPOINT && <div className="woocommerce-chart__footer">{ legend }</div> }
+				</Section>
+			</div>
 		);
 	}
 }
