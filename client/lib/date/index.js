@@ -427,13 +427,11 @@ export function getDateFormatsForInterval( interval ) {
 			tooltipFormat = '%B %Y';
 			xFormat = '%b %y';
 			x2Format = '';
-			tableFormat = 'M Y';
 			break;
 		case 'year':
 			pointLabelFormat = 'Y';
 			tooltipFormat = '%Y';
 			xFormat = '%Y';
-			tableFormat = 'Y';
 			break;
 	}
 

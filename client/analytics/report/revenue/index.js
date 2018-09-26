@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
-import { map, find, orderBy } from 'lodash';
+import { map, find } from 'lodash';
 import PropTypes from 'prop-types';
 import { withSelect } from '@wordpress/data';
 
@@ -28,7 +28,7 @@ import {
 import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getAdminLink, getNewPath, onQueryChange } from 'lib/nav-utils';
-import { getAllReportData, isReportDataEmpty } from 'store/reports/utils';
+import { getReportChartData, isReportDataEmpty } from 'store/reports/utils';
 import {
 	getCurrentDates,
 	isoDateFormat,
@@ -60,7 +60,7 @@ export class RevenueReport extends Component {
 		return [
 			{
 				label: __( 'Date', 'wc-admin' ),
-				key: 'date_start',
+				key: 'date',
 				required: true,
 				defaultSort: true,
 				isSortable: true,
@@ -343,37 +343,35 @@ export class RevenueReport extends Component {
 	}
 
 	renderTable() {
-		const { primaryData, query } = this.props;
-		const intervals = primaryData.data.intervals;
-
-		const page = parseInt( query.page ) || 1;
-		const rowsPerPage = parseInt( query.per_page ) || 25;
-
-		const rows =
-			this.getRowsContent(
-				orderBy(
-					intervals,
-					function( interval ) {
-						return 'undefined' === typeof interval.subtotals[ query.orderby ]
-							? interval.date_start
-							: interval.subtotals[ query.orderby ];
-					},
-					query.order || 'asc'
-				).slice( ( page - 1 ) * rowsPerPage, page * rowsPerPage )
-			) || [];
-
+		const { isTableDataRequesting, tableData, tableQuery } = this.props;
 		const headers = this.getHeadersContent();
 
-		const tableQuery = {
-			...query,
-			orderby: query.orderby || 'date_start',
-			order: query.order || 'asc',
-		};
+		if ( isTableDataRequesting ) {
+			return (
+				<Card
+					title={ __( 'Revenue', 'wc-admin' ) }
+					className="woocommerce-analytics__table-placeholder"
+				>
+					<TablePlaceholder
+						caption={ __( 'Revenue', 'wc-admin' ) }
+						headers={ headers }
+						query={ tableQuery }
+					/>
+				</Card>
+			);
+		}
+
+		const intervals = tableData.data.intervals;
+		const rows = this.getRowsContent( intervals );
+
+		const rowsPerPage =
+			( tableQuery && tableQuery.per_page && parseInt( tableQuery.per_page ) ) || 25;
+
 		return (
 			<TableCard
 				title={ __( 'Revenue', 'wc-admin' ) }
 				rows={ rows }
-				totalRows={ intervals.length }
+				totalRows={ tableData.totalResults }
 				rowsPerPage={ rowsPerPage }
 				headers={ headers }
 				onClickDownload={ this.onDownload( headers, rows, tableQuery ) }
@@ -409,13 +407,18 @@ export class RevenueReport extends Component {
 	}
 
 	render() {
-		const { path, query, primaryData, secondaryData } = this.props;
+		const { path, query, primaryData, secondaryData, isTableDataError } = this.props;
 
 		if ( primaryData.isRequesting || secondaryData.isRequesting ) {
 			return this.renderPlaceholder();
 		}
 
-		if ( isReportDataEmpty( primaryData ) || primaryData.isError || secondaryData.isError ) {
+		if (
+			isReportDataEmpty( primaryData ) ||
+			primaryData.isError ||
+			secondaryData.isError ||
+			isTableDataError
+		) {
 			let title, actionLabel, actionURL, actionCallback;
 			if ( primaryData.isError || secondaryData.isError ) {
 				title = __( 'There was an error getting your stats. Please try again.', 'wc-admin' );
@@ -464,6 +467,7 @@ RevenueReport.propTypes = {
 export default compose(
 	withSelect( ( select, props ) => {
 		const { query } = props;
+		const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
 		const datesFromQuery = getCurrentDates( query );
 		const interval = getIntervalForQuery( query );
 		const baseArgs = {
@@ -472,7 +476,7 @@ export default compose(
 			per_page: MAX_PER_PAGE,
 		};
 
-		const primaryData = getAllReportData(
+		const primaryData = getReportChartData(
 			'revenue',
 			{
 				...baseArgs,
@@ -482,7 +486,7 @@ export default compose(
 			select
 		);
 
-		const secondaryData = getAllReportData(
+		const secondaryData = getReportChartData(
 			'revenue',
 			{
 				...baseArgs,
@@ -492,9 +496,27 @@ export default compose(
 			select
 		);
 
+		// TODO Support hour here when viewing a single day
+		const tableQuery = {
+			interval: 'day',
+			orderby: query.orderby || 'date',
+			order: query.order || 'asc',
+			page: query.page || 1,
+			per_page: query.per_page || 25,
+			after: datesFromQuery.primary.after + 'T00:00:00+00:00',
+			before: datesFromQuery.primary.before + 'T23:59:59+00:00',
+		};
+		const tableData = getReportStats( 'revenue', tableQuery );
+		const isTableDataError = isReportStatsError( 'revenue', tableQuery );
+		const isTableDataRequesting = isReportStatsRequesting( 'revenue', tableQuery );
+
 		return {
 			primaryData,
 			secondaryData,
+			tableQuery,
+			tableData,
+			isTableDataError,
+			isTableDataRequesting,
 		};
 	} )
 )( RevenueReport );
