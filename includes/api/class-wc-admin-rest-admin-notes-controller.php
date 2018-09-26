@@ -108,6 +108,18 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		$data    = $this->add_additional_fields_to_object( $item, $request );
 		$data    = $this->filter_response_by_context( $data, $context );
 
+		// Dates get special handling
+		$date_keys = array( 'date_created', 'date_reminder' );
+		foreach ( (array) $date_keys as $date_key ) {
+			if ( ! is_null( $data[ $date_key ] ) ) {
+				$datetime                   = $data[ $date_key ];
+				$data[ $date_key ]          = wc_rest_prepare_date_response( $datetime, false );
+				$data[ $date_key . '_gmt' ] = wc_rest_prepare_date_response( $datetime );
+			} else {
+				$data[ $date_key . '_gmt' ] = null;
+			}
+		}
+
 		// Wrap the data in a response object.
 		$response = rest_ensure_response( $data );
 		$response->add_links( $this->prepare_links( $item, $request ) );
