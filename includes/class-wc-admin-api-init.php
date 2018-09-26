@@ -84,6 +84,7 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-revenue-stats-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-taxes-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-taxes-stats-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-admin-notes-controller.php';
 
 		$controllers = array(
 			'WC_Admin_REST_Reports_Controller',
@@ -97,6 +98,7 @@ class WC_Admin_Api_Init {
 			'WC_Admin_REST_Reports_Taxes_Stats_Controller',
 			'WC_Admin_REST_Reports_Coupons_Controller',
 			'WC_Admin_REST_Reports_Coupons_Stats_Controller',
+			'WC_Admin_REST_Admin_Notes_Controller',
 		);
 
 		foreach ( $controllers as $controller ) {
