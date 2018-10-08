@@ -225,18 +225,20 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . self::TABLE_NAME;
-		$now        = time();
-		$week_back  = $now - WEEK_IN_SECONDS;
+		$table_name                   = $wpdb->prefix . self::TABLE_NAME;
+		$now                          = new DateTime();
+		$week_to_date_start           = WC_Admin_Reports_Interval::next_week_start( $now, true );
+		$week_to_date_start_timestamp = (int) $week_to_date_start->format( 'U' ) + 1;
+		$week_to_date_start->setTimestamp( $week_to_date_start_timestamp );
 
-		// These defaults are only applied when not using REST API, as the API has its own defaults that overwrite these for most values (except before, after, etc).
+		// These defaults are only applied when not using REST API, as the API has its own defaults that overwrite these for most values.
 		$defaults   = array(
 			'per_page'     => get_option( 'posts_per_page' ),
 			'page'         => 1,
 			'order'        => 'DESC',
 			'orderby'      => 'date',
-			'before'       => date( WC_Admin_Reports_Interval::$iso_datetime_format, $now ),
-			'after'        => date( WC_Admin_Reports_Interval::$iso_datetime_format, $week_back ),
+			'before'       => $now->format( WC_Admin_Reports_Interval::$iso_datetime_format ),
+			'after'        => $week_to_date_start->format( WC_Admin_Reports_Interval::$iso_datetime_format ),
 			'interval'     => 'week',
 			'fields'       => '*',
 			'categories'   => array(),
@@ -245,6 +247,14 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			'products'     => array(),
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
+
+		// If time period not specified from outside, use default values.
+		if ( null === $query_args['before'] ) {
+			$query_args['before'] = $now->format( WC_Admin_Reports_Interval::$iso_datetime_format );
+		}
+		if ( null === $query_args['after'] ) {
+			$query_args['after'] = $week_to_date_start->format( WC_Admin_Reports_Interval::$iso_datetime_format );
+		}
 
 		$cache_key = $this->get_cache_key( $query_args );
 		$data      = wp_cache_get( $cache_key, $this->cache_group );
@@ -278,10 +288,6 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			if ( null === $totals ) {
 				return new WP_Error( 'woocommerce_reports_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'wc-admin' ) );
 			}
-
-			// Specification says these are not included in totals.
-			unset( $totals[0]['date_start'] );
-			unset( $totals[0]['date_end'] );
 
 			$totals = (object) $this->cast_numbers( $totals[0] );
 
@@ -422,7 +428,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 
 		$data = array(
 			'order_id'       => $order->get_id(),
-			'date_created'   => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
+			'date_created'   => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
 			'num_items_sold' => self::get_num_items_sold( $order ),
 			'gross_total'    => $order->get_total(),
 			'coupon_total'   => $order->get_total_discount(),

@@ -26,6 +26,13 @@ class WC_Admin_Reports_Interval {
 	 */
 	public static $sql_datetime_format = 'Y-m-d H:i:s';
 
+
+	public static function convert_datetime_to_local( $datetime ) {
+		$datetime_local = clone $datetime;
+		$datetime_local->setTimezone( new DateTimeZone( wc_timezone_string() ) );
+		return $datetime_local;
+	}
+
 	/**
 	 * Returns date format to be used as grouping clause in SQL.
 	 *
@@ -34,23 +41,26 @@ class WC_Admin_Reports_Interval {
 	 */
 	public static function mysql_datetime_format( $time_interval ) {
 		$first_day_of_week = absint( get_option( 'start_of_week' ) );
+		$local_tz          = new DateTimeZone( wc_timezone_string() );
+		$datetime          = new DateTime( 'now', $local_tz );
+		$tz_offset         = $datetime->format( 'P' );
 
 		if ( 1 === $first_day_of_week ) {
 			// Week begins on Monday, ISO 8601.
-			$week_format = "DATE_FORMAT(date_created, '%x-%v')";
+			$week_format = "DATE_FORMAT( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ) , '%x-%v')";
 		} else {
 			// Week begins on day other than specified by ISO 8601, needs to be in sync with function simple_week_number.
-			$week_format = "CONCAT(YEAR(date_created), '-', LPAD( FLOOR( ( DAYOFYEAR(date_created) + ( ( DATE_FORMAT(MAKEDATE(YEAR(date_created),1), '%w') - $first_day_of_week + 7 ) % 7 ) - 1 ) / 7  ) + 1 , 2, '0'))";
+			$week_format = "CONCAT(YEAR( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ) ), '-', LPAD( FLOOR( ( DAYOFYEAR( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ) ) + ( ( DATE_FORMAT(MAKEDATE(YEAR( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ) ),1), '%w') - $first_day_of_week + 7 ) % 7 ) - 1 ) / 7  ) + 1 , 2, '0'))";
 
 		}
 
 		$mysql_date_format_mapping = array(
-			'hour'    => "DATE_FORMAT(date_created, '%Y-%m-%d %k')",
-			'day'     => "DATE_FORMAT(date_created, '%Y-%m-%d')",
+			'hour'    => "DATE_FORMAT( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ), '%Y-%m-%d %k')",
+			'day'     => "DATE_FORMAT( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ), '%Y-%m-%d')",
 			'week'    => $week_format,
-			'month'   => "DATE_FORMAT(date_created, '%Y-%m')",
-			'quarter' => "CONCAT(YEAR(date_created), '-', QUARTER(date_created))",
-			'year'    => 'YEAR(date_created)',
+			'month'   => "DATE_FORMAT( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ), '%Y-%m')",
+			'quarter' => "CONCAT(YEAR( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ) ), '-', QUARTER( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ) ))",
+			'year'    => "YEAR( CONVERT_TZ(date_created, 'GMT', '$tz_offset' ) )",
 
 		);
 
@@ -64,7 +74,8 @@ class WC_Admin_Reports_Interval {
 	 * @return int|null
 	 */
 	public static function quarter( $datetime ) {
-		switch ( (int) $datetime->format( 'm' ) ) {
+		$datetime_local = self::convert_datetime_to_local( $datetime );
+		switch ( (int) $datetime_local->format( 'm' ) ) {
 			case 1:
 			case 2:
 			case 3:
@@ -97,9 +108,10 @@ class WC_Admin_Reports_Interval {
 	 * @return int
 	 */
 	public static function simple_week_number( $datetime, $first_day_of_week ) {
-		$beg_of_year_day          = new DateTime( "{$datetime->format('Y')}-01-01" );
+		$datetime_local           = self::convert_datetime_to_local( $datetime );
+		$beg_of_year_day          = new DateTime( "{$datetime_local->format('Y')}-01-01" );
 		$adj_day_beg_of_year      = ( (int) $beg_of_year_day->format( 'w' ) - $first_day_of_week + 7 ) % 7;
-		$days_since_start_of_year = (int) $datetime->format( 'z' ) + 1;
+		$days_since_start_of_year = (int) $datetime_local->format( 'z' ) + 1;
 
 		return (int) floor( ( ( $days_since_start_of_year + $adj_day_beg_of_year - 1 ) / 7 ) ) + 1;
 	}
@@ -116,7 +128,8 @@ class WC_Admin_Reports_Interval {
 	 */
 	public static function week_number( $datetime, $first_day_of_week ) {
 		if ( 1 === $first_day_of_week ) {
-			$week_number = (int) $datetime->format( 'W' );
+			$datetime_local = self::convert_datetime_to_local( $datetime );
+			$week_number    = (int) $datetime_local->format( 'W' );
 		} else {
 			$week_number = WC_Admin_Reports_Interval::simple_week_number( $datetime, $first_day_of_week );
 		}
@@ -131,12 +144,13 @@ class WC_Admin_Reports_Interval {
 	 * @return string
 	 */
 	public static function time_interval_id( $time_interval, $datetime ) {
+		$datetime_local      = self::convert_datetime_to_local( $datetime );
 		$php_time_format_for = array(
 			'hour'    => 'Y-m-d H',
 			'day'     => 'Y-m-d',
 			'week'    => 'o-W',
 			'month'   => 'Y-m',
-			'quarter' => 'Y-' . WC_Admin_Reports_Interval::quarter( $datetime ),
+			'quarter' => 'Y-' . WC_Admin_Reports_Interval::quarter( $datetime_local ),
 			'year'    => 'Y',
 		);
 
@@ -144,13 +158,13 @@ class WC_Admin_Reports_Interval {
 		$first_day_of_week = absint( get_option( 'start_of_week' ) );
 
 		if ( 'week' === $time_interval && 1 !== $first_day_of_week ) {
-			$week_no = WC_Admin_Reports_Interval::simple_week_number( $datetime, $first_day_of_week );
+			$week_no = WC_Admin_Reports_Interval::simple_week_number( $datetime_local, $first_day_of_week );
 			$week_no = str_pad( $week_no, 2, '0', STR_PAD_LEFT );
-			$year_no = $datetime->format( 'Y' );
+			$year_no = $datetime_local->format( 'Y' );
 			return "$year_no-$week_no";
 		}
 
-		return $datetime->format( $php_time_format_for[ $time_interval ] );
+		return $datetime_local->format( $php_time_format_for[ $time_interval ] );
 	}
 
 	/**
@@ -162,8 +176,12 @@ class WC_Admin_Reports_Interval {
 	 * @return int
 	 */
 	public static function intervals_between( $start, $end, $interval ) {
+		// TODO: check timezones.
 		$start_datetime = new DateTime( $start );
 		$end_datetime   = new DateTime( $end );
+		$local_tz       = new DateTimeZone( wc_timezone_string() );
+		$start_datetime->setTimezone( $local_tz );
+		$end_datetime->setTimezone( $local_tz );
 
 		switch ( $interval ) {
 			case 'hour':
@@ -211,16 +229,21 @@ class WC_Admin_Reports_Interval {
 	 * @return DateTime
 	 */
 	public static function next_hour_start( $datetime, $reversed = false ) {
-		$hour_increment         = $reversed ? 0 : 1;
-		$timestamp              = (int) $datetime->format( 'U' );
-		$hours_offset_timestamp = ( floor( $timestamp / HOUR_IN_SECONDS ) + $hour_increment ) * HOUR_IN_SECONDS;
+		$datetime_local = self::convert_datetime_to_local( $datetime );
 
+		$minutes             = (int) $datetime_local->format( 'i' );
+		$seconds             = (int) $datetime_local->format( 's' );
+		$current_hour_offset = $minutes * MINUTE_IN_SECONDS + $seconds;
+		$timestamp_local     = (int) $datetime_local->format( 'U' );
 		if ( $reversed ) {
-			$hours_offset_timestamp --;
+			$timestamp_local = $timestamp_local - $current_hour_offset - 1;
+		} else {
+			$timestamp_local = $timestamp_local + ( HOUR_IN_SECONDS - $current_hour_offset );
 		}
 
 		$hours_offset_time = new DateTime();
-		$hours_offset_time->setTimestamp( $hours_offset_timestamp );
+		$hours_offset_time->setTimestamp( $timestamp_local );
+		$hours_offset_time->setTimezone( new DateTimeZone( wc_timezone_string() ) );
 		return $hours_offset_time;
 	}
 
@@ -232,17 +255,28 @@ class WC_Admin_Reports_Interval {
 	 * @return DateTime
 	 */
 	public static function next_day_start( $datetime, $reversed = false ) {
-		$day_increment      = $reversed ? -1 : 1;
-		$timestamp          = (int) $datetime->format( 'U' );
-		$next_day_timestamp = ( floor( $timestamp / DAY_IN_SECONDS ) + $day_increment ) * DAY_IN_SECONDS;
-		$next_day           = new DateTime();
-		$next_day->setTimestamp( $next_day_timestamp );
+		$datetime_local = self::convert_datetime_to_local( $datetime );
 
-		// The day boundary is actually next midnight when going in reverse, so set it to day -1 at 23:59:59.
+		$minutes         = (int) $datetime_local->format( 'i' );
+		$seconds         = (int) $datetime_local->format( 's' );
+		$hours           = (int) $datetime_local->format( 'G' );
+		$timestamp_local = (int) $datetime_local->format( 'U' );
+
+		$day_start_offset = $hours * HOUR_IN_SECONDS + $minutes * MINUTE_IN_SECONDS + $seconds;
+
+		// To hit the correct next day/previous day when DST changes, go 2 hours back/forward.
 		if ( $reversed ) {
-			$timestamp            = (int) $next_day->format( 'U' );
-			$end_of_day_timestamp = floor( $timestamp / DAY_IN_SECONDS ) * DAY_IN_SECONDS + DAY_IN_SECONDS - 1;
-			$next_day->setTimestamp( $end_of_day_timestamp );
+			$timestamp_local = $timestamp_local - $day_start_offset - 2 * HOUR_IN_SECONDS;
+		} else {
+			$timestamp_local = $timestamp_local + ( DAY_IN_SECONDS - $day_start_offset ) + 2 * HOUR_IN_SECONDS;
+		}
+
+		$datetime_local->setTimestamp( $timestamp_local );
+		$date = $datetime_local->format( 'Y-m-d' );
+		if ( $reversed ) {
+			$next_day = new DateTime( "{$date}T23:59:59", new DateTimeZone( wc_timezone_string() ) );
+		} else {
+			$next_day = new DateTime( "{$date}T00:00:00", new DateTimeZone( wc_timezone_string() ) );
 		}
 
 		return $next_day;
@@ -256,22 +290,17 @@ class WC_Admin_Reports_Interval {
 	 * @return DateTime
 	 */
 	public static function next_week_start( $datetime, $reversed = false ) {
+		$datetime_local = self::convert_datetime_to_local( $datetime );
+
 		$first_day_of_week = absint( get_option( 'start_of_week' ) );
-		$initial_week_no   = WC_Admin_Reports_Interval::week_number( $datetime, $first_day_of_week );
+		$initial_week_no   = WC_Admin_Reports_Interval::week_number( $datetime_local, $first_day_of_week );
 
 		do {
-			$datetime        = WC_Admin_Reports_Interval::next_day_start( $datetime, $reversed );
-			$current_week_no = WC_Admin_Reports_Interval::week_number( $datetime, $first_day_of_week );
+			$datetime_local  = WC_Admin_Reports_Interval::next_day_start( $datetime_local, $reversed );
+			$current_week_no = WC_Admin_Reports_Interval::week_number( $datetime_local, $first_day_of_week );
 		} while ( $current_week_no === $initial_week_no );
 
-		// The week boundary is actually next midnight when going in reverse, so set it to day -1 at 23:59:59.
-		if ( $reversed ) {
-			$timestamp            = (int) $datetime->format( 'U' );
-			$end_of_day_timestamp = floor( $timestamp / DAY_IN_SECONDS ) * DAY_IN_SECONDS + DAY_IN_SECONDS - 1;
-			$datetime->setTimestamp( $end_of_day_timestamp );
-		}
-
-		return $datetime;
+		return $datetime_local;
 	}
 
 	/**
@@ -282,26 +311,24 @@ class WC_Admin_Reports_Interval {
 	 * @return DateTime
 	 */
 	public static function next_month_start( $datetime, $reversed = false ) {
-		$month_increment = 1;
-		$year            = $datetime->format( 'Y' );
-		$month           = (int) $datetime->format( 'm' );
+		$datetime_local  = self::convert_datetime_to_local( $datetime );
+		$year            = (int) $datetime_local->format( 'Y' );
+		$month           = (int) $datetime_local->format( 'm' );
 
 		if ( $reversed ) {
-			$beg_of_month_datetime       = new DateTime( "$year-$month-01 00:00:00" );
+			$beg_of_month_datetime       = new DateTime( "$year-$month-01 00:00:00", new DateTimeZone( wc_timezone_string() ) );
 			$timestamp                   = (int) $beg_of_month_datetime->format( 'U' );
 			$end_of_prev_month_timestamp = $timestamp - 1;
-			$datetime->setTimestamp( $end_of_prev_month_timestamp );
+			$datetime_local->setTimestamp( $end_of_prev_month_timestamp );
+			return $datetime_local;
 		} else {
-			$month += $month_increment;
+			$month ++;
 			if ( $month > 12 ) {
 				$month = 1;
 				$year ++;
 			}
-			$day      = '01';
-			$datetime = new DateTime( "$year-$month-$day 00:00:00" );
+			return new DateTime( "$year-$month-01 00:00:00", new DateTimeZone( wc_timezone_string() ) );
 		}
-
-		return $datetime;
 	}
 
 	/**
@@ -312,8 +339,9 @@ class WC_Admin_Reports_Interval {
 	 * @return DateTime
 	 */
 	public static function next_quarter_start( $datetime, $reversed = false ) {
-		$year  = $datetime->format( 'Y' );
-		$month = (int) $datetime->format( 'n' );
+		$datetime_local = self::convert_datetime_to_local( $datetime );
+		$year           = (int) $datetime_local->format( 'Y' );
+		$month          = (int) $datetime_local->format( 'n' );
 
 		switch ( $month ) {
 			case 1:
@@ -354,7 +382,7 @@ class WC_Admin_Reports_Interval {
 				}
 				break;
 		}
-		$datetime = new DateTime( "$year-$month-01 00:00:00" );
+		$datetime = new DateTime( "$year-$month-01 00:00:00", new DateTimeZone( wc_timezone_string() ) );
 		if ( $reversed ) {
 			$timestamp                   = (int) $datetime->format( 'U' );
 			$end_of_prev_month_timestamp = $timestamp - 1;
@@ -372,19 +400,19 @@ class WC_Admin_Reports_Interval {
 	 * @return DateTime
 	 */
 	public static function next_year_start( $datetime, $reversed = false ) {
-		$year_increment = 1;
-		$year           = (int) $datetime->format( 'Y' );
+		$datetime_local = self::convert_datetime_to_local( $datetime );
+		$year           = (int) $datetime_local->format( 'Y' );
 		$month          = '01';
 		$day            = '01';
 
 		if ( $reversed ) {
-			$datetime                   = new DateTime( "$year-$month-$day 00:00:00" );
+			$datetime                   = new DateTime( "$year-$month-$day 00:00:00", new DateTimeZone( wc_timezone_string() ) );
 			$timestamp                  = (int) $datetime->format( 'U' );
 			$end_of_prev_year_timestamp = $timestamp - 1;
 			$datetime->setTimestamp( $end_of_prev_year_timestamp );
 		} else {
-			$year    += $year_increment;
-			$datetime = new DateTime( "$year-$month-$day 00:00:00" );
+			$year    ++;
+			$datetime = new DateTime( "$year-$month-$day 00:00:00", new DateTimeZone( wc_timezone_string() ) );
 		}
 
 		return $datetime;
@@ -408,3 +436,42 @@ class WC_Admin_Reports_Interval {
 	}
 
 }
+
+//$datetime = new DateTime( '2018-09-28T18:58:00+02', new DateTimeZone( 'Europe/Berlin' ) );
+//$hm = WC_Admin_Reports_Interval::next_week_start( $datetime, true );
+
+//$setting = array(
+//	'start'      => '2017-11-01T00:00:00Z',
+//	'end'        => '2017-11-30T23:59:59Z',
+//	'week_start' => 1,
+//	'intervals'  => array(
+//		'hour'    => 720,
+//		'day'     => 30,
+//		'week'    => 5,
+//		'month'   => 1,
+//		'quarter' => 1,
+//		'year'    => 1,
+//	),
+//);
+//$hm = WC_Admin_Reports_Interval::intervals_between( $setting['start'], $setting['end'], 'week' );
+
+//update_option( 'timezone_string', 'Europe/Berlin' );
+//$settings = array(
+//	'2018-01-01T02:00:00+10' => array( // Dec in Berlin.
+//		0 => '2018-01-01 00:00:00',
+//		1 => '2017-11-30 23:59:59',
+//	),
+//	'2017-12-30T02:00:00+10' => array(
+//		0 => '2018-01-01 00:00:00',
+//		1 => '2017-11-30 23:59:59',
+//	),
+//	// Leap year reversed test.
+//	'2016-03-05T10:00:00+04' => array(
+//		0 => '2016-04-01 00:00:00',
+//		1 => '2016-02-29 23:59:59',
+//	),
+//);
+//$datetime = new DateTime( '2018-01-01T02:00:00+10' );
+//$reversed = true;
+//$result_dt = WC_Admin_Reports_Interval::next_month_start( $datetime, $reversed );
+

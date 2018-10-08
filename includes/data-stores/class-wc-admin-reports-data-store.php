@@ -103,8 +103,8 @@ class WC_Admin_Reports_Data_Store {
 	 * Fills in interval gaps from DB with 0-filled objects.
 	 *
 	 * @param array    $db_intervals   Array of all intervals present in the db.
-	 * @param DateTime $datetime_start Start date.
-	 * @param DateTime $datetime_end   End date.
+	 * @param DateTime $datetime_start Start date in UTC.
+	 * @param DateTime $datetime_end   End date in UTC.
 	 * @param string   $time_interval  Time interval, e.g. day, week, month.
 	 * @param stdClass $data           Data with SQL extracted intervals.
 	 * @return stdClass
@@ -116,6 +116,7 @@ class WC_Admin_Reports_Data_Store {
 		$time_ids     = array_flip( wp_list_pluck( $data->intervals, 'time_interval' ) );
 		$db_intervals = array_flip( $db_intervals );
 		$datetime     = new DateTime( $datetime_start );
+		$utc_tz       = new DateTimeZone( 'UTC' );
 		// Totals object used to get all needed properties.
 		$totals_arr = get_object_vars( $data->totals );
 		foreach ( $totals_arr as $key => $val ) {
@@ -135,20 +136,21 @@ class WC_Admin_Reports_Data_Store {
 			}
 			if ( array_key_exists( $time_id, $time_ids ) ) {
 				// For interval present in the db for this time frame, just fill in dates.
-				$record               = &$data->intervals[ $time_ids[ $time_id ] ];
-				$record['date_start'] = $datetime->format( 'Y-m-d H:i:s' );
-				$record['date_end']   = $interval_end;
+				$record                   = &$data->intervals[ $time_ids[ $time_id ] ];
+				$record['date_start_gmt'] = $datetime->format( 'Y-m-d H:i:s' );
+				$record['date_end_gmt']   = $interval_end;
 			} elseif ( array_key_exists( $time_id, $db_intervals ) ) {
 				// For intervals present in the db outside of this time frame, do nothing.
 			} else {
 				// For intervals not present in the db, fabricate it.
-				$record_arr                  = array();
-				$record_arr['time_interval'] = $time_id;
-				$record_arr['date_start']    = $datetime->format( 'Y-m-d H:i:s' );
-				$record_arr['date_end']      = $interval_end;
-				$data->intervals[]           = array_merge( $record_arr, $totals_arr );
+				$record_arr                   = array();
+				$record_arr['time_interval']  = $time_id;
+				$record_arr['date_start_gmt'] = $datetime->format( 'Y-m-d H:i:s' );
+				$record_arr['date_end_gmt']   = $interval_end;
+				$data->intervals[]            = array_merge( $record_arr, $totals_arr );
 			}
 			$datetime = $next_start;
+			$datetime->setTimezone( $utc_tz );
 		}
 		return $data;
 	}
@@ -185,8 +187,10 @@ class WC_Admin_Reports_Data_Store {
 	 * If there are less records in the database than time intervals, then we need to remap offset in SQL query
 	 * to fetch correct records.
 	 *
-	 * @param array $intervals_query Array with clauses for the Intervals SQL query.
-	 * @param int   $db_records      Number of records in the db for requested time period.
+	 * @param array $intervals_query         Array with clauses for the Intervals SQL query.
+	 * @param array $query_args              Query arguments from the user.
+	 * @param int   $db_interval_count       Number of intervals in the database.
+	 * @param int   $expected_interval_count Number of expected datetime intervals.
 	 */
 	protected function update_intervals_sql_params( &$intervals_query, &$query_args, $db_interval_count, $expected_interval_count ) {
 		if ( $db_interval_count === $expected_interval_count ) {
@@ -257,6 +261,11 @@ class WC_Admin_Reports_Data_Store {
 					$new_start_date->setTimestamp( $new_start_date_timestamp );
 				}
 			}
+			// Set time zone for SQL query to UTC, as db stores date_created in UTC.
+			$utc_tz = new DateTimeZone( 'UTC' );
+			$new_start_date->setTimezone( $utc_tz );
+			$new_end_date->setTimezone( $utc_tz );
+
 			$query_args['adj_after']          = $new_start_date->format( WC_Admin_Reports_Interval::$iso_datetime_format );
 			$query_args['adj_before']         = $new_end_date->format( WC_Admin_Reports_Interval::$iso_datetime_format );
 			$intervals_query['where_clause']  = '';
@@ -379,28 +388,34 @@ class WC_Admin_Reports_Data_Store {
 	 * @param array    $intervals Array of intervals extracted from SQL db.
 	 */
 	protected function update_interval_boundary_dates( $datetime_start, $datetime_end, $time_interval, &$intervals ) {
+		$utc_tz = new DateTimeZone( 'UTC' );
+
 		foreach ( $intervals as $key => $interval ) {
 			$datetime = new DateTime( $interval['datetime_anchor'] );
 
-			$prev_start           = WC_Admin_Reports_Interval::iterate( $datetime, $time_interval, true );
+			$prev_start = WC_Admin_Reports_Interval::iterate( $datetime, $time_interval, true );
 			// TODO: not sure if the +1/-1 here are correct, especially as they are applied before the ?: below.
 			$prev_start_timestamp = (int) $prev_start->format( 'U' ) + 1;
 			$prev_start->setTimestamp( $prev_start_timestamp );
+			$prev_start->setTimezone( $utc_tz );
 			if ( $datetime_start ) {
-				$start_datetime                  = new DateTime( $datetime_start );
-				$intervals[ $key ]['date_start'] = ( $prev_start < $start_datetime ? $start_datetime : $prev_start )->format( 'Y-m-d H:i:s' );
+				$start_datetime = new DateTime( $datetime_start );
+				$start_datetime->setTimezone( $utc_tz );
+				$intervals[ $key ]['date_start_gmt'] = ( $prev_start < $start_datetime ? $start_datetime : $prev_start )->format( 'Y-m-d H:i:s' );
 			} else {
-				$intervals[ $key ]['date_start'] = $prev_start->format( 'Y-m-d H:i:s' );
+				$intervals[ $key ]['date_start_gmt'] = $prev_start->format( 'Y-m-d H:i:s' );
 			}
 
 			$next_end           = WC_Admin_Reports_Interval::iterate( $datetime, $time_interval );
 			$next_end_timestamp = (int) $next_end->format( 'U' ) - 1;
 			$next_end->setTimestamp( $next_end_timestamp );
+			$next_end->setTimezone( $utc_tz );
 			if ( $datetime_end ) {
-				$end_datetime                  = new DateTime( $datetime_end );
-				$intervals[ $key ]['date_end'] = ( $next_end > $end_datetime ? $end_datetime : $next_end )->format( 'Y-m-d H:i:s' );
+				$end_datetime = new DateTime( $datetime_end );
+				$end_datetime->setTimezone( $utc_tz );
+				$intervals[ $key ]['date_end_gmt'] = ( $next_end > $end_datetime ? $end_datetime : $next_end )->format( 'Y-m-d H:i:s' );
 			} else {
-				$intervals[ $key ]['date_end'] = $next_end->format( 'Y-m-d H:i:s' );
+				$intervals[ $key ]['date_end_gmt'] = $next_end->format( 'Y-m-d H:i:s' );
 			}
 
 			$intervals[ $key ]['interval'] = $time_interval;
@@ -413,19 +428,20 @@ class WC_Admin_Reports_Data_Store {
 	 * @param array $intervals Time interval, e.g. day, week, month.
 	 */
 	protected function create_interval_subtotals( &$intervals ) {
+		$utc_tz = new DateTimeZone( 'UTC' );
 		foreach ( $intervals as $key => $interval ) {
 			// Move intervals result to subtotals object.
 			$intervals[ $key ] = array(
 				'interval'       => $interval['time_interval'],
-				'date_start'     => $interval['date_start'],
-				'date_start_gmt' => $interval['date_start'],
-				'date_end'       => $interval['date_end'],
-				'date_end_gmt'   => $interval['date_end'],
+				'date_start'     => WC_Admin_Reports_Interval::convert_datetime_to_local( new DateTime( $interval['date_start_gmt'], $utc_tz ) )->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
+				'date_start_gmt' => $interval['date_start_gmt'],
+				'date_end'       => WC_Admin_Reports_Interval::convert_datetime_to_local( new DateTime( $interval['date_end_gmt'], $utc_tz ) )->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
+				'date_end_gmt'   => $interval['date_end_gmt'],
 			);
 
 			unset( $interval['interval'] );
-			unset( $interval['date_start'] );
-			unset( $interval['date_end'] );
+			unset( $interval['date_start_gmt'] );
+			unset( $interval['date_end_gmt'] );
 			unset( $interval['datetime_anchor'] );
 			unset( $interval['time_interval'] );
 			$intervals[ $key ]['subtotals'] = (object) $this->cast_numbers( $interval );
@@ -444,16 +460,16 @@ class WC_Admin_Reports_Data_Store {
 			'where_clause' => '',
 		);
 
+		$date_query = new WP_Date_Query( array() );
+
 		if ( isset( $query_args['before'] ) && '' !== $query_args['before'] ) {
-			$datetime                   = new DateTime( $query_args['before'] );
-			$datetime_str               = $datetime->format( WC_Admin_Reports_Interval::$sql_datetime_format );
+			$datetime_str               = $date_query->build_mysql_datetime( $query_args['before'] );
 			$sql_query['where_clause'] .= " AND date_created <= '$datetime_str'";
 
 		}
 
 		if ( isset( $query_args['after'] ) && '' !== $query_args['after'] ) {
-			$datetime                   = new DateTime( $query_args['after'] );
-			$datetime_str               = $datetime->format( WC_Admin_Reports_Interval::$sql_datetime_format );
+			$datetime_str               = $date_query->build_mysql_datetime( $query_args['after'] );
 			$sql_query['where_clause'] .= " AND date_created >= '$datetime_str'";
 		}
 

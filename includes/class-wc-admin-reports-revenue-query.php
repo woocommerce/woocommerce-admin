@@ -31,14 +31,14 @@ class WC_Admin_Reports_Revenue_Query extends WC_Admin_Reports_Query {
 	 */
 	protected function get_default_query_vars() {
 		return array(
-			'per_page' => get_option( 'posts_per_page' ), // not sure if this should be the default.
+			'per_page' => get_option( 'posts_per_page' ),
 			'page'     => 1,
 			'order'    => 'DESC',
 			'orderby'  => 'date',
 			'before'   => '',
 			'after'    => '',
 			'interval' => 'week',
-			'fields' => array(
+			'fields'   => array(
 				'orders_count',
 				'num_items_sold',
 				'gross_revenue',

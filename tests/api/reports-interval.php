@@ -8,6 +8,27 @@
 class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 
 	/**
+	 * Restore UTC on failire.
+	 */
+	public function tearDown() {
+		parent::tearDown();
+		// @codingStandardsIgnoreStart
+		date_default_timezone_set( 'UTC' );
+		// @codingStandardsIgnoreEnd
+		update_option( 'gmt_offset', 0 );
+		update_option( 'timezone_string', '' );
+	}
+
+	public function onNotSuccessfulTest( Throwable $e ) {
+		// @codingStandardsIgnoreStart
+		date_default_timezone_set( 'UTC' );
+		// @codingStandardsIgnoreEnd
+		update_option( 'gmt_offset', 0 );
+		update_option( 'timezone_string', '' );
+		parent::onNotSuccessfulTest( $e );
+	}
+
+	/**
 	 * Test quarter function.
 	 */
 	public function test_quarter() {
@@ -37,6 +58,14 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 
 		$datetime = new DateTime( '2018-12-31T23:59:59Z' );
 		$this->assertEquals( 4, WC_Admin_Reports_Interval::quarter( $datetime ) );
+
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$datetime = new DateTime( '2018-12-31T23:59:59Z' );
+		$this->assertEquals( 1, WC_Admin_Reports_Interval::quarter( $datetime ) ); // Berlin is already past midnight.
+
+		$datetime = new DateTime( '2018-12-31T23:59:59+02:00' );
+		$this->assertEquals( 4, WC_Admin_Reports_Interval::quarter( $datetime ) );
+
 	}
 
 	/**
@@ -323,6 +352,71 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 			}
 		}
 
+		// Berlin is UTC+1 in winter and UTC+2 in summer, until our lovely DST change will be taken away from us.
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$expected_week_no = array(
+			'2010-12-24T23:45:00Z' => array(
+				1 => 52,
+				2 => 52,
+				3 => 52,
+				4 => 52,
+				5 => 52,
+				6 => 53,
+				7 => 52,
+			),
+			'2010-12-25T23:45:00Z' => array(
+				1 => 52,
+				2 => 52,
+				3 => 52,
+				4 => 52,
+				5 => 52,
+				6 => 53,
+				7 => 53,
+			),
+			'2010-12-31T23:45:00Z' => array(
+				1 => 1,
+				2 => 1,
+				3 => 1,
+				4 => 1,
+				5 => 1,
+				6 => 1,
+				7 => 1,
+			),
+			'2011-01-01T23:45:00Z' => array(
+				1 => 1,
+				2 => 1,
+				3 => 1,
+				4 => 1,
+				5 => 1,
+				6 => 1,
+				7 => 2,
+			),
+			'2011-01-01T23:45:00+03:00' => array(
+				1 => 1,
+				2 => 1,
+				3 => 1,
+				4 => 1,
+				5 => 1,
+				6 => 1,
+				7 => 1,
+			),
+			'2011-01-01T00:45:00+03:00' => array(
+				1 => 53,
+				2 => 53,
+				3 => 53,
+				4 => 53,
+				5 => 53,
+				6 => 53,
+				7 => 53,
+			),
+		);
+
+		foreach ( $expected_week_no as $date => $week_numbers ) {
+			for ( $first_day_of_week = 1; $first_day_of_week <= 7; $first_day_of_week++ ) {
+				$datetime = new DateTime( $date );
+				$this->assertEquals( $expected_week_no[ $date ][ $first_day_of_week ], WC_Admin_Reports_Interval::simple_week_number( $datetime, $first_day_of_week ), "First day of week: $first_day_of_week; Date: $date" );
+			}
+		}
 	}
 
 	/**
@@ -360,6 +454,23 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 			'2012-01-04' => 1,
 			'2012-01-05' => 1,
 			'2012-01-06' => 1,
+		);
+		foreach ( $expected_week_no as $date => $week_numbers ) {
+			$datetime = new DateTime( $date );
+			$this->assertEquals( $expected_week_no[ $date ], WC_Admin_Reports_Interval::week_number( $datetime, 1 ), "ISO week number for date: $date" );
+		}
+
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$expected_week_no = array(
+			'2010-12-26T23:45:59+02' => 51,
+			'2010-12-26T23:45:59Z'   => 52,
+			'2010-12-27T23:45:59+02' => 52,
+			'2010-12-27T23:45:59Z'   => 52,
+
+			'2011-01-02T23:45:59+02' => 52,
+			'2011-01-02T23:45:59Z'   => 1,
+			'2011-01-03T23:45:59+02' => 1,
+			'2011-01-03T23:45:59Z'   => 1,
 		);
 		foreach ( $expected_week_no as $date => $week_numbers ) {
 			$datetime = new DateTime( $date );
@@ -609,6 +720,33 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$iso_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
 			}
 		}
+
+		update_option( 'gmt_offset', 2 ); // Not using timezone name here, as it could cause problems with DST.
+		$settings = array(
+			'2017-12-30T00:00:00+03:45' => array( // 29th, 20:15 UTC, which is 22:15+02
+				0 => '2017-12-29 23:00:00',
+				1 => '2017-12-29 21:59:59',
+			),
+			'2017-12-31T23:45:00+02'    => array( // Same as local time.
+				0 => '2018-01-01 00:00:00',
+				1 => '2017-12-31 22:59:59',
+			),
+			'2017-12-31T23:45:00+03'    => array( // 20:45 UTC, which is 22:45+02
+				0 => '2017-12-31 23:00:00',
+				1 => '2017-12-31 21:59:59',
+			),
+			'2017-12-31T23:45:00+01'    => array( // 22:45 UTC, which is 00:45+02
+				0 => '2018-01-01 01:00:00',
+				1 => '2017-12-31 23:59:59',
+			),
+		);
+		foreach ( $settings as $datetime_s => $setting ) {
+			$datetime = new DateTime( $datetime_s );
+			foreach ( $setting as $reversed => $exp_value ) {
+				$result_dt = WC_Admin_Reports_Interval::next_hour_start( $datetime, $reversed );
+				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
+			}
+		}
 	}
 
 	/**
@@ -630,6 +768,25 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 			foreach ( $setting as $reversed => $exp_value ) {
 				$result_dt = WC_Admin_Reports_Interval::next_day_start( $datetime, $reversed );
 				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$iso_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
+			}
+		}
+
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$settings = array(
+			'2017-12-30T00:00:00+03' => array( // 29th 21:00 UTC, which is 22:00 or 23:00 Berlin time.
+				0 => '2017-12-30 00:00:00',
+				1 => '2017-12-28 23:59:59',
+			),
+			'2017-12-30T10:23:46+05' => array( // 30th 5:23 UTC, thus 6:23 or 7:23 Berlin time
+				0 => '2017-12-31 00:00:00',
+				1 => '2017-12-29 23:59:59',
+			),
+		);
+		foreach ( $settings as $datetime_s => $setting ) {
+			$datetime = new DateTime( $datetime_s );
+			foreach ( $setting as $reversed => $exp_value ) {
+				$result_dt = WC_Admin_Reports_Interval::next_day_start( $datetime, $reversed );
+				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
 			}
 		}
 	}
@@ -680,6 +837,29 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$iso_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
 			}
 		}
+
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$settings = array(
+			'2017-12-30T00:00:00+05' => array(
+				0 => '2018-01-01 00:00:00',
+				1 => '2017-12-24 23:59:59',
+			),
+			'2018-01-01T01:00:00+10' => array( // Dec 31st 2017 15:00 UTC, so 16:00 or 17:00 in Berlin.
+				0 => '2018-01-01 00:00:00',
+				1 => '2017-12-24 23:59:59',
+			),
+			'2010-12-25T10:00:00+02' => array(
+				0 => '2010-12-27 00:00:00',
+				1 => '2010-12-19 23:59:59',
+			),
+		);
+		foreach ( $settings as $datetime_s => $setting ) {
+			$datetime = new DateTime( $datetime_s );
+			foreach ( $setting as $reversed => $exp_value ) {
+				$result_dt = WC_Admin_Reports_Interval::next_week_start( $datetime, $reversed );
+				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
+			}
+		}
 	}
 
 	/**
@@ -712,6 +892,25 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$iso_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
 			}
 		}
+
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$settings = array(
+			'2010-12-26T01:00:00+10' => array(
+				0 => '2010-12-26 00:00:00',
+				1 => '2010-12-18 23:59:59',
+			),
+			'2010-12-26T11:00:00+10' => array(
+				0 => '2011-01-01 00:00:00',
+				1 => '2010-12-25 23:59:59',
+			),
+		);
+		foreach ( $settings as $datetime_s => $setting ) {
+			$datetime = new DateTime( $datetime_s );
+			foreach ( $setting as $reversed => $exp_value ) {
+				$result_dt = WC_Admin_Reports_Interval::next_week_start( $datetime, $reversed );
+				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
+			}
+		}
 	}
 
 	/**
@@ -736,6 +935,30 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$iso_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
 			}
 		}
+
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$settings = array(
+			'2018-01-01T02:00:00+10' => array( // Dec in Berlin.
+				0 => '2018-01-01 00:00:00',
+				1 => '2017-11-30 23:59:59',
+			),
+			'2017-12-30T02:00:00+10' => array(
+				0 => '2018-01-01 00:00:00',
+				1 => '2017-11-30 23:59:59',
+			),
+			// Leap year reversed test.
+			'2016-03-05T10:00:00+04' => array(
+				0 => '2016-04-01 00:00:00',
+				1 => '2016-02-29 23:59:59',
+			),
+		);
+		foreach ( $settings as $datetime_s => $setting ) {
+			$datetime = new DateTime( $datetime_s );
+			foreach ( $setting as $reversed => $exp_value ) {
+				$result_dt = WC_Admin_Reports_Interval::next_month_start( $datetime, $reversed );
+				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
+			}
+		}
 	}
 
 	/**
@@ -755,12 +978,39 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 				0 => '2018-04-01T00:00:00Z',
 				1 => '2017-12-31T23:59:59Z',
 			),
+			'2018-04-14T10:00:00Z' => array(
+				0 => '2018-07-01T00:00:00Z',
+				1 => '2018-03-31T23:59:59Z',
+			),
+			'2018-07-14T10:00:00Z' => array(
+				0 => '2018-10-01T00:00:00Z',
+				1 => '2018-06-30T23:59:59Z',
+			),
 		);
 		foreach ( $settings as $datetime_s => $setting ) {
 			$datetime = new DateTime( $datetime_s );
 			foreach ( $setting as $reversed => $exp_value ) {
 				$result_dt = WC_Admin_Reports_Interval::next_quarter_start( $datetime, $reversed );
 				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$iso_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
+			}
+		}
+
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$settings = array(
+			'2018-01-01T02:00:00+10' => array(
+				0 => '2018-01-01 00:00:00',
+				1 => '2017-09-30 23:59:59',
+			),
+			'2017-12-31T22:00:00-08' => array(
+				0 => '2018-04-01 00:00:00',
+				1 => '2017-12-31 23:59:59',
+			),
+		);
+		foreach ( $settings as $datetime_s => $setting ) {
+			$datetime = new DateTime( $datetime_s );
+			foreach ( $setting as $reversed => $exp_value ) {
+				$result_dt = WC_Admin_Reports_Interval::next_quarter_start( $datetime, $reversed );
+				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
 			}
 		}
 	}
@@ -788,6 +1038,25 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 			foreach ( $setting as $reversed => $exp_value ) {
 				$result_dt = WC_Admin_Reports_Interval::next_year_start( $datetime, $reversed );
 				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$iso_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
+			}
+		}
+
+		update_option( 'timezone_string', 'Europe/Berlin' );
+		$settings = array(
+			'2018-01-01T02:00:00+06' => array( // 2017 in Berlin.
+				0 => '2018-01-01 00:00:00',
+				1 => '2016-12-31 23:59:59',
+			),
+			'2017-12-31T22:00:00-10' => array( // 2018 in Berlin.
+				0 => '2019-01-01 00:00:00',
+				1 => '2017-12-31 23:59:59',
+			),
+		);
+		foreach ( $settings as $datetime_s => $setting ) {
+			$datetime = new DateTime( $datetime_s );
+			foreach ( $setting as $reversed => $exp_value ) {
+				$result_dt = WC_Admin_Reports_Interval::next_year_start( $datetime, $reversed );
+				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
 			}
 		}
 	}

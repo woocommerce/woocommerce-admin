@@ -50,13 +50,52 @@ class WC_Tests_API_Reports_Revenue_Stats extends WC_REST_Unit_Test_Case {
 	public function test_get_reports() {
 		wp_set_current_user( $this->user );
 
-		// @todo update after report interface is done.
-		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint ) );
+		$request  = new WP_REST_Request( 'GET', $this->endpoint );
+		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 2, count( $data ) ); // @todo update results after implement report interface.
-		//$this->assertEquals( array(), $reports ); // @todo update results after implement report interface.
+		$this->assertEquals( 2, count( $data ) );
+
+		$now        = new DateTime();
+		$start_date = WC_Admin_Reports_Interval::next_week_start( $now, true );
+		$ts         = $start_date->format( 'U' );
+		$ts++;
+		$start_date->setTimestamp( $ts );
+
+		// These two fields are based on now(), so don't guess those.
+		unset( $data['intervals'][0]['date_end'] );
+		unset( $data['intervals'][0]['date_end_gmt'] );
+
+		$this->assertEquals( array(
+			'totals'    => array(
+				'orders_count'   => 0,
+				'num_items_sold' => 0,
+				'gross_revenue'  => 0.0,
+				'coupons'        => 0.0,
+				'refunds'        => 0.0,
+				'taxes'          => 0.0,
+				'shipping'       => 0.0,
+				'net_revenue'    => 0.0,
+			),
+			'intervals' => array(
+				array(
+					'interval'       => $now->format( 'o-W' ),
+					'date_start'     => $start_date->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
+					'date_start_gmt' => $start_date->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
+					'subtotals'      => (object) array(
+						'orders_count'   => 0,
+						'num_items_sold' => 0,
+						'gross_revenue'  => 0.0,
+						'coupons'        => 0.0,
+						'refunds'        => 0.0,
+						'taxes'          => 0.0,
+						'shipping'       => 0.0,
+						'net_revenue'    => 0.0,
+					),
+				),
+			),
+		), $data );
 	}
 
 	/**
