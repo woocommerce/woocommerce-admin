@@ -29,7 +29,7 @@ class OrdersReport extends Component {
 	}
 
 	render() {
-		const { isRequesting, query, orders, path } = this.props;
+		const { isRequesting, orders, path, query } = this.props;
 
 		return (
 			<Fragment>
