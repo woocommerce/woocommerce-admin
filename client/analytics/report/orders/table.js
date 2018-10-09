@@ -36,7 +36,7 @@ export default class OrdersReportTable extends Component {
 		return [
 			{
 				label: __( 'Date', 'wc-admin' ),
-				key: 'dateCreated',
+				key: 'date_created',
 				required: true,
 				defaultSort: true,
 				isIdentifier: true,
@@ -57,7 +57,7 @@ export default class OrdersReportTable extends Component {
 			},
 			{
 				label: __( 'Customer', 'wc-admin' ),
-				key: 'customerId',
+				key: 'customer_id',
 				required: false,
 				isSortable: true,
 			},
@@ -69,7 +69,7 @@ export default class OrdersReportTable extends Component {
 			},
 			{
 				label: __( 'Items Sold', 'wc-admin' ),
-				key: 'numberOfProducts',
+				key: 'items_sold',
 				required: false,
 				isSortable: true,
 				isNumeric: true,
@@ -82,7 +82,7 @@ export default class OrdersReportTable extends Component {
 			},
 			{
 				label: __( 'N. Revenue', 'wc-admin' ),
-				key: 'netRevenue',
+				key: 'net_revenue',
 				required: false,
 				isSortable: true,
 				isNumeric: true,
@@ -105,12 +105,12 @@ export default class OrdersReportTable extends Component {
 		} = row;
 
 		return {
-			dateCreated: date_created,
+			date_created,
 			orderLink: getAdminLink( 'post.php?post=' + id + '&action=edit' ),
 			id,
 			statusName: statusNames[ status ],
 			status,
-			customerId: customer_id,
+			customer_id,
 			productsDisplay: line_items.map( ( item, i ) => (
 				<Fragment>
 					{ i === 0 ? null : ', ' }
@@ -126,7 +126,7 @@ export default class OrdersReportTable extends Component {
 				.map( item => item.name )
 				.join()
 				.toLowerCase(),
-			numberOfProducts: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
+			items_sold: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
 			couponsDisplay: coupon_lines.map( ( coupon, i ) => (
 				<Fragment>
 					{ i === 0 ? null : ', ' }
@@ -145,7 +145,7 @@ export default class OrdersReportTable extends Component {
 				.map( item => item.code )
 				.join()
 				.toLowerCase(),
-			netRevenue: getCurrencyFormatDecimal( total - total_tax - shipping_total - discount_total ),
+			net_revenue: getCurrencyFormatDecimal( total - total_tax - shipping_total - discount_total ),
 		};
 	}
 
@@ -167,24 +167,24 @@ export default class OrdersReportTable extends Component {
 
 		return map( tableData, row => {
 			const {
-				dateCreated,
+				date_created,
 				orderLink,
 				id,
 				statusName,
 				status,
-				customerId,
+				customer_id,
 				productsDisplay,
 				products,
-				numberOfProducts,
+				items_sold,
 				couponsDisplay,
 				coupons,
-				netRevenue,
+				net_revenue,
 			} = row;
 
 			return [
 				{
-					display: formatDate( formats.tableFormat, dateCreated ),
-					value: dateCreated,
+					display: formatDate( formats.tableFormat, date_created ),
+					value: date_created,
 				},
 				{
 					display: <a href={ orderLink }>{ id }</a>,
@@ -197,24 +197,24 @@ export default class OrdersReportTable extends Component {
 				{
 					// @TODO This should display customer type (new/returning) once it's
 					// implemented in the API
-					display: customerId,
-					value: customerId,
+					display: customer_id,
+					value: customer_id,
 				},
 				{
 					display: productsDisplay,
 					value: products,
 				},
 				{
-					display: numberOfProducts,
-					value: numberOfProducts,
+					display: items_sold,
+					value: items_sold,
 				},
 				{
 					display: couponsDisplay,
 					value: coupons,
 				},
 				{
-					display: formatCurrency( netRevenue ),
-					value: netRevenue,
+					display: formatCurrency( net_revenue ),
+					value: net_revenue,
 				},
 			];
 		} );
@@ -241,7 +241,7 @@ export default class OrdersReportTable extends Component {
 		const rows = this.getRowsContent(
 			orderBy(
 				this.formatTableData( orders ),
-				query.orderby || 'dateCreated',
+				query.orderby || 'date_created',
 				query.order || 'asc'
 			).slice( ( page - 1 ) * rowsPerPage, page * rowsPerPage )
 		);
@@ -250,7 +250,7 @@ export default class OrdersReportTable extends Component {
 
 		const tableQuery = {
 			...query,
-			orderby: query.orderby || 'date_start',
+			orderby: query.orderby || 'date_created',
 			order: query.order || 'asc',
 		};
 
