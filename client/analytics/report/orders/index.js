@@ -39,7 +39,6 @@ class OrdersReport extends Component {
 					filters={ filters }
 					advancedConfig={ advancedFilterConfig }
 				/>
-				<p>Below is a temporary example</p>
 				<OrdersReportTable isRequesting={ isRequesting } orders={ orders } query={ query } />
 			</Fragment>
 		);
