@@ -68,7 +68,7 @@ export default class OrdersReportTable extends Component {
 			},
 			{
 				label: __( 'N. Revenue', 'wc-admin' ),
-				key: 'total',
+				key: 'netRevenue',
 				required: false,
 				isSortable: true,
 				isNumeric: true,
@@ -77,7 +77,18 @@ export default class OrdersReportTable extends Component {
 	}
 
 	formatRowData( row, statusNames ) {
-		const { date_created, id, status, customer_id, line_items, coupon_lines, total } = row;
+		const {
+			date_created,
+			id,
+			status,
+			customer_id,
+			line_items,
+			coupon_lines,
+			total,
+			total_tax,
+			shipping_total,
+			discount_total,
+		} = row;
 
 		return {
 			dateCreated: date_created,
@@ -107,7 +118,9 @@ export default class OrdersReportTable extends Component {
 					{ i === 0 ? null : ', ' }
 					<a
 						className={ coupon_lines.length > 1 ? 'inline' : null }
-						href={ getAdminLink( 'post.php?post=' + get( coupon, [ 'meta_data', 'value', 'id' ] ) + '&action=edit' ) }
+						href={ getAdminLink(
+							'post.php?post=' + get( coupon, [ 'meta_data', 'value', 'id' ] ) + '&action=edit'
+						) }
 					>
 						{ coupon.code }
 					</a>
@@ -117,7 +130,7 @@ export default class OrdersReportTable extends Component {
 				.map( item => item.code )
 				.join()
 				.toLowerCase(),
-			total: getCurrencyFormatDecimal( total ),
+			netRevenue: getCurrencyFormatDecimal( total - total_tax - shipping_total - discount_total ),
 		};
 	}
 
@@ -150,7 +163,7 @@ export default class OrdersReportTable extends Component {
 				numberOfProducts,
 				couponsDisplay,
 				coupons,
-				total,
+				netRevenue,
 			} = row;
 
 			return [
@@ -185,8 +198,8 @@ export default class OrdersReportTable extends Component {
 					value: coupons,
 				},
 				{
-					display: formatCurrency( total ),
-					value: getCurrencyFormatDecimal( total ),
+					display: formatCurrency( netRevenue ),
+					value: netRevenue,
 				},
 			];
 		} );
