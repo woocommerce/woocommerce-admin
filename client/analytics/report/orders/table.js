@@ -167,6 +167,8 @@ export default class OrdersReportTable extends Component {
 					value: status,
 				},
 				{
+					// @TODO This should display customer type (new/returning) once it's
+					// implemented in the API
 					display: customerId,
 					value: customerId,
 				},
