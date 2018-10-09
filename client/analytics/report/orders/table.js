@@ -114,7 +114,7 @@ export default class OrdersReportTable extends Component {
 				.map( item => item.name )
 				.join()
 				.toLowerCase(),
-			numberOfProducts: line_items.length,
+			numberOfProducts: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
 			couponsDisplay: coupon_lines.map( ( coupon, i ) => (
 				<Fragment>
 					{ i === 0 ? null : ', ' }
