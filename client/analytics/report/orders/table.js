@@ -99,6 +99,7 @@ export default class OrdersReportTable extends Component {
 				customer_id,
 				line_items,
 				coupon_lines,
+				currency,
 				total,
 				total_tax,
 				shipping_total,
@@ -113,6 +114,7 @@ export default class OrdersReportTable extends Component {
 				line_items,
 				items_sold: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
 				coupon_lines,
+				currency,
 				net_revenue: getCurrencyFormatDecimal(
 					total - total_tax - shipping_total - discount_total
 				),
@@ -140,6 +142,7 @@ export default class OrdersReportTable extends Component {
 				line_items,
 				items_sold,
 				coupon_lines,
+				currency,
 				net_revenue,
 			} = row;
 
@@ -186,7 +189,7 @@ export default class OrdersReportTable extends Component {
 					value: false,
 				},
 				{
-					display: formatCurrency( net_revenue ),
+					display: formatCurrency( net_revenue, currency ),
 					value: net_revenue,
 				},
 			];
