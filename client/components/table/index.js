@@ -220,6 +220,7 @@ class TableCard extends Component {
 					onClickDownload && (
 						<IconButton
 							key="download"
+							className="woocommerce-table__download-button"
 							onClick={ onClickDownload }
 							icon="arrow-down"
 							size={ 18 }
