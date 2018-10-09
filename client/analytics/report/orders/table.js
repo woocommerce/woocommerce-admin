@@ -5,7 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
-import { get, map, orderBy } from 'lodash';
+import { map, orderBy } from 'lodash';
 
 /**
  * Internal dependencies
@@ -121,7 +121,8 @@ export default class OrdersReportTable extends Component {
 					<a
 						className={ coupon_lines.length > 1 ? 'is-inline' : null }
 						href={ getAdminLink(
-							'post.php?post=' + get( coupon, [ 'meta_data', 'value', 'id' ] ) + '&action=edit'
+							// @TODO it should link to the coupons report
+							'edit.php?s=' + coupon.code + '&post_type=shop_coupon'
 						) }
 					>
 						{ coupon.code }
