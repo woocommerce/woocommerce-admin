@@ -65,7 +65,7 @@ export default class OrdersReportTable extends Component {
 				label: __( 'Product(s)', 'wc-admin' ),
 				key: 'products',
 				required: false,
-				isSortable: true,
+				isSortable: false,
 			},
 			{
 				label: __( 'Items Sold', 'wc-admin' ),
@@ -78,7 +78,7 @@ export default class OrdersReportTable extends Component {
 				label: __( 'Coupon(s)', 'wc-admin' ),
 				key: 'coupons',
 				required: false,
-				isSortable: true,
+				isSortable: false,
 			},
 			{
 				label: __( 'N. Revenue', 'wc-admin' ),
@@ -110,40 +110,9 @@ export default class OrdersReportTable extends Component {
 				id,
 				status,
 				customer_id,
-				productsDisplay: line_items.map( ( item, i ) => (
-					<Fragment>
-						{ i === 0 ? null : ', ' }
-						<a
-							className={ line_items.length > 1 ? 'is-inline' : null }
-							href={ getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ) }
-						>
-							{ item.name }
-						</a>
-					</Fragment>
-				) ),
-				products: line_items
-					.map( item => item.name )
-					.join()
-					.toLowerCase(),
+				line_items,
 				items_sold: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
-				couponsDisplay: coupon_lines.map( ( coupon, i ) => (
-					<Fragment>
-						{ i === 0 ? null : ', ' }
-						<a
-							className={ coupon_lines.length > 1 ? 'is-inline' : null }
-							href={ getAdminLink(
-								// @TODO it should link to the coupons report
-								'edit.php?s=' + coupon.code + '&post_type=shop_coupon'
-							) }
-						>
-							{ coupon.code }
-						</a>
-					</Fragment>
-				) ),
-				coupons: coupon_lines
-					.map( item => item.code )
-					.join()
-					.toLowerCase(),
+				coupon_lines,
 				net_revenue: getCurrencyFormatDecimal(
 					total - total_tax - shipping_total - discount_total
 				),
@@ -168,11 +137,9 @@ export default class OrdersReportTable extends Component {
 				id,
 				status,
 				customer_id,
-				productsDisplay,
-				products,
+				line_items,
 				items_sold,
-				couponsDisplay,
-				coupons,
+				coupon_lines,
 				net_revenue,
 			} = row;
 
@@ -196,16 +163,39 @@ export default class OrdersReportTable extends Component {
 					value: customer_id,
 				},
 				{
-					display: productsDisplay,
-					value: products,
+					display: line_items.map( ( item, i ) => (
+						<Fragment>
+							{ i === 0 ? null : ', ' }
+							<a
+								className={ line_items.length > 1 ? 'is-inline' : null }
+								href={ getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ) }
+							>
+								{ item.name }
+							</a>
+						</Fragment>
+					) ),
+					value: false,
 				},
 				{
 					display: items_sold,
 					value: items_sold,
 				},
 				{
-					display: couponsDisplay,
-					value: coupons,
+					display: coupon_lines.map( ( coupon, i ) => (
+						<Fragment>
+							{ i === 0 ? null : ', ' }
+							<a
+								className={ coupon_lines.length > 1 ? 'is-inline' : null }
+								href={ getAdminLink(
+									// @TODO it should link to the coupons report
+									'edit.php?s=' + coupon.code + '&post_type=shop_coupon'
+								) }
+							>
+								{ coupon.code }
+							</a>
+						</Fragment>
+					) ),
+					value: false,
 				},
 				{
 					display: formatCurrency( net_revenue ),
