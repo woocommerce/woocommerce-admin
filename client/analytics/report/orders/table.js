@@ -90,66 +90,71 @@ export default class OrdersReportTable extends Component {
 		];
 	}
 
-	formatRowData( row, statusNames ) {
-		const {
-			date_created,
-			id,
-			status,
-			customer_id,
-			line_items,
-			coupon_lines,
-			total,
-			total_tax,
-			shipping_total,
-			discount_total,
-		} = row;
+	formatTableData( data ) {
+		return map( data, row => {
+			const {
+				date_created,
+				id,
+				status,
+				customer_id,
+				line_items,
+				coupon_lines,
+				total,
+				total_tax,
+				shipping_total,
+				discount_total,
+			} = row;
 
-		return {
-			date_created,
-			orderLink: getAdminLink( 'post.php?post=' + id + '&action=edit' ),
-			id,
-			statusName: statusNames[ status ],
-			status,
-			customer_id,
-			productsDisplay: line_items.map( ( item, i ) => (
-				<Fragment>
-					{ i === 0 ? null : ', ' }
-					<a
-						className={ line_items.length > 1 ? 'is-inline' : null }
-						href={ getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ) }
-					>
-						{ item.name }
-					</a>
-				</Fragment>
-			) ),
-			products: line_items
-				.map( item => item.name )
-				.join()
-				.toLowerCase(),
-			items_sold: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
-			couponsDisplay: coupon_lines.map( ( coupon, i ) => (
-				<Fragment>
-					{ i === 0 ? null : ', ' }
-					<a
-						className={ coupon_lines.length > 1 ? 'is-inline' : null }
-						href={ getAdminLink(
-							// @TODO it should link to the coupons report
-							'edit.php?s=' + coupon.code + '&post_type=shop_coupon'
-						) }
-					>
-						{ coupon.code }
-					</a>
-				</Fragment>
-			) ),
-			coupons: coupon_lines
-				.map( item => item.code )
-				.join()
-				.toLowerCase(),
-			net_revenue: getCurrencyFormatDecimal( total - total_tax - shipping_total - discount_total ),
-		};
+			return {
+				date_created,
+				id,
+				status,
+				customer_id,
+				productsDisplay: line_items.map( ( item, i ) => (
+					<Fragment>
+						{ i === 0 ? null : ', ' }
+						<a
+							className={ line_items.length > 1 ? 'is-inline' : null }
+							href={ getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ) }
+						>
+							{ item.name }
+						</a>
+					</Fragment>
+				) ),
+				products: line_items
+					.map( item => item.name )
+					.join()
+					.toLowerCase(),
+				items_sold: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
+				couponsDisplay: coupon_lines.map( ( coupon, i ) => (
+					<Fragment>
+						{ i === 0 ? null : ', ' }
+						<a
+							className={ coupon_lines.length > 1 ? 'is-inline' : null }
+							href={ getAdminLink(
+								// @TODO it should link to the coupons report
+								'edit.php?s=' + coupon.code + '&post_type=shop_coupon'
+							) }
+						>
+							{ coupon.code }
+						</a>
+					</Fragment>
+				) ),
+				coupons: coupon_lines
+					.map( item => item.code )
+					.join()
+					.toLowerCase(),
+				net_revenue: getCurrencyFormatDecimal(
+					total - total_tax - shipping_total - discount_total
+				),
+			};
+		} );
 	}
 
-	formatTableData( data ) {
+	getRowsContent( tableData ) {
+		const { query } = this.props;
+		const currentInterval = getIntervalForQuery( query );
+		const formats = getDateFormatsForInterval( currentInterval );
 		const statusNames = {
 			failed: __( 'Failed', 'wc-admin' ),
 			processing: __( 'Processing', 'wc-admin' ),
@@ -157,20 +162,10 @@ export default class OrdersReportTable extends Component {
 			completed: __( 'Completed', 'wc-admin' ),
 		};
 
-		return map( data, row => this.formatRowData( row, statusNames ) );
-	}
-
-	getRowsContent( tableData ) {
-		const { query } = this.props;
-		const currentInterval = getIntervalForQuery( query );
-		const formats = getDateFormatsForInterval( currentInterval );
-
 		return map( tableData, row => {
 			const {
 				date_created,
-				orderLink,
 				id,
-				statusName,
 				status,
 				customer_id,
 				productsDisplay,
@@ -187,11 +182,11 @@ export default class OrdersReportTable extends Component {
 					value: date_created,
 				},
 				{
-					display: <a href={ orderLink }>{ id }</a>,
+					display: <a href={ getAdminLink( 'post.php?post=' + id + '&action=edit' ) }>{ id }</a>,
 					value: id,
 				},
 				{
-					display: statusName,
+					display: statusNames[ status ],
 					value: status,
 				},
 				{
