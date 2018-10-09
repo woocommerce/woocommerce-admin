@@ -123,7 +123,7 @@ export default class OrdersReportTable extends Component {
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const currentInterval = getIntervalForQuery( query );
-		const formats = getDateFormatsForInterval( currentInterval );
+		const { tableFormat } = getDateFormatsForInterval( currentInterval );
 		const statusNames = {
 			failed: __( 'Failed', 'wc-admin' ),
 			processing: __( 'Processing', 'wc-admin' ),
@@ -145,7 +145,7 @@ export default class OrdersReportTable extends Component {
 
 			return [
 				{
-					display: formatDate( formats.tableFormat, date_created ),
+					display: formatDate( tableFormat, date_created ),
 					value: date_created,
 				},
 				{
@@ -158,22 +158,17 @@ export default class OrdersReportTable extends Component {
 				},
 				{
 					// @TODO This should display customer type (new/returning) once it's
-					// implemented in the API
+					// implemented in the API.
 					display: customer_id,
 					value: customer_id,
 				},
 				{
-					display: line_items.map( ( item, i ) => (
-						<Fragment>
-							{ i === 0 ? null : ', ' }
-							<a
-								className={ line_items.length > 1 ? 'is-inline' : null }
-								href={ getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ) }
-							>
-								{ item.name }
-							</a>
-						</Fragment>
-					) ),
+					display: this.renderList(
+						line_items.map( item => ( {
+							href: getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ),
+							label: item.name,
+						} ) )
+					),
 					value: false,
 				},
 				{
@@ -181,20 +176,13 @@ export default class OrdersReportTable extends Component {
 					value: items_sold,
 				},
 				{
-					display: coupon_lines.map( ( coupon, i ) => (
-						<Fragment>
-							{ i === 0 ? null : ', ' }
-							<a
-								className={ coupon_lines.length > 1 ? 'is-inline' : null }
-								href={ getAdminLink(
-									// @TODO it should link to the coupons report
-									'edit.php?s=' + coupon.code + '&post_type=shop_coupon'
-								) }
-							>
-								{ coupon.code }
-							</a>
-						</Fragment>
-					) ),
+					display: this.renderList(
+						coupon_lines.map( coupon => ( {
+							// @TODO It should link to the coupons report.
+							href: getAdminLink( 'edit.php?s=' + coupon.code + '&post_type=shop_coupon' ),
+							label: coupon.code,
+						} ) )
+					),
 					value: false,
 				},
 				{
@@ -203,6 +191,18 @@ export default class OrdersReportTable extends Component {
 				},
 			];
 		} );
+	}
+
+	renderList( items ) {
+		// @TODO Use ViewMore component if there are many items.
+		return items.map( ( item, i ) => (
+			<Fragment>
+				{ i > 0 ? ', ' : null }
+				<a className={ items.length > 1 ? 'is-inline' : null } href={ item.href }>
+					{ item.label }
+				</a>
+			</Fragment>
+		) );
 	}
 
 	renderPlaceholderTable() {
