@@ -227,11 +227,10 @@ export default class OrdersReportTable extends Component {
 		const page = parseInt( query.page ) || 1;
 		const rowsPerPage = parseInt( query.per_page ) || 25;
 		const rows = this.getRowsContent(
-			orderBy(
-				this.formatTableData( orders ),
-				query.orderby || 'dateCreated',
-				query.order || 'asc'
-			).slice( ( page - 1 ) * rowsPerPage, page * rowsPerPage )
+			orderBy( this.formatTableData( orders ), query.orderby, query.order || 'asc' ).slice(
+				( page - 1 ) * rowsPerPage,
+				page * rowsPerPage
+			)
 		);
 
 		const headers = this.getHeadersContent();
