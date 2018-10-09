@@ -63,6 +63,7 @@ export class RevenueReport extends Component {
 				key: 'date_start',
 				required: true,
 				defaultSort: true,
+				isIdentifier: true,
 				isSortable: true,
 			},
 			{
@@ -70,6 +71,7 @@ export class RevenueReport extends Component {
 				key: 'orders_count',
 				required: false,
 				isSortable: true,
+				isNumeric: true,
 			},
 			{
 				label: __( 'Gross Revenue', 'wc-admin' ),

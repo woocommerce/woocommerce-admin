@@ -73,21 +73,24 @@
 		width: 80%;
 	}
 
-	&.is-numeric {
+	&:not(.is-identifier) {
 		text-align: right;
 
 		button {
 			justify-content: flex-end;
 		}
+	}
 
-		.is-placeholder {
-			max-width: 40px;
-		}
+	&.is-numeric .is-placeholder {
+		max-width: 40px;
 	}
 }
 
-.woocommerce-table__header,
 th.woocommerce-table__item {
+	font-weight: normal;
+}
+
+.woocommerce-table__header {
 	font-weight: bold;
 	white-space: nowrap;
 }
