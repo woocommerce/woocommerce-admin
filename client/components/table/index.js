@@ -20,6 +20,7 @@ import { getIdsFromQuery } from 'lib/nav-utils';
 import MenuItem from 'components/ellipsis-menu/menu-item';
 import MenuTitle from 'components/ellipsis-menu/menu-title';
 import Pagination from 'components/pagination';
+import Search from 'components/search';
 import Table from './table';
 import TableSummary from './summary';
 
@@ -41,6 +42,7 @@ class TableCard extends Component {
 		};
 		this.toggleCols = this.toggleCols.bind( this );
 		this.onCompare = this.onCompare.bind( this );
+		this.onSearch = this.onSearch.bind( this );
 		this.selectRow = this.selectRow.bind( this );
 		this.selectAllRows = this.selectAllRows.bind( this );
 	}
@@ -81,6 +83,15 @@ class TableCard extends Component {
 		const { selectedRows } = this.state;
 		if ( compareBy ) {
 			onQueryChange( 'compare' )( compareBy, selectedRows.join( ',' ) );
+		}
+	}
+
+	onSearch( value ) {
+		const { compareBy, onQueryChange } = this.props;
+		const { selectedRows } = this.state;
+		if ( compareBy ) {
+			const ids = value.map( v => v.id );
+			onQueryChange( 'compare' )( compareBy, [ ...selectedRows, ...ids ].join( ',' ) );
 		}
 	}
 
@@ -199,9 +210,12 @@ class TableCard extends Component {
 						</CompareButton>
 					),
 					compareBy && (
-						<div key="search" style={ { padding: '4px 12px', color: '#6c7781' } }>
-							{ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
-						</div>
+						<Search
+							key="search"
+							placeholder={ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
+							type={ compareBy + 's' }
+							onChange={ this.onSearch }
+						/>
 					),
 					onClickDownload && (
 						<IconButton
