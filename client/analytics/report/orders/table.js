@@ -103,7 +103,7 @@ export default class OrdersReportTable extends Component {
 				<Fragment>
 					{ i === 0 ? null : ', ' }
 					<a
-						className={ line_items.length > 1 ? 'inline' : null }
+						className={ line_items.length > 1 ? 'is-inline' : null }
 						href={ getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ) }
 					>
 						{ item.name }
@@ -119,7 +119,7 @@ export default class OrdersReportTable extends Component {
 				<Fragment>
 					{ i === 0 ? null : ', ' }
 					<a
-						className={ coupon_lines.length > 1 ? 'inline' : null }
+						className={ coupon_lines.length > 1 ? 'is-inline' : null }
 						href={ getAdminLink(
 							'post.php?post=' + get( coupon, [ 'meta_data', 'value', 'id' ] ) + '&action=edit'
 						) }

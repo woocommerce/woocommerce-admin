@@ -48,13 +48,13 @@
 	border-bottom: 1px solid $core-grey-light-500;
 	text-align: left;
 
-	a:not(.inline) {
-		display: block;
-		margin: ($gap*-1) ($gap-large*-1);
-		padding: $gap $gap-large;
-	}
-
 	a {
+		&:not(.is-inline) {
+			display: block;
+			margin: ($gap*-1) ($gap-large*-1);
+			padding: $gap $gap-large;
+		}
+
 		&:hover,
 		&:focus {
 			color: $woocommerce-700;
