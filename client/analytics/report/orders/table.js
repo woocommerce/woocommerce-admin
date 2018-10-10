@@ -172,7 +172,10 @@ export default class OrdersReportTable extends Component {
 							label: item.name,
 						} ) )
 					),
-					value: false,
+					value: line_items
+						.map( item => item.name )
+						.join()
+						.toLowerCase(),
 				},
 				{
 					display: items_sold,
@@ -186,7 +189,10 @@ export default class OrdersReportTable extends Component {
 							label: coupon.code,
 						} ) )
 					),
-					value: false,
+					value: coupon_lines
+						.map( item => item.code )
+						.join()
+						.toLowerCase(),
 				},
 				{
 					display: formatCurrency( net_revenue, currency ),
