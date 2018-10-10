@@ -73,7 +73,7 @@
 		width: 80%;
 	}
 
-	&:not(.is-identifier) {
+	&:not(.is-left-aligned) {
 		text-align: right;
 
 		.rtl & {

@@ -39,14 +39,14 @@ export default class OrdersReportTable extends Component {
 				key: 'date_created',
 				required: true,
 				defaultSort: true,
-				isIdentifier: true,
+				isLeftAligned: true,
 				isSortable: true,
 			},
 			{
 				label: __( 'Order #', 'wc-admin' ),
 				key: 'id',
 				required: true,
-				isIdentifier: true,
+				isLeftAligned: true,
 				isSortable: true,
 			},
 			{

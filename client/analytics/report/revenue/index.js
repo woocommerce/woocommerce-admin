@@ -63,7 +63,7 @@ export class RevenueReport extends Component {
 				key: 'date_start',
 				required: true,
 				defaultSort: true,
-				isIdentifier: true,
+				isLeftAligned: true,
 				isSortable: true,
 			},
 			{
