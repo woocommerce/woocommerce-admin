@@ -10,7 +10,7 @@ import { map, orderBy } from 'lodash';
 /**
  * Internal dependencies
  */
-import { Card, TableCard, TablePlaceholder } from '@woocommerce/components';
+import { Card, OrderStatus, TableCard, TablePlaceholder } from '@woocommerce/components';
 import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getIntervalForQuery, getDateFormatsForInterval } from 'lib/date';
@@ -83,7 +83,7 @@ export default class OrdersReportTable extends Component {
 			{
 				label: __( 'N. Revenue', 'wc-admin' ),
 				key: 'net_revenue',
-				required: false,
+				required: true,
 				isSortable: true,
 				isNumeric: true,
 			},
@@ -126,12 +126,6 @@ export default class OrdersReportTable extends Component {
 		const { query } = this.props;
 		const currentInterval = getIntervalForQuery( query );
 		const { tableFormat } = getDateFormatsForInterval( currentInterval );
-		const statusNames = {
-			failed: __( 'Failed', 'wc-admin' ),
-			processing: __( 'Processing', 'wc-admin' ),
-			'on-hold': __( 'On hold', 'wc-admin' ),
-			completed: __( 'Completed', 'wc-admin' ),
-		};
 
 		return map( tableData, row => {
 			const {
@@ -156,7 +150,7 @@ export default class OrdersReportTable extends Component {
 					value: id,
 				},
 				{
-					display: statusNames[ status ],
+					display: <OrderStatus order={ { status } } />,
 					value: status,
 				},
 				{
@@ -205,7 +199,7 @@ export default class OrdersReportTable extends Component {
 	renderList( items ) {
 		// @TODO Use ViewMore component if there are many items.
 		return items.map( ( item, i ) => (
-			<Fragment>
+			<Fragment key={ i }>
 				{ i > 0 ? ', ' : null }
 				<a className={ items.length > 1 ? 'is-inline' : null } href={ item.href }>
 					{ item.label }
@@ -219,7 +213,7 @@ export default class OrdersReportTable extends Component {
 
 		return (
 			<Card
-				title={ __( 'Revenue', 'wc-admin' ) }
+				title={ __( 'Orders', 'wc-admin' ) }
 				className="woocommerce-analytics__table-placeholder"
 			>
 				<TablePlaceholder caption={ __( 'Orders last week', 'wc-admin' ) } headers={ headers } />
@@ -266,8 +260,6 @@ export default class OrdersReportTable extends Component {
 	render() {
 		const { isRequesting } = this.props;
 
-		return (
-			<Fragment>{ isRequesting ? this.renderPlaceholderTable() : this.renderTable() }</Fragment>
-		);
+		return isRequesting ? this.renderPlaceholderTable() : this.renderTable();
 	}
 }
