@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { map, orderBy } from 'lodash';
@@ -169,10 +169,15 @@ export default class OrdersReportTable extends Component {
 				},
 				{
 					display: this.renderList(
-						line_items.map( item => ( {
-							href: 'post.php?post=' + item.product_id + '&action=edit',
-							label: item.name,
-						} ) )
+						line_items
+							.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
+							.map( ( item, i ) => ( {
+								href: 'post.php?post=' + item.product_id + '&action=edit',
+								label:
+									i === 0
+										? item.name
+										: sprintf( __( '%s× %s', 'wc-admin' ), item.quantity, item.name ),
+							} ) )
 					),
 					value: line_items
 						.map( item => item.name )
@@ -217,6 +222,7 @@ export default class OrdersReportTable extends Component {
 						{ item.label }
 					</Link>
 				) ) }
+				numberOfVisibleItems={ 1 }
 			/>
 		);
 	}
