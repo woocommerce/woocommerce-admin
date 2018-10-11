@@ -3,11 +3,11 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { Fragment } from '@wordpress/element';
 import classnames from 'classnames';
-import Gridicon from 'gridicons';
-import { IconButton } from '@wordpress/components';
+import { Button, Dashicon, IconButton, Popover } from '@wordpress/components';
 import PropTypes from 'prop-types';
-import { withInstanceId } from '@wordpress/compose';
+import { withState, withInstanceId } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -15,51 +15,92 @@ import { withInstanceId } from '@wordpress/compose';
 import './style.scss';
 
 /**
- * This component can be used to show an item styled as a "tag", optionally with an `X` + "remove".
- * Generally this is used in a collection of selected items, see the Search component.
+ * This component can be used to show an item styled as a "tag", optionally with an `X` + "remove"
+ * or with a popover that is shown on click.
  *
  * @return { object } -
  */
-const Tag = ( { id, instanceId, label, remove, removeLabel, screenReaderLabel, className } ) => {
-	screenReaderLabel = screenReaderLabel || label;
-	if ( ! label ) {
-		// A null label probably means something went wrong
-		// @todo Maybe this should be a loading indicator?
-		return null;
-	}
-	const classes = classnames( 'woocommerce-tag', className, {
-		'has-remove': !! remove,
-	} );
-	const labelId = `woocommerce-tag__label-${ instanceId }`;
-	return (
-		<span className={ classes }>
-			<span className="woocommerce-tag__text" id={ labelId }>
+const Tag = withState( {
+	isVisible: false,
+} )(
+	( {
+		id,
+		instanceId,
+		isVisible,
+		label,
+		popoverContents,
+		remove,
+		removeLabel,
+		screenReaderLabel,
+		setState,
+		className,
+	} ) => {
+		screenReaderLabel = screenReaderLabel || label;
+		if ( ! label ) {
+			// A null label probably means something went wrong
+			// @todo Maybe this should be a loading indicator?
+			return null;
+		}
+		const classes = classnames( 'woocommerce-tag', className, {
+			'has-remove': !! remove,
+		} );
+		const labelId = `woocommerce-tag__label-${ instanceId }`;
+		const labelTextNode = (
+			<Fragment>
 				<span className="screen-reader-text">{ screenReaderLabel }</span>
 				<span aria-hidden="true">{ label }</span>
-			</span>
+			</Fragment>
+		);
 
-			{ remove && (
-				<IconButton
-					className="woocommerce-tag__remove"
-					icon={ <Gridicon icon="cross-small" size={ 24 } /> }
-					onClick={ remove( id ) }
-					label={ removeLabel }
-					aria-describedby={ labelId }
-				/>
-			) }
-		</span>
-	);
-};
+		return (
+			<span className={ classes }>
+				{ popoverContents ? (
+					<Button
+						className="woocommerce-tag__text"
+						id={ labelId }
+						onClick={ () => setState( () => ( { isVisible: true } ) ) }
+						isToggled={ isVisible }
+					>
+						{ labelTextNode }
+					</Button>
+				) : (
+					<span className="woocommerce-tag__text" id={ labelId }>
+						{ labelTextNode }
+					</span>
+				) }
+				{ popoverContents &&
+					isVisible && (
+						<Popover onClose={ () => setState( () => ( { isVisible: false } ) ) }>
+							{ popoverContents }
+						</Popover>
+					) }
+				{ remove && (
+					<IconButton
+						className="woocommerce-tag__remove"
+						icon={ <Dashicon icon="dismiss" size={ 20 } /> }
+						onClick={ remove( id ) }
+						label={ removeLabel }
+						aria-describedby={ labelId }
+					/>
+				) }
+			</span>
+		);
+	}
+);
 
 Tag.propTypes = {
-	/**
-	 * The ID for this item, used in the remove function.
-	 */
-	id: PropTypes.number.isRequired,
 	/**
 	 * The name for this item, displayed as the tag's text.
 	 */
 	label: PropTypes.string.isRequired,
+	/**
+	 * The ID for this item, used in the remove function.
+	 */
+	id: PropTypes.number,
+	/**
+	 * Contents to display on click in a popover
+	 */
+	popoverContents: PropTypes.oneOfType( [ PropTypes.element, PropTypes.node ] ),
 	/**
 	 * A function called when the remove X is clicked. If not used, no X icon will display.
 	 */
