@@ -3,14 +3,22 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { map, orderBy } from 'lodash';
+import classNames from 'classnames';
 
 /**
  * Internal dependencies
  */
-import { Card, OrderStatus, TableCard, TablePlaceholder } from '@woocommerce/components';
+import {
+	Card,
+	Link,
+	OrderStatus,
+	TableCard,
+	TablePlaceholder,
+	ViewMoreList,
+} from '@woocommerce/components';
 import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getIntervalForQuery, getDateFormatsForInterval } from 'lib/date';
@@ -162,7 +170,7 @@ export default class OrdersReportTable extends Component {
 				{
 					display: this.renderList(
 						line_items.map( item => ( {
-							href: getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ),
+							href: 'post.php?post=' + item.product_id + '&action=edit',
 							label: item.name,
 						} ) )
 					),
@@ -179,7 +187,7 @@ export default class OrdersReportTable extends Component {
 					display: this.renderList(
 						coupon_lines.map( coupon => ( {
 							// @TODO It should link to the coupons report.
-							href: getAdminLink( 'edit.php?s=' + coupon.code + '&post_type=shop_coupon' ),
+							href: 'edit.php?s=' + coupon.code + '&post_type=shop_coupon',
 							label: coupon.code,
 						} ) )
 					),
@@ -197,15 +205,20 @@ export default class OrdersReportTable extends Component {
 	}
 
 	renderList( items ) {
-		// @TODO Use ViewMore component if there are many items.
-		return items.map( ( item, i ) => (
-			<Fragment key={ i }>
-				{ i > 0 ? ', ' : null }
-				<a className={ items.length > 1 ? 'is-inline' : null } href={ item.href }>
-					{ item.label }
-				</a>
-			</Fragment>
-		) );
+		return (
+			<ViewMoreList
+				items={ items.map( item => (
+					<Link
+						className={ classNames( { 'is-not-unique': items.length > 1 } ) }
+						href={ item.href }
+						key={ item.href }
+						type={ 'wp-admin' }
+					>
+						{ item.label }
+					</Link>
+				) ) }
+			/>
+		);
 	}
 
 	renderPlaceholderTable() {
