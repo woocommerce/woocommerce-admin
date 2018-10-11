@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import Tag from 'components/tag';
-import ViewMoreListItems from './items';
 import './style.scss';
 
 /**
@@ -18,28 +17,21 @@ import './style.scss';
  *
  * @return { object } -
  */
-const ViewMoreList = ( { visibleItems, popoverItems, separator } ) => {
+const ViewMoreList = ( { popoverItems } ) => {
 	return (
-		<ul className="woocommerce-view-more-list">
-			<ViewMoreListItems items={ visibleItems } separator={ separator } />
-			{ popoverItems.length > 1 && (
-				<li className="woocommerce-view-more-list__item">
-					<Tag
-						className="woocommerce-view-more-list__tag"
-						label={ sprintf( __( '+%d more', 'wc-admin' ), popoverItems.length - 1 ) }
-						popoverContents={
-							<div className="woocommerce-view-more-list__popover">
-								<ViewMoreListItems
-									items={ popoverItems }
-									itemsClassName="woocommerce-view-more-list__popover__item"
-									separator={ null }
-								/>
-							</div>
-						}
-					/>
-				</li>
-			) }
-		</ul>
+		<Tag
+			className="woocommerce-view-more-list"
+			label={ sprintf( __( '+%d more', 'wc-admin' ), popoverItems.length - 1 ) }
+			popoverContents={
+				<ul className="woocommerce-view-more-list__popover">
+					{ popoverItems.map( ( item, i ) => (
+						<li key={ i } className="woocommerce-view-more-list__popover__item">
+							{ item }
+						</li>
+					) ) }
+				</ul>
+			}
+		/>
 	);
 };
 
@@ -50,21 +42,10 @@ ViewMoreList.propTypes = {
 	popoverItems: PropTypes.arrayOf(
 		PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] )
 	),
-	/**
-	 * Separator to display between the items
-	 */
-	separator: PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] ),
-	/**
-	 * Items to list by default
-	 */
-	visibleItems: PropTypes.arrayOf(
-		PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] )
-	),
 };
 
 ViewMoreList.defaultProps = {
 	popoverItems: [],
-	separator: ', ',
 	visibleItems: [],
 };
 

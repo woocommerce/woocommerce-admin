@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { map, orderBy } from 'lodash';
 import classNames from 'classnames';
@@ -158,6 +158,7 @@ export default class OrdersReportTable extends Component {
 
 			const coupons = coupon_lines.map( coupon => ( {
 				label: coupon.code,
+				// @TODO It should link to the coupons report
 				href: 'edit.php?s=' + coupon.code + '&post_type=shop_coupon',
 			} ) );
 
@@ -227,10 +228,12 @@ export default class OrdersReportTable extends Component {
 
 	renderList( visibleItems, popoverItems ) {
 		return (
-			<ViewMoreList
-				visibleItems={ this.renderLinks( visibleItems, visibleItems.length === 0 ) }
-				popoverItems={ this.renderLinks( popoverItems, false ) }
-			/>
+			<Fragment>
+				{ this.renderLinks( visibleItems, visibleItems.length === 0 ) }
+				{ popoverItems.length > 1 && (
+					<ViewMoreList popoverItems={ this.renderLinks( popoverItems, false ) } />
+				) }
+			</Fragment>
 		);
 	}
 
