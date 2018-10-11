@@ -18,22 +18,19 @@ import './style.scss';
  *
  * @return { object } -
  */
-const ViewMoreList = ( { items, numberOfVisibleItems, separator } ) => {
-	const visibleItems = items.slice( 0, numberOfVisibleItems );
-	const popupItems = items.slice( numberOfVisibleItems );
-
+const ViewMoreList = ( { visibleItems, popoverItems, separator } ) => {
 	return (
 		<ul className="woocommerce-view-more-list">
 			<ViewMoreListItems items={ visibleItems } separator={ separator } />
-			{ popupItems.length > 0 && (
+			{ popoverItems.length > 1 && (
 				<li className="woocommerce-view-more-list__item">
 					<Tag
 						className="woocommerce-view-more-list__tag"
-						label={ sprintf( __( '+%d more', 'wc-admin' ), popupItems.length ) }
+						label={ sprintf( __( '+%d more', 'wc-admin' ), popoverItems.length - 1 ) }
 						popoverContents={
 							<div className="woocommerce-view-more-list__popover">
 								<ViewMoreListItems
-									items={ popupItems }
+									items={ popoverItems }
 									itemsClassName="woocommerce-view-more-list__popover__item"
 									separator={ null }
 								/>
@@ -48,24 +45,27 @@ const ViewMoreList = ( { items, numberOfVisibleItems, separator } ) => {
 
 ViewMoreList.propTypes = {
 	/**
-	 * Items to list
+	 * Items to list in the popover
 	 */
-	items: PropTypes.arrayOf(
-		PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] ).isRequired
+	popoverItems: PropTypes.arrayOf(
+		PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] )
 	),
-	/**
-	 * Number of items to display before the 'X more' button appears.
-	 */
-	numberOfVisibleItems: PropTypes.number,
 	/**
 	 * Separator to display between the items
 	 */
 	separator: PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] ),
+	/**
+	 * Items to list by default
+	 */
+	visibleItems: PropTypes.arrayOf(
+		PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] )
+	),
 };
 
 ViewMoreList.defaultProps = {
-	numberOfVisibleItems: 3,
+	popoverItems: [],
 	separator: ', ',
+	visibleItems: [],
 };
 
 export default ViewMoreList;

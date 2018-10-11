@@ -148,6 +148,19 @@ export default class OrdersReportTable extends Component {
 				net_revenue,
 			} = row;
 
+			const products = line_items
+				.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
+				.map( item => ( {
+					label: item.name,
+					href: 'post.php?post=' + item.product_id + '&action=edit',
+					quantity: item.quantity,
+				} ) );
+
+			const coupons = coupon_lines.map( coupon => ( {
+				label: coupon.code,
+				href: 'edit.php?s=' + coupon.code + '&post_type=shop_coupon',
+			} ) );
+
 			return [
 				{
 					display: formatDate( tableFormat, date_created ),
@@ -169,15 +182,11 @@ export default class OrdersReportTable extends Component {
 				},
 				{
 					display: this.renderList(
-						line_items
-							.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
-							.map( ( item, i ) => ( {
-								href: 'post.php?post=' + item.product_id + '&action=edit',
-								label:
-									i === 0
-										? item.name
-										: sprintf( __( '%s× %s', 'wc-admin' ), item.quantity, item.name ),
-							} ) )
+						products.length ? [ products[ 0 ] ] : [],
+						products.map( product => ( {
+							label: sprintf( __( '%s× %s', 'wc-admin' ), product.quantity, product.label ),
+							href: product.href,
+						} ) )
 					),
 					value: line_items
 						.map( item => item.name )
@@ -189,13 +198,7 @@ export default class OrdersReportTable extends Component {
 					value: items_sold,
 				},
 				{
-					display: this.renderList(
-						coupon_lines.map( coupon => ( {
-							// @TODO It should link to the coupons report.
-							href: 'edit.php?s=' + coupon.code + '&post_type=shop_coupon',
-							label: coupon.code,
-						} ) )
-					),
+					display: this.renderList( coupons.length ? [ coupons[ 0 ] ] : [], coupons ),
 					value: coupon_lines
 						.map( item => item.code )
 						.join()
@@ -209,20 +212,24 @@ export default class OrdersReportTable extends Component {
 		} );
 	}
 
-	renderList( items ) {
+	renderLinks( items = [], isUnique ) {
+		return items.map( item => (
+			<Link
+				className={ classNames( { 'is-not-unique': ! isUnique } ) }
+				href={ item.href }
+				key={ item.href }
+				type={ 'wp-admin' }
+			>
+				{ item.label }
+			</Link>
+		) );
+	}
+
+	renderList( visibleItems, popoverItems ) {
 		return (
 			<ViewMoreList
-				items={ items.map( item => (
-					<Link
-						className={ classNames( { 'is-not-unique': items.length > 1 } ) }
-						href={ item.href }
-						key={ item.href }
-						type={ 'wp-admin' }
-					>
-						{ item.label }
-					</Link>
-				) ) }
-				numberOfVisibleItems={ 1 }
+				visibleItems={ this.renderLinks( visibleItems, visibleItems.length === 0 ) }
+				popoverItems={ this.renderLinks( popoverItems, false ) }
 			/>
 		);
 	}

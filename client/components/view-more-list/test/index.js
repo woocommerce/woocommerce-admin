@@ -10,19 +10,17 @@ import { shallow } from 'enzyme';
 import ViewMoreList from '../';
 
 describe( 'ViewMoreList', () => {
-	test( 'should not render the view more button if there are less items than `numberOfVisibleItems`', () => {
-		const viewMoreList = shallow(
-			<ViewMoreList numberOfVisibleItems={ 2 } items={ [ <p>Lorem</p>, <p>Ipsum</p> ] } />
-		);
+	test( 'should not render the view more button if there are no `popoverItems`', () => {
+		const viewMoreList = shallow( <ViewMoreList items={ [ <p>Lorem</p>, <p>Ipsum</p> ] } /> );
 
 		expect( viewMoreList.find( '.woocommerce-view-more-list__tag' ).length ).toBe( 0 );
 	} );
 
-	test( 'should render the view more button if there are more items than `numberOfVisibleItems`', () => {
+	test( 'should render the view more button if there are `popoverItems', () => {
 		const viewMoreList = shallow(
 			<ViewMoreList
-				numberOfVisibleItems={ 2 }
-				items={ [ <p>Lorem</p>, <p>Ipsum</p>, <p>Dolor</p>, <p>Sit</p> ] }
+				items={ [ <p>Lorem</p>, <p>Ipsum</p> ] }
+				popoverItems={ [ <p>Dolor</p>, <p>Sit</p> ] }
 			/>
 		);
 
