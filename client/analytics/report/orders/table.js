@@ -189,10 +189,7 @@ export default class OrdersReportTable extends Component {
 							href: product.href,
 						} ) )
 					),
-					value: line_items
-						.map( item => item.name )
-						.join()
-						.toLowerCase(),
+					value: products.map( product => product.label ).join( ' ' ),
 				},
 				{
 					display: items_sold,
@@ -200,10 +197,7 @@ export default class OrdersReportTable extends Component {
 				},
 				{
 					display: this.renderList( coupons.length ? [ coupons[ 0 ] ] : [], coupons ),
-					value: coupon_lines
-						.map( item => item.code )
-						.join()
-						.toLowerCase(),
+					value: coupons.map( item => item.code ).join( ' ' ),
 				},
 				{
 					display: formatCurrency( net_revenue, currency ),
