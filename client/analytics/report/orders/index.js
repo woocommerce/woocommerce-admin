@@ -4,7 +4,7 @@
  */
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -16,16 +16,6 @@ import OrdersReportTable from './table';
 class OrdersReport extends Component {
 	constructor( props ) {
 		super( props );
-
-		this.toggleStatus = this.toggleStatus.bind( this );
-	}
-
-	toggleStatus( order ) {
-		const { requestUpdateOrder } = this.props;
-		const updatedOrder = { ...order };
-		const status = updatedOrder.status === 'completed' ? 'processing' : 'completed';
-		updatedOrder.status = status;
-		requestUpdateOrder( updatedOrder );
 	}
 
 	render() {
@@ -51,12 +41,5 @@ export default compose(
 		const orders = getOrders();
 		const isRequesting = select( 'core/data' ).isResolving( 'wc-admin', 'getOrders' );
 		return { isRequesting, orders };
-	} ),
-	withDispatch( dispatch => {
-		return {
-			requestUpdateOrder: function( updatedOrder ) {
-				dispatch( 'wc-admin' ).requestUpdateOrder( updatedOrder );
-			},
-		};
 	} )
 )( OrdersReport );
