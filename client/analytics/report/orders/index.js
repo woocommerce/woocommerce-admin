@@ -8,7 +8,7 @@ import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
 import PropTypes from 'prop-types';
 import { withSelect } from '@wordpress/data';
-import { map, find } from 'lodash';
+import { find, get, map } from 'lodash';
 
 /**
  * Internal dependencies
@@ -246,7 +246,16 @@ class OrdersReport extends Component {
 				/>
 				{ this.renderChartSummaryNumbers() }
 				{ this.renderChart() }
-				<OrdersReportTable isRequesting={ isRequesting } orders={ orders } query={ query } />
+				<OrdersReportTable
+					isRequesting={ isRequesting }
+					orders={ orders }
+					query={ query }
+					totalRows={ get(
+						primaryData,
+						[ 'data', 'totals', 'orders_count' ],
+						Object.keys( orders ).length
+					) }
+				/>
 			</Fragment>
 		);
 	}
@@ -260,9 +269,6 @@ OrdersReport.propTypes = {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { getOrders } = select( 'wc-admin' );
-		const orders = getOrders();
-		const isRequesting = select( 'core/data' ).isResolving( 'wc-admin', 'getOrders' );
 		const { query } = props;
 		const interval = getIntervalForQuery( query );
 		const datesFromQuery = getCurrentDates( query );
@@ -300,6 +306,19 @@ export default compose(
 			},
 			select
 		);
+
+		const { getOrders, isGetOrdersRequesting } = select( 'wc-admin' );
+		const tableQuery = {
+			orderby: query.orderby || 'date',
+			order: query.order || 'asc',
+			page: query.page || 1,
+			per_page: query.per_page || 25,
+			after: datesFromQuery.primary.after + 'T00:00:00+00:00',
+			before: datesFromQuery.primary.before + 'T23:59:59+00:00',
+		};
+		const orders = getOrders( tableQuery );
+		const isRequesting = isGetOrdersRequesting( tableQuery );
+
 		return {
 			isRequesting,
 			orders,
