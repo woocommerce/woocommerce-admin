@@ -8,33 +8,24 @@ import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
 import PropTypes from 'prop-types';
 import { withSelect } from '@wordpress/data';
-import { map, find } from 'lodash';
+import { find } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import {
-	Chart,
-	ChartPlaceholder,
-	EmptyContent,
-	ReportFilters,
-	SummaryList,
-	SummaryListPlaceholder,
-	SummaryNumber,
-} from '@woocommerce/components';
+import { Chart, ChartPlaceholder, EmptyContent, ReportFilters } from '@woocommerce/components';
 import { filters, advancedFilterConfig } from './config';
-import { formatCurrency } from 'lib/currency';
-import { getAdminLink, getNewPath } from 'lib/nav-utils';
+import { getAdminLink } from 'lib/nav-utils';
 import { getReportChartData, getSummaryNumbers } from 'store/reports/utils';
 import {
 	getAllowedIntervalsForQuery,
 	getCurrentDates,
-	getDateParamsFromQuery,
 	getDateFormatsForInterval,
 	getIntervalForQuery,
 	getPreviousDate,
 } from 'lib/date';
 import { MAX_PER_PAGE } from 'store/constants';
+import OrdersReportChart from './chart';
 import OrdersReportTable from './table';
 
 class OrdersReport extends Component {
@@ -77,65 +68,6 @@ class OrdersReport extends Component {
 		}
 
 		return charts[ 0 ];
-	}
-
-	renderChartSummaryNumbers() {
-		const selectedChart = this.getSelectedChart();
-		const charts = this.getCharts();
-		if ( this.props.summaryNumbers.isRequesting ) {
-			return <SummaryListPlaceholder numberOfItems={ charts.length } />;
-		}
-
-		const totals = this.props.summaryNumbers.totals.primary || {};
-		const secondaryTotals = this.props.summaryNumbers.totals.secondary || {};
-		const { compare } = getDateParamsFromQuery( this.props.query );
-
-		const summaryNumbers = map( this.getCharts(), chart => {
-			const { key, label, type } = chart;
-			const isSelected = selectedChart.key === key;
-			let value = parseFloat( totals[ key ] );
-			let secondaryValue =
-				( secondaryTotals[ key ] && parseFloat( secondaryTotals[ key ] ) ) || undefined;
-
-			let delta = 0;
-			if ( secondaryValue && secondaryValue !== 0 ) {
-				delta = Math.round( ( value - secondaryValue ) / secondaryValue * 100 );
-			}
-
-			switch ( type ) {
-				case 'average':
-					value = Math.round( value );
-					secondaryValue = secondaryValue && Math.round( secondaryValue );
-					break;
-				case 'currency':
-					value = formatCurrency( value );
-					secondaryValue = secondaryValue && formatCurrency( secondaryValue );
-					break;
-				case 'number':
-					break;
-			}
-
-			const href = getNewPath( { chart: key } );
-
-			return (
-				<SummaryNumber
-					key={ key }
-					value={ value }
-					label={ label }
-					selected={ isSelected }
-					prevValue={ secondaryValue }
-					prevLabel={
-						'previous_period' === compare
-							? __( 'Previous Period:', 'wc-admin' )
-							: __( 'Previous Year:', 'wc-admin' )
-					}
-					delta={ delta }
-					href={ href }
-				/>
-			);
-		} );
-
-		return <SummaryList>{ summaryNumbers }</SummaryList>;
 	}
 
 	renderChart() {
@@ -248,7 +180,7 @@ class OrdersReport extends Component {
 					filters={ filters }
 					advancedConfig={ advancedFilterConfig }
 				/>
-				{ this.renderChartSummaryNumbers() }
+				<OrdersReportChart isRequesting={ isRequesting } orders={ orders } query={ query } />
 				{ this.renderChart() }
 				<OrdersReportTable isRequesting={ isRequesting } orders={ orders } query={ query } />
 			</Fragment>
