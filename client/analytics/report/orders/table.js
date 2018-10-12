@@ -6,7 +6,6 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { map, orderBy } from 'lodash';
-import classNames from 'classnames';
 
 /**
  * Internal dependencies
@@ -207,13 +206,9 @@ export default class OrdersReportTable extends Component {
 		} );
 	}
 
-	renderLinks( items = [], isUnique ) {
+	renderLinks( items = [] ) {
 		return items.map( item => (
-			<Link
-				className={ classNames( { 'is-inline': ! isUnique } ) }
-				href={ item.href }
-				type={ 'wp-admin' }
-			>
+			<Link href={ item.href } type={ 'wp-admin' }>
 				{ item.label }
 			</Link>
 		) );
@@ -222,10 +217,8 @@ export default class OrdersReportTable extends Component {
 	renderList( visibleItems, popoverItems ) {
 		return (
 			<Fragment>
-				{ this.renderLinks( visibleItems, popoverItems.length <= 1 ) }
-				{ popoverItems.length > 1 && (
-					<ViewMoreList items={ this.renderLinks( popoverItems, false ) } />
-				) }
+				{ this.renderLinks( visibleItems ) }
+				{ popoverItems.length > 1 && <ViewMoreList items={ this.renderLinks( popoverItems ) } /> }
 			</Fragment>
 		);
 	}
