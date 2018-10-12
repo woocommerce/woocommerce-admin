@@ -90,13 +90,13 @@ const Tag = withState( {
 
 Tag.propTypes = {
 	/**
-	 * The name for this item, displayed as the tag's text.
-	 */
-	label: PropTypes.string.isRequired,
-	/**
 	 * The ID for this item, used in the remove function.
 	 */
 	id: PropTypes.number,
+	/**
+	 * The name for this item, displayed as the tag's text.
+	 */
+	label: PropTypes.string.isRequired,
 	/**
 	 * Contents to display on click in a popover
 	 */
