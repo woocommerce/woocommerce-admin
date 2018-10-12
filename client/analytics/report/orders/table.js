@@ -212,7 +212,6 @@ export default class OrdersReportTable extends Component {
 			<Link
 				className={ classNames( { 'is-not-unique': ! isUnique } ) }
 				href={ item.href }
-				key={ item.href }
 				type={ 'wp-admin' }
 			>
 				{ item.label }
@@ -223,7 +222,7 @@ export default class OrdersReportTable extends Component {
 	renderList( visibleItems, popoverItems ) {
 		return (
 			<Fragment>
-				{ this.renderLinks( visibleItems, visibleItems.length === 0 ) }
+				{ this.renderLinks( visibleItems, popoverItems.length <= 1 ) }
 				{ popoverItems.length > 1 && (
 					<ViewMoreList popoverItems={ this.renderLinks( popoverItems, false ) } />
 				) }

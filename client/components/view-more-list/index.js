@@ -12,8 +12,7 @@ import Tag from 'components/tag';
 import './style.scss';
 
 /**
- * This component displays a list of items with a 'X more' button at the end if
- * the number of items to display is higher than the value of numberOfVisibleItems.
+ * This component displays a 'X more' button that displays a list of items on a popover when clicked.
  *
  * @return { object } -
  */
@@ -46,7 +45,6 @@ ViewMoreList.propTypes = {
 
 ViewMoreList.defaultProps = {
 	popoverItems: [],
-	visibleItems: [],
 };
 
 export default ViewMoreList;
