@@ -100,7 +100,7 @@ Tag.propTypes = {
 	/**
 	 * Contents to display on click in a popover
 	 */
-	popoverContents: PropTypes.oneOfType( [ PropTypes.element, PropTypes.node ] ),
+	popoverContents: PropTypes.node,
 	/**
 	 * A function called when the remove X is clicked. If not used, no X icon will display.
 	 */

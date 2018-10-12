@@ -38,9 +38,7 @@ ViewMoreList.propTypes = {
 	/**
 	 * Items to list in the popover
 	 */
-	items: PropTypes.arrayOf(
-		PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] )
-	),
+	items: PropTypes.arrayOf( PropTypes.node ),
 };
 
 ViewMoreList.defaultProps = {
