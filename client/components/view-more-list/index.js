@@ -16,14 +16,14 @@ import './style.scss';
  *
  * @return { object } -
  */
-const ViewMoreList = ( { popoverItems } ) => {
+const ViewMoreList = ( { items } ) => {
 	return (
 		<Tag
 			className="woocommerce-view-more-list"
-			label={ sprintf( __( '+%d more', 'wc-admin' ), popoverItems.length - 1 ) }
+			label={ sprintf( __( '+%d more', 'wc-admin' ), items.length - 1 ) }
 			popoverContents={
 				<ul className="woocommerce-view-more-list__popover">
-					{ popoverItems.map( ( item, i ) => (
+					{ items.map( ( item, i ) => (
 						<li key={ i } className="woocommerce-view-more-list__popover__item">
 							{ item }
 						</li>
@@ -38,13 +38,13 @@ ViewMoreList.propTypes = {
 	/**
 	 * Items to list in the popover
 	 */
-	popoverItems: PropTypes.arrayOf(
+	items: PropTypes.arrayOf(
 		PropTypes.oneOfType( [ PropTypes.string, PropTypes.element, PropTypes.node ] )
 	),
 };
 
 ViewMoreList.defaultProps = {
-	popoverItems: [],
+	items: [],
 };
 
 export default ViewMoreList;

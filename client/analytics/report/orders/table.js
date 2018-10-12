@@ -224,7 +224,7 @@ export default class OrdersReportTable extends Component {
 			<Fragment>
 				{ this.renderLinks( visibleItems, popoverItems.length <= 1 ) }
 				{ popoverItems.length > 1 && (
-					<ViewMoreList popoverItems={ this.renderLinks( popoverItems, false ) } />
+					<ViewMoreList items={ this.renderLinks( popoverItems, false ) } />
 				) }
 			</Fragment>
 		);
