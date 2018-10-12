@@ -7,6 +7,7 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { map } from 'lodash';
 import { withSelect } from '@wordpress/data';
+import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
@@ -31,7 +32,7 @@ class OrdersReportSummary extends Component {
 		const secondaryTotals = this.props.summaryNumbers.totals.secondary || {};
 		const { compare } = getDateParamsFromQuery( this.props.query );
 
-		const summaryNumbers = map( this.getCharts(), chart => {
+		const summaryNumbers = map( charts, chart => {
 			const { key, label, type } = chart;
 			const isSelected = selectedChart.key === key;
 			let value = parseFloat( totals[ key ] );
@@ -80,12 +81,19 @@ class OrdersReportSummary extends Component {
 	}
 }
 
+OrdersReportSummary.propTypes = {
+	charts: PropTypes.object.isRequired,
+	endpoint: PropTypes.string.isRequired,
+	query: PropTypes.object.isRequired,
+	selectedChart: PropTypes.object.isRequired,
+};
+
 export default compose(
 	withSelect( ( select, props ) => {
-		const { query } = props;
+		const { query, endpoint } = props;
 		const datesFromQuery = getCurrentDates( query );
 		const summaryNumbers = getSummaryNumbers(
-			'orders',
+			endpoint,
 			{
 				primary: datesFromQuery.primary,
 				secondary: datesFromQuery.secondary,

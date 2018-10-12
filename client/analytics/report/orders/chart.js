@@ -3,13 +3,17 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
+import { find } from 'lodash';
+import PropTypes from 'prop-types';
+
 /**
  * Internal dependencies
  */
-import OrdersReportSummary from './summary';
+import OrdersReportGraph from 'analytics/components/graph';
+import OrdersReportSummary from 'analytics/components/summary';
 
-export default class OrdersReportChart extends Component {
+class OrdersReportChart extends Component {
 	constructor( props ) {
 		super( props );
 	}
@@ -42,7 +46,6 @@ export default class OrdersReportChart extends Component {
 	getSelectedChart() {
 		const { query } = this.props;
 		const charts = this.getCharts();
-
 		const chart = find( charts, { key: query.chart } );
 		if ( chart ) {
 			return chart;
@@ -54,11 +57,26 @@ export default class OrdersReportChart extends Component {
 	render() {
 		const { query } = this.props;
 		return (
-			<OrdersReportSummary
-				charts={ this.getCharts() }
-				selected={ this.getSelectedChart() }
-				query={ query }
-			/>
+			<Fragment>
+				<OrdersReportSummary
+					charts={ this.getCharts() }
+					endpoint="orders"
+					query={ query }
+					selectedChart={ this.getSelectedChart() }
+				/>
+				<OrdersReportGraph
+					charts={ this.getCharts() }
+					endpoint="orders"
+					query={ query }
+					selectedChart={ this.getSelectedChart() }
+				/>
+			</Fragment>
 		);
 	}
 }
+
+OrdersReportChart.propTypes = {
+	query: PropTypes.object.isRequired,
+};
+
+export default OrdersReportChart;
