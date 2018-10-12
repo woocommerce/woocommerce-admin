@@ -210,7 +210,7 @@ export default class OrdersReportTable extends Component {
 	renderLinks( items = [], isUnique ) {
 		return items.map( item => (
 			<Link
-				className={ classNames( { 'is-not-unique': ! isUnique } ) }
+				className={ classNames( { 'is-inline': ! isUnique } ) }
 				href={ item.href }
 				type={ 'wp-admin' }
 			>
