@@ -17,7 +17,7 @@ import { getNewPath } from 'lib/nav-utils';
 import { SummaryList, SummaryListPlaceholder, SummaryNumber } from '@woocommerce/components';
 import { getCurrentDates, getDateParamsFromQuery } from 'lib/date';
 import { getSummaryNumbers } from 'store/reports/utils';
-class OrdersReportSummary extends Component {
+class ReportSummary extends Component {
 	constructor( props ) {
 		super( props );
 	}
@@ -81,7 +81,7 @@ class OrdersReportSummary extends Component {
 	}
 }
 
-OrdersReportSummary.propTypes = {
+ReportSummary.propTypes = {
 	charts: PropTypes.object.isRequired,
 	endpoint: PropTypes.string.isRequired,
 	query: PropTypes.object.isRequired,
@@ -105,4 +105,4 @@ export default compose(
 			summaryNumbers,
 		};
 	} )
-)( OrdersReportSummary );
+)( ReportSummary );

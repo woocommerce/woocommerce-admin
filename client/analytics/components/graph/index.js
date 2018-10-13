@@ -21,7 +21,7 @@ import {
 import { getReportChartData } from 'store/reports/utils';
 import { MAX_PER_PAGE } from 'store/constants';
 
-class OrdersReportGraph extends Component {
+class ReportGraph extends Component {
 	constructor( props ) {
 		super( props );
 	}
@@ -121,4 +121,4 @@ export default compose(
 			secondaryData,
 		};
 	} )
-)( OrdersReportGraph );
+)( ReportGraph );
