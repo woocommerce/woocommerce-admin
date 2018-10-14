@@ -14,13 +14,9 @@ export default {
 	async getOrders( state, query ) {
 		try {
 			const orders = await apiFetch( { path: '/wc/v3/orders' + stringifyQuery( query ) } );
-			dispatch( 'wc-admin' ).setOrders( orders );
+			dispatch( 'wc-admin' ).setOrders( orders, query );
 		} catch ( error ) {
-			if ( error && error.responseJSON ) {
-				alert( error.responseJSON.message );
-			} else {
-				alert( error );
-			}
+			dispatch( 'wc-admin' ).setOrdersError( query );
 		}
 	},
 };

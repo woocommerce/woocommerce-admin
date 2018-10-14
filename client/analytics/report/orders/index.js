@@ -199,7 +199,8 @@ class OrdersReport extends Component {
 
 	render() {
 		const {
-			isRequesting,
+			isTableDataError,
+			isTableDataRequesting,
 			orders,
 			path,
 			query,
@@ -208,9 +209,14 @@ class OrdersReport extends Component {
 			summaryNumbers,
 		} = this.props;
 
-		if ( primaryData.isError || secondaryData.isError || summaryNumbers.isError ) {
+		if (
+			primaryData.isError ||
+			secondaryData.isError ||
+			isTableDataError ||
+			summaryNumbers.isError
+		) {
 			let title, actionLabel, actionURL, actionCallback;
-			if ( primaryData.isError || secondaryData.isError ) {
+			if ( primaryData.isError || secondaryData.isError || isTableDataError ) {
 				title = __( 'There was an error getting your stats. Please try again.', 'wc-admin' );
 				actionLabel = __( 'Reload', 'wc-admin' );
 				actionCallback = () => {
@@ -247,7 +253,7 @@ class OrdersReport extends Component {
 				{ this.renderChartSummaryNumbers() }
 				{ this.renderChart() }
 				<OrdersReportTable
-					isRequesting={ isRequesting }
+					isRequesting={ isTableDataRequesting }
 					orders={ orders }
 					query={ query }
 					totalRows={ get(
@@ -307,7 +313,7 @@ export default compose(
 			select
 		);
 
-		const { getOrders, isGetOrdersRequesting } = select( 'wc-admin' );
+		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-admin' );
 		const tableQuery = {
 			orderby: query.orderby || 'date',
 			order: query.order || 'asc',
@@ -317,10 +323,12 @@ export default compose(
 			before: datesFromQuery.primary.before + 'T23:59:59+00:00',
 		};
 		const orders = getOrders( tableQuery );
-		const isRequesting = isGetOrdersRequesting( tableQuery );
+		const isTableDataError = isGetOrdersError( tableQuery );
+		const isTableDataRequesting = isGetOrdersRequesting( tableQuery );
 
 		return {
-			isRequesting,
+			isTableDataError,
+			isTableDataRequesting,
 			orders,
 			primaryData,
 			secondaryData,

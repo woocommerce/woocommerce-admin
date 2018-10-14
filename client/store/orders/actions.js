@@ -6,10 +6,17 @@ import { dispatch } from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
 
 export default {
-	setOrders( orders ) {
+	setOrders( orders, query ) {
 		return {
 			type: 'SET_ORDERS',
 			orders,
+			query: query || {},
+		};
+	},
+	setOrdersError( query ) {
+		return {
+			type: 'SET_ORDERS_ERROR',
+			query: query || {},
 		};
 	},
 	updateOrder( order ) {
