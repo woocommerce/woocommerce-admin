@@ -26,14 +26,6 @@ export default function ordersReducer( state = DEFAULT_STATE, action ) {
 			return merge( {}, state, {
 				[ queryKey ]: ERROR,
 			} );
-
-		case 'UPDATE_ORDER':
-			const updatedOrders = { ...state.orders };
-			updatedOrders[ action.order.id ] = action.order;
-			return {
-				...state,
-				orders: updatedOrders,
-			};
 	}
 
 	return state;
