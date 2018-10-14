@@ -40,7 +40,7 @@ export default {
 	 * Returns true if a get orders request has returned an error.
 	 *
 	 * @param  {Object} state     Current state
-	 * @param  {Object} query     Report query paremters
+	 * @param  {Object} query     Query paremeters
 	 * @return {Boolean}          True if the `getOrders` request has failed, false otherwise
 	 */
 	isGetOrdersError( state, query ) {
