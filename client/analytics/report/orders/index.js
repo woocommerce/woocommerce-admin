@@ -321,6 +321,7 @@ export default compose(
 			per_page: query.per_page || 25,
 			after: datesFromQuery.primary.after + 'T00:00:00+00:00',
 			before: datesFromQuery.primary.before + 'T23:59:59+00:00',
+			status: [ 'processing', 'on-hold', 'completed' ],
 		};
 		const orders = getOrders( tableQuery );
 		const isTableDataError = isGetOrdersError( tableQuery );
