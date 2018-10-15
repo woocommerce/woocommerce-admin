@@ -10,8 +10,8 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import OrdersReportGraph from 'analytics/components/graph';
-import OrdersReportSummary from 'analytics/components/summary';
+import ReportGraph from 'analytics/components/graph';
+import ReportSummary from 'analytics/components/summary';
 
 class OrdersReportChart extends Component {
 	constructor( props ) {
@@ -58,13 +58,13 @@ class OrdersReportChart extends Component {
 		const { query } = this.props;
 		return (
 			<Fragment>
-				<OrdersReportSummary
+				<ReportSummary
 					charts={ this.getCharts() }
 					endpoint="orders"
 					query={ query }
 					selectedChart={ this.getSelectedChart() }
 				/>
-				<OrdersReportGraph
+				<ReportGraph
 					charts={ this.getCharts() }
 					endpoint="orders"
 					query={ query }
