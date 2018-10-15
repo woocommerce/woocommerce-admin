@@ -389,6 +389,8 @@ export function getIntervalForQuery( query ) {
 	return current;
 }
 
+export const dayTicksThreshold = 180;
+
 /**
  * Returns date formats for the current interval.
  * See https://github.com/d3/d3-time-format for chart formats.
@@ -412,7 +414,7 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 			tableFormat = 'h A';
 			break;
 		case 'day':
-			if ( ticks < 180 ) {
+			if ( ticks < dayTicksThreshold ) {
 				xFormat = '%d';
 			} else {
 				xFormat = '%b';

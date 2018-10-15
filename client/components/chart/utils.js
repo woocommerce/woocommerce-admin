@@ -20,6 +20,7 @@ import { format as formatDate } from '@wordpress/date';
  * Internal dependencies
  */
 import { formatCurrency } from 'lib/currency';
+import { dayTicksThreshold } from 'lib/date';
 
 /**
  * Describes `smallestFactor`
@@ -302,7 +303,7 @@ export const getXTicks = ( uniqueDates, width, layout, interval ) => {
 
 	if ( uniqueDates.length <= maxTicks ) {
 		return uniqueDates;
-	} else if ( uniqueDates.length > 180 && interval === 'day' ) {
+	} else if ( uniqueDates.length > dayTicksThreshold && interval === 'day' ) {
 		uniqueDates = filterXAxisDates( uniqueDates );
 	}
 
