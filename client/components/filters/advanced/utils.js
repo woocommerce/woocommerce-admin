@@ -108,3 +108,25 @@ export const getDefaultOptionValue = ( config, options ) => {
 	}
 	return options[ 0 ].value;
 };
+
+export function getFilterArgs( query, advancedFilters ) {
+	const { filter } = query;
+
+	if ( ! filter ) {
+		return {};
+	}
+
+	if ( 'advanced' !== filter ) {
+		return { filter };
+	}
+
+	const activeFilters = getActiveFiltersFromQuery( query, advancedFilters );
+	return activeFilters.reduce(
+		( result, activeFilter ) => {
+			const { key, rule, value } = activeFilter;
+			result[ getUrlKey( key, rule ) ] = value;
+			return result;
+		},
+		{ match: query.match || 'all' }
+	);
+}
