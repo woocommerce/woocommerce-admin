@@ -27,15 +27,16 @@ import { formatCurrency } from 'lib/currency';
  * @returns {integer} smallest factor of num
  */
 export const getFactors = inputNum => {
-	const num_factors = [];
+	const numFactors = [];
 	for ( let i = 1; i <= Math.floor( Math.sqrt( inputNum ) ); i += 1 ) {
 		if ( inputNum % i === 0 ) {
-			num_factors.push( i );
-			inputNum / i !== i && num_factors.push( inputNum / i );
+			numFactors.push( i );
+			inputNum / i !== i && numFactors.push( inputNum / i );
 		}
 	}
-	num_factors.sort( ( x, y ) => x - y ); // numeric sort
-	return num_factors;
+	numFactors.sort( ( x, y ) => x - y ); // numeric sort
+
+	return numFactors;
 };
 
 /**
@@ -207,6 +208,75 @@ export const getLine = ( xLineScale, yScale ) =>
 		.y( d => yScale( d.value ) );
 
 /**
+ * Calculate the maximum number of ticks allowed in the x-axis based on the width and layout of the chart
+ * @param {integer} width - calculated page width
+ * @param {string} layout - standard, comparison or compact chart types
+ * @returns {integer} number of x-axis ticks based on width and chart layout
+ */
+const calculateMaxXTicks = ( width, layout ) => {
+	if ( width < 783 ) {
+		return 7;
+	} else if ( width >= 783 && width < 1129 ) {
+		return 12;
+	} else if ( width >= 1130 && width < 1365 ) {
+		if ( layout === 'standard' ) {
+			return 16;
+		} else if ( layout === 'comparison' ) {
+			return 12;
+		} else if ( layout === 'compact' ) {
+			return 7;
+		}
+	} else if ( width >= 1365 ) {
+		if ( layout === 'standard' ) {
+			return 31;
+		} else if ( layout === 'comparison' ) {
+			return 16;
+		} else if ( layout === 'compact' ) {
+			return 12;
+		}
+	}
+
+	return 16;
+};
+
+/**
+ * Get x-axis ticks given the unique dates and the increment factor.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} incrementFactor - increment factor for the visible ticks.
+ * @returns {integer} Ticks for the x-axis.
+ */
+const getXTicksFromIncrementFactor = ( uniqueDates, incrementFactor ) => {
+	const ticks = [];
+	for ( let idx = 0; idx < uniqueDates.length; idx = idx + incrementFactor ) {
+		ticks.push( uniqueDates[ idx ] );
+	}
+
+	// If the first or last date is missing from the ticks array, add it back in.
+	if ( ticks[ 0 ] !== uniqueDates[ 0 ] ) {
+		ticks.unshift( uniqueDates[ 0 ] );
+	}
+	if ( ticks[ ticks.length - 1 ] !== uniqueDates[ uniqueDates.length - 1 ] ) {
+		ticks.push( uniqueDates[ uniqueDates.length - 1 ] );
+	}
+
+	return ticks;
+};
+
+const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
+	let factors = [];
+	let i = 1;
+	// First we get all the factors of the length of the uniqueDates array
+	// if the number is a prime number or near prime (with 3 factors) then we
+	// step down by 1 integer and try again.
+	while ( factors.length <= 3 ) {
+		factors = getFactors( uniqueDates.length - i );
+		i += 1;
+	}
+
+	return factors.find( f => uniqueDates.length / f < maxTicks );
+};
+
+/**
  * Describes getXTicks
  * @param {array} uniqueDates - all the unique dates from the input data for the chart
  * @param {integer} width - calculated page width
@@ -214,64 +284,15 @@ export const getLine = ( xLineScale, yScale ) =>
  * @returns {integer} number of x-axis ticks based on width and chart layout
  */
 export const getXTicks = ( uniqueDates, width, layout ) => {
-	// caluclate the maximum number of ticks allowed in the x-axis based on the width
-	// and layout of the chart
-	let ticks = 16;
-	if ( width < 783 ) {
-		ticks = 7;
-	} else if ( width >= 783 && width < 1129 ) {
-		ticks = 12;
-	} else if ( width >= 1130 && width < 1365 ) {
-		if ( layout === 'standard' ) {
-			ticks = 16;
-		} else if ( layout === 'comparison' ) {
-			ticks = 12;
-		} else if ( layout === 'compact' ) {
-			ticks = 7;
-		}
-	} else if ( width >= 1365 ) {
-		if ( layout === 'standard' ) {
-			ticks = 31;
-		} else if ( layout === 'comparison' ) {
-			ticks = 16;
-		} else if ( layout === 'compact' ) {
-			ticks = 12;
-		}
-	}
-	if ( uniqueDates.length <= ticks ) {
+	const maxTicks = calculateMaxXTicks( width, layout );
+
+	if ( uniqueDates.length <= maxTicks ) {
 		return uniqueDates;
 	}
-	let factors = [];
-	let i = 0;
-	//  first we get all the factors of the length of the uniqieDates array
-	// if the number is a prime number or near prime (with 3 factors) then we
-	// step down by 1 integer and try again
-	while ( factors.length <= 3 ) {
-		factors = getFactors( uniqueDates.length - ( 1 + i ) );
-		i += 1;
-	}
-	let newTicks = [];
-	let factorIndex = 0;
-	// newTicks is the first tick plus the smallest factor (initiallY) etc.
-	// however, if we still end up with too many ticks we look at the next factor
-	// and try again unttil we have fewer ticks than the max
-	while ( newTicks.length > ticks || newTicks.length === 0 ) {
-		if ( newTicks.length > ticks ) {
-			factorIndex += 1;
-			newTicks = [];
-		}
-		for ( let idx = 0; idx < uniqueDates.length; idx = idx + factors[ factorIndex ] ) {
-			newTicks.push( uniqueDates[ idx ] );
-		}
-	}
-	// if, for some reason, the first or last date is missing from the newTicks array, add it back in
-	if ( newTicks[ 0 ] !== uniqueDates[ 0 ] ) {
-		newTicks.unshift( uniqueDates[ 0 ] );
-	}
-	if ( newTicks[ newTicks.length - 1 ] !== uniqueDates[ uniqueDates.length - 1 ] ) {
-		newTicks.push( uniqueDates[ uniqueDates.length - 1 ] );
-	}
-	return newTicks;
+
+	const incrementFactor = calculateXTicksIncrementFactor( uniqueDates, maxTicks );
+
+	return getXTicksFromIncrementFactor( uniqueDates, incrementFactor );
 };
 
 /**
