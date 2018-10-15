@@ -240,6 +240,18 @@ const calculateMaxXTicks = ( width, layout ) => {
 };
 
 /**
+ * Filter out irrelevant dates from uniqueDates if there are too many
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @returns {integer} Unique dates filtered
+ */
+const filterXAxisDates = uniqueDates => {
+	return uniqueDates.filter(
+		( date, i ) =>
+			i === 0 || new Date( date ).getMonth() !== new Date( uniqueDates[ i - 1 ] ).getMonth()
+	);
+};
+
+/**
  * Get x-axis ticks given the unique dates and the increment factor.
  * @param {array} uniqueDates - all the unique dates from the input data for the chart
  * @param {integer} incrementFactor - increment factor for the visible ticks.
@@ -247,6 +259,7 @@ const calculateMaxXTicks = ( width, layout ) => {
  */
 const getXTicksFromIncrementFactor = ( uniqueDates, incrementFactor ) => {
 	const ticks = [];
+
 	for ( let idx = 0; idx < uniqueDates.length; idx = idx + incrementFactor ) {
 		ticks.push( uniqueDates[ idx ] );
 	}
@@ -281,13 +294,16 @@ const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
  * @param {array} uniqueDates - all the unique dates from the input data for the chart
  * @param {integer} width - calculated page width
  * @param {string} layout - standard, comparison or compact chart types
+ * @param {string} interval - string of the interval used in the graph (hour, day, week...)
  * @returns {integer} number of x-axis ticks based on width and chart layout
  */
-export const getXTicks = ( uniqueDates, width, layout ) => {
+export const getXTicks = ( uniqueDates, width, layout, interval ) => {
 	const maxTicks = calculateMaxXTicks( width, layout );
 
 	if ( uniqueDates.length <= maxTicks ) {
 		return uniqueDates;
+	} else if ( uniqueDates.length > 180 && interval === 'day' ) {
+		uniqueDates = filterXAxisDates( uniqueDates );
 	}
 
 	const incrementFactor = calculateXTicksIncrementFactor( uniqueDates, maxTicks );
@@ -356,9 +372,7 @@ export const drawAxis = ( node, params ) => {
 					const monthDate = d instanceof Date ? d : new Date( d );
 					let prevMonth = i !== 0 ? ticks[ i - 1 ] : ticks[ i ];
 					prevMonth = prevMonth instanceof Date ? prevMonth : new Date( prevMonth );
-					return monthDate.getDate() === 1 ||
-						i === 0 ||
-						params.x2Format( monthDate ) !== params.x2Format( prevMonth )
+					return i === 0 || params.x2Format( monthDate ) !== params.x2Format( prevMonth )
 						? params.x2Format( monthDate )
 						: '';
 				} )
