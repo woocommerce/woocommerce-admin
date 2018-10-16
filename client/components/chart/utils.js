@@ -276,6 +276,12 @@ const getXTicksFromIncrementFactor = ( uniqueDates, incrementFactor ) => {
 	return ticks;
 };
 
+/**
+ * Calculates the increment factor between ticks so there aren't more than maxTicks.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} maxTicks - maximum number of ticks that can be displayed in the x-axis
+ * @returns {integer} x-axis ticks increment factor
+ */
 const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
 	let factors = [];
 	let i = 1;
@@ -291,7 +297,7 @@ const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
 };
 
 /**
- * Describes getXTicks
+ * Returns ticks for the x-axis.
  * @param {array} uniqueDates - all the unique dates from the input data for the chart
  * @param {integer} width - calculated page width
  * @param {string} layout - standard, comparison or compact chart types
