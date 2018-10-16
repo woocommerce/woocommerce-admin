@@ -10,8 +10,8 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import ReportGraph from 'analytics/components/graph';
-import ReportSummary from 'analytics/components/summary';
+import ReportChart from 'analytics/components/report-chart';
+import ReportSummary from 'analytics/components/report-summary';
 
 class OrdersReportChart extends Component {
 	getCharts() {
@@ -60,7 +60,7 @@ class OrdersReportChart extends Component {
 					query={ query }
 					selectedChart={ this.getSelectedChart() }
 				/>
-				<ReportGraph
+				<ReportChart
 					charts={ this.getCharts() }
 					endpoint="orders"
 					query={ query }

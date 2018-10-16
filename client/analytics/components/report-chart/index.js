@@ -23,7 +23,7 @@ import {
 import { getReportChartData } from 'store/reports/utils';
 import { MAX_PER_PAGE } from 'store/constants';
 
-class ReportGraph extends Component {
+class ReportChart extends Component {
 	render() {
 		const { primaryData, secondaryData, selectedChart, query } = this.props;
 
@@ -85,7 +85,7 @@ class ReportGraph extends Component {
 	}
 }
 
-ReportGraph.propTypes = {
+ReportChart.propTypes = {
 	primaryData: PropTypes.object.isRequired,
 	secondaryData: PropTypes.object.isRequired,
 	selectedChart: PropTypes.object.isRequired,
@@ -126,4 +126,4 @@ export default compose(
 			secondaryData,
 		};
 	} )
-)( ReportGraph );
+)( ReportChart );
