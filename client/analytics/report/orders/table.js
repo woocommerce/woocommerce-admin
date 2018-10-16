@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { map, orderBy } from 'lodash';
@@ -10,7 +10,14 @@ import { map, orderBy } from 'lodash';
 /**
  * Internal dependencies
  */
-import { Card, OrderStatus, TableCard, TablePlaceholder } from '@woocommerce/components';
+import {
+	Card,
+	Link,
+	OrderStatus,
+	TableCard,
+	TablePlaceholder,
+	ViewMoreList,
+} from '@woocommerce/components';
 import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getIntervalForQuery, getDateFormatsForInterval } from 'lib/date';
@@ -36,7 +43,7 @@ export default class OrdersReportTable extends Component {
 		return [
 			{
 				label: __( 'Date', 'wc-admin' ),
-				key: 'date_created',
+				key: 'date',
 				required: true,
 				defaultSort: true,
 				isLeftAligned: true,
@@ -53,13 +60,13 @@ export default class OrdersReportTable extends Component {
 				label: __( 'Status', 'wc-admin' ),
 				key: 'status',
 				required: false,
-				isSortable: true,
+				isSortable: false,
 			},
 			{
 				label: __( 'Customer', 'wc-admin' ),
 				key: 'customer_id',
 				required: false,
-				isSortable: true,
+				isSortable: false,
 			},
 			{
 				label: __( 'Product(s)', 'wc-admin' ),
@@ -71,7 +78,7 @@ export default class OrdersReportTable extends Component {
 				label: __( 'Items Sold', 'wc-admin' ),
 				key: 'items_sold',
 				required: false,
-				isSortable: true,
+				isSortable: false,
 				isNumeric: true,
 			},
 			{
@@ -84,7 +91,7 @@ export default class OrdersReportTable extends Component {
 				label: __( 'N. Revenue', 'wc-admin' ),
 				key: 'net_revenue',
 				required: true,
-				isSortable: true,
+				isSortable: false,
 				isNumeric: true,
 			},
 		];
@@ -107,7 +114,7 @@ export default class OrdersReportTable extends Component {
 			} = row;
 
 			return {
-				date_created,
+				date: date_created,
 				id,
 				status,
 				customer_id,
@@ -129,7 +136,7 @@ export default class OrdersReportTable extends Component {
 
 		return map( tableData, row => {
 			const {
-				date_created,
+				date,
 				id,
 				status,
 				customer_id,
@@ -140,10 +147,24 @@ export default class OrdersReportTable extends Component {
 				net_revenue,
 			} = row;
 
+			const products = line_items
+				.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
+				.map( item => ( {
+					label: item.name,
+					href: 'post.php?post=' + item.product_id + '&action=edit',
+					quantity: item.quantity,
+				} ) );
+
+			const coupons = coupon_lines.map( coupon => ( {
+				label: coupon.code,
+				// @TODO It should link to the coupons report
+				href: 'edit.php?s=' + coupon.code + '&post_type=shop_coupon',
+			} ) );
+
 			return [
 				{
-					display: formatDate( tableFormat, date_created ),
-					value: date_created,
+					display: formatDate( tableFormat, date ),
+					value: date,
 				},
 				{
 					display: <a href={ getAdminLink( 'post.php?post=' + id + '&action=edit' ) }>{ id }</a>,
@@ -161,32 +182,21 @@ export default class OrdersReportTable extends Component {
 				},
 				{
 					display: this.renderList(
-						line_items.map( item => ( {
-							href: getAdminLink( 'post.php?post=' + item.product_id + '&action=edit' ),
-							label: item.name,
+						products.length ? [ products[ 0 ] ] : [],
+						products.map( product => ( {
+							label: sprintf( __( '%s× %s', 'wc-admin' ), product.quantity, product.label ),
+							href: product.href,
 						} ) )
 					),
-					value: line_items
-						.map( item => item.name )
-						.join()
-						.toLowerCase(),
+					value: products.map( product => product.label ).join( ' ' ),
 				},
 				{
 					display: items_sold,
 					value: items_sold,
 				},
 				{
-					display: this.renderList(
-						coupon_lines.map( coupon => ( {
-							// @TODO It should link to the coupons report.
-							href: getAdminLink( 'edit.php?s=' + coupon.code + '&post_type=shop_coupon' ),
-							label: coupon.code,
-						} ) )
-					),
-					value: coupon_lines
-						.map( item => item.code )
-						.join()
-						.toLowerCase(),
+					display: this.renderList( coupons.length ? [ coupons[ 0 ] ] : [], coupons ),
+					value: coupons.map( item => item.code ).join( ' ' ),
 				},
 				{
 					display: formatCurrency( net_revenue, currency ),
@@ -196,16 +206,21 @@ export default class OrdersReportTable extends Component {
 		} );
 	}
 
-	renderList( items ) {
-		// @TODO Use ViewMore component if there are many items.
-		return items.map( ( item, i ) => (
-			<Fragment key={ i }>
-				{ i > 0 ? ', ' : null }
-				<a className={ items.length > 1 ? 'is-inline' : null } href={ item.href }>
-					{ item.label }
-				</a>
-			</Fragment>
+	renderLinks( items = [] ) {
+		return items.map( item => (
+			<Link href={ item.href } type={ 'wp-admin' }>
+				{ item.label }
+			</Link>
 		) );
+	}
+
+	renderList( visibleItems, popoverItems ) {
+		return (
+			<Fragment>
+				{ this.renderLinks( visibleItems ) }
+				{ popoverItems.length > 1 && <ViewMoreList items={ this.renderLinks( popoverItems ) } /> }
+			</Fragment>
+		);
 	}
 
 	renderPlaceholderTable() {
@@ -216,37 +231,32 @@ export default class OrdersReportTable extends Component {
 				title={ __( 'Orders', 'wc-admin' ) }
 				className="woocommerce-analytics__table-placeholder"
 			>
-				<TablePlaceholder caption={ __( 'Orders last week', 'wc-admin' ) } headers={ headers } />
+				<TablePlaceholder caption={ __( 'Orders', 'wc-admin' ) } headers={ headers } />
 			</Card>
 		);
 	}
 
 	renderTable() {
-		const { orders, query } = this.props;
+		const { orders, query, totalRows } = this.props;
 
-		const page = parseInt( query.page ) || 1;
 		const rowsPerPage = parseInt( query.per_page ) || 25;
 		const rows = this.getRowsContent(
-			orderBy(
-				this.formatTableData( orders ),
-				query.orderby || 'date_created',
-				query.order || 'asc'
-			).slice( ( page - 1 ) * rowsPerPage, page * rowsPerPage )
+			orderBy( this.formatTableData( orders ), query.orderby || 'date', query.order || 'asc' )
 		);
 
 		const headers = this.getHeadersContent();
 
 		const tableQuery = {
 			...query,
-			orderby: query.orderby || 'date_created',
+			orderby: query.orderby || 'date',
 			order: query.order || 'asc',
 		};
 
 		return (
 			<TableCard
-				title={ __( 'Orders last week', 'wc-admin' ) }
+				title={ __( 'Orders', 'wc-admin' ) }
 				rows={ rows }
-				totalRows={ Object.keys( orders ).length }
+				totalRows={ totalRows }
 				rowsPerPage={ rowsPerPage }
 				headers={ headers }
 				onClickDownload={ this.onDownload( headers, rows, tableQuery ) }
