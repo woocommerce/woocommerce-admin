@@ -55,8 +55,13 @@ class Table extends Component {
 		super( props );
 		this.state = {
 			tabIndex: null,
+			shadowStyles: {
+				transform: 'translateX(0)',
+				visibility: 'hidden',
+			},
 		};
 		this.container = createRef();
+		this.tableShadow = createRef();
 		this.sortBy = this.sortBy.bind( this );
 	}
 
@@ -68,6 +73,12 @@ class Table extends Component {
 			tabIndex: scrollable ? '0' : null,
 		} );
 		/* eslint-enable react/no-did-mount-set-state */
+		this.updateTableShadow();
+		window.addEventListener( 'resize', this.updateTableShadow );
+	}
+
+	componentDidUnmount() {
+		window.removeEventListener( 'resize', this.updateTableShadow );
 	}
 
 	sortBy( key ) {
@@ -83,6 +94,17 @@ class Table extends Component {
 			this.props.onSort( key, dir );
 		};
 	}
+
+	updateTableShadow = () => {
+		const table = this.container.current;
+		const scrolledToEnd = table.scrollWidth - table.scrollLeft <= table.offsetWidth;
+		this.setState( {
+			shadowStyles: {
+				transform: 'translateX(' + this.container.current.scrollLeft + 'px)',
+				visibility: scrolledToEnd ? 'hidden' : 'visible',
+			},
+		} );
+	};
 
 	render() {
 		const {
@@ -108,6 +130,7 @@ class Table extends Component {
 				aria-hidden={ ariaHidden }
 				aria-labelledby={ `caption-${ instanceId }` }
 				role="group"
+				onScroll={ this.updateTableShadow }
 			>
 				<table>
 					<caption
@@ -191,6 +214,11 @@ class Table extends Component {
 						) ) }
 					</tbody>
 				</table>
+				<div
+					ref={ this.tableShadow }
+					className="woocommerce-table__shadow"
+					style={ this.state.shadowStyles }
+				/>
 			</div>
 		);
 	}
