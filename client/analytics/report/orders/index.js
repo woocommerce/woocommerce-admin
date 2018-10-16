@@ -23,6 +23,7 @@ import {
 	SummaryNumber,
 } from '@woocommerce/components';
 import { filters, advancedFilterConfig } from './config';
+import { getFilterArgs } from 'components/filters/advanced/utils'; // For now
 import { formatCurrency } from 'lib/currency';
 import { getAdminLink, getNewPath } from 'lib/nav-utils';
 import { getReportChartData, getSummaryNumbers } from 'store/reports/utils';
@@ -284,9 +285,10 @@ export default compose(
 		const datesFromQuery = getCurrentDates( query );
 		const baseArgs = {
 			order: 'asc',
-			interval: interval,
+			interval,
 			per_page: MAX_PER_PAGE,
 		};
+		const filterArgs = getFilterArgs( query, advancedFilterConfig );
 
 		const summaryNumbers = getSummaryNumbers(
 			'orders',
@@ -303,6 +305,7 @@ export default compose(
 				...baseArgs,
 				after: datesFromQuery.primary.after,
 				before: datesFromQuery.primary.before,
+				...filterArgs,
 			},
 			select
 		);
@@ -313,6 +316,7 @@ export default compose(
 				...baseArgs,
 				after: datesFromQuery.secondary.after,
 				before: datesFromQuery.secondary.before,
+				...filterArgs,
 			},
 			select
 		);

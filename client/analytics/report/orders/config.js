@@ -38,7 +38,7 @@ export const advancedFilterConfig = {
 		'wc-admin'
 	),
 	filters: {
-		status: {
+		order_status: {
 			labels: {
 				add: __( 'Order Status', 'wc-admin' ),
 				remove: __( 'Remove order status filter', 'wc-admin' ),
@@ -65,6 +65,7 @@ export const advancedFilterConfig = {
 					value: key,
 					label: orderStatuses[ key ],
 				} ) ),
+				defaultOption: 'wc-completed',
 			},
 		},
 		product: {
