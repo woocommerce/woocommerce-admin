@@ -17,7 +17,7 @@ import { ERROR } from 'store/constants';
  *
  * @param  {Object} state     Current state
  * @param  {Object} query     Report query paremters
- * @return {Object}           Report details
+ * @return {Array}            Report details
  */
 function getOrders( state, query = {} ) {
 	return get( state, [ 'orders', getJsonString( query ) ], [] );
