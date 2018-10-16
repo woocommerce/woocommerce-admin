@@ -18,10 +18,6 @@ import { SummaryList, SummaryListPlaceholder, SummaryNumber } from '@woocommerce
 import { getCurrentDates, getDateParamsFromQuery } from 'lib/date';
 import { getSummaryNumbers } from 'store/reports/utils';
 class ReportSummary extends Component {
-	constructor( props ) {
-		super( props );
-	}
-
 	render() {
 		const { selectedChart, charts } = this.props;
 		if ( this.props.summaryNumbers.isRequesting ) {
@@ -82,7 +78,7 @@ class ReportSummary extends Component {
 }
 
 ReportSummary.propTypes = {
-	charts: PropTypes.object.isRequired,
+	charts: PropTypes.array.isRequired,
 	endpoint: PropTypes.string.isRequired,
 	query: PropTypes.object.isRequired,
 	selectedChart: PropTypes.object.isRequired,

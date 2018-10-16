@@ -7,6 +7,8 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
 import { withSelect } from '@wordpress/data';
+import PropTypes from 'prop-types';
+
 /**
  * Internal dependencies
  */
@@ -22,10 +24,6 @@ import { getReportChartData } from 'store/reports/utils';
 import { MAX_PER_PAGE } from 'store/constants';
 
 class ReportGraph extends Component {
-	constructor( props ) {
-		super( props );
-	}
-
 	render() {
 		const { primaryData, secondaryData, selectedChart, query } = this.props;
 
@@ -86,6 +84,13 @@ class ReportGraph extends Component {
 		);
 	}
 }
+
+ReportGraph.propTypes = {
+	primaryData: PropTypes.object.isRequired,
+	secondaryData: PropTypes.object.isRequired,
+	selectedChart: PropTypes.object.isRequired,
+	query: PropTypes.object.isRequired,
+};
 
 export default compose(
 	withSelect( ( select, props ) => {

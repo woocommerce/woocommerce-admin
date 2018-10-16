@@ -14,10 +14,6 @@ import ReportGraph from 'analytics/components/graph';
 import ReportSummary from 'analytics/components/summary';
 
 class OrdersReportChart extends Component {
-	constructor( props ) {
-		super( props );
-	}
-
 	getCharts() {
 		return [
 			{
