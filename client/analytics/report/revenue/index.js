@@ -17,8 +17,15 @@ import { Card, ReportFilters, TableCard, TablePlaceholder } from '@woocommerce/c
 import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getAdminLink, onQueryChange } from 'lib/nav-utils';
-import { appendTimestamp, getCurrentDates, getDateFormatsForInterval, getIntervalForQuery } from 'lib/date';
+import {
+	appendTimestamp,
+	getCurrentDates,
+	getDateFormatsForInterval,
+	getIntervalForQuery,
+} from 'lib/date';
 import OrdersReportChart from './chart';
+import { getReportChartData } from 'store/reports/utils';
+import { MAX_PER_PAGE } from 'store/constants';
 
 export class RevenueReport extends Component {
 	constructor() {
@@ -204,13 +211,19 @@ export class RevenueReport extends Component {
 	}
 
 	render() {
-		const { path, query } = this.props;
+		const { path, query, primaryQuery, secondaryQuery, primaryData, secondaryData } = this.props;
 
 		return (
 			<Fragment>
 				<ReportFilters query={ query } path={ path } />
 
-				<OrdersReportChart query={ query } />
+				<OrdersReportChart
+					query={ query }
+					primaryData={ primaryData }
+					secondaryData={ secondaryData }
+					primaryQuery={ primaryQuery }
+					secondaryQuery={ secondaryQuery }
+				/>
 				{ this.renderTable() }
 			</Fragment>
 		);
@@ -228,6 +241,27 @@ export default compose(
 		const { query } = props;
 		const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
 		const datesFromQuery = getCurrentDates( query );
+		const interval = getIntervalForQuery( query );
+		const baseArgs = {
+			order: 'asc',
+			interval,
+			per_page: MAX_PER_PAGE,
+		};
+
+		const primaryQuery = {
+			...baseArgs,
+			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
+		};
+
+		const secondaryQuery = {
+			...baseArgs,
+			after: appendTimestamp( datesFromQuery.secondary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.secondary.before, 'end' ),
+		};
+
+		const primaryData = getReportChartData( 'revenue', primaryQuery, select );
+		const secondaryData = getReportChartData( 'revenue', secondaryQuery, select );
 
 		// TODO Support hour here when viewing a single day
 		const tableQuery = {
@@ -248,6 +282,10 @@ export default compose(
 			tableData,
 			isTableDataError,
 			isTableDataRequesting,
+			primaryData,
+			secondaryData,
+			primaryQuery,
+			secondaryQuery,
 		};
 	} )
 )( RevenueReport );

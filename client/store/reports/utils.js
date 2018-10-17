@@ -9,7 +9,6 @@ import { forEach, isNull } from 'lodash';
  * Internal dependencies
  */
 import { MAX_PER_PAGE } from 'store/constants';
-import { appendTimestamp } from 'lib/date';
 
 /**
  * Returns true if a report object is empty.
@@ -37,11 +36,12 @@ export function isReportDataEmpty( report ) {
  * Returns summary number totals needed to render a report page.
  *
  * @param  {String} endpoint Report  API Endpoint
- * @param  {Object} dates  Primary and secondary dates.
+ * @param  {Object} primaryQuery Query object for primary timeseries data
+ * @param  {Object} secondaryQuery Query object for secondary timeseries data
  * @param {object} select Instance of @wordpress/select
  * @return {Object}  Object containing summary number responses.
  */
-export function getSummaryNumbers( endpoint, dates, select ) {
+export function getSummaryNumbers( endpoint, primaryQuery, secondaryQuery, select ) {
 	const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
 	const response = {
 		isRequesting: false,
@@ -52,16 +52,6 @@ export function getSummaryNumbers( endpoint, dates, select ) {
 		},
 	};
 
-	const baseQuery = {
-		interval: 'day',
-		per_page: 1, // We only need the `totals` part of the response.
-	};
-
-	const primaryQuery = {
-		...baseQuery,
-		after: appendTimestamp( dates.primary.after, 'start' ),
-		before: appendTimestamp( dates.primary.before, 'end' ),
-	};
 	const primary = getReportStats( endpoint, primaryQuery );
 	if ( isReportStatsRequesting( endpoint, primaryQuery ) ) {
 		return { ...response, isRequesting: true };
@@ -71,12 +61,6 @@ export function getSummaryNumbers( endpoint, dates, select ) {
 
 	const primaryTotals = ( primary && primary.data && primary.data.totals ) || null;
 
-	const secondaryQuery = {
-		...baseQuery,
-		per_page: 1,
-		after: appendTimestamp( dates.secondary.after, 'start' ),
-		before: appendTimestamp( dates.secondary.before, 'end' ),
-	};
 	const secondary = getReportStats( endpoint, secondaryQuery );
 	if ( isReportStatsRequesting( endpoint, secondaryQuery ) ) {
 		return { ...response, isRequesting: true };
@@ -109,9 +93,6 @@ export function getReportChartData( endpoint, query, select ) {
 			intervals: [],
 		},
 	};
-
-	query.after = appendTimestamp( query.after, 'start' );
-	query.before = appendTimestamp( query.before, 'end' );
 
 	const stats = getReportStats( endpoint, query );
 

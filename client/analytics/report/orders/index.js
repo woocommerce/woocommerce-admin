@@ -33,12 +33,16 @@ class OrdersReport extends Component {
 			orders,
 			path,
 			query,
+			primaryQuery,
+			secondaryQuery,
 			primaryData,
 			secondaryData,
 		} = this.props;
 
 		if ( primaryData.isError || isTableDataError ) {
 			let title, actionLabel, actionURL, actionCallback;
+			// @TODO: There is a possibility of inifite reload here if 'secondaryData.isError' is undefined.
+			// A refactor of error handling is under discussion
 			if ( primaryData.isError || secondaryData.isError || isTableDataError ) {
 				title = __( 'There was an error getting your stats. Please try again.', 'wc-admin' );
 				actionLabel = __( 'Reload', 'wc-admin' );
@@ -73,7 +77,13 @@ class OrdersReport extends Component {
 					filters={ filters }
 					advancedConfig={ advancedFilterConfig }
 				/>
-				<OrdersReportChart query={ query } />
+				<OrdersReportChart
+					query={ query }
+					primaryData={ primaryData }
+					secondaryData={ secondaryData }
+					primaryQuery={ primaryQuery }
+					secondaryQuery={ secondaryQuery }
+				/>
 				<OrdersReportTable
 					isRequesting={ isTableDataRequesting }
 					orders={ orders }
@@ -102,21 +112,22 @@ export default compose(
 		const datesFromQuery = getCurrentDates( query );
 		const baseArgs = {
 			order: 'asc',
-			interval: interval,
+			interval,
 			per_page: MAX_PER_PAGE,
 		};
 
-		const primaryData = getReportChartData(
-			'orders',
-			{
-				...baseArgs,
-				after: datesFromQuery.primary.after,
-				before: datesFromQuery.primary.before,
-			},
-			select
-		);
+		const primaryQuery = {
+			...baseArgs,
+			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
+		};
 
-		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-admin' );
+		const secondaryQuery = {
+			...baseArgs,
+			after: appendTimestamp( datesFromQuery.secondary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.secondary.before, 'end' ),
+		};
+
 		const tableQuery = {
 			orderby: query.orderby || 'date',
 			order: query.order || 'asc',
@@ -126,6 +137,10 @@ export default compose(
 			before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
 			status: [ 'processing', 'on-hold', 'completed' ],
 		};
+
+		const primaryData = getReportChartData( 'orders', primaryQuery, select );
+		const secondaryData = getReportChartData( 'orders', secondaryQuery, select );
+		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-admin' );
 		const orders = getOrders( tableQuery );
 		const isTableDataError = isGetOrdersError( tableQuery );
 		const isTableDataRequesting = isGetOrdersRequesting( tableQuery );
@@ -135,6 +150,9 @@ export default compose(
 			isTableDataRequesting,
 			orders,
 			primaryData,
+			secondaryData,
+			primaryQuery,
+			secondaryQuery,
 		};
 	} )
 )( OrdersReport );

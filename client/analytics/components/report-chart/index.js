@@ -4,9 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
-import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 
 /**
@@ -20,8 +18,6 @@ import {
 	getIntervalForQuery,
 	getPreviousDate,
 } from 'lib/date';
-import { getReportChartData } from 'store/reports/utils';
-import { MAX_PER_PAGE } from 'store/constants';
 import ReportError from 'analytics/components/report-error';
 
 class ReportChart extends Component {
@@ -94,41 +90,6 @@ ReportChart.propTypes = {
 	primaryData: PropTypes.object.isRequired,
 	secondaryData: PropTypes.object.isRequired,
 	selectedChart: PropTypes.object.isRequired,
-	query: PropTypes.object.isRequired,
 };
 
-export default compose(
-	withSelect( ( select, props ) => {
-		const { query, endpoint } = props;
-		const interval = getIntervalForQuery( query );
-		const datesFromQuery = getCurrentDates( query );
-		const baseArgs = {
-			order: 'asc',
-			interval: interval,
-			per_page: MAX_PER_PAGE,
-		};
-		const primaryData = getReportChartData(
-			endpoint,
-			{
-				...baseArgs,
-				after: datesFromQuery.primary.after,
-				before: datesFromQuery.primary.before,
-			},
-			select
-		);
-
-		const secondaryData = getReportChartData(
-			endpoint,
-			{
-				...baseArgs,
-				after: datesFromQuery.secondary.after,
-				before: datesFromQuery.secondary.before,
-			},
-			select
-		);
-		return {
-			primaryData,
-			secondaryData,
-		};
-	} )
-)( ReportChart );
+export default ReportChart;
