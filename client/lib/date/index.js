@@ -55,8 +55,15 @@ export const periods = [
  * @param {string} timeOfDay - Either `start` or `end` of the day.
  * @return {string} - String date with timestamp attached.
  */
-export const appendTimestamp = ( date, timeOfDay ) =>
-	timeOfDay === 'start' ? date + 'T00:00:00+00:00' : date + 'T23:59:59+00:00';
+export const appendTimestamp = ( date, timeOfDay ) => {
+	if ( timeOfDay === 'start' ) {
+		return date + 'T00:00:00+00:00';
+	}
+	if ( timeOfDay === 'end' ) {
+		return date + 'T23:59:59+00:00';
+	}
+	throw new Error( 'appendTimestamp requires second parameter to be either `start` or `end`' );
+};
 
 /**
  * Convert a string to Moment object

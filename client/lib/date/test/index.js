@@ -32,6 +32,10 @@ describe( 'appendTimestamp', () => {
 	it( 'should append `end` timestamp', () => {
 		expect( appendTimestamp( '2018-01-01', 'end' ) ).toEqual( '2018-01-01T23:59:59+00:00' );
 	} );
+
+	it( 'should throw and error if `timeOfDay` is not valid', () => {
+		expect( () => appendTimestamp( '2018-01-01' ) ).toThrow( Error );
+	} );
 } );
 
 describe( 'toMoment', () => {
