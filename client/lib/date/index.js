@@ -49,6 +49,23 @@ export const periods = [
 ];
 
 /**
+ * Adds timestamp to a string date.
+ *
+ * @param {string} date - Date as a string.
+ * @param {string} timeOfDay - Either `start` or `end` of the day.
+ * @return {string} - String date with timestamp attached.
+ */
+export const appendTimestamp = ( date, timeOfDay ) => {
+	if ( timeOfDay === 'start' ) {
+		return date + 'T00:00:00+00:00';
+	}
+	if ( timeOfDay === 'end' ) {
+		return date + 'T23:59:59+00:00';
+	}
+	throw new Error( 'appendTimestamp requires second parameter to be either `start` or `end`' );
+};
+
+/**
  * Convert a string to Moment object
  *
  * @param {string} format - localized date string format
@@ -389,14 +406,17 @@ export function getIntervalForQuery( query ) {
 	return current;
 }
 
+export const dayTicksThreshold = 180;
+
 /**
  * Returns date formats for the current interval.
  * See https://github.com/d3/d3-time-format for chart formats.
  *
  * @param  {String} interval Interval to get date formats for.
+ * @param  {Int}    [ticks] Number of ticks the axis will have.
  * @return {String} Current interval.
  */
-export function getDateFormatsForInterval( interval ) {
+export function getDateFormatsForInterval( interval, ticks = 0 ) {
 	let pointLabelFormat = 'F j, Y';
 	let tooltipFormat = '%B %d %Y';
 	let xFormat = '%Y-%m-%d';
@@ -411,7 +431,12 @@ export function getDateFormatsForInterval( interval ) {
 			tableFormat = 'h A';
 			break;
 		case 'day':
-			xFormat = '%d';
+			if ( ticks < dayTicksThreshold ) {
+				xFormat = '%d';
+			} else {
+				xFormat = '%b';
+				x2Format = '%Y';
+			}
 			break;
 		case 'week':
 			xFormat = '%d';

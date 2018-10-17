@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import { findIndex, get } from 'lodash';
+import { find, findIndex, get } from 'lodash';
 import { max as d3Max } from 'd3-array';
 import { axisBottom as d3AxisBottom, axisLeft as d3AxisLeft } from 'd3-axis';
 import { format as d3Format } from 'd3-format';
@@ -20,6 +20,7 @@ import { format as formatDate } from '@wordpress/date';
  * Internal dependencies
  */
 import { formatCurrency } from 'lib/currency';
+import { dayTicksThreshold } from 'lib/date';
 
 /**
  * Describes `smallestFactor`
@@ -27,15 +28,16 @@ import { formatCurrency } from 'lib/currency';
  * @returns {integer} smallest factor of num
  */
 export const getFactors = inputNum => {
-	const num_factors = [];
+	const numFactors = [];
 	for ( let i = 1; i <= Math.floor( Math.sqrt( inputNum ) ); i += 1 ) {
 		if ( inputNum % i === 0 ) {
-			num_factors.push( i );
-			inputNum / i !== i && num_factors.push( inputNum / i );
+			numFactors.push( i );
+			inputNum / i !== i && numFactors.push( inputNum / i );
 		}
 	}
-	num_factors.sort( ( x, y ) => x - y ); // numeric sort
-	return num_factors;
+	numFactors.sort( ( x, y ) => x - y ); // numeric sort
+
+	return numFactors;
 };
 
 /**
@@ -207,82 +209,126 @@ export const getLine = ( xLineScale, yScale ) =>
 		.y( d => yScale( d.value ) );
 
 /**
- * Describes getXTicks
- * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * Calculate the maximum number of ticks allowed in the x-axis based on the width and layout of the chart
  * @param {integer} width - calculated page width
  * @param {string} layout - standard, comparison or compact chart types
  * @returns {integer} number of x-axis ticks based on width and chart layout
  */
-export const getXTicks = ( uniqueDates, width, layout ) => {
-	// caluclate the maximum number of ticks allowed in the x-axis based on the width
-	// and layout of the chart
-	let ticks = 16;
+const calculateMaxXTicks = ( width, layout ) => {
 	if ( width < 783 ) {
-		ticks = 7;
+		return 7;
 	} else if ( width >= 783 && width < 1129 ) {
-		ticks = 12;
+		return 12;
 	} else if ( width >= 1130 && width < 1365 ) {
 		if ( layout === 'standard' ) {
-			ticks = 16;
+			return 16;
 		} else if ( layout === 'comparison' ) {
-			ticks = 12;
+			return 12;
 		} else if ( layout === 'compact' ) {
-			ticks = 7;
+			return 7;
 		}
 	} else if ( width >= 1365 ) {
 		if ( layout === 'standard' ) {
-			ticks = 31;
+			return 31;
 		} else if ( layout === 'comparison' ) {
-			ticks = 16;
+			return 16;
 		} else if ( layout === 'compact' ) {
-			ticks = 12;
+			return 12;
 		}
 	}
-	if ( uniqueDates.length <= ticks ) {
-		return uniqueDates;
+
+	return 16;
+};
+
+/**
+ * Filter out irrelevant dates so only the first date of each month is kept.
+ * @param {array} dates - string dates.
+ * @returns {array} Filtered dates.
+ */
+const getFirstDatePerMonth = dates => {
+	return dates.filter(
+		( date, i ) => i === 0 || new Date( date ).getMonth() !== new Date( dates[ i - 1 ] ).getMonth()
+	);
+};
+
+/**
+ * Get x-axis ticks given the unique dates and the increment factor.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} incrementFactor - increment factor for the visible ticks.
+ * @returns {array} Ticks for the x-axis.
+ */
+const getXTicksFromIncrementFactor = ( uniqueDates, incrementFactor ) => {
+	const ticks = [];
+
+	for ( let idx = 0; idx < uniqueDates.length; idx = idx + incrementFactor ) {
+		ticks.push( uniqueDates[ idx ] );
 	}
+
+	// If the first or last date is missing from the ticks array, add it back in.
+	if ( ticks[ 0 ] !== uniqueDates[ 0 ] ) {
+		ticks.unshift( uniqueDates[ 0 ] );
+	}
+	if ( ticks[ ticks.length - 1 ] !== uniqueDates[ uniqueDates.length - 1 ] ) {
+		ticks.push( uniqueDates[ uniqueDates.length - 1 ] );
+	}
+
+	return ticks;
+};
+
+/**
+ * Calculates the increment factor between ticks so there aren't more than maxTicks.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} maxTicks - maximum number of ticks that can be displayed in the x-axis
+ * @returns {integer} x-axis ticks increment factor
+ */
+const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
 	let factors = [];
-	let i = 0;
-	//  first we get all the factors of the length of the uniqieDates array
+	let i = 1;
+	// First we get all the factors of the length of the uniqueDates array
 	// if the number is a prime number or near prime (with 3 factors) then we
-	// step down by 1 integer and try again
+	// step down by 1 integer and try again.
 	while ( factors.length <= 3 ) {
-		factors = getFactors( uniqueDates.length - ( 1 + i ) );
+		factors = getFactors( uniqueDates.length - i );
 		i += 1;
 	}
-	let newTicks = [];
-	let factorIndex = 0;
-	// newTicks is the first tick plus the smallest factor (initiallY) etc.
-	// however, if we still end up with too many ticks we look at the next factor
-	// and try again unttil we have fewer ticks than the max
-	while ( newTicks.length > ticks || newTicks.length === 0 ) {
-		if ( newTicks.length > ticks ) {
-			factorIndex += 1;
-			newTicks = [];
-		}
-		for ( let idx = 0; idx < uniqueDates.length; idx = idx + factors[ factorIndex ] ) {
-			newTicks.push( uniqueDates[ idx ] );
-		}
+
+	return factors.find( f => uniqueDates.length / f < maxTicks );
+};
+
+/**
+ * Returns ticks for the x-axis.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} width - calculated page width
+ * @param {string} layout - standard, comparison or compact chart types
+ * @param {string} interval - string of the interval used in the graph (hour, day, week...)
+ * @returns {integer} number of x-axis ticks based on width and chart layout
+ */
+export const getXTicks = ( uniqueDates, width, layout, interval ) => {
+	const maxTicks = calculateMaxXTicks( width, layout );
+
+	if ( uniqueDates.length >= dayTicksThreshold && interval === 'day' ) {
+		uniqueDates = getFirstDatePerMonth( uniqueDates );
 	}
-	// if, for some reason, the first or last date is missing from the newTicks array, add it back in
-	if ( newTicks[ 0 ] !== uniqueDates[ 0 ] ) {
-		newTicks.unshift( uniqueDates[ 0 ] );
+	if ( uniqueDates.length <= maxTicks ) {
+		return uniqueDates;
 	}
-	if ( newTicks[ newTicks.length - 1 ] !== uniqueDates[ uniqueDates.length - 1 ] ) {
-		newTicks.push( uniqueDates[ uniqueDates.length - 1 ] );
-	}
-	return newTicks;
+
+	const incrementFactor = calculateXTicksIncrementFactor( uniqueDates, maxTicks );
+
+	return getXTicksFromIncrementFactor( uniqueDates, incrementFactor );
 };
 
 /**
  * Describes getDateSpaces
+ * @param {array} data - The chart component's `data` prop.
  * @param {array} uniqueDates - from `getUniqueDates`
  * @param {number} width - calculated width of the charting space
  * @param {function} xLineScale - from `getXLineScale`
  * @returns {array} that icnludes the date, start (x position) and width to layout the mouseover rectangles
  */
-export const getDateSpaces = ( uniqueDates, width, xLineScale ) =>
+export const getDateSpaces = ( data, uniqueDates, width, xLineScale ) =>
 	uniqueDates.map( ( d, i ) => {
+		const datapoints = find( data, { date: d } );
 		const xNow = xLineScale( new Date( d ) );
 		const xPrev =
 			i >= 1
@@ -299,6 +345,15 @@ export const getDateSpaces = ( uniqueDates, width, xLineScale ) =>
 			date: d,
 			start: uniqueDates.length > 1 ? xStart : 0,
 			width: uniqueDates.length > 1 ? xWidth : width,
+			values: Object.keys( datapoints )
+				.filter( key => key !== 'date' )
+				.map( key => {
+					return {
+						key,
+						value: datapoints[ key ].value,
+						date: d,
+					};
+				} ),
 		};
 	} );
 
@@ -316,7 +371,7 @@ export const drawAxis = ( node, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'axis' )
 		.attr( 'aria-hidden', 'true' )
-		.attr( 'transform', `translate(0,${ params.height })` )
+		.attr( 'transform', `translate(0, ${ params.height })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -327,7 +382,7 @@ export const drawAxis = ( node, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'axis axis-month' )
 		.attr( 'aria-hidden', 'true' )
-		.attr( 'transform', `translate(3, ${ params.height + 20 })` )
+		.attr( 'transform', `translate(0, ${ params.height + 20 })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -335,9 +390,7 @@ export const drawAxis = ( node, params ) => {
 					const monthDate = d instanceof Date ? d : new Date( d );
 					let prevMonth = i !== 0 ? ticks[ i - 1 ] : ticks[ i ];
 					prevMonth = prevMonth instanceof Date ? prevMonth : new Date( prevMonth );
-					return monthDate.getDate() === 1 ||
-						i === 0 ||
-						params.x2Format( monthDate ) !== params.x2Format( prevMonth )
+					return i === 0 || params.x2Format( monthDate ) !== params.x2Format( prevMonth )
 						? params.x2Format( monthDate )
 						: '';
 				} )
@@ -547,14 +600,31 @@ export const drawLines = ( node, data, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'focus' );
 
-	focus
-		.append( 'line' )
+	const focusGrid = focus
+		.append( 'g' )
 		.attr( 'class', 'focus-grid' )
+		.attr( 'opacity', '0' );
+
+	focusGrid
+		.append( 'line' )
 		.attr( 'x1', d => params.xLineScale( new Date( d.date ) ) )
 		.attr( 'y1', 0 )
 		.attr( 'x2', d => params.xLineScale( new Date( d.date ) ) )
 		.attr( 'y2', params.height )
-		.attr( 'opacity', '0' );
+		.style( 'opacity', 1 );
+
+	focusGrid
+		.selectAll( 'circle' )
+		.data( d => d.values )
+		.enter()
+		.append( 'circle' )
+		.attr( 'r', 8 )
+		.attr( 'fill', d => getColor( d.key, params ) )
+		.attr( 'stroke', '#fff' )
+		.attr( 'stroke-width', 4 )
+		.style( 'opacity', 1 )
+		.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
+		.attr( 'cy', d => params.yScale( d.value ) );
 
 	focus
 		.append( 'rect' )
