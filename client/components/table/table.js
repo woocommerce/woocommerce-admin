@@ -56,12 +56,10 @@ class Table extends Component {
 		this.state = {
 			tabIndex: null,
 			shadowStyles: {
-				transform: 'translateX(0)',
 				visibility: 'hidden',
 			},
 		};
 		this.container = createRef();
-		this.tableShadow = createRef();
 		this.sortBy = this.sortBy.bind( this );
 	}
 
@@ -100,7 +98,6 @@ class Table extends Component {
 		const scrolledToEnd = table.scrollWidth - table.scrollLeft <= table.offsetWidth;
 		this.setState( {
 			shadowStyles: {
-				transform: 'translateX(' + this.container.current.scrollLeft + 'px)',
 				visibility: scrolledToEnd ? 'hidden' : 'visible',
 			},
 		} );
