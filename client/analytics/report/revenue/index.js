@@ -17,7 +17,12 @@ import { Card, ReportFilters, TableCard, TablePlaceholder } from '@woocommerce/c
 import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { getAdminLink, onQueryChange } from 'lib/nav-utils';
-import { appendTimestamp, getCurrentDates, getDateFormatsForInterval, getIntervalForQuery } from 'lib/date';
+import {
+	appendTimestamp,
+	getCurrentDates,
+	getDateFormatsForInterval,
+	getIntervalForQuery,
+} from 'lib/date';
 import OrdersReportChart from './chart';
 import { getReportChartData } from 'store/reports/utils';
 import { MAX_PER_PAGE } from 'store/constants';
@@ -245,14 +250,14 @@ export default compose(
 
 		const primaryQuery = {
 			...baseArgs,
-			after: datesFromQuery.primary.after + 'T00:00:00+00:00',
-			before: datesFromQuery.primary.before + 'T23:59:59+00:00',
+			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
 		};
 
 		const secondaryQuery = {
 			...baseArgs,
-			after: datesFromQuery.secondary.after + 'T00:00:00+00:00',
-			before: datesFromQuery.secondary.before + 'T23:59:59+00:00',
+			after: appendTimestamp( datesFromQuery.secondary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.secondary.before, 'end' ),
 		};
 
 		const primaryData = getReportChartData( 'revenue', primaryQuery, select );
