@@ -46,6 +46,21 @@
 .woocommerce-table__table {
 	overflow-x: auto;
 
+	&:after {
+		content: '';
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 41px;
+		height: 100%;
+		background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+		visibility: hidden;
+	}
+
+	&.is-scrollable:after {
+		visibility: visible;
+	}
+
 	table {
 		border-collapse: collapse;
 		width: 100%;
@@ -55,15 +70,6 @@
 	tr:focus-within {
 		background-color: $core-grey-light-200;
 	}
-}
-
-.woocommerce-table__shadow {
-	position: absolute;
-	right: 0;
-	top: 0;
-	width: 41px;
-	height: 100%;
-	background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
 }
 
 .woocommerce-table__header,

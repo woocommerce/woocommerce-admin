@@ -55,9 +55,7 @@ class Table extends Component {
 		super( props );
 		this.state = {
 			tabIndex: null,
-			shadowStyles: {
-				visibility: 'hidden',
-			},
+			isScrollable: false,
 		};
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
@@ -97,9 +95,7 @@ class Table extends Component {
 		const table = this.container.current;
 		const scrolledToEnd = table.scrollWidth - table.scrollLeft <= table.offsetWidth;
 		this.setState( {
-			shadowStyles: {
-				visibility: scrolledToEnd ? 'hidden' : 'visible',
-			},
+			isScrollable: scrolledToEnd ? false : true,
 		} );
 	};
 
@@ -115,7 +111,9 @@ class Table extends Component {
 			rows,
 		} = this.props;
 		const { tabIndex } = this.state;
-		const classes = classnames( 'woocommerce-table__table', classNames );
+		const classes = classnames( 'woocommerce-table__table', classNames, {
+			'is-scrollable': this.state.isScrollable,
+		} );
 		const sortedBy = query.orderby || get( find( headers, { defaultSort: true } ), 'key', false );
 		const sortDir = query.order || DESC;
 
@@ -211,7 +209,6 @@ class Table extends Component {
 						) ) }
 					</tbody>
 				</table>
-				<div className="woocommerce-table__shadow" style={ this.state.shadowStyles } />
 			</div>
 		);
 	}
