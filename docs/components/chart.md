@@ -20,12 +20,27 @@ An array of data.
 
 Format to parse dates into d3 time format
 
+### `pointLabelFormat`
+
+- Type: String
+- Default: null
+
+Date format of the point labels (might be used in tooltips and ARIA properties).
+
 ### `tooltipFormat`
 
 - Type: String
-- Default: `'%Y-%m-%d'`
+- Default: `'%B %d, %Y'`
 
-A datetime formatting string to format the title of the toolip, passed to d3TimeFormat.
+A datetime formatting string to format the date displayed as the title of the toolip
+if `tooltipTitle` is missing, passed to d3TimeFormat.
+
+### `tooltipTitle`
+
+- Type: String
+- Default: null
+
+A string to use as a title for the tooltip. Takes preference over `tooltipFormat`.
 
 ### `xFormat`
 
@@ -55,6 +70,14 @@ A number formatting string, passed to d3Format.
 
 `standard` (default) legend layout in the header or `comparison` moves legend layout
 to the left or 'compact' has the legend below
+
+### `mode`
+
+- Type: One of: 'item-comparison', 'time-comparison'
+- Default: `'item-comparison'`
+
+`item-comparison` (default) or `time-comparison`, this is used to generate correct
+ARIA properties.
 
 ### `title`
 
@@ -149,6 +172,13 @@ Interval specification (hourly, daily, weekly etc.)
 `standard` (default) legend layout in the header or `comparison` moves legend layout
 to the left or 'compact' has the legend below
 
+### `pointLabelFormat`
+
+- Type: String
+- Default: null
+
+Date format of the point labels (might be used in tooltips and ARIA properties).
+
 ### `margin`
 
 - Type: Object
@@ -165,6 +195,14 @@ to the left or 'compact' has the legend below
 
 Margins for axis and chart padding.
 
+### `mode`
+
+- Type: One of: 'item-comparison', 'time-comparison'
+- Default: `'item-comparison'`
+
+`items-comparison` (default) or `time-comparison`, this is used to generate correct
+ARIA properties.
+
 ### `orderedKeys`
 
 - Type: Array
@@ -175,9 +213,17 @@ The list of labels for this chart.
 ### `tooltipFormat`
 
 - Type: String
-- Default: `'%Y-%m-%d'`
+- Default: `'%B %d, %Y'`
 
-A datetime formatting string to format the title of the toolip, passed to d3TimeFormat.
+A datetime formatting string to format the date displayed as the title of the toolip
+if `tooltipTitle` is missing, passed to d3TimeFormat.
+
+### `tooltipTitle`
+
+- Type: String
+- Default: null
+
+A string to use as a title for the tooltip. Takes preference over `tooltipFormat`.
 
 ### `type`
 
@@ -270,6 +316,4 @@ Display legend items as a `row` or `column` inside a flex-box.
 
 `ChartPlaceholder` displays a large loading indiciator for use in place of a `Chart` while data is loading.
 
-Props
------
 

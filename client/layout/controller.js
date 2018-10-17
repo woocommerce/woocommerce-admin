@@ -12,6 +12,7 @@ import { find } from 'lodash';
 import Analytics from 'analytics';
 import AnalyticsReport from 'analytics/report';
 import Dashboard from 'dashboard';
+import DevDocs from 'devdocs';
 
 const getPages = () => {
 	const pages = [
@@ -29,6 +30,16 @@ const getPages = () => {
 			container: AnalyticsReport,
 			path: '/analytics/:report',
 			wpMenu: 'toplevel_page_wc-admin--analytics',
+		},
+		{
+			container: DevDocs,
+			path: '/devdocs',
+			wpMenu: 'toplevel_page_woocommerce',
+		},
+		{
+			container: DevDocs,
+			path: '/devdocs/:component',
+			wpMenu: 'toplevel_page_woocommerce',
 		},
 	];
 
@@ -50,20 +61,28 @@ class Controller extends Component {
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
 window.wpNavMenuClassChange = function( menuClass, pathname ) {
 	const path = '/' === pathname ? '' : '#' + pathname;
-	jQuery( '.current' ).each( function( i, obj ) {
-		jQuery( obj ).removeClass( 'current' );
+	Array.from( document.getElementsByClassName( 'current' ) ).forEach( function( item ) {
+		item.classList.remove( 'current' );
 	} );
-	jQuery( '.wp-has-current-submenu' )
-		.removeClass( 'wp-has-current-submenu' )
-		.removeClass( 'wp-menu-open' )
-		.removeClass( 'selected' )
-		.addClass( 'wp-not-current-submenu menu-top' );
-	jQuery( 'li > a[href$="admin.php?page=wc-admin' + path + '"]' )
-		.parent()
-		.addClass( 'current' );
-	jQuery( '#' + menuClass )
-		.removeClass( 'wp-not-current-submenu' )
-		.addClass( 'wp-has-current-submenu wp-menu-open current' );
+
+	const submenu = document.querySelector( '.wp-has-current-submenu' );
+	submenu.classList.remove( 'wp-has-current-submenu' );
+	submenu.classList.remove( 'wp-menu-open' );
+	submenu.classList.remove( 'selected' );
+	submenu.classList.add( 'wp-not-current-submenu' );
+	submenu.classList.add( 'menu-top' );
+
+	Array.from(
+		document.querySelectorAll( `li > a[href$="admin.php?page=wc-admin${ path }"]` )
+	).forEach( function( item ) {
+		item.parentElement.classList.add( 'current' );
+	} );
+
+	const currentMenu = document.querySelector( '#' + menuClass );
+	currentMenu.classList.remove( 'wp-not-current-submenu' );
+	currentMenu.classList.add( 'wp-has-current-submenu' );
+	currentMenu.classList.add( 'wp-menu-open' );
+	currentMenu.classList.add( 'current' );
 };
 
 export { Controller, getPages };

@@ -99,8 +99,11 @@ class D3Chart extends Component {
 			dateParser,
 			height,
 			layout,
+			interval,
 			margin,
+			mode,
 			orderedKeys,
+			pointLabelFormat,
 			tooltipFormat,
 			tooltipTitle,
 			type,
@@ -123,7 +126,7 @@ class D3Chart extends Component {
 		const uniqueDates = getUniqueDates( lineData, parseDate );
 		const xLineScale = getXLineScale( uniqueDates, adjWidth );
 		const xScale = getXScale( uniqueDates, adjWidth );
-		const xTicks = getXTicks( uniqueDates, adjWidth, layout );
+		const xTicks = getXTicks( uniqueDates, adjWidth, layout, interval );
 		return {
 			colorScheme,
 			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
@@ -131,7 +134,9 @@ class D3Chart extends Component {
 			line: getLine( xLineScale, yScale ),
 			lineData,
 			margin,
+			mode,
 			orderedKeys: newOrderedKeys,
+			pointLabelFormat,
 			parseDate,
 			scale,
 			tooltipFormat: d3TimeFormat( tooltipFormat ),
@@ -207,6 +212,10 @@ D3Chart.propTypes = {
 	 */
 	layout: PropTypes.oneOf( [ 'standard', 'comparison', 'compact' ] ),
 	/**
+	 * Date format of the point labels (might be used in tooltips and ARIA properties).
+	 */
+	pointLabelFormat: PropTypes.string,
+	/**
 	 * Margins for axis and chart padding.
 	 */
 	margin: PropTypes.shape( {
@@ -215,6 +224,11 @@ D3Chart.propTypes = {
 		right: PropTypes.number,
 		top: PropTypes.number,
 	} ),
+	/**
+	 * `items-comparison` (default) or `time-comparison`, this is used to generate correct
+	 * ARIA properties.
+	 */
+	mode: PropTypes.oneOf( [ 'item-comparison', 'time-comparison' ] ),
 	/**
 	 * The list of labels for this chart.
 	 */
@@ -261,6 +275,7 @@ D3Chart.defaultProps = {
 		top: 20,
 	},
 	layout: 'standard',
+	mode: 'item-comparison',
 	tooltipFormat: '%B %d, %Y',
 	type: 'line',
 	width: 600,

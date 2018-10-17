@@ -2,44 +2,103 @@
 /**
  * External dependencies
  */
-import { Fragment } from '@wordpress/element';
-import { SelectControl } from '@wordpress/components';
-import { partial } from 'lodash';
+import { Component } from '@wordpress/element';
+import { SelectControl, Spinner } from '@wordpress/components';
+import { find, partial } from 'lodash';
 import PropTypes from 'prop-types';
-import { withInstanceId } from '@wordpress/compose';
+import interpolateComponents from 'interpolate-components';
+import classnames from 'classnames';
 
-const SelectFilter = ( { config, filter, instanceId, onFilterChange } ) => {
-	const { key, rule, value } = filter;
-	const { input, labels, rules } = config;
-	return (
-		<Fragment>
-			<div
-				id={ `${ key }-${ instanceId }` }
-				className="woocommerce-filters-advanced__fieldset-legend"
-			>
-				{ labels.title }
-			</div>
-			{ rule && (
-				<SelectControl
-					className="woocommerce-filters-advanced__list-specifier"
-					options={ rules }
-					value={ rule }
-					onChange={ partial( onFilterChange, key, 'rule' ) }
-					aria-label={ labels.rule }
-				/>
-			) }
-			<div className="woocommerce-filters-advanced__list-selector">
-				<SelectControl
-					className="woocommerce-filters-advanced__list-select"
-					options={ input.options }
-					value={ value }
-					onChange={ partial( onFilterChange, filter.key, 'value' ) }
-					aria-labelledby={ `${ key }-${ instanceId }` }
-				/>
-			</div>
-		</Fragment>
-	);
-};
+/**
+ * Internal dependencies
+ */
+import { getDefaultOptionValue } from './utils';
+
+class SelectFilter extends Component {
+	constructor( { filter, config, onFilterChange } ) {
+		super( ...arguments );
+
+		const options = config.input.options;
+		this.state = { options };
+
+		this.updateOptions = this.updateOptions.bind( this );
+
+		if ( ! options && config.input.getOptions ) {
+			config.input
+				.getOptions()
+				.then( this.updateOptions )
+				.then( returnedOptions => {
+					if ( ! filter.value ) {
+						const value = getDefaultOptionValue( config, returnedOptions );
+						onFilterChange( filter.key, 'value', value );
+					}
+				} );
+		}
+	}
+
+	updateOptions( options ) {
+		this.setState( { options } );
+		return options;
+	}
+
+	getLegend( filter, config ) {
+		const rule = find( config.rules, { value: filter.rule } ) || {};
+		const value = find( config.input.options, { value: filter.value } ) || {};
+		return interpolateComponents( {
+			mixedString: config.labels.title,
+			components: {
+				filter: <span>{ value.label }</span>,
+				rule: <span>{ rule.label }</span>,
+			},
+		} );
+	}
+
+	render() {
+		const { config, filter, onFilterChange, isEnglish } = this.props;
+		const { options } = this.state;
+		const { key, rule, value } = filter;
+		const { labels, rules } = config;
+		const children = interpolateComponents( {
+			mixedString: labels.title,
+			components: {
+				rule: (
+					<SelectControl
+						className="woocommerce-filters-advanced__rule"
+						options={ rules }
+						value={ rule }
+						onChange={ partial( onFilterChange, key, 'rule' ) }
+						aria-label={ labels.rule }
+					/>
+				),
+				filter: options ? (
+					<SelectControl
+						className="woocommerce-filters-advanced__input"
+						options={ options }
+						value={ value }
+						onChange={ partial( onFilterChange, filter.key, 'value' ) }
+						aria-label={ labels.filter }
+					/>
+				) : (
+					<Spinner />
+				),
+			},
+		} );
+		/*eslint-disable jsx-a11y/no-noninteractive-tabindex*/
+		return (
+			<fieldset tabIndex="0">
+				<legend className="screen-reader-text">{ this.getLegend( filter, config ) }</legend>
+				<div
+					className={ classnames( 'woocommerce-filters-advanced__fieldset', {
+						'is-english': isEnglish,
+					} ) }
+				>
+					{ children }
+				</div>
+			</fieldset>
+		);
+		/*eslint-enable jsx-a11y/no-noninteractive-tabindex*/
+	}
+}
 
 SelectFilter.propTypes = {
 	/**
@@ -49,6 +108,7 @@ SelectFilter.propTypes = {
 		labels: PropTypes.shape( {
 			rule: PropTypes.string,
 			title: PropTypes.string,
+			filter: PropTypes.string,
 		} ),
 		rules: PropTypes.arrayOf( PropTypes.object ),
 		input: PropTypes.object,
@@ -67,4 +127,4 @@ SelectFilter.propTypes = {
 	onFilterChange: PropTypes.func.isRequired,
 };
 
-export default withInstanceId( SelectFilter );
+export default SelectFilter;

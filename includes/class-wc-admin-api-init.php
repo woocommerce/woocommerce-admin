@@ -21,17 +21,14 @@ class WC_Admin_Api_Init {
 		// Hook in data stores.
 		add_filter( 'woocommerce_data_stores', array( 'WC_Admin_Api_Init', 'add_data_stores' ) );
 		// Add wc-admin report tables to list of WooCommerce tables.
-		add_filter( 'woocommerce_install_get_tables', array( 'WC_Admin_Api_Init', 'add_report_tables' ) );
+		add_filter( 'woocommerce_install_get_tables', array( 'WC_Admin_Api_Init', 'add_tables' ) );
 		// REST API extensions init.
 		add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
 		add_filter( 'rest_endpoints', array( 'WC_Admin_Api_Init', 'filter_rest_endpoints' ), 10, 1 );
 		add_filter( 'woocommerce_debug_tools', array( 'WC_Admin_Api_Init', 'add_regenerate_tool' ) );
-		// Initialize report classes.
-		add_action( 'woocommerce_after_register_post_type', array( 'WC_Admin_Api_Init', 'orders_data_store_init' ), 20 );
-		add_action( 'woocommerce_after_register_post_type', array( 'WC_Admin_Api_Init', 'order_product_lookup_store_init' ), 20 );
 
-		// Create tables.
-		$this->create_db_tables();
+		// Initialize Orders data store class's static vars.
+		add_action( 'woocommerce_after_register_post_type', array( 'WC_Admin_Api_Init', 'orders_data_store_init' ), 20 );
 	}
 
 	/**
@@ -52,12 +49,20 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-products-stats-query.php';
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-categories-query.php';
 
-		// Reports data stores.
+		// Data stores.
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-orders-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-products-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-products-stats-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-categories-data-store.php';
+
+		// Data triggers.
+		require_once dirname( __FILE__ ) . '/wc-admin-order-functions.php';
+		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-notes-data-store.php';
+
+		// CRUD classes.
+		require_once dirname( __FILE__ ) . '/class-wc-admin-note.php';
+		require_once dirname( __FILE__ ) . '/class-wc-admin-notes.php';
 	}
 
 	/**
@@ -109,18 +114,18 @@ class WC_Admin_Api_Init {
 	public static function filter_rest_endpoints( $endpoints ) {
 		// Override GET /wc/v3/system_status/tools.
 		if ( isset( $endpoints['/wc/v3/system_status/tools'] )
-		     && isset( $endpoints['/wc/v3/system_status/tools'][1] )
-		     && isset( $endpoints['/wc/v3/system_status/tools'][0] )
-		     && $endpoints['/wc/v3/system_status/tools'][1]['callback'][0] instanceof WC_Admin_REST_System_Status_Tools_Controller
+			&& isset( $endpoints['/wc/v3/system_status/tools'][1] )
+			&& isset( $endpoints['/wc/v3/system_status/tools'][0] )
+			&& $endpoints['/wc/v3/system_status/tools'][1]['callback'][0] instanceof WC_Admin_REST_System_Status_Tools_Controller
 		) {
 			$endpoints['/wc/v3/system_status/tools'][0] = $endpoints['/wc/v3/system_status/tools'][1];
 		}
 		// // Override GET & PUT for /wc/v3/system_status/tools.
 		if ( isset( $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'] )
-		     && isset( $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][3] )
-		     && isset( $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][2] )
-		     && $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][2]['callback'][0] instanceof WC_Admin_REST_System_Status_Tools_Controller
-		     && $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][3]['callback'][0] instanceof WC_Admin_REST_System_Status_Tools_Controller
+			&& isset( $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][3] )
+			&& isset( $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][2] )
+			&& $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][2]['callback'][0] instanceof WC_Admin_REST_System_Status_Tools_Controller
+			&& $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][3]['callback'][0] instanceof WC_Admin_REST_System_Status_Tools_Controller
 		) {
 			$endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][0] = $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][2];
 			$endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][1] = $endpoints['/wc/v3/system_status/tools/(?P<id>[\w-]+)'][3];
@@ -128,14 +133,22 @@ class WC_Admin_Api_Init {
 
 		// Override GET /wc/v3/reports.
 		if ( isset( $endpoints['/wc/v3/reports'] )
-		     && isset( $endpoints['/wc/v3/reports'][1] )
-		     && isset( $endpoints['/wc/v3/reports'][0] )
-		     && $endpoints['/wc/v3/reports'][1]['callback'][0] instanceof WC_Admin_REST_Reports_Controller
+			&& isset( $endpoints['/wc/v3/reports'][1] )
+			&& isset( $endpoints['/wc/v3/reports'][0] )
+			&& $endpoints['/wc/v3/reports'][1]['callback'][0] instanceof WC_Admin_REST_Reports_Controller
 		) {
 			$endpoints['/wc/v3/reports'][0] = $endpoints['/wc/v3/reports'][1];
 		}
 
 		return $endpoints;
+	}
+
+	/**
+	 * Regenerate data for reports.
+	 */
+	public static function regenrate_report_data() {
+		WC_Admin_Reports_Orders_Data_Store::queue_order_stats_repopulate_database();
+		self::order_product_lookup_store_init();
 	}
 
 	/**
@@ -149,10 +162,10 @@ class WC_Admin_Api_Init {
 			$tools,
 			array(
 				'rebuild_stats' => array(
-					'name'     => __( 'Rebuild reports data', 'woocommerce' ),
-					'button'   => __( 'Rebuild reports', 'woocommerce' ),
-					'desc'     => __( 'This tool will rebuild all of the information used by the reports.', 'woocommerce' ),
-					'callback' => array( 'WC_Admin_Reports_Orders_Data_Store', 'queue_order_stats_repopulate_database' ),
+					'name'     => __( 'Rebuild reports data', 'wc-admin' ),
+					'button'   => __( 'Rebuild reports', 'wc-admin' ),
+					'desc'     => __( 'This tool will rebuild all of the information used by the reports.', 'wc-admin' ),
+					'callback' => array( 'WC_Admin_Api_Init', 'regenrate_report_data' ),
 				),
 			)
 		);
@@ -166,12 +179,13 @@ class WC_Admin_Api_Init {
 	}
 
 	/**
-	 * Init orders product looup store.
+	 * Init orders product lookup store.
 	 *
 	 * @param WC_Background_Updater|null $updater Updater instance.
 	 * @return bool
 	 */
 	public static function order_product_lookup_store_init( $updater = null ) {
+		// TODO: this needs to be updated a bit, as it no longer runs as a part of WC_Install, there is no bg updater.
 		global $wpdb;
 
 		$orders = get_transient( 'wc_update_350_all_orders' );
@@ -239,17 +253,18 @@ class WC_Admin_Api_Init {
 				'report-products'       => 'WC_Admin_Reports_Products_Data_Store',
 				'report-products-stats' => 'WC_Admin_Reports_Products_Stats_Data_Store',
 				'report-categories'     => 'WC_Admin_Reports_Categories_Data_Store',
+				'admin-note'            => 'WC_Admin_Notes_Data_Store',
 			)
 		);
 	}
 
 	/**
-	 * Adds report tables.
+	 * Adds new tables.
 	 *
 	 * @param array $wc_tables List of WooCommerce tables.
 	 * @return array
 	 */
-	public static function add_report_tables( $wc_tables ) {
+	public static function add_tables( $wc_tables ) {
 		global $wpdb;
 
 		return array_merge(
@@ -260,6 +275,8 @@ class WC_Admin_Api_Init {
 				"{$wpdb->prefix}wc_order_product_lookup",
 				"{$wpdb->prefix}wc_order_tax_lookup",
 				"{$wpdb->prefix}wc_order_coupon_lookup",
+				"{$wpdb->prefix}woocommerce_admin_notes",
+				"{$wpdb->prefix}woocommerce_admin_note_actions",
 			)
 		);
 	}
@@ -323,7 +340,32 @@ class WC_Admin_Api_Init {
 			KEY order_id (order_id),
 			KEY coupon_id (coupon_id),
 			KEY date_created (date_created)
-		  ) $collate;";
+		  ) $collate;
+			CREATE TABLE {$wpdb->prefix}woocommerce_admin_notes (
+				note_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+				name varchar(255) NOT NULL,
+				type varchar(20) NOT NULL,
+				locale varchar(20) NOT NULL,
+				title longtext NOT NULL,
+				content longtext NOT NULL,
+				icon varchar(200) NOT NULL,
+				content_data longtext NULL default null,
+				status varchar(200) NOT NULL,
+				source varchar(200) NOT NULL,
+				date_created datetime NOT NULL default '0000-00-00 00:00:00',
+				date_reminder datetime NULL default null,
+				PRIMARY KEY (note_id)
+				) $collate;
+			CREATE TABLE {$wpdb->prefix}woocommerce_admin_note_actions (
+				action_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+				note_id BIGINT UNSIGNED NOT NULL,
+				name varchar(255) NOT NULL,
+				label varchar(255) NOT NULL,
+				query longtext NOT NULL,
+				PRIMARY KEY (action_id),
+				KEY note_id (note_id)
+				) $collate;
+			";
 
 		return $tables;
 	}
@@ -331,10 +373,21 @@ class WC_Admin_Api_Init {
 	/**
 	 * Create database tables.
 	 */
-	protected function create_db_tables() {
+	public static function create_db_tables() {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		dbDelta( self::get_schema() );
+	}
+
+	/**
+	 * Install plugin.
+	 */
+	public static function install() {
+		// Create tables.
+		self::create_db_tables();
+
+		// Initialize report tables.
+		add_action( 'woocommerce_after_register_post_type', array( 'WC_Admin_Api_Init', 'order_product_lookup_store_init' ), 20 );
 	}
 
 }
