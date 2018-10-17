@@ -29,7 +29,7 @@ class ReportChart extends Component {
 		const { primaryData, secondaryData, selectedChart, query } = this.props;
 
 		if ( primaryData.isError || secondaryData.isError ) {
-			return <ReportError isError={ true } />;
+			return <ReportError isError />;
 		}
 
 		if ( primaryData.isRequesting || secondaryData.isRequesting ) {

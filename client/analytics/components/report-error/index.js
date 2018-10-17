@@ -41,8 +41,8 @@ class ReportError extends Component {
 }
 
 ReportError.propTypes = {
-	isError: PropTypes.boolean,
-	isEmpty: PropTypes.boolean,
+	isError: PropTypes.bool,
+	isEmpty: PropTypes.bool,
 };
 
 export default ReportError;

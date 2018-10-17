@@ -23,7 +23,7 @@ class ReportSummary extends Component {
 		const { selectedChart, charts } = this.props;
 
 		if ( this.props.summaryNumbers.isError ) {
-			return <ReportError isError={ true } />;
+			return <ReportError isError />;
 		}
 
 		if ( this.props.summaryNumbers.isRequesting ) {
