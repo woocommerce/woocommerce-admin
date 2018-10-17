@@ -54,7 +54,6 @@ export default class OrdersReportTable extends Component {
 				label: __( 'Order #', 'wc-admin' ),
 				key: 'id',
 				required: true,
-				isLeftAligned: true,
 				isSortable: true,
 			},
 			{
