@@ -241,14 +241,13 @@ const calculateMaxXTicks = ( width, layout ) => {
 };
 
 /**
- * Filter out irrelevant dates from uniqueDates if there are too many
- * @param {array} uniqueDates - all the unique dates from the input data for the chart
- * @returns {integer} Unique dates filtered
+ * Filter out irrelevant dates so only the first date of each month is kept.
+ * @param {array} dates - string dates.
+ * @returns {array} Filtered dates.
  */
-const filterXAxisDates = uniqueDates => {
-	return uniqueDates.filter(
-		( date, i ) =>
-			i === 0 || new Date( date ).getMonth() !== new Date( uniqueDates[ i - 1 ] ).getMonth()
+const getFirstDatePerMonth = dates => {
+	return dates.filter(
+		( date, i ) => i === 0 || new Date( date ).getMonth() !== new Date( dates[ i - 1 ] ).getMonth()
 	);
 };
 
@@ -256,7 +255,7 @@ const filterXAxisDates = uniqueDates => {
  * Get x-axis ticks given the unique dates and the increment factor.
  * @param {array} uniqueDates - all the unique dates from the input data for the chart
  * @param {integer} incrementFactor - increment factor for the visible ticks.
- * @returns {integer} Ticks for the x-axis.
+ * @returns {array} Ticks for the x-axis.
  */
 const getXTicksFromIncrementFactor = ( uniqueDates, incrementFactor ) => {
 	const ticks = [];
@@ -308,7 +307,7 @@ export const getXTicks = ( uniqueDates, width, layout, interval ) => {
 	const maxTicks = calculateMaxXTicks( width, layout );
 
 	if ( uniqueDates.length > dayTicksThreshold && interval === 'day' ) {
-		uniqueDates = filterXAxisDates( uniqueDates );
+		uniqueDates = getFirstDatePerMonth( uniqueDates );
 	}
 	if ( uniqueDates.length <= maxTicks ) {
 		return uniqueDates;
