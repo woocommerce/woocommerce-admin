@@ -99,9 +99,13 @@ class D3Chart extends Component {
 			dateParser,
 			height,
 			layout,
+			interval,
 			margin,
+			mode,
 			orderedKeys,
+			pointLabelFormat,
 			tooltipFormat,
+			tooltipTitle,
 			type,
 			xFormat,
 			x2Format,
@@ -122,7 +126,7 @@ class D3Chart extends Component {
 		const uniqueDates = getUniqueDates( lineData, parseDate );
 		const xLineScale = getXLineScale( uniqueDates, adjWidth );
 		const xScale = getXScale( uniqueDates, adjWidth );
-		const xTicks = getXTicks( uniqueDates, adjWidth, layout );
+		const xTicks = getXTicks( uniqueDates, adjWidth, layout, interval );
 		return {
 			colorScheme,
 			dateSpaces: getDateSpaces( uniqueDates, adjWidth, xLineScale ),
@@ -130,10 +134,13 @@ class D3Chart extends Component {
 			line: getLine( xLineScale, yScale ),
 			lineData,
 			margin,
+			mode,
 			orderedKeys: newOrderedKeys,
+			pointLabelFormat,
 			parseDate,
 			scale,
 			tooltipFormat: d3TimeFormat( tooltipFormat ),
+			tooltipTitle,
 			type,
 			uniqueDates,
 			uniqueKeys,
@@ -205,6 +212,10 @@ D3Chart.propTypes = {
 	 */
 	layout: PropTypes.oneOf( [ 'standard', 'comparison', 'compact' ] ),
 	/**
+	 * Date format of the point labels (might be used in tooltips and ARIA properties).
+	 */
+	pointLabelFormat: PropTypes.string,
+	/**
 	 * Margins for axis and chart padding.
 	 */
 	margin: PropTypes.shape( {
@@ -214,13 +225,23 @@ D3Chart.propTypes = {
 		top: PropTypes.number,
 	} ),
 	/**
+	 * `items-comparison` (default) or `time-comparison`, this is used to generate correct
+	 * ARIA properties.
+	 */
+	mode: PropTypes.oneOf( [ 'item-comparison', 'time-comparison' ] ),
+	/**
 	 * The list of labels for this chart.
 	 */
 	orderedKeys: PropTypes.array,
 	/**
-	 * A datetime formatting string to format the title of the toolip, passed to d3TimeFormat.
+	 * A datetime formatting string to format the date displayed as the title of the toolip
+	 * if `tooltipTitle` is missing, passed to d3TimeFormat.
 	 */
 	tooltipFormat: PropTypes.string,
+	/**
+	 * A string to use as a title for the tooltip. Takes preference over `tooltipFormat`.
+	 */
+	tooltipTitle: PropTypes.string,
 	/**
 	 * Chart type of either `line` or `bar`.
 	 */
@@ -254,7 +275,8 @@ D3Chart.defaultProps = {
 		top: 20,
 	},
 	layout: 'standard',
-	tooltipFormat: '%Y-%m-%d',
+	mode: 'item-comparison',
+	tooltipFormat: '%B %d, %Y',
 	type: 'line',
 	width: 600,
 	xFormat: '%Y-%m-%d',

@@ -3,8 +3,7 @@
 /**
  * External dependencies
  */
-
-import { findIndex } from 'lodash';
+import { findIndex, get } from 'lodash';
 import { max as d3Max } from 'd3-array';
 import { axisBottom as d3AxisBottom, axisLeft as d3AxisLeft } from 'd3-axis';
 import { format as d3Format } from 'd3-format';
@@ -13,12 +12,15 @@ import {
 	scaleLinear as d3ScaleLinear,
 	scaleTime as d3ScaleTime,
 } from 'd3-scale';
-import { event as d3Event, mouse as d3Mouse, select as d3Select } from 'd3-selection';
+import { event as d3Event, select as d3Select } from 'd3-selection';
 import { line as d3Line } from 'd3-shape';
+import { format as formatDate } from '@wordpress/date';
+
 /**
  * Internal dependencies
  */
 import { formatCurrency } from 'lib/currency';
+import { dayTicksThreshold } from 'lib/date';
 
 /**
  * Describes `smallestFactor`
@@ -26,15 +28,16 @@ import { formatCurrency } from 'lib/currency';
  * @returns {integer} smallest factor of num
  */
 export const getFactors = inputNum => {
-	const num_factors = [];
+	const numFactors = [];
 	for ( let i = 1; i <= Math.floor( Math.sqrt( inputNum ) ); i += 1 ) {
 		if ( inputNum % i === 0 ) {
-			num_factors.push( i );
-			inputNum / i !== i && num_factors.push( inputNum / i );
+			numFactors.push( i );
+			inputNum / i !== i && numFactors.push( inputNum / i );
 		}
 	}
-	num_factors.sort( ( x, y ) => x - y ); // numeric sort
-	return num_factors;
+	numFactors.sort( ( x, y ) => x - y ); // numeric sort
+
+	return numFactors;
 };
 
 /**
@@ -64,7 +67,7 @@ export const getOrderedKeys = ( data, uniqueKeys ) =>
 		.map( key => ( {
 			key,
 			focus: true,
-			total: data.reduce( ( a, c ) => a + c[ key ], 0 ),
+			total: data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 			visible: true,
 		} ) )
 		.sort( ( a, b ) => b.total - a.total );
@@ -83,7 +86,8 @@ export const getLineData = ( data, orderedKeys ) =>
 		values: data.map( d => ( {
 			date: d.date,
 			focus: row.focus,
-			value: d[ row.key ],
+			label: get( d, [ row.key, 'label' ], '' ),
+			value: get( d, [ row.key, 'value' ], 0 ),
 			visible: row.visible,
 		} ) ),
 	} ) );
@@ -205,71 +209,113 @@ export const getLine = ( xLineScale, yScale ) =>
 		.y( d => yScale( d.value ) );
 
 /**
- * Describes getXTicks
- * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * Calculate the maximum number of ticks allowed in the x-axis based on the width and layout of the chart
  * @param {integer} width - calculated page width
  * @param {string} layout - standard, comparison or compact chart types
  * @returns {integer} number of x-axis ticks based on width and chart layout
  */
-export const getXTicks = ( uniqueDates, width, layout ) => {
-	// caluclate the maximum number of ticks allowed in the x-axis based on the width
-	// and layout of the chart
-	let ticks = 16;
+const calculateMaxXTicks = ( width, layout ) => {
 	if ( width < 783 ) {
-		ticks = 7;
+		return 7;
 	} else if ( width >= 783 && width < 1129 ) {
-		ticks = 12;
+		return 12;
 	} else if ( width >= 1130 && width < 1365 ) {
 		if ( layout === 'standard' ) {
-			ticks = 16;
+			return 16;
 		} else if ( layout === 'comparison' ) {
-			ticks = 12;
+			return 12;
 		} else if ( layout === 'compact' ) {
-			ticks = 7;
+			return 7;
 		}
 	} else if ( width >= 1365 ) {
 		if ( layout === 'standard' ) {
-			ticks = 31;
+			return 31;
 		} else if ( layout === 'comparison' ) {
-			ticks = 16;
+			return 16;
 		} else if ( layout === 'compact' ) {
-			ticks = 12;
+			return 12;
 		}
 	}
-	if ( uniqueDates.length <= ticks ) {
-		return uniqueDates;
+
+	return 16;
+};
+
+/**
+ * Filter out irrelevant dates so only the first date of each month is kept.
+ * @param {array} dates - string dates.
+ * @returns {array} Filtered dates.
+ */
+const getFirstDatePerMonth = dates => {
+	return dates.filter(
+		( date, i ) => i === 0 || new Date( date ).getMonth() !== new Date( dates[ i - 1 ] ).getMonth()
+	);
+};
+
+/**
+ * Get x-axis ticks given the unique dates and the increment factor.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} incrementFactor - increment factor for the visible ticks.
+ * @returns {array} Ticks for the x-axis.
+ */
+const getXTicksFromIncrementFactor = ( uniqueDates, incrementFactor ) => {
+	const ticks = [];
+
+	for ( let idx = 0; idx < uniqueDates.length; idx = idx + incrementFactor ) {
+		ticks.push( uniqueDates[ idx ] );
 	}
+
+	// If the first or last date is missing from the ticks array, add it back in.
+	if ( ticks[ 0 ] !== uniqueDates[ 0 ] ) {
+		ticks.unshift( uniqueDates[ 0 ] );
+	}
+	if ( ticks[ ticks.length - 1 ] !== uniqueDates[ uniqueDates.length - 1 ] ) {
+		ticks.push( uniqueDates[ uniqueDates.length - 1 ] );
+	}
+
+	return ticks;
+};
+
+/**
+ * Calculates the increment factor between ticks so there aren't more than maxTicks.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} maxTicks - maximum number of ticks that can be displayed in the x-axis
+ * @returns {integer} x-axis ticks increment factor
+ */
+const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
 	let factors = [];
-	let i = 0;
-	//  first we get all the factors of the length of the uniqieDates array
+	let i = 1;
+	// First we get all the factors of the length of the uniqueDates array
 	// if the number is a prime number or near prime (with 3 factors) then we
-	// step down by 1 integer and try again
+	// step down by 1 integer and try again.
 	while ( factors.length <= 3 ) {
-		factors = getFactors( uniqueDates.length - ( 1 + i ) );
+		factors = getFactors( uniqueDates.length - i );
 		i += 1;
 	}
-	let newTicks = [];
-	let factorIndex = 0;
-	// newTicks is the first tick plus the smallest factor (initiallY) etc.
-	// however, if we still end up with too many ticks we look at the next factor
-	// and try again unttil we have fewer ticks than the max
-	while ( newTicks.length > ticks || newTicks.length === 0 ) {
-		if ( newTicks.length > ticks ) {
-			factorIndex += 1;
-			newTicks = [];
-		}
-		for ( let idx = 0; idx < uniqueDates.length; idx = idx + factors[ factorIndex ] ) {
-			newTicks.push( uniqueDates[ idx ] );
-		}
+
+	return factors.find( f => uniqueDates.length / f < maxTicks );
+};
+
+/**
+ * Returns ticks for the x-axis.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} width - calculated page width
+ * @param {string} layout - standard, comparison or compact chart types
+ * @param {string} interval - string of the interval used in the graph (hour, day, week...)
+ * @returns {integer} number of x-axis ticks based on width and chart layout
+ */
+export const getXTicks = ( uniqueDates, width, layout, interval ) => {
+	const maxTicks = calculateMaxXTicks( width, layout );
+
+	if ( uniqueDates.length >= dayTicksThreshold && interval === 'day' ) {
+		uniqueDates = getFirstDatePerMonth( uniqueDates );
 	}
-	// if, for some reason, the first or last date is missing from the newTicks array, add it back in
-	if ( newTicks[ 0 ] !== uniqueDates[ 0 ] ) {
-		newTicks.unshift( uniqueDates[ 0 ] );
+	if ( uniqueDates.length <= maxTicks ) {
+		return uniqueDates;
 	}
-	if ( newTicks[ newTicks.length - 1 ] !== uniqueDates[ uniqueDates.length - 1 ] ) {
-		newTicks.push( uniqueDates[ uniqueDates.length - 1 ] );
-	}
-	return newTicks;
+
+	const incrementFactor = calculateXTicksIncrementFactor( uniqueDates, maxTicks );
+
+	return getXTicksFromIncrementFactor( uniqueDates, incrementFactor );
 };
 
 /**
@@ -313,7 +359,8 @@ export const drawAxis = ( node, params ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'axis' )
-		.attr( 'transform', `translate(0,${ params.height })` )
+		.attr( 'aria-hidden', 'true' )
+		.attr( 'transform', `translate(0, ${ params.height })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -323,7 +370,8 @@ export const drawAxis = ( node, params ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'axis axis-month' )
-		.attr( 'transform', `translate(3, ${ params.height + 20 })` )
+		.attr( 'aria-hidden', 'true' )
+		.attr( 'transform', `translate(0, ${ params.height + 20 })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -331,9 +379,7 @@ export const drawAxis = ( node, params ) => {
 					const monthDate = d instanceof Date ? d : new Date( d );
 					let prevMonth = i !== 0 ? ticks[ i - 1 ] : ticks[ i ];
 					prevMonth = prevMonth instanceof Date ? prevMonth : new Date( prevMonth );
-					return monthDate.getDate() === 1 ||
-						i === 0 ||
-						params.x2Format( monthDate ) !== params.x2Format( prevMonth )
+					return i === 0 || params.x2Format( monthDate ) !== params.x2Format( prevMonth )
 						? params.x2Format( monthDate )
 						: '';
 				} )
@@ -370,6 +416,7 @@ export const drawAxis = ( node, params ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'axis y-axis' )
+		.attr( 'aria-hidden', 'true' )
 		.attr( 'transform', 'translate(-50, 0)' )
 		.attr( 'text-anchor', 'start' )
 		.call(
@@ -390,29 +437,32 @@ export const drawAxis = ( node, params ) => {
 		.remove();
 };
 
-const showTooltip = ( node, params, d, position ) => {
-	const chartCoords = node.node().getBoundingClientRect();
-	let [ xPosition, yPosition ] = position ? position : d3Mouse( node.node() );
-	xPosition = xPosition > chartCoords.width - 340 ? xPosition - 340 : xPosition + 100;
-	yPosition = yPosition > chartCoords.height - 150 ? yPosition - 200 : yPosition + 20;
+const getTooltipRowLabel = ( d, row, params ) =>
+	d[ row.key ].labelDate ? formatDate( params.pointLabelFormat, d[ row.key ].labelDate ) : row.key;
+
+const showTooltip = ( params, d, position ) => {
 	const keys = params.orderedKeys.filter( row => row.visible ).map(
 		row => `
 				<li class="key-row">
 					<div class="key-container">
 						<span class="key-color" style="background-color:${ getColor( row.key, params ) }"></span>
-						<span class="key-key">${ row.key }:</span>
+						<span class="key-key">${ getTooltipRowLabel( d, row, params ) }</span>
 					</div>
-					<span class="key-value">${ formatCurrency( d[ row.key ] ) }</span>
+					<span class="key-value">${ formatCurrency( d[ row.key ].value ) }</span>
 				</li>
 			`
 	);
 
+	const tooltipTitle = params.tooltipTitle
+		? params.tooltipTitle
+		: params.tooltipFormat( d.date instanceof Date ? d.date : new Date( d.date ) );
+
 	params.tooltip
-		.style( 'left', xPosition + 'px' )
-		.style( 'top', yPosition + 'px' )
-		.style( 'display', 'flex' ).html( `
+		.style( 'left', position.x + 'px' )
+		.style( 'top', position.y + 'px' )
+		.style( 'visibility', 'visible' ).html( `
 			<div>
-				<h4>${ params.tooltipFormat( d.date instanceof Date ? d.date : new Date( d.date ) ) }</h4>
+				<h4>${ tooltipTitle }</h4>
 				<ul>
 				${ keys.join( '' ) }
 				</ul>
@@ -420,38 +470,60 @@ const showTooltip = ( node, params, d, position ) => {
 		` );
 };
 
-const handleMouseOverBarChart = ( d, i, nodes, node, data, params, position ) => {
-	d3Select( nodes[ i ].parentNode )
+const handleMouseOverBarChart = ( date, parentNode, node, data, params, position ) => {
+	d3Select( parentNode )
 		.select( '.barfocus' )
 		.attr( 'opacity', '0.1' );
-	showTooltip( node, params, d, position );
+	showTooltip( params, data.find( e => e.date === date ), position );
 };
 
-const handleMouseOutBarChart = ( d, i, nodes, params ) => {
-	d3Select( nodes[ i ].parentNode )
+const handleMouseOutBarChart = ( parentNode, params ) => {
+	d3Select( parentNode )
 		.select( '.barfocus' )
 		.attr( 'opacity', '0' );
-	params.tooltip.style( 'display', 'none' );
+	params.tooltip.style( 'visibility', 'hidden' );
 };
 
-const handleMouseOverLineChart = ( d, i, nodes, node, data, params, position ) => {
-	d3Select( nodes[ i ].parentNode )
+const handleMouseOverLineChart = ( date, parentNode, node, data, params, position ) => {
+	d3Select( parentNode )
 		.select( '.focus-grid' )
 		.attr( 'opacity', '1' );
-	showTooltip( node, params, data.find( e => e.date === d.date ), position );
+	showTooltip( params, data.find( e => e.date === date ), position );
 };
 
-const handleMouseOutLineChart = ( d, i, nodes, params ) => {
-	d3Select( nodes[ i ].parentNode )
+const handleMouseOutLineChart = ( parentNode, params ) => {
+	d3Select( parentNode )
 		.select( '.focus-grid' )
 		.attr( 'opacity', '0' );
-	params.tooltip.style( 'display', 'none' );
+	params.tooltip.style( 'visibility', 'hidden' );
 };
 
-const calculatePositionInChart = ( element, chart ) => {
+const calculateTooltipPosition = ( element, chart, elementWidthRatio = 1 ) => {
 	const elementCoords = element.getBoundingClientRect();
 	const chartCoords = chart.getBoundingClientRect();
-	return [ elementCoords.x - chartCoords.x, elementCoords.y - chartCoords.y ];
+	const tooltipSize = d3Select( '.tooltip' )
+		.node()
+		.getBoundingClientRect();
+	const tooltipMargin = 24;
+
+	let xPosition =
+		elementCoords.x + elementCoords.width * elementWidthRatio + tooltipMargin - chartCoords.x;
+	let yPosition = elementCoords.y + tooltipMargin - chartCoords.y;
+	if ( xPosition + tooltipSize.width + tooltipMargin > chartCoords.width ) {
+		xPosition = Math.max(
+			0,
+			elementCoords.x +
+				elementCoords.width * ( 1 - elementWidthRatio ) -
+				tooltipSize.width -
+				tooltipMargin -
+				chartCoords.x
+		);
+	}
+	if ( yPosition + tooltipSize.height + tooltipMargin > chartCoords.height ) {
+		yPosition = Math.max( 0, elementCoords.y - tooltipSize.height - tooltipMargin - chartCoords.y );
+	}
+
+	return { x: xPosition, y: yPosition };
 };
 
 export const drawLines = ( node, data, params ) => {
@@ -459,10 +531,12 @@ export const drawLines = ( node, data, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'lines' )
 		.selectAll( '.line-g' )
-		.data( params.lineData.filter( d => d.visible ) )
+		.data( params.lineData.filter( d => d.visible ).reverse() )
 		.enter()
 		.append( 'g' )
-		.attr( 'class', 'line-g' );
+		.attr( 'class', 'line-g' )
+		.attr( 'role', 'region' )
+		.attr( 'aria-label', d => d.key );
 
 	series
 		.append( 'path' )
@@ -493,10 +567,18 @@ export const drawLines = ( node, data, params ) => {
 			} )
 			.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
 			.attr( 'cy', d => params.yScale( d.value ) )
-			.on( 'mouseover', ( d, i, nodes ) =>
-				handleMouseOverLineChart( d, i, nodes, node, data, params )
-			)
-			.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+			.attr( 'tabindex', '0' )
+			.attr( 'aria-label', d => {
+				const label = d.label
+					? d.label
+					: params.tooltipFormat( d.date instanceof Date ? d.date : new Date( d.date ) );
+				return `${ label } ${ formatCurrency( d.value ) }`;
+			} )
+			.on( 'focus', ( d, i, nodes ) => {
+				const position = calculateTooltipPosition( d3Event.target, node.node() );
+				handleMouseOverLineChart( d.date, nodes[ i ].parentNode, node, data, params, position );
+			} )
+			.on( 'blur', ( d, i, nodes ) => handleMouseOutLineChart( nodes[ i ].parentNode, params ) );
 
 	const focus = node
 		.append( 'g' )
@@ -524,15 +606,12 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'width', d => d.width )
 		.attr( 'height', params.height )
 		.attr( 'opacity', 0 )
-		.attr( 'tabindex', '0' )
-		.on( 'mouseover', ( d, i, nodes ) =>
-			handleMouseOverLineChart( d, i, nodes, node, data, params )
-		)
-		.on( 'focus', ( d, i, nodes ) => {
-			const position = calculatePositionInChart( d3Event.target, node.node() );
-			handleMouseOverLineChart( d, i, nodes, node, data, params, position );
+		.on( 'mouseover', ( d, i, nodes ) => {
+			const elementWidthRatio = i === 0 || i === params.dateSpaces.length - 1 ? 0 : 0.5;
+			const position = calculateTooltipPosition( d3Event.target, node.node(), elementWidthRatio );
+			handleMouseOverLineChart( d.date, nodes[ i ].parentNode, node, data, params, position );
 		} )
-		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutLineChart( d, i, nodes, params ) );
+		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( nodes[ i ].parentNode, params ) );
 };
 
 export const drawBars = ( node, data, params ) => {
@@ -544,7 +623,15 @@ export const drawBars = ( node, data, params ) => {
 		.enter()
 		.append( 'g' )
 		.attr( 'transform', d => `translate(${ params.xScale( d.date ) },0)` )
-		.attr( 'class', 'bargroup' );
+		.attr( 'class', 'bargroup' )
+		.attr( 'role', 'region' )
+		.attr(
+			'aria-label',
+			d =>
+				params.mode === 'item-comparison'
+					? params.tooltipFormat( d.date instanceof Date ? d.date : new Date( d.date ) )
+					: null
+		);
 
 	barGroup
 		.append( 'rect' )
@@ -561,8 +648,10 @@ export const drawBars = ( node, data, params ) => {
 			params.orderedKeys.filter( row => row.visible ).map( row => ( {
 				key: row.key,
 				focus: row.focus,
-				value: d[ row.key ],
+				value: get( d, [ row.key, 'value' ], 0 ),
+				label: get( d, [ row.key, 'label' ], '' ),
 				visible: row.visible,
+				date: d.date,
 			} ) )
 		)
 		.enter()
@@ -573,14 +662,21 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'width', params.xGroupScale.bandwidth() )
 		.attr( 'height', d => params.height - params.yScale( d.value ) )
 		.attr( 'fill', d => getColor( d.key, params ) )
+		.attr( 'tabindex', '0' )
+		.attr( 'aria-label', d => {
+			const label = params.mode === 'time-comparison' && d.label ? d.label : d.key;
+			return `${ label } ${ formatCurrency( d.value ) }`;
+		} )
 		.style( 'opacity', d => {
 			const opacity = d.focus ? 1 : 0.1;
 			return d.visible ? opacity : 0;
 		} )
-		.on( 'mouseover', ( d, i, nodes ) =>
-			handleMouseOverBarChart( d, i, nodes, node, data, params )
-		)
-		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
+		.on( 'focus', ( d, i, nodes ) => {
+			const targetNode = d.value > 0 ? d3Event.target : d3Event.target.parentNode;
+			const position = calculateTooltipPosition( targetNode, node.node() );
+			handleMouseOverBarChart( d.date, nodes[ i ].parentNode, node, data, params, position );
+		} )
+		.on( 'blur', ( d, i, nodes ) => handleMouseOutBarChart( nodes[ i ].parentNode, params ) );
 
 	barGroup
 		.append( 'rect' )
@@ -590,13 +686,9 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'width', params.xGroupScale.range()[ 1 ] )
 		.attr( 'height', params.height )
 		.attr( 'opacity', '0' )
-		.attr( 'tabindex', '0' )
-		.on( 'mouseover', ( d, i, nodes ) =>
-			handleMouseOverBarChart( d, i, nodes, node, data, params )
-		)
-		.on( 'focus', ( d, i, nodes ) => {
-			const position = calculatePositionInChart( d3Event.target, node.node() );
-			handleMouseOverBarChart( d, i, nodes, node, data, params, position );
+		.on( 'mouseover', ( d, i, nodes ) => {
+			const position = calculateTooltipPosition( d3Event.target, node.node() );
+			handleMouseOverBarChart( d.date, nodes[ i ].parentNode, node, data, params, position );
 		} )
-		.on( 'mouseout blur', ( d, i, nodes ) => handleMouseOutBarChart( d, i, nodes, params ) );
+		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutBarChart( nodes[ i ].parentNode, params ) );
 };

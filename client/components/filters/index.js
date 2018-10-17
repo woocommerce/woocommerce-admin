@@ -14,7 +14,7 @@ import AdvancedFilters from './advanced';
 import CompareFilter from './compare';
 import DatePicker from './date';
 import FilterPicker from './filter';
-import { H, Section } from 'layout/section';
+import { H, Section } from 'components/section';
 import './style.scss';
 
 /**
@@ -45,12 +45,7 @@ class ReportFilters extends Component {
 		if ( 'advanced' === query.filter ) {
 			return (
 				<div className="woocommerce-filters__advanced-filters">
-					<AdvancedFilters
-						config={ advancedConfig }
-						filterTitle={ __( 'Orders', 'wc-admin' ) }
-						path={ path }
-						query={ query }
-					/>
+					<AdvancedFilters config={ advancedConfig } path={ path } query={ query } />
 				</div>
 			);
 		}

@@ -12,10 +12,11 @@ import { find } from 'lodash';
  * Internal dependencies
  */
 import './style.scss';
-import Header from 'layout/header';
+import Header from 'header';
 import OrdersReport from './orders';
 import ProductsReport from './products';
 import RevenueReport from './revenue';
+import CouponsReport from './coupons';
 import useFilters from 'components/higher-order/use-filters';
 
 const REPORTS_FILTER = 'woocommerce-reports-list';
@@ -36,6 +37,11 @@ const getReports = () => {
 			report: 'orders',
 			title: __( 'Orders', 'wc-admin' ),
 			component: OrdersReport,
+		},
+		{
+			report: 'coupons',
+			title: __( 'Coupons', 'wc-admin' ),
+			component: CouponsReport,
 		},
 	] );
 

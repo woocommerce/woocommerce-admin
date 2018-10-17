@@ -19,6 +19,7 @@ import Gridicon from 'gridicons';
  */
 import D3Chart from './charts';
 import Legend from './legend';
+import { H, Section } from 'components/section';
 import { gap, gaplarge } from 'stylesheets/abstracts/_variables.scss';
 import { updateQueryString } from 'lib/nav-utils';
 
@@ -41,7 +42,7 @@ function getOrderedKeys( props ) {
 		),
 	].map( key => ( {
 		key,
-		total: props.data.reduce( ( a, c ) => a + c[ key ], 0 ),
+		total: props.data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 		visible: true,
 		focus: true,
 	} ) );
@@ -188,15 +189,18 @@ class Chart extends Component {
 		const {
 			dateParser,
 			layout,
+			mode,
+			pointLabelFormat,
 			title,
 			tooltipFormat,
+			tooltipTitle,
 			xFormat,
 			x2Format,
 			yFormat,
 			interval,
 		} = this.props;
-		const legendDirection = layout === 'standard' && width > WIDE_BREAKPOINT ? 'row' : 'column';
-		const chartDirection = layout === 'comparison' && width > WIDE_BREAKPOINT ? 'row' : 'column';
+		const legendDirection = layout === 'standard' && width >= WIDE_BREAKPOINT ? 'row' : 'column';
+		const chartDirection = layout === 'comparison' && width >= WIDE_BREAKPOINT ? 'row' : 'column';
 		const legend = (
 			<Legend
 				className={ 'woocommerce-chart__legend' }
@@ -216,8 +220,8 @@ class Chart extends Component {
 		return (
 			<div className="woocommerce-chart" ref={ this.chartRef }>
 				<div className="woocommerce-chart__header">
-					<span className="woocommerce-chart__title">{ title }</span>
-					{ width > WIDE_BREAKPOINT && legendDirection === 'row' && legend }
+					<H className="woocommerce-chart__title">{ title }</H>
+					{ width >= WIDE_BREAKPOINT && legendDirection === 'row' && legend }
 					{ this.renderIntervalSelector() }
 					<NavigableMenu
 						className="woocommerce-chart__types"
@@ -248,30 +252,35 @@ class Chart extends Component {
 						/>
 					</NavigableMenu>
 				</div>
-				<div
-					className={ classNames(
-						'woocommerce-chart__body',
-						`woocommerce-chart__body-${ chartDirection }`
-					) }
-				>
-					{ width > WIDE_BREAKPOINT && legendDirection === 'column' && legend }
-					<D3Chart
-						colorScheme={ d3InterpolateViridis }
-						data={ visibleData }
-						dateParser={ dateParser }
-						height={ 300 }
-						margin={ margin }
-						orderedKeys={ orderedKeys }
-						tooltipFormat={ tooltipFormat }
-						type={ type }
-						interval={ interval }
-						width={ chartDirection === 'row' ? width - 320 : width }
-						xFormat={ xFormat }
-						x2Format={ x2Format }
-						yFormat={ yFormat }
-					/>
-				</div>
-				{ width < WIDE_BREAKPOINT && <div className="woocommerce-chart__footer">{ legend }</div> }
+				<Section component={ false }>
+					<div
+						className={ classNames(
+							'woocommerce-chart__body',
+							`woocommerce-chart__body-${ chartDirection }`
+						) }
+					>
+						{ width >= WIDE_BREAKPOINT && legendDirection === 'column' && legend }
+						<D3Chart
+							colorScheme={ d3InterpolateViridis }
+							data={ visibleData }
+							dateParser={ dateParser }
+							height={ 300 }
+							margin={ margin }
+							mode={ mode }
+							orderedKeys={ orderedKeys }
+							pointLabelFormat={ pointLabelFormat }
+							tooltipFormat={ tooltipFormat }
+							tooltipTitle={ tooltipTitle }
+							type={ type }
+							interval={ interval }
+							width={ chartDirection === 'row' ? width - 320 : width }
+							xFormat={ xFormat }
+							x2Format={ x2Format }
+							yFormat={ yFormat }
+						/>
+					</div>
+					{ width < WIDE_BREAKPOINT && <div className="woocommerce-chart__footer">{ legend }</div> }
+				</Section>
 			</div>
 		);
 	}
@@ -287,9 +296,18 @@ Chart.propTypes = {
 	 */
 	dateParser: PropTypes.string.isRequired,
 	/**
-	 * A datetime formatting string to format the title of the toolip, passed to d3TimeFormat.
+	 * Date format of the point labels (might be used in tooltips and ARIA properties).
+	 */
+	pointLabelFormat: PropTypes.string,
+	/**
+	 * A datetime formatting string to format the date displayed as the title of the toolip
+	 * if `tooltipTitle` is missing, passed to d3TimeFormat.
 	 */
 	tooltipFormat: PropTypes.string,
+	/**
+	 * A string to use as a title for the tooltip. Takes preference over `tooltipFormat`.
+	 */
+	tooltipTitle: PropTypes.string,
 	/**
 	 * A datetime formatting string, passed to d3TimeFormat.
 	 */
@@ -307,6 +325,11 @@ Chart.propTypes = {
 	 * to the left or 'compact' has the legend below
 	 */
 	layout: PropTypes.oneOf( [ 'standard', 'comparison', 'compact' ] ),
+	/**
+	 * `item-comparison` (default) or `time-comparison`, this is used to generate correct
+	 * ARIA properties.
+	 */
+	mode: PropTypes.oneOf( [ 'item-comparison', 'time-comparison' ] ),
 	/**
 	 * A title describing this chart.
 	 */
@@ -332,11 +355,12 @@ Chart.propTypes = {
 Chart.defaultProps = {
 	data: [],
 	dateParser: '%Y-%m-%dT%H:%M:%S',
-	tooltipFormat: '%Y-%m-%d',
+	tooltipFormat: '%B %d, %Y',
 	xFormat: '%d',
 	x2Format: '%b %Y',
 	yFormat: '$.3s',
 	layout: 'standard',
+	mode: 'item-comparison',
 	type: 'line',
 	interval: 'day',
 };

@@ -17,10 +17,17 @@ Function called when selected results change, passed result list.
 ### `type`
 
 - **Required**
-- Type: One of: 'products', 'product_cats', 'orders', 'customers'
+- Type: One of: 'products', 'product_cats', 'orders', 'customers', 'coupons'
 - Default: null
 
 The object type to be used in searching.
+
+### `placeholder`
+
+- Type: String
+- Default: null
+
+A placeholder for the search input.
 
 ### `selected`
 
@@ -30,4 +37,11 @@ The object type to be used in searching.
 - Default: `[]`
 
 An array of objects describing selected values.
+
+### `inlineTags`
+
+- Type: Boolean
+- Default: `false`
+
+Render tags inside input, otherwise render below input
 

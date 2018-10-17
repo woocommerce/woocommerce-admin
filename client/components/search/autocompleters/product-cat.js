@@ -9,6 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
  */
 import { computeSuggestionMatch } from './utils';
 import { stringifyQuery } from 'lib/nav-utils';
+import { NAMESPACE } from 'store/constants';
 
 /**
  * A product categories completer.
@@ -29,7 +30,7 @@ export default {
 			};
 			payload = stringifyQuery( query );
 		}
-		return apiFetch( { path: '/wc/v3/products/categories' + payload } );
+		return apiFetch( { path: `${ NAMESPACE }products/categories${ payload }` } );
 	},
 	isDebounced: true,
 	getOptionKeywords( cat ) {

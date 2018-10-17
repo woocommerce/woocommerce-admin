@@ -30,6 +30,17 @@ The string to use as a query parameter when comparing row items.
 
 An array of column headers (see `Table` props).
 
+### `labels`
+
+- Type: Object
+  - compareButton: String
+  - downloadButton: String
+  - helpText: String
+  - placeholder: String
+- Default: null
+
+Custom labels for table header actions.
+
 ### `ids`
 
 - Type: Array
@@ -118,6 +129,13 @@ The total number of rows (across all pages).
 Props
 -----
 
+### `query`
+
+- Type: Object
+- Default: null
+
+An object of the query parameters passed to the page, ex `{ page: 2, per_page: 5 }`.
+
 ### `caption`
 
 - **Required**
@@ -166,6 +184,37 @@ An array of objects with `label` & `value` properties, which display on a single
 ===================
 
 A table component, without the Card wrapper. This is a basic table display, sortable, but no default filtering.
+
+Row data should be passed to the component as a list of arrays, where each array is a row in the table.
+Headers are passed in separately as an array of objects with column-related properties. For example,
+this data would render the following table.
+
+```js
+const headers = [ { label: 'Month' }, { label: 'Orders' }, { label: 'Revenue' } ];
+const rows = [
+	[
+		{ display: 'January', value: 1 },
+		{ display: 10, value: 10 },
+		{ display: '$530.00', value: 530 },
+	],
+	[
+		{ display: 'February', value: 2 },
+		{ display: 13, value: 13 },
+		{ display: '$675.00', value: 675 },
+	],
+	[
+		{ display: 'March', value: 3 },
+		{ display: 9, value: 9 },
+		{ display: '$460.00', value: 460 },
+	],
+]
+```
+
+|   Month  | Orders | Revenue |
+| ---------|--------|---------|
+| January  |     10 | $530.00 |
+| February |     13 | $675.00 |
+| March    |      9 | $460.00 |
 
 Props
 -----

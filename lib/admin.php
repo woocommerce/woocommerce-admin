@@ -96,6 +96,20 @@ function wc_admin_register_pages() {
 		'parent' => '/analytics',
 		'path'   => '/analytics/orders',
 	) );
+
+	wc_admin_register_page( array(
+		'title'  => __( 'Coupons', 'wc-admin' ),
+		'parent' => '/analytics',
+		'path'   => '/analytics/coupons',
+	) );
+
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		wc_admin_register_page( array(
+			'title'  => 'DevDocs',
+			'parent' => 'woocommerce', // Exposed on the main menu for now.
+			'path'   => '/devdocs',
+		) );
+	}
 }
 add_action( 'admin_menu', 'wc_admin_register_pages' );
 
