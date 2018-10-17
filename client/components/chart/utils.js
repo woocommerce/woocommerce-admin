@@ -307,10 +307,11 @@ const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
 export const getXTicks = ( uniqueDates, width, layout, interval ) => {
 	const maxTicks = calculateMaxXTicks( width, layout );
 
+	if ( uniqueDates.length > dayTicksThreshold && interval === 'day' ) {
+		uniqueDates = filterXAxisDates( uniqueDates );
+	}
 	if ( uniqueDates.length <= maxTicks ) {
 		return uniqueDates;
-	} else if ( uniqueDates.length > dayTicksThreshold && interval === 'day' ) {
-		uniqueDates = filterXAxisDates( uniqueDates );
 	}
 
 	const incrementFactor = calculateXTicksIncrementFactor( uniqueDates, maxTicks );
