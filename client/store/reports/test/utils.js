@@ -239,15 +239,14 @@ describe( 'getSummaryNumbers()', () => {
 		},
 	};
 
-	const dates = {
-		primary: {
-			after: '2018-10-10',
-			before: '2018-10-10',
-		},
-		secondary: {
-			after: '2018-10-09',
-			before: '2018-10-09',
-		},
+	const primaryQuery = {
+		after: '2018-10-10T00:00:00+00:00',
+		before: '2018-10-10T23:59:59+00:00',
+	};
+
+	const secondaryQuery = {
+		after: '2018-10-09T00:00:00+00:00',
+		before: '2018-10-09T23:59:59+00:00',
 	};
 
 	beforeAll( () => {
@@ -280,7 +279,7 @@ describe( 'getSummaryNumbers()', () => {
 		setIsReportStatsRequesting( () => {
 			return true;
 		} );
-		const result = getSummaryNumbers( 'revenue', dates, select );
+		const result = getSummaryNumbers( 'revenue', primaryQuery, secondaryQuery, select );
 		expect( result ).toEqual( { ...response, isRequesting: true } );
 	} );
 
@@ -291,7 +290,7 @@ describe( 'getSummaryNumbers()', () => {
 		setIsReportStatsError( () => {
 			return true;
 		} );
-		const result = getSummaryNumbers( 'revenue', dates, select );
+		const result = getSummaryNumbers( 'revenue', primaryQuery, secondaryQuery, select );
 		expect( result ).toEqual( { ...response, isError: true } );
 	} );
 
@@ -336,7 +335,7 @@ describe( 'getSummaryNumbers()', () => {
 			};
 		} );
 
-		const result = getSummaryNumbers( 'revenue', dates, select );
+		const result = getSummaryNumbers( 'revenue', primaryQuery, secondaryQuery, select );
 		expect( result ).toEqual( { ...response, totals } );
 	} );
 } );

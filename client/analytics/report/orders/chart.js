@@ -51,7 +51,7 @@ class OrdersReportChart extends Component {
 	}
 
 	render() {
-		const { query } = this.props;
+		const { query, primaryQuery, secondaryQuery, primaryData, secondaryData } = this.props;
 		return (
 			<Fragment>
 				<ReportSummary
@@ -59,12 +59,15 @@ class OrdersReportChart extends Component {
 					endpoint="orders"
 					query={ query }
 					selectedChart={ this.getSelectedChart() }
+					primaryQuery={ primaryQuery }
+					secondaryQuery={ secondaryQuery }
 				/>
 				<ReportChart
 					charts={ this.getCharts() }
-					endpoint="orders"
-					query={ query }
 					selectedChart={ this.getSelectedChart() }
+					query={ query }
+					primaryData={ primaryData }
+					secondaryData={ secondaryData }
 				/>
 			</Fragment>
 		);
@@ -73,6 +76,10 @@ class OrdersReportChart extends Component {
 
 OrdersReportChart.propTypes = {
 	query: PropTypes.object.isRequired,
+	primaryQuery: PropTypes.object.isRequired,
+	secondaryQuery: PropTypes.object.isRequired,
+	primaryData: PropTypes.object.isRequired,
+	secondaryData: PropTypes.object.isRequired,
 };
 
 export default OrdersReportChart;
