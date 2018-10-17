@@ -17,6 +17,11 @@ class ProductsReportChart extends Component {
 	getCharts() {
 		return [
 			{
+				key: 'items_sold',
+				label: __( 'Items Sold', 'wc-admin' ),
+				type: 'number',
+			},
+			{
 				key: 'gross_revenue',
 				label: __( 'Gross Revenue', 'wc-admin' ),
 				type: 'currency',
@@ -24,11 +29,6 @@ class ProductsReportChart extends Component {
 			{
 				key: 'orders_count',
 				label: __( 'Orders Count', 'wc-admin' ),
-				type: 'number',
-			},
-			{
-				key: 'items_sold',
-				label: __( 'Items Sold', 'wc-admin' ),
 				type: 'number',
 			},
 		];
