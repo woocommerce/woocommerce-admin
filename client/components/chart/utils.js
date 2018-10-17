@@ -306,7 +306,7 @@ const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
 export const getXTicks = ( uniqueDates, width, layout, interval ) => {
 	const maxTicks = calculateMaxXTicks( width, layout );
 
-	if ( uniqueDates.length > dayTicksThreshold && interval === 'day' ) {
+	if ( uniqueDates.length >= dayTicksThreshold && interval === 'day' ) {
 		uniqueDates = getFirstDatePerMonth( uniqueDates );
 	}
 	if ( uniqueDates.length <= maxTicks ) {
