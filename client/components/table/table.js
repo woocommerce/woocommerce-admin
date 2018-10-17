@@ -214,11 +214,7 @@ class Table extends Component {
 						) ) }
 					</tbody>
 				</table>
-				<div
-					ref={ this.tableShadow }
-					className="woocommerce-table__shadow"
-					style={ this.state.shadowStyles }
-				/>
+				<div className="woocommerce-table__shadow" style={ this.state.shadowStyles } />
 			</div>
 		);
 	}
