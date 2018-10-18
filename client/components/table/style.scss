@@ -80,6 +80,9 @@
 	tr:hover,
 	tr:focus-within {
 		background-color: $core-grey-light-200;
+		td {
+			background: transparent;
+		}
 	}
 }
 
@@ -129,6 +132,10 @@
 
 	&.is-numeric .is-placeholder {
 		max-width: 40px;
+	}
+
+	&.is-sorted {
+		background-color: $core-grey-light-100;
 	}
 }
 

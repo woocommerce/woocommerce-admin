@@ -198,6 +198,7 @@ class Table extends Component {
 									const cellClasses = classnames( 'woocommerce-table__item', {
 										'is-left-aligned': isLeftAligned,
 										'is-numeric': isNumeric,
+										'is-sorted': sortedBy === headers[ j ].key,
 									} );
 									return (
 										<Cell scope={ isHeader ? 'row' : null } key={ j } className={ cellClasses }>
