@@ -95,18 +95,12 @@
 
 	> a:only-child {
 		display: block;
-		margin: ($gap*-1) ($gap-large*-1);
-		padding: $gap $gap-large;
 	}
 
 	a {
 		&:hover,
 		&:focus {
 			color: $woocommerce-700;
-		}
-
-		&:focus {
-			box-shadow: none;
 		}
 	}
 
@@ -136,6 +130,16 @@
 
 	&.is-sorted {
 		background-color: $core-grey-light-100;
+  }
+  
+	&.is-checkbox-column {
+		width: 33px;
+		max-width: 33px;
+		padding-right: 0;
+		padding-left: 17px;
+		& + th {
+			border-left: 0;
+		}
 	}
 }
 
