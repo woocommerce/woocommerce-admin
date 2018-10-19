@@ -32,10 +32,10 @@
     "docs": "node ./bin/generate-docs"
   },
   "devDependencies": {
-    "@babel/cli": "7.1.0",
-    "@babel/core": "7.1.0",
+    "@babel/cli": "7.1.2",
+    "@babel/core": "7.1.2",
     "@babel/plugin-transform-async-to-generator": "7.1.0",
-    "@babel/runtime-corejs2": "7.0.0",
+    "@babel/runtime-corejs2": "7.1.2",
     "@wordpress/api-fetch": "2.0.0",
     "@wordpress/babel-plugin-import-jsx-pragma": "1.1.0",
     "@wordpress/babel-plugin-makepot": "2.1.0",
@@ -52,7 +52,7 @@
     "@wordpress/keycodes": "2.0.0",
     "@wordpress/postcss-themes": "1.0.4",
     "@wordpress/scripts": "2.2.1",
-    "ast-types": "0.11.5",
+    "ast-types": "0.11.6",
     "autoprefixer": "9.2.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
