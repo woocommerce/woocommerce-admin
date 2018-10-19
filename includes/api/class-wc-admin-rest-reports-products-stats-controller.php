@@ -224,10 +224,9 @@ class WC_Admin_REST_Reports_Products_Stats_Controller extends WC_REST_Reports_Co
 	 * Set the default results to 0 if API returns an empty array
 	 *
 	 * @param Mixed $results Report data.
-	 * @param Array $args Product stats query args.
 	 * @return object
 	 */
-	public function set_default_report_data( $results, $args ) {
+	public function set_default_report_data( $results ) {
 		if ( empty( $results ) ) {
 			$results = new stdClass();
 			$results->total = 0;
