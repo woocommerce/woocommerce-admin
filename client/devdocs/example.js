@@ -4,7 +4,7 @@
  */
 import codeBlocks from 'gfm-code-blocks';
 import { Component } from '@wordpress/element';
-import { LiveError, LivePreview, LiveProvider } from 'react-live';
+// import { LiveError, LivePreview, LiveProvider } from 'react-live';
 // Used to provide scope in LivePreview
 import { addFilter } from '@wordpress/hooks';
 import { withState } from '@wordpress/compose';
@@ -55,17 +55,17 @@ class Example extends Component {
 			Gridicon,
 		};
 
-		return code ? (
-			<LiveProvider
-				code={ code }
-				scope={ scope }
-				className="woocommerce-devdocs__example"
-				noInline={ true }
-			>
-				<LiveError />
-				<LivePreview />
-			</LiveProvider>
-		) : null;
+		return code ? <th code={ code } scope={ scope } /> : null;
+
+		// <LiveProvider
+		// 	code={ code }
+		// 	scope={ scope }
+		// 	className="woocommerce-devdocs__example"
+		// 	noInline={ true }
+		// >
+		// 	<LiveError />
+		// 	<LivePreview />
+		// </LiveProvider>
 	}
 }
 
