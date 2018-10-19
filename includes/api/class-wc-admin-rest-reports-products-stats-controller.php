@@ -35,7 +35,7 @@ class WC_Admin_REST_Reports_Products_Stats_Controller extends WC_REST_Reports_Co
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_filter( 'woocommerce_reports_products_stats_select_query', array( $this, 'set_default_report_data' ), 10, 2 );
+		add_filter( 'woocommerce_reports_products_stats_select_query', array( $this, 'set_default_report_data' ) );
 	}
 
 	/**
