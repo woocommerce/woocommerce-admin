@@ -126,9 +126,9 @@ class WC_Admin_REST_Reports_Products_Stats_Controller extends WC_REST_Reports_Co
 	 */
 	public function get_item_schema() {
 		$totals = array(
-			'items_sold' => array(
+			'items_sold'    => array(
 				'description' => __( 'Number of items sold.', 'wc-admin' ),
-				'type' => 'integer',
+				'type'        => 'integer',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
@@ -138,9 +138,9 @@ class WC_Admin_REST_Reports_Products_Stats_Controller extends WC_REST_Reports_Co
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
-			'orders_count' => array(
+			'orders_count'  => array(
 				'description' => __( 'Number of orders.', 'wc-admin' ),
-				'type' => 'integer',
+				'type'        => 'integer',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
@@ -219,9 +219,9 @@ class WC_Admin_REST_Reports_Products_Stats_Controller extends WC_REST_Reports_Co
 	 * @return array
 	 */
 	public function get_collection_params() {
-		$params             = array();
-		$params['context']  = $this->get_context_param( array( 'default' => 'view' ) );
-		$params['page']     = array(
+		$params               = array();
+		$params['context']    = $this->get_context_param( array( 'default' => 'view' ) );
+		$params['page']       = array(
 			'description'       => __( 'Current page of the collection.', 'wc-admin' ),
 			'type'              => 'integer',
 			'default'           => 1,
@@ -229,7 +229,7 @@ class WC_Admin_REST_Reports_Products_Stats_Controller extends WC_REST_Reports_Co
 			'validate_callback' => 'rest_validate_request_arg',
 			'minimum'           => 1,
 		);
-		$params['per_page'] = array(
+		$params['per_page']   = array(
 			'description'       => __( 'Maximum number of items to be returned in result set.', 'wc-admin' ),
 			'type'              => 'integer',
 			'default'           => 10,
@@ -238,26 +238,26 @@ class WC_Admin_REST_Reports_Products_Stats_Controller extends WC_REST_Reports_Co
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['after']    = array(
+		$params['after']      = array(
 			'description'       => __( 'Limit response to resources published after a given ISO8601 compliant date.', 'wc-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['before']   = array(
+		$params['before']     = array(
 			'description'       => __( 'Limit response to resources published before a given ISO8601 compliant date.', 'wc-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['order']    = array(
+		$params['order']      = array(
 			'description'       => __( 'Order sort attribute ascending or descending.', 'wc-admin' ),
 			'type'              => 'string',
 			'default'           => 'desc',
 			'enum'              => array( 'asc', 'desc' ),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['orderby']  = array(
+		$params['orderby']    = array(
 			'description'       => __( 'Sort collection by object attribute.', 'wc-admin' ),
 			'type'              => 'string',
 			'default'           => 'date',
@@ -274,7 +274,7 @@ class WC_Admin_REST_Reports_Products_Stats_Controller extends WC_REST_Reports_Co
 			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['interval'] = array(
+		$params['interval']   = array(
 			'description'       => __( 'Time interval to use for buckets in the returned data.', 'wc-admin' ),
 			'type'              => 'string',
 			'default'           => 'week',
