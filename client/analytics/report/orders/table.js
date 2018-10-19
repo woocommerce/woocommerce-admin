@@ -210,6 +210,19 @@ class OrdersReportTable extends Component {
 				value: totals.orders_count,
 			},
 			{
+				label: _n( 'new customer', 'new customers', totals.num_new_customers, 'wc-admin' ),
+				value: totals.num_new_customers,
+			},
+			{
+				label: _n(
+					'returning customer',
+					'returning customers',
+					totals.num_returning_customers,
+					'wc-admin'
+				),
+				value: totals.num_returning_customers,
+			},
+			{
 				label: _n( 'item sold', 'items sold', totals.num_items_sold, 'wc-admin' ),
 				value: totals.num_items_sold,
 			},

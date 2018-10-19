@@ -36,16 +36,18 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 * @var array
 	 */
 	protected $column_types = array(
-		'orders_count'        => 'intval',
-		'num_items_sold'      => 'intval',
-		'gross_revenue'       => 'floatval',
-		'coupons'             => 'floatval',
-		'refunds'             => 'floatval',
-		'taxes'               => 'floatval',
-		'shipping'            => 'floatval',
-		'net_revenue'         => 'floatval',
-		'avg_items_per_order' => 'floatval',
-		'avg_order_value'     => 'floatval',
+		'orders_count'            => 'intval',
+		'num_items_sold'          => 'intval',
+		'gross_revenue'           => 'floatval',
+		'coupons'                 => 'floatval',
+		'refunds'                 => 'floatval',
+		'taxes'                   => 'floatval',
+		'shipping'                => 'floatval',
+		'net_revenue'             => 'floatval',
+		'avg_items_per_order'     => 'floatval',
+		'avg_order_value'         => 'floatval',
+		'num_returning_customers' => 'floatval',
+		'num_new_customers'       => 'floatval',
 	);
 
 	/**
@@ -54,16 +56,18 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 * @var array
 	 */
 	protected $report_columns = array(
-		'orders_count'        => 'COUNT(*) as orders_count',
-		'num_items_sold'      => 'SUM(num_items_sold) as num_items_sold',
-		'gross_revenue'       => 'SUM(gross_total) AS gross_revenue',
-		'coupons'             => 'SUM(coupon_total) AS coupons',
-		'refunds'             => 'SUM(refund_total) AS refunds',
-		'taxes'               => 'SUM(tax_total) AS taxes',
-		'shipping'            => 'SUM(shipping_total) AS shipping',
-		'net_revenue'         => 'SUM(net_total) AS net_revenue',
-		'avg_items_per_order' => 'AVG(num_items_sold) AS avg_items_per_order',
-		'avg_order_value'     => 'AVG(gross_total) AS avg_order_value',
+		'orders_count'            => 'COUNT(*) as orders_count',
+		'num_items_sold'          => 'SUM(num_items_sold) as num_items_sold',
+		'gross_revenue'           => 'SUM(gross_total) AS gross_revenue',
+		'coupons'                 => 'SUM(coupon_total) AS coupons',
+		'refunds'                 => 'SUM(refund_total) AS refunds',
+		'taxes'                   => 'SUM(tax_total) AS taxes',
+		'shipping'                => 'SUM(shipping_total) AS shipping',
+		'net_revenue'             => 'SUM(net_total) AS net_revenue',
+		'avg_items_per_order'     => 'AVG(num_items_sold) AS avg_items_per_order',
+		'avg_order_value'         => 'AVG(gross_total) AS avg_order_value',
+		'num_returning_customers' => 'SUM(returning_customer = 1) AS num_returning_customers',
+		'num_new_customers'       => 'SUM(returning_customer = 0) AS num_new_customers',
 	);
 
 	/**
@@ -428,15 +432,16 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		}
 
 		$data = array(
-			'order_id'       => $order->get_id(),
-			'date_created'   => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
-			'num_items_sold' => self::get_num_items_sold( $order ),
-			'gross_total'    => $order->get_total(),
-			'coupon_total'   => $order->get_total_discount(),
-			'refund_total'   => $order->get_total_refunded(),
-			'tax_total'      => $order->get_total_tax(),
-			'shipping_total' => $order->get_shipping_total(),
-			'net_total'      => (float) $order->get_total() - (float) $order->get_total_tax() - (float) $order->get_shipping_total(),
+			'order_id'           => $order->get_id(),
+			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
+			'num_items_sold'     => self::get_num_items_sold( $order ),
+			'gross_total'        => $order->get_total(),
+			'coupon_total'       => $order->get_total_discount(),
+			'refund_total'       => $order->get_total_refunded(),
+			'tax_total'          => $order->get_total_tax(),
+			'shipping_total'     => $order->get_shipping_total(),
+			'net_total'          => (float) $order->get_total() - (float) $order->get_total_tax() - (float) $order->get_shipping_total(),
+			'returning_customer' => self::is_returning_customer( $order ),
 		);
 
 		// Update or add the information to the DB.
@@ -476,5 +481,29 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		}
 
 		return $num_items;
+	}
+
+	/**
+	 * Check to see if an order's customer has made previous orders or not
+	 * 
+	 * @param $order WC_Order object.
+	 * @return bool
+	 */
+	protected static function is_returning_customer( $order ) {
+		$customer_id = $order->get_user_id();
+
+		if ( $customer_id === 0 ) {
+			return false;
+		}
+
+		$customer_orders = get_posts( array(
+			'meta_key' => '_customer_user',
+			'meta_value' => $customer_id,
+			'post_type' => 'shop_order', 
+			'post_status' => array( 'wc-on-hold', 'wc-processing', 'wc-completed' ),
+			'numberposts' => -1
+		) );
+
+		return count( $customer_orders ) > 1;
 	}
 }
