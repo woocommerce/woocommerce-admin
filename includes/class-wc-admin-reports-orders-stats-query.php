@@ -36,6 +36,8 @@ class WC_Admin_Reports_Orders_Stats_Query extends WC_Admin_Reports_Query {
 				'avg_order_value',
 				'orders_count',
 				'avg_items_per_order',
+				'num_items_sold',
+				'coupons',
 			),
 		);
 	}
