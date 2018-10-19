@@ -43,6 +43,7 @@ class Example extends Component {
 	}
 
 	render() {
+		/*eslint-disable */
 		const { code } = this.state;
 		const scope = {
 			...wpComponents,
@@ -55,17 +56,20 @@ class Example extends Component {
 			Gridicon,
 		};
 
-		return code ? <th code={ code } scope={ scope } /> : null;
+		return null;
 
-		// <LiveProvider
-		// 	code={ code }
-		// 	scope={ scope }
-		// 	className="woocommerce-devdocs__example"
-		// 	noInline={ true }
-		// >
-		// 	<LiveError />
-		// 	<LivePreview />
-		// </LiveProvider>
+		return code ? (
+			<LiveProvider
+				code={ code }
+				scope={ scope }
+				className="woocommerce-devdocs__example"
+				noInline={ true }
+			>
+				<LiveError />
+				<LivePreview />
+			</LiveProvider>
+		) : null;
+		/*eslint-enable */
 	}
 }
 
