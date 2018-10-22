@@ -204,6 +204,9 @@ class OrdersReportTable extends Component {
 	}
 
 	getSummary( totals ) {
+		if ( ! totals ) {
+			return [];
+		}
 		return [
 			{
 				label: _n( 'order', 'orders', totals.num_items_sold, 'wc-admin' ),
@@ -221,6 +224,10 @@ class OrdersReportTable extends Component {
 					'wc-admin'
 				),
 				value: totals.num_returning_customers,
+			},
+			{
+				label: _n( 'product', 'products', totals.products, 'wc-admin' ),
+				value: totals.products,
 			},
 			{
 				label: _n( 'item sold', 'items sold', totals.num_items_sold, 'wc-admin' ),
