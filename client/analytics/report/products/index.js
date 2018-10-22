@@ -10,10 +10,10 @@ import { get } from 'lodash';
 /**
  * Internal dependencies
  */
+import { filters } from './config';
 import { ReportFilters } from '@woocommerce/components';
 import { appendTimestamp, getCurrentDates } from 'lib/date';
-import { filters } from './config';
-import { getSummaryNumbers } from 'store/reports/utils';
+import { getReportChartData } from 'store/reports/utils';
 import ProductsReportChart from './chart';
 import ProductsReportTable from './table';
 
@@ -22,9 +22,9 @@ class ProductsReport extends Component {
 		const {
 			isProductsError,
 			isProductsRequesting,
-			products,
 			path,
-			summaryNumbers,
+			primaryData,
+			products,
 			query,
 		} = this.props;
 
@@ -33,11 +33,15 @@ class ProductsReport extends Component {
 				<ReportFilters query={ query } path={ path } filters={ filters } />
 				<ProductsReportChart query={ query } />
 				<ProductsReportTable
-					isError={ isProductsError || summaryNumbers.isError }
-					isRequesting={ isProductsRequesting || summaryNumbers.isRequesting }
+					isError={ isProductsError || primaryData.isError }
+					isRequesting={ isProductsRequesting || primaryData.isRequesting }
 					products={ products }
 					query={ query }
-					totalRows={ get( summaryNumbers, [ 'totals', 'primary', 'products_count' ], 0 ) }
+					totalRows={ get(
+						primaryData,
+						[ 'data', 'totals', 'products_count' ],
+						Object.keys( products ).length
+					) }
 				/>
 			</Fragment>
 		);
@@ -48,8 +52,9 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { query } = props;
 		const datesFromQuery = getCurrentDates( query );
-		const { getProducts, isGetProductsError, isGetProductsRequesting } = select( 'wc-admin' );
+		const primaryData = getReportChartData( 'products', 'primary', query, select );
 
+		const { getProducts, isGetProductsError, isGetProductsRequesting } = select( 'wc-admin' );
 		const tableQuery = {
 			orderby: query.orderby || 'date',
 			order: query.order || 'asc',
@@ -59,7 +64,6 @@ export default compose(
 			before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
 			extended_product_info: true,
 		};
-		const summaryNumbers = getSummaryNumbers( 'products', query, select );
 		const products = getProducts( tableQuery );
 		const isProductsError = isGetProductsError( tableQuery );
 		const isProductsRequesting = isGetProductsRequesting( tableQuery );
@@ -67,8 +71,8 @@ export default compose(
 		return {
 			isProductsError,
 			isProductsRequesting,
+			primaryData,
 			products,
-			summaryNumbers,
 		};
 	} )
 )( ProductsReport );

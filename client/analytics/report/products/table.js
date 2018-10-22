@@ -38,14 +38,10 @@ export default class ProductsReportTable extends Component {
 				key: 'name',
 				required: true,
 				isLeftAligned: true,
-				isSortable: false,
 			},
 			{
 				label: __( 'SKU', 'wc-admin' ),
 				key: 'sku',
-				required: false,
-				isSortable: false,
-				isNumeric: false,
 				hiddenByDefault: true,
 			},
 			{
@@ -66,7 +62,6 @@ export default class ProductsReportTable extends Component {
 			{
 				label: __( 'Orders', 'wc-admin' ),
 				key: 'orders_count',
-				required: false,
 				isSortable: true,
 				isNumeric: true,
 			},
@@ -118,7 +113,7 @@ export default class ProductsReportTable extends Component {
 				},
 				{
 					display: items_sold,
-					value: Number( items_sold ),
+					value: items_sold,
 				},
 				{
 					display: formatCurrency( gross_revenue ),
@@ -136,7 +131,7 @@ export default class ProductsReportTable extends Component {
 							{ orders_count }
 						</Link>
 					),
-					value: Number( orders_count ),
+					value: orders_count,
 				},
 				{
 					display: categories.map( cat => cat.name ).join( ', ' ),
@@ -152,11 +147,11 @@ export default class ProductsReportTable extends Component {
 							{ stockStatuses[ stock_status ] }
 						</Link>
 					),
-					value: stock_status,
+					value: stockStatuses[ stock_status ],
 				},
 				{
 					display: stock_quantity,
-					value: Number( stock_quantity ),
+					value: stock_quantity,
 				},
 			];
 		} );
@@ -206,7 +201,7 @@ export default class ProductsReportTable extends Component {
 				rowsPerPage={ rowsPerPage }
 				headers={ headers }
 				labels={ labels }
-				ids={ products.map( p => p.product_id ) }
+				ids={ orderedProducts.map( p => p.product_id ) }
 				compareBy={ 'product' }
 				onClickDownload={ this.onDownload( headers, rows, tableQuery ) }
 				onQueryChange={ onQueryChange }
