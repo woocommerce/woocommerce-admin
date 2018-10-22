@@ -157,7 +157,7 @@ export default class ProductsReportTable extends Component {
 		} );
 	}
 
-	renderPlaceholderTable() {
+	renderPlaceholderTable( tableQuery ) {
 		const headers = this.getHeadersContent();
 
 		return (
@@ -165,32 +165,26 @@ export default class ProductsReportTable extends Component {
 				title={ __( 'Products', 'wc-admin' ) }
 				className="woocommerce-analytics__table-placeholder"
 			>
-				<TablePlaceholder caption={ __( 'Products', 'wc-admin' ) } headers={ headers } />
+				<TablePlaceholder
+					caption={ __( 'Products', 'wc-admin' ) }
+					headers={ headers }
+					query={ tableQuery }
+				/>
 			</Card>
 		);
 	}
 
-	renderTable() {
-		const { products, query, totalRows } = this.props;
+	renderTable( tableQuery ) {
+		const { products, totalRows } = this.props;
 
-		const rowsPerPage = parseInt( query.per_page ) || 25;
-		const orderedProducts = orderBy(
-			products,
-			query.orderby || 'items_sold',
-			query.order || 'asc'
-		);
+		const rowsPerPage = parseInt( tableQuery.per_page ) || 25;
+		const orderedProducts = orderBy( products, tableQuery.orderby, tableQuery.order );
 		const rows = this.getRowsContent( orderedProducts );
 
 		const headers = this.getHeadersContent();
 		const labels = {
 			helpText: __( 'Select at least two products to compare', 'wc-admin' ),
 			placeholder: __( 'Search by product name or SKU', 'wc-admin' ),
-		};
-
-		const tableQuery = {
-			...query,
-			orderby: query.orderby || 'date',
-			order: query.order || 'asc',
 		};
 
 		return (
@@ -212,16 +206,22 @@ export default class ProductsReportTable extends Component {
 	}
 
 	render() {
-		const { isError, isRequesting } = this.props;
+		const { isError, isRequesting, query } = this.props;
 
 		if ( isError ) {
 			return <ReportError isError />;
 		}
 
+		const tableQuery = {
+			...query,
+			orderby: query.orderby || 'items_sold',
+			order: query.order || 'asc',
+		};
+
 		if ( isRequesting ) {
-			return this.renderPlaceholderTable();
+			return this.renderPlaceholderTable( tableQuery );
 		}
 
-		return this.renderTable();
+		return this.renderTable( tableQuery );
 	}
 }
