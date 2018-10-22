@@ -215,7 +215,7 @@ export default class ProductsReportTable extends Component {
 		const tableQuery = {
 			...query,
 			orderby: query.orderby || 'items_sold',
-			order: query.order || 'asc',
+			order: query.order || 'desc',
 		};
 
 		if ( isRequesting ) {

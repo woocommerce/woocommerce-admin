@@ -56,8 +56,8 @@ export default compose(
 
 		const { getProducts, isGetProductsError, isGetProductsRequesting } = select( 'wc-admin' );
 		const tableQuery = {
-			orderby: query.orderby || 'date',
-			order: query.order || 'asc',
+			orderby: query.orderby || 'items_sold',
+			order: query.order || 'desc',
 			page: query.page || 1,
 			per_page: query.per_page || 25,
 			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
