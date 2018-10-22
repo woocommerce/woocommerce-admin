@@ -175,7 +175,7 @@ export default class ProductsReportTable extends Component {
 	}
 
 	renderTable( tableQuery ) {
-		const { products, totalRows } = this.props;
+		const { products, query, totalRows } = this.props;
 
 		const rowsPerPage = parseInt( tableQuery.per_page ) || 25;
 		const orderedProducts = orderBy( products, tableQuery.orderby, tableQuery.order );
@@ -197,7 +197,7 @@ export default class ProductsReportTable extends Component {
 				labels={ labels }
 				ids={ orderedProducts.map( p => p.product_id ) }
 				compareBy={ 'product' }
-				onClickDownload={ this.onDownload( headers, rows, tableQuery ) }
+				onClickDownload={ this.onDownload( headers, rows, query ) }
 				onQueryChange={ onQueryChange }
 				query={ tableQuery }
 				summary={ null }
