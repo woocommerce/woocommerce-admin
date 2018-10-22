@@ -11,7 +11,7 @@ import { merge } from 'lodash';
 import { ERROR } from 'store/constants';
 import { getJsonString } from 'store/utils';
 
-const DEFAULT_STATE = {};
+export const DEFAULT_STATE = {};
 
 export default function productsReducer( state = DEFAULT_STATE, action ) {
 	const queryKey = getJsonString( action.query );
