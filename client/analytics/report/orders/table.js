@@ -243,7 +243,7 @@ export default class OrdersReportTable extends Component {
 	}
 
 	renderTable( tableQuery ) {
-		const { orders, totalRows } = this.props;
+		const { orders, query, totalRows } = this.props;
 
 		const rowsPerPage = parseInt( tableQuery.per_page ) || 25;
 		const rows = this.getRowsContent(
@@ -259,7 +259,7 @@ export default class OrdersReportTable extends Component {
 				totalRows={ totalRows }
 				rowsPerPage={ rowsPerPage }
 				headers={ headers }
-				onClickDownload={ this.onDownload( headers, rows, tableQuery ) }
+				onClickDownload={ this.onDownload( headers, rows, query ) }
 				onQueryChange={ onQueryChange }
 				query={ tableQuery }
 				summary={ null }
