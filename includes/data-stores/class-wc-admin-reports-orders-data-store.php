@@ -284,16 +284,16 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 				return new WP_Error( 'woocommerce_reports_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'wc-admin' ) );
 			}
 
-			$unique_products = $wpdb->get_results(
+			$unique_products = $wpdb->get_var(
 				"SELECT
 						COUNT( DISTINCT {$wpdb->prefix}wc_order_product_lookup.product_id )
 					FROM
 						{$wpdb->prefix}wc_order_product_lookup JOIN wp_posts ON {$wpdb->prefix}wc_order_product_lookup.order_id = wp_posts.ID
 					WHERE
 						1=1
-						{$totals_query['where_clause']}", ARRAY_A
+						{$totals_query['where_clause']}"
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
-			$totals[0]['products'] = $unique_products[0]['COUNT( DISTINCT wp_wc_order_product_lookup.product_id )'];
+			$totals[0]['products'] = $unique_products;
 
 			// Specification says these are not included in totals.
 			unset( $totals[0]['date_start'] );
