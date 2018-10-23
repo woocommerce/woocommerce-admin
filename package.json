@@ -24,7 +24,7 @@
     "i18n": "npm run -s i18n:js && npm run -s i18n:php && npm run -s i18n:check && npm run -s i18n:pot",
     "lint": "npm run lint:js && npm run lint:php",
     "lint:js": "npm run -s install-if-deps-outdated && eslint client --ext=js,jsx",
-    "lint:php": "./vendor/bin/phpcs --standard=phpcs.xml.dist $(git ls-files | grep .php$)",
+    "lint:php": "./vendor/bin/phpcs -n --standard=phpcs.xml.dist $(git ls-files | grep .php$)",
     "precommit": "npm run -s install-if-no-packages && node bin/pre-commit-hook.js",
     "prepush": "npm run -s install-if-no-packages && node bin/pre-push-hook.js",
     "pretest": "npm run -s install-if-no-packages",
