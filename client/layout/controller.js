@@ -78,6 +78,10 @@ window.wpNavMenuClassChange = function( menuClass, pathname ) {
 		item.parentElement.classList.add( 'current' );
 	} );
 
+	// Make revenue the default url
+	if ( menuClass === 'toplevel_page_wc-admin--analytics' ) {
+		menuClass = 'toplevel_page_wc-admin--analytics-revenue';
+	}
 	const currentMenu = document.querySelector( '#' + menuClass );
 	currentMenu.classList.remove( 'wp-not-current-submenu' );
 	currentMenu.classList.add( 'wp-has-current-submenu' );
