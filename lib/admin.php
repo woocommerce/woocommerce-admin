@@ -95,14 +95,6 @@ function wc_admin_register_pages() {
 
 	wc_admin_register_page(
 		array(
-			'title'  => __( 'Products', 'wc-admin' ),
-			'parent' => '/analytics',
-			'path'   => '/analytics/products',
-		)
-	);
-
-	wc_admin_register_page(
-		array(
 			'title'  => __( 'Orders', 'wc-admin' ),
 			'parent' => '/analytics',
 			'path'   => '/analytics/orders',
@@ -111,9 +103,57 @@ function wc_admin_register_pages() {
 
 	wc_admin_register_page(
 		array(
+			'title'  => __( 'Products', 'wc-admin' ),
+			'parent' => '/analytics',
+			'path'   => '/analytics/products',
+		)
+	);
+
+	wc_admin_register_page(
+		array(
+			'title'  => __( 'Categories', 'wc-admin' ),
+			'parent' => '/analytics',
+			'path'   => '/analytics/categories',
+		)
+	);
+
+	wc_admin_register_page(
+		array(
 			'title'  => __( 'Coupons', 'wc-admin' ),
 			'parent' => '/analytics',
 			'path'   => '/analytics/coupons',
+		)
+	);
+
+	wc_admin_register_page(
+		array(
+			'title'  => __( 'Taxes', 'wc-admin' ),
+			'parent' => '/analytics',
+			'path'   => '/analytics/taxes',
+		)
+	);
+
+	wc_admin_register_page(
+		array(
+			'title'  => __( 'Downloads', 'wc-admin' ),
+			'parent' => '/analytics',
+			'path'   => '/analytics/downloads',
+		)
+	);
+
+	wc_admin_register_page(
+		array(
+			'title'  => __( 'Stock', 'wc-admin' ),
+			'parent' => '/analytics',
+			'path'   => '/analytics/stock',
+		)
+	);
+
+	wc_admin_register_page(
+		array(
+			'title'  => __( 'Customers', 'wc-admin' ),
+			'parent' => '/analytics',
+			'path'   => '/analytics/customers',
 		)
 	);
 
