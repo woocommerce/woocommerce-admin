@@ -119,10 +119,10 @@ export default class ProductsReportTable extends Component {
 					display: (
 						<Link
 							href={
-								'admin.php?page=wc-admin#/analytics/orders?filter=advanced&product_includes=' +
+								'orders?filter=advanced&product_includes=' +
 								product_id
 							}
-							type="wp-admin"
+							type="wc-admin"
 						>
 							{ orders_count }
 						</Link>
