@@ -331,7 +331,7 @@ TableCard.propTypes = {
 	 */
 	downloadable: PropTypes.bool,
 	/**
-	 * A callback function which handles the "download" button press. Optional, if used, the download button will appear.
+	 * A callback function called when the "download" button is pressed. Optional, if used, the download button will appear.
 	 */
 	onClickDownload: PropTypes.func,
 	/**
