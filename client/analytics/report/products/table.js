@@ -196,7 +196,7 @@ export default class ProductsReportTable extends Component {
 				onClickDownload={ this.onDownload( headers, rows, query ) }
 				onQueryChange={ onQueryChange }
 				query={ tableQuery }
-				summary={ null }
+				summary={ null } // @TODO
 			/>
 		);
 	}
