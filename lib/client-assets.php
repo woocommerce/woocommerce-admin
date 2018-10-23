@@ -13,26 +13,34 @@ function wc_admin_register_script() {
 	$screen_id = wc_admin_get_current_screen_id();
 
 	if ( in_array( $screen_id, wc_admin_get_embed_enabled_screen_ids() ) ) {
-		$js_entry  = 'dist/embedded.js';
-		$css_entry = 'dist/css/embedded.css';
+		$js_entry  = 'dist/embedded/index.js';
+		$css_entry = 'dist/embedded/style.css';
 	} else {
-		$js_entry  = 'dist/index.js';
-		$css_entry = 'dist/css/index.css';
+		$js_entry  = 'dist/app/index.js';
+		$css_entry = 'dist/app/style.css';
 	}
 
 	wp_register_script(
+		'wc-currency',
+		wc_admin_url( 'dist/currency/index.js' ),
+		array(),
+		filemtime( wc_admin_dir_path( 'dist/currency/index.js' ) ),
+		true
+	);
+
+	wp_register_script(
 		'wc-components',
-		wc_admin_url( 'dist/components.js' ),
-		array( 'wp-components', 'wp-data', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-keycodes' ),
-		filemtime( wc_admin_dir_path( 'dist/components.js' ) ),
+		wc_admin_url( 'dist/components/index.js' ),
+		array( 'wc-currency', 'wp-components', 'wp-data', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-keycodes' ),
+		filemtime( wc_admin_dir_path( 'dist/components/index.js' ) ),
 		true
 	);
 
 	wp_register_style(
 		'wc-components',
-		wc_admin_url( 'dist/css/components.css' ),
+		wc_admin_url( 'dist/components/style.css' ),
 		array( 'wp-edit-blocks' ),
-		filemtime( wc_admin_dir_path( 'dist/css/components.css' ) )
+		filemtime( wc_admin_dir_path( 'dist/components/style.css' ) )
 	);
 
 	wp_register_script(
