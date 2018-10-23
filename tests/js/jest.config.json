@@ -9,7 +9,8 @@
   "moduleDirectories": ["node_modules", "<rootDir>/client"],
   "moduleNameMapper": {
     "tinymce": "<rootDir>/tests/js/mocks/tinymce",
-    "@woocommerce/components": "<rootDir>/client/components"
+    "@woocommerce/components": "<rootDir>/client/components",
+    "@woocommerce/currency": "<rootDir>/packages/currency"
   },
   "setupFiles": [
     "<rootDir>/node_modules/@wordpress/jest-preset-default/scripts/setup-globals.js",
@@ -17,7 +18,9 @@
   ],
   "preset": "@wordpress/jest-preset-default",
   "testPathIgnorePatterns": [
-    "/node_modules/"
+    "/node_modules/",
+    "<rootDir>/.*/build/",
+    "<rootDir>/.*/build-module/"
   ],
   "verbose": true
 }

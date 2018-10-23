@@ -28,6 +28,10 @@ Object.defineProperty( global.wc, 'components', {
 	get: () => require( '@woocommerce/components' ),
 } );
 
+Object.defineProperty( global.wc, 'currency', {
+	get: () => require( '@woocommerce/currency' ),
+} );
+
 global.wcSettings = {
 	adminUrl: 'https://vagrant.local/wp/wp-admin/',
 	locale: 'en-US',
