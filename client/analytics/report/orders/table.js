@@ -8,7 +8,7 @@ import { format as formatDate } from '@wordpress/date';
 import { map, orderBy } from 'lodash';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
 import {
 	Card,
@@ -18,7 +18,11 @@ import {
 	TablePlaceholder,
 	ViewMoreList,
 } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
+import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+
+/**
+ * Internal dependencies
+ */
 import { getIntervalForQuery, getDateFormatsForInterval } from 'lib/date';
 import { getAdminLink, onQueryChange } from 'lib/nav-utils';
 import './style.scss';

@@ -8,10 +8,14 @@ import { format as formatDate } from '@wordpress/date';
 import { map } from 'lodash';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
 import { Card, Link, TableCard, TablePlaceholder } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
+import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+
+/**
+ * Internal dependencies
+ */
 import { getDateFormatsForInterval, getIntervalForQuery } from 'lib/date';
 import { onQueryChange } from 'lib/nav-utils';
 import ReportError from 'analytics/components/report-error';

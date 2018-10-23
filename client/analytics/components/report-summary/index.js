@@ -10,9 +10,13 @@ import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 
 /**
+ * WooCommerce dependencies
+ */
+import { formatCurrency } from '@woocommerce/currency';
+
+/**
  * Internal dependencies
  */
-import { formatCurrency } from 'lib/currency';
 import { getNewPath } from 'lib/nav-utils';
 import { SummaryList, SummaryListPlaceholder, SummaryNumber } from '@woocommerce/components';
 import { getDateParamsFromQuery } from 'lib/date';

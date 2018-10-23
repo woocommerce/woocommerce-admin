@@ -8,10 +8,14 @@ import { withSelect } from '@wordpress/data';
 import { get } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { ReportFilters } from '@woocommerce/components';
+
+/**
  * Internal dependencies
  */
 import { filters } from './config';
-import { ReportFilters } from '@woocommerce/components';
 import { appendTimestamp, getCurrentDates } from 'lib/date';
 import { getReportChartData } from 'store/reports/utils';
 import ProductsReportChart from './chart';
