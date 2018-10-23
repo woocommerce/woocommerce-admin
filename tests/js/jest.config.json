@@ -2,11 +2,12 @@
   "rootDir": "../../",
   "collectCoverageFrom": [
     "client/**/*.js",
+    "packages/**/*.js",
     "!**/node_modules/**",
     "!**/vendor/**",
     "!**/test/**"
   ],
-  "moduleDirectories": ["node_modules", "<rootDir>/client"],
+  "moduleDirectories": ["node_modules", "<rootDir>/client", "<rootDir>/packages"],
   "moduleNameMapper": {
     "tinymce": "<rootDir>/tests/js/mocks/tinymce",
     "@woocommerce/components": "<rootDir>/client/components",
