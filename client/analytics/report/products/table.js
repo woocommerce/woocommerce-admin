@@ -117,21 +117,17 @@ export default class ProductsReportTable extends Component {
 				},
 				{
 					display: (
-						<Link
-							href={
-								'orders?filter=advanced&product_includes=' +
-								product_id
-							}
-							type="wc-admin"
-						>
+						<Link href={ 'orders?filter=advanced&product_includes=' + product_id } type="wc-admin">
 							{ orders_count }
 						</Link>
 					),
 					value: orders_count,
 				},
 				{
-					display: categories.map( cat => cat.name ).join( ', ' ),
-					value: categories.map( cat => cat.name ).join( ', ' ),
+					display: Array.isArray( categories )
+						? categories.map( cat => cat.name ).join( ', ' )
+						: '',
+					value: Array.isArray( categories ) ? categories.map( cat => cat.name ).join( ', ' ) : '',
 				},
 				{
 					display: variations.length,
