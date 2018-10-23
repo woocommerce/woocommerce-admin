@@ -159,7 +159,7 @@ class WC_Admin_Reports_Data_Store {
 	 * @param int      $page_no        Offset requested by the user.
 	 * @param int      $items_per_page Number of records requested by the user.
 	 * @param int      $db_interval_count Database interval count.
-	 * @param int      $expected_interval_count Expect DB interval count.
+	 * @param int      $expected_interval_count Expected interval count on the output.
 	 * @param string   $order_by Order by field.
 	 */
 	protected function remove_extra_records( &$data, $page_no, $items_per_page, $db_interval_count, $expected_interval_count, $order_by ) {
@@ -187,7 +187,7 @@ class WC_Admin_Reports_Data_Store {
 	 * @param array $intervals_query Array with clauses for the Intervals SQL query.
 	 * @param array $query_args Query arguements.
 	 * @param int   $db_interval_count Database interval count.
-	 * @param int   $expected_interval_count Expect DB interval count.
+	 * @param int   $expected_interval_count Expected interval count on the output.
 	 */
 	protected function update_intervals_sql_params( &$intervals_query, &$query_args, $db_interval_count, $expected_interval_count ) {
 		if ( $db_interval_count === $expected_interval_count ) {
