@@ -105,7 +105,8 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 
 		if ( $note->get_id() ) {
 			$wpdb->update(
-				$wpdb->prefix . 'woocommerce_admin_notes', array(
+				$wpdb->prefix . 'woocommerce_admin_notes',
+				array(
 					'name'          => $note->get_name(),
 					'type'          => $note->get_type(),
 					'locale'        => $note->get_locale(),
@@ -117,7 +118,8 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 					'source'        => $note->get_source(),
 					'date_created'  => $note->get_date_created(),
 					'date_reminder' => $note->get_date_reminder(),
-				), array( 'note_id' => $note->get_id() )
+				),
+				array( 'note_id' => $note->get_id() )
 			);
 		}
 
@@ -135,13 +137,13 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 	 */
 	public function delete( &$note, $args = array() ) {
 		$note_id = $note->get_id();
-		if ( $note->get_id() ) {
+		if ( $note_id ) {
 			global $wpdb;
 			$wpdb->delete( $wpdb->prefix . 'woocommerce_admin_notes', array( 'note_id' => $note_id ) );
 			$wpdb->delete( $wpdb->prefix . 'woocommerce_admin_note_actions', array( 'note_id' => $note_id ) );
 			$note->set_id( null );
 		}
-		do_action( 'woocommerce_trash_note', $id );
+		do_action( 'woocommerce_trash_note', $note_id );
 	}
 
 	/**
@@ -183,7 +185,8 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 		$wpdb->delete( $wpdb->prefix . 'woocommerce_admin_note_actions', array( 'note_id' => $note->get_id() ) );
 		foreach ( $note->get_actions( 'edit' ) as $action ) {
 			$wpdb->insert(
-				$wpdb->prefix . 'woocommerce_admin_note_actions', array(
+				$wpdb->prefix . 'woocommerce_admin_note_actions',
+				array(
 					'note_id' => $note->get_id(),
 					'name'    => $action->name,
 					'label'   => $action->label,
@@ -202,13 +205,6 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 	public function get_notes( $args = array() ) {
 		global $wpdb;
 
-		// Build the query.
-		$query = "
-			SELECT note_id, title, content
-			FROM {$wpdb->prefix}woocommerce_admin_notes
-			ORDER BY note_id DESC
-		";
-
 		$per_page = isset( $args['per_page'] ) ? intval( $args['per_page'] ) : 10;
 		if ( $per_page <= 0 ) {
 			$per_page = 10;
@@ -222,7 +218,13 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 		$offset     = $per_page * ( $page - 1 );
 		$pagination = sprintf( ' LIMIT %d, %d', $offset, $per_page );
 
-		return $wpdb->get_results( $query . $pagination ); // phpcs:ignore WordPress.WP.PreparedSQL.NotPrepared
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT note_id, title, content FROM {$wpdb->prefix}woocommerce_admin_notes ORDER BY note_id DESC LIMIT %d, %d",
+				$offset,
+				$per_page
+			)
+		);
 	}
 
 	/**
@@ -232,14 +234,24 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 	 */
 	public function get_notes_count() {
 		global $wpdb;
+		// phpcs:ignore WordPress.WP.PreparedSQL.NotPrepared
+		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}woocommerce_admin_notes" );
+	}
 
-		// Build the query.
-		$query = "
-			SELECT COUNT(*)
-			FROM {$wpdb->prefix}woocommerce_admin_notes
-		";
-
-		return $wpdb->get_var( $query ); // phpcs:ignore WordPress.WP.PreparedSQL.NotPrepared
+	/**
+	 * Find all the notes with a given name.
+	 *
+	 * @param string $name Name to search for.
+	 * @return array An array of matching note ids.
+	 */
+	public function get_notes_with_name( $name ) {
+		global $wpdb;
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT note_id FROM {$wpdb->prefix}woocommerce_admin_notes WHERE name = %s ORDER BY note_id ASC",
+				$name
+			)
+		);
 	}
 
 }
