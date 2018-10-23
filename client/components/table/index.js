@@ -84,12 +84,10 @@ class TableCard extends Component {
 	onClickDownload() {
 		const { headers, query, onClickDownload, rows, title } = this.props;
 
-		const fileBaseName = title.toLowerCase().replace( ' ', '-' );
-
 		// @TODO The current implementation only downloads the contents displayed in the table.
 		// Another solution is required when the data set is larger (see #311).
 		downloadCSVFile(
-			generateCSVFileName( fileBaseName, query ),
+			generateCSVFileName( title, query ),
 			generateCSVDataFromTable( headers, rows )
 		);
 
