@@ -16,10 +16,6 @@ import { onQueryChange } from 'lib/nav-utils';
 import ReportError from 'analytics/components/report-error';
 
 export default class ProductsReportTable extends Component {
-	constructor( props ) {
-		super( props );
-	}
-
 	onDownload( headers, rows, query ) {
 		// @TODO The current implementation only downloads the contents displayed in the table.
 		// Another solution is required when the data set is larger (see #311).
