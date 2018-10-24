@@ -13,11 +13,9 @@ function wc_admin_register_script() {
 	$screen_id = wc_admin_get_current_screen_id();
 
 	if ( in_array( $screen_id, wc_admin_get_embed_enabled_screen_ids() ) ) {
-		$js_entry  = 'dist/embedded/index.js';
-		$css_entry = 'dist/embedded/style.css';
+		$entry = 'embedded';
 	} else {
-		$js_entry  = 'dist/app/index.js';
-		$css_entry = 'dist/app/style.css';
+		$entry = 'app';
 	}
 
 	wp_register_script(
@@ -29,11 +27,48 @@ function wc_admin_register_script() {
 	);
 
 	wp_register_script(
+		'wc-date',
+		wc_admin_url( 'dist/date/index.js' ),
+		array( 'wp-date', 'wp-i18n' ),
+		filemtime( wc_admin_dir_path( 'dist/date/index.js' ) ),
+		true
+	);
+
+	wp_register_script(
 		'wc-components',
 		wc_admin_url( 'dist/components/index.js' ),
-		array( 'wc-currency', 'wp-components', 'wp-data', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-keycodes' ),
+		array(
+			'wp-components',
+			'wp-data',
+			'wp-element',
+			'wp-hooks',
+			'wp-i18n',
+			'wp-keycodes',
+			'wc-currency',
+			'wc-date',
+		),
 		filemtime( wc_admin_dir_path( 'dist/components/index.js' ) ),
 		true
+	);
+
+	wp_register_script(
+		WC_ADMIN_APP,
+		wc_admin_url( "dist/{$entry}/index.js" ),
+		array( 'wc-components', 'wp-date', 'wp-html-entities', 'wp-keycodes' ),
+		filemtime( wc_admin_dir_path( "dist/{$entry}/index.js" ) ),
+		true
+	);
+
+	// Set up the text domain and translations.
+	$locale_data = gutenberg_get_jed_locale_data( 'wc-admin' );
+	$content     = 'wp.i18n.setLocaleData( ' . json_encode( $locale_data ) . ', "wc-admin" );';
+	wp_add_inline_script( 'wc-components', $content, 'before' );
+
+	// Resets lodash to wp-admin's version of lodash.
+	wp_add_inline_script(
+		WC_ADMIN_APP,
+		'_.noConflict();',
+		'after'
 	);
 
 	wp_register_style(
@@ -43,28 +78,22 @@ function wc_admin_register_script() {
 		filemtime( wc_admin_dir_path( 'dist/components/style.css' ) )
 	);
 
-	wp_register_script(
-		WC_ADMIN_APP,
-		wc_admin_url( $js_entry ),
-		array( 'wc-components', 'wp-date', 'wp-html-entities', 'wp-keycodes' ),
-		filemtime( wc_admin_dir_path( $js_entry ) ),
-		true
-	);
-
 	wp_register_style(
 		WC_ADMIN_APP,
-		wc_admin_url( $css_entry ),
+		wc_admin_url( "dist/{$entry}/style.css" ),
 		array( 'wc-components' ),
-		filemtime( wc_admin_dir_path( $css_entry ) )
+		filemtime( wc_admin_dir_path( "dist/{$entry}/style.css" ) )
 	);
+}
+add_action( 'admin_enqueue_scripts', 'wc_admin_register_script' );
 
-	// Set up the text domain and translations.
-	$locale_data = gutenberg_get_jed_locale_data( 'wc-admin' );
-	$content     = 'wp.i18n.setLocaleData( ' . json_encode( $locale_data ) . ', "wc-admin" );';
-	wp_add_inline_script( 'wc-components', $content, 'before' );
-
+/**
+ * Output the wcSettings global before printing any script tags.
+ */
+function wc_admin_print_script_settings() {
 	// Add Tracks script to the DOM if tracking is opted in, and Jetpack is installed/activated.
 	$tracking_enabled = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
+	$tracking_script = '';
 	if ( $tracking_enabled && defined( 'JETPACK__VERSION' ) ) {
 		$tracking_script  = "var wc_tracking_script = document.createElement( 'script' );\n";
 		$tracking_script .= "wc_tracking_script.src = '//stats.wp.com/w.js';\n"; // TODO Version/cache buster.
@@ -73,9 +102,7 @@ function wc_admin_register_script() {
 		$tracking_script .= "wc_tracking_script.defer = true;\n";
 		$tracking_script .= "window._tkq = window._tkq || [];\n";
 		$tracking_script .= "document.head.appendChild( wc_tracking_script );\n";
-		wp_add_inline_script( 'wc-components', $tracking_script, 'before' );
 	}
-
 	/**
 	 * TODO: On merge, once plugin images are added to core WooCommerce, `wcAdminAssetUrl` can be retired, and
 	 * `wcAssetUrl` can be used in its place throughout the codebase.
@@ -97,22 +124,16 @@ function wc_admin_register_script() {
 		'siteTitle'        => get_bloginfo( 'name' ),
 		'trackingEnabled'  => $tracking_enabled,
 	);
-
-	wp_add_inline_script(
-		'wc-components',
-		'var wcSettings = ' . json_encode( $settings ) . ';',
-		'before'
-	);
-
-	// Resets lodash to wp-admin's version of lodash.
-	wp_add_inline_script(
-		WC_ADMIN_APP,
-		'_.noConflict();',
-		'after'
-	);
-
+	?>
+	<script type="text/javascript">
+		<?php
+		echo $tracking_script; // WPCS: XSS ok.
+		?>
+		var wcSettings = <?php echo json_encode( $settings ); ?>;
+	</script>
+	<?php
 }
-add_action( 'admin_enqueue_scripts', 'wc_admin_register_script' );
+add_action( 'admin_print_footer_scripts', 'wc_admin_print_script_settings', 1 );
 
 /**
  * Load plugin text domain for translations.
