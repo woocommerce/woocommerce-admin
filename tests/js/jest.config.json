@@ -11,7 +11,8 @@
   "moduleNameMapper": {
     "tinymce": "<rootDir>/tests/js/mocks/tinymce",
     "@woocommerce/components": "<rootDir>/client/components",
-    "@woocommerce/currency": "<rootDir>/packages/currency"
+    "@woocommerce/currency": "<rootDir>/packages/currency",
+    "@woocommerce/date": "<rootDir>/packages/date"
   },
   "setupFiles": [
     "<rootDir>/node_modules/@wordpress/jest-preset-default/scripts/setup-globals.js",

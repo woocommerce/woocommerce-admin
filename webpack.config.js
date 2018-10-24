@@ -9,6 +9,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const externals = {
 	'@woocommerce/components': { this: [ 'wc', 'components' ] },
 	'@woocommerce/currency': { this: [ 'wc', 'currency' ] },
+	'@woocommerce/date': { this: [ 'wc', 'date' ] },
 	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
 	'@wordpress/blocks': { this: [ 'wp', 'blocks' ] },
 	'@wordpress/components': { this: [ 'wp', 'components' ] },
@@ -29,6 +30,7 @@ const externals = {
 const wcAdminPackages = {
 	components: './client/components',
 	currency: './packages/currency',
+	date: './packages/date',
 };
 
 Object.keys( wcAdminPackages ).forEach( ( name ) => {
