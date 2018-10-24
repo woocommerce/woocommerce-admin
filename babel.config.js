@@ -6,6 +6,9 @@ module.exports = function( api ) {
 		plugins: [
 			'@babel/plugin-transform-async-to-generator',
 			'transform-class-properties',
+			[ '@babel/transform-react-jsx', {
+				pragma: 'createElement',
+			} ],
 			[
 				'@wordpress/babel-plugin-import-jsx-pragma',
 				{
@@ -18,9 +21,6 @@ module.exports = function( api ) {
 		env: {
 			production: {
 				plugins: [
-					'@wordpress/babel-plugin-import-jsx-pragma',
-					'transform-class-properties',
-					'@babel/plugin-transform-async-to-generator',
 					[
 						'@wordpress/babel-plugin-makepot',
 						{
