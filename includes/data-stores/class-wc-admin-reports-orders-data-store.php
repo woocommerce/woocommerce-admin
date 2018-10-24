@@ -46,8 +46,8 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		'net_revenue'             => 'floatval',
 		'avg_items_per_order'     => 'floatval',
 		'avg_order_value'         => 'floatval',
-		'num_returning_customers' => 'floatval',
-		'num_new_customers'       => 'floatval',
+		'num_returning_customers' => 'intval',
+		'num_new_customers'       => 'intval',
 	);
 
 	/**
