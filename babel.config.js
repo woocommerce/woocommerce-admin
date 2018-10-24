@@ -20,7 +20,7 @@ module.exports = function( api ) {
 				plugins: [
 					'@wordpress/babel-plugin-import-jsx-pragma',
 					'transform-class-properties',
-					'@babel/plugin-transform-async-to-generator"',
+					'@babel/plugin-transform-async-to-generator',
 					[
 						'@wordpress/babel-plugin-makepot',
 						{
