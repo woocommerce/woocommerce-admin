@@ -9,10 +9,14 @@ import { withSelect } from '@wordpress/data';
 import { get } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { appendTimestamp, getCurrentDates } from '@woocommerce/date';
+import { ReportFilters } from '@woocommerce/components';
+
+/**
  * Internal dependencies
  */
-import { ReportFilters } from '@woocommerce/components';
-import { appendTimestamp, getCurrentDates } from 'lib/date';
 import RevenueReportChart from './chart';
 import RevenueReportTable from './table';
 

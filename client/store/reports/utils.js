@@ -6,10 +6,14 @@
 import { forEach, isNull } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { appendTimestamp, getCurrentDates, getIntervalForQuery } from '@woocommerce/date';
+
+/**
  * Internal dependencies
  */
 import { MAX_PER_PAGE } from 'store/constants';
-import { appendTimestamp, getCurrentDates, getIntervalForQuery } from 'lib/date';
 
 /**
  * Returns true if a report object is empty.

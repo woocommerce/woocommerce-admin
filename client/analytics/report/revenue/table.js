@@ -12,11 +12,11 @@ import { map } from 'lodash';
  */
 import { Card, Link, TableCard, TablePlaceholder } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { getDateFormatsForInterval, getIntervalForQuery } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import { getDateFormatsForInterval, getIntervalForQuery } from 'lib/date';
 import { onQueryChange } from 'lib/nav-utils';
 import ReportError from 'analytics/components/report-error';
 

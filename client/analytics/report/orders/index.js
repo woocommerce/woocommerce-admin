@@ -10,12 +10,16 @@ import { withSelect } from '@wordpress/data';
 import { get } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { appendTimestamp, getCurrentDates } from '@woocommerce/date';
+import { EmptyContent, ReportFilters } from '@woocommerce/components';
+
+/**
  * Internal dependencies
  */
-import { EmptyContent, ReportFilters } from '@woocommerce/components';
-import { filters, advancedFilterConfig } from './config';
+import { advancedFilterConfig, filters } from './config';
 import { getAdminLink } from 'lib/nav-utils';
-import { appendTimestamp, getCurrentDates } from 'lib/date';
 import { getReportChartData } from 'store/reports/utils';
 import OrdersReportChart from './chart';
 import OrdersReportTable from './table';

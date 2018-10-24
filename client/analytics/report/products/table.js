@@ -7,10 +7,14 @@ import { Component } from '@wordpress/element';
 import { map, orderBy } from 'lodash';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
 import { Card, Link, TableCard, TablePlaceholder } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
+import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+
+/**
+ * Internal dependencies
+ */
 import { getNewPath, getTimeRelatedQuery, onQueryChange } from 'lib/nav-utils';
 import ReportError from 'analytics/components/report-error';
 

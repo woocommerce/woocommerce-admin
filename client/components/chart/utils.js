@@ -19,12 +19,8 @@ import { format as formatDate } from '@wordpress/date';
 /**
  * WooCommerce dependencies
  */
+import { dayTicksThreshold } from '@woocommerce/date';
 import { formatCurrency } from '@woocommerce/currency';
-
-/**
- * Internal dependencies
- */
-import { dayTicksThreshold } from 'lib/date';
 
 /**
  * Describes `smallestFactor`

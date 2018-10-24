@@ -19,11 +19,11 @@ import {
 	ViewMoreList,
 } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { getIntervalForQuery, getDateFormatsForInterval } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import { getIntervalForQuery, getDateFormatsForInterval } from 'lib/date';
 import { getAdminLink, onQueryChange } from 'lib/nav-utils';
 import './style.scss';
 

@@ -10,13 +10,13 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
+import { appendTimestamp, getCurrentDates } from '@woocommerce/date';
 import { ReportFilters } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import { filters } from './config';
-import { appendTimestamp, getCurrentDates } from 'lib/date';
 import { getReportChartData } from 'store/reports/utils';
 import ProductsReportChart from './chart';
 import ProductsReportTable from './table';
