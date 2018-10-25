@@ -50,9 +50,9 @@ getPackages().forEach( ( p ) => {
 					fs.unlinkSync( buildFile );
 					process.stdout.write(
 						chalk.red( '  \u2022 ' ) +
-              path.relative( path.resolve( srcDir, '..', '..' ), buildFile ) +
-              ' (deleted)' +
-              '\n'
+						path.relative( path.resolve( srcDir, '..', '..' ), buildFile ) +
+						' (deleted)' +
+						'\n'
 					);
 				} catch ( e ) {}
 			}
