@@ -11,8 +11,9 @@ import PropTypes from 'prop-types';
  */
 import './style.scss';
 import EllipsisMenu from 'components/ellipsis-menu';
-import { H, Section } from 'components/section';
+import { Section } from 'components/section';
 import { validateComponent } from 'lib/proptype-validator';
+import SectionHeader from 'components/section-header';
 
 /**
  * A basic card component with a header. The header can contain a title, an action, and an `EllipsisMenu` menu.
@@ -26,15 +27,11 @@ class Card extends Component {
 		} );
 		return (
 			<div className={ className }>
-				<div className="woocommerce-card__header">
-					<H className="woocommerce-card__title woocommerce-card__header-item">{ title }</H>
-					{ action && (
-						<div className="woocommerce-card__action woocommerce-card__header-item">{ action }</div>
-					) }
-					{ menu && (
-						<div className="woocommerce-card__menu woocommerce-card__header-item">{ menu }</div>
-					) }
-				</div>
+				{ title && (
+					<SectionHeader title={ title } menu={ menu }>
+						{ action }
+					</SectionHeader>
+				) }
 				<Section className="woocommerce-card__body">{ children }</Section>
 			</div>
 		);
@@ -57,7 +54,7 @@ Card.propTypes = {
 	/**
 	 * The title to use for this card.
 	 */
-	title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ).isRequired,
+	title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ),
 };
 
 export default Card;

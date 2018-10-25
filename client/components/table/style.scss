@@ -6,9 +6,8 @@
 		position: relative;
 	}
 
-	.woocommerce-card__action,
-	.woocommerce-card__menu {
-		justify-self: flex-end;
+	.woocommerce-search {
+		flex-grow: 1;
 	}
 
 	&.has-compare {

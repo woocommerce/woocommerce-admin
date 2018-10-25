@@ -2,8 +2,6 @@
 
 .woocommerce-card {
 	margin-bottom: $gap-large;
-	background: white;
-	border: 1px solid $core-grey-light-700;
 
 	@include breakpoint( '<782px' ) {
 		margin-left: -16px;
@@ -12,25 +10,6 @@
 		border-left: none;
 		border-right: none;
 		width: auto;
-	}
-}
-
-.woocommerce-card__header {
-	padding: ($gap - 3) $gap;
-	border-bottom: 1px solid $core-grey-light-700;
-	display: grid;
-	align-items: center;
-
-	.has-action & {
-		grid-template-columns: auto 1fr;
-	}
-
-	.has-menu & {
-		grid-template-columns: auto 24px;
-	}
-
-	.has-menu.has-action & {
-		grid-template-columns: auto 1fr 48px;
 	}
 }
 
@@ -45,6 +24,8 @@
 }
 
 .woocommerce-card__body {
+	background: white;
+	border: 1px solid $core-grey-light-700;
 	padding: $gap;
 }
 
