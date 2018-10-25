@@ -95,14 +95,16 @@ window.wpNavMenuClassChange = function( page ) {
 		item.classList.remove( 'current' );
 	} );
 
-	const submenu = document.querySelector( '.wp-has-current-submenu' );
-	submenu.classList.remove( 'wp-has-current-submenu' );
-	submenu.classList.remove( 'wp-menu-open' );
-	submenu.classList.remove( 'selected' );
-	submenu.classList.add( 'wp-not-current-submenu' );
-	submenu.classList.add( 'menu-top' );
+	const submenu = Array.from( document.querySelectorAll( '.wp-has-current-submenu' ) );
+	submenu.forEach( function( element ) {
+		element.classList.remove( 'wp-has-current-submenu' );
+		element.classList.remove( 'wp-menu-open' );
+		element.classList.remove( 'selected' );
+		element.classList.add( 'wp-not-current-submenu' );
+		element.classList.add( 'menu-top' );
+	} );
 
-	const currentItems = document.querySelectorAll( `li > a[href="${ window.location.href }"]` );
+	const currentItems = document.querySelectorAll( `li > a[href$="${ window.location.hash }"]` );
 
 	Array.from( currentItems ).forEach( function( item ) {
 		item.parentElement.classList.add( 'current' );
@@ -117,6 +119,11 @@ window.wpNavMenuClassChange = function( page ) {
 	currentMenu.classList.add( 'wp-has-current-submenu' );
 	currentMenu.classList.add( 'wp-menu-open' );
 	currentMenu.classList.add( 'current' );
+
+	// Make revenue the default url
+	if ( page.wpClosedMenu === 'toplevel_page_wc-admin--analytics' ) {
+		page.wpClosedMenu = 'toplevel_page_wc-admin--analytics-revenue';
+	}
 
 	// Sometimes navigating from the subMenu to Dashboard does not close subMenu
 	const closedMenu = document.querySelector( '#' + page.wpClosedMenu );
