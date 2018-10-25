@@ -45,7 +45,7 @@ class WC_Admin_Reports_Interval {
 		}
 
 		$mysql_date_format_mapping = array(
-			'hour'    => "DATE_FORMAT(date_created, '%Y-%m-%d %k')",
+			'hour'    => "DATE_FORMAT(date_created, '%Y-%m-%d %H')",
 			'day'     => "DATE_FORMAT(date_created, '%Y-%m-%d')",
 			'week'    => $week_format,
 			'month'   => "DATE_FORMAT(date_created, '%Y-%m')",
