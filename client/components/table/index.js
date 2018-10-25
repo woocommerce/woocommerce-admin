@@ -5,7 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import { fill, find, findIndex, first, isEqual, noop, partial, uniq } from 'lodash';
+import { find, findIndex, first, isEqual, noop, partial, uniq } from 'lodash';
 import { IconButton, ToggleControl } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
@@ -17,6 +17,7 @@ import Card from 'components/card';
 import CompareButton from 'components/filters/compare/button';
 import DowloadIcon from './download-icon';
 import EllipsisMenu from 'components/ellipsis-menu';
+import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { getIdsFromQuery } from 'lib/nav-utils';
 import MenuItem from 'components/ellipsis-menu/menu-item';
 import MenuTitle from 'components/ellipsis-menu/menu-title';
@@ -38,10 +39,11 @@ class TableCard extends Component {
 		super( props );
 		const { compareBy, query } = props;
 		this.state = {
-			showCols: fill( Array( props.headers.length ), true ),
+			showCols: props.headers.map( ( { hiddenByDefault } ) => ! hiddenByDefault ),
 			selectedRows: getIdsFromQuery( query[ compareBy ] ),
 		};
 		this.toggleCols = this.toggleCols.bind( this );
+		this.onClickDownload = this.onClickDownload.bind( this );
 		this.onCompare = this.onCompare.bind( this );
 		this.onSearch = this.onSearch.bind( this );
 		this.selectRow = this.selectRow.bind( this );
@@ -77,6 +79,24 @@ class TableCard extends Component {
 				),
 			} ) );
 		};
+	}
+
+	onClickDownload() {
+		const { headers, query, onClickDownload, rows, title } = this.props;
+		const { showCols } = this.state;
+		const visibleHeaders = headers.filter( ( header, i ) => showCols[ i ] );
+		const visibleRows = rows.map( row => row.filter( ( cell, i ) => showCols[ i ] ) );
+
+		// @TODO The current implementation only downloads the contents displayed in the table.
+		// Another solution is required when the data set is larger (see #311).
+		downloadCSVFile(
+			generateCSVFileName( title, query ),
+			generateCSVDataFromTable( visibleHeaders, visibleRows )
+		);
+
+		if ( onClickDownload ) {
+			onClickDownload();
+		}
 	}
 
 	onCompare() {
@@ -168,6 +188,7 @@ class TableCard extends Component {
 	render() {
 		const {
 			compareBy,
+			downloadable,
 			labels = {},
 			onClickDownload,
 			onQueryChange,
@@ -219,11 +240,11 @@ class TableCard extends Component {
 							onChange={ this.onSearch }
 						/>
 					),
-					onClickDownload && (
+					( downloadable || onClickDownload ) && (
 						<IconButton
 							key="download"
 							className="woocommerce-table__download-button"
-							onClick={ onClickDownload }
+							onClick={ this.onClickDownload }
 							isLink
 						>
 							<DowloadIcon />
@@ -284,6 +305,7 @@ TableCard.propTypes = {
 	 */
 	headers: PropTypes.arrayOf(
 		PropTypes.shape( {
+			hiddenByDefault: PropTypes.bool,
 			defaultSort: PropTypes.bool,
 			isSortable: PropTypes.bool,
 			key: PropTypes.string,
@@ -309,7 +331,11 @@ TableCard.propTypes = {
 	 */
 	onQueryChange: PropTypes.func,
 	/**
-	 * A callback function which handles then "download" button press. Optional, if not used, the button won't appear.
+	 * Whether the table must be downloadable. If true, the download button will appear.
+	 */
+	downloadable: PropTypes.bool,
+	/**
+	 * A callback function called when the "download" button is pressed. Optional, if used, the download button will appear.
 	 */
 	onClickDownload: PropTypes.func,
 	/**
@@ -356,6 +382,7 @@ TableCard.propTypes = {
 };
 
 TableCard.defaultProps = {
+	downloadable: false,
 	onQueryChange: noop,
 	query: {},
 	rowHeader: 0,

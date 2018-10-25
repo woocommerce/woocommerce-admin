@@ -4,7 +4,7 @@
  */
 import history from 'lib/history';
 import { parse, stringify } from 'qs';
-import { uniq } from 'lodash';
+import { isEmpty, pick, uniq } from 'lodash';
 
 /**
  * Returns a string with the site's wp-admin URL appended. JS version of `admin_url`.
@@ -27,7 +27,16 @@ export const getPath = () => history.location.pathname;
  * @param {Object} query parameters to be converted.
  * @return {String} Query string.
  */
-export const stringifyQuery = query => ( query ? '?' + stringify( query ) : '' );
+export const stringifyQuery = query => ( isEmpty( query ) ? '' : '?' + stringify( query ) );
+
+/**
+ * Gets time related parameters from a query.
+ *
+ * @param {Object} query Query containing the parameters.
+ * @return {Object} Object containing the time related queries.
+ */
+export const getTimeRelatedQuery = query =>
+	pick( query, [ 'period', 'compare', 'before', 'after' ] );
 
 /**
  * Get an array of IDs from a comma-separated query parameter.
