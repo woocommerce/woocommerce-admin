@@ -444,8 +444,9 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 		case 'week':
 			if ( ticks < weekTicksThreshold ) {
 				xFormat = '%d';
+				xFormat = '%b %Y';
 			} else {
-				xFormat = '%b';
+				xFormat = '%d %b';
 				x2Format = '%Y';
 			}
 			tooltipFormat = __( 'Week of %B %d %Y', 'wc-admin' );
