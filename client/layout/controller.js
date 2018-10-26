@@ -104,7 +104,8 @@ window.wpNavMenuClassChange = function( page ) {
 		element.classList.add( 'menu-top' );
 	} );
 
-	const currentItems = document.querySelectorAll( `li > a[href$="${ window.location.hash }"]` );
+	const pageHash = window.location.hash.split( '?' )[ 0 ];
+	const currentItems = document.querySelectorAll( `li > a[href$="${ pageHash }"]` );
 
 	Array.from( currentItems ).forEach( function( item ) {
 		item.parentElement.classList.add( 'current' );
