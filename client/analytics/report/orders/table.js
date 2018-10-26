@@ -5,7 +5,9 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
-import { map, orderBy } from 'lodash';
+import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
+import { get, map, orderBy } from 'lodash';
 
 /**
  * Internal dependencies
@@ -19,12 +21,19 @@ import {
 	ViewMoreList,
 } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
-import { getIntervalForQuery, getDateFormatsForInterval } from 'lib/date';
+import {
+	appendTimestamp,
+	getCurrentDates,
+	getIntervalForQuery,
+	getDateFormatsForInterval,
+} from 'lib/date';
 import { getAdminLink, onQueryChange } from 'lib/nav-utils';
+import ReportError from 'analytics/components/report-error';
 import { QUERY_DEFAULTS } from 'store/constants';
+import { getReportChartData, getFilterQuery } from 'store/reports/utils';
 import './style.scss';
 
-export default class OrdersReportTable extends Component {
+class OrdersReportTable extends Component {
 	constructor( props ) {
 		super( props );
 	}
@@ -232,11 +241,16 @@ export default class OrdersReportTable extends Component {
 	}
 
 	renderTable( tableQuery ) {
-		const { orders, totalRows } = this.props;
+		const { orders, primaryData } = this.props;
 
 		const rowsPerPage = parseInt( tableQuery.per_page ) || QUERY_DEFAULTS.pageSize;
 		const rows = this.getRowsContent(
 			orderBy( this.formatTableData( orders ), tableQuery.orderby, tableQuery.order )
+		);
+		const totalRows = get(
+			primaryData,
+			[ 'data', 'totals', 'orders_count' ],
+			Object.keys( orders ).length
 		);
 
 		const headers = this.getHeadersContent();
@@ -257,7 +271,14 @@ export default class OrdersReportTable extends Component {
 	}
 
 	render() {
-		const { isRequesting, query } = this.props;
+		const { isTableDataError, isTableDataRequesting, primaryData, query } = this.props;
+		const isError = isTableDataError || primaryData.isError;
+
+		if ( isError ) {
+			return <ReportError isError />;
+		}
+
+		const isRequesting = isTableDataRequesting || primaryData.isRequesting;
 
 		const tableQuery = {
 			...query,
@@ -265,8 +286,41 @@ export default class OrdersReportTable extends Component {
 			order: query.order || 'asc',
 		};
 
-		return isRequesting
-			? this.renderPlaceholderTable( tableQuery )
-			: this.renderTable( tableQuery );
+		if ( isRequesting ) {
+			return this.renderPlaceholderTable( tableQuery );
+		}
+
+		return this.renderTable( tableQuery );
 	}
 }
+
+export default compose(
+	withSelect( ( select, props ) => {
+		const { query } = props;
+		const datesFromQuery = getCurrentDates( query );
+		const primaryData = getReportChartData( 'orders', 'primary', query, select );
+		const filterQuery = getFilterQuery( 'orders', query );
+
+		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-admin' );
+		const tableQuery = {
+			orderby: query.orderby || 'date',
+			order: query.order || 'asc',
+			page: query.page || 1,
+			per_page: query.per_page || QUERY_DEFAULTS.pageSize,
+			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
+			status: [ 'processing', 'on-hold', 'completed' ],
+			...filterQuery,
+		};
+		const orders = getOrders( tableQuery );
+		const isTableDataError = isGetOrdersError( tableQuery );
+		const isTableDataRequesting = isGetOrdersRequesting( tableQuery );
+
+		return {
+			isTableDataError,
+			isTableDataRequesting,
+			orders,
+			primaryData,
+		};
+	} )
+)( OrdersReportTable );

@@ -5,19 +5,21 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
-import { map } from 'lodash';
+import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
+import { get, map } from 'lodash';
 
 /**
  * Internal dependencies
  */
 import { Card, Link, TableCard, TablePlaceholder } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
-import { getDateFormatsForInterval, getIntervalForQuery } from 'lib/date';
+import { appendTimestamp, getCurrentDates, getDateFormatsForInterval, getIntervalForQuery } from 'lib/date';
 import { onQueryChange } from 'lib/nav-utils';
 import ReportError from 'analytics/components/report-error';
 import { QUERY_DEFAULTS } from 'store/constants';
 
-export default class RevenueReportTable extends Component {
+class RevenueReportTable extends Component {
 	getHeadersContent() {
 		return [
 			{
@@ -161,12 +163,13 @@ export default class RevenueReportTable extends Component {
 	}
 
 	renderTable( tableQuery ) {
-		const { tableData, totalRows } = this.props;
+		const { tableData } = this.props;
 
 		const rowsPerPage =
 			( tableQuery && tableQuery.per_page && parseInt( tableQuery.per_page ) ) ||
 			QUERY_DEFAULTS.pageSize;
 		const rows = this.getRowsContent( tableData.data.intervals );
+		const totalRows = get( tableData, [ 'totalResults' ], 0 );
 
 		const headers = this.getHeadersContent();
 
@@ -186,9 +189,9 @@ export default class RevenueReportTable extends Component {
 	}
 
 	render() {
-		const { isError, isRequesting, query } = this.props;
+		const { isTableDataError, isTableDataRequesting, query } = this.props;
 
-		if ( isError ) {
+		if ( isTableDataError ) {
 			return <ReportError isError />;
 		}
 
@@ -198,10 +201,39 @@ export default class RevenueReportTable extends Component {
 			order: query.order || 'asc',
 		};
 
-		if ( isRequesting ) {
+		if ( isTableDataRequesting ) {
 			return this.renderPlaceholderTable( tableQuery );
 		}
 
 		return this.renderTable( tableQuery );
 	}
 }
+
+export default compose(
+	withSelect( ( select, props ) => {
+		const { query } = props;
+		const datesFromQuery = getCurrentDates( query );
+		const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
+
+		// TODO Support hour here when viewing a single day
+		const tableQuery = {
+			interval: 'day',
+			orderby: query.orderby || 'date',
+			order: query.order || 'asc',
+			page: query.page || 1,
+			per_page: query.per_page || QUERY_DEFAULTS.pageSize,
+			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
+		};
+		const tableData = getReportStats( 'revenue', tableQuery );
+		const isTableDataError = isReportStatsError( 'revenue', tableQuery );
+		const isTableDataRequesting = isReportStatsRequesting( 'revenue', tableQuery );
+
+		return {
+			isTableDataError,
+			isTableDataRequesting,
+			tableQuery,
+			tableData,
+		};
+	} )
+)( RevenueReportTable );
