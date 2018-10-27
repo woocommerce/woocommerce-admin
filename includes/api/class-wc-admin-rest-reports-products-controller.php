@@ -138,29 +138,29 @@ class WC_Admin_REST_Reports_Products_Controller extends WC_REST_Reports_Controll
 			'title'      => 'report_products',
 			'type'       => 'object',
 			'properties' => array(
-				'product_id' => array(
+				'product_id'    => array(
 					'type'        => 'integer',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'Product ID.', 'woocommerce' ),
+					'description' => __( 'Product ID.', 'wc-admin' ),
 				),
-				'items_sold' => array(
+				'items_sold'    => array(
 					'type'        => 'integer',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'Number of items sold.', 'woocommerce' ),
+					'description' => __( 'Number of items sold.', 'wc-admin' ),
 				),
 				'gross_revenue' => array(
 					'type'        => 'number',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'Total gross revenue of all items sold.', 'woocommerce' ),
+					'description' => __( 'Total gross revenue of all items sold.', 'wc-admin' ),
 				),
-				'orders_count' => array(
+				'orders_count'  => array(
 					'type'        => 'integer',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'Number of orders product appeared in.', 'woocommerce' ),
+					'description' => __( 'Number of orders product appeared in.', 'wc-admin' ),
 				),
 			),
 		);
@@ -174,18 +174,18 @@ class WC_Admin_REST_Reports_Products_Controller extends WC_REST_Reports_Controll
 	 * @return array
 	 */
 	public function get_collection_params() {
-		$params               = array();
-		$params['context']    = $this->get_context_param( array( 'default' => 'view' ) );
-		$params['page']       = array(
-			'description'       => __( 'Current page of the collection.', 'woocommerce' ),
+		$params                          = array();
+		$params['context']               = $this->get_context_param( array( 'default' => 'view' ) );
+		$params['page']                  = array(
+			'description'       => __( 'Current page of the collection.', 'wc-admin' ),
 			'type'              => 'integer',
 			'default'           => 1,
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
 			'minimum'           => 1,
 		);
-		$params['per_page']   = array(
-			'description'       => __( 'Maximum number of items to be returned in result set.', 'woocommerce' ),
+		$params['per_page']              = array(
+			'description'       => __( 'Maximum number of items to be returned in result set.', 'wc-admin' ),
 			'type'              => 'integer',
 			'default'           => 10,
 			'minimum'           => 1,
@@ -193,27 +193,27 @@ class WC_Admin_REST_Reports_Products_Controller extends WC_REST_Reports_Controll
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['after']      = array(
-			'description'       => __( 'Limit response to resources published after a given ISO8601 compliant date.', 'woocommerce' ),
+		$params['after']                 = array(
+			'description'       => __( 'Limit response to resources published after a given ISO8601 compliant date.', 'wc-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['before']     = array(
-			'description'       => __( 'Limit response to resources published before a given ISO8601 compliant date.', 'woocommerce' ),
+		$params['before']                = array(
+			'description'       => __( 'Limit response to resources published before a given ISO8601 compliant date.', 'wc-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['order']      = array(
-			'description'       => __( 'Order sort attribute ascending or descending.', 'woocommerce' ),
+		$params['order']                 = array(
+			'description'       => __( 'Order sort attribute ascending or descending.', 'wc-admin' ),
 			'type'              => 'string',
 			'default'           => 'desc',
 			'enum'              => array( 'asc', 'desc' ),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['orderby']    = array(
-			'description'       => __( 'Sort collection by object attribute.', 'woocommerce' ),
+		$params['orderby']               = array(
+			'description'       => __( 'Sort collection by object attribute.', 'wc-admin' ),
 			'type'              => 'string',
 			'default'           => 'date',
 			'enum'              => array(
@@ -224,8 +224,8 @@ class WC_Admin_REST_Reports_Products_Controller extends WC_REST_Reports_Controll
 			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['categories'] = array(
-			'description'       => __( 'Limit result to items from the specified categories.', 'woocommerce' ),
+		$params['categories']            = array(
+			'description'       => __( 'Limit result to items from the specified categories.', 'wc-admin' ),
 			'type'              => 'array',
 			'sanitize_callback' => 'wp_parse_id_list',
 			'validate_callback' => 'rest_validate_request_arg',
@@ -233,8 +233,8 @@ class WC_Admin_REST_Reports_Products_Controller extends WC_REST_Reports_Controll
 				'type' => 'integer',
 			),
 		);
-		$params['products']   = array(
-			'description'       => __( 'Limit result to items with specified product ids.', 'woocommerce' ),
+		$params['products']              = array(
+			'description'       => __( 'Limit result to items with specified product ids.', 'wc-admin' ),
 			'type'              => 'array',
 			'sanitize_callback' => 'wp_parse_id_list',
 			'validate_callback' => 'rest_validate_request_arg',
@@ -243,7 +243,7 @@ class WC_Admin_REST_Reports_Products_Controller extends WC_REST_Reports_Controll
 			),
 		);
 		$params['extended_product_info'] = array(
-			'description'       => __( 'Add additional piece of info about each product to the report.', 'woocommerce' ),
+			'description'       => __( 'Add additional piece of info about each product to the report.', 'wc-admin' ),
 			'type'              => 'boolean',
 			'default'           => false,
 			'sanitize_callback' => 'wc_string_to_bool',

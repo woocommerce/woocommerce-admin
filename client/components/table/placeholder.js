@@ -16,9 +16,10 @@ import Table from './table';
  */
 class TablePlaceholder extends Component {
 	render() {
-		const { caption, headers, numberOfRows } = this.props;
+		const { caption, headers, numberOfRows, query } = this.props;
+		const filteredHeaders = headers.filter( header => ! header.hiddenByDefault );
 		const rows = range( numberOfRows ).map( () =>
-			headers.map( () => ( { display: <span className="is-placeholder" /> } ) )
+			filteredHeaders.map( () => ( { display: <span className="is-placeholder" /> } ) )
 		);
 
 		return (
@@ -26,15 +27,20 @@ class TablePlaceholder extends Component {
 				ariaHidden={ true }
 				caption={ caption }
 				classNames="is-loading"
-				headers={ headers }
+				headers={ filteredHeaders }
 				rowHeader={ false }
 				rows={ rows }
+				query={ query }
 			/>
 		);
 	}
 }
 
 TablePlaceholder.propTypes = {
+	/**
+	 *  An object of the query parameters passed to the page, ex `{ page: 2, per_page: 5 }`.
+	 */
+	query: PropTypes.object,
 	/**
 	 * A label for the content in this table.
 	 */
@@ -44,6 +50,7 @@ TablePlaceholder.propTypes = {
 	 */
 	headers: PropTypes.arrayOf(
 		PropTypes.shape( {
+			hiddenByDefault: PropTypes.bool,
 			defaultSort: PropTypes.bool,
 			isSortable: PropTypes.bool,
 			key: PropTypes.string,

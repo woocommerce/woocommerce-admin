@@ -8,6 +8,13 @@ import { __ } from '@wordpress/i18n';
 import { getSettings, format as formatDate } from '@wordpress/date';
 
 /**
+ * Internal dependencies
+ */
+import { QUERY_DEFAULTS } from 'store/constants';
+
+export const isoDateFormat = 'YYYY-MM-DD';
+
+/**
  * DateValue Object
  *
  * @typedef {Object} DateValue - Describes the date range supplied by the date picker.
@@ -27,8 +34,6 @@ import { getSettings, format as formatDate } from '@wordpress/date';
  * @param {moment.Moment|null} before - If the period supplied is "custom", this is the before date
  */
 
-export const isoDateFormat = 'YYYY-MM-DD';
-
 export const presetValues = [
 	{ value: 'today', label: __( 'Today', 'wc-admin' ) },
 	{ value: 'yesterday', label: __( 'Yesterday', 'wc-admin' ) },
@@ -47,6 +52,23 @@ export const periods = [
 	{ value: 'previous_period', label: __( 'Previous Period', 'wc-admin' ) },
 	{ value: 'previous_year', label: __( 'Previous Year', 'wc-admin' ) },
 ];
+
+/**
+ * Adds timestamp to a string date.
+ *
+ * @param {string} date - Date as a string.
+ * @param {string} timeOfDay - Either `start` or `end` of the day.
+ * @return {string} - String date with timestamp attached.
+ */
+export const appendTimestamp = ( date, timeOfDay ) => {
+	if ( timeOfDay === 'start' ) {
+		return date + 'T00:00:00+00:00';
+	}
+	if ( timeOfDay === 'end' ) {
+		return date + 'T23:59:59+00:00';
+	}
+	throw new Error( 'appendTimestamp requires second parameter to be either `start` or `end`' );
+};
 
 /**
  * Convert a string to Moment object
@@ -241,8 +263,8 @@ function getDateValue( period, compare, after, before ) {
  */
 export const getDateParamsFromQuery = ( { period, compare, after, before } ) => {
 	return {
-		period: period || 'today',
-		compare: compare || 'previous_period',
+		period: period || QUERY_DEFAULTS.period,
+		compare: compare || QUERY_DEFAULTS.compare,
 		after: after ? moment( after ) : null,
 		before: before ? moment( before ) : null,
 	};
@@ -322,6 +344,8 @@ export const getPreviousDate = ( date, date1, date2, compare, interval ) => {
 
 /**
  * Returns the allowed selectable intervals for a specific query.
+ * TODO Add support for hours. `` if ( differenceInDays <= 1 ) { allowed = [ 'hour' ]; }
+ * Today/yesterday/default: allowed = [ 'hour' ];
  *
  * @param  {Object} query Current query
  * @return {Array} Array containing allowed intervals.
@@ -341,17 +365,11 @@ export function getAllowedIntervalsForQuery( query ) {
 			allowed = [ 'day', 'week' ];
 		} else if ( differenceInDays > 1 && differenceInDays <= 7 ) {
 			allowed = [ 'day' ];
-		} else if ( differenceInDays <= 1 ) {
-			allowed = [ 'hour' ];
 		} else {
 			allowed = [ 'day' ];
 		}
 	} else {
 		switch ( query.period ) {
-			case 'today':
-			case 'yesterday':
-				allowed = [ 'hour' ];
-				break;
 			case 'week':
 			case 'last_week':
 				allowed = [ 'day' ];
@@ -393,18 +411,21 @@ export function getIntervalForQuery( query ) {
 	return current;
 }
 
+export const dayTicksThreshold = 180;
+
 /**
  * Returns date formats for the current interval.
  * See https://github.com/d3/d3-time-format for chart formats.
  *
  * @param  {String} interval Interval to get date formats for.
+ * @param  {Int}    [ticks] Number of ticks the axis will have.
  * @return {String} Current interval.
  */
-export function getDateFormatsForInterval( interval ) {
+export function getDateFormatsForInterval( interval, ticks = 0 ) {
 	let pointLabelFormat = 'F j, Y';
 	let tooltipFormat = '%B %d %Y';
 	let xFormat = '%Y-%m-%d';
-	let x2Format = '%b %y';
+	let x2Format = '%b %Y';
 	let tableFormat = 'm/d/Y';
 
 	switch ( interval ) {
@@ -415,7 +436,12 @@ export function getDateFormatsForInterval( interval ) {
 			tableFormat = 'h A';
 			break;
 		case 'day':
-			xFormat = '%d';
+			if ( ticks < dayTicksThreshold ) {
+				xFormat = '%d';
+			} else {
+				xFormat = '%b';
+				x2Format = '%Y';
+			}
 			break;
 		case 'week':
 			xFormat = '%d';
@@ -425,15 +451,13 @@ export function getDateFormatsForInterval( interval ) {
 		case 'month':
 			pointLabelFormat = 'F Y';
 			tooltipFormat = '%B %Y';
-			xFormat = '%b %y';
+			xFormat = '%b %Y';
 			x2Format = '';
-			tableFormat = 'M Y';
 			break;
 		case 'year':
 			pointLabelFormat = 'Y';
 			tooltipFormat = '%Y';
 			xFormat = '%Y';
-			tableFormat = 'Y';
 			break;
 	}
 

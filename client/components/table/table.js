@@ -55,6 +55,7 @@ class Table extends Component {
 		super( props );
 		this.state = {
 			tabIndex: null,
+			isScrollable: false,
 		};
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
@@ -68,6 +69,12 @@ class Table extends Component {
 			tabIndex: scrollable ? '0' : null,
 		} );
 		/* eslint-enable react/no-did-mount-set-state */
+		this.updateTableShadow();
+		window.addEventListener( 'resize', this.updateTableShadow );
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener( 'resize', this.updateTableShadow );
 	}
 
 	sortBy( key ) {
@@ -84,6 +91,14 @@ class Table extends Component {
 		};
 	}
 
+	updateTableShadow = () => {
+		const table = this.container.current;
+		const scrolledToEnd = table.scrollWidth - table.scrollLeft <= table.offsetWidth;
+		this.setState( {
+			isScrollable: scrolledToEnd ? false : true,
+		} );
+	};
+
 	render() {
 		const {
 			ariaHidden,
@@ -96,7 +111,9 @@ class Table extends Component {
 			rows,
 		} = this.props;
 		const { tabIndex } = this.state;
-		const classes = classnames( 'woocommerce-table__table', classNames );
+		const classes = classnames( 'woocommerce-table__table', classNames, {
+			'is-scrollable': this.state.isScrollable,
+		} );
 		const sortedBy = query.orderby || get( find( headers, { defaultSort: true } ), 'key', false );
 		const sortDir = query.order || DESC;
 
@@ -108,6 +125,7 @@ class Table extends Component {
 				aria-hidden={ ariaHidden }
 				aria-labelledby={ `caption-${ instanceId }` }
 				role="group"
+				onScroll={ this.updateTableShadow }
 			>
 				<table>
 					<caption
@@ -120,10 +138,11 @@ class Table extends Component {
 					<tbody>
 						<tr>
 							{ headers.map( ( header, i ) => {
-								const { isSortable, isNumeric, key, label } = header;
+								const { cellClassName, isLeftAligned, isSortable, isNumeric, key, label } = header;
 								const labelId = `header-${ instanceId } -${ i }`;
 								const thProps = {
-									className: classnames( 'woocommerce-table__header', {
+									className: classnames( 'woocommerce-table__header', cellClassName, {
+										'is-left-aligned': isLeftAligned,
 										'is-sortable': isSortable,
 										'is-sorted': sortedBy === key,
 										'is-numeric': isNumeric,
@@ -173,11 +192,13 @@ class Table extends Component {
 						{ rows.map( ( row, i ) => (
 							<tr key={ i }>
 								{ row.map( ( cell, j ) => {
-									const { isNumeric } = headers[ j ];
+									const { cellClassName, isLeftAligned, isNumeric } = headers[ j ];
 									const isHeader = rowHeader === j;
 									const Cell = isHeader ? 'th' : 'td';
-									const cellClasses = classnames( 'woocommerce-table__item', {
+									const cellClasses = classnames( 'woocommerce-table__item', cellClassName, {
+										'is-left-aligned': isLeftAligned,
 										'is-numeric': isNumeric,
+										'is-sorted': sortedBy === headers[ j ].key,
 									} );
 									return (
 										<Cell scope={ isHeader ? 'row' : null } key={ j } className={ cellClasses }>
@@ -217,6 +238,10 @@ Table.propTypes = {
 			 * Boolean, true if this column is the default for sorting. Only one column should have this set.
 			 */
 			defaultSort: PropTypes.bool,
+			/**
+			 * Boolean, true if this column should be aligned to the left.
+			 */
+			isLeftAligned: PropTypes.bool,
 			/**
 			 * Boolean, true if this column is a number value.
 			 */

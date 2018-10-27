@@ -10,6 +10,7 @@ import { setLocaleData } from '@wordpress/i18n';
  * Internal dependencies
  */
 import {
+	appendTimestamp,
 	toMoment,
 	getLastPeriod,
 	getCurrentPeriod,
@@ -22,6 +23,20 @@ import {
 	getDateDifferenceInDays,
 	getPreviousDate,
 } from 'lib/date';
+
+describe( 'appendTimestamp', () => {
+	it( 'should append `start` timestamp', () => {
+		expect( appendTimestamp( '2018-01-01', 'start' ) ).toEqual( '2018-01-01T00:00:00+00:00' );
+	} );
+
+	it( 'should append `end` timestamp', () => {
+		expect( appendTimestamp( '2018-01-01', 'end' ) ).toEqual( '2018-01-01T23:59:59+00:00' );
+	} );
+
+	it( 'should throw and error if `timeOfDay` is not valid', () => {
+		expect( () => appendTimestamp( '2018-01-01' ) ).toThrow( Error );
+	} );
+} );
 
 describe( 'toMoment', () => {
 	it( 'should pass through a valid Moment object as an argument', () => {
@@ -584,18 +599,25 @@ describe( 'getCurrentDates', () => {
 	it( 'should correctly apply default values', () => {
 		const query = {};
 		const today = moment().format( isoDateFormat );
-		const yesterday = moment()
-			.subtract( 1, 'day' )
+		const startOfMonth = moment()
+			.startOf( 'month' )
+			.format( isoDateFormat );
+		const startOfMonthYearAgo = moment()
+			.startOf( 'month' )
+			.subtract( 1, 'year' )
+			.format( isoDateFormat );
+		const todayLastYear = moment()
+			.subtract( 1, 'year' )
 			.format( isoDateFormat );
 		const currentDates = getCurrentDates( query );
 
-		// Ensure default period is 'today'
-		expect( currentDates.primary.after ).toBe( today );
+		// Ensure default period is 'month'
+		expect( currentDates.primary.after ).toBe( startOfMonth );
 		expect( currentDates.primary.before ).toBe( today );
 
 		// Ensure default compare is `previous_period`
-		expect( currentDates.secondary.after ).toBe( yesterday );
-		expect( currentDates.secondary.before ).toBe( yesterday );
+		expect( currentDates.secondary.after ).toBe( startOfMonthYearAgo );
+		expect( currentDates.secondary.before ).toBe( todayLastYear );
 	} );
 } );
 

@@ -13,7 +13,7 @@ import { createRegistry, RegistryProvider } from '@wordpress/data';
 import TopSellingProductsWithSelect, { TopSellingProducts } from '../';
 import { numberFormat } from 'lib/number';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
-import mockData from '../__mocks__/mock-data';
+import mockData from '../__mocks__/top-selling-products-mock-data';
 
 // Mock <Table> to avoid tests failing due to it using DOM properties that
 // are not available on TestRenderer.
@@ -33,9 +33,7 @@ describe( 'TopSellingProducts', () => {
 	test( 'should render empty message when there are no rows', () => {
 		const topSellingProducts = shallow( <TopSellingProducts data={ {} } /> );
 
-		expect(
-			topSellingProducts.find( '.woocommerce-top-selling-products__empty-message' ).length
-		).toBe( 1 );
+		expect( topSellingProducts.find( 'EmptyTable' ).length ).toBe( 1 );
 	} );
 
 	test( 'should render correct data in the table', () => {

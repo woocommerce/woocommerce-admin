@@ -5,7 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import { fill, find, findIndex, first, isEqual, noop, partial, uniq } from 'lodash';
+import { find, findIndex, first, isEqual, noop, partial, uniq } from 'lodash';
 import { IconButton, ToggleControl } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
@@ -15,11 +15,14 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import Card from 'components/card';
 import CompareButton from 'components/filters/compare/button';
+import DowloadIcon from './download-icon';
 import EllipsisMenu from 'components/ellipsis-menu';
+import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import { getIdsFromQuery } from 'lib/nav-utils';
 import MenuItem from 'components/ellipsis-menu/menu-item';
 import MenuTitle from 'components/ellipsis-menu/menu-title';
 import Pagination from 'components/pagination';
+import Search from 'components/search';
 import Table from './table';
 import TableSummary from './summary';
 
@@ -36,11 +39,13 @@ class TableCard extends Component {
 		super( props );
 		const { compareBy, query } = props;
 		this.state = {
-			showCols: fill( Array( props.headers.length ), true ),
+			showCols: props.headers.map( ( { hiddenByDefault } ) => ! hiddenByDefault ),
 			selectedRows: getIdsFromQuery( query[ compareBy ] ),
 		};
 		this.toggleCols = this.toggleCols.bind( this );
+		this.onClickDownload = this.onClickDownload.bind( this );
 		this.onCompare = this.onCompare.bind( this );
+		this.onSearch = this.onSearch.bind( this );
 		this.selectRow = this.selectRow.bind( this );
 		this.selectAllRows = this.selectAllRows.bind( this );
 	}
@@ -76,11 +81,38 @@ class TableCard extends Component {
 		};
 	}
 
+	onClickDownload() {
+		const { headers, query, onClickDownload, rows, title } = this.props;
+		const { showCols } = this.state;
+		const visibleHeaders = headers.filter( ( header, i ) => showCols[ i ] );
+		const visibleRows = rows.map( row => row.filter( ( cell, i ) => showCols[ i ] ) );
+
+		// @TODO The current implementation only downloads the contents displayed in the table.
+		// Another solution is required when the data set is larger (see #311).
+		downloadCSVFile(
+			generateCSVFileName( title, query ),
+			generateCSVDataFromTable( visibleHeaders, visibleRows )
+		);
+
+		if ( onClickDownload ) {
+			onClickDownload();
+		}
+	}
+
 	onCompare() {
 		const { compareBy, onQueryChange } = this.props;
 		const { selectedRows } = this.state;
 		if ( compareBy ) {
 			onQueryChange( 'compare' )( compareBy, selectedRows.join( ',' ) );
+		}
+	}
+
+	onSearch( value ) {
+		const { compareBy, onQueryChange } = this.props;
+		const { selectedRows } = this.state;
+		if ( compareBy ) {
+			const ids = value.map( v => v.id );
+			onQueryChange( 'compare' )( compareBy, [ ...selectedRows, ...ids ].join( ',' ) );
 		}
 	}
 
@@ -140,6 +172,7 @@ class TableCard extends Component {
 		const { selectedRows } = this.state;
 		const isAllChecked = ids.length === selectedRows.length;
 		return {
+			cellClassName: 'is-checkbox-column',
 			label: (
 				<input
 					type="checkbox"
@@ -155,6 +188,8 @@ class TableCard extends Component {
 	render() {
 		const {
 			compareBy,
+			downloadable,
+			labels = {},
 			onClickDownload,
 			onQueryChange,
 			query,
@@ -189,26 +224,31 @@ class TableCard extends Component {
 						<CompareButton
 							key="compare"
 							count={ selectedRows.length }
-							helpText={ __( 'Select at least two items to compare', 'wc-admin' ) }
+							helpText={
+								labels.helpText || __( 'Select at least two items to compare', 'wc-admin' )
+							}
 							onClick={ this.onCompare }
 						>
-							{ __( 'Compare', 'wc-admin' ) }
+							{ labels.compareButton || __( 'Compare', 'wc-admin' ) }
 						</CompareButton>
 					),
 					compareBy && (
-						<div key="search" style={ { padding: '4px 12px', color: '#6c7781' } }>
-							Placeholder for search
-						</div>
+						<Search
+							key="search"
+							placeholder={ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
+							type={ compareBy + 's' }
+							onChange={ this.onSearch }
+						/>
 					),
-					onClickDownload && (
+					( downloadable || onClickDownload ) && (
 						<IconButton
 							key="download"
-							onClick={ onClickDownload }
-							icon="arrow-down"
-							size={ 18 }
-							isDefault
+							className="woocommerce-table__download-button"
+							onClick={ this.onClickDownload }
+							isLink
 						>
-							{ __( 'Download', 'wc-admin' ) }
+							<DowloadIcon />
+							{ labels.downloadButton || __( 'Download', 'wc-admin' ) }
 						</IconButton>
 					),
 				] }
@@ -265,6 +305,7 @@ TableCard.propTypes = {
 	 */
 	headers: PropTypes.arrayOf(
 		PropTypes.shape( {
+			hiddenByDefault: PropTypes.bool,
 			defaultSort: PropTypes.bool,
 			isSortable: PropTypes.bool,
 			key: PropTypes.string,
@@ -272,6 +313,15 @@ TableCard.propTypes = {
 			required: PropTypes.bool,
 		} )
 	),
+	/**
+	 * Custom labels for table header actions.
+	 */
+	labels: PropTypes.shape( {
+		compareButton: PropTypes.string,
+		downloadButton: PropTypes.string,
+		helpText: PropTypes.string,
+		placeholder: PropTypes.string,
+	} ),
 	/**
 	 * A list of IDs, matching to the row list so that ids[ 0 ] contains the object ID for the object displayed in row[ 0 ].
 	 */
@@ -281,7 +331,11 @@ TableCard.propTypes = {
 	 */
 	onQueryChange: PropTypes.func,
 	/**
-	 * A callback function which handles then "download" button press. Optional, if not used, the button won't appear.
+	 * Whether the table must be downloadable. If true, the download button will appear.
+	 */
+	downloadable: PropTypes.bool,
+	/**
+	 * A callback function called when the "download" button is pressed. Optional, if used, the download button will appear.
 	 */
 	onClickDownload: PropTypes.func,
 	/**
@@ -328,6 +382,7 @@ TableCard.propTypes = {
 };
 
 TableCard.defaultProps = {
+	downloadable: false,
 	onQueryChange: noop,
 	query: {},
 	rowHeader: 0,

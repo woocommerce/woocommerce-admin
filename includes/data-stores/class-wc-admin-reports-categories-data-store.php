@@ -10,7 +10,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * WC_Admin_Reports_Categories_Data_Store.
- *
  */
 class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store implements WC_Admin_Reports_Data_Store_Interface {
 
@@ -115,7 +114,7 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 	 */
 	private function sort_callback( $a, $b ) {
 		if ( '' === $this->order_by || '' === $this->order ) {
-			return new WP_Error( 'woocommerce_reports_categories_sort_failed', __( 'Sorry, fetching categories data failed.', 'woocommerce' ) );
+			return new WP_Error( 'woocommerce_reports_categories_sort_failed', __( 'Sorry, fetching categories data failed.', 'wc-admin' ) );
 		}
 		if ( $a[ $this->order_by ] === $b[ $this->order_by ] ) {
 			return 0;
@@ -166,7 +165,7 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 		$week_back  = $now - WEEK_IN_SECONDS;
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
-		$defaults   = array(
+		$defaults = array(
 			'per_page'     => get_option( 'posts_per_page' ),
 			'page'         => 1,
 			'order'        => 'DESC',
@@ -208,11 +207,12 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 						{$sql_query_params['where_clause']}
 					GROUP BY
 						product_id
-					", ARRAY_A
+					",
+				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			if ( null === $products_data ) {
-				return new WP_Error( 'woocommerce_reports_categories_result_failed', __( 'Sorry, fetching revenue data failed.', 'woocommerce' ), array( 'status' => 500 ) );
+				return new WP_Error( 'woocommerce_reports_categories_result_failed', __( 'Sorry, fetching revenue data failed.', 'wc-admin' ), array( 'status' => 500 ) );
 			}
 
 			// Group by category without a helper table, worst case we add it and change the SQL afterwards.

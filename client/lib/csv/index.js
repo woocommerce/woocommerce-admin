@@ -11,7 +11,11 @@ function getCSVHeaders( headers ) {
 
 function getCSVRows( rows ) {
 	return Array.isArray( rows )
-		? rows.map( row => row.map( rowItem => rowItem.value ).join( ',' ) ).join( '\n' )
+		? rows
+				.map( row =>
+					row.map( rowItem => rowItem.value.toString().replace( /,/g, '' ) ).join( ',' )
+				)
+				.join( '\n' )
 		: [];
 }
 
@@ -38,7 +42,7 @@ export function generateCSVDataFromTable( headers, rows ) {
  */
 export function generateCSVFileName( name = '', params = {} ) {
 	const fileNameSections = [
-		name,
+		name.toLowerCase().replace( ' ', '-' ),
 		moment().format( 'YYYY-MM-DD' ),
 		Object.keys( params )
 			.map( key => key + '-' + params[ key ] )

@@ -17,6 +17,10 @@
 			}
 		}
 	}
+
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
 }
 
 .woocommerce-filters-date,
@@ -66,5 +70,18 @@
 
 	.components-button {
 		margin-right: $gap;
+	}
+}
+
+.woocommerce-filters-filter__search {
+	.woocommerce-search__autocomplete-results {
+		position: static;
+	}
+	.woocommerce-search__inline-container {
+		overflow: hidden;
+
+		&:not(.is-active) {
+			border: none;
+		}
 	}
 }

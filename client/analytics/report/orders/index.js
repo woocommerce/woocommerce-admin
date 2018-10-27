@@ -2,36 +2,69 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Button } from '@wordpress/components';
-import { withSelect, withDispatch } from '@wordpress/data';
-import moment from 'moment';
-import { partial } from 'lodash';
+import PropTypes from 'prop-types';
+import { withSelect } from '@wordpress/data';
+import { get } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import { Card, ReportFilters } from '@woocommerce/components';
+import { EmptyContent, ReportFilters } from '@woocommerce/components';
 import { filters, advancedFilterConfig } from './config';
+import { getAdminLink } from 'lib/nav-utils';
+import { appendTimestamp, getCurrentDates } from 'lib/date';
+import { QUERY_DEFAULTS } from 'store/constants';
+import { getReportChartData } from 'store/reports/utils';
+import OrdersReportChart from './chart';
+import OrdersReportTable from './table';
 
 class OrdersReport extends Component {
 	constructor( props ) {
 		super( props );
-
-		this.toggleStatus = this.toggleStatus.bind( this );
-	}
-
-	toggleStatus( order ) {
-		const { requestUpdateOrder } = this.props;
-		const updatedOrder = { ...order };
-		const status = updatedOrder.status === 'completed' ? 'processing' : 'completed';
-		updatedOrder.status = status;
-		requestUpdateOrder( updatedOrder );
 	}
 
 	render() {
-		const { orders, orderIds, query, path } = this.props;
+		const {
+			isTableDataError,
+			isTableDataRequesting,
+			orders,
+			path,
+			query,
+			primaryData,
+			secondaryData,
+		} = this.props;
+
+		if ( primaryData.isError || isTableDataError ) {
+			let title, actionLabel, actionURL, actionCallback;
+			if ( primaryData.isError || secondaryData.isError || isTableDataError ) {
+				title = __( 'There was an error getting your stats. Please try again.', 'wc-admin' );
+				actionLabel = __( 'Reload', 'wc-admin' );
+				actionCallback = () => {
+					// TODO Add tracking for how often an error is displayed, and the reload action is clicked.
+					window.location.reload();
+				};
+			} else {
+				title = __( 'No results could be found for this date range.', 'wc-admin' );
+				actionLabel = __( 'View Orders', 'wc-admin' );
+				actionURL = getAdminLink( 'edit.php?post_type=shop_order' );
+			}
+
+			return (
+				<Fragment>
+					<ReportFilters query={ query } path={ path } />
+					<EmptyContent
+						title={ title }
+						actionLabel={ actionLabel }
+						actionURL={ actionURL }
+						actionCallback={ actionCallback }
+					/>
+				</Fragment>
+			);
+		}
+
 		return (
 			<Fragment>
 				<ReportFilters
@@ -40,57 +73,53 @@ class OrdersReport extends Component {
 					filters={ filters }
 					advancedConfig={ advancedFilterConfig }
 				/>
-				<p>Below is a temporary example</p>
-				<Card title="Orders">
-					<table style={ { width: '100%' } }>
-						<thead>
-							<tr style={ { textAlign: 'left' } }>
-								<th>Id</th>
-								<th>Date</th>
-								<th>Total</th>
-								<th>Status</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							{ orderIds &&
-								orderIds.map( id => {
-									const order = orders[ id ];
-									return (
-										<tr key={ id }>
-											<td>{ id }</td>
-											<td>{ moment( order.date_created ).format( 'LL' ) }</td>
-											<td>{ order.total }</td>
-											<td>{ order.status }</td>
-											<td>
-												<Button isPrimary onClick={ partial( this.toggleStatus, order ) }>
-													Toggle Status
-												</Button>
-											</td>
-										</tr>
-									);
-								} ) }
-						</tbody>
-					</table>
-				</Card>
+				<OrdersReportChart query={ query } />
+				<OrdersReportTable
+					isRequesting={ isTableDataRequesting }
+					orders={ orders }
+					query={ query }
+					totalRows={ get(
+						primaryData,
+						[ 'data', 'totals', 'orders_count' ],
+						Object.keys( orders ).length
+					) }
+				/>
 			</Fragment>
 		);
 	}
 }
 
+OrdersReport.propTypes = {
+	params: PropTypes.object.isRequired,
+	path: PropTypes.string.isRequired,
+	query: PropTypes.object.isRequired,
+};
+
 export default compose(
-	withSelect( select => {
-		const { getOrders, getOrderIds } = select( 'wc-admin' );
-		return {
-			orders: getOrders(),
-			orderIds: getOrderIds(),
+	withSelect( ( select, props ) => {
+		const { query } = props;
+		const datesFromQuery = getCurrentDates( query );
+		const primaryData = getReportChartData( 'orders', 'primary', query, select );
+
+		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-admin' );
+		const tableQuery = {
+			orderby: query.orderby || 'date',
+			order: query.order || 'asc',
+			page: query.page || 1,
+			per_page: query.per_page || QUERY_DEFAULTS.pageSize,
+			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
+			before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
+			status: [ 'processing', 'on-hold', 'completed' ],
 		};
-	} ),
-	withDispatch( dispatch => {
+		const orders = getOrders( tableQuery );
+		const isTableDataError = isGetOrdersError( tableQuery );
+		const isTableDataRequesting = isGetOrdersRequesting( tableQuery );
+
 		return {
-			requestUpdateOrder: function( updatedOrder ) {
-				dispatch( 'wc-admin' ).requestUpdateOrder( updatedOrder );
-			},
+			isTableDataError,
+			isTableDataRequesting,
+			orders,
+			primaryData,
 		};
 	} )
 )( OrdersReport );

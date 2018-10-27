@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import { findIndex, get } from 'lodash';
+import { find, findIndex, get } from 'lodash';
 import { max as d3Max } from 'd3-array';
 import { axisBottom as d3AxisBottom, axisLeft as d3AxisLeft } from 'd3-axis';
 import { format as d3Format } from 'd3-format';
@@ -20,6 +20,7 @@ import { format as formatDate } from '@wordpress/date';
  * Internal dependencies
  */
 import { formatCurrency } from 'lib/currency';
+import { dayTicksThreshold } from 'lib/date';
 
 /**
  * Describes `smallestFactor`
@@ -27,15 +28,16 @@ import { formatCurrency } from 'lib/currency';
  * @returns {integer} smallest factor of num
  */
 export const getFactors = inputNum => {
-	const num_factors = [];
+	const numFactors = [];
 	for ( let i = 1; i <= Math.floor( Math.sqrt( inputNum ) ); i += 1 ) {
 		if ( inputNum % i === 0 ) {
-			num_factors.push( i );
-			inputNum / i !== i && num_factors.push( inputNum / i );
+			numFactors.push( i );
+			inputNum / i !== i && numFactors.push( inputNum / i );
 		}
 	}
-	num_factors.sort( ( x, y ) => x - y ); // numeric sort
-	return num_factors;
+	numFactors.sort( ( x, y ) => x - y ); // numeric sort
+
+	return numFactors;
 };
 
 /**
@@ -207,82 +209,123 @@ export const getLine = ( xLineScale, yScale ) =>
 		.y( d => yScale( d.value ) );
 
 /**
- * Describes getXTicks
- * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * Calculate the maximum number of ticks allowed in the x-axis based on the width and layout of the chart
  * @param {integer} width - calculated page width
  * @param {string} layout - standard, comparison or compact chart types
  * @returns {integer} number of x-axis ticks based on width and chart layout
  */
-export const getXTicks = ( uniqueDates, width, layout ) => {
-	// caluclate the maximum number of ticks allowed in the x-axis based on the width
-	// and layout of the chart
-	let ticks = 16;
+const calculateMaxXTicks = ( width, layout ) => {
 	if ( width < 783 ) {
-		ticks = 7;
+		return 7;
 	} else if ( width >= 783 && width < 1129 ) {
-		ticks = 12;
+		return 12;
 	} else if ( width >= 1130 && width < 1365 ) {
 		if ( layout === 'standard' ) {
-			ticks = 16;
+			return 16;
 		} else if ( layout === 'comparison' ) {
-			ticks = 12;
+			return 12;
 		} else if ( layout === 'compact' ) {
-			ticks = 7;
+			return 7;
 		}
 	} else if ( width >= 1365 ) {
 		if ( layout === 'standard' ) {
-			ticks = 31;
+			return 31;
 		} else if ( layout === 'comparison' ) {
-			ticks = 16;
+			return 16;
 		} else if ( layout === 'compact' ) {
-			ticks = 12;
+			return 12;
 		}
 	}
-	if ( uniqueDates.length <= ticks ) {
-		return uniqueDates;
+
+	return 16;
+};
+
+/**
+ * Filter out irrelevant dates so only the first date of each month is kept.
+ * @param {array} dates - string dates.
+ * @returns {array} Filtered dates.
+ */
+const getFirstDatePerMonth = dates => {
+	return dates.filter(
+		( date, i ) => i === 0 || new Date( date ).getMonth() !== new Date( dates[ i - 1 ] ).getMonth()
+	);
+};
+
+/**
+ * Get x-axis ticks given the unique dates and the increment factor.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} incrementFactor - increment factor for the visible ticks.
+ * @returns {array} Ticks for the x-axis.
+ */
+const getXTicksFromIncrementFactor = ( uniqueDates, incrementFactor ) => {
+	const ticks = [];
+
+	for ( let idx = 0; idx < uniqueDates.length; idx = idx + incrementFactor ) {
+		ticks.push( uniqueDates[ idx ] );
 	}
+
+	// If the first date is missing from the ticks array, add it back in.
+	if ( ticks[ 0 ] !== uniqueDates[ 0 ] ) {
+		ticks.unshift( uniqueDates[ 0 ] );
+	}
+
+	return ticks;
+};
+
+/**
+ * Calculates the increment factor between ticks so there aren't more than maxTicks.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} maxTicks - maximum number of ticks that can be displayed in the x-axis
+ * @returns {integer} x-axis ticks increment factor
+ */
+const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
 	let factors = [];
-	let i = 0;
-	//  first we get all the factors of the length of the uniqieDates array
+	let i = 1;
+	// First we get all the factors of the length of the uniqueDates array
 	// if the number is a prime number or near prime (with 3 factors) then we
-	// step down by 1 integer and try again
+	// step down by 1 integer and try again.
 	while ( factors.length <= 3 ) {
-		factors = getFactors( uniqueDates.length - ( 1 + i ) );
+		factors = getFactors( uniqueDates.length - i );
 		i += 1;
 	}
-	let newTicks = [];
-	let factorIndex = 0;
-	// newTicks is the first tick plus the smallest factor (initiallY) etc.
-	// however, if we still end up with too many ticks we look at the next factor
-	// and try again unttil we have fewer ticks than the max
-	while ( newTicks.length > ticks || newTicks.length === 0 ) {
-		if ( newTicks.length > ticks ) {
-			factorIndex += 1;
-			newTicks = [];
-		}
-		for ( let idx = 0; idx < uniqueDates.length; idx = idx + factors[ factorIndex ] ) {
-			newTicks.push( uniqueDates[ idx ] );
-		}
+
+	return factors.find( f => uniqueDates.length / f < maxTicks );
+};
+
+/**
+ * Returns ticks for the x-axis.
+ * @param {array} uniqueDates - all the unique dates from the input data for the chart
+ * @param {integer} width - calculated page width
+ * @param {string} layout - standard, comparison or compact chart types
+ * @param {string} interval - string of the interval used in the graph (hour, day, week...)
+ * @returns {integer} number of x-axis ticks based on width and chart layout
+ */
+export const getXTicks = ( uniqueDates, width, layout, interval ) => {
+	const maxTicks = calculateMaxXTicks( width, layout );
+
+	if ( uniqueDates.length >= dayTicksThreshold && interval === 'day' ) {
+		uniqueDates = getFirstDatePerMonth( uniqueDates );
 	}
-	// if, for some reason, the first or last date is missing from the newTicks array, add it back in
-	if ( newTicks[ 0 ] !== uniqueDates[ 0 ] ) {
-		newTicks.unshift( uniqueDates[ 0 ] );
+	if ( uniqueDates.length <= maxTicks ) {
+		return uniqueDates;
 	}
-	if ( newTicks[ newTicks.length - 1 ] !== uniqueDates[ uniqueDates.length - 1 ] ) {
-		newTicks.push( uniqueDates[ uniqueDates.length - 1 ] );
-	}
-	return newTicks;
+
+	const incrementFactor = calculateXTicksIncrementFactor( uniqueDates, maxTicks );
+
+	return getXTicksFromIncrementFactor( uniqueDates, incrementFactor );
 };
 
 /**
  * Describes getDateSpaces
+ * @param {array} data - The chart component's `data` prop.
  * @param {array} uniqueDates - from `getUniqueDates`
  * @param {number} width - calculated width of the charting space
  * @param {function} xLineScale - from `getXLineScale`
  * @returns {array} that icnludes the date, start (x position) and width to layout the mouseover rectangles
  */
-export const getDateSpaces = ( uniqueDates, width, xLineScale ) =>
+export const getDateSpaces = ( data, uniqueDates, width, xLineScale ) =>
 	uniqueDates.map( ( d, i ) => {
+		const datapoints = find( data, { date: d } );
 		const xNow = xLineScale( new Date( d ) );
 		const xPrev =
 			i >= 1
@@ -299,8 +342,35 @@ export const getDateSpaces = ( uniqueDates, width, xLineScale ) =>
 			date: d,
 			start: uniqueDates.length > 1 ? xStart : 0,
 			width: uniqueDates.length > 1 ? xWidth : width,
+			values: Object.keys( datapoints )
+				.filter( key => key !== 'date' )
+				.map( key => {
+					return {
+						key,
+						value: datapoints[ key ].value,
+						date: d,
+					};
+				} ),
 		};
 	} );
+
+/**
+ * Compares 2 strings and returns a list of words that are unique from s2
+ * @param {string} s1 - base string to compare against
+ * @param {string} s2 - string to compare against the base string
+ * @param {string} splitChar - character to use to deliminate words
+ * @returns {array} of unique words that appear in s2 but not in s1, the base string
+ */
+export const compareStrings = ( s1, s2, splitChar = ' ' ) => {
+	const string1 = s1.split( splitChar );
+	const string2 = s2.split( splitChar );
+	const diff = new Array();
+	const long = s1.length > s2.length ? string1 : string2;
+	for ( let x = 0; x < long.length; x++ ) {
+		string1[ x ] !== string2[ x ] && diff.push( string2[ x ] );
+	}
+	return diff;
+};
 
 export const drawAxis = ( node, params ) => {
 	const xScale = params.type === 'line' ? params.xLineScale : params.xScale;
@@ -316,7 +386,7 @@ export const drawAxis = ( node, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'axis' )
 		.attr( 'aria-hidden', 'true' )
-		.attr( 'transform', `translate(0,${ params.height })` )
+		.attr( 'transform', `translate(0, ${ params.height })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -327,7 +397,7 @@ export const drawAxis = ( node, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'axis axis-month' )
 		.attr( 'aria-hidden', 'true' )
-		.attr( 'transform', `translate(3, ${ params.height + 20 })` )
+		.attr( 'transform', `translate(0, ${ params.height + 20 })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -335,11 +405,11 @@ export const drawAxis = ( node, params ) => {
 					const monthDate = d instanceof Date ? d : new Date( d );
 					let prevMonth = i !== 0 ? ticks[ i - 1 ] : ticks[ i ];
 					prevMonth = prevMonth instanceof Date ? prevMonth : new Date( prevMonth );
-					return monthDate.getDate() === 1 ||
-						i === 0 ||
-						params.x2Format( monthDate ) !== params.x2Format( prevMonth )
+					return i === 0
 						? params.x2Format( monthDate )
-						: '';
+						: compareStrings( params.x2Format( prevMonth ), params.x2Format( monthDate ) ).join(
+								' '
+							);
 				} )
 		)
 		.call( g => g.select( '.domain' ).remove() );
@@ -398,6 +468,21 @@ export const drawAxis = ( node, params ) => {
 const getTooltipRowLabel = ( d, row, params ) =>
 	d[ row.key ].labelDate ? formatDate( params.pointLabelFormat, d[ row.key ].labelDate ) : row.key;
 
+const getFormatedTotal = ( total, valueType ) => {
+	let rowTotal = total;
+	switch ( valueType ) {
+		case 'average':
+			rowTotal = Math.round( total );
+			break;
+		case 'currency':
+			rowTotal = formatCurrency( total );
+			break;
+		case 'number':
+			break;
+	}
+	return rowTotal;
+};
+
 const showTooltip = ( params, d, position ) => {
 	const keys = params.orderedKeys.filter( row => row.visible ).map(
 		row => `
@@ -406,7 +491,7 @@ const showTooltip = ( params, d, position ) => {
 						<span class="key-color" style="background-color:${ getColor( row.key, params ) }"></span>
 						<span class="key-key">${ getTooltipRowLabel( d, row, params ) }</span>
 					</div>
-					<span class="key-value">${ formatCurrency( d[ row.key ].value ) }</span>
+					<span class="key-value">${ getFormatedTotal( d[ row.key ].value, params.valueType ) }</span>
 				</li>
 			`
 	);
@@ -465,20 +550,23 @@ const calculateTooltipPosition = ( element, chart, elementWidthRatio = 1 ) => {
 	const tooltipMargin = 24;
 
 	let xPosition =
-		elementCoords.x + elementCoords.width * elementWidthRatio + tooltipMargin - chartCoords.x;
-	let yPosition = elementCoords.y + tooltipMargin - chartCoords.y;
+		elementCoords.left + elementCoords.width * elementWidthRatio + tooltipMargin - chartCoords.left;
+	let yPosition = elementCoords.top + tooltipMargin - chartCoords.top;
 	if ( xPosition + tooltipSize.width + tooltipMargin > chartCoords.width ) {
 		xPosition = Math.max(
 			0,
-			elementCoords.x +
+			elementCoords.left +
 				elementCoords.width * ( 1 - elementWidthRatio ) -
 				tooltipSize.width -
 				tooltipMargin -
-				chartCoords.x
+				chartCoords.left
 		);
 	}
 	if ( yPosition + tooltipSize.height + tooltipMargin > chartCoords.height ) {
-		yPosition = Math.max( 0, elementCoords.y - tooltipSize.height - tooltipMargin - chartCoords.y );
+		yPosition = Math.max(
+			0,
+			elementCoords.top - tooltipSize.height - tooltipMargin - chartCoords.top
+		);
 	}
 
 	return { x: xPosition, y: yPosition };
@@ -489,17 +577,21 @@ export const drawLines = ( node, data, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'lines' )
 		.selectAll( '.line-g' )
-		.data( params.lineData.filter( d => d.visible ) )
+		.data( params.lineData.filter( d => d.visible ).reverse() )
 		.enter()
 		.append( 'g' )
 		.attr( 'class', 'line-g' )
 		.attr( 'role', 'region' )
 		.attr( 'aria-label', d => d.key );
 
+	let lineStroke = params.width <= 1329 || params.uniqueDates.length > 50 ? 2 : 3;
+	lineStroke = params.width <= 783 ? 1.25 : lineStroke;
+	const dotRadius = params.width <= 1329 ? 4 : 6;
+
 	series
 		.append( 'path' )
 		.attr( 'fill', 'none' )
-		.attr( 'stroke-width', 3 )
+		.attr( 'stroke-width', lineStroke )
 		.attr( 'stroke-linejoin', 'round' )
 		.attr( 'stroke-linecap', 'round' )
 		.attr( 'stroke', d => getColor( d.key, params ) )
@@ -509,16 +601,16 @@ export const drawLines = ( node, data, params ) => {
 		} )
 		.attr( 'd', d => params.line( d.values ) );
 
-	params.uniqueDates.length < 50 &&
+	params.width / params.uniqueDates.length > 36 &&
 		series
 			.selectAll( 'circle' )
 			.data( ( d, i ) => d.values.map( row => ( { ...row, i, visible: d.visible, key: d.key } ) ) )
 			.enter()
 			.append( 'circle' )
-			.attr( 'r', 6 )
+			.attr( 'r', dotRadius )
 			.attr( 'fill', d => getColor( d.key, params ) )
 			.attr( 'stroke', '#fff' )
-			.attr( 'stroke-width', 3 )
+			.attr( 'stroke-width', lineStroke + 1 )
 			.style( 'opacity', d => {
 				const opacity = d.focus ? 1 : 0.1;
 				return d.visible ? opacity : 0;
@@ -547,14 +639,29 @@ export const drawLines = ( node, data, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'focus' );
 
-	focus
-		.append( 'line' )
+	const focusGrid = focus
+		.append( 'g' )
 		.attr( 'class', 'focus-grid' )
+		.attr( 'opacity', '0' );
+
+	focusGrid
+		.append( 'line' )
 		.attr( 'x1', d => params.xLineScale( new Date( d.date ) ) )
 		.attr( 'y1', 0 )
 		.attr( 'x2', d => params.xLineScale( new Date( d.date ) ) )
-		.attr( 'y2', params.height )
-		.attr( 'opacity', '0' );
+		.attr( 'y2', params.height );
+
+	focusGrid
+		.selectAll( 'circle' )
+		.data( d => d.values.reverse() )
+		.enter()
+		.append( 'circle' )
+		.attr( 'r', dotRadius + 2 )
+		.attr( 'fill', d => getColor( d.key, params ) )
+		.attr( 'stroke', '#fff' )
+		.attr( 'stroke-width', lineStroke + 2 )
+		.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
+		.attr( 'cy', d => params.yScale( d.value ) );
 
 	focus
 		.append( 'rect' )

@@ -14,18 +14,14 @@
  * $mydata = $report->get_data();
  *
  * @package  WooCommerce Admin/Classes
-
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * WC_Admin_Reports_Products_Query
- *
  */
 class WC_Admin_Reports_Products_Query extends WC_Admin_Reports_Query {
-
-	const REPORT_NAME = 'report-products';
 
 	/**
 	 * Valid fields for Products report.
@@ -42,8 +38,10 @@ class WC_Admin_Reports_Products_Query extends WC_Admin_Reports_Query {
 	 * @return array
 	 */
 	public function get_data() {
-		$args    = apply_filters( 'woocommerce_reports_products_query_args', $this->get_query_vars() );
-		$results = WC_Data_Store::load( $this::REPORT_NAME )->get_data( $args );
+		$args = apply_filters( 'woocommerce_reports_products_query_args', $this->get_query_vars() );
+
+		$data_store = WC_Data_Store::load( 'report-products' );
+		$results    = $data_store->get_data( $args );
 		return apply_filters( 'woocommerce_reports_products_select_query', $results, $args );
 	}
 

@@ -3,7 +3,7 @@
 .woocommerce-table {
 	.woocommerce-card__body {
 		padding: 0;
-		padding-bottom: $gap;
+		position: relative;
 	}
 
 	.woocommerce-card__action,
@@ -13,11 +13,54 @@
 
 	&.has-compare {
 		.woocommerce-card__action {
+			align-items: center;
 			text-align: left;
 			display: grid;
 			width: 100%;
 			grid-template-columns: auto 1fr auto;
 		}
+		.woocommerce-search {
+			margin: 0 $gap;
+		}
+		.woocommerce-compare-button {
+			padding: 3px $gap-small;
+			height: auto;
+		}
+	}
+
+	$row-text-height: 1.1375rem;
+	$row-height: #{$gap * 2} + #{$row-text-height} + 1px;
+	$header-row-height: #{$gap-smaller * 2} + #{$row-text-height} + 1px;
+	&.is-empty {
+		align-items: center;
+		background: $core-grey-light-100;
+		color: $core-grey-dark-500;
+		display: flex;
+		// Default to 5 rows for browsers not supporting custom properties (IE11)
+		height: calc(#{$header-row-height} + (#{$row-height}) * 5);
+		height: calc(#{$header-row-height} + (#{$row-height}) * var(--number-of-rows));
+		justify-content: center;
+		padding: $gap;
+		text-align: center;
+	}
+
+	button.woocommerce-table__download-button.is-link {
+		padding: 6px $gap-small;
+		color: #000;
+		text-decoration: none;
+		svg {
+			margin-right: $gap-smaller;
+			height: 24px;
+			width: 24px;
+		}
+	}
+
+	.woocommerce-pagination {
+		padding-top: $gap;
+		padding-bottom: $gap;
+		z-index: 1;
+		background: white;
+		position: relative;
 	}
 }
 
@@ -28,7 +71,21 @@
 
 .woocommerce-table__table {
 	overflow-x: auto;
-	margin-bottom: $gap;
+
+	&:after {
+		content: '';
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 41px;
+		height: 100%;
+		background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+		visibility: hidden;
+	}
+
+	&.is-scrollable:after {
+		visibility: visible;
+	}
 
 	table {
 		border-collapse: collapse;
@@ -38,6 +95,10 @@
 	tr:hover,
 	tr:focus-within {
 		background-color: $core-grey-light-200;
+		td,
+		th {
+			background: transparent;
+		}
 	}
 }
 
@@ -48,18 +109,14 @@
 	border-bottom: 1px solid $core-grey-light-500;
 	text-align: left;
 
-	a {
+	> a:only-child {
 		display: block;
-		margin: ($gap*-1) ($gap-large*-1);
-		padding: $gap $gap-large;
+	}
 
+	a {
 		&:hover,
 		&:focus {
 			color: $woocommerce-700;
-		}
-
-		&:focus {
-			box-shadow: none;
 		}
 	}
 
@@ -71,32 +128,64 @@
 		width: 80%;
 	}
 
-	&.is-numeric {
+	&:not(.is-left-aligned) {
 		text-align: right;
+
+		.rtl & {
+			text-align: left;
+		}
 
 		button {
 			justify-content: flex-end;
 		}
+	}
 
-		.is-placeholder {
-			max-width: 40px;
+	&.is-numeric .is-placeholder {
+		max-width: 40px;
+	}
+
+	&.is-sorted {
+		background-color: $core-grey-light-100;
+	}
+
+	&.is-checkbox-column {
+		width: 33px;
+		max-width: 33px;
+		padding-right: 0;
+		padding-left: 17px;
+		& + th {
+			border-left: 0;
 		}
 	}
 }
 
-.woocommerce-table__header,
 th.woocommerce-table__item {
-	font-weight: bold;
-	white-space: nowrap;
+	font-weight: normal;
 }
 
 .woocommerce-table__header {
 	padding: $gap-smaller $gap-large;
 	background-color: #f8f9fa;
 	border-bottom: 1px solid $core-grey-light-700;
+	font-weight: bold;
+	white-space: nowrap;
 
 	& + .woocommerce-table__header {
 		border-left: 1px solid $core-grey-light-700;
+
+		.rtl & {
+			border-left: 0;
+			border-right: 1px solid $core-grey-light-700;
+		}
+	}
+
+	&.is-left-aligned.is-sortable {
+		padding-left: $gap;
+		svg {
+			display: inline-flex;
+			order: 1;
+			margin-left: 0;
+		}
 	}
 
 	.components-button.is-button {
@@ -108,6 +197,10 @@ th.woocommerce-table__item {
 		border: none;
 		background: transparent;
 		box-shadow: none !important;
+
+		.rtl & {
+			padding: $gap-smaller 0 $gap-smaller $gap-large;
+		}
 
 		// @todo Add interactive styles
 		&:hover {

@@ -9,7 +9,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * WC_Admin_Reports_Products_Data_Store.
- *
  */
 class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store implements WC_Admin_Reports_Data_Store_Interface {
 
@@ -116,7 +115,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 	 */
 	protected function include_extended_product_info( &$products_data ) {
 		foreach ( $products_data as $key => $product_data ) {
-			$product = wc_get_product( $product_data['product_id'] );
+			$product             = wc_get_product( $product_data['product_id'] );
 			$extended_attributes = apply_filters( 'woocommerce_rest_reports_products_extended_attributes', $this->extended_attributes, $product_data );
 			foreach ( $extended_attributes as $extended_attribute ) {
 				$function = 'get_' . $extended_attribute;
@@ -142,7 +141,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 		$week_back  = $now - WEEK_IN_SECONDS;
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
-		$defaults   = array(
+		$defaults = array(
 			'per_page'              => get_option( 'posts_per_page' ),
 			'page'                  => 1,
 			'order'                 => 'DESC',
@@ -201,11 +200,12 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 					ORDER BY
 						{$sql_query_params['order_by_clause']}
 					{$sql_query_params['limit']}
-					", ARRAY_A
+					",
+				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			if ( null === $product_data ) {
-				return new WP_Error( 'woocommerce_reports_products_result_failed', __( 'Sorry, fetching revenue data failed.', 'woocommerce' ) );
+				return new WP_Error( 'woocommerce_reports_products_result_failed', __( 'Sorry, fetching revenue data failed.', 'wc-admin' ) );
 			}
 
 			if ( $query_args['extended_product_info'] ) {

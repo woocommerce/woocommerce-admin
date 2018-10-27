@@ -283,7 +283,8 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 						{$totals_query['from_clause']}
 					WHERE
 						1=1
-						{$totals_query['where_clause']}", ARRAY_A
+						{$totals_query['where_clause']}",
+				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 			if ( null === $totals ) {
 				return new WP_Error( 'woocommerce_reports_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'wc-admin' ) );
@@ -333,7 +334,8 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 							time_interval
 						ORDER BY
 							{$intervals_query['order_by_clause']}
-						{$intervals_query['limit']}", ARRAY_A
+						{$intervals_query['limit']}",
+				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			if ( null === $intervals ) {
@@ -372,12 +374,14 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 
 		// This needs to be updated to work in batches instead of getting all orders, as
 		// that will not work well on DBs with more than a few hundred orders.
-		$order_ids = wc_get_orders( array(
-			'limit'  => -1,
-			'status' => parent::get_report_order_statuses(),
-			'type'   => 'shop_order',
-			'return' => 'ids',
-		) );
+		$order_ids = wc_get_orders(
+			array(
+				'limit'  => -1,
+				'status' => parent::get_report_order_statuses(),
+				'type'   => 'shop_order',
+				'return' => 'ids',
+			)
+		);
 
 		foreach ( $order_ids as $id ) {
 			self::$background_process->push_to_queue( $id );
@@ -420,9 +424,12 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		}
 
 		if ( ! in_array( $order->get_status(), parent::get_report_order_statuses(), true ) ) {
-			$wpdb->delete( $table_name, array(
-				'order_id' => $order->get_id(),
-			) );
+			$wpdb->delete(
+				$table_name,
+				array(
+					'order_id' => $order->get_id(),
+				)
+			);
 			return;
 		}
 

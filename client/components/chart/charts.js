@@ -84,6 +84,7 @@ class D3Chart extends Component {
 			height: params.height - margin.top - margin.bottom,
 			width: params.width - margin.left - margin.right,
 			tooltip: d3Select( this.tooltipRef.current ),
+			valueType: params.valueType,
 		} );
 		drawAxis( g, adjParams );
 		type === 'line' && drawLines( g, data, adjParams );
@@ -99,6 +100,7 @@ class D3Chart extends Component {
 			dateParser,
 			height,
 			layout,
+			interval,
 			margin,
 			mode,
 			orderedKeys,
@@ -109,6 +111,7 @@ class D3Chart extends Component {
 			xFormat,
 			x2Format,
 			yFormat,
+			valueType,
 		} = this.props;
 		const { width } = this.state;
 		const calculatedWidth = width || node.offsetWidth;
@@ -125,10 +128,10 @@ class D3Chart extends Component {
 		const uniqueDates = getUniqueDates( lineData, parseDate );
 		const xLineScale = getXLineScale( uniqueDates, adjWidth );
 		const xScale = getXScale( uniqueDates, adjWidth );
-		const xTicks = getXTicks( uniqueDates, adjWidth, layout );
+		const xTicks = getXTicks( uniqueDates, adjWidth, layout, interval );
 		return {
 			colorScheme,
-			dateSpaces: getDateSpaces( uniqueDates, adjWidth, xLineScale ),
+			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
 			height: calculatedHeight,
 			line: getLine( xLineScale, yScale ),
 			lineData,
@@ -154,6 +157,7 @@ class D3Chart extends Component {
 			yScale,
 			yTickOffset: getYTickOffset( adjHeight, scale, yMax ),
 			yFormat,
+			valueType,
 		};
 	}
 

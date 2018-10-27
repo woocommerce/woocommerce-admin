@@ -11,6 +11,7 @@ import { utcParse as d3UTCParse } from 'd3-time-format';
  */
 import dummyOrders from './fixtures/dummy';
 import {
+	compareStrings,
 	getDateSpaces,
 	getOrderedKeys,
 	getLineData,
@@ -182,7 +183,7 @@ describe( 'getYTickOffset', () => {
 
 describe( 'getdateSpaces', () => {
 	it( 'return an array used to space out the mouseover rectangles, used for tooltips', () => {
-		const testDateSpaces = getDateSpaces( testUniqueDates, 100, testXLineScale );
+		const testDateSpaces = getDateSpaces( dummyOrders, testUniqueDates, 100, testXLineScale );
 		expect( testDateSpaces[ 0 ].date ).toEqual( '2018-05-30T00:00:00' );
 		expect( testDateSpaces[ 0 ].start ).toEqual( 0 );
 		expect( testDateSpaces[ 0 ].width ).toEqual( 10 );
@@ -192,5 +193,13 @@ describe( 'getdateSpaces', () => {
 		expect( testDateSpaces[ testDateSpaces.length - 1 ].date ).toEqual( '2018-06-04T00:00:00' );
 		expect( testDateSpaces[ testDateSpaces.length - 1 ].start ).toEqual( 90 );
 		expect( testDateSpaces[ testDateSpaces.length - 1 ].width ).toEqual( 10 );
+	} );
+} );
+
+describe( 'compareStrings', () => {
+	it( 'return an array of unique words from s2 that dont appear in base string', () => {
+		expect( compareStrings( 'Jul 2018', 'Aug 2018' ).join( ' ' ) ).toEqual( 'Aug' );
+		expect( compareStrings( 'Jul 2017', 'Aug 2018' ).join( ' ' ) ).toEqual( 'Aug 2018' );
+		expect( compareStrings( 'Jul 2017', 'Jul 2018' ).join( ' ' ) ).toEqual( '2018' );
 	} );
 } );
