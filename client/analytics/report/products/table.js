@@ -11,7 +11,7 @@ import { get, map, orderBy } from 'lodash';
 /**
  * Internal dependencies
  */
-import { Card, Link, TableCard, TablePlaceholder } from '@woocommerce/components';
+import { Link, TableCard } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import { appendTimestamp, getCurrentDates } from 'lib/date';
 import { getNewPath, getTimeRelatedQuery, onQueryChange } from 'lib/nav-utils';
@@ -148,36 +148,22 @@ class ProductsReportTable extends Component {
 		} );
 	}
 
-	renderPlaceholderTable( tableQuery ) {
+	render() {
+		const { isProductsError, isProductsRequesting, primaryData, products, tableQuery } = this.props;
+		const isError = isProductsError || primaryData.isError;
+
+		if ( isError ) {
+			return <ReportError isError />;
+		}
+
+		const isRequesting = isProductsRequesting || primaryData.isRequesting;
+
 		const headers = this.getHeadersContent();
-
-		return (
-			<Card
-				title={ __( 'Products', 'wc-admin' ) }
-				className="woocommerce-analytics__table-placeholder"
-			>
-				<TablePlaceholder
-					caption={ __( 'Products', 'wc-admin' ) }
-					headers={ headers }
-					query={ tableQuery }
-				/>
-			</Card>
-		);
-	}
-
-	renderTable( tableQuery ) {
-		const { products, primaryData } = this.props;
-
-		const rowsPerPage = parseInt( tableQuery.per_page ) || QUERY_DEFAULTS.pageSize;
 		const orderedProducts = orderBy( products, tableQuery.orderby, tableQuery.order );
 		const rows = this.getRowsContent( orderedProducts );
-		const totalRows = get(
-			primaryData,
-			[ 'data', 'totals', 'products_count' ],
-			Object.keys( products ).length
-		);
+		const rowsPerPage = parseInt( tableQuery.per_page ) || QUERY_DEFAULTS.pageSize;
+		const totalRows = get( primaryData, [ 'data', 'totals', 'products_count' ], products.length );
 
-		const headers = this.getHeadersContent();
 		const labels = {
 			helpText: __( 'Select at least two products to compare', 'wc-admin' ),
 			placeholder: __( 'Search by product name or SKU', 'wc-admin' ),
@@ -192,6 +178,7 @@ class ProductsReportTable extends Component {
 				headers={ headers }
 				labels={ labels }
 				ids={ orderedProducts.map( p => p.product_id ) }
+				isLoading={ isRequesting }
 				compareBy={ 'product' }
 				onQueryChange={ onQueryChange }
 				query={ tableQuery }
@@ -200,24 +187,8 @@ class ProductsReportTable extends Component {
 			/>
 		);
 	}
-
-	render() {
-		const { isProductsError, isProductsRequesting, primaryData, tableQuery } = this.props;
-		const isError = isProductsError || primaryData.isError;
-
-		if ( isError ) {
-			return <ReportError isError />;
-		}
-
-		const isRequesting = isProductsRequesting || primaryData.isRequesting;
-
-		if ( isRequesting ) {
-			return this.renderPlaceholderTable( tableQuery );
-		}
-
-		return this.renderTable( tableQuery );
-	}
 }
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const { query } = props;

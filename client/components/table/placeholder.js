@@ -54,7 +54,7 @@ TablePlaceholder.propTypes = {
 			defaultSort: PropTypes.bool,
 			isSortable: PropTypes.bool,
 			key: PropTypes.string,
-			label: PropTypes.string,
+			label: PropTypes.node,
 			required: PropTypes.bool,
 		} )
 	),

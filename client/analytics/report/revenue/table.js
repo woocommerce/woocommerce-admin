@@ -12,9 +12,14 @@ import { get, map } from 'lodash';
 /**
  * Internal dependencies
  */
-import { Card, Link, TableCard, TablePlaceholder } from '@woocommerce/components';
+import { Link, TableCard } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
-import { appendTimestamp, getCurrentDates, getDateFormatsForInterval, getIntervalForQuery } from 'lib/date';
+import {
+	appendTimestamp,
+	getCurrentDates,
+	getDateFormatsForInterval,
+	getIntervalForQuery,
+} from 'lib/date';
 import { onQueryChange } from 'lib/nav-utils';
 import ReportError from 'analytics/components/report-error';
 import { QUERY_DEFAULTS } from 'store/constants';
@@ -145,51 +150,8 @@ class RevenueReportTable extends Component {
 		} );
 	}
 
-	renderPlaceholderTable( tableQuery ) {
-		const headers = this.getHeadersContent();
-
-		return (
-			<Card
-				title={ __( 'Revenue', 'wc-admin' ) }
-				className="woocommerce-analytics__table-placeholder"
-			>
-				<TablePlaceholder
-					caption={ __( 'Revenue', 'wc-admin' ) }
-					headers={ headers }
-					query={ tableQuery }
-				/>
-			</Card>
-		);
-	}
-
-	renderTable( tableQuery ) {
-		const { tableData } = this.props;
-
-		const rowsPerPage =
-			( tableQuery && tableQuery.per_page && parseInt( tableQuery.per_page ) ) ||
-			QUERY_DEFAULTS.pageSize;
-		const rows = this.getRowsContent( tableData.data.intervals );
-		const totalRows = get( tableData, [ 'totalResults' ], 0 );
-
-		const headers = this.getHeadersContent();
-
-		return (
-			<TableCard
-				title={ __( 'Revenue', 'wc-admin' ) }
-				rows={ rows }
-				totalRows={ totalRows }
-				rowsPerPage={ rowsPerPage }
-				headers={ headers }
-				onQueryChange={ onQueryChange }
-				query={ tableQuery }
-				summary={ null }
-				downloadable
-			/>
-		);
-	}
-
 	render() {
-		const { isTableDataError, isTableDataRequesting, query } = this.props;
+		const { isTableDataError, isTableDataRequesting, query, tableData } = this.props;
 
 		if ( isTableDataError ) {
 			return <ReportError isError />;
@@ -201,11 +163,27 @@ class RevenueReportTable extends Component {
 			order: query.order || 'asc',
 		};
 
-		if ( isTableDataRequesting ) {
-			return this.renderPlaceholderTable( tableQuery );
-		}
+		const headers = this.getHeadersContent();
+		const rows = this.getRowsContent( get( tableData, [ 'data', 'intervals' ], [] ) );
+		const rowsPerPage =
+			( tableQuery && tableQuery.per_page && parseInt( tableQuery.per_page ) ) ||
+			QUERY_DEFAULTS.pageSize;
+		const totalRows = get( tableData, [ 'totalResults' ], Object.keys( rows ).length );
 
-		return this.renderTable( tableQuery );
+		return (
+			<TableCard
+				title={ __( 'Revenue', 'wc-admin' ) }
+				rows={ rows }
+				totalRows={ totalRows }
+				rowsPerPage={ rowsPerPage }
+				headers={ headers }
+				isLoading={ isTableDataRequesting }
+				onQueryChange={ onQueryChange }
+				query={ tableQuery }
+				summary={ null }
+				downloadable
+			/>
+		);
 	}
 }
 
