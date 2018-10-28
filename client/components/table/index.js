@@ -169,9 +169,9 @@ class TableCard extends Component {
 	}
 
 	getAllCheckbox() {
-		const { ids = [], isLoading } = this.props;
+		const { ids = [] } = this.props;
 		const { selectedRows } = this.state;
-		const isAllChecked = ! isLoading && ids.length === selectedRows.length;
+		const isAllChecked = ids.length > 0 && ids.length === selectedRows.length;
 		return {
 			cellClassName: 'is-checkbox-column',
 			label: (
