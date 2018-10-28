@@ -285,6 +285,7 @@ class TableCard extends Component {
 						rowHeader={ rowHeader }
 						caption={ title }
 						query={ query }
+						onSort={ onQueryChange( 'sort' ) }
 					/>
 				) : (
 					<Table
