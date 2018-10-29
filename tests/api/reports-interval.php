@@ -720,7 +720,7 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$iso_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
 			}
 		}
-
+		fwrite( STDERR, '---> test_next_hour_start, gmt offset' );
 		update_option( 'gmt_offset', 2 ); // Not using timezone name here, as it could cause problems with DST.
 		$settings = array(
 			'2017-12-30T00:00:00+03:45' => array( // 29th, 20:15 UTC, which is 22:15+02

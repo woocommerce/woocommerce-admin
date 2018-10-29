@@ -57,6 +57,7 @@ class WC_Tests_API_Reports_Products_Stats extends WC_REST_Unit_Test_Case {
 
 		$time = time();
 
+		// Create order adds 4 products to the order.
 		$order = WC_Helper_Order::create_order( 1, $product );
 		$order->set_status( 'completed' );
 		$order->set_shipping_total( 10 );
@@ -106,6 +107,7 @@ class WC_Tests_API_Reports_Products_Stats extends WC_REST_Unit_Test_Case {
 		);
 
 		$this->assertEquals( 200, $response->get_status() );
+		fwrite( STDERR, print_r( $reports, true ) );
 		$this->assertEquals( $expected_reports, $reports );
 	}
 

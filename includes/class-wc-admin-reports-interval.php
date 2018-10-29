@@ -234,21 +234,24 @@ class WC_Admin_Reports_Interval {
 	 * @return DateTime
 	 */
 	public static function next_hour_start( $datetime, $reversed = false ) {
+		fwrite( STDERR, "\n===\n" . ' next_hour_start; R: ' . $reversed . ' datetime: ' . print_r( $datetime, true ) );
 		$datetime_local = self::convert_datetime_to_local( $datetime );
-
+		fwrite( STDERR, "\n".'next_hour_start; datetime: ' . print_r( $datetime->format( self::$sql_datetime_format ), true ) . '; datetime local: ' . print_r( $datetime_local, true ) );
 		$minutes             = (int) $datetime_local->format( 'i' );
 		$seconds             = (int) $datetime_local->format( 's' );
 		$current_hour_offset = $minutes * MINUTE_IN_SECONDS + $seconds;
 		$timestamp_local     = (int) $datetime_local->format( 'U' );
+		fwrite( STDERR, "\n".'next_hour_start; datetime: ' . print_r( $datetime->format( self::$sql_datetime_format ), true ) . '; timestamp local 1: ' . print_r( $timestamp_local, true ) );
 		if ( $reversed ) {
 			$timestamp_local = $timestamp_local - $current_hour_offset - 1;
 		} else {
 			$timestamp_local = $timestamp_local + ( HOUR_IN_SECONDS - $current_hour_offset );
 		}
-
+		fwrite( STDERR, "\n".'next_hour_start; datetime: ' . print_r( $datetime->format( self::$sql_datetime_format ), true ) . '; timestamp local 2: ' . print_r( $timestamp_local, true ) );
 		$hours_offset_time = new DateTime();
 		$hours_offset_time->setTimestamp( $timestamp_local );
 		$hours_offset_time->setTimezone( new DateTimeZone( wc_timezone_string() ) );
+		fwrite( STDERR, "\n".'next_hour_start; datetime: ' . print_r( $datetime->format( self::$sql_datetime_format ), true ) . '; hours_offset_time: ' . print_r( $hours_offset_time, true ) );
 		return $hours_offset_time;
 	}
 
