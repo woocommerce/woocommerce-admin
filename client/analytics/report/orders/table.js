@@ -12,14 +12,7 @@ import { get, map, orderBy } from 'lodash';
 /**
  * Internal dependencies
  */
-import {
-	Card,
-	Link,
-	OrderStatus,
-	TableCard,
-	TablePlaceholder,
-	ViewMoreList,
-} from '@woocommerce/components';
+import { Link, OrderStatus, TableCard, ViewMoreList } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import {
 	appendTimestamp,
@@ -223,55 +216,8 @@ class OrdersReportTable extends Component {
 		);
 	}
 
-	renderPlaceholderTable( tableQuery ) {
-		const headers = this.getHeadersContent();
-
-		return (
-			<Card
-				title={ __( 'Orders', 'wc-admin' ) }
-				className="woocommerce-analytics__table-placeholder"
-			>
-				<TablePlaceholder
-					caption={ __( 'Orders', 'wc-admin' ) }
-					headers={ headers }
-					query={ tableQuery }
-				/>
-			</Card>
-		);
-	}
-
-	renderTable( tableQuery ) {
-		const { orders, primaryData } = this.props;
-
-		const rowsPerPage = parseInt( tableQuery.per_page ) || QUERY_DEFAULTS.pageSize;
-		const rows = this.getRowsContent(
-			orderBy( this.formatTableData( orders ), tableQuery.orderby, tableQuery.order )
-		);
-		const totalRows = get(
-			primaryData,
-			[ 'data', 'totals', 'orders_count' ],
-			Object.keys( orders ).length
-		);
-
-		const headers = this.getHeadersContent();
-
-		return (
-			<TableCard
-				title={ __( 'Orders', 'wc-admin' ) }
-				rows={ rows }
-				totalRows={ totalRows }
-				rowsPerPage={ rowsPerPage }
-				headers={ headers }
-				onQueryChange={ onQueryChange }
-				query={ tableQuery }
-				summary={ null }
-				downloadable
-			/>
-		);
-	}
-
 	render() {
-		const { isTableDataError, isTableDataRequesting, primaryData, query } = this.props;
+		const { isTableDataError, isTableDataRequesting, primaryData, query, orders } = this.props;
 		const isError = isTableDataError || primaryData.isError;
 
 		if ( isError ) {
@@ -286,11 +232,27 @@ class OrdersReportTable extends Component {
 			order: query.order || 'asc',
 		};
 
-		if ( isRequesting ) {
-			return this.renderPlaceholderTable( tableQuery );
-		}
+		const headers = this.getHeadersContent();
+		const rows = this.getRowsContent(
+			orderBy( this.formatTableData( orders ), tableQuery.orderby, tableQuery.order )
+		);
+		const rowsPerPage = parseInt( tableQuery.per_page ) || QUERY_DEFAULTS.pageSize;
+		const totalRows = get( primaryData, [ 'data', 'totals', 'orders_count' ], orders.length );
 
-		return this.renderTable( tableQuery );
+		return (
+			<TableCard
+				title={ __( 'Orders', 'wc-admin' ) }
+				rows={ rows }
+				totalRows={ totalRows }
+				rowsPerPage={ rowsPerPage }
+				headers={ headers }
+				isLoading={ isRequesting }
+				onQueryChange={ onQueryChange }
+				query={ tableQuery }
+				summary={ null }
+				downloadable
+			/>
+		);
 	}
 }
 
