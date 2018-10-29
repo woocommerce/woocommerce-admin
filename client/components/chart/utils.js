@@ -598,6 +598,10 @@ const calculateTooltipPosition = ( element, chart, elementWidthRatio = 1 ) => {
 		.getBoundingClientRect();
 	const tooltipMargin = 24;
 
+	if ( chartCoords.width < WIDE_BREAKPOINT ) {
+		elementWidthRatio = 0;
+	}
+
 	return {
 		x: calculateTooltipXPosition(
 			elementCoords,
