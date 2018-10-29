@@ -67,35 +67,37 @@ class WC_Tests_API_Reports_Revenue_Stats extends WC_REST_Unit_Test_Case {
 		unset( $data['intervals'][0]['date_end'] );
 		unset( $data['intervals'][0]['date_end_gmt'] );
 
-		$this->assertEquals( array(
-			'totals'    => array(
-				'orders_count'   => 0,
-				'num_items_sold' => 0,
-				'gross_revenue'  => 0.0,
-				'coupons'        => 0.0,
-				'refunds'        => 0.0,
-				'taxes'          => 0.0,
-				'shipping'       => 0.0,
-				'net_revenue'    => 0.0,
-			),
-			'intervals' => array(
-				array(
-					'interval'       => $now->format( 'o-W' ),
-					'date_start'     => $start_date->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
-					'date_start_gmt' => $start_date->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
-					'subtotals'      => (object) array(
-						'orders_count'   => 0,
-						'num_items_sold' => 0,
-						'gross_revenue'  => 0.0,
-						'coupons'        => 0.0,
-						'refunds'        => 0.0,
-						'taxes'          => 0.0,
-						'shipping'       => 0.0,
-						'net_revenue'    => 0.0,
+		$this->assertEquals(
+			array(
+				'totals'    => array(
+					'orders_count'   => 0,
+					'num_items_sold' => 0,
+					'gross_revenue'  => 0.0,
+					'coupons'        => 0.0,
+					'refunds'        => 0.0,
+					'taxes'          => 0.0,
+					'shipping'       => 0.0,
+					'net_revenue'    => 0.0,
+				),
+				'intervals' => array(
+					array(
+						'interval'       => $now->format( 'o-W' ),
+						'date_start'     => $start_date->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
+						'date_start_gmt' => $start_date->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
+						'subtotals'      => (object) array(
+							'orders_count'   => 0,
+							'num_items_sold' => 0,
+							'gross_revenue'  => 0.0,
+							'coupons'        => 0.0,
+							'refunds'        => 0.0,
+							'taxes'          => 0.0,
+							'shipping'       => 0.0,
+							'net_revenue'    => 0.0,
+						),
 					),
 				),
-			),
-		), $data );
+			), $data
+		);
 	}
 
 	/**

@@ -26,7 +26,12 @@ class WC_Admin_Reports_Interval {
 	 */
 	public static $sql_datetime_format = 'Y-m-d H:i:s';
 
-
+	/**
+	 * Converts provided datetime to local timezone set in WP general settings.
+	 *
+	 * @param DateTime $datetime DateTime object to be converted to local datetime.
+	 * @return DateTime
+	 */
 	public static function convert_datetime_to_local( $datetime ) {
 		$datetime_local = clone $datetime;
 		$datetime_local->setTimezone( new DateTimeZone( wc_timezone_string() ) );
