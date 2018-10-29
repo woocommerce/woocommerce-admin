@@ -13,6 +13,26 @@
 	}
 }
 
+.woocommerce-card__header {
+	padding: ($gap - 3) $gap;
+	border-bottom: 1px solid $core-grey-light-700;
+	display: grid;
+	align-items: center;
+
+	.has-action & {
+		grid-template-columns: auto 1fr;
+	}
+
+	.has-menu & {
+		grid-template-columns: auto 24px;
+	}
+
+	.has-menu.has-action & {
+		grid-gap: $gap-small;
+		grid-template-columns: auto 1fr 24px;
+	}
+}
+
 .woocommerce-card__header-item {
 	@include set-grid-item-position( 3, 3 );
 	-ms-grid-row-align: center;
@@ -34,7 +54,7 @@
 }
 
 .woocommerce-card__title {
-	margin: 0 $gap 0 0;
+	margin: 0;
 	// EllipsisMenu is 24px, so to match we add 6px padding around the
 	// heading text, which we know is 18px from line-height.
 	padding: 3px 0;
