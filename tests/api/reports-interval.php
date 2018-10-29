@@ -744,7 +744,8 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 			$datetime = new DateTime( $datetime_s );
 			foreach ( $setting as $reversed => $exp_value ) {
 				$result_dt = WC_Admin_Reports_Interval::next_hour_start( $datetime, $reversed );
-				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed" );
+				$tz        = $result_dt->getTimezone();
+				$this->assertEquals( $exp_value, $result_dt->format( WC_Admin_Reports_Interval::$sql_datetime_format ), __FUNCTION__ . ": DT: $datetime_s; R: $reversed; result timezone: " . $tz->getName() . '; WC timezone string: ' . wc_timezone_string() );
 			}
 		}
 	}
