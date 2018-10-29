@@ -12,11 +12,13 @@ import { MAX_PER_PAGE } from 'store/constants';
 import { appendTimestamp, getCurrentDates, getIntervalForQuery } from 'lib/date';
 import { getActiveFiltersFromQuery, getUrlKey } from 'components/filters/advanced/utils';
 import { flatenFilters } from 'components/filters/filter/utils';
+import * as categoriesConfig from 'analytics/report/categories/config';
 import * as couponsConfig from 'analytics/report/coupons/config';
 import * as ordersConfig from 'analytics/report/orders/config';
 import * as productsConfig from 'analytics/report/products/config';
 
 const reportConfigs = {
+	categories: categoriesConfig,
 	coupons: couponsConfig,
 	orders: ordersConfig,
 	products: productsConfig,

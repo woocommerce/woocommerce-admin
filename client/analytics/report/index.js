@@ -16,6 +16,7 @@ import Header from 'header';
 import OrdersReport from './orders';
 import ProductsReport from './products';
 import RevenueReport from './revenue';
+import CategoriesReport from './categories';
 import CouponsReport from './coupons';
 import useFilters from 'components/higher-order/use-filters';
 
@@ -37,6 +38,11 @@ const getReports = () => {
 			report: 'orders',
 			title: __( 'Orders', 'wc-admin' ),
 			component: OrdersReport,
+		},
+		{
+			report: 'categories',
+			title: __( 'Categories', 'wc-admin' ),
+			component: CategoriesReport,
 		},
 		{
 			report: 'coupons',
