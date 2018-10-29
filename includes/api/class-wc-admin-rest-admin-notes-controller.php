@@ -63,6 +63,12 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 					'callback'            => array( $this, 'get_item' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_item' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
@@ -125,6 +131,34 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 	}
 
 	/**
+	 * Update a single note.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function update_item( $request ) {
+		$note = WC_Admin_Notes::get_note( $request->get_param( 'id' ) );
+		if ( is_wp_error( $note ) ) {
+			return $note;
+		}
+
+		$error_found = false;
+		if ( isset( $request['status'] ) ) {
+			$requested_status = sanitize_text_field( $request['status'] );
+
+			try {
+				$note->set_status( $requested_status );
+			} catch ( WC_Data_Exception $e ) {
+				return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+			}
+			// TODO - track this transition.
+			$note->save();
+		}
+
+		return $this->get_item( $request );
+	}
+
+	/**
 	 * Check whether a given request has permission to read a single note.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
@@ -147,6 +181,20 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 	public function get_items_permissions_check( $request ) {
 		if ( ! wc_rest_check_manager_permissions( 'system_status', 'read' ) ) {
 			return new WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot list resources.', 'wc-admin' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check whether a given request has permission to update a single note.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function update_item_permissions_check( $request ) {
+		if ( ! wc_rest_check_manager_permissions( 'system_status', 'edit' ) ) {
+			return new WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot edit this resource.', 'wc-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
