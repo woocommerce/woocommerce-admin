@@ -14,7 +14,7 @@ import { NAMESPACE } from 'store/constants';
 
 export default {
 	async getReportStats( state, endpoint, query ) {
-		const statEndpoints = [ 'orders', 'revenue', 'products' ];
+		const statEndpoints = [ 'orders', 'revenue', 'products', 'coupons' ];
 		let apiPath = endpoint + stringifyQuery( query );
 
 		if ( statEndpoints.indexOf( endpoint ) >= 0 ) {
