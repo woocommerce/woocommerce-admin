@@ -96,7 +96,8 @@ class WC_Tests_API_Reports_Revenue_Stats extends WC_REST_Unit_Test_Case {
 						),
 					),
 				),
-			), $data
+			),
+			$data
 		);
 	}
 
