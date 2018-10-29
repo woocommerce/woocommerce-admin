@@ -398,9 +398,10 @@ class WC_Admin_Reports_Data_Store {
 			$prev_start->setTimestamp( $prev_start_timestamp );
 			$prev_start->setTimezone( $utc_tz );
 			if ( $datetime_start ) {
-				$start_datetime = new DateTime( $datetime_start );
+				$start_datetime                  = new DateTime( $datetime_start );
 				$start_datetime->setTimezone( $utc_tz );
-				$intervals[ $key ]['date_start_gmt'] = ( $prev_start < $start_datetime ? $start_datetime : $prev_start )->format( 'Y-m-d H:i:s' );
+				$date_start                      = $prev_start < $start_datetime ? $start_datetime : $prev_start;
+				$intervals[ $key ]['date_start_gmt'] = $date_start->format( 'Y-m-d H:i:s' );
 			} else {
 				$intervals[ $key ]['date_start_gmt'] = $prev_start->format( 'Y-m-d H:i:s' );
 			}
@@ -410,9 +411,10 @@ class WC_Admin_Reports_Data_Store {
 			$next_end->setTimestamp( $next_end_timestamp );
 			$next_end->setTimezone( $utc_tz );
 			if ( $datetime_end ) {
-				$end_datetime = new DateTime( $datetime_end );
+				$end_datetime                  = new DateTime( $datetime_end );
 				$end_datetime->setTimezone( $utc_tz );
-				$intervals[ $key ]['date_end_gmt'] = ( $next_end > $end_datetime ? $end_datetime : $next_end )->format( 'Y-m-d H:i:s' );
+				$date_end                      = $next_end > $end_datetime ? $end_datetime : $next_end;
+				$intervals[ $key ]['date_end_gmt'] = $date_end->format( 'Y-m-d H:i:s' );
 			} else {
 				$intervals[ $key ]['date_end_gmt'] = $next_end->format( 'Y-m-d H:i:s' );
 			}
