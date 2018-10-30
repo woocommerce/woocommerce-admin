@@ -12,6 +12,7 @@
 		"no-duplicate-selectors": null,
 		"rule-empty-line-before": null,
 		"selector-class-pattern": null,
+		"string-quotes": "single",
 		"value-keyword-case": null
 	}
 }
