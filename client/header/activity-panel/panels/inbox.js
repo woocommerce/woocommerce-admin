@@ -16,6 +16,7 @@ import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import { EmptyContent, Section } from '@woocommerce/components';
 import sanitizeHTML from 'lib/sanitize-html';
+import { QUERY_DEFAULTS } from 'store/constants';
 
 class InboxPanel extends Component {
 	render() {
@@ -46,7 +47,7 @@ class InboxPanel extends Component {
 				return [];
 			}
 			return actions.map( action => (
-				<Button disabled isDefault href={ action.url }>
+				<Button isDefault href={ action.url }>
 					{ action.label }
 				</Button>
 			) );
@@ -91,7 +92,7 @@ export default compose(
 		const { getNotes, isGetNotesError, isGetNotesRequesting } = select( 'wc-admin' );
 		const inboxQuery = {
 			page: 1,
-			per_page: 25,
+			per_page: QUERY_DEFAULTS.pageSize,
 		};
 
 		const notes = getNotes( inboxQuery );

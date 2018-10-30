@@ -21,31 +21,31 @@ const getPages = () => {
 			container: Dashboard,
 			path: '/',
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics',
+			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
 		},
 		{
 			container: Analytics,
 			path: '/analytics',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics',
+			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
 			wpClosedMenu: 'toplevel_page_woocommerce',
 		},
 		{
 			container: AnalyticsReport,
 			path: '/analytics/:report',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics',
+			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
 			wpClosedMenu: 'toplevel_page_woocommerce',
 		},
 		{
 			container: DevDocs,
 			path: '/devdocs',
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics',
+			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
 		},
 		{
 			container: DevDocs,
 			path: '/devdocs/:component',
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics',
+			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
 		},
 	];
 
@@ -95,14 +95,21 @@ window.wpNavMenuClassChange = function( page ) {
 		item.classList.remove( 'current' );
 	} );
 
-	const submenu = document.querySelector( '.wp-has-current-submenu' );
-	submenu.classList.remove( 'wp-has-current-submenu' );
-	submenu.classList.remove( 'wp-menu-open' );
-	submenu.classList.remove( 'selected' );
-	submenu.classList.add( 'wp-not-current-submenu' );
-	submenu.classList.add( 'menu-top' );
+	const submenu = Array.from( document.querySelectorAll( '.wp-has-current-submenu' ) );
+	submenu.forEach( function( element ) {
+		element.classList.remove( 'wp-has-current-submenu' );
+		element.classList.remove( 'wp-menu-open' );
+		element.classList.remove( 'selected' );
+		element.classList.add( 'wp-not-current-submenu' );
+		element.classList.add( 'menu-top' );
+	} );
 
-	const currentItems = document.querySelectorAll( `li > a[href="${ window.location.href }"]` );
+	const pageHash = window.location.hash.split( '?' )[ 0 ];
+	const currentItemsSelector =
+		pageHash === '#/'
+			? `li > a[href$="${ pageHash }"], li > a[href*="${ pageHash }?"]`
+			: `li > a[href*="${ pageHash }"]`;
+	const currentItems = document.querySelectorAll( currentItemsSelector );
 
 	Array.from( currentItems ).forEach( function( item ) {
 		item.parentElement.classList.add( 'current' );

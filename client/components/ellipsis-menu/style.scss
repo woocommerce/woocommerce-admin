@@ -1,14 +1,21 @@
 /** @format */
 
-.woocommerce-ellipsis-menu__toggle .dashicon {
-	transform: rotate(90deg);
+.woocommerce-ellipsis-menu__toggle {
+	height: 24px;
+	justify-content: center;
+	vertical-align: middle;
+	width: 24px;
+
+	.dashicon {
+		transform: rotate(90deg);
+	}
 }
 
 .woocommerce-ellipsis-menu__popover {
 	text-align: left;
 
-	&:not(.is-mobile):before,
-	&:not(.is-mobile):after {
+	&:not(.is-mobile)::before,
+	&:not(.is-mobile)::after {
 		margin-left: -16px;
 	}
 

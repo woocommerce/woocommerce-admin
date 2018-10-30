@@ -402,18 +402,14 @@ export const drawAxis = ( node, params ) => {
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
 				.tickFormat( ( d, i ) => {
-					let monthDate = d instanceof Date ? d : new Date( d );
+					const monthDate = d instanceof Date ? d : new Date( d );
 					let prevMonth = i !== 0 ? ticks[ i - 1 ] : ticks[ i ];
 					prevMonth = prevMonth instanceof Date ? prevMonth : new Date( prevMonth );
-					monthDate =
-						i !== 0
-							? compareStrings(
-									params.x2Format( prevMonth ),
-									params.x2Format( monthDate ),
-									params
-								).join( ' ' )
-							: params.x2Format( monthDate );
-					return i === 0 || monthDate !== params.x2Format( prevMonth ) ? monthDate : '';
+					return i === 0
+						? params.x2Format( monthDate )
+						: compareStrings( params.x2Format( prevMonth ), params.x2Format( monthDate ) ).join(
+								' '
+							);
 				} )
 		)
 		.call( g => g.select( '.domain' ).remove() );
@@ -588,10 +584,14 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'role', 'region' )
 		.attr( 'aria-label', d => d.key );
 
+	let lineStroke = params.width <= 1329 || params.uniqueDates.length > 50 ? 2 : 3;
+	lineStroke = params.width <= 783 ? 1.25 : lineStroke;
+	const dotRadius = params.width <= 1329 ? 4 : 6;
+
 	series
 		.append( 'path' )
 		.attr( 'fill', 'none' )
-		.attr( 'stroke-width', 3 )
+		.attr( 'stroke-width', lineStroke )
 		.attr( 'stroke-linejoin', 'round' )
 		.attr( 'stroke-linecap', 'round' )
 		.attr( 'stroke', d => getColor( d.key, params ) )
@@ -601,16 +601,16 @@ export const drawLines = ( node, data, params ) => {
 		} )
 		.attr( 'd', d => params.line( d.values ) );
 
-	params.uniqueDates.length < 50 &&
+	params.width / params.uniqueDates.length > 36 &&
 		series
 			.selectAll( 'circle' )
 			.data( ( d, i ) => d.values.map( row => ( { ...row, i, visible: d.visible, key: d.key } ) ) )
 			.enter()
 			.append( 'circle' )
-			.attr( 'r', 6 )
+			.attr( 'r', dotRadius )
 			.attr( 'fill', d => getColor( d.key, params ) )
 			.attr( 'stroke', '#fff' )
-			.attr( 'stroke-width', 3 )
+			.attr( 'stroke-width', lineStroke + 1 )
 			.style( 'opacity', d => {
 				const opacity = d.focus ? 1 : 0.1;
 				return d.visible ? opacity : 0;
@@ -653,13 +653,13 @@ export const drawLines = ( node, data, params ) => {
 
 	focusGrid
 		.selectAll( 'circle' )
-		.data( d => d.values )
+		.data( d => d.values.reverse() )
 		.enter()
 		.append( 'circle' )
-		.attr( 'r', 8 )
+		.attr( 'r', dotRadius + 2 )
 		.attr( 'fill', d => getColor( d.key, params ) )
 		.attr( 'stroke', '#fff' )
-		.attr( 'stroke-width', 4 )
+		.attr( 'stroke-width', lineStroke + 2 )
 		.attr( 'cx', d => params.xLineScale( new Date( d.date ) ) )
 		.attr( 'cy', d => params.yScale( d.value ) );
 
