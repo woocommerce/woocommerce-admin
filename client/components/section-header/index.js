@@ -26,7 +26,7 @@ class SectionHeader extends Component {
 				<H className="woocommerce-section-header__title woocommerce-section-header__header-item">
 					{ title }
 				</H>
-				<hr />
+				<hr role="presentation" />
 				{ children && (
 					<div className="woocommerce-section-header__actions woocommerce-section-header__header-item">
 						{ children }
