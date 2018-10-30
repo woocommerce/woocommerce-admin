@@ -73,6 +73,7 @@ class Chart extends Component {
 		this.handleLegendHover = this.handleLegendHover.bind( this );
 		this.updateDimensions = this.updateDimensions.bind( this );
 		this.getVisibleData = this.getVisibleData.bind( this );
+		this.setInterval = this.setInterval.bind( this );
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -152,7 +153,8 @@ class Chart extends Component {
 	}
 
 	setInterval( interval ) {
-		updateQueryString( { interval } );
+		const { path } = this.props;
+		updateQueryString( { interval }, path );
 	}
 
 	renderIntervalSelector() {
@@ -312,6 +314,10 @@ Chart.propTypes = {
 	 * Format to parse dates into d3 time format
 	 */
 	dateParser: PropTypes.string.isRequired,
+	/**
+	 * Current path
+	 */
+	path: PropTypes.string,
 	/**
 	 * Date format of the point labels (might be used in tooltips and ARIA properties).
 	 */
