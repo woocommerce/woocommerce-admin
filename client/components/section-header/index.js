@@ -15,20 +15,18 @@ import { H } from 'components/section';
 import { validateComponent } from 'lib/proptype-validator';
 
 /**
- * A basic card component with a header. The header can contain a title, an action, and an `EllipsisMenu` menu.
+ * A header component. The header can contain a title, actions via children, and an `EllipsisMenu` menu.
  */
 class SectionHeader extends Component {
 	render() {
-		const { children, menu, title, standAlone } = this.props;
-		const className = classnames( 'woocommerce-section-header', this.props.className, {
-			'stand-alone': !! standAlone,
-		} );
+		const { children, menu, title } = this.props;
+		const className = classnames( 'woocommerce-section-header', this.props.className );
 		return (
 			<div className={ className }>
 				<H className="woocommerce-section-header__title woocommerce-section-header__header-item">
 					{ title }
 				</H>
-				{ standAlone && <hr /> }
+				<hr />
 				{ children && (
 					<div className="woocommerce-section-header__actions woocommerce-section-header__header-item">
 						{ children }
@@ -57,10 +55,6 @@ SectionHeader.propTypes = {
 	 * The title to use for this card.
 	 */
 	title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ).isRequired,
-	/**
-	 * Is this a standalone header
-	 */
-	standAlone: PropTypes.bool,
 };
 
 export default SectionHeader;

@@ -1,9 +1,9 @@
 /** @format */
 
 .woocommerce-card {
+	margin-bottom: $gap-large;
 	background: white;
 	border: 1px solid $core-grey-light-700;
-	margin-bottom: $gap-large;
 
 	@include breakpoint( '<782px' ) {
 		margin-left: -16px;

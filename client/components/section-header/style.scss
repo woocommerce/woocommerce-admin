@@ -1,9 +1,7 @@
 /** @format */
 
 .woocommerce-section-header {
-	background: white;
-	border: 1px solid $core-grey-light-700;
-	padding: ($gap - 3) $gap;
+	padding: ($gap - 3);
 	border-bottom: none;
 	display: flex;
 	justify-content: space-between;
@@ -15,13 +13,6 @@
 		border-left: none;
 		border-right: none;
 		width: auto;
-	}
-
-	&.stand-alone {
-		background: none;
-		border: none;
-		padding-left: 0;
-		padding-right: 0;
 	}
 
 	hr {
