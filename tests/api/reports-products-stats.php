@@ -107,7 +107,6 @@ class WC_Tests_API_Reports_Products_Stats extends WC_REST_Unit_Test_Case {
 		);
 
 		$this->assertEquals( 200, $response->get_status() );
-		fwrite( STDERR, print_r( $reports, true ) );
 		$this->assertEquals( $expected_reports, $reports );
 	}
 
