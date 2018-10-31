@@ -26,6 +26,7 @@ before_script:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - bash bin/install-wp-tests.sh wc_admin_test root '' localhost $WP_VERSION
   - bash bin/travis.sh before
+  - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
   - node --version
   - npm --version
   - php --version
