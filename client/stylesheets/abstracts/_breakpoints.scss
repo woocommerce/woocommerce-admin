@@ -1,5 +1,7 @@
 /** @format */
 
+/* stylelint-disable block-closing-brace-newline-after */
+
 // Breakpoints
 // Forked from https://github.com/Automattic/wp-calypso/blob/46ae24d8800fb85da6acf057a640e60dac988a38/assets/stylesheets/shared/mixins/_breakpoints.scss
 
@@ -55,3 +57,5 @@ $breakpoints: 320px, 400px, 600px, 782px, 960px, 1100px, 1365px;
 		}
 	}
 }
+
+/* stylelint-enable */
