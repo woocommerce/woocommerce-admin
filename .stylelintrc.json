@@ -14,6 +14,7 @@
 		"rule-empty-line-before": null,
 		"selector-class-pattern": null,
 		"string-quotes": "single",
-		"value-keyword-case": null
+		"value-keyword-case": null,
+		"value-list-comma-newline-after": null
 	}
 }
