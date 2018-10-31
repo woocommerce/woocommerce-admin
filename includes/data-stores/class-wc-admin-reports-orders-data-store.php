@@ -519,13 +519,15 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			return false;
 		}
 
-		$customer_orders = get_posts( array(
-			'meta_key' => '_customer_user',
-			'meta_value' => $customer_id,
-			'post_type' => 'shop_order',
-			'post_status' => array( 'wc-on-hold', 'wc-processing', 'wc-completed' ),
-			'numberposts' => 2,
-		) );
+		$customer_orders = get_posts(
+			array(
+				'meta_key'    => '_customer_user', // WPCS: slow query ok.
+				'meta_value'  => $customer_id, // WPCS: slow query ok.
+				'post_type'   => 'shop_order',
+				'post_status' => array( 'wc-on-hold', 'wc-processing', 'wc-completed' ),
+				'numberposts' => 2,
+			)
+		);
 
 		return count( $customer_orders ) > 1;
 	}
