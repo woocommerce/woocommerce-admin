@@ -5,7 +5,19 @@ php:
   - 7.1
 
 env:
-  - WP_VERSION=latest WP_MULTISITE=0 RUN_PHPCS=1 WP_CORE_DIR=/tmp/wordpress NODE_RELEASE=8.x
+  - WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress NODE_RELEASE=8.x
+
+matrix:
+  fast_finish: true
+  include:
+  - php: 7.2
+    env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress NODE_RELEASE=8.x RUN_PHPCS=1
+  - php: 7.1
+    env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress NODE_RELEASE=8.x
+  - php: 5.6
+    env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress NODE_RELEASE=8.x
+
+
 
 before_script:
   - phpenv config-rm xdebug.ini
