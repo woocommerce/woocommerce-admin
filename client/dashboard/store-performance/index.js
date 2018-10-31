@@ -74,11 +74,7 @@ class StorePerformance extends Component {
 
 		return (
 			<Fragment>
-				<SectionHeader
-					title={ __( 'Store Performance', 'wc-admin' ) }
-					menu={ this.renderMenu() }
-					standAlone
-				/>
+				<SectionHeader title={ __( 'Store Performance', 'wc-admin' ) } menu={ this.renderMenu() } />
 				<Card className="woocommerce-dashboard__store-performance">
 					<SummaryList>
 						{ showCustomers && (

@@ -9,6 +9,8 @@ exports[`SectionHeader it renders correctly 1`] = `
   >
     A SectionHeader Example
   </h2>
-  <hr />
+  <hr
+    role="presentation"
+  />
 </div>
 `;
