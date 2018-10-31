@@ -8,7 +8,7 @@
 class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 
 	/**
-	 * Restore UTC on failire.
+	 * Restore UTC on failure.
 	 */
 	public function tearDown() {
 		parent::tearDown();
@@ -17,15 +17,6 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 		// @codingStandardsIgnoreEnd
 		update_option( 'gmt_offset', 0 );
 		update_option( 'timezone_string', '' );
-	}
-
-	public function onNotSuccessfulTest( Throwable $e ) {
-		// @codingStandardsIgnoreStart
-		date_default_timezone_set( 'UTC' );
-		// @codingStandardsIgnoreEnd
-		update_option( 'gmt_offset', 0 );
-		update_option( 'timezone_string', '' );
-		parent::onNotSuccessfulTest( $e );
 	}
 
 	/**
