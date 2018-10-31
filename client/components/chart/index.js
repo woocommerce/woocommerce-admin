@@ -153,8 +153,8 @@ class Chart extends Component {
 	}
 
 	setInterval( interval ) {
-		const { path } = this.props;
-		updateQueryString( { interval }, path );
+		const { path, query } = this.props;
+		updateQueryString( { interval }, path, query );
 	}
 
 	renderIntervalSelector() {
@@ -322,6 +322,10 @@ Chart.propTypes = {
 	 * Date format of the point labels (might be used in tooltips and ARIA properties).
 	 */
 	pointLabelFormat: PropTypes.string,
+	/**
+	 * The query string represented in object form
+	 */
+	query: PropTypes.object,
 	/**
 	 * A datetime formatting string to format the date displayed as the title of the toolip
 	 * if `tooltipTitle` is missing, passed to d3TimeFormat.

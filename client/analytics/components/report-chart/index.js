@@ -79,6 +79,7 @@ class ReportChart extends Component {
 		return (
 			<Chart
 				path={ path }
+				query={ query }
 				data={ chartData }
 				title={ selectedChart.label }
 				interval={ currentInterval }
