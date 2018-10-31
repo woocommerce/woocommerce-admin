@@ -5,6 +5,7 @@
 		"at-rule-no-unknown": null,
 		"comment-empty-line-before": null,
 		"declaration-block-no-duplicate-properties": null,
+		"declaration-colon-newline-after": null,
 		"declaration-property-unit-whitelist": null,
 		"font-weight-notation": null,
 		"max-line-length": null,
