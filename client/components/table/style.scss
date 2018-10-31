@@ -6,6 +6,10 @@
 		position: relative;
 	}
 
+	.woocommerce-search {
+		flex-grow: 1;
+	}
+
 	.woocommerce-card__action {
 		justify-self: flex-end;
 		margin: -($gap - 3) 0;
@@ -114,7 +118,7 @@
 .woocommerce-table__table {
 	overflow-x: auto;
 
-	&:after {
+	&::after {
 		content: '';
 		position: absolute;
 		right: 0;
@@ -125,7 +129,7 @@
 		visibility: hidden;
 	}
 
-	&.is-scrollable:after {
+	&.is-scrollable::after {
 		visibility: visible;
 	}
 
@@ -294,7 +298,7 @@ th.woocommerce-table__item {
 		font-weight: 600;
 	}
 
-	& + .woocommerce-table__summary-item:before {
+	& + .woocommerce-table__summary-item::before {
 		content: '/';
 		margin: 0 $gap-smallest;
 	}
