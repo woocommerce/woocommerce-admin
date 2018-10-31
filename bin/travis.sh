@@ -3,7 +3,7 @@
 
 if [ $1 == 'before' ]; then
 
-	# composer global require "phpunit/phpunit=6.*"
+	composer global require "phpunit/phpunit=6.*"
 
 	if [[ ${RUN_PHPCS} == 1 ]]; then
 		composer install
