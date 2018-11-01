@@ -78,6 +78,7 @@ class WC_Tests_API_Reports_Revenue_Stats extends WC_REST_Unit_Test_Case {
 					'taxes'          => 0.0,
 					'shipping'       => 0.0,
 					'net_revenue'    => 0.0,
+					'products'       => 0,
 				),
 				'intervals' => array(
 					array(
@@ -93,6 +94,7 @@ class WC_Tests_API_Reports_Revenue_Stats extends WC_REST_Unit_Test_Case {
 							'taxes'          => 0.0,
 							'shipping'       => 0.0,
 							'net_revenue'    => 0.0,
+							'products'       => 0,
 						),
 					),
 				),
