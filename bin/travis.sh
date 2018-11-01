@@ -5,6 +5,9 @@ if [ $1 == 'before' ]; then
 
 	composer global require "phpunit/phpunit=6.*"
 
+	php -r 'echo "default PHP timezone: " . date_default_timezone_get() . "\n";'
+    php -r 'echo "DST in PHP active: " . date("I") . "\n";'
+
 	if [[ ${RUN_PHPCS} == 1 ]]; then
 		composer install
 	fi

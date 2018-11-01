@@ -29,8 +29,6 @@ before_script:
   - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
   - node --version
   - npm --version
-  - php -r 'echo "default PHP timezone: " . date_default_timezone_get() . "\n";'
-  - php -r 'echo "DST in PHP active: " . date("I") . "\n";'
   - timedatectl
 
 script:
