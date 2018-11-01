@@ -92,7 +92,7 @@ export class TopSellingProducts extends Component {
 		const title = __( 'Top Selling Products', 'wc-admin' );
 
 		if ( isError ) {
-			return <ReportError isError />;
+			return <ReportError className="woocommerce-top-selling-products" isError />;
 		}
 
 		if ( ! isRequesting && rows.length === 0 ) {
