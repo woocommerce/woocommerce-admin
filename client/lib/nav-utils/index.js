@@ -9,6 +9,7 @@ import { isEmpty, pick, uniq } from 'lodash';
 /**
  * Internal dependencies
  */
+// Import the module into itself. Functions consumed from this import can be mocked in tests.
 import * as navUtils from './index';
 
 /**
