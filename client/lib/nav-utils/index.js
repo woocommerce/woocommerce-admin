@@ -35,7 +35,7 @@ export const stringifyQuery = query => ( isEmpty( query ) ? '' : '?' + stringify
  * @param {Object} query Query containing the parameters.
  * @return {Object} Object containing the time related queries.
  */
-export const getTimeRelatedQuery = query =>
+export const getTimeRelatedQuery = ( query = getQuery() ) =>
 	pick( query, [ 'period', 'compare', 'before', 'after' ] );
 
 /**
