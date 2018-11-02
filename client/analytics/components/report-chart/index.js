@@ -76,6 +76,8 @@ class ReportChart extends Component {
 			};
 		} );
 
+		const isItemComparison = 'single_product' === query.filter && !! query.products;
+
 		return (
 			<Chart
 				path={ path }
@@ -84,7 +86,8 @@ class ReportChart extends Component {
 				title={ selectedChart.label }
 				interval={ currentInterval }
 				allowedIntervals={ allowedIntervals }
-				mode="time-comparison"
+				layout={ isItemComparison ? 'comparison' : 'standard' }
+				mode={ isItemComparison ? 'item-comparison' : 'time-comparison' }
 				pointLabelFormat={ formats.pointLabelFormat }
 				tooltipTitle={ selectedChart.label }
 				xFormat={ formats.xFormat }
