@@ -115,14 +115,14 @@ class DateRange extends Component {
 			beforeError,
 			shortDateFormat,
 			isViewportMobile,
-			isViewportTablet,
+			isViewportSmall,
 		} = this.props;
 		const isOutsideRange = this.getOutsideRange();
-		const isDoubleCalendar = isViewportTablet && ! isViewportMobile;
+		const isDoubleCalendar = isViewportMobile && ! isViewportSmall;
 		return (
 			<div
 				className={ classnames( 'woocommerce-calendar', {
-					'is-mobile': isViewportTablet,
+					'is-mobile': isViewportMobile,
 				} ) }
 			>
 				<div className="woocommerce-calendar__inputs">
@@ -228,5 +228,5 @@ DateRange.propTypes = {
 
 export default withViewportMatch( {
 	isViewportMobile: '< medium',
-	isViewportTablet: '< large',
+	isViewportSmall: '< small',
 } )( DateRange );
