@@ -20,9 +20,9 @@ function wc_admin_register_script() {
 
 	wp_register_script(
 		'wc-csv',
-		wc_admin_url( 'dist/csv/index.js' ),
+		wc_admin_url( 'dist/csv-export/index.js' ),
 		array(),
-		filemtime( wc_admin_dir_path( 'dist/csv/index.js' ) ),
+		filemtime( wc_admin_dir_path( 'dist/csv-export/index.js' ) ),
 		true
 	);
 

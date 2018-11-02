@@ -8,7 +8,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const externals = {
 	'@woocommerce/components': { this: [ 'wc', 'components' ] },
-	'@woocommerce/csv': { this: [ 'wc', 'csv' ] },
+	'@woocommerce/csv-export': { this: [ 'wc', 'csvExport' ] },
 	'@woocommerce/currency': { this: [ 'wc', 'currency' ] },
 	'@woocommerce/date': { this: [ 'wc', 'date' ] },
 	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
@@ -30,7 +30,7 @@ const externals = {
 
 const wcAdminPackages = {
 	components: './client/components',
-	csv: './packages/csv',
+	csvExport: './packages/csv-export',
 	currency: './packages/currency',
 	date: './packages/date',
 	navigation: './packages/navigation',

@@ -1,5 +1,5 @@
 {
-  "name": "@woocommerce/csv",
+  "name": "@woocommerce/csv-export",
   "version": "1.0.0-alpha.0",
   "description": "WooCommerce utility library to convert data to CSV files.",
   "author": "Automattic",
@@ -9,7 +9,7 @@
     "woocommerce",
     "csv"
   ],
-  "homepage": "https://github.com/WooCommerce/wc-admin/tree/master/packages/csv/README.md",
+  "homepage": "https://github.com/WooCommerce/wc-admin/tree/master/packages/csv-export/README.md",
   "repository": {
     "type": "git",
     "url": "https://github.com/WooCommerce/wc-admin.git"

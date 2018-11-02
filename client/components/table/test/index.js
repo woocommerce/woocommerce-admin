@@ -8,7 +8,7 @@ import { mount, shallow } from 'enzyme';
 /**
  * Woocommerce dependencies
  */
-import { downloadCSVFile } from '@woocommerce/csv';
+import { downloadCSVFile } from '@woocommerce/csv-export';
 
 /**
  * Internal dependencies
@@ -18,8 +18,8 @@ import mockHeaders from '../__mocks__/table-mock-headers';
 import mockData from '../__mocks__/table-mock-data';
 import mockCSV from '../__mocks__/table-mock-csv';
 
-jest.mock( '@woocommerce/csv', () => ( {
-	...require.requireActual( '@woocommerce/csv' ),
+jest.mock( '@woocommerce/csv-export', () => ( {
+	...require.requireActual( '@woocommerce/csv-export' ),
 	generateCSVFileName: jest.fn().mockReturnValue( 'filename.csv' ),
 	downloadCSVFile: jest.fn(),
 } ) );
