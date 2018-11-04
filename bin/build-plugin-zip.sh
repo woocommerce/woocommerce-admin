@@ -62,8 +62,6 @@ else
 fi
 
 # Run the build.
-status "Installing dependencies... 📦"
-npm install
 status "Generating build... 👷‍♀️"
 npm run build
 npm run docs
