@@ -64,7 +64,6 @@ fi
 # Run the build.
 status "Installing dependencies... 📦"
 npm install
-composer install
 status "Generating build... 👷‍♀️"
 npm run build
 npm run docs
@@ -74,9 +73,9 @@ build_files=$(ls dist/*/*.{js,css})
 # Generate the plugin zip file.
 status "Creating archive... 🎁"
 zip -r wc-admin.zip \
-	wc-admin.php.php \
+	wc-admin.php \
 	lib/*.php \
-    includes/*.php \
+	includes/*.php \
 	$build_files \
 	languages/wc-admin.pot \
 	languages/wc-admin.php \
