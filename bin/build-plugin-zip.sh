@@ -76,6 +76,8 @@ zip -r wc-admin.zip \
 	wc-admin.php \
 	lib/*.php \
 	includes/*.php \
+	includes/**/*.php \
+	images/* \
 	$build_files \
 	languages/wc-admin.pot \
 	languages/wc-admin.php \
