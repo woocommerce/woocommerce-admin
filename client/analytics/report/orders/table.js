@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { compose } from '@wordpress/compose';
@@ -32,6 +33,9 @@ import ReportTable from 'analytics/components/report-table';
 import { formatTableOrders } from './utils';
 import './style.scss';
 
+const ORDERS_TABLE_HEADERS = 'woocommerce-orders-table-headers';
+const ORDERS_TABLE_DATA = 'woocommerce-orders-table-data';
+
 class OrdersReportTable extends Component {
 	constructor() {
 		super();
@@ -42,7 +46,9 @@ class OrdersReportTable extends Component {
 	}
 
 	getHeadersContent() {
-		return [
+		const customHeaders = applyFilters( ORDERS_TABLE_HEADERS, false );
+
+		const headers = [
 			{
 				label: __( 'Date', 'wc-admin' ),
 				key: 'date',
@@ -100,6 +106,8 @@ class OrdersReportTable extends Component {
 				isNumeric: true,
 			},
 		];
+
+		return customHeaders ? headers.concat( customHeaders ) : headers;
 	}
 
 	getRowsContent( tableData ) {
@@ -134,7 +142,9 @@ class OrdersReportTable extends Component {
 				href: 'edit.php?s=' + coupon.code + '&post_type=shop_coupon',
 			} ) );
 
-			return [
+			const customRowData = applyFilters( ORDERS_TABLE_DATA, false );
+
+			const rowData = [
 				{
 					display: formatDate( tableFormat, date ),
 					value: date,
@@ -178,6 +188,8 @@ class OrdersReportTable extends Component {
 					value: net_revenue,
 				},
 			];
+
+			return customRowData ? rowData.concat( customRowData ) : rowData;
 		} );
 	}
 
