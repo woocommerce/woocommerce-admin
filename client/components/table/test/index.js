@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 import { mount, shallow } from 'enzyme';
 
 /**
- * Woocommerce dependencies
+ * WooCommerce dependencies
  */
 import { downloadCSVFile } from '@woocommerce/csv-export';
 
