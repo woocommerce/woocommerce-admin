@@ -2,7 +2,7 @@
 .woocommerce-chart {
 	margin-top: -$gap;
 	margin-bottom: $gap-large;
-	background: white;
+	background: $white;
 	border: 1px solid $core-grey-light-700;
 	border-top: 0;
 
@@ -90,6 +90,12 @@
 		justify-content: flex-start;
 		pointer-events: none;
 		visibility: hidden;
+		z-index: 1;
+
+		@include breakpoint( '<600px' ) {
+			min-width: auto;
+			width: calc(100% - #{$gap-large * 2});
+		}
 
 		h4 {
 			text-align: left;
@@ -349,7 +355,7 @@
 					width: 16px;
 					background-color: $white;
 
-					&:after {
+					&::after {
 						content: '';
 						position: absolute;
 						display: none;
@@ -359,7 +365,7 @@
 						background-color: currentColor;
 						border-color: currentColor;
 
-						&:after {
+						&::after {
 							display: block;
 							left: 5px;
 							top: 2px;

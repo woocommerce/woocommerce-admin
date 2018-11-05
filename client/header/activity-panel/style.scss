@@ -10,7 +10,7 @@
 
 	@include breakpoint( '<782px' ) {
 		position: relative;
-		background: #fff;
+		background: $white;
 		margin: 0;
 		padding: 0;
 		top: -3px;
@@ -20,12 +20,12 @@
 		flex: 1 100%;
 	}
 
-	@include breakpoint( '782px-1100px' ) {
+	@include breakpoint( '782px-960px' ) {
 		max-width: 280px;
 		height: 60px;
 	}
 
-	@include breakpoint( '>1100px' ) {
+	@include breakpoint( '>960px' ) {
 		max-width: 400px;
 	}
 
@@ -40,7 +40,7 @@
 	height: 60px;
 	justify-content: flex-end;
 
-	@include breakpoint( '>1100px' ) {
+	@include breakpoint( '>960px' ) {
 		height: 80px;
 	}
 
@@ -53,7 +53,7 @@
 		width: 18px;
 		height: 18px;
 
-		@include breakpoint( '>1100px' ) {
+		@include breakpoint( '>960px' ) {
 			width: 24px;
 			height: 24px;
 		}
@@ -61,8 +61,8 @@
 
 	.components-icon-button {
 		display: initial;
-		text-indent: 0px;
-		border-radius: 0px;
+		text-indent: 0;
+		border-radius: 0;
 	}
 
 	.woocommerce-layout__activity-panel-tab {
@@ -80,7 +80,7 @@
 		height: 60px;
 		border-bottom: 3px solid $white;
 
-		@include breakpoint( '>1100px' ) {
+		@include breakpoint( '>960px' ) {
 			height: 80px;
 		}
 
@@ -91,12 +91,12 @@
 		}
 
 		font-size: 11px;
-		@include breakpoint( '>1100px' ) {
+		@include breakpoint( '>960px' ) {
 			font-size: 13px;
 		}
 
-		&.has-unread:after,
-		&.woocommerce-layout__activity-panel-tab-wordpress-notices:after {
+		&.has-unread::after,
+		&.woocommerce-layout__activity-panel-tab-wordpress-notices::after {
 			content: ' ';
 			position: absolute;
 			padding: 1px;
@@ -109,14 +109,14 @@
 			top: 10px;
 			left: 50%;
 
-			@include breakpoint( '782px-1100px' ) {
+			@include breakpoint( '782px-960px' ) {
 				top: 8px;
 				right: 18px;
 				left: initial;
 				margin-left: 0;
 			}
 
-			@include breakpoint( '>1100px' ) {
+			@include breakpoint( '>960px' ) {
 				top: 16px;
 				right: 28px;
 				left: initial;
@@ -131,8 +131,8 @@
 			background-color: $core-grey-light-200;
 			box-shadow: none;
 
-			&.has-unread:after,
-			&.woocommerce-layout__activity-panel-tab-wordpress-notices:after {
+			&.has-unread::after,
+			&.woocommerce-layout__activity-panel-tab-wordpress-notices::after {
 				border-color: $core-grey-light-200;
 			}
 		}
@@ -142,8 +142,8 @@
 		&:hover:not(.is-active),
 		&.components-button:not(.is-active):not(:disabled):not([aria-disabled='true']):hover {
 			border-bottom: 3px solid $core-grey-light-200;
-			&.has-unread:after,
-			&.woocommerce-layout__activity-panel-tab-wordpress-notices:after {
+			&.has-unread::after,
+			&.woocommerce-layout__activity-panel-tab-wordpress-notices::after {
 				border-color: $core-grey-light-200;
 			}
 		}
@@ -162,12 +162,12 @@
 	}
 }
 
-.woocommerce-layout__activity-panel-toggle-bubble.has-unread:after {
+.woocommerce-layout__activity-panel-toggle-bubble.has-unread::after {
 	content: ' ';
 	position: absolute;
 	padding: 1px;
 	background: $core-orange;
-	border: 2px solid white;
+	border: 2px solid $white;
 	width: 4px;
 	height: 4px;
 	display: inline-block;
@@ -198,10 +198,10 @@
 	min-height: calc(100vh - 80px);
 	background: $core-grey-light-200;
 	box-shadow: 0 12px 12px 0 rgba(85, 93, 102, 0.3);
-	width: 0px;
+	width: 0;
 	@include activity-panel-slide();
 	position: fixed;
-	right: 0px;
+	right: 0;
 	top: 92px;
 	z-index: 1000;
 	overflow-x: hidden;
@@ -209,10 +209,10 @@
 
 	// Extra padding is needed at the bottom of the wrapper because of our positioning, height, and overflow rules. Otherwise, some content can get cut off.
 	padding-bottom: $gap-small * 6;
-	@include breakpoint( '782px-1100px' ) {
+	@include breakpoint( '782px-960px' ) {
 		padding-bottom: $gap-small;
 	}
-	@include breakpoint( '>1100px' ) {
+	@include breakpoint( '>960px' ) {
 		top: 112px;
 		padding-bottom: $gap * 2;
 	}
@@ -245,7 +245,7 @@
 	}
 
 	.woocommerce-activity-card__subtitle {
-		span + span:before {
+		span + span::before {
 			content: ' \2022 ';
 		}
 	}

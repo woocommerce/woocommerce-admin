@@ -19,11 +19,10 @@ import Gridicon from 'gridicons';
  */
 import D3Chart from './charts';
 import Legend from './legend';
+import { WIDE_BREAKPOINT } from './utils';
 import { H, Section } from 'components/section';
 import { gap, gaplarge } from 'stylesheets/abstracts/_variables.scss';
 import { updateQueryString } from 'lib/nav-utils';
-
-const WIDE_BREAKPOINT = 1100;
 
 d3FormatDefaultLocale( {
 	decimal: '.',
@@ -74,6 +73,7 @@ class Chart extends Component {
 		this.handleLegendHover = this.handleLegendHover.bind( this );
 		this.updateDimensions = this.updateDimensions.bind( this );
 		this.getVisibleData = this.getVisibleData.bind( this );
+		this.setInterval = this.setInterval.bind( this );
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -153,7 +153,8 @@ class Chart extends Component {
 	}
 
 	setInterval( interval ) {
-		updateQueryString( { interval } );
+		const { path, query } = this.props;
+		updateQueryString( { interval }, path, query );
 	}
 
 	renderIntervalSelector() {
@@ -314,9 +315,17 @@ Chart.propTypes = {
 	 */
 	dateParser: PropTypes.string.isRequired,
 	/**
+	 * Current path
+	 */
+	path: PropTypes.string,
+	/**
 	 * Date format of the point labels (might be used in tooltips and ARIA properties).
 	 */
 	pointLabelFormat: PropTypes.string,
+	/**
+	 * The query string represented in object form
+	 */
+	query: PropTypes.object,
 	/**
 	 * A datetime formatting string to format the date displayed as the title of the toolip
 	 * if `tooltipTitle` is missing, passed to d3TimeFormat.

@@ -6,10 +6,14 @@
 import { find, forEach, isNull } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { appendTimestamp, getCurrentDates, getIntervalForQuery } from '@woocommerce/date';
+
+/**
  * Internal dependencies
  */
 import { MAX_PER_PAGE } from 'store/constants';
-import { appendTimestamp, getCurrentDates, getIntervalForQuery } from 'lib/date';
 import { getActiveFiltersFromQuery, getUrlKey } from 'components/filters/advanced/utils';
 import { flatenFilters } from 'components/filters/filter/utils';
 import * as couponsConfig from 'analytics/report/coupons/config';
@@ -23,15 +27,23 @@ const reportConfigs = {
 };
 
 export function getFilterQuery( endpoint, query ) {
-	const { filter } = query;
+	if ( reportConfigs[ endpoint ] ) {
+		const { filters = [], advancedFilters = {} } = reportConfigs[ endpoint ];
+		return filters
+			.map( filter => getQueryFromConfig( filter, advancedFilters, query ) )
+			.reduce( ( result, configQuery ) => Object.assign( result, configQuery ), {} );
+	}
+	return {};
+}
 
-	if ( ! filter ) {
+export function getQueryFromConfig( config, advancedFilters, query ) {
+	const queryValue = query[ config.param ];
+
+	if ( ! queryValue ) {
 		return {};
 	}
 
-	const { filters = [], advancedFilters = {} } = reportConfigs[ endpoint ];
-
-	if ( 'advanced' === filter ) {
+	if ( 'advanced' === queryValue ) {
 		const activeFilters = getActiveFiltersFromQuery( query, advancedFilters.filters );
 
 		if ( activeFilters.length === 0 ) {
@@ -48,14 +60,14 @@ export function getFilterQuery( endpoint, query ) {
 		);
 	}
 
-	const filterConfig = find( flatenFilters( filters ), { value: filter } );
+	const filter = find( flatenFilters( config.filters ), { value: queryValue } );
 
-	if ( ! filterConfig ) {
+	if ( ! filter ) {
 		return {};
 	}
 
-	if ( filterConfig.settings && filterConfig.settings.param ) {
-		const { param } = filterConfig.settings;
+	if ( filter.settings && filter.settings.param ) {
+		const { param } = filter.settings;
 
 		if ( query[ param ] ) {
 			return {

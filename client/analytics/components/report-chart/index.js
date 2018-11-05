@@ -10,7 +10,7 @@ import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
 import { Chart, ChartPlaceholder } from '@woocommerce/components';
 import {
@@ -19,13 +19,17 @@ import {
 	getDateFormatsForInterval,
 	getIntervalForQuery,
 	getPreviousDate,
-} from 'lib/date';
+} from '@woocommerce/date';
+
+/**
+ * Internal dependencies
+ */
 import { getReportChartData } from 'store/reports/utils';
 import ReportError from 'analytics/components/report-error';
 
 class ReportChart extends Component {
 	render() {
-		const { primaryData, secondaryData, selectedChart, query } = this.props;
+		const { path, primaryData, secondaryData, selectedChart, query } = this.props;
 
 		if ( primaryData.isError || secondaryData.isError ) {
 			return <ReportError isError />;
@@ -71,8 +75,11 @@ class ReportChart extends Component {
 				},
 			};
 		} );
+
 		return (
 			<Chart
+				path={ path }
+				query={ query }
 				data={ chartData }
 				title={ selectedChart.label }
 				interval={ currentInterval }
@@ -90,10 +97,11 @@ class ReportChart extends Component {
 }
 
 ReportChart.propTypes = {
+	path: PropTypes.string.isRequired,
 	primaryData: PropTypes.object.isRequired,
+	query: PropTypes.object.isRequired,
 	secondaryData: PropTypes.object.isRequired,
 	selectedChart: PropTypes.object.isRequired,
-	query: PropTypes.object.isRequired,
 };
 
 export default compose(
