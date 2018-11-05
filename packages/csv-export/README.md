@@ -30,3 +30,32 @@ onClick = () => {
 	downloadCSVFile( name, data );
 }
 ```
+
+### generateCSVDataFromTable(headers, rows) ⇒ <code>String</code>
+Generates a CSV string from table contents
+
+**Returns**: <code>String</code> - Table contents in a CSV format
+
+| Param | Type | Description |
+| --- | --- | --- |
+| headers | <code>Array.&lt;Object&gt;</code> | Object with table header information |
+| rows | <code>Array.Array.&lt;Object&gt;</code> | Object with table rows information |
+
+### generateCSVFileName([name], [params]) ⇒ <code>String</code>
+Generates a file name for CSV files based on the provided name, the current date
+and the provided params, which are all appended with hyphens.
+
+**Returns**: <code>String</code> - Formatted file name
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [name] | <code>String</code> | <code>&#x27;&#x27;</code> | Name of the file |
+| [params] | <code>Object</code> | <code>{}</code> | Object of key-values to append to the file name |
+
+### downloadCSVFile(fileName, content)
+Downloads a CSV file with the given file name and contents
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fileName | <code>String</code> | Name of the file to download |
+| content | <code>String</code> | Contents of the file to download |
