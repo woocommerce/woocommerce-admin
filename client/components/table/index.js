@@ -12,16 +12,12 @@ import PropTypes from 'prop-types';
 /**
  * WooCommerce dependencies
  */
-<<<<<<< HEAD
-import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from '@woocommerce/csv';
-import { getIdsFromQuery } from '@woocommerce/navigation';
-=======
 import {
 	downloadCSVFile,
 	generateCSVDataFromTable,
 	generateCSVFileName,
 } from '@woocommerce/csv-export';
->>>>>>> Change name to `csv-export`
+import { getIdsFromQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
