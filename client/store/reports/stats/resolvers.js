@@ -17,7 +17,8 @@ import { stringifyQuery } from '@woocommerce/navigation';
 import { NAMESPACE } from 'store/constants';
 
 export default {
-	async getReportStats( state, endpoint, query ) {
+	// TODO: Use controls data plugin or fresh-data instead of async
+	async getReportStats( endpoint, query ) {
 		const statEndpoints = [ 'orders', 'revenue', 'products' ];
 		let apiPath = endpoint + stringifyQuery( query );
 

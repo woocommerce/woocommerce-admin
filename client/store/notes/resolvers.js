@@ -16,7 +16,8 @@ import { stringifyQuery } from '@woocommerce/navigation';
 import { NAMESPACE } from 'store/constants';
 
 export default {
-	async getNotes( state, query ) {
+	// TODO: Use controls data plugin or fresh-data instead of async
+	async getNotes( query ) {
 		try {
 			const notes = await apiFetch( { path: NAMESPACE + 'admin/notes' + stringifyQuery( query ) } );
 			dispatch( 'wc-admin' ).setNotes( notes, query );

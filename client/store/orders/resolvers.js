@@ -16,7 +16,8 @@ import { stringifyQuery } from '@woocommerce/navigation';
 import { NAMESPACE } from 'store/constants';
 
 export default {
-	async getOrders( state, query ) {
+	// TODO: Use controls data plugin or fresh-data instead of async
+	async getOrders( query ) {
 		try {
 			const orders = await apiFetch( { path: NAMESPACE + 'orders' + stringifyQuery( query ) } );
 			dispatch( 'wc-admin' ).setOrders( orders, query );
