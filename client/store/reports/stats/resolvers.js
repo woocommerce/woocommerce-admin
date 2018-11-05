@@ -18,8 +18,13 @@ import { NAMESPACE } from 'store/constants';
 
 export default {
 	// TODO: Use controls data plugin or fresh-data instead of async
-	async getReportStats( endpoint, query ) {
+	async getReportStats( ...args ) {
+		// This is interim code to work with either 2.x or 3.x version of @wordpress/data
+		// TODO: Change to just `getNotes( endpoint, query )`
+		// after Gutenberg plugin uses @wordpress/data 3+
+		const [ endpoint, query ] = args.length === 2 ? args : args.slice( 1, 3 );
 		const statEndpoints = [ 'orders', 'revenue', 'products' ];
+
 		let apiPath = endpoint + stringifyQuery( query );
 
 		if ( statEndpoints.indexOf( endpoint ) >= 0 ) {
