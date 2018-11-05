@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { find } from 'lodash';
 import PropTypes from 'prop-types';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -13,9 +14,11 @@ import PropTypes from 'prop-types';
 import ReportChart from 'analytics/components/report-chart';
 import ReportSummary from 'analytics/components/report-summary';
 
+const CHARTS_FILTER = 'woocommerce-charts-list';
+
 class OrdersReportChart extends Component {
 	getCharts() {
-		return [
+		return applyFilters( CHARTS_FILTER, [
 			{
 				key: 'orders_count',
 				label: __( 'Orders Count', 'wc-admin' ),
@@ -36,7 +39,7 @@ class OrdersReportChart extends Component {
 				label: __( 'Average Items Per Order', 'wc-admin' ),
 				type: 'average',
 			},
-		];
+		] );
 	}
 
 	getSelectedChart() {
