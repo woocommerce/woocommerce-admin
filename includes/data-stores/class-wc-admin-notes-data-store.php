@@ -104,21 +104,33 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 		global $wpdb;
 
 		if ( $note->get_id() ) {
+			$date_created = $note->get_date_created();
+			if ( $date_created instanceof WC_DateTime ) {
+				$date_created = gmdate( 'Y-m-d H:i:s', $date_created->getTimestamp() );
+			}
+
+			$date_reminder = $note->get_date_reminder();
+			if ( $date_reminder instanceof WC_DateTime ) {
+				$date_reminder = gmdate( 'Y-m-d H:i:s', $date_reminder->getTimestamp() );
+			}
+
+			$note_columns = array(
+				'name'          => $note->get_name(),
+				'type'          => $note->get_type(),
+				'locale'        => $note->get_locale(),
+				'title'         => $note->get_title(),
+				'content'       => $note->get_content(),
+				'icon'          => $note->get_icon(),
+				'content_data'  => wp_json_encode( $note->get_content_data() ),
+				'status'        => $note->get_status(),
+				'source'        => $note->get_source(),
+				'date_created'  => $date_created,
+				'date_reminder' => $date_reminder,
+			);
+
 			$wpdb->update(
 				$wpdb->prefix . 'woocommerce_admin_notes',
-				array(
-					'name'          => $note->get_name(),
-					'type'          => $note->get_type(),
-					'locale'        => $note->get_locale(),
-					'title'         => $note->get_title(),
-					'content'       => $note->get_content(),
-					'icon'          => $note->get_icon(),
-					'content_data'  => wp_json_encode( $note->get_content_data() ),
-					'status'        => $note->get_status(),
-					'source'        => $note->get_source(),
-					'date_created'  => $note->get_date_created(),
-					'date_reminder' => $note->get_date_reminder(),
-				),
+				$note_columns,
 				array( 'note_id' => $note->get_id() )
 			);
 		}
