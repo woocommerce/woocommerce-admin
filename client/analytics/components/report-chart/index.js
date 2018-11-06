@@ -79,6 +79,10 @@ class ReportChart extends Component {
 		const isItemComparison =
 			'compare-product' === query.filter ||
 			( 'single_product' === query.filter && !! query.products );
+		const itemsLabel =
+			'compare-product' === query.filter
+				? __( '%s products', 'wc-admin' )
+				: __( '%s variations', 'wc-admin' );
 
 		return (
 			<Chart
@@ -87,6 +91,7 @@ class ReportChart extends Component {
 				data={ chartData }
 				title={ selectedChart.label }
 				interval={ currentInterval }
+				itemsLabel={ itemsLabel }
 				allowedIntervals={ allowedIntervals }
 				layout={ isItemComparison ? 'comparison' : 'standard' }
 				mode={ isItemComparison ? 'item-comparison' : 'time-comparison' }

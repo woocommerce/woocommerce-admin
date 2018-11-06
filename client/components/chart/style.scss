@@ -62,11 +62,12 @@
 	.woocommerce-chart__footer {
 		width: 100%;
 
-		.woocommerce-legend {
-			&.woocommerce-legend__direction-column {
+		.woocommerce-legend__direction-column {
+			border-right: none;
+
+			.woocommerce-legend__list {
 				height: 100%;
 				min-height: none;
-				border-right: none;
 				margin-bottom: $gap;
 			}
 		}
@@ -254,20 +255,30 @@
 }
 
 .woocommerce-legend {
+	&.has-total {
+		padding-bottom: 50px;
+		position: relative;
+	}
+
+	&.woocommerce-legend__direction-column {
+		border-right: 1px solid $core-grey-light-700;
+	}
+}
+
+.woocommerce-legend__list {
 	color: $black;
 	display: flex;
 	height: 100%;
 	margin: 0;
 
-	&.woocommerce-legend__direction-column {
+	.woocommerce-legend__direction-column & {
 		flex-direction: column;
-		border-right: 1px solid $core-grey-light-700;
 		height: 300px;
 		min-width: 320px;
 		overflow: auto;
 
 		li {
-			margin: 0;
+			margin: 2px 0;
 			padding: 0;
 
 			button {
@@ -276,12 +287,19 @@
 			}
 
 			&:first-child {
-				margin-top: 17px;
+				margin-top: 12px;
+			}
+
+			.has-total &:last-child::after {
+				content: '';
+				display: block;
+				height: 12px;
+				width: 100%;
 			}
 		}
 	}
 
-	&.woocommerce-legend__direction-row {
+	.woocommerce-legend__direction-row & {
 		flex-direction: row;
 
 		li {
@@ -310,6 +328,9 @@
 	li {
 		&.woocommerce-legend__item {
 			button {
+				display: flex;
+				justify-content: center;
+				align-items: center;
 				&:hover {
 					background-color: $core-grey-light-100;
 				}
@@ -350,7 +371,7 @@
 				.woocommerce-legend__item-checkmark {
 					border: 1px solid $core-grey-light-900;
 					position: absolute;
-					top: 2px;
+					top: 4px;
 					left: 0;
 					height: 16px;
 					width: 16px;
@@ -394,5 +415,37 @@
 				}
 			}
 		}
+	}
+}
+
+.woocommerce-legend__total {
+	background: $white;
+	border-top: 1px solid $core-grey-light-700;
+	color: $core-grey-dark-500;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 1px;
+	height: 50px;
+	text-transform: uppercase;
+
+	&::before {
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+		content: '';
+		display: block;
+		height: 20px;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 100%;
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+
+	.is-scrollable &::before {
+		opacity: 1;
 	}
 }
