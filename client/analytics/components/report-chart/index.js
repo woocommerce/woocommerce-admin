@@ -76,7 +76,9 @@ class ReportChart extends Component {
 			};
 		} );
 
-		const isItemComparison = 'single_product' === query.filter && !! query.products;
+		const isItemComparison =
+			'compare-product' === query.filter ||
+			( 'single_product' === query.filter && !! query.products );
 
 		return (
 			<Chart
