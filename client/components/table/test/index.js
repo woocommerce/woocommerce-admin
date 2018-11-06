@@ -8,7 +8,7 @@ import { mount, shallow } from 'enzyme';
 /**
  * WooCommerce dependencies
  */
-import { downloadCSVFile } from '@woocommerce/csv-export';
+import { downloadCSVFile, generateCSVFileName } from '@woocommerce/csv-export';
 
 /**
  * Internal dependencies
@@ -84,5 +84,6 @@ describe( 'TableCard', () => {
 		downloadButton.props().onClick();
 
 		expect( downloadCSVFile ).toHaveBeenCalledWith( 'filename.csv', mockCSV );
+		expect( generateCSVFileName ).toHaveBeenCalledWith( 'Revenue', {} );
 	} );
 } );
