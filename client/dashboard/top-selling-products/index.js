@@ -9,12 +9,17 @@ import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
 import { Card, EmptyTable, TableCard } from '@woocommerce/components';
-import { getAdminLink } from 'lib/nav-utils';
+import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { getAdminLink } from '@woocommerce/navigation';
+
+/**
+ * Internal dependencies
+ */
 import { numberFormat } from 'lib/number';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
+import ReportError from 'analytics/components/report-error';
 import { NAMESPACE } from 'store/constants';
 import './style.scss';
 
@@ -87,7 +92,7 @@ export class TopSellingProducts extends Component {
 		const title = __( 'Top Selling Products', 'wc-admin' );
 
 		if ( isError ) {
-			// @TODO An error notice should be displayed when there is an error
+			return <ReportError className="woocommerce-top-selling-products" isError />;
 		}
 
 		if ( ! isRequesting && rows.length === 0 ) {

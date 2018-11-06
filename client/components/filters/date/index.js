@@ -8,12 +8,16 @@ import { Dropdown } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
 /**
+ * WooCommerce dependencies
+ */
+import { getCurrentDates, getDateParamsFromQuery, isoDateFormat } from '@woocommerce/date';
+import { updateQueryString } from '@woocommerce/navigation';
+
+/**
  * Internal dependencies
  */
 import DatePickerContent from './content';
 import DropdownButton from 'components/dropdown-button';
-import { getCurrentDates, getDateParamsFromQuery, isoDateFormat } from 'lib/date';
-import { updateQueryString } from 'lib/nav-utils';
 import './style.scss';
 
 const shortDateFormat = __( 'MM/DD/YYYY', 'wc-admin' );
@@ -122,8 +126,8 @@ class DatePicker extends Component {
 			beforeError,
 		} = this.state;
 		return (
-			<div className="woocommerce-filters-date">
-				<p>{ __( 'Date Range', 'wc-admin' ) }:</p>
+			<div className="woocommerce-filters-filter">
+				<span className="woocommerce-filters-label">{ __( 'Date Range', 'wc-admin' ) }:</span>
 				<Dropdown
 					ref={ this.dropdownRef }
 					contentClassName="woocommerce-filters-date__content"

@@ -6,10 +6,14 @@ import { Component, Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
 import { ReportFilters } from '@woocommerce/components';
-import { filters, advancedFilters } from './config';
+
+/**
+ * Internal dependencies
+ */
+import { advancedFilters, filters } from './config';
 import OrdersReportChart from './chart';
 import OrdersReportTable from './table';
 
@@ -23,9 +27,9 @@ export default class OrdersReport extends Component {
 					query={ query }
 					path={ path }
 					filters={ filters }
-					advancedConfig={ advancedFilters }
+					advancedFilters={ advancedFilters }
 				/>
-				<OrdersReportChart query={ query } />
+				<OrdersReportChart query={ query } path={ path } />
 				<OrdersReportTable query={ query } />
 			</Fragment>
 		);

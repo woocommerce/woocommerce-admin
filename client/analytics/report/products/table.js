@@ -9,12 +9,16 @@ import { withSelect } from '@wordpress/data';
 import { get, map, orderBy } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { appendTimestamp, getCurrentDates } from '@woocommerce/date';
+import { Link, TableCard } from '@woocommerce/components';
+import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { getNewPath, getTimeRelatedQuery, onQueryChange } from '@woocommerce/navigation';
+
+/**
  * Internal dependencies
  */
-import { Link, TableCard } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
-import { appendTimestamp, getCurrentDates } from 'lib/date';
-import { getNewPath, getTimeRelatedQuery, onQueryChange } from 'lib/nav-utils';
 import ReportError from 'analytics/components/report-error';
 import { getFilterQuery, getReportChartData } from 'store/reports/utils';
 import { QUERY_DEFAULTS } from 'store/constants';

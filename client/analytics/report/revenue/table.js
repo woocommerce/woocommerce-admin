@@ -10,17 +10,21 @@ import { withSelect } from '@wordpress/data';
 import { get, map } from 'lodash';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
-import { Link, TableCard } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency';
 import {
 	appendTimestamp,
 	getCurrentDates,
 	getDateFormatsForInterval,
 	getIntervalForQuery,
-} from 'lib/date';
-import { onQueryChange } from 'lib/nav-utils';
+} from '@woocommerce/date';
+import { Link, TableCard } from '@woocommerce/components';
+import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { onQueryChange } from '@woocommerce/navigation';
+
+/**
+ * Internal dependencies
+ */
 import ReportError from 'analytics/components/report-error';
 import { QUERY_DEFAULTS } from 'store/constants';
 
