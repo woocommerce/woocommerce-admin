@@ -29,7 +29,15 @@ import ReportError from 'analytics/components/report-error';
 
 class ReportChart extends Component {
 	render() {
-		const { path, primaryData, secondaryData, selectedChart, query } = this.props;
+		const {
+			comparisonChart,
+			itemsLabel,
+			path,
+			primaryData,
+			secondaryData,
+			selectedChart,
+			query,
+		} = this.props;
 
 		if ( primaryData.isError || secondaryData.isError ) {
 			return <ReportError isError />;
@@ -76,14 +84,6 @@ class ReportChart extends Component {
 			};
 		} );
 
-		const isItemComparison =
-			'compare-product' === query.filter ||
-			( 'single_product' === query.filter && !! query.products );
-		const itemsLabel =
-			'compare-product' === query.filter
-				? __( '%s products', 'wc-admin' )
-				: __( '%s variations', 'wc-admin' );
-
 		return (
 			<Chart
 				path={ path }
@@ -93,8 +93,8 @@ class ReportChart extends Component {
 				interval={ currentInterval }
 				itemsLabel={ itemsLabel }
 				allowedIntervals={ allowedIntervals }
-				layout={ isItemComparison ? 'comparison' : 'standard' }
-				mode={ isItemComparison ? 'item-comparison' : 'time-comparison' }
+				layout={ comparisonChart ? 'comparison' : 'standard' }
+				mode={ comparisonChart ? 'item-comparison' : 'time-comparison' }
 				pointLabelFormat={ formats.pointLabelFormat }
 				tooltipTitle={ selectedChart.label }
 				xFormat={ formats.xFormat }
@@ -107,6 +107,8 @@ class ReportChart extends Component {
 }
 
 ReportChart.propTypes = {
+	comparisonChart: PropTypes.bool,
+	itemsLabel: PropTypes.string,
 	path: PropTypes.string.isRequired,
 	primaryData: PropTypes.object.isRequired,
 	query: PropTypes.object.isRequired,
