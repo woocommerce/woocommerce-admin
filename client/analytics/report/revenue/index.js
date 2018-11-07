@@ -8,12 +8,16 @@ import PropTypes from 'prop-types';
 /**
  * WooCommerce dependencies
  */
+
 import { ReportFilters } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
-import RevenueReportChart from './chart';
+import { charts } from './config';
+import getSelectedChart from 'lib/get-selected-chart';
+import ReportChart from 'analytics/components/report-chart';
+import ReportSummary from 'analytics/components/report-summary';
 import RevenueReportTable from './table';
 
 export default class RevenueReport extends Component {
@@ -23,7 +27,19 @@ export default class RevenueReport extends Component {
 		return (
 			<Fragment>
 				<ReportFilters query={ query } path={ path } />
-				<RevenueReportChart query={ query } path={ path } />
+				<ReportSummary
+					charts={ charts }
+					endpoint="orders"
+					query={ query }
+					selectedChart={ getSelectedChart( query.chart, charts ) }
+				/>
+				<ReportChart
+					charts={ charts }
+					endpoint="orders"
+					path={ path }
+					query={ query }
+					selectedChart={ getSelectedChart( query.chart, charts ) }
+				/>
 				<RevenueReportTable query={ query } />
 			</Fragment>
 		);
