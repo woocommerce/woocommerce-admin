@@ -15,7 +15,7 @@ import { formatCurrency } from '@woocommerce/currency';
 /**
  * Internal dependencies
  */
-import './style.scss';
+import './legend.scss';
 import { getColor } from './utils';
 
 function getFormatedTotal( total, valueType ) {
