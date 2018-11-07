@@ -12,7 +12,7 @@ import { find } from 'lodash';
  * @param {array} charts - list of charts for a particular report
  * @returns {object} - chart configuration object
  */
-export default function getSelectedChart( chartName, charts ) {
+export default function getSelectedChart( chartName, charts = [] ) {
 	const chart = find( charts, { key: chartName } );
 	if ( chart ) {
 		return chart;
