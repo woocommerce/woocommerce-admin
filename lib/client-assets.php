@@ -12,7 +12,7 @@ function wc_admin_register_script() {
 	// Are we displaying the full React app or just embedding the header on a classic screen?
 	$screen_id = wc_admin_get_current_screen_id();
 
-	if ( in_array( $screen_id, wc_admin_get_embed_enabled_screen_ids() ) ) {
+	if ( in_array( $screen_id, wc_admin_get_embed_enabled_screen_ids(), true ) ) {
 		$entry = 'embedded';
 	} else {
 		$entry = 'app';
@@ -77,13 +77,22 @@ function wc_admin_register_script() {
 		true
 	);
 
+	// Force loading the ecmascript polyfill separately and early (instead of waiting for load-scripts).
+	wp_register_script(
+		'wp-polyfill',
+		null,
+		array( 'wp-polyfill-ecmascript' ),
+		filemtime( wc_admin_dir_path( "dist/{$entry}/index.js" ) ),
+		true
+	);
+
 	// Set up the text domain and translations.
 	if ( function_exists( 'wp_get_jed_locale_data' ) ) {
 		$locale_data = wp_get_jed_locale_data( 'wc-admin' );
 	} else {
 		$locale_data = gutenberg_get_jed_locale_data( 'wc-admin' );
 	}
-	$content = 'wp.i18n.setLocaleData( ' . json_encode( $locale_data ) . ', "wc-admin" );';
+	$content = 'wp.i18n.setLocaleData( ' . wp_json_encode( $locale_data ) . ', "wc-admin" );';
 	wp_add_inline_script( 'wp-i18n', $content, 'after' );
 
 	// Resets lodash to wp-admin's version of lodash.
@@ -115,7 +124,7 @@ add_action( 'admin_enqueue_scripts', 'wc_admin_register_script' );
 function wc_admin_print_script_settings() {
 	// Add Tracks script to the DOM if tracking is opted in, and Jetpack is installed/activated.
 	$tracking_enabled = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
-	$tracking_script = '';
+	$tracking_script  = '';
 	if ( $tracking_enabled && defined( 'JETPACK__VERSION' ) ) {
 		$tracking_script  = "var wc_tracking_script = document.createElement( 'script' );\n";
 		$tracking_script .= "wc_tracking_script.src = '//stats.wp.com/w.js';\n"; // TODO Version/cache buster.
@@ -151,7 +160,7 @@ function wc_admin_print_script_settings() {
 		<?php
 		echo $tracking_script; // WPCS: XSS ok.
 		?>
-		var wcSettings = <?php echo json_encode( $settings ); ?>;
+		var wcSettings = <?php echo wp_json_encode( $settings ); ?>;
 	</script>
 	<?php
 }
