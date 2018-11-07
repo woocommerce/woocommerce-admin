@@ -1,15 +1,8 @@
-/**
- * @format
- */
-
-/**
- * External dependencies
- */
-
+/** @format */
 /**
  * Internal dependencies
  */
-import { getUrlKey, getActiveFiltersFromQuery, getQueryFromActiveFilters } from '../utils';
+import { getUrlKey, getActiveFiltersFromQuery, getQueryFromActiveFilters } from '../filters';
 
 const config = {
 	with_select: {
