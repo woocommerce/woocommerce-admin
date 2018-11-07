@@ -29,13 +29,13 @@ export default class RevenueReport extends Component {
 				<ReportFilters query={ query } path={ path } />
 				<ReportSummary
 					charts={ charts }
-					endpoint="orders"
+					endpoint="revenue"
 					query={ query }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
 				<ReportChart
 					charts={ charts }
-					endpoint="orders"
+					endpoint="revenue"
 					path={ path }
 					query={ query }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
