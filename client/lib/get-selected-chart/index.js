@@ -14,7 +14,6 @@ import { find } from 'lodash';
  */
 export default function getSelectedChart( chartName, charts ) {
 	const chart = find( charts, { key: chartName } );
-	console.log( chartName, charts, chart );
 	if ( chart ) {
 		return chart;
 	}
