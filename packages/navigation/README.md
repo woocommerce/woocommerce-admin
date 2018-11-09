@@ -125,7 +125,7 @@ Given a query object, return an array of activeFilters, if any.
 | config | <code>object</code> | config object |
 
 ## getDefaultOptionValue(config, options) ⇒ <code>string</code> \| <code>undefined</code>
-Get the url query key from the filter key and rule.
+Get the default option's value from the configuration object for a given filter. The first option is used as default if no <code>defaultOption</code> is provided.
 
 **Returns**: <code>string</code> \| <code>undefined</code> - - the value of the default option.
 

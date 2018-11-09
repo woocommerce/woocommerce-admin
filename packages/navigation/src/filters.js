@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { compact, find, omit } from 'lodash';
+import { compact, find, get, omit } from 'lodash';
 
 /**
  * Collapse an array of filter values with subFilters into a 1-dimensional array.
@@ -71,7 +71,8 @@ export function getActiveFiltersFromQuery( query, config ) {
 }
 
 /**
- * Get the url query key from the filter key and rule.
+ * Get the default option's value from the configuration object for a given filter. The first
+ * option is used as default if no `defaultOption` is provided.
  *
  * @param {object} config - a filter config object.
  * @param {array} options - select options.
