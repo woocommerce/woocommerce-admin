@@ -89,7 +89,7 @@ export function getDefaultOptionValue( config, options ) {
 		}
 		return option.value;
 	}
-	return options[ 0 ].value;
+	return get( options, [ 0, 'value' ] );
 }
 
 /**
