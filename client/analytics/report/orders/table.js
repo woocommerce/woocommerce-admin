@@ -306,7 +306,8 @@ export default compose(
 		const primaryData = getReportChartData( 'orders', 'primary', query, select );
 		const filterQuery = getFilterQuery( 'orders', query );
 
-		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-admin' );
+		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-api' );
+
 		const tableQuery = {
 			orderby: query.orderby || 'date',
 			order: query.order || 'asc',
