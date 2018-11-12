@@ -169,8 +169,8 @@ Legend.propTypes = {
 	 */
 	legendDirection: PropTypes.oneOf( [ 'row', 'column' ] ),
 	/**
-	 * Label to describe the legend items. It will be displayed in comparison charts
-	 * when they don't fit in the screen.
+	 * Label to describe the legend items. It will be displayed in the legend of
+	 * comparison charts when there are many.
 	 */
 	itemsLabel: PropTypes.string,
 	/**

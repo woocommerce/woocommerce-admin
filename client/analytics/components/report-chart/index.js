@@ -32,11 +32,11 @@ class ReportChart extends Component {
 		const {
 			comparisonChart,
 			itemsLabel,
+			query,
 			path,
 			primaryData,
 			secondaryData,
 			selectedChart,
-			query,
 		} = this.props;
 
 		if ( primaryData.isError || secondaryData.isError ) {
@@ -91,8 +91,8 @@ class ReportChart extends Component {
 				data={ chartData }
 				title={ selectedChart.label }
 				interval={ currentInterval }
-				itemsLabel={ itemsLabel }
 				allowedIntervals={ allowedIntervals }
+				itemsLabel={ itemsLabel }
 				layout={ comparisonChart ? 'comparison' : 'standard' }
 				mode={ comparisonChart ? 'item-comparison' : 'time-comparison' }
 				pointLabelFormat={ formats.pointLabelFormat }

@@ -180,30 +180,30 @@
 }
 
 .woocommerce-legend__total {
+	align-items: center;
 	background: $white;
 	border-top: 1px solid $core-grey-light-700;
+	bottom: 0;
 	color: $core-grey-dark-500;
 	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
 	height: 50px;
+	justify-content: center;
+	left: 0;
+	position: absolute;
+	right: 0;
 	text-transform: uppercase;
 
 	&::before {
 		background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+		bottom: 100%;
 		content: '';
 		height: 20px;
-		position: absolute;
 		left: 0;
-		right: 0;
-		bottom: 100%;
 		opacity: 0;
-		transition: opacity 0.3s;
 		pointer-events: none;
+		position: absolute;
+		right: 0;
+		transition: opacity 0.3s;
 	}
 
 	.is-scrollable &::before {
