@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 /**
  * WooCommerce dependencies
  */
-
 import { ReportFilters } from '@woocommerce/components';
 
 /**
