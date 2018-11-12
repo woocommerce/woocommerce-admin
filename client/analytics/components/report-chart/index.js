@@ -31,8 +31,8 @@ class ReportChart extends Component {
 	render() {
 		const {
 			comparisonChart,
-			itemsLabel,
 			query,
+			itemsLabel,
 			path,
 			primaryData,
 			secondaryData,
