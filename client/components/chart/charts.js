@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { timeFormat as d3TimeFormat, utcParse as d3UTCParse } from 'd3-time-format';
 import { select as d3Select } from 'd3-selection';
+import { withViewportMatch } from '@wordpress/viewport';
 
 /**
  * Internal dependencies
@@ -105,6 +106,7 @@ class D3Chart extends Component {
 			mode,
 			orderedKeys,
 			pointLabelFormat,
+			smallChart,
 			tooltipFormat,
 			tooltipTitle,
 			type,
@@ -141,6 +143,7 @@ class D3Chart extends Component {
 			pointLabelFormat,
 			parseDate,
 			scale,
+			smallChart,
 			tooltipFormat: d3TimeFormat( tooltipFormat ),
 			tooltipTitle,
 			type,
@@ -287,4 +290,6 @@ D3Chart.defaultProps = {
 	yFormat: '.3s',
 };
 
-export default D3Chart;
+export default withViewportMatch( {
+	smallChart: '< large',
+} )( D3Chart );
