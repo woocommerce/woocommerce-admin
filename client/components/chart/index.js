@@ -23,7 +23,6 @@ import { updateQueryString } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import D3Chart from './charts';
-import { gap, gaplarge } from 'stylesheets/abstracts/_variables.scss';
 import { H, Section } from 'components/section';
 import Legend from './legend';
 
@@ -60,16 +59,13 @@ function getOrderedKeys( props ) {
 class Chart extends Component {
 	constructor( props ) {
 		super( props );
-		this.chartRef = createRef();
-		const wpBody = document.getElementById( 'wpbody' ).getBoundingClientRect().width;
-		const wpWrap = document.getElementById( 'wpwrap' ).getBoundingClientRect().width;
-		const calcGap = wpWrap > 782 ? gaplarge.match( /\d+/ )[ 0 ] : gap.match( /\d+/ )[ 0 ];
+		this.chartBodyRef = createRef();
 		this.state = {
 			data: props.data,
 			orderedKeys: getOrderedKeys( props ),
 			type: props.type,
 			visibleData: [ ...props.data ],
-			width: wpBody - 2 * calcGap,
+			width: 0,
 		};
 		this.handleTypeToggle = this.handleTypeToggle.bind( this );
 		this.handleLegendToggle = this.handleLegendToggle.bind( this );
@@ -93,6 +89,7 @@ class Chart extends Component {
 	}
 
 	componentDidMount() {
+		this.updateDimensions();
 		window.addEventListener( 'resize', this.updateDimensions );
 	}
 
@@ -140,7 +137,7 @@ class Chart extends Component {
 
 	updateDimensions() {
 		this.setState( {
-			width: this.chartRef.current.offsetWidth,
+			width: this.chartBodyRef.current.offsetWidth,
 		} );
 	}
 
@@ -253,7 +250,7 @@ class Chart extends Component {
 				break;
 		}
 		return (
-			<div className="woocommerce-chart" ref={ this.chartRef }>
+			<div className="woocommerce-chart">
 				<div className="woocommerce-chart__header">
 					<H className="woocommerce-chart__title">{ title }</H>
 					{ isViewportWide && legendDirection === 'row' && legend }
@@ -293,27 +290,30 @@ class Chart extends Component {
 							'woocommerce-chart__body',
 							`woocommerce-chart__body-${ chartDirection }`
 						) }
+						ref={ this.chartBodyRef }
 					>
 						{ isViewportWide && legendDirection === 'column' && legend }
-						<D3Chart
-							colorScheme={ d3InterpolateViridis }
-							data={ visibleData }
-							dateParser={ dateParser }
-							height={ chartHeight }
-							margin={ margin }
-							mode={ mode }
-							orderedKeys={ orderedKeys }
-							pointLabelFormat={ pointLabelFormat }
-							tooltipFormat={ tooltipFormat }
-							tooltipTitle={ tooltipTitle }
-							type={ type }
-							interval={ interval }
-							width={ chartDirection === 'row' ? width - 320 : width }
-							xFormat={ xFormat }
-							x2Format={ x2Format }
-							yFormat={ yFormat }
-							valueType={ valueType }
-						/>
+						{ width > 0 && (
+							<D3Chart
+								colorScheme={ d3InterpolateViridis }
+								data={ visibleData }
+								dateParser={ dateParser }
+								height={ chartHeight }
+								margin={ margin }
+								mode={ mode }
+								orderedKeys={ orderedKeys }
+								pointLabelFormat={ pointLabelFormat }
+								tooltipFormat={ tooltipFormat }
+								tooltipTitle={ tooltipTitle }
+								type={ type }
+								interval={ interval }
+								width={ chartDirection === 'row' ? width - 320 : width }
+								xFormat={ xFormat }
+								x2Format={ x2Format }
+								yFormat={ yFormat }
+								valueType={ valueType }
+							/>
+						) }
 					</div>
 					{ ! isViewportWide && <div className="woocommerce-chart__footer">{ legend }</div> }
 				</Section>

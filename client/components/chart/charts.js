@@ -118,7 +118,6 @@ class D3Chart extends Component {
 		const { width } = this.state;
 		const calculatedWidth = width || node.offsetWidth;
 		const calculatedHeight = height || node.offsetHeight;
-		const scale = width / node.offsetWidth;
 		const adjHeight = calculatedHeight - margin.top - margin.bottom;
 		const adjWidth = calculatedWidth - margin.left - margin.right;
 		const uniqueKeys = getUniqueKeys( data );
@@ -142,7 +141,6 @@ class D3Chart extends Component {
 			orderedKeys: newOrderedKeys,
 			pointLabelFormat,
 			parseDate,
-			scale,
 			smallChart,
 			tooltipFormat: d3TimeFormat( tooltipFormat ),
 			tooltipTitle,
@@ -158,7 +156,7 @@ class D3Chart extends Component {
 			xScale,
 			yMax,
 			yScale,
-			yTickOffset: getYTickOffset( adjHeight, scale, yMax ),
+			yTickOffset: getYTickOffset( adjHeight, yMax ),
 			yFormat,
 			valueType,
 		};

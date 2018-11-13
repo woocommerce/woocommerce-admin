@@ -188,14 +188,13 @@ export const getYScale = ( height, yMax ) =>
 /**
  * Describes getyTickOffset
  * @param {number} height - calculated height of the charting space
- * @param {number} scale - ratio of the expected width to calculated width (given the viewbox)
  * @param {number} yMax - from `getYMax`
  * @returns {function} the D3 linear scale from 0 to the value from `getYMax`, offset by 12 pixels down
  */
-export const getYTickOffset = ( height, scale, yMax ) =>
+export const getYTickOffset = ( height, yMax ) =>
 	d3ScaleLinear()
 		.domain( [ 0, yMax ] )
-		.rangeRound( [ height + scale * 12, scale * 12 ] );
+		.rangeRound( [ height + 12, 12 ] );
 
 /**
  * Describes getyTickOffset
@@ -417,10 +416,6 @@ export const drawAxis = ( node, params ) => {
 		.call( g => g.select( '.domain' ).remove() );
 
 	node
-		.selectAll( '.axis-month .tick text' )
-		.style( 'font-size', `${ Math.round( params.scale * 10 ) }px` );
-
-	node
 		.append( 'g' )
 		.attr( 'class', 'pipes' )
 		.attr( 'transform', `translate(0, ${ params.height })` )
@@ -454,10 +449,6 @@ export const drawAxis = ( node, params ) => {
 				.tickValues( yGrids )
 				.tickFormat( d => d3Format( params.yFormat )( d !== 0 ? d : 0 ) )
 		);
-
-	node
-		.selectAll( '.y-axis .tick text' )
-		.style( 'font-size', `${ Math.round( params.scale * 10 ) }px` );
 
 	node.selectAll( '.domain' ).remove();
 	node
@@ -549,7 +540,7 @@ const calculateTooltipXPosition = (
 	tooltipSize,
 	tooltipMargin,
 	elementWidthRatio,
-	smallChart,
+	smallChart
 ) => {
 	const xPosition =
 		elementCoords.left + elementCoords.width * elementWidthRatio + tooltipMargin - chartCoords.left;
@@ -578,7 +569,13 @@ const calculateTooltipXPosition = (
 	return xPosition;
 };
 
-const calculateTooltipYPosition = ( elementCoords, chartCoords, tooltipSize, tooltipMargin, smallChart ) => {
+const calculateTooltipYPosition = (
+	elementCoords,
+	chartCoords,
+	tooltipSize,
+	tooltipMargin,
+	smallChart
+) => {
 	if ( smallChart ) {
 		return chartCoords.height;
 	}
@@ -610,9 +607,15 @@ const calculateTooltipPosition = ( element, chart, smallChart, elementWidthRatio
 			tooltipSize,
 			tooltipMargin,
 			elementWidthRatio,
-			smallChart,
+			smallChart
 		),
-		y: calculateTooltipYPosition( elementCoords, chartCoords, tooltipSize, tooltipMargin, smallChart ),
+		y: calculateTooltipYPosition(
+			elementCoords,
+			chartCoords,
+			tooltipSize,
+			tooltipMargin,
+			smallChart
+		),
 	};
 };
 
@@ -717,7 +720,12 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'opacity', 0 )
 		.on( 'mouseover', ( d, i, nodes ) => {
 			const elementWidthRatio = i === 0 || i === params.dateSpaces.length - 1 ? 0 : 0.5;
-			const position = calculateTooltipPosition( d3Event.target, node.node(), params.smallChart, elementWidthRatio );
+			const position = calculateTooltipPosition(
+				d3Event.target,
+				node.node(),
+				params.smallChart,
+				elementWidthRatio
+			);
 			handleMouseOverLineChart( d.date, nodes[ i ].parentNode, node, data, params, position );
 		} )
 		.on( 'mouseout', ( d, i, nodes ) => handleMouseOutLineChart( nodes[ i ].parentNode, params ) );
