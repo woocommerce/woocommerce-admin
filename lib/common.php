@@ -68,7 +68,7 @@ function wc_admin_get_embed_breadcrumbs() {
 	$tab             = '';
 	$get_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : '';
 	if ( isset( $_GET['page'] ) ) {
-		$page = wp_unslash( $_GET['page'] );
+		$page = sanitize_text_field( wp_unslash( $_GET['page'] ) );
 		if ( in_array( $page, array_keys( $pages_with_tabs ) ) ) {
 			$tab = ! empty( $get_tab ) ? $get_tab . '-' : $pages_with_tabs[ $page ] . '-';
 		}
