@@ -12,6 +12,11 @@ import PropTypes from 'prop-types';
 /**
  * WooCommerce dependencies
  */
+import {
+	downloadCSVFile,
+	generateCSVDataFromTable,
+	generateCSVFileName,
+} from '@woocommerce/csv-export';
 import { getIdsFromQuery } from '@woocommerce/navigation';
 
 /**
@@ -22,7 +27,6 @@ import Card from 'components/card';
 import CompareButton from 'components/filters/compare/button';
 import DowloadIcon from './download-icon';
 import EllipsisMenu from 'components/ellipsis-menu';
-import { downloadCSVFile, generateCSVDataFromTable, generateCSVFileName } from 'lib/csv';
 import MenuItem from 'components/ellipsis-menu/menu-item';
 import MenuTitle from 'components/ellipsis-menu/menu-title';
 import Pagination from 'components/pagination';
@@ -105,19 +109,23 @@ class TableCard extends Component {
 	}
 
 	onCompare() {
-		const { compareBy, onQueryChange } = this.props;
+		const { compareBy, compareParam, onQueryChange } = this.props;
 		const { selectedRows } = this.state;
 		if ( compareBy ) {
-			onQueryChange( 'compare' )( compareBy, selectedRows.join( ',' ) );
+			onQueryChange( 'compare' )( compareBy, compareParam, selectedRows.join( ',' ) );
 		}
 	}
 
 	onSearch( value ) {
-		const { compareBy, onQueryChange } = this.props;
+		const { compareBy, compareParam, onQueryChange } = this.props;
 		const { selectedRows } = this.state;
 		if ( compareBy ) {
 			const ids = value.map( v => v.id );
-			onQueryChange( 'compare' )( compareBy, [ ...selectedRows, ...ids ].join( ',' ) );
+			onQueryChange( 'compare' )(
+				compareBy,
+				compareParam,
+				[ ...selectedRows, ...ids ].join( ',' )
+			);
 		}
 	}
 
@@ -243,7 +251,7 @@ class TableCard extends Component {
 						<Search
 							key="search"
 							placeholder={ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
-							type={ compareBy + 's' }
+							type={ compareBy }
 							onChange={ this.onSearch }
 						/>
 					),
@@ -405,6 +413,10 @@ TableCard.propTypes = {
 	 * The total number of rows (across all pages).
 	 */
 	totalRows: PropTypes.number.isRequired,
+	/**
+	 * Url query parameter compare function operates on
+	 */
+	compareParam: PropTypes.string,
 };
 
 TableCard.defaultProps = {
@@ -414,6 +426,7 @@ TableCard.defaultProps = {
 	query: {},
 	rowHeader: 0,
 	rows: [],
+	compareParam: 'filter',
 };
 
 export default TableCard;
