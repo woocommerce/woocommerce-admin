@@ -8,7 +8,7 @@ import { stringify } from 'qs';
 
 export default {
 	// TODO: Use controls data plugin or fresh-data instead of async
-	async getProducts( ...args ) {
+	async getTaxes( ...args ) {
 		// This is interim code to work with either 2.x or 3.x version of @wordpress/data
 		// TODO: Change to just `getNotes( query )` after Gutenberg plugin uses @wordpress/data 3+
 		const query = args.length === 1 ? args[ 0 ] : args[ 1 ];
@@ -19,9 +19,9 @@ export default {
 				path:
 					'https://virtserver.swaggerhub.com/peterfabian/wc-v3-api/1.0.0/reports/taxes' + params,
 			} );
-			dispatch( 'wc-admin' ).setProducts( products, query );
+			dispatch( 'wc-admin' ).setTaxes( products, query );
 		} catch ( error ) {
-			dispatch( 'wc-admin' ).setProductsError( query );
+			dispatch( 'wc-admin' ).setTaxesError( query );
 		}
 	},
 };
