@@ -59,6 +59,7 @@ class Table extends Component {
 		};
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
+		this.updateTableShadow = this.updateTableShadow.bind( this );
 	}
 
 	componentDidMount() {
@@ -91,7 +92,7 @@ class Table extends Component {
 		};
 	}
 
-	updateTableShadow = () => {
+	updateTableShadow() {
 		const table = this.container.current;
 		const scrolledToEnd = table.scrollWidth - table.scrollLeft <= table.offsetWidth;
 		this.setState( {

@@ -54,7 +54,7 @@ const config = {
 
 Render a select component with options.
 
-```jsx 
+```jsx
 input: {
 	component: 'SelectControl',
 	options: [
@@ -66,11 +66,11 @@ input: {
 }
 ```
 
-`options`: An array of objects with `key` and `label` properties. 
+`options`: An array of objects with `key` and `label` properties.
 
 ### Search
 
-Render an input for users to search and select using an autocomplete. 
+Render an input for users to search and select using an autocomplete.
 
 ```jsx
 input: {
@@ -83,7 +83,7 @@ input: {
 }
 ```
 
-`type`: A string Autocompleter type used by the [Search Component](https://github.com/woocommerce/wc-admin/tree/master/client/components/search).
+`type`: A string Autocompleter type used by the [Search Component](https://github.com/woocommerce/wc-admin/tree/master/packages/components/search).
 `getLabels`: A function returning a Promise resolving to an array of objects with `id` and `label` properties.
 
 ### Date
