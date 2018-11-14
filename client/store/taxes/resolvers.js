@@ -2,9 +2,13 @@
 /**
  * External dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { dispatch } from '@wordpress/data';
 import { stringify } from 'qs';
+
+/**
+ * Internal dependencies
+ */
+import { SWAGGERNAMESPACE } from 'store/constants';
 
 export default {
 	// TODO: Use controls data plugin or fresh-data instead of async
@@ -15,11 +19,14 @@ export default {
 
 		try {
 			const params = query ? '?' + stringify( query ) : '';
-			const products = await apiFetch( {
-				path:
-					'https://virtserver.swaggerhub.com/peterfabian/wc-v3-api/1.0.0/reports/taxes' + params,
+			// @TODO: Use /reports/taxes when it becomes available
+			// const taxes = await apiFetch( {
+			// 	path: NAMESPACE + 'reports/taxes' + params,
+			// } );
+			const taxes = await fetch( {
+				path: SWAGGERNAMESPACE + 'reports/taxes' + params,
 			} );
-			dispatch( 'wc-admin' ).setTaxes( products, query );
+			dispatch( 'wc-admin' ).setTaxes( taxes, query );
 		} catch ( error ) {
 			dispatch( 'wc-admin' ).setTaxesError( query );
 		}
