@@ -15,7 +15,6 @@ import CompareFilter from './compare';
 import DatePicker from './date';
 import FilterPicker from './filter';
 import { H, Section } from '../section';
-import './style.scss';
 
 /**
  * Add a collection of report filters to a page. This uses `DatePicker` & `FilterPicker` for the "basic" filters, and `AdvancedFilters`

@@ -7,11 +7,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * A button useful for a launcher of a dropdown component. The button is 100% width of its container and displays
  * single or multiple lines rendered as `<span/>` elments.
  *

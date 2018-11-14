@@ -10,11 +10,6 @@ import { isString } from 'lodash';
 import crypto from 'crypto';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * Display a users Gravatar.
  *
  * @return { object } -

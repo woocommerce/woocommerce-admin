@@ -1,17 +1,11 @@
+/** @format */
 /**
  * External dependencies
- *
- * @format
  */
 import { Button, IconButton, Dropdown, NavigableMenu } from '@wordpress/components';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
-
-/**
- * Internal dependencies
- */
-import './style.scss';
 
 /**
  * A component for displaying a button with a main action plus a secondary set of actions behind a menu toggle.

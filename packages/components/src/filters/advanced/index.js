@@ -27,7 +27,6 @@ import Card from '../../card';
 import Link from '../../link';
 import SelectFilter from './select-filter';
 import SearchFilter from './search-filter';
-import './style.scss';
 
 const matches = [
 	{ value: 'all', label: __( 'All', 'wc-admin' ) },

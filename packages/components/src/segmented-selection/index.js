@@ -8,11 +8,6 @@ import PropTypes from 'prop-types';
 import { partial, uniqueId } from 'lodash';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * Create a panel of styled selectable options rendering stylized checkboxes and labels
  */
 class SegmentedSelection extends Component {

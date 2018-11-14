@@ -1,16 +1,10 @@
 /** @format */
-
 /**
  * External dependencies
  */
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-
-/**
- * Internal dependencies
- */
-import './style.scss';
 
 /**
  * Use `ProductImage` to display a product's or variation's featured image.

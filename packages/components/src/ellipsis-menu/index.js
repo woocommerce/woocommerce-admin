@@ -8,11 +8,6 @@ import { IconButton, Dropdown, NavigableMenu } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * This is a dropdown menu hidden behind a vertical ellipsis icon. When clicked, the inner MenuItems are displayed.
  */
 class EllipsisMenu extends Component {

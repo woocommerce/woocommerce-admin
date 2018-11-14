@@ -8,11 +8,6 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * Use the `Flag` component to display a country's flag.
  *
  * @return { object } -

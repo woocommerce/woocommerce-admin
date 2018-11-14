@@ -28,7 +28,6 @@ import { validateDateInputForRange } from '@woocommerce/date';
  */
 import DateInput from './input';
 import phrases from './phrases';
-import './style.scss';
 
 /**
  * This is wrapper for a [react-dates](https://github.com/airbnb/react-dates) powered calendar.

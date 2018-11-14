@@ -8,11 +8,6 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * This component creates slideable content controlled by an animate prop to direct the contents to slide left or right.
  * All other props are passed to `CSSTransition`. More info at http://reactcommunity.org/react-transition-group/css-transition
  */

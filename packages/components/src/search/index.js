@@ -16,7 +16,6 @@ import classnames from 'classnames';
 import Autocomplete from './autocomplete';
 import { product, productCategory, coupons, variations } from './autocompleters';
 import Tag from '../tag';
-import './style.scss';
 
 /**
  * A search box which autocompletes results while typing, allowing for the user to select an existing object

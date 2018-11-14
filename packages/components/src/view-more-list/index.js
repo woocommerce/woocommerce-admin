@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import Tag from '../tag';
-import './style.scss';
 
 /**
  * This component displays a 'X more' button that displays a list of items on a popover when clicked.

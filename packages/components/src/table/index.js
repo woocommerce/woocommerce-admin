@@ -22,7 +22,6 @@ import { getIdsFromQuery } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import './style.scss';
 import Card from '../card';
 import CompareButton from '../filters/compare/button';
 import DowloadIcon from './download-icon';

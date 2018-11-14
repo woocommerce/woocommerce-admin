@@ -10,11 +10,6 @@ import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * Use `Rating` to display a set of stars, filled, empty or half-filled, that represents a
  * rating in a scale between 0 and the prop `totalStars` (default 5).
  */

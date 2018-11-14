@@ -11,11 +11,6 @@ import { uniqueId } from 'lodash';
 import { withViewportMatch } from '@wordpress/viewport';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * A container element for a list of SummaryNumbers. This component handles detecting & switching to
  * the mobile format on smaller screens.
  *

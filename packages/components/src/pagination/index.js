@@ -10,11 +10,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { isFinite, noop, uniqueId } from 'lodash';
 
-/**
- * Internal dependencies
- */
-import './style.scss';
-
 const PER_PAGE_OPTIONS = [ 25, 50, 75, 100 ];
 
 /**

@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import './style.scss';
 import { H } from '../section';
 import ImageAsset from '../image-asset';
 

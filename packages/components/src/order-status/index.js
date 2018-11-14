@@ -7,11 +7,6 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * Use `OrderStatus` to display a badge with human-friendly text describing the current order status.
  *
  * @return { object } -

@@ -4,10 +4,6 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
-/**
- * Internal dependencies
- */
-import './style.scss';
 
 /**
  * Display a number with a styled border.

@@ -5,6 +5,7 @@
 const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
 const { get } = require( 'lodash' );
 const path = require( 'path' );
+const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 
 /**
  * WordPress dependencies
@@ -70,7 +71,7 @@ const webpackConfig = {
 			},
 			{ test: /\.md$/, use: 'raw-loader' },
 			{
-				test: /\.(scss|css)$/,
+				test: /\.s?css$/,
 				use: ExtractTextPlugin.extract( {
 					fallback: 'style-loader',
 					use: [
@@ -124,6 +125,14 @@ const webpackConfig = {
 		new ExtractTextPlugin( {
 			filename: './dist/[name]/style.css',
 		} ),
+		new CopyWebpackPlugin(
+			wcAdminPackages.map( packageName => ( {
+				from: `./packages/${ packageName }/build-style/*.css`,
+				to: `./dist/${ packageName }/`,
+				flatten: true,
+				transform: content => content,
+			} ) )
+		),
 	],
 };
 

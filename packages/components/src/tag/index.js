@@ -10,11 +10,6 @@ import PropTypes from 'prop-types';
 import { withState, withInstanceId } from '@wordpress/compose';
 
 /**
- * Internal dependencies
- */
-import './style.scss';
-
-/**
  * This component can be used to show an item styled as a "tag", optionally with an `X` + "remove"
  * or with a popover that is shown on click.
  *
