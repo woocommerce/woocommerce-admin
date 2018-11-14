@@ -16,7 +16,6 @@ import moment from 'moment';
 import { partial } from 'lodash';
 import PropTypes from 'prop-types';
 import { withViewportMatch } from '@wordpress/viewport';
-import 'react-dates/lib/css/_datepicker.css';
 
 /**
  * WooCommerce dependencies
