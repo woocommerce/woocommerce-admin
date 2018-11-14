@@ -17,7 +17,7 @@ import { getJsonString } from 'store/utils';
  * @return {Object}        Report details
  */
 function getTaxes( state, query = {} ) {
-	return get( state, [ 'taxes', getJsonString( query ) ], [] );
+	return get( state, [ 'taxes', getJsonString( query ) ], {} );
 }
 export default {
 	getTaxes,
@@ -25,7 +25,7 @@ export default {
 	 * Returns true if a taxes request is pending.
 	 *
 	 * @param  {Object} state  Current state
-	 * @return {Object}        True if the `getTaxes` request is pending, false otherwise
+	 * @return {Boolean}       True if the `getTaxes` request is pending, false otherwise
 	 */
 	isGetTaxesRequesting( state, ...args ) {
 		return select( 'core/data' ).isResolving( 'wc-admin', 'getTaxes', args );
@@ -35,7 +35,7 @@ export default {
 	 *
 	 * @param  {Object} state  Current state
 	 * @param  {Object} query  Report query paremters
-	 * @return {Object}        True if the `getTaxes` request has failed, false otherwise
+	 * @return {Boolean}       True if the `getTaxes` request has failed, false otherwise
 	 */
 	isGetTaxesError( state, query ) {
 		return ERROR === getTaxes( state, query );
