@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { timeFormat as d3TimeFormat, utcParse as d3UTCParse } from 'd3-time-format';
 import { select as d3Select } from 'd3-selection';
-import { withViewportMatch } from '@wordpress/viewport';
 
 /**
  * Internal dependencies
@@ -106,7 +105,7 @@ class D3Chart extends Component {
 			mode,
 			orderedKeys,
 			pointLabelFormat,
-			smallChart,
+			tooltipPosition,
 			tooltipFormat,
 			tooltipTitle,
 			type,
@@ -141,7 +140,7 @@ class D3Chart extends Component {
 			orderedKeys: newOrderedKeys,
 			pointLabelFormat,
 			parseDate,
-			smallChart,
+			tooltipPosition,
 			tooltipFormat: d3TimeFormat( tooltipFormat ),
 			tooltipTitle,
 			type,
@@ -243,6 +242,10 @@ D3Chart.propTypes = {
 	 */
 	tooltipFormat: PropTypes.string,
 	/**
+	 * The position where to render the tooltip can be `over` the chart or `below` the chart.
+	 */
+	tooltipPosition: PropTypes.string,
+	/**
 	 * A string to use as a title for the tooltip. Takes preference over `tooltipFormat`.
 	 */
 	tooltipTitle: PropTypes.string,
@@ -281,6 +284,7 @@ D3Chart.defaultProps = {
 	layout: 'standard',
 	mode: 'item-comparison',
 	tooltipFormat: '%B %d, %Y',
+	tooltipPosition: 'over',
 	type: 'line',
 	width: 600,
 	xFormat: '%Y-%m-%d',
@@ -288,6 +292,4 @@ D3Chart.defaultProps = {
 	yFormat: '.3s',
 };
 
-export default withViewportMatch( {
-	smallChart: '< large',
-} )( D3Chart );
+export default D3Chart;

@@ -207,6 +207,7 @@ class Chart extends Component {
 			layout,
 			mode,
 			pointLabelFormat,
+			isViewportLarge,
 			isViewportWide,
 			title,
 			tooltipFormat,
@@ -304,6 +305,7 @@ class Chart extends Component {
 								orderedKeys={ orderedKeys }
 								pointLabelFormat={ pointLabelFormat }
 								tooltipFormat={ tooltipFormat }
+								tooltipPosition={ isViewportLarge ? 'over' : 'below' }
 								tooltipTitle={ tooltipTitle }
 								type={ type }
 								interval={ interval }
