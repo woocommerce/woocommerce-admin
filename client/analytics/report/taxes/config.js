@@ -9,14 +9,19 @@ import { __ } from '@wordpress/i18n';
 
 export const charts = [
 	{
-		key: 'gross_discount',
-		label: __( 'Gross Discount', 'wc-admin' ),
+		key: 'order_tax',
+		label: __( 'Order Tax', 'wc-admin' ),
 		type: 'currency',
 	},
 	{
-		key: 'taxes_count',
-		label: __( 'Taxes Count', 'wc-admin' ),
-		type: 'number',
+		key: 'total_tax',
+		label: __( 'Total Tax', 'wc-admin' ),
+		type: 'currency',
+	},
+	{
+		key: 'shipping_tax',
+		label: __( 'Shipping Tax', 'wc-admin' ),
+		type: 'currency',
 	},
 	{
 		key: 'orders_count',
@@ -31,6 +36,6 @@ export const filters = [
 		staticParams: [ 'chart' ],
 		param: 'filter',
 		showFilters: () => true,
-		filters: [ { label: __( 'All Orders', 'wc-admin' ), value: 'all' } ],
+		filters: [ { label: __( 'All Taxes', 'wc-admin' ), value: 'all' } ],
 	},
 ];
