@@ -244,7 +244,7 @@ D3Chart.propTypes = {
 	/**
 	 * The position where to render the tooltip can be `over` the chart or `below` the chart.
 	 */
-	tooltipPosition: PropTypes.string,
+	tooltipPosition: PropTypes.oneOf( [ 'below', 'over' ] ),
 	/**
 	 * A string to use as a title for the tooltip. Takes preference over `tooltipFormat`.
 	 */
