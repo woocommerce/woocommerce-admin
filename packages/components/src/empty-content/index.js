@@ -11,8 +11,8 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import './style.scss';
-import { H } from 'components/section';
-import ImageAsset from 'components/image-asset';
+import { H } from '../section';
+import ImageAsset from '../image-asset';
 
 /**
  * A component to be used when there is no data to show.

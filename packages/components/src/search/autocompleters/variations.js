@@ -5,11 +5,15 @@
 import apiFetch from '@wordpress/api-fetch';
 
 /**
+ * WooCommerce dependencies
+ */
+import { stringifyQuery, getQuery } from '@woocommerce/navigation';
+
+/**
  * Internal dependencies
  */
 import { computeSuggestionMatch } from './utils';
-import ProductImage from 'components/product-image';
-import { stringifyQuery, getQuery } from '@woocommerce/navigation';
+import ProductImage from '../../product-image';
 import { NAMESPACE } from 'store/constants';
 
 /**

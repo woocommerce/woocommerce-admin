@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import Link from 'components/link';
+import Link from '../link';
 
 /**
  * A component to show a value, label, and an optional change percentage. Can also act as a link to a specific report focus.

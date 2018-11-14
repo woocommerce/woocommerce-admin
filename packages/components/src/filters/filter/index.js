@@ -17,9 +17,9 @@ import { flattenFilters, getTimeRelatedQuery, updateQueryString } from '@woocomm
 /**
  * Internal dependencies
  */
-import AnimationSlider from 'components/animation-slider';
-import DropdownButton from 'components/dropdown-button';
-import Search from 'components/search';
+import AnimationSlider from '../../animation-slider';
+import DropdownButton from '../../dropdown-button';
+import Search from '../../search';
 import './style.scss';
 
 export const DEFAULT_FILTER = 'all';

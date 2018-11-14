@@ -12,8 +12,8 @@ import classnames from 'classnames';
  * Internal dependencies
  */
 import ComparePeriods from './compare-periods';
-import DateRange from 'components/calendar';
-import { H, Section } from 'components/section';
+import DateRange from '../../calendar';
+import { H, Section } from '../../section';
 import PresetPeriods from './preset-periods';
 
 const isMobileViewport = () => window.innerWidth < 782;

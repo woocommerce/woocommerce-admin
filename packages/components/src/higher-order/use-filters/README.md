@@ -1,7 +1,7 @@
 useFilters
 ==========
 
-`useFilters` is a fork of [gutenberg's `withFilters`](https://github.com/WordPress/gutenberg/tree/master/components/higher-order/with-filters). It is also a React [higher-order component](https://facebook.github.io/react/docs/higher-order-components.html).
+`useFilters` is a fork of [gutenberg's `withFilters`.](https://github.com/WordPress/gutenberg/tree/master/packages/components/src/higher-order/with-filters) It is also a React [higher-order component.](https://facebook.github.io/react/docs/higher-order-components.html)
 
 Wrapping a component with `useFilters` provides a filtering capability controlled externally by the list of `hookName`s.
 
@@ -9,7 +9,7 @@ Wrapping a component with `useFilters` provides a filtering capability controlle
 
 ```jsx
 import { applyFilters } from '@wordpress/hooks';
-import { useFilters } from 'components/higher-order/use-filters';
+import { useFilters } from '@woocommerce/components';
 
 function MyCustomElement() {
 	return <h3>{ applyFilters( 'woocommerce.componentTitle', 'Title Text' ) }</h3>;

@@ -13,7 +13,7 @@ import { stringifyQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { computeSuggestionMatch } from './utils';
-import ProductImage from 'components/product-image';
+import ProductImage from '../../product-image';
 import { NAMESPACE } from 'store/constants';
 
 /**

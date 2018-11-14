@@ -10,9 +10,9 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import './style.scss';
-import EllipsisMenu from 'components/ellipsis-menu';
-import { H } from 'components/section';
-import { validateComponent } from 'lib/proptype-validator';
+import EllipsisMenu from '../ellipsis-menu';
+import { H } from '../section';
+import { validateComponent } from '../../lib/proptype-validator';
 
 /**
  * A header component. The header can contain a title, actions via children, and an `EllipsisMenu` menu.

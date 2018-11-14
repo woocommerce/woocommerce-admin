@@ -10,9 +10,9 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import './style.scss';
-import EllipsisMenu from 'components/ellipsis-menu';
-import { H, Section } from 'components/section';
-import { validateComponent } from 'lib/proptype-validator';
+import EllipsisMenu from '../ellipsis-menu';
+import { H, Section } from '../section';
+import { validateComponent } from '../../lib/proptype-validator';
 
 /**
  * A basic card component with a header. The header can contain a title, an action, and an `EllipsisMenu` menu.

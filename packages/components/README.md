@@ -9,3 +9,5 @@ Install the module
 ```bash
 npm install @woocommerce/components --save
 ```
+
+View [the full Component documentation](https://woocommerce.github.io/wc-admin/#/components/) for usage information.

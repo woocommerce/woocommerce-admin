@@ -17,7 +17,7 @@ import { updateQueryString } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import DatePickerContent from './content';
-import DropdownButton from 'components/dropdown-button';
+import DropdownButton from '../../dropdown-button';
 import './style.scss';
 
 const shortDateFormat = __( 'MM/DD/YYYY', 'wc-admin' );

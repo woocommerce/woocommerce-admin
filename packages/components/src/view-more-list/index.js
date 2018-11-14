@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import Tag from 'components/tag';
+import Tag from '../tag';
 import './style.scss';
 
 /**

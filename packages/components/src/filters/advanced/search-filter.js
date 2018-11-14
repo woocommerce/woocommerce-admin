@@ -12,7 +12,7 @@ import classnames from 'classnames';
 /**
  * Internal dependencies
  */
-import Search from 'components/search';
+import Search from '../../search';
 
 class SearchFilter extends Component {
 	constructor( { filter, config, query } ) {

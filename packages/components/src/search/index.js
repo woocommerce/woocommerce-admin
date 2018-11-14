@@ -15,7 +15,7 @@ import classnames from 'classnames';
  */
 import Autocomplete from './autocomplete';
 import { product, productCategory, coupons, variations } from './autocompleters';
-import Tag from 'components/tag';
+import Tag from '../tag';
 import './style.scss';
 
 /**

@@ -83,7 +83,7 @@ input: {
 }
 ```
 
-`type`: A string Autocompleter type used by the [Search Component](https://github.com/woocommerce/wc-admin/tree/master/packages/components/search).
+`type`: A string Autocompleter type used by the [Search Component](https://github.com/woocommerce/wc-admin/tree/master/packages/components/src/search).
 `getLabels`: A function returning a Promise resolving to an array of objects with `id` and `label` properties.
 
 ### Date

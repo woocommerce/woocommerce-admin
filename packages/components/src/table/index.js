@@ -23,14 +23,14 @@ import { getIdsFromQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import './style.scss';
-import Card from 'components/card';
-import CompareButton from 'components/filters/compare/button';
+import Card from '../card';
+import CompareButton from '../filters/compare/button';
 import DowloadIcon from './download-icon';
-import EllipsisMenu from 'components/ellipsis-menu';
-import MenuItem from 'components/ellipsis-menu/menu-item';
-import MenuTitle from 'components/ellipsis-menu/menu-title';
-import Pagination from 'components/pagination';
-import Search from 'components/search';
+import EllipsisMenu from '../ellipsis-menu';
+import MenuItem from '../ellipsis-menu/menu-item';
+import MenuTitle from '../ellipsis-menu/menu-title';
+import Pagination from '../pagination';
+import Search from '../search';
 import Table from './table';
 import TablePlaceholder from './placeholder';
 import TableSummary from './summary';

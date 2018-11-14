@@ -23,8 +23,8 @@ import {
 /**
  * Internal dependencies
  */
-import Card from 'components/card';
-import Link from 'components/link';
+import Card from '../../card';
+import Link from '../../link';
 import SelectFilter from './select-filter';
 import SearchFilter from './search-filter';
 import './style.scss';
