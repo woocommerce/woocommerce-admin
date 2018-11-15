@@ -23,12 +23,12 @@ export default {
 		// TODO: Change to just `getNotes( endpoint, query )`
 		// after Gutenberg plugin uses @wordpress/data 3+
 		const [ endpoint, query ] = args.length === 2 ? args : args.slice( 1, 3 );
-		const statEndpoints = [ 'orders', 'revenue', 'products', 'categories' ];
+		const statEndpoints = [ 'orders', 'revenue', 'products' ];
 
 		let apiPath = endpoint + stringifyQuery( query );
 
 		// TODO: Remove once swagger endpoints are phased out.
-		const swaggerEndpoints = [ 'taxes' ];
+		const swaggerEndpoints = [ 'categories', 'taxes' ];
 		if ( swaggerEndpoints.indexOf( endpoint ) >= 0 ) {
 			apiPath = SWAGGERNAMESPACE + 'reports/' + endpoint + '/stats' + stringifyQuery( query );
 			try {
