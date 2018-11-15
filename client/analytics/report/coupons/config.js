@@ -58,11 +58,6 @@ export const charts = [
 	},
 ];
 
-num_new_customers: 1911;
-num_returning_customers: 0;
-orders_count: 1911;
-products: '20';
-
 export const filters = [
 	{
 		label: __( 'Show', 'wc-admin' ),
