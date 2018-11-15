@@ -8,9 +8,11 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import { filters } from './config';
+import { charts, filters } from './config';
+import getSelectedChart from 'lib/get-selected-chart';
 import { ReportFilters } from '@woocommerce/components';
-import CategoriesReportChart from './chart';
+import ReportChart from 'analytics/components/report-chart';
+import ReportSummary from 'analytics/components/report-summary';
 
 export default class CategoriesReport extends Component {
 	render() {
@@ -19,7 +21,19 @@ export default class CategoriesReport extends Component {
 		return (
 			<Fragment>
 				<ReportFilters query={ query } path={ path } filters={ filters } />
-				<CategoriesReportChart query={ query } />
+				<ReportSummary
+					charts={ charts }
+					endpoint="categories"
+					query={ query }
+					selectedChart={ getSelectedChart( query.chart, charts ) }
+				/>
+				<ReportChart
+					charts={ charts }
+					endpoint="categories"
+					path={ path }
+					query={ query }
+					selectedChart={ getSelectedChart( query.chart, charts ) }
+				/>
 			</Fragment>
 		);
 	}
