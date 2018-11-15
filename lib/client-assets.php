@@ -19,6 +19,14 @@ function wc_admin_register_script() {
 	}
 
 	wp_register_script(
+		'wc-csv',
+		wc_admin_url( 'dist/csv-export/index.js' ),
+		array(),
+		filemtime( wc_admin_dir_path( 'dist/csv-export/index.js' ) ),
+		true
+	);
+
+	wp_register_script(
 		'wc-currency',
 		wc_admin_url( 'dist/currency/index.js' ),
 		array(),
@@ -52,6 +60,7 @@ function wc_admin_register_script() {
 			'wp-hooks',
 			'wp-i18n',
 			'wp-keycodes',
+			'wc-csv',
 			'wc-currency',
 			'wc-date',
 			'wc-navigation',
@@ -69,8 +78,12 @@ function wc_admin_register_script() {
 	);
 
 	// Set up the text domain and translations.
-	$locale_data = gutenberg_get_jed_locale_data( 'wc-admin' );
-	$content     = 'wp.i18n.setLocaleData( ' . json_encode( $locale_data ) . ', "wc-admin" );';
+	if ( function_exists( 'wp_get_jed_locale_data' ) ) {
+		$locale_data = wp_get_jed_locale_data( 'wc-admin' );
+	} else {
+		$locale_data = gutenberg_get_jed_locale_data( 'wc-admin' );
+	}
+	$content = 'wp.i18n.setLocaleData( ' . json_encode( $locale_data ) . ', "wc-admin" );';
 	wp_add_inline_script( 'wp-i18n', $content, 'after' );
 
 	// Resets lodash to wp-admin's version of lodash.

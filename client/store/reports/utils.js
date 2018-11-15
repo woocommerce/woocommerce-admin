@@ -9,23 +9,24 @@ import { find, forEach, isNull } from 'lodash';
  * WooCommerce dependencies
  */
 import { appendTimestamp, getCurrentDates, getIntervalForQuery } from '@woocommerce/date';
+import { flattenFilters, getActiveFiltersFromQuery, getUrlKey } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import { MAX_PER_PAGE } from 'store/constants';
-import { getActiveFiltersFromQuery, getUrlKey } from 'components/filters/advanced/utils';
-import { flatenFilters } from 'components/filters/filter/utils';
 import * as categoriesConfig from 'analytics/report/categories/config';
 import * as couponsConfig from 'analytics/report/coupons/config';
 import * as ordersConfig from 'analytics/report/orders/config';
 import * as productsConfig from 'analytics/report/products/config';
+import * as taxesConfig from 'analytics/report/taxes/config';
 
 const reportConfigs = {
 	categories: categoriesConfig,
 	coupons: couponsConfig,
 	orders: ordersConfig,
 	products: productsConfig,
+	taxes: taxesConfig,
 };
 
 export function getFilterQuery( endpoint, query ) {
@@ -62,7 +63,7 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
 		);
 	}
 
-	const filter = find( flatenFilters( config.filters ), { value: queryValue } );
+	const filter = find( flattenFilters( config.filters ), { value: queryValue } );
 
 	if ( ! filter ) {
 		return {};
