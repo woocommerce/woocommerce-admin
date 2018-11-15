@@ -10,6 +10,24 @@ import { __ } from '@wordpress/i18n';
 import { getRequestByIdString } from 'lib/async-requests';
 import { NAMESPACE } from 'store/constants';
 
+export const charts = [
+	{
+		key: 'items_sold',
+		label: __( 'Items Sold', 'wc-admin' ),
+		type: 'number',
+	},
+	{
+		key: 'gross_revenue',
+		label: __( 'Gross Revenue', 'wc-admin' ),
+		type: 'currency',
+	},
+	{
+		key: 'orders_count',
+		label: __( 'Orders Count', 'wc-admin' ),
+		type: 'number',
+	},
+];
+
 const filterConfig = {
 	label: __( 'Show', 'wc-admin' ),
 	staticParams: [ 'chart' ],
@@ -42,7 +60,7 @@ const filterConfig = {
 		},
 		{
 			label: __( 'Product Comparison', 'wc-admin' ),
-			value: 'compare-product',
+			value: 'compare-products',
 			settings: {
 				type: 'products',
 				param: 'products',
@@ -60,7 +78,7 @@ const filterConfig = {
 		},
 		{
 			label: __( 'Product Category Comparison', 'wc-admin' ),
-			value: 'compare-product_cat',
+			value: 'compare-product_cats',
 			settings: {
 				type: 'product_cats',
 				param: 'categories',
