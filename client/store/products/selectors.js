@@ -16,7 +16,7 @@ import { getJsonString } from 'store/utils';
  * Returns products report details for a specific report query.
  *
  * @param  {Object} state  Current state
- * @param  {Object} query  Report query paremeters
+ * @param  {Object} query  Report query parameters
  * @return {Object}        Report details
  */
 function getProducts( state, query = {} ) {
@@ -40,7 +40,7 @@ export default {
 	 * Returns true if a getProducts request has returned an error.
 	 *
 	 * @param  {Object} state  Current state
-	 * @param  {Object} query  Report query paremters
+	 * @param  {Object} query  Report query parameters
 	 * @return {Boolean}        True if the `getProducts` request has failed, false otherwise
 	 */
 	isGetProductsError( state, query ) {

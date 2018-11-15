@@ -17,7 +17,7 @@ import { getJsonString } from 'store/utils';
  *
  * @param  {Object} state     Current state
  * @param  {String} endpoint  Stats endpoint
- * @param  {Object} query     Report query paremeters
+ * @param  {Object} query     Report query parameters
  * @return {Object}           Report details
  */
 function getReportStats( state, endpoint, query = {} ) {

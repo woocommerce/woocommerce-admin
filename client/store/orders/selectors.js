@@ -16,7 +16,7 @@ import { ERROR } from 'store/constants';
  * Returns orders for a specific query.
  *
  * @param  {Object} state     Current state
- * @param  {Object} query     Report query paremeters
+ * @param  {Object} query     Report query parameters
  * @return {Array}            Report details
  */
 function getOrders( state, query = {} ) {
