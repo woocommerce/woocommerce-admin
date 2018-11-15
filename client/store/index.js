@@ -8,7 +8,6 @@ import { combineReducers, registerStore } from '@wordpress/data';
  * Internal dependencies
  */
 import { applyMiddleware, addThunks } from './middleware';
-import categories from 'store/categories';
 import orders from 'store/orders';
 import products from 'store/products';
 import reports from 'store/reports';
@@ -16,7 +15,6 @@ import notes from 'store/notes';
 
 const store = registerStore( 'wc-admin', {
 	reducer: combineReducers( {
-		categories: categories.reducer,
 		orders: orders.reducer,
 		products: products.reducer,
 		reports: reports.reducer,
@@ -24,7 +22,6 @@ const store = registerStore( 'wc-admin', {
 	} ),
 
 	actions: {
-		...categories.actions,
 		...orders.actions,
 		...products.actions,
 		...reports.actions,
@@ -32,7 +29,6 @@ const store = registerStore( 'wc-admin', {
 	},
 
 	selectors: {
-		...categories.selectors,
 		...orders.selectors,
 		...products.selectors,
 		...reports.selectors,
@@ -40,7 +36,6 @@ const store = registerStore( 'wc-admin', {
 	},
 
 	resolvers: {
-		...categories.resolvers,
 		...orders.resolvers,
 		...products.resolvers,
 		...reports.resolvers,
