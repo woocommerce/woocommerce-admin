@@ -13,7 +13,7 @@ import { NAMESPACE } from 'store/constants';
 export const charts = [
 	{
 		key: 'avg_items_per_order',
-		label: __( 'Avergae Items Per Order', 'wc-admin' ),
+		label: __( 'Average Items Per Order', 'wc-admin' ),
 		type: 'number',
 	},
 	{
