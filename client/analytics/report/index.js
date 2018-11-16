@@ -9,6 +9,11 @@ import PropTypes from 'prop-types';
 import { find } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { useFilters } from '@woocommerce/components';
+
+/**
  * Internal dependencies
  */
 import './style.scss';
@@ -19,7 +24,6 @@ import RevenueReport from './revenue';
 import CategoriesReport from './categories';
 import CouponsReport from './coupons';
 import TaxesReport from './taxes';
-import useFilters from 'components/higher-order/use-filters';
 
 const REPORTS_FILTER = 'woocommerce-reports-list';
 
