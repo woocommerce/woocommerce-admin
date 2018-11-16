@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import { charts, filters } from './config';
+import CouponsReportTable from './table';
 import getSelectedChart from 'lib/get-selected-chart';
 import { ReportFilters } from '@woocommerce/components';
 import ReportChart from 'analytics/components/report-chart';
@@ -34,6 +35,7 @@ export default class CouponsReport extends Component {
 					query={ query }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
+				<CouponsReportTable query={ query } />
 			</Fragment>
 		);
 	}

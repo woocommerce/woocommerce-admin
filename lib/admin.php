@@ -111,6 +111,14 @@ function wc_admin_register_pages() {
 
 	wc_admin_register_page(
 		array(
+			'title'  => __( 'Coupons', 'wc-admin' ),
+			'parent' => '/analytics/revenue',
+			'path'   => '/analytics/coupons',
+		)
+	);
+
+	wc_admin_register_page(
+		array(
 			'title'  => __( 'Taxes', 'wc-admin' ),
 			'parent' => '/analytics/revenue',
 			'path'   => '/analytics/taxes',
@@ -122,6 +130,14 @@ function wc_admin_register_pages() {
 			'title'  => __( 'Coupons', 'wc-admin' ),
 			'parent' => '/analytics/revenue',
 			'path'   => '/analytics/coupons',
+		)
+	);
+
+	wc_admin_register_page(
+		array(
+			'title'  => __( 'Categories', 'wc-admin' ),
+			'parent' => '/analytics/revenue',
+			'path'   => '/analytics/categories',
 		)
 	);
 
