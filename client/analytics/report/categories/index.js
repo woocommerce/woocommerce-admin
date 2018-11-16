@@ -6,11 +6,15 @@ import { Component, Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
 /**
+ * WooCommerce dependencies
+ */
+import { ReportFilters } from '@woocommerce/components';
+
+/**
  * Internal dependencies
  */
 import { charts, filters } from './config';
 import getSelectedChart from 'lib/get-selected-chart';
-import { ReportFilters } from '@woocommerce/components';
 import ReportChart from 'analytics/components/report-chart';
 import ReportSummary from 'analytics/components/report-summary';
 
