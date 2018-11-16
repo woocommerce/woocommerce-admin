@@ -30,10 +30,6 @@ import { QUERY_DEFAULTS } from 'store/constants';
 import { getReportChartData, getFilterQuery } from 'store/reports/utils';
 
 class CouponsReportTable extends Component {
-	constructor( props ) {
-		super( props );
-	}
-
 	getHeadersContent() {
 		return [
 			{
