@@ -180,7 +180,7 @@ class CouponsReportTable extends Component {
 		return (
 			<TableCard
 				title={ __( 'Coupons', 'wc-admin' ) }
-				compareBy={ 'coupon' }
+				compareBy={ 'coupons' }
 				ids={ orderedCoupons.map( coupon => coupon.coupon_id ) }
 				rows={ rows }
 				totalRows={ totalRows }
