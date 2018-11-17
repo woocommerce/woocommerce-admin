@@ -28,7 +28,7 @@ class TaxesReportTable extends Component {
 		return [
 			{
 				label: __( 'Tax Code', 'wc-admin' ),
-				// @TODO it should be the tax rate code, not the ID
+				// @TODO it should be the tax code, not the ID
 				key: 'tax_rate_id',
 				required: true,
 				isLeftAligned: true,

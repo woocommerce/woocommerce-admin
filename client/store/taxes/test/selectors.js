@@ -21,7 +21,7 @@ jest.mock( '@wordpress/data', () => ( {
 	select: jest.fn().mockReturnValue( {} ),
 } ) );
 
-const query = { orderby: 'date' };
+const query = { orderby: 'tax_rate_id' };
 const queryKey = getJsonString( query );
 
 describe( 'getTaxes()', () => {

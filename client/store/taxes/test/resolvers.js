@@ -33,7 +33,7 @@ xdescribe( 'getTaxes', () => {
 			if ( options.path === '/wc/v3/reports/taxes' ) {
 				return Promise.resolve( TAXES_1 );
 			}
-			if ( options.path === '/wc/v3/reports/taxes?orderby=id' ) {
+			if ( options.path === '/wc/v3/reports/taxes?orderby=tax_rate_id' ) {
 				return Promise.resolve( TAXES_2 );
 			}
 		} );

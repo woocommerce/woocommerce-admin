@@ -39,7 +39,7 @@ describe( 'taxesReducer()', () => {
 
 	it( 'tracks multiple queries in taxes data', () => {
 		const otherQuery = {
-			orderby: 'id',
+			orderby: 'tax_rate_id',
 		};
 		const otherQueryKey = getJsonString( otherQuery );
 		const otherTaxes = [ { tax_rate_id: 1 }, { tax_rate_id: 2 }, { tax_rate_id: 3 } ];
