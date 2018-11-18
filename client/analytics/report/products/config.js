@@ -33,11 +33,13 @@ const filterConfig = {
 	staticParams: [ 'chart' ],
 	param: 'filter',
 	showFilters: () => true,
+	chartMode: 'time-comparison',
 	filters: [
 		{ label: __( 'All Products', 'wc-admin' ), value: 'all' },
 		{
 			label: __( 'Single Product', 'wc-admin' ),
 			value: 'select_product',
+			chartMode: 'item-comparison',
 			subFilters: [
 				{
 					component: 'Search',
@@ -61,6 +63,7 @@ const filterConfig = {
 		{
 			label: __( 'Product Comparison', 'wc-admin' ),
 			value: 'compare-products',
+			chartMode: 'item-comparison',
 			settings: {
 				type: 'products',
 				param: 'products',
@@ -79,6 +82,7 @@ const filterConfig = {
 		{
 			label: __( 'Product Category Comparison', 'wc-admin' ),
 			value: 'compare-product_cats',
+			chartMode: 'item-comparison',
 			settings: {
 				type: 'product_cats',
 				param: 'categories',
@@ -97,11 +101,13 @@ const filterConfig = {
 		{
 			label: __( 'Top Products by Items Sold', 'wc-admin' ),
 			value: 'top_items',
+			chartMode: 'item-comparison',
 			query: { orderby: 'items_sold', order: 'desc' },
 		},
 		{
 			label: __( 'Top Products by Gross Revenue', 'wc-admin' ),
 			value: 'top_sales',
+			chartMode: 'item-comparison',
 			query: { orderby: 'gross_revenue', order: 'desc' },
 		},
 	],
