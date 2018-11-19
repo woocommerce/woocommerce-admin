@@ -33,11 +33,25 @@ import ReportError from 'analytics/components/report-error';
 export const DEFAULT_FILTER = 'all';
 
 export class ReportChart extends Component {
-	getAppliedFilter( filterConfig, query ) {
-		const allFilters = flattenFilters( filterConfig.filters );
-		const value = query[ filterConfig.param ] || DEFAULT_FILTER;
+	getSelectedFilter( filters, query ) {
+		if ( filters.length === 0 ) {
+			return null;
+		}
 
-		return find( allFilters, { value } );
+		const filterConfig = filters.pop();
+
+		if ( filterConfig.showFilters( query ) ) {
+			const allFilters = flattenFilters( filterConfig.filters );
+			const value = query[ filterConfig.param ] || DEFAULT_FILTER;
+			const selectedFilter = find( allFilters, { value } );
+			const selectedFilterParam = get( selectedFilter, [ 'settings', 'param' ] );
+
+			if ( ! selectedFilterParam || Object.keys( query ).includes( selectedFilterParam ) ) {
+				return selectedFilter;
+			}
+		}
+
+		return this.getSelectedFilter( filters, query );
 	}
 
 	getChartMode() {
@@ -45,13 +59,10 @@ export class ReportChart extends Component {
 		if ( ! filters ) {
 			return null;
 		}
-		const filterConfig = filters[ 0 ];
-		const appliedFilter = this.getAppliedFilter( filterConfig, query );
-		const appliedFilterParam = get( appliedFilter, [ 'settings', 'param' ] );
+		const clonedFilters = filters.slice( 0 );
+		const selectedFilter = this.getSelectedFilter( clonedFilters, query );
 
-		return ! appliedFilterParam || Object.keys( query ).includes( appliedFilterParam )
-			? appliedFilter.chartMode
-			: filterConfig.chartMode;
+		return get( selectedFilter, [ 'chartMode' ] );
 	}
 
 	render() {

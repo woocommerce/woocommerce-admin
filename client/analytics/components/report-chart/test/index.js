@@ -16,96 +16,67 @@ jest.mock( 'components', () => ( {
 
 const path = '/analytics/revenue';
 const data = {
-  data: {
-    intervals: [],
-  },
-  isEmpty: false,
-  isError: false,
-  isRequesting: false,
+	data: {
+		intervals: [],
+	},
+	isEmpty: false,
+	isError: false,
+	isRequesting: false,
 };
 const selectedChart = {
-  key: 'gross_revenue',
-  label: 'Gross Revenue',
-  type: 'currency',
+	key: 'gross_revenue',
+	label: 'Gross Revenue',
+	type: 'currency',
 };
 
 describe( 'ReportChart', () => {
 	test( 'should not set the mode prop by default', () => {
-    const reportChart = shallow(
-      <ReportChart
-        path={ path }
-        primaryData={ data }
-        query={ {} }
-        secondaryData={ data }
-        selectedChart={ selectedChart }
-      />
-    );
-    const chart = reportChart.find( 'Chart' );
+		const reportChart = shallow(
+			<ReportChart
+				path={ path }
+				primaryData={ data }
+				query={ {} }
+				secondaryData={ data }
+				selectedChart={ selectedChart }
+			/>
+		);
+		const chart = reportChart.find( 'Chart' );
 
 		expect( chart.props().mode ).toEqual( null );
 		expect( chart.props().layout ).toEqual( 'standard' );
 	} );
 
 	test( 'should set the mode prop depending on the active filter', () => {
-    const filters = [ {
-      param: 'filter',
-      chartMode: 'item-comparison',
-			showFilters: () => true,
-      filters: [
-        {
-					value: 'lorem-ipsum',
-					settings: {
-						param: 'filter2',
+		const filters = [
+			{
+				param: 'filter',
+				showFilters: () => true,
+				filters: [
+					{
+						value: 'lorem-ipsum',
+						chartMode: 'item-comparison',
+						settings: {
+							param: 'filter2',
+						},
 					},
-        },
-      ],
-    } ];
-    const reportChart = shallow(
-      <ReportChart
-        filters={ filters }
-        path={ path }
-        primaryData={ data }
-        query={ { filter: 'lorem-ipsum', filter2: 'ipsum-lorem' } }
-        secondaryData={ data }
-        selectedChart={ selectedChart }
-      />
-    );
+				],
+			},
+		];
+		const query = { filter: 'lorem-ipsum', filter2: 'ipsum-lorem' };
+		const reportChart = shallow(
+			<ReportChart
+				filters={ filters }
+				path={ path }
+				primaryData={ data }
+				query={ query }
+				secondaryData={ data }
+				selectedChart={ selectedChart }
+			/>
+		);
 
-    const chart = reportChart.find( 'Chart' );
+		const chart = reportChart.find( 'Chart' );
 
 		expect( chart.props().mode ).toEqual( 'item-comparison' );
 		expect( chart.props().layout ).toEqual( 'comparison' );
-  } );
-
-	test( 'should set the mode prop depending on the active filter or it\'s parent', () => {
-    const filters = [ {
-      param: 'filter',
-      chartMode: 'item-comparison',
-			showFilters: () => true,
-      filters: [
-        {
-					value: 'lorem-ipsum',
-					settings: {
-						param: 'filter2',
-					},
-          chartMode: 'time-comparison',
-        },
-      ],
-    } ];
-    const reportChart = shallow(
-      <ReportChart
-        filters={ filters }
-        path={ path }
-        primaryData={ data }
-        query={ { filter: 'lorem-ipsum', filter2: 'ipsum-lorem' } }
-        secondaryData={ data }
-        selectedChart={ selectedChart }
-      />
-    );
-
-    const chart = reportChart.find( 'Chart' );
-
-		expect( chart.props().mode ).toEqual( 'time-comparison' );
-		expect( chart.props().layout ).toEqual( 'standard' );
-  } );
+	} );
 } );
