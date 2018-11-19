@@ -112,9 +112,9 @@ class TaxesReportTable extends Component {
 		if ( ! totals ) {
 			return [];
 		}
+		// @TODO the number of total rows should come from the API
 		const totalRows = 0;
 		return [
-			// @TODO
 			{
 				label: _n( 'tax code', 'tax codes', totalRows, 'wc-admin' ),
 				value: totalRows,
