@@ -32,7 +32,7 @@ import ReportError from 'analytics/components/report-error';
 
 export const DEFAULT_FILTER = 'all';
 
-class ReportChart extends Component {
+export class ReportChart extends Component {
 	getAppliedFilter( filterConfig, query ) {
 		const allFilters = flattenFilters( filterConfig.filters );
 		const value = query[ filterConfig.param ] || DEFAULT_FILTER;
