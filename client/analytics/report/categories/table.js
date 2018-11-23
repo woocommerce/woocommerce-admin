@@ -145,8 +145,8 @@ class CategoriesReportTable extends Component {
 
 		return (
 			<TableCard
-				title={ __( 'Coupons', 'wc-admin' ) }
-				compareBy={ 'coupons' }
+				title={ __( 'Categories', 'wc-admin' ) }
+				compareBy={ 'product_cats' }
 				ids={ orderedCategories.map( category => category.category_id ) }
 				rows={ rows }
 				totalRows={ totalRows }
