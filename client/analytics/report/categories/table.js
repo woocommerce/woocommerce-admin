@@ -20,6 +20,7 @@ import { onQueryChange } from '@woocommerce/navigation';
  */
 import ReportError from 'analytics/components/report-error';
 import { getReportChartData, getReportTableData } from 'store/reports/utils';
+import { numberFormat } from 'lib/number';
 
 class CategoriesReportTable extends Component {
 	getHeadersContent() {
@@ -70,7 +71,7 @@ class CategoriesReportTable extends Component {
 					href={ '/analytics/orders?filter=advanced&code_includes=' + category_id }
 					type="wc-admin"
 				>
-					{ products_count }
+					{ numberFormat( products_count ) }
 				</Link>
 			);
 
@@ -81,7 +82,7 @@ class CategoriesReportTable extends Component {
 					value: category_id,
 				},
 				{
-					display: items_sold,
+					display: numberFormat( items_sold ),
 					value: items_sold,
 				},
 				{
@@ -93,7 +94,7 @@ class CategoriesReportTable extends Component {
 					value: products_count,
 				},
 				{
-					display: orders_count,
+					display: numberFormat( orders_count ),
 					value: orders_count,
 				},
 			];
@@ -107,11 +108,11 @@ class CategoriesReportTable extends Component {
 		return [
 			{
 				label: _n( 'category', 'categories', totals.categories_count, 'wc-admin' ),
-				value: totals.categories_count,
+				value: numberFormat( totals.categories_count ),
 			},
 			{
 				label: _n( 'item sold', 'items sold', totals.items_sold, 'wc-admin' ),
-				value: totals.items_sold,
+				value: numberFormat( totals.items_sold ),
 			},
 			{
 				label: __( 'gross revenue', 'wc-admin' ),
@@ -119,7 +120,7 @@ class CategoriesReportTable extends Component {
 			},
 			{
 				label: _n( 'orders', 'orders', totals.orders_count, 'wc-admin' ),
-				value: totals.orders_count,
+				value: numberFormat( totals.orders_count ),
 			},
 		];
 	}
