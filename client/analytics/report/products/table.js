@@ -20,6 +20,7 @@ import { getNewPath, getPersistedQuery, onQueryChange } from '@woocommerce/navig
  */
 import ReportError from 'analytics/components/report-error';
 import { getReportChartData, getReportTableData } from 'store/reports/utils';
+import { numberFormat } from 'lib/number';
 
 class ProductsReportTable extends Component {
 	getHeadersContent() {
@@ -165,11 +166,11 @@ class ProductsReportTable extends Component {
 		return [
 			{
 				label: _n( 'product sold', 'products sold', totals.products_count, 'wc-admin' ),
-				value: totals.products_count,
+				value: numberFormat( totals.products_count ),
 			},
 			{
 				label: _n( 'item sold', 'items sold', totals.items_sold, 'wc-admin' ),
-				value: totals.items_sold,
+				value: numberFormat( totals.items_sold ),
 			},
 			{
 				label: __( 'gross revenue', 'wc-admin' ),
@@ -177,7 +178,7 @@ class ProductsReportTable extends Component {
 			},
 			{
 				label: _n( 'orders', 'orders', totals.orders_count, 'wc-admin' ),
-				value: totals.orders_count,
+				value: numberFormat( totals.orders_count ),
 			},
 		];
 	}
