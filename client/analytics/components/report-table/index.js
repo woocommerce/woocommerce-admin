@@ -52,8 +52,8 @@ class ReportTable extends Component {
 		const ids = orderedItems.map( item => item[ itemIdField ] );
 		const rows = getRowsContent( orderedItems );
 		const totals = get( primaryData, [ 'data', 'totals' ], null );
-		const totalRows = get( totals, [ totalsCountField ], items.length );
 		const summary = getSummary( totals );
+		const totalRows = get( totals, [ totalsCountField ], items.length );
 
 		return (
 			<TableCard
