@@ -4,24 +4,28 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
-import { get, map, orderBy } from 'lodash';
+import { map } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import { Link, TableCard } from '@woocommerce/components';
+import { Link } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
-import { getNewPath, getPersistedQuery, onQueryChange } from '@woocommerce/navigation';
+import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
-import ReportError from 'analytics/components/report-error';
-import { getReportChartData, getReportTableData } from 'store/reports/utils';
+import ReportTable from 'analytics/components/report-table';
 
-class ProductsReportTable extends Component {
+export default class ProductsReportTable extends Component {
+	constructor() {
+		super();
+
+		this.getHeadersContent = this.getHeadersContent.bind( this );
+		this.getRowsContent = this.getRowsContent.bind( this );
+	}
+
 	getHeadersContent() {
 		return [
 			{
@@ -159,20 +163,7 @@ class ProductsReportTable extends Component {
 	}
 
 	render() {
-		const { primaryData, tableData } = this.props;
-		const { items, query } = tableData;
-		const isError = tableData.isError || primaryData.isError;
-
-		if ( isError ) {
-			return <ReportError isError />;
-		}
-
-		const isRequesting = tableData.isRequesting || primaryData.isRequesting;
-
-		const headers = this.getHeadersContent();
-		const orderedProducts = orderBy( items, query.orderby, query.order );
-		const rows = this.getRowsContent( orderedProducts );
-		const totalRows = get( primaryData, [ 'data', 'totals', 'products_count' ], items.length );
+		const { query } = this.props;
 
 		const labels = {
 			helpText: __( 'Select at least two products to compare', 'wc-admin' ),
@@ -180,38 +171,22 @@ class ProductsReportTable extends Component {
 		};
 
 		return (
-			<TableCard
-				title={ __( 'Products', 'wc-admin' ) }
-				rows={ rows }
-				totalRows={ totalRows }
-				rowsPerPage={ query.per_page }
-				headers={ headers }
+			<ReportTable
+				compareBy="products"
+				endpoint="products"
+				getHeadersContent={ this.getHeadersContent }
+				getRowsContent={ this.getRowsContent }
+				itemIdField="product_id"
 				labels={ labels }
-				ids={ orderedProducts.map( p => p.product_id ) }
-				isLoading={ isRequesting }
-				compareBy={ 'products' }
-				onQueryChange={ onQueryChange }
 				query={ query }
-				summary={ null } // @TODO
-				downloadable
+				tableQuery={ {
+					orderby: query.orderby || 'items_sold',
+					order: query.order || 'desc',
+					extended_product_info: true,
+				} }
+				totalsCountField="products_count"
+				title={ __( 'Products', 'wc-admin' ) }
 			/>
 		);
 	}
 }
-
-export default compose(
-	withSelect( ( select, props ) => {
-		const { query } = props;
-		const primaryData = getReportChartData( 'products', 'primary', query, select );
-		const tableData = getReportTableData( 'products', query, select, {
-			orderby: query.orderby || 'items_sold',
-			order: query.order || 'desc',
-			extended_product_info: true,
-		} );
-
-		return {
-			primaryData,
-			tableData,
-		};
-	} )
-)( ProductsReportTable );
