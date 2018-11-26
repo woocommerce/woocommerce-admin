@@ -31,10 +31,10 @@ class ReportTable extends Component {
 			tableData,
 			totalsCountField,
 			// These two props are not used in the render function, but are destructured
-			// so they are not included in the `props` variable.
+			// so they are not included in the `tableProps` variable.
 			endpoint,
 			tableQuery,
-			...props
+			...tableProps
 		} = this.props;
 
 		const { items, query } = tableData;
@@ -66,7 +66,7 @@ class ReportTable extends Component {
 				rowsPerPage={ query.per_page }
 				summary={ summary }
 				totalRows={ totalRows }
-				{ ...props }
+				{ ...tableProps }
 			/>
 		);
 	}
