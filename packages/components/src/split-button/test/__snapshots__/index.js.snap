@@ -121,49 +121,6 @@ exports[`SplitButton it should render a split button with a menu label 1`] = `
 </div>
 `;
 
-exports[`SplitButton it should render a split button with a menu label 2`] = `
-<div
-  className="woocommerce-split-button"
->
-  <button
-    className="components-button woocommerce-split-button__main-action"
-    onClick={[Function]}
-    type="button"
-  />
-  <div
-    className="woocommerce-split-button__menu"
-  >
-    <button
-      aria-expanded={false}
-      aria-haspopup="true"
-      aria-label="Select an action"
-      className="components-button components-icon-button woocommerce-split-button__menu-toggle"
-      onBlur={[Function]}
-      onClick={[Function]}
-      onFocus={[Function]}
-      onMouseEnter={[Function]}
-      onMouseLeave={[Function]}
-      type="button"
-    >
-      <svg
-        aria-hidden={true}
-        className="dashicon dashicons-arrow-down"
-        focusable="false"
-        height={20}
-        role="img"
-        viewBox="0 0 20 20"
-        width={20}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M15 8l-4.03 6L7 8h8z"
-        />
-      </svg>
-    </button>
-  </div>
-</div>
-`;
-
 exports[`SplitButton it should render a split button with isPrimary theme 1`] = `
 <div
   className="woocommerce-split-button is-primary"

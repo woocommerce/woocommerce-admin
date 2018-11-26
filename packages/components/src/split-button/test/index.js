@@ -51,11 +51,4 @@ describe( 'SplitButton', () => {
 			.toJSON();
 		expect( tree ).toMatchSnapshot();
 	} );
-
-	test( 'it should render a split button with a menu label', () => {
-		const tree = renderer
-			.create( <SplitButton controls={ controls } menuLabel="Select an action" /> )
-			.toJSON();
-		expect( tree ).toMatchSnapshot();
-	} );
 } );
