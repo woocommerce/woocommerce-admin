@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { map } from 'lodash';
 
@@ -17,6 +17,7 @@ import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
+import { numberFormat } from 'lib/number';
 
 export default class ProductsReportTable extends Component {
 	constructor() {
@@ -121,7 +122,7 @@ export default class ProductsReportTable extends Component {
 					value: sku,
 				},
 				{
-					display: items_sold,
+					display: numberFormat( items_sold ),
 					value: items_sold,
 				},
 				{
@@ -143,7 +144,7 @@ export default class ProductsReportTable extends Component {
 					value: Array.isArray( categories ) ? categories.map( cat => cat.name ).join( ', ' ) : '',
 				},
 				{
-					display: variations.length,
+					display: numberFormat( variations.length ),
 					value: variations.length,
 				},
 				{
@@ -155,11 +156,35 @@ export default class ProductsReportTable extends Component {
 					value: stockStatuses[ stock_status ],
 				},
 				{
-					display: stock_quantity,
+					display: numberFormat( stock_quantity ),
 					value: stock_quantity,
 				},
 			];
 		} );
+	}
+
+	getSummary( totals ) {
+		if ( ! totals ) {
+			return [];
+		}
+		return [
+			{
+				label: _n( 'product sold', 'products sold', totals.products_count, 'wc-admin' ),
+				value: numberFormat( totals.products_count ),
+			},
+			{
+				label: _n( 'item sold', 'items sold', totals.items_sold, 'wc-admin' ),
+				value: numberFormat( totals.items_sold ),
+			},
+			{
+				label: __( 'gross revenue', 'wc-admin' ),
+				value: formatCurrency( totals.gross_revenue ),
+			},
+			{
+				label: _n( 'orders', 'orders', totals.orders_count, 'wc-admin' ),
+				value: numberFormat( totals.orders_count ),
+			},
+		];
 	}
 
 	render() {
@@ -176,6 +201,7 @@ export default class ProductsReportTable extends Component {
 				endpoint="products"
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
+				getSummary={ this.getSummary }
 				itemIdField="product_id"
 				labels={ labels }
 				query={ query }

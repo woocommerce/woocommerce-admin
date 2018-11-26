@@ -16,6 +16,7 @@ import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency'
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
+import { numberFormat } from 'lib/number';
 
 export default class TaxesReportTable extends Component {
 	constructor() {
@@ -103,7 +104,7 @@ export default class TaxesReportTable extends Component {
 					value: getCurrencyFormatDecimal( shipping_tax ),
 				},
 				{
-					display: orders_count,
+					display: numberFormat( orders_count ),
 					value: orders_count,
 				},
 			];
@@ -119,7 +120,7 @@ export default class TaxesReportTable extends Component {
 		return [
 			{
 				label: _n( 'tax code', 'tax codes', totalRows, 'wc-admin' ),
-				value: totalRows,
+				value: numberFormat( totalRows ),
 			},
 			{
 				label: __( 'total tax', 'wc-admin' ),
@@ -135,7 +136,7 @@ export default class TaxesReportTable extends Component {
 			},
 			{
 				label: _n( 'order', 'orders', totals.orders_count, 'wc-admin' ),
-				value: totals.orders_count,
+				value: numberFormat( totals.orders_count ),
 			},
 		];
 	}

@@ -18,6 +18,7 @@ import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency'
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
+import { numberFormat } from 'lib/number';
 
 export default class CouponsReportTable extends Component {
 	constructor() {
@@ -90,7 +91,7 @@ export default class CouponsReportTable extends Component {
 					href={ '/analytics/orders?filter=advanced&code_includes=' + coupon_id }
 					type="wc-admin"
 				>
-					{ orders_count }
+					{ numberFormat( orders_count ) }
 				</Link>
 			);
 
@@ -134,11 +135,11 @@ export default class CouponsReportTable extends Component {
 		return [
 			{
 				label: _n( 'coupon', 'coupons', totals.coupons_count, 'wc-admin' ),
-				value: totals.coupons_count,
+				value: numberFormat( totals.coupons_count ),
 			},
 			{
 				label: _n( 'order', 'orders', totals.orders_count, 'wc-admin' ),
-				value: totals.orders_count,
+				value: numberFormat( totals.orders_count ),
 			},
 			{
 				label: __( 'gross discounted', 'wc-admin' ),
