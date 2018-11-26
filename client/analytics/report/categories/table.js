@@ -4,25 +4,21 @@
  */
 import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
-import { get, map, orderBy } from 'lodash';
+import { map } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import { Link, TableCard } from '@woocommerce/components';
+import { Link } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
-import { onQueryChange } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
-import ReportError from 'analytics/components/report-error';
-import { getReportChartData, getReportTableData } from 'store/reports/utils';
+import ReportTable from 'analytics/components/report-table';
 import { numberFormat } from 'lib/number';
 
-class CategoriesReportTable extends Component {
+export default class CategoriesReportTable extends Component {
 	getHeadersContent() {
 		return [
 			{
@@ -126,51 +122,20 @@ class CategoriesReportTable extends Component {
 	}
 
 	render() {
-		const { tableData, primaryData } = this.props;
-		const { items, query } = tableData;
-
-		const isError = tableData.isError || primaryData.isError;
-
-		if ( isError ) {
-			return <ReportError isError />;
-		}
-
-		const isRequesting = tableData.isRequesting || primaryData.isRequesting;
-
-		const headers = this.getHeadersContent();
-		const orderedCategories = orderBy( items, query.orderby, query.order );
-		const rows = this.getRowsContent( orderedCategories );
-		const totalRows = get( primaryData, [ 'data', 'totals', 'categories_count' ], items.length );
-		const summary = primaryData.data.totals ? this.getSummary( primaryData.data.totals ) : null;
+		const { query } = this.props;
 
 		return (
-			<TableCard
-				title={ __( 'Categories', 'wc-admin' ) }
-				compareBy={ 'product_cats' }
-				ids={ orderedCategories.map( category => category.category_id ) }
-				rows={ rows }
-				totalRows={ totalRows }
-				rowsPerPage={ query.per_page }
-				headers={ headers }
-				isLoading={ isRequesting }
-				onQueryChange={ onQueryChange }
+			<ReportTable
+				compareBy="product_cats"
+				endpoint="categories"
+				getHeadersContent={ this.getHeadersContent }
+				getRowsContent={ this.getRowsContent }
+				getSummary={ this.getSummary }
+				itemIdField="category_id"
 				query={ query }
-				summary={ summary }
-				downloadable
+				totalsCountField="categories_count"
+				title={ __( 'Categories', 'wc-admin' ) }
 			/>
 		);
 	}
 }
-
-export default compose(
-	withSelect( ( select, props ) => {
-		const { query } = props;
-		const primaryData = getReportChartData( 'categories', 'primary', query, select );
-		const tableData = getReportTableData( 'categories', query, select );
-
-		return {
-			primaryData,
-			tableData,
-		};
-	} )
-)( CategoriesReportTable );
