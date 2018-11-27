@@ -8,7 +8,19 @@ Currently we have a small set of public-facing packages that can be dowloaded fr
 - `@woocommerce/date`: A collection of utilities to display and work with date values.
 - `@woocommerce/navigation`: A collection of navigation-related functions for handling query parameter objects, serializing query parameters, updating query parameters, and triggering path changes.
 
-## To create a new package
+## Working with existing packages
+
+- You can make changes to packages files as normal, and running `npm start` will compile and watch both app files and packages.
+- :warning: Make sure any dependencies you add to a package are also added to that package's `package.json`, not just the wc-admin package.json
+- :warning: Make sure you're not importing from any wc-admin files outside of the package (you can import from other packages, just use the `import from @woocommerce/package` syntax).
+- Add your change to the CHANGELOG for that package.
+- If you want to release an update for the package, also bump the version number (we use semantic versioning for packages, [see these guidelines](https://github.com/WordPress/gutenberg/blob/master/CONTRIBUTING.md#maintaining-changelogs)).
+- Label your PR with the `Packages` label.
+- Once merged, you can wait for the next package release roundup, or you can publish a release now (see below, "Publishing packages").
+
+---
+
+## Creating a new package
 
 Most of this is pulled [from the Gutenberg workflow](https://github.com/WordPress/gutenberg/blob/master/CONTRIBUTING.md#creating-new-package).
 
@@ -58,7 +70,7 @@ To create a new package, add a new folder to `/packages`, containing…
 
 ---
 
-## To publish packages
+## Publishing packages
 
 - Run `npm run publish:check` to see which packages will be published
 - Create a PR with a CHANGELOG for each updated package (or try to add to the CHANGELOG with any PR editing `packages/`)
