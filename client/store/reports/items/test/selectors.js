@@ -33,9 +33,10 @@ describe( 'getReportItems()', () => {
 
 	it( 'returns stored items for current query', () => {
 		const itemsData = [ { id: 1214 }, { id: 1215 }, { id: 1216 } ];
+		const itemsTotalCount = 50;
 		const queryState = {
 			data: itemsData,
-			totalCount: itemsData.length,
+			totalCount: itemsTotalCount,
 		};
 		const state = deepFreeze( {
 			reports: {

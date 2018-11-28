@@ -24,7 +24,9 @@ jest.mock( '@wordpress/api-fetch', () => jest.fn() );
 
 describe( 'getReportItems', () => {
 	const ITEMS_1 = [ { id: 1214 }, { id: 1215 }, { id: 1216 } ];
+	const ITEMS_1_COUNT = 50;
 	const ITEMS_2 = [ { id: 1 }, { id: 2 }, { id: 3 } ];
+	const ITEMS_2_COUNT = 75;
 	const endpoint = 'products';
 
 	beforeAll( () => {
@@ -32,7 +34,7 @@ describe( 'getReportItems', () => {
 			if ( options.path === `/wc/v3/reports/${ endpoint }` ) {
 				return Promise.resolve( {
 					headers: {
-						get: () => ITEMS_1.length,
+						get: () => ITEMS_1_COUNT,
 					},
 					json: () => Promise.resolve( ITEMS_1 ),
 				} );
@@ -40,7 +42,7 @@ describe( 'getReportItems', () => {
 			if ( options.path === `/wc/v3/reports/${ endpoint }?orderby=id` ) {
 				return Promise.resolve( {
 					headers: {
-						get: () => ITEMS_2.length,
+						get: () => ITEMS_2_COUNT,
 					},
 					json: () => Promise.resolve( ITEMS_2 ),
 				} );
@@ -55,7 +57,7 @@ describe( 'getReportItems', () => {
 			endpoint,
 			undefined,
 			ITEMS_1,
-			ITEMS_1.length
+			ITEMS_1_COUNT
 		);
 	} );
 
@@ -66,7 +68,7 @@ describe( 'getReportItems', () => {
 			endpoint,
 			{ orderby: 'id' },
 			ITEMS_2,
-			ITEMS_2.length
+			ITEMS_2_COUNT
 		);
 	} );
 } );
