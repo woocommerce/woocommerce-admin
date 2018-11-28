@@ -28,7 +28,7 @@ const endpoint = 'coupons';
 describe( 'getReportItems()', () => {
 	it( 'returns an empty object when no items are available', () => {
 		const state = deepFreeze( {} );
-		expect( getReportItems( state, endpoint, query ) ).toEqual( {} );
+		expect( getReportItems( state, endpoint, query ) ).toEqual( { data: [] } );
 	} );
 
 	it( 'returns stored items for current query', () => {
