@@ -26,23 +26,27 @@ const queryKey = getJsonString( query );
 const endpoint = 'coupons';
 
 describe( 'getReportItems()', () => {
-	it( 'returns an empty array when no items are available', () => {
+	it( 'returns an empty object when no items are available', () => {
 		const state = deepFreeze( {} );
-		expect( getReportItems( state, endpoint, query ) ).toEqual( [] );
+		expect( getReportItems( state, endpoint, query ) ).toEqual( {} );
 	} );
 
 	it( 'returns stored items for current query', () => {
 		const items = [ { id: 1214 }, { id: 1215 }, { id: 1216 } ];
+		const queryState = {
+			data: items,
+			totalResults: items.length,
+		};
 		const state = deepFreeze( {
 			reports: {
 				items: {
 					[ endpoint ]: {
-						[ queryKey ]: items,
+						[ queryKey ]: queryState,
 					},
 				},
 			},
 		} );
-		expect( getReportItems( state, endpoint, query ) ).toEqual( items );
+		expect( getReportItems( state, endpoint, query ) ).toEqual( queryState );
 	} );
 } );
 

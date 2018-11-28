@@ -30,10 +30,20 @@ describe( 'getReportItems', () => {
 	beforeAll( () => {
 		apiFetch.mockImplementation( options => {
 			if ( options.path === `/wc/v3/reports/${ endpoint }` ) {
-				return Promise.resolve( ITEMS_1 );
+				return Promise.resolve( {
+					headers: {
+						get: () => ITEMS_1.length,
+					},
+					json: () => Promise.resolve( ITEMS_1 ),
+				} );
 			}
 			if ( options.path === `/wc/v3/reports/${ endpoint }?orderby=id` ) {
-				return Promise.resolve( ITEMS_2 );
+				return Promise.resolve( {
+					headers: {
+						get: () => ITEMS_2.length,
+					},
+					json: () => Promise.resolve( ITEMS_2 ),
+				} );
 			}
 		} );
 	} );
@@ -41,12 +51,22 @@ describe( 'getReportItems', () => {
 	it( 'returns requested report data', async () => {
 		expect.assertions( 1 );
 		await getReportItems( endpoint );
-		expect( dispatch().setReportItems ).toHaveBeenCalledWith( endpoint, ITEMS_1, undefined );
+		expect( dispatch().setReportItems ).toHaveBeenCalledWith(
+			endpoint,
+			ITEMS_1,
+			undefined,
+			ITEMS_1.length
+		);
 	} );
 
 	it( 'returns requested report data for a specific query', async () => {
 		expect.assertions( 1 );
 		await getReportItems( endpoint, { orderby: 'id' } );
-		expect( dispatch().setReportItems ).toHaveBeenCalledWith( endpoint, ITEMS_2, { orderby: 'id' } );
+		expect( dispatch().setReportItems ).toHaveBeenCalledWith(
+			endpoint,
+			ITEMS_2,
+			{ orderby: 'id' },
+			ITEMS_2.length
+		);
 	} );
 } );

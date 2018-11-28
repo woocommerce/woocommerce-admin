@@ -29,7 +29,6 @@ class ReportTable extends Component {
 			itemIdField,
 			primaryData,
 			tableData,
-			totalsCountField,
 			// These two props are not used in the render function, but are destructured
 			// so they are not included in the `tableProps` variable.
 			endpoint,
@@ -38,6 +37,7 @@ class ReportTable extends Component {
 		} = this.props;
 
 		const { items, query } = tableData;
+		const { data: itemsData, totalResults } = items;
 
 		const isError = tableData.isError || primaryData.isError;
 
@@ -48,12 +48,11 @@ class ReportTable extends Component {
 		const isRequesting = tableData.isRequesting || primaryData.isRequesting;
 
 		const headers = getHeadersContent();
-		const orderedItems = orderBy( items, query.orderby, query.order );
+		const orderedItems = orderBy( itemsData, query.orderby, query.order );
 		const ids = orderedItems.map( item => item[ itemIdField ] );
 		const rows = getRowsContent( orderedItems );
 		const totals = get( primaryData, [ 'data', 'totals' ], null );
 		const summary = getSummary( totals );
-		const totalRows = get( totals, [ totalsCountField ], items.length );
 
 		return (
 			<TableCard
@@ -65,7 +64,7 @@ class ReportTable extends Component {
 				rows={ rows }
 				rowsPerPage={ query.per_page }
 				summary={ summary }
-				totalRows={ totalRows }
+				totalRows={ totalResults || 0 }
 				{ ...tableProps }
 			/>
 		);
@@ -109,25 +108,17 @@ ReportTable.propTypes = {
 	 * String to display as the title of the table.
 	 */
 	title: PropTypes.string.isRequired,
-	/**
-	 * Name of the property in the primary data totals object which contains the
-	 * total number of items.
-	 */
-	totalsCountField: PropTypes.string,
 };
 
 ReportTable.defaultProps = {
 	getSummary: () => null,
 	tableQuery: {},
-	totalsCountField: '',
 };
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { endpoint, query, tableQuery } = props;
-		// @TODO allow loading the primary data for the variations table once #926 is fixed.
-		const primaryData =
-			endpoint === 'variations' ? {} : getReportChartData( endpoint, 'primary', query, select );
+		const { endpoint, getSummary, query, tableQuery } = props;
+		const primaryData = getSummary ? getReportChartData( endpoint, 'primary', query, select ) : {};
 		const tableData = getReportTableData( endpoint, query, select, tableQuery );
 
 		return {

@@ -37,11 +37,14 @@ export default {
 		}
 
 		try {
-			const items = await apiFetch( {
+			const response = await apiFetch( {
+				parse: false,
 				path: NAMESPACE + 'reports/' + endpoint + stringifyQuery( query ),
 			} );
 
-			dispatch( 'wc-admin' ).setReportItems( endpoint, items, query );
+			const items = await response.json();
+			const totalResults = parseInt( response.headers.get( 'x-wp-total' ) );
+			dispatch( 'wc-admin' ).setReportItems( endpoint, items, query, totalResults );
 		} catch ( error ) {
 			dispatch( 'wc-admin' ).setReportItemsError( endpoint, query );
 		}

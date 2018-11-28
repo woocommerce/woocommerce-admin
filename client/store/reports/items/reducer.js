@@ -20,7 +20,10 @@ export default function reportItemsReducer( state = DEFAULT_STATE, action ) {
 		case 'SET_REPORT_ITEMS':
 			return merge( {}, state, {
 				[ action.endpoint ]: {
-					[ queryKey ]: action.items,
+					[ queryKey ]: {
+						data: action.items,
+						totalResults: action.totalResults,
+					},
 				},
 			} );
 

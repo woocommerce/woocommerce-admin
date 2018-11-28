@@ -37,7 +37,7 @@ describe( 'reportItemsReducer()', () => {
 		} );
 
 		const queryKey = getJsonString( query );
-		expect( state[ endpoint ][ queryKey ] ).toEqual( items );
+		expect( state[ endpoint ][ queryKey ].data ).toEqual( items );
 	} );
 
 	it( 'tracks multiple queries in items data', () => {
@@ -48,7 +48,9 @@ describe( 'reportItemsReducer()', () => {
 		const otherItems = [ { id: 1 }, { id: 2 }, { id: 3 } ];
 		const otherQueryState = {
 			[ endpoint ]: {
-				[ otherQueryKey ]: otherItems,
+				[ otherQueryKey ]: {
+					data: otherItems,
+				},
 			},
 		};
 		const originalState = deepFreeze( otherQueryState );
@@ -65,8 +67,8 @@ describe( 'reportItemsReducer()', () => {
 		} );
 
 		const queryKey = getJsonString( query );
-		expect( state[ endpoint ][ queryKey ] ).toEqual( items );
-		expect( state[ endpoint ][ otherQueryKey ] ).toEqual( otherItems );
+		expect( state[ endpoint ][ queryKey ].data ).toEqual( items );
+		expect( state[ endpoint ][ otherQueryKey ].data ).toEqual( otherItems );
 	} );
 
 	it( 'returns with received error data', () => {
