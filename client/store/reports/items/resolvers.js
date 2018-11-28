@@ -26,9 +26,9 @@ export default {
 				const response = await fetch(
 					SWAGGERNAMESPACE + 'reports/' + endpoint + stringifyQuery( query )
 				);
-				const items = await response.json();
+				const itemsData = await response.json();
 
-				dispatch( 'wc-admin' ).setReportItems( endpoint, items, query );
+				dispatch( 'wc-admin' ).setReportItems( endpoint, query, itemsData );
 			} catch ( error ) {
 				dispatch( 'wc-admin' ).setReportItemsError( endpoint, query );
 			}
@@ -42,9 +42,9 @@ export default {
 				path: NAMESPACE + 'reports/' + endpoint + stringifyQuery( query ),
 			} );
 
-			const items = await response.json();
-			const totalResults = parseInt( response.headers.get( 'x-wp-total' ) );
-			dispatch( 'wc-admin' ).setReportItems( endpoint, items, query, totalResults );
+			const itemsData = await response.json();
+			const totalCount = parseInt( response.headers.get( 'x-wp-total' ) );
+			dispatch( 'wc-admin' ).setReportItems( endpoint, query, itemsData, totalCount );
 		} catch ( error ) {
 			dispatch( 'wc-admin' ).setReportItemsError( endpoint, query );
 		}

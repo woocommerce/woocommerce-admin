@@ -27,17 +27,22 @@ describe( 'reportItemsReducer()', () => {
 		const query = {
 			orderby: 'orders_count',
 		};
-		const items = [ { id: 1214 }, { id: 1215 }, { id: 1216 } ];
+		const itemsData = [ { id: 1214 }, { id: 1215 }, { id: 1216 } ];
 
 		const state = reportItemsReducer( originalState, {
 			type: 'SET_REPORT_ITEMS',
 			endpoint,
 			query,
-			items,
+			data: itemsData,
+			totalCount: itemsData.length,
 		} );
 
 		const queryKey = getJsonString( query );
-		expect( state[ endpoint ][ queryKey ].data ).toEqual( items );
+		expect( state[ endpoint ][ queryKey ] ).toEqual( {
+			data: itemsData,
+			totalCount: itemsData.length,
+		} );
+		expect( state[ endpoint ][ queryKey ].totalCount ).toEqual( itemsData.length );
 	} );
 
 	it( 'tracks multiple queries in items data', () => {
@@ -45,11 +50,12 @@ describe( 'reportItemsReducer()', () => {
 			orderby: 'id',
 		};
 		const otherQueryKey = getJsonString( otherQuery );
-		const otherItems = [ { id: 1 }, { id: 2 }, { id: 3 } ];
+		const otherItemsData = [ { id: 1 }, { id: 2 }, { id: 3 } ];
 		const otherQueryState = {
 			[ endpoint ]: {
 				[ otherQueryKey ]: {
-					data: otherItems,
+					data: otherItemsData,
+					totalCount: otherItemsData.length,
 				},
 			},
 		};
@@ -57,18 +63,25 @@ describe( 'reportItemsReducer()', () => {
 		const query = {
 			orderby: 'orders_count',
 		};
-		const items = [ { id: 1214 }, { id: 1215 }, { id: 1216 } ];
+		const itemsData = [ { id: 1214 }, { id: 1215 }, { id: 1216 } ];
 
 		const state = reportItemsReducer( originalState, {
 			type: 'SET_REPORT_ITEMS',
 			endpoint,
 			query,
-			items,
+			data: itemsData,
+			totalCount: itemsData.length,
 		} );
 
 		const queryKey = getJsonString( query );
-		expect( state[ endpoint ][ queryKey ].data ).toEqual( items );
-		expect( state[ endpoint ][ otherQueryKey ].data ).toEqual( otherItems );
+		expect( state[ endpoint ][ queryKey ] ).toEqual( {
+			data: itemsData,
+			totalCount: itemsData.length,
+		} );
+		expect( state[ endpoint ][ otherQueryKey ] ).toEqual( {
+			data: otherItemsData,
+			totalCount: otherItemsData.length,
+		} );
 	} );
 
 	it( 'returns with received error data', () => {

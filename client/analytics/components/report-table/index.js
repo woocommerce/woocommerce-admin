@@ -37,7 +37,6 @@ class ReportTable extends Component {
 		} = this.props;
 
 		const { items, query } = tableData;
-		const { data: itemsData, totalResults } = items;
 
 		const isError = tableData.isError || primaryData.isError;
 
@@ -48,7 +47,7 @@ class ReportTable extends Component {
 		const isRequesting = tableData.isRequesting || primaryData.isRequesting;
 
 		const headers = getHeadersContent();
-		const orderedItems = orderBy( itemsData, query.orderby, query.order );
+		const orderedItems = orderBy( items.data, query.orderby, query.order );
 		const ids = orderedItems.map( item => item[ itemIdField ] );
 		const rows = getRowsContent( orderedItems );
 		const totals = get( primaryData, [ 'data', 'totals' ], null );
@@ -64,7 +63,7 @@ class ReportTable extends Component {
 				rows={ rows }
 				rowsPerPage={ query.per_page }
 				summary={ summary }
-				totalRows={ totalResults || 0 }
+				totalRows={ items.totalCount || 0 }
 				{ ...tableProps }
 			/>
 		);

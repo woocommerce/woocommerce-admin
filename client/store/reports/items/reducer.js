@@ -21,8 +21,8 @@ export default function reportItemsReducer( state = DEFAULT_STATE, action ) {
 			return merge( {}, state, {
 				[ action.endpoint ]: {
 					[ queryKey ]: {
-						data: action.items,
-						totalResults: action.totalResults,
+						data: action.data,
+						totalCount: action.totalCount,
 					},
 				},
 			} );

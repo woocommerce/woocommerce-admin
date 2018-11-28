@@ -53,8 +53,8 @@ describe( 'getReportItems', () => {
 		await getReportItems( endpoint );
 		expect( dispatch().setReportItems ).toHaveBeenCalledWith(
 			endpoint,
-			ITEMS_1,
 			undefined,
+			ITEMS_1,
 			ITEMS_1.length
 		);
 	} );
@@ -64,8 +64,8 @@ describe( 'getReportItems', () => {
 		await getReportItems( endpoint, { orderby: 'id' } );
 		expect( dispatch().setReportItems ).toHaveBeenCalledWith(
 			endpoint,
-			ITEMS_2,
 			{ orderby: 'id' },
+			ITEMS_2,
 			ITEMS_2.length
 		);
 	} );
