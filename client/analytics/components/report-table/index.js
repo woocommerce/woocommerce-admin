@@ -51,7 +51,7 @@ class ReportTable extends Component {
 		const ids = orderedItems.map( item => item[ itemIdField ] );
 		const rows = getRowsContent( orderedItems );
 		const totals = get( primaryData, [ 'data', 'totals' ], null );
-		const summary = getSummary( totals );
+		const summary = getSummary ? getSummary( totals ) : null;
 
 		return (
 			<TableCard
@@ -110,7 +110,6 @@ ReportTable.propTypes = {
 };
 
 ReportTable.defaultProps = {
-	getSummary: () => null,
 	tableQuery: {},
 };
 
