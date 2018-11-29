@@ -47,17 +47,13 @@ class D3Chart extends Component {
 		this.state = {
 			allData: this.getAllData( props ),
 			type: props.type,
-			width: props.width,
 		};
 		this.tooltipRef = createRef();
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const { type, width } = this.props;
+		const { type } = this.props;
 		/* eslint-disable react/no-did-update-set-state */
-		if ( width !== prevProps.width ) {
-			this.setState( { width } );
-		}
 		const nextAllData = this.getAllData( this.props );
 		if ( ! isEqual( [ ...nextAllData ].sort(), [ ...prevState.allData ].sort() ) ) {
 			this.setState( { allData: nextAllData } );
@@ -74,27 +70,27 @@ class D3Chart extends Component {
 		return [ ...props.data, ...orderedKeys ];
 	}
 
-	drawChart( node, params ) {
-		const { data, margin, type } = this.props;
+	drawChart( node ) {
+		const { data, height, margin, type, width } = this.props;
+		const params = this.getParams();
+		const adjParams = Object.assign( {}, params, {
+			height: height - margin.top - margin.bottom,
+			width: width - margin.left - margin.right,
+			tooltip: d3Select( this.tooltipRef.current ),
+			valueType: params.valueType,
+		} );
+
 		const g = node
 			.attr( 'id', 'chart' )
 			.append( 'g' )
 			.attr( 'transform', `translate(${ margin.left },${ margin.top })` );
 
-		const adjParams = Object.assign( {}, params, {
-			height: params.height - margin.top - margin.bottom,
-			width: params.width - margin.left - margin.right,
-			tooltip: d3Select( this.tooltipRef.current ),
-			valueType: params.valueType,
-		} );
 		drawAxis( g, adjParams );
 		type === 'line' && drawLines( g, data, adjParams );
 		type === 'bar' && drawBars( g, data, adjParams );
-
-		return node;
 	}
 
-	getParams( node ) {
+	getParams() {
 		const {
 			colorScheme,
 			data,
@@ -109,16 +105,14 @@ class D3Chart extends Component {
 			tooltipValueFormat,
 			tooltipTitle,
 			type,
+			width,
 			xFormat,
 			x2Format,
 			yFormat,
 			valueType,
 		} = this.props;
-		const { width } = this.state;
-		const calculatedWidth = width && width > 0 ? width : node.offsetWidth;
-		const calculatedHeight = height || node.offsetHeight;
-		const adjHeight = calculatedHeight - margin.top - margin.bottom;
-		const adjWidth = calculatedWidth - margin.left - margin.right;
+		const adjHeight = height - margin.top - margin.bottom;
+		const adjWidth = width - margin.left - margin.right;
 		const uniqueKeys = getUniqueKeys( data );
 		const newOrderedKeys = orderedKeys || getOrderedKeys( data, uniqueKeys );
 		const lineData = getLineData( data, newOrderedKeys );
@@ -132,7 +126,7 @@ class D3Chart extends Component {
 		return {
 			colorScheme,
 			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
-			height: calculatedHeight,
+			height,
 			line: getLine( xLineScale, yScale ),
 			lineData,
 			margin,
@@ -146,7 +140,6 @@ class D3Chart extends Component {
 			type,
 			uniqueDates,
 			uniqueKeys,
-			width: calculatedWidth,
 			xFormat: getFormatter( xFormat, d3TimeFormat ),
 			x2Format: getFormatter( x2Format, d3TimeFormat ),
 			xGroupScale: getXGroupScale( orderedKeys, xScale ),
@@ -174,9 +167,9 @@ class D3Chart extends Component {
 					className={ classNames( this.props.className ) }
 					data={ this.state.allData }
 					drawChart={ this.drawChart }
-					getParams={ this.getParams }
+					height={ this.props.height }
 					type={ this.state.type }
-					width={ this.state.width }
+					width={ this.props.width }
 				/>
 				<div className="d3-chart__tooltip" ref={ this.tooltipRef } />
 			</div>

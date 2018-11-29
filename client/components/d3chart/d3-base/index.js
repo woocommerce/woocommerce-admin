@@ -29,12 +29,11 @@ export default class D3Base extends Component {
 	constructor( props ) {
 		super( props );
 
-		this.getUpdatedParams = this.getUpdatedParams.bind( this );
 		this.chartRef = createRef();
 	}
 
 	componentDidMount() {
-		window.addEventListener( 'resize', this.getUpdatedParams );
+		window.addEventListener( 'resize', this.drawChart );
 
 		this.drawUpdatedChart();
 	}
@@ -43,6 +42,7 @@ export default class D3Base extends Component {
 		return (
 			this.props.className !== nextProps.className ||
 			! isEqual( this.props.data, nextProps.data ) ||
+			this.props.height !== nextProps.height ||
 			this.props.type !== nextProps.type ||
 			this.props.width !== nextProps.width
 		);
@@ -53,7 +53,7 @@ export default class D3Base extends Component {
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener( 'resize', this.getUpdatedParams );
+		window.removeEventListener( 'resize', this.drawChart );
 
 		this.deleteChart();
 	}
@@ -69,15 +69,12 @@ export default class D3Base extends Component {
 	 */
 	drawUpdatedChart() {
 		const { drawChart } = this.props;
-		const params = this.getUpdatedParams();
-
-		const svg = this.getContainer( params );
-		drawChart( svg, params, this.props.width );
+		const svg = this.getContainer();
+		drawChart( svg );
 	}
 
-	getContainer( params ) {
-		const { className } = this.props;
-		const { height, width } = params;
+	getContainer() {
+		const { className, height, width } = this.props;
 
 		this.deleteChart();
 
@@ -95,11 +92,6 @@ export default class D3Base extends Component {
 		return svg.append( 'g' );
 	}
 
-	getUpdatedParams() {
-		const { getParams } = this.props;
-		return getParams( this.chartRef.current );
-	}
-
 	render() {
 		return (
 			<div className={ classNames( 'd3-base', this.props.className ) } ref={ this.chartRef } />
@@ -111,6 +103,5 @@ D3Base.propTypes = {
 	className: PropTypes.string,
 	data: PropTypes.any, // required to detect changes in data
 	drawChart: PropTypes.func.isRequired,
-	getParams: PropTypes.func.isRequired,
 	type: PropTypes.string,
 };
