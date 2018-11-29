@@ -71,11 +71,11 @@ class D3Chart extends Component {
 	}
 
 	drawChart( node ) {
-		const { data, height, margin, type, width } = this.props;
+		const { data, margin, type } = this.props;
 		const params = this.getParams();
 		const adjParams = Object.assign( {}, params, {
-			height: height - margin.top - margin.bottom,
-			width: width - margin.left - margin.right,
+			height: params.adjHeight,
+			width: params.adjWidth,
 			tooltip: d3Select( this.tooltipRef.current ),
 			valueType: params.valueType,
 		} );
@@ -124,6 +124,8 @@ class D3Chart extends Component {
 		const xScale = getXScale( uniqueDates, adjWidth );
 		const xTicks = getXTicks( uniqueDates, adjWidth, mode, interval );
 		return {
+			adjHeight,
+			adjWidth,
 			colorScheme,
 			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
 			height,
