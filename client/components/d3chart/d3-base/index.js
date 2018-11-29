@@ -26,7 +26,12 @@ import './style.scss';
  * phase' (i.e. in 'componentDidMount' and 'componentDidUpdate' methods).
  */
 export default class D3Base extends Component {
-	chartRef = createRef();
+	constructor( props ) {
+		super( props );
+
+		this.getUpdatedParams = this.getUpdatedParams.bind( this );
+		this.chartRef = createRef();
+	}
 
 	componentDidMount() {
 		window.addEventListener( 'resize', this.getUpdatedParams );
