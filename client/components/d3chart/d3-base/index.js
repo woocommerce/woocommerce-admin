@@ -33,8 +33,6 @@ export default class D3Base extends Component {
 	}
 
 	componentDidMount() {
-		window.addEventListener( 'resize', this.drawChart );
-
 		this.drawUpdatedChart();
 	}
 
@@ -54,8 +52,6 @@ export default class D3Base extends Component {
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener( 'resize', this.drawChart );
-
 		this.deleteChart();
 	}
 
