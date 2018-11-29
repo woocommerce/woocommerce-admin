@@ -6,7 +6,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { Component, createRef } from '@wordpress/element';
-import { isEmpty, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import { select as d3Select } from 'd3-selection';
 
 /**
@@ -26,70 +26,29 @@ import './style.scss';
  * phase' (i.e. in 'componentDidMount' and 'componentDidUpdate' methods).
  */
 export default class D3Base extends Component {
-	static propTypes = {
-		className: PropTypes.string,
-		data: PropTypes.any, // required to detect changes in data
-		drawChart: PropTypes.func.isRequired,
-		getParams: PropTypes.func.isRequired,
-		type: PropTypes.string,
-	};
-
-	state = {
-		data: null,
-		params: null,
-		drawChart: null,
-		getParams: null,
-		type: null,
-	};
-
 	chartRef = createRef();
 
-	static getDerivedStateFromProps( nextProps, prevState ) {
-		let state = {};
-
-		if ( ! isEqual( nextProps.data, prevState.data ) ) {
-			state = { ...state, data: nextProps.data };
-		}
-
-		if ( ! isEqual( nextProps.drawChart, prevState.drawChart ) ) {
-			state = { ...state, drawChart: nextProps.drawChart };
-		}
-
-		if ( ! isEqual( nextProps.getParams, prevState.getParams ) ) {
-			state = { ...state, getParams: nextProps.getParams };
-		}
-
-		if ( nextProps.type !== prevState.type ) {
-			state = { ...state, type: nextProps.type };
-		}
-
-		if ( ! isEmpty( state ) ) {
-			return { ...state, params: null };
-		}
-
-		return null;
-	}
-
 	componentDidMount() {
-		window.addEventListener( 'resize', this.updateParams );
+		window.addEventListener( 'resize', this.getUpdatedParams );
 
-		this.drawChart();
+		this.drawUpdatedChart();
 	}
 
-	shouldComponentUpdate( nextProps, nextState ) {
+	shouldComponentUpdate( nextProps ) {
 		return (
-			( nextState.params !== null && ! isEqual( this.state.params, nextState.params ) ) ||
-			! isEqual( this.state.data, nextState.data ) ||
-			this.state.type !== nextState.type
+			this.props.className !== nextProps.className ||
+			! isEqual( this.props.data, nextProps.data ) ||
+			this.props.type !== nextProps.type ||
+			this.props.width !== nextProps.width
 		);
 	}
 
 	componentDidUpdate() {
-		this.drawChart();
+		this.drawUpdatedChart();
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener( 'resize', this.updateParams );
+		window.removeEventListener( 'resize', this.getUpdatedParams );
 
 		this.deleteChart();
 	}
@@ -103,19 +62,17 @@ export default class D3Base extends Component {
 	/**
 	 * Renders the chart, or triggers a rendering by updating the list of params.
 	 */
-	drawChart() {
-		if ( ! this.state.params ) {
-			this.updateParams();
-			return;
-		}
+	drawUpdatedChart() {
+		const { drawChart } = this.props;
+		const params = this.getUpdatedParams();
 
-		const svg = this.getContainer();
-		this.props.drawChart( svg, this.state.params );
+		const svg = this.getContainer( params );
+		drawChart( svg, params, this.props.width );
 	}
 
-	getContainer() {
+	getContainer( params ) {
 		const { className } = this.props;
-		const { width, height } = this.state.params;
+		const { height, width } = params;
 
 		this.deleteChart();
 
@@ -133,10 +90,10 @@ export default class D3Base extends Component {
 		return svg.append( 'g' );
 	}
 
-	updateParams = () => {
-		const params = this.state.getParams( this.chartRef.current );
-		this.setState( { params } );
-	};
+	getUpdatedParams() {
+		const { getParams } = this.props;
+		return getParams( this.chartRef.current );
+	}
 
 	render() {
 		return (
@@ -144,3 +101,11 @@ export default class D3Base extends Component {
 		);
 	}
 }
+
+D3Base.propTypes = {
+	className: PropTypes.string,
+	data: PropTypes.any, // required to detect changes in data
+	drawChart: PropTypes.func.isRequired,
+	getParams: PropTypes.func.isRequired,
+	type: PropTypes.string,
+};
