@@ -42,6 +42,7 @@ export default class D3Base extends Component {
 		return (
 			this.props.className !== nextProps.className ||
 			! isEqual( this.props.data, nextProps.data ) ||
+			this.props.drawChart !== nextProps.drawChart ||
 			this.props.height !== nextProps.height ||
 			this.props.type !== nextProps.type ||
 			this.props.width !== nextProps.width
