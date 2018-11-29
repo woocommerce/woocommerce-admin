@@ -266,6 +266,10 @@ Table.propTypes = {
 			 * Boolean, true if this column should always display in the table (not shown in toggle-able list).
 			 */
 			required: PropTypes.bool,
+			/**
+			 * The label used for screen readers for this column.
+			 */
+			screenReaderLabel: PropTypes.string,
 		} )
 	),
 	/**
