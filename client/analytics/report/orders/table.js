@@ -241,11 +241,11 @@ class OrdersReportTable extends Component {
 		return (
 			<ReportTable
 				endpoint="orders"
-				tableData={ tableData }
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
 				query={ query }
+				tableData={ tableData }
 				title={ __( 'Orders', 'wc-admin' ) }
 			/>
 		);
