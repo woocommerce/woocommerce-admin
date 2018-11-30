@@ -6,7 +6,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { compose } from '@wordpress/compose';
-import { get, map, orderBy } from 'lodash';
+import { map, orderBy } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -17,21 +17,29 @@ import {
 	getIntervalForQuery,
 	getDateFormatsForInterval,
 } from '@woocommerce/date';
-import { Link, OrderStatus, TableCard, ViewMoreList } from '@woocommerce/components';
+import { Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
-import { getAdminLink, onQueryChange } from '@woocommerce/navigation';
+import { getAdminLink } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
-import ReportError from 'analytics/components/report-error';
 import { QUERY_DEFAULTS } from 'store/constants';
 import { getReportChartData, getFilterQuery } from 'store/reports/utils';
 import { numberFormat } from 'lib/number';
 import withSelect from 'wc-api/with-select';
+import ReportTable from 'analytics/components/report-table';
 import './style.scss';
 
 class OrdersReportTable extends Component {
+	constructor() {
+		super();
+
+		this.getHeadersContent = this.getHeadersContent.bind( this );
+		this.getRowsContent = this.getRowsContent.bind( this );
+		this.getSummary = this.getSummary.bind( this );
+	}
+
 	getHeadersContent() {
 		return [
 			{
@@ -259,41 +267,32 @@ class OrdersReportTable extends Component {
 	}
 
 	render() {
-		const { isTableDataError, isTableDataRequesting, primaryData, query, orders } = this.props;
-		const isError = isTableDataError || primaryData.isError;
-
-		if ( isError ) {
-			return <ReportError isError />;
-		}
-
-		const isRequesting = isTableDataRequesting || primaryData.isRequesting;
-
-		const tableQuery = {
-			...query,
-			orderby: query.orderby || 'date',
-			order: query.order || 'asc',
-		};
-
-		const headers = this.getHeadersContent();
-		const rows = this.getRowsContent(
-			orderBy( this.formatTableData( orders ), tableQuery.orderby, tableQuery.order )
+		const { isTableDataError, isTableDataRequesting, orders, query, tableQuery } = this.props;
+		const sortedOrders = orderBy(
+			this.formatTableData( orders ),
+			tableQuery.orderby,
+			tableQuery.order
 		);
-		const rowsPerPage = parseInt( tableQuery.per_page ) || QUERY_DEFAULTS.pageSize;
-		const totalRows = get( primaryData, [ 'data', 'totals', 'orders_count' ], orders.length );
-		const summary = primaryData.data.totals ? this.getSummary( primaryData.data.totals ) : null;
 
 		return (
-			<TableCard
+			<ReportTable
+				endpoint="orders"
+				tableData={ {
+					items: {
+						data: sortedOrders,
+						totalCount: sortedOrders.length, // @TODO
+					},
+					isError: isTableDataError,
+					isRequesting: isTableDataRequesting,
+					query: tableQuery,
+				} }
+				isTableDataError={ isTableDataError }
+				isTableDataRequesting={ isTableDataRequesting }
+				getHeadersContent={ this.getHeadersContent }
+				getRowsContent={ this.getRowsContent }
+				getSummary={ this.getSummary }
+				query={ query }
 				title={ __( 'Orders', 'wc-admin' ) }
-				rows={ rows }
-				totalRows={ totalRows }
-				rowsPerPage={ rowsPerPage }
-				headers={ headers }
-				isLoading={ isRequesting }
-				onQueryChange={ onQueryChange }
-				query={ tableQuery }
-				summary={ summary }
-				downloadable
 			/>
 		);
 	}
@@ -327,6 +326,7 @@ export default compose(
 			isTableDataRequesting,
 			orders,
 			primaryData,
+			tableQuery,
 		};
 	} )
 )( OrdersReportTable );
