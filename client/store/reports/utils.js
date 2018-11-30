@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import { find, forEach, isNull } from 'lodash';
+import { find, forEach, get, isNull } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -242,7 +242,10 @@ export function getReportChartData( endpoint, dataType, query, select ) {
 		}
 
 		forEach( pagedData, function( _data ) {
-			intervals = intervals.concat( _data.data.intervals );
+			const _pagedData = get( _data, [ 'data', 'intervals' ] );
+			if ( _pagedData ) {
+				intervals = intervals.concat( _pagedData );
+			}
 		} );
 	}
 
