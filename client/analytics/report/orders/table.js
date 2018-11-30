@@ -6,7 +6,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { compose } from '@wordpress/compose';
-import { map, orderBy } from 'lodash';
+import { map } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -18,17 +18,18 @@ import {
 	getDateFormatsForInterval,
 } from '@woocommerce/date';
 import { Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { formatCurrency } from '@woocommerce/currency';
 import { getAdminLink } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import { QUERY_DEFAULTS } from 'store/constants';
-import { getReportChartData, getFilterQuery } from 'store/reports/utils';
+import { getFilterQuery } from 'store/reports/utils';
 import { numberFormat } from 'lib/number';
 import withSelect from 'wc-api/with-select';
 import ReportTable from 'analytics/components/report-table';
+import { formatTableOrders } from './utils';
 import './style.scss';
 
 class OrdersReportTable extends Component {
@@ -95,38 +96,6 @@ class OrdersReportTable extends Component {
 				isNumeric: true,
 			},
 		];
-	}
-
-	formatTableData( data ) {
-		return map( data, row => {
-			const {
-				date_created,
-				id,
-				status,
-				customer_id,
-				line_items,
-				coupon_lines,
-				currency,
-				total,
-				total_tax,
-				shipping_total,
-				discount_total,
-			} = row;
-
-			return {
-				date: date_created,
-				id,
-				status,
-				customer_id,
-				line_items,
-				items_sold: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
-				coupon_lines,
-				currency,
-				net_revenue: getCurrencyFormatDecimal(
-					total - total_tax - shipping_total - discount_total
-				),
-			};
-		} );
 	}
 
 	getRowsContent( tableData ) {
@@ -267,27 +236,12 @@ class OrdersReportTable extends Component {
 	}
 
 	render() {
-		const { isTableDataError, isTableDataRequesting, orders, query, tableQuery } = this.props;
-		const sortedOrders = orderBy(
-			this.formatTableData( orders ),
-			tableQuery.orderby,
-			tableQuery.order
-		);
+		const { query, tableData } = this.props;
 
 		return (
 			<ReportTable
 				endpoint="orders"
-				tableData={ {
-					items: {
-						data: sortedOrders,
-						totalCount: sortedOrders.length, // @TODO
-					},
-					isError: isTableDataError,
-					isRequesting: isTableDataRequesting,
-					query: tableQuery,
-				} }
-				isTableDataError={ isTableDataError }
-				isTableDataRequesting={ isTableDataRequesting }
+				tableData={ tableData }
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
@@ -302,10 +256,11 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { query } = props;
 		const datesFromQuery = getCurrentDates( query );
-		const primaryData = getReportChartData( 'orders', 'primary', query, select );
 		const filterQuery = getFilterQuery( 'orders', query );
 
-		const { getOrders, isGetOrdersError, isGetOrdersRequesting } = select( 'wc-api' );
+		const { getOrders, getOrdersTotalCount, isGetOrdersError, isGetOrdersRequesting } = select(
+			'wc-api'
+		);
 
 		const tableQuery = {
 			orderby: query.orderby || 'date',
@@ -318,15 +273,20 @@ export default compose(
 			...filterQuery,
 		};
 		const orders = getOrders( tableQuery );
-		const isTableDataError = isGetOrdersError( tableQuery );
-		const isTableDataRequesting = isGetOrdersRequesting( tableQuery );
+		const ordersTotalCount = getOrdersTotalCount( tableQuery );
+		const isError = isGetOrdersError( tableQuery );
+		const isRequesting = isGetOrdersRequesting( tableQuery );
 
 		return {
-			isTableDataError,
-			isTableDataRequesting,
-			orders,
-			primaryData,
-			tableQuery,
+			tableData: {
+				items: {
+					data: formatTableOrders( orders ),
+					totalCount: ordersTotalCount,
+				},
+				isError,
+				isRequesting,
+				query: tableQuery,
+			},
 		};
 	} )
 )( OrdersReportTable );
