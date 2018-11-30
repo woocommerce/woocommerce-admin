@@ -128,7 +128,6 @@ class D3Chart extends Component {
 			adjWidth,
 			colorScheme,
 			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
-			height,
 			line: getLine( xLineScale, yScale ),
 			lineData,
 			margin,
