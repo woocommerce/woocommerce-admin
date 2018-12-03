@@ -33,8 +33,8 @@ import ReportTable from 'analytics/components/report-table';
 import { formatTableOrders } from './utils';
 import './style.scss';
 
-const HEADERS_FILTER = 'woocommerce-orders-table-headers';
-const ROWS_FILTER = 'woocommerce-orders-table-rows';
+const HEADERS_FILTER = 'woocommerce_orders_table_headers';
+const ROWS_FILTER = 'woocommerce_orders_table_rows';
 
 class OrdersReportTable extends Component {
 	constructor() {
