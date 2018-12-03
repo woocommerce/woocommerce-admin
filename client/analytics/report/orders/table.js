@@ -34,7 +34,6 @@ import { formatTableOrders } from './utils';
 import './style.scss';
 
 const HEADERS_FILTER = 'woocommerce-orders-table-headers';
-const DATA_FILTER = 'woocommerce-orders-table-data';
 const ROWS_FILTER = 'woocommerce-orders-table-rows';
 
 class OrdersReportTable extends Component {
@@ -47,9 +46,7 @@ class OrdersReportTable extends Component {
 	}
 
 	getHeadersContent() {
-		const customHeaders = applyFilters( HEADERS_FILTER, false );
-
-		const headers = [
+		return applyFilters( HEADERS_FILTER, [
 			{
 				label: __( 'Date', 'wc-admin' ),
 				key: 'date',
@@ -106,9 +103,7 @@ class OrdersReportTable extends Component {
 				isSortable: false,
 				isNumeric: true,
 			},
-		];
-
-		return customHeaders ? headers.concat( customHeaders ) : headers;
+		] );
 	}
 
 	getRowsContent( tableData ) {
@@ -142,9 +137,7 @@ class OrdersReportTable extends Component {
 				href: 'edit.php?s=' + coupon.code + '&post_type=shop_coupon',
 			} ) );
 
-			const customRowData = applyFilters( ROWS_FILTER, false, row );
-
-			const rowData = [
+			return applyFilters( ROWS_FILTER, [
 				{
 					display: formatDate( tableFormat, date ),
 					value: date,
@@ -187,9 +180,7 @@ class OrdersReportTable extends Component {
 					display: formatCurrency( net_revenue, currency ),
 					value: net_revenue,
 				},
-			];
-
-			return customRowData ? rowData.concat( customRowData ) : rowData;
+			] );
 		} );
 	}
 
