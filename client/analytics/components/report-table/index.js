@@ -118,13 +118,13 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { endpoint, getSummary, query, tableData, tableQuery } = props;
 		const primaryData = getSummary ? getReportChartData( endpoint, 'primary', query, select ) : {};
-		const loadedTableData = tableData
+		const queriedTableData = tableData
 			? tableData
 			: getReportTableData( endpoint, query, select, tableQuery );
 
 		return {
 			primaryData,
-			tableData: tableData ? tableData : loadedTableData,
+			tableData: queriedTableData,
 		};
 	} )
 )( ReportTable );
