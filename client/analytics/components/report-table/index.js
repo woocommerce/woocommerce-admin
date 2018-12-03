@@ -121,9 +121,7 @@ export default compose(
 		const primaryData = getSummary
 			? getReportChartData( chartEndpoint, 'primary', query, select )
 			: {};
-		const queriedTableData = tableData
-			? tableData
-			: getReportTableData( endpoint, query, select, tableQuery );
+		const queriedTableData = tableData || getReportTableData( endpoint, query, select, tableQuery );
 
 		return {
 			primaryData,
