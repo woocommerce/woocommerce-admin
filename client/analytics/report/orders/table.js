@@ -3,7 +3,6 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 import { Component, Fragment } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { compose } from '@wordpress/compose';
@@ -33,9 +32,6 @@ import ReportTable from 'analytics/components/report-table';
 import { formatTableOrders } from './utils';
 import './style.scss';
 
-const HEADERS_FILTER = 'woocommerce_orders_table_headers';
-const ROWS_FILTER = 'woocommerce_orders_table_rows';
-
 class OrdersReportTable extends Component {
 	constructor() {
 		super();
@@ -46,7 +42,7 @@ class OrdersReportTable extends Component {
 	}
 
 	getHeadersContent() {
-		return applyFilters( HEADERS_FILTER, [
+		return [
 			{
 				label: __( 'Date', 'wc-admin' ),
 				key: 'date',
@@ -103,7 +99,7 @@ class OrdersReportTable extends Component {
 				isSortable: false,
 				isNumeric: true,
 			},
-		] );
+		];
 	}
 
 	getRowsContent( tableData ) {
@@ -137,7 +133,7 @@ class OrdersReportTable extends Component {
 				href: 'edit.php?s=' + coupon.code + '&post_type=shop_coupon',
 			} ) );
 
-			return applyFilters( ROWS_FILTER, [
+			return [
 				{
 					display: formatDate( tableFormat, date ),
 					value: date,
@@ -180,7 +176,7 @@ class OrdersReportTable extends Component {
 					display: formatCurrency( net_revenue, currency ),
 					value: net_revenue,
 				},
-			] );
+			];
 		} );
 	}
 
