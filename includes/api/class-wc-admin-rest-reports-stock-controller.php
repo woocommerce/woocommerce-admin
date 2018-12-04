@@ -52,6 +52,10 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date ID';
 		}
+		if ( 'stock_quantity' === $args['orderby'] ) {
+			$args['meta_key'] = '_stock'; // WPCS: slow query ok.
+			$args['orderby']  = 'meta_value_num';
+		}
 
 		$args['post_type'] = array( 'product', 'product_variation' );
 
@@ -334,15 +338,16 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 		$params['order']          = array(
 			'description'       => __( 'Order sort attribute ascending or descending.', 'wc-admin' ),
 			'type'              => 'string',
-			'default'           => 'desc',
+			'default'           => 'asc',
 			'enum'              => array( 'asc', 'desc' ),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['orderby']        = array(
 			'description'       => __( 'Sort collection by object attribute.', 'wc-admin' ),
 			'type'              => 'string',
-			'default'           => 'date',
+			'default'           => 'stock_quantity',
 			'enum'              => array(
+				'stock_quantity',
 				'date',
 				'id',
 				'include',
