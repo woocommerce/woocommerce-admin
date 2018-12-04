@@ -166,6 +166,7 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 		$data = array(
 			'id'             => $product->get_id(),
 			'parent_id'      => $product->get_parent_id(),
+			'name'           => $product->get_name(),
 			'sku'            => $product->get_sku(),
 			'stock_status'   => $product->get_stock_status(),
 			'stock_quantity' => (float) $product->get_stock_quantity(),
@@ -227,6 +228,12 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 				'parent_id'      => array(
 					'description' => __( 'Product parent ID.', 'wc-admin' ),
 					'type'        => 'integer',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'name'           => array(
+					'description' => __( 'Product name.', 'wc-admin' ),
+					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
