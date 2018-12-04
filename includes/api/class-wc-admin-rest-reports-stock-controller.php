@@ -34,7 +34,7 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 	/**
 	 * Maps query arguments from the REST request.
 	 *
-	 * @param  array $request Request array.
+	 * @param  WP_REST_Request $request Request array.
 	 * @return array
 	 */
 	protected function prepare_reports_query( $request ) {
