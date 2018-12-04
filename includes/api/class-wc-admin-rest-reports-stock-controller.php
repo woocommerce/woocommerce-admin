@@ -239,7 +239,7 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 				),
 				'sku'            => array(
 					'description' => __( 'Unique identifier.', 'wc-admin' ),
-					'type'        => 'integer',
+					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
