@@ -22,7 +22,9 @@ export function formatTableOrders( orders ) {
 			total_tax,
 			shipping_total,
 			discount_total,
+			refunds,
 		} = order;
+		const refundTotal = refunds.reduce( ( acc, refund ) => acc - parseInt( refund.total ), 0 );
 
 		return {
 			date: date_created,
@@ -33,7 +35,9 @@ export function formatTableOrders( orders ) {
 			items_sold: line_items.reduce( ( acc, item ) => item.quantity + acc, 0 ),
 			coupon_lines,
 			currency,
-			net_revenue: getCurrencyFormatDecimal( total - total_tax - shipping_total - discount_total ),
+			net_revenue: getCurrencyFormatDecimal(
+				total - total_tax - shipping_total - discount_total - refundTotal
+			),
 		};
 	} );
 }
