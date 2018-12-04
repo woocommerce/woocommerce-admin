@@ -199,11 +199,31 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 	 * @return array
 	 */
 	protected function prepare_links( $product ) {
-		$links = array(
-			'product' => array(
-				'href' => rest_url( sprintf( '/%s/products/%d', $this->namespace, $product->get_parent_id() ? $product->get_parent_id() : $product->get_id() ) ),
-			),
-		);
+		if ( $product->is_type( 'variation' ) ) {
+			$links = array(
+				'product' => array(
+					'href' => rest_url( sprintf( '/%s/products/%d/variations/%d', $this->namespace, $product->get_parent_id(), $product->get_id() ) ),
+				),
+				'parent'  => array(
+					'href' => rest_url( sprintf( '/%s/products/%d', $this->namespace, $product->get_parent_id() ) ),
+				),
+			);
+		} elseif ( $product->get_parent_id() ) {
+			$links = array(
+				'product' => array(
+					'href' => rest_url( sprintf( '/%s/products/%d', $this->namespace, $product->get_id() ) ),
+				),
+				'parent'  => array(
+					'href' => rest_url( sprintf( '/%s/products/%d', $this->namespace, $product->get_parent_id() ) ),
+				),
+			);
+		} else {
+			$links = array(
+				'product' => array(
+					'href' => rest_url( sprintf( '/%s/products/%d', $this->namespace, $product->get_id() ) ),
+				),
+			);
+		}
 
 		return $links;
 	}
