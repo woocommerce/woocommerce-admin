@@ -112,12 +112,14 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 	public function test_get_warning_notes() {
 		wp_set_current_user( $this->user );
 
-		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint ) );
+		$request  = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params( array( 'type' => 'warning' ) );
+		$response = $this->server->dispatch( $request );
 		$notes    = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 1, count( $notes ) );
-		$this->assertEquals( $notes[0]->title, 'PHPUNIT_TEST_NOTE_2_TITLE' );
+		$this->assertEquals( $notes[0]['title'], 'PHPUNIT_TEST_NOTE_2_TITLE' );
 	}
 
 	/**
