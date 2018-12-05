@@ -22,7 +22,6 @@ import RevenueReportTable from './table';
 export default class RevenueReport extends Component {
 	render() {
 		const { path, query } = this.props;
-
 		return (
 			<Fragment>
 				<ReportFilters query={ query } path={ path } />
