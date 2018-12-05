@@ -32,6 +32,24 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 	protected $rest_base = 'reports/taxes';
 
 	/**
+	 * Maps query arguments from the REST request.
+	 *
+	 * @param array $request Request array.
+	 * @return array
+	 */
+	protected function prepare_reports_query( $request ) {
+		$args             = array();
+		$args['before']   = $request['before'];
+		$args['after']    = $request['after'];
+		$args['page']     = $request['page'];
+		$args['per_page'] = $request['per_page'];
+		$args['orderby']  = $request['orderby'];
+		$args['order']    = $request['order'];
+
+		return $args;
+	}
+
+	/**
 	 * Get all reports.
 	 *
 	 * @param WP_REST_Request $request Request data.
@@ -39,20 +57,17 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 	 */
 	public function get_items( $request ) {
 		$query_args  = $this->prepare_reports_query( $request );
-		$taxes_query = new WC_Reports_Orders_Stats_Query( $query_args ); // @todo change to correct class.
+		$taxes_query = new WC_Admin_Reports_Taxes_Query( $query_args );
 		$report_data = $taxes_query->get_data();
 
-		$out_data = array(
-			'totals'    => get_object_vars( $report_data->totals ),
-			'intervals' => array(),
-		);
+		$data = array();
 
-		foreach ( $report_data->intervals as $interval_data ) {
-			$item                    = $this->prepare_item_for_response( (object) $interval_data, $request );
-			$out_data['intervals'][] = $this->prepare_response_for_collection( $item );
+		foreach ( $report_data->data as $tax_data ) {
+			$item   = $this->prepare_item_for_response( $tax_data, $request );
+			$data[] = $this->prepare_response_for_collection( $item );
 		}
 
-		$response = rest_ensure_response( $out_data );
+		$response = rest_ensure_response( $data );
 		$response->header( 'X-WP-Total', (int) $report_data->total );
 		$response->header( 'X-WP-TotalPages', (int) $report_data->pages );
 
@@ -84,14 +99,12 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 	 * @return WP_REST_Response
 	 */
 	public function prepare_item_for_response( $report, $request ) {
-		$data = get_object_vars( $report );
-
 		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$data    = $this->add_additional_fields_to_object( $data, $request );
-		$data    = $this->filter_response_by_context( $data, $context );
+		$report  = $this->add_additional_fields_to_object( $report, $request );
+		$report  = $this->filter_response_by_context( $report, $context );
 
 		// Wrap the data in a response object.
-		$response = rest_ensure_response( $data );
+		$response = rest_ensure_response( $report );
 		$response->add_links( $this->prepare_links( $report ) );
 
 		/**
@@ -115,7 +128,7 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 	protected function prepare_links( $object ) {
 		$links = array(
 			'tax' => array(
-				'href' => rest_url( sprintf( '/%s/taxes/%d', $this->namespace, $object->category_id ) ),
+				'href' => rest_url( sprintf( '/%s/taxes/%d', $this->namespace, $object->tax_rate_id ) ),
 			),
 		);
 
@@ -216,9 +229,8 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 		$params['orderby']  = array(
 			'description'       => __( 'Sort collection by object attribute.', 'wc-admin' ),
 			'type'              => 'string',
-			'default'           => 'date',
+			'default'           => 'tax_rate_id',
 			'enum'              => array(
-				'date',
 				'name',
 				'tax_rate_id',
 				'orders_count',
