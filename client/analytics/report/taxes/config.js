@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getRequestByIdString } from 'lib/async-requests';
+import { getTaxCode } from './utils';
 import { NAMESPACE } from 'store/constants';
 
 export const charts = [
@@ -50,7 +51,7 @@ export const filters = [
 					param: 'taxes',
 					getLabels: getRequestByIdString( NAMESPACE + 'taxes', tax => ( {
 						id: tax.id,
-						label: tax.country + '-' + tax.state + '-' + tax.name,
+						label: getTaxCode( tax ),
 					} ) ),
 					labels: {
 						helpText: __( 'Select at least two tax codes to compare', 'wc-admin' ),
