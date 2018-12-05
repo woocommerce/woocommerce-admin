@@ -36,10 +36,10 @@ export default {
 	},
 	isDebounced: true,
 	getOptionKeywords( tax ) {
-		return [ tax.code ];
+		return [ tax.id, tax.country + '-' + tax.state + '-' + tax.name ];
 	},
 	getOptionLabel( tax, query ) {
-		const match = computeSuggestionMatch( tax.code, query ) || {};
+		const match = computeSuggestionMatch( tax.country + '-' + tax.state + '-' + tax.name, query ) || {};
 		return [
 			<span key="name" className="woocommerce-search__result-name" aria-label={ tax.code }>
 				{ match.suggestionBeforeMatch }
