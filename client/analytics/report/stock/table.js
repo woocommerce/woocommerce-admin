@@ -33,13 +33,11 @@ export default class StockReportTable extends Component {
 				key: 'product_variation',
 				required: true,
 				isLeftAligned: true,
-				isSortable: true,
 			},
 			{
 				label: __( 'Parent', 'wc-admin' ),
 				key: 'parent',
 				required: true,
-				isSortable: true,
 			},
 			{
 				label: __( 'SKU', 'wc-admin' ),
@@ -48,7 +46,6 @@ export default class StockReportTable extends Component {
 			{
 				label: __( 'Status', 'wc-admin' ),
 				key: 'stock_status',
-				isSortable: true,
 			},
 			{
 				label: __( 'Stock', 'wc-admin' ),
@@ -65,7 +62,10 @@ export default class StockReportTable extends Component {
 		const { stockStatuses } = wcSettings;
 
 		return products.map( product => {
-			const { id, parent_id, sku, stock_quantity, stock_status } = product;
+			const { id, name, parent_id, sku, stock_quantity, stock_status } = product;
+			const isVariation = id > 0 && parent_id > 0;
+			const itemName = isVariation ? id : name; // @TODO it should be variation name instead of id
+			const parentName = isVariation ? name : null;
 
 			const productDetailLink = getNewPath( persistedQuery, 'products', {
 				filter: 'single_product',
@@ -74,7 +74,7 @@ export default class StockReportTable extends Component {
 
 			const nameLink = (
 				<Link href={ productDetailLink } type="wc-admin">
-					{ id }
+					{ itemName }
 				</Link>
 			);
 
@@ -86,12 +86,12 @@ export default class StockReportTable extends Component {
 
 			return [
 				{
-					display: nameLink, // @TODO display name instead of id
-					value: id,
+					display: nameLink,
+					value: itemName,
 				},
 				{
-					display: parent_id, // @TODO display name instead of id
-					value: parent_id,
+					display: parentName,
+					value: parentName,
 				},
 				{
 					display: sku,
