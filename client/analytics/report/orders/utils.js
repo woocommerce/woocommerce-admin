@@ -7,6 +7,7 @@
  * WooCommerce dependencies
  */
 import { getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { getOrderRefundTotal } from 'lib/order-values';
 
 export function formatTableOrders( orders ) {
 	return orders.map( order => {
@@ -22,9 +23,7 @@ export function formatTableOrders( orders ) {
 			total_tax,
 			shipping_total,
 			discount_total,
-			refunds,
 		} = order;
-		const refundTotal = refunds.reduce( ( acc, refund ) => acc - parseInt( refund.total ), 0 );
 
 		return {
 			date: date_created,
@@ -36,7 +35,7 @@ export function formatTableOrders( orders ) {
 			coupon_lines,
 			currency,
 			net_revenue: getCurrencyFormatDecimal(
-				total - total_tax - shipping_total - discount_total - refundTotal
+				total - total_tax - shipping_total - discount_total + getOrderRefundTotal( order )
 			),
 		};
 	} );
