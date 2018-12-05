@@ -110,7 +110,7 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		);
 
 		$type = isset( $request['type'] ) ? $request['type'] : '';
-		$type = sanitize_text_field( trim( $type ) );
+		$type = sanitize_text_field( $type );
 		if ( ! empty( $type ) ) {
 			$args['type'] = $type;
 		}
