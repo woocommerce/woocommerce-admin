@@ -11,6 +11,7 @@ import { map } from 'lodash';
  */
 import { Link } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { getTaxCode } from './utils';
 
 /**
  * Internal dependencies
@@ -71,25 +72,24 @@ export default class TaxesReportTable extends Component {
 
 	getRowsContent( taxes ) {
 		return map( taxes, tax => {
-			const { order_tax, orders_count, tax_rate_id, total_tax, shipping_tax } = tax;
+			const { order_tax, orders_count, tax_rate, tax_rate_id, total_tax, shipping_tax } = tax;
 
 			// @TODO must link to the tax detail report
 			const taxLink = (
 				<Link href="" type="wc-admin">
-					{ tax_rate_id }
+					{ getTaxCode( tax ) }
 				</Link>
 			);
 
 			return [
-				// @TODO it should be the tax code, not the tax ID
 				{
 					display: taxLink,
 					value: tax_rate_id,
 				},
 				{
 					// @TODO add `rate` once it's returned by the API
-					display: '',
-					value: '',
+					display: tax_rate.toFixed( 2 ) + '%',
+					value: tax_rate,
 				},
 				{
 					display: formatCurrency( total_tax ),
@@ -153,6 +153,9 @@ export default class TaxesReportTable extends Component {
 				getSummary={ this.getSummary }
 				itemIdField="tax_rate_id"
 				query={ query }
+				tableQuery={ {
+					orderby: query.orderby || 'tax_rate_id',
+				} }
 				title={ __( 'Taxes', 'wc-admin' ) }
 				columnPrefsKey="taxes_report_columns"
 			/>
