@@ -26,6 +26,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 	 */
 	protected $column_types = array(
 		'tax_rate_id'  => 'intval',
+		'tax_rate'    => 'floatval',
 		'total_tax'    => 'floatval',
 		'order_tax'    => 'floatval',
 		'shipping_tax' => 'floatval',
@@ -39,6 +40,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 	 */
 	protected $report_columns = array(
 		'tax_rate_id'  => 'tax_rate_id',
+		'tax_rate'     => 'tax_rate',
 		'total_tax'    => 'SUM(total_tax) as total_tax',
 		'order_tax'    => 'SUM(order_tax) as order_tax',
 		'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',

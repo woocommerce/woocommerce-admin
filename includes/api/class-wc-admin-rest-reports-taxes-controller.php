@@ -152,6 +152,12 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
+				'tax_rate'  => array(
+					'description' => __( 'Tax rate.', 'wc-admin' ),
+					'type'        => 'number',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
 				'total_tax'    => array(
 					'description' => __( 'Total tax.', 'wc-admin' ),
 					'type'        => 'number',

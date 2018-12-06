@@ -94,6 +94,7 @@ class WC_Tests_API_Reports_Taxes extends WC_REST_Unit_Test_Case {
 		$tax_report = reset( $reports );
 
 		$this->assertEquals( 1, $tax_report['tax_rate_id'] );
+		$this->assertEquals( 7, $tax_report['tax_rate'] );
 		$this->assertEquals( 7, $tax_report['total_tax'] );
 		$this->assertEquals( 5, $tax_report['order_tax'] );
 		$this->assertEquals( 2, $tax_report['shipping_tax'] );
@@ -124,8 +125,9 @@ class WC_Tests_API_Reports_Taxes extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertEquals( 5, count( $properties ) );
+		$this->assertEquals( 6, count( $properties ) );
 		$this->assertArrayHasKey( 'tax_rate_id', $properties );
+		$this->assertArrayHasKey( 'tax_rate', $properties );
 		$this->assertArrayHasKey( 'total_tax', $properties );
 		$this->assertArrayHasKey( 'order_tax', $properties );
 		$this->assertArrayHasKey( 'shipping_tax', $properties );
