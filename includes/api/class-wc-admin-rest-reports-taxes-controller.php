@@ -152,9 +152,33 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'tax_rate'  => array(
+				'name'         => array(
+					'description' => __( 'Tax rate name.', 'wc-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'tax_rate'     => array(
 					'description' => __( 'Tax rate.', 'wc-admin' ),
 					'type'        => 'number',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'country'      => array(
+					'description' => __( 'Country.', 'wc-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'state'        => array(
+					'description' => __( 'State.', 'wc-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'priority'        => array(
+					'description' => __( 'Priority.', 'wc-admin' ),
+					'type'        => 'integer',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),

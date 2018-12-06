@@ -61,6 +61,8 @@ class WC_Tests_API_Reports_Taxes extends WC_REST_Unit_Test_Case {
 			array(
 				'tax_rate_id'       => 1,
 				'tax_rate'          => '7',
+				'tax_rate_country'  => 'US',
+				'tax_rate_state'    => 'GA',
 				'tax_rate_name'     => 'TestTax',
 				'tax_rate_priority' => 1,
 				'tax_rate_order'    => 1,
@@ -94,7 +96,10 @@ class WC_Tests_API_Reports_Taxes extends WC_REST_Unit_Test_Case {
 		$tax_report = reset( $reports );
 
 		$this->assertEquals( 1, $tax_report['tax_rate_id'] );
+		$this->assertEquals( 'TestTax', $tax_report['name'] );
 		$this->assertEquals( 7, $tax_report['tax_rate'] );
+		$this->assertEquals( 'US', $tax_report['country'] );
+		$this->assertEquals( 'GA', $tax_report['state'] );
 		$this->assertEquals( 7, $tax_report['total_tax'] );
 		$this->assertEquals( 5, $tax_report['order_tax'] );
 		$this->assertEquals( 2, $tax_report['shipping_tax'] );
@@ -125,9 +130,13 @@ class WC_Tests_API_Reports_Taxes extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertEquals( 6, count( $properties ) );
+		$this->assertEquals( 10, count( $properties ) );
 		$this->assertArrayHasKey( 'tax_rate_id', $properties );
+		$this->assertArrayHasKey( 'name', $properties );
 		$this->assertArrayHasKey( 'tax_rate', $properties );
+		$this->assertArrayHasKey( 'country', $properties );
+		$this->assertArrayHasKey( 'state', $properties );
+		$this->assertArrayHasKey( 'priority', $properties );
 		$this->assertArrayHasKey( 'total_tax', $properties );
 		$this->assertArrayHasKey( 'order_tax', $properties );
 		$this->assertArrayHasKey( 'shipping_tax', $properties );
