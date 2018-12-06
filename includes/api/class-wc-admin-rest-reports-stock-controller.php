@@ -93,6 +93,8 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 			);
 		}
 
+		$query_args['ignore_sticky_posts'] = true;
+
 		return $args;
 	}
 
