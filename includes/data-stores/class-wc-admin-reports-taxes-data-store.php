@@ -80,6 +80,27 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 	}
 
 	/**
+	 * Fills ORDER BY clause of SQL request based on user supplied parameters.
+	 *
+	 * @param array $query_args Parameters supplied by the user.
+	 * @return array
+	 */
+	protected function get_order_by_sql_params( $query_args ) {
+		$sql_query['order_by_clause'] = '';
+		if ( isset( $query_args['orderby'] ) ) {
+			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
+		}
+
+		if ( isset( $query_args['order'] ) ) {
+			$sql_query['order_by_clause'] .= ' ' . $query_args['order'];
+		} else {
+			$sql_query['order_by_clause'] .= ' DESC';
+		}
+
+		return $sql_query;
+	}
+
+	/**
 	 * Returns the report data based on parameters supplied by the user.
 	 *
 	 * @param array $query_args  Query parameters.
@@ -97,7 +118,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 			'per_page' => get_option( 'posts_per_page' ),
 			'page'     => 1,
 			'order'    => 'DESC',
-			'orderby'  => 'date',
+			'orderby'  => 'tax_rate_id',
 			'before'   => date( WC_Admin_Reports_Interval::$iso_datetime_format, $now ),
 			'after'    => date( WC_Admin_Reports_Interval::$iso_datetime_format, $week_back ),
 			'fields'   => '*',
@@ -183,6 +204,22 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 	 */
 	protected function get_cache_key( $params ) {
 		return 'woocommerce_' . self::TABLE_NAME . '_' . md5( wp_json_encode( $params ) );
+	}
+
+	/**
+	 * Maps ordering specified by the user to columns in the database/fields in the data.
+	 *
+	 * @param string $order_by Sorting criterion.
+	 * @return string
+	 */
+	protected function normalize_order_by( $order_by ) {
+		global $wpdb;
+
+		if ( 'rate' === $order_by ) {
+			return $wpdb->prefix . 'woocommerce_tax_rates.tax_rate';
+		}
+
+		return $order_by;
 	}
 
 }
