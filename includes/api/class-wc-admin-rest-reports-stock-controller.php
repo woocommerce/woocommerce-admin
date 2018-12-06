@@ -51,10 +51,15 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date ID';
-		}
-		if ( 'stock_quantity' === $args['orderby'] ) {
+		} elseif ( 'stock_quantity' === $args['orderby'] ) {
 			$args['meta_key'] = '_stock'; // WPCS: slow query ok.
 			$args['orderby']  = 'meta_value_num';
+		} elseif ( 'include' === $query_args['orderby'] ) {
+			$query_args['orderby'] = 'post__in';
+		} elseif ( 'id' === $query_args['orderby'] ) {
+			$query_args['orderby'] = 'ID'; // ID must be capitalized.
+		} elseif ( 'slug' === $query_args['orderby'] ) {
+			$query_args['orderby'] = 'name';
 		}
 
 		$args['post_type'] = array( 'product', 'product_variation' );
