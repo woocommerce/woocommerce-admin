@@ -63,7 +63,7 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 		$data = array();
 
 		foreach ( $report_data->data as $tax_data ) {
-			$item   = $this->prepare_item_for_response( $tax_data, $request );
+			$item   = $this->prepare_item_for_response( (object) $tax_data, $request );
 			$data[] = $this->prepare_response_for_collection( $item );
 		}
 
