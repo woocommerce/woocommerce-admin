@@ -26,9 +26,6 @@ class WC_Admin_Api_Init {
 		add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
 		add_filter( 'rest_endpoints', array( 'WC_Admin_Api_Init', 'filter_rest_endpoints' ), 10, 1 );
 		add_filter( 'woocommerce_debug_tools', array( 'WC_Admin_Api_Init', 'add_regenerate_tool' ) );
-
-		// Initialize Orders data store class's static vars.
-		add_action( 'woocommerce_after_register_post_type', array( 'WC_Admin_Api_Init', 'orders_data_store_init' ), 20 );
 	}
 
 	/**
@@ -150,14 +147,6 @@ class WC_Admin_Api_Init {
 	}
 
 	/**
-	 * Regenerate data for reports.
-	 */
-	public static function regenrate_report_data() {
-		WC_Admin_Reports_Orders_Data_Store::queue_order_stats_repopulate_database();
-		self::order_product_lookup_store_init();
-	}
-
-	/**
 	 * Adds regenerate tool.
 	 *
 	 * @param array $tools List of tools.
@@ -171,81 +160,50 @@ class WC_Admin_Api_Init {
 					'name'     => __( 'Rebuild reports data', 'wc-admin' ),
 					'button'   => __( 'Rebuild reports', 'wc-admin' ),
 					'desc'     => __( 'This tool will rebuild all of the information used by the reports.', 'wc-admin' ),
-					'callback' => array( 'WC_Admin_Api_Init', 'regenrate_report_data' ),
+					'callback' => array( 'WC_Admin_Api_Init', 'order_lookups_init' ),
 				),
 			)
 		);
 	}
 
-	/**
-	 * Init orders data store.
-	 */
-	public static function orders_data_store_init() {
-		WC_Admin_Reports_Orders_Data_Store::init();
-	}
-
-	/**
-	 * Init orders product lookup store.
-	 *
-	 * @param WC_Background_Updater|null $updater Updater instance.
-	 * @return bool
-	 */
-	public static function order_product_lookup_store_init( $updater = null ) {
-		// TODO: this needs to be updated a bit, as it no longer runs as a part of WC_Install, there is no bg updater.
+	public static function order_lookups_init( $page = 0 ) {
 		global $wpdb;
 
-		$orders = get_transient( 'wc_update_350_all_orders' );
-		if ( false === $orders ) {
-			$orders = wc_get_orders(
-				array(
-					'limit'  => -1,
-					'return' => 'ids',
-				)
+		$f = fopen('/srv/www/wordpress-default/log/as_test.log', 'a');
+		$orders_in_one_batch = apply_filters( 'wc_admin_order_batch_size', 10 );
+
+		$total_orders = $wpdb->get_var( "SELECT COUNT( ID ) FROM {$wpdb->prefix}posts WHERE post_type IN ( 'shop_order', 'shop_order_refund' )" );
+
+		$offset = $page * $orders_in_one_batch;
+		fwrite($f, __FUNCTION__ . ": Total orders:  $total_orders; offset: $offset\n");
+		if ( $offset > $total_orders ) {
+			return;
+		}
+
+		$order_ids = wc_get_orders(
+			array(
+				'limit'   => $orders_in_one_batch,
+				'offset'  => $page * $orders_in_one_batch,
+				'return'  => 'ids',
+				'orderby' => 'ID',
+				'order'   => 'ASC',
+			)
+		);
+
+		$q = WC()->queue();
+		$plus_one_minute = time() + 60;
+		foreach ( $order_ids as $order_id ) {
+			$args = array(
+				$order_id,
 			);
-			set_transient( 'wc_update_350_all_orders', $orders, DAY_IN_SECONDS );
+			$q->schedule_single( $plus_one_minute, 'wc-admin_order_lookups_update', $args );
+			fwrite($f, "Addding order $order_id to queues\n");
 		}
 
-		// Process orders until close to running out of memory timeouts on large sites then requeue.
-		foreach ( $orders as $order_id ) {
-			$order = wc_get_order( $order_id );
-			if ( ! $order ) {
-				continue;
-			}
-			foreach ( $order->get_items() as $order_item ) {
-				$wpdb->replace(
-					$wpdb->prefix . 'wc_order_product_lookup',
-					array(
-						'order_item_id'         => $order_item->get_id(),
-						'order_id'              => $order->get_id(),
-						'product_id'            => $order_item->get_product_id( 'edit' ),
-						'variation_id'          => $order_item->get_variation_id( 'edit' ),
-						'customer_id'           => ( 0 < $order->get_customer_id( 'edit' ) ) ? $order->get_customer_id( 'edit' ) : null,
-						'product_qty'           => $order_item->get_quantity( 'edit' ),
-						'product_gross_revenue' => $order_item->get_subtotal( 'edit' ),
-						'date_created'          => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
-					),
-					array(
-						'%d',
-						'%d',
-						'%d',
-						'%d',
-						'%d',
-						'%d',
-						'%f',
-						'%s',
-					)
-				);
-			}
-			// Pop the order ID from the array for updating the transient later should we near memory exhaustion.
-			unset( $orders[ $order_id ] );
-			if ( $updater instanceof WC_Background_Updater && $updater->is_memory_exceeded() ) {
-				// Update the transient for the next run to avoid processing the same orders again.
-				set_transient( 'wc_update_350_all_orders', $orders, DAY_IN_SECONDS );
-				return true;
-			}
-		}
-
-		return true;
+		$page++;
+		$q->schedule_single( $plus_one_minute, 'wc-admin_process_orders_batch', array( $page ) );
+		fwrite($f, "Addding page $page of orders to queue\n");
+		fclose($f);
 	}
 
 	/**
@@ -404,5 +362,10 @@ class WC_Admin_Api_Init {
 	}
 
 }
+
+add_action( 'wc-admin_process_orders_batch', 'WC_Admin_Api_Init::order_lookups_init', 10, 1 );
+add_action( 'wc-admin_order_lookups_update', 'wc_admin_order_update', 10, 1 );
+
+
 
 new WC_Admin_Api_Init();

@@ -331,7 +331,7 @@ class WC_Admin_Reports_Data_Store {
 	 *
 	 * @return array
 	 */
-	protected static function get_report_order_statuses() {
+	public static function get_report_order_statuses() {
 		return apply_filters( 'woocommerce_reports_order_statuses', array( 'completed', 'processing', 'on-hold' ) );
 	}
 

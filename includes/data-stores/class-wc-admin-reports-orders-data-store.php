@@ -7,10 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'WC_Admin_Order_Stats_Background_Process', false ) ) {
-	include_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-order-stats-background-process.php';
-}
-
 /**
  * WC_Admin_Reports_Orders_Data_Store.
  *
@@ -70,36 +66,6 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		'num_returning_customers' => 'SUM(returning_customer = 1) AS num_returning_customers',
 		'num_new_customers'       => 'SUM(returning_customer = 0) AS num_new_customers',
 	);
-
-	/**
-	 * Background process to populate order stats.
-	 *
-	 * @var WC_Admin_Order_Stats_Background_Process
-	 */
-	protected static $background_process;
-
-	/**
-	 * Constructor.
-	 */
-	public function __construct() {
-		if ( ! self::$background_process ) {
-			self::$background_process = new WC_Admin_Order_Stats_Background_Process();
-		}
-	}
-
-	/**
-	 * Set up all the hooks for maintaining and populating table data.
-	 */
-	public static function init() {
-		add_action( 'save_post', array( __CLASS__, 'sync_order' ) );
-		// TODO: this is required as order update skips save_post.
-		add_action( 'clean_post_cache', array( __CLASS__, 'sync_order' ) );
-		add_action( 'woocommerce_order_refunded', array( __CLASS__, 'sync_order' ) );
-
-		if ( ! self::$background_process ) {
-			self::$background_process = new WC_Admin_Order_Stats_Background_Process();
-		}
-	}
 
 	/**
 	 * Returns expected number of items on the page in case of date ordering.
@@ -436,105 +402,6 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	}
 
 	/**
-	 * Queue a background process that will repopulate the entire orders stats database.
-	 *
-	 * @todo Make this work on large DBs.
-	 */
-	public static function queue_order_stats_repopulate_database() {
-
-		// This needs to be updated to work in batches instead of getting all orders, as
-		// that will not work well on DBs with more than a few hundred orders.
-		$order_ids = wc_get_orders(
-			array(
-				'limit'  => -1,
-				'status' => parent::get_report_order_statuses(),
-				'type'   => 'shop_order',
-				'return' => 'ids',
-			)
-		);
-
-		foreach ( $order_ids as $id ) {
-			self::$background_process->push_to_queue( $id );
-		}
-
-		self::$background_process->save();
-		self::$background_process->dispatch();
-	}
-
-	/**
-	 * Add order information to the lookup table when orders are created or modified.
-	 *
-	 * @param int $post_id Post ID.
-	 */
-	public static function sync_order( $post_id ) {
-		if ( 'shop_order' !== get_post_type( $post_id ) ) {
-			return;
-		}
-
-		$order = wc_get_order( $post_id );
-		if ( ! $order ) {
-			return;
-		}
-
-		self::update( $order );
-	}
-
-	/**
-	 * Update the database with stats data.
-	 *
-	 * @param WC_Order $order Order to update row for.
-	 * @return int|bool|null Number or rows modified or false on failure.
-	 */
-	public static function update( $order ) {
-		global $wpdb;
-		$table_name = $wpdb->prefix . self::TABLE_NAME;
-
-		if ( ! $order->get_id() || ! $order->get_date_created() ) {
-			return false;
-		}
-
-		if ( ! in_array( $order->get_status(), parent::get_report_order_statuses(), true ) ) {
-			$wpdb->delete(
-				$table_name,
-				array(
-					'order_id' => $order->get_id(),
-				)
-			);
-			return;
-		}
-
-		$data = array(
-			'order_id'           => $order->get_id(),
-			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
-			'num_items_sold'     => self::get_num_items_sold( $order ),
-			'gross_total'        => $order->get_total(),
-			'coupon_total'       => $order->get_total_discount(),
-			'refund_total'       => $order->get_total_refunded(),
-			'tax_total'          => $order->get_total_tax(),
-			'shipping_total'     => $order->get_shipping_total(),
-			'net_total'          => (float) $order->get_total() - (float) $order->get_total_tax() - (float) $order->get_shipping_total(),
-			'returning_customer' => self::is_returning_customer( $order ),
-		);
-
-		// Update or add the information to the DB.
-		return $wpdb->replace(
-			$table_name,
-			$data,
-			array(
-				'%d',
-				'%s',
-				'%d',
-				'%f',
-				'%f',
-				'%f',
-				'%f',
-				'%f',
-				'%f',
-			)
-		);
-	}
-
-	/**
 	 * Calculation methods.
 	 */
 
@@ -544,7 +411,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 * @param array $order WC_Order object.
 	 * @return int
 	 */
-	protected static function get_num_items_sold( $order ) {
+	public static function get_num_items_sold( $order ) {
 		$num_items = 0;
 
 		$line_items = $order->get_items( 'line_item' );
@@ -561,7 +428,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 * @param array $order WC_Order object.
 	 * @return bool
 	 */
-	protected static function is_returning_customer( $order ) {
+	public static function is_returning_customer( $order ) {
 		$customer_id = $order->get_user_id();
 
 		if ( 0 === $customer_id ) {
