@@ -45,6 +45,7 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 		$args['per_page'] = $request['per_page'];
 		$args['orderby']  = $request['orderby'];
 		$args['order']    = $request['order'];
+		$args['taxes']    = $request['taxes'];
 
 		return $args;
 	}
@@ -271,24 +272,10 @@ class WC_Admin_REST_Reports_Taxes_Controller extends WC_REST_Reports_Controller 
 			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['interval'] = array(
-			'description'       => __( 'Time interval to use for buckets in the returned data.', 'wc-admin' ),
-			'type'              => 'string',
-			'default'           => 'week',
-			'enum'              => array(
-				'hour',
-				'day',
-				'week',
-				'month',
-				'quarter',
-				'year',
-			),
-			'validate_callback' => 'rest_validate_request_arg',
-		);
-		$params['code']     = array(
-			'description'       => __( 'Limit result set to items assigned one or more code.', 'wc-admin' ),
+		$params['taxes']    = array(
+			'description'       => __( 'Limit result set to items assigned one or more tax rates.', 'wc-admin' ),
 			'type'              => 'array',
-			'sanitize_callback' => 'wp_parse_slug_list',
+			'sanitize_callback' => 'wp_parse_id_list',
 			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(
 				'type' => 'string',

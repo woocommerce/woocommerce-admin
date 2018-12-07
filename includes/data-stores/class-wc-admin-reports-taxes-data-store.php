@@ -80,7 +80,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 		$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args ) );
 
 		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
-			$allowed_taxes                     = esc_sql( implode( ',', $query_args['taxes'] ) );
+			$allowed_taxes                     = implode( ',', $query_args['taxes'] );
 			$sql_query_params['where_clause'] .= " AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})";
 		}
 
@@ -159,6 +159,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 								{$sql_query_params['from_clause']}
 							WHERE
 								1=1
+								{$sql_query_params['where_time_clause']}
 								{$sql_query_params['where_clause']}
 							GROUP BY
 								{$table_name}.tax_rate_id
