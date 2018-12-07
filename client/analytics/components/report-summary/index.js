@@ -20,7 +20,7 @@ import { SummaryList, SummaryListPlaceholder, SummaryNumber } from '@woocommerce
  */
 import { getSummaryNumbers } from 'store/reports/utils';
 import ReportError from 'analytics/components/report-error';
-import { getFormattedValues } from './utils';
+import { calculateDelta, formatValue } from './utils';
 
 export class ReportSummary extends Component {
 	render() {
@@ -40,28 +40,26 @@ export class ReportSummary extends Component {
 
 		const summaryNumbers = charts.map( chart => {
 			const { key, label, type } = chart;
-			const isSelected = selectedChart.key === key;
-			const { delta, secondaryValue, value } = getFormattedValues(
-				type,
-				totals[ key ],
-				secondaryTotals[ key ]
-			);
+			const delta = calculateDelta( totals[ key ], secondaryTotals[ key ] );
 			const href = getNewPath( { chart: key } );
+			const prevValue = formatValue( type, secondaryTotals[ key ] );
+			const isSelected = selectedChart.key === key;
+			const value = formatValue( type, totals[ key ] );
 
 			return (
 				<SummaryNumber
 					key={ key }
-					value={ value }
+					delta={ delta }
+					href={ href }
 					label={ label }
-					selected={ isSelected }
-					prevValue={ secondaryValue }
 					prevLabel={
 						'previous_period' === compare
 							? __( 'Previous Period:', 'wc-admin' )
 							: __( 'Previous Year:', 'wc-admin' )
 					}
-					delta={ delta }
-					href={ href }
+					prevValue={ prevValue }
+					selected={ isSelected }
+					value={ value }
 				/>
 			);
 		} );

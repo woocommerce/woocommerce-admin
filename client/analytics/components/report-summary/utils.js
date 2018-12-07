@@ -14,7 +14,7 @@ import { formatCurrency } from '@woocommerce/currency';
  */
 import { numberFormat } from 'lib/number';
 
-function formatValue( type, value ) {
+export function formatValue( type, value ) {
 	if ( ! isFinite( value ) ) {
 		return null;
 	}
@@ -29,7 +29,7 @@ function formatValue( type, value ) {
 	}
 }
 
-function calculateDelta( value, secondaryValue ) {
+export function calculateDelta( value, secondaryValue ) {
 	if ( ! isFinite( value ) || ! isFinite( secondaryValue ) ) {
 		return null;
 	}
@@ -39,12 +39,4 @@ function calculateDelta( value, secondaryValue ) {
 	}
 
 	return Math.round( ( value - secondaryValue ) / secondaryValue * 100 );
-}
-
-export function getFormattedValues( type, value, secondaryValue ) {
-	return {
-		delta: calculateDelta( value, secondaryValue ),
-		secondaryValue: formatValue( type, secondaryValue ),
-		value: formatValue( type, value ),
-	};
 }
