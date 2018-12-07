@@ -15,18 +15,14 @@ function createWcApiStore() {
 
 	function getComponentSelectors( component ) {
 		const componentRequirements = [];
-		const apiSelectors = apiClient.getSelectors( componentRequirements );
 
-		apiClient.clearComponentRequirements( component );
-
-		return Object.keys( apiSelectors ).reduce( ( componentSelectors, selectorName ) => {
-			componentSelectors[ selectorName ] = ( ...args ) => {
-				const result = apiSelectors[ selectorName ]( ...args );
+		return {
+			selectors: apiClient.getSelectors( componentRequirements ),
+			onComplete: () => {
+				apiClient.clearComponentRequirements( component );
 				apiClient.setComponentRequirements( component, componentRequirements );
-				return result;
-			};
-			return componentSelectors;
-		}, {} );
+			},
+		};
 	}
 
 	return {
