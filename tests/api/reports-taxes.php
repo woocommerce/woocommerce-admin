@@ -5,6 +5,10 @@
  * @package WooCommerce\Tests\API
  * @since 3.5.0
  */
+
+/**
+ * WC_Tests_API_Reports_Taxes
+ */
 class WC_Tests_API_Reports_Taxes extends WC_REST_Unit_Test_Case {
 
 	/**
