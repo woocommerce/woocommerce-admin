@@ -19,8 +19,11 @@ function createWcApiStore() {
 		return {
 			selectors: apiClient.getSelectors( componentRequirements ),
 			onComplete: () => {
-				apiClient.clearComponentRequirements( component );
-				apiClient.setComponentRequirements( component, componentRequirements );
+				if ( 0 === componentRequirements.length ) {
+					apiClient.clearComponentRequirements( component );
+				} else {
+					apiClient.setComponentRequirements( component, componentRequirements );
+				}
 			},
 		};
 	}
