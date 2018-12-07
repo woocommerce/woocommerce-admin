@@ -25,26 +25,27 @@ import { calculateDelta, formatValue } from './utils';
 export class ReportSummary extends Component {
 	render() {
 		const { charts, query, selectedChart, summaryData } = this.props;
+		const { totals, isError, isRequesting } = summaryData;
 
-		if ( summaryData.isError ) {
+		if ( isError ) {
 			return <ReportError isError />;
 		}
 
-		if ( summaryData.isRequesting ) {
+		if ( isRequesting ) {
 			return <SummaryListPlaceholder numberOfItems={ charts.length } />;
 		}
 
-		const totals = summaryData.totals.primary || {};
-		const secondaryTotals = summaryData.totals.secondary || {};
+		const primaryTotals = totals.primary || {};
+		const secondaryTotals = totals.secondary || {};
 		const { compare } = getDateParamsFromQuery( query );
 
 		const summaryNumbers = charts.map( chart => {
 			const { key, label, type } = chart;
-			const delta = calculateDelta( totals[ key ], secondaryTotals[ key ] );
+			const delta = calculateDelta( primaryTotals[ key ], secondaryTotals[ key ] );
 			const href = getNewPath( { chart: key } );
 			const prevValue = formatValue( type, secondaryTotals[ key ] );
 			const isSelected = selectedChart.key === key;
-			const value = formatValue( type, totals[ key ] );
+			const value = formatValue( type, primaryTotals[ key ] );
 
 			return (
 				<SummaryNumber

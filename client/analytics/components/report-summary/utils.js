@@ -29,8 +29,8 @@ export function formatValue( type, value ) {
 	}
 }
 
-export function calculateDelta( value, secondaryValue ) {
-	if ( ! isFinite( value ) || ! isFinite( secondaryValue ) ) {
+export function calculateDelta( primaryValue, secondaryValue ) {
+	if ( ! isFinite( primaryValue ) || ! isFinite( secondaryValue ) ) {
 		return null;
 	}
 
@@ -38,5 +38,5 @@ export function calculateDelta( value, secondaryValue ) {
 		return 0;
 	}
 
-	return Math.round( ( value - secondaryValue ) / secondaryValue * 100 );
+	return Math.round( ( primaryValue - secondaryValue ) / secondaryValue * 100 );
 }
