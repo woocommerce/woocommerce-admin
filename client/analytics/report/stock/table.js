@@ -35,11 +35,6 @@ export default class StockReportTable extends Component {
 				isLeftAligned: true,
 			},
 			{
-				label: __( 'Parent', 'wc-admin' ),
-				key: 'parent',
-				required: true,
-			},
-			{
 				label: __( 'SKU', 'wc-admin' ),
 				key: 'sku',
 			},
@@ -63,18 +58,17 @@ export default class StockReportTable extends Component {
 
 		return products.map( product => {
 			const { id, name, parent_id, sku, stock_quantity, stock_status } = product;
-			const isVariation = id > 0 && parent_id > 0;
-			const itemName = isVariation ? id : name; // @TODO it should be variation name instead of id
-			const parentName = isVariation ? name : null;
 
 			const productDetailLink = getNewPath( persistedQuery, 'products', {
 				filter: 'single_product',
-				products: id,
+				products: parent_id || id,
 			} );
+
+			const formattedName = name.replace( ' - ', ' / ' );
 
 			const nameLink = (
 				<Link href={ productDetailLink } type="wc-admin">
-					{ itemName }
+					{ formattedName }
 				</Link>
 			);
 
@@ -87,11 +81,7 @@ export default class StockReportTable extends Component {
 			return [
 				{
 					display: nameLink,
-					value: itemName,
-				},
-				{
-					display: parentName,
-					value: parentName,
+					value: formattedName,
 				},
 				{
 					display: sku,
