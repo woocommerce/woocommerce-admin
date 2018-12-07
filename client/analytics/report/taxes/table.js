@@ -115,12 +115,10 @@ export default class TaxesReportTable extends Component {
 		if ( ! totals ) {
 			return [];
 		}
-		// @TODO the number of total rows should come from the API
-		const totalRows = 0;
 		return [
 			{
-				label: _n( 'tax code', 'tax codes', totalRows, 'wc-admin' ),
-				value: numberFormat( totalRows ),
+				label: _n( 'tax code', 'tax codes', totals.tax_codes, 'wc-admin' ),
+				value: numberFormat( totals.tax_codes ),
 			},
 			{
 				label: __( 'total tax', 'wc-admin' ),
@@ -135,8 +133,8 @@ export default class TaxesReportTable extends Component {
 				value: formatCurrency( totals.shipping_tax ),
 			},
 			{
-				label: _n( 'order', 'orders', totals.orders_count, 'wc-admin' ),
-				value: numberFormat( totals.orders_count ),
+				label: _n( 'order', 'orders', totals.orders, 'wc-admin' ),
+				value: numberFormat( totals.orders ),
 			},
 		];
 	}
