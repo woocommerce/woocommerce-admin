@@ -61,6 +61,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 	public function __construct() {
 		global $wpdb;
 		$table_name                          = $wpdb->prefix . self::TABLE_NAME;
+		// Avoid ambigious column tax_rate_id in SQL query.
 		$this->report_columns['tax_rate_id'] = $table_name . '.' . $this->report_columns['tax_rate_id'];
 	}
 
