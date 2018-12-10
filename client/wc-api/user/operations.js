@@ -29,6 +29,7 @@ function readCurrentUserData( resourceNames, fetch ) {
 				} ),
 		];
 	}
+	return [];
 }
 
 function updateCurrentUserData( resourceNames, data, fetch ) {
@@ -51,6 +52,7 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 				} ),
 		];
 	}
+	return [];
 }
 
 export default {
