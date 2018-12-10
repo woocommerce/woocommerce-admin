@@ -179,6 +179,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 						{$sql_query_params['from_clause']}
 					WHERE
 						1=1
+						{$sql_query_params['where_time_clause']}
 						{$sql_query_params['where_clause']}
 					GROUP BY
 						{$table_name}.tax_rate_id
