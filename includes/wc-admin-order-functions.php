@@ -171,6 +171,22 @@ function wc_admin_order_meta_update( $order, $updated_props ) {
 	wc_admin_order_update( $order_id );
 }
 
+/**
+ * Update multiple orders' lookup tables in one go.
+ *
+ * @param array $order_ids Array of order ids.
+ */
+function wc_admin_order_batch_update( $order_ids ) {
+	foreach ( $order_ids as $order_id ) {
+		try {
+			wc_admin_order_update( $order_id );
+		} catch ( Exception $e ) {
+			// Log error somewhere.
+			$e->getMessage();
+		}
+	}
+}
+
 add_action( 'woocommerce_new_order', 'wc_admin_order_update', 10, 1 );
 add_action( 'woocommerce_update_order', 'wc_admin_order_update', 10, 1 );
 // the following action is actually a superset of woocommerce_update_order one, so might need to switch to that one?

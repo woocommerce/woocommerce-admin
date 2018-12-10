@@ -178,15 +178,18 @@ class WC_Admin_Api_Init {
 		$total_orders        = $wpdb->get_var( "SELECT COUNT( ID ) FROM {$wpdb->prefix}posts WHERE post_type IN ( 'shop_order', 'shop_order_refund' )" );
 
 		$offset = $batch_no * $orders_in_one_batch;
+
 		if ( $offset > $total_orders ) {
 			return;
 		}
 
-		$q               = WC()->queue();
-		$plus_one_minute = time() + 60;
-		$batch_no++;
-		$q->schedule_single( $plus_one_minute, 'wc-admin_process_orders_batch', array( $batch_no ) );
+		$q = WC()->queue();
 
+		// Schedule next batch planning.
+		$future_time = time() + 5;
+		$q->schedule_single( $future_time, 'wc-admin_process_orders_batch', array( $batch_no + 1 ) );
+
+		// Schedule this order batch execution.
 		$order_ids = wc_get_orders(
 			array(
 				'limit'   => $orders_in_one_batch,
@@ -196,13 +199,7 @@ class WC_Admin_Api_Init {
 				'order'   => 'ASC',
 			)
 		);
-
-		foreach ( $order_ids as $order_id ) {
-			$args = array(
-				$order_id,
-			);
-			$q->schedule_single( $plus_one_minute, 'wc-admin_order_lookups_update', $args );
-		}
+		$q->schedule_single( $future_time, 'wc-admin_order_lookups_update', array( $order_ids ) );
 	}
 
 	/**
@@ -360,7 +357,7 @@ class WC_Admin_Api_Init {
 }
 
 add_action( 'wc-admin_process_orders_batch', 'WC_Admin_Api_Init::order_lookups_init', 10, 1 );
-add_action( 'wc-admin_order_lookups_update', 'wc_admin_order_update', 10, 1 );
+add_action( 'wc-admin_order_lookups_update', 'wc_admin_order_batch_update', 10, 1 );
 
 
 
