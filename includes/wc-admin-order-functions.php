@@ -5,6 +5,12 @@
  * @package  WooCommerce Admin
  */
 
+/**
+ * Remove order record from db table.
+ *
+ * @param string $table_name Name of the db table.
+ * @param int    $order_id Order id.
+ */
 function remove_order_record( $table_name, $order_id ) {
 	global $wpdb;
 
@@ -17,7 +23,7 @@ function remove_order_record( $table_name, $order_id ) {
 }
 
 /**
- * Make an entry in the wc_admin_order_product_lookup table for an order.
+ * Make an entry in all lookup/stat tables for an order.
  *
  * @param int $order_id Order ID.
  * @return void
@@ -29,9 +35,6 @@ function wc_admin_order_update( $order_id ) {
 	if ( ! $order ) {
 		return;
 	}
-	$f = fopen('/srv/www/wordpress-default/log/as_test.log', 'a');
-	fwrite($f, __FUNCTION__ . ": Processing order $order_id\n");
-	fclose($f);
 
 	$report_order_statuses = WC_Admin_Reports_Data_Store::get_report_order_statuses();
 
@@ -157,8 +160,21 @@ function wc_admin_order_update( $order_id ) {
 	}
 }
 
-add_action( 'woocommerce_create_order', 'wc_admin_order_update', 10, 1 );
+/**
+ * Trigger update of order information from woocommerce_order_object_updated_props.
+ *
+ * @param WC_Order $order WC_Order object.
+ * @param array    $updated_props Array of updated props.
+ */
+function wc_admin_order_meta_update( $order, $updated_props ) {
+	$order_id = $order->get_id();
+	wc_admin_order_update( $order_id );
+}
+
+add_action( 'woocommerce_new_order', 'wc_admin_order_update', 10, 1 );
 add_action( 'woocommerce_update_order', 'wc_admin_order_update', 10, 1 );
+// the following action is actually a superset of woocommerce_update_order one, so might need to switch to that one?
+// add_action( 'woocommerce_order_object_updated_props', 'wc_admin_order_meta_update', 10, 2 );.
 add_action( 'woocommerce_trash_order', 'wc_admin_order_update', 10, 1 );
 add_action( 'woocommerce_delete_order', 'wc_admin_order_update', 10, 1 );
-// check if woocommerce_order_refunded also needs to be included here, or
+// check if woocommerce_order_refunded also needs to be included here.

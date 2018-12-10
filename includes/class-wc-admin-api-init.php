@@ -166,44 +166,43 @@ class WC_Admin_Api_Init {
 		);
 	}
 
-	public static function order_lookups_init( $page = 0 ) {
+	/**
+	 * Add orders to next batch for processing, plus plan the next batch.
+	 *
+	 * @param int $batch_no Batch number for batch of orders to process.
+	 */
+	public static function order_lookups_init( $batch_no = 0 ) {
 		global $wpdb;
 
-		$f = fopen('/srv/www/wordpress-default/log/as_test.log', 'a');
 		$orders_in_one_batch = apply_filters( 'wc_admin_order_batch_size', 10 );
+		$total_orders        = $wpdb->get_var( "SELECT COUNT( ID ) FROM {$wpdb->prefix}posts WHERE post_type IN ( 'shop_order', 'shop_order_refund' )" );
 
-		$total_orders = $wpdb->get_var( "SELECT COUNT( ID ) FROM {$wpdb->prefix}posts WHERE post_type IN ( 'shop_order', 'shop_order_refund' )" );
-
-		$offset = $page * $orders_in_one_batch;
-		fwrite($f, __FUNCTION__ . ": Total orders:  $total_orders; offset: $offset\n");
+		$offset = $batch_no * $orders_in_one_batch;
 		if ( $offset > $total_orders ) {
 			return;
 		}
 
+		$q               = WC()->queue();
+		$plus_one_minute = time() + 60;
+		$batch_no++;
+		$q->schedule_single( $plus_one_minute, 'wc-admin_process_orders_batch', array( $batch_no ) );
+
 		$order_ids = wc_get_orders(
 			array(
 				'limit'   => $orders_in_one_batch,
-				'offset'  => $page * $orders_in_one_batch,
+				'offset'  => $batch_no * $orders_in_one_batch,
 				'return'  => 'ids',
 				'orderby' => 'ID',
 				'order'   => 'ASC',
 			)
 		);
 
-		$q = WC()->queue();
-		$plus_one_minute = time() + 60;
 		foreach ( $order_ids as $order_id ) {
 			$args = array(
 				$order_id,
 			);
 			$q->schedule_single( $plus_one_minute, 'wc-admin_order_lookups_update', $args );
-			fwrite($f, "Addding order $order_id to queues\n");
 		}
-
-		$page++;
-		$q->schedule_single( $plus_one_minute, 'wc-admin_process_orders_batch', array( $page ) );
-		fwrite($f, "Addding page $page of orders to queue\n");
-		fclose($f);
 	}
 
 	/**
@@ -356,9 +355,6 @@ class WC_Admin_Api_Init {
 	public static function install() {
 		// Create tables.
 		self::create_db_tables();
-
-		// Initialize report tables.
-		add_action( 'woocommerce_after_register_post_type', array( 'WC_Admin_Api_Init', 'order_product_lookup_store_init' ), 20 );
 	}
 
 }

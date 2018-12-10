@@ -408,7 +408,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	/**
 	 * Get number of items sold among all orders.
 	 *
-	 * @param array $order WC_Order object.
+	 * @param WC_Order $order WC_Order object.
 	 * @return int
 	 */
 	public static function get_num_items_sold( $order ) {
@@ -425,7 +425,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	/**
 	 * Check to see if an order's customer has made previous orders or not
 	 *
-	 * @param array $order WC_Order object.
+	 * @param WC_Order $order WC_Order object.
 	 * @return bool
 	 */
 	public static function is_returning_customer( $order ) {
