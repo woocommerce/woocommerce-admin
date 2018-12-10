@@ -5,6 +5,7 @@
 import { applyFilters } from '@wordpress/hooks';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
 import { get, orderBy } from 'lodash';
 import PropTypes from 'prop-types';
 
@@ -24,6 +25,26 @@ import withSelect from 'wc-api/with-select';
 const TABLE_FILTER = 'woocommerce_admin_report_table';
 
 class ReportTable extends Component {
+	onColumnsChange = columns => {
+		const userDataFields = {
+			revenue_report_columns: columns,
+		};
+		this.props.updateCurrentUserData( userDataFields );
+	};
+
+	filterShownHeaders = ( headers, shownKeys ) => {
+		if ( ! shownKeys ) {
+			return headers;
+		}
+
+		return headers.map( header => {
+			if ( shownKeys.includes( header.key ) ) {
+				return header;
+			}
+			return { ...header, hiddenByDefault: true };
+		} );
+	};
+
 	render() {
 		const {
 			getHeadersContent,
@@ -36,6 +57,7 @@ class ReportTable extends Component {
 			// so they are not included in the `tableProps` variable.
 			endpoint,
 			tableQuery,
+			userPrefColumns,
 			...tableProps
 		} = this.props;
 
@@ -61,13 +83,17 @@ class ReportTable extends Component {
 			summary: getSummary ? getSummary( totals, totalCount ) : null,
 		} );
 
+		// Hide any headers based on user prefs, if loaded.
+		const filteredHeaders = this.filterShownHeaders( headers, userPrefColumns );
+
 		return (
 			<TableCard
 				downloadable
-				headers={ headers }
+				headers={ filteredHeaders }
 				ids={ ids }
 				isLoading={ isRequesting }
 				onQueryChange={ onQueryChange }
+				onColumnsChange={ this.onColumnsChange }
 				rows={ rows }
 				rowsPerPage={ parseInt( query.per_page ) }
 				summary={ summary }
@@ -131,9 +157,20 @@ export default compose(
 			: {};
 		const queriedTableData = tableData || getReportTableData( endpoint, query, select, tableQuery );
 
+		const { getCurrentUserData } = select( 'wc-api' );
+		const userData = getCurrentUserData();
+
 		return {
 			primaryData,
 			tableData: queriedTableData,
+			userPrefColumns: userData.revenue_report_columns,
+		};
+	} ),
+	withDispatch( dispatch => {
+		const { updateCurrentUserData } = dispatch( 'wc-api' );
+
+		return {
+			updateCurrentUserData,
 		};
 	} )
 )( ReportTable );
