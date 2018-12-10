@@ -26,10 +26,14 @@ const TABLE_FILTER = 'woocommerce_admin_report_table';
 
 class ReportTable extends Component {
 	onColumnsChange = columns => {
-		const userDataFields = {
-			revenue_report_columns: columns,
-		};
-		this.props.updateCurrentUserData( userDataFields );
+		const { columnPrefsKey } = this.props;
+
+		if ( columnPrefsKey ) {
+			const userDataFields = {
+				[ columnPrefsKey ]: columns,
+			};
+			this.props.updateCurrentUserData( userDataFields );
+		}
 	};
 
 	filterShownHeaders = ( headers, shownKeys ) => {
@@ -106,6 +110,10 @@ class ReportTable extends Component {
 
 ReportTable.propTypes = {
 	/**
+	 * The key for user preferences settings for column visibility.
+	 */
+	columnPrefsKey: PropTypes.string,
+	/**
 	 * The endpoint to use in API calls.
 	 */
 	endpoint: PropTypes.string,
@@ -150,21 +158,26 @@ ReportTable.defaultProps = {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { endpoint, getSummary, query, tableData, tableQuery } = props;
+		const { endpoint, getSummary, query, tableData, tableQuery, columnPrefsKey } = props;
 		const chartEndpoint = 'variations' === endpoint ? 'products' : endpoint;
 		const primaryData = getSummary
 			? getReportChartData( chartEndpoint, 'primary', query, select )
 			: {};
 		const queriedTableData = tableData || getReportTableData( endpoint, query, select, tableQuery );
 
-		const { getCurrentUserData } = select( 'wc-api' );
-		const userData = getCurrentUserData();
-
-		return {
+		const selectProps = {
 			primaryData,
 			tableData: queriedTableData,
-			userPrefColumns: userData.revenue_report_columns,
 		};
+
+		if ( columnPrefsKey ) {
+			const { getCurrentUserData } = select( 'wc-api' );
+			const userData = getCurrentUserData();
+
+			selectProps.userPrefColumns = userData[ columnPrefsKey ];
+		}
+
+		return selectProps;
 	} ),
 	withDispatch( dispatch => {
 		const { updateCurrentUserData } = dispatch( 'wc-api' );

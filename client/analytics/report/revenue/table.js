@@ -215,7 +215,7 @@ class RevenueReportTable extends Component {
 				query={ query }
 				tableData={ tableData }
 				title={ __( 'Revenue', 'wc-admin' ) }
-				columnPrefs="revenue_report_columns"
+				columnPrefsKey="revenue_report_columns"
 			/>
 		);
 	}
