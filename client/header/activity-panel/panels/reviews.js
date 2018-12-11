@@ -7,7 +7,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
-import { noop } from 'lodash';
+import { noop, isNull } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -34,7 +34,13 @@ import withSelect from 'wc-api/with-select';
 
 class ReviewsPanel extends Component {
 	renderReview( review ) {
-		const product = review._embedded.up[ 0 ];
+		const product =
+			( review && review._embedded && review._embedded.up && review._embedded.up[ 0 ] ) || null;
+
+		if ( isNull( product ) ) {
+			return null;
+		}
+
 		const title = interpolateComponents( {
 			mixedString: sprintf(
 				__(

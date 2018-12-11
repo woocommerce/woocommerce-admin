@@ -18,13 +18,6 @@ defined( 'ABSPATH' ) || exit;
 class WC_Admin_REST_Product_Reviews_Controller extends WC_REST_Product_Reviews_Controller {
 
 	/**
-	 * Endpoint namespace.
-	 *
-	 * @var string
-	 */
-	protected $namespace = 'wc/v3';
-
-	/**
 	 * Prepare links for the request.
 	 *
 	 * @param WP_Comment $review Product review object.
