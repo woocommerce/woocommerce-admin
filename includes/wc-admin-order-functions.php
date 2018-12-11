@@ -16,7 +16,7 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 	global $wpdb;
 
 	$order = wc_get_order( $order_id );
-	if ( ! $order ) {
+	if ( ! $order || 'shop_order_refund' === $order->get_type() ) {
 		return;
 	}
 
