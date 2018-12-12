@@ -380,7 +380,7 @@ function wc_admin_get_user_data_fields() {
 function wc_admin_get_user_data_values( $user ) {
 	$values = array();
 	foreach ( wc_admin_get_user_data_fields() as $field ) {
-		$values[ $field ] = get_user_meta( $user['id'], 'woocommerce_meta_' . $field, true );
+		$values[ $field ] = get_user_meta( $user['id'], 'wc_admin_' . $field, true );
 	}
 	return $values;
 }
@@ -402,7 +402,7 @@ function wc_admin_update_user_data_values( $values, $user, $field_id ) {
 	foreach ( $values as $field => $value ) {
 		if ( in_array( $field, $fields, true ) ) {
 			$updates[ $field ] = $value;
-			update_user_meta( $user->ID, 'woocommerce_meta_' . $field, $value );
+			update_user_meta( $user->ID, 'wc_admin_' . $field, $value );
 		}
 	}
 
