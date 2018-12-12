@@ -50,6 +50,15 @@ function wc_admin_plugins_notice() {
 }
 
 /**
+ * Notify users that the plugin needs to be built
+ */
+function wc_admin_build_notice() {
+	echo '<div class="error"><p>';
+	esc_html_e( 'WooCommerce Admin development mode requires files to be built. From the plugin directory, run <code>npm install</code> to install dependencies, <code>npm run build</code> to build the files or <code>npm start</code> to build the files and watch for changes.', 'wc-admin' );
+	echo '</p></div>';
+}
+
+/**
  * Returns true if all dependencies for the wc-admin plugin are loaded.
  *
  * @return bool
@@ -65,6 +74,15 @@ function dependencies_satisfied() {
 	$gutenberg_plugin_active      = defined( 'GUTENBERG_DEVELOPMENT_MODE' ) || defined( 'GUTENBERG_VERSION' );
 
 	return $wordpress_includes_gutenberg || $gutenberg_plugin_active;
+}
+
+/**
+ * Returns true if build file exists.
+ *
+ * @return bool
+ */
+function wc_admin_build_file_exists() {
+	return file_exists( plugin_dir_path( __FILE__ ) . '/dist/app/index.js' );
 }
 
 /**
@@ -123,7 +141,7 @@ function wc_admin_init() {
 	}
 
 	// Only create/update tables on init if WP_DEBUG is true.
-	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG && wc_admin_build_file_exists() ) {
 		WC_Admin_Api_Init::create_db_tables();
 	}
 }
@@ -135,6 +153,12 @@ add_action( 'init', 'wc_admin_init' );
 function wc_admin_plugins_loaded() {
 	if ( ! dependencies_satisfied() ) {
 		add_action( 'admin_notices', 'wc_admin_plugins_notice' );
+		return;
+	}
+
+	// Verify we have a proper build.
+	if ( ! wc_admin_build_file_exists() && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		add_action( 'admin_notices', 'wc_admin_build_notice' );
 		return;
 	}
 
