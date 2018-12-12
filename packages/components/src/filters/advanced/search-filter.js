@@ -25,7 +25,14 @@ class SearchFilter extends Component {
 		this.updateLabels = this.updateLabels.bind( this );
 
 		if ( filter.value.length ) {
-			config.input.getLabels( filter.value, query ).then( this.updateLabels );
+			if ( typeof config.input.getLabels === 'function' ) {
+				config.input.getLabels( filter.value, query ).then( this.updateLabels );
+			} else {
+				const filters = filter.value.split( ',' );
+				this.state.selected = config.input.getLabels.filter( ( label ) => {
+					return filters.includes( label.id );
+				} );
+			}
 		}
 	}
 
