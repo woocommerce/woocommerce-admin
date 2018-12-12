@@ -46,6 +46,8 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-variations-query.php';
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-products-stats-query.php';
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-categories-query.php';
+		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-taxes-query.php';
+		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-taxes-stats-query.php';
 
 		// Data stores.
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-data-store.php';
@@ -54,6 +56,8 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-variations-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-products-stats-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-categories-data-store.php';
+		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-taxes-data-store.php';
+		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-taxes-stats-data-store.php';
 
 		// Data triggers.
 		require_once dirname( __FILE__ ) . '/wc-admin-order-functions.php';
@@ -69,6 +73,8 @@ class WC_Admin_Api_Init {
 	 */
 	public function rest_api_init() {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-admin-notes-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-products-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-product-reviews-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-system-status-tools-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-categories-controller.php';
@@ -88,6 +94,8 @@ class WC_Admin_Api_Init {
 
 		$controllers = array(
 			'WC_Admin_REST_Admin_Notes_Controller',
+			'WC_Admin_REST_Products_Controller',
+			'WC_Admin_REST_Product_Reviews_Controller',
 			'WC_Admin_REST_Reports_Controller',
 			'WC_Admin_REST_System_Status_Tools_Controller',
 			'WC_Admin_REST_Reports_Products_Controller',
@@ -141,6 +149,42 @@ class WC_Admin_Api_Init {
 			&& $endpoints['/wc/v3/reports'][1]['callback'][0] instanceof WC_Admin_REST_Reports_Controller
 		) {
 			$endpoints['/wc/v3/reports'][0] = $endpoints['/wc/v3/reports'][1];
+		}
+
+		// Override /wc/v3/products.
+		if ( isset( $endpoints['/wc/v3/products'] )
+			&& isset( $endpoints['/wc/v3/products'][3] )
+			&& isset( $endpoints['/wc/v3/products'][2] )
+			&& $endpoints['/wc/v3/products'][2]['callback'][0] instanceof WC_Admin_REST_Products_Controller
+			&& $endpoints['/wc/v3/products'][3]['callback'][0] instanceof WC_Admin_REST_Products_Controller
+		) {
+			$endpoints['/wc/v3/products'][0] = $endpoints['/wc/v3/products'][2];
+			$endpoints['/wc/v3/products'][1] = $endpoints['/wc/v3/products'][3];
+		}
+
+		// Override /wc/v3/products/$id.
+		if ( isset( $endpoints['/wc/v3/products/(?P<id>[\d]+)'] )
+			&& isset( $endpoints['/wc/v3/products/(?P<id>[\d]+)'][5] )
+			&& isset( $endpoints['/wc/v3/products/(?P<id>[\d]+)'][4] )
+			&& isset( $endpoints['/wc/v3/products/(?P<id>[\d]+)'][3] )
+			&& $endpoints['/wc/v3/products/(?P<id>[\d]+)'][3]['callback'][0] instanceof WC_Admin_REST_Products_Controller
+			&& $endpoints['/wc/v3/products/(?P<id>[\d]+)'][4]['callback'][0] instanceof WC_Admin_REST_Products_Controller
+			&& $endpoints['/wc/v3/products/(?P<id>[\d]+)'][5]['callback'][0] instanceof WC_Admin_REST_Products_Controller
+		) {
+			$endpoints['/wc/v3/products/(?P<id>[\d]+)'][0] = $endpoints['/wc/v3/products/(?P<id>[\d]+)'][3];
+			$endpoints['/wc/v3/products/(?P<id>[\d]+)'][1] = $endpoints['/wc/v3/products/(?P<id>[\d]+)'][4];
+			$endpoints['/wc/v3/products/(?P<id>[\d]+)'][2] = $endpoints['/wc/v3/products/(?P<id>[\d]+)'][5];
+		}
+
+		// Override /wc/v3/products/reviews.
+		if ( isset( $endpoints['/wc/v3/products/reviews'] )
+			&& isset( $endpoints['/wc/v3/products/reviews'][3] )
+			&& isset( $endpoints['/wc/v3/products/reviews'][2] )
+			&& $endpoints['/wc/v3/products/reviews'][2]['callback'][0] instanceof WC_Admin_REST_Product_Reviews_Controller
+			&& $endpoints['/wc/v3/products/reviews'][3]['callback'][0] instanceof WC_Admin_REST_Product_Reviews_Controller
+		) {
+			$endpoints['/wc/v3/products/reviews'][0] = $endpoints['/wc/v3/products/reviews'][2];
+			$endpoints['/wc/v3/products/reviews'][1] = $endpoints['/wc/v3/products/reviews'][3];
 		}
 
 		return $endpoints;
@@ -218,6 +262,8 @@ class WC_Admin_Api_Init {
 				'report-variations'     => 'WC_Admin_Reports_Variations_Data_Store',
 				'report-products-stats' => 'WC_Admin_Reports_Products_Stats_Data_Store',
 				'report-categories'     => 'WC_Admin_Reports_Categories_Data_Store',
+				'report-taxes'          => 'WC_Admin_Reports_Taxes_Data_Store',
+				'report-taxes-stats'    => 'WC_Admin_Reports_Taxes_Stats_Data_Store',
 				'admin-note'            => 'WC_Admin_Notes_Data_Store',
 			)
 		);

@@ -21,6 +21,7 @@ import * as couponsConfig from 'analytics/report/coupons/config';
 import * as ordersConfig from 'analytics/report/orders/config';
 import * as productsConfig from 'analytics/report/products/config';
 import * as taxesConfig from 'analytics/report/taxes/config';
+import * as customersConfig from 'analytics/report/customers/config';
 import * as reportsUtils from './utils';
 
 const reportConfigs = {
@@ -29,6 +30,7 @@ const reportConfigs = {
 	orders: ordersConfig,
 	products: productsConfig,
 	taxes: taxesConfig,
+	customers: customersConfig,
 };
 
 export function getFilterQuery( endpoint, query ) {
@@ -139,7 +141,7 @@ function getRequestQuery( endpoint, dataType, query ) {
  * @return {Object}  Object containing summary number responses.
  */
 export function getSummaryNumbers( endpoint, query, select ) {
-	const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
+	const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-api' );
 	const response = {
 		isRequesting: false,
 		isError: false,
@@ -182,7 +184,7 @@ export function getSummaryNumbers( endpoint, query, select ) {
  * @return {Object}  Object containing API request information (response, fetching, and error details)
  */
 export function getReportChartData( endpoint, dataType, query, select ) {
-	const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
+	const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-api' );
 
 	const response = {
 		isEmpty: false,
@@ -270,8 +272,8 @@ export function getTooltipValueFormat( type ) {
 	}
 }
 
-export function getReportTableQuery( urlQuery, query ) {
-	const filterQuery = getFilterQuery( 'products', urlQuery );
+export function getReportTableQuery( endpoint, urlQuery, query ) {
+	const filterQuery = getFilterQuery( endpoint, urlQuery );
 	const datesFromQuery = getCurrentDates( urlQuery );
 
 	return {
@@ -296,22 +298,22 @@ export function getReportTableQuery( urlQuery, query ) {
  * @return {Object} Object    Table data response
  */
 export function getReportTableData( endpoint, urlQuery, select, query = {} ) {
-	const { getReportItems, isGetReportItemsRequesting, isGetReportItemsError } = select(
-		'wc-admin'
-	);
+	const { getReportItems, isReportItemsRequesting, isReportItemsError } = select( 'wc-api' );
 
-	const tableQuery = reportsUtils.getReportTableQuery( urlQuery, query );
+	const tableQuery = reportsUtils.getReportTableQuery( endpoint, urlQuery, query );
 	const response = {
 		query: tableQuery,
 		isRequesting: false,
 		isError: false,
-		items: [],
+		items: {
+			data: [],
+		},
 	};
 
 	const items = getReportItems( endpoint, tableQuery );
-	if ( isGetReportItemsRequesting( endpoint, tableQuery ) ) {
+	if ( isReportItemsRequesting( endpoint, tableQuery ) ) {
 		return { ...response, isRequesting: true };
-	} else if ( isGetReportItemsError( endpoint, tableQuery ) ) {
+	} else if ( isReportItemsError( endpoint, tableQuery ) ) {
 		return { ...response, isError: true };
 	}
 
