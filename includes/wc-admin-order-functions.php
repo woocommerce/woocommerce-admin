@@ -16,6 +16,8 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 	global $wpdb;
 
 	$order = wc_get_order( $order_id );
+
+	// This hook gets called on refunds as well, so return early to avoid errors.
 	if ( ! $order || 'shop_order_refund' === $order->get_type() ) {
 		return;
 	}
@@ -23,7 +25,8 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 	if ( 'refunded' === $order->get_status() ) {
 		$wpdb->delete(
 			$wpdb->prefix . 'wc_order_product_lookup',
-			array( 'order_id' => $order->get_id() )
+			array( 'order_id' => $order->get_id() ),
+			array( '%d' )
 		);
 		return;
 	}
@@ -31,18 +34,19 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 	$refunds = wc_admin_get_order_refund_items( $order );
 
 	foreach ( $order->get_items() as $order_item ) {
-		$quantity_refunded = isset( $refunds[ $order_item->get_id() ] ) ? $refunds[ $order_item->get_id() ] : 0;
+		$order_item_id     = $order_item->get_id();
+		$quantity_refunded = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ] : 0;
 		if ( $quantity_refunded >= $order_item->get_quantity( 'edit' ) ) {
 			$wpdb->delete(
 				$wpdb->prefix . 'wc_order_product_lookup',
-				array( 'order_item_id' => $order_item->get_id() ),
+				array( 'order_item_id' => $order_item_id ),
 				array( '%d' )
 			);
 		} else {
 			$wpdb->replace(
 				$wpdb->prefix . 'wc_order_product_lookup',
 				array(
-					'order_item_id'         => $order_item->get_id(),
+					'order_item_id'         => $order_item_id,
 					'order_id'              => $order->get_id(),
 					'product_id'            => $order_item->get_product_id( 'edit' ),
 					'variation_id'          => $order_item->get_variation_id( 'edit' ),
@@ -66,9 +70,9 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 	}
 }
 // TODO: maybe replace these with woocommerce_create_order, woocommerce_update_order, woocommerce_trash_order, woocommerce_delete_order, as clean_post_cache might be called in other circumstances and trigger too many updates?
-add_action( 'save_post', 'wc_admin_order_product_lookup_entry', 10, 1 );
+add_action( 'save_post', 'wc_admin_order_product_lookup_entry' );
 add_action( 'woocommerce_order_refunded', 'wc_admin_order_product_lookup_entry' );
-add_action( 'clean_post_cache', 'wc_admin_order_product_lookup_entry', 10, 1 );
+add_action( 'clean_post_cache', 'wc_admin_order_product_lookup_entry' );
 
 /**
  * Get total refund amount and line items refunded.
@@ -79,7 +83,6 @@ add_action( 'clean_post_cache', 'wc_admin_order_product_lookup_entry', 10, 1 );
 function wc_admin_get_order_refund_items( $order ) {
 	$refunds             = $order->get_refunds();
 	$refunded_line_items = array();
-	$single_item_order   = ( 1 === count( $order->get_items() ) );
 	foreach ( $refunds as $refund ) {
 		foreach ( $refund->get_items() as $refunded_item ) {
 			$line_item_id                          = wc_get_order_item_meta( $refunded_item->get_id(), '_refunded_item_id', true );
