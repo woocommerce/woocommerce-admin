@@ -20,15 +20,7 @@ function readCurrentUserData( resourceNames, fetch ) {
 
 		return [
 			fetch( { path: url } )
-				.then( user => {
-					const userData = mapValues( user.woocommerce_meta, data => {
-						if ( ! data || 0 === data.length ) {
-							return '';
-						}
-						return JSON.parse( data );
-					} );
-					return { [ 'current-user-data' ]: { data: userData } };
-				} )
+				.then( userToUserDataResource )
 				.catch( error => {
 					return { [ 'current-user-data' ]: { error: String( error.message ) } };
 				} ),
@@ -58,15 +50,23 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 
 		return [
 			fetch( { path: url, method: 'POST', data: user } )
-				.then( updatedUserData => {
-					return { [ resourceName ]: { data: updatedUserData.woocommerce_meta } };
-				} )
+				.then( userToUserDataResource )
 				.catch( error => {
 					return { [ resourceName ]: { error } };
 				} ),
 		];
 	}
 	return [];
+}
+
+function userToUserDataResource( user ) {
+	const userData = mapValues( user.woocommerce_meta, data => {
+		if ( ! data || 0 === data.length ) {
+			return '';
+		}
+		return JSON.parse( data );
+	} );
+	return { [ 'current-user-data' ]: { data: userData } };
 }
 
 export default {
