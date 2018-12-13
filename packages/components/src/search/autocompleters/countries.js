@@ -9,6 +9,7 @@ import { decodeEntities } from '@wordpress/html-entities';
  * Internal dependencies
  */
 import { computeSuggestionMatch } from './utils';
+import Flag from '../../flag';
 
 /**
  * A country completer.
@@ -29,6 +30,13 @@ export default {
 		const name = decodeEntities( country.name );
 		const match = computeSuggestionMatch( name, query ) || {};
 		return [
+			<Flag
+				key="thumbnail"
+				className="woocommerce-search__result-thumbnail"
+				code={ country.code }
+				width={ 18 }
+				height={ 18 }
+			/>,
 			<span key="name" className="woocommerce-search__result-name" aria-label={ name }>
 				{ match.suggestionBeforeMatch }
 				<strong className="components-form-token-field__suggestion-match">
