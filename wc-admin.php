@@ -53,9 +53,13 @@ function wc_admin_plugins_notice() {
  * Notify users that the plugin needs to be built
  */
 function wc_admin_build_notice() {
-	echo '<div class="error"><p>';
-	esc_html_e( 'WooCommerce Admin development mode requires files to be built. From the plugin directory, run <code>npm install</code> to install dependencies, <code>npm run build</code> to build the files or <code>npm start</code> to build the files and watch for changes.', 'wc-admin' );
-	echo '</p></div>';
+	$message_one = __( 'You have installed a development version WooCommerce Admin which requires files to be built. From the plugin directory, run <code>npm install</code> to install dependencies, <code>npm run build</code> to build the files.', 'wc-admin' );
+	$message_two = sprintf(
+		/* translators: 1: URL of GitHub Repository build page */
+		__( 'Or you can download a pre-built version of the plugin by visiting <a href="%1$s">the releases page in the repository</a>.', 'wc-admin' ),
+		'https://github.com/woocommerce/wc-admin/releases'
+	);
+	printf( '<div class="error"><p>%s %s</p></div>', $message_one, $message_two ); /* WPCS: xss ok. */
 }
 
 /**
@@ -156,17 +160,17 @@ function wc_admin_plugins_loaded() {
 		return;
 	}
 
-	// Verify we have a proper build.
-	if ( ! wc_admin_build_file_exists() && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-		add_action( 'admin_notices', 'wc_admin_build_notice' );
-		return;
-	}
-
 	// Initialize the WC API extensions.
 	require_once dirname( __FILE__ ) . '/includes/class-wc-admin-api-init.php';
 
 	// Some common utilities.
 	require_once dirname( __FILE__ ) . '/lib/common.php';
+
+	// Verify we have a proper build.
+	if ( ! wc_admin_build_file_exists() ) {
+		add_action( 'admin_notices', 'wc_admin_build_notice' );
+		return;
+	}
 
 	// Register script files.
 	require_once dirname( __FILE__ ) . '/lib/client-assets.php';
