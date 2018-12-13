@@ -228,7 +228,7 @@ Search.propTypes = {
 	 */
 	selected: PropTypes.arrayOf(
 		PropTypes.shape( {
-			id: PropTypes.oneOf( [
+			id: PropTypes.oneOfType( [
 				PropTypes.number,
 				PropTypes.string,
 			] ).isRequired,

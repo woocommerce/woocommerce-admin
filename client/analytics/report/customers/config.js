@@ -79,20 +79,26 @@ export const advancedFilters = {
 				{
 					value: 'excludes',
 					/* translators: Sentence fragment, logical, "Excludes" refers to countries excluding a given country or countries. Screenshot for context: https://cloudup.com/cCsm3GeXJbE */
-					label: _x( 'Excludes', 'countriess', 'wc-admin' ),
+					label: _x( 'Excludes', 'countries', 'wc-admin' ),
 				},
 			],
 			input: {
 				component: 'Search',
 				type: 'countries',
-				getLabels:
-					( wcSettings.dataEndpoints &&
-						wcSettings.dataEndpoints.countries &&
-						wcSettings.dataEndpoints.countries.map( country => ( {
-							id: country.code,
-							label: decodeEntities( country.name ),
-						} ) ) ) ||
-					[],
+				getLabels: async value => {
+					const countries =
+						( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
+
+					const allLabels = countries.map( country => ( {
+						id: country.code,
+						label: decodeEntities( country.name ),
+					} ) );
+
+					const labels = value.split( ',' );
+					return await allLabels.filter( label => {
+						return labels.includes( label.id );
+					} );
+				},
 			},
 		},
 	},
