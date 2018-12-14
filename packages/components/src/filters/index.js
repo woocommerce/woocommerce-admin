@@ -92,15 +92,6 @@ ReportFilters.propTypes = {
 	 */
 	advancedFilters: PropTypes.object,
 	/**
-	 * Config options for the date range picker.
-	 */
-	dateRangeFilter: PropTypes.shape( {
-		/**
-		 * Whether the date range filter must be shown.
-		 */
-		show: PropTypes.bool,
-	} ),
-	/**
 	 * Config option passed through to `FilterPicker` - if not used, `FilterPicker` is not displayed.
 	 */
 	filters: PropTypes.array,
@@ -120,9 +111,6 @@ ReportFilters.propTypes = {
 
 ReportFilters.defaultProps = {
 	advancedFilters: {},
-	dateRangeFilter: {
-		show: true,
-	},
 	filters: [],
 	query: {},
 	showDatePicker: true,
