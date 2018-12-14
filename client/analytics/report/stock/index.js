@@ -16,7 +16,7 @@ import { ReportFilters } from '@woocommerce/components';
 import { showDatePicker, filters } from './config';
 import StockReportTable from './table';
 
-export default class CouponsReport extends Component {
+export default class StockReport extends Component {
 	render() {
 		const { query, path } = this.props;
 
@@ -34,6 +34,6 @@ export default class CouponsReport extends Component {
 	}
 }
 
-CouponsReport.propTypes = {
+StockReport.propTypes = {
 	query: PropTypes.object.isRequired,
 };
