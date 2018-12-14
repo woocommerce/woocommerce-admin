@@ -134,7 +134,7 @@ export default class StockReportTable extends Component {
 				// getSummary={ this.getSummary }
 				query={ query }
 				tableQuery={ {
-					orderby: query.orderby || 'date', // @TODO
+					orderby: query.orderby || 'stock_quantity',
 					order: query.order || 'desc',
 					type: query.type || 'all',
 				} }
