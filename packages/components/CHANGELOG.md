@@ -5,7 +5,10 @@
 - Add country autocompleter to search component
 - Adding new `<Chart />` component.
 - Added new `showDatePicker` prop to `<Filters />` component which allows to use the filters component without the date picker.
-- Added new customers autocompleter, and added support for using it within 
+- Added new taxes and customers autocompleters, and added support for using them within `<Filters />`.
+- Bug fix for `<SummaryNumber />` returning N/A instead of zero.
+- Bug fix for screen reader label IDs in `<Table />` header.
+- Added new component `<TextControlWithAffixes />`.
 
 # 1.2.0
 
