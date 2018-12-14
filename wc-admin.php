@@ -53,7 +53,7 @@ function wc_admin_plugins_notice() {
  * Notify users that the plugin needs to be built
  */
 function wc_admin_build_notice() {
-	$message_one = __( 'You have installed a development version WooCommerce Admin which requires files to be built. From the plugin directory, run <code>npm install</code> to install dependencies, <code>npm run build</code> to build the files.', 'wc-admin' );
+	$message_one = __( 'You have installed a development version of WooCommerce Admin which requires files to be built. From the plugin directory, run <code>npm install</code> to install dependencies, <code>npm run build</code> to build the files.', 'wc-admin' );
 	$message_two = sprintf(
 		/* translators: 1: URL of GitHub Repository build page */
 		__( 'Or you can download a pre-built version of the plugin by visiting <a href="%1$s">the releases page in the repository</a>.', 'wc-admin' ),
@@ -166,6 +166,11 @@ function wc_admin_plugins_loaded() {
 	// Some common utilities.
 	require_once dirname( __FILE__ ) . '/lib/common.php';
 
+	// Admin note providers.
+	require_once dirname( __FILE__ ) . '/includes/class-wc-admin-notes-new-sales-record.php';
+	require_once dirname( __FILE__ ) . '/includes/class-wc-admin-notes-settings-notes.php';
+	require_once dirname( __FILE__ ) . '/includes/class-wc-admin-notes-woo-subscriptions-notes.php';
+
 	// Verify we have a proper build.
 	if ( ! wc_admin_build_file_exists() ) {
 		add_action( 'admin_notices', 'wc_admin_build_notice' );
@@ -177,11 +182,6 @@ function wc_admin_plugins_loaded() {
 
 	// Create the Admin pages.
 	require_once dirname( __FILE__ ) . '/lib/admin.php';
-
-	// Admin note providers.
-	require_once dirname( __FILE__ ) . '/includes/class-wc-admin-notes-new-sales-record.php';
-	require_once dirname( __FILE__ ) . '/includes/class-wc-admin-notes-settings-notes.php';
-	require_once dirname( __FILE__ ) . '/includes/class-wc-admin-notes-woo-subscriptions-notes.php';
 }
 add_action( 'plugins_loaded', 'wc_admin_plugins_loaded' );
 
