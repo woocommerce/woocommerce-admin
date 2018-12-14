@@ -3,6 +3,9 @@
 - Update `<Table />` to use header keys to denote which columns are shown
 - Add `onColumnsChange` property to `<Table />` which is called when columns are shown/hidden
 - Add country autocompleter to search component
+- Adding new `<Chart />` component.
+- Added new `showDatePicker` prop to `<Filters />` component which allows to use the filters component without the date picker.
+- Added new customers autocompleter, and added support for using it within 
 
 # 1.2.0
 
