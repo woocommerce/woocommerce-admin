@@ -53,10 +53,9 @@ export default {
 	// This is slightly different than gutenberg/Autocomplete, we don't support different methods
 	// of replace/insertion, so we can just return the value.
 	getOptionCompletion( customer ) {
-		const value = {
+		return {
 			id: customer.id,
 			label: customer.email,
 		};
-		return value;
 	},
 };

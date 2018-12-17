@@ -28,10 +28,9 @@ class WC_Admin_REST_Customers_Controller extends WC_REST_Customers_Controller {
 	 * @return array
 	 */
 	public static function update_search_filters( $prepared_args, $request ) {
-		if ( ! empty( $prepared_args['search_columns'] ) && in_array( 'user_email', $prepared_args['search_columns'] ) && empty( $request['name'] ) ) {
+		if ( ! empty( $request['email'] ) ) {
 			$prepared_args['search'] = '*' . $prepared_args['search'] . '*';
 		}
-
 		return $prepared_args;
 	}
 
@@ -42,7 +41,8 @@ class WC_Admin_REST_Customers_Controller extends WC_REST_Customers_Controller {
 	 */
 	public function get_collection_params() {
 		$params = parent::get_collection_params();
-		// Allow partial email matches.
+		// Allow partial email matches. Previously, this was of format 'email' which required a strict "test@example.com" format.
+		// This, in combination with `update_search_filters` allows us to do partial searches.
 		$params['email']['format'] = '';
 		return $params;
 	}
