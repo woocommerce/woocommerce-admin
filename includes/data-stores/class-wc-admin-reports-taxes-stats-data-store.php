@@ -198,6 +198,10 @@ class WC_Admin_Reports_Taxes_Stats_Data_Store extends WC_Admin_Reports_Data_Stor
 			}
 
 			$totals = (object) $this->cast_numbers( $totals[0] );
+
+			$this->update_interval_boundary_dates( $query_args['after'], $query_args['before'], $query_args['interval'], $intervals );
+			$this->create_interval_subtotals( $intervals );
+
 			$data     = (object) array(
 				'totals'    => $totals,
 				'intervals' => $intervals,

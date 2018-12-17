@@ -87,7 +87,6 @@ export default class TaxesReportTable extends Component {
 					value: tax_rate_id,
 				},
 				{
-					// @TODO add `rate` once it's returned by the API
 					display: tax_rate.toFixed( 2 ) + '%',
 					value: tax_rate,
 				},
