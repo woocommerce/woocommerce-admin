@@ -133,7 +133,7 @@ export default class TaxesReportTable extends Component {
 			},
 			{
 				label: _n( 'order', 'orders', totals.orders, 'wc-admin' ),
-				value: numberFormat( totals.orders ),
+				value: numberFormat( totals.orders_count ),
 			},
 		];
 	}

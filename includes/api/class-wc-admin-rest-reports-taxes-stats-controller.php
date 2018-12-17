@@ -180,7 +180,7 @@ class WC_Admin_REST_Reports_Taxes_Stats_Controller extends WC_REST_Reports_Contr
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
-			'order_count' => array(
+			'orders_count' => array(
 				'description' => __( 'Amount of orders.', 'wc-admin' ),
 				'type'        => 'integer',
 				'context'     => array( 'view', 'edit' ),

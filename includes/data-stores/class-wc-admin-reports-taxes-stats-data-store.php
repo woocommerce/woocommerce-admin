@@ -30,7 +30,7 @@ class WC_Admin_Reports_Taxes_Stats_Data_Store extends WC_Admin_Reports_Data_Stor
 		'total_tax'    => 'floatval',
 		'order_tax'    => 'floatval',
 		'shipping_tax' => 'floatval',
-		'order_count'  => 'intval',
+		'orders_count' => 'intval',
 	);
 
 	/**
@@ -43,7 +43,7 @@ class WC_Admin_Reports_Taxes_Stats_Data_Store extends WC_Admin_Reports_Data_Stor
 		'total_tax'    => 'SUM(total_tax) AS total_tax',
 		'order_tax'    => 'SUM(order_tax) as order_tax',
 		'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',
-		'order_count'  => 'COUNT(DISTINCT order_id) as orders',
+		'orders_count' => 'COUNT(DISTINCT order_id) as orders_count',
 	);
 
 	/**
