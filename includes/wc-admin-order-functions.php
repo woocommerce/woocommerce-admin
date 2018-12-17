@@ -35,7 +35,9 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 
 	foreach ( $order->get_items() as $order_item ) {
 		$order_item_id     = $order_item->get_id();
-		$quantity_refunded = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ] : 0;
+		$quantity_refunded = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ]['quantity'] : 0;
+		$amount_refunded   = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ]['amount'] : 0;
+
 		if ( $quantity_refunded >= $order_item->get_quantity( 'edit' ) ) {
 			$wpdb->delete(
 				$wpdb->prefix . 'wc_order_product_lookup',
@@ -52,7 +54,7 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 					'variation_id'          => $order_item->get_variation_id( 'edit' ),
 					'customer_id'           => ( 0 < $order->get_customer_id( 'edit' ) ) ? $order->get_customer_id( 'edit' ) : null,
 					'product_qty'           => $order_item->get_quantity( 'edit' ) - $quantity_refunded,
-					'product_gross_revenue' => $order_item->get_subtotal( 'edit' ),
+					'product_gross_revenue' => $order_item->get_subtotal( 'edit' ) - $amount_refunded,
 					'date_created'          => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
 				),
 				array(
@@ -86,8 +88,12 @@ function wc_admin_get_order_refund_items( $order ) {
 	foreach ( $refunds as $refund ) {
 		foreach ( $refund->get_items() as $refunded_item ) {
 			$line_item_id                          = wc_get_order_item_meta( $refunded_item->get_id(), '_refunded_item_id', true );
-			$refunded_line_items[ $line_item_id ]  = isset( $refunded_line_items[ $line_item_id ] ) ? $refunded_line_items[ $line_item_id ] : 0;
-			$refunded_line_items[ $line_item_id ] += absint( $refunded_item['quantity'] );
+			if ( ! isset( $refunded_line_items[ $line_item_id ] ) ) {
+				$refunded_line_items[ $line_item_id ]['quantity'] = 0;
+				$refunded_line_items[ $line_item_id ]['subtotal'] = 0;
+			}
+			$refunded_line_items[ $line_item_id ]['quantity'] += absint( $refunded_item['quantity'] );
+			$refunded_line_items[ $line_item_id ]['subtotal'] += absint( $refunded_item['subtotal'] );
 		}
 	}
 	return $refunded_line_items;
