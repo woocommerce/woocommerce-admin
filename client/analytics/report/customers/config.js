@@ -166,6 +166,81 @@ export const advancedFilters = {
 				} ) ),
 			},
 		},
+		order_count: {
+			labels: {
+				add: 'No. of Orders',
+				remove: 'Remove order  filter',
+				rule: 'Select an order count filter match',
+				title: 'No. of Orders {{rule /}} {{filter /}}',
+			},
+			rules: [
+				{
+					value: 'max',
+					label: 'Less Than',
+				},
+				{
+					value: 'min',
+					label: 'More Than',
+				},
+				{
+					value: 'between',
+					label: 'Between',
+				},
+			],
+			input: {
+				component: 'Number',
+			},
+		},
+		total_spend: {
+			labels: {
+				add: 'Total Spend',
+				remove: 'Remove total spend filter',
+				rule: 'Select a total spend filter match',
+				title: 'Total Spend {{rule /}} {{filter /}}',
+			},
+			rules: [
+				{
+					value: 'max',
+					label: 'Less Than',
+				},
+				{
+					value: 'min',
+					label: 'More Than',
+				},
+				{
+					value: 'between',
+					label: 'Between',
+				},
+			],
+			input: {
+				component: 'Number',
+			},
+		},
+		avg_order_value: {
+			labels: {
+				add: 'AOV',
+				remove: 'Remove average older value filter',
+				rule: 'Select an average order value filter match',
+				title: 'AOV {{rule /}} {{filter /}}',
+			},
+			rules: [
+				{
+					value: 'max',
+					label: 'Less Than',
+				},
+				{
+					value: 'min',
+					label: 'More Than',
+				},
+				{
+					value: 'between',
+					label: 'Between',
+				},
+			],
+			input: {
+				component: 'Number',
+			},
+		},
 	},
 };
 /*eslint-enable max-len*/
