@@ -32,4 +32,4 @@ There is a "devdocs" page which is useful for displaying components individually
 
 ```http://<your-wp-site>/wp-admin/admin.php?page=wc-admin#/devdocs```
 
-This is useful for viewing of (WooCommerce)[https://woocommerce.github.io/wc-admin/#/components/] components and ad-hoc testing.
+This is useful for viewing of [WooCommerce components](https://woocommerce.github.io/wc-admin/#/components/) components and ad-hoc testing.
