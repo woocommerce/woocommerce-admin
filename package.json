@@ -42,7 +42,7 @@
     "docs": "node ./bin/generate-docs",
     "publish:check": "npm run build:packages && lerna updated",
     "publish:dev": "npm run build:packages && lerna publish --npm-tag next",
-    "publish:prod": "npm run build:packages && lerna publish"
+    "publish:prod": "npm run build:packages && lerna publish from-package"
   },
   "devDependencies": {
     "@babel/cli": "7.2.0",
