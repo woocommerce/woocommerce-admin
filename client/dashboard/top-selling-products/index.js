@@ -6,7 +6,6 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { get, map } from 'lodash';
 import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -20,7 +19,7 @@ import { getAdminLink } from '@woocommerce/navigation';
  */
 import { numberFormat } from 'lib/number';
 import ReportError from 'analytics/components/report-error';
-import { NAMESPACE } from 'store/constants';
+import withSelect from 'wc-api/with-select';
 import './style.scss';
 
 export class TopSellingProducts extends Component {
@@ -123,8 +122,8 @@ export class TopSellingProducts extends Component {
 
 export default compose(
 	withSelect( select => {
-		const { getReportStats, getReportStatsError, isReportStatsRequesting } = select( 'wc-admin' );
-		const endpoint = NAMESPACE + 'reports/products';
+		const { getReportStats, getReportStatsError, isReportStatsRequesting } = select( 'wc-api' );
+		const endpoint = 'products';
 		// @TODO We will need to add the date parameters from the Date Picker
 		// { after: '2018-04-22', before: '2018-05-06' }
 		const query = { orderby: 'items_sold', per_page: 5, extended_info: 1 };
