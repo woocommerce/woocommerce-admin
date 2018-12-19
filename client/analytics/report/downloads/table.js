@@ -142,6 +142,7 @@ export default class CouponsReportTable extends Component {
 				getSummary={ this.getSummary }
 				query={ query }
 				title={ __( 'Downloads', 'wc-admin' ) }
+				columnPrefsKey="downloads_report_columns"
 			/>
 		);
 	}
