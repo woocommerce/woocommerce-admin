@@ -29,6 +29,8 @@ class WC_Admin_Api_Init {
 
 		// Initialize Orders data store class's static vars.
 		add_action( 'woocommerce_after_register_post_type', array( 'WC_Admin_Api_Init', 'orders_data_store_init' ), 20 );
+		// Add taxonomy support for product categories.
+		add_filter( 'woocommerce_taxonomy_args_product_cat', array( 'WC_Admin_Api_Init', 'show_product_categories_in_rest' ) );
 	}
 
 	/**
@@ -468,6 +470,17 @@ class WC_Admin_Api_Init {
 
 		// Initialize report tables.
 		add_action( 'woocommerce_after_register_post_type', array( 'WC_Admin_Api_Init', 'order_product_lookup_store_init' ), 20 );
+	}
+
+	/**
+	 * Enables the WP REST API for product categories
+	 *
+	 * @param array $args Default arguments for product_cat taxonomy.
+	 * @return array
+	 */
+	public static function show_product_categories_in_rest( $args ) {
+		$args['show_in_rest'] = true;
+		return $args;
 	}
 
 }
