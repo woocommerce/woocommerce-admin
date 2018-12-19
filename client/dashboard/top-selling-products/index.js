@@ -48,8 +48,8 @@ export class TopSellingProducts extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Gross Revenue', 'wc-admin' ),
-				key: 'gross_revenue',
+				label: __( 'Net Revenue', 'wc-admin' ),
+				key: 'net_revenue',
 				required: true,
 				isSortable: false,
 				isNumeric: true,
@@ -59,7 +59,7 @@ export class TopSellingProducts extends Component {
 
 	getRowsContent( data ) {
 		return map( data, row => {
-			const { product_id, items_sold, gross_revenue, orders_count, name } = row;
+			const { product_id, items_sold, net_revenue, orders_count, name } = row;
 
 			const productLink = (
 				<a href={ getAdminLink( `/post.php?post=${ product_id }&action=edit` ) }>{ name }</a>
@@ -78,8 +78,8 @@ export class TopSellingProducts extends Component {
 					value: orders_count,
 				},
 				{
-					display: formatCurrency( gross_revenue ),
-					value: getCurrencyFormatDecimal( gross_revenue ),
+					display: formatCurrency( net_revenue ),
+					value: getCurrencyFormatDecimal( net_revenue ),
 				},
 			];
 		} );
@@ -123,7 +123,7 @@ export class TopSellingProducts extends Component {
 
 export default compose(
 	withSelect( select => {
-		const { getReportStats, getReportStatsError, isReportStatsRequesting } = select( 'wc-admin' );
+		const { getReportStats, isReportStatsRequesting, isReportStatsError } = select( 'wc-admin' );
 		const endpoint = NAMESPACE + 'reports/products';
 		// @TODO We will need to add the date parameters from the Date Picker
 		// { after: '2018-04-22', before: '2018-05-06' }
@@ -131,7 +131,7 @@ export default compose(
 
 		const stats = getReportStats( endpoint, query );
 		const isRequesting = isReportStatsRequesting( endpoint, query );
-		const isError = Boolean( getReportStatsError( endpoint, query ) );
+		const isError = isReportStatsError( endpoint, query );
 
 		return { data: get( stats, 'data', [] ), isRequesting, isError };
 	} )

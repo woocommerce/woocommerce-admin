@@ -43,21 +43,21 @@ describe( 'TopSellingProducts', () => {
 		expect( firstRow[ 1 ].value ).toBe( mockData[ 0 ].items_sold );
 		expect( firstRow[ 2 ].display ).toBe( numberFormat( mockData[ 0 ].orders_count ) );
 		expect( firstRow[ 2 ].value ).toBe( mockData[ 0 ].orders_count );
-		expect( firstRow[ 3 ].display ).toBe( formatCurrency( mockData[ 0 ].gross_revenue ) );
-		expect( firstRow[ 3 ].value ).toBe( getCurrencyFormatDecimal( mockData[ 0 ].gross_revenue ) );
+		expect( firstRow[ 3 ].display ).toBe( formatCurrency( mockData[ 0 ].net_revenue ) );
+		expect( firstRow[ 3 ].value ).toBe( getCurrencyFormatDecimal( mockData[ 0 ].net_revenue ) );
 	} );
 
 	test( 'should load report stats from API', () => {
 		const getReportStatsMock = jest.fn().mockReturnValue( { data: mockData } );
 		const isReportStatsRequestingMock = jest.fn().mockReturnValue( false );
-		const getReportStatsErrorMock = jest.fn().mockReturnValue( undefined );
+		const isReportStatsErrorMock = jest.fn().mockReturnValue( false );
 		const registry = createRegistry();
 		registry.registerStore( 'wc-admin', {
 			reducer: () => {},
 			selectors: {
 				getReportStats: getReportStatsMock,
 				isReportStatsRequesting: isReportStatsRequestingMock,
-				getReportStatsError: getReportStatsErrorMock,
+				isReportStatsError: isReportStatsErrorMock,
 			},
 		} );
 		const topSellingProductsWrapper = TestRenderer.create(
@@ -74,8 +74,8 @@ describe( 'TopSellingProducts', () => {
 		expect( getReportStatsMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
 		expect( isReportStatsRequestingMock.mock.calls[ 0 ][ 1 ] ).toBe( endpoint );
 		expect( isReportStatsRequestingMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
-		expect( getReportStatsErrorMock.mock.calls[ 0 ][ 1 ] ).toBe( endpoint );
-		expect( getReportStatsErrorMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
+		expect( isReportStatsErrorMock.mock.calls[ 0 ][ 1 ] ).toBe( endpoint );
+		expect( isReportStatsErrorMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
 		expect( topSellingProducts.props.data ).toBe( mockData );
 	} );
 } );

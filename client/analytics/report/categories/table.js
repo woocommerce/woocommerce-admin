@@ -19,6 +19,12 @@ import ReportTable from 'analytics/components/report-table';
 import { numberFormat } from 'lib/number';
 
 export default class CategoriesReportTable extends Component {
+	constructor( props ) {
+		super( props );
+
+		this.getRowsContent = this.getRowsContent.bind( this );
+	}
+
 	getHeadersContent() {
 		return [
 			{
@@ -39,7 +45,7 @@ export default class CategoriesReportTable extends Component {
 			{
 				label: __( 'G. Revenue', 'wc-admin' ),
 				screenReaderLabel: __( 'Gross Revenue', 'wc-admin' ),
-				key: 'gross_revenue',
+				key: 'net_revenue',
 				isSortable: true,
 				isNumeric: true,
 			},
@@ -60,34 +66,38 @@ export default class CategoriesReportTable extends Component {
 
 	getRowsContent( categories ) {
 		return map( categories, category => {
-			const { category_id, items_sold, gross_revenue, products_count, orders_count } = category;
-
-			// @TODO it should link to the Products report filtered by category
-			const productsLink = (
-				<Link
-					href={ '/analytics/orders?filter=advanced&code_includes=' + category_id }
-					type="wc-admin"
-				>
-					{ numberFormat( products_count ) }
-				</Link>
-			);
+			const {
+				category_id,
+				items_sold,
+				net_revenue,
+				products_count,
+				orders_count,
+				extended_info,
+			} = category;
+			const { name } = extended_info;
 
 			return [
-				// @TODO it should be the category name, not the category ID
 				{
-					display: category_id,
-					value: category_id,
+					display: (
+						<Link
+							href={ 'term.php?taxonomy=product_cat&post_type=product&tag_ID=' + category_id }
+							type="wp-admin"
+						>
+							{ name }
+						</Link>
+					),
+					value: name,
 				},
 				{
 					display: numberFormat( items_sold ),
 					value: items_sold,
 				},
 				{
-					display: formatCurrency( gross_revenue ),
-					value: getCurrencyFormatDecimal( gross_revenue ),
+					display: formatCurrency( net_revenue ),
+					value: getCurrencyFormatDecimal( net_revenue ),
 				},
 				{
-					display: productsLink,
+					display: numberFormat( products_count ),
 					value: products_count,
 				},
 				{
@@ -114,7 +124,7 @@ export default class CategoriesReportTable extends Component {
 			},
 			{
 				label: __( 'gross revenue', 'wc-admin' ),
-				value: formatCurrency( totals.gross_revenue ),
+				value: formatCurrency( totals.net_revenue ),
 			},
 			{
 				label: _n( 'orders', 'orders', totals.orders_count, 'wc-admin' ),
@@ -135,6 +145,11 @@ export default class CategoriesReportTable extends Component {
 				getSummary={ this.getSummary }
 				itemIdField="category_id"
 				query={ query }
+				tableQuery={ {
+					orderby: query.orderby || 'items_sold',
+					order: query.order || 'desc',
+					extended_info: true,
+				} }
 				title={ __( 'Categories', 'wc-admin' ) }
 				columnPrefsKey="categories_report_columns"
 			/>
