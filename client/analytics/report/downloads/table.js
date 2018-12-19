@@ -97,7 +97,7 @@ export default class CouponsReportTable extends Component {
 				},
 				{
 					display: (
-						<Link href={ 'post.php?post=' + order_id + '&action=edit' } type="wp-admin">
+						<Link href={ `post.php?post=${ order_id }&action=edit` } type="wp-admin">
 							{ order_id }
 						</Link>
 					),
