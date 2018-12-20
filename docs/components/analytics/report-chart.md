@@ -42,7 +42,7 @@ Primary data to display in the chart.
 - Type: Object
 - Default: null
 
-The query string represented in object form
+The query string represented in object form.
 
 ### `secondaryData`
 

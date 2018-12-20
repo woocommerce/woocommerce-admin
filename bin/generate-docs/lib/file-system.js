@@ -93,7 +93,7 @@ function getMdFileName( filepath, route, absolute = true ) {
 /**
  * Get an array of files exported from in the given file
  *
- * @param { array } files A list of files.
+ * @param { array } files A list of files, presumably in the components directory.
  * @param { string } basePath The absolute path to the components directory.
  * @return { array } Updated array with absolute paths to all files.
  */
@@ -150,11 +150,10 @@ function isFile( file ) {
 /**
  * Create a table of contents given a list of markdown files.
  *
- * @param { array } files An array of files.
+ * @param { array } files A list of files, presumably in the components directory.
  * @param { string } route Folder where the docs are stored.
  * @param { string } title Title of the TOC section
- * the array of files and a `title` property with a title describing those files.
- * @return { string } Toc contents.
+ * @return { string } TOC contents.
  */
 function getTocContents( files, route, title ) {
 	const mdFiles = files.map( f => getMdFileName( f, route, false ) ).sort();

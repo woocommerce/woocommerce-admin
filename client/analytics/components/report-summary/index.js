@@ -74,7 +74,7 @@ export class ReportSummary extends Component {
 
 ReportSummary.propTypes = {
 	/**
-	 * Properties of all the chart available for that report.
+	 * Properties of all the charts available for that report.
 	 */
 	charts: PropTypes.array.isRequired,
 	/**
@@ -82,7 +82,7 @@ ReportSummary.propTypes = {
 	 */
 	endpoint: PropTypes.string.isRequired,
 	/**
-	 * Query object.
+	 * The query string represented in object form.
 	 */
 	query: PropTypes.object.isRequired,
 	/**

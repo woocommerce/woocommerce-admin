@@ -151,7 +151,7 @@ ReportChart.propTypes = {
 	 */
 	primaryData: PropTypes.object.isRequired,
 	/**
-	 * The query string represented in object form
+	 * The query string represented in object form.
 	 */
 	query: PropTypes.object.isRequired,
 	/**

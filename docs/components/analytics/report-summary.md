@@ -12,7 +12,7 @@ Props
 - Type: Array
 - Default: null
 
-Properties of all the chart available for that report.
+Properties of all the charts available for that report.
 
 ### `endpoint`
 
@@ -28,7 +28,7 @@ The endpoint to use in API calls.
 - Type: Object
 - Default: null
 
-Query object.
+The query string represented in object form.
 
 ### `selectedChart`
 
