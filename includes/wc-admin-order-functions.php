@@ -36,7 +36,7 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 	foreach ( $order->get_items() as $order_item ) {
 		$order_item_id     = $order_item->get_id();
 		$quantity_refunded = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ]['quantity'] : 0;
-		$amount_refunded   = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ]['amount'] : 0;
+		$amount_refunded   = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ]['subtotal'] : 0;
 
 		if ( $quantity_refunded >= $order_item->get_quantity( 'edit' ) ) {
 			$wpdb->delete(
@@ -93,7 +93,7 @@ function wc_admin_get_order_refund_items( $order ) {
 				$refunded_line_items[ $line_item_id ]['subtotal'] = 0;
 			}
 			$refunded_line_items[ $line_item_id ]['quantity'] += absint( $refunded_item['quantity'] );
-			$refunded_line_items[ $line_item_id ]['subtotal'] += absint( $refunded_item['subtotal'] );
+			$refunded_line_items[ $line_item_id ]['subtotal'] += abs( $refunded_item['subtotal'] );
 		}
 	}
 	return $refunded_line_items;
