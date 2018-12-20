@@ -46,7 +46,7 @@ class WC_Admin_REST_Orders_Controller extends WC_REST_Orders_Controller {
 		if ( ! empty( $request['number'] ) ) {
 			$order_ids = $wpdb->get_col(
 				$wpdb->prepare(
-					"SELECT ID FROM wp_posts WHERE post_type = 'shop_order' AND ID LIKE %s",
+					"SELECT ID FROM {$wpdb->prefix}posts WHERE post_type = 'shop_order' AND ID LIKE %s",
 					intval( $request['number'] ) . '%'
 				)
 			);

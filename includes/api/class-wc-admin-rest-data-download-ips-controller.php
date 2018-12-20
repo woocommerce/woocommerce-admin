@@ -63,8 +63,9 @@ class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller
 		if ( isset( $request['match'] ) ) {
 			$downloads = $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT DISTINCT( user_ip_address ) FROM `wp_wc_download_log`
-					WHERE user_ip_address LIKE %s',
+					"SELECT DISTINCT( user_ip_address ) FROM {$wpdb->prefix}wc_download_log
+					WHERE user_ip_address LIKE %s
+					LIMIT 10",
 					$request['match'] . '%'
 				)
 			);

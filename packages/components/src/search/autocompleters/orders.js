@@ -3,6 +3,7 @@
  * External dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { isNaN } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -23,16 +24,22 @@ import { computeSuggestionMatch } from './utils';
 export default {
 	name: 'orders',
 	className: 'woocommerce-search__order-result',
-	options( number ) {
+	options( search ) {
 		let payload = '';
-		if ( number ) {
+		if ( search ) {
+			const number = parseInt( search );
+
+			if ( isNaN( number ) ) {
+				return;
+			}
+
 			const query = {
 				number,
 				per_page: 10,
 			};
 			payload = stringifyQuery( query );
+			return apiFetch( { path: `/wc/v3/orders${ payload }` } );
 		}
-		return apiFetch( { path: `/wc/v3/orders${ payload }` } );
 	},
 	isDebounced: true,
 	getOptionKeywords( order ) {
