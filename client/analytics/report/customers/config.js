@@ -219,8 +219,7 @@ export const advancedFilters = {
 				},
 			],
 			input: {
-				component: 'Number',
-				type: 'currency',
+				component: 'Currency',
 			},
 		},
 		avg_order_value: {
@@ -249,8 +248,7 @@ export const advancedFilters = {
 				},
 			],
 			input: {
-				component: 'Number',
-				type: 'currency',
+				component: 'Currency',
 			},
 		},
 	},
