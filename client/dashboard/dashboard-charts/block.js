@@ -6,18 +6,24 @@ import { Component, Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
 import { Card } from '@woocommerce/components';
+
+/**
+ * Internal dependencies
+ */
 import ReportChart from 'analytics/components/report-chart';
 import './block.scss';
-class ChartBlock extends Component {
-	constructor() {
-		super( ...arguments );
-	}
 
+class ChartBlock extends Component {
 	render() {
 		const { charts, endpoint, path, query } = this.props;
+
+		if ( ! charts || ! charts.length ) {
+			return null;
+		}
+
 		return (
 			<Fragment>
 				<Card className="woocommerce-dashboard__chart-block" title={ charts[ 0 ].label }>

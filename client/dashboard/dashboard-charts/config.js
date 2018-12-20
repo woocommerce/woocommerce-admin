@@ -1,18 +1,14 @@
 /** @format */
 /**
- * External dependencies
- */
-
-/**
  * Internal dependencies
  */
 
-import { charts as ordersCharts } from '../../analytics/report/orders/config';
-import { charts as productsCharts } from '../../analytics/report/products/config';
-import { charts as revenueCharts } from '../../analytics/report/revenue/config';
-import { charts as categoriesCharts } from '../../analytics/report/categories/config';
-import { charts as couponsCharts } from '../../analytics/report/coupons/config';
-import { charts as taxesCharts } from '../../analytics/report/taxes/config';
+import { charts as ordersCharts } from 'analytics/report/orders/config';
+import { charts as productsCharts } from 'analytics/report/products/config';
+import { charts as revenueCharts } from 'analytics/report/revenue/config';
+import { charts as categoriesCharts } from 'analytics/report/categories/config';
+import { charts as couponsCharts } from 'analytics/report/coupons/config';
+import { charts as taxesCharts } from 'analytics/report/taxes/config';
 
 const allCharts = ordersCharts
 	.map( d => ( { ...d, endpoint: 'orders' } ) )
@@ -31,8 +27,13 @@ const uniqCharts = allCharts.reduce( ( a, b ) => {
 	}
 	return a;
 }, [] );
+
+// Default charts.
+// TODO: Implement user-based toggling/persistence.
+const defaultCharts = [ 'items_sold', 'gross_revenue' ];
+
 export const showCharts = uniqCharts.map( d => ( {
 	...d,
-	show: false,
+	show: defaultCharts.indexOf( d.key ) >= 0,
 } ) );
 export const getChartFromKey = key => allCharts.filter( d => d.key === key );

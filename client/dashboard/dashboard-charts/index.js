@@ -10,9 +10,13 @@ import { Component, Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
 import { EllipsisMenu, MenuItem, SectionHeader } from '@woocommerce/components';
+
+/**
+ * Internal dependencies
+ */
 import ChartBlock from './block';
 import { getChartFromKey, showCharts } from './config';
 import './style.scss';
