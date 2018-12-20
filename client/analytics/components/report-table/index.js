@@ -25,8 +25,17 @@ import { extendTableData } from './utils';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';
 
+/**
+ * Component that extends `TableCard` to facilitate its usage in reports.
+ */
 class ReportTable extends Component {
-	onColumnsChange = shownColumns => {
+	constructor( props ) {
+		super( props );
+
+		this.onColumnsChange = this.onColumnsChange.bind( this );
+	}
+
+	onColumnsChange( columns ) {
 		const { columnPrefsKey, getHeadersContent } = this.props;
 		const columns = getHeadersContent().map( header => header.key );
 		const hiddenColumns = columns.filter( column => ! shownColumns.includes( column ) );
@@ -37,9 +46,9 @@ class ReportTable extends Component {
 			};
 			this.props.updateCurrentUserData( userDataFields );
 		}
-	};
+	}
 
-	filterShownHeaders = ( headers, hiddenKeys ) => {
+	filterShownHeaders( headers, hiddenKeys ) {
 		if ( ! hiddenKeys ) {
 			return headers;
 		}
@@ -48,7 +57,7 @@ class ReportTable extends Component {
 			const hidden = hiddenKeys.includes( header.key ) && ! header.required;
 			return { ...header, hiddenByDefault: hidden };
 		} );
-	};
+	}
 
 	render() {
 		const {
@@ -145,11 +154,13 @@ ReportTable.propTypes = {
 	 */
 	itemIdField: PropTypes.string,
 	/**
-	 * Primary data of that report.
+	 * Primary data of that report. If it's not provided, it will be automatically
+	 * loaded via the provided `endpoint`.
 	 */
 	primaryData: PropTypes.object.isRequired,
 	/**
-	 * Table data of that report.
+	 * Table data of that report. If it's not provided, it will be automatically
+	 * loaded via the provided `endpoint`.
 	 */
 	tableData: PropTypes.object.isRequired,
 	/**

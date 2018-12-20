@@ -22,6 +22,9 @@ import ReportError from 'analytics/components/report-error';
 import { calculateDelta, formatValue } from './utils';
 import withSelect from 'wc-api/with-select';
 
+/**
+ * Component to render summary numbers in reports.
+ */
 export class ReportSummary extends Component {
 	render() {
 		const { charts, query, selectedChart, summaryData } = this.props;
@@ -70,10 +73,27 @@ export class ReportSummary extends Component {
 }
 
 ReportSummary.propTypes = {
+	/**
+	 * Properties of all the chart available for that report.
+	 */
 	charts: PropTypes.array.isRequired,
+	/**
+	 * The endpoint to use in API calls.
+	 */
 	endpoint: PropTypes.string.isRequired,
+	/**
+	 * Query object.
+	 */
 	query: PropTypes.object.isRequired,
-	selectedChart: PropTypes.object.isRequired,
+	/**
+	 * Properties of the selected chart.
+	 */
+	selectedChart: PropTypes.shape( {
+		/**
+		 * Key of the selected chart.
+		 */
+		key: PropTypes.string.isRequired,
+	} ).isRequired,
 };
 
 export default compose(
