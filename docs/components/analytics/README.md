@@ -1,11 +1,11 @@
-Client Components
-=================
+Analytics Components
+====================
 
 This folder contains components internally used by `wc-admin`.
 
 ## How to use:
 
-Client components can be imported by their relative or absolute path.
+Analytics components can be imported by their relative or absolute path.
 
 ```jsx
 import ReportChart from 'analytics/components/report-chart';

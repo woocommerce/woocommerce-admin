@@ -14,7 +14,7 @@ const { namedTypes } = types;
  */
 const { camelCaseDash } = require( './formatting' );
 
-const CLIENT_FOLDER = path.resolve( __dirname, '../../../client/analytics/components/' );
+const ANALYTICS_FOLDER = path.resolve( __dirname, '../../../client/analytics/components/' );
 const PACKAGES_FOLDER = path.resolve( __dirname, '../../../packages/components/src/' );
 const DOCS_FOLDER = path.resolve( __dirname, '../../../docs/components/' );
 
@@ -172,7 +172,7 @@ function getTocContents( files, route, title ) {
 
 module.exports = {
 	DOCS_FOLDER,
-	CLIENT_FOLDER,
+	ANALYTICS_FOLDER,
 	PACKAGES_FOLDER,
 	deleteExistingDocs,
 	getExportedFileList,

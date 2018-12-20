@@ -12,7 +12,7 @@ const { parse, resolver } = require( 'react-docgen' );
  */
 const { getDescription, getProps, getTitle } = require( './lib/formatting' );
 const {
-	CLIENT_FOLDER,
+	ANALYTICS_FOLDER,
 	PACKAGES_FOLDER,
 	DOCS_FOLDER,
 	deleteExistingDocs,
@@ -24,9 +24,9 @@ const {
 
 const fileCollections = [
 	{
-		folder: CLIENT_FOLDER,
-		route: 'client',
-		title: 'Client components',
+		folder: ANALYTICS_FOLDER,
+		route: 'analytics',
+		title: 'Analytics components',
 	},
 	{
 		folder: PACKAGES_FOLDER,

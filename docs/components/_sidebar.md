@@ -2,11 +2,11 @@
 
 * [Components](components/)
 
-  * [Client components](components/client/)
-    * [ReportChart](components/client/report-chart.md)
-    * [ReportError](components/client/report-error.md)
-    * [ReportSummary](components/client/report-summary.md)
-    * [ReportTable](components/client/report-table.md)
+  * [Analytics components](components/analytics/)
+    * [ReportChart](components/analytics/report-chart.md)
+    * [ReportError](components/analytics/report-error.md)
+    * [ReportSummary](components/analytics/report-summary.md)
+    * [ReportTable](components/analytics/report-table.md)
   * [Package components](components/packages/)
     * [AnimationSlider](components/packages/animation-slider.md)
     * [Calendar](components/packages/calendar.md)
