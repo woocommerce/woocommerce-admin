@@ -32,7 +32,7 @@ class WC_Admin_Api_Init {
 		// Add taxonomy support for product categories.
 		add_filter( 'woocommerce_taxonomy_args_product_cat', array( 'WC_Admin_Api_Init', 'show_product_categories_in_rest' ) );
 		// Increase per_page limit in REST response.
-		add_filter( 'rest_product_cat_collection_params', array( 'WC_Admin_Api_Init', 'increase_per_page_limit' ) );
+		add_filter( 'woocommerce_rest_product_cat_query', array( 'WC_Admin_Api_Init', 'increase_per_page_limit' ) );
 	}
 
 	/**
@@ -488,12 +488,12 @@ class WC_Admin_Api_Init {
 	/**
 	 * Increase per page limit for product categories
 	 *
-	 * @param array $query_params Rest query params.
+	 * @param array $prepared_args Prepared arguments for query.
 	 * @return array
 	 */
-	public static function increase_per_page_limit( $query_params ) {
-		$query_params['per_page']['maximum'] = PHP_INT_MAX;
-		return $query_params;
+	public static function increase_per_page_limit( $prepared_args ) {
+		$prepared_args['number'] = PHP_INT_MAX;
+		return $prepared_args;
 	}
 
 }

@@ -20,7 +20,7 @@ function read( resourceNames, fetch = apiFetch ) {
 
 	return filteredNames.map( async resourceName => {
 		const query = getResourceIdentifier( resourceName );
-		const url = `/wp/v2/product_cat${ stringifyQuery( query ) }`;
+		const url = `/wc/v3/products/categories${ stringifyQuery( query ) }`;
 
 		try {
 			const response = await fetch( {

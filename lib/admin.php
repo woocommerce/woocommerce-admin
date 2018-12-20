@@ -214,7 +214,6 @@ function wc_admin_enqueue_script() {
 
 	wp_enqueue_script( WC_ADMIN_APP );
 	wp_enqueue_style( WC_ADMIN_APP );
-	wp_localize_script( WC_ADMIN_APP, 'server', array( 'php_int_max' => PHP_INT_MAX ) );
 }
 add_action( 'admin_enqueue_scripts', 'wc_admin_enqueue_script' );
 

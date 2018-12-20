@@ -149,13 +149,10 @@ class CategoriesReportTable extends Component {
 export default compose(
 	withSelect( select => {
 		const { getCategories, getCategoriesError, isGetCategoriesRequesting } = select( 'wc-api' );
-		const categoriesQuery = {
-			per_page: server.php_int_max, // eslint-disable-line
-		};
 
-		const categories = getCategories( categoriesQuery );
-		const isError = Boolean( getCategoriesError( categoriesQuery ) );
-		const isRequesting = isGetCategoriesRequesting( categoriesQuery );
+		const categories = getCategories();
+		const isError = Boolean( getCategoriesError() );
+		const isRequesting = isGetCategoriesRequesting();
 
 		return { categories, isError, isRequesting };
 	} )
