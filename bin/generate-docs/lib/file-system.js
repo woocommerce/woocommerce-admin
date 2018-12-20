@@ -165,7 +165,7 @@ function getTocContents( files, route, title ) {
 	} );
 
 	return [
-		'  * [' + title + '](components/' + route + '/)\n',
+		'  * [' + title + '](components/' + route + '/)',
 		...toc,
 	];
 }
