@@ -37,7 +37,6 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 		$order_item_id     = $order_item->get_id();
 		$quantity_refunded = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ]['quantity'] : 0;
 		$amount_refunded   = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ]['subtotal'] : 0;
-
 		if ( $quantity_refunded >= $order_item->get_quantity( 'edit' ) ) {
 			$wpdb->delete(
 				$wpdb->prefix . 'wc_order_product_lookup',
@@ -48,14 +47,14 @@ function wc_admin_order_product_lookup_entry( $order_id ) {
 			$wpdb->replace(
 				$wpdb->prefix . 'wc_order_product_lookup',
 				array(
-					'order_item_id'         => $order_item_id,
-					'order_id'              => $order->get_id(),
-					'product_id'            => $order_item->get_product_id( 'edit' ),
-					'variation_id'          => $order_item->get_variation_id( 'edit' ),
-					'customer_id'           => ( 0 < $order->get_customer_id( 'edit' ) ) ? $order->get_customer_id( 'edit' ) : null,
-					'product_qty'           => $order_item->get_quantity( 'edit' ) - $quantity_refunded,
-					'product_gross_revenue' => $order_item->get_subtotal( 'edit' ) - $amount_refunded,
-					'date_created'          => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
+					'order_item_id'       => $order_item_id,
+					'order_id'            => $order->get_id(),
+					'product_id'          => $order_item->get_product_id( 'edit' ),
+					'variation_id'        => $order_item->get_variation_id( 'edit' ),
+					'customer_id'         => ( 0 < $order->get_customer_id( 'edit' ) ) ? $order->get_customer_id( 'edit' ) : null,
+					'product_qty'         => $order_item->get_quantity( 'edit' ) - $quantity_refunded,
+					'product_net_revenue' => $order_item->get_subtotal( 'edit' ) - $amount_refunded,
+					'date_created'        => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
 				),
 				array(
 					'%d',
