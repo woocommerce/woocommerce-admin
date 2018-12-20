@@ -93,7 +93,7 @@ function getMdFileName( filepath, route, absolute = true ) {
 /**
  * Get an array of files exported from in the given file
  *
- * @param { array } files An array of files.
+ * @param { array } files A list of files.
  * @param { string } basePath The absolute path to the components directory.
  * @return { array } Updated array with absolute paths to all files.
  */
@@ -148,7 +148,7 @@ function isFile( file ) {
 }
 
 /**
- * Generate a table of contents given a list of markdown files.
+ * Create a table of contents given a list of markdown files.
  *
  * @param { array } files An array of files.
  * @param { string } route Folder where the docs are stored.
