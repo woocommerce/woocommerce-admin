@@ -32,7 +32,7 @@ class WC_Admin_Reports_Downloads_Query extends WC_Admin_Reports_Query {
 	}
 
 	/**
-	 * Get downloads  data based on the current query vars.
+	 * Get downloads data based on the current query vars.
 	 *
 	 * @return array
 	 */

@@ -177,7 +177,11 @@ class WC_Admin_Reports_Downloads_Data_Store extends WC_Admin_Reports_Data_Store 
 		$included_ips_str = '';
 
 		if ( isset( $query_args['ip_address_includes'] ) && is_array( $query_args['ip_address_includes'] ) && count( $query_args['ip_address_includes'] ) > 0 ) {
-			$included_ips_str = implode( "','", $query_args['ip_address_includes'] );
+			$ip_includes = array();
+			foreach ( $query_args['ip_address_includes'] as $ip ) {
+				$ip_includes[] = esc_sql( $ip );
+			}
+			$included_ips_str = implode( "','", $ip_includes );
 		}
 		return $included_ips_str;
 	}
@@ -192,7 +196,11 @@ class WC_Admin_Reports_Downloads_Data_Store extends WC_Admin_Reports_Data_Store 
 		$excluded_ips_str = '';
 
 		if ( isset( $query_args['ip_address_excludes'] ) && is_array( $query_args['ip_address_excludes'] ) && count( $query_args['ip_address_excludes'] ) > 0 ) {
-			$excluded_ips_str = implode( ',', $query_args['ip_address_excludes'] );
+			$ip_excludes = array();
+			foreach ( $query_args['ip_address_excludes'] as $ip ) {
+				$ip_excludes[] = esc_sql( $ip );
+			}
+			$excluded_ips_str = implode( ',', $ip_excludes );
 		}
 		return $excluded_ips_str;
 	}

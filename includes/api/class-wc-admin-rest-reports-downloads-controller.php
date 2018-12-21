@@ -291,6 +291,7 @@ class WC_Admin_REST_Reports_Downloads_Controller extends WC_REST_Reports_Control
 			),
 			'default'           => array(),
 			'sanitize_callback' => 'wp_parse_id_list',
+			'validate_callback' => 'rest_validate_request_arg',
 
 		);
 		$params['product_excludes'] = array(
@@ -300,6 +301,7 @@ class WC_Admin_REST_Reports_Downloads_Controller extends WC_REST_Reports_Control
 				'type' => 'integer',
 			),
 			'default'           => array(),
+			'validate_callback' => 'rest_validate_request_arg',
 			'sanitize_callback' => 'wp_parse_id_list',
 		);
 		$params['order_includes'] = array(
