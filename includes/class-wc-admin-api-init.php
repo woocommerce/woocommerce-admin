@@ -69,7 +69,6 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-downloads-data-store.php';
 
 		// Data triggers.
-		require_once dirname( __FILE__ ) . '/wc-admin-order-functions.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-notes-data-store.php';
 
 		// CRUD classes.
@@ -290,6 +289,7 @@ class WC_Admin_Api_Init {
 		WC_Admin_Reports_Orders_Data_Store::init();
 		WC_Admin_Reports_Products_Data_Store::init();
 		WC_Admin_Reports_Taxes_Data_Store::init();
+		WC_Admin_Reports_Coupons_Data_Store::init();
 	}
 
 	/**
