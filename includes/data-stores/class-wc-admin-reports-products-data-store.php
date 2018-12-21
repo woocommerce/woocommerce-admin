@@ -324,7 +324,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 			return;
 		}
 
-		$refunds = $this->get_order_refund_items( $order );
+		$refunds = self::get_order_refund_items( $order );
 
 		foreach ( $order->get_items() as $order_item ) {
 			$order_item_id     = $order_item->get_id();
