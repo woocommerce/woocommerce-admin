@@ -27,8 +27,8 @@ const TABLE_FILTER = 'woocommerce_admin_report_table';
 
 class ReportTable extends Component {
 	onColumnsChange = shownColumns => {
-		const { columnPrefsKey } = this.props;
-		const columns = this.props.getHeadersContent().map( header => header.key );
+		const { columnPrefsKey, getHeadersContent } = this.props;
+		const columns = getHeadersContent().map( header => header.key );
 		const hiddenColumns = columns.filter( column => ! shownColumns.includes( column ) );
 
 		if ( columnPrefsKey ) {
