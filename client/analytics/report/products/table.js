@@ -112,7 +112,9 @@ class ProductsReportTable extends Component {
 				products: product_id,
 			} );
 			const categories = this.props.categories;
-			const productCategories = category_ids.map( category_id => categories[ category_id ] );
+			const productCategories = category_ids
+				.map( category_id => categories[ category_id ] )
+				.filter( Boolean );
 
 			return [
 				{
@@ -247,10 +249,13 @@ class ProductsReportTable extends Component {
 export default compose(
 	withSelect( select => {
 		const { getCategories, getCategoriesError, isGetCategoriesRequesting } = select( 'wc-api' );
+		const tableQuery = {
+			per_page: -1,
+		};
 
-		const categories = getCategories();
-		const isError = Boolean( getCategoriesError() );
-		const isRequesting = isGetCategoriesRequesting();
+		const categories = getCategories( tableQuery );
+		const isError = Boolean( getCategoriesError( tableQuery ) );
+		const isRequesting = isGetCategoriesRequesting( tableQuery );
 
 		return { categories, isError, isRequesting };
 	} )
