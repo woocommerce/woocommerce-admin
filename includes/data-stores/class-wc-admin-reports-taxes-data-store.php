@@ -256,6 +256,16 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 		if ( ! $order ) {
 			return;
 		}
+
+		if ( ! in_array( $order->get_status(), parent::get_report_order_statuses(), true ) ) {
+			$wpdb->delete(
+				$wpdb->prefix . self::TABLE_NAME,
+				array( 'order_id' => $order->get_id() ),
+				array( '%d' )
+			);
+			return;
+		}
+
 		foreach ( $order->get_items( 'tax' ) as $tax_item ) {
 			$wpdb->replace(
 				$wpdb->prefix . self::TABLE_NAME,

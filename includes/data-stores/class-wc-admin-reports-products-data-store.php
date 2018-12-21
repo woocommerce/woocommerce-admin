@@ -315,7 +315,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 			return;
 		}
 
-		if ( 'refunded' === $order->get_status() ) {
+		if ( ! in_array( $order->get_status(), parent::get_report_order_statuses(), true ) ) {
 			$wpdb->delete(
 				$wpdb->prefix . self::TABLE_NAME,
 				array( 'order_id' => $order->get_id() ),
@@ -375,7 +375,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 		$refunded_line_items = array();
 		foreach ( $refunds as $refund ) {
 			foreach ( $refund->get_items() as $refunded_item ) {
-				$line_item_id                          = wc_get_order_item_meta( $refunded_item->get_id(), '_refunded_item_id', true );
+				$line_item_id = wc_get_order_item_meta( $refunded_item->get_id(), '_refunded_item_id', true );
 				if ( ! isset( $refunded_line_items[ $line_item_id ] ) ) {
 					$refunded_line_items[ $line_item_id ]['quantity'] = 0;
 					$refunded_line_items[ $line_item_id ]['subtotal'] = 0;
