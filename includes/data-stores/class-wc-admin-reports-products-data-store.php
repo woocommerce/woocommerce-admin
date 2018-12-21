@@ -317,7 +317,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 
 		if ( 'refunded' === $order->get_status() ) {
 			$wpdb->delete(
-				$wpdb->prefix . 'wc_order_product_lookup',
+				$wpdb->prefix . self::TABLE_NAME,
 				array( 'order_id' => $order->get_id() ),
 				array( '%d' )
 			);
@@ -332,13 +332,13 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 			$amount_refunded   = isset( $refunds[ $order_item_id ] ) ? $refunds[ $order_item_id ]['subtotal'] : 0;
 			if ( $quantity_refunded >= $order_item->get_quantity( 'edit' ) ) {
 				$wpdb->delete(
-					$wpdb->prefix . 'wc_order_product_lookup',
+					$wpdb->prefix . self::TABLE_NAME,
 					array( 'order_item_id' => $order_item_id ),
 					array( '%d' )
 				);
 			} else {
 				$wpdb->replace(
-					$wpdb->prefix . 'wc_order_product_lookup',
+					$wpdb->prefix . self::TABLE_NAME,
 					array(
 						'order_item_id'       => $order_item_id,
 						'order_id'            => $order->get_id(),

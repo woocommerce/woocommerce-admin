@@ -276,7 +276,7 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 		$coupon_items = $order->get_items( 'coupon' );
 		foreach ( $coupon_items as $coupon_item ) {
 			$wpdb->replace(
-				$wpdb->prefix . 'wc_order_coupon_lookup',
+				$wpdb->prefix . self::TABLE_NAME,
 				array(
 					'order_id'        => $order_id,
 					'coupon_id'       => wc_get_coupon_id_by_code( $coupon_item->get_code() ),

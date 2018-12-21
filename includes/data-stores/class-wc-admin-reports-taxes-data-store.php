@@ -258,7 +258,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 		}
 		foreach ( $order->get_items( 'tax' ) as $tax_item ) {
 			$wpdb->replace(
-				$wpdb->prefix . 'wc_order_tax_lookup',
+				$wpdb->prefix . self::TABLE_NAME,
 				array(
 					'order_id'     => $order->get_id(),
 					'date_created' => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
