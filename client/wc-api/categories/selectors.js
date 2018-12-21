@@ -27,12 +27,9 @@ const getCategories = ( getResource, requireResource ) => (
 	return categories;
 };
 
-const getCategoriesTotalCount = ( getResource, requireResource ) => (
-	query = {},
-	requirement = DEFAULT_REQUIREMENT
-) => {
+const getCategoriesTotalCount = getResource => ( query = {} ) => {
 	const resourceName = getResourceName( 'category-query', query );
-	return requireResource( requirement, resourceName ).totalCount || 0;
+	return getResource( resourceName ).totalCount || 0;
 };
 
 const getCategoriesError = getResource => ( query = {} ) => {
