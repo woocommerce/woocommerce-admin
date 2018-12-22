@@ -19,7 +19,7 @@ const {
 	getExportedFileList,
 	getMdFileName,
 	getRealFilePaths,
-	getTocContents,
+	getTocSection,
 } = require( './lib/file-system' );
 
 const fileCollections = [
@@ -35,7 +35,7 @@ const fileCollections = [
 	},
 ];
 
-const tocContents = [];
+const tocSections = [];
 
 fileCollections.forEach( fileCollection => {
 	// Start by wiping the existing docs. **Change this if we end up manually editing docs**
@@ -48,16 +48,16 @@ fileCollections.forEach( fileCollection => {
 	buildComponentDocs( files, fileCollection.route );
 
 	// Concatenate TOC contents
-	tocContents.push( ...getTocContents( files, fileCollection.route, fileCollection.title ) );
+	tocSections.push( ...getTocSection( files, fileCollection.route, fileCollection.title ) );
 } );
 
 // Write TOC file
 const tocFile = path.resolve( DOCS_FOLDER, '_sidebar.md' );
 const tocHeader = '* [Home](/)\n\n* [Components](components/)\n\n';
-fs.writeFileSync( tocFile, tocHeader + tocContents.join( '\n' ) );
+fs.writeFileSync( tocFile, tocHeader + tocSections.join( '\n' ) );
 
 // Sum the number of TOC lines and substract the titles
-const numberOfFiles = tocContents.length - fileCollections.length;
+const numberOfFiles = tocSections.length - fileCollections.length;
 console.log( `Wrote docs for ${ numberOfFiles } files.` );
 
 /**

@@ -155,7 +155,7 @@ function isFile( file ) {
  * @param { string } title Title of the TOC section
  * @return { string } TOC contents.
  */
-function getTocContents( files, route, title ) {
+function getTocSection( files, route, title ) {
 	const mdFiles = files.map( f => getMdFileName( f, route, false ) ).sort();
 
 	const toc = uniq( mdFiles ).map( doc => {
@@ -177,5 +177,5 @@ module.exports = {
 	getExportedFileList,
 	getMdFileName,
 	getRealFilePaths,
-	getTocContents,
+	getTocSection,
 };
