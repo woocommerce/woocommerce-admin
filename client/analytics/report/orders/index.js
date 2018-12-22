@@ -22,6 +22,7 @@ import ReportSummary from 'analytics/components/report-summary';
 export default class OrdersReport extends Component {
 	render() {
 		const { path, query } = this.props;
+
 		return (
 			<Fragment>
 				<ReportFilters
