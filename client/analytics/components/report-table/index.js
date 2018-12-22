@@ -67,7 +67,7 @@ class ReportTable extends Component {
 			itemIdField,
 			primaryData,
 			tableData,
-			// These two props are not used in the render function, but are destructured
+			// These props are not used in the render function, but are destructured
 			// so they are not included in the `tableProps` variable.
 			endpoint,
 			tableQuery,
