@@ -35,7 +35,7 @@ class ReportTable extends Component {
 		this.onColumnsChange = this.onColumnsChange.bind( this );
 	}
 
-	onColumnsChange( columns ) {
+	onColumnsChange( shownColumns ) {
 		const { columnPrefsKey, getHeadersContent } = this.props;
 		const columns = getHeadersContent().map( header => header.key );
 		const hiddenColumns = columns.filter( column => ! shownColumns.includes( column ) );
