@@ -259,7 +259,7 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 	}
 
 	/**
-	 * Make an entry in the wc_order_coupon_lookup table for an order.
+	 * Create or update an an entry in the wc_order_coupon_lookup table for an order.
 	 *
 	 * @since 3.5.0
 	 * @param int $order_id Order ID.

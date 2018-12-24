@@ -299,7 +299,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 	}
 
 	/**
-	 * Make an entry in the wc_admin_order_product_lookup table for an order.
+	 * Create or update an entry in the wc_admin_order_product_lookup table for an order.
 	 *
 	 * @since 3.5.0
 	 * @param int $order_id Order ID.

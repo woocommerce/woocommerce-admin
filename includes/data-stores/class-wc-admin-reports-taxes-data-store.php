@@ -245,7 +245,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 	}
 
 	/**
-	 * Make an entry in the wc_order_tax_lookup table for an order.
+	 * Create or update an entry in the wc_order_tax_lookup table for an order.
 	 *
 	 * @param int $order_id Order ID.
 	 * @return void
