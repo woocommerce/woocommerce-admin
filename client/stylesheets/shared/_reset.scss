@@ -9,7 +9,7 @@
 	#wpbody-content {
 		padding: 0;
 		overflow-x: hidden !important;
-		min-height: calc(100vh - 32px);
+		min-height: calc(100vh - #{$adminbar-height});
 	}
 
 	@include breakpoint( '<782px' ) {
@@ -19,7 +19,7 @@
 		}
 		#wpcontent,
 		#wpbody-content {
-			min-height: calc(100vh - 46px);
+			min-height: calc(100vh - #{$adminbar-height-mobile});
 		}
 	}
 
