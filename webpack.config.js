@@ -86,7 +86,6 @@ const webpackConfig = {
 					},
 				},
 				include: new RegExp( '/node_modules\/(' +
-					'buble' +
 					'|d3-array' +
 					'|debug' +
 					'|regexpu-core' +
