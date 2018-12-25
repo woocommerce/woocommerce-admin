@@ -168,8 +168,7 @@ class ProductsReportTable extends Component {
 							) }
 						</div>
 					),
-					value:
-						productCategories && productCategories.map( category => category.name ).join( ', ' ),
+					value: productCategories.map( category => category.name ).join( ', ' ),
 				},
 				{
 					display: numberFormat( variations.length ),
