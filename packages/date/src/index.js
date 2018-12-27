@@ -345,8 +345,6 @@ export const getPreviousDate = ( date, date1, date2, compare, interval ) => {
 
 /**
  * Returns the allowed selectable intervals for a specific query.
- * TODO Add support for hours. `` if ( differenceInDays <= 1 ) { allowed = [ 'hour' ]; }
- * Today/yesterday/default: allowed = [ 'hour' ];
  *
  * @param  {Object} query Current query
  * @return {Array} Array containing allowed intervals.
@@ -365,9 +363,9 @@ export function getAllowedIntervalsForQuery( query ) {
 		} else if ( differenceInDays > 7 ) {
 			allowed = [ 'day', 'week' ];
 		} else if ( differenceInDays > 1 && differenceInDays <= 7 ) {
-			allowed = [ 'day' ];
+			allowed = [ 'day', 'hour' ];
 		} else {
-			allowed = [ 'day' ];
+			allowed = [ 'hour', 'day' ];
 		}
 	} else {
 		switch ( query.period ) {
@@ -388,7 +386,7 @@ export function getAllowedIntervalsForQuery( query ) {
 				allowed = [ 'day', 'week', 'month', 'quarter' ];
 				break;
 			default:
-				allowed = [ 'day' ];
+				allowed = [ 'hour', 'day' ];
 				break;
 		}
 	}
@@ -444,8 +442,9 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 
 	switch ( interval ) {
 		case 'hour':
-			tooltipLabelFormat = '%I %p';
-			xFormat = '%I %p';
+			tooltipLabelFormat = '%_I%p';
+			xFormat = '%_I%p';
+			x2Format = '%b %d, %Y';
 			tableFormat = 'h A';
 			break;
 		case 'day':
