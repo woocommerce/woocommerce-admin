@@ -401,7 +401,7 @@ describe( 'getYTickOffset', () => {
 	} );
 } );
 
-describe( 'getdateSpaces', () => {
+describe( 'getDateSpaces', () => {
 	it( 'return an array used to space out the mouseover rectangles, used for tooltips', () => {
 		const testDateSpaces = getDateSpaces( dummyOrders, testUniqueDates, 100, testXLineScale );
 		expect( testDateSpaces[ 0 ].date ).toEqual( '2018-05-30T00:00:00' );
