@@ -305,12 +305,12 @@ export const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
  * @returns {boolean} whether the first and last date are different hours from the same date.
  */
 const areDatesInTheSameDay = dates => {
-	const firstDate = new Date( dates [ 0 ] + 'Z' );
-	const lastDate = new Date( dates [ dates.length - 1 ] + 'Z' );
+	const firstDate = new Date( dates [ 0 ] );
+	const lastDate = new Date( dates [ dates.length - 1 ] );
 	return (
-		firstDate.getUTCDate() === lastDate.getUTCDate() &&
-		firstDate.getUTCMonth() === lastDate.getUTCMonth() &&
-		firstDate.getUTCFullYear() === lastDate.getUTCFullYear()
+		firstDate.getDate() === lastDate.getDate() &&
+		firstDate.getMonth() === lastDate.getMonth() &&
+		firstDate.getFullYear() === lastDate.getFullYear()
 	);
 };
 
