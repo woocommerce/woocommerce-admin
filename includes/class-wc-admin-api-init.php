@@ -285,7 +285,7 @@ class WC_Admin_Api_Init {
 	/**
 	 * Init orders data store.
 	 */
-	public static function data_store_init() {
+	public static function orders_data_store_init() {
 		WC_Admin_Reports_Orders_Data_Store::init();
 		WC_Admin_Reports_Products_Data_Store::init();
 		WC_Admin_Reports_Taxes_Data_Store::init();
