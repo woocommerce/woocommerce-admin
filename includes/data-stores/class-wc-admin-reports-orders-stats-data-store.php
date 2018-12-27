@@ -63,8 +63,9 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		'net_revenue'             => '( SUM(net_total) - SUM(refund_total) ) AS net_revenue',
 		'avg_items_per_order'     => 'AVG(num_items_sold) AS avg_items_per_order',
 		'avg_order_value'         => '( SUM(net_total) - SUM(refund_total) ) / COUNT(*) AS avg_order_value',
-		'num_returning_customers' => 'SUM(returning_customer = 1) AS num_returning_customers',
-		'num_new_customers'       => 'SUM(returning_customer = 0) AS num_new_customers',
+		// Count returning customers as ( total_customers - new_customers ) to get an accurate number and count customers in with both new and old statuses as new.
+		'num_returning_customers' => '( COUNT( DISTINCT( customer_id ) ) -  COUNT( DISTINCT( CASE WHEN returning_customer = 0 THEN customer_id END ) ) ) AS num_returning_customers',
+		'num_new_customers'       => 'COUNT( DISTINCT( CASE WHEN returning_customer = 0 THEN customer_id END ) ) AS num_new_customers',
 	);
 
 	/**
