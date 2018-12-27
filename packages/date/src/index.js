@@ -5,7 +5,6 @@
 import moment from 'moment';
 import { find } from 'lodash';
 import { __ } from '@wordpress/i18n';
-import { format as formatDate } from '@wordpress/date';
 
 const QUERY_DEFAULTS = {
 	pageSize: 25,
@@ -314,8 +313,8 @@ export const getCurrentDates = query => {
  * @return {Int}  - Difference in days.
  */
 export const getDateDifferenceInDays = ( date, date2 ) => {
-	const _date = toMoment( isoDateFormat, formatDate( 'Y-m-d', date ) );
-	const _date2 = toMoment( isoDateFormat, formatDate( 'Y-m-d', date2 ) );
+	const _date = moment( date );
+	const _date2 = moment( date2 );
 	return _date.diff( _date2, 'days' );
 };
 
@@ -330,14 +329,14 @@ export const getDateDifferenceInDays = ( date, date2 ) => {
  * @return {String}  - Calculated date
  */
 export const getPreviousDate = ( date, date1, date2, compare, interval ) => {
-	const dateMoment = toMoment( isoDateFormat, formatDate( 'Y-m-d', date ) );
+	const dateMoment = moment( date );
 
 	if ( 'previous_year' === compare ) {
 		return dateMoment.clone().subtract( 1, 'years' );
 	}
 
-	const _date1 = toMoment( isoDateFormat, formatDate( 'Y-m-d', date1 ) );
-	const _date2 = toMoment( isoDateFormat, formatDate( 'Y-m-d', date2 ) );
+	const _date1 = moment( date1 );
+	const _date2 = moment( date2 );
 	const difference = _date1.diff( _date2, interval );
 
 	return dateMoment.clone().subtract( difference, interval );
