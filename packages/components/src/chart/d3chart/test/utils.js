@@ -421,5 +421,6 @@ describe( 'compareStrings', () => {
 		expect( compareStrings( 'Jul 2018', 'Aug 2018' ).join( ' ' ) ).toEqual( 'Aug' );
 		expect( compareStrings( 'Jul 2017', 'Aug 2018' ).join( ' ' ) ).toEqual( 'Aug 2018' );
 		expect( compareStrings( 'Jul 2017', 'Jul 2018' ).join( ' ' ) ).toEqual( '2018' );
+		expect( compareStrings( 'Jul, 2018', 'Aug, 2018' ).join( ' ' ) ).toEqual( 'Aug' );
 	} );
 } );
