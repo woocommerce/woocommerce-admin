@@ -109,8 +109,6 @@ function wc_admin_register_script() {
 		filemtime( wc_admin_dir_path( 'dist/components/ie.css' ) )
 	);
 
-	wp_style_add_data( 'wc-components-ie', 'conditional', 'IE' );
-
 	wp_register_style(
 		WC_ADMIN_APP,
 		wc_admin_url( "dist/{$entry}/style.css" ),
