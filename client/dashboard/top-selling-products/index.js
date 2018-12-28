@@ -88,7 +88,6 @@ export class TopSellingProducts extends Component {
 	}
 
 	render() {
-		const query = {};
 		const tableQuery = {
 			orderby: 'items_sold',
 			order: 'desc',
@@ -101,7 +100,7 @@ export class TopSellingProducts extends Component {
 				endpoint="products"
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
-				query={ query }
+				query={ this.props.query }
 				tableQuery={ tableQuery }
 				title={ __( 'Top Selling Products', 'wc-admin' ) }
 			/>
