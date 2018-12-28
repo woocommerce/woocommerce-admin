@@ -4,6 +4,7 @@
  * @format
  */
 import TestRenderer from 'react-test-renderer';
+import { map, noop } from 'lodash';
 import { shallow } from 'enzyme';
 import { createRegistry, RegistryProvider } from '@wordpress/data';
 
@@ -15,7 +16,7 @@ import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency'
 /**
  * Internal dependencies
  */
-import TopSellingProductsWithSelect, { TopSellingProducts } from '../';
+import LeaderboardWithSelect, { Leaderboard } from '../';
 import { numberFormat } from 'lib/number';
 import mockData from '../__mocks__/top-selling-products-mock-data';
 
@@ -26,16 +27,53 @@ jest.mock( '@woocommerce/components', () => ( {
 	TableCard: () => null,
 } ) );
 
-describe( 'TopSellingProducts', () => {
-	test( 'should render empty message when there are no rows', () => {
-		const topSellingProducts = shallow( <TopSellingProducts data={ {} } /> );
+const getRowsContent = ( data ) => {
+	return map( data, row => {
+		const { name, items_sold, net_revenue, orders_count } = row;
+		return [
+			{
+				display: name,
+				value: name,
+			},
+			{
+				display: numberFormat( items_sold ),
+				value: items_sold,
+			},
+			{
+				display: numberFormat( orders_count ),
+				value: orders_count,
+			},
+			{
+				display: formatCurrency( net_revenue ),
+				value: getCurrencyFormatDecimal( net_revenue ),
+			},
+		];
+	} );
+};
 
-		expect( topSellingProducts.find( 'EmptyTable' ).length ).toBe( 1 );
+describe( 'Leaderboard', () => {
+	test( 'should render empty message when there are no rows', () => {
+		const leaderboard = shallow(
+			<Leaderboard
+				title={ '' }
+				getHeadersContent={ noop }
+				getRowsContent={ getRowsContent }
+			/>
+		);
+
+		expect( leaderboard.find( 'EmptyTable' ).length ).toBe( 1 );
 	} );
 
 	test( 'should render correct data in the table', () => {
-		const topSellingProducts = shallow( <TopSellingProducts data={ mockData } /> );
-		const table = topSellingProducts.find( 'TableCard' );
+		const leaderboard = shallow(
+			<Leaderboard
+				title={ '' }
+				getHeadersContent={ noop }
+				getRowsContent={ getRowsContent }
+				items={ { data: { ...mockData } } }
+			/>
+		);
+		const table = leaderboard.find( 'TableCard' );
 		const firstRow = table.props().rows[ 0 ];
 
 		expect( firstRow[ 0 ].value ).toBe( mockData[ 0 ].name );
@@ -60,12 +98,12 @@ describe( 'TopSellingProducts', () => {
 				isReportStatsError: isReportStatsErrorMock,
 			},
 		} );
-		const topSellingProductsWrapper = TestRenderer.create(
+		const leaderboardWrapper = TestRenderer.create(
 			<RegistryProvider value={ registry }>
-				<TopSellingProductsWithSelect />
+				<LeaderboardWithSelect />
 			</RegistryProvider>
 		);
-		const topSellingProducts = topSellingProductsWrapper.root.findByType( TopSellingProducts );
+		const leaderboard = leaderboardWrapper.root.findByType( Leaderboard );
 
 		const endpoint = '/wc/v3/reports/products';
 		const query = { orderby: 'items_sold', per_page: 5, extended_info: 1 };
@@ -76,6 +114,6 @@ describe( 'TopSellingProducts', () => {
 		expect( isReportStatsRequestingMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
 		expect( isReportStatsErrorMock.mock.calls[ 0 ][ 1 ] ).toBe( endpoint );
 		expect( isReportStatsErrorMock.mock.calls[ 0 ][ 2 ] ).toEqual( query );
-		expect( topSellingProducts.props.data ).toBe( mockData );
+		expect( leaderboard.props.data ).toBe( mockData );
 	} );
 } );
