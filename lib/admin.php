@@ -214,6 +214,7 @@ function wc_admin_enqueue_script() {
 
 	wp_enqueue_script( WC_ADMIN_APP );
 	wp_enqueue_style( WC_ADMIN_APP );
+	wp_enqueue_style( 'wc-components-ie' );
 }
 add_action( 'admin_enqueue_scripts', 'wc_admin_enqueue_script' );
 
