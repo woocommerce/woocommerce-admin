@@ -25,7 +25,7 @@ export class Leaderboard extends Component {
 	render() {
 		const { getHeadersContent, getRowsContent, isRequesting, isError, items, title } = this.props;
 		const data = get( items, [ 'data' ], [] );
-		const rows = isRequesting || isError ? [] : getRowsContent( data );
+		const rows = getRowsContent( data );
 
 		if ( isError ) {
 			return <ReportError className="woocommerce-leaderboard" isError />;
