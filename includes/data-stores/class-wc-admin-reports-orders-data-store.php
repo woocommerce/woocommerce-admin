@@ -460,6 +460,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			'shipping_total'     => $order->get_shipping_total(),
 			'net_total'          => (float) $order->get_total() - (float) $order->get_total_tax() - (float) $order->get_shipping_total(),
 			'returning_customer' => self::is_returning_customer( $order ),
+			'status'             => $order->get_status(),
 		);
 
 		// Update or add the information to the DB.
@@ -476,6 +477,8 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 				'%f',
 				'%f',
 				'%f',
+				'%d',
+				'%s',
 			)
 		);
 	}
