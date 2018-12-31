@@ -376,7 +376,7 @@ export function getAllowedIntervalsForQuery( query ) {
 		switch ( query.period ) {
 			case 'today':
 			case 'yesterday':
-				allowed = [ 'hour' ];
+				allowed = [ 'day' ];
 				break;
 			case 'week':
 			case 'last_week':
