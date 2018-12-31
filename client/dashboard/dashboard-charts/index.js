@@ -5,6 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import Gridicon from 'gridicons';
+import { isEqual } from 'lodash';
 import { ToggleControl, IconButton, NavigableMenu } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
@@ -30,6 +31,16 @@ class DashboardCharts extends Component {
 		};
 
 		this.toggle = this.toggle.bind( this );
+	}
+
+	static getDerivedStateFromProps( props, state ) {
+		const { query } = props;
+		if ( ! isEqual( { ...query, ...state.type }, state.query ) ) {
+			return {
+				query: { ...query, ...state.type },
+			};
+		}
+		return null;
 	}
 
 	toggle( key ) {
