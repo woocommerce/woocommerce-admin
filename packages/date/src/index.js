@@ -367,10 +367,10 @@ export function getAllowedIntervalsForQuery( query ) {
 			allowed = [ 'day', 'week', 'month' ];
 		} else if ( differenceInDays >= 7 ) {
 			allowed = [ 'day', 'week' ];
-		} else if ( differenceInDays > 1 && differenceInDays < 7 ) {
-			allowed = [ 'day' ];
+		} else if ( differenceInDays > 1 && differenceInDays <= 7 ) {
+			allowed = [ 'day', 'hour' ];
 		} else {
-			allowed = [ 'hour', 'day' ];
+			allowed = [ 'day', 'hour' ];
 		}
 	} else {
 		switch ( query.period ) {
@@ -395,7 +395,7 @@ export function getAllowedIntervalsForQuery( query ) {
 				allowed = [ 'day', 'week', 'month', 'quarter' ];
 				break;
 			default:
-				allowed = [ 'day' ];
+				allowed = [ 'day', 'hour' ];
 				break;
 		}
 	}
