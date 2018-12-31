@@ -708,14 +708,14 @@ class WC_Admin_Reports_Data_Store {
 		if ( isset( $query_args['status_is'] ) && is_array( $query_args['status_is'] ) && count( $query_args['status_is'] ) > 0 ) {
 			$allowed_statuses = array_map( array( $this, 'normalize_order_status' ), $query_args['status_is'] );
 			if ( $allowed_statuses ) {
-				$subqueries[] = "{$wpdb->prefix}posts.post_status IN ( '" . implode( "','", $allowed_statuses ) . "' )";
+				$subqueries[] = "{$wpdb->prefix}wc_order_stats.status IN ( '" . implode( "','", $allowed_statuses ) . "' )";
 			}
 		}
 
 		if ( isset( $query_args['status_is_not'] ) && is_array( $query_args['status_is_not'] ) && count( $query_args['status_is_not'] ) > 0 ) {
 			$forbidden_statuses = array_map( array( $this, 'normalize_order_status' ), $query_args['status_is_not'] );
 			if ( $forbidden_statuses ) {
-				$subqueries[] = "{$wpdb->prefix}posts.post_status NOT IN ( '" . implode( "','", $forbidden_statuses ) . "' )";
+				$subqueries[] = "{$wpdb->prefix}wc_order_stats.status NOT IN ( '" . implode( "','", $forbidden_statuses ) . "' )";
 			}
 		}
 
