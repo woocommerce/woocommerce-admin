@@ -400,6 +400,7 @@ function wc_admin_get_user_data_fields() {
 		'taxes_report_columns',
 		'variations_report_columns',
 		'dashboard_charts',
+		'dashboard_chart_type',
 	);
 
 	return apply_filters( 'wc_admin_get_user_data_fields', $user_data_fields );

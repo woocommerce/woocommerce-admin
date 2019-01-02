@@ -41,6 +41,7 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 		'taxes_report_columns',
 		'variations_report_columns',
 		'dashboard_charts',
+		'dashboard_chart_type',
 	];
 
 	if ( resourceNames.includes( resourceName ) ) {

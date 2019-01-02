@@ -29,7 +29,7 @@ class DashboardCharts extends Component {
 	constructor( props ) {
 		super( ...arguments );
 		this.state = {
-			chartType: 'line', // @TODO: Remove this and use from props containing persisted user preferences.
+			chartType: props.userPrefChartType || 'line',
 			hiddenChartKeys: props.userPrefCharts || [],
 			query: props.query,
 		};
@@ -37,12 +37,22 @@ class DashboardCharts extends Component {
 		this.toggle = this.toggle.bind( this );
 	}
 
-	componentDidUpdate( { userPrefCharts: prevUserPrefCharts } ) {
-		const { userPrefCharts } = this.props;
+	componentDidUpdate( {
+		userPrefCharts: prevUserPrefCharts,
+		userPrefChartType: prevUserPrefChartType,
+	} ) {
+		const { userPrefCharts, userPrefChartType } = this.props;
 		if ( ! isEqual( userPrefCharts, prevUserPrefCharts ) ) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
 				hiddenChartKeys: userPrefCharts,
+			} );
+			/* eslint-enable react/no-did-update-set-state */
+		}
+		if ( userPrefChartType !== prevUserPrefChartType ) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( {
+				chartType: userPrefChartType,
 			} );
 			/* eslint-enable react/no-did-update-set-state */
 		}
@@ -72,8 +82,11 @@ class DashboardCharts extends Component {
 
 	handleTypeToggle( type ) {
 		return () => {
-			this.setState( {
-				chartType: type,
+			this.setState( { chartType: type }, () => {
+				const userDataFields = {
+					[ 'dashboard_chart_type' ]: this.state.chartType,
+				};
+				this.props.updateCurrentUserData( userDataFields );
 			} );
 		};
 	}
@@ -98,7 +111,7 @@ class DashboardCharts extends Component {
 
 	render() {
 		const { path } = this.props;
-		const { hiddenChartKeys, chartType } = this.state;
+		const { chartType, hiddenChartKeys } = this.state;
 		const query = { ...this.props.query, type: chartType };
 		return (
 			<Fragment>
@@ -165,6 +178,7 @@ export default compose(
 
 		return {
 			userPrefCharts: userData.dashboard_charts,
+			userPrefChartType: userData.dashboard_chart_type,
 		};
 	} ),
 	withDispatch( dispatch => {
