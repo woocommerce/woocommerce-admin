@@ -345,7 +345,7 @@ class WC_Admin_Reports_Data_Store {
 	 * @param string $status Order status.
 	 * @return string
 	 */
-	protected function normalize_order_status( $status ) {
+	protected static function normalize_order_status( $status ) {
 		$status = trim( $status );
 		return 'wc-' . $status;
 	}
