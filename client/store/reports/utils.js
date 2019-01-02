@@ -111,6 +111,24 @@ export function isReportDataEmpty( report ) {
 }
 
 /**
+ * Returns true if `date` is today.
+ *
+ * @param  {String|Object} date Date string or object in a format that can be
+ * understood by the Date JS object. For example `yyyy-mm-dd`.
+ * @returns {Boolean} Whether `date` is today.
+ */
+function isToday( date ) {
+	const d = new Date( date );
+	const today = new Date();
+
+	return (
+		d.getFullYear() === today.getFullYear() &&
+		d.getMonth() === today.getMonth() &&
+		d.getDate() === today.getDate()
+	);
+}
+
+/**
  * Constructs and returns a query associated with a Report data request.
  *
  * @param  {String} endpoint Report API Endpoint
@@ -122,12 +140,13 @@ function getRequestQuery( endpoint, dataType, query ) {
 	const datesFromQuery = getCurrentDates( query );
 	const interval = getIntervalForQuery( query );
 	const filterQuery = getFilterQuery( endpoint, query );
+	const endingTimeOfDay = isToday( datesFromQuery[ dataType ].before ) ? 'now' : 'end';
 	return {
 		order: 'asc',
 		interval,
 		per_page: MAX_PER_PAGE,
 		after: appendTimestamp( datesFromQuery[ dataType ].after, 'start' ),
-		before: appendTimestamp( datesFromQuery[ dataType ].before, 'end' ),
+		before: appendTimestamp( datesFromQuery[ dataType ].before, endingTimeOfDay ),
 		...filterQuery,
 	};
 }

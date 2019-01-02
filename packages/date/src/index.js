@@ -57,17 +57,20 @@ export const periods = [
  * Adds timestamp to a string date.
  *
  * @param {string} date - Date as a string.
- * @param {string} timeOfDay - Either `start` or `end` of the day.
+ * @param {string} timeOfDay - Either `start`, `now` or `end` of the day.
  * @return {string} - String date with timestamp attached.
  */
 export const appendTimestamp = ( date, timeOfDay ) => {
 	if ( timeOfDay === 'start' ) {
 		return date + 'T00:00:00+00:00';
 	}
+	if ( timeOfDay === 'now' ) {
+		return date + 'T' + moment().format( 'HH:mm:ss' ) + '+00:00';
+	}
 	if ( timeOfDay === 'end' ) {
 		return date + 'T23:59:59+00:00';
 	}
-	throw new Error( 'appendTimestamp requires second parameter to be either `start` or `end`' );
+	throw new Error( 'appendTimestamp requires second parameter to be either `start`, `now` or `end`' );
 };
 
 /**
