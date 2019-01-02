@@ -89,6 +89,22 @@ class D3Chart extends Component {
 		type === 'bar' && drawBars( g, data, adjParams );
 	}
 
+	shouldBeCompact() {
+		const {	data, margin, type, width } = this.props;
+		const widthWithoutMargins = width - margin.left - margin.right;
+		const minimumWideWidth = data.length * 3;
+
+		return type === 'bar' && widthWithoutMargins < minimumWideWidth;
+	}
+
+	getWidth() {
+		const {	data, margin, type, width } = this.props;
+		const widthWithoutMargins = width - margin.left - margin.right;
+		const minimumWidth = this.shouldBeCompact() ? data.length * 2 : data.length * 3;
+
+		return type === 'bar' ? Math.max( widthWithoutMargins, minimumWidth ) : widthWithoutMargins;
+	}
+
 	getParams() {
 		const {
 			colorScheme,
@@ -104,14 +120,14 @@ class D3Chart extends Component {
 			tooltipValueFormat,
 			tooltipTitle,
 			type,
-			width,
 			xFormat,
 			x2Format,
 			yFormat,
 			valueType,
 		} = this.props;
 		const adjHeight = height - margin.top - margin.bottom;
-		const adjWidth = width - margin.left - margin.right;
+		const adjWidth = this.getWidth();
+		const compact = this.shouldBeCompact();
 		const uniqueKeys = getUniqueKeys( data );
 		const newOrderedKeys = orderedKeys || getOrderedKeys( data, uniqueKeys );
 		const lineData = getLineData( data, newOrderedKeys );
@@ -120,7 +136,7 @@ class D3Chart extends Component {
 		const parseDate = d3UTCParse( dateParser );
 		const uniqueDates = getUniqueDates( lineData, parseDate );
 		const xLineScale = getXLineScale( uniqueDates, adjWidth );
-		const xScale = getXScale( uniqueDates, adjWidth );
+		const xScale = getXScale( uniqueDates, adjWidth, compact );
 		const xTicks = getXTicks( uniqueDates, adjWidth, mode, interval );
 		return {
 			adjHeight,
@@ -143,7 +159,7 @@ class D3Chart extends Component {
 			uniqueKeys,
 			xFormat: getFormatter( xFormat, d3TimeFormat ),
 			x2Format: getFormatter( x2Format, d3TimeFormat ),
-			xGroupScale: getXGroupScale( orderedKeys, xScale ),
+			xGroupScale: getXGroupScale( orderedKeys, xScale, compact ),
 			xLineScale,
 			xTicks,
 			xScale,
@@ -156,21 +172,23 @@ class D3Chart extends Component {
 	}
 
 	render() {
-		if ( isEmpty( this.props.data ) ) {
+		const { className, data, height, margin } = this.props;
+		if ( isEmpty( data ) ) {
 			return null; // TODO: improve messaging
 		}
+		const computedWidth = this.getWidth() + margin.left + margin.right;
 		return (
 			<div
-				className={ classNames( 'd3-chart__container', this.props.className ) }
-				style={ { height: this.props.height } }
+				className={ classNames( 'd3-chart__container', className ) }
+				style={ { height } }
 			>
 				<D3Base
 					className={ classNames( this.props.className ) }
 					data={ this.state.allData }
 					drawChart={ this.drawChart }
-					height={ this.props.height }
+					height={ height }
 					type={ this.state.type }
-					width={ this.props.width }
+					width={ computedWidth }
 				/>
 				<div className="d3-chart__tooltip" ref={ this.tooltipRef } />
 			</div>
