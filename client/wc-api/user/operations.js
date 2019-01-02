@@ -42,6 +42,7 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 		'variations_report_columns',
 		'dashboard_charts',
 		'dashboard_chart_type',
+		'dashboard_chart_interval',
 	];
 
 	if ( resourceNames.includes( resourceName ) ) {

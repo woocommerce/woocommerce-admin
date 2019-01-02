@@ -401,6 +401,7 @@ function wc_admin_get_user_data_fields() {
 		'variations_report_columns',
 		'dashboard_charts',
 		'dashboard_chart_type',
+		'dashboard_chart_interval',
 	);
 
 	return apply_filters( 'wc_admin_get_user_data_fields', $user_data_fields );
