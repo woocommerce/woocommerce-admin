@@ -68,7 +68,9 @@ export const appendTimestamp = ( date, timeOfDay ) => {
 		return date + 'T00:00:00+00:00';
 	}
 	if ( timeOfDay === 'now' ) {
-		return date + 'T' + moment().format( 'HH:mm:ss' ) + '+00:00';
+		// Set seconds to 00 to avoid consecutives calls happening before the previous
+		// one finished.
+		return date + 'T' + moment().format( 'HH:mm:00' ) + '+00:00';
 	}
 	if ( timeOfDay === 'end' ) {
 		return date + 'T23:59:59+00:00';
