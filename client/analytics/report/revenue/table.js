@@ -101,7 +101,7 @@ class RevenueReportTable extends Component {
 
 	getRowsContent( data = [] ) {
 		const { query } = this.props;
-		const currentInterval = getIntervalForQuery( query );
+		const currentInterval = getIntervalForQuery( { interval: 'day', ...query } );
 		const formats = getDateFormatsForInterval( currentInterval );
 
 		return data.map( row => {

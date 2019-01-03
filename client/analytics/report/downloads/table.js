@@ -67,7 +67,7 @@ export default class CouponsReportTable extends Component {
 
 	getRowsContent( downloads ) {
 		const { query } = this.props;
-		const currentInterval = getIntervalForQuery( query );
+		const currentInterval = getIntervalForQuery( { interval: 'day', ...query } );
 		const { tableFormat } = getDateFormatsForInterval( currentInterval );
 		const persistedQuery = getPersistedQuery( query );
 

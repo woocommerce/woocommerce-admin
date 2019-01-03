@@ -93,7 +93,7 @@ export default class CustomersReportTable extends Component {
 
 	getRowsContent( customers ) {
 		const { query } = this.props;
-		const currentInterval = getIntervalForQuery( query );
+		const currentInterval = getIntervalForQuery( { interval: 'day', ...query } );
 		const formats = getDateFormatsForInterval( currentInterval );
 
 		return customers.map( customer => {
