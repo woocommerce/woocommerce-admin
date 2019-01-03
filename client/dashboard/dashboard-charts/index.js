@@ -42,14 +42,14 @@ class DashboardCharts extends Component {
 		userPrefChartType: prevUserPrefChartType,
 	} ) {
 		const { userPrefCharts, userPrefChartType } = this.props;
-		if ( ! isEqual( userPrefCharts, prevUserPrefCharts ) ) {
+		if ( userPrefCharts && ! isEqual( userPrefCharts, prevUserPrefCharts ) ) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
 				hiddenChartKeys: userPrefCharts,
 			} );
 			/* eslint-enable react/no-did-update-set-state */
 		}
-		if ( userPrefChartType !== prevUserPrefChartType ) {
+		if ( userPrefChartType && userPrefChartType !== prevUserPrefChartType ) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
 				chartType: userPrefChartType,
