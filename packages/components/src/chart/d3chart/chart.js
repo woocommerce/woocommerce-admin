@@ -92,7 +92,8 @@ class D3Chart extends Component {
 	shouldBeCompact() {
 		const {	data, margin, type, width } = this.props;
 		const widthWithoutMargins = width - margin.left - margin.right;
-		const minimumWideWidth = data.length * 3;
+		const columnsPerDate = data && data.length ? Object.keys( data[ 0 ] ).length - 1 : 0;
+		const minimumWideWidth = data.length * ( columnsPerDate + 1 );
 
 		return type === 'bar' && widthWithoutMargins < minimumWideWidth;
 	}
@@ -100,7 +101,8 @@ class D3Chart extends Component {
 	getWidth() {
 		const {	data, margin, type, width } = this.props;
 		const widthWithoutMargins = width - margin.left - margin.right;
-		const minimumWidth = this.shouldBeCompact() ? data.length * 2 : data.length * 3;
+		const columnsPerDate = data && data.length ? Object.keys( data[ 0 ] ).length - 1 : 0;
+		const minimumWidth = this.shouldBeCompact() ? data.length * columnsPerDate : data.length * ( columnsPerDate + 1 );
 
 		return type === 'bar' ? Math.max( widthWithoutMargins, minimumWidth ) : widthWithoutMargins;
 	}
