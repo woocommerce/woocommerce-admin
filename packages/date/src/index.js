@@ -56,11 +56,14 @@ export const periods = [
 /**
  * Adds timestamp to a string date.
  *
- * @param {string} date - Date as a string.
+ * @param {string|moment.Moment} date - Date as a string or a moment object.
  * @param {string} timeOfDay - Either `start`, `now` or `end` of the day.
  * @return {string} - String date with timestamp attached.
  */
 export const appendTimestamp = ( date, timeOfDay ) => {
+	if ( moment.isMoment( date ) ) {
+		date = date.format( isoDateFormat );
+	}
 	if ( timeOfDay === 'start' ) {
 		return date + 'T00:00:00+00:00';
 	}
@@ -296,14 +299,14 @@ export const getCurrentDates = query => {
 		primary: {
 			label: find( presetValues, item => item.value === period ).label,
 			range: getRangeLabel( primaryStart, primaryEnd ),
-			after: primaryStart.format( isoDateFormat ),
-			before: primaryEnd.format( isoDateFormat ),
+			after: primaryStart,
+			before: primaryEnd,
 		},
 		secondary: {
 			label: find( periods, item => item.value === compare ).label,
 			range: getRangeLabel( secondaryStart, secondaryEnd ),
-			after: secondaryStart.format( isoDateFormat ),
-			before: secondaryEnd.format( isoDateFormat ),
+			after: secondaryStart,
+			before: secondaryEnd,
 		},
 	};
 };
@@ -325,11 +328,11 @@ export const getDateDifferenceInDays = ( date, date2 ) => {
  * Get the previous date for either the previous period of year.
  *
  * @param {String} date - Base date
- * @param {String} date1 - primary start
- * @param {String} date2 - secondary start
+ * @param {String|Moment.moment} date1 - primary start
+ * @param {String|Moment.moment} date2 - secondary start
  * @param {String} compare - `previous_period`  or `previous_year`
  * @param {String} interval - interval
- * @return {String}  - Calculated date
+ * @return {Moment.moment}  - Calculated date
  */
 export const getPreviousDate = ( date, date1, date2, compare, interval ) => {
 	const dateMoment = moment( date );
