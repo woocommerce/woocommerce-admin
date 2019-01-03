@@ -16,7 +16,7 @@ import { getAdminLink } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { numberFormat } from 'lib/number';
-import Leaderboard from 'dashboard/leaderboard';
+import Leaderboard from 'analytics/components/leaderboard';
 
 export class TopSellingProducts extends Component {
 	constructor( props ) {
