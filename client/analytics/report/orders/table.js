@@ -103,7 +103,7 @@ class OrdersReportTable extends Component {
 
 	getRowsContent( tableData ) {
 		const { query } = this.props;
-		const currentInterval = getIntervalForQuery( query );
+		const currentInterval = getIntervalForQuery( { interval: 'day', ...query } );
 		const { tableFormat } = getDateFormatsForInterval( currentInterval );
 		return map( tableData, row => {
 			const {

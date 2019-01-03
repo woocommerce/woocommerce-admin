@@ -370,13 +370,13 @@ export function getAllowedIntervalsForQuery( query ) {
 		} else if ( differenceInDays > 1 && differenceInDays <= 7 ) {
 			allowed = [ 'day', 'hour' ];
 		} else {
-			allowed = [ 'day', 'hour' ];
+			allowed = [ 'hour', 'day' ];
 		}
 	} else {
 		switch ( query.period ) {
 			case 'today':
 			case 'yesterday':
-				allowed = [ 'day' ];
+				allowed = [ 'hour', 'day' ];
 				break;
 			case 'week':
 			case 'last_week':
@@ -395,7 +395,7 @@ export function getAllowedIntervalsForQuery( query ) {
 				allowed = [ 'day', 'week', 'month', 'quarter' ];
 				break;
 			default:
-				allowed = [ 'day', 'hour' ];
+				allowed = [ 'hour', 'day' ];
 				break;
 		}
 	}
