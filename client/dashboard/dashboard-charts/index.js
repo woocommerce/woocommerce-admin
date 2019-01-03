@@ -150,7 +150,11 @@ class DashboardCharts extends Component {
 		return (
 			<Fragment>
 				<div className="woocommerce-dashboard__dashboard-charts">
-					<SectionHeader title={ __( 'Charts', 'wc-admin' ) } menu={ this.renderMenu() }>
+					<SectionHeader
+						title={ __( 'Charts', 'wc-admin' ) }
+						menu={ this.renderMenu() }
+						className={ 'has-interval-select' }
+					>
 						{ this.renderIntervalSelector() }
 						<NavigableMenu
 							className="woocommerce-chart__types"
