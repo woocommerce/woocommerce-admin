@@ -92,20 +92,25 @@ class D3Chart extends Component {
 
 	shouldBeCompact() {
 		const {	data, margin, type, width } = this.props;
+		if ( type !== 'bar' ) {
+			return false;
+		}
 		const widthWithoutMargins = width - margin.left - margin.right;
 		const columnsPerDate = data && data.length ? Object.keys( data[ 0 ] ).length - 1 : 0;
 		const minimumWideWidth = data.length * ( columnsPerDate + 1 );
 
-		return type === 'bar' && widthWithoutMargins < minimumWideWidth;
+		return widthWithoutMargins < minimumWideWidth;
 	}
 
 	getWidth() {
 		const {	data, margin, type, width } = this.props;
-		const widthWithoutMargins = width - margin.left - margin.right;
+		if ( type !== 'bar' ) {
+			return width;
+		}
 		const columnsPerDate = data && data.length ? Object.keys( data[ 0 ] ).length - 1 : 0;
 		const minimumWidth = this.shouldBeCompact() ? data.length * columnsPerDate : data.length * ( columnsPerDate + 1 );
 
-		return type === 'bar' ? Math.max( widthWithoutMargins, minimumWidth ) : widthWithoutMargins;
+		return Math.max( width, minimumWidth + margin.left + margin.right );
 	}
 
 	getParams() {
@@ -129,7 +134,7 @@ class D3Chart extends Component {
 			valueType,
 		} = this.props;
 		const adjHeight = height - margin.top - margin.bottom;
-		const adjWidth = this.getWidth();
+		const adjWidth = this.getWidth() - margin.left - margin.right;
 		const compact = this.shouldBeCompact();
 		const uniqueKeys = getUniqueKeys( data );
 		const newOrderedKeys = orderedKeys || getOrderedKeys( data, uniqueKeys );
@@ -175,11 +180,11 @@ class D3Chart extends Component {
 	}
 
 	render() {
-		const { className, data, height, margin } = this.props;
+		const { className, data, height } = this.props;
 		if ( isEmpty( data ) ) {
 			return null; // TODO: improve messaging
 		}
-		const computedWidth = this.getWidth() + margin.left + margin.right;
+		const computedWidth = this.getWidth();
 		return (
 			<div
 				className={ classNames( 'd3-chart__container', className ) }
