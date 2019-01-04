@@ -7,13 +7,13 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
-import { ToggleControl } from '@wordpress/components';
+import { SelectControl, ToggleControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { EllipsisMenu, MenuItem, SectionHeader } from '@woocommerce/components';
+import { EllipsisMenu, MenuItem, MenuTitle, SectionHeader } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -26,17 +26,31 @@ class Leaderboards extends Component {
 		super( ...arguments );
 		this.state = {
 			hiddenLeaderboardKeys: props.userPrefLeaderboards || [],
+			rowsPerTable: props.userPrefLeaderboardRows || 5,
 		};
 
 		this.toggle = this.toggle.bind( this );
 	}
 
-	componentDidUpdate( { userPrefLeaderboards: prevuserPrefLeaderboards } ) {
-		const { userPrefLeaderboards } = this.props;
-		if ( userPrefLeaderboards && ! isEqual( userPrefLeaderboards, prevuserPrefLeaderboards ) ) {
+	componentDidUpdate( {
+		userPrefLeaderboardRows: prevUserPrefLeaderboardRows,
+		userPrefLeaderboards: prevUserPrefLeaderboards,
+	} ) {
+		const { userPrefLeaderboardRows, userPrefLeaderboards } = this.props;
+		if ( userPrefLeaderboards && ! isEqual( userPrefLeaderboards, prevUserPrefLeaderboards ) ) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
 				hiddenLeaderboardKeys: userPrefLeaderboards,
+			} );
+			/* eslint-enable react/no-did-update-set-state */
+		}
+		if (
+			userPrefLeaderboardRows &&
+			parseInt( userPrefLeaderboardRows ) !== parseInt( prevUserPrefLeaderboardRows )
+		) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( {
+				rowsPerTable: parseInt( userPrefLeaderboardRows ),
 			} );
 			/* eslint-enable react/no-did-update-set-state */
 		}
@@ -66,7 +80,22 @@ class Leaderboards extends Component {
 		};
 	}
 
+	setRowsPerTable = rows => {
+		return this.setState(
+			{
+				rowsPerTable: rows,
+			},
+			() => {
+				const userDataFields = {
+					[ 'dashboard_leaderboard_rows' ]: this.state.rowsPerTable,
+				};
+				this.props.updateCurrentUserData( userDataFields );
+			}
+		);
+	};
+
 	renderMenu() {
+		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
 		const allLeaderboards = [
 			{
 				key: 'top-products',
@@ -83,17 +112,30 @@ class Leaderboards extends Component {
 		];
 		return (
 			<EllipsisMenu label={ __( 'Choose which leaderboards to display', 'wc-admin' ) }>
-				{ allLeaderboards.map( leaderboard => {
-					return (
-						<MenuItem onInvoke={ this.toggle( leaderboard.key ) } key={ leaderboard.key }>
-							<ToggleControl
-								label={ __( `${ leaderboard.label }`, 'wc-admin' ) }
-								checked={ ! this.state.hiddenLeaderboardKeys.includes( leaderboard.key ) }
-								onChange={ this.toggle( leaderboard.key ) }
-							/>
-						</MenuItem>
-					);
-				} ) }
+				<Fragment>
+					<MenuTitle>{ __( 'Leaderboards', 'wc-admin' ) }</MenuTitle>
+					{ allLeaderboards.map( leaderboard => {
+						return (
+							<MenuItem onInvoke={ this.toggle( leaderboard.key ) } key={ leaderboard.key }>
+								<ToggleControl
+									label={ __( `${ leaderboard.label }`, 'wc-admin' ) }
+									checked={ ! hiddenLeaderboardKeys.includes( leaderboard.key ) }
+									onChange={ this.toggle( leaderboard.key ) }
+								/>
+							</MenuItem>
+						);
+					} ) }
+					<MenuTitle>{ __( 'Rows Per Table', 'wc-admin' ) }</MenuTitle>
+					<SelectControl
+						className="woocommerce-chart__interval-select"
+						value={ rowsPerTable }
+						options={ Array.from( { length: 20 }, ( v, key ) => ( {
+							v: key + 1,
+							label: key + 1,
+						} ) ) }
+						onChange={ this.setRowsPerTable }
+					/>
+				</Fragment>
 			</EllipsisMenu>
 		);
 	}
@@ -128,6 +170,7 @@ export default compose(
 
 		return {
 			userPrefLeaderboards: userData.dashboard_leaderboards,
+			userPrefLeaderboardRows: userData.dashboard_leaderboard_rows,
 		};
 	} ),
 	withDispatch( dispatch => {
