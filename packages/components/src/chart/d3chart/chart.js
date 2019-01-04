@@ -8,7 +8,6 @@ import { Component, createRef } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { timeFormat as d3TimeFormat, utcParse as d3UTCParse } from 'd3-time-format';
-import { select as d3Select } from 'd3-selection';
 
 /**
  * Internal dependencies
@@ -76,7 +75,7 @@ class D3Chart extends Component {
 		const adjParams = Object.assign( {}, params, {
 			height: params.adjHeight,
 			width: params.adjWidth,
-			tooltip: d3Select( this.tooltipRef.current ),
+			tooltip: this.tooltipRef.current,
 			valueType: params.valueType,
 		} );
 
@@ -195,6 +194,7 @@ class D3Chart extends Component {
 					data={ this.state.allData }
 					drawChart={ this.drawChart }
 					height={ height }
+					tooltipRef={ this.tooltipRef }
 					type={ this.state.type }
 					width={ computedWidth }
 				/>

@@ -10,6 +10,14 @@ import { select as d3Select } from 'd3-selection';
  */
 import { getColor } from './color';
 
+export const hideTooltip = ( parentNode, tooltipNode ) => {
+	d3Select( parentNode )
+		.selectAll( '.barfocus, .focus-grid' )
+		.attr( 'opacity', '0' );
+	d3Select( tooltipNode )
+		.style( 'visibility', 'hidden' );
+};
+
 const calculateTooltipXPosition = (
 	elementCoords,
 	chartCoords,
@@ -126,7 +134,7 @@ export const showTooltip = ( params, d, position ) => {
 		? params.tooltipTitle
 		: params.tooltipLabelFormat( d.date instanceof Date ? d.date : new Date( d.date ) );
 
-	params.tooltip
+	d3Select( params.tooltip )
 		.style( 'left', position.x + 'px' )
 		.style( 'top', position.y + 'px' )
 		.style( 'visibility', 'visible' ).html( `
