@@ -23,7 +23,15 @@ import './style.scss';
 
 export class Leaderboard extends Component {
 	render() {
-		const { getHeadersContent, getRowsContent, isRequesting, isError, items, title } = this.props;
+		const {
+			getHeadersContent,
+			getRowsContent,
+			isRequesting,
+			isError,
+			items,
+			tableQuery,
+			title,
+		} = this.props;
 		const data = get( items, [ 'data' ], [] );
 		const rows = getRowsContent( data );
 
@@ -47,9 +55,9 @@ export class Leaderboard extends Component {
 				headers={ getHeadersContent() }
 				isLoading={ isRequesting }
 				rows={ rows }
-				rowsPerPage={ 5 }
+				rowsPerPage={ tableQuery.per_page }
 				title={ title }
-				totalRows={ 5 }
+				totalRows={ tableQuery.per_page }
 			/>
 		);
 	}

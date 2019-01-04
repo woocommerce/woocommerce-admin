@@ -83,7 +83,7 @@ class Leaderboards extends Component {
 	setRowsPerTable = rows => {
 		return this.setState(
 			{
-				rowsPerTable: rows,
+				rowsPerTable: parseInt( rows ),
 			},
 			() => {
 				const userDataFields = {
@@ -141,7 +141,7 @@ class Leaderboards extends Component {
 	}
 
 	render() {
-		const { hiddenLeaderboardKeys } = this.state;
+		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
 		return (
 			<Fragment>
 				<div className="woocommerce-dashboard__dashboard-leaderboards">
@@ -149,7 +149,7 @@ class Leaderboards extends Component {
 					<div className="woocommerce-dashboard__columns">
 						<div>
 							{ ! hiddenLeaderboardKeys.includes( 'top-products' ) && (
-								<TopSellingProducts query={ this.props.query } />
+								<TopSellingProducts query={ this.props.query } totalRows={ rowsPerTable } />
 							) }
 						</div>
 					</div>
