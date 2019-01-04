@@ -12,7 +12,7 @@ import { NAMESPACE } from 'store/constants';
 
 export const charts = [
 	{
-		key: 'downloads_count',
+		key: 'download_count',
 		label: __( 'Downloads', 'wc-admin' ),
 		type: 'number',
 	},

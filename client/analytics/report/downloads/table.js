@@ -71,7 +71,9 @@ export default class CouponsReportTable extends Component {
 		const persistedQuery = getPersistedQuery( query );
 
 		return map( downloads, download => {
-			const { date, file_name, ip_address, order_id, product_id, user_id } = download;
+			const { _embedded, date, file_name, ip_address, order_id, product_id } = download;
+			const { name: productName } = _embedded.product[ 0 ];
+			const { name: userName } = _embedded.user[ 0 ];
 
 			const productLink = getNewPath( persistedQuery, 'products', {
 				filter: 'single_product',
@@ -86,10 +88,10 @@ export default class CouponsReportTable extends Component {
 				{
 					display: (
 						<Link href={ productLink } type="wc-admin">
-							{ product_id }
+							{ productName }
 						</Link>
 					),
-					value: product_id,
+					value: productName,
 				},
 				{
 					display: file_name,
@@ -104,8 +106,8 @@ export default class CouponsReportTable extends Component {
 					value: order_id,
 				},
 				{
-					display: user_id,
-					value: user_id,
+					display: userName,
+					value: userName,
 				},
 				{
 					display: ip_address,
@@ -125,8 +127,8 @@ export default class CouponsReportTable extends Component {
 				value: numberFormat( totals.days ), // @TODO it's not defined
 			},
 			{
-				label: _n( 'download', 'downloads', totals.downloads_count, 'wc-admin' ),
-				value: numberFormat( totals.downloads_count ),
+				label: _n( 'download', 'downloads', totals.download_count, 'wc-admin' ),
+				value: numberFormat( totals.download_count ),
 			},
 		];
 	}
@@ -141,6 +143,9 @@ export default class CouponsReportTable extends Component {
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
 				query={ query }
+				tableQuery={ {
+					_embed: true,
+				} }
 				title={ __( 'Downloads', 'wc-admin' ) }
 				columnPrefsKey="downloads_report_columns"
 			/>
