@@ -20,6 +20,7 @@ import { EllipsisMenu, MenuItem, MenuTitle, SectionHeader } from '@woocommerce/c
  */
 import withSelect from 'wc-api/with-select';
 import TopSellingProducts from './top-selling-products';
+import './style.scss';
 
 class Leaderboards extends Component {
 	constructor( props ) {
@@ -127,7 +128,7 @@ class Leaderboards extends Component {
 					} ) }
 					<MenuTitle>{ __( 'Rows Per Table', 'wc-admin' ) }</MenuTitle>
 					<SelectControl
-						className="woocommerce-chart__interval-select"
+						className="woocommerce-ellipsis-menu__item"
 						value={ rowsPerTable }
 						options={ Array.from( { length: 20 }, ( v, key ) => ( {
 							v: key + 1,
