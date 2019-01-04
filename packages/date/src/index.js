@@ -56,14 +56,12 @@ export const periods = [
 /**
  * Adds timestamp to a string date.
  *
- * @param {string|moment.Moment} date - Date as a string or a moment object.
+ * @param {moment.Moment} date - Date as a moment object.
  * @param {string} timeOfDay - Either `start`, `now` or `end` of the day.
  * @return {string} - String date with timestamp attached.
  */
 export const appendTimestamp = ( date, timeOfDay ) => {
-	if ( moment.isMoment( date ) ) {
-		date = date.format( isoDateFormat );
-	}
+	date = date.format( isoDateFormat );
 	if ( timeOfDay === 'start' ) {
 		return date + 'T00:00:00+00:00';
 	}
