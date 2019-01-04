@@ -34,6 +34,7 @@ export class Leaderboard extends Component {
 		} = this.props;
 		const data = get( items, [ 'data' ], [] );
 		const rows = getRowsContent( data );
+		const totalRows = tableQuery ? tableQuery.per_page : 5;
 
 		if ( isError ) {
 			return <ReportError className="woocommerce-leaderboard" isError />;
@@ -55,9 +56,9 @@ export class Leaderboard extends Component {
 				headers={ getHeadersContent() }
 				isLoading={ isRequesting }
 				rows={ rows }
-				rowsPerPage={ tableQuery.per_page }
+				rowsPerPage={ totalRows }
 				title={ title }
-				totalRows={ tableQuery.per_page }
+				totalRows={ totalRows }
 			/>
 		);
 	}
