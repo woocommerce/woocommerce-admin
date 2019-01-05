@@ -6,11 +6,12 @@ import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { map } from 'lodash';
+import moment from 'moment';
 
 /**
  * WooCommerce dependencies
  */
-import { getIntervalForQuery, getDateFormatsForInterval } from '@woocommerce/date';
+import { getIntervalForQuery, getCurrentDates, getDateFormatsForInterval } from '@woocommerce/date';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 
@@ -121,10 +122,16 @@ export default class CouponsReportTable extends Component {
 		if ( ! totals ) {
 			return [];
 		}
+		const { query } = this.props;
+		const dates = getCurrentDates( query );
+		const after = moment( dates.primary.after );
+		const before = moment( dates.primary.before );
+		const days = before.diff( after, 'days' );
+
 		return [
 			{
-				label: _n( 'day', 'days', totals.days, 'wc-admin' ),
-				value: numberFormat( totals.days ), // @TODO it's not defined
+				label: _n( 'day', 'days', days, 'wc-admin' ),
+				value: numberFormat( days ),
 			},
 			{
 				label: _n( 'download', 'downloads', totals.download_count, 'wc-admin' ),
