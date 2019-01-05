@@ -13,6 +13,15 @@ defined( 'ABSPATH' ) || exit;
 class WC_Admin_Reports_Downloads_Stats_Data_Store extends WC_Admin_Reports_Downloads_Data_Store implements WC_Admin_Reports_Data_Store_Interface {
 
 	/**
+	 * Mapping columns to data type to return correct response types.
+	 *
+	 * @var array
+	 */
+	protected $column_types = array(
+		'download_count'    => 'intval',
+	);
+
+	/**
 	 * SQL columns to select in the db query and their mapping to SQL code.
 	 *
 	 * @var array
@@ -100,7 +109,6 @@ class WC_Admin_Reports_Downloads_Stats_Data_Store extends WC_Admin_Reports_Downl
 
 			$this->update_intervals_sql_params( $intervals_query, $query_args, $db_records_count, $expected_interval_count );
 			$intervals_query['where_time_clause'] = str_replace( 'date_created', 'timestamp', $intervals_query['where_time_clause'] );
-
 			$totals = $wpdb->get_results(
 				"SELECT
 						{$selections}
