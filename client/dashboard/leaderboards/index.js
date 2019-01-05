@@ -119,7 +119,7 @@ class Leaderboards extends Component {
 						return (
 							<MenuItem onInvoke={ this.toggle( leaderboard.key ) } key={ leaderboard.key }>
 								<ToggleControl
-									label={ __( `${ leaderboard.label }`, 'wc-admin' ) }
+									label={ leaderboard.label }
 									checked={ ! hiddenLeaderboardKeys.includes( leaderboard.key ) }
 									onChange={ this.toggle( leaderboard.key ) }
 								/>
