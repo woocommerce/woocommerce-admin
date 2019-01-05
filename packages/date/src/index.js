@@ -275,9 +275,9 @@ export const getDateParamsFromQuery = ( { period, compare, after, before } ) => 
  *
  * @param {Object} query - date parameters derived from query parameters
  * @property {string} [period] - period value, ie `last_week`
- * @property {string} [compare] - compare valuer, ie previous_year
- * @property {string} [after] - date in iso date format, ie 2018-07-03
- * @property {string} [before] - date in iso date format, ie 2018-07-03
+ * @property {string} [compare] - compare value, ie 'previous_year'
+ * @property {string} [after] - date in iso date format, ie '2018-07-03'
+ * @property {string} [before] - date in iso date format, ie '2018-07-03'
  * @param {String} dateFormat - format of the dates to return
  * @return {{primary: DateValue, secondary: DateValue}} - Primary and secondary DateValue objects
  */
