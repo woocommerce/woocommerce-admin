@@ -70,7 +70,7 @@ export const advancedFilters = {
 				} ) ),
 			},
 		},
-		username: {
+		user: {
 			labels: {
 				add: __( 'Username', 'wc-admin' ),
 				placeholder: __( 'Search customer username', 'wc-admin' ),
