@@ -16,7 +16,7 @@ import { getAdminLink, history } from '@woocommerce/navigation';
  */
 import ReportChart from 'analytics/components/report-chart';
 import './block.scss';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 class ChartBlock extends Component {
 	handleChartClick = () => {
@@ -52,8 +52,8 @@ class ChartBlock extends Component {
 								charts[ 0 ].key
 						) }
 					>
-						{ /* translators: appended to end of chart type for report link */
-						charts[ 0 ].label + __( ' Report', 'wc-admin' ) }
+						{ /* translators: %s is the chart type */
+						sprintf( __( '%s Report', 'wc-admin' ), charts[ 0 ].label ) }
 					</a>
 					<ReportChart
 						charts={ charts }
