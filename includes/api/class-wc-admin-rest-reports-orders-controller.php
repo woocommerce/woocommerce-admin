@@ -46,9 +46,9 @@ class WC_Admin_REST_Reports_Orders_Controller extends WC_Admin_REST_Reports_Cont
 		$args['orderby']          = $request['orderby'];
 		$args['order']            = $request['order'];
 		$args['product_includes'] = (array) $request['product_includes'];
-		$args['product_exlcudes'] = (array) $request['product_exlcudes'];
+		$args['product_excludes'] = (array) $request['product_excludes'];
 		$args['coupon_includes']  = (array) $request['coupon_includes'];
-		$args['coupon_exlcudes']  = (array) $request['coupon_exlcudes'];
+		$args['coupon_excludes']  = (array) $request['coupon_excludes'];
 		$args['status_is']        = (array) $request['status_is'];
 		$args['status_is_not']    = (array) $request['status_is_not'];
 		$args['customer_type']    = $request['customer_type'];

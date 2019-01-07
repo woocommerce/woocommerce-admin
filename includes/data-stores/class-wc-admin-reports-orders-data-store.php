@@ -50,18 +50,15 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	);
 
 	/**
-	 * Returns comma separated ids of included coupons, based on query arguments from the user.
-	 *
-	 * @param array $query_args Parameters supplied by the user.
-	 * @return string
+	 * Constructor
 	 */
-	protected function get_included_coupons( $query_args ) {
-		$included_coupons_str = '';
-
-		if ( isset( $query_args['coupons'] ) && is_array( $query_args['coupons'] ) && count( $query_args['coupons'] ) > 0 ) {
-			$included_coupons_str = implode( ',', $query_args['coupons'] );
-		}
-		return $included_coupons_str;
+	public function __construct() {
+		global $wpdb;
+		$table_name = $wpdb->prefix . self::TABLE_NAME;
+		// Avoid ambigious columns in SQL query.
+		$this->report_columns['order_id']     = $table_name . '.' . $this->report_columns['order_id'];
+		$this->report_columns['date_created'] = $table_name . '.' . $this->report_columns['date_created'];
+		$this->report_columns['customer_id']  = $table_name . '.' . $this->report_columns['customer_id'];
 	}
 
 	/**
@@ -78,9 +75,33 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		$sql_query_params = array_merge( $sql_query_params, $this->get_limit_sql_params( $query_args ) );
 		$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args ) );
 
-		$included_coupons = $this->get_included_coupons( $query_args );
+		$status_subquery = $this->get_status_subquery( $query_args );
+		if ( $status_subquery ) {
+			$sql_query_params['where_clause'] .= " AND {$status_subquery}";
+		}
+
+		$included_coupons          = $this->get_included_coupons( $query_args );
+		$excluded_coupons          = $this->get_excluded_coupons( $query_args );
+		$order_coupon_lookup_table = $wpdb->prefix . 'wc_order_coupon_lookup';
 		if ( $included_coupons ) {
-			$sql_query_params['where_clause'] .= " AND {$order_stats_lookup_table}.coupon_id IN ({$included_coupons})";
+			$sql_query_params['from_clause']  .= " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id";
+			$sql_query_params['where_clause'] .= " AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})";
+		}
+		if ( $excluded_coupons ) {
+			$sql_query_params['from_clause']  .= " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id";
+			$sql_query_params['where_clause'] .= " AND {$order_coupon_lookup_table}.coupon_id NOT IN ({$excluded_coupons})";
+		}
+
+		$included_products          = $this->get_included_products( $query_args );
+		$excluded_products          = $this->get_excluded_products( $query_args );
+		$order_product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
+		if ( $included_products ) {
+			$sql_query_params['from_clause']  .= " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id";
+			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id IN ({$included_products})";
+		}
+		if ( $excluded_products ) {
+			$sql_query_params['from_clause']  .= " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id";
+			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id NOT IN ({$excluded_products})";
 		}
 
 		return $sql_query_params;
@@ -133,7 +154,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			$db_records_count = (int) $wpdb->get_var(
 				"SELECT COUNT(*) FROM (
 							SELECT
-								order_id
+								{$table_name}.order_id
 							FROM
 								{$table_name}
 								{$sql_query_params['from_clause']}
@@ -196,6 +217,32 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		}
 
 		return $order_by;
+	}
+
+	/**
+	 * Returns order status subquery to be used in WHERE SQL query, based on query arguments from the user.
+	 *
+	 * @param array  $query_args Parameters supplied by the user.
+	 * @param string $operator   AND or OR, based on match query argument.
+	 * @return string
+	 */
+	protected function get_status_subquery( $query_args, $operator = 'AND' ) {
+		$subqueries = array();
+		if ( isset( $query_args['status_is'] ) && is_array( $query_args['status_is'] ) && count( $query_args['status_is'] ) > 0 ) {
+			$allowed_statuses = array_map( array( $this, 'normalize_order_status' ), $query_args['status_is'] );
+			if ( $allowed_statuses ) {
+				$subqueries[] = "status IN ( '" . implode( "','", $allowed_statuses ) . "' )";
+			}
+		}
+
+		if ( isset( $query_args['status_is_not'] ) && is_array( $query_args['status_is_not'] ) && count( $query_args['status_is_not'] ) > 0 ) {
+			$forbidden_statuses = array_map( array( $this, 'normalize_order_status' ), $query_args['status_is_not'] );
+			if ( $forbidden_statuses ) {
+				$subqueries[] = "status NOT IN ( '" . implode( "','", $forbidden_statuses ) . "' )";
+			}
+		}
+
+		return implode( " $operator ", $subqueries );
 	}
 
 	/**
