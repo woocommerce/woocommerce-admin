@@ -48,6 +48,7 @@ class WC_Admin_Api_Init {
 
 		// Query classes for reports.
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-revenue-query.php';
+		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-orders-query.php';
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-orders-stats-query.php';
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-products-query.php';
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-variations-query.php';
@@ -63,6 +64,7 @@ class WC_Admin_Api_Init {
 
 		// Data stores.
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-data-store.php';
+		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-orders-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-orders-stats-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-products-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-variations-data-store.php';
@@ -104,6 +106,7 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-downloads-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-downloads-files-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-downloads-stats-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-orders-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-orders-stats-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-products-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-variations-controller.php';
@@ -130,6 +133,7 @@ class WC_Admin_Api_Init {
 				'WC_Admin_REST_Reports_Variations_Controller',
 				'WC_Admin_REST_Reports_Products_Stats_Controller',
 				'WC_Admin_REST_Reports_Revenue_Stats_Controller',
+				'WC_Admin_REST_Reports_Orders_Controller',
 				'WC_Admin_REST_Reports_Orders_Stats_Controller',
 				'WC_Admin_REST_Reports_Categories_Controller',
 				'WC_Admin_REST_Reports_Taxes_Controller',
@@ -411,6 +415,7 @@ class WC_Admin_Api_Init {
 			$data_stores,
 			array(
 				'report-revenue-stats'  => 'WC_Admin_Reports_Orders_Stats_Data_Store',
+				'report-orders'         => 'WC_Admin_Reports_Orders_Data_Store',
 				'report-orders-stats'   => 'WC_Admin_Reports_Orders_Stats_Data_Store',
 				'report-products'       => 'WC_Admin_Reports_Products_Data_Store',
 				'report-variations'     => 'WC_Admin_Reports_Variations_Data_Store',
