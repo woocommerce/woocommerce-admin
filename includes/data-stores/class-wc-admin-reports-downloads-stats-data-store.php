@@ -18,7 +18,7 @@ class WC_Admin_Reports_Downloads_Stats_Data_Store extends WC_Admin_Reports_Downl
 	 * @var array
 	 */
 	protected $column_types = array(
-		'download_count'    => 'intval',
+		'download_count' => 'intval',
 	);
 
 	/**
