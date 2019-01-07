@@ -126,7 +126,7 @@ export default class CouponsReportTable extends Component {
 		const dates = getCurrentDates( query );
 		const after = moment( dates.primary.after );
 		const before = moment( dates.primary.before );
-		const days = before.diff( after, 'days' );
+		const days = before.diff( after, 'days' ) + 1;
 
 		return [
 			{
