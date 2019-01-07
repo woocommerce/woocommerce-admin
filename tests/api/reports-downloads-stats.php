@@ -138,7 +138,7 @@ class WC_Tests_API_Reports_Downloads_Stats extends WC_REST_Unit_Test_Case {
 
 		$totals = $properties['totals']['properties'];
 		$this->assertEquals( 1, count( $totals ) );
-		$this->assertArrayHasKey( 'downloads_count', $totals );
+		$this->assertArrayHasKey( 'download_count', $totals );
 
 		$intervals = $properties['intervals']['items']['properties'];
 		$this->assertEquals( 6, count( $intervals ) );
@@ -151,6 +151,6 @@ class WC_Tests_API_Reports_Downloads_Stats extends WC_REST_Unit_Test_Case {
 
 		$subtotals = $properties['intervals']['items']['properties']['subtotals']['properties'];
 		$this->assertEquals( 1, count( $subtotals ) );
-		$this->assertArrayHasKey( 'downloads_count', $subtotals );
+		$this->assertArrayHasKey( 'download_count', $subtotals );
 	}
 }
