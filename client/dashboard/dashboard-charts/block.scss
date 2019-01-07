@@ -2,6 +2,25 @@
 
 .woocommerce-dashboard__chart-block-wrapper {
 	cursor: pointer;
+	&:hover {
+		.woocommerce-chart,
+		.woocommerce-card__header {
+			background: #f8f9f9;
+		}
+	}
+	.woocommerce-chart__footer {
+		position: relative;
+		&:after {
+			content: '';
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			cursor: pointer;
+			z-index: 1;
+		}
+	}
 }
 
 .woocommerce-dashboard__chart-block {
