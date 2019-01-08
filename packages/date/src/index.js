@@ -434,6 +434,7 @@ export function getChartTypeForQuery( { type } ) {
 
 export const dayTicksThreshold = 63;
 export const weekTicksThreshold = 9;
+export const defaultTableDateFormat = 'm/d/Y';
 
 /**
  * Returns date formats for the current interval.
@@ -447,7 +448,7 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 	let tooltipLabelFormat = '%B %d, %Y';
 	let xFormat = '%Y-%m-%d';
 	let x2Format = '%b %Y';
-	let tableFormat = 'm/d/Y';
+	let tableFormat = defaultTableDateFormat;
 
 	switch ( interval ) {
 		case 'hour':

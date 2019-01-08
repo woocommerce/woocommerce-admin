@@ -11,7 +11,7 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { appendTimestamp, getCurrentDates } from '@woocommerce/date';
+import { appendTimestamp, defaultTableDateFormat, getCurrentDates } from '@woocommerce/date';
 import { Link } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
 
@@ -118,7 +118,7 @@ class RevenueReportTable extends Component {
 			);
 			return [
 				{
-					display: formatDate( 'm/d/Y', row.date_start ),
+					display: formatDate( defaultTableDateFormat, row.date_start ),
 					value: row.date_start,
 				},
 				{

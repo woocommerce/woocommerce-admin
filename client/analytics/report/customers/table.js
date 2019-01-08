@@ -9,6 +9,7 @@ import { format as formatDate } from '@wordpress/date';
 /**
  * WooCommerce dependencies
  */
+import { defaultTableDateFormat } from '@woocommerce/date';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
 import { Link } from '@woocommerce/components';
 
@@ -124,7 +125,7 @@ export default class CustomersReportTable extends Component {
 					value: username,
 				},
 				{
-					display: formatDate( 'm/d/Y', date_sign_up ),
+					display: formatDate( defaultTableDateFormat, date_sign_up ),
 					value: date_sign_up,
 				},
 				{
@@ -144,7 +145,7 @@ export default class CustomersReportTable extends Component {
 					value: getCurrencyFormatDecimal( avg_order_value ),
 				},
 				{
-					display: formatDate( 'm/d/Y', date_last_active ),
+					display: formatDate( defaultTableDateFormat, date_last_active ),
 					value: date_last_active,
 				},
 				{

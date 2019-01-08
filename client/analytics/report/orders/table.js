@@ -11,7 +11,7 @@ import { map } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { appendTimestamp, getCurrentDates } from '@woocommerce/date';
+import { appendTimestamp, defaultTableDateFormat, getCurrentDates } from '@woocommerce/date';
 import { Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { formatCurrency } from '@woocommerce/currency';
 
@@ -126,7 +126,7 @@ class OrdersReportTable extends Component {
 
 			return [
 				{
-					display: formatDate( 'm/d/Y', date ),
+					display: formatDate( defaultTableDateFormat, date ),
 					value: date,
 				},
 				{

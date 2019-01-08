@@ -11,7 +11,7 @@ import moment from 'moment';
 /**
  * WooCommerce dependencies
  */
-import { getCurrentDates } from '@woocommerce/date';
+import { defaultTableDateFormat, getCurrentDates } from '@woocommerce/date';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 
@@ -81,7 +81,7 @@ export default class CouponsReportTable extends Component {
 
 			return [
 				{
-					display: formatDate( 'm/d/Y', date ),
+					display: formatDate( defaultTableDateFormat, date ),
 					value: date,
 				},
 				{
