@@ -74,7 +74,7 @@ class WC_Admin_REST_Reports_Controller extends WC_REST_Reports_Controller {
 		$data    = array();
 		$reports = array(
 			array(
-				'slug'        => 'store-performance',
+				'slug'        => 'performance-indicators',
 				'description' => __( 'Batch endpoint for getting specific performance indicators from `stats` endpoints.', 'wc-admin' ),
 			),
 			array(

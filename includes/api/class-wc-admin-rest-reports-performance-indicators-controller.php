@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API Store Performance controller
+ * REST API Performance indiciators controller
  *
  * Handles requests to the /reports/store-performance endpoint.
  *
@@ -10,12 +10,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * REST API Reports Store Performance controller class.
+ * REST API Reports Performance indicators controller class.
  *
  * @package WooCommerce/API
  * @extends WC_REST_Reports_Controller
  */
-class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports_Controller {
+class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Reports_Controller {
 
 	/**
 	 * Endpoint namespace.
@@ -29,7 +29,7 @@ class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports
 	 *
 	 * @var string
 	 */
-	protected $rest_base = 'reports/store-performance';
+	protected $rest_base = 'reports/performance-indicators';
 
 	/**
 	 * Maps query arguments from the REST request.
@@ -44,6 +44,41 @@ class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports
 		$args['stats']  = $request['stats'];
 		return $args;
 	}
+	
+
+	/**
+	 * Get all allowed stats that can be returned from this endpoint.
+	 * @return array
+	 */
+	public function get_allowed_stats() {
+		global $wp_rest_server;
+
+		$request       = new WP_REST_Request( 'GET', '/wc/v3/reports' );
+		$response      = rest_do_request( $request );
+		$endpoints     = $response->get_data();
+		$allowed_stats = array();
+		if ( 200 !== $response->get_status() ) {
+			return new WP_Error( 'woocommerce_reports_performance_indicators_result_failed', __( 'Sorry, fetching performance indicators failed.', 'wc-admin' ) );
+		}
+
+		foreach ( $endpoints as $endpoint ) {
+			if ( '/stats' === substr( $endpoint['slug'], -6 ) ) {
+				$request  = new WP_REST_Request( 'OPTIONS', '/wc/v3/reports/' . $endpoint['slug'] );
+				$response = rest_do_request( $request );
+				$data     = $response->get_data();
+				$prefix   = substr( $endpoint['slug'], 0, -6 );
+
+				if ( empty( $data['schema']['properties']['totals']['properties'] ) ) {
+					continue;
+				}
+
+				foreach( $data['schema']['properties']['totals']['properties'] as $property_key => $schema_info ) {
+					$allowed_stats[] = $prefix . '/' . $property_key;
+				}
+			}
+		}
+		return $allowed_stats;
+	}
 
 	/**
 	 * Get all reports.
@@ -52,8 +87,18 @@ class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports
 	 * @return array|WP_Error
 	 */
 	public function get_items( $request ) {
-		$query_args    = $this->prepare_reports_query( $request );
-		$stats         = array();
+		$allowed_stats = $this->get_allowed_stats();
+
+		if ( is_wp_error( $allowed_stats ) ) {
+			return $allowed_stats;
+		}
+
+		$query_args = $this->prepare_reports_query( $request );
+		if ( empty ( $query_args['stats'] ) ) {
+			return new WP_Error( 'woocommerce_reports_performance_indicators_empty_query', __( 'A list of stats to query must be provided.', 'wc-admin' ), 400 );
+		}
+
+		$stats = array();
 		foreach ( $query_args['stats'] as $stat_request ) {
 			$is_error = false;
 
@@ -61,12 +106,7 @@ class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports
 			$endpoint = $pieces[0];
 			$stat     = $pieces[1];
 
-			// Validate the stat is a proper path format.
-			if ( ! preg_match( '/^[0-9a-zA-Z\/\_-]+$/', $stat_request ) ) {
-				$stats[] = (object) array(
-					'stat'  => $stat_request,
-					'value' => null,
-				);
+			if ( ! in_array( $stat_request, $allowed_stats ) ) {
 				continue;
 			}
 
@@ -113,9 +153,9 @@ class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response
 	 */
-	public function prepare_item_for_response( $data, $request ) {
+	public function prepare_item_for_response( $stat_data, $request ) {
 		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$data    = $this->add_additional_fields_to_object( $data, $request );
+		$data    = $this->add_additional_fields_to_object( $stat_data, $request );
 		$data    = $this->filter_response_by_context( $data, $context );
 
 		// Wrap the data in a response object.
@@ -132,7 +172,7 @@ class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports
 		 * @param object           $report   The original report object.
 		 * @param WP_REST_Request  $request  Request used to generate the response.
 		 */
-		return apply_filters( 'woocommerce_rest_prepare_report_store_performance', $response, $report, $request );
+		return apply_filters( 'woocommerce_rest_prepare_report_performance_indicators', $response, $stat_data, $request );
 	}
 
 	/**
@@ -163,23 +203,20 @@ class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports
 	public function get_item_schema() {
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'report_store_performance',
-			'type'       => 'array',
-			'items'       => array(
-				'type'       => 'object',
-				'properties' => array(
-					'stat'             => array(
-						'description' => __( 'Unique identifier for the resource.', 'wc-admin' ),
-						'type'        => 'string',
-						'context'     => array( 'view', 'edit' ),
-						'readonly'    => true,
-					),
-					'value'      => array(
-						'description' => __( 'Value of the stat. Returns null if the stat does not exist or cannot be loaded.', 'wc-admin' ),
-						'type'        => 'number',
-						'context'     => array( 'view', 'edit' ),
-						'readonly'    => true,
-					),
+			'title'      => 'report_performance_indicator',
+			'type'       => 'object',
+			'properties' => array(
+				'stat'             => array(
+					'description' => __( 'Unique identifier for the resource.', 'wc-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'value'      => array(
+					'description' => __( 'Value of the stat. Returns null if the stat does not exist or cannot be loaded.', 'wc-admin' ),
+					'type'        => 'number',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
 				),
 			),
 		);
@@ -193,10 +230,20 @@ class WC_Admin_REST_Reports_Store_Performance_Controller extends WC_REST_Reports
 	 * @return array
 	 */
 	public function get_collection_params() {
+		$allowed_stats     = $this->get_allowed_stats();
+		if ( is_wp_error( $allowed_stats ) ) {
+			$allowed_stats = __( 'There was an issue loading the report endpoints', 'wc-admin' );
+		} else {
+			$allowed_stats = implode( ', ', $allowed_stats );
+		}
+
 		$params            = array();
 		$params['context'] = $this->get_context_param( array( 'default' => 'view' ) );
 		$params['stats']   = array(
-			'description'       => __( 'Limit response to specific report stats.', 'wc-admin' ),
+			'description'       => sprintf(
+				__( 'Limit response to specific report stats. Allowed values: %s.', 'wc-admin' ),
+				$allowed_stats
+			),
 			'type'              => 'array',
 			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(

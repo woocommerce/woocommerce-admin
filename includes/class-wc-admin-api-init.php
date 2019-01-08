@@ -108,38 +108,43 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-products-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-variations-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-products-stats-controller.php';
-		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-store-performance-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-performance-indicators-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-revenue-stats-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-taxes-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-taxes-stats-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-stock-controller.php';
 
-		$controllers = array(
-			'WC_Admin_REST_Admin_Notes_Controller',
-			'WC_Admin_REST_Customers_Controller',
-			'WC_Admin_REST_Data_Controller',
-			'WC_Admin_REST_Data_Download_Ips_Controller',
-			'WC_Admin_REST_Orders_Controller',
-			'WC_Admin_REST_Products_Controller',
-			'WC_Admin_REST_Product_Reviews_Controller',
-			'WC_Admin_REST_Reports_Controller',
-			'WC_Admin_REST_System_Status_Tools_Controller',
-			'WC_Admin_REST_Reports_Store_Performance_Controller',
-			'WC_Admin_REST_Reports_Products_Controller',
-			'WC_Admin_REST_Reports_Variations_Controller',
-			'WC_Admin_REST_Reports_Products_Stats_Controller',
-			'WC_Admin_REST_Reports_Revenue_Stats_Controller',
-			'WC_Admin_REST_Reports_Orders_Stats_Controller',
-			'WC_Admin_REST_Reports_Categories_Controller',
-			'WC_Admin_REST_Reports_Taxes_Controller',
-			'WC_Admin_REST_Reports_Taxes_Stats_Controller',
-			'WC_Admin_REST_Reports_Coupons_Controller',
-			'WC_Admin_REST_Reports_Coupons_Stats_Controller',
-			'WC_Admin_REST_Reports_Stock_Controller',
-			'WC_Admin_REST_Reports_Downloads_Controller',
-			'WC_Admin_REST_Reports_Downloads_Stats_Controller',
-			'WC_Admin_REST_Reports_Customers_Controller',
+		$controllers = apply_filters(
+			'woocommerce_admin_rest_controllers',
+			array(
+				'WC_Admin_REST_Admin_Notes_Controller',
+				'WC_Admin_REST_Customers_Controller',
+				'WC_Admin_REST_Data_Controller',
+				'WC_Admin_REST_Data_Download_Ips_Controller',
+				'WC_Admin_REST_Orders_Controller',
+				'WC_Admin_REST_Products_Controller',
+				'WC_Admin_REST_Product_Reviews_Controller',
+				'WC_Admin_REST_Reports_Controller',
+				'WC_Admin_REST_System_Status_Tools_Controller',
+				'WC_Admin_REST_Reports_Products_Controller',
+				'WC_Admin_REST_Reports_Variations_Controller',
+				'WC_Admin_REST_Reports_Products_Stats_Controller',
+				'WC_Admin_REST_Reports_Revenue_Stats_Controller',
+				'WC_Admin_REST_Reports_Orders_Stats_Controller',
+				'WC_Admin_REST_Reports_Categories_Controller',
+				'WC_Admin_REST_Reports_Taxes_Controller',
+				'WC_Admin_REST_Reports_Taxes_Stats_Controller',
+				'WC_Admin_REST_Reports_Coupons_Controller',
+				'WC_Admin_REST_Reports_Coupons_Stats_Controller',
+				'WC_Admin_REST_Reports_Stock_Controller',
+				'WC_Admin_REST_Reports_Downloads_Controller',
+				'WC_Admin_REST_Reports_Downloads_Stats_Controller',
+				'WC_Admin_REST_Reports_Customers_Controller',
+			)
 		);
+
+		// The performance indiciators controller must be registered last, after other /stats endpoints have been registered.
+		$controllers[] = 'WC_Admin_REST_Reports_Performance_Indicators_Controller';
 
 		foreach ( $controllers as $controller ) {
 			$this->$controller = new $controller();
