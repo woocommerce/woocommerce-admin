@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
-import { isEqual } from 'lodash';
+import { isEqual, xor } from 'lodash';
 import PropTypes from 'prop-types';
 import { ToggleControl, IconButton, NavigableMenu } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
@@ -60,34 +60,22 @@ class DashboardCharts extends Component {
 
 	toggle( key ) {
 		return () => {
-			this.setState(
-				prevState => {
-					const hidden = prevState.hiddenChartKeys.includes( key );
-					const hiddenChartKeys = prevState.hiddenChartKeys.filter( chartKey => chartKey !== key );
-
-					if ( ! hidden ) {
-						hiddenChartKeys.push( key );
-					}
-					return { hiddenChartKeys };
-				},
-				() => {
-					const userDataFields = {
-						[ 'dashboard_charts' ]: this.state.hiddenChartKeys,
-					};
-					this.props.updateCurrentUserData( userDataFields );
-				}
-			);
+			const hiddenChartKeys = xor( this.state.hiddenChartKeys, [ key ] );
+			this.setState( { hiddenChartKeys } );
+			const userDataFields = {
+				[ 'dashboard_charts' ]: hiddenChartKeys,
+			};
+			this.props.updateCurrentUserData( userDataFields );
 		};
 	}
 
 	handleTypeToggle( type ) {
 		return () => {
-			this.setState( { chartType: type }, () => {
-				const userDataFields = {
-					[ 'dashboard_chart_type' ]: this.state.chartType,
-				};
-				this.props.updateCurrentUserData( userDataFields );
-			} );
+			this.setState( { chartType: type } );
+			const userDataFields = {
+				[ 'dashboard_chart_type' ]: type,
+			};
+			this.props.updateCurrentUserData( userDataFields );
 		};
 	}
 
