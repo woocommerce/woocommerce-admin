@@ -5,7 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { isEqual } from 'lodash';
+import { isEqual, xor } from 'lodash';
 import PropTypes from 'prop-types';
 import { SelectControl, ToggleControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
@@ -59,25 +59,12 @@ class Leaderboards extends Component {
 
 	toggle( key ) {
 		return () => {
-			this.setState(
-				prevState => {
-					const hidden = prevState.hiddenLeaderboardKeys.includes( key );
-					const hiddenLeaderboardKeys = prevState.hiddenLeaderboardKeys.filter(
-						chartKey => chartKey !== key
-					);
-
-					if ( ! hidden ) {
-						hiddenLeaderboardKeys.push( key );
-					}
-					return { hiddenLeaderboardKeys };
-				},
-				() => {
-					const userDataFields = {
-						[ 'dashboard_leaderboards' ]: this.state.hiddenLeaderboardKeys,
-					};
-					this.props.updateCurrentUserData( userDataFields );
-				}
-			);
+			const hiddenLeaderboardKeys = xor( this.state.hiddenLeaderboardKeys, [ key ] );
+			this.setState( { hiddenLeaderboardKeys } );
+			const userDataFields = {
+				[ 'dashboard_leaderboards' ]: hiddenLeaderboardKeys,
+			};
+			this.props.updateCurrentUserData( userDataFields );
 		};
 	}
 
