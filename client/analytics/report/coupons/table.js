@@ -10,7 +10,6 @@ import { map } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { getIntervalForQuery, getDateFormatsForInterval } from '@woocommerce/date';
 import { Link } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
 
@@ -67,10 +66,6 @@ export default class CouponsReportTable extends Component {
 	}
 
 	getRowsContent( coupons ) {
-		const { query } = this.props;
-		const currentInterval = getIntervalForQuery( { interval: 'day', ...query } );
-		const { tableFormat } = getDateFormatsForInterval( currentInterval );
-
 		return map( coupons, coupon => {
 			const { amount, coupon_id, extended_info, orders_count } = coupon;
 			const { code, date_created, date_expires, discount_type } = extended_info;
@@ -105,11 +100,11 @@ export default class CouponsReportTable extends Component {
 					value: getCurrencyFormatDecimal( amount ),
 				},
 				{
-					display: formatDate( tableFormat, date_created ),
+					display: formatDate( 'm/d/Y', date_created ),
 					value: date_created,
 				},
 				{
-					display: date_expires ? formatDate( tableFormat, date_expires ) : __( 'N/A', 'wc-admin' ),
+					display: date_expires ? formatDate( 'm/d/Y', date_expires ) : __( 'N/A', 'wc-admin' ),
 					value: date_expires,
 				},
 				{
