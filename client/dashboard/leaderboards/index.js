@@ -69,17 +69,11 @@ class Leaderboards extends Component {
 	}
 
 	setRowsPerTable = rows => {
-		return this.setState(
-			{
-				rowsPerTable: parseInt( rows ),
-			},
-			() => {
-				const userDataFields = {
-					[ 'dashboard_leaderboard_rows' ]: this.state.rowsPerTable,
-				};
-				this.props.updateCurrentUserData( userDataFields );
-			}
-		);
+		this.setState( { rowsPerTable: parseInt( rows ) } );
+		const userDataFields = {
+			[ 'dashboard_leaderboard_rows' ]: parseInt( rows ),
+		};
+		this.props.updateCurrentUserData( userDataFields );
 	};
 
 	renderMenu() {
