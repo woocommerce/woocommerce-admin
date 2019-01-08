@@ -4,6 +4,7 @@
  */
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * WooCommerce dependencies
@@ -16,7 +17,6 @@ import { getAdminLink, history } from '@woocommerce/navigation';
  */
 import ReportChart from 'analytics/components/report-chart';
 import './block.scss';
-import { __, sprintf } from '@wordpress/i18n';
 
 class ChartBlock extends Component {
 	handleChartClick = () => {
