@@ -43,6 +43,8 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 		'dashboard_charts',
 		'dashboard_chart_type',
 		'dashboard_chart_interval',
+		'dashboard_leaderboards',
+		'dashboard_leaderboard_rows',
 	];
 
 	if ( resourceNames.includes( resourceName ) ) {
