@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API Performance indiciators controller
+ * REST API Performance indicators controller
  *
  * Handles requests to the /reports/store-performance endpoint.
  *
@@ -44,10 +44,10 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 		$args['stats']  = $request['stats'];
 		return $args;
 	}
-	
 
 	/**
 	 * Get all allowed stats that can be returned from this endpoint.
+	 *
 	 * @return array
 	 */
 	public function get_allowed_stats() {
@@ -72,7 +72,7 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 					continue;
 				}
 
-				foreach( $data['schema']['properties']['totals']['properties'] as $property_key => $schema_info ) {
+				foreach ( $data['schema']['properties']['totals']['properties'] as $property_key => $schema_info ) {
 					$allowed_stats[] = $prefix . '/' . $property_key;
 				}
 			}
@@ -94,7 +94,7 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 		}
 
 		$query_args = $this->prepare_reports_query( $request );
-		if ( empty ( $query_args['stats'] ) ) {
+		if ( empty( $query_args['stats'] ) ) {
 			return new WP_Error( 'woocommerce_reports_performance_indicators_empty_query', __( 'A list of stats to query must be provided.', 'wc-admin' ), 400 );
 		}
 
@@ -149,7 +149,7 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 	/**
 	 * Prepare a report object for serialization.
 	 *
-	 * @param stdClass        $data    Report data.
+	 * @param stdClass        $stat_data    Report data.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response
 	 */
@@ -241,6 +241,7 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 		$params['context'] = $this->get_context_param( array( 'default' => 'view' ) );
 		$params['stats']   = array(
 			'description'       => sprintf(
+				/* translators: Allowed values is a list of stat endpoints. */
 				__( 'Limit response to specific report stats. Allowed values: %s.', 'wc-admin' ),
 				$allowed_stats
 			),

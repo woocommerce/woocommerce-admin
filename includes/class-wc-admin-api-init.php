@@ -143,7 +143,7 @@ class WC_Admin_Api_Init {
 			)
 		);
 
-		// The performance indiciators controller must be registered last, after other /stats endpoints have been registered.
+		// The performance indicators controller must be registered last, after other /stats endpoints have been registered.
 		$controllers[] = 'WC_Admin_REST_Reports_Performance_Indicators_Controller';
 
 		foreach ( $controllers as $controller ) {
