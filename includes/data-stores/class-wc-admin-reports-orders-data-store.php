@@ -80,6 +80,11 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			$sql_query_params['where_clause'] .= " AND {$status_subquery}";
 		}
 
+		if ( $query_args['customer_type'] ) {
+			$returning_customer                = 'returning' === $query_args['customer_type'] ? 1 : 0;
+			$sql_query_params['where_clause'] .= " AND returning_customer = ${returning_customer}";
+		}
+
 		$included_coupons          = $this->get_included_coupons( $query_args );
 		$excluded_coupons          = $this->get_excluded_coupons( $query_args );
 		$order_coupon_lookup_table = $wpdb->prefix . 'wc_order_coupon_lookup';
