@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 import { Component, createRef } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -21,7 +21,7 @@ import {
 	getUniqueKeys,
 	getUniqueDates,
 	getFormatter,
-} from './utils';
+} from './utils/index';
 import {
 	getXScale,
 	getXGroupScale,
@@ -30,9 +30,7 @@ import {
 	getYScale,
 	getYTickOffset,
 } from './utils/scales';
-import { drawAxis, getXTicks } from './utils/axis';
-import { drawBars } from './utils/bar-chart';
-import { drawLines } from './utils/line-chart';
+import { getXTicks } from './utils/axis';
 
 /**
  * A simple D3 line and bar chart component for timeseries data in React.
@@ -40,55 +38,8 @@ import { drawLines } from './utils/line-chart';
 class D3Chart extends Component {
 	constructor( props ) {
 		super( props );
-		this.drawChart = this.drawChart.bind( this );
-		this.getAllData = this.getAllData.bind( this );
 		this.getParams = this.getParams.bind( this );
-		this.state = {
-			allData: this.getAllData( props ),
-			type: props.type,
-		};
 		this.tooltipRef = createRef();
-	}
-
-	componentDidUpdate( prevProps, prevState ) {
-		const { type } = this.props;
-		/* eslint-disable react/no-did-update-set-state */
-		const nextAllData = this.getAllData( this.props );
-		if ( ! isEqual( [ ...nextAllData ].sort(), [ ...prevState.allData ].sort() ) ) {
-			this.setState( { allData: nextAllData } );
-		}
-		if ( type !== prevProps.type ) {
-			this.setState( { type } );
-		}
-		/* eslint-enable react/no-did-update-set-state */
-	}
-
-	getAllData( props ) {
-		const orderedKeys =
-			props.orderedKeys || getOrderedKeys( props.data, getUniqueKeys( props.data ) );
-		return [ ...props.data, ...orderedKeys ];
-	}
-
-	drawChart( node ) {
-		setTimeout( () => {
-			const { data, margin, type } = this.props;
-			const params = this.getParams();
-			const adjParams = Object.assign( {}, params, {
-				height: params.adjHeight,
-				width: params.adjWidth,
-				tooltip: this.tooltipRef.current,
-				valueType: params.valueType,
-			} );
-
-			const g = node
-				.attr( 'id', 'chart' )
-				.append( 'g' )
-				.attr( 'transform', `translate(${ margin.left },${ margin.top })` );
-
-			drawAxis( g, adjParams );
-			type === 'line' && drawLines( g, data, adjParams );
-			type === 'bar' && drawBars( g, data, adjParams );
-		} );
 	}
 
 	shouldBeCompact() {
@@ -181,7 +132,7 @@ class D3Chart extends Component {
 	}
 
 	render() {
-		const { className, data, height } = this.props;
+		const { className, data, height, type } = this.props;
 		if ( isEmpty( data ) ) {
 			return null; // TODO: improve messaging
 		}
@@ -191,16 +142,17 @@ class D3Chart extends Component {
 				className={ classNames( 'd3-chart__container', className ) }
 				style={ { height } }
 			>
+				<div className="d3-chart__tooltip" ref={ this.tooltipRef } />
 				<D3Base
 					className={ classNames( this.props.className ) }
-					data={ this.state.allData }
-					drawChart={ this.drawChart }
+					data={ data }
 					height={ height }
+					getParams={ this.getParams }
+					orderedKeys={ this.props.orderedKeys }
 					tooltipRef={ this.tooltipRef }
-					type={ this.state.type }
+					type={ type }
 					width={ computedWidth }
 				/>
-				<div className="d3-chart__tooltip" ref={ this.tooltipRef } />
 			</div>
 		);
 	}

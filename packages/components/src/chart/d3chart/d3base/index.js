@@ -12,6 +12,9 @@ import { select as d3Select } from 'd3-selection';
 /**
  * Internal dependencies
  */
+import { drawAxis } from '../utils/axis';
+import { drawBars } from '../utils/bar-chart';
+import { drawLines } from '../utils/line-chart';
 import { hideTooltip } from '../utils/tooltip';
 
 /**
@@ -37,14 +40,14 @@ export default class D3Base extends Component {
 	}
 
 	componentDidMount() {
-		this.drawUpdatedChart();
+		this.drawChart();
 	}
 
 	shouldComponentUpdate( nextProps ) {
 		return (
 			this.props.className !== nextProps.className ||
 			! isEqual( this.props.data, nextProps.data ) ||
-			this.props.drawChart !== nextProps.drawChart ||
+			! isEqual( this.props.orderedKeys, nextProps.orderedKeys ) ||
 			this.props.height !== nextProps.height ||
 			this.props.type !== nextProps.type ||
 			this.props.width !== nextProps.width
@@ -52,7 +55,7 @@ export default class D3Base extends Component {
 	}
 
 	componentDidUpdate() {
-		this.drawUpdatedChart();
+		this.drawChart();
 	}
 
 	componentWillUnmount() {
@@ -65,13 +68,25 @@ export default class D3Base extends Component {
 			.remove();
 	}
 
-	/**
-	 * Renders the chart, or triggers a rendering by updating the list of params.
-	 */
-	drawUpdatedChart() {
-		const { drawChart } = this.props;
-		const svg = this.getContainer();
-		drawChart( svg );
+	drawChart() {
+		const node = this.getContainer();
+		const { data, getParams, tooltipRef, type } = this.props;
+		const params = getParams();
+		const adjParams = Object.assign( {}, params, {
+			height: params.adjHeight,
+			width: params.adjWidth,
+			tooltip: tooltipRef.current,
+			valueType: params.valueType,
+		} );
+
+		const g = node
+			.attr( 'id', 'chart' )
+			.append( 'g' )
+			.attr( 'transform', `translate(${ params.margin.left },${ params.margin.top })` );
+
+		drawAxis( g, adjParams );
+		type === 'line' && drawLines( g, data, adjParams );
+		type === 'bar' && drawBars( g, data, adjParams );
 	}
 
 	getContainer() {
@@ -102,7 +117,7 @@ export default class D3Base extends Component {
 
 D3Base.propTypes = {
 	className: PropTypes.string,
-	data: PropTypes.any, // required to detect changes in data
-	drawChart: PropTypes.func.isRequired,
+	data: PropTypes.array,
+	orderedKeys: PropTypes.array, // required to detect changes in data
 	type: PropTypes.string,
 };
