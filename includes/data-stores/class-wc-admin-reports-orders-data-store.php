@@ -138,7 +138,9 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			'product_excludes' => array(),
 			'coupon_includes'  => array(),
 			'coupon_excludes'  => array(),
+			'customer_type'    => null,
 			'status_is'        => parent::get_report_order_statuses(),
+			'extended_info'    => false,
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 
