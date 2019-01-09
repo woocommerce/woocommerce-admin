@@ -175,7 +175,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 				return $data;
 			}
 
-			$order_data = $wpdb->get_results(
+			$orders_data = $wpdb->get_results(
 				"SELECT
 						{$selections}
 					FROM
@@ -192,13 +192,17 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
-			if ( null === $order_data ) {
+			if ( null === $orders_data ) {
 				return $data;
 			}
 
-			$order_data = array_map( array( $this, 'cast_numbers' ), $order_data );
-			$data       = (object) array(
-				'data'    => $order_data,
+			if ( $query_args['extended_info'] ) {
+				$this->include_extended_info( $orders_data, $query_args );
+			}
+
+			$orders_data = array_map( array( $this, 'cast_numbers' ), $orders_data );
+			$data        = (object) array(
+				'data'    => $orders_data,
 				'total'   => $db_records_count,
 				'pages'   => $total_pages,
 				'page_no' => (int) $query_args['page'],
@@ -248,6 +252,31 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		}
 
 		return implode( " $operator ", $subqueries );
+	}
+
+	/**
+	 * Enriches the order data.
+	 *
+	 * @param array $orders_data Orders data.
+	 * @param array $query_args  Query parameters.
+	 */
+	protected function include_extended_info( &$orders_data, $query_args ) {
+		foreach ( $orders_data as $key => $order_data ) {
+			$order                       = wc_get_order( $order_data['order_id'] );
+			$extended_info               = new ArrayObject();
+			$extended_info['products']   = array();
+			$extended_info['categories'] = array();
+			foreach ( $order->get_items() as $item ) {
+				$extended_info['products'][] = array(
+					'id'   => $item->get_product_id(),
+					'name' => $item->get_name(),
+				);
+				foreach ( get_the_terms( $item->get_product_id(), 'product_cat' ) as $category ) {
+					$extended_info['categories'][] = $category->term_id;
+				}
+			}
+			$orders_data[ $key ]['extended_info'] = $extended_info;
+		}
 	}
 
 	/**

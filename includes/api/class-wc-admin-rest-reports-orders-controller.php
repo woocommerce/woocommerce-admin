@@ -52,6 +52,7 @@ class WC_Admin_REST_Reports_Orders_Controller extends WC_Admin_REST_Reports_Cont
 		$args['status_is']        = (array) $request['status_is'];
 		$args['status_is_not']    = (array) $request['status_is_not'];
 		$args['customer_type']    = $request['customer_type'];
+		$args['extended_info']    = $request['extended_info'];
 		return $args;
 	}
 
@@ -190,6 +191,20 @@ class WC_Admin_REST_Reports_Orders_Controller extends WC_Admin_REST_Reports_Cont
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
+				'extended_info'      => array(
+					'products'   => array(
+						'type'        => 'array',
+						'readonly'    => true,
+						'context'     => array( 'view', 'edit' ),
+						'description' => __( 'List of product IDs and names.', 'wc-admin' ),
+					),
+					'categories' => array(
+						'type'        => 'array',
+						'readonly'    => true,
+						'context'     => array( 'view', 'edit' ),
+						'description' => __( 'Category IDs.', 'wc-admin' ),
+					),
+				),
 			),
 		);
 
@@ -320,6 +335,13 @@ class WC_Admin_REST_Reports_Orders_Controller extends WC_Admin_REST_Reports_Cont
 				'returning',
 				'new',
 			),
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['extended_info']    = array(
+			'description'       => __( 'Add additional piece of info about each coupon to the report.', 'wc-admin' ),
+			'type'              => 'boolean',
+			'default'           => false,
+			'sanitize_callback' => 'wc_string_to_bool',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 
