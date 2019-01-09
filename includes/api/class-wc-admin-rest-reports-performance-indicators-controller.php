@@ -78,6 +78,11 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 			}
 		}
 
+		/**
+		 * Filter the list of allowed stats that can be returned via the performance indiciator endpoint.
+		 *
+		 * @param array $allowed_stats The list of allowed stats.
+		 */
 		return apply_filters( 'woocommerce_admin_performance_indicators_allowed_stats', $allowed_stats );
 	}
 
@@ -111,7 +116,12 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 				continue;
 			}
 
-			// Allow custom endpoints to be loaded here.
+			/**
+			 * Filter the list of allowed endpoints, so that data can be loaded from extensions rather than core.
+			 * These should be in the format of slug => path. Example: `bookings` => `/wc-bookings/v1/reports/bookings/stats`.
+			 *
+			 * @param array $endpoints The list of allowed endpoints.
+			 */
 			$stats_endpoints = apply_filters( 'woocommerce_admin_performance_indicators_stats_endpoints', array() );
 			if ( ! empty( $stats_endpoints [ $endpoint ] ) ) {
 				$request_url = $stats_endpoints [ $endpoint ];
