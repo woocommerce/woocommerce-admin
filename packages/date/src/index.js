@@ -367,8 +367,8 @@ export function getAllowedIntervalsForQuery( query ) {
 			allowed = [ 'day', 'week', 'month' ];
 		} else if ( differenceInDays >= 7 ) {
 			allowed = [ 'day', 'week' ];
-		} else if ( differenceInDays > 1 && differenceInDays <= 7 ) {
-			allowed = [ 'day', 'hour' ];
+		} else if ( differenceInDays > 1 && differenceInDays < 7 ) {
+			allowed = [ 'day' ];
 		} else {
 			allowed = [ 'hour', 'day' ];
 		}
