@@ -77,7 +77,8 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 				}
 			}
 		}
-		return $allowed_stats;
+
+		return apply_filters( 'woocommerce_admin_performance_indicators_allowed_stats', $allowed_stats );
 	}
 
 	/**
@@ -110,7 +111,15 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 				continue;
 			}
 
-			$request = new WP_REST_Request( 'GET', '/wc/v3/reports/' . $endpoint . '/stats' );
+			// Allow custom endpoints to be loaded here.
+			$stats_endpoints = apply_filters( 'woocommerce_admin_performance_indicators_stats_endpoints', array() );
+			if ( ! empty( $stats_endpoints [ $endpoint ] ) ) {
+				$request_url = $stats_endpoints [ $endpoint ];
+			} else {
+				$request_url = '/wc/v3/reports/' . $endpoint . '/stats';
+			}
+
+			$request = new WP_REST_Request( 'GET', $request_url );
 			$request->set_param( 'before', $query_args['before'] );
 			$request->set_param( 'after', $query_args['after'] );
 
