@@ -12,9 +12,6 @@ import { select as d3Select } from 'd3-selection';
 /**
  * Internal dependencies
  */
-import { drawAxis } from '../utils/axis';
-import { drawBars } from '../utils/bar-chart';
-import { drawLines } from '../utils/line-chart';
 import { hideTooltip } from '../utils/tooltip';
 
 /**
@@ -40,7 +37,7 @@ export default class D3Base extends Component {
 	}
 
 	componentDidMount() {
-		this.drawChart();
+		this.drawUpdatedChart();
 	}
 
 	shouldComponentUpdate( nextProps ) {
@@ -48,6 +45,7 @@ export default class D3Base extends Component {
 			this.props.className !== nextProps.className ||
 			! isEqual( this.props.data, nextProps.data ) ||
 			! isEqual( this.props.orderedKeys, nextProps.orderedKeys ) ||
+			this.props.drawChart !== nextProps.drawChart ||
 			this.props.height !== nextProps.height ||
 			this.props.type !== nextProps.type ||
 			this.props.width !== nextProps.width
@@ -55,7 +53,7 @@ export default class D3Base extends Component {
 	}
 
 	componentDidUpdate() {
-		this.drawChart();
+		this.drawUpdatedChart();
 	}
 
 	componentWillUnmount() {
@@ -68,25 +66,13 @@ export default class D3Base extends Component {
 			.remove();
 	}
 
-	drawChart() {
-		const node = this.getContainer();
-		const { data, getParams, tooltipRef, type } = this.props;
-		const params = getParams();
-		const adjParams = Object.assign( {}, params, {
-			height: params.adjHeight,
-			width: params.adjWidth,
-			tooltip: tooltipRef.current,
-			valueType: params.valueType,
-		} );
-
-		const g = node
-			.attr( 'id', 'chart' )
-			.append( 'g' )
-			.attr( 'transform', `translate(${ params.margin.left },${ params.margin.top })` );
-
-		drawAxis( g, adjParams );
-		type === 'line' && drawLines( g, data, adjParams );
-		type === 'bar' && drawBars( g, data, adjParams );
+	/**
+	 * Renders the chart, or triggers a rendering by updating the list of params.
+	 */
+	drawUpdatedChart() {
+		const { drawChart } = this.props;
+		const svg = this.getContainer();
+		drawChart( svg );
 	}
 
 	getContainer() {

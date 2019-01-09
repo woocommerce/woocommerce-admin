@@ -30,7 +30,9 @@ import {
 	getYScale,
 	getYTickOffset,
 } from './utils/scales';
-import { getXTicks } from './utils/axis';
+import { drawAxis, getXTicks } from './utils/axis';
+import { drawBars } from './utils/bar-chart';
+import { drawLines } from './utils/line-chart';
 
 /**
  * A simple D3 line and bar chart component for timeseries data in React.
@@ -39,7 +41,28 @@ class D3Chart extends Component {
 	constructor( props ) {
 		super( props );
 		this.getParams = this.getParams.bind( this );
+		this.drawChart = this.drawChart.bind( this );
 		this.tooltipRef = createRef();
+	}
+
+	drawChart( node ) {
+		const { data, margin, type } = this.props;
+		const params = this.getParams();
+		const adjParams = Object.assign( {}, params, {
+			height: params.adjHeight,
+			width: params.adjWidth,
+			tooltip: this.tooltipRef.current,
+			valueType: params.valueType,
+		} );
+
+		const g = node
+			.attr( 'id', 'chart' )
+			.append( 'g' )
+			.attr( 'transform', `translate(${ margin.left },${ margin.top })` );
+
+		drawAxis( g, adjParams );
+		type === 'line' && drawLines( g, data, adjParams );
+		type === 'bar' && drawBars( g, data, adjParams );
 	}
 
 	shouldBeCompact() {
@@ -146,8 +169,8 @@ class D3Chart extends Component {
 				<D3Base
 					className={ classNames( this.props.className ) }
 					data={ data }
+					drawChart={ this.drawChart }
 					height={ height }
-					getParams={ this.getParams }
 					orderedKeys={ this.props.orderedKeys }
 					tooltipRef={ this.tooltipRef }
 					type={ type }
