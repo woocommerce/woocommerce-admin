@@ -161,6 +161,12 @@ class WC_Admin_REST_Reports_Orders_Controller extends WC_Admin_REST_Reports_Cont
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
+				'date_created'       => array(
+					'description' => __( 'Date the order was created.', 'wc-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
 				'status'             => array(
 					'description' => __( 'Order status.', 'wc-admin' ),
 					'type'        => 'string',
@@ -185,9 +191,9 @@ class WC_Admin_REST_Reports_Orders_Controller extends WC_Admin_REST_Reports_Cont
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'returning_customer' => array(
-					'description' => __( 'Returning customer.', 'wc-admin' ),
-					'type'        => 'bool',
+				'customer_type' => array(
+					'description' => __( 'Returning or new customer.', 'wc-admin' ),
+					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
