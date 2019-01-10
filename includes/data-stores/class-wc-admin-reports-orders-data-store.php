@@ -88,24 +88,26 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		$included_coupons          = $this->get_included_coupons( $query_args );
 		$excluded_coupons          = $this->get_excluded_coupons( $query_args );
 		$order_coupon_lookup_table = $wpdb->prefix . 'wc_order_coupon_lookup';
+		if ( $included_coupons || $excluded_coupons ) {
+			$sql_query_params['from_clause'] .= " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id";
+		}
 		if ( $included_coupons ) {
-			$sql_query_params['from_clause']  .= " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id";
 			$sql_query_params['where_clause'] .= " AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})";
 		}
 		if ( $excluded_coupons ) {
-			$sql_query_params['from_clause']  .= " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id";
 			$sql_query_params['where_clause'] .= " AND {$order_coupon_lookup_table}.coupon_id NOT IN ({$excluded_coupons})";
 		}
 
 		$included_products          = $this->get_included_products( $query_args );
 		$excluded_products          = $this->get_excluded_products( $query_args );
 		$order_product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
+		if ( $included_products || $excluded_products ) {
+			$sql_query_params['from_clause'] .= " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id";
+		}
 		if ( $included_products ) {
-			$sql_query_params['from_clause']  .= " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id";
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id IN ({$included_products})";
 		}
 		if ( $excluded_products ) {
-			$sql_query_params['from_clause']  .= " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id";
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id NOT IN ({$excluded_products})";
 		}
 
