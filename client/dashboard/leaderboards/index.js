@@ -19,6 +19,7 @@ import { EllipsisMenu, MenuItem, MenuTitle, SectionHeader } from '@woocommerce/c
  * Internal dependencies
  */
 import withSelect from 'wc-api/with-select';
+import TopSellingCategories from './top-selling-categories';
 import TopSellingProducts from './top-selling-products';
 import './style.scss';
 
@@ -129,11 +130,13 @@ class Leaderboards extends Component {
 				<div className="woocommerce-dashboard__dashboard-leaderboards">
 					<SectionHeader title={ __( 'Leaderboards', 'wc-admin' ) } menu={ this.renderMenu() } />
 					<div className="woocommerce-dashboard__columns">
-						<div>
-							{ ! hiddenLeaderboardKeys.includes( 'top-products' ) && (
-								<TopSellingProducts query={ this.props.query } totalRows={ rowsPerTable } />
-							) }
-						</div>
+						{ ! hiddenLeaderboardKeys.includes( 'top-products' ) && (
+							<TopSellingProducts query={ this.props.query } totalRows={ rowsPerTable } />
+						) }
+
+						{ ! hiddenLeaderboardKeys.includes( 'top-categories' ) && (
+							<TopSellingCategories query={ this.props.query } totalRows={ rowsPerTable } />
+						) }
 					</div>
 				</div>
 			</Fragment>
