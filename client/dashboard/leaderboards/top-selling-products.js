@@ -10,7 +10,8 @@ import { get, map } from 'lodash';
  * WooCommerce dependencies
  */
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
-import { getAdminLink } from '@woocommerce/navigation';
+import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -60,12 +61,22 @@ export class TopSellingProducts extends Component {
 	}
 
 	getRowsContent( data ) {
+		const { query } = this.props;
+		const persistedQuery = getPersistedQuery( query );
 		return map( data, row => {
 			const { product_id, items_sold, net_revenue, orders_count, extended_info } = row;
 			const name = get( extended_info, [ 'name' ] );
+
+			const productUrl = getNewPath( persistedQuery, 'analytics/products', {
+				filter: 'single_product',
+				products: product_id,
+			} );
 			const productLink = (
-				<a href={ getAdminLink( `/post.php?post=${ product_id }&action=edit` ) }>{ name }</a>
+				<Link href={ productUrl } type="wc-admin">
+					{ name }
+				</Link>
 			);
+
 			return [
 				{
 					display: productLink,
@@ -103,7 +114,7 @@ export class TopSellingProducts extends Component {
 				getRowsContent={ this.getRowsContent }
 				query={ query }
 				tableQuery={ tableQuery }
-				title={ __( 'Top Selling Products', 'wc-admin' ) }
+				title={ __( 'Top Selling Products - Items Sold', 'wc-admin' ) }
 			/>
 		);
 	}

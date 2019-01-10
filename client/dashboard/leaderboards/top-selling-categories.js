@@ -10,7 +10,8 @@ import { get, map } from 'lodash';
  * WooCommerce dependencies
  */
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
-import { getAdminLink } from '@woocommerce/navigation';
+import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -53,13 +54,24 @@ export class TopSellingCategories extends Component {
 	}
 
 	getRowsContent( data ) {
+		const { query } = this.props;
+		const persistedQuery = getPersistedQuery( query );
 		return map( data, row => {
-			const { items_sold, net_revenue, extended_info } = row;
+			const { category_id, items_sold, net_revenue, extended_info } = row;
 			const name = get( extended_info, [ 'name' ] );
-			const productLink = <a href={ getAdminLink( '/post.php?post=' ) }>{ name }</a>;
+			// TODO Update this to use a single_category filter, once it exists.
+			const categoryUrl = getNewPath( persistedQuery, 'analytics/categories', {
+				filter: 'compare-categories',
+				categories: category_id,
+			} );
+			const categoryLink = (
+				<Link href={ categoryUrl } type="wc-admin">
+					{ name }
+				</Link>
+			);
 			return [
 				{
-					display: productLink,
+					display: categoryLink,
 					value: name,
 				},
 				{
@@ -90,7 +102,7 @@ export class TopSellingCategories extends Component {
 				getRowsContent={ this.getRowsContent }
 				query={ query }
 				tableQuery={ tableQuery }
-				title={ __( 'Top Selling Categories', 'wc-admin' ) }
+				title={ __( 'Top Selling Categories - Items Sold', 'wc-admin' ) }
 			/>
 		);
 	}
