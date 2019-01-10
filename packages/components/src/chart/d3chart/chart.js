@@ -40,8 +40,8 @@ import { drawLines } from './utils/line-chart';
 class D3Chart extends Component {
 	constructor( props ) {
 		super( props );
-		this.getParams = this.getParams.bind( this );
 		this.drawChart = this.drawChart.bind( this );
+		this.getParams = this.getParams.bind( this );
 		this.tooltipRef = createRef();
 	}
 
