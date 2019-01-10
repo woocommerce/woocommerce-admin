@@ -265,22 +265,87 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 * @param array $query_args  Query parameters.
 	 */
 	protected function include_extended_info( &$orders_data, $query_args ) {
-		foreach ( $orders_data as $key => $order_data ) {
-			$order                       = wc_get_order( $order_data['order_id'] );
-			$extended_info               = new ArrayObject();
-			$extended_info['products']   = array();
-			$extended_info['categories'] = array();
-			foreach ( $order->get_items() as $item ) {
-				$extended_info['products'][] = array(
-					'id'   => $item->get_product_id(),
-					'name' => $item->get_name(),
-				);
-				foreach ( get_the_terms( $item->get_product_id(), 'product_cat' ) as $category ) {
-					$extended_info['categories'][] = $category->term_id;
-				}
+		$mapped_orders = $this->map_array_by_key( $orders_data, 'order_id' );
+		$product_data  = $this->get_product_data_by_order_ids( array_keys( $mapped_orders ) );
+
+		$mapped_data = array();
+		foreach ( $product_data as $product ) {
+			if ( ! isset( $mapped_data[ $product['order_id'] ] ) ) {
+				$mapped_data[ $product['order_id'] ]['products']   = array();
+				$mapped_data[ $product['order_id'] ]['categories'] = array();
 			}
-			$orders_data[ $key ]['extended_info'] = $extended_info;
+
+			$mapped_data[ $product['order_id'] ]['products'][] = array(
+				'id'   => $product['product_id'],
+				'name' => $product['product_name'],
+			);
+			$mapped_data[ $product['order_id'] ]['categories'] = array_unique(
+				array_merge(
+					$mapped_data[ $product['order_id'] ]['categories'],
+					$product['category_ids']
+				)
+			);
 		}
+
+		foreach ( $orders_data as $key => $order_data ) {
+			$orders_data[ $key ]['extended_info'] = $mapped_data[ $order_data['order_id'] ];
+		}
+	}
+
+	/**
+	 * Returns the same array index by a given key
+	 *
+	 * @param array  $array Array to be looped over.
+	 * @param string $key Key of values used for new array.
+	 * @return array
+	 */
+	protected function map_array_by_key( $array, $key ) {
+		$mapped = array();
+		foreach ( $array as $item ) {
+			$mapped[ $item[ $key ] ] = $item;
+		}
+		return $mapped;
+	}
+
+	/**
+	 * Get product Ids, names, and categories from order IDs.
+	 *
+	 * @param array $order_ids Array of order IDs.
+	 * @return array
+	 */
+	protected function get_product_data_by_order_ids( $order_ids ) {
+		global $wpdb;
+		$order_product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
+		$included_order_ids         = implode( ',', $order_ids );
+
+		$product_data = $wpdb->get_results(
+			"SELECT order_id, ID as product_id, post_title as product_name
+				FROM {$wpdb->prefix}posts
+				JOIN {$order_product_lookup_table} ON {$order_product_lookup_table}.product_id = {$wpdb->prefix}posts.ID
+				WHERE 
+					order_id IN ({$included_order_ids})
+				",
+			ARRAY_A
+		); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+
+		$mapped_products      = $this->map_array_by_key( $product_data, 'product_id' );
+		$included_product_ids = implode( ',', array_keys( $mapped_products ) );
+
+		$product_categories = $wpdb->get_results(
+			"SELECT term_id AS category_id, object_id AS product_id
+				FROM {$wpdb->prefix}term_relationships
+				JOIN {$wpdb->prefix}term_taxonomy ON {$wpdb->prefix}term_relationships.term_taxonomy_id = {$wpdb->prefix}term_taxonomy.term_taxonomy_id
+				WHERE
+					object_id IN (${included_product_ids})
+				",
+			ARRAY_A
+		); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+
+		foreach ( $product_categories as $category ) {
+			$mapped_products[ $category['product_id'] ]['category_ids'][] = $category['category_id'];
+		}
+
+		return $mapped_products;
 	}
 
 	/**
