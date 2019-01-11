@@ -228,6 +228,28 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		if ( 'date' === $order_by ) {
 			return 'date_created';
 		}
+	}
+
+	/**
+	 * Queue a background process that will repopulate the entire orders stats database.
+	 *
+	 * @todo Make this work on large DBs.
+	 */
+	public static function queue_order_stats_repopulate_database() {
+
+		// This needs to be updated to work in batches instead of getting all orders, as
+		// that will not work well on DBs with more than a few hundred orders.
+		$order_ids = wc_get_orders(
+			array(
+				'limit'  => -1,
+				'type'   => 'shop_order',
+				'return' => 'ids',
+			)
+		);
+
+		foreach ( $order_ids as $id ) {
+			self::$background_process->push_to_queue( $id );
+		}
 
 		return $order_by;
 	}
