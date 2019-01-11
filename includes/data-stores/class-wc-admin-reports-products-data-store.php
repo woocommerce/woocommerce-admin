@@ -328,15 +328,6 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 			return;
 		}
 
-		if ( ! in_array( $order->get_status(), parent::get_report_order_statuses(), true ) ) {
-			$wpdb->delete(
-				$wpdb->prefix . self::TABLE_NAME,
-				array( 'order_id' => $order->get_id() ),
-				array( '%d' )
-			);
-			return;
-		}
-
 		$refunds = self::get_order_refund_items( $order );
 
 		foreach ( $order->get_items() as $order_item ) {
