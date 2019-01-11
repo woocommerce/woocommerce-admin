@@ -109,8 +109,6 @@ class WC_Admin_Reports_Coupons_Stats_Data_Store extends WC_Admin_Reports_Coupons
 			'fields'       => '*',
 			'interval'     => 'week',
 			'coupons'      => array(),
-			// This is not a parameter for products reports per se, but we should probably restricts order statuses here, too.
-			'order_status' => parent::get_report_order_statuses(),
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 
