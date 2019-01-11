@@ -201,7 +201,7 @@
 	top: 92px;
 	z-index: 1000;
 	overflow-x: hidden;
-	overflow-y: scroll;
+	overflow-y: auto;
 
 	// Extra padding is needed at the bottom of the wrapper because of our positioning, height, and overflow rules. Otherwise, some content can get cut off.
 	padding-bottom: $gap-small * 6;
