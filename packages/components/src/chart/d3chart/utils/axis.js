@@ -176,9 +176,9 @@ export const getYGrids = ( yMax ) => {
 	const yGrids = [];
 
 	for ( let i = 0; i < 4; i++ ) {
-		const roundedValue = yMax > 1 ? Math.round( i / 3 * yMax ) : i / 3 * yMax;
-		if ( yGrids[ yGrids.length - 1 ] !== roundedValue ) {
-			yGrids.push( roundedValue );
+		const value = yMax > 1 ? Math.round( i / 3 * yMax ) : i / 3 * yMax;
+		if ( yGrids[ yGrids.length - 1 ] !== value ) {
+			yGrids.push( value );
 		}
 	}
 
