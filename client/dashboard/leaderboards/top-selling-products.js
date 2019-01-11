@@ -44,13 +44,6 @@ export class TopSellingProducts extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Orders', 'wc-admin' ),
-				key: 'orders_count',
-				required: false,
-				isSortable: false,
-				isNumeric: true,
-			},
-			{
 				label: __( 'Net Revenue', 'wc-admin' ),
 				key: 'net_revenue',
 				required: true,
@@ -64,7 +57,7 @@ export class TopSellingProducts extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		return map( data, row => {
-			const { product_id, items_sold, net_revenue, orders_count, extended_info } = row;
+			const { product_id, items_sold, net_revenue, extended_info } = row;
 			const name = get( extended_info, [ 'name' ] );
 
 			const productUrl = getNewPath( persistedQuery, 'analytics/products', {
@@ -85,10 +78,6 @@ export class TopSellingProducts extends Component {
 				{
 					display: numberFormat( items_sold ),
 					value: items_sold,
-				},
-				{
-					display: numberFormat( orders_count ),
-					value: orders_count,
 				},
 				{
 					display: formatCurrency( net_revenue ),
@@ -114,7 +103,7 @@ export class TopSellingProducts extends Component {
 				getRowsContent={ this.getRowsContent }
 				query={ query }
 				tableQuery={ tableQuery }
-				title={ __( 'Top Selling Products - Items Sold', 'wc-admin' ) }
+				title={ __( 'Top Products - Items Sold', 'wc-admin' ) }
 			/>
 		);
 	}

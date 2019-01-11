@@ -102,7 +102,7 @@ export class TopSellingCategories extends Component {
 				getRowsContent={ this.getRowsContent }
 				query={ query }
 				tableQuery={ tableQuery }
-				title={ __( 'Top Selling Categories - Items Sold', 'wc-admin' ) }
+				title={ __( 'Top Categories - Items Sold', 'wc-admin' ) }
 			/>
 		);
 	}
