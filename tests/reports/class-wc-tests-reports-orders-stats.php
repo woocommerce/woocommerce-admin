@@ -1527,7 +1527,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'avg_items_per_order'     => 0,
 				'avg_order_value'         => 0,
 				'num_returning_customers' => 0,
-				'num_new_customers'       => 2,
+				'num_new_customers'       => 0,
 				'products'                => 0,
 			),
 			'intervals' => array(
@@ -1549,7 +1549,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'avg_items_per_order'     => 0,
 						'avg_order_value'         => 0,
 						'num_returning_customers' => 0,
-						'num_new_customers'       => 2,
+						'num_new_customers'       => 0,
 					),
 				),
 			),
