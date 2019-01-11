@@ -172,7 +172,7 @@ export const compareStrings = ( s1, s2, splitChar = new RegExp( [ ' |,' ], 'g' )
 	return diff;
 };
 
-const getYGrids = ( yMax ) => {
+export const getYGrids = ( yMax ) => {
 	const yGrids = [];
 
 	for ( let i = 0; i < 4; i++ ) {
