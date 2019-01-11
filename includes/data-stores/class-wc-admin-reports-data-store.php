@@ -784,6 +784,13 @@ class WC_Admin_Reports_Data_Store {
 			}
 		}
 
+		if ( ( ! isset( $query_args['status_is'] ) || empty( $query_args['status_is'] ) )
+			&& ( ! isset( $query_args['status_is_not'] ) || empty( $query_args['status_is_not'] ) )
+		) {
+			$allowed_statuses = array_map( array( $this, 'normalize_order_status' ), $this->get_report_order_statuses() );
+			$subqueries[]     = "{$wpdb->prefix}wc_order_stats.status IN ( '" . implode( "','", $allowed_statuses ) . "' )";
+		}
+
 		return implode( " $operator ", $subqueries );
 	}
 
