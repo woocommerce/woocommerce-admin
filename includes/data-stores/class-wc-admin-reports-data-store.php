@@ -397,12 +397,12 @@ class WC_Admin_Reports_Data_Store {
 	}
 
 	/**
-	 * Get the order statuses used when calculating reports.
+	 * Get the excluded order statuses used when calculating reports.
 	 *
 	 * @return array
 	 */
-	protected static function get_report_order_statuses() {
-		return apply_filters( 'woocommerce_reports_order_statuses', array( 'completed', 'processing', 'on-hold' ) );
+	protected static function get_excluded_report_order_statuses() {
+		return apply_filters( 'woocommerce_reports_excluded_order_statuses', array( 'refunded', 'pending', 'failed', 'cancelled' ) );
 	}
 
 	/**
@@ -788,8 +788,8 @@ class WC_Admin_Reports_Data_Store {
 		if ( ( ! isset( $query_args['status_is'] ) || empty( $query_args['status_is'] ) )
 			&& ( ! isset( $query_args['status_is_not'] ) || empty( $query_args['status_is_not'] ) )
 		) {
-			$allowed_statuses = array_map( array( $this, 'normalize_order_status' ), $this->get_report_order_statuses() );
-			$subqueries[]     = "{$wpdb->prefix}wc_order_stats.status IN ( '" . implode( "','", $allowed_statuses ) . "' )";
+			$excluded_statuses = array_map( array( $this, 'normalize_order_status' ), $this->get_excluded_report_order_statuses() );
+			$subqueries[]      = "{$wpdb->prefix}wc_order_stats.status NOT IN ( '" . implode( "','", $excluded_statuses ) . "' )";
 		}
 
 		return implode( " $operator ", $subqueries );
