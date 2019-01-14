@@ -158,8 +158,11 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 	 * @return string
 	 */
 	protected function normalize_order_by( $order_by ) {
+		global $wpdb;
+		$order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
+
 		if ( 'date' === $order_by ) {
-			return 'date_created';
+			return $order_product_lookup_table . '.date_created';
 		}
 		if ( 'product_name' === $order_by ) {
 			return '_products.post_title';
