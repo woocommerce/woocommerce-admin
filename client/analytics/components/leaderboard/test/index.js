@@ -102,7 +102,7 @@ describe( 'Leaderboard', () => {
 		);
 		const leaderboard = leaderboardWrapper.root.findByType( Leaderboard );
 
-		const endpoint = '/wc/v3/reports/products';
+		const endpoint = '/wc/v4/reports/products';
 		const query = { orderby: 'items_sold', per_page: 5, extended_info: 1 };
 
 		expect( getReportStatsMock.mock.calls[ 0 ][ 1 ] ).toBe( endpoint );

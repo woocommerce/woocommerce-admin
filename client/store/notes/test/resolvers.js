@@ -29,10 +29,10 @@ describe( 'getNotes', () => {
 
 	beforeAll( () => {
 		apiFetch.mockImplementation( options => {
-			if ( options.path === '/wc/v3/admin/notes' ) {
+			if ( options.path === '/wc/v4/admin/notes' ) {
 				return Promise.resolve( NOTES_1 );
 			}
-			if ( options.path === '/wc/v3/admin/notes?page=2' ) {
+			if ( options.path === '/wc/v4/admin/notes?page=2' ) {
 				return Promise.resolve( NOTES_2 );
 			}
 		} );

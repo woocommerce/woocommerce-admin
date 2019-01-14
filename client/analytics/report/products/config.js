@@ -86,7 +86,7 @@ const filterConfig = {
 			settings: {
 				type: 'categories',
 				param: 'categories',
-				getLabels: getRequestByIdString( NAMESPACE + 'products/categories', category => ( {
+				getLabels: getRequestByIdString( '/wc/v4/products/categories', category => ( {
 					id: category.id,
 					label: category.name,
 				} ) ),

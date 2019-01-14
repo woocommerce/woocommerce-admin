@@ -29,10 +29,10 @@ describe( 'getOrders', () => {
 
 	beforeAll( () => {
 		apiFetch.mockImplementation( options => {
-			if ( options.path === '/wc/v3/orders' ) {
+			if ( options.path === '/wc/v4/orders' ) {
 				return Promise.resolve( ORDERS_1 );
 			}
-			if ( options.path === '/wc/v3/orders?orderby=id' ) {
+			if ( options.path === '/wc/v4/orders?orderby=id' ) {
 				return Promise.resolve( ORDERS_2 );
 			}
 		} );
