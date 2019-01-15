@@ -39,6 +39,24 @@ export const drawBars = ( node, data, params ) => {
 		);
 
 	barGroup
+		.append( 'rect' )
+		.attr( 'class', 'barmouse' )
+		.attr( 'x', 0 )
+		.attr( 'y', 0 )
+		.attr( 'width', params.xGroupScale.range()[ 1 ] )
+		.attr( 'height', params.height )
+		.attr( 'opacity', '0' )
+		.on( 'mouseover', ( d, i, nodes ) => {
+			const position = calculateTooltipPosition(
+				d3Event.target,
+				node.node(),
+				params.tooltipPosition
+			);
+			handleMouseOverBarChart( d.date, nodes[ i ].parentNode, node, data, params, position );
+		} )
+		.on( 'mouseout', ( d, i, nodes ) => hideTooltip( nodes[ i ].parentNode, params.tooltip ) );
+
+	barGroup
 		.selectAll( '.bar' )
 		.data( d =>
 			params.orderedKeys.filter( row => row.visible ).map( row => ( {
@@ -58,6 +76,7 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'width', params.xGroupScale.bandwidth() )
 		.attr( 'height', d => params.height - params.yScale( d.value ) )
 		.attr( 'fill', d => getColor( d.key, params.orderedKeys, params.colorScheme ) )
+		.attr( 'pointer-events', 'none' )
 		.attr( 'tabindex', '0' )
 		.attr( 'aria-label', d => {
 			const label = params.mode === 'time-comparison' && d.label ? d.label : d.key;
@@ -73,22 +92,4 @@ export const drawBars = ( node, data, params ) => {
 			handleMouseOverBarChart( d.date, nodes[ i ].parentNode, node, data, params, position );
 		} )
 		.on( 'blur', ( d, i, nodes ) => hideTooltip( nodes[ i ].parentNode, params.tooltip ) );
-
-	barGroup
-		.append( 'rect' )
-		.attr( 'class', 'barmouse' )
-		.attr( 'x', 0 )
-		.attr( 'y', 0 )
-		.attr( 'width', params.xGroupScale.range()[ 1 ] )
-		.attr( 'height', params.height )
-		.attr( 'opacity', '0' )
-		.on( 'mouseover', ( d, i, nodes ) => {
-			const position = calculateTooltipPosition(
-				d3Event.target,
-				node.node(),
-				params.tooltipPosition
-			);
-			handleMouseOverBarChart( d.date, nodes[ i ].parentNode, node, data, params, position );
-		} )
-		.on( 'mouseout', ( d, i, nodes ) => hideTooltip( nodes[ i ].parentNode, params.tooltip ) );
 };
