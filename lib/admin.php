@@ -228,23 +228,6 @@ function wc_admin_enqueue_script() {
 add_action( 'admin_enqueue_scripts', 'wc_admin_enqueue_script' );
 
 /**
- * Hydrates the initial state.
- */
-function wc_admin_hydrate_state() {
-	$current_user_data = array();
-	foreach ( wc_admin_get_user_data_fields() as $user_field ) {
-		$current_user_data[ $user_field ] = get_user_meta( get_current_user_id(), 'wc_admin_' . $user_field, true );
-	}
-
-	wp_localize_script(
-		WC_ADMIN_APP,
-		'wcAdminServer',
-		array( 'currentUserData' => $current_user_data )
-	);
-}
-add_action( 'admin_enqueue_scripts', 'wc_admin_hydrate_state' );
-
-/**
  * Adds an admin body class.
  *
  * @param string $admin_body_class Body class to add.

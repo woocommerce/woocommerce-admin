@@ -8,7 +8,7 @@ import { DEFAULT_REQUIREMENT } from '../constants';
 const getCurrentUserData = ( getResource, requireResource ) => (
 	requirement = DEFAULT_REQUIREMENT
 ) => {
-	const initalState = wcAdminServer.currentUserData; // eslint-disable-line no-undef
+	const initalState = wcSettings.currentUserData;
 	return requireResource( requirement, 'current-user-data' ).data || initalState;
 };
 
