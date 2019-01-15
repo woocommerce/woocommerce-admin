@@ -14,7 +14,7 @@ import { calculateTooltipPosition, hideTooltip, showTooltip } from './tooltip';
 
 const handleMouseOverBarChart = ( date, parentNode, node, data, params, position ) => {
 	d3Select( parentNode )
-		.select( '.barmouse' )
+		.select( '.barfocus' )
 		.attr( 'opacity', '0.1' );
 	showTooltip( params, data.find( e => e.date === date ), position );
 };
@@ -40,7 +40,7 @@ export const drawBars = ( node, data, params ) => {
 
 	barGroup
 		.append( 'rect' )
-		.attr( 'class', 'barmouse' )
+		.attr( 'class', 'barfocus' )
 		.attr( 'x', 0 )
 		.attr( 'y', 0 )
 		.attr( 'width', params.xGroupScale.range()[ 1 ] )

@@ -12,7 +12,7 @@ import { getColor } from './color';
 
 export const hideTooltip = ( parentNode, tooltipNode ) => {
 	d3Select( parentNode )
-		.selectAll( '.barmouse, .focus-grid' )
+		.selectAll( '.barfocus, .focus-grid' )
 		.attr( 'opacity', '0' );
 	d3Select( tooltipNode )
 		.style( 'visibility', 'hidden' );
