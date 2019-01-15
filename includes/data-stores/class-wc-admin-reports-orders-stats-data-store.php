@@ -475,23 +475,23 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 * @return bool
 	 */
 	protected static function is_returning_customer( $order ) {
-		$customer_id = $order->get_user_id();
+		global $wpdb;
+		$customer_id        = WC_Admin_Reports_Customers_Data_Store::get_customer_id_by_user_id( $order->get_user_id() );
+		$orders_stats_table = $wpdb->prefix . self::TABLE_NAME;
 
-		if ( 0 === $customer_id ) {
+		if ( ! $customer_id ) {
 			return false;
 		}
 
-		$customer_orders = get_posts(
-			array(
-				'meta_key'    => '_customer_user', // WPCS: slow query ok.
-				'meta_value'  => $customer_id, // WPCS: slow query ok.
-				'post_type'   => 'shop_order',
-				'post_status' => array( 'wc-on-hold', 'wc-processing', 'wc-completed' ),
-				'numberposts' => 2,
+		$customer_orders = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM ${orders_stats_table} WHERE customer_id = %d AND date_created < %s",
+				$customer_id,
+				$order->get_date_created()->getTimestamp()
 			)
 		);
 
-		return count( $customer_orders ) > 1;
+		return $customer_orders >= 1;
 	}
 
 	/**
