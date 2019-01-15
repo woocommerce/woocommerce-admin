@@ -443,7 +443,7 @@ TableCard.propTypes = {
 	 */
 	searchParam: PropTypes.string,
 	/**
-	 * Url query parameter search function operates on
+	 * Boolean to determine whether or not ellipsis menu is shown.
 	 */
 	showMenu: PropTypes.bool,
 	/**
