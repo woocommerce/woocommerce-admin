@@ -1493,8 +1493,14 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$this->assertEquals( $expected_stats, json_decode( json_encode( $data_store->get_data( $query_args ) ), true ), 'Product includes, negative filter for 2 product: ' . $wpdb->last_query );
 
 		// ** Customer returning
+		$returning_order = WC_Helper_Order::create_order( $customer_1->get_id(), $product );
+		$returning_order->set_status( 'completed' );
+		$returning_order->set_shipping_total( 10 );
+		$returning_order->set_total( 110 ); // $25x4 products + $10 shipping.
+		$returning_order->save();
+
 		$query_args = array(
-			'after'    => $current_hour->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
+			'after'    => date( 'Y-m-d H:i:s', $orders[0]->get_date_created()->getOffsetTimestamp() + 1 ), // Date after initial order to get a returning customer.
 			'before'   => $now->format( WC_Admin_Reports_Interval::$sql_datetime_format ),
 			'interval' => 'hour',
 			'customer' => 'returning',
@@ -1504,15 +1510,12 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$order_w_coupon_1_perms = 24;
 		$order_w_coupon_2_perms = 24;
 
-		// @TODO: Pull a time period after a customer's initial order to return returning customer orders.
-		$orders_count = 0;
-		// New customers for single product orders.
-		$num_items_sold = 0;
-		// New customers have orders with no coupon.
-		$coupons       = 0;
-		$shipping      = $orders_count * 10;
-		$net_revenue   = 0;
-		$gross_revenue = $net_revenue + $shipping;
+		$orders_count   = 1;
+		$num_items_sold = 4;
+		$coupons        = 0;
+		$shipping       = $orders_count * 10;
+		$net_revenue    = 100;
+		$gross_revenue  = $net_revenue + $shipping;
 
 		$expected_stats = array(
 			'totals'    => array(
@@ -1524,17 +1527,17 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
 				'net_revenue'             => $net_revenue,
-				'avg_items_per_order'     => 0,
-				'avg_order_value'         => 0,
-				'num_returning_customers' => 0,
+				'avg_items_per_order'     => $num_items_sold,
+				'avg_order_value'         => $net_revenue / $orders_count,
+				'num_returning_customers' => 1,
 				'num_new_customers'       => 0,
-				'products'                => 0,
+				'products'                => 1,
 			),
 			'intervals' => array(
 				array(
 					'interval'       => $current_hour->format( 'Y-m-d H' ),
-					'date_start'     => $current_hour->format( 'Y-m-d H:i:s' ),
-					'date_start_gmt' => $current_hour->format( 'Y-m-d H:i:s' ),
+					'date_start'     => date( 'Y-m-d H:i:s', $orders[0]->get_date_created()->getOffsetTimestamp() + 1 ),
+					'date_start_gmt' => date( 'Y-m-d H:i:s', $orders[0]->get_date_created()->getOffsetTimestamp() + 1 ),
 					'date_end'       => $now->format( 'Y-m-d H:i:s' ),
 					'date_end_gmt'   => $now->format( 'Y-m-d H:i:s' ),
 					'subtotals'      => array(
@@ -1546,9 +1549,9 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
 						'net_revenue'             => $net_revenue,
-						'avg_items_per_order'     => 0,
-						'avg_order_value'         => 0,
-						'num_returning_customers' => 0,
+						'avg_items_per_order'     => $num_items_sold,
+						'avg_order_value'         => $net_revenue / $orders_count,
+						'num_returning_customers' => 1,
 						'num_new_customers'       => 0,
 					),
 				),
@@ -1557,7 +1560,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'pages'     => 1,
 			'page_no'   => 1,
 		);
-		$this->assertEquals( $expected_stats, json_decode( json_encode( $data_store->get_data( $query_args ) ), true ), 'Product includes, negative filter for 2 product: ' . $wpdb->last_query );
+		$this->assertEquals( $expected_stats, json_decode( json_encode( $data_store->get_data( $query_args ) ), true ), 'Orders from returning customers: ' . $wpdb->last_query );
+		wp_delete_post( $returning_order->get_id(), true );
 
 		// Combinations: match all
 		// status_is + product_includes.
