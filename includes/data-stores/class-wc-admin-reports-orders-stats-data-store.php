@@ -77,6 +77,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		add_action( 'clean_post_cache', array( __CLASS__, 'sync_order' ) );
 		add_action( 'woocommerce_order_refunded', array( __CLASS__, 'sync_order' ) );
 		add_action( 'woocommerce_refund_deleted', array( __CLASS__, 'sync_on_refund_delete' ), 10, 2 );
+		add_action( 'delete_post', array( __CLASS__, 'delete_order' ) );
 	}
 
 	/**
@@ -446,6 +447,28 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		// Update or add the information to the DB.
 		return $wpdb->replace( $table_name, $data, $format );
 	}
+
+	/**
+	 * Deletes the order stats when an order is deleted.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public static function delete_order( $post_id ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . self::TABLE_NAME;
+
+		if ( 'shop_order' !== get_post_type( $post_id ) ) {
+			return;
+		}
+
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM ${table_name} WHERE order_id = %d",
+				$post_id
+			)
+		);
+	}
+
 
 	/**
 	 * Calculation methods.
