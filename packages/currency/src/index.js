@@ -13,10 +13,10 @@ import { get, isNaN } from 'lodash';
  * @returns {?String}                  A formatted string.
  */
 export function formatCurrency( number, currency ) {
-	const locale = wcSettings.siteLocale || 'en-US'; // Default so we don't break.
-	// default to wcSettings if currency is not passed in
+	const locale = wcAdminSettings.siteLocale || 'en-US'; // Default so we don't break.
+	// default to wcAdminSettings if currency is not passed in
 	if ( ! currency ) {
-		currency = get( wcSettings, 'currency.code', 'USD' );
+		currency = get( wcAdminSettings, 'currency.code', 'USD' );
 	}
 	if ( 'number' !== typeof number ) {
 		number = parseFloat( number );
@@ -35,7 +35,7 @@ export function formatCurrency( number, currency ) {
  * @return {Number} The original number rounded to a decimal point
  */
 export function getCurrencyFormatDecimal( number ) {
-	const { precision = 2 } = wcSettings.currency;
+	const { precision = 2 } = wcAdminSettings.currency;
 	if ( 'number' !== typeof number ) {
 		number = parseFloat( number );
 	}
@@ -53,7 +53,7 @@ export function getCurrencyFormatDecimal( number ) {
  * @return {String}               The original number rounded to a decimal point
  */
 export function getCurrencyFormatString( number ) {
-	const { precision = 2 } = wcSettings.currency;
+	const { precision = 2 } = wcAdminSettings.currency;
 	if ( 'number' !== typeof number ) {
 		number = parseFloat( number );
 	}

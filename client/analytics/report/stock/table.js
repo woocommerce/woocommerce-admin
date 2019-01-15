@@ -56,7 +56,7 @@ export default class StockReportTable extends Component {
 	getRowsContent( products ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const { stockStatuses } = wcSettings;
+		const { stockStatuses } = wcAdminSettings;
 
 		return products.map( product => {
 			const { id, name, parent_id, sku, stock_quantity, stock_status } = product;

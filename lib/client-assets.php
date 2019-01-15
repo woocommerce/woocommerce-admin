@@ -134,7 +134,7 @@ function format_order_statuses( $statuses ) {
 }
 
 /**
- * Output the wcSettings global before printing any script tags.
+ * Output the wcAdminSettings global before printing any script tags.
  */
 function wc_admin_print_script_settings() {
 	global $wp_locale;
@@ -199,7 +199,7 @@ function wc_admin_print_script_settings() {
 		<?php
 		echo $tracking_script; // WPCS: XSS ok.
 		?>
-		var wcSettings = <?php echo wp_json_encode( $settings ); ?>;
+		var wcAdminSettings = <?php echo wp_json_encode( $settings ); ?>;
 	</script>
 	<?php
 }

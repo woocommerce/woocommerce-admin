@@ -8,7 +8,7 @@
  */
 
 export function recordEvent( eventName, eventProperties ) {
-	if ( ! wcSettings.trackingEnabled || 'development' === process.env.NODE_ENV ) {
+	if ( ! wcAdminSettings.trackingEnabled || 'development' === process.env.NODE_ENV ) {
 		return false;
 	}
 

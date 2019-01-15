@@ -30,7 +30,7 @@ d3FormatDefaultLocale( {
 	decimal: '.',
 	thousands: ',',
 	grouping: [ 3 ],
-	currency: [ decodeEntities( get( wcSettings, 'currency.symbol', '' ) ), '' ],
+	currency: [ decodeEntities( get( wcAdminSettings, 'currency.symbol', '' ) ), '' ],
 } );
 
 function getOrderedKeys( props, previousOrderedKeys = [] ) {

@@ -21,7 +21,7 @@ export default {
 	name: 'countries',
 	className: 'woocommerce-search__country-result',
 	options() {
-		return wcSettings.dataEndpoints.countries || [];
+		return wcAdminSettings.dataEndpoints.countries || [];
 	},
 	getOptionKeywords( country ) {
 		return [ decodeEntities( country.name ) ];

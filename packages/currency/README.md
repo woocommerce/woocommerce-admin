@@ -18,12 +18,12 @@ _This package assumes that your code will run in an **ES2015+** environment. If 
 import { formatCurrency, getCurrencyFormatDecimal, getCurrencyFormatString } from '@woocommerce/currency';
 
 // Formats money with a given currency code. Uses site's current locale for symbol formatting,
-// from the wcSettings global. Defaults to `en-US`. If no currency provided, this is also
-// pulled from wcSettings, and defaults to USD.
+// from the wcAdminSettings global. Defaults to `en-US`. If no currency provided, this is also
+// pulled from wcAdminSettings, and defaults to USD.
 const total = formatCurrency( 20.923, 'USD' ); // '$20.92'
 
 // Get the rounded decimal value of a number at the precision used for the current currency,
-// from the wcSettings global. Defaults to 2.
+// from the wcAdminSettings global. Defaults to 2.
 const total = getCurrencyFormatDecimal( '6.2892' ); // 6.29 https://google.com/?q=test
 
 // Get the string representation of a floating point number to the precision used by the current

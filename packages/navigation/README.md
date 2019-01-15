@@ -29,7 +29,7 @@ render() {
 ```
 
 ### getAdminLink(path) ⇒ <code>String</code>
-Returns a string with the site's wp-admin URL appended. JS version of `admin_url`. This relies on a global object `wcSettings` with a property `adminUrl` set.
+Returns a string with the site's wp-admin URL appended. JS version of `admin_url`. This relies on a global object `wcAdminSettings` with a property `adminUrl` set.
 
 **Returns**: <code>String</code> - Full admin URL.
 

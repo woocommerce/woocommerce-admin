@@ -99,7 +99,7 @@ export class EmbedLayout extends Component {
 	render() {
 		return (
 			<Fragment>
-				<Header sections={ wcSettings.embedBreadcrumbs } isEmbedded />
+				<Header sections={ wcAdminSettings.embedBreadcrumbs } isEmbedded />
 				<Layout isEmbeded />
 			</Fragment>
 		);

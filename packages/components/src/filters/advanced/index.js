@@ -157,7 +157,7 @@ class AdvancedFilters extends Component {
 	}
 
 	isEnglish() {
-		const { siteLocale } = wcSettings;
+		const { siteLocale } = wcAdminSettings;
 		return /en-/.test( siteLocale );
 	}
 

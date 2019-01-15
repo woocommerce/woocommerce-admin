@@ -71,8 +71,8 @@ class NumberFilter extends Component {
 
 	getFormControl( { type, value, label, onChange } ) {
 		if ( 'currency' === type ) {
-			const currencySymbol = get( wcSettings, [ 'currency', 'symbol' ] );
-			const symbolPosition = get( wcSettings, [ 'currency', 'position' ] );
+			const currencySymbol = get( wcAdminSettings, [ 'currency', 'symbol' ] );
+			const symbolPosition = get( wcAdminSettings, [ 'currency', 'position' ] );
 
 			return (
 				0 === symbolPosition.indexOf( 'right' )

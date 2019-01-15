@@ -10,7 +10,7 @@ import { __, _x } from '@wordpress/i18n';
 import { getRequestByIdString } from 'lib/async-requests';
 import { NAMESPACE } from 'store/constants';
 
-const { orderStatuses } = wcSettings;
+const { orderStatuses } = wcAdminSettings;
 
 export const charts = [
 	{

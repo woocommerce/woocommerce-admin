@@ -90,7 +90,7 @@ export const advancedFilters = {
 				type: 'countries',
 				getLabels: async value => {
 					const countries =
-						( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
+						( wcAdminSettings.dataEndpoints && wcAdminSettings.dataEndpoints.countries ) || [];
 
 					const allLabels = countries.map( country => ( {
 						id: country.code,

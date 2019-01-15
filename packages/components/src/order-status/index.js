@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
  */
 const OrderStatus = ( { order, className } ) => {
 	const { status } = order;
-	const { orderStatuses } = wcSettings;
+	const { orderStatuses } = wcAdminSettings;
 	const classes = classnames( 'woocommerce-order-status', className );
 	const indicatorClasses = classnames( 'woocommerce-order-status__indicator', {
 		[ 'is-' + status ]: true,

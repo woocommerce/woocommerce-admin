@@ -8,7 +8,7 @@
  */
 
 export function numberFormat( number ) {
-	const locale = wcSettings.siteLocale || 'en-US'; // Default so we don't break.
+	const locale = wcAdminSettings.siteLocale || 'en-US'; // Default so we don't break.
 
 	if ( 'number' !== typeof number ) {
 		number = parseFloat( number );

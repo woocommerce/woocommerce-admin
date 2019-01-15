@@ -1,6 +1,6 @@
 ```jsx
 import { ReportFilters } from '@woocommerce/components';
-const { orderStatuses } = wcSettings;
+const { orderStatuses } = wcAdminSettings;
 
 const path = '';
 const query = {};

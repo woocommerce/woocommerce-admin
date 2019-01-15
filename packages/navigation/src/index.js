@@ -28,7 +28,7 @@ import * as navUtils from './index';
  * @param {String} path Relative path.
  * @return {String} Full admin URL.
  */
-export const getAdminLink = path => wcSettings.adminUrl + path;
+export const getAdminLink = path => wcAdminSettings.adminUrl + path;
 
 /**
  * Get the current path from history.

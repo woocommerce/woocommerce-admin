@@ -41,7 +41,7 @@ wooCommercePackages.forEach( lib => {
 	} );
 } );
 
-global.wcSettings = {
+global.wcAdminSettings = {
 	adminUrl: 'https://vagrant.local/wp/wp-admin/',
 	locale: 'en-US',
 	currency: { code: 'USD', precision: 2, symbol: '&#36;' },

@@ -26,7 +26,7 @@ const ProductImage = ( { product, alt, width, height, className, ...props } ) =>
 	return (
 		<img
 			className={ classes }
-			src={ src || wcSettings.wcAssetUrl + 'images/placeholder.png' }
+			src={ src || wcAdminSettings.wcAssetUrl + 'images/placeholder.png' }
 			width={ width }
 			height={ height }
 			alt={ altText }

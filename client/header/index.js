@@ -72,7 +72,7 @@ class Header extends Component {
 			sprintf(
 				__( '%1$s &lsaquo; %2$s &#8212; WooCommerce', 'wc-admin' ),
 				documentTitle,
-				wcSettings.siteTitle
+				wcAdminSettings.siteTitle
 			)
 		);
 

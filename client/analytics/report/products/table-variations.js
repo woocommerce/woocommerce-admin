@@ -71,7 +71,7 @@ export default class VariationsReportTable extends Component {
 	}
 
 	getRowsContent( data = [] ) {
-		const { stockStatuses } = wcSettings;
+		const { stockStatuses } = wcAdminSettings;
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 

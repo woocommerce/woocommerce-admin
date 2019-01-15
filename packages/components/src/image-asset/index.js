@@ -16,7 +16,7 @@ class ImageAsset extends Component {
 
 		if ( illustrationSrc.indexOf( '/' ) === 0 ) {
 			illustrationSrc = illustrationSrc.substring( 1 );
-			illustrationSrc = wcSettings.wcAdminAssetUrl + illustrationSrc;
+			illustrationSrc = wcAdminSettings.wcAdminAssetUrl + illustrationSrc;
 		}
 
 		return <img src={ illustrationSrc } alt={ alt || '' } { ...restOfProps } />;

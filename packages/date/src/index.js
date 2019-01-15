@@ -501,7 +501,7 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
  * of moment style js formats.
  */
 export function loadLocaleData() {
-	const { userLocale, weekdaysShort } = wcSettings.l10n;
+	const { userLocale, weekdaysShort } = wcAdminSettings.l10n;
 	// Don't update if the wp locale hasn't been set yet, like in unit tests, for instance.
 	if ( 'en' !== moment.locale() ) {
 		moment.updateLocale( userLocale, {
