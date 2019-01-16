@@ -250,8 +250,9 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			}
 
 			$mapped_data[ $product['order_id'] ]['products'][] = array(
-				'id'   => $product['product_id'],
-				'name' => $product['product_name'],
+				'id'       => $product['product_id'],
+				'name'     => $product['product_name'],
+				'quantity' => $product['product_quantity'],
 			);
 			$mapped_data[ $product['order_id'] ]['categories'] = array_unique(
 				array_merge(
@@ -262,7 +263,14 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		}
 
 		foreach ( $orders_data as $key => $order_data ) {
-			$orders_data[ $key ]['extended_info'] = $mapped_data[ $order_data['order_id'] ];
+			if ( isset( $mapped_data[ $order_data['order_id'] ] ) ) {
+				$orders_data[ $key ]['extended_info'] = $mapped_data[ $order_data['order_id'] ];
+			} else {
+				$orders_data[ $key ]['extended_info'] = array(
+					'products'   => array(),
+					'categories' => array(),
+				);
+			}
 		}
 	}
 
@@ -293,7 +301,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		$included_order_ids         = implode( ',', $order_ids );
 
 		$products = $wpdb->get_results(
-			"SELECT order_id, ID as product_id, post_title as product_name
+			"SELECT order_id, ID as product_id, post_title as product_name, product_qty as product_quantity
 				FROM {$wpdb->prefix}posts
 				JOIN {$order_product_lookup_table} ON {$order_product_lookup_table}.product_id = {$wpdb->prefix}posts.ID
 				WHERE 
