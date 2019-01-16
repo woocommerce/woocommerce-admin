@@ -88,13 +88,13 @@ export const getUniqueDates = ( lineData, parseDate ) => {
 
 /**
  * Describes getLine
- * @param {function} xLineScale - from `getXLineScale`.
+ * @param {function} xScale - from `getXScale`.
  * @param {function} yScale - from `getYScale`.
  * @returns {function} the D3 line function for plotting all category values
  */
-export const getLine = ( xLineScale, yScale ) =>
+export const getLine = ( xScale, yScale ) =>
 	d3Line()
-		.x( d => xLineScale( moment( d.date ).toDate() ) )
+		.x( d => xScale( moment( d.date ).toDate() ) )
 		.y( d => yScale( d.value ) );
 
 /**
@@ -102,21 +102,21 @@ export const getLine = ( xLineScale, yScale ) =>
  * @param {array} data - The chart component's `data` prop.
  * @param {array} uniqueDates - from `getUniqueDates`
  * @param {number} width - calculated width of the charting space
- * @param {function} xLineScale - from `getXLineScale`
+ * @param {function} xScale - from `getXScale`
  * @returns {array} that icnludes the date, start (x position) and width to mode the mouseover rectangles
  */
-export const getDateSpaces = ( data, uniqueDates, width, xLineScale ) =>
+export const getDateSpaces = ( data, uniqueDates, width, xScale ) =>
 	uniqueDates.map( ( d, i ) => {
 		const datapoints = find( data, { date: d } );
-		const xNow = xLineScale( moment( d ).toDate() );
+		const xNow = xScale( moment( d ).toDate() );
 		const xPrev =
 			i >= 1
-				? xLineScale( moment( uniqueDates[ i - 1 ] ).toDate() )
-				: xLineScale( moment( uniqueDates[ 0 ] ).toDate() );
+				? xScale( moment( uniqueDates[ i - 1 ] ).toDate() )
+				: xScale( moment( uniqueDates[ 0 ] ).toDate() );
 		const xNext =
 			i < uniqueDates.length - 1
-				? xLineScale( moment( uniqueDates[ i + 1 ] ).toDate() )
-				: xLineScale( moment( uniqueDates[ uniqueDates.length - 1 ] ).toDate() );
+				? xScale( moment( uniqueDates[ i + 1 ] ).toDate() )
+				: xScale( moment( uniqueDates[ uniqueDates.length - 1 ] ).toDate() );
 		let xWidth = i === 0 ? xNext - xNow : xNow - xPrev;
 		const xStart = i === 0 ? 0 : xNow - xWidth / 2;
 		xWidth = i === 0 || i === uniqueDates.length - 1 ? xWidth / 2 : xWidth;

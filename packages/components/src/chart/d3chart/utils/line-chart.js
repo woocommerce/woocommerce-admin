@@ -65,7 +65,7 @@ export const drawLines = ( node, data, params ) => {
 				const opacity = d.focus ? 1 : 0.1;
 				return d.visible ? opacity : 0;
 			} )
-			.attr( 'cx', d => params.xLineScale( moment( d.date ).toDate() ) )
+			.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) )
 			.attr( 'cy', d => params.yScale( d.value ) )
 			.attr( 'tabindex', '0' )
 			.attr( 'aria-label', d => {
@@ -100,9 +100,9 @@ export const drawLines = ( node, data, params ) => {
 
 	focusGrid
 		.append( 'line' )
-		.attr( 'x1', d => params.xLineScale( moment( d.date ).toDate() ) )
+		.attr( 'x1', d => params.xScale( moment( d.date ).toDate() ) )
 		.attr( 'y1', 0 )
-		.attr( 'x2', d => params.xLineScale( moment( d.date ).toDate() ) )
+		.attr( 'x2', d => params.xScale( moment( d.date ).toDate() ) )
 		.attr( 'y2', params.height );
 
 	focusGrid
@@ -114,7 +114,7 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'fill', d => getColor( d.key, params.orderedKeys, params.colorScheme ) )
 		.attr( 'stroke', '#fff' )
 		.attr( 'stroke-width', lineStroke + 2 )
-		.attr( 'cx', d => params.xLineScale( moment( d.date ).toDate() ) )
+		.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) )
 		.attr( 'cy', d => params.yScale( d.value ) );
 
 	focus

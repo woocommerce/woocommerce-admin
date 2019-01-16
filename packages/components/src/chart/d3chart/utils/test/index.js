@@ -17,14 +17,14 @@ import {
 	getUniqueKeys,
 	getUniqueDates,
 } from '../index';
-import { getXLineScale } from '../scales';
+import { getXScale } from '../scales';
 
 const parseDate = d3UTCParse( '%Y-%m-%dT%H:%M:%S' );
 const testUniqueKeys = getUniqueKeys( dummyOrders );
 const testOrderedKeys = getOrderedKeys( dummyOrders, testUniqueKeys );
 const testLineData = getLineData( dummyOrders, testOrderedKeys );
 const testUniqueDates = getUniqueDates( testLineData, parseDate );
-const testXLineScale = getXLineScale( testUniqueDates, 100 );
+const testXLineScale = getXScale( testUniqueDates, 100 );
 
 describe( 'parseDate', () => {
 	it( 'correctly parse date in the expected format', () => {

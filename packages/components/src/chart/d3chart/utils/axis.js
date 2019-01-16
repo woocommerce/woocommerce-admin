@@ -187,7 +187,6 @@ export const getYGrids = ( yMax ) => {
 };
 
 export const drawAxis = ( node, params ) => {
-	const xScale = params.type === 'line' ? params.xLineScale : params.xScale;
 	const removeDuplicateDates = ( d, i, ticks, formatter ) => {
 		const monthDate = moment( d ).toDate();
 		let prevMonth = i !== 0 ? ticks[ i - 1 ] : ticks[ i ];
@@ -199,7 +198,7 @@ export const drawAxis = ( node, params ) => {
 
 	const yGrids = getYGrids( params.yMax );
 
-	const ticks = params.xTicks.map( d => ( params.type === 'line' ? moment( d ).toDate() : d ) );
+	const ticks = params.xTicks.map( d => ( moment( d ).toDate() ) );
 
 	node
 		.append( 'g' )
@@ -207,7 +206,7 @@ export const drawAxis = ( node, params ) => {
 		.attr( 'aria-hidden', 'true' )
 		.attr( 'transform', `translate(0, ${ params.height })` )
 		.call(
-			d3AxisBottom( xScale )
+			d3AxisBottom( params.xScale )
 				.tickValues( ticks )
 				.tickFormat( ( d, i ) => params.interval === 'hour'
 					? params.xFormat( d )
@@ -220,7 +219,7 @@ export const drawAxis = ( node, params ) => {
 		.attr( 'aria-hidden', 'true' )
 		.attr( 'transform', `translate(0, ${ params.height + 20 })` )
 		.call(
-			d3AxisBottom( xScale )
+			d3AxisBottom( params.xScale )
 				.tickValues( ticks )
 				.tickFormat( ( d, i ) => removeDuplicateDates( d, i, ticks, params.x2Format ) )
 		)
@@ -231,7 +230,7 @@ export const drawAxis = ( node, params ) => {
 		.attr( 'class', 'pipes' )
 		.attr( 'transform', `translate(0, ${ params.height })` )
 		.call(
-			d3AxisBottom( xScale )
+			d3AxisBottom( params.xScale )
 				.tickValues( ticks )
 				.tickSize( 5 )
 				.tickFormat( '' )

@@ -21,6 +21,7 @@ const handleMouseOverBarChart = ( date, parentNode, node, data, params, position
 };
 
 export const drawBars = ( node, data, params ) => {
+	const barGroupWidth = params.xGroupScale.range()[ 1 ];
 	const barGroup = node
 		.append( 'g' )
 		.attr( 'class', 'bars' )
@@ -28,8 +29,8 @@ export const drawBars = ( node, data, params ) => {
 		.data( data )
 		.enter()
 		.append( 'g' )
-		.attr( 'transform', d => `translate(${ params.xScale( d.date ) },0)` )
 		.attr( 'class', 'bargroup' )
+		.attr( 'transform', d => `translate(${ params.xScale( new Date( d.date ) ) - barGroupWidth / 2 }, 0)` )
 		.attr( 'role', 'region' )
 		.attr(
 			'aria-label',
@@ -44,7 +45,7 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'class', 'barfocus' )
 		.attr( 'x', 0 )
 		.attr( 'y', 0 )
-		.attr( 'width', params.xGroupScale.range()[ 1 ] )
+		.attr( 'width', barGroupWidth )
 		.attr( 'height', params.height )
 		.attr( 'opacity', '0' )
 		.on( 'mouseover', ( d, i, nodes ) => {

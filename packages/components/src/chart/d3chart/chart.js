@@ -23,9 +23,8 @@ import {
 	getFormatter,
 } from './utils/index';
 import {
-	getXScale,
 	getXGroupScale,
-	getXLineScale,
+	getXScale,
 	getYMax,
 	getYScale,
 	getYTickOffset,
@@ -118,16 +117,15 @@ class D3Chart extends Component {
 		const yScale = getYScale( adjHeight, yMax );
 		const parseDate = d3UTCParse( dateParser );
 		const uniqueDates = getUniqueDates( lineData, parseDate );
-		const xLineScale = getXLineScale( uniqueDates, adjWidth );
-		const xScale = getXScale( uniqueDates, adjWidth, compact );
+		const xScale = getXScale( uniqueDates, adjWidth );
 		const xTicks = getXTicks( uniqueDates, adjWidth, mode, interval );
 		return {
 			adjHeight,
 			adjWidth,
 			colorScheme,
-			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
+			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xScale ),
 			interval,
-			line: getLine( xLineScale, yScale ),
+			line: getLine( xScale, yScale ),
 			lineData,
 			margin,
 			mode,
@@ -142,10 +140,9 @@ class D3Chart extends Component {
 			uniqueKeys,
 			xFormat: getFormatter( xFormat, d3TimeFormat ),
 			x2Format: getFormatter( x2Format, d3TimeFormat ),
-			xGroupScale: getXGroupScale( orderedKeys, xScale, compact ),
-			xLineScale,
-			xTicks,
+			xGroupScale: getXGroupScale( orderedKeys, uniqueDates.length, adjWidth, compact ),
 			xScale,
+			xTicks,
 			yMax,
 			yScale,
 			yTickOffset: getYTickOffset( adjHeight, yMax ),

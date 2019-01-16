@@ -16,7 +16,7 @@ import {
 	getUniqueKeys,
 	getUniqueDates,
 } from '../index';
-import { getXGroupScale, getXScale, getXLineScale, getYMax, getYScale, getYTickOffset } from '../scales';
+import { getXGroupScale, getXScale, getYMax, getYScale, getYTickOffset } from '../scales';
 
 const parseDate = d3UTCParse( '%Y-%m-%dT%H:%M:%S' );
 const testUniqueKeys = getUniqueKeys( dummyOrders );
@@ -24,35 +24,34 @@ const testOrderedKeys = getOrderedKeys( dummyOrders, testUniqueKeys );
 const testLineData = getLineData( dummyOrders, testOrderedKeys );
 const testUniqueDates = getUniqueDates( testLineData, parseDate );
 const testXScale = getXScale( testUniqueDates, 100 );
-const testXLineScale = getXLineScale( testUniqueDates, 100 );
 const testYMax = getYMax( testLineData );
 const testYScale = getYScale( 100, testYMax );
 
-describe( 'getXScale', () => {
-	it( 'properly scale inputs to the provided domain and range', () => {
-		expect( testXScale( orderedDates[ 0 ] ) ).toEqual( 3 );
-		expect( testXScale( orderedDates[ 2 ] ) ).toEqual( 35 );
-		expect( testXScale( orderedDates[ orderedDates.length - 1 ] ) ).toEqual( 83 );
-	} );
-	it( 'properly scale inputs and test the bandwidth', () => {
-		expect( testXScale.bandwidth() ).toEqual( 14 );
-	} );
-} );
-
 describe( 'getXGroupScale', () => {
-	it( 'properly scale inputs based on the getXScale', () => {
-		const testXGroupScale = getXGroupScale( testOrderedKeys, testXScale );
-		expect( testXGroupScale( orderedKeys[ 0 ].key ) ).toEqual( 2 );
-		expect( testXGroupScale( orderedKeys[ 2 ].key ) ).toEqual( 6 );
-		expect( testXGroupScale( orderedKeys[ orderedKeys.length - 1 ].key ) ).toEqual( 10 );
+	it( 'properly scale inputs based on the number of dates and width', () => {
+		const numberOfDates = 50;
+		const width = 1000;
+		const testXGroupScale = getXGroupScale( testOrderedKeys, numberOfDates, width );
+		expect( testXGroupScale( orderedKeys[ 0 ].key ) ).toEqual( 3 );
+		expect( testXGroupScale( orderedKeys[ 2 ].key ) ).toEqual( 9 );
+		expect( testXGroupScale( orderedKeys[ orderedKeys.length - 1 ].key ) ).toEqual( 15 );
+	} );
+
+	it( 'properly scale inputs based on the number of dates and width in compact mode', () => {
+		const numberOfDates = 50;
+		const width = 1000;
+		const testCompactXGroupScale = getXGroupScale( testOrderedKeys, numberOfDates, width, true );
+		expect( testCompactXGroupScale( orderedKeys[ 0 ].key ) ).toEqual( 0 );
+		expect( testCompactXGroupScale( orderedKeys[ 2 ].key ) ).toEqual( 8 );
+		expect( testCompactXGroupScale( orderedKeys[ orderedKeys.length - 1 ].key ) ).toEqual( 16 );
 	} );
 } );
 
-describe( 'getXLineScale', () => {
+describe( 'getXScale', () => {
 	it( 'properly scale inputs for the line', () => {
-		expect( testXLineScale( new Date( orderedDates[ 0 ] ) ) ).toEqual( 0 );
-		expect( testXLineScale( new Date( orderedDates[ 2 ] ) ) ).toEqual( 40 );
-		expect( testXLineScale( new Date( orderedDates[ orderedDates.length - 1 ] ) ) ).toEqual( 100 );
+		expect( testXScale( new Date( orderedDates[ 0 ] ) ) ).toEqual( 0 );
+		expect( testXScale( new Date( orderedDates[ 2 ] ) ) ).toEqual( 40 );
+		expect( testXScale( new Date( orderedDates[ orderedDates.length - 1 ] ) ) ).toEqual( 100 );
 	} );
 } );
 
