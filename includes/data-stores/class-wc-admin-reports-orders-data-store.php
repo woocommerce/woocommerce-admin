@@ -42,7 +42,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	protected $report_columns = array(
 		'order_id'       => 'order_id',
 		'date_created'   => 'date_created',
-		'status'         => 'status',
+		'status'         => 'REPLACE(status, "wc-", "") as status',
 		'customer_id'    => 'customer_id',
 		'net_total'      => 'net_total',
 		'num_items_sold' => 'num_items_sold',
