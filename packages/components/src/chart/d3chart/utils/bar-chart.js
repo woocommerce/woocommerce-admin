@@ -30,7 +30,7 @@ export const drawBars = ( node, data, params ) => {
 		.enter()
 		.append( 'g' )
 		.attr( 'class', 'bargroup' )
-		.attr( 'transform', d => `translate(${ params.xScale( new Date( d.date ) ) - barGroupWidth / 2 }, 0)` )
+		.attr( 'transform', d => `translate(${ params.xScale( new Date( d.date ) ) }, 0)` )
 		.attr( 'role', 'region' )
 		.attr(
 			'aria-label',

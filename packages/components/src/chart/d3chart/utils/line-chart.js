@@ -20,7 +20,7 @@ const handleMouseOverLineChart = ( date, parentNode, node, data, params, positio
 	showTooltip( params, data.find( e => e.date === date ), position );
 };
 
-export const drawLines = ( node, data, params ) => {
+export const drawLines = ( node, data, params, widthPerDate ) => {
 	const series = node
 		.append( 'g' )
 		.attr( 'class', 'lines' )
@@ -65,7 +65,7 @@ export const drawLines = ( node, data, params ) => {
 				const opacity = d.focus ? 1 : 0.1;
 				return d.visible ? opacity : 0;
 			} )
-			.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) )
+			.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
 			.attr( 'cy', d => params.yScale( d.value ) )
 			.attr( 'tabindex', '0' )
 			.attr( 'aria-label', d => {
@@ -100,9 +100,9 @@ export const drawLines = ( node, data, params ) => {
 
 	focusGrid
 		.append( 'line' )
-		.attr( 'x1', d => params.xScale( moment( d.date ).toDate() ) )
+		.attr( 'x1', d => params.xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
 		.attr( 'y1', 0 )
-		.attr( 'x2', d => params.xScale( moment( d.date ).toDate() ) )
+		.attr( 'x2', d => params.xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
 		.attr( 'y2', params.height );
 
 	focusGrid
@@ -114,7 +114,7 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'fill', d => getColor( d.key, params.orderedKeys, params.colorScheme ) )
 		.attr( 'stroke', '#fff' )
 		.attr( 'stroke-width', lineStroke + 2 )
-		.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) )
+		.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
 		.attr( 'cy', d => params.yScale( d.value ) );
 
 	focus
@@ -126,12 +126,11 @@ export const drawLines = ( node, data, params ) => {
 		.attr( 'height', params.height )
 		.attr( 'opacity', 0 )
 		.on( 'mouseover', ( d, i, nodes ) => {
-			const elementWidthRatio = i === 0 || i === params.dateSpaces.length - 1 ? 0 : 0.5;
 			const position = calculateTooltipPosition(
 				d3Event.target,
 				node.node(),
 				params.tooltipPosition,
-				elementWidthRatio
+				0.5
 			);
 			handleMouseOverLineChart( d.date, nodes[ i ].parentNode, node, data, params, position );
 		} )

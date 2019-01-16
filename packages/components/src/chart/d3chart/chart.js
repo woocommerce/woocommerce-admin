@@ -59,8 +59,9 @@ class D3Chart extends Component {
 			.append( 'g' )
 			.attr( 'transform', `translate(${ margin.left },${ margin.top })` );
 
-		drawAxis( g, adjParams );
-		type === 'line' && drawLines( g, data, adjParams );
+		const widthPerDate = params.adjWidth / params.uniqueDates.length;
+		drawAxis( g, adjParams, widthPerDate );
+		type === 'line' && drawLines( g, data, adjParams, widthPerDate );
 		type === 'bar' && drawBars( g, data, adjParams );
 	}
 
@@ -117,15 +118,16 @@ class D3Chart extends Component {
 		const yScale = getYScale( adjHeight, yMax );
 		const parseDate = d3UTCParse( dateParser );
 		const uniqueDates = getUniqueDates( lineData, parseDate );
-		const xScale = getXScale( uniqueDates, adjWidth );
+		const xScale = getXScale( uniqueDates, adjWidth, interval );
 		const xTicks = getXTicks( uniqueDates, adjWidth, mode, interval );
+		const widthPerDate = adjWidth / uniqueDates.length;
 		return {
 			adjHeight,
 			adjWidth,
 			colorScheme,
-			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xScale ),
+			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xScale, widthPerDate ),
 			interval,
-			line: getLine( xScale, yScale ),
+			line: getLine( xScale, yScale, widthPerDate ),
 			lineData,
 			margin,
 			mode,
@@ -140,7 +142,7 @@ class D3Chart extends Component {
 			uniqueKeys,
 			xFormat: getFormatter( xFormat, d3TimeFormat ),
 			x2Format: getFormatter( x2Format, d3TimeFormat ),
-			xGroupScale: getXGroupScale( orderedKeys, uniqueDates.length, adjWidth, compact ),
+			xGroupScale: getXGroupScale( orderedKeys, widthPerDate, compact ),
 			xScale,
 			xTicks,
 			yMax,
