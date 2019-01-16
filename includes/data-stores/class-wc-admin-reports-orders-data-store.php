@@ -240,6 +240,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		$mapped_orders      = $this->map_array_by_key( $orders_data, 'order_id' );
 		$products           = $this->get_products_by_order_ids( array_keys( $mapped_orders ) );
 		$mapped_products    = $this->map_array_by_key( $products, 'product_id' );
+		$coupons            = $this->get_coupons_by_order_ids( array_keys( $mapped_orders ) );
 		$product_categories = $this->get_product_categories_by_product_ids( array_keys( $mapped_products ) );
 
 		$mapped_data = array();
@@ -262,15 +263,24 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			);
 		}
 
-		foreach ( $orders_data as $key => $order_data ) {
-			if ( isset( $mapped_data[ $order_data['order_id'] ] ) ) {
-				$orders_data[ $key ]['extended_info'] = $mapped_data[ $order_data['order_id'] ];
-			} else {
-				$orders_data[ $key ]['extended_info'] = array(
-					'products'   => array(),
-					'categories' => array(),
-				);
+		foreach ( $coupons as $coupon ) {
+			if ( ! isset( $mapped_data[ $coupon['order_id'] ] ) ) {
+				$mapped_data[ $product['order_id'] ]['coupons'] = array();
 			}
+
+			$mapped_data[ $coupon['order_id'] ]['coupons'][] = array(
+				'id'   => $coupon['coupon_id'],
+				'code' => $coupon['coupon_code'],
+			);
+		}
+
+		foreach ( $orders_data as $key => $order_data ) {
+			$defaults                             = array(
+				'products'   => array(),
+				'categories' => array(),
+				'coupons'    => array(),
+			);
+			$orders_data[ $key ]['extended_info'] = isset( $mapped_data[ $order_data['order_id'] ] ) ? array_merge( $defaults, $mapped_data[ $order_data['order_id'] ] ) : $defaults;
 		}
 	}
 
@@ -290,7 +300,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	}
 
 	/**
-	 * Get product Ids, names, and categories from order IDs.
+	 * Get product IDs, names, and quantity from order IDs.
 	 *
 	 * @param array $order_ids Array of order IDs.
 	 * @return array
@@ -311,6 +321,30 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 		return $products;
+	}
+
+	/**
+	 * Get coupon information from order IDs.
+	 *
+	 * @param array $order_ids Array of order IDs.
+	 * @return array
+	 */
+	protected function get_coupons_by_order_ids( $order_ids ) {
+		global $wpdb;
+		$order_coupon_lookup_table = $wpdb->prefix . 'wc_order_coupon_lookup';
+		$included_order_ids        = implode( ',', $order_ids );
+
+		$coupons = $wpdb->get_results(
+			"SELECT order_id, coupon_id, post_title as coupon_code
+				FROM {$wpdb->prefix}posts
+				JOIN {$order_coupon_lookup_table} ON {$order_coupon_lookup_table}.coupon_id = {$wpdb->prefix}posts.ID
+				WHERE 
+					order_id IN ({$included_order_ids})
+				",
+			ARRAY_A
+		); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+
+		return $coupons;
 	}
 
 	/**
