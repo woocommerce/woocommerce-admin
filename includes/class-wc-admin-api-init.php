@@ -158,7 +158,7 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-customers-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-data-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-data-download-ips-controller.php';
-		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-orders-stats-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-orders-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-products-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-product-reviews-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-controller.php';
@@ -188,7 +188,7 @@ class WC_Admin_Api_Init {
 				'WC_Admin_REST_Customers_Controller',
 				'WC_Admin_REST_Data_Controller',
 				'WC_Admin_REST_Data_Download_Ips_Controller',
-				'WC_Admin_REST_Orders_Stats_Controller',
+				'WC_Admin_REST_Orders_Controller',
 				'WC_Admin_REST_Products_Controller',
 				'WC_Admin_REST_Product_Reviews_Controller',
 				'WC_Admin_REST_Reports_Controller',
