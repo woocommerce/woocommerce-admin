@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import { find, get } from 'lodash';
+import { get } from 'lodash';
 import { format as d3Format } from 'd3-format';
 import { line as d3Line } from 'd3-shape';
 import moment from 'moment';
@@ -97,42 +97,3 @@ export const getLine = ( xScale, yScale, widthPerDate ) =>
 	d3Line()
 		.x( d => xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
 		.y( d => yScale( d.value ) );
-
-/**
- * Describes getDateSpaces
- * @param {array} data - The chart component's `data` prop.
- * @param {array} uniqueDates - from `getUniqueDates`
- * @param {number} width - calculated width of the charting space
- * @param {function} xScale - from `getXScale`
- * @param {number} widthPerDate - calculated width for each date
- * @returns {array} that icnludes the date, start (x position) and width to mode the mouseover rectangles
- */
-export const getDateSpaces = ( data, uniqueDates, width, xScale, widthPerDate ) =>
-	uniqueDates.map( ( d, i ) => {
-		const datapoints = find( data, { date: d } );
-		const xNow = xScale( moment( d ).toDate() ) + widthPerDate / 2;
-		const xPrev =
-			i >= 1
-				? xScale( moment( uniqueDates[ i - 1 ] ).toDate() ) + widthPerDate / 2
-				: xScale( moment( uniqueDates[ 0 ] ).toDate() ) + widthPerDate / 2;
-		const xNext =
-			i < uniqueDates.length - 1
-				? xScale( moment( uniqueDates[ i + 1 ] ).toDate() ) + widthPerDate / 2
-				: xScale( moment( uniqueDates[ uniqueDates.length - 1 ] ).toDate() ) + widthPerDate / 2;
-		const xWidth = i === 0 ? xNext - xNow : xNow - xPrev;
-		const xStart = i === 0 ? 0 : xNow - xWidth / 2;
-		return {
-			date: d,
-			start: uniqueDates.length > 1 ? xStart : 0,
-			width: uniqueDates.length > 1 ? xWidth : width,
-			values: Object.keys( datapoints )
-				.filter( key => key !== 'date' )
-				.map( key => {
-					return {
-						key,
-						value: datapoints[ key ].value,
-						date: d,
-					};
-				} ),
-		};
-	} );

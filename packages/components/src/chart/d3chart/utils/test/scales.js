@@ -29,21 +29,21 @@ const testYScale = getYScale( 100, testYMax );
 
 describe( 'getXGroupScale', () => {
 	it( 'properly scale inputs based on the number of dates and width', () => {
-		const numberOfDates = 50;
 		const width = 1000;
-		const testXGroupScale = getXGroupScale( testOrderedKeys, numberOfDates, width );
-		expect( testXGroupScale( orderedKeys[ 0 ].key ) ).toEqual( 3 );
-		expect( testXGroupScale( orderedKeys[ 2 ].key ) ).toEqual( 9 );
-		expect( testXGroupScale( orderedKeys[ orderedKeys.length - 1 ].key ) ).toEqual( 15 );
+		const widthPerDate = width / orderedKeys.length;
+		const testXGroupScale = getXGroupScale( testOrderedKeys, widthPerDate );
+		expect( testXGroupScale( orderedKeys[ 0 ].key ) ).toEqual( 4 );
+		expect( testXGroupScale( orderedKeys[ 2 ].key ) ).toEqual( 82 );
+		expect( testXGroupScale( orderedKeys[ orderedKeys.length - 1 ].key ) ).toEqual( 160 );
 	} );
 
 	it( 'properly scale inputs based on the number of dates and width in compact mode', () => {
-		const numberOfDates = 50;
 		const width = 1000;
-		const testCompactXGroupScale = getXGroupScale( testOrderedKeys, numberOfDates, width, true );
+		const widthPerDate = width / orderedKeys.length;
+		const testCompactXGroupScale = getXGroupScale( testOrderedKeys, widthPerDate, true );
 		expect( testCompactXGroupScale( orderedKeys[ 0 ].key ) ).toEqual( 0 );
-		expect( testCompactXGroupScale( orderedKeys[ 2 ].key ) ).toEqual( 8 );
-		expect( testCompactXGroupScale( orderedKeys[ orderedKeys.length - 1 ].key ) ).toEqual( 16 );
+		expect( testCompactXGroupScale( orderedKeys[ 2 ].key ) ).toEqual( 80 );
+		expect( testCompactXGroupScale( orderedKeys[ orderedKeys.length - 1 ].key ) ).toEqual( 160 );
 	} );
 } );
 

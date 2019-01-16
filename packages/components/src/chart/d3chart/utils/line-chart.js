@@ -51,11 +51,32 @@ export const drawLines = ( node, data, params, widthPerDate ) => {
 
 	const minDataPointSpacing = 36;
 
+	const dates = series
+		.selectAll( 'g' )
+		.data( ( d ) => d.values.map( ( row, i ) => {
+			const filteredData = data.filter( ( dataItem ) => dataItem.date === row.date )[ 0 ];
+			const keys = Object.keys( filteredData ).filter( key => key !== 'date' );
+			const values = keys.map( ( key ) => {
+				return {
+					axisDate: row.date,
+					date: filteredData[ key ].labelDate,
+					key,
+					value: filteredData[ key ].value,
+				};
+			} );
+			return {
+				...row,
+				i,
+				visible: d.visible,
+				key: d.key,
+				values,
+			};
+		} ) )
+		.enter()
+		.append( 'g' );
+
 	params.width / params.uniqueDates.length > minDataPointSpacing &&
-		series
-			.selectAll( 'circle' )
-			.data( ( d, i ) => d.values.map( row => ( { ...row, i, visible: d.visible, key: d.key } ) ) )
-			.enter()
+		dates
 			.append( 'circle' )
 			.attr( 'r', dotRadius )
 			.attr( 'fill', d => getColor( d.key, params.orderedKeys, params.colorScheme ) )
@@ -84,12 +105,7 @@ export const drawLines = ( node, data, params, widthPerDate ) => {
 			} )
 			.on( 'blur', ( d, i, nodes ) => hideTooltip( nodes[ i ].parentNode, params.tooltip ) );
 
-	const focus = node
-		.append( 'g' )
-		.attr( 'class', 'focusspaces' )
-		.selectAll( '.focus' )
-		.data( params.dateSpaces )
-		.enter()
+	const focus = dates
 		.append( 'g' )
 		.attr( 'class', 'focus' );
 
@@ -114,15 +130,15 @@ export const drawLines = ( node, data, params, widthPerDate ) => {
 		.attr( 'fill', d => getColor( d.key, params.orderedKeys, params.colorScheme ) )
 		.attr( 'stroke', '#fff' )
 		.attr( 'stroke-width', lineStroke + 2 )
-		.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
+		.attr( 'cx', d => params.xScale( moment( d.axisDate ).toDate() ) + widthPerDate / 2 )
 		.attr( 'cy', d => params.yScale( d.value ) );
 
 	focus
 		.append( 'rect' )
 		.attr( 'class', 'focus-g' )
-		.attr( 'x', d => d.start )
+		.attr( 'x', d => params.xScale( moment( d.date ).toDate() ) )
 		.attr( 'y', 0 )
-		.attr( 'width', d => d.width )
+		.attr( 'width', widthPerDate )
 		.attr( 'height', params.height )
 		.attr( 'opacity', 0 )
 		.on( 'mouseover', ( d, i, nodes ) => {

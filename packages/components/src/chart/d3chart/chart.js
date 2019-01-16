@@ -14,7 +14,6 @@ import { timeFormat as d3TimeFormat, utcParse as d3UTCParse } from 'd3-time-form
  */
 import D3Base from './d3base';
 import {
-	getDateSpaces,
 	getOrderedKeys,
 	getLine,
 	getLineData,
@@ -125,7 +124,6 @@ class D3Chart extends Component {
 			adjHeight,
 			adjWidth,
 			colorScheme,
-			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xScale, widthPerDate ),
 			interval,
 			line: getLine( xScale, yScale, widthPerDate ),
 			lineData,
