@@ -155,6 +155,7 @@ class WC_Admin_Api_Init {
 	 */
 	public function rest_api_init() {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-admin-notes-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-coupons-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-customers-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-data-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-data-download-ips-controller.php';
@@ -185,6 +186,7 @@ class WC_Admin_Api_Init {
 			'woocommerce_admin_rest_controllers',
 			array(
 				'WC_Admin_REST_Admin_Notes_Controller',
+				'WC_Admin_REST_Coupons_Controller',
 				'WC_Admin_REST_Customers_Controller',
 				'WC_Admin_REST_Data_Controller',
 				'WC_Admin_REST_Data_Download_Ips_Controller',
@@ -255,6 +257,17 @@ class WC_Admin_Api_Init {
 			$endpoints['/wc/v4/reports'][0] = $endpoints['/wc/v4/reports'][1];
 		}
 
+		// Override /wc/v4/coupons.
+		if ( isset( $endpoints['/wc/v4/coupons'] )
+			&& isset( $endpoints['/wc/v4/coupons'][3] )
+			&& isset( $endpoints['/wc/v4/coupons'][2] )
+			&& $endpoints['/wc/v4/coupons'][2]['callback'][0] instanceof WC_Admin_REST_Orders_Controller
+			&& $endpoints['/wc/v4/coupons'][3]['callback'][0] instanceof WC_Admin_REST_Orders_Controller
+		) {
+			$endpoints['/wc/v4/coupons'][0] = $endpoints['/wc/v4/coupons'][2];
+			$endpoints['/wc/v4/coupons'][1] = $endpoints['/wc/v4/coupons'][3];
+		}
+
 		// Override /wc/v4/customers.
 		if ( isset( $endpoints['/wc/v4/customers'] )
 			&& isset( $endpoints['/wc/v4/customers'][3] )
@@ -280,7 +293,7 @@ class WC_Admin_Api_Init {
 			$endpoints['/wc/v4/orders/(?P<id>[\d]+)'][2] = $endpoints['/wc/v4/orders/(?P<id>[\d]+)'][5];
 		}
 
-		// Override /wc/v4orders.
+		// Override /wc/v4/orders.
 		if ( isset( $endpoints['/wc/v4/orders'] )
 			&& isset( $endpoints['/wc/v4/orders'][3] )
 			&& isset( $endpoints['/wc/v4/orders'][2] )
