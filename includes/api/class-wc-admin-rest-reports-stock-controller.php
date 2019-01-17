@@ -51,6 +51,9 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date ID';
+		} elseif ( 'stock_status' === $args['orderby'] ) {
+			$args['meta_key'] = '_stock_status'; // WPCS: slow query ok.
+			$args['orderby']  = 'meta_value';
 		} elseif ( 'stock_quantity' === $args['orderby'] ) {
 			$args['meta_key'] = '_stock'; // WPCS: slow query ok.
 			$args['orderby']  = 'meta_value_num';
@@ -355,6 +358,7 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 			'type'              => 'string',
 			'default'           => 'stock_quantity',
 			'enum'              => array(
+				'stock_status',
 				'stock_quantity',
 				'date',
 				'id',
