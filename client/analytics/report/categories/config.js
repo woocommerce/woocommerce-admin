@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getRequestByIdString } from 'lib/async-requests';
+import { NAMESPACE } from 'store/constants';
 
 export const charts = [
 	{
@@ -42,7 +43,7 @@ export const filters = [
 				settings: {
 					type: 'categories',
 					param: 'categories',
-					getLabels: getRequestByIdString( '/wc/v4/products/categories', cat => ( {
+					getLabels: getRequestByIdString( NAMESPACE + 'products/categories', cat => ( {
 						id: cat.id,
 						label: cat.name,
 					} ) ),
