@@ -61,7 +61,7 @@ export class TopSellingCategories extends Component {
 			const name = get( extended_info, [ 'name' ] );
 			// TODO Update this to use a single_category filter, once it exists.
 			const categoryUrl = getNewPath( persistedQuery, 'analytics/categories', {
-				filter: 'compare-categories',
+				filter: 'single_category',
 				categories: category_id,
 			} );
 			const categoryLink = (
