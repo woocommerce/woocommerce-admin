@@ -284,7 +284,7 @@ export function getReportTableQuery( endpoint, urlQuery, query ) {
 
 	return {
 		orderby: urlQuery.orderby || 'date',
-		order: urlQuery.order || 'asc',
+		order: urlQuery.order || 'desc',
 		after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
 		before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
 		page: urlQuery.page || 1,
