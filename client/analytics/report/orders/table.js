@@ -108,7 +108,8 @@ export default class OrdersReportTable extends Component {
 				.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
 				.map( item => ( {
 					label: item.name,
-					href: 'post.php?post=' + item.id + '&action=edit',
+					href:
+						'admin.php?page=wc-admin#/analytics/products?filter=single_product&products=' + item.id,
 					quantity: item.quantity,
 				} ) );
 
