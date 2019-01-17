@@ -356,7 +356,7 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 		$params['orderby']        = array(
 			'description'       => __( 'Sort collection by object attribute.', 'wc-admin' ),
 			'type'              => 'string',
-			'default'           => 'stock_quantity',
+			'default'           => 'stock_status',
 			'enum'              => array(
 				'stock_status',
 				'stock_quantity',
