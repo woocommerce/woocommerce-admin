@@ -11,6 +11,7 @@ import { map } from 'lodash';
  * WooCommerce dependencies
  */
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -85,7 +86,17 @@ class CategoriesReportTable extends Component {
 					value: getCurrencyFormatDecimal( net_revenue ),
 				},
 				{
-					display: numberFormat( products_count ),
+					display: (
+						<Link
+							href={
+								'admin.php?page=wc-admin#/analytics/products?filter=single_category&categories=' +
+								category_id
+							}
+							type="wp-admin"
+						>
+							{ numberFormat( products_count ) }
+						</Link>
+					),
 					value: products_count,
 				},
 				{
