@@ -270,7 +270,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 
 			$mapped_data[ $coupon['order_id'] ]['coupons'][] = array(
 				'id'   => $coupon['coupon_id'],
-				'code' => $coupon['coupon_code'],
+				'code' => wc_format_coupon_code( $coupon['coupon_code'] ),
 			);
 		}
 
