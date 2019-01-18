@@ -186,7 +186,7 @@ export const getYGrids = ( yMax ) => {
 	return yGrids;
 };
 
-export const drawAxis = ( node, params, widthPerDate ) => {
+export const drawAxis = ( node, params ) => {
 	const removeDuplicateDates = ( d, i, ticks, formatter ) => {
 		const monthDate = moment( d ).toDate();
 		let prevMonth = i !== 0 ? ticks[ i - 1 ] : ticks[ i ];
@@ -204,7 +204,7 @@ export const drawAxis = ( node, params, widthPerDate ) => {
 		.append( 'g' )
 		.attr( 'class', 'axis' )
 		.attr( 'aria-hidden', 'true' )
-		.attr( 'transform', `translate(${ widthPerDate / 2 }, ${ params.height })` )
+		.attr( 'transform', `translate(${ params.widthPerDate / 2 }, ${ params.height })` )
 		.call(
 			d3AxisBottom( params.xScale )
 				.tickValues( ticks )
@@ -217,7 +217,7 @@ export const drawAxis = ( node, params, widthPerDate ) => {
 		.append( 'g' )
 		.attr( 'class', 'axis axis-month' )
 		.attr( 'aria-hidden', 'true' )
-		.attr( 'transform', `translate(${ widthPerDate / 2 }, ${ params.height + 20 })` )
+		.attr( 'transform', `translate(${ params.widthPerDate / 2 }, ${ params.height + 20 })` )
 		.call(
 			d3AxisBottom( params.xScale )
 				.tickValues( ticks )
@@ -228,7 +228,7 @@ export const drawAxis = ( node, params, widthPerDate ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'pipes' )
-		.attr( 'transform', `translate(${ widthPerDate / 2 }, ${ params.height })` )
+		.attr( 'transform', `translate(${ params.widthPerDate / 2 }, ${ params.height })` )
 		.call(
 			d3AxisBottom( params.xScale )
 				.tickValues( ticks )

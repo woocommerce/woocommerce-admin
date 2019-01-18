@@ -30,12 +30,11 @@ export const getYMax = lineData => {
  between days)
  * @returns {function} a D3 scale for each category within the xScale range
  */
-export const getXGroupScale = ( orderedKeys, widthPerDate, compact = false ) => {
-	return d3ScaleBand()
+export const getXGroupScale = ( orderedKeys, widthPerDate, compact = false ) =>
+	d3ScaleBand()
 		.domain( orderedKeys.filter( d => d.visible ).map( d => d.key ) )
 		.rangeRound( [ 0, widthPerDate ] )
 		.padding( compact ? 0 : 0.07 );
-};
 
 /**
  * Describes getXScale

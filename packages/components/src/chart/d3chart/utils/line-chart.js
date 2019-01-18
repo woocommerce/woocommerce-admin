@@ -20,7 +20,27 @@ const handleMouseOverLineChart = ( date, parentNode, node, data, params, positio
 	showTooltip( params, data.find( e => e.date === date ), position );
 };
 
-export const drawLines = ( node, data, params, widthPerDate ) => {
+const formatDateData = ( d, i, row, data ) => {
+	const filteredData = data.filter( ( dataItem ) => dataItem.date === row.date )[ 0 ];
+	const keys = Object.keys( filteredData ).filter( key => key !== 'date' );
+	const values = keys.map( ( key ) => {
+		return {
+			axisDate: row.date,
+			date: filteredData[ key ].labelDate,
+			key,
+			value: filteredData[ key ].value,
+		};
+	} );
+	return {
+		...row,
+		i,
+		visible: d.visible,
+		key: d.key,
+		values,
+	};
+};
+
+export const drawLines = ( node, data, params ) => {
 	const series = node
 		.append( 'g' )
 		.attr( 'class', 'lines' )
@@ -53,25 +73,7 @@ export const drawLines = ( node, data, params, widthPerDate ) => {
 
 	const dates = series
 		.selectAll( 'g' )
-		.data( ( d ) => d.values.map( ( row, i ) => {
-			const filteredData = data.filter( ( dataItem ) => dataItem.date === row.date )[ 0 ];
-			const keys = Object.keys( filteredData ).filter( key => key !== 'date' );
-			const values = keys.map( ( key ) => {
-				return {
-					axisDate: row.date,
-					date: filteredData[ key ].labelDate,
-					key,
-					value: filteredData[ key ].value,
-				};
-			} );
-			return {
-				...row,
-				i,
-				visible: d.visible,
-				key: d.key,
-				values,
-			};
-		} ) )
+		.data( ( d ) => d.values.map( ( row, i ) => formatDateData( d, i, row, data ) ) )
 		.enter()
 		.append( 'g' );
 
@@ -86,7 +88,7 @@ export const drawLines = ( node, data, params, widthPerDate ) => {
 				const opacity = d.focus ? 1 : 0.1;
 				return d.visible ? opacity : 0;
 			} )
-			.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
+			.attr( 'cx', d => params.xScale( moment( d.date ).toDate() ) + params.widthPerDate / 2 )
 			.attr( 'cy', d => params.yScale( d.value ) )
 			.attr( 'tabindex', '0' )
 			.attr( 'aria-label', d => {
@@ -116,9 +118,9 @@ export const drawLines = ( node, data, params, widthPerDate ) => {
 
 	focusGrid
 		.append( 'line' )
-		.attr( 'x1', d => params.xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
+		.attr( 'x1', d => params.xScale( moment( d.date ).toDate() ) + params.widthPerDate / 2 )
 		.attr( 'y1', 0 )
-		.attr( 'x2', d => params.xScale( moment( d.date ).toDate() ) + widthPerDate / 2 )
+		.attr( 'x2', d => params.xScale( moment( d.date ).toDate() ) + params.widthPerDate / 2 )
 		.attr( 'y2', params.height );
 
 	focusGrid
@@ -130,7 +132,7 @@ export const drawLines = ( node, data, params, widthPerDate ) => {
 		.attr( 'fill', d => getColor( d.key, params.orderedKeys, params.colorScheme ) )
 		.attr( 'stroke', '#fff' )
 		.attr( 'stroke-width', lineStroke + 2 )
-		.attr( 'cx', d => params.xScale( moment( d.axisDate ).toDate() ) + widthPerDate / 2 )
+		.attr( 'cx', d => params.xScale( moment( d.axisDate ).toDate() ) + params.widthPerDate / 2 )
 		.attr( 'cy', d => params.yScale( d.value ) );
 
 	focus
@@ -138,7 +140,7 @@ export const drawLines = ( node, data, params, widthPerDate ) => {
 		.attr( 'class', 'focus-g' )
 		.attr( 'x', d => params.xScale( moment( d.date ).toDate() ) )
 		.attr( 'y', 0 )
-		.attr( 'width', widthPerDate )
+		.attr( 'width', params.widthPerDate )
 		.attr( 'height', params.height )
 		.attr( 'opacity', 0 )
 		.on( 'mouseover', ( d, i, nodes ) => {

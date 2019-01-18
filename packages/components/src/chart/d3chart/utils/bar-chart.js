@@ -21,7 +21,6 @@ const handleMouseOverBarChart = ( date, parentNode, node, data, params, position
 };
 
 export const drawBars = ( node, data, params ) => {
-	const barGroupWidth = params.xGroupScale.range()[ 1 ];
 	const barGroup = node
 		.append( 'g' )
 		.attr( 'class', 'bars' )
@@ -45,7 +44,7 @@ export const drawBars = ( node, data, params ) => {
 		.attr( 'class', 'barfocus' )
 		.attr( 'x', 0 )
 		.attr( 'y', 0 )
-		.attr( 'width', barGroupWidth )
+		.attr( 'width', params.xGroupScale.range()[ 1 ] )
 		.attr( 'height', params.height )
 		.attr( 'opacity', '0' )
 		.on( 'mouseover', ( d, i, nodes ) => {

@@ -58,9 +58,8 @@ class D3Chart extends Component {
 			.append( 'g' )
 			.attr( 'transform', `translate(${ margin.left },${ margin.top })` );
 
-		const widthPerDate = params.adjWidth / params.uniqueDates.length;
-		drawAxis( g, adjParams, widthPerDate );
-		type === 'line' && drawLines( g, data, adjParams, widthPerDate );
+		drawAxis( g, adjParams );
+		type === 'line' && drawLines( g, data, adjParams );
 		type === 'bar' && drawBars( g, data, adjParams );
 	}
 
@@ -148,6 +147,7 @@ class D3Chart extends Component {
 			yTickOffset: getYTickOffset( adjHeight, yMax ),
 			yFormat: getFormatter( yFormat ),
 			valueType,
+			widthPerDate,
 		};
 	}
 
