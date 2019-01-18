@@ -66,7 +66,7 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 			);
 			$args['orderby']    = array(
 				'_stock_status' => $args['order'],
-				'_stock'        => $args['order'],
+				'_stock'        => 'desc' === $args['order'] ? 'asc' : 'desc',
 			);
 		} elseif ( 'stock_quantity' === $args['orderby'] ) {
 			$args['meta_key'] = '_stock'; // WPCS: slow query ok.
