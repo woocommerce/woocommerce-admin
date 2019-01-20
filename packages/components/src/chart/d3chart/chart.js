@@ -130,7 +130,7 @@ class D3Chart extends Component {
 			colorScheme,
 			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
 			interval,
-			line: getLine( xLineScale, yScale, xOffset ),
+			line: getLine( xLineScale, yScale ),
 			lineData,
 			margin,
 			mode,

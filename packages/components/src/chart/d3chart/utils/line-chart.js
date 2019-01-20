@@ -36,18 +36,19 @@ export const drawLines = ( node, data, params ) => {
 	lineStroke = params.width <= smallBreak ? 1.25 : lineStroke;
 	const dotRadius = params.width <= wideBreak ? 4 : 6;
 
-	series
-		.append( 'path' )
-		.attr( 'fill', 'none' )
-		.attr( 'stroke-width', lineStroke )
-		.attr( 'stroke-linejoin', 'round' )
-		.attr( 'stroke-linecap', 'round' )
-		.attr( 'stroke', d => getColor( d.key, params.orderedKeys, params.colorScheme ) )
-		.style( 'opacity', d => {
-			const opacity = d.focus ? 1 : 0.1;
-			return d.visible ? opacity : 0;
-		} )
-		.attr( 'd', d => params.line( d.values ) );
+	params.uniqueDates.length > 1 &&
+		series
+			.append( 'path' )
+			.attr( 'fill', 'none' )
+			.attr( 'stroke-width', lineStroke )
+			.attr( 'stroke-linejoin', 'round' )
+			.attr( 'stroke-linecap', 'round' )
+			.attr( 'stroke', d => getColor( d.key, params.orderedKeys, params.colorScheme ) )
+			.style( 'opacity', d => {
+				const opacity = d.focus ? 1 : 0.1;
+				return d.visible ? opacity : 0;
+			} )
+			.attr( 'd', d => params.line( d.values ) );
 
 	const minDataPointSpacing = 36;
 

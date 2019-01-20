@@ -90,14 +90,12 @@ export const getUniqueDates = ( lineData, parseDate ) => {
  * Describes getLine
  * @param {function} xLineScale - from `getXLineScale`.
  * @param {function} yScale - from `getYScale`.
- * @param {number} xOffset - Offset to use to draw the line in the X axis.
  * @returns {function} the D3 line function for plotting all category values
  */
-export const getLine = ( xLineScale, yScale, xOffset ) => {
-	return d3Line()
-		.x( d => xLineScale( moment( d.date ).toDate() ) + xOffset )
+export const getLine = ( xLineScale, yScale ) =>
+	d3Line()
+		.x( d => xLineScale( moment( d.date ).toDate() ) )
 		.y( d => yScale( d.value ) );
-};
 
 /**
  * Describes getDateSpaces
