@@ -127,8 +127,8 @@ export const drawLines = ( node, data, params, xOffset ) => {
 		.attr( 'height', params.height )
 		.attr( 'opacity', 0 )
 		.on( 'mouseover', ( d, i, nodes ) => {
-			const tooltipAlignedToTheLeft = ( i === 0 || i === params.dateSpaces.length - 1 ) && params.uniqueDates.length > 1;
-			const elementWidthRatio = tooltipAlignedToTheLeft ? 0 : 0.5;
+			const isTooltipLeftAligned = ( i === 0 || i === params.dateSpaces.length - 1 ) && params.uniqueDates.length > 1;
+			const elementWidthRatio = isTooltipLeftAligned ? 0 : 0.5;
 			const position = calculateTooltipPosition(
 				d3Event.target,
 				node.node(),
