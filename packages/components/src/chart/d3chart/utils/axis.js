@@ -205,7 +205,7 @@ export const drawAxis = ( node, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'axis' )
 		.attr( 'aria-hidden', 'true' )
-		.attr( 'transform', `translate(0, ${ params.height })` )
+		.attr( 'transform', `translate(${ params.xOffset }, ${ params.height })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -218,7 +218,7 @@ export const drawAxis = ( node, params ) => {
 		.append( 'g' )
 		.attr( 'class', 'axis axis-month' )
 		.attr( 'aria-hidden', 'true' )
-		.attr( 'transform', `translate(0, ${ params.height + 20 })` )
+		.attr( 'transform', `translate(${ params.xOffset }, ${ params.height + 20 })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -229,7 +229,7 @@ export const drawAxis = ( node, params ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'pipes' )
-		.attr( 'transform', `translate(0, ${ params.height })` )
+		.attr( 'transform', `translate(${ params.xOffset }, ${ params.height })` )
 		.call(
 			d3AxisBottom( xScale )
 				.tickValues( ticks )
@@ -240,7 +240,7 @@ export const drawAxis = ( node, params ) => {
 	node
 		.append( 'g' )
 		.attr( 'class', 'grid' )
-		.attr( 'transform', `translate(-${ params.margin.left },0)` )
+		.attr( 'transform', `translate(-${ params.margin.left }, 0)` )
 		.call(
 			d3AxisLeft( params.yScale )
 				.tickValues( yGrids )

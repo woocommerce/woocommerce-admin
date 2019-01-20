@@ -121,13 +121,16 @@ class D3Chart extends Component {
 		const xLineScale = getXLineScale( uniqueDates, adjWidth );
 		const xScale = getXScale( uniqueDates, adjWidth, compact );
 		const xTicks = getXTicks( uniqueDates, adjWidth, mode, interval );
+		const xOffset = type === 'line' && uniqueDates.length <= 1
+			? adjWidth / 2
+			: 0;
 		return {
 			adjHeight,
 			adjWidth,
 			colorScheme,
 			dateSpaces: getDateSpaces( data, uniqueDates, adjWidth, xLineScale ),
 			interval,
-			line: getLine( xLineScale, yScale ),
+			line: getLine( xLineScale, yScale, xOffset ),
 			lineData,
 			margin,
 			mode,
@@ -140,17 +143,18 @@ class D3Chart extends Component {
 			type,
 			uniqueDates,
 			uniqueKeys,
+			valueType,
 			xFormat: getFormatter( xFormat, d3TimeFormat ),
 			x2Format: getFormatter( x2Format, d3TimeFormat ),
 			xGroupScale: getXGroupScale( orderedKeys, xScale, compact ),
 			xLineScale,
+			xOffset,
 			xTicks,
 			xScale,
 			yMax,
 			yScale,
 			yTickOffset: getYTickOffset( adjHeight, yMax ),
 			yFormat: getFormatter( yFormat ),
-			valueType,
 		};
 	}
 
