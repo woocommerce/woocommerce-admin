@@ -36,7 +36,6 @@ function updateSettings( resourceNames, data, fetch ) {
 	if ( resourceNames.includes( resourceName ) ) {
 		const url = '/wc/v3/settings/wc_admin/';
 		const settingsData = pick( data[ resourceName ], settingsFields );
-		console.log( settingsData );
 
 		const promises = Object.keys( settingsData ).map( setting =>
 			fetch( { path: url + setting, method: 'POST', data: { value: settingsData[ setting ] } } )
@@ -46,17 +45,7 @@ function updateSettings( resourceNames, data, fetch ) {
 				} )
 		);
 
-		console.log( promises );
-
 		return [ promises ];
-
-		// return [
-		// 	fetch( { path: url, method: 'POST', data: settingsData } )
-		// 		.then( settingsToSettingsResource )
-		// 		.catch( error => {
-		// 			return { [ resourceName ]: { error } };
-		// 		} ),
-		// ];
 	}
 	return [];
 }
