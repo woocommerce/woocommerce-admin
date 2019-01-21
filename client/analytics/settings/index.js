@@ -52,13 +52,9 @@ class Settings extends Component {
 		this.setState( { excludedStatuses } );
 	};
 
-	resetDefaults = () => {
-		console.log( 'resetting' );
-	};
+	resetDefaults = () => {};
 
-	saveChanges = () => {
-		console.log( 'saving' );
-	};
+	saveChanges = () => {};
 
 	getOrderStatusOptions() {
 		const orderStatuses = wcSettings.orderStatuses;
