@@ -16,6 +16,7 @@ import { getPersistedQuery, stringifyQuery } from '@woocommerce/navigation';
  */
 import Analytics from 'analytics';
 import AnalyticsReport from 'analytics/report';
+import AnalyticsSettings from 'analytics/settings';
 import Dashboard from 'dashboard';
 import DevDocs from 'devdocs';
 
@@ -32,6 +33,12 @@ const getPages = () => {
 			path: '/analytics',
 			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
 			wpClosedMenu: 'toplevel_page_woocommerce',
+		},
+		{
+			container: AnalyticsSettings,
+			path: '/analytics/settings',
+			wpOpenMenu: 'toplevel_page_woocommerce',
+			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
 		},
 		{
 			container: AnalyticsReport,
