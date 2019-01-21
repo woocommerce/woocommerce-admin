@@ -88,7 +88,7 @@ class CategoriesReportTable extends Component {
 					value: getCurrencyFormatDecimal( net_revenue ),
 				},
 				{
-					display: (
+					display: category && (
 						<Link
 							href={ getNewPath( persistedQuery, 'categories', {
 								filter: 'single_category',
