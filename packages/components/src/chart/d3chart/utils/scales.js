@@ -33,7 +33,7 @@ export const getYMax = lineData => {
 export const getXScale = ( uniqueDates, width, compact = false ) =>
 	d3ScaleBand()
 		.domain( uniqueDates )
-		.rangeRound( [ 0, width ] )
+		.range( [ 0, width ] )
 		.paddingInner( compact ? 0 : 0.1 );
 
 /**
