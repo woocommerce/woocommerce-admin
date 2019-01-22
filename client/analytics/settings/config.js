@@ -29,7 +29,7 @@ const orderStatuses = Object.keys( wcSettings.orderStatuses )
 export const analyticsSettings = [
 	{
 		name: 'woocommerce_excluded_report_order_statuses',
-		label: __( 'Excluded Statuses', 'wc-admin' ),
+		label: __( 'Excluded Statuses:', 'wc-admin' ),
 		inputType: 'checkboxGroup',
 		options: [
 			{
