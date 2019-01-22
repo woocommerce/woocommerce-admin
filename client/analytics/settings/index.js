@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
@@ -18,6 +18,7 @@ import { SectionHeader, useFilters } from '@woocommerce/components';
  * Internal dependencies
  */
 import './style.scss';
+import { analyticsSettings } from './config';
 import Header from 'header';
 import Setting from './setting';
 
@@ -27,12 +28,12 @@ class Settings extends Component {
 	constructor() {
 		super( ...arguments );
 
+		const settings = {};
+		analyticsSettings.forEach( setting => ( settings[ setting.name ] = setting.initialValue ) );
+
 		this.state = {
 			hasError: false,
-			settings: {
-				woocommerce_excluded_report_order_statuses:
-					wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses || [],
-			},
+			settings: settings,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind( this );
@@ -77,27 +78,6 @@ class Settings extends Component {
 			return null;
 		}
 
-		const helpText = sprintf(
-			__(
-				'Orders with these statuses are excluded from the totals in your reports.' +
-					'The <strong>Refunded</strong> status can not be excluded.  <a href="%s">Learn more</a>',
-				'wc-admin'
-			),
-			'#',
-			'wc-admin' // @TODO: this needs to be replaced with a real link
-		);
-
-		const orderStatuses = Object.keys( wcSettings.orderStatuses ).map( key => {
-			return {
-				value: key,
-				label: wcSettings.orderStatuses[ key ],
-				description: sprintf(
-					__( 'Exclude the %s status from reports', 'wc-admin' ),
-					wcSettings.orderStatuses[ key ]
-				),
-			};
-		} );
-
 		return (
 			<Fragment>
 				<Header
@@ -107,15 +87,18 @@ class Settings extends Component {
 					] }
 				/>
 				<SectionHeader title={ __( 'Analytics Settings', 'wc-admin' ) } />
-				<Setting
-					label={ __( 'Excluded Statuses', 'wc-admin' ) }
-					options={ orderStatuses }
-					helpText={ helpText }
-					inputType="checkbox"
-					name="woocommerce_excluded_report_order_statuses"
-					handleChange={ this.handleInputChange }
-					value={ wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses }
-				/>
+				{ analyticsSettings.map( setting => (
+					<Setting
+						handleChange={ this.handleInputChange }
+						helpText={ setting.helpText }
+						inputType={ setting.inputType }
+						key={ setting.name }
+						label={ setting.label }
+						name={ setting.name }
+						options={ setting.options }
+						value={ this.state.settings[ setting.name ] }
+					/>
+				) ) }
 				<div className="woocommerce-settings__actions">
 					<Button isDefault onClick={ this.resetDefaults }>
 						{ __( 'Reset Defaults', 'wc-admin' ) }
