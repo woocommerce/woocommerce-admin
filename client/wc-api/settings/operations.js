@@ -42,13 +42,17 @@ function updateSettings( resourceNames, data, fetch ) {
 		const url = NAMESPACE + '/settings/wc_admin/';
 		const settingsData = pick( data[ resourceName ], settingsFields );
 
-		const promises = Object.keys( settingsData ).map( setting =>
-			fetch( { path: url + setting, method: 'POST', data: { value: settingsData[ setting ] } } )
+		const promises = Object.keys( settingsData ).map( setting => {
+			let value = settingsData[ setting ];
+			if ( Array.isArray( value ) ) {
+				value = value.join( ',' );
+			}
+			return fetch( { path: url + setting, method: 'POST', data: { value: value } } )
 				.then( settingsToSettingsResource )
 				.catch( error => {
 					return { [ resourceName ]: { error } };
-				} )
-		);
+				} );
+		} );
 
 		return [ promises ];
 	}
