@@ -5,7 +5,10 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
-import { uniqueId } from 'lodash';
+import { compose } from '@wordpress/compose';
+import { remove, uniqueId } from 'lodash';
+import { withDispatch } from '@wordpress/data';
+
 /**
  * WooCommerce dependencies
  */
@@ -26,7 +29,7 @@ class Settings extends Component {
 
 		this.state = {
 			hasError: false,
-			excludedStatuses: {},
+			excludedStatuses: wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses || [],
 		};
 
 		this.toggleExcludedStatus = this.toggleExcludedStatus.bind( this );
@@ -45,16 +48,21 @@ class Settings extends Component {
 		const status = e.target.value;
 		const excludedStatuses = this.state.excludedStatuses;
 		if ( e.target.checked ) {
-			excludedStatuses[ status ] = true;
+			excludedStatuses.push( status );
 		} else {
-			delete excludedStatuses[ status ];
+			remove( excludedStatuses, value => value === status );
 		}
 		this.setState( { excludedStatuses } );
 	};
 
 	resetDefaults = () => {};
 
-	saveChanges = () => {};
+	saveChanges = () => {
+		this.props.updateSettings( {
+			woocommerce_excluded_report_order_statuses: this.state.excludedStatuses.join( ',' ),
+		} );
+		// @TODO: Need a confirmation on successful update.
+	};
 
 	getOrderStatusOptions() {
 		const orderStatuses = wcSettings.orderStatuses;
@@ -72,7 +80,7 @@ class Settings extends Component {
 							__( 'Exclude the %s status from reports', 'wc-admin' ),
 							status.name
 						) }
-						checked={ 'undefined' !== typeof excludedStatuses[ key ] }
+						checked={ excludedStatuses.includes( key ) }
 						value={ key }
 					/>
 					{ orderStatuses[ key ] }
@@ -129,4 +137,12 @@ class Settings extends Component {
 	}
 }
 
-export default useFilters( SETTINGS_FILTER )( Settings );
+export default compose(
+	withDispatch( dispatch => {
+		const { updateSettings } = dispatch( 'wc-api' );
+
+		return {
+			updateSettings,
+		};
+	} )
+)( useFilters( SETTINGS_FILTER )( Settings ) );
