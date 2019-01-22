@@ -202,6 +202,8 @@ function wc_admin_print_script_settings() {
 	foreach ( $preload_data_endpoints as $key => $endpoint ) {
 		$settings['dataEndpoints'][ $key ] = $preload_data[ $endpoint ]['body'];
 	}
+
+	$settings = apply_filters( 'wc_admin_wc_settings', $settings );
 	?>
 	<script type="text/javascript">
 		<?php
