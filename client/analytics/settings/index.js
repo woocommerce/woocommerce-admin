@@ -17,7 +17,7 @@ import { SectionHeader, useFilters } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import './style.scss';
+import './index.scss';
 import { analyticsSettings } from './config';
 import Header from 'header';
 import Setting from './setting';

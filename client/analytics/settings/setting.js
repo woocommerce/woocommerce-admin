@@ -8,6 +8,7 @@ import { uniqueId } from 'lodash';
 /**
  * Internal dependencies
  */
+import './setting.scss';
 import sanitizeHTML from 'lib/sanitize-html';
 
 export default class Settings extends Component {
@@ -17,17 +18,16 @@ export default class Settings extends Component {
 
 		switch ( inputType ) {
 			case 'checkboxGroup':
-				const test = options.map( optionGroup => (
-					<div className="woocommerce-settings__setting-option-group" key={ optionGroup.key }>
+				return options.map( optionGroup => (
+					<div className="woocommerce-setting__options-group" key={ optionGroup.key }>
 						{ optionGroup.label && (
-							<span className="woocommerce-settings__setting-option-group-label">
+							<span className="woocommerce-setting__options-group-label">
 								{ optionGroup.label }
 							</span>
 						) }
 						{ this.renderCheckboxOptions( optionGroup.options ) }
 					</div>
 				) );
-				return test;
 			case 'checkbox':
 				return this.renderCheckboxOptions( options );
 			default:
@@ -63,12 +63,12 @@ export default class Settings extends Component {
 		const { helpText, label } = this.props;
 
 		return (
-			<div className="woocommerce-settings__setting">
-				<div className="woocommerce-settings__setting-label">{ label }</div>
-				<div className="woocommerce-settings__setting-options">
+			<div className="woocommerce-setting">
+				<div className="woocommerce-setting__label">{ label }</div>
+				<div className="woocommerce-setting__options">
 					{ this.renderInput() }
 					<span
-						className="woocommerce-settings__setting-help"
+						className="woocommerce-setting__help"
 						dangerouslySetInnerHTML={ sanitizeHTML( helpText ) }
 					/>
 				</div>
