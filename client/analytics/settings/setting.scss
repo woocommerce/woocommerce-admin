@@ -3,17 +3,27 @@
 .woocommerce-setting {
 	display: flex;
 	margin-bottom: $gap-large;
+	@include breakpoint( '<1280px' ) {
+		flex-direction: column;
+	}
 }
 
 .woocommerce-setting__label {
-	padding: 0 ($gap - 3);
+	@include font-size(16);
+	margin-bottom: $gap;
+	padding-right: $gap;
 	font-weight: bold;
-	width: 15%;
+	@include breakpoint( '>1280px' ) {
+		width: 15%;
+	}
 }
 
 .woocommerce-setting__options {
 	display: flex;
 	flex-direction: column;
+	@include breakpoint( '>1280px' ) {
+		width: 35%;
+	}
 
 	label {
 		width: 100%;
@@ -23,7 +33,7 @@
 	}
 
 	input[type='checkbox'] {
-		margin-right: $gap-smallest;
+		margin-right: $gap-small;
 	}
 }
 

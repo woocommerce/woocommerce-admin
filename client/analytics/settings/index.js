@@ -87,25 +87,27 @@ class Settings extends Component {
 					] }
 				/>
 				<SectionHeader title={ __( 'Analytics Settings', 'wc-admin' ) } />
-				{ analyticsSettings.map( setting => (
-					<Setting
-						handleChange={ this.handleInputChange }
-						helpText={ setting.helpText }
-						inputType={ setting.inputType }
-						key={ setting.name }
-						label={ setting.label }
-						name={ setting.name }
-						options={ setting.options }
-						value={ this.state.settings[ setting.name ] }
-					/>
-				) ) }
-				<div className="woocommerce-settings__actions">
-					<Button isDefault onClick={ this.resetDefaults }>
-						{ __( 'Reset Defaults', 'wc-admin' ) }
-					</Button>
-					<Button isPrimary onClick={ this.saveChanges }>
-						{ __( 'Save Changes', 'wc-admin' ) }
-					</Button>
+				<div className="woocommerce-settings__wrapper">
+					{ analyticsSettings.map( setting => (
+						<Setting
+							handleChange={ this.handleInputChange }
+							helpText={ setting.helpText }
+							inputType={ setting.inputType }
+							key={ setting.name }
+							label={ setting.label }
+							name={ setting.name }
+							options={ setting.options }
+							value={ this.state.settings[ setting.name ] }
+						/>
+					) ) }
+					<div className="woocommerce-settings__actions">
+						<Button isDefault onClick={ this.resetDefaults }>
+							{ __( 'Reset Defaults', 'wc-admin' ) }
+						</Button>
+						<Button isPrimary onClick={ this.saveChanges }>
+							{ __( 'Save Changes', 'wc-admin' ) }
+						</Button>
+					</div>
 				</div>
 			</Fragment>
 		);

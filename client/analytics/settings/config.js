@@ -46,7 +46,7 @@ export const analyticsSettings = [
 		],
 		helpText: sprintf(
 			__(
-				'Orders with these statuses are excluded from the totals in your reports.' +
+				'Orders with these statuses are excluded from the totals in your reports. ' +
 					'The <strong>Refunded</strong> status can not be excluded.  <a href="%s">Learn more</a>',
 				'wc-admin'
 			),
