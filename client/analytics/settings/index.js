@@ -48,7 +48,17 @@ class Settings extends Component {
 		/* eslint-enable no-console */
 	}
 
-	resetDefaults = () => {};
+	resetDefaults = () => {
+		if (
+			window.confirm(
+				__( 'Are you sure you want to reset all settings to default values?', 'wc-admin' )
+			)
+		) {
+			const settings = {};
+			analyticsSettings.forEach( setting => ( settings[ setting.name ] = setting.defaultValue ) );
+			this.setState( { settings }, this.saveChanges );
+		}
+	};
 
 	saveChanges = () => {
 		this.props.updateSettings( this.state.settings );
@@ -59,7 +69,7 @@ class Settings extends Component {
 		const { checked, name, type, value } = e.target;
 		const { settings } = this.state;
 
-		if ( 'checkbox' === type && Array.isArray( settings[ name ] ) ) {
+		if ( 'checkbox' === type ) {
 			if ( checked ) {
 				settings[ name ].push( value );
 			} else {
