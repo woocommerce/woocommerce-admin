@@ -8,8 +8,6 @@ import { __, _x } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { getCustomerLabel, getProductLabels } from 'lib/labels';
-import { getRequestByIdString } from 'lib/async-requests';
-import { NAMESPACE } from 'store/constants';
 
 export const charts = [
 	{
@@ -121,10 +119,13 @@ export const advancedFilters = {
 			input: {
 				component: 'Search',
 				type: 'orders',
-				getLabels: getRequestByIdString( NAMESPACE + 'orders', order => ( {
-					id: order.id,
-					label: '#' + order.id,
-				} ) ),
+				getLabels: async value => {
+					const orderIds = value.split( ',' );
+					return await orderIds.map( orderId => ( {
+						id: orderId,
+						label: '#' + orderId,
+					} ) );
+				},
 			},
 		},
 		ip_address: {
