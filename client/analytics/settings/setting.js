@@ -4,6 +4,7 @@
  */
 import { Component } from '@wordpress/element';
 import { uniqueId } from 'lodash';
+import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
@@ -11,7 +12,7 @@ import { uniqueId } from 'lodash';
 import './setting.scss';
 import sanitizeHTML from 'lib/sanitize-html';
 
-export default class Settings extends Component {
+class Setting extends Component {
 	renderInput = () => {
 		const { handleChange, name, inputType, options, value } = this.props;
 		const id = uniqueId( name );
@@ -33,6 +34,7 @@ export default class Settings extends Component {
 				);
 			case 'checkbox':
 				return this.renderCheckboxOptions( options );
+			case 'text':
 			default:
 				return (
 					<input id={ id } type="text" name={ name } onChange={ handleChange } value={ value } />
@@ -70,12 +72,70 @@ export default class Settings extends Component {
 				<div className="woocommerce-setting__label">{ label }</div>
 				<div className="woocommerce-setting__options">
 					{ this.renderInput() }
-					<span
-						className="woocommerce-setting__help"
-						dangerouslySetInnerHTML={ sanitizeHTML( helpText ) }
-					/>
+					{ helpText && (
+						<span
+							className="woocommerce-setting__help"
+							dangerouslySetInnerHTML={ sanitizeHTML( helpText ) }
+						/>
+					) }
 				</div>
 			</div>
 		);
 	}
 }
+
+Setting.propTypes = {
+	/**
+	 * Function assigned to the onChange of all inputs.
+	 */
+	handleChange: PropTypes.func.isRequired,
+	/**
+	 * Optional help text displayed underneath the setting.
+	 */
+	helpText: PropTypes.string,
+	/**
+	 * Type of input to use; defaults to a text input.
+	 */
+	inputType: PropTypes.oneOf( [ 'checkbox', 'checkboxGroup', 'text' ] ),
+	/**
+	 * Label used for describing the setting.
+	 */
+	label: PropTypes.string.isRequired,
+	/**
+	 * Setting slug applied to input names.
+	 */
+	name: PropTypes.string.isRequired,
+	/**
+	 * Array of options used for when the `inputType` allows multiple selections.
+	 */
+	options: PropTypes.arrayOf(
+		PropTypes.shape( {
+			/**
+			 * Input value for this option.
+			 */
+			value: PropTypes.string,
+			/**
+			 * Label for this option or above a group for a group `inpuType`.
+			 */
+			label: PropTypes.string,
+			/**
+			 * Description used for screen readers.
+			 */
+			description: PropTypes.string,
+			/**
+			 * Key used for a group `inpuType`.
+			 */
+			key: PropTypes.string,
+			/**
+			 * Nested options for a group `inpuType`.
+			 */
+			options: PropTypes.array,
+		} )
+	),
+	/**
+	 * The string value used for the input or array of items if the input allows multiselection.
+	 */
+	value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.array ] ),
+};
+
+export default Setting;
