@@ -18,16 +18,19 @@ export default class Settings extends Component {
 
 		switch ( inputType ) {
 			case 'checkboxGroup':
-				return options.map( optionGroup => (
-					<div className="woocommerce-setting__options-group" key={ optionGroup.key }>
-						{ optionGroup.label && (
-							<span className="woocommerce-setting__options-group-label">
-								{ optionGroup.label }
-							</span>
-						) }
-						{ this.renderCheckboxOptions( optionGroup.options ) }
-					</div>
-				) );
+				return options.map(
+					optionGroup =>
+						optionGroup.options.length > 0 && (
+							<div className="woocommerce-setting__options-group" key={ optionGroup.key }>
+								{ optionGroup.label && (
+									<span className="woocommerce-setting__options-group-label">
+										{ optionGroup.label }
+									</span>
+								) }
+								{ this.renderCheckboxOptions( optionGroup.options ) }
+							</div>
+						)
+				);
 			case 'checkbox':
 				return this.renderCheckboxOptions( options );
 			default:
