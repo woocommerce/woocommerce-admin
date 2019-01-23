@@ -37,8 +37,8 @@ const getPages = () => {
 		{
 			container: AnalyticsSettings,
 			path: '/analytics/settings',
-			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpClosedMenu: 'toplevel_page_woocommerce',
 		},
 		{
 			container: AnalyticsReport,
