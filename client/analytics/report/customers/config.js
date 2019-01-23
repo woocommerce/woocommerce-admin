@@ -8,8 +8,7 @@ import { decodeEntities } from '@wordpress/html-entities';
 /**
  * Internal dependencies
  */
-import { getCustomerLabel } from 'lib/labels';
-import { getRequestByIdString } from 'lib/async-requests';
+import { getCustomerLabel, getRequestByIdString } from 'lib/async-requests';
 import { NAMESPACE } from 'store/constants';
 
 export const filters = [

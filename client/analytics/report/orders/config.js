@@ -7,7 +7,7 @@ import { __, _x } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { getCouponLabels, getProductLabels } from 'lib/labels';
+import { getCouponLabels, getProductLabels } from 'lib/async-requests';
 
 const { orderStatuses } = wcSettings;
 

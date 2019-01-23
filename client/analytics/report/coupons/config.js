@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { getCouponLabels } from 'lib/labels';
+import { getCouponLabels } from 'lib/async-requests';
 
 export const charts = [
 	{

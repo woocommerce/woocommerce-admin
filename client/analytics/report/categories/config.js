@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { getCategoryLabels } from 'lib/labels';
+import { getCategoryLabels } from 'lib/async-requests';
 
 export const charts = [
 	{
