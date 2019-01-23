@@ -19,6 +19,7 @@ import { Link } from '@woocommerce/components';
  */
 import CategoryBreacrumbs from './breadcrumbs';
 import { numberFormat } from 'lib/number';
+import { getCategoryLabels } from 'lib/async-requests';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
 
@@ -68,7 +69,6 @@ class CategoriesReportTable extends Component {
 	}
 
 	getRowsContent( categoryStats ) {
-		const { query } = this.props;
 		return map( categoryStats, categoryStat => {
 			const { category_id, items_sold, net_revenue, products_count, orders_count } = categoryStat;
 			const { categories, query } = this.props;
@@ -150,10 +150,13 @@ class CategoriesReportTable extends Component {
 				compareBy="categories"
 				endpoint="categories"
 				getHeadersContent={ this.getHeadersContent }
+				getLabels={ getCategoryLabels }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
 				itemIdField="category_id"
 				query={ query }
+				searchBy="categories"
+				searchParam="categories"
 				labels={ labels }
 				tableQuery={ {
 					orderby: query.orderby || 'items_sold',
