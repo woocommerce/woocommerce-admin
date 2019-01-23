@@ -3,6 +3,9 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
+
+const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
 const defaultOrderStatuses = [
 	'completed',
@@ -26,7 +29,7 @@ const orderStatuses = Object.keys( wcSettings.orderStatuses )
 		};
 	} );
 
-export const analyticsSettings = [
+export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 	{
 		name: 'woocommerce_excluded_report_order_statuses',
 		label: __( 'Excluded Statuses:', 'wc-admin' ),
@@ -56,4 +59,4 @@ export const analyticsSettings = [
 		initialValue: wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses,
 		defaultValue: [ 'pending', 'cancelled', 'failed' ],
 	},
-];
+] );
