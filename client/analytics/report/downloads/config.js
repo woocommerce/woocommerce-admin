@@ -7,6 +7,7 @@ import { __, _x } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { getCustomerLabel, getProductLabels } from 'lib/labels';
 import { getRequestByIdString } from 'lib/async-requests';
 import { NAMESPACE } from 'store/constants';
 
@@ -64,10 +65,7 @@ export const advancedFilters = {
 			input: {
 				component: 'Search',
 				type: 'products',
-				getLabels: getRequestByIdString( NAMESPACE + 'products', product => ( {
-					id: product.id,
-					label: product.name,
-				} ) ),
+				getLabels: getProductLabels,
 			},
 		},
 		user: {
@@ -95,10 +93,7 @@ export const advancedFilters = {
 			input: {
 				component: 'Search',
 				type: 'usernames',
-				getLabels: getRequestByIdString( NAMESPACE + 'customers', customer => ( {
-					id: customer.id,
-					label: customer.username,
-				} ) ),
+				getLabels: getCustomerLabel,
 			},
 		},
 		order: {
