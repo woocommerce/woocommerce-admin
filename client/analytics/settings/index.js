@@ -22,7 +22,7 @@ import { analyticsSettings } from './config';
 import Header from 'header';
 import Setting from './setting';
 
-const SETTINGS_FILTER = 'woocommerce_admin_settings_page';
+const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
 class Settings extends Component {
 	constructor() {
