@@ -54,5 +54,6 @@ export const analyticsSettings = [
 			'wc-admin'
 		),
 		initialValue: wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses,
+		defaultValue: [ 'pending', 'cancelled', 'failed' ],
 	},
 ];
