@@ -7,7 +7,7 @@ import { __, _x } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { getCustomerLabel, getProductLabels } from 'lib/async-requests';
+import { getCustomerLabels, getProductLabels } from 'lib/async-requests';
 
 export const charts = [
 	{
@@ -91,7 +91,7 @@ export const advancedFilters = {
 			input: {
 				component: 'Search',
 				type: 'usernames',
-				getLabels: getCustomerLabel,
+				getLabels: getCustomerLabels,
 			},
 		},
 		order: {

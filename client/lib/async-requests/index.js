@@ -51,7 +51,7 @@ export const getCouponLabels = getRequestByIdString( NAMESPACE + 'coupons', coup
 	label: coupon.code,
 } ) );
 
-export const getCustomerLabel = getRequestByIdString( NAMESPACE + 'customers', customer => ( {
+export const getCustomerLabels = getRequestByIdString( NAMESPACE + 'customers', customer => ( {
 	id: customer.id,
 	label: customer.username,
 } ) );
