@@ -201,7 +201,7 @@ export default class CustomersReportTable extends Component {
 				query={ query }
 				labels={ { placeholder: __( 'Search by customer name', 'wc-admin' ) } }
 				searchBy="customers"
-				searchParam="customers"
+				searchParam="name"
 				title={ __( 'Customers', 'wc-admin' ) }
 				columnPrefsKey="customers_report_columns"
 			/>

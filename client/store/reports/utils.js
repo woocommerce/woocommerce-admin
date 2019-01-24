@@ -38,7 +38,10 @@ const reportConfigs = {
 
 export function getFilterQuery( endpoint, query ) {
 	if ( query.search ) {
-		return { [ query.search ]: query[ query.search ] };
+		return {
+			[ query.search ]: query[ query.search ],
+			name: query.name, // @TODO use config instead of hardcoding the param name here
+		};
 	}
 	if ( reportConfigs[ endpoint ] ) {
 		const { filters = [], advancedFilters = {} } = reportConfigs[ endpoint ];
