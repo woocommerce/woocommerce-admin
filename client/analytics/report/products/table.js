@@ -18,7 +18,6 @@ import { Link, Tag } from '@woocommerce/components';
  * Internal dependencies
  */
 import CategoryBreacrumbs from '../categories/breadcrumbs';
-import { getProductLabels } from 'lib/async-requests';
 import { isLowStock } from './utils';
 import { numberFormat } from 'lib/number';
 import ReportTable from 'analytics/components/report-table';
@@ -242,7 +241,6 @@ class ProductsReportTable extends Component {
 				endpoint="products"
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
-				getLabels={ getProductLabels }
 				getSummary={ this.getSummary }
 				itemIdField="product_id"
 				labels={ labels }

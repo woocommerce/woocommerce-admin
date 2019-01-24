@@ -256,8 +256,8 @@ export class Autocomplete extends Component {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const isExpanded = this.state.filteredOptions.length > 0;
-		const wasExpanded = prevState.filteredOptions.length > 0;
+		const isExpanded = this.state.filteredOptions.length > 0 || ( this.props.completer.getAdditionalOptions && this.state.query );
+		const wasExpanded = prevState.filteredOptions.length > 0 || ( prevProps.completer.getAdditionalOptions && prevState.query );
 		if ( isExpanded && ! wasExpanded ) {
 			this.toggleKeyEvents( true );
 		} else if ( ! isExpanded && wasExpanded ) {
@@ -271,10 +271,13 @@ export class Autocomplete extends Component {
 	}
 
 	render() {
-		const { children, instanceId, completer: { className = '' }, staticResults } = this.props;
+		const { children, instanceId, completer, showAdditionalOptions, staticResults } = this.props;
+		const { className = '', getAdditionalOptions } = completer;
 		const { selectedIndex, filteredOptions, query } = this.state;
 		const { key: selectedKey = '' } = filteredOptions[ selectedIndex ] || {};
-		const isExpanded = filteredOptions.length > 0 && !! query;
+		const additionalOptions = showAdditionalOptions && getAdditionalOptions ? getAdditionalOptions( query ) : [];
+		const options = additionalOptions.concat( filteredOptions );
+		const isExpanded = options.length > 0 && !! query;
 		const listBoxId = isExpanded ? `woocommerce-search__autocomplete-${ instanceId }` : null;
 		const activeId = isExpanded
 			? `woocommerce-search__autocomplete-${ instanceId }-${ selectedKey }`
@@ -282,12 +285,13 @@ export class Autocomplete extends Component {
 		const resultsClasses = classnames( 'woocommerce-search__autocomplete-results', {
 			'is-static-results': staticResults,
 		} );
+
 		return (
 			<div ref={ this.bindNode } className="woocommerce-search__autocomplete">
 				{ children( { isExpanded, listBoxId, activeId, onChange: this.search } ) }
 				{ isExpanded && (
 					<div id={ listBoxId } role="listbox" className={ resultsClasses }>
-						{ filteredOptions.map( ( option, index ) => (
+						{ options.map( ( option, index ) => (
 								<Button
 									key={ option.key }
 									id={ `woocommerce-search__autocomplete-${ instanceId }-${ option.key }` }

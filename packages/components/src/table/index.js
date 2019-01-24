@@ -45,7 +45,7 @@ import TableSummary from './summary';
 class TableCard extends Component {
 	constructor( props ) {
 		super( props );
-		const { compareBy, getLabels, searchParam, query } = props;
+		const { compareBy, query } = props;
 
 		const showCols = props.headers.map( ( { key, hiddenByDefault } ) => ! hiddenByDefault && key ).filter( Boolean );
 		const selectedRows = query.filter ? getIdsFromQuery( query[ compareBy ] ) : [];
@@ -57,27 +57,10 @@ class TableCard extends Component {
 		this.onSearch = this.onSearch.bind( this );
 		this.selectRow = this.selectRow.bind( this );
 		this.selectAllRows = this.selectAllRows.bind( this );
-		this.updateLabels = this.updateLabels.bind( this );
-
-		if ( query.search && getLabels ) {
-			const ids = query[ searchParam ];
-			getLabels( ids, query ).then( this.updateLabels );
-		}
 	}
 
 	componentDidUpdate( { query: prevQuery, headers: prevHeaders } ) {
-		const { compareBy, headers, query, getLabels, searchBy, searchParam } = this.props;
-
-		const prevSearchIds = getIdsFromQuery( prevQuery[ searchBy ] );
-		const currentSearchIds = getIdsFromQuery( query[ searchBy ] );
-		if ( query.search !== prevQuery.search || ! isEqual( prevSearchIds.sort(), currentSearchIds.sort() ) ) {
-			if ( query.search && getLabels ) {
-				const ids = query[ searchParam ];
-				getLabels( ids, query ).then( this.updateLabels );
-			} else if ( this.state.searchedValues !== [] ) {
-				this.updateLabels( [] );
-			}
-		}
+		const { compareBy, headers, query } = this.props;
 
 		if ( query.filter ) {
 			const prevIds = getIdsFromQuery( prevQuery[ compareBy ] );
@@ -167,19 +150,15 @@ class TableCard extends Component {
 		}
 	}
 
-	updateLabels( searchedValues ) {
-		this.setState( { searchedValues } );
-	}
-
 	onSearch( values ) {
 		const { compareParam, searchBy, searchParam } = this.props;
-		const ids = values.map( v => v.id );
-		if ( ids.length ) {
+		const labels = values.map( v => v.label );
+		if ( labels.length ) {
 			updateQueryString( {
 				filter: undefined,
 				[ compareParam ]: undefined,
 				search: searchBy,
-				[ searchParam ]: ids.join( ',' ),
+				[ searchParam ]: labels.join( ',' ),
 			} );
 		} else {
 			updateQueryString( {
@@ -266,7 +245,9 @@ class TableCard extends Component {
 			title,
 			totalRows,
 		} = this.props;
-		const { searchedValues, selectedRows, showCols } = this.state;
+		const { selectedRows, showCols } = this.state;
+		const searchedValues = query.search === searchBy && query[ searchParam ] ? query[ searchParam ].split( ',' ) : [];
+		const searchedLabels = searchedValues.map( v => ( { id: v, label: v } ) );
 		const allHeaders = this.props.headers;
 		let headers = this.getVisibleHeaders();
 		let rows = this.getVisibleRows();
@@ -308,7 +289,8 @@ class TableCard extends Component {
 							inlineTags
 							type={ searchBy }
 							onChange={ this.onSearch }
-							selected={ searchParam && searchedValues }
+							selected={ searchedLabels }
+							showAdditionalAutocompleterOptions={ true }
 						/>
 					),
 					( downloadable || onClickDownload ) && (

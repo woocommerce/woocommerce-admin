@@ -17,7 +17,6 @@ import { Date, Link } from '@woocommerce/components';
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
-import { getCustomerLabels } from 'lib/async-requests';
 import { numberFormat } from 'lib/number';
 
 export default class CustomersReportTable extends Component {
@@ -197,7 +196,6 @@ export default class CustomersReportTable extends Component {
 			<ReportTable
 				endpoint="customers"
 				getHeadersContent={ this.getHeadersContent }
-				getLabels={ getCustomerLabels }
 				getRowsContent={ this.getRowsContent }
 				itemIdField="id"
 				query={ query }

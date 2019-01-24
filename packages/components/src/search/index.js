@@ -149,7 +149,7 @@ class Search extends Component {
 
 	render() {
 		const autocompleter = this.getAutocompleter();
-		const { placeholder, inlineTags, selected, instanceId, className, staticResults } = this.props;
+		const { placeholder, inlineTags, selected, instanceId, className, showAdditionalAutocompleterOptions, staticResults } = this.props;
 		const { value = '', isActive } = this.state;
 		const aria = {
 			'aria-labelledby': this.props[ 'aria-labelledby' ],
@@ -167,6 +167,7 @@ class Search extends Component {
 					completer={ autocompleter }
 					onSelect={ this.selectResult }
 					selected={ selected.map( s => s.id ) }
+					showAdditionalOptions={ showAdditionalAutocompleterOptions }
 					staticResults={ staticResults }
 				>
 					{ ( { listBoxId, activeId, onChange } ) =>
@@ -285,6 +286,10 @@ Search.propTypes = {
 	 */
 	inlineTags: PropTypes.bool,
 	/**
+	 * Render additional options in the autocompleter depending on the type.
+	 */
+	showAdditionalAutocompleterOptions: PropTypes.bool,
+	/**
 	 * Render results list positioned statically instead of absolutely.
 	 */
 	staticResults: PropTypes.bool,
@@ -294,6 +299,7 @@ Search.defaultProps = {
 	onChange: noop,
 	selected: [],
 	inlineTags: false,
+	showAdditionalAutocompleterOptions: false,
 	staticResults: false,
 };
 

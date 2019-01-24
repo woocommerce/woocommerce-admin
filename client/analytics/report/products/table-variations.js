@@ -17,7 +17,6 @@ import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
-import { getVariationLabels } from 'lib/async-requests';
 import { numberFormat } from 'lib/number';
 import { isLowStock } from './utils';
 
@@ -168,7 +167,6 @@ export default class VariationsReportTable extends Component {
 				compareParam={ 'filter-variations' }
 				endpoint="variations"
 				getHeadersContent={ this.getHeadersContent }
-				getLabels={ getVariationLabels }
 				getRowsContent={ this.getRowsContent }
 				itemIdField="product_id"
 				labels={ labels }
