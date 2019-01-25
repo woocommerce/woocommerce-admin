@@ -170,8 +170,8 @@ export default class CouponsReportTable extends Component {
 				itemIdField="coupon_id"
 				query={ query }
 				tableQuery={ {
-					orderby: query.orderby || 'coupon_id',
-					order: query.order || 'asc',
+					orderby: query.orderby || 'orders_count',
+					order: query.order || 'desc',
 					extended_info: true,
 				} }
 				title={ __( 'Coupons', 'wc-admin' ) }

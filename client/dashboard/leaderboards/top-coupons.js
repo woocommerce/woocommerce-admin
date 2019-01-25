@@ -100,8 +100,8 @@ export class TopCoupons extends Component {
 	render() {
 		const { query, totalRows } = this.props;
 		const tableQuery = {
-			orderby: 'coupon_id',
-			order: 'asc',
+			orderby: 'orders_count',
+			order: 'desc',
 			per_page: totalRows,
 			extended_info: true,
 		};
