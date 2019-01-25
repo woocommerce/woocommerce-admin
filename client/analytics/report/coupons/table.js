@@ -75,12 +75,12 @@ export default class CouponsReportTable extends Component {
 			const { amount, coupon_id, extended_info, orders_count } = coupon;
 			const { code, date_created, date_expires, discount_type } = extended_info;
 
-			const productUrl = getNewPath( persistedQuery, '/analytics/coupons', {
+			const couponUrl = getNewPath( persistedQuery, '/analytics/coupons', {
 				filter: 'single_coupon',
 				coupons: coupon_id,
 			} );
 			const couponLink = (
-				<Link href={ productUrl } type="wc-admin">
+				<Link href={ couponUrl } type="wc-admin">
 					{ code }
 				</Link>
 			);
