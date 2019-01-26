@@ -15,6 +15,7 @@ import { find } from 'lodash';
  */
 import { getCurrentDates, appendTimestamp, getDateParamsFromQuery } from '@woocommerce/date';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import { calculateDelta, formatValue } from '@woocommerce/number';
 
 /**
  * Internal dependencies
@@ -31,7 +32,6 @@ import {
 } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import './style.scss';
-import { calculateDelta, formatValue } from 'lib/number';
 
 class StorePerformance extends Component {
 	constructor( props ) {

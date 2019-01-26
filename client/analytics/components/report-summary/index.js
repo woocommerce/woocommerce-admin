@@ -13,13 +13,13 @@ import PropTypes from 'prop-types';
 import { getDateParamsFromQuery } from '@woocommerce/date';
 import { getNewPath } from '@woocommerce/navigation';
 import { SummaryList, SummaryListPlaceholder, SummaryNumber } from '@woocommerce/components';
+import { calculateDelta, formatValue } from '@woocommerce/number';
 
 /**
  * Internal dependencies
  */
 import { getSummaryNumbers } from 'store/reports/utils';
 import ReportError from 'analytics/components/report-error';
-import { calculateDelta, formatValue } from 'lib/number';
 import withSelect from 'wc-api/with-select';
 
 /**

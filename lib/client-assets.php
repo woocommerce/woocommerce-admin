@@ -43,6 +43,14 @@ function wc_admin_register_script() {
 	);
 
 	wp_register_script(
+		'wc-number',
+		wc_admin_url( 'dist/number/index.js' ),
+		array(),
+		filemtime( wc_admin_dir_path( 'dist/number/index.js' ) ),
+		true
+	);
+
+	wp_register_script(
 		'wc-date',
 		wc_admin_url( 'dist/date/index.js' ),
 		array( 'wp-date', 'wp-i18n' ),
@@ -64,6 +72,7 @@ function wc_admin_register_script() {
 			'wc-currency',
 			'wc-date',
 			'wc-navigation',
+			'wc-number',
 		),
 		filemtime( wc_admin_dir_path( 'dist/components/index.js' ) ),
 		true
