@@ -21,10 +21,9 @@ import { formatNumber, formatValue, calculateDelta } from '@woocommerce/number';
 // Defaults to en-US localization
 const localizedNumber = formatNumber( 1337 ); // '1,377'
 
-// formatValue's first argument is a type: average, currency, or number
+// formatValue's first argument is a type: average, or number
 // The second argument is the number/value to format
 const formattedAverage = formatValue( 'average', '10.5' ); // 11 just uses Math.round
-const formattedCurrency = formatValue( 'currency', '10.5' ); // $10.50 calls @woocommerce.formatCurrency
 const formattedNumber = formatValue( 'number', '1337' ); // 1,337 calls formatNumber ( see above )
 
 // Get a rounded percent change/delta between two numbers
