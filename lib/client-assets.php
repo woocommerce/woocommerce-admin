@@ -29,7 +29,7 @@ function wc_admin_register_script() {
 	wp_register_script(
 		'wc-currency',
 		wc_admin_url( 'dist/currency/index.js' ),
-		array(),
+		array( 'wc-number' ),
 		filemtime( wc_admin_dir_path( 'dist/currency/index.js' ) ),
 		true
 	);
