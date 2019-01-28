@@ -14,6 +14,7 @@ import { getDateParamsFromQuery } from '@woocommerce/date';
 import { getNewPath } from '@woocommerce/navigation';
 import { SummaryList, SummaryListPlaceholder, SummaryNumber } from '@woocommerce/components';
 import { calculateDelta, formatValue } from '@woocommerce/number';
+import { formatCurrency } from '@woocommerce/currency';
 
 /**
  * Internal dependencies
@@ -45,11 +46,16 @@ export class ReportSummary extends Component {
 		const renderSummaryNumbers = ( { onToggle } ) =>
 			charts.map( chart => {
 				const { key, label, type } = chart;
+				const isCurrency = 'currency' === type;
 				const delta = calculateDelta( primaryTotals[ key ], secondaryTotals[ key ] );
 				const href = getNewPath( { chart: key } );
-				const prevValue = formatValue( type, secondaryTotals[ key ] );
+				const prevValue = isCurrency
+					? formatCurrency( secondaryTotals[ key ] )
+					: formatValue( type, secondaryTotals[ key ] );
 				const isSelected = selectedChart.key === key;
-				const value = formatValue( type, primaryTotals[ key ] );
+				const value = isCurrency
+					? formatCurrency( primaryTotals[ key ] )
+					: formatValue( type, primaryTotals[ key ] );
 
 				return (
 					<SummaryNumber
