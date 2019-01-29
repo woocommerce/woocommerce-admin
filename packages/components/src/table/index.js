@@ -151,19 +151,17 @@ class TableCard extends Component {
 	}
 
 	onSearch( values ) {
-		const { compareParam, searchBy, searchParam } = this.props;
+		const { compareParam } = this.props;
 		const labels = values.map( v => v.label );
 		if ( labels.length ) {
 			updateQueryString( {
 				filter: undefined,
 				[ compareParam ]: undefined,
-				search: searchBy,
-				[ searchParam ]: labels.join( ',' ),
+				search: uniq( labels ).join( ',' ),
 			} );
 		} else {
 			updateQueryString( {
 				search: undefined,
-				[ searchParam ]: undefined,
 			} );
 		}
 	}
@@ -239,14 +237,13 @@ class TableCard extends Component {
 			rowHeader,
 			rowsPerPage,
 			searchBy,
-			searchParam,
 			showMenu,
 			summary,
 			title,
 			totalRows,
 		} = this.props;
 		const { selectedRows, showCols } = this.state;
-		const searchedValues = query.search === searchBy && query[ searchParam ] ? query[ searchParam ].split( ',' ) : [];
+		const searchedValues = query.search ? query.search.split( ',' ) : [];
 		const searchedLabels = searchedValues.map( v => ( { id: v, label: v } ) );
 		const allHeaders = this.props.headers;
 		let headers = this.getVisibleHeaders();
@@ -445,10 +442,6 @@ TableCard.propTypes = {
 	 * The string to use as a query parameter when searching row items.
 	 */
 	searchBy: PropTypes.string,
-	/**
-	 * Url query parameter search function operates on
-	 */
-	searchParam: PropTypes.string,
 	/**
 	 * Boolean to determine whether or not ellipsis menu is shown.
 	 */

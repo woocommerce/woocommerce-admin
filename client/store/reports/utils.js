@@ -39,10 +39,10 @@ const reportConfigs = {
 export function getFilterQuery( endpoint, query ) {
 	if ( query.search ) {
 		return {
-			[ query.search ]: query[ query.search ],
-			name: query.name, // @TODO use config instead of hardcoding the param name here
+			[ endpoint ]: query[ endpoint ],
 		};
 	}
+
 	if ( reportConfigs[ endpoint ] ) {
 		const { filters = [], advancedFilters = {} } = reportConfigs[ endpoint ];
 		return filters
@@ -341,7 +341,7 @@ export function getReportTableQuery( endpoint, urlQuery, query ) {
  *
  * @param  {String} endpoint  Report API Endpoint
  * @param  {Object} urlQuery  Query parameters in the url
- * @param  {object} select    Instance of @wordpress/select
+ * @param  {Object} select    Instance of @wordpress/select
  * @param  {Object} query     Query parameters specific for that endpoint
  * @return {Object} Object    Table data response
  */
@@ -366,4 +366,29 @@ export function getReportTableData( endpoint, urlQuery, select, query = {} ) {
 	}
 
 	return { ...response, items };
+}
+
+/**
+ * Returns items based on a search query.
+ *
+ * @param  {Object} select    Instance of @wordpress/select
+ * @param  {String} endpoint  Report API Endpoint
+ * @param  {String} search    Search strings separated by commas.
+ * @return {Object} Object    Object containing the matching items.
+ */
+export function searchItemsByString( select, endpoint, search ) {
+	const { getItems } = select( 'wc-api' );
+	const searchWords = search.split( ',' );
+
+	const items = searchWords.reduce( ( acc, searchWord ) => {
+		return {
+			...acc,
+			...getItems( endpoint, {
+				search: searchWord,
+				per_page: 10,
+			} ),
+		};
+	}, [] );
+
+	return items;
 }

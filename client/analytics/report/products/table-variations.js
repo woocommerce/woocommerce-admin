@@ -173,7 +173,6 @@ export default class VariationsReportTable extends Component {
 				query={ query }
 				getSummary={ this.getSummary }
 				searchBy="variations"
-				searchParam="variations"
 				tableQuery={ {
 					orderby: query.orderby || 'items_sold',
 					order: query.order || 'desc',

@@ -170,7 +170,6 @@ export default class CouponsReportTable extends Component {
 				itemIdField="coupon_id"
 				query={ query }
 				searchBy="coupons"
-				searchParam="coupons"
 				tableQuery={ {
 					orderby: query.orderby || 'orders_count',
 					order: query.order || 'desc',
