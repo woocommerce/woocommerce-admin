@@ -208,25 +208,26 @@ export class Autocomplete extends Component {
 	}
 
 	handleKeyDown( event ) {
-		const { selectedIndex, filteredOptions } = this.state;
-		if ( filteredOptions.length === 0 ) {
+		const options = this.getOptions();
+		const { selectedIndex } = this.state;
+		if ( options.length === 0 ) {
 			return;
 		}
 		let nextSelectedIndex;
 		switch ( event.keyCode ) {
 			case UP:
-				nextSelectedIndex = ( selectedIndex === 0 ? filteredOptions.length : selectedIndex ) - 1;
+				nextSelectedIndex = ( selectedIndex === 0 ? options.length : selectedIndex ) - 1;
 				this.setState( { selectedIndex: nextSelectedIndex } );
 				break;
 
 			case TAB:
 			case DOWN:
-				nextSelectedIndex = ( selectedIndex + 1 ) % filteredOptions.length;
+				nextSelectedIndex = ( selectedIndex + 1 ) % options.length;
 				this.setState( { selectedIndex: nextSelectedIndex } );
 				break;
 
 			case ENTER:
-				this.select( filteredOptions[ selectedIndex ] );
+				this.select( options[ selectedIndex ] );
 				break;
 
 			case LEFT:
@@ -255,9 +256,13 @@ export class Autocomplete extends Component {
 		this.node[ handler ]( 'keydown', this.handleKeyDown, true );
 	}
 
+	isExpanded( props, state ) {
+		return state.filteredOptions.length > 0 || ( props.completer.getAdditionalOptions && state.query );
+	}
+
 	componentDidUpdate( prevProps, prevState ) {
-		const isExpanded = this.state.filteredOptions.length > 0 || ( this.props.completer.getAdditionalOptions && this.state.query );
-		const wasExpanded = prevState.filteredOptions.length > 0 || ( prevProps.completer.getAdditionalOptions && prevState.query );
+		const isExpanded = this.isExpanded( this.props, this.state );
+		const wasExpanded = this.isExpanded( prevProps, prevState );
 		if ( isExpanded && ! wasExpanded ) {
 			this.toggleKeyEvents( true );
 		} else if ( ! isExpanded && wasExpanded ) {
@@ -270,14 +275,22 @@ export class Autocomplete extends Component {
 		this.debouncedLoadOptions.cancel();
 	}
 
-	render() {
-		const { children, instanceId, completer, showAdditionalOptions, staticResults } = this.props;
-		const { className = '', getAdditionalOptions } = completer;
-		const { selectedIndex, filteredOptions, query } = this.state;
-		const { key: selectedKey = '' } = filteredOptions[ selectedIndex ] || {};
+	getOptions() {
+		const { completer, showAdditionalOptions } = this.props;
+		const { getAdditionalOptions } = completer;
+		const { filteredOptions, query } = this.state;
+
 		const additionalOptions = showAdditionalOptions && getAdditionalOptions ? getAdditionalOptions( query ) : [];
-		const options = additionalOptions.concat( filteredOptions );
-		const isExpanded = options.length > 0 && !! query;
+		return additionalOptions.concat( filteredOptions );
+	}
+
+	render() {
+		const { children, instanceId, completer, staticResults } = this.props;
+		const { className = '' } = completer;
+		const { selectedIndex, filteredOptions } = this.state;
+		const { key: selectedKey = '' } = filteredOptions[ selectedIndex ] || {};
+		const isExpanded = this.isExpanded( this.props, this.state );
+		const options = isExpanded ? this.getOptions() : [];
 		const listBoxId = isExpanded ? `woocommerce-search__autocomplete-${ instanceId }` : null;
 		const activeId = isExpanded
 			? `woocommerce-search__autocomplete-${ instanceId }-${ selectedKey }`
