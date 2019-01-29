@@ -257,7 +257,7 @@ export class Autocomplete extends Component {
 	}
 
 	isExpanded( props, state ) {
-		return state.filteredOptions.length > 0 || ( props.completer.getAdditionalOptions && state.query );
+		return state.filteredOptions.length > 0 || ( props.completer.getFreeTextOptions && state.query );
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
@@ -276,11 +276,11 @@ export class Autocomplete extends Component {
 	}
 
 	getOptions() {
-		const { completer, showAdditionalOptions } = this.props;
-		const { getAdditionalOptions } = completer;
+		const { completer, allowFreeText } = this.props;
+		const { getFreeTextOptions } = completer;
 		const { filteredOptions, query } = this.state;
 
-		const additionalOptions = showAdditionalOptions && getAdditionalOptions ? getAdditionalOptions( query ) : [];
+		const additionalOptions = allowFreeText && getFreeTextOptions ? getFreeTextOptions( query ) : [];
 		return additionalOptions.concat( filteredOptions );
 	}
 

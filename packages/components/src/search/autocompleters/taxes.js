@@ -40,7 +40,7 @@ export default {
 	getOptionKeywords( tax ) {
 		return [ tax.id, getTaxCode( tax ) ];
 	},
-	getAdditionalOptions( query ) {
+	getFreeTextOptions( query ) {
 		const label = (
 			<span key="name" className="woocommerce-search__result-name">
 				{ interpolateComponents( {

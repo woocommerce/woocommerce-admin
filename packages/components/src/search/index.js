@@ -149,7 +149,7 @@ class Search extends Component {
 
 	render() {
 		const autocompleter = this.getAutocompleter();
-		const { placeholder, inlineTags, selected, instanceId, className, showAdditionalAutocompleterOptions, staticResults } = this.props;
+		const { placeholder, inlineTags, selected, instanceId, className, allowFreeTextSearch, staticResults } = this.props;
 		const { value = '', isActive } = this.state;
 		const aria = {
 			'aria-labelledby': this.props[ 'aria-labelledby' ],
@@ -167,7 +167,7 @@ class Search extends Component {
 					completer={ autocompleter }
 					onSelect={ this.selectResult }
 					selected={ selected.map( s => s.id ) }
-					showAdditionalOptions={ showAdditionalAutocompleterOptions }
+					allowFreeText={ allowFreeTextSearch }
 					staticResults={ staticResults }
 				>
 					{ ( { listBoxId, activeId, onChange } ) =>
@@ -286,9 +286,9 @@ Search.propTypes = {
 	 */
 	inlineTags: PropTypes.bool,
 	/**
-	 * Render additional options in the autocompleter depending on the type.
+	 * Render additional options in the autocompleter to allow free text entering depending on the type.
 	 */
-	showAdditionalAutocompleterOptions: PropTypes.bool,
+	allowFreeTextSearch: PropTypes.bool,
 	/**
 	 * Render results list positioned statically instead of absolutely.
 	 */
@@ -299,7 +299,7 @@ Search.defaultProps = {
 	onChange: noop,
 	selected: [],
 	inlineTags: false,
-	showAdditionalAutocompleterOptions: false,
+	allowFreeTextSearch: false,
 	staticResults: false,
 };
 

@@ -41,7 +41,7 @@ export default {
 	getOptionKeywords( cat ) {
 		return [ cat.name ];
 	},
-	getAdditionalOptions( query ) {
+	getFreeTextOptions( query ) {
 		const label = (
 			<span key="name" className="woocommerce-search__result-name">
 				{ interpolateComponents( {
