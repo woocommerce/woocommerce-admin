@@ -287,6 +287,7 @@ class TableCard extends Component {
 							type={ searchBy }
 							onChange={ this.onSearch }
 							selected={ searchedLabels }
+							showClearButton={ true }
 							allowFreeTextSearch={ true }
 						/>
 					),
