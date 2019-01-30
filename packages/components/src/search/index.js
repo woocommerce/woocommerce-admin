@@ -149,7 +149,7 @@ class Search extends Component {
 
 	render() {
 		const autocompleter = this.getAutocompleter();
-		const { placeholder, inlineTags, selected, instanceId, className, allowFreeTextSearch, staticResults } = this.props;
+		const { allowFreeTextSearch, placeholder, inlineTags, selected, instanceId, className, staticResults } = this.props;
 		const { value = '', isActive } = this.state;
 		const aria = {
 			'aria-labelledby': this.props[ 'aria-labelledby' ],
@@ -164,10 +164,10 @@ class Search extends Component {
 				'has-inline-tags': inlineTags,
 			} ) }>
 				<Autocomplete
+					allowFreeText={ allowFreeTextSearch }
 					completer={ autocompleter }
 					onSelect={ this.selectResult }
 					selected={ selected.map( s => s.id ) }
-					allowFreeText={ allowFreeTextSearch }
 					staticResults={ staticResults }
 				>
 					{ ( { listBoxId, activeId, onChange } ) =>
@@ -240,6 +240,10 @@ class Search extends Component {
 
 Search.propTypes = {
 	/**
+	 * Render additional options in the autocompleter to allow free text entering depending on the type.
+	 */
+	allowFreeTextSearch: PropTypes.bool,
+	/**
 	 * Class name applied to parent div.
 	 */
 	className: PropTypes.string,
@@ -286,20 +290,16 @@ Search.propTypes = {
 	 */
 	inlineTags: PropTypes.bool,
 	/**
-	 * Render additional options in the autocompleter to allow free text entering depending on the type.
-	 */
-	allowFreeTextSearch: PropTypes.bool,
-	/**
 	 * Render results list positioned statically instead of absolutely.
 	 */
 	staticResults: PropTypes.bool,
 };
 
 Search.defaultProps = {
+	allowFreeTextSearch: false,
 	onChange: noop,
 	selected: [],
 	inlineTags: false,
-	allowFreeTextSearch: false,
 	staticResults: false,
 };
 
