@@ -125,6 +125,7 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-downloads-query.php';
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-downloads-stats-query.php';
 		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-customers-query.php';
+		require_once dirname( __FILE__ ) . '/class-wc-admin-reports-customers-stats-query.php';
 
 		// Data stores.
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-data-store.php';
@@ -141,6 +142,7 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-downloads-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-downloads-stats-data-store.php';
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-customers-data-store.php';
+		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-reports-customers-stats-data-store.php';
 
 		// Data triggers.
 		require_once dirname( __FILE__ ) . '/data-stores/class-wc-admin-notes-data-store.php';
@@ -170,6 +172,7 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-coupons-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-coupons-stats-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-customers-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-customers-stats-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-downloads-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-downloads-files-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-downloads-stats-controller.php';
@@ -183,6 +186,7 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-taxes-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-taxes-stats-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-stock-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-taxes-controller.php';
 
 		$controllers = apply_filters(
 			'woocommerce_admin_rest_controllers',
@@ -214,6 +218,8 @@ class WC_Admin_Api_Init {
 				'WC_Admin_REST_Reports_Downloads_Controller',
 				'WC_Admin_REST_Reports_Downloads_Stats_Controller',
 				'WC_Admin_REST_Reports_Customers_Controller',
+				'WC_Admin_REST_Reports_Customers_Stats_Controller',
+				'WC_Admin_REST_Taxes_Controller',
 			)
 		);
 
@@ -361,6 +367,17 @@ class WC_Admin_Api_Init {
 		) {
 			$endpoints['/wc/v4/products/reviews'][0] = $endpoints['/wc/v4/products/reviews'][2];
 			$endpoints['/wc/v4/products/reviews'][1] = $endpoints['/wc/v4/products/reviews'][3];
+		}
+
+		// Override /wc/v4/taxes.
+		if ( isset( $endpoints['/wc/v4/taxes'] )
+			&& isset( $endpoints['/wc/v4/taxes'][3] )
+			&& isset( $endpoints['/wc/v4/taxes'][2] )
+			&& $endpoints['/wc/v4/taxes'][2]['callback'][0] instanceof WC_Admin_REST_Orders_Controller
+			&& $endpoints['/wc/v4/taxes'][3]['callback'][0] instanceof WC_Admin_REST_Orders_Controller
+		) {
+			$endpoints['/wc/v4/taxes'][0] = $endpoints['/wc/v4/taxes'][2];
+			$endpoints['/wc/v4/taxes'][1] = $endpoints['/wc/v4/taxes'][3];
 		}
 
 		return $endpoints;
@@ -631,6 +648,7 @@ class WC_Admin_Api_Init {
 				'report-downloads-stats' => 'WC_Admin_Reports_Downloads_Stats_Data_Store',
 				'admin-note'             => 'WC_Admin_Notes_Data_Store',
 				'report-customers'       => 'WC_Admin_Reports_Customers_Data_Store',
+				'report-customers-stats' => 'WC_Admin_Reports_Customers_Stats_Data_Store',
 			)
 		);
 	}

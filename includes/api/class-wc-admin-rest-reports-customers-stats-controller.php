@@ -1,8 +1,8 @@
 <?php
 /**
- * REST API Reports customers controller
+ * REST API Reports customers stats controller
  *
- * Handles requests to the /reports/customers endpoint.
+ * Handles requests to the /reports/customers/stats endpoint.
  *
  * @package WooCommerce Admin/API
  */
@@ -10,13 +10,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * REST API Reports customers controller class.
+ * REST API Reports customers stats controller class.
  *
  * @package WooCommerce/API
  * @extends WC_REST_Reports_Controller
  */
-class WC_Admin_REST_Reports_Customers_Controller extends WC_REST_Reports_Controller {
-
+class WC_Admin_REST_Reports_Customers_Stats_Controller extends WC_REST_Reports_Controller {
 	/**
 	 * Endpoint namespace.
 	 *
@@ -29,7 +28,7 @@ class WC_Admin_REST_Reports_Customers_Controller extends WC_REST_Reports_Control
 	 *
 	 * @var string
 	 */
-	protected $rest_base = 'reports/customers';
+	protected $rest_base = 'reports/customers/stats';
 
 	/**
 	 * Maps query arguments from the REST request.
@@ -41,10 +40,6 @@ class WC_Admin_REST_Reports_Customers_Controller extends WC_REST_Reports_Control
 		$args                        = array();
 		$args['registered_before']   = $request['registered_before'];
 		$args['registered_after']    = $request['registered_after'];
-		$args['page']                = $request['page'];
-		$args['per_page']            = $request['per_page'];
-		$args['order']               = $request['order'];
-		$args['orderby']             = $request['orderby'];
 		$args['match']               = $request['match'];
 		$args['name']                = $request['name'];
 		$args['username']            = $request['username'];
@@ -78,59 +73,34 @@ class WC_Admin_REST_Reports_Customers_Controller extends WC_REST_Reports_Control
 	 */
 	public function get_items( $request ) {
 		$query_args      = $this->prepare_reports_query( $request );
-		$customers_query = new WC_Admin_Reports_Customers_Query( $query_args );
+		$customers_query = new WC_Admin_Reports_Customers_Stats_Query( $query_args );
 		$report_data     = $customers_query->get_data();
+		$out_data        = array(
+			'totals'    => $report_data,
+			// TODO: is this needed? the single element array tricks the isReportDataEmpty() selector.
+			'intervals' => array( (object) array() ),
+		);
 
-		$data = array();
-
-		foreach ( $report_data->data as $customer_data ) {
-			$item   = $this->prepare_item_for_response( $customer_data, $request );
-			$data[] = $this->prepare_response_for_collection( $item );
-		}
-
-		$response = rest_ensure_response( $data );
-		$response->header( 'X-WP-Total', (int) $report_data->total );
-		$response->header( 'X-WP-TotalPages', (int) $report_data->pages );
-
-		$page      = $report_data->page_no;
-		$max_pages = $report_data->pages;
-		$base      = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) );
-		if ( $page > 1 ) {
-			$prev_page = $page - 1;
-			if ( $prev_page > $max_pages ) {
-				$prev_page = $max_pages;
-			}
-			$prev_link = add_query_arg( 'page', $prev_page, $base );
-			$response->link_header( 'prev', $prev_link );
-		}
-		if ( $max_pages > $page ) {
-			$next_page = $page + 1;
-			$next_link = add_query_arg( 'page', $next_page, $base );
-			$response->link_header( 'next', $next_link );
-		}
-
-		return $response;
+		return rest_ensure_response( $out_data );
 	}
 
 	/**
 	 * Prepare a report object for serialization.
 	 *
-	 * @param array           $report  Report data.
+	 * @param Array           $report  Report data.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response
 	 */
 	public function prepare_item_for_response( $report, $request ) {
-		$context                      = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$data                         = $this->add_additional_fields_to_object( $report, $request );
-		$data['date_registered_gmt']  = wc_rest_prepare_date_response( $data['date_registered'] );
-		$data['date_registered']      = wc_rest_prepare_date_response( $data['date_registered'], false );
-		$data['date_last_active_gmt'] = wc_rest_prepare_date_response( $data['date_last_active'] );
-		$data['date_last_active']     = wc_rest_prepare_date_response( $data['date_last_active'], false );
-		$data                         = $this->filter_response_by_context( $data, $context );
+		$data = $report;
+
+		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
+		$data    = $this->add_additional_fields_to_object( $data, $request );
+		$data    = $this->filter_response_by_context( $data, $context );
 
 		// Wrap the data in a response object.
 		$response = rest_ensure_response( $data );
-		$response->add_links( $this->prepare_links( $report ) );
+
 		/**
 		 * Filter a report returned from the API.
 		 *
@@ -140,25 +110,7 @@ class WC_Admin_REST_Reports_Customers_Controller extends WC_REST_Reports_Control
 		 * @param object           $report   The original report object.
 		 * @param WP_REST_Request  $request  Request used to generate the response.
 		 */
-		return apply_filters( 'woocommerce_rest_prepare_report_customers', $response, $report, $request );
-	}
-
-	/**
-	 * Prepare links for the request.
-	 *
-	 * @param array $object Object data.
-	 * @return array
-	 */
-	protected function prepare_links( $object ) {
-		if ( empty( $object['user_id'] ) ) {
-			return array();
-		}
-
-		return array(
-			'customer' => array(
-				'href' => rest_url( sprintf( '/%s/customers/%d', $this->namespace, $object['user_id'] ) ),
-			),
-		);
+		return apply_filters( 'woocommerce_rest_prepare_report_customers_stats', $response, $report, $request );
 	}
 
 	/**
@@ -167,97 +119,100 @@ class WC_Admin_REST_Reports_Customers_Controller extends WC_REST_Reports_Control
 	 * @return array
 	 */
 	public function get_item_schema() {
+		// TODO: should any of these be 'indicator's?
+		$totals = array(
+			'customers_count'     => array(
+				'description' => __( 'Number of customers.', 'wc-admin' ),
+				'type'        => 'integer',
+				'context'     => array( 'view', 'edit' ),
+				'readonly'    => true,
+			),
+			'avg_orders_count'    => array(
+				'description' => __( 'Average number of orders.', 'wc-admin' ),
+				'type'        => 'integer',
+				'context'     => array( 'view', 'edit' ),
+				'readonly'    => true,
+			),
+			'avg_total_spend'     => array(
+				'description' => __( 'Average total spend per customer.', 'wc-admin' ),
+				'type'        => 'number',
+				'context'     => array( 'view', 'edit' ),
+				'readonly'    => true,
+				'format'      => 'currency',
+			),
+			'avg_avg_order_value' => array(
+				'description' => __( 'Average AOV per customer.', 'wc-admin' ),
+				'type'        => 'number',
+				'context'     => array( 'view', 'edit' ),
+				'readonly'    => true,
+				'format'      => 'currency',
+			),
+		);
+
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'report_customers',
+			'title'      => 'report_customers_stats',
 			'type'       => 'object',
 			'properties' => array(
-				'customer_id'          => array(
-					'description' => __( 'Customer ID.', 'wc-admin' ),
-					'type'        => 'integer',
+				'totals'    => array(
+					'description' => __( 'Totals data.', 'wc-admin' ),
+					'type'        => 'object',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
+					'properties'  => $totals,
 				),
-				'user_id'              => array(
-					'description' => __( 'User ID.', 'wc-admin' ),
-					'type'        => 'integer',
+				'intervals' => array( // TODO: remove this?
+					'description' => __( 'Reports data grouped by intervals.', 'wc-admin' ),
+					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
-				),
-				'name'                 => array(
-					'description' => __( 'Name.', 'wc-admin' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'username'             => array(
-					'description' => __( 'Username.', 'wc-admin' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'country'              => array(
-					'description' => __( 'Country.', 'wc-admin' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'city'                 => array(
-					'description' => __( 'City.', 'wc-admin' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'postcode'             => array(
-					'description' => __( 'Postal code.', 'wc-admin' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'date_registered'      => array(
-					'description' => __( 'Date registered.', 'wc-admin' ),
-					'type'        => 'date-time',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'date_registered_gmt'  => array(
-					'description' => __( 'Date registered GMT.', 'wc-admin' ),
-					'type'        => 'date-time',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'date_last_active'     => array(
-					'description' => __( 'Date last active.', 'wc-admin' ),
-					'type'        => 'date-time',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'date_last_active_gmt' => array(
-					'description' => __( 'Date last active GMT.', 'wc-admin' ),
-					'type'        => 'date-time',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'orders_count'         => array(
-					'description' => __( 'Order count.', 'wc-admin' ),
-					'type'        => 'integer',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'total_spend'          => array(
-					'description' => __( 'Total spend.', 'wc-admin' ),
-					'type'        => 'number',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
-				'avg_order_value'      => array(
-					'description' => __( 'Avg order value.', 'wc-admin' ),
-					'type'        => 'number',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
+					'items'       => array(
+						'type'       => 'object',
+						'properties' => array(
+							'interval'       => array(
+								'description' => __( 'Type of interval.', 'wc-admin' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+								'enum'        => array( 'day', 'week', 'month', 'year' ),
+							),
+							'date_start'     => array(
+								'description' => __( "The date the report start, in the site's timezone.", 'wc-admin' ),
+								'type'        => 'date-time',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'date_start_gmt' => array(
+								'description' => __( 'The date the report start, as GMT.', 'wc-admin' ),
+								'type'        => 'date-time',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'date_end'       => array(
+								'description' => __( "The date the report end, in the site's timezone.", 'wc-admin' ),
+								'type'        => 'date-time',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'date_end_gmt'   => array(
+								'description' => __( 'The date the report end, as GMT.', 'wc-admin' ),
+								'type'        => 'date-time',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'subtotals'      => array(
+								'description' => __( 'Interval subtotals.', 'wc-admin' ),
+								'type'        => 'object',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+								'properties'  => $totals,
+							),
+						),
+					),
 				),
 			),
 		);
+
 		return $this->add_additional_fields_schema( $schema );
 	}
 
@@ -279,48 +234,6 @@ class WC_Admin_REST_Reports_Customers_Controller extends WC_REST_Reports_Control
 			'description'       => __( 'Limit response to objects registered after (or at) a given ISO8601 compliant datetime.', 'wc-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
-			'validate_callback' => 'rest_validate_request_arg',
-		);
-		$params['page']                    = array(
-			'description'       => __( 'Current page of the collection.', 'wc-admin' ),
-			'type'              => 'integer',
-			'default'           => 1,
-			'sanitize_callback' => 'absint',
-			'validate_callback' => 'rest_validate_request_arg',
-			'minimum'           => 1,
-		);
-		$params['per_page']                = array(
-			'description'       => __( 'Maximum number of items to be returned in result set.', 'wc-admin' ),
-			'type'              => 'integer',
-			'default'           => 10,
-			'minimum'           => 1,
-			'maximum'           => 100,
-			'sanitize_callback' => 'absint',
-			'validate_callback' => 'rest_validate_request_arg',
-		);
-		$params['order']                   = array(
-			'description'       => __( 'Order sort attribute ascending or descending.', 'wc-admin' ),
-			'type'              => 'string',
-			'default'           => 'desc',
-			'enum'              => array( 'asc', 'desc' ),
-			'validate_callback' => 'rest_validate_request_arg',
-		);
-		$params['orderby']                 = array(
-			'description'       => __( 'Sort collection by object attribute.', 'wc-admin' ),
-			'type'              => 'string',
-			'default'           => 'date_registered',
-			'enum'              => array(
-				'username',
-				'name',
-				'country',
-				'city',
-				'postcode',
-				'date_registered',
-				'date_last_active',
-				'orders_count',
-				'total_spend',
-				'avg_order_value',
-			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['match']                   = array(
@@ -446,6 +359,7 @@ class WC_Admin_REST_Reports_Customers_Controller extends WC_REST_Reports_Control
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
+
 		return $params;
 	}
 }

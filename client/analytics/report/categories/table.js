@@ -13,12 +13,12 @@ import { map } from 'lodash';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
+import { numberFormat } from '@woocommerce/number';
 
 /**
  * Internal dependencies
  */
 import CategoryBreacrumbs from './breadcrumbs';
-import { numberFormat } from 'lib/number';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
 

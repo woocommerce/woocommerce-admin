@@ -25,6 +25,10 @@ describe( 'numberFormat', () => {
 		expect( numberFormat( '10000.123456', 'not a number' ) ).toBe( '10,000.123456' );
 	} );
 
+	it( 'calculates the correct decimals based on precision passed in', () => {
+		expect( numberFormat( '1337.4498', 2 ) ).toBe( '1,337.45' );
+	} );
+
 	it( 'uses store currency settings, not locale', () => {
 		global.wcSettings.siteLocale = 'en-US';
 		global.wcSettings.currency.decimal_separator = ',';
