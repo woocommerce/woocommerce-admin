@@ -115,7 +115,7 @@ Setting.propTypes = {
 			 */
 			value: PropTypes.string,
 			/**
-			 * Label for this option or above a group for a group `inpuType`.
+			 * Label for this option or above a group for a group `inputType`.
 			 */
 			label: PropTypes.string,
 			/**
@@ -123,11 +123,11 @@ Setting.propTypes = {
 			 */
 			description: PropTypes.string,
 			/**
-			 * Key used for a group `inpuType`.
+			 * Key used for a group `inputType`.
 			 */
 			key: PropTypes.string,
 			/**
-			 * Nested options for a group `inpuType`.
+			 * Nested options for a group `inputType`.
 			 */
 			options: PropTypes.array,
 		} )
