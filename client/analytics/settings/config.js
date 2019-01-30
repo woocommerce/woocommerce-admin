@@ -43,9 +43,7 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 		options: [
 			{
 				key: 'defaultStatuses',
-				options: orderStatuses.filter(
-					status => defaultOrderStatuses.includes( status.value ) && 'refunded' !== status.value
-				),
+				options: orderStatuses.filter( status => defaultOrderStatuses.includes( status.value ) ),
 			},
 			{
 				key: 'customStatuses',
