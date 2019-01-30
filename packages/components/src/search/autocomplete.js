@@ -286,8 +286,7 @@ export class Autocomplete extends Component {
 	}
 
 	render() {
-		const { children, instanceId, completer, staticResults } = this.props;
-		const { className = '' } = completer;
+		const { children, instanceId, completer: { className = '' }, staticResults } = this.props;
 		const { selectedIndex } = this.state;
 		const isExpanded = this.isExpanded( this.props, this.state );
 		const options = isExpanded ? this.getOptions() : [];
