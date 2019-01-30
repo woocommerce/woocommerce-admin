@@ -210,7 +210,7 @@ class Search extends Component {
 										{ ...aria }
 									/>
 									<span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
-										{ __( 'Move backward for selected items' ) }
+										{ __( 'Move backward for selected items', 'wc-admin' ) }
 									</span>
 								</div>
 							</div>
