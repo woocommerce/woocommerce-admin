@@ -287,10 +287,10 @@ export class Autocomplete extends Component {
 	render() {
 		const { children, instanceId, completer, staticResults } = this.props;
 		const { className = '' } = completer;
-		const { selectedIndex, filteredOptions } = this.state;
-		const { key: selectedKey = '' } = filteredOptions[ selectedIndex ] || {};
+		const { selectedIndex } = this.state;
 		const isExpanded = this.isExpanded( this.props, this.state );
 		const options = isExpanded ? this.getOptions() : [];
+		const { key: selectedKey = '' } = options[ selectedIndex ] || {};
 		const listBoxId = isExpanded ? `woocommerce-search__autocomplete-${ instanceId }` : null;
 		const activeId = isExpanded
 			? `woocommerce-search__autocomplete-${ instanceId }-${ selectedKey }`
