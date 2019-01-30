@@ -64,7 +64,7 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 				moreLink: <Link href="#" type="external" />, // @TODO: this needs to be replaced with a real link.
 			},
 		} ),
-		initialValue: wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses,
+		initialValue: wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses || [],
 		defaultValue: [ 'pending', 'cancelled', 'failed' ],
 	},
 ] );
