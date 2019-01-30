@@ -196,7 +196,8 @@ export class Autocomplete extends Component {
 		const expression = 'undefined' !== typeof completer.getSearchExpression
 			? completer.getSearchExpression( escapeRegExp( query ) )
 			: escapeRegExp( query );
-		const search = new RegExp( expression, 'i' );
+		// if there is no expression, match empty string
+		const search = expression ? new RegExp( expression, 'i' ) : /^$/;
 		// filter the options we already have
 		const filteredOptions = filterOptions( search, this.state.options, selected );
 		// update the state
