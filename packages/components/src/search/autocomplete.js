@@ -208,6 +208,15 @@ export class Autocomplete extends Component {
 		}
 	}
 
+	getOptions() {
+		const { allowFreeText, completer } = this.props;
+		const { getFreeTextOptions } = completer;
+		const { filteredOptions, query } = this.state;
+
+		const additionalOptions = allowFreeText && getFreeTextOptions ? getFreeTextOptions( query ) : [];
+		return additionalOptions.concat( filteredOptions );
+	}
+
 	handleKeyDown( event ) {
 		const options = this.getOptions();
 		const { selectedIndex } = this.state;
@@ -274,15 +283,6 @@ export class Autocomplete extends Component {
 	componentWillUnmount() {
 		this.toggleKeyEvents( false );
 		this.debouncedLoadOptions.cancel();
-	}
-
-	getOptions() {
-		const { completer, allowFreeText } = this.props;
-		const { getFreeTextOptions } = completer;
-		const { filteredOptions, query } = this.state;
-
-		const additionalOptions = allowFreeText && getFreeTextOptions ? getFreeTextOptions( query ) : [];
-		return additionalOptions.concat( filteredOptions );
 	}
 
 	render() {

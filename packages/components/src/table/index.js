@@ -281,13 +281,13 @@ class TableCard extends Component {
 					),
 					searchBy && (
 						<Search
-							key="search"
-							placeholder={ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
-							inlineTags
-							type={ searchBy }
-							onChange={ this.onSearch }
-							selected={ searchedLabels }
 							allowFreeTextSearch={ true }
+							inlineTags
+							key="search"
+							onChange={ this.onSearch }
+							placeholder={ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
+							selected={ searchedLabels }
+							type={ searchBy }
 						/>
 					),
 					( downloadable || onClickDownload ) && (
