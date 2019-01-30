@@ -29,7 +29,7 @@ import TaxesReport from './taxes';
 import DownloadsReport from './downloads';
 import StockReport from './stock';
 import CustomersReport from './customers';
-import { searchItemsByString } from 'store/reports/utils';
+import { searchItemsByString } from 'wc-api/items/utils';
 import withSelect from 'wc-api/with-select';
 
 const REPORTS_FILTER = 'woocommerce-reports-list';
