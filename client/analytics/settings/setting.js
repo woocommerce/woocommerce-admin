@@ -3,14 +3,13 @@
  * External dependencies
  */
 import { Component } from '@wordpress/element';
-import { uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
+import { uniqueId } from 'lodash';
 
 /**
  * Internal dependencies
  */
 import './setting.scss';
-import sanitizeHTML from 'lib/sanitize-html';
 
 class Setting extends Component {
 	renderInput = () => {
@@ -72,12 +71,7 @@ class Setting extends Component {
 				<div className="woocommerce-setting__label">{ label }</div>
 				<div className="woocommerce-setting__options">
 					{ this.renderInput() }
-					{ helpText && (
-						<span
-							className="woocommerce-setting__help"
-							dangerouslySetInnerHTML={ sanitizeHTML( helpText ) }
-						/>
-					) }
+					{ helpText && <span className="woocommerce-setting__help">{ helpText }</span> }
 				</div>
 			</div>
 		);
@@ -92,7 +86,7 @@ Setting.propTypes = {
 	/**
 	 * Optional help text displayed underneath the setting.
 	 */
-	helpText: PropTypes.string,
+	helpText: PropTypes.oneOfType( [ PropTypes.string, PropTypes.array ] ),
 	/**
 	 * Type of input to use; defaults to a text input.
 	 */

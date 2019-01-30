@@ -4,6 +4,12 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import interpolateComponents from 'interpolate-components';
+
+/**
+ * WooCommerce dependencies
+ */
+import { Link } from '@woocommerce/components';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
@@ -47,15 +53,17 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 				options: orderStatuses.filter( status => ! defaultOrderStatuses.includes( status.value ) ),
 			},
 		],
-		helpText: sprintf(
-			__(
+		helpText: interpolateComponents( {
+			mixedString: __(
 				'Orders with these statuses are excluded from the totals in your reports. ' +
-					'The <strong>Refunded</strong> status can not be excluded.  <a href="%s">Learn more</a>',
+					'The {{strong}}Refunded{{/strong}} status can not be excluded.  {{moreLink}}Learn more{{/moreLink}}',
 				'wc-admin'
 			),
-			'#', // @TODO: this needs to be replaced with a real link.
-			'wc-admin'
-		),
+			components: {
+				strong: <strong />,
+				moreLink: <Link href="#" type="external" />, // @TODO: this needs to be replaced with a real link.
+			},
+		} ),
 		initialValue: wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses,
 		defaultValue: [ 'pending', 'cancelled', 'failed' ],
 	},
