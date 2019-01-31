@@ -61,7 +61,10 @@ class Settings extends Component {
 
 	saveChanges = () => {
 		this.props.updateSettings( this.state.settings );
-		// @todo Need a confirmation on successful update.
+		this.props.addNotice( {
+			status: 'success',
+			message: __( 'Your settings have been successfully saved.' ),
+		} );
 	};
 
 	handleInputChange( e ) {
@@ -125,9 +128,10 @@ class Settings extends Component {
 
 export default compose(
 	withDispatch( dispatch => {
-		const { updateSettings } = dispatch( 'wc-api' );
+		const { addNotice, updateSettings } = dispatch( 'wc-api' );
 
 		return {
+			addNotice,
 			updateSettings,
 		};
 	} )
