@@ -62,7 +62,7 @@ function updateSettings( resourceNames, data, fetch ) {
 function settingsToSettingsResource( settings ) {
 	const settingsData = {};
 	settings.forEach( setting => ( settingsData[ setting.id ] = setting.value ) );
-	return { [ 'settings' ]: { data: settingsData } };
+	return { [ 'settings' ]: { data: settingsData, lastReceived: new Date() } };
 }
 
 export default {

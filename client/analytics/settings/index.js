@@ -21,6 +21,7 @@ import './index.scss';
 import { analyticsSettings } from './config';
 import Header from 'header';
 import Setting from './setting';
+import withSelect from 'wc-api/with-select';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
@@ -33,6 +34,7 @@ class Settings extends Component {
 
 		this.state = {
 			settings: settings,
+			saving: false,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind( this );
@@ -59,12 +61,31 @@ class Settings extends Component {
 		}
 	};
 
+	componentDidUpdate() {
+		const { isError } = this.props;
+
+		// @TODO: Add `&& ! isRequesting` to this condition when lastReceived is correctly updated.
+		if ( this.state.saving ) {
+			if ( ! isError ) {
+				this.props.addNotice( {
+					status: 'success',
+					message: __( 'Your settings have been successfully saved.', 'wc-admin' ),
+				} );
+			} else {
+				this.props.addNotice( {
+					status: 'error',
+					message: __( 'There was an error saving your settings.  Please try again.', 'wc-admin' ),
+				} );
+			}
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( { saving: false } );
+			/* eslint-enable react/no-did-update-set-state */
+		}
+	}
+
 	saveChanges = () => {
 		this.props.updateSettings( this.state.settings );
-		this.props.addNotice( {
-			status: 'success',
-			message: __( 'Your settings have been successfully saved.' ),
-		} );
+		this.setState( { saving: true } );
 	};
 
 	handleInputChange( e ) {
@@ -127,6 +148,15 @@ class Settings extends Component {
 }
 
 export default compose(
+	withSelect( select => {
+		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
+
+		const settings = getSettings();
+		const isError = Boolean( getSettingsError() );
+		const isRequesting = isGetSettingsRequesting();
+
+		return { getSettings, isError, isRequesting, settings };
+	} ),
 	withDispatch( dispatch => {
 		const { addNotice, updateSettings } = dispatch( 'wc-api' );
 
