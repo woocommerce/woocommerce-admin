@@ -21,7 +21,11 @@ class Setting extends Component {
 				return options.map(
 					optionGroup =>
 						optionGroup.options.length > 0 && (
-							<div className="woocommerce-setting__options-group" key={ optionGroup.key }>
+							<div
+								className="woocommerce-setting__options-group"
+								key={ optionGroup.key }
+								aria-labelledby={ name + '-label' }
+							>
 								{ optionGroup.label && (
 									<span className="woocommerce-setting__options-group-label">
 										{ optionGroup.label }
@@ -64,11 +68,13 @@ class Setting extends Component {
 	}
 
 	render() {
-		const { helpText, label } = this.props;
+		const { helpText, label, name } = this.props;
 
 		return (
 			<div className="woocommerce-setting">
-				<div className="woocommerce-setting__label">{ label }</div>
+				<div className="woocommerce-setting__label" id={ name + '-label' }>
+					{ label }
+				</div>
 				<div className="woocommerce-setting__options">
 					{ this.renderInput() }
 					{ helpText && <span className="woocommerce-setting__help">{ helpText }</span> }
