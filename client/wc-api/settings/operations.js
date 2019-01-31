@@ -21,7 +21,7 @@ function update( resourceNames, data, fetch = apiFetch ) {
 
 function readSettings( resourceNames, fetch ) {
 	if ( resourceNames.includes( 'settings' ) ) {
-		const url = '/wc/v4/settings/wc_admin';
+		const url = NAMESPACE + '/settings/wc_admin';
 
 		return [
 			fetch( { path: url } )
