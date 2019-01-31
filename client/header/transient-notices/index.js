@@ -4,6 +4,7 @@
  */
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 
 /**
@@ -11,6 +12,7 @@ import PropTypes from 'prop-types';
  */
 import './style.scss';
 import TransientNotice from './transient-notice';
+import withSelect from 'wc-api/with-select';
 
 class TransientNotices extends Component {
 	render() {
@@ -36,4 +38,11 @@ TransientNotices.propTypes = {
 	notices: PropTypes.array,
 };
 
-export default TransientNotices;
+export default compose(
+	withSelect( select => {
+		const { getNotices } = select( 'wc-api' );
+		const notices = getNotices();
+
+		return { notices };
+	} )
+)( TransientNotices );
