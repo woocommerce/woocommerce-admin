@@ -44,15 +44,16 @@ class TransientNotice extends Component {
 
 		return (
 			<CSSTransition in={ this.state.visible } timeout={ 300 } classNames="slide">
-				<Notice
-					status={ status }
-					isDismissible={ isDismissible }
-					onRemove={ onRemove }
-					actions={ actions }
-					className={ classes }
-				>
-					{ message }
-				</Notice>
+				<div className={ classes } role="alert">
+					<Notice
+						status={ status }
+						isDismissible={ isDismissible }
+						onRemove={ onRemove }
+						actions={ actions }
+					>
+						{ message }
+					</Notice>
+				</div>
 			</CSSTransition>
 		);
 	}
