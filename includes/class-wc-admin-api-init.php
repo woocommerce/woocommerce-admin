@@ -167,6 +167,7 @@ class WC_Admin_Api_Init {
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-product-categories-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-product-reviews-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-controller.php';
+		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-setting-options-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-system-status-tools-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-categories-controller.php';
 		require_once dirname( __FILE__ ) . '/api/class-wc-admin-rest-reports-coupons-controller.php';
@@ -202,6 +203,7 @@ class WC_Admin_Api_Init {
 				'WC_Admin_REST_Product_Categories_Controller',
 				'WC_Admin_REST_Product_Reviews_Controller',
 				'WC_Admin_REST_Reports_Controller',
+				'WC_Admin_REST_Setting_Options_Controller',
 				'WC_Admin_REST_System_Status_Tools_Controller',
 				'WC_Admin_REST_Reports_Products_Controller',
 				'WC_Admin_REST_Reports_Variations_Controller',
@@ -378,6 +380,20 @@ class WC_Admin_Api_Init {
 		) {
 			$endpoints['/wc/v4/taxes'][0] = $endpoints['/wc/v4/taxes'][2];
 			$endpoints['/wc/v4/taxes'][1] = $endpoints['/wc/v4/taxes'][3];
+		}
+
+		// Override /wc/v4/settings/$group_id.
+		if ( isset( $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'] )
+			&& isset( $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][5] )
+			&& isset( $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][4] )
+			&& isset( $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][3] )
+			&& $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][3]['callback'][0] instanceof WC_Admin_REST_Setting_Options_Controller
+			&& $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][4]['callback'][0] instanceof WC_Admin_REST_Setting_Options_Controller
+			&& $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][5]['callback'][0] instanceof WC_Admin_REST_Setting_Options_Controller
+		) {
+			$endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][0] = $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][3];
+			$endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][1] = $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][4];
+			$endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][2] = $endpoints['/wc/v4/settings/(?P<group_id>[\w-]+)'][5];
 		}
 
 		return $endpoints;
@@ -704,7 +720,9 @@ class WC_Admin_Api_Init {
 			status varchar(200) NOT NULL,
 			customer_id BIGINT UNSIGNED NOT NULL,
 			PRIMARY KEY (order_id),
-			KEY date_created (date_created)
+			KEY date_created (date_created),
+			KEY customer_id (customer_id),
+			KEY status (status)
 		  ) $collate;
 		  CREATE TABLE {$wpdb->prefix}wc_order_product_lookup (
 			order_item_id BIGINT UNSIGNED NOT NULL,
