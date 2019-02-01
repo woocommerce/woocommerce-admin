@@ -157,12 +157,12 @@ class Search extends Component {
 	render() {
 		const autocompleter = this.getAutocompleter();
 		const {
-			placeholder,
-			inlineTags,
-			selected,
-			instanceId,
-			className,
 			allowFreeTextSearch,
+			className,
+			inlineTags,
+			instanceId,
+			placeholder,
+			selected,
 			showClearButton,
 			staticResults,
 		} = this.props;
@@ -180,10 +180,10 @@ class Search extends Component {
 				'has-inline-tags': inlineTags,
 			} ) }>
 				<Autocomplete
+					allowFreeText={ allowFreeTextSearch }
 					completer={ autocompleter }
 					onSelect={ this.selectResult }
 					selected={ selected.map( s => s.id ) }
-					allowFreeText={ allowFreeTextSearch }
 					staticResults={ staticResults }
 				>
 					{ ( { listBoxId, activeId, onChange } ) =>
@@ -226,7 +226,7 @@ class Search extends Component {
 										{ ...aria }
 									/>
 									<span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
-										{ __( 'Move backward for selected items' ) }
+										{ __( 'Move backward for selected items', 'wc-admin' ) }
 									</span>
 								</div>
 							</div>
@@ -265,6 +265,10 @@ class Search extends Component {
 }
 
 Search.propTypes = {
+	/**
+	 * Render additional options in the autocompleter to allow free text entering depending on the type.
+	 */
+	allowFreeTextSearch: PropTypes.bool,
 	/**
 	 * Class name applied to parent div.
 	 */
@@ -312,10 +316,6 @@ Search.propTypes = {
 	 */
 	inlineTags: PropTypes.bool,
 	/**
-	 * Render additional options in the autocompleter to allow free text entering depending on the type.
-	 */
-	allowFreeTextSearch: PropTypes.bool,
-	/**
 	 * Render a 'Clear' button next to the input box to remove its contents.
 	 */
 	showClearButton: PropTypes.bool,
@@ -326,10 +326,10 @@ Search.propTypes = {
 };
 
 Search.defaultProps = {
+	allowFreeTextSearch: false,
 	onChange: noop,
 	selected: [],
 	inlineTags: false,
-	allowFreeTextSearch: false,
 	showClearButton: false,
 	staticResults: false,
 };

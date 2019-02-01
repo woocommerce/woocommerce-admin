@@ -13,12 +13,12 @@ import { map } from 'lodash';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
+import { numberFormat } from '@woocommerce/number';
 
 /**
  * Internal dependencies
  */
 import CategoryBreacrumbs from './breadcrumbs';
-import { numberFormat } from 'lib/number';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
 
@@ -71,7 +71,7 @@ class CategoriesReportTable extends Component {
 		return map( categoryStats, categoryStat => {
 			const { category_id, items_sold, net_revenue, products_count, orders_count } = categoryStat;
 			const { categories, query } = this.props;
-			const category = categories[ category_id ];
+			const category = categories.get( category_id );
 			const persistedQuery = getPersistedQuery( query );
 
 			return [

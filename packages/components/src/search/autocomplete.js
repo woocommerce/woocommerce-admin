@@ -132,6 +132,16 @@ export class Autocomplete extends Component {
 	loadOptions( completer, query ) {
 		const { options } = completer;
 
+		if ( ! query ) {
+			this.setState( {
+				options: [],
+				filteredOptions: [],
+				selectedIndex: 0,
+			} );
+
+			return;
+		}
+
 		/*
 		 * We support both synchronous and asynchronous retrieval of completer options
 		 * but internally treat all as async so we maintain a single, consistent code path.
@@ -171,9 +181,7 @@ export class Autocomplete extends Component {
 				filteredOptions,
 				selectedIndex,
 			} );
-			if ( query ) {
-				this.announce( filteredOptions );
-			}
+			this.announce( filteredOptions );
 		} ) );
 	}
 
@@ -183,7 +191,7 @@ export class Autocomplete extends Component {
 		const container = event.target;
 
 		// look for the trigger prefix and search query just before the cursor location
-		const query = container.value;
+		const query = container.value.trim();
 		// asynchronously load the options for the open completer
 		if ( completer && query !== wasQuery ) {
 			if ( completer.isDebounced ) {
@@ -196,7 +204,8 @@ export class Autocomplete extends Component {
 		const expression = 'undefined' !== typeof completer.getSearchExpression
 			? completer.getSearchExpression( escapeRegExp( query ) )
 			: escapeRegExp( query );
-		const search = new RegExp( expression, 'i' );
+		// if there is no expression, match empty string
+		const search = expression ? new RegExp( expression, 'i' ) : /^$/;
 		// filter the options we already have
 		const filteredOptions = filterOptions( search, this.state.options, selected );
 		// update the state
@@ -205,6 +214,15 @@ export class Autocomplete extends Component {
 		if ( this.state.options ) {
 			this.announce( filteredOptions );
 		}
+	}
+
+	getOptions() {
+		const { allowFreeText, completer } = this.props;
+		const { getFreeTextOptions } = completer;
+		const { filteredOptions, query } = this.state;
+
+		const additionalOptions = allowFreeText && getFreeTextOptions ? getFreeTextOptions( query ) : [];
+		return additionalOptions.concat( filteredOptions );
 	}
 
 	handleKeyDown( event ) {
@@ -275,22 +293,12 @@ export class Autocomplete extends Component {
 		this.debouncedLoadOptions.cancel();
 	}
 
-	getOptions() {
-		const { completer, allowFreeText } = this.props;
-		const { getFreeTextOptions } = completer;
-		const { filteredOptions, query } = this.state;
-
-		const additionalOptions = allowFreeText && getFreeTextOptions ? getFreeTextOptions( query ) : [];
-		return additionalOptions.concat( filteredOptions );
-	}
-
 	render() {
-		const { children, instanceId, completer, staticResults } = this.props;
-		const { className = '' } = completer;
-		const { selectedIndex, filteredOptions } = this.state;
-		const { key: selectedKey = '' } = filteredOptions[ selectedIndex ] || {};
+		const { children, instanceId, completer: { className = '' }, staticResults } = this.props;
+		const { selectedIndex } = this.state;
 		const isExpanded = this.isExpanded( this.props, this.state );
 		const options = isExpanded ? this.getOptions() : [];
+		const { key: selectedKey = '' } = options[ selectedIndex ] || {};
 		const listBoxId = isExpanded ? `woocommerce-search__autocomplete-${ instanceId }` : null;
 		const activeId = isExpanded
 			? `woocommerce-search__autocomplete-${ instanceId }-${ selectedKey }`

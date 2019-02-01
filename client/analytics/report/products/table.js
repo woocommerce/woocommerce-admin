@@ -13,13 +13,13 @@ import { map } from 'lodash';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link, Tag } from '@woocommerce/components';
+import { numberFormat } from '@woocommerce/number';
 
 /**
  * Internal dependencies
  */
 import CategoryBreacrumbs from '../categories/breadcrumbs';
 import { isLowStock } from './utils';
-import { numberFormat } from 'lib/number';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
 import './style.scss';
@@ -119,11 +119,11 @@ class ProductsReportTable extends Component {
 				filter: 'single_product',
 				products: product_id,
 			} );
-			const categories = this.props.categories;
+			const { categories } = this.props;
 
 			const productCategories =
 				( category_ids &&
-					category_ids.map( category_id => categories[ category_id ] ).filter( Boolean ) ) ||
+					category_ids.map( category_id => categories.get( category_id ) ).filter( Boolean ) ) ||
 				[];
 
 			return [

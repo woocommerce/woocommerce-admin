@@ -62,9 +62,9 @@ class TableCard extends Component {
 	componentDidUpdate( { query: prevQuery, headers: prevHeaders } ) {
 		const { compareBy, headers, query } = this.props;
 
-		if ( query.filter ) {
+		if ( query.filter || prevQuery.filter ) {
 			const prevIds = prevQuery.filter ? getIdsFromQuery( prevQuery[ compareBy ] ) : [];
-			const currentIds = getIdsFromQuery( query[ compareBy ] );
+			const currentIds = query.filter ? getIdsFromQuery( query[ compareBy ] ) : [];
 			if ( ! isEqual( prevIds.sort(), currentIds.sort() ) ) {
 				/* eslint-disable react/no-did-update-set-state */
 				this.setState( {
@@ -281,14 +281,14 @@ class TableCard extends Component {
 					),
 					searchBy && (
 						<Search
-							key="search"
-							placeholder={ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
+							allowFreeTextSearch={ true }
 							inlineTags
-							type={ searchBy }
+							key="search"
 							onChange={ this.onSearch }
+							placeholder={ labels.placeholder || __( 'Search by item name', 'wc-admin' ) }
 							selected={ searchedLabels }
 							showClearButton={ true }
-							allowFreeTextSearch={ true }
+							type={ searchBy }
 						/>
 					),
 					( downloadable || onClickDownload ) && (
