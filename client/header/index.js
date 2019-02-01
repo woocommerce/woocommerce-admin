@@ -81,14 +81,6 @@ class Header extends Component {
 			'is-scrolled': isScrolled,
 		} );
 
-		const notices = [
-			{
-				id: 'my-notice',
-				status: 'success',
-				message: 'Houston, we have lift off.',
-			},
-		];
-
 		return (
 			<div className={ className }>
 				<h1 className="woocommerce-layout__header-breadcrumbs">
@@ -110,7 +102,7 @@ class Header extends Component {
 					} ) }
 				</h1>
 				<ActivityPanel />
-				<TransientNotices notices={ notices } />
+				<TransientNotices />
 			</div>
 		);
 	}
