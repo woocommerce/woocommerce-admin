@@ -139,7 +139,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test the calculations and querying works correctly for the base case of 1 order.
+	 * Test that querying statuses includes the default or query-specific statuses.
 	 *
 	 * @since 3.5.0
 	 */
