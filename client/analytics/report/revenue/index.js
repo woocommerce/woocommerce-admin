@@ -21,7 +21,7 @@ import RevenueReportTable from './table';
 
 export default class RevenueReport extends Component {
 	render() {
-		const { path, query } = this.props;
+		const { isEmpty, path, query } = this.props;
 
 		return (
 			<Fragment>
@@ -39,7 +39,7 @@ export default class RevenueReport extends Component {
 					query={ query }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
-				<RevenueReportTable query={ query } />
+				<RevenueReportTable isEmpty={ isEmpty } query={ query } />
 			</Fragment>
 		);
 	}

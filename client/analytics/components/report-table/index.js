@@ -20,6 +20,7 @@ import { onQueryChange } from '@woocommerce/navigation';
  */
 import ReportError from 'analytics/components/report-error';
 import { getReportChartData, getReportTableData } from 'wc-api/reports/utils';
+import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 import { extendTableData } from './utils';
 
@@ -64,6 +65,7 @@ class ReportTable extends Component {
 			getHeadersContent,
 			getRowsContent,
 			getSummary,
+			isEmpty,
 			itemIdField,
 			primaryData,
 			tableData,
@@ -84,12 +86,12 @@ class ReportTable extends Component {
 		}
 
 		const isRequesting = tableData.isRequesting || primaryData.isRequesting;
-		const totals = get( primaryData, [ 'data', 'totals' ], null );
-		const totalResults = items.totalResults || 0;
+		const totals = get( primaryData, [ 'data', 'totals' ], {} );
+		const totalResults = items.totalResults;
 		const { headers, ids, rows, summary } = applyFilters( TABLE_FILTER, {
 			endpoint: endpoint,
 			headers: getHeadersContent(),
-			ids: itemIdField ? items.data.map( item => item[ itemIdField ] ) : null,
+			ids: itemIdField ? items.data.map( item => item[ itemIdField ] ) : [],
 			rows: getRowsContent( items.data ),
 			totals: totals,
 			summary: getSummary ? getSummary( totals, totalResults ) : null,
@@ -107,7 +109,7 @@ class ReportTable extends Component {
 				onQueryChange={ onQueryChange }
 				onColumnsChange={ this.onColumnsChange }
 				rows={ rows }
-				rowsPerPage={ parseInt( query.per_page ) }
+				rowsPerPage={ parseInt( query.per_page ) || QUERY_DEFAULTS.pageSize }
 				summary={ summary }
 				totalRows={ totalResults }
 				{ ...tableProps }
@@ -159,7 +161,7 @@ ReportTable.propTypes = {
 	 * Primary data of that report. If it's not provided, it will be automatically
 	 * loaded via the provided `endpoint`.
 	 */
-	primaryData: PropTypes.object.isRequired,
+	primaryData: PropTypes.object,
 	/**
 	 * Table data of that report. If it's not provided, it will be automatically
 	 * loaded via the provided `endpoint`.
@@ -176,12 +178,22 @@ ReportTable.propTypes = {
 };
 
 ReportTable.defaultProps = {
-	tableData: {},
+	primaryData: {},
+	tableData: {
+		items: {
+			data: [],
+			totalResults: 0,
+		},
+		query: {},
+	},
 	tableQuery: {},
 };
 
 export default compose(
 	withSelect( ( select, props ) => {
+		if ( props.isEmpty ) {
+			return {};
+		}
 		const { endpoint, getSummary, query, tableData, tableQuery, columnPrefsKey } = props;
 		const chartEndpoint = 'variations' === endpoint ? 'products' : endpoint;
 		const primaryData = getSummary

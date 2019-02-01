@@ -21,7 +21,7 @@ import ReportSummary from 'analytics/components/report-summary';
 
 export default class CategoriesReport extends Component {
 	render() {
-		const { query, path } = this.props;
+		const { isEmpty, query, path } = this.props;
 
 		return (
 			<Fragment>
@@ -39,7 +39,7 @@ export default class CategoriesReport extends Component {
 					query={ query }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
-				<CategoriesReportTable query={ query } />
+				<CategoriesReportTable isEmpty={ isEmpty } query={ query } />
 			</Fragment>
 		);
 	}

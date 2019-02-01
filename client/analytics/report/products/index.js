@@ -23,7 +23,7 @@ import VariationsReportTable from './table-variations';
 
 export default class ProductsReport extends Component {
 	render() {
-		const { path, query } = this.props;
+		const { isEmpty, path, query } = this.props;
 		const isProductDetailsView = query.filter === 'single_product';
 
 		const itemsLabel = isProductDetailsView
@@ -49,9 +49,9 @@ export default class ProductsReport extends Component {
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
 				{ isProductDetailsView ? (
-					<VariationsReportTable query={ query } />
+					<VariationsReportTable isEmpty={ isEmpty } query={ query } />
 				) : (
-					<ProductsReportTable query={ query } />
+					<ProductsReportTable isEmpty={ isEmpty } query={ query } />
 				) }
 			</Fragment>
 		);

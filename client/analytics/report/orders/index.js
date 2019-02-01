@@ -21,7 +21,7 @@ import ReportSummary from 'analytics/components/report-summary';
 
 export default class OrdersReport extends Component {
 	render() {
-		const { path, query } = this.props;
+		const { isEmpty, path, query } = this.props;
 
 		return (
 			<Fragment>
@@ -44,7 +44,7 @@ export default class OrdersReport extends Component {
 					query={ query }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
-				<OrdersReportTable query={ query } />
+				<OrdersReportTable isEmpty={ isEmpty } query={ query } />
 			</Fragment>
 		);
 	}
