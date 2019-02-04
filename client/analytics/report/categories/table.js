@@ -127,7 +127,7 @@ class CategoriesReportTable extends Component {
 				value: formatCurrency( net_revenue ),
 			},
 			{
-				label: _n( 'orders', 'orders', orders_count, 'wc-admin' ),
+				label: _n( 'order', 'orders', orders_count, 'wc-admin' ),
 				value: numberFormat( orders_count ),
 			},
 		];
