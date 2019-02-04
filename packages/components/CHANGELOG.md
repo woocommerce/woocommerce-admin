@@ -1,3 +1,6 @@
+# 1.5.0 (unreleased)
+- Improves display of charts where all values are 0.
+
 # 1.4.2
 - Add emoji-flags dependency
 
