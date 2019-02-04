@@ -252,8 +252,6 @@ class WC_Tests_Reports_Products extends WC_Unit_Test_Case {
 
 	/**
 	 * Tests that line item refunds are reflected in product stats.
-	 *
-	 * @since 3.5.0
 	 */
 	public function test_populate_and_refund() {
 		WC_Helper_Reports::reset_stats_dbs();

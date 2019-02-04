@@ -140,8 +140,6 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 
 	/**
 	 * Test that querying statuses includes the default or query-specific statuses.
-	 *
-	 * @since 3.5.0
 	 */
 	public function test_populate_and_query_statuses() {
 		WC_Helper_Reports::reset_stats_dbs();
