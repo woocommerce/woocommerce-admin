@@ -218,7 +218,7 @@ export default class CustomersReportTable extends Component {
 	}
 
 	render() {
-		const { isEmpty, query } = this.props;
+		const { query } = this.props;
 
 		return (
 			<ReportTable
@@ -226,7 +226,6 @@ export default class CustomersReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
-				isEmpty={ isEmpty }
 				itemIdField="id"
 				query={ query }
 				labels={ { placeholder: __( 'Search by customer name', 'wc-admin' ) } }

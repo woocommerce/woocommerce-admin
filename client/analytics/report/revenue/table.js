@@ -200,7 +200,7 @@ class RevenueReportTable extends Component {
 	}
 
 	render() {
-		const { isEmpty, query, tableData } = this.props;
+		const { query, tableData } = this.props;
 
 		return (
 			<ReportTable
@@ -208,7 +208,6 @@ class RevenueReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
-				isEmpty={ isEmpty }
 				query={ query }
 				tableData={ tableData }
 				title={ __( 'Revenue', 'wc-admin' ) }

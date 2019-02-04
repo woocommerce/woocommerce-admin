@@ -21,7 +21,7 @@ import TaxesReportTable from './table';
 
 export default class TaxesReport extends Component {
 	render() {
-		const { isEmpty, query, path } = this.props;
+		const { query, path } = this.props;
 		return (
 			<Fragment>
 				<ReportFilters query={ query } path={ path } filters={ filters } />
@@ -38,7 +38,7 @@ export default class TaxesReport extends Component {
 					query={ query }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
-				<TaxesReportTable isEmpty={ isEmpty } query={ query } />
+				<TaxesReportTable query={ query } />
 			</Fragment>
 		);
 	}

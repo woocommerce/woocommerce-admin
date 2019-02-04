@@ -134,7 +134,7 @@ class CategoriesReportTable extends Component {
 	}
 
 	render() {
-		const { isEmpty, query } = this.props;
+		const { query } = this.props;
 
 		const labels = {
 			helpText: __( 'Select at least two categories to compare', 'wc-admin' ),
@@ -148,7 +148,6 @@ class CategoriesReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
-				isEmpty={ isEmpty }
 				itemIdField="category_id"
 				query={ query }
 				searchBy="categories"
@@ -167,7 +166,8 @@ class CategoriesReportTable extends Component {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		if ( props.isEmpty ) {
+		const { query } = props;
+		if ( query.search && ! ( query.categories && query.categories.length ) ) {
 			return {};
 		}
 

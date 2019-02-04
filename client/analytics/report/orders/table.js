@@ -246,7 +246,7 @@ export default class OrdersReportTable extends Component {
 	}
 
 	render() {
-		const { isEmpty, query } = this.props;
+		const { query } = this.props;
 
 		return (
 			<ReportTable
@@ -254,7 +254,6 @@ export default class OrdersReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
-				isEmpty={ isEmpty }
 				query={ query }
 				tableQuery={ {
 					extended_info: true,

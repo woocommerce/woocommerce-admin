@@ -18,7 +18,7 @@ import StockReportTable from './table';
 
 export default class StockReport extends Component {
 	render() {
-		const { isEmpty, query, path } = this.props;
+		const { query, path } = this.props;
 
 		return (
 			<Fragment>
@@ -28,7 +28,7 @@ export default class StockReport extends Component {
 					showDatePicker={ showDatePicker }
 					filters={ filters }
 				/>
-				<StockReportTable isEmpty={ isEmpty } query={ query } />
+				<StockReportTable query={ query } />
 			</Fragment>
 		);
 	}

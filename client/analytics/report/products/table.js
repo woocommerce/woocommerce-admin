@@ -226,7 +226,7 @@ class ProductsReportTable extends Component {
 	}
 
 	render() {
-		const { isEmpty, query } = this.props;
+		const { query } = this.props;
 
 		const labels = {
 			helpText: __( 'Select at least two products to compare', 'wc-admin' ),
@@ -240,7 +240,6 @@ class ProductsReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
-				isEmpty={ isEmpty }
 				itemIdField="product_id"
 				labels={ labels }
 				query={ query }
@@ -259,7 +258,8 @@ class ProductsReportTable extends Component {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		if ( props.isEmpty ) {
+		const { query } = props;
+		if ( query.search && ! ( query.products && query.products.length ) ) {
 			return {};
 		}
 

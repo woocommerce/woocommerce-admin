@@ -162,7 +162,7 @@ export default class VariationsReportTable extends Component {
 	}
 
 	render() {
-		const { isEmpty, query } = this.props;
+		const { query } = this.props;
 
 		const labels = {
 			helpText: __( 'Select at least two variations to compare', 'wc-admin' ),
@@ -176,7 +176,6 @@ export default class VariationsReportTable extends Component {
 				endpoint="variations"
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
-				isEmpty={ isEmpty }
 				itemIdField="product_id"
 				labels={ labels }
 				query={ query }

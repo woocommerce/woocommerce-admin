@@ -65,7 +65,6 @@ class ReportTable extends Component {
 			getHeadersContent,
 			getRowsContent,
 			getSummary,
-			isEmpty,
 			itemIdField,
 			primaryData,
 			tableData,
@@ -191,10 +190,10 @@ ReportTable.defaultProps = {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		if ( props.isEmpty ) {
+		const { endpoint, getSummary, query, tableData, tableQuery, columnPrefsKey } = props;
+		if ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) {
 			return {};
 		}
-		const { endpoint, getSummary, query, tableData, tableQuery, columnPrefsKey } = props;
 		const chartEndpoint = 'variations' === endpoint ? 'products' : endpoint;
 		const primaryData = getSummary
 			? getReportChartData( chartEndpoint, 'primary', query, select )

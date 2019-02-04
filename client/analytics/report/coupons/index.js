@@ -21,7 +21,7 @@ import ReportSummary from 'analytics/components/report-summary';
 
 export default class CouponsReport extends Component {
 	render() {
-		const { isEmpty, query, path } = this.props;
+		const { query, path } = this.props;
 
 		return (
 			<Fragment>
@@ -39,7 +39,7 @@ export default class CouponsReport extends Component {
 					query={ query }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
-				<CouponsReportTable isEmpty={ isEmpty } query={ query } />
+				<CouponsReportTable query={ query } />
 			</Fragment>
 		);
 	}

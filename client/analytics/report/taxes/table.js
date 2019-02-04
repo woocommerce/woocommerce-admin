@@ -143,7 +143,7 @@ export default class TaxesReportTable extends Component {
 	}
 
 	render() {
-		const { isEmpty, query } = this.props;
+		const { query } = this.props;
 
 		return (
 			<ReportTable
@@ -152,7 +152,6 @@ export default class TaxesReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
-				isEmpty={ isEmpty }
 				itemIdField="tax_rate_id"
 				query={ query }
 				searchBy="taxes"

@@ -148,9 +148,7 @@ export default compose(
 		const items = searchItemsByString( select, report, search );
 		const ids = Object.keys( items );
 		if ( ! ids.length ) {
-			return {
-				isEmpty: true,
-			};
+			return {};
 		}
 
 		return {

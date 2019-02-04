@@ -156,7 +156,7 @@ export default class CouponsReportTable extends Component {
 	}
 
 	render() {
-		const { isEmpty, query } = this.props;
+		const { query } = this.props;
 
 		return (
 			<ReportTable
@@ -165,7 +165,6 @@ export default class CouponsReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
-				isEmpty={ isEmpty }
 				itemIdField="coupon_id"
 				query={ query }
 				searchBy="coupons"

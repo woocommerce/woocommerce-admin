@@ -18,7 +18,7 @@ import CustomersReportTable from './table';
 
 export default class CustomersReport extends Component {
 	render() {
-		const { isEmpty, query, path } = this.props;
+		const { query, path } = this.props;
 		const tableQuery = {
 			orderby: 'date_last_active',
 			order: 'desc',
@@ -34,7 +34,7 @@ export default class CustomersReport extends Component {
 					showDatePicker={ false }
 					advancedFilters={ advancedFilters }
 				/>
-				<CustomersReportTable isEmpty={ isEmpty } query={ tableQuery } />
+				<CustomersReportTable query={ tableQuery } />
 			</Fragment>
 		);
 	}
