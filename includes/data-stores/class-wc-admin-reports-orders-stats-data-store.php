@@ -503,7 +503,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 */
 	protected static function is_returning_customer( $order ) {
 		global $wpdb;
-		$customer_id        = WC_Admin_Reports_Customers_Data_Store::get_customer_id_by_user_id( $order->get_user_id() );
+		$customer_id        = WC_Admin_Reports_Customers_Data_Store::get_customer_id_from_order( $order );
 		$orders_stats_table = $wpdb->prefix . self::TABLE_NAME;
 
 		if ( ! $customer_id ) {

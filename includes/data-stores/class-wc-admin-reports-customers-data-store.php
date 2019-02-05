@@ -392,6 +392,34 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	}
 
 	/**
+	 * Gets the customer ID for given order, either from user_id, if the order was done
+	 * by a registered customer, or from the billing email in the provided WC_Order.
+	 *
+	 * @param WC_Order $order Order to get customer data from.
+	 * @return int|false The ID of the retrieved customer, or false when there is no such customer.
+	 */
+	public static function get_customer_id_from_order( $order ) {
+		$user_id = $order->get_user_id();
+		if ( $user_id ) {
+			return self::get_customer_id_by_user_id( $user_id );
+		}
+
+		$email = $order->get_billing_email( 'edit' );
+
+		if ( empty( $email ) ) {
+			return false;
+		}
+
+		$guest_customer_id = self::get_customer_id_by_email( $email );
+
+		if ( $guest_customer_id ) {
+			return $guest_customer_id;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Gets the guest (no user_id) customer ID or creates a new one for
 	 * the corresponding billing email in the provided WC_Order
 	 *
@@ -502,6 +530,26 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 			$wpdb->prepare(
 				"SELECT customer_id FROM {$table_name} WHERE user_id = %d LIMIT 1",
 				$user_id
+			)
+		); // WPCS: unprepared SQL ok.
+
+		return $customer_id ? (int) $customer_id : false;
+	}
+
+	/**
+	 * Retrieve a customer id by billing email.
+	 *
+	 * @param string $email Billing email for the user.
+	 * @return false|int Customer ID if found, boolean false if not.
+	 */
+	public static function get_customer_id_by_email( $email ) {
+		global $wpdb;
+
+		$table_name  = $wpdb->prefix . self::TABLE_NAME;
+		$customer_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT customer_id FROM {$table_name} WHERE email = %s AND user_id IS NULL LIMIT 1",
+				$email
 			)
 		); // WPCS: unprepared SQL ok.
 
