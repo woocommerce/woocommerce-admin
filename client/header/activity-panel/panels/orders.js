@@ -66,6 +66,13 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 
 	const orderCardTitle = ( order, address ) => {
 		const name = `${ address.first_name } ${ address.last_name }`;
+		const customerString =
+			name.length > 1
+				? sprintf(
+						__( 'placed by {{customerLink}}%(customerName)s{{/customerLink}}', 'wc-admin' ),
+						{ customerName: name }
+					)
+				: '';
 
 		return (
 			<Fragment>
@@ -73,12 +80,12 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 					mixedString: sprintf(
 						__(
 							/* eslint-disable-next-line max-len */
-							'Order {{orderLink}}#%(orderNumber)s{{/orderLink}} placed by {{customerLink}}%(customerName)s{{/customerLink}} {{destinationFlag/}}',
+							'Order {{orderLink}}#%(orderNumber)s{{/orderLink}} %(customerString)s {{destinationFlag/}}',
 							'wc-admin'
 						),
 						{
 							orderNumber: order.number,
-							customerName: name,
+							customerString: customerString,
 						}
 					),
 					components: {
