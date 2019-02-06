@@ -218,10 +218,13 @@ ReportChart.defaultProps = {
 export default compose(
 	withSelect( ( select, props ) => {
 		const { query, endpoint, filters } = props;
-		if ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) {
-			return {};
-		}
 		const chartMode = props.mode || getChartMode( filters, query ) || 'time-comparison';
+
+		if ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) {
+			return {
+				mode: chartMode,
+			};
+		}
 
 		if ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) {
 			return {
