@@ -183,7 +183,7 @@ ReportChart.propTypes = {
 	/**
 	 * Primary data to display in the chart.
 	 */
-	primaryData: PropTypes.object.isRequired,
+	primaryData: PropTypes.object,
 	/**
 	 * The query string represented in object form.
 	 */
@@ -198,9 +198,29 @@ ReportChart.propTypes = {
 	selectedChart: PropTypes.object.isRequired,
 };
 
+ReportChart.defaultProps = {
+	primaryData: {
+		data: {
+			intervals: [],
+		},
+		isError: false,
+		isRequesting: false,
+	},
+	secondaryData: {
+		data: {
+			intervals: [],
+		},
+		isError: false,
+		isRequesting: false,
+	},
+};
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const { query, endpoint, filters } = props;
+		if ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) {
+			return {};
+		}
 		const chartMode = props.mode || getChartMode( filters, query ) || 'time-comparison';
 
 		if ( 'item-comparison' === chartMode ) {
