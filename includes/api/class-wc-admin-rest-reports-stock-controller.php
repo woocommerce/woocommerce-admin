@@ -198,7 +198,7 @@ class WC_Admin_REST_Reports_Stock_Controller extends WC_REST_Reports_Controller 
 			'name'           => $product->get_name(),
 			'sku'            => $product->get_sku(),
 			'stock_status'   => $product->get_stock_status(),
-			'stock_quantity' => (int) $product->get_stock_quantity(),
+			'stock_quantity' => (float) $product->get_stock_quantity(),
 			'manage_stock'   => $product->get_manage_stock(),
 		);
 
