@@ -90,7 +90,7 @@ export class ReportChart extends Component {
 
 	renderChart( mode, isRequesting, chartData ) {
 		const {
-			emptySearch,
+			emptySearchResults,
 			interactiveLegend,
 			itemsLabel,
 			legendPosition,
@@ -103,7 +103,7 @@ export class ReportChart extends Component {
 		const currentInterval = getIntervalForQuery( query );
 		const allowedIntervals = getAllowedIntervalsForQuery( query );
 		const formats = getDateFormatsForInterval( currentInterval, primaryData.data.intervals.length );
-		const emptyMessage = emptySearch
+		const emptyMessage = emptySearchResults
 			? __( 'No data for the current search', 'wc-admin' )
 			: __( 'No data for the selected date range', 'wc-admin' );
 		return (
@@ -228,7 +228,7 @@ export default compose(
 
 		if ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) {
 			return {
-				emptySearch: true,
+				emptySearchResults: true,
 				mode: chartMode,
 			};
 		}
