@@ -122,15 +122,17 @@ class D3Chart extends Component {
 		const visibleKeys = newOrderedKeys.filter( key => key.visible );
 		const lineData = getLineData( data, newOrderedKeys );
 		const yMax = getYMax( lineData );
-		this.setState( {
-			isEmpty: yMax === 0,
-		} );
 		const yScale = getYScale( adjHeight, yMax );
 		const parseDate = d3UTCParse( dateParser );
 		const uniqueDates = getUniqueDates( lineData, parseDate );
 		const xLineScale = getXLineScale( uniqueDates, adjWidth );
 		const xScale = getXScale( uniqueDates, adjWidth, compact );
 		const xTicks = getXTicks( uniqueDates, adjWidth, mode, interval );
+
+		this.setState( {
+			isEmpty: yMax === 0,
+		} );
+
 		return {
 			adjHeight,
 			adjWidth,
