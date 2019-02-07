@@ -233,12 +233,6 @@ export default compose(
 			};
 		}
 
-		if ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) {
-			return {
-				mode: chartMode,
-			};
-		}
-
 		if ( 'item-comparison' === chartMode ) {
 			const primaryData = getReportChartData( endpoint, 'primary', query, select );
 			return {
