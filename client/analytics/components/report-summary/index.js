@@ -32,11 +32,11 @@ export class ReportSummary extends Component {
 	}
 
 	getValues( key, type ) {
-		const { emptySearch, summaryData } = this.props;
+		const { emptySearchResults, summaryData } = this.props;
 		const { totals } = summaryData;
 
-		const primaryValue = emptySearch ? 0 : totals.primary[ key ];
-		const secondaryValue = emptySearch ? 0 : totals.secondary[ key ];
+		const primaryValue = emptySearchResults ? 0 : totals.primary[ key ];
+		const secondaryValue = emptySearchResults ? 0 : totals.secondary[ key ];
 
 		return {
 			delta: calculateDelta( primaryValue, secondaryValue ),
@@ -136,7 +136,7 @@ export default compose(
 		const { query, endpoint } = props;
 		if ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) {
 			return {
-				emptySearch: true,
+				emptySearchResults: true,
 			};
 		}
 		const summaryData = getSummaryNumbers( endpoint, query, select );
