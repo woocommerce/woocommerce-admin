@@ -1,6 +1,6 @@
 <?php
 /**
- * Generates a usage PHP array of feature flags, based on the config used by the client application.
+ * Generates an array of feature flags, based on the config used by the client application.
  *
  * @package WooCommerce Admin
  */
@@ -13,7 +13,7 @@ $config_json = file_get_contents( 'config/' . $phase . '.json' );
 $config      = json_decode( $config_json );
 
 $write  = "<?php\n";
-$write .= "// This file is auto-generated as part of the build process. Changing values here without the correct JavaScript may break things.\n";
+$write .= "// This file is auto-generated as part of the build process. Changing values here without the correct assets may break things.\n";
 $write .= "function wc_admin_get_feature_config() {\n";
 $write .= "\treturn array(\n";
 foreach ( $config->features as $feature => $bool ) {

@@ -23,30 +23,6 @@ import DevDocs from 'devdocs';
 const getPages = () => {
 	const pages = [
 		{
-			container: Dashboard,
-			path: '/',
-			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
-		},
-		{
-			container: Analytics,
-			path: '/analytics',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
-			wpClosedMenu: 'toplevel_page_woocommerce',
-		},
-		{
-			container: AnalyticsSettings,
-			path: '/analytics/settings',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
-			wpClosedMenu: 'toplevel_page_woocommerce',
-		},
-		{
-			container: AnalyticsReport,
-			path: '/analytics/:report',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
-			wpClosedMenu: 'toplevel_page_woocommerce',
-		},
-		{
 			container: DevDocs,
 			path: '/devdocs',
 			wpOpenMenu: 'toplevel_page_woocommerce',
@@ -59,6 +35,36 @@ const getPages = () => {
 			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
 		},
 	];
+
+	if ( window.wcAdminFeature.dashboard ) {
+		pages.push( {
+			container: Dashboard,
+			path: '/',
+			wpOpenMenu: 'toplevel_page_woocommerce',
+			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
+		} );
+	}
+
+	if ( window.wcAdminFeature.analytics ) {
+		pages.push( {
+			container: Analytics,
+			path: '/analytics',
+			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpClosedMenu: 'toplevel_page_woocommerce',
+		} );
+		pages.push( {
+			container: AnalyticsSettings,
+			path: '/analytics/settings',
+			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpClosedMenu: 'toplevel_page_woocommerce',
+		} );
+		pages.push( {
+			container: AnalyticsReport,
+			path: '/analytics/:report',
+			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpClosedMenu: 'toplevel_page_woocommerce',
+		} );
+	}
 
 	return pages;
 };

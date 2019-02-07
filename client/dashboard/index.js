@@ -18,22 +18,6 @@ import StorePerformance from './store-performance';
 export default class Dashboard extends Component {
 	render() {
 		const { query, path } = this.props;
-
-		/** eslint-disable */
-		if ( window.wcAdminFeature.analytics ) {
-			console.log( 'is analytics feature enabled: true' );
-		} else {
-			console.log( 'is analytics feature enabled: false' );
-		}
-
-		console.log( 'analytics/categories' );
-		if ( window.wcAdminFeature[ 'analytics/categories' ] ) {
-			console.log( 'is analytics/categories feature enabled: true' );
-		} else {
-			console.log( 'is analytics/categories feature enabled: false' );
-		}
-		/** eslint-enable */
-
 		return (
 			<Fragment>
 				<Header sections={ [ __( 'Dashboard', 'wc-admin' ) ] } />
