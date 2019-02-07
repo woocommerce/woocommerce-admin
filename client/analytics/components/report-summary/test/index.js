@@ -97,7 +97,7 @@ describe( 'ReportSummary', () => {
 
 	test( 'should show 0s when displaying an empty search', () => {
 		const reportChart = renderChart( 'number', null, undefined, false, false, {
-			emptySearch: true,
+			emptySearchResults: true,
 		} );
 		const summaryNumber = reportChart.find( 'SummaryNumber' );
 
