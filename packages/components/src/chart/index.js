@@ -422,7 +422,8 @@ Chart.propTypes = {
 	 */
 	dateParser: PropTypes.string.isRequired,
 	/**
-	 * The message to be displayed if there is no data to render.
+	 * The message to be displayed if there is no data to render. If no message is provided,
+	 * nothing will be displayed.
 	 */
 	emptyMessage: PropTypes.string,
 	/**
