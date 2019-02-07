@@ -4732,6 +4732,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			) as $order_time
 		) {
 			// Order with 1 product.
+			sleep( 1 );
 			$order = WC_Helper_Order::create_order( $customer->get_id(), $product );
 			$order->set_date_created( $order_time );
 			$order->set_status( $order_status );
