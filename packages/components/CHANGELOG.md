@@ -4,6 +4,10 @@
 - Improves display of charts where all values are 0.
 - Fix X-axis labels in hourly bar charts.
 - New `<Search>` prop named `showClearButton`, that will display a 'Clear' button when the search box contains one or more tags.
+- Number of selectable chart elements is now limited to 5.
+- Color scale logic for charts with lots of items has been fixed.
+- Update `@woocommerce/navigation` to v2.0.0
+- Bug fix for `<StockReportTable />` returning N/A instead of zero.
 
 # 1.4.2
 - Add emoji-flags dependency
