@@ -36,7 +36,7 @@ const getPages = () => {
 		},
 	];
 
-	if ( window.wcAdminFeature.dashboard ) {
+	if ( window.wcAdminFeatures.dashboard ) {
 		pages.push( {
 			container: Dashboard,
 			path: '/',
@@ -45,7 +45,7 @@ const getPages = () => {
 		} );
 	}
 
-	if ( window.wcAdminFeature.analytics ) {
+	if ( window.wcAdminFeatures.analytics ) {
 		pages.push( {
 			container: Analytics,
 			path: '/analytics',

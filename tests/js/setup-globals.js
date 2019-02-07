@@ -65,9 +65,9 @@ global.wcSettings = {
 };
 
 const config = require( '../../config/development.json' );
-window.wcAdminFeature = {};
+window.wcAdminFeatures = {};
 config && config.features && Object.keys( config.features ).forEach( ( key ) => {
-  window.wcAdminFeature[ key ] = config.features[ key ];
+  window.wcAdminFeatures[ key ] = config.features[ key ];
 } );
 
 setLocaleData( { '': { domain: 'wc-admin', lang: 'en_US' } }, 'wc-admin' );

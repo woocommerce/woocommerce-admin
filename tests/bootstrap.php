@@ -137,5 +137,3 @@ function wc_admin_get_feature_config() {
 	}
 	return $flags;
 }
-
-define( 'WC_ADMIN_PHASE', 'development' );

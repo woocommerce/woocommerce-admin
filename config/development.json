@@ -1,8 +1,8 @@
 {
 	"features": {
+		"activity-panels": true,
 		"analytics": true,
 		"analytics/categories": true,
-		"dashboard": true,
-		"activity-panels": true
+		"dashboard": true
 	}
 }

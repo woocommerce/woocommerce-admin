@@ -16,7 +16,7 @@ const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-web
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 let WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'core';
-if ( [ 'development', 'beta', 'plugin', 'core' ].indexOf( WC_ADMIN_PHASE ) === -1 ) {
+if ( [ 'development', 'plugin', 'core' ].indexOf( WC_ADMIN_PHASE ) === -1 ) {
 	WC_ADMIN_PHASE = 'core';
 }
 const WC_ADMIN_CONFIG = require( path.join( __dirname, 'config', WC_ADMIN_PHASE + '.json' ) );
@@ -143,11 +143,9 @@ const webpackConfig = {
 		},
 	},
 	plugins: [
+		// Inject the current feature flags.
 		new DefinePlugin( {
-			// Inject the `WC_ADMIN_PHASE` global, used for feature flagging.
-			// Defaults to most production ready ('core').
-			'window.WC_ADMIN_PHASE': WC_ADMIN_PHASE,
-			'window.wcAdminFeature': { ...WC_ADMIN_CONFIG.features },
+			'window.wcAdminFeatures': { ...WC_ADMIN_CONFIG.features },
 		} ),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {

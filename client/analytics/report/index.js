@@ -83,7 +83,7 @@ const getReports = () => {
 		},
 	];
 
-	if ( window.wcAdminFeature[ 'analytics/categories' ] ) {
+	if ( window.wcAdminFeatures[ 'analytics/categories' ] ) {
 		reports.push( {
 			report: 'categories',
 			title: __( 'Categories', 'wc-admin' ),

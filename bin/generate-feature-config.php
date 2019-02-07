@@ -6,7 +6,7 @@
  */
 
 $phase = isset( $_SERVER['WC_ADMIN_PHASE'] ) ? $_SERVER['WC_ADMIN_PHASE'] : ''; // WPCS: sanitization ok.
-if ( empty( $phase ) || ! in_array( $phase, array( 'development', 'beta', 'plugin', 'core' ) ) ) {
+if ( empty( $phase ) || ! in_array( $phase, array( 'development', 'plugin', 'core' ) ) ) {
 	$phase = 'core';
 }
 $config_json = file_get_contents( 'config/' . $phase . '.json' );
@@ -20,8 +20,7 @@ foreach ( $config->features as $feature => $bool ) {
 	$write .= "\t\t'{$feature}' => " . ( $bool ? 'true' : 'false' ) . ",\n";
 }
 $write .= "\t);\n";
-$write .= "}\n\n";
-$write .= "define( 'WC_ADMIN_PHASE', '{$phase}' );\n";
+$write .= "}\n";
 
 $config_file = fopen( 'includes/feature-config.php', 'w' );
 fwrite( $config_file, $write );
