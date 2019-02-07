@@ -109,13 +109,15 @@ function wc_admin_register_pages() {
 		)
 	);
 
-	wc_admin_register_page(
-		array(
-			'title'  => __( 'Categories', 'wc-admin' ),
-			'parent' => '/analytics/revenue',
-			'path'   => '/analytics/categories',
-		)
-	);
+	if ( wc_admin_is_feature_enabled( 'analytics/categories' ) ) {
+		wc_admin_register_page(
+			array(
+				'title'  => __( 'Categories', 'wc-admin' ),
+				'parent' => '/analytics/revenue',
+				'path'   => '/analytics/categories',
+			)
+		);
+	}
 
 	wc_admin_register_page(
 		array(
