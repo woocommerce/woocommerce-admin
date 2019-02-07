@@ -267,6 +267,7 @@ class Chart extends Component {
 		const { interactiveLegend, orderedKeys, visibleData, width } = this.state;
 		const {
 			dateParser,
+			emptyMessage,
 			interval,
 			isRequesting,
 			isViewportLarge,
@@ -380,6 +381,7 @@ class Chart extends Component {
 									data={ visibleData }
 									dateParser={ dateParser }
 									height={ chartHeight }
+									emptyMessage={ emptyMessage }
 									interval={ interval }
 									margin={ margin }
 									mode={ mode }
@@ -419,6 +421,10 @@ Chart.propTypes = {
 	 * Format to parse dates into d3 time format
 	 */
 	dateParser: PropTypes.string.isRequired,
+	/**
+	 * The message to be displayed if there is no data to render.
+	 */
+	emptyMessage: PropTypes.string,
 	/**
 	 * Label describing the legend items.
 	 */
