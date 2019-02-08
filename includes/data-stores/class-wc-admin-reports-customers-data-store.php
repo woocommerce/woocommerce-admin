@@ -577,6 +577,37 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	}
 
 	/**
+	 * Update the customers date of first order when updating an order.
+	 *
+	 * @param int $order_id Order ID.
+	 * @return int|bool Returns -1 if order won't be processed, or a boolean indicating processing success.
+	 */
+	public static function sync_order_customer( $order_id ) {
+		global $wpdb;
+		$table_name        = $wpdb->prefix . self::TABLE_NAME;
+		$order_stats_table = $wpdb->prefix . 'wc_order_stats';
+
+		if ( 'shop_order' !== get_post_type( $order_id ) ) {
+			return -1;
+		}
+
+		$first_order = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT ANY_VALUE( customer_id ) as customer_id, MIN( date_created ) as date_created FROM ${order_stats_table} WHERE  customer_id = ( SELECT customer_id FROM ${order_stats_table} WHERE order_id = %d )",
+				$order_id
+			)
+		);
+
+		return $wpdb->update(
+			$table_name,
+			array(
+				'date_first_order' => $first_order->date_created,
+			),
+			array( 'customer_id' => $first_order->customer_id )
+		);
+	}
+
+	/**
 	 * Returns string to be used as cache key for the data.
 	 *
 	 * @param array $params Query parameters.

@@ -579,12 +579,13 @@ class WC_Admin_Api_Init {
 				WC_Admin_Reports_Products_Data_Store::sync_order_products( $order_id ),
 				WC_Admin_Reports_Coupons_Data_Store::sync_order_coupons( $order_id ),
 				WC_Admin_Reports_Taxes_Data_Store::sync_order_taxes( $order_id ),
+				WC_Admin_Reports_Customers_Data_Store::sync_order_customer( $order_id ),
 			)
 		);
 
 		// If all updates were either skipped or successful, we're done.
 		// The update methods return -1 for skip, or a boolean success indicator.
-		if ( 4 === absint( $result ) ) {
+		if ( 5 === absint( $result ) ) {
 			return;
 		}
 
