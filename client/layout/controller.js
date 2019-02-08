@@ -21,20 +21,22 @@ import Dashboard from 'dashboard';
 import DevDocs from 'devdocs';
 
 const getPages = () => {
-	const pages = [
-		{
+	const pages = [];
+
+	if ( window.wcAdminFeatures.devdocs ) {
+		pages.push( {
 			container: DevDocs,
 			path: '/devdocs',
 			wpOpenMenu: 'toplevel_page_woocommerce',
 			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
-		},
-		{
+		} );
+		pages.push( {
 			container: DevDocs,
 			path: '/devdocs/:component',
 			wpOpenMenu: 'toplevel_page_woocommerce',
 			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
-		},
-	];
+		} );
+	}
 
 	if ( window.wcAdminFeatures.dashboard ) {
 		pages.push( {

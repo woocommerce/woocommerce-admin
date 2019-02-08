@@ -2,7 +2,7 @@
 	"features": {
 		"activity-panels": false,
 		"analytics": true,
-		"analytics/categories": false,
-		"dashboard": true
+		"dashboard": true,
+		"devdocs": false
 	}
 }

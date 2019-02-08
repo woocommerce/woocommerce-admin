@@ -52,6 +52,11 @@ const getReports = () => {
 			component: OrdersReport,
 		},
 		{
+			report: 'categories',
+			title: __( 'Categories', 'wc-admin' ),
+			component: CategoriesReport,
+		},
+		{
 			report: 'coupons',
 			title: __( 'Coupons', 'wc-admin' ),
 			component: CouponsReport,
@@ -83,13 +88,6 @@ const getReports = () => {
 		},
 	];
 
-	if ( window.wcAdminFeatures[ 'analytics/categories' ] ) {
-		reports.push( {
-			report: 'categories',
-			title: __( 'Categories', 'wc-admin' ),
-			component: CategoriesReport,
-		} );
-	}
 	return applyFilters( REPORTS_FILTER, reports );
 };
 

@@ -116,15 +116,13 @@ function wc_admin_register_pages() {
 			)
 		);
 
-		if ( wc_admin_is_feature_enabled( 'analytics/categories' ) ) {
-			wc_admin_register_page(
-				array(
-					'title'  => __( 'Categories', 'wc-admin' ),
-					'parent' => '/analytics/revenue',
-					'path'   => '/analytics/categories',
-				)
-			);
-		}
+		wc_admin_register_page(
+			array(
+				'title'  => __( 'Categories', 'wc-admin' ),
+				'parent' => '/analytics/revenue',
+				'path'   => '/analytics/categories',
+			)
+		);
 
 		wc_admin_register_page(
 			array(
@@ -175,7 +173,7 @@ function wc_admin_register_pages() {
 		);
 	}
 
-	if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+	if ( wc_admin_is_feature_enabled( 'devdocs' ) && defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 		wc_admin_register_page(
 			array(
 				'title'  => 'DevDocs',
