@@ -892,6 +892,7 @@ class WC_Admin_Api_Init {
 				email varchar(100) NOT NULL,
 				date_last_active timestamp NULL default null,
 				date_registered timestamp NULL default null,
+				date_first_order timestamp NULL default null,
 				country char(2) DEFAULT '' NOT NULL,
 				postcode varchar(20) DEFAULT '' NOT NULL,
 				city varchar(100) DEFAULT '' NOT NULL,
