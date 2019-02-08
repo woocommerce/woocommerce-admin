@@ -403,7 +403,6 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'tax_total'          => $order->get_total_tax(),
 			'shipping_total'     => $order->get_shipping_total(),
 			'net_total'          => (float) $order->get_total() - (float) $order->get_total_tax() - (float) $order->get_shipping_total(),
-			'returning_customer' => self::is_returning_customer( $order ),
 			'status'             => self::normalize_order_status( $order->get_status() ),
 		);
 		$format = array(
@@ -506,33 +505,6 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		}
 
 		return $num_items;
-	}
-
-	/**
-	 * Check to see if an order's customer has made previous orders or not
-	 *
-	 * @param array $order WC_Order object.
-	 * @return bool
-	 */
-	protected static function is_returning_customer( $order ) {
-		global $wpdb;
-		$customer_id        = WC_Admin_Reports_Customers_Data_Store::get_customer_id_by_user_id( $order->get_user_id() );
-		$orders_stats_table = $wpdb->prefix . self::TABLE_NAME;
-
-		if ( ! $customer_id ) {
-			return false;
-		}
-
-		$customer_orders = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM ${orders_stats_table} WHERE customer_id = %d AND date_created < %s AND order_id != %d",
-				$customer_id,
-				date( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ),
-				$order->get_id()
-			)
-		);
-
-		return $customer_orders >= 1;
 	}
 
 	/**
