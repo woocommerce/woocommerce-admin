@@ -1,5 +1,5 @@
 # 1.5.0 (unreleased)
-- Chart component: new prop `emptyMessage`. When a message is provided, it will be displayed on top of the chart if there are no values higher than 0.
+- Chart component: new props `emptyMessage` and `baseValue`. When an empty message is provided, it will be displayed on top of the chart if there are no values different than `baseValue`.
 - Chart component: remove d3-array dependency.
 - Chart component: fix display when there is no data.
 - Improves display of charts where all values are 0.
