@@ -20,6 +20,7 @@ import {
 	getUniqueKeys,
 	getUniqueDates,
 	getFormatter,
+	isDataEmpty,
 } from './utils/index';
 import {
 	getXScale,
@@ -42,9 +43,6 @@ class D3Chart extends Component {
 		this.drawChart = this.drawChart.bind( this );
 		this.getParams = this.getParams.bind( this );
 		this.tooltipRef = createRef();
-		this.state = {
-			isEmpty: false,
-		};
 	}
 
 	drawChart( node ) {
@@ -129,10 +127,6 @@ class D3Chart extends Component {
 		const xScale = getXScale( uniqueDates, adjWidth, compact );
 		const xTicks = getXTicks( uniqueDates, adjWidth, mode, interval );
 
-		this.setState( {
-			isEmpty: yMax === 0,
-		} );
-
 		return {
 			adjHeight,
 			adjWidth,
@@ -168,10 +162,9 @@ class D3Chart extends Component {
 	}
 
 	getEmptyMessage() {
-		const { isEmpty } = this.state;
-		const { emptyMessage } = this.props;
+		const { baseValue, data, emptyMessage } = this.props;
 
-		if ( isEmpty && emptyMessage ) {
+		if ( emptyMessage && isDataEmpty( data, baseValue ) ) {
 			return (
 				<div className="d3-chart__empty-message">{ emptyMessage }</div>
 			);
@@ -204,6 +197,11 @@ class D3Chart extends Component {
 }
 
 D3Chart.propTypes = {
+	/**
+	 * Base chart value. If no data value is different than the baseValue, the
+	 * `emptyMessage` will be displayed if provided.
+	 */
+	baseValue: PropTypes.number,
 	/**
 	 * Additional CSS classes.
 	 */
@@ -290,6 +288,7 @@ D3Chart.propTypes = {
 };
 
 D3Chart.defaultProps = {
+	baseValue: 0,
 	data: [],
 	dateParser: '%Y-%m-%dT%H:%M:%S',
 	height: 200,
