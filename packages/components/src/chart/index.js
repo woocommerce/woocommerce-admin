@@ -266,6 +266,7 @@ class Chart extends Component {
 	render() {
 		const { interactiveLegend, orderedKeys, visibleData, width } = this.state;
 		const {
+			baseValue,
 			dateParser,
 			emptyMessage,
 			interval,
@@ -377,6 +378,7 @@ class Chart extends Component {
 						{ ! isRequesting &&
 							width > 0 && (
 								<D3Chart
+									baseValue={ baseValue }
 									colorScheme={ d3InterpolateViridis }
 									data={ visibleData }
 									dateParser={ dateParser }
@@ -413,6 +415,11 @@ Chart.propTypes = {
 	 * Allowed intervals to show in a dropdown.
 	 */
 	allowedIntervals: PropTypes.array,
+	/**
+	 * Base chart value. If no data value is different than the baseValue, the
+	 * `emptyMessage` will be displayed if provided.
+	 */
+	baseValue: PropTypes.number,
 	/**
 	 * An array of data.
 	 */
@@ -507,6 +514,7 @@ Chart.propTypes = {
 };
 
 Chart.defaultProps = {
+	baseValue: 0,
 	data: [],
 	dateParser: '%Y-%m-%dT%H:%M:%S',
 	interactiveLegend: true,
