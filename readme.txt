@@ -1,6 +1,6 @@
 === WooCommerce Admin ===
 Contributors: automattic
-Tags: ecommerce, e-commerce, store, sales, reports, analytics, stats, woo commerce, woocommerce
+Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.0.0
 Tested up to: 5.0.3
 Stable tag: 1.0.0
