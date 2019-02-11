@@ -515,24 +515,20 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 * @return bool
 	 */
 	protected static function is_returning_customer( $order ) {
-		global $wpdb;
-		$customer_id        = WC_Admin_Reports_Customers_Data_Store::get_customer_id_by_user_id( $order->get_user_id() );
-		$orders_stats_table = $wpdb->prefix . self::TABLE_NAME;
+		$customer_id = WC_Admin_Reports_Customers_Data_Store::get_customer_id_by_user_id( $order->get_user_id() );
 
 		if ( ! $customer_id ) {
 			return false;
 		}
 
-		$customer_orders = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM ${orders_stats_table} WHERE customer_id = %d AND date_created < %s AND order_id != %d",
-				$customer_id,
-				date( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ),
-				$order->get_id()
-			)
-		);
+		$oldest_orders = WC_Admin_Reports_Customers_Data_Store::get_oldest_orders( $customer_id );
+		$first_order   = $oldest_orders[0];
 
-		return $customer_orders >= 1;
+		if ( ! $first_order ) {
+			return false;
+		}
+
+		return (int) $order->get_id() !== (int) $first_order->order_id;
 	}
 
 	/**
