@@ -6,7 +6,7 @@
  */
 
 $phase = isset( $_SERVER['WC_ADMIN_PHASE'] ) ? $_SERVER['WC_ADMIN_PHASE'] : ''; // WPCS: sanitization ok.
-if ( empty( $phase ) || ! in_array( $phase, array( 'development', 'plugin', 'core' ) ) ) {
+if ( ! in_array( $phase, array( 'development', 'plugin', 'core' ) ) ) {
 	$phase = 'core';
 }
 $config_json = file_get_contents( 'config/' . $phase . '.json' );

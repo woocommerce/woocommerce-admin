@@ -168,7 +168,6 @@ const webpackConfig = {
 				transform: content => content,
 			} ) )
 		),
-
 	],
 };
 
