@@ -528,7 +528,42 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			return false;
 		}
 
+		// Order is older than previous first order.
+		if ( $order->get_date_created() < new WC_DateTime( $first_order->date_created ) ) {
+			self::set_customer_first_order( $customer_id, $order->get_id() );
+			return false;
+		}
+		// First order date has changed and next oldest is now the first order.
+		if (
+			(int) $order->get_id() === (int) $first_order->order_id &&
+			$order->get_date_created() > new WC_DateTime( $first_order->date_created ) &&
+			$oldest_orders[1] &&
+			new WC_DateTime( $oldest_orders[1]->date_created ) < $order->get_date_created()
+		) {
+			self::set_customer_first_order( $customer_id, $oldest_orders[1]->order_id );
+			return true;
+		}
+
 		return (int) $order->get_id() !== (int) $first_order->order_id;
+	}
+
+	/**
+	 * Set a customer's first order and all others to returning.
+	 *
+	 * @param int $customer_id Customer ID.
+	 * @param int $order_id Order ID.
+	 */
+	protected static function set_customer_first_order( $customer_id, $order_id ) {
+		global $wpdb;
+		$orders_stats_table = $wpdb->prefix . self::TABLE_NAME;
+
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE ${orders_stats_table} SET returning_customer = CASE WHEN order_id = %d THEN false ELSE true END WHERE customer_id = %d",
+				$order_id,
+				$customer_id
+			)
+		);
 	}
 
 	/**
