@@ -522,11 +522,12 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		}
 
 		$oldest_orders = WC_Admin_Reports_Customers_Data_Store::get_oldest_orders( $customer_id );
-		$first_order   = $oldest_orders[0];
 
-		if ( ! $first_order ) {
+		if ( empty( $oldest_orders ) ) {
 			return false;
 		}
+
+		$first_order = $oldest_orders[0];
 
 		// Order is older than previous first order.
 		if ( $order->get_date_created() < new WC_DateTime( $first_order->date_created ) ) {
