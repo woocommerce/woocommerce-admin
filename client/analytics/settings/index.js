@@ -158,7 +158,8 @@ export default compose(
 		return { getSettings, isError, isRequesting, settings };
 	} ),
 	withDispatch( dispatch => {
-		const { addNotice, updateSettings } = dispatch( 'wc-api' );
+		const { addNotice } = dispatch( 'wc-admin' );
+		const { updateSettings } = dispatch( 'wc-api' );
 
 		return {
 			addNotice,

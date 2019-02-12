@@ -21,7 +21,7 @@ class TransientNotices extends Component {
 
 		return (
 			<section className={ classes }>
-				{ notices && notices.map( notice => <TransientNotice key={ notice.id } { ...notice } /> ) }
+				{ notices && notices.map( ( notice, i ) => <TransientNotice key={ i } { ...notice } /> ) }
 			</section>
 		);
 	}
@@ -40,7 +40,7 @@ TransientNotices.propTypes = {
 
 export default compose(
 	withSelect( select => {
-		const { getNotices } = select( 'wc-api' );
+		const { getNotices } = select( 'wc-admin' );
 		const notices = getNotices();
 
 		return { notices };
