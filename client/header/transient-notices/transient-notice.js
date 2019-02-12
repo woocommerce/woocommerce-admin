@@ -8,6 +8,7 @@ import { CSSTransition } from 'react-transition-group';
 import { noop } from 'lodash';
 import { Notice } from '@wordpress/components';
 import PropTypes from 'prop-types';
+import { speak } from '@wordpress/a11y';
 
 class TransientNotice extends Component {
 	constructor( props ) {
@@ -32,6 +33,7 @@ class TransientNotice extends Component {
 		/* eslint-disable react/no-did-mount-set-state */
 		this.setState( { visible: true, timeout } );
 		/* eslint-enable react/no-did-mount-set-state */
+		speak( this.props.message );
 	}
 
 	componentWillUnmount() {
@@ -44,7 +46,7 @@ class TransientNotice extends Component {
 
 		return (
 			<CSSTransition in={ this.state.visible } timeout={ 300 } classNames="slide">
-				<div className={ classes } role="alert">
+				<div className={ classes }>
 					<Notice
 						status={ status }
 						isDismissible={ isDismissible }
