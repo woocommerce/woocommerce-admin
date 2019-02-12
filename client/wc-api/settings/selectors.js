@@ -20,7 +20,6 @@ const getSettingsError = getResource => () => {
 
 const isGetSettingsRequesting = getResource => () => {
 	const { lastRequested, lastReceived } = getResource( 'settings' );
-
 	if ( isNil( lastRequested ) || isNil( lastReceived ) ) {
 		return true;
 	}

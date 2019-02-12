@@ -62,17 +62,16 @@ class Settings extends Component {
 	};
 
 	componentDidUpdate() {
-		const { isError } = this.props;
+		const { addNotice, isError, isRequesting } = this.props;
 
-		// @TODO: Add `&& ! isRequesting` to this condition when lastReceived is correctly updated.
-		if ( this.state.saving ) {
+		if ( this.state.saving && ! isRequesting ) {
 			if ( ! isError ) {
-				this.props.addNotice( {
+				addNotice( {
 					status: 'success',
 					message: __( 'Your settings have been successfully saved.', 'wc-admin' ),
 				} );
 			} else {
-				this.props.addNotice( {
+				addNotice( {
 					status: 'error',
 					message: __( 'There was an error saving your settings.  Please try again.', 'wc-admin' ),
 				} );
