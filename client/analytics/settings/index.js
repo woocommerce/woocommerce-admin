@@ -63,8 +63,9 @@ class Settings extends Component {
 
 	componentDidUpdate() {
 		const { addNotice, isError, isRequesting } = this.props;
+		const { saving } = this.state;
 
-		if ( this.state.saving && ! isRequesting ) {
+		if ( saving && ! isRequesting ) {
 			if ( ! isError ) {
 				addNotice( {
 					status: 'success',
