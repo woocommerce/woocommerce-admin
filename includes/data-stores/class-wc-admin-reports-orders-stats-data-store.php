@@ -535,11 +535,11 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			return false;
 		}
 		// First order date has changed and next oldest is now the first order.
-		$second_order = $oldest_orders[1];
+		$second_order = isset( $oldest_orders[1] ) ? $oldest_orders[1] : false;
 		if (
 			(int) $order->get_id() === (int) $first_order->order_id &&
 			$order->get_date_created() > new WC_DateTime( $first_order->date_created ) &&
-			isset( $second_order ) &&
+			$second_order &&
 			new WC_DateTime( $second_order->date_created ) < $order->get_date_created()
 		) {
 			self::set_customer_first_order( $customer_id, $second_order->order_id );
