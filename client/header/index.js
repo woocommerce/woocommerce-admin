@@ -20,7 +20,6 @@ import { Link } from '@woocommerce/components';
  */
 import './style.scss';
 import ActivityPanel from './activity-panel';
-import TransientNotices from './transient-notices';
 
 class Header extends Component {
 	constructor() {
@@ -102,7 +101,6 @@ class Header extends Component {
 					} ) }
 				</h1>
 				<ActivityPanel />
-				<TransientNotices />
 			</div>
 		);
 	}
