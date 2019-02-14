@@ -82,6 +82,23 @@ class WC_Tests_API_Reports_Taxes_Stats extends WC_REST_Unit_Test_Case {
 		$order->calculate_taxes();
 		$order->save();
 
+		// Add refunds to line items.
+		foreach ( $order->get_items() as $item_id => $item ) {
+			$refund    = array(
+				'amount'     => 1,
+				'reason'     => 'Testing line item refund',
+				'order_id'   => $order->get_id(),
+				'line_items' => array(
+					$item_id => array(
+						'qty'          => 1,
+						'refund_total' => 1,
+						'refund_tax'   => array( $tax => 1 ),
+					),
+				),
+			);
+			$wc_refund = wc_create_refund( $refund );
+		}
+
 		WC_Helper_Queue::run_all_pending();
 
 		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint ) );
@@ -93,8 +110,8 @@ class WC_Tests_API_Reports_Taxes_Stats extends WC_REST_Unit_Test_Case {
 		$tax_report = reset( $reports );
 
 		$this->assertEquals( 1, $tax_report['tax_codes'] );
-		$this->assertEquals( 7.7, $tax_report['total_tax'] );
-		$this->assertEquals( 7, $tax_report['order_tax'] );
+		$this->assertEquals( 6.7, $tax_report['total_tax'] ); // 110 * 0.07 (tax rate) - 1 (refund)
+		$this->assertEquals( 6, $tax_report['order_tax'] ); // 100 * 0.07 (tax rate) - 1 (refund)
 		$this->assertEquals( 0.7, $tax_report['shipping_tax'] );
 		$this->assertEquals( 1, $tax_report['orders_count'] );
 	}
