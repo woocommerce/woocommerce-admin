@@ -19,12 +19,13 @@ class WC_Admin_Reports_Stock_Stats_Data_Store extends WC_Admin_Reports_Data_Stor
 	 * @return array Array of counts.
 	 */
 	public function get_data( $query ) {
-		$report_data = array();
+		$report_data              = array();
+		$cache_expire             = DAY_IN_SECONDS * 30;
 		$low_stock_transient_name = 'wc_admin_stock_count_lowstock';
 		$low_stock_count          = get_transient( $low_stock_transient_name );
 		if ( false === $low_stock_count ) {
 			$low_stock_count = $this->get_low_stock_count();
-			set_transient( $low_stock_transient_name, $low_stock_count, DAY_IN_SECONDS * 30 );
+			set_transient( $low_stock_transient_name, $low_stock_count, $cache_expire );
 		}
 		$report_data['lowstock'] = $low_stock_count;
 
@@ -34,7 +35,7 @@ class WC_Admin_Reports_Stock_Stats_Data_Store extends WC_Admin_Reports_Data_Stor
 			$count          = get_transient( $transient_name );
 			if ( false === $count ) {
 				$count = $this->get_count( $status );
-				set_transient( $transient_name, $count, DAY_IN_SECONDS * 30 );
+				set_transient( $transient_name, $count, $cache_expire );
 			}
 			$report_data[ $status ] = $count;
 		}
@@ -43,7 +44,7 @@ class WC_Admin_Reports_Stock_Stats_Data_Store extends WC_Admin_Reports_Data_Stor
 		$product_count                = get_transient( $product_count_transient_name );
 		if ( false === $product_count ) {
 			$product_count = $this->get_product_count();
-			set_transient( $product_count_transient_name, $product_count, DAY_IN_SECONDS * 30 );
+			set_transient( $product_count_transient_name, $product_count, $cache_expire );
 		}
 		$report_data['products'] = $product_count;
 		return $report_data;

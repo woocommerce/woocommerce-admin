@@ -32,7 +32,7 @@ class WC_Admin_REST_Reports_Stock_Stats_Controller extends WC_REST_Reports_Contr
 	protected $rest_base = 'reports/stock/stats';
 
 	/**
-	 * Get all reports.
+	 * Get Stock Status Totals.
 	 *
 	 * @param  WP_REST_Request $request Request data.
 	 * @return array|WP_Error
