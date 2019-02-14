@@ -71,6 +71,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 	 */
 	public static function init() {
 		add_action( 'woocommerce_reports_delete_order_stats', array( __CLASS__, 'sync_on_order_delete' ), 15 );
+		add_action( 'woocommerce_refund_deleted', array( __CLASS__, 'sync_on_refund_delete' ), 10, 2 );
 	}
 
 	/**
@@ -335,5 +336,15 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 		 * @param int $order_id    Order ID.
 		 */
 		do_action( 'woocommerce_reports_delete_tax', 0, $order_id );
+	}
+
+	/**
+	 * Syncs tax information when a refund is deleted.
+	 *
+	 * @param int $refund_id Refund ID.
+	 * @param int $order_id Order ID.
+	 */
+	public static function sync_on_refund_delete( $refund_id, $order_id ) {
+		self::sync_order_taxes( $order_id );
 	}
 }
