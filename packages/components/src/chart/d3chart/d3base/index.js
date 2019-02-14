@@ -54,7 +54,7 @@ export default class D3Base extends Component {
 	delayedScroll() {
 		const { tooltip } = this.props;
 		return throttle( () => {
-			tooltip.hide();
+			tooltip && tooltip.hide();
 		}, 300 );
 	}
 
@@ -104,5 +104,6 @@ D3Base.propTypes = {
 	className: PropTypes.string,
 	data: PropTypes.array,
 	orderedKeys: PropTypes.array, // required to detect changes in data
+	tooltip: PropTypes.object,
 	type: PropTypes.string,
 };
