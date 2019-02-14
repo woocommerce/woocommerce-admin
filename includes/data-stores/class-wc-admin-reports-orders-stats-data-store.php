@@ -75,6 +75,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	public static function init() {
 		add_action( 'woocommerce_refund_deleted', array( __CLASS__, 'sync_on_refund_delete' ), 10, 2 );
 		add_action( 'delete_post', array( __CLASS__, 'delete_order' ) );
+		add_action( 'save_post', array( __CLASS__, 'sync_order' ) );
 	}
 
 	/**
@@ -527,20 +528,24 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			return false;
 		}
 
-		$first_order = $oldest_orders[0];
+		$first_order       = $oldest_orders[0];
+		$second_order      = isset( $oldest_orders[1] ) ? $oldest_orders[1] : false;
+		$excluded_statuses = self::get_excluded_report_order_statuses();
 
 		// Order is older than previous first order.
-		if ( $order->get_date_created() < new WC_DateTime( $first_order->date_created ) ) {
+		if ( $order->get_date_created() < new WC_DateTime( $first_order->date_created ) &&
+			! in_array( $order->get_status(), $excluded_statuses, true )
+		) {
 			self::set_customer_first_order( $customer_id, $order->get_id() );
 			return false;
 		}
-		// First order date has changed and next oldest is now the first order.
-		$second_order = isset( $oldest_orders[1] ) ? $oldest_orders[1] : false;
+		// First order date or status has changed and next oldest is now the first order.
+		$date_change   = $second_order && $order->get_date_created() > new WC_DateTime( $first_order->date_created ) &&
+			new WC_DateTime( $second_order->date_created ) < $order->get_date_created();
+		$status_change = $second_order && in_array( $order->get_status(), $excluded_statuses, true );
 		if (
 			(int) $order->get_id() === (int) $first_order->order_id &&
-			$order->get_date_created() > new WC_DateTime( $first_order->date_created ) &&
-			$second_order &&
-			new WC_DateTime( $second_order->date_created ) < $order->get_date_created()
+			( $date_change || $status_change )
 		) {
 			self::set_customer_first_order( $customer_id, $second_order->order_id );
 			return true;
