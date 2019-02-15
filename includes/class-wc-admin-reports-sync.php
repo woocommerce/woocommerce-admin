@@ -220,7 +220,7 @@ class WC_Admin_Reports_Sync {
 				'order'   => 'ASC',
 			)
 		);
-		$order_ids = $order_query->get_orders();
+		$order_ids   = $order_query->get_orders();
 
 		foreach ( $order_ids as $order_id ) {
 			self::orders_lookup_process_order( $order_id );
@@ -421,8 +421,11 @@ class WC_Admin_Reports_Sync {
 				)
 			);
 
+			// Only run single orders to avoid processing large batches.
 			foreach ( $jobs as $job ) {
-				$job->execute();
+				if ( self::SINGLE_ORDER_ACTION === $job->get_hook() ) {
+					$job->execute();
+				}
 			}
 		}
 	}
