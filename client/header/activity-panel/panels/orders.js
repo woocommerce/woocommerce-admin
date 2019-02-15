@@ -32,7 +32,6 @@ import { getAdminLink } from '@woocommerce/navigation';
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
-import { getOrderRefundTotal } from 'lib/order-values';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 
@@ -65,14 +64,13 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 	);
 
 	const getCustomerString = order => {
-		// We want the billing address, but shipping can be used as a fallback.
-		const address = { ...order.shipping, ...order.billing };
+		const { first_name, last_name } = order.extended_info.customer;
 
-		if ( ! address.first_name && ! address.last_name ) {
+		if ( ! first_name && ! last_name ) {
 			return '';
 		}
 
-		const name = [ address.first_name, address.last_name ].join( ' ' );
+		const name = [ first_name, last_name ].join( ' ' );
 		return sprintf(
 			__(
 				/* translators: describes who placed an order, e.g. Order #123 placed by John Doe */
@@ -95,13 +93,17 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 							'wc-admin'
 						),
 						{
-							orderNumber: order.number,
+							orderNumber: order.order_id,
 							customerString: getCustomerString( order ),
 						}
 					),
 					components: {
-						orderLink: <Link href={ 'post.php?action=edit&post=' + order.id } type="wp-admin" />,
-						destinationFlag: <Flag order={ order } round={ false } />,
+						orderLink: (
+							<Link href={ 'post.php?action=edit&post=' + order.order_id } type="wp-admin" />
+						),
+						destinationFlag: order.extended_info.customer.country ? (
+							<Flag code={ order.extended_info.customer.country } round={ false } />
+						) : null,
 						// @todo Hook up customer name link
 						customerLink: <Link href={ '#' } type="wp-admin" />,
 					},
@@ -111,16 +113,16 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 	};
 
 	const cards = [];
-	orders.forEach( ( order, id ) => {
-		const productsCount = order.line_items.reduce( ( total, line ) => total + line.quantity, 0 );
+	orders.forEach( order => {
+		const productsCount = order.extended_info.products.length;
 
-		const total = order.total;
-		const refundValue = getOrderRefundTotal( order );
-		const remainingTotal = getCurrencyFormatDecimal( order.total ) + refundValue;
+		const total = order.gross_total;
+		const refundValue = order.refund_total;
+		const remainingTotal = getCurrencyFormatDecimal( total ) + refundValue;
 
 		cards.push(
 			<ActivityCard
-				key={ id }
+				key={ order.order_id }
 				className="woocommerce-order-activity-card"
 				title={ orderCardTitle( order ) }
 				date={ order.date_created }
@@ -134,16 +136,15 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 						</span>
 						{ refundValue ? (
 							<span>
-								<s>{ formatCurrency( total, order.currency_symbol ) }</s>{' '}
-								{ formatCurrency( remainingTotal, order.currency_symbol ) }
+								<s>{ formatCurrency( total ) }</s> { formatCurrency( remainingTotal ) }
 							</span>
 						) : (
-							<span>{ formatCurrency( total, order.currency_symbol ) }</span>
+							<span>{ formatCurrency( total ) }</span>
 						) }
 					</div>
 				}
 				actions={
-					<Button isDefault href={ getAdminLink( 'post.php?action=edit&post=' + order.id ) }>
+					<Button isDefault href={ getAdminLink( 'post.php?action=edit&post=' + order.order_id ) }>
 						{ __( 'Begin fulfillment' ) }
 					</Button>
 				}
@@ -178,29 +179,30 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 }
 
 OrdersPanel.propTypes = {
-	orders: PropTypes.instanceOf( Map ).isRequired,
+	orders: PropTypes.array.isRequired,
 	isError: PropTypes.bool,
 	isRequesting: PropTypes.bool,
 };
 
 OrdersPanel.defaultProps = {
-	orders: new Map(),
+	orders: [],
 	isError: false,
 	isRequesting: false,
 };
 
 export default compose(
 	withSelect( select => {
-		const { getItems, getItemsError, isGetItemsRequesting } = select( 'wc-api' );
+		const { getReportItems, getReportItemsError, isReportItemsRequesting } = select( 'wc-api' );
 		const ordersQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
-			status: 'processing',
+			status_is: 'processing',
+			extended_info: true,
 		};
 
-		const orders = getItems( 'orders', ordersQuery );
-		const isError = Boolean( getItemsError( 'orders', ordersQuery ) );
-		const isRequesting = isGetItemsRequesting( 'orders', ordersQuery );
+		const orders = getReportItems( 'orders', ordersQuery ).data;
+		const isError = Boolean( getReportItemsError( 'orders', ordersQuery ) );
+		const isRequesting = isReportItemsRequesting( 'orders', ordersQuery );
 
 		return { orders, isError, isRequesting };
 	} )
