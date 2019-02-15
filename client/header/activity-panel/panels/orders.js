@@ -64,28 +64,46 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 		</EllipsisMenu>
 	);
 
-	const orderCardTitle = ( order, address ) => {
-		const name = `${ address.first_name } ${ address.last_name }`;
+	const getCustomerString = order => {
+		// We want the billing address, but shipping can be used as a fallback.
+		const address = { ...order.shipping, ...order.billing };
 
+		if ( ! address.first_name && ! address.last_name ) {
+			return '';
+		}
+
+		const name = [ address.first_name, address.last_name ].join( ' ' );
+		return sprintf(
+			__(
+				/* translators: describes who placed an order, e.g. Order #123 placed by John Doe */
+				'placed by {{customerLink}}%(customerName)s{{/customerLink}}',
+				'wc-admin'
+			),
+			{
+				customerName: name,
+			}
+		);
+	};
+
+	const orderCardTitle = order => {
 		return (
 			<Fragment>
 				{ interpolateComponents( {
 					mixedString: sprintf(
 						__(
-							/* eslint-disable-next-line max-len */
-							'Order {{orderLink}}#%(orderNumber)s{{/orderLink}} placed by {{customerLink}}%(customerName)s{{/customerLink}} {{destinationFlag/}}',
+							'Order {{orderLink}}#%(orderNumber)s{{/orderLink}} %(customerString)s {{destinationFlag/}}',
 							'wc-admin'
 						),
 						{
 							orderNumber: order.number,
-							customerName: name,
+							customerString: getCustomerString( order ),
 						}
 					),
 					components: {
 						orderLink: <Link href={ 'post.php?action=edit&post=' + order.id } type="wp-admin" />,
+						destinationFlag: <Flag order={ order } round={ false } />,
 						// @todo Hook up customer name link
 						customerLink: <Link href={ '#' } type="wp-admin" />,
-						destinationFlag: <Flag order={ order } round={ false } />,
 					},
 				} ) }
 			</Fragment>
@@ -94,8 +112,6 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 
 	const cards = [];
 	orders.forEach( ( order, id ) => {
-		// We want the billing address, but shipping can be used as a fallback.
-		const address = { ...order.shipping, ...order.billing };
 		const productsCount = order.line_items.reduce( ( total, line ) => total + line.quantity, 0 );
 
 		const total = order.total;
@@ -106,7 +122,7 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 			<ActivityCard
 				key={ id }
 				className="woocommerce-order-activity-card"
-				title={ orderCardTitle( order, address ) }
+				title={ orderCardTitle( order ) }
 				date={ order.date_created }
 				subtitle={
 					<div>
