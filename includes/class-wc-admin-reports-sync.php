@@ -79,6 +79,7 @@ class WC_Admin_Reports_Sync {
 
 		// Initialize syncing hooks.
 		add_action( 'wp_loaded', array( __CLASS__, 'orders_lookup_update_init' ) );
+		add_action( 'wp_loaded', array( __CLASS__, 'execute_jobs_in_debug_mode' ) );
 
 		// Initialize scheduled action handlers.
 		add_action( self::QUEUE_BATCH_ACTION, array( __CLASS__, 'queue_batches' ), 10, 3 );
@@ -404,6 +405,25 @@ class WC_Admin_Reports_Sync {
 		foreach ( $customer_ids as $customer_id ) {
 			// @todo Schedule single customer update if this fails?
 			WC_Admin_Reports_Customers_Data_Store::update_registered_customer( $customer_id );
+		}
+	}
+
+	/**
+	 * Execute jobs immediately when debugging.
+	 */
+	public static function execute_jobs_in_debug_mode() {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			$jobs = self::queue()->search(
+				array(
+					'per_page' => -1,
+					'status'   => 'pending',
+					'claimed'  => false,
+				)
+			);
+
+			foreach ( $jobs as $job ) {
+				$job->execute();
+			}
 		}
 	}
 }
