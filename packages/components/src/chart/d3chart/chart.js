@@ -28,6 +28,7 @@ import {
 import { drawAxis } from './utils/axis';
 import { drawBars } from './utils/bar-chart';
 import { drawLines } from './utils/line-chart';
+import { getColor } from './utils/color';
 import ChartTooltip from './utils/tooltip';
 
 /**
@@ -79,21 +80,23 @@ class D3Chart extends Component {
 	}
 
 	getParams( uniqueDates ) {
-		const { colorScheme, data, interval, mode, orderedKeys, chartType } = this.props;
+		const { chartType, colorScheme, data, interval, mode, orderedKeys } = this.props;
 		const newOrderedKeys = orderedKeys || getOrderedKeys( data );
+		const visibleKeys = newOrderedKeys.filter( key => key.visible );
+		const colorKeys = mode === 'time-comparison' ? newOrderedKeys : visibleKeys;
 
 		return {
-			colorScheme,
+			getColor: getColor( colorKeys, colorScheme ),
 			interval,
 			mode,
 			chartType,
 			uniqueDates,
-			visibleKeys: newOrderedKeys.filter( key => key.visible ),
+			visibleKeys,
 		};
 	}
 
-	createTooltip( chart, visibleKeys ) {
-		const { colorScheme, tooltipLabelFormat, tooltipPosition, tooltipTitle, tooltipValueFormat } = this.props;
+	createTooltip( chart, getColorFunction, visibleKeys ) {
+		const { tooltipLabelFormat, tooltipPosition, tooltipTitle, tooltipValueFormat } = this.props;
 
 		const tooltip = new ChartTooltip();
 		tooltip.ref = this.tooltipRef.current;
@@ -103,7 +106,7 @@ class D3Chart extends Component {
 		tooltip.labelFormat = getFormatter( tooltipLabelFormat, d3TimeFormat );
 		tooltip.valueFormat = getFormatter( tooltipValueFormat );
 		tooltip.visibleKeys = visibleKeys;
-		tooltip.colorScheme = colorScheme;
+		tooltip.getColor = getColorFunction;
 		this.tooltip = tooltip;
 	}
 
@@ -119,7 +122,7 @@ class D3Chart extends Component {
 			.append( 'g' )
 			.attr( 'transform', `translate(${ margin.left }, ${ margin.top })` );
 
-		this.createTooltip( g.node(), params.visibleKeys );
+		this.createTooltip( g.node(), params.getColor, params.visibleKeys );
 
 		drawAxis( g, params, scales, formats, margin );
 		chartType === 'line' && drawLines( g, data, params, scales, formats, this.tooltip );

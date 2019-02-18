@@ -300,6 +300,7 @@ class Chart extends Component {
 				interactive={ interactiveLegend }
 				legendDirection={ legendDirection }
 				legendValueFormat={ tooltipValueFormat }
+				mode={ mode }
 				totalLabel={ sprintf( itemsLabel, orderedKeys.length ) }
 			/>
 		);
@@ -379,6 +380,7 @@ class Chart extends Component {
 							width > 0 && (
 								<D3Chart
 									baseValue={ baseValue }
+									chartType={ chartType }
 									colorScheme={ d3InterpolateViridis }
 									data={ visibleData }
 									dateParser={ dateParser }
@@ -392,7 +394,6 @@ class Chart extends Component {
 									tooltipValueFormat={ tooltipValueFormat }
 									tooltipPosition={ isViewportLarge ? 'over' : 'below' }
 									tooltipTitle={ tooltipTitle }
-									chartType={ chartType }
 									width={ chartDirection === 'row' ? width - 320 : width }
 									xFormat={ xFormat }
 									x2Format={ x2Format }
