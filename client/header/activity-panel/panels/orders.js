@@ -64,7 +64,8 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 	);
 
 	const getCustomerString = order => {
-		const { first_name, last_name } = order.extended_info.customer;
+		const extended_info = order.extended_info || {};
+		const { first_name, last_name } = extended_info.customer || {};
 
 		if ( ! first_name && ! last_name ) {
 			return '';
@@ -84,6 +85,9 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 	};
 
 	const orderCardTitle = order => {
+		const { extended_info, order_id } = order;
+		const { customer } = extended_info || {};
+
 		return (
 			<Fragment>
 				{ interpolateComponents( {
@@ -93,16 +97,14 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 							'wc-admin'
 						),
 						{
-							orderNumber: order.order_id,
+							orderNumber: order_id,
 							customerString: getCustomerString( order ),
 						}
 					),
 					components: {
-						orderLink: (
-							<Link href={ 'post.php?action=edit&post=' + order.order_id } type="wp-admin" />
-						),
-						destinationFlag: order.extended_info.customer.country ? (
-							<Flag code={ order.extended_info.customer.country } round={ false } />
+						orderLink: <Link href={ 'post.php?action=edit&post=' + order_id } type="wp-admin" />,
+						destinationFlag: customer.country ? (
+							<Flag code={ customer.country } round={ false } />
 						) : null,
 						// @todo Hook up customer name link
 						customerLink: <Link href={ '#' } type="wp-admin" />,
@@ -114,7 +116,9 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 
 	const cards = [];
 	orders.forEach( order => {
-		const productsCount = order.extended_info.products.length;
+		const extended_info = order.extended_info || {};
+		const productsCount =
+			extended_info && extended_info.products ? extended_info.products.length : 0;
 
 		const total = order.gross_total;
 		const refundValue = order.refund_total;
