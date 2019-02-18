@@ -79,7 +79,6 @@ class WC_Admin_Reports_Sync {
 
 		// Initialize syncing hooks.
 		add_action( 'wp_loaded', array( __CLASS__, 'orders_lookup_update_init' ) );
-		add_action( 'wp_loaded', array( __CLASS__, 'execute_jobs_in_debug_mode' ) );
 
 		// Initialize scheduled action handlers.
 		add_action( self::QUEUE_BATCH_ACTION, array( __CLASS__, 'queue_batches' ), 10, 3 );
@@ -133,6 +132,11 @@ class WC_Admin_Reports_Sync {
 			return;
 		}
 
+		if ( apply_filters( 'woocommerce_disable_scheduling', false ) ) {
+			self::orders_lookup_process_order( $order_id );
+			return;
+		}
+
 		// This can get called multiple times for a single order, so we look
 		// for existing pending jobs for the same order to avoid duplicating efforts.
 		$existing_jobs = self::queue()->search(
@@ -170,7 +174,7 @@ class WC_Admin_Reports_Sync {
 		// Activate WC_Order extension.
 		WC_Admin_Order::add_filters();
 
-		add_action( 'save_post_shop_order', array( __CLASS__, 'schedule_single_order_process' ) );
+		add_action( 'save_post', array( __CLASS__, 'schedule_single_order_process' ) );
 		add_action( 'woocommerce_order_refunded', array( __CLASS__, 'schedule_single_order_process' ) );
 
 		WC_Admin_Reports_Orders_Stats_Data_Store::init();
@@ -405,28 +409,6 @@ class WC_Admin_Reports_Sync {
 		foreach ( $customer_ids as $customer_id ) {
 			// @todo Schedule single customer update if this fails?
 			WC_Admin_Reports_Customers_Data_Store::update_registered_customer( $customer_id );
-		}
-	}
-
-	/**
-	 * Execute jobs immediately when debugging.
-	 */
-	public static function execute_jobs_in_debug_mode() {
-		if ( apply_filters( 'woocommerce_disable_scheduling', false ) ) {
-			$jobs = self::queue()->search(
-				array(
-					'per_page' => -1,
-					'status'   => 'pending',
-					'claimed'  => false,
-				)
-			);
-
-			// Only run single orders to avoid processing large batches.
-			foreach ( $jobs as $job ) {
-				if ( self::SINGLE_ORDER_ACTION === $job->get_hook() ) {
-					$job->execute();
-				}
-			}
 		}
 	}
 }
