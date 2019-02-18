@@ -412,7 +412,7 @@ class WC_Admin_Reports_Sync {
 	 * Execute jobs immediately when debugging.
 	 */
 	public static function execute_jobs_in_debug_mode() {
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		if ( apply_filters( 'woocommerce_disable_scheduling', false ) ) {
 			$jobs = self::queue()->search(
 				array(
 					'per_page' => -1,
