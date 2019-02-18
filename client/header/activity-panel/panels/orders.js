@@ -24,7 +24,7 @@ import {
 	Section,
 } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
-import { getAdminLink } from '@woocommerce/navigation';
+import { getAdminLink, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -87,6 +87,12 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 	const orderCardTitle = order => {
 		const { extended_info, order_id } = order;
 		const { customer } = extended_info || {};
+		const customerUrl = customer.customer_id
+			? getNewPath( {}, '/analytics/customers', {
+					filter: 'single_customer',
+					customer_id: customer.customer_id,
+				} )
+			: null;
 
 		return (
 			<Fragment>
@@ -106,8 +112,7 @@ function OrdersPanel( { orders, isRequesting, isError } ) {
 						destinationFlag: customer.country ? (
 							<Flag code={ customer.country } round={ false } />
 						) : null,
-						// @todo Hook up customer name link
-						customerLink: <Link href={ '#' } type="wp-admin" />,
+						customerLink: customerUrl ? <Link href={ customerUrl } type="wc-admin" /> : <span />,
 					},
 				} ) }
 			</Fragment>
