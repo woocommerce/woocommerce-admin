@@ -196,7 +196,7 @@ export default compose(
 		const ordersQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
-			status_is: 'processing',
+			status_is: [ 'processing', 'on-hold' ],
 			extended_info: true,
 		};
 
