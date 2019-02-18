@@ -44,7 +44,6 @@ function filterOptions( search, options = [], exclude = [], maxResults = 10 ) {
 export class Autocomplete extends Component {
 	static getInitialState() {
 		return {
-			isFocused: false,
 			search: /./,
 			selectedIndex: 0,
 			query: undefined,
@@ -157,7 +156,7 @@ export class Autocomplete extends Component {
 		const promise = ( this.activePromise = Promise.resolve(
 			typeof options === 'function' ? options( query ) : options
 		).then( optionsData => {
-			if ( ! optionsData || ! this.state.isFocused ) {
+			if ( ! optionsData || ! this.state.query ) {
 				return;
 			}
 			const { selected } = this.props;
@@ -210,7 +209,7 @@ export class Autocomplete extends Component {
 		// filter the options we already have
 		const filteredOptions = filterOptions( search, this.state.options, selected );
 		// update the state
-		this.setState( { isFocused: true, selectedIndex: 0, filteredOptions, search, query } );
+		this.setState( { selectedIndex: 0, filteredOptions, search, query } );
 		// announce the count of filtered options but only if they have loaded
 		if ( this.state.options ) {
 			this.announce( filteredOptions );
@@ -276,11 +275,7 @@ export class Autocomplete extends Component {
 	}
 
 	isExpanded( props, state ) {
-		const { filteredOptions, isFocused, query } = state;
-
-		if ( ! isFocused ) {
-			return false;
-		}
+		const { filteredOptions, query } = state;
 
 		return filteredOptions.length > 0 || ( props.completer.getFreeTextOptions && query );
 	}

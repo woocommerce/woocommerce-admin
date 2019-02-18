@@ -10,6 +10,13 @@
 		fill: $core-grey-light-900;
 	}
 
+	.woocommerce-tag {
+		max-width: 100%;
+	}
+	.woocommerce-tag .woocommerce-tag__text {
+		max-width: calc(100% - 24px);
+	}
+
 	&:not(.has-inline-tags) {
 		.woocommerce-tag {
 			margin: 8px 6px 0 0;
