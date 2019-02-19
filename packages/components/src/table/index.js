@@ -323,7 +323,7 @@ class TableCard extends Component {
 								return null;
 							}
 							return (
-								<MenuItem key={ key } onInvoke={ this.onColumnToggle( key ) }>
+								<MenuItem key={ key } tabIndex={ null }>
 									<ToggleControl
 										label={ label }
 										checked={ showCols.includes( key ) }
