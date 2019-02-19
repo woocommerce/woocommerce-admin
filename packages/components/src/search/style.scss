@@ -2,6 +2,11 @@
 
 .woocommerce-search {
 	position: relative;
+	min-width: 0;
+
+	>div {
+		min-width: 0;
+	}
 
 	.woocommerce-search__icon {
 		position: absolute;
