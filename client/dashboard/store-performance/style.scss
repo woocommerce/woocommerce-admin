@@ -1,15 +1,10 @@
 /** @format */
 
 .woocommerce-dashboard__store-performance {
-	border-bottom: 0;
-	border-right: 0;
+	margin-bottom: $gap-large;
 
-	.woocommerce-card__header {
-		border-right: 1px solid $core-grey-light-700;
-	}
-
-	.woocommerce-card__body {
-		padding: 0;
+	@include breakpoint( '<782px' ) {
+		border-width: 0;
 	}
 
 	.woocommerce-summary {
