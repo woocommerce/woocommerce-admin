@@ -244,10 +244,10 @@ class WC_Tests_API_Reports_Customers extends WC_REST_Unit_Test_Case {
 			)
 		);
 
-		// Test include param.
+		// Test customers param.
 		$request->set_query_params(
 			array(
-				'include' => $customer_id,
+				'customers' => $customer_id,
 			)
 		);
 

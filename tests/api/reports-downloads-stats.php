@@ -185,11 +185,18 @@ class WC_Tests_API_Reports_Downloads_Stats extends WC_REST_Unit_Test_Case {
 		$object->set_user_ip_address( '5.4.3.2.1' );
 		$object->save();
 
+		$customer_id = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT customer_id FROM {$wpdb->prefix}wc_customer_lookup WHERE user_id = %d",
+				1
+			)
+		);
+
 		// Test includes filtering.
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
-				'user_includes' => 1,
+				'customer_includes' => $customer_id,
 			)
 		);
 		$response        = $this->server->dispatch( $request );
@@ -202,7 +209,7 @@ class WC_Tests_API_Reports_Downloads_Stats extends WC_REST_Unit_Test_Case {
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
-				'user_excludes' => 1,
+				'customer_excludes' => $customer_id,
 			)
 		);
 		$response = $this->server->dispatch( $request );
