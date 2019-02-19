@@ -49,6 +49,8 @@ class WC_Admin_REST_Reports_Downloads_Stats_Controller extends WC_REST_Reports_C
 		$args['match']               = $request['match'];
 		$args['product_includes']    = (array) $request['product_includes'];
 		$args['product_excludes']    = (array) $request['product_excludes'];
+		$args['user_includes']       = (array) $request['user_includes'];
+		$args['user_excludes']       = (array) $request['user_excludes'];
 		$args['order_includes']      = (array) $request['order_includes'];
 		$args['order_excludes']      = (array) $request['order_excludes'];
 		$args['ip_address_includes'] = (array) $request['ip_address_includes'];
