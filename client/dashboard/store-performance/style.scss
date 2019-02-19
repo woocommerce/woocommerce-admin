@@ -8,6 +8,38 @@
 	}
 
 	.woocommerce-summary {
+		background-color: $core-grey-light-100;
 		margin: 0;
+
+		@include breakpoint( '<782px' ) {
+			&.is-placeholder {
+				border-top: 0;
+			}
+
+			&:not(.is-placeholder) {
+				.woocommerce-summary__item-container:first-child {
+					.woocommerce-summary__item {
+						border-top: 1px solid $core-grey-light-700;
+					}
+				}
+			}
+
+			.woocommerce-summary__item-container {
+				margin-left: -16px;
+				margin-right: -16px;
+			}
+		}
+	}
+
+	.woocommerce-summary__item {
+		background-color: $white;
+
+		&:hover {
+			background-color: $core-grey-light-200;
+		}
+
+		&:active {
+			background-color: $core-grey-light-300;
+		}
 	}
 }

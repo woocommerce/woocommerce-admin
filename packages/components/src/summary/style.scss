@@ -47,6 +47,10 @@ $inner-border: $core-grey-light-500;
 	box-shadow: inset -1px -1px 0 $outer-border;
 
 	@include breakpoint( '<782px' ) {
+		& {
+			border-width: 0;
+		}
+
 		&.is-placeholder {
 			border-top: 0;
 		}
@@ -203,7 +207,6 @@ $inner-border: $core-grey-light-500;
 
 .woocommerce-summary__item-container {
 	margin-bottom: 0;
-	width: 100%;
 
 	&:last-of-type .woocommerce-summary__item {
 		// Make sure the last item always uses the outer-border color.
@@ -387,29 +390,5 @@ $inner-border: $core-grey-light-500;
 		.woocommerce-summary__item-prev-value {
 			@include font-size( 11 );
 		}
-	}
-}
-
-.woocommerce-card {
-	.woocommerce-summary {
-		background-color: $core-grey-light-100;
-		border: none;
-	}
-
-	.woocommerce-summary__item {
-		background-color: $white;
-
-		&:hover {
-			background-color: $core-grey-light-200;
-		}
-
-		&:active {
-			background-color: $core-grey-light-300;
-		}
-	}
-
-	.woocommerce-summary__item.is-selected {
-		margin-top: 0;
-		box-shadow: none;
 	}
 }
