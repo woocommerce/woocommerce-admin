@@ -20,16 +20,18 @@ class MenuItem extends Component {
 
 	onClick( event ) {
 		const { isClickable, onInvoke } = this.props;
-		if ( isClickable ) {
+		if ( isClickable && onInvoke ) {
 			event.preventDefault();
 			onInvoke();
 		}
 	}
 
 	onKeyDown( event ) {
-		if ( event.keyCode === ENTER || event.keyCode === SPACE ) {
+		const { onInvoke } = this.props;
+
+		if ( onInvoke && ( event.keyCode === ENTER || event.keyCode === SPACE ) ) {
 			event.preventDefault();
-			this.props.onInvoke();
+			onInvoke();
 		}
 	}
 
@@ -73,7 +75,6 @@ MenuItem.propTypes = {
 
 MenuItem.defaultProps = {
 	isClickable: false,
-	onInvoke: () => null,
 	tabIndex: 0,
 };
 
