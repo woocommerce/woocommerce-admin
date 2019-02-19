@@ -573,7 +573,7 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 
 		$customer = new WC_Customer( $user_id );
 
-		if ( $customer->get_id() != $user_id ) {
+		if ( ! self::is_valid_customer( $user_id ) ) {
 			return false;
 		}
 
@@ -620,6 +620,26 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 		 */
 		do_action( 'woocommerce_reports_update_customer', $customer_id );
 		return $results;
+	}
+
+	/**
+	 * Check if a user ID is a valid customer or other user role with past orders.
+	 *
+	 * @param int $user_id User ID.
+	 * @return bool
+	 */
+	protected static function is_valid_customer( $user_id ) {
+		$customer = new WC_Customer( $user_id );
+
+		if ( $customer->get_id() !== $user_id ) {
+			return false;
+		}
+
+		if ( $customer->get_order_count() < 1 && 'customer' !== $customer->get_role() ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
