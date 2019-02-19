@@ -128,7 +128,7 @@
 		// Anything deeper than 5 levels will use this fallback depth
 		&[class*="depth-"] .woocommerce-search-list__item-label:before {
 			margin-right: $gap-smallest;
-			content: repeat( '— ', 5 );
+			content: str-repeat( '— ', 5 );
 		}
 
 		&.depth-0 .woocommerce-search-list__item-label:before {
@@ -138,7 +138,7 @@
 
 		@for $i from 1 to 5 {
 			&.depth-#{$i} .woocommerce-search-list__item-label:before {
-				content: repeat( '— ', $i );
+				content: str-repeat( '— ', $i );
 			}
 		}
 
