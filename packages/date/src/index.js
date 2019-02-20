@@ -102,9 +102,9 @@ export function toMoment( format, str ) {
  * @return {string} - text value for the supplied date range
  */
 export function getRangeLabel( after, before ) {
-	const isSameDay = after.isSame( before, 'day' );
 	const isSameYear = after.year() === before.year();
 	const isSameMonth = isSameYear && after.month() === before.month();
+	const isSameDay = isSameYear && isSameMonth && after.isSame( before, 'day' );
 	const fullDateFormat = __( 'MMM D, YYYY', 'wc-admin' );
 	const monthDayFormat = __( 'MMM D', 'wc-admin' );
 
