@@ -34,12 +34,12 @@ class MenuItem extends Component {
 	}
 
 	render() {
-		const { children, tabIndex } = this.props;
+		const { children } = this.props;
 
 		return (
 			<div
 				role="menuitem"
-				tabIndex={ tabIndex }
+				tabIndex="0"
 				onKeyDown={ this.onKeyDown }
 				onClick={ this.onClick }
 				className="woocommerce-ellipsis-menu__item"
@@ -64,17 +64,11 @@ MenuItem.propTypes = {
 	 * A function called when this item is activated via keyboard ENTER or SPACE; or when the item is clicked
 	 * (only if `isClickable` is set).
 	 */
-	onInvoke: PropTypes.func,
-	/**
-	 * `tab-index` HTML property.
-	 */
-	tabIndex: PropTypes.number,
+	onInvoke: PropTypes.func.isRequired,
 };
 
 MenuItem.defaultProps = {
 	isClickable: false,
-	onInvoke: () => null,
-	tabIndex: 0,
 };
 
 export default MenuItem;
