@@ -23,14 +23,14 @@ import SearchListItem from './item';
 import Tag from '../tag';
 
 const defaultMessages = {
-	clear: __( 'Clear all selected items', 'woo-gutenberg-products-block' ),
-	list: __( 'Results', 'woo-gutenberg-products-block' ),
-	noItems: __( 'No items found.', 'woo-gutenberg-products-block' ),
-	noResults: __( 'No results for %s', 'woo-gutenberg-products-block' ),
-	search: __( 'Search for items', 'woo-gutenberg-products-block' ),
+	clear: __( 'Clear all selected items', 'wc-admin' ),
+	list: __( 'Results', 'wc-admin' ),
+	noItems: __( 'No items found.', 'wc-admin' ),
+	noResults: __( 'No results for %s', 'wc-admin' ),
+	search: __( 'Search for items', 'wc-admin' ),
 	selected: ( n ) =>
-		sprintf( _n( '%d item selected', '%d items selected', n, 'woo-gutenberg-products-block' ), n ),
-	updated: __( 'Search results updated.', 'woo-gutenberg-products-block' ),
+		sprintf( _n( '%d item selected', '%d items selected', n, 'wc-admin' ), n ),
+	updated: __( 'Search results updated.', 'wc-admin' ),
 };
 
 /**
@@ -182,7 +182,7 @@ export class SearchListControl extends Component {
 							onClick={ this.onClear }
 							aria-label={ messages.clear }
 						>
-							{ __( 'Clear all', 'woo-gutenberg-products-block' ) }
+							{ __( 'Clear all', 'wc-admin' ) }
 						</Button>
 					) : null }
 				</div>
