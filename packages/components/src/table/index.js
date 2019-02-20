@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { find, first, isEqual, noop, partial, uniq, without } from 'lodash';
-import { IconButton, ToggleControl } from '@wordpress/components';
+import { IconButton } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
 /**
@@ -111,16 +111,11 @@ class TableCard extends Component {
 	onColumnToggle( key ) {
 		const { headers, query, onQueryChange, onColumnsChange } = this.props;
 
-		return ( visible ) => {
+		return () => {
 			this.setState( prevState => {
 				const hasKey = prevState.showCols.includes( key );
 
-				if ( visible && ! hasKey ) {
-					const showCols = [ ...prevState.showCols, key ];
-					onColumnsChange( showCols );
-					return { showCols };
-				}
-				if ( ! visible && hasKey ) {
+				if ( hasKey ) {
 					// Handle hiding a sorted column
 					if ( query.orderby === key ) {
 						const defaultSort = find( headers, { defaultSort: true } ) || first( headers ) || {};
@@ -131,7 +126,10 @@ class TableCard extends Component {
 					onColumnsChange( showCols );
 					return { showCols };
 				}
-				return {};
+
+				const showCols = [ ...prevState.showCols, key ];
+				onColumnsChange( showCols );
+				return { showCols };
 			} );
 		};
 	}
@@ -323,12 +321,14 @@ class TableCard extends Component {
 								return null;
 							}
 							return (
-								<MenuItem key={ key } onInvoke={ this.onColumnToggle( key ) }>
-									<ToggleControl
-										label={ label }
-										checked={ showCols.includes( key ) }
-										onChange={ this.onColumnToggle( key ) }
-									/>
+								<MenuItem
+									checked={ showCols.includes( key ) }
+									isCheckbox
+									isClickable
+									key={ key }
+									onInvoke={ this.onColumnToggle( key ) }
+								>
+									{ label }
 								</MenuItem>
 							);
 						} ) }

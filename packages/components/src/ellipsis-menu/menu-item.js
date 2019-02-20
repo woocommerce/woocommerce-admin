@@ -2,6 +2,7 @@
 /**
  * External dependencies
  */
+import { BaseControl, FormToggle } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { ENTER, SPACE } from '@wordpress/keycodes';
 import PropTypes from 'prop-types';
@@ -27,14 +28,39 @@ class MenuItem extends Component {
 	}
 
 	onKeyDown( event ) {
-		if ( event.keyCode === ENTER || event.keyCode === SPACE ) {
+		if ( event.target.isSameNode( event.currentTarget ) &&
+				( event.keyCode === ENTER || event.keyCode === SPACE ) ) {
 			event.preventDefault();
 			this.props.onInvoke();
 		}
 	}
 
 	render() {
-		const { children } = this.props;
+		const { checked, children, isCheckbox } = this.props;
+
+		if ( isCheckbox ) {
+			return (
+				<div
+					aria-checked={ checked }
+					role="menuitemcheckbox"
+					tabIndex="0"
+					onKeyDown={ this.onKeyDown }
+					onClick={ this.onClick }
+					className="woocommerce-ellipsis-menu__item"
+				>
+					<BaseControl className="components-toggle-control">
+						<FormToggle
+							aria-hidden="true"
+							checked={ checked }
+							onChange={ this.props.onInvoke }
+							onClick={ e => e.stopPropagation() }
+							tabIndex="-1"
+						/>
+						{ children }
+					</BaseControl>
+				</div>
+			);
+		}
 
 		return (
 			<div
@@ -52,9 +78,17 @@ class MenuItem extends Component {
 
 MenuItem.propTypes = {
 	/**
+	 * Whether the menu item is checked or not. Only relevant for menu items with `isCheckbox`.
+	 */
+	checked: PropTypes.bool,
+	/**
 	 * A renderable component (or string) which will be displayed as the content of this item. Generally a `ToggleControl`.
 	 */
 	children: PropTypes.node,
+	/**
+	 * Whether the menu item is a checkbox (will render a FormToggle and use the `menuitemcheckbox` role).
+	 */
+	isCheckbox: PropTypes.bool,
 	/**
 	 * Boolean to control whether the MenuItem should handle the click event. Defaults to false, assuming your child component
 	 * handles the click event.
@@ -69,6 +103,7 @@ MenuItem.propTypes = {
 
 MenuItem.defaultProps = {
 	isClickable: false,
+	isCheckbox: false,
 };
 
 export default MenuItem;

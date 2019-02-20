@@ -10,6 +10,7 @@
 - Color scale logic for charts with lots of items has been fixed.
 - Update `@woocommerce/navigation` to v2.0.0
 - Bug fix for `<StockReportTable />` returning N/A instead of zero.
+- MenuItem component: new prop `isCheckbox` that allows creating menu items with a `FormToggle` and `role=menuitemcheckbox`.
 
 # 1.4.2
 - Add emoji-flags dependency
