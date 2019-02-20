@@ -1,7 +1,3 @@
-# (unreleased)
-
-- New variable `previousPeriodValues` with labels for the previous period.
-
 # 1.0.5
 
 - Fixed bug in getAllowedIntervalsForQuery() to not return `hour` for default intervals

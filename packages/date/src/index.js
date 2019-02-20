@@ -48,19 +48,6 @@ export const presetValues = [
 	{ value: 'custom', label: __( 'Custom', 'wc-admin' ) },
 ];
 
-export const previousPeriodValues = [
-	{ value: 'today', label: __( 'Yesterday', 'wc-admin' ) },
-	{ value: 'yesterday', label: __( 'Previous Day', 'wc-admin' ) },
-	{ value: 'week', label: __( 'Last Week', 'wc-admin' ) },
-	{ value: 'last_week', label: __( 'Previous Week', 'wc-admin' ) },
-	{ value: 'month', label: __( 'Last Month', 'wc-admin' ) },
-	{ value: 'last_month', label: __( 'Previous Month', 'wc-admin' ) },
-	{ value: 'quarter', label: __( 'Last Quarter', 'wc-admin' ) },
-	{ value: 'last_quarter', label: __( 'Previous Quarter', 'wc-admin' ) },
-	{ value: 'year', label: __( 'Previous Quarter', 'wc-admin' ) },
-	{ value: 'last_year', label: __( 'Previous Year', 'wc-admin' ) },
-];
-
 export const periods = [
 	{ value: 'previous_period', label: __( 'Previous Period', 'wc-admin' ) },
 	{ value: 'previous_year', label: __( 'Previous Year', 'wc-admin' ) },
@@ -115,9 +102,9 @@ export function toMoment( format, str ) {
  * @return {string} - text value for the supplied date range
  */
 export function getRangeLabel( after, before ) {
+	const isSameDay = after.isSame( before, 'day' );
 	const isSameYear = after.year() === before.year();
 	const isSameMonth = isSameYear && after.month() === before.month();
-	const isSameDay = isSameYear && isSameMonth && after.isSame( before, 'day' );
 	const fullDateFormat = __( 'MMM D, YYYY', 'wc-admin' );
 	const monthDayFormat = __( 'MMM D', 'wc-admin' );
 
@@ -290,23 +277,6 @@ export const getDateParamsFromQuery = ( { period, compare, after, before } ) => 
 };
 
 /**
- * Gets the previous period label based on the current period and a `compare` value.
- *
- * @param {String} compare - compare value, ie `previous_year`
- * @param {String} currentPeriod - period value, ie `last_week`
- * @return {String} - Difference in days.
- */
-const getPreviousPeriodLabel = ( compare, currentPeriod ) => {
-	if ( compare === 'previous_year' ) {
-		return find( periods, item => item.value === 'previous_year' ).label;
-	}
-
-	const label = find( previousPeriodValues, item => item.value === currentPeriod );
-
-	return label ? label.label : find( periods, item => item.value === 'previous_period' ).label;
-};
-
-/**
  * Get Date Value Objects for a primary and secondary date range
  *
  * @param {Object} query - date parameters derived from query parameters
@@ -333,7 +303,7 @@ export const getCurrentDates = query => {
 			before: primaryEnd,
 		},
 		secondary: {
-			label: getPreviousPeriodLabel( compare, period ),
+			label: find( periods, item => item.value === compare ).label,
 			range: getRangeLabel( secondaryStart, secondaryEnd ),
 			after: secondaryStart,
 			before: secondaryEnd,
