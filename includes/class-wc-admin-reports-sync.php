@@ -132,7 +132,7 @@ class WC_Admin_Reports_Sync {
 			return;
 		}
 
-		if ( apply_filters( 'woocommerce_disable_scheduling', false ) ) {
+		if ( apply_filters( 'woocommerce_disable_order_scheduling', false ) ) {
 			self::orders_lookup_process_order( $order_id );
 			return;
 		}
