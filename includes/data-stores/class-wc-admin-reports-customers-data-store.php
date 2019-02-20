@@ -502,20 +502,15 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	public static function get_guest_id_by_email( $email ) {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . self::TABLE_NAME;
-		$guest_row  = $wpdb->get_row(
+		$table_name  = $wpdb->prefix . self::TABLE_NAME;
+		$customer_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT * FROM {$table_name} WHERE email = %s AND user_id IS NULL LIMIT 1",
+				"SELECT customer_id FROM {$table_name} WHERE email = %s AND user_id IS NULL LIMIT 1",
 				$email
-			),
-			ARRAY_A
+			)
 		); // WPCS: unprepared SQL ok.
 
-		if ( $guest_row ) {
-			return $guest_row['customer_id'];
-		}
-
-		return false;
+		return $customer_id ? (int) $customer_id : false;
 	}
 
 	/**
