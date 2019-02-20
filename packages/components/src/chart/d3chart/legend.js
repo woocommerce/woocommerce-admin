@@ -57,14 +57,14 @@ class D3Legend extends Component {
 			interactive,
 			legendDirection,
 			legendValueFormat,
-			mode,
 			totalLabel,
 		} = this.props;
 		const { isScrollable } = this.state;
-		const numberOfRowsVisible = data.filter( row => row.visible ).length;
+		const visibleData = data.filter( key => key.visible );
+		const numberOfRowsVisible = visibleData.length;
 		const showTotalLabel = legendDirection === 'column' && data.length > selectionLimit && totalLabel;
 
-		const keys = mode === 'time-comparison' ? data : data.filter( key => key.visible );
+		const keys = data.length > selectionLimit ? visibleData : data;
 
 		return (
 			<div

@@ -30,6 +30,7 @@ import { drawBars } from './utils/bar-chart';
 import { drawLines } from './utils/line-chart';
 import { getColor } from './utils/color';
 import ChartTooltip from './utils/tooltip';
+import { selectionLimit } from '../constants';
 
 /**
  * A simple D3 line and bar chart component for timeseries data in React.
@@ -83,7 +84,7 @@ class D3Chart extends Component {
 		const { chartType, colorScheme, data, interval, mode, orderedKeys } = this.props;
 		const newOrderedKeys = orderedKeys || getOrderedKeys( data );
 		const visibleKeys = newOrderedKeys.filter( key => key.visible );
-		const colorKeys = mode === 'time-comparison' ? newOrderedKeys : visibleKeys;
+		const colorKeys = newOrderedKeys.length > selectionLimit ? visibleKeys : newOrderedKeys;
 
 		return {
 			getColor: getColor( colorKeys, colorScheme ),

@@ -267,6 +267,7 @@ class Chart extends Component {
 		const { interactiveLegend, orderedKeys, visibleData, width } = this.state;
 		const {
 			baseValue,
+			chartType,
 			dateParser,
 			emptyMessage,
 			interval,
@@ -279,7 +280,6 @@ class Chart extends Component {
 			tooltipLabelFormat,
 			tooltipValueFormat,
 			tooltipTitle,
-			chartType,
 			valueType,
 			xFormat,
 			x2Format,
@@ -300,7 +300,6 @@ class Chart extends Component {
 				interactive={ interactiveLegend }
 				legendDirection={ legendDirection }
 				legendValueFormat={ tooltipValueFormat }
-				mode={ mode }
 				totalLabel={ sprintf( itemsLabel, orderedKeys.length ) }
 			/>
 		);
