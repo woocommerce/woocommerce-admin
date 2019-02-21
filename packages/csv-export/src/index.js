@@ -13,7 +13,7 @@ function getCSVRows( rows ) {
 	return Array.isArray( rows )
 		? rows
 				.map( row =>
-					row.map( rowItem => rowItem.value.toString().replace( /,/g, '' ) ).join( ',' )
+					row.map( rowItem => rowItem.value ? rowItem.value.toString().replace( /,/g, '' ) : '' ).join( ',' )
 				)
 				.join( '\n' )
 		: [];
