@@ -28,7 +28,7 @@ export const drawBars = ( node, data, params, scales, formats, tooltip ) => {
 			'aria-label',
 			d =>
 				params.mode === 'item-comparison'
-					? tooltip.labelFormat( d.date instanceof Date ? d.date : moment( d.date ).toDate() )
+					? formats.screenReaderFormat( d.date instanceof Date ? d.date : moment( d.date ).toDate() )
 					: null
 		);
 
@@ -74,8 +74,7 @@ export const drawBars = ( node, data, params, scales, formats, tooltip ) => {
 					label = d.label;
 				} else {
 					const dayData = data.find( e => e.date === d.date );
-					const date = tooltip.labelFormat( moment( dayData[ d.key ].labelDate ).toDate() );
-					label = params.interval === 'hour' ? `${ d.key } ${ date }` : date;
+					label = formats.screenReaderFormat( moment( dayData[ d.key ].labelDate ).toDate() );
 				}
 			}
 			return `${ label } ${ tooltip.valueFormat( d.value ) }`;

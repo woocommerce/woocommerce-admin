@@ -274,6 +274,7 @@ class Chart extends Component {
 			isViewportLarge,
 			itemsLabel,
 			mode,
+			screenReaderFormat,
 			showHeaderControls,
 			title,
 			tooltipLabelFormat,
@@ -388,6 +389,7 @@ class Chart extends Component {
 									margin={ margin }
 									mode={ mode }
 									orderedKeys={ orderedKeys }
+									screenReaderFormat={ screenReaderFormat }
 									tooltipLabelFormat={ tooltipLabelFormat }
 									tooltipValueFormat={ tooltipValueFormat }
 									tooltipPosition={ isViewportLarge ? 'over' : 'below' }
@@ -472,6 +474,10 @@ Chart.propTypes = {
 	 */
 	legendPosition: PropTypes.oneOf( [ 'bottom', 'side', 'top' ] ),
 	/**
+	 * A datetime formatting string or overriding function to format the screen reader labels.
+	 */
+	screenReaderFormat: PropTypes.oneOfType( [ PropTypes.string, PropTypes.func ] ),
+	/**
 	 * Wether header UI controls must be displayed.
 	 */
 	showHeaderControls: PropTypes.bool,
@@ -521,8 +527,9 @@ Chart.defaultProps = {
 	interval: 'day',
 	isRequesting: false,
 	mode: 'time-comparison',
+	screenReaderFormat: '%B %-d, %Y',
 	showHeaderControls: true,
-	tooltipLabelFormat: '%B %d, %Y',
+	tooltipLabelFormat: '%B %-d, %Y',
 	tooltipValueFormat: ',',
 	type: 'line',
 	xFormat: '%d',
