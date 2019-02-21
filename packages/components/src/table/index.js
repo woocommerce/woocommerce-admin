@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { find, first, isEqual, noop, partial, uniq, without } from 'lodash';
 import { IconButton, ToggleControl } from '@wordpress/components';
 import PropTypes from 'prop-types';
@@ -301,39 +301,41 @@ class TableCard extends Component {
 							type={ searchBy }
 						/>
 					),
-					( downloadable || onClickDownload ) && (
-						<IconButton
-							key="download"
-							className="woocommerce-table__download-button"
-							disabled={ isLoading }
-							onClick={ this.onClickDownload }
-							isLink
-						>
-							<DowloadIcon />
-							<span className="woocommerce-table__download-button__label">
-								{ labels.downloadButton || __( 'Download', 'wc-admin' ) }
-							</span>
-						</IconButton>
-					),
 				] }
 				menu={
-					showMenu && <EllipsisMenu label={ __( 'Choose which values to display', 'wc-admin' ) }>
-						<MenuTitle>{ __( 'Columns:', 'wc-admin' ) }</MenuTitle>
-						{ allHeaders.map( ( { key, label, required } ) => {
-							if ( required ) {
-								return null;
-							}
-							return (
-								<MenuItem key={ key } onInvoke={ this.onColumnToggle( key ) }>
-									<ToggleControl
-										label={ label }
-										checked={ showCols.includes( key ) }
-										onChange={ this.onColumnToggle( key ) }
-									/>
-								</MenuItem>
-							);
-						} ) }
-					</EllipsisMenu>
+					showMenu && <Fragment>
+						{ ( downloadable || onClickDownload ) && (
+							<IconButton
+								key="download"
+								className="woocommerce-table__download-button"
+								disabled={ isLoading }
+								onClick={ this.onClickDownload }
+								isLink
+							>
+								<DowloadIcon />
+								<span className="woocommerce-table__download-button__label">
+									{ labels.downloadButton || __( 'Download', 'wc-admin' ) }
+								</span>
+							</IconButton>
+						) }
+						<EllipsisMenu label={ __( 'Choose which values to display', 'wc-admin' ) }>
+							<MenuTitle>{ __( 'Columns:', 'wc-admin' ) }</MenuTitle>
+							{ allHeaders.map( ( { key, label, required } ) => {
+								if ( required ) {
+									return null;
+								}
+								return (
+									<MenuItem key={ key } onInvoke={ this.onColumnToggle( key ) }>
+										<ToggleControl
+											label={ label }
+											checked={ showCols.includes( key ) }
+											onChange={ this.onColumnToggle( key ) }
+										/>
+									</MenuItem>
+								);
+							} ) }
+						</EllipsisMenu>
+					</Fragment>
 				}
 			>
 				{ isLoading ? (
