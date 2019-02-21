@@ -52,6 +52,11 @@
 			.woocommerce-search {
 				margin-right: 0;
 			}
+			&:not(.has-compare) {
+				.woocommerce-search {
+					margin-left: 0;
+				}
+			}
 		}
 	}
 
