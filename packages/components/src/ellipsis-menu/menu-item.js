@@ -3,8 +3,8 @@
  * External dependencies
  */
 import { BaseControl, FormToggle } from '@wordpress/components';
-import { Component } from '@wordpress/element';
-import { ENTER, SPACE } from '@wordpress/keycodes';
+import { Component, createRef } from '@wordpress/element';
+import { DOWN, ENTER, SPACE, UP } from '@wordpress/keycodes';
 import PropTypes from 'prop-types';
 
 /**
@@ -16,7 +16,9 @@ class MenuItem extends Component {
 	constructor() {
 		super( ...arguments );
 		this.onClick = this.onClick.bind( this );
+		this.onFocusFormToggle = this.onFocusFormToggle.bind( this );
 		this.onKeyDown = this.onKeyDown.bind( this );
+		this.container = createRef();
 	}
 
 	onClick( event ) {
@@ -28,11 +30,25 @@ class MenuItem extends Component {
 	}
 
 	onKeyDown( event ) {
-		if ( event.target.isSameNode( event.currentTarget ) &&
-				( event.keyCode === ENTER || event.keyCode === SPACE ) ) {
-			event.preventDefault();
-			this.props.onInvoke();
+		if ( event.target.isSameNode( event.currentTarget ) ) {
+			if ( event.keyCode === ENTER || event.keyCode === SPACE ) {
+				event.preventDefault();
+				this.props.onInvoke();
+			}
+			if ( event.keyCode === UP ) {
+				event.preventDefault();
+			}
+			if ( event.keyCode === DOWN ) {
+				event.preventDefault();
+				const nextElementToFocus = event.target.nextSibling ||
+					event.target.parentNode.querySelector( '.woocommerce-ellipsis-menu__item' );
+				nextElementToFocus.focus();
+			}
 		}
+	}
+
+	onFocusFormToggle() {
+		this.container.current.focus();
 	}
 
 	render() {
@@ -42,6 +58,7 @@ class MenuItem extends Component {
 			return (
 				<div
 					aria-checked={ checked }
+					ref={ this.container }
 					role="menuitemcheckbox"
 					tabIndex="0"
 					onKeyDown={ this.onKeyDown }
@@ -53,6 +70,7 @@ class MenuItem extends Component {
 							aria-hidden="true"
 							checked={ checked }
 							onChange={ this.props.onInvoke }
+							onFocus={ this.onFocusFormToggle }
 							onClick={ e => e.stopPropagation() }
 							tabIndex="-1"
 						/>
