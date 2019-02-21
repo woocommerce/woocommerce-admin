@@ -5,6 +5,8 @@
 - Chart component: change chart type query parameter to `chartType`.
 - Bug fix for `<StockReportTable />` returning N/A instead of zero.
 - Add new component: SearchListControl for displaying and filtering a selectable list of items.
+- Update card header to use flexbox styles to support older browsers.
+- Move table download button into table header menu area.
 
 # 1.5.0
 - Improves display of charts where all values are 0.
