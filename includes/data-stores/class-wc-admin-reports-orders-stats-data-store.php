@@ -401,9 +401,10 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'refund_total'       => $order->get_total_refunded(),
 			'tax_total'          => $order->get_total_tax(),
 			'shipping_total'     => $order->get_shipping_total(),
-			'net_total'          => (float) $order->get_total() - (float) $order->get_total_tax() - (float) $order->get_shipping_total(),
+			'net_total'          => self::get_net_total( $order ),
 			'returning_customer' => self::is_returning_customer( $order ),
 			'status'             => self::normalize_order_status( $order->get_status() ),
+			'customer_id'        => WC_Admin_Reports_Customers_Data_Store::get_or_create_customer_from_order( $order ),
 		);
 		$format = array(
 			'%d',
@@ -417,31 +418,8 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'%f',
 			'%d',
 			'%s',
+			'%d',
 		);
-
-		// Ensure we're associating this order with a Customer in the lookup table.
-		$order_user_id        = $order->get_customer_id();
-		$customers_data_store = new WC_Admin_Reports_Customers_Data_Store();
-
-		if ( 0 === $order_user_id ) {
-			$email = $order->get_billing_email( 'edit' );
-
-			if ( $email ) {
-				$customer_id = $customers_data_store->get_or_create_guest_customer_from_order( $order );
-
-				if ( $customer_id ) {
-					$data['customer_id'] = $customer_id;
-					$format[]            = '%d';
-				}
-			}
-		} else {
-			$customer = $customers_data_store->get_customer_by_user_id( $order_user_id );
-
-			if ( $customer && $customer['customer_id'] ) {
-				$data['customer_id'] = $customer['customer_id'];
-				$format[]            = '%d';
-			}
-		}
 
 		// Update or add the information to the DB.
 		$result = $wpdb->replace( $table_name, $data, $format );
@@ -505,6 +483,23 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		}
 
 		return $num_items;
+	}
+
+	/**
+	 * Get the net amount from an order without shipping, tax, or refunds.
+	 *
+	 * @param array $order WC_Order object.
+	 * @return float
+	 */
+	protected static function get_net_total( $order ) {
+		$net_total = $order->get_total() - $order->get_total_tax() - $order->get_shipping_total();
+
+		$refunds = $order->get_refunds();
+		foreach ( $refunds as $refund ) {
+			$net_total += $refund->get_total() - $refund->get_total_tax() - $refund->get_shipping_total();
+		}
+
+		return $net_total > 0 ? (float) $net_total : 0;
 	}
 
 	/**
