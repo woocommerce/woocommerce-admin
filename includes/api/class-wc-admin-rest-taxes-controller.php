@@ -33,6 +33,21 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 	}
 
 	/**
+	 * Get the query params for collections.
+	 *
+	 * @return array
+	 */
+	public function get_collection_params() {
+		$params         = parent::get_collection_params();
+		$params['code'] = array(
+			'description'       => __( 'Search by similar tax code.', 'wc-admin' ),
+			'type'              => 'string',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		return $params;
+	}
+
+	/**
 	 * Get all taxes and allow filtering by tax code.
 	 *
 	 * @todo This is mostly copied from
