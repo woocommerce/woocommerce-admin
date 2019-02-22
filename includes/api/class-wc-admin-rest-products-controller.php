@@ -49,4 +49,35 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 		return $schema;
 	}
 
+	/**
+	 * Get the query params for collections.
+	 *
+	 * @return array
+	 */
+	public function get_collection_params() {
+		$params                 = parent::get_collection_params();
+		$params['product_name'] = array(
+			'description'       => __( 'Search for a similar product name.', 'wc-admin' ),
+			'type'              => 'string',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		return $params;
+	}
+
+	/**
+	 * Add product name filtering to the WC API.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 * @return array
+	 */
+	protected function prepare_objects_query( $request ) {
+		$args = parent::prepare_objects_query( $request );
+
+		if ( ! empty( $request['product_name'] ) ) {
+			$args['post_title__like'] = $request['product_name'];
+		}
+
+		return $args;
+	}
+
 }
