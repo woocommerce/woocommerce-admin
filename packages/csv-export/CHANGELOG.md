@@ -1,6 +1,6 @@
 # 1.1.0
 
-- Fix null values in columns
+- Fix error in `getCSVRows` when there is a null or undefined column value
 
 # 1.0.0
 
