@@ -418,7 +418,7 @@ class WC_Admin_Api_Init {
 	 * @param object $wp_query WP_Query object.
 	 * @return string
 	 */
-	public function add_wp_query_post_title_filter( $where, &$wp_query ) {
+	public static function add_wp_query_post_title_filter( $where, $wp_query ) {
 		global $wpdb;
 
 		$post_title_search = $wp_query->get( 'post_title__like' );
