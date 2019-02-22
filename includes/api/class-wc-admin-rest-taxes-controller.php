@@ -25,6 +25,14 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 	protected $namespace = 'wc/v4';
 
 	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		add_filter( 'woocommerce_rest_tax_query', array( __CLASS__, 'add_tax_code_query_args' ), 10, 2 );
+		add_filter( 'woocommerce_rest_tax_query_string', array( __CLASS__, 'add_tax_code_filter' ), 10, 2 );
+	}
+
+	/**
 	 * Get all taxes and allow filtering by tax code.
 	 *
 	 * @todo This is mostly copied from
@@ -126,4 +134,37 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 		return $response;
 	}
 
+	/**
+	 * Add tax code query arguments from request.
+	 *
+	 * @param array $prepared_args Array of arguments used for querying taxes.
+	 * @param array $request Array of request parameters.
+	 * @return array
+	 */
+	public static function add_tax_code_query_args( $prepared_args, $request ) {
+		if ( $request['code'] ) {
+			$prepared_args['code'] = $request['code'];
+		}
+		return $prepared_args;
+	}
+
+	/**
+	 * Filter tax codes by code.
+	 *
+	 * @param string $query Sql query string.
+	 * @param array  $prepared_args Array of arguments.
+	 * @return string
+	 */
+	public static function add_tax_code_filter( $query, $prepared_args ) {
+		global $wpdb;
+
+		$tax_code_search = $prepared_args['code'];
+		if ( $tax_code_search ) {
+			$tax_code_search = $wpdb->esc_like( $tax_code_search );
+			$tax_code_search = ' \'%' . $tax_code_search . '%\'';
+			$query          .= ' AND CONCAT( tax_rate_name, "-", tax_rate_priority ) LIKE ' . $tax_code_search;
+		}
+
+		return $query;
+	}
 }
