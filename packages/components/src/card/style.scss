@@ -21,7 +21,7 @@
 	display: flex;
 	align-items: center;
 
-	>* {
+	> .woocommerce-card__header-item {
 		display: flex;
 		align-items: center;
 		margin-left: $gap-small / 2;
