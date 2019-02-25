@@ -26,9 +26,6 @@ class WC_Admin_Api_Init {
 
 		// Add currency symbol to orders endpoint response.
 		add_filter( 'woocommerce_rest_prepare_shop_order_object', array( __CLASS__, 'add_currency_symbol_to_order_response' ) );
-
-		// Add WP Query where filters.
-		add_filter( 'posts_where', array( __CLASS__, 'add_wp_query_post_title_filter' ), 10, 2 );
 	}
 
 	/**
@@ -409,26 +406,6 @@ class WC_Admin_Api_Init {
 		$response->set_data( $response_data );
 
 		return $response;
-	}
-
-	/**
-	 * Add post title searching to WP Query
-	 *
-	 * @param string $where Where clause used to search posts.
-	 * @param object $wp_query WP_Query object.
-	 * @return string
-	 */
-	public static function add_wp_query_post_title_filter( $where, $wp_query ) {
-		global $wpdb;
-
-		$post_title_search = $wp_query->get( 'post_title__like' );
-		if ( $post_title_search ) {
-			$post_title_search = $wpdb->esc_like( $post_title_search );
-			$post_title_search = ' \'%' . $post_title_search . '%\'';
-			$where            .= ' AND ' . $wpdb->posts . '.post_title LIKE ' . $post_title_search;
-		}
-
-		return $where;
 	}
 }
 
