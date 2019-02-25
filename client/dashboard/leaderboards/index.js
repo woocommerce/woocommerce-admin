@@ -7,7 +7,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { isEqual, xor } from 'lodash';
 import PropTypes from 'prop-types';
-import { SelectControl, ToggleControl } from '@wordpress/components';
+import { SelectControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -95,23 +95,27 @@ class Leaderboards extends Component {
 			},
 		];
 		return (
-			<EllipsisMenu label={ __( 'Choose which leaderboards to display', 'wc-admin' ) }>
+			<EllipsisMenu
+				label={ __( 'Choose which leaderboards to display and the number of rows', 'wc-admin' ) }
+			>
 				<Fragment>
 					<MenuTitle>{ __( 'Leaderboards', 'wc-admin' ) }</MenuTitle>
 					{ allLeaderboards.map( leaderboard => {
 						return (
-							<MenuItem onInvoke={ this.toggle( leaderboard.key ) } key={ leaderboard.key }>
-								<ToggleControl
-									label={ leaderboard.label }
-									checked={ ! hiddenLeaderboardKeys.includes( leaderboard.key ) }
-									onChange={ this.toggle( leaderboard.key ) }
-								/>
+							<MenuItem
+								checked={ ! hiddenLeaderboardKeys.includes( leaderboard.key ) }
+								isCheckbox
+								isClickable
+								key={ leaderboard.key }
+								onInvoke={ this.toggle( leaderboard.key ) }
+							>
+								{ leaderboard.label }
 							</MenuItem>
 						);
 					} ) }
-					<MenuTitle>{ __( 'Rows Per Table', 'wc-admin' ) }</MenuTitle>
 					<SelectControl
-						className="woocommerce-ellipsis-menu__item"
+						className="woocommerce-dashboard__dashboard-leaderboards__select"
+						label={ <MenuTitle>{ __( 'Rows Per Table', 'wc-admin' ) }</MenuTitle> }
 						value={ rowsPerTable }
 						options={ Array.from( { length: 20 }, ( v, key ) => ( {
 							v: key + 1,
