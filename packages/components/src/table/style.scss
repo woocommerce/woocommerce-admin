@@ -14,7 +14,7 @@
 		flex-grow: 1;
 	}
 
-	.woocommerce-card__action {
+	.woocommerce-card__menu {
 		margin-left: auto;
 	}
 
@@ -38,10 +38,6 @@
 		@include breakpoint( '<960px' ) {
 			.woocommerce-card__header {
 				flex-wrap: wrap;
-			}
-
-			.woocommerce-card__menu {
-				margin-left: auto;
 			}
 
 			.woocommerce-card__action {
