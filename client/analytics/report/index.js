@@ -13,7 +13,7 @@ import { find } from 'lodash';
  * WooCommerce dependencies
  */
 import { useFilters } from '@woocommerce/components';
-import { getQuery } from '@woocommerce/navigation';
+import { getQuery, getSearchWords } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -138,29 +138,24 @@ Report.propTypes = {
 export default compose(
 	useFilters( REPORTS_FILTER ),
 	withSelect( ( select, props ) => {
-		const { search } = getQuery();
+		const query = getQuery();
+		const { search } = query;
 
 		if ( ! search ) {
 			return {};
 		}
 
 		const { report } = props.params;
-		const searchWords = search.split( ',' ).map( searchWord => searchWord.replace( '%2C', ',' ) );
+		const searchWords = getSearchWords( query );
 		const items = searchItemsByString( select, report, searchWords );
 		const ids = Object.keys( items );
 		if ( ! ids.length ) {
-			return {
-				query: {
-					...props.query,
-					search: searchWords,
-				},
-			};
+			return {};
 		}
 
 		return {
 			query: {
 				...props.query,
-				search: searchWords,
 				[ report ]: ids.join( ',' ),
 			},
 		};
