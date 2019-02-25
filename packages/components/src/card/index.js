@@ -9,9 +9,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import EllipsisMenu from '../ellipsis-menu';
 import { H, Section } from '../section';
-import { validateComponent } from '../lib/proptype-validator';
 
 /**
  * A basic card component with a header. The header can contain a title, an action, and an `EllipsisMenu` menu.
@@ -54,9 +52,9 @@ Card.propTypes = {
 	 */
 	className: PropTypes.string,
 	/**
-	 * An `EllipsisMenu`, with filters used to control the content visible in this card
+	 * A menu are to control visible contents of the card and secondary actions.
 	 */
-	menu: validateComponent( EllipsisMenu ),
+	menu: PropTypes.node,
 	/**
 	 * The title to use for this card.
 	 */
