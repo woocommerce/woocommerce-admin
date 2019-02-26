@@ -28,10 +28,13 @@ class ProductsReport extends Component {
 	getChartMeta() {
 		const { query, isSingleProductView, isSingleProductVariable } = this.props;
 
-		const isProductDetailsView =
-			'top_items' === query.filter ||
-			'top_sales' === query.filter ||
-			'compare-products' === query.filter;
+		const isProductDetailsView = [
+			'top_items',
+			'top_sales',
+			'compare-products',
+			'single_category',
+			'compare-categories',
+		].includes( query.filter );
 
 		const mode =
 			isProductDetailsView || ( isSingleProductView && isSingleProductVariable )
@@ -53,19 +56,13 @@ class ProductsReport extends Component {
 
 	render() {
 		const { compareObject, itemsLabel, mode } = this.getChartMeta();
-		const {
-			path,
-			query,
-			isProductsError,
-			isProductsRequesting,
-			isSingleProductVariable,
-		} = this.props;
+		const { path, query, isError, isRequesting, isSingleProductVariable } = this.props;
 
-		if ( isProductsError ) {
+		if ( isError ) {
 			return <ReportError isError />;
 		}
 
-		if ( isProductsRequesting ) {
+		if ( isRequesting ) {
 			return (
 				<Fragment>
 					<ReportFilters query={ query } path={ path } filters={ filters } />
@@ -78,7 +75,7 @@ class ProductsReport extends Component {
 							<ChartPlaceholder height={ 220 } />
 						</div>
 					</div>
-					<ProductsReportTable query={ query } />
+					<ProductsReportTable isRequesting={ true } query={ query } />
 				</Fragment>
 			);
 		}
@@ -128,9 +125,20 @@ ProductsReport.propTypes = {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { query } = props;
+		const { query, isRequesting } = props;
+		const isSingleProductView =
+			! query.search && query.products && 1 === query.products.split( ',' ).length;
+		if ( isRequesting ) {
+			return {
+				query: {
+					...query,
+				},
+				isSingleProductView,
+				isRequesting,
+			};
+		}
+
 		const { getItems, isGetItemsRequesting, getItemsError } = select( 'wc-api' );
-		const isSingleProductView = query.products && 1 === query.products.split( ',' ).length;
 		if ( isSingleProductView ) {
 			const productId = parseInt( query.products );
 			const includeArgs = { include: productId };
@@ -147,8 +155,8 @@ export default compose(
 				},
 				isSingleProductView,
 				isSingleProductVariable: isVariable,
-				isProductsRequesting,
-				isProductsError,
+				isRequesting: isProductsRequesting,
+				isError: isProductsError,
 			};
 		}
 

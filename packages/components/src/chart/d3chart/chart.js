@@ -28,7 +28,9 @@ import {
 import { drawAxis } from './utils/axis';
 import { drawBars } from './utils/bar-chart';
 import { drawLines } from './utils/line-chart';
+import { getColor } from './utils/color';
 import ChartTooltip from './utils/tooltip';
+import { selectionLimit } from '../constants';
 
 /**
  * A simple D3 line and bar chart component for timeseries data in React.
@@ -53,14 +55,14 @@ class D3Chart extends Component {
 	}
 
 	getScaleParams( uniqueDates ) {
-		const { data, height, margin, orderedKeys, type } = this.props;
+		const { data, height, margin, orderedKeys, chartType } = this.props;
 
 		const adjHeight = height - margin.top - margin.bottom;
 		const adjWidth = this.getWidth() - margin.left - margin.right;
 		const yMax = getYMax( data );
 		const yScale = getYScale( adjHeight, yMax );
 
-		if ( type === 'line' ) {
+		if ( chartType === 'line' ) {
 			return {
 				xScale: getXLineScale( uniqueDates, adjWidth ),
 				yMax,
@@ -80,21 +82,23 @@ class D3Chart extends Component {
 	}
 
 	getParams( uniqueDates ) {
-		const { colorScheme, data, interval, mode, orderedKeys, type } = this.props;
+		const { chartType, colorScheme, data, interval, mode, orderedKeys } = this.props;
 		const newOrderedKeys = orderedKeys || getOrderedKeys( data );
+		const visibleKeys = newOrderedKeys.filter( key => key.visible );
+		const colorKeys = newOrderedKeys.length > selectionLimit ? visibleKeys : newOrderedKeys;
 
 		return {
-			colorScheme,
+			getColor: getColor( colorKeys, colorScheme ),
 			interval,
 			mode,
-			type,
+			chartType,
 			uniqueDates,
-			visibleKeys: newOrderedKeys.filter( key => key.visible ),
+			visibleKeys,
 		};
 	}
 
-	createTooltip( chart, visibleKeys ) {
-		const { colorScheme, tooltipLabelFormat, tooltipPosition, tooltipTitle, tooltipValueFormat } = this.props;
+	createTooltip( chart, getColorFunction, visibleKeys ) {
+		const { tooltipLabelFormat, tooltipPosition, tooltipTitle, tooltipValueFormat } = this.props;
 
 		const tooltip = new ChartTooltip();
 		tooltip.ref = this.tooltipRef.current;
@@ -104,12 +108,12 @@ class D3Chart extends Component {
 		tooltip.labelFormat = getFormatter( tooltipLabelFormat, d3TimeFormat );
 		tooltip.valueFormat = getFormatter( tooltipValueFormat );
 		tooltip.visibleKeys = visibleKeys;
-		tooltip.colorScheme = colorScheme;
+		tooltip.getColor = getColorFunction;
 		this.tooltip = tooltip;
 	}
 
 	drawChart( node ) {
-		const { data, dateParser, margin, type } = this.props;
+		const { data, dateParser, margin, chartType } = this.props;
 		const uniqueDates = getUniqueDates( data, dateParser );
 		const formats = this.getFormatParams();
 		const params = this.getParams( uniqueDates );
@@ -120,16 +124,16 @@ class D3Chart extends Component {
 			.append( 'g' )
 			.attr( 'transform', `translate(${ margin.left }, ${ margin.top })` );
 
-		this.createTooltip( g.node(), params.visibleKeys );
+		this.createTooltip( g.node(), params.getColor, params.visibleKeys );
 
 		drawAxis( g, params, scales, formats, margin );
-		type === 'line' && drawLines( g, data, params, scales, formats, this.tooltip );
-		type === 'bar' && drawBars( g, data, params, scales, formats, this.tooltip );
+		chartType === 'line' && drawLines( g, data, params, scales, formats, this.tooltip );
+		chartType === 'bar' && drawBars( g, data, params, scales, formats, this.tooltip );
 	}
 
 	shouldBeCompact() {
-		const {	data, margin, type, width } = this.props;
-		if ( type !== 'bar' ) {
+		const {	data, margin, chartType, width } = this.props;
+		if ( chartType !== 'bar' ) {
 			return false;
 		}
 		const widthWithoutMargins = width - margin.left - margin.right;
@@ -140,8 +144,8 @@ class D3Chart extends Component {
 	}
 
 	getWidth() {
-		const {	data, margin, type, width } = this.props;
-		if ( type !== 'bar' ) {
+		const {	data, margin, chartType, width } = this.props;
+		if ( chartType !== 'bar' ) {
 			return width;
 		}
 		const columnsPerDate = data && data.length ? Object.keys( data[ 0 ] ).length - 1 : 0;
@@ -161,7 +165,7 @@ class D3Chart extends Component {
 	}
 
 	render() {
-		const { className, data, height, orderedKeys, type } = this.props;
+		const { className, data, height, orderedKeys, chartType } = this.props;
 		const computedWidth = this.getWidth();
 		return (
 			<div
@@ -177,7 +181,7 @@ class D3Chart extends Component {
 					height={ height }
 					orderedKeys={ orderedKeys }
 					tooltip={ this.tooltip }
-					type={ type }
+					chartType={ chartType }
 					width={ computedWidth }
 				/>
 			</div>
@@ -261,7 +265,7 @@ D3Chart.propTypes = {
 	/**
 	 * Chart type of either `line` or `bar`.
 	 */
-	type: PropTypes.oneOf( [ 'bar', 'line' ] ),
+	chartType: PropTypes.oneOf( [ 'bar', 'line' ] ),
 	/**
 	 * Width of the `svg`.
 	 */
@@ -296,7 +300,7 @@ D3Chart.defaultProps = {
 	tooltipPosition: 'over',
 	tooltipLabelFormat: '%B %-d, %Y',
 	tooltipValueFormat: ',',
-	type: 'line',
+	chartType: 'line',
 	width: 600,
 	xFormat: '%Y-%m-%d',
 	x2Format: '',

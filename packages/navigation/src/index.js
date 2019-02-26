@@ -71,6 +71,26 @@ export function getIdsFromQuery( queryString = '' ) {
 }
 
 /**
+ * Get an array of searched words given a query.
+ *
+ * @param {Object} query Query object.
+ * @return {Array} List of search words.
+ */
+export function getSearchWords( query = navUtils.getQuery() ) {
+	if ( typeof query !== 'object' ) {
+		throw new Error( 'Invalid parameter passed to getSearchWords, it expects an object or no parameters.' );
+	}
+	const { search } = query;
+	if ( ! search ) {
+		return [];
+	}
+	if ( typeof search !== 'string' ) {
+		throw new Error( 'Invalid \'search\' type. getSearchWords expects query\'s \'search\' property to be a string.' );
+	}
+	return search.split( ',' ).map( searchWord => searchWord.replace( '%2C', ',' ) );
+}
+
+/**
  * Return a URL with set query parameters.
  *
  * @param {Object} query object of params to be updated.
@@ -110,7 +130,11 @@ export function onQueryChange( param, path = getPath(), query = getQuery() ) {
 			return ( key, dir ) => updateQueryString( { orderby: key, order: dir }, path, query );
 		case 'compare':
 			return ( key, queryParam, ids ) =>
-				updateQueryString( { [ queryParam ]: `compare-${ key }`, [ key ]: ids }, path, query );
+				updateQueryString( {
+					[ queryParam ]: `compare-${ key }`,
+					[ key ]: ids,
+					search: undefined,
+				}, path, query );
 		default:
 			return value => updateQueryString( { [ param ]: value }, path, query );
 	}

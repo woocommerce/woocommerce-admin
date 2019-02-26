@@ -7,9 +7,9 @@ import classNames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
-import { isEqual, xor } from 'lodash';
+import { xor } from 'lodash';
 import PropTypes from 'prop-types';
-import { ToggleControl, IconButton, NavigableMenu, SelectControl } from '@wordpress/components';
+import { IconButton, NavigableMenu, SelectControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -38,35 +38,6 @@ class DashboardCharts extends Component {
 		this.toggle = this.toggle.bind( this );
 	}
 
-	componentDidUpdate( {
-		userPrefCharts: prevUserPrefCharts,
-		userPrefChartType: prevUserPrefChartType,
-		userPrefChartInterval: prevUserPrefChartInterval,
-	} ) {
-		const { userPrefCharts, userPrefChartInterval, userPrefChartType } = this.props;
-		if ( userPrefCharts && ! isEqual( userPrefCharts, prevUserPrefCharts ) ) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( {
-				hiddenChartKeys: userPrefCharts,
-			} );
-			/* eslint-enable react/no-did-update-set-state */
-		}
-		if ( userPrefChartType && userPrefChartType !== prevUserPrefChartType ) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( {
-				chartType: userPrefChartType,
-			} );
-			/* eslint-enable react/no-did-update-set-state */
-		}
-		if ( userPrefChartInterval !== prevUserPrefChartInterval ) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( {
-				interval: userPrefChartInterval,
-			} );
-			/* eslint-enable react/no-did-update-set-state */
-		}
-	}
-
 	toggle( key ) {
 		return () => {
 			const hiddenChartKeys = xor( this.state.hiddenChartKeys, [ key ] );
@@ -78,27 +49,31 @@ class DashboardCharts extends Component {
 		};
 	}
 
-	handleTypeToggle( type ) {
+	handleTypeToggle( chartType ) {
 		return () => {
-			this.setState( { chartType: type } );
+			this.setState( { chartType } );
 			const userDataFields = {
-				[ 'dashboard_chart_type' ]: type,
+				[ 'dashboard_chart_type' ]: chartType,
 			};
 			this.props.updateCurrentUserData( userDataFields );
 		};
 	}
 
 	renderMenu() {
+		const { hiddenChartKeys } = this.state;
+
 		return (
 			<EllipsisMenu label={ __( 'Choose which charts to display', 'wc-admin' ) }>
 				{ uniqCharts.map( chart => {
 					return (
-						<MenuItem onInvoke={ this.toggle( chart.key ) } key={ chart.key }>
-							<ToggleControl
-								label={ __( `${ chart.label }`, 'wc-admin' ) }
-								checked={ ! this.state.hiddenChartKeys.includes( chart.key ) }
-								onChange={ this.toggle( chart.key ) }
-							/>
+						<MenuItem
+							checked={ ! hiddenChartKeys.includes( chart.key ) }
+							isCheckbox
+							isClickable
+							key={ chart.key }
+							onInvoke={ this.toggle( chart.key ) }
+						>
+							{ __( `${ chart.label }`, 'wc-admin' ) }
 						</MenuItem>
 					);
 				} ) }
@@ -146,7 +121,7 @@ class DashboardCharts extends Component {
 	render() {
 		const { path } = this.props;
 		const { chartType, hiddenChartKeys, interval } = this.state;
-		const query = { ...this.props.query, type: chartType, interval };
+		const query = { ...this.props.query, chartType, interval };
 		return (
 			<Fragment>
 				<div className="woocommerce-dashboard__dashboard-charts">
@@ -163,24 +138,25 @@ class DashboardCharts extends Component {
 						>
 							<IconButton
 								className={ classNames( 'woocommerce-chart__type-button', {
-									'woocommerce-chart__type-button-selected': ! query.type || query.type === 'line',
+									'woocommerce-chart__type-button-selected':
+										! query.chartType || query.chartType === 'line',
 								} ) }
 								icon={ <Gridicon icon="line-graph" /> }
 								title={ __( 'Line chart', 'wc-admin' ) }
-								aria-checked={ query.type === 'line' }
+								aria-checked={ query.chartType === 'line' }
 								role="menuitemradio"
-								tabIndex={ query.type === 'line' ? 0 : -1 }
+								tabIndex={ query.chartType === 'line' ? 0 : -1 }
 								onClick={ this.handleTypeToggle( 'line' ) }
 							/>
 							<IconButton
 								className={ classNames( 'woocommerce-chart__type-button', {
-									'woocommerce-chart__type-button-selected': query.type === 'bar',
+									'woocommerce-chart__type-button-selected': query.chartType === 'bar',
 								} ) }
 								icon={ <Gridicon icon="stats-alt" /> }
 								title={ __( 'Bar chart', 'wc-admin' ) }
-								aria-checked={ query.type === 'bar' }
+								aria-checked={ query.chartType === 'bar' }
 								role="menuitemradio"
-								tabIndex={ query.type === 'bar' ? 0 : -1 }
+								tabIndex={ query.chartType === 'bar' ? 0 : -1 }
 								onClick={ this.handleTypeToggle( 'bar' ) }
 							/>
 						</NavigableMenu>

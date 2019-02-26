@@ -355,30 +355,37 @@ class WC_Admin_Reports_Segmenting {
 				$args['include'] = $this->query_args['categories'];
 			}
 
+			// @todo: Look into `wc_get_products` or data store methods and not directly touching the database or post types.
 			$categories = get_categories( $args );
 
 			$segments       = wp_list_pluck( $categories, 'cat_ID' );
 			$segment_labels = wp_list_pluck( $categories, 'name', 'cat_ID' );
 
 		} elseif ( 'coupon' === $this->query_args['segmentby'] ) {
-			// @todo Switch to a non-direct-SQL way to get all coupons?
-			// @todo These are only currently existing coupons, but we should add also deleted ones, if they have been used at least once.
-			$coupon_ids = $wpdb->get_results( "SELECT ID FROM {$wpdb->prefix}posts WHERE post_type='shop_coupon' AND post_status='publish'", ARRAY_A ); // WPCS: cache ok, DB call ok, unprepared SQL ok.
-			$segments   = wp_list_pluck( $coupon_ids, 'ID' );
+			$args = array();
+			if ( isset( $this->query_args['coupons'] ) ) {
+				$args['include'] = $this->query_args['coupons'];
+			}
+			$coupons        = WC_Admin_Reports_Coupons_Data_Store::get_coupons( $args );
+			$segments       = wp_list_pluck( $coupons, 'ID' );
+			$segment_labels = wp_list_pluck( $coupons, 'post_title', 'ID' );
+			$segment_labels = array_map( 'wc_format_coupon_code', $segment_labels );
 		} elseif ( 'customer_type' === $this->query_args['segmentby'] ) {
 			// 0 -- new customer
 			// 1 -- returning customer
 			$segments = array( 0, 1 );
 		} elseif ( 'tax_rate_id' === $this->query_args['segmentby'] ) {
-			// @todo Do we need to include tax rates that existed in the past, but have never been used? I guess there are other, more pressing problems...
-			// Current tax rates UNION previously used tax rates.
-			$tax_rate_ids = $wpdb->get_results(
-				"SELECT tax_rate_id FROM {$wpdb->prefix}woocommerce_tax_rates
-						UNION 
-						SELECT DISTINCT meta_value FROM {$wpdb->prefix}woocommerce_order_itemmeta where meta_key='rate_id'",
-				ARRAY_A
-			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
-			$segments     = wp_list_pluck( $tax_rate_ids, 'tax_rate_id' );
+			$args = array();
+			if ( isset( $this->query_args['taxes'] ) ) {
+				$args['include'] = $this->query_args['taxes'];
+			}
+			$taxes = WC_Admin_Reports_Taxes_Stats_Data_Store::get_taxes( $args );
+
+			foreach ( $taxes as $tax ) {
+				$id                    = $tax['tax_rate_id'];
+				$segments[]            = $id;
+				$segment_labels[ $id ] = WC_Tax::get_rate_code( (object) $tax );
+			}
 		} else {
 			// Catch all default.
 			$segments = array();
