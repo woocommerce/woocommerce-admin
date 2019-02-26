@@ -25,14 +25,6 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 	protected $namespace = 'wc/v4';
 
 	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		add_filter( 'woocommerce_rest_tax_query', array( __CLASS__, 'add_tax_code_query_args' ), 10, 2 );
-		add_filter( 'woocommerce_rest_tax_query_string', array( __CLASS__, 'add_tax_code_filter' ), 10, 2 );
-	}
-
-	/**
 	 * Get the query params for collections.
 	 *
 	 * @return array
@@ -50,7 +42,6 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 	/**
 	 * Get all taxes and allow filtering by tax code.
 	 *
-	 * @todo This is mostly copied from
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|WP_REST_Response
 	 */
@@ -71,6 +62,7 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 		);
 		$prepared_args['orderby'] = $orderby_possibles[ $request['orderby'] ];
 		$prepared_args['class']   = $request['class'];
+		$prepared_args['code']    = $request['code'];
 
 		/**
 		 * Filter arguments, before passing to $wpdb->get_results(), when querying taxes via the REST API.
@@ -92,14 +84,13 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 			$query .= " AND tax_rate_class = '$class'";
 		}
 
-		/**
-		 * Filter the query string to conditionally return tax codes in the REST API.
-		 *
-		 * @todo Remove this if https://github.com/woocommerce/woocommerce/pull/22813 gets merged.
-		 * @param string $query         Query string used to look up tax codes.
-		 * @param array  $prepared_args Array of arguments for $wpdb->get_results().
-		 */
-		$query = apply_filters( 'woocommerce_rest_tax_query_string', $query, $prepared_args );
+		// Filter by tax code.
+		$tax_code_search = $prepared_args['code'];
+		if ( $tax_code_search ) {
+			$tax_code_search = $wpdb->esc_like( $tax_code_search );
+			$tax_code_search = ' \'%' . $tax_code_search . '%\'';
+			$query          .= ' AND CONCAT_WS( "-", NULLIF(tax_rate_country, ""), NULLIF(tax_rate_state, ""), NULLIF(tax_rate_name, ""), NULLIF(tax_rate_priority, "") ) LIKE ' . $tax_code_search;
+		}
 
 		// Order tax rates.
 		$order_by = sprintf( ' ORDER BY %s', sanitize_key( $prepared_args['orderby'] ) );
@@ -120,7 +111,7 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 
 		// Store pagination values for headers then unset for count query.
 		$per_page = (int) $prepared_args['number'];
-		$page = ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
+		$page     = ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
 
 		// Query only for ids.
 		$wpdb->get_results( str_replace( 'SELECT *', 'SELECT tax_rate_id', $query ) ); // @codingStandardsIgnoreLine.
@@ -147,39 +138,5 @@ class WC_Admin_REST_Taxes_Controller extends WC_REST_Taxes_Controller {
 		}
 
 		return $response;
-	}
-
-	/**
-	 * Add tax code query arguments from request.
-	 *
-	 * @param array $prepared_args Array of arguments used for querying taxes.
-	 * @param array $request Array of request parameters.
-	 * @return array
-	 */
-	public static function add_tax_code_query_args( $prepared_args, $request ) {
-		if ( $request['code'] ) {
-			$prepared_args['code'] = $request['code'];
-		}
-		return $prepared_args;
-	}
-
-	/**
-	 * Filter tax codes by code.
-	 *
-	 * @param string $query Sql query string.
-	 * @param array  $prepared_args Array of arguments.
-	 * @return string
-	 */
-	public static function add_tax_code_filter( $query, $prepared_args ) {
-		global $wpdb;
-
-		$tax_code_search = $prepared_args['code'];
-		if ( $tax_code_search ) {
-			$tax_code_search = $wpdb->esc_like( $tax_code_search );
-			$tax_code_search = ' \'%' . $tax_code_search . '%\'';
-			$query          .= ' AND CONCAT_WS( "-", NULLIF(tax_rate_country, ""), NULLIF(tax_rate_state, ""), NULLIF(tax_rate_name, ""), NULLIF(tax_rate_priority, "") ) LIKE ' . $tax_code_search;
-		}
-
-		return $query;
 	}
 }
