@@ -29,6 +29,7 @@ import TaxesReport from './taxes';
 import DownloadsReport from './downloads';
 import StockReport from './stock';
 import CustomersReport from './customers';
+import ReportError from 'analytics/components/report-error';
 import { searchItemsByString } from 'wc-api/items/utils';
 import withSelect from 'wc-api/with-select';
 
@@ -114,7 +115,12 @@ class Report extends Component {
 			return null;
 		}
 
-		const { params } = this.props;
+		const { params, isError } = this.props;
+
+		if ( isError ) {
+			return <ReportError isError />;
+		}
+
 		const report = find( getReports(), { report: params.report } );
 		if ( ! report ) {
 			return null;
@@ -147,13 +153,19 @@ export default compose(
 
 		const { report } = props.params;
 		const searchWords = getSearchWords( query );
-		const items = searchItemsByString( select, report, searchWords );
+		const itemsResult = searchItemsByString( select, report, searchWords );
+		const { isError, isRequesting, items } = itemsResult;
 		const ids = Object.keys( items );
 		if ( ! ids.length ) {
-			return {};
+			return {
+				isError,
+				isRequesting,
+			};
 		}
 
 		return {
+			isError,
+			isRequesting,
 			query: {
 				...props.query,
 				[ report ]: ids.join( ',' ),
