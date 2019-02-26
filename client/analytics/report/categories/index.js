@@ -54,6 +54,7 @@ export default class CategoriesReport extends Component {
 				<ReportSummary
 					charts={ charts }
 					endpoint="products"
+					limitProperty="categories"
 					query={ chartQuery }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 				/>
@@ -62,6 +63,7 @@ export default class CategoriesReport extends Component {
 					charts={ charts }
 					mode={ mode }
 					endpoint="products"
+					limitProperty="categories"
 					path={ path }
 					query={ chartQuery }
 					itemsLabel={ itemsLabel }
