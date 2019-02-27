@@ -207,6 +207,11 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 				$this->include_extended_info( $orders_data, $query_args );
 			}
 
+			foreach ( $orders_data as $key => $order_data ) {
+				$wc_order                            = new WC_Order( $order_data['order_id'] );
+				$orders_data[ $key ]['order_number'] = $wc_order->get_order_number();
+			}
+
 			$orders_data = array_map( array( $this, 'cast_numbers' ), $orders_data );
 			$data        = (object) array(
 				'data'    => $orders_data,

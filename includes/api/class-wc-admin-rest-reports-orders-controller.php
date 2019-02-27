@@ -161,6 +161,12 @@ class WC_Admin_REST_Reports_Orders_Controller extends WC_Admin_REST_Reports_Cont
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
+				'order_number'           => array(
+					'description' => __( 'Order Number.', 'wc-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
 				'date_created'       => array(
 					'description' => __( 'Date the order was created.', 'wc-admin' ),
 					'type'        => 'string',
