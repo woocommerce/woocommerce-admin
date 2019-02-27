@@ -46,14 +46,14 @@ export class ReportSummary extends Component {
 	}
 
 	render() {
-		const { charts, query, selectedChart, summaryData } = this.props;
-		const { isError, isRequesting } = summaryData;
+		const { charts, isRequesting, query, selectedChart, summaryData } = this.props;
+		const { isError, isRequesting: isSummaryDataRequesting } = summaryData;
 
 		if ( isError ) {
 			return <ReportError isError />;
 		}
 
-		if ( isRequesting ) {
+		if ( isRequesting || isSummaryDataRequesting ) {
 			return <SummaryListPlaceholder numberOfItems={ charts.length } />;
 		}
 
@@ -118,6 +118,10 @@ ReportSummary.propTypes = {
 	 */
 	query: PropTypes.object.isRequired,
 	/**
+	 * Whether there is an API call running.
+	 */
+	isRequesting: PropTypes.bool,
+	/**
 	 * Properties of the selected chart.
 	 */
 	selectedChart: PropTypes.shape( {
@@ -145,13 +149,19 @@ ReportSummary.defaultProps = {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { endpoint, limitProperty, query } = props;
+		const { endpoint, isRequesting, limitProperty, query } = props;
 		const limitBy = limitProperty || endpoint;
+
+		if ( isRequesting ) {
+			return {};
+		}
+
 		if ( query.search && ! ( query[ limitBy ] && query[ limitBy ].length ) ) {
 			return {
 				emptySearchResults: true,
 			};
 		}
+
 		const summaryData = getSummaryNumbers( endpoint, query, select, limitBy );
 
 		return {
