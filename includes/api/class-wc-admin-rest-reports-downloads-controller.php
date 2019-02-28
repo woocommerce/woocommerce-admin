@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * @package WooCommerce/API
  * @extends WC_REST_Reports_Controller
  */
-class WC_Admin_REST_Reports_Downloads_Controller extends WC_REST_Reports_Controller {
+class WC_Admin_REST_Reports_Downloads_Controller extends WC_Admin_REST_Reports_Controller {
 
 	/**
 	 * Endpoint namespace.
@@ -111,8 +111,7 @@ class WC_Admin_REST_Reports_Downloads_Controller extends WC_REST_Reports_Control
 		$response->data['file_path']    = $file_path;
 		$customer                       = new WC_Customer( $data['user_id'] );
 		$response->data['username']     = $customer->get_username();
-		$order                          = new WC_Order( $data['order_id'] );
-		$response->data['order_number'] = $order->get_order_number();
+		$response->data['order_number'] = $this->get_order_number( $data['order_id'] );
 
 		/**
 		 * Filter a report returned from the API.
