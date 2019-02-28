@@ -125,6 +125,20 @@ class WC_Admin_Reports_Sync {
 		);
 	}
 
+	/**
+	 * Get the number of pending actions for reports.
+	 *
+	 * @return int
+	 */
+	public static function get_pending_actions() {
+		$query   = array(
+			'status' => ActionScheduler_Store::STATUS_PENDING,
+			'group'  => self::QUEUE_GROUP,
+		);
+		$store   = ActionScheduler::store();
+		$pending = $store->query_actions( $query, 'count' );
+		return $pending;
+	}
 
 	/**
 	 * Schedule an action to process a single Order.

@@ -205,6 +205,7 @@ function wc_admin_print_script_settings() {
 			'weekdaysShort' => array_values( $wp_locale->weekday_abbrev ),
 		),
 		'currentUserData'       => $current_user_data,
+		'pendingReportActions'  => intval( WC_Admin_Reports_Sync::get_pending_actions() ),
 	);
 	$settings = wc_admin_add_custom_settings( $settings );
 
