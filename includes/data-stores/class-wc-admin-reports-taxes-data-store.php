@@ -87,17 +87,14 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 
 		$sql_query['from_clause']       = '';
 		$sql_query['outer_from_clause'] = '';
-		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
-			if ( $order_status_filter ) {
-				$sql_query['from_clause'] .= " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
-			}
 
+		if ( $order_status_filter ) {
+			$sql_query['from_clause'] .= " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
+		}
+
+		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
 			$sql_query['outer_from_clause'] .= " JOIN {$wpdb->prefix}woocommerce_tax_rates ON default_results.id = {$wpdb->prefix}woocommerce_tax_rates.tax_rate_id";
 		} else {
-			if ( $order_status_filter ) {
-				$sql_query['from_clause'] .= " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
-			}
-
 			$sql_query['from_clause'] .= " JOIN {$wpdb->prefix}woocommerce_tax_rates ON {$table_name}.tax_rate_id = {$wpdb->prefix}woocommerce_tax_rates.tax_rate_id";
 		}
 
