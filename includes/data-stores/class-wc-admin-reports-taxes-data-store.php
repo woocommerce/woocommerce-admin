@@ -92,6 +92,10 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
 			$allowed_taxes                     = implode( ',', $query_args['taxes'] );
 			$sql_query_params['where_clause'] .= " AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})";
+			if ( $order_status_filter ) {
+				$sql_query_params['inner_from_clause'] .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_tax_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
+			}
+			$sql_query_params['outer_from_clause'] .= " JOIN {$wpdb->prefix}woocommerce_tax_rates ON default_results.id = {$wpdb->prefix}woocommerce_tax_rates.tax_rate_id";
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
@@ -162,48 +166,88 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 				'page_no' => 0,
 			);
 
-			$selections       = $this->selected_columns( $query_args );
 			$sql_query_params = $this->get_sql_query_params( $query_args );
 
-			$db_records_count = (int) $wpdb->get_var(
-				"SELECT COUNT(*) FROM (
+			if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
+				$total_results = count( $query_args['taxes'] );
+				$total_pages   = (int) ceil( $total_results / $sql_query_params['per_page'] );
+
+				$inner_selections = array( 'tax_rate_id', 'total_tax', 'order_tax', 'shipping_tax', 'orders_count' );
+				$outer_selections = array( 'name', 'tax_rate', 'country', 'state', 'priority' );
+
+				$selections      = $this->selected_columns( array( 'fields' => $inner_selections ) );
+				$fields          = $this->get_fields( $query_args );
+				$join_selections = $this->format_join_selections( $fields, 'tax_rate_id', $outer_selections );
+				$ids_table       = $this->get_ids_table( $query_args['taxes'], 'tax_rate_id' );
+
+				$tax_data = $wpdb->get_results(
+					"SELECT {$join_selections}
+						FROM (
 							SELECT
-								{$table_name}.tax_rate_id
+								{$selections}
 							FROM
 								{$table_name}
-								{$sql_query_params['from_clause']}
+								{$sql_query_params['inner_from_clause']}
 							WHERE
 								1=1
 								{$sql_query_params['where_time_clause']}
 								{$sql_query_params['where_clause']}
 							GROUP BY
 								{$table_name}.tax_rate_id
-					  		) AS tt"
-			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+						) AS results
+						RIGHT JOIN ( {$ids_table} ) AS default_results
+							ON default_results.id = results.tax_rate_id
+						{$sql_query_params['outer_from_clause']}
+						ORDER BY
+							{$sql_query_params['order_by_clause']}
+						{$sql_query_params['limit']}
+						",
+					ARRAY_A
+				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+			} else {
+				$db_records_count = (int) $wpdb->get_var(
+					"SELECT COUNT(*) FROM (
+								SELECT
+									{$table_name}.tax_rate_id
+								FROM
+									{$table_name}
+									{$sql_query_params['from_clause']}
+								WHERE
+									1=1
+									{$sql_query_params['where_time_clause']}
+									{$sql_query_params['where_clause']}
+								GROUP BY
+									{$table_name}.tax_rate_id
+									) AS tt"
+				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
-			$total_pages = (int) ceil( $db_records_count / $sql_query_params['per_page'] );
-			if ( $query_args['page'] < 1 || $query_args['page'] > $total_pages ) {
-				return $data;
+				$total_results = $db_records_count;
+				$total_pages   = (int) ceil( $db_records_count / $sql_query_params['per_page'] );
+
+				if ( $query_args['page'] < 1 || $query_args['page'] > $total_pages ) {
+					return $data;
+				}
+				$selections = $this->selected_columns( $query_args );
+
+				$tax_data = $wpdb->get_results(
+					"SELECT
+							{$selections}
+						FROM
+							{$table_name}
+							{$sql_query_params['from_clause']}
+						WHERE
+							1=1
+							{$sql_query_params['where_time_clause']}
+							{$sql_query_params['where_clause']}
+						GROUP BY
+							{$table_name}.tax_rate_id
+						ORDER BY
+							{$sql_query_params['order_by_clause']}
+						{$sql_query_params['limit']}
+						",
+					ARRAY_A
+				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 			}
-
-			$tax_data = $wpdb->get_results(
-				"SELECT
-						{$selections}
-					FROM
-						{$table_name}
-						{$sql_query_params['from_clause']}
-					WHERE
-						1=1
-						{$sql_query_params['where_time_clause']}
-						{$sql_query_params['where_clause']}
-					GROUP BY
-						{$table_name}.tax_rate_id
-					ORDER BY
-						{$sql_query_params['order_by_clause']}
-					{$sql_query_params['limit']}
-					",
-				ARRAY_A
-			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			if ( null === $tax_data ) {
 				return $data;
@@ -212,7 +256,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 			$tax_data = array_map( array( $this, 'cast_numbers' ), $tax_data );
 			$data     = (object) array(
 				'data'    => $tax_data,
-				'total'   => $db_records_count,
+				'total'   => $total_results,
 				'pages'   => $total_pages,
 				'page_no' => (int) $query_args['page'],
 			);

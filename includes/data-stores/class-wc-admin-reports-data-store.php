@@ -636,14 +636,18 @@ class WC_Admin_Reports_Data_Store {
 	/**
 	 * Returns a comma separated list of the field names prepared to be used for a selection after a join with `default_results`.
 	 *
-	 * @param array  $fields   Array of fields name.
-	 * @param string $id_field Name of the column used as an identifier.
+	 * @param array  $fields           Array of fields name.
+	 * @param string $id_field         Name of the column used as an identifier.
+	 * @param array  $outer_selections Array of fields that are not selected in the inner query.
 	 * @return string
 	 */
-	protected function format_join_selections( $fields, $id_field ) {
+	protected function format_join_selections( $fields, $id_field, $outer_selections = array() ) {
 		foreach ( $fields as $i => $field ) {
 			if ( $field === $id_field ) {
 				$fields[ $i ] = "default_results.id AS {$id_field}";
+			}
+			if ( in_array( $field, $outer_selections, true ) ) {
+				$fields[ $i ] = $this->report_columns[ $field ];
 			}
 		}
 		return implode( ', ', $fields );
