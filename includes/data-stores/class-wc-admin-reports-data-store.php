@@ -644,9 +644,9 @@ class WC_Admin_Reports_Data_Store {
 	protected function format_join_selections( $fields, $id_field, $outer_selections = array() ) {
 		foreach ( $fields as $i => $field ) {
 			if ( $field === $id_field ) {
-				$fields[ $i ] = "default_results.id AS {$id_field}";
+				$fields[ $i ] = "default_results.id AS {$field}";
 			}
-			if ( in_array( $field, $outer_selections, true ) ) {
+			if ( in_array( $field, $outer_selections, true ) && array_key_exists( $field, $this->report_columns ) ) {
 				$fields[ $i ] = $this->report_columns[ $field ];
 			}
 		}

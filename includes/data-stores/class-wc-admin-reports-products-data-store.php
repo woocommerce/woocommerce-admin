@@ -117,25 +117,25 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 	}
 
 	/**
-	 * Fills second FROM clause of SQL request based on user supplied parameters.
+	 * Fills outer FROM clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 * @return array
 	 */
-	protected function get_joins_from_order_params( $query_args, $id_cell ) {
+	protected function get_outer_from_sql_params( $query_args, $id_cell ) {
 		global $wpdb;
-		$sql_query['from_clause_2'] = '';
+		$sql_query['outer_from_clause'] = '';
 
 		// Order by product name requires extra JOIN.
 		if ( 'product_name' === $query_args['orderby'] ) {
-			$sql_query['from_clause_2'] = " JOIN {$wpdb->prefix}posts AS _products ON {$id_cell} = _products.ID";
+			$sql_query['outer_from_clause'] .= " JOIN {$wpdb->prefix}posts AS _products ON {$id_cell} = _products.ID";
 		}
 		if ( 'sku' === $query_args['orderby'] ) {
-			$sql_query['from_clause_2'] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$id_cell} = postmeta.post_id AND postmeta.meta_key = '_sku'";
+			$sql_query['outer_from_clause'] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$id_cell} = postmeta.post_id AND postmeta.meta_key = '_sku'";
 		}
 		if ( 'variations' === $query_args['orderby'] ) {
-			$sql_query['from_clause_2'] = " LEFT JOIN ( SELECT post_parent, COUNT(*) AS variations FROM {$wpdb->prefix}posts WHERE post_type = 'product_variation' GROUP BY post_parent ) AS _variations ON {$id_cell} = _variations.post_parent";
+			$sql_query['outer_from_clause'] .= " LEFT JOIN ( SELECT post_parent, COUNT(*) AS variations FROM {$wpdb->prefix}posts WHERE post_type = 'product_variation' GROUP BY post_parent ) AS _variations ON {$id_cell} = _variations.post_parent";
 		}
 
 		return $sql_query;
@@ -157,10 +157,10 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
-			$sql_query_params                  = array_merge( $sql_query_params, $this->get_joins_from_order_params( $query_args, 'default_results.id' ) );
+			$sql_query_params                  = array_merge( $sql_query_params, $this->get_outer_from_sql_params( $query_args, 'default_results.id' ) );
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id IN ({$included_products})";
 		} else {
-			$sql_query_params = array_merge( $sql_query_params, $this->get_joins_from_order_params( $query_args, "{$order_product_lookup_table}.product_id" ) );
+			$sql_query_params = array_merge( $sql_query_params, $this->get_outer_from_sql_params( $query_args, "{$order_product_lookup_table}.product_id" ) );
 		}
 
 		$included_variations = $this->get_included_variations( $query_args );
@@ -281,6 +281,10 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 				$total_results = count( $included_products );
 				$total_pages   = (int) ceil( $total_results / $sql_query_params['per_page'] );
 
+				if ( 'date' === $query_args['orderby'] ) {
+					$selections .= ", {$table_name}.date_created";
+				}
+
 				$fields          = $this->get_fields( $query_args );
 				$join_selections = $this->format_join_selections( $fields, 'product_id' );
 				$ids_table       = $this->get_ids_table( $included_products, 'product_id' );
@@ -299,10 +303,10 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 									{$sql_query_params['where_clause']}
 								GROUP BY
 									product_id
-						) AS results
+						) AS {$table_name}
 						RIGHT JOIN ( {$ids_table} ) AS default_results
-							ON default_results.id = results.product_id
-						{$sql_query_params['from_clause_2']}
+							ON default_results.id = {$table_name}.product_id
+						{$sql_query_params['outer_from_clause']}
 						ORDER BY
 							{$sql_query_params['order_by_clause']}
 						{$sql_query_params['limit']}
@@ -317,7 +321,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 								FROM
 									{$table_name}
 									{$sql_query_params['from_clause']}
-									{$sql_query_params['from_clause_2']}
+									{$sql_query_params['outer_from_clause']}
 								WHERE
 									1=1
 									{$sql_query_params['where_time_clause']}
@@ -340,7 +344,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 						FROM
 							{$table_name}
 							{$sql_query_params['from_clause']}
-							{$sql_query_params['from_clause_2']}
+							{$sql_query_params['outer_from_clause']}
 						WHERE
 							1=1
 							{$sql_query_params['where_time_clause']}
