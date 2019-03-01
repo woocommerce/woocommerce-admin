@@ -205,7 +205,10 @@ export default compose(
 		const ordersQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
-			status_is: [ 'processing', 'on-hold' ],
+			status_is: wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses || [
+				'processing',
+				'on-hold',
+			],
 			extended_info: true,
 		};
 
