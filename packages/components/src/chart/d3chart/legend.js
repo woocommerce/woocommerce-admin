@@ -57,6 +57,7 @@ class D3Legend extends Component {
 			interactive,
 			legendDirection,
 			legendValueFormat,
+			parentInstanceId,
 			totalLabel,
 		} = this.props;
 		const { isScrollable } = this.state;
@@ -89,7 +90,11 @@ class D3Legend extends Component {
 								'woocommerce-legend__item-checked': row.visible,
 							} ) }
 							key={ row.key }
-							id={ row.key }
+							id={
+								Number.isInteger( parentInstanceId )
+								? `woocommerce-legend__item-${ parentInstanceId }_${ row.key }`
+								: `woocommerce-legend__item-${ row.key }`
+							}
 							onMouseEnter={ handleLegendHover }
 							onMouseLeave={ handleLegendHover }
 							onBlur={ handleLegendHover }
@@ -97,7 +102,11 @@ class D3Legend extends Component {
 						>
 							<button
 								onClick={ handleLegendToggle }
-								id={ row.key }
+								id={
+									Number.isInteger( parentInstanceId )
+									? `woocommerce-legend__item__button-${ parentInstanceId }_${ row.key }`
+									: `woocommerce-legend__item__button-${ row.key }`
+								}
 								disabled={
 									( row.visible && numberOfRowsVisible <= 1 ) ||
 									( ! row.visible && numberOfRowsVisible >= selectionLimit ) ||
@@ -168,6 +177,10 @@ D3Legend.propTypes = {
 	 * A number formatting string or function to format the value displayed in the legend.
 	 */
 	legendValueFormat: PropTypes.oneOfType( [ PropTypes.string, PropTypes.func ] ),
+	/**
+	 * Instance ID of the parent component. If specified, it's used to generate unique ID's.
+	 */
+	parentInstanceId: PropTypes.number,
 	/**
 	 * Label to describe the legend items. It will be displayed in the legend of
 	 * comparison charts when there are many.
