@@ -2,6 +2,7 @@
 /**
  * External dependencies
  */
+import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
@@ -13,7 +14,7 @@ import './setting.scss';
 
 class Setting extends Component {
 	renderInput = () => {
-		const { handleChange, name, inputType, options, value } = this.props;
+		const { callback, handleChange, name, inputText, inputType, options, value } = this.props;
 		const id = uniqueId( name );
 
 		switch ( inputType ) {
@@ -22,14 +23,12 @@ class Setting extends Component {
 					optionGroup =>
 						optionGroup.options.length > 0 && (
 							<div
-								className="woocommerce-setting__options-group"
+								className="woocommerce-sinput-group"
 								key={ optionGroup.key }
 								aria-labelledby={ name + '-label' }
 							>
 								{ optionGroup.label && (
-									<span className="woocommerce-setting__options-group-label">
-										{ optionGroup.label }
-									</span>
+									<span className="woocommerce-sinput-group-label">{ optionGroup.label }</span>
 								) }
 								{ this.renderCheckboxOptions( optionGroup.options ) }
 							</div>
@@ -37,10 +36,23 @@ class Setting extends Component {
 				);
 			case 'checkbox':
 				return this.renderCheckboxOptions( options );
+			case 'button':
+				return (
+					<Button isDefault onClick={ callback }>
+						{ inputText }
+					</Button>
+				);
 			case 'text':
 			default:
 				return (
-					<input id={ id } type="text" name={ name } onChange={ handleChange } value={ value } />
+					<input
+						id={ id }
+						type="text"
+						name={ name }
+						onChange={ handleChange }
+						value={ value }
+						placeholder={ inputText }
+					/>
 				);
 		}
 	};
@@ -75,7 +87,7 @@ class Setting extends Component {
 				<div className="woocommerce-setting__label" id={ name + '-label' }>
 					{ label }
 				</div>
-				<div className="woocommerce-setting__options">
+				<div className="woocommerce-setting__input">
 					{ this.renderInput() }
 					{ helpText && <span className="woocommerce-setting__help">{ helpText }</span> }
 				</div>
@@ -93,6 +105,10 @@ Setting.propTypes = {
 	 * Optional help text displayed underneath the setting.
 	 */
 	helpText: PropTypes.oneOfType( [ PropTypes.string, PropTypes.array ] ),
+	/**
+	 * Text used as placeholder or button text in the input area.
+	 */
+	inputText: PropTypes.string,
 	/**
 	 * Type of input to use; defaults to a text input.
 	 */

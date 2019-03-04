@@ -124,13 +124,8 @@ class Settings extends Component {
 					{ analyticsSettings.map( setting => (
 						<Setting
 							handleChange={ this.handleInputChange }
-							helpText={ setting.helpText }
-							inputType={ setting.inputType }
-							key={ setting.name }
-							label={ setting.label }
-							name={ setting.name }
-							options={ setting.options }
 							value={ this.state.settings[ setting.name ] }
+							{ ...setting }
 						/>
 					) ) }
 					<div className="woocommerce-settings__actions">
