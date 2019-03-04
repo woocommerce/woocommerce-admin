@@ -92,7 +92,7 @@ class D3Legend extends Component {
 							key={ row.key }
 							id={
 								Number.isInteger( parentInstanceId )
-								? `woocommerce-legend__item-${ parentInstanceId }_${ row.key }`
+								? `woocommerce-legend__item-${ parentInstanceId }__${ row.key }`
 								: `woocommerce-legend__item-${ row.key }`
 							}
 							onMouseEnter={ handleLegendHover }
@@ -104,7 +104,7 @@ class D3Legend extends Component {
 								onClick={ handleLegendToggle }
 								id={
 									Number.isInteger( parentInstanceId )
-									? `woocommerce-legend__item__button-${ parentInstanceId }_${ row.key }`
+									? `woocommerce-legend__item__button-${ parentInstanceId }__${ row.key }`
 									: `woocommerce-legend__item__button-${ row.key }`
 								}
 								disabled={
