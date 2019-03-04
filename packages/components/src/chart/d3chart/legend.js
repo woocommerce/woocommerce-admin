@@ -117,18 +117,17 @@ class D3Legend extends Component {
 									: ''
 								}
 							>
-								<div className="woocommerce-legend__item-container" id={ row.key }>
+								<div className="woocommerce-legend__item-container">
 									<span
 										className={ classNames( 'woocommerce-legend__item-checkmark', {
 											'woocommerce-legend__item-checkmark-checked': row.visible,
 										} ) }
-										id={ row.key }
 										style={ { color: getColor( keys, colorScheme )( row.key ) } }
 									/>
-									<span className="woocommerce-legend__item-title" id={ row.key }>
+									<span className="woocommerce-legend__item-title">
 										{ row.label }
 									</span>
-									<span className="woocommerce-legend__item-total" id={ row.key }>
+									<span className="woocommerce-legend__item-total">
 										{ getFormatter( legendValueFormat )( row.total ) }
 									</span>
 								</div>

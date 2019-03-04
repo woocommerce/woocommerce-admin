@@ -158,7 +158,7 @@ class Chart extends Component {
 		if ( ! interactiveLegend ) {
 			return;
 		}
-		const key = event.target.id.split( '_' ).pop();
+		const key = event.currentTarget.id.split( '_' ).pop();
 		const orderedKeys = this.state.orderedKeys.map( d => ( {
 			...d,
 			visible: d.key === key ? ! d.visible : d.visible,
@@ -176,7 +176,7 @@ class Chart extends Component {
 	}
 
 	handleLegendHover( event ) {
-		const key = event.target.id.split( '_' ).pop();
+		const key = event.currentTarget.id.split( '_' ).pop();
 		const hoverTarget = this.state.orderedKeys.filter( d => d.key === key )[ 0 ];
 		this.setState( {
 			orderedKeys: this.state.orderedKeys.map( d => {
