@@ -9,7 +9,6 @@ import { formatDefaultLocale as d3FormatDefaultLocale } from 'd3-format';
 import { get, isEqual, partial, isEmpty } from 'lodash';
 import Gridicon from 'gridicons';
 import { IconButton, NavigableMenu, SelectControl } from '@wordpress/components';
-import { compose, withInstanceId } from '@wordpress/compose';
 import { interpolateViridis as d3InterpolateViridis } from 'd3-scale-chromatic';
 import PropTypes from 'prop-types';
 import { withViewportMatch } from '@wordpress/viewport';
@@ -275,7 +274,6 @@ class Chart extends Component {
 			chartType,
 			dateParser,
 			emptyMessage,
-			instanceId,
 			interval,
 			isRequesting,
 			isViewportLarge,
@@ -307,7 +305,6 @@ class Chart extends Component {
 				interactive={ interactiveLegend }
 				legendDirection={ legendDirection }
 				legendValueFormat={ tooltipValueFormat }
-				parentInstanceId={ instanceId }
 				totalLabel={ sprintf( itemsLabel, orderedKeys.length ) }
 			/>
 		);
@@ -524,8 +521,6 @@ Chart.propTypes = {
 	 * A number formatting string, passed to d3Format.
 	 */
 	yFormat: PropTypes.string,
-	// from withInstanceId
-	instanceId: PropTypes.number,
 };
 
 Chart.defaultProps = {
@@ -546,11 +541,8 @@ Chart.defaultProps = {
 	yFormat: '$.3s',
 };
 
-export default compose( [
-	withViewportMatch( {
-		isViewportMobile: '< medium',
-		isViewportLarge: '>= large',
-		isViewportWide: '>= wide',
-	} ),
-	withInstanceId,
-] )( Chart );
+export default withViewportMatch( {
+	isViewportMobile: '< medium',
+	isViewportLarge: '>= large',
+	isViewportWide: '>= wide',
+} )( Chart );

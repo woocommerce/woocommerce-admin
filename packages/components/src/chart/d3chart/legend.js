@@ -5,6 +5,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { Component, createRef } from '@wordpress/element';
+import { withInstanceId } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 
 /**
@@ -57,7 +58,7 @@ class D3Legend extends Component {
 			interactive,
 			legendDirection,
 			legendValueFormat,
-			parentInstanceId,
+			instanceId,
 			totalLabel,
 		} = this.props;
 		const { isScrollable } = this.state;
@@ -90,11 +91,7 @@ class D3Legend extends Component {
 								'woocommerce-legend__item-checked': row.visible,
 							} ) }
 							key={ row.key }
-							id={
-								Number.isInteger( parentInstanceId )
-								? `woocommerce-legend__item-${ parentInstanceId }__${ row.key }`
-								: `woocommerce-legend__item-${ row.key }`
-							}
+							id={ `woocommerce-legend-${ instanceId }__item__${ row.key }` }
 							onMouseEnter={ handleLegendHover }
 							onMouseLeave={ handleLegendHover }
 							onBlur={ handleLegendHover }
@@ -102,11 +99,7 @@ class D3Legend extends Component {
 						>
 							<button
 								onClick={ handleLegendToggle }
-								id={
-									Number.isInteger( parentInstanceId )
-									? `woocommerce-legend__item__button-${ parentInstanceId }__${ row.key }`
-									: `woocommerce-legend__item__button-${ row.key }`
-								}
+								id={ `woocommerce-legend-${ instanceId }__item-button__${ row.key }` }
 								disabled={
 									( row.visible && numberOfRowsVisible <= 1 ) ||
 									( ! row.visible && numberOfRowsVisible >= selectionLimit ) ||
@@ -177,14 +170,12 @@ D3Legend.propTypes = {
 	 */
 	legendValueFormat: PropTypes.oneOfType( [ PropTypes.string, PropTypes.func ] ),
 	/**
-	 * Instance ID of the parent component. If specified, it's used to generate unique ID's.
-	 */
-	parentInstanceId: PropTypes.number,
-	/**
 	 * Label to describe the legend items. It will be displayed in the legend of
 	 * comparison charts when there are many.
 	 */
 	totalLabel: PropTypes.string,
+	// from withInstanceId
+	instanceId: PropTypes.number,
 };
 
 D3Legend.defaultProps = {
@@ -193,4 +184,4 @@ D3Legend.defaultProps = {
 	legendValueFormat: ',',
 };
 
-export default D3Legend;
+export default withInstanceId( D3Legend );
