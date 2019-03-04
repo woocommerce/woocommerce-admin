@@ -185,7 +185,6 @@ function wc_admin_print_script_settings() {
 		'orderStatuses'    => format_order_statuses( wc_get_order_statuses() ),
 		'stockStatuses'    => wc_get_product_stock_status_options(),
 		'siteTitle'        => get_bloginfo( 'name' ),
-		'trackingEnabled'  => 'yes' === get_option( 'woocommerce_allow_tracking', 'no' ),
 		'dataEndpoints'    => array(),
 		'l10n'             => array(
 			'userLocale'    => get_user_locale(),

@@ -9,7 +9,6 @@
 
 export function recordEvent( eventName, eventProperties ) {
 	if (
-		! wcSettings.trackingEnabled ||
 		! window.wcTracks ||
 		'function' !== typeof window.wcTracks.recordEvent ||
 		'development' === process.env.NODE_ENV
