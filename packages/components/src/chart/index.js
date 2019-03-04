@@ -52,18 +52,20 @@ d3FormatDefaultLocale( {
 } );
 
 function getOrderedKeys( props, previousOrderedKeys = [] ) {
-	const updatedKeys = [
-		...new Set(
-			props.data.reduce( ( accum, curr ) => {
-				Object.keys( curr ).forEach( key => key !== 'date' && accum.push( key ) );
-				return accum;
-			}, [] )
-		),
-	].map( ( key ) => {
+	const uniqueKeys = props.data.reduce( ( accum, curr ) => {
+		Object.entries( curr ).forEach( ( [ key, value ] ) => {
+			if ( key !== 'date' && ! accum[ key ] ) {
+				accum[ key ] = value.label;
+			}
+		} );
+		return accum;
+	}, {} );
+	const updatedKeys = Object.entries( uniqueKeys ).map( ( [ key, label ] ) => {
 		const previousKey = previousOrderedKeys.find( item => key === item.key );
 		const defaultVisibleStatus = 'item-comparison' === props.mode ? false : true;
 		return {
 			key,
+			label,
 			total: props.data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 			visible: previousKey ? previousKey.visible : defaultVisibleStatus,
 			focus: true,

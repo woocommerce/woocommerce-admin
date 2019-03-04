@@ -126,7 +126,7 @@ class D3Legend extends Component {
 										style={ { color: getColor( keys, colorScheme )( row.key ) } }
 									/>
 									<span className="woocommerce-legend__item-title" id={ row.key }>
-										{ row.key }
+										{ row.label }
 									</span>
 									<span className="woocommerce-legend__item-total" id={ row.key }>
 										{ getFormatter( legendValueFormat )( row.total ) }

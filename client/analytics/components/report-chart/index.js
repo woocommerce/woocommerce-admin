@@ -42,7 +42,8 @@ export class ReportChart extends Component {
 					const label = intervalData[ segment.segment_label ]
 						? segment.segment_label + ' (#' + segment.segment_id + ')'
 						: segment.segment_label;
-					intervalData[ label ] = {
+					intervalData[ segment.segment_id ] = {
+						label,
 						value: segment.subtotals[ selectedChart.key ] || 0,
 					};
 				}
@@ -75,10 +76,12 @@ export class ReportChart extends Component {
 			return {
 				date: formatDate( 'Y-m-d\\TH:i:s', interval.date_start ),
 				[ primaryKey ]: {
+					label: primaryKey,
 					labelDate: interval.date_start,
 					value: interval.subtotals[ selectedChart.key ] || 0,
 				},
 				[ secondaryKey ]: {
+					label: secondaryKey,
 					labelDate: secondaryDate.format( 'YYYY-MM-DD HH:mm:ss' ),
 					value: ( secondaryInterval && secondaryInterval.subtotals[ selectedChart.key ] ) || 0,
 				},
