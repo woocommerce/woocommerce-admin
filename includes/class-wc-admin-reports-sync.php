@@ -126,18 +126,53 @@ class WC_Admin_Reports_Sync {
 	}
 
 	/**
-	 * Get the number of pending actions for reports.
+	 * Get an array containing numbers of action counts for reports - broken down by batch, total and pending vs finished.
 	 *
-	 * @return int
+	 * @return array
 	 */
-	public static function get_pending_actions() {
-		$query   = array(
-			'status' => ActionScheduler_Store::STATUS_PENDING,
-			'group'  => self::QUEUE_GROUP,
+	public static function get_action_counts() {
+		$store = ActionScheduler::store();
+
+		$get_pending_counts = array(
+			'all' => array(
+				'status' => ActionScheduler_Store::STATUS_PENDING,
+				'group'  => self::QUEUE_GROUP,
+			),
+			'orders-batch' => array(
+				'status' => ActionScheduler_Store::STATUS_PENDING,
+				'group'  => self::QUEUE_GROUP,
+				'hook'   => self::ORDERS_BATCH_ACTION,
+			),
+			'customers-batch' => array(
+				'status' => ActionScheduler_Store::STATUS_PENDING,
+				'group'  => self::QUEUE_GROUP,
+				'hook'   => self::CUSTOMERS_BATCH_ACTION,
+			),
 		);
-		$store   = ActionScheduler::store();
-		$pending = $store->query_actions( $query, 'count' );
-		return $pending;
+
+		$get_total_counts = array(
+			'all' => array(
+				'group' => self::QUEUE_GROUP,
+			),
+			'orders-batch' => array(
+				'group'  => self::QUEUE_GROUP,
+				'hook'   => self::ORDERS_BATCH_ACTION,
+			),
+			'customers-batch' => array(
+				'group'  => self::QUEUE_GROUP,
+				'hook'   => self::CUSTOMERS_BATCH_ACTION,
+			),
+		);
+
+		$results = array();
+		foreach ( $get_pending_counts as $key => $query ) {
+			$results[ $key . '-pending' ] = $store->query_actions( $query, 'count' );
+		}
+		foreach ( $get_total_counts as $key => $query ) {
+			$results[ $key ] = $store->query_actions( $query, 'count' ) - $results[ $key . '-pending' ];
+		}
+
+		return $results;
 	}
 
 	/**
