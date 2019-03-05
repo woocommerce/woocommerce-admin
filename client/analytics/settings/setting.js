@@ -4,8 +4,10 @@
  */
 import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -13,8 +15,16 @@ import { uniqueId } from 'lodash';
 import './setting.scss';
 
 class Setting extends Component {
+	constructor( props ) {
+		super( props );
+		this.state = {
+			disabled: false,
+		};
+	}
+
 	renderInput = () => {
-		const { callback, handleChange, name, inputText, inputType, options, value } = this.props;
+		const { handleChange, name, inputText, inputType, options, value } = this.props;
+		const { disabled } = this.state;
 		const id = uniqueId( name );
 
 		switch ( inputType ) {
@@ -38,7 +48,7 @@ class Setting extends Component {
 				return this.renderCheckboxOptions( options );
 			case 'button':
 				return (
-					<Button isDefault onClick={ callback }>
+					<Button isDefault onClick={ this.handleInputCallback } disabled={ disabled }>
 						{ inputText }
 					</Button>
 				);
@@ -52,13 +62,30 @@ class Setting extends Component {
 						onChange={ handleChange }
 						value={ value }
 						placeholder={ inputText }
+						disabled={ disabled }
 					/>
 				);
 		}
 	};
 
+	handleInputCallback = () => {
+		const { addNotice, callback } = this.props;
+
+		if ( 'function' !== typeof callback ) {
+			return;
+		}
+
+		return new Promise( ( resolve, reject ) => {
+			this.setState( { disabled: true } );
+			callback( resolve, reject, addNotice );
+		} ).then( () => {
+			this.setState( { disabled: false } );
+		} );
+	};
+
 	renderCheckboxOptions( options ) {
 		const { handleChange, name, value } = this.props;
+		const { disabled } = this.state;
 
 		return options.map( option => {
 			const id = uniqueId( name + '-' + option.value );
@@ -72,6 +99,7 @@ class Setting extends Component {
 						aria-label={ option.description }
 						checked={ value && value.includes( option.value ) }
 						value={ option.value }
+						disabled={ disabled }
 					/>
 					{ option.label }
 				</label>
@@ -98,6 +126,10 @@ class Setting extends Component {
 
 Setting.propTypes = {
 	/**
+	 * A callback that is fired after actionable items, such as buttons.
+	 */
+	callback: PropTypes.func,
+	/**
 	 * Function assigned to the onChange of all inputs.
 	 */
 	handleChange: PropTypes.func.isRequired,
@@ -112,7 +144,7 @@ Setting.propTypes = {
 	/**
 	 * Type of input to use; defaults to a text input.
 	 */
-	inputType: PropTypes.oneOf( [ 'checkbox', 'checkboxGroup', 'text' ] ),
+	inputType: PropTypes.oneOf( [ 'button', 'checkbox', 'checkboxGroup', 'text' ] ),
 	/**
 	 * Label used for describing the setting.
 	 */
@@ -154,4 +186,9 @@ Setting.propTypes = {
 	value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.array ] ),
 };
 
-export default Setting;
+export default compose(
+	withDispatch( dispatch => {
+		const { addNotice } = dispatch( 'wc-admin' );
+		return { addNotice };
+	} )
+)( Setting );
