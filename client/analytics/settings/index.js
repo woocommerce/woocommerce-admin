@@ -125,6 +125,7 @@ class Settings extends Component {
 						<Setting
 							handleChange={ this.handleInputChange }
 							value={ this.state.settings[ setting.name ] }
+							key={ setting.name }
 							{ ...setting }
 						/>
 					) ) }
