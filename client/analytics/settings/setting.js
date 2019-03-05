@@ -33,12 +33,14 @@ class Setting extends Component {
 					optionGroup =>
 						optionGroup.options.length > 0 && (
 							<div
-								className="woocommerce-sinput-group"
+								className="woocommerce-setting__options-group"
 								key={ optionGroup.key }
 								aria-labelledby={ name + '-label' }
 							>
 								{ optionGroup.label && (
-									<span className="woocommerce-sinput-group-label">{ optionGroup.label }</span>
+									<span className="woocommerce-setting__options-group-label">
+										{ optionGroup.label }
+									</span>
 								) }
 								{ this.renderCheckboxOptions( optionGroup.options ) }
 							</div>
