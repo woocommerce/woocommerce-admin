@@ -48,10 +48,10 @@ export function generateCSVFileName( name = '', params = {} ) {
 		moment().format( 'YYYY-MM-DD' ),
 		Object.keys( params )
 			.map( key => key + '-' + params[ key ] )
-			.join( '-' ),
+			.join( '_' ),
 	].filter( text => text.length );
 
-	return fileNameSections.join( '-' ) + '.csv';
+	return fileNameSections.join( '_' ) + '.csv';
 }
 
 /**
