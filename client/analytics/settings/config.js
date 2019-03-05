@@ -100,21 +100,17 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 			'wc-admin'
 		),
 		callback: ( resolve, reject, addNotice ) => {
-			const startedMessage = __(
-				'Report table data is being rebuilt.  Please allow some time for data to fully populate.',
-				'wc-admin'
-			);
 			const errorMessage = __( 'There was a problem rebuilding your report data.', 'wc-admin' );
 
 			apiFetch( { path: '/wc/v3/system_status/tools/rebuild_stats', method: 'PUT' } )
 				.then( response => {
 					if ( response.success ) {
-						addNotice( { status: 'success', message: startedMessage } );
+						addNotice( { status: 'success', message: response.message } );
 						// @todo This should be changed to detect when the lookup table population is complete.
 						setTimeout( () => resolve(), 300000 );
 					} else {
 						addNotice( { status: 'error', message: errorMessage } );
-						resolve();
+						reject();
 					}
 				} )
 				.catch( error => {
