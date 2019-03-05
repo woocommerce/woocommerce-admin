@@ -200,31 +200,10 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 				$fields          = $this->get_fields( $query_args );
 				$join_selections = $this->format_join_selections( $fields, 'tax_rate_id', $outer_selections );
 				$ids_table       = $this->get_ids_table( $query_args['taxes'], 'tax_rate_id' );
-
-				$tax_data = $wpdb->get_results(
-					"SELECT {$join_selections}
-						FROM (
-							SELECT
-								{$selections}
-							FROM
-								{$table_name}
-								{$sql_query_params['from_clause']}
-							WHERE
-								1=1
-								{$sql_query_params['where_time_clause']}
-								{$sql_query_params['where_clause']}
-							GROUP BY
-								{$table_name}.tax_rate_id
-						) AS {$table_name}
-						RIGHT JOIN ( {$ids_table} ) AS default_results
-							ON default_results.id = {$table_name}.tax_rate_id
-						{$sql_query_params['outer_from_clause']}
-						ORDER BY
-							{$sql_query_params['order_by_clause']}
-						{$sql_query_params['limit']}
-						",
-					ARRAY_A
-				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+				$prefix = "SELECT {$join_selections} FROM (";
+				$suffix = ") AS {$table_name}";
+				$right_join = "RIGHT JOIN ( {$ids_table} ) AS default_results
+					ON default_results.id = {$table_name}.tax_rate_id";
 			} else {
 				$db_records_count = (int) $wpdb->get_var(
 					"SELECT COUNT(*) FROM (
@@ -251,8 +230,14 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 
 				$selections = $this->selected_columns( $query_args );
 
-				$tax_data = $wpdb->get_results(
-					"SELECT
+				$prefix     = '';
+				$suffix     = '';
+				$right_join = '';
+			}
+
+			$tax_data = $wpdb->get_results(
+				"{$prefix}
+						SELECT
 							{$selections}
 						FROM
 							{$table_name}
@@ -263,13 +248,15 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 							{$sql_query_params['where_clause']}
 						GROUP BY
 							{$table_name}.tax_rate_id
-						ORDER BY
-							{$sql_query_params['order_by_clause']}
-						{$sql_query_params['limit']}
-						",
-					ARRAY_A
-				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
-			}
+					{$suffix}
+					{$right_join}
+					{$sql_query_params['outer_from_clause']}
+					ORDER BY
+						{$sql_query_params['order_by_clause']}
+					{$sql_query_params['limit']}
+					",
+				ARRAY_A
+			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			if ( null === $tax_data ) {
 				return $data;

@@ -120,22 +120,23 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 	 * Fills outer FROM clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
+	 * @param string $arg_name   Name of the FROM sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 * @return array
 	 */
-	protected function get_outer_from_sql_params( $query_args, $id_cell ) {
+	protected function get_outer_from_sql_params( $query_args, $arg_name, $id_cell ) {
 		global $wpdb;
 		$sql_query['outer_from_clause'] = '';
 
 		// Order by product name requires extra JOIN.
 		if ( 'product_name' === $query_args['orderby'] ) {
-			$sql_query['outer_from_clause'] .= " JOIN {$wpdb->prefix}posts AS _products ON {$id_cell} = _products.ID";
+			$sql_query[ $arg_name ] .= " JOIN {$wpdb->prefix}posts AS _products ON {$id_cell} = _products.ID";
 		}
 		if ( 'sku' === $query_args['orderby'] ) {
-			$sql_query['outer_from_clause'] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$id_cell} = postmeta.post_id AND postmeta.meta_key = '_sku'";
+			$sql_query[ $arg_name ] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$id_cell} = postmeta.post_id AND postmeta.meta_key = '_sku'";
 		}
 		if ( 'variations' === $query_args['orderby'] ) {
-			$sql_query['outer_from_clause'] .= " LEFT JOIN ( SELECT post_parent, COUNT(*) AS variations FROM {$wpdb->prefix}posts WHERE post_type = 'product_variation' GROUP BY post_parent ) AS _variations ON {$id_cell} = _variations.post_parent";
+			$sql_query[ $arg_name ] .= " LEFT JOIN ( SELECT post_parent, COUNT(*) AS variations FROM {$wpdb->prefix}posts WHERE post_type = 'product_variation' GROUP BY post_parent ) AS _variations ON {$id_cell} = _variations.post_parent";
 		}
 
 		return $sql_query;
@@ -157,10 +158,10 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
-			$sql_query_params                  = array_merge( $sql_query_params, $this->get_outer_from_sql_params( $query_args, 'default_results.id' ) );
+			$sql_query_params                  = array_merge( $sql_query_params, $this->get_outer_from_sql_params( $query_args, 'outer_from_clause', 'default_results.id' ) );
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id IN ({$included_products})";
 		} else {
-			$sql_query_params = array_merge( $sql_query_params, $this->get_outer_from_sql_params( $query_args, "{$order_product_lookup_table}.product_id" ) );
+			$sql_query_params = array_merge( $sql_query_params, $this->get_outer_from_sql_params( $query_args, 'from_clause', "{$order_product_lookup_table}.product_id" ) );
 		}
 
 		$included_variations = $this->get_included_variations( $query_args );
@@ -288,31 +289,10 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 				$fields          = $this->get_fields( $query_args );
 				$join_selections = $this->format_join_selections( $fields, 'product_id' );
 				$ids_table       = $this->get_ids_table( $included_products, 'product_id' );
-
-				$product_data = $wpdb->get_results(
-					"SELECT {$join_selections}
-						FROM (
-							SELECT
-									{$selections}
-								FROM
-									{$table_name}
-									{$sql_query_params['from_clause']}
-								WHERE
-									1=1
-									{$sql_query_params['where_time_clause']}
-									{$sql_query_params['where_clause']}
-								GROUP BY
-									product_id
-						) AS {$table_name}
-						RIGHT JOIN ( {$ids_table} ) AS default_results
-							ON default_results.id = {$table_name}.product_id
-						{$sql_query_params['outer_from_clause']}
-						ORDER BY
-							{$sql_query_params['order_by_clause']}
-						{$sql_query_params['limit']}
-						",
-					ARRAY_A
-				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+				$prefix = "SELECT {$join_selections} FROM (";
+				$suffix = ") AS {$table_name}";
+				$right_join = "RIGHT JOIN ( {$ids_table} ) AS default_results
+					ON default_results.id = {$table_name}.product_id";
 			} else {
 				$db_records_count = (int) $wpdb->get_var(
 					"SELECT COUNT(*) FROM (
@@ -321,7 +301,6 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 								FROM
 									{$table_name}
 									{$sql_query_params['from_clause']}
-									{$sql_query_params['outer_from_clause']}
 								WHERE
 									1=1
 									{$sql_query_params['where_time_clause']}
@@ -338,26 +317,33 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 					return $data;
 				}
 
-				$product_data = $wpdb->get_results(
-					"SELECT
-							{$selections}
-						FROM
-							{$table_name}
-							{$sql_query_params['from_clause']}
-							{$sql_query_params['outer_from_clause']}
-						WHERE
-							1=1
-							{$sql_query_params['where_time_clause']}
-							{$sql_query_params['where_clause']}
-						GROUP BY
-							product_id
-						ORDER BY
-							{$sql_query_params['order_by_clause']}
-						{$sql_query_params['limit']}
-						",
-					ARRAY_A
-				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+				$prefix     = '';
+				$suffix     = '';
+				$right_join = '';
 			}
+
+			$product_data = $wpdb->get_results(
+				"${prefix}
+					SELECT
+						{$selections}
+					FROM
+						{$table_name}
+						{$sql_query_params['from_clause']}
+					WHERE
+						1=1
+						{$sql_query_params['where_time_clause']}
+						{$sql_query_params['where_clause']}
+					GROUP BY
+						product_id
+				{$suffix}
+					{$right_join}
+					{$sql_query_params['outer_from_clause']}
+					ORDER BY
+						{$sql_query_params['order_by_clause']}
+					{$sql_query_params['limit']}
+					",
+				ARRAY_A
+			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			if ( null === $product_data ) {
 				return $data;
