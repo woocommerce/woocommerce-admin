@@ -78,9 +78,13 @@ class Setting extends Component {
 		return new Promise( ( resolve, reject ) => {
 			this.setState( { disabled: true } );
 			callback( resolve, reject, addNotice );
-		} ).then( () => {
-			this.setState( { disabled: false } );
-		} );
+		} )
+			.then( () => {
+				this.setState( { disabled: false } );
+			} )
+			.catch( () => {
+				this.setState( { disabled: false } );
+			} );
 	};
 
 	renderCheckboxOptions( options ) {
