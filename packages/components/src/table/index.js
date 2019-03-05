@@ -128,8 +128,13 @@ class TableCard extends Component {
 	}
 
 	onClickDownload() {
-		const { query, onClickDownload, title } = this.props;
+		const { query, onClickDownload, searchBy, title } = this.props;
+
+		// Delete unnecessary items from filename.
 		delete query.extended_info;
+		if ( query.search ) {
+			delete query[ searchBy ];
+		}
 
 		// @todo The current implementation only downloads the contents displayed in the table.
 		// Another solution is required when the data set is larger (see #311).
