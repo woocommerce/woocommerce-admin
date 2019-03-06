@@ -119,11 +119,11 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param array  $sql_query  Current SQL query array.
-	 * @param string $arg_name   Name of the FROM sql param.
+	 * @param string $from_arg   Name of the FROM sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 * @return array
 	 */
-	protected function get_order_by_params( $query_args, $sql_query, $arg_name, $id_cell ) {
+	protected function get_order_by_params( $query_args, $sql_query, $from_arg, $id_cell ) {
 		global $wpdb;
 		$lookup_table = $wpdb->prefix . self::TABLE_NAME;
 
@@ -134,7 +134,7 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 
 		$sql_query['outer_from_clause'] = '';
 		if ( false !== strpos( $sql_query['order_by_clause'], '_terms' ) ) {
-			$sql_query[ $arg_name ] .= " JOIN {$wpdb->prefix}terms AS _terms ON {$id_cell} = _terms.term_id";
+			$sql_query[ $from_arg ] .= " JOIN {$wpdb->prefix}terms AS _terms ON {$id_cell} = _terms.term_id";
 		}
 
 		if ( isset( $query_args['order'] ) ) {
