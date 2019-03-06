@@ -81,7 +81,6 @@ class WC_Admin_Reports_Sync {
 	public static function init() {
 		// Add report regeneration to tools REST API.
 		add_filter( 'woocommerce_debug_tools', array( __CLASS__, 'add_regenerate_tool' ) );
-		add_filter( 'woocommerce_debug_tools', array( __CLASS__, 'remove_regenerate_tool' ) );
 
 		// Initialize syncing hooks.
 		add_action( 'wp_loaded', array( __CLASS__, 'orders_lookup_update_init' ) );
@@ -109,20 +108,6 @@ class WC_Admin_Reports_Sync {
 	}
 
 	/**
-	 * Remove the regenerate tool from system status tools while
-	 * still allowing use of the tool through the REST API.
-	 *
-	 * @param array $tools Array of tools.
-	 * @return array
-	 */
-	public static function remove_regenerate_tool( $tools ) {
-		if ( isset( $_GET['page'] ) && 'wc-status' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
-			unset( $tools['rebuild_stats'] );
-		}
-		return $tools;
-	}
-
-	/**
 	 * Clears all queued actions.
 	 */
 	public static function clear_queued_actions() {
@@ -140,12 +125,16 @@ class WC_Admin_Reports_Sync {
 	}
 
 	/**
-	 * Adds regenerate tool.
+	 * Adds regenerate tool to WC system status tools API.
 	 *
 	 * @param array $tools List of tools.
 	 * @return array
 	 */
 	public static function add_regenerate_tool( $tools ) {
+		if ( isset( $_GET['page'] ) && 'wc-status' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return $tools;
+		}
+
 		return array_merge(
 			$tools,
 			array(
