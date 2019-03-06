@@ -446,6 +446,12 @@ Chart.propTypes = {
 	 */
 	emptyMessage: PropTypes.string,
 	/**
+	 * Name of the param used to filter items. If specified, it will be used, in combination
+	 * with query, to detect which elements are being used by the current filter and must be
+	 * displayed even if their value is 0.
+	 */
+	filterParam: PropTypes.string,
+	/**
 	 * Label describing the legend items.
 	 */
 	itemsLabel: PropTypes.string,
