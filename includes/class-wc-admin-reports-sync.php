@@ -47,6 +47,16 @@ class WC_Admin_Reports_Sync {
 	const QUEUE_GROUP = 'wc-admin-data';
 
 	/**
+	 * Action scheduler post type.
+	 */
+	const ACTION_SCHEDULER_POST_TYPE = 'scheduled-action';
+
+	/**
+	 * Action scheduler job priority (lower numbers are claimed first).
+	 */
+	const JOB_PRIORITY = 30;
+
+	/**
 	 * Queue instance.
 	 *
 	 * @var WC_Queue_Interface
@@ -122,6 +132,42 @@ class WC_Admin_Reports_Sync {
 		foreach ( $hooks as $hook ) {
 			self::queue()->cancel_all( $hook, null, self::QUEUE_GROUP );
 		}
+	}
+
+	/**
+	 * Force a lower action claim priority by setting a high value for menu_order.
+	 *
+	 * Filters on "wp_insert_post_data" and changes `menu_order` for
+	 * scheduled actions originating from WC Admin.
+	 *
+	 * @param array $postdata Post data to insert.
+	 * @return array Filtered post data.
+	 */
+	public static function force_lower_action_priority( $postdata ) {
+		if (
+			( self::ACTION_SCHEDULER_POST_TYPE === $postdata['post_type'] ) &&
+			( 0 === strpos( $postdata['post_title'], 'wc-admin_' ) )
+		) {
+			$postdata['menu_order'] = self::JOB_PRIORITY;
+		}
+
+		return $postdata;
+	}
+
+	/**
+	 * Queue a single action.
+	 *
+	 * Defaults to our group and forces a lower priority (using menu_order).
+	 *
+	 * @param int    $timestamp When the job will run.
+	 * @param string $hook The hook to trigger.
+	 * @param array  $args Arguments to pass when the hook triggers.
+	 * @param string $group The group to assign this job to.
+	 */
+	public static function queue_action( $timestamp, $hook, $args = array(), $group = self::QUEUE_GROUP ) {
+		add_filter( 'wp_insert_post_data', array( __CLASS__, 'force_lower_action_priority' ), 10, 1 );
+		self::queue()->schedule_single( $timestamp, $hook, $args, $group );
+		remove_filter( 'wp_insert_post_data', array( __CLASS__, 'force_lower_action_priority' ), 10 );
 	}
 
 	/**
@@ -334,7 +380,7 @@ class WC_Admin_Reports_Sync {
 				$batch_start = $range_start + ( $i * $chunk_size );
 				$batch_end   = min( $range_end, $range_start + ( $chunk_size * ( $i + 1 ) ) - 1 );
 
-				self::queue()->schedule_single(
+				self::queue_action(
 					$action_timestamp,
 					self::QUEUE_BATCH_ACTION,
 					array( $batch_start, $batch_end, $single_batch_action ),
@@ -344,7 +390,7 @@ class WC_Admin_Reports_Sync {
 		} else {
 			// Otherwise, queue the single batches.
 			for ( $i = $range_start; $i <= $range_end; $i++ ) {
-				self::queue()->schedule_single( $action_timestamp, $single_batch_action, array( $i ), self::QUEUE_GROUP );
+				self::queue_action( $action_timestamp, $single_batch_action, array( $i ), self::QUEUE_GROUP );
 			}
 		}
 	}
@@ -385,14 +431,14 @@ class WC_Admin_Reports_Sync {
 			is_a( $next_job_schedule, 'DateTime' ) &&
 			( self::QUEUE_DEPEDENT_ACTION !== $blocking_job_hook )
 		) {
-			self::queue()->schedule_single(
+			self::queue_action(
 				$next_job_schedule->getTimestamp() + 5,
 				self::QUEUE_DEPEDENT_ACTION,
 				array( $action, $action_args, $prerequisite_action ),
 				self::QUEUE_GROUP
 			);
 		} else {
-			self::queue()->schedule_single( time() + 5, $action, $action_args, self::QUEUE_GROUP );
+			self::queue_action( time() + 5, $action, $action_args, self::QUEUE_GROUP );
 		}
 	}
 
