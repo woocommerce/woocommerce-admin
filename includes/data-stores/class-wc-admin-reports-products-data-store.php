@@ -117,14 +117,14 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 	}
 
 	/**
-	 * Fills outer FROM clause of SQL request based on user supplied parameters.
+	 * Fills FROM clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param string $arg_name   Name of the FROM sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 * @return array
 	 */
-	protected function get_outer_from_sql_params( $query_args, $arg_name, $id_cell ) {
+	protected function get_from_sql_params( $query_args, $arg_name, $id_cell ) {
 		global $wpdb;
 		$sql_query['outer_from_clause'] = '';
 
@@ -158,10 +158,10 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
-			$sql_query_params                  = array_merge( $sql_query_params, $this->get_outer_from_sql_params( $query_args, 'outer_from_clause', 'default_results.id' ) );
+			$sql_query_params                  = array_merge( $sql_query_params, $this->get_from_sql_params( $query_args, 'outer_from_clause', 'default_results.id' ) );
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id IN ({$included_products})";
 		} else {
-			$sql_query_params = array_merge( $sql_query_params, $this->get_outer_from_sql_params( $query_args, 'from_clause', "{$order_product_lookup_table}.product_id" ) );
+			$sql_query_params = array_merge( $sql_query_params, $this->get_from_sql_params( $query_args, 'from_clause', "{$order_product_lookup_table}.product_id" ) );
 		}
 
 		$included_variations = $this->get_included_variations( $query_args );
