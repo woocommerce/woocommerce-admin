@@ -13,7 +13,7 @@ import { flattenFilters } from '@woocommerce/navigation';
 export const DEFAULT_FILTER = 'all';
 
 export function getSelectedFilter( filters, query, selectedFilterArgs = {} ) {
-	if ( filters.length === 0 ) {
+	if ( ! filters || filters.length === 0 ) {
 		return null;
 	}
 
