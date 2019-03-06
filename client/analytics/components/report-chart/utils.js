@@ -17,28 +17,26 @@ export function getSelectedFilter( filters, query, selectedFilterArgs = {} ) {
 		return null;
 	}
 
-	const filterConfig = filters.pop();
+	const clonedFilters = filters.slice( 0 );
+	const filterConfig = clonedFilters.pop();
 
 	if ( filterConfig.showFilters( query, selectedFilterArgs ) ) {
 		const allFilters = flattenFilters( filterConfig.filters );
 		const value = query[ filterConfig.param ] || DEFAULT_FILTER;
-		const selectedFilter = find( allFilters, { value } );
+		return find( allFilters, { value } );
+	}
+
+	return getSelectedFilter( clonedFilters, query, selectedFilterArgs );
+}
+
+export function getChartMode( selectedFilter, query ) {
+	if ( selectedFilter && query ) {
 		const selectedFilterParam = get( selectedFilter, [ 'settings', 'param' ] );
 
 		if ( ! selectedFilterParam || Object.keys( query ).includes( selectedFilterParam ) ) {
-			return selectedFilter;
+			return get( selectedFilter, [ 'chartMode' ] );
 		}
 	}
 
-	return getSelectedFilter( filters, query, selectedFilterArgs );
-}
-
-export function getChartMode( filters, query, selectedFilterArgs ) {
-	if ( ! filters ) {
-		return;
-	}
-	const clonedFilters = filters.slice( 0 );
-	const selectedFilter = getSelectedFilter( clonedFilters, query, selectedFilterArgs );
-
-	return get( selectedFilter, [ 'chartMode' ] );
+	return null;
 }
