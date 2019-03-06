@@ -325,12 +325,19 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 			return -1;
 		}
 
-		$coupon_items = $order->get_items( 'coupon' );
-		$num_updated  = 0;
+		$coupon_items       = $order->get_items( 'coupon' );
+		$coupon_items_count = count( $coupon_items );
+		$num_updated        = 0;
 
 		foreach ( $coupon_items as $coupon_item ) {
 			$coupon_id = wc_get_coupon_id_by_code( $coupon_item->get_code() );
-			$result    = $wpdb->replace(
+
+			if ( ! $coupon_id ) {
+				$coupon_items_count--;
+				continue;
+			}
+
+			$result = $wpdb->replace(
 				$wpdb->prefix . self::TABLE_NAME,
 				array(
 					'order_id'        => $order_id,
@@ -357,7 +364,7 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 			$num_updated += intval( $result );
 		}
 
-		return ( count( $coupon_items ) === $num_updated );
+		return ( $coupon_items_count === $num_updated );
 	}
 
 	/**
