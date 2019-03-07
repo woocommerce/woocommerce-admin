@@ -124,6 +124,12 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 			$args['type'] = $type;
 		}
 
+		$status = isset( $request['status'] ) ? $request['status'] : '';
+		$status = sanitize_text_field( $status );
+		if ( ! empty( $status ) ) {
+			$args['status'] = $status;
+		}
+
 		$notes = WC_Admin_Notes::get_notes( 'edit', $args );
 
 		$data = array();
@@ -231,6 +237,29 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		 * @param WP_REST_Request  $request  Request used to generate the response.
 		 */
 		return apply_filters( 'woocommerce_rest_prepare_admin_note', $response, $data, $request );
+	}
+
+	/**
+	 * Get the query params for collections.
+	 *
+	 * @return array
+	 */
+	public function get_collection_params() {
+		$params                     = array();
+		$params['context']          = $this->get_context_param( array( 'default' => 'view' ) );
+		$params['type']             = array(
+			'description'       => __( 'Type of note.', 'wc-admin' ),
+			'type'              => 'string',
+			'enum'              => WC_Admin_Note::get_allowed_types(),
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['status']             = array(
+			'description'       => __( 'Status of note.', 'wc-admin' ),
+			'type'              => 'string',
+			'enum'              => WC_Admin_Note::get_allowed_statuses(),
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		return $params;
 	}
 
 	/**

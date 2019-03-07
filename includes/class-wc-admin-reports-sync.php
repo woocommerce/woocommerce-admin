@@ -104,6 +104,8 @@ class WC_Admin_Reports_Sync {
 		// Queue orders lookup to occur after customers lookup generation is done.
 		self::queue_dependent_action( self::ORDERS_LOOKUP_BATCH_INIT, array(), self::CUSTOMERS_BATCH_ACTION );
 
+		WC_Admin_Notes_Historical_Data::mark_actioned();
+
 		return __( 'Report table data is being rebuilt.  Please allow some time for data to fully populate.', 'wc-admin' );
 	}
 
@@ -147,7 +149,6 @@ class WC_Admin_Reports_Sync {
 			)
 		);
 	}
-
 
 	/**
 	 * Schedule an action to process a single Order.

@@ -76,6 +76,8 @@ class WC_Admin_Install {
 		self::create_tables();
 		self::update_wc_admin_version();
 
+		WC_Admin_Notes_Historical_Data::add_note();
+
 		delete_transient( 'wc_admin_installing' );
 
 		do_action( 'wc_admin_installed' );

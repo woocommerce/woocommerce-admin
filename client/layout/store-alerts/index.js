@@ -136,10 +136,13 @@ class StoreAlerts extends Component {
 export default compose(
 	withSelect( select => {
 		const { getNotes } = select( 'wc-api' );
+		const { getLastStoreAlertRefresh } = select( 'wc-admin' );
 		const alertsQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
 			type: 'error,update',
+			status: 'unactioned',
+			_timestamp: getLastStoreAlertRefresh(),
 		};
 
 		const alerts = getNotes( alertsQuery );

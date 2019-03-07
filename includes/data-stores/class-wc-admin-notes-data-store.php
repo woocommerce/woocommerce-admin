@@ -269,22 +269,36 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 				}
 			}
 		}
-		$escaped_where_types = implode( ',', $where_type_array );
 
-		if ( empty( $escaped_where_types ) ) {
-			$query = $wpdb->prepare(
-				"SELECT note_id, title, content FROM {$wpdb->prefix}wc_admin_notes ORDER BY note_id DESC LIMIT %d, %d",
-				$offset,
-				$per_page
-			);
-		} else {
-			$query = $wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-				"SELECT note_id, title, content FROM {$wpdb->prefix}wc_admin_notes WHERE type IN ($escaped_where_types) ORDER BY note_id DESC LIMIT %d, %d",
-				$offset,
-				$per_page
-			);
+		$allowed_statuses   = WC_Admin_Note::get_allowed_statuses();
+		$where_status_array = array();
+		if ( isset( $args['status'] ) ) {
+			$args_statuses = explode( ',', $args['status'] );
+			foreach ( (array) $args_statuses as $args_status ) {
+				$args_status = trim( $args_status );
+				if ( in_array( $args_status, $allowed_statuses, true ) ) {
+					$where_status_array[] = "'" . esc_sql( $args_status ) . "'";
+				}
+			}
 		}
+
+		$escaped_where_types  = implode( ',', $where_type_array );
+		$escaped_status_types = implode( ',', $where_status_array );
+		$where_clauses        = '';
+
+		if ( ! empty( $escaped_where_types ) ) {
+			$where_clauses .= " AND type IN ($escaped_where_types)";
+		}
+
+		if ( ! empty( $escaped_status_types ) ) {
+			$where_clauses .= " AND status IN ($escaped_status_types)";
+		}
+
+		$query = $wpdb->prepare(
+			"SELECT note_id, title, content FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses} ORDER BY note_id DESC LIMIT %d, %d",
+			$offset,
+			$per_page
+		); // WPCS: unprepared SQL ok.
 
 		return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
