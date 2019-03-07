@@ -10,15 +10,6 @@ const notices = ( state = DEFAULT_STATE, action ) => {
 	return state;
 };
 
-const lastStoreAlertRefresh = ( state = DEFAULT_STATE, action ) => {
-	if ( action.type === 'REFRESH_STORE_ALERTS' ) {
-		return action.timestamp;
-	}
-
-	return state;
-};
-
 export default {
 	notices,
-	lastStoreAlertRefresh,
 };
