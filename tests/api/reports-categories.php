@@ -116,9 +116,6 @@ class WC_Tests_API_Reports_Categories extends WC_REST_Unit_Test_Case {
 
 		$uncategorized_term = get_term_by( 'slug', 'uncategorized', 'product_cat' );
 
-		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint ) );
-		$reports  = $response->get_data();
-
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
