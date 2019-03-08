@@ -154,6 +154,14 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 1, count( $notes ) );
 		$this->assertEquals( $notes[0]['title'], 'PHPUNIT_TEST_NOTE_2_TITLE' );
+
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params( array( 'status' => 'invalid' ) );
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// get_notes returns all results since 'status' is not one of actioned or unactioned.
+		$this->assertEquals( 2, count( $notes ) );
 	}
 
 	/**

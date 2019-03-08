@@ -23,22 +23,13 @@ class WC_Admin_Notes_Historical_Data {
 
 		// First, see if we've already created this kind of note so we don't do it again.
 		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
-		foreach ( (array) $note_ids as $note_id ) {
-			$note         = WC_Admin_Notes::get_note( $note_id );
-			$content_data = $note->get_content_data();
-			if ( property_exists( $content_data, 'getting_started' ) ) {
-				return;
-			}
+		if ( empty( $note_ids ) ) {
+			return;
 		}
 
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'WooCommerce Admin: Historical Analytics Data', 'wc-admin' ) );
 		$note->set_content( __( 'To view your historical analytics data, you must process your existing orders and customers.', 'wc-admin' ) );
-		$note->set_content_data(
-			(object) array(
-				'getting_started' => true,
-			)
-		);
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_UPDATE );
 		$note->set_icon( 'info' );
 		$note->set_name( self::NOTE_NAME );
@@ -63,6 +54,7 @@ class WC_Admin_Notes_Historical_Data {
 			return;
 		}
 
+		// @todo Tracks; Add track recording for when this note is actioned.
 		$note = WC_Admin_Notes::get_note( $note_ids[0] );
 		$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 		$note->save();
