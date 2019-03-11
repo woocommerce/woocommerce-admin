@@ -197,13 +197,13 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 
 		$actions = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT name, label, query FROM {$wpdb->prefix}wc_admin_note_actions WHERE note_id = %d",
+				"SELECT name, label, query, status FROM {$wpdb->prefix}wc_admin_note_actions WHERE note_id = %d",
 				$note->get_id()
 			)
 		);
 		if ( $actions ) {
 			foreach ( $actions as $action ) {
-				$note->add_action( $action->name, $action->label, $action->query );
+				$note->add_action( $action->name, $action->label, $action->query, $action->status );
 			}
 		}
 	}
@@ -232,6 +232,7 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 					'name'    => $action->name,
 					'label'   => $action->label,
 					'query'   => $action->query,
+					'status'  => $action->status,
 				)
 			);
 		}

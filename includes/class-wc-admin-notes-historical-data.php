@@ -39,7 +39,8 @@ class WC_Admin_Notes_Historical_Data {
 		$note->add_action(
 			'get-started',
 			__( 'Get Started', 'wc-admin' ),
-			'?page=wc-admin#/analytics/settings'
+			'?page=wc-admin#/analytics/settings',
+			'actioned'
 		);
 
 		$note->save();

@@ -16,7 +16,7 @@ class WC_Admin_Install {
 	 *
 	 * @todo get this dynamically?
 	 */
-	const VERSION_NUMBER = '0.6.0';
+	const VERSION_NUMBER = '0.8.0';
 
 	/**
 	 * Plugin version option name.
@@ -176,6 +176,7 @@ class WC_Admin_Install {
 			name varchar(255) NOT NULL,
 			label varchar(255) NOT NULL,
 			query longtext NOT NULL,
+			status varchar(255) NOT NULL,
 			PRIMARY KEY (action_id),
 			KEY note_id (note_id)
 		) $collate;
