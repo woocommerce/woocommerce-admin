@@ -258,6 +258,49 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 
 		$offset = $per_page * ( $page - 1 );
 
+		$where_clauses = $this->get_notes_where_clauses( $args );
+
+		$query = $wpdb->prepare(
+			"SELECT note_id, title, content FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses} ORDER BY note_id DESC LIMIT %d, %d",
+			$offset,
+			$per_page
+		); // WPCS: unprepared SQL ok.
+
+		return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	}
+
+	/**
+	 * Return a count of notes.
+	 *
+	 * @param string $type Comma separated list of note types.
+	 * @param string $status Comma separated list of statuses.
+	 * @return array An array of objects containing a note id.
+	 */
+	public function get_notes_count( $type = '', $status = '' ) {
+		global $wpdb;
+
+		$where_clauses = $this->get_notes_where_clauses(
+			array(
+				'type'   => $type,
+				'status' => $status,
+			)
+		);
+
+		if ( ! empty( $where_clauses ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses}" );
+		}
+
+		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes" );
+	}
+
+	/**
+	 * Return where clauses for getting notes by status and type. For use in both the count and listing queries.
+	 *
+	 *  @param array $args Array of args to pass.
+	 * @return string Where clauses for the query.
+	 */
+	public function get_notes_where_clauses( $args = array() ) {
 		$allowed_types    = WC_Admin_Note::get_allowed_types();
 		$where_type_array = array();
 		if ( isset( $args['type'] ) ) {
@@ -294,43 +337,7 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 			$where_clauses .= " AND status IN ($escaped_status_types)";
 		}
 
-		$query = $wpdb->prepare(
-			"SELECT note_id, title, content FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses} ORDER BY note_id DESC LIMIT %d, %d",
-			$offset,
-			$per_page
-		); // WPCS: unprepared SQL ok.
-
-		return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-	}
-
-	/**
-	 * Return a count of notes.
-	 *
-	 * @param string $type Comma separated list of note types.
-	 * @return array An array of objects containing a note id.
-	 */
-	public function get_notes_count( $type = '' ) {
-		global $wpdb;
-
-		$allowed_types    = WC_Admin_Note::get_allowed_types();
-		$where_type_array = array();
-		if ( ! empty( $type ) ) {
-			$args_types = explode( ',', $type );
-			foreach ( (array) $args_types as $args_type ) {
-				$args_type = trim( $args_type );
-				if ( in_array( $args_type, $allowed_types, true ) ) {
-					$where_type_array[] = "'" . esc_sql( $args_type ) . "'";
-				}
-			}
-		}
-		$escaped_where_types = implode( ',', $where_type_array );
-
-		if ( ! empty( $escaped_where_types ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE type IN ($escaped_where_types)" );
-		}
-
-		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes" );
+		return $where_clauses;
 	}
 
 	/**

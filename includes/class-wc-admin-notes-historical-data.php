@@ -23,7 +23,7 @@ class WC_Admin_Notes_Historical_Data {
 
 		// First, see if we've already created this kind of note so we don't do it again.
 		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( empty( $note_ids ) ) {
+		if ( ! empty( $note_ids ) ) {
 			return;
 		}
 
@@ -33,6 +33,7 @@ class WC_Admin_Notes_Historical_Data {
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_UPDATE );
 		$note->set_icon( 'info' );
 		$note->set_name( self::NOTE_NAME );
+		$note->set_content_data( (object) array() );
 		$note->set_source( 'woocommerce-admin' );
 		// @todo Add remind me later option. See https://github.com/woocommerce/wc-admin/issues/1756.
 		$note->add_action(
