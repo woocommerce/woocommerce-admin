@@ -365,6 +365,7 @@ class WC_Admin_Note extends WC_Data {
 	/**
 	 * Set note data for potential re-localization.
 	 *
+	 * @todo Set a default empty array? https://github.com/woocommerce/wc-admin/pull/1763#pullrequestreview-212442921.
 	 * @param object $content_data Note data.
 	 */
 	public function set_content_data( $content_data ) {
