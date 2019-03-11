@@ -259,7 +259,7 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 			if ( count( $included_categories ) > 0 ) {
 				$fields          = $this->get_fields( $query_args );
 				$join_selections = $this->format_join_selections( array_merge( array( 'category_id' ), $fields ), 'category_id' );
-				$ids_table       = $this->get_ids_table( $included_categories, 'category_id' );
+				$ids_table       = $this->get_ids_table( $included_categories );
 
 				$prefix     = "SELECT {$join_selections} FROM (";
 				$suffix     = ") AS {$table_name}";
