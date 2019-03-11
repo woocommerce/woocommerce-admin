@@ -45,22 +45,6 @@ class WC_Admin_Notes_Historical_Data {
 
 		$note->save();
 	}
-
-	/**
-	 * Marks a note as actioned so that it does not show up again.
-	 */
-	public static function mark_actioned() {
-		$data_store = WC_Data_Store::load( 'admin-note' );
-		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( empty( $note_ids ) ) {
-			return;
-		}
-
-		// @todo Tracks; Add track recording for when this note is actioned.
-		$note = WC_Admin_Notes::get_note( $note_ids[0] );
-		$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
-		$note->save();
-	}
 }
 
 new WC_Admin_Notes_Historical_Data();
