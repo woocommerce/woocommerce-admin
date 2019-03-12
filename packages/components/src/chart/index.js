@@ -89,9 +89,9 @@ class Chart extends Component {
 		if ( ! data || ! data.length ) {
 			return;
 		}
-		const uniqueKeys = getUniqueKeys( data );
+		const uniqueKeys = getUniqueKeys( data ).sort();
 
-		if ( ! isEqual( uniqueKeys.sort(), this.prevDataKeys ) ) {
+		if ( ! isEqual( uniqueKeys, this.prevDataKeys ) ) {
 			const dataKeys = this.getDataKeys();
 			this.prevDataKeys = uniqueKeys;
 			/* eslint-disable react/no-did-update-set-state */
@@ -157,19 +157,17 @@ class Chart extends Component {
 		}
 		const key = event.currentTarget.id.split( '_' ).pop();
 		const { focusedKeys, visibleKeys } = this.state;
-		let newFocusedKeys = [];
-		let newVisibleKeys = [];
 		if ( visibleKeys.includes( key ) ) {
-			newFocusedKeys = without( focusedKeys, key );
-			newVisibleKeys = without( visibleKeys, key );
+			this.setState( {
+				focusedKeys: without( focusedKeys, key ),
+				visibleKeys: without( visibleKeys, key ),
+			} );
 		} else {
-			newFocusedKeys = focusedKeys.concat( [ key ] );
-			newVisibleKeys = visibleKeys.concat( [ key ] );
+			this.setState( {
+				focusedKeys: focusedKeys.concat( [ key ] ),
+				visibleKeys: visibleKeys.concat( [ key ] ),
+			} );
 		}
-		this.setState( {
-			focusedKeys: newFocusedKeys,
-			visibleKeys: newVisibleKeys,
-		} );
 	}
 
 	handleLegendHover( event ) {
