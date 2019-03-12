@@ -1,0 +1,24 @@
+
+*** These modified files were found in JOE when it aborted on Tue Mar 12 10:47:12 2019
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/MERGE_MSG
+
+*** File '/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/MERGE_MSG'
+
+Merge
+ branch 'master' of https://github.com/woocommerce/wc-admin
+
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
+commit
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
