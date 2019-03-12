@@ -155,15 +155,20 @@ class Chart extends Component {
 			return;
 		}
 		const key = event.currentTarget.id.split( '_' ).pop();
-		const { visibleKeys } = this.state;
-		const newVisibleKeys = visibleKeys.includes( key )
-			? without( visibleKeys, key )
-			: visibleKeys.concat( [ key ] );
+		const { focusedKeys, visibleKeys } = this.state;
+		let newFocusedKeys = [];
+		let newVisibleKeys = [];
+		if ( visibleKeys.includes( key ) ) {
+			newFocusedKeys = without( focusedKeys, key );
+			newVisibleKeys = without( visibleKeys, key );
+		} else {
+			newFocusedKeys = focusedKeys.concat( [ key ] );
+			newVisibleKeys = visibleKeys.concat( [ key ] );
+		}
 		this.setState( {
+			focusedKeys: newFocusedKeys,
 			visibleKeys: newVisibleKeys,
 		} );
-		const copyEvent = { ...event }; // can't pass a synthetic event into the hover handler
-		this.handleLegendHover( copyEvent );
 	}
 
 	handleLegendHover( event ) {
