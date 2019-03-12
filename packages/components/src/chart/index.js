@@ -282,11 +282,11 @@ class Chart extends Component {
 			valueType,
 			xFormat,
 			x2Format,
+			yFormat,
 		} = this.props;
 		const selectedIds = filterParam ? getIdsFromQuery( query[ filterParam ] ) : [];
 		const orderedKeys = this.getOrderedKeys( data, mode, focusedKeys, visibleKeys, selectedIds );
 		const visibleData = isRequesting ? null : this.getVisibleData( data, orderedKeys );
-		let { yFormat } = this.props;
 
 		const legendPosition = this.getLegendPosition();
 		const legendDirection = legendPosition === 'top' ? 'row' : 'column';
@@ -312,16 +312,19 @@ class Chart extends Component {
 			top: 0,
 		};
 
-		switch ( valueType ) {
-			case 'average':
-				yFormat = ',.0f';
-				break;
-			case 'currency':
-				yFormat = '$.3~s';
-				break;
-			case 'number':
-				yFormat = ',.0f';
-				break;
+		let d3chartYFormat = yFormat;
+		if ( ! yFormat ) {
+			switch ( valueType ) {
+				case 'average':
+					d3chartYFormat = ',.0f';
+					break;
+				case 'currency':
+					d3chartYFormat = '$.3~s';
+					break;
+				case 'number':
+					d3chartYFormat = ',.0f';
+					break;
+			}
 		}
 		return (
 			<div className="woocommerce-chart">
@@ -396,11 +399,11 @@ class Chart extends Component {
 									tooltipValueFormat={ tooltipValueFormat }
 									tooltipPosition={ isViewportLarge ? 'over' : 'below' }
 									tooltipTitle={ tooltipTitle }
+									valueType={ valueType }
 									width={ chartDirection === 'row' ? width - 320 : width }
 									xFormat={ xFormat }
 									x2Format={ x2Format }
-									yFormat={ yFormat }
-									valueType={ valueType }
+									yFormat={ d3chartYFormat }
 								/>
 							) }
 					</div>
@@ -541,7 +544,6 @@ Chart.defaultProps = {
 	tooltipValueFormat: ',',
 	xFormat: '%d',
 	x2Format: '%b %Y',
-	yFormat: '$.3s',
 };
 
 export default withViewportMatch( {
