@@ -26,6 +26,7 @@ import ChartPlaceholder from './placeholder';
 import { H, Section } from '../section';
 import { D3Chart, D3Legend } from './d3chart';
 import { getUniqueKeys } from './d3chart/utils/index';
+import { selectionLimit } from './constants';
 
 function getD3CurrencyFormat( symbol, position ) {
 	switch ( position ) {
@@ -61,7 +62,7 @@ class Chart extends Component {
 		const dataKeys = this.getDataKeys();
 		this.state = {
 			focusedKeys: [],
-			visibleKeys: dataKeys.slice( 0, 5 ),
+			visibleKeys: dataKeys.slice( 0, selectionLimit ),
 			width: 0,
 		};
 		this.prevDataKeys = dataKeys.sort();
@@ -95,7 +96,7 @@ class Chart extends Component {
 			this.prevDataKeys = uniqueKeys;
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
-				visibleKeys: dataKeys.slice( 0, 5 ),
+				visibleKeys: dataKeys.slice( 0, selectionLimit ),
 			} );
 			/* eslint-enable react/no-did-update-set-state */
 		}
