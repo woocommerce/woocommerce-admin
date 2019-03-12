@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -27,7 +28,7 @@ import { Chart } from '@woocommerce/components';
 import { getReportChartData, getTooltipValueFormat } from 'wc-api/reports/utils';
 import ReportError from 'analytics/components/report-error';
 import withSelect from 'wc-api/with-select';
-import { getChartMode } from './utils';
+import { getChartMode, getSelectedFilter } from './utils';
 
 /**
  * Component that renders the chart in reports.
@@ -92,6 +93,7 @@ export class ReportChart extends Component {
 	renderChart( mode, isRequesting, chartData ) {
 		const {
 			emptySearchResults,
+			filterParam,
 			interactiveLegend,
 			itemsLabel,
 			legendPosition,
@@ -113,6 +115,7 @@ export class ReportChart extends Component {
 				data={ chartData }
 				dateParser={ '%Y-%m-%dT%H:%M:%S' }
 				emptyMessage={ emptyMessage }
+				filterParam={ filterParam }
 				interactiveLegend={ interactiveLegend }
 				interval={ currentInterval }
 				isRequesting={ isRequesting }
@@ -185,10 +188,10 @@ ReportChart.propTypes = {
 	 */
 	itemsLabel: PropTypes.string,
 	/**
-	 * Allows specifying a property different from the `endpoint` that will be used
+	 * Allows specifying properties different from the `endpoint` that will be used
 	 * to limit the items when there is an active search.
 	 */
-	limitProperty: PropTypes.string,
+	limitProperties: PropTypes.array,
 	/**
 	 * `items-comparison` (default) or `time-comparison`, this is used to generate correct
 	 * ARIA properties.
@@ -236,27 +239,34 @@ ReportChart.defaultProps = {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { endpoint, filters, isRequesting, limitProperty, query } = props;
-		const limitBy = limitProperty || endpoint;
-		const chartMode = props.mode || getChartMode( filters, query ) || 'time-comparison';
+		const { endpoint, filters, isRequesting, limitProperties, query } = props;
+		const limitBy = limitProperties || [ endpoint ];
+		const selectedFilter = getSelectedFilter( filters, query );
+		const filterParam = get( selectedFilter, [ 'settings', 'param' ] );
+		const chartMode = props.mode || getChartMode( selectedFilter, query ) || 'time-comparison';
+
+		const newProps = {
+			mode: chartMode,
+			filterParam,
+		};
 
 		if ( isRequesting ) {
-			return {
-				mode: chartMode,
-			};
+			return newProps;
 		}
 
-		if ( query.search && ! ( query[ limitBy ] && query[ limitBy ].length ) ) {
+		const hasLimitByParam = limitBy.some( item => query[ item ] && query[ item ].length );
+
+		if ( query.search && ! hasLimitByParam ) {
 			return {
+				...newProps,
 				emptySearchResults: true,
-				mode: chartMode,
 			};
 		}
 
 		if ( 'item-comparison' === chartMode ) {
 			const primaryData = getReportChartData( endpoint, 'primary', query, select, limitBy );
 			return {
-				mode: chartMode,
+				...newProps,
 				primaryData,
 			};
 		}
@@ -264,7 +274,7 @@ export default compose(
 		const primaryData = getReportChartData( endpoint, 'primary', query, select, limitBy );
 		const secondaryData = getReportChartData( endpoint, 'secondary', query, select, limitBy );
 		return {
-			mode: chartMode,
+			...newProps,
 			primaryData,
 			secondaryData,
 		};
