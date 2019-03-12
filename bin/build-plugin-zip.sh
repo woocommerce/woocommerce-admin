@@ -78,8 +78,8 @@ zip -r wc-admin.zip \
 	includes/**/*.php \
 	images/* \
 	$build_files \
-	languages/wc-admin.pot \
-	languages/wc-admin.php \
+	languages/woocommerce-admin.pot \
+	languages/woocommerce-admin.php \
 	readme.txt
 
 success "Done. You've built WooCommerce Admin! 🎉 "
