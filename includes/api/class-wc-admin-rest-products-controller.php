@@ -61,11 +61,6 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 			'type'              => 'string',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['product_search'] = array(
-			'description'       => __( 'Search by similar product name or sku.', 'woocommerce-admin' ),
-			'type'              => 'string',
-			'validate_callback' => 'rest_validate_request_arg',
-		);
 		return $params;
 	}
 
@@ -82,10 +77,6 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 		if ( ! empty( $request['search'] ) ) {
 			$args['search'] = $request['search'];
 			unset( $args['s'] );
-		}
-
-		if ( ! empty( $request['product_search'] ) ) {
-			$args['product_search'] = $request['product_search'];
 		}
 
 		return $args;
