@@ -43,7 +43,7 @@ export default {
 		let payload = '';
 		if ( search ) {
 			const query = {
-				search,
+				product_search: search,
 				per_page: 10,
 			};
 			payload = stringifyQuery( query );
@@ -56,7 +56,7 @@ export default {
 	},
 	isDebounced: true,
 	getOptionKeywords( variation ) {
-		return [ getVariationName( variation ) ];
+		return [ getVariationName( variation ), variation.sku ];
 	},
 	getOptionLabel( variation, query ) {
 		const match = computeSuggestionMatch( getVariationName( variation ), query ) || {};
