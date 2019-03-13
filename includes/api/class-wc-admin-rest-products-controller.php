@@ -101,6 +101,8 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 		add_filter( 'posts_join', array( __CLASS__, 'add_wp_query_product_search_join' ), 10, 2 );
 		$response = parent::get_items( $request );
 		remove_filter( 'posts_where', array( __CLASS__, 'add_wp_query_post_title_filter' ), 10 );
+		remove_filter( 'posts_where', array( __CLASS__, 'add_wp_query_product_search_filter' ), 10 );
+		remove_filter( 'posts_join', array( __CLASS__, 'add_wp_query_product_search_join' ), 10 );
 		return $response;
 	}
 
