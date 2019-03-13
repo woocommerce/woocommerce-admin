@@ -126,6 +126,7 @@ function wc_admin_register_script() {
 		array( 'wc-components' ),
 		filemtime( wc_admin_dir_path( "dist/{$entry}/style.css" ) )
 	);
+	wp_style_add_data( WC_ADMIN_APP, 'rtl', 'replace' );
 }
 add_action( 'admin_enqueue_scripts', 'wc_admin_register_script' );
 
