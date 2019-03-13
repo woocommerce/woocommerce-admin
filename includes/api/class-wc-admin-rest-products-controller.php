@@ -61,11 +61,16 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 			'type'              => 'string',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
+		$params['product_search'] = array(
+			'description'       => __( 'Search by similar product name or sku.', 'woocommerce-admin' ),
+			'type'              => 'string',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
 		return $params;
 	}
 
 	/**
-	 * Add product name filtering to the WC API.
+	 * Add product name and sku filtering to the WC API.
 	 *
 	 * @param WP_REST_Request $request Request data.
 	 * @return array
@@ -75,6 +80,10 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 
 		if ( ! empty( $request['product_name'] ) ) {
 			$args['post_title__like'] = $request['product_name'];
+		}
+
+		if ( ! empty( $request['product_search'] ) ) {
+			$args['product_search'] = $request['product_search'];
 		}
 
 		return $args;
@@ -88,6 +97,8 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 	 */
 	public function get_items( $request ) {
 		add_filter( 'posts_where', array( __CLASS__, 'add_wp_query_post_title_filter' ), 10, 2 );
+		add_filter( 'posts_where', array( __CLASS__, 'add_wp_query_product_search_filter' ), 10, 2 );
+		add_filter( 'posts_join', array( __CLASS__, 'add_wp_query_product_search_join' ), 10, 2 );
 		$response = parent::get_items( $request );
 		remove_filter( 'posts_where', array( __CLASS__, 'add_wp_query_post_title_filter' ), 10 );
 		return $response;
@@ -111,6 +122,45 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 		}
 
 		return $where;
+	}
+
+	/**
+	 * Allow searching by product name or sku in WP Query
+	 *
+	 * @param string $where Where clause used to search posts.
+	 * @param object $wp_query WP_Query object.
+	 * @return string
+	 */
+	public static function add_wp_query_product_search_filter( $where, $wp_query ) {
+		global $wpdb;
+
+		$product_search = $wp_query->get( 'product_search' );
+		if ( $product_search ) {
+			$product_search = $wpdb->esc_like( $product_search );
+			$product_search = ' \'%' . $product_search . '%\'';
+			$where         .= ' AND (' . $wpdb->posts . '.post_title LIKE ' . $product_search . ' OR ';
+			$where         .= 'ps_post_meta.meta_key = "_sku" AND ps_post_meta.meta_value LIKE ' . $product_search . ')';
+		}
+
+		return $where;
+	}
+
+	/**
+	 * Join posts meta table when product search is present and meta query is not present.
+	 *
+	 * @param string $join Join clause used to search posts.
+	 * @param object $wp_query WP_Query object.
+	 * @return string
+	 */
+	public static function add_wp_query_product_search_join( $join, $wp_query ) {
+		global $wpdb;
+
+		$product_search = $wp_query->get( 'product_search' );
+		if ( $product_search ) {
+			$join .= ' INNER JOIN ' . $wpdb->postmeta . ' AS ps_post_meta ON ps_post_meta.post_id = ' . $wpdb->posts . '.ID';
+		}
+
+		return $join;
 	}
 
 }
