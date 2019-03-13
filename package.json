@@ -1,5 +1,5 @@
 {
-  "name": "wc-admin",
+  "name": "woocommerce-admin",
   "version": "0.8.0",
   "main": "js/index.js",
   "author": "Automattic",

@@ -35,7 +35,7 @@ class WC_Admin_Notes_Historical_Data {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_content_data( (object) array() );
 		$note->set_source( 'woocommerce-admin' );
-		// @todo Add remind me later option. See https://github.com/woocommerce/wc-admin/issues/1756.
+		// @todo Add remind me later option. See https://github.com/woocommerce/woocommerce-admin/issues/1756.
 		$note->add_action(
 			'get-started',
 			__( 'Get Started', 'woocommerce-admin' ),

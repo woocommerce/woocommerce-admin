@@ -202,7 +202,7 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 	/**
 	 * Sorts the list of stats. Sorted by custom arrangement.
 	 *
-	 * @see https://github.com/woocommerce/wc-admin/issues/1282
+	 * @see https://github.com/woocommerce/woocommerce-admin/issues/1282
 	 * @param object $a First item.
 	 * @param object $b Second item.
 	 * @return order
@@ -211,7 +211,7 @@ class WC_Admin_REST_Reports_Performance_Indicators_Controller extends WC_REST_Re
 		/**
 		 * Custom ordering for store performance indicators.
 		 *
-		 * @see https://github.com/woocommerce/wc-admin/issues/1282
+		 * @see https://github.com/woocommerce/woocommerce-admin/issues/1282
 		 * @param array $indicators A list of ordered indicators.
 		 */
 		$stat_order = apply_filters(

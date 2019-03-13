@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WooCommerce Admin
- * Plugin URI: https://github.com/woocommerce/wc-admin
+ * Plugin URI: https://github.com/woocommerce/woocommerce-admin
  * Description: A new JavaScript-driven interface for managing your store. The plugin includes new and improved reports, and a dashboard to monitor all the important key metrics of your site.
  * Author: WooCommerce
  * Author URI: https://woocommerce.com/
@@ -57,7 +57,7 @@ function wc_admin_build_notice() {
 	$message_two = sprintf(
 		/* translators: 1: URL of GitHub Repository build page */
 		__( 'Or you can download a pre-built version of the plugin by visiting <a href="%1$s">the releases page in the repository</a>.', 'woocommerce-admin' ),
-		'https://github.com/woocommerce/wc-admin/releases'
+		'https://github.com/woocommerce/woocommerce-admin/releases'
 	);
 	printf( '<div class="error"><p>%s %s</p></div>', $message_one, $message_two ); /* WPCS: xss ok. */
 }
