@@ -105,12 +105,12 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 	public static function add_wp_query_product_search_filter( $where, $wp_query ) {
 		global $wpdb;
 
-		$product_search = $wp_query->get( 'product_search' );
+		$product_search = trim( $wp_query->get( 'product_search' ) );
 		if ( $product_search ) {
 			$product_search = $wpdb->esc_like( $product_search );
 			$product_search = ' \'%' . $product_search . '%\'';
-			$where         .= ' AND (' . $wpdb->posts . '.post_title LIKE ' . $product_search . ' OR ';
-			$where         .= 'ps_post_meta.meta_key = "_sku" AND ps_post_meta.meta_value LIKE ' . $product_search . ')';
+			$where         .= ' AND (' . $wpdb->posts . '.post_title LIKE ' . $product_search;
+			$where         .= wc_product_sku_enabled() ? ' OR ps_post_meta.meta_key = "_sku" AND ps_post_meta.meta_value LIKE ' . $product_search . ')' : ')';
 		}
 
 		return $where;
@@ -126,8 +126,8 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 	public static function add_wp_query_product_search_join( $join, $wp_query ) {
 		global $wpdb;
 
-		$product_search = $wp_query->get( 'product_search' );
-		if ( $product_search ) {
+		$product_search = trim( $wp_query->get( 'product_search' ) );
+		if ( $product_search && wc_product_sku_enabled() ) {
 			$join .= ' INNER JOIN ' . $wpdb->postmeta . ' AS ps_post_meta ON ps_post_meta.post_id = ' . $wpdb->posts . '.ID';
 		}
 
