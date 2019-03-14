@@ -165,7 +165,7 @@ export default class VariationsReportTable extends Component {
 
 		const labels = {
 			helpText: __( 'Check at least two variations below to compare', 'woocommerce-admin' ),
-			placeholder: __( 'Search by variation name', 'woocommerce-admin' ),
+			placeholder: __( 'Search by variation name or SKU', 'woocommerce-admin' ),
 		};
 
 		return (
