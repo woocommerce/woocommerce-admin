@@ -81,7 +81,7 @@ class WC_Admin_REST_Product_Variations_Controller extends WC_REST_Product_Variat
 	public function add_wp_query_product_search_group_by( $groupby, $wp_query ) {
 		global $wpdb;
 
-		$product_search = $wp_query->get( 'product_search' );
+		$product_search = trim( $wp_query->get( 'product_search' ) );
 		if ( $product_search && empty( $groupby ) ) {
 			$groupby .= $wpdb->posts . '.ID';
 		}
