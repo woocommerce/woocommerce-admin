@@ -56,6 +56,7 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 	 */
 	public static function init() {
 		add_action( 'woocommerce_reports_delete_order_stats', array( __CLASS__, 'sync_on_order_delete' ), 5 );
+		add_action( 'delete_post', array( __CLASS__, 'delete_coupon' ) );
 	}
 
 	/**
@@ -282,7 +283,7 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 				$total_results = $db_records_count;
-				$total_pages = (int) ceil( $db_records_count / $sql_query_params['per_page'] );
+				$total_pages   = (int) ceil( $db_records_count / $sql_query_params['per_page'] );
 				if ( $query_args['page'] < 1 || $query_args['page'] > $total_pages ) {
 					return $data;
 				}
@@ -362,12 +363,19 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 			return -1;
 		}
 
-		$coupon_items = $order->get_items( 'coupon' );
-		$num_updated  = 0;
+		$coupon_items       = $order->get_items( 'coupon' );
+		$coupon_items_count = count( $coupon_items );
+		$num_updated        = 0;
 
 		foreach ( $coupon_items as $coupon_item ) {
 			$coupon_id = wc_get_coupon_id_by_code( $coupon_item->get_code() );
-			$result    = $wpdb->replace(
+
+			if ( ! $coupon_id ) {
+				$coupon_items_count--;
+				continue;
+			}
+
+			$result = $wpdb->replace(
 				$wpdb->prefix . self::TABLE_NAME,
 				array(
 					'order_id'        => $order_id,
@@ -394,7 +402,7 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 			$num_updated += intval( $result );
 		}
 
-		return ( count( $coupon_items ) === $num_updated );
+		return ( $coupon_items_count === $num_updated );
 	}
 
 	/**
@@ -424,6 +432,25 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 	}
 
 	/**
+	 * Deletes the coupon lookup information when a coupon is deleted.
+	 * This keeps data consistent if it gets resynced at any point.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public static function delete_coupon( $post_id ) {
+		global $wpdb;
+
+		if ( 'shop_coupon' !== get_post_type( $post_id ) ) {
+			return;
+		}
+
+		$wpdb->delete(
+			$wpdb->prefix . self::TABLE_NAME,
+			array( 'coupon_id' => $post_id )
+		);
+	}
+
+	/**
 	 * Gets coupons based on the provided arguments.
 	 *
 	 * @todo Upon core merge, including this in core's `class-wc-coupon-data-store-cpt.php` might make more sense.
@@ -436,7 +463,7 @@ class WC_Admin_Reports_Coupons_Data_Store extends WC_Admin_Reports_Data_Store im
 
 		if ( ! empty( $args['include'] ) ) {
 			$included_coupons = implode( ',', $args['include'] );
-			$query .= " AND ID IN ({$included_coupons})";
+			$query           .= " AND ID IN ({$included_coupons})";
 		}
 
 		return $wpdb->get_results( $query );  // WPCS: cache ok, DB call ok, unprepared SQL ok.
