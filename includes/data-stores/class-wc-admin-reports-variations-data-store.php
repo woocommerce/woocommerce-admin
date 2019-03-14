@@ -131,7 +131,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.variation_id IN ({$allowed_variations_str})";
 		}
 
-		$order_status_filter = $this->get_status_subquery( $query_args );
+		$order_status_filter                   = $this->get_status_subquery( $query_args );
 		$sql_query_params['outer_from_clause'] = '';
 		if ( $order_status_filter ) {
 			$sql_query_params[ $from_arg ]    .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
@@ -248,7 +248,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 				'page_no' => 0,
 			);
 
-			$selections       = $this->selected_columns( $query_args );
+			$selections        = $this->selected_columns( $query_args );
 			$included_products = $this->get_included_products_array( $query_args );
 
 			if ( count( $included_products ) > 0 && count( $query_args['variations'] ) > 0 ) {
@@ -265,8 +265,8 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 				$join_selections = $this->format_join_selections( $fields, array( 'product_id', 'variation_id' ) );
 				$ids_table       = $this->get_ids_table( $query_args['variations'], 'variation_id', array( 'product_id' => $included_products[0] ) );
 
-				$prefix = "SELECT {$join_selections} FROM (";
-				$suffix = ") AS {$table_name}";
+				$prefix     = "SELECT {$join_selections} FROM (";
+				$suffix     = ") AS {$table_name}";
 				$right_join = "RIGHT JOIN ( {$ids_table} ) AS default_results
 					ON default_results.variation_id = {$table_name}.variation_id";
 			} else {
@@ -289,7 +289,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 				$total_results = $db_records_count;
-				$total_pages = (int) ceil( $db_records_count / $sql_query_params['per_page'] );
+				$total_pages   = (int) ceil( $db_records_count / $sql_query_params['per_page'] );
 
 				if ( $query_args['page'] < 1 || $query_args['page'] > $total_pages ) {
 					return $data;
