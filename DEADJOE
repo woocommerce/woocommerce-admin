@@ -1,0 +1,116 @@
+
+*** These modified files were found in JOE when it aborted on Wed Mar 13 18:16:43 2019
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/MERGE_MSG
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
+
+*** These modified files were found in JOE when it aborted on Thu Mar 14 10:29:34 2019
+*** JOE was aborted because the terminal closed
+
+*** File '/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo'
+noop
+
+# Rebase 040a3cf0..040a3cf0 onto 040a3cf0 (1 command)
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discathis commit's log message
+# x, exec = run command (the rest of the line) using shell
+# d, drop = remove commit
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented 
+*** File '(Unnamed)'
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/MERGE_MSG
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
+
+*** These modified files were found in JOE when it aborted on Thu Mar 14 10:32:54 2019
+*** JOE was aborted by UNIX signal 1
+
+*** File '/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo'
+noop
+
+# Rebase 040a3cf0..040a3cf0 onto 040a3cf0 (1 command)
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+# d, drop = remove commit
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented out
+
+*** File '(Unnamed)'
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/MERGE_MSG
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
+
+*** These modified files were found in JOE when it aborted on Thu Mar 14 16:04:28 2019
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/MERGE_MSG
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
+
+*** These modified files were found in JOE when it aborted on Thu Mar 14 16:04:30 2019
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/MERGE_MSG
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+/var/www/html/wordpress/wp-content/plugins/wc-admin-forked/.git/rebase-merge/git-rebase-todo
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
