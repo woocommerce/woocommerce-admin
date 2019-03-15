@@ -20,13 +20,9 @@ export function searchItemsByString( select, endpoint, search ) {
 	let isError = false;
 	search.forEach( searchWord => {
 		const query = {
+			search: searchWord,
 			per_page: 10,
 		};
-		if ( 'products' === endpoint ) {
-			query.product_search = searchWord;
-		} else {
-			query.search = searchWord;
-		}
 		const newItems = getItems( endpoint, query );
 		newItems.forEach( ( item, id ) => {
 			items[ id ] = item;
