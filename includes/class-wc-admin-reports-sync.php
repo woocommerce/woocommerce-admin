@@ -80,7 +80,7 @@ class WC_Admin_Reports_Sync {
 	 */
 	public static function init() {
 		// Add report regeneration to tools REST API.
-		add_filter( 'woocommerce_debug_tools', array( __CLASS__, 'add_regenerate_tool' ) );
+		add_filter( 'woocommerce_debug_tools', array( __CLASS__, 'add_debug_tools' ) );
 
 		// Initialize syncing hooks.
 		add_action( 'wp_loaded', array( __CLASS__, 'orders_lookup_update_init' ) );
@@ -119,15 +119,17 @@ class WC_Admin_Reports_Sync {
 		} else {
 			self::queue()->cancel_all( null, array(), self::QUEUE_GROUP );
 		}
+
+		return __( 'Analytics jobs have been cleared.', 'wc-admin' );
 	}
 
 	/**
-	 * Adds regenerate tool to WC system status tools API.
+	 * Adds regenerate and job clearing tools to WC system status tools API.
 	 *
 	 * @param array $tools List of tools.
 	 * @return array
 	 */
-	public static function add_regenerate_tool( $tools ) {
+	public static function add_debug_tools( $tools ) {
 		if ( isset( $_GET['page'] ) && 'wc-status' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return $tools;
 		}
@@ -135,11 +137,17 @@ class WC_Admin_Reports_Sync {
 		return array_merge(
 			$tools,
 			array(
-				'rebuild_stats' => array(
+				'rebuild_stats'        => array(
 					'name'     => __( 'Rebuild reports data', 'wc-admin' ),
 					'button'   => __( 'Rebuild reports', 'wc-admin' ),
 					'desc'     => __( 'This tool will rebuild all of the information used by the reports.', 'wc-admin' ),
 					'callback' => array( __CLASS__, 'regenerate_report_data' ),
+				),
+				'clear_analytics_jobs' => array(
+					'name'     => __( 'Analytics jobs', 'wc-admin' ),
+					'button'   => __( 'Clear analytics jobs', 'wc-admin' ),
+					'desc'     => __( 'This tool will clear all background analytics jobs.', 'wc-admin' ),
+					'callback' => array( __CLASS__, 'clear_queued_actions' ),
 				),
 			)
 		);
