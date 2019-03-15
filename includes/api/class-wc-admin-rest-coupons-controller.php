@@ -30,8 +30,8 @@ class WC_Admin_REST_Coupons_Controller extends WC_REST_Coupons_Controller {
 	 * @return array
 	 */
 	public function get_collection_params() {
-		$params                = parent::get_collection_params();
-		$params['search_code'] = array(
+		$params           = parent::get_collection_params();
+		$params['search'] = array(
 			'description'       => __( 'Limit results to coupons with codes matching a given string.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'validate_callback' => 'rest_validate_request_arg',
@@ -49,8 +49,9 @@ class WC_Admin_REST_Coupons_Controller extends WC_REST_Coupons_Controller {
 	protected function prepare_objects_query( $request ) {
 		$args = parent::prepare_objects_query( $request );
 
-		if ( ! empty( $request['search_code'] ) ) {
-			$args['search_code'] = $request['search_code'];
+		if ( ! empty( $request['search'] ) ) {
+			$args['search'] = $request['search'];
+			$args['s']      = false;
 		}
 
 		return $args;
@@ -79,11 +80,11 @@ class WC_Admin_REST_Coupons_Controller extends WC_REST_Coupons_Controller {
 	public static function add_wp_query_search_code_filter( $where, $wp_query ) {
 		global $wpdb;
 
-		$code_search = $wp_query->get( 'search_code' );
-		if ( $code_search ) {
-			$code_search = $wpdb->esc_like( $code_search );
-			$code_search = ' \'%' . $code_search . '%\'';
-			$where      .= ' AND ' . $wpdb->posts . '.post_title LIKE ' . $code_search;
+		$search = $wp_query->get( 'search' );
+		if ( $search ) {
+			$search = $wpdb->esc_like( $search );
+			$search = "'%" . $search . "%'";
+			$where .= ' AND ' . $wpdb->posts . '.post_title LIKE ' . $search;
 		}
 
 		return $where;
