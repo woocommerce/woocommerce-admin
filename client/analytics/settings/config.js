@@ -121,4 +121,34 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 				} );
 		},
 	},
+	{
+		name: 'woocommerce_clear_pending_jobs',
+		label: __( 'Analytics jobs:', 'wc-admin' ),
+		inputType: 'button',
+		inputText: __( 'Clear analytics jobs', 'wc-admin' ),
+		helpText: __(
+			'This tool will cancel all pending jobs queued for building analytics report data.',
+			'wc-admin'
+		),
+		callback: ( resolve, reject, addNotice ) => {
+			const errorMessage = __( 'There was a problem clearing pending jobs.', 'wc-admin' );
+
+			apiFetch( { path: '/wc/v3/system_status/tools/clear_analytics_jobs', method: 'PUT' } )
+				.then( response => {
+					if ( response.success ) {
+						addNotice( { status: 'success', message: response.message } );
+						resolve();
+					} else {
+						addNotice( { status: 'error', message: errorMessage } );
+						reject();
+					}
+				} )
+				.catch( error => {
+					if ( error && error.message ) {
+						addNotice( { status: 'error', message: error.message } );
+					}
+					reject();
+				} );
+		},
+	},
 ] );
