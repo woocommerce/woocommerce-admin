@@ -40,10 +40,11 @@ function OrdersPanel( { orders, isRequesting, isError, orderStatuses } ) {
 		if ( ! orderStatuses.length ) {
 			return (
 				<EmptyContent
-					title={
+					title={ __(
 						"You currently don't have any actionable statuses. " +
-						'To display orders here, select orders that require further review in settings.'
-					}
+							'To display orders here, select orders that require further review in settings.',
+						'woocommerce-admin'
+					) }
 					actionLabel={ __( 'Settings', 'woocommerce-admin' ) }
 					actionURL={ getAdminLink( 'admin.php?page=wc-admin#/analytics/settings' ) }
 				/>
