@@ -164,10 +164,12 @@
 	display: none;
 
 	.is-error .woocommerce-calendar__input-text:focus + span & {
+		/* rtl:begin:ignore */
 		display: block;
 		left: 50% !important;
 		position: absolute;
 		top: auto !important;
+		/* rtl:end:ignore */
 	}
 
 	.components-popover__content {
