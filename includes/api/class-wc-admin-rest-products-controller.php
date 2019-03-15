@@ -110,7 +110,7 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 		$search = trim( $wp_query->get( 'search' ) );
 		if ( $search ) {
 			$search = $wpdb->esc_like( $search );
-			$search = ' \'%' . $search . '%\'';
+			$search = "'%" . $search . "%'";
 			$where .= ' AND (' . $wpdb->posts . '.post_title LIKE ' . $search;
 			$where .= wc_product_sku_enabled() ? ' OR ps_post_meta.meta_key = "_sku" AND ps_post_meta.meta_value LIKE ' . $search . ')' : ')';
 		}
