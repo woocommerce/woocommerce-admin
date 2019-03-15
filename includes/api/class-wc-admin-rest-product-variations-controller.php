@@ -29,8 +29,8 @@ class WC_Admin_REST_Product_Variations_Controller extends WC_REST_Product_Variat
 	 * @return array
 	 */
 	public function get_collection_params() {
-		$params                   = parent::get_collection_params();
-		$params['product_search'] = array(
+		$params           = parent::get_collection_params();
+		$params['search'] = array(
 			'description'       => __( 'Search by similar product name or sku.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'validate_callback' => 'rest_validate_request_arg',
@@ -47,8 +47,9 @@ class WC_Admin_REST_Product_Variations_Controller extends WC_REST_Product_Variat
 	protected function prepare_objects_query( $request ) {
 		$args = parent::prepare_objects_query( $request );
 
-		if ( ! empty( $request['product_search'] ) ) {
-			$args['product_search'] = $request['product_search'];
+		if ( ! empty( $request['search'] ) ) {
+			$args['search'] = $request['search'];
+			$args['s']      = false;
 		}
 
 		return $args;
@@ -81,8 +82,8 @@ class WC_Admin_REST_Product_Variations_Controller extends WC_REST_Product_Variat
 	public function add_wp_query_product_search_group_by( $groupby, $wp_query ) {
 		global $wpdb;
 
-		$product_search = trim( $wp_query->get( 'product_search' ) );
-		if ( $product_search && empty( $groupby ) ) {
+		$search = trim( $wp_query->get( 'search' ) );
+		if ( $search && empty( $groupby ) ) {
 			$groupby .= $wpdb->posts . '.ID';
 		}
 		return $groupby;

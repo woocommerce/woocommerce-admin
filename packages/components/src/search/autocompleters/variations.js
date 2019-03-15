@@ -43,7 +43,7 @@ export default {
 		let payload = '';
 		if ( search ) {
 			const query = {
-				product_search: search,
+				search,
 				per_page: 10,
 			};
 			payload = stringifyQuery( query );
