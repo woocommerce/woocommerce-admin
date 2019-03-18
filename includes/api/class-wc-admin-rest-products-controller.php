@@ -76,7 +76,7 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 
 		if ( ! empty( $request['search'] ) ) {
 			$args['search'] = $request['search'];
-			$args['s']      = false;
+			unset( $args['s'] );
 		}
 
 		return $args;
