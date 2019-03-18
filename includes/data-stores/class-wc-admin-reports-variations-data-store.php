@@ -78,6 +78,34 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 		$this->report_columns['orders_count'] = str_replace( 'order_id', $table_name . '.order_id', $this->report_columns['orders_count'] );
 	}
 
+    /**
+     * Fills ORDER BY clause of SQL request based on user supplied parameters.
+     *
+     * @param array $query_args Parameters supplied by the user.
+     * @return array
+     */
+    protected function get_order_by_sql_params( $query_args ) {
+        global $wpdb;
+        $order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
+
+        $sql_query['order_by_clause'] = '';
+        if ( isset( $query_args['orderby'] ) ) {
+            $sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
+        }
+
+        if ( 'postmeta.meta_value' === $sql_query['order_by_clause'] ) {
+            $sql_query['from_clause'] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$order_product_lookup_table}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
+        }
+
+        if ( isset( $query_args['order'] ) ) {
+            $sql_query['order_by_clause'] .= ' ' . $query_args['order'];
+        } else {
+            $sql_query['order_by_clause'] .= ' DESC';
+        }
+
+        return $sql_query;
+    }
+
 	/**
 	 * Updates the database query with parameters used for Products report: categories and order status.
 	 *
@@ -127,6 +155,9 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 		if ( 'date' === $order_by ) {
 			return $table_name . '.date_created';
 		}
+        if ( 'sku' === $order_by ) {
+            return 'postmeta.meta_value';
+        }
 
 		return $order_by;
 	}
