@@ -22,8 +22,10 @@ import { smallBreak, wideBreak } from './breakpoints';
  * @param {function} xScale - from `getXLineScale`
  * @returns {array} that includes the date, start (x position) and width to mode the mouseover rectangles
  */
-export const getDateSpaces = ( data, uniqueDates, visibleKeys, width, xScale ) =>
-	uniqueDates.map( ( d, i ) => {
+export const getDateSpaces = ( data, uniqueDates, visibleKeys, width, xScale ) => {
+	const reversedKeys = visibleKeys.slice().reverse();
+
+	return uniqueDates.map( ( d, i ) => {
 		const datapoints = first( data.filter( item => item.date === d ) );
 		const xNow = xScale( moment( d ).toDate() );
 		const xPrev =
@@ -41,7 +43,7 @@ export const getDateSpaces = ( data, uniqueDates, visibleKeys, width, xScale ) =
 			date: d,
 			start: uniqueDates.length > 1 ? xStart : 0,
 			width: uniqueDates.length > 1 ? xWidth : width,
-			values: visibleKeys.map( ( { key } ) => {
+			values: reversedKeys.map( ( { key } ) => {
 				const datapoint = datapoints[ key ];
 				if ( ! datapoint ) {
 					return null;
@@ -54,6 +56,7 @@ export const getDateSpaces = ( data, uniqueDates, visibleKeys, width, xScale ) =
 			} ).filter( Boolean ),
 		};
 	} );
+};
 
 /**
  * Describes getLine
@@ -101,8 +104,7 @@ export const drawLines = ( node, data, params, scales, formats, tooltip ) => {
 		.attr( 'class', 'line-g' )
 		.attr( 'role', 'region' )
 		.attr( 'aria-label', d => d.label || d.key );
-	const reversedKeys = params.visibleKeys.slice().reverse();
-	const dateSpaces = getDateSpaces( data, params.uniqueDates, reversedKeys, width, scales.xScale );
+	const dateSpaces = getDateSpaces( data, params.uniqueDates, params.visibleKeys, width, scales.xScale );
 
 	let lineStroke = width <= wideBreak || params.uniqueDates.length > 50 ? 2 : 3;
 	lineStroke = width <= smallBreak ? 1.25 : lineStroke;
