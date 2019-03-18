@@ -49,7 +49,7 @@ class WC_Admin_REST_Product_Variations_Controller extends WC_REST_Product_Variat
 
 		if ( ! empty( $request['search'] ) ) {
 			$args['search'] = $request['search'];
-			$args['s']      = false;
+			unset( $args['s'] );
 		}
 
 		return $args;
@@ -84,7 +84,7 @@ class WC_Admin_REST_Product_Variations_Controller extends WC_REST_Product_Variat
 
 		$search = trim( $wp_query->get( 'search' ) );
 		if ( $search && empty( $groupby ) ) {
-			$groupby .= $wpdb->posts . '.ID';
+			$groupby = $wpdb->posts . '.ID';
 		}
 		return $groupby;
 	}
