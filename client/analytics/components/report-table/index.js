@@ -50,7 +50,7 @@ class ReportTable extends Component {
 	}
 
 	filterShownHeaders( headers, hiddenKeys ) {
-		if ( ! hiddenKeys ) {
+		if ( ! hiddenKeys || ! hiddenKeys.length ) {
 			return headers;
 		}
 
