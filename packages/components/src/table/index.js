@@ -24,7 +24,7 @@ import { getIdsFromQuery, getSearchWords, updateQueryString } from '@woocommerce
  */
 import Card from '../card';
 import CompareButton from '../filters/compare/button';
-import DowloadIcon from './download-icon';
+import DownloadIcon from './download-icon';
 import EllipsisMenu from '../ellipsis-menu';
 import MenuItem from '../ellipsis-menu/menu-item';
 import MenuTitle from '../ellipsis-menu/menu-title';
@@ -317,7 +317,7 @@ class TableCard extends Component {
 							onClick={ this.onClickDownload }
 							isLink
 						>
-							<DowloadIcon />
+							<DownloadIcon />
 							<span className="woocommerce-table__download-button__label">
 								{ labels.downloadButton || __( 'Download', 'woocommerce-admin' ) }
 							</span>
