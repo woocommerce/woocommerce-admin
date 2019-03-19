@@ -46,7 +46,7 @@ class TableCard extends Component {
 	constructor( props ) {
 		super( props );
 		const { query, compareBy } = this.props;
-		const showCols = props.headers.map( ( { key, hiddenByDefault } ) => ! hiddenByDefault && key ).filter( Boolean );
+		const showCols = this.getShowCols( props.headers );
 		const selectedRows = query.filter ? getIdsFromQuery( query[ compareBy ] ) : [];
 
 		this.state = { showCols, selectedRows };
@@ -58,8 +58,8 @@ class TableCard extends Component {
 		this.selectAllRows = this.selectAllRows.bind( this );
 	}
 
-	componentDidUpdate( { headers: prevHeaders, isLoading: prevIsLoading, query: prevQuery } ) {
-		const { compareBy, headers, isLoading, onColumnsChange, query } = this.props;
+	componentDidUpdate( { headers: prevHeaders, query: prevQuery } ) {
+		const { compareBy, headers, onColumnsChange, query } = this.props;
 		const { showCols } = this.state;
 
 		if ( query.filter || prevQuery.filter ) {
@@ -73,10 +73,10 @@ class TableCard extends Component {
 				/* eslint-enable react/no-did-update-set-state */
 			}
 		}
-		if ( ! isLoading && prevIsLoading && ! isEqual( headers, prevHeaders ) ) {
+		if ( ! isEqual( prevHeaders, headers ) ) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
-				showCols: headers.map( ( { key, hiddenByDefault } ) => ! hiddenByDefault && key ).filter( Boolean ),
+				showCols: this.getShowCols( headers ),
 			} );
 			/* eslint-enable react/no-did-update-set-state */
 		}
@@ -89,6 +89,10 @@ class TableCard extends Component {
 			/* eslint-enable react/no-did-update-set-state */
 			onColumnsChange( newShowCols );
 		}
+	}
+
+	getShowCols( headers ) {
+		return headers.map( ( { key, hiddenByDefault } ) => ! hiddenByDefault && key ).filter( Boolean );
 	}
 
 	getVisibleHeaders() {
