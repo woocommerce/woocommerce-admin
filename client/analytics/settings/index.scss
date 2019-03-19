@@ -11,6 +11,10 @@
 		margin-left: 15%;
 	}
 
+	@include breakpoint( '<782px' ) {
+		margin-bottom: 40px;
+	}
+
 	button {
 		margin-right: $gap;
 	}
