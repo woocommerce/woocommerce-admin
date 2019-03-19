@@ -8,7 +8,6 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import { withDispatch } from '@wordpress/data';
-import withSelect from 'wc-api/with-select';
 
 /**
  * Internal dependencies
@@ -18,6 +17,7 @@ import ActivityHeader from '../activity-header';
 import { EmptyContent, Section } from '@woocommerce/components';
 import sanitizeHTML from 'lib/sanitize-html';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
+import withSelect from 'wc-api/with-select';
 
 class InboxPanel extends Component {
 	componentWillUnmount() {
