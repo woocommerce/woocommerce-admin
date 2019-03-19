@@ -73,7 +73,7 @@ class TableCard extends Component {
 				/* eslint-enable react/no-did-update-set-state */
 			}
 		}
-		if ( ! isEqual( prevHeaders, headers ) ) {
+		if ( ! isEqual( headers, prevHeaders ) ) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
 				showCols: this.getShowCols( headers ),
