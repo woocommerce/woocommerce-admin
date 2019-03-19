@@ -7,11 +7,11 @@
 }
 
 .woocommerce-settings__actions {
+	margin-bottom: $gap-largest;
+	
 	@include breakpoint( '>1280px' ) {
 		margin-left: 15%;
 	}
-
-		margin-bottom: $gap-largest;
 
 	button {
 		margin-right: $gap;
