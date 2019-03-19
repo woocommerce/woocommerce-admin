@@ -20,14 +20,7 @@ import sanitizeHTML from 'lib/sanitize-html';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 
 class InboxPanel extends Component {
-	constructor( props ) {
-		super( props );
-		this.state = {
-			lastRead: props.lastRead,
-		};
-	}
-
-	componentDidMount() {
+	componentWillUnmount() {
 		const userDataFields = {
 			[ 'activity_panel_inbox_last_read' ]: Date.now(),
 		};
@@ -35,8 +28,7 @@ class InboxPanel extends Component {
 	}
 
 	render() {
-		const { isError, isRequesting, notes } = this.props;
-		const { lastRead } = this.state;
+		const { isError, isRequesting, lastRead, notes } = this.props;
 
 		if ( isError ) {
 			const title = __(
