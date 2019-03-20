@@ -276,13 +276,13 @@ export default withSelect( select => {
 
 	const notesQuery = {
 		page: 1,
-		per_page: 3,
+		per_page: 1,
 	};
 
 	const latestNote = getNotes( notesQuery );
 	const unreadNotes =
-		! getNotesError &&
-		! isGetNotesRequesting &&
+		! Boolean( getNotesError( notesQuery ) ) &&
+		! isGetNotesRequesting( notesQuery ) &&
 		latestNote[ 0 ] &&
 		new Date( latestNote[ 0 ].date_created ).getTime() > userData.activity_panel_inbox_last_read;
 
