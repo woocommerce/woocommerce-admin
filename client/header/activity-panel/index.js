@@ -305,11 +305,11 @@ export default withSelect( select => {
 	if ( 'yes' === wcSettings.reviewsEnabled ) {
 		const reviewsQuery = {
 			order: 'desc',
-			orderby: 'date',
+			orderby: 'date_gmt',
 			page: 1,
 			per_page: 1,
 		};
-		const latestReview = getReviews( reviewsQuery );
+		const reviews = getReviews( reviewsQuery );
 		const totalReviews = getReviewsTotalCount( reviewsQuery );
 		const isReviewsError = Boolean( getReviewsError( reviewsQuery ) );
 		const isReviewsRequesting = isGetReviewsRequesting( reviewsQuery );
@@ -317,8 +317,9 @@ export default withSelect( select => {
 		if ( ! isReviewsError && ! isReviewsRequesting ) {
 			numberOfReviews = totalReviews;
 			unreadReviews =
-				latestReview[ 0 ] &&
-				new Date( latestReview[ 0 ].date_created ).getTime() >
+				reviews.length &&
+				reviews[ 0 ] &&
+				new Date( reviews[ 0 ].date_created_gmt + 'Z' ).getTime() >
 					userData.activity_panel_reviews_last_read;
 		}
 	}
