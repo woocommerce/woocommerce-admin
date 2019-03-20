@@ -123,11 +123,11 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 	},
 	{
 		name: 'woocommerce_clear_pending_jobs',
-		label: __( 'Analytics jobs:', 'wc-admin' ),
+		label: __( 'Pending analytics actions:', 'wc-admin' ),
 		inputType: 'button',
-		inputText: __( 'Clear analytics jobs', 'wc-admin' ),
+		inputText: __( 'Clear actions', 'wc-admin' ),
 		helpText: __(
-			'This tool will cancel all pending jobs queued for building analytics report data.',
+			'This tool will cancel all pending actions queued for building analytics report data.',
 			'wc-admin'
 		),
 		callback: ( resolve, reject, addNotice ) => {
