@@ -44,8 +44,9 @@ class WC_Admin_REST_Tax_Classes_Controller extends WC_REST_Tax_Classes_Controlle
 			'slug' => sanitize_title( $request['slug'] ),
 			'name' => '',
 		);
-		$classes = WC_Tax::get_tax_classes();
-		$deleted = false;
+
+		$classes  = WC_Tax::get_tax_classes();
+		$deleted  = false;
 
 		foreach ( $classes as $key => $class ) {
 			if ( sanitize_title( $class ) === $tax_class['slug'] ) {
@@ -59,6 +60,9 @@ class WC_Admin_REST_Tax_Classes_Controller extends WC_REST_Tax_Classes_Controlle
 		if ( ! $deleted ) {
 			return new WP_Error( 'woocommerce_rest_invalid_id', __( 'Invalid resource id.', 'woocommerce' ), array( 'status' => 400 ) );
 		}
+
+		$request->set_param( 'context', 'edit' );
+		$previous = $this->prepare_item_for_response( $tax_class, $request );
 
 		update_option( 'woocommerce_tax_classes', implode( "\n", $classes ) );
 
@@ -75,8 +79,13 @@ class WC_Admin_REST_Tax_Classes_Controller extends WC_REST_Tax_Classes_Controlle
 		// Delete tax rates in the selected class.
 		$wpdb->delete( $wpdb->prefix . 'woocommerce_tax_rates', array( 'tax_rate_class' => $tax_class['slug'] ), array( '%s' ) );
 
-		$request->set_param( 'context', 'edit' );
-		$response = $this->prepare_item_for_response( $tax_class, $request );
+		$response = new WP_REST_Response();
+		$response->set_data(
+			array(
+				'deleted'  => true,
+				'previous' => $previous->get_data(),
+			)
+		);
 
 		/**
 		 * Fires after a tax class is deleted via the REST API.

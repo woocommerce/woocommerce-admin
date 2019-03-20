@@ -39,6 +39,11 @@ class WC_Admin_REST_Shipping_Zone_Methods_Controller extends WC_REST_Shipping_Zo
 		$instance_id = (int) $request['instance_id'];
 		$force       = $request['force'];
 
+		// We don't support trashing for this type, error out.
+		if ( ! $force ) {
+			return new WP_Error( 'rest_trash_not_supported', __( 'Shipping methods do not support trashing.', 'woocommerce' ), array( 'status' => 501 ) );
+		}
+
 		$methods = $zone->get_shipping_methods();
 		$method  = false;
 
@@ -59,14 +64,18 @@ class WC_Admin_REST_Shipping_Zone_Methods_Controller extends WC_REST_Shipping_Zo
 		}
 
 		$request->set_param( 'context', 'view' );
-		$response = $this->prepare_item_for_response( $method, $request );
+		$previous = $this->prepare_item_for_response( $method, $request );
 
 		// Actually delete.
-		if ( $force ) {
-			$zone->delete_shipping_method( $instance_id );
-		} else {
-			return new WP_Error( 'rest_trash_not_supported', __( 'Shipping methods do not support trashing.', 'woocommerce' ), array( 'status' => 501 ) );
-		}
+		$zone->delete_shipping_method( $instance_id );
+
+		$response = new WP_REST_Response();
+		$response->set_data(
+			array(
+				'deleted'  => true,
+				'previous' => $previous,
+			)
+		);
 
 		/**
 		 * Fires after a product review is deleted via the REST API.

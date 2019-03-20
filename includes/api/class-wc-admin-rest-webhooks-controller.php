@@ -46,13 +46,21 @@ class WC_Admin_REST_Webhooks_Controller extends WC_REST_Webhooks_Controller {
 		}
 
 		$request->set_param( 'context', 'edit' );
-		$response = $this->prepare_item_for_response( $webhook, $request );
+		$previous = $this->prepare_item_for_response( $webhook, $request );
 		$result   = $webhook->delete( true );
 
 		if ( ! $result ) {
 			/* translators: %s: post type */
 			return new WP_Error( 'woocommerce_rest_cannot_delete', sprintf( __( 'The %s cannot be deleted.', 'woocommerce' ), $this->post_type ), array( 'status' => 500 ) );
 		}
+
+		$response = new WP_REST_Response();
+		$response->set_data(
+			array(
+				'deleted'  => true,
+				'previous' => $previous->get_data(),
+			)
+		);
 
 		/**
 		 * Fires after a single item is deleted or trashed via the REST API.
