@@ -20,7 +20,15 @@ if ( ! defined( 'WC_ADMIN_APP' ) ) {
 }
 
 if ( ! defined( 'WC_ADMIN_ABSPATH' ) ) {
-	define( 'WC_ADMIN_ABSPATH', dirname( __FILE__ ) );
+	define( 'WC_ADMIN_ABSPATH', dirname( __FILE__ ) . '/' );
+}
+
+if ( ! defined( 'WC_ADMIN_DIST_JS_FOLDER' ) ) {
+	define( 'WC_ADMIN_DIST_JS_FOLDER', 'dist/' );
+}
+
+if ( ! defined( 'WC_ADMIN_DIST_CSS_FOLDER' ) ) {
+	define( 'WC_ADMIN_DIST_CSS_FOLDER', 'dist/' );
 }
 
 if ( ! defined( 'WC_ADMIN_PLUGIN_FILE' ) ) {
@@ -30,6 +38,22 @@ if ( ! defined( 'WC_ADMIN_PLUGIN_FILE' ) ) {
 if ( ! defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
 	define( 'WC_ADMIN_VERSION_NUMBER', '0.10.0' );
 }
+
+/**
+ * Removes core hooks in favor of our local feature plugin handlers.
+ */
+function wc_admin_initialize() {
+	remove_action( 'admin_init', array( 'WC_Admin_Library', 'load_features' ) );
+	remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'register_scripts' ) );
+	remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'load_scripts' ), 15 );
+	remove_action( 'woocommerce_components_settings', array( 'WC_Admin_Library', 'add_component_settings' ) );
+	remove_filter( 'admin_body_class', array( 'WC_Admin_Library', 'add_admin_body_classes' ) );
+	remove_action( 'admin_menu', array( 'WC_Admin_Library', 'register_page_handler' ) );
+	remove_filter( 'admin_title', array( 'WC_Admin_Library', 'update_admin_title' ) );
+
+	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-loader.php';
+}
+add_action( 'woocommerce_loaded', 'wc_admin_initialize' );
 
 /**
  * Notify users of the plugin requirements.
@@ -149,19 +173,16 @@ function wc_admin_plugins_loaded() {
 		return;
 	}
 
-	if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
-		require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
-	}
-
 	// Initialize the WC API extensions.
 	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-reports-sync.php';
 	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-install.php';
 	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-api-init.php';
 
-	// Some common utilities.
+	// @todo This file is related to the Activity Panel feature, and could be moved to a specific folder/class loader.
 	require_once WC_ADMIN_ABSPATH . '/lib/common.php';
 
 	// Admin note providers.
+	// @todo These should be moved to an individual feature folder.
 	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-new-sales-record.php';
 	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-mobile-app.php';
 	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-settings-notes.php';
@@ -175,13 +196,24 @@ function wc_admin_plugins_loaded() {
 		return;
 	}
 
-	// Register script files.
-	require_once WC_ADMIN_ABSPATH . '/lib/client-assets.php';
-
 	// Create the Admin pages.
+	// @todo This file is related to the analytics and dashboard features, and could be moved to a specific folder/class loader.
 	require_once WC_ADMIN_ABSPATH . '/lib/admin.php';
 }
 add_action( 'plugins_loaded', 'wc_admin_plugins_loaded' );
+
+/**
+ * Overwrites the allowed features array using a local `feature-config.php` file.
+ *
+ * @param array $features Array of feature slugs.
+ */
+function wc_admin_overwrite_features( $features ) {
+	require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
+	$feature_config = wc_admin_get_feature_config();
+	$features       = array_keys( array_filter( $feature_config ) );
+	return $features;
+}
+add_filter( 'woocommerce_admin_features', 'wc_admin_overwrite_features' );
 
 /**
  * Things to do after WooCommerce updates.
@@ -219,3 +251,45 @@ function wc_admin_set_actionscheduler_store_class( $store_class ) {
 
 // Hook up our modified ActionScheduler Store.
 add_filter( 'action_scheduler_store_class', 'wc_admin_set_actionscheduler_store_class' );
+
+/**
+ * Load plugin text domain for translations.
+ */
+function wc_admin_load_plugin_textdomain() {
+	load_plugin_textdomain( 'woocommerce-admin', false, basename( dirname( __FILE__ ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'wc_admin_load_plugin_textdomain' );
+
+/**
+ * Format a number using the decimal and thousands separator settings in WooCommerce.
+ *
+ * @param mixed $number Number to be formatted.
+ * @return string
+ */
+function wc_admin_number_format( $number ) {
+	$currency_settings = WC_Admin_Loader::get_currency_settings();
+	return number_format(
+		$number,
+		0,
+		$currency_settings['decimal_separator'],
+		$currency_settings['thousand_separator']
+	);
+}
+
+/**
+ * Retrieves a URL to relative path inside WooCommerce admin with
+ * the provided query parameters.
+ *
+ * @param  string $path Relative path of the desired page.
+ * @param  array  $query Query parameters to append to the path.
+ *
+ * @return string       Fully qualified URL pointing to the desired path.
+ */
+function wc_admin_url( $path, $query = array() ) {
+	if ( ! empty( $query ) ) {
+		$query_string = http_build_query( $query );
+		$path         = $path . '?' . $query_string;
+	}
+
+	return admin_url( 'admin.php?page=wc-admin#' . $path, dirname( __FILE__ ) );
+}
