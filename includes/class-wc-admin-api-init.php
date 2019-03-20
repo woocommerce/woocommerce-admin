@@ -106,7 +106,9 @@ class WC_Admin_Api_Init {
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-data-countries-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-data-download-ips-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-orders-controller.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-order-notes-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-products-controller.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-product-attributes-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-product-categories-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-product-variations-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-product-reviews-controller.php';
@@ -133,7 +135,11 @@ class WC_Admin_Api_Init {
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-reports-taxes-stats-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-reports-stock-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-reports-stock-stats-controller.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-shipping-zone-methods-controller.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-shipping-zones-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-taxes-controller.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-tax-classes-controller.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-webhooks-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-customers-controller.php';
 
 		$controllers = apply_filters(
@@ -146,7 +152,9 @@ class WC_Admin_Api_Init {
 				'WC_Admin_REST_Data_Countries_Controller',
 				'WC_Admin_REST_Data_Download_Ips_Controller',
 				'WC_Admin_REST_Orders_Controller',
+				'WC_Admin_REST_Order_Notes_Controller',
 				'WC_Admin_REST_Products_Controller',
+				'WC_Admin_REST_Product_Attributes_Controller',
 				'WC_Admin_REST_Product_Categories_Controller',
 				'WC_Admin_REST_Product_Variations_Controller',
 				'WC_Admin_REST_Product_Reviews_Controller',
@@ -171,7 +179,11 @@ class WC_Admin_Api_Init {
 				'WC_Admin_REST_Reports_Downloads_Stats_Controller',
 				'WC_Admin_REST_Reports_Customers_Controller',
 				'WC_Admin_REST_Reports_Customers_Stats_Controller',
+				'WC_Admin_REST_Shipping_Zone_Methods_Controller',
+				'WC_Admin_REST_Shipping_Zones_Controller',
 				'WC_Admin_REST_Taxes_Controller',
+				'WC_Admin_REST_Tax_Classes_Controller',
+				'WC_Admin_REST_Webhooks_Controller',
 			)
 		);
 
