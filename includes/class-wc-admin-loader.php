@@ -337,7 +337,7 @@ class WC_Admin_Loader {
 	 * @todo move to activity panel code?
 	 */
 	public static function inject_before_notices() {
-		if ( ( ! self::is_admin_page() && ! self::is_embed_page() ) || ! Wself::is_feature_enabled( 'activity-panels' ) ) {
+		if ( ( ! self::is_admin_page() && ! self::is_embed_page() ) || ! self::is_feature_enabled( 'activity-panels' ) ) {
 			return;
 		}
 		echo '<div class="woocommerce-layout__notice-list-hide" id="wp__notice-list">';
@@ -403,6 +403,7 @@ class WC_Admin_Loader {
 	 * @return array Array of component settings.
 	 */
 	public static function add_component_settings( $settings ) {
+		// @todo Some of these component settings should be added by feature specific code.
 		$preload_data_endpoints = array(
 			'countries'             => '/wc/v4/data/countries',
 			'performanceIndicators' => '/wc/v4/reports/performance-indicators/allowed',
