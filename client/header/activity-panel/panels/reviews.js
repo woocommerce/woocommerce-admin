@@ -197,12 +197,14 @@ ReviewsPanel.propTypes = {
 	reviews: PropTypes.array.isRequired,
 	isError: PropTypes.bool,
 	isRequesting: PropTypes.bool,
+	numberOfReviews: PropTypes.number,
 };
 
 ReviewsPanel.defaultProps = {
 	reviews: [],
 	isError: false,
 	isRequesting: false,
+	numberOfReviews: 0,
 };
 
 export default compose(
