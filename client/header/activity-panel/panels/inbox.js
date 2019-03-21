@@ -20,9 +20,14 @@ import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 
 class InboxPanel extends Component {
+	constructor( props ) {
+		super( props );
+		this.mountTime = Date.now();
+	}
+
 	componentWillUnmount() {
 		const userDataFields = {
-			[ 'activity_panel_inbox_last_read' ]: Date.now(),
+			[ 'activity_panel_inbox_last_read' ]: this.mountTime,
 		};
 		this.props.updateCurrentUserData( userDataFields );
 	}
