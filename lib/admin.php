@@ -148,13 +148,15 @@ function wc_admin_register_pages() {
 			)
 		);
 
-		wc_admin_register_page(
-			array(
-				'title'  => __( 'Stock', 'woocommerce-admin' ),
-				'parent' => '/analytics/revenue',
-				'path'   => '/analytics/stock',
-			)
-		);
+		if ( 'yes' === get_option( 'woocommerce_manage_stock' ) ) {
+			wc_admin_register_page(
+				array(
+					'title'  => __( 'Stock', 'woocommerce-admin' ),
+					'parent' => '/analytics/revenue',
+					'path'   => '/analytics/stock',
+				)
+			);
+		}
 
 		wc_admin_register_page(
 			array(
@@ -447,6 +449,7 @@ function wc_admin_get_user_data_fields() {
 		'dashboard_chart_interval',
 		'dashboard_leaderboards',
 		'dashboard_leaderboard_rows',
+		'activity_panel_inbox_last_read',
 		'activity_panel_reviews_last_read',
 	);
 

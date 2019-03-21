@@ -92,13 +92,13 @@ class ActivityPanel extends Component {
 
 	// @todo Pull in dynamic unread status/count
 	getTabs() {
-		const { unreadOrders, unreadReviews } = this.props;
+		const { unreadNotes, unreadOrders, unreadReviews } = this.props;
 		return [
 			{
 				name: 'inbox',
 				title: __( 'Inbox', 'woocommerce-admin' ),
 				icon: <Gridicon icon="mail" />,
-				unread: true,
+				unread: unreadNotes,
 			},
 			{
 				name: 'orders',
@@ -106,12 +106,14 @@ class ActivityPanel extends Component {
 				icon: <Gridicon icon="pages" />,
 				unread: unreadOrders,
 			},
-			{
-				name: 'stock',
-				title: __( 'Stock', 'woocommerce-admin' ),
-				icon: <Gridicon icon="clipboard" />,
-				unread: false,
-			},
+			'yes' === wcSettings.manageStock
+				? {
+						name: 'stock',
+						title: __( 'Stock', 'woocommerce-admin' ),
+						icon: <Gridicon icon="clipboard" />,
+						unread: false,
+					}
+				: null,
 			'yes' === wcSettings.reviewsEnabled
 				? {
 						name: 'reviews',
@@ -263,8 +265,11 @@ class ActivityPanel extends Component {
 export default withSelect( select => {
 	const {
 		getCurrentUserData,
+		getNotes,
+		getNotesError,
 		getReportItems,
 		getReportItemsError,
+		isGetNotesRequesting,
 		isReportItemsRequesting,
 		getReviews,
 		getReviewsTotalCount,
@@ -276,6 +281,19 @@ export default withSelect( select => {
 		'processing',
 		'on-hold',
 	];
+
+	const notesQuery = {
+		page: 1,
+		per_page: 1,
+	};
+
+	const latestNote = getNotes( notesQuery );
+	const unreadNotes =
+		! Boolean( getNotesError( notesQuery ) ) &&
+		! isGetNotesRequesting( notesQuery ) &&
+		latestNote[ 0 ] &&
+		new Date( latestNote[ 0 ].date_created_gmt ).getTime() >
+			userData.activity_panel_inbox_last_read;
 
 	let unreadOrders = null;
 	if ( ! orderStatuses.length ) {
@@ -324,5 +342,5 @@ export default withSelect( select => {
 		}
 	}
 
-	return { unreadOrders, unreadReviews, numberOfReviews };
+	return { unreadNotes, unreadOrders, unreadReviews, numberOfReviews };
 } )( clickOutside( ActivityPanel ) );
