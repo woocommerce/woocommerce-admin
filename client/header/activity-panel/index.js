@@ -15,6 +15,7 @@ import { partial, uniqueId, find } from 'lodash';
  */
 import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
+import { DEFAULT_REVIEW_STATUSES } from 'wc-api/constants';
 import { H, Section } from '@woocommerce/components';
 import InboxPanel from './panels/inbox';
 import OrdersPanel from './panels/orders';
@@ -326,6 +327,7 @@ export default withSelect( select => {
 			orderby: 'date_gmt',
 			page: 1,
 			per_page: 1,
+			status: DEFAULT_REVIEW_STATUSES,
 		};
 		const reviews = getReviews( reviewsQuery );
 		const totalReviews = getReviewsTotalCount( reviewsQuery );
