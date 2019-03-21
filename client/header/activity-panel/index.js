@@ -260,13 +260,14 @@ class ActivityPanel extends Component {
 }
 
 export default withSelect( select => {
-	const { getCurrentUserData,
+	const {
+		getCurrentUserData,
 		getNotes,
 		getNotesError,
 		getReportItems,
 		getReportItemsError,
 		isGetNotesRequesting,
-		isReportItemsRequesting
+		isReportItemsRequesting,
 	} = select( 'wc-api' );
 	const orderStatuses = wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses || [
 		'processing',
