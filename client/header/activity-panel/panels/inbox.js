@@ -90,7 +90,7 @@ class InboxPanel extends Component {
 								title={ note.title }
 								date={ note.date_created }
 								icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
-								unread={ ! lastRead || new Date( note.date_created ).getTime() > lastRead }
+								unread={ ! lastRead || new Date( note.date_created_gmt ).getTime() > lastRead }
 								actions={ getButtonsFromActions( note.actions ) }
 							>
 								<span dangerouslySetInnerHTML={ sanitizeHTML( note.content ) } />

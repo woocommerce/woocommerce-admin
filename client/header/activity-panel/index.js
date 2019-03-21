@@ -284,7 +284,8 @@ export default withSelect( select => {
 		! Boolean( getNotesError( notesQuery ) ) &&
 		! isGetNotesRequesting( notesQuery ) &&
 		latestNote[ 0 ] &&
-		new Date( latestNote[ 0 ].date_created ).getTime() > userData.activity_panel_inbox_last_read;
+		new Date( latestNote[ 0 ].date_created_gmt ).getTime() >
+			userData.activity_panel_inbox_last_read;
 
 	if ( ! orderStatuses.length ) {
 		return { unreadNotes, unreadOrders: false };
