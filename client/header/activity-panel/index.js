@@ -336,7 +336,7 @@ export default withSelect( select => {
 			numberOfReviews = totalReviews;
 			unreadReviews =
 				reviews.length &&
-				reviews[ 0 ] &&
+				reviews[ 0 ].date_created_gmt &&
 				new Date( reviews[ 0 ].date_created_gmt + 'Z' ).getTime() >
 					userData.activity_panel_reviews_last_read;
 		}

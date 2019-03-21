@@ -125,10 +125,18 @@ class ReviewsPanel extends Component {
 				key={ review.id }
 				title={ title }
 				subtitle={ subtitle }
-				date={ moment( review.date_created_gmt + 'Z' ).format( 'YYYY-MM-DDTH:mm:ss' ) }
+				date={
+					review.date_created_gmt
+						? moment( review.date_created_gmt + 'Z' ).format( 'YYYY-MM-DDTH:mm:ss' )
+						: null
+				}
 				icon={ icon }
 				actions={ cardActions() }
-				unread={ ! lastRead || new Date( review.date_created_gmt + 'Z' ).getTime() > lastRead }
+				unread={
+					! lastRead ||
+					! review.date_created_gmt ||
+					new Date( review.date_created_gmt + 'Z' ).getTime() > lastRead
+				}
 			>
 				<span dangerouslySetInnerHTML={ sanitizeHTML( review.review ) } />
 			</ActivityCard>
