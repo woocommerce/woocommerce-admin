@@ -34,7 +34,7 @@ export class TopCustomers extends Component {
                 key: 'name',
                 required: true,
                 isLeftAligned: true,
-                isSortable: true,
+                isSortable: false,
             },
             {
                 label: __( 'Orders', 'woocommerce-admin' ),
@@ -57,40 +57,26 @@ export class TopCustomers extends Component {
         const { query } = this.props;
         const persistedQuery = getPersistedQuery( query );
         return map( data, row => {
-            //const { amount, coupon_id, extended_info, orders_count } = row;
-            const { id, total_spend, name, orders_count, avg_order_value, user_id } = row;
-            console.log(row);
-            //const { code } = extended_info;
+            const { id, total_spend, name, orders_count } = row;
 
             const customerUrl = getNewPath( persistedQuery, 'analytics/customers', {
-                // filter: 'single_',
-                // coupons: coupon_id,
-                search: 'name',
+                filter: 'single_customer',
+                customers: id,
             } );
             const customerLink = (
                 <Link href={ customerUrl } type="wc-admin">
-                { name }
+                    { name }
                 </Link>
-        );
+            );
 
-            const ordersUrl = getNewPath( persistedQuery, 'analytics/orders', {
-                filter: 'advanced',
-                customer_id: user_id,
-               // coupon_includes: coupon_id,
-            } );
-            const ordersLink = (
-                <Link href={ ordersUrl } type="wc-admin">
-                { numberFormat( orders_count ) }
-                </Link>
-        );
             return [
                 {
                     display: customerLink,
                     value: name,
                 },
                 {
-                    display: ordersLink,
-                    value: orders_count,
+                    display: orders_count,
+                    value: numberFormat( orders_count ),
                 },
                 {
                     display: formatCurrency( total_spend ),
@@ -111,14 +97,14 @@ export class TopCustomers extends Component {
 
         return (
             <Leaderboard
-        endpoint="customers"
-        getHeadersContent={ this.getHeadersContent }
-        getRowsContent={ this.getRowsContent }
-        query={ query }
-        tableQuery={ tableQuery }
-        title={ __( 'Top Customers', 'woocommerce-admin' ) }
-        />
-    );
+                endpoint="customers"
+                getHeadersContent={ this.getHeadersContent }
+                getRowsContent={ this.getRowsContent }
+                query={ query }
+                tableQuery={ tableQuery }
+                title={ __( 'Top Customers', 'woocommerce-admin' ) }
+             />
+        );
     }
 }
 
