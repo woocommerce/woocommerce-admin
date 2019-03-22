@@ -12,13 +12,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class WC_Admin_Install {
 	/**
-	 * Plugin version.
-	 *
-	 * @todo get this dynamically?
-	 */
-	const VERSION_NUMBER = '0.8.0';
-
-	/**
 	 * Plugin version option name.
 	 */
 	const VERSION_OPTION = 'wc_admin_version';
@@ -34,7 +27,7 @@ class WC_Admin_Install {
 	 * Hook in tabs.
 	 */
 	public static function init() {
-		add_action( 'init', array( __CLASS__, 'check_version' ), 5 );
+		add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
 		add_filter( 'wpmu_drop_tables', array( __CLASS__, 'wpmu_drop_tables' ) );
 
 		// Add wc-admin report tables to list of WooCommerce tables.
@@ -49,11 +42,21 @@ class WC_Admin_Install {
 	public static function check_version() {
 		if (
 			! defined( 'IFRAME_REQUEST' ) &&
-			version_compare( get_option( self::VERSION_OPTION ), self::VERSION_NUMBER, '<' )
+			version_compare( get_option( self::VERSION_OPTION ), self::get_version_number(), '<' )
 		) {
 			self::install();
 			do_action( 'wc_admin_updated' );
 		}
+	}
+
+	/**
+	 * Get the version number of the plugin from plugin data.
+	 *
+	 * @return string
+	 */
+	public static function get_version_number() {
+		$plugin_data = get_plugin_data( WC_ADMIN_PLUGIN_FILE );
+		return $plugin_data['Version'];
 	}
 
 	/**
@@ -260,7 +263,7 @@ class WC_Admin_Install {
 	 */
 	private static function update_wc_admin_version() {
 		delete_option( self::VERSION_OPTION );
-		add_option( self::VERSION_OPTION, self::VERSION_NUMBER );
+		add_option( self::VERSION_OPTION, self::get_version_number() );
 	}
 }
 
