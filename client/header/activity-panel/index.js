@@ -15,7 +15,7 @@ import { partial, uniqueId, find } from 'lodash';
  */
 import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
-import { DEFAULT_REVIEW_STATUSES } from 'wc-api/constants';
+import { DEFAULT_ACTIONABLE_STATUSES, DEFAULT_REVIEW_STATUSES } from 'wc-api/constants';
 import { H, Section } from '@woocommerce/components';
 import InboxPanel from './panels/inbox';
 import OrdersPanel from './panels/orders';
@@ -278,10 +278,8 @@ export default withSelect( select => {
 		isGetReviewsRequesting,
 	} = select( 'wc-api' );
 	const userData = getCurrentUserData();
-	const orderStatuses = wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses || [
-		'processing',
-		'on-hold',
-	];
+	const orderStatuses =
+		wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses || DEFAULT_ACTIONABLE_STATUSES;
 
 	const notesQuery = {
 		page: 1,
