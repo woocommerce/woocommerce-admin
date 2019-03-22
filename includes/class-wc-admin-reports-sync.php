@@ -144,9 +144,9 @@ class WC_Admin_Reports_Sync {
 					'callback' => array( __CLASS__, 'regenerate_report_data' ),
 				),
 				'clear_analytics_jobs' => array(
-					'name'     => __( 'Analytics jobs', 'wc-admin' ),
-					'button'   => __( 'Clear analytics jobs', 'wc-admin' ),
-					'desc'     => __( 'This tool will clear all background analytics jobs.', 'wc-admin' ),
+					'name'     => __( 'Pending analytics actions', 'wc-admin' ),
+					'button'   => __( 'Clear actions', 'wc-admin' ),
+					'desc'     => __( 'This tool will cancel all pending actions queued for building analytics report data.', 'wc-admin' ),
 					'callback' => array( __CLASS__, 'clear_queued_actions' ),
 				),
 			)
