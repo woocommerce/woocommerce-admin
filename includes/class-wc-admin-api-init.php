@@ -92,7 +92,7 @@ class WC_Admin_Api_Init {
 		require_once WC_ADMIN_ABSPATH . '/includes/data-stores/class-wc-admin-notes-data-store.php';
 
 		// CRUD classes.
-		require_once WC_ADMIN_ABSPATH . '/includes/note/class-wc-admin-note.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-note.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes.php';
 	}
 
