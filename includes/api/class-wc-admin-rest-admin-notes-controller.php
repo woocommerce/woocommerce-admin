@@ -344,9 +344,13 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		);
 		$params['type']     = array(
 			'description'       => __( 'Type of note.', 'woocommerce-admin' ),
-			'type'              => 'string',
-			'enum'              => WC_Admin_Note::get_allowed_types(),
+			'type'              => 'array',
+			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
+			'items'             => array(
+				'enum' => WC_Admin_Note::get_allowed_types(),
+				'type' => 'string',
+			),
 		);
 		$params['status']   = array(
 			'description'       => __( 'Status of note.', 'woocommerce-admin' ),
