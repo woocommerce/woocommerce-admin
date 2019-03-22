@@ -46,6 +46,8 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 		'dashboard_chart_interval',
 		'dashboard_leaderboards',
 		'dashboard_leaderboard_rows',
+		'activity_panel_inbox_last_read',
+		'activity_panel_reviews_last_read',
 	];
 
 	if ( resourceNames.includes( resourceName ) ) {
