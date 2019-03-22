@@ -42,29 +42,4 @@ class WC_Admin_REST_System_Status_Tools_Controller extends WC_REST_System_Status
 			)
 		);
 	}
-
-	/**
-	 * Actually executes a tool.
-	 *
-	 * @param  string $tool Tool.
-	 * @return array
-	 */
-	public function execute_tool( $tool ) {
-		$ran     = true;
-		$message = '';
-
-		switch ( $tool ) {
-			case 'rebuild_stats':
-				WC_Admin_Api_Init::regenerate_report_data();
-				$message = __( 'Rebuilding reports data in the background . . .', 'wc-admin' );
-				break;
-			default:
-				return parent::execute_tool( $tool );
-		}
-
-		return array(
-			'success' => $ran,
-			'message' => $message,
-		);
-	}
 }
