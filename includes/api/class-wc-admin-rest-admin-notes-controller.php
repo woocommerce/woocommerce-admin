@@ -108,20 +108,43 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$per_page = isset( $request['per_page'] ) ? intval( $request['per_page'] ) : 10;
-		if ( $per_page <= 0 ) {
-			$per_page = 10;
+		$query_args = $this->prepare_objects_query( $request );
+
+		$notes = WC_Admin_Notes::get_notes( 'edit', $query_args );
+
+		$data = array();
+		foreach ( (array) $notes as $note_obj ) {
+			$note   = $this->prepare_item_for_response( $note_obj, $request );
+			$note   = $this->prepare_response_for_collection( $note );
+			$data[] = $note;
 		}
 
-		$page = isset( $request['page'] ) ? intval( $request['page'] ) : 1;
+		$response = rest_ensure_response( $data );
+		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( $type, $status ) );
+
+		return $response;
+	}
+
+	/**
+	 * Prepare objects query.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return array
+	 */
+	protected function prepare_objects_query( $request ) {
+		$args            = array();
+		$args['order']   = $request['order'];
+		$args['orderby'] = $request['orderby'];
+
+		$args['per_page'] = isset( $request['per_page'] ) ? intval( $request['per_page'] ) : 10;
+		if ( $args['per_page'] <= 0 ) {
+			$args['per_page'] = 10;
+		}
+
+		$args['page'] = isset( $request['page'] ) ? intval( $request['page'] ) : 1;
 		if ( $page <= 0 ) {
-			$page = 1;
+			$args['page'] = 1;
 		}
-
-		$args = array(
-			'per_page' => $per_page,
-			'page'     => $page,
-		);
 
 		$type = isset( $request['type'] ) ? $request['type'] : '';
 		$type = sanitize_text_field( $type );
@@ -135,19 +158,18 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 			$args['status'] = $status;
 		}
 
-		$notes = WC_Admin_Notes::get_notes( 'edit', $args );
+		/**
+		 * Filter the query arguments for a request.
+		 *
+		 * Enables adding extra arguments or setting defaults for a post
+		 * collection request.
+		 *
+		 * @param array           $args    Key value array of query var to query value.
+		 * @param WP_REST_Request $request The request used.
+		 */
+		$args = apply_filters( 'woocommerce_rest_admin_notes_object_query', $args, $request );
 
-		$data = array();
-		foreach ( (array) $notes as $note_obj ) {
-			$note   = $this->prepare_item_for_response( $note_obj, $request );
-			$note   = $this->prepare_response_for_collection( $note );
-			$data[] = $note;
-		}
-
-		$response = rest_ensure_response( $data );
-		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( $type, $status ) );
-
-		return $response;
+		return $args;
 	}
 
 	/**
@@ -300,15 +322,32 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 	 * @return array
 	 */
 	public function get_collection_params() {
-		$params            = array();
-		$params['context'] = $this->get_context_param( array( 'default' => 'view' ) );
-		$params['type']    = array(
+		$params             = array();
+		$params['context']  = $this->get_context_param( array( 'default' => 'view' ) );
+		$params['page']     = array(
+			'description'       => __( 'Current page of the collection.', 'woocommerce-admin' ),
+			'type'              => 'integer',
+			'default'           => 1,
+			'sanitize_callback' => 'absint',
+			'validate_callback' => 'rest_validate_request_arg',
+			'minimum'           => 1,
+		);
+		$params['per_page'] = array(
+			'description'       => __( 'Maximum number of items to be returned in result set.', 'woocommerce-admin' ),
+			'type'              => 'integer',
+			'default'           => 10,
+			'minimum'           => 1,
+			'maximum'           => 100,
+			'sanitize_callback' => 'absint',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['type']     = array(
 			'description'       => __( 'Type of note.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'enum'              => WC_Admin_Note::get_allowed_types(),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['status']  = array(
+		$params['status']   = array(
 			'description'       => __( 'Status of note.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'enum'              => WC_Admin_Note::get_allowed_statuses(),
