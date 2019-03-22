@@ -81,7 +81,7 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 		$args = parent::prepare_objects_query( $request );
 
 		if ( ! empty( $request['search'] ) ) {
-			$args['search'] = $request['search'];
+			$args['search'] = trim( $request['search'] );
 			unset( $args['s'] );
 		}
 		if ( ! empty( $request['low_in_stock'] ) ) {
@@ -118,7 +118,7 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 	public static function add_wp_query_filter( $where, $wp_query ) {
 		global $wpdb;
 
-		$search = trim( $wp_query->get( 'search' ) );
+		$search = $wp_query->get( 'search' );
 		if ( $search ) {
 			$search = $wpdb->esc_like( $search );
 			$search = "'%" . $search . "%'";
@@ -151,7 +151,7 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 	public static function add_wp_query_join( $join, $wp_query ) {
 		global $wpdb;
 
-		$search = trim( $wp_query->get( 'search' ) );
+		$search = $wp_query->get( 'search' );
 		if ( $search && wc_product_sku_enabled() ) {
 			$join .= " INNER JOIN {$wpdb->postmeta} AS ps_post_meta ON ps_post_meta.post_id = {$wpdb->posts}.ID";
 		}
@@ -175,7 +175,7 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 	public function add_wp_query_group_by( $groupby, $wp_query ) {
 		global $wpdb;
 
-		$search       = trim( $wp_query->get( 'search' ) );
+		$search       = $wp_query->get( 'search' );
 		$low_in_stock = $wp_query->get( 'low_in_stock' );
 		if ( empty( $groupby ) && ( $search || $low_in_stock ) ) {
 			$groupby = $wpdb->posts . '.ID';
