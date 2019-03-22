@@ -133,6 +133,7 @@ class ReviewsPanel extends Component {
 				icon={ icon }
 				actions={ cardActions() }
 				unread={
+					review.status === 'hold' ||
 					! lastRead ||
 					! review.date_created_gmt ||
 					new Date( review.date_created_gmt + 'Z' ).getTime() > lastRead

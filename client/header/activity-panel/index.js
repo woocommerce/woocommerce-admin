@@ -340,6 +340,23 @@ export default withSelect( select => {
 				new Date( reviews[ 0 ].date_created_gmt + 'Z' ).getTime() >
 					userData.activity_panel_reviews_last_read;
 		}
+
+		if ( ! unreadReviews && '1' === wcSettings.commentModeration ) {
+			const actionableReviewsQuery = {
+				page: 1,
+				// @todo we are not using this review, so when the endpoint supports it,
+				// it could be replaced with `per_page: 0`
+				per_page: 1,
+				status: 'hold',
+			};
+			const totalActionableReviews = getReviewsTotalCount( actionableReviewsQuery );
+			const isActionableReviewsError = Boolean( getReviewsError( actionableReviewsQuery ) );
+			const isActionableReviewsRequesting = isGetReviewsRequesting( actionableReviewsQuery );
+
+			if ( ! isActionableReviewsError && ! isActionableReviewsRequesting ) {
+				unreadReviews = totalActionableReviews > 0;
+			}
+		}
 	}
 
 	return { unreadNotes, unreadOrders, unreadReviews, numberOfReviews };
