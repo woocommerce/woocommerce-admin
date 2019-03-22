@@ -75,8 +75,8 @@ export class TopCustomers extends Component {
                     value: name,
                 },
                 {
-                    display: orders_count,
-                    value: numberFormat( orders_count ),
+                    display: numberFormat( orders_count ),
+                    value: orders_count,
                 },
                 {
                     display: formatCurrency( total_spend ),
