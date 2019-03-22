@@ -137,6 +137,10 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		$args['order']   = $request['order'];
 		$args['orderby'] = $request['orderby'];
 
+		if ( 'date' === $args['orderby'] ) {
+			$args['orderby'] = 'date_created';
+		}
+
 		$args['per_page'] = isset( $request['per_page'] ) ? intval( $request['per_page'] ) : 10;
 		if ( $args['per_page'] <= 0 ) {
 			$args['per_page'] = 10;
@@ -325,6 +329,26 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 	public function get_collection_params() {
 		$params             = array();
 		$params['context']  = $this->get_context_param( array( 'default' => 'view' ) );
+		$params['order']    = array(
+			'description'       => __( 'Order sort attribute ascending or descending.', 'woocommerce-admin' ),
+			'type'              => 'string',
+			'default'           => 'desc',
+			'enum'              => array( 'asc', 'desc' ),
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['orderby']  = array(
+			'description'       => __( 'Sort collection by object attribute.', 'woocommerce-admin' ),
+			'type'              => 'string',
+			'default'           => 'date',
+			'enum'              => array(
+				'note_id',
+				'date',
+				'type',
+				'title',
+				'status',
+			),
+			'validate_callback' => 'rest_validate_request_arg',
+		);
 		$params['page']     = array(
 			'description'       => __( 'Current page of the collection.', 'woocommerce-admin' ),
 			'type'              => 'integer',
