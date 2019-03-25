@@ -14,6 +14,9 @@ foreach ( $plugin_file as $line ) {
 	if ( stripos( $line, ' * Version: ' ) !== false ) {
 		$line = " * Version: {$package->version}\n";
 	}
+	if ( stripos( $line, "\tdefine( 'WC_ADMIN_VERSION_NUMBER'," ) !== false ) {
+		$line = "\tdefine( 'WC_ADMIN_VERSION_NUMBER', '{$package->version}' );\n";
+	}
 	$lines[] = $line;
 }
 file_put_contents( 'woocommerce-admin.php', $lines );

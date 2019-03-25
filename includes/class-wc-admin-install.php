@@ -42,21 +42,11 @@ class WC_Admin_Install {
 	public static function check_version() {
 		if (
 			! defined( 'IFRAME_REQUEST' ) &&
-			version_compare( get_option( self::VERSION_OPTION ), self::get_version_number(), '<' )
+			version_compare( get_option( self::VERSION_OPTION ), WC_ADMIN_VERSION_NUMBER, '<' )
 		) {
 			self::install();
 			do_action( 'wc_admin_updated' );
 		}
-	}
-
-	/**
-	 * Get the version number of the plugin from plugin data.
-	 *
-	 * @return string
-	 */
-	public static function get_version_number() {
-		$plugin_data = get_plugin_data( WC_ADMIN_PLUGIN_FILE );
-		return $plugin_data['Version'];
 	}
 
 	/**
@@ -263,7 +253,7 @@ class WC_Admin_Install {
 	 */
 	private static function update_wc_admin_version() {
 		delete_option( self::VERSION_OPTION );
-		add_option( self::VERSION_OPTION, self::get_version_number() );
+		add_option( self::VERSION_OPTION, WC_ADMIN_VERSION_NUMBER );
 	}
 }
 
