@@ -112,7 +112,7 @@ class WC_Admin_Notes {
 		$data_store = WC_Data_Store::load( 'admin-note' );
 		$raw_notes  = $data_store->get_notes(
 			array(
-				'status' => WC_Admin_Note::E_WC_ADMIN_NOTE_SNOOZED,
+				'status' => array( WC_Admin_Note::E_WC_ADMIN_NOTE_SNOOZED ),
 			)
 		);
 		$now        = new DateTime();

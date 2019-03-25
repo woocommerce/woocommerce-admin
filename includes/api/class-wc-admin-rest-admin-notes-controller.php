@@ -121,7 +121,7 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		}
 
 		$response = rest_ensure_response( $data );
-		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( $type, $status ) );
+		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( $query_args['type'], $query_args['status'] ) );
 
 		return $response;
 	}
@@ -136,6 +136,8 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		$args            = array();
 		$args['order']   = $request['order'];
 		$args['orderby'] = $request['orderby'];
+		$args['type']    = isset( $request['type'] ) ? $request['type'] : array();
+		$args['status']  = isset( $request['status'] ) ? $request['status'] : array();
 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date_created';
@@ -149,18 +151,6 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		$args['page'] = isset( $request['page'] ) ? intval( $request['page'] ) : 1;
 		if ( $args['page'] <= 0 ) {
 			$args['page'] = 1;
-		}
-
-		$type = isset( $request['type'] ) ? $request['type'] : '';
-		$type = sanitize_text_field( $type );
-		if ( ! empty( $type ) ) {
-			$args['type'] = $type;
-		}
-
-		$status = isset( $request['status'] ) ? $request['status'] : '';
-		$status = sanitize_text_field( $status );
-		if ( ! empty( $status ) ) {
-			$args['status'] = $status;
 		}
 
 		/**
@@ -378,9 +368,13 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		);
 		$params['status']   = array(
 			'description'       => __( 'Status of note.', 'woocommerce-admin' ),
-			'type'              => 'string',
-			'enum'              => WC_Admin_Note::get_allowed_statuses(),
+			'type'              => 'array',
+			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
+			'items'             => array(
+				'enum' => WC_Admin_Note::get_allowed_statuses(),
+				'type' => 'string',
+			),
 		);
 		return $params;
 	}

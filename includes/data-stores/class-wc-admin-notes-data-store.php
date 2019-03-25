@@ -311,8 +311,7 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 		$allowed_types    = WC_Admin_Note::get_allowed_types();
 		$where_type_array = array();
 		if ( isset( $args['type'] ) ) {
-			$args_types = explode( ',', $args['type'] );
-			foreach ( (array) $args_types as $args_type ) {
+			foreach ( $args['type'] as $args_type ) {
 				$args_type = trim( $args_type );
 				if ( in_array( $args_type, $allowed_types, true ) ) {
 					$where_type_array[] = "'" . esc_sql( $args_type ) . "'";
@@ -323,8 +322,7 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 		$allowed_statuses   = WC_Admin_Note::get_allowed_statuses();
 		$where_status_array = array();
 		if ( isset( $args['status'] ) ) {
-			$args_statuses = explode( ',', $args['status'] );
-			foreach ( (array) $args_statuses as $args_status ) {
+			foreach ( $args['status'] as $args_status ) {
 				$args_status = trim( $args_status );
 				if ( in_array( $args_status, $allowed_statuses, true ) ) {
 					$where_status_array[] = "'" . esc_sql( $args_status ) . "'";
