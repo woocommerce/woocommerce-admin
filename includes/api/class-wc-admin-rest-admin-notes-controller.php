@@ -142,7 +142,7 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 		}
 
 		$args['page'] = isset( $request['page'] ) ? intval( $request['page'] ) : 1;
-		if ( $page <= 0 ) {
+		if ( $args['page'] <= 0 ) {
 			$args['page'] = 1;
 		}
 
