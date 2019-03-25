@@ -127,7 +127,7 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 		}
 
 		if ( $wp_query->get( 'low_in_stock' ) ) {
-			$low_stock_amount = get_option( 'woocommerce_notify_low_stock_amount', 2 );
+			$low_stock_amount = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
 			$where           .= " AND lis_postmeta2.meta_key = '_manage_stock' AND lis_postmeta2.meta_value = 'yes'
 			AND lis_postmeta.meta_key = '_stock' AND lis_postmeta.meta_value IS NOT NULL
 			AND (
