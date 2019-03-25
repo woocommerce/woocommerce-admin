@@ -253,7 +253,7 @@
 			width: 60px;
 
 			&.is-placeholder::before {
-				background: $core-grey-dark-500;
+				background-color: $core-grey-dark-500;
 				border-radius: 50%;
 				content: '';
 				position: absolute;
