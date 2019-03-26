@@ -94,7 +94,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
 		}
 
-		if ( 'postmeta.meta_value' === $sql_query['order_by_clause'] ) {
+		if ( 'meta_value' === $sql_query['order_by_clause'] ) {
 			$sql_query['from_clause'] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$order_product_lookup_table}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
 		}
 
@@ -159,7 +159,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 			return $table_name . '.date_created';
 		}
 		if ( 'sku' === $order_by ) {
-			return 'postmeta.meta_value';
+			return 'meta_value';
 		}
 
 		return $order_by;
