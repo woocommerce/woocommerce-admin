@@ -32,9 +32,6 @@
 			line-height: 18px;
 			margin-left: $gap;
 			margin-right: $gap;
-			@include breakpoint( '<960px' ) {
-				display: none;
-			}
 		}
 	}
 
@@ -78,10 +75,12 @@
 	padding: 8px $gap 0 $gap;
 
 	@include breakpoint( '<960px' ) {
-		border-right: 0;
-		min-height: 0;
+		order: 1;
+		margin-top: -8px;
 		margin-left: 0;
 		padding-left: $gap / 2;
+		border-right: 0;
+		min-height: 0;
 	}
 
 	#wpbody & .components-select-control__input {
@@ -108,6 +107,19 @@
 		}
 		&:hover {
 			box-shadow: none !important;
+		}
+	}
+}
+
+@include breakpoint( '<960px' ) {
+	.woocommerce-summary + .woocommerce-chart {
+		.woocommerce-chart__title {
+			display: none;
+		}
+
+		.woocommerce-chart__interval-select {
+			order: 0;
+			margin-top: 0;
 		}
 	}
 }
