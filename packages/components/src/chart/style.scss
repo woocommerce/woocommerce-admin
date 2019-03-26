@@ -75,6 +75,7 @@
 	padding: 8px $gap 0 $gap;
 
 	@include breakpoint( '<960px' ) {
+		width: 100%;
 		order: 1;
 		margin-top: -8px;
 		margin-left: 0;
@@ -118,6 +119,7 @@
 		}
 
 		.woocommerce-chart__interval-select {
+			width: auto;
 			order: 0;
 			margin-top: 0;
 		}
