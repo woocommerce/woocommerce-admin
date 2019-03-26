@@ -164,7 +164,7 @@
     "dist/**/*.js",
     "dist/feature-config-core.php",
     "includes/class-wc-admin-loader.php",
-    "includes/onboarding/*.php",
+    "includes/features/**/*.php",
     "languages/**/*.json",
     "LICENSE.MD"
   ]

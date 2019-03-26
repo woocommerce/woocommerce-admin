@@ -63,17 +63,6 @@ function wc_admin_register_page( $options ) {
 function wc_admin_register_pages() {
 	global $menu, $submenu;
 
-	if ( WC_Admin_Loader::is_feature_enabled( 'dashboard' ) ) {
-		add_submenu_page(
-			'woocommerce',
-			__( 'WooCommerce Dashboard', 'woocommerce-admin' ),
-			__( 'Dashboard', 'woocommerce-admin' ),
-			'manage_options',
-			'wc-admin',
-			array( 'WC_Admin_Loader', 'page_wrapper' )
-		);
-	}
-
 	if ( WC_Admin_Loader::is_feature_enabled( 'analytics' ) ) {
 		add_menu_page(
 			__( 'WooCommerce Analytics', 'woocommerce-admin' ),
@@ -179,41 +168,6 @@ function wc_admin_register_pages() {
 	}
 }
 add_action( 'admin_menu', 'wc_admin_register_pages' );
-
-/**
- * This method is temporary while this is a feature plugin. As a part of core,
- * we can integrate this better with wc-admin-menus.
- *
- * It makes dashboard the top level link for 'WooCommerce' and renames the first Analytics menu item.
- */
-function wc_admin_link_structure() {
-	global $submenu;
-	// User does not have capabilites to see the submenu.
-	if ( ! current_user_can( 'manage_woocommerce' ) ) {
-		return;
-	}
-
-	$wc_admin_key = null;
-	foreach ( $submenu['woocommerce'] as $submenu_key => $submenu_item ) {
-		if ( 'wc-admin' === $submenu_item[2] ) {
-			$wc_admin_key = $submenu_key;
-			break;
-		}
-	}
-
-	if ( ! $wc_admin_key ) {
-		return;
-	}
-
-	$menu = $submenu['woocommerce'][ $wc_admin_key ];
-
-	// Move menu item to top of array.
-	unset( $submenu['woocommerce'][ $wc_admin_key ] );
-	array_unshift( $submenu['woocommerce'], $menu );
-}
-
-// priority is 20 to run after https://github.com/woocommerce/woocommerce/blob/a55ae325306fc2179149ba9b97e66f32f84fdd9c/includes/admin/class-wc-admin-menus.php#L165.
-add_action( 'admin_head', 'wc_admin_link_structure', 20 );
 
 /**
  * Outputs a breadcrumb

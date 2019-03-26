@@ -47,6 +47,9 @@ class WC_Admin_Loader {
 		add_action( 'admin_menu', array( 'WC_Admin_Loader', 'register_page_handler' ) );
 		add_filter( 'admin_title', array( 'WC_Admin_Loader', 'update_admin_title' ) );
 
+		// priority is 20 to run after https://github.com/woocommerce/woocommerce/blob/a55ae325306fc2179149ba9b97e66f32f84fdd9c/includes/admin/class-wc-admin-menus.php#L165.
+		add_action( 'admin_head', array( 'WC_Admin_Loader', 'update_link_structure' ), 20 );
+
 		// @todo move these to notes code.
 		add_action( 'admin_head', array( 'WC_Admin_Loader', 'remove_notices' ) );
 		add_action( 'admin_notices', array( 'WC_Admin_Loader', 'inject_before_notices' ), 0 );
@@ -114,7 +117,7 @@ class WC_Admin_Loader {
 		$features = self::get_features();
 		foreach ( $features as $feature ) {
 			$feature = strtolower( $feature );
-			$file    = WC_ADMIN_ABSPATH . '/includes/' . $feature . '/class-wc-admin-' . $feature . '.php';
+			$file    = WC_ADMIN_FEATURES_PATH . $feature . '/class-wc-admin-' . $feature . '.php';
 			if ( file_exists( $file ) ) {
 				require_once( $file );
 				$feature = ucfirst( $feature );
@@ -129,14 +132,51 @@ class WC_Admin_Loader {
 	 * @todo The entry point for the embed needs moved to this class as well.
 	 */
 	public static function register_page_handler() {
+		$page_title = null;
+		$menu_title = null;
+
+		if ( self::is_feature_enabled( 'dashboard' ) ) {
+			$page_title = __( 'WooCommerce Dashboard', 'woocommerce-admin' );
+			$menu_title = __( 'Dashboard', 'woocommerce-admin' );
+		}
+
 		add_submenu_page(
 			'woocommerce',
-			null,
-			null,
+			$page_title,
+			$menu_title,
 			'manage_options',
 			'wc-admin',
 			array( 'WC_Admin_Loader', 'page_wrapper' )
 		);
+	}
+
+	/**
+	 * Update the WooCommerce menu structure to make our main dashboard/handler the top level link for 'WooCommerce'.
+	 */
+	public static function update_link_structure() {
+		global $submenu;
+		// User does not have capabilites to see the submenu.
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			return;
+		}
+
+		$wc_admin_key = null;
+		foreach ( $submenu['woocommerce'] as $submenu_key => $submenu_item ) {
+			if ( 'wc-admin' === $submenu_item[2] ) {
+				$wc_admin_key = $submenu_key;
+				break;
+			}
+		}
+
+		if ( ! $wc_admin_key ) {
+			return;
+		}
+
+		$menu = $submenu['woocommerce'][ $wc_admin_key ];
+
+		// Move menu item to top of array.
+		unset( $submenu['woocommerce'][ $wc_admin_key ] );
+		array_unshift( $submenu['woocommerce'], $menu );
 	}
 
 	/**
@@ -158,6 +198,8 @@ class WC_Admin_Loader {
 			self::get_file_version( 'currency/index.js' ),
 			true
 		);
+
+		wp_set_script_translations( 'wc-currency', 'woocommerce-admin' );
 
 		wp_register_script(
 			'wc-navigation',
@@ -183,6 +225,8 @@ class WC_Admin_Loader {
 			true
 		);
 
+		wp_set_script_translations( 'wc-date', 'woocommerce-admin' );
+
 		wp_register_script(
 			'wc-components',
 			self::get_url( 'components/index.js' ),
@@ -202,6 +246,8 @@ class WC_Admin_Loader {
 			self::get_file_version( 'components/index.js' ),
 			true
 		);
+
+		wp_set_script_translations( 'wc-components', 'woocommerce-admin' );
 
 		wp_register_style(
 			'wc-components',
@@ -232,9 +278,7 @@ class WC_Admin_Loader {
 			true
 		);
 
-		if ( function_exists( 'wp_set_script_translations' ) ) {
-			wp_set_script_translations( WC_ADMIN_APP, 'woocommerce-admin' );
-		}
+		wp_set_script_translations( WC_ADMIN_APP, 'woocommerce-admin' );
 
 		wp_register_style(
 			WC_ADMIN_APP,
@@ -403,39 +447,33 @@ class WC_Admin_Loader {
 	 * @return array Array of component settings.
 	 */
 	public static function add_component_settings( $settings ) {
-		// @todo Some of these component settings should be added by feature specific code.
-		$preload_data_endpoints = array(
-			'countries'             => '/wc/v4/data/countries',
-			'performanceIndicators' => '/wc/v4/reports/performance-indicators/allowed',
-		);
-
-		if ( function_exists( 'gutenberg_preload_api_request' ) ) {
-			$preload_function = 'gutenberg_preload_api_request';
-		} else {
-			$preload_function = 'rest_preload_api_request';
+		$preload_data_endpoints = apply_filters( 'woocommerce_component_settings_preload_endpoints', array( WC_ADMIN_API_NAMESPACE ) );
+		if ( ! empty( $preload_data_endpoints ) ) {
+			$preload_data = array_reduce(
+				array_values( $preload_data_endpoints ),
+				'rest_preload_api_request'
+			);
 		}
-
-		$preload_data = array_reduce(
-			array_values( $preload_data_endpoints ),
-			$preload_function
-		);
 
 		$current_user_data = array();
 		foreach ( self::get_user_data_fields() as $user_field ) {
 			$current_user_data[ $user_field ] = json_decode( get_user_meta( get_current_user_id(), 'wc_admin_' . $user_field, true ) );
 		}
 
-		$settings['alertCount']       = WC_Admin_Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
-		$settings['orderStatuses']    = self::get_order_statuses( wc_get_order_statuses() );
-		$settings['currentUserData']  = $current_user_data;
-		$settings                     = self::get_custom_settings( $settings );
-		foreach ( $preload_data_endpoints as $key => $endpoint ) {
-			$settings['dataEndpoints'][ $key ] = $preload_data[ $endpoint ]['body'];
-		}
+		$settings['alertCount']        = WC_Admin_Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
+		$settings['orderStatuses']     = self::get_order_statuses( wc_get_order_statuses() );
+		$settings['currentUserData']   = $current_user_data;
 		$settings['currency']          = self::get_currency_settings();
 		$settings['reviewsEnabled']    = get_option( 'woocommerce_enable_reviews' );
 		$settings['manageStock']       = get_option( 'woocommerce_manage_stock' );
 		$settings['commentModeration'] = get_option( 'comment_moderation' );
+
+		if ( ! empty( $preload_data_endpoints ) ) {
+			foreach ( $preload_data_endpoints as $key => $endpoint ) {
+				$settings['dataEndpoints'][ $key ] = $preload_data[ $endpoint ]['body'];
+			}
+		}
+		$settings = self::get_custom_settings( $settings );
 
 		if ( self::is_embed_page() ) {
 			$settings['embedBreadcrumbs'] = wc_admin_get_embed_breadcrumbs(); // @todo move function into loader.
@@ -471,7 +509,9 @@ class WC_Admin_Loader {
 		$settings['wcAdminSettings']         = array();
 
 		foreach ( $wc_admin_group_settings as $setting ) {
-			$settings['wcAdminSettings'][ $setting['id'] ] = $setting['value'];
+			if ( ! empty( $setting['id'] ) && ! empty( $setting['value'] ) ) {
+				$settings['wcAdminSettings'][ $setting['id'] ] = $setting['value'];
+			}
 		}
 		return $settings;
 	}

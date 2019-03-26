@@ -31,12 +31,20 @@ if ( ! defined( 'WC_ADMIN_DIST_CSS_FOLDER' ) ) {
 	define( 'WC_ADMIN_DIST_CSS_FOLDER', 'dist/' );
 }
 
+if ( ! defined( 'WC_ADMIN_FEATURES_PATH' ) ) {
+	define( 'WC_ADMIN_FEATURES_PATH', WC_ADMIN_ABSPATH . 'includes/features/' );
+}
+
 if ( ! defined( 'WC_ADMIN_PLUGIN_FILE' ) ) {
 	define( 'WC_ADMIN_PLUGIN_FILE', __FILE__ );
 }
 
 if ( ! defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
 	define( 'WC_ADMIN_VERSION_NUMBER', '0.10.0' );
+}
+
+if ( ! defined( 'WC_ADMIN_API_NAMESPACE' ) ) {
+	define( 'WC_ADMIN_API_NAMESPACE', '/wc/v4' );
 }
 
 /**
