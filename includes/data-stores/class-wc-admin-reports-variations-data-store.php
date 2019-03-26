@@ -111,7 +111,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 	 * Updates the database query with parameters used for Products report: categories and order status.
 	 *
 	 * @param array  $query_args Query arguments supplied by the user.
-	 * @param string $from_arg Name of the FROM sql param.
+	 * @param string $from_arg   Name of the FROM sql param.
 	 *
 	 * @return array             Array of parameters used for SQL query.
 	 */
