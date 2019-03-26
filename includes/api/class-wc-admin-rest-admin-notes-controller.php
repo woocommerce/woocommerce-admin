@@ -133,24 +133,16 @@ class WC_Admin_REST_Admin_Notes_Controller extends WC_REST_CRUD_Controller {
 	 * @return array
 	 */
 	protected function prepare_objects_query( $request ) {
-		$args            = array();
-		$args['order']   = $request['order'];
-		$args['orderby'] = $request['orderby'];
-		$args['type']    = isset( $request['type'] ) ? $request['type'] : array();
-		$args['status']  = isset( $request['status'] ) ? $request['status'] : array();
+		$args             = array();
+		$args['order']    = $request['order'];
+		$args['orderby']  = $request['orderby'];
+		$args['per_page'] = $request['per_page'];
+		$args['page']     = $request['page'];
+		$args['type']     = isset( $request['type'] ) ? $request['type'] : array();
+		$args['status']   = isset( $request['status'] ) ? $request['status'] : array();
 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date_created';
-		}
-
-		$args['per_page'] = isset( $request['per_page'] ) ? intval( $request['per_page'] ) : 10;
-		if ( $args['per_page'] <= 0 ) {
-			$args['per_page'] = 10;
-		}
-
-		$args['page'] = isset( $request['page'] ) ? intval( $request['page'] ) : 1;
-		if ( $args['page'] <= 0 ) {
-			$args['page'] = 1;
 		}
 
 		/**

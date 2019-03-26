@@ -250,27 +250,21 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 	public function get_notes( $args = array() ) {
 		global $wpdb;
 
-		$order   = isset( $args['order'] ) ? $args['order'] : 'DESC';
-		$orderby = isset( $args['orderby'] ) ? $args['orderby'] : 'date_created';
+		$defaults = array(
+			'per_page' => get_option( 'posts_per_page' ),
+			'page'     => 1,
+			'order'    => 'DESC',
+			'orderby'  => 'date_created',
+		);
+		$args     = wp_parse_args( $args, $defaults );
 
-		$per_page = isset( $args['per_page'] ) ? intval( $args['per_page'] ) : 10;
-		if ( $per_page <= 0 ) {
-			$per_page = 10;
-		}
-
-		$page = isset( $args['page'] ) ? intval( $args['page'] ) : 1;
-		if ( $page <= 0 ) {
-			$page = 1;
-		}
-
-		$offset = $per_page * ( $page - 1 );
-
+		$offset        = $args['per_page'] * ( $args['page'] - 1 );
 		$where_clauses = $this->get_notes_where_clauses( $args );
 
 		$query = $wpdb->prepare(
-			"SELECT note_id, title, content FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses} ORDER BY {$orderby} {$order} LIMIT %d, %d",
+			"SELECT note_id, title, content FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses} ORDER BY {$args['orderby']} {$args['order']} LIMIT %d, %d",
 			$offset,
-			$per_page
+			$args['per_page']
 		); // WPCS: unprepared SQL ok.
 
 		return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
