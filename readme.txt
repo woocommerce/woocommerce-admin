@@ -70,6 +70,8 @@ Release and roadmap notes available on the [WooCommerce Developers Blog](https:/
 == Screenshots ==
 
 1. WooCommerce Admin Dashboard
+2. Activity Panels
+3. Analytics
 
 == Changelog ==
 
