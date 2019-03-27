@@ -1,0 +1,27 @@
+/** @format */
+
+.woocommerce-profile-wizard__body {
+	background: #1d232f;
+
+	.woocommerce-profile-wizard__header-title {
+		color: #fff;
+	}
+
+	#woocommerce-layout__primary {
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+		width: 70%;
+	}
+
+	/* Hide wp-admin and WooCommerce elements when viewing the profile wizard*/
+	#adminmenumain,
+	#wpadminbar,
+	.woocommerce-layout__header {
+		display: none;
+	}
+
+	#wpcontent {
+		margin-left: 0;
+	}
+}
