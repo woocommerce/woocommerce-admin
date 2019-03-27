@@ -35,7 +35,7 @@ class WC_Admin_Analytics {
 	}
 
 	/**
-	 * Preload data from the performance indiciators endpoint.
+	 * Preload data from the countries endpoint.
 	 *
 	 * @param array $endpoints Array of preloaded endpoints.
 	 * @return array
