@@ -10,10 +10,11 @@ import { Component, Fragment } from '@wordpress/element';
  */
 import './style.scss';
 import DashboardCharts from './dashboard-charts';
-import { H, ReportFilters } from '@woocommerce/components';
 import Header from 'header';
 import Leaderboards from './leaderboards';
+import { ReportFilters } from '@woocommerce/components';
 import StorePerformance from './store-performance';
+import TaskList from './task-list';
 
 export default class Dashboard extends Component {
 	render() {
@@ -24,20 +25,7 @@ export default class Dashboard extends Component {
 			<Fragment>
 				<Header sections={ [ __( 'Dashboard', 'woocommerce-admin' ) ] } />
 				{ window.wcAdminFeatures.onboarding && ! requiredTasksComplete ? (
-					<div className="woocommerce-task-list">
-						<div className="woocommerce-task-list__header">
-							<H className="woocommerce-task-list__header-title">
-								{ __( 'Welcome to the WooCommerce Dashboard', 'woocommerce-admin' ) }
-							</H>
-							<H className="woocommerce-task-list__header-subtitle">
-								{ __(
-									"Here we'll guide you through the remaining tasks " +
-										'to get your store ready for launch',
-									'woocommerce-admin'
-								) }
-							</H>
-						</div>
-					</div>
+					<TaskList />
 				) : (
 					<Fragment>
 						<ReportFilters query={ query } path={ path } />
