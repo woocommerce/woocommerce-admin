@@ -1,8 +1,8 @@
 <?php
 /**
- * REST API Data Download IP Controller
+ * REST API Onboarding Levels Controller
  *
- * Handles requests to /data/download-ips
+ * Handles requests to /onboarding/levels
  *
  * @package WooCommerce Admin/API
  */
@@ -10,12 +10,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Data Download IP controller.
+ * Onboarding Levels controller.
  *
  * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
-class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller {
+class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller {
 	/**
 	 * Endpoint namespace.
 	 *
@@ -28,7 +28,7 @@ class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller
 	 *
 	 * @var string
 	 */
-	protected $rest_base = 'data/download-ips';
+	protected $rest_base = 'onboarding/levels';
 
 	/**
 	 * Register routes.
@@ -51,7 +51,61 @@ class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller
 	}
 
 	/**
-	 * Return the download IPs matching the passed parameters.
+	 * Get an array of all levels and child tasks.
+	 */
+	public function get_levels() {
+		$levels = array(
+			array(
+				'slug'  => '',
+				'tasks' => array(
+					array(
+						'slug'                     => '',
+						'description'              => '',
+						'illustration'             => '',
+						'status'                   => '',
+						'is_visible_conditional'   => '',
+						'in_progress_conditional'  => '',
+						'is_completed_conditional' => '',
+						'is_required'              => '',
+					),
+				),
+			),
+			array(
+				'slug'  => '',
+				'tasks' => array(
+					array(
+						'slug'                     => '',
+						'description'              => '',
+						'illustration'             => '',
+						'status'                   => '',
+						'is_visible_conditional'   => '',
+						'in_progress_conditional'  => '',
+						'is_completed_conditional' => '',
+						'is_required'              => '',
+					),
+				),
+			),
+			array(
+				'slug'  => '',
+				'tasks' => array(
+					array(
+						'slug'                     => '',
+						'description'              => '',
+						'illustration'             => '',
+						'status'                   => '',
+						'is_visible_conditional'   => '',
+						'in_progress_conditional'  => '',
+						'is_completed_conditional' => '',
+						'is_required'              => '',
+					),
+				),
+			),
+		);
+		return apply_filters( 'woocommerce_onboarding_levels', $levels );
+	}
+
+	/**
+	 * Return all level items and child tasks.
 	 *
 	 * @since  3.5.0
 	 * @param  WP_REST_Request $request Request data.
@@ -60,24 +114,12 @@ class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller
 	public function get_items( $request ) {
 		global $wpdb;
 
-		if ( isset( $request['match'] ) ) {
-			$downloads = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT DISTINCT( user_ip_address ) FROM {$wpdb->prefix}wc_download_log
-					WHERE user_ip_address LIKE %s
-					LIMIT 10",
-					$request['match'] . '%'
-				)
-			);
-		} else {
-			return new WP_Error( 'woocommerce_rest_data_download_ips_invalid_request', __( 'Invalid request. Please pass the match parameter.', 'woocommerce-admin' ), array( 'status' => 400 ) );
-		}
+		$levels = $this->get_levels();
+		$data   = array();
 
-		$data = array();
-
-		if ( ! empty( $downloads ) ) {
-			foreach ( $downloads as $download ) {
-				$response = $this->prepare_item_for_response( $download, $request );
+		if ( ! empty( $levels ) ) {
+			foreach ( $levels as $level ) {
+				$response = $this->prepare_item_for_response( $level, $request );
 				$data[]   = $this->prepare_response_for_collection( $response );
 			}
 		}
@@ -107,7 +149,7 @@ class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller
 		 * @param array            $item     The original item.
 		 * @param WP_REST_Request  $request  Request used to generate the response.
 		 */
-		return apply_filters( 'woocommerce_rest_prepare_data_download_ip', $response, $item, $request );
+		return apply_filters( 'woocommerce_rest_prepare_onboarding_level', $response, $item, $request );
 	}
 
 	/**
@@ -115,6 +157,7 @@ class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller
 	 *
 	 * @param object $item Data object.
 	 * @return array Links for the given object.
+	 * @todo Check to make sure this generates a valid URL after #1897.
 	 */
 	protected function prepare_links( $item ) {
 		$links = array(
@@ -126,23 +169,6 @@ class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller
 	}
 
 	/**
-	 * Get the query params for collections.
-	 *
-	 * @return array
-	 */
-	public function get_collection_params() {
-		$params            = array();
-		$params['context'] = $this->get_context_param( array( 'default' => 'view' ) );
-		$params['match']   = array(
-			'description'       => __( 'A partial IP address can be passed and matching results will be returned.', 'woocommerce-admin' ),
-			'type'              => 'string',
-			'validate_callback' => 'rest_validate_request_arg',
-		);
-		return $params;
-	}
-
-
-	/**
 	 * Get the schema, conforming to JSON Schema.
 	 *
 	 * @return array
@@ -150,12 +176,18 @@ class WC_Admin_REST_Data_Download_Ips_Controller extends WC_REST_Data_Controller
 	public function get_item_schema() {
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'data_download_ips',
+			'title'      => 'onboarding_level',
 			'type'       => 'object',
 			'properties' => array(
-				'user_ip_address' => array(
+				'slug' => array(
 					'type'        => 'string',
-					'description' => __( 'IP address.', 'woocommerce-admin' ),
+					'description' => __( 'Level slug.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'tasks' => array(
+					'type'        => 'array',
+					'description' => __( 'Array of task under the level.', 'woocommerce-admin' ),
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
