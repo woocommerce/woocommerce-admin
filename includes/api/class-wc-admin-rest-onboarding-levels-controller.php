@@ -214,13 +214,13 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 					'items'       => array(
 						'type'       => 'object',
 						'properties' => array(
-							'id' => array(
+							'id'           => array(
 								'description' => __( 'Task ID.', 'woocommerce-admin' ),
 								'type'        => 'integer',
 								'context'     => array( 'view', 'edit' ),
 								'readonly'    => true,
 							),
-							'label'  => array(
+							'label'        => array(
 								'description' => __( 'Task label.', 'woocommerce-admin' ),
 								'type'        => 'string',
 								'context'     => array( 'view', 'edit' ),
