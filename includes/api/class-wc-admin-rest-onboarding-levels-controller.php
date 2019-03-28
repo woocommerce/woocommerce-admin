@@ -52,55 +52,76 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 
 	/**
 	 * Get an array of all levels and child tasks.
+	 *
+	 * @todo Status values below should pull from the database task status once implemented.
 	 */
 	public function get_levels() {
 		$levels = array(
 			array(
-				'slug'  => '',
+				'id'    => 'account',
 				'tasks' => array(
 					array(
-						'slug'                     => '',
-						'description'              => '',
-						'illustration'             => '',
-						'status'                   => '',
-						'is_visible_conditional'   => '',
-						'in_progress_conditional'  => '',
-						'is_completed_conditional' => '',
-						'is_required'              => '',
+						'id'           => 'create_account',
+						'label'        => __( 'Create an account', 'woocommerce-admin' ),
+						'description'  => __( 'Speed up & secure your store', 'woocommerce-admin' ),
+						'illustration' => '',
+						'status'       => 'visible',
+						'is_required'  => false,
 					),
 				),
 			),
 			array(
-				'slug'  => '',
+				'id'    => 'storefront',
 				'tasks' => array(
 					array(
-						'slug'                     => '',
-						'description'              => '',
-						'illustration'             => '',
-						'status'                   => '',
-						'is_visible_conditional'   => '',
-						'in_progress_conditional'  => '',
-						'is_completed_conditional' => '',
-						'is_required'              => '',
+						'id'           => 'add_products',
+						'label'        => __( 'Add your products', 'woocommerce-admin' ),
+						'description'  => __( 'Bring your store to life', 'woocommerce-admin' ),
+						'illustration' => '',
+						'status'       => 'visible',
+						'is_required'  => true,
+					),
+					array(
+						'id'           => 'customize_appearance',
+						'label'        => __( 'Customize Appearance', 'woocommerce-admin' ),
+						'description'  => __( 'Ensure your store is on-brand', 'woocommerce-admin' ),
+						'illustration' => '',
+						'status'       => 'visible',
+						'is_required'  => false,
 					),
 				),
 			),
 			array(
-				'slug'  => '',
+				'id'    => 'checkout',
 				'tasks' => array(
 					array(
-						'slug'                     => '',
-						'description'              => '',
-						'illustration'             => '',
-						'status'                   => '',
-						'is_visible_conditional'   => '',
-						'in_progress_conditional'  => '',
-						'is_completed_conditional' => '',
-						'is_required'              => '',
+						'id'           => 'configure_shipping',
+						'label'        => __( 'Configure shipping', 'woocommerce-admin' ),
+						'description'  => __( 'Set up prices and destinations', 'woocommerce-admin' ),
+						'illustration' => '',
+						'status'       => 'visible',
+						'is_required'  => true,
+					),
+					array(
+						'id'           => 'configure_taxes',
+						'label'        => __( 'Configure taxes', 'woocommerce-admin' ),
+						'description'  => __( 'Set up sales tax rates', 'woocommerce-admin' ),
+						'illustration' => '',
+						'status'       => 'visible',
+						'is_required'  => false,
+					),
+					array(
+						'id'           => 'configure_payments',
+						'label'        => __( 'Configure payments', 'woocommerce-admin' ),
+						'description'  => __( 'Choose payment providers', 'woocommerce-admin' ),
+						'illustration' => '',
+						'status'       => 'visible',
+						'is_required'  => true,
 					),
 				),
 			),
 		);
+
 		return apply_filters( 'woocommerce_onboarding_levels', $levels );
 	}
 
@@ -162,7 +183,7 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 	protected function prepare_links( $item ) {
 		$links = array(
 			'collection' => array(
-				'href' => rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ),
+				'href' => rest_url( sprintf( '/%s/onboarding/tasks?level=%s', $this->namespace, $item['id'] ) ),
 			),
 		);
 		return $links;
@@ -179,17 +200,53 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 			'title'      => 'onboarding_level',
 			'type'       => 'object',
 			'properties' => array(
-				'slug' => array(
+				'id'    => array(
 					'type'        => 'string',
-					'description' => __( 'Level slug.', 'woocommerce-admin' ),
+					'description' => __( 'Level ID.', 'woocommerce-admin' ),
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
 				'tasks' => array(
 					'type'        => 'array',
-					'description' => __( 'Array of task under the level.', 'woocommerce-admin' ),
+					'description' => __( 'Array of tasks under the level.', 'woocommerce-admin' ),
 					'context'     => array( 'view' ),
 					'readonly'    => true,
+					'items'       => array(
+						'type'       => 'object',
+						'properties' => array(
+							'id' => array(
+								'description' => __( 'Task ID.', 'woocommerce-admin' ),
+								'type'        => 'integer',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'label'  => array(
+								'description' => __( 'Task label.', 'woocommerce-admin' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'description'  => array(
+								'description' => __( 'Task description.', 'woocommerce-admin' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'illustration'  => array(
+								'description' => __( 'URL for illustration used.', 'woocommerce-admin' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+							),
+							'status'  => array(
+								'description' => __( 'Task status.', 'woocommerce-admin' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+								'readonly'    => true,
+								'enum'        => array( 'visible', 'hidden', 'in-progress', 'skipped', 'completed' ),
+							),
+						),
+					),
 				),
 			),
 		);
