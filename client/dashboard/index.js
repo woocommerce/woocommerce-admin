@@ -20,7 +20,7 @@ export default class Dashboard extends Component {
 	render() {
 		const { query, path } = this.props;
 		// @todo This should be replaced by a check of tasks from the REST API response from #1897.
-		const requiredTasksComplete = false;
+		const requiredTasksComplete = true;
 		return (
 			<Fragment>
 				<Header sections={ [ __( 'Dashboard', 'woocommerce-admin' ) ] } />
