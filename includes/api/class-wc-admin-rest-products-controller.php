@@ -175,7 +175,7 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 	 * @param object $wp_query WP_Query object.
 	 * @return string
 	 */
-	public function add_wp_query_group_by( $groupby, $wp_query ) {
+	public static function add_wp_query_group_by( $groupby, $wp_query ) {
 		global $wpdb;
 
 		$search       = $wp_query->get( 'search' );
