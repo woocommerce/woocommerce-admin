@@ -134,9 +134,9 @@ class WC_Admin_REST_Products_Controller extends WC_REST_Products_Controller {
 			AND lis_postmeta.meta_value IS NOT NULL
 			AND lis_postmeta3.meta_key = '_low_stock_amount'
 			AND (
-				lis_postmeta3.meta_value IS NOT NULL
+				lis_postmeta3.meta_value > ''
 				AND CAST(lis_postmeta.meta_value AS SIGNED) <= CAST(lis_postmeta3.meta_value AS SIGNED)
-				OR lis_postmeta3.meta_value IS NULL
+				OR lis_postmeta3.meta_value <= ''
 				AND CAST(lis_postmeta.meta_value AS SIGNED) <= {$low_stock_amount}
 			)";
 		}
