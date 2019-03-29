@@ -24,7 +24,8 @@ export function getUnreadNotes( select ) {
 
 export function getUnreadOrders( select ) {
 	const { getReportItems, getReportItemsError, isReportItemsRequesting } = select( 'wc-api' );
-	const orderStatuses = wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses || DEFAULT_ACTIONABLE_STATUSES;
+	const orderStatuses =
+		wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses || DEFAULT_ACTIONABLE_STATUSES;
 
 	if ( ! orderStatuses.length ) {
 		return false;
@@ -76,11 +77,12 @@ export function getUnreadReviews( select ) {
 
 		if ( ! isReviewsError && ! isReviewsRequesting ) {
 			numberOfReviews = totalReviews;
-			hasUnreadReviews =
+			hasUnreadReviews = Boolean(
 				reviews.length &&
-				reviews[ 0 ].date_created_gmt &&
-				new Date( reviews[ 0 ].date_created_gmt + 'Z' ).getTime() >
-					userData.activity_panel_reviews_last_read;
+					reviews[ 0 ].date_created_gmt &&
+					new Date( reviews[ 0 ].date_created_gmt + 'Z' ).getTime() >
+						userData.activity_panel_reviews_last_read
+			);
 		}
 	}
 
