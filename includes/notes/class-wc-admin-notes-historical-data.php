@@ -23,7 +23,12 @@ class WC_Admin_Notes_Historical_Data {
 
 		// First, see if we've already created this kind of note so we don't do it again.
 		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( ! empty( $note_ids ) ) {
+		$orders   = wc_get_orders(
+			array(
+				'limit' => 1,
+			)
+		);
+		if ( ! empty( $note_ids ) || count( $orders ) < 1 ) {
 			return;
 		}
 
