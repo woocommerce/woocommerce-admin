@@ -81,11 +81,12 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 	/**
 	 * Fills ORDER BY clause of SQL request based on user supplied parameters.
 	 *
-	 * @param array $query_args Parameters supplied by the user.
+	 * @param array  $query_args    Parameters supplied by the user.
+	 * @param string $from_arg_name Name of the FROM sql param.
 	 *
 	 * @return array
 	 */
-	protected function get_order_by_sql_params( $query_args ) {
+	protected function get_order_by_sql_params( $query_args, $from_arg_name ) {
 		global $wpdb;
 		$order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
 
@@ -121,7 +122,14 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 
 		$sql_query_params = $this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
 		$sql_query_params = array_merge( $sql_query_params, $this->get_limit_sql_params( $query_args ) );
-		$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args ) );
+
+		$sql_query_params['from_clause'] = '';
+		$sql_query_params['outer_from_clause'] = '';
+		if ( count( $query_args['variations'] ) > 0 ) {
+			$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args, 'outer_from_clause' ) );
+		} else {
+			$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args, 'from_clause' ) );
+		}
 
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
@@ -134,7 +142,6 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 		}
 
 		$order_status_filter                   = $this->get_status_subquery( $query_args );
-		$sql_query_params['outer_from_clause'] = '';
 		if ( $order_status_filter ) {
 			$sql_query_params[ $from_arg ]    .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
 			$sql_query_params['where_clause'] .= " AND ( {$order_status_filter} )";
