@@ -81,12 +81,10 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 	/**
 	 * Fills ORDER BY clause of SQL request based on user supplied parameters.
 	 *
-	 * @param array  $query_args Parameters supplied by the user.
-	 * @param string $from_arg   Name of the FROM sql param.
-	 *
+	 * @param array $query_args Parameters supplied by the user.
 	 * @return array
 	 */
-	protected function get_order_by_sql_params( $query_args, $from_arg ) {
+	protected function get_order_by_sql_params( $query_args ) {
 		global $wpdb;
 		$order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
 
@@ -95,14 +93,30 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
 		}
 
-		if ( 'postmeta.meta_value' === $sql_query['order_by_clause'] ) {
-			$sql_query[ $from_arg ] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$order_product_lookup_table}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
-		}
-
 		if ( isset( $query_args['order'] ) ) {
 			$sql_query['order_by_clause'] .= ' ' . $query_args['order'];
 		} else {
 			$sql_query['order_by_clause'] .= ' DESC';
+		}
+
+		return $sql_query;
+	}
+
+	/**
+	 * Fills FROM clause of SQL request based on user supplied parameters.
+	 *
+	 * @param array  $query_args Parameters supplied by the user.
+	 * @param string $arg_name   Name of the FROM sql param.
+	 * @return array
+	 */
+	protected function get_from_sql_params( $query_args, $arg_name ) {
+		global $wpdb;
+		$order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
+
+		$sql_query['from_clause']       = '';
+		$sql_query['outer_from_clause'] = '';
+		if ( 'sku' === $query_args['orderby'] ) {
+			$sql_query[ $arg_name ] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$order_product_lookup_table}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
 		}
 
 		return $sql_query;
@@ -120,13 +134,12 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 
 		$sql_query_params = $this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
 		$sql_query_params = array_merge( $sql_query_params, $this->get_limit_sql_params( $query_args ) );
+		$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args ) );
 
-		$sql_query_params['from_clause'] = '';
-		$sql_query_params['outer_from_clause'] = '';
 		if ( count( $query_args['variations'] ) > 0 ) {
-			$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args, 'outer_from_clause' ) );
+			$sql_query_params = array_merge( $sql_query_params, $this->get_from_sql_params( $query_args, 'outer_from_clause' ) );
 		} else {
-			$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args, 'from_clause' ) );
+			$sql_query_params = array_merge( $sql_query_params, $this->get_from_sql_params( $query_args, 'from_clause' ) );
 		}
 
 		$included_products = $this->get_included_products( $query_args );
