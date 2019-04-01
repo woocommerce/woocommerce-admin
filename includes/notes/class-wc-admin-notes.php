@@ -86,7 +86,7 @@ class WC_Admin_Notes {
 	 * @param string $status Comma separated list of statuses.
 	 * @return int
 	 */
-	public static function get_notes_count( $type = '', $status = '' ) {
+	public static function get_notes_count( $type = array(), $status = array() ) {
 		$data_store = WC_Data_Store::load( 'admin-note' );
 		return $data_store->get_notes_count( $type, $status );
 	}

@@ -277,7 +277,7 @@ class WC_Admin_Notes_Data_Store extends WC_Data_Store_WP implements WC_Object_Da
 	 * @param string $status Comma separated list of statuses.
 	 * @return array An array of objects containing a note id.
 	 */
-	public function get_notes_count( $type = '', $status = '' ) {
+	public function get_notes_count( $type = array(), $status = array() ) {
 		global $wpdb;
 
 		$where_clauses = $this->get_notes_where_clauses(
