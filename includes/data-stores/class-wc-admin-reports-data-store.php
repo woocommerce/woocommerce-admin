@@ -985,4 +985,18 @@ class WC_Admin_Reports_Data_Store {
 		return $operator;
 	}
 
+	/**
+	 * Returns the same array index by a given key
+	 *
+	 * @param array  $array Array to be looped over.
+	 * @param string $key Key of values used for new array.
+	 * @return array
+	 */
+	protected function map_array_by_key( $array, $key ) {
+		$mapped = array();
+		foreach ( $array as $item ) {
+			$mapped[ $item[ $key ] ] = $item;
+		}
+		return $mapped;
+	}
 }

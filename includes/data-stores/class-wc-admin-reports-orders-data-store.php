@@ -297,21 +297,6 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	}
 
 	/**
-	 * Returns the same array index by a given key
-	 *
-	 * @param array  $array Array to be looped over.
-	 * @param string $key Key of values used for new array.
-	 * @return array
-	 */
-	protected function map_array_by_key( $array, $key ) {
-		$mapped = array();
-		foreach ( $array as $item ) {
-			$mapped[ $item[ $key ] ] = $item;
-		}
-		return $mapped;
-	}
-
-	/**
 	 * Get product IDs, names, and quantity from order IDs.
 	 *
 	 * @param array $order_ids Array of order IDs.

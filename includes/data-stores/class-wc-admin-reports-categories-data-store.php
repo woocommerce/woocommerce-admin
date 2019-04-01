@@ -228,15 +228,16 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
-			'per_page'      => get_option( 'posts_per_page' ),
-			'page'          => 1,
-			'order'         => 'DESC',
-			'orderby'       => 'date',
-			'before'        => WC_Admin_Reports_Interval::default_before(),
-			'after'         => WC_Admin_Reports_Interval::default_after(),
-			'fields'        => '*',
-			'categories'    => array(),
-			'extended_info' => false,
+			'per_page'        => get_option( 'posts_per_page' ),
+			'page'            => 1,
+			'order'           => 'DESC',
+			'orderby'         => 'date',
+			'before'          => WC_Admin_Reports_Interval::default_before(),
+			'after'           => WC_Admin_Reports_Interval::default_after(),
+			'fields'          => '*',
+			'categories'      => array(),
+			'extended_info'   => false,
+			'ignore_children' => false,
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
@@ -305,6 +306,9 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 			}
 
 			$categories_data = $this->page_records( $categories_data, $query_args['page'], $query_args['per_page'] );
+			if ( ! $query_args['ignore_children'] ) {
+				$this->merge_child_category_data( $categories_data, $query_args );
+			}
 			$this->include_extended_info( $categories_data, $query_args );
 			$categories_data = array_map( array( $this, 'cast_numbers' ), $categories_data );
 			$data            = (object) array(
@@ -318,6 +322,74 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Merges child data into parent data to provide cumulative stats on all descendants.
+	 *
+	 * @param array $categories_data Array of category data.
+	 * @param array $query_args Query arguments supplied by the user.
+	 */
+	public function merge_child_category_data( &$categories_data, $query_args ) {
+		$mapped_categories  = $this->map_child_categories( $categories_data );
+		$child_category_ids = call_user_func_array( 'array_merge', $mapped_categories );
+
+		if ( empty( $child_category_ids ) ) {
+			return $categories_data;
+		}
+
+		$query_args['ignore_children'] = true;
+		$query_args['categories']      = $child_category_ids;
+		$child_data                    = $this->get_data( $query_args );
+		$mapped_child_data             = $this->map_array_by_key( $child_data->data, 'category_id' );
+
+		foreach ( $categories_data as $key => $category_data ) {
+			foreach ( $mapped_categories[ $category_data['category_id'] ] as $child_category_id ) {
+				$categories_data[ $key ] = $this->sum_category_values( $categories_data[ $key ], $mapped_child_data[ $child_category_id ] );
+			}
+		}
+	}
+
+	/**
+	 * Add each column type from two different category arrays.
+	 *
+	 * @param array $category Main category.
+	 * @param array $new_category Category to add to main category.
+	 */
+	public function sum_category_values( $category, $new_category ) {
+		foreach ( array_keys( $category ) as $column ) {
+			if ( 'category_id' === $column ) {
+				continue;
+			}
+
+			$category[ $column ] += $new_category[ $column ];
+		}
+		return $category;
+	}
+
+	/**
+	 * Creates a hierarchial map of children categories keyed by parent category IDs.
+	 *
+	 * @param array $categories_data Array of category data.
+	 * @return array
+	 */
+	public function map_child_categories( $categories_data ) {
+		$mapped_categories = array();
+
+		foreach ( $categories_data as $data ) {
+			$child_categories                          = get_terms(
+				'product_cat',
+				array(
+					'parent' => $data['category_id'],
+				)
+			);
+			$mapped_categories[ $data['category_id'] ] = array();
+			foreach ( $child_categories as $child_category ) {
+				$mapped_categories[ $data['category_id'] ][] = $child_category->term_id;
+			}
+		}
+
+		return $mapped_categories;
 	}
 
 	/**
