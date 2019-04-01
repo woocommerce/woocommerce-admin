@@ -49,11 +49,11 @@ Visit the [WooCommerce server requirements documentation](https://docs.woocommer
 
 = Automatic installation =
 
-Automatic installation is the easiest option, as WordPress handles the file transfers and you need not leave your web browser. To perform an automatic install: 
+Automatic installation is the easiest option, as WordPress handles the file transfers and you don't need to leave your web browser. To perform an automatic install: 
 1. Log in to your WordPress dashboard.
-2. Go  to:Plugins > Add New.
-3. Enter “WooCommerce Admin” in the Search field, and  view details about its point release, the rating and description. 
-4. Select  “Install Now” when you’re ready
+2. Go to: Plugins > Add New.
+3. Enter “WooCommerce Admin” in the Search field, and view details about its point release, the rating and description. 
+4. Select “Install Now” when you’re ready
 
 = Manual installation =
 
@@ -67,7 +67,7 @@ Bugs should be reported in the [WooCommerce Admin GitHub repository](https://git
 
 Yes, you can! Join our [GitHub repository](https://github.com/woocommerce/woocommerce-admin/)
 
-Release and roadmap notes are available on the[WooCommerce Developers Blog](https://woocommerce.wordpress.com/2019/01/15/woocommerce-blocks-1-3-0-release-notes/)
+Release and roadmap notes are available on the [WooCommerce Developers Blog](https://woocommerce.wordpress.com/2019/01/15/woocommerce-blocks-1-3-0-release-notes/)
 
 == Screenshots ==
 
