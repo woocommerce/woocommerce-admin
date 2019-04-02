@@ -461,16 +461,17 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 			return $returning_customer_id;
 		}
 
-		$data   = array(
-			'first_name'       => $order->get_billing_first_name( 'edit' ),
-			'last_name'        => $order->get_billing_last_name( 'edit' ),
+		$customer_name = self::get_customer_name_from_order( $order );
+		$data          = array(
+			'first_name'       => $customer_name[0],
+			'last_name'        => $customer_name[1],
 			'email'            => $order->get_billing_email( 'edit' ),
 			'city'             => $order->get_billing_city( 'edit' ),
 			'postcode'         => $order->get_billing_postcode( 'edit' ),
 			'country'          => $order->get_billing_country( 'edit' ),
 			'date_last_active' => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
 		);
-		$format = array(
+		$format        = array(
 			'%s',
 			'%s',
 			'%s',
@@ -503,6 +504,36 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 		do_action( 'woocommerce_reports_new_customer', $customer_id );
 
 		return $result ? $customer_id : false;
+	}
+
+	/**
+	 * Get a customer name from billing, shipping, or user profile.
+	 *
+	 * @param WC_Order $order Order made by customer.
+	 * @return array
+	 */
+	public static function get_customer_name_from_order( $order ) {
+		$first_name = null;
+		$last_name  = null;
+
+		if ( $order->get_billing_first_name( 'edit' ) || $order->get_billing_last_name( 'edit' ) ) {
+			$first_name = $order->get_billing_first_name( 'edit' );
+			$last_name  = $order->get_billing_last_name( 'edit' );
+		} elseif ( $order->get_shipping_first_name( 'edit' ) || $order->get_shipping_last_name( 'edit' ) ) {
+			$first_name = $order->get_shipping_first_name( 'edit' );
+			$last_name  = $order->get_shipping_last_name( 'edit' );
+		} elseif (
+			0 !== $order->get_user_id() &&
+			(
+				get_user_meta( $order->get_user_id(), 'first_name', true ) ||
+				get_user_meta( $order->get_user_id(), 'last_name', true )
+			)
+		) {
+			$first_name = get_user_meta( $order->get_user_id(), 'first_name', true );
+			$last_name  = get_user_meta( $order->get_user_id(), 'last_name', true );
+		}
+
+		return apply_filters( 'woocommerce_customer_name', array( $first_name, $last_name ), $order );
 	}
 
 	/**
