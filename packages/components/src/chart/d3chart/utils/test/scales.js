@@ -12,7 +12,7 @@ import {
 	getOrderedKeys,
 	getUniqueDates,
 } from '../index';
-import { getXGroupScale, getXScale, getXLineScale, getYMax, getYScale } from '../scales';
+import { getXGroupScale, getXScale, getXLineScale, getYAxisLimits, getYScale } from '../scales';
 
 jest.mock( 'd3-scale', () => ( {
 	...require.requireActual( 'd3-scale' ),
@@ -88,26 +88,26 @@ describe( 'X scales', () => {
 } );
 
 describe( 'Y scales', () => {
-	describe( 'getYMax', () => {
-		it( 'calculate the correct maximum y value', () => {
-			expect( getYMax( dummyOrders ) ).toEqual( 15000000 );
+	describe( 'getYAxisLimits', () => {
+		it( 'calculate the correct y value limits', () => {
+			expect( getYAxisLimits( dummyOrders, 100 ) ).toEqual( { lower: 0, upper: 15000000 } );
 		} );
 
-		it( 'return 0 if there is no line data', () => {
-			expect( getYMax( [] ) ).toEqual( 0 );
+		it( 'return baseValue if there is no line data', () => {
+			expect( getYAxisLimits( [], 100 ) ).toEqual( { lower: 100, upper: 100 } );
 		} );
 	} );
 
 	describe( 'getYScale', () => {
 		it( 'creates linear scale with correct parameters', () => {
-			getYScale( 100, 15000000 );
+			getYScale( 100, 0, 15000000, 100 );
 
 			expect( scaleLinear().domain ).toHaveBeenLastCalledWith( [ 0, 15000000 ] );
 			expect( scaleLinear().rangeRound ).toHaveBeenLastCalledWith( [ 100, 0 ] );
 		} );
 
-		it( 'avoids the domain starting and ending at the same point when yMax is 0', () => {
-			getYScale( 100, 0 );
+		it( 'avoids the domain starting and ending at the same point when yMin, yMax and baseValue are the same', () => {
+			getYScale( 100, 100, 100, 100 );
 
 			const args = scaleLinear().domain.mock.calls;
 			const lastArgs = args[ args.length - 1 ][ 0 ];

@@ -22,7 +22,7 @@ import {
 	getXScale,
 	getXGroupScale,
 	getXLineScale,
-	getYMax,
+	getYAxisLimits,
 	getYScale,
 } from './utils/scales';
 import { drawAxis } from './utils/axis';
@@ -57,18 +57,19 @@ class D3Chart extends Component {
 	}
 
 	getScaleParams( uniqueDates ) {
-		const { data, height, orderedKeys, chartType } = this.props;
+		const { baseValue, data, height, orderedKeys, chartType } = this.props;
 		const margin = this.getMargin();
 
 		const adjHeight = height - margin.top - margin.bottom;
 		const adjWidth = this.getWidth() - margin.left - margin.right;
-		const yMax = getYMax( data );
-		const yScale = getYScale( adjHeight, yMax );
+		const { upper: yMax, lower: yMin } = getYAxisLimits( data, baseValue );
+		const yScale = getYScale( adjHeight, yMin, yMax, baseValue );
 
 		if ( chartType === 'line' ) {
 			return {
 				xScale: getXLineScale( uniqueDates, adjWidth ),
 				yMax,
+				yMin,
 				yScale,
 			};
 		}
@@ -80,6 +81,7 @@ class D3Chart extends Component {
 			xGroupScale: getXGroupScale( orderedKeys, xScale, compact ),
 			xScale,
 			yMax,
+			yMin,
 			yScale,
 		};
 	}
@@ -116,7 +118,7 @@ class D3Chart extends Component {
 	}
 
 	drawChart( node ) {
-		const { data, dateParser, chartType } = this.props;
+		const { baseValue, data, dateParser, chartType } = this.props;
 		const margin = this.getMargin();
 		const uniqueDates = getUniqueDates( data, dateParser );
 		const formats = this.getFormatParams();
@@ -130,7 +132,7 @@ class D3Chart extends Component {
 
 		this.createTooltip( g.node(), params.getColor, params.visibleKeys );
 
-		drawAxis( g, params, scales, formats, margin, isRTL() );
+		drawAxis( g, params, scales, formats, margin, baseValue, isRTL() );
 		chartType === 'line' && drawLines( g, data, params, scales, formats, this.tooltip );
 		chartType === 'bar' && drawBars( g, data, params, scales, formats, this.tooltip );
 	}

@@ -173,15 +173,50 @@ export const compareStrings = ( s1, s2, splitChar = new RegExp( [ ' |,' ], 'g' )
 	return diff;
 };
 
-export const getYGrids = ( yMax ) => {
-	const yGrids = [];
+const getNegativeYGrids = ( yMin, baseValue, domain ) => {
+	if ( yMin >= baseValue ) {
+		return [];
+	}
+	const grids = [];
+	const negativeTicks = Math.ceil( yMin >= baseValue ? 0 : 3 * ( Math.abs( yMin - baseValue ) / domain ) );
 
-	for ( let i = 0; i < 4; i++ ) {
-		const value = yMax > 1 ? Math.round( i / 3 * yMax ) : i / 3 * yMax;
-		if ( yGrids[ yGrids.length - 1 ] !== value ) {
-			yGrids.push( value );
+	for ( let i = 0; i < negativeTicks; i++ ) {
+		const val = ( i + 1 ) / negativeTicks * ( yMin - baseValue ) + baseValue;
+		const value = yMin - baseValue < -1 ? Math.round( val ) : val;
+		if ( grids[ grids.length - 1 ] !== value ) {
+			grids.push( value );
 		}
 	}
+
+	return grids;
+};
+
+const getPositiveYGrids = ( yMax, baseValue, domain ) => {
+	if ( yMax <= baseValue ) {
+		return [];
+	}
+	const grids = [];
+	const positiveTicks = Math.ceil( yMax <= baseValue ? 0 : 3 * ( Math.abs( yMax - baseValue ) / domain ) );
+
+	for ( let i = 0; i < positiveTicks; i++ ) {
+		const val = ( i + 1 ) / positiveTicks * ( yMax - baseValue ) + baseValue;
+		const value = yMax - baseValue > 1 ? Math.round( val ) : val;
+		if ( grids[ grids.length - 1 ] !== value ) {
+			grids.push( value );
+		}
+	}
+
+	return grids;
+};
+
+export const getYGrids = ( yMin, yMax, baseValue ) => {
+	const domain = Math.max( yMax, baseValue ) - Math.min( yMin, baseValue );
+
+	const yGrids = [
+		baseValue,
+		...getNegativeYGrids( yMin, baseValue, domain ),
+		...getPositiveYGrids( yMax, baseValue, domain ),
+	];
 
 	return yGrids;
 };
@@ -238,14 +273,15 @@ const drawXAxis = ( node, params, scales, formats ) => {
 		);
 };
 
-const drawYAxis = ( node, scales, formats, margin, isRTL ) => {
-	const yGrids = getYGrids( scales.yScale.domain()[ 1 ] );
+const drawYAxis = ( node, scales, formats, margin, baseValue, isRTL ) => {
+	const yGrids = getYGrids( scales.yScale.domain()[ 0 ], scales.yScale.domain()[ 1 ], baseValue );
 	const width = scales.xScale.range()[ 1 ];
 	const xPosition = isRTL ? width + margin.left + margin.right / 2 - 15 : -margin.left / 2 - 15;
 
+	const withPositiveValuesClass = scales.yMin >= baseValue || scales.yMax > baseValue ? ' with-positive-ticks' : '';
 	node
 		.append( 'g' )
-		.attr( 'class', 'grid' )
+		.attr( 'class', 'grid' + withPositiveValuesClass )
 		.attr( 'transform', `translate(-${ margin.left }, 0)` )
 		.call(
 			d3AxisLeft( scales.yScale )
@@ -262,14 +298,14 @@ const drawYAxis = ( node, scales, formats, margin, isRTL ) => {
 		.attr( 'text-anchor', 'start' )
 		.call(
 			d3AxisLeft( scales.yScale )
-				.tickValues( scales.yMax === 0 ? [ yGrids[ 0 ] ] : yGrids )
+				.tickValues( scales.yMax === baseValue && scales.yMin === baseValue ? [ yGrids[ 0 ] ] : yGrids )
 				.tickFormat( d => formats.yFormat( d !== 0 ? d : 0 ) )
 		);
 };
 
-export const drawAxis = ( node, params, scales, formats, margin, isRTL ) => {
+export const drawAxis = ( node, params, scales, formats, margin, baseValue, isRTL ) => {
 	drawXAxis( node, params, scales, formats );
-	drawYAxis( node, scales, formats, margin, isRTL );
+	drawYAxis( node, scales, formats, margin, baseValue, isRTL );
 
 	node.selectAll( '.domain' ).remove();
 	node.selectAll( '.axis .tick line' ).remove();

@@ -240,19 +240,94 @@ describe( 'compareStrings', () => {
 } );
 
 describe( 'getYGrids', () => {
-	it( 'returns a single 0 when yMax is 0', () => {
-		expect( getYGrids( 0 ) ).toEqual( [ 0 ] );
+	describe( 'when baseValue is 0', () => {
+		it( 'returns a single 0 when yMax, yMin are 0', () => {
+			expect( getYGrids( 0, 0, 0 ) ).toEqual( [ 0 ] );
+		} );
+
+		describe( 'positive charts', () => {
+			it( 'returns decimal values when yMax is <= 1 and yMin is 0', () => {
+				expect( getYGrids( 0, 1, 0 ) ).toEqual( [ 0, 0.3333333333333333, 0.6666666666666666, 1 ] );
+			} );
+
+			it( 'returns decimal values when yMax and yMin are <= 1', () => {
+				expect( getYGrids( 1, 1, 0 ) ).toEqual( [ 0, 0.3333333333333333, 0.6666666666666666, 1 ] );
+			} );
+
+			it( 'doesn\'t return decimal values when yMax is > 1', () => {
+				expect( getYGrids( 0, 2, 0 ) ).toEqual( [ 0, 1, 2 ] );
+			} );
+
+			it( 'returns up to four values when yMax is a big number', () => {
+				expect( getYGrids( 0, 10000, 0 ) ).toEqual( [ 0, 3333, 6667, 10000 ] );
+			} );
+		} );
+
+		describe( 'negative charts', () => {
+			it( 'returns decimal values when yMin is >= -1 and yMax and baseValue are 0', () => {
+				expect( getYGrids( -1, 0, 0 ) ).toEqual( [ 0, -0.3333333333333333, -0.6666666666666666, -1 ] );
+			} );
+
+			it( 'returns decimal values when yMax and yMin are >= -1', () => {
+				expect( getYGrids( -1, -1, 0 ) ).toEqual( [ 0, -0.3333333333333333, -0.6666666666666666, -1 ] );
+			} );
+
+			it( 'doesn\'t return decimal values when yMin is < -1', () => {
+				expect( getYGrids( -2, 0, 0 ) ).toEqual( [ 0, -1, -2 ] );
+			} );
+
+			it( 'returns up to four values when yMin is a big negative number', () => {
+				expect( getYGrids( -10000, 0, 0 ) ).toEqual( [ 0, -3333, -6667, -10000 ] );
+			} );
+		} );
+
+		describe( 'positive & negative charts', () => {
+			it( 'returns decimal values when yMax is <= 1 and yMin is 0', () => {
+				expect( getYGrids( -1, 1, 0 ) ).toEqual( [ 0, -0.5, -1, 0.5, 1 ] );
+			} );
+
+			it( 'doesn\'t return decimal values when yMax is >1', () => {
+				expect( getYGrids( -2, 2, 0 ) ).toEqual( [ 0, -1, -2, 1, 2 ] );
+			} );
+
+			it( 'returns up to four values when yMax is a big number', () => {
+				expect( getYGrids( -10000, 10000, 0 ) ).toEqual( [ 0, -5000, -10000, 5000, 10000 ] );
+			} );
+		} );
 	} );
 
-	it( 'returns decimal values when yMax is <= 1', () => {
-		expect( getYGrids( 1 ) ).toEqual( [ 0, 0.3333333333333333, 0.6666666666666666, 1 ] );
-	} );
+	describe( 'when baseValue is not 0', () => {
+		it( 'returns a single value when yMax, yMin = baseValue', () => {
+			expect( getYGrids( 100, 100, 100 ) ).toEqual( [ 100 ] );
+		} );
 
-	it( 'doesn\'t return decimal values when yMax is >1', () => {
-		expect( getYGrids( 2 ) ).toEqual( [ 0, 1, 2 ] );
-	} );
+		it( 'returns decimal values when yMax and yMin are 1 unit higher than baseValue', () => {
+			expect( getYGrids( 101, 101, 100 ) ).toEqual( [ 100, 100.3333333333333333, 100.6666666666666666, 101 ] );
+		} );
 
-	it( 'returns up to four values when yMax is a big number', () => {
-		expect( getYGrids( 10000 ) ).toEqual( [ 0, 3333, 6667, 10000 ] );
+		it( 'returns decimal values when yMax and yMin are 1 unit lower than baseValue', () => {
+			expect( getYGrids( 99, 99, 100 ) ).toEqual( [ 100, 99.6666666666666666, 99.3333333333333333, 99 ] );
+		} );
+
+		it( 'returns decimal values when yMax and yMin are 1 unit higher/lower than baseValue', () => {
+			expect( getYGrids( 99, 101, 100 ) ).toEqual( [ 100, 99.5, 99, 100.5, 101 ] );
+		} );
+
+		it( 'doesn\'t return decimal values when the differente between yMax or yMin and baseValue is bigger than 1 unit', () => {
+			expect( getYGrids( 100, 102, 100 ) ).toEqual( [ 100, 101, 102 ] );
+			expect( getYGrids( 98, 100, 100 ) ).toEqual( [ 100, 99, 98 ] );
+		} );
+
+		it( 'returns up to five values when yMax and yMin difference with baseValue is bigger than 1', () => {
+			expect( getYGrids( 98, 102, 100 ) ).toEqual( [ 100, 99, 98, 101, 102 ] );
+		} );
+
+		it( 'returns up to four values when yMax difference with baseValue is bigger than 1', () => {
+			expect( getYGrids( 100, 10100, 100 ) ).toEqual( [ 100, 3433, 6767, 10100 ] );
+		} );
+
+		it( 'returns up to four values when yMin difference with baseValue is bigger than 1', () => {
+			expect( getYGrids( -9900, 100, 100 ) ).toEqual( [ 100, -3233, -6567, -9900 ] );
+		} );
 	} );
 } );

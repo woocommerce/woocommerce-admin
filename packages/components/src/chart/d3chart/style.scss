@@ -129,13 +129,10 @@
 					stroke: $core-grey-dark-500;
 				}
 			}
-
-			&:last-child {
-				line {
-					opacity: 0;
-				}
-			}
 		}
+	}
+	.grid.with-positive-ticks .tick:last-child line {
+		opacity: 0;
 	}
 	.tick {
 		padding-top: 10px;
