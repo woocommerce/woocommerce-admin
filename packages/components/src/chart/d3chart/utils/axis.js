@@ -173,16 +173,16 @@ export const compareStrings = ( s1, s2, splitChar = new RegExp( [ ' |,' ], 'g' )
 	return diff;
 };
 
-const getNegativeYGrids = ( yMin, baseValue, domain ) => {
-	if ( yMin >= baseValue ) {
+const getNegativeYGrids = ( yMin, domain ) => {
+	if ( yMin >= 0 ) {
 		return [];
 	}
 	const grids = [];
-	const negativeTicks = Math.ceil( yMin >= baseValue ? 0 : 3 * ( Math.abs( yMin - baseValue ) / domain ) );
+	const negativeTicks = Math.ceil( yMin >= 0 ? 0 : 3 * ( Math.abs( yMin ) / domain ) );
 
 	for ( let i = 0; i < negativeTicks; i++ ) {
-		const val = ( i + 1 ) / negativeTicks * ( yMin - baseValue ) + baseValue;
-		const value = yMin - baseValue < -1 ? Math.round( val ) : val;
+		const val = ( i + 1 ) / negativeTicks * yMin;
+		const value = yMin < -1 ? Math.round( val ) : val;
 		if ( grids[ grids.length - 1 ] !== value ) {
 			grids.push( value );
 		}
@@ -191,16 +191,16 @@ const getNegativeYGrids = ( yMin, baseValue, domain ) => {
 	return grids;
 };
 
-const getPositiveYGrids = ( yMax, baseValue, domain ) => {
-	if ( yMax <= baseValue ) {
+const getPositiveYGrids = ( yMax, domain ) => {
+	if ( yMax <= 0 ) {
 		return [];
 	}
 	const grids = [];
-	const positiveTicks = Math.ceil( yMax <= baseValue ? 0 : 3 * ( Math.abs( yMax - baseValue ) / domain ) );
+	const positiveTicks = Math.ceil( yMax <= 0 ? 0 : 3 * ( Math.abs( yMax ) / domain ) );
 
 	for ( let i = 0; i < positiveTicks; i++ ) {
-		const val = ( i + 1 ) / positiveTicks * ( yMax - baseValue ) + baseValue;
-		const value = yMax - baseValue > 1 ? Math.round( val ) : val;
+		const val = ( i + 1 ) / positiveTicks * yMax;
+		const value = yMax > 1 ? Math.round( val ) : val;
 		if ( grids[ grids.length - 1 ] !== value ) {
 			grids.push( value );
 		}
@@ -209,13 +209,13 @@ const getPositiveYGrids = ( yMax, baseValue, domain ) => {
 	return grids;
 };
 
-export const getYGrids = ( yMin, yMax, baseValue ) => {
-	const domain = Math.max( yMax, baseValue ) - Math.min( yMin, baseValue );
+export const getYGrids = ( yMin, yMax ) => {
+	const domain = yMax - yMin || 1;
 
 	const yGrids = [
-		baseValue,
-		...getNegativeYGrids( yMin, baseValue, domain ),
-		...getPositiveYGrids( yMax, baseValue, domain ),
+		0,
+		...getNegativeYGrids( yMin, domain ),
+		...getPositiveYGrids( yMax, domain ),
 	];
 
 	return yGrids;
@@ -273,12 +273,12 @@ const drawXAxis = ( node, params, scales, formats ) => {
 		);
 };
 
-const drawYAxis = ( node, scales, formats, margin, baseValue, isRTL ) => {
-	const yGrids = getYGrids( scales.yScale.domain()[ 0 ], scales.yScale.domain()[ 1 ], baseValue );
+const drawYAxis = ( node, scales, formats, margin, isRTL ) => {
+	const yGrids = getYGrids( scales.yScale.domain()[ 0 ], scales.yScale.domain()[ 1 ] );
 	const width = scales.xScale.range()[ 1 ];
 	const xPosition = isRTL ? width + margin.left + margin.right / 2 - 15 : -margin.left / 2 - 15;
 
-	const withPositiveValuesClass = scales.yMin >= baseValue || scales.yMax > baseValue ? ' with-positive-ticks' : '';
+	const withPositiveValuesClass = scales.yMin >= 0 || scales.yMax > 0 ? ' with-positive-ticks' : '';
 	node
 		.append( 'g' )
 		.attr( 'class', 'grid' + withPositiveValuesClass )
@@ -298,14 +298,14 @@ const drawYAxis = ( node, scales, formats, margin, baseValue, isRTL ) => {
 		.attr( 'text-anchor', 'start' )
 		.call(
 			d3AxisLeft( scales.yScale )
-				.tickValues( scales.yMax === baseValue && scales.yMin === baseValue ? [ yGrids[ 0 ] ] : yGrids )
+				.tickValues( scales.yMax === 0 && scales.yMin === 0 ? [ yGrids[ 0 ] ] : yGrids )
 				.tickFormat( d => formats.yFormat( d !== 0 ? d : 0 ) )
 		);
 };
 
-export const drawAxis = ( node, params, scales, formats, margin, baseValue, isRTL ) => {
+export const drawAxis = ( node, params, scales, formats, margin, isRTL ) => {
 	drawXAxis( node, params, scales, formats );
-	drawYAxis( node, scales, formats, margin, baseValue, isRTL );
+	drawYAxis( node, scales, formats, margin, isRTL );
 
 	node.selectAll( '.domain' ).remove();
 	node.selectAll( '.axis .tick line' ).remove();

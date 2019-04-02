@@ -78,23 +78,22 @@ const expandDomain = ( val ) => {
 /**
  * Describes and rounds the maximum y value to the nearest thousand, ten-thousand, million etc. In case it is a decimal number, ceils it.
  * @param {array} data - The chart component's `data` prop.
- * @param {number} baseValue - base value to test data values against
  * @returns {number} the maximum value in the timeseries multiplied by 4/3
  */
-export const getYAxisLimits = ( data, baseValue ) => {
+export const getYAxisLimits = data => {
 	const { upper: maxValue, lower: minValue } = getYValueLimits( data );
-	const limits = { upper: baseValue, lower: baseValue };
-	const domain = Math.max( maxValue - baseValue, baseValue - minValue );
+	const limits = { upper: 0, lower: 0 };
+	const domain = Math.max( maxValue, -minValue );
 	const domainSpace = Math.max( expandDomain( domain ) / 3, 1 );
 
-	if ( Number.isFinite( maxValue ) || maxValue > baseValue ) {
-		limits.upper = Math.ceil( ( maxValue - baseValue ) / domainSpace ) * domainSpace + baseValue;
+	if ( Number.isFinite( maxValue ) || maxValue > 0 ) {
+		limits.upper = Math.ceil( maxValue / domainSpace ) * domainSpace;
 		if ( limits.upper === maxValue ) {
 			limits.upper += domainSpace;
 		}
 	}
-	if ( Number.isFinite( minValue ) || minValue < baseValue ) {
-		limits.lower = Math.floor( ( minValue - baseValue ) / domainSpace ) * domainSpace + baseValue;
+	if ( Number.isFinite( minValue ) || minValue < 0 ) {
+		limits.lower = Math.floor( minValue / domainSpace ) * domainSpace;
 		if ( limits.lower === minValue ) {
 			limits.lower -= domainSpace;
 		}
@@ -108,10 +107,9 @@ export const getYAxisLimits = ( data, baseValue ) => {
  * @param {number} height - calculated height of the charting space
  * @param {number} yMin - minimum y value
  * @param {number} yMax - maximum y value
- * @param {number} baseValue - base value to test data values against
  * @returns {function} the D3 linear scale from 0 to the value from `getYMax`
  */
-export const getYScale = ( height, yMin, yMax, baseValue ) =>
+export const getYScale = ( height, yMin, yMax ) =>
 	d3ScaleLinear()
-		.domain( [ Math.min( yMin, baseValue ), yMax === baseValue && yMin === baseValue ? baseValue + 1 : Math.max( yMax, baseValue ) ] )
+		.domain( [ Math.min( yMin, 0 ), yMax === 0 && yMin === 0 ? 1 : Math.max( yMax, 0 ) ] )
 		.rangeRound( [ height, 0 ] );
