@@ -32,8 +32,6 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 
 	/**
 	 * Register routes.
-	 *
-	 * @since 3.5.0
 	 */
 	public function register_routes() {
 		register_rest_route(
@@ -128,7 +126,6 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 	/**
 	 * Return all level items and child tasks.
 	 *
-	 * @since  3.5.0
 	 * @param  WP_REST_Request $request Request data.
 	 * @return WP_Error|WP_REST_Response
 	 */
@@ -151,7 +148,6 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 	/**
 	 * Prepare the data object for response.
 	 *
-	 * @since  3.5.0
 	 * @param object          $item Data object.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response $response Response data.
