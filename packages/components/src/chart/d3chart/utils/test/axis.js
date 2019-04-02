@@ -240,7 +240,7 @@ describe( 'compareStrings', () => {
 } );
 
 describe( 'getYGrids', () => {
-	it( 'returns a single 0 when yMax, yMin are 0', () => {
+	it( 'returns a single 0 when yMax and yMin are 0', () => {
 		expect( getYGrids( 0, 0 ) ).toEqual( [ 0 ] );
 	} );
 
@@ -285,11 +285,11 @@ describe( 'getYGrids', () => {
 			expect( getYGrids( -1, 1 ) ).toEqual( [ 0, -0.5, -1, 0.5, 1 ] );
 		} );
 
-		it( 'doesn\'t return decimal values when yMax is >1', () => {
+		it( 'doesn\'t return decimal values when yMax is > 1', () => {
 			expect( getYGrids( -2, 2 ) ).toEqual( [ 0, -1, -2, 1, 2 ] );
 		} );
 
-		it( 'returns up to four values when yMax is a big number', () => {
+		it( 'returns up to five values when yMax is a big number', () => {
 			expect( getYGrids( -10000, 10000 ) ).toEqual( [ 0, -5000, -10000, 5000, 10000 ] );
 		} );
 	} );

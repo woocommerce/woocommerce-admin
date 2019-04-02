@@ -99,10 +99,17 @@ describe( 'Y scales', () => {
 	} );
 
 	describe( 'getYScale', () => {
-		it( 'creates linear scale with correct parameters', () => {
+		it( 'creates positive linear scale with correct parameters', () => {
 			getYScale( 100, 0, 15000000 );
 
 			expect( scaleLinear().domain ).toHaveBeenLastCalledWith( [ 0, 15000000 ] );
+			expect( scaleLinear().rangeRound ).toHaveBeenLastCalledWith( [ 100, 0 ] );
+		} );
+
+		it( 'creates negative linear scale with correct parameters', () => {
+			getYScale( 100, -15000000, 0 );
+
+			expect( scaleLinear().domain ).toHaveBeenLastCalledWith( [ -15000000, 0 ] );
 			expect( scaleLinear().rangeRound ).toHaveBeenLastCalledWith( [ 100, 0 ] );
 		} );
 
