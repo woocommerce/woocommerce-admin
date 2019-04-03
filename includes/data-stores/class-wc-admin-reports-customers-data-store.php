@@ -622,12 +622,13 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 			return false;
 		}
 
-		$last_active = $customer->get_meta( 'wc_last_active', true, 'edit' );
-		$data        = array(
+		$customer_name = self::get_customer_name( $user_id, $customer->get_last_order() );
+		$last_active   = $customer->get_meta( 'wc_last_active', true, 'edit' );
+		$data          = array(
 			'user_id'          => $user_id,
 			'username'         => $customer->get_username( 'edit' ),
-			'first_name'       => $customer->get_first_name( 'edit' ),
-			'last_name'        => $customer->get_last_name( 'edit' ),
+			'first_name'       => $customer_name[0],
+			'last_name'        => $customer_name[1],
 			'email'            => $customer->get_email( 'edit' ),
 			'city'             => $customer->get_billing_city( 'edit' ),
 			'postcode'         => $customer->get_billing_postcode( 'edit' ),
@@ -635,7 +636,7 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 			'date_registered'  => $customer->get_date_created( 'edit' )->date( WC_Admin_Reports_Interval::$sql_datetime_format ),
 			'date_last_active' => $last_active ? date( 'Y-m-d H:i:s', $last_active ) : null,
 		);
-		$format      = array(
+		$format        = array(
 			'%d',
 			'%s',
 			'%s',
