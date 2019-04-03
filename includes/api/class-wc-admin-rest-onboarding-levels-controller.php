@@ -55,11 +55,9 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 	 */
 	public function get_levels() {
 		$levels = array(
-			array(
-				'id'    => 'account',
+			'account'    => array(
 				'tasks' => array(
-					array(
-						'id'           => 'create_account',
+					'create_account' => array(
 						'label'        => __( 'Create an account', 'woocommerce-admin' ),
 						'description'  => __( 'Speed up & secure your store', 'woocommerce-admin' ),
 						'illustration' => '',
@@ -68,19 +66,16 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 					),
 				),
 			),
-			array(
-				'id'    => 'storefront',
+			'storefront' => array(
 				'tasks' => array(
-					array(
-						'id'           => 'add_products',
+					'add_products'         => array(
 						'label'        => __( 'Add your products', 'woocommerce-admin' ),
 						'description'  => __( 'Bring your store to life', 'woocommerce-admin' ),
 						'illustration' => '',
 						'status'       => 'visible',
 						'is_required'  => true,
 					),
-					array(
-						'id'           => 'customize_appearance',
+					'customize_appearance' => array(
 						'label'        => __( 'Customize Appearance', 'woocommerce-admin' ),
 						'description'  => __( 'Ensure your store is on-brand', 'woocommerce-admin' ),
 						'illustration' => '',
@@ -89,27 +84,24 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 					),
 				),
 			),
-			array(
+			'checkout'   => array(
 				'id'    => 'checkout',
 				'tasks' => array(
-					array(
-						'id'           => 'configure_shipping',
+					'configure_shipping' => array(
 						'label'        => __( 'Configure shipping', 'woocommerce-admin' ),
 						'description'  => __( 'Set up prices and destinations', 'woocommerce-admin' ),
 						'illustration' => '',
 						'status'       => 'visible',
 						'is_required'  => true,
 					),
-					array(
-						'id'           => 'configure_taxes',
+					'configure_taxes'    => array(
 						'label'        => __( 'Configure taxes', 'woocommerce-admin' ),
 						'description'  => __( 'Set up sales tax rates', 'woocommerce-admin' ),
 						'illustration' => '',
 						'status'       => 'visible',
 						'is_required'  => false,
 					),
-					array(
-						'id'           => 'configure_payments',
+					'configure_payments' => array(
 						'label'        => __( 'Configure payments', 'woocommerce-admin' ),
 						'description'  => __( 'Choose payment providers', 'woocommerce-admin' ),
 						'illustration' => '',
@@ -136,7 +128,8 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 		$data   = array();
 
 		if ( ! empty( $levels ) ) {
-			foreach ( $levels as $level ) {
+			foreach ( $levels as $id => $level ) {
+				$level    = $this->convert_to_non_associative( $level, $id );
 				$response = $this->prepare_item_for_response( $level, $request );
 				$data[]   = $this->prepare_response_for_collection( $response );
 			}
@@ -167,6 +160,25 @@ class WC_Admin_REST_Onboarding_Levels_Controller extends WC_REST_Data_Controller
 		 * @param WP_REST_Request  $request  Request used to generate the response.
 		 */
 		return apply_filters( 'woocommerce_rest_prepare_onboarding_level', $response, $item, $request );
+	}
+
+	/**
+	 * Convert the associative levels and tasks to non-associative for JSON use.
+	 *
+	 * @param array  $item Level.
+	 * @param string $id Level ID.
+	 * @return array
+	 */
+	public function convert_to_non_associative( $item, $id ) {
+		$item = array( 'id' => $id ) + $item;
+
+		$tasks = array();
+		foreach ( $item['tasks'] as $key => $task ) {
+			$tasks[] = array( 'id' => $key ) + $task;
+		}
+		$item['tasks'] = $tasks;
+
+		return $item;
 	}
 
 	/**
