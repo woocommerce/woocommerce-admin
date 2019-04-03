@@ -78,7 +78,7 @@ const calculateStep = ( minValue, maxValue ) => {
 	const maxLimit = 4 / 3 * maxAbsValue;
 	const pow3Y = Math.pow( 10, ( ( Math.log( maxLimit ) * Math.LOG10E + 1 ) | 0 ) - 2 ) * 3;
 
-	return Math.max( Math.ceil( Math.ceil( maxLimit / pow3Y ) * pow3Y / 3 ), 1 );
+	return Math.max( Math.ceil( Math.ceil( maxLimit / pow3Y ) * pow3Y / 3 ), 1 / 3 );
 };
 
 /**
@@ -94,13 +94,13 @@ export const getYScaleLimits = data => {
 
 	if ( Number.isFinite( minValue ) || minValue < 0 ) {
 		limits.lower = Math.floor( minValue / step ) * step;
-		if ( limits.lower === minValue ) {
+		if ( limits.lower === minValue && minValue !== 0 ) {
 			limits.lower -= step;
 		}
 	}
 	if ( Number.isFinite( maxValue ) || maxValue > 0 ) {
 		limits.upper = Math.ceil( maxValue / step ) * step;
-		if ( limits.upper === maxValue ) {
+		if ( limits.upper === maxValue && maxValue !== 0 ) {
 			limits.upper += step;
 		}
 	}
