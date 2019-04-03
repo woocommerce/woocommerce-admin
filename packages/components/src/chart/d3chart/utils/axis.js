@@ -173,52 +173,48 @@ export const compareStrings = ( s1, s2, splitChar = new RegExp( [ ' |,' ], 'g' )
 	return diff;
 };
 
-const getNegativeYGrids = ( yMin, domain ) => {
+const getNegativeYGrids = ( yMin, step ) => {
 	if ( yMin >= 0 ) {
 		return [];
 	}
 	const grids = [];
-	const negativeTicks = Math.ceil( yMin >= 0 ? 0 : 3 * ( Math.abs( yMin ) / domain ) );
+	const negativeTicks = yMin >= 0 ? 0 : Math.ceil( Math.abs( yMin ) / step );
 
 	for ( let i = 0; i < negativeTicks; i++ ) {
 		const val = ( i + 1 ) / negativeTicks * yMin;
-		const value = yMin < -1 ? Math.round( val ) : val;
-		if ( grids[ grids.length - 1 ] !== value ) {
-			grids.push( value );
+		const roundedVal = yMin < -1 ? Math.round( val ) : val;
+		if ( grids[ grids.length - 1 ] !== roundedVal ) {
+			grids.push( roundedVal );
 		}
 	}
 
 	return grids;
 };
 
-const getPositiveYGrids = ( yMax, domain ) => {
+const getPositiveYGrids = ( yMax, step ) => {
 	if ( yMax <= 0 ) {
 		return [];
 	}
 	const grids = [];
-	const positiveTicks = Math.ceil( yMax <= 0 ? 0 : 3 * ( Math.abs( yMax ) / domain ) );
+	const positiveTicks = yMax <= 0 ? 0 : Math.ceil( Math.abs( yMax ) / step );
 
 	for ( let i = 0; i < positiveTicks; i++ ) {
 		const val = ( i + 1 ) / positiveTicks * yMax;
-		const value = yMax > 1 ? Math.round( val ) : val;
-		if ( grids[ grids.length - 1 ] !== value ) {
-			grids.push( value );
+		const roundedVal = yMax > 1 ? Math.round( val ) : val;
+		if ( grids[ grids.length - 1 ] !== roundedVal ) {
+			grids.push( roundedVal );
 		}
 	}
 
 	return grids;
 };
 
-export const getYGrids = ( yMin, yMax ) => {
-	const domain = yMax - yMin || 1;
-
-	const yGrids = [
+export const getYGrids = ( yMin, yMax, step ) => {
+	return [
 		0,
-		...getNegativeYGrids( yMin, domain ),
-		...getPositiveYGrids( yMax, domain ),
+		...getNegativeYGrids( yMin, step ),
+		...getPositiveYGrids( yMax, step ),
 	];
-
-	return yGrids;
 };
 
 const removeDuplicateDates = ( d, i, ticks, formatter ) => {
@@ -274,7 +270,7 @@ const drawXAxis = ( node, params, scales, formats ) => {
 };
 
 const drawYAxis = ( node, scales, formats, margin, isRTL ) => {
-	const yGrids = getYGrids( scales.yScale.domain()[ 0 ], scales.yScale.domain()[ 1 ] );
+	const yGrids = getYGrids( scales.yScale.domain()[ 0 ], scales.yScale.domain()[ 1 ], scales.step );
 	const width = scales.xScale.range()[ 1 ];
 	const xPosition = isRTL ? width + margin.left + margin.right / 2 - 15 : -margin.left / 2 - 15;
 

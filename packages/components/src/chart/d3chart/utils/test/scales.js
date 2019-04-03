@@ -12,7 +12,7 @@ import {
 	getOrderedKeys,
 	getUniqueDates,
 } from '../index';
-import { getXGroupScale, getXScale, getXLineScale, getYAxisLimits, getYScale } from '../scales';
+import { getXGroupScale, getXScale, getXLineScale, getYScaleLimits, getYScale } from '../scales';
 
 jest.mock( 'd3-scale', () => ( {
 	...require.requireActual( 'd3-scale' ),
@@ -88,13 +88,13 @@ describe( 'X scales', () => {
 } );
 
 describe( 'Y scales', () => {
-	describe( 'getYAxisLimits', () => {
+	describe( 'getYScaleLimits', () => {
 		it( 'calculate the correct y value limits', () => {
-			expect( getYAxisLimits( dummyOrders ) ).toEqual( { lower: 0, upper: 15000000 } );
+			expect( getYScaleLimits( dummyOrders ) ).toEqual( { lower: 0, upper: 15000000, step: 5000000 } );
 		} );
 
 		it( 'return 0 if there is no line data', () => {
-			expect( getYAxisLimits( [] ) ).toEqual( { lower: 0, upper: 0 } );
+			expect( getYScaleLimits( [] ) ).toEqual( { lower: 0, upper: 0, step: 1 } );
 		} );
 	} );
 

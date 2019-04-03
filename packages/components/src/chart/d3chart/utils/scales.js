@@ -69,10 +69,12 @@ const getYValueLimits = data => {
 	return { upper: maxYValue, lower: minYValue };
 };
 
-const expandDomain = ( val ) => {
-  const yMax = 4 / 3 * val;
-  const pow3Y = Math.pow( 10, ( ( Math.log( yMax ) * Math.LOG10E + 1 ) | 0 ) - 2 ) * 3;
-  return Math.ceil( Math.ceil( yMax / pow3Y ) * pow3Y );
+const calculateStep = ( minValue, maxValue ) => {
+	const domain = Math.max( maxValue, -minValue );
+	const yMax = 4 / 3 * domain;
+	const pow3Y = Math.pow( 10, ( ( Math.log( yMax ) * Math.LOG10E + 1 ) | 0 ) - 2 ) * 3;
+
+	return Math.max( Math.ceil( Math.ceil( yMax / pow3Y ) * pow3Y / 3 ), 1 );
 };
 
 /**
@@ -80,22 +82,21 @@ const expandDomain = ( val ) => {
  * @param {array} data - The chart component's `data` prop.
  * @returns {number} the maximum value in the timeseries multiplied by 4/3
  */
-export const getYAxisLimits = data => {
-	const { upper: maxValue, lower: minValue } = getYValueLimits( data );
-	const limits = { upper: 0, lower: 0 };
-	const domain = Math.max( maxValue, -minValue );
-	const domainSpace = Math.max( expandDomain( domain ) / 3, 1 );
+export const getYScaleLimits = data => {
+	const { lower: minValue, upper: maxValue } = getYValueLimits( data );
+	const step = calculateStep( minValue, maxValue );
+	const limits = { lower: 0, upper: 0, step };
 
-	if ( Number.isFinite( maxValue ) || maxValue > 0 ) {
-		limits.upper = Math.ceil( maxValue / domainSpace ) * domainSpace;
-		if ( limits.upper === maxValue ) {
-			limits.upper += domainSpace;
+	if ( Number.isFinite( minValue ) || minValue < 0 ) {
+		limits.lower = Math.floor( minValue / step ) * step;
+		if ( limits.lower === minValue ) {
+			limits.lower -= step;
 		}
 	}
-	if ( Number.isFinite( minValue ) || minValue < 0 ) {
-		limits.lower = Math.floor( minValue / domainSpace ) * domainSpace;
-		if ( limits.lower === minValue ) {
-			limits.lower -= domainSpace;
+	if ( Number.isFinite( maxValue ) || maxValue > 0 ) {
+		limits.upper = Math.ceil( maxValue / step ) * step;
+		if ( limits.upper === maxValue ) {
+			limits.upper += step;
 		}
 	}
 
