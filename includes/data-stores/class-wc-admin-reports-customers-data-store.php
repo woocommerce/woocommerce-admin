@@ -461,7 +461,7 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 			return $returning_customer_id;
 		}
 
-		$customer_name = self::get_customer_name_from_order( $order );
+		$customer_name = self::get_customer_name( $order->get_user_id(), $order );
 		$data          = array(
 			'first_name'       => $customer_name[0],
 			'last_name'        => $customer_name[1],
@@ -507,30 +507,37 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	}
 
 	/**
-	 * Get a customer name from billing, shipping, or user profile.
+	 * Try to get a customer name from user profile or order information.
 	 *
+	 * @param int      $user_id User ID.
 	 * @param WC_Order $order Order made by customer.
 	 * @return array
 	 */
-	public static function get_customer_name_from_order( $order ) {
+	public static function get_customer_name( $user_id = 0, $order = null ) {
 		$first_name = null;
 		$last_name  = null;
 
-		if ( $order->get_billing_first_name( 'edit' ) || $order->get_billing_last_name( 'edit' ) ) {
+		if (
+			$user_id &&
+			get_user_meta( $user_id, 'first_name', true ) ||
+			get_user_meta( $user_id, 'last_name', true )
+		) {
+			$first_name = get_user_meta( $user_id, 'first_name', true );
+			$last_name  = get_user_meta( $user_id, 'last_name', true );
+		} elseif (
+			$order &&
+			$order->get_billing_first_name( 'edit' ) ||
+			$order->get_billing_last_name( 'edit' )
+		) {
 			$first_name = $order->get_billing_first_name( 'edit' );
 			$last_name  = $order->get_billing_last_name( 'edit' );
-		} elseif ( $order->get_shipping_first_name( 'edit' ) || $order->get_shipping_last_name( 'edit' ) ) {
+		} elseif (
+			$order &&
+			$order->get_shipping_first_name( 'edit' ) ||
+			$order->get_shipping_last_name( 'edit' )
+		) {
 			$first_name = $order->get_shipping_first_name( 'edit' );
 			$last_name  = $order->get_shipping_last_name( 'edit' );
-		} elseif (
-			0 !== $order->get_user_id() &&
-			(
-				get_user_meta( $order->get_user_id(), 'first_name', true ) ||
-				get_user_meta( $order->get_user_id(), 'last_name', true )
-			)
-		) {
-			$first_name = get_user_meta( $order->get_user_id(), 'first_name', true );
-			$last_name  = get_user_meta( $order->get_user_id(), 'last_name', true );
 		}
 
 		return apply_filters( 'woocommerce_customer_name', array( $first_name, $last_name ), $order );
