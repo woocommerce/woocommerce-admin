@@ -70,17 +70,22 @@ const getYValueLimits = data => {
 };
 
 const calculateStep = ( minValue, maxValue ) => {
-	const domain = Math.max( maxValue, -minValue );
-	const yMax = 4 / 3 * domain;
-	const pow3Y = Math.pow( 10, ( ( Math.log( yMax ) * Math.LOG10E + 1 ) | 0 ) - 2 ) * 3;
+	if ( ! Number.isFinite( minValue ) || ! Number.isFinite( maxValue ) ) {
+		return 1;
+	}
 
-	return Math.max( Math.ceil( Math.ceil( yMax / pow3Y ) * pow3Y / 3 ), 1 );
+	const maxAbsValue = Math.max( -minValue, maxValue );
+	const maxLimit = 4 / 3 * maxAbsValue;
+	const pow3Y = Math.pow( 10, ( ( Math.log( maxLimit ) * Math.LOG10E + 1 ) | 0 ) - 2 ) * 3;
+
+	return Math.max( Math.ceil( Math.ceil( maxLimit / pow3Y ) * pow3Y / 3 ), 1 );
 };
 
 /**
- * Describes and rounds the maximum y value to the nearest thousand, ten-thousand, million etc. In case it is a decimal number, ceils it.
+ * Returns the lower and upper limits of the Y scale and the calculated step to use in the axis, rounding
+ * them to the nearest thousand, ten-thousand, million etc. In case it is a decimal number, ceils it.
  * @param {array} data - The chart component's `data` prop.
- * @returns {number} the maximum value in the timeseries multiplied by 4/3
+ * @returns {object} Object containing the `lower` and `upper` limits and a `step` value.
  */
 export const getYScaleLimits = data => {
 	const { lower: minValue, upper: maxValue } = getYValueLimits( data );

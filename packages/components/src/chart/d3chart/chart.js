@@ -22,8 +22,8 @@ import {
 	getXScale,
 	getXGroupScale,
 	getXLineScale,
-	getYScaleLimits,
 	getYScale,
+	getYScaleLimits,
 } from './utils/scales';
 import { drawAxis } from './utils/axis';
 import { drawBars } from './utils/bar-chart';

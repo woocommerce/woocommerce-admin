@@ -173,40 +173,36 @@ export const compareStrings = ( s1, s2, splitChar = new RegExp( [ ' |,' ], 'g' )
 	return diff;
 };
 
-const getNegativeYGrids = ( yMin, step ) => {
-	if ( yMin >= 0 ) {
-		return [];
-	}
+const calculateYGridValues = ( numberOfTicks, limit, roundValues ) => {
 	const grids = [];
-	const negativeTicks = yMin >= 0 ? 0 : Math.ceil( Math.abs( yMin ) / step );
 
-	for ( let i = 0; i < negativeTicks; i++ ) {
-		const val = ( i + 1 ) / negativeTicks * yMin;
-		const roundedVal = yMin < -1 ? Math.round( val ) : val;
-		if ( grids[ grids.length - 1 ] !== roundedVal ) {
-			grids.push( roundedVal );
+	for ( let i = 0; i < numberOfTicks; i++ ) {
+		const val = ( i + 1 ) / numberOfTicks * limit;
+		const rVal = roundValues ? Math.round( val ) : val;
+		if ( grids[ grids.length - 1 ] !== rVal ) {
+			grids.push( rVal );
 		}
 	}
 
 	return grids;
 };
 
+const getNegativeYGrids = ( yMin, step ) => {
+	if ( yMin >= 0 ) {
+		return [];
+	}
+
+	const numberOfTicks = Math.ceil( -yMin / step );
+	return calculateYGridValues( numberOfTicks, yMin, yMin < -1 );
+};
+
 const getPositiveYGrids = ( yMax, step ) => {
 	if ( yMax <= 0 ) {
 		return [];
 	}
-	const grids = [];
-	const positiveTicks = yMax <= 0 ? 0 : Math.ceil( Math.abs( yMax ) / step );
 
-	for ( let i = 0; i < positiveTicks; i++ ) {
-		const val = ( i + 1 ) / positiveTicks * yMax;
-		const roundedVal = yMax > 1 ? Math.round( val ) : val;
-		if ( grids[ grids.length - 1 ] !== roundedVal ) {
-			grids.push( roundedVal );
-		}
-	}
-
-	return grids;
+	const numberOfTicks = Math.ceil( yMax / step );
+	return calculateYGridValues( numberOfTicks, yMax, yMax > 1 );
 };
 
 export const getYGrids = ( yMin, yMax, step ) => {

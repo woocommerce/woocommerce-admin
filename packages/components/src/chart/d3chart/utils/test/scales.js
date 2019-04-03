@@ -93,7 +93,7 @@ describe( 'Y scales', () => {
 			expect( getYScaleLimits( dummyOrders ) ).toEqual( { lower: 0, upper: 15000000, step: 5000000 } );
 		} );
 
-		it( 'return 0 if there is no line data', () => {
+		it( 'return defaults if there is no line data', () => {
 			expect( getYScaleLimits( [] ) ).toEqual( { lower: 0, upper: 0, step: 1 } );
 		} );
 	} );
