@@ -7,7 +7,7 @@
  */
 
 /**
- * Contains backend logic for the onboarding profile and checklist feature.
+ * Contains backend logic for the dashboard feature.
  */
 class WC_Admin_Dashboard {
 	/**
@@ -32,6 +32,7 @@ class WC_Admin_Dashboard {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
+		add_filter( 'wc_admin_get_user_data_fields', array( $this, 'add_user_data_fields' ) );
 	}
 
 	/**
@@ -41,8 +42,28 @@ class WC_Admin_Dashboard {
 	 * @return array
 	 */
 	public function add_preload_endpoints( $endpoints ) {
-		$endpoints['performanceIndicators'] = WC_ADMIN_API_NAMESPACE . '/reports/performance-indicators/allowed';
+		$endpoints['performanceIndicators'] = '/wc/v4/reports/performance-indicators/allowed';
 		return $endpoints;
+	}
+
+	/**
+	 * Adds fields so that we can store performance indiciators, row settings, and chart type settings for users.
+	 *
+	 * @param array $user_data_fields User data fields.
+	 * @return array
+	 */
+	public function add_user_data_fields( $user_data_fields ) {
+		return array_merge(
+			$user_data_fields,
+			array(
+				'dashboard_performance_indicators',
+				'dashboard_charts',
+				'dashboard_chart_type',
+				'dashboard_chart_interval',
+				'dashboard_leaderboards',
+				'dashboard_leaderboard_rows',
+			)
+		);
 	}
 }
 

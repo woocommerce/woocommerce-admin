@@ -43,15 +43,13 @@ if ( ! defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
 	define( 'WC_ADMIN_VERSION_NUMBER', '0.10.0' );
 }
 
-if ( ! defined( 'WC_ADMIN_API_NAMESPACE' ) ) {
-	define( 'WC_ADMIN_API_NAMESPACE', '/wc/v4' );
-}
-
 /**
  * Removes core hooks in favor of our local feature plugin handlers.
+ *
+ * @see WC_Admin_Library::__construct()
  */
 function wc_admin_initialize() {
-	remove_action( 'admin_init', array( 'WC_Admin_Library', 'load_features' ) );
+	remove_action( 'init', array( 'WC_Admin_Library', 'load_features' ) );
 	remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'register_scripts' ) );
 	remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'load_scripts' ), 15 );
 	remove_action( 'woocommerce_components_settings', array( 'WC_Admin_Library', 'add_component_settings' ) );
@@ -59,7 +57,14 @@ function wc_admin_initialize() {
 	remove_action( 'admin_menu', array( 'WC_Admin_Library', 'register_page_handler' ) );
 	remove_filter( 'admin_title', array( 'WC_Admin_Library', 'update_admin_title' ) );
 
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-loader.php';
+	remove_action( 'rest_api_init', array( 'WC_Admin_Library', 'register_user_data' ) );
+	remove_action( 'in_admin_header', array( 'WC_Admin_Library', 'embed_page_header' ) );
+	remove_filter( 'woocommerce_settings_groups', array( 'WC_Admin_Library', 'add_settings_group' ) );
+	remove_filter( 'woocommerce_settings-wc_admin', array( 'WC_Admin_Library', 'add_settings' ) );
+
+	remove_action( 'admin_head', array( 'WC_Admin_Library', 'update_link_structure' ), 20 );
+
+	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-loader.php';
 }
 add_action( 'woocommerce_loaded', 'wc_admin_initialize' );
 
@@ -126,6 +131,22 @@ function wc_admin_build_file_exists() {
 }
 
 /**
+ * Adds a menu item for the wc-admin devdocs.
+ */
+function wc_admin_devdocs() {
+	if ( WC_Admin_Loader::is_feature_enabled( 'devdocs' ) && defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		wc_admin_register_page(
+			array(
+				'title'  => 'DevDocs',
+				'parent' => 'woocommerce',
+				'path'   => '/devdocs',
+			)
+		);
+	}
+}
+add_action( 'admin_menu', 'wc_admin_devdocs' );
+
+/**
  * Daily events to run.
  *
  * Note: WC_Admin_Notes_Order_Milestones::other_milestones is hooked to this as well.
@@ -182,31 +203,17 @@ function wc_admin_plugins_loaded() {
 	}
 
 	// Initialize the WC API extensions.
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-reports-sync.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-install.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-api-init.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-reports-sync.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-api-init.php';
 
-	// @todo This file is related to the Activity Panel feature, and could be moved to a specific folder/class loader.
-	require_once WC_ADMIN_ABSPATH . '/lib/common.php';
-
-	// Admin note providers.
-	// @todo These should be moved to an individual feature folder.
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-new-sales-record.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-mobile-app.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-settings-notes.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-historical-data.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-order-milestones.php';
+	do_action( 'wc_admin_includes' );
 
 	// Verify we have a proper build.
 	if ( ! wc_admin_build_file_exists() ) {
 		add_action( 'admin_notices', 'wc_admin_build_notice' );
 		return;
 	}
-
-	// Create the Admin pages.
-	// @todo This file is related to the analytics and dashboard features, and could be moved to a specific folder/class loader.
-	require_once WC_ADMIN_ABSPATH . '/lib/admin.php';
 }
 add_action( 'plugins_loaded', 'wc_admin_plugins_loaded' );
 
@@ -269,6 +276,7 @@ function wc_admin_load_plugin_textdomain() {
 add_action( 'plugins_loaded', 'wc_admin_load_plugin_textdomain' );
 
 /**
+<<<<<<< HEAD
  * Format a number using the decimal and thousands separator settings in WooCommerce.
  *
  * @param mixed $number Number to be formatted.
@@ -301,3 +309,19 @@ function wc_admin_url( $path, $query = array() ) {
 
 	return admin_url( 'admin.php?page=wc-admin#' . $path, dirname( __FILE__ ) );
 }
+=======
+ * Returns true if we are on a "classic" (non JS app) powered admin page.
+ * `wc_get_screen_ids` will also return IDs for extensions that have properly registered themselves.
+ *
+ * @param bool $is_embed If the current page should embed the WooCommerce target area (activity panel, notices, etc).
+ */
+function wc_admin_is_embed_enabled_wc_page( $is_embed ) {
+	if ( ! WC_Admin_Loader::is_feature_enabled( 'activity-panels' ) && ! WC_Admin_Loader::is_feature_enabled( 'store-alerts' ) ) {
+		return false;
+	}
+
+	return $is_embed;
+}
+
+add_action( 'woocommerce_page_is_embed_page', 'wc_admin_is_embed_enabled_wc_page' );
+>>>>>>> Continue refactoring code, and make it possible to launch 'embedded' features via the process as well.

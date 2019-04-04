@@ -6,6 +6,34 @@
  * @package Woocommerce Admin
  */
 
+if ( ! function_exists( 'wc_admin_register_page' ) ) {
+	/**
+	 * Add a single page to a given parent top-level-item.
+	 *
+	 * @param array $options {
+	 *     Array describing the menu item.
+	 *
+	 *     @type string $title Menu title
+	 *     @type string $parent Parent path or menu ID
+	 *     @type string $path Path for this page, full path in app context; ex /analytics/report
+	 * }
+	 */
+	function wc_admin_register_page( $options ) {
+		$defaults = array(
+			'parent' => '/analytics',
+		);
+		$options  = wp_parse_args( $options, $defaults );
+		add_submenu_page(
+			'/' === $options['parent'][0] ? "wc-admin#{$options['parent']}" : $options['parent'],
+			$options['title'],
+			$options['title'],
+			'manage_options',
+			"wc-admin#{$options['path']}",
+			array( 'WC_Admin_Loader', 'page_wrapper' )
+		);
+	}
+}
+
 /**
  * WC_Admin_Loader Class.
  */
@@ -37,23 +65,26 @@ class WC_Admin_Loader {
 
 	/**
 	 * Constructor.
+	 * Hooks added here should be removed in `wc_admin_initialize` via the feature plugin.
 	 */
 	public function __construct() {
-		add_action( 'admin_init', array( 'WC_Admin_Loader', 'load_features' ) );
+		add_action( 'init', array( 'WC_Admin_Loader', 'load_features' ) );
 		add_action( 'admin_enqueue_scripts', array( 'WC_Admin_Loader', 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( 'WC_Admin_Loader', 'load_scripts' ), 15 );
 		add_action( 'woocommerce_components_settings', array( 'WC_Admin_Loader', 'add_component_settings' ) );
 		add_filter( 'admin_body_class', array( 'WC_Admin_Loader', 'add_admin_body_classes' ) );
 		add_action( 'admin_menu', array( 'WC_Admin_Loader', 'register_page_handler' ) );
 		add_filter( 'admin_title', array( 'WC_Admin_Loader', 'update_admin_title' ) );
+		add_action( 'rest_api_init', array( 'WC_Admin_Loader', 'register_user_data' ) );
+		add_action( 'in_admin_header', array( 'WC_Admin_Loader', 'embed_page_header' ) );
+		add_filter( 'woocommerce_settings_groups', array( 'WC_Admin_Loader', 'add_settings_group' ) );
+		add_filter( 'woocommerce_settings-wc_admin', array( 'WC_Admin_Loader', 'add_settings' ) );
+		add_action( 'admin_head', array( 'WC_Admin_Loader', 'remove_notices' ) );
+		add_action( 'admin_notices', array( 'WC_Admin_Loader', 'inject_before_notices' ) );
+		add_action( 'admin_notices', array( 'WC_Admin_Loader', 'inject_after_notices' ), PHP_INT_MAX );
 
 		// priority is 20 to run after https://github.com/woocommerce/woocommerce/blob/a55ae325306fc2179149ba9b97e66f32f84fdd9c/includes/admin/class-wc-admin-menus.php#L165.
 		add_action( 'admin_head', array( 'WC_Admin_Loader', 'update_link_structure' ), 20 );
-
-		// @todo move these to notes code.
-		add_action( 'admin_head', array( 'WC_Admin_Loader', 'remove_notices' ) );
-		add_action( 'admin_notices', array( 'WC_Admin_Loader', 'inject_before_notices' ), 0 );
-		add_action( 'admin_notices', array( 'WC_Admin_Loader', 'inject_after_notices' ), PHP_INT_MAX );
 	}
 
 	/**
@@ -329,7 +360,297 @@ class WC_Admin_Loader {
 	 * @todo See usage in `admin.php`. This needs refactored and implemented properly in core.
 	 */
 	public static function is_embed_page() {
-		return apply_filters( 'woocommerce_page_is_embed_page', false );
+		$is_embed  = false;
+		$screen_id = self::get_current_screen_id();
+		if ( ! $screen_id ) {
+			return false;
+		}
+
+		$screens = self::get_embed_enabled_screen_ids();
+
+		if ( in_array( $screen_id, $screens, true ) ) {
+			$is_embed = true;
+		}
+
+		return apply_filters( 'woocommerce_page_is_embed_page', $is_embed );
+	}
+
+	/**
+	 * Returns the current screen ID.
+	 * This is slightly different from WP's get_current_screen, in that it attaches an action,
+	 * so certain pages like 'add new' pages can have different breadcrumbs or handling.
+	 * It also catches some more unique dynamic pages like taxonomy/attribute management.
+	 *
+	 * Format: {$current_screen->action}-{$current_screen->action}, or just {$current_screen->action} if no action is found
+	 *
+	 * @todo Refactor: https://github.com/woocommerce/woocommerce-admin/issues/1432.
+	 * @return string Current screen ID.
+	 */
+	public static function get_current_screen_id() {
+		$current_screen = get_current_screen();
+		if ( ! $current_screen ) {
+			return false;
+		}
+		$current_screen_id = $current_screen->action ? $current_screen->action . '-' . $current_screen->id : $current_screen->id;
+
+		if ( ! empty( $_GET['taxonomy'] ) && ! empty( $_GET['post_type'] ) && 'product' === $_GET['post_type'] ) {
+			$current_screen_id = 'product_page_product_attributes';
+		}
+
+		return $current_screen_id;
+	}
+
+	/**
+	 * `WC_Admin_Loader::get_embed_enabled_screen_ids`,  `WC_Admin_Loader::get_embed_enabled_plugin_screen_ids`,
+	 * `WC_Admin_Loader::get_embed_enabled_screen_ids` should be considered temporary functions for the feature plugin.
+	 *  This is separate from WC's screen_id functions so that extensions explictly have to opt-in to the feature plugin.
+	 *
+	 * @todo Refactor: https://github.com/woocommerce/woocommerce-admin/issues/1432.
+	 */
+	public static function get_embed_enabled_core_screen_ids() {
+		$screens = array(
+			'edit-shop_order',
+			'shop_order',
+			'add-shop_order',
+			'edit-shop_coupon',
+			'shop_coupon',
+			'add-shop_coupon',
+			'woocommerce_page_wc-reports',
+			'woocommerce_page_wc-settings',
+			'woocommerce_page_wc-status',
+			'woocommerce_page_wc-addons',
+			'edit-product',
+			'product_page_product_importer',
+			'product_page_product_exporter',
+			'add-product',
+			'product',
+			'edit-product_cat',
+			'edit-product_tag',
+			'product_page_product_attributes',
+		);
+		return apply_filters( 'wc_admin_get_embed_enabled_core_screens_ids', $screens );
+	}
+
+	/**
+	 * If any extensions want to show the new header, they can register their screen ids.
+	 * Separate so extensions can register support for the feature plugin separately.
+	 *
+	 * @todo Refactor: https://github.com/woocommerce/woocommerce-admin/issues/1432.
+	 */
+	public static function get_embed_enabled_plugin_screen_ids() {
+		$screens = array();
+		return apply_filters( 'wc_admin_get_embed_enabled_plugin_screens_ids', $screens );
+	}
+
+	/**
+	 * Returns core and plugin screen IDs for a list of screens the new header should be enabled on.
+	 */
+	public static function get_embed_enabled_screen_ids() {
+		return array_merge( self::get_embed_enabled_core_screen_ids(), self::get_embed_enabled_plugin_screen_ids() );
+	}
+
+	/**
+	 * Returns breadcrumbs for the current page.
+	 *
+	 * @todo Refactor: https://github.com/woocommerce/woocommerce-admin/issues/1432.
+	 */
+	private static function get_embed_breadcrumbs() {
+		$current_screen_id = self::get_current_screen_id();
+
+		// If a page has a tab, we can append that to the screen ID and show another pagination level.
+		$pages_with_tabs = array(
+			'wc-reports'  => 'orders',
+			'wc-settings' => 'general',
+			'wc-status'   => 'status',
+		);
+		$tab             = '';
+		$get_tab         = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : '';
+		if ( isset( $_GET['page'] ) ) {
+			$page = sanitize_text_field( wp_unslash( $_GET['page'] ) );
+			if ( in_array( $page, array_keys( $pages_with_tabs ) ) ) {
+				$tab = ! empty( $get_tab ) ? $get_tab . '-' : $pages_with_tabs[ $page ] . '-';
+			}
+		}
+
+		$breadcrumbs = apply_filters(
+			'wc_admin_get_breadcrumbs',
+			array(
+				'edit-shop_order'                       => __( 'Orders', 'woocommerce-admin' ),
+				'add-shop_order'                        => array(
+					array( '/edit.php?post_type=shop_order', __( 'Orders', 'woocommerce-admin' ) ),
+					__( 'Add New', 'woocommerce-admin' ),
+				),
+				'shop_order'                            => array(
+					array( '/edit.php?post_type=shop_order', __( 'Orders', 'woocommerce-admin' ) ),
+					__( 'Edit Order', 'woocommerce-admin' ),
+				),
+				'edit-shop_coupon'                      => __( 'Coupons', 'woocommerce-admin' ),
+				'add-shop_coupon'                       => array(
+					array( 'edit.php?post_type=shop_coupon', __( 'Coupons', 'woocommerce-admin' ) ),
+					__( 'Add New', 'woocommerce-admin' ),
+				),
+				'shop_coupon'                           => array(
+					array( 'edit.php?post_type=shop_coupon', __( 'Coupons', 'woocommerce-admin' ) ),
+					__( 'Edit Coupon', 'woocommerce-admin' ),
+				),
+				'woocommerce_page_wc-reports'           => array(
+					array( 'admin.php?page=wc-reports', __( 'Reports', 'woocommerce-admin' ) ),
+				),
+				'orders-woocommerce_page_wc-reports'    => array(
+					array( 'admin.php?page=wc-reports', __( 'Reports', 'woocommerce-admin' ) ),
+					__( 'Orders', 'woocommerce-admin' ),
+				),
+				'customers-woocommerce_page_wc-reports' => array(
+					array( 'admin.php?page=wc-reports', __( 'Reports', 'woocommerce-admin' ) ),
+					__( 'Customers', 'woocommerce-admin' ),
+				),
+				'stock-woocommerce_page_wc-reports'     => array(
+					array( 'admin.php?page=wc-reports', __( 'Reports', 'woocommerce-admin' ) ),
+					__( 'Stock', 'woocommerce-admin' ),
+				),
+				'taxes-woocommerce_page_wc-reports'     => array(
+					array( 'admin.php?page=wc-reports', __( 'Reports', 'woocommerce-admin' ) ),
+					__( 'Taxes', 'woocommerce-admin' ),
+				),
+				'woocommerce_page_wc-settings'          => array(
+					array( 'admin.php?page=wc-settings', __( 'Settings', 'woocommerce-admin' ) ),
+				),
+				'general-woocommerce_page_wc-settings'  => array(
+					array( 'admin.php?page=wc-settings', __( 'Settings', 'woocommerce-admin' ) ),
+					__( 'General', 'woocommerce-admin' ),
+				),
+				'products-woocommerce_page_wc-settings' => array(
+					array( 'admin.php?page=wc-settings', __( 'Settings', 'woocommerce-admin' ) ),
+					__( 'Products', 'woocommerce-admin' ),
+				),
+				'tax-woocommerce_page_wc-settings'      => array(
+					array( 'admin.php?page=wc-settings', __( 'Settings', 'woocommerce-admin' ) ),
+					__( 'Tax', 'woocommerce-admin' ),
+				),
+				'shipping-woocommerce_page_wc-settings' => array(
+					array( 'admin.php?page=wc-settings', __( 'Settings', 'woocommerce-admin' ) ),
+					__( 'Shipping', 'woocommerce-admin' ),
+				),
+				'checkout-woocommerce_page_wc-settings' => array(
+					array( 'admin.php?page=wc-settings', __( 'Settings', 'woocommerce-admin' ) ),
+					__( 'Payments', 'woocommerce-admin' ),
+				),
+				'email-woocommerce_page_wc-settings'    => array(
+					array( 'admin.php?page=wc-settings', __( 'Settings', 'woocommerce-admin' ) ),
+					__( 'Emails', 'woocommerce-admin' ),
+				),
+				'advanced-woocommerce_page_wc-settings' => array(
+					array( 'admin.php?page=wc-settings', __( 'Settings', 'woocommerce-admin' ) ),
+					__( 'Advanced', 'woocommerce-admin' ),
+				),
+				'woocommerce_page_wc-status'            => array(
+					__( 'Status', 'woocommerce-admin' ),
+				),
+				'status-woocommerce_page_wc-status'     => array(
+					array( 'admin.php?page=wc-status', __( 'Status', 'woocommerce-admin' ) ),
+					__( 'System Status', 'woocommerce-admin' ),
+				),
+				'tools-woocommerce_page_wc-status'      => array(
+					array( 'admin.php?page=wc-status', __( 'Status', 'woocommerce-admin' ) ),
+					__( 'Tools', 'woocommerce-admin' ),
+				),
+				'logs-woocommerce_page_wc-status'       => array(
+					array( 'admin.php?page=wc-status', __( 'Status', 'woocommerce-admin' ) ),
+					__( 'Logs', 'woocommerce-admin' ),
+				),
+				'connect-woocommerce_page_wc-status'    => array(
+					array( 'admin.php?page=wc-status', __( 'Status', 'woocommerce-admin' ) ),
+					__( 'WooCommerce Services Status', 'woocommerce-admin' ),
+				),
+				'woocommerce_page_wc-addons'            => __( 'Extensions', 'woocommerce-admin' ),
+				'edit-product'                          => __( 'Products', 'woocommerce-admin' ),
+				'product_page_product_importer'         => array(
+					array( 'edit.php?post_type=product', __( 'Products', 'woocommerce-admin' ) ),
+					__( 'Import', 'woocommerce-admin' ),
+				),
+				'product_page_product_exporter'         => array(
+					array( 'edit.php?post_type=product', __( 'Products', 'woocommerce-admin' ) ),
+					__( 'Export', 'woocommerce-admin' ),
+				),
+				'add-product'                           => array(
+					array( 'edit.php?post_type=product', __( 'Products', 'woocommerce-admin' ) ),
+					__( 'Add New', 'woocommerce-admin' ),
+				),
+				'product'                               => array(
+					array( 'edit.php?post_type=product', __( 'Products', 'woocommerce-admin' ) ),
+					__( 'Edit Product', 'woocommerce-admin' ),
+				),
+				'edit-product_cat'                      => array(
+					array( 'edit.php?post_type=product', __( 'Products', 'woocommerce-admin' ) ),
+					__( 'Categories', 'woocommerce-admin' ),
+				),
+				'edit-product_tag'                      => array(
+					array( 'edit.php?post_type=product', __( 'Products', 'woocommerce-admin' ) ),
+					__( 'Tags', 'woocommerce-admin' ),
+				),
+				'product_page_product_attributes'       => array(
+					array( 'edit.php?post_type=product', __( 'Products', 'woocommerce-admin' ) ),
+					__( 'Attributes', 'woocommerce-admin' ),
+				),
+			)
+		);
+
+		if ( ! empty( $breadcrumbs[ $tab . $current_screen_id ] ) ) {
+			return $breadcrumbs[ $tab . $current_screen_id ];
+		} elseif ( ! empty( $breadcrumbs[ $current_screen_id ] ) ) {
+			return $breadcrumbs[ $current_screen_id ];
+		} else {
+			return '';
+		}
+	}
+
+	/**
+	 * Outputs breadcrumbs via PHP for the initial load of an embedded page.
+	 *
+	 * @param array $section Section to create breadcrumb from.
+	 */
+	private static function output_breadcrumbs( $section ) {
+		?>
+		<span>
+		<?php if ( is_array( $section ) ) : ?>
+			<a href="<?php echo esc_url( admin_url( $section[0] ) ); ?>">
+				<?php echo esc_html( $section[1] ); ?>
+			</a>
+		<?php else : ?>
+			<?php echo esc_html( $section ); ?>
+		<?php endif; ?>
+		</span>
+		<?php
+	}
+
+	/**
+	 * Set up a div for the header embed to render into.
+	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
+	 */
+	public static function embed_page_header() {
+		if ( ! self::is_embed_page() ) {
+			return;
+		}
+
+		$sections = self::get_embed_breadcrumbs();
+		$sections = is_array( $sections ) ? $sections : array( $sections );
+		?>
+		<div id="woocommerce-embedded-root">
+			<div class="woocommerce-layout">
+				<div class="woocommerce-layout__header is-embed-loading">
+					<h1 class="woocommerce-layout__header-breadcrumbs">
+						<span><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-admin#/' ) ); ?>">WooCommerce</a></span>
+						<?php foreach ( $sections as $section ) : ?>
+							<?php self::output_breadcrumbs( $section ); ?>
+						<?php endforeach; ?>
+					</h1>
+				</div>
+			</div>
+			<div class="woocommerce-layout__primary is-embed-loading" id="woocommerce-layout__primary">
+				<div id="woocommerce-layout__notice-list" class="woocommerce-layout__notice-list"></div>
+			</div>
+		</div>
+		<?php
 	}
 
 	/**
@@ -359,10 +680,9 @@ class WC_Admin_Loader {
 		return " $admin_body_class ";
 	}
 
+
 	/**
 	 * Removes notices that should not be displayed on WC Admin pages.
-	 *
-	 * @todo move to activity panel code?
 	 */
 	public static function remove_notices() {
 		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
@@ -377,11 +697,9 @@ class WC_Admin_Loader {
 
 	/**
 	 * Runs before admin notices action and hides them.
-	 *
-	 * @todo move to activity panel code?
 	 */
 	public static function inject_before_notices() {
-		if ( ( ! self::is_admin_page() && ! self::is_embed_page() ) || ! self::is_feature_enabled( 'activity-panels' ) ) {
+		if ( ( ! self::is_admin_page() && ! self::is_embed_page() ) ) {
 			return;
 		}
 		echo '<div class="woocommerce-layout__notice-list-hide" id="wp__notice-list">';
@@ -390,11 +708,9 @@ class WC_Admin_Loader {
 
 	/**
 	 * Runs after admin notices and closes div.
-	 *
-	 * @todo move to activity panel code?
 	 */
 	public static function inject_after_notices() {
-		if ( ( ! self::is_admin_page() && ! self::is_embed_page() ) || ! self::is_feature_enabled( 'activity-panels' ) ) {
+		if ( ( ! self::is_admin_page() && ! self::is_embed_page() ) ) {
 			return;
 		}
 		echo '</div>';
@@ -412,7 +728,7 @@ class WC_Admin_Loader {
 		}
 
 		if ( self::is_embed_page() ) {
-			$sections = wc_admin_get_embed_breadcrumbs(); // @todo Bring this function into loader.
+			$sections = self::get_embed_breadcrumbs();
 			$sections = is_array( $sections ) ? $sections : array( $sections );
 			$pieces   = array();
 
@@ -447,7 +763,7 @@ class WC_Admin_Loader {
 	 * @return array Array of component settings.
 	 */
 	public static function add_component_settings( $settings ) {
-		$preload_data_endpoints = apply_filters( 'woocommerce_component_settings_preload_endpoints', array( WC_ADMIN_API_NAMESPACE ) );
+		$preload_data_endpoints = apply_filters( 'woocommerce_component_settings_preload_endpoints', array( '/wc/v3' ) );
 		if ( ! empty( $preload_data_endpoints ) ) {
 			$preload_data = array_reduce(
 				array_values( $preload_data_endpoints ),
@@ -460,7 +776,6 @@ class WC_Admin_Loader {
 			$current_user_data[ $user_field ] = json_decode( get_user_meta( get_current_user_id(), 'wc_admin_' . $user_field, true ) );
 		}
 
-		$settings['alertCount']        = WC_Admin_Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
 		$settings['orderStatuses']     = self::get_order_statuses( wc_get_order_statuses() );
 		$settings['currentUserData']   = $current_user_data;
 		$settings['currency']          = self::get_currency_settings();
@@ -476,7 +791,7 @@ class WC_Admin_Loader {
 		$settings = self::get_custom_settings( $settings );
 
 		if ( self::is_embed_page() ) {
-			$settings['embedBreadcrumbs'] = wc_admin_get_embed_breadcrumbs(); // @todo move function into loader.
+			$settings['embedBreadcrumbs'] = self::get_embed_breadcrumbs();
 		}
 
 		return $settings;
@@ -495,6 +810,50 @@ class WC_Admin_Loader {
 			$formatted_statuses[ $formatted_key ] = $value;
 		}
 		return $formatted_statuses;
+	}
+
+	/**
+	 * Register the admin settings for use in the WC REST API
+	 *
+	 * @param array $groups Array of setting groups.
+	 * @return array
+	 */
+	public static function add_settings_group( $groups ) {
+		$groups[] = array(
+			'id'          => 'wc_admin',
+			'label'       => __( 'WooCommerce Admin', 'woocommerce-admin' ),
+			'description' => __( 'Settings for WooCommerce admin reporting.', 'woocommerce-admin' ),
+		);
+		return $groups;
+	}
+
+	/**
+	 * Add WC Admin specific settings
+	 *
+	 * @param array $settings Array of settings in wc admin group.
+	 * @return array
+	 */
+	public static function add_settings( $settings ) {
+		$statuses   = self::get_order_statuses( wc_get_order_statuses() );
+		$settings[] = array(
+			'id'          => 'woocommerce_excluded_report_order_statuses',
+			'option_key'  => 'woocommerce_excluded_report_order_statuses',
+			'label'       => __( 'Excluded report order statuses', 'woocommerce-admin' ),
+			'description' => __( 'Statuses that should not be included when calculating report totals.', 'woocommerce-admin' ),
+			'default'     => array( 'pending', 'cancelled', 'failed' ),
+			'type'        => 'multiselect',
+			'options'     => $statuses,
+		);
+		$settings[] = array(
+			'id'          => 'woocommerce_actionable_order_statuses',
+			'option_key'  => 'woocommerce_actionable_order_statuses',
+			'label'       => __( 'Actionable order statuses', 'woocommerce-admin' ),
+			'description' => __( 'Statuses that require extra action on behalf of the store admin.', 'woocommerce-admin' ),
+			'default'     => array( 'processing', 'on-hold' ),
+			'type'        => 'multiselect',
+			'options'     => $statuses,
+		);
+		return $settings;
 	}
 
 	/**
@@ -545,6 +904,58 @@ class WC_Admin_Loader {
 	}
 
 	/**
+	 * Registers WooCommerce specific user data to the WordPress user API.
+	 */
+	public static function register_user_data() {
+		register_rest_field(
+			'user',
+			'woocommerce_meta',
+			array(
+				'get_callback'    => array( 'WC_Admin_Loader', 'get_user_data_values' ),
+				'update_callback' => array( 'WC_Admin_Loader', 'update_user_data_values' ),
+				'schema'          => null,
+			)
+		);
+	}
+
+	/**
+	 * For all the registered user data fields (  WC_Admin_Loader::get_user_data_fields ), fetch the data
+	 * for returning via the REST API.
+	 *
+	 * @param WP_User $user Current user.
+	 */
+	public static function get_user_data_values( $user ) {
+		$values = array();
+		foreach ( self::get_user_data_fields() as $field ) {
+			$values[ $field ] = get_user_meta( $user['id'], 'wc_admin_' . $field, true );
+		}
+		return $values;
+	}
+
+	/**
+	 * For all the registered user data fields ( WC_Admin_Loader::get_user_data_fields ), update the data
+	 * for the REST API.
+	 *
+	 * @param array   $values   The new values for the meta.
+	 * @param WP_User $user     The current user.
+	 * @param string  $field_id The field id for the user meta.
+	 */
+	public static function update_user_data_values( $values, $user, $field_id ) {
+		if ( empty( $values ) || ! is_array( $values ) || 'woocommerce_meta' !== $field_id ) {
+			return;
+		}
+		$fields  = self::get_user_data_fields();
+		$updates = array();
+		foreach ( $values as $field => $value ) {
+			if ( in_array( $field, $fields, true ) ) {
+				$updates[ $field ] = $value;
+				update_user_meta( $user->ID, 'wc_admin_' . $field, $value );
+			}
+		}
+		return $updates;
+	}
+
+	/**
 	 * We store some WooCommerce specific user meta attached to users endpoint,
 	 * so that we can track certain preferences or values such as the inbox activity panel last open time.
 	 * Additional fields can be added in the function below, and then used via wc-admin's currentUser data.
@@ -552,26 +963,7 @@ class WC_Admin_Loader {
 	 * @return array Fields to expose over the WP user endpoint.
 	 */
 	public static function get_user_data_fields() {
-		$user_data_fields = array(
-			'categories_report_columns',
-			'coupons_report_columns',
-			'customers_report_columns',
-			'orders_report_columns',
-			'products_report_columns',
-			'revenue_report_columns',
-			'taxes_report_columns',
-			'variations_report_columns',
-			'dashboard_performance_indicators',
-			'dashboard_charts',
-			'dashboard_chart_type',
-			'dashboard_chart_interval',
-			'dashboard_leaderboards',
-			'dashboard_leaderboard_rows',
-			'activity_panel_inbox_last_read',
-			'activity_panel_reviews_last_read',
-		);
-
-		return apply_filters( 'wc_admin_get_user_data_fields', $user_data_fields );
+		return apply_filters( 'wc_admin_get_user_data_fields', array() );
 	}
 }
 
