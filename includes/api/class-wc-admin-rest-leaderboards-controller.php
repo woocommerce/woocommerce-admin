@@ -55,8 +55,9 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 * @param int    $per_page Number of rows.
 	 * @param string $after Items after date.
 	 * @param string $before Items before date.
+	 * @param string $persisted_query URL query string.
 	 */
-	public function get_coupons_leaderboard( $per_page, $after, $before ) {
+	public function get_coupons_leaderboard( $per_page, $after, $before, $persisted_query ) {
 		$coupons_data_store = new WC_Admin_Reports_Coupons_Data_Store();
 		$coupons_data       = $coupons_data_store->get_data(
 			array(
@@ -71,7 +72,14 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 
 		$rows = array();
 		foreach ( $coupons_data->data as $coupon ) {
-			$coupon_url  = wc_admin_url( 'analytics/coupons?filter=advanced&coupon_includes=' . $coupon['coupon_id'] );
+			$url_query   = wp_parse_args(
+				array(
+					'filter'  => 'single_coupon',
+					'coupons' => $coupon['coupon_id'],
+				),
+				$persisted_query
+			);
+			$coupon_url  = wc_admin_url( 'analytics/coupons', $url_query );
 			$coupon_code = $coupon['extended_info'] && $coupon['extended_info']['code'] ? $coupon['extended_info']['code'] : '';
 			$rows[]      = array(
 				array(
@@ -113,8 +121,9 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 * @param int    $per_page Number of rows.
 	 * @param string $after Items after date.
 	 * @param string $before Items before date.
+	 * @param string $persisted_query URL query string.
 	 */
-	public function get_categories_leaderboard( $per_page, $after, $before ) {
+	public function get_categories_leaderboard( $per_page, $after, $before, $persisted_query ) {
 		$categories_data_store = new WC_Admin_Reports_Categories_Data_Store();
 		$categories_data       = $categories_data_store->get_data(
 			array(
@@ -129,7 +138,14 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 
 		$rows = array();
 		foreach ( $categories_data->data as $category ) {
-			$category_url  = wc_admin_url( 'analytics/categories?filter=single_category&categories=' . $category['category_id'] );
+			$url_query     = wp_parse_args(
+				array(
+					'filter'     => 'single_category',
+					'categories' => $category['category_id'],
+				),
+				$persisted_query
+			);
+			$category_url  = wc_admin_url( 'analytics/categories', $url_query );
 			$category_name = $category['extended_info'] && $category['extended_info']['name'] ? $category['extended_info']['name'] : '';
 			$rows[]        = array(
 				array(
@@ -171,8 +187,9 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 * @param int    $per_page Number of rows.
 	 * @param string $after Items after date.
 	 * @param string $before Items before date.
+	 * @param string $persisted_query URL query string.
 	 */
-	public function get_customers_leaderboard( $per_page, $after, $before ) {
+	public function get_customers_leaderboard( $per_page, $after, $before, $persisted_query ) {
 		$customers_data_store = new WC_Admin_Reports_Customers_Data_Store();
 		$customers_data       = $customers_data_store->get_data(
 			array(
@@ -184,7 +201,14 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 
 		$rows = array();
 		foreach ( $customers_data->data as $customer ) {
-			$customer_url = wc_admin_url( 'analytics/customers?filter=single_customer&customers=' . $customer['id'] );
+			$url_query    = wp_parse_args(
+				array(
+					'filter'    => 'single_customer',
+					'customers' => $customer['id'],
+				),
+				$persisted_query
+			);
+			$customer_url = wc_admin_url( 'analytics/customers', $url_query );
 			$rows[]       = array(
 				array(
 					'display' => "<a href='{$customer_url}'>{$customer['name']}</a>",
@@ -225,8 +249,9 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 * @param int    $per_page Number of rows.
 	 * @param string $after Items after date.
 	 * @param string $before Items before date.
+	 * @param string $persisted_query URL query string.
 	 */
-	public function get_products_leaderboard( $per_page, $after, $before ) {
+	public function get_products_leaderboard( $per_page, $after, $before, $persisted_query ) {
 		$products_data_store = new WC_Admin_Reports_Products_Data_Store();
 		$products_data       = $products_data_store->get_data(
 			array(
@@ -241,7 +266,14 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 
 		$rows = array();
 		foreach ( $products_data->data as $product ) {
-			$product_url  = wc_admin_url( 'analytics/products?filter=single_product&products=' . $product['product_id'] );
+			$url_query    = wp_parse_args(
+				array(
+					'filter'   => 'single_product',
+					'products' => $product['product_id'],
+				),
+				$persisted_query
+			);
+			$product_url  = wc_admin_url( 'analytics/products', $url_query );
 			$product_name = $product['extended_info'] && $product['extended_info']['name'] ? $product['extended_info']['name'] : '';
 			$rows[]       = array(
 				array(
@@ -283,17 +315,18 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 * @param int    $per_page Number of rows.
 	 * @param string $after Items after date.
 	 * @param string $before Items before date.
+	 * @param string $persisted_query URL query string.
 	 * @return array
 	 */
-	public function get_leaderboards( $per_page, $after, $before ) {
+	public function get_leaderboards( $per_page, $after, $before, $persisted_query ) {
 		$leaderboards = array(
-			$this->get_customers_leaderboard( $per_page, $after, $before ),
-			$this->get_coupons_leaderboard( $per_page, $after, $before ),
-			$this->get_categories_leaderboard( $per_page, $after, $before ),
-			$this->get_products_leaderboard( $per_page, $after, $before ),
+			$this->get_customers_leaderboard( $per_page, $after, $before, $persisted_query ),
+			$this->get_coupons_leaderboard( $per_page, $after, $before, $persisted_query ),
+			$this->get_categories_leaderboard( $per_page, $after, $before, $persisted_query ),
+			$this->get_products_leaderboard( $per_page, $after, $before, $persisted_query ),
 		);
 
-		return apply_filters( 'woocommerce_leaderboards', $leaderboards, $per_page );
+		return apply_filters( 'woocommerce_leaderboards', $leaderboards, $per_page, $after, $before, $persisted_query );
 	}
 
 	/**
@@ -303,7 +336,9 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$leaderboards = $this->get_leaderboards( $request['per_page'], $request['after'], $request['before'] );
+		parse_str( $request['persisted_query'], $persisted_query );
+
+		$leaderboards = $this->get_leaderboards( $request['per_page'], $request['after'], $request['before'], $persisted_query );
 		$data         = array();
 
 		if ( ! empty( $leaderboards ) ) {
@@ -344,8 +379,8 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 * @return array
 	 */
 	public function get_collection_params() {
-		$params             = array();
-		$params['page']     = array(
+		$params                    = array();
+		$params['page']            = array(
 			'description'       => __( 'Current page of the collection.', 'woocommerce-admin' ),
 			'type'              => 'integer',
 			'default'           => 1,
@@ -353,7 +388,7 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 			'minimum'           => 1,
 		);
-		$params['per_page'] = array(
+		$params['per_page']        = array(
 			'description'       => __( 'Maximum number of items to be returned in result set.', 'woocommerce-admin' ),
 			'type'              => 'integer',
 			'default'           => 5,
@@ -362,16 +397,21 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['after']    = array(
+		$params['after']           = array(
 			'description'       => __( 'Limit response to resources published after a given ISO8601 compliant date.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['before']   = array(
+		$params['before']          = array(
 			'description'       => __( 'Limit response to resources published before a given ISO8601 compliant date.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['persisted_query'] = array(
+			'description'       => __( 'URL query to persist across links.', 'woocommerce-admin' ),
+			'type'              => 'string',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		return $params;
@@ -388,7 +428,7 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 			'title'      => 'leaderboard',
 			'type'       => 'object',
 			'properties' => array(
-				'id'    => array(
+				'id'      => array(
 					'type'        => 'string',
 					'description' => __( 'Leaderboard Name.', 'woocommerce-admin' ),
 					'context'     => array( 'view' ),

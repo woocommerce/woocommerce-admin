@@ -23,8 +23,26 @@ function wc_admin_dir_path( $file = '' ) {
  *
  * @return string       Fully qualified URL pointing to the desired file.
  */
-function wc_admin_url( $path ) {
+function wc_admin_plugin_url( $path ) {
 	return plugins_url( $path, dirname( __FILE__ ) );
+}
+
+/**
+ * Retrieves a URL to relative path inside WooCommerce admin with
+ * the provided query parameters.
+ *
+ * @param  string $path Relative path of the desired page.
+ * @param  array  $query Query parameters to append to the path.
+ *
+ * @return string       Fully qualified URL pointing to the desired path.
+ */
+function wc_admin_url( $path, $query = array() ) {
+	if ( ! empty( $query ) ) {
+		$query_string = http_build_query( $query );
+		$path         = $path . '?' . $query_string;
+	}
+
+	return admin_url( 'admin.php?page=wc-admin#' . $path, dirname( __FILE__ ) );
 }
 
 /**
