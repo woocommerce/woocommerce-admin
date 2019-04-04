@@ -50,17 +50,250 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	}
 
 	/**
+	 * Get the data for the coupons leaderboard.
+	 *
+	 * @param int    $per_page Number of rows.
+	 * @param string $after Items after date.
+	 * @param string $before Items before date.
+	 */
+	public function get_coupons_leaderboard( $per_page, $after, $before ) {
+		$coupons_data_store = new WC_Admin_Reports_Coupons_Data_Store();
+		$coupons_data       = $coupons_data_store->get_data(
+			array(
+				'orderby'       => 'orders_count',
+				'order'         => 'desc',
+				'after'         => $after,
+				'before'        => $before,
+				'per_page'      => $per_page,
+				'extended_info' => true,
+			)
+		);
+
+		$rows = array();
+		foreach ( $coupons_data->data as $coupon ) {
+			$coupon_url  = wc_admin_url( 'analytics/coupons?filter=advanced&coupon_includes=' . $coupon['coupon_id'] );
+			$coupon_code = $coupon['extended_info'] && $coupon['extended_info']['code'] ? $coupon['extended_info']['code'] : '';
+			$rows[]      = array(
+				array(
+					'display' => "<a href='{$coupon_url}'>{$coupon_code}</a>",
+					'value'   => $coupon_code,
+				),
+				array(
+					'display' => wc_admin_number_format( $coupon['orders_count'] ),
+					'value'   => $coupon['orders_count'],
+				),
+				array(
+					'display' => wc_price( $coupon['amount'] ),
+					'value'   => $coupon['amount'],
+				),
+			);
+		}
+
+		return array(
+			'id'      => 'coupons',
+			'label'   => __( 'Top Coupons - Number of Orders', 'woocommerce-admin' ),
+			'headers' => array(
+				array(
+					'label' => __( 'Coupon Code', 'woocommerce-admin' ),
+				),
+				array(
+					'label' => __( 'Orders', 'woocommerce-admin' ),
+				),
+				array(
+					'label' => __( 'Amount Discounted', 'woocommerce-admin' ),
+				),
+			),
+			'rows'    => $rows,
+		);
+	}
+
+	/**
+	 * Get the data for the categories leaderboard.
+	 *
+	 * @param int    $per_page Number of rows.
+	 * @param string $after Items after date.
+	 * @param string $before Items before date.
+	 */
+	public function get_categories_leaderboard( $per_page, $after, $before ) {
+		$categories_data_store = new WC_Admin_Reports_Categories_Data_Store();
+		$categories_data       = $categories_data_store->get_data(
+			array(
+				'orderby'       => 'items_sold',
+				'order'         => 'desc',
+				'after'         => $after,
+				'before'        => $before,
+				'per_page'      => $per_page,
+				'extended_info' => true,
+			)
+		);
+
+		$rows = array();
+		foreach ( $categories_data->data as $category ) {
+			$category_url  = wc_admin_url( 'analytics/categories?filter=single_category&categories=' . $category['category_id'] );
+			$category_name = $category['extended_info'] && $category['extended_info']['name'] ? $category['extended_info']['name'] : '';
+			$rows[]        = array(
+				array(
+					'display' => "<a href='{$category_url}'>{$category_name}</a>",
+					'value'   => $category_name,
+				),
+				array(
+					'display' => wc_admin_number_format( $category['items_sold'] ),
+					'value'   => $category['items_sold'],
+				),
+				array(
+					'display' => wc_price( $category['net_revenue'] ),
+					'value'   => $category['net_revenue'],
+				),
+			);
+		}
+
+		return array(
+			'id'      => 'categories',
+			'label'   => __( 'Top Categories - Items Sold', 'woocommerce-admin' ),
+			'headers' => array(
+				array(
+					'label' => __( 'Category', 'woocommerce-admin' ),
+				),
+				array(
+					'label' => __( 'Items Sold', 'woocommerce-admin' ),
+				),
+				array(
+					'label' => __( 'Net Revenue', 'woocommerce-admin' ),
+				),
+			),
+			'rows'    => $rows,
+		);
+	}
+
+	/**
+	 * Get the data for the customers leaderboard.
+	 *
+	 * @param int    $per_page Number of rows.
+	 * @param string $after Items after date.
+	 * @param string $before Items before date.
+	 */
+	public function get_customers_leaderboard( $per_page, $after, $before ) {
+		$customers_data_store = new WC_Admin_Reports_Customers_Data_Store();
+		$customers_data       = $customers_data_store->get_data(
+			array(
+				'orderby'  => 'total_spend',
+				'order'    => 'desc',
+				'per_page' => $per_page,
+			)
+		);
+
+		$rows = array();
+		foreach ( $customers_data->data as $customer ) {
+			$customer_url = wc_admin_url( 'analytics/customers?filter=single_customer&customers=' . $customer['id'] );
+			$rows[]       = array(
+				array(
+					'display' => "<a href='{$customer_url}'>{$customer['name']}</a>",
+					'value'   => $customer['name'],
+				),
+				array(
+					'display' => wc_admin_number_format( $customer['orders_count'] ),
+					'value'   => $customer['orders_count'],
+				),
+				array(
+					'display' => wc_price( $customer['total_spend'] ),
+					'value'   => $customer['total_spend'],
+				),
+			);
+		}
+
+		return array(
+			'id'      => 'customers',
+			'label'   => __( 'Top Customers - Total Spend', 'woocommerce-admin' ),
+			'headers' => array(
+				array(
+					'label' => __( 'Customer Name', 'woocommerce-admin' ),
+				),
+				array(
+					'label' => __( 'Orders', 'woocommerce-admin' ),
+				),
+				array(
+					'label' => __( 'Total Spend', 'woocommerce-admin' ),
+				),
+			),
+			'rows'    => $rows,
+		);
+	}
+
+	/**
+	 * Get the data for the products leaderboard.
+	 *
+	 * @param int    $per_page Number of rows.
+	 * @param string $after Items after date.
+	 * @param string $before Items before date.
+	 */
+	public function get_products_leaderboard( $per_page, $after, $before ) {
+		$products_data_store = new WC_Admin_Reports_Products_Data_Store();
+		$products_data       = $products_data_store->get_data(
+			array(
+				'orderby'       => 'items_sold',
+				'order'         => 'desc',
+				'after'         => $after,
+				'before'        => $before,
+				'per_page'      => $per_page,
+				'extended_info' => true,
+			)
+		);
+
+		$rows = array();
+		foreach ( $products_data->data as $product ) {
+			$product_url  = wc_admin_url( 'analytics/products?filter=single_product&products=' . $product['product_id'] );
+			$product_name = $product['extended_info'] && $product['extended_info']['name'] ? $product['extended_info']['name'] : '';
+			$rows[]       = array(
+				array(
+					'display' => "<a href='{$product_url}'>{$product_name}</a>",
+					'value'   => $product_name,
+				),
+				array(
+					'display' => wc_admin_number_format( $product['items_sold'] ),
+					'value'   => $product['items_sold'],
+				),
+				array(
+					'display' => wc_price( $product['net_revenue'] ),
+					'value'   => $product['net_revenue'],
+				),
+			);
+		}
+
+		return array(
+			'id'      => 'products',
+			'label'   => __( 'Top Products - Items Sold', 'woocommerce-admin' ),
+			'headers' => array(
+				array(
+					'label' => __( 'Product', 'woocommerce-admin' ),
+				),
+				array(
+					'label' => __( 'Items Sold', 'woocommerce-admin' ),
+				),
+				array(
+					'label' => __( 'Net Revenue', 'woocommerce-admin' ),
+				),
+			),
+			'rows'    => $rows,
+		);
+	}
+
+	/**
 	 * Get an array of all leaderboards.
 	 *
-	 * @param int    $rows Number of rows.
+	 * @param int    $per_page Number of rows.
 	 * @param string $after Items after date.
 	 * @param string $before Items before date.
 	 * @return array
 	 */
-	public function get_leaderboards( $rows, $after, $before ) {
-		$leaderboards = array();
+	public function get_leaderboards( $per_page, $after, $before ) {
+		$leaderboards = array(
+			$this->get_customers_leaderboard( $per_page, $after, $before ),
+			$this->get_coupons_leaderboard( $per_page, $after, $before ),
+			$this->get_categories_leaderboard( $per_page, $after, $before ),
+			$this->get_products_leaderboard( $per_page, $after, $before ),
+		);
 
-		return apply_filters( 'woocommerce_leaderboards', $leaderboards, $rows );
+		return apply_filters( 'woocommerce_leaderboards', $leaderboards, $per_page );
 	}
 
 	/**

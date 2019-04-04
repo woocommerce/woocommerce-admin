@@ -295,3 +295,20 @@ function wc_admin_is_feature_enabled( $feature ) {
 	$features = wc_admin_get_feature_config();
 	return isset( $features[ $feature ] ) && true === $features[ $feature ];
 }
+
+/**
+ * Format a number using the decimal and thousands separator settings in WooCommerce.
+ *
+ * @param int $number Number to be formatted.
+ * @return string
+ */
+function wc_admin_number_format( $number ) {
+	$currency_settings = wc_admin_currency_settings();
+
+	return number_format(
+		$number,
+		0,
+		$currency_settings['decimal_separator'],
+		$currency_settings['thousand_separator']
+	);
+}
