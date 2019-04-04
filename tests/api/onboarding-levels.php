@@ -88,8 +88,9 @@ class WC_Tests_API_Onboarding_Levels extends WC_REST_Unit_Test_Case {
 		add_filter(
 			'woocommerce_onboarding_levels',
 			function( $levels ) {
-				$levels[] = array(
-					'id' => 'test_level',
+				$levels['test_level'] = array(
+					'id'    => 'test_level',
+					'tasks' => array(),
 				);
 				return $levels;
 			}
