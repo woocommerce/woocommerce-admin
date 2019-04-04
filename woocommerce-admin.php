@@ -223,20 +223,14 @@ add_action( 'plugins_loaded', 'wc_admin_plugins_loaded' );
  * @param array $features Array of feature slugs.
  */
 function wc_admin_overwrite_features( $features ) {
-	require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
+	if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
+		require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
+	}
 	$feature_config = wc_admin_get_feature_config();
 	$features       = array_keys( array_filter( $feature_config ) );
 	return $features;
 }
 add_filter( 'woocommerce_admin_features', 'wc_admin_overwrite_features' );
-
-/**
- * Things to do after WooCommerce updates.
- */
-function wc_admin_woocommerce_updated() {
-	WC_Admin_Notes_Settings_Notes::add_notes_for_settings_that_have_moved();
-}
-add_action( 'woocommerce_updated', 'wc_admin_woocommerce_updated' );
 
 /*
  * Remove the emoji script as it always defaults to replacing emojis with Twemoji images.
@@ -276,7 +270,6 @@ function wc_admin_load_plugin_textdomain() {
 add_action( 'plugins_loaded', 'wc_admin_load_plugin_textdomain' );
 
 /**
-<<<<<<< HEAD
  * Format a number using the decimal and thousands separator settings in WooCommerce.
  *
  * @param mixed $number Number to be formatted.
@@ -309,7 +302,8 @@ function wc_admin_url( $path, $query = array() ) {
 
 	return admin_url( 'admin.php?page=wc-admin#' . $path, dirname( __FILE__ ) );
 }
-=======
+
+/*
  * Returns true if we are on a "classic" (non JS app) powered admin page.
  * `wc_get_screen_ids` will also return IDs for extensions that have properly registered themselves.
  *
@@ -324,4 +318,3 @@ function wc_admin_is_embed_enabled_wc_page( $is_embed ) {
 }
 
 add_action( 'woocommerce_page_is_embed_page', 'wc_admin_is_embed_enabled_wc_page' );
->>>>>>> Continue refactoring code, and make it possible to launch 'embedded' features via the process as well.
