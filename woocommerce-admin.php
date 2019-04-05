@@ -214,3 +214,13 @@ function wc_admin_set_actionscheduler_store_class( $store_class ) {
 
 // Hook up our modified ActionScheduler Store.
 add_filter( 'action_scheduler_store_class', 'wc_admin_set_actionscheduler_store_class' );
+
+/*
+ *  Add Welcome message once plugin installed
+ */
+add_action('wc_admin_installed','wc_admin_add_welcome_message');
+
+function wc_admin_add_welcome_message(){
+
+	WC_Admin_Notes_Welcome_Message::add_welcome_note();
+}
