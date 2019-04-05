@@ -333,7 +333,7 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 */
 	public function get_leaderboards( $per_page, $after, $before, $persisted_query ) {
 		$leaderboards = array(
-			// $this->get_customers_leaderboard( $per_page, $after, $before, $persisted_query ),
+			$this->get_customers_leaderboard( $per_page, $after, $before, $persisted_query ),
 			$this->get_coupons_leaderboard( $per_page, $after, $before, $persisted_query ),
 			$this->get_categories_leaderboard( $per_page, $after, $before, $persisted_query ),
 			$this->get_products_leaderboard( $per_page, $after, $before, $persisted_query ),
