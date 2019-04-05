@@ -47,6 +47,19 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/allowed',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_allowed_items' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_allowed_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -320,7 +333,7 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 	 */
 	public function get_leaderboards( $per_page, $after, $before, $persisted_query ) {
 		$leaderboards = array(
-			$this->get_customers_leaderboard( $per_page, $after, $before, $persisted_query ),
+			// $this->get_customers_leaderboard( $per_page, $after, $before, $persisted_query ),
 			$this->get_coupons_leaderboard( $per_page, $after, $before, $persisted_query ),
 			$this->get_categories_leaderboard( $per_page, $after, $before, $persisted_query ),
 			$this->get_products_leaderboard( $per_page, $after, $before, $persisted_query ),
@@ -349,6 +362,39 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 		}
 
 		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Returns a list of allowed leaderboards.
+	 *
+	 * @param  WP_REST_Request $request Request data.
+	 * @return array|WP_Error
+	 */
+	public function get_allowed_items( $request ) {
+		$leaderboards = $this->get_leaderboards( 1, null, null, null );
+
+		$data = array();
+		foreach ( $leaderboards as $leaderboard ) {
+			$data[] = (object) array(
+				'id'      => $leaderboard['id'],
+				'label'   => $leaderboard['label'],
+				'headers' => $leaderboard['headers'],
+			);
+		}
+
+		$objects = array();
+		foreach ( $data as $item ) {
+			$prepared  = $this->prepare_item_for_response( $item, $request );
+			$objects[] = $this->prepare_response_for_collection( $prepared );
+		}
+
+		$response = rest_ensure_response( $objects );
+		$response->header( 'X-WP-Total', count( $data ) );
+		$response->header( 'X-WP-TotalPages', 1 );
+
+		$base = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) );
+
+		return $response;
 	}
 
 	/**
