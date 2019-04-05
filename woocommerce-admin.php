@@ -7,7 +7,10 @@
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
  * Domain Path: /languages
- * Version: 0.8.0
+ * Version: 0.10.0
+ *
+ * WC requires at least: 3.5.0
+ * WC tested up to: 3.5.7
  *
  * @package WC_Admin
  */
@@ -22,6 +25,10 @@ if ( ! defined( 'WC_ADMIN_ABSPATH' ) ) {
 
 if ( ! defined( 'WC_ADMIN_PLUGIN_FILE' ) ) {
 	define( 'WC_ADMIN_PLUGIN_FILE', __FILE__ );
+}
+
+if ( ! defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
+	define( 'WC_ADMIN_VERSION_NUMBER', '0.10.0' );
 }
 
 /**
@@ -152,10 +159,10 @@ function wc_admin_plugins_loaded() {
 	require_once WC_ADMIN_ABSPATH . '/lib/common.php';
 
 	// Admin note providers.
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-notes-new-sales-record.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-notes-settings-notes.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-notes-woo-subscriptions-notes.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-notes-historical-data.php';
+	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-new-sales-record.php';
+	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-settings-notes.php';
+	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
+	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-historical-data.php';
 
 	// Verify we have a proper build.
 	if ( ! wc_admin_build_file_exists() ) {

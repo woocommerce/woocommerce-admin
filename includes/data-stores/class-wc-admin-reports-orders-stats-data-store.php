@@ -9,8 +9,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * WC_Admin_Reports_Orders_Stats_Data_Store.
- *
- * @version  3.5.0
  */
 class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Store implements WC_Admin_Reports_Data_Store_Interface {
 
@@ -36,6 +34,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		'num_items_sold'          => 'intval',
 		'gross_revenue'           => 'floatval',
 		'coupons'                 => 'floatval',
+		'coupons_count'           => 'intval',
 		'refunds'                 => 'floatval',
 		'taxes'                   => 'floatval',
 		'shipping'                => 'floatval',
@@ -57,7 +56,8 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		'orders_count'            => 'COUNT(*) as orders_count',
 		'num_items_sold'          => 'SUM(num_items_sold) as num_items_sold',
 		'gross_revenue'           => 'SUM(gross_total) AS gross_revenue',
-		'coupons'                 => 'SUM(coupon_total) AS coupons',
+		'coupons'                 => 'SUM(discount_amount) AS coupons',
+		'coupons_count'           => 'COUNT(DISTINCT coupon_id) as coupons_count',
 		'refunds'                 => 'SUM(refund_total) AS refunds',
 		'taxes'                   => 'SUM(tax_total) AS taxes',
 		'shipping'                => 'SUM(shipping_total) AS shipping',
@@ -231,6 +231,9 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 					FROM
 						{$table_name}
 						{$totals_query['from_clause']}
+					LEFT JOIN
+						{$wpdb->prefix}wc_order_coupon_lookup
+						ON {$wpdb->prefix}wc_order_coupon_lookup.order_id = {$wpdb->prefix}wc_order_stats.order_id
 					WHERE
 						1=1
 						{$totals_query['where_time_clause']}
@@ -253,6 +256,9 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 						FROM
 							{$table_name}
 							{$intervals_query['from_clause']}
+						LEFT JOIN
+							{$wpdb->prefix}wc_order_coupon_lookup
+							ON {$wpdb->prefix}wc_order_coupon_lookup.order_id = {$wpdb->prefix}wc_order_stats.order_id
 						WHERE
 							1=1
 							{$intervals_query['where_time_clause']}
@@ -277,12 +283,15 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 
 			$intervals = $wpdb->get_results(
 				"SELECT
-							MAX(date_created) AS datetime_anchor,
+							MAX({$table_name}.date_created) AS datetime_anchor,
 							{$intervals_query['select_clause']} AS time_interval
 							{$selections}
 						FROM
 							{$table_name}
 							{$intervals_query['from_clause']}
+						LEFT JOIN
+							{$wpdb->prefix}wc_order_coupon_lookup
+							ON {$wpdb->prefix}wc_order_coupon_lookup.order_id = {$wpdb->prefix}wc_order_stats.order_id
 						WHERE
 							1=1
 							{$intervals_query['where_time_clause']}
@@ -397,7 +406,6 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
 			'num_items_sold'     => self::get_num_items_sold( $order ),
 			'gross_total'        => $order->get_total(),
-			'coupon_total'       => $order->get_total_discount(),
 			'refund_total'       => $order->get_total_refunded(),
 			'tax_total'          => $order->get_total_tax(),
 			'shipping_total'     => $order->get_shipping_total(),
@@ -410,7 +418,6 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'%d',
 			'%s',
 			'%d',
-			'%f',
 			'%f',
 			'%f',
 			'%f',
@@ -431,7 +438,8 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		 */
 		do_action( 'woocommerce_reports_update_order_stats', $order->get_id() );
 
-		return ( 1 === $result );
+		// Check the rows affected for success. Using REPLACE can affect 2 rows if the row already exists.
+		return ( 1 === $result || 2 === $result );
 	}
 
 	/**
@@ -492,11 +500,11 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 * @return float
 	 */
 	protected static function get_net_total( $order ) {
-		$net_total = $order->get_total() - $order->get_total_tax() - $order->get_shipping_total();
+		$net_total = floatval( $order->get_total() ) - floatval( $order->get_total_tax() ) - floatval( $order->get_shipping_total() );
 
 		$refunds = $order->get_refunds();
 		foreach ( $refunds as $refund ) {
-			$net_total += $refund->get_total() - $refund->get_total_tax() - $refund->get_shipping_total();
+			$net_total += floatval( $refund->get_total() ) - floatval( $refund->get_total_tax() ) - floatval( $refund->get_shipping_total() );
 		}
 
 		return $net_total > 0 ? (float) $net_total : 0;

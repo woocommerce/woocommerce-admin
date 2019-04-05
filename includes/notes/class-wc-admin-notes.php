@@ -18,16 +18,10 @@ class WC_Admin_Notes {
 	const UNSNOOZE_HOOK = 'wc_admin_unsnooze_admin_notes';
 
 	/**
-	 * Schedule events and hook appropriate actions.
+	 * Hook appropriate actions.
 	 */
 	public static function init() {
-		$queue = WC()->queue();
-		$next  = $queue->get_next( self::UNSNOOZE_HOOK );
-
-		if ( ! $next ) {
-			$queue->schedule_recurring( time(), HOUR_IN_SECONDS, self::UNSNOOZE_HOOK );
-		}
-
+		add_action( 'admin_init', array( __CLASS__, 'schedule_unsnooze_notes' ) );
 		add_action( self::UNSNOOZE_HOOK, array( __CLASS__, 'unsnooze_notes' ) );
 	}
 
@@ -86,7 +80,7 @@ class WC_Admin_Notes {
 	 * @param string $status Comma separated list of statuses.
 	 * @return int
 	 */
-	public static function get_notes_count( $type = '', $status = '' ) {
+	public static function get_notes_count( $type = array(), $status = array() ) {
 		$data_store = WC_Data_Store::load( 'admin-note' );
 		return $data_store->get_notes_count( $type, $status );
 	}
@@ -112,7 +106,7 @@ class WC_Admin_Notes {
 		$data_store = WC_Data_Store::load( 'admin-note' );
 		$raw_notes  = $data_store->get_notes(
 			array(
-				'status' => WC_Admin_Note::E_WC_ADMIN_NOTE_SNOOZED,
+				'status' => array( WC_Admin_Note::E_WC_ADMIN_NOTE_SNOOZED ),
 			)
 		);
 		$now        = new DateTime();
@@ -126,6 +120,18 @@ class WC_Admin_Notes {
 				$note->set_date_reminder( null );
 				$note->save();
 			}
+		}
+	}
+
+	/**
+	 * Schedule unsnooze notes event.
+	 */
+	public static function schedule_unsnooze_notes() {
+		$queue = WC()->queue();
+		$next  = $queue->get_next( self::UNSNOOZE_HOOK );
+
+		if ( ! $next ) {
+			$queue->schedule_recurring( time(), HOUR_IN_SECONDS, self::UNSNOOZE_HOOK );
 		}
 	}
 }

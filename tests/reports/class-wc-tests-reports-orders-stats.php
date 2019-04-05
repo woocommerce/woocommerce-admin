@@ -24,11 +24,14 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$product->set_regular_price( 25 );
 		$product->save();
 
+		$coupon = WC_Helper_Coupon::create_coupon( 'test-coupon' );
+		$coupon->set_amount( 20 );
+		$coupon->save();
+
 		$order = WC_Helper_Order::create_order( 1, $product );
 		$order->set_status( 'completed' );
 		$order->set_shipping_total( 10 );
-		$order->set_discount_total( 20 );
-		$order->set_discount_tax( 0 );
+		$order->apply_coupon( $coupon );
 		$order->set_cart_tax( 5 );
 		$order->set_shipping_tax( 2 );
 		$order->set_total( 97 ); // $25x4 products + $10 shipping - $20 discount + $7 tax.
@@ -61,6 +64,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'avg_order_value'         => 56,
 				'gross_revenue'           => 97,
 				'coupons'                 => 20,
+				'coupons_count'           => 1,
 				'refunds'                 => 12,
 				'taxes'                   => 7,
 				'shipping'                => 10,
@@ -81,6 +85,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'gross_revenue'           => 97,
 						'net_revenue'             => 56,
 						'coupons'                 => 20,
+						'coupons_count'           => 1,
 						'shipping'                => 10,
 						'taxes'                   => 7,
 						'refunds'                 => 12,
@@ -112,6 +117,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'avg_items_per_order'     => 4,
 				'num_items_sold'          => 4,
 				'coupons'                 => 20,
+				'coupons_count'           => 1,
 				'num_returning_customers' => 0,
 				'num_new_customers'       => 1,
 				'products'                => '1',
@@ -131,6 +137,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'avg_items_per_order'     => 4,
 						'num_items_sold'          => 4,
 						'coupons'                 => 20,
+						'coupons_count'           => 1,
 						'num_returning_customers' => 0,
 						'num_new_customers'       => 1,
 						'segments'                => array(),
@@ -201,6 +208,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'avg_order_value'         => 100,
 				'gross_revenue'           => 100,
 				'coupons'                 => 0,
+				'coupons_count'           => 0,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => 0,
@@ -221,6 +229,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'gross_revenue'           => 100,
 						'net_revenue'             => 100,
 						'coupons'                 => 0,
+						'coupons_count'           => 0,
 						'shipping'                => 0,
 						'taxes'                   => 0,
 						'refunds'                 => 0,
@@ -256,6 +265,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'avg_order_value'         => 75,
 				'gross_revenue'           => 75,
 				'coupons'                 => 0,
+				'coupons_count'           => 0,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => 0,
@@ -276,6 +286,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'gross_revenue'           => 75,
 						'net_revenue'             => 75,
 						'coupons'                 => 0,
+						'coupons_count'           => 0,
 						'shipping'                => 0,
 						'taxes'                   => 0,
 						'refunds'                 => 0,
@@ -517,6 +528,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$orders_count   = count( $this_['hour'] ) * $order_permutations;
 		$num_items_sold = $orders_count / 2 * $qty_per_product + $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -534,6 +546,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -557,6 +570,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -607,6 +621,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -623,6 +638,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -646,6 +662,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -682,6 +699,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -698,6 +716,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -721,6 +740,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -756,6 +776,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => 0,
 				'gross_revenue'           => 0,
 				'coupons'                 => 0,
+				'coupons_count'           => 0,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => 0,
@@ -779,6 +800,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => 0,
 						'gross_revenue'           => 0,
 						'coupons'                 => 0,
+						'coupons_count'           => 0,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => 0,
@@ -819,6 +841,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -835,6 +858,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -858,6 +882,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -896,6 +921,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 4 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 4 )
@@ -910,6 +936,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -933,6 +960,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -969,6 +997,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_3_price * $qty_per_product * ( $orders_count / 2 )
 						+ ( $product_3_price + $product_4_price ) * $qty_per_product * ( $orders_count / 2 )
@@ -981,6 +1010,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1005,6 +1035,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1041,6 +1072,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_3_price * $qty_per_product * ( $orders_count / 4 )
 						+ ( $product_3_price + $product_4_price ) * $qty_per_product * ( $orders_count / 4 )
@@ -1055,6 +1087,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1078,6 +1111,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1115,6 +1149,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_3_price * $qty_per_product * ( $orders_count / 2 )
 						+ ( $product_3_price + $product_4_price ) * $qty_per_product * ( $orders_count / 2 )
@@ -1127,6 +1162,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1150,6 +1186,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1190,6 +1227,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_2_price * $qty_per_product * ( $orders_count / 2 )
 						+ ( $product_2_price + $product_4_price ) * $qty_per_product * ( $orders_count / 2 )
@@ -1202,6 +1240,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1225,6 +1264,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1263,6 +1303,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -1279,6 +1320,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1302,6 +1344,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1332,11 +1375,13 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 
 		$order_permutations     = 24;
 		$order_w_coupon_1_perms = 24;
+		$order_w_coupon_2_perms = 0;
 
 		$orders_count   = count( $this_['hour'] ) * $order_permutations;
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -1353,6 +1398,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1376,6 +1422,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1405,12 +1452,14 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		);
 
 		$order_permutations     = 48;
+		$order_w_coupon_1_perms = 0;
 		$order_w_coupon_2_perms = 24;
 
 		$orders_count   = count( $this_['hour'] ) * $order_permutations;
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -1427,6 +1476,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1450,6 +1500,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1487,6 +1538,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -1503,6 +1555,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1526,6 +1579,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1566,6 +1620,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -1582,6 +1637,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1605,6 +1661,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1645,6 +1702,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => 0,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1668,6 +1726,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => 0,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1702,6 +1761,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$orders_count   = $total_orders_count - $returning_orders_count;
 		$num_items_sold = $total_orders_count * 6 - ( $returning_orders_count * 4 );
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $total_orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $total_orders_count / 6 )
@@ -1719,6 +1779,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1742,6 +1803,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1783,6 +1845,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 2 )
 						+ ( $product_1_price + $product_4_price ) * $qty_per_product * ( $orders_count / 2 )
@@ -1795,6 +1858,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1818,6 +1882,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1857,6 +1922,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -1873,6 +1939,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1896,6 +1963,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -1935,6 +2003,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 2 )
 						+ ( $product_1_price + $product_4_price ) * $qty_per_product * ( $orders_count / 2 )
@@ -1947,6 +2016,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -1970,6 +2040,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2012,6 +2083,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 2 )
 						+ ( $product_1_price + $product_4_price ) * $qty_per_product * ( $orders_count / 2 )
@@ -2024,6 +2096,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2047,6 +2120,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2093,6 +2167,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 2 )
 						+ ( $product_1_price + $product_4_price ) * $qty_per_product * ( $orders_count / 2 )
@@ -2105,6 +2180,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2128,6 +2204,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2174,6 +2251,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$orders_count   = count( $this_['hour'] ) * $order_permutations;
 		$num_items_sold = $orders_count * $qty_per_product; // No 2-item-orders here.
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 2 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 2 )
@@ -2186,6 +2264,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2210,6 +2289,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2259,6 +2339,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$orders_count   = count( $this_['hour'] ) * $order_permutations;
 		$num_items_sold = $orders_count * $qty_per_product;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 2 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 2 )
@@ -2271,6 +2352,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2294,6 +2376,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2347,6 +2430,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$orders_count   = count( $this_['hour'] ) * $order_permutations;
 		$num_items_sold = $orders_count * $qty_per_product;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 2 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 2 )
@@ -2359,6 +2443,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2382,6 +2467,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2423,6 +2509,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -2439,6 +2526,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2462,6 +2550,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2502,6 +2591,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 4 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 8 )
@@ -2518,6 +2608,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2541,6 +2632,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2581,6 +2673,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -2597,6 +2690,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2620,6 +2714,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2660,6 +2755,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count / 6 )
 						+ $product_2_price * $qty_per_product * ( $orders_count / 6 )
@@ -2676,6 +2772,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2699,6 +2796,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2739,6 +2837,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count * 3 / 10 )
 						+ $product_2_price * $qty_per_product * ( $orders_count * 1 / 10 )
@@ -2755,6 +2854,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2778,6 +2878,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2821,6 +2922,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count * 3 / 14 )
 						+ $product_2_price * $qty_per_product * ( $orders_count * 1 / 7 )
@@ -2837,6 +2939,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2860,6 +2963,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2906,6 +3010,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count * 3 / 14 )
 						+ $product_2_price * $qty_per_product * ( $orders_count * 1 / 7 )
@@ -2922,6 +3027,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -2945,6 +3051,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -2991,6 +3098,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count * 1 / 5 )
 						+ $product_2_price * $qty_per_product * ( $orders_count * 1 / 10 )
@@ -3007,6 +3115,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -3030,6 +3139,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -3079,6 +3189,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count * 3 / 16 )
 						+ $product_2_price * $qty_per_product * ( $orders_count * 1 / 8 )
@@ -3095,6 +3206,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -3118,6 +3230,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -3170,6 +3283,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$num_items_sold = $orders_count / 2 * $qty_per_product
 						+ $orders_count / 2 * $qty_per_product * 2;
 		$coupons        = count( $this_['hour'] ) * ( $order_w_coupon_1_perms * $coupon_1_amount + $order_w_coupon_2_perms * $coupon_2_amount );
+		$coupons_count  = ( $order_w_coupon_1_perms ? 1 : 0 ) + ( $order_w_coupon_2_perms ? 1 : 0 );
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_1_price * $qty_per_product * ( $orders_count * 3 / 17 )
 						+ $product_2_price * $qty_per_product * ( $orders_count * 5 / 34 )
@@ -3186,6 +3300,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -3209,6 +3324,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -3545,6 +3661,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => 0,
+				'coupons_count'           => 0,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -3563,6 +3680,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 							'num_items_sold'          => $p1_num_items_sold,
 							'gross_revenue'           => $p1_gross_revenue,
 							'coupons'                 => 0,
+							'coupons_count'           => 0,
 							'refunds'                 => 0,
 							'taxes'                   => 0,
 							'shipping'                => $p1_shipping,
@@ -3581,6 +3699,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 							'num_items_sold'          => $p2_num_items_sold,
 							'gross_revenue'           => $p2_gross_revenue,
 							'coupons'                 => 0,
+							'coupons_count'           => 0,
 							'refunds'                 => 0,
 							'taxes'                   => 0,
 							'shipping'                => $p2_shipping,
@@ -3599,6 +3718,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 							'num_items_sold'          => 0,
 							'gross_revenue'           => 0,
 							'coupons'                 => 0,
+							'coupons_count'           => 0,
 							'refunds'                 => 0,
 							'taxes'                   => 0,
 							'shipping'                => 0,
@@ -3623,6 +3743,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $i3_tot_num_items_sold,
 						'gross_revenue'           => $i3_tot_gross_revenue,
 						'coupons'                 => 0,
+						'coupons_count'           => 0,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $i3_tot_shipping,
@@ -3640,6 +3761,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => $i3_p1_num_items_sold,
 									'gross_revenue'       => $i3_p1_gross_revenue,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => $i3_p1_shipping,
@@ -3658,6 +3780,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => $i3_p2_num_items_sold,
 									'gross_revenue'       => $i3_p2_gross_revenue,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => $i3_p2_shipping,
@@ -3676,6 +3799,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => 0,
 									'gross_revenue'       => 0,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => 0,
@@ -3700,6 +3824,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $i2_tot_num_items_sold,
 						'gross_revenue'           => $i2_tot_gross_revenue,
 						'coupons'                 => 0,
+						'coupons_count'           => 0,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $i2_tot_shipping,
@@ -3717,6 +3842,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => $i2_p1_num_items_sold,
 									'gross_revenue'       => $i2_p1_gross_revenue,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => $i2_p1_shipping,
@@ -3735,6 +3861,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => $i2_p2_num_items_sold,
 									'gross_revenue'       => $i2_p2_gross_revenue,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => $i2_p2_shipping,
@@ -3753,6 +3880,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => 0,
 									'gross_revenue'       => 0,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => 0,
@@ -3777,6 +3905,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => 0,
 						'gross_revenue'           => 0,
 						'coupons'                 => 0,
+						'coupons_count'           => 0,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => 0,
@@ -3794,6 +3923,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => 0,
 									'gross_revenue'       => 0,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => 0,
@@ -3812,6 +3942,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => 0,
 									'gross_revenue'       => 0,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => 0,
@@ -3830,6 +3961,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 									'num_items_sold'      => 0,
 									'gross_revenue'       => 0,
 									'coupons'             => 0,
+									'coupons_count'       => 0,
 									'refunds'             => 0,
 									'taxes'               => 0,
 									'shipping'            => 0,
@@ -4000,6 +4132,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$orders_count   = count( $order_during_this_['hour'] );
 		$num_items_sold = $orders_count * $qty_per_product;
 		$coupons        = 0;
+		$coupons_count  = 0;
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_price * $qty_per_product * $orders_count - $coupons;
 		$gross_revenue  = $net_revenue + $shipping;
@@ -4010,6 +4143,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -4033,6 +4167,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -4141,6 +4276,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 					'num_items_sold'          => $num_items_sold,
 					'gross_revenue'           => $gross_revenue,
 					'coupons'                 => $coupons,
+					'coupons_count'           => $coupons_count,
 					'refunds'                 => 0,
 					'taxes'                   => 0,
 					'shipping'                => $shipping,
@@ -4170,6 +4306,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -4279,6 +4416,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 					'num_items_sold'          => $num_items_sold,
 					'gross_revenue'           => $gross_revenue,
 					'coupons'                 => $coupons,
+					'coupons_count'           => $coupons_count,
 					'refunds'                 => 0,
 					'taxes'                   => 0,
 					'shipping'                => $shipping,
@@ -4308,6 +4446,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -4428,6 +4567,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 					'num_items_sold'          => $num_items_sold,
 					'gross_revenue'           => $gross_revenue,
 					'coupons'                 => $coupons,
+					'coupons_count'           => $coupons_count,
 					'refunds'                 => 0,
 					'taxes'                   => 0,
 					'shipping'                => $shipping,
@@ -4457,6 +4597,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -4492,6 +4633,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -4546,6 +4688,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -4582,6 +4725,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -4763,6 +4907,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$orders_count   = count( $order_during_this_['hour'] );
 		$num_items_sold = $orders_count * $qty_per_product;
 		$coupons        = 0;
+		$coupons_count  = 0;
 		$shipping       = $orders_count * 10;
 		$net_revenue    = $product_price * $qty_per_product * $orders_count - $coupons;
 		$gross_revenue  = $net_revenue + $shipping;
@@ -4773,6 +4918,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -4796,6 +4942,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						'num_items_sold'          => $num_items_sold,
 						'gross_revenue'           => $gross_revenue,
 						'coupons'                 => $coupons,
+						'coupons_count'           => $coupons_count,
 						'refunds'                 => 0,
 						'taxes'                   => 0,
 						'shipping'                => $shipping,
@@ -4904,6 +5051,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 					'num_items_sold'          => $num_items_sold,
 					'gross_revenue'           => $gross_revenue,
 					'coupons'                 => $coupons,
+					'coupons_count'           => $coupons_count,
 					'refunds'                 => 0,
 					'taxes'                   => 0,
 					'shipping'                => $shipping,
@@ -4950,6 +5098,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -5079,6 +5228,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 					'num_items_sold'          => $num_items_sold,
 					'gross_revenue'           => $gross_revenue,
 					'coupons'                 => $coupons,
+					'coupons_count'           => $coupons_count,
 					'refunds'                 => 0,
 					'taxes'                   => 0,
 					'shipping'                => $shipping,
@@ -5112,6 +5262,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -5246,6 +5397,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 					'num_items_sold'          => $num_items_sold,
 					'gross_revenue'           => $gross_revenue,
 					'coupons'                 => $coupons,
+					'coupons_count'           => $coupons_count,
 					'refunds'                 => 0,
 					'taxes'                   => 0,
 					'shipping'                => $shipping,
@@ -5279,6 +5431,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -5314,6 +5467,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -5368,6 +5522,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -5405,6 +5560,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 				'num_items_sold'          => $num_items_sold,
 				'gross_revenue'           => $gross_revenue,
 				'coupons'                 => $coupons,
+				'coupons_count'           => $coupons_count,
 				'refunds'                 => 0,
 				'taxes'                   => 0,
 				'shipping'                => $shipping,
@@ -5456,7 +5612,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$query_args  = array(
 			'interval' => 'hour',
 		);
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		$this->assertEquals( 0, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 0, $actual_data->totals->num_new_customers );
 
@@ -5480,7 +5636,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'after'    => $start_time,
 			'before'   => $end_time,
 		);
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		$this->assertEquals( 0, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 1, $actual_data->totals->num_new_customers );
 
@@ -5502,7 +5658,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'before'   => $end_time,
 		);
 
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		$this->assertEquals( 0, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 1, $actual_data->totals->num_new_customers );
 
@@ -5518,7 +5674,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'before'   => $end_time,
 		);
 
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		$this->assertEquals( 1, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 0, $actual_data->totals->num_new_customers );
 
@@ -5541,7 +5697,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'after'    => $start_time,
 			'before'   => $end_time,
 		);
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		// It's still the same customer who ordered for the first time in this hour, they just placed 2 orders.
 		$this->assertEquals( 1, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 0, $actual_data->totals->num_new_customers );
@@ -5567,7 +5723,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$query_args  = array(
 			'interval' => 'hour',
 		);
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		$this->assertEquals( 0, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 0, $actual_data->totals->num_new_customers );
 
@@ -5591,7 +5747,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'after'    => $start_time,
 			'before'   => $end_time,
 		);
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		$this->assertEquals( 0, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 1, $actual_data->totals->num_new_customers );
 
@@ -5613,7 +5769,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'before'   => $end_time,
 		);
 
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		$this->assertEquals( 0, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 1, $actual_data->totals->num_new_customers );
 
@@ -5629,7 +5785,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'before'   => $end_time,
 		);
 
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		$this->assertEquals( 1, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 0, $actual_data->totals->num_new_customers );
 
@@ -5652,7 +5808,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			'after'    => $start_time,
 			'before'   => $end_time,
 		);
-		$actual_data = json_decode( json_encode( $data_store->get_data( $query_args ) ) );
+		$actual_data = json_decode( wp_json_encode( $data_store->get_data( $query_args ) ) );
 		// It's still the same customer who ordered for the first time in this hour, they just placed 2 orders.
 		$this->assertEquals( 1, $actual_data->totals->num_returning_customers );
 		$this->assertEquals( 0, $actual_data->totals->num_new_customers );

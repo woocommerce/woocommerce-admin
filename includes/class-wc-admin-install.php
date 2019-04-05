@@ -12,13 +12,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class WC_Admin_Install {
 	/**
-	 * Plugin version.
-	 *
-	 * @todo get this dynamically?
-	 */
-	const VERSION_NUMBER = '0.8.0';
-
-	/**
 	 * Plugin version option name.
 	 */
 	const VERSION_OPTION = 'wc_admin_version';
@@ -34,7 +27,7 @@ class WC_Admin_Install {
 	 * Hook in tabs.
 	 */
 	public static function init() {
-		add_action( 'init', array( __CLASS__, 'check_version' ), 5 );
+		add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
 		add_filter( 'wpmu_drop_tables', array( __CLASS__, 'wpmu_drop_tables' ) );
 
 		// Add wc-admin report tables to list of WooCommerce tables.
@@ -49,7 +42,7 @@ class WC_Admin_Install {
 	public static function check_version() {
 		if (
 			! defined( 'IFRAME_REQUEST' ) &&
-			version_compare( get_option( self::VERSION_OPTION ), self::VERSION_NUMBER, '<' )
+			version_compare( get_option( self::VERSION_OPTION ), WC_ADMIN_VERSION_NUMBER, '<' )
 		) {
 			self::install();
 			do_action( 'wc_admin_updated' );
@@ -74,9 +67,8 @@ class WC_Admin_Install {
 		wc_maybe_define_constant( 'WC_ADMIN_INSTALLING', true );
 
 		self::create_tables();
-		self::update_wc_admin_version();
-
 		WC_Admin_Notes_Historical_Data::add_note();
+		self::update_wc_admin_version();
 
 		delete_transient( 'wc_admin_installing' );
 
@@ -101,7 +93,6 @@ class WC_Admin_Install {
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			num_items_sold int(11) UNSIGNED DEFAULT 0 NOT NULL,
 			gross_total double DEFAULT 0 NOT NULL,
-			coupon_total double DEFAULT 0 NOT NULL,
 			refund_total double DEFAULT 0 NOT NULL,
 			tax_total double DEFAULT 0 NOT NULL,
 			shipping_total double DEFAULT 0 NOT NULL,
@@ -260,7 +251,7 @@ class WC_Admin_Install {
 	 */
 	private static function update_wc_admin_version() {
 		delete_option( self::VERSION_OPTION );
-		add_option( self::VERSION_OPTION, self::VERSION_NUMBER );
+		add_option( self::VERSION_OPTION, WC_ADMIN_VERSION_NUMBER );
 	}
 }
 

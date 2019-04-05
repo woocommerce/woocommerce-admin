@@ -22,14 +22,14 @@ import withSelect from 'wc-api/with-select';
 import TopSellingCategories from './top-selling-categories';
 import TopSellingProducts from './top-selling-products';
 import TopCoupons from './top-coupons';
-import TopCustomers from "./top-customers";
+import TopCustomers from './top-customers';
 import './style.scss';
 
 class Leaderboards extends Component {
 	constructor( props ) {
 		super( ...arguments );
 		this.state = {
-			hiddenLeaderboardKeys: props.userPrefLeaderboards || [],
+			hiddenLeaderboardKeys: props.userPrefLeaderboards || [ 'top-coupons', 'top-customers' ],
 			rowsPerTable: parseInt( props.userPrefLeaderboardRows ) || 5,
 		};
 

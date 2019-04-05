@@ -92,8 +92,8 @@ class WC_Admin_Api_Init {
 		require_once WC_ADMIN_ABSPATH . '/includes/data-stores/class-wc-admin-notes-data-store.php';
 
 		// CRUD classes.
-		require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-note.php';
-		require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-notes.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-note.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes.php';
 	}
 
 	/**
@@ -105,6 +105,7 @@ class WC_Admin_Api_Init {
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-data-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-data-countries-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-data-download-ips-controller.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-onboarding-levels-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-orders-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-products-controller.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/api/class-wc-admin-rest-product-categories-controller.php';
@@ -145,6 +146,7 @@ class WC_Admin_Api_Init {
 				'WC_Admin_REST_Data_Controller',
 				'WC_Admin_REST_Data_Countries_Controller',
 				'WC_Admin_REST_Data_Download_Ips_Controller',
+				'WC_Admin_REST_Onboarding_Levels_Controller',
 				'WC_Admin_REST_Orders_Controller',
 				'WC_Admin_REST_Products_Controller',
 				'WC_Admin_REST_Product_Categories_Controller',

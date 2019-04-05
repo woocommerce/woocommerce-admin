@@ -79,19 +79,44 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 	}
 
 	/**
+	 * Fills FROM clause of SQL request based on user supplied parameters.
+	 *
+	 * @param array  $query_args Parameters supplied by the user.
+	 * @param string $arg_name   Name of the FROM sql param.
+	 * @return array
+	 */
+	protected function get_from_sql_params( $query_args, $arg_name ) {
+		global $wpdb;
+		$order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
+
+		$sql_query['from_clause']       = '';
+		$sql_query['outer_from_clause'] = '';
+		if ( 'sku' === $query_args['orderby'] ) {
+			$sql_query[ $arg_name ] .= " JOIN {$wpdb->prefix}postmeta AS postmeta ON {$order_product_lookup_table}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
+		}
+
+		return $sql_query;
+	}
+
+	/**
 	 * Updates the database query with parameters used for Products report: categories and order status.
 	 *
-	 * @param array  $query_args Query arguments supplied by the user.
-	 * @param string $from_arg   Name of the FROM sql param.
-	 * @return array             Array of parameters used for SQL query.
+	 * @param array $query_args Query arguments supplied by the user.
+	 * @return array Array of parameters used for SQL query.
 	 */
-	protected function get_sql_query_params( $query_args, $from_arg ) {
+	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
 		$order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
 
 		$sql_query_params = $this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
 		$sql_query_params = array_merge( $sql_query_params, $this->get_limit_sql_params( $query_args ) );
 		$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args ) );
+
+		if ( count( $query_args['variations'] ) > 0 ) {
+			$sql_query_params = array_merge( $sql_query_params, $this->get_from_sql_params( $query_args, 'outer_from_clause' ) );
+		} else {
+			$sql_query_params = array_merge( $sql_query_params, $this->get_from_sql_params( $query_args, 'from_clause' ) );
+		}
 
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
@@ -103,10 +128,9 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.variation_id IN ({$allowed_variations_str})";
 		}
 
-		$order_status_filter                   = $this->get_status_subquery( $query_args );
-		$sql_query_params['outer_from_clause'] = '';
+		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$sql_query_params[ $from_arg ]    .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
+			$sql_query_params['from_clause']  .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
 			$sql_query_params['where_clause'] .= " AND ( {$order_status_filter} )";
 			$sql_query_params['where_clause'] .= ' AND variation_id > 0';
 		}
@@ -118,6 +142,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 	 * Maps ordering specified by the user to columns in the database/fields in the data.
 	 *
 	 * @param string $order_by Sorting criterion.
+	 *
 	 * @return string
 	 */
 	protected function normalize_order_by( $order_by ) {
@@ -127,6 +152,9 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 		if ( 'date' === $order_by ) {
 			return $table_name . '.date_created';
 		}
+		if ( 'sku' === $order_by ) {
+			return 'meta_value';
+		}
 
 		return $order_by;
 	}
@@ -135,7 +163,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 	 * Enriches the product data with attributes specified by the extended_attributes.
 	 *
 	 * @param array $products_data Product data.
-	 * @param array $query_args  Query parameters.
+	 * @param array $query_args Query parameters.
 	 */
 	protected function include_extended_info( &$products_data, $query_args ) {
 		foreach ( $products_data as $key => $product_data ) {
@@ -183,7 +211,8 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 	/**
 	 * Returns the report data based on parameters supplied by the user.
 	 *
-	 * @param array $query_args  Query parameters.
+	 * @param array $query_args Query parameters.
+	 *
 	 * @return stdClass|WP_Error Data.
 	 */
 	public function get_data( $query_args ) {
@@ -222,7 +251,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 			$included_products = $this->get_included_products_array( $query_args );
 
 			if ( count( $included_products ) > 0 && count( $query_args['variations'] ) > 0 ) {
-				$sql_query_params = $this->get_sql_query_params( $query_args, 'from_clause' );
+				$sql_query_params = $this->get_sql_query_params( $query_args );
 
 				if ( 'date' === $query_args['orderby'] ) {
 					$selections .= ", {$table_name}.date_created";
@@ -240,7 +269,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 				$right_join = "RIGHT JOIN ( {$ids_table} ) AS default_results
 					ON default_results.variation_id = {$table_name}.variation_id";
 			} else {
-				$sql_query_params = $this->get_sql_query_params( $query_args, 'from_clause' );
+				$sql_query_params = $this->get_sql_query_params( $query_args );
 
 				$db_records_count = (int) $wpdb->get_var(
 					"SELECT COUNT(*) FROM (
@@ -317,6 +346,7 @@ class WC_Admin_Reports_Variations_Data_Store extends WC_Admin_Reports_Data_Store
 	 * Returns string to be used as cache key for the data.
 	 *
 	 * @param array $params Query parameters.
+	 *
 	 * @return string
 	 */
 	protected function get_cache_key( $params ) {

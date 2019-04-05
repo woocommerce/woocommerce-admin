@@ -93,30 +93,6 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 	}
 
 	/**
-	 * Fills ORDER BY clause of SQL request based on user supplied parameters.
-	 *
-	 * @param array $query_args Parameters supplied by the user.
-	 * @return array
-	 */
-	protected function get_order_by_sql_params( $query_args ) {
-		global $wpdb;
-		$order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
-
-		$sql_query['order_by_clause'] = '';
-		if ( isset( $query_args['orderby'] ) ) {
-			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
-		}
-
-		if ( isset( $query_args['order'] ) ) {
-			$sql_query['order_by_clause'] .= ' ' . $query_args['order'];
-		} else {
-			$sql_query['order_by_clause'] .= ' DESC';
-		}
-
-		return $sql_query;
-	}
-
-	/**
 	 * Fills FROM clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
@@ -207,13 +183,33 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 	 * @param array $query_args  Query parameters.
 	 */
 	protected function include_extended_info( &$products_data, $query_args ) {
+		global $wpdb;
+		$product_names = array();
+
 		foreach ( $products_data as $key => $product_data ) {
 			$extended_info = new ArrayObject();
 			if ( $query_args['extended_info'] ) {
-				$product = wc_get_product( $product_data['product_id'] );
+				$product_id = $product_data['product_id'];
+				$product    = wc_get_product( $product_id );
 				// Product was deleted.
 				if ( ! $product ) {
-					$products_data[ $key ]['extended_info']['name'] = __( '(Deleted)', 'woocommerce-admin' );
+					if ( ! isset( $product_names[ $product_id ] ) ) {
+						$product_names[ $product_id ] = $wpdb->get_var(
+							$wpdb->prepare(
+								"SELECT i.order_item_name
+								FROM {$wpdb->prefix}woocommerce_order_items i, {$wpdb->prefix}woocommerce_order_itemmeta m
+								WHERE i.order_item_id = m.order_item_id
+								AND m.meta_key = '_product_id'
+								AND m.meta_value = %s
+								ORDER BY i.order_item_id DESC
+								LIMIT 1",
+								$product_id
+							)
+						);
+					}
+
+					/* translators: %s is product name */
+					$products_data[ $key ]['extended_info']['name'] = $product_names[ $product_id ] ? sprintf( __( '%s (Deleted)', 'woocommerce-admin' ), $product_names[ $product_id ] ) : __( '(Deleted)', 'woocommerce-admin' );
 					continue;
 				}
 
@@ -488,7 +484,8 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 				do_action( 'woocommerce_reports_update_product', $order_item_id, $order->get_id() );
 			}
 
-			$num_updated += intval( $result );
+			// Sum the rows affected. Using REPLACE can affect 2 rows if the row already exists.
+			$num_updated += 2 === intval( $result ) ? 1 : intval( $result );
 		}
 
 		return ( count( $order_items ) === $num_updated );

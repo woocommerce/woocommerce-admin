@@ -1,9 +1,10 @@
 {
 	"features": {
-		"activity-panels": false,
+		"activity-panels": true,
 		"analytics": true,
 		"dashboard": true,
 		"devdocs": false,
-		"store-alerts": false
+		"onboarding": false,
+		"store-alerts": true
 	}
 }
