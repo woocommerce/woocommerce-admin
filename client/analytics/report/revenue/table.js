@@ -64,13 +64,6 @@ class RevenueReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Coupons', 'woocommerce-admin' ),
-				key: 'coupons',
-				required: false,
-				isSortable: true,
-				isNumeric: true,
-			},
-			{
 				label: __( 'Taxes', 'woocommerce-admin' ),
 				key: 'taxes',
 				required: false,
@@ -96,15 +89,7 @@ class RevenueReportTable extends Component {
 
 	getRowsContent( data = [] ) {
 		return data.map( row => {
-			const {
-				coupons,
-				gross_revenue,
-				net_revenue,
-				orders_count,
-				refunds,
-				shipping,
-				taxes,
-			} = row.subtotals;
+			const { gross_revenue, net_revenue, orders_count, refunds, shipping, taxes } = row.subtotals;
 
 			// @todo How to create this per-report? Can use `w`, `year`, `m` to build time-specific order links
 			// we need to know which kind of report this is, and parse the `label` to get this row's date
@@ -134,10 +119,6 @@ class RevenueReportTable extends Component {
 					value: getCurrencyFormatDecimal( refunds ),
 				},
 				{
-					display: formatCurrency( coupons ),
-					value: getCurrencyFormatDecimal( coupons ),
-				},
-				{
 					display: formatCurrency( taxes ),
 					value: getCurrencyFormatDecimal( taxes ),
 				},
@@ -158,7 +139,6 @@ class RevenueReportTable extends Component {
 			orders_count = 0,
 			gross_revenue = 0,
 			refunds = 0,
-			coupons = 0,
 			taxes = 0,
 			shipping = 0,
 			net_revenue = 0,
@@ -179,10 +159,6 @@ class RevenueReportTable extends Component {
 			{
 				label: __( 'refunds', 'woocommerce-admin' ),
 				value: formatCurrency( refunds ),
-			},
-			{
-				label: __( 'coupons', 'woocommerce-admin' ),
-				value: formatCurrency( coupons ),
 			},
 			{
 				label: __( 'taxes', 'woocommerce-admin' ),

@@ -20,13 +20,6 @@ export const charts = [
 		type: 'currency',
 	},
 	{
-		key: 'coupons',
-		label: __( 'Coupons', 'woocommerce-admin' ),
-		order: 'desc',
-		orderby: 'coupons',
-		type: 'currency',
-	},
-	{
 		key: 'taxes',
 		label: __( 'Taxes', 'woocommerce-admin' ),
 		order: 'desc',
