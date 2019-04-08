@@ -5,6 +5,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
+import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
@@ -165,6 +166,34 @@ class ReviewsPanel extends Component {
 			) );
 	}
 
+	renderEmptyMessage() {
+		return (
+			<ActivityCard
+				className="woocommerce-empty-review-activity-card"
+				title={ __( 'You have no reviews to moderate', 'woocommerce-admin' ) }
+				icon={ <Gridicon icon="time" size={ 48 } /> }
+				actions={
+					<Button
+						href="https://woocommerce.com/posts/reviews-woocommerce-best-practices/"
+						isDefault
+					>
+						{ __( 'Learn more', 'woocommerce-admin' ) }
+					</Button>
+				}
+			>
+				<p>
+					{ __( "Your customers haven't started reviewing your products.", 'woocommerce-admin' ) }
+				</p>
+				<p>
+					{ __(
+						'Take some time to learn about best practices for collecting and using your reviews.',
+						'woocommerce-admin'
+					) }
+				</p>
+			</ActivityCard>
+		);
+	}
+
 	render() {
 		const { isError, isRequesting, reviews } = this.props;
 
@@ -190,15 +219,22 @@ class ReviewsPanel extends Component {
 			);
 		}
 
+		const title =
+			isRequesting || reviews.length
+				? __( 'Reviews', 'woocommerce-admin' )
+				: __( 'No reviews to moderate', 'woocommerce-admin' );
+
 		return (
 			<Fragment>
-				<ActivityHeader title={ __( 'Reviews', 'woocommerce-admin' ) } />
+				<ActivityHeader title={ title } />
 				<Section>
 					{ isRequesting ? (
 						this.renderPlaceholders()
 					) : (
 						<Fragment>
-							{ reviews.map( review => this.renderReview( review, this.props ) ) }
+							{ reviews.length
+								? reviews.map( review => this.renderReview( review, this.props ) )
+								: this.renderEmptyMessage() }
 						</Fragment>
 					) }
 				</Section>
