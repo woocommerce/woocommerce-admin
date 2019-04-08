@@ -21,7 +21,8 @@ export function getUnreadNotes( select ) {
 		! Boolean( getNotesError( notesQuery ) ) &&
 		! isGetNotesRequesting( notesQuery ) &&
 		latestNote[ 0 ] &&
-		new Date( latestNote[ 0 ].date_created_gmt ).getTime() > userData.activity_panel_inbox_last_read
+		new Date( latestNote[ 0 ].date_created_gmt + 'Z' ).getTime() >
+			userData.activity_panel_inbox_last_read
 	);
 }
 
