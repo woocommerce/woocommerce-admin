@@ -80,7 +80,7 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 				$persisted_query
 			);
 			$coupon_url  = wc_admin_url( 'analytics/coupons', $url_query );
-			$coupon_code = $coupon['extended_info'] && $coupon['extended_info']['code'] ? $coupon['extended_info']['code'] : '';
+			$coupon_code = isset( $coupon['extended_info'] ) && isset( $coupon['extended_info']['code'] ) ? $coupon['extended_info']['code'] : '';
 			$rows[]      = array(
 				array(
 					'display' => "<a href='{$coupon_url}'>{$coupon_code}</a>",
@@ -146,7 +146,7 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 				$persisted_query
 			);
 			$category_url  = wc_admin_url( 'analytics/categories', $url_query );
-			$category_name = $category['extended_info'] && $category['extended_info']['name'] ? $category['extended_info']['name'] : '';
+			$category_name = isset( $category['extended_info'] ) && isset( $category['extended_info']['name'] ) ? $category['extended_info']['name'] : '';
 			$rows[]        = array(
 				array(
 					'display' => "<a href='{$category_url}'>{$category_name}</a>",
@@ -274,7 +274,7 @@ class WC_Admin_REST_Leaderboards_Controller extends WC_REST_Data_Controller {
 				$persisted_query
 			);
 			$product_url  = wc_admin_url( 'analytics/products', $url_query );
-			$product_name = $product['extended_info'] && $product['extended_info']['name'] ? $product['extended_info']['name'] : '';
+			$product_name = isset( $product['extended_info'] ) && isset( $product['extended_info']['name'] ) ? $product['extended_info']['name'] : '';
 			$rows[]       = array(
 				array(
 					'display' => "<a href='{$product_url}'>{$product_name}</a>",
