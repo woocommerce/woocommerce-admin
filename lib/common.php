@@ -317,7 +317,7 @@ function wc_admin_is_feature_enabled( $feature ) {
 /**
  * Format a number using the decimal and thousands separator settings in WooCommerce.
  *
- * @param int $number Number to be formatted.
+ * @param mixed $number Number to be formatted.
  * @return string
  */
 function wc_admin_number_format( $number ) {
