@@ -100,7 +100,7 @@ function wc_admin_build_file_exists() {
  */
 function wc_admin_do_wc_admin_daily() {
 	WC_Admin_Notes_New_Sales_Record::possibly_add_sales_record_note();
-    WC_Admin_Notes_Giving_Feedback_Notes::add_notes_for_admin_giving_feedback();
+	WC_Admin_Notes_Giving_Feedback_Notes::add_notes_for_admin_giving_feedback();
 }
 add_action( 'wc_admin_daily', 'wc_admin_do_wc_admin_daily' );
 
