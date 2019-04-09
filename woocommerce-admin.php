@@ -100,6 +100,7 @@ function wc_admin_build_file_exists() {
  */
 function wc_admin_do_wc_admin_daily() {
 	WC_Admin_Notes_New_Sales_Record::possibly_add_sales_record_note();
+    WC_Admin_Notes_Giving_Feedback_Notes::add_notes_for_admin_giving_feedback();
 }
 add_action( 'wc_admin_daily', 'wc_admin_do_wc_admin_daily' );
 
@@ -163,6 +164,7 @@ function wc_admin_plugins_loaded() {
 	// Admin note providers.
 	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-new-sales-record.php';
 	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-settings-notes.php';
+	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-giving-feedback-notes.php';
 	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
 	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-historical-data.php';
 	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-order-milestones.php';
