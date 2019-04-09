@@ -540,7 +540,7 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 			$last_name  = $order->get_shipping_last_name( 'edit' );
 		}
 
-		return apply_filters( 'woocommerce_customer_name', array( $first_name, $last_name ), $order );
+		return apply_filters( 'woocommerce_reports_customer_name', array( $first_name, $last_name ), $order );
 	}
 
 	/**
