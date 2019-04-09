@@ -97,6 +97,17 @@ Leaderboard.propTypes = {
 	 */
 	query: PropTypes.object,
 	/**
+	 * Which column should be the row header, defaults to the first item (`0`) (see `Table` props).
+	 */
+	rows: PropTypes.arrayOf(
+		PropTypes.arrayOf(
+			PropTypes.shape( {
+				display: PropTypes.node,
+				value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number, PropTypes.bool ] ),
+			} )
+		)
+	).isRequired,
+	/**
 	 * String to display as the title of the table.
 	 */
 	title: PropTypes.string.isRequired,
@@ -104,6 +115,12 @@ Leaderboard.propTypes = {
 	 * Number of table rows.
 	 */
 	totalRows: PropTypes.number.isRequired,
+};
+
+Leaderboard.defaultProps = {
+	rows: [],
+	isError: false,
+	isRequesting: false,
 };
 
 export default compose(
