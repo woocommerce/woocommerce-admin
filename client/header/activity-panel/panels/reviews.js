@@ -9,7 +9,7 @@ import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
-import { get, noop, isNull } from 'lodash';
+import { get, last, noop, isNull } from 'lodash';
 import PropTypes from 'prop-types';
 import { withDispatch } from '@wordpress/data';
 
@@ -150,46 +150,80 @@ class ReviewsPanel extends Component {
 		);
 	}
 
-	renderPlaceholders() {
-		const { numberOfReviews } = this.props;
-		const placeholders = new Array( numberOfReviews );
-		return placeholders
-			.fill( 0 )
-			.map( ( p, i ) => (
-				<ActivityCardPlaceholder
-					className="woocommerce-review-activity-card"
-					key={ i }
-					hasAction
-					hasDate
-					lines={ 2 }
-				/>
-			) );
-	}
-
 	renderEmptyMessage() {
+		const { lastApprovedReviewTime } = this.props;
+
+		const title = __( 'You have no reviews to moderate', 'woocommerce-admin' );
+		let buttonUrl = '';
+		let buttonText = '';
+		let content = '';
+
+		if ( lastApprovedReviewTime ) {
+			const now = new Date();
+			const DAY = 24 * 60 * 60 * 1000;
+			if ( ( now.getTime() - lastApprovedReviewTime ) / DAY > 30 ) {
+				buttonUrl = '';
+				buttonText = __( 'Learn more', 'woocommerce-admin' );
+				content = (
+					<Fragment>
+						<p>
+							{ __(
+								"We noticed that it's been a while since your products had any reviews.",
+								'woocommerce-admin'
+							) }
+						</p>
+						<p>
+							{ __(
+								'Take some time to learn about best practices for collecting and using your reviews.',
+								'woocommerce-admin'
+							) }
+						</p>
+					</Fragment>
+				);
+			} else {
+				buttonUrl = '';
+				buttonText = __( 'View all Reviews', 'woocommerce-admin' );
+				content = (
+					<p>
+						{ __(
+							/* eslint-disable max-len */
+							"Awesome, you've moderated all of your product reviews. How about responding to some of those negative reviews?",
+							'woocommerce-admin'
+							/* eslint-enable */
+						) }
+					</p>
+				);
+			}
+		} else {
+			buttonUrl = 'https://woocommerce.com/posts/reviews-woocommerce-best-practices/';
+			buttonText = __( 'Learn more', 'woocommerce-admin' );
+			content = (
+				<Fragment>
+					<p>
+						{ __( "Your customers haven't started reviewing your products.", 'woocommerce-admin' ) }
+					</p>
+					<p>
+						{ __(
+							'Take some time to learn about best practices for collecting and using your reviews.',
+							'woocommerce-admin'
+						) }
+					</p>
+				</Fragment>
+			);
+		}
+
 		return (
 			<ActivityCard
 				className="woocommerce-empty-review-activity-card"
-				title={ __( 'You have no reviews to moderate', 'woocommerce-admin' ) }
+				title={ title }
 				icon={ <Gridicon icon="time" size={ 48 } /> }
 				actions={
-					<Button
-						href="https://woocommerce.com/posts/reviews-woocommerce-best-practices/"
-						isDefault
-					>
-						{ __( 'Learn more', 'woocommerce-admin' ) }
+					<Button href={ buttonUrl } isDefault>
+						{ buttonText }
 					</Button>
 				}
 			>
-				<p>
-					{ __( "Your customers haven't started reviewing your products.", 'woocommerce-admin' ) }
-				</p>
-				<p>
-					{ __(
-						'Take some time to learn about best practices for collecting and using your reviews.',
-						'woocommerce-admin'
-					) }
-				</p>
+				{ content }
 			</ActivityCard>
 		);
 	}
@@ -229,7 +263,12 @@ class ReviewsPanel extends Component {
 				<ActivityHeader title={ title } />
 				<Section>
 					{ isRequesting ? (
-						this.renderPlaceholders()
+						<ActivityCardPlaceholder
+							className="woocommerce-review-activity-card"
+							hasAction
+							hasDate
+							lines={ 2 }
+						/>
 					) : (
 						<Fragment>
 							{ reviews.length
@@ -254,31 +293,47 @@ ReviewsPanel.defaultProps = {
 	reviews: [],
 	isError: false,
 	isRequesting: false,
-	numberOfReviews: 0,
 };
 
 export default compose(
-	withSelect( ( select, props ) => {
-		const { numberOfReviews } = props;
+	withSelect( select => {
 		const { getCurrentUserData, getReviews, getReviewsError, isGetReviewsRequesting } = select(
 			'wc-api'
 		);
-		if ( numberOfReviews === 0 ) {
-			return {};
-		}
 		const userData = getCurrentUserData();
 		const reviewsQuery = {
+			page: 1,
+			per_page: QUERY_DEFAULTS.pageSize,
+			status: 'hold',
+			_embed: 1,
+		};
+		const reviews = getReviews( reviewsQuery );
+
+		const allReviewsQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
 			status: DEFAULT_REVIEW_STATUSES,
 			_embed: 1,
 		};
+		const lastReview = last( getReviews( allReviewsQuery ) );
+		let lastApprovedReviewTime = null;
+		if ( lastReview && lastReview.date_created_gmt ) {
+			const creationDate = new Date( lastReview.date_created_gmt );
+			lastApprovedReviewTime = creationDate.getTime();
+		}
 
-		const reviews = getReviews( reviewsQuery );
-		const isError = Boolean( getReviewsError( reviewsQuery ) );
-		const isRequesting = isGetReviewsRequesting( reviewsQuery );
+		const isError =
+			Boolean( getReviewsError( reviewsQuery ) ) || Boolean( getReviewsError( allReviewsQuery ) );
+		const isRequesting =
+			isGetReviewsRequesting( reviewsQuery ) || isGetReviewsRequesting( allReviewsQuery );
 
-		return { reviews, isError, isRequesting, lastRead: userData.activity_panel_reviews_last_read };
+		return {
+			reviews,
+			isError,
+			isRequesting,
+			lastRead: userData.activity_panel_reviews_last_read,
+			lastApprovedReviewTime,
+		};
 	} ),
 	withDispatch( dispatch => {
 		const { updateCurrentUserData } = dispatch( 'wc-api' );
