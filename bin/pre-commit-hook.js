@@ -101,6 +101,18 @@ files.forEach( file => {
 	}
 
 	try {
+		// Check if PHP PHP_CodeSniffer is installed
+		execSync( `./vendor/bin/phpcbf -h` );
+		execSync( `./vendor/bin/phpcs -h` );
+	} catch( e ) {
+		console.log(
+			'PHP_CodeSniffer is not installed. ' +
+			'Please, run `composer install` ' +
+			'and run the command again.' );
+		process.exit( 1 );
+	}
+
+	try {
 		// Apply auto-fix
 		execSync( `./vendor/bin/phpcbf --standard=phpcs.xml.dist ${ file }` );
 	} catch( e ) {
