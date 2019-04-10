@@ -102,7 +102,7 @@ files.forEach( file => {
 
 	try {
 		// Apply auto-fix
-		execSync( `./vendor/bin/phpcbf --standard=phpcs.xml.dist ${ file } > /dev/null` );
+		execSync( `./vendor/bin/phpcbf --standard=phpcs.xml.dist ${ file }` );
 	} catch( e ) {
 		try {
 			// Check if there are still errors
