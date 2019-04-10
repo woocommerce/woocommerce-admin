@@ -34,7 +34,7 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 			return;
 		}
 
-		// Getting install timestamp reference class-wc-admin-install.php
+		// Getting install timestamp reference class-wc-admin-install.php.
 		$wc_admin_installed = get_option( 'wc_admin_install_timestamp', false );
 		if ( false === $wc_admin_installed ) {
 			$wc_admin_installed = time();
