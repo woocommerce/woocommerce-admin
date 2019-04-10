@@ -41,7 +41,7 @@ class InboxPanel extends Component {
 			>
 				{ __(
 					/* eslint-disable max-len */
-					"As things begin to happen in your store your inbox will start to fill up. You'll see things like achivements, new feature announcements, extension recommendations and more!",
+					"As things begin to happen in your store your inbox will start to fill up. You'll see things like achievements, new feature announcements, extension recommendations and more!",
 					/* eslint-enable */
 					'woocommerce-admin'
 				) }

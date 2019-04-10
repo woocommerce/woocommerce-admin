@@ -48,7 +48,7 @@ class OrdersPanel extends Component {
 				>
 					{ __(
 						/* eslint-disable max-len */
-						"Good job, you've fullfilled all of your new orders!",
+						"Good job, you've fulfilled all of your new orders!",
 						/* eslint-enable */
 						'woocommerce-admin'
 					) }
