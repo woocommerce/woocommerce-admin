@@ -101,7 +101,7 @@ files.forEach( file => {
 	}
 
 	try {
-		// Check if PHP PHP_CodeSniffer is installed
+		// Check if PHP PHP_CodeSniffer is installed.
 		execSync( `./vendor/bin/phpcbf -h` );
 		execSync( `./vendor/bin/phpcs -h` );
 	} catch( e ) {
@@ -113,11 +113,11 @@ files.forEach( file => {
 	}
 
 	try {
-		// Apply auto-fix
+		// Apply auto-fix.
 		execSync( `./vendor/bin/phpcbf --standard=phpcs.xml.dist ${ file }` );
 	} catch( e ) {
 		try {
-			// Check if there are still errors
+			// Check if there are still errors.
 			execSync( `./vendor/bin/phpcs --standard=phpcs.xml.dist ${ file }` );
 		} catch( err ) {
 			fileHasPhpLintErrors = true;
