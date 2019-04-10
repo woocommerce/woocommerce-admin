@@ -207,7 +207,13 @@ function wc_admin_plugins_loaded() {
 	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
 	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-api-init.php';
 
-	do_action( 'wc_admin_includes' );
+	// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-new-sales-record.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-settings-notes.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-historical-data.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-order-milestones.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-mobile-app.php';
 
 	// Verify we have a proper build.
 	if ( ! wc_admin_build_file_exists() ) {
@@ -303,7 +309,7 @@ function wc_admin_url( $path, $query = array() ) {
 	return admin_url( 'admin.php?page=wc-admin#' . $path, dirname( __FILE__ ) );
 }
 
-/*
+/**
  * Returns true if we are on a "classic" (non JS app) powered admin page.
  * `wc_get_screen_ids` will also return IDs for extensions that have properly registered themselves.
  *

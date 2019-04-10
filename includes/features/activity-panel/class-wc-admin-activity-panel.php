@@ -32,7 +32,6 @@ class WC_Admin_Activity_Panel {
 	 */
 	public function __construct() {
 		add_filter( 'wc_admin_get_user_data_fields', array( $this, 'add_user_data_fields' ) );
-		add_action( 'wc_admin_includes', array( $this, 'load_note_providers' ) );
 		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 ); // Run after WC_Admin_Loader.
 		add_action( 'woocommerce_updated', array( $this, 'woocommerce_updated_note' ) );
 	}
@@ -51,18 +50,6 @@ class WC_Admin_Activity_Panel {
 				'activity_panel_reviews_last_read',
 			)
 		);
-	}
-
-	/**
-	 * Loads Admin note providers.
-	 */
-	public function load_note_providers() {
-		require_once 'notes/class-wc-admin-notes-new-sales-record.php';
-		require_once 'notes/class-wc-admin-notes-settings-notes.php';
-		require_once 'notes/class-wc-admin-notes-woo-subscriptions-notes.php';
-		require_once 'notes/class-wc-admin-notes-historical-data.php';
-		require_once 'notes/class-wc-admin-notes-order-milestones.php';
-		require_once 'notes/class-wc-admin-notes-mobile-app.php';
 	}
 
 	/**
