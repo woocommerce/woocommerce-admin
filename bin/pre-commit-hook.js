@@ -101,7 +101,7 @@ files.forEach( file => {
 	}
 
 	try {
-		// Check if PHP PHP_CodeSniffer is installed.
+		// Check if PHP_CodeSniffer is installed.
 		execSync( `./vendor/bin/phpcbf -h` );
 		execSync( `./vendor/bin/phpcs -h` );
 	} catch( e ) {
