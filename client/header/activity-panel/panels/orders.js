@@ -46,12 +46,7 @@ class OrdersPanel extends Component {
 					title={ __( 'You have no orders to fulfill', 'woocommerce-admin' ) }
 					icon={ <Gridicon icon="checkmark" size={ 48 } /> }
 				>
-					{ __(
-						/* eslint-disable max-len */
-						"Good job, you've fulfilled all of your new orders!",
-						/* eslint-enable */
-						'woocommerce-admin'
-					) }
+					{ __( "Good job, you've fulfilled all of your new orders!", 'woocommerce-admin' ) }
 				</ActivityCard>
 			);
 		}
@@ -62,15 +57,18 @@ class OrdersPanel extends Component {
 				title={ __( 'You have no orders to fulfill', 'woocommerce-admin' ) }
 				icon={ <Gridicon icon="time" size={ 48 } /> }
 				actions={
-					<Button href="https://docs.woocommerce.com/document/managing-orders/" isDefault>
+					<Button
+						href="https://docs.woocommerce.com/document/managing-orders/"
+						isDefault
+						target="_blank"
+					>
 						{ __( 'Learn more', 'woocommerce-admin' ) }
 					</Button>
 				}
 			>
 				{ __(
-					/* eslint-disable max-len */
-					"You're still waiting for your customers to make their first orders. While you wait why not learn how to manage orders?",
-					/* eslint-enable */
+					"You're still waiting for your customers to make their first orders. " +
+						'While you wait why not learn how to manage orders?',
 					'woocommerce-admin'
 				) }
 			</ActivityCard>

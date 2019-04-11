@@ -40,9 +40,8 @@ class InboxPanel extends Component {
 				icon={ <Gridicon icon="checkmark" size={ 48 } /> }
 			>
 				{ __(
-					/* eslint-disable max-len */
-					"As things begin to happen in your store your inbox will start to fill up. You'll see things like achievements, new feature announcements, extension recommendations and more!",
-					/* eslint-enable */
+					'As things begin to happen in your store your inbox will start to fill up. ' +
+						"You'll see things like achievements, new feature announcements, extension recommendations and more!",
 					'woocommerce-admin'
 				) }
 			</ActivityCard>
@@ -52,7 +51,7 @@ class InboxPanel extends Component {
 	renderNotes() {
 		const { lastRead, notes } = this.props;
 
-		if ( Object.keys( notes ).length === 0 ) {
+		if ( 0 === Object.keys( notes ).length ) {
 			return this.renderEmptyCard();
 		}
 
