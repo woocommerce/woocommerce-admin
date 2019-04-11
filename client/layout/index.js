@@ -68,8 +68,6 @@ class Layout extends Component {
 
 				<div className="woocommerce-layout__primary" id="woocommerce-layout__primary">
 					{ window.wcAdminFeatures[ 'store-alerts' ] && <StoreAlerts /> }
-					{ window.wcAdminFeatures.onboarding &&
-						isEmbeded && <strong>Testing. @todo Remove this before merging.</strong> }
 					<Notices />
 					{ ! isEmbeded && (
 						<div className="woocommerce-layout__main">

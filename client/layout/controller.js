@@ -19,7 +19,6 @@ import AnalyticsReport from 'analytics/report';
 import AnalyticsSettings from 'analytics/settings';
 import Dashboard from 'dashboard';
 import DevDocs from 'devdocs';
-import Onboarding from 'onboarding';
 
 const getPages = () => {
 	const pages = [];
@@ -66,13 +65,6 @@ const getPages = () => {
 			path: '/analytics/:report',
 			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
 			wpClosedMenu: 'toplevel_page_woocommerce',
-		} );
-	}
-
-	if ( window.wcAdminFeatures.onboarding ) {
-		pages.push( {
-			container: Onboarding,
-			path: '/onboarding',
 		} );
 	}
 

@@ -308,19 +308,3 @@ function wc_admin_url( $path, $query = array() ) {
 
 	return admin_url( 'admin.php?page=wc-admin#' . $path, dirname( __FILE__ ) );
 }
-
-/**
- * Returns true if we are on a "classic" (non JS app) powered admin page.
- * `wc_get_screen_ids` will also return IDs for extensions that have properly registered themselves.
- *
- * @param bool $is_embed If the current page should embed the WooCommerce target area (activity panel, notices, etc).
- */
-function wc_admin_is_embed_enabled_wc_page( $is_embed ) {
-	if ( ! WC_Admin_Loader::is_feature_enabled( 'activity-panels' ) && ! WC_Admin_Loader::is_feature_enabled( 'store-alerts' ) ) {
-		return false;
-	}
-
-	return $is_embed;
-}
-
-add_action( 'woocommerce_page_is_embed_page', 'wc_admin_is_embed_enabled_wc_page' );
