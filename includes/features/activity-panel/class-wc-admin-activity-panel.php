@@ -70,4 +70,4 @@ class WC_Admin_Activity_Panel {
 	}
 }
 
-new WC_Admin_Analytics();
+new WC_Admin_Activity_Panel();

@@ -43,6 +43,7 @@ class WC_Admin_Dashboard {
 	 */
 	public function add_preload_endpoints( $endpoints ) {
 		$endpoints['performanceIndicators'] = '/wc/v4/reports/performance-indicators/allowed';
+		$endpoints['leaderboards']          = '/wc/v4/leaderboards/allowed';
 		return $endpoints;
 	}
 
