@@ -37,7 +37,7 @@ class WC_Admin_Notes_Welcome_Message {
 		$note->add_action(
 			'learn-more',
 			__( 'Learn more', 'woocommerce-admin' ),
-			'	https://woocommerce.wordpress.com/'
+			'https://woocommerce.wordpress.com/'
 		);
 
 		$note->save();
