@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { applyFilters } from '@wordpress/hooks';
-import { Component, createRef, Fragment } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import { get } from 'lodash';
@@ -107,8 +107,7 @@ class ReportTable extends Component {
 		const filteredHeaders = this.filterShownHeaders( headers, userPrefColumns );
 
 		return (
-			<Fragment>
-				<div ref={ this.scrollPointRef } />
+			<div ref={ this.scrollPointRef }>
 				<TableCard
 					downloadable
 					headers={ filteredHeaders }
@@ -123,7 +122,7 @@ class ReportTable extends Component {
 					totalRows={ totalResults }
 					{ ...tableProps }
 				/>
-			</Fragment>
+			</div>
 		);
 	}
 }

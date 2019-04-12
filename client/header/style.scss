@@ -1,13 +1,17 @@
 /** @format */
-body {
-	scroll-padding-top: #{$adminbar-height + 80};
+$small-header-height: 50px;
+$medium-header-height: 60px;
+$large-header-height: 80px;
+
+body.woocommerce-feature-enabled-activity-panels {
+	scroll-padding-top: #{$adminbar-height + $large-header-height};
 
 	@include breakpoint( '<782px' ) {
-		scroll-padding-top: #{$adminbar-height + 50};
+		scroll-padding-top: #{$adminbar-height + $small-header-height};
 	}
 
 	@include breakpoint( '782px-960px' ) {
-		scroll-padding-top: #{$adminbar-height + 60};
+		scroll-padding-top: #{$adminbar-height + $medium-header-height};
 	}
 }
 
@@ -19,7 +23,7 @@ body {
 	box-sizing: border-box;
 	border-bottom: 1px solid $white;
 	padding: 0;
-	height: 80px;
+	height: $large-header-height;
 	position: fixed;
 	width: 100%;
 	top: $adminbar-height;
@@ -31,12 +35,12 @@ body {
 
 	@include breakpoint( '<782px' ) {
 		top: $adminbar-height-mobile;
-		height: 50px;
+		height: $small-header-height;
 		flex-flow: row wrap;
 	}
 
 	@include breakpoint( '782px-960px' ) {
-		height: 60px;
+		height: $medium-header-height;
 	}
 
 	.woocommerce-layout__header-breadcrumbs {
