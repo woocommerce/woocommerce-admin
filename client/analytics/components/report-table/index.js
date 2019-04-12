@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { applyFilters } from '@wordpress/hooks';
-import { Component } from '@wordpress/element';
+import { Component, createRef, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import { get } from 'lodash';
@@ -34,6 +34,8 @@ class ReportTable extends Component {
 		super( props );
 
 		this.onColumnsChange = this.onColumnsChange.bind( this );
+		this.onPageChange = this.onPageChange.bind( this );
+		this.scrollPointRef = createRef();
 	}
 
 	onColumnsChange( shownColumns ) {
@@ -47,6 +49,10 @@ class ReportTable extends Component {
 			};
 			updateCurrentUserData( userDataFields );
 		}
+	}
+
+	onPageChange() {
+		this.scrollPointRef.current.scrollIntoView();
 	}
 
 	filterShownHeaders( headers, hiddenKeys ) {
@@ -101,19 +107,23 @@ class ReportTable extends Component {
 		const filteredHeaders = this.filterShownHeaders( headers, userPrefColumns );
 
 		return (
-			<TableCard
-				downloadable
-				headers={ filteredHeaders }
-				ids={ ids }
-				isLoading={ isLoading }
-				onQueryChange={ onQueryChange }
-				onColumnsChange={ this.onColumnsChange }
-				rows={ rows }
-				rowsPerPage={ parseInt( query.per_page ) || QUERY_DEFAULTS.pageSize }
-				summary={ summary }
-				totalRows={ totalResults }
-				{ ...tableProps }
-			/>
+			<Fragment>
+				<div ref={ this.scrollPointRef } />
+				<TableCard
+					downloadable
+					headers={ filteredHeaders }
+					ids={ ids }
+					isLoading={ isLoading }
+					onQueryChange={ onQueryChange }
+					onColumnsChange={ this.onColumnsChange }
+					onPageChange={ this.onPageChange }
+					rows={ rows }
+					rowsPerPage={ parseInt( query.per_page ) || QUERY_DEFAULTS.pageSize }
+					summary={ summary }
+					totalRows={ totalResults }
+					{ ...tableProps }
+				/>
+			</Fragment>
 		);
 	}
 }

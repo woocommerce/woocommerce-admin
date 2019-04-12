@@ -1,4 +1,15 @@
 /** @format */
+body {
+	scroll-padding-top: #{$adminbar-height + 80};
+
+	@include breakpoint( '<782px' ) {
+		scroll-padding-top: #{$adminbar-height + 50};
+	}
+
+	@include breakpoint( '782px-960px' ) {
+		scroll-padding-top: #{$adminbar-height + 60};
+	}
+}
 
 .woocommerce-layout__header {
 	background: $white;
