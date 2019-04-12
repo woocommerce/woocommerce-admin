@@ -19,7 +19,7 @@ class WC_Admin_Notes_Welcome_Message {
 	 */
 	public static function add_welcome_note() {
 
-		//Check if plugin is upgrading if yes then don't create this note.
+		// Check if plugin is upgrading if yes then don't create this note.
 		$is_upgrading = get_option( WC_Admin_Install::VERSION_OPTION );
 		if ( $is_upgrading ) {
 			return;
