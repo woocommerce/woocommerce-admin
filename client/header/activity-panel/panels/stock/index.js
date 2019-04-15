@@ -72,7 +72,7 @@ class StockPanel extends Component {
 		}
 
 		const title =
-			products.length > 0
+			isRequesting || products.length > 0
 				? __( 'Stock', 'woocommerce-admin' )
 				: __( 'No products with low stock', 'woocommerce-admin' );
 		return (
