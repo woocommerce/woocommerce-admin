@@ -1,3 +1,6 @@
+# unreleased
+- <DateInput> and <DatePicker> got a `disabled` prop.
+
 # 2.0.0
 - Chart legend component now uses withInstanceId HOC so the ids used in several HTML elements are unique.
 - Chart component now accepts data with negative values.
