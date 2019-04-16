@@ -212,7 +212,7 @@ function wc_admin_plugins_loaded() {
 	// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
 	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-new-sales-record.php';
 	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-settings-notes.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-giving-feedback-notes.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-giving-feedback-notes.php';
 	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
 	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-historical-data.php';
 	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-order-milestones.php';
