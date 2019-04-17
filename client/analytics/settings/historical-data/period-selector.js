@@ -11,20 +11,51 @@ import { SelectControl } from '@wordpress/components';
  */
 import { DatePicker } from '@woocommerce/components';
 
-function HistoricalDataPeriodSelector( { disabled, onDateChange, onPeriodChange, value } ) {
+function HistoricalDataPeriodSelector( {
+	dateFormat,
+	disabled,
+	onDateChange,
+	onPeriodChange,
+	value,
+} ) {
 	const onSelectChange = val => {
 		onPeriodChange( val );
 	};
 	const onDatePickerChange = val => {
-		if ( val.date.isValid ) {
-			// console.log( val );
-			// window.val = val;
-			onDateChange( val.date.format( 'YYYY-MM-DD' ) );
+		if ( val.date && val.date.isValid ) {
+			onDateChange( val.date.format( dateFormat ) );
 		} else {
-			onDateChange( null );
+			onDateChange( val.text );
 		}
 	};
-	const dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
+	const getDatePickerError = momentDate => {
+		if ( ! momentDate.isValid() || value.date.length !== dateFormat.length ) {
+			return __( 'Invalid date', 'woocommerce-admin' );
+		}
+		if ( momentDate.isAfter( new Date(), 'day' ) ) {
+			return __( 'Date must be in the past', 'woocommerce-admin' );
+		}
+		return null;
+	};
+	const getDatePicker = () => {
+		const momentDate = moment( value.date, dateFormat );
+		return (
+			<div className="woocommerce-settings-historical-data__column">
+				<div className="woocommerce-settings-historical-data__column-label">
+					{ __( 'Begining on', 'woocommerce-admin' ) }
+				</div>
+				<DatePicker
+					date={ momentDate.isValid() ? momentDate.toDate() : null }
+					dateFormat={ dateFormat }
+					disabled={ disabled }
+					error={ getDatePickerError( momentDate ) }
+					isInvalidDate={ date => moment( date ).isAfter( new Date(), 'day' ) }
+					onUpdate={ onDatePickerChange }
+					text={ value.date }
+				/>
+			</div>
+		);
+	};
 
 	return (
 		<div className="woocommerce-settings-historical-data__columns">
@@ -45,21 +76,7 @@ function HistoricalDataPeriodSelector( { disabled, onDateChange, onPeriodChange,
 					] }
 				/>
 			</div>
-			{ value.label === 'custom' && (
-				<div className="woocommerce-settings-historical-data__column">
-					<div className="woocommerce-settings-historical-data__column-label">
-						{ __( 'Begining on', 'woocommerce-admin' ) }
-					</div>
-					<DatePicker
-						date={ value.date ? new Date( value.date ) : new Date() }
-						disabled={ disabled }
-						text={ moment( value.date || new Date() ).format( dateFormat ) }
-						onUpdate={ onDatePickerChange }
-						dateFormat={ dateFormat }
-						isInvalidDate={ date => moment( date ).isAfter( new Date(), 'day' ) }
-					/>
-				</div>
-			) }
+			{ value.label === 'custom' && getDatePicker() }
 		</div>
 	);
 }

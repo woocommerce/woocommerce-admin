@@ -5,6 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
+import moment from 'moment';
 
 /**
  * Internal dependencies
@@ -19,6 +20,8 @@ class HistoricalData extends Component {
 	constructor() {
 		super( ...arguments );
 
+		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
+
 		this.state = {
 			customersProgress: 0,
 			customersTotal: 0,
@@ -26,8 +29,8 @@ class HistoricalData extends Component {
 			ordersProgress: 0,
 			ordersTotal: 0,
 			period: {
-				date: null,
-				value: 'all',
+				date: moment().format( this.dateFormat ),
+				label: 'all',
 			},
 			skipChecked: true,
 			step: 'ready',
@@ -49,6 +52,7 @@ class HistoricalData extends Component {
 	onPeriodChange( val ) {
 		this.setState( {
 			period: {
+				...this.state.period,
 				label: val,
 			},
 		} );
@@ -103,6 +107,7 @@ class HistoricalData extends Component {
 						{ step !== 'finished' && (
 							<Fragment>
 								<HistoricalDataPeriodSelector
+									dateFormat={ this.dateFormat }
 									disabled={ isInProgress }
 									onPeriodChange={ this.onPeriodChange }
 									onDateChange={ this.onDateChange }
