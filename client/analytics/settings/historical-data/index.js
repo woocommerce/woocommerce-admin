@@ -25,6 +25,7 @@ class HistoricalData extends Component {
 		this.state = {
 			customersProgress: 0,
 			customersTotal: 0,
+			importDate: 'July 1',
 			isRequesting: false,
 			ordersProgress: 0,
 			ordersTotal: 0,
@@ -82,6 +83,7 @@ class HistoricalData extends Component {
 		const {
 			customersProgress,
 			customersTotal,
+			importDate,
 			ordersProgress,
 			ordersTotal,
 			period,
@@ -130,10 +132,10 @@ class HistoricalData extends Component {
 								/>
 							</Fragment>
 						) }
-						<HistoricalDataStatus status={ step } />
+						<HistoricalDataStatus importDate={ importDate } status={ step } />
 					</div>
 				</div>
-				<div className="woocommerce-settings__actions">
+				<div className="woocommerce-settings__actions woocommerce-settings-historical-data__actions">
 					{ step === 'ready' && (
 						<Button isPrimary onClick={ this.changeStep( 'customers' ) }>
 							{ __( 'Start', 'woocommerce-admin' ) }

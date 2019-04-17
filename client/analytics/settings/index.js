@@ -21,7 +21,7 @@ import './index.scss';
 import { analyticsSettings } from './config';
 import Header from 'header';
 import Setting from './setting';
-import HistoricalData from './historical-data/index';
+import HistoricalData from './historical-data';
 import withSelect from 'wc-api/with-select';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';

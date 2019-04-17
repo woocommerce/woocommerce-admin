@@ -2,17 +2,20 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 
-function HistoricalDataStatus( { status } ) {
+function HistoricalDataStatus( { importDate, status } ) {
 	const statusLabels = {
 		ready: __( 'Ready To Import', 'woocommerce-admin' ),
 		stopped: __( 'Ready To Import', 'woocommerce-admin' ),
 		customers: [ __( 'Importing Customers', 'woocommerce-admin' ), <Spinner key="spinner" /> ],
 		orders: [ __( 'Importing Orders', 'woocommerce-admin' ), <Spinner key="spinner" /> ],
 		finalizing: [ __( 'Finalizing', 'woocommerce-admin' ), <Spinner key="spinner" /> ],
-		finished: __( 'Historical data from July 1 onward imported', 'woocommerce-admin' ),
+		finished: sprintf(
+			__( 'Historical data from %s onward imported', 'woocommerce-admin' ),
+			importDate
+		),
 	};
 
 	return (

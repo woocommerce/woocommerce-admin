@@ -2,8 +2,8 @@
 
 .woocommerce-settings-historical-data__columns {
 	display: grid;
-	grid-template-columns: calc(50% - #{$gap-large/2}) calc(50% - #{$gap-large/2});
 	grid-column-gap: $gap-large;
+	grid-template-columns: calc(50% - #{$gap-large/2}) calc(50% - #{$gap-large/2});
 	margin-top: $gap-small;
 
 	.woocommerce-settings-historical-data__column {
@@ -105,7 +105,7 @@
 	}
 }
 
-.woocommerce-settings__actions {
+.woocommerce-settings-historical-data__actions {
 	align-items: center;
 	display: flex;
 }
