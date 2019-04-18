@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { applyFilters } from '@wordpress/hooks';
-import { Component, createRef } from '@wordpress/element';
+import { Component, createRef, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import { get } from 'lodash';
@@ -23,6 +23,8 @@ import { getReportChartData, getReportTableData } from 'wc-api/reports/utils';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 import { extendTableData } from './utils';
+
+import './style.scss';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';
 
@@ -107,7 +109,12 @@ class ReportTable extends Component {
 		const filteredHeaders = this.filterShownHeaders( headers, userPrefColumns );
 
 		return (
-			<div ref={ this.scrollPointRef }>
+			<Fragment>
+				<div
+					className="woocommerce-report-table__scroll-point"
+					ref={ this.scrollPointRef }
+					aria-hidden
+				/>
 				<TableCard
 					downloadable
 					headers={ filteredHeaders }
@@ -122,7 +129,7 @@ class ReportTable extends Component {
 					totalRows={ totalResults }
 					{ ...tableProps }
 				/>
-			</div>
+			</Fragment>
 		);
 	}
 }
