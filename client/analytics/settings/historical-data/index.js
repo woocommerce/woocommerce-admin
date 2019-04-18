@@ -166,7 +166,7 @@ export default withSelect( () => {
 		customersProgress: 0,
 		customersTotal: 0,
 		hasImportedData: false,
-		importDate: 'July 1',
+		importDate: '2019-04-01',
 		inProgress: false,
 		ordersProgress: 0,
 		ordersTotal: 0,

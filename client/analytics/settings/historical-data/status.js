@@ -3,8 +3,9 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Spinner } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+import moment from 'moment';
+import { Spinner } from '@wordpress/components';
 
 /**
  * WooCommerce dependencies
@@ -22,7 +23,7 @@ function HistoricalDataStatus( { importDate, status } ) {
 		finalizing: [ __( 'Finalizing', 'woocommerce-admin' ), <Spinner key="spinner" /> ],
 		finished: sprintf(
 			__( 'Historical data from %s onward imported', 'woocommerce-admin' ),
-			importDate
+			moment( importDate ).format( 'll' )
 		),
 	} );
 
