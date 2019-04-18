@@ -42,7 +42,7 @@ function HistoricalDataPeriodSelector( {
 		return (
 			<div className="woocommerce-settings-historical-data__column">
 				<div className="woocommerce-settings-historical-data__column-label">
-					{ __( 'Begining on', 'woocommerce-admin' ) }
+					{ __( 'Beginning on', 'woocommerce-admin' ) }
 				</div>
 				<DatePicker
 					date={ momentDate.isValid() ? momentDate.toDate() : null }
