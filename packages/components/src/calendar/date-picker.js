@@ -12,10 +12,14 @@ import { TAB } from '@wordpress/keycodes';
 import moment from 'moment';
 
 /**
+ * WooCommerce dependencies
+ */
+import { dateValidationMessages, toMoment } from '@woocommerce/date';
+
+/**
  * Internal dependencies
  */
 import DateInput from './input';
-import { toMoment } from '@woocommerce/date';
 import { H, Section } from '../section';
 import PropTypes from 'prop-types';
 
@@ -54,7 +58,7 @@ class DatePicker extends Component {
 		const value = event.target.value;
 		const { dateFormat } = this.props;
 		const date = toMoment( dateFormat, value );
-		const error = date ? null : __( 'Invalid date', 'woocommerce-admin' );
+		const error = date ? null : dateValidationMessages.invalid;
 
 		this.props.onUpdate( {
 			date,
