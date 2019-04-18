@@ -168,7 +168,7 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function schedule_single_order_import( $order_id ) {
-		if ( 'shop_order' !== get_post_type( $order_id ) ) {
+		if ( 'shop_order' !== get_post_type( $order_id ) && 'woocommerce_refund_created' !== current_filter() ) {
 			return;
 		}
 
@@ -215,8 +215,9 @@ class WC_Admin_Reports_Sync {
 		// Activate WC_Order extension.
 		WC_Admin_Order::add_filters();
 
+		// Order and refund data must be run on these hooks to ensure meta data is set.
 		add_action( 'save_post', array( __CLASS__, 'schedule_single_order_import' ) );
-		add_action( 'woocommerce_order_refunded', array( __CLASS__, 'schedule_single_order_import' ) );
+		add_action( 'woocommerce_refund_created', array( __CLASS__, 'schedule_single_order_process' ) );
 
 		WC_Admin_Reports_Orders_Stats_Data_Store::init();
 		WC_Admin_Reports_Customers_Data_Store::init();
@@ -312,10 +313,10 @@ class WC_Admin_Reports_Sync {
 	}
 
 	/**
-	 * Imports a single order to update lookup tables for.
+	 * Imports a single order or refund to update lookup tables for.
 	 * If an error is encountered in one of the updates, a retry action is scheduled.
 	 *
-	 * @param int $order_id Order ID.
+	 * @param int $order_id Order or refund ID.
 	 * @return void
 	 */
 	public static function orders_lookup_import_order( $order_id ) {

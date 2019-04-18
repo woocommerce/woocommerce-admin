@@ -92,6 +92,7 @@ class WC_Admin_Install {
 		$tables = "
 		CREATE TABLE {$wpdb->prefix}wc_order_stats (
 			order_id bigint(20) unsigned NOT NULL,
+			parent_id bigint(20) unsigned DEFAULT 0 NOT NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			num_items_sold int(11) UNSIGNED DEFAULT 0 NOT NULL,
 			gross_total double DEFAULT 0 NOT NULL,
@@ -99,7 +100,7 @@ class WC_Admin_Install {
 			tax_total double DEFAULT 0 NOT NULL,
 			shipping_total double DEFAULT 0 NOT NULL,
 			net_total double DEFAULT 0 NOT NULL,
-			returning_customer boolean DEFAULT 0 NOT NULL,
+			returning_customer boolean DEFAULT NULL,
 			status varchar(200) NOT NULL,
 			customer_id BIGINT UNSIGNED NOT NULL,
 			PRIMARY KEY (order_id),

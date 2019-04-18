@@ -73,7 +73,6 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 * Set up all the hooks for maintaining and populating table data.
 	 */
 	public static function init() {
-		add_action( 'woocommerce_refund_deleted', array( __CLASS__, 'sync_on_refund_delete' ), 10, 2 );
 		add_action( 'delete_post', array( __CLASS__, 'delete_order' ) );
 	}
 
@@ -365,7 +364,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 * @return int|bool Returns -1 if order won't be processed, or a boolean indicating processing success.
 	 */
 	public static function sync_order( $post_id ) {
-		if ( 'shop_order' !== get_post_type( $post_id ) ) {
+		if ( 'shop_order' !== get_post_type( $post_id ) && 'shop_order_refund' !== get_post_type( $post_id ) ) {
 			return -1;
 		}
 
@@ -378,19 +377,9 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	}
 
 	/**
-	 * Syncs order information when a refund is deleted.
-	 *
-	 * @param int $refund_id Refund ID.
-	 * @param int $order_id Order ID.
-	 */
-	public static function sync_on_refund_delete( $refund_id, $order_id ) {
-		self::sync_order( $order_id );
-	}
-
-	/**
 	 * Update the database with stats data.
 	 *
-	 * @param WC_Order $order Order to update row for.
+	 * @param WC_Order|WC_Order_Refund $order Order or refund to update row for.
 	 * @return int|bool Returns -1 if order won't be processed, or a boolean indicating processing success.
 	 */
 	public static function update( $order ) {
@@ -406,13 +395,12 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
 			'num_items_sold'     => self::get_num_items_sold( $order ),
 			'gross_total'        => $order->get_total(),
-			'refund_total'       => $order->get_total_refunded(),
 			'tax_total'          => $order->get_total_tax(),
 			'shipping_total'     => $order->get_shipping_total(),
 			'net_total'          => self::get_net_total( $order ),
-			'returning_customer' => self::is_returning_customer( $order ),
 			'status'             => self::normalize_order_status( $order->get_status() ),
-			'customer_id'        => WC_Admin_Reports_Customers_Data_Store::get_or_create_customer_from_order( $order ),
+			'customer_id'        => 0,
+			'returning_customer' => null,
 		);
 		$format = array(
 			'%d',
@@ -422,11 +410,20 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'%f',
 			'%f',
 			'%f',
-			'%f',
-			'%d',
 			'%s',
 			'%d',
+			'%d',
 		);
+
+		if ( 'shop_order_refund' === $order->get_type() ) {
+			$parent_order        = wc_get_order( $order->get_parent_id() );
+			$data['customer_id'] = WC_Admin_Reports_Customers_Data_Store::get_or_create_customer_from_order( $parent_order );
+			$data['parent_id']   = $parent_order->get_id();
+			$format[]            = '%d';
+		} else {
+			$data['returning_customer'] = self::is_returning_customer( $order );
+			$data['customer_id']        = WC_Admin_Reports_Customers_Data_Store::get_or_create_customer_from_order( $order );
+		}
 
 		// Update or add the information to the DB.
 		$result = $wpdb->replace( $table_name, $data, $format );
@@ -452,7 +449,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		$order_id   = (int) $post_id;
 		$table_name = $wpdb->prefix . self::TABLE_NAME;
 
-		if ( 'shop_order' !== get_post_type( $order_id ) ) {
+		if ( 'shop_order' !== get_post_type( $order_id ) && 'shop_order_refund' !== get_post_type( $order_id ) ) {
 			return;
 		}
 
@@ -501,13 +498,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 */
 	protected static function get_net_total( $order ) {
 		$net_total = floatval( $order->get_total() ) - floatval( $order->get_total_tax() ) - floatval( $order->get_shipping_total() );
-
-		$refunds = $order->get_refunds();
-		foreach ( $refunds as $refund ) {
-			$net_total += floatval( $refund->get_total() ) - floatval( $refund->get_total_tax() ) - floatval( $refund->get_shipping_total() );
-		}
-
-		return $net_total > 0 ? (float) $net_total : 0;
+		return (float) $net_total;
 	}
 
 	/**
