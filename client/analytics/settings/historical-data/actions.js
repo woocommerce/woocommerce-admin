@@ -59,7 +59,7 @@ function HistoricalDataActions( {
 			);
 		}
 
-		// It's not in progress and has imported data
+		// It's not in progress and has some imported data
 		return (
 			<Fragment>
 				<Button isPrimary onClick={ () => null }>
