@@ -4,9 +4,17 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
+
+/**
+ * WooCommerce dependencies
+ */
+import { useFilters } from '@woocommerce/components';
+
+const HISTORICAL_DATA_STATUS_FILTER = 'woocommerce-import-status';
 
 function HistoricalDataStatus( { importDate, status } ) {
-	const statusLabels = {
+	const statusLabels = applyFilters( HISTORICAL_DATA_STATUS_FILTER, {
 		ready: __( 'Ready To Import', 'woocommerce-admin' ),
 		stopped: __( 'Ready To Import', 'woocommerce-admin' ),
 		customers: [ __( 'Importing Customers', 'woocommerce-admin' ), <Spinner key="spinner" /> ],
@@ -16,7 +24,7 @@ function HistoricalDataStatus( { importDate, status } ) {
 			__( 'Historical data from %s onward imported', 'woocommerce-admin' ),
 			importDate
 		),
-	};
+	} );
 
 	return (
 		<span className="woocommerce-settings-historical-data__status">
@@ -26,4 +34,4 @@ function HistoricalDataStatus( { importDate, status } ) {
 	);
 }
 
-export default HistoricalDataStatus;
+export default useFilters( HISTORICAL_DATA_STATUS_FILTER )( HistoricalDataStatus );
