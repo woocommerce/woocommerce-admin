@@ -14,6 +14,7 @@ import HistoricalDataPeriodSelector from './period-selector';
 import HistoricalDataProgress from './progress';
 import HistoricalDataStatus from './status';
 import HistoricalDataSkipCheckbox from './skip-checkbox';
+import withSelect from 'wc-api/with-select';
 import './style.scss';
 
 class HistoricalData extends Component {
@@ -23,12 +24,6 @@ class HistoricalData extends Component {
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
 
 		this.state = {
-			customersProgress: 0,
-			customersTotal: 0,
-			importDate: 'July 1',
-			isRequesting: false,
-			ordersProgress: 0,
-			ordersTotal: 0,
 			period: {
 				date: moment().format( this.dateFormat ),
 				label: 'all',
@@ -86,10 +81,8 @@ class HistoricalData extends Component {
 			importDate,
 			ordersProgress,
 			ordersTotal,
-			period,
-			skipChecked,
-			step,
-		} = this.state;
+		} = this.props;
+		const { period, skipChecked, step } = this.state;
 		const isInProgress = this.isInProgress();
 
 		return (
@@ -184,4 +177,13 @@ class HistoricalData extends Component {
 	}
 }
 
-export default HistoricalData;
+export default withSelect( () => {
+	return {
+		customersProgress: 0,
+		customersTotal: 0,
+		importDate: 'July 1',
+		isRequesting: false,
+		ordersProgress: 0,
+		ordersTotal: 0,
+	};
+} )( HistoricalData );
