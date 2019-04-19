@@ -12,7 +12,7 @@ import { Spinner } from '@wordpress/components';
  */
 import { useFilters } from '@woocommerce/components';
 
-const HISTORICAL_DATA_STATUS_FILTER = 'woocommerce-import-status';
+const HISTORICAL_DATA_STATUS_FILTER = 'woocommerce_admin_import_status';
 
 function HistoricalDataStatus( { importDate, status } ) {
 	const statusLabels = applyFilters( HISTORICAL_DATA_STATUS_FILTER, {
