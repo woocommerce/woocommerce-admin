@@ -52,6 +52,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 *
 	 * @var array
 	 */
+<<<<<<< HEAD
 	protected $report_columns = array();
 
 	/**
@@ -78,6 +79,24 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'num_new_customers'       => "COUNT( DISTINCT( CASE WHEN {$table_name}.returning_customer = 0 THEN {$table_name}.customer_id END ) ) AS num_new_customers",
 		);
 	}
+=======
+	protected $report_columns = array(
+		'orders_count'            => 'SUM( CASE WHEN parent_id IS NULL THEN 1 ELSE 0 END ) as orders_count',
+		'num_items_sold'          => 'SUM(num_items_sold) as num_items_sold',
+		'gross_revenue'           => 'SUM(gross_total) AS gross_revenue',
+		'coupons'                 => 'SUM(discount_amount) AS coupons',
+		'coupons_count'           => 'COUNT(DISTINCT coupon_id) as coupons_count',
+		'refunds'                 => 'SUM( CASE WHEN gross_total < 0 THEN gross_total END ) AS refunds',
+		'taxes'                   => 'SUM(tax_total) AS taxes',
+		'shipping'                => 'SUM(shipping_total) AS shipping',
+		'net_revenue'             => 'SUM(net_total) AS net_revenue',
+		'avg_items_per_order'     => 'AVG(num_items_sold) AS avg_items_per_order',
+		'avg_order_value'         => 'SUM(net_total) / COUNT(*) AS avg_order_value',
+		// Count returning customers as ( total_customers - new_customers ) to get an accurate number and count customers in with both new and old statuses as new.
+		'num_returning_customers' => '( COUNT( DISTINCT( customer_id ) ) -  COUNT( DISTINCT( CASE WHEN returning_customer = 0 THEN customer_id END ) ) ) AS num_returning_customers',
+		'num_new_customers'       => 'COUNT( DISTINCT( CASE WHEN returning_customer = 0 THEN customer_id END ) ) AS num_new_customers',
+	);
+>>>>>>> Remove unused refund amounts from tables and data stores
 
 	/**
 	 * Set up all the hooks for maintaining and populating table data.
