@@ -53,9 +53,14 @@ function HistoricalDataActions( {
 		// Has imported all possible data
 		if ( customersProgress === customersTotal && ordersProgress === ordersTotal ) {
 			return (
-				<Button isDefault onClick={ () => null }>
-					{ __( 'Import Additional Historical Data', 'woocommerce-admin' ) }
-				</Button>
+				<Fragment>
+					<Button isDefault onClick={ () => null }>
+						{ __( 'Re-import Data', 'woocommerce-admin' ) }
+					</Button>
+					<Button isDefault onClick={ () => null }>
+						{ __( 'Delete Previously Imported Data', 'woocommerce-admin' ) }
+					</Button>
+				</Fragment>
 			);
 		}
 
