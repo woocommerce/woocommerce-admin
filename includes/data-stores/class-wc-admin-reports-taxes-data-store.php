@@ -52,7 +52,7 @@ class WC_Admin_Reports_Taxes_Data_Store extends WC_Admin_Reports_Data_Store impl
 		'total_tax'    => 'SUM(total_tax) as total_tax',
 		'order_tax'    => 'SUM(order_tax) as order_tax',
 		'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',
-		'orders_count' => 'COUNT(DISTINCT order_id) as orders_count',
+		'orders_count' => 'COUNT( DISTINCT ( CASE WHEN total_tax >= 0 THEN order_id END ) ) as orders_count',
 	);
 
 	/**

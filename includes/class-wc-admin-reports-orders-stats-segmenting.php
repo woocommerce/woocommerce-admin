@@ -67,7 +67,7 @@ class WC_Admin_Reports_Orders_Stats_Segmenting extends WC_Admin_Reports_Segmenti
 			'gross_revenue'           => "SUM($order_stats_table.gross_total) AS gross_revenue",
 			'coupons'                 => "SUM($order_stats_table.discount_amount) AS coupons",
 			'coupons_count'           => 'COUNT( DISTINCT(coupon_lookup_left_join.coupon_id) ) AS coupons_count',
-			'refunds'                 => "SUM( CASE WHEN $order_stats_table.parent_id IS NOT NULL THEN $order_stats_table.gross_total END ) AS refunds",
+			'refunds'                 => "SUM( CASE WHEN $order_stats_table.parent_id != 0 THEN $order_stats_table.gross_total END ) AS refunds",
 			'taxes'                   => "SUM($order_stats_table.tax_total) AS taxes",
 			'shipping'                => "SUM($order_stats_table.shipping_total) AS shipping",
 			'net_revenue'             => "SUM($order_stats_table.net_total) AS net_revenue",
