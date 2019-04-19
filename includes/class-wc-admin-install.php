@@ -93,6 +93,7 @@ class WC_Admin_Install {
 		CREATE TABLE {$wpdb->prefix}wc_order_stats (
 			order_id bigint(20) unsigned NOT NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			date_created_gmt datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			num_items_sold int(11) UNSIGNED DEFAULT 0 NOT NULL,
 			gross_total double DEFAULT 0 NOT NULL,
 			refund_total double DEFAULT 0 NOT NULL,

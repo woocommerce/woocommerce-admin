@@ -25,15 +25,16 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 * @var array
 	 */
 	protected $column_types = array(
-		'order_id'       => 'intval',
-		'date_created'   => 'strval',
-		'status'         => 'strval',
-		'customer_id'    => 'intval',
-		'net_total'      => 'floatval',
-		'gross_total'    => 'floatval',
-		'refund_total'   => 'floatval',
-		'num_items_sold' => 'intval',
-		'customer_type'  => 'strval',
+		'order_id'         => 'intval',
+		'date_created'     => 'strval',
+		'date_created_gmt' => 'strval',
+		'status'           => 'strval',
+		'customer_id'      => 'intval',
+		'net_total'        => 'floatval',
+		'gross_total'      => 'floatval',
+		'refund_total'     => 'floatval',
+		'num_items_sold'   => 'intval',
+		'customer_type'    => 'strval',
 	);
 
 	/**
@@ -42,15 +43,16 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 * @var array
 	 */
 	protected $report_columns = array(
-		'order_id'       => 'order_id',
-		'date_created'   => 'date_created',
-		'status'         => 'REPLACE(status, "wc-", "") as status',
-		'customer_id'    => 'customer_id',
-		'net_total'      => 'net_total',
-		'gross_total'    => 'gross_total',
-		'refund_total'   => 'refund_total',
-		'num_items_sold' => 'num_items_sold',
-		'customer_type'  => '(CASE WHEN returning_customer <> 0 THEN "returning" ELSE "new" END) as customer_type',
+		'order_id'         => 'order_id',
+		'date_created'     => 'date_created',
+		'date_created_gmt' => 'date_created_gmt',
+		'status'           => 'REPLACE(status, "wc-", "") as status',
+		'customer_id'      => 'customer_id',
+		'net_total'        => 'net_total',
+		'gross_total'      => 'gross_total',
+		'refund_total'     => 'refund_total',
+		'num_items_sold'   => 'num_items_sold',
+		'customer_type'    => '(CASE WHEN returning_customer <> 0 THEN "returning" ELSE "new" END) as customer_type',
 	);
 
 	/**

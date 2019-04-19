@@ -404,6 +404,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		$data   = array(
 			'order_id'           => $order->get_id(),
 			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
+			'date_created_gmt'   => gmdate( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ),
 			'num_items_sold'     => self::get_num_items_sold( $order ),
 			'gross_total'        => $order->get_total(),
 			'refund_total'       => $order->get_total_refunded(),
@@ -416,6 +417,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 		);
 		$format = array(
 			'%d',
+			'%s',
 			'%s',
 			'%d',
 			'%f',
