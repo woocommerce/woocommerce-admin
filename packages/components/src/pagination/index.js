@@ -20,6 +20,10 @@ class Pagination extends Component {
 	constructor( props ) {
 		super( props );
 
+		this.state = {
+				inputValue: this.props.page,
+		};
+
 		this.previousPage = this.previousPage.bind( this );
 		this.nextPage = this.nextPage.bind( this );
 		this.onPageValueChange = this.onPageValueChange.bind( this );
@@ -59,7 +63,11 @@ class Pagination extends Component {
 		const { onPageChange } = this.props;
 		const newPage = parseInt( event.target.value, 10 );
 
-		if ( isFinite( newPage ) && this.pageCount && this.pageCount >= newPage ) {
+		this.setState( {
+				inputValue: event.target.value,
+		} );
+
+		if ( isFinite( newPage ) && newPage > 0 && this.pageCount && this.pageCount >= newPage ) {
 			onPageChange( newPage );
 		}
 	}
@@ -116,6 +124,7 @@ class Pagination extends Component {
 
 	renderPagePicker() {
 		const { page } = this.props;
+		const { inputValue } = this.state;
 		const isError = page < 1 || page > this.pageCount;
 		const inputClass = classNames( 'woocommerce-pagination__page-picker-input', {
 			'has-error': isError,
@@ -133,7 +142,7 @@ class Pagination extends Component {
 						type="number"
 						onClick={ this.selectInputValue }
 						onChange={ this.onPageValueChange }
-						value={ page }
+						value={ inputValue }
 						min={ 1 }
 						max={ this.pageCount }
 					/>
