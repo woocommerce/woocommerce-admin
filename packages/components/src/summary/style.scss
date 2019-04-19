@@ -23,6 +23,12 @@ $inner-border: $core-grey-light-500;
 	.woocommerce-summary__item-prev-value {
 		display: block;
 	}
+
+	&.is-placeholder {
+		.woocommerce-summary__item-prev-label {
+			margin-right: calc( 100% - 80px );
+		}
+	}
 }
 
 @mixin reset-wrap() {
@@ -34,6 +40,12 @@ $inner-border: $core-grey-light-500;
 	.woocommerce-summary__item-prev-label,
 	.woocommerce-summary__item-prev-value {
 		display: inline;
+	}
+
+	&.is-placeholder {
+		.woocommerce-summary__item-prev-label {
+			margin-right: 0;
+		}
 	}
 }
 
@@ -97,7 +109,7 @@ $inner-border: $core-grey-light-500;
 		max-height: 100%;
 		margin-top: 0;
 		margin-bottom: 0;
-		overflow-y: scroll;
+		overflow-y: auto;
 		border: none;
 	}
 
@@ -215,10 +227,10 @@ $inner-border: $core-grey-light-500;
 	&.is-dropdown-button {
 		padding: 0;
 		list-style: none;
-		border-bottom: 1px solid $outer-border;
 		border-right: 1px solid $outer-border;
 
 		.components-button {
+			border-bottom: 1px solid $outer-border;
 			text-align: left;
 			display: block;
 		}
@@ -263,7 +275,6 @@ $inner-border: $core-grey-light-500;
 		}
 
 		.woocommerce-summary__item-prev-label {
-			margin-right: calc( 100% - 80px );
 			width: 80px;
 		}
 
@@ -279,6 +290,7 @@ $inner-border: $core-grey-light-500;
 	background-color: $core-grey-light-100;
 	border-bottom: 1px solid $outer-border;
 	border-right: 1px solid $inner-border;
+	line-height: 1.4em;
 	text-decoration: none;
 
 	&:hover {
