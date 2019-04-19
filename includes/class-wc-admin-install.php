@@ -115,7 +115,7 @@ class WC_Admin_Install {
 			variation_id BIGINT UNSIGNED NOT NULL,
 			customer_id BIGINT UNSIGNED NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			product_qty INT UNSIGNED NOT NULL,
+			product_qty INT NOT NULL,
 			product_net_revenue double DEFAULT 0 NOT NULL,
 			product_gross_revenue double DEFAULT 0 NOT NULL,
 			coupon_amount double DEFAULT 0 NOT NULL,
