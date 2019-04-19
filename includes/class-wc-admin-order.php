@@ -66,4 +66,22 @@ class WC_Admin_Order extends WC_Order {
 	public function is_returning_customer() {
 		return WC_Admin_Reports_Orders_Stats_Data_Store::is_returning_customer( $this );
 	}
+
+	/**
+	 * Get the customer ID used for reports in the customer lookup table.
+	 *
+	 * @return int
+	 */
+	public function get_report_customer_id() {
+		return WC_Admin_Reports_Customers_Data_Store::get_or_create_customer_from_order( $this );
+	}
+
+	/**
+	 * Returns true if the customer has made an earlier order.
+	 *
+	 * @return bool
+	 */
+	public function is_returning_customer() {
+		return WC_Admin_Reports_Orders_Stats_Data_Store::is_returning_customer( $this );
+	}
 }
