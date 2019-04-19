@@ -104,4 +104,23 @@ class WC_Admin_Order_Refund extends WC_Order_Refund {
 	public function get_item_coupon_amount( $item ) {
 		return floatval( $item->get_subtotal( 'edit' ) - $item->get_total( 'edit' ) );
 	}
+
+	/**
+	 * Get the customer ID of the parent order used for reports in the customer lookup table.
+	 *
+	 * @return int
+	 */
+	public function get_report_customer_id() {
+		$parent_order = wc_get_order( $this->get_parent_id() );
+		return WC_Admin_Reports_Customers_Data_Store::get_or_create_customer_from_order( $parent_order );
+	}
+
+	/**
+	 * Returns null since refunds should not be counted towards returning customer counts.
+	 *
+	 * @return null
+	 */
+	public function is_returning_customer() {
+		return null;
+	}
 }

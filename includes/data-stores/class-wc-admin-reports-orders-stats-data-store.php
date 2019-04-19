@@ -392,6 +392,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 
 		$data   = array(
 			'order_id'           => $order->get_id(),
+			'parent_id'          => $order->get_parent_id(),
 			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
 			'num_items_sold'     => self::get_num_items_sold( $order ),
 			'gross_total'        => $order->get_total(),
@@ -399,11 +400,12 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'shipping_total'     => $order->get_shipping_total(),
 			'net_total'          => self::get_net_total( $order ),
 			'status'             => self::normalize_order_status( $order->get_status() ),
-			'customer_id'        => 0,
-			'returning_customer' => null,
+			'customer_id'        => $order->get_report_customer_id(),
+			'returning_customer' => $order->is_returning_customer(),
 		);
 		$format = array(
 			'%d',
+			'%d',
 			'%s',
 			'%d',
 			'%f',
@@ -414,16 +416,6 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 			'%d',
 			'%d',
 		);
-
-		if ( 'shop_order_refund' === $order->get_type() ) {
-			$parent_order        = wc_get_order( $order->get_parent_id() );
-			$data['customer_id'] = WC_Admin_Reports_Customers_Data_Store::get_or_create_customer_from_order( $parent_order );
-			$data['parent_id']   = $parent_order->get_id();
-			$format[]            = '%d';
-		} else {
-			$data['returning_customer'] = self::is_returning_customer( $order );
-			$data['customer_id']        = WC_Admin_Reports_Customers_Data_Store::get_or_create_customer_from_order( $order );
-		}
 
 		// Update or add the information to the DB.
 		$result = $wpdb->replace( $table_name, $data, $format );
@@ -507,7 +499,7 @@ class WC_Admin_Reports_Orders_Stats_Data_Store extends WC_Admin_Reports_Data_Sto
 	 * @param array $order WC_Order object.
 	 * @return bool
 	 */
-	protected static function is_returning_customer( $order ) {
+	public static function is_returning_customer( $order ) {
 		$customer_id = WC_Admin_Reports_Customers_Data_Store::get_existing_customer_id_from_order( $order );
 
 		if ( ! $customer_id ) {
