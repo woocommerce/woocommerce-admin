@@ -1,8 +1,8 @@
 <?php
 /**
- * WC Admin Order
+ * WC Admin Order Refund
  *
- * WC Admin Order class that adds some functionality on top of general WooCommerce WC_Order.
+ * WC Admin Order Refund class that adds some functionality on top of general WooCommerce WC_Order_Refund.
  *
  * @package WooCommerce Admin/Classes
  */
@@ -10,26 +10,18 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WC_Admin_Order class.
+ * WC_Admin_Order_Refund class.
  */
-class WC_Admin_Order extends WC_Order {
-
+class WC_Admin_Order_Refund extends WC_Order_Refund {
 	/**
-	 * Holds refund amounts and quantities for the order.
-	 *
-	 * @var void|array
-	 */
-	protected $refunded_line_items;
-
-	/**
-	 * Add filter(s) required to hook WC_Admin_Order class to substitute WC_Order.
+	 * Add filter(s) required to hook WC_Admin_Order_Refund class to substitute WC_Order_Refund.
 	 */
 	public static function add_filters() {
 		add_filter( 'woocommerce_order_class', array( __CLASS__, 'order_class_name' ), 10, 3 );
 	}
 
 	/**
-	 * Filter function to swap class WC_Order for WC_Admin_Order in cases when it's suitable.
+	 * Filter function to swap class WC_Order_Refund for WC_Admin_Order_Refund in cases when it's suitable.
 	 *
 	 * @param string $classname Name of the class to be created.
 	 * @param string $order_type Type of order object to be created.
@@ -38,8 +30,8 @@ class WC_Admin_Order extends WC_Order {
 	 * @return string
 	 */
 	public static function order_class_name( $classname, $order_type, $order_id ) {
-		if ( 'WC_Order' === $classname ) {
-			return 'WC_Admin_Order';
+		if ( 'WC_Order_Refund' === $classname ) {
+			return 'WC_Admin_Order_Refund';
 		} else {
 			return $classname;
 		}

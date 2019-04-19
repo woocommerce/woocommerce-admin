@@ -44,6 +44,7 @@ class WC_Admin_Api_Init {
 
 		// WC Class extensions.
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-order.php';
+		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-order-refund.php';
 
 		// Segmentation.
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-reports-segmenting.php';

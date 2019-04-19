@@ -214,6 +214,7 @@ class WC_Admin_Reports_Sync {
 	public static function orders_lookup_update_init() {
 		// Activate WC_Order extension.
 		WC_Admin_Order::add_filters();
+		WC_Admin_Order_Refund::add_filters();
 
 		// Order and refund data must be run on these hooks to ensure meta data is set.
 		add_action( 'save_post', array( __CLASS__, 'schedule_single_order_import' ) );
