@@ -53,7 +53,7 @@ class WC_Admin_Reports_Products_Data_Store extends WC_Admin_Reports_Data_Store i
 		'product_id'   => 'product_id',
 		'items_sold'   => 'SUM(product_qty) as items_sold',
 		'net_revenue'  => 'SUM(product_net_revenue) AS net_revenue',
-		'orders_count' => 'COUNT(DISTINCT order_id) as orders_count',
+		'orders_count' => 'COUNT( DISTINCT ( CASE WHEN product_gross_revenue >= 0 THEN order_id END ) ) as orders_count',
 	);
 
 	/**
