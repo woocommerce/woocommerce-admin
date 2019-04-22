@@ -1,5 +1,5 @@
 # unreleased
-- Pagination no longer considers `0` a valid input and triggers `onPageValueChange` on the input blur event.
+- Pagination no longer considers `0` a valid input and triggers `onPageChange` on the input blur event.
 - Tweaks to SummaryListPlaceholder height in order to better match SummaryNumber.
 
 # 2.0.0
