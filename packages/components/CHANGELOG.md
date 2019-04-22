@@ -1,5 +1,6 @@
 # unreleased
 - Pagination no longer considers `0` a valid input.
+- Tweaks to SummaryListPlaceholder height in order to better match SummaryNumber.
 
 # 2.0.0
 - Chart legend component now uses withInstanceId HOC so the ids used in several HTML elements are unique.
