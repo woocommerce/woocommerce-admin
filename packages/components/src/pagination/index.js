@@ -26,7 +26,8 @@ class Pagination extends Component {
 
 		this.previousPage = this.previousPage.bind( this );
 		this.nextPage = this.nextPage.bind( this );
-		this.onPageValueChange = this.onPageValueChange.bind( this );
+		this.onInputChange = this.onInputChange.bind( this );
+		this.onInputBlur = this.onInputBlur.bind( this );
 		this.perPageChange = this.perPageChange.bind( this );
 		this.selectInputValue = this.selectInputValue.bind( this );
 	}
@@ -59,13 +60,15 @@ class Pagination extends Component {
 		}
 	}
 
-	onPageValueChange( event ) {
-		const { onPageChange } = this.props;
-		const newPage = parseInt( event.target.value, 10 );
-
+	onInputChange( event ) {
 		this.setState( {
 				inputValue: event.target.value,
 		} );
+	}
+
+	onInputBlur( event ) {
+		const { onPageChange } = this.props;
+		const newPage = parseInt( event.target.value, 10 );
 
 		if ( isFinite( newPage ) && newPage > 0 && this.pageCount && this.pageCount >= newPage ) {
 			onPageChange( newPage );
@@ -141,7 +144,8 @@ class Pagination extends Component {
 						aria-invalid={ isError }
 						type="number"
 						onClick={ this.selectInputValue }
-						onChange={ this.onPageValueChange }
+						onChange={ this.onInputChange }
+						onBlur={ this.onInputBlur }
 						value={ inputValue }
 						min={ 1 }
 						max={ this.pageCount }
