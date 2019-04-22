@@ -6,7 +6,7 @@
 	align-items: center;
 	position: fixed;
 	right: 0;
-	height: $large-header-height;
+	height: $medium-header-height;
 
 	@include breakpoint( '<782px' ) {
 		position: relative;
@@ -15,16 +15,15 @@
 		padding: 0;
 		width: 100vw;
 		display: none;
-		height: #{$medium-header-height};
 		flex: 1 100%;
 	}
 
 	@include breakpoint( '782px-960px' ) {
 		max-width: 280px;
-		height: $medium-header-height;
 	}
 
 	@include breakpoint( '>960px' ) {
+		height: $large-header-height;
 		max-width: 400px;
 	}
 
@@ -41,10 +40,6 @@
 
 	@include breakpoint( '>960px' ) {
 		height: $large-header-height;
-	}
-
-	@include breakpoint( '<782px' ) {
-		height: $medium-header-height;
 	}
 
 	.dashicon,
