@@ -178,7 +178,12 @@ export default class OrdersReportTable extends Component {
 					value: formattedCoupons.map( item => item.code ).join( ' ' ),
 				},
 				{
-					display: formatCurrency( net_total, currency ),
+					display:
+						net_total < 0 ? (
+							<span className="is-negative">{ formatCurrency( net_total, currency ) }</span>
+						) : (
+							formatCurrency( net_total, currency )
+						),
 					value: net_total,
 				},
 			];
