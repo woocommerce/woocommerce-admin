@@ -102,6 +102,7 @@ export default class OrdersReportTable extends Component {
 				num_items_sold,
 				order_id,
 				order_number,
+				parent_id,
 				status,
 			} = row;
 			const extended_info = row.extended_info || {};
@@ -133,7 +134,15 @@ export default class OrdersReportTable extends Component {
 				},
 				{
 					display: (
-						<Link href={ 'post.php?post=' + order_id + '&action=edit' } type="wp-admin">
+						<Link
+							href={
+								'post.php?post=' +
+								( parent_id ? parent_id : order_id ) +
+								'&action=edit' +
+								( parent_id ? '#order_refunds' : '' )
+							}
+							type="wp-admin"
+						>
 							{ order_number }
 						</Link>
 					),
