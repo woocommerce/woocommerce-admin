@@ -91,15 +91,30 @@ export default class TaxesReportTable extends Component {
 					value: tax_rate,
 				},
 				{
-					display: formatCurrency( total_tax ),
+					display:
+						total_tax < 0 ? (
+							<span className="is-negative">{ formatCurrency( total_tax ) }</span>
+						) : (
+							formatCurrency( total_tax )
+						),
 					value: getCurrencyFormatDecimal( total_tax ),
 				},
 				{
-					display: formatCurrency( order_tax ),
+					display:
+						order_tax < 0 ? (
+							<span className="is-negative">{ formatCurrency( order_tax ) }</span>
+						) : (
+							formatCurrency( order_tax )
+						),
 					value: getCurrencyFormatDecimal( order_tax ),
 				},
 				{
-					display: formatCurrency( shipping_tax ),
+					display:
+						shipping_tax < 0 ? (
+							<span className="is-negative">{ formatCurrency( shipping_tax ) }</span>
+						) : (
+							formatCurrency( shipping_tax )
+						),
 					value: getCurrencyFormatDecimal( shipping_tax ),
 				},
 				{

@@ -153,7 +153,12 @@ class ProductsReportTable extends Component {
 					value: items_sold,
 				},
 				{
-					display: formatCurrency( net_revenue ),
+					display:
+						net_revenue < 0 ? (
+							<span className="is-negative">{ formatCurrency( net_revenue ) }</span>
+						) : (
+							formatCurrency( net_revenue )
+						),
 					value: getCurrencyFormatDecimal( net_revenue ),
 				},
 				{

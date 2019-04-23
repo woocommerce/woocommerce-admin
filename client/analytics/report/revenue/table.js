@@ -126,7 +126,12 @@ class RevenueReportTable extends Component {
 					value: Number( orders_count ),
 				},
 				{
-					display: formatCurrency( gross_revenue ),
+					display:
+						gross_revenue < 0 ? (
+							<span className="is-negative">{ formatCurrency( gross_revenue ) }</span>
+						) : (
+							formatCurrency( gross_revenue )
+						),
 					value: getCurrencyFormatDecimal( gross_revenue ),
 				},
 				{
@@ -138,15 +143,30 @@ class RevenueReportTable extends Component {
 					value: getCurrencyFormatDecimal( coupons ),
 				},
 				{
-					display: formatCurrency( taxes ),
+					display:
+						taxes < 0 ? (
+							<span className="is-negative">{ formatCurrency( taxes ) }</span>
+						) : (
+							formatCurrency( taxes )
+						),
 					value: getCurrencyFormatDecimal( taxes ),
 				},
 				{
-					display: formatCurrency( shipping ),
+					display:
+						shipping < 0 ? (
+							<span className="is-negative">{ formatCurrency( shipping ) }</span>
+						) : (
+							formatCurrency( shipping )
+						),
 					value: getCurrencyFormatDecimal( shipping ),
 				},
 				{
-					display: formatCurrency( net_revenue ),
+					display:
+						net_revenue < 0 ? (
+							<span className="is-negative">{ formatCurrency( net_revenue ) }</span>
+						) : (
+							formatCurrency( net_revenue )
+						),
 					value: getCurrencyFormatDecimal( net_revenue ),
 				},
 			];
