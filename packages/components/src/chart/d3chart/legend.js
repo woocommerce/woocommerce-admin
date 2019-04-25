@@ -101,7 +101,7 @@ class D3Legend extends Component {
 								onClick={ handleLegendToggle }
 								id={ `woocommerce-legend-${ instanceId }__item-button__${ row.key }` }
 								disabled={
-									( row.visible && numberOfRowsVisible <= 1 ) ||
+									( row.visible && numberOfRowsVisible <= 1 ) &&
 									( ! row.visible && numberOfRowsVisible >= selectionLimit ) ||
 									! interactive
 								}
