@@ -85,7 +85,7 @@ function wc_admin_plugins_notice() {
 	} else {
 		$message = sprintf(
 			/* translators: 1: URL of WordPress.org, 2: URL of WooCommerce plugin */
-			__( 'The WooCommerce Admin feature plugin requires both <a href="%1$s">WordPress</a> 5.0 or greater and <a href="%2$s">WooCommerce</a> 3.5 or greater to be installed and active.', 'woocommerce-admin' ),
+			__( 'The WooCommerce Admin feature plugin requires both <a href="%1$s">WordPress</a> 5.0 or greater and <a href="%2$s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
 			'https://wordpress.org/',
 			'https://wordpress.org/plugins/woocommerce/'
 		);
