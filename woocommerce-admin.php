@@ -9,8 +9,8 @@
  * Domain Path: /languages
  * Version: 0.11.0
  *
- * WC requires at least: 3.5.0
- * WC tested up to: 3.5.7
+ * WC requires at least: 3.6.0
+ * WC tested up to: 3.6.2
  *
  * @package WC_Admin
  */
@@ -79,7 +79,7 @@ function wc_admin_plugins_notice() {
 	if ( $wordpress_includes_gutenberg ) {
 		$message = sprintf(
 			/* translators: URL of WooCommerce plugin */
-			__( 'The WooCommerce Admin feature plugin requires <a href="%s">WooCommerce</a> 3.5 or greater to be installed and active.', 'woocommerce-admin' ),
+			__( 'The WooCommerce Admin feature plugin requires <a href="%s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
 			'https://wordpress.org/plugins/woocommerce/'
 		);
 	} else {
