@@ -5,6 +5,7 @@
 import { applyFilters } from '@wordpress/hooks';
 import { Component, createRef, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { focus } from '@wordpress/dom';
 import { withDispatch } from '@wordpress/data';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
@@ -55,6 +56,11 @@ class ReportTable extends Component {
 
 	onPageChange() {
 		this.scrollPointRef.current.scrollIntoView();
+		const focusableElements = focus.focusable.find( this.scrollPointRef.current.nextSibling );
+
+		if ( focusableElements.length ) {
+			focusableElements[ 0 ].focus();
+		}
 	}
 
 	filterShownHeaders( headers, hiddenKeys ) {
