@@ -299,40 +299,45 @@ ReviewsPanel.defaultProps = {
 };
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select, props ) => {
+		const { hasUnapprovedReviews } = props;
 		const { getCurrentUserData, getReviews, getReviewsError, isGetReviewsRequesting } = select(
 			'wc-api'
 		);
-		const userData = getCurrentUserData();
-		const reviewsQuery = {
-			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
-			status: 'hold',
-			_embed: 1,
-		};
-		const reviews = getReviews( reviewsQuery );
-
-		const approvedReviewsQuery = {
-			page: 1,
-			per_page: 1,
-			status: 'approved',
-			_embed: 1,
-		};
-		const approvedReviews = getReviews( approvedReviewsQuery );
+		let reviews = [];
+		let isError = false;
+		let isRequesting = false;
 		let lastApprovedReviewTime = null;
-		if ( approvedReviews.length ) {
-			const lastApprovedReview = approvedReviews[ 0 ];
-			if ( lastApprovedReview.date_created_gmt ) {
-				const creationDate = new Date( lastApprovedReview.date_created_gmt );
-				lastApprovedReviewTime = creationDate.getTime();
+		const userData = getCurrentUserData();
+		if ( hasUnapprovedReviews ) {
+			const reviewsQuery = {
+				page: 1,
+				per_page: QUERY_DEFAULTS.pageSize,
+				status: 'hold',
+				_embed: 1,
+			};
+			reviews = getReviews( reviewsQuery );
+			isError = Boolean( getReviewsError( reviewsQuery ) );
+			isRequesting = isGetReviewsRequesting( reviewsQuery );
+		} else {
+			const approvedReviewsQuery = {
+				page: 1,
+				per_page: 1,
+				status: 'approved',
+				_embed: 1,
+			};
+			const approvedReviews = getReviews( approvedReviewsQuery );
+			if ( approvedReviews.length ) {
+				const lastApprovedReview = approvedReviews[ 0 ];
+				if ( lastApprovedReview.date_created_gmt ) {
+					const creationDate = new Date( lastApprovedReview.date_created_gmt );
+					lastApprovedReviewTime = creationDate.getTime();
+				}
 			}
-		}
 
-		const isError =
-			Boolean( getReviewsError( reviewsQuery ) ) ||
-			Boolean( getReviewsError( approvedReviewsQuery ) );
-		const isRequesting =
-			isGetReviewsRequesting( reviewsQuery ) || isGetReviewsRequesting( approvedReviewsQuery );
+			isError = Boolean( getReviewsError( approvedReviewsQuery ) );
+			isRequesting = isGetReviewsRequesting( approvedReviewsQuery );
+		}
 
 		return {
 			reviews,

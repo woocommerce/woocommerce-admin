@@ -141,7 +141,8 @@ class ActivityPanel extends Component {
 			case 'stock':
 				return <StockPanel />;
 			case 'reviews':
-				return <ReviewsPanel />;
+				const { hasUnapprovedReviews } = this.props;
+				return <ReviewsPanel hasUnapprovedReviews={ hasUnapprovedReviews } />;
 			default:
 				return null;
 		}
