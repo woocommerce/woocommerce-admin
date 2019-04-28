@@ -28,3 +28,19 @@
 .woocommerce-dashboard__widget-item {
 	flex: 1;
 }
+
+.woocommerce-section-header {
+	&:hover .woocommerce-section-mover {
+		display: flex;
+	}
+
+	.woocommerce-section-mover {
+		position: absolute;
+		left: -35px;
+		display: none;
+
+		&:hover {
+			display: flex;
+		}
+	}
+}

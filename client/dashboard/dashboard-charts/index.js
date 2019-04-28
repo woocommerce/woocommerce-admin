@@ -132,14 +132,14 @@ class DashboardCharts extends Component {
 	};
 
 	render() {
-		const { path } = this.props;
+		const { path, title } = this.props;
 		const { chartType, hiddenChartKeys, interval } = this.state;
 		const query = { ...this.props.query, chartType, interval };
 		return (
 			<Fragment>
 				<div className="woocommerce-dashboard__dashboard-charts">
 					<SectionHeader
-						title={ __( 'Charts', 'woocommerce-admin' ) }
+						title={ title || __( 'Charts', 'woocommerce-admin' ) }
 						menu={ this.renderMenu() }
 						className={ 'has-interval-select' }
 					>
