@@ -6,12 +6,10 @@ import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
 import { get, noop, isNull } from 'lodash';
 import PropTypes from 'prop-types';
-import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -41,13 +39,6 @@ class ReviewsPanel extends Component {
 		super();
 
 		this.mountTime = new Date().getTime();
-	}
-
-	componentWillUnmount() {
-		const userDataFields = {
-			[ 'activity_panel_reviews_last_read' ]: this.mountTime,
-		};
-		this.props.updateCurrentUserData( userDataFields );
 	}
 
 	renderReview( review, props ) {
@@ -298,60 +289,47 @@ ReviewsPanel.defaultProps = {
 	isRequesting: false,
 };
 
-export default compose(
-	withSelect( ( select, props ) => {
-		const { hasUnapprovedReviews } = props;
-		const { getCurrentUserData, getReviews, getReviewsError, isGetReviewsRequesting } = select(
-			'wc-api'
-		);
-		let reviews = [];
-		let isError = false;
-		let isRequesting = false;
-		let lastApprovedReviewTime = null;
-		const userData = getCurrentUserData();
-		if ( hasUnapprovedReviews ) {
-			const reviewsQuery = {
-				page: 1,
-				per_page: QUERY_DEFAULTS.pageSize,
-				status: 'hold',
-				_embed: 1,
-			};
-			reviews = getReviews( reviewsQuery );
-			isError = Boolean( getReviewsError( reviewsQuery ) );
-			isRequesting = isGetReviewsRequesting( reviewsQuery );
-		} else {
-			const approvedReviewsQuery = {
-				page: 1,
-				per_page: 1,
-				status: 'approved',
-				_embed: 1,
-			};
-			const approvedReviews = getReviews( approvedReviewsQuery );
-			if ( approvedReviews.length ) {
-				const lastApprovedReview = approvedReviews[ 0 ];
-				if ( lastApprovedReview.date_created_gmt ) {
-					const creationDate = new Date( lastApprovedReview.date_created_gmt );
-					lastApprovedReviewTime = creationDate.getTime();
-				}
+export default withSelect( ( select, props ) => {
+	const { hasUnapprovedReviews } = props;
+	const { getReviews, getReviewsError, isGetReviewsRequesting } = select( 'wc-api' );
+	let reviews = [];
+	let isError = false;
+	let isRequesting = false;
+	let lastApprovedReviewTime = null;
+	if ( hasUnapprovedReviews ) {
+		const reviewsQuery = {
+			page: 1,
+			per_page: QUERY_DEFAULTS.pageSize,
+			status: 'hold',
+			_embed: 1,
+		};
+		reviews = getReviews( reviewsQuery );
+		isError = Boolean( getReviewsError( reviewsQuery ) );
+		isRequesting = isGetReviewsRequesting( reviewsQuery );
+	} else {
+		const approvedReviewsQuery = {
+			page: 1,
+			per_page: 1,
+			status: 'approved',
+			_embed: 1,
+		};
+		const approvedReviews = getReviews( approvedReviewsQuery );
+		if ( approvedReviews.length ) {
+			const lastApprovedReview = approvedReviews[ 0 ];
+			if ( lastApprovedReview.date_created_gmt ) {
+				const creationDate = new Date( lastApprovedReview.date_created_gmt );
+				lastApprovedReviewTime = creationDate.getTime();
 			}
-
-			isError = Boolean( getReviewsError( approvedReviewsQuery ) );
-			isRequesting = isGetReviewsRequesting( approvedReviewsQuery );
 		}
 
-		return {
-			reviews,
-			isError,
-			isRequesting,
-			lastRead: userData.activity_panel_reviews_last_read,
-			lastApprovedReviewTime,
-		};
-	} ),
-	withDispatch( dispatch => {
-		const { updateCurrentUserData } = dispatch( 'wc-api' );
+		isError = Boolean( getReviewsError( approvedReviewsQuery ) );
+		isRequesting = isGetReviewsRequesting( approvedReviewsQuery );
+	}
 
-		return {
-			updateCurrentUserData,
-		};
-	} )
-)( ReviewsPanel );
+	return {
+		reviews,
+		isError,
+		isRequesting,
+		lastApprovedReviewTime,
+	};
+} )( ReviewsPanel );
