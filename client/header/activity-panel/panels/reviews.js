@@ -9,7 +9,7 @@ import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
-import { get, last, noop, isNull } from 'lodash';
+import { get, noop, isNull } from 'lodash';
 import PropTypes from 'prop-types';
 import { withDispatch } from '@wordpress/data';
 
@@ -25,13 +25,14 @@ import {
 	Section,
 	SplitButton,
 } from '@woocommerce/components';
+import { getAdminLink } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
-import { DEFAULT_REVIEW_STATUSES, QUERY_DEFAULTS } from 'wc-api/constants';
+import { QUERY_DEFAULTS } from 'wc-api/constants';
 import sanitizeHTML from 'lib/sanitize-html';
 import withSelect from 'wc-api/with-select';
 
@@ -162,7 +163,7 @@ class ReviewsPanel extends Component {
 			const now = new Date();
 			const DAY = 24 * 60 * 60 * 1000;
 			if ( ( now.getTime() - lastApprovedReviewTime ) / DAY > 30 ) {
-				buttonUrl = '';
+				buttonUrl = 'https://woocommerce.com/posts/reviews-woocommerce-best-practices/';
 				buttonText = __( 'Learn more', 'woocommerce-admin' );
 				content = (
 					<Fragment>
@@ -181,7 +182,7 @@ class ReviewsPanel extends Component {
 					</Fragment>
 				);
 			} else {
-				buttonUrl = '';
+				buttonUrl = getAdminLink( 'edit-comments.php' );
 				buttonText = __( 'View all Reviews', 'woocommerce-admin' );
 				content = (
 					<p>
@@ -286,7 +287,6 @@ ReviewsPanel.propTypes = {
 	reviews: PropTypes.array.isRequired,
 	isError: PropTypes.bool,
 	isRequesting: PropTypes.bool,
-	numberOfReviews: PropTypes.number,
 };
 
 ReviewsPanel.defaultProps = {
@@ -309,23 +309,27 @@ export default compose(
 		};
 		const reviews = getReviews( reviewsQuery );
 
-		const allReviewsQuery = {
+		const approvedReviewsQuery = {
 			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
-			status: DEFAULT_REVIEW_STATUSES,
+			per_page: 1,
+			status: 'approved',
 			_embed: 1,
 		};
-		const lastReview = last( getReviews( allReviewsQuery ) );
+		const approvedReviews = getReviews( approvedReviewsQuery );
 		let lastApprovedReviewTime = null;
-		if ( lastReview && lastReview.date_created_gmt ) {
-			const creationDate = new Date( lastReview.date_created_gmt );
-			lastApprovedReviewTime = creationDate.getTime();
+		if ( approvedReviews.length ) {
+			const lastApprovedReview = approvedReviews[ 0 ];
+			if ( lastApprovedReview.date_created_gmt ) {
+				const creationDate = new Date( lastApprovedReview.date_created_gmt );
+				lastApprovedReviewTime = creationDate.getTime();
+			}
 		}
 
 		const isError =
-			Boolean( getReviewsError( reviewsQuery ) ) || Boolean( getReviewsError( allReviewsQuery ) );
+			Boolean( getReviewsError( reviewsQuery ) ) ||
+			Boolean( getReviewsError( approvedReviewsQuery ) );
 		const isRequesting =
-			isGetReviewsRequesting( reviewsQuery ) || isGetReviewsRequesting( allReviewsQuery );
+			isGetReviewsRequesting( reviewsQuery ) || isGetReviewsRequesting( approvedReviewsQuery );
 
 		return {
 			reviews,
