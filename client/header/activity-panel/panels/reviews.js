@@ -156,6 +156,7 @@ class ReviewsPanel extends Component {
 
 		const title = __( 'You have no reviews to moderate', 'woocommerce-admin' );
 		let buttonUrl = '';
+		let buttonTarget = '';
 		let buttonText = '';
 		let content = '';
 
@@ -164,6 +165,7 @@ class ReviewsPanel extends Component {
 			const DAY = 24 * 60 * 60 * 1000;
 			if ( ( now.getTime() - lastApprovedReviewTime ) / DAY > 30 ) {
 				buttonUrl = 'https://woocommerce.com/posts/reviews-woocommerce-best-practices/';
+				buttonTarget = '_blank';
 				buttonText = __( 'Learn more', 'woocommerce-admin' );
 				content = (
 					<Fragment>
@@ -197,6 +199,7 @@ class ReviewsPanel extends Component {
 			}
 		} else {
 			buttonUrl = 'https://woocommerce.com/posts/reviews-woocommerce-best-practices/';
+			buttonTarget = '_blank';
 			buttonText = __( 'Learn more', 'woocommerce-admin' );
 			content = (
 				<Fragment>
@@ -219,7 +222,7 @@ class ReviewsPanel extends Component {
 				title={ title }
 				icon={ <Gridicon icon="time" size={ 48 } /> }
 				actions={
-					<Button href={ buttonUrl } isDefault>
+					<Button href={ buttonUrl } target={ buttonTarget } isDefault>
 						{ buttonText }
 					</Button>
 				}
