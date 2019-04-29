@@ -33,10 +33,9 @@ export default class CustomizableDashboard extends Component {
 	}
 
 	onMove( index, change ) {
-		const { sections } = this.state;
-		const updatedSections = [ ...sections ];
-		const section = updatedSections.splice( index, 1 ).shift();
-		updatedSections.splice( index + change, 0, section );
+		const updatedSections = [ ...this.state.sections ];
+		const movedSection = updatedSections.splice( index, 1 ).shift();
+		updatedSections.splice( index + change, 0, movedSection );
 
 		this.setState( {
 			sections: updatedSections,
