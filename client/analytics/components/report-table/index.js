@@ -56,7 +56,10 @@ class ReportTable extends Component {
 
 	onPageChange() {
 		this.scrollPointRef.current.scrollIntoView();
-		const focusableElements = focus.focusable.find( this.scrollPointRef.current.nextSibling );
+		const tableElement = this.scrollPointRef.current.nextSibling.querySelector(
+			'.woocommerce-table__table'
+		);
+		const focusableElements = focus.focusable.find( tableElement );
 
 		if ( focusableElements.length ) {
 			focusableElements[ 0 ].focus();
