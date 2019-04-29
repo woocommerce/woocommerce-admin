@@ -5,6 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
+import { partial } from 'lodash';
 
 /**
  * Internal dependencies
@@ -22,12 +23,24 @@ export default class CustomizableDashboard extends Component {
 		super( props );
 		const { query, path } = props;
 		this.state = {
-			sections: applyFilters( 'woocommerce-dashboard-sections', [
+			sections: applyFilters( 'woocommerce_dashboard_sections', [
 				{ key: 'store-performance', component: <StorePerformance query={ query } /> },
 				{ key: 'charts', component: <DashboardCharts query={ query } path={ path } /> },
 				{ key: 'leaderboards', component: <Leaderboards query={ query } /> },
 			] ),
 		};
+		this.onMove = this.onMove.bind( this );
+	}
+
+	onMove( index, change ) {
+		const { sections } = this.state;
+		const updatedSections = [ ...sections ];
+		const section = updatedSections.splice( index, 1 ).shift();
+		updatedSections.splice( index + change, 0, section );
+
+		this.setState( {
+			sections: updatedSections,
+		} );
 	}
 
 	render() {
@@ -40,11 +53,16 @@ export default class CustomizableDashboard extends Component {
 					<H>{ __( 'Customizable Dashboard', 'woocommerce-admin' ) }</H>
 				</div>
 				<ReportFilters query={ query } path={ path } />
-				{ sections.map( section => {
+				{ sections.map( ( section, index ) => {
 					return (
 						<div className="woocommerce-dashboard-section" key={ section.key }>
 							{ section.component }
-							<SectionMover />
+							<SectionMover
+								onMoveUp={ partial( this.onMove, index, -1 ) }
+								onMoveDown={ partial( this.onMove, index, 1 ) }
+								isFirst={ 0 === index }
+								isLast={ sections.length === index + 1 }
+							/>
 						</div>
 					);
 				} ) }
