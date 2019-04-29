@@ -5,7 +5,6 @@
 	border-bottom: none;
 	display: flex;
 	justify-content: space-between;
-	position: relative;
 
 	@include breakpoint( '<782px' ) {
 		margin-left: -16px;

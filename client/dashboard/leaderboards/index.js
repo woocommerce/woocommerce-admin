@@ -116,12 +116,11 @@ class Leaderboards extends Component {
 	}
 
 	render() {
-		const { title } = this.props;
 		return (
 			<Fragment>
 				<div className="woocommerce-dashboard__dashboard-leaderboards">
 					<SectionHeader
-						title={ title || __( 'Leaderboards', 'woocommerce-admin' ) }
+						title={ __( 'Leaderboards', 'woocommerce-admin' ) }
 						menu={ this.renderMenu() }
 					/>
 					<div className="woocommerce-dashboard__columns">{ this.renderLeaderboards() }</div>

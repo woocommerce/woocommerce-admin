@@ -157,11 +157,10 @@ class StorePerformance extends Component {
 	}
 
 	render() {
-		const { title } = this.props;
 		return (
 			<Fragment>
 				<SectionHeader
-					title={ title || __( 'Store Performance', 'woocommerce-admin' ) }
+					title={ __( 'Store Performance', 'woocommerce-admin' ) }
 					menu={ this.renderMenu() }
 				/>
 				<div className="woocommerce-dashboard__store-performance">{ this.renderList() }</div>

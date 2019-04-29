@@ -29,7 +29,9 @@
 	flex: 1;
 }
 
-.woocommerce-section-header {
+.woocommerce-dashboard-section {
+	position: relative;
+
 	&:hover .woocommerce-section-mover {
 		display: flex;
 	}
@@ -37,6 +39,7 @@
 	.woocommerce-section-mover {
 		position: absolute;
 		left: -35px;
+		top: 12px;
 		display: none;
 
 		&:hover {
