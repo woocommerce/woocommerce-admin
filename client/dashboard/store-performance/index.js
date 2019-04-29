@@ -8,6 +8,7 @@ import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import moment from 'moment';
 import { find } from 'lodash';
+import { TextControl } from '@wordpress/components';
 
 /**
  * WooCommerce dependencies
@@ -35,9 +36,16 @@ import './style.scss';
 class StorePerformance extends Component {
 	constructor( props ) {
 		super( props );
+		const { title } = props;
+
 		this.state = {
 			hiddenIndicators: props.hiddenIndicators || [],
+			titleInput: title || __( 'Store Performance', 'woocommerce-admin' ),
 		};
+
+		this.onMenuToggle = this.onMenuToggle.bind( this );
+		this.onTitleChange = this.onTitleChange.bind( this );
+		this.onTitleBlur = this.onTitleBlur.bind( this );
 		this.toggle = this.toggle.bind( this );
 	}
 
@@ -62,10 +70,47 @@ class StorePerformance extends Component {
 		};
 	}
 
+	onMenuToggle( isOpen ) {
+		const { titleInput } = this.state;
+		if ( ! isOpen && titleInput === '' ) {
+			this.setState( { titleInput: __( 'Store Performance', 'woocommerce-admin' ) } );
+		}
+	}
+
+	onTitleChange( updatedTitle ) {
+		this.setState( { titleInput: updatedTitle } );
+	}
+
+	onTitleBlur() {
+		const { onTitleUpdate } = this.props;
+		const { titleInput } = this.state;
+
+		if ( onTitleUpdate ) {
+			onTitleUpdate( titleInput );
+		}
+	}
+
 	renderMenu() {
 		const { indicators } = this.props;
+		const { titleInput } = this.state;
 		return (
-			<EllipsisMenu label={ __( 'Choose which analytics to display', 'woocommerce-admin' ) }>
+			<EllipsisMenu
+				label={ __(
+					'Choose which analytics to display and the section name',
+					'woocommerce-admin'
+				) }
+				onToggle={ this.onMenuToggle }
+			>
+				{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
+					<div className="woocommerce-ellipsis-menu__item">
+						<TextControl
+							label={ __( 'Section Title', 'woocommerce-admin' ) }
+							onBlur={ this.onTitleBlur }
+							onChange={ this.onTitleChange }
+							value={ titleInput }
+						/>
+					</div>
+				) }
 				<MenuTitle>{ __( 'Display Stats:', 'woocommerce-admin' ) }</MenuTitle>
 				{ indicators.map( ( indicator, i ) => {
 					const checked = ! this.state.hiddenIndicators.includes( indicator.stat );
@@ -157,10 +202,11 @@ class StorePerformance extends Component {
 	}
 
 	render() {
+		const { title } = this.props;
 		return (
 			<Fragment>
 				<SectionHeader
-					title={ __( 'Store Performance', 'woocommerce-admin' ) }
+					title={ title || __( 'Store Performance', 'woocommerce-admin' ) }
 					menu={ this.renderMenu() }
 				/>
 				<div className="woocommerce-dashboard__store-performance">{ this.renderList() }</div>

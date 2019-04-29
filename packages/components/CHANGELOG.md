@@ -1,6 +1,7 @@
 # unreleased
 - Pagination no longer considers `0` a valid input and triggers `onPageChange` on the input blur event.
 - Tweaks to SummaryListPlaceholder height in order to better match SummaryNumber.
+- EllipsisMenu has a new prop named `onToggle` that allows passing a function that will be called every time the menu is opened or closed.
 
 # 2.0.0
 - Chart legend component now uses withInstanceId HOC so the ids used in several HTML elements are unique.

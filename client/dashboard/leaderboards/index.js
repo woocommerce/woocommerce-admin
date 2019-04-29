@@ -7,7 +7,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { xor } from 'lodash';
 import PropTypes from 'prop-types';
-import { SelectControl } from '@wordpress/components';
+import { SelectControl, TextControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -25,11 +25,17 @@ import './style.scss';
 class Leaderboards extends Component {
 	constructor( props ) {
 		super( ...arguments );
+		const { title } = props;
+
 		this.state = {
 			hiddenLeaderboardKeys: props.userPrefLeaderboards || [ 'coupons', 'customers' ],
 			rowsPerTable: parseInt( props.userPrefLeaderboardRows ) || 5,
+			titleInput: title || __( 'Leaderboards', 'woocommerce-admin' ),
 		};
 
+		this.onMenuToggle = this.onMenuToggle.bind( this );
+		this.onTitleChange = this.onTitleChange.bind( this );
+		this.onTitleBlur = this.onTitleBlur.bind( this );
 		this.toggle = this.toggle.bind( this );
 	}
 
@@ -44,6 +50,26 @@ class Leaderboards extends Component {
 		};
 	}
 
+	onMenuToggle( isOpen ) {
+		const { titleInput } = this.state;
+		if ( ! isOpen && titleInput === '' ) {
+			this.setState( { titleInput: __( 'Leaderboards', 'woocommerce-admin' ) } );
+		}
+	}
+
+	onTitleChange( updatedTitle ) {
+		this.setState( { titleInput: updatedTitle } );
+	}
+
+	onTitleBlur() {
+		const { onTitleUpdate } = this.props;
+		const { titleInput } = this.state;
+
+		if ( onTitleUpdate ) {
+			onTitleUpdate( titleInput );
+		}
+	}
+
 	setRowsPerTable = rows => {
 		this.setState( { rowsPerTable: parseInt( rows ) } );
 		const userDataFields = {
@@ -53,17 +79,28 @@ class Leaderboards extends Component {
 	};
 
 	renderMenu() {
-		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
+		const { hiddenLeaderboardKeys, rowsPerTable, titleInput } = this.state;
 		const { allLeaderboards } = this.props;
 
 		return (
 			<EllipsisMenu
 				label={ __(
-					'Choose which leaderboards to display and the number of rows',
+					'Choose which leaderboards to display and other settings',
 					'woocommerce-admin'
 				) }
+				onToggle={ this.onMenuToggle }
 			>
 				<Fragment>
+					{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
+						<div className="woocommerce-ellipsis-menu__item">
+							<TextControl
+								label={ __( 'Section Title', 'woocommerce-admin' ) }
+								onBlur={ this.onTitleBlur }
+								onChange={ this.onTitleChange }
+								value={ titleInput }
+							/>
+						</div>
+					) }
 					<MenuTitle>{ __( 'Leaderboards', 'woocommerce-admin' ) }</MenuTitle>
 					{ allLeaderboards.map( leaderboard => {
 						return (
@@ -116,11 +153,13 @@ class Leaderboards extends Component {
 	}
 
 	render() {
+		const { title } = this.props;
+
 		return (
 			<Fragment>
 				<div className="woocommerce-dashboard__dashboard-leaderboards">
 					<SectionHeader
-						title={ __( 'Leaderboards', 'woocommerce-admin' ) }
+						title={ title || __( 'Leaderboards', 'woocommerce-admin' ) }
 						menu={ this.renderMenu() }
 					/>
 					<div className="woocommerce-dashboard__columns">{ this.renderLeaderboards() }</div>

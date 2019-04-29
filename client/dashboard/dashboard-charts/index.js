@@ -9,13 +9,13 @@ import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import { xor } from 'lodash';
 import PropTypes from 'prop-types';
-import { IconButton, NavigableMenu, SelectControl } from '@wordpress/components';
+import { IconButton, NavigableMenu, SelectControl, TextControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { EllipsisMenu, MenuItem, SectionHeader } from '@woocommerce/components';
+import { EllipsisMenu, MenuItem, MenuTitle, SectionHeader } from '@woocommerce/components';
 import { getAllowedIntervalsForQuery } from '@woocommerce/date';
 
 /**
@@ -29,6 +29,8 @@ import './style.scss';
 class DashboardCharts extends Component {
 	constructor( props ) {
 		super( ...arguments );
+		const { title } = props;
+
 		this.state = {
 			chartType: props.userPrefChartType || 'line',
 			hiddenChartKeys: props.userPrefCharts || [
@@ -46,8 +48,12 @@ class DashboardCharts extends Component {
 				'shipping_tax',
 			],
 			interval: props.userPrefIntervals || 'day',
+			titleInput: title || __( 'Charts', 'woocommerce-admin' ),
 		};
 
+		this.onMenuToggle = this.onMenuToggle.bind( this );
+		this.onTitleChange = this.onTitleChange.bind( this );
+		this.onTitleBlur = this.onTitleBlur.bind( this );
 		this.toggle = this.toggle.bind( this );
 	}
 
@@ -62,6 +68,26 @@ class DashboardCharts extends Component {
 		};
 	}
 
+	onMenuToggle( isOpen ) {
+		const { titleInput } = this.state;
+		if ( ! isOpen && titleInput === '' ) {
+			this.setState( { titleInput: __( 'Charts', 'woocommerce-admin' ) } );
+		}
+	}
+
+	onTitleChange( updatedTitle ) {
+		this.setState( { titleInput: updatedTitle } );
+	}
+
+	onTitleBlur() {
+		const { onTitleUpdate } = this.props;
+		const { titleInput } = this.state;
+
+		if ( onTitleUpdate ) {
+			onTitleUpdate( titleInput );
+		}
+	}
+
 	handleTypeToggle( chartType ) {
 		return () => {
 			this.setState( { chartType } );
@@ -73,10 +99,24 @@ class DashboardCharts extends Component {
 	}
 
 	renderMenu() {
-		const { hiddenChartKeys } = this.state;
+		const { hiddenChartKeys, titleInput } = this.state;
 
 		return (
-			<EllipsisMenu label={ __( 'Choose which charts to display', 'woocommerce-admin' ) }>
+			<EllipsisMenu
+				label={ __( 'Choose which charts to display and the section name', 'woocommerce-admin' ) }
+				onToggle={ this.onMenuToggle }
+			>
+				{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
+					<div className="woocommerce-ellipsis-menu__item">
+						<TextControl
+							label={ __( 'Section Title', 'woocommerce-admin' ) }
+							onBlur={ this.onTitleBlur }
+							onChange={ this.onTitleChange }
+							value={ titleInput }
+						/>
+					</div>
+				) }
+				<MenuTitle>{ __( 'Charts', 'woocommerce-admin' ) }</MenuTitle>
 				{ uniqCharts.map( chart => {
 					return (
 						<MenuItem
@@ -132,14 +172,14 @@ class DashboardCharts extends Component {
 	};
 
 	render() {
-		const { path } = this.props;
+		const { path, title } = this.props;
 		const { chartType, hiddenChartKeys, interval } = this.state;
 		const query = { ...this.props.query, chartType, interval };
 		return (
 			<Fragment>
 				<div className="woocommerce-dashboard__dashboard-charts">
 					<SectionHeader
-						title={ __( 'Charts', 'woocommerce-admin' ) }
+						title={ title || __( 'Charts', 'woocommerce-admin' ) }
 						menu={ this.renderMenu() }
 						className={ 'has-interval-select' }
 					>
