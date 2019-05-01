@@ -77,13 +77,13 @@ const calculateStep = ( minValue, maxValue ) => {
 	const maxAbsValue = Math.max( -minValue, maxValue );
 	const maxLimit = 4 / 3 * maxAbsValue;
 	const pow3Y = Math.pow( 10, ( ( Math.log( maxLimit ) * Math.LOG10E + 1 ) | 0 ) - 2 ) * 3;
-	let tempStep = Math.ceil( maxLimit / pow3Y ) * pow3Y / 3;
+	const step = Math.ceil( maxLimit / pow3Y ) * pow3Y / 3;
 
-	if ( maxValue > 1 || minValue < -1 ) {
-		tempStep = Math.ceil( tempStep );
+	if ( maxValue < 1 && minValue > -1 ) {
+		return Math.round( step * 4 ) / 4;
 	}
 
-	return Math.max( tempStep, 1 / 3 );
+	return Math.ceil( step );
 };
 
 /**
