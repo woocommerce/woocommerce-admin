@@ -16,6 +16,7 @@ class EllipsisMenu extends Component {
 
 		this.onToggle = this.onToggle.bind( this );
 	}
+
 	onToggle( isOpen ) {
 		const { onToggle } = this.props;
 
@@ -23,6 +24,7 @@ class EllipsisMenu extends Component {
 			onToggle( isOpen );
 		}
 	}
+
 	render() {
 		const { children, label } = this.props;
 		if ( ! children ) {
