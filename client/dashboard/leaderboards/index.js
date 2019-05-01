@@ -25,17 +25,12 @@ import './style.scss';
 class Leaderboards extends Component {
 	constructor( props ) {
 		super( ...arguments );
-		const { title } = props;
 
 		this.state = {
 			hiddenLeaderboardKeys: props.userPrefLeaderboards || [ 'coupons', 'customers' ],
 			rowsPerTable: parseInt( props.userPrefLeaderboardRows ) || 5,
-			titleInput: title || __( 'Leaderboards', 'woocommerce-admin' ),
 		};
 
-		this.onMenuToggle = this.onMenuToggle.bind( this );
-		this.onTitleChange = this.onTitleChange.bind( this );
-		this.onTitleBlur = this.onTitleBlur.bind( this );
 		this.toggle = this.toggle.bind( this );
 	}
 
@@ -50,26 +45,6 @@ class Leaderboards extends Component {
 		};
 	}
 
-	onMenuToggle( isOpen ) {
-		const { titleInput } = this.state;
-		if ( ! isOpen && titleInput === '' ) {
-			this.setState( { titleInput: __( 'Leaderboards', 'woocommerce-admin' ) } );
-		}
-	}
-
-	onTitleChange( updatedTitle ) {
-		this.setState( { titleInput: updatedTitle } );
-	}
-
-	onTitleBlur() {
-		const { onTitleUpdate } = this.props;
-		const { titleInput } = this.state;
-
-		if ( onTitleUpdate ) {
-			onTitleUpdate( titleInput );
-		}
-	}
-
 	setRowsPerTable = rows => {
 		this.setState( { rowsPerTable: parseInt( rows ) } );
 		const userDataFields = {
@@ -79,8 +54,8 @@ class Leaderboards extends Component {
 	};
 
 	renderMenu() {
-		const { hiddenLeaderboardKeys, rowsPerTable, titleInput } = this.state;
-		const { allLeaderboards } = this.props;
+		const { allLeaderboards, onMenuToggle, onTitleBlur, onTitleChange, titleInput } = this.props;
+		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
 
 		return (
 			<EllipsisMenu
@@ -88,15 +63,15 @@ class Leaderboards extends Component {
 					'Choose which leaderboards to display and other settings',
 					'woocommerce-admin'
 				) }
-				onToggle={ this.onMenuToggle }
+				onToggle={ onMenuToggle }
 			>
 				<Fragment>
 					{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
 						<div className="woocommerce-ellipsis-menu__item">
 							<TextControl
 								label={ __( 'Section Title', 'woocommerce-admin' ) }
-								onBlur={ this.onTitleBlur }
-								onChange={ this.onTitleChange }
+								onBlur={ onTitleBlur }
+								onChange={ onTitleChange }
 								value={ titleInput }
 							/>
 						</div>

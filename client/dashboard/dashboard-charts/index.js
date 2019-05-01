@@ -29,7 +29,6 @@ import './style.scss';
 class DashboardCharts extends Component {
 	constructor( props ) {
 		super( ...arguments );
-		const { title } = props;
 
 		this.state = {
 			chartType: props.userPrefChartType || 'line',
@@ -48,12 +47,8 @@ class DashboardCharts extends Component {
 				'shipping_tax',
 			],
 			interval: props.userPrefIntervals || 'day',
-			titleInput: title || __( 'Charts', 'woocommerce-admin' ),
 		};
 
-		this.onMenuToggle = this.onMenuToggle.bind( this );
-		this.onTitleChange = this.onTitleChange.bind( this );
-		this.onTitleBlur = this.onTitleBlur.bind( this );
 		this.toggle = this.toggle.bind( this );
 	}
 
@@ -68,26 +63,6 @@ class DashboardCharts extends Component {
 		};
 	}
 
-	onMenuToggle( isOpen ) {
-		const { titleInput } = this.state;
-		if ( ! isOpen && titleInput === '' ) {
-			this.setState( { titleInput: __( 'Charts', 'woocommerce-admin' ) } );
-		}
-	}
-
-	onTitleChange( updatedTitle ) {
-		this.setState( { titleInput: updatedTitle } );
-	}
-
-	onTitleBlur() {
-		const { onTitleUpdate } = this.props;
-		const { titleInput } = this.state;
-
-		if ( onTitleUpdate ) {
-			onTitleUpdate( titleInput );
-		}
-	}
-
 	handleTypeToggle( chartType ) {
 		return () => {
 			this.setState( { chartType } );
@@ -99,19 +74,20 @@ class DashboardCharts extends Component {
 	}
 
 	renderMenu() {
-		const { hiddenChartKeys, titleInput } = this.state;
+		const { onMenuToggle, onTitleBlur, onTitleChange, titleInput } = this.props;
+		const { hiddenChartKeys } = this.state;
 
 		return (
 			<EllipsisMenu
 				label={ __( 'Choose which charts to display and the section name', 'woocommerce-admin' ) }
-				onToggle={ this.onMenuToggle }
+				onToggle={ onMenuToggle }
 			>
 				{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
 					<div className="woocommerce-ellipsis-menu__item">
 						<TextControl
 							label={ __( 'Section Title', 'woocommerce-admin' ) }
-							onBlur={ this.onTitleBlur }
-							onChange={ this.onTitleChange }
+							onBlur={ onTitleBlur }
+							onChange={ onTitleChange }
 							value={ titleInput }
 						/>
 					</div>

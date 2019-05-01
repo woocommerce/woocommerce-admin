@@ -12,6 +12,7 @@ import { applyFilters } from '@wordpress/hooks';
 import './style.scss';
 import DashboardCharts from './dashboard-charts';
 import Leaderboards from './leaderboards';
+import Section from './section';
 import { ReportFilters, H } from '@woocommerce/components';
 import StorePerformance from './store-performance';
 
@@ -66,14 +67,14 @@ export default class CustomizableDashboard extends Component {
 				<ReportFilters query={ query } path={ path } />
 				{ sections.map( section => {
 					return (
-						<div className="woocommerce-dashboard-section" key={ section.key }>
-							<section.component
-								onTitleUpdate={ this.onSectionTitleUpdate( section.key ) }
-								path={ path }
-								query={ query }
-								title={ section.title }
-							/>
-						</div>
+						<Section
+							component={ section.component }
+							key={ section.key }
+							onTitleUpdate={ this.onSectionTitleUpdate( section.key ) }
+							path={ path }
+							query={ query }
+							title={ section.title }
+						/>
 					);
 				} ) }
 			</Fragment>

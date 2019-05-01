@@ -36,16 +36,11 @@ import './style.scss';
 class StorePerformance extends Component {
 	constructor( props ) {
 		super( props );
-		const { title } = props;
 
 		this.state = {
 			hiddenIndicators: props.hiddenIndicators || [],
-			titleInput: title || __( 'Store Performance', 'woocommerce-admin' ),
 		};
 
-		this.onMenuToggle = this.onMenuToggle.bind( this );
-		this.onTitleChange = this.onTitleChange.bind( this );
-		this.onTitleBlur = this.onTitleBlur.bind( this );
 		this.toggle = this.toggle.bind( this );
 	}
 
@@ -70,43 +65,23 @@ class StorePerformance extends Component {
 		};
 	}
 
-	onMenuToggle( isOpen ) {
-		const { titleInput } = this.state;
-		if ( ! isOpen && titleInput === '' ) {
-			this.setState( { titleInput: __( 'Store Performance', 'woocommerce-admin' ) } );
-		}
-	}
-
-	onTitleChange( updatedTitle ) {
-		this.setState( { titleInput: updatedTitle } );
-	}
-
-	onTitleBlur() {
-		const { onTitleUpdate } = this.props;
-		const { titleInput } = this.state;
-
-		if ( onTitleUpdate ) {
-			onTitleUpdate( titleInput );
-		}
-	}
-
 	renderMenu() {
-		const { indicators } = this.props;
-		const { titleInput } = this.state;
+		const { indicators, onMenuToggle, onTitleBlur, onTitleChange, titleInput } = this.props;
+
 		return (
 			<EllipsisMenu
 				label={ __(
 					'Choose which analytics to display and the section name',
 					'woocommerce-admin'
 				) }
-				onToggle={ this.onMenuToggle }
+				onToggle={ onMenuToggle }
 			>
 				{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
 					<div className="woocommerce-ellipsis-menu__item">
 						<TextControl
 							label={ __( 'Section Title', 'woocommerce-admin' ) }
-							onBlur={ this.onTitleBlur }
-							onChange={ this.onTitleChange }
+							onBlur={ onTitleBlur }
+							onChange={ onTitleChange }
 							value={ titleInput }
 						/>
 					</div>
