@@ -54,7 +54,7 @@ class Leaderboards extends Component {
 	};
 
 	renderMenu() {
-		const { allLeaderboards, onMenuToggle, onTitleBlur, onTitleChange, titleInput } = this.props;
+		const { allLeaderboards, onTitleBlur, onTitleChange, titleInput } = this.props;
 		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
 
 		return (
@@ -63,7 +63,6 @@ class Leaderboards extends Component {
 					'Choose which leaderboards to display and other settings',
 					'woocommerce-admin'
 				) }
-				onToggle={ onMenuToggle }
 			>
 				<Fragment>
 					{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
@@ -72,6 +71,7 @@ class Leaderboards extends Component {
 								label={ __( 'Section Title', 'woocommerce-admin' ) }
 								onBlur={ onTitleBlur }
 								onChange={ onTitleChange }
+								required
 								value={ titleInput }
 							/>
 						</div>

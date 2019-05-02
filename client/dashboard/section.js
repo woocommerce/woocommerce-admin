@@ -2,28 +2,19 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 
-export default class StorePerformance extends Component {
+export default class Section extends Component {
 	constructor( props ) {
 		super( props );
-		const { title } = props;
+		const { defaultTitle } = props;
 
 		this.state = {
-			titleInput: title || __( 'Store Performance', 'woocommerce-admin' ),
+			titleInput: defaultTitle,
 		};
 
-		this.onMenuToggle = this.onMenuToggle.bind( this );
 		this.onTitleChange = this.onTitleChange.bind( this );
 		this.onTitleBlur = this.onTitleBlur.bind( this );
-	}
-
-	onMenuToggle( isOpen ) {
-		const { titleInput } = this.state;
-		if ( ! isOpen && titleInput === '' ) {
-			this.setState( { titleInput: __( 'Store Performance', 'woocommerce-admin' ) } );
-		}
 	}
 
 	onTitleChange( updatedTitle ) {
@@ -31,11 +22,16 @@ export default class StorePerformance extends Component {
 	}
 
 	onTitleBlur() {
-		const { onTitleUpdate } = this.props;
+		const { defaultTitle, onTitleUpdate } = this.props;
 		const { titleInput } = this.state;
 
 		if ( onTitleUpdate ) {
-			onTitleUpdate( titleInput );
+			if ( titleInput === '' ) {
+				onTitleUpdate( defaultTitle );
+				this.setState( { titleInput: defaultTitle } );
+			} else {
+				onTitleUpdate( titleInput );
+			}
 		}
 	}
 
@@ -48,7 +44,6 @@ export default class StorePerformance extends Component {
 				<SectionComponent
 					onTitleChange={ this.onTitleChange }
 					onTitleBlur={ this.onTitleBlur }
-					onMenuToggle={ this.onMenuToggle }
 					titleInput={ titleInput }
 					{ ...props }
 				/>

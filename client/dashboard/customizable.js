@@ -25,16 +25,19 @@ export default class CustomizableDashboard extends Component {
 				{
 					key: 'store-performance',
 					component: StorePerformance,
+					defaultTitle: __( 'Store Performance', 'woocommerce-admin' ),
 					title: __( 'Store Performance', 'woocommerce-admin' ),
 				},
 				{
 					key: 'charts',
 					component: DashboardCharts,
+					defaultTitle: __( 'Charts', 'woocommerce-admin' ),
 					title: __( 'Charts', 'woocommerce-admin' ),
 				},
 				{
 					key: 'leaderboards',
 					component: Leaderboards,
+					defaultTitle: __( 'Leaderboards', 'woocommerce-admin' ),
 					title: __( 'Leaderboards', 'woocommerce-admin' ),
 				},
 			] ),
@@ -69,6 +72,7 @@ export default class CustomizableDashboard extends Component {
 					return (
 						<Section
 							component={ section.component }
+							defaultTitle={ section.defaultTitle }
 							key={ section.key }
 							onTitleUpdate={ this.onSectionTitleUpdate( section.key ) }
 							path={ path }

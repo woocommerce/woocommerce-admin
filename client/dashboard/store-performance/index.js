@@ -66,7 +66,7 @@ class StorePerformance extends Component {
 	}
 
 	renderMenu() {
-		const { indicators, onMenuToggle, onTitleBlur, onTitleChange, titleInput } = this.props;
+		const { indicators, onTitleBlur, onTitleChange, titleInput } = this.props;
 
 		return (
 			<EllipsisMenu
@@ -74,7 +74,6 @@ class StorePerformance extends Component {
 					'Choose which analytics to display and the section name',
 					'woocommerce-admin'
 				) }
-				onToggle={ onMenuToggle }
 			>
 				{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
 					<div className="woocommerce-ellipsis-menu__item">
@@ -82,6 +81,7 @@ class StorePerformance extends Component {
 							label={ __( 'Section Title', 'woocommerce-admin' ) }
 							onBlur={ onTitleBlur }
 							onChange={ onTitleChange }
+							required
 							value={ titleInput }
 						/>
 					</div>

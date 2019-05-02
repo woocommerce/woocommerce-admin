@@ -74,13 +74,12 @@ class DashboardCharts extends Component {
 	}
 
 	renderMenu() {
-		const { onMenuToggle, onTitleBlur, onTitleChange, titleInput } = this.props;
+		const { onTitleBlur, onTitleChange, titleInput } = this.props;
 		const { hiddenChartKeys } = this.state;
 
 		return (
 			<EllipsisMenu
 				label={ __( 'Choose which charts to display and the section name', 'woocommerce-admin' ) }
-				onToggle={ onMenuToggle }
 			>
 				{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
 					<div className="woocommerce-ellipsis-menu__item">
@@ -88,6 +87,7 @@ class DashboardCharts extends Component {
 							label={ __( 'Section Title', 'woocommerce-admin' ) }
 							onBlur={ onTitleBlur }
 							onChange={ onTitleChange }
+							required
 							value={ titleInput }
 						/>
 					</div>
