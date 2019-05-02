@@ -13,24 +13,27 @@ import { H } from '@woocommerce/components';
 
 export default class ProfileWizard extends Component {
 	componentDidMount() {
-		const body = document.querySelector( '.wp-admin' );
-		body.classList.add( 'woocommerce-profile-wizard__body' );
+		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 	}
 
 	componentWillUnmount() {
-		const body = document.querySelector( '.wp-admin' );
-		body.classList.remove( 'woocommerce-profile-wizard__body' );
+		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
 	}
 
 	render() {
 		return (
-			<div>
+			<div className="woocommerce-profile-wizard__container">
 				<H className="woocommerce-profile-wizard__header-title">
+					{ __( 'Start setting up your WooCommerce store', 'woocommerce-admin' ) }
+				</H>
+
+				<p>
 					{ __(
-						'Go beyond the confines of traditional eCommerce solutions, and be limited only be your own imagination.',
+						'Simplify and enhance the setup of your store with features and benefits offered by Jetpack ' +
+							'& WooCommerce Services.',
 						'woocommerce-admin'
 					) }
-				</H>
+				</p>
 			</div>
 		);
 	}
