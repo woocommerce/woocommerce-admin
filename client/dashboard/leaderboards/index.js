@@ -5,7 +5,6 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { xor } from 'lodash';
 import PropTypes from 'prop-types';
 import { SelectControl, TextControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
@@ -27,21 +26,7 @@ class Leaderboards extends Component {
 		super( ...arguments );
 
 		this.state = {
-			hiddenLeaderboardKeys: props.userPrefLeaderboards || [ 'coupons', 'customers' ],
 			rowsPerTable: parseInt( props.userPrefLeaderboardRows ) || 5,
-		};
-
-		this.toggle = this.toggle.bind( this );
-	}
-
-	toggle( key ) {
-		return () => {
-			const hiddenLeaderboardKeys = xor( this.state.hiddenLeaderboardKeys, [ key ] );
-			this.setState( { hiddenLeaderboardKeys } );
-			const userDataFields = {
-				[ 'dashboard_leaderboards' ]: hiddenLeaderboardKeys,
-			};
-			this.props.updateCurrentUserData( userDataFields );
 		};
 	}
 
@@ -54,8 +39,15 @@ class Leaderboards extends Component {
 	};
 
 	renderMenu() {
-		const { allLeaderboards, onTitleBlur, onTitleChange, titleInput } = this.props;
-		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
+		const {
+			allLeaderboards,
+			hiddenBlocks,
+			onTitleBlur,
+			onTitleChange,
+			onToggleHiddenBlock,
+			titleInput,
+		} = this.props;
+		const { rowsPerTable } = this.state;
 
 		return (
 			<EllipsisMenu
@@ -80,11 +72,11 @@ class Leaderboards extends Component {
 					{ allLeaderboards.map( leaderboard => {
 						return (
 							<MenuItem
-								checked={ ! hiddenLeaderboardKeys.includes( leaderboard.id ) }
+								checked={ ! hiddenBlocks.includes( leaderboard.id ) }
 								isCheckbox
 								isClickable
 								key={ leaderboard.id }
-								onInvoke={ this.toggle( leaderboard.id ) }
+								onInvoke={ () => onToggleHiddenBlock( leaderboard.id )() }
 							>
 								{ leaderboard.label }
 							</MenuItem>
@@ -106,11 +98,11 @@ class Leaderboards extends Component {
 	}
 
 	renderLeaderboards() {
-		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
-		const { allLeaderboards, query } = this.props;
+		const { rowsPerTable } = this.state;
+		const { allLeaderboards, hiddenBlocks, query } = this.props;
 
 		return allLeaderboards.map( leaderboard => {
-			if ( hiddenLeaderboardKeys.includes( leaderboard.id ) ) {
+			if ( hiddenBlocks.includes( leaderboard.id ) ) {
 				return;
 			}
 
