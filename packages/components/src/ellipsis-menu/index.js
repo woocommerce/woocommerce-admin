@@ -11,20 +11,6 @@ import PropTypes from 'prop-types';
  * This is a dropdown menu hidden behind a vertical ellipsis icon. When clicked, the inner MenuItems are displayed.
  */
 class EllipsisMenu extends Component {
-	constructor( props ) {
-		super( props );
-
-		this.onToggle = this.onToggle.bind( this );
-	}
-
-	onToggle( isOpen ) {
-		const { onToggle } = this.props;
-
-		if ( onToggle ) {
-			onToggle( isOpen );
-		}
-	}
-
 	render() {
 		const { children, label } = this.props;
 		if ( ! children ) {
@@ -56,7 +42,6 @@ class EllipsisMenu extends Component {
 				<Dropdown
 					contentClassName="woocommerce-ellipsis-menu__popover"
 					position="bottom left"
-					onToggle={ this.onToggle }
 					renderToggle={ renderToggle }
 					renderContent={ renderContent }
 				/>
@@ -74,10 +59,6 @@ EllipsisMenu.propTypes = {
 	 * A list of `MenuTitle`/`MenuItem` components
 	 */
 	children: PropTypes.node,
-	/**
-	 * Function called when the menu is opened or closed.
-	 */
-	onToggle: PropTypes.func,
 };
 
 export default EllipsisMenu;
