@@ -70,41 +70,32 @@ class CustomizableDashboard extends Component {
 			),
 		};
 
-		this.updateSections = this.updateSections.bind( this );
+		this.updateSection = this.updateSection.bind( this );
 	}
 
-	updateSections( sections ) {
-		this.setState( { sections } );
-		this.props.updateCurrentUserData( { dashboard_sections: sections } );
+	updateSection( updatedKey, newSettings ) {
+		const newSections = this.state.sections.map( section => {
+			if ( section.key === updatedKey ) {
+				return {
+					...section,
+					...newSettings,
+				};
+			}
+			return section;
+		} );
+		this.setState( { sections: newSections } );
+		this.props.updateCurrentUserData( { dashboard_sections: newSections } );
 	}
 
 	onChangeHiddenBlocks( updatedKey ) {
 		return updatedHiddenBlocks => {
-			const newSections = this.state.sections.map( section => {
-				if ( section.key === updatedKey ) {
-					return {
-						...section,
-						hiddenBlocks: updatedHiddenBlocks,
-					};
-				}
-				return section;
-			} );
-			this.updateSections( newSections );
+			this.updateSection( updatedKey, { hiddenBlocks: updatedHiddenBlocks } );
 		};
 	}
 
 	onSectionTitleUpdate( updatedKey ) {
 		return updatedTitle => {
-			const newSections = this.state.sections.map( section => {
-				if ( section.key === updatedKey ) {
-					return {
-						...section,
-						title: updatedTitle,
-					};
-				}
-				return section;
-			} );
-			this.updateSections( newSections );
+			this.updateSection( updatedKey, { title: updatedTitle } );
 		};
 	}
 
