@@ -7,10 +7,10 @@ import { Component } from '@wordpress/element';
 export default class Section extends Component {
 	constructor( props ) {
 		super( props );
-		const { defaultTitle } = props;
+		const { title } = props;
 
 		this.state = {
-			titleInput: defaultTitle,
+			titleInput: title,
 		};
 
 		this.onTitleChange = this.onTitleChange.bind( this );
@@ -22,16 +22,13 @@ export default class Section extends Component {
 	}
 
 	onTitleBlur() {
-		const { defaultTitle, onTitleUpdate } = this.props;
+		const { onTitleUpdate, title } = this.props;
 		const { titleInput } = this.state;
 
-		if ( onTitleUpdate ) {
-			if ( titleInput === '' ) {
-				onTitleUpdate( defaultTitle );
-				this.setState( { titleInput: defaultTitle } );
-			} else {
-				onTitleUpdate( titleInput );
-			}
+		if ( titleInput === '' ) {
+			this.setState( { titleInput: title } );
+		} else if ( onTitleUpdate ) {
+			onTitleUpdate( titleInput );
 		}
 	}
 
