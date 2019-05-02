@@ -69,7 +69,7 @@ const getYValueLimits = data => {
 	return { upper: maxYValue, lower: minYValue };
 };
 
-const calculateStep = ( minValue, maxValue ) => {
+export const calculateStep = ( minValue, maxValue ) => {
 	if ( ! Number.isFinite( minValue ) || ! Number.isFinite( maxValue ) ) {
 		return 1;
 	}
