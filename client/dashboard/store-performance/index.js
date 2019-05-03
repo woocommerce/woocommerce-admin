@@ -225,6 +225,14 @@ export default compose(
 		);
 		const statKeys = userIndicators.map( indicator => indicator.stat ).join( ',' );
 
+		if ( statKeys.length === 0 ) {
+			return {
+				hiddenIndicators,
+				userIndicators,
+				indicators,
+			};
+		}
+
 		const primaryQuery = {
 			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
 			before: appendTimestamp( endPrimary, endPrimary.isSame( moment(), 'day' ) ? 'now' : 'end' ),
