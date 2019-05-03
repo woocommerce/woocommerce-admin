@@ -31,7 +31,7 @@ class DashboardCharts extends Component {
 
 		this.state = {
 			chartType: props.userPrefChartType || 'line',
-			interval: props.userPrefIntervals || 'day',
+			interval: props.userPrefChartInterval || 'day',
 		};
 	}
 
