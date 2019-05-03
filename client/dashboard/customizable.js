@@ -17,6 +17,7 @@ import { H, ReportFilters } from '@woocommerce/components';
  * Internal dependencies
  */
 import './style.scss';
+import sectionsDefinition from './sections-definition';
 import Section from './section';
 import withSelect from 'wc-api/with-select';
 
@@ -24,53 +25,33 @@ class CustomizableDashboard extends Component {
 	constructor( props ) {
 		super( props );
 
-		const defaultSections = [
-			{
-				key: 'store-performance',
-				title: __( 'Store Performance', 'woocommerce-admin' ),
-				hiddenBlocks: [
-					'coupons/amount',
-					'coupons/orders_count',
-					'downloads/download_count',
-					'taxes/order_tax',
-					'taxes/total_tax',
-					'taxes/shipping_tax',
-					'revenue/shipping',
-				],
-			},
-			{
-				key: 'charts',
-				title: __( 'Charts', 'woocommerce-admin' ),
-				hiddenBlocks: [
-					'avg_order_value',
-					'avg_items_per_order',
-					'items_sold',
-					'gross_revenue',
-					'refunds',
-					'coupons',
-					'taxes',
-					'shipping',
-					'amount',
-					'total_tax',
-					'order_tax',
-					'shipping_tax',
-				],
-			},
-			{
-				key: 'leaderboards',
-				title: __( 'Leaderboards', 'woocommerce-admin' ),
-				hiddenBlocks: [ 'coupons', 'customers' ],
-			},
-		];
-
 		this.state = {
-			sections: applyFilters(
-				'woocommerce_dashboard_sections',
-				props.userPrefSections || defaultSections
+			sections: this.mergeSections(
+				applyFilters( 'woocommerce_dashboard_sections', sectionsDefinition ),
+				props.userPrefSections || []
 			),
 		};
 
 		this.updateSection = this.updateSection.bind( this );
+	}
+
+	mergeSections( defaultSections, prefSections ) {
+		const defaultKeys = defaultSections.map( section => section.key );
+		const prefKeys = prefSections.map( section => section.key );
+		const keys = new Set( [ ...prefKeys, ...defaultKeys ] );
+		const sections = [];
+
+		keys.forEach( key => {
+			const prefSection = prefSections.find( section => section.key === key );
+			const defaultSection = defaultSections.find( section => section.key === key );
+
+			sections.push( {
+				...defaultSection,
+				...prefSection,
+			} );
+		} );
+
+		return sections;
 	}
 
 	updateSection( updatedKey, newSettings ) {
@@ -118,7 +99,6 @@ class CustomizableDashboard extends Component {
 							path={ path }
 							query={ query }
 							title={ section.title }
-							type={ section.key }
 						/>
 					);
 				} ) }

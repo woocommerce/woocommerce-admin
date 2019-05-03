@@ -5,23 +5,10 @@
 import { Component } from '@wordpress/element';
 import { xor } from 'lodash';
 
-/**
- * Internal dependencies
- */
-import DashboardCharts from './dashboard-charts';
-import Leaderboards from './leaderboards';
-import StorePerformance from './store-performance';
-
 export default class Section extends Component {
 	constructor( props ) {
 		super( props );
 		const { title } = props;
-
-		this.components = {
-			'store-performance': StorePerformance,
-			charts: DashboardCharts,
-			leaderboards: Leaderboards,
-		};
 
 		this.state = {
 			titleInput: title,
@@ -55,9 +42,8 @@ export default class Section extends Component {
 	}
 
 	render() {
-		const { type, ...props } = this.props;
+		const { component: SectionComponent, ...props } = this.props;
 		const { titleInput } = this.state;
-		const SectionComponent = this.components[ type ];
 
 		return (
 			<div className="woocommerce-dashboard-section">
