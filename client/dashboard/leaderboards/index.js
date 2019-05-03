@@ -153,7 +153,6 @@ export default compose(
 			getItems,
 			getItemsError,
 			isGetItemsRequesting,
-			userPrefLeaderboards: userData.dashboard_leaderboards,
 			userPrefLeaderboardRows: userData.dashboard_leaderboard_rows,
 		};
 	} ),
