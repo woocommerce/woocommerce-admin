@@ -1,6 +1,6 @@
 {
   "name": "@woocommerce/admin-library",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "homepage": "https://woocommerce.github.io/woocommerce-admin/",
   "repository": {
     "type": "git",
@@ -149,7 +149,7 @@
     "locutus": "2.0.10",
     "mini-css-extract-plugin": "0.6.0",
     "node-sass": "4.11.0",
-    "node-watch": "0.6.1",
+    "node-watch": "0.6.2",
     "postcss-color-function": "4.1.0",
     "postcss-loader": "3.0.0",
     "prettier": "github:automattic/calypso-prettier#c56b4251",
@@ -157,7 +157,7 @@
     "raw-loader": "1.0.0",
     "react-docgen": "2.21.0",
     "readline-sync": "1.4.9",
-    "recast": "0.17.4",
+    "recast": "0.17.5",
     "replace": "1.1.0",
     "rimraf": "2.6.3",
     "rtlcss": "2.4.0",
@@ -165,8 +165,8 @@
     "style-loader": "0.23.1",
     "stylelint": "9.10.1",
     "stylelint-config-wordpress": "13.1.0",
-    "webpack": "4.28.3",
-    "webpack-cli": "3.1.2",
+    "webpack": "4.30.0",
+    "webpack-cli": "3.3.1",
     "webpack-rtl-plugin": "github:yoavf/webpack-rtl-plugin#develop"
   },
   "engines": {

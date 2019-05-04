@@ -144,6 +144,10 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 				'clause' => 'where',
 				'column' => $table_name . '.date_registered',
 			),
+			'order'       => array(
+				'clause' => 'where',
+				'column' => $wpdb->prefix . 'wc_order_stats.date_created',
+			),
 			'last_active' => array(
 				'clause' => 'where',
 				'column' => $table_name . '.date_last_active',
@@ -338,11 +342,13 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
-			'per_page' => get_option( 'posts_per_page' ),
-			'page'     => 1,
-			'order'    => 'DESC',
-			'orderby'  => 'date_registered',
-			'fields'   => '*',
+			'per_page'     => get_option( 'posts_per_page' ),
+			'page'         => 1,
+			'order'        => 'DESC',
+			'orderby'      => 'date_registered',
+			'order_before' => WC_Admin_Reports_Interval::default_before(),
+			'order_after'  => WC_Admin_Reports_Interval::default_after(),
+			'fields'       => '*',
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
@@ -514,8 +520,8 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	 * @return array
 	 */
 	public static function get_customer_name( $user_id = 0, $order = null ) {
-		$first_name = null;
-		$last_name  = null;
+		$first_name = '';
+		$last_name  = '';
 
 		if (
 			$user_id &&
@@ -677,7 +683,7 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	protected static function is_valid_customer( $user_id ) {
 		$customer = new WC_Customer( $user_id );
 
-		if ( $customer->get_id() !== $user_id ) {
+		if ( $customer->get_id() != $user_id ) {
 			return false;
 		}
 
@@ -686,6 +692,31 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 		}
 
 		return true;
+	}
+
+	/**
+	 * Delete a customer lookup row.
+	 *
+	 * @param int $customer_id Customer ID.
+	 */
+	public static function delete_customer( $customer_id ) {
+		global $wpdb;
+		$customer_id = (int) $customer_id;
+		$table_name  = $wpdb->prefix . self::TABLE_NAME;
+
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM ${table_name} WHERE customer_id = %d",
+				$customer_id
+			)
+		);
+
+		/**
+		 * Fires when a customer is deleted.
+		 *
+		 * @param int $order_id Order ID.
+		 */
+		do_action( 'woocommerce_reports_delete_customer', $customer_id );
 	}
 
 	/**
