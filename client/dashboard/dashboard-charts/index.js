@@ -9,13 +9,13 @@ import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import { xor } from 'lodash';
 import PropTypes from 'prop-types';
-import { IconButton, NavigableMenu, SelectControl } from '@wordpress/components';
+import { IconButton, NavigableMenu, SelectControl, TextControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { EllipsisMenu, MenuItem, SectionHeader } from '@woocommerce/components';
+import { EllipsisMenu, MenuItem, MenuTitle, SectionHeader } from '@woocommerce/components';
 import { getAllowedIntervalsForQuery } from '@woocommerce/date';
 
 /**
@@ -25,10 +25,12 @@ import ChartBlock from './block';
 import { getChartFromKey, uniqCharts } from './config';
 import withSelect from 'wc-api/with-select';
 import './style.scss';
+import SectionControls from 'dashboard/components/section-controls';
 
 class DashboardCharts extends Component {
 	constructor( props ) {
 		super( ...arguments );
+
 		this.state = {
 			chartType: props.userPrefChartType || 'line',
 			hiddenChartKeys: props.userPrefCharts || [
@@ -45,7 +47,7 @@ class DashboardCharts extends Component {
 				'order_tax',
 				'shipping_tax',
 			],
-			interval: props.userPrefIntervals || 'day',
+			interval: props.userPrefChartInterval || 'day',
 		};
 
 		this.toggle = this.toggle.bind( this );
@@ -73,24 +75,57 @@ class DashboardCharts extends Component {
 	}
 
 	renderMenu() {
+		const {
+			onTitleBlur,
+			onTitleChange,
+			titleInput,
+			onMove,
+			onRemove,
+			isFirst,
+			isLast,
+		} = this.props;
 		const { hiddenChartKeys } = this.state;
 
 		return (
-			<EllipsisMenu label={ __( 'Choose which charts to display', 'woocommerce-admin' ) }>
-				{ uniqCharts.map( chart => {
-					return (
-						<MenuItem
-							checked={ ! hiddenChartKeys.includes( chart.key ) }
-							isCheckbox
-							isClickable
-							key={ chart.key }
-							onInvoke={ this.toggle( chart.key ) }
-						>
-							{ __( `${ chart.label }`, 'woocommerce-admin' ) }
-						</MenuItem>
-					);
-				} ) }
-			</EllipsisMenu>
+			<EllipsisMenu
+				label={ __( 'Choose which charts to display', 'woocommerce-admin' ) }
+				renderContent={ ( { onToggle } ) => (
+					<Fragment>
+						{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
+							<div className="woocommerce-ellipsis-menu__item">
+								<TextControl
+									label={ __( 'Section Title', 'woocommerce-admin' ) }
+									onBlur={ onTitleBlur }
+									onChange={ onTitleChange }
+									required
+									value={ titleInput }
+								/>
+							</div>
+						) }
+						<MenuTitle>{ __( 'Charts', 'woocommerce-admin' ) }</MenuTitle>
+						{ uniqCharts.map( chart => {
+							return (
+								<MenuItem
+									checked={ ! hiddenChartKeys.includes( chart.key ) }
+									isCheckbox
+									isClickable
+									key={ chart.key }
+									onInvoke={ this.toggle( chart.key ) }
+								>
+									{ __( `${ chart.label }`, 'woocommerce-admin' ) }
+								</MenuItem>
+							);
+						} ) }
+						<SectionControls
+							onToggle={ onToggle }
+							onMove={ onMove }
+							onRemove={ onRemove }
+							isFirst={ isFirst }
+							isLast={ isLast }
+						/>
+					</Fragment>
+				) }
+			/>
 		);
 	}
 
@@ -132,14 +167,14 @@ class DashboardCharts extends Component {
 	};
 
 	render() {
-		const { path } = this.props;
+		const { path, title } = this.props;
 		const { chartType, hiddenChartKeys, interval } = this.state;
 		const query = { ...this.props.query, chartType, interval };
 		return (
 			<Fragment>
 				<div className="woocommerce-dashboard__dashboard-charts">
 					<SectionHeader
-						title={ __( 'Charts', 'woocommerce-admin' ) }
+						title={ title || __( 'Charts', 'woocommerce-admin' ) }
 						menu={ this.renderMenu() }
 						className={ 'has-interval-select' }
 					>
