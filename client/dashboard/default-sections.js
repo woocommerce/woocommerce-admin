@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -11,7 +12,9 @@ import DashboardCharts from './dashboard-charts';
 import Leaderboards from './leaderboards';
 import StorePerformance from './store-performance';
 
-export default [
+const DEFAULT_SECTIONS_FILTER = 'woocommerce_dashboard_default_sections';
+
+export default applyFilters( DEFAULT_SECTIONS_FILTER, [
 	{
 		key: 'store-performance',
 		component: StorePerformance,
@@ -51,4 +54,4 @@ export default [
 		title: __( 'Leaderboards', 'woocommerce-admin' ),
 		hiddenBlocks: [ 'coupons', 'customers' ],
 	},
-];
+] );

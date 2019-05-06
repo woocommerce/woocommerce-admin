@@ -5,7 +5,6 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { applyFilters } from '@wordpress/hooks';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -17,7 +16,7 @@ import { H, ReportFilters } from '@woocommerce/components';
  * Internal dependencies
  */
 import './style.scss';
-import sectionsDefinition from './sections-definition';
+import defaultSections from './default-sections';
 import Section from './section';
 import withSelect from 'wc-api/with-select';
 
@@ -26,16 +25,16 @@ class CustomizableDashboard extends Component {
 		super( props );
 
 		this.state = {
-			sections: this.mergeSections(
-				applyFilters( 'woocommerce_dashboard_sections', sectionsDefinition ),
-				props.userPrefSections || []
-			),
+			sections: this.mergeSectionsWithDefaults( props.userPrefSections ),
 		};
 
 		this.updateSection = this.updateSection.bind( this );
 	}
 
-	mergeSections( defaultSections, prefSections ) {
+	mergeSectionsWithDefaults( prefSections ) {
+		if ( ! prefSections || prefSections.length === 0 ) {
+			return defaultSections;
+		}
 		const defaultKeys = defaultSections.map( section => section.key );
 		const prefKeys = prefSections.map( section => section.key );
 		const keys = new Set( [ ...prefKeys, ...defaultKeys ] );
