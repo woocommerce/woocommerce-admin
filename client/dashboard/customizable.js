@@ -19,7 +19,7 @@ import { H, ReportFilters } from '@woocommerce/components';
  */
 import './style.scss';
 import defaultSections from './default-sections';
-import Section from './section';
+import Section from './components/section';
 import withSelect from 'wc-api/with-select';
 
 class CustomizableDashboard extends Component {
