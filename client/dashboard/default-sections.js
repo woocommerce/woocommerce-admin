@@ -18,7 +18,9 @@ export default applyFilters( DEFAULT_SECTIONS_FILTER, [
 	{
 		key: 'store-performance',
 		component: StorePerformance,
-		title: __( 'Store Performance', 'woocommerce-admin' ),
+		title: __( 'Performance', 'woocommerce-admin' ),
+		isVisible: true,
+		icon: 'arrow-right-alt',
 		hiddenBlocks: [
 			'coupons/amount',
 			'coupons/orders_count',
@@ -33,6 +35,8 @@ export default applyFilters( DEFAULT_SECTIONS_FILTER, [
 		key: 'charts',
 		component: DashboardCharts,
 		title: __( 'Charts', 'woocommerce-admin' ),
+		isVisible: true,
+		icon: 'chart-bar',
 		hiddenBlocks: [
 			'avg_order_value',
 			'avg_items_per_order',
@@ -52,6 +56,8 @@ export default applyFilters( DEFAULT_SECTIONS_FILTER, [
 		key: 'leaderboards',
 		component: Leaderboards,
 		title: __( 'Leaderboards', 'woocommerce-admin' ),
+		isVisible: true,
+		icon: 'editor-ol',
 		hiddenBlocks: [ 'coupons', 'customers' ],
 	},
 ] );
