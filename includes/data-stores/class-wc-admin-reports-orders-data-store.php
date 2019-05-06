@@ -59,7 +59,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			'net_total'      => "{$table_name}.net_total",
 			'gross_total'    => "{$table_name}.gross_total",
 			'num_items_sold' => "{$table_name}.num_items_sold",
-			'customer_type'  => "(CASE WHEN {$table_name}.returning_customer <> 0 THEN 'returning' ELSE 'new' END) as customer_type",
+			'customer_type'  => "(CASE WHEN {$table_name}.returning_customer = 1 THEN 'returning' WHEN {$table_name}.returning_customer = 0 THEN 'new' ELSE '' END) as customer_type",
 		);
 	}
 

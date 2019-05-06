@@ -90,6 +90,17 @@ export default class OrdersReportTable extends Component {
 		];
 	}
 
+	getCustomerType( customerType ) {
+		switch ( customerType ) {
+			case 'new':
+				return _x( 'New', 'customer type', 'woocommerce-admin' );
+			case 'returning':
+				return _x( 'Returning', 'customer type', 'woocommerce-admin' );
+			default:
+				return _x( 'N/A', 'customer type', 'woocommerce-admin' );
+		}
+	}
+
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
@@ -155,10 +166,7 @@ export default class OrdersReportTable extends Component {
 					value: status,
 				},
 				{
-					display:
-						customer_type === 'new'
-							? _x( 'New', 'customer type', 'woocommerce-admin' )
-							: _x( 'Returning', 'customer type', 'woocommerce-admin' ),
+					display: this.getCustomerType( customer_type ),
 					value: customer_type,
 				},
 				{
