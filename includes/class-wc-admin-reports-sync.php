@@ -218,7 +218,7 @@ class WC_Admin_Reports_Sync {
 
 		// Order and refund data must be run on these hooks to ensure meta data is set.
 		add_action( 'save_post', array( __CLASS__, 'schedule_single_order_import' ) );
-		add_action( 'woocommerce_refund_created', array( __CLASS__, 'schedule_single_order_process' ) );
+		add_action( 'woocommerce_refund_created', array( __CLASS__, 'schedule_single_order_import' ) );
 
 		WC_Admin_Reports_Orders_Stats_Data_Store::init();
 		WC_Admin_Reports_Customers_Data_Store::init();
