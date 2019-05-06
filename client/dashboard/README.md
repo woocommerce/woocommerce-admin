@@ -15,6 +15,8 @@ addFilter( 'woocommerce_dashboard_default_sections', sections => {
 			key: 'example',
 			component: ExampleSection,
 			title: 'My Example Dashboard Section',
+			isVisible: true,
+			icon: 'arrow-right-alt',
 			hiddenBlocks: [],
 		},
 	];
