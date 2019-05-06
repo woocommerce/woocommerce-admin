@@ -33,6 +33,7 @@
 	margin: 0 auto;
 	width: 84px;
 	padding: $gap-large;
+	margin-top: -$gap-large;
 
 	.components-popover__content {
 		padding: 0 $gap $gap-smaller;
