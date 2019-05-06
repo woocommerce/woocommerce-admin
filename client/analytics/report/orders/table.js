@@ -11,7 +11,7 @@ import { map } from 'lodash';
  */
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { defaultTableDateFormat } from '@woocommerce/date';
-import { formatCurrency } from '@woocommerce/currency';
+import { formatCurrency, renderCurrency } from '@woocommerce/currency';
 import { numberFormat } from '@woocommerce/number';
 
 /**
@@ -187,12 +187,7 @@ export default class OrdersReportTable extends Component {
 					value: formattedCoupons.map( item => item.code ).join( ' ' ),
 				},
 				{
-					display:
-						net_total < 0 ? (
-							<span className="is-negative">{ formatCurrency( net_total, currency ) }</span>
-						) : (
-							formatCurrency( net_total, currency )
-						),
+					display: renderCurrency( net_total, currency ),
 					value: net_total,
 				},
 			];
