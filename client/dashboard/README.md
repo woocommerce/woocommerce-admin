@@ -1,0 +1,40 @@
+Dashboard
+=======
+
+This folder contains the components used in the Dashboard page.
+
+## Extending the Dashboard
+
+New Dashboard sections can be added by hooking into the filter `woocommerce_dashboard_default_sections`. For example:
+
+```js
+addFilter( 'woocommerce_dashboard_default_sections', sections => {
+	return [
+		...sections,
+		{
+			key: 'example',
+			component: ExampleSection,
+			title: 'My Example Dashboard Section',
+			hiddenBlocks: [],
+		},
+	];
+} );
+```
+
+Each report is defined by an object containing `key`, `title`, `component` and `hiddenBlocks`.
+
+- `key` (string): The key used internally to identify the section.
+- `title` (string): The title shown in the Dashboard. It can be modified by users.
+- `component` (react component): The component containing the section content.
+- `hiddenBlocks` (array of strings): The keys of the blocks that must be hidden by default. Used in Sections that contain several blocks that can be shown or hidden. It can be modified by users.
+
+The component will get the following props:
+
+- `hiddenBlocks` (array of strings): Hidden blocks according to the default settings or the user preferences if they had made any modification.
+- `onTitleBlur` (function): Event to trigger when the edit title input box is unfocused.
+- `onTitleChange` (function): Event to trigger when the edit title input box receives a change event.
+- `onToggleHiddenBlock` (function): Event to trigger when the user toggles one of the hidden blocks preferences.
+- `titleInput` (string): Current string to be displayed in the edit title input box. Title is only updated on blur, so this value will be different than `title` when the user is modifying the input box.
+- `path` (string): The exact path for this view.
+- `query` (object): The query string for the current view, can be used to read current preferences for time periods or chart interval/type.
+- `title` (string): Title of the section according to the default settings or the user preferences if they had made any modification.
