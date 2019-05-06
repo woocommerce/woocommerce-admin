@@ -42,8 +42,11 @@ class CustomizableDashboard extends Component {
 		const sections = [];
 
 		keys.forEach( key => {
-			const prefSection = prefSections.find( section => section.key === key );
 			const defaultSection = defaultSections.find( section => section.key === key );
+			if ( ! defaultSection ) {
+				return;
+			}
+			const prefSection = prefSections.find( section => section.key === key );
 
 			sections.push( {
 				...defaultSection,
