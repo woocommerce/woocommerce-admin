@@ -25,12 +25,18 @@ Each report is defined by an object containing `key`, `title`, `component` and `
 
 - `key` (string): The key used internally to identify the section.
 - `title` (string): The title shown in the Dashboard. It can be modified by users.
+- `icon` (string|function|WPComponent|null): Icon to be used to identify the section.
 - `component` (react component): The component containing the section content.
+- `isVisible` (boolean): Whether the section is visible by default. Sections can be added/hidden by users.
 - `hiddenBlocks` (array of strings): The keys of the blocks that must be hidden by default. Used in Sections that contain several blocks that can be shown or hidden. It can be modified by users.
 
 The component will get the following props:
 
 - `hiddenBlocks` (array of strings): Hidden blocks according to the default settings or the user preferences if they had made any modification.
+- `isFirst` (boolean): Whether the component is the first one shown in the Dashboard.
+- `isLast` (boolean): Whether the component is the last one shown in the Dashboard.
+- `onMove` (boolean): Event to trigger when moving the section.
+- `onRemove` (boolean): Event to trigger when removing the section.
 - `onTitleBlur` (function): Event to trigger when the edit title input box is unfocused.
 - `onTitleChange` (function): Event to trigger when the edit title input box receives a change event.
 - `onToggleHiddenBlock` (function): Event to trigger when the user toggles one of the hidden blocks preferences.
