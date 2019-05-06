@@ -59,6 +59,11 @@ class CustomizableDashboard extends Component {
 		return sections;
 	}
 
+	updateSections( newSections ) {
+		this.setState( { sections: newSections } );
+		this.props.updateCurrentUserData( { dashboard_sections: newSections } );
+	}
+
 	updateSection( updatedKey, newSettings ) {
 		const newSections = this.state.sections.map( section => {
 			if ( section.key === updatedKey ) {
@@ -69,8 +74,7 @@ class CustomizableDashboard extends Component {
 			}
 			return section;
 		} );
-		this.setState( { sections: newSections } );
-		this.props.updateCurrentUserData( { dashboard_sections: newSections } );
+		this.updateSections( newSections );
 	}
 
 	onChangeHiddenBlocks( updatedKey ) {
@@ -91,16 +95,14 @@ class CustomizableDashboard extends Component {
 				// Close the dropdown before setting state so an action is not performed on an unmounted component.
 				onToggle();
 			}
-			this.setState( state => {
-				// When toggling visibility, place section at the end of the array.
-				const sections = [ ...state.sections ];
-				const index = sections.findIndex( s => key === s.key );
-				const toggledSection = sections.splice( index, 1 ).shift();
-				toggledSection.isVisible = ! toggledSection.isVisible;
-				sections.push( toggledSection );
+			// When toggling visibility, place section at the end of the array.
+			const sections = [ ...this.state.sections ];
+			const index = sections.findIndex( s => key === s.key );
+			const toggledSection = sections.splice( index, 1 ).shift();
+			toggledSection.isVisible = ! toggledSection.isVisible;
+			sections.push( toggledSection );
 
-				return { sections };
-			} );
+			this.updateSections( sections );
 		};
 	}
 
@@ -109,7 +111,7 @@ class CustomizableDashboard extends Component {
 		const movedSection = sections.splice( index, 1 ).shift();
 		sections.splice( index + change, 0, movedSection );
 
-		this.setState( { sections } );
+		this.updateSections( sections );
 	}
 
 	renderAddMore() {
