@@ -23,7 +23,7 @@ addFilter( 'woocommerce_dashboard_default_sections', sections => {
 } );
 ```
 
-Each report is defined by an object containing `key`, `title`, `component` and `hiddenBlocks`.
+Each section is defined by an object containing the following properties.
 
 - `key` (string): The key used internally to identify the section.
 - `title` (string): The title shown in the Dashboard. It can be modified by users.
