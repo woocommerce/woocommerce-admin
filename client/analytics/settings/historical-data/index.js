@@ -80,12 +80,12 @@ class HistoricalData extends Component {
 		}
 		if ( period.label !== 'all' ) {
 			if ( period.label === 'custom' ) {
-				const daysDifference = moment( period.date, this.dateFormat ).diff(
-					moment(),
+				const daysDifference = moment().diff(
+					moment( period.date, this.dateFormat ),
 					'days',
 					true
 				);
-				params.days = Math.ceil( Math.abs( daysDifference ) );
+				params.days = Math.ceil( daysDifference );
 			} else {
 				params.days = parseInt( period.label, 10 );
 			}
