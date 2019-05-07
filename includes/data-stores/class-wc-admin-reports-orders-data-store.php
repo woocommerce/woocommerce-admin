@@ -40,16 +40,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 *
 	 * @var array
 	 */
-	protected $report_columns = array(
-		'order_id'       => 'order_id',
-		'date_created'   => 'date_created',
-		'status'         => 'REPLACE(status, "wc-", "") as status',
-		'customer_id'    => 'customer_id',
-		'net_total'      => 'net_total',
-		'gross_total'    => 'gross_total',
-		'num_items_sold' => 'num_items_sold',
-		'customer_type'  => '(CASE WHEN returning_customer <> 0 THEN "returning" ELSE "new" END) as customer_type',
-	);
+	protected $report_columns = array();
 
 	/**
 	 * Constructor
@@ -58,14 +49,16 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		global $wpdb;
 		$table_name = $wpdb->prefix . self::TABLE_NAME;
 		// Avoid ambigious columns in SQL query.
-		$this->report_columns['order_id']       = $table_name . '.' . $this->report_columns['order_id'];
-		$this->report_columns['date_created']   = $table_name . '.' . $this->report_columns['date_created'];
-		$this->report_columns['status']         = "REPLACE({$table_name}.status, 'wc-', '') as status";
-		$this->report_columns['customer_id']    = $table_name . '.' . $this->report_columns['customer_id'];
-		$this->report_columns['net_total']      = $table_name . '.' . $this->report_columns['net_total'];
-		$this->report_columns['gross_total']    = $table_name . '.' . $this->report_columns['gross_total'];
-		$this->report_columns['num_items_sold'] = $table_name . '.' . $this->report_columns['num_items_sold'];
-		$this->report_columns['customer_type']  = "(CASE WHEN {$table_name}.returning_customer <> 0 THEN 'returning' ELSE 'new' END) as customer_type";
+		$this->report_columns = array(
+			'order_id'       => "{$table_name}.order_id",
+			'date_created'   => "{$table_name}.date_created",
+			'status'         => "REPLACE({$table_name}.status, 'wc-', '') as status",
+			'customer_id'    => "{$table_name}.customer_id",
+			'net_total'      => "{$table_name}.net_total",
+			'gross_total'    => "{$table_name}.gross_total",
+			'num_items_sold' => "{$table_name}.num_items_sold",
+			'customer_type'  => "(CASE WHEN {$table_name}.returning_customer <> 0 THEN 'returning' ELSE 'new' END) as customer_type",
+		);
 	}
 
 	/**
@@ -92,6 +85,10 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			$sql_query_params['where_clause'] .= " AND {$order_stats_lookup_table}.returning_customer = ${returning_customer}";
 		}
 
+		$refund_subquery                   = $this->get_refund_subquery( $query_args );
+		$sql_query_params['from_clause']  .= $refund_subquery['from_clause'] ? $refund_subquery['from_clause'] : '';
+		$sql_query_params['where_clause'] .= $refund_subquery['where_clause'] ? ' AND ' . $refund_subquery['where_clause'] : '';
+
 		$included_coupons          = $this->get_included_coupons( $query_args );
 		$excluded_coupons          = $this->get_excluded_coupons( $query_args );
 		$order_coupon_lookup_table = $wpdb->prefix . 'wc_order_coupon_lookup';
@@ -116,20 +113,6 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		}
 		if ( $excluded_products ) {
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id NOT IN ({$excluded_products})";
-		}
-
-		if ( 'all' === $query_args['refunds'] ) {
-			$sql_query_params['where_clause'] .= ' AND parent_id != 0';
-		}
-
-		if ( 'none' === $query_args['refunds'] ) {
-			$sql_query_params['where_clause'] .= ' AND parent_id = 0';
-		}
-
-		if ( 'full' === $query_args['refunds'] || 'partial' === $query_args['refunds'] ) {
-			$operator                          = 'full' === $query_args['refunds'] ? '=' : '!=';
-			$sql_query_params['from_clause']  .= " JOIN {$order_stats_lookup_table} parent_order_stats ON {$order_stats_lookup_table}.parent_id = parent_order_stats.order_id";
-			$sql_query_params['where_clause'] .= " AND parent_order_stats.status {$operator} '{$this->normalize_order_status( 'refunded' )}'";
 		}
 
 		return $sql_query_params;
