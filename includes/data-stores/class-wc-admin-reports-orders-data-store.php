@@ -58,9 +58,14 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		global $wpdb;
 		$table_name = $wpdb->prefix . self::TABLE_NAME;
 		// Avoid ambigious columns in SQL query.
-		$this->report_columns['order_id']     = $table_name . '.' . $this->report_columns['order_id'];
-		$this->report_columns['date_created'] = $table_name . '.' . $this->report_columns['date_created'];
-		$this->report_columns['customer_id']  = $table_name . '.' . $this->report_columns['customer_id'];
+		$this->report_columns['order_id']       = $table_name . '.' . $this->report_columns['order_id'];
+		$this->report_columns['date_created']   = $table_name . '.' . $this->report_columns['date_created'];
+		$this->report_columns['status']         = "REPLACE({$table_name}.status, 'wc-', '') as status";
+		$this->report_columns['customer_id']    = $table_name . '.' . $this->report_columns['customer_id'];
+		$this->report_columns['net_total']      = $table_name . '.' . $this->report_columns['net_total'];
+		$this->report_columns['gross_total']    = $table_name . '.' . $this->report_columns['gross_total'];
+		$this->report_columns['num_items_sold'] = $table_name . '.' . $this->report_columns['num_items_sold'];
+		$this->report_columns['customer_type']  = "(CASE WHEN {$table_name}.returning_customer <> 0 THEN 'returning' ELSE 'new' END) as customer_type";
 	}
 
 	/**
@@ -84,7 +89,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 
 		if ( $query_args['customer_type'] ) {
 			$returning_customer                = 'returning' === $query_args['customer_type'] ? 1 : 0;
-			$sql_query_params['where_clause'] .= " AND returning_customer = ${returning_customer}";
+			$sql_query_params['where_clause'] .= " AND {$order_stats_lookup_table}.returning_customer = ${returning_customer}";
 		}
 
 		$included_coupons          = $this->get_included_coupons( $query_args );
@@ -111,6 +116,20 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		}
 		if ( $excluded_products ) {
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id NOT IN ({$excluded_products})";
+		}
+
+		if ( 'all' === $query_args['refunds'] ) {
+			$sql_query_params['where_clause'] .= ' AND parent_id != 0';
+		}
+
+		if ( 'none' === $query_args['refunds'] ) {
+			$sql_query_params['where_clause'] .= ' AND parent_id = 0';
+		}
+
+		if ( 'full' === $query_args['refunds'] || 'partial' === $query_args['refunds'] ) {
+			$operator                          = 'full' === $query_args['refunds'] ? '=' : '!=';
+			$sql_query_params['from_clause']  .= " JOIN {$order_stats_lookup_table} parent_order_stats ON {$order_stats_lookup_table}.parent_id = parent_order_stats.order_id";
+			$sql_query_params['where_clause'] .= " AND parent_order_stats.status {$operator} '{$this->normalize_order_status( 'refunded' )}'";
 		}
 
 		return $sql_query_params;
@@ -143,6 +162,7 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			'customer_type'    => null,
 			'status_is'        => array(),
 			'extended_info'    => false,
+			'refunds'          => null,
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
