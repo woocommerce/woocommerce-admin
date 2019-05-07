@@ -3,7 +3,7 @@
 		"activity-panels": true,
 		"analytics": true,
 		"analytics-dashboard": true,
-		"dashboard/customizable": true,
+		"analytics-dashboard/customizable": true,
 		"devdocs": true,
 		"onboarding": true,
 		"store-alerts": true
