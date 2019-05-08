@@ -123,10 +123,31 @@ class WC_Admin_Reports_Sync {
 	 * @return string
 	 */
 	public static function regenerate_report_data( $days, $skip_existing ) {
+		// Reset all import stats.
+		self::update_imported_from_date( $days );
+		update_option( 'wc_admin_import_customers_total', 0 );
+		update_option( 'wc_admin_import_customers_count', 0 );
+		update_option( 'wc_admin_import_orders_total', 0 );
+		update_option( 'wc_admin_import_orders_count', 0 );
+
 		self::customer_lookup_import_batch_init( $days, $skip_existing );
 		self::queue_dependent_action( self::ORDERS_IMPORT_BATCH_INIT, array( $days, $skip_existing ), self::CUSTOMERS_IMPORT_BATCH_ACTION );
 
 		return __( 'Report table data is being rebuilt.  Please allow some time for data to fully populate.', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Update the imported from date.
+	 *
+	 * @param int $days Number of days.
+	 */
+	public static function update_imported_from_date( $days ) {
+		$previous_import_date = get_option( 'wc_admin_imported_from_date' );
+		$current_import_date  = $days ? date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ) : -1;
+
+		if ( ! $previous_import_date || -1 === $current_import_date || new DateTime( $previous_import_date ) > new DateTime( $current_import_date ) ) {
+			update_option( 'wc_admin_imported_from_date', $current_import_date );
+		}
 	}
 
 	/**
@@ -239,6 +260,7 @@ class WC_Admin_Reports_Sync {
 			return;
 		}
 
+		update_option( 'wc_admin_import_orders_total', $orders->total );
 		$num_batches = ceil( $orders->total / $batch_size );
 
 		self::queue_batches( 1, $num_batches, self::ORDERS_IMPORT_BATCH_ACTION, array( $days, $skip_existing ) );
@@ -309,6 +331,9 @@ class WC_Admin_Reports_Sync {
 		foreach ( $orders->order_ids as $order_id ) {
 			self::orders_lookup_import_order( $order_id );
 		}
+
+		$imported_count = get_option( 'wc_admin_import_orders_count', 0 );
+		update_option( 'wc_admin_import_orders_count', $imported_count + count( $orders->order_ids ) );
 	}
 
 	/**
@@ -521,6 +546,7 @@ class WC_Admin_Reports_Sync {
 			return;
 		}
 
+		update_option( 'wc_admin_import_customers_total', $total_customers );
 		$num_batches = ceil( $total_customers / $batch_size );
 
 		self::queue_batches( 1, $num_batches, self::CUSTOMERS_IMPORT_BATCH_ACTION, array( $days, $skip_existing ) );
@@ -554,6 +580,9 @@ class WC_Admin_Reports_Sync {
 			// @todo Schedule single customer update if this fails?
 			WC_Admin_Reports_Customers_Data_Store::update_registered_customer( $customer_id );
 		}
+
+		$imported_count = get_option( 'wc_admin_import_customers_count', 0 );
+		update_option( 'wc_admin_import_customers_count', $imported_count + count( $customer_ids ) );
 	}
 
 	/**
