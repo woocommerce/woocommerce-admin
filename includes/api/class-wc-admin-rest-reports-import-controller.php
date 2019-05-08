@@ -71,6 +71,18 @@ class WC_Admin_REST_Reports_Import_Controller extends WC_Admin_REST_Reports_Cont
 				'schema' => array( $this, 'get_import_public_schema' ),
 			)
 		);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/status',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_import_status' ),
+					'permission_callback' => array( $this, 'import_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_import_public_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -243,6 +255,27 @@ class WC_Admin_REST_Reports_Import_Controller extends WC_Admin_REST_Reports_Cont
 				'message' => $delete,
 			);
 		}
+
+		$response = $this->prepare_item_for_response( $result, $request );
+		$data     = $this->prepare_response_for_collection( $response );
+
+		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Get the status of the current import.
+	 *
+	 * @param  WP_REST_Request $request Request data.
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_import_status( $request ) {
+		$result = array(
+			'customers_total' => get_option( 'wc_admin_import_customers_total', 0 ),
+			'customers_count' => get_option( 'wc_admin_import_customers_count', 0 ),
+			'orders_total'    => get_option( 'wc_admin_import_orders_total', 0 ),
+			'orders_count'    => get_option( 'wc_admin_import_orders_total', 0 ),
+			'imported_from'   => get_option( 'wc_admin_imported_from_date', false ),
+		);
 
 		$response = $this->prepare_item_for_response( $result, $request );
 		$data     = $this->prepare_response_for_collection( $response );
