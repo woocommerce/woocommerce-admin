@@ -178,7 +178,7 @@ export const advancedFilters = {
 					{ value: 'full', label: __( 'Fully refunded', 'woocommerce-admin' ) },
 					{ value: 'none', label: __( 'None', 'woocommerce-admin' ) },
 				],
-				defaultOption: 'new',
+				defaultOption: 'all',
 			},
 		},
 	},
