@@ -303,12 +303,15 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function orders_lookup_import_batch( $batch_number, $days, $skip_existing ) {
+		$properties = array( 'type' => 'order' );
+		WC_Tracks::record_event( 'import_job_start', $properties );
 		$batch_size = self::get_batch_size( self::ORDERS_IMPORT_BATCH_ACTION );
 		$orders     = self::get_orders( $batch_size, $batch_number, $days, $skip_existing );
 
 		foreach ( $orders->order_ids as $order_id ) {
 			self::orders_lookup_import_order( $order_id );
 		}
+		WC_Tracks::record_event( 'import_job_complete', $properties );
 	}
 
 	/**
@@ -535,6 +538,8 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function customer_lookup_import_batch( $batch_number, $days, $skip_existing ) {
+		$properties = array( 'type' => 'customer' );
+		WC_Tracks::record_event( 'import_job_start', $properties );
 		$batch_size     = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
 		$customer_query = self::get_user_ids_for_batch(
 			$days,
@@ -554,6 +559,7 @@ class WC_Admin_Reports_Sync {
 			// @todo Schedule single customer update if this fails?
 			WC_Admin_Reports_Customers_Data_Store::update_registered_customer( $customer_id );
 		}
+		WC_Tracks::record_event( 'import_job_complete', $properties );
 	}
 
 	/**
@@ -577,6 +583,8 @@ class WC_Admin_Reports_Sync {
 	 * Delete a batch of customers.
 	 */
 	public static function customer_lookup_delete_batch() {
+		$properties = array( 'type' => 'customer' );
+		WC_Tracks::record_event( 'delete_import_data_job_start', $properties );
 		global $wpdb;
 		$batch_size   = self::get_batch_size( self::CUSTOMERS_DELETE_BATCH_ACTION );
 		$customer_ids = $wpdb->get_col(
@@ -589,6 +597,7 @@ class WC_Admin_Reports_Sync {
 		foreach ( $customer_ids as $customer_id ) {
 			WC_Admin_Reports_Customers_Data_Store::delete_customer( $customer_id );
 		}
+		WC_Tracks::record_event( 'delete_import_data_job_complete', $properties );
 	}
 
 	/**
@@ -614,6 +623,8 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function orders_lookup_delete_batch() {
+		$properties = array( 'type' => 'order' );
+		WC_Tracks::record_event( 'delete_import_data_job_start', $properties );
 		global $wpdb;
 		$batch_size = self::get_batch_size( self::ORDERS_DELETE_BATCH_ACTION );
 		$order_ids  = $wpdb->get_col(
@@ -626,6 +637,7 @@ class WC_Admin_Reports_Sync {
 		foreach ( $order_ids as $order_id ) {
 			WC_Admin_Reports_Orders_Stats_Data_Store::delete_order( $order_id );
 		}
+		WC_Tracks::record_event( 'delete_import_data_job_complete', $properties );
 	}
 
 }
