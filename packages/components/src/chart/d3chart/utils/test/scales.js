@@ -93,6 +93,10 @@ describe( 'Y scales', () => {
 			expect( calculateStep() ).toEqual( 1 );
 		} );
 
+		it( 'returns 1/3 when max and min values are 0', () => {
+			expect( calculateStep( 0, 0 ) ).toEqual( 1 / 3 );
+		} );
+
 		it( 'returns decimals for scales below 1', () => {
 			expect( calculateStep( 0, 0.5 ) ).toEqual( 0.25 );
 		} );

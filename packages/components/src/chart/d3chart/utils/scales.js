@@ -74,6 +74,10 @@ export const calculateStep = ( minValue, maxValue ) => {
 		return 1;
 	}
 
+	if ( maxValue === 0 && minValue === 0 ) {
+		return 1 / 3;
+	}
+
 	const maxAbsValue = Math.max( -minValue, maxValue );
 	const maxLimit = 4 / 3 * maxAbsValue;
 	const pow3Y = Math.pow( 10, ( ( Math.log( maxLimit ) * Math.LOG10E + 1 ) | 0 ) - 2 ) * 3;
