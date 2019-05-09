@@ -83,6 +83,19 @@ class WC_Admin_REST_Reports_Import_Controller extends WC_Admin_REST_Reports_Cont
 				'schema' => array( $this, 'get_import_public_schema' ),
 			)
 		);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/totals',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_import_totals' ),
+					'permission_callback' => array( $this, 'import_permissions_check' ),
+					'args'                => $this->get_import_collection_params(),
+				),
+				'schema' => array( $this, 'get_import_public_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -279,6 +292,22 @@ class WC_Admin_REST_Reports_Import_Controller extends WC_Admin_REST_Reports_Cont
 		);
 
 		$response = $this->prepare_item_for_response( $result, $request );
+		$data     = $this->prepare_response_for_collection( $response );
+
+		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Get the total orders and customers based on user supplied params.
+	 *
+	 * @param  WP_REST_Request $request Request data.
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_import_totals( $request ) {
+		$query_args = $this->prepare_objects_query( $request );
+		$totals     = WC_Admin_Reports_Sync::get_import_totals( $query_args['days'], $query_args['skip_existing'] );
+
+		$response = $this->prepare_item_for_response( $totals, $request );
 		$data     = $this->prepare_response_for_collection( $response );
 
 		return rest_ensure_response( $data );
