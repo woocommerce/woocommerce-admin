@@ -123,13 +123,7 @@ class WC_Admin_Reports_Sync {
 	 * @return string
 	 */
 	public static function regenerate_report_data( $days, $skip_existing ) {
-		// Reset all import stats.
-		self::update_imported_from_date( $days );
-		update_option( 'wc_admin_import_customers_total', 0 );
-		update_option( 'wc_admin_import_customers_count', 0 );
-		update_option( 'wc_admin_import_orders_total', 0 );
-		update_option( 'wc_admin_import_orders_count', 0 );
-
+		self::reset_import_stats( $days, $skip_existing );
 		self::customer_lookup_import_batch_init( $days, $skip_existing );
 		self::queue_dependent_action( self::ORDERS_IMPORT_BATCH_INIT, array( $days, $skip_existing ), self::CUSTOMERS_IMPORT_BATCH_ACTION );
 
@@ -137,17 +131,67 @@ class WC_Admin_Reports_Sync {
 	}
 
 	/**
-	 * Update the imported from date.
+	 * Update the import stat totals and counts.
 	 *
-	 * @param int $days Number of days.
+	 * @param int|bool $days Number of days to import.
+	 * @param bool     $skip_existing Skip exisiting records.
 	 */
-	public static function update_imported_from_date( $days ) {
+	public static function reset_import_stats( $days, $skip_existing ) {
+		$totals = self::get_import_totals( $days, $skip_existing );
+		update_option( 'wc_admin_import_customers_count', 0 );
+		update_option( 'wc_admin_import_orders_count', 0 );
+		update_option( 'wc_admin_import_customers_total', $totals['customers'] );
+		update_option( 'wc_admin_import_orders_total', $totals['orders'] );
+
+		// Update imported from date if older than previous.
 		$previous_import_date = get_option( 'wc_admin_imported_from_date' );
 		$current_import_date  = $days ? date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ) : -1;
 
 		if ( ! $previous_import_date || -1 === $current_import_date || new DateTime( $previous_import_date ) > new DateTime( $current_import_date ) ) {
 			update_option( 'wc_admin_imported_from_date', $current_import_date );
 		}
+	}
+
+	/**
+	 * Get the import totals for customers and orders.
+	 *
+	 * @param int|bool $days Number of days to import.
+	 * @param bool     $skip_existing Skip exisiting records.
+	 * @return array
+	 */
+	public static function get_import_totals( $days, $skip_existing ) {
+		$orders         = self::get_orders( 1, 1, $days, $skip_existing );
+		$customer_query = self::get_user_ids_for_batch(
+			$days,
+			$skip_existing,
+			array(
+				'fields' => 'ID',
+				'number' => 1,
+			)
+		);
+
+		return array(
+			'customers' => $customer_query->get_total(),
+			'orders'    => $orders->total,
+		);
+	}
+
+	/**
+	 * Returns true if an import is in progress.
+	 *
+	 * @return bool
+	 */
+	public static function is_importing() {
+		$pending_jobs = self::queue()->search(
+			array(
+				'status'   => 'pending',
+				'per_page' => 1,
+				'claimed'  => false,
+				'group'    => self::QUEUE_GROUP,
+			)
+		);
+
+		return ! empty( $pending_jobs );
 	}
 
 	/**
@@ -260,7 +304,6 @@ class WC_Admin_Reports_Sync {
 			return;
 		}
 
-		update_option( 'wc_admin_import_orders_total', $orders->total );
 		$num_batches = ceil( $orders->total / $batch_size );
 
 		self::queue_batches( 1, $num_batches, self::ORDERS_IMPORT_BATCH_ACTION, array( $days, $skip_existing ) );
@@ -546,7 +589,6 @@ class WC_Admin_Reports_Sync {
 			return;
 		}
 
-		update_option( 'wc_admin_import_customers_total', $total_customers );
 		$num_batches = ceil( $total_customers / $batch_size );
 
 		self::queue_batches( 1, $num_batches, self::CUSTOMERS_IMPORT_BATCH_ACTION, array( $days, $skip_existing ) );
