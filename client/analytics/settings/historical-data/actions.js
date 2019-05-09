@@ -46,9 +46,9 @@ function HistoricalDataActions( {
 
 		// Has no imported data
 		if ( ! hasImportedData ) {
-			// @todo when the import status endpoint is hooked up, the
-			// 'Delete Previously Imported Data' button should be removed
-			// from this section
+			// @todo When the import status endpoint is hooked up,
+			// the 'Delete Previously Imported Data' button should be
+			// removed from this section.
 			return (
 				<Fragment>
 					<Button isPrimary onClick={ onStartImport }>

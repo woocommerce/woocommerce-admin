@@ -176,7 +176,7 @@ class HistoricalData extends Component {
 			hasImportedData &&
 			customersProgress === customersTotal &&
 			ordersProgress === ordersTotal;
-		// @todo Once we read the import status from the real endpoint,
+		// @todo When the import status endpoint is hooked up,
 		// this bool should be removed and assume it's true.
 		const showImportStatus = false;
 
