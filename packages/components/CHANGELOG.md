@@ -1,7 +1,11 @@
-# unreleased
+# 3.0.0 (unreleased)
+- <DateInput> and <DatePicker> got a `disabled` prop.
 - TableCard component: new `onPageChange` prop.
+- TableCard now has a `defaultOrder` parameter to specify default sort column sort order.
 - Pagination no longer considers `0` a valid input and triggers `onPageChange` on the input blur event.
 - Tweaks to SummaryListPlaceholder height in order to better match SummaryNumber.
+- EllipsisMenu component (breaking change): Remove `children` prop in favor of a render prop `renderContent` so that function arguments `isOpen`, `onToggle`, and `onClose` can be passed down.
+- Chart has a new prop named `yBelow1Format` which overrides the `yFormat` for values between -1 and 1 (not included).
 
 # 2.0.0
 - Chart legend component now uses withInstanceId HOC so the ids used in several HTML elements are unique.

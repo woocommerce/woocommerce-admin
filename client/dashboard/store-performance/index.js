@@ -31,42 +31,23 @@ import {
 	SummaryNumber,
 } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
+import SectionControls from 'dashboard/components/section-controls';
 import './style.scss';
 
 class StorePerformance extends Component {
-	constructor( props ) {
-		super( props );
-
-		this.state = {
-			hiddenIndicators: props.hiddenIndicators || [],
-		};
-
-		this.toggle = this.toggle.bind( this );
-	}
-
-	toggle( statKey ) {
-		return () => {
-			this.setState( state => {
-				const indicators = [ ...state.hiddenIndicators ];
-				let newHiddenIndicators = [];
-				if ( ! indicators.includes( statKey ) ) {
-					indicators.push( statKey );
-					newHiddenIndicators = indicators;
-				} else {
-					newHiddenIndicators = indicators.filter( indicator => indicator !== statKey );
-				}
-				this.props.updateCurrentUserData( {
-					dashboard_performance_indicators: newHiddenIndicators,
-				} );
-				return {
-					hiddenIndicators: newHiddenIndicators,
-				};
-			} );
-		};
-	}
-
 	renderMenu() {
-		const { indicators, onTitleBlur, onTitleChange, titleInput } = this.props;
+		const {
+			hiddenBlocks,
+			indicators,
+			isFirst,
+			isLast,
+			onMove,
+			onRemove,
+			onTitleBlur,
+			onTitleChange,
+			onToggleHiddenBlock,
+			titleInput,
+		} = this.props;
 
 		return (
 			<EllipsisMenu
@@ -74,34 +55,44 @@ class StorePerformance extends Component {
 					'Choose which analytics to display and the section name',
 					'woocommerce-admin'
 				) }
-			>
-				{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
-					<div className="woocommerce-ellipsis-menu__item">
-						<TextControl
-							label={ __( 'Section Title', 'woocommerce-admin' ) }
-							onBlur={ onTitleBlur }
-							onChange={ onTitleChange }
-							required
-							value={ titleInput }
+				renderContent={ ( { onToggle } ) => (
+					<Fragment>
+						{ window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] && (
+							<div className="woocommerce-ellipsis-menu__item">
+								<TextControl
+									label={ __( 'Section Title', 'woocommerce-admin' ) }
+									onBlur={ onTitleBlur }
+									onChange={ onTitleChange }
+									required
+									value={ titleInput }
+								/>
+							</div>
+						) }
+						<MenuTitle>{ __( 'Display Stats:', 'woocommerce-admin' ) }</MenuTitle>
+						{ indicators.map( ( indicator, i ) => {
+							const checked = ! hiddenBlocks.includes( indicator.stat );
+							return (
+								<MenuItem
+									checked={ checked }
+									isCheckbox
+									isClickable
+									key={ i }
+									onInvoke={ () => onToggleHiddenBlock( indicator.stat )() }
+								>
+									{ sprintf( __( 'Show %s', 'woocommerce-admin' ), indicator.label ) }
+								</MenuItem>
+							);
+						} ) }
+						<SectionControls
+							onToggle={ onToggle }
+							onMove={ onMove }
+							onRemove={ onRemove }
+							isFirst={ isFirst }
+							isLast={ isLast }
 						/>
-					</div>
+					</Fragment>
 				) }
-				<MenuTitle>{ __( 'Display Stats:', 'woocommerce-admin' ) }</MenuTitle>
-				{ indicators.map( ( indicator, i ) => {
-					const checked = ! this.state.hiddenIndicators.includes( indicator.stat );
-					return (
-						<MenuItem
-							checked={ checked }
-							isCheckbox
-							isClickable
-							key={ i }
-							onInvoke={ this.toggle( indicator.stat ) }
-						>
-							{ sprintf( __( 'Show %s', 'woocommerce-admin' ), indicator.label ) }
-						</MenuItem>
-					);
-				} ) }
-			</EllipsisMenu>
+			/>
 		);
 	}
 
@@ -177,43 +168,24 @@ class StorePerformance extends Component {
 	}
 
 	render() {
-		const { title } = this.props;
+		const { userIndicators, title } = this.props;
 		return (
 			<Fragment>
 				<SectionHeader
 					title={ title || __( 'Store Performance', 'woocommerce-admin' ) }
 					menu={ this.renderMenu() }
 				/>
-				<div className="woocommerce-dashboard__store-performance">{ this.renderList() }</div>
+				{ userIndicators.length > 0 && (
+					<div className="woocommerce-dashboard__store-performance">{ this.renderList() }</div>
+				) }
 			</Fragment>
 		);
 	}
 }
 export default compose(
 	withSelect( ( select, props ) => {
-		const { query } = props;
-		const {
-			getCurrentUserData,
-			getReportItems,
-			getReportItemsError,
-			isReportItemsRequesting,
-		} = select( 'wc-api' );
-		const userData = getCurrentUserData();
-		let hiddenIndicators = userData.dashboard_performance_indicators;
-
-		// Set default values for user preferences if none is set.
-		// These columns are HIDDEN by default.
-		if ( ! hiddenIndicators ) {
-			hiddenIndicators = [
-				'coupons/amount',
-				'coupons/orders_count',
-				'downloads/download_count',
-				'taxes/order_tax',
-				'taxes/total_tax',
-				'taxes/shipping_tax',
-				'revenue/shipping',
-			];
-		}
+		const { hiddenBlocks, query } = props;
+		const { getReportItems, getReportItemsError, isReportItemsRequesting } = select( 'wc-api' );
 
 		const datesFromQuery = getCurrentDates( query );
 		const endPrimary = datesFromQuery.primary.before;
@@ -221,9 +193,17 @@ export default compose(
 
 		const indicators = wcSettings.dataEndpoints.performanceIndicators;
 		const userIndicators = indicators.filter(
-			indicator => ! hiddenIndicators.includes( indicator.stat )
+			indicator => ! hiddenBlocks.includes( indicator.stat )
 		);
 		const statKeys = userIndicators.map( indicator => indicator.stat ).join( ',' );
+
+		if ( statKeys.length === 0 ) {
+			return {
+				hiddenBlocks,
+				userIndicators,
+				indicators,
+			};
+		}
 
 		const primaryQuery = {
 			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
@@ -249,7 +229,7 @@ export default compose(
 		const secondaryRequesting = isReportItemsRequesting( 'performance-indicators', secondaryQuery );
 
 		return {
-			hiddenIndicators,
+			hiddenBlocks,
 			userIndicators,
 			indicators,
 			primaryData,

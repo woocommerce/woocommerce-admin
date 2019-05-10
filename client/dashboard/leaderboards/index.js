@@ -5,7 +5,6 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { xor } from 'lodash';
 import PropTypes from 'prop-types';
 import { SelectControl, TextControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
@@ -20,6 +19,7 @@ import { EllipsisMenu, MenuItem, MenuTitle, SectionHeader } from '@woocommerce/c
  */
 import Leaderboard from 'analytics/components/leaderboard';
 import withSelect from 'wc-api/with-select';
+import SectionControls from 'dashboard/components/section-controls';
 import './style.scss';
 
 class Leaderboards extends Component {
@@ -27,21 +27,7 @@ class Leaderboards extends Component {
 		super( ...arguments );
 
 		this.state = {
-			hiddenLeaderboardKeys: props.userPrefLeaderboards || [ 'coupons', 'customers' ],
 			rowsPerTable: parseInt( props.userPrefLeaderboardRows ) || 5,
-		};
-
-		this.toggle = this.toggle.bind( this );
-	}
-
-	toggle( key ) {
-		return () => {
-			const hiddenLeaderboardKeys = xor( this.state.hiddenLeaderboardKeys, [ key ] );
-			this.setState( { hiddenLeaderboardKeys } );
-			const userDataFields = {
-				[ 'dashboard_leaderboards' ]: hiddenLeaderboardKeys,
-			};
-			this.props.updateCurrentUserData( userDataFields );
 		};
 	}
 
@@ -54,8 +40,19 @@ class Leaderboards extends Component {
 	};
 
 	renderMenu() {
-		const { allLeaderboards, onTitleBlur, onTitleChange, titleInput } = this.props;
-		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
+		const {
+			allLeaderboards,
+			isFirst,
+			isLast,
+			hiddenBlocks,
+			onMove,
+			onRemove,
+			onTitleBlur,
+			onTitleChange,
+			onToggleHiddenBlock,
+			titleInput,
+		} = this.props;
+		const { rowsPerTable } = this.state;
 
 		return (
 			<EllipsisMenu
@@ -63,54 +60,62 @@ class Leaderboards extends Component {
 					'Choose which leaderboards to display and other settings',
 					'woocommerce-admin'
 				) }
-			>
-				<Fragment>
-					{ window.wcAdminFeatures[ 'dashboard/customizable' ] && (
-						<div className="woocommerce-ellipsis-menu__item">
-							<TextControl
-								label={ __( 'Section Title', 'woocommerce-admin' ) }
-								onBlur={ onTitleBlur }
-								onChange={ onTitleChange }
-								required
-								value={ titleInput }
-							/>
-						</div>
-					) }
-					<MenuTitle>{ __( 'Leaderboards', 'woocommerce-admin' ) }</MenuTitle>
-					{ allLeaderboards.map( leaderboard => {
-						return (
-							<MenuItem
-								checked={ ! hiddenLeaderboardKeys.includes( leaderboard.id ) }
-								isCheckbox
-								isClickable
-								key={ leaderboard.id }
-								onInvoke={ this.toggle( leaderboard.id ) }
-							>
-								{ leaderboard.label }
-							</MenuItem>
-						);
-					} ) }
-					<SelectControl
-						className="woocommerce-dashboard__dashboard-leaderboards__select"
-						label={ <MenuTitle>{ __( 'Rows Per Table', 'woocommerce-admin' ) }</MenuTitle> }
-						value={ rowsPerTable }
-						options={ Array.from( { length: 20 }, ( v, key ) => ( {
-							v: key + 1,
-							label: key + 1,
-						} ) ) }
-						onChange={ this.setRowsPerTable }
-					/>
-				</Fragment>
-			</EllipsisMenu>
+				renderContent={ ( { onToggle } ) => (
+					<Fragment>
+						{ window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] && (
+							<div className="woocommerce-ellipsis-menu__item">
+								<TextControl
+									label={ __( 'Section Title', 'woocommerce-admin' ) }
+									onBlur={ onTitleBlur }
+									onChange={ onTitleChange }
+									required
+									value={ titleInput }
+								/>
+							</div>
+						) }
+						<MenuTitle>{ __( 'Leaderboards', 'woocommerce-admin' ) }</MenuTitle>
+						{ allLeaderboards.map( leaderboard => {
+							return (
+								<MenuItem
+									checked={ ! hiddenBlocks.includes( leaderboard.id ) }
+									isCheckbox
+									isClickable
+									key={ leaderboard.id }
+									onInvoke={ () => onToggleHiddenBlock( leaderboard.id )() }
+								>
+									{ leaderboard.label }
+								</MenuItem>
+							);
+						} ) }
+						<SelectControl
+							className="woocommerce-dashboard__dashboard-leaderboards__select"
+							label={ <MenuTitle>{ __( 'Rows Per Table', 'woocommerce-admin' ) }</MenuTitle> }
+							value={ rowsPerTable }
+							options={ Array.from( { length: 20 }, ( v, key ) => ( {
+								v: key + 1,
+								label: key + 1,
+							} ) ) }
+							onChange={ this.setRowsPerTable }
+						/>
+						<SectionControls
+							onToggle={ onToggle }
+							onMove={ onMove }
+							onRemove={ onRemove }
+							isFirst={ isFirst }
+							isLast={ isLast }
+						/>
+					</Fragment>
+				) }
+			/>
 		);
 	}
 
 	renderLeaderboards() {
-		const { hiddenLeaderboardKeys, rowsPerTable } = this.state;
-		const { allLeaderboards, query } = this.props;
+		const { rowsPerTable } = this.state;
+		const { allLeaderboards, hiddenBlocks, query } = this.props;
 
 		return allLeaderboards.map( leaderboard => {
-			if ( hiddenLeaderboardKeys.includes( leaderboard.id ) ) {
+			if ( hiddenBlocks.includes( leaderboard.id ) ) {
 				return;
 			}
 
@@ -161,7 +166,6 @@ export default compose(
 			getItems,
 			getItemsError,
 			isGetItemsRequesting,
-			userPrefLeaderboards: userData.dashboard_leaderboards,
 			userPrefLeaderboardRows: userData.dashboard_leaderboard_rows,
 		};
 	} ),

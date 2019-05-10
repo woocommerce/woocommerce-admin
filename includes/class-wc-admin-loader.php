@@ -166,7 +166,7 @@ class WC_Admin_Loader {
 		$page_title = null;
 		$menu_title = null;
 
-		if ( self::is_feature_enabled( 'dashboard' ) ) {
+		if ( self::is_feature_enabled( 'analytics-dashboard' ) ) {
 			$page_title = __( 'WooCommerce Dashboard', 'woocommerce-admin' );
 			$menu_title = __( 'Dashboard', 'woocommerce-admin' );
 		}
@@ -351,8 +351,8 @@ class WC_Admin_Loader {
 	 * Returns true if we are on a JS powered admin page.
 	 */
 	public static function is_admin_page() {
-		global $hook_suffix;
-		if ( in_array( $hook_suffix, array( 'woocommerce_page_wc-admin' ) ) ) {
+		$current_screen = get_current_screen();
+		if ( '_page_wc-admin' === substr( $current_screen->id, -14 ) ) {
 			return true;
 		}
 		return false;

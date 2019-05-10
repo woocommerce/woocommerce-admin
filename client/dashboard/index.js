@@ -16,9 +16,16 @@ import Leaderboards from './leaderboards';
 import { ReportFilters } from '@woocommerce/components';
 import StorePerformance from './store-performance';
 import TaskList from './task-list';
+import ProfileWizard from './profile-wizard';
 
 export default class Dashboard extends Component {
 	renderDashboardOutput() {
+		// @todo This should be replaced by a check from the REST API response from #1897.
+		const profileWizardComplete = true;
+		if ( window.wcAdminFeatures.onboarding && ! profileWizardComplete ) {
+			return <ProfileWizard />;
+		}
+
 		// @todo This should be replaced by a check of tasks from the REST API response from #1897.
 		const requiredTasksComplete = true;
 		if ( window.wcAdminFeatures.onboarding && ! requiredTasksComplete ) {
@@ -29,7 +36,7 @@ export default class Dashboard extends Component {
 
 		// @todo When the customizable dashboard is ready to be launched, we can pull `CustomizableDashboard`'s render
 		// method into `index.js`, and replace both this feature check, and the existing dashboard below.
-		if ( window.wcAdminFeatures[ 'dashboard/customizable' ] ) {
+		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {
 			return <CustomizableDashboard query={ query } path={ path } />;
 		}
 
