@@ -17,7 +17,6 @@ import { stringifyQuery } from '@woocommerce/navigation';
  */
 import { formatParams } from './utils';
 import HistoricalDataLayout from './layout';
-import './style.scss';
 
 class HistoricalData extends Component {
 	constructor() {
