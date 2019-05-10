@@ -202,7 +202,19 @@ class WC_Admin_Reports_Sync {
 
 		if ( is_a( $store, 'WC_Admin_ActionScheduler_WPPostStore' ) ) {
 			// If we're using our data store, call our bespoke deletion method.
-			$store->clear_pending_wcadmin_actions();
+			$action_types = array(
+				self::QUEUE_BATCH_ACTION,
+				self::QUEUE_DEPEDENT_ACTION,
+				self::CUSTOMERS_IMPORT_BATCH_ACTION,
+				self::CUSTOMERS_DELETE_BATCH_INIT,
+				self::CUSTOMERS_DELETE_BATCH_ACTION,
+				self::ORDERS_IMPORT_BATCH_ACTION,
+				self::ORDERS_IMPORT_BATCH_INIT,
+				self::ORDERS_DELETE_BATCH_INIT,
+				self::ORDERS_DELETE_BATCH_ACTION,
+				self::SINGLE_ORDER_IMPORT_ACTION,
+			);
+			$store->clear_pending_wcadmin_actions( $action_types );
 		} else {
 			self::queue()->cancel_all( null, array(), self::QUEUE_GROUP );
 		}

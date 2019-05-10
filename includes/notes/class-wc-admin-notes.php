@@ -148,7 +148,8 @@ class WC_Admin_Notes {
 
 		if ( is_a( $store, 'WC_Admin_ActionScheduler_WPPostStore' ) ) {
 			// If we're using our data store, call our bespoke deletion method.
-			$store->clear_pending_wcadmin_actions();
+			$action_types = array( self::UNSNOOZE_HOOK );
+			$store->clear_pending_wcadmin_actions( $action_types );
 		} else {
 			self::queue()->cancel_all( null, array(), self::QUEUE_GROUP );
 		}
