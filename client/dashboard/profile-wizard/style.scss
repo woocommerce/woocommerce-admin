@@ -30,6 +30,10 @@
 		}
 	}
 
+	.woocommerce-layout .woocommerce-layout__main {
+		padding-right: 0;
+	}
+
 	/* Hide wp-admin and WooCommerce elements when viewing the profile wizard*/
 	#adminmenumain,
 	#wpadminbar,
