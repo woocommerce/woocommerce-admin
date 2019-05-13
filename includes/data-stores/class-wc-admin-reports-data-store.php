@@ -459,7 +459,7 @@ class WC_Admin_Reports_Data_Store {
 	 */
 	protected static function get_excluded_report_order_statuses() {
 		$excluded_statuses = WC_Admin_Settings::get_option( 'woocommerce_excluded_report_order_statuses', array( 'pending', 'failed', 'cancelled' ) );
-		$excluded_statuses = array_merge( array( 'refunded', 'trash' ), $excluded_statuses );
+		$excluded_statuses = array_merge( array( 'trash' ), $excluded_statuses );
 		return apply_filters( 'woocommerce_reports_excluded_order_statuses', $excluded_statuses );
 	}
 
@@ -572,13 +572,21 @@ class WC_Admin_Reports_Data_Store {
 		);
 
 		if ( isset( $query_args['before'] ) && '' !== $query_args['before'] ) {
-			$datetime_str                    = $query_args['before']->format( WC_Admin_Reports_Interval::$sql_datetime_format );
+			if ( is_a( $query_args['before'], 'WC_DateTime' ) ) {
+				$datetime_str = $query_args['before']->date( WC_Admin_Reports_Interval::$sql_datetime_format );
+			} else {
+				$datetime_str = $query_args['before']->format( WC_Admin_Reports_Interval::$sql_datetime_format );
+			}
 			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created <= '$datetime_str'";
 
 		}
 
 		if ( isset( $query_args['after'] ) && '' !== $query_args['after'] ) {
-			$datetime_str                    = $query_args['after']->format( WC_Admin_Reports_Interval::$sql_datetime_format );
+			if ( is_a( $query_args['after'], 'WC_DateTime' ) ) {
+				$datetime_str = $query_args['after']->date( WC_Admin_Reports_Interval::$sql_datetime_format );
+			} else {
+				$datetime_str = $query_args['after']->format( WC_Admin_Reports_Interval::$sql_datetime_format );
+			}
 			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$datetime_str'";
 		}
 
@@ -708,6 +716,41 @@ class WC_Admin_Reports_Data_Store {
 		$intervals_query = array_merge( $intervals_query, $this->get_order_by_sql_params( $query_args ) );
 
 		return $intervals_query;
+	}
+
+	/**
+	 * Get join and where clauses for refunds based on user supplied parameters.
+	 *
+	 * @param array $query_args Parameters supplied by the user.
+	 * @return array
+	 */
+	protected function get_refund_subquery( $query_args ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'wc_order_stats';
+		$sql_query  = array(
+			'where_clause' => '',
+			'from_clause'  => '',
+		);
+
+		if ( ! isset( $query_args['refunds'] ) ) {
+			return $sql_query;
+		}
+
+		if ( 'all' === $query_args['refunds'] ) {
+			$sql_query['where_clause'] .= 'parent_id != 0';
+		}
+
+		if ( 'none' === $query_args['refunds'] ) {
+			$sql_query['where_clause'] .= 'parent_id = 0';
+		}
+
+		if ( 'full' === $query_args['refunds'] || 'partial' === $query_args['refunds'] ) {
+			$operator                   = 'full' === $query_args['refunds'] ? '=' : '!=';
+			$sql_query['from_clause']  .= " JOIN {$table_name} parent_order_stats ON {$table_name}.parent_id = parent_order_stats.order_id";
+			$sql_query['where_clause'] .= "parent_order_stats.status {$operator} '{$this->normalize_order_status( 'refunded' )}'";
+		}
+
+		return $sql_query;
 	}
 
 	/**

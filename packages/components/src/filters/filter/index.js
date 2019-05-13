@@ -4,6 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button, Dropdown, IconButton } from '@wordpress/components';
+import { focus } from '@wordpress/dom';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { find, partial, last, get, includes } from 'lodash';
@@ -42,6 +43,7 @@ class FilterPicker extends Component {
 		this.getVisibleFilters = this.getVisibleFilters.bind( this );
 		this.updateSelectedTag = this.updateSelectedTag.bind( this );
 		this.onTagChange = this.onTagChange.bind( this );
+		this.onContentMount = this.onContentMount.bind( this );
 		this.goBack = this.goBack.bind( this );
 
 		if ( selectedFilter.settings && selectedFilter.settings.getLabels ) {
@@ -72,7 +74,7 @@ class FilterPicker extends Component {
 	getFilter( value ) {
 		const { config, query } = this.props;
 		const allFilters = flattenFilters( config.filters );
-		value = value || query[ config.param ] || DEFAULT_FILTER;
+		value = value || query[ config.param ] || config.defaultValue || DEFAULT_FILTER;
 		return find( allFilters, { value } ) || {};
 	}
 
@@ -108,7 +110,7 @@ class FilterPicker extends Component {
 		// Keep only time related queries when updating to a new filter
 		const persistedQuery = getPersistedQuery( query );
 		const update = {
-			[ config.param ]: 'all' === value ? undefined : value,
+			[ config.param ]: ( config.defaultValue || DEFAULT_FILTER ) === value ? undefined : value,
 			...additionalQueries,
 		};
 		// Keep any url parameters as designated by the config
@@ -118,7 +120,7 @@ class FilterPicker extends Component {
 		updateQueryString( update, path, persistedQuery );
 	}
 
-	onTagChange( filter, onClose, tags ) {
+	onTagChange( filter, onClose, config, tags ) {
 		const tag = last( tags );
 		const { value, settings } = filter;
 		const { param: filterParam } = settings;
@@ -126,12 +128,12 @@ class FilterPicker extends Component {
 			this.update( value, { [ filterParam ]: tag.id } );
 			onClose();
 		} else {
-			this.update( 'all' );
+			this.update( config.defaultValue || DEFAULT_FILTER );
 		}
 		this.updateSelectedTag( [ tag ] );
 	}
 
-	renderButton( filter, onClose ) {
+	renderButton( filter, onClose, config ) {
 		if ( filter.component ) {
 			const { type, labels } = filter.settings;
 			const persistedFilter = this.getFilter();
@@ -143,7 +145,7 @@ class FilterPicker extends Component {
 					type={ type }
 					placeholder={ labels.placeholder }
 					selected={ selectedTag ? [ selectedTag ] : [] }
-					onChange={ partial( this.onTagChange, filter, onClose ) }
+					onChange={ partial( this.onTagChange, filter, onClose, config ) }
 					inlineTags
 					staticResults
 				/>
@@ -168,6 +170,16 @@ class FilterPicker extends Component {
 		);
 	}
 
+	onContentMount( content ) {
+		const { nav } = this.state;
+		const parentFilter = nav.length ? this.getFilter( nav[ nav.length - 1 ] ) : false;
+		const focusableIndex = parentFilter ? 1 : 0;
+		const focusable = focus.tabbable.find( content )[ focusableIndex ];
+		setTimeout( () => {
+			focusable.focus();
+		}, 0 );
+	}
+
 	render() {
 		const { config } = this.props;
 		const { nav, animate } = this.state;
@@ -190,7 +202,11 @@ class FilterPicker extends Component {
 						/>
 					) }
 					renderContent={ ( { onClose } ) => (
-						<AnimationSlider animationKey={ nav } animate={ animate } focusOnChange>
+						<AnimationSlider
+							animationKey={ nav }
+							animate={ animate }
+							onExited={ this.onContentMount }
+						>
 							{ () => (
 								<ul className="woocommerce-filters-filter__content-list">
 									{ parentFilter && (
@@ -213,7 +229,7 @@ class FilterPicker extends Component {
 													( selectedFilter.path && includes( selectedFilter.path, filter.value ) ),
 											} ) }
 										>
-											{ this.renderButton( filter, onClose ) }
+											{ this.renderButton( filter, onClose, config ) }
 										</li>
 									) ) }
 								</ul>
@@ -243,6 +259,10 @@ FilterPicker.propTypes = {
 		 * The url paramter this filter will modify.
 		 */
 		param: PropTypes.string.isRequired,
+		/**
+		 * The default paramter value to use instead of 'all'.
+		 */
+		defaultValue: PropTypes.string,
 		/**
 		 * Determine if the filter should be shown. Supply a function with the query object as an argument returning a boolean.
 		 */

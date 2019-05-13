@@ -7,10 +7,10 @@
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
  * Domain Path: /languages
- * Version: 0.10.0
+ * Version: 0.11.0
  *
- * WC requires at least: 3.5.0
- * WC tested up to: 3.5.7
+ * WC requires at least: 3.6.0
+ * WC tested up to: 3.6.2
  *
  * @package WC_Admin
  */
@@ -20,7 +20,19 @@ if ( ! defined( 'WC_ADMIN_APP' ) ) {
 }
 
 if ( ! defined( 'WC_ADMIN_ABSPATH' ) ) {
-	define( 'WC_ADMIN_ABSPATH', dirname( __FILE__ ) );
+	define( 'WC_ADMIN_ABSPATH', dirname( __FILE__ ) . '/' );
+}
+
+if ( ! defined( 'WC_ADMIN_DIST_JS_FOLDER' ) ) {
+	define( 'WC_ADMIN_DIST_JS_FOLDER', 'dist/' );
+}
+
+if ( ! defined( 'WC_ADMIN_DIST_CSS_FOLDER' ) ) {
+	define( 'WC_ADMIN_DIST_CSS_FOLDER', 'dist/' );
+}
+
+if ( ! defined( 'WC_ADMIN_FEATURES_PATH' ) ) {
+	define( 'WC_ADMIN_FEATURES_PATH', WC_ADMIN_ABSPATH . 'includes/features/' );
 }
 
 if ( ! defined( 'WC_ADMIN_PLUGIN_FILE' ) ) {
@@ -28,8 +40,33 @@ if ( ! defined( 'WC_ADMIN_PLUGIN_FILE' ) ) {
 }
 
 if ( ! defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
-	define( 'WC_ADMIN_VERSION_NUMBER', '0.10.0' );
+	define( 'WC_ADMIN_VERSION_NUMBER', '0.11.0' );
 }
+
+/**
+ * Removes core hooks in favor of our local feature plugin handlers.
+ *
+ * @see WC_Admin_Library::__construct()
+ */
+function wc_admin_initialize() {
+	remove_action( 'init', array( 'WC_Admin_Library', 'load_features' ) );
+	remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'register_scripts' ) );
+	remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'load_scripts' ), 15 );
+	remove_action( 'woocommerce_components_settings', array( 'WC_Admin_Library', 'add_component_settings' ) );
+	remove_filter( 'admin_body_class', array( 'WC_Admin_Library', 'add_admin_body_classes' ) );
+	remove_action( 'admin_menu', array( 'WC_Admin_Library', 'register_page_handler' ) );
+	remove_filter( 'admin_title', array( 'WC_Admin_Library', 'update_admin_title' ) );
+
+	remove_action( 'rest_api_init', array( 'WC_Admin_Library', 'register_user_data' ) );
+	remove_action( 'in_admin_header', array( 'WC_Admin_Library', 'embed_page_header' ) );
+	remove_filter( 'woocommerce_settings_groups', array( 'WC_Admin_Library', 'add_settings_group' ) );
+	remove_filter( 'woocommerce_settings-wc_admin', array( 'WC_Admin_Library', 'add_settings' ) );
+
+	remove_action( 'admin_head', array( 'WC_Admin_Library', 'update_link_structure' ), 20 );
+
+	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-loader.php';
+}
+add_action( 'woocommerce_loaded', 'wc_admin_initialize' );
 
 /**
  * Notify users of the plugin requirements.
@@ -42,13 +79,13 @@ function wc_admin_plugins_notice() {
 	if ( $wordpress_includes_gutenberg ) {
 		$message = sprintf(
 			/* translators: URL of WooCommerce plugin */
-			__( 'The WooCommerce Admin feature plugin requires <a href="%s">WooCommerce</a> 3.5 or greater to be installed and active.', 'woocommerce-admin' ),
+			__( 'The WooCommerce Admin feature plugin requires <a href="%s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
 			'https://wordpress.org/plugins/woocommerce/'
 		);
 	} else {
 		$message = sprintf(
 			/* translators: 1: URL of WordPress.org, 2: URL of WooCommerce plugin */
-			__( 'The WooCommerce Admin feature plugin requires both <a href="%1$s">WordPress</a> 5.0 or greater and <a href="%2$s">WooCommerce</a> 3.5 or greater to be installed and active.', 'woocommerce-admin' ),
+			__( 'The WooCommerce Admin feature plugin requires both <a href="%1$s">WordPress</a> 5.0 or greater and <a href="%2$s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
 			'https://wordpress.org/',
 			'https://wordpress.org/plugins/woocommerce/'
 		);
@@ -75,7 +112,7 @@ function wc_admin_build_notice() {
  * @return bool
  */
 function wc_admin_dependencies_satisfied() {
-	$woocommerce_minimum_met = class_exists( 'WooCommerce' ) && version_compare( WC_VERSION, '3.5', '>' );
+	$woocommerce_minimum_met = class_exists( 'WooCommerce' ) && version_compare( WC_VERSION, '3.6', '>=' );
 	if ( ! $woocommerce_minimum_met ) {
 		return false;
 	}
@@ -94,10 +131,30 @@ function wc_admin_build_file_exists() {
 }
 
 /**
+ * Adds a menu item for the wc-admin devdocs.
+ */
+function wc_admin_devdocs() {
+	if ( WC_Admin_Loader::is_feature_enabled( 'devdocs' ) && defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		wc_admin_register_page(
+			array(
+				'title'  => 'DevDocs',
+				'parent' => 'woocommerce',
+				'path'   => '/devdocs',
+			)
+		);
+	}
+}
+add_action( 'admin_menu', 'wc_admin_devdocs' );
+
+/**
  * Daily events to run.
+ *
+ * Note: WC_Admin_Notes_Order_Milestones::other_milestones is hooked to this as well.
  */
 function wc_admin_do_wc_admin_daily() {
 	WC_Admin_Notes_New_Sales_Record::possibly_add_sales_record_note();
+	WC_Admin_Notes_Giving_Feedback_Notes::add_notes_for_admin_giving_feedback();
+	WC_Admin_Notes_Mobile_App::possibly_add_mobile_app_note();
 }
 add_action( 'wc_admin_daily', 'wc_admin_do_wc_admin_daily' );
 
@@ -133,6 +190,7 @@ function wc_admin_deactivate_wc_admin_plugin() {
 	if ( wc_admin_dependencies_satisfied() ) {
 		wp_clear_scheduled_hook( 'wc_admin_daily' );
 		WC_Admin_Reports_Sync::clear_queued_actions();
+		WC_Admin_Notes::clear_queued_actions();
 	}
 }
 register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, 'wc_admin_deactivate_wc_admin_plugin' );
@@ -146,45 +204,44 @@ function wc_admin_plugins_loaded() {
 		return;
 	}
 
-	if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
-		require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
-	}
-
 	// Initialize the WC API extensions.
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-reports-sync.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-install.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-api-init.php';
-
-	// Some common utilities.
-	require_once WC_ADMIN_ABSPATH . '/lib/common.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-reports-sync.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-api-init.php';
 
 	// Admin note providers.
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-new-sales-record.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-settings-notes.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
-	require_once WC_ADMIN_ABSPATH . '/includes/notes/class-wc-admin-notes-historical-data.php';
+	// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-new-sales-record.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-settings-notes.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-giving-feedback-notes.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-historical-data.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-order-milestones.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-mobile-app.php';
+	require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-welcome-message.php';
 
 	// Verify we have a proper build.
 	if ( ! wc_admin_build_file_exists() ) {
 		add_action( 'admin_notices', 'wc_admin_build_notice' );
 		return;
 	}
-
-	// Register script files.
-	require_once WC_ADMIN_ABSPATH . '/lib/client-assets.php';
-
-	// Create the Admin pages.
-	require_once WC_ADMIN_ABSPATH . '/lib/admin.php';
 }
 add_action( 'plugins_loaded', 'wc_admin_plugins_loaded' );
 
 /**
- * Things to do after WooCommerce updates.
+ * Overwrites the allowed features array using a local `feature-config.php` file.
+ *
+ * @param array $features Array of feature slugs.
  */
-function wc_admin_woocommerce_updated() {
-	WC_Admin_Notes_Settings_Notes::add_notes_for_settings_that_have_moved();
+function wc_admin_overwrite_features( $features ) {
+	if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
+		require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
+	}
+	$feature_config = wc_admin_get_feature_config();
+	$features       = array_keys( array_filter( $feature_config ) );
+	return $features;
 }
-add_action( 'woocommerce_updated', 'wc_admin_woocommerce_updated' );
+add_filter( 'woocommerce_admin_features', 'wc_admin_overwrite_features' );
 
 /*
  * Remove the emoji script as it always defaults to replacing emojis with Twemoji images.
@@ -214,3 +271,45 @@ function wc_admin_set_actionscheduler_store_class( $store_class ) {
 
 // Hook up our modified ActionScheduler Store.
 add_filter( 'action_scheduler_store_class', 'wc_admin_set_actionscheduler_store_class' );
+
+/**
+ * Load plugin text domain for translations.
+ */
+function wc_admin_load_plugin_textdomain() {
+	load_plugin_textdomain( 'woocommerce-admin', false, basename( dirname( __FILE__ ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'wc_admin_load_plugin_textdomain' );
+
+/**
+ * Format a number using the decimal and thousands separator settings in WooCommerce.
+ *
+ * @param mixed $number Number to be formatted.
+ * @return string
+ */
+function wc_admin_number_format( $number ) {
+	$currency_settings = WC_Admin_Loader::get_currency_settings();
+	return number_format(
+		$number,
+		0,
+		$currency_settings['decimal_separator'],
+		$currency_settings['thousand_separator']
+	);
+}
+
+/**
+ * Retrieves a URL to relative path inside WooCommerce admin with
+ * the provided query parameters.
+ *
+ * @param  string $path Relative path of the desired page.
+ * @param  array  $query Query parameters to append to the path.
+ *
+ * @return string       Fully qualified URL pointing to the desired path.
+ */
+function wc_admin_url( $path, $query = array() ) {
+	if ( ! empty( $query ) ) {
+		$query_string = http_build_query( $query );
+		$path         = $path . '?' . $query_string;
+	}
+
+	return admin_url( 'admin.php?page=wc-admin#' . $path, dirname( __FILE__ ) );
+}

@@ -21,6 +21,7 @@ import './index.scss';
 import { analyticsSettings } from './config';
 import Header from 'header';
 import Setting from './setting';
+import HistoricalData from './historical-data';
 import withSelect from 'wc-api/with-select';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
@@ -109,6 +110,7 @@ class Settings extends Component {
 	}
 
 	render() {
+		const { addNotice } = this.props;
 		const { hasError } = this.state;
 		if ( hasError ) {
 			return null;
@@ -140,6 +142,7 @@ class Settings extends Component {
 							{ __( 'Save Changes', 'woocommerce-admin' ) }
 						</Button>
 					</div>
+					<HistoricalData addNotice={ addNotice } />
 				</div>
 			</Fragment>
 		);

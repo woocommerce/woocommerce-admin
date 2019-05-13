@@ -8,10 +8,11 @@
 	<!-- Exclude paths -->
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>bin/*</exclude-pattern>
 
 	<!-- Configs -->
 	<config name="minimum_supported_wp_version" value="4.7" />
-	<config name="testVersion" value="5.2-"/>
+	<config name="testVersion" value="5.4-"/>
 
 	<!-- Rules -->
 	<rule ref="WooCommerce-Core" />

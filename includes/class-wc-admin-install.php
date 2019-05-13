@@ -68,10 +68,12 @@ class WC_Admin_Install {
 
 		self::create_tables();
 		WC_Admin_Notes_Historical_Data::add_note();
+		WC_Admin_Notes_Welcome_Message::add_welcome_note();
 		self::update_wc_admin_version();
 
 		delete_transient( 'wc_admin_installing' );
 
+		update_option( 'wc_admin_install_timestamp', time() );
 		do_action( 'wc_admin_installed' );
 	}
 
@@ -90,14 +92,14 @@ class WC_Admin_Install {
 		$tables = "
 		CREATE TABLE {$wpdb->prefix}wc_order_stats (
 			order_id bigint(20) unsigned NOT NULL,
+			parent_id bigint(20) unsigned DEFAULT 0 NOT NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			num_items_sold int(11) UNSIGNED DEFAULT 0 NOT NULL,
 			gross_total double DEFAULT 0 NOT NULL,
-			refund_total double DEFAULT 0 NOT NULL,
 			tax_total double DEFAULT 0 NOT NULL,
 			shipping_total double DEFAULT 0 NOT NULL,
 			net_total double DEFAULT 0 NOT NULL,
-			returning_customer boolean DEFAULT 0 NOT NULL,
+			returning_customer boolean DEFAULT NULL,
 			status varchar(200) NOT NULL,
 			customer_id BIGINT UNSIGNED NOT NULL,
 			PRIMARY KEY (order_id),
@@ -112,14 +114,13 @@ class WC_Admin_Install {
 			variation_id BIGINT UNSIGNED NOT NULL,
 			customer_id BIGINT UNSIGNED NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			product_qty INT UNSIGNED NOT NULL,
+			product_qty INT NOT NULL,
 			product_net_revenue double DEFAULT 0 NOT NULL,
 			product_gross_revenue double DEFAULT 0 NOT NULL,
 			coupon_amount double DEFAULT 0 NOT NULL,
 			tax_amount double DEFAULT 0 NOT NULL,
 			shipping_amount double DEFAULT 0 NOT NULL,
 			shipping_tax_amount double DEFAULT 0 NOT NULL,
-			refund_amount double DEFAULT 0 NOT NULL,
 			PRIMARY KEY  (order_item_id),
 			KEY order_id (order_id),
 			KEY product_id (product_id),

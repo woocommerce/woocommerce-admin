@@ -12,10 +12,14 @@ import { TAB } from '@wordpress/keycodes';
 import moment from 'moment';
 
 /**
+ * WooCommerce dependencies
+ */
+import { dateValidationMessages, toMoment } from '@woocommerce/date';
+
+/**
  * Internal dependencies
  */
 import DateInput from './input';
-import { toMoment } from '@woocommerce/date';
 import { H, Section } from '../section';
 import PropTypes from 'prop-types';
 
@@ -54,7 +58,7 @@ class DatePicker extends Component {
 		const value = event.target.value;
 		const { dateFormat } = this.props;
 		const date = toMoment( dateFormat, value );
-		const error = date ? null : __( 'Invalid date', 'woocommerce-admin' );
+		const error = date ? null : dateValidationMessages.invalid;
 
 		this.props.onUpdate( {
 			date,
@@ -64,15 +68,15 @@ class DatePicker extends Component {
 	}
 
 	render() {
-		const { date, text, dateFormat, error } = this.props;
-		// @todo Make upstream Gutenberg change to invalidate certain days.
-		// const isOutsideRange = getOutsideRange( invalidDays );
+		const { date, disabled, text, dateFormat, error, isInvalidDate } = this.props;
+
 		return (
 			<Dropdown
 				position="bottom center"
 				focusOnMount={ false }
 				renderToggle={ ( { isOpen, onToggle } ) => (
 					<DateInput
+						disabled={ disabled }
 						value={ text }
 						onChange={ this.onInputChange }
 						dateFormat={ dateFormat }
@@ -98,6 +102,7 @@ class DatePicker extends Component {
 							<WpDatePicker
 								currentDate={ date }
 								onChange={ partial( this.onDateChange, onToggle ) }
+								isInvalidDate={ isInvalidDate }
 							/>
 						</div>
 					</Section>
@@ -113,6 +118,10 @@ DatePicker.propTypes = {
 	 */
 	date: PropTypes.object,
 	/**
+	 * Whether the input is disabled.
+	 */
+	disabled: PropTypes.bool,
+	/**
 	 * The date in human-readable format. Displayed in the text input.
 	 */
 	text: PropTypes.string,
@@ -121,14 +130,6 @@ DatePicker.propTypes = {
 	 */
 	error: PropTypes.string,
 	/**
-	 * (Coming Soon) Optionally invalidate certain days. `past`, `future`, `none`, or function are accepted.
-	 * A function will be passed to react-dates' `isOutsideRange` prop
-	 */
-	invalidDays: PropTypes.oneOfType( [
-		PropTypes.oneOf( [ 'past', 'future', 'none' ] ),
-		PropTypes.func,
-	] ),
-	/**
 	 * A function called upon selection of a date or input change.
 	 */
 	onUpdate: PropTypes.func.isRequired,
@@ -136,6 +137,10 @@ DatePicker.propTypes = {
 	 * The date format in moment.js-style tokens.
 	 */
 	dateFormat: PropTypes.string.isRequired,
+	/**
+	 * A function to determine if a day on the calendar is not valid
+	 */
+	isInvalidDate: PropTypes.func,
 };
 
 export default DatePicker;

@@ -1,8 +1,22 @@
-# (unreleased)
+# 3.0.0 (unreleased)
+- <DateInput> and <DatePicker> got a `disabled` prop.
+- TableCard component: new `onPageChange` prop.
+- TableCard now has a `defaultOrder` parameter to specify default sort column sort order.
+- Pagination no longer considers `0` a valid input and triggers `onPageChange` on the input blur event.
+- Tweaks to SummaryListPlaceholder height in order to better match SummaryNumber.
+- EllipsisMenu component (breaking change): Remove `children` prop in favor of a render prop `renderContent` so that function arguments `isOpen`, `onToggle`, and `onClose` can be passed down.
+- Chart has a new prop named `yBelow1Format` which overrides the `yFormat` for values between -1 and 1 (not included).
+
+# 2.0.0
 - Chart legend component now uses withInstanceId HOC so the ids used in several HTML elements are unique.
 - Chart component now accepts data with negative values.
 - Chart component: new prop `filterParam` used to detect selected items in the current query. If there are, they will be displayed in the chart even if their values are 0.
 - Expand search results and allow searching when input is refocused in autocompleter.
+- Animation Slider: Remove `focusOnChange` in favor of `onExited` so consumers can pass a function to be executed after a transition has finished.
+- SearchListControl: Add `onSearch` callback prop to let the parent component know about search changes.
+- Calendar: Expose `isInvalidDate` prop to `DatePicker` to indicated invalid days that are not selectable.
+- Calendar: Expose `isInvalidDate` prop to `DateRange` and remove the `invalidDays` prop.
+- Bump dependency versions.
 
 # 1.6.0
 - Chart component: new props `emptyMessage` and `baseValue`. When an empty message is provided, it will be displayed on top of the chart if there are no values different than `baseValue`.
