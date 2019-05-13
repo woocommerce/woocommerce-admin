@@ -45,7 +45,7 @@ class WC_Admin_ActionScheduler_WPPostStore extends ActionScheduler_wpPostStore {
 
 		// Cancel all pending actions by trashing the posts.
 		// Action Scheduler will handle the cleanup.
-		foreach ( $action_types as $action_type ) {
+		foreach ( (array) $action_types as $action_type ) {
 			$wpdb->update(
 				$wpdb->posts,
 				array(
