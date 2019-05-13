@@ -172,7 +172,7 @@ function wc_admin_activate_wc_admin_plugin() {
 
 	// Run the installer on activation.
 	require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
-	WC_Admin_Install::install();
+	WC_Admin_Install::create_tables();
 }
 register_activation_hook( WC_ADMIN_PLUGIN_FILE, 'wc_admin_activate_wc_admin_plugin' );
 
