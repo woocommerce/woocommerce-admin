@@ -21,7 +21,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'wc/v4';
+	protected $namespace = 'wc-internal/v1';
 
 	/**
 	 * Route base.

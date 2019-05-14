@@ -15,7 +15,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 	 *
 	 * @var string
 	 */
-	protected $endpoint = '/wc/v4/onboarding/profile';
+	protected $endpoint = '/wc-internal/v1/onboarding/profile';
 
 	/**
 	 * Setup test data. Called before every test.
@@ -56,7 +56,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 
 		// Test updating 2 fields separately.
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
-		$request->set_param( 'store_city', 'Atlanta' );
+		$request->set_param( 'industry', 'Clothing' );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
@@ -65,7 +65,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 
 		// Test that the update works.
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
-		$request->set_param( 'store_state', 'Georgia' );
+		$request->set_param( 'theme', 'Storefront' );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
@@ -78,8 +78,8 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$data     = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 'Atlanta', $data['store_city'] );
-		$this->assertEquals( 'Georgia', $data['store_state'] );
+		$this->assertEquals( 'Clothing', $data['industry'] );
+		$this->assertEquals( 'Storefront', $data['theme'] );
 	}
 
 	/**
@@ -95,14 +95,8 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertCount( 14, $properties );
+		$this->assertCount( 8, $properties );
 		$this->assertArrayHasKey( 'account_type', $properties );
-		$this->assertArrayHasKey( 'store_address_1', $properties );
-		$this->assertArrayHasKey( 'store_address_2', $properties );
-		$this->assertArrayHasKey( 'store_zip', $properties );
-		$this->assertArrayHasKey( 'store_city', $properties );
-		$this->assertArrayHasKey( 'store_state', $properties );
-		$this->assertArrayHasKey( 'store_country', $properties );
 		$this->assertArrayHasKey( 'industry', $properties );
 		$this->assertArrayHasKey( 'product_types', $properties );
 		$this->assertArrayHasKey( 'product_count', $properties );
