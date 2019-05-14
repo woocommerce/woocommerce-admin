@@ -199,55 +199,19 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 	 */
 	public static function get_profile_properties() {
 		$properties = array(
-			'account_type'    => array(
+			'account_type'   => array(
 				'type'        => 'string',
 				'description' => __( 'Account type used for Jetpack.', 'woocommerce-admin' ),
 				'context'     => array( 'view' ),
 				'readonly'    => true,
 			),
-			'store_address_1' => array(
-				'type'        => 'string',
-				'description' => __( 'Store address line 1.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
-			),
-			'store_address_2' => array(
-				'type'        => 'string',
-				'description' => __( 'Store address line 2.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
-			),
-			'store_zip'       => array(
-				'type'        => 'string',
-				'description' => __( 'Store address line 2.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
-			),
-			'store_city'      => array(
-				'type'        => 'string',
-				'description' => __( 'Store city.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
-			),
-			'store_state'     => array(
-				'type'        => 'string',
-				'description' => __( 'Store state.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
-			),
-			'store_country'   => array(
-				'type'        => 'string',
-				'description' => __( 'Store country.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
-			),
-			'industry'        => array(
+			'industry'       => array(
 				'type'        => 'string',
 				'description' => __( 'Industry.', 'woocommerce-admin' ),
 				'context'     => array( 'view' ),
 				'readonly'    => true,
 			),
-			'product_types'   => array(
+			'product_types'  => array(
 				'type'        => 'array',
 				'description' => __( 'Types of products sold.', 'woocommerce-admin' ),
 				'context'     => array( 'view' ),
@@ -262,7 +226,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 				'context'     => array( 'view' ),
 				'readonly'    => true,
 			),
-			'selling_venues'  => array(
+			'selling_venues' => array(
 				'type'        => 'array',
 				'description' => __( 'Other places the store is selling products.', 'woocommerce-admin' ),
 				'context'     => array( 'view' ),
@@ -283,7 +247,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 				'context'     => array( 'view' ),
 				'readonly'    => true,
 			),
-			'purchase'        => array(
+			'purchase'       => array(
 				'type'        => 'bool',
 				'description' => __( 'Whether or not the user opted to purchase items now or later.', 'woocommerce-admin' ),
 				'context'     => array( 'view' ),
