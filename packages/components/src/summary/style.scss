@@ -13,7 +13,8 @@ $inner-border: $core-grey-light-500;
 	}
 
 	.woocommerce-summary__item-container:nth-of-type(#{$i}n+1):nth-last-of-type(-n+#{$i}) {
-		.woocommerce-summary__item, & ~ .woocommerce-summary__item-container .woocommerce-summary__item {
+		.woocommerce-summary__item,
+		& ~ .woocommerce-summary__item-container .woocommerce-summary__item {
 			border-bottom-color: $outer-border;
 		}
 	}
