@@ -280,8 +280,8 @@ $inner-border: $core-grey-light-500;
 
 .woocommerce-summary__item {
 	display: flex;
-    flex-direction: column;
-    height: 100%;
+	flex-direction: column;
+	height: 100%;
 	padding: $spacing;
 	background-color: $core-grey-light-100;
 	border-bottom: 1px solid $inner-border;
