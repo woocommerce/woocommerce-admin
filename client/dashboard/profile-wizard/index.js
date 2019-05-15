@@ -7,6 +7,7 @@ import { Component, createElement } from '@wordpress/element';
 /**
  * Internal depdencies
  */
+import Plugins from './steps/plugins';
 import Start from './steps/start';
 import './style.scss';
 
@@ -16,6 +17,10 @@ const getSteps = () => {
 	steps.push( {
 		key: 'start',
 		container: Start,
+	} );
+	steps.push( {
+		key: 'plugins',
+		container: Plugins,
 	} );
 
 	return steps;
@@ -34,7 +39,7 @@ export default class ProfileWizard extends Component {
 
 	getStep() {
 		const { step } = this.props.query;
-		const currentStep = find( getSteps(), { key: step } );
+		const currentStep = getSteps().find( s => s.key === step );
 
 		if ( ! currentStep ) {
 			return getSteps()[ 0 ];
