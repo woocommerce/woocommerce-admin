@@ -56,7 +56,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 
 		// Test updating 2 fields separately.
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
-		$request->set_param( 'industry', 'Clothing' );
+		$request->set_param( 'industry', 'health-beauty' );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
@@ -78,8 +78,8 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$data     = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 'Clothing', $data['industry'] );
-		$this->assertEquals( 'Storefront', $data['theme'] );
+		$this->assertEquals( 'health-beauty', $data['industry'][0] );
+		$this->assertEquals( 'storefront', $data['theme'] );
 	}
 
 	/**

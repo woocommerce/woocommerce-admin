@@ -200,58 +200,110 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 	public static function get_profile_properties() {
 		$properties = array(
 			'account_type'   => array(
-				'type'        => 'string',
-				'description' => __( 'Account type used for Jetpack.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
+				'type'              => 'string',
+				'description'       => __( 'Account type used for Jetpack.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+				'enum'              => array(
+					'new',
+					'existing',
+					'google',
+				),
 			),
 			'industry'       => array(
-				'type'        => 'string',
-				'description' => __( 'Industry.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
+				'type'              => 'array',
+				'description'       => __( 'Industry.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'sanitize_callback' => 'wp_parse_slug_list',
+				'validate_callback' => 'rest_validate_request_arg',
+				'items'             => array(
+					'enum' => array(
+						'fashion-apparel-accessories',
+						'health-beauty',
+						'art-music-photography',
+						'food-drink',
+						'home-furniture-garden',
+						'other',
+					),
+					'type' => 'string',
+				),
 			),
 			'product_types'  => array(
-				'type'        => 'array',
-				'description' => __( 'Types of products sold.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
-				'items'       => array(
+				'type'              => 'array',
+				'description'       => __( 'Types of products sold.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'sanitize_callback' => 'wp_parse_slug_list',
+				'validate_callback' => 'rest_validate_request_arg',
+				'items'             => array(
+					'enum' => array(
+						'physical',
+						'downloads',
+						'subscriptions',
+						'memberships',
+						'composite',
+						'spaces',
+						'rentals',
+					),
 					'type' => 'string',
 				),
 			),
 			'product_count'  => array(
-				'type'        => 'integer',
-				'description' => __( 'Number of products to be added.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
+				'type'              => 'string',
+				'description'       => __( 'Number of products to be added.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+				'enum'              => array(
+					'1-10',
+					'11-100',
+					'101-1000',
+					'1000+',
+				),
 			),
 			'selling_venues' => array(
-				'type'        => 'array',
-				'description' => __( 'Other places the store is selling products.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
-				'items'       => array(
-					'type' => 'string',
+				'type'              => 'string',
+				'description'       => __( 'Other places the store is selling products.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+				'enum'              => array(
+					'no',
+					'other',
+					'brick-mortar',
+					'brick-mortar-other',
 				),
 			),
 			'other_platform' => array(
-				'type'        => 'string',
-				'description' => __( 'Name of other platform used to sell.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
+				'type'              => 'string',
+				'description'       => __( 'Name of other platform used to sell.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+				'enum'              => array(
+					'shopify',
+					'bigcommerce',
+					'magento',
+					'wix',
+					'other',
+				),
 			),
 			'theme'          => array(
-				'type'        => 'string',
-				'description' => __( 'Selected store theme.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
+				'type'              => 'string',
+				'description'       => __( 'Selected store theme.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'sanitize_callback' => 'sanitize_title_with_dashes',
+				'validate_callback' => 'rest_validate_request_arg',
 			),
 			'purchase'       => array(
-				'type'        => 'bool',
-				'description' => __( 'Whether or not the user opted to purchase items now or later.', 'woocommerce-admin' ),
-				'context'     => array( 'view' ),
-				'readonly'    => true,
+				'type'              => 'bool',
+				'description'       => __( 'Whether or not the user opted to purchase items now or later.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
 			),
 		);
 
@@ -268,6 +320,9 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 		$properties = self::get_profile_properties();
 		foreach ( $properties as $key => $property ) {
 			unset( $properties[ $key ]['default'] );
+			unset( $properties[ $key ]['items'] );
+			unset( $properties[ $key ]['validate_callback'] );
+			unset( $properties[ $key ]['sanitize_callback'] );
 		}
 
 		$schema = array(
