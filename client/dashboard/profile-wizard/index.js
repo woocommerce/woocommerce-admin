@@ -23,10 +23,12 @@ const getSteps = () => {
 
 export default class ProfileWizard extends Component {
 	componentDidMount() {
+		document.documentElement.classList.remove( 'wp-toolbar' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 	}
 
 	componentWillUnmount() {
+		document.documentElement.classList.add( 'wp-toolbar' );
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
 	}
 
