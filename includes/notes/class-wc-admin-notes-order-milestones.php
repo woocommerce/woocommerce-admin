@@ -269,6 +269,8 @@ class WC_Admin_Notes_Order_Milestones {
 
 	/**
 	 * Convenience method to see if the milestone notes are enabled.
+	 *
+	 * @return boolean True if milestone notifications are enabled.
 	 */
 	public function are_milestones_enabled() {
 		/**
@@ -278,7 +280,7 @@ class WC_Admin_Notes_Order_Milestones {
 		 *
 		 * @param boolean default true
 		 */
-		$milestone_notes_enabled = apply_filters( 'woocommerce_admin_order_milestone_enabled', true );
+		$milestone_notes_enabled = apply_filters( 'woocommerce_admin_order_milestones_enabled', true );
 
 		return $milestone_notes_enabled;
 	}
