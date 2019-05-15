@@ -11,6 +11,9 @@ function HistoricalDataActions( {
 	customersTotal,
 	hasImportedData,
 	inProgress,
+	onDeletePreviousData,
+	onStartImport,
+	onStopImport,
 	ordersProgress,
 	ordersTotal,
 } ) {
@@ -22,7 +25,7 @@ function HistoricalDataActions( {
 					<Button
 						className="woocommerce-settings-historical-data__action-button"
 						isPrimary
-						onClick={ () => null }
+						onClick={ onStopImport }
 					>
 						{ __( 'Stop Import', 'woocommerce-admin' ) }
 					</Button>
@@ -43,10 +46,18 @@ function HistoricalDataActions( {
 
 		// Has no imported data
 		if ( ! hasImportedData ) {
+			// @todo When the import status endpoint is hooked up,
+			// the 'Delete Previously Imported Data' button should be
+			// removed from this section.
 			return (
-				<Button isPrimary onClick={ () => null }>
-					{ __( 'Start', 'woocommerce-admin' ) }
-				</Button>
+				<Fragment>
+					<Button isPrimary onClick={ onStartImport }>
+						{ __( 'Start', 'woocommerce-admin' ) }
+					</Button>
+					<Button isDefault onClick={ onDeletePreviousData }>
+						{ __( 'Delete Previously Imported Data', 'woocommerce-admin' ) }
+					</Button>
+				</Fragment>
 			);
 		}
 
@@ -57,7 +68,7 @@ function HistoricalDataActions( {
 					<Button isDefault onClick={ () => null }>
 						{ __( 'Re-import Data', 'woocommerce-admin' ) }
 					</Button>
-					<Button isDefault onClick={ () => null }>
+					<Button isDefault onClick={ onDeletePreviousData }>
 						{ __( 'Delete Previously Imported Data', 'woocommerce-admin' ) }
 					</Button>
 				</Fragment>
@@ -67,10 +78,10 @@ function HistoricalDataActions( {
 		// It's not in progress and has some imported data
 		return (
 			<Fragment>
-				<Button isPrimary onClick={ () => null }>
+				<Button isPrimary onClick={ onStartImport }>
 					{ __( 'Start', 'woocommerce-admin' ) }
 				</Button>
-				<Button isDefault onClick={ () => null }>
+				<Button isDefault onClick={ onDeletePreviousData }>
 					{ __( 'Delete Previously Imported Data', 'woocommerce-admin' ) }
 				</Button>
 			</Fragment>
