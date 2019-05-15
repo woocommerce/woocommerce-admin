@@ -199,7 +199,14 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 	 */
 	public static function get_profile_properties() {
 		$properties = array(
-			'account_type'   => array(
+			'skipped'         => array(
+				'type'              => 'bool',
+				'description'       => __( 'Whether or not the profile was skipped.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+			),
+			'account_type'    => array(
 				'type'              => 'string',
 				'description'       => __( 'Account type used for Jetpack.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -211,7 +218,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'google',
 				),
 			),
-			'industry'       => array(
+			'industry'        => array(
 				'type'              => 'array',
 				'description'       => __( 'Industry.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -230,7 +237,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'type' => 'string',
 				),
 			),
-			'product_types'  => array(
+			'product_types'   => array(
 				'type'              => 'array',
 				'description'       => __( 'Types of products sold.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -250,7 +257,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'type' => 'string',
 				),
 			),
-			'product_count'  => array(
+			'product_count'   => array(
 				'type'              => 'string',
 				'description'       => __( 'Number of products to be added.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -263,7 +270,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'1000+',
 				),
 			),
-			'selling_venues' => array(
+			'selling_venues'  => array(
 				'type'              => 'string',
 				'description'       => __( 'Other places the store is selling products.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -276,7 +283,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'brick-mortar-other',
 				),
 			),
-			'other_platform' => array(
+			'other_platform'  => array(
 				'type'              => 'string',
 				'description'       => __( 'Name of other platform used to sell.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -290,7 +297,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'other',
 				),
 			),
-			'theme'          => array(
+			'theme'           => array(
 				'type'              => 'string',
 				'description'       => __( 'Selected store theme.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -298,7 +305,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 				'sanitize_callback' => 'sanitize_title_with_dashes',
 				'validate_callback' => 'rest_validate_request_arg',
 			),
-			'purchase'       => array(
+			'items_purchased' => array(
 				'type'              => 'bool',
 				'description'       => __( 'Whether or not the user opted to purchase items now or later.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
