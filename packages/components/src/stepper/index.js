@@ -22,25 +22,23 @@ class Stepper extends Component {
 		return (
 			<div className="woocommerce-stepper">
                 { steps.map( ( step, i ) => {
-					const isComplete = currentIndex > i;
-					const isActive = step.key === currentStep;
+					const { key, label, isComplete } = step;
                     const className = classnames( 'woocommerce-stepper__step', {
-                        'is-active': isActive,
-                        'is-complete': isComplete,
+                        'is-active': key === currentStep,
+                        'is-complete': 'undefined' !== typeof isComplete ? isComplete : currentIndex > i,
                     } );
 
                     return (
-						<Fragment>
+						<Fragment key={ key } >
 							<div
 								className={ className }
-								key={ step.key }
 							>
 								<div className="woocommerce-stepper__step-icon">
-									<span class="woocommerce-stepper__step-number">{ i + 1 }</span>
+									<span className="woocommerce-stepper__step-number">{ i + 1 }</span>
 									<CheckIcon />
 								</div>
 								<span className="woocommerce-stepper_step-label">
-									{ step.label }
+									{ label }
 								</span>
 							</div>
 							<div className="woocommerce-stepper__step-divider" />
@@ -61,17 +59,21 @@ Stepper.propTypes = {
 			/**
 			 * Key used to identify step.
 			 */
-			key: PropTypes.string,
+			key: PropTypes.string.isRequired,
 			/**
 			 * Label displayed in stepper.
 			 */
-            label: PropTypes.string,
+			label: PropTypes.string.isRequired,
+			/**
+			 * Optionally mark a step complete regardless of step index.
+			 */
+            isComplete: PropTypes.bool,
 		} )
-	),
+	).isRequired,
 	/**
 	 * The current step's key.
 	 */
-	currentStep: PropTypes.string,
+	currentStep: PropTypes.string.isRequired,
 };
 
 export default Stepper;

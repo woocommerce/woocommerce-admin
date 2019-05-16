@@ -2,8 +2,9 @@
 import { Stepper } from '@woocommerce/components';
 
 const MyStepper = withState( {
-	currentStep: 'first',
-} )( ( { currentStep, setState } ) => {
+    currentStep: 'first',
+    isComplete: false,
+} )( ( { currentStep, isComplete, setState } ) => {
     const steps = [
         {
             label: 'First',
@@ -24,20 +25,39 @@ const MyStepper = withState( {
     ];
     const currentIndex = steps.findIndex( s => currentStep === s.key );
 
+    if ( isComplete ) {
+        steps.forEach( s => s.isComplete = true );
+    }
+
 	return (
-		<div>
-            <button
-                onClick={ () => setState( { currentStep: steps[ currentIndex - 1 ]['key'] } ) }
-                disabled={ currentIndex < 1 }
-            >
-                Previous step
-            </button>
-            <button
-                onClick={ () => setState( { currentStep: steps[ currentIndex + 1 ]['key'] } ) }
-                disabled={ currentIndex >= steps.length - 1 }
-            >
-                Next step
-            </button>
+        <div>
+            { isComplete ? (
+                <button onClick={ () => setState( { currentStep: 'first', isComplete: false } ) } >
+                    Reset
+                </button>
+            ) : (
+                <div>
+                    <button
+                        onClick={ () => setState( { currentStep: steps[ currentIndex - 1 ]['key'] } ) }
+                        disabled={ currentIndex < 1 }
+                    >
+                        Previous step
+                    </button>
+                    <button
+                        onClick={ () => setState( { currentStep: steps[ currentIndex + 1 ]['key'] } ) }
+                        disabled={ currentIndex >= steps.length - 1 }
+                    >
+                        Next step
+                    </button>
+                    <button
+                        onClick={ () => setState( { isComplete: true } ) }
+                        disabled={ currentIndex !== steps.length - 1 }
+                    >
+                        Complete
+                    </button>
+                </div>
+            ) }
+
 			<Stepper
 				steps={ steps }
 				currentStep={ currentStep }
