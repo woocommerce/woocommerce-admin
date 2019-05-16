@@ -16,14 +16,15 @@ import CheckIcon from './check-icon';
  */
 class Stepper extends Component {
 	render() {
-        const { currentStep, steps } = this.props;
+        const { className, currentStep, steps } = this.props;
 		const currentIndex = steps.findIndex( s => currentStep === s.key );
+		const stepperClassName = classnames( 'woocommerce-stepper', className );
 
 		return (
-			<div className="woocommerce-stepper">
+			<div className={ stepperClassName }>
                 { steps.map( ( step, i ) => {
 					const { key, label, isComplete } = step;
-                    const className = classnames( 'woocommerce-stepper__step', {
+                    const stepClassName = classnames( 'woocommerce-stepper__step', {
                         'is-active': key === currentStep,
                         'is-complete': 'undefined' !== typeof isComplete ? isComplete : currentIndex > i,
                     } );
@@ -31,7 +32,7 @@ class Stepper extends Component {
                     return (
 						<Fragment key={ key } >
 							<div
-								className={ className }
+								className={ stepClassName }
 							>
 								<div className="woocommerce-stepper__step-icon">
 									<span className="woocommerce-stepper__step-number">{ i + 1 }</span>
@@ -52,6 +53,14 @@ class Stepper extends Component {
 
 Stepper.propTypes = {
 	/**
+	 * Additional class name to style the component.
+	 */
+	className: PropTypes.string,
+	/**
+	 * The current step's key.
+	 */
+	currentStep: PropTypes.string.isRequired,
+	/**
 	 * An array of steps used.
 	 */
 	steps: PropTypes.arrayOf(
@@ -70,10 +79,6 @@ Stepper.propTypes = {
             isComplete: PropTypes.bool,
 		} )
 	).isRequired,
-	/**
-	 * The current step's key.
-	 */
-	currentStep: PropTypes.string.isRequired,
 };
 
 export default Stepper;

@@ -1,13 +1,15 @@
 .woocommerce-stepper {
-    background: #FFFFFF;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.12), 0px 0px 2px rgba(0, 0, 0, 0.14);
+	background: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2),
+		0 2px 2px rgba(0, 0, 0, 0.12),
+		0 0 2px rgba(0, 0, 0, 0.14);
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
 	margin-bottom: $gap-large;
 	padding-left: $gap;
 	padding-right: $gap;
-	
+
 	.woocommerce-stepper__step {
 		display: inline-flex;
 		align-items: center;
@@ -18,9 +20,10 @@
 			display: none;
 		}
 
-		&.is-active, &.is-complete {
+		&.is-active,
+		&.is-complete {
 			color: #6802f3;
-			
+
 			.woocommerce-stepper__step-icon {
 				color: #fff;
 				background: #6802f3;
@@ -51,7 +54,7 @@
 	.woocommerce-stepper__step-divider {
 		flex-grow: 1;
 		border-bottom: 1px solid #e4e1e4;
-		
+
 		&:last-child {
 			display: none;
 		}
