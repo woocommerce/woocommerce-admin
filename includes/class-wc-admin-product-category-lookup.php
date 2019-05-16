@@ -120,6 +120,8 @@ class WC_Admin_Product_Category_Lookup {
 	 * @param int $product_id Product to update.
 	 */
 	protected function update_product_relationships( $product_id ) {
+		global $wpdb;
+
 		if ( ! $product_id ) {
 			return;
 		}
@@ -135,10 +137,12 @@ class WC_Admin_Product_Category_Lookup {
 		$inserts      = array();
 
 		foreach ( $category_ids as $category_id ) {
-			$inserts[] = $wpdb->prepare( '(%d, %d)', $product_id, $category_id );
+			$inserts[] = $wpdb->prepare( '(%d,%d)', $product_id, $category_id );
 		}
 
-		$wpdb->query( "INSERT IGNORE INTO {$wpdb->prefix}wc_product_category_lookup {$inserts}" );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+		$insert_query = implode( ',', $inserts );
+
+		$wpdb->query( "INSERT IGNORE INTO {$wpdb->prefix}wc_product_category_lookup (product_id,category_id) VALUES {$insert_query}" );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
