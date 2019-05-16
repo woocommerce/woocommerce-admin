@@ -12,6 +12,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
+		svg > g {
+			transform: translateX(25%);
+		}
 	}
 
 	.woocommerce-profile-wizard__header-title {
