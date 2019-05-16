@@ -189,6 +189,11 @@ class WC_Admin_Install {
 			UNIQUE KEY user_id (user_id),
 			KEY email (email)
 		) $collate;
+		CREATE TABLE {$wpdb->prefix}wc_product_category_lookup (
+			product_id BIGINT UNSIGNED NOT NULL,
+			category_id BIGINT UNSIGNED NOT NULL,
+			PRIMARY KEY (product_id,category_id)
+		) $collate;
 		";
 
 		return $tables;
@@ -220,6 +225,7 @@ class WC_Admin_Install {
 			"{$wpdb->prefix}wc_admin_notes",
 			"{$wpdb->prefix}wc_admin_note_actions",
 			"{$wpdb->prefix}wc_customer_lookup",
+			"{$wpdb->prefix}wc_product_category_lookup",
 		);
 	}
 
