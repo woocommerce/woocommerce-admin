@@ -61,6 +61,10 @@ class WC_Admin_Loader {
 
 		// priority is 20 to run after https://github.com/woocommerce/woocommerce/blob/a55ae325306fc2179149ba9b97e66f32f84fdd9c/includes/admin/class-wc-admin-menus.php#L165.
 		add_action( 'admin_head', array( 'WC_Admin_Loader', 'remove_app_entry_page_menu_item' ), 20 );
+
+		include_once 'class-wc-admin-product-category-lookup.php';
+		$product_category_lookup = new WC_Admin_Product_Category_Lookup();
+		$product_category_lookup->init();
 	}
 
 	/**
