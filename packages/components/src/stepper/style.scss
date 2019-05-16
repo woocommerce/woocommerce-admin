@@ -56,4 +56,13 @@
 			display: none;
 		}
 	}
+
+	@include breakpoint( '<782px' ) {
+		.woocommerce-stepper_step-label {
+			display: none;
+		}
+		.woocommerce-stepper__step-icon {
+			margin-right: 0;
+		}
+	}
 }
