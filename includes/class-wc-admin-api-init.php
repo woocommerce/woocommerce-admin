@@ -96,6 +96,9 @@ class WC_Admin_Api_Init {
 		// CRUD classes.
 		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-note.php';
 		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes.php';
+
+		// Data sync.
+		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-product-category-lookup.php';
 	}
 
 	/**
