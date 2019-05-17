@@ -34,7 +34,7 @@
 		border-bottom: 1px solid $core-grey-light-700;
 		border-radius: 0;
 
-		> .woocommerce-card__title {
+		> .woocommerce-card__title-wrapper > .woocommerce-card__title {
 			// EllipsisMenu is 24px, so to match we add 6px padding around the
 			// heading text, which we know is 18px from line-height.
 			padding: 3px 0;
