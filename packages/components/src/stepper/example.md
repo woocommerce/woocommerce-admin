@@ -29,7 +29,7 @@ const MyStepper = withState( {
         steps.forEach( s => s.isComplete = true );
     }
 
-	return (
+    return (
         <div>
             { isComplete ? (
                 <button onClick={ () => setState( { currentStep: 'first', isComplete: false } ) } >
