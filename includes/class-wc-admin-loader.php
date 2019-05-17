@@ -78,8 +78,7 @@ class WC_Admin_Loader {
 
 		// List of tables without prefixes.
 		$tables = array(
-			'wc_category_lookup'                => 'wc_category_lookup',
-			'wc_product_category_parent_lookup' => 'wc_product_category_parent_lookup',
+			'wc_category_lookup' => 'wc_category_lookup',
 		);
 
 		foreach ( $tables as $name => $table ) {
