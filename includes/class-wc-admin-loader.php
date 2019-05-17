@@ -44,6 +44,7 @@ class WC_Admin_Loader {
 	 * Hooks added here should be removed in `wc_admin_initialize` via the feature plugin.
 	 */
 	public function __construct() {
+		add_action( 'init', array( 'WC_Admin_Loader', 'define_tables' ) );
 		add_action( 'init', array( 'WC_Admin_Loader', 'load_features' ) );
 		add_action( 'admin_enqueue_scripts', array( 'WC_Admin_Loader', 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( 'WC_Admin_Loader', 'load_scripts' ), 15 );
@@ -67,6 +68,24 @@ class WC_Admin_Loader {
 		* Gutenberg has also disabled emojis. More on that here -> https://github.com/WordPress/gutenberg/pull/6151
 		*/
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	}
+
+	/**
+	 * Add custom tables to $wpdb object.
+	 */
+	public static function define_tables() {
+		global $wpdb;
+
+		// List of tables without prefixes.
+		$tables = array(
+			'wc_product_category_lookup'        => 'wc_product_category_lookup',
+			'wc_product_category_parent_lookup' => 'wc_product_category_parent_lookup',
+		);
+
+		foreach ( $tables as $name => $table ) {
+			$wpdb->$name    = $wpdb->prefix . $table;
+			$wpdb->tables[] = $table;
+		}
 	}
 
 	/**

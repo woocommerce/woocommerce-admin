@@ -190,11 +190,10 @@ class WC_Admin_Install {
 			KEY email (email)
 		) $collate;
 		CREATE TABLE {$wpdb->prefix}wc_product_category_lookup (
-			parent_id BIGINT UNSIGNED NOT NULL,
 			category_id BIGINT UNSIGNED NOT NULL,
-			descendant_id BIGINT UNSIGNED NOT NULL,
+			descendant_id BIGINT UNSIGNED DEFAULT 0 NOT NULL,
 			depth int(11) DEFAULT 0 NOT NULL,
-			PRIMARY KEY (product_id,category_id)
+			PRIMARY KEY (category_id,descendant_id)
 		) $collate;
 		";
 
