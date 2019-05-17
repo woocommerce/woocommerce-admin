@@ -98,7 +98,7 @@ class WC_Admin_Api_Init {
 		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes.php';
 
 		// Data sync.
-		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-product-category-lookup.php';
+		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-category-lookup.php';
 	}
 
 	/**

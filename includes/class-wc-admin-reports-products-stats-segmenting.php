@@ -176,10 +176,10 @@ class WC_Admin_Reports_Products_Stats_Segmenting extends WC_Admin_Reports_Segmen
 			);
 			$segmenting_from           = "
 			LEFT JOIN {$wpdb->prefix}term_relationships ON {$product_segmenting_table}.product_id = {$wpdb->prefix}term_relationships.object_id
-			LEFT JOIN {$wpdb->wc_product_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_product_category_lookup}.descendant_id
+			LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_category_lookup}.category_id
 			";
-			$segmenting_where          = " AND {$wpdb->wc_product_category_lookup}.category_id IS NOT NULL";
-			$segmenting_groupby        = "{$wpdb->wc_product_category_lookup}.category_id";
+			$segmenting_where          = " AND {$wpdb->wc_category_lookup}.category_tree_id IS NOT NULL";
+			$segmenting_groupby        = "{$wpdb->wc_category_lookup}.category_tree_id";
 			$segmenting_dimension_name = 'category_id';
 
 			$segments = $this->get_product_related_segments( $type, $segmenting_selections, $segmenting_from, $segmenting_where, $segmenting_groupby, $segmenting_dimension_name, $table_name, $query_params, $unique_orders_table );

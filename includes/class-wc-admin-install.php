@@ -189,11 +189,10 @@ class WC_Admin_Install {
 			UNIQUE KEY user_id (user_id),
 			KEY email (email)
 		) $collate;
-		CREATE TABLE {$wpdb->prefix}wc_product_category_lookup (
+		CREATE TABLE {$wpdb->prefix}wc_category_lookup (
+			category_tree_id BIGINT UNSIGNED NOT NULL,
 			category_id BIGINT UNSIGNED NOT NULL,
-			descendant_id BIGINT UNSIGNED DEFAULT 0 NOT NULL,
-			depth int(11) DEFAULT 0 NOT NULL,
-			PRIMARY KEY (category_id,descendant_id)
+			PRIMARY KEY (category_tree_id,category_id)
 		) $collate;
 		";
 
@@ -226,7 +225,7 @@ class WC_Admin_Install {
 			"{$wpdb->prefix}wc_admin_notes",
 			"{$wpdb->prefix}wc_admin_note_actions",
 			"{$wpdb->prefix}wc_customer_lookup",
-			"{$wpdb->prefix}wc_product_category_lookup",
+			"{$wpdb->prefix}wc_category_lookup",
 		);
 	}
 
@@ -269,7 +268,7 @@ class WC_Admin_Install {
 		if ( ! wp_next_scheduled( 'wc_admin_daily' ) ) {
 			wp_schedule_event( time(), 'daily', 'wc_admin_daily' );
 		}
-		wp_schedule_single_event( time() + 10, 'regenerate_product_category_lookup' );
+		wp_schedule_single_event( time() + 10, 'generate_category_lookup_table' );
 	}
 
 	/**

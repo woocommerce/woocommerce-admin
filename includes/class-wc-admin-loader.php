@@ -78,7 +78,7 @@ class WC_Admin_Loader {
 
 		// List of tables without prefixes.
 		$tables = array(
-			'wc_product_category_lookup'        => 'wc_product_category_lookup',
+			'wc_category_lookup'                => 'wc_category_lookup',
 			'wc_product_category_parent_lookup' => 'wc_product_category_parent_lookup',
 		);
 
@@ -164,7 +164,7 @@ class WC_Admin_Loader {
 	/**
 	 * Registers a basic page handler for the app entry point.
 	 *
-	 * @todo The entry point for the embed needs moved to this class as well.
+	 * TODO: The entry point for the embed needs moved to this class as well.
 	 */
 	public static function register_page_handler() {
 		$analytics_cap = apply_filters( 'woocommerce_admin_analytics_menu_capability', 'view_woocommerce_reports' );
@@ -355,7 +355,7 @@ class WC_Admin_Loader {
 	/**
 	 *  Returns true if we are on a "classic" (non JS app) powered admin page.
 	 *
-	 * @todo See usage in `admin.php`. This needs refactored and implemented properly in core.
+	 * TODO: See usage in `admin.php`. This needs refactored and implemented properly in core.
 	 */
 	public static function is_embed_page() {
 		return wc_admin_is_connected_page();
@@ -484,7 +484,7 @@ class WC_Admin_Loader {
 	 * Edits Admin title based on section of wc-admin.
 	 *
 	 * @param string $admin_title Modifies admin title.
-	 * @todo Can we do some URL rewriting so we can figure out which page they are on server side?
+	 * TODO: Can we do some URL rewriting so we can figure out which page they are on server side.
 	 */
 	public static function update_admin_title( $admin_title ) {
 		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
@@ -542,7 +542,7 @@ class WC_Admin_Loader {
 		$settings['reviewsEnabled']    = get_option( 'woocommerce_enable_reviews' );
 		$settings['manageStock']       = get_option( 'woocommerce_manage_stock' );
 		$settings['commentModeration'] = get_option( 'comment_moderation' );
-		// @todo On merge, once plugin images are added to core WooCommerce, `wcAdminAssetUrl` can be retired,
+		// TODO: On merge, once plugin images are added to core WooCommerce, `wcAdminAssetUrl` can be retired,
 		// and `wcAssetUrl` can be used in its place throughout the codebase.
 		$settings['wcAdminAssetUrl'] = plugins_url( 'images/', plugin_dir_path( dirname( __FILE__ ) ) . 'woocommerce-admin.php' );
 

@@ -84,17 +84,17 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 
 		// join wp_order_product_lookup_table with relationships and taxonomies.
 		$sql_query_params['from_clause'] .= " LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id";
-		$sql_query_params['from_clause'] .= " LEFT JOIN {$wpdb->wc_product_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_product_category_lookup}.descendant_id";
+		$sql_query_params['from_clause'] .= " LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_category_lookup}.category_id";
 
 		$included_categories = $this->get_included_categories( $query_args );
 		if ( $included_categories ) {
-			$sql_query_params['where_clause'] .= " AND {$wpdb->wc_product_category_lookup}.category_id IN ({$included_categories})";
+			$sql_query_params['where_clause'] .= " AND {$wpdb->wc_category_lookup}.category_tree_id IN ({$included_categories})";
 
 			// Limit is left out here so that the grouping in code by PHP can be applied correctly.
 			// This also needs to be put after the term_taxonomy JOIN so that we can match the correct term name.
 			$sql_query_params = $this->get_order_by_params( $query_args, $sql_query_params, 'outer_from_clause', 'default_results.category_id' );
 		} else {
-			$sql_query_params = $this->get_order_by_params( $query_args, $sql_query_params, 'from_clause', "{$wpdb->wc_product_category_lookup}.category_id" );
+			$sql_query_params = $this->get_order_by_params( $query_args, $sql_query_params, 'from_clause', "{$wpdb->wc_category_lookup}.category_tree_id" );
 		}
 
 		// @todo Only products in the category C or orders with products from category C (and, possibly others?).
@@ -109,7 +109,7 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 			$sql_query_params['where_clause'] .= " AND ( {$order_status_filter} )";
 		}
 
-		$sql_query_params['where_clause'] .= " AND {$wpdb->wc_product_category_lookup}.category_id IS NOT NULL";
+		$sql_query_params['where_clause'] .= " AND {$wpdb->wc_category_lookup}.category_tree_id IS NOT NULL";
 
 		return $sql_query_params;
 	}
@@ -274,7 +274,7 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 			$categories_data = $wpdb->get_results(
 				"${prefix}
 					SELECT
-						{$wpdb->wc_product_category_lookup}.category_id as category_id,
+						{$wpdb->wc_category_lookup}.category_tree_id as category_id,
 						{$selections}
 					FROM
 						{$table_name}
@@ -284,7 +284,7 @@ class WC_Admin_Reports_Categories_Data_Store extends WC_Admin_Reports_Data_Store
 						{$sql_query_params['where_time_clause']}
 						{$sql_query_params['where_clause']}
 					GROUP BY
-						category_id
+						{$wpdb->wc_category_lookup}.category_tree_id
 				{$suffix}
 					{$right_join}
 					{$sql_query_params['outer_from_clause']}
