@@ -44,10 +44,6 @@ class WC_Admin_Product_Category_Lookup {
 	public function init() {
 		add_action( 'regenerate_product_category_lookup', array( $this, 'regenerate' ) );
 		add_action( 'edited_product_cat', array( $this, 'on_edit' ), 99 );
-
-		if ( ! empty( $_GET['test'] ) ) {
-			add_action( 'shutdown', array( $this, 'regenerate' ) );
-		}
 	}
 
 	/**
