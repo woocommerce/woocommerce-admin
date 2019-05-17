@@ -133,13 +133,13 @@ class WC_Admin_Reports_Orders_Stats_Segmenting extends WC_Admin_Reports_Segmenti
 				FROM
 				(
 					SELECT
-				        $table_name.order_id, 
+				        $table_name.order_id,
 				        $segmenting_groupby AS $segmenting_dimension_name,
-				        MAX( num_items_sold ) AS num_items_sold, 
-				        MAX( net_total ) as net_total, 
+				        MAX( num_items_sold ) AS num_items_sold,
+				        MAX( net_total ) as net_total,
 				        MAX( returning_customer ) AS returning_customer
 				    FROM
-				        $table_name 
+				        $table_name
 				        $segmenting_from
 				        {$totals_query['from_clause']}
 				    WHERE
@@ -223,7 +223,7 @@ class WC_Admin_Reports_Orders_Stats_Segmenting extends WC_Admin_Reports_Segmenti
 				        MAX( net_total ) as net_total,
 				        MAX( returning_customer ) AS returning_customer
 				    FROM
-				        $table_name 
+				        $table_name
 				        $segmenting_from
 				        {$intervals_query['from_clause']}
 				    WHERE
@@ -387,10 +387,10 @@ class WC_Admin_Reports_Orders_Stats_Segmenting extends WC_Admin_Reports_Segmenti
 			$segmenting_from          .= "
 			INNER JOIN $product_segmenting_table ON ($table_name.order_id = $product_segmenting_table.order_id)
 			LEFT JOIN {$wpdb->prefix}term_relationships ON {$product_segmenting_table}.product_id = {$wpdb->prefix}term_relationships.object_id
-			RIGHT JOIN {$wpdb->prefix}term_taxonomy ON {$wpdb->prefix}term_relationships.term_taxonomy_id = {$wpdb->prefix}term_taxonomy.term_taxonomy_id
+			LEFT JOIN {$wpdb->wc_product_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_product_category_lookup}.descendant_id
 			";
-			$segmenting_where          = " AND taxonomy = 'product_cat'";
-			$segmenting_groupby        = 'wp_term_taxonomy.term_taxonomy_id';
+			$segmenting_where          = " AND {$wpdb->wc_product_category_lookup}.category_id IS NOT NULL";
+			$segmenting_groupby        = "{$wpdb->wc_product_category_lookup}.category_id";
 			$segmenting_dimension_name = 'category_id';
 
 			$segments = $this->get_product_related_segments( $type, $segmenting_selections, $segmenting_from, $segmenting_where, $segmenting_groupby, $segmenting_dimension_name, $table_name, $query_params, $unique_orders_table );
