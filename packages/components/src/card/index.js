@@ -18,10 +18,11 @@ import { validateComponent } from '../lib/proptype-validator';
  */
 class Card extends Component {
 	render() {
-		const { action, children, description, menu, title } = this.props;
+		const { action, children, description, isInactive, menu, title } = this.props;
 		const className = classnames( 'woocommerce-card', this.props.className, {
 			'has-menu': !! menu,
 			'has-action': !! action,
+			'is-inactive': !! isInactive,
 		} );
 		return (
 			<div className={ className }>
@@ -64,6 +65,10 @@ Card.propTypes = {
 	 * The description displayed beneath the title.
 	 */
 	description: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ),
+	/**
+	 * Boolean representing whether the card is inactive or not.
+	 */
+	isInactive: PropTypes.bool,
 	/**
 	 * An `EllipsisMenu`, with filters used to control the content visible in this card
 	 */
