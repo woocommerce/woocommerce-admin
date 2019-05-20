@@ -95,7 +95,7 @@ Stepper.propTypes = {
 	direction: PropTypes.oneOf( [ 'horizontal', 'vertical' ] ),
 
 	/**
-	 * Optional mark the current step as in pending to show a spinner treatment.
+	 * Optionally mark the current step as pending to show a spinner.
 	 */
 	isPending: PropTypes.bool,
 };

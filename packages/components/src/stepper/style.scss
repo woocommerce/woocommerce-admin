@@ -22,6 +22,10 @@
 			display: none;
 		}
 
+		&:not( .is-vertical ).woocommerce-stepper_step-label {
+			margin: 0 4px 0 4px;
+		}
+
 		&.is-active,
 		&.is-complete {
 			.woocommerce-stepper__step-icon, .components-spinner {
@@ -31,6 +35,9 @@
 
 		&.is-active {
 			font-weight: 600;
+			.woocommerce-stepper_step-label {
+				margin: 0;
+			}
 		}
 
 		&.is-complete {
