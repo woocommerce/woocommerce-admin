@@ -21,7 +21,7 @@ class WC_Admin_Install {
 	 *
 	 * @var array
 	 */
-	private static $db_updates = array();
+	protected static $db_updates = array();
 
 	/**
 	 * Hook in tabs.
@@ -67,9 +67,9 @@ class WC_Admin_Install {
 		wc_maybe_define_constant( 'WC_ADMIN_INSTALLING', true );
 
 		self::create_tables();
-		WC_Admin_Notes_Historical_Data::add_note();
-		WC_Admin_Notes_Welcome_Message::add_welcome_note();
-		self::update_wc_admin_version();
+		self::create_events();
+		self::create_notes();
+		self::update_db_version();
 
 		delete_transient( 'wc_admin_installing' );
 
@@ -82,7 +82,7 @@ class WC_Admin_Install {
 	 *
 	 * @return string
 	 */
-	private static function get_schema() {
+	protected static function get_schema() {
 		global $wpdb;
 
 		if ( $wpdb->has_cap( 'collation' ) ) {
@@ -92,15 +92,15 @@ class WC_Admin_Install {
 		$tables = "
 		CREATE TABLE {$wpdb->prefix}wc_order_stats (
 			order_id bigint(20) unsigned NOT NULL,
+			parent_id bigint(20) unsigned DEFAULT 0 NOT NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			date_created_gmt datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			num_items_sold int(11) UNSIGNED DEFAULT 0 NOT NULL,
+			num_items_sold int(11) DEFAULT 0 NOT NULL,
 			gross_total double DEFAULT 0 NOT NULL,
-			refund_total double DEFAULT 0 NOT NULL,
 			tax_total double DEFAULT 0 NOT NULL,
 			shipping_total double DEFAULT 0 NOT NULL,
 			net_total double DEFAULT 0 NOT NULL,
-			returning_customer boolean DEFAULT 0 NOT NULL,
+			returning_customer boolean DEFAULT NULL,
 			status varchar(200) NOT NULL,
 			customer_id BIGINT UNSIGNED NOT NULL,
 			PRIMARY KEY (order_id),
@@ -115,14 +115,13 @@ class WC_Admin_Install {
 			variation_id BIGINT UNSIGNED NOT NULL,
 			customer_id BIGINT UNSIGNED NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			product_qty INT UNSIGNED NOT NULL,
+			product_qty INT NOT NULL,
 			product_net_revenue double DEFAULT 0 NOT NULL,
 			product_gross_revenue double DEFAULT 0 NOT NULL,
 			coupon_amount double DEFAULT 0 NOT NULL,
 			tax_amount double DEFAULT 0 NOT NULL,
 			shipping_amount double DEFAULT 0 NOT NULL,
 			shipping_tax_amount double DEFAULT 0 NOT NULL,
-			refund_amount double DEFAULT 0 NOT NULL,
 			PRIMARY KEY  (order_item_id),
 			KEY order_id (order_id),
 			KEY product_id (product_id),
@@ -252,9 +251,26 @@ class WC_Admin_Install {
 	/**
 	 * Update WC Admin version to current.
 	 */
-	private static function update_wc_admin_version() {
+	protected static function update_db_version() {
 		delete_option( self::VERSION_OPTION );
 		add_option( self::VERSION_OPTION, WC_ADMIN_VERSION_NUMBER );
+	}
+
+	/**
+	 * Schedule cron events.
+	 */
+	public static function create_events() {
+		if ( ! wp_next_scheduled( 'wc_admin_daily' ) ) {
+			wp_schedule_event( time(), 'daily', 'wc_admin_daily' );
+		}
+	}
+
+	/**
+	 * Create notes.
+	 */
+	protected static function create_notes() {
+		WC_Admin_Notes_Historical_Data::add_note();
+		WC_Admin_Notes_Welcome_Message::add_welcome_note();
 	}
 }
 

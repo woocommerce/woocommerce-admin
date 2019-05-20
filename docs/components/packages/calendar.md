@@ -13,6 +13,13 @@ Props
 
 A moment date object representing the selected date. `null` for no selection.
 
+### `disabled`
+
+- Type: Boolean
+- Default: null
+
+Whether the input is disabled.
+
 ### `text`
 
 - Type: String
@@ -107,13 +114,12 @@ The end date in human-readable format. Displayed in the text input.
 
 String identifying which is the currently focused input (start or end).
 
-### `invalidDays`
+### `isInvalidDate`
 
-- Type: One of type: enum, func
+- Type: Function
 - Default: null
 
-Optionally invalidate certain days. `past`, `future`, `none`, or function are accepted.
-A function will be passed to react-dates' `isOutsideRange` prop
+A function to determine if a day on the calendar is not valid
 
 ### `onUpdate`
 

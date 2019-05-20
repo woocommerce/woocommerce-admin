@@ -3,10 +3,10 @@ Contributors: automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.0.0
 Tested up to: 5.1.1
-Requires PHP: 5.2.4
+Requires PHP: 5.4.0
 Stable tag: 1.0.0
-License: GPLv2
-License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/LICENSE.md
+License: GPLv3
+License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/license.txt
 
 == Description ==
 
@@ -21,7 +21,7 @@ This plugin is under active development and, as such, we advise you to first ins
 WooCommerce Admin has a host of new reports that are optimized for speed and have advanced filters that allow you to dive into data about your store:
 
 - Revenue Report
-- Orders Report 
+- Orders Report
 - Products Report
 - Categories Report
 - Coupons Report
@@ -41,18 +41,18 @@ Once again: This plugin is under active development and, as such, we advise you 
 = Minimum Requirements =
 
 * WordPress 5.0
-* WooCommerce 3.5.1 or greater
-* PHP version 5.2.4 or greater. PHP 7.2 or greater is recommended
+* WooCommerce 3.6.0 or greater
+* PHP version 5.4 or greater. PHP 7.2 or greater is recommended
 * MySQL version 5.0 or greater. MySQL 5.6 or greater is recommended
 
 Visit the [WooCommerce server requirements documentation](https://docs.woocommerce.com/document/server-requirements/) for a detailed list of server requirements.
 
 = Automatic installation =
 
-Automatic installation is the easiest option, as WordPress handles the file transfers and you don't need to leave your web browser. To perform an automatic install: 
+Automatic installation is the easiest option, as WordPress handles the file transfers and you don't need to leave your web browser. To perform an automatic install:
 1. Log in to your WordPress dashboard.
 2. Go to: Plugins > Add New.
-3. Enter “WooCommerce Admin” in the Search field, and view details about its point release, the rating and description. 
+3. Enter “WooCommerce Admin” in the Search field, and view details about its point release, the rating and description.
 4. Select “Install Now” when you’re ready
 
 = Manual installation =
@@ -76,6 +76,76 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 3. Analytics
 
 == Changelog ==
+
+= 0.12.0 2019-05-14
+
+- Fix: dashboard issues #2194
+- Fix: Dashboard: re-arrange section dropdown order #2216
+- Fix: Refactor page handler API #2209
+- Fix: EllipsisMenu misalignment in wide containers #2207
+- Dev: Handle “all guests” when getting customers from orders. #2038
+- Dev: Order milestones: prevent order count queries from being issues on every request. #2224
+- Dev: Replace Rebuild reports settings with Import Historical Data #2198
+- Dev: add a defaultValue parameter to the ReportFilters component #2150 👏 @rrennick
+- Dev: Record refunds separate from order entries #2083
+- Dev: Add refund filtering to order reports #2179
+- Dev: Hook up API Historical Data screen to API endpoints #2177
+- Fix: Show Y grid ticks/lines in charts where all values are lower than 1 #2147
+- Fix: Dashboard: Rename class/feature to remove conflict with legacy dashboard widget #2138
+- Fix: add defaultOrder field to tablecard header #2139 👏 @rrennick
+- Fix: Travis: Exit scripts with error when one occurs #2184
+- Dev: Add profile wizard base page #1933
+- Dev: Save section/block preferences in user data #2148
+- Fix: Vertically center Dashboard 'Add more' button #2171
+- Fix: Don't make an API call when there are no performance indicators #2157
+- Dev: Add Historical Data Import Screen #2073
+- Fix: Fix customer type filter param in orders report #2169
+- Dev: EllipsisMenu: Refactor children to renderContent #2154
+- Dev: Dashboard: Section add, remove, move up, and move down #2134
+- Fix: Persist chart interval in Dashboard #2156
+- Dev: Allow renaming Dashboard sections #2131
+- Dev: Add import endpoint and controller #2034
+- Fix: Prevent chart type buttons breaking in two lines #2135
+- Dev: Support Sequential Order Numbers in Downloads Report order number filter #1907
+- Dev: Scroll to top of the table when navigating table pages #2051
+- Dev: Add empty state for the Reviews panels #2124
+
+== Changelog ==
+
+= 0.11.0 2019-04-17
+
+- Dev: Extend report submenu items #2033
+- Dev: Extension Examples #2018
+- Dev: Update admin notes readme #2043
+- Dev: Add profile wizard base page #1933
+- Dev: Method to publish core ready features #1863
+- Dev: Add PHP autofix to pre-commit hook #2022
+- Dev: PHP Lint fixes #2023
+- Dev: Update Link in readme to Proper Location #2026
+- Dev: Split D3Chart utils/axis file #2000
+- Dev: Remove coupon_total from order stats table #1975
+- Fix: Transpile acorn-jsx package #2064
+- Fix: Inbox: Giving Feedback Notice #2019 👏 @Mr-AjayM
+- Fix: Check if welcome message notice exists before creating it #2063
+- Fix: Respect manual offsets in default before/after params #2035
+- Fix: Fix wrong dates in Reviews and Orders panels of the Activity Panel #2013
+- Fix: Make customer name extendable #1976
+- Fix: center mobile icon vertically #1990 👏 @rrennick
+- Fix: search filter focus #1994
+- Fix: Fix date filter layout on Android #1996
+- Fix: Order Status filter: <select> is not vertically aligned #1971 👏 @dinhtungdu
+- Fix: add filter length condition to enable filter check #1983 👏 @rrennick
+- Fix: lookup product title in order meta if product has been deleted #1977 👏 @rrennick
+- Fix: Cast order totals as floats when calculating net total #1945
+- Enhancement: Add empty state in Stock panel #2049
+- Enhancement: Add empty state in Orders panel #2037
+- Enhancement: Hook up Stock panel #1998
+- Enhancement: Add order milestone notifications. #1872
+- Enhancement: Add leaderboard controller and endpoint #1995
+- Enhancement: Hook up leaderboards endpoint to dashboard #2004
+- Enhancement: Activity Panel: Add a mobile app note #2008
+- Enhancement: Scroll to top only when URL changes #1989
+- Enhancement: Allow negative values in charts #1979
 
 = 0.10.0 2019-04-02
 
