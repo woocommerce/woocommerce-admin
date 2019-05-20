@@ -22,13 +22,14 @@
 			display: none;
 		}
 
-		&:not( .is-vertical ).woocommerce-stepper_step-label {
+		&:not(.is-vertical).woocommerce-stepper_step-label {
 			margin: 0 4px 0 4px;
 		}
 
 		&.is-active,
 		&.is-complete {
-			.woocommerce-stepper__step-icon, .components-spinner {
+			.woocommerce-stepper__step-icon,
+			.components-spinner {
 				background: $muriel-active;
 			}
 		}
@@ -50,7 +51,8 @@
 		}
 	}
 
-	.woocommerce-stepper__step-icon, .components-spinner {
+	.woocommerce-stepper__step-icon,
+	.components-spinner {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
