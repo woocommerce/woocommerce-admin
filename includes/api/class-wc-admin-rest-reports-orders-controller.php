@@ -170,14 +170,14 @@ class WC_Admin_REST_Reports_Orders_Controller extends WC_Admin_REST_Reports_Cont
 					'readonly'    => true,
 				),
 				'date_created'     => array(
-					'description' => __( 'Date the order was created.', 'woocommerce-admin' ),
-					'type'        => 'string',
+					'description' => __( "Date the order was created, in the site's timezone.", 'woocommerce-admin' ),
+					'type'        => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
 				'date_created_gmt' => array(
-					'description' => __( 'Date the order was created (GMT).', 'woocommerce-admin' ),
-					'type'        => 'string',
+					'description' => __( 'Date the order was created, as GMT.', 'woocommerce-admin' ),
+					'type'        => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
