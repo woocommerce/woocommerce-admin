@@ -1,7 +1,6 @@
 /** @format */
 
 @import 'node_modules/color-studio/dist/color-variables.scss';
-
 // @todo Replace duplicate colors below with their color-studio/Muriel counterparts.
 
 $white: rgba(255, 255, 255, 1);
@@ -61,10 +60,3 @@ $core-orange: #ca4a1f;
 
 $button: #f0f2f4;
 $button-border: darken($button, 20%);
-
-// Muriel
-$muriel-gray-dark-300: #969ca1;
-$muriel-active: #bb4f10;
-
-// Onboarding
-$woocommerce-onboarding-background: #f6f6f6;
