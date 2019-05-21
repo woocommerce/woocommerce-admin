@@ -26,6 +26,43 @@ class WC_Admin_Onboarding {
 		}
 		return self::$instance;
 	}
+
+	/**
+	 * Hook into WooCommerce.
+	 */
+	public function __construct() {
+		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 ); // Run after WC_Admin_Loader.
+	}
+
+	/**
+	 * Add alert count to the component settings.
+	 *
+	 * @param array $settings Component settings.
+	 */
+	public function component_settings( $settings ) {
+		$redirect_url = esc_url_raw(
+			add_query_arg(
+				array(
+					'page' => 'wc-admin',
+				),
+				admin_url( 'admin.php' )
+			) . '#/?step=details'
+		);
+
+		$settings['jetpackConnectUrl'] = Jetpack::init()->build_connect_url( true, $redirect_url, 'woocommerce-setup-wizard' );
+
+		// Redirect to local calypso, if we are developing locally.
+		if ( WC_Admin_Loader::is_feature_enabled( 'devdocs' ) && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			$settings['jetpackConnectUrl'] = add_query_arg(
+				array(
+					'calypso_env' => 'development',
+				),
+				$settings['jetpackConnectUrl']
+			);
+		}
+
+		return $settings;
+	}
 }
 
 new WC_Admin_Onboarding();
