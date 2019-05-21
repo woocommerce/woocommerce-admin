@@ -18,6 +18,41 @@ import SpeedIcon from './images/flash_on';
 import MobileAppIcon from './images/phone_android';
 import './style.scss';
 
+const benefits = [
+	{
+		title: __( 'Security', 'woocommerce-admin' ),
+		icon: <SecurityIcon />,
+		description: __(
+			'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
+			'woocommerce-admin'
+		),
+	},
+	{
+		title: __( 'Sales Tax', 'woocommerce-admin' ),
+		icon: <SalesTaxIcon />,
+		description: __(
+			'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
+			'woocommerce-admin'
+		),
+	},
+	{
+		title: __( 'Speed', 'woocommerce-admin' ),
+		icon: <SpeedIcon />,
+		description: __(
+			'Cache your images and static files on our own powerful global network of servers and speed up your site.',
+			'woocommerce-admin'
+		),
+	},
+	{
+		title: __( 'Mobile App', 'woocommerce-admin' ),
+		icon: <MobileAppIcon />,
+		description: __(
+			'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
+			'woocommerce-admin'
+		),
+	},
+];
+
 export default class Start extends Component {
 	constructor() {
 		super( ...arguments );
@@ -72,41 +107,6 @@ export default class Start extends Component {
 			},
 		} );
 
-		const benefits = [
-			{
-				title: __( 'Security', 'woocommerce-admin' ),
-				icon: <SecurityIcon />,
-				description: __(
-					'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
-					'woocommerce-admin'
-				),
-			},
-			{
-				title: __( 'Sales Tax', 'woocommerce-admin' ),
-				icon: <SalesTaxIcon />,
-				description: __(
-					'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
-					'woocommerce-admin'
-				),
-			},
-			{
-				title: __( 'Speed', 'woocommerce-admin' ),
-				icon: <SpeedIcon />,
-				description: __(
-					'Cache your images and static files on our own powerful global network of servers and speed up your site.',
-					'woocommerce-admin'
-				),
-			},
-			{
-				title: __( 'Mobile App', 'woocommerce-admin' ),
-				icon: <MobileAppIcon />,
-				description: __(
-					'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
-					'woocommerce-admin'
-				),
-			},
-		];
-
 		return (
 			<Fragment>
 				<ProfileWizardHeader />
@@ -141,7 +141,10 @@ export default class Start extends Component {
 					</div>
 
 					<Card>
-						{ benefits.map( benefit => this.renderBenefit( benefit ) ) }
+						<div className="woocommerce-profile-wizard__benefits">
+							{ benefits.map( benefit => this.renderBenefit( benefit ) ) }
+						</div>
+
 						<Button isPrimary onClick={ this.startWizard }>
 							{ __( 'Get started', 'woocommerce-admin' ) }
 						</Button>
