@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { CheckboxControl, FormToggle } from '@wordpress/components';
+import { Button, CheckboxControl, FormToggle } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import interpolateComponents from 'interpolate-components';
 
@@ -11,11 +11,12 @@ import interpolateComponents from 'interpolate-components';
  * Internal depdencies
  */
 import { Card, H, Link } from '@woocommerce/components';
-import ProfileWizardHeader from '../header';
-import SecurityIcon from '../images/security';
-import SalesTaxIcon from '../images/local_atm';
-import SpeedIcon from '../images/flash_on';
-import MobileAppIcon from '../images/phone_android';
+import ProfileWizardHeader from '../../header';
+import SecurityIcon from './images/security';
+import SalesTaxIcon from './images/local_atm';
+import SpeedIcon from './images/flash_on';
+import MobileAppIcon from './images/phone_android';
+import './style.scss';
 
 export default class Start extends Component {
 	constructor() {
@@ -32,6 +33,10 @@ export default class Start extends Component {
 		// @todo This should close the wizard and set the `skipped` property to true via the API.
 	}
 
+	startWizard() {
+		// @todo This should go to the next step.
+	}
+
 	onTrackingChange() {
 		this.setState( {
 			trackingChecked: ! this.state.trackingChecked,
@@ -44,8 +49,10 @@ export default class Start extends Component {
 		return (
 			<div className="woocommerce-profile-wizard__benefit" key={ title }>
 				{ icon }
-				<H className="woocommerce-profile-wizard__benefit-title">{ title }</H>
-				<p>{ description }</p>
+				<div className="woocommerce-profile-wizard__benefit-content">
+					<H className="woocommerce-profile-wizard__benefit-title">{ title }</H>
+					<p>{ description }</p>
+				</div>
 			</div>
 		);
 	}
@@ -133,7 +140,12 @@ export default class Start extends Component {
 						/>
 					</div>
 
-					<Card>{ benefits.map( benefit => this.renderBenefit( benefit ) ) }</Card>
+					<Card>
+						{ benefits.map( benefit => this.renderBenefit( benefit ) ) }
+						<Button isPrimary onClick={ this.startWizard }>
+							{ __( 'Get started', 'woocommerce-admin' ) }
+						</Button>
+					</Card>
 
 					<p>
 						<Link href="#" onClick={ this.skipWizard }>

@@ -17,6 +17,12 @@
 			color: $muriel-gray-800;
 		}
 		color: $muriel-gray-600;
+		text-align: left;
+
+		button {
+			display: flex;
+			margin: 0 auto;
+		}
 	}
 
 	.woocommerce-profile-wizard__header {
