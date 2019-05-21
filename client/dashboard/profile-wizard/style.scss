@@ -16,6 +16,10 @@
 		svg > g {
 			transform: translateX(25%);
 		}
+
+		.woocommerce-profile-wizard__plus {
+			stroke: $muriel-gray-800;
+		}
 	}
 
 	.woocommerce-profile-wizard__header-title {

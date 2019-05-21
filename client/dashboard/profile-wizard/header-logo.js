@@ -12,7 +12,7 @@ export default () => (
 		<g fill="none" fillRule="evenodd">
 			<g>
 				<g>
-					<g transform="translate(219 35.082353)">
+					<g transform="translate(219 35.082353)" className="woocommerce-profile-wizard__plus">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
