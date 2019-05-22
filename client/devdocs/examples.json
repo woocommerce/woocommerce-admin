@@ -23,6 +23,7 @@
   { "component": "SegmentedSelection" },
   { "component": "SplitButton" },
   { "component": "Stepper" },
+  { "component": "Spinner" },
   { "component": "Summary", "render": "MySummaryList" },
   { "component": "Table" },
   { "component": "Tag" },

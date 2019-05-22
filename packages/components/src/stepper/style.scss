@@ -15,6 +15,7 @@
 		padding: $gap-small;
 		font-weight: 400;
 		color: $muriel-gray-900;
+		height: 48px;
 
 		svg {
 			display: none;
@@ -24,11 +25,16 @@
 			margin: 0 4px 0 4px;
 		}
 
+		.woocommerce-spinner {
+			display: block;
+			margin-left: -$gap-smaller;
+			margin-right: $gap-smallest;
+		}
+
 		&.is-active,
 		&.is-complete {
-			.woocommerce-stepper__step-icon,
-			.components-spinner {
-				background: $muriel-hot-orange-700;
+			.woocommerce-stepper__step-icon {
+				background: $muriel-gray-900;
 			}
 		}
 
@@ -49,8 +55,7 @@
 		}
 	}
 
-	.woocommerce-stepper__step-icon,
-	.components-spinner {
+	.woocommerce-stepper__step-icon {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -61,10 +66,6 @@
 		background: $muriel-gray-300;
 		color: #fff;
 		border-radius: 50%;
-	}
-
-	.components-spinner {
-		margin-left: 0;
 	}
 
 	.woocommerce-stepper__step-divider {

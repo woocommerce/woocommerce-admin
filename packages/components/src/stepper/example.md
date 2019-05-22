@@ -3,8 +3,9 @@ import { Stepper } from '@woocommerce/components';
 
 const MyStepper = withState( {
     currentStep: 'first',
-    isComplete: false,
-} )( ( { currentStep, isComplete, setState } ) => {
+	isComplete: false,
+	isPending: false,
+} )( ( { currentStep, isComplete, isPending, setState } ) => {
     const steps = [
         {
             label: 'First',
@@ -54,6 +55,11 @@ const MyStepper = withState( {
                         disabled={ currentIndex !== steps.length - 1 }
                     >
                         Complete
+					</button>
+					 <button
+                        onClick={ () => setState( { isPending: ! isPending } ) }
+                    >
+                        Toggle Spinner
                     </button>
                 </div>
             ) }
@@ -61,9 +67,11 @@ const MyStepper = withState( {
 			<Stepper
 				steps={ steps }
 				currentStep={ currentStep }
+				isPending={ isPending }
 			/>
 
 			<Stepper
+				isPending={ isPending }
 				direction="vertical"
 				steps={ steps }
 				currentStep={ currentStep }
