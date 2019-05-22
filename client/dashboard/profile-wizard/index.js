@@ -2,13 +2,16 @@
 /**
  * External dependencies
  */
+import apiFetch from '@wordpress/api-fetch';
 import { Component, createElement, Fragment } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 import { pick } from 'lodash';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { updateQueryString } from '@woocommerce/navigation';
+import { stringifyQuery, updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal depdencies
@@ -57,10 +60,11 @@ const getSteps = () => {
 	return steps;
 };
 
-export default class ProfileWizard extends Component {
+class ProfileWizard extends Component {
 	constructor() {
 		super( ...arguments );
 		this.goToNextStep = this.goToNextStep.bind( this );
+		this.updateProfile = this.updateProfile.bind( this );
 	}
 
 	componentDidMount() {
@@ -71,10 +75,6 @@ export default class ProfileWizard extends Component {
 	componentWillUnmount() {
 		document.documentElement.classList.add( 'wp-toolbar' );
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
-	}
-
-	closeWizard() {
-		// @todo This should close the wizard and mark the profiler as complete via the API.
 	}
 
 	getCurrentStep() {
@@ -94,10 +94,24 @@ export default class ProfileWizard extends Component {
 		const nextStep = getSteps()[ currentStepIndex + 1 ];
 
 		if ( 'undefined' === nextStep ) {
-			return this.closeWizard();
+			this.updateProfile( { complete: true } );
 		}
 
 		return updateQueryString( { step: nextStep.key } );
+	}
+
+	updateProfile( params ) {
+		const { addNotice } = this.props;
+		const payload = stringifyQuery( params );
+
+		return apiFetch( {
+			path: `/wc-admin/v1/onboarding/profile${ payload }`,
+			method: 'POST',
+		} ).catch( error => {
+			if ( error && error.message ) {
+				addNotice( { status: 'error', message: error.message } );
+			}
+		} );
 	}
 
 	render() {
@@ -108,6 +122,7 @@ export default class ProfileWizard extends Component {
 			query,
 			step,
 			goToNextStep: this.goToNextStep,
+			updateProfile: this.updateProfile,
 		} );
 		const steps = getSteps().map( _step => pick( _step, [ 'key', 'label' ] ) );
 
@@ -119,3 +134,13 @@ export default class ProfileWizard extends Component {
 		);
 	}
 }
+
+export default compose(
+	withDispatch( dispatch => {
+		const { addNotice } = dispatch( 'wc-admin' );
+
+		return {
+			addNotice,
+		};
+	} )
+)( ProfileWizard );
