@@ -43,7 +43,7 @@ class WC_Admin_REST_Onboarding_Plugins_Controller extends WC_REST_Data_Controlle
 					'callback'            => array( $this, 'install_plugin' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
-				'schema' => array( $this, 'get_public_item_schema' ),
+				'schema' => array( $this, 'get_item_schema' ),
 			)
 		);
 
@@ -56,7 +56,20 @@ class WC_Admin_REST_Onboarding_Plugins_Controller extends WC_REST_Data_Controlle
 					'callback'            => array( $this, 'activate_plugin' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
-				'schema' => array( $this, 'get_public_item_schema' ),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/connect-jetpack',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'connect_jetpack' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_connect_schema' ),
 			)
 		);
 	}
@@ -95,13 +108,14 @@ class WC_Admin_REST_Onboarding_Plugins_Controller extends WC_REST_Data_Controlle
 	 */
 	public function install_plugin( $request ) {
 		$allowed_plugins = $this->get_allowed_plugins();
-		if ( ! in_array( $request['plugin'], array_keys( $allowed_plugins ), true ) ) {
+		$plugin          = sanitize_title_with_dashes( $request['plugin'] );
+		if ( ! in_array( $plugin, array_keys( $allowed_plugins ), true ) ) {
 			return new WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-		$slug              = $request['plugin'];
+		$slug              = $plugin;
 		$path              = $allowed_plugins[ $slug ];
 		$installed_plugins = get_plugins();
 
@@ -155,17 +169,18 @@ class WC_Admin_REST_Onboarding_Plugins_Controller extends WC_REST_Data_Controlle
 	 */
 	public function activate_plugin( $request ) {
 		$allowed_plugins = $this->get_allowed_plugins();
-		if ( ! in_array( $request['plugin'], array_keys( $allowed_plugins ), true ) ) {
+		$plugin          = sanitize_title_with_dashes( $request['plugin'] );
+		if ( ! in_array( $plugin, array_keys( $allowed_plugins ), true ) ) {
 			return new WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-		$slug              = $request['plugin'];
+		$slug              = $plugin;
 		$path              = $allowed_plugins[ $slug ];
 		$installed_plugins = get_plugins();
 
-		if ( ! in_array( $path, array_keys( $installed_plugins ), tre ) ) {
+		if ( ! in_array( $path, array_keys( $installed_plugins ), true ) ) {
 			return new WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
 		}
 
@@ -182,6 +197,44 @@ class WC_Admin_REST_Onboarding_Plugins_Controller extends WC_REST_Data_Controlle
 	}
 
 	/**
+	 * Generates a Jetpack Connect URL.
+	 *
+	 * @return array Connection URL for Jetpack
+	 */
+	public function connect_jetpack() {
+		if ( ! class_exists( 'Jetpack' ) ) {
+			return new WP_Error( 'woocommerce_rest_jetpack_not_active', __( 'Jetpack is not installed or active.', 'woocommerce-admin' ), 404 );
+		}
+
+		$redirect_url = esc_url_raw(
+			add_query_arg(
+				array(
+					'page' => 'wc-admin',
+				),
+				admin_url( 'admin.php' )
+			) . '#/?step=details'
+		);
+
+		$connect_url = Jetpack::init()->build_connect_url( true, $redirect_url, 'woocommerce-setup-wizard' );
+
+		// Redirect to local calypso instead of production.
+		if ( defined( 'WOOCOMMERCE_CALYPSO_LOCAL' ) && WOOCOMMERCE_CALYPSO_LOCAL ) {
+			$connect_url = add_query_arg(
+				array(
+					'calypso_env' => 'development',
+				),
+				$connect_url
+			);
+		}
+
+		return( array(
+			'slug'          => $slug,
+			'name'          => __( 'Jetpack', 'woocommerce-admin' ),
+			'connectAction' => $connect_url,
+		) );
+	}
+
+	/**
 	 * Get the schema, conforming to JSON Schema.
 	 *
 	 * @return array
@@ -192,38 +245,44 @@ class WC_Admin_REST_Onboarding_Plugins_Controller extends WC_REST_Data_Controlle
 			'title'      => 'onboarding_plugin',
 			'type'       => 'object',
 			'properties' => array(
-				'plugins' => array(
-					'type'        => 'array',
-					'description' => __( 'Array of plugins that have been updated by the endpoint.', 'woocommerce-admin' ),
-					'context'     => array( 'view' ),
+				'slug'   => array(
+					'description' => __( 'Plugin slug.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
-					'items'       => array(
-						'type'       => 'object',
-						'properties' => array(
-							'slug'   => array(
-								'description' => __( 'Plugin slug.', 'woocommerce-admin' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-								'readonly'    => true,
-							),
-							'name'   => array(
-								'description' => __( 'Plugin dname.', 'woocommerce-admin' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-								'readonly'    => true,
-							),
-							'status' => array(
-								'description' => __( 'Plugin status.', 'woocommerce-admin' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-								'readonly'    => true,
-							),
-						),
-					),
+				),
+				'name'   => array(
+					'description' => __( 'Plugin name.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'status' => array(
+					'description' => __( 'Plugin status.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
 				),
 			),
 		);
 
 		return $this->add_additional_fields_schema( $schema );
+	}
+
+	/**
+	 * Get the schema, conforming to JSON Schema.
+	 *
+	 * @return array
+	 */
+	public function get_connect_schema() {
+		$schema = $this->get_item_schema();
+		unset( $schema['properties']['status'] );
+		$schema['properties']['connectAction'] = array(
+			'description' => __( 'Action that should be completed to connect Jetpack.', 'woocommerce-admin' ),
+			'type'        => 'string',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+		return $schema;
 	}
 }

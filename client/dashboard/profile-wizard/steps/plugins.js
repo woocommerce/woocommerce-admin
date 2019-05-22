@@ -28,6 +28,7 @@ class Plugins extends Component {
 			isError: false,
 			pluginsInstalled: 0,
 			pluginsActivated: 0,
+			connectUrl: '',
 		};
 
 		this.activatePlugins = this.activatePlugins.bind( this );
@@ -54,13 +55,13 @@ class Plugins extends Component {
 			this.state.pluginsActivated !== prevState.pluginsActivated &&
 			this.state.pluginsActivated === plugins.length
 		) {
-			window.location = wcSettings.jetpackConnectUrl;
+			this.connectJetpack();
 		}
 	}
 
 	installPlugins() {
 		forEach( plugins, async plugin => {
-			const response = await this.installPlugin( plugin );
+			const response = await this.doPluginAction( 'install', plugin );
 			if ( 'success' === response.status ) {
 				this.setState( state => ( {
 					pluginsInstalled: state.pluginsInstalled + 1,
@@ -69,13 +70,21 @@ class Plugins extends Component {
 		} );
 	}
 
-	activatePlugins() {
+	activatePlugins( event ) {
+		event.preventDefault();
+
+		// Avoid double activating.
+		const { isPending } = this.state;
+		if ( isPending ) {
+			return false;
+		}
+
 		this.setState( {
 			isPending: true,
 		} );
 
 		forEach( plugins, async plugin => {
-			const response = await this.activatePlugin( plugin );
+			const response = await this.doPluginAction( 'activate', plugin );
 			if ( 'success' === response.status ) {
 				this.setState( state => ( {
 					pluginsActivated: state.pluginsActivated + 1,
@@ -84,10 +93,22 @@ class Plugins extends Component {
 		} );
 	}
 
-	async installPlugin( plugin ) {
+	getErrorMessage( action, plugin ) {
+		return 'install' === action
+			? sprintf(
+					__( 'There was an error installing %s. Please try again.', 'woocommerce-admin' ),
+					this.getPluginName( plugin )
+				)
+			: sprintf(
+					__( 'There was an error activating %s. Please try again.', 'woocommerce-admin' ),
+					this.getPluginName( plugin )
+				);
+	}
+
+	async doPluginAction( action, plugin ) {
 		try {
 			const pluginResponse = await apiFetch( {
-				path: '/wc-admin/v1/onboarding/plugins/install',
+				path: `/wc-admin/v1/onboarding/plugins/${ action }`,
 				method: 'POST',
 				data: {
 					plugin,
@@ -97,10 +118,7 @@ class Plugins extends Component {
 		} catch ( err ) {
 			this.props.addNotice( {
 				status: 'error',
-				message: sprintf(
-					__( 'There was an error installing %s. Please try again.', 'woocommerce-admin' ),
-					this.getPluginName( plugin )
-				),
+				message: this.getErrorMessage( action, plugin ),
 			} );
 			this.setState( {
 				isPending: false,
@@ -109,23 +127,20 @@ class Plugins extends Component {
 		}
 	}
 
-	async activatePlugin( plugin ) {
+	async connectJetpack() {
 		try {
-			const pluginResponse = await apiFetch( {
-				path: '/wc-admin/v1/onboarding/plugins/activate',
-				method: 'POST',
-				data: {
-					plugin,
-				},
+			const connectResponse = await apiFetch( {
+				path: '/wc-admin/v1/onboarding/plugins/connect-jetpack',
 			} );
-			return pluginResponse;
+			if ( connectResponse && connectResponse.connectAction ) {
+				window.location = connectResponse.connectAction;
+				return;
+			}
+			throw new Error();
 		} catch ( err ) {
 			this.props.addNotice( {
 				status: 'error',
-				message: sprintf(
-					__( 'There was an error activating %s. Please try again.', 'woocommerce-admin' ),
-					this.getPluginName( plugin )
-				),
+				message: this.getErrorMessage( 'activate', 'jetpack' ),
 			} );
 			this.setState( {
 				isPending: false,
@@ -177,11 +192,12 @@ class Plugins extends Component {
 								</Button>
 							) }
 
-							{ 'activate' === step && (
-								<Button isPrimary onClick={ this.activatePlugins }>
-									{ __( 'Activate & continue', 'woocommerce-admin' ) }
-								</Button>
-							) }
+							{ ! isError &&
+								'activate' === step && (
+									<Button isPrimary isBusy={ isPending } onClick={ this.activatePlugins }>
+										{ __( 'Activate & continue', 'woocommerce-admin' ) }
+									</Button>
+								) }
 						</div>
 					</Card>
 				</div>
