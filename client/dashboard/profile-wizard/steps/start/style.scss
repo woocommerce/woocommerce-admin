@@ -40,11 +40,13 @@
 		}
 
 		.woocommerce-profile-wizard__benefit-title {
+			font-size: 16px;
+			font-weight: 400;
 			margin-top: 0;
 			margin-bottom: $gap-smaller;
 		}
 
-		p {
+		.woocommerce-profile-wizard__benefit-content p {
 			padding-bottom: $gap;
 			margin-top: 0;
 			border-bottom: 1px solid $muriel-gray-50;

@@ -116,11 +116,16 @@ export default class Start extends Component {
 					</H>
 
 					<p>
-						{ __(
-							'Simplify and enhance the setup of your store with features and benefits offered by Jetpack ' +
-								'& WooCommerce Services.',
-							'woocommerce-admin'
-						) }
+						{ interpolateComponents( {
+							mixedString: __(
+								'Simplify and enhance the setup of your store with features and benefits offered by ' +
+									'{{strong}}Jetpack & WooCommerce Services{{/strong}}.',
+								'woocommerce-admin'
+							),
+							components: {
+								strong: <strong />,
+							},
+						} ) }
 					</p>
 
 					<div className="woocommerce-profile-wizard__tracking">
