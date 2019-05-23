@@ -26,6 +26,65 @@ class WC_Admin_Onboarding {
 		}
 		return self::$instance;
 	}
+
+	/**
+	 * Hook into WooCommerce.
+	 */
+	public function __construct() {
+		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 ); // Run after WC_Admin_Loader.
+		add_filter( 'admin_body_class', array( $this, 'add_admin_body_classes' ) );
+	}
+
+	/**
+	 * Returns true if the profiler should be displayed (not completed and not skipped).
+	 *
+	 * @return bool
+	 */
+	public function should_show_profiler() {
+		// @todo Remove this once we have a proper way to dismiss the profiler.
+		if ( ! defined( 'WOOCOMMERCE_ADMIN_DEV_SHOW_PROFILER' ) || false === WOOCOMMERCE_ADMIN_DEV_SHOW_PROFILER ) {
+			return false;
+		}
+		$onboarding_data = get_option( 'wc_onboarding_profile', array() );
+
+		// @todo Update this to compare to proper bools (https://github.com/woocommerce/woocommerce-admin/issues/2299).
+		$is_completed = isset( $onboarding_data['completed'] ) && 'true' === $onboarding_data['completed'];
+		$is_skipped   = isset( $onboarding_data['skipped'] ) && 'true' === $onboarding_data['skipped'];
+		return $is_completed || $is_skipped ? false : true;
+	}
+
+	/**
+	 * Add profiler status to component settings.
+	 *
+	 * @param array $settings Component settings.
+	 */
+	public function component_settings( $settings ) {
+		$settings['showProfiler'] = $this->should_show_profiler();
+		return $settings;
+	}
+
+	/**
+	 * Adds body classes allowing us hide wp-admin ahead of time, if we know the profiler wizard is going to show.
+	 *
+	 * @param string $admin_body_class Body class to add.
+	 */
+	public function add_admin_body_classes( $admin_body_class = '' ) {
+		global $hook_suffix;
+
+		if ( ! WC_Admin_Loader::is_admin_page() ) {
+			return $admin_body_class;
+		}
+
+		$show_profiler = $this->should_show_profiler();
+		if ( ! $show_profiler ) {
+			return $admin_body_class;
+		}
+
+		$classes          = explode( ' ', trim( $admin_body_class ) );
+		$classes[]        = 'woocommerce-profile-wizard__body';
+		$admin_body_class = implode( ' ', array_unique( $classes ) );
+		return " $admin_body_class ";
+	}
 }
 
 new WC_Admin_Onboarding();

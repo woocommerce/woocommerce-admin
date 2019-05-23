@@ -27,6 +27,12 @@ import StoreAlerts from './store-alerts';
 class Layout extends Component {
 	componentDidMount() {
 		this.recordPageViewTrack();
+
+		const path = this.getPath();
+
+		if ( 'dashboard' !== path ) {
+			document.body.classList.remove( 'woocommerce-profile-wizard__body' );
+		}
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -42,7 +48,7 @@ class Layout extends Component {
 		}
 	}
 
-	recordPageViewTrack() {
+	getPath() {
 		const pathname = get( this.props, 'location.pathname' );
 		if ( ! pathname ) {
 			return;
@@ -56,7 +62,11 @@ class Layout extends Component {
 			path = 'dashboard';
 		}
 
-		recordPageView( path );
+		return path;
+	}
+
+	recordPageViewTrack() {
+		recordPageView( this.getPath() );
 	}
 
 	render() {
