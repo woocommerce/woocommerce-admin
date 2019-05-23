@@ -10,8 +10,11 @@ import { isNil } from 'lodash';
  */
 import { DEFAULT_REQUIREMENT } from '../constants';
 
-const getSettings = ( getResource, requireResource ) => ( requirement = DEFAULT_REQUIREMENT ) => {
-	return requireResource( requirement, 'settings' ).data || {};
+const getSettings = ( getResource, requireResource ) => (
+	group,
+	requirement = DEFAULT_REQUIREMENT
+) => {
+	return requireResource( requirement, `settings/${ group }` ).data || {};
 };
 
 const getSettingsError = getResource => () => {

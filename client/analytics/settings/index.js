@@ -153,7 +153,7 @@ export default compose(
 	withSelect( select => {
 		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
 
-		const settings = getSettings();
+		const settings = getSettings( 'wc_admin' );
 		const isError = Boolean( getSettingsError() );
 		const isRequesting = isGetSettingsRequesting();
 

@@ -20,18 +20,19 @@ function update( resourceNames, data, fetch = apiFetch ) {
 }
 
 function readSettings( resourceNames, fetch ) {
-	if ( resourceNames.includes( 'settings' ) ) {
-		const url = NAMESPACE + '/settings/wc_admin';
+	const filteredNames = resourceNames.filter( name => {
+		return name.startsWith( 'settings/' );
+	} );
 
-		return [
-			fetch( { path: url } )
-				.then( settingsToSettingsResource )
-				.catch( error => {
-					return { [ 'settings' ]: { error: String( error.message ) } };
-				} ),
-		];
-	}
-	return [];
+	return filteredNames.map( async resourceName => {
+		const url = NAMESPACE + '/' + resourceName;
+
+		return fetch( { path: url } )
+			.then( settingsToSettingsResource.bind( null, resourceName ) )
+			.catch( error => {
+				return { [ resourceName ]: { error: String( error.message ) } };
+			} );
+	} );
 }
 
 function updateSettings( resourceNames, data, fetch ) {
@@ -62,10 +63,10 @@ function updateSettings( resourceNames, data, fetch ) {
 	return [];
 }
 
-function settingsToSettingsResource( settings ) {
+function settingsToSettingsResource( resourceName, settings ) {
 	const settingsData = {};
 	settings.forEach( setting => ( settingsData[ setting.id ] = setting.value ) );
-	return { [ 'settings' ]: { data: settingsData } };
+	return { [ resourceName ]: { data: settingsData } };
 }
 
 function settingToSettingsResource( settings, setting ) {
