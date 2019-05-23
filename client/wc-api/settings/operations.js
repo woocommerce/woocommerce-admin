@@ -4,7 +4,6 @@
  * External dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
-import { pick } from 'lodash';
 
 /**
  * Internal dependencies
@@ -36,31 +35,26 @@ function readSettings( resourceNames, fetch ) {
 }
 
 function updateSettings( resourceNames, data, fetch ) {
-	const resourceName = 'settings';
-	const settingsFields = [
-		'woocommerce_excluded_report_order_statuses',
-		'woocommerce_actionable_order_statuses',
-	];
+	const filteredNames = resourceNames.filter( name => {
+		return name.startsWith( 'settings/' );
+	} );
 
-	if ( resourceNames.includes( resourceName ) ) {
-		const url = NAMESPACE + '/settings/wc_admin/';
-		const settingsData = pick( data[ resourceName ], settingsFields );
-
-		const promises = Object.keys( settingsData ).map( setting => {
-			return fetch( {
-				path: url + setting,
-				method: 'POST',
-				data: { value: settingsData[ setting ] },
-			} )
-				.then( settingToSettingsResource.bind( null, data.settings ) )
-				.catch( error => {
-					return { [ resourceName ]: { error } };
-				} );
+	return filteredNames.map( async resourceName => {
+		const url = NAMESPACE + '/' + resourceName + '/batch';
+		const settingsData = Object.keys( data[ resourceName ] ).map( key => {
+			return { id: key, value: data[ resourceName ][ key ] };
 		} );
 
-		return promises;
-	}
-	return [];
+		return fetch( {
+			path: url,
+			method: 'POST',
+			data: { update: settingsData },
+		} )
+			.then( settingToSettingsResource.bind( null, resourceName ) )
+			.catch( error => {
+				return { [ resourceName ]: { error } };
+			} );
+	} );
 }
 
 function settingsToSettingsResource( resourceName, settings ) {
@@ -69,9 +63,17 @@ function settingsToSettingsResource( resourceName, settings ) {
 	return { [ resourceName ]: { data: settingsData } };
 }
 
-function settingToSettingsResource( settings, setting ) {
-	settings[ setting.id ] = setting.value;
-	return { [ 'settings' ]: { data: settings } };
+function settingToSettingsResource( resourceName, data ) {
+	const settings = {};
+	if ( 'undefined' === typeof data.update ) {
+		return '';
+	}
+
+	// @todo This will only return updated fields so fields
+	// not updated may be temporarily overwritten in the store.
+	data.update.forEach( setting => ( settings[ setting.id ] = setting.value ) );
+
+	return { [ resourceName ]: { data: settings } };
 }
 
 export default {

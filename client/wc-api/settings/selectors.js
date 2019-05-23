@@ -17,12 +17,12 @@ const getSettings = ( getResource, requireResource ) => (
 	return requireResource( requirement, `settings/${ group }` ).data || {};
 };
 
-const getSettingsError = getResource => () => {
-	return getResource( 'settings' ).error;
+const getSettingsError = getResource => group => {
+	return getResource( `settings/${ group }` ).error;
 };
 
-const isGetSettingsRequesting = getResource => () => {
-	const { lastRequested, lastReceived } = getResource( 'settings' );
+const isGetSettingsRequesting = getResource => group => {
+	const { lastReceived, lastRequested } = getResource( `settings/${ group }` );
 	if ( isNil( lastRequested ) || isNil( lastReceived ) ) {
 		return true;
 	}

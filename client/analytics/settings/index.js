@@ -88,7 +88,7 @@ class Settings extends Component {
 	}
 
 	saveChanges = () => {
-		this.props.updateSettings( this.state.settings );
+		this.props.updateSettings( { wc_admin: this.state.settings } );
 		this.setState( { saving: true } );
 	};
 
@@ -154,8 +154,8 @@ export default compose(
 		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
 
 		const settings = getSettings( 'wc_admin' );
-		const isError = Boolean( getSettingsError() );
-		const isRequesting = isGetSettingsRequesting();
+		const isError = Boolean( getSettingsError( 'wc_admin' ) );
+		const isRequesting = isGetSettingsRequesting( 'wc_admin' );
 
 		return { getSettings, isError, isRequesting, settings };
 	} ),
