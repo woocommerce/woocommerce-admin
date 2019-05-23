@@ -45,7 +45,7 @@ class Stepper extends Component {
 								className={ stepClassName }
 							>
 								{ icon }
-								<span className="woocommerce-stepper_step-label">
+								<span className="woocommerce-stepper__step-label">
 									{ label }
 								</span>
 							</div>
