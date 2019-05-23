@@ -17,9 +17,12 @@
 		.wp-responsive-open #wpbody {
 			right: -14.5em;
 		}
-		#wpcontent,
-		#wpbody-content {
+		#wpcontent {
 			min-height: calc(100vh - #{$adminbar-height-mobile});
+		}
+
+		#wpbody-content {
+			min-height: 100vh;
 		}
 	}
 
