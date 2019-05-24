@@ -25,7 +25,7 @@
 
 	@include breakpoint( '>960px' ) {
 		#toplevel_page_woocommerce.menu-top > a:focus,
-		#toplevel_page_wcadmin--analytics.menu-top > a:focus {
+		#toplevel_page_wp-admin-admin-woocommerce-analytics-revenue.menu-top > a:focus {
 			padding-bottom: 1px;
 		}
 	}

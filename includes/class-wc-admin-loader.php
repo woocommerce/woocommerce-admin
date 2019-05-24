@@ -6,6 +6,21 @@
  * @package Woocommerce Admin
  */
 
+// @todo This needs a proper function/method. The idea is to fake the right parameters when admin.php/woocommerce/* routes are called.
+add_action(
+	'admin_init',
+	function() {
+		// phpcs:disable
+		$pathinfo = isset( $_SERVER['PATH_INFO'] ) ? $_SERVER['PATH_INFO'] : '';
+		if ( substr( $pathinfo, 0, 12 ) !== '/woocommerce' ) {
+			return;
+		}
+		global $plugin_page;
+		$plugin_page = 'wc-admin';
+		// phpcs:enable
+	}
+);
+
 /**
  * WC_Admin_Loader Class.
  */
@@ -154,7 +169,7 @@ class WC_Admin_Loader {
 				'id'         => 'woocommerce-dashboard', // Expected to be overridden if dashboard is enabled.
 				'parent'     => 'woocommerce',
 				'title'      => null,
-				'path'       => self::APP_ENTRY_POINT,
+				'path'       => '/wp-admin/admin.php/woocommerce/',
 				'capability' => $analytics_cap,
 			)
 		);
@@ -534,6 +549,8 @@ class WC_Admin_Loader {
 		if ( self::is_embed_page() ) {
 			$settings['embedBreadcrumbs'] = self::get_embed_breadcrumbs();
 		}
+
+		$settings['isJsPage'] = self::is_admin_page();
 
 		return $settings;
 	}

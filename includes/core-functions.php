@@ -40,5 +40,5 @@ function wc_admin_url( $path, $query = array() ) {
 		$path         = $path . '?' . $query_string;
 	}
 
-	return admin_url( 'admin.php?page=wc-admin#' . $path, dirname( __FILE__ ) );
+	return admin_url( 'admin.php/woocommerce/' . $path, dirname( __FILE__ ) );
 }

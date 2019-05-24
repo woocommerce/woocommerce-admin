@@ -31,13 +31,13 @@ const getPages = () => {
 			container: DevDocs,
 			path: '/devdocs',
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpClosedMenu: 'toplevel_page_wp-admin-admin-woocommerce-analytics-revenue',
 		} );
 		pages.push( {
 			container: DevDocs,
 			path: '/devdocs/:component',
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpClosedMenu: 'toplevel_page_wp-admin-admin-woocommerce-analytics-revenue',
 		} );
 	}
 
@@ -46,7 +46,7 @@ const getPages = () => {
 			container: Dashboard,
 			path: '/',
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpClosedMenu: 'toplevel_page_wp-admin-admin-woocommerce-analytics-revenue',
 		} );
 	}
 
@@ -54,19 +54,19 @@ const getPages = () => {
 		pages.push( {
 			container: Analytics,
 			path: '/analytics',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpOpenMenu: 'toplevel_page_wp-admin-admin-woocommerce-analytics-revenue',
 			wpClosedMenu: 'toplevel_page_woocommerce',
 		} );
 		pages.push( {
 			container: AnalyticsSettings,
 			path: '/analytics/settings',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpOpenMenu: 'toplevel_page_wp-admin-admin-woocommerce-analytics-revenue',
 			wpClosedMenu: 'toplevel_page_woocommerce',
 		} );
 		pages.push( {
 			container: AnalyticsReport,
 			path: '/analytics/:report',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
+			wpOpenMenu: 'toplevel_page_wp-admin-admin-woocommerce-analytics-revenue',
 			wpClosedMenu: 'toplevel_page_woocommerce',
 		} );
 	}
@@ -133,6 +133,20 @@ class Controller extends Component {
  * @param {Array} excludedScreens - wc-admin screens to avoid updating.
  */
 export function updateLinkHref( item, nextQuery, excludedScreens ) {
+	const pageUrlPrefix = 'wp-admin/admin.php/woocommerce';
+
+	// When a JS powered page is clicked on in the menus, navigate using the History API instead of a full page refresh.
+	if ( item.href.includes( pageUrlPrefix ) ) {
+		const pieces = item.href.split( 'admin.php?page=' );
+		if ( pieces && pieces[ 1 ] && pieces[ 1 ].includes( pageUrlPrefix ) ) {
+			item.href = '/' + pieces[ 1 ];
+			item.onclick = e => {
+				e.preventDefault();
+				getHistory().push( e.target.getAttribute( 'href' ).replace( '/' + pageUrlPrefix, '' ) );
+			};
+		}
+	}
+
 	/**
 	 * Regular expression for finding any WooCommerce Admin screen.
 	 * The groupings are as follows:
@@ -190,11 +204,11 @@ window.wpNavMenuClassChange = function( page ) {
 		element.classList.add( 'menu-top' );
 	} );
 
-	const pageHash = window.location.hash.split( '?' )[ 0 ];
+	const pathName = window.location.pathname;
 	const currentItemsSelector =
-		pageHash === '#/'
-			? `li > a[href$="${ pageHash }"], li > a[href*="${ pageHash }?"]`
-			: `li > a[href*="${ pageHash }"]`;
+		pathName === '#/'
+			? `li > a[href$="${ pathName }"], li > a[href*="${ pathName }?"]`
+			: `li > a[href*="${ pathName }"]`;
 	const currentItems = document.querySelectorAll( currentItemsSelector );
 
 	Array.from( currentItems ).forEach( function( item ) {
