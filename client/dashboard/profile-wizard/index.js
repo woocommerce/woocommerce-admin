@@ -11,7 +11,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { stringifyQuery, updateQueryString } from '@woocommerce/navigation';
+import { updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal depdencies
@@ -102,11 +102,11 @@ class ProfileWizard extends Component {
 
 	updateProfile( params ) {
 		const { addNotice } = this.props;
-		const payload = stringifyQuery( params );
 
 		return apiFetch( {
-			path: `/wc-admin/v1/onboarding/profile${ payload }`,
+			path: '/wc-admin/v1/onboarding/profile',
 			method: 'POST',
+			data: params,
 		} ).catch( error => {
 			if ( error && error.message ) {
 				addNotice( { status: 'error', message: error.message } );
