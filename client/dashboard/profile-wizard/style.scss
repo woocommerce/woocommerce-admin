@@ -28,6 +28,10 @@
 		button {
 			display: flex;
 			margin: 0 auto;
+
+			&:disabled {
+				display: none;
+			}
 		}
 	}
 
