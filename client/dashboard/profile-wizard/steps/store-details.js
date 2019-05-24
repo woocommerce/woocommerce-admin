@@ -6,14 +6,17 @@ import { __ } from '@wordpress/i18n';
 import { Button, SelectControl, TextControl } from '@wordpress/components';
 import classNames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * Internal depdencies
  */
 import { H, Card } from '@woocommerce/components';
+import withSelect from 'wc-api/with-select';
 
-export default class StoreDetails extends Component {
+class StoreDetails extends Component {
 	constructor() {
 		super( ...arguments );
 
@@ -26,6 +29,7 @@ export default class StoreDetails extends Component {
 			postCode: '',
 		};
 
+		this.submitForm = this.submitForm.bind( this );
 		this.validateEmail = this.validateEmail.bind( this );
 	}
 
@@ -59,7 +63,20 @@ export default class StoreDetails extends Component {
 		if ( ! this.isValidForm() ) {
 			return;
 		}
-		// @todo Submit data to WC Settings.
+
+		const { addressLine1, addressLine2, countryState, postCode } = this.state;
+
+		this.props.updateSettings( {
+			general: {
+				woocommerce_store_address: addressLine1,
+				woocommerce_store_address_2: addressLine2,
+				woocommerce_default_country: countryState,
+				woocommerce_store_postcode: postCode,
+			},
+		} );
+
+		// @todo The email address is currently not saved.  Where should this be saved to?
+
 		// @todo Go to next step once https://github.com/woocommerce/woocommerce-admin/pull/2283 is merged.
 	}
 
@@ -161,3 +178,24 @@ export default class StoreDetails extends Component {
 		);
 	}
 }
+
+export default compose(
+	withSelect( select => {
+		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
+
+		const settings = getSettings( 'general' );
+		const isError = Boolean( getSettingsError( 'general' ) );
+		const isRequesting = isGetSettingsRequesting( 'general' );
+
+		return { getSettings, isError, isRequesting, settings };
+	} ),
+	withDispatch( dispatch => {
+		const { addNotice } = dispatch( 'wc-api' );
+		const { updateSettings } = dispatch( 'wc-api' );
+
+		return {
+			addNotice,
+			updateSettings,
+		};
+	} )
+)( StoreDetails );
