@@ -6,6 +6,10 @@
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
 		'Helvetica Neue', sans-serif;
 
+	#wpbody-content {
+		min-height: 100vh;
+	}
+
 	.woocommerce-profile-wizard__container a {
 		color: $muriel-gray-600;
 	}
@@ -143,8 +147,6 @@
 }
 
 .woocommerce-profile-wizard__header.is-stepper {
-	display: block;
-
 	svg > g {
 		transform: initial;
 	}
@@ -162,5 +164,6 @@
 		background: transparent;
 		box-shadow: none;
 		margin-bottom: 0;
+		width: 100%;
 	}
 }
