@@ -206,7 +206,7 @@ class WC_Admin_REST_Onboarding_Plugins_Controller extends WC_REST_Data_Controlle
 			return new WP_Error( 'woocommerce_rest_jetpack_not_active', __( 'Jetpack is not installed or active.', 'woocommerce-admin' ), 404 );
 		}
 
-		$next_step_slug = 'store-details';
+		$next_step_slug = apply_filters( 'woocommerce_onboarding_after_jetpack_step', 'store-details' );
 		$redirect_url   = esc_url_raw(
 			add_query_arg(
 				array(

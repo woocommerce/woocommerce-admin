@@ -32,7 +32,7 @@ class WC_Admin_Onboarding {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 ); // Run after WC_Admin_Loader.
-		add_filter( 'admin_body_class', array( $this, 'add_admin_body_classes' ) );
+		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
 	}
 
 	/**
@@ -50,6 +50,9 @@ class WC_Admin_Onboarding {
 		// @todo Update this to compare to proper bools (https://github.com/woocommerce/woocommerce-admin/issues/2299).
 		$is_completed = isset( $onboarding_data['completed'] ) && 'true' === $onboarding_data['completed'];
 		$is_skipped   = isset( $onboarding_data['skipped'] ) && 'true' === $onboarding_data['skipped'];
+
+		// @todo When merging to WooCommerce Core, we should set the `completed` flag to true during the upgrade progress.
+		// https://github.com/woocommerce/woocommerce-admin/pull/2300#discussion_r287237498.
 		return $is_completed || $is_skipped ? false : true;
 	}
 
@@ -64,26 +67,17 @@ class WC_Admin_Onboarding {
 	}
 
 	/**
-	 * Adds body classes allowing us hide wp-admin ahead of time, if we know the profiler wizard is going to show.
+	 * Let the app know that we will be showing the onboarding route, so wp-admin elements should be hidden while loading.
 	 *
-	 * @param string $admin_body_class Body class to add.
+	 * @param bool $is_loading Indicates if the `woocommerce-admin-is-loading` should be appended or not.
+	 * @return bool
 	 */
-	public function add_admin_body_classes( $admin_body_class = '' ) {
-		global $hook_suffix;
-
-		if ( ! WC_Admin_Loader::is_admin_page() ) {
-			return $admin_body_class;
-		}
-
+	public function is_loading( $is_loading ) {
 		$show_profiler = $this->should_show_profiler();
 		if ( ! $show_profiler ) {
-			return $admin_body_class;
+			return $is_loading;
 		}
-
-		$classes          = explode( ' ', trim( $admin_body_class ) );
-		$classes[]        = 'woocommerce-profile-wizard__body';
-		$admin_body_class = implode( ' ', array_unique( $classes ) );
-		return " $admin_body_class ";
+		return true;
 	}
 }
 
