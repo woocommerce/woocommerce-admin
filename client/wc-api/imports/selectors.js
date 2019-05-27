@@ -6,6 +6,23 @@
 import { getResourceName } from '../utils';
 import { DEFAULT_REQUIREMENT } from '../constants';
 
+const getImportStatus = ( getResource, requireResource ) => (
+	query = {},
+	requirement = DEFAULT_REQUIREMENT
+) => {
+	const resourceName = getResourceName( 'import-status', query );
+	return (
+		requireResource( requirement, resourceName ) || {
+			customers_total: null,
+			customers_count: null,
+			orders_total: null,
+			orders_count: null,
+			imported_from: null,
+			is_importing: null,
+		}
+	);
+};
+
 const getImportTotals = ( getResource, requireResource ) => (
 	query = {},
 	requirement = DEFAULT_REQUIREMENT
@@ -15,5 +32,6 @@ const getImportTotals = ( getResource, requireResource ) => (
 };
 
 export default {
+	getImportStatus,
 	getImportTotals,
 };

@@ -8,18 +8,19 @@ import { Fragment } from '@wordpress/element';
 
 function HistoricalDataActions( {
 	customersProgress,
-	customersTotal,
-	hasImportedData,
-	inProgress,
 	onDeletePreviousData,
+	onReimportData,
 	onStartImport,
 	onStopImport,
+	ongoingImport,
 	ordersProgress,
-	ordersTotal,
+	status,
 } ) {
 	const getActions = () => {
+		const importDisabled = status !== 'ready';
+
 		// An import is currently in progress
-		if ( inProgress ) {
+		if ( [ 'customers', 'orders', 'finalizing' ].includes( status ) ) {
 			return (
 				<Fragment>
 					<Button
@@ -44,42 +45,36 @@ function HistoricalDataActions( {
 			);
 		}
 
-		// Has no imported data
-		if ( ! hasImportedData ) {
-			// @todo When the import status endpoint is hooked up,
-			// the 'Delete Previously Imported Data' button should be
-			// removed from this section.
+		if ( [ 'ready', 'nothing' ].includes( status ) ) {
+			if ( ongoingImport && ( customersProgress > 0 || ordersProgress > 0 ) ) {
+				// An import was stopped before finishing
+				return (
+					<Fragment>
+						<Button isPrimary onClick={ onStartImport } disabled={ importDisabled }>
+							{ __( 'Start', 'woocommerce-admin' ) }
+						</Button>
+						<Button isDefault onClick={ onDeletePreviousData }>
+							{ __( 'Delete Previously Imported Data', 'woocommerce-admin' ) }
+						</Button>
+					</Fragment>
+				);
+			}
+
+			// Has no imported data or user clicked on 'reimport data'
 			return (
 				<Fragment>
-					<Button isPrimary onClick={ onStartImport }>
+					<Button isPrimary onClick={ onStartImport } disabled={ importDisabled }>
 						{ __( 'Start', 'woocommerce-admin' ) }
-					</Button>
-					<Button isDefault onClick={ onDeletePreviousData }>
-						{ __( 'Delete Previously Imported Data', 'woocommerce-admin' ) }
 					</Button>
 				</Fragment>
 			);
 		}
 
 		// Has imported all possible data
-		if ( customersProgress === customersTotal && ordersProgress === ordersTotal ) {
-			return (
-				<Fragment>
-					<Button isDefault onClick={ () => null }>
-						{ __( 'Re-import Data', 'woocommerce-admin' ) }
-					</Button>
-					<Button isDefault onClick={ onDeletePreviousData }>
-						{ __( 'Delete Previously Imported Data', 'woocommerce-admin' ) }
-					</Button>
-				</Fragment>
-			);
-		}
-
-		// It's not in progress and has some imported data
 		return (
 			<Fragment>
-				<Button isPrimary onClick={ onStartImport }>
-					{ __( 'Start', 'woocommerce-admin' ) }
+				<Button isDefault onClick={ onReimportData }>
+					{ __( 'Re-import Data', 'woocommerce-admin' ) }
 				</Button>
 				<Button isDefault onClick={ onDeletePreviousData }>
 					{ __( 'Delete Previously Imported Data', 'woocommerce-admin' ) }

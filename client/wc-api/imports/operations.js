@@ -12,17 +12,27 @@ import { stringifyQuery } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { isResourcePrefix, getResourceIdentifier } from '../utils';
+import { getResourcePrefix, getResourceIdentifier } from '../utils';
 import { NAMESPACE } from '../constants';
 
+const typeEndpointMap = {
+	'import-status': 'reports/import/status',
+	'import-totals': 'reports/import/totals',
+};
+
 function read( resourceNames, fetch = apiFetch ) {
-	const filteredNames = resourceNames.filter( name => isResourcePrefix( name, 'import-totals' ) );
+	const filteredNames = resourceNames.filter( name => {
+		const prefix = getResourcePrefix( name );
+		return Boolean( typeEndpointMap[ prefix ] );
+	} );
 
 	return filteredNames.map( async resourceName => {
+		const prefix = getResourcePrefix( resourceName );
+		const endpoint = typeEndpointMap[ prefix ];
 		const query = getResourceIdentifier( resourceName );
 		const fetchArgs = {
 			parse: false,
-			path: NAMESPACE + '/reports/import/totals' + stringifyQuery( query ),
+			path: NAMESPACE + `/${ endpoint }${ stringifyQuery( query ) }`,
 		};
 
 		try {

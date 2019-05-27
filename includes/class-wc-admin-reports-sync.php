@@ -161,12 +161,14 @@ class WC_Admin_Reports_Sync {
 	 */
 	public static function get_import_totals( $days, $skip_existing ) {
 		$orders         = self::get_orders( 1, 1, $days, $skip_existing );
+		$customer_roles = apply_filters( 'woocommerce_admin_import_customer_roles', array( 'customer' ) );
 		$customer_query = self::get_user_ids_for_batch(
 			$days,
 			$skip_existing,
 			array(
-				'fields' => 'ID',
-				'number' => 1,
+				'fields'   => 'ID',
+				'number'   => 1,
+				'role__in' => $customer_roles,
 			)
 		);
 
@@ -187,6 +189,7 @@ class WC_Admin_Reports_Sync {
 				'status'   => 'pending',
 				'per_page' => 1,
 				'claimed'  => false,
+				'search'   => 'import',
 				'group'    => self::QUEUE_GROUP,
 			)
 		);
@@ -334,7 +337,7 @@ class WC_Admin_Reports_Sync {
 	public static function get_orders( $limit = 10, $page = 1, $days = false, $skip_existing = false ) {
 		global $wpdb;
 		$where_clause = '';
-		$offset       = $page > 1 ? $page * $limit : 0;
+		$offset       = $page > 1 ? ( $page - 1 ) * $limit : 0;
 
 		if ( $days ) {
 			$days_ago      = date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) );
