@@ -22,8 +22,9 @@ export default class Dashboard extends Component {
 	renderDashboardOutput() {
 		const { query, path } = this.props;
 
-		// @todo This should check a selector client side, with wcSettings.showProfiler as initial state.
-		if ( window.wcAdminFeatures.onboarding && wcSettings.showProfiler ) {
+		// @todo This should be replaced by a check from the REST API response from #1897.
+		const profileWizardComplete = true;
+		if ( window.wcAdminFeatures.onboarding && ! profileWizardComplete ) {
 			return <ProfileWizard query={ query } />;
 		}
 
