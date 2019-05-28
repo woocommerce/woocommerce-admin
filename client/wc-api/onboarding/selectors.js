@@ -15,8 +15,12 @@ const getProfileItems = ( getResource, requireResource ) => (
 	requirement = DEFAULT_REQUIREMENT
 ) => {
 	const resourceName = 'onboarding-profile';
-
 	const ids = requireResource( requirement, resourceName ).data || [];
+
+	if ( ! ids.length ) {
+		return wcSettings.onboardingProfile;
+	}
+
 	const items = {};
 	ids.forEach( id => {
 		items[ id ] = getResource( getResourceName( resourceName, id ) ).data;
