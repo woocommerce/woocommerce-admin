@@ -27,6 +27,7 @@ import StoreAlerts from './store-alerts';
 class Layout extends Component {
 	componentDidMount() {
 		this.recordPageViewTrack();
+		document.body.classList.remove( 'woocommerce-admin-is-loading' );
 	}
 
 	componentDidUpdate( prevProps ) {
