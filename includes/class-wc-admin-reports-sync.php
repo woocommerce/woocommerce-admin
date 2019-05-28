@@ -238,7 +238,7 @@ class WC_Admin_Reports_Sync {
 		// Delete customers after order data is deleted.
 		self::queue_dependent_action( self::CUSTOMERS_DELETE_BATCH_INIT, array(), self::ORDERS_DELETE_BATCH_INIT );
 
-		// Delete options about deleted imports.
+		// Delete import options.
 		delete_option( 'wc_admin_import_customers_count' );
 		delete_option( 'wc_admin_import_orders_count' );
 		delete_option( 'wc_admin_import_customers_total' );

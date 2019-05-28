@@ -10,11 +10,11 @@ import moment from 'moment';
 import { formatParams, getStatus } from '../utils';
 
 describe( 'formatParams', () => {
-	it( 'returns empty string when skipChecked is false and period is all', () => {
+	it( 'returns empty object when skipChecked is false and period is all', () => {
 		expect( formatParams( 'YYYY-MM-DD', { label: 'all' }, false ) ).toEqual( {} );
 	} );
 
-	it( 'returns skip_checked param', () => {
+	it( 'returns skip_existing param', () => {
 		expect( formatParams( 'YYYY-MM-DD', { label: 'all' }, true ) ).toEqual( {
 			skip_existing: true,
 		} );
@@ -24,13 +24,13 @@ describe( 'formatParams', () => {
 		expect( formatParams( 'YYYY-MM-DD', { label: '30' }, false ) ).toEqual( { days: 30 } );
 	} );
 
-	it( 'returns correct days param based on period label', () => {
+	it( 'returns correct days param based on period date', () => {
 		const date = '2018-01-01';
 		const days = Math.ceil( moment().diff( moment( date, 'YYYY-MM-DD' ), 'days', true ) );
 		expect( formatParams( 'YYYY-MM-DD', { label: 'custom', date }, false ) ).toEqual( { days } );
 	} );
 
-	it( 'returns both params when required', () => {
+	it( 'returns both params', () => {
 		expect( formatParams( 'YYYY-MM-DD', { label: '30' }, true ) ).toEqual( {
 			skip_existing: true,
 			days: 30,
@@ -51,7 +51,7 @@ describe( 'getStatus', () => {
 		).toEqual( 'customers' );
 	} );
 
-	it( 'returns `customers` when importing orders', () => {
+	it( 'returns `orders` when importing orders', () => {
 		expect(
 			getStatus( {
 				customersProgress: 1,

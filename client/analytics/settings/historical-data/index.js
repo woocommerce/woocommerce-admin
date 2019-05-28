@@ -25,6 +25,8 @@ class HistoricalData extends Component {
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
 
 		this.state = {
+			// Whether there is an ongoing import which is not paused
+			inProgress: false,
 			period: {
 				date: moment().format( this.dateFormat ),
 				label: 'all',
@@ -71,13 +73,22 @@ class HistoricalData extends Component {
 		);
 		this.makeQuery( path, errorMessage );
 		this.setState( {
+			inProgress: false,
 			ongoingImport: false,
+		} );
+	}
+
+	onReimportData() {
+		this.setState( {
+			inProgress: false,
+			reimportingData: true,
 		} );
 	}
 
 	onStartImport() {
 		const { period, skipChecked } = this.state;
 		this.setState( {
+			inProgress: true,
 			ongoingImport: true,
 			reimportingData: false,
 		} );
@@ -93,6 +104,7 @@ class HistoricalData extends Component {
 
 	onStopImport() {
 		this.setState( {
+			inProgress: false,
 			reimportingData: false,
 		} );
 		const path = '/wc/v4/reports/import/cancel';
@@ -103,14 +115,9 @@ class HistoricalData extends Component {
 		this.makeQuery( path, errorMessage );
 	}
 
-	onReimportData() {
-		this.setState( {
-			reimportingData: true,
-		} );
-	}
-
 	onPeriodChange( val ) {
 		this.setState( {
+			inProgress: false,
 			period: {
 				...this.state.period,
 				label: val,
@@ -121,6 +128,7 @@ class HistoricalData extends Component {
 
 	onDateChange( val ) {
 		this.setState( {
+			inProgress: false,
 			period: {
 				date: val,
 				label: 'custom',
@@ -131,17 +139,19 @@ class HistoricalData extends Component {
 
 	onSkipChange( val ) {
 		this.setState( {
+			inProgress: false,
 			ongoingImport: false,
 			skipChecked: val,
 		} );
 	}
 
 	render() {
-		const { ongoingImport, period, reimportingData, skipChecked } = this.state;
+		const { inProgress, ongoingImport, period, reimportingData, skipChecked } = this.state;
 
 		return (
 			<HistoricalDataLayout
 				dateFormat={ this.dateFormat }
+				inProgress={ inProgress }
 				ongoingImport={ ongoingImport }
 				onPeriodChange={ this.onPeriodChange }
 				onDateChange={ this.onDateChange }

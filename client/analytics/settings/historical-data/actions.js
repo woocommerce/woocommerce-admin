@@ -9,10 +9,10 @@ import { Fragment } from '@wordpress/element';
 function HistoricalDataActions( {
 	customersProgress,
 	onDeletePreviousData,
+	ongoingImport,
 	onReimportData,
 	onStartImport,
 	onStopImport,
-	ongoingImport,
 	ordersProgress,
 	status,
 } ) {
@@ -46,8 +46,8 @@ function HistoricalDataActions( {
 		}
 
 		if ( [ 'ready', 'nothing' ].includes( status ) ) {
+			// An import was stopped before finishing
 			if ( ongoingImport && ( customersProgress > 0 || ordersProgress > 0 ) ) {
-				// An import was stopped before finishing
 				return (
 					<Fragment>
 						<Button isPrimary onClick={ onStartImport } disabled={ importDisabled }>

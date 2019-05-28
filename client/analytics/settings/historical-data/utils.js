@@ -46,15 +46,14 @@ export const getStatus = ( {
 			return 'finalizing';
 		}
 	}
-	if (
-		! reimportingData &&
-		( customersTotal > 0 || ordersTotal > 0 ) &&
-		customersProgress === customersTotal &&
-		ordersProgress === ordersTotal
-	) {
-		return 'finished';
-	}
 	if ( customersTotal > 0 || ordersTotal > 0 ) {
+		if (
+			! reimportingData &&
+			customersProgress === customersTotal &&
+			ordersProgress === ordersTotal
+		) {
+			return 'finished';
+		}
 		return 'ready';
 	}
 	return 'nothing';

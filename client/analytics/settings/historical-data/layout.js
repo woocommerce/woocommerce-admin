@@ -20,37 +20,6 @@ import withSelect from 'wc-api/with-select';
 import './style.scss';
 
 class HistoricalDataLayout extends Component {
-	constructor() {
-		super();
-
-		this.state = {
-			inProgress: false,
-		};
-
-		this.onStartImport = this.onStartImport.bind( this );
-		this.onStopImport = this.onStopImport.bind( this );
-	}
-
-	onStartImport() {
-		const { onStartImport } = this.props;
-
-		this.setState( {
-			inProgress: true,
-		} );
-
-		onStartImport();
-	}
-
-	onStopImport() {
-		const { onStopImport } = this.props;
-
-		this.setState( {
-			inProgress: false,
-		} );
-
-		onStopImport();
-	}
-
 	render() {
 		const {
 			customersProgress,
@@ -58,6 +27,7 @@ class HistoricalDataLayout extends Component {
 			dateFormat,
 			debouncedSpeak,
 			importDate,
+			inProgress,
 			isImporting,
 			ongoingImport,
 			onPeriodChange,
@@ -65,20 +35,22 @@ class HistoricalDataLayout extends Component {
 			onSkipChange,
 			onDeletePreviousData,
 			onReimportData,
+			onStartImport,
+			onStopImport,
 			ordersProgress,
 			ordersTotal,
 			period,
 			reimportingData,
 			skipChecked,
 		} = this.props;
-		const inProgress = this.state.inProgress && isImporting !== false;
-		if ( inProgress ) {
+		const importInProgress = inProgress && isImporting !== false;
+		if ( inProgress && isImporting === false ) {
 			debouncedSpeak( 'Import complete' );
 		}
 		const status = getStatus( {
 			customersProgress,
 			customersTotal,
-			inProgress,
+			inProgress: importInProgress,
 			ordersProgress,
 			ordersTotal,
 			reimportingData,
@@ -102,13 +74,13 @@ class HistoricalDataLayout extends Component {
 							<Fragment>
 								<HistoricalDataPeriodSelector
 									dateFormat={ dateFormat }
-									disabled={ inProgress }
+									disabled={ importInProgress }
 									onPeriodChange={ onPeriodChange }
 									onDateChange={ onDateChange }
 									value={ period }
 								/>
 								<HistoricalDataSkipCheckbox
-									disabled={ inProgress }
+									disabled={ importInProgress }
 									checked={ skipChecked }
 									onChange={ onSkipChange }
 								/>
@@ -128,12 +100,12 @@ class HistoricalDataLayout extends Component {
 					</div>
 				</div>
 				<HistoricalDataActions
+					customersProgress={ customersProgress }
 					onDeletePreviousData={ onDeletePreviousData }
 					onReimportData={ onReimportData }
-					onStartImport={ this.onStartImport }
-					onStopImport={ this.onStopImport }
+					onStartImport={ onStartImport }
+					onStopImport={ onStopImport }
 					ongoingImport={ ongoingImport }
-					customersProgress={ customersProgress }
 					ordersProgress={ ordersProgress }
 					status={ status }
 				/>

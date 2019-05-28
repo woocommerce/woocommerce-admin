@@ -15,10 +15,10 @@ const getImportStatus = ( getResource, requireResource ) => (
 		requireResource( requirement, resourceName ) || {
 			customers_total: null,
 			customers_count: null,
-			orders_total: null,
-			orders_count: null,
 			imported_from: null,
 			is_importing: null,
+			orders_total: null,
+			orders_count: null,
 		}
 	);
 };
