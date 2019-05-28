@@ -108,6 +108,7 @@
 		padding-right: 0;
 	}
 
+	/* Muriel style overrides */
 	.muriel-input-text {
 		&.empty {
 			.components-base-control__label {
@@ -133,6 +134,18 @@
 		left: $gap;
 	}
 
+	.muriel-select select {
+		left: 15px;
+	}
+
+	.muriel-select.empty label {
+		top: 15px;
+	}
+
+	.muriel-select::after {
+		margin-top: -$gap-smallest;
+	}
+
 	.muriel-input-text.active,
 	.muriel-select.active {
 		border: 2px solid $muriel-hot-purple-600;
@@ -143,7 +156,22 @@
 		}
 	}
 
-	/* Hide wp-admin and WooCommerce elements when viewing the profile wizard*/
+	.muriel-checkbox input[type='checkbox'] {
+		width: 18px;
+		height: 18px;
+	}
+
+	.muriel-checkbox input[type='checkbox']:checked::before {
+		font-size: 18px;
+		margin-left: -3px;
+		margin-top: -1px;
+	}
+
+	.muriel-button.is-button {
+		height: 48px;
+	}
+
+	/* Hide wp-admin and WooCommerce elements when viewing the profile wizard */
 	#adminmenumain,
 	#wpadminbar,
 	.woocommerce-layout__header,
