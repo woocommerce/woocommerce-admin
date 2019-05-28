@@ -4,6 +4,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
+import { withSpokenMessages } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -106,39 +108,45 @@ class HistoricalDataLayout extends Component {
 	}
 }
 
-export default withSelect( ( select, props ) => {
-	const { getImportStatus, getImportTotals } = select( 'wc-api' );
-	const { dateFormat, ongoingImport, inProgress, period, skipChecked } = props;
+export default compose( [
+	withSpokenMessages,
+	withSelect( ( select, props ) => {
+		const { getImportStatus, getImportTotals } = select( 'wc-api' );
+		const { debouncedSpeak, dateFormat, ongoingImport, inProgress, period, skipChecked } = props;
 
-	const { customers, orders } = getImportTotals( formatParams( dateFormat, period, skipChecked ) );
+		const { customers, orders } = getImportTotals(
+			formatParams( dateFormat, period, skipChecked )
+		);
 
-	if ( ! ongoingImport ) {
+		if ( ! ongoingImport ) {
+			return {
+				customersTotal: customers,
+				ordersTotal: orders,
+			};
+		}
+
+		const {
+			customers_count: customersProgress,
+			customers_total: customersTotal,
+			imported_from: importDate,
+			is_importing: isImporting,
+			orders_count: ordersProgress,
+			orders_total: ordersTotal,
+		} = getImportStatus( formatParams( dateFormat, period, skipChecked ) );
+		let newInProgress = inProgress;
+		// If the server reports the import finished
+		if ( inProgress && ! isImporting ) {
+			newInProgress = false;
+			debouncedSpeak( 'Import complete' );
+		}
+
 		return {
-			customersTotal: customers,
-			ordersTotal: orders,
+			customersProgress,
+			customersTotal: customersTotal || customers,
+			importDate,
+			inProgress: newInProgress,
+			ordersProgress,
+			ordersTotal: ordersTotal || orders,
 		};
-	}
-
-	const {
-		customers_count: customersProgress,
-		customers_total: customersTotal,
-		imported_from: importDate,
-		is_importing: isImporting,
-		orders_count: ordersProgress,
-		orders_total: ordersTotal,
-	} = getImportStatus( formatParams( dateFormat, period, skipChecked ) );
-	let newInProgress = inProgress;
-	// If the server reports the import finished
-	if ( inProgress && ! isImporting ) {
-		newInProgress = false;
-	}
-
-	return {
-		customersProgress,
-		customersTotal: customersTotal || customers,
-		importDate,
-		inProgress: newInProgress,
-		ordersProgress,
-		ordersTotal: ordersTotal || orders,
-	};
-} )( HistoricalDataLayout );
+	} ),
+] )( HistoricalDataLayout );
