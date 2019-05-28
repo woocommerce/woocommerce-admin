@@ -20,27 +20,61 @@ import withSelect from 'wc-api/with-select';
 import './style.scss';
 
 class HistoricalDataLayout extends Component {
+	constructor() {
+		super();
+
+		this.state = {
+			inProgress: false,
+		};
+
+		this.onStartImport = this.onStartImport.bind( this );
+		this.onStopImport = this.onStopImport.bind( this );
+	}
+
+	onStartImport() {
+		const { onStartImport } = this.props;
+
+		this.setState( {
+			inProgress: true,
+		} );
+
+		onStartImport();
+	}
+
+	onStopImport() {
+		const { onStopImport } = this.props;
+
+		this.setState( {
+			inProgress: false,
+		} );
+
+		onStopImport();
+	}
+
 	render() {
 		const {
 			customersProgress,
 			customersTotal,
 			dateFormat,
+			debouncedSpeak,
 			importDate,
-			inProgress,
+			isImporting,
 			ongoingImport,
 			onPeriodChange,
 			onDateChange,
 			onSkipChange,
 			onDeletePreviousData,
 			onReimportData,
-			onStartImport,
-			onStopImport,
 			ordersProgress,
 			ordersTotal,
 			period,
 			reimportingData,
 			skipChecked,
 		} = this.props;
+		const inProgress = this.state.inProgress && isImporting !== false;
+		if ( inProgress ) {
+			debouncedSpeak( 'Import complete' );
+		}
 		const status = getStatus( {
 			customersProgress,
 			customersTotal,
@@ -96,8 +130,8 @@ class HistoricalDataLayout extends Component {
 				<HistoricalDataActions
 					onDeletePreviousData={ onDeletePreviousData }
 					onReimportData={ onReimportData }
-					onStartImport={ onStartImport }
-					onStopImport={ onStopImport }
+					onStartImport={ this.onStartImport }
+					onStopImport={ this.onStopImport }
 					ongoingImport={ ongoingImport }
 					customersProgress={ customersProgress }
 					ordersProgress={ ordersProgress }
@@ -112,7 +146,7 @@ export default compose( [
 	withSpokenMessages,
 	withSelect( ( select, props ) => {
 		const { getImportStatus, getImportTotals } = select( 'wc-api' );
-		const { debouncedSpeak, dateFormat, ongoingImport, inProgress, period, skipChecked } = props;
+		const { dateFormat, ongoingImport, period, skipChecked } = props;
 
 		const { customers, orders } = getImportTotals(
 			formatParams( dateFormat, period, skipChecked )
@@ -133,18 +167,12 @@ export default compose( [
 			orders_count: ordersProgress,
 			orders_total: ordersTotal,
 		} = getImportStatus( formatParams( dateFormat, period, skipChecked ) );
-		let newInProgress = inProgress;
-		// If the server reports the import finished
-		if ( inProgress && ! isImporting ) {
-			newInProgress = false;
-			debouncedSpeak( 'Import complete' );
-		}
 
 		return {
 			customersProgress,
 			customersTotal: customersTotal || customers,
 			importDate,
-			inProgress: newInProgress,
+			isImporting,
 			ordersProgress,
 			ordersTotal: ordersTotal || orders,
 		};

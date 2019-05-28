@@ -238,6 +238,13 @@ class WC_Admin_Reports_Sync {
 		// Delete customers after order data is deleted.
 		self::queue_dependent_action( self::CUSTOMERS_DELETE_BATCH_INIT, array(), self::ORDERS_DELETE_BATCH_INIT );
 
+		// Delete options about deleted imports.
+		delete_option( 'wc_admin_import_customers_count' );
+		delete_option( 'wc_admin_import_orders_count' );
+		delete_option( 'wc_admin_import_customers_total' );
+		delete_option( 'wc_admin_import_orders_total' );
+		delete_option( 'wc_admin_imported_from_date' );
+
 		return __( 'Report table data is being deleted.', 'woocommerce-admin' );
 	}
 
