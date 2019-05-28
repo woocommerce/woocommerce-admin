@@ -9,8 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal dependencies
  */
 import { getResourceName } from '../utils';
-
-const NAMESPACE = '/wc-admin/v1';
+import { NAMESPACE } from './constants';
 
 function read( resourceNames, fetch = apiFetch ) {
 	return [ ...readProfileItems( resourceNames, fetch ) ];
