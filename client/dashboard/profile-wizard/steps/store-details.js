@@ -3,8 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, SelectControl, TextControl } from '@wordpress/components';
-import classNames from 'classnames';
+import { Button, SelectControl, TextControl } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -24,39 +23,20 @@ class StoreDetails extends Component {
 			addressLine1: '',
 			addressLine2: '',
 			countryState: '',
-			email: '',
-			emailError: '',
 			postCode: '',
 		};
 
 		this.submitForm = this.submitForm.bind( this );
-		this.validateEmail = this.validateEmail.bind( this );
 	}
 
 	isValidForm() {
-		const { addressLine1, countryState, email, emailError, postCode } = this.state;
+		const { addressLine1, countryState, postCode } = this.state;
 
-		if (
-			addressLine1.length &&
-			countryState &&
-			email.length &&
-			! emailError.length &&
-			postCode.length
-		) {
+		if ( addressLine1.length && countryState && postCode.length ) {
 			return true;
 		}
 
 		return false;
-	}
-
-	validateEmail() {
-		let emailError = '';
-
-		if ( ! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( this.state.email ) ) {
-			emailError = __( 'Must be a valid email address', 'woocommerce-admin' );
-		}
-
-		this.setState( { emailError } );
 	}
 
 	submitForm() {
@@ -74,8 +54,6 @@ class StoreDetails extends Component {
 				woocommerce_store_postcode: postCode,
 			},
 		} );
-
-		// @todo The email address is currently not saved.  Where should this be saved to?
 
 		// @todo Go to next step once https://github.com/woocommerce/woocommerce-admin/pull/2283 is merged.
 	}
@@ -111,7 +89,7 @@ class StoreDetails extends Component {
 	}
 
 	render() {
-		const { addressLine1, addressLine2, countryState, email, emailError, postCode } = this.state;
+		const { addressLine1, addressLine2, countryState, postCode } = this.state;
 
 		return (
 			<Fragment>
@@ -151,24 +129,6 @@ class StoreDetails extends Component {
 						required
 						value={ postCode }
 					/>
-
-					<TextControl
-						label={ __( 'Email', 'woocommerce-admin' ) }
-						onBlur={ this.validateEmail }
-						onChange={ value => this.setState( { email: value } ) }
-						required
-						type="email"
-						value={ email }
-					/>
-					<span
-						className={ classNames( 'woocommerce-profile-wizard__input-help', {
-							'is-error': emailError.length,
-						} ) }
-					>
-						{ emailError.length
-							? emailError
-							: __( 'Order notifications will be sent here', 'woocommerce-admin' ) }
-					</span>
 
 					<Button isPrimary onClick={ this.submitForm } disabled={ ! this.isValidForm() }>
 						{ __( 'Continue', 'woocommerce-admin' ) }

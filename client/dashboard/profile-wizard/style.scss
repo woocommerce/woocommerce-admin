@@ -207,16 +207,6 @@
 	#wpbody {
 		padding-top: 0;
 	}
-
-	.woocommerce-profile-wizard__input-help {
-		color: $muriel-gray-600;
-		font-size: 12px;
-		padding-left: $gap-smaller;
-
-		&.is-error {
-			color: $muriel-red-500;
-		}
-	}
 }
 
 .woocommerce-profile-wizard__plugins-card {
