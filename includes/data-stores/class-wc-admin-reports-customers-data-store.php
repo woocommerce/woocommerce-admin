@@ -438,22 +438,18 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	 * @return int|bool
 	 */
 	public static function get_existing_customer_id_from_order( $order ) {
-		if($order){ // Only try if the order details exist
-			$user_id = $order->get_customer_id();
+		$user_id = $order->get_customer_id();
 
-			if ( 0 === $user_id ) {
-				$email = $order->get_billing_email( 'edit' );
+		if ( 0 === $user_id ) {
+			$email = $order->get_billing_email( 'edit' );
 
-				if ( $email ) {
-					return self::get_guest_id_by_email( $email );
-				} else {
-					return false;
-				}
+			if ( $email ) {
+				return self::get_guest_id_by_email( $email );
 			} else {
-				return self::get_customer_id_by_user_id( $user_id );
+				return false;
 			}
-		}else{
-			return false;
+		} else {
+			return self::get_customer_id_by_user_id( $user_id );
 		}
 	}
 
@@ -464,56 +460,60 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	 * @return int|bool
 	 */
 	public static function get_or_create_customer_from_order( $order ) {
-		global $wpdb;
-		$returning_customer_id = self::get_existing_customer_id_from_order( $order );
+		if( false !== $order){ // Only try if the order details exist
+			global $wpdb;
+			$returning_customer_id = self::get_existing_customer_id_from_order( $order );
 
-		if ( $returning_customer_id ) {
-			return $returning_customer_id;
+			if ( $returning_customer_id ) {
+				return $returning_customer_id;
+			}
+
+			$customer_name = self::get_customer_name( $order->get_user_id(), $order );
+			$data          = array(
+				'first_name'       => $customer_name[0],
+				'last_name'        => $customer_name[1],
+				'email'            => $order->get_billing_email( 'edit' ),
+				'city'             => $order->get_billing_city( 'edit' ),
+				'postcode'         => $order->get_billing_postcode( 'edit' ),
+				'country'          => $order->get_billing_country( 'edit' ),
+				'date_last_active' => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
+			);
+			$format        = array(
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+			);
+
+			// Add registered customer data.
+			if ( 0 !== $order->get_user_id() ) {
+				$user_id                 = $order->get_user_id();
+				$customer                = new WC_Customer( $user_id );
+				$data['user_id']         = $user_id;
+				$data['username']        = $customer->get_username( 'edit' );
+				$data['date_registered'] = $customer->get_date_created( 'edit' ) ? $customer->get_date_created( 'edit' )->date( WC_Admin_Reports_Interval::$sql_datetime_format ) : null;
+				$format[]                = '%d';
+				$format[]                = '%s';
+				$format[]                = '%s';
+			}
+
+			$result      = $wpdb->insert( $wpdb->prefix . self::TABLE_NAME, $data, $format );
+			$customer_id = $wpdb->insert_id;
+
+			/**
+			 * Fires when a new report customer is created.
+			 *
+			 * @param int $customer_id Customer ID.
+			 */
+			do_action( 'woocommerce_reports_new_customer', $customer_id );
+
+			return $result ? $customer_id : false;
+		}else{
+			return false;
 		}
-
-		$customer_name = self::get_customer_name( $order->get_user_id(), $order );
-		$data          = array(
-			'first_name'       => $customer_name[0],
-			'last_name'        => $customer_name[1],
-			'email'            => $order->get_billing_email( 'edit' ),
-			'city'             => $order->get_billing_city( 'edit' ),
-			'postcode'         => $order->get_billing_postcode( 'edit' ),
-			'country'          => $order->get_billing_country( 'edit' ),
-			'date_last_active' => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
-		);
-		$format        = array(
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-		);
-
-		// Add registered customer data.
-		if ( 0 !== $order->get_user_id() ) {
-			$user_id                 = $order->get_user_id();
-			$customer                = new WC_Customer( $user_id );
-			$data['user_id']         = $user_id;
-			$data['username']        = $customer->get_username( 'edit' );
-			$data['date_registered'] = $customer->get_date_created( 'edit' ) ? $customer->get_date_created( 'edit' )->date( WC_Admin_Reports_Interval::$sql_datetime_format ) : null;
-			$format[]                = '%d';
-			$format[]                = '%s';
-			$format[]                = '%s';
-		}
-
-		$result      = $wpdb->insert( $wpdb->prefix . self::TABLE_NAME, $data, $format );
-		$customer_id = $wpdb->insert_id;
-
-		/**
-		 * Fires when a new report customer is created.
-		 *
-		 * @param int $customer_id Customer ID.
-		 */
-		do_action( 'woocommerce_reports_new_customer', $customer_id );
-
-		return $result ? $customer_id : false;
 	}
 
 	/**
