@@ -438,18 +438,22 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	 * @return int|bool
 	 */
 	public static function get_existing_customer_id_from_order( $order ) {
-		$user_id = $order->get_customer_id();
+		if($order){ // Only try if the order details exist
+			$user_id = $order->get_customer_id();
 
-		if ( 0 === $user_id ) {
-			$email = $order->get_billing_email( 'edit' );
+			if ( 0 === $user_id ) {
+				$email = $order->get_billing_email( 'edit' );
 
-			if ( $email ) {
-				return self::get_guest_id_by_email( $email );
+				if ( $email ) {
+					return self::get_guest_id_by_email( $email );
+				} else {
+					return false;
+				}
 			} else {
-				return false;
+				return self::get_customer_id_by_user_id( $user_id );
 			}
-		} else {
-			return self::get_customer_id_by_user_id( $user_id );
+		}else{
+			return false;
 		}
 	}
 
