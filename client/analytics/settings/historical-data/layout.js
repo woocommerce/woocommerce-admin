@@ -22,12 +22,12 @@ import './style.scss';
 class HistoricalDataLayout extends Component {
 	render() {
 		const {
+			activeImport,
 			customersProgress,
 			customersTotal,
 			dateFormat,
 			importDate,
 			inProgress,
-			ongoingImport,
 			onPeriodChange,
 			onDateChange,
 			onSkipChange,
@@ -94,9 +94,9 @@ class HistoricalDataLayout extends Component {
 					</div>
 				</div>
 				<HistoricalDataActions
+					activeImport={ activeImport }
 					customersProgress={ customersProgress }
 					onDeletePreviousData={ onDeletePreviousData }
-					ongoingImport={ ongoingImport }
 					onReimportData={ onReimportData }
 					onStartImport={ onStartImport }
 					onStopImport={ onStopImport }
@@ -110,11 +110,11 @@ class HistoricalDataLayout extends Component {
 
 export default withSelect( ( select, props ) => {
 	const { getImportStatus, getImportTotals } = select( 'wc-api' );
-	const { dateFormat, inProgress, ongoingImport, period, skipChecked } = props;
+	const { activeImport, dateFormat, inProgress, period, skipChecked } = props;
 
 	const { customers, orders } = getImportTotals( formatParams( dateFormat, period, skipChecked ) );
 
-	if ( ! ongoingImport ) {
+	if ( ! activeImport ) {
 		return {
 			customersTotal: customers,
 			ordersTotal: orders,

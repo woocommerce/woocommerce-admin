@@ -7,9 +7,9 @@ import { Button } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
 
 function HistoricalDataActions( {
+	activeImport,
 	customersProgress,
 	onDeletePreviousData,
-	ongoingImport,
 	onReimportData,
 	onStartImport,
 	onStopImport,
@@ -47,7 +47,7 @@ function HistoricalDataActions( {
 
 		if ( [ 'ready', 'nothing' ].includes( status ) ) {
 			// An import was stopped before finishing
-			if ( ongoingImport && ( customersProgress > 0 || ordersProgress > 0 ) ) {
+			if ( activeImport && ( customersProgress > 0 || ordersProgress > 0 ) ) {
 				return (
 					<Fragment>
 						<Button isPrimary onClick={ onStartImport } disabled={ importDisabled }>

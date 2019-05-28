@@ -26,15 +26,16 @@ class HistoricalData extends Component {
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
 
 		this.state = {
-			// Whether there is an import that is running
+			// Whether there is an active import (which might have already finished)
+			// which matches the period and skipChecked settings
+			activeImport: false,
+			// Whether the active import is currently running
 			inProgress: false,
 			period: {
 				date: moment().format( this.dateFormat ),
 				label: 'all',
 			},
-			// Whether there is an ongoing import (that might be paused) which matches the period and skipChecked settings
-			ongoingImport: false,
-			// Whether there is an ongoingImport but the user click on 'reimport data'
+			// Whether there is an active import but the user click on 'reimport data'
 			reimportingData: false,
 			skipChecked: true,
 		};
@@ -75,8 +76,8 @@ class HistoricalData extends Component {
 		);
 		this.makeQuery( path, errorMessage );
 		this.setState( {
+			activeImport: false,
 			inProgress: false,
-			ongoingImport: false,
 		} );
 	}
 
@@ -98,8 +99,8 @@ class HistoricalData extends Component {
 	onStartImport() {
 		const { period, skipChecked } = this.state;
 		this.setState( {
+			activeImport: true,
 			inProgress: true,
-			ongoingImport: true,
 			reimportingData: false,
 		} );
 		const path =
@@ -126,43 +127,43 @@ class HistoricalData extends Component {
 
 	onPeriodChange( val ) {
 		this.setState( {
+			activeImport: false,
 			inProgress: false,
 			period: {
 				...this.state.period,
 				label: val,
 			},
-			ongoingImport: false,
 		} );
 	}
 
 	onDateChange( val ) {
 		this.setState( {
+			activeImport: false,
 			inProgress: false,
 			period: {
 				date: val,
 				label: 'custom',
 			},
-			ongoingImport: false,
 		} );
 	}
 
 	onSkipChange( val ) {
 		this.setState( {
+			activeImport: false,
 			inProgress: false,
-			ongoingImport: false,
 			skipChecked: val,
 		} );
 	}
 
 	render() {
-		const { inProgress, ongoingImport, period, reimportingData, skipChecked } = this.state;
+		const { activeImport, inProgress, period, reimportingData, skipChecked } = this.state;
 
 		return (
 			<HistoricalDataLayout
+				activeImport={ activeImport }
 				dateFormat={ this.dateFormat }
 				onImportFinish={ this.onImportFinish }
 				inProgress={ inProgress }
-				ongoingImport={ ongoingImport }
 				onPeriodChange={ this.onPeriodChange }
 				onDateChange={ this.onDateChange }
 				onSkipChange={ this.onSkipChange }
