@@ -13,7 +13,7 @@ export const formatParams = ( dateFormat, period, skipChecked ) => {
 	if ( period.label !== 'all' ) {
 		if ( period.label === 'custom' ) {
 			const daysDifference = moment().diff( moment( period.date, dateFormat ), 'days', true );
-			params.days = Math.ceil( daysDifference );
+			params.days = Math.floor( daysDifference );
 		} else {
 			params.days = parseInt( period.label, 10 );
 		}

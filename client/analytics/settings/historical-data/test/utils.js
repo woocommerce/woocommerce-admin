@@ -26,7 +26,7 @@ describe( 'formatParams', () => {
 
 	it( 'returns correct days param based on period date', () => {
 		const date = '2018-01-01';
-		const days = Math.ceil( moment().diff( moment( date, 'YYYY-MM-DD' ), 'days', true ) );
+		const days = Math.floor( moment().diff( moment( date, 'YYYY-MM-DD' ), 'days', true ) );
 		expect( formatParams( 'YYYY-MM-DD', { label: 'custom', date }, false ) ).toEqual( { days } );
 	} );
 

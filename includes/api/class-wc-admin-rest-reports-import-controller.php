@@ -187,7 +187,7 @@ class WC_Admin_REST_Reports_Import_Controller extends WC_Admin_REST_Reports_Cont
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
-			'minimum'           => 1,
+			'minimum'           => 0,
 		);
 		$params['skip_existing'] = array(
 			'description'       => __( 'Skip importing existing order data.', 'woocommerce-admin' ),

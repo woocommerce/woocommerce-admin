@@ -346,7 +346,7 @@ class WC_Admin_Reports_Sync {
 		$where_clause = '';
 		$offset       = $page > 1 ? ( $page - 1 ) * $limit : 0;
 
-		if ( $days ) {
+		if ( is_int( $days ) ) {
 			$days_ago      = date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) );
 			$where_clause .= " AND post_date >= '{$days_ago}'";
 		}
@@ -574,7 +574,7 @@ class WC_Admin_Reports_Sync {
 			$query_args = array();
 		}
 
-		if ( $days ) {
+		if ( is_int( $days ) ) {
 			$query_args['date_query'] = array(
 				'after' => date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ),
 			);

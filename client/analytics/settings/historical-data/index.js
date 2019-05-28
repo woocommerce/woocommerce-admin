@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Component } from '@wordpress/element';
 import moment from 'moment';
+import { withSpokenMessages } from '@wordpress/components';
 
 /**
  * WooCommerce dependencies
@@ -25,7 +26,7 @@ class HistoricalData extends Component {
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
 
 		this.state = {
-			// Whether there is an ongoing import which is not paused
+			// Whether there is an import that is running
 			inProgress: false,
 			period: {
 				date: moment().format( this.dateFormat ),
@@ -39,6 +40,7 @@ class HistoricalData extends Component {
 		};
 
 		this.makeQuery = this.makeQuery.bind( this );
+		this.onImportFinish = this.onImportFinish.bind( this );
 		this.onDeletePreviousData = this.onDeletePreviousData.bind( this );
 		this.onReimportData = this.onReimportData.bind( this );
 		this.onStartImport = this.onStartImport.bind( this );
@@ -78,6 +80,14 @@ class HistoricalData extends Component {
 		} );
 	}
 
+	onImportFinish() {
+		const { debouncedSpeak } = this.props;
+		debouncedSpeak( 'Import complete' );
+		this.setState( {
+			inProgress: false,
+		} );
+	}
+
 	onReimportData() {
 		this.setState( {
 			inProgress: false,
@@ -105,7 +115,6 @@ class HistoricalData extends Component {
 	onStopImport() {
 		this.setState( {
 			inProgress: false,
-			reimportingData: false,
 		} );
 		const path = '/wc/v4/reports/import/cancel';
 		const errorMessage = __(
@@ -151,6 +160,7 @@ class HistoricalData extends Component {
 		return (
 			<HistoricalDataLayout
 				dateFormat={ this.dateFormat }
+				onImportFinish={ this.onImportFinish }
 				inProgress={ inProgress }
 				ongoingImport={ ongoingImport }
 				onPeriodChange={ this.onPeriodChange }
@@ -168,4 +178,4 @@ class HistoricalData extends Component {
 	}
 }
 
-export default HistoricalData;
+export default withSpokenMessages( HistoricalData );

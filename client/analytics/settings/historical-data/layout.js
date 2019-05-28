@@ -4,12 +4,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
-import { withSpokenMessages } from '@wordpress/components';
+import { SECOND } from '@fresh-data/framework';
 
 /**
  * Internal dependencies
  */
+import { DEFAULT_REQUIREMENT } from 'wc-api/constants';
 import { formatParams, getStatus } from './utils';
 import HistoricalDataActions from './actions';
 import HistoricalDataPeriodSelector from './period-selector';
@@ -25,10 +25,8 @@ class HistoricalDataLayout extends Component {
 			customersProgress,
 			customersTotal,
 			dateFormat,
-			debouncedSpeak,
 			importDate,
 			inProgress,
-			isImporting,
 			ongoingImport,
 			onPeriodChange,
 			onDateChange,
@@ -43,14 +41,10 @@ class HistoricalDataLayout extends Component {
 			reimportingData,
 			skipChecked,
 		} = this.props;
-		const importInProgress = inProgress && isImporting !== false;
-		if ( inProgress && isImporting === false ) {
-			debouncedSpeak( 'Import complete' );
-		}
 		const status = getStatus( {
 			customersProgress,
 			customersTotal,
-			inProgress: importInProgress,
+			inProgress,
 			ordersProgress,
 			ordersTotal,
 			reimportingData,
@@ -74,13 +68,13 @@ class HistoricalDataLayout extends Component {
 							<Fragment>
 								<HistoricalDataPeriodSelector
 									dateFormat={ dateFormat }
-									disabled={ importInProgress }
+									disabled={ inProgress }
 									onPeriodChange={ onPeriodChange }
 									onDateChange={ onDateChange }
 									value={ period }
 								/>
 								<HistoricalDataSkipCheckbox
-									disabled={ importInProgress }
+									disabled={ inProgress }
 									checked={ skipChecked }
 									onChange={ onSkipChange }
 								/>
@@ -102,10 +96,10 @@ class HistoricalDataLayout extends Component {
 				<HistoricalDataActions
 					customersProgress={ customersProgress }
 					onDeletePreviousData={ onDeletePreviousData }
+					ongoingImport={ ongoingImport }
 					onReimportData={ onReimportData }
 					onStartImport={ onStartImport }
 					onStopImport={ onStopImport }
-					ongoingImport={ ongoingImport }
 					ordersProgress={ ordersProgress }
 					status={ status }
 				/>
@@ -114,39 +108,50 @@ class HistoricalDataLayout extends Component {
 	}
 }
 
-export default compose( [
-	withSpokenMessages,
-	withSelect( ( select, props ) => {
-		const { getImportStatus, getImportTotals } = select( 'wc-api' );
-		const { dateFormat, ongoingImport, period, skipChecked } = props;
+export default withSelect( ( select, props ) => {
+	const { getImportStatus, getImportTotals } = select( 'wc-api' );
+	const { dateFormat, inProgress, ongoingImport, period, skipChecked } = props;
 
-		const { customers, orders } = getImportTotals(
-			formatParams( dateFormat, period, skipChecked )
-		);
+	const { customers, orders } = getImportTotals( formatParams( dateFormat, period, skipChecked ) );
 
-		if ( ! ongoingImport ) {
-			return {
-				customersTotal: customers,
-				ordersTotal: orders,
-			};
-		}
-
-		const {
-			customers_count: customersProgress,
-			customers_total: customersTotal,
-			imported_from: importDate,
-			is_importing: isImporting,
-			orders_count: ordersProgress,
-			orders_total: ordersTotal,
-		} = getImportStatus( formatParams( dateFormat, period, skipChecked ) );
-
+	if ( ! ongoingImport ) {
 		return {
-			customersProgress,
-			customersTotal: customersTotal || customers,
-			importDate,
-			isImporting,
-			ordersProgress,
-			ordersTotal: ordersTotal || orders,
+			customersTotal: customers,
+			ordersTotal: orders,
 		};
-	} ),
-] )( HistoricalDataLayout );
+	}
+
+	const requirement = inProgress
+		? {
+				...DEFAULT_REQUIREMENT,
+				timeout: 3 * SECOND,
+			}
+		: DEFAULT_REQUIREMENT;
+	const {
+		customers_count: customersProgress,
+		customers_total: customersTotal,
+		imported_from: importDate,
+		is_importing: isImporting,
+		orders_count: ordersProgress,
+		orders_total: ordersTotal,
+	} = getImportStatus( formatParams( dateFormat, period, skipChecked ), requirement );
+
+	const hasImportFinished = Boolean(
+		inProgress &&
+			isImporting === false &&
+			( ( customersProgress === customersTotal && customersTotal > 0 ) ||
+				( ordersProgress === ordersTotal && ordersTotal > 0 ) )
+	);
+	if ( hasImportFinished ) {
+		props.onImportFinish();
+	}
+
+	return {
+		customersProgress,
+		customersTotal: customersTotal || customers,
+		importDate,
+		inProgress: inProgress || isImporting,
+		ordersProgress,
+		ordersTotal: ordersTotal || orders,
+	};
+} )( HistoricalDataLayout );
