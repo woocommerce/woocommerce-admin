@@ -22,6 +22,7 @@ class StoreDetails extends Component {
 		this.state = {
 			addressLine1: '',
 			addressLine2: '',
+			city: '',
 			countryState: '',
 			postCode: '',
 		};
@@ -30,9 +31,9 @@ class StoreDetails extends Component {
 	}
 
 	isValidForm() {
-		const { addressLine1, countryState, postCode } = this.state;
+		const { addressLine1, city, countryState, postCode } = this.state;
 
-		if ( addressLine1.length && countryState && postCode.length ) {
+		if ( addressLine1.length && city.length && countryState.length && postCode.length ) {
 			return true;
 		}
 
@@ -44,13 +45,14 @@ class StoreDetails extends Component {
 			return;
 		}
 
-		const { addressLine1, addressLine2, countryState, postCode } = this.state;
+		const { addressLine1, addressLine2, city, countryState, postCode } = this.state;
 
 		this.props.updateSettings( {
 			general: {
 				woocommerce_store_address: addressLine1,
 				woocommerce_store_address_2: addressLine2,
 				woocommerce_default_country: countryState,
+				woocommerce_store_city: city,
 				woocommerce_store_postcode: postCode,
 			},
 		} );
@@ -89,7 +91,7 @@ class StoreDetails extends Component {
 	}
 
 	render() {
-		const { addressLine1, addressLine2, countryState, postCode } = this.state;
+		const { addressLine1, addressLine2, city, countryState, postCode } = this.state;
 
 		return (
 			<Fragment>
@@ -121,6 +123,13 @@ class StoreDetails extends Component {
 						options={ this.getCountryStateOptions() }
 						value={ countryState }
 						required
+					/>
+
+					<TextControl
+						label={ __( 'City', 'woocommerce-admin' ) }
+						onChange={ value => this.setState( { city: value } ) }
+						required
+						value={ city }
 					/>
 
 					<TextControl
