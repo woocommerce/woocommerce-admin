@@ -24,10 +24,16 @@ class StoreDetails extends Component {
 			addressLine2: '',
 			city: '',
 			countryState: '',
+			countryStateOptions: [],
 			postCode: '',
 		};
 
 		this.submitForm = this.submitForm.bind( this );
+	}
+
+	componentWillMount() {
+		const countryStateOptions = this.getCountryStateOptions();
+		this.setState( { countryStateOptions } );
 	}
 
 	isValidForm() {
@@ -91,7 +97,14 @@ class StoreDetails extends Component {
 	}
 
 	render() {
-		const { addressLine1, addressLine2, city, countryState, postCode } = this.state;
+		const {
+			addressLine1,
+			addressLine2,
+			city,
+			countryState,
+			countryStateOptions,
+			postCode,
+		} = this.state;
 
 		return (
 			<Fragment>
@@ -120,7 +133,7 @@ class StoreDetails extends Component {
 					<SelectControl
 						label={ __( 'Country / State', 'woocommerce-admin' ) }
 						onChange={ value => this.setState( { countryState: value } ) }
-						options={ this.getCountryStateOptions() }
+						options={ countryStateOptions }
 						value={ countryState }
 						required
 					/>
