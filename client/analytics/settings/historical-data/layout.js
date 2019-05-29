@@ -23,7 +23,6 @@ import './style.scss';
 class HistoricalDataLayout extends Component {
 	render() {
 		const {
-			activeImport,
 			customersProgress,
 			customersTotal,
 			dateFormat,
@@ -93,13 +92,11 @@ class HistoricalDataLayout extends Component {
 					</div>
 				</div>
 				<HistoricalDataActions
-					activeImport={ activeImport }
-					customersProgress={ customersProgress }
+					importDate={ importDate }
 					onDeletePreviousData={ onDeletePreviousData }
 					onReimportData={ onReimportData }
 					onStartImport={ onStartImport }
 					onStopImport={ onStopImport }
-					ordersProgress={ ordersProgress }
 					status={ status }
 				/>
 			</Fragment>
@@ -166,12 +163,12 @@ export default withSelect( ( select, props ) => {
 	if ( ! activeImport ) {
 		return {
 			customersTotal: customers,
+			importDate,
 			ordersTotal: orders,
 		};
 	}
 
 	return {
-		activeImport,
 		customersProgress,
 		customersTotal: isNil( customersTotal ) ? customers : customersTotal,
 		importDate,
