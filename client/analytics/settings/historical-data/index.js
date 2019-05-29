@@ -60,6 +60,7 @@ class HistoricalData extends Component {
 					addNotice( { status: 'error', message: errorMessage } );
 					this.setState( {
 						activeImport: false,
+						lastImportStopTimestamp: Date.now(),
 					} );
 				}
 			} )
@@ -68,6 +69,7 @@ class HistoricalData extends Component {
 					addNotice( { status: 'error', message: error.message } );
 					this.setState( {
 						activeImport: false,
+						lastImportStopTimestamp: Date.now(),
 					} );
 				}
 			} );
