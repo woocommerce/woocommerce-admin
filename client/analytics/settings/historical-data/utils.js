@@ -44,6 +44,7 @@ export const getStatus = ( {
 		) {
 			return 'finalizing';
 		}
+		return 'initializing';
 	}
 	if ( customersTotal > 0 || ordersTotal > 0 ) {
 		if ( customersProgress === customersTotal && ordersProgress === ordersTotal ) {

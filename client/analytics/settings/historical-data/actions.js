@@ -20,7 +20,7 @@ function HistoricalDataActions( {
 		const importDisabled = status !== 'ready';
 
 		// An import is currently in progress
-		if ( [ 'customers', 'orders', 'finalizing' ].includes( status ) ) {
+		if ( [ 'initializing', 'customers', 'orders', 'finalizing' ].includes( status ) ) {
 			return (
 				<Fragment>
 					<Button
