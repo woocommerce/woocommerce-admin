@@ -28,7 +28,6 @@ export const getStatus = ( {
 	inProgress,
 	ordersProgress,
 	ordersTotal,
-	reimportingData,
 } ) => {
 	if ( inProgress ) {
 		if ( customersProgress < customersTotal ) {
@@ -47,11 +46,7 @@ export const getStatus = ( {
 		}
 	}
 	if ( customersTotal > 0 || ordersTotal > 0 ) {
-		if (
-			! reimportingData &&
-			customersProgress === customersTotal &&
-			ordersProgress === ordersTotal
-		) {
+		if ( customersProgress === customersTotal && ordersProgress === ordersTotal ) {
 			return 'finished';
 		}
 		return 'ready';

@@ -87,19 +87,6 @@ describe( 'getStatus', () => {
 		).toEqual( 'finished' );
 	} );
 
-	it( 'returns `ready` when customers and orders are not already imported but `reimportingData` is true', () => {
-		expect(
-			getStatus( {
-				customersProgress: 1,
-				customersTotal: 1,
-				inProgress: false,
-				ordersProgress: 0,
-				ordersTotal: 1,
-				reimportingData: true,
-			} )
-		).toEqual( 'ready' );
-	} );
-
 	it( 'returns `ready` when there are customers or orders to import', () => {
 		expect(
 			getStatus( {

@@ -29,20 +29,18 @@ class HistoricalData extends Component {
 			// Whether there is an active import (which might have been stopped)
 			// that matches the period and skipChecked settings
 			activeImport: null,
-			// Whether the active import is currently running
-			inProgress: null,
-			lastImportTimestamp: 0,
+			lastImportStartTimestamp: 0,
+			lastImportStopTimestamp: 0,
 			period: {
 				date: moment().format( this.dateFormat ),
 				label: 'all',
 			},
-			// Whether there is an active import but the user click on 'reimport data'
-			reimportingData: null,
 			skipChecked: true,
 		};
 
 		this.makeQuery = this.makeQuery.bind( this );
-		this.onImportFinish = this.onImportFinish.bind( this );
+		this.onImportFinished = this.onImportFinished.bind( this );
+		this.onImportStarted = this.onImportStarted.bind( this );
 		this.onDeletePreviousData = this.onDeletePreviousData.bind( this );
 		this.onReimportData = this.onReimportData.bind( this );
 		this.onStartImport = this.onStartImport.bind( this );
@@ -62,7 +60,6 @@ class HistoricalData extends Component {
 					addNotice( { status: 'error', message: errorMessage } );
 					this.setState( {
 						activeImport: false,
-						inProgress: null,
 					} );
 				}
 			} )
@@ -71,10 +68,24 @@ class HistoricalData extends Component {
 					addNotice( { status: 'error', message: error.message } );
 					this.setState( {
 						activeImport: false,
-						inProgress: null,
 					} );
 				}
 			} );
+	}
+
+	onImportFinished() {
+		const { debouncedSpeak } = this.props;
+		debouncedSpeak( 'Import complete' );
+		this.setState( {
+			lastImportStopTimestamp: Date.now(),
+		} );
+	}
+
+	onImportStarted() {
+		this.setState( {
+			activeImport: true,
+			lastImportStartTimestamp: Date.now(),
+		} );
 	}
 
 	onDeletePreviousData() {
@@ -86,34 +97,17 @@ class HistoricalData extends Component {
 		this.makeQuery( path, errorMessage );
 		this.setState( {
 			activeImport: false,
-			inProgress: null,
-		} );
-	}
-
-	onImportFinish() {
-		const { debouncedSpeak } = this.props;
-		debouncedSpeak( 'Import complete' );
-		this.setState( {
-			inProgress: false,
 		} );
 	}
 
 	onReimportData() {
 		this.setState( {
 			activeImport: false,
-			inProgress: null,
-			reimportingData: true,
 		} );
 	}
 
 	onStartImport() {
 		const { period, skipChecked } = this.state;
-		this.setState( {
-			activeImport: true,
-			inProgress: true,
-			lastImportTimestamp: Date.now(),
-			reimportingData: false,
-		} );
 		const path =
 			'/wc/v4/reports/import' +
 			stringifyQuery( formatParams( this.dateFormat, period, skipChecked ) );
@@ -122,11 +116,12 @@ class HistoricalData extends Component {
 			'woocommerce-admin'
 		);
 		this.makeQuery( path, errorMessage );
+		this.onImportStarted();
 	}
 
 	onStopImport() {
 		this.setState( {
-			inProgress: false,
+			lastImportStopTimestamp: Date.now(),
 		} );
 		const path = '/wc/v4/reports/import/cancel';
 		const errorMessage = __(
@@ -139,7 +134,6 @@ class HistoricalData extends Component {
 	onPeriodChange( val ) {
 		this.setState( {
 			activeImport: false,
-			inProgress: null,
 			period: {
 				...this.state.period,
 				label: val,
@@ -150,7 +144,6 @@ class HistoricalData extends Component {
 	onDateChange( val ) {
 		this.setState( {
 			activeImport: false,
-			inProgress: null,
 			period: {
 				date: val,
 				label: 'custom',
@@ -161,7 +154,6 @@ class HistoricalData extends Component {
 	onSkipChange( val ) {
 		this.setState( {
 			activeImport: false,
-			inProgress: null,
 			skipChecked: val,
 		} );
 	}
@@ -169,10 +161,9 @@ class HistoricalData extends Component {
 	render() {
 		const {
 			activeImport,
-			inProgress,
-			lastImportTimestamp,
+			lastImportStartTimestamp,
+			lastImportStopTimestamp,
 			period,
-			reimportingData,
 			skipChecked,
 		} = this.state;
 
@@ -180,9 +171,10 @@ class HistoricalData extends Component {
 			<HistoricalDataLayout
 				activeImport={ activeImport }
 				dateFormat={ this.dateFormat }
-				onImportFinish={ this.onImportFinish }
-				inProgress={ inProgress }
-				lastImportTimestamp={ lastImportTimestamp }
+				onImportFinished={ this.onImportFinished }
+				onImportStarted={ this.onImportStarted }
+				lastImportStartTimestamp={ lastImportStartTimestamp }
+				lastImportStopTimestamp={ lastImportStopTimestamp }
 				onPeriodChange={ this.onPeriodChange }
 				onDateChange={ this.onDateChange }
 				onSkipChange={ this.onSkipChange }
@@ -191,7 +183,6 @@ class HistoricalData extends Component {
 				onStartImport={ this.onStartImport }
 				onStopImport={ this.onStopImport }
 				period={ period }
-				reimportingData={ reimportingData }
 				skipChecked={ skipChecked }
 			/>
 		);

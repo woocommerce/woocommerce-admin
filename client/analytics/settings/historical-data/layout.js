@@ -39,7 +39,6 @@ class HistoricalDataLayout extends Component {
 			ordersProgress,
 			ordersTotal,
 			period,
-			reimportingData,
 			skipChecked,
 		} = this.props;
 		const status = getStatus( {
@@ -48,7 +47,6 @@ class HistoricalDataLayout extends Component {
 			inProgress,
 			ordersProgress,
 			ordersTotal,
-			reimportingData,
 		} );
 
 		return (
@@ -111,17 +109,33 @@ class HistoricalDataLayout extends Component {
 
 export default withSelect( ( select, props ) => {
 	const { getImportStatus, isGetImportStatusRequesting, getImportTotals } = select( 'wc-api' );
-	const { activeImport, dateFormat, inProgress, lastImportTimestamp, period, skipChecked } = props;
+	const {
+		activeImport,
+		dateFormat,
+		lastImportStartTimestamp,
+		lastImportStopTimestamp,
+		onImportStarted,
+		onImportFinished,
+		period,
+		skipChecked,
+	} = props;
+
+	const inProgress =
+		( typeof lastImportStartTimestamp !== 'undefined' &&
+			typeof lastImportStopTimestamp === 'undefined' ) ||
+		lastImportStartTimestamp > lastImportStopTimestamp;
 
 	const params = formatParams( dateFormat, period, skipChecked );
-	const { customers, orders } = getImportTotals( params, lastImportTimestamp );
+	// Use timestamp to invalidate previous totals when the import finished/stopped
+	const { customers, orders } = getImportTotals( params, lastImportStopTimestamp );
 	const requirement = inProgress
 		? {
 				freshness: 3 * SECOND,
 				timeout: 3 * SECOND,
 			}
 		: DEFAULT_REQUIREMENT;
-	// Use the timestamp
+
+	// Use timestamp to invalidate previous status when a new import starts
 	const {
 		customers_count: customersProgress,
 		customers_total: customersTotal,
@@ -129,19 +143,15 @@ export default withSelect( ( select, props ) => {
 		is_importing: isImporting,
 		orders_count: ordersProgress,
 		orders_total: ordersTotal,
-	} = getImportStatus( lastImportTimestamp, requirement );
-	const isStatusLoading = isGetImportStatusRequesting( lastImportTimestamp );
+	} = getImportStatus( lastImportStartTimestamp, requirement );
+	const isStatusLoading = isGetImportStatusRequesting( lastImportStartTimestamp );
 
-	if (
-		( isNil( activeImport ) && ! isImporting ) ||
-		( ! isNil( activeImport ) && ! activeImport )
-	) {
-		return {
-			customersTotal: customers,
-			ordersTotal: orders,
-		};
+	const hasImportStarted = Boolean(
+		! lastImportStartTimestamp && ! isStatusLoading && ! inProgress && isImporting === true
+	);
+	if ( hasImportStarted ) {
+		onImportStarted();
 	}
-
 	const hasImportFinished = Boolean(
 		! isStatusLoading &&
 			inProgress &&
@@ -150,15 +160,22 @@ export default withSelect( ( select, props ) => {
 				( ordersProgress === ordersTotal && ordersTotal > 0 ) )
 	);
 	if ( hasImportFinished ) {
-		props.onImportFinish();
+		onImportFinished();
+	}
+
+	if ( ! activeImport ) {
+		return {
+			customersTotal: customers,
+			ordersTotal: orders,
+		};
 	}
 
 	return {
-		activeImport: isNil( activeImport ) ? isImporting : activeImport,
+		activeImport,
 		customersProgress,
 		customersTotal: isNil( customersTotal ) ? customers : customersTotal,
 		importDate,
-		inProgress: isNil( inProgress ) ? isImporting : inProgress,
+		inProgress,
 		ordersProgress,
 		ordersTotal: isNil( ordersTotal ) ? orders : ordersTotal,
 	};
