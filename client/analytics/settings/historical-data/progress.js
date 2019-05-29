@@ -12,7 +12,7 @@ function HistoricalDataProgress( { label, progress = 0, total } ) {
 
 	const labelCounters = ! isNil( total )
 		? sprintf( __( '%(progress)s of %(total)s', 'woocommerce-admin' ), {
-				progress,
+				progress: progress || 0,
 				total,
 			} )
 		: null;
@@ -28,7 +28,7 @@ function HistoricalDataProgress( { label, progress = 0, total } ) {
 			<progress
 				className="woocommerce-settings-historical-data__progress-bar"
 				max={ total }
-				value={ progress }
+				value={ progress || 0 }
 			/>
 		</div>
 	);

@@ -3,6 +3,7 @@
  * External dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { omit } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -32,15 +33,15 @@ function read( resourceNames, fetch = apiFetch ) {
 		const query = getResourceIdentifier( resourceName );
 		const fetchArgs = {
 			parse: false,
-			path: NAMESPACE + `/${ endpoint }${ stringifyQuery( query ) }`,
+			path: NAMESPACE + `/${ endpoint }${ stringifyQuery( omit( query, [ 'timestamp' ] ) ) }`,
 		};
 
 		try {
 			const response = await fetch( fetchArgs );
-			const totals = await response.json();
+			const data = await response.json();
 
 			return {
-				[ resourceName ]: totals,
+				[ resourceName ]: { data },
 			};
 		} catch ( error ) {
 			return { [ resourceName ]: { error } };

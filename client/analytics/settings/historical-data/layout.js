@@ -4,6 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
+import { isNil } from 'lodash';
 import { SECOND } from '@fresh-data/framework';
 
 /**
@@ -109,24 +110,18 @@ class HistoricalDataLayout extends Component {
 }
 
 export default withSelect( ( select, props ) => {
-	const { getImportStatus, getImportTotals } = select( 'wc-api' );
-	const { activeImport, dateFormat, inProgress, period, skipChecked } = props;
+	const { getImportStatus, isGetImportStatusRequesting, getImportTotals } = select( 'wc-api' );
+	const { activeImport, dateFormat, inProgress, lastImportTimestamp, period, skipChecked } = props;
 
-	const { customers, orders } = getImportTotals( formatParams( dateFormat, period, skipChecked ) );
-
-	if ( ! activeImport ) {
-		return {
-			customersTotal: customers,
-			ordersTotal: orders,
-		};
-	}
-
+	const params = formatParams( dateFormat, period, skipChecked );
+	const { customers, orders } = getImportTotals( params, lastImportTimestamp );
 	const requirement = inProgress
 		? {
-				...DEFAULT_REQUIREMENT,
+				freshness: 3 * SECOND,
 				timeout: 3 * SECOND,
 			}
 		: DEFAULT_REQUIREMENT;
+	// Use the timestamp
 	const {
 		customers_count: customersProgress,
 		customers_total: customersTotal,
@@ -134,10 +129,22 @@ export default withSelect( ( select, props ) => {
 		is_importing: isImporting,
 		orders_count: ordersProgress,
 		orders_total: ordersTotal,
-	} = getImportStatus( formatParams( dateFormat, period, skipChecked ), requirement );
+	} = getImportStatus( lastImportTimestamp, requirement );
+	const isStatusLoading = isGetImportStatusRequesting( lastImportTimestamp );
+
+	if (
+		( isNil( activeImport ) && ! isImporting ) ||
+		( ! isNil( activeImport ) && ! activeImport )
+	) {
+		return {
+			customersTotal: customers,
+			ordersTotal: orders,
+		};
+	}
 
 	const hasImportFinished = Boolean(
-		inProgress &&
+		! isStatusLoading &&
+			inProgress &&
 			isImporting === false &&
 			( ( customersProgress === customersTotal && customersTotal > 0 ) ||
 				( ordersProgress === ordersTotal && ordersTotal > 0 ) )
@@ -147,11 +154,12 @@ export default withSelect( ( select, props ) => {
 	}
 
 	return {
+		activeImport: isNil( activeImport ) ? isImporting : activeImport,
 		customersProgress,
-		customersTotal: customersTotal || customers,
+		customersTotal: isNil( customersTotal ) ? customers : customersTotal,
 		importDate,
-		inProgress: inProgress || isImporting,
+		inProgress: isNil( inProgress ) ? isImporting : inProgress,
 		ordersProgress,
-		ordersTotal: ordersTotal || orders,
+		ordersTotal: isNil( ordersTotal ) ? orders : ordersTotal,
 	};
 } )( HistoricalDataLayout );

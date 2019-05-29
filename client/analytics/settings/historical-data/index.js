@@ -26,17 +26,18 @@ class HistoricalData extends Component {
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
 
 		this.state = {
-			// Whether there is an active import (which might have already finished)
-			// which matches the period and skipChecked settings
-			activeImport: false,
+			// Whether there is an active import (which might have been stopped)
+			// that matches the period and skipChecked settings
+			activeImport: null,
 			// Whether the active import is currently running
-			inProgress: false,
+			inProgress: null,
+			lastImportTimestamp: 0,
 			period: {
 				date: moment().format( this.dateFormat ),
 				label: 'all',
 			},
 			// Whether there is an active import but the user click on 'reimport data'
-			reimportingData: false,
+			reimportingData: null,
 			skipChecked: true,
 		};
 
@@ -59,11 +60,19 @@ class HistoricalData extends Component {
 					addNotice( { status: 'success', message: response.message } );
 				} else {
 					addNotice( { status: 'error', message: errorMessage } );
+					this.setState( {
+						activeImport: false,
+						inProgress: null,
+					} );
 				}
 			} )
 			.catch( error => {
 				if ( error && error.message ) {
 					addNotice( { status: 'error', message: error.message } );
+					this.setState( {
+						activeImport: false,
+						inProgress: null,
+					} );
 				}
 			} );
 	}
@@ -77,7 +86,7 @@ class HistoricalData extends Component {
 		this.makeQuery( path, errorMessage );
 		this.setState( {
 			activeImport: false,
-			inProgress: false,
+			inProgress: null,
 		} );
 	}
 
@@ -91,7 +100,8 @@ class HistoricalData extends Component {
 
 	onReimportData() {
 		this.setState( {
-			inProgress: false,
+			activeImport: false,
+			inProgress: null,
 			reimportingData: true,
 		} );
 	}
@@ -101,6 +111,7 @@ class HistoricalData extends Component {
 		this.setState( {
 			activeImport: true,
 			inProgress: true,
+			lastImportTimestamp: Date.now(),
 			reimportingData: false,
 		} );
 		const path =
@@ -128,7 +139,7 @@ class HistoricalData extends Component {
 	onPeriodChange( val ) {
 		this.setState( {
 			activeImport: false,
-			inProgress: false,
+			inProgress: null,
 			period: {
 				...this.state.period,
 				label: val,
@@ -139,7 +150,7 @@ class HistoricalData extends Component {
 	onDateChange( val ) {
 		this.setState( {
 			activeImport: false,
-			inProgress: false,
+			inProgress: null,
 			period: {
 				date: val,
 				label: 'custom',
@@ -150,13 +161,20 @@ class HistoricalData extends Component {
 	onSkipChange( val ) {
 		this.setState( {
 			activeImport: false,
-			inProgress: false,
+			inProgress: null,
 			skipChecked: val,
 		} );
 	}
 
 	render() {
-		const { activeImport, inProgress, period, reimportingData, skipChecked } = this.state;
+		const {
+			activeImport,
+			inProgress,
+			lastImportTimestamp,
+			period,
+			reimportingData,
+			skipChecked,
+		} = this.state;
 
 		return (
 			<HistoricalDataLayout
@@ -164,6 +182,7 @@ class HistoricalData extends Component {
 				dateFormat={ this.dateFormat }
 				onImportFinish={ this.onImportFinish }
 				inProgress={ inProgress }
+				lastImportTimestamp={ lastImportTimestamp }
 				onPeriodChange={ this.onPeriodChange }
 				onDateChange={ this.onDateChange }
 				onSkipChange={ this.onSkipChange }
