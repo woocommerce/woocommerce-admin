@@ -39,6 +39,16 @@ describe( 'formatParams', () => {
 } );
 
 describe( 'getStatus', () => {
+	it( 'returns `initializing` when no progress numbers are defined', () => {
+		expect(
+			getStatus( {
+				customersTotal: 1,
+				inProgress: true,
+				ordersTotal: 1,
+			} )
+		).toEqual( 'initializing' );
+	} );
+
 	it( 'returns `customers` when importing customers', () => {
 		expect(
 			getStatus( {

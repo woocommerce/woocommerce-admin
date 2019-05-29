@@ -5,7 +5,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { isNil } from 'lodash';
 
-function HistoricalDataProgress( { label, progress = 0, total } ) {
+function HistoricalDataProgress( { label, progress, total } ) {
 	const labelText = sprintf( __( 'Imported %(label)s', 'woocommerce-admin' ), {
 		label,
 	} );

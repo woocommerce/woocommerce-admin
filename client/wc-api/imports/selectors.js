@@ -15,16 +15,7 @@ const getImportStatus = ( getResource, requireResource ) => (
 	requirement = DEFAULT_REQUIREMENT
 ) => {
 	const resourceName = getResourceName( 'import-status', timestamp );
-	return (
-		requireResource( requirement, resourceName ).data || {
-			customers_total: null,
-			customers_count: null,
-			imported_from: null,
-			is_importing: null,
-			orders_total: null,
-			orders_count: null,
-		}
-	);
+	return requireResource( requirement, resourceName ).data || {};
 };
 
 const isGetImportStatusRequesting = getResource => timestamp => {
@@ -45,7 +36,7 @@ const getImportTotals = ( getResource, requireResource ) => (
 ) => {
 	const identifier = { ...query, timestamp };
 	const resourceName = getResourceName( 'import-totals', identifier );
-	return requireResource( requirement, resourceName ).data || { customers: null, orders: null };
+	return requireResource( requirement, resourceName ).data || {};
 };
 
 export default {
