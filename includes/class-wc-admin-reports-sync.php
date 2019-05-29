@@ -597,7 +597,7 @@ class WC_Admin_Reports_Sync {
 	 * Init customer lookup table update (in batches).
 	 *
 	 * @param int|bool $days Number of days to process.
-	 * @param bool     $skip_existing Skip exisiting records.
+	 * @param bool     $skip_existing Skip existing records.
 	 */
 	public static function customer_lookup_import_batch_init( $days, $skip_existing ) {
 		$batch_size      = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
