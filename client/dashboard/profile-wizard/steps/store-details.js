@@ -28,7 +28,7 @@ class StoreDetails extends Component {
 			postCode: '',
 		};
 
-		this.submitForm = this.submitForm.bind( this );
+		this.onContinue = this.onContinue.bind( this );
 	}
 
 	componentWillMount() {
@@ -46,14 +46,15 @@ class StoreDetails extends Component {
 		return false;
 	}
 
-	submitForm() {
+	async onContinue() {
 		if ( ! this.isValidForm() ) {
 			return;
 		}
 
+		const { addNotice, goToNextStep, isError, updateSettings } = this.props;
 		const { addressLine1, addressLine2, city, countryState, postCode } = this.state;
 
-		this.props.updateSettings( {
+		await updateSettings( {
 			general: {
 				woocommerce_store_address: addressLine1,
 				woocommerce_store_address_2: addressLine2,
@@ -63,7 +64,14 @@ class StoreDetails extends Component {
 			},
 		} );
 
-		// @todo Go to next step once https://github.com/woocommerce/woocommerce-admin/pull/2283 is merged.
+		if ( ! isError ) {
+			goToNextStep();
+		} else {
+			addNotice( {
+				status: 'error',
+				message: __( 'There was a problem saving your store details.', 'woocommerce-admin' ),
+			} );
+		}
 	}
 
 	getCountryStateOptions() {
@@ -152,7 +160,7 @@ class StoreDetails extends Component {
 						value={ postCode }
 					/>
 
-					<Button isPrimary onClick={ this.submitForm } disabled={ ! this.isValidForm() }>
+					<Button isPrimary onClick={ this.onContinue } disabled={ ! this.isValidForm() }>
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</Card>
