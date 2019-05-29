@@ -30,21 +30,21 @@ export const getStatus = ( {
 	ordersTotal,
 } ) => {
 	if ( inProgress ) {
+		if (
+			isNil( customersProgress ) ||
+			isNil( ordersProgress ) ||
+			isNil( customersTotal ) ||
+			isNil( ordersTotal )
+		) {
+			return 'initializing';
+		}
 		if ( customersProgress < customersTotal ) {
 			return 'customers';
 		}
 		if ( ordersProgress < ordersTotal ) {
 			return 'orders';
 		}
-		if (
-			! isNil( customersTotal ) &&
-			! isNil( ordersTotal ) &&
-			customersProgress === customersTotal &&
-			ordersProgress === ordersTotal
-		) {
-			return 'finalizing';
-		}
-		return 'initializing';
+		return 'finalizing';
 	}
 	if ( customersTotal > 0 || ordersTotal > 0 ) {
 		if ( customersProgress === customersTotal && ordersProgress === ordersTotal ) {
