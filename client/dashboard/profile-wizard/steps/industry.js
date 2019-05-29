@@ -6,11 +6,14 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { Button, CheckboxControl } from 'newspack-components';
 import { includes, filter } from 'lodash';
+import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import { H, Card } from '@woocommerce/components';
+import withSelect from 'wc-api/with-select';
 
 class Industry extends Component {
 	constructor() {
@@ -23,9 +26,17 @@ class Industry extends Component {
 	}
 
 	async onContinue() {
-		const updateProfile = await this.props.updateProfile( { industry: this.state.selected } );
-		if ( updateProfile && 'success' === updateProfile.status ) {
-			this.props.goToNextStep();
+		const { addNotice, goToNextStep, isError, updateProfileItems } = this.props;
+
+		await updateProfileItems( { industry: this.state.selected } );
+
+		if ( ! isError ) {
+			goToNextStep();
+		} else {
+			addNotice( {
+				status: 'error',
+				message: __( 'There was a problem updating your industries.', 'woocommerce-admin' ),
+			} );
 		}
 	}
 
@@ -62,7 +73,7 @@ class Industry extends Component {
 							return (
 								<CheckboxControl
 									key={ slug }
-									label={ __( industries[ slug ], 'woocommerce-admin' ) }
+									label={ industries[ slug ] }
 									onChange={ () => this.onChange( slug ) }
 								/>
 							);
@@ -71,11 +82,7 @@ class Industry extends Component {
 
 					<div className="woocommerce-profile-wizard__industry-actions">
 						{ selected.length > 0 && (
-							<Button
-								isPrimary
-								className="woocommerce-profile-wizard__continue"
-								onClick={ this.onContinue }
-							>
+							<Button isPrimary onClick={ this.onContinue }>
 								{ __( 'Continue', 'woocommerce-admin' ) }
 							</Button>
 						) }
@@ -86,4 +93,20 @@ class Industry extends Component {
 	}
 }
 
-export default Industry;
+export default compose(
+	withSelect( select => {
+		const { getProfileItemsError } = select( 'wc-api' );
+
+		const isError = Boolean( getProfileItemsError() );
+
+		return { isError };
+	} ),
+	withDispatch( dispatch => {
+		const { addNotice, updateProfileItems } = dispatch( 'wc-api' );
+
+		return {
+			addNotice,
+			updateProfileItems,
+		};
+	} )
+)( Industry );
