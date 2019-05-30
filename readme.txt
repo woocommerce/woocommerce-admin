@@ -5,16 +5,12 @@ Requires at least: 5.0.0
 Tested up to: 5.1.1
 Requires PHP: 5.4.0
 Stable tag: 1.0.0
-License: GPLv2
-License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/LICENSE.md
+License: GPLv3
+License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/license.txt
 
 == Description ==
 
 WooCommerce Admin is a new JavaScript-driven interface for managing your store. The plugin includes new and improved reports and a dashboard to monitor key metrics of your site.
-
-**BETA SOFTWARE**
-
-This plugin is under active development and, as such, we advise you to first install WooCommerce Admin in a staging/test environment. While this code is being run in production on sites, we recommend you first verify it works for you in a test environment, the same as any plugin for WooCommerce.
 
 **New Reports for WooCommerce**
 
@@ -74,6 +70,41 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 1. WooCommerce Admin Dashboard
 2. Activity Panels
 3. Analytics
+
+== Changelog ==
+
+= 0.12.0 2019-05-14
+
+- Fix: dashboard issues #2194
+- Fix: Dashboard: re-arrange section dropdown order #2216
+- Fix: Refactor page handler API #2209
+- Fix: EllipsisMenu misalignment in wide containers #2207
+- Dev: Handle “all guests” when getting customers from orders. #2038
+- Dev: Order milestones: prevent order count queries from being issues on every request. #2224
+- Dev: Replace Rebuild reports settings with Import Historical Data #2198
+- Dev: add a defaultValue parameter to the ReportFilters component #2150 👏 @rrennick
+- Dev: Record refunds separate from order entries #2083
+- Dev: Add refund filtering to order reports #2179
+- Dev: Hook up API Historical Data screen to API endpoints #2177
+- Fix: Show Y grid ticks/lines in charts where all values are lower than 1 #2147
+- Fix: Dashboard: Rename class/feature to remove conflict with legacy dashboard widget #2138
+- Fix: add defaultOrder field to tablecard header #2139 👏 @rrennick
+- Fix: Travis: Exit scripts with error when one occurs #2184
+- Dev: Add profile wizard base page #1933
+- Dev: Save section/block preferences in user data #2148
+- Fix: Vertically center Dashboard 'Add more' button #2171
+- Fix: Don't make an API call when there are no performance indicators #2157
+- Dev: Add Historical Data Import Screen #2073
+- Fix: Fix customer type filter param in orders report #2169
+- Dev: EllipsisMenu: Refactor children to renderContent #2154
+- Dev: Dashboard: Section add, remove, move up, and move down #2134
+- Fix: Persist chart interval in Dashboard #2156
+- Dev: Allow renaming Dashboard sections #2131
+- Dev: Add import endpoint and controller #2034
+- Fix: Prevent chart type buttons breaking in two lines #2135
+- Dev: Support Sequential Order Numbers in Downloads Report order number filter #1907
+- Dev: Scroll to top of the table when navigating table pages #2051
+- Dev: Add empty state for the Reviews panels #2124
 
 == Changelog ==
 

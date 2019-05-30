@@ -4,6 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -17,13 +18,14 @@ import { ReportFilters } from '@woocommerce/components';
 import StorePerformance from './store-performance';
 import TaskList from './task-list';
 import ProfileWizard from './profile-wizard';
+import withSelect from 'wc-api/with-select';
 
-export default class Dashboard extends Component {
+class Dashboard extends Component {
 	renderDashboardOutput() {
-		// @todo This should be replaced by a check from the REST API response from #1897.
-		const profileWizardComplete = true;
-		if ( window.wcAdminFeatures.onboarding && ! profileWizardComplete ) {
-			return <ProfileWizard />;
+		const { path, profileItems, query } = this.props;
+
+		if ( window.wcAdminFeatures.onboarding && ! profileItems.skipped && ! profileItems.completed ) {
+			return <ProfileWizard query={ query } />;
 		}
 
 		// @todo This should be replaced by a check of tasks from the REST API response from #1897.
@@ -31,8 +33,6 @@ export default class Dashboard extends Component {
 		if ( window.wcAdminFeatures.onboarding && ! requiredTasksComplete ) {
 			return <TaskList />;
 		}
-
-		const { query, path } = this.props;
 
 		// @todo When the customizable dashboard is ready to be launched, we can pull `CustomizableDashboard`'s render
 		// method into `index.js`, and replace both this feature check, and the existing dashboard below.
@@ -59,3 +59,12 @@ export default class Dashboard extends Component {
 		);
 	}
 }
+
+export default compose(
+	withSelect( select => {
+		const { getProfileItems } = select( 'wc-api' );
+		const profileItems = getProfileItems();
+
+		return { profileItems };
+	} )
+)( Dashboard );

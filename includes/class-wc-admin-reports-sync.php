@@ -274,7 +274,7 @@ class WC_Admin_Reports_Sync {
 				( self::SINGLE_ORDER_IMPORT_ACTION === $existing_job->get_hook() ) ||
 				(
 					self::QUEUE_DEPEDENT_ACTION === $existing_job->get_hook() &&
-					in_array( self::SINGLE_ORDER_IMPORT_ACTION, $existing_job->get_args() )
+					in_array( self::SINGLE_ORDER_IMPORT_ACTION, $existing_job->get_args(), true )
 				)
 			) {
 				return;
@@ -351,6 +351,7 @@ class WC_Admin_Reports_Sync {
 		$count = $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts}
 			WHERE post_type IN ( 'shop_order', 'shop_order_refund' )
+			AND post_status NOT IN ( 'auto-draft', 'trash' )
 			{$where_clause}"
 		); // WPCS: unprepared SQL ok.
 
@@ -358,6 +359,7 @@ class WC_Admin_Reports_Sync {
 			$wpdb->prepare(
 				"SELECT ID FROM {$wpdb->posts}
 				WHERE post_type IN ( 'shop_order', 'shop_order_refund' )
+				AND post_status NOT IN ( 'auto-draft', 'trash' )
 				{$where_clause}
 				ORDER BY post_date ASC
 				LIMIT %d
@@ -601,12 +603,14 @@ class WC_Admin_Reports_Sync {
 	 */
 	public static function customer_lookup_import_batch_init( $days, $skip_existing ) {
 		$batch_size      = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
+		$customer_roles  = apply_filters( 'woocommerce_admin_import_customer_roles', array( 'customer' ) );
 		$customer_query  = self::get_user_ids_for_batch(
 			$days,
 			$skip_existing,
 			array(
-				'fields' => 'ID',
-				'number' => 1,
+				'fields'   => 'ID',
+				'number'   => 1,
+				'role__in' => $customer_roles,
 			)
 		);
 		$total_customers = $customer_query->get_total();
@@ -629,7 +633,8 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function customer_lookup_import_batch( $batch_number, $days, $skip_existing ) {
-		$batch_size = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
+		$batch_size     = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
+		$customer_roles = apply_filters( 'woocommerce_admin_import_customer_roles', array( 'customer' ) );
 
 		$properties = array(
 			'batch_number' => $batch_number,
@@ -642,11 +647,12 @@ class WC_Admin_Reports_Sync {
 			$days,
 			$skip_existing,
 			array(
-				'fields'  => 'ID',
-				'orderby' => 'ID',
-				'order'   => 'ASC',
-				'number'  => $batch_size,
-				'paged'   => $batch_number,
+				'fields'   => 'ID',
+				'orderby'  => 'ID',
+				'order'    => 'ASC',
+				'number'   => $batch_size,
+				'paged'    => $batch_number,
+				'role__in' => $customer_roles,
 			)
 		);
 

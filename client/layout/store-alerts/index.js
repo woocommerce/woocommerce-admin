@@ -73,6 +73,7 @@ class StoreAlerts extends Component {
 				<Button
 					key={ action.name }
 					isDefault
+					isPrimary={ action.primary }
 					href={ action.url }
 					onClick={ '' === action.status ? noop : markStatus }
 				>
@@ -180,7 +181,7 @@ class StoreAlerts extends Component {
 		const numberOfAlerts = alerts.length;
 		const alert = alerts[ currentIndex ];
 		const type = alert.type;
-		const className = classnames( 'woocommerce-store-alerts', {
+		const className = classnames( 'woocommerce-store-alerts', 'woocommerce-analytics__card', {
 			'is-alert-error': 'error' === type,
 			'is-alert-update': 'update' === type,
 		} );

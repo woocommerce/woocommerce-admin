@@ -1,0 +1,110 @@
+.woocommerce-stepper {
+	background: $muriel-white;
+	box-shadow: $muriel-box-shadow-1dp;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	margin-bottom: $gap-large;
+	padding-left: $gap;
+	padding-right: $gap;
+	font-size: 16px;
+
+	.woocommerce-stepper__step {
+		display: inline-flex;
+		align-items: center;
+		padding: $gap-small;
+		font-weight: 400;
+		color: $muriel-gray-900;
+		height: 48px;
+
+		svg {
+			display: none;
+		}
+
+		.woocommerce-spinner {
+			display: block;
+			margin-left: -$gap-smaller;
+			margin-right: $gap-smallest;
+		}
+
+		.woocommerce-spinner__circle {
+			stroke: $muriel-hot-blue-500;
+		}
+
+		&.is-active,
+		&.is-complete {
+			.woocommerce-stepper__step-icon {
+				background: $muriel-hot-blue-500;
+				color: $muriel-white;
+			}
+		}
+
+		&.is-active {
+			font-weight: 600;
+			.woocommerce-stepper__step-label {
+				margin: 0;
+			}
+		}
+
+		&.is-complete {
+			.woocommerce-stepper__step-number {
+				display: none;
+			}
+			svg {
+				display: inline;
+			}
+		}
+	}
+
+	.woocommerce-stepper__step-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		min-width: 24px;
+		margin-right: $gap-small;
+		background: $muriel-gray-50;
+		color: $muriel-gray-600;
+		border-radius: 50%;
+	}
+
+	.woocommerce-stepper__step-divider {
+		flex-grow: 1;
+		border-bottom: 1px solid $muriel-gray-50;
+
+		&:last-child {
+			display: none;
+		}
+	}
+
+	@include breakpoint( '<782px' ) {
+		.woocommerce-stepper__step-label {
+			display: none;
+			padding-top: 24px;
+		}
+		.woocommerce-stepper__step-icon {
+			margin-right: 0;
+		}
+	}
+
+	&.is-vertical {
+		align-items: initial;
+		flex-direction: column;
+
+		.woocommerce-stepper__step-divider {
+			border-bottom: 0;
+			border-left: 1px solid $muriel-gray-50;
+			height: 50px;
+			margin-left: 24px;
+		}
+
+		.woocommerce-stepper__step-label {
+			display: initial;
+		}
+
+		.woocommerce-stepper__step-icon {
+			margin-right: $gap-small;
+		}
+	}
+}
