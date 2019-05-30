@@ -100,17 +100,15 @@ class ProductTypes extends Component {
 						} ) }
 					</div>
 
-					<div className="woocommerce-profile-wizard__card-actions">
-						{ selected.length > 0 && (
-							<Button
-								isPrimary
-								className="woocommerce-profile-wizard__continue"
-								onClick={ this.onContinue }
-							>
-								{ __( 'Continue', 'woocommerce-admin' ) }
-							</Button>
-						) }
-					</div>
+					{ selected.length > 0 && (
+						<Button
+							isPrimary
+							className="woocommerce-profile-wizard__continue"
+							onClick={ this.onContinue }
+						>
+							{ __( 'Continue', 'woocommerce-admin' ) }
+						</Button>
+					) }
 				</Card>
 			</Fragment>
 		);

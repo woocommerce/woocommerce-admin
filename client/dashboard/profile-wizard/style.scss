@@ -27,7 +27,7 @@
 
 		button {
 			display: flex;
-			margin: 0 auto;
+			margin: $gap auto 0;
 			min-width: 310px;
 			max-width: 100%;
 			justify-content: center;
@@ -264,16 +264,6 @@
 		}
 	}
 
-	.woocommerce-profile-wizard__industry-card {
-		.woocommerce-card__body {
-			padding-bottom: 0;
-		}
-
-		.woocommerce-profile-wizard__industry-actions {
-			padding-bottom: $gap;
-		}
-	}
-
 	/* Hide wp-admin and WooCommerce elements when viewing the profile wizard */
 	#adminmenumain,
 	#wpadminbar,
@@ -306,9 +296,10 @@
 		margin-left: 64px;
 		min-height: 28px;
 
-		button {
+		button.muriel-button {
+			margin: 0;
 			height: 40px;
-			min-width: none;
+			min-width: auto;
 			display: initial;
 		}
 	}

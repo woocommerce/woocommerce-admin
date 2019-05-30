@@ -80,13 +80,11 @@ class Industry extends Component {
 						} ) }
 					</div>
 
-					<div className="woocommerce-profile-wizard__industry-actions">
-						{ selected.length > 0 && (
-							<Button isPrimary onClick={ this.onContinue }>
-								{ __( 'Continue', 'woocommerce-admin' ) }
-							</Button>
-						) }
-					</div>
+					{ selected.length > 0 && (
+						<Button isPrimary onClick={ this.onContinue }>
+							{ __( 'Continue', 'woocommerce-admin' ) }
+						</Button>
+					) }
 				</Card>
 			</Fragment>
 		);
