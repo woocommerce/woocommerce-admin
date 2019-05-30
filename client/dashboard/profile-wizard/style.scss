@@ -214,7 +214,7 @@
 			padding-top: $gap;
 			padding-bottom: $gap;
 
-			&:after {
+			&::after {
 				content: '';
 				position: absolute;
 				left: $gap-large * 2;
@@ -257,7 +257,7 @@
 			&:last-of-type {
 				padding-bottom: 0;
 
-				&:after {
+				&::after {
 					display: none;
 				}
 			}
