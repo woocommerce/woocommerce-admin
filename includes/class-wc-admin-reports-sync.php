@@ -382,10 +382,16 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function orders_lookup_import_batch( $batch_number, $days, $skip_existing ) {
-		self::record_event( 'import_job_start', array( 'type' => 'order' ) );
-
 		$batch_size = self::get_batch_size( self::ORDERS_IMPORT_BATCH_ACTION );
-		$orders     = self::get_orders( $batch_size, $batch_number, $days, $skip_existing );
+
+		$properties = array(
+			'batch_number' => $batch_number,
+			'batch_size'   => $batch_size,
+			'type'         => 'order',
+		);
+		self::record_event( 'import_job_start', $properties );
+
+		$orders = self::get_orders( $batch_size, $batch_number, $days, $skip_existing );
 
 		foreach ( $orders->order_ids as $order_id ) {
 			self::orders_lookup_import_order( $order_id );
@@ -394,7 +400,9 @@ class WC_Admin_Reports_Sync {
 		$imported_count = get_option( 'wc_admin_import_orders_count', 0 );
 		update_option( 'wc_admin_import_orders_count', $imported_count + count( $orders->order_ids ) );
 
-		self::record_event( 'import_job_complete', array( 'type' => 'order' ) );
+		$properties['imported_count'] = $imported_count;
+
+		self::record_event( 'import_job_complete', $properties );
 	}
 
 	/**
@@ -621,9 +629,15 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function customer_lookup_import_batch( $batch_number, $days, $skip_existing ) {
-		self::record_event( 'import_job_start', array( 'type' => 'customer' ) );
+		$batch_size = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
 
-		$batch_size     = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
+		$properties = array(
+			'batch_number' => $batch_number,
+			'batch_size'   => $batch_size,
+			'type'         => 'customer',
+		);
+		self::record_event( 'import_job_start', $properties );
+
 		$customer_query = self::get_user_ids_for_batch(
 			$days,
 			$skip_existing,
@@ -646,7 +660,9 @@ class WC_Admin_Reports_Sync {
 		$imported_count = get_option( 'wc_admin_import_customers_count', 0 );
 		update_option( 'wc_admin_import_customers_count', $imported_count + count( $customer_ids ) );
 
-		self::record_event( 'import_job_complete', array( 'type' => 'customer' ) );
+		$properties['imported_count'] = $imported_count;
+
+		self::record_event( 'import_job_complete', $properties );
 	}
 
 	/**
