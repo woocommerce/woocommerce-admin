@@ -74,6 +74,7 @@ class WC_Admin_Onboarding {
 	/**
 	 * Get a list of allowed product types for the onboarding wizard.
 	 *
+	 * @todo Prices for products should be pulled dynamically.
 	 * @return array
 	 */
 	public static function get_allowed_product_types() {
@@ -94,26 +95,24 @@ class WC_Admin_Onboarding {
 					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-subscriptions/', 'woocommerce-admin' ),
 				),
 				'memberships'   => array(
-					'label'       => __( 'Memberships — $199 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Memberships — $149 per year', 'woocommerce-admin' ),
 					'description' => __( 'Restrict content to customer groups.', 'woocommerce-admin' ),
 					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-memberships/', 'woocommerce-admin' ),
 				),
 				'composite'     => array(
-					'label'       => __( 'Composite Products — $199 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Composite Products — $79 per year', 'woocommerce-admin' ),
 					'description' => __( 'Kits with configurable components.', 'woocommerce-admin' ),
 					'more_url'    => __( 'https://woocommerce.com/products/composite-products/', 'woocommerce-admin' ),
 				),
 				'spaces'        => array(
-					'label'       => __( 'Spaces — $199 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Spaces — $249 per year', 'woocommerce-admin' ),
 					'description' => __( 'Sell access to spaces, e.g. hotel rooms.', 'woocommerce-admin' ),
-					// @todo Need a link for this product information.
-					'more_url'    => __( '#', 'woocommerce-admin' ),
+					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-accommodation-bookings/', 'woocommerce-admin' ),
 				),
 				'rentals'       => array(
-					'label'       => __( 'Rentals — $199 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Rentals — $249 per year', 'woocommerce-admin' ),
 					'description' => __( 'Sell access to rental items, e.g. cars.', 'woocommerce-admin' ),
-					// @todo Need a link for this product information.
-					'more_url'    => __( '#', 'woocommerce-admin' ),
+					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-bookings/', 'woocommerce-admin' ),
 				),
 			)
 		);
