@@ -96,9 +96,10 @@ class ProfileWizard extends Component {
 		const currentStepIndex = getSteps().findIndex( s => s.key === currentStep.key );
 		const nextStep = getSteps()[ currentStepIndex + 1 ];
 
-		if ( 'undefined' === nextStep ) {
-			await updateProfileItems( { complete: true } );
-			if ( ! isError ) {
+		if ( 'undefined' === typeof nextStep ) {
+			await updateProfileItems( { completed: true } );
+
+			if ( isError ) {
 				addNotice( {
 					status: 'error',
 					message: __( 'There was a problem completing the profiler.', 'woocommerce-admin' ),
@@ -139,7 +140,7 @@ export default compose(
 		return { isError };
 	} ),
 	withDispatch( dispatch => {
-		const { addNotice, updateProfileItems } = dispatch( 'wc-admin' );
+		const { addNotice, updateProfileItems } = dispatch( 'wc-api' );
 
 		return {
 			addNotice,
