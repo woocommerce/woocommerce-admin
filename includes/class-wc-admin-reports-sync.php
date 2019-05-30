@@ -633,8 +633,7 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function customer_lookup_import_batch( $batch_number, $days, $skip_existing ) {
-		$batch_size     = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
-		$customer_roles = apply_filters( 'woocommerce_admin_import_customer_roles', array( 'customer' ) );
+		$batch_size = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
 
 		$properties = array(
 			'batch_number' => $batch_number,
@@ -643,6 +642,7 @@ class WC_Admin_Reports_Sync {
 		);
 		self::record_event( 'import_job_start', $properties );
 
+		$customer_roles = apply_filters( 'woocommerce_admin_import_customer_roles', array( 'customer' ) );
 		$customer_query = self::get_user_ids_for_batch(
 			$days,
 			$skip_existing,
