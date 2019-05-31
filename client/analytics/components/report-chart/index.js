@@ -103,7 +103,16 @@ export class ReportChart extends Component {
 		return chartData;
 	}
 
-	renderChart( mode, isRequesting, chartData ) {
+	getTimeChartTotals() {
+		const { primaryData, secondaryData, selectedChart } = this.props;
+
+		return {
+			primary: get( primaryData, [ 'data', 'totals', selectedChart.key ], null ),
+			secondary: get( secondaryData, [ 'data', 'totals', selectedChart.key ], null ),
+		};
+	}
+
+	renderChart( mode, isRequesting, chartData, chartTotals ) {
 		const {
 			emptySearchResults,
 			filterParam,
@@ -140,6 +149,7 @@ export class ReportChart extends Component {
 				screenReaderFormat={ formats.screenReaderFormat }
 				showHeaderControls={ showHeaderControls }
 				title={ selectedChart.label }
+				totals={ chartTotals }
 				tooltipLabelFormat={ formats.tooltipLabelFormat }
 				tooltipTitle={ ( 'time-comparison' === mode && selectedChart.label ) || null }
 				tooltipValueFormat={ getTooltipValueFormat( selectedChart.type ) }
@@ -174,8 +184,9 @@ export class ReportChart extends Component {
 		const isChartRequesting =
 			isRequesting || primaryData.isRequesting || secondaryData.isRequesting;
 		const chartData = this.getTimeChartData();
+		const chartTotals = this.getTimeChartTotals();
 
-		return this.renderChart( 'time-comparison', isChartRequesting, chartData );
+		return this.renderChart( 'time-comparison', isChartRequesting, chartData, chartTotals );
 	}
 
 	render() {

@@ -79,7 +79,7 @@ class Chart extends Component {
 		const { data, filterParam, mode, query } = this.props;
 		if ( 'item-comparison' === mode ) {
 			const selectedIds = filterParam ? getIdsFromQuery( query[ filterParam ] ) : [];
-			return this.getOrderedKeys( data, mode, [], [], selectedIds ).map( orderedItem => orderedItem.key );
+			return this.getOrderedKeys( [], [], selectedIds ).map( orderedItem => orderedItem.key );
 		}
 		return getUniqueKeys( data );
 	}
@@ -111,7 +111,8 @@ class Chart extends Component {
 		window.removeEventListener( 'resize', this.updateDimensions );
 	}
 
-	getOrderedKeys( data, mode, focusedKeys, visibleKeys, selectedIds = [] ) {
+	getOrderedKeys( focusedKeys, visibleKeys, selectedIds = [] ) {
+		const { data, mode, totals } = this.props;
 		if ( ! data || data.length === 0 ) {
 			return [];
 		}
@@ -130,7 +131,7 @@ class Chart extends Component {
 				focus: focusedKeys.length === 0 || focusedKeys.includes( key ),
 				key,
 				label,
-				total: data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
+				total: totals ? totals[ key ] : data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 				visible: visibleKeys.includes( key ),
 			};
 		} );
@@ -290,7 +291,7 @@ class Chart extends Component {
 			yFormat,
 		} = this.props;
 		const selectedIds = filterParam ? getIdsFromQuery( query[ filterParam ] ) : [];
-		const orderedKeys = this.getOrderedKeys( data, mode, focusedKeys, visibleKeys, selectedIds );
+		const orderedKeys = this.getOrderedKeys( focusedKeys, visibleKeys, selectedIds );
 		const visibleData = isRequesting ? null : this.getVisibleData( data, orderedKeys );
 
 		const legendPosition = this.getLegendPosition();
@@ -507,6 +508,10 @@ Chart.propTypes = {
 	 * A title describing this chart.
 	 */
 	title: PropTypes.string,
+	/**
+	 * Values to overwrite the legend totals. If not defined, the sum of all line values will be used.
+	 */
+	totals: PropTypes.object,
 	/**
 	 * A datetime formatting string or overriding function to format the tooltip label.
 	 */
