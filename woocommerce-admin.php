@@ -6,7 +6,6 @@
  * Author: WooCommerce
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
- * Domain Path: /languages
  * Version: 0.12.0
  *
  * WC requires at least: 3.6.0
@@ -77,8 +76,6 @@ class WC_Admin_Feature_Plugin {
 	 * @return void
 	 */
 	public function on_plugins_loaded() {
-		$this->load_plugin_textdomain();
-
 		if ( ! $this->check_dependencies() ) {
 			add_action( 'admin_init', array( $this, 'deactivate_self' ) );
 			add_action( 'admin_notices', array( $this, 'render_dependencies_notice' ) );
@@ -104,13 +101,6 @@ class WC_Admin_Feature_Plugin {
 		$this->define( 'WC_ADMIN_FEATURES_PATH', WC_ADMIN_ABSPATH . 'includes/features/' );
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', __FILE__ );
 		$this->define( 'WC_ADMIN_VERSION_NUMBER', '0.12.0' );
-	}
-
-	/**
-	 * Load Localisation files.
-	 */
-	protected function load_plugin_textdomain() {
-		load_plugin_textdomain( 'woocommerce-admin', false, basename( dirname( __FILE__ ) ) . '/languages' );
 	}
 
 	/**

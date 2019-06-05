@@ -18,17 +18,5 @@ module.exports = function( api ) {
 				},
 			],
 		],
-		env: {
-			production: {
-				plugins: [
-					[
-						'@wordpress/babel-plugin-makepot',
-						{
-							output: 'languages/woocommerce-admin.pot',
-						},
-					],
-				],
-			},
-		},
 	};
 };
