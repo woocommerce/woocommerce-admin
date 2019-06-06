@@ -18,7 +18,7 @@
     "license.txt"
   ],
   "scripts": {
-    "prebuild": "npm run -s install-if-deps-outdated && php ./bin/update-version.php",
+    "prebuild": "npm run -s install-if-deps-outdated && php ./bin/update-version.php && composer install --no-dev",
     "build": "npm run build:feature-config && npm run build:packages && npm run build:core",
     "postbuild": "npm run -s i18n:php && npm run -s i18n:pot",
     "build:core": "cross-env NODE_ENV=production webpack",

@@ -55,10 +55,35 @@ class WC_Admin_Feature_Plugin {
 	 */
 	public function init() {
 		$this->define_constants();
+		$this->include_rest_api_package();
 		register_activation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
 		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
 		add_filter( 'woocommerce_data_stores', array( $this, 'add_data_stores' ) );
+	}
+
+	/**
+	 * Include REST API package.
+	 */
+	protected function include_rest_api_package() {
+		if ( file_exists( __DIR__ . '/vendor/woocommerce-rest-api/woocommerce-rest-api.php' ) ) {
+			require_once __DIR__ . '/vendor/woocommerce-rest-api/woocommerce-rest-api.php';
+		} else {
+			add_action(
+				'admin_notices',
+				function() {
+					echo '<div class="error"><p>';
+					printf(
+						/* Translators: %1$s WooCommerce plugin directory, %2$s is the install command, %3$s is the build command. */
+						esc_html__( 'The development version of WC Admin requires files to be built before it can function properly. From the plugin directory (%1$s), run %2$s to install dependencies and %3$s to build assets.', 'woocommerce-admin' ),
+						'<code>' . esc_html( str_replace( ABSPATH, '', WC_ADMIN_ABSPATH ) ) . '</code>',
+						'<code>npm install</code>',
+						'<code>npm run build</code>'
+					);
+					echo '</p></div>';
+				}
+			);
+		}
 	}
 
 	/**
