@@ -62,7 +62,6 @@
 		background-color: transparent;
 		color: $white;
 		height: 46px;
-		border-bottom: 3px solid #5b3452;
 		max-width: min-content;
 		min-width: 80px;
 		width: 100%;
@@ -115,18 +114,18 @@
 
 		&:hover,
 		&.components-button:not(:disabled):not([aria-disabled='true']):hover {
-			background-color: $core-grey-light-200;
 			box-shadow: none;
-
-			&.has-unread::after,
-			&.woocommerce-layout__activity-panel-tab-wordpress-notices::after {
-				border-color: $core-grey-light-200;
-			}
 		}
 
 		&:focus,
 		&.components-button:not(:disabled):not([aria-disabled='true']):focus {
 			box-shadow: inset -1px -1px 0 $core-grey-dark-300, inset 1px 1px 0 $core-grey-dark-300;
+		}
+
+		&.components-button:focus {
+			background-color: transparent;
+			color: $white;
+			box-shadow: none !important;
 		}
 	}
 }

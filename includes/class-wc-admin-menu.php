@@ -64,6 +64,7 @@ class WC_Admin_Menu {
 		remove_menu_page( 'users.php' );
 		remove_menu_page( 'tools.php' );
 		remove_menu_page( 'link-manager.php' );
+		remove_menu_page( 'options-general.php' );
 
 		// Core settings pages.
 		remove_submenu_page( 'options-general.php', 'options-general.php' );
