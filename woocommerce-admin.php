@@ -125,6 +125,9 @@ class WC_Admin_Feature_Plugin {
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-events.php';
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-api-init.php';
 
+		// Update wp-admin navigation.
+		require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-menu.php';
+
 		// Admin note providers.
 		// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
 		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-new-sales-record.php';

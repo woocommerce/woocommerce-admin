@@ -92,12 +92,18 @@ class WC_Admin_Page_Controller {
 	}
 
 	/**
+	 * Returns array of registered pages.
+	 */
+	public function get_registered_pages() {
+		return $this->pages;
+	}
+
+	/**
 	 * Determine the current page ID, if it was registered with this controller.
 	 */
 	public function determine_current_page() {
 		$current_url       = '';
 		$current_screen_id = $this->get_current_screen_id();
-
 		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
 			$current_url = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 		}

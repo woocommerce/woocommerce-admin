@@ -39,6 +39,16 @@ function wc_admin_is_connected_page() {
 }
 
 /**
+ * Gets registered pages.
+ *
+ * @return array
+ */
+function wc_admin_get_registered_pages() {
+	$controller = WC_Admin_Page_Controller::get_instance();
+	return $controller->get_registered_pages();
+}
+
+/**
  * Is this a WooCommerce Admin Page?
  * Passthrough to WC_Admin_Page_Controller::is_registered_page().
  *

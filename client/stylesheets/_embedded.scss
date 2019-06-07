@@ -3,6 +3,9 @@
 // Import our wp-admin reset.
 @import './shared/_reset.scss';
 
+// Import wp-admin skin.
+@import './shared/_wp_admin_skin.scss';
+
 // Import any global styles.
 @import './shared/_global.scss';
 

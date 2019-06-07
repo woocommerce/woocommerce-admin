@@ -6,7 +6,6 @@
 	align-items: center;
 	position: fixed;
 	right: 0;
-	height: $medium-header-height;
 
 	@include breakpoint( '<782px' ) {
 		position: relative;
@@ -23,7 +22,6 @@
 	}
 
 	@include breakpoint( '>960px' ) {
-		height: $large-header-height;
 		max-width: 400px;
 	}
 
@@ -35,12 +33,8 @@
 .woocommerce-layout__activity-panel-tabs {
 	width: 100%;
 	display: flex;
-	height: $medium-header-height;
+	height: 47px;
 	justify-content: flex-end;
-
-	@include breakpoint( '>960px' ) {
-		height: $large-header-height;
-	}
 
 	.dashicon,
 	.gridicon {
@@ -48,13 +42,8 @@
 	}
 
 	svg {
-		width: 18px;
-		height: 18px;
-
-		@include breakpoint( '>960px' ) {
-			width: 24px;
-			height: 24px;
-		}
+		width: 16px;
+		height: 16px;
 	}
 
 	.components-icon-button {
@@ -70,23 +59,21 @@
 		border: none;
 		outline: none;
 		cursor: pointer;
-		background-color: $white;
-		color: $core-grey-dark-500;
+		background-color: transparent;
+		color: $white;
+		height: 46px;
+		border-bottom: 3px solid #5b3452;
 		max-width: min-content;
 		min-width: 80px;
 		width: 100%;
 		font-size: 11px;
-		height: $medium-header-height;
-		@include breakpoint( '>960px' ) {
-			font-size: 13px;
-			height: $large-header-height;
-		}
 
 		&.is-active {
-			color: $core-grey-dark-700;
+			color: $white;
+			border-bottom: 3px solid $woocommerce;
 			box-shadow: none;
 
-			&::before {
+			/*&::before {
 				background-color: $woocommerce;
 				bottom: 0;
 				content: '';
@@ -94,7 +81,7 @@
 				left: 0;
 				position: absolute;
 				right: 0;
-			}
+			}*/
 		}
 
 		&.has-unread::after,
@@ -119,8 +106,8 @@
 			}
 
 			@include breakpoint( '>960px' ) {
-				top: 16px;
-				right: 28px;
+				top: 6px;
+				right: 26px;
 				left: initial;
 				margin-left: 0;
 			}
@@ -192,27 +179,21 @@
 }
 
 .woocommerce-layout__activity-panel-wrapper {
-	height: calc(100vh - #{$medium-header-height + $small-header-height + $adminbar-height-mobile});
+	/*height: calc(100vh - #{$medium-header-height + $small-header-height + $adminbar-height-mobile});*/
+
+	height: calc(100vh - 47px);
+	min-height: calc(100vh - 47px);
+
 	background: $core-grey-light-200;
 	box-shadow: 0 12px 12px 0 rgba(85, 93, 102, 0.3);
 	width: 0;
 	@include activity-panel-slide();
 	position: fixed;
 	right: 0;
-	top: #{$medium-header-height + $small-header-height + $adminbar-height-mobile};
+	top: 46px;
 	z-index: 1000;
 	overflow-x: hidden;
 	overflow-y: auto;
-
-	@include breakpoint( '782px-960px' ) {
-		height: calc(100vh - #{$medium-header-height + $adminbar-height});
-		top: #{$medium-header-height + $adminbar-height};
-	}
-
-	@include breakpoint( '>960px' ) {
-		height: calc(100vh - #{$large-header-height + $adminbar-height});
-		top: #{$large-header-height + $adminbar-height};
-	}
 
 	&.is-open {
 		@include activity-panel-slide();
