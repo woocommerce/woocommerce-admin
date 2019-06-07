@@ -241,4 +241,13 @@ window.sidebar = function() {
 	sidebar.appendChild( backButton );
 };
 
+/* eslint-disable */
+// For the purpose of a demo, let's get them back to wp-admin.
+jQuery( document ).ready( function( $ ) {
+	$( '.woocommerce-admin-back-admin' ).click( function( e ) {
+		window.location = '/wp-admin';
+	} );
+} );
+/* eslintenable */
+
 export { Controller, getPages };
