@@ -41,6 +41,7 @@ class WC_Admin_Menu {
 	public function setup() {
 		if ( WC_Admin_Loader::is_admin_page() || WC_Admin_Loader::is_embed_page() ) {
 			add_action( 'admin_head', array( $this, 'remove_core_menus' ) );
+			add_action( 'admin_head', array( $this, 'update_menu_structure' ) );
 			add_action( 'wp_before_admin_bar_render', array( $this, 'modify_masterbar' ), 100000 );
 		} else {
 			add_action( 'admin_head', array( $this, 'remove_woocommerce_menus' ) );
@@ -75,6 +76,60 @@ class WC_Admin_Menu {
 		remove_submenu_page( 'options-general.php', 'options-permalink.php' );
 		remove_submenu_page( 'options-general.php', 'privacy.php' );
 		remove_submenu_page( 'options-general.php', 'sharing' );
+	}
+
+	/**
+	 * Updates the WooCommerce menu structure on WooCommerces pages.
+	 */
+	public function update_menu_structure() {
+		remove_menu_page( 'woocommerce' );
+		global $menu, $submenu;
+
+		array_unshift(
+			$menu,
+			array(
+				__( 'Orders', 'woocommerce-admin' ),
+				'edit_shop_orders',
+				'edit.php?post_type=shop_order',
+				__( 'Orders', 'woocommerce-admin' ),
+				'menu-top menu-icon-order',
+				'menu-posts-shop_order',
+				'dashicons-admin-post',
+			)
+		);
+
+		array_unshift(
+			$menu,
+			array(
+				__( 'Dashboard', 'woocommerce-admin' ),
+				'manage_woocommerce',
+				'admin.php?page=wc-admin',
+				__( 'Dashboard', 'woocommerce-admin' ),
+				'menu-top menu-icon-generic toplevel_page_woocommerce menu-top-first',
+				'toplevel_page_woocommerce',
+				'dashicons-admin-generic',
+			)
+		);
+
+		$menu[] = array( // phpcs:ignore
+			__( 'Promotions', 'woocommerce-admin' ),
+			'edit_shop_coupons',
+			'edit.php?post_type=shop_coupon',
+			__( 'Promotions', 'woocommerce-admin' ),
+			'menu-top menu-icon-coupon',
+			'menu-posts-shop_coupon',
+			'dashicons-admin-post',
+		);
+
+		$menu[] = array( // phpcs:ignore
+			__( 'Settings', 'woocommerce-admin' ),
+			'manage_woocommerce',
+			'admin.php?page=wc-settings',
+			__( 'Settings', 'woocommerce-admin' ),
+			'menu-top menu-icon-cog',
+			'menu-posts-settings',
+			'dashicons-admin-post',
+		);
 	}
 
 	/**
