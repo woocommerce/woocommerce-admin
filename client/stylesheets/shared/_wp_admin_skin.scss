@@ -549,3 +549,20 @@ div.mce-toolbar-grp,
 .wp-filter .search-form {
 	margin-right: 10px;
 }
+
+#adminmenuwrap {
+	height: 100%;
+}
+
+.woocommerce-admin-back-admin {
+	border: none;
+	background-color: transparent;
+	padding: 6px;
+	margin-left: 6px;
+	cursor: pointer;
+
+	.dashicons {
+		padding-right: 6px;
+		line-height: 0.9em;
+	}
+}

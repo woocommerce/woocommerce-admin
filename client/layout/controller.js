@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { Component, createElement } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import { parse } from 'qs';
 import { find, last, isEqual } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
@@ -120,6 +121,7 @@ class Controller extends Component {
 
 		window.wpNavMenuUrlUpdate( page, query );
 		window.wpNavMenuClassChange( page );
+		window.sidebar();
 		return createElement( page.container, { params, path: url, pathMatch: path, query } );
 	}
 }
@@ -219,6 +221,24 @@ window.wpNavMenuClassChange = function( page ) {
 
 	const wpWrap = document.querySelector( '#wpwrap' );
 	wpWrap.classList.remove( 'wp-responsive-open' );
+};
+
+window.sidebar = function() {
+	const sidebar = document.getElementById( 'adminmenuwrap' );
+
+	const backButton = document.createElement( 'button' );
+	backButton.classList.add( 'woocommerce-admin-back-admin' );
+
+	const icon = document.createElement( 'span' ); //<span className="dashicons dashicons-arrow-left-alt"></span>
+	icon.classList.add( 'dashicons' );
+	icon.classList.add( 'dashicons-arrow-left-alt' );
+
+	const text = document.createElement( 'span' );
+	text.textContent = __( 'Back to wp-admin', 'woocommerce-admin' );
+
+	backButton.appendChild( icon );
+	backButton.appendChild( text );
+	sidebar.appendChild( backButton );
 };
 
 export { Controller, getPages };
