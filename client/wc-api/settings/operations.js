@@ -25,6 +25,10 @@ function readSettings( resourceNames, fetch ) {
 	} );
 
 	return filteredNames.map( async resourceName => {
+		if ( document.hidden ) {
+			return {};
+		}
+
 		const url = NAMESPACE + '/' + resourceName;
 
 		return fetch( { path: url } )
@@ -41,6 +45,10 @@ function updateSettings( resourceNames, data, fetch ) {
 	} );
 
 	return filteredNames.map( async resourceName => {
+		if ( document.hidden ) {
+			return {};
+		}
+
 		const url = NAMESPACE + '/' + resourceName + '/batch';
 		const settingsData = Object.keys( data[ resourceName ] ).map( key => {
 			return { id: key, value: data[ resourceName ][ key ] };

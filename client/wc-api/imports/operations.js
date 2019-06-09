@@ -26,6 +26,10 @@ function read( resourceNames, fetch = apiFetch ) {
 		};
 
 		try {
+			if ( document.hidden ) {
+				return {};
+			}
+
 			const response = await fetch( fetchArgs );
 			const totals = await response.json();
 

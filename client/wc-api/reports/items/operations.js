@@ -45,6 +45,10 @@ function read( resourceNames, fetch = apiFetch ) {
 		};
 
 		try {
+			if ( document.hidden ) {
+				return {};
+			}
+
 			const response = await fetch( fetchArgs );
 			const report = await response.json();
 			const totalResults = parseInt( response.headers.get( 'x-wp-total' ) );

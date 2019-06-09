@@ -40,6 +40,10 @@ function read( resourceNames, fetch = apiFetch ) {
 		const isUnboundedRequest = -1 === query.per_page;
 
 		try {
+			if ( document.hidden ) {
+				return {};
+			}
+
 			const response = await fetch( {
 				/* eslint-disable max-len */
 				/**

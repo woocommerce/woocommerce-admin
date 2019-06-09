@@ -27,6 +27,10 @@ function readReviewQueries( resourceNames, fetch ) {
 		const url = `${ NAMESPACE }/products/reviews${ stringifyQuery( query ) }`;
 
 		try {
+			if ( document.hidden ) {
+				return {};
+			}
+
 			const response = await fetch( {
 				parse: false,
 				path: url,

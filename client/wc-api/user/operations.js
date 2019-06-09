@@ -15,7 +15,7 @@ function update( resourceNames, data, fetch = apiFetch ) {
 }
 
 function readCurrentUserData( resourceNames, fetch ) {
-	if ( resourceNames.includes( 'current-user-data' ) ) {
+	if ( ! document.hidden && resourceNames.includes( 'current-user-data' ) ) {
 		const url = '/wp/v2/users/me?context=edit';
 
 		return [

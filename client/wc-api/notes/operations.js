@@ -31,6 +31,10 @@ function readNoteQueries( resourceNames, fetch ) {
 		const url = `${ NAMESPACE }/admin/notes${ stringifyQuery( query ) }`;
 
 		try {
+			if ( document.hidden ) {
+				return {};
+			}
+
 			const response = await fetch( {
 				parse: false,
 				path: url,
