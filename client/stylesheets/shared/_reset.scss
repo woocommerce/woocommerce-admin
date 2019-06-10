@@ -7,9 +7,21 @@
 
 	#wpcontent,
 	#wpbody-content {
-		padding: 0;
+		padding-left: 0;
 		overflow-x: hidden !important;
 		min-height: calc(100vh - #{$adminbar-height});
+	}
+
+	&.woocommerce_page_wc-admin {
+		#wpbody-content {
+			padding-bottom: 0;
+		}
+	}
+
+	@include breakpoint( '>782px' ) {
+		#wpbody-content {
+			padding-bottom: 0;
+		}
 	}
 
 	@include breakpoint( '<782px' ) {
