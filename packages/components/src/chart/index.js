@@ -131,7 +131,8 @@ class Chart extends Component {
 				focus: focusedKeys.length === 0 || focusedKeys.includes( key ),
 				key,
 				label,
-				total: legendTotals ? legendTotals[ key ] : data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
+				total: legendTotals && 'undefined' !== typeof legendTotals[ key ]
+					? legendTotals[ key ] : data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 				visible: visibleKeys.includes( key ),
 			};
 		} );
