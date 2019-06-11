@@ -33,10 +33,10 @@ const GlobalPrices = () => {
 				interval="day"
 				data={ data.reverse() }
 				dateParser="%Y-%m-%dT%H:%M:%S"
+				legendTotals={ { primary: average } }
 				showHeaderControls={ false }
 				valueType={ 'currency' }
 				tooltipValueFormat={ formatCurrency }
-				totals={ { primary: average } }
 			/>
 		</Card>
 	);

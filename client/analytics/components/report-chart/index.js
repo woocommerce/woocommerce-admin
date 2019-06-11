@@ -112,7 +112,7 @@ export class ReportChart extends Component {
 		};
 	}
 
-	renderChart( mode, isRequesting, chartData, chartTotals ) {
+	renderChart( mode, isRequesting, chartData, legendTotals ) {
 		const {
 			emptySearchResults,
 			filterParam,
@@ -143,13 +143,13 @@ export class ReportChart extends Component {
 				isRequesting={ isRequesting }
 				itemsLabel={ itemsLabel }
 				legendPosition={ legendPosition }
+				legendTotals={ legendTotals }
 				mode={ mode }
 				path={ path }
 				query={ query }
 				screenReaderFormat={ formats.screenReaderFormat }
 				showHeaderControls={ showHeaderControls }
 				title={ selectedChart.label }
-				totals={ chartTotals }
 				tooltipLabelFormat={ formats.tooltipLabelFormat }
 				tooltipTitle={ ( 'time-comparison' === mode && selectedChart.label ) || null }
 				tooltipValueFormat={ getTooltipValueFormat( selectedChart.type ) }
@@ -184,9 +184,9 @@ export class ReportChart extends Component {
 		const isChartRequesting =
 			isRequesting || primaryData.isRequesting || secondaryData.isRequesting;
 		const chartData = this.getTimeChartData();
-		const chartTotals = this.getTimeChartTotals();
+		const legendTotals = this.getTimeChartTotals();
 
-		return this.renderChart( 'time-comparison', isChartRequesting, chartData, chartTotals );
+		return this.renderChart( 'time-comparison', isChartRequesting, chartData, legendTotals );
 	}
 
 	render() {

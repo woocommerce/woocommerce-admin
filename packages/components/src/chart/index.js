@@ -112,7 +112,7 @@ class Chart extends Component {
 	}
 
 	getOrderedKeys( focusedKeys, visibleKeys, selectedIds = [] ) {
-		const { data, mode, totals } = this.props;
+		const { data, legendTotals, mode } = this.props;
 		if ( ! data || data.length === 0 ) {
 			return [];
 		}
@@ -131,7 +131,7 @@ class Chart extends Component {
 				focus: focusedKeys.length === 0 || focusedKeys.includes( key ),
 				key,
 				label,
-				total: totals ? totals[ key ] : data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
+				total: legendTotals ? legendTotals[ key ] : data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 				visible: visibleKeys.includes( key ),
 			};
 		} );
@@ -497,6 +497,10 @@ Chart.propTypes = {
 	 */
 	legendPosition: PropTypes.oneOf( [ 'bottom', 'side', 'top' ] ),
 	/**
+	 * Values to overwrite the legend totals. If not defined, the sum of all line values will be used.
+	 */
+	legendTotals: PropTypes.object,
+	/**
 	 * A datetime formatting string or overriding function to format the screen reader labels.
 	 */
 	screenReaderFormat: PropTypes.oneOfType( [ PropTypes.string, PropTypes.func ] ),
@@ -508,10 +512,6 @@ Chart.propTypes = {
 	 * A title describing this chart.
 	 */
 	title: PropTypes.string,
-	/**
-	 * Values to overwrite the legend totals. If not defined, the sum of all line values will be used.
-	 */
-	totals: PropTypes.object,
 	/**
 	 * A datetime formatting string or overriding function to format the tooltip label.
 	 */
