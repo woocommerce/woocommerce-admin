@@ -13,6 +13,7 @@
     "dist/**/*.js",
     "dist/feature-config-core.php",
     "includes/class-wc-admin-loader.php",
+    "includes/page-controller/*.php",
     "includes/features/**/*.php",
     "languages/**/*.json",
     "license.txt"

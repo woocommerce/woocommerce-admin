@@ -203,22 +203,29 @@ window.wpNavMenuClassChange = function( page ) {
 
 	if ( page.wpOpenMenu ) {
 		const currentMenu = document.querySelector( '#' + page.wpOpenMenu );
-		currentMenu.classList.remove( 'wp-not-current-submenu' );
-		currentMenu.classList.add( 'wp-has-current-submenu' );
-		currentMenu.classList.add( 'wp-menu-open' );
-		currentMenu.classList.add( 'current' );
+		if ( currentMenu && currentMenu.classList ) {
+			currentMenu.classList.remove( 'wp-not-current-submenu' );
+			currentMenu.classList.add( 'wp-has-current-submenu' );
+			currentMenu.classList.add( 'wp-menu-open' );
+			currentMenu.classList.add( 'current' );
+		}
 	}
 
 	// Sometimes navigating from the subMenu to Dashboard does not close subMenu
 	if ( page.wpClosedMenu ) {
 		const closedMenu = document.querySelector( '#' + page.wpClosedMenu );
-		closedMenu.classList.remove( 'wp-has-current-submenu' );
-		closedMenu.classList.remove( 'wp-menu-open' );
-		closedMenu.classList.add( 'wp-not-current-submenu' );
+
+		if ( closedMenu && closedMenu.classList ) {
+			closedMenu.classList.remove( 'wp-has-current-submenu' );
+			closedMenu.classList.remove( 'wp-menu-open' );
+			closedMenu.classList.add( 'wp-not-current-submenu' );
+		}
 	}
 
 	const wpWrap = document.querySelector( '#wpwrap' );
-	wpWrap.classList.remove( 'wp-responsive-open' );
+	if ( wpWrap && wpWrap.classList ) {
+		wpWrap.classList.remove( 'wp-responsive-open' );
+	}
 };
 
 export { Controller, getPages };

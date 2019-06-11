@@ -127,8 +127,8 @@ class WC_Admin_Loader {
 	 * Class loader for enabled WooCommerce Admin features/sections.
 	 */
 	public static function load_features() {
-		require_once WC_ADMIN_ABSPATH . 'includes/page-controller/class-wc-admin-page-controller.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/page-controller/page-controller-functions.php';
+		require_once 'page-controller/class-wc-admin-page-controller.php';
+		require_once 'page-controller/page-controller-functions.php';
 
 		$features = self::get_features();
 		foreach ( $features as $feature ) {
@@ -160,7 +160,7 @@ class WC_Admin_Loader {
 		);
 
 		// Connect existing WooCommerce pages.
-		require_once WC_ADMIN_ABSPATH . 'includes/page-controller/connect-existing-pages.php';
+		require_once 'page-controller/connect-existing-pages.php';
 	}
 
 	/**
