@@ -50,8 +50,8 @@ class WC_Admin_Analytics_Dashboard {
 	 * @return array
 	 */
 	public function add_preload_endpoints( $endpoints ) {
-		$endpoints['performanceIndicators'] = '/wc/v4/reports/performance-indicators/allowed';
-		$endpoints['leaderboards']          = '/wc/v4/leaderboards/allowed';
+		$endpoints['performanceIndicators'] = '/wc-admin/reports/performance-indicators/allowed';
+		$endpoints['leaderboards']          = '/wc-admin/leaderboards/allowed';
 		return $endpoints;
 	}
 

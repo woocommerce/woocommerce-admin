@@ -91,7 +91,7 @@ class HistoricalData extends Component {
 	}
 
 	onDeletePreviousData() {
-		const path = '/wc/v4/reports/import/delete';
+		const path = '/wc-admin/reports/import/delete';
 		const errorMessage = __(
 			'There was a problem deleting your previous data.',
 			'woocommerce-admin'
@@ -111,7 +111,7 @@ class HistoricalData extends Component {
 	onStartImport() {
 		const { period, skipChecked } = this.state;
 		const path =
-			'/wc/v4/reports/import' +
+			'/wc-admin/reports/import' +
 			stringifyQuery( formatParams( this.dateFormat, period, skipChecked ) );
 		const errorMessage = __(
 			'There was a problem rebuilding your report data.',
@@ -125,7 +125,7 @@ class HistoricalData extends Component {
 		this.setState( {
 			lastImportStopTimestamp: Date.now(),
 		} );
-		const path = '/wc/v4/reports/import/cancel';
+		const path = '/wc-admin/reports/import/cancel';
 		const errorMessage = __(
 			'There was a problem stopping your current import.',
 			'woocommerce-admin'
