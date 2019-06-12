@@ -7,7 +7,8 @@
   "prefer-stable": true,
   "minimum-stability": "dev",
   "require": {
-    "composer/installers": "1.6.0"
+    "composer/installers": "1.6.0",
+    "woocommerce/woocommerce-rest-api": ">0"
   },
   "require-dev": {
     "phpunit/phpunit": "6.5.13",
@@ -22,13 +23,29 @@
     ],
     "phpcbf": [
       "phpcbf -p"
-    ]
+    ],
+    "installer-paths": {
+      "vendor/woocommerce-rest-api": ["woocommerce/woocommerce-rest-api"]
+    }
   },
   "extra": {
     "scripts-description": {
       "test": "Run unit tests",
       "phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
       "phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier"
+    }
+  },
+  "config": {
+    "preferred-install": {
+        "woocommerce/woocommerce-rest-api": "dist"
+    }
+  },
+  "autoload": {
+    "classmap": [
+      "includes/"
+    ],
+    "psr-4": {
+      "WooCommerce\\Admin\\": "src/"
     }
   }
 }
