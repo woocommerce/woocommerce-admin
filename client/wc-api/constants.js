@@ -5,6 +5,7 @@
 import { MINUTE } from '@fresh-data/framework';
 
 export const NAMESPACE = '/wc/v4';
+export const PRIVATE_NAMESPACE = '/wc-admin';
 
 export const DEFAULT_REQUIREMENT = {
 	timeout: 1 * MINUTE,

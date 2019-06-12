@@ -14,16 +14,16 @@ import { stringifyQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { getResourceIdentifier, getResourcePrefix, getResourceName } from '../utils';
-import { NAMESPACE } from '../constants';
+import { NAMESPACE, PRIVATE_NAMESPACE } from '../constants';
 
 const typeEndpointMap = {
-	'items-query-categories': 'products/categories',
-	'items-query-customers': 'customers',
-	'items-query-coupons': 'coupons',
-	'items-query-leaderboards': 'leaderboards',
-	'items-query-orders': 'orders',
-	'items-query-products': 'products',
-	'items-query-taxes': 'taxes',
+	'items-query-categories': NAMESPACE + '/products/categories',
+	'items-query-customers': NAMESPACE + '/customers',
+	'items-query-coupons': NAMESPACE + '/coupons',
+	'items-query-leaderboards': PRIVATE_NAMESPACE + '/leaderboards',
+	'items-query-orders': NAMESPACE + '/orders',
+	'items-query-products': NAMESPACE + '/products',
+	'items-query-taxes': NAMESPACE + '/taxes',
 };
 
 function read( resourceNames, fetch = apiFetch ) {
@@ -36,7 +36,7 @@ function read( resourceNames, fetch = apiFetch ) {
 		const prefix = getResourcePrefix( resourceName );
 		const endpoint = typeEndpointMap[ prefix ];
 		const query = getResourceIdentifier( resourceName );
-		const url = NAMESPACE + `/${ endpoint }${ stringifyQuery( query ) }`;
+		const url = `${ endpoint }${ stringifyQuery( query ) }`;
 		const isUnboundedRequest = -1 === query.per_page;
 
 		try {
