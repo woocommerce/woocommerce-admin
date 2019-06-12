@@ -13,7 +13,7 @@ import { stringifyQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { getResourceIdentifier, getResourcePrefix } from 'wc-api/utils';
-import { NAMESPACE } from 'wc-api/constants';
+import { NAMESPACE } from '../constants';
 
 const statEndpoints = [
 	'coupons',

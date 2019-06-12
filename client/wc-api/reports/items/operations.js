@@ -13,7 +13,7 @@ import { stringifyQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { getResourceIdentifier, getResourcePrefix } from '../../utils';
-import { NAMESPACE } from '../../constants';
+import { NAMESPACE } from '../constants';
 
 const typeEndpointMap = {
 	'report-items-query-orders': 'orders',

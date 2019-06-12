@@ -14,7 +14,7 @@ import { stringifyQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { getResourcePrefix, getResourceIdentifier } from '../utils';
-import { NAMESPACE } from '../constants';
+import { NAMESPACE } from './constants';
 
 const typeEndpointMap = {
 	'import-status': 'reports/import/status',

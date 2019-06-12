@@ -13,7 +13,7 @@ import { stringifyQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { isResourcePrefix, getResourceIdentifier, getResourceName } from '../utils';
-import { NAMESPACE } from '../constants';
+import { NAMESPACE } from './constants';
 
 function read( resourceNames, fetch = apiFetch ) {
 	return [ ...readNotes( resourceNames, fetch ), ...readNoteQueries( resourceNames, fetch ) ];
