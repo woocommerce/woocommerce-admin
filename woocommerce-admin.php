@@ -57,7 +57,6 @@ class WC_Admin_Feature_Plugin {
 		$this->define_constants();
 		register_activation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
-		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
 	}
 
 	/**
@@ -87,6 +86,7 @@ class WC_Admin_Feature_Plugin {
 
 		if ( ! $this->check_build() ) {
 			add_action( 'admin_notices', array( $this, 'render_build_notice' ) );
+			return;
 		}
 
 		$this->includes();
@@ -114,16 +114,19 @@ class WC_Admin_Feature_Plugin {
 	}
 
 	/**
-	 * Include WC Admin classes.
+	 * Include WC Admin autoloader and functions.
 	 */
-	public function includes() {
-		require_once WC_ADMIN_ABSPATH . 'includes/core-functions.php';
+	protected function includes() {
+		require_once __DIR__ . '/vendor/autoload.php';
+		require_once __DIR__ . '/vendor/woocommerce-rest-api/woocommerce-rest-api.php';
+		require_once __DIR__ . '/includes/core-functions.php';
+		require_once __DIR__ . '/includes/page-controller/page-controller-functions.php';
 
 		// Initialize the WC API extensions.
+		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-loader.php';
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-reports-sync.php';
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-events.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-api-init.php';
 
 		// Admin note providers.
 		// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
@@ -148,41 +151,49 @@ class WC_Admin_Feature_Plugin {
 		if ( 'ActionScheduler_wpPostStore' !== $store_class ) {
 			return $store_class;
 		}
-
-		// Include our store class here instead of wc_admin_plugins_loaded()
-		// because ActionScheduler is hooked into `plugins_loaded` at a
-		// much higher priority.
-		require_once WC_ADMIN_ABSPATH . '/includes/class-wc-admin-actionscheduler-wppoststore.php';
-
 		return 'WC_Admin_ActionScheduler_WPPostStore';
 	}
 
 	/**
-	 * Removes core hooks in favor of our local feature plugin handlers.
+	 * Adds data stores.
 	 *
-	 * @see WC_Admin_Library::__construct()
+	 * @param array $data_stores List of data stores.
+	 * @return array
+	 */
+	public function add_data_stores( $data_stores ) {
+		return array_merge(
+			$data_stores,
+			array(
+				'report-revenue-stats'   => 'WC_Admin_Reports_Orders_Stats_Data_Store',
+				'report-orders'          => 'WC_Admin_Reports_Orders_Data_Store',
+				'report-orders-stats'    => 'WC_Admin_Reports_Orders_Stats_Data_Store',
+				'report-products'        => 'WC_Admin_Reports_Products_Data_Store',
+				'report-variations'      => 'WC_Admin_Reports_Variations_Data_Store',
+				'report-products-stats'  => 'WC_Admin_Reports_Products_Stats_Data_Store',
+				'report-categories'      => 'WC_Admin_Reports_Categories_Data_Store',
+				'report-taxes'           => 'WC_Admin_Reports_Taxes_Data_Store',
+				'report-taxes-stats'     => 'WC_Admin_Reports_Taxes_Stats_Data_Store',
+				'report-coupons'         => 'WC_Admin_Reports_Coupons_Data_Store',
+				'report-coupons-stats'   => 'WC_Admin_Reports_Coupons_Stats_Data_Store',
+				'report-downloads'       => 'WC_Admin_Reports_Downloads_Data_Store',
+				'report-downloads-stats' => 'WC_Admin_Reports_Downloads_Stats_Data_Store',
+				'admin-note'             => 'WC_Admin_Notes_Data_Store',
+				'report-customers'       => 'WC_Admin_Reports_Customers_Data_Store',
+				'report-customers-stats' => 'WC_Admin_Reports_Customers_Stats_Data_Store',
+				'report-stock-stats'     => 'WC_Admin_Reports_Stock_Stats_Data_Store',
+			)
+		);
+	}
+
+	/**
+	 * Hook in WooCommerce admin functionality.
 	 */
 	protected function hooks() {
-		remove_action( 'init', array( 'WC_Admin_Library', 'load_features' ) );
-		remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'register_scripts' ) );
-		remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'load_scripts' ), 15 );
-		remove_action( 'woocommerce_components_settings', array( 'WC_Admin_Library', 'add_component_settings' ) );
-		remove_filter( 'admin_body_class', array( 'WC_Admin_Library', 'add_admin_body_classes' ) );
-		remove_action( 'admin_menu', array( 'WC_Admin_Library', 'register_page_handler' ) );
-		remove_filter( 'admin_title', array( 'WC_Admin_Library', 'update_admin_title' ) );
-
-		remove_action( 'rest_api_init', array( 'WC_Admin_Library', 'register_user_data' ) );
-		remove_action( 'in_admin_header', array( 'WC_Admin_Library', 'embed_page_header' ) );
-		remove_filter( 'woocommerce_settings_groups', array( 'WC_Admin_Library', 'add_settings_group' ) );
-		remove_filter( 'woocommerce_settings-wc_admin', array( 'WC_Admin_Library', 'add_settings' ) );
-
-		remove_action( 'admin_head', array( 'WC_Admin_Library', 'update_link_structure' ), 20 );
-
-		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-loader.php';
-
 		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ) );
 		add_action( 'admin_menu', array( $this, 'register_devdocs_page' ) );
-
+		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
+		add_filter( 'woocommerce_data_stores', array( $this, 'add_data_stores' ) );
+		add_action( 'rest_api_init', array( WooCommerce\Admin\RestApi::instance(), 'register_rest_routes' ), 10 );
 	}
 
 	/**
@@ -206,7 +217,7 @@ class WC_Admin_Feature_Plugin {
 	 * @return bool
 	 */
 	protected function check_build() {
-		return file_exists( plugin_dir_path( __FILE__ ) . '/dist/app/index.js' );
+		return file_exists( plugin_dir_path( __FILE__ ) . '/dist/app/index.js' ) && file_exists( __DIR__ . '/vendor/autoload.php' );
 	}
 
 	/**
