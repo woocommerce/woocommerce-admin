@@ -18,7 +18,7 @@
     "license.txt"
   ],
   "scripts": {
-    "prebuild": "npm run -s install-if-deps-outdated && php ./bin/update-version.php && composer install --no-dev && composer dump-autoload",
+    "prebuild": "npm run -s install-if-deps-outdated && php ./bin/update-version.php && composer install --no-dev --optimize-autoloader",
     "build": "npm run build:feature-config && npm run build:packages && npm run build:core",
     "postbuild": "npm run -s i18n:php && npm run -s i18n:pot",
     "build:core": "cross-env NODE_ENV=production webpack",
@@ -127,8 +127,8 @@
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-plugin-transform-es2015-template-literals": "6.22.0",
     "chalk": "2.4.2",
-    "concurrently": "4.1.0",
     "color-studio": "github:automattic/color-studio#1.0.4",
+    "concurrently": "4.1.0",
     "copy-webpack-plugin": "5.0.3",
     "cross-env": "5.2.0",
     "css-loader": "2.1.1",

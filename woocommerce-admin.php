@@ -56,7 +56,19 @@ class WC_Admin_Feature_Plugin {
 	public function init() {
 		$this->define_constants();
 		register_activation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
+
+		if ( ! $this->check_build() ) {
+			add_action( 'admin_notices', array( $this, 'render_build_notice' ) );
+			return;
+		}
+
+		// Include packages early.
+		require_once __DIR__ . '/vendor/autoload.php';
+		//require_once __DIR__ . '/vendor/woocommerce-rest-api/woocommerce-rest-api.php';
+
+		// Kick everything else off after plugins load.
 		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
+		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
 	}
 
 	/**
@@ -65,7 +77,7 @@ class WC_Admin_Feature_Plugin {
 	 * @return void
 	 */
 	public function on_activation() {
-		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
+		require_once __DIR__ . '/includes/class-wc-admin-install.php';
 		WC_Admin_Install::create_tables();
 		WC_Admin_Install::create_events();
 	}
@@ -84,11 +96,6 @@ class WC_Admin_Feature_Plugin {
 			return;
 		}
 
-		if ( ! $this->check_build() ) {
-			add_action( 'admin_notices', array( $this, 'render_build_notice' ) );
-			return;
-		}
-
 		$this->includes();
 		$this->hooks();
 	}
@@ -98,10 +105,10 @@ class WC_Admin_Feature_Plugin {
 	 */
 	protected function define_constants() {
 		$this->define( 'WC_ADMIN_APP', 'wc-admin-app' );
-		$this->define( 'WC_ADMIN_ABSPATH', dirname( __FILE__ ) . '/' );
+		$this->define( 'WC_ADMIN_ABSPATH', __DIR__ . '/' );
 		$this->define( 'WC_ADMIN_DIST_JS_FOLDER', 'dist/' );
 		$this->define( 'WC_ADMIN_DIST_CSS_FOLDER', 'dist/' );
-		$this->define( 'WC_ADMIN_FEATURES_PATH', WC_ADMIN_ABSPATH . 'includes/features/' );
+		$this->define( 'WC_ADMIN_FEATURES_PATH', __DIR__ . '/includes/features/' );
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', __FILE__ );
 		$this->define( 'WC_ADMIN_VERSION_NUMBER', '0.12.0' );
 	}
@@ -110,34 +117,32 @@ class WC_Admin_Feature_Plugin {
 	 * Load Localisation files.
 	 */
 	protected function load_plugin_textdomain() {
-		load_plugin_textdomain( 'woocommerce-admin', false, basename( dirname( __FILE__ ) ) . '/languages' );
+		load_plugin_textdomain( 'woocommerce-admin', false, basename( __DIR__ ) . '/languages' );
 	}
 
 	/**
 	 * Include WC Admin autoloader and functions.
 	 */
 	protected function includes() {
-		require_once __DIR__ . '/vendor/autoload.php';
-		require_once __DIR__ . '/vendor/woocommerce-rest-api/woocommerce-rest-api.php';
 		require_once __DIR__ . '/includes/core-functions.php';
 		require_once __DIR__ . '/includes/page-controller/page-controller-functions.php';
 
 		// Initialize the WC API extensions.
-		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-loader.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-reports-sync.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-events.php';
+		require_once __DIR__ . '/includes/class-wc-admin-loader.php';
+		require_once __DIR__ . '/includes/class-wc-admin-reports-sync.php';
+		require_once __DIR__ . '/includes/class-wc-admin-install.php';
+		require_once __DIR__ . '/includes/class-wc-admin-events.php';
 
 		// Admin note providers.
 		// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
-		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-new-sales-record.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-settings-notes.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-giving-feedback-notes.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-historical-data.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-order-milestones.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-mobile-app.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes-welcome-message.php';
+		require_once __DIR__ . '/includes/notes/class-wc-admin-notes-new-sales-record.php';
+		require_once __DIR__ . '/includes/notes/class-wc-admin-notes-settings-notes.php';
+		require_once __DIR__ . '/includes/notes/class-wc-admin-notes-giving-feedback-notes.php';
+		require_once __DIR__ . '/includes/notes/class-wc-admin-notes-woo-subscriptions-notes.php';
+		require_once __DIR__ . '/includes/notes/class-wc-admin-notes-historical-data.php';
+		require_once __DIR__ . '/includes/notes/class-wc-admin-notes-order-milestones.php';
+		require_once __DIR__ . '/includes/notes/class-wc-admin-notes-mobile-app.php';
+		require_once __DIR__ . '/includes/notes/class-wc-admin-notes-welcome-message.php';
 	}
 
 	/**
@@ -191,7 +196,6 @@ class WC_Admin_Feature_Plugin {
 	protected function hooks() {
 		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ) );
 		add_action( 'admin_menu', array( $this, 'register_devdocs_page' ) );
-		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
 		add_filter( 'woocommerce_data_stores', array( $this, 'add_data_stores' ) );
 		add_action( 'rest_api_init', array( WooCommerce\Admin\RestApi::instance(), 'register_rest_routes' ), 10 );
 	}

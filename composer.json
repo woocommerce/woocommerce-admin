@@ -41,6 +41,7 @@
     }
   },
   "autoload": {
+    "exclude-from-classmap": ["/vendor"],
     "classmap": [
       "includes/"
     ],
