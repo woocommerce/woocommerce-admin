@@ -64,7 +64,7 @@ class WC_Admin_Feature_Plugin {
 
 		// Include packages early.
 		require_once __DIR__ . '/vendor/autoload.php';
-		//require_once __DIR__ . '/vendor/woocommerce-rest-api/woocommerce-rest-api.php';
+		require_once __DIR__ . '/vendor/woocommerce-rest-api/woocommerce-rest-api.php';
 
 		// Kick everything else off after plugins load.
 		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
