@@ -18,13 +18,12 @@
 				padding-bottom: 80px;
 			}
 		}
-	}
 
-	@include breakpoint( '<782px' ) {
 		// WP breakpoint for mobile menu
 		.wp-responsive-open #wpbody {
 			right: -14.5em;
 		}
+
 		#wpcontent,
 		#wpbody-content {
 			min-height: calc(100vh - #{$adminbar-height-mobile});
