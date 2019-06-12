@@ -23,16 +23,16 @@
     ],
     "phpcbf": [
       "phpcbf -p"
-    ],
-    "installer-paths": {
-      "vendor/woocommerce-rest-api": ["woocommerce/woocommerce-rest-api"]
-    }
+    ]
   },
   "extra": {
     "scripts-description": {
       "test": "Run unit tests",
       "phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
       "phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier"
+    },
+    "installer-paths": {
+      "vendor/woocommerce-rest-api": ["woocommerce/woocommerce-rest-api"]
     }
   },
   "config": {
