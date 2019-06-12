@@ -44,23 +44,23 @@ class WC_Admin_Loader {
 	 * Hooks added here should be removed in `wc_admin_initialize` via the feature plugin.
 	 */
 	public function __construct() {
-		add_action( 'init', array( 'WC_Admin_Loader', 'load_features' ) );
-		add_action( 'admin_enqueue_scripts', array( 'WC_Admin_Loader', 'register_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( 'WC_Admin_Loader', 'load_scripts' ), 15 );
-		add_action( 'woocommerce_components_settings', array( 'WC_Admin_Loader', 'add_component_settings' ) );
-		add_filter( 'admin_body_class', array( 'WC_Admin_Loader', 'add_admin_body_classes' ) );
-		add_action( 'admin_menu', array( 'WC_Admin_Loader', 'register_page_handler' ) );
-		add_filter( 'admin_title', array( 'WC_Admin_Loader', 'update_admin_title' ) );
-		add_action( 'rest_api_init', array( 'WC_Admin_Loader', 'register_user_data' ) );
-		add_action( 'in_admin_header', array( 'WC_Admin_Loader', 'embed_page_header' ) );
-		add_filter( 'woocommerce_settings_groups', array( 'WC_Admin_Loader', 'add_settings_group' ) );
-		add_filter( 'woocommerce_settings-wc_admin', array( 'WC_Admin_Loader', 'add_settings' ) );
-		add_action( 'admin_head', array( 'WC_Admin_Loader', 'remove_notices' ) );
-		add_action( 'admin_notices', array( 'WC_Admin_Loader', 'inject_before_notices' ) );
-		add_action( 'admin_notices', array( 'WC_Admin_Loader', 'inject_after_notices' ), PHP_INT_MAX );
+		add_action( 'init', array( __CLASS__, 'load_features' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
+		add_action( 'woocommerce_components_settings', array( __CLASS__, 'add_component_settings' ) );
+		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'register_page_handler' ) );
+		add_filter( 'admin_title', array( __CLASS__, 'update_admin_title' ) );
+		add_action( 'rest_api_init', array( __CLASS__, 'register_user_data' ) );
+		add_action( 'in_admin_header', array( __CLASS__, 'embed_page_header' ) );
+		add_filter( 'woocommerce_settings_groups', array( __CLASS__, 'add_settings_group' ) );
+		add_filter( 'woocommerce_settings-wc_admin', array( __CLASS__, 'add_settings' ) );
+		add_action( 'admin_head', array( __CLASS__, 'remove_notices' ) );
+		add_action( 'admin_notices', array( __CLASS__, 'inject_before_notices' ) );
+		add_action( 'admin_notices', array( __CLASS__, 'inject_after_notices' ), PHP_INT_MAX );
 
 		// priority is 20 to run after https://github.com/woocommerce/woocommerce/blob/a55ae325306fc2179149ba9b97e66f32f84fdd9c/includes/admin/class-wc-admin-menus.php#L165.
-		add_action( 'admin_head', array( 'WC_Admin_Loader', 'remove_app_entry_page_menu_item' ), 20 );
+		add_action( 'admin_head', array( __CLASS__, 'remove_app_entry_page_menu_item' ), 20 );
 
 		/*
 		* Remove the emoji script as it always defaults to replacing emojis with Twemoji images.
@@ -127,9 +127,6 @@ class WC_Admin_Loader {
 	 * Class loader for enabled WooCommerce Admin features/sections.
 	 */
 	public static function load_features() {
-		require_once WC_ADMIN_ABSPATH . 'includes/page-controller/class-wc-admin-page-controller.php';
-		require_once WC_ADMIN_ABSPATH . 'includes/page-controller/page-controller-functions.php';
-
 		$features = self::get_features();
 		foreach ( $features as $feature ) {
 			$feature = strtolower( $feature );
@@ -664,8 +661,8 @@ class WC_Admin_Loader {
 			'user',
 			'woocommerce_meta',
 			array(
-				'get_callback'    => array( 'WC_Admin_Loader', 'get_user_data_values' ),
-				'update_callback' => array( 'WC_Admin_Loader', 'update_user_data_values' ),
+				'get_callback'    => array( __CLASS__, 'get_user_data_values' ),
+				'update_callback' => array( __CLASS__, 'update_user_data_values' ),
 				'schema'          => null,
 			)
 		);
