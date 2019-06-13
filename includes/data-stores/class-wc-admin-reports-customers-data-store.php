@@ -460,6 +460,10 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	 * @return int|bool
 	 */
 	public static function get_or_create_customer_from_order( $order ) {
+		if ( ! $order ) {
+			return false;
+		}
+
 		global $wpdb;
 		$returning_customer_id = self::get_existing_customer_id_from_order( $order );
 
