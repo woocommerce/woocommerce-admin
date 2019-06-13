@@ -71,6 +71,12 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 0.13.1 2019-06-12
+
+- Fix: Exit deactivate early if WooCommerce not active. #2410
+
+== Changelog ==
+
 = 0.13.0 2019-06-12
 
 - Fix: Notes: update sales record link #2397
