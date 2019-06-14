@@ -74,7 +74,7 @@
 	}
 
 	.components-popover:not(.is-mobile) {
-		z-index: 1 !important; /* below of woocommerce-layout__header */
+		z-index: 1; /* below of woocommerce-layout__header */
 	}
 }
 
