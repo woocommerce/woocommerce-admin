@@ -90,7 +90,7 @@
 // See https://github.com/Automattic/jetpack/issues/9608
 @include breakpoint( '<782px' ) {
 	.jetpack-masterbar {
-		#wpadminbar #wp-admin-bar-menu-toggle > .ab-item {
+		#wpadminbar #wp-admin-bar-menu-toggle {
 			margin-top: -10px;
 		}
 
