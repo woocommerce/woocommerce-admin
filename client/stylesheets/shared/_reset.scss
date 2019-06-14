@@ -72,18 +72,16 @@
 			margin-left: 2px;
 		}
 	}
+
+	.components-popover:not(.is-mobile) {
+		z-index: 1 !important; /* below of woocommerce-layout__header */
+	}
 }
 
 @include breakpoint( '<600px' ) {
 	#wpadminbar {
 		position: fixed;
 	}
-}
-
-.auto-fold #adminmenu,
-.auto-fold #adminmenuback,
-.auto-fold #adminmenuwrap {
-	z-index: 99992; /* higher than woocommerce-layout__header (99991) */
 }
 
 // Temporary fix for compability with the Jetpack masterbar
