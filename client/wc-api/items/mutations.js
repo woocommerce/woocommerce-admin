@@ -5,9 +5,14 @@
  */
 import { getResourceName } from '../utils';
 
-const updateItem = operations => ( type, id, itemData ) => {
+const updateItem = operations => async ( type, id, itemData, callback ) => {
 	const resourceName = getResourceName( `items-query-${ type }-item`, id );
-	operations.update( [ resourceName ], { [ resourceName ]: { id, ...itemData } } );
+	const result = await operations.update( [ resourceName ], {
+		[ resourceName ]: { id, ...itemData },
+	} );
+	if ( typeof callback === 'function' ) {
+		callback( result[ 0 ][ resourceName ] );
+	}
 };
 
 export default {

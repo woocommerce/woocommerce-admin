@@ -26,6 +26,7 @@ class ProductStockCard extends Component {
 		this.state = {
 			quantity: props.product.stock_quantity,
 			editing: false,
+			edited: false,
 		};
 
 		this.beginEdit = this.beginEdit.bind( this );
@@ -53,17 +54,34 @@ class ProductStockCard extends Component {
 		this.setState( { quantity: event.target.value } );
 	}
 
-	updateStock() {
-		const { product, updateItem } = this.props;
+	async updateStock() {
+		const { addNotice, product, updateItem } = this.props;
 
-		this.setState( { editing: false }, () => {
-			const data = {
-				stock_quantity: this.state.quantity,
-				type: product.type,
-				parent_id: product.parent_id,
-			};
+		this.setState( { editing: false, edited: true } );
 
-			updateItem( 'products', product.id, data );
+		const data = {
+			stock_quantity: this.state.quantity,
+			type: product.type,
+			parent_id: product.parent_id,
+		};
+
+		await updateItem( 'products', product.id, data, response => {
+			if ( response && response.data ) {
+				addNotice( {
+					status: 'success',
+					message: sprintf( __( '%s stock updated.', 'woocommerce-admin' ), product.name ),
+				} );
+			}
+			if ( response && response.error ) {
+				addNotice( {
+					status: 'error',
+					message: sprintf(
+						__( '%s stock could not be updated.', 'woocommerce-admin' ),
+						product.name
+					),
+				} );
+				this.setState( { quantity: product.stock_quantity } );
+			}
 		} );
 	}
 
@@ -117,6 +135,17 @@ class ProductStockCard extends Component {
 
 	render() {
 		const { product } = this.props;
+		const { edited, editing } = this.state;
+		const { notifyLowStockAmount } = wcSettings;
+		const lowStockAmount = Number.isFinite( product.low_stock_amount )
+			? product.low_stock_amount
+			: notifyLowStockAmount;
+		const isLowStock = product.stock_quantity < lowStockAmount;
+
+		if ( ! isLowStock && ! edited && ! editing ) {
+			return null;
+		}
+
 		const title = (
 			<Link
 				href={ 'post.php?action=edit&post=' + ( product.parent_id || product.id ) }
@@ -147,10 +176,13 @@ class ProductStockCard extends Component {
 				</div>
 			</div>
 		);
+		const activityCardClasses = classnames( 'woocommerce-stock-activity-card', {
+			'is-dimmed': ! editing && ! isLowStock,
+		} );
 
 		return (
 			<ActivityCard
-				className="woocommerce-stock-activity-card"
+				className={ activityCardClasses }
 				title={ title }
 				subtitle={ subtitle }
 				icon={ icon }
@@ -164,8 +196,11 @@ class ProductStockCard extends Component {
 
 export default compose(
 	withDispatch( dispatch => {
+		const { addNotice } = dispatch( 'wc-admin' );
 		const { updateItem } = dispatch( 'wc-api' );
+
 		return {
+			addNotice,
 			updateItem,
 		};
 	} )
