@@ -140,7 +140,7 @@ class ProductStockCard extends Component {
 		const lowStockAmount = Number.isFinite( product.low_stock_amount )
 			? product.low_stock_amount
 			: notifyLowStockAmount;
-		const isLowStock = product.stock_quantity < lowStockAmount;
+		const isLowStock = product.stock_quantity <= lowStockAmount;
 
 		if ( ! isLowStock && ! edited && ! editing ) {
 			return null;
