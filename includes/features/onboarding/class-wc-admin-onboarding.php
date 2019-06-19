@@ -78,8 +78,7 @@ class WC_Admin_Onboarding {
 	 * @return array
 	 */
 	public static function get_allowed_product_types() {
-		return apply_filters(
-			'woocommerce_admin_onboarding_product_types',
+		$product_types = self::append_product_data(
 			array(
 				'physical'      => array(
 					'label'       => __( 'Physical products', 'woocommerce-admin' ),
@@ -90,32 +89,68 @@ class WC_Admin_Onboarding {
 					'description' => __( 'Virtual products that customers download.', 'woocommerce-admin' ),
 				),
 				'subscriptions' => array(
-					'label'       => __( 'Subscriptions — $199 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Subscriptions', 'woocommerce-admin' ),
 					'description' => __( 'Products with recurring payment.', 'woocommerce-admin' ),
 					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-subscriptions/', 'woocommerce-admin' ),
+					'product'     => 'woocommerce-subscriptions',
 				),
 				'memberships'   => array(
-					'label'       => __( 'Memberships — $149 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Memberships', 'woocommerce-admin' ),
 					'description' => __( 'Restrict content to customer groups.', 'woocommerce-admin' ),
 					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-memberships/', 'woocommerce-admin' ),
+					'product'     => 'woocommerce-memberships',
 				),
 				'composite'     => array(
-					'label'       => __( 'Composite Products — $79 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Composite Products', 'woocommerce-admin' ),
 					'description' => __( 'Kits with configurable components.', 'woocommerce-admin' ),
 					'more_url'    => __( 'https://woocommerce.com/products/composite-products/', 'woocommerce-admin' ),
+					'product'     => 'woocommerce-composite-products',
 				),
 				'spaces'        => array(
-					'label'       => __( 'Spaces — $249 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Spaces', 'woocommerce-admin' ),
 					'description' => __( 'Sell access to spaces, e.g. hotel rooms.', 'woocommerce-admin' ),
 					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-accommodation-bookings/', 'woocommerce-admin' ),
+					'product'     => 'WooCommerce Bookings',
 				),
 				'rentals'       => array(
-					'label'       => __( 'Rentals — $249 per year', 'woocommerce-admin' ),
+					'label'       => __( 'Rentals', 'woocommerce-admin' ),
 					'description' => __( 'Sell access to rental items, e.g. cars.', 'woocommerce-admin' ),
 					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-bookings/', 'woocommerce-admin' ),
+					'product'     => 'WooCommerce Bookings',
 				),
 			)
 		);
+
+		return apply_filters( 'woocommerce_admin_onboarding_product_types', $product_types );
+	}
+
+	/**
+	 * Append dynamic product data from API.
+	 *
+	 * @param array $product_types Array of product types.
+	 * @return array
+	 */
+	public static function append_product_data( $product_types ) {
+		$woocommerce_product_types = wp_remote_get( 'https://woocommerce.com/wp-json/wccom-extensions/1.0/search?category=product-type' );
+		$product_data              = json_decode( $woocommerce_product_types['body'] );
+		$products                  = array();
+
+		// Map product data by slug.
+		foreach ( $product_data->products as $product_datum ) {
+			$products[ $product_datum->slug ] = $product_datum;
+		}
+
+		// Loop over product types and append data.
+		foreach ( $product_types as $key => $product_type ) {
+			if ( isset( $product_type['product'] ) ) {
+				/* translators: Amount of product per year (e.g. Bookings - $240.00 per year) */
+				$product_types[ $key ]['label']      .= sprintf( __( ' — %s per year', 'woocommerce-admin' ), html_entity_decode( $products[ $product_type['product'] ]->price ) );
+				$product_types[ $key ]['description'] = $products[ $product_type['product'] ]->excerpt;
+				$product_types[ $key ]['more_url']    = $products[ $product_type['product'] ]->link;
+			}
+		}
+
+		return $product_types;
 	}
 
 	/**
