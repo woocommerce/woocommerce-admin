@@ -37,12 +37,10 @@ class ProductStockCard extends Component {
 		this.updateStock = this.updateStock.bind( this );
 	}
 
-	componentDidUpdate() {
-		this.quantityInput && this.quantityInput.focus();
-	}
-
 	beginEdit() {
-		this.setState( { editing: true } );
+		this.setState( { editing: true }, () => {
+			this.quantityInput && this.quantityInput.focus();
+		} );
 	}
 
 	cancelEdit() {
