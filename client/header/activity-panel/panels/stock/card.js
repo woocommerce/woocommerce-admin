@@ -149,6 +149,9 @@ class ProductStockCard extends Component {
 			: notifyLowStockAmount;
 		const isLowStock = product.stock_quantity <= lowStockAmount;
 
+		// Hide cards that are not in low stock and have not been edited.
+		// This allows clearing cards which are no longer in low stock after
+		// closing & opening the panel without having to make another request.
 		if ( ! isLowStock && ! edited && ! editing ) {
 			return null;
 		}
