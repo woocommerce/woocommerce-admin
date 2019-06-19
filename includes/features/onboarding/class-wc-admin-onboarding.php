@@ -89,34 +89,20 @@ class WC_Admin_Onboarding {
 					'description' => __( 'Virtual products that customers download.', 'woocommerce-admin' ),
 				),
 				'subscriptions' => array(
-					'label'       => __( 'Subscriptions', 'woocommerce-admin' ),
-					'description' => __( 'Products with recurring payment.', 'woocommerce-admin' ),
-					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-subscriptions/', 'woocommerce-admin' ),
-					'product'     => 'woocommerce-subscriptions',
+					'label'   => __( 'Subscriptions', 'woocommerce-admin' ),
+					'product' => 'woocommerce-subscriptions',
 				),
 				'memberships'   => array(
-					'label'       => __( 'Memberships', 'woocommerce-admin' ),
-					'description' => __( 'Restrict content to customer groups.', 'woocommerce-admin' ),
-					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-memberships/', 'woocommerce-admin' ),
-					'product'     => 'woocommerce-memberships',
+					'label'   => __( 'Memberships', 'woocommerce-admin' ),
+					'product' => 'woocommerce-memberships',
 				),
 				'composite'     => array(
-					'label'       => __( 'Composite Products', 'woocommerce-admin' ),
-					'description' => __( 'Kits with configurable components.', 'woocommerce-admin' ),
-					'more_url'    => __( 'https://woocommerce.com/products/composite-products/', 'woocommerce-admin' ),
-					'product'     => 'woocommerce-composite-products',
+					'label'   => __( 'Composite Products', 'woocommerce-admin' ),
+					'product' => 'woocommerce-composite-products',
 				),
-				'spaces'        => array(
-					'label'       => __( 'Spaces', 'woocommerce-admin' ),
-					'description' => __( 'Sell access to spaces, e.g. hotel rooms.', 'woocommerce-admin' ),
-					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-accommodation-bookings/', 'woocommerce-admin' ),
-					'product'     => 'WooCommerce Bookings',
-				),
-				'rentals'       => array(
-					'label'       => __( 'Rentals', 'woocommerce-admin' ),
-					'description' => __( 'Sell access to rental items, e.g. cars.', 'woocommerce-admin' ),
-					'more_url'    => __( 'https://woocommerce.com/products/woocommerce-bookings/', 'woocommerce-admin' ),
-					'product'     => 'WooCommerce Bookings',
+				'bookings'      => array(
+					'label'   => __( 'Bookings', 'woocommerce-admin' ),
+					'product' => 'WooCommerce Bookings',
 				),
 			)
 		);
