@@ -145,11 +145,18 @@ class WC_Admin_Onboarding {
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
+		$profile = get_option( 'wc_onboarding_profile', array() );
+
 		$settings['onboarding'] = array(
-			'industries'   => self::get_allowed_industries(),
-			'productTypes' => self::get_allowed_product_types(),
-			'profile'      => get_option( 'wc_onboarding_profile', array() ),
+			'industries' => self::get_allowed_industries(),
+			'profile'    => $profile,
 		);
+
+		// Only fetch if the onboarding wizard is incomplete.
+		if ( $this->should_show_profiler() ) {
+			$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
+		}
+
 		return $settings;
 	}
 
