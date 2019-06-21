@@ -117,9 +117,14 @@ class WC_Admin_Onboarding {
 	 * @return array
 	 */
 	public static function append_product_data( $product_types ) {
-		$woocommerce_product_types = wp_remote_get( 'https://woocommerce.com/wp-json/wccom-extensions/1.0/search?category=product-type' );
-		$product_data              = json_decode( $woocommerce_product_types['body'] );
-		$products                  = array();
+		$product_data_transient_name = 'wc_onboarding_product_data';
+		$woocommerce_products        = get_transient( $product_data_transient_name );
+		if ( false === $woocommerce_products ) {
+			$woocommerce_products = wp_remote_get( 'https://woocommerce.com/wp-json/wccom-extensions/1.0/search?category=product-type' );
+			set_transient( $product_data_transient_name, $woocommerce_products, DAY_IN_SECONDS );
+		}
+		$product_data = json_decode( $woocommerce_products['body'] );
+		$products     = array();
 
 		// Map product data by slug.
 		foreach ( $product_data->products as $product_datum ) {
