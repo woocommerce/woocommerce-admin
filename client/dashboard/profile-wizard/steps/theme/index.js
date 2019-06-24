@@ -60,34 +60,41 @@ class Theme extends Component {
 					{ __( 'Your theme determines how your store appears to customers', 'woocommerce-admin' ) }
 				</H>
 				<div className="woocommerce-profile-wizard__themes">
-					{ themes.map( theme => (
-						<Card className="woocommerce-profile-wizard__theme" key={ theme.slug }>
-							{ theme.image && (
-								<img
-									alt={ theme.title }
-									src={ theme.image }
-									className="woocommerce-profile-wizard__theme-image"
-								/>
-							) }
-							<div className="woocommerce-profile-wizard__theme-details">
-								<H className="woocommerce-profile-wizard__theme-name">{ theme.title }</H>
-								<p className="woocommerce-profile-wizard__theme-price">
-									{ sprintf(
-										__( '%s per year', 'woocommerce-admin' ),
-										decodeEntities( theme.price )
-									) }
-								</p>
-								<div className="woocommerce-profile-wizard__theme-actions">
-									<Button isPrimary onClick={ () => this.onChoose( theme.slug ) }>
-										{ __( 'Choose', 'woocommerce-admin' ) }
-									</Button>
-									<Button isDefault onClick={ () => this.openDemo( theme.slug ) }>
-										{ __( 'Live Demo', 'woocommerce-admin' ) }
-									</Button>
+					{ themes.map( theme => {
+						const { image, price, slug, title } = theme;
+						const priceValue = Number( decodeEntities( price ).replace( /[^0-9.-]+/g, '' ) );
+
+						return (
+							<Card className="woocommerce-profile-wizard__theme" key={ theme.slug }>
+								{ image && (
+									<img
+										alt={ title }
+										src={ image }
+										className="woocommerce-profile-wizard__theme-image"
+									/>
+								) }
+								<div className="woocommerce-profile-wizard__theme-details">
+									<H className="woocommerce-profile-wizard__theme-name">{ title }</H>
+									<p className="woocommerce-profile-wizard__theme-price">
+										{ priceValue <= 0
+											? __( 'Free', 'woocommerce-admin' )
+											: sprintf(
+													__( '%s per year', 'woocommerce-admin' ),
+													decodeEntities( price )
+												) }
+									</p>
+									<div className="woocommerce-profile-wizard__theme-actions">
+										<Button isPrimary onClick={ () => this.onChoose( slug ) }>
+											{ __( 'Choose', 'woocommerce-admin' ) }
+										</Button>
+										<Button isDefault onClick={ () => this.openDemo( slug ) }>
+											{ __( 'Live Demo', 'woocommerce-admin' ) }
+										</Button>
+									</div>
 								</div>
-							</div>
-						</Card>
-					) ) }
+							</Card>
+						);
+					} ) }
 				</div>
 			</Fragment>
 		);
