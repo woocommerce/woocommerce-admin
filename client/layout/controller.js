@@ -15,7 +15,6 @@ import { getNewPath, getPersistedQuery, getHistory } from '@woocommerce/navigati
 /**
  * Internal dependencies
  */
-import Analytics from 'analytics';
 import AnalyticsReport from 'analytics/report';
 import AnalyticsSettings from 'analytics/settings';
 import Dashboard from 'dashboard';
@@ -50,11 +49,6 @@ export const getPages = () => {
 	}
 
 	if ( window.wcAdminFeatures.analytics ) {
-		pages.push( {
-			container: Analytics,
-			path: '/analytics',
-			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-revenue',
-		} );
 		pages.push( {
 			container: AnalyticsSettings,
 			path: '/analytics/settings',
