@@ -6,7 +6,7 @@ import { Component } from '@wordpress/element';
 import { useFilters } from '@woocommerce/components';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
+import { get, isFunction } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -74,10 +74,11 @@ class Layout extends Component {
 	}
 
 	render() {
-		const { isEmbedded, page, ...restProps } = this.props;
+		const { isEmbedded, ...restProps } = this.props;
+		const { breadcrumbs } = this.props.page;
 		return (
 			<div className="woocommerce-layout">
-				<Header sections={ page.breadcrumbs || [] } />
+				<Header sections={ ( isFunction( breadcrumbs ) ? breadcrumbs( this.props ) : breadcrumbs ) || [] } />
 				<TransientNotices />
 				{ ! isEmbedded && (
 					<PrimaryLayout>
