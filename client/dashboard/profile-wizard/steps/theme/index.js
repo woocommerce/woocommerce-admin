@@ -137,7 +137,7 @@ class Theme extends Component {
 				>
 					{ () => (
 						<div className="woocommerce-profile-wizard__themes">
-							{ themes.map( theme => this.renderTheme( theme ) ) }
+							{ themes && themes.map( theme => this.renderTheme( theme ) ) }
 						</div>
 					) }
 				</TabPanel>
