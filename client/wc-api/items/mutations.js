@@ -21,7 +21,12 @@ const updateProductStock = operations => async ( product, newStock ) => {
 	} );
 
 	const result = await operations.update( [ resourceName ], {
-		[ resourceName ]: { id: product.id, stock_quantity: newStock },
+		[ resourceName ]: {
+			id: product.id,
+			type: product.type,
+			parent_id: product.parent_id,
+			stock_quantity: newStock,
+		},
 	} );
 	const response = result[ 0 ][ resourceName ];
 	if ( response && response.data ) {
