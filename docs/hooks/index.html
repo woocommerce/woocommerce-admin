@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>WooCommerce Admin</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="description" content="Description">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
+<body>
+<h1>Hooks Documentation</h1>
+<div>
+	<label for="search">Search:</label>
+	<input type="text" id="search">
+</div>
+<div>
+	<input type="checkbox" id="filters" name="filters"/>
+	<label for="filters">Filters</label>
+	<input type="checkbox" id="actions" name="actions"/>
+	<label for="actions">Actions</label>
+</div>
+<script type="module">
+	import hooks from './hooks.js';
+	import { createTable } from './methods.js'
+
+	createTable( hooks );
+</script>
+</body>
+</html>
