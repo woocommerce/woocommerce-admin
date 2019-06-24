@@ -2,10 +2,9 @@
 /**
  * External dependencies
  */
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { useFilters } from '@woocommerce/components';
 import { Router, Route, Switch } from 'react-router-dom';
-import { Slot } from 'react-slot-fill';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
 
@@ -75,10 +74,10 @@ class Layout extends Component {
 	}
 
 	render() {
-		const { isEmbedded, ...restProps } = this.props;
+		const { isEmbedded, page, ...restProps } = this.props;
 		return (
 			<div className="woocommerce-layout">
-				<Slot name="header" />
+				<Header sections={ page.breadcrumbs || [] } />
 				<TransientNotices />
 				{ ! isEmbedded && (
 					<PrimaryLayout>
@@ -94,6 +93,7 @@ class Layout extends Component {
 
 Layout.propTypes = {
 	isEmbedded: PropTypes.bool,
+	page: PropTypes.object.isRequired,
 };
 
 class _PageLayout extends Component {
@@ -121,11 +121,8 @@ export const PageLayout = useFilters( PAGES_FILTER )( _PageLayout );
 
 export class EmbedLayout extends Component {
 	render() {
-		return (
-			<Fragment>
-				<Header sections={ wcSettings.embedBreadcrumbs } isEmbedded />
-				<Layout isEmbedded />
-			</Fragment>
-		);
+		return <Layout page={ {
+			breadcrumbs: wcSettings.embedBreadcrumbs,
+		} } isEmbedded />;
 	}
 }

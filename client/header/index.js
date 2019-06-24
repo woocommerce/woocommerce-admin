@@ -6,7 +6,6 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Component, findDOMNode } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
-import { Fill } from 'react-slot-fill';
 import PropTypes from 'prop-types';
 
 /**
@@ -115,10 +114,4 @@ Header.defaultProps = {
 	isEmbedded: false,
 };
 
-export default function( props ) {
-	return (
-		<Fill name="header">
-			<Header { ...props } />
-		</Fill>
-	);
-}
+export default Header;
