@@ -4,16 +4,14 @@ const hooks = [
     title: 'Filter report table',
     desc: 'Enables manipulation of data used to create a report table.',
     type: 'filter',
-    source: 'client/analytics/components/report-table/index.js',
-    soureUrl: 'http://example.com',
+    source: 'http://example.com',
   },
   {
-    hook: 'woocommerce_admin_report_table',
-    title: 'Filter report table',
-    desc: 'Enables manipulation of data used to create a report table.',
+    hook: 'woocommerce_admin_order_milestones_enabled',
+    title: 'Enable milestones',
+    desc: 'Filter to allow for disabling order milestones.',
     type: 'filter',
-    source: 'client/analytics/components/report-table/index.js',
-    sourceUrl: 'http://example.com',
+    source: 'http://example.com',
   },
 ];
 

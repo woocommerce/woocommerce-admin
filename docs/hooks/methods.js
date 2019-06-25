@@ -1,10 +1,9 @@
 function createRow( hook ) {
 	return `
 			<tr>
-				<td>${ hook.hook }</td>
+				<td><a href="${ hook.source }">${ hook.hook }</a></td>
 				<td>${ hook.title }</td>
 				<td>${ hook.type }</td>
-				<td><a href="${ hook.sourceUrl }">${ hook.source }</a></td>
 				<td>${ hook.desc }</td>
 			</tr>
 		  `;
@@ -19,7 +18,6 @@ export const createTable = hooks => {
 		'<th>Hook</th>' +
 		'<th>Title</th>' +
 		'<th>Type</th>' +
-		'<th>Source</th>' +
 		'<th>Description</th>' +
 		'</tr>';
 
