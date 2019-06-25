@@ -128,25 +128,48 @@ class WC_Admin_Onboarding {
 		$themes     = array();
 
 		foreach ( $theme_data->products as $theme ) {
-			$slug                         = sanitize_title( $theme->slug );
-			$themes[ $slug ]              = (array) $theme;
-			$themes[ $slug ]['installed'] = false;
+			$slug                                       = sanitize_title( $theme->slug );
+			$themes[ $slug ]                            = (array) $theme;
+			$themes[ $slug ]['is_installed']            = false;
+			$themes[ $slug ]['has_woocommerce_support'] = true;
 		}
 
 		$installed_themes = wp_get_themes();
 
 		foreach ( $installed_themes as $slug => $theme ) {
 			$themes[ $slug ] = array(
-				'slug'      => sanitize_title( $slug ),
-				'title'     => $theme->get( 'Name' ),
-				'price'     => '0.00',
-				'installed' => true,
-				'image'     => $theme->get_screenshot(),
+				'slug'                    => sanitize_title( $slug ),
+				'title'                   => $theme->get( 'Name' ),
+				'price'                   => '0.00',
+				'is_installed'            => true,
+				'image'                   => $theme->get_screenshot(),
+				'has_woocommerce_support' => self::has_woocommerce_support( $theme ),
 			);
 		}
 
 		$themes = apply_filters( 'woocommerce_admin_onboarding_themes', $themes );
 		return array_values( $themes );
+	}
+
+	/**
+	 * Check if theme has declared support for WooCommerce
+	 *
+	 * @param WP_Theme $theme Theme to check.
+	 * @return bool
+	 */
+	public static function has_woocommerce_support( $theme ) {
+		$directory = new RecursiveDirectoryIterator( $theme->theme_root . '/' . $theme->stylesheet );
+		$iterator  = new RecursiveIteratorIterator( $directory );
+		$files     = new RegexIterator( $iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH );
+
+		foreach ( $files as $file ) {
+			$content = file_get_contents( $file[0] );
+			if ( preg_match( '/add_theme_support\(([^(]*)(\'|\")woocommerce(\'|\")([^(]*)/si', $content, $matches ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
