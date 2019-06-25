@@ -125,8 +125,28 @@ class WC_Admin_Onboarding {
 		}
 
 		$theme_data = json_decode( $theme_data['body'] );
+		$themes     = array();
 
-		return apply_filters( 'woocommerce_admin_onboarding_themes', $theme_data->products );
+		foreach ( $theme_data->products as $theme ) {
+			$slug                         = sanitize_title( $theme->slug );
+			$themes[ $slug ]              = (array) $theme;
+			$themes[ $slug ]['installed'] = false;
+		}
+
+		$installed_themes = wp_get_themes();
+
+		foreach ( $installed_themes as $slug => $theme ) {
+			$themes[ $slug ] = array(
+				'slug'      => sanitize_title( $slug ),
+				'title'     => $theme->get( 'Name' ),
+				'price'     => '0.00',
+				'installed' => true,
+				'image'     => $theme->get_screenshot(),
+			);
+		}
+
+		$themes = apply_filters( 'woocommerce_admin_onboarding_themes', $themes );
+		return array_values( $themes );
 	}
 
 	/**
@@ -180,6 +200,7 @@ class WC_Admin_Onboarding {
 		if ( $this->should_show_profiler() ) {
 			$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
 			$settings['onboarding']['themes']       = self::get_themes();
+			$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
 		}
 
 		return $settings;
