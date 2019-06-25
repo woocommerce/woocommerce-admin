@@ -7,7 +7,7 @@ import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
-import { TabPanel } from '@wordpress/components';
+import { TabPanel, Tooltip } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -18,6 +18,7 @@ import { Card, H } from '@woocommerce/components';
 /**
  * Internal depdencies
  */
+import ErrorIcon from './error';
 import withSelect from 'wc-api/with-select';
 import './style.scss';
 
@@ -55,7 +56,7 @@ class Theme extends Component {
 	}
 
 	renderTheme( theme ) {
-		const { demo, image, slug, title } = theme;
+		const { demo, has_woocommerce_support, image, slug, title } = theme;
 
 		return (
 			<Card className="woocommerce-profile-wizard__theme" key={ theme.slug }>
@@ -63,7 +64,18 @@ class Theme extends Component {
 					<img alt={ title } src={ image } className="woocommerce-profile-wizard__theme-image" />
 				) }
 				<div className="woocommerce-profile-wizard__theme-details">
-					<H className="woocommerce-profile-wizard__theme-name">{ title }</H>
+					<H className="woocommerce-profile-wizard__theme-name">
+						{ title }
+						{ ! has_woocommerce_support && (
+							<Tooltip
+								text={ __( 'This theme does not support WooCommerce.', 'woocommerce-admin' ) }
+							>
+								<span>
+									<ErrorIcon />
+								</span>
+							</Tooltip>
+						) }
+					</H>
 					<p className="woocommerce-profile-wizard__theme-status">
 						{ this.getThemeStatus( theme ) }
 					</p>
