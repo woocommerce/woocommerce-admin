@@ -118,9 +118,7 @@ class WC_Admin_Onboarding {
 		$themes_transient_name = 'wc_onboarding_themes';
 		$themes                = get_transient( $themes_transient_name );
 		if ( false === $themes ) {
-			// @todo This should be replaced with the real wccom URL once
-			// https://github.com/Automattic/woocommerce.com/pull/6035 is merged and deployed.
-			$theme_data = wp_remote_get( 'http://woocommerce.test/wp-json/wccom-extensions/1.0/search?category=themes' );
+			$theme_data = wp_remote_get( 'http://woocommerce.com/wp-json/wccom-extensions/1.0/search?category=themes' );
 			$theme_data = json_decode( $theme_data['body'] );
 			$themes     = array();
 

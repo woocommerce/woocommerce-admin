@@ -56,7 +56,7 @@ class Theme extends Component {
 	}
 
 	renderTheme( theme ) {
-		const { demo, has_woocommerce_support, image, slug, title } = theme;
+		const { demo_url, has_woocommerce_support, image, slug, title } = theme;
 
 		return (
 			<Card className="woocommerce-profile-wizard__theme" key={ theme.slug }>
@@ -81,13 +81,13 @@ class Theme extends Component {
 					</p>
 					<div className="woocommerce-profile-wizard__theme-actions">
 						<Button
-							isPrimary={ Boolean( demo ) }
-							isDefault={ ! Boolean( demo ) }
+							isPrimary={ Boolean( demo_url ) }
+							isDefault={ ! Boolean( demo_url ) }
 							onClick={ () => this.onChoose( slug ) }
 						>
 							{ __( 'Choose', 'woocommerce-admin' ) }
 						</Button>
-						{ demo && (
+						{ demo_url && (
 							<Button isDefault onClick={ () => this.openDemo( slug ) }>
 								{ __( 'Live Demo', 'woocommerce-admin' ) }
 							</Button>
