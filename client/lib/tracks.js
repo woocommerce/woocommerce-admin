@@ -12,7 +12,7 @@ const tracksDebug = debug( 'wc-admin:tracks' );
 /**
  * Record an event to Tracks
  *
- * @param {String} eventName The name of the event to record, always prefixed with wcadmin_
+ * @param {String} eventName The name of the event to record, always prefixed with wc_admin_
  * @param {Object} eventProperties event properties to include in the event
  */
 
