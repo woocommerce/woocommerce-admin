@@ -17,7 +17,7 @@ const tracksDebug = debug( 'wc-admin:tracks' );
  */
 
 export function recordEvent( eventName, eventProperties ) {
-	tracksDebug( 'recordevent %s %o', eventName, eventProperties );
+	tracksDebug( 'recordevent %s %o', 'wc_admin_' + eventName, eventProperties );
 
 	if (
 		! window.wcTracks ||
