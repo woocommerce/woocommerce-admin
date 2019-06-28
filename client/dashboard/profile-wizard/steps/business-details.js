@@ -76,6 +76,12 @@ class BusinessDetails extends Component {
 		);
 	}
 
+	setDefaultValue( key, options ) {
+		if ( ! this.state[ key ].length ) {
+			this.setState( { [ key ]: options[ 0 ].value } );
+		}
+	}
+
 	render() {
 		const { other_platform, product_count, selling_venues } = this.state;
 
@@ -154,6 +160,7 @@ class BusinessDetails extends Component {
 					<SelectControl
 						label={ __( 'How many products will you add?', 'woocommerce-admin' ) }
 						onChange={ value => this.setState( { product_count: value } ) }
+						onClick={ this.setDefaultValue.bind( this, 'product_count', productCountOptions ) }
 						options={ productCountOptions }
 						value={ product_count }
 						required
@@ -162,6 +169,7 @@ class BusinessDetails extends Component {
 					<SelectControl
 						label={ __( 'Currently selling elsewhere?', 'woocommerce-admin' ) }
 						onChange={ value => this.setState( { selling_venues: value } ) }
+						onClick={ this.setDefaultValue.bind( this, 'selling_venues', sellingVenueOptions ) }
 						options={ sellingVenueOptions }
 						value={ selling_venues }
 						required
@@ -171,6 +179,7 @@ class BusinessDetails extends Component {
 						<SelectControl
 							label={ __( 'Which platform is the store using?', 'woocommerce-admin' ) }
 							onChange={ value => this.setState( { other_platform: value } ) }
+							onClick={ this.setDefaultValue.bind( this, 'other_platform', otherPlatformOptions ) }
 							options={ otherPlatformOptions }
 							value={ other_platform }
 							required
