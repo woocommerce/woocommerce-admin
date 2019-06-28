@@ -129,7 +129,9 @@ class Settings extends Component {
 	saveChanges = () => {
 		this.persistChanges( this.state );
 		this.props.updateSettings( { wc_admin: this.state.settings } );
-		this.setState( { saving: true } );
+
+		// TODO: remove this optimistic set of isDirty to false once #2541 is resolved.
+		this.setState( { saving: true, isDirty: false } );
 	};
 
 	handleInputChange( e ) {
