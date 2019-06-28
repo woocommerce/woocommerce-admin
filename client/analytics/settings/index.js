@@ -158,8 +158,8 @@ class Settings extends Component {
 							{ __( 'Save Changes', 'woocommerce-admin' ) }
 						</Button>
 					</div>
-					<HistoricalData addNotice={ addNotice } />
 				</div>
+				<HistoricalData addNotice={ addNotice } />
 			</Fragment>
 		);
 	}
