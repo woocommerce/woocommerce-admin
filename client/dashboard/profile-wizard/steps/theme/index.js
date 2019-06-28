@@ -55,7 +55,7 @@ class Theme extends Component {
 	openDemo( theme ) {
 		// @todo This should open a theme demo preview.
 
-		recordEvent( 'storeprofiler_store_theme_demo', { theme } );
+		recordEvent( 'storeprofiler_store_theme_live_demo', { theme } );
 	}
 
 	renderTheme( theme ) {

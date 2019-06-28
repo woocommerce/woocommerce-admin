@@ -37,13 +37,9 @@ class BusinessDetails extends Component {
 		const { addNotice, goToNextStep, isError, updateProfileItems } = this.props;
 		const { other_platform, product_count, selling_venues } = this.state;
 
-		const alreadySelling = [ 'other', 'brick-mortar-other', 'brick-mortar' ].includes(
-			selling_venues
-		);
-
-		recordEvent( 'storeprofiler_store_business_details', {
+		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: product_count,
-			already_selling: alreadySelling,
+			already_selling: 'no' !== selling_venues,
 			used_platform: other_platform,
 		} );
 

@@ -55,7 +55,9 @@ class StoreDetails extends Component {
 		const { addNotice, goToNextStep, isError, updateSettings } = this.props;
 		const { addressLine1, addressLine2, city, countryState, postCode } = this.state;
 
-		recordEvent( 'storeprofiler_store_details', { store_country: countryState.split( ':' )[ 0 ] } );
+		recordEvent( 'storeprofiler_store_details_continue', {
+			store_country: countryState.split( ':' )[ 0 ],
+		} );
 
 		await updateSettings( {
 			general: {

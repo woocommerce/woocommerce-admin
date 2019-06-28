@@ -84,7 +84,7 @@ class Plugins extends Component {
 			isPending: true,
 		} );
 
-		recordEvent( 'storeprofiler_plugin_install' );
+		recordEvent( 'storeprofiler_install_plugin' );
 
 		forEach( plugins, async plugin => {
 			const response = await this.doPluginAction( 'activate', plugin );

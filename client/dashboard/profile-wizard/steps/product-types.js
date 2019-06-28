@@ -32,7 +32,9 @@ class ProductTypes extends Component {
 	async onContinue() {
 		const { addNotice, goToNextStep, isError, updateProfileItems } = this.props;
 
-		recordEvent( 'storeprofiler_store_product_type', { product_type: this.state.selected } );
+		recordEvent( 'storeprofiler_store_product_type_continue', {
+			product_type: this.state.selected,
+		} );
 		await updateProfileItems( { product_types: this.state.selected } );
 
 		if ( ! isError ) {
