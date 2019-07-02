@@ -132,17 +132,26 @@ class WC_Admin_Onboarding {
 				}
 
 				$installed_themes = wp_get_themes();
+				$active_theme     = get_option( 'stylesheet' );
 
 				foreach ( $installed_themes as $slug => $theme ) {
+					$has_woocommerce_support = self::has_woocommerce_support( $theme );
+
+					if ( ! $has_woocommerce_support && $active_theme !== $slug ) {
+						continue;
+					}
+
 					$themes[ $slug ] = array(
 						'slug'                    => sanitize_title( $slug ),
 						'title'                   => $theme->get( 'Name' ),
 						'price'                   => '0.00',
 						'is_installed'            => true,
 						'image'                   => $theme->get_screenshot(),
-						'has_woocommerce_support' => self::has_woocommerce_support( $theme ),
+						'has_woocommerce_support' => $has_woocommerce_support,
 					);
 				}
+
+				$themes = array( $active_theme => $themes[ $active_theme ] ) + $themes;
 
 				set_transient( $themes_transient_name, $themes, DAY_IN_SECONDS );
 			}
