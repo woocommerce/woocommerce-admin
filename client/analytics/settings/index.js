@@ -181,7 +181,7 @@ class Settings extends Component {
 							{ __( 'Reset Defaults', 'woocommerce-admin' ) }
 						</Button>
 						<Button isPrimary onClick={ this.saveChanges }>
-							{ __( 'Save Changes', 'woocommerce-admin' ) }
+							{ __( 'Save Settings', 'woocommerce-admin' ) }
 						</Button>
 					</div>
 				</div>
