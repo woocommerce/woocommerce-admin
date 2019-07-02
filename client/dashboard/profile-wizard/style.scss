@@ -299,8 +299,11 @@
 			display: inline-block;
 		}
 
-		.components-form-toggle {
-			display: none;
+		&.components-form-toggle .components-form-toggle__track {
+			width: 36px;
+			max-width: 36px;
+			height: 18px;
+			max-height: 18px;
 		}
 
 		.components-base-control__field {
