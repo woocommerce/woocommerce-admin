@@ -13,6 +13,7 @@
 - Card component: new `description` prop.
 - Card component: new `isInactive` prop.
 - DateRangeFilterPicker (breaking change): Introduced `onRangeSelect` prop and remove `path` prop better control.
+- SearchListItem component: new `countLabel` prop that will overwrite the `item.count` value.
 
 # 2.0.0
 - Chart legend component now uses withInstanceId HOC so the ids used in several HTML elements are unique.
