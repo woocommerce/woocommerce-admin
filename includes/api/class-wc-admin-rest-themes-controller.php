@@ -85,11 +85,10 @@ class WC_Admin_REST_Themes_Controller extends WC_REST_Data_Controller {
 		}
 
 		if ( ! is_wp_error( $install ) && isset( $install['destination_name'] ) ) {
-			$theme  = wp_get_theme( $install['destination_name'] );
 			$result = array(
 				'status'  => 'success',
 				'message' => $upgrader->strings['process_success'],
-				'theme'   => $theme,
+				'theme'   => $install['destination_name'],
 			);
 		} else {
 			if ( is_wp_error( $install ) && $install->get_error_code() ) {
