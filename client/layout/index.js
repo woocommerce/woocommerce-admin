@@ -81,6 +81,7 @@ class Layout extends Component {
 			<div className="woocommerce-layout">
 				<Header
 					sections={ ( isFunction( breadcrumbs ) ? breadcrumbs( this.props ) : breadcrumbs ) || [] }
+					isEmbedded={ isEmbedded }
 				/>
 				<TransientNotices />
 				{ ! isEmbedded && (

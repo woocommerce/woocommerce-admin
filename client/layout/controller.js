@@ -4,7 +4,7 @@
  */
 import { Component, createElement } from '@wordpress/element';
 import { parse, stringify } from 'qs';
-import { isEqual, last } from 'lodash';
+import { find, isEqual, last } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 

@@ -83,12 +83,14 @@ class Header extends Component {
 			<div className={ className }>
 				<h1 className="woocommerce-layout__header-breadcrumbs">
 					<span>
-						<Link href="/">WooCommerce</Link>
+						<Link href={ 'admin.php?page=wc-admin' } type={ isEmbedded ? 'wp-admin' : 'wc-admin' }>
+							WooCommerce
+						</Link>
 					</span>
 					{ _sections.map( ( section, i ) => {
 						const sectionPiece = Array.isArray( section ) ? (
 							<Link
-								href={ getNewPath( {}, section[ 0 ], {} ) }
+								href={ isEmbedded ? section[ 0 ] : getNewPath( {}, section[ 0 ], {} ) }
 								type={ isEmbedded ? 'wp-admin' : 'wc-admin' }
 							>
 								{ section[ 1 ] }
