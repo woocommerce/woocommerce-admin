@@ -9,10 +9,10 @@
 	}
 
 	.woocommerce-feature-enabled-activity-panels & {
-		top: -#{$adminbar-height + $large-header-height + $gap};
+		top: -#{$adminbar-height + $header-height + $gap};
 
-		@include breakpoint( '<1280px' ) {
-			top: -#{$adminbar-height-mobile + $small-header-height + $gap};
+		@include breakpoint( '<782px' ) {
+			top: -#{$adminbar-height-mobile + $header-height + $gap};
 		}
 	}
 }

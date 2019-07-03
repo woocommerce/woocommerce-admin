@@ -21,7 +21,7 @@
 	}
 
 	#woocommerce-embedded-root.is-embed-loading + #wpbody .wrap {
-		padding-top: $small-header-height + 40;
+		padding-top: $header-height + 40;
 
 		@include breakpoint( '<782px' ) {
 			padding-top: 30px;
@@ -30,7 +30,7 @@
 
 	#screen-meta,
 	#screen-meta-links {
-		top: $small-header-height;
+		top: $header-height;
 	}
 
 	#screen-meta {
@@ -47,7 +47,7 @@
 	}
 
 	.woocommerce-layout__header {
-		height: $small-header-height;
+		height: $header-height;
 		&.is-scrolled {
 			box-shadow: 0 8px 16px 0 rgba(85, 93, 102, 0.3);
 		}
@@ -55,11 +55,6 @@
 		.woocommerce-layout__header-breadcrumbs {
 			margin-top: 0;
 			margin-bottom: 0;
-
-			@include breakpoint( '>1280px' ) {
-				height: $small-header-height;
-				line-height: $small-header-height;
-			}
 		}
 	}
 
@@ -74,7 +69,7 @@
 
 	.woocommerce-layout__primary {
 		margin: 0;
-		padding-top: $small-header-height + 20;
+		padding-top: $header-height + 20;
 
 		@include breakpoint( '<782px' ) {
 			padding-top: 10px;
@@ -93,20 +88,6 @@
 	.woocommerce-layout__activity-panel-tabs {
 		animation: isLoaded;
 		animation-duration: 2000ms;
-
-		.woocommerce-layout__activity-panel-tab {
-			@include breakpoint( '>1280px' ) {
-				font-size: 11px;
-				height: $small-header-height;
-			}
-		}
-	}
-
-	.woocommerce-layout__activity-panel-wrapper {
-		@include breakpoint( '>1280px' ) {
-			height: calc(100vh - #{$small-header-height + $adminbar-height});
-			top: #{$small-header-height + $adminbar-height};
-		}
 	}
 
 	.woocommerce-layout__notice-list-show {
