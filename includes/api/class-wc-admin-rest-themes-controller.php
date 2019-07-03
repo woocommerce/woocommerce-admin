@@ -70,6 +70,10 @@ class WC_Admin_REST_Themes_Controller extends WC_REST_Data_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function upload_theme( $request ) {
+		if ( ! isset( $_FILES['pluginzip'] ) || ! is_uploaded_file( $_FILES['pluginzip']['tmp_name'] ) || ! is_file( $_FILES['pluginzip']['tmp_name'] ) ) { // WPCS: sanitization ok.
+			return new WP_Error( 'woocommerce_rest_invalid_file', __( 'Specified file failed upload test.', 'woocommerce-admin' ) );
+		}
+
 		include_once ABSPATH . 'wp-admin/includes/file.php';
 		include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 		include_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-theme-upgrader.php';
