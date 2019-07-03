@@ -266,36 +266,16 @@
 		}
 	}
 
-	.woocommerce-profile-wizard__tracking {
-		.components-form-toggle {
-			display: none;
-		}
-
-		@include breakpoint( '<782px' ) {
-			.components-form-toggle {
-				display: inline-block;
-			}
-			.components-checkbox-control__input {
-				display: none;
-			}
-
-			display: flex;
-			flex-direction: row-reverse;
-			align-items: center;
-			justify-content: flex-end;
-
-			.muriel-checkbox label.components-checkbox-control__label {
-				margin-left: $gap-small;
-			}
-		}
-	}
-
 	.woocommerce-profile-wizard__toggle {
 		label {
 			font-size: 14px;
 		}
 
 		.components-base-control {
+			display: inline-block;
+		}
+
+		&.components-form-toggle {
 			display: inline-block;
 		}
 
@@ -318,6 +298,30 @@
 			.components-form-toggle__track {
 				background-color: $muriel-hot-purple-600;
 				border-color: $muriel-hot-purple-600;
+			}
+		}
+	}
+
+	.woocommerce-profile-wizard__tracking {
+		.components-form-toggle {
+			display: none;
+		}
+
+		@include breakpoint( '<782px' ) {
+			.components-form-toggle {
+				display: inline-block;
+			}
+			.components-checkbox-control__input {
+				display: none;
+			}
+
+			display: flex;
+			flex-direction: row-reverse;
+			align-items: center;
+			justify-content: flex-end;
+
+			.muriel-checkbox label.components-checkbox-control__label {
+				margin-left: $gap-small;
 			}
 		}
 	}

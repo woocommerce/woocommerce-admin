@@ -52,7 +52,12 @@ class BusinessDetails extends Component {
 			install_mailchimp: this.state.extensions.mailchimp,
 		} );
 
-		await updateProfileItems( { other_platform, product_count, selling_venues, business_extensions: extensions } );
+		await updateProfileItems( {
+			other_platform,
+			product_count,
+			selling_venues,
+			business_extensions: extensions,
+		} );
 
 		if ( ! isError ) {
 			goToNextStep();
@@ -244,6 +249,9 @@ class BusinessDetails extends Component {
 			},
 		];
 
+		// Show extensions when the currently selling elsewhere checkbox has been answered.
+		const showExtensions = '' !== this.state.selling_venues;
+
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
@@ -281,7 +289,7 @@ class BusinessDetails extends Component {
 						/>
 					) }
 
-					{ this.isValidForm() && this.renderBusinessExtensions() }
+					{ showExtensions && this.renderBusinessExtensions() }
 
 					<Button
 						isPrimary
@@ -293,7 +301,7 @@ class BusinessDetails extends Component {
 					</Button>
 				</Card>
 
-				{ this.isValidForm() && this.renderBusinessExtensionHelpText() }
+				{ showExtensions && this.renderBusinessExtensionHelpText() }
 			</Fragment>
 		);
 	}
