@@ -22,6 +22,7 @@ import { Card, H } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import './style.scss';
 import { recordEvent } from 'lib/tracks';
+import ThemeUploader from './uploader';
 
 class Theme extends Component {
 	constructor() {
@@ -175,6 +176,7 @@ class Theme extends Component {
 					{ () => (
 						<div className="woocommerce-profile-wizard__themes">
 							{ themes && themes.map( theme => this.renderTheme( theme ) ) }
+							<ThemeUploader />
 						</div>
 					) }
 				</TabPanel>
