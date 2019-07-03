@@ -23,6 +23,7 @@ import Notices from './notices';
 import { recordPageView } from 'lib/tracks';
 import TransientNotices from './transient-notices';
 import StoreAlerts from './store-alerts';
+import { REPORTS_FILTER } from 'analytics/report';
 
 export class PrimaryLayout extends Component {
 	render() {
@@ -78,7 +79,9 @@ class Layout extends Component {
 		const { breadcrumbs } = this.props.page;
 		return (
 			<div className="woocommerce-layout">
-				<Header sections={ ( isFunction( breadcrumbs ) ? breadcrumbs( this.props ) : breadcrumbs ) || [] } />
+				<Header
+					sections={ ( isFunction( breadcrumbs ) ? breadcrumbs( this.props ) : breadcrumbs ) || [] }
+				/>
 				<TransientNotices />
 				{ ! isEmbedded && (
 					<PrimaryLayout>
@@ -117,13 +120,18 @@ class _PageLayout extends Component {
 		);
 	}
 }
-// Use the useFilters HoC so PageLayout is re-rendered when the filter is used to add new pages
-export const PageLayout = useFilters( PAGES_FILTER )( _PageLayout );
+// Use the useFilters HoC so PageLayout is re-rendered when filters are used to add new pages or reports
+export const PageLayout = useFilters( [ PAGES_FILTER, REPORTS_FILTER ] )( _PageLayout );
 
 export class EmbedLayout extends Component {
 	render() {
-		return <Layout page={ {
-			breadcrumbs: wcSettings.embedBreadcrumbs,
-		} } isEmbedded />;
+		return (
+			<Layout
+				page={ {
+					breadcrumbs: wcSettings.embedBreadcrumbs,
+				} }
+				isEmbedded
+			/>
+		);
 	}
 }
