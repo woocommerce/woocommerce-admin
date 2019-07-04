@@ -4,10 +4,13 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
+import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { DropZoneProvider, DropZone, Spinner } from '@wordpress/components';
 import Gridicon from 'gridicons';
+import { noop } from 'lodash';
+import PropTypes from 'prop-types';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -34,18 +37,16 @@ class ThemeUploader extends Component {
 	}
 
 	uploadTheme( file ) {
-		const { addNotice } = this.props;
+		const { addNotice, onUploadComplete } = this.props;
 
 		const body = new FormData();
 		body.append( 'pluginzip', file );
 
 		return apiFetch( { path: '/wc-admin/v1/themes', method: 'POST', body } )
 			.then( response => {
+				onUploadComplete( response );
 				this.setState( { isUploading: false } );
 				addNotice( { status: response.status, message: response.message } );
-				if ( 'success' === response.status ) {
-					// @todo Add theme to list of themes; maybe add prop onThemeInstall.
-				}
 			} )
 			.catch( error => {
 				this.setState( { isUploading: false } );
@@ -56,10 +57,15 @@ class ThemeUploader extends Component {
 	}
 
 	render() {
+		const { className } = this.props;
 		const { isUploading } = this.state;
 
+		const classes = classnames( 'woocommerce-theme-uploader', className, {
+			'is-uploading': isUploading,
+		} );
+
 		return (
-			<Card className="woocommerce-theme-uploader">
+			<Card className={ classes }>
 				<DropZoneProvider>
 					{ ! isUploading ? (
 						<Fragment>
@@ -87,6 +93,21 @@ class ThemeUploader extends Component {
 		);
 	}
 }
+
+ThemeUploader.propTypes = {
+	/**
+	 * Additional class name to style the component.
+	 */
+	className: PropTypes.string,
+	/**
+	 * Function called when an upload has finished.
+	 */
+	onUploadComplete: PropTypes.func,
+};
+
+ThemeUploader.defaultProps = {
+	onUploadComplete: noop,
+};
 
 export default compose(
 	withDispatch( dispatch => {
