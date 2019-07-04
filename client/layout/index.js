@@ -80,7 +80,7 @@ class Layout extends Component {
 		return (
 			<div className="woocommerce-layout">
 				<Header
-					sections={ ( isFunction( breadcrumbs ) ? breadcrumbs( this.props ) : breadcrumbs ) || [] }
+					sections={ isFunction( breadcrumbs ) ? breadcrumbs( this.props ) : breadcrumbs }
 					isEmbedded={ isEmbedded }
 				/>
 				<TransientNotices />
@@ -98,7 +98,17 @@ class Layout extends Component {
 
 Layout.propTypes = {
 	isEmbedded: PropTypes.bool,
-	page: PropTypes.object.isRequired,
+	page: PropTypes.shape( {
+		container: PropTypes.func.isRequired,
+		path: PropTypes.string.isRequired,
+		breadcrumbs: PropTypes.oneOfType( [
+			PropTypes.func,
+			PropTypes.arrayOf(
+				PropTypes.oneOfType( [ PropTypes.arrayOf( PropTypes.string ), PropTypes.string ] )
+			),
+		] ).isRequired,
+		wpOpenMenu: PropTypes.string.isRequired,
+	} ).isRequired,
 };
 
 class _PageLayout extends Component {
