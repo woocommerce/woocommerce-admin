@@ -31,6 +31,12 @@ const actionableOrderStatuses = Array.isArray(
 	? wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses
 	: [];
 
+const excludedOrderStatuses = Array.isArray(
+	wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses
+)
+	? wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses
+	: [];
+
 const orderStatuses = Object.keys( wcSettings.orderStatuses )
 	.filter( status => status !== 'refunded' )
 	.map( key => {
@@ -70,8 +76,7 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 				strong: <strong />,
 			},
 		} ),
-		initialValue:
-			[ ...wcSettings.wcAdminSettings.woocommerce_excluded_report_order_statuses ] || [],
+		initialValue: [ ...excludedOrderStatuses ],
 		defaultValue: [ 'pending', 'cancelled', 'failed' ],
 	},
 	{
@@ -94,7 +99,7 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 				'These orders will show up in the Orders tab under the activity panel.',
 			'woocommerce-admin'
 		),
-		initialValue: actionableOrderStatuses,
+		initialValue: [ ...actionableOrderStatuses ],
 		defaultValue: DEFAULT_ACTIONABLE_STATUSES,
 	},
 	{
