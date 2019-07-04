@@ -1,4 +1,7 @@
-# 3.0.0 (unreleased)
+# unreleased
+- SearchListItem component: new `countLabel` prop that will overwrite the `item.count` value.
+
+# 3.0.0
 - <DateInput> and <DatePicker> got a `disabled` prop.
 - TableCard component: new `onPageChange` prop.
 - TableCard now has a `defaultOrder` parameter to specify default sort column sort order.
@@ -13,7 +16,7 @@
 - Card component: new `description` prop.
 - Card component: new `isInactive` prop.
 - DateRangeFilterPicker (breaking change): Introduced `onRangeSelect` prop and remove `path` prop better control.
-- SearchListItem component: new `countLabel` prop that will overwrite the `item.count` value.
+- Update liscence to GPL-3.0-or-later.
 
 # 2.0.0
 - Chart legend component now uses withInstanceId HOC so the ids used in several HTML elements are unique.
