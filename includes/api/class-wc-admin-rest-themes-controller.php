@@ -56,8 +56,8 @@ class WC_Admin_REST_Themes_Controller extends WC_REST_Data_Controller {
 	 * @return WP_Error|boolean
 	 */
 	public function upload_theme_permissions_check( $request ) {
-		if ( ! current_user_can( 'upload_plugins' ) ) {
-			return new WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you are not allowed to install plugins on this site.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
+		if ( ! current_user_can( 'upload_themes' ) ) {
+			return new WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you are not allowed to install themes on this site.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
