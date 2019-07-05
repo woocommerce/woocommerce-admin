@@ -28,6 +28,13 @@ class WC_Tests_API_Themes extends WC_REST_Unit_Test_Case {
 				'role' => 'administrator',
 			)
 		);
+
+		// Editor does not have theme capabilities.
+		$this->editor = $this->factory->user->create(
+			array(
+				'role' => 'editor',
+			)
+		);
 	}
 
 	/**
@@ -43,6 +50,21 @@ class WC_Tests_API_Themes extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 500, $response->get_status() );
 		$this->assertEquals( 'woocommerce_rest_invalid_file', $data['code'] );
 	}
+
+	/**
+	 * Test that a user without capabilities receives a forbidden response error.
+	 */
+	public function test_capabilities() {
+		wp_set_current_user( $this->editor );
+
+		$request  = new WP_REST_Request( 'POST', $this->endpoint );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 403, $response->get_status() );
+		$this->assertEquals( 'woocommerce_rest_cannot_view', $data['code'] );
+	}
+
 
 	/**
 	 * Test schema.
