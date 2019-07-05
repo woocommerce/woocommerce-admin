@@ -125,8 +125,11 @@
 		height: 100%;
 	}
 
+	&.is-uploading .components-drop-zone__provider {
+		min-height: 382px;
+	}
+
 	.components-drop-zone__provider {
-		min-height: 400px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -134,6 +137,20 @@
 		border-radius: 2px;
 		background: #f6f6f6;
 		border: 1px dashed #b0b5b8;
+	}
+
+	.components-form-file-upload {
+		flex: 1;
+		width: 100%;
+	}
+
+	.components-form-file-upload > .components-button {
+		flex: 1;
+		flex-direction: column;
+		margin: 0;
+		width: 100%;
+		height: 100%;
+		min-height: 380px;
 
 		> .gridicon {
 			width: 48px;
@@ -142,6 +159,10 @@
 			path {
 				fill: #50575d;
 			}
+		}
+
+		.dashicons-upload {
+			display: none;
 		}
 	}
 

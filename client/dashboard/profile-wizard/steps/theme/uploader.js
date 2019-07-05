@@ -7,7 +7,7 @@ import apiFetch from '@wordpress/api-fetch';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { DropZoneProvider, DropZone } from '@wordpress/components';
+import { DropZoneProvider, DropZone, FormFileUpload } from '@wordpress/components';
 import Gridicon from 'gridicons';
 import { noop } from 'lodash';
 import PropTypes from 'prop-types';
@@ -26,18 +26,23 @@ class ThemeUploader extends Component {
 			isUploading: false,
 		};
 
+		this.handleFilesUpload = this.handleFilesUpload.bind( this );
 		this.handleFilesDrop = this.handleFilesDrop.bind( this );
 	}
 
 	handleFilesDrop( files ) {
 		const file = files[ 0 ];
+		this.uploadTheme( file );
+	}
 
-		this.setState( { isUploading: true } );
+	handleFilesUpload( e ) {
+		const file = e.target.files[ 0 ];
 		this.uploadTheme( file );
 	}
 
 	uploadTheme( file ) {
 		const { addNotice, onUploadComplete } = this.props;
+		this.setState( { isUploading: true } );
 
 		const body = new FormData();
 		body.append( 'pluginzip', file );
@@ -69,11 +74,13 @@ class ThemeUploader extends Component {
 				<DropZoneProvider>
 					{ ! isUploading ? (
 						<Fragment>
-							<Gridicon icon="cloud-upload" />
-							<H className="woocommerce-theme-uploader__title">
-								{ __( 'Upload a theme', 'woocommerce-admin' ) }
-							</H>
-							<p>{ __( 'Drop a theme zip file here to upload', 'woocommerce-admin' ) }</p>
+							<FormFileUpload accept=".zip" onChange={ this.handleFilesUpload }>
+								<Gridicon icon="cloud-upload" />
+								<H className="woocommerce-theme-uploader__title">
+									{ __( 'Upload a theme', 'woocommerce-admin' ) }
+								</H>
+								<p>{ __( 'Drop a theme zip file here to upload', 'woocommerce-admin' ) }</p>
+							</FormFileUpload>
 							<DropZone
 								label={ __( 'Drop your theme zip file here', 'woocommerce-admin' ) }
 								onFilesDrop={ this.handleFilesDrop }
