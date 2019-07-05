@@ -7,7 +7,7 @@ import apiFetch from '@wordpress/api-fetch';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { DropZoneProvider, DropZone, Spinner } from '@wordpress/components';
+import { DropZoneProvider, DropZone } from '@wordpress/components';
 import Gridicon from 'gridicons';
 import { noop } from 'lodash';
 import PropTypes from 'prop-types';
@@ -16,7 +16,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, H } from '@woocommerce/components';
+import { Card, H, Spinner } from '@woocommerce/components';
 
 class ThemeUploader extends Component {
 	constructor() {
@@ -81,7 +81,7 @@ class ThemeUploader extends Component {
 						</Fragment>
 					) : (
 						<Fragment>
-							<Spinner key="spinner" />
+							<Spinner />
 							<H className="woocommerce-theme-uploader__title">
 								{ __( 'Uploading theme', 'woocommerce-admin' ) }
 							</H>
