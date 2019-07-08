@@ -145,6 +145,10 @@
 	}
 
 	/* Muriel style overrides */
+	.muriel-component {
+		margin-top: $gap;
+		margin-bottom: $gap;
+	}
 	.muriel-input-text {
 		&.empty {
 			.components-base-control__label {
