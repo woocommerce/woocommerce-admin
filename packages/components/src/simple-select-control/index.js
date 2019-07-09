@@ -106,6 +106,7 @@ class SimpleSelectControl extends Component {
 						{ map( options, ( option ) => {
 							const optionValue = option.value;
 							const optionLabel = option.label;
+							const optionDisabled = option.disabled || false;
 							const isSelected = ( currentValue === optionValue );
 							return (
 								<Button
@@ -117,6 +118,7 @@ class SimpleSelectControl extends Component {
 									className={ classNames( {
 										'is-selected': isSelected,
 									} ) }
+									disabled={ optionDisabled }
 									role="menuitemradio"
 									aria-checked={ isSelected }
 								>
@@ -155,12 +157,20 @@ SimpleSelectControl.propTypes = {
 			 * Label for this option.
 			 */
 			label: PropTypes.string,
+			/**
+			 * Disable the option.
+			 */
+			disabled: PropTypes.bool,
 		} )
 	),
 	/**
 	 * A function that receives the value of the new option that is being selected as input.
 	 */
 	onChange: PropTypes.func,
+	/**
+	 * The currently value of the select element.
+	 */
+	value: PropTypes.string,
 };
 
 export default withFocusOutside( SimpleSelectControl );

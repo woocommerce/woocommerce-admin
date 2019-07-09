@@ -30,6 +30,11 @@ class MySimpleSelectControl extends Component {
 				value: 'snake',
 				label: 'Snake',
 			},
+			{
+				value: 'chinchilla',
+				label: 'Chinchilla',
+				disabled: true,
+			},
 		];
 
 		return (
