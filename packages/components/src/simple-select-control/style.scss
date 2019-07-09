@@ -8,7 +8,7 @@
 	border-radius: 3px;
 	background: #fff;
 	font-size: 16px;
-	line-height: 24px;
+	line-height: 54px;
 	font-weight: 400;
 	margin-top: $gap;
 	margin-bottom: $gap;
@@ -21,7 +21,7 @@
 			justify-content: unset;
 			margin-left: 0;
 			position: absolute;
-			top: 14px;
+			top: 0;
 			left: 8px;
 			width: calc(100% - 24px);
 
@@ -45,6 +45,7 @@
 				height: 24px;
 				width: 24px;
 				margin-top: 0;
+				top: 0;
 				right: 0;
 				bottom: 16px;
 				color: #000;
@@ -81,8 +82,8 @@
 			&.components-button {
 				background: #fff;
 				font-size: 16px;
-				line-height: 24px;
-				height: 26px;
+				line-height: 54px;
+				height: 54px;
 				z-index: 100;
 				color: #636d75;
 			}
