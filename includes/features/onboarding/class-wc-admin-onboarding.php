@@ -152,17 +152,14 @@ class WC_Admin_Onboarding {
 			$active_theme     = get_option( 'stylesheet' );
 
 			foreach ( $installed_themes as $slug => $theme ) {
-				$has_woocommerce_support = self::has_woocommerce_support( $theme );
+				$theme_data = self::get_theme_data( $theme );
 
-				if ( ! $has_woocommerce_support && $active_theme !== $slug ) {
+				if ( ! $theme_data['has_woocommerce_support'] && $active_theme !== $slug ) {
 					continue;
 				}
 
 				$installed_themes = wp_get_themes();
-
-				foreach ( $installed_themes as $slug => $theme ) {
-					$themes[ $slug ] = self::get_theme_data( $theme );
-				}
+				$themes[ $slug ]  = $theme_data;
 			}
 
 			$themes = array( $active_theme => $themes[ $active_theme ] ) + $themes;
