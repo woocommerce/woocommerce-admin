@@ -44,6 +44,7 @@ export function getUnreadOrders( select ) {
 		page: 1,
 		per_page: 0,
 		status_is: orderStatuses,
+		after: '1970-01-01T00:00:01',
 	};
 
 	const totalOrders = getReportItems( 'orders', ordersQuery ).totalResults;

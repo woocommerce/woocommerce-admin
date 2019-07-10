@@ -28,12 +28,12 @@ import withSelect from 'wc-api/with-select';
 
 class OrdersPanel extends Component {
 	renderEmptyCard() {
-		const { hasNonActionableOrders } = this.props;
-		if ( hasNonActionableOrders ) {
+		const { hasActionableOrders } = this.props;
+		if ( hasActionableOrders ) {
 			return (
 				<ActivityCard
 					className="woocommerce-empty-activity-card"
-					title={ __( 'You have no orders to fulfill', 'woocommerce-admin' ) }
+					title={ __( 'You have no new orders to fulfill', 'woocommerce-admin' ) }
 					icon={ <Gridicon icon="checkmark" size={ 48 } /> }
 				>
 					{ __( "Good job, you've fulfilled all of your new orders!", 'woocommerce-admin' ) }
@@ -283,6 +283,7 @@ export default compose(
 		const allOrdersQuery = {
 			page: 1,
 			per_page: 0,
+			after: '1970-01-01T00:00:01',
 		};
 
 		const totalNonActionableOrders = getReportItems( 'orders', allOrdersQuery ).totalResults;
