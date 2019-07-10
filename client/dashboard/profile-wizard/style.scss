@@ -165,6 +165,14 @@
 		}
 	}
 
+	.woocommerce-profile-wizard__error {
+		display: block;
+		margin-top: $gap;
+		margin-bottom: $gap;
+		font-size: 12px;
+		color: $muriel-red-500;
+	}
+
 	.muriel-input-text {
 		&.empty {
 			.components-base-control__label {
