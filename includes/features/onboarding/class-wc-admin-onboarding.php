@@ -215,14 +215,22 @@ class WC_Admin_Onboarding {
 	 * @return bool
 	 */
 	public static function has_woocommerce_support( $theme ) {
-		$directory = new RecursiveDirectoryIterator( $theme->theme_root . '/' . $theme->stylesheet );
-		$iterator  = new RecursiveIteratorIterator( $directory );
-		$files     = new RegexIterator( $iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH );
+		$themes = array( $theme );
+		if ( $theme->get( 'Template' ) ) {
+			$parent_theme = wp_get_theme( $theme->get( 'Template' ) );
+			$themes[]     = $parent_theme;
+		}
 
-		foreach ( $files as $file ) {
-			$content = file_get_contents( $file[0] );
-			if ( preg_match( '/add_theme_support\(([^(]*)(\'|\")woocommerce(\'|\")([^(]*)/si', $content, $matches ) ) {
-				return true;
+		foreach ( $themes as $theme ) {
+			$directory = new RecursiveDirectoryIterator( $theme->theme_root . '/' . $theme->stylesheet );
+			$iterator  = new RecursiveIteratorIterator( $directory );
+			$files     = new RegexIterator( $iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH );
+
+			foreach ( $files as $file ) {
+				$content = file_get_contents( $file[0] );
+				if ( preg_match( '/add_theme_support\(([^(]*)(\'|\")woocommerce(\'|\")([^(]*)/si', $content, $matches ) ) {
+					return true;
+				}
 			}
 		}
 
