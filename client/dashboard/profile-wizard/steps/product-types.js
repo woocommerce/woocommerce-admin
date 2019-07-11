@@ -127,7 +127,7 @@ class ProductTypes extends Component {
 								/>
 							);
 						} ) }
-						{ error && <span class="woocommerce-profile-wizard__error">{ error }</span> }
+						{ error && <span className="woocommerce-profile-wizard__error">{ error }</span> }
 					</div>
 
 					<Button

@@ -129,7 +129,9 @@ class BusinessDetails extends Component {
 		const { fields } = this.state;
 
 		if ( ! fields[ key ].length ) {
-			this.setState( { fields: { ...fields, [ key ]: options[ 0 ].value } } );
+			this.setState( { fields: { ...fields, [ key ]: options[ 0 ].value } }, () =>
+				this.validateField( key )
+			);
 		}
 	}
 
