@@ -76,14 +76,13 @@ export default class TaskDashboard extends Component {
 	}
 
 	render() {
+		const siteUrl = wcSettings.siteUrl.replace( /(^\w+:|^)\/\//, '' );
+
 		return (
 			<Fragment>
 				<div className="woocommerce-task-dashboard__sidebar" />
 				<div className="woocommerce-task-dashboard__header">
-					<div className="woocommerce-task-dashboard__header-site">
-						{ /* @todo This shoud be replaced with the real site domain. */ }
-						{ __( 'mysite.com', 'woocommerce-admin' ) }
-					</div>
+					<div className="woocommerce-task-dashboard__header-site">{ siteUrl }</div>
 					<span className="woocommerce-task-dashboard__header-title">
 						{ __( 'Dashboard', 'woocommerce-admin' ) }
 					</span>
