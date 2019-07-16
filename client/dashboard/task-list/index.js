@@ -66,33 +66,16 @@ const getTasks = () => {
 
 export default class TaskDashboard extends Component {
 	componentDidMount() {
-		document.body.classList.add( 'woocommerce-dashboard__body' );
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
 	}
 
 	componentWillUnmount() {
-		document.body.classList.remove( 'woocommerce-dashboard__body' );
 		document.body.classList.remove( 'woocommerce-task-dashboard__body' );
 	}
 
 	render() {
-		const siteUrl = wcSettings.siteUrl.replace( /(^\w+:|^)\/\//, '' );
-
 		return (
 			<Fragment>
-				<div className="woocommerce-task-dashboard__sidebar" />
-				<div className="woocommerce-task-dashboard__header">
-					<div className="woocommerce-task-dashboard__header-site">{ siteUrl }</div>
-					<span className="woocommerce-task-dashboard__header-title">
-						{ __( 'Dashboard', 'woocommerce-admin' ) }
-					</span>
-					<div className="woocommerce-task-dashboard__header-connection">
-						<div className="woocommerce-task-dashboard__header-connection-avatar">
-							{ /* @todo This should display the user avatar if the store is connected. */ }
-							<Gridicon icon="user" />
-						</div>
-					</div>
-				</div>
 				<div className="woocommerce-task-dashboard__container">
 					<Card
 						title={ __( 'Set up your store and start selling', 'woocommerce-admin' ) }

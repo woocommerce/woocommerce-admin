@@ -1,18 +1,6 @@
 /** @format */
 
 .woocommerce-task-dashboard__body {
-	.woocommerce-layout__primary {
-		margin: #{$header-height + 64px} 68px 64px #{$sidebar-width + 68px};
-
-		@include breakpoint( '<782px' ) {
-			margin: #{$header-height + $gap-larger} $gap $gap-larger;
-		}
-	}
-
-	.woocommerce-layout__main {
-		padding-right: 0;
-	}
-
 	.woocommerce-card__description {
 		color: $muriel-gray-500;
 	}
@@ -51,81 +39,5 @@
 
 	#wpbody-content {
 		position: relative;
-	}
-}
-
-.woocommerce-task-dashboard__header {
-	position: fixed;
-	top: 32px;
-	left: 0;
-	height: $header-height;
-	width: 100%;
-	background: $muriel-hot-purple-600;
-	color: $white;
-	z-index: 999;
-	display: flex;
-	align-items: center;
-
-	@include breakpoint( '<782px' ) {
-		position: absolute;
-		top: 0;
-	}
-}
-
-.woocommerce-task-dashboard__header-site {
-	width: $sidebar-width;
-	border-right: 1px solid $muriel-hot-purple-700;
-	font-size: 16px;
-	padding: $gap;
-	height: 100%;
-	display: flex;
-	align-items: center;
-
-	@include breakpoint( '<782px' ) {
-		display: none;
-	}
-}
-
-.woocommerce-task-dashboard__header-connection {
-	margin-left: auto;
-	margin-right: $gap;
-}
-
-.woocommerce-task-dashboard__header-connection-avatar {
-	background: $muriel-hot-purple-900;
-	border-radius: 50%;
-	width: 32px;
-	height: 32px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	svg path {
-		fill: $white;
-	}
-}
-
-.woocommerce-task-dashboard__sidebar {
-	background: $white;
-	width: $sidebar-width;
-	height: 100%;
-	margin-top: $header-height;
-	position: fixed;
-	left: 0;
-	top: 0;
-	z-index: 998;
-	padding: $gap;
-
-	@include breakpoint( '<782px' ) {
-		display: none;
-	}
-}
-
-.woocommerce-task-dashboard__header-title {
-	font-size: 20px;
-	margin-left: $gap-larger * 2;
-
-	@include breakpoint( '<782px' ) {
-		margin-left: $gap;
 	}
 }
