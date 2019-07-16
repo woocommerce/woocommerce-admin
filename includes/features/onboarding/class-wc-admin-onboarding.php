@@ -49,6 +49,7 @@ class WC_Admin_Onboarding {
 		add_action( 'woocommerce_theme_installed', array( $this, 'delete_themes_transient' ) );
 		add_action( 'after_switch_theme', array( $this, 'delete_themes_transient' ) );
 		add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
+		add_action( 'admin_init', array( $this, 'reset_onboarding' ) );
 		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
 		add_filter( 'woocommerce_rest_prepare_themes', array( $this, 'add_uploaded_theme_data' ) );
 	}
@@ -340,6 +341,33 @@ class WC_Admin_Onboarding {
 				'<p><a href="' . wc_admin_url( '&reset_onboarding=1' ) . '" class="button button-primary">' . __( 'Setup wizard', 'woocommerce-admin' ) . '</a></p>';
 			$screen->add_help_tab( $help_tab );
 		}
+	}
+
+	/**
+	 * Reset the onboarding profiler and redirect to the profiler.
+	 */
+	public static function reset_onboarding() {
+		if (
+			! WC_Admin_Loader::is_admin_page() ||
+			! isset( $_GET['reset_onboarding'] ) || // WPCS: CSRF ok.
+			1 !== absint( $_GET['reset_onboarding'] ) // WPCS: CSRF ok.
+		) {
+			return;
+		}
+
+		$request = new WP_REST_Request( 'POST', '/wc-admin/v1/onboarding/profile' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'completed' => false,
+					'skipped'   => false,
+				)
+			)
+		);
+		$response = rest_do_request( $request );
+
+		wp_safe_redirect( wc_admin_url() );
 	}
 }
 
