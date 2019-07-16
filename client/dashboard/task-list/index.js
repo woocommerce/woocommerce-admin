@@ -88,7 +88,7 @@ export default class TaskDashboard extends Component {
 					</span>
 					<div className="woocommerce-task-dashboard__header-connection">
 						<div className="woocommerce-task-dashboard__header-connection-avatar">
-							{ /* @todo This shoud display the user avatar if the store is connected. */ }
+							{ /* @todo This should display the user avatar if the store is connected. */ }
 							<Gridicon icon="user" />
 						</div>
 					</div>
