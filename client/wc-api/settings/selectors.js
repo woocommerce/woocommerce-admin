@@ -36,7 +36,23 @@ const isGetSettingsRequesting = getResource => group => {
 		return true;
 	}
 
-	return lastRequested > lastReceived;
+	// This selector is used by other "groups", so return early if not looking at wc_admin settings.
+	if ( 'wc_admin' !== group ) {
+		return lastRequested > lastReceived;
+	}
+
+	// Mutation operations for `wc_admin` settings update a different resource (batch endpoint) in fresh-data.
+	// As such we must use lastReceived stamp from that resource to properly compare lastRequested to lastReceived.
+	const { lastReceived: lastMutationReceived } = getResource(
+		getResourceName( 'settings/wc_admin', 'woocommerce_actionable_order_statuses' )
+	);
+
+	// If we don't have a lastReceived on mutations, use the standard resource times.
+	if ( isNil( lastMutationReceived ) ) {
+		return lastRequested > lastReceived;
+	}
+
+	return lastRequested > lastMutationReceived;
 };
 
 export default {
