@@ -22,7 +22,11 @@
 			margin-left: 0;
 			position: absolute;
 			top: 0;
-			width: calc(100% - 24px);
+			height: 100%;
+			width: 100%;
+			left: 0;
+			padding-left: $gap;
+			padding-right: $gap-largest;
 
 			&:focus:not(:disabled) {
 				box-shadow: none;
