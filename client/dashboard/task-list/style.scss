@@ -13,19 +13,15 @@
 	.woocommerce-list {
 		margin: 0;
 
-		.woocommerce-list__item-before svg {
+		.woocommerce-list__item-before i {
 			width: 36px;
 			height: 36px;
-
-			path {
-				fill: $muriel-hot-purple-600;
-			}
+			font-size: 36px;
+			color: $muriel-hot-purple-600;
 		}
 
-		.woocommerce-list__item-after svg {
-			path {
-				fill: $muriel-gray-600;
-			}
+		.woocommerce-list__item-after i {
+			color: $muriel-gray-600;
 		}
 	}
 

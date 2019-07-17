@@ -15,56 +15,49 @@ import { Card, List } from '@woocommerce/components';
  * Internal depdencies
  */
 import './style.scss';
-import AccountBalance from './images/account_balance';
-import AddBox from './images/add_box';
-import ChenvronRight from './images/chevron_right';
-import Extension from './images/extension';
-import LocalShipping from './images/local_shipping';
-import Palette from './images/palette';
-import Payment from './images/payment';
 
 const getTasks = () => {
 	return [
 		{
 			title: __( 'Connect your store to WooCommerce.com', 'woocommerce-admin' ),
 			description: 'Install and manage your extensions directly from your Dashboard',
-			before: <Extension />,
-			after: <ChenvronRight />,
+			before: <i class="material-icons-outlined">extension</i>,
+			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Add your first product', 'woocommerce-admin' ),
 			description: 'Add products manually, import from a sheet or migrate from another platform',
-			before: <AddBox />,
-			after: <ChenvronRight />,
+			before: <i class="material-icons-outlined">add_box</i>,
+			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Personalize your store', 'woocommerce-admin' ),
 			description: 'Create a custom homepage and upload your logo',
-			before: <Palette />,
-			after: <ChenvronRight />,
+			before: <i class="material-icons-outlined">palette</i>,
+			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Set up shipping', 'woocommerce-admin' ),
 			description: 'Configure some basic shipping rates to get started',
-			before: <LocalShipping />,
-			after: <ChenvronRight />,
+			before: <i class="material-icons-outlined">local_shipping</i>,
+			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Set up tax', 'woocommerce-admin' ),
 			description: 'Choose how to configure tax rates - manually or automatically',
-			before: <AccountBalance />,
-			after: <ChenvronRight />,
+			before: <i class="material-icons-outlined">account_balance</i>,
+			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Set up payments', 'woocommerce-admin' ),
 			description: 'Select which payment providers you’d like to use and configure them',
-			before: <Payment />,
-			after: <ChenvronRight />,
+			before: <i class="material-icons-outlined">payment</i>,
+			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 	];
