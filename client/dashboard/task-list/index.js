@@ -20,42 +20,54 @@ const getTasks = () => {
 	return [
 		{
 			title: __( 'Connect your store to WooCommerce.com', 'woocommerce-admin' ),
-			description: 'Install and manage your extensions directly from your Dashboard',
+			description: __(
+				'Install and manage your extensions directly from your Dashboard',
+				'wooocommerce-admin'
+			),
 			before: <i class="material-icons-outlined">extension</i>,
 			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Add your first product', 'woocommerce-admin' ),
-			description: 'Add products manually, import from a sheet or migrate from another platform',
+			description: __(
+				'Add products manually, import from a sheet or migrate from another platform',
+				'wooocommerce-admin'
+			),
 			before: <i class="material-icons-outlined">add_box</i>,
 			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Personalize your store', 'woocommerce-admin' ),
-			description: 'Create a custom homepage and upload your logo',
+			description: __( 'Create a custom homepage and upload your logo', 'wooocommerce-admin' ),
 			before: <i class="material-icons-outlined">palette</i>,
 			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Set up shipping', 'woocommerce-admin' ),
-			description: 'Configure some basic shipping rates to get started',
+			description: __( 'Configure some basic shipping rates to get started', 'wooocommerce-admin' ),
 			before: <i class="material-icons-outlined">local_shipping</i>,
 			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Set up tax', 'woocommerce-admin' ),
-			description: 'Choose how to configure tax rates - manually or automatically',
+			description: __(
+				'Choose how to configure tax rates - manually or automatically',
+				'wooocommerce-admin'
+			),
 			before: <i class="material-icons-outlined">account_balance</i>,
 			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			title: __( 'Set up payments', 'woocommerce-admin' ),
-			description: 'Select which payment providers you’d like to use and configure them',
+			description: __(
+				'Select which payment providers you’d like to use and configure them',
+				'wooocommerce-admin'
+			),
 			before: <i class="material-icons-outlined">payment</i>,
 			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
