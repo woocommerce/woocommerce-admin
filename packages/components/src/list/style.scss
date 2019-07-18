@@ -3,6 +3,10 @@
 	display: flex;
 	margin-bottom: 0;
 
+	&.has-action {
+		cursor: pointer;
+	}
+
 	.woocommerce-list__item-title {
 		display: block;
 		font-size: 16px;

@@ -5,7 +5,6 @@
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { ENTER } from '@wordpress/keycodes';
-import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -26,14 +25,17 @@ class List extends Component {
 			<ul className={ listClassName }>
 				{ items.map( ( item, i ) => {
 					const { after, before, classes, description, onClick, title } = item;
-					const itemClassName = classnames( 'woocommerce-list__item', classes );
+					const hasAction = 'function' === typeof onClick;
+					const itemClassName = classnames( 'woocommerce-list__item', classes, {
+						'has-action': hasAction,
+					} );
 
 					return (
 						<li
 							className={ itemClassName }
 							key={ i }
-							onClick={ 'function' === typeof onClick ? onClick : noop }
-							onKeyDown={ ( e ) => this.handleKeyDown( e, onClick ) }
+							onClick={ hasAction ? onClick : null }
+							onKeyDown={ ( e ) => hasAction ? this.handleKeyDown( e, onClick ) : null }
 							role="menuitem"
 							aria-disabled="false"
 							tabIndex="0"
