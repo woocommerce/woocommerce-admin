@@ -24,9 +24,9 @@ class List extends Component {
 		return (
 			<ul className={ listClassName }>
 				{ items.map( ( item, i ) => {
-					const { after, before, classes, description, onClick, title } = item;
+					const { after, before, className: itemClasses, description, onClick, title } = item;
 					const hasAction = 'function' === typeof onClick;
-					const itemClassName = classnames( 'woocommerce-list__item', classes, {
+					const itemClassName = classnames( 'woocommerce-list__item', itemClasses, {
 						'has-action': hasAction,
 					} );
 
@@ -97,7 +97,11 @@ List.propTypes = {
 			/**
 			 * Content displayed after the list item text.
 			 */
-            onClick: PropTypes.func,
+			onClick: PropTypes.func,
+			/**
+			 * Additional class name to style the list item.
+			 */
+			className: PropTypes.string,
 		} )
 	).isRequired,
 };
