@@ -25,6 +25,13 @@ class WC_Admin_Onboarding_Tasks {
 	const ACTIVE_TASK_TRANSIENT = 'wc_onboarding_active_task';
 
 	/**
+	 * Name of the tasks transient.
+	 *
+	 * @var string
+	 */
+	const TASKS_TRANSIENT = 'wc_onboarding_tasks';
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -38,8 +45,33 @@ class WC_Admin_Onboarding_Tasks {
 	 * Constructor
 	 */
 	public function __construct() {
+		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 30 ); // Run after WC_Admin_Onboarding.
 		add_action( 'admin_init', array( $this, 'set_active_task' ), 20 );
 		add_action( 'admin_init', array( $this, 'check_active_task_completion' ), 1 );
+	}
+
+	/**
+	 * Add task items to component settings.
+	 *
+	 * @param array $settings Component settings.
+	 */
+	public function component_settings( $settings ) {
+		$tasks = get_transient( self::TASKS_TRANSIENT );
+
+		if ( ! $tasks ) {
+			$tasks     = array();
+			$task_list = array( 'products' );
+
+			foreach ( $task_list as $task ) {
+				$tasks[ $task ] = self::check_task_completion( $task );
+			}
+
+			set_transient( self::TASKS_TRANSIENT, $tasks, DAY_IN_SECONDS );
+		}
+
+		$settings['onboarding']['tasks'] = $tasks;
+
+		return $settings;
 	}
 
 
@@ -73,6 +105,7 @@ class WC_Admin_Onboarding_Tasks {
 
 		if ( self::check_task_completion( $active_task ) ) {
 			delete_transient( self::ACTIVE_TASK_TRANSIENT );
+			delete_transient( self::TASKS_TRANSIENT );
 			wp_safe_redirect( wc_admin_url() );
 			exit;
 		}

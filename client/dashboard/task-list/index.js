@@ -19,6 +19,8 @@ import './style.scss';
 import Products from './tasks/products';
 
 const getTasks = () => {
+	const { tasks } = wcSettings.onboarding;
+
 	return [
 		{
 			key: 'connect',
@@ -38,10 +40,15 @@ const getTasks = () => {
 				'Add products manually, import from a sheet or migrate from another platform',
 				'wooocommerce-admin'
 			),
-			before: <i class="material-icons-outlined">add_box</i>,
+			before: tasks.products ? (
+				<i class="material-icons-outlined">check_circle</i>
+			) : (
+				<i class="material-icons-outlined">add_box</i>
+			),
 			after: <i class="material-icons-outlined">chevron_right</i>,
 			onClick: () => updateQueryString( { task: 'products' } ),
 			container: <Products />,
+			className: tasks.products ? 'is-complete' : null,
 		},
 		{
 			key: 'personalize-store',

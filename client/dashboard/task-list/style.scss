@@ -13,6 +13,10 @@
 	.woocommerce-list {
 		margin: 0;
 
+		.woocommerce-list__item.is-complete .woocommerce-list__item-before i {
+			color: $muriel-gray-200;
+		}
+
 		.woocommerce-list__item-before i {
 			width: 36px;
 			height: 36px;
