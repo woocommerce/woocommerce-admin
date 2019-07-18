@@ -20,7 +20,10 @@ const subTasks = [
 		),
 		before: <i class="material-icons-outlined">add_box</i>,
 		after: <i class="material-icons-outlined">chevron_right</i>,
-		onClick: () => ( window.location.href = getAdminLink( 'post-new.php?post_type=product' ) ),
+		onClick: () =>
+			( window.location.href = getAdminLink(
+				'post-new.php?post_type=product&wc_onboarding_active_task=products'
+			) ),
 	},
 	{
 		title: __( 'Import', 'woocommerce-admin' ),
@@ -31,7 +34,9 @@ const subTasks = [
 		before: <i class="material-icons-outlined">import_export</i>,
 		after: <i class="material-icons-outlined">chevron_right</i>,
 		onClick: () =>
-			( window.location.href = getAdminLink( 'edit.php?post_type=product&page=product_importer' ) ),
+			( window.location.href = getAdminLink(
+				'edit.php?post_type=product&page=product_importer&wc_onboarding_active_task=products'
+			) ),
 	},
 	{
 		title: __( 'Migrate', 'woocommerce-admin' ),
