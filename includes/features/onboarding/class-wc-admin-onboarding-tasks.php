@@ -48,9 +48,15 @@ class WC_Admin_Onboarding_Tasks {
 	 */
 	public static function set_active_task() {
 		if ( isset( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) ) { // WPCS: csrf ok.
+			$task = sanitize_title_with_dashes( wp_unslash( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) );
+
+			if ( self::check_task_completion( $task ) ) {
+				return;
+			}
+
 			set_transient(
 				self::ACTIVE_TASK_TRANSIENT,
-				sanitize_title_with_dashes( wp_unslash( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) ),
+				$task,
 				DAY_IN_SECONDS
 			); // WPCS: csrf ok.
 		}
@@ -65,23 +71,27 @@ class WC_Admin_Onboarding_Tasks {
 			return;
 		}
 
-		switch ( $active_task ) {
-			case 'products':
-				$products = wp_count_posts( 'product' );
-				if ( $products > 0 ) {
-					self::redirect_to_dashboard();
-				}
-				break;
+		if ( self::check_task_completion( $active_task ) ) {
+			delete_transient( self::ACTIVE_TASK_TRANSIENT );
+			wp_safe_redirect( wc_admin_url() );
+			exit;
 		}
 	}
 
 	/**
-	 * Redirect to dashboard and delete active task transient.
+	 * Check for task completion of a given task.
+	 *
+	 * @param string $task Name of task.
+	 * @return bool;
 	 */
-	public static function redirect_to_dashboard() {
-		delete_transient( self::ACTIVE_TASK_TRANSIENT );
-		wp_safe_redirect( wc_admin_url() );
-		exit;
+	public static function check_task_completion( $task ) {
+		switch ( $task ) {
+			case 'products':
+				$products = wp_count_posts( 'product' );
+				return $products > 0;
+		}
+
+		return false;
 	}
 }
 
