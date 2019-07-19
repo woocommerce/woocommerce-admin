@@ -13,8 +13,20 @@
 	.woocommerce-list {
 		margin: 0;
 
-		.woocommerce-list__item.is-complete .woocommerce-list__item-before i {
-			color: $muriel-gray-200;
+		.woocommerce-list__item.is-complete {
+			background: $muriel-gray-0;
+
+			.woocommerce-list__item-before i {
+				color: $muriel-gray-200;
+			}
+
+			.woocommerce-list__item-title {
+				color: $muriel-gray-500;
+			}
+
+			.woocommerce-list__item-description {
+				display: none;
+			}
 		}
 
 		.woocommerce-list__item-before i {

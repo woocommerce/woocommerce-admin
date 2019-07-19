@@ -1,6 +1,7 @@
 .woocommerce-list__item {
 	padding: $gap;
 	display: flex;
+	align-items: center;
 	margin-bottom: 0;
 
 	&.has-action {
