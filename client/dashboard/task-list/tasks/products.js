@@ -18,8 +18,8 @@ const subTasks = [
 			'For small stores we recommend adding products manually',
 			'woocommerce-admin'
 		),
-		before: <i class="material-icons-outlined">add_box</i>,
-		after: <i class="material-icons-outlined">chevron_right</i>,
+		before: <i className="material-icons-outlined">add_box</i>,
+		after: <i className="material-icons-outlined">chevron_right</i>,
 		onClick: () =>
 			( window.location.href = getAdminLink(
 				'post-new.php?post_type=product&wc_onboarding_active_task=products'
@@ -31,8 +31,8 @@ const subTasks = [
 			'For larger stores we recommend importing all products at once via CSV file',
 			'woocommerce-admin'
 		),
-		before: <i class="material-icons-outlined">import_export</i>,
-		after: <i class="material-icons-outlined">chevron_right</i>,
+		before: <i className="material-icons-outlined">import_export</i>,
+		after: <i className="material-icons-outlined">chevron_right</i>,
 		onClick: () =>
 			( window.location.href = getAdminLink(
 				'edit.php?post_type=product&page=product_importer&wc_onboarding_active_task=products'
@@ -44,8 +44,8 @@ const subTasks = [
 			'For stores currently selling elsewhere we suggest using a product migration service',
 			'woocommerce-admin'
 		),
-		before: <i class="material-icons-outlined">cloud_download</i>,
-		after: <i class="material-icons-outlined">chevron_right</i>,
+		before: <i className="material-icons-outlined">cloud_download</i>,
+		after: <i className="material-icons-outlined">chevron_right</i>,
 		// @todo This should be replaced with the in-app purchase iframe when ready.
 		onClick: () => window.open( 'https://woocommerce.com/products/cart2cart/', '_blank' ),
 	},
