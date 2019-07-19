@@ -121,7 +121,7 @@ class WC_Admin_Onboarding_Tasks {
 		switch ( $task ) {
 			case 'products':
 				$products = wp_count_posts( 'product' );
-				return $products > 0;
+				return (int) $products->publish > 0 || (int) $products->draft > 0;
 		}
 
 		return false;

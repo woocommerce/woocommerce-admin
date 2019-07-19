@@ -29,8 +29,8 @@ const getTasks = () => {
 				'Install and manage your extensions directly from your Dashboard',
 				'wooocommerce-admin'
 			),
-			before: <i class="material-icons-outlined">extension</i>,
-			after: <i class="material-icons-outlined">chevron_right</i>,
+			before: <i className="material-icons-outlined">extension</i>,
+			after: <i className="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
@@ -41,11 +41,11 @@ const getTasks = () => {
 				'wooocommerce-admin'
 			),
 			before: tasks.products ? (
-				<i class="material-icons-outlined">check_circle</i>
+				<i className="material-icons-outlined">check_circle</i>
 			) : (
-				<i class="material-icons-outlined">add_box</i>
+				<i className="material-icons-outlined">add_box</i>
 			),
-			after: <i class="material-icons-outlined">chevron_right</i>,
+			after: <i className="material-icons-outlined">chevron_right</i>,
 			onClick: () => updateQueryString( { task: 'products' } ),
 			container: <Products />,
 			className: tasks.products ? 'is-complete' : null,
@@ -54,16 +54,16 @@ const getTasks = () => {
 			key: 'personalize-store',
 			title: __( 'Personalize your store', 'woocommerce-admin' ),
 			description: __( 'Create a custom homepage and upload your logo', 'wooocommerce-admin' ),
-			before: <i class="material-icons-outlined">palette</i>,
-			after: <i class="material-icons-outlined">chevron_right</i>,
+			before: <i className="material-icons-outlined">palette</i>,
+			after: <i className="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
 			key: 'shipping',
 			title: __( 'Set up shipping', 'woocommerce-admin' ),
 			description: __( 'Configure some basic shipping rates to get started', 'wooocommerce-admin' ),
-			before: <i class="material-icons-outlined">local_shipping</i>,
-			after: <i class="material-icons-outlined">chevron_right</i>,
+			before: <i className="material-icons-outlined">local_shipping</i>,
+			after: <i className="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
@@ -73,8 +73,8 @@ const getTasks = () => {
 				'Choose how to configure tax rates - manually or automatically',
 				'wooocommerce-admin'
 			),
-			before: <i class="material-icons-outlined">account_balance</i>,
-			after: <i class="material-icons-outlined">chevron_right</i>,
+			before: <i className="material-icons-outlined">account_balance</i>,
+			after: <i className="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 		{
@@ -84,8 +84,8 @@ const getTasks = () => {
 				'Select which payment providers you’d like to use and configure them',
 				'wooocommerce-admin'
 			),
-			before: <i class="material-icons-outlined">payment</i>,
-			after: <i class="material-icons-outlined">chevron_right</i>,
+			before: <i className="material-icons-outlined">payment</i>,
+			after: <i className="material-icons-outlined">chevron_right</i>,
 			onClick: noop,
 		},
 	];
