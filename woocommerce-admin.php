@@ -227,7 +227,7 @@ class WC_Admin_Feature_Plugin {
 		}
 
 		$wordpress_version = get_bloginfo( 'version' );
-		return version_compare( $wordpress_version, '4.9.9', '>' );
+		return version_compare( $wordpress_version, '5.2.0', '>=' );
 	}
 
 	/**
@@ -252,10 +252,10 @@ class WC_Admin_Feature_Plugin {
 	 */
 	public function render_dependencies_notice() {
 		// The notice varies by WordPress version.
-		$wordpress_version            = get_bloginfo( 'version' );
-		$wordpress_includes_gutenberg = version_compare( $wordpress_version, '4.9.9', '>' );
+		$wordpress_version    = get_bloginfo( 'version' );
+		$has_valid_wp_version = version_compare( $wordpress_version, '5.2.0', '>=' );
 
-		if ( $wordpress_includes_gutenberg ) {
+		if ( $has_valid_wp_version ) {
 			$message = sprintf(
 				/* translators: URL of WooCommerce plugin */
 				__( 'The WooCommerce Admin feature plugin requires <a href="%s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
@@ -264,7 +264,7 @@ class WC_Admin_Feature_Plugin {
 		} else {
 			$message = sprintf(
 				/* translators: 1: URL of WordPress.org, 2: URL of WooCommerce plugin */
-				__( 'The WooCommerce Admin feature plugin requires both <a href="%1$s">WordPress</a> 5.0 or greater and <a href="%2$s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
+				__( 'The WooCommerce Admin feature plugin requires both <a href="%1$s">WordPress</a> 5.2 or greater and <a href="%2$s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
 				'https://wordpress.org/',
 				'https://wordpress.org/plugins/woocommerce/'
 			);
