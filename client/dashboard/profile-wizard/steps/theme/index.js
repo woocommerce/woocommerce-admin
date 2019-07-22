@@ -23,6 +23,7 @@ import withSelect from 'wc-api/with-select';
 import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import ThemeUploader from './uploader';
+import ThemePreview from './preview';
 
 class Theme extends Component {
 	constructor() {
@@ -30,11 +31,13 @@ class Theme extends Component {
 
 		this.state = {
 			activeTab: 'all',
+			demo: null,
 			uploadedThemes: [],
 		};
 
 		this.handleUploadComplete = this.handleUploadComplete.bind( this );
 		this.onChoose = this.onChoose.bind( this );
+		this.onClosePreview = this.onClosePreview.bind( this );
 		this.onSelectTab = this.onSelectTab.bind( this );
 		this.openDemo = this.openDemo.bind( this );
 	}
@@ -56,10 +59,15 @@ class Theme extends Component {
 		}
 	}
 
-	openDemo( theme ) {
-		// @todo This should open a theme demo preview.
+	onClosePreview() {
+		document.body.classList.remove( 'woocommerce-theme-preview-active' );
+		this.setState( { demo: null } );
+	}
 
-		recordEvent( 'storeprofiler_store_theme_live_demo', { theme } );
+	openDemo( theme ) {
+		document.body.classList.add( 'woocommerce-theme-preview-active' );
+		this.setState( { demo: theme } );
+		recordEvent( 'storeprofiler_store_theme_live_demo', { theme: theme.slug } );
 	}
 
 	renderTheme( theme ) {
@@ -95,7 +103,7 @@ class Theme extends Component {
 							{ __( 'Choose', 'woocommerce-admin' ) }
 						</Button>
 						{ demo_url && (
-							<Button isDefault onClick={ () => this.openDemo( slug ) }>
+							<Button isDefault onClick={ () => this.openDemo( theme ) }>
 								{ __( 'Live Demo', 'woocommerce-admin' ) }
 							</Button>
 						) }
@@ -157,6 +165,7 @@ class Theme extends Component {
 
 	render() {
 		const themes = this.getThemes();
+		const { demo } = this.state;
 
 		return (
 			<Fragment>
@@ -192,6 +201,9 @@ class Theme extends Component {
 						</div>
 					) }
 				</TabPanel>
+				{ demo && (
+					<ThemePreview theme={ demo } onChoose={ this.onChoose } onClose={ this.onClosePreview } />
+				) }
 			</Fragment>
 		);
 	}
