@@ -67,7 +67,7 @@ WebPreview.propTypes = {
 	/**
 	 * Content shown when iframe is still loading.
 	 */
-	loading: PropTypes.node,
+	loadingContent: PropTypes.node,
 	/**
 	 * Function to fire when iframe content is loaded.
 	 */
