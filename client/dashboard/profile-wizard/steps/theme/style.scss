@@ -229,6 +229,13 @@
 			padding: $gap-small;
 			color: $muriel-gray-500;
 			margin: 0;
+			border-radius: 50%;
+
+			&.is-selected,
+			&:focus {
+				background: $muriel-gray-500;
+				color: $white;
+			}
 		}
 
 		@include breakpoint( '<782px' ) {

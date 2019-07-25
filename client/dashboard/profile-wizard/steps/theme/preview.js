@@ -4,6 +4,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
+import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import interpolateComponents from 'interpolate-components';
 
@@ -62,7 +63,9 @@ class ThemePreview extends Component {
 						{ devices.map( device => (
 							<Button
 								key={ device.key }
-								className="woocommerce-theme-preview__device"
+								className={ classnames( 'woocommerce-theme-preview__device', {
+									'is-selected': device.key === currentDevice,
+								} ) }
 								onClick={ () => this.setState( { device: device.key } ) }
 							>
 								<i className="material-icons-outlined">{ device.icon }</i>
