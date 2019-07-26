@@ -99,8 +99,9 @@ class Segmenter extends ReportsSegmenter {
 		$product_segmenting_table = $wpdb->prefix . 'wc_order_product_lookup';
 
 		// LIMIT offset, rowcount needs to be updated to LIMIT offset, rowcount * max number of segments.
-		$limit_parts      = explode( ',', $intervals_query['limit'] );
-		$orig_rowcount    = intval( $limit_parts[1] );
+		$limit_parts   = explode( ',', $intervals_query['limit'] );
+		$orig_rowcount = intval( $limit_parts[1] );
+		// @todo - this is breaking intervals.
 		$segmenting_limit = $limit_parts[0] . ',' . $orig_rowcount * count( $this->get_all_segments() );
 
 		// Can't get all the numbers from one query, so split it into one query for product-level numbers and one for order-level numbers (which first need to have orders uniqued).
@@ -120,8 +121,7 @@ class Segmenter extends ReportsSegmenter {
 						{$intervals_query['where_clause']}
 						$segmenting_where
 					GROUP BY
-						time_interval, $segmenting_groupby
-					$segmenting_limit",
+						time_interval, $segmenting_groupby",
 			ARRAY_A
 		); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
