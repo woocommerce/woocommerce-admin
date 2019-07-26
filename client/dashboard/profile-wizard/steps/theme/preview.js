@@ -50,6 +50,7 @@ class ThemePreview extends Component {
 					</Button>
 					<div className="woocommerce-theme-preview__theme-name">
 						{ interpolateComponents( {
+							/* translators: Describing who a previewed theme is developed by. E.g., Storefront developed by WooCommerce */
 							mixedString: sprintf(
 								__( '{{strong}}%s{{/strong}} developed by WooCommerce', 'woocommerce-admin' ),
 								title
