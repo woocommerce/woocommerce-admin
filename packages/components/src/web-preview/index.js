@@ -37,7 +37,7 @@ class WebPreview extends Component {
 	}
 
 	render() {
-		const { className, loading, src, title } = this.props;
+		const { className, loadingContent, src, title } = this.props;
 		const { isLoading } = this.state;
 
 		const classes = classnames( 'woocommerce-web-preview', className, {
@@ -46,7 +46,7 @@ class WebPreview extends Component {
 
 		return (
 			<div className={ classes }>
-				{ isLoading && loading }
+				{ isLoading && loadingContent }
 				<div className="woocommerce-web-preview__iframe-wrapper">
 					<iframe
 						ref={ this.iframeRef }
@@ -83,7 +83,7 @@ WebPreview.propTypes = {
 };
 
 WebPreview.defaultProps = {
-	loading: <Spinner />,
+	loadingContent: <Spinner />,
 	onLoad: noop,
 };
 
