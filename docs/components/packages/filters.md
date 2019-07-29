@@ -43,7 +43,28 @@ The query string represented in object form
 - Type: Boolean
 - Default: `true`
 
-Whether the date picker must be shown..
+Whether the date picker must be shown.
+
+### `onDateSelect`
+
+- Type: Function
+- Default: `() => {}`
+
+Function to be called after date selection.
+
+### `onFilterSelect`
+
+- Type: Function
+- Default: null
+
+Function to be called after filter selection.
+
+### `onAdvancedFilterAction`
+
+- Type: Function
+- Default: null
+
+Function to be called after an advanced filter action has been taken.
 
 `AdvancedFilters` (component)
 =============================
@@ -86,6 +107,13 @@ Name of this filter, used in translations.
 - Default: `{}`
 
 The query string represented in object form.
+
+### `onAdvancedFilterAction`
+
+- Type: Function
+- Default: `() => {}`
+
+Function to be called after an advanced filter action has been taken.
 
 `CompareFilter` (component)
 ===========================
@@ -152,13 +180,13 @@ Select a range of dates or single dates.
 Props
 -----
 
-### `path`
+### `onRangeSelect`
 
 - **Required**
-- Type: String
+- Type: Function
 - Default: null
 
-The `path` parameter supplied by React-Router.
+Callback called when selection is made.
 
 ### `query`
 
@@ -211,4 +239,11 @@ The `path` parameter supplied by React-Router.
 - Default: `{}`
 
 The query string represented in object form.
+
+### `onFilterSelect`
+
+- Type: Function
+- Default: `() => {}`
+
+Function to be called after filter selection.
 

@@ -19,8 +19,8 @@ WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
 
 # Error if WP < 5
 if [[ $WP_VERSION =~ ^([0-9]+)[0-9\.]+\-? ]]; then
-	if [ "5" -gt "${BASH_REMATCH[1]}" ]; then
-		echo "You must use WordPress 5.0 or greater."
+	if [ "5.2" -gt "${BASH_REMATCH[1]}" ]; then
+		echo "You must use WordPress 5.2 or greater."
 		exit 1
 	fi
 fi
@@ -180,6 +180,11 @@ install_deps() {
 	cd "wp-content/plugins/"
 	# As zip file does not include tests, we have to get it from git repo.
 	git clone --depth 1 https://github.com/woocommerce/woocommerce.git
+
+	# Bring in WooCommerce Core dependencies
+	cd "woocommerce"
+	composer install --no-dev
+
 	cd "$WP_CORE_DIR"
 	php wp-cli.phar plugin activate woocommerce
 

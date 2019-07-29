@@ -3,25 +3,18 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import moment from 'moment';
-
-/**
- * WooCommerce dependencies
- */
-import { stringifyQuery } from '@woocommerce/navigation';
+import { withSpokenMessages } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
-import HistoricalDataActions from './actions';
-import HistoricalDataPeriodSelector from './period-selector';
-import HistoricalDataProgress from './progress';
-import HistoricalDataStatus from './status';
-import HistoricalDataSkipCheckbox from './skip-checkbox';
-import withSelect from 'wc-api/with-select';
-import './style.scss';
+import { formatParams } from './utils';
+import HistoricalDataLayout from './layout';
+import { recordEvent } from 'lib/tracks';
 
 class HistoricalData extends Component {
 	constructor() {
@@ -30,7 +23,11 @@ class HistoricalData extends Component {
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
 
 		this.state = {
-			inProgress: false,
+			// Whether there is an active import (which might have been stopped)
+			// that matches the period and skipChecked settings
+			activeImport: null,
+			lastImportStartTimestamp: 0,
+			lastImportStopTimestamp: 0,
 			period: {
 				date: moment().format( this.dateFormat ),
 				label: 'all',
@@ -39,7 +36,10 @@ class HistoricalData extends Component {
 		};
 
 		this.makeQuery = this.makeQuery.bind( this );
+		this.onImportFinished = this.onImportFinished.bind( this );
+		this.onImportStarted = this.onImportStarted.bind( this );
 		this.onDeletePreviousData = this.onDeletePreviousData.bind( this );
+		this.onReimportData = this.onReimportData.bind( this );
 		this.onStartImport = this.onStartImport.bind( this );
 		this.onStopImport = this.onStopImport.bind( this );
 		this.onDateChange = this.onDateChange.bind( this );
@@ -48,20 +48,43 @@ class HistoricalData extends Component {
 	}
 
 	makeQuery( path, errorMessage ) {
-		const { addNotice } = this.props;
+		const { createNotice } = this.props;
 		apiFetch( { path, method: 'POST' } )
 			.then( response => {
 				if ( 'success' === response.status ) {
-					addNotice( { status: 'success', message: response.message } );
+					createNotice( 'success', response.message );
 				} else {
-					addNotice( { status: 'error', message: errorMessage } );
+					createNotice( 'error', errorMessage );
+					this.setState( {
+						activeImport: false,
+						lastImportStopTimestamp: Date.now(),
+					} );
 				}
 			} )
 			.catch( error => {
 				if ( error && error.message ) {
-					addNotice( { status: 'error', message: error.message } );
+					createNotice( 'error', error.message );
+					this.setState( {
+						activeImport: false,
+						lastImportStopTimestamp: Date.now(),
+					} );
 				}
 			} );
+	}
+
+	onImportFinished() {
+		const { debouncedSpeak } = this.props;
+		debouncedSpeak( 'Import complete' );
+		this.setState( {
+			lastImportStopTimestamp: Date.now(),
+		} );
+	}
+
+	onImportStarted() {
+		this.setState( {
+			activeImport: true,
+			lastImportStartTimestamp: Date.now(),
+		} );
 	}
 
 	onDeletePreviousData() {
@@ -71,40 +94,35 @@ class HistoricalData extends Component {
 			'woocommerce-admin'
 		);
 		this.makeQuery( path, errorMessage );
+		this.setState( {
+			activeImport: false,
+		} );
+		recordEvent( 'analytics_import_delete_previous' );
+	}
+
+	onReimportData() {
+		this.setState( {
+			activeImport: false,
+		} );
 	}
 
 	onStartImport() {
 		const { period, skipChecked } = this.state;
-		this.setState( {
-			inProgress: true,
-		} );
-		const params = {};
-		if ( skipChecked ) {
-			params.skip_existing = true;
-		}
-		if ( period.label !== 'all' ) {
-			if ( period.label === 'custom' ) {
-				const daysDifference = moment().diff(
-					moment( period.date, this.dateFormat ),
-					'days',
-					true
-				);
-				params.days = Math.ceil( daysDifference );
-			} else {
-				params.days = parseInt( period.label, 10 );
-			}
-		}
-		const path = '/wc/v4/reports/import' + stringifyQuery( params );
+		const path = addQueryArgs(
+			'/wc/v4/reports/import',
+			formatParams( this.dateFormat, period, skipChecked )
+		);
 		const errorMessage = __(
 			'There was a problem rebuilding your report data.',
 			'woocommerce-admin'
 		);
 		this.makeQuery( path, errorMessage );
+		this.onImportStarted();
 	}
 
 	onStopImport() {
 		this.setState( {
-			inProgress: false,
+			lastImportStopTimestamp: Date.now(),
 		} );
 		const path = '/wc/v4/reports/import/cancel';
 		const errorMessage = __(
@@ -116,6 +134,7 @@ class HistoricalData extends Component {
 
 	onPeriodChange( val ) {
 		this.setState( {
+			activeImport: false,
 			period: {
 				...this.state.period,
 				label: val,
@@ -125,6 +144,7 @@ class HistoricalData extends Component {
 
 	onDateChange( val ) {
 		this.setState( {
+			activeImport: false,
 			period: {
 				date: val,
 				label: 'custom',
@@ -134,124 +154,40 @@ class HistoricalData extends Component {
 
 	onSkipChange( val ) {
 		this.setState( {
+			activeImport: false,
 			skipChecked: val,
 		} );
 	}
 
-	getStatus() {
-		const { customersProgress, customersTotal, ordersProgress, ordersTotal } = this.props;
-		const { inProgress } = this.state;
-
-		if ( inProgress ) {
-			if ( customersProgress < customersTotal ) {
-				return 'customers';
-			}
-			if ( ordersProgress < ordersTotal ) {
-				return 'orders';
-			}
-			return 'finalizing';
-		}
-		if (
-			( customersTotal > 0 || ordersTotal > 0 ) &&
-			customersProgress === customersTotal &&
-			ordersProgress === ordersTotal
-		) {
-			return 'finished';
-		}
-		return 'ready';
-	}
-
 	render() {
 		const {
-			customersProgress,
-			customersTotal,
-			hasImportedData,
-			importDate,
-			ordersProgress,
-			ordersTotal,
-		} = this.props;
-		const { inProgress, period, skipChecked } = this.state;
-		const hasImportedAllData =
-			! inProgress &&
-			hasImportedData &&
-			customersProgress === customersTotal &&
-			ordersProgress === ordersTotal;
-		// @todo When the import status endpoint is hooked up,
-		// this bool should be removed and assume it's true.
-		const showImportStatus = false;
+			activeImport,
+			lastImportStartTimestamp,
+			lastImportStopTimestamp,
+			period,
+			skipChecked,
+		} = this.state;
 
 		return (
-			<Fragment>
-				<div className="woocommerce-setting">
-					<div className="woocommerce-setting__label" id="import-historical-data-label">
-						{ __( 'Import Historical Data:', 'woocommerce-admin' ) }
-					</div>
-					<div className="woocommerce-setting__input">
-						<span className="woocommerce-setting__help">
-							{ __(
-								'This tool populates historical analytics data by processing customers ' +
-									'and orders created prior to activating WooCommerce Admin.',
-								'woocommerce-admin'
-							) }
-						</span>
-						{ ! hasImportedAllData && (
-							<Fragment>
-								<HistoricalDataPeriodSelector
-									dateFormat={ this.dateFormat }
-									disabled={ inProgress }
-									onPeriodChange={ this.onPeriodChange }
-									onDateChange={ this.onDateChange }
-									value={ period }
-								/>
-								<HistoricalDataSkipCheckbox
-									disabled={ inProgress }
-									checked={ skipChecked }
-									onChange={ this.onSkipChange }
-								/>
-								{ showImportStatus && (
-									<Fragment>
-										<HistoricalDataProgress
-											label={ __( 'Registered Customers', 'woocommerce-admin' ) }
-											progress={ customersProgress }
-											total={ customersTotal }
-										/>
-										<HistoricalDataProgress
-											label={ __( 'Orders', 'woocommerce-admin' ) }
-											progress={ ordersProgress }
-											total={ ordersTotal }
-										/>
-									</Fragment>
-								) }
-							</Fragment>
-						) }
-						{ showImportStatus && (
-							<HistoricalDataStatus importDate={ importDate } status={ this.getStatus() } />
-						) }
-					</div>
-				</div>
-				<HistoricalDataActions
-					customersProgress={ customersProgress }
-					customersTotal={ customersTotal }
-					hasImportedData={ hasImportedData }
-					inProgress={ inProgress }
-					onDeletePreviousData={ this.onDeletePreviousData }
-					onStartImport={ this.onStartImport }
-					onStopImport={ this.onStopImport }
-					ordersProgress={ ordersProgress }
-					ordersTotal={ ordersTotal }
-				/>
-			</Fragment>
+			<HistoricalDataLayout
+				activeImport={ activeImport }
+				dateFormat={ this.dateFormat }
+				onImportFinished={ this.onImportFinished }
+				onImportStarted={ this.onImportStarted }
+				lastImportStartTimestamp={ lastImportStartTimestamp }
+				lastImportStopTimestamp={ lastImportStopTimestamp }
+				onPeriodChange={ this.onPeriodChange }
+				onDateChange={ this.onDateChange }
+				onSkipChange={ this.onSkipChange }
+				onDeletePreviousData={ this.onDeletePreviousData }
+				onReimportData={ this.onReimportData }
+				onStartImport={ this.onStartImport }
+				onStopImport={ this.onStopImport }
+				period={ period }
+				skipChecked={ skipChecked }
+			/>
 		);
 	}
 }
 
-export default withSelect( () => {
-	return {
-		customersProgress: 0,
-		customersTotal: 0,
-		hasImportedData: false,
-		importDate: '2019-04-01',
-		ordersProgress: 0,
-		ordersTotal: 0,
-	};
-} )( HistoricalData );
+export default withSpokenMessages( HistoricalData );

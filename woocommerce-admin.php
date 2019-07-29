@@ -7,10 +7,12 @@
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
  * Domain Path: /languages
- * Version: 0.12.0
+ * Version: 0.16.0
+ * Requires at least: 5.2.0
+ * Requires PHP: 5.6.20
  *
  * WC requires at least: 3.6.0
- * WC tested up to: 3.6.2
+ * WC tested up to: 3.6.4
  *
  * @package WC_Admin
  */
@@ -56,12 +58,13 @@ class WC_Admin_Feature_Plugin {
 	public function init() {
 		$this->define_constants();
 		register_activation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
+		register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_deactivation' ) );
 		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
 		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
 	}
 
 	/**
-	 * Install DB and create cron events when activated,
+	 * Install DB and create cron events when activated.
 	 *
 	 * @return void
 	 */
@@ -69,6 +72,24 @@ class WC_Admin_Feature_Plugin {
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
 		WC_Admin_Install::create_tables();
 		WC_Admin_Install::create_events();
+	}
+
+	/**
+	 * Remove WooCommerce Admin scheduled actions on deactivate.
+	 *
+	 * @return void
+	 */
+	public function on_deactivation() {
+		// Check if we are deactivating due to dependencies not being satisfied.
+		// If WooCommerce is disabled we can't include files that depend upon it.
+		if ( ! $this->check_dependencies() ) {
+			return;
+		}
+
+		$this->includes();
+		WC_Admin_Reports_Sync::clear_queued_actions();
+		WC_Admin_Notes::clear_queued_actions();
+		wp_clear_scheduled_hook( 'wc_admin_daily' );
 	}
 
 	/**
@@ -103,7 +124,9 @@ class WC_Admin_Feature_Plugin {
 		$this->define( 'WC_ADMIN_DIST_CSS_FOLDER', 'dist/' );
 		$this->define( 'WC_ADMIN_FEATURES_PATH', WC_ADMIN_ABSPATH . 'includes/features/' );
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', __FILE__ );
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '0.12.0' );
+		// WARNING: Do not directly edit this version number constant.
+		// It is updated as part of the prebuild process from the package.json value.
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '0.16.0' );
 	}
 
 	/**
@@ -124,6 +147,15 @@ class WC_Admin_Feature_Plugin {
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-install.php';
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-events.php';
 		require_once WC_ADMIN_ABSPATH . 'includes/class-wc-admin-api-init.php';
+		require_once WC_ADMIN_ABSPATH . 'includes/export/class-wc-admin-report-csv-exporter.php';
+		require_once WC_ADMIN_ABSPATH . 'includes/export/class-wc-admin-report-exporter.php';
+
+		// Data triggers.
+		require_once WC_ADMIN_ABSPATH . 'includes/data-stores/class-wc-admin-notes-data-store.php';
+
+		// CRUD classes.
+		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-note.php';
+		require_once WC_ADMIN_ABSPATH . 'includes/notes/class-wc-admin-notes.php';
 
 		// Admin note providers.
 		// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
@@ -197,7 +229,7 @@ class WC_Admin_Feature_Plugin {
 		}
 
 		$wordpress_version = get_bloginfo( 'version' );
-		return version_compare( $wordpress_version, '4.9.9', '>' );
+		return version_compare( $wordpress_version, '5.2.0', '>=' );
 	}
 
 	/**
@@ -222,10 +254,10 @@ class WC_Admin_Feature_Plugin {
 	 */
 	public function render_dependencies_notice() {
 		// The notice varies by WordPress version.
-		$wordpress_version            = get_bloginfo( 'version' );
-		$wordpress_includes_gutenberg = version_compare( $wordpress_version, '4.9.9', '>' );
+		$wordpress_version    = get_bloginfo( 'version' );
+		$has_valid_wp_version = version_compare( $wordpress_version, '5.2.0', '>=' );
 
-		if ( $wordpress_includes_gutenberg ) {
+		if ( $has_valid_wp_version ) {
 			$message = sprintf(
 				/* translators: URL of WooCommerce plugin */
 				__( 'The WooCommerce Admin feature plugin requires <a href="%s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
@@ -234,7 +266,7 @@ class WC_Admin_Feature_Plugin {
 		} else {
 			$message = sprintf(
 				/* translators: 1: URL of WordPress.org, 2: URL of WooCommerce plugin */
-				__( 'The WooCommerce Admin feature plugin requires both <a href="%1$s">WordPress</a> 5.0 or greater and <a href="%2$s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
+				__( 'The WooCommerce Admin feature plugin requires both <a href="%1$s">WordPress</a> 5.2 or greater and <a href="%2$s">WooCommerce</a> 3.6 or greater to be installed and active.', 'woocommerce-admin' ),
 				'https://wordpress.org/',
 				'https://wordpress.org/plugins/woocommerce/'
 			);
@@ -264,7 +296,7 @@ class WC_Admin_Feature_Plugin {
 		if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
 			require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
 		}
-		$feature_config = wc_admin_get_feature_config();
+		$feature_config = apply_filters( 'wc_admin_get_feature_config', wc_admin_get_feature_config() );
 		$features       = array_keys( array_filter( $feature_config ) );
 		return $features;
 	}

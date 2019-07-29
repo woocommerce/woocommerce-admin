@@ -18,6 +18,7 @@ import { EmptyContent, Section } from '@woocommerce/components';
 import sanitizeHTML from 'lib/sanitize-html';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
+import classnames from 'classnames';
 
 class InboxPanel extends Component {
 	constructor( props ) {
@@ -32,10 +33,22 @@ class InboxPanel extends Component {
 		this.props.updateCurrentUserData( userDataFields );
 	}
 
+	handleActionClick( event, note_id, action_id ) {
+		const { triggerNoteAction } = this.props;
+		const href = event.target.href || '';
+
+		if ( href.length && ! href.startsWith( wcSettings.adminUrl ) ) {
+			event.preventDefault();
+			window.open( href, '_blank' );
+		}
+
+		triggerNoteAction( note_id, action_id );
+	}
+
 	renderEmptyCard() {
 		return (
 			<ActivityCard
-				className="woocommerce-empty-review-activity-card"
+				className="woocommerce-empty-activity-card"
 				title={ __( 'Your inbox is empty', 'woocommerce-admin' ) }
 				icon={ <Gridicon icon="checkmark" size={ 48 } /> }
 			>
@@ -55,12 +68,17 @@ class InboxPanel extends Component {
 			return this.renderEmptyCard();
 		}
 
-		const getButtonsFromActions = actions => {
-			if ( ! actions ) {
+		const getButtonsFromActions = note => {
+			if ( ! note.actions ) {
 				return [];
 			}
-			return actions.map( action => (
-				<Button isDefault href={ action.url }>
+			return note.actions.map( action => (
+				<Button
+					isDefault
+					isPrimary={ action.primary }
+					href={ action.url || undefined }
+					onClick={ e => this.handleActionClick( e, note.id, action.id ) }
+				>
 					{ action.label }
 				</Button>
 			) );
@@ -71,7 +89,9 @@ class InboxPanel extends Component {
 		return notesArray.map( note => (
 			<ActivityCard
 				key={ note.id }
-				className="woocommerce-inbox-activity-card"
+				className={ classnames( 'woocommerce-inbox-activity-card', {
+					actioned: 'unactioned' !== note.status,
+				} ) }
 				title={ note.title }
 				date={ note.date_created_gmt }
 				icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
@@ -80,7 +100,7 @@ class InboxPanel extends Component {
 					! note.date_created_gmt ||
 					new Date( note.date_created_gmt + 'Z' ).getTime() > lastRead
 				}
-				actions={ getButtonsFromActions( note.actions ) }
+				actions={ getButtonsFromActions( note ) }
 			>
 				<span dangerouslySetInnerHTML={ sanitizeHTML( note.content ) } />
 			</ActivityCard>
@@ -145,6 +165,7 @@ export default compose(
 			type: 'info,warning',
 			orderby: 'date',
 			order: 'desc',
+			status: 'unactioned',
 		};
 
 		const notes = getNotes( inboxQuery );
@@ -154,10 +175,11 @@ export default compose(
 		return { notes, isError, isRequesting, lastRead: userData.activity_panel_inbox_last_read };
 	} ),
 	withDispatch( dispatch => {
-		const { updateCurrentUserData } = dispatch( 'wc-api' );
+		const { updateCurrentUserData, triggerNoteAction } = dispatch( 'wc-api' );
 
 		return {
 			updateCurrentUserData,
+			triggerNoteAction,
 		};
 	} )
 )( InboxPanel );

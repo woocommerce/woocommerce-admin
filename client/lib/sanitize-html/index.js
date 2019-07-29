@@ -4,8 +4,8 @@
  */
 import { sanitize } from 'dompurify';
 
-export const ALLOWED_TAGS = [ 'a', 'b', 'em', 'i', 'strong' ];
-export const ALLOWED_ATTR = [ 'target', 'href' ];
+export const ALLOWED_TAGS = [ 'a', 'b', 'em', 'i', 'strong', 'p' ];
+export const ALLOWED_ATTR = [ 'target', 'href', 'rel', 'name', 'download' ];
 
 export default html => {
 	return {

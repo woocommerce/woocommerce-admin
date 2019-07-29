@@ -53,6 +53,10 @@ Whether there is an API call running.
 - **Required**
 - Type: Object
   - key: String - Key of the selected chart.
+  - label: String - Chart label.
+  - order: One of: 'asc', 'desc'
+  - orderby: String - Order by query argument.
+  - type: One of: 'average', 'number', 'currency'
 - Default: null
 
 Properties of the selected chart.
@@ -70,4 +74,11 @@ Properties of the selected chart.
 }`
 
 Data to display in the SummaryNumbers.
+
+### `report`
+
+- Type: String
+- Default: null
+
+Report name, if different than the endpoint.
 

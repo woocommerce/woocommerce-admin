@@ -1,4 +1,15 @@
-# 3.0.0 (unreleased)
+# unreleased
+- SearchListItem component: new `countLabel` prop that will overwrite the `item.count` value.
+- AdvancedFilters component: fire `onAdvancedFilterAction` for match changes.
+- TableCard component: add `onSearch` an `onSort` function props.
+- Add new component `<List />` for displaying interactive list items.
+- Fix z-index issue in `<Chart />` empty message.
+- Added a new `<SimpleSelectControl />` component.
+
+# 3.1.0
+- Added support for a countLabel prop on SearchListItem to allow custom counts.
+
+# 3.0.0
 - <DateInput> and <DatePicker> got a `disabled` prop.
 - TableCard component: new `onPageChange` prop.
 - TableCard now has a `defaultOrder` parameter to specify default sort column sort order.
@@ -6,7 +17,14 @@
 - Tweaks to SummaryListPlaceholder height in order to better match SummaryNumber.
 - EllipsisMenu component (breaking change): Remove `children` prop in favor of a render prop `renderContent` so that function arguments `isOpen`, `onToggle`, and `onClose` can be passed down.
 - Chart has a new prop named `yBelow1Format` which overrides the `yFormat` for values between -1 and 1 (not included).
+- Add a `totals` prop to Chart component that allows overwriting the total values shown in the legend.
 - Add new component `<Stepper />` for showing a list of steps and progress.
+- Add new `<Spinner />` component.
+- Card component: updated default Muriel design.
+- Card component: new `description` prop.
+- Card component: new `isInactive` prop.
+- DateRangeFilterPicker (breaking change): Introduced `onRangeSelect` prop and remove `path` prop better control.
+- Update license to GPL-3.0-or-later.
 
 # 2.0.0
 - Chart legend component now uses withInstanceId HOC so the ids used in several HTML elements are unique.

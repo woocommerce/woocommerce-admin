@@ -342,12 +342,14 @@ export function getReportTableQuery( options ) {
 	const filterQuery = getFilterQuery( options );
 	const datesFromQuery = getCurrentDates( query );
 
+	const noIntervals = includes( noIntervalEndpoints, options.endpoint );
+
 	return {
 		orderby: query.orderby || 'date',
 		order: query.order || 'desc',
-		after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
-		before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
-		page: query.page || 1,
+		after: noIntervals ? undefined : appendTimestamp( datesFromQuery.primary.after, 'start' ),
+		before: noIntervals ? undefined : appendTimestamp( datesFromQuery.primary.before, 'end' ),
+		page: query.paged || 1,
 		per_page: query.per_page || QUERY_DEFAULTS.pageSize,
 		...filterQuery,
 		...tableQuery,

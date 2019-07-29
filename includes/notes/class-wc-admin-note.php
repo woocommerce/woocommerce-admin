@@ -347,6 +347,16 @@ class WC_Admin_Note extends WC_Data {
 			'br'     => array(),
 			'em'     => array(),
 			'strong' => array(),
+			'a'      => array(
+				'href'     => true,
+				'rel'      => true,
+				'name'     => true,
+				'target'   => true,
+				'download' => array(
+					'valueless' => 'y',
+				),
+			),
+			'p'      => array(),
 		);
 
 		$content = wp_kses( $content, $allowed_html );
@@ -466,16 +476,18 @@ class WC_Admin_Note extends WC_Data {
 	/**
 	 * Add an action to the note
 	 *
-	 * @param string $name Label name (not presented to user).
-	 * @param string $label Note label (e.g. presented as button label).
-	 * @param string $query Note query (for redirect).
-	 * @param string $status The status to set for the action should on click.
+	 * @param string  $name    Action name (not presented to user).
+	 * @param string  $label   Action label (presented as button label).
+	 * @param string  $url     Action URL, if navigation needed. Optional.
+	 * @param string  $status  Status to transition parent Note to upon click. Defaults to 'actioned'.
+	 * @param boolean $primary Whether or not this is the primary action. Defaults to false.
 	 */
-	public function add_action( $name, $label, $query, $status = '' ) {
-		$name   = wc_clean( $name );
-		$label  = wc_clean( $label );
-		$query  = wc_clean( $query );
-		$status = wc_clean( $status );
+	public function add_action( $name, $label, $url = '', $status = self::E_WC_ADMIN_NOTE_ACTIONED, $primary = false ) {
+		$name    = wc_clean( $name );
+		$label   = wc_clean( $label );
+		$query   = esc_url_raw( $url );
+		$status  = wc_clean( $status );
+		$primary = (bool) $primary;
 
 		if ( empty( $name ) ) {
 			$this->error( 'admin_note_invalid_data', __( 'The admin note action name prop cannot be empty.', 'woocommerce-admin' ) );
@@ -485,19 +497,25 @@ class WC_Admin_Note extends WC_Data {
 			$this->error( 'admin_note_invalid_data', __( 'The admin note action label prop cannot be empty.', 'woocommerce-admin' ) );
 		}
 
-		if ( empty( $query ) ) {
-			$this->error( 'admin_note_invalid_data', __( 'The admin note action query prop cannot be empty.', 'woocommerce-admin' ) );
-		}
-
 		$action = array(
-			'name'   => $name,
-			'label'  => $label,
-			'query'  => $query,
-			'status' => $status,
+			'name'    => $name,
+			'label'   => $label,
+			'query'   => $query,
+			'status'  => $status,
+			'primary' => $primary,
 		);
 
 		$note_actions   = $this->get_prop( 'actions', 'edit' );
 		$note_actions[] = (object) $action;
 		$this->set_prop( 'actions', $note_actions );
+	}
+
+	/**
+	 * Set actions on a note.
+	 *
+	 * @param array $actions Note actions.
+	 */
+	public function set_actions( $actions ) {
+		$this->set_prop( 'actions', $actions );
 	}
 }

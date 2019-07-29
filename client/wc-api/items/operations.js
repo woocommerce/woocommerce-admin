@@ -3,12 +3,8 @@
 /**
  * External dependencies
  */
+import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
-
-/**
- * WooCommerce dependencies
- */
-import { stringifyQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -36,7 +32,7 @@ function read( resourceNames, fetch = apiFetch ) {
 		const prefix = getResourcePrefix( resourceName );
 		const endpoint = typeEndpointMap[ prefix ];
 		const query = getResourceIdentifier( resourceName );
-		const url = NAMESPACE + `/${ endpoint }${ stringifyQuery( query ) }`;
+		const url = addQueryArgs( `${ NAMESPACE }/${ endpoint }`, query );
 		const isUnboundedRequest = -1 === query.per_page;
 
 		try {
@@ -115,7 +111,19 @@ function update( resourceNames, data, fetch = apiFetch ) {
 	} );
 }
 
+function updateLocally( resourceNames, data ) {
+	const updateableTypes = [ 'items-query-products-item' ];
+	const filteredNames = resourceNames.filter( name => {
+		return updateableTypes.includes( getResourcePrefix( name ) );
+	} );
+
+	return filteredNames.map( async resourceName => {
+		return { [ resourceName ]: { data: data[ resourceName ] } };
+	} );
+}
+
 export default {
 	read,
 	update,
+	updateLocally,
 };

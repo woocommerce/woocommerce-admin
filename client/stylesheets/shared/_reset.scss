@@ -6,17 +6,26 @@
 	}
 
 	#wpcontent,
-	#wpbody-content {
+	&.woocommerce_page_wc-admin #wpbody-content {
 		padding: 0;
 		overflow-x: hidden !important;
 		min-height: calc(100vh - #{$adminbar-height});
 	}
 
+	@include breakpoint( '>782px' ) {
+		#wpbody-content {
+			padding: 0;
+		}
+	}
+
 	@include breakpoint( '<782px' ) {
 		// WP breakpoint for mobile menu
+		.wp-responsive-open #woocommerce-embedded-root,
 		.wp-responsive-open #wpbody {
+			position: relative;
 			right: -14.5em;
 		}
+
 		#wpcontent,
 		#wpbody-content {
 			min-height: calc(100vh - #{$adminbar-height-mobile});
@@ -29,24 +38,6 @@
 			padding-bottom: 1px;
 		}
 	}
-
-	.wp-has-current-submenu::after {
-		right: 0;
-		border: 8px solid transparent;
-		content: ' ';
-		height: 0;
-		width: 0;
-		position: absolute;
-		pointer-events: none;
-		border-right-color: #f1f1f1;
-		top: 0;
-		margin-top: 10px;
-
-		@include breakpoint( '<960px' ) {
-			border-width: 4px;
-			margin-top: 14px;
-		}
-	}
 }
 
 .woocommerce-layout * {
@@ -57,72 +48,40 @@
 	display: none;
 }
 
-.wp-responsive-open {
-	.woocommerce-layout__header {
-		margin-left: 2px;
+.woocommerce_page_wc-admin {
+	.wp-responsive-open {
+		.woocommerce-layout__header {
+			margin-left: 2px;
+		}
 	}
 
-	@include breakpoint( '<782px' ) {
-		.woocommerce-layout__activity-panel-wrapper.is-open,
-		.woocommerce-layout__activity-panel-tabs {
-			width: calc(100vw - 190px);
-		}
+	.components-popover:not(.is-mobile) {
+		z-index: 1; /* below of woocommerce-layout__header */
 	}
 }
 
 @include breakpoint( '<600px' ) {
-	#wpadminbar,
-	.jetpack-masterbar #wpadminbar {
+	#wpadminbar {
 		position: fixed;
 	}
 }
 
-#adminmenuwrap {
-	z-index: 99992;
-}
-
 // Temporary fix for compability with the Jetpack masterbar
 // See https://github.com/Automattic/jetpack/issues/9608
-// !important rules overwrite some existing !important rules
-.jetpack-masterbar {
-	@include breakpoint( '<782px' ) {
-		&.wp-admin .wrap h1 {
-			padding-left: 0;
-		}
-
-		#wpadminbar li.menupop.my-sites {
-			margin-left: 55px;
-		}
-
+@include breakpoint( '<782px' ) {
+	.jetpack-masterbar {
 		#wpadminbar #wp-admin-bar-menu-toggle {
-			top: -5px;
-			left: -5px;
-			width: 60px;
-
-			.ab-icon::before {
-				color: $white;
-			}
-
-			a {
-				padding: 0 8px 4px 8px !important;
-			}
-
-			a:hover {
-				background: #333;
-			}
+			margin-top: -10px;
 		}
 
-		.wp-responsive-open #wpadminbar #wp-admin-bar-menu-toggle {
-			left: -5px;
-			width: 60px;
+		// #wpwrap id added for specificity
+		#wpwrap .woocommerce-layout__header-breadcrumbs {
+			padding-left: 60px;
+		}
 
-			.ab-icon::before {
-				color: $white !important;
-			}
-
-			a {
-				background: #333;
-			}
+		&.wp-admin .wrap h1,
+		&.wp-admin .wrap h2 {
+			padding-left: 0;
 		}
 	}
 }

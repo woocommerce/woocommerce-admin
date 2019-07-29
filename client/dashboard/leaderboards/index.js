@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
-import { SelectControl, TextControl } from '@wordpress/components';
+import { SelectControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -19,6 +19,7 @@ import { EllipsisMenu, MenuItem, MenuTitle, SectionHeader } from '@woocommerce/c
  */
 import Leaderboard from 'analytics/components/leaderboard';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
 class Leaderboards extends Component {
@@ -64,13 +65,20 @@ class Leaderboards extends Component {
 					<Fragment>
 						<MenuTitle>{ __( 'Leaderboards', 'woocommerce-admin' ) }</MenuTitle>
 						{ allLeaderboards.map( leaderboard => {
+							const checked = ! hiddenBlocks.includes( leaderboard.id );
 							return (
 								<MenuItem
-									checked={ ! hiddenBlocks.includes( leaderboard.id ) }
+									checked={ checked }
 									isCheckbox
 									isClickable
 									key={ leaderboard.id }
-									onInvoke={ () => onToggleHiddenBlock( leaderboard.id )() }
+									onInvoke={ () => {
+										onToggleHiddenBlock( leaderboard.id )();
+										recordEvent( 'dash_leaderboards_toggle', {
+											status: checked ? 'off' : 'on',
+											key: leaderboard.id,
+										} );
+									} }
 								>
 									{ leaderboard.label }
 								</MenuItem>
@@ -87,24 +95,16 @@ class Leaderboards extends Component {
 							onChange={ this.setRowsPerTable }
 						/>
 						{ window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] && (
-							<Fragment>
-								<div className="woocommerce-ellipsis-menu__item">
-									<TextControl
-										label={ __( 'Section Title', 'woocommerce-admin' ) }
-										onBlur={ onTitleBlur }
-										onChange={ onTitleChange }
-										required
-										value={ titleInput }
-									/>
-								</div>
-								<Controls
-									onToggle={ onToggle }
-									onMove={ onMove }
-									onRemove={ onRemove }
-									isFirst={ isFirst }
-									isLast={ isLast }
-								/>
-							</Fragment>
+							<Controls
+								onToggle={ onToggle }
+								onMove={ onMove }
+								onRemove={ onRemove }
+								isFirst={ isFirst }
+								isLast={ isLast }
+								onTitleBlur={ onTitleBlur }
+								onTitleChange={ onTitleChange }
+								titleInput={ titleInput }
+							/>
 						) }
 					</Fragment>
 				) }

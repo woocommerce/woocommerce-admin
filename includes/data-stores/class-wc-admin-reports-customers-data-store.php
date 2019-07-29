@@ -45,6 +45,7 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 		'email'            => 'email',
 		'country'          => 'country',
 		'city'             => 'city',
+		'state'            => 'state',
 		'postcode'         => 'postcode',
 		'date_registered'  => 'date_registered',
 		'date_last_active' => 'date_last_active',
@@ -438,9 +439,26 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	 * @return int|bool
 	 */
 	public static function get_existing_customer_id_from_order( $order ) {
+		global $wpdb;
+
+		if ( ! is_a( $order, 'WC_Order' ) ) {
+			return false;
+		}
+
 		$user_id = $order->get_customer_id();
 
 		if ( 0 === $user_id ) {
+			$customer_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT customer_id FROM {$wpdb->prefix}wc_order_stats WHERE order_id = %d",
+					$order->get_id()
+				)
+			);
+
+			if ( $customer_id ) {
+				return $customer_id;
+			}
+
 			$email = $order->get_billing_email( 'edit' );
 
 			if ( $email ) {
@@ -460,24 +478,33 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	 * @return int|bool
 	 */
 	public static function get_or_create_customer_from_order( $order ) {
+		if ( ! $order ) {
+			return false;
+		}
+
 		global $wpdb;
+
+		if ( ! is_a( $order, 'WC_Order' ) ) {
+			return false;
+		}
+
 		$returning_customer_id = self::get_existing_customer_id_from_order( $order );
 
 		if ( $returning_customer_id ) {
 			return $returning_customer_id;
 		}
 
-		$customer_name = self::get_customer_name( $order->get_user_id(), $order );
-		$data          = array(
-			'first_name'       => $customer_name[0],
-			'last_name'        => $customer_name[1],
+		$data   = array(
+			'first_name'       => $order->get_customer_first_name(),
+			'last_name'        => $order->get_customer_last_name(),
 			'email'            => $order->get_billing_email( 'edit' ),
 			'city'             => $order->get_billing_city( 'edit' ),
+			'state'            => $order->get_billing_state( 'edit' ),
 			'postcode'         => $order->get_billing_postcode( 'edit' ),
 			'country'          => $order->get_billing_country( 'edit' ),
 			'date_last_active' => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
 		);
-		$format        = array(
+		$format = array(
 			'%s',
 			'%s',
 			'%s',
@@ -510,42 +537,6 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 		do_action( 'woocommerce_reports_new_customer', $customer_id );
 
 		return $result ? $customer_id : false;
-	}
-
-	/**
-	 * Try to get a customer name from user profile or order information.
-	 *
-	 * @param int      $user_id User ID.
-	 * @param WC_Order $order Order made by customer.
-	 * @return array
-	 */
-	public static function get_customer_name( $user_id = 0, $order = null ) {
-		$first_name = '';
-		$last_name  = '';
-
-		if (
-			$user_id &&
-			(
-				get_user_meta( $user_id, 'first_name', true ) ||
-				get_user_meta( $user_id, 'last_name', true )
-			)
-		) {
-			$first_name = get_user_meta( $user_id, 'first_name', true );
-			$last_name  = get_user_meta( $user_id, 'last_name', true );
-		} elseif ( $order ) {
-			if (
-				$order->get_billing_first_name( 'edit' ) ||
-				$order->get_billing_last_name( 'edit' )
-			) {
-				$first_name = $order->get_billing_first_name( 'edit' );
-				$last_name  = $order->get_billing_last_name( 'edit' );
-			} else {
-				$first_name = $order->get_shipping_first_name( 'edit' );
-				$last_name  = $order->get_shipping_last_name( 'edit' );
-			}
-		}
-
-		return apply_filters( 'woocommerce_reports_customer_name', array( $first_name, $last_name ), $order );
 	}
 
 	/**
@@ -627,21 +618,31 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 			return false;
 		}
 
-		$customer_name = self::get_customer_name( $user_id, $customer->get_last_order() );
-		$last_active   = $customer->get_meta( 'wc_last_active', true, 'edit' );
-		$data          = array(
+		$last_order = $customer->get_last_order();
+
+		if ( ! $last_order ) {
+			$first_name = get_user_meta( $user_id, 'first_name', true );
+			$last_name  = get_user_meta( $user_id, 'last_name', true );
+		} else {
+			$first_name = $last_order->get_customer_first_name();
+			$last_name  = $last_order->get_customer_last_name();
+		}
+
+		$last_active = $customer->get_meta( 'wc_last_active', true, 'edit' );
+		$data        = array(
 			'user_id'          => $user_id,
 			'username'         => $customer->get_username( 'edit' ),
-			'first_name'       => $customer_name[0],
-			'last_name'        => $customer_name[1],
+			'first_name'       => $first_name,
+			'last_name'        => $last_name,
 			'email'            => $customer->get_email( 'edit' ),
 			'city'             => $customer->get_billing_city( 'edit' ),
+			'state'            => $customer->get_billing_state( 'edit' ),
 			'postcode'         => $customer->get_billing_postcode( 'edit' ),
 			'country'          => $customer->get_billing_country( 'edit' ),
 			'date_registered'  => $customer->get_date_created( 'edit' )->date( WC_Admin_Reports_Interval::$sql_datetime_format ),
 			'date_last_active' => $last_active ? date( 'Y-m-d H:i:s', $last_active ) : null,
 		);
-		$format        = array(
+		$format      = array(
 			'%d',
 			'%s',
 			'%s',
@@ -682,7 +683,7 @@ class WC_Admin_Reports_Customers_Data_Store extends WC_Admin_Reports_Data_Store 
 	protected static function is_valid_customer( $user_id ) {
 		$customer = new WC_Customer( $user_id );
 
-		if ( $customer->get_id() != $user_id ) {
+		if ( absint( $customer->get_id() ) !== absint( $user_id ) ) {
 			return false;
 		}
 

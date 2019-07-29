@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { remove } from 'lodash';
+import { partial, remove, transform } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -19,10 +19,10 @@ import { SectionHeader, useFilters } from '@woocommerce/components';
  */
 import './index.scss';
 import { analyticsSettings } from './config';
-import Header from 'header';
 import Setting from './setting';
 import HistoricalData from './historical-data';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
@@ -34,11 +34,21 @@ class Settings extends Component {
 		analyticsSettings.forEach( setting => ( settings[ setting.name ] = setting.initialValue ) );
 
 		this.state = {
-			settings: settings,
+			settings,
 			saving: false,
+			isDirty: false,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind( this );
+		this.warnIfUnsavedChanges = this.warnIfUnsavedChanges.bind( this );
+	}
+
+	componentDidMount() {
+		window.addEventListener( 'beforeunload', this.warnIfUnsavedChanges );
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener( 'beforeunload', this.warnIfUnsavedChanges );
 	}
 
 	componentDidCatch( error ) {
@@ -50,6 +60,18 @@ class Settings extends Component {
 		/* eslint-enable no-console */
 	}
 
+	warnIfUnsavedChanges( event ) {
+		const { isDirty } = this.state;
+
+		if ( isDirty ) {
+			event.returnValue = __(
+				'You have unsaved changes. If you proceed, they will be lost.',
+				'woocommerce-admin'
+			);
+			return event.returnValue;
+		}
+	}
+
 	resetDefaults = () => {
 		if (
 			window.confirm(
@@ -58,38 +80,69 @@ class Settings extends Component {
 		) {
 			const settings = {};
 			analyticsSettings.forEach( setting => ( settings[ setting.name ] = setting.defaultValue ) );
-			this.setState( { settings }, this.saveChanges );
+			this.setState( { settings }, partial( this.saveChanges, 'reset' ) );
 		}
 	};
 
 	componentDidUpdate() {
-		const { addNotice, isError, isRequesting } = this.props;
-		const { saving } = this.state;
+		const { createNotice, isError, isRequesting } = this.props;
+		const { saving, isDirty } = this.state;
+		let newIsDirtyState = isDirty;
 
 		if ( saving && ! isRequesting ) {
 			if ( ! isError ) {
-				addNotice( {
-					status: 'success',
-					message: __( 'Your settings have been successfully saved.', 'woocommerce-admin' ),
-				} );
+				createNotice(
+					'success',
+					__( 'Your settings have been successfully saved.', 'woocommerce-admin' )
+				);
+				newIsDirtyState = false;
 			} else {
-				addNotice( {
-					status: 'error',
-					message: __(
-						'There was an error saving your settings.  Please try again.',
-						'woocommerce-admin'
-					),
-				} );
+				createNotice(
+					'error',
+					__( 'There was an error saving your settings.  Please try again.', 'woocommerce-admin' )
+				);
 			}
 			/* eslint-disable react/no-did-update-set-state */
-			this.setState( { saving: false } );
+			this.setState( { saving: false, isDirty: newIsDirtyState } );
 			/* eslint-enable react/no-did-update-set-state */
 		}
 	}
 
-	saveChanges = () => {
-		this.props.updateSettings( this.state.settings );
-		this.setState( { saving: true } );
+	/**
+	 * Ensure changes are reflected to parameters on the window as well as
+	 * the config for construction of this component when re-navigating to
+	 * the settings page.
+	 *
+	 * @param {object} state - State
+	 */
+	persistChanges( state ) {
+		analyticsSettings.forEach( setting => {
+			const updatedValue = state.settings[ setting.name ];
+			wcSettings.wcAdminSettings[ setting.name ] = updatedValue;
+			setting.initialValue = updatedValue;
+		} );
+	}
+
+	saveChanges = source => {
+		const { settings } = this.state;
+		this.persistChanges( this.state );
+		this.props.updateSettings( { wc_admin: settings } );
+
+		if ( 'reset' === source ) {
+			recordEvent( 'analytics_settings_reset_defaults' );
+		} else {
+			const eventProps = transform(
+				analyticsSettings,
+				( props, setting ) => {
+					props[ setting.name ] = settings[ setting.name ];
+				},
+				{}
+			);
+			recordEvent( 'analytics_settings_save', eventProps );
+		}
+
+		// TODO: remove this optimistic set of isDirty to false once #2541 is resolved.
+		this.setState( { saving: true, isDirty: false } );
 	};
 
 	handleInputChange( e ) {
@@ -106,11 +159,11 @@ class Settings extends Component {
 			settings[ name ] = value;
 		}
 
-		this.setState( { settings } );
+		this.setState( { settings, isDirty: true } );
 	}
 
 	render() {
-		const { addNotice } = this.props;
+		const { createNotice } = this.props;
 		const { hasError } = this.state;
 		if ( hasError ) {
 			return null;
@@ -118,12 +171,6 @@ class Settings extends Component {
 
 		return (
 			<Fragment>
-				<Header
-					sections={ [
-						[ '/analytics/revenue', __( 'Analytics', 'woocommerce-admin' ) ],
-						__( 'Settings', 'woocommerce-admin' ),
-					] }
-				/>
 				<SectionHeader title={ __( 'Analytics Settings', 'woocommerce-admin' ) } />
 				<div className="woocommerce-settings__wrapper">
 					{ analyticsSettings.map( setting => (
@@ -139,11 +186,11 @@ class Settings extends Component {
 							{ __( 'Reset Defaults', 'woocommerce-admin' ) }
 						</Button>
 						<Button isPrimary onClick={ this.saveChanges }>
-							{ __( 'Save Changes', 'woocommerce-admin' ) }
+							{ __( 'Save Settings', 'woocommerce-admin' ) }
 						</Button>
 					</div>
-					<HistoricalData addNotice={ addNotice } />
 				</div>
+				<HistoricalData createNotice={ createNotice } />
 			</Fragment>
 		);
 	}
@@ -153,18 +200,18 @@ export default compose(
 	withSelect( select => {
 		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
 
-		const settings = getSettings();
-		const isError = Boolean( getSettingsError() );
-		const isRequesting = isGetSettingsRequesting();
+		const settings = getSettings( 'wc_admin' );
+		const isError = Boolean( getSettingsError( 'wc_admin' ) );
+		const isRequesting = isGetSettingsRequesting( 'wc_admin' );
 
 		return { getSettings, isError, isRequesting, settings };
 	} ),
 	withDispatch( dispatch => {
-		const { addNotice } = dispatch( 'wc-admin' );
+		const { createNotice } = dispatch( 'core/notices' );
 		const { updateSettings } = dispatch( 'wc-api' );
 
 		return {
-			addNotice,
+			createNotice,
 			updateSettings,
 		};
 	} )

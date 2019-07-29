@@ -188,7 +188,7 @@ export const advancedFilters = {
 		orders_count: {
 			labels: {
 				add: __( 'No. of Orders', 'woocommerce-admin' ),
-				remove: __( 'Remove order  filter', 'woocommerce-admin' ),
+				remove: __( 'Remove order filter', 'woocommerce-admin' ),
 				rule: __( 'Select an order count filter match', 'woocommerce-admin' ),
 				title: __(
 					'{{title}}No. of Orders{{/title}} {{rule /}} {{filter /}}',
@@ -247,7 +247,7 @@ export const advancedFilters = {
 		avg_order_value: {
 			labels: {
 				add: __( 'AOV', 'woocommerce-admin' ),
-				remove: __( 'Remove average older value filter', 'woocommerce-admin' ),
+				remove: __( 'Remove average order value filter', 'woocommerce-admin' ),
 				rule: __( 'Select an average order value filter match', 'woocommerce-admin' ),
 				title: __( '{{title}}AOV{{/title}} {{rule /}} {{filter /}}', 'woocommerce-admin' ),
 			},

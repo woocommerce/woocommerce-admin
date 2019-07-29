@@ -8,7 +8,6 @@ import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import moment from 'moment';
 import { find } from 'lodash';
-import { TextControl } from '@wordpress/components';
 
 /**
  * WooCommerce dependencies
@@ -32,6 +31,7 @@ import {
 } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import './style.scss';
+import { recordEvent } from 'lib/tracks';
 
 class StorePerformance extends Component {
 	renderMenu() {
@@ -66,31 +66,29 @@ class StorePerformance extends Component {
 									isCheckbox
 									isClickable
 									key={ i }
-									onInvoke={ () => onToggleHiddenBlock( indicator.stat )() }
+									onInvoke={ () => {
+										onToggleHiddenBlock( indicator.stat )();
+										recordEvent( 'dash_indicators_toggle', {
+											status: checked ? 'off' : 'on',
+											key: indicator.stat,
+										} );
+									} }
 								>
 									{ sprintf( __( 'Show %s', 'woocommerce-admin' ), indicator.label ) }
 								</MenuItem>
 							);
 						} ) }
 						{ window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] && (
-							<Fragment>
-								<div className="woocommerce-ellipsis-menu__item">
-									<TextControl
-										label={ __( 'Section Title', 'woocommerce-admin' ) }
-										onBlur={ onTitleBlur }
-										onChange={ onTitleChange }
-										required
-										value={ titleInput }
-									/>
-								</div>
-								<Controls
-									onToggle={ onToggle }
-									onMove={ onMove }
-									onRemove={ onRemove }
-									isFirst={ isFirst }
-									isLast={ isLast }
-								/>
-							</Fragment>
+							<Controls
+								onToggle={ onToggle }
+								onMove={ onMove }
+								onRemove={ onRemove }
+								isFirst={ isFirst }
+								isLast={ isLast }
+								onTitleBlur={ onTitleBlur }
+								onTitleChange={ onTitleChange }
+								titleInput={ titleInput }
+							/>
 						) }
 					</Fragment>
 				) }
@@ -161,6 +159,9 @@ class StorePerformance extends Component {
 								prevLabel={ prevLabel }
 								prevValue={ secondaryValue }
 								delta={ delta }
+								onLinkClickCallback={ () => {
+									recordEvent( 'dash_indicators_click', { key: indicator.stat } );
+								} }
 							/>
 						);
 					} )

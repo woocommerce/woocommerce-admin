@@ -23,7 +23,7 @@ class Setting extends Component {
 	}
 
 	renderInput = () => {
-		const { handleChange, name, inputText, inputType, options, value } = this.props;
+		const { handleChange, name, inputText, inputType, options, value, component } = this.props;
 		const { disabled } = this.state;
 		const id = uniqueId( name );
 
@@ -54,6 +54,9 @@ class Setting extends Component {
 						{ inputText }
 					</Button>
 				);
+			case 'component':
+				const SettingComponent = component;
+				return <SettingComponent value={ value } onChange={ handleChange } { ...this.props } />;
 			case 'text':
 			default:
 				return (
@@ -71,7 +74,7 @@ class Setting extends Component {
 	};
 
 	handleInputCallback = () => {
-		const { addNotice, callback } = this.props;
+		const { createNotice, callback } = this.props;
 
 		if ( 'function' !== typeof callback ) {
 			return;
@@ -79,7 +82,7 @@ class Setting extends Component {
 
 		return new Promise( ( resolve, reject ) => {
 			this.setState( { disabled: true } );
-			callback( resolve, reject, addNotice );
+			callback( resolve, reject, createNotice );
 		} )
 			.then( () => {
 				this.setState( { disabled: false } );
@@ -150,7 +153,7 @@ Setting.propTypes = {
 	/**
 	 * Type of input to use; defaults to a text input.
 	 */
-	inputType: PropTypes.oneOf( [ 'button', 'checkbox', 'checkboxGroup', 'text' ] ),
+	inputType: PropTypes.oneOf( [ 'button', 'checkbox', 'checkboxGroup', 'text', 'component' ] ),
 	/**
 	 * Label used for describing the setting.
 	 */
@@ -194,7 +197,7 @@ Setting.propTypes = {
 
 export default compose(
 	withDispatch( dispatch => {
-		const { addNotice } = dispatch( 'wc-admin' );
-		return { addNotice };
+		const { createNotice } = dispatch( 'core/notices' );
+		return { createNotice };
 	} )
 )( Setting );

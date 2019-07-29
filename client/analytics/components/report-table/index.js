@@ -24,7 +24,7 @@ import { getReportChartData, getReportTableData } from 'wc-api/reports/utils';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 import { extendTableData } from './utils';
-
+import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';
@@ -38,11 +38,13 @@ class ReportTable extends Component {
 
 		this.onColumnsChange = this.onColumnsChange.bind( this );
 		this.onPageChange = this.onPageChange.bind( this );
+		this.onSort = this.onSort.bind( this );
 		this.scrollPointRef = createRef();
+		this.trackTableSearch = this.trackTableSearch.bind( this );
 	}
 
-	onColumnsChange( shownColumns ) {
-		const { columnPrefsKey, getHeadersContent, updateCurrentUserData } = this.props;
+	onColumnsChange( shownColumns, toggledColumn ) {
+		const { columnPrefsKey, endpoint, getHeadersContent, updateCurrentUserData } = this.props;
 		const columns = getHeadersContent().map( header => header.key );
 		const hiddenColumns = columns.filter( column => ! shownColumns.includes( column ) );
 
@@ -52,9 +54,20 @@ class ReportTable extends Component {
 			};
 			updateCurrentUserData( userDataFields );
 		}
+
+		if ( toggledColumn ) {
+			const eventProps = {
+				report: endpoint,
+				column: toggledColumn,
+				status: shownColumns.includes( toggledColumn ) ? 'on' : 'off',
+			};
+
+			recordEvent( 'analytics_table_header_toggle', eventProps );
+		}
 	}
 
-	onPageChange() {
+	onPageChange( newPage, source ) {
+		const { endpoint } = this.props;
 		this.scrollPointRef.current.scrollIntoView();
 		const tableElement = this.scrollPointRef.current.nextSibling.querySelector(
 			'.woocommerce-table__table'
@@ -64,6 +77,34 @@ class ReportTable extends Component {
 		if ( focusableElements.length ) {
 			focusableElements[ 0 ].focus();
 		}
+
+		if ( source ) {
+			if ( 'goto' === source ) {
+				recordEvent( 'analytics_table_go_to_page', { report: endpoint, page: newPage } );
+			} else {
+				recordEvent( 'analytics_table_page_click', { report: endpoint, direction: source } );
+			}
+		}
+	}
+
+	trackTableSearch() {
+		const { endpoint } = this.props;
+
+		// @todo: decide if this should only fire for new tokens (not any/all changes).
+		recordEvent( 'analytics_table_filter', { report: endpoint } );
+	}
+
+	onSort( key, direction ) {
+		onQueryChange( 'sort' )( key, direction );
+
+		const { endpoint } = this.props;
+		const eventProps = {
+			report: endpoint,
+			column: key,
+			direction,
+		};
+
+		recordEvent( 'analytics_table_sort', eventProps );
 	}
 
 	filterShownHeaders( headers, hiddenKeys ) {
@@ -106,13 +147,28 @@ class ReportTable extends Component {
 		const totals = get( primaryData, [ 'data', 'totals' ], {} );
 		const totalResults = items.totalResults;
 		const downloadable = 0 < totalResults;
+
+		/**
+		 * Filter report table.
+		 *
+		 * Enables manipulation of data used to create a report table.
+		 *
+		 * @param {object} reportTableData - data used to create the table.
+		 * @param {string} reportTableData.endpoint - table api endpoint.
+		 * @param {array} reportTableData.headers - table headers data.
+		 * @param {array} reportTableData.rows - table rows data.
+		 * @param {object} reportTableData.totals - total aggregates for request.
+		 * @param {array} reportTableData.summary - summary numbers data.
+		 * @param {object} reportTableData.items - response from api requerst.
+		 */
 		const { headers, ids, rows, summary } = applyFilters( TABLE_FILTER, {
-			endpoint: endpoint,
+			endpoint,
 			headers: getHeadersContent(),
 			ids: itemIdField ? items.data.map( item => item[ itemIdField ] ) : [],
 			rows: getRowsContent( items.data ),
-			totals: totals,
+			totals,
 			summary: getSummary ? getSummary( totals, totalResults ) : null,
+			items,
 		} );
 
 		// Hide any headers based on user prefs, if loaded.
@@ -127,11 +183,16 @@ class ReportTable extends Component {
 				/>
 				<TableCard
 					downloadable={ downloadable }
+					onClickDownload={ () => {
+						recordEvent( 'analytics_table_download', { report: endpoint, rows: totalResults } );
+					} }
 					headers={ filteredHeaders }
 					ids={ ids }
 					isLoading={ isLoading }
 					onQueryChange={ onQueryChange }
 					onColumnsChange={ this.onColumnsChange }
+					onSearch={ this.trackTableSearch }
+					onSort={ this.onSort }
 					onPageChange={ this.onPageChange }
 					rows={ rows }
 					rowsPerPage={ parseInt( query.per_page ) || QUERY_DEFAULTS.pageSize }

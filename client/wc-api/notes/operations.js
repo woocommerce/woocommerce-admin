@@ -2,12 +2,8 @@
 /**
  * External dependencies
  */
+import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
-
-/**
- * WooCommerce dependencies
- */
-import { stringifyQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -20,7 +16,10 @@ function read( resourceNames, fetch = apiFetch ) {
 }
 
 function update( resourceNames, data, fetch = apiFetch ) {
-	return [ ...updateNote( resourceNames, data, fetch ) ];
+	return [
+		...updateNote( resourceNames, data, fetch ),
+		...triggerAction( resourceNames, data, fetch ),
+	];
 }
 
 function readNoteQueries( resourceNames, fetch ) {
@@ -28,7 +27,7 @@ function readNoteQueries( resourceNames, fetch ) {
 
 	return filteredNames.map( async resourceName => {
 		const query = getResourceIdentifier( resourceName );
-		const url = `${ NAMESPACE }/admin/notes${ stringifyQuery( query ) }`;
+		const url = addQueryArgs( `${ NAMESPACE }/admin/notes`, query );
 
 		try {
 			const response = await fetch( {
@@ -93,7 +92,26 @@ function updateNote( resourceNames, data, fetch ) {
 	return [];
 }
 
+function triggerAction( resourceNames, data, fetch ) {
+	const resourceName = 'note-action';
+	if ( resourceNames.includes( resourceName ) ) {
+		const { noteId, actionId } = data[ resourceName ];
+		const url = `${ NAMESPACE }/admin/notes/${ noteId }/action/${ actionId }`;
+		return [
+			fetch( { path: url, method: 'POST' } )
+				.then( note => {
+					return { [ 'note:' + noteId ]: { data: note } };
+				} )
+				.catch( error => {
+					return { [ 'note:' + noteId ]: { error } };
+				} ),
+		];
+	}
+	return [];
+}
+
 export default {
 	read,
 	update,
+	triggerAction,
 };

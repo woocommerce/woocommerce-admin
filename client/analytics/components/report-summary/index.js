@@ -22,6 +22,7 @@ import { formatCurrency } from '@woocommerce/currency';
 import { getSummaryNumbers } from 'wc-api/reports/utils';
 import ReportError from 'analytics/components/report-error';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 
 /**
  * Component to render summary numbers in reports.
@@ -46,7 +47,15 @@ export class ReportSummary extends Component {
 	}
 
 	render() {
-		const { charts, isRequesting, query, selectedChart, summaryData } = this.props;
+		const {
+			charts,
+			isRequesting,
+			query,
+			selectedChart,
+			summaryData,
+			endpoint,
+			report,
+		} = this.props;
 		const { isError, isRequesting: isSummaryDataRequesting } = summaryData;
 
 		if ( isError ) {
@@ -87,7 +96,13 @@ export class ReportSummary extends Component {
 						prevValue={ prevValue }
 						selected={ isSelected }
 						value={ value }
-						onLinkClickCallback={ onToggle }
+						onLinkClickCallback={ () => {
+							// Wider than a certain breakpoint, there is no dropdown so avoid calling onToggle.
+							if ( onToggle ) {
+								onToggle();
+							}
+							recordEvent( 'analytics_chart_tab_click', { report: report || endpoint, key } );
+						} }
 					/>
 				);
 			} );
@@ -129,11 +144,31 @@ ReportSummary.propTypes = {
 		 * Key of the selected chart.
 		 */
 		key: PropTypes.string.isRequired,
+		/**
+		 * Chart label.
+		 */
+		label: PropTypes.string.isRequired,
+		/**
+		 * Order query argument.
+		 */
+		order: PropTypes.oneOf( [ 'asc', 'desc' ] ),
+		/**
+		 * Order by query argument.
+		 */
+		orderby: PropTypes.string,
+		/**
+		 * Number type for formatting.
+		 */
+		type: PropTypes.oneOf( [ 'average', 'number', 'currency' ] ).isRequired,
 	} ).isRequired,
 	/**
 	 * Data to display in the SummaryNumbers.
 	 */
 	summaryData: PropTypes.object,
+	/**
+	 * Report name, if different than the endpoint.
+	 */
+	report: PropTypes.string,
 };
 
 ReportSummary.defaultProps = {

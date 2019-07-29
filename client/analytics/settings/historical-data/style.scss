@@ -4,10 +4,10 @@
 	display: grid;
 	grid-column-gap: $gap-large;
 	grid-template-columns: calc(50% - #{$gap-large/2}) calc(50% - #{$gap-large/2});
-	margin-top: $gap-small;
 
 	.woocommerce-settings-historical-data__column {
 		align-self: end;
+		margin-top: $gap-small;
 		// Auto-position fix for IE11.
 		@include set-grid-item-position( 2, 2 );
 	}
@@ -50,10 +50,14 @@
 }
 
 .woocommerce-settings-historical-data__progress-label {
-	display: block;
+	display: inline-block;
 	font-weight: bold;
 	margin-bottom: $gap-small;
 	margin-top: $gap-large;
+
+	& + & {
+		margin-left: 0.25em;
+	}
 }
 
 .woocommerce-settings-historical-data__progress-bar {

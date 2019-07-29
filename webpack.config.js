@@ -26,12 +26,11 @@ const WC_ADMIN_CONFIG = require( path.join( __dirname, 'config', WC_ADMIN_PHASE 
 const externals = {
 	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
 	'@wordpress/blocks': { this: [ 'wp', 'blocks' ] },
-	'@wordpress/components': { this: [ 'wp', 'components' ] },
-	'@wordpress/compose': { this: [ 'wp', 'compose' ] },
 	'@wordpress/data': { this: [ 'wp', 'data' ] },
 	'@wordpress/editor': { this: [ 'wp', 'editor' ] },
 	'@wordpress/element': { this: [ 'wp', 'element' ] },
 	'@wordpress/hooks': { this: [ 'wp', 'hooks' ] },
+	'@wordpress/url': { this: [ 'wp', 'url' ] },
 	'@wordpress/html-entities': { this: [ 'wp', 'htmlEntities' ] },
 	'@wordpress/i18n': { this: [ 'wp', 'i18n' ] },
 	'@wordpress/keycodes': { this: [ 'wp', 'keycodes' ] },
@@ -100,12 +99,17 @@ const webpackConfig = {
 					'|acorn-jsx' +
 					'|d3-array' +
 					'|debug' +
+					'|newspack-components' +
 					'|regexpu-core' +
 					'|unicode-match-property-ecmascript' +
 					'|unicode-match-property-value-ecmascript)/'
 				),
 			},
 			{ test: /\.md$/, use: 'raw-loader' },
+			{
+				test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/,
+				loader: 'url-loader',
+			},
 			{
 				test: /\.s?css$/,
 				use: [
@@ -144,6 +148,8 @@ const webpackConfig = {
 		],
 		alias: {
 			'gutenberg-components': path.resolve( __dirname, 'node_modules/@wordpress/components/src' ),
+			// @todo - remove once https://github.com/WordPress/gutenberg/pull/16196 is released.
+			'react-spring': 'react-spring/web.cjs',
 		},
 	},
 	plugins: [

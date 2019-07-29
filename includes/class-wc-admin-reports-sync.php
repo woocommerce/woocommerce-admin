@@ -123,6 +123,10 @@ class WC_Admin_Reports_Sync {
 	 * @return string
 	 */
 	public static function regenerate_report_data( $days, $skip_existing ) {
+		if ( self::is_importing() ) {
+			return new WP_Error( 'wc_admin_import_in_progress', __( 'An import is already in progress.  Please allow the previous import to complete before beginning a new one.', 'woocommerce-admin' ) );
+		}
+
 		self::reset_import_stats( $days, $skip_existing );
 		self::customer_lookup_import_batch_init( $days, $skip_existing );
 		self::queue_dependent_action( self::ORDERS_IMPORT_BATCH_INIT, array( $days, $skip_existing ), self::CUSTOMERS_IMPORT_BATCH_ACTION );
@@ -161,12 +165,14 @@ class WC_Admin_Reports_Sync {
 	 */
 	public static function get_import_totals( $days, $skip_existing ) {
 		$orders         = self::get_orders( 1, 1, $days, $skip_existing );
+		$customer_roles = apply_filters( 'woocommerce_admin_import_customer_roles', array( 'customer' ) );
 		$customer_query = self::get_user_ids_for_batch(
 			$days,
 			$skip_existing,
 			array(
-				'fields' => 'ID',
-				'number' => 1,
+				'fields'   => 'ID',
+				'number'   => 1,
+				'role__in' => $customer_roles,
 			)
 		);
 
@@ -187,6 +193,7 @@ class WC_Admin_Reports_Sync {
 				'status'   => 'pending',
 				'per_page' => 1,
 				'claimed'  => false,
+				'search'   => 'import',
 				'group'    => self::QUEUE_GROUP,
 			)
 		);
@@ -234,6 +241,13 @@ class WC_Admin_Reports_Sync {
 
 		// Delete customers after order data is deleted.
 		self::queue_dependent_action( self::CUSTOMERS_DELETE_BATCH_INIT, array(), self::ORDERS_DELETE_BATCH_INIT );
+
+		// Delete import options.
+		delete_option( 'wc_admin_import_customers_count' );
+		delete_option( 'wc_admin_import_orders_count' );
+		delete_option( 'wc_admin_import_customers_total' );
+		delete_option( 'wc_admin_import_orders_total' );
+		delete_option( 'wc_admin_imported_from_date' );
 
 		return __( 'Report table data is being deleted.', 'woocommerce-admin' );
 	}
@@ -334,9 +348,9 @@ class WC_Admin_Reports_Sync {
 	public static function get_orders( $limit = 10, $page = 1, $days = false, $skip_existing = false ) {
 		global $wpdb;
 		$where_clause = '';
-		$offset       = $page > 1 ? $page * $limit : 0;
+		$offset       = $page > 1 ? ( $page - 1 ) * $limit : 0;
 
-		if ( $days ) {
+		if ( is_int( $days ) ) {
 			$days_ago      = date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) );
 			$where_clause .= " AND post_date >= '{$days_ago}'";
 		}
@@ -351,6 +365,7 @@ class WC_Admin_Reports_Sync {
 		$count = $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts}
 			WHERE post_type IN ( 'shop_order', 'shop_order_refund' )
+			AND post_status NOT IN ( 'wc-auto-draft', 'auto-draft', 'trash' )
 			{$where_clause}"
 		); // WPCS: unprepared SQL ok.
 
@@ -358,6 +373,7 @@ class WC_Admin_Reports_Sync {
 			$wpdb->prepare(
 				"SELECT ID FROM {$wpdb->posts}
 				WHERE post_type IN ( 'shop_order', 'shop_order_refund' )
+				AND post_status NOT IN ( 'auto-draft', 'trash' )
 				{$where_clause}
 				ORDER BY post_date ASC
 				LIMIT %d
@@ -383,7 +399,18 @@ class WC_Admin_Reports_Sync {
 	 */
 	public static function orders_lookup_import_batch( $batch_number, $days, $skip_existing ) {
 		$batch_size = self::get_batch_size( self::ORDERS_IMPORT_BATCH_ACTION );
-		$orders     = self::get_orders( $batch_size, $batch_number, $days, $skip_existing );
+
+		$properties = array(
+			'batch_number' => $batch_number,
+			'batch_size'   => $batch_size,
+			'type'         => 'order',
+		);
+		wc_admin_record_tracks_event( 'import_job_start', $properties );
+
+		// When we are skipping already imported orders, the table of orders to import gets smaller in
+		// every batch, so we want to always import the first page.
+		$page   = $skip_existing ? 1 : $batch_number;
+		$orders = self::get_orders( $batch_size, $page, $days, $skip_existing );
 
 		foreach ( $orders->order_ids as $order_id ) {
 			self::orders_lookup_import_order( $order_id );
@@ -391,6 +418,10 @@ class WC_Admin_Reports_Sync {
 
 		$imported_count = get_option( 'wc_admin_import_orders_count', 0 );
 		update_option( 'wc_admin_import_orders_count', $imported_count + count( $orders->order_ids ) );
+
+		$properties['imported_count'] = $imported_count;
+
+		wc_admin_record_tracks_event( 'import_job_complete', $properties );
 	}
 
 	/**
@@ -401,6 +432,26 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function orders_lookup_import_order( $order_id ) {
+
+		$order = wc_get_order( $order_id );
+
+		// If the order isn't found for some reason, skip the sync.
+		if ( ! $order ) {
+			return;
+		}
+
+		$type = $order->get_type();
+
+		// If the order isn't the right type, skip sync.
+		if ( 'shop_order' !== $type && 'shop_order_refund' !== $type ) {
+			return;
+		}
+
+		// If the order has no id or date created, skip sync.
+		if ( ! $order->get_id() || ! $order->get_date_created() ) {
+			return;
+		}
+
 		$result = array_sum(
 			array(
 				WC_Admin_Reports_Orders_Stats_Data_Store::sync_order( $order_id ),
@@ -464,11 +515,15 @@ class WC_Admin_Reports_Sync {
 		if ( $range_size > $batch_size ) {
 			// If the current batch range is larger than a single batch,
 			// split the range into $queue_batch_size chunks.
-			$chunk_size = ceil( $range_size / $batch_size );
+			$chunk_size = (int) ceil( $range_size / $batch_size );
 
 			for ( $i = 0; $i < $batch_size; $i++ ) {
-				$batch_start = $range_start + ( $i * $chunk_size );
-				$batch_end   = min( $range_end, $range_start + ( $chunk_size * ( $i + 1 ) ) - 1 );
+				$batch_start = (int) ( $range_start + ( $i * $chunk_size ) );
+				$batch_end   = (int) min( $range_end, $range_start + ( $chunk_size * ( $i + 1 ) ) - 1 );
+
+				if ( $batch_start > $range_end ) {
+					return;
+				}
 
 				self::queue()->schedule_single(
 					$action_timestamp,
@@ -562,7 +617,7 @@ class WC_Admin_Reports_Sync {
 			$query_args = array();
 		}
 
-		if ( $days ) {
+		if ( is_int( $days ) ) {
 			$query_args['date_query'] = array(
 				'after' => date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ),
 			);
@@ -585,7 +640,7 @@ class WC_Admin_Reports_Sync {
 	 * Init customer lookup table update (in batches).
 	 *
 	 * @param int|bool $days Number of days to process.
-	 * @param bool     $skip_existing Skip exisiting records.
+	 * @param bool     $skip_existing Skip existing records.
 	 */
 	public static function customer_lookup_import_batch_init( $days, $skip_existing ) {
 		$batch_size      = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
@@ -619,8 +674,19 @@ class WC_Admin_Reports_Sync {
 	 * @return void
 	 */
 	public static function customer_lookup_import_batch( $batch_number, $days, $skip_existing ) {
-		$batch_size     = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
+		$batch_size = self::get_batch_size( self::CUSTOMERS_IMPORT_BATCH_ACTION );
+
+		$properties = array(
+			'batch_number' => $batch_number,
+			'batch_size'   => $batch_size,
+			'type'         => 'customer',
+		);
+		wc_admin_record_tracks_event( 'import_job_start', $properties );
+
 		$customer_roles = apply_filters( 'woocommerce_admin_import_customer_roles', array( 'customer' ) );
+		// When we are skipping already imported customers, the table of customers to import gets smaller in
+		// every batch, so we want to always import the first page.
+		$page           = $skip_existing ? 1 : $batch_number;
 		$customer_query = self::get_user_ids_for_batch(
 			$days,
 			$skip_existing,
@@ -629,7 +695,7 @@ class WC_Admin_Reports_Sync {
 				'orderby'  => 'ID',
 				'order'    => 'ASC',
 				'number'   => $batch_size,
-				'paged'    => $batch_number,
+				'paged'    => $page,
 				'role__in' => $customer_roles,
 			)
 		);
@@ -643,6 +709,10 @@ class WC_Admin_Reports_Sync {
 
 		$imported_count = get_option( 'wc_admin_import_customers_count', 0 );
 		update_option( 'wc_admin_import_customers_count', $imported_count + count( $customer_ids ) );
+
+		$properties['imported_count'] = $imported_count;
+
+		wc_admin_record_tracks_event( 'import_job_complete', $properties );
 	}
 
 	/**
@@ -667,6 +737,9 @@ class WC_Admin_Reports_Sync {
 	 */
 	public static function customer_lookup_delete_batch() {
 		global $wpdb;
+
+		wc_admin_record_tracks_event( 'delete_import_data_job_start', array( 'type' => 'customer' ) );
+
 		$batch_size   = self::get_batch_size( self::CUSTOMERS_DELETE_BATCH_ACTION );
 		$customer_ids = $wpdb->get_col(
 			$wpdb->prepare(
@@ -678,6 +751,8 @@ class WC_Admin_Reports_Sync {
 		foreach ( $customer_ids as $customer_id ) {
 			WC_Admin_Reports_Customers_Data_Store::delete_customer( $customer_id );
 		}
+
+		wc_admin_record_tracks_event( 'delete_import_data_job_complete', array( 'type' => 'customer' ) );
 	}
 
 	/**
@@ -704,6 +779,9 @@ class WC_Admin_Reports_Sync {
 	 */
 	public static function orders_lookup_delete_batch() {
 		global $wpdb;
+
+		wc_admin_record_tracks_event( 'delete_import_data_job_start', array( 'type' => 'order' ) );
+
 		$batch_size = self::get_batch_size( self::ORDERS_DELETE_BATCH_ACTION );
 		$order_ids  = $wpdb->get_col(
 			$wpdb->prepare(
@@ -715,8 +793,9 @@ class WC_Admin_Reports_Sync {
 		foreach ( $order_ids as $order_id ) {
 			WC_Admin_Reports_Orders_Stats_Data_Store::delete_order( $order_id );
 		}
-	}
 
+		wc_admin_record_tracks_event( 'delete_import_data_job_complete', array( 'type' => 'order' ) );
+	}
 }
 
 WC_Admin_Reports_Sync::init();

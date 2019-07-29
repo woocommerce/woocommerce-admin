@@ -8,7 +8,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
-import { IconButton, NavigableMenu, SelectControl, TextControl } from '@wordpress/components';
+import { IconButton, NavigableMenu, SelectControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -21,8 +21,9 @@ import { getAllowedIntervalsForQuery } from '@woocommerce/date';
  * Internal dependencies
  */
 import ChartBlock from './block';
-import { getChartFromKey, uniqCharts } from './config';
+import { uniqCharts } from './config';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
 class DashboardCharts extends Component {
@@ -42,6 +43,7 @@ class DashboardCharts extends Component {
 				[ 'dashboard_chart_type' ]: chartType,
 			};
 			this.props.updateCurrentUserData( userDataFields );
+			recordEvent( 'dash_charts_type_toggle', { chart_type: chartType } );
 		};
 	}
 
@@ -66,37 +68,37 @@ class DashboardCharts extends Component {
 					<Fragment>
 						<MenuTitle>{ __( 'Charts', 'woocommerce-admin' ) }</MenuTitle>
 						{ uniqCharts.map( chart => {
+							const key = chart.endpoint + '_' + chart.key;
+							const checked = ! hiddenBlocks.includes( key );
 							return (
 								<MenuItem
-									checked={ ! hiddenBlocks.includes( chart.key ) }
+									checked={ checked }
 									isCheckbox
 									isClickable
-									key={ chart.key }
-									onInvoke={ () => onToggleHiddenBlock( chart.key )() }
+									key={ chart.endpoint + '_' + chart.key }
+									onInvoke={ () => {
+										onToggleHiddenBlock( key )();
+										recordEvent( 'dash_charts_chart_toggle', {
+											status: checked ? 'off' : 'on',
+											key,
+										} );
+									} }
 								>
 									{ __( `${ chart.label }`, 'woocommerce-admin' ) }
 								</MenuItem>
 							);
 						} ) }
 						{ window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] && (
-							<Fragment>
-								<div className="woocommerce-ellipsis-menu__item">
-									<TextControl
-										label={ __( 'Section Title', 'woocommerce-admin' ) }
-										onBlur={ onTitleBlur }
-										onChange={ onTitleChange }
-										required
-										value={ titleInput }
-									/>
-								</div>
-								<Controls
-									onToggle={ onToggle }
-									onMove={ onMove }
-									onRemove={ onRemove }
-									isFirst={ isFirst }
-									isLast={ isLast }
-								/>
-							</Fragment>
+							<Controls
+								onToggle={ onToggle }
+								onMove={ onMove }
+								onRemove={ onRemove }
+								isFirst={ isFirst }
+								isLast={ isLast }
+								onTitleBlur={ onTitleBlur }
+								onTitleChange={ onTitleChange }
+								titleInput={ titleInput }
+							/>
 						) }
 					</Fragment>
 				) }
@@ -138,6 +140,7 @@ class DashboardCharts extends Component {
 				[ 'dashboard_chart_interval' ]: this.state.interval,
 			};
 			this.props.updateCurrentUserData( userDataFields );
+			recordEvent( 'dash_charts_interval', { interval } );
 		} );
 	};
 
@@ -186,11 +189,11 @@ class DashboardCharts extends Component {
 					</SectionHeader>
 					<div className="woocommerce-dashboard__columns">
 						{ uniqCharts.map( chart => {
-							return hiddenBlocks.includes( chart.key ) ? null : (
+							return hiddenBlocks.includes( chart.endpoint + '_' + chart.key ) ? null : (
 								<ChartBlock
-									charts={ getChartFromKey( chart.key ) }
+									charts={ [ chart ] }
 									endpoint={ chart.endpoint }
-									key={ chart.key }
+									key={ chart.endpoint + '_' + chart.key }
 									path={ path }
 									query={ query }
 								/>

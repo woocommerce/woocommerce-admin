@@ -1,8 +1,6 @@
 .woocommerce-stepper {
-	background: #fff;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2),
-		0 2px 2px rgba(0, 0, 0, 0.12),
-		0 0 2px rgba(0, 0, 0, 0.14);
+	background: $muriel-white;
+	box-shadow: $muriel-box-shadow-1dp;
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
@@ -15,18 +13,36 @@
 		display: inline-flex;
 		align-items: center;
 		padding: $gap-small;
-		font-weight: 600;
+		font-weight: 400;
+		color: $muriel-gray-900;
+		height: 48px;
 
 		svg {
 			display: none;
 		}
 
+		.woocommerce-spinner {
+			display: block;
+			margin-left: -$gap-smaller;
+			margin-right: $gap-smallest;
+		}
+
+		.woocommerce-spinner__circle {
+			stroke: $muriel-hot-blue-500;
+		}
+
 		&.is-active,
 		&.is-complete {
-			color: $muriel-active;
-
 			.woocommerce-stepper__step-icon {
-				background: $muriel-active;
+				background: $muriel-hot-blue-500;
+				color: $muriel-white;
+			}
+		}
+
+		&.is-active {
+			font-weight: 600;
+			.woocommerce-stepper__step-label {
+				margin: 0;
 			}
 		}
 
@@ -46,15 +62,16 @@
 		justify-content: center;
 		width: 24px;
 		height: 24px;
+		min-width: 24px;
 		margin-right: $gap-small;
-		background: $muriel-gray-dark-300;
-		color: #fff;
+		background: $muriel-gray-50;
+		color: $muriel-gray-600;
 		border-radius: 50%;
 	}
 
 	.woocommerce-stepper__step-divider {
 		flex-grow: 1;
-		border-bottom: 1px solid $muriel-gray-dark-300;
+		border-bottom: 1px solid $muriel-gray-50;
 
 		&:last-child {
 			display: none;
@@ -62,11 +79,32 @@
 	}
 
 	@include breakpoint( '<782px' ) {
-		.woocommerce-stepper_step-label {
+		.woocommerce-stepper__step-label {
 			display: none;
+			padding-top: 24px;
 		}
 		.woocommerce-stepper__step-icon {
 			margin-right: 0;
+		}
+	}
+
+	&.is-vertical {
+		align-items: initial;
+		flex-direction: column;
+
+		.woocommerce-stepper__step-divider {
+			border-bottom: 0;
+			border-left: 1px solid $muriel-gray-50;
+			height: 50px;
+			margin-left: 24px;
+		}
+
+		.woocommerce-stepper__step-label {
+			display: initial;
+		}
+
+		.woocommerce-stepper__step-icon {
+			margin-right: $gap-small;
 		}
 	}
 }

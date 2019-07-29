@@ -1,9 +1,9 @@
 {
   "name": "@woocommerce/currency",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "WooCommerce currency utilities.",
   "author": "Automattic",
-  "license": "GPL-2.0-or-later",
+  "license": "GPL-3.0-or-later",
   "keywords": [
     "wordpress",
     "woocommerce",
@@ -21,9 +21,9 @@
   "module": "build-module/index.js",
   "react-native": "src/index",
   "dependencies": {
-    "@babel/runtime-corejs2": "7.4.4",
+    "@babel/runtime-corejs2": "7.5.4",
     "@woocommerce/number": "1.0.2",
-    "lodash": "4.17.11"
+    "lodash": "4.17.13"
   },
   "publishConfig": {
     "access": "public"

@@ -39,6 +39,19 @@ class WC_Admin_Notes_New_Sales_Record {
 	 * Possibly add a sales record note.
 	 */
 	public static function possibly_add_sales_record_note() {
+		/**
+		 * Filter to allow for disabling sales record milestones.
+		 *
+		 * @since 3.7.0
+		 *
+		 * @param boolean default true
+		 */
+		$sales_record_notes_enabled = apply_filters( 'woocommerce_admin_sales_record_milestone_enabled', true );
+
+		if ( ! $sales_record_notes_enabled ) {
+			return;
+		}
+
 		$yesterday = date( 'Y-m-d', current_time( 'timestamp', 0 ) - DAY_IN_SECONDS );
 		$total     = self::sum_sales_for_date( $yesterday );
 
@@ -86,6 +99,8 @@ class WC_Admin_Notes_New_Sales_Record {
 			// We only want one sales record note at any time in the inbox, so we delete any other first.
 			WC_Admin_Notes::delete_notes_with_name( self::NOTE_NAME );
 
+			$report_url = '?page=wc-admin&path=/analytics/revenue&period=custom&compare=previous_year&after=' . $yesterday . '&before=' . $yesterday;
+
 			// And now, create our new note.
 			$note = new WC_Admin_Note();
 			$note->set_title( __( 'New sales record!', 'woocommerce-admin' ) );
@@ -95,7 +110,7 @@ class WC_Admin_Notes_New_Sales_Record {
 			$note->set_icon( 'trophy' );
 			$note->set_name( self::NOTE_NAME );
 			$note->set_source( 'woocommerce-admin' );
-			$note->add_action( 'view-report', __( 'View report', 'woocommerce-admin' ), '?page=wc-admin#/analytics' );
+			$note->add_action( 'view-report', __( 'View report', 'woocommerce-admin' ), $report_url );
 			$note->save();
 		}
 	}

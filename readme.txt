@@ -1,9 +1,9 @@
 === WooCommerce Admin ===
 Contributors: automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
-Requires at least: 5.0.0
-Tested up to: 5.1.1
-Requires PHP: 5.4.0
+Requires at least: 5.2.0
+Tested up to: 5.2.1
+Requires PHP: 5.6.20
 Stable tag: 1.0.0
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/license.txt
@@ -11,10 +11,6 @@ License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/licens
 == Description ==
 
 WooCommerce Admin is a new JavaScript-driven interface for managing your store. The plugin includes new and improved reports and a dashboard to monitor key metrics of your site.
-
-**BETA SOFTWARE**
-
-This plugin is under active development and, as such, we advise you to first install WooCommerce Admin in a staging/test environment. While this code is being run in production on sites, we recommend you first verify it works for you in a test environment, the same as any plugin for WooCommerce.
 
 **New Reports for WooCommerce**
 
@@ -36,11 +32,9 @@ WooCommerce Admin also allows store owners to customize a new dashboard screen w
 
 == Getting Started ==
 
-Once again: This plugin is under active development and, as such, we advise you to first install WooCommerce Admin in a staging/test environment. While this code is being run in production on sites, we recommend you first verify it works for you in a test environment, the same as any plugin for WooCommerce.
-
 = Minimum Requirements =
 
-* WordPress 5.0
+* WordPress 5.2
 * WooCommerce 3.6.0 or greater
 * PHP version 5.4 or greater. PHP 7.2 or greater is recommended
 * MySQL version 5.0 or greater. MySQL 5.6 or greater is recommended
@@ -77,7 +71,137 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 0.12.0 2019-05-14
+= 0.16.0 2019-07-24 =
+
+- Tweak: Change verbiage of feedback notification. #2677
+- Dev: Update unit tests to work with PHPUnit 7+. #2678
+- Fix: Bug that was preventing confirmation dialog from showing after saving settings. #2660
+- Fix: completed orders lingering in activity panel. #2659 (Activity Panel, REST API)
+- Dev: Webpack: Use wp.url instead of bundling package #2663 (Build)
+- Fix: Location of unread indicators in activity panel. #2662
+- Bug: Fix missing nav on connected admin pages. #2676
+- Task: Add priority 2 Tracks events #2633 (Components, Packages)
+- Dev: Replace 'stringifyQuery' with 'addQueryArgs' #2655 (Build, Components, Packages)
+- Task: Add priority 3 Tracks events #2638 (Components, Packages)
+- Fix: Z-index issue in empty message on chart #2646 (Components, Packages)
+- Dev: Tests setup: bring in Woo Core dependencies #2640 (Build)
+- Fix: Disable placeholder animation when prefers-reduced-motion is set #2645 (Accessibility)
+- Task: Add instructions for translating to contributing docs. #2618 (Documentation)
+- Dev: show example extension list as list in readme #2619 (Documentation)
+- Fix: react-spring breaking IE11 #2698 (Build)
+
+= 0.15.0 2019-07-11 =
+
+- Fix: Compare checkboxes in report tables #2571
+- Dev: Introduce a new Products by Tag(s) block #554
+- Dev: Tracks: Fix Link onclick #2594 (Components, Packages)
+- Fix: Use correct links in DevDocs. #2602 (Documentation)
+- Fix: Prevent error when no actionable order statuses are set #2577
+- Fix: exclude old WC auto-draft orders from import #2612 (Analytics)
+- Dev: Fix: propType validation warnings on embedded pages #2607
+- Fix: Only calculate one order row when the order has multiple coupons. #2484 (Analytics)
+- Fix: Cast is_snoozable as int prior to database save #2573
+- Performance: check for scheduled snooze action once per hour instead of every admin request. #2593
+- Fix: Update layout of Settings Page and notify users when settings are not saved. #2544
+- Dev: Update color-studio to 1.0.5 #2575 (Build, Packages)
+- Task: Add tracks event to Store Alert and Inbox Notification action clicks #2559
+- Fix: Change size of Header to 56px - fixes bug in product edit page toolbar being hidden.
+- Dev: Add countLabel prop to SearchListItem #2569 (Components, Packages)
+- Task: Send tracks event for snoozing store alerts. #2560
+- Fix: Stock notifs: fix low_stock_amount for variations #2546
+- Enhancement: Add Report CSV Export Endpoint #2526 (Analytics, REST API)
+- Tweak: remove placeholder link. #2561
+- Fix: WordPress Notifications Activity Panel falsely saying there are notices to be seen. #2552
+- Dev: Route handling: Remove hash in favor of path parameter #2444 (Components, Packages)
+- Dev: Customizable dashboard: handle turned off feature flag #2548
+- Dev: Dashboard: Add Tracks events #2550 (Dashboard)
+- Task: Tracks: Add chart and table events #2557
+- Fix: Fixes issue with alerts on mobile #2537
+- Bug: Fix batch queue range bug. #2521
+- Dev: Advanced Filters: Add Tracks events #2525 (Components, Packages)
+- Tweak: Open external note action links in a new tab #2462 (Activity Panel, Inbox)
+- Tweak: fix some report endpoint default params. #2496 (REST API)
+- Enhancement: Remove updated stock products from Activity Panel #2442 (Activity Panel)
+- Fix: Track name for activity panel open event #2532
+- Enhancement: Add Reports CSV Exporter Class #2502 (Analytics)
+- Fix: margins on non-update notices. #2487  👏 @benignant
+- Enhancement: add state/region to Customers Report. #2463 (Analytics) 👏 @KZeni
+
+= 0.14.0 2019-06-24 =
+
+- Dev: Action Scheduler: fix potential endless sync #2425
+- Dev: Fix Activity Panel being overlapped by editor toolbar #2446 (Activity Panel)
+- Bug: add match=any support for advanced orders table filter #2228
+- Dev: update tested to version in plugin repo readme.txt #2443
+- Fix: PHP errors on missing refund orders during import. #2464 (Analytics)
+- Dev: Allow keyboard interaction in Stock Activity Panel form #2447 (Accessibility, Activity Panel)
+- Dev: Activity Panels: Add track event when panels are opened. #2498 (Build)
+- Dev: Add wp-api-fetch script to dependencies #2460
+- Dev: Remove the "wpClosedMenu" page setting #2441 (Build)
+- Enhancement: Report Tables: Add example extension #2440 (Build, Components, Extensibility, Packages)
+- Fix: fix type in readme changelog for 0.13.0 #2457 (Documentation)
+- Tweak: Add test to catch missing version updates. #2424 (Build)
+- Dev: Fix revenue and orders charts using the wrong endpoint in the Dashboard #2417 (Dashboard)
+- Fix: handle internal `rest_do_request()` error conditions. #2423 (Dashboard)
+- Dev: Fix conflicts with WordPress.com toolbar #2431 (Activity Panel)
+- Task: Remove test menu from Orders panel #2438 (Activity Panel)
+- Dev: Table queries: remove befor/after from no interval endpoints #2422
+- Tweak: Reduce style dependencies on WP core, avoid errantly including WP core's Google Fonts. #2432 (Components)
+- Dev: Update Dashboard Charts naming and order #2429 (Dashboard)
+- Bug: Fix search bar in Orders page not being tapable on mobile #2384
+
+= 0.13.2 2019-06-13 =
+
+- Fix: Bump plugin version for database update.
+
+= 0.13.1 2019-06-12 =
+
+- Fix: Exit deactivate early if WooCommerce not active. #2410
+
+= 0.13.0 2019-06-12 =
+
+- Fix: Notes: update sales record link #2397
+- Enhancement: Settings: Add default date settings #2292 (Components, Dashboard, Packages)
+- Dev: Add tracks to import jobs #2193
+- Dev: Notes: Add filters to disable milestone and sales record notes. #2227
+- Enhancement: Trigger an action server side when admin note actions are clicked #2325
+- Dev: Fix Activity Panel layout on mobile #2405 (Activity Panel)
+- Dev: Add uninstall file to release ZIP #2402 (Build)
+- Bug: Fix wrong average numbers in chart legends #2352 (Analytics, Components, Packages)
+- Dev: Add date_created_gmt property to orders endpoint #2086 (Activity Panel)
+- Enhancement: Add progress bars to Historical Data Import screen #2312
+- Bug: Fix some data not to being imported when 'skip_existing' option is enabled #2385
+- Fix: Double space at 191 row #2369  👏 @shoheitanaka
+- Enhancement: Only show unactioned notes in the Inbox panel. #2327 (Inbox)
+- Bug: Don't create Notices tab in Activity Panel if notices HTML element was removed by a plugin #2378
+- Tweak: Allow paragraph tags in admin notes. #2344 (Inbox)
+- Tweak: Allow note action URLs to be empty. #2324 (Inbox)
+- Bug: Prevent inactive tabs from making requests #2377
+- Task: Remove second beta warning from readme #2362
+- Fix: Misspelling at update config.js #2368  👏 @shoheitanaka
+- Dev: Transpile newspack-components package #2348 (Build)
+- Dev: Low stock handling inconsistencies with WooCommerce 3.6+ #2191
+- Dev: Remove d3-array dependency #2286 (Build)
+- Dev: Dashboard Extentions: Add a section #2280 (Build, Components, Extensibility, Packages)
+- Fix: Move StoreAlerts below screen meta links on embed pages. #2291
+- Fix: Extensions: fix registering a page #2301 (Extensibility)
+- Dev: Fix `box-shadow-8dp` error. #2290 (Components, Packages)
+- Fix: Dashboard Extension Example: Make namespace unique #2302 (Extensibility)
+- Dev: Persisted Queries: Avoid adding to non time related screens #2225 (Build)
+- Dev: Remove customizable dashboard heading #2321 (Dashboard)
+- Bug: Add missing space in Orders Activity Panel card #2306 (Activity Panel)
+- Task: Remove beta warning from readme. #2340
+- Dev: Dashboard: Extend charts data #2258 (Dashboard, Extensibility)
+- Bug: Handle `WC_Admin_Notices`. #2245 (Activity Panel, On Merge to WC Core)
+- Bug: Exclude auto-draft and trashed orders from imports. #2265
+- Fix: wc-api: Remove reference to import update functions #2277 (Dashboard)
+- Enhancement: Add support for “primary” admin notice actions. #2269
+- Enhancement: Allow links in admin notice content. #2272
+- Fix: Remove errant import update operation from `wp-api` spec. #2271
+- Dev: Hook up import/totals endpoint to Historical Data Import screen #2208
+- Fix: Refactor main file into singleton class structure #2226
+
+= 0.12.0 2019-05-14 =
 
 - Fix: dashboard issues #2194
 - Fix: Dashboard: re-arrange section dropdown order #2216
@@ -110,9 +234,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Scroll to top of the table when navigating table pages #2051
 - Dev: Add empty state for the Reviews panels #2124
 
-== Changelog ==
-
-= 0.11.0 2019-04-17
+= 0.11.0 2019-04-17 =
 
 - Dev: Extend report submenu items #2033
 - Dev: Extension Examples #2018
@@ -147,7 +269,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Scroll to top only when URL changes #1989
 - Enhancement: Allow negative values in charts #1979
 
-= 0.10.0 2019-04-02
+= 0.10.0 2019-04-02 =
 
 - Dev: Properly namespaced methods in wc-admin.php. props @ronakganatra9 #1804
 - Dev: Changed text-domain to `woocommerce-admin` #1795

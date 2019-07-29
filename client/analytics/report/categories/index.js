@@ -7,11 +7,6 @@ import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 
 /**
- * WooCommerce dependencies
- */
-import { ReportFilters } from '@woocommerce/components';
-
-/**
  * Internal dependencies
  */
 import { charts, filters } from './config';
@@ -20,6 +15,7 @@ import getSelectedChart from 'lib/get-selected-chart';
 import ReportChart from 'analytics/components/report-chart';
 import ReportSummary from 'analytics/components/report-summary';
 import ProductsReportTable from '../products/table';
+import ReportFilters from 'analytics/components/report-filters';
 
 export default class CategoriesReport extends Component {
 	getChartMeta() {
@@ -56,7 +52,7 @@ export default class CategoriesReport extends Component {
 
 		return (
 			<Fragment>
-				<ReportFilters query={ query } path={ path } filters={ filters } />
+				<ReportFilters query={ query } path={ path } filters={ filters } report="categories" />
 				<ReportSummary
 					charts={ charts }
 					endpoint="products"
@@ -65,10 +61,10 @@ export default class CategoriesReport extends Component {
 					query={ chartQuery }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 					filters={ filters }
+					report="categories"
 				/>
 				<ReportChart
 					filters={ filters }
-					charts={ charts }
 					mode={ mode }
 					endpoint="products"
 					limitProperties={ isSingleCategoryView ? [ 'products', 'categories' ] : [ 'categories' ] }

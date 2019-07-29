@@ -8,7 +8,6 @@ import { IconButton, Button, Dashicon, Dropdown, NavigableMenu } from '@wordpres
 import classnames from 'classnames';
 import interpolateComponents from 'interpolate-components';
 import { compose } from '@wordpress/compose';
-import { noop } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 import moment from 'moment';
 
@@ -24,6 +23,7 @@ import withSelect from 'wc-api/with-select';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import sanitizeHTML from 'lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
+import { recordEvent } from 'lib/tracks';
 
 import './style.scss';
 
@@ -64,17 +64,15 @@ class StoreAlerts extends Component {
 	}
 
 	renderActions( alert ) {
-		const { updateNote } = this.props;
+		const { triggerNoteAction, updateNote } = this.props;
 		const actions = alert.actions.map( action => {
-			const markStatus = () => {
-				updateNote( alert.id, { status: action.status } );
-			};
 			return (
 				<Button
 					key={ action.name }
 					isDefault
-					href={ action.url }
-					onClick={ '' === action.status ? noop : markStatus }
+					isPrimary={ action.primary }
+					href={ action.url || undefined }
+					onClick={ () => triggerNoteAction( alert.id, action.id ) }
 				>
 					{ action.label }
 				</Button>
@@ -121,10 +119,18 @@ class StoreAlerts extends Component {
 			},
 		];
 
-		const setReminderDate = ( newDate, onClose ) => {
+		const setReminderDate = ( snoozeOption, onClose ) => {
 			return () => {
 				onClose();
-				updateNote( alert.id, { status: 'snoozed', date_reminder: newDate } );
+				updateNote( alert.id, { status: 'snoozed', date_reminder: snoozeOption.newDate } );
+
+				const eventProps = {
+					alert_name: alert.name,
+					alert_title: alert.title,
+					snooze_duration: snoozeOption.newDate,
+					snooze_label: snoozeOption.label,
+				};
+				recordEvent( 'store_alert_snooze', eventProps );
 			};
 		};
 
@@ -146,7 +152,7 @@ class StoreAlerts extends Component {
 							<Button
 								className="components-dropdown-menu__menu-item"
 								key={ idx }
-								onClick={ setReminderDate( option.newDate, onClose ) }
+								onClick={ setReminderDate( option, onClose ) }
 							>
 								{ option.label }
 							</Button>
@@ -180,7 +186,7 @@ class StoreAlerts extends Component {
 		const numberOfAlerts = alerts.length;
 		const alert = alerts[ currentIndex ];
 		const type = alert.type;
-		const className = classnames( 'woocommerce-store-alerts', {
+		const className = classnames( 'woocommerce-store-alerts', 'woocommerce-analytics__card', {
 			'is-alert-error': 'error' === type,
 			'is-alert-update': 'update' === type,
 		} );
@@ -256,8 +262,10 @@ export default compose(
 		};
 	} ),
 	withDispatch( dispatch => {
-		const { updateNote } = dispatch( 'wc-api' );
+		const { triggerNoteAction, updateNote } = dispatch( 'wc-api' );
+
 		return {
+			triggerNoteAction,
 			updateNote,
 		};
 	} )

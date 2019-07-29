@@ -25,6 +25,7 @@ import {
 import InboxPanel from './panels/inbox';
 import OrdersPanel from './panels/orders';
 import StockPanel from './panels/stock';
+import { recordEvent } from 'lib/tracks';
 import ReviewsPanel from './panels/reviews';
 import withSelect from 'wc-api/with-select';
 import WordPressNotices from './wordpress-notices';
@@ -45,6 +46,13 @@ class ActivityPanel extends Component {
 	}
 
 	togglePanel( tabName ) {
+		const { isPanelOpen, currentTab } = this.state;
+
+		// If a panel is being opened, or if an existing panel is already open and a different one is being opened, record a track.
+		if ( ! isPanelOpen || tabName !== currentTab ) {
+			recordEvent( 'activity_panel_open', { tab: tabName } );
+		}
+
 		// The WordPress Notices tab is handled differently, since they are displayed inline, so the panel should be closed,
 		// Close behavior of the expanded notices is based on current tab.
 		if ( 'wpnotices' === tabName ) {
@@ -254,11 +262,13 @@ class ActivityPanel extends Component {
 							className="woocommerce-layout__activity-panel-tabs"
 						>
 							{ tabs && tabs.map( this.renderTab ) }
-							<WordPressNotices
-								showNotices={ 'wpnotices' === currentTab }
-								togglePanel={ this.togglePanel }
-								onCountUpdate={ this.updateNoticeFlag }
-							/>
+							{ Boolean( document.getElementById( 'wp__notice-list' ) ) && (
+								<WordPressNotices
+									showNotices={ 'wpnotices' === currentTab }
+									togglePanel={ this.togglePanel }
+									onCountUpdate={ this.updateNoticeFlag }
+								/>
+							) }
 						</NavigableMenu>
 						{ this.renderPanel() }
 					</div>

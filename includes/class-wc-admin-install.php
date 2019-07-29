@@ -94,6 +94,7 @@ class WC_Admin_Install {
 			order_id bigint(20) unsigned NOT NULL,
 			parent_id bigint(20) unsigned DEFAULT 0 NOT NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			date_created_gmt datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			num_items_sold int(11) DEFAULT 0 NOT NULL,
 			gross_total double DEFAULT 0 NOT NULL,
 			tax_total double DEFAULT 0 NOT NULL,
@@ -170,6 +171,7 @@ class WC_Admin_Install {
 			label varchar(255) NOT NULL,
 			query longtext NOT NULL,
 			status varchar(255) NOT NULL,
+			is_primary boolean DEFAULT 0 NOT NULL,
 			PRIMARY KEY (action_id),
 			KEY note_id (note_id)
 		) $collate;
@@ -185,6 +187,7 @@ class WC_Admin_Install {
 			country char(2) DEFAULT '' NOT NULL,
 			postcode varchar(20) DEFAULT '' NOT NULL,
 			city varchar(100) DEFAULT '' NOT NULL,
+			state varchar(100) DEFAULT '' NOT NULL,
 			PRIMARY KEY (customer_id),
 			UNIQUE KEY user_id (user_id),
 			KEY email (email)
@@ -277,6 +280,19 @@ class WC_Admin_Install {
 	protected static function create_notes() {
 		WC_Admin_Notes_Historical_Data::add_note();
 		WC_Admin_Notes_Welcome_Message::add_welcome_note();
+	}
+
+	/**
+	 * Delete all data from tables.
+	 */
+	public static function delete_table_data() {
+		global $wpdb;
+
+		$tables = self::get_tables();
+
+		foreach ( $tables as $table ) {
+			$wpdb->query( "TRUNCATE TABLE {$table}" ); // WPCS: unprepared SQL ok.
+		}
 	}
 }
 

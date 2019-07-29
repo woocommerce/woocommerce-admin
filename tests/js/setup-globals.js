@@ -62,6 +62,10 @@ global.wcSettings = {
 		userLocale: 'en_US',
 		weekdaysShort: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
 	},
+	wcAdminSettings: {
+		woocommerce_actionable_order_statuses: [],
+		woocommerce_excluded_report_order_statuses: [],
+	},
 };
 
 const config = require( '../../config/development.json' );

@@ -25,15 +25,16 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	 * @var array
 	 */
 	protected $column_types = array(
-		'order_id'       => 'intval',
-		'parent_id'      => 'intval',
-		'date_created'   => 'strval',
-		'status'         => 'strval',
-		'customer_id'    => 'intval',
-		'net_total'      => 'floatval',
-		'gross_total'    => 'floatval',
-		'num_items_sold' => 'intval',
-		'customer_type'  => 'strval',
+		'order_id'         => 'intval',
+		'parent_id'        => 'intval',
+		'date_created'     => 'strval',
+		'date_created_gmt' => 'strval',
+		'status'           => 'strval',
+		'customer_id'      => 'intval',
+		'net_total'        => 'floatval',
+		'gross_total'      => 'floatval',
+		'num_items_sold'   => 'intval',
+		'customer_type'    => 'strval',
 	);
 
 	/**
@@ -51,15 +52,16 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 		$table_name = $wpdb->prefix . self::TABLE_NAME;
 		// Avoid ambigious columns in SQL query.
 		$this->report_columns = array(
-			'order_id'       => "{$table_name}.order_id",
-			'parent_id'      => "{$table_name}.parent_id",
-			'date_created'   => "{$table_name}.date_created",
-			'status'         => "REPLACE({$table_name}.status, 'wc-', '') as status",
-			'customer_id'    => "{$table_name}.customer_id",
-			'net_total'      => "{$table_name}.net_total",
-			'gross_total'    => "{$table_name}.gross_total",
-			'num_items_sold' => "{$table_name}.num_items_sold",
-			'customer_type'  => "(CASE WHEN {$table_name}.returning_customer = 1 THEN 'returning' WHEN {$table_name}.returning_customer = 0 THEN 'new' ELSE '' END) as customer_type",
+			'order_id'         => "{$table_name}.order_id",
+			'parent_id'        => "{$table_name}.parent_id",
+			'date_created'     => "{$table_name}.date_created",
+			'date_created_gmt' => "{$table_name}.date_created_gmt",
+			'status'           => "REPLACE({$table_name}.status, 'wc-', '') as status",
+			'customer_id'      => "{$table_name}.customer_id",
+			'net_total'        => "{$table_name}.net_total",
+			'gross_total'      => "{$table_name}.gross_total",
+			'num_items_sold'   => "{$table_name}.num_items_sold",
+			'customer_type'    => "(CASE WHEN {$table_name}.returning_customer = 1 THEN 'returning' WHEN {$table_name}.returning_customer = 0 THEN 'new' ELSE '' END) as customer_type",
 		);
 	}
 
@@ -72,6 +74,8 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
 		$order_stats_lookup_table = $wpdb->prefix . self::TABLE_NAME;
+		$operator                 = $this->get_match_operator( $query_args );
+		$where_subquery           = array();
 
 		$sql_query_params = $this->get_time_period_sql_params( $query_args, $order_stats_lookup_table );
 		$sql_query_params = array_merge( $sql_query_params, $this->get_limit_sql_params( $query_args ) );
@@ -79,17 +83,33 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 
 		$status_subquery = $this->get_status_subquery( $query_args );
 		if ( $status_subquery ) {
-			$sql_query_params['where_clause'] .= " AND {$status_subquery}";
+			if ( empty( $query_args['status_is'] ) && empty( $query_args['status_is_not'] ) ) {
+				$sql_query_params['where_clause'] .= " AND {$status_subquery}";
+			} else {
+				$where_subquery[] = $status_subquery;
+			}
+		}
+
+		$included_orders = $this->get_included_orders( $query_args );
+		if ( $included_orders ) {
+			$where_subquery[] = "{$order_stats_lookup_table}.order_id IN ({$included_orders})";
+		}
+
+		$excluded_orders = $this->get_excluded_orders( $query_args );
+		if ( $excluded_orders ) {
+			$where_subquery[] = "{$order_stats_lookup_table}.order_id NOT IN ({$excluded_orders})";
 		}
 
 		if ( $query_args['customer_type'] ) {
-			$returning_customer                = 'returning' === $query_args['customer_type'] ? 1 : 0;
-			$sql_query_params['where_clause'] .= " AND {$order_stats_lookup_table}.returning_customer = ${returning_customer}";
+			$returning_customer = 'returning' === $query_args['customer_type'] ? 1 : 0;
+			$where_subquery[]   = "{$order_stats_lookup_table}.returning_customer = ${returning_customer}";
 		}
 
-		$refund_subquery                   = $this->get_refund_subquery( $query_args );
-		$sql_query_params['from_clause']  .= $refund_subquery['from_clause'] ? $refund_subquery['from_clause'] : '';
-		$sql_query_params['where_clause'] .= $refund_subquery['where_clause'] ? ' AND ' . $refund_subquery['where_clause'] : '';
+		$refund_subquery                  = $this->get_refund_subquery( $query_args );
+		$sql_query_params['from_clause'] .= $refund_subquery['from_clause'] ? $refund_subquery['from_clause'] : '';
+		if ( $refund_subquery['where_clause'] ) {
+			$where_subquery[] = $refund_subquery['where_clause'];
+		}
 
 		$included_coupons          = $this->get_included_coupons( $query_args );
 		$excluded_coupons          = $this->get_excluded_coupons( $query_args );
@@ -98,10 +118,10 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			$sql_query_params['from_clause'] .= " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id";
 		}
 		if ( $included_coupons ) {
-			$sql_query_params['where_clause'] .= " AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})";
+			$where_subquery[] = "{$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})";
 		}
 		if ( $excluded_coupons ) {
-			$sql_query_params['where_clause'] .= " AND {$order_coupon_lookup_table}.coupon_id NOT IN ({$excluded_coupons})";
+			$where_subquery[] = "{$order_coupon_lookup_table}.coupon_id NOT IN ({$excluded_coupons})";
 		}
 
 		$included_products          = $this->get_included_products( $query_args );
@@ -111,10 +131,14 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			$sql_query_params['from_clause'] .= " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id";
 		}
 		if ( $included_products ) {
-			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id IN ({$included_products})";
+			$where_subquery[] = "{$order_product_lookup_table}.product_id IN ({$included_products})";
 		}
 		if ( $excluded_products ) {
-			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id NOT IN ({$excluded_products})";
+			$where_subquery[] = "{$order_product_lookup_table}.product_id NOT IN ({$excluded_products})";
+		}
+
+		if ( 0 < count( $where_subquery ) ) {
+			$sql_query_params['where_clause'] .= ' AND (' . implode( " {$operator} ", $where_subquery ) . ')';
 		}
 
 		return $sql_query_params;
@@ -137,8 +161,8 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			'page'             => 1,
 			'order'            => 'DESC',
 			'orderby'          => 'date_created',
-			'before'           => WC_Admin_Reports_Interval::default_before(),
-			'after'            => WC_Admin_Reports_Interval::default_after(),
+			'before'           => '',
+			'after'            => '',
 			'fields'           => '*',
 			'product_includes' => array(),
 			'product_excludes' => array(),
@@ -148,6 +172,8 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 			'status_is'        => array(),
 			'extended_info'    => false,
 			'refunds'          => null,
+			'order_includes'   => array(),
+			'order_excludes'   => array(),
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
@@ -165,7 +191,6 @@ class WC_Admin_Reports_Orders_Data_Store extends WC_Admin_Reports_Data_Store imp
 
 			$selections       = $this->selected_columns( $query_args );
 			$sql_query_params = $this->get_sql_query_params( $query_args );
-
 			$db_records_count = (int) $wpdb->get_var(
 				"SELECT COUNT(*) FROM (
 							SELECT

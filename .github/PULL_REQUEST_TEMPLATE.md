@@ -20,3 +20,7 @@ _Replace this with a good description of your changes & reasoning._
 
 <!--- Note: When displaying information based on sample data, such as SwaggerHub, 
 be sure to detail parts affected in Release Notes --->
+
+### Changelog Note:
+
+<!--- Optional: Enter a changelog note following the WooCommerce core format using prefixes of Enhancement:, Tweak:, Dev:, Fix:, Performance:. If no note is entered, one will be constructed from the title and labels. --->

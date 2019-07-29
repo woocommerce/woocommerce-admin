@@ -56,7 +56,8 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 
 		// Test updating 2 fields separately.
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
-		$request->set_param( 'industry', 'health-beauty' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'industry' => 'health-beauty' ) ) );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
@@ -65,7 +66,8 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 
 		// Test that the update works.
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
-		$request->set_param( 'theme', 'Storefront' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'theme' => 'Storefront' ) ) );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
@@ -95,7 +97,8 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertCount( 9, $properties );
+		$this->assertCount( 11, $properties );
+		$this->assertArrayHasKey( 'completed', $properties );
 		$this->assertArrayHasKey( 'skipped', $properties );
 		$this->assertArrayHasKey( 'account_type', $properties );
 		$this->assertArrayHasKey( 'industry', $properties );
@@ -103,6 +106,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'product_count', $properties );
 		$this->assertArrayHasKey( 'selling_venues', $properties );
 		$this->assertArrayHasKey( 'other_platform', $properties );
+		$this->assertArrayHasKey( 'business_extensions', $properties );
 		$this->assertArrayHasKey( 'theme', $properties );
 		$this->assertArrayHasKey( 'items_purchased', $properties );
 	}
@@ -128,7 +132,8 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 
 		// Test that the update works.
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
-		$request->set_param( 'test_profile_datum', 'woo' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'test_profile_datum' => 'woo' ) ) );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 

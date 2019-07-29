@@ -117,21 +117,15 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function update_items( $request ) {
-		$query_args      = $this->prepare_objects_query( $request );
+		$params          = $request->get_json_params();
+		$query_args      = $this->prepare_objects_query( $params );
 		$onboarding_data = get_option( 'wc_onboarding_profile', array() );
-		$update          = update_option( 'wc_onboarding_profile', array_merge( $onboarding_data, $query_args ) );
+		update_option( 'wc_onboarding_profile', array_merge( $onboarding_data, $query_args ) );
 
-		if ( $update ) {
-			$result = array(
-				'status'  => 'success',
-				'message' => __( 'Onboarding profile data has been updated.', 'woocommerce-admin' ),
-			);
-		} else {
-			$result = array(
-				'status'  => 'error',
-				'message' => __( 'There was an error updating the onboarding profile data.', 'woocommerce-admin' ),
-			);
-		}
+		$result = array(
+			'status'  => 'success',
+			'message' => __( 'Onboarding profile data has been updated.', 'woocommerce-admin' ),
+		);
 
 		$response = $this->prepare_item_for_response( $result, $request );
 		$data     = $this->prepare_response_for_collection( $response );
@@ -142,16 +136,16 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 	/**
 	 * Prepare objects query.
 	 *
-	 * @param  WP_REST_Request $request Full details about the request.
+	 * @param  array $params The params sent in the request.
 	 * @return array
 	 */
-	protected function prepare_objects_query( $request ) {
+	protected function prepare_objects_query( $params ) {
 		$args       = array();
 		$properties = self::get_profile_properties();
 
 		foreach ( $properties as $key => $property ) {
-			if ( isset( $request[ $key ] ) ) {
-				$args[ $key ] = $request[ $key ];
+			if ( isset( $params[ $key ] ) ) {
+				$args[ $key ] = $params[ $key ];
 			}
 		}
 
@@ -161,10 +155,10 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 		 * Enables adding extra arguments or setting defaults for a post
 		 * collection request.
 		 *
-		 * @param array           $args    Key value array of query var to query value.
-		 * @param WP_REST_Request $request The request used.
+		 * @param array $args    Key value array of query var to query value.
+		 * @param array $params The params sent in the request.
 		 */
-		$args = apply_filters( 'woocommerce_rest_onboarding_profile_object_query', $args, $request );
+		$args = apply_filters( 'woocommerce_rest_onboarding_profile_object_query', $args, $params );
 
 		return $args;
 	}
@@ -199,14 +193,21 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 	 */
 	public static function get_profile_properties() {
 		$properties = array(
-			'skipped'         => array(
-				'type'              => 'bool',
+			'completed'           => array(
+				'type'              => 'boolean',
+				'description'       => __( 'Whether or not the profile was completed.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+			),
+			'skipped'             => array(
+				'type'              => 'boolean',
 				'description'       => __( 'Whether or not the profile was skipped.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
 			),
-			'account_type'    => array(
+			'account_type'        => array(
 				'type'              => 'string',
 				'description'       => __( 'Account type used for Jetpack.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -218,7 +219,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'google',
 				),
 			),
-			'industry'        => array(
+			'industry'            => array(
 				'type'              => 'array',
 				'description'       => __( 'Industry.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -226,18 +227,11 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 				'sanitize_callback' => 'wp_parse_slug_list',
 				'validate_callback' => 'rest_validate_request_arg',
 				'items'             => array(
-					'enum' => array(
-						'fashion-apparel-accessories',
-						'health-beauty',
-						'art-music-photography',
-						'food-drink',
-						'home-furniture-garden',
-						'other',
-					),
+					'enum' => array_keys( WC_Admin_Onboarding::get_allowed_industries() ),
 					'type' => 'string',
 				),
 			),
-			'product_types'   => array(
+			'product_types'       => array(
 				'type'              => 'array',
 				'description'       => __( 'Types of products sold.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -245,19 +239,11 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 				'sanitize_callback' => 'wp_parse_slug_list',
 				'validate_callback' => 'rest_validate_request_arg',
 				'items'             => array(
-					'enum' => array(
-						'physical',
-						'downloads',
-						'subscriptions',
-						'memberships',
-						'composite',
-						'spaces',
-						'rentals',
-					),
+					'enum' => array_keys( WC_Admin_Onboarding::get_allowed_product_types() ),
 					'type' => 'string',
 				),
 			),
-			'product_count'   => array(
+			'product_count'       => array(
 				'type'              => 'string',
 				'description'       => __( 'Number of products to be added.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -270,7 +256,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'1000+',
 				),
 			),
-			'selling_venues'  => array(
+			'selling_venues'      => array(
 				'type'              => 'string',
 				'description'       => __( 'Other places the store is selling products.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -283,7 +269,7 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'brick-mortar-other',
 				),
 			),
-			'other_platform'  => array(
+			'other_platform'      => array(
 				'type'              => 'string',
 				'description'       => __( 'Name of other platform used to sell.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -297,7 +283,19 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 					'other',
 				),
 			),
-			'theme'           => array(
+			'business_extensions' => array(
+				'type'              => 'array',
+				'description'       => __( 'Extra business extensions to install.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'sanitize_callback' => 'wp_parse_slug_list',
+				'validate_callback' => 'rest_validate_request_arg',
+				'items'             => array(
+					'enum' => array( 'mailchimp', 'facebook' ),
+					'type' => 'string',
+				),
+			),
+			'theme'               => array(
 				'type'              => 'string',
 				'description'       => __( 'Selected store theme.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -305,8 +303,8 @@ class WC_Admin_REST_Onboarding_Profile_Controller extends WC_REST_Data_Controlle
 				'sanitize_callback' => 'sanitize_title_with_dashes',
 				'validate_callback' => 'rest_validate_request_arg',
 			),
-			'items_purchased' => array(
-				'type'              => 'bool',
+			'items_purchased'     => array(
+				'type'              => 'boolean',
 				'description'       => __( 'Whether or not the user opted to purchase items now or later.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
 				'readonly'          => true,

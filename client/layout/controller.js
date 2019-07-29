@@ -3,38 +3,43 @@
  * External dependencies
  */
 import { Component, createElement } from '@wordpress/element';
-import { parse } from 'qs';
-import { find, last, isEqual } from 'lodash';
+import { parse, stringify } from 'qs';
+import { find, isEqual, last, omit } from 'lodash';
+import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * WooCommerce dependencies
  */
-import { getNewPath, getPersistedQuery, getHistory, stringifyQuery } from '@woocommerce/navigation';
+import { getNewPath, getPersistedQuery, getHistory } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
-import Analytics from 'analytics';
-import AnalyticsReport from 'analytics/report';
+import AnalyticsReport, { getReports } from 'analytics/report';
 import AnalyticsSettings from 'analytics/settings';
 import Dashboard from 'dashboard';
 import DevDocs from 'devdocs';
 
-const getPages = () => {
+const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
+
+export const PAGES_FILTER = 'woocommerce_admin_pages_list';
+
+export const getPages = () => {
 	const pages = [];
 
 	if ( window.wcAdminFeatures.devdocs ) {
 		pages.push( {
 			container: DevDocs,
 			path: '/devdocs',
+			breadcrumbs: [ 'Documentation' ],
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
 		} );
 		pages.push( {
 			container: DevDocs,
 			path: '/devdocs/:component',
+			breadcrumbs: ( { match } ) => [ [ '/devdocs', 'Documentation' ], match.params.component ],
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
 		} );
 	}
 
@@ -42,47 +47,50 @@ const getPages = () => {
 		pages.push( {
 			container: Dashboard,
 			path: '/',
+			breadcrumbs: [ __( 'Dashboard', 'woocommerce-admin' ) ],
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			wpClosedMenu: 'toplevel_page_wc-admin--analytics-revenue',
 		} );
 	}
 
 	if ( window.wcAdminFeatures.analytics ) {
 		pages.push( {
-			container: Analytics,
-			path: '/analytics',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
-			wpClosedMenu: 'toplevel_page_woocommerce',
-		} );
-		pages.push( {
 			container: AnalyticsSettings,
 			path: '/analytics/settings',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
-			wpClosedMenu: 'toplevel_page_woocommerce',
+			breadcrumbs: [
+				[ '/analytics/revenue', __( 'Analytics', 'woocommerce-admin' ) ],
+				__( 'Settings', 'woocommerce-admin' ),
+			],
+			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-revenue',
 		} );
 		pages.push( {
 			container: AnalyticsReport,
 			path: '/analytics/:report',
-			wpOpenMenu: 'toplevel_page_wc-admin--analytics-revenue',
-			wpClosedMenu: 'toplevel_page_woocommerce',
+			breadcrumbs: ( { match } ) => {
+				const report = find( getReports(), { report: match.params.report } );
+				if ( ! report ) {
+					return [];
+				}
+				return [ [ '/analytics/revenue', __( 'Analytics', 'woocommerce-admin' ) ], report.title ];
+			},
+			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-revenue',
 		} );
 	}
 
-	return pages;
+	return applyFilters( PAGES_FILTER, pages );
 };
 
-class Controller extends Component {
+export class Controller extends Component {
 	componentDidMount() {
 		window.document.documentElement.scrollTop = 0;
 	}
 
 	componentDidUpdate( prevProps ) {
 		const prevQuery = this.getQuery( prevProps.location.search );
-		const prevBaseQuery = this.getBaseQuery( prevProps.location.search );
-		const baseQuery = this.getBaseQuery( this.props.location.search );
+		const prevBaseQuery = omit( this.getQuery( prevProps.location.search ), 'paged' );
+		const baseQuery = omit( this.getQuery( this.props.location.search ), 'paged' );
 
-		if ( prevQuery.page > 1 && ! isEqual( prevBaseQuery, baseQuery ) ) {
-			getHistory().replace( getNewPath( { page: 1 } ) );
+		if ( prevQuery.paged > 1 && ! isEqual( prevBaseQuery, baseQuery ) ) {
+			getHistory().replace( getNewPath( { paged: 1 } ) );
 		}
 
 		if ( prevProps.match.url !== this.props.match.url ) {
@@ -99,54 +107,66 @@ class Controller extends Component {
 		return parse( search );
 	}
 
-	getBaseQuery( searchString ) {
-		const query = this.getQuery( searchString );
-		delete query.page;
-		return query;
-	}
-
 	render() {
-		// Pass URL parameters (example :report -> params.report) and query string parameters
-		const { path, url, params } = this.props.match;
-		const query = this.getQuery( this.props.location.search );
-		const page = find( getPages(), { path } );
-
-		if ( ! page ) {
-			return null; // @todo What should we display or do when a route/page doesn't exist?
-		}
+		const { page, match, location } = this.props;
+		const { url, params } = match;
+		const query = this.getQuery( location.search );
 
 		window.wpNavMenuUrlUpdate( page, query );
-		window.wpNavMenuClassChange( page );
-		return createElement( page.container, { params, path: url, pathMatch: path, query } );
+		window.wpNavMenuClassChange( page, url );
+		return createElement( page.container, { params, path: url, pathMatch: page.path, query } );
 	}
 }
 
-// Update links in wp-admin menu to persist time related queries
-window.wpNavMenuUrlUpdate = function( page, query ) {
-	const search = stringifyQuery( getPersistedQuery( query ) );
+/**
+ * Update an anchor's link in sidebar to include persisted queries. Leave excluded screens
+ * as is.
+ *
+ * @param {HTMLElement} item - Sidebar anchor link.
+ * @param {object} nextQuery - A query object to be added to updated hrefs.
+ * @param {Array} excludedScreens - wc-admin screens to avoid updating.
+ */
+export function updateLinkHref( item, nextQuery, excludedScreens ) {
+	const isWCAdmin = /admin.php\?page=wc-admin/.test( item.href );
 
-	Array.from(
-		document.querySelectorAll( `#${ page.wpOpenMenu } a, #${ page.wpClosedMenu } a` )
-	).forEach( item => {
-		/**
-		 * Example hrefs:
-		 *
-		 * http://example.com/wp-admin/admin.php?page=wc-admin#/analytics/orders?period=today&compare=previous_year
-		 * http://example.com/wp-admin/admin.php?page=wc-admin#/?period=week&compare=previous_year
-		 * http://example.com/wp-admin/admin.php?page=wc-admin
-		 */
-		if ( item.href.includes( 'wc-admin' ) && ! item.href.includes( 'devdocs' ) ) {
-			const url = item.href.split( 'wc-admin' );
-			const hashUrl = last( url );
-			const base = hashUrl.split( '?' )[ 0 ];
-			const href = `${ url[ 0 ] }wc-admin${ '#' === base[ 0 ] ? '' : '#/' }${ base }${ search }`;
-			item.href = href;
-		}
-	} );
+	if ( isWCAdmin ) {
+		const search = last( item.href.split( '?' ) );
+		const query = parse( search );
+		const path = query.path || 'dashboard';
+		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
+
+		const isExcludedScreen = excludedScreens.includes( screen );
+
+		const href =
+			'admin.php?' + stringify( Object.assign( query, isExcludedScreen ? {} : nextQuery ) );
+
+		// Replace the href so you can see the url on hover.
+		item.href = href;
+
+		item.onclick = e => {
+			e.preventDefault();
+			getHistory().push( href );
+		};
+	}
+}
+
+// Update's wc-admin links in wp-admin menu
+window.wpNavMenuUrlUpdate = function( page, query ) {
+	const excludedScreens = applyFilters( TIME_EXCLUDED_SCREENS_FILTER, [
+		'devdocs',
+		'stock',
+		'settings',
+		'customers',
+	] );
+	const nextQuery = getPersistedQuery( query );
+
+	Array.from( document.querySelectorAll( '#adminmenu a' ) ).forEach( item =>
+		updateLinkHref( item, nextQuery, excludedScreens )
+	);
 };
 
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
-window.wpNavMenuClassChange = function( page ) {
+window.wpNavMenuClassChange = function( page, url ) {
 	Array.from( document.getElementsByClassName( 'current' ) ).forEach( function( item ) {
 		item.classList.remove( 'current' );
 	} );
@@ -160,11 +180,14 @@ window.wpNavMenuClassChange = function( page ) {
 		element.classList.add( 'menu-top' );
 	} );
 
-	const pageHash = window.location.hash.split( '?' )[ 0 ];
+	const pageUrl =
+		'/' === url
+			? 'admin.php?page=wc-admin'
+			: 'admin.php?page=wc-admin&path=' + encodeURIComponent( url );
 	const currentItemsSelector =
-		pageHash === '#/'
-			? `li > a[href$="${ pageHash }"], li > a[href*="${ pageHash }?"]`
-			: `li > a[href*="${ pageHash }"]`;
+		url === '/'
+			? `li > a[href$="${ pageUrl }"], li > a[href*="${ pageUrl }?"]`
+			: `li > a[href*="${ pageUrl }"]`;
 	const currentItems = document.querySelectorAll( currentItemsSelector );
 
 	Array.from( currentItems ).forEach( function( item ) {
@@ -179,16 +202,6 @@ window.wpNavMenuClassChange = function( page ) {
 		currentMenu.classList.add( 'current' );
 	}
 
-	// Sometimes navigating from the subMenu to Dashboard does not close subMenu
-	if ( page.wpClosedMenu ) {
-		const closedMenu = document.querySelector( '#' + page.wpClosedMenu );
-		closedMenu.classList.remove( 'wp-has-current-submenu' );
-		closedMenu.classList.remove( 'wp-menu-open' );
-		closedMenu.classList.add( 'wp-not-current-submenu' );
-	}
-
 	const wpWrap = document.querySelector( '#wpwrap' );
 	wpWrap.classList.remove( 'wp-responsive-open' );
 };
-
-export { Controller, getPages };

@@ -8,22 +8,13 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
-import { noop } from 'lodash';
 import interpolateComponents from 'interpolate-components';
+import { keyBy, map, merge } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import {
-	EllipsisMenu,
-	EmptyContent,
-	Flag,
-	Link,
-	MenuTitle,
-	MenuItem,
-	OrderStatus,
-	Section,
-} from '@woocommerce/components';
+import { EmptyContent, Flag, Link, OrderStatus, Section } from '@woocommerce/components';
 import { formatCurrency } from '@woocommerce/currency';
 import { getAdminLink, getNewPath } from '@woocommerce/navigation';
 
@@ -42,7 +33,7 @@ class OrdersPanel extends Component {
 		if ( hasNonActionableOrders ) {
 			return (
 				<ActivityCard
-					className="woocommerce-empty-review-activity-card"
+					className="woocommerce-empty-activity-card"
 					title={ __( 'You have no orders to fulfill', 'woocommerce-admin' ) }
 					icon={ <Gridicon icon="checkmark" size={ 48 } /> }
 				>
@@ -53,7 +44,7 @@ class OrdersPanel extends Component {
 
 		return (
 			<ActivityCard
-				className="woocommerce-empty-review-activity-card"
+				className="woocommerce-empty-activity-card"
 				title={ __( 'You have no orders to fulfill', 'woocommerce-admin' ) }
 				icon={ <Gridicon icon="time" size={ 48 } /> }
 				actions={
@@ -199,7 +190,7 @@ class OrdersPanel extends Component {
 							'woocommerce-admin'
 						) }
 						actionLabel={ __( 'Settings', 'woocommerce-admin' ) }
-						actionURL={ getAdminLink( 'admin.php?page=wc-admin#/analytics/settings' ) }
+						actionURL={ getAdminLink( 'admin.php?page=wc-admin&path=/analytics/settings' ) }
 					/>
 				);
 			}
@@ -226,18 +217,6 @@ class OrdersPanel extends Component {
 			);
 		}
 
-		const menu = (
-			<EllipsisMenu
-				label="Demo Menu"
-				renderContent={ () => (
-					<Fragment>
-						<MenuTitle>Test</MenuTitle>
-						<MenuItem onInvoke={ noop }>Test</MenuItem>
-					</Fragment>
-				) }
-			/>
-		);
-
 		const title =
 			isRequesting || orders.length
 				? __( 'Orders', 'woocommerce-admin' )
@@ -245,7 +224,7 @@ class OrdersPanel extends Component {
 
 		return (
 			<Fragment>
-				<ActivityHeader title={ title } menu={ menu } />
+				<ActivityHeader title={ title } />
 				<Section>
 					{ isRequesting ? (
 						<ActivityCardPlaceholder
@@ -278,7 +257,15 @@ OrdersPanel.defaultProps = {
 export default compose(
 	withSelect( ( select, props ) => {
 		const { hasActionableOrders } = props;
-		const { getReportItems, getReportItemsError, isReportItemsRequesting } = select( 'wc-api' );
+		const {
+			getItems,
+			getItemsTotalCount,
+			getItemsError,
+			isGetItemsRequesting,
+			getReportItems,
+			getReportItemsError,
+			isReportItemsRequesting,
+		} = select( 'wc-api' );
 		const orderStatuses =
 			wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses ||
 			DEFAULT_ACTIONABLE_STATUSES;
@@ -288,28 +275,60 @@ export default compose(
 		}
 
 		if ( hasActionableOrders ) {
+			// Query the core Orders endpoint for the most up-to-date statuses.
+			const actionableOrdersQuery = {
+				page: 1,
+				per_page: QUERY_DEFAULTS.pageSize,
+				status: orderStatuses,
+				_fields: [ 'id', 'date_created_gmt', 'status' ],
+			};
+			const actionableOrders = Array.from( getItems( 'orders', actionableOrdersQuery ).values() );
+			const isRequestingActionable = isGetItemsRequesting( 'orders', actionableOrdersQuery );
+
+			if ( isRequestingActionable ) {
+				return {
+					isError: Boolean( getItemsError( 'orders', actionableOrdersQuery ) ),
+					isRequesting: isRequestingActionable,
+					orderStatuses,
+				};
+			}
+
+			// Retrieve the Order stats data from our reporting table.
 			const ordersQuery = {
 				page: 1,
 				per_page: QUERY_DEFAULTS.pageSize,
-				status_is: orderStatuses,
 				extended_info: true,
+				order_includes: map( actionableOrders, 'id' ),
 			};
 
-			const orders = getReportItems( 'orders', ordersQuery ).data;
+			const reportOrders = getReportItems( 'orders', ordersQuery ).data;
 			const isError = Boolean( getReportItemsError( 'orders', ordersQuery ) );
 			const isRequesting = isReportItemsRequesting( 'orders', ordersQuery );
+			let orders = [];
+
+			if ( reportOrders && reportOrders.length ) {
+				// Merge the core endpoint data with our reporting table.
+				const actionableOrdersById = keyBy( actionableOrders, 'id' );
+				orders = reportOrders.map( order =>
+					merge( {}, order, actionableOrdersById[ order.order_id ] || {} )
+				);
+			}
 
 			return { orders, isError, isRequesting, orderStatuses };
 		}
 
+		// Get a count of all orders for messaging purposes.
+		// @todo Add a property to wcSettings for this?
 		const allOrdersQuery = {
 			page: 1,
-			per_page: 0,
+			per_page: 1,
+			_fields: [ 'id' ],
 		};
 
-		const totalNonActionableOrders = getReportItems( 'orders', allOrdersQuery ).totalResults;
-		const isError = Boolean( getReportItemsError( 'orders', allOrdersQuery ) );
-		const isRequesting = isReportItemsRequesting( 'orders', allOrdersQuery );
+		getItems( 'orders', allOrdersQuery );
+		const totalNonActionableOrders = getItemsTotalCount( 'orders', allOrdersQuery );
+		const isError = Boolean( getItemsError( 'orders', allOrdersQuery ) );
+		const isRequesting = isGetItemsRequesting( 'orders', allOrdersQuery );
 
 		return {
 			hasNonActionableOrders: totalNonActionableOrders > 0,

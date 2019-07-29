@@ -1,4 +1,15 @@
+# 3.0.0 (unreleased)
+
+- `getHistory` updated to reflect path parameters in url query.
+- `getNewPath` also updated to reflect path parameters in url query.
+- `stringifyQuery` method is no longer available, instead use `addQueryArgs` from `@wordpress/url` package.
+
+# 2.1.1
+
+- Update license to GPL-3.0-or-later
+
 # 2.1.0
+
 - New method `getSearchWords` that extracts search words given a query object.
 - Bump dependency versions.
 

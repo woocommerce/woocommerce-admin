@@ -14,22 +14,35 @@ $gap-smaller: 8px;
 $gap-smallest: 4px;
 
 // Header
-$small-header-height: 50px;
-$medium-header-height: 60px;
-$large-header-height: 80px;
+$header-height: 56px;
+
+// Sidebar
+$sidebar-width: 272px;
 
 // @todo Remove this spacing variable
 $spacing: 16px;
 
-// Gutenberg Button variables. These are temporary until Gutenberg's variables are exposed.
-$border-width: 1px;
+// Gutenberg variables. These are temporary until Gutenberg's variables are exposed.
+$default-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+	'Helvetica Neue', sans-serif;
 $default-font-size: 13px;
-$blue-medium-200: #bfe7f3;
+$default-line-height: 1.4;
+$break-small: 600px;
+$border-width: 1px;
+$blue-medium-focus: #007cba;
 $light-gray-500: $core-grey-light-500;
 $dark-gray-300: $core-grey-dark-300;
+$dark-gray-700: $core-grey-dark-700;
 $dark-gray-900: $core-grey-dark-900;
 $alert-red: $error-red;
+$radius-round-rectangle: 4px;
 
 // WordPress defaults
 $adminbar-height: 32px;
 $adminbar-height-mobile: 46px;
+
+// Muriel
+$muriel-box-shadow-1dp: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+	0 1px 3px 0 rgba(0, 0, 0, 0.12);
+$muriel-box-shadow-8dp: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+	0 3px 14px 2px rgba(0, 0, 0, 0.12);

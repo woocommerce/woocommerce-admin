@@ -21,6 +21,7 @@ import './style.scss';
 import defaultSections from './default-sections';
 import Section from './section';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 
 class CustomizableDashboard extends Component {
 	constructor( props ) {
@@ -85,6 +86,7 @@ class CustomizableDashboard extends Component {
 
 	onSectionTitleUpdate( updatedKey ) {
 		return updatedTitle => {
+			recordEvent( 'dash_section_rename', { key: updatedKey } );
 			this.updateSection( updatedKey, { title: updatedTitle } );
 		};
 	}
@@ -101,6 +103,12 @@ class CustomizableDashboard extends Component {
 			const toggledSection = sections.splice( index, 1 ).shift();
 			toggledSection.isVisible = ! toggledSection.isVisible;
 			sections.push( toggledSection );
+
+			if ( toggledSection.isVisible ) {
+				recordEvent( 'dash_section_add', { key: toggledSection.key } );
+			} else {
+				recordEvent( 'dash_section_remove', { key: toggledSection.key } );
+			}
 
 			this.updateSections( sections );
 		};
@@ -122,6 +130,12 @@ class CustomizableDashboard extends Component {
 			// Yes, lets insert.
 			sections.splice( newIndex, 0, movedSection );
 			this.updateSections( sections );
+
+			const eventProps = {
+				key: movedSection.key,
+				direction: 0 < change ? 'down' : 'up',
+			};
+			recordEvent( 'dash_section_order_change', eventProps );
 		} else {
 			// No, lets try the next one.
 			this.onMove( index, change + change );
@@ -183,7 +197,6 @@ class CustomizableDashboard extends Component {
 
 		return (
 			<Fragment>
-				<H>{ __( 'Customizable Dashboard', 'woocommerce-admin' ) }</H>
 				<ReportFilters query={ query } path={ path } />
 				{ sections.map( ( section, index ) => {
 					if ( section.isVisible ) {

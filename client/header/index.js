@@ -6,7 +6,6 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Component, findDOMNode } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
-import { Fill } from 'react-slot-fill';
 import PropTypes from 'prop-types';
 
 /**
@@ -20,6 +19,7 @@ import { Link } from '@woocommerce/components';
  */
 import './style.scss';
 import ActivityPanel from './activity-panel';
+import { recordEvent } from 'lib/tracks';
 
 class Header extends Component {
 	constructor() {
@@ -30,6 +30,7 @@ class Header extends Component {
 
 		this.onWindowScroll = this.onWindowScroll.bind( this );
 		this.updateIsScrolled = this.updateIsScrolled.bind( this );
+		this.trackLinkClick = this.trackLinkClick.bind( this );
 	}
 
 	componentDidMount() {
@@ -54,6 +55,12 @@ class Header extends Component {
 				isScrolled: isScrolled,
 			} );
 		}
+	}
+
+	trackLinkClick( event ) {
+		const href = event.target.closest( 'a' ).getAttribute( 'href' );
+
+		recordEvent( 'navbar_breadcrumb_click', { href, text: event.target.innerText } );
 	}
 
 	render() {
@@ -84,13 +91,20 @@ class Header extends Component {
 			<div className={ className }>
 				<h1 className="woocommerce-layout__header-breadcrumbs">
 					<span>
-						<Link href="/">WooCommerce</Link>
+						<Link
+							href={ 'admin.php?page=wc-admin' }
+							type={ isEmbedded ? 'wp-admin' : 'wc-admin' }
+							onClick={ this.trackLinkClick }
+						>
+							WooCommerce
+						</Link>
 					</span>
 					{ _sections.map( ( section, i ) => {
 						const sectionPiece = Array.isArray( section ) ? (
 							<Link
-								href={ getNewPath( {}, section[ 0 ], {} ) }
+								href={ isEmbedded ? section[ 0 ] : getNewPath( {}, section[ 0 ], {} ) }
 								type={ isEmbedded ? 'wp-admin' : 'wc-admin' }
+								onClick={ this.trackLinkClick }
 							>
 								{ section[ 1 ] }
 							</Link>
@@ -115,10 +129,4 @@ Header.defaultProps = {
 	isEmbedded: false,
 };
 
-export default function( props ) {
-	return (
-		<Fill name="header">
-			<Header { ...props } />
-		</Fill>
-	);
-}
+export default Header;

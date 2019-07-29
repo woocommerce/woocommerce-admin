@@ -12,8 +12,8 @@ import { find, get } from 'lodash';
 import ComponentExample from './example';
 import ComponentDocs from './docs';
 import { Card, Link } from '@woocommerce/components';
+import { getAdminLink } from '@woocommerce/navigation';
 import examples from './examples.json';
-import Header from 'header';
 import './style.scss';
 
 const camelCaseToSlug = name => {
@@ -41,21 +41,19 @@ export default class extends Component {
 		} );
 
 		let exampleList = examples;
-		let breadcrumbs = [ 'Documentation' ];
 		if ( component ) {
 			const example = find( examples, ex => component === camelCaseToSlug( ex.component ) );
-			breadcrumbs = [ [ '/devdocs', 'Documentation' ], example.component ];
 			exampleList = [ example ];
 		}
 
 		return (
 			<div className={ className }>
-				<Header sections={ breadcrumbs } />
 				{ exampleList.map( example => {
 					const { componentName, filePath, render, docPath } = getExampleData( example );
 					const cardClasses = classnames(
 						'woocommerce-devdocs__card',
-						`woocommerce-devdocs__card--${ filePath }`
+						`woocommerce-devdocs__card--${ filePath }`,
+						'woocommerce-analytics__card'
 					);
 					return (
 						<Card
@@ -65,10 +63,16 @@ export default class extends Component {
 								component ? (
 									componentName
 								) : (
-									<Link href={ `/devdocs/${ filePath }` }>{ componentName }</Link>
+									<Link href={ getAdminLink( `?page=wc-admin&path=/devdocs/${ filePath }` ) }>
+										{ componentName }
+									</Link>
 								)
 							}
-							action={ component ? <Link href={ '/devdocs' }>Full list</Link> : null }
+							action={
+								component ? (
+									<Link href={ getAdminLink( '?page=wc-admin&path=/devdocs' ) }>Full list</Link>
+								) : null
+							}
 						>
 							<ComponentExample
 								asyncName={ componentName }

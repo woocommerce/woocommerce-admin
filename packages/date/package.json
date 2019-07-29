@@ -1,9 +1,9 @@
 {
   "name": "@woocommerce/date",
-  "version": "1.0.7",
+  "version": "1.2.0",
   "description": "WooCommerce date utilities.",
   "author": "Automattic",
-  "license": "GPL-2.0-or-later",
+  "license": "GPL-3.0-or-later",
   "keywords": [
     "wordpress",
     "woocommerce",
@@ -21,10 +21,10 @@
   "module": "build-module/index.js",
   "react-native": "src/index",
   "dependencies": {
-    "@babel/runtime-corejs2": "7.4.4",
-    "@wordpress/date": "3.0.1",
-    "@wordpress/i18n": "3.1.0",
-    "lodash": "4.17.11",
+    "@babel/runtime-corejs2": "7.5.4",
+    "@wordpress/date": "3.3.0",
+    "@wordpress/i18n": "3.4.0",
+    "lodash": "4.17.13",
     "moment": "2.22.2"
   },
   "publishConfig": {
