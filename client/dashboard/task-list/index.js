@@ -19,6 +19,7 @@ import { updateQueryString } from '@woocommerce/navigation';
 import './style.scss';
 import Connect from './tasks/connect';
 import Products from './tasks/products';
+import Shipping from './tasks/shipping';
 import withSelect from 'wc-api/with-select';
 
 class TaskDashboard extends Component {
@@ -84,7 +85,8 @@ class TaskDashboard extends Component {
 				),
 				before: <i className="material-icons-outlined">local_shipping</i>,
 				after: <i className="material-icons-outlined">chevron_right</i>,
-				onClick: noop,
+				onClick: () => updateQueryString( { task: 'shipping' } ),
+				container: <Shipping />,
 				visible: true,
 			},
 			{
