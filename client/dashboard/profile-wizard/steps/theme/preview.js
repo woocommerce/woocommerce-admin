@@ -85,7 +85,7 @@ class ThemePreview extends Component {
 							</Button>
 						) ) }
 					</div>
-					<Button isPrimary onClick={ () => onChoose( slug ) }>
+					<Button isPrimary onClick={ () => onChoose( slug, 'preview' ) }>
 						{ __( 'Choose', 'woocommerce-admin' ) }
 					</Button>
 				</div>

@@ -42,10 +42,10 @@ class Theme extends Component {
 		this.openDemo = this.openDemo.bind( this );
 	}
 
-	async onChoose( theme ) {
+	async onChoose( theme, location = '' ) {
 		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
 
-		recordEvent( 'storeprofiler_store_theme_choose', { theme } );
+		recordEvent( 'storeprofiler_store_theme_choose', { theme, location } );
 		await updateProfileItems( { theme } );
 
 		if ( ! isError ) {
@@ -100,7 +100,7 @@ class Theme extends Component {
 						<Button
 							isPrimary={ Boolean( demo_url ) }
 							isDefault={ ! Boolean( demo_url ) }
-							onClick={ () => this.onChoose( slug ) }
+							onClick={ () => this.onChoose( slug, 'card' ) }
 						>
 							{ __( 'Choose', 'woocommerce-admin' ) }
 						</Button>
