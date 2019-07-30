@@ -13,6 +13,11 @@ import interpolateComponents from 'interpolate-components';
  */
 import { WebPreview } from '@woocommerce/components';
 
+/**
+ * Internal depdencies
+ */
+import { recordEvent } from 'lib/tracks';
+
 const devices = [
 	{
 		key: 'mobile',
@@ -35,6 +40,13 @@ class ThemePreview extends Component {
 		this.state = {
 			device: 'desktop',
 		};
+
+		this.handleDeviceClick = this.handleDeviceClick.bind( this );
+	}
+
+	handleDeviceClick( device ) {
+		recordEvent( 'storeprofiler_store_theme_demo_device', { device } );
+		this.setState( { device } );
 	}
 
 	render() {
@@ -67,7 +79,7 @@ class ThemePreview extends Component {
 								className={ classnames( 'woocommerce-theme-preview__device', {
 									'is-selected': device.key === currentDevice,
 								} ) }
-								onClick={ () => this.setState( { device: device.key } ) }
+								onClick={ () => this.handleDeviceClick( device.key ) }
 							>
 								<i className="material-icons-outlined">{ device.icon }</i>
 							</Button>

@@ -60,14 +60,16 @@ class Theme extends Component {
 	}
 
 	onClosePreview() {
+		const { demo } = this.state;
+		recordEvent( 'storeprofiler_store_theme_demo_close', { theme: demo.slug } );
 		document.body.classList.remove( 'woocommerce-theme-preview-active' );
 		this.setState( { demo: null } );
 	}
 
 	openDemo( theme ) {
+		recordEvent( 'storeprofiler_store_theme_live_demo', { theme: theme.slug } );
 		document.body.classList.add( 'woocommerce-theme-preview-active' );
 		this.setState( { demo: theme } );
-		recordEvent( 'storeprofiler_store_theme_live_demo', { theme: theme.slug } );
 	}
 
 	renderTheme( theme ) {
@@ -160,6 +162,8 @@ class Theme extends Component {
 			this.setState( {
 				uploadedThemes: [ ...this.state.uploadedThemes, upload.theme_data ],
 			} );
+
+			recordEvent( 'storeprofiler_store_theme_upload', { theme: upload.theme_data.slug } );
 		}
 	}
 
