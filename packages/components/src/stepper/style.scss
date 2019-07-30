@@ -1,20 +1,14 @@
 .woocommerce-stepper {
-	background: $muriel-white;
-	box-shadow: $muriel-box-shadow-1dp;
-
 	.woocommerce-stepper__steps {
 		display: flex;
 		justify-content: space-around;
-		align-items: center;
 		margin-bottom: $gap-large;
-		padding-left: $gap;
-		padding-right: $gap;
 		font-size: 16px;
 	}
 
 	.woocommerce-stepper__step {
 		display: inline-flex;
-		padding: $gap-small;
+		padding: $gap-smaller;
 		font-weight: 400;
 		color: $muriel-gray-900;
 		height: 48px;
@@ -24,7 +18,7 @@
 		}
 
 		.woocommerce-stepper__step-description {
-			display: block;
+			display: none;
 			font-size: 14px;
 			color: $muriel-gray-500;
 			font-weight: 400;
@@ -84,8 +78,10 @@
 	}
 
 	.woocommerce-stepper__step-divider {
+		align-self: flex-start;
 		flex-grow: 1;
 		border-bottom: 1px solid $muriel-gray-50;
+		margin-top: 20px;
 
 		&:last-child {
 			display: none;
@@ -112,7 +108,8 @@
 			border-bottom: 0;
 			border-left: 1px solid $muriel-gray-50;
 			height: 50px;
-			margin-left: 24px;
+			margin-top: 0;
+			margin-left: 20px;
 		}
 
 		.woocommerce-stepper__step-label {
@@ -121,6 +118,10 @@
 
 		.woocommerce-stepper__step-icon {
 			margin-right: $gap-small;
+		}
+
+		.woocommerce-stepper__step-description {
+			display: block;
 		}
 	}
 }
