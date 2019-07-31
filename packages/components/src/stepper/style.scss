@@ -33,13 +33,16 @@
 
 		.woocommerce-spinner {
 			display: block;
-			margin-left: -$gap-smaller;
-			margin-right: $gap-smallest;
+			margin-right: $gap-small;
 			max-height: $step-icon-size;
+			min-width: auto;
+			width: 24px;
+			border-radius: 50%;
+			background: $muriel-hot-blue-500;
 		}
 
 		.woocommerce-spinner__circle {
-			stroke: $muriel-hot-blue-500;
+			stroke: $white;
 		}
 
 		&.is-active,
