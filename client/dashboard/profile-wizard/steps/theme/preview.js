@@ -45,7 +45,8 @@ class ThemePreview extends Component {
 	}
 
 	handleDeviceClick( device ) {
-		recordEvent( 'storeprofiler_store_theme_demo_device', { device } );
+		const { theme } = this.props;
+		recordEvent( 'storeprofiler_store_theme_demo_device', { device, theme: theme.slug } );
 		this.setState( { device } );
 	}
 
