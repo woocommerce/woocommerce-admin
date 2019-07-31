@@ -42,10 +42,10 @@ class Theme extends Component {
 		this.openDemo = this.openDemo.bind( this );
 	}
 
-	async onChoose( theme ) {
+	async onChoose( theme, location = '' ) {
 		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
 
-		recordEvent( 'storeprofiler_store_theme_choose', { theme } );
+		recordEvent( 'storeprofiler_store_theme_choose', { theme, location } );
 		await updateProfileItems( { theme } );
 
 		if ( ! isError ) {
@@ -60,14 +60,16 @@ class Theme extends Component {
 	}
 
 	onClosePreview() {
+		const { demo } = this.state;
+		recordEvent( 'storeprofiler_store_theme_demo_close', { theme: demo.slug } );
 		document.body.classList.remove( 'woocommerce-theme-preview-active' );
 		this.setState( { demo: null } );
 	}
 
 	openDemo( theme ) {
+		recordEvent( 'storeprofiler_store_theme_live_demo', { theme: theme.slug } );
 		document.body.classList.add( 'woocommerce-theme-preview-active' );
 		this.setState( { demo: theme } );
-		recordEvent( 'storeprofiler_store_theme_live_demo', { theme: theme.slug } );
 	}
 
 	renderTheme( theme ) {
@@ -98,7 +100,7 @@ class Theme extends Component {
 						<Button
 							isPrimary={ Boolean( demo_url ) }
 							isDefault={ ! Boolean( demo_url ) }
-							onClick={ () => this.onChoose( slug ) }
+							onClick={ () => this.onChoose( slug, 'card' ) }
 						>
 							{ __( 'Choose', 'woocommerce-admin' ) }
 						</Button>
@@ -160,6 +162,8 @@ class Theme extends Component {
 			this.setState( {
 				uploadedThemes: [ ...this.state.uploadedThemes, upload.theme_data ],
 			} );
+
+			recordEvent( 'storeprofiler_store_theme_upload', { theme: upload.theme_data.slug } );
 		}
 	}
 
