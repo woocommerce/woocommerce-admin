@@ -123,13 +123,13 @@
 			position: absolute;
 			left: $step-icon-size / 2 + $gap-smaller;
 			top: $step-icon-size + ( $gap-smaller * 2 );
-			height: calc( 100% -  #{$step-icon-size} - #{ $gap-smaller * 2 } );
+			height: calc(100% - #{$step-icon-size} - #{ $gap-smaller * 2 });
 			border-left: 1px solid $muriel-gray-50;
 		}
 
 		.woocommerce-stepper__step:last-child {
 			min-height: auto;
-			&:after {
+			&::after {
 				display: none;
 			}
 		}
