@@ -46,7 +46,7 @@ class ThemePreview extends Component {
 			<div className="woocommerce-theme-preview">
 				<div className="woocommerce-theme-preview__toolbar">
 					<Button className="woocommerce-theme-preview__close" onClick={ onClose }>
-						<i className="material-icons-outlined">arrow_back</i>
+						<i className="material-icons-outlined">close</i>
 					</Button>
 					<div className="woocommerce-theme-preview__theme-name">
 						{ interpolateComponents( {

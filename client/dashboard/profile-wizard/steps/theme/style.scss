@@ -223,7 +223,7 @@
 
 	.woocommerce-theme-preview__devices {
 		margin-left: auto;
-		margin-right: $gap-smallest;
+		margin-right: $gap;
 
 		.muriel-button {
 			padding: $gap-small;
@@ -268,8 +268,14 @@
 			max-width: 768px;
 		}
 
-		&.is-desktop .woocommerce-web-preview__iframe-wrapper {
-			max-width: 1280px;
+		&.is-desktop {
+			width: 100%;
+			padding: 0;
+
+			.woocommerce-web-preview__iframe-wrapper {
+				border-radius: 0;
+				box-shadow: none;
+			}
 		}
 	}
 }
