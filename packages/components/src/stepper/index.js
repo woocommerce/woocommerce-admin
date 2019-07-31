@@ -16,12 +16,26 @@ import CheckIcon from './check-icon';
  * A stepper component to indicate progress in a set number of steps.
  */
 class Stepper extends Component {
+	renderCurrentStepContent() {
+		const { currentStep, steps } = this.props;
+		const step = steps.find( s => currentStep === s.key );
+
+		if ( ! step.content ) {
+			return null;
+		}
+
+		return (
+			<div className="woocommerce-stepper_content">
+				{ step.content }
+			</div>
+		);
+	}
+
 	render() {
-		const { className, currentStep, steps, direction, isPending } = this.props;
+		const { className, currentStep, steps, isVertical, isPending } = this.props;
 		const currentIndex = steps.findIndex( s => currentStep === s.key );
-		const content = steps[ currentIndex ].content;
 		const stepperClassName = classnames( 'woocommerce-stepper', className, {
-			'is-vertical': 'vertical' === direction,
+			'is-vertical': isVertical,
 		} );
 
 		return (
@@ -29,12 +43,13 @@ class Stepper extends Component {
 				<div className="woocommerce-stepper__steps">
 					{ steps.map( ( step, i ) => {
 						const { key, label, description, isComplete } = step;
+						const isCurrentStep = key === currentStep;
 						const stepClassName = classnames( 'woocommerce-stepper__step', {
-							'is-active': key === currentStep,
+							'is-active': isCurrentStep,
 							'is-complete': 'undefined' !== typeof isComplete ? isComplete : currentIndex > i,
 						} );
 
-						const icon = currentStep === key && isPending ? <Spinner /> : (
+						const icon = isCurrentStep && isPending ? <Spinner /> : (
 							<div className="woocommerce-stepper__step-icon">
 								<span className="woocommerce-stepper__step-number">{ i + 1 }</span>
 								<CheckIcon />
@@ -56,19 +71,16 @@ class Stepper extends Component {
 												{ description }
 											</span>
 										}
+										{ isCurrentStep && isVertical && this.renderCurrentStepContent() }
 									</div>
 								</div>
-								<div className="woocommerce-stepper__step-divider" />
+									{ ! isVertical && <div className="woocommerce-stepper__step-divider" /> }
 							</Fragment>
 						);
 					} ) }
 				</div>
 
-				{ content &&
-					<div className="woocommerce-stepper_content">
-						{ content }
-					</div>
-				}
+				{ ! isVertical && this.renderCurrentStepContent() }
 			</div>
 		);
 	}
@@ -112,9 +124,9 @@ Stepper.propTypes = {
 	).isRequired,
 
 	/**
-	 * Direction of the stepper.
+	 * If the stepper is vertical instead of horizontal.
 	 */
-	direction: PropTypes.oneOf( [ 'horizontal', 'vertical' ] ),
+	isVertical: PropTypes.bool,
 
 	/**
 	 * Optionally mark the current step as pending to show a spinner.
@@ -123,7 +135,7 @@ Stepper.propTypes = {
 };
 
 Stepper.defaultProps = {
-	direction: 'horizontal',
+	isVertical: false,
 	isPending: false,
 };
 

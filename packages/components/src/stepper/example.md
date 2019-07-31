@@ -83,7 +83,7 @@ const MyStepper = withState( {
 
 		<Stepper
 			isPending={ isPending }
-			direction="vertical"
+			isVertical={ true }
 			steps={ steps }
 			currentStep={ currentStep }
 		/>

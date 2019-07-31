@@ -1,20 +1,22 @@
 .woocommerce-stepper {
+	$step-icon-size: 24px;
+
 	.woocommerce-stepper__steps {
 		display: flex;
 		justify-content: space-around;
 		margin-bottom: $gap-large;
-		font-size: 16px;
 	}
 
 	.woocommerce-stepper__step {
 		display: inline-flex;
 		padding: $gap-smaller;
 		font-weight: 400;
-		color: $muriel-gray-900;
-		height: 48px;
+		position: relative;
 
 		.woocommerce-stepper__step-label {
-			line-height: 24px;
+			color: $muriel-gray-900;
+			line-height: $step-icon-size;
+			font-size: 16px;
 		}
 
 		.woocommerce-stepper__step-description {
@@ -33,6 +35,7 @@
 			display: block;
 			margin-left: -$gap-smaller;
 			margin-right: $gap-smallest;
+			max-height: $step-icon-size;
 		}
 
 		.woocommerce-spinner__circle {
@@ -48,8 +51,11 @@
 		}
 
 		&.is-active {
-			font-weight: 600;
+			.woocommerce-stepper__step-icon {
+				font-weight: 600;
+			}
 			.woocommerce-stepper__step-label {
+				font-weight: 600;
 				margin: 0;
 			}
 		}
@@ -65,12 +71,13 @@
 	}
 
 	.woocommerce-stepper__step-icon {
+		font-size: 16px;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 24px;
-		height: 24px;
-		min-width: 24px;
+		width: $step-icon-size;
+		height: $step-icon-size;
+		min-width: $step-icon-size;
 		margin-right: $gap-small;
 		background: $muriel-gray-50;
 		color: $muriel-gray-600;
@@ -81,7 +88,7 @@
 		align-self: flex-start;
 		flex-grow: 1;
 		border-bottom: 1px solid $muriel-gray-50;
-		margin-top: 20px;
+		margin-top: $step-icon-size / 2 + $gap-smaller;
 
 		&:last-child {
 			display: none;
@@ -104,12 +111,24 @@
 			flex-direction: column;
 		}
 
-		.woocommerce-stepper__step-divider {
-			border-bottom: 0;
+		.woocommerce-stepper__step {
+			min-height: 90px;
+		}
+
+		.woocommerce-stepper__step::after {
+			content: '';
+			position: absolute;
+			left: $step-icon-size / 2 + $gap-smaller;
+			top: $step-icon-size + ( $gap-smaller * 2 );
+			height: calc( 100% -  #{$step-icon-size} - #{ $gap-smaller * 2 } );
 			border-left: 1px solid $muriel-gray-50;
-			height: 50px;
-			margin-top: 0;
-			margin-left: 20px;
+		}
+
+		.woocommerce-stepper__step:last-child {
+			min-height: auto;
+			&:after {
+				display: none;
+			}
 		}
 
 		.woocommerce-stepper__step-label {
@@ -122,6 +141,10 @@
 
 		.woocommerce-stepper__step-description {
 			display: block;
+		}
+
+		.woocommerce-stepper_content {
+			margin-top: $gap-smaller;
 		}
 	}
 }
