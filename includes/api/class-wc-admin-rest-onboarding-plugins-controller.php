@@ -273,15 +273,7 @@ class WC_Admin_REST_Onboarding_Plugins_Controller extends WC_REST_Data_Controlle
 			return new WP_Error( 'woocommerce_rest_helper_not_active', __( 'There was an error loading the WooCommerce.com Helper API.', 'woocommerce-admin' ), 404 );
 		}
 
-		// Request new authorization.
-		$redirect_uri = add_query_arg(
-			array(
-				'page'            => 'wc-admin',
-				'task'            => 'connect',
-				'wccom-connected' => 1,
-			),
-			admin_url( 'admin.php' )
-		);
+		$redirect_uri = wc_admin_url( '&task=connect&wccom-connected=1' );
 
 		$request = WC_Helper_API::post(
 			'oauth/request_token',

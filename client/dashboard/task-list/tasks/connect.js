@@ -93,14 +93,15 @@ class Connect extends Component {
 			if ( connectResponse && connectResponse.success ) {
 				await this.props.updateProfileItems( { wccom_connected: true } );
 				if ( ! this.props.isProfileItemsError ) {
-					// @todo Extensions are not currently installed. This will be handled on WCCOM.
 					this.props.createNotice(
 						'success',
 						__(
-							'Store connected to WooCommerce.com and extensions installed successfully.',
+							'Store connected to WooCommerce.com and extensions are being installed.',
 							'woocommerce-admin'
 						)
 					);
+
+					// @todo Show a notice for when extensions are correctly installed.
 
 					document.body.classList.remove( 'woocommerce-admin-is-loading' );
 					getHistory().push( this.baseQuery() );
