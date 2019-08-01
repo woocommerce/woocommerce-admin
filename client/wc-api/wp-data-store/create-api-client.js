@@ -3,18 +3,11 @@
  * External dependencies
  */
 import { ApiClient } from '@fresh-data/framework';
-import { createStore as createReduxStore } from 'redux';
 
 /**
  * Internal dependencies
  */
-import reducer from './reducer';
-
-function createStore( name ) {
-	const devTools = window.__REDUX_DEVTOOLS_EXTENSION__;
-
-	return createReduxStore( reducer, devTools && devTools( { name: name, instanceId: name } ) );
-}
+import createStore from './create-store';
 
 function createDataHandlers( store ) {
 	return {

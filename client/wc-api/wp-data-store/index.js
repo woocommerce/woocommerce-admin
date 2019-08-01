@@ -17,37 +17,12 @@ if ( 'development' === process.env.NODE_ENV ) {
 function createWcApiStore() {
 	const apiClient = createApiClient( 'wc-api', wcApiSpec );
 
-	function getComponentSelectors( component ) {
-		const componentRequirements = [];
-
-		return {
-			selectors: apiClient.getSelectors( componentRequirements ),
-			onComplete: () => {
-				if ( 0 === componentRequirements.length ) {
-					apiClient.clearComponentRequirements( component );
-				} else {
-					apiClient.setComponentRequirements( component, componentRequirements );
-				}
-			},
-			onUnmount: () => {
-				apiClient.clearComponentRequirements( component );
-			},
-		};
-	}
-
 	return {
-		// The wrapped function for getSelectors is temporary code.
-		//
-		// @todo Remove the `() =>` after the `@wordpress/data` PR is merged:
-		// https://github.com/WordPress/gutenberg/pull/11460
-		//
-		getSelectors: () => context => {
-			const component = context && context.component ? context.component : context;
-			return getComponentSelectors( component );
+		getSelectors: () => {
+			return apiClient.getSelectors();
 		},
 		getActions() {
-			const mutations = apiClient.getMutations();
-			return mutations;
+			return apiClient.getMutations();
 		},
 		subscribe: apiClient.subscribe,
 	};
