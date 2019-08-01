@@ -138,6 +138,7 @@ class TaskDashboard extends Component {
 						currentTask.container
 					) : (
 						<Card
+							className="woocommerce-task-card"
 							title={ __( 'Set up your store and start selling', 'woocommerce-admin' ) }
 							description={ __(
 								'Below you’ll find a list of the most important steps to get your store up and running.',
