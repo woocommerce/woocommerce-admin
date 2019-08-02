@@ -163,7 +163,7 @@ class WC_Admin_Loader {
 	/**
 	 * Registers a basic page handler for the app entry point.
 	 *
-	 * TODO: The entry point for the embed needs moved to this class as well.
+	 * @todo The entry point for the embed needs moved to this class as well.
 	 */
 	public static function register_page_handler() {
 		$analytics_cap = apply_filters( 'woocommerce_admin_analytics_menu_capability', 'view_woocommerce_reports' );
