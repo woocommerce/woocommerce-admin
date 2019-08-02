@@ -29,7 +29,7 @@ class Form extends Component {
 
 	async isValidForm() {
         await this.validate();
-		return Object.keys( this.state.errors ).length;
+		return ! Object.keys( this.state.errors ).length;
     }
 
     validate() {
@@ -56,7 +56,7 @@ class Form extends Component {
         Object.keys( values ).map( name => touched[ name ] = true );
         this.setState( { touched } );
 
-		if ( this.isValidForm() ) {
+		if ( await this.isValidForm() ) {
 			this.props.onSubmitCallback( values );
 		}
     }
@@ -97,7 +97,7 @@ Form.propTypes = {
 	 * A renderable component in which to pass this component's state and helpers.
      * Generally a number of input or other form elements.
 	 */
-	children: PropTypes.node,
+	children: PropTypes.any,
 	/**
 	 * Object of all initial errors to store in state.
 	 */
