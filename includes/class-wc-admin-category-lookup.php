@@ -169,26 +169,28 @@ class WC_Admin_Category_Lookup {
 		$inserts[] = $this->get_insert_sql( $category_id, $category_id );
 
 		foreach ( $ancestors as $ancestor ) {
-			$inserts[] = $this->get_insert_sql( $ancestor, $category_id );
+			$inserts[] = $this->get_insert_sql( $category_id, $ancestor );
 
 			foreach ( $children as $child ) {
-				$inserts[] = $this->get_insert_sql( $ancestor, $child->category_id );
+				$inserts[] = $this->get_insert_sql( $child->category_id, $ancestor );
 			}
 		}
 
 		$insert_string = implode( ',', $inserts );
 
-		$wpdb->query( "INSERT IGNORE INTO $wpdb->wc_category_lookup (category_tree_id,category_id) VALUES {$insert_string}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( "INSERT IGNORE INTO $wpdb->wc_category_lookup (category_id, category_tree_id) VALUES {$insert_string}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
 	 * Get category lookup table values to insert.
 	 *
+	 * @param int $category_id Category ID to insert.
+	 * @param int $category_tree_id Tree to insert into.
 	 * @return string
 	 */
-	protected function get_insert_sql( $category_tree_id, $category_id ) {
+	protected function get_insert_sql( $category_id, $category_tree_id ) {
 		global $wpdb;
-		return $wpdb->prepare( '(%d,%d)', $category_tree_id, $category_id );
+		return $wpdb->prepare( '(%d,%d)', $category_id, $category_tree_id );
 	}
 
 	/**
