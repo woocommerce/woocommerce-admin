@@ -90,6 +90,7 @@ class WC_Admin_Feature_Plugin {
 		WC_Admin_Reports_Sync::clear_queued_actions();
 		WC_Admin_Notes::clear_queued_actions();
 		wp_clear_scheduled_hook( 'wc_admin_daily' );
+		wp_clear_scheduled_hook( 'generate_category_lookup_table' );
 	}
 
 	/**
