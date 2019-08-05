@@ -137,8 +137,9 @@ Form.propTypes = {
 Form.defaultProps = {
 	errors: {},
 	initialValues: {},
-	touched: {},
 	onSubmitCallback: noop,
+	touched: {},
+	validate: noop,
 };
 
 export default Form;
