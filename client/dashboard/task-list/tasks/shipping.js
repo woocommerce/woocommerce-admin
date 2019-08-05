@@ -5,7 +5,9 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 import { filter } from 'lodash';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -19,8 +21,9 @@ import {
 	StoreAddress,
 	validateStoreAddress,
 } from '../../components/settings/general/store-address';
+import withSelect from 'wc-api/with-select';
 
-export default class Shipping extends Component {
+class Shipping extends Component {
 	constructor() {
 		super( ...arguments );
 
@@ -28,20 +31,59 @@ export default class Shipping extends Component {
 			step: 'store_location',
 		};
 
-		this.initialStoreAddress = {
-			addressLine1: '',
-			addressLine2: '',
-			city: '',
-			countryState: '',
-			postCode: '',
-		};
+		this.onStoreLocationSubmit = this.onStoreLocationSubmit.bind( this );
+	}
+
+	async onStoreLocationSubmit( values ) {
+		const { createNotice, isSettingsError, updateSettings } = this.props;
+
+		await updateSettings( {
+			general: {
+				woocommerce_store_address: values.addressLine1,
+				woocommerce_store_address_2: values.addressLine2,
+				woocommerce_default_country: values.countryState,
+				woocommerce_store_city: values.city,
+				woocommerce_store_postcode: values.postCode,
+			},
+		} );
+
+		if ( ! isSettingsError ) {
+			this.setState( { step: 'rates' } );
+		} else {
+			createNotice(
+				'error',
+				__( 'There was a problem saving your store location.', 'woocommerce-admin' )
+			);
+		}
 	}
 
 	getStoreLocationContent() {
+		const { isSettingsRequesting, settings } = this.props;
+
+		if ( isSettingsRequesting ) {
+			return;
+		}
+
+		const {
+			woocommerce_store_address,
+			woocommerce_store_address_2,
+			woocommerce_store_city,
+			woocommerce_default_country,
+			woocommerce_store_postcode,
+		} = settings;
+
+		const initialValues = {
+			addressLine1: woocommerce_store_address || '',
+			addressLine2: woocommerce_store_address_2 || '',
+			city: woocommerce_store_city || '',
+			countryState: woocommerce_default_country || '',
+			postCode: woocommerce_store_postcode || '',
+		};
+
 		return (
 			<Form
-				initialValues={ this.initialStoreAddress }
-				onSubmitCallback={ this.onContinue }
+				initialValues={ initialValues }
+				onSubmitCallback={ this.onStoreLocationSubmit }
 				validate={ validateStoreAddress }
 			>
 				{ ( { getInputProps, handleSubmit } ) => (
@@ -98,13 +140,40 @@ export default class Shipping extends Component {
 
 	render() {
 		const { step } = this.state;
+		const { isSettingsRequesting } = this.props;
 
 		return (
 			<Fragment>
 				<Card>
-					<Stepper isVertical={ true } currentStep={ step } steps={ this.getSteps() } />
+					<Stepper
+						isPending={ isSettingsRequesting }
+						isVertical={ true }
+						currentStep={ step }
+						steps={ this.getSteps() }
+					/>
 				</Card>
 			</Fragment>
 		);
 	}
 }
+
+export default compose(
+	withSelect( select => {
+		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
+
+		const settings = getSettings( 'general' );
+		const isSettingsError = Boolean( getSettingsError( 'general' ) );
+		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
+
+		return { isSettingsError, isSettingsRequesting, settings };
+	} ),
+	withDispatch( dispatch => {
+		const { createNotice } = dispatch( 'core/notices' );
+		const { updateSettings } = dispatch( 'wc-api' );
+
+		return {
+			createNotice,
+			updateSettings,
+		};
+	} )
+)( Shipping );
