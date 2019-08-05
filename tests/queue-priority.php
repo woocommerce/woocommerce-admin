@@ -6,6 +6,9 @@
  * @since 3.5.0
  */
 
+use Automattic\WooCommerce\Admin\WC_Admin_Reports_Sync;
+use Automattic\WooCommerce\Admin\WC_Admin_ActionScheduler_wpPostStore;
+
 /**
  * Reports Generation Batch Queue Prioritizaion Test Class
  *

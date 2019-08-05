@@ -25,6 +25,7 @@ use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Order_Milestones;
 use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Welcome_Message;
 use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Woo_Subscriptions_Notes;
 use Automattic\WooCommerce\Admin\WC_Admin_Report_Exporter;
+use Automattic\WooCommerce\Admin\WC_Admin_Reports_Sync;
 
 /**
  * Autoload packages.
@@ -221,7 +222,7 @@ class WC_Admin_Feature_Plugin {
 			return $store_class;
 		}
 
-		return 'WC_Admin_ActionScheduler_WPPostStore';
+		return 'Automattic\WooCommerce\Admin\WC_Admin_ActionScheduler_WPPostStore';
 	}
 
 	/**
