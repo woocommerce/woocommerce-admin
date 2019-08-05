@@ -15,7 +15,10 @@ import { Card, Form, Stepper } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import StoreAddress from 'dashboard/components/settings/general/store-address';
+import {
+	StoreAddress,
+	validateStoreAddress,
+} from '../../components/settings/general/store-address';
 
 export default class Shipping extends Component {
 	constructor() {
@@ -23,11 +26,35 @@ export default class Shipping extends Component {
 
 		this.state = {
 			step: 'store_location',
-			fields: {},
+		};
+
+		this.initialStoreAddress = {
+			addressLine1: '',
+			addressLine2: '',
+			city: '',
+			countryState: '',
+			postCode: '',
 		};
 	}
 
-	getStoreLocationContent() {}
+	getStoreLocationContent() {
+		return (
+			<Form
+				initialValues={ this.initialStoreAddress }
+				onSubmitCallback={ this.onContinue }
+				validate={ validateStoreAddress }
+			>
+				{ ( { getInputProps, handleSubmit } ) => (
+					<Fragment>
+						<StoreAddress getInputProps={ getInputProps } />
+						<Button isPrimary onClick={ handleSubmit }>
+							{ __( 'Proceed', 'woocommerce-admin' ) }
+						</Button>
+					</Fragment>
+				) }
+			</Form>
+		);
+	}
 
 	getSteps() {
 		const steps = [
@@ -71,23 +98,10 @@ export default class Shipping extends Component {
 
 	render() {
 		const { step } = this.state;
-		const validationSchema = {
-			addressLine1: {
-				required: true,
-			},
-		};
 
 		return (
 			<Fragment>
 				<Card>
-					<Form
-						validationSchema={ validationSchema }
-						onSubmitCallback={ () => console.log( 'submitted' ) }
-					>
-						{ ( { getInputProps, values, errors, touched, handleChange, handleSubmit } ) => (
-							<StoreAddress />
-						) }
-					</Form>;
 					<Stepper isVertical={ true } currentStep={ step } steps={ this.getSteps() } />
 				</Card>
 			</Fragment>
