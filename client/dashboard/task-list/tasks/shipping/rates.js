@@ -53,6 +53,8 @@ export default class ShippingRates extends Component {
 			},
 		} );
 
+		wcSettings.onboarding.shippingZonesCount = 1;
+
 		if ( restOfTheWorldEnabled ) {
 			apiFetch( {
 				method: 'POST',

@@ -32,7 +32,7 @@ class TaskDashboard extends Component {
 	}
 
 	getTasks() {
-		const { tasks } = wcSettings.onboarding;
+		const { shippingZonesCount, tasks } = wcSettings.onboarding;
 		const { profileItems, query } = this.props;
 
 		return [
@@ -83,10 +83,16 @@ class TaskDashboard extends Component {
 					'Configure some basic shipping rates to get started',
 					'wooocommerce-admin'
 				),
-				before: <i className="material-icons-outlined">local_shipping</i>,
+				before:
+					shippingZonesCount > 0 ? (
+						<i className="material-icons-outlined">check_circle</i>
+					) : (
+						<i className="material-icons-outlined">local_shipping</i>
+					),
 				after: <i className="material-icons-outlined">chevron_right</i>,
-				onClick: () => updateQueryString( { task: 'shipping' } ),
+				onClick: shippingZonesCount > 0 ? null : () => updateQueryString( { task: 'shipping' } ),
 				container: <Shipping />,
+				className: shippingZonesCount > 0 ? 'is-complete' : null,
 				visible: true,
 			},
 			{

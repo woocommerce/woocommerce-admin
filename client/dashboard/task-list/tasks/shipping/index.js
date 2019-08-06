@@ -3,8 +3,6 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
-import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { filter } from 'lodash';
@@ -14,6 +12,7 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { Card, Stepper } from '@woocommerce/components';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -27,28 +26,21 @@ class Shipping extends Component {
 		super( ...arguments );
 
 		this.state = {
-			shippingZones: [],
 			step: 'store_location',
 		};
 
 		this.completeStep = this.completeStep.bind( this );
 	}
 
-	async componentDidMount() {
-		const shippingZones = await apiFetch( { path: '/wc/v3/shipping/zones' } );
-		/* eslint-disable react/no-did-mount-set-state */
-		this.setState( { shippingZones } );
-		/* eslint-enable react/no-did-mount-set-state */
-	}
-
 	componentDidUpdate() {
+		const { shippingZonesCount } = wcSettings.onboarding;
 		const { settings } = this.props;
 		const {
 			woocommerce_store_address,
 			woocommerce_default_country,
 			woocommerce_store_postcode,
 		} = settings;
-		const { shippingZones, step } = this.state;
+		const { step } = this.state;
 
 		if (
 			'store_location' === step &&
@@ -57,7 +49,7 @@ class Shipping extends Component {
 			woocommerce_store_postcode
 		) {
 			this.completeStep();
-		} else if ( 'rates' === step && shippingZones.length > 1 ) {
+		} else if ( 'rates' === step && shippingZonesCount > 0 ) {
 			this.completeStep();
 		}
 	}
@@ -71,13 +63,11 @@ class Shipping extends Component {
 		if ( nextStep ) {
 			this.setState( { step: nextStep.key } );
 		} else {
-			// @todo Complete the shipping task and redirect to dashboard.
+			getHistory().push( getNewPath( '/', {}, {} ) );
 		}
 	}
 
 	getSteps() {
-		const { countryCode } = this.props;
-
 		const steps = [
 			{
 				key: 'store_location',
@@ -97,36 +87,20 @@ class Shipping extends Component {
 				content: <ShippingRates completeStep={ this.completeStep } { ...this.props } />,
 				visible: true,
 			},
-			{
-				key: 'label_printing',
-				label: __( 'Enable shipping label printing', 'woocommerce-admin' ),
-				description: __(
-					'With WooCommerce Services and Jetpack you can save time at the' +
-						'Post Office by printing your shipping labels at home.',
-					'woocommerce-admin'
-				),
-				content: (
-					<Fragment>
-						<Button isPrimary>{ __( 'Install & enable', 'woocommerce-admin' ) }</Button>
-						<Button>{ __( 'No thanks', 'woocommerce-admin' ) }</Button>
-					</Fragment>
-				),
-				visible: [ 'US', 'GB', 'CA', 'AU' ].includes( countryCode ),
-			},
 		];
 
 		return filter( steps, step => step.visible );
 	}
 
 	render() {
-		const { shippingZones, step } = this.state;
+		const { step } = this.state;
 		const { isSettingsRequesting } = this.props;
 
 		return (
 			<Fragment>
 				<Card>
 					<Stepper
-						isPending={ ! shippingZones.length || isSettingsRequesting }
+						isPending={ isSettingsRequesting }
 						isVertical={ true }
 						currentStep={ step }
 						steps={ this.getSteps() }
