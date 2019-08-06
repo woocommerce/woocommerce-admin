@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
@@ -12,15 +13,13 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, Form, Stepper } from '@woocommerce/components';
+import { Card, Stepper } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
-import {
-	StoreAddress,
-	validateStoreAddress,
-} from '../../components/settings/general/store-address';
+import StoreLocation from './location';
+import ShippingRates from './rates';
 import withSelect from 'wc-api/with-select';
 
 class Shipping extends Component {
@@ -28,74 +27,48 @@ class Shipping extends Component {
 		super( ...arguments );
 
 		this.state = {
+			shippingZones: [],
 			step: 'store_location',
 		};
 
-		this.onStoreLocationSubmit = this.onStoreLocationSubmit.bind( this );
+		this.completeStep = this.completeStep.bind( this );
 	}
 
-	async onStoreLocationSubmit( values ) {
-		const { createNotice, isSettingsError, updateSettings } = this.props;
+	async componentDidMount() {
+		const shippingZones = await apiFetch( { path: '/wc/v3/shipping/zones' } );
+		/* eslint-disable react/no-did-mount-set-state */
+		this.setState( { shippingZones } );
+		/* eslint-enable react/no-did-mount-set-state */
+	}
 
-		await updateSettings( {
-			general: {
-				woocommerce_store_address: values.addressLine1,
-				woocommerce_store_address_2: values.addressLine2,
-				woocommerce_default_country: values.countryState,
-				woocommerce_store_city: values.city,
-				woocommerce_store_postcode: values.postCode,
-			},
-		} );
+	componentDidUpdate() {
+		const { settings } = this.props;
+		const { woocommerce_store_address, woocommerce_default_country, woocommerce_store_postcode } = settings;
+		const { shippingZones, step } = this.state;
 
-		if ( ! isSettingsError ) {
-			this.setState( { step: 'rates' } );
+		if (
+			'store_location' === step &&
+			woocommerce_store_address &&
+			woocommerce_default_country &&
+			woocommerce_store_postcode
+		) {
+			this.completeStep();
+		} else if ( 'rates' === step && shippingZones.length > 1 ) {
+			this.completeStep();
+		}
+	}
+
+	completeStep() {
+		const { step } = this.state;
+		const steps = this.getSteps();
+		const currentStepIndex = steps.findIndex( s => s.key === step );
+		const nextStep = steps[ currentStepIndex + 1 ];
+
+		if ( nextStep ) {
+			this.setState( { step: nextStep.key } );
 		} else {
-			createNotice(
-				'error',
-				__( 'There was a problem saving your store location.', 'woocommerce-admin' )
-			);
+			// @todo Complete the shipping task and redirect to dashboard.
 		}
-	}
-
-	getStoreLocationContent() {
-		const { isSettingsRequesting, settings } = this.props;
-
-		if ( isSettingsRequesting ) {
-			return;
-		}
-
-		const {
-			woocommerce_store_address,
-			woocommerce_store_address_2,
-			woocommerce_store_city,
-			woocommerce_default_country,
-			woocommerce_store_postcode,
-		} = settings;
-
-		const initialValues = {
-			addressLine1: woocommerce_store_address || '',
-			addressLine2: woocommerce_store_address_2 || '',
-			city: woocommerce_store_city || '',
-			countryState: woocommerce_default_country || '',
-			postCode: woocommerce_store_postcode || '',
-		};
-
-		return (
-			<Form
-				initialValues={ initialValues }
-				onSubmitCallback={ this.onStoreLocationSubmit }
-				validate={ validateStoreAddress }
-			>
-				{ ( { getInputProps, handleSubmit } ) => (
-					<Fragment>
-						<StoreAddress getInputProps={ getInputProps } />
-						<Button isPrimary onClick={ handleSubmit }>
-							{ __( 'Proceed', 'woocommerce-admin' ) }
-						</Button>
-					</Fragment>
-				) }
-			</Form>
-		);
 	}
 
 	getSteps() {
@@ -105,7 +78,7 @@ class Shipping extends Component {
 				label: __( 'Set store location', 'woocommerce-admin' ),
 				description: __( 'The address from which your business operates', 'woocommerce-admin' ),
 				isPending: true,
-				content: this.getStoreLocationContent(),
+				content: <StoreLocation completeStep={ this.completeStep } { ...this.props } />,
 				visible: true,
 			},
 			{
@@ -115,6 +88,7 @@ class Shipping extends Component {
 					'Define how much customers pay to ship to different destinations',
 					'woocommerce-admin'
 				),
+				content: <ShippingRates completeStep={ this.completeStep } { ...this.props } />,
 				visible: true,
 			},
 			{
@@ -139,14 +113,14 @@ class Shipping extends Component {
 	}
 
 	render() {
-		const { step } = this.state;
+		const { shippingZones, step } = this.state;
 		const { isSettingsRequesting } = this.props;
 
 		return (
 			<Fragment>
 				<Card>
 					<Stepper
-						isPending={ isSettingsRequesting }
+						isPending={ ! shippingZones.length || isSettingsRequesting }
 						isVertical={ true }
 						currentStep={ step }
 						steps={ this.getSteps() }
