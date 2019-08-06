@@ -43,7 +43,11 @@ class Shipping extends Component {
 
 	componentDidUpdate() {
 		const { settings } = this.props;
-		const { woocommerce_store_address, woocommerce_default_country, woocommerce_store_postcode } = settings;
+		const {
+			woocommerce_store_address,
+			woocommerce_default_country,
+			woocommerce_store_postcode,
+		} = settings;
 		const { shippingZones, step } = this.state;
 
 		if (
@@ -72,6 +76,8 @@ class Shipping extends Component {
 	}
 
 	getSteps() {
+		const { countryCode } = this.props;
+
 		const steps = [
 			{
 				key: 'store_location',
@@ -105,7 +111,7 @@ class Shipping extends Component {
 						<Button>{ __( 'No thanks', 'woocommerce-admin' ) }</Button>
 					</Fragment>
 				),
-				visible: true,
+				visible: [ 'US', 'GB', 'CA', 'AU' ].includes( countryCode ),
 			},
 		];
 
@@ -139,7 +145,14 @@ export default compose(
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
 		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
 
-		return { isSettingsError, isSettingsRequesting, settings };
+		const countryCode = settings.woocommerce_default_country
+			? settings.woocommerce_default_country.split( ':' )[ 0 ]
+			: null;
+		const countries = ( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
+		const country = countryCode ? countries.find( c => c.code === countryCode ) : null;
+		const countryName = country ? country.name : null;
+
+		return { countryCode, countryName, isSettingsError, isSettingsRequesting, settings };
 	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );

@@ -29,18 +29,19 @@ export default class ShippingRates extends Component {
 
 	async onSubmit() {
 		const { defaultRate, restOfTheWorldEnabled, restOfTheWorldRate } = this.state;
+		const { countryCode, countryName } = this.props;
 
 		const zone = await apiFetch( {
 			method: 'POST',
 			path: '/wc/v3/shipping/zones',
-			data: { name: this.getCountryName() },
+			data: { name: countryName },
 		} );
 		apiFetch( {
 			method: 'POST',
 			path: `/wc/v3/shipping/zones/${ zone.id }`,
 			data: {
 				type: 'country',
-				code: this.getCountryCode(),
+				code: countryCode,
 			},
 		} );
 		apiFetch( {
@@ -66,17 +67,6 @@ export default class ShippingRates extends Component {
 		this.props.completeStep();
 	}
 
-	getCountryCode() {
-		const { settings } = this.props;
-		return settings.woocommerce_default_country.split( ':' )[ 0 ];
-	}
-
-	getCountryName() {
-		const countries = ( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
-		const country = countries.find( c => c.code === this.getCountryCode() );
-		return country ? country.name : null;
-	}
-
 	onBlur() {
 		const { defaultRate, restOfTheWorldRate } = this.state;
 		this.setState( {
@@ -87,10 +77,11 @@ export default class ShippingRates extends Component {
 
 	render() {
 		const { defaultRate, restOfTheWorldRate, restOfTheWorldEnabled } = this.state;
+		const { countryCode, countryName } = this.props;
 
 		return (
 			<Fragment>
-				<Flag code={ this.getCountryCode() } /> { this.getCountryName() }
+				<Flag code={ countryCode } /> { countryName }
 				<TextControl
 					label={ __( 'Shipping cost', 'woocommerce-admin' ) }
 					required
