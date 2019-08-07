@@ -92,7 +92,7 @@ class TaskDashboard extends Component {
 						<i className="material-icons-outlined">local_shipping</i>
 					),
 				after: <i className="material-icons-outlined">chevron_right</i>,
-				onClick: shippingZonesCount > 0 ? null : () => updateQueryString( { task: 'shipping' } ),
+				onClick: () => updateQueryString( { task: 'shipping' } ),
 				container: <Shipping />,
 				className: shippingZonesCount > 0 ? 'is-complete' : null,
 				visible: true,

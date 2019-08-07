@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { filter } from 'lodash';
@@ -25,16 +26,75 @@ class Shipping extends Component {
 	constructor() {
 		super( ...arguments );
 
-		this.state = {
+		this.initialState = {
+			isPending: false,
 			step: 'store_location',
+			shippingZones: [],
 		};
+
+		this.state = this.initialState;
 
 		this.completeStep = this.completeStep.bind( this );
 	}
 
-	componentDidUpdate() {
-		const { shippingZonesCount } = wcSettings.onboarding;
-		const { settings } = this.props;
+	componentDidMount() {
+		this.reset();
+	}
+
+	reset() {
+		this.setState( this.initialState );
+	}
+
+	async fetchShippingZones() {
+		this.setState( { isPending: true } );
+		const { countryCode, countryName } = this.props;
+		const shippingZones = [];
+		const zones = await apiFetch( { path: '/wc/v3/shipping/zones' } );
+		let hasCountryZone = false;
+
+		await Promise.all(
+			zones.map( async zone => {
+				// "Rest of the world zone"
+				if ( 0 === zone.id ) {
+					zone.methods = await apiFetch( { path: `/wc/v3/shipping/zones/${ zone.id }/methods` } );
+					zone.name = __( 'Rest of the world', 'woocommerce-admin' );
+					zone.toggleEnabled = true;
+					shippingZones.push( zone );
+					return;
+				}
+
+				// Return any zone with a single location matching the country zone.
+				zone.locations = await apiFetch( { path: `/wc/v3/shipping/zones/${ zone.id }/locations` } );
+				if ( 1 === zone.locations.length && countryCode === zone.locations[ 0 ].code ) {
+					zone.methods = await apiFetch( { path: `/wc/v3/shipping/zones/${ zone.id }/methods` } );
+					shippingZones.push( zone );
+					hasCountryZone = true;
+				}
+			} )
+		);
+
+		// Create the default store country zone if it doesn't exist.
+		if ( ! hasCountryZone ) {
+			const zone = await apiFetch( {
+				method: 'POST',
+				path: '/wc/v3/shipping/zones',
+				data: { name: countryName },
+			} );
+			zone.locations = await apiFetch( {
+				method: 'POST',
+				path: `/wc/v3/shipping/zones/${ zone.id }/locations`,
+				data: [ { code: countryCode, type: 'country' } ],
+			} );
+			shippingZones.push( zone );
+		}
+
+		shippingZones.reverse();
+
+		this.setState( { isPending: false, shippingZones } );
+	}
+
+	componentDidUpdate( prevProps, prevState ) {
+		const { countryCode, settings } = this.props;
 		const {
 			woocommerce_store_address,
 			woocommerce_default_country,
@@ -49,8 +109,13 @@ class Shipping extends Component {
 			woocommerce_store_postcode
 		) {
 			this.completeStep();
-		} else if ( 'rates' === step && shippingZonesCount > 0 ) {
-			this.completeStep();
+		}
+
+		if (
+			prevProps.countryCode !== countryCode ||
+			( 'rates' === step && 'rates' !== prevState.step )
+		) {
+			this.fetchShippingZones();
 		}
 	}
 
@@ -63,6 +128,7 @@ class Shipping extends Component {
 		if ( nextStep ) {
 			this.setState( { step: nextStep.key } );
 		} else {
+			this.setState( { step: steps[ 0 ].key } );
 			getHistory().push( getNewPath( '/', {}, {} ) );
 		}
 	}
@@ -73,7 +139,6 @@ class Shipping extends Component {
 				key: 'store_location',
 				label: __( 'Set store location', 'woocommerce-admin' ),
 				description: __( 'The address from which your business operates', 'woocommerce-admin' ),
-				isPending: true,
 				content: <StoreLocation completeStep={ this.completeStep } { ...this.props } />,
 				visible: true,
 			},
@@ -84,7 +149,13 @@ class Shipping extends Component {
 					'Define how much customers pay to ship to different destinations',
 					'woocommerce-admin'
 				),
-				content: <ShippingRates completeStep={ this.completeStep } { ...this.props } />,
+				content: (
+					<ShippingRates
+						shippingZones={ this.state.shippingZones }
+						completeStep={ this.completeStep }
+						{ ...this.props }
+					/>
+				),
 				visible: true,
 			},
 		];
@@ -93,14 +164,14 @@ class Shipping extends Component {
 	}
 
 	render() {
-		const { step } = this.state;
+		const { isPending, step } = this.state;
 		const { isSettingsRequesting } = this.props;
 
 		return (
 			<div className="woocommerce-task-shipping">
 				<Card className="is-narrow">
 					<Stepper
-						isPending={ isSettingsRequesting }
+						isPending={ isPending || isSettingsRequesting }
 						isVertical={ true }
 						currentStep={ step }
 						steps={ this.getSteps() }
