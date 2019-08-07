@@ -136,53 +136,55 @@ export default class ShippingRates extends Component {
 
 		return (
 			<Fragment>
-				{ shippingZones.map( zone => (
-					<div className="woocommerce-shipping-rate" key={ zone.id }>
-						<div className="woocommerce-shipping-rate__icon">
-							{ zone.locations ? (
-								zone.locations.map( location => (
-									<Flag size={ 24 } code={ location.code } key={ location.code } />
-								) )
-							) : (
-								<i className="material-icons-outlined">public</i>
-							) }
-						</div>
-						<div className="woocommerce-shipping-rate__main">
-							<div className="woocommerce-shipping-rate__name">
-								{ zone.name }
-								{ zone.toggleEnabled && (
-									<FormToggle
-										checked={ enabledZones.includes( zone.id ) }
-										onChange={ () => this.handleToggle( zone.id ) }
-									/>
+				<div className="woocommerce-shipping-rates">
+					{ shippingZones.map( zone => (
+						<div className="woocommerce-shipping-rate" key={ zone.id }>
+							<div className="woocommerce-shipping-rate__icon">
+								{ zone.locations ? (
+									zone.locations.map( location => (
+										<Flag size={ 24 } code={ location.code } key={ location.code } />
+									) )
+								) : (
+									<i className="material-icons-outlined">public</i>
 								) }
 							</div>
-							{ ( ! zone.toggleEnabled || enabledZones.includes( zone.id ) ) && (
-								<div
-									className={ classnames( 'woocommerce-shipping-rate__control-wrapper', {
-										'has-value': zoneRates[ zone.id ],
-									} ) }
-								>
-									<span className="woocommerce-shipping-rate__control-prefix">
-										{ get( wcSettings, [ 'currency', 'symbol' ], '$' ) }
-									</span>
-									<TextControl
-										label={ __( 'Shipping cost', 'woocommerce-admin' ) }
-										required
-										value={ zoneRates[ zone.id ] || getCurrencyFormatString( 0 ) }
-										onChange={ value => this.handleChange( zone.id, value ) }
-										onBlur={ () => this.handleBlur( zone.id ) }
-									/>
-									{ parseFloat( zoneRates[ zone.id ] ) === parseFloat( 0 ) && (
-										<span className="woocommerce-shipping-rate__control-suffix">
-											{ __( 'Free shipping', 'woocommerce-admin' ) }
-										</span>
+							<div className="woocommerce-shipping-rate__main">
+								<div className="woocommerce-shipping-rate__name">
+									{ zone.name }
+									{ zone.toggleEnabled && (
+										<FormToggle
+											checked={ enabledZones.includes( zone.id ) }
+											onChange={ () => this.handleToggle( zone.id ) }
+										/>
 									) }
 								</div>
-							) }
+								{ ( ! zone.toggleEnabled || enabledZones.includes( zone.id ) ) && (
+									<div
+										className={ classnames( 'woocommerce-shipping-rate__control-wrapper', {
+											'has-value': zoneRates[ zone.id ],
+										} ) }
+									>
+										<span className="woocommerce-shipping-rate__control-prefix">
+											{ get( wcSettings, [ 'currency', 'symbol' ], '$' ) }
+										</span>
+										<TextControl
+											label={ __( 'Shipping cost', 'woocommerce-admin' ) }
+											required
+											value={ zoneRates[ zone.id ] || getCurrencyFormatString( 0 ) }
+											onChange={ value => this.handleChange( zone.id, value ) }
+											onBlur={ () => this.handleBlur( zone.id ) }
+										/>
+										{ parseFloat( zoneRates[ zone.id ] ) === parseFloat( 0 ) && (
+											<span className="woocommerce-shipping-rate__control-suffix">
+												{ __( 'Free shipping', 'woocommerce-admin' ) }
+											</span>
+										) }
+									</div>
+								) }
+							</div>
 						</div>
-					</div>
-				) ) }
+					) ) }
+				</div>
 
 				<Button isPrimary onClick={ this.handleSubmit }>
 					{ __( 'Complete task', 'woocommerce-admin' ) }

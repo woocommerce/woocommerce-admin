@@ -65,6 +65,10 @@
 	}
 }
 
+.woocommerce-shipping-rates {
+	margin-bottom: $gap;
+}
+
 .woocommerce-shipping-rate {
 	display: flex;
 	padding-top: $gap-small;
@@ -74,7 +78,7 @@
 		width: 100%;
 	}
 
-	.woocommerce-shipping-rate__flag {
+	.woocommerce-shipping-rate__icon {
 		padding-top: $gap;
 		margin-right: $gap-large;
 	}
@@ -100,6 +104,10 @@
 
 		.muriel-input-text input {
 			left: $gap * 2;
+		}
+
+		.components-base-control {
+			margin-bottom: 0;
 		}
 
 		.woocommerce-shipping-rate__control-prefix,
