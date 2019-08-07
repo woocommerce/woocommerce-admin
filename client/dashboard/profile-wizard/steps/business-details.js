@@ -43,9 +43,7 @@ class BusinessDetails extends Component {
 	async onContinue( values ) {
 		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
 		const { facebook, mailchimp, other_platform, product_count, selling_venues } = values;
-		const businessExtensions = keys( pickBy( values ) ).filter( name =>
-			this.extensions.includes( name )
-		);
+		const businessExtensions = this.getBusinessExtensions( values );
 
 		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: product_count,
@@ -91,6 +89,10 @@ class BusinessDetails extends Component {
 		return errors;
 	}
 
+	getBusinessExtensions( values ) {
+		return keys( pickBy( values ) ).filter( name => this.extensions.includes( name ) );
+	}
+
 	getNumberRangeString( min, max = false ) {
 		if ( ! max ) {
 			return sprintf(
@@ -107,7 +109,7 @@ class BusinessDetails extends Component {
 	}
 
 	renderBusinessExtensionHelpText( values ) {
-		const extensions = keys( pickBy( values ) ).filter( name => this.extensions.includes( name ) );
+		const extensions = this.getBusinessExtensions( values );
 		const extensionSlugs = {
 			facebook: __( 'Facebook for WooCommerce', 'woocommerce-admin' ),
 			mailchimp: __( 'Mailchimp for WooCommerce', 'woocommerce-admin' ),
@@ -256,7 +258,7 @@ class BusinessDetails extends Component {
 							<H className="woocommerce-profile-wizard__header-title">
 								{ __( 'Business details', 'woocommerce-admin' ) }
 							</H>
-							<p>{ __( 'Tell us about the business' ) }</p>
+							<p>{ __( 'Tell us about the business', 'woocommerce-admin' ) }</p>
 							<Card>
 								<Fragment>
 									<SimpleSelectControl
