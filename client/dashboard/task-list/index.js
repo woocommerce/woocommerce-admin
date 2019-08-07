@@ -24,10 +24,12 @@ import withSelect from 'wc-api/with-select';
 
 class TaskDashboard extends Component {
 	componentDidMount() {
+		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
 	}
 
 	componentWillUnmount() {
+		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-task-dashboard__body' );
 	}
 

@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { filter } from 'lodash';
 import { withDispatch } from '@wordpress/data';
@@ -97,8 +97,8 @@ class Shipping extends Component {
 		const { isSettingsRequesting } = this.props;
 
 		return (
-			<Fragment>
-				<Card>
+			<div className="woocommerce-task-shipping">
+				<Card className="is-narrow">
 					<Stepper
 						isPending={ isSettingsRequesting }
 						isVertical={ true }
@@ -106,7 +106,7 @@ class Shipping extends Component {
 						steps={ this.getSteps() }
 					/>
 				</Card>
-			</Fragment>
+			</div>
 		);
 	}
 }
