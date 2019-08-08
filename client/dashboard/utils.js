@@ -5,6 +5,7 @@
 
 import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
+import { noop } from 'lodash';
 
 /**
  * Internal depdencies
@@ -36,6 +37,33 @@ export function doPluginAction( action, plugin ) {
 	} )
 		.then( response => response )
 		.catch( error => ( { status: 'error', error, plugin } ) );
+}
+
+/**
+ * Install or activate an array of plugin.
+ *
+ * @param {string} action The action name for the error (install|activate)
+ * @param {array} plugins An array of plugins to install or activate.
+ * @param {function} callback A function to call when an individual plugin is installed or activated.
+ * @return {object} An object contain arrays of successful and failed plugin slugs.
+ */
+export async function doPluginActions( action, plugins, callback = noop ) {
+	const succcessful = [];
+	const failed = [];
+
+	await Promise.all(
+		plugins.map( async plugin => {
+			const response = await doPluginAction( action, plugin );
+			callback( response );
+			if ( 'success' === response.status ) {
+				succcessful.push( plugin );
+			} else {
+				failed.push( plugin );
+			}
+		} )
+	);
+
+	return { succcessful, failed };
 }
 
 /**

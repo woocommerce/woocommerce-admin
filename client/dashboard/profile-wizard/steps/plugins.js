@@ -6,7 +6,6 @@ import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import { forEach } from 'lodash';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 
@@ -16,7 +15,7 @@ import { withDispatch } from '@wordpress/data';
 import { H, Stepper, Card } from '@woocommerce/components';
 import { NAMESPACE } from 'wc-api/onboarding/constants';
 import { recordEvent } from 'lib/tracks';
-import { doPluginAction, getPluginErrorMessage } from 'dashboard/utils';
+import { doPluginActions, getPluginErrorMessage } from 'dashboard/utils';
 
 const plugins = [ 'jetpack', 'woocommerce-services' ];
 
@@ -28,8 +27,6 @@ class Plugins extends Component {
 			step: 'install',
 			isPending: true,
 			isError: false,
-			pluginsInstalled: 0,
-			pluginsActivated: 0,
 			connectUrl: '',
 		};
 
@@ -40,45 +37,32 @@ class Plugins extends Component {
 		this.installPlugins();
 	}
 
-	componentDidUpdate( prevProps, prevState ) {
-		if (
-			this.state.pluginsInstalled !== prevState.pluginsInstalled &&
-			this.state.pluginsInstalled === plugins.length
-		) {
-			/* eslint-disable react/no-did-update-set-state */
+	pluginActionCallback( response ) {
+		if ( 'success' !== response.status ) {
+			this.setState( {
+				isPending: false,
+				isError: true,
+			} );
+			this.props.createNotice( 'error', getPluginErrorMessage( 'install', response.plugin ) );
+		}
+	}
+
+	async installPlugins() {
+		const installed = await doPluginActions( 'install', plugins, this.pluginActionCallback );
+		if ( installed.failed.length ) {
+			this.setState( {
+				isPending: false,
+				isError: true,
+			} );
+		} else {
 			this.setState( {
 				step: 'activate',
 				isPending: false,
 			} );
-			/* eslint-enable react/no-did-update-set-state */
-		}
-
-		if (
-			this.state.pluginsActivated !== prevState.pluginsActivated &&
-			this.state.pluginsActivated === plugins.length
-		) {
-			this.connectJetpack();
 		}
 	}
 
-	installPlugins() {
-		forEach( plugins, async plugin => {
-			const response = await doPluginAction( 'install', plugin );
-			if ( 'success' === response.status ) {
-				this.setState( state => ( {
-					pluginsInstalled: state.pluginsInstalled + 1,
-				} ) );
-			} else {
-				this.props.createNotice( 'error', getPluginErrorMessage( 'install', response.plugin ) );
-				this.setState( {
-					isPending: false,
-					isError: true,
-				} );
-			}
-		} );
-	}
-
-	activatePlugins( event ) {
+	async activatePlugins( event ) {
 		event.preventDefault();
 
 		// Avoid double activating.
@@ -93,14 +77,10 @@ class Plugins extends Component {
 
 		recordEvent( 'storeprofiler_install_plugin' );
 
-		forEach( plugins, async plugin => {
-			const response = await doPluginAction( 'activate', plugin );
-			if ( 'success' === response.status ) {
-				this.setState( state => ( {
-					pluginsActivated: state.pluginsActivated + 1,
-				} ) );
-			}
-		} );
+		const activated = await doPluginActions( 'activate', plugins, this.pluginActionCallback );
+		if ( ! activated.failed.length ) {
+			this.connectJetpack();
+		}
 	}
 
 	async connectJetpack() {
