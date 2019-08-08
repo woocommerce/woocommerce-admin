@@ -50,19 +50,30 @@ class BusinessDetails extends Component {
 		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: product_count,
 			already_selling: 'no' !== selling_venues,
+			currency: wcSettings.currency.code,
 			revenue,
 			used_platform: other_platform,
 			install_facebook: facebook,
 			install_mailchimp: mailchimp,
 		} );
 
-		await updateProfileItems( {
+		const _updates = {
 			other_platform,
 			product_count,
 			revenue,
 			selling_venues,
 			business_extensions: businessExtensions,
+		};
+
+		// Remove possible empty values like `revenue` and `other_platform`.
+		const updates = {};
+		Object.keys( _updates ).forEach( key => {
+			if ( _updates[ key ] !== '' ) {
+				updates[ key ] = _updates[ key ];
+			}
 		} );
+
+		await updateProfileItems( updates );
 
 		if ( ! isError ) {
 			goToNextStep();
