@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
@@ -16,6 +16,7 @@ import { withDispatch } from '@wordpress/data';
 import { H, Stepper, Card } from '@woocommerce/components';
 import { NAMESPACE } from 'wc-api/onboarding/constants';
 import { recordEvent } from 'lib/tracks';
+import { doPluginAction, getPluginErrorMessage } from 'dashboard/utils';
 
 const plugins = [ 'jetpack', 'woocommerce-services' ];
 
@@ -62,11 +63,17 @@ class Plugins extends Component {
 
 	installPlugins() {
 		forEach( plugins, async plugin => {
-			const response = await this.doPluginAction( 'install', plugin );
+			const response = await doPluginAction( 'install', plugin );
 			if ( 'success' === response.status ) {
 				this.setState( state => ( {
 					pluginsInstalled: state.pluginsInstalled + 1,
 				} ) );
+			} else {
+				this.props.createNotice( 'error', getPluginErrorMessage( 'install', response.plugin ) );
+				this.setState( {
+					isPending: false,
+					isError: true,
+				} );
 			}
 		} );
 	}
@@ -87,44 +94,13 @@ class Plugins extends Component {
 		recordEvent( 'storeprofiler_install_plugin' );
 
 		forEach( plugins, async plugin => {
-			const response = await this.doPluginAction( 'activate', plugin );
+			const response = await doPluginAction( 'activate', plugin );
 			if ( 'success' === response.status ) {
 				this.setState( state => ( {
 					pluginsActivated: state.pluginsActivated + 1,
 				} ) );
 			}
 		} );
-	}
-
-	getErrorMessage( action, plugin ) {
-		return 'install' === action
-			? sprintf(
-					__( 'There was an error installing %s. Please try again.', 'woocommerce-admin' ),
-					this.getPluginName( plugin )
-				)
-			: sprintf(
-					__( 'There was an error activating %s. Please try again.', 'woocommerce-admin' ),
-					this.getPluginName( plugin )
-				);
-	}
-
-	async doPluginAction( action, plugin ) {
-		try {
-			const pluginResponse = await apiFetch( {
-				path: `${ NAMESPACE }/onboarding/plugins/${ action }`,
-				method: 'POST',
-				data: {
-					plugin,
-				},
-			} );
-			return pluginResponse;
-		} catch ( err ) {
-			this.props.createNotice( 'error', this.getErrorMessage( action, plugin ) );
-			this.setState( {
-				isPending: false,
-				isError: true,
-			} );
-		}
 	}
 
 	async connectJetpack() {
@@ -138,20 +114,11 @@ class Plugins extends Component {
 			}
 			throw new Error();
 		} catch ( err ) {
-			this.props.createNotice( 'error', this.getErrorMessage( 'activate', 'jetpack' ) );
+			this.props.createNotice( 'error', getPluginErrorMessage( 'activate', 'jetpack' ) );
 			this.setState( {
 				isPending: false,
 				isError: true,
 			} );
-		}
-	}
-
-	getPluginName( plugin ) {
-		switch ( plugin ) {
-			case 'jetpack':
-				return __( 'Jetpack', 'woocommerce-admin' );
-			case 'woocommerce-services':
-				return __( 'WooCommerce Services', 'woocommerce-admin' );
 		}
 	}
 
