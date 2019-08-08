@@ -9,6 +9,7 @@ import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { FormToggle } from '@wordpress/components';
 import { get, xor } from 'lodash';
+import PropTypes from 'prop-types';
 
 /**
  * WooCommerce dependencies
@@ -16,7 +17,7 @@ import { get, xor } from 'lodash';
 import { Flag } from '@woocommerce/components';
 import { getCurrencyFormatString } from '@woocommerce/currency';
 
-export default class ShippingRates extends Component {
+class ShippingRates extends Component {
 	constructor() {
 		super( ...arguments );
 
@@ -61,7 +62,9 @@ export default class ShippingRates extends Component {
 		const { createNotice, shippingZones } = this.props;
 
 		shippingZones.map( zone => {
-			const flatRateMethods = zone.methods.filter( method => 'flat_rate' === method.method_id );
+			const flatRateMethods = zone.methods
+				? zone.methods.filter( method => 'flat_rate' === method.method_id )
+				: [];
 
 			if ( zone.toggleEnabled && ! enabledZones.includes( zone.id ) ) {
 				// Disable any flat rate methods that exist if toggled off.
@@ -145,6 +148,7 @@ export default class ShippingRates extends Component {
 										<Flag size={ 24 } code={ location.code } key={ location.code } />
 									) )
 								) : (
+									// Icon used for zones without locations or "Rest of the world".
 									<i className="material-icons-outlined">public</i>
 								) }
 							</div>
@@ -170,7 +174,11 @@ export default class ShippingRates extends Component {
 										<TextControl
 											label={ __( 'Shipping cost', 'woocommerce-admin' ) }
 											required
-											value={ zoneRates[ zone.id ] || getCurrencyFormatString( 0 ) }
+											value={
+												'undefined' === typeof zoneRates[ zone.id ]
+													? getCurrencyFormatString( 0 )
+													: zoneRates[ zone.id ]
+											}
 											onChange={ value => this.handleChange( zone.id, value ) }
 											onBlur={ () => this.handleBlur( zone.id ) }
 										/>
@@ -193,3 +201,25 @@ export default class ShippingRates extends Component {
 		);
 	}
 }
+
+ShippingRates.propTypes = {
+	/**
+	 * Function used to mark the step complete.
+	 */
+	completeStep: PropTypes.func.isRequired,
+	/**
+	 * Function to create a transient notice in the store.
+	 */
+	createNotice: PropTypes.func.isRequired,
+	/**
+	 * Array of shipping zones returned from the WC REST API with added
+	 * `methods` and `locations` properties appended from separate API calls.
+	 */
+	shippingZones: PropTypes.array,
+};
+
+ShippingRates.defaultProps = {
+	shippingZones: [],
+};
+
+export default ShippingRates;

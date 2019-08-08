@@ -65,7 +65,8 @@ class Shipping extends Component {
 
 				// Return any zone with a single location matching the country zone.
 				zone.locations = await apiFetch( { path: `/wc/v3/shipping/zones/${ zone.id }/locations` } );
-				if ( 1 === zone.locations.length && countryCode === zone.locations[ 0 ].code ) {
+				const countryLocation = zone.locations.find( location => countryCode === location.code );
+				if ( countryLocation ) {
 					zone.methods = await apiFetch( { path: `/wc/v3/shipping/zones/${ zone.id }/methods` } );
 					shippingZones.push( zone );
 					hasCountryZone = true;
@@ -112,8 +113,8 @@ class Shipping extends Component {
 		}
 
 		if (
-			prevProps.countryCode !== countryCode ||
-			( 'rates' === step && 'rates' !== prevState.step )
+			'rates' === step &&
+			( prevProps.countryCode !== countryCode || 'rates' !== prevState.step )
 		) {
 			this.fetchShippingZones();
 		}
@@ -129,7 +130,7 @@ class Shipping extends Component {
 			this.setState( { step: nextStep.key } );
 		} else {
 			this.setState( { step: steps[ 0 ].key } );
-			getHistory().push( getNewPath( '/', {}, {} ) );
+			getHistory().push( getNewPath( {}, '/', {} ) );
 		}
 	}
 
