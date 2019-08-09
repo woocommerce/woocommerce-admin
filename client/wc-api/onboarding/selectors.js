@@ -43,8 +43,31 @@ const isGetProfileItemsRequesting = getResource => () => {
 	return lastRequested > lastReceived;
 };
 
+const getJetpackConnectUrl = ( getResource, requireResource ) => (
+	requirement = DEFAULT_REQUIREMENT
+) => {
+	return requireResource( requirement, 'jetpack-connect-url' ).data;
+};
+
+const getJetpackConnectUrlError = getResource => () => {
+	return getResource( 'jetpack-connect-url' ).error;
+};
+
+const isGetJetpackConnectUrlRequesting = getResource => () => {
+	const { lastReceived, lastRequested } = getResource( 'jetpack-connect-url' );
+
+	if ( isNil( lastRequested ) || isNil( lastReceived ) ) {
+		return true;
+	}
+
+	return lastRequested > lastReceived;
+};
+
 export default {
 	getProfileItems,
 	getProfileItemsError,
 	isGetProfileItemsRequesting,
+	getJetpackConnectUrl,
+	getJetpackConnectUrlError,
+	isGetJetpackConnectUrlRequesting,
 };

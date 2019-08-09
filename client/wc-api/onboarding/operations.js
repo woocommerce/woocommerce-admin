@@ -12,7 +12,10 @@ import { getResourceName } from '../utils';
 import { NAMESPACE } from './constants';
 
 function read( resourceNames, fetch = apiFetch ) {
-	return [ ...readProfileItems( resourceNames, fetch ) ];
+	return [
+		...readProfileItems( resourceNames, fetch ),
+		...readJetpackConnectUrl( resourceNames, fetch ),
+	];
 }
 
 function update( resourceNames, data, fetch = apiFetch ) {
@@ -88,6 +91,28 @@ function profileItemToResource( items ) {
 	} );
 
 	return resources;
+}
+
+function readJetpackConnectUrl( resourceNames, fetch ) {
+	const resourceName = 'jetpack-connect-url';
+
+	if ( resourceNames.includes( resourceName ) ) {
+		const url = NAMESPACE + '/onboarding/plugins/connect-jetpack';
+
+		return [
+			fetch( {
+				path: url,
+			} )
+				.then( response => {
+					return { [ resourceName ]: { data: response.connectAction } };
+				} )
+				.catch( error => {
+					return { [ resourceName ]: { error } };
+				} ),
+		];
+	}
+
+	return [];
 }
 
 export default {

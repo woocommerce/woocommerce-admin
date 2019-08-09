@@ -5,7 +5,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 
@@ -13,9 +12,9 @@ import { withDispatch } from '@wordpress/data';
  * Internal depdencies
  */
 import { H, Stepper, Card } from '@woocommerce/components';
-import { NAMESPACE } from 'wc-api/onboarding/constants';
 import { recordEvent } from 'lib/tracks';
 import { doPluginActions, getPluginErrorMessage } from 'dashboard/utils';
+import withSelect from 'wc-api/with-select';
 
 const plugins = [ 'jetpack', 'woocommerce-services' ];
 
@@ -35,6 +34,21 @@ class Plugins extends Component {
 
 	componentDidMount() {
 		this.installPlugins();
+	}
+
+	componentDidUpdate( prevProps ) {
+		const {
+			createNotice,
+			jetpackConnectUrl,
+			isJetpackConnectError,
+			isJetpackConnectRequesting,
+		} = this.props;
+
+		if ( ! isJetpackConnectRequesting && jetpackConnectUrl ) {
+			window.location = jetpackConnectUrl;
+		} else if ( prevProps.isJetpackConnectError !== isJetpackConnectError ) {
+			createNotice( 'error', getPluginErrorMessage( 'activate', 'jetpack' ) );
+		}
 	}
 
 	pluginActionCallback( response ) {
@@ -77,32 +91,11 @@ class Plugins extends Component {
 
 		recordEvent( 'storeprofiler_install_plugin' );
 
-		const activated = await doPluginActions( 'activate', plugins, this.pluginActionCallback );
-		if ( ! activated.failed.length ) {
-			this.connectJetpack();
-		}
-	}
-
-	async connectJetpack() {
-		try {
-			const connectResponse = await apiFetch( {
-				path: `${ NAMESPACE }/onboarding/plugins/connect-jetpack`,
-			} );
-			if ( connectResponse && connectResponse.connectAction ) {
-				window.location = connectResponse.connectAction;
-				return;
-			}
-			throw new Error();
-		} catch ( err ) {
-			this.props.createNotice( 'error', getPluginErrorMessage( 'activate', 'jetpack' ) );
-			this.setState( {
-				isPending: false,
-				isError: true,
-			} );
-		}
+		doPluginActions( 'activate', plugins, this.pluginActionCallback );
 	}
 
 	render() {
+		const { isJetpackConnectError } = this.props;
 		const { step, isPending, isError } = this.state;
 		return (
 			<Fragment>
@@ -128,13 +121,13 @@ class Plugins extends Component {
 					/>
 
 					<div className="woocommerce-profile-wizard__plugins-actions">
-						{ isError && (
+						{ ( isError || isJetpackConnectError ) && (
 							<Button isPrimary onClick={ () => location.reload() }>
 								{ __( 'Retry', 'woocommerce-admin' ) }
 							</Button>
 						) }
 
-						{ ! isError &&
+						{ ! ( isError || isJetpackConnectError ) &&
 							'activate' === step && (
 								<Button isPrimary isBusy={ isPending } onClick={ this.activatePlugins }>
 									{ __( 'Activate & continue', 'woocommerce-admin' ) }
@@ -148,6 +141,19 @@ class Plugins extends Component {
 }
 
 export default compose(
+	withSelect( select => {
+		const {
+			getJetpackConnectUrl,
+			isGetJetpackConnectUrlRequesting,
+			getJetpackConnectUrlError,
+		} = select( 'wc-api' );
+
+		const jetpackConnectUrl = getJetpackConnectUrl();
+		const isJetpackConnectRequesting = isGetJetpackConnectUrlRequesting();
+		const isJetpackConnectError = getJetpackConnectUrlError();
+
+		return { jetpackConnectUrl, isJetpackConnectRequesting, isJetpackConnectError };
+	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
 		return {
