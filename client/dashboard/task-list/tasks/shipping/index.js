@@ -18,6 +18,7 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
+import Connect from './connect';
 import StoreLocation from './location';
 import ShippingLabels from './labels';
 import ShippingRates from './rates';
@@ -174,6 +175,16 @@ class Shipping extends Component {
 				),
 				content: <ShippingLabels completeStep={ this.completeStep } { ...this.props } />,
 				visible: [ 'US', 'GB', 'CA', 'AU' ].includes( countryCode ),
+			},
+			{
+				key: 'connect',
+				label: __( 'Connect your store', 'woocommerce-admin' ),
+				description: __(
+					'Connect your store to WordPress.com to enable label printing',
+					'woocommerce-admin'
+				),
+				content: <Connect completeStep={ this.completeStep } { ...this.props } />,
+				visible: 'US' === countryCode,
 			},
 		];
 
