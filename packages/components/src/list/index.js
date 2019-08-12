@@ -3,20 +3,18 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { Component } from '@wordpress/element';
-import { ENTER } from '@wordpress/keycodes';
+import { Component, Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
+
+/**
+ * WooCommerce dependencies
+ */
+import Link from '../link';
 
 /**
  * List component to display a list of items.
  */
 class List extends Component {
-    handleKeyDown( event, onClick ) {
-		if ( 'function' === typeof onClick && event.keyCode === ENTER ) {
-			onClick();
-		}
-    }
-
 	render() {
 		const { className, items } = this.props;
 		const listClassName = classnames( 'woocommerce-list', className );
@@ -24,42 +22,45 @@ class List extends Component {
 		return (
 			<ul className={ listClassName }>
 				{ items.map( ( item, i ) => {
-					const { after, before, className: itemClasses, description, onClick, title } = item;
-					const hasAction = 'function' === typeof onClick;
+					const { after, before, className: itemClasses, description, href, onClick, title } = item;
+					const hasAction = 'function' === typeof onClick || href;
 					const itemClassName = classnames( 'woocommerce-list__item', itemClasses, {
 						'has-action': hasAction,
 					} );
+					const ActionTag = hasAction ? Link : Fragment;
+					const actionProps = hasAction ? {
+						href: href ? href : '#',
+						onClick: 'function' === typeof onClick ? onClick : null,
+						type: 'external',
+					} : {};
 
 					return (
 						<li
 							className={ itemClassName }
 							key={ i }
-							onClick={ hasAction ? onClick : null }
-							onKeyDown={ ( e ) => hasAction ? this.handleKeyDown( e, onClick ) : null }
-							role="menuitem"
-							aria-disabled="false"
-							tabIndex="0"
 						>
-                            { before &&
-                                <div className="woocommerce-list__item-before">
-                                    { before }
-                                </div>
-                            }
-                            <div className="woocommerce-list__item-text">
-                                <span className="woocommerce-list__item-title">
-                                    { title }
-                                </span>
-                                { description &&
-                                    <span className="woocommerce-list__item-description">
-                                        { description }
-                                    </span>
-                                }
-                            </div>
-                            { after &&
-                                <div className="woocommerce-list__item-after">
-                                    { after }
-                                </div>
-                            }
+							<ActionTag { ...actionProps }>
+								{ before &&
+									<div className="woocommerce-list__item-before">
+										{ before }
+									</div>
+								}
+								<div className="woocommerce-list__item-text">
+									<span className="woocommerce-list__item-title">
+										{ title }
+									</span>
+									{ description &&
+										<span className="woocommerce-list__item-description">
+											{ description }
+										</span>
+									}
+								</div>
+								{ after &&
+									<div className="woocommerce-list__item-after">
+										{ after }
+									</div>
+								}
+							</ActionTag>
 						</li>
                     );
                 } ) }
@@ -79,29 +80,33 @@ List.propTypes = {
 	items: PropTypes.arrayOf(
 		PropTypes.shape( {
 			/**
-			 * Title displayed for the list item.
+			 * Content displayed after the list item text.
 			 */
-			title: PropTypes.string.isRequired,
-			/**
-			 * Description displayed beneath the list item title.
-			 */
-			description: PropTypes.string,
+			after: PropTypes.node,
 			/**
 			 * Content displayed before the list item text.
 			 */
 			before: PropTypes.node,
 			/**
-			 * Content displayed after the list item text.
+			 * Additional class name to style the list item.
 			 */
-			after: PropTypes.node,
+			className: PropTypes.string,
+			/**
+			 * Description displayed beneath the list item title.
+			 */
+			description: PropTypes.string,
+			/**
+			 * Href attribute used in a Link wrapped around the item.
+			 */
+			href: PropTypes.string,
 			/**
 			 * Content displayed after the list item text.
 			 */
 			onClick: PropTypes.func,
 			/**
-			 * Additional class name to style the list item.
+			 * Title displayed for the list item.
 			 */
-			className: PropTypes.string,
+			title: PropTypes.string.isRequired,
 		} )
 	).isRequired,
 };

@@ -5,7 +5,16 @@
 	margin-bottom: 0;
 
 	&.has-action {
+		padding: 0;
 		cursor: pointer;
+	}
+
+	> a {
+		text-decoration: none;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		padding: $gap;
 	}
 
 	.woocommerce-list__item-title {
