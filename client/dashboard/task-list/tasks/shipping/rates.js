@@ -8,57 +8,23 @@ import { Button, TextControl } from 'newspack-components';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { FormToggle } from '@wordpress/components';
-import { get, xor } from 'lodash';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
  * WooCommerce dependencies
  */
-import { Flag } from '@woocommerce/components';
+import { Flag, Form } from '@woocommerce/components';
 import { getCurrencyFormatString } from '@woocommerce/currency';
 
 class ShippingRates extends Component {
 	constructor() {
 		super( ...arguments );
 
-		this.state = {
-			zoneRates: {},
-			enabledZones: [],
-		};
-
-		this.handleSubmit = this.handleSubmit.bind( this );
+		this.updateShippingZones = this.updateShippingZones.bind( this );
 	}
 
-	componentDidUpdate( prevProps ) {
-		const { shippingZones } = this.props;
-
-		if ( prevProps.shippingZones !== shippingZones ) {
-			const zoneRates = {};
-			const enabledZones = [];
-
-			shippingZones.forEach( zone => {
-				const flatRateMethods =
-					zone.methods && zone.methods.length
-						? zone.methods.filter( method => 'flat_rate' === method.method_id )
-						: [];
-				const rate = flatRateMethods.length
-					? flatRateMethods[ 0 ].settings.cost.value
-					: getCurrencyFormatString( 0 );
-				zoneRates[ zone.id ] = rate;
-
-				if ( zone.toggleEnabled && flatRateMethods.length && flatRateMethods[ 0 ].enabled ) {
-					enabledZones.push( zone.id );
-				}
-			} );
-
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( { zoneRates, enabledZones } );
-			/* eslint-enable react/no-did-update-set-state */
-		}
-	}
-
-	async handleSubmit() {
-		const { enabledZones, zoneRates } = this.state;
+	async updateShippingZones( values ) {
 		const { createNotice, shippingZones } = this.props;
 
 		shippingZones.map( zone => {
@@ -66,7 +32,7 @@ class ShippingRates extends Component {
 				? zone.methods.filter( method => 'flat_rate' === method.method_id )
 				: [];
 
-			if ( zone.toggleEnabled && ! enabledZones.includes( zone.id ) ) {
+			if ( zone.toggleEnabled && ! values[ `${ zone.id }_enabled` ] ) {
 				// Disable any flat rate methods that exist if toggled off.
 				if ( flatRateMethods.length ) {
 					flatRateMethods.map( method => {
@@ -89,7 +55,7 @@ class ShippingRates extends Component {
 					path: `/wc/v3/shipping/zones/${ zone.id }/methods/${ flatRateMethods[ 0 ].instance_id }`,
 					data: {
 						enabled: true,
-						settings: { cost: zoneRates[ zone.id ] },
+						settings: { cost: values[ `${ zone.id }_rate` ] },
 					},
 				} );
 			} else {
@@ -99,7 +65,7 @@ class ShippingRates extends Component {
 					path: `/wc/v3/shipping/zones/${ zone.id }/methods`,
 					data: {
 						method_id: 'flat_rate',
-						settings: { cost: zoneRates[ zone.id ] },
+						settings: { cost: values[ `${ zone.id }_rate` ] },
 					},
 				} );
 			}
@@ -114,23 +80,74 @@ class ShippingRates extends Component {
 		this.props.completeStep();
 	}
 
-	handleChange( zoneId, value ) {
-		this.setState( prevState => ( { zoneRates: { ...prevState.zoneRates, [ zoneId ]: value } } ) );
+	renderInputPrefix() {
+		const symbolPosition = get( wcSettings, [ 'currency', 'position' ] );
+		if ( 0 === symbolPosition.indexOf( 'right' ) ) {
+			return;
+		}
+
+		return (
+			<span className="woocommerce-shipping-rate__control-prefix">
+				{ get( wcSettings, [ 'currency', 'symbol' ], '$' ) }
+			</span>
+		);
 	}
 
-	handleToggle( zoneId ) {
-		this.setState( prevState => ( { enabledZones: xor( prevState.enabledZones, [ zoneId ] ) } ) );
+	renderInputSuffix( rate ) {
+		const symbolPosition = get( wcSettings, [ 'currency', 'position' ] );
+		if ( 0 === symbolPosition.indexOf( 'right' ) ) {
+			return (
+				<span className="woocommerce-shipping-rate__control-suffix">
+					{ get( wcSettings, [ 'currency', 'symbol' ], '$' ) }
+				</span>
+			);
+		}
+
+		return parseFloat( rate ) === parseFloat( 0 ) ? (
+			<span className="woocommerce-shipping-rate__control-suffix">
+				{ __( 'Free shipping', 'woocommerce-admin' ) }
+			</span>
+		) : null;
 	}
 
-	handleBlur( zoneId ) {
-		const { zoneRates } = this.state;
-		zoneRates[ zoneId ] = getCurrencyFormatString( zoneRates[ zoneId ] );
+	getInitialValues() {
+		const values = {};
 
-		this.setState( { zoneRates } );
+		this.props.shippingZones.forEach( zone => {
+			const flatRateMethods =
+				zone.methods && zone.methods.length
+					? zone.methods.filter( method => 'flat_rate' === method.method_id )
+					: [];
+			const rate = flatRateMethods.length
+				? flatRateMethods[ 0 ].settings.cost.value
+				: getCurrencyFormatString( 0 );
+			values[ `${ zone.id }_rate` ] = rate;
+
+			if ( flatRateMethods.length && flatRateMethods[ 0 ].enabled ) {
+				values[ `${ zone.id }_enabled` ] = true;
+			} else {
+				values[ `${ zone.id }_enabled` ] = false;
+			}
+		} );
+
+		return values;
+	}
+
+	validate( values ) {
+		const errors = {};
+
+		const rates = Object.keys( values ).filter( field => field.endsWith( '_rate' ) );
+
+		rates.forEach( rate => {
+			if ( values[ rate ] < 0 ) {
+				errors[ rate ] = __( 'Shipping rates can not be negative numbers.', 'woocommerce-admin' );
+			}
+		} );
+
+		return errors;
 	}
 
 	render() {
-		const { enabledZones, zoneRates } = this.state;
 		const { shippingZones } = this.props;
 
 		if ( ! shippingZones.length ) {
@@ -138,66 +155,68 @@ class ShippingRates extends Component {
 		}
 
 		return (
-			<Fragment>
-				<div className="woocommerce-shipping-rates">
-					{ shippingZones.map( zone => (
-						<div className="woocommerce-shipping-rate" key={ zone.id }>
-							<div className="woocommerce-shipping-rate__icon">
-								{ zone.locations ? (
-									zone.locations.map( location => (
-										<Flag size={ 24 } code={ location.code } key={ location.code } />
-									) )
-								) : (
-									// Icon used for zones without locations or "Rest of the world".
-									<i className="material-icons-outlined">public</i>
-								) }
-							</div>
-							<div className="woocommerce-shipping-rate__main">
-								<div className="woocommerce-shipping-rate__name">
-									{ zone.name }
-									{ zone.toggleEnabled && (
-										<FormToggle
-											checked={ enabledZones.includes( zone.id ) }
-											onChange={ () => this.handleToggle( zone.id ) }
-										/>
-									) }
-								</div>
-								{ ( ! zone.toggleEnabled || enabledZones.includes( zone.id ) ) && (
-									<div
-										className={ classnames( 'woocommerce-shipping-rate__control-wrapper', {
-											'has-value': zoneRates[ zone.id ],
-										} ) }
-									>
-										<span className="woocommerce-shipping-rate__control-prefix">
-											{ get( wcSettings, [ 'currency', 'symbol' ], '$' ) }
-										</span>
-										<TextControl
-											label={ __( 'Shipping cost', 'woocommerce-admin' ) }
-											required
-											value={
-												'undefined' === typeof zoneRates[ zone.id ]
-													? getCurrencyFormatString( 0 )
-													: zoneRates[ zone.id ]
-											}
-											onChange={ value => this.handleChange( zone.id, value ) }
-											onBlur={ () => this.handleBlur( zone.id ) }
-										/>
-										{ parseFloat( zoneRates[ zone.id ] ) === parseFloat( 0 ) && (
-											<span className="woocommerce-shipping-rate__control-suffix">
-												{ __( 'Free shipping', 'woocommerce-admin' ) }
-											</span>
-										) }
+			<Form
+				initialValues={ this.getInitialValues() }
+				onSubmitCallback={ this.updateShippingZones }
+				validate={ this.validate }
+			>
+				{ ( { getInputProps, handleSubmit, setTouched, setValue, values } ) => {
+					return (
+						<Fragment>
+							<div className="woocommerce-shipping-rates">
+								{ shippingZones.map( zone => (
+									<div className="woocommerce-shipping-rate" key={ zone.id }>
+										<div className="woocommerce-shipping-rate__icon">
+											{ zone.locations ? (
+												zone.locations.map( location => (
+													<Flag size={ 24 } code={ location.code } key={ location.code } />
+												) )
+											) : (
+												// Icon used for zones without locations or "Rest of the world".
+												<i className="material-icons-outlined">public</i>
+											) }
+										</div>
+										<div className="woocommerce-shipping-rate__main">
+											<div className="woocommerce-shipping-rate__name">
+												{ zone.name }
+												{ zone.toggleEnabled && (
+													<FormToggle { ...getInputProps( `${ zone.id }_enabled` ) } />
+												) }
+											</div>
+											{ ( ! zone.toggleEnabled || values[ `${ zone.id }_enabled` ] ) && (
+												<div
+													className={ classnames( 'woocommerce-shipping-rate__control-wrapper', {
+														'has-value': values[ `${ zone.id }_rate` ],
+													} ) }
+												>
+													{ this.renderInputPrefix() }
+													<TextControl
+														label={ __( 'Shipping cost', 'woocommerce-admin' ) }
+														required
+														{ ...getInputProps( `${ zone.id }_rate` ) }
+														onBlur={ () => {
+															setTouched( `${ zone.id }_rate` );
+															setValue(
+																`${ zone.id }_rate`,
+																getCurrencyFormatString( values[ `${ zone.id }_rate` ] )
+															);
+														} }
+													/>
+													{ this.renderInputSuffix( values[ `${ zone.id }_rate` ] ) }
+												</div>
+											) }
+										</div>
 									</div>
-								) }
+								) ) }
 							</div>
-						</div>
-					) ) }
-				</div>
 
-				<Button isPrimary onClick={ this.handleSubmit }>
-					{ __( 'Complete task', 'woocommerce-admin' ) }
-				</Button>
-			</Fragment>
+							<Button isPrimary onClick={ handleSubmit }>
+								{ __( 'Complete task', 'woocommerce-admin' ) }
+							</Button>
+						</Fragment>
+					);
+				} }
+			</Form>
 		);
 	}
 }

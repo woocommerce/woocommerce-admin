@@ -48,6 +48,9 @@ class Shipping extends Component {
 	async fetchShippingZones() {
 		this.setState( { isPending: true } );
 		const { countryCode, countryName } = this.props;
+
+		// @todo The following fetches for shipping information should be moved into
+		// the wc-api to make these methods and states more readily available.
 		const shippingZones = [];
 		const zones = await apiFetch( { path: '/wc/v3/shipping/zones' } );
 		let hasCountryZone = false;
@@ -129,7 +132,6 @@ class Shipping extends Component {
 		if ( nextStep ) {
 			this.setState( { step: nextStep.key } );
 		} else {
-			this.setState( { step: steps[ 0 ].key } );
 			getHistory().push( getNewPath( {}, '/', {} ) );
 		}
 	}
@@ -173,7 +175,7 @@ class Shipping extends Component {
 				<Card className="is-narrow">
 					<Stepper
 						isPending={ isPending || isSettingsRequesting }
-						isVertical={ true }
+						isVertical
 						currentStep={ step }
 						steps={ this.getSteps() }
 					/>
