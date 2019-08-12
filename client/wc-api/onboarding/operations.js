@@ -3,13 +3,14 @@
 /**
  * External dependencies
  */
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
  */
 import { getResourceName } from '../utils';
-import { NAMESPACE } from './constants';
+import { NAMESPACE, pluginNames } from './constants';
 
 function read( resourceNames, fetch = apiFetch ) {
 	return [
@@ -19,7 +20,11 @@ function read( resourceNames, fetch = apiFetch ) {
 }
 
 function update( resourceNames, data, fetch = apiFetch ) {
-	return [ ...updateProfileItems( resourceNames, data, fetch ) ];
+	return [
+		...activatePlugins( resourceNames, data, fetch ),
+		...installPlugins( resourceNames, data, fetch ),
+		...updateProfileItems( resourceNames, data, fetch ),
+	];
 }
 
 function readProfileItems( resourceNames, fetch ) {
@@ -107,9 +112,73 @@ function readJetpackConnectUrl( resourceNames, fetch ) {
 					return { [ resourceName ]: { data: response.connectAction } };
 				} )
 				.catch( error => {
+					error.message = getPluginErrorMessage( 'activate', 'jetpack' );
 					return { [ resourceName ]: { error } };
 				} ),
 		];
+	}
+
+	return [];
+}
+
+function doPluginActions( fetch, action, plugins ) {
+	const resourceName = [ `plugin-${ action }` ];
+
+	return plugins.map( async plugin => {
+		return fetch( {
+			path: `${ NAMESPACE }/onboarding/plugins/${ action }`,
+			method: 'POST',
+			data: {
+				plugin,
+			},
+		} )
+			.then( response => {
+				return {
+					[ resourceName ]: { data: plugins },
+					[ getResourceName( resourceName, plugin ) ]: { data: response },
+				};
+			} )
+			.catch( error => {
+				error.message = getPluginErrorMessage( action, plugin );
+				return {
+					[ resourceName ]: { data: plugins },
+					[ getResourceName( resourceName, plugin ) ]: { error },
+				};
+			} );
+	} );
+}
+
+function getPluginErrorMessage( action, plugin ) {
+	const pluginName = pluginNames[ plugin ] || plugin;
+
+	return 'install' === action
+		? sprintf(
+				__( 'There was an error installing %s. Please try again.', 'woocommerce-admin' ),
+				pluginName
+			)
+		: sprintf(
+				__( 'There was an error activating %s. Please try again.', 'woocommerce-admin' ),
+				pluginName
+			);
+}
+
+function installPlugins( resourceNames, data, fetch ) {
+	const resourceName = 'plugin-install';
+
+	if ( resourceNames.includes( resourceName ) ) {
+		const plugins = data[ resourceName ];
+		return doPluginActions( fetch, 'install', plugins );
+	}
+
+	return [];
+}
+
+function activatePlugins( resourceNames, data, fetch ) {
+	const resourceName = 'plugin-activate';
+
+	if ( resourceNames.includes( resourceName ) ) {
+		const plugins = data[ resourceName ];
+		return doPluginActions( fetch, 'activate', plugins );
 	}
 
 	return [];
