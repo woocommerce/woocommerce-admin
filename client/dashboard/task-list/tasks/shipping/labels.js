@@ -5,6 +5,9 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
+import { difference } from 'lodash';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -14,58 +17,59 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { doPluginActions, getPluginErrorMessage } from 'dashboard/utils';
+import withSelect from 'wc-api/with-select';
 
-export default class ShippingLabels extends Component {
+const plugins = [ 'jetpack', 'woocommerce-services' ];
+
+class ShippingLabels extends Component {
 	constructor() {
 		super( ...arguments );
 
-		this.plugins = [ 'jetpack', 'woocommerce-services' ];
-
-		this.state = {
-			isInstalling: false,
-			isError: false,
-		};
-
 		this.installAndActivatePlugins = this.installAndActivatePlugins.bind( this );
-		this.pluginActionCallback = this.pluginActionCallback.bind( this );
 	}
 
-	async installAndActivatePlugins( event ) {
-		const { isInstalling } = this.state;
-		const { createNotice, completeStep } = this.props;
+	componentDidUpdate( prevProps ) {
+		const {
+			activatedPlugins,
+			activatePlugins,
+			completeStep,
+			createNotice,
+			errors,
+			installedPlugins,
+			isRequesting,
+		} = this.props;
 
-		event.preventDefault();
+		const newErrors = difference( errors, prevProps.errors );
+		newErrors.map( error => createNotice( 'error', error ) );
 
-		// Avoid double activating.
-		if ( isInstalling ) {
-			return false;
+		if (
+			! isRequesting &&
+			installedPlugins.length === plugins.length &&
+			activatedPlugins.length !== plugins.length &&
+			prevProps.installedPlugins.length !== installedPlugins.length
+		) {
+			activatePlugins( plugins );
 		}
 
-		this.setState( {
-			isInstalling: true,
-		} );
-
-		const installed = await doPluginActions( 'install', this.plugins, this.pluginActionCallback );
-		if ( installed.failed.length ) {
-			return false;
-		}
-
-		const activated = await doPluginActions( 'activate', this.plugins, this.pluginActionCallback );
-		if ( ! activated.failed.length ) {
-			createNotice( 'success', __( 'Plugins were successfully installed', 'woocommerce-admin' ) );
+		if ( activatedPlugins.length === plugins.length ) {
+			createNotice(
+				'success',
+				__( 'Plugins were successfully installed and activated.', 'woocommerce-admin' )
+			);
 			completeStep();
 		}
 	}
 
-	pluginActionCallback( response ) {
-		if ( 'success' !== response.status ) {
-			this.setState( {
-				isInstalling: false,
-				isError: true,
-			} );
-			this.props.createNotice( 'error', getPluginErrorMessage( 'install', response.plugin ) );
+	async installAndActivatePlugins( event ) {
+		event.preventDefault();
+
+		// Avoid double activating.
+		const { isRequesting, installPlugins } = this.props;
+		if ( isRequesting ) {
+			return false;
 		}
+
+		installPlugins( plugins );
 	}
 
 	skipInstaller() {
@@ -73,15 +77,15 @@ export default class ShippingLabels extends Component {
 	}
 
 	render() {
-		const { isError, isInstalling } = this.state;
+		const { hasErrors, isRequesting } = this.props;
 
-		return isError ? (
+		return hasErrors ? (
 			<Button isPrimary onClick={ () => location.reload() }>
 				{ __( 'Retry', 'woocommerce-admin' ) }
 			</Button>
 		) : (
 			<Fragment>
-				<Button isBusy={ isInstalling } isPrimary onClick={ this.installAndActivatePlugins }>
+				<Button isBusy={ isRequesting } isPrimary onClick={ this.installAndActivatePlugins }>
 					{ __( 'Install & enable', 'woocommerce-admin' ) }
 				</Button>
 				<Button onClick={ this.skipInstaller }>{ __( 'No thanks', 'woocommerce-admin' ) }</Button>
@@ -89,3 +93,50 @@ export default class ShippingLabels extends Component {
 		);
 	}
 }
+
+export default compose(
+	withSelect( select => {
+		const {
+			getPluginInstallations,
+			getPluginInstallationErrors,
+			getPluginActivations,
+			getPluginActivationErrors,
+			isPluginActivateRequesting,
+			isPluginInstallRequesting,
+		} = select( 'wc-api' );
+
+		const isRequesting = isPluginActivateRequesting() || isPluginInstallRequesting();
+
+		const activationErrors = getPluginActivationErrors( plugins );
+		const activatedPlugins = Object.keys( getPluginActivations( plugins ) );
+		const installationErrors = getPluginInstallationErrors( plugins );
+		const installedPlugins = Object.keys( getPluginInstallations( plugins ) );
+
+		const errors = [];
+		Object.keys( activationErrors ).map( plugin =>
+			errors.push( activationErrors[ plugin ].message )
+		);
+		Object.keys( installationErrors ).map( plugin =>
+			errors.push( installationErrors[ plugin ].message )
+		);
+		const hasErrors = Boolean( errors.length );
+
+		return {
+			activatedPlugins,
+			installedPlugins,
+			errors,
+			hasErrors,
+			isRequesting,
+		};
+	} ),
+	withDispatch( dispatch => {
+		const { createNotice } = dispatch( 'core/notices' );
+		const { activatePlugins, installPlugins } = dispatch( 'wc-api' );
+
+		return {
+			activatePlugins,
+			createNotice,
+			installPlugins,
+		};
+	} )
+)( ShippingLabels );
