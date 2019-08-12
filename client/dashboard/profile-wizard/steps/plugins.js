@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { difference } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -13,7 +14,6 @@ import { withDispatch } from '@wordpress/data';
  */
 import { H, Stepper, Card } from '@woocommerce/components';
 import { recordEvent } from 'lib/tracks';
-import { doPluginActions, getPluginErrorMessage } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
 
 const plugins = [ 'jetpack', 'woocommerce-services' ];
@@ -24,55 +24,32 @@ class Plugins extends Component {
 
 		this.state = {
 			step: 'install',
-			isPending: true,
-			isError: false,
-			connectUrl: '',
 		};
 
 		this.activatePlugins = this.activatePlugins.bind( this );
 	}
 
 	componentDidMount() {
-		this.installPlugins();
+		this.props.installPlugins( plugins );
 	}
 
 	componentDidUpdate( prevProps ) {
-		const {
-			createNotice,
-			jetpackConnectUrl,
-			isJetpackConnectError,
-			isJetpackConnectRequesting,
-		} = this.props;
+		const { createNotice, errors, installedPlugins, jetpackConnectUrl } = this.props;
 
-		if ( ! isJetpackConnectRequesting && jetpackConnectUrl ) {
+		if ( jetpackConnectUrl ) {
 			window.location = jetpackConnectUrl;
-		} else if ( prevProps.isJetpackConnectError !== isJetpackConnectError ) {
-			createNotice( 'error', getPluginErrorMessage( 'activate', 'jetpack' ) );
 		}
-	}
 
-	pluginActionCallback( response ) {
-		if ( 'success' !== response.status ) {
-			this.setState( {
-				isPending: false,
-				isError: true,
-			} );
-			this.props.createNotice( 'error', getPluginErrorMessage( 'install', response.plugin ) );
-		}
-	}
+		const newErrors = difference( errors, prevProps.errors );
+		newErrors.map( error => createNotice( 'error', error ) );
 
-	async installPlugins() {
-		const installed = await doPluginActions( 'install', plugins, this.pluginActionCallback );
-		if ( installed.failed.length ) {
-			this.setState( {
-				isPending: false,
-				isError: true,
-			} );
-		} else {
-			this.setState( {
-				step: 'activate',
-				isPending: false,
-			} );
+		if (
+			prevProps.installedPlugins.length !== plugins.length &&
+			installedPlugins.length === plugins.length
+		) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( { step: 'activate' } );
+			/* eslint-enable react/no-did-update-set-state */
 		}
 	}
 
@@ -80,23 +57,20 @@ class Plugins extends Component {
 		event.preventDefault();
 
 		// Avoid double activating.
-		const { isPending } = this.state;
-		if ( isPending ) {
+		const { isRequesting } = this.props;
+		if ( isRequesting ) {
 			return false;
 		}
 
-		this.setState( {
-			isPending: true,
-		} );
-
 		recordEvent( 'storeprofiler_install_plugin' );
 
-		doPluginActions( 'activate', plugins, this.pluginActionCallback );
+		this.props.activatePlugins( plugins );
 	}
 
 	render() {
-		const { isJetpackConnectError } = this.props;
-		const { step, isPending, isError } = this.state;
+		const { hasErrors, isRequesting } = this.props;
+		const { step } = this.state;
+
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
@@ -107,7 +81,7 @@ class Plugins extends Component {
 					<Stepper
 						isVertical={ true }
 						currentStep={ step }
-						isPending={ isPending }
+						isPending={ isRequesting && ! hasErrors }
 						steps={ [
 							{
 								label: __( 'Install Jetpack and WooCommerce Services', 'woocommerce-admin' ),
@@ -121,18 +95,17 @@ class Plugins extends Component {
 					/>
 
 					<div className="woocommerce-profile-wizard__plugins-actions">
-						{ ( isError || isJetpackConnectError ) && (
+						{ hasErrors && (
 							<Button isPrimary onClick={ () => location.reload() }>
 								{ __( 'Retry', 'woocommerce-admin' ) }
 							</Button>
 						) }
 
-						{ ! ( isError || isJetpackConnectError ) &&
-							'activate' === step && (
-								<Button isPrimary isBusy={ isPending } onClick={ this.activatePlugins }>
-									{ __( 'Activate & continue', 'woocommerce-admin' ) }
-								</Button>
-							) }
+						{ ! ( hasErrors && 'activate' === step ) && (
+							<Button isPrimary isBusy={ isRequesting } onClick={ this.activatePlugins }>
+								{ __( 'Activate & continue', 'woocommerce-admin' ) }
+							</Button>
+						) }
 					</div>
 				</Card>
 			</Fragment>
@@ -146,18 +119,59 @@ export default compose(
 			getJetpackConnectUrl,
 			isGetJetpackConnectUrlRequesting,
 			getJetpackConnectUrlError,
+			getPluginInstallations,
+			getPluginInstallationErrors,
+			getPluginActivations,
+			getPluginActivationErrors,
+			isPluginActivateRequesting,
+			isPluginInstallRequesting,
 		} = select( 'wc-api' );
 
-		const jetpackConnectUrl = getJetpackConnectUrl();
-		const isJetpackConnectRequesting = isGetJetpackConnectUrlRequesting();
-		const isJetpackConnectError = getJetpackConnectUrlError();
+		const isRequesting =
+			isPluginActivateRequesting() || isPluginInstallRequesting() || getJetpackConnectUrlError();
 
-		return { jetpackConnectUrl, isJetpackConnectRequesting, isJetpackConnectError };
+		const activationErrors = getPluginActivationErrors( plugins );
+		const activatedPlugins = Object.keys( getPluginActivations( plugins ) );
+		const installationErrors = getPluginInstallationErrors( plugins );
+		const installedPlugins = Object.keys( getPluginInstallations( plugins ) );
+
+		const isJetpackConnectUrlRequesting = isGetJetpackConnectUrlRequesting();
+		const jetpackConnectUrlError = getJetpackConnectUrlError();
+		let jetpackConnectUrl = null;
+		if ( activatedPlugins.includes( 'jetpack' ) ) {
+			jetpackConnectUrl = getJetpackConnectUrl();
+		}
+
+		const errors = [];
+		Object.keys( activationErrors ).map( plugin =>
+			errors.push( activationErrors[ plugin ].message )
+		);
+		Object.keys( installationErrors ).map( plugin =>
+			errors.push( installationErrors[ plugin ].message )
+		);
+		if ( jetpackConnectUrlError ) {
+			errors.push( jetpackConnectUrlError );
+		}
+		const hasErrors = Boolean( errors.length );
+
+		return {
+			activatedPlugins,
+			installedPlugins,
+			jetpackConnectUrl,
+			isJetpackConnectUrlRequesting,
+			errors,
+			hasErrors,
+			isRequesting,
+		};
 	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
+		const { activatePlugins, installPlugins } = dispatch( 'wc-api' );
+
 		return {
+			activatePlugins,
 			createNotice,
+			installPlugins,
 		};
 	} )
 )( Plugins );
