@@ -155,10 +155,13 @@ class Autocomplete extends Component {
 	}
 
 	search( event ) {
+		const { hideBeforeSearch, options } = this.props;
 		const query = event.target.value;
 
 		// @todo Add a hook to alter options or search event before and after filtering.
-		const filteredOptions = this.getFilteredOptions( query );
+		const filteredOptions = ! query.length && ! hideBeforeSearch
+			? options
+			: this.getFilteredOptions( query );
 		this.setState( { selectedIndex: 0, filteredOptions, query }, () => this.announce( filteredOptions ) );
 	}
 
@@ -226,6 +229,10 @@ Autocomplete.propTypes = {
 	 */
 	getSearchExpression: PropTypes.func,
 	/**
+	 * Render tags inside input, otherwise render below input.
+	 */
+	inlineTags: PropTypes.bool,
+	/**
 	 * Function called when selected results change, passed result list.
 	 */
 	onChange: PropTypes.func,
@@ -264,10 +271,6 @@ Autocomplete.propTypes = {
 		} )
 	),
 	/**
-	 * Render tags inside input, otherwise render below input.
-	 */
-	inlineTags: PropTypes.bool,
-	/**
 	 * A limit for the number of results shown in the options menu.  Set to 0 for no limit.
 	 */
 	maxResults: PropTypes.number,
@@ -280,9 +283,13 @@ Autocomplete.propTypes = {
 	 */
 	showClearButton: PropTypes.bool,
 	/**
+	 * Only show list options after typing a search query.
+	 */
+	hideBeforeSearch: PropTypes.bool,
+	/**
 	 * Render results list positioned statically instead of absolutely.
 	 */
-	staticResults: PropTypes.bool,
+	staticList: PropTypes.bool,
 };
 
 Autocomplete.defaultProps = {
@@ -294,7 +301,8 @@ Autocomplete.defaultProps = {
 	multiple: false,
 	selected: [],
 	showClearButton: false,
-	staticResults: false,
+	hideBeforeSearch: false,
+	staticList: false,
 };
 
 export default compose( [

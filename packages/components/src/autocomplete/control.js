@@ -37,10 +37,10 @@ class SearchControl extends Component {
 		};
 	}
 
-	onFocus( onChange ) {
+	onFocus( onSearch ) {
 		return event => {
 			this.setState( { isActive: true } );
-			onChange( event );
+			onSearch( event );
 		};
 	}
 

@@ -88,13 +88,13 @@ class List extends Component {
 	}
 
 	render() {
-		const { filteredOptions, instanceId, listboxId, selectedIndex, staticResults } = this.props;
-		const optionsClasses = classnames( 'woocommerce-autocomplete__listbox', {
-			'is-static-results': staticResults,
+		const { filteredOptions, instanceId, listboxId, selectedIndex, staticList } = this.props;
+		const listboxClasses = classnames( 'woocommerce-autocomplete__listbox', {
+			'is-static': staticList,
 		} );
 
 		return (
-			<div id={ listboxId } role="listbox" className={ optionsClasses }>
+			<div id={ listboxId } role="listbox" className={ listboxClasses }>
 				{ filteredOptions.map( ( option, index ) => (
 						<Button
 							key={ option.key }
@@ -156,9 +156,9 @@ List.propTypes = {
 	 */
 	selectedIndex: PropTypes.number.isRequired,
 	/**
-	 * Bool to determine if the results should be positioned absolutely or staticly.
+	 * Bool to determine if the list should be positioned absolutely or staticly.
 	 */
-	staticResults: PropTypes.bool,
+	staticList: PropTypes.bool,
 };
 
 export default List;
