@@ -35,7 +35,7 @@ class Autocomplete extends Component {
 
 		this.bindNode = this.bindNode.bind( this );
 		this.search = this.search.bind( this );
-		this.selectResult = this.selectResult.bind( this );
+		this.selectOption = this.selectOption.bind( this );
 		this.updateSelectedIndex = this.updateSelectedIndex.bind( this );
 	}
 
@@ -43,8 +43,16 @@ class Autocomplete extends Component {
 		this.node = node;
 	}
 
-	reset() {
-		this.setState( this.constructor.getInitialState() );
+	reset( selected = this.props.selected ) {
+		const { multiple } = this.props;
+		const initialState = this.constructor.getInitialState();
+
+		// Reset to the option label if not using tags.
+		if ( ! multiple && selected.length && selected[ 0 ].label ) {
+			initialState.query = selected[ 0 ].label;
+		}
+
+		this.setState( initialState );
 	}
 
 	handleFocusOutside() {
@@ -57,17 +65,28 @@ class Autocomplete extends Component {
 		return filteredOptions.length > 0 || query;
 	}
 
-	selectResult( option ) {
-		const { selected, onChange, query } = this.props;
+	hasTags() {
+		const { multiple, selected } = this.props;
+
+		if ( ! multiple ) {
+			return false;
+		}
+
+		return selected.some( item => Boolean( item.label ) );
+	}
+
+	selectOption( option ) {
+		const { multiple, onChange, selected } = this.props;
+		const { query } = this.state;
+		const newSelected = multiple ? [ ...selected, option ] : [ option ];
 
 		// Check if this is already selected
 		const isSelected = findIndex( selected, { key: option.key } );
 		if ( -1 === isSelected ) {
-			this.setState( { query: '' } );
-			onChange( [ ...selected, option ], query );
+			onChange( newSelected, query );
 		}
 
-		this.reset();
+		this.reset( newSelected );
 	}
 
 	updateSelectedIndex( value ) {
@@ -153,6 +172,7 @@ class Autocomplete extends Component {
 		const { selectedIndex } = this.state;
 
 		const isExpanded = this.isExpanded();
+		const hasTags = this.hasTags();
 		const { key: selectedKey = '' } = options[ selectedIndex ] || {};
 		const listboxId = isExpanded ? `woocommerce-autocomplete__listbox-${ instanceId }` : null;
 		const activeId = isExpanded
@@ -162,7 +182,7 @@ class Autocomplete extends Component {
 		return (
 			<div
 				className={ classnames( 'woocommerce-autocomplete', className, {
-					'has-inline-tags': inlineTags,
+					'has-inline-tags': hasTags && inlineTags,
 				} ) }
 				ref={ this.bindNode }
 			>
@@ -170,11 +190,12 @@ class Autocomplete extends Component {
 					{ ...this.props }
 					{ ...this.state }
 					activeId={ activeId }
-					listboxId={ listboxId }
+					hasTags={ hasTags }
 					isExpanded={ isExpanded }
+					listboxId={ listboxId }
 					onSearch={ this.search }
 				/>
-				{ ! inlineTags && <Tags { ...this.props } /> }
+				{ ! inlineTags && hasTags && <Tags { ...this.props } /> }
 				{ isExpanded &&
 					<List
 						{ ...this.props }
@@ -183,7 +204,7 @@ class Autocomplete extends Component {
 						listboxId={ listboxId }
 						node={ this.node }
 						onChange={ this.updateSelectedIndex }
-						onSelect={ this.selectResult }
+						onSelect={ this.selectOption }
 					/>
 				}
 			</div>
@@ -251,6 +272,10 @@ Autocomplete.propTypes = {
 	 */
 	maxResults: PropTypes.number,
 	/**
+	 * Allow multiple option selections.
+	 */
+	multiple: PropTypes.bool,
+	/**
 	 * Render a 'Clear' button next to the input box to remove its contents.
 	 */
 	showClearButton: PropTypes.bool,
@@ -266,6 +291,7 @@ Autocomplete.defaultProps = {
 	inlineTags: false,
 	onChange: noop,
 	maxResults: 0,
+	multiple: false,
 	selected: [],
 	showClearButton: false,
 	staticResults: false,

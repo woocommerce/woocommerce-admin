@@ -37,11 +37,6 @@ class SearchControl extends Component {
 		};
 	}
 
-	shouldRenderTags() {
-		const { selected } = this.props;
-		return selected.some( item => Boolean( item.label ) );
-	}
-
 	onFocus( onChange ) {
 		return event => {
 			this.setState( { isActive: true } );
@@ -64,13 +59,13 @@ class SearchControl extends Component {
 	renderInput() {
 		const {
 			activeId,
+			hasTags,
 			inlineTags,
 			instanceId,
 			isExpanded,
 			listboxId,
 			onSearch,
 			placeholder,
-			shouldRenderTags,
 			query,
 		} = this.props;
 
@@ -92,7 +87,7 @@ class SearchControl extends Component {
 			aria-controls={ listboxId }
 			aria-activedescendant={ activeId }
 			aria-describedby={
-				shouldRenderTags && inlineTags ? `search-inline-input-${ instanceId }` : null
+				hasTags && inlineTags ? `search-inline-input-${ instanceId }` : null
 			}
 			size={ inlineTags
 				? ( ( query.length === 0 && placeholder && placeholder.length ) ||
@@ -104,9 +99,9 @@ class SearchControl extends Component {
 
 	render() {
 		const {
+			hasTags,
 			inlineTags,
 			instanceId,
-			shouldRenderTags,
 		} = this.props;
 		const { isActive } = this.state;
 
@@ -120,7 +115,7 @@ class SearchControl extends Component {
 			<div
 				className={ classnames( 'woocommerce-autocomplete__control', {
 					'is-active': isActive,
-					'has-tags': inlineTags && shouldRenderTags,
+					'has-tags': inlineTags && hasTags,
 				} ) }
 				onClick={ () => {
 					this.input.current.focus();
@@ -129,9 +124,9 @@ class SearchControl extends Component {
 				<Gridicon className="woocommerce-autocomplete__icon" icon="search" size={ 18 } />
 				{ inlineTags && <Tags { ...this.props } /> }
 				{ this.renderInput() }
-				<span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
+				{ inlineTags && <span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
 					{ __( 'Move backward for selected items', 'woocommerce-admin' ) }
-				</span>
+				</span> }
 			</div>
 			/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 		);
@@ -184,7 +179,7 @@ SearchControl.propTypes = {
 	/**
 	 * Bool to determine if tags should be rendered.
 	 */
-	shouldRenderTags: PropTypes.bool,
+	hasTags: PropTypes.bool,
 };
 
 export default SearchControl;
