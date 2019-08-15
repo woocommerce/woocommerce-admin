@@ -4,8 +4,9 @@
  */
 import { Button } from '@wordpress/components';
 import classnames from 'classnames';
-import { Component } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import { ENTER, ESCAPE, UP, DOWN, LEFT, TAB, RIGHT } from '@wordpress/keycodes';
+import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -17,6 +18,24 @@ class List extends Component {
 
 		this.handleKeyDown = this.handleKeyDown.bind( this );
 		this.select = this.select.bind( this );
+		this.optionRefs = {};
+	}
+
+	componentDidUpdate( prevProps ) {
+		const { filteredOptions } = this.props;
+
+		// Remove old option refs to avoid memory leaks.
+		if ( ! isEqual( filteredOptions, prevProps.filteredOptions ) ) {
+			this.optionRefs = {};
+		}
+	}
+
+	getOptionRef( index ) {
+		if ( ! this.optionRefs.hasOwnProperty( index ) ) {
+			this.optionRefs[ index ] = createRef();
+		}
+
+		return this.optionRefs[ index ];
 	}
 
 	select( option ) {
@@ -39,13 +58,13 @@ class List extends Component {
 		switch ( event.keyCode ) {
 			case UP:
 				nextSelectedIndex = ( selectedIndex === 0 ? filteredOptions.length : selectedIndex ) - 1;
-				onChange( nextSelectedIndex );
+				onChange( nextSelectedIndex, this.optionRefs[ nextSelectedIndex ] );
 				break;
 
 			case TAB:
 			case DOWN:
 				nextSelectedIndex = ( selectedIndex + 1 ) % filteredOptions.length;
-				onChange( nextSelectedIndex );
+				onChange( nextSelectedIndex, this.optionRefs[ nextSelectedIndex ] );
 				break;
 
 			case ENTER:
@@ -97,6 +116,7 @@ class List extends Component {
 			<div id={ listboxId } role="listbox" className={ listboxClasses }>
 				{ filteredOptions.map( ( option, index ) => (
 						<Button
+							ref={ this.getOptionRef( index ) }
 							key={ option.key }
 							id={ `woocommerce-autocomplete__option-${ instanceId }-${ option.key }` }
 							role="option"

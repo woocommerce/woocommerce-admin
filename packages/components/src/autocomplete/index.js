@@ -90,8 +90,12 @@ class Autocomplete extends Component {
 		this.reset( newSelected );
 	}
 
-	updateSelectedIndex( value ) {
-		this.setState( { selectedIndex: value } );
+	updateSelectedIndex( value, optionRef = null ) {
+		this.setState( { selectedIndex: value }, () => {
+			if ( optionRef ) {
+				optionRef.current.focus();
+			}
+		} );
 	}
 
 	announce( filteredOptions ) {
