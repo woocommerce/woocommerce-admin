@@ -35,25 +35,28 @@ const MyAutocomplete = withState( {
 } )( ( { singleSelected, multipleSelected, inlineSelected, setState } ) => (
 	<div>
 		<Autocomplete
+			label='Single value autocomplete'
 			onChange={ ( selected ) => setState( { singleSelected: selected } ) }
 			options={ options }
-			placeholder={ 'Single value autocomplete' }
+			placeholder='Start typing to filter options...'
 			selected={ singleSelected }
 		/>
 		<Autocomplete
+			label='Autocomplete with tags and clear button'
 			multiple
 			onChange={ ( selected ) => setState( { multipleSelected: selected } ) }
 			options={ options }
-			placeholder={ 'Autocomplete with tags and clear button' }
+			placeholder='Start typing to filter options...'
 			selected={ multipleSelected }
 			showClearButton
 		/>
 		<Autocomplete
+			label='Autocomplete with inline tags'
 			multiple
 			inlineTags
 			onChange={ ( selected ) => setState( { inlineSelected: selected } ) }
 			options={ options }
-			placeholder={ 'Autocomplete with inline tags' }
+			placeholder='Start typing to filter options...'
 			selected={ inlineSelected }
 		/>
 	</div>

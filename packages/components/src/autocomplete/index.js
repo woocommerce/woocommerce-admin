@@ -229,9 +229,20 @@ Autocomplete.propTypes = {
 	 */
 	getSearchExpression: PropTypes.func,
 	/**
+	 * Help text to be appended beneath the input.
+	 */
+	help: PropTypes.oneOfType( [
+		PropTypes.string,
+		PropTypes.node,
+	] ),
+	/**
 	 * Render tags inside input, otherwise render below input.
 	 */
 	inlineTags: PropTypes.bool,
+	/**
+	 * A label to use for the main input.
+	 */
+	label: PropTypes.string,
 	/**
 	 * Function called when selected results change, passed result list.
 	 */

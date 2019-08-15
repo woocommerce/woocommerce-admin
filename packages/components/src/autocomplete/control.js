@@ -71,6 +71,7 @@ class SearchControl extends Component {
 
 		return <input
 			className="woocommerce-autocomplete__input"
+			id={ `woocommerce-autocomplete-${ instanceId }__input` }
 			ref={ this.input }
 			type={ 'search' }
 			value={ query }
@@ -100,8 +101,10 @@ class SearchControl extends Component {
 	render() {
 		const {
 			hasTags,
+			help,
 			inlineTags,
 			instanceId,
+			label,
 		} = this.props;
 		const { isActive } = this.state;
 
@@ -123,10 +126,26 @@ class SearchControl extends Component {
 			>
 				<Gridicon className="woocommerce-autocomplete__icon" icon="search" size={ 18 } />
 				{ inlineTags && <Tags { ...this.props } /> }
+				{ !! label &&
+					<label
+						htmlFor={ `woocommerce-autocomplete-${ instanceId }__input` }
+						className="components-base-control__label"
+					>
+						{ label }
+					</label>
+				}
 				{ this.renderInput() }
 				{ inlineTags && <span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
 					{ __( 'Move backward for selected items', 'woocommerce-admin' ) }
 				</span> }
+				{ !! help &&
+					<p
+						id={ `woocommerce-autocomplete-${ instanceId }__help` }
+						className="components-base-control__help"
+					>
+						{ help }
+					</p>
+				}
 			</div>
 			/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 		);
@@ -135,6 +154,17 @@ class SearchControl extends Component {
 
 SearchControl.propTypes = {
 	/**
+	 * Bool to determine if tags should be rendered.
+	 */
+	hasTags: PropTypes.bool,
+	/**
+	 * Help text to be appended beneath the input.
+	 */
+	help: PropTypes.oneOfType( [
+		PropTypes.string,
+		PropTypes.node,
+	] ),
+	/**
 	 * Render tags inside input, otherwise render below input.
 	 */
 	inlineTags: PropTypes.bool,
@@ -142,6 +172,10 @@ SearchControl.propTypes = {
 	 * ID of the main Autocomplete instance.
 	 */
 	instanceId: PropTypes.number,
+	/**
+	 * A label to use for the main input.
+	 */
+	label: PropTypes.string,
 	/**
 	 * ID used for a11y in the listbox.
 	 */
@@ -176,10 +210,6 @@ SearchControl.propTypes = {
 			label: PropTypes.string,
 		} )
 	),
-	/**
-	 * Bool to determine if tags should be rendered.
-	 */
-	hasTags: PropTypes.bool,
 };
 
 export default SearchControl;
