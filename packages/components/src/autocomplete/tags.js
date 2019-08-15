@@ -4,7 +4,8 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, Icon } from '@wordpress/components';
-import { Component, Fragment } from '@wordpress/element';
+import classnames from 'classnames';
+import { Component } from '@wordpress/element';
 import { findIndex } from 'lodash';
 import PropTypes from 'prop-types';
 
@@ -42,8 +43,12 @@ class Tags extends Component {
 			return null;
 		}
 
+		const classes = classnames( 'woocommerce-autocomplete__tags', {
+			'has-clear': showClearButton,
+		} );
+
 		return (
-			<Fragment>
+			<div className={ classes }>
 				{ selected.map( ( item, i ) => {
 					if ( ! item.label ) {
 						return null;
@@ -72,7 +77,7 @@ class Tags extends Component {
 					<Icon icon="dismiss" />
 					<span className="screen-reader-text">{ __( 'Clear all', 'woocommerce-admin' ) }</span>
 				</Button> }
-			</Fragment>
+			</div>
 		);
 	}
 }

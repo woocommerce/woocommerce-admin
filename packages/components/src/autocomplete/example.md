@@ -7,6 +7,11 @@ const options = [
 		label: 'Apple',
 		value: { id: 'apple' },
 	},
+    {
+        key: 'apricot',
+		label: 'Apricot',
+		value: { id: 'apricot' },
+	},
 	{
         key: 'banana',
 		label: 'Banana',
@@ -22,6 +27,21 @@ const options = [
         key: 'cherry',
 		label: 'Cherry',
 		value: { id: 'cherry' }
+	},
+	{
+        key: 'cantaloupe',
+		label: 'Cantaloupe',
+		value: { id: 'cantaloupe' }
+	},
+	{
+        key: 'dragonfruit',
+		label: 'Dragon Fruit',
+		value: { id: 'dragonfruit' }
+	},
+	{
+        key: 'elderberry',
+		label: 'Elderberry',
+		value: { id: 'elderberry' }
     },
 ];
 const onChange = (selected) => {
@@ -35,29 +55,32 @@ const MyAutocomplete = withState( {
 } )( ( { singleSelected, multipleSelected, inlineSelected, setState } ) => (
 	<div>
 		<Autocomplete
-			label='Single value autocomplete'
+			label='Single value'
 			onChange={ ( selected ) => setState( { singleSelected: selected } ) }
 			options={ options }
 			placeholder='Start typing to filter options...'
 			selected={ singleSelected }
 		/>
+		<br/>
 		<Autocomplete
-			label='Autocomplete with tags and clear button'
-			multiple
-			onChange={ ( selected ) => setState( { multipleSelected: selected } ) }
-			options={ options }
-			placeholder='Start typing to filter options...'
-			selected={ multipleSelected }
-			showClearButton
-		/>
-		<Autocomplete
-			label='Autocomplete with inline tags'
+			label='Inline tags'
 			multiple
 			inlineTags
 			onChange={ ( selected ) => setState( { inlineSelected: selected } ) }
 			options={ options }
 			placeholder='Start typing to filter options...'
 			selected={ inlineSelected }
+		/>
+		<br/>
+		<Autocomplete
+			hideBeforeSearch
+			label='Hidden options before search'
+			multiple
+			onChange={ ( selected ) => setState( { multipleSelected: selected } ) }
+			options={ options }
+			placeholder='Start typing to filter options...'
+			selected={ multipleSelected }
+			showClearButton
 		/>
 	</div>
 ) );

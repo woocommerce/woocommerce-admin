@@ -18,7 +18,8 @@ import Tags from './tags';
 import SearchControl from './control';
 
 /**
- * A search box which autocompletes results while typing, allowing for the user to select an option.
+ * A search box which filters options while typing,
+ * allowing a user to select from an option from a filtered list.
  */
 class Autocomplete extends Component {
 	static getInitialState() {

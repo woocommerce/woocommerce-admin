@@ -4,7 +4,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, createRef } from '@wordpress/element';
-import Gridicon from 'gridicons';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -68,14 +67,15 @@ class SearchControl extends Component {
 			placeholder,
 			query,
 		} = this.props;
+		const { isActive } = this.state;
 
 		return <input
-			className="woocommerce-autocomplete__input"
-			id={ `woocommerce-autocomplete-${ instanceId }__input` }
+			className="woocommerce-autocomplete__control-input"
+			id={ `woocommerce-autocomplete-${ instanceId }__control-input` }
 			ref={ this.input }
 			type={ 'search' }
 			value={ query }
-			placeholder={ placeholder }
+			placeholder={ isActive ? placeholder : '' }
 			onChange={ this.updateSearch( onSearch ) }
 			onFocus={ this.onFocus( onSearch ) }
 			onBlur={ this.onBlur }
@@ -105,6 +105,7 @@ class SearchControl extends Component {
 			inlineTags,
 			instanceId,
 			label,
+			query,
 		} = this.props;
 		const { isActive } = this.state;
 
@@ -116,36 +117,41 @@ class SearchControl extends Component {
 			// for the benefit of sighted users.
 			/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 			<div
-				className={ classnames( 'woocommerce-autocomplete__control', {
+				className={ classnames( 'components-base-control', 'woocommerce-autocomplete__control', {
+					empty: ! query.length,
 					'is-active': isActive,
 					'has-tags': inlineTags && hasTags,
+					'with-value': query.length,
 				} ) }
 				onClick={ () => {
 					this.input.current.focus();
 				} }
 			>
-				<Gridicon className="woocommerce-autocomplete__icon" icon="search" size={ 18 } />
+				<i className="material-icons-outlined">search</i>
 				{ inlineTags && <Tags { ...this.props } /> }
-				{ !! label &&
-					<label
-						htmlFor={ `woocommerce-autocomplete-${ instanceId }__input` }
-						className="components-base-control__label"
-					>
-						{ label }
-					</label>
-				}
-				{ this.renderInput() }
-				{ inlineTags && <span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
-					{ __( 'Move backward for selected items', 'woocommerce-admin' ) }
-				</span> }
-				{ !! help &&
-					<p
-						id={ `woocommerce-autocomplete-${ instanceId }__help` }
-						className="components-base-control__help"
-					>
-						{ help }
-					</p>
-				}
+
+				<div className="components-base-control__field">
+					{ !! label &&
+						<label
+							htmlFor={ `woocommerce-autocomplete-${ instanceId }__control-input` }
+							className="components-base-control__label"
+						>
+							{ label }
+						</label>
+					}
+					{ this.renderInput() }
+					{ inlineTags && <span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
+						{ __( 'Move backward for selected items', 'woocommerce-admin' ) }
+					</span> }
+					{ !! help &&
+						<p
+							id={ `woocommerce-autocomplete-${ instanceId }__help` }
+							className="components-base-control__help"
+						>
+							{ help }
+						</p>
+					}
+				</div>
 			</div>
 			/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 		);
