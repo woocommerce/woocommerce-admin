@@ -122,7 +122,7 @@ class Autocomplete extends Component {
 	}
 
 	getFilteredOptions( query ) {
-		const { excludeSelectedOptions, getSearchExpression, maxResults, options, selected } = this.props;
+		const { excludeSelectedOptions, getSearchExpression, maxResults, onFilter, options, selected } = this.props;
 		const selectedKeys = selected.map( option => option.key );
 		const filtered = [];
 
@@ -156,14 +156,14 @@ class Autocomplete extends Component {
 			}
 		}
 
-		return filtered;
+		return onFilter( filtered );
 	}
 
 	search( event ) {
-		const { hideBeforeSearch, options } = this.props;
+		const { hideBeforeSearch, onSearch, options } = this.props;
 		const query = event.target.value;
 
-		// @todo Add a hook to alter options or search event before and after filtering.
+		onSearch( query );
 		const filteredOptions = ! query.length && ! hideBeforeSearch
 			? options
 			: this.getFilteredOptions( query );
@@ -230,6 +230,11 @@ Autocomplete.propTypes = {
 	 */
 	excludeSelectedOptions: PropTypes.bool,
 	/**
+	 * Add or remove items to the list of options after filtering,
+	 * passed the array of filtered options and should return an array of options.
+	 */
+	onFilter: PropTypes.func,
+	/**
 	 * Function to add regex expression to the filter the results, passed the search query.
 	 */
 	getSearchExpression: PropTypes.func,
@@ -252,6 +257,10 @@ Autocomplete.propTypes = {
 	 * Function called when selected results change, passed result list.
 	 */
 	onChange: PropTypes.func,
+	/**
+	 * Function to run after the search query is updated, passed the search query.
+	 */
+	onSearch: PropTypes.func,
 	/**
 	 * An array of objects for the options list.  The option along with its key, label and
 	 * value will be returned in the onChange event.
@@ -313,6 +322,8 @@ Autocomplete.defaultProps = {
 	getSearchExpression: identity,
 	inlineTags: false,
 	onChange: noop,
+	onFilter: identity,
+	onSearch: noop,
 	maxResults: 0,
 	multiple: false,
 	selected: [],
