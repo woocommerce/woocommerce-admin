@@ -5,8 +5,8 @@
 import { Button } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component, createRef } from '@wordpress/element';
-import { ENTER, ESCAPE, UP, DOWN, LEFT, TAB, RIGHT } from '@wordpress/keycodes';
 import { isEqual } from 'lodash';
+import { ENTER, ESCAPE, UP, DOWN, LEFT, TAB, RIGHT } from '@wordpress/keycodes';
 import PropTypes from 'prop-types';
 
 /**
@@ -19,6 +19,7 @@ class List extends Component {
 		this.handleKeyDown = this.handleKeyDown.bind( this );
 		this.select = this.select.bind( this );
 		this.optionRefs = {};
+		this.listbox = createRef();
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -48,8 +49,23 @@ class List extends Component {
 		onSelect( option );
 	}
 
+	scrollToOption( index ) {
+		const listbox = this.listbox.current;
+
+		if ( listbox.scrollHeight > listbox.clientHeight ) {
+			const option = this.optionRefs[ index ].current;
+			const scrollBottom = listbox.clientHeight + listbox.scrollTop;
+			const elementBottom = option.offsetTop + option.offsetHeight;
+			if ( elementBottom > scrollBottom ) {
+				listbox.scrollTop = elementBottom - listbox.clientHeight;
+			} else if ( option.offsetTop < listbox.scrollTop ) {
+				listbox.scrollTop = option.offsetTop;
+			}
+		}
+	}
+
 	handleKeyDown( event ) {
-		const { onChange, filteredOptions, selectedIndex } = this.props;
+		const { filteredOptions, onChange, onSearch, selectedIndex } = this.props;
 		if ( filteredOptions.length === 0 ) {
 			return;
 		}
@@ -57,34 +73,45 @@ class List extends Component {
 		let nextSelectedIndex;
 		switch ( event.keyCode ) {
 			case UP:
-				nextSelectedIndex = ( selectedIndex === 0 ? filteredOptions.length : selectedIndex ) - 1;
-				onChange( nextSelectedIndex, this.optionRefs[ nextSelectedIndex ] );
+				nextSelectedIndex = null !== selectedIndex
+					? ( selectedIndex === 0 ? filteredOptions.length : selectedIndex ) - 1
+					: filteredOptions.length - 1;
+				onChange( nextSelectedIndex );
+				this.scrollToOption( nextSelectedIndex );
+				event.preventDefault();
+				event.stopPropagation();
 				break;
 
 			case TAB:
 			case DOWN:
-				nextSelectedIndex = ( selectedIndex + 1 ) % filteredOptions.length;
-				onChange( nextSelectedIndex, this.optionRefs[ nextSelectedIndex ] );
+				nextSelectedIndex = null !== selectedIndex
+					? ( selectedIndex + 1 ) % filteredOptions.length
+					: 0;
+				onChange( nextSelectedIndex );
+				this.scrollToOption( nextSelectedIndex );
+				event.preventDefault();
+				event.stopPropagation();
 				break;
 
 			case ENTER:
 				this.select( filteredOptions[ selectedIndex ] );
+				event.preventDefault();
+				event.stopPropagation();
 				break;
 
 			case LEFT:
 			case RIGHT:
+				onChange( null );
+				break;
+
 			case ESCAPE:
-				onChange( 0 );
+				onChange( null );
+				onSearch( '' );
 				return;
 
 			default:
 				return;
 		}
-
-		// Any handled keycode should prevent original behavior. This relies on
-		// the early return in the default case.
-		event.preventDefault();
-		event.stopPropagation();
 	}
 
 	toggleKeyEvents( isListening ) {
@@ -113,7 +140,7 @@ class List extends Component {
 		} );
 
 		return (
-			<div id={ listboxId } role="listbox" className={ listboxClasses }>
+			<div ref={ this.listbox } id={ listboxId } role="listbox" className={ listboxClasses }>
 				{ filteredOptions.map( ( option, index ) => (
 						<Button
 							ref={ this.getOptionRef( index ) }
@@ -174,7 +201,7 @@ List.propTypes = {
 	/**
 	 * Integer for the currently selected item.
 	 */
-	selectedIndex: PropTypes.number.isRequired,
+	selectedIndex: PropTypes.number,
 	/**
 	 * Bool to determine if the list should be positioned absolutely or staticly.
 	 */

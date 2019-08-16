@@ -32,14 +32,14 @@ class SearchControl extends Component {
 
 	updateSearch( onSearch ) {
 		return event => {
-			onSearch( event );
+			onSearch( event.target.value );
 		};
 	}
 
 	onFocus( onSearch ) {
 		return event => {
 			this.setState( { isActive: true } );
-			onSearch( event );
+			onSearch( event.target.value );
 		};
 	}
 
@@ -89,11 +89,6 @@ class SearchControl extends Component {
 			aria-activedescendant={ activeId }
 			aria-describedby={
 				hasTags && inlineTags ? `search-inline-input-${ instanceId }` : null
-			}
-			size={ inlineTags
-				? ( ( query.length === 0 && placeholder && placeholder.length ) ||
-					query.length ) + 1
-				: null
 			}
 		/>;
 	}

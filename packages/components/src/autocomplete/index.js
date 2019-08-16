@@ -90,12 +90,8 @@ class Autocomplete extends Component {
 		this.reset( newSelected );
 	}
 
-	updateSelectedIndex( value, optionRef = null ) {
-		this.setState( { selectedIndex: value }, () => {
-			if ( optionRef ) {
-				optionRef.current.focus();
-			}
-		} );
+	updateSelectedIndex( value ) {
+		this.setState( { selectedIndex: value } );
 	}
 
 	announce( filteredOptions ) {
@@ -159,9 +155,8 @@ class Autocomplete extends Component {
 		return onFilter( filtered );
 	}
 
-	search( event ) {
+	search( query ) {
 		const { hideBeforeSearch, onSearch, options } = this.props;
-		const query = event.target.value;
 
 		onSearch( query );
 		const filteredOptions = ! query.length && ! hideBeforeSearch
@@ -213,6 +208,7 @@ class Autocomplete extends Component {
 						node={ this.node }
 						onChange={ this.updateSelectedIndex }
 						onSelect={ this.selectOption }
+						onSearch={ this.search }
 					/>
 				}
 			</div>
