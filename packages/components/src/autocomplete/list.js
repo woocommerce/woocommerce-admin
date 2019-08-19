@@ -106,7 +106,7 @@ class List extends Component {
 
 			case ESCAPE:
 				onChange( null );
-				onSearch( '' );
+				onSearch( null );
 				return;
 
 			default:

@@ -159,10 +159,11 @@ class Autocomplete extends Component {
 		const { hideBeforeSearch, onSearch, options } = this.props;
 
 		onSearch( query );
-		const filteredOptions = ! query.length && ! hideBeforeSearch
+		// Get all options if `hideBeforeSearch` is enabled and query is not null.
+		const filteredOptions = null !== query && ! query.length && ! hideBeforeSearch
 			? options
 			: this.getFilteredOptions( query );
-		this.setState( { selectedIndex: 0, filteredOptions, query }, () => this.announce( filteredOptions ) );
+		this.setState( { selectedIndex: 0, filteredOptions, query: query || '' }, () => this.announce( filteredOptions ) );
 	}
 
 	render() {
