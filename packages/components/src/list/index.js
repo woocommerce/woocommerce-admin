@@ -4,6 +4,7 @@
  */
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
+import { ENTER } from '@wordpress/keycodes';
 import PropTypes from 'prop-types';
 
 /**
@@ -15,12 +16,18 @@ import Link from '../link';
  * List component to display a list of items.
  */
 class List extends Component {
+	handleKeyDown( event, onClick ) {
+		if ( 'function' === typeof onClick && event.keyCode === ENTER ) {
+			onClick();
+		}
+	}
+
 	render() {
 		const { className, items } = this.props;
 		const listClassName = classnames( 'woocommerce-list', className );
 
 		return (
-			<ul className={ listClassName }>
+			<ul className={ listClassName } role="menu">
 				{ items.map( ( item, i ) => {
 					const { after, before, className: itemClasses, description, href, onClick, target, title } = item;
 					const hasAction = 'function' === typeof onClick || href;
@@ -28,12 +35,17 @@ class List extends Component {
 						'has-action': hasAction,
 					} );
 					const InnerTag = href ? Link : 'div';
-					const actionProps = {
+
+					const innerTagProps = {
 						className: 'woocommerce-list__item-inner',
-						href: href,
 						onClick: 'function' === typeof onClick ? onClick : null,
-						target: target,
-						type: 'external',
+						'aria-disabled': hasAction ? 'false' : null,
+						tabIndex: hasAction ? '0' : null,
+						role: hasAction ? 'menuitem' : null,
+						onKeyDown: ( e ) => hasAction ? this.handleKeyDown( e, onClick ) : null,
+						target: href ? target : null,
+						type: href ? 'external' : null,
+						href: href,
 					};
 
 					return (
@@ -41,7 +53,7 @@ class List extends Component {
 							className={ itemClassName }
 							key={ i }
 						>
-							<InnerTag { ...actionProps }>
+							<InnerTag { ...innerTagProps }>
 								{ before &&
 									<div className="woocommerce-list__item-before">
 										{ before }
