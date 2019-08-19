@@ -21,7 +21,7 @@ import SearchControl from './control';
  * A search box which filters options while typing,
  * allowing a user to select from an option from a filtered list.
  */
-class Autocomplete extends Component {
+export class Autocomplete extends Component {
 	static getInitialState() {
 		return {
 			filteredOptions: [],
@@ -123,7 +123,7 @@ class Autocomplete extends Component {
 		const filtered = [];
 
 		// Create a regular expression to filter the options.
-		const expression = getSearchExpression( escapeRegExp( query ) );
+		const expression = getSearchExpression( escapeRegExp( query.trim() ) );
 		const search = expression ? new RegExp( expression, 'i' ) : /^$/;
 
 		for ( let i = 0; i < options.length; i++ ) {
