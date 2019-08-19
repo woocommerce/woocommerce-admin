@@ -3,7 +3,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
 /**
@@ -27,20 +27,21 @@ class List extends Component {
 					const itemClassName = classnames( 'woocommerce-list__item', itemClasses, {
 						'has-action': hasAction,
 					} );
-					const ActionTag = hasAction ? Link : Fragment;
-					const actionProps = hasAction ? {
-						href: href ? href : '#',
+					const InnerTag = href ? Link : 'div';
+					const actionProps = {
+						className: 'woocommerce-list__item-inner',
+						href: href,
 						onClick: 'function' === typeof onClick ? onClick : null,
 						target: target,
 						type: 'external',
-					} : {};
+					};
 
 					return (
 						<li
 							className={ itemClassName }
 							key={ i }
 						>
-							<ActionTag { ...actionProps }>
+							<InnerTag { ...actionProps }>
 								{ before &&
 									<div className="woocommerce-list__item-before">
 										{ before }
@@ -61,7 +62,7 @@ class List extends Component {
 										{ after }
 									</div>
 								}
-							</ActionTag>
+							</InnerTag>
 						</li>
                     );
                 } ) }

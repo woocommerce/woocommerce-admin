@@ -1,15 +1,13 @@
 .woocommerce-list__item {
-	padding: $gap;
 	display: flex;
 	align-items: center;
 	margin-bottom: 0;
 
 	&.has-action {
-		padding: 0;
 		cursor: pointer;
 	}
 
-	> a {
+	> .woocommerce-list__item-inner {
 		text-decoration: none;
 		width: 100%;
 		display: flex;
