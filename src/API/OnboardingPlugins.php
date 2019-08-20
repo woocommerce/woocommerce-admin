@@ -8,6 +8,7 @@
  */
 
 namespace Automattic\WooCommerce\Admin\API;
+use Automattic\WooCommerce\Admin\Features\Onboarding;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -116,27 +117,13 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Get an array of plugins that can be installed & activated via the endpoints.
-	 */
-	public function get_allowed_plugins() {
-		return apply_filters(
-			'woocommerce_onboarding_plugins_whitelist',
-			array(
-				'facebook-for-woocommerce' => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
-				'jetpack'                  => 'jetpack/jetpack.php',
-				'woocommerce-services'     => 'woocommerce-services/woocommerce-services.php',
-			)
-		);
-	}
-
-	/**
 	 * Installs the requested plugin.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return array Plugin Status
 	 */
 	public function install_plugin( $request ) {
-		$allowed_plugins = $this->get_allowed_plugins();
+		$allowed_plugins = Onboarding::get_allowed_plugins();
 		$plugin          = sanitize_title_with_dashes( $request['plugin'] );
 		if ( ! in_array( $plugin, array_keys( $allowed_plugins ), true ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
@@ -197,7 +184,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * @return array Plugin Status
 	 */
 	public function activate_plugin( $request ) {
-		$allowed_plugins = $this->get_allowed_plugins();
+		$allowed_plugins = Onboarding::get_allowed_plugins();
 		$plugin          = sanitize_title_with_dashes( $request['plugin'] );
 		if ( ! in_array( $plugin, array_keys( $allowed_plugins ), true ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
@@ -231,7 +218,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * @return array Connection URL for Jetpack
 	 */
 	public function connect_jetpack() {
-		if ( ! class_exists( 'Jetpack' ) ) {
+		if ( ! class_exists( '\Jetpack' ) ) {
 			return new \WP_Error( 'woocommerce_rest_jetpack_not_active', __( 'Jetpack is not installed or active.', 'woocommerce-admin' ), 404 );
 		}
 

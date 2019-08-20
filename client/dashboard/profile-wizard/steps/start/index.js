@@ -2,22 +2,30 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { FormToggle } from '@wordpress/components';
 import { Button, CheckboxControl } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
+import { get, filter } from 'lodash';
+
+/**
+ * WooCommerce depdencies
+ */
+import { Card, H, Link } from '@woocommerce/components';
+import { updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal depdencies
  */
-import { Card, H, Link } from '@woocommerce/components';
+import CardIcon from './images/card';
 import SecurityIcon from './images/security';
 import SalesTaxIcon from './images/local_atm';
 import SpeedIcon from './images/flash_on';
 import MobileAppIcon from './images/phone_android';
+import PrintIcon from './images/print';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 
@@ -29,6 +37,7 @@ const benefits = [
 			'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
 			'woocommerce-admin'
 		),
+		plugins: [ 'jetpack' ],
 	},
 	{
 		title: __( 'Sales Tax', 'woocommerce-admin' ),
@@ -37,6 +46,7 @@ const benefits = [
 			'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
 			'woocommerce-admin'
 		),
+		plugins: [ 'jetpack', 'woocommerce-services' ],
 	},
 	{
 		title: __( 'Speed', 'woocommerce-admin' ),
@@ -45,6 +55,7 @@ const benefits = [
 			'Cache your images and static files on our own powerful global network of servers and speed up your site.',
 			'woocommerce-admin'
 		),
+		plugins: [ 'jetpack' ],
 	},
 	{
 		title: __( 'Mobile App', 'woocommerce-admin' ),
@@ -53,6 +64,25 @@ const benefits = [
 			'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
 			'woocommerce-admin'
 		),
+		plugins: [ 'jetpack' ],
+	},
+	{
+		title: __( 'Print your own shipping labels', 'woocommerce-admin' ),
+		icon: <PrintIcon />,
+		description: __(
+			'Save time at the Post Office by printing USPS shipping labels at home.',
+			'woocommerce-admin'
+		),
+		plugins: [ 'woocommerce-services' ],
+	},
+	{
+		title: __( 'Simple payment setup', 'woocommerce-admin' ),
+		icon: <CardIcon />,
+		description: __(
+			'WooCommerce Services enables us to provision Stripe and Paypal accounts quickly and easily for you.',
+			'woocommerce-admin'
+		),
+		plugins: [ 'woocommerce-services' ],
 	},
 ];
 
@@ -67,6 +97,16 @@ class Start extends Component {
 		this.onTrackingChange = this.onTrackingChange.bind( this );
 		this.startWizard = this.startWizard.bind( this );
 		this.skipWizard = this.skipWizard.bind( this );
+	}
+
+	componentDidMount() {
+		const activatedPlugins = get( wcSettings, [ 'onboarding', 'activePlugins' ], [] );
+		if (
+			activatedPlugins.includes( 'jetpack' ) &&
+			activatedPlugins.includes( 'woocommerce-services' )
+		) {
+			return updateQueryString( { step: 'store-details' } );
+		}
 	}
 
 	async updateTracking() {
@@ -128,8 +168,28 @@ class Start extends Component {
 		);
 	}
 
+	getBenefits() {
+		const activatedPlugins = get( wcSettings, [ 'onboarding', 'activePlugins' ], [] );
+		if ( activatedPlugins.includes( 'jetpack' ) ) {
+			return filter( benefits, benefit => benefit.plugins.includes( 'woocommerce-services' ) );
+		}
+		return filter( benefits, benefit => benefit.plugins.includes( 'jetpack' ) );
+	}
+
+	renderBenefits() {
+		return (
+			<div className="woocommerce-profile-wizard__benefits">
+				{ this.getBenefits().map( benefit => this.renderBenefit( benefit ) ) }
+			</div>
+		);
+	}
+
 	render() {
 		const { allowTracking } = this.state;
+		const activatedPlugins = get( wcSettings, [ 'onboarding', 'activePlugins' ], [] );
+		const pluginNames = activatedPlugins.includes( 'jetpack' )
+			? __( 'WooCommerce Services', 'woocommerce-admin' )
+			: __( 'Jetpack & WooCommerce Services', 'woocommerce-admin' );
 
 		const trackingLabel = interpolateComponents( {
 			mixedString: __(
@@ -151,10 +211,13 @@ class Start extends Component {
 
 				<p>
 					{ interpolateComponents( {
-						mixedString: __(
-							'Simplify and enhance the setup of your store with the free features and benefits offered by ' +
-								'{{strong}}Jetpack & WooCommerce Services{{/strong}}.',
-							'woocommerce-admin'
+						mixedString: sprintf(
+							__(
+								'Simplify and enhance the setup of your store with the free features and benefits offered by ' +
+									'{{strong}}%s{{/strong}}.',
+								'woocommerce-admin'
+							),
+							pluginNames
 						),
 						components: {
 							strong: <strong />,
@@ -163,9 +226,7 @@ class Start extends Component {
 				</p>
 
 				<Card>
-					<div className="woocommerce-profile-wizard__benefits">
-						{ benefits.map( benefit => this.renderBenefit( benefit ) ) }
-					</div>
+					{ this.renderBenefits() }
 
 					<div className="woocommerce-profile-wizard__tracking">
 						<CheckboxControl
@@ -195,7 +256,7 @@ class Start extends Component {
 
 				<p>
 					<Button isLink className="woocommerce-profile-wizard__skip" onClick={ this.skipWizard }>
-						{ __( 'Proceed without Jetpack or WooCommerce Services', 'woocommerce-admin' ) }
+						{ sprintf( __( 'Proceed without %s', 'woocommerce-admin' ), pluginNames ) }
 					</Button>
 				</p>
 			</Fragment>

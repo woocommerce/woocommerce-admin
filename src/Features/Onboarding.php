@@ -311,12 +311,49 @@ class Onboarding {
 
 		// Only fetch if the onboarding wizard is incomplete.
 		if ( $this->should_show_profiler() ) {
-			$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
-			$settings['onboarding']['themes']       = self::get_themes();
-			$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
+			$settings['onboarding']['productTypes']  = self::get_allowed_product_types();
+			$settings['onboarding']['themes']        = self::get_themes();
+			$settings['onboarding']['activeTheme']   = get_option( 'stylesheet' );
+			$settings['onboarding']['activePlugins'] = self::get_active_plugins();
 		}
 
 		return $settings;
+	}
+
+	/**
+	 * Gets an array of plugins that can be installed & activated via the onboarding wizard.
+	 */
+	public static function get_allowed_plugins() {
+		return apply_filters(
+			'woocommerce_onboarding_plugins_whitelist',
+			array(
+				'jetpack'              => 'jetpack/jetpack.php',
+				'woocommerce-services' => 'woocommerce-services/woocommerce-services.php',
+			)
+		);
+	}
+	/**
+	 * Get a list of active plugins, relevent to the onboarding wizard.
+	 *
+	 * @return array
+	 */
+	public static function get_active_plugins() {
+		$all_active_plugins   = get_option( 'active_plugins', array() );
+		$allowed_plugins      = self::get_allowed_plugins();
+		$active_plugin_files  = array_intersect( $all_active_plugins, $allowed_plugins );
+		$allowed_plugin_slugs = array_flip( $allowed_plugins );
+		$active_plugins = array();
+		foreach ( $active_plugin_files as $file ) {
+			$slug = $allowed_plugin_slugs[ $file ];
+			if ( 'jetpack' === $slug || 'woocommerce-services' === $slug ) {
+				// If Jetpack is installed but not connected, consider both WCS and Jetpack inactive for the purpose of onboarding.
+				if ( ! class_exists( 'Jetpack' ) || ! ( \Jetpack::is_active() || \Jetpack::is_development_mode() ) ) {
+					continue;
+				}
+			}
+			$active_plugins[] = $slug;
+		}
+		return $active_plugins;
 	}
 
 	/**
