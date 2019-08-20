@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { BACKSPACE } from '@wordpress/keycodes';
 import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -50,7 +51,7 @@ class SearchControl extends Component {
 	onKeyDown( event ) {
 		const { selected, onChange, query } = this.props;
 
-		if ( 8 === event.keyCode && ! query && selected.length ) {
+		if ( BACKSPACE === event.keyCode && ! query && selected.length ) {
 			onChange( [ ...selected.slice( 0, -1 ) ] );
 		}
 	}
