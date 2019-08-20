@@ -12,7 +12,11 @@
 		position: relative;
 
 		.woocommerce-autocomplete__tags {
-			margin-right: $gap-smallest;
+			margin: $gap-small $gap-smallest 0 0;
+		}
+
+		.woocommerce-tag {
+			max-height: 20px;
 		}
 
 		.components-base-control__field {
@@ -23,6 +27,7 @@
 		}
 
 		.components-base-control__label {
+			left: 52px;
 			position: absolute;
 			color: $new-muriel-gray-50;
 			font-size: 16px;
@@ -51,7 +56,8 @@
 		}
 
 		&.with-value .components-base-control__label,
-		&.is-active .components-base-control__label {
+		&.is-active .components-base-control__label,
+		&.has-tags .components-base-control__label {
 			font-size: 12px;
 			margin-top: -$gap-small;
 		}
