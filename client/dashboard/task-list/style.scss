@@ -137,3 +137,28 @@
 		}
 	}
 }
+
+.woocommerce-task-tax__automated-tax-control {
+	display: flex;
+	align-items: center;
+	margin-top: $gap;
+
+	i {
+		margin-left: $gap;
+		margin-right: $gap-large;
+	}
+
+	.woocommerce-task-tax__automated-tax-control-inner {
+		border-top: 1px solid $muriel-gray-5;
+		display: flex;
+		align-items: center;
+		flex: 1;
+		font-size: 16px;
+		padding-top: $gap;
+		padding-bottom: $gap;
+	}
+
+	.components-form-toggle {
+		margin-left: auto;
+	}
+}

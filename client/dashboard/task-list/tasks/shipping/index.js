@@ -18,9 +18,9 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import Connect from './connect';
-import StoreLocation from './location';
-import ShippingLabels from './labels';
+import Connect from '../steps/connect';
+import Plugins from '../steps/plugins';
+import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
 import withSelect from 'wc-api/with-select';
 
@@ -173,7 +173,13 @@ class Shipping extends Component {
 						'Post Office by printing your shipping labels at home',
 					'woocommerce-admin'
 				),
-				content: <ShippingLabels completeStep={ this.completeStep } { ...this.props } />,
+				content: (
+					<Plugins
+						onComplete={ this.completeStep }
+						onSkip={ () => getHistory().push( getNewPath( {}, '/', {} ) ) }
+						{ ...this.props }
+					/>
+				),
 				visible: [ 'US', 'GB', 'CA', 'AU' ].includes( countryCode ),
 			},
 			{
