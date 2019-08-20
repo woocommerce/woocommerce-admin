@@ -72,7 +72,7 @@ class OnboardingTasks {
 		}
 
 		$settings['onboarding']['tasks']              = $tasks;
-		$settings['onboarding']['shippingZonesCount'] = count( WC_Shipping_Zones::get_zones() );
+		$settings['onboarding']['shippingZonesCount'] = count( \WC_Shipping_Zones::get_zones() );
 
 		return $settings;
 	}
