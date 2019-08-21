@@ -7,7 +7,8 @@
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
+use \Automattic\WooCommerce\Admin\Install;
+
 require_once dirname( __FILE__ ) . '/woocommerce-admin.php';
 
-WC_Admin_Feature_Plugin::instance()->includes();
-WC_Admin_Install::delete_table_data();
+Install::delete_table_data();

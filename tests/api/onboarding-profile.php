@@ -5,6 +5,8 @@
  * @package WooCommerce Admin\Tests\API
  */
 
+use \Automattic\WooCommerce\Admin\API\OnboardingProfile;
+
 /**
  * WC Tests API Onboarding Profile
  */
@@ -42,7 +44,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 
-		$properties = WC_Admin_REST_Onboarding_Profile_Controller::get_profile_properties();
+		$properties = OnboardingProfile::get_profile_properties();
 		foreach ( $properties as $key => $property ) {
 			$this->assertArrayHasKey( $key, $properties );
 		}
@@ -97,7 +99,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertCount( 13, $properties );
+		$this->assertCount( 14, $properties );
 		$this->assertArrayHasKey( 'completed', $properties );
 		$this->assertArrayHasKey( 'skipped', $properties );
 		$this->assertArrayHasKey( 'account_type', $properties );
@@ -105,6 +107,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'product_types', $properties );
 		$this->assertArrayHasKey( 'product_count', $properties );
 		$this->assertArrayHasKey( 'selling_venues', $properties );
+		$this->assertArrayHasKey( 'revenue', $properties );
 		$this->assertArrayHasKey( 'other_platform', $properties );
 		$this->assertArrayHasKey( 'business_extensions', $properties );
 		$this->assertArrayHasKey( 'theme', $properties );

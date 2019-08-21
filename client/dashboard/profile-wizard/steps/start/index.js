@@ -152,7 +152,7 @@ class Start extends Component {
 				<p>
 					{ interpolateComponents( {
 						mixedString: __(
-							'Simplify and enhance the setup of your store with features and benefits offered by ' +
+							'Simplify and enhance the setup of your store with the free features and benefits offered by ' +
 								'{{strong}}Jetpack & WooCommerce Services{{/strong}}.',
 							'woocommerce-admin'
 						),
@@ -181,7 +181,6 @@ class Start extends Component {
 							onChange={ this.onTrackingChange }
 							onClick={ e => e.stopPropagation() }
 							tabIndex="-1"
-							className="woocommerce-profile-wizard__toggle"
 						/>
 					</div>
 
@@ -195,9 +194,9 @@ class Start extends Component {
 				</Card>
 
 				<p>
-					<Link href="#" onClick={ this.skipWizard }>
+					<Button isLink className="woocommerce-profile-wizard__skip" onClick={ this.skipWizard }>
 						{ __( 'Proceed without Jetpack or WooCommerce Services', 'woocommerce-admin' ) }
-					</Link>
+					</Button>
 				</p>
 			</Fragment>
 		);
