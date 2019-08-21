@@ -104,6 +104,8 @@ class WC_Tests_API_Reports_Categories extends WC_REST_Unit_Test_Case {
 		$order->set_total( 100 ); // $25 x 4.
 		$order->save();
 
+		WC_Helper_Queue::run_all_pending();
+
 		// Populate all of the data.
 		$product = new WC_Product_Simple();
 		$product->set_name( 'Test Product 2' );
@@ -111,8 +113,6 @@ class WC_Tests_API_Reports_Categories extends WC_REST_Unit_Test_Case {
 		$second_category_id = wp_create_category( 'Second Category' );
 		$product->set_category_ids( array( $second_category_id ) );
 		$product->save();
-
-		WC_Helper_Queue::run_all_pending();
 
 		$uncategorized_term = get_term_by( 'slug', 'uncategorized', 'product_cat' );
 
