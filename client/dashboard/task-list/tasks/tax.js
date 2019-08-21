@@ -38,6 +38,7 @@ class Tax extends Component {
 		this.state = this.initialState;
 
 		this.completeStep = this.completeStep.bind( this );
+		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
 	}
 
 	componentDidMount() {
@@ -48,13 +49,13 @@ class Tax extends Component {
 		this.setState( this.initialState );
 	}
 
-	componentDidUpdate() {
-		const { settings } = this.props;
+	componentDidUpdate( prevProps ) {
+		const { generalSettings, taxSettings } = this.props;
 		const {
 			woocommerce_store_address,
 			woocommerce_default_country,
 			woocommerce_store_postcode,
-		} = settings;
+		} = generalSettings;
 		const { step } = this.state;
 
 		if (
@@ -64,6 +65,17 @@ class Tax extends Component {
 			woocommerce_store_postcode
 		) {
 			this.completeStep();
+		}
+
+		if (
+			taxSettings.wc_connect_taxes_enabled &&
+			taxSettings.wc_connect_taxes_enabled !== prevProps.taxSettings.wc_connect_taxes_enabled
+		) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( {
+				automatedTaxEnabled: 'yes' === taxSettings.wc_connect_taxes_enabled ? true : false,
+			} );
+			/* eslint-enable react/no-did-update-set-state */
 		}
 	}
 
@@ -80,8 +92,34 @@ class Tax extends Component {
 		}
 	}
 
+	async updateAutomatedTax() {
+		const { createNotice, isTaxSettingsError, updateSettings } = this.props;
+		const { automatedTaxEnabled } = this.state;
+
+		await updateSettings( {
+			tax: {
+				wc_connect_taxes_enabled: automatedTaxEnabled ? 'yes' : 'no',
+			},
+		} );
+
+		if ( ! isTaxSettingsError ) {
+			createNotice( 'success', __( 'Your tax settings have been updated.', 'woocommerce-admin' ) );
+			if ( automatedTaxEnabled ) {
+				this.completeStep();
+			} else {
+				window.location = getAdminLink( 'admin.php?page=wc-settings&tab=tax&section=standard' );
+			}
+		} else {
+			createNotice(
+				'error',
+				__( 'There was a problem updating your tax settings.', 'woocommerce-admin' )
+			);
+		}
+	}
+
 	getAutomatedTaxStepContent() {
 		const { automatedTaxEnabled } = this.state;
+		const { isTaxSettingsRequesting } = this.props;
 
 		return (
 			<Fragment>
@@ -101,7 +139,7 @@ class Tax extends Component {
 						/>
 					</div>
 				</div>
-				<Button isPrimary onClick={ this.completeStep }>
+				<Button isPrimary onClick={ this.updateAutomatedTax } isBusy={ isTaxSettingsRequesting }>
 					{ __( 'Complete task', 'woocommerce-admin' ) }
 				</Button>
 			</Fragment>
@@ -109,14 +147,21 @@ class Tax extends Component {
 	}
 
 	getSteps() {
-		const { countryCode } = this.props;
+		const { countryCode, generalSettings, isGeneralSettingsRequesting } = this.props;
 
 		const steps = [
 			{
 				key: 'store_location',
 				label: __( 'Set store location', 'woocommerce-admin' ),
 				description: __( 'The address from which your business operates', 'woocommerce-admin' ),
-				content: <StoreLocation completeStep={ this.completeStep } { ...this.props } />,
+				content: (
+					<StoreLocation
+						{ ...this.props }
+						completeStep={ this.completeStep }
+						isSettingsRequesting={ isGeneralSettingsRequesting }
+						settings={ generalSettings }
+					/>
+				),
 				visible: true,
 			},
 			{
@@ -130,7 +175,9 @@ class Tax extends Component {
 					<Plugins
 						onComplete={ this.completeStep }
 						onSkip={ () =>
-							( window.location.href = getAdminLink( 'admin.php?page=wc-settings&tab=tax' ) )
+							( window.location.href = getAdminLink(
+								'admin.php?page=wc-settings&tab=tax&section=standard'
+							) )
 						}
 						skipText={ __( 'Set up tax rates manually', 'woocommerce-admin' ) }
 					/>
@@ -164,13 +211,13 @@ class Tax extends Component {
 
 	render() {
 		const { isPending, step } = this.state;
-		const { isSettingsRequesting } = this.props;
+		const { isGeneralSettingsRequesting, isTaxSettingsRequesting } = this.props;
 
 		return (
 			<div className="woocommerce-task-tax">
 				<Card className="is-narrow">
 					<Stepper
-						isPending={ isPending || isSettingsRequesting }
+						isPending={ isPending || isGeneralSettingsRequesting || isTaxSettingsRequesting }
 						isVertical={ true }
 						currentStep={ step }
 						steps={ this.getSteps() }
@@ -185,15 +232,26 @@ export default compose(
 	withSelect( select => {
 		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
 
-		const settings = getSettings( 'general' );
-		const isSettingsError = Boolean( getSettingsError( 'general' ) );
-		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
+		const generalSettings = getSettings( 'general' );
+		const isGeneralSettingsError = Boolean( getSettingsError( 'general' ) );
+		const isGeneralSettingsRequesting = isGetSettingsRequesting( 'general' );
+		const taxSettings = getSettings( 'tax' );
+		const isTaxSettingsError = Boolean( getSettingsError( 'tax' ) );
+		const isTaxSettingsRequesting = isGetSettingsRequesting( 'tax' );
 
-		const countryCode = settings.woocommerce_default_country
-			? settings.woocommerce_default_country.split( ':' )[ 0 ]
+		const countryCode = generalSettings.woocommerce_default_country
+			? generalSettings.woocommerce_default_country.split( ':' )[ 0 ]
 			: null;
 
-		return { countryCode, isSettingsError, isSettingsRequesting, settings };
+		return {
+			countryCode,
+			isGeneralSettingsError,
+			isGeneralSettingsRequesting,
+			generalSettings,
+			isTaxSettingsError,
+			isTaxSettingsRequesting,
+			taxSettings,
+		};
 	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
