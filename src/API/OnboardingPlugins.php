@@ -56,7 +56,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'activate_plugin' ),
+					'callback'            => array( $this, 'activate_plugins' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
@@ -183,32 +183,35 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return array Plugin Status
 	 */
-	public function activate_plugin( $request ) {
+	public function activate_plugins( $request ) {
 		$allowed_plugins = Onboarding::get_allowed_plugins();
-		$plugin          = sanitize_title_with_dashes( $request['plugin'] );
-		if ( ! in_array( $plugin, array_keys( $allowed_plugins ), true ) ) {
-			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
+		$_plugins        = explode( ',', $request['plugins'] );
+		$plugins         = array_intersect( array_keys( $allowed_plugins ), $_plugins );
+
+		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Invalid plugins.', 'woocommerce-admin' ), 404 );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-		$slug              = $plugin;
-		$path              = $allowed_plugins[ $slug ];
-		$installed_plugins = get_plugins();
+		foreach( $plugins as $plugin ) {
+			$slug              = $plugin;
+			$path              = $allowed_plugins[ $slug ];
+			$installed_plugins = get_plugins();
 
-		if ( ! in_array( $path, array_keys( $installed_plugins ), true ) ) {
-			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
-		}
+			if ( ! in_array( $path, array_keys( $installed_plugins ), true ) ) {
+				return new \WP_Error( 'woocommerce_rest_invalid_plugin', sprintf( __( 'Invalid plugin %s.', 'woocommerce-admin' ), $slug ), 404 );
+			}
 
-		$result = activate_plugin( $path );
-		if ( ! is_null( $result ) ) {
-			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'The requested plugin could not be activated.', 'woocommerce-admin' ), 500 );
+			$result = activate_plugin( $path );
+			if ( ! is_null( $result ) ) {
+				return new \WP_Error( 'woocommerce_rest_invalid_plugin', sprintf( __( 'The requested plugins could not be activated.', 'woocommerce-admin' ), $slug ), 500 );
+			}
 		}
 
 		return( array(
-			'slug'   => $slug,
-			'name'   => $installed_plugins[ $path ]['Name'],
-			'status' => 'success',
+			'plugins' => array_values( $plugins ),
+			'status'  => 'success',
 		) );
 	}
 
