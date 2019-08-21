@@ -147,6 +147,9 @@ class FeaturePlugin {
 		// CRUD classes.
 		WC_Admin_Notes::init();
 
+		// Initialize category lookup.
+		CategoryLookup::instance()->init();
+
 		// Admin note providers.
 		// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
 		new WC_Admin_Notes_Woo_Subscriptions_Notes();

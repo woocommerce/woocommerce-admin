@@ -5,12 +5,14 @@
  * @package WooCommerce Admin/Classes
  */
 
+namespace Automattic\WooCommerce\Admin;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WC_Admin_Category_Lookup class.
+ * \Automattic\WooCommerce\Admin\CategoryLookup class.
  */
-class WC_Admin_Category_Lookup {
+class CategoryLookup {
 
 	/**
 	 * Stores changes to categories we need to sync.
@@ -61,7 +63,7 @@ class WC_Admin_Category_Lookup {
 		global $wpdb;
 
 		// Delete existing data and ensure schema is current.
-		WC_Admin_Install::create_tables();
+		Install::create_tables();
 		$wpdb->query( "TRUNCATE TABLE $wpdb->wc_category_lookup" );
 
 		$terms = get_terms(
@@ -275,5 +277,3 @@ class WC_Admin_Category_Lookup {
 		);
 	}
 }
-
-WC_Admin_Category_Lookup::instance()->init();
