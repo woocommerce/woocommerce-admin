@@ -20,6 +20,7 @@ import { updateQueryString } from '@woocommerce/navigation';
  */
 import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
+import { pluginNames } from 'wc-api/onboarding/constants';
 
 const pluginsToInstall = [ 'jetpack', 'woocommerce-services' ];
 const plugins = difference(
@@ -100,9 +101,9 @@ class Plugins extends Component {
 		const { hasErrors, isRequesting } = this.props;
 		const { step } = this.state;
 
-		const pluginNames = plugins.includes( 'jetpack' )
-			? __( 'Jetpack & WooCommerce Services', 'woocommerce-admin' )
-			: __( 'WooCommerce Services', 'woocommerce-admin' );
+		const pluginLabel = plugins.includes( 'jetpack' )
+			? Object.values( pluginNames ).join( ' & ' )
+			: pluginNames[ 'woocommerce-services' ];
 
 		return (
 			<Fragment>
@@ -117,11 +118,11 @@ class Plugins extends Component {
 						isPending={ isRequesting && ! hasErrors }
 						steps={ [
 							{
-								label: sprintf( __( 'Install %s', 'woocommerce-admin' ), pluginNames ),
+								label: sprintf( __( 'Install %s', 'woocommerce-admin' ), pluginLabel ),
 								key: 'install',
 							},
 							{
-								label: sprintf( __( 'Activate %s', 'woocommerce-admin' ), pluginNames ),
+								label: sprintf( __( 'Activate %s', 'woocommerce-admin' ), pluginLabel ),
 								key: 'activate',
 							},
 						] }
@@ -183,7 +184,7 @@ export default compose(
 			errors.push( installationErrors[ plugin ].message )
 		);
 		if ( jetpackConnectUrlError ) {
-			errors.push( jetpackConnectUrlError );
+			errors.push( jetpackConnectUrlError.message );
 		}
 		const hasErrors = Boolean( errors.length );
 

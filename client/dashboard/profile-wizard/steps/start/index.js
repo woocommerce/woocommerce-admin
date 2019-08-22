@@ -29,6 +29,8 @@ import PrintIcon from './images/print';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 
+// @todo Port to wc-api for use in other parts of the application
+const activatedPlugins = get( wcSettings, [ 'onboarding', 'activePlugins' ], [] );
 const benefits = [
 	{
 		title: __( 'Security', 'woocommerce-admin' ),
@@ -37,7 +39,7 @@ const benefits = [
 			'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
 			'woocommerce-admin'
 		),
-		plugins: [ 'jetpack' ],
+		visible: ! activatedPlugins.includes( 'jetpack' ),
 	},
 	{
 		title: __( 'Sales Tax', 'woocommerce-admin' ),
@@ -46,7 +48,7 @@ const benefits = [
 			'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
 			'woocommerce-admin'
 		),
-		plugins: [ 'jetpack', 'woocommerce-services' ],
+		visible: true,
 	},
 	{
 		title: __( 'Speed', 'woocommerce-admin' ),
@@ -55,7 +57,7 @@ const benefits = [
 			'Cache your images and static files on our own powerful global network of servers and speed up your site.',
 			'woocommerce-admin'
 		),
-		plugins: [ 'jetpack' ],
+		visible: ! activatedPlugins.includes( 'jetpack' ),
 	},
 	{
 		title: __( 'Mobile App', 'woocommerce-admin' ),
@@ -64,7 +66,7 @@ const benefits = [
 			'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
 			'woocommerce-admin'
 		),
-		plugins: [ 'jetpack' ],
+		visible: ! activatedPlugins.includes( 'jetpack' ),
 	},
 	{
 		title: __( 'Print your own shipping labels', 'woocommerce-admin' ),
@@ -73,7 +75,9 @@ const benefits = [
 			'Save time at the Post Office by printing USPS shipping labels at home.',
 			'woocommerce-admin'
 		),
-		plugins: [ 'woocommerce-services' ],
+		visible:
+			activatedPlugins.includes( 'jetpack' ) &&
+			! activatedPlugins.includes( 'woocommerce-services' ),
 	},
 	{
 		title: __( 'Simple payment setup', 'woocommerce-admin' ),
@@ -82,7 +86,9 @@ const benefits = [
 			'WooCommerce Services enables us to provision Stripe and Paypal accounts quickly and easily for you.',
 			'woocommerce-admin'
 		),
-		plugins: [ 'woocommerce-services' ],
+		visible:
+			activatedPlugins.includes( 'jetpack' ) &&
+			! activatedPlugins.includes( 'woocommerce-services' ),
 	},
 ];
 
@@ -100,7 +106,6 @@ class Start extends Component {
 	}
 
 	componentDidMount() {
-		const activatedPlugins = get( wcSettings, [ 'onboarding', 'activePlugins' ], [] );
 		if (
 			activatedPlugins.includes( 'jetpack' ) &&
 			activatedPlugins.includes( 'woocommerce-services' )
@@ -168,25 +173,18 @@ class Start extends Component {
 		);
 	}
 
-	getBenefits() {
-		const activatedPlugins = get( wcSettings, [ 'onboarding', 'activePlugins' ], [] );
-		if ( activatedPlugins.includes( 'jetpack' ) ) {
-			return filter( benefits, benefit => benefit.plugins.includes( 'woocommerce-services' ) );
-		}
-		return filter( benefits, benefit => benefit.plugins.includes( 'jetpack' ) );
-	}
-
 	renderBenefits() {
 		return (
 			<div className="woocommerce-profile-wizard__benefits">
-				{ this.getBenefits().map( benefit => this.renderBenefit( benefit ) ) }
+				{ filter( benefits, benefit => benefit.visible ).map( benefit =>
+					this.renderBenefit( benefit )
+				) }
 			</div>
 		);
 	}
 
 	render() {
 		const { allowTracking } = this.state;
-		const activatedPlugins = get( wcSettings, [ 'onboarding', 'activePlugins' ], [] );
 		const pluginNames = activatedPlugins.includes( 'jetpack' )
 			? __( 'WooCommerce Services', 'woocommerce-admin' )
 			: __( 'Jetpack & WooCommerce Services', 'woocommerce-admin' );

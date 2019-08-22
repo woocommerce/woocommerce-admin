@@ -113,7 +113,14 @@ function activatePlugins( resourceNames, data, fetch ) {
 			} )
 				.then( activatePluginToResource.bind( null, data[ resourceName ] ) )
 				.catch( error => {
-					return { [ resourceName ]: { error } };
+					const resources = { [ resourceName ]: { error } };
+					Object.keys( plugins ).forEach( key => {
+						const pluginError = { ...error };
+						const item = plugins[ key ];
+						pluginError.message = getPluginErrorMessage( 'activate', item );
+						resources[ getResourceName( resourceName, item ) ] = { error: pluginError };
+					} );
+					return resources;
 				} ),
 		];
 	}
@@ -149,7 +156,7 @@ function readJetpackConnectUrl( resourceNames, fetch ) {
 					return { [ resourceName ]: { data: response.connectAction } };
 				} )
 				.catch( error => {
-					error.message = getPluginErrorMessage( 'activate', 'jetpack' );
+					error.message = getPluginErrorMessage( 'connect', 'jetpack' );
 					return { [ resourceName ]: { error } };
 				} ),
 		];
@@ -160,13 +167,24 @@ function readJetpackConnectUrl( resourceNames, fetch ) {
 
 function getPluginErrorMessage( action, plugin ) {
 	const pluginName = pluginNames[ plugin ] || plugin;
-
-	return 'install' === action
-		? sprintf(
+	switch ( action ) {
+		case 'install':
+			return sprintf(
 				__( 'There was an error installing %s. Please try again.', 'woocommerce-admin' ),
 				pluginName
-			)
-		: __( 'There was an error activating your plugins. Please try again.', 'woocommerce-admin' );
+			);
+		case 'connect':
+			return sprintf(
+				__( 'There was an error connecting to %s. Please try again.', 'woocommerce-admin' ),
+				pluginName
+			);
+		case 'activate':
+		default:
+			return sprintf(
+				__( 'There was an error activating %s. Please try again.', 'woocommerce-admin' ),
+				pluginName
+			);
+	}
 }
 
 function installPlugins( resourceNames, data, fetch ) {
@@ -189,7 +207,7 @@ function installPlugins( resourceNames, data, fetch ) {
 					};
 				} )
 				.catch( error => {
-					error.message = getPluginErrorMessage( 'install', plugin );
+					error.message = getPluginErrorMessage( 'install', pluginNames[ plugin ] || plugin );
 					return {
 						[ resourceName ]: { data: plugins },
 						[ getResourceName( resourceName, plugin ) ]: { error },

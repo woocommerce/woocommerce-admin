@@ -322,6 +322,8 @@ class Onboarding {
 
 	/**
 	 * Gets an array of plugins that can be installed & activated via the onboarding wizard.
+	 *
+	 * @todo Handle edgecase of where installed plugins may have versioned folder names (i.e. `jetpack-master/jetpack.php`).
 	 */
 	public static function get_allowed_plugins() {
 		return apply_filters(
