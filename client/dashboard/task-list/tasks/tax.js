@@ -8,12 +8,13 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { filter } from 'lodash';
 import { FormToggle } from '@wordpress/components';
+import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { Card, Stepper } from '@woocommerce/components';
+import { Card, H, Stepper } from '@woocommerce/components';
 import { getAdminLink, getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
@@ -50,7 +51,7 @@ class Tax extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const { generalSettings, isJetpackConnected, taxSettings } = this.props;
+		const { generalSettings, isJetpackConnected, pluginsToActivate, taxSettings } = this.props;
 		const {
 			woocommerce_store_address,
 			woocommerce_default_country,
@@ -59,13 +60,24 @@ class Tax extends Component {
 		const { stepIndex } = this.state;
 		const currentStep = this.getSteps()[ stepIndex ];
 		const currentStepKey = currentStep && currentStep.key;
+		const isCompleteAddress =
+			woocommerce_store_address && woocommerce_default_country && woocommerce_store_postcode;
 
+		// Show the success screen if all requirements are satisfied from the beginning.
 		if (
-			'store_location' === currentStepKey &&
-			woocommerce_store_address &&
-			woocommerce_default_country &&
-			woocommerce_store_postcode
+			0 === stepIndex &&
+			( ! pluginsToActivate.length &&
+				isCompleteAddress &&
+				isJetpackConnected &&
+				this.isSupportedCountry() )
 		) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( { stepIndex: null } );
+			/* eslint-enable react/no-did-update-set-state */
+			return;
+		}
+
+		if ( 'store_location' === currentStepKey && isCompleteAddress ) {
 			this.completeStep();
 		}
 
@@ -83,6 +95,12 @@ class Tax extends Component {
 		if ( 'connect' === currentStepKey && isJetpackConnected ) {
 			this.completeStep();
 		}
+	}
+
+	isSupportedCountry() {
+		const { countryCode } = this.props;
+		const { automatedTaxSupportedCountries } = wcSettings.onboarding;
+		return automatedTaxSupportedCountries.includes( countryCode );
 	}
 
 	completeStep() {
@@ -110,7 +128,7 @@ class Tax extends Component {
 		if ( ! isTaxSettingsError ) {
 			createNotice( 'success', __( 'Your tax settings have been updated.', 'woocommerce-admin' ) );
 			if ( automatedTaxEnabled ) {
-				this.completeStep();
+				getHistory().push( getNewPath( {}, '/', {} ) );
 			} else {
 				window.location = getAdminLink( 'admin.php?page=wc-settings&tab=tax&section=standard' );
 			}
@@ -152,8 +170,7 @@ class Tax extends Component {
 	}
 
 	getSteps() {
-		const { countryCode, generalSettings, isGeneralSettingsRequesting } = this.props;
-		const { automatedTaxSupportedCountries } = wcSettings.onboarding;
+		const { generalSettings, isGeneralSettingsRequesting } = this.props;
 
 		const steps = [
 			{
@@ -188,7 +205,7 @@ class Tax extends Component {
 						skipText={ __( 'Set up tax rates manually', 'woocommerce-admin' ) }
 					/>
 				),
-				visible: automatedTaxSupportedCountries.includes( countryCode ),
+				visible: this.isSupportedCountry(),
 			},
 			{
 				key: 'connect',
@@ -198,7 +215,7 @@ class Tax extends Component {
 					'woocommerce-admin'
 				),
 				content: <Connect completeStep={ this.completeStep } { ...this.props } />,
-				visible: automatedTaxSupportedCountries.includes( countryCode ),
+				visible: this.isSupportedCountry(),
 			},
 			{
 				key: 'automated_tax',
@@ -208,7 +225,7 @@ class Tax extends Component {
 					'woocommerce-admin'
 				),
 				content: this.getAutomatedTaxStepContent(),
-				visible: automatedTaxSupportedCountries.includes( countryCode ),
+				visible: this.isSupportedCountry(),
 			},
 			{
 				key: 'manual_configuration',
@@ -225,7 +242,7 @@ class Tax extends Component {
 						{ __( 'Configure', 'woocommerce-admin' ) }
 					</Button>
 				),
-				visible: ! automatedTaxSupportedCountries.includes( countryCode ),
+				visible: ! this.isSupportedCountry(),
 			},
 		];
 
@@ -239,12 +256,54 @@ class Tax extends Component {
 		return (
 			<div className="woocommerce-task-tax">
 				<Card className="is-narrow">
-					<Stepper
-						isPending={ isPending || isGeneralSettingsRequesting || isTaxSettingsRequesting }
-						isVertical={ true }
-						currentStep={ this.getSteps()[ stepIndex ].key }
-						steps={ this.getSteps() }
-					/>
+					{ null !== stepIndex ? (
+						<Stepper
+							isPending={ isPending || isGeneralSettingsRequesting || isTaxSettingsRequesting }
+							isVertical={ true }
+							currentStep={ this.getSteps()[ stepIndex ].key }
+							steps={ this.getSteps() }
+						/>
+					) : (
+						<div className="woocommerce-task-tax__success">
+							<span
+								className="woocommerce-task-tax__success-icon"
+								role="img"
+								aria-labelledby="woocommerce-task-tax__success-message"
+							>
+								🎊
+							</span>
+							<H id="woocommerce-task-tax__success-message">
+								{ __( 'Good news!', 'woocommerce-admin' ) }
+							</H>
+							<p>
+								{ interpolateComponents( {
+									mixedString: __(
+										'{{strong}}Jetpack{{/strong}} and {{strong}}WooCommerce Services{{/strong}} ' +
+											'can automate your sales tax calculations for you.',
+										'woocommerce-admin'
+									),
+									components: {
+										strong: <strong />,
+									},
+								} ) }
+							</p>
+							<Button
+								isPrimary
+								onClick={ () =>
+									this.setState( { automatedTaxEnabled: true }, this.updateAutomatedTax )
+								}
+							>
+								{ __( 'Yes please', 'woocommerce-admin' ) }
+							</Button>
+							<Button
+								onClick={ () =>
+									this.setState( { automatedTaxEnabled: false }, this.updateAutomatedTax )
+								}
+							>
+								{ __( "No thanks, I'll configure taxes manually", 'woocommerce-admin' ) }
+							</Button>
+						</div>
+					) }
 				</Card>
 			</div>
 		);
@@ -262,7 +321,10 @@ export default compose(
 		const isTaxSettingsError = Boolean( getSettingsError( 'tax' ) );
 		const isTaxSettingsRequesting = isGetSettingsRequesting( 'tax' );
 		// @todo This value should be fetched and updated via the wc-api.
-		const isJetpackConnected = true;
+		const isJetpackConnected = false;
+		// @todo This should check against a list of already activated plugins and should be
+		// revisited after https://github.com/woocommerce/woocommerce-admin/pull/2825 is merged.
+		const pluginsToActivate = [ 'jetpack', 'woocommerce-services' ];
 
 		const countryCode = generalSettings.woocommerce_default_country
 			? generalSettings.woocommerce_default_country.split( ':' )[ 0 ]
@@ -277,6 +339,7 @@ export default compose(
 			isTaxSettingsRequesting,
 			taxSettings,
 			isJetpackConnected,
+			pluginsToActivate,
 		};
 	} ),
 	withDispatch( dispatch => {
