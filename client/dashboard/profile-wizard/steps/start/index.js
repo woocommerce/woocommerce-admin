@@ -9,7 +9,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
-import { get, filter } from 'lodash';
+import { filter } from 'lodash';
 
 /**
  * WooCommerce depdencies
@@ -29,69 +29,6 @@ import PrintIcon from './images/print';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 
-// @todo Port to wc-api for use in other parts of the application
-const activatedPlugins = get( wcSettings, [ 'onboarding', 'activePlugins' ], [] );
-const benefits = [
-	{
-		title: __( 'Security', 'woocommerce-admin' ),
-		icon: <SecurityIcon />,
-		description: __(
-			'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
-			'woocommerce-admin'
-		),
-		visible: ! activatedPlugins.includes( 'jetpack' ),
-	},
-	{
-		title: __( 'Sales Tax', 'woocommerce-admin' ),
-		icon: <SalesTaxIcon />,
-		description: __(
-			'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
-			'woocommerce-admin'
-		),
-		visible: true,
-	},
-	{
-		title: __( 'Speed', 'woocommerce-admin' ),
-		icon: <SpeedIcon />,
-		description: __(
-			'Cache your images and static files on our own powerful global network of servers and speed up your site.',
-			'woocommerce-admin'
-		),
-		visible: ! activatedPlugins.includes( 'jetpack' ),
-	},
-	{
-		title: __( 'Mobile App', 'woocommerce-admin' ),
-		icon: <MobileAppIcon />,
-		description: __(
-			'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
-			'woocommerce-admin'
-		),
-		visible: ! activatedPlugins.includes( 'jetpack' ),
-	},
-	{
-		title: __( 'Print your own shipping labels', 'woocommerce-admin' ),
-		icon: <PrintIcon />,
-		description: __(
-			'Save time at the Post Office by printing USPS shipping labels at home.',
-			'woocommerce-admin'
-		),
-		visible:
-			activatedPlugins.includes( 'jetpack' ) &&
-			! activatedPlugins.includes( 'woocommerce-services' ),
-	},
-	{
-		title: __( 'Simple payment setup', 'woocommerce-admin' ),
-		icon: <CardIcon />,
-		description: __(
-			'WooCommerce Services enables us to provision Stripe and Paypal accounts quickly and easily for you.',
-			'woocommerce-admin'
-		),
-		visible:
-			activatedPlugins.includes( 'jetpack' ) &&
-			! activatedPlugins.includes( 'woocommerce-services' ),
-	},
-];
-
 class Start extends Component {
 	constructor() {
 		super( ...arguments );
@@ -107,8 +44,8 @@ class Start extends Component {
 
 	componentDidMount() {
 		if (
-			activatedPlugins.includes( 'jetpack' ) &&
-			activatedPlugins.includes( 'woocommerce-services' )
+			this.props.activePlugins.includes( 'jetpack' ) &&
+			this.props.activePlugins.includes( 'woocommerce-services' )
 		) {
 			return updateQueryString( { step: 'store-details' } );
 		}
@@ -173,10 +110,72 @@ class Start extends Component {
 		);
 	}
 
+	getBenefits() {
+		const { activePlugins } = this.props;
+		return [
+			{
+				title: __( 'Security', 'woocommerce-admin' ),
+				icon: <SecurityIcon />,
+				description: __(
+					'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
+					'woocommerce-admin'
+				),
+				visible: ! activePlugins.includes( 'jetpack' ),
+			},
+			{
+				title: __( 'Sales Tax', 'woocommerce-admin' ),
+				icon: <SalesTaxIcon />,
+				description: __(
+					'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
+					'woocommerce-admin'
+				),
+				visible: true,
+			},
+			{
+				title: __( 'Speed', 'woocommerce-admin' ),
+				icon: <SpeedIcon />,
+				description: __(
+					'Cache your images and static files on our own powerful global network of servers and speed up your site.',
+					'woocommerce-admin'
+				),
+				visible: ! activePlugins.includes( 'jetpack' ),
+			},
+			{
+				title: __( 'Mobile App', 'woocommerce-admin' ),
+				icon: <MobileAppIcon />,
+				description: __(
+					'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
+					'woocommerce-admin'
+				),
+				visible: ! activePlugins.includes( 'jetpack' ),
+			},
+			{
+				title: __( 'Print your own shipping labels', 'woocommerce-admin' ),
+				icon: <PrintIcon />,
+				description: __(
+					'Save time at the Post Office by printing USPS shipping labels at home.',
+					'woocommerce-admin'
+				),
+				visible:
+					activePlugins.includes( 'jetpack' ) && ! activePlugins.includes( 'woocommerce-services' ),
+			},
+			{
+				title: __( 'Simple payment setup', 'woocommerce-admin' ),
+				icon: <CardIcon />,
+				description: __(
+					'WooCommerce Services enables us to provision Stripe and Paypal accounts quickly and easily for you.',
+					'woocommerce-admin'
+				),
+				visible:
+					activePlugins.includes( 'jetpack' ) && ! activePlugins.includes( 'woocommerce-services' ),
+			},
+		];
+	}
+
 	renderBenefits() {
 		return (
 			<div className="woocommerce-profile-wizard__benefits">
-				{ filter( benefits, benefit => benefit.visible ).map( benefit =>
+				{ filter( this.getBenefits(), benefit => benefit.visible ).map( benefit =>
 					this.renderBenefit( benefit )
 				) }
 			</div>
@@ -185,7 +184,8 @@ class Start extends Component {
 
 	render() {
 		const { allowTracking } = this.state;
-		const pluginNames = activatedPlugins.includes( 'jetpack' )
+		const { activePlugins } = this.props;
+		const pluginNames = activePlugins.includes( 'jetpack' )
 			? __( 'WooCommerce Services', 'woocommerce-admin' )
 			: __( 'Jetpack & WooCommerce Services', 'woocommerce-admin' );
 
@@ -264,15 +264,27 @@ class Start extends Component {
 
 export default compose(
 	withSelect( select => {
-		const { getProfileItemsError, getSettings, getSettingsError, isGetSettingsRequesting } = select(
-			'wc-api'
-		);
+		const {
+			getProfileItemsError,
+			getSettings,
+			getSettingsError,
+			isGetSettingsRequesting,
+			getActivePlugins,
+		} = select( 'wc-api' );
 
 		const isSettingsError = Boolean( getSettingsError( 'advanced' ) );
 		const isSettingsRequesting = isGetSettingsRequesting( 'advanced' );
 		const isProfileItemsError = Boolean( getProfileItemsError() );
 
-		return { getSettings, isSettingsError, isProfileItemsError, isSettingsRequesting };
+		const activePlugins = getActivePlugins();
+
+		return {
+			getSettings,
+			isSettingsError,
+			isProfileItemsError,
+			isSettingsRequesting,
+			activePlugins,
+		};
 	} ),
 	withDispatch( dispatch => {
 		const { updateProfileItems, updateSettings } = dispatch( 'wc-api' );

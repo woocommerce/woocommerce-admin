@@ -14,6 +14,7 @@ import { NAMESPACE, pluginNames } from './constants';
 
 function read( resourceNames, fetch = apiFetch ) {
 	return [
+		...readActivePlugins( resourceNames, fetch ),
 		...readProfileItems( resourceNames, fetch ),
 		...readJetpackConnectUrl( resourceNames, fetch ),
 	];
@@ -98,6 +99,33 @@ function profileItemToResource( items ) {
 	return resources;
 }
 
+function readActivePlugins( resourceNames, fetch ) {
+	const resourceName = 'active-plugins';
+	if ( resourceNames.includes( resourceName ) ) {
+		const url = NAMESPACE + '/onboarding/plugins/active';
+
+		return [
+			fetch( { path: url } )
+				.then( activePluginsToResources )
+				.catch( error => {
+					return { [ resourceName ]: { error: String( error.message ) } };
+				} ),
+		];
+	}
+
+	return [];
+}
+
+function activePluginsToResources( items ) {
+	const { plugins } = items;
+	const resourceName = 'active-plugins';
+	return {
+		[ resourceName ]: {
+			data: plugins,
+		},
+	};
+}
+
 function activatePlugins( resourceNames, data, fetch ) {
 	const resourceName = 'plugin-activate';
 	if ( resourceNames.includes( resourceName ) ) {
@@ -111,7 +139,7 @@ function activatePlugins( resourceNames, data, fetch ) {
 					plugins: plugins.join( ',' ),
 				},
 			} )
-				.then( activatePluginToResource.bind( null, data[ resourceName ] ) )
+				.then( response => activatePluginToResource( response, plugins ) )
 				.catch( error => {
 					const resources = { [ resourceName ]: { error } };
 					Object.keys( plugins ).forEach( key => {
@@ -128,17 +156,17 @@ function activatePlugins( resourceNames, data, fetch ) {
 	return [];
 }
 
-function activatePluginToResource( items ) {
+function activatePluginToResource( response, items ) {
 	const resourceName = 'plugin-activate';
 
 	const resources = {
 		[ resourceName ]: { data: items },
+		[ 'active-plugins' ]: { data: response.active },
 	};
 	Object.keys( items ).forEach( key => {
 		const item = items[ key ];
 		resources[ getResourceName( resourceName, item ) ] = { data: item };
 	} );
-
 	return resources;
 }
 

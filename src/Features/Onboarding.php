@@ -347,12 +347,6 @@ class Onboarding {
 		$active_plugins = array();
 		foreach ( $active_plugin_files as $file ) {
 			$slug = $allowed_plugin_slugs[ $file ];
-			if ( 'jetpack' === $slug || 'woocommerce-services' === $slug ) {
-				// If Jetpack is installed but not connected, consider both WCS and Jetpack inactive for the purpose of onboarding.
-				if ( ! class_exists( 'Jetpack' ) || ! ( \Jetpack::is_active() || \Jetpack::is_development_mode() ) ) {
-					continue;
-				}
-			}
 			$active_plugins[] = $slug;
 		}
 		return $active_plugins;

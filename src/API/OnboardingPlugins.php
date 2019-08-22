@@ -52,6 +52,19 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/active',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'active_plugins' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/activate',
 			array(
 				array(
@@ -178,6 +191,19 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
+	 * Returns a list of active plugins.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return array Active plugins
+	 */
+	public function active_plugins( $request ) {
+		$plugins = Onboarding::get_active_plugins();
+		return( array(
+			'plugins' => array_values( $plugins ),
+		) );
+	}
+
+	/**
 	 * Activate the requested plugin.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
@@ -210,8 +236,9 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 		}
 
 		return( array(
-			'plugins' => array_values( $plugins ),
-			'status'  => 'success',
+			'activatedPlugins' => array_values( $plugins ),
+			'active' => Onboarding::get_active_plugins(),
+			'status' => 'success',
 		) );
 	}
 
