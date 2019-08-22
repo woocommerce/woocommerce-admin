@@ -146,7 +146,7 @@ class Shipping extends Component {
 				key: 'store_location',
 				label: __( 'Set store location', 'woocommerce-admin' ),
 				description: __( 'The address from which your business operates', 'woocommerce-admin' ),
-				content: <StoreLocation completeStep={ this.completeStep } { ...this.props } />,
+				content: <StoreLocation onComplete={ this.completeStep } { ...this.props } />,
 				visible: true,
 			},
 			{
@@ -159,7 +159,7 @@ class Shipping extends Component {
 				content: (
 					<ShippingRates
 						shippingZones={ this.state.shippingZones }
-						completeStep={ this.completeStep }
+						onComplete={ this.completeStep }
 						{ ...this.props }
 					/>
 				),

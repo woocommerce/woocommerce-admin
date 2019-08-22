@@ -180,7 +180,7 @@ class Tax extends Component {
 				content: (
 					<StoreLocation
 						{ ...this.props }
-						completeStep={ this.completeStep }
+						onComplete={ this.completeStep }
 						isSettingsRequesting={ isGeneralSettingsRequesting }
 						settings={ generalSettings }
 					/>
@@ -214,7 +214,7 @@ class Tax extends Component {
 					'Connect your store to WordPress.com to enable automated sales tax calculations',
 					'woocommerce-admin'
 				),
-				content: <Connect completeStep={ this.completeStep } { ...this.props } />,
+				content: <Connect { ...this.props } />,
 				visible: this.isSupportedCountry(),
 			},
 			{
