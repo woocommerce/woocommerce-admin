@@ -19,6 +19,7 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import Connect from '../steps/connect';
+import { getCountryCode } from 'dashboard/utils';
 import Plugins from '../steps/plugins';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
@@ -224,9 +225,8 @@ export default compose(
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
 		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
 
-		const countryCode = settings.woocommerce_default_country
-			? settings.woocommerce_default_country.split( ':' )[ 0 ]
-			: null;
+		const countryCode = getCountryCode( settings.woocommerce_default_country );
+
 		const countries = ( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
 		const country = countryCode ? countries.find( c => c.code === countryCode ) : null;
 		const countryName = country ? country.name : null;

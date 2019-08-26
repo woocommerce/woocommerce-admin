@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { filter } from 'lodash';
 import { FormToggle } from '@wordpress/components';
@@ -21,10 +21,10 @@ import { getAdminLink, getHistory, getNewPath } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import Connect from './steps/connect';
+import { getCountryCode } from 'dashboard/utils';
 import Plugins from './steps/plugins';
 import StoreLocation from './steps/location';
 import withSelect from 'wc-api/with-select';
-import { Fragment } from '@wordpress/element/build/react';
 
 class Tax extends Component {
 	constructor() {
@@ -320,15 +320,12 @@ export default compose(
 		const taxSettings = getSettings( 'tax' );
 		const isTaxSettingsError = Boolean( getSettingsError( 'tax' ) );
 		const isTaxSettingsRequesting = isGetSettingsRequesting( 'tax' );
+		const countryCode = getCountryCode( generalSettings.woocommerce_default_country );
 		// @todo This value should be fetched and updated via the wc-api.
 		const isJetpackConnected = false;
 		// @todo This should check against a list of already activated plugins and should be
 		// revisited after https://github.com/woocommerce/woocommerce-admin/pull/2825 is merged.
 		const pluginsToActivate = [ 'jetpack', 'woocommerce-services' ];
-
-		const countryCode = generalSettings.woocommerce_default_country
-			? generalSettings.woocommerce_default_country.split( ':' )[ 0 ]
-			: null;
 
 		return {
 			countryCode,
