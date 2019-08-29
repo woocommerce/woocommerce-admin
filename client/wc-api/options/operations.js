@@ -44,10 +44,10 @@ function updateOptions( resourceNames, data, fetch ) {
 	} );
 
 	return filteredNames.map( async resourceName => {
-		return fetch( { path: url, method: 'POST', data: data.options } )
-			.then( () => optionsToResource( data ) )
+		return fetch( { path: url, method: 'POST', data: data[ resourceName ] } )
+			.then( () => optionsToResource( data[ resourceName ] ) )
 			.catch( error => {
-				return { [ resourceName ]: { error: String( error.message ) } };
+				return { [ resourceName ]: { error } };
 			} );
 	} );
 }
