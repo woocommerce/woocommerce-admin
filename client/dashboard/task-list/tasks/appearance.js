@@ -190,7 +190,7 @@ class Appearance extends Component {
 		const { isRequesting, hasErrors } = this.props;
 
 		return (
-			<div className="woocommerce-task-tax">
+			<div className="woocommerce-task-appearance">
 				<Card className="is-narrow">
 					<Stepper
 						isPending={ isRequesting && ! hasErrors }
