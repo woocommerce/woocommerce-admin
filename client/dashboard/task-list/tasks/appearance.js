@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, ImageUpload } from 'newspack-components';
+import { Button, ImageUpload, TextControl } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
@@ -25,18 +25,21 @@ class Appearance extends Component {
 		super( props );
 
 		this.state = {
-			stepIndex: 0,
 			logo: null,
+			stepIndex: 0,
+			storeNoticeText: props.options.woocommerce_demo_store_notice || '',
 		};
 
 		this.completeStep = this.completeStep.bind( this );
 		this.updateLogo = this.updateLogo.bind( this );
+		this.updateNotice = this.updateNotice.bind( this );
 	}
 
 	async componentDidUpdate( prevProps ) {
 		const { stepIndex } = this.state;
-		const { createNotice, errors, hasErrors, isRequesting, themeMods } = this.props;
+		const { createNotice, errors, hasErrors, isRequesting, options, themeMods } = this.props;
 		const step = this.getSteps()[ stepIndex ].key;
+		const isRequestSuccessful = ! isRequesting && prevProps.isRequesting && ! hasErrors;
 
 		if ( themeMods && prevProps.themeMods.custom_logo !== themeMods.custom_logo ) {
 			await wp.media.attachment( themeMods.custom_logo ).fetch();
@@ -46,7 +49,22 @@ class Appearance extends Component {
 			/* eslint-enable react/no-did-update-set-state */
 		}
 
-		if ( 'logo' === step && ! isRequesting && prevProps.isRequesting && ! hasErrors ) {
+		if (
+			options.woocommerce_demo_store_notice &&
+			prevProps.options.woocommerce_demo_store_notice !== options.woocommerce_demo_store_notice
+		) {
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( { storeNoticeText: options.woocommerce_demo_store_notice } );
+			/* eslint-enable react/no-did-update-set-state */
+		}
+
+		if ( 'logo' === step && isRequestSuccessful ) {
+			createNotice( 'success', __( 'Store logo updated sucessfully.' ) );
+			this.completeStep();
+		}
+
+		if ( 'notice' === step && isRequestSuccessful ) {
+			createNotice( 'success', __( 'Store notice updated sucessfully.' ) );
 			this.completeStep();
 		}
 
@@ -65,17 +83,27 @@ class Appearance extends Component {
 		}
 	}
 
-	async updateLogo() {
+	updateLogo() {
 		const { options, themeMods, updateOptions } = this.props;
 		const { logo } = this.state;
 
-		await updateOptions( {
+		updateOptions( {
 			[ `theme_mods_${ options.stylesheet }` ]: { ...themeMods, custom_logo: logo.id },
 		} );
 	}
 
+	updateNotice() {
+		const { updateOptions } = this.props;
+		const { storeNoticeText } = this.state;
+
+		updateOptions( {
+			woocommerce_demo_store: storeNoticeText.length ? 'yes' : 'no',
+			woocommerce_demo_store_notice: storeNoticeText,
+		} );
+	}
+
 	getSteps() {
-		const { logo } = this.state;
+		const { logo, storeNoticeText } = this.state;
 		const { isRequesting } = this.props;
 
 		const steps = [
@@ -139,7 +167,15 @@ class Appearance extends Component {
 				),
 				content: (
 					<Fragment>
-						<Button isPrimary>{ __( 'Complete task', 'woocommerce-admin' ) }</Button>
+						<TextControl
+							label={ __( 'Store notice text', 'woocommerce-admin' ) }
+							placeholder={ __( 'Store notice text', 'woocommerce-admin' ) }
+							value={ storeNoticeText }
+							onChange={ value => this.setState( { storeNoticeText: value } ) }
+						/>
+						<Button onClick={ this.updateNotice } isPrimary>
+							{ __( 'Complete task', 'woocommerce-admin' ) }
+						</Button>
 					</Fragment>
 				),
 				visible: true,
@@ -172,7 +208,11 @@ export default compose(
 	withSelect( select => {
 		const { getOptions, getOptionsError, isOptionsRequesting } = select( 'wc-api' );
 
-		const options = getOptions( [ 'woocommerce_demo_store_notice', 'stylesheet' ] );
+		const options = getOptions( [
+			'woocommerce_demo_store',
+			'woocommerce_demo_store_notice',
+			'stylesheet',
+		] );
 		const themeModsName = `theme_mods_${ options.stylesheet }`;
 		const themeOptions =
 			options.stylesheet && ! wcSettings.onboarding.customLogo
@@ -183,11 +223,22 @@ export default compose(
 
 		const errors = [];
 		const uploadLogoError = getOptionsError( [ themeModsName ] );
+		const storeNoticeError = getOptionsError( [
+			'woocommerce_demo_store',
+			'woocommerce_demo_store_notice',
+		] );
 		if ( uploadLogoError ) {
 			errors.push( uploadLogoError.message );
 		}
+		if ( storeNoticeError ) {
+			errors.push( storeNoticeError.message );
+		}
 		const hasErrors = Boolean( errors.length );
-		const isRequesting = Boolean( isOptionsRequesting( [ themeModsName ] ) );
+		const isRequesting =
+			Boolean( isOptionsRequesting( [ themeModsName ] ) ) ||
+			Boolean(
+				isOptionsRequesting( [ 'woocommerce_demo_store', 'woocommerce_demo_store_notice' ] )
+			);
 
 		return { errors, getOptionsError, hasErrors, isRequesting, options, themeMods };
 	} ),
