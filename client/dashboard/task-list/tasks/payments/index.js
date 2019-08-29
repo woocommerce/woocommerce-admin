@@ -259,13 +259,4 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 		};
 	} )
-	/*withDispatch( dispatch => {
-		const { createNotice } = dispatch( 'core/notices' );
-		const { updateSettings } = dispatch( 'wc-api' );
-
-		return {
-			createNotice,
-			updateSettings,
-		};
-	} )*/
 )( Payments );

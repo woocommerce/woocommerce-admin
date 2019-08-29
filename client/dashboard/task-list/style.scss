@@ -202,11 +202,20 @@
 		margin-top: $gap-large;
 	}
 
+	.woocommerce-list__item-title {
+		border-top: 1px solid $studio-gray-5;
+		padding-top: $gap;
+	}
+
 	.woocommerce-task-payments__woocommerce-services-options {
-		border-top: 1px solid $new-muriel-gray-5;
-		margin-top: $gap-small;
-		margin-left: $gap-large;
-		padding-top: $gap-small;
+		border-top: 1px solid $studio-gray-5;
+		margin-top: $gap;
+		margin-left: $gap-larger;
+		padding-top: $gap;
+
+		.components-checkbox-control__input {
+			margin-left: -$gap-larger;
+		}
 
 		.components-checkbox-control__label {
 			font-size: 16px;
