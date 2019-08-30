@@ -135,7 +135,7 @@ class Payments extends Component {
 								'and one-touch checkout with Apple Pay.',
 							'woocommerce-admin'
 						) }
-						{ this.renderWooCommerceServicesStripeConnect( this.formData ) }
+						{ this.renderWooCommerceServicesStripeConnect() }
 					</Fragment>
 				),
 				before: <div />, // @todo Logo
@@ -150,7 +150,7 @@ class Payments extends Component {
 							"Safe and secure payments using credit cards or your customer's PayPal account.",
 							'woocommerce-admin'
 						) }
-						{ this.renderWooCommerceServicesPayPalConnect( this.formData ) }
+						{ this.renderWooCommerceServicesPayPalConnect() }
 					</Fragment>
 				),
 				before: <div />, // @todo Logo
@@ -223,7 +223,7 @@ class Payments extends Component {
 				description: __( "Select which payment methods you'd like to use", 'woocommerce-admin' ),
 				content: (
 					<Fragment>
-						<List items={ this.getMethodOptions( this.formData ) } />
+						<List items={ this.getMethodOptions() } />
 						<Button onClick={ this.completeStep } isPrimary disabled={ ! isMethodSelected }>
 							{ __( 'Proceed', 'woocommerce-admin' ) }
 						</Button>
