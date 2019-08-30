@@ -486,4 +486,21 @@ class Onboarding {
 		wp_safe_redirect( wc_admin_url() );
 		exit;
 	}
+
+	/**
+	 * Reset the onboarding task list and redirect to the dashboard.
+	 */
+	public static function reset_task_list() {
+		if (
+			! Loader::is_admin_page() ||
+			! isset( $_GET['reset_task_list'] ) // WPCS: CSRF ok.
+		) {
+			return;
+		}
+
+		$new_value = 1 === absint( $_GET['reset_task_list'] ) ? 'no' : 'yes'; // WPCS: CSRF ok.
+		update_option( 'woocommerce_task_list_hidden', $new_value );
+		wp_safe_redirect( wc_admin_url() );
+		exit;
+	}
 }
