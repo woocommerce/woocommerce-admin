@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { filter, noop } from 'lodash';
+import { filter } from 'lodash';
 import { compose } from '@wordpress/compose';
 
 /**
