@@ -59,12 +59,12 @@ class Appearance extends Component {
 		}
 
 		if ( 'logo' === step && isRequestSuccessful ) {
-			createNotice( 'success', __( 'Store logo updated sucessfully.' ) );
+			createNotice( 'success', __( 'Store logo updated sucessfully.', 'woocommerce-admin' ) );
 			this.completeStep();
 		}
 
 		if ( 'notice' === step && isRequestSuccessful ) {
-			createNotice( 'success', __( 'Store notice updated sucessfully.' ) );
+			createNotice( 'success', __( 'Store notice updated sucessfully.', 'woocommerce-admin' ) );
 			this.completeStep();
 		}
 

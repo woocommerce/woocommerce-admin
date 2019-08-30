@@ -23,7 +23,7 @@ class Options extends \WC_REST_Data_Controller {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'wc/v4';
+	protected $namespace = 'wc-admin/v1';
 
 	/**
 	 * Route base.
@@ -64,7 +64,7 @@ class Options extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Check if a given request has access to manage plugins.
+	 * Check if a given request has access to manage options.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|boolean

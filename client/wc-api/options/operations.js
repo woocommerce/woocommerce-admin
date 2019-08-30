@@ -9,7 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal dependencies
  */
 import { getResourceIdentifier, getResourceName } from '../utils';
-import { NAMESPACE } from '../constants';
+import { WC_ADMIN_NAMESPACE } from '../constants';
 
 function read( resourceNames, fetch = apiFetch ) {
 	return [ ...readOptions( resourceNames, fetch ) ];
@@ -26,7 +26,7 @@ function readOptions( resourceNames, fetch ) {
 
 	return filteredNames.map( async resourceName => {
 		const optionNames = getResourceIdentifier( resourceName );
-		const url = NAMESPACE + '/options?options=' + optionNames.join( ',' );
+		const url = WC_ADMIN_NAMESPACE + '/options?options=' + optionNames.join( ',' );
 
 		return fetch( { path: url } )
 			.then( optionsToResource )
@@ -37,7 +37,7 @@ function readOptions( resourceNames, fetch ) {
 }
 
 function updateOptions( resourceNames, data, fetch ) {
-	const url = NAMESPACE + '/options';
+	const url = WC_ADMIN_NAMESPACE + '/options';
 
 	const filteredNames = resourceNames.filter( name => {
 		return name.startsWith( 'options' );
