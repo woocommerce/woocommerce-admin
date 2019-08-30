@@ -461,6 +461,8 @@ class Onboarding {
 			)
 		);
 		$response = rest_do_request( $request );
+		wp_safe_redirect( wc_admin_url() );
+		exit;
 	}
 
 	/**
