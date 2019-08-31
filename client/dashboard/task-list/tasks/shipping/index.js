@@ -24,6 +24,7 @@ import Plugins from '../steps/plugins';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
 import withSelect from 'wc-api/with-select';
+import { COUNTRIES } from '@woocommerce-admin/constants';
 
 class Shipping extends Component {
 	constructor() {
@@ -227,8 +228,7 @@ export default compose(
 
 		const countryCode = getCountryCode( settings.woocommerce_default_country );
 
-		const countries = ( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
-		const country = countryCode ? countries.find( c => c.code === countryCode ) : null;
+		const country = countryCode ? COUNTRIES.find( c => c.code === countryCode ) : null;
 		const countryName = country ? country.name : null;
 
 		return { countryCode, countryName, isSettingsError, isSettingsRequesting, settings };

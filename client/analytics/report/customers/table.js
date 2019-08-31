@@ -18,6 +18,7 @@ import { numberFormat } from '@woocommerce/number';
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
+import { COUNTRIES } from '@woocommerce-admin/constants';
 
 export default class CustomersReportTable extends Component {
 	constructor() {
@@ -102,8 +103,7 @@ export default class CustomersReportTable extends Component {
 	}
 
 	getCountryName( code ) {
-		const countries = ( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
-		const country = countries.find( c => c.code === code );
+		const country = COUNTRIES.find( c => c.code === code );
 		return country ? country.name : null;
 	}
 

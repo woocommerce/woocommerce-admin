@@ -23,6 +23,7 @@ import { isLowStock } from './utils';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
 import './style.scss';
+import { MANAGE_STOCK, STOCK_STATUSES } from '@woocommerce-admin/constants';
 
 class ProductsReportTable extends Component {
 	constructor() {
@@ -78,13 +79,13 @@ class ProductsReportTable extends Component {
 				key: 'variations',
 				isSortable: true,
 			},
-			'yes' === wcSettings.manageStock
+			'yes' === MANAGE_STOCK
 				? {
 						label: __( 'Status', 'woocommerce-admin' ),
 						key: 'stock_status',
 					}
 				: null,
-			'yes' === wcSettings.manageStock
+			'yes' === MANAGE_STOCK
 				? {
 						label: __( 'Stock', 'woocommerce-admin' ),
 						key: 'stock',
@@ -95,7 +96,6 @@ class ProductsReportTable extends Component {
 	}
 
 	getRowsContent( data = [] ) {
-		const { stockStatuses } = wcSettings;
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
@@ -132,7 +132,7 @@ class ProductsReportTable extends Component {
 					{ _x( 'Low', 'Indication of a low quantity', 'woocommerce-admin' ) }
 				</Link>
 			) : (
-				stockStatuses[ stock_status ]
+				STOCK_STATUSES[ stock_status ]
 			);
 
 			return [
@@ -194,13 +194,13 @@ class ProductsReportTable extends Component {
 					display: numberFormat( variations.length ),
 					value: variations.length,
 				},
-				'yes' === wcSettings.manageStock
+				'yes' === MANAGE_STOCK
 					? {
 							display: manage_stock ? stockStatus : __( 'N/A', 'woocommerce-admin' ),
-							value: manage_stock ? stockStatuses[ stock_status ] : null,
+							value: manage_stock ? STOCK_STATUSES[ stock_status ] : null,
 						}
 					: null,
-				'yes' === wcSettings.manageStock
+				'yes' === MANAGE_STOCK
 					? {
 							display: manage_stock
 								? numberFormat( stock_quantity )

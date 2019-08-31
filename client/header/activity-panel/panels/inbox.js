@@ -10,6 +10,11 @@ import Gridicon from 'gridicons';
 import { withDispatch } from '@wordpress/data';
 
 /**
+ * WooCommerce dependencies
+ */
+import { ADMIN_URL } from '@woocommerce/settings';
+
+/**
  * Internal dependencies
  */
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
@@ -37,7 +42,7 @@ class InboxPanel extends Component {
 		const { triggerNoteAction } = this.props;
 		const href = event.target.href || '';
 
-		if ( href.length && ! href.startsWith( wcSettings.adminUrl ) ) {
+		if ( href.length && ! href.startsWith( ADMIN_URL ) ) {
 			event.preventDefault();
 			window.open( href, '_blank' );
 		}

@@ -10,6 +10,7 @@ import { isNil } from 'lodash';
  */
 import { DEFAULT_REQUIREMENT } from '../constants';
 import { getResourceName } from '../utils';
+import { ONBOARDING, JETPACK_STATUS } from '@woocommerce-admin/constants';
 
 const getProfileItems = ( getResource, requireResource ) => (
 	requirement = DEFAULT_REQUIREMENT
@@ -18,7 +19,7 @@ const getProfileItems = ( getResource, requireResource ) => (
 	const ids = requireResource( requirement, resourceName ).data || [];
 
 	if ( ! ids.length ) {
-		return wcSettings.onboarding.profile;
+		return ONBOARDING.profile;
 	}
 
 	const items = {};
@@ -81,17 +82,14 @@ const isJetpackConnected = ( getResource, requireResource ) => (
 	requirement = DEFAULT_REQUIREMENT
 ) => {
 	const activePluginsData = requireResource( requirement, 'active-plugins' ).data || undefined;
-	const activePlugins = ! activePluginsData
-		? wcSettings.onboarding.activePlugins
-		: activePluginsData;
+	const activePlugins = ! activePluginsData ? ONBOARDING.activePlugins : activePluginsData;
 
 	// Avoid issuing API calls, since Jetpack is obviously not connected.
 	if ( ! activePlugins.includes( 'jetpack' ) ) {
 		return false;
 	}
 
-	const data =
-		requireResource( requirement, 'jetpack-status' ).data || wcSettings.dataEndpoints.jetpackStatus;
+	const data = requireResource( requirement, 'jetpack-status' ).data || JETPACK_STATUS;
 	return ( data && data.isActive ) || false;
 };
 
@@ -101,7 +99,7 @@ const getActivePlugins = ( getResource, requireResource ) => (
 	const resourceName = 'active-plugins';
 	const data = requireResource( requirement, resourceName ).data || [];
 	if ( ! data.length ) {
-		return wcSettings.onboarding.activePlugins;
+		return ONBOARDING.activePlugins;
 	}
 
 	return data;

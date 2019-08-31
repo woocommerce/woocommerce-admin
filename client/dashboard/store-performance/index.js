@@ -32,6 +32,7 @@ import {
 import withSelect from 'wc-api/with-select';
 import './style.scss';
 import { recordEvent } from 'lib/tracks';
+import { PERFORMANCE_INDICATORS } from '@woocommerce-admin/constants';
 
 class StorePerformance extends Component {
 	renderMenu() {
@@ -194,8 +195,7 @@ export default compose(
 		const endPrimary = datesFromQuery.primary.before;
 		const endSecondary = datesFromQuery.secondary.before;
 
-		const indicators = wcSettings.dataEndpoints.performanceIndicators;
-		const userIndicators = indicators.filter(
+		const userIndicators = PERFORMANCE_INDICATORS.filter(
 			indicator => ! hiddenBlocks.includes( indicator.stat )
 		);
 		const statKeys = userIndicators.map( indicator => indicator.stat ).join( ',' );
@@ -204,7 +204,7 @@ export default compose(
 			return {
 				hiddenBlocks,
 				userIndicators,
-				indicators,
+				PERFORMANCE_INDICATORS,
 			};
 		}
 
@@ -234,7 +234,7 @@ export default compose(
 		return {
 			hiddenBlocks,
 			userIndicators,
-			indicators,
+			PERFORMANCE_INDICATORS,
 			primaryData,
 			primaryError,
 			primaryRequesting,

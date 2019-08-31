@@ -8,6 +8,11 @@ import { SelectControl, TextControl } from 'newspack-components';
 import { useMemo } from 'react';
 
 /**
+ * Internal dependencies
+ */
+import { COUNTRIES } from '@woocommerce-admin/constants';
+
+/**
  * Form validation.
  *
  * @param {Object} values Keyed values of all fields in the form.
@@ -38,9 +43,7 @@ export function validateStoreAddress( values ) {
  * @return {Object} Select options, { value: 'US:GA', label: 'United States - Georgia' }
  */
 export function getCountryStateOptions() {
-	const countries = ( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
-
-	const countryStateOptions = countries.reduce( ( acc, country ) => {
+	const countryStateOptions = COUNTRIES.reduce( ( acc, country ) => {
 		if ( ! country.states.length ) {
 			acc.push( {
 				value: country.code,

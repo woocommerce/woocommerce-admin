@@ -25,6 +25,7 @@ import { getCountryCode } from 'dashboard/utils';
 import Plugins from './steps/plugins';
 import StoreLocation from './steps/location';
 import withSelect from 'wc-api/with-select';
+import { ONBOARDING } from '@woocommerce-admin/constants';
 
 class Tax extends Component {
 	constructor() {
@@ -99,7 +100,7 @@ class Tax extends Component {
 
 	isSupportedCountry() {
 		const { countryCode } = this.props;
-		const { automatedTaxSupportedCountries } = wcSettings.onboarding;
+		const { automatedTaxSupportedCountries } = ONBOARDING;
 		return automatedTaxSupportedCountries.includes( countryCode );
 	}
 

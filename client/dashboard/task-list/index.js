@@ -23,6 +23,7 @@ import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 import withSelect from 'wc-api/with-select';
+import { ONBOARDING } from '@woocommerce-admin/constants';
 
 class TaskDashboard extends Component {
 	componentDidMount() {
@@ -36,7 +37,7 @@ class TaskDashboard extends Component {
 	}
 
 	getTasks() {
-		const { shippingZonesCount, tasks } = wcSettings.onboarding;
+		const { shippingZonesCount, tasks } = ONBOARDING;
 		const { profileItems, query } = this.props;
 
 		return [

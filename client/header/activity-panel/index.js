@@ -29,6 +29,7 @@ import { recordEvent } from 'lib/tracks';
 import ReviewsPanel from './panels/reviews';
 import withSelect from 'wc-api/with-select';
 import WordPressNotices from './wordpress-notices';
+import { MANAGE_STOCK, REVIEWS_ENABLED } from '@woocommerce-admin/constants';
 
 class ActivityPanel extends Component {
 	constructor() {
@@ -128,7 +129,7 @@ class ActivityPanel extends Component {
 				icon: <Gridicon icon="pages" />,
 				unread: hasUnreadOrders,
 			},
-			'yes' === wcSettings.manageStock
+			'yes' === MANAGE_STOCK
 				? {
 						name: 'stock',
 						title: __( 'Stock', 'woocommerce-admin' ),
@@ -136,7 +137,7 @@ class ActivityPanel extends Component {
 						unread: hasUnreadStock,
 					}
 				: null,
-			'yes' === wcSettings.reviewsEnabled
+			'yes' === REVIEWS_ENABLED
 				? {
 						name: 'reviews',
 						title: __( 'Reviews', 'woocommerce-admin' ),

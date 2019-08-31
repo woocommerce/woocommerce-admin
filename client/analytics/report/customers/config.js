@@ -11,6 +11,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import { getCustomerLabels, getRequestByIdString } from 'lib/async-requests';
 import { NAMESPACE } from 'wc-api/constants';
+import { COUNTRIES } from '@woocommerce-admin/constants';
 
 const CUSTOMERS_REPORT_FILTERS_FILTER = 'woocommerce_admin_customers_report_filters';
 const CUSTOMERS_REPORT_ADVANCED_FILTERS_FILTER =
@@ -116,10 +117,7 @@ export const advancedFilters = applyFilters( CUSTOMERS_REPORT_ADVANCED_FILTERS_F
 				component: 'Search',
 				type: 'countries',
 				getLabels: async value => {
-					const countries =
-						( wcSettings.dataEndpoints && wcSettings.dataEndpoints.countries ) || [];
-
-					const allLabels = countries.map( country => ( {
+					const allLabels = COUNTRIES.map( country => ( {
 						id: country.code,
 						label: decodeEntities( country.name ),
 					} ) );

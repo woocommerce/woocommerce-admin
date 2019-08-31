@@ -24,6 +24,7 @@ import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
+import { ONBOARDING } from '@woocommerce-admin/constants';
 
 class Theme extends Component {
 	constructor() {
@@ -117,7 +118,7 @@ class Theme extends Component {
 
 	getThemeStatus( theme ) {
 		const { is_installed, price, slug } = theme;
-		const { activeTheme } = wcSettings.onboarding;
+		const { activeTheme } = ONBOARDING;
 
 		if ( activeTheme === slug ) {
 			return __( 'Currently active theme', 'woocommerce-admin' );
@@ -142,7 +143,7 @@ class Theme extends Component {
 
 	getThemes() {
 		const { activeTab, uploadedThemes } = this.state;
-		const { themes } = wcSettings.onboarding;
+		const { themes } = ONBOARDING;
 		themes.concat( uploadedThemes );
 		const allThemes = [ ...themes, ...uploadedThemes ];
 

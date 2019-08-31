@@ -26,6 +26,7 @@ import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
 import { DEFAULT_ACTIONABLE_STATUSES, QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
+import { ACTIONABLE_STATUSES } from '@woocommerce-admin/constants';
 
 class OrdersPanel extends Component {
 	renderEmptyCard() {
@@ -266,9 +267,7 @@ export default compose(
 			getReportItemsError,
 			isReportItemsRequesting,
 		} = select( 'wc-api' );
-		const orderStatuses =
-			wcSettings.wcAdminSettings.woocommerce_actionable_order_statuses ||
-			DEFAULT_ACTIONABLE_STATUSES;
+		const orderStatuses = ACTIONABLE_STATUSES || DEFAULT_ACTIONABLE_STATUSES;
 
 		if ( ! orderStatuses.length ) {
 			return { orders: [], isError: true, isRequesting: false, orderStatuses };
@@ -318,7 +317,6 @@ export default compose(
 		}
 
 		// Get a count of all orders for messaging purposes.
-		// @todo Add a property to wcSettings for this?
 		const allOrdersQuery = {
 			page: 1,
 			per_page: 1,

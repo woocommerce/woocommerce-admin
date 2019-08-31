@@ -19,6 +19,7 @@ import { numberFormat } from '@woocommerce/number';
  */
 import ReportTable from 'analytics/components/report-table';
 import { isLowStock } from './utils';
+import { MANAGE_STOCK, STOCK_STATUSES } from '@woocommerce-admin/constants';
 
 export default class VariationsReportTable extends Component {
 	constructor() {
@@ -64,13 +65,13 @@ export default class VariationsReportTable extends Component {
 				isSortable: true,
 				isNumeric: true,
 			},
-			'yes' === wcSettings.manageStock
+			'yes' === MANAGE_STOCK
 				? {
 						label: __( 'Status', 'woocommerce-admin' ),
 						key: 'stock_status',
 					}
 				: null,
-			'yes' === wcSettings.manageStock
+			'yes' === MANAGE_STOCK
 				? {
 						label: __( 'Stock', 'woocommerce-admin' ),
 						key: 'stock',
@@ -81,7 +82,6 @@ export default class VariationsReportTable extends Component {
 	}
 
 	getRowsContent( data = [] ) {
-		const { stockStatuses } = wcSettings;
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
@@ -125,19 +125,19 @@ export default class VariationsReportTable extends Component {
 					),
 					value: orders_count,
 				},
-				'yes' === wcSettings.manageStock
+				'yes' === MANAGE_STOCK
 					? {
 							display: isLowStock( stock_status, stock_quantity, low_stock_amount ) ? (
 								<Link href={ editPostLink } type="wp-admin">
 									{ _x( 'Low', 'Indication of a low quantity', 'woocommerce-admin' ) }
 								</Link>
 							) : (
-								stockStatuses[ stock_status ]
+								STOCK_STATUSES[ stock_status ]
 							),
-							value: stockStatuses[ stock_status ],
+							value: STOCK_STATUSES[ stock_status ],
 						}
 					: null,
-				'yes' === wcSettings.manageStock
+				'yes' === MANAGE_STOCK
 					? {
 							display: stock_quantity,
 							value: stock_quantity,

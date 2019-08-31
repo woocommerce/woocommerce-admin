@@ -20,6 +20,7 @@ import { Link, ProductImage } from '@woocommerce/components';
  * Internal dependencies
  */
 import { ActivityCard } from '../../activity-card';
+import { NOTIFY_LOW_STOCK_AMOUNT } from '@woocommerce-admin/constants';
 
 class ProductStockCard extends Component {
 	constructor( props ) {
@@ -132,10 +133,9 @@ class ProductStockCard extends Component {
 	render() {
 		const { product } = this.props;
 		const { edited, editing } = this.state;
-		const { notifyLowStockAmount } = wcSettings;
 		const lowStockAmount = Number.isFinite( product.low_stock_amount )
 			? product.low_stock_amount
-			: notifyLowStockAmount;
+			: NOTIFY_LOW_STOCK_AMOUNT;
 		const isLowStock = product.stock_quantity <= lowStockAmount;
 
 		// Hide cards that are not in low stock and have not been edited.

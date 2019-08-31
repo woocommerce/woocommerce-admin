@@ -24,6 +24,7 @@ import { recordPageView } from 'lib/tracks';
 import TransientNotices from './transient-notices';
 import StoreAlerts from './store-alerts';
 import { REPORTS_FILTER } from 'analytics/report';
+import { EMBED_BREADCRUMBS } from '@woocommerce-admin/constants';
 
 export class PrimaryLayout extends Component {
 	render() {
@@ -139,7 +140,7 @@ export class EmbedLayout extends Component {
 		return (
 			<Layout
 				page={ {
-					breadcrumbs: wcSettings.embedBreadcrumbs,
+					breadcrumbs: EMBED_BREADCRUMBS,
 				} }
 				isEmbedded
 			/>

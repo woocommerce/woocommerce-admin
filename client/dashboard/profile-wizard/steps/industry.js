@@ -15,6 +15,7 @@ import { withDispatch } from '@wordpress/data';
 import { H, Card } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
+import { ONBOARDING } from '@woocommerce-admin/constants';
 
 class Industry extends Component {
 	constructor() {
@@ -77,7 +78,7 @@ class Industry extends Component {
 	}
 
 	render() {
-		const { industries } = wcSettings.onboarding;
+		const { industries } = ONBOARDING;
 		const { error } = this.state;
 		return (
 			<Fragment>

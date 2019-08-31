@@ -14,6 +14,7 @@ import { keys, pickBy } from 'lodash';
  * WooCommerce dependencies
  */
 import { numberFormat } from '@woocommerce/number';
+import { CURRENCY, WC_ASSET_URL } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -50,7 +51,7 @@ class BusinessDetails extends Component {
 		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: product_count,
 			already_selling: 'no' !== selling_venues,
-			currency: wcSettings.currency.code,
+			currency: CURRENCY.code,
 			revenue,
 			used_platform: other_platform,
 			install_facebook: facebook,
@@ -179,17 +180,14 @@ class BusinessDetails extends Component {
 				{ extensionBenefits.map( benefit => (
 					<div className="woocommerce-profile-wizard__benefit" key={ benefit.title }>
 						<div className="woocommerce-profile-wizard__business-extension">
-							<img src={ wcSettings.wcAdminAssetUrl + benefit.icon } alt="" />
+							<img src={ WC_ASSET_URL + benefit.icon } alt="" />
 						</div>
 						<div className="woocommerce-profile-wizard__benefit-content">
 							<H className="woocommerce-profile-wizard__benefit-title">{ benefit.title }</H>
 							<p>{ benefit.description }</p>
 						</div>
 						<div className="woocommerce-profile-wizard__benefit-toggle">
-							<FormToggle
-								checked={ values[ benefit.slug ] }
-								{ ...getInputProps( benefit.slug ) }
-							/>
+							<FormToggle checked={ values[ benefit.slug ] } { ...getInputProps( benefit.slug ) } />
 						</div>
 					</div>
 				) ) }

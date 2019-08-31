@@ -17,6 +17,7 @@ import { numberFormat } from '@woocommerce/number';
  */
 import ReportTable from 'analytics/components/report-table';
 import { isLowStock } from './utils';
+import { STOCK_STATUSES } from '@woocommerce-admin/constants';
 
 export default class StockReportTable extends Component {
 	constructor() {
@@ -58,7 +59,6 @@ export default class StockReportTable extends Component {
 	getRowsContent( products ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const { stockStatuses } = wcSettings;
 
 		return products.map( product => {
 			const {
@@ -89,7 +89,7 @@ export default class StockReportTable extends Component {
 				</Link>
 			) : (
 				<Link href={ 'post.php?action=edit&post=' + ( parent_id || id ) } type="wp-admin">
-					{ stockStatuses[ stock_status ] }
+					{ STOCK_STATUSES[ stock_status ] }
 				</Link>
 			);
 

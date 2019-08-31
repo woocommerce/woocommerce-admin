@@ -11,6 +11,7 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { Card } from '@woocommerce/components';
 import { getAdminLink, getHistory, getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import { CURRENCY } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -40,6 +41,8 @@ class ChartBlock extends Component {
 			return null;
 		}
 
+		const { decimalSeparator, thousandSeparator, symbol, symbolPosition } = CURRENCY;
+
 		return (
 			<div
 				role="presentation"
@@ -58,6 +61,10 @@ class ChartBlock extends Component {
 						sprintf( __( '%s Report', 'woocommerce-admin' ), charts[ 0 ].label ) }
 					</a>
 					<ReportChart
+						currencySymbol={ symbol }
+						currencyPosition={ symbolPosition }
+						decimalSeparator={ decimalSeparator }
+						thousandSeparator={ thousandSeparator }
 						endpoint={ endpoint }
 						query={ query }
 						interactiveLegend={ false }

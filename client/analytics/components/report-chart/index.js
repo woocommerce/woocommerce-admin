@@ -21,6 +21,7 @@ import {
 	getPreviousDate,
 } from '@woocommerce/date';
 import { Chart } from '@woocommerce/components';
+import { CURRENCY } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -125,6 +126,7 @@ export class ReportChart extends Component {
 			showHeaderControls,
 			primaryData,
 		} = this.props;
+		const { decimalSeparator, thousandSeparator, symbol, symbolPosition } = CURRENCY;
 		const currentInterval = getIntervalForQuery( query );
 		const allowedIntervals = getAllowedIntervalsForQuery( query );
 		const formats = getDateFormatsForInterval( currentInterval, primaryData.data.intervals.length );
@@ -133,6 +135,10 @@ export class ReportChart extends Component {
 			: __( 'No data for the selected date range', 'woocommerce-admin' );
 		return (
 			<Chart
+				currencySymbol={ symbol }
+				currencyPosition={ symbolPosition }
+				decimalSeparator={ decimalSeparator }
+				thousandSeparator={ thousandSeparator }
 				allowedIntervals={ allowedIntervals }
 				data={ chartData }
 				dateParser={ '%Y-%m-%dT%H:%M:%S' }

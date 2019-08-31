@@ -21,13 +21,11 @@ import { updateQueryString } from '@woocommerce/navigation';
 import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
 import { pluginNames } from 'wc-api/onboarding/constants';
+import { ONBOARDING } from '@woocommerce-admin/constants';
 
 const pluginsToInstall = [ 'jetpack', 'woocommerce-services' ];
 // We want to use the cached version of activePlugins here, otherwise the list we are dealing with could update as plugins are activated.
-const plugins = difference(
-	pluginsToInstall,
-	get( wcSettings, [ 'onboarding', 'activePlugins' ], [] )
-);
+const plugins = difference( pluginsToInstall, get( ONBOARDING, 'activePlugins', [] ) );
 
 class Plugins extends Component {
 	constructor() {

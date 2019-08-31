@@ -24,6 +24,7 @@ import { QUERY_DEFAULTS } from 'wc-api/constants';
 import sanitizeHTML from 'lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
 import { recordEvent } from 'lib/tracks';
+import { ALERT_COUNT } from '@woocommerce-admin/constants';
 
 import './style.scss';
 
@@ -174,7 +175,7 @@ class StoreAlerts extends Component {
 
 	render() {
 		const alerts = this.props.alerts || [];
-		const preloadAlertCount = wcSettings.alertCount && parseInt( wcSettings.alertCount );
+		const preloadAlertCount = parseInt( ALERT_COUNT, 10 );
 
 		if ( preloadAlertCount > 0 && this.props.isLoading ) {
 			return <StoreAlertsPlaceholder hasMultipleAlerts={ preloadAlertCount > 1 } />;

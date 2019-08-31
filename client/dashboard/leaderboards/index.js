@@ -21,6 +21,7 @@ import Leaderboard from 'analytics/components/leaderboard';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import './style.scss';
+import { LEADERBOARDS } from '@woocommerce-admin/constants';
 
 class Leaderboards extends Component {
 	constructor( props ) {
@@ -161,7 +162,7 @@ export default compose(
 			'wc-api'
 		);
 		const userData = getCurrentUserData();
-		const allLeaderboards = wcSettings.dataEndpoints.leaderboards;
+		const allLeaderboards = LEADERBOARDS;
 
 		return {
 			allLeaderboards,

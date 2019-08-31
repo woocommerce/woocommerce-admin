@@ -31,6 +31,7 @@ import CustomersReport from './customers';
 import ReportError from 'analytics/components/report-error';
 import { searchItemsByString } from 'wc-api/items/utils';
 import withSelect from 'wc-api/with-select';
+import { MANAGE_STOCK } from '@woocommerce-admin/constants';
 
 export const REPORTS_FILTER = 'woocommerce_admin_reports_list';
 
@@ -71,7 +72,7 @@ export const getReports = () => {
 			title: __( 'Downloads', 'woocommerce-admin' ),
 			component: DownloadsReport,
 		},
-		'yes' === wcSettings.manageStock
+		'yes' === MANAGE_STOCK
 			? {
 					report: 'stock',
 					title: __( 'Stock', 'woocommerce-admin' ),
