@@ -21,6 +21,7 @@ import {
 	getQueryFromActiveFilters,
 	getHistory,
 } from '@woocommerce/navigation';
+import { LOCALE } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -186,8 +187,7 @@ class AdvancedFilters extends Component {
 	}
 
 	isEnglish() {
-		const { siteLocale } = wcSettings;
-		return /en-/.test( siteLocale );
+		return /en-/.test( LOCALE.siteLocale );
 	}
 
 	onFilter() {

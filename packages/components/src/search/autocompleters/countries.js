@@ -6,6 +6,11 @@
 import { decodeEntities } from '@wordpress/html-entities';
 
 /**
+ * WooCommerce dependencies
+ */
+import { COUNTRIES } from '@woocommerce/settings';
+
+/**
  * Internal dependencies
  */
 import { computeSuggestionMatch } from './utils';
@@ -22,7 +27,7 @@ export default {
 	className: 'woocommerce-search__country-result',
 	isDebounced: true,
 	options() {
-		return wcSettings.dataEndpoints.countries || [];
+		return COUNTRIES || [];
 	},
 	getSearchExpression( query ) {
 		return '^' + query;

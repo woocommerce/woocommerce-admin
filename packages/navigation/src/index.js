@@ -2,6 +2,7 @@
 /**
  * External dependencies
  */
+import { ADMIN_URL } from '@woocommerce/settings';
 import { addQueryArgs } from '@wordpress/url';
 import { parse } from 'qs';
 import { pick, uniq } from 'lodash';
@@ -29,7 +30,7 @@ import * as navUtils from './index';
  * @param {String} path Relative path.
  * @return {String} Full admin URL.
  */
-export const getAdminLink = path => wcSettings.adminUrl + path;
+export const getAdminLink = path => ADMIN_URL + path;
 
 /**
  * Get the current path from history.

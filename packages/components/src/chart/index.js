@@ -6,7 +6,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { Component, createRef, Fragment } from '@wordpress/element';
 import { formatDefaultLocale as d3FormatDefaultLocale } from 'd3-format';
-import { get, isEqual, partial, without } from 'lodash';
+import { isEqual, partial, without } from 'lodash';
 import Gridicon from 'gridicons';
 import { IconButton, NavigableMenu, SelectControl } from '@wordpress/components';
 import { interpolateViridis as d3InterpolateViridis } from 'd3-scale-chromatic';
@@ -41,16 +41,6 @@ function getD3CurrencyFormat( symbol, position ) {
 			return [ symbol, '' ];
 	}
 }
-
-const currencySymbol = get( wcSettings, [ 'currency', 'symbol' ], '' );
-const symbolPosition = get( wcSettings, [ 'currency', 'position' ], 'left' );
-
-d3FormatDefaultLocale( {
-	decimal: get( wcSettings, [ 'currency', 'decimal_separator' ], '.' ),
-	thousands: get( wcSettings, [ 'currency', 'thousand_separator' ], ',' ),
-	grouping: [ 3 ],
-	currency: getD3CurrencyFormat( currencySymbol, symbolPosition ),
-} );
 
 /**
  * A chart container using d3, to display timeseries data with an interactive legend.
@@ -103,6 +93,15 @@ class Chart extends Component {
 	}
 
 	componentDidMount() {
+		const { currencyPosition, currencySymbol, thousandSeparator, decimalSeparator } = this.props;
+
+		d3FormatDefaultLocale( {
+			decimal: thousandSeparator,
+			thousands: decimalSeparator,
+			grouping: [ 3 ],
+			currency: getD3CurrencyFormat( currencySymbol, currencyPosition ),
+		} );
+
 		this.updateDimensions();
 		window.addEventListener( 'resize', this.updateDimensions );
 	}
@@ -441,6 +440,14 @@ Chart.propTypes = {
 	 */
 	chartType: PropTypes.oneOf( [ 'bar', 'line' ] ),
 	/**
+	 * Currency symbol.
+	 */
+	currencySymbol: PropTypes.string,
+	/**
+	 * Currency symbol position. left, left_space, right, right_space.
+	 */
+	currencyPosition: PropTypes.string,
+	/**
 	 * An array of data.
 	 */
 	data: PropTypes.array.isRequired,
@@ -448,6 +455,10 @@ Chart.propTypes = {
 	 * Format to parse dates into d3 time format
 	 */
 	dateParser: PropTypes.string.isRequired,
+	/**
+	 * Decimal separator for currency.
+	 */
+	decimalSeparator: PropTypes.string,
 	/**
 	 * The message to be displayed if there is no data to render. If no message is provided,
 	 * nothing will be displayed.
@@ -514,6 +525,10 @@ Chart.propTypes = {
 	 */
 	title: PropTypes.string,
 	/**
+	 * Thousand separator for currency.
+	 */
+	thousandSeparator: PropTypes.string,
+	/**
 	 * A datetime formatting string or overriding function to format the tooltip label.
 	 */
 	tooltipLabelFormat: PropTypes.oneOfType( [ PropTypes.string, PropTypes.func ] ),
@@ -550,14 +565,18 @@ Chart.propTypes = {
 Chart.defaultProps = {
 	baseValue: 0,
 	chartType: 'line',
+	currencySymbol: '$',
+	currencyPosition: 'left',
 	data: [],
 	dateParser: '%Y-%m-%dT%H:%M:%S',
+	decimalSeparator: '.',
 	interactiveLegend: true,
 	interval: 'day',
 	isRequesting: false,
 	mode: 'time-comparison',
 	screenReaderFormat: '%B %-d, %Y',
 	showHeaderControls: true,
+	thousandSeparator: ',',
 	tooltipLabelFormat: '%B %-d, %Y',
 	tooltipValueFormat: ',',
 	xFormat: '%d',

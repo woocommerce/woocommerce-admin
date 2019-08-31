@@ -7,6 +7,11 @@ import PropTypes from 'prop-types';
 import { get } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { WC_ASSET_URL } from '@woocommerce/settings';
+
+/**
  * Use `ProductImage` to display a product's or variation's featured image.
  * If no image can be found, a placeholder matching the front-end image
  * placeholder will be displayed.
@@ -26,7 +31,7 @@ const ProductImage = ( { product, alt, width, height, className, ...props } ) =>
 	return (
 		<img
 			className={ classes }
-			src={ src || wcSettings.wcAssetUrl + 'images/placeholder.png' }
+			src={ src || WC_ASSET_URL + 'images/placeholder.png' }
 			width={ width }
 			height={ height }
 			alt={ altText }

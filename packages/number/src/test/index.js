@@ -30,7 +30,7 @@ describe( 'numberFormat', () => {
 	} );
 
 	it( 'uses store currency settings, not locale', () => {
-		global.wcSettings.siteLocale = 'en-US';
+		global.wcSettings.locale.siteLocale = 'en-US';
 		global.wcSettings.currency.decimal_separator = ',';
 		global.wcSettings.currency.thousand_separator = '.';
 

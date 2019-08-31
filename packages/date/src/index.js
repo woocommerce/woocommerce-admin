@@ -7,6 +7,11 @@ import { find } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { parse } from 'qs';
 
+/**
+ * WooCommerce dependencies
+ */
+import { LOCALE, DEFAULT_DATE_RANGE } from '@woocommerce/settings';
+
 export const isoDateFormat = 'YYYY-MM-DD';
 
 /**
@@ -275,7 +280,7 @@ export const getDateParamsFromQuery = ( { period, compare, after, before } ) => 
 	}
 
 	const defaultDateRange =
-		wcSettings.wcAdminSettings.woocommerce_default_date_range ||
+		DEFAULT_DATE_RANGE ||
 		'period=month&compare=previous_year';
 
 	const queryDefaults = parse( defaultDateRange.replace( /&amp;/g, '&' ) );
@@ -519,7 +524,7 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
  * of moment style js formats.
  */
 export function loadLocaleData() {
-	const { userLocale, weekdaysShort } = wcSettings.l10n;
+	const { userLocale, weekdaysShort } = LOCALE;
 	// Don't update if the wp locale hasn't been set yet, like in unit tests, for instance.
 	if ( 'en' !== moment.locale() ) {
 		moment.updateLocale( userLocale, {

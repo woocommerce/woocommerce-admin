@@ -19,6 +19,7 @@ import { textContent } from './utils';
  * WooCommerce dependencies
  */
 import { formatCurrency } from '@woocommerce/currency';
+import { CURRENCY } from '@woocommerce/settings';
 
 class NumberFilter extends Component {
 	getBetweenString() {
@@ -71,13 +72,10 @@ class NumberFilter extends Component {
 
 	getFormControl( { type, value, label, onChange } ) {
 		if ( 'currency' === type ) {
-			const currencySymbol = get( wcSettings, [ 'currency', 'symbol' ] );
-			const symbolPosition = get( wcSettings, [ 'currency', 'position' ] );
-
 			return (
-				0 === symbolPosition.indexOf( 'right' )
+				0 === CURRENCY.symbolPosition.indexOf( 'right' )
 				? <TextControlWithAffixes
-					suffix={ <span dangerouslySetInnerHTML={ { __html: currencySymbol } } /> }
+					suffix={ <span dangerouslySetInnerHTML={ { __html: CURRENCY.symbol } } /> }
 					className="woocommerce-filters-advanced__input"
 					type="number"
 					value={ value || '' }
@@ -85,7 +83,7 @@ class NumberFilter extends Component {
 					onChange={ onChange }
 				/>
 				: <TextControlWithAffixes
-					prefix={ <span dangerouslySetInnerHTML={ { __html: currencySymbol } } /> }
+					prefix={ <span dangerouslySetInnerHTML={ { __html: CURRENCY.symbol } } /> }
 					className="woocommerce-filters-advanced__input"
 					type="number"
 					value={ value || '' }
