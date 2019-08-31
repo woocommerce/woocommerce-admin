@@ -37,7 +37,7 @@ class ActivityPanels {
 	 */
 	public function __construct() {
 		add_filter( 'wc_admin_get_user_data_fields', array( $this, 'add_user_data_fields' ) );
-		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 ); // Run after Automattic\WooCommerce\Admin\Loader.
+		add_action( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 ); // Run after Automattic\WooCommerce\Admin\Loader.
 		add_action( 'woocommerce_updated', array( $this, 'woocommerce_updated_note' ) );
 	}
 
@@ -63,6 +63,11 @@ class ActivityPanels {
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
+		// Only add wc-admin settings in admin context.
+		if ( ! is_admin() ) {
+			return $settings;
+		}
+
 		$settings['alertCount'] = WC_Admin_Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
 		return $settings;
 	}

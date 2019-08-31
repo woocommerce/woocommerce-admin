@@ -44,7 +44,6 @@ wooCommercePackages.forEach( lib => {
 
 global.wcSettings = {
 	adminUrl: 'https://vagrant.local/wp/wp-admin/',
-	locale: 'en-US',
 	currency: { code: 'USD', precision: 2, symbol: '$' },
 	date: {
 		dow: 0,
@@ -58,11 +57,12 @@ global.wcSettings = {
 		refunded: 'Refunded',
 		failed: 'Failed',
 	},
-	l10n: {
+	locale: {
+		siteLocale: 'en_US',
 		userLocale: 'en_US',
 		weekdaysShort: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
 	},
-	wcAdminSettings: {
+	settings: {
 		woocommerce_actionable_order_statuses: [],
 		woocommerce_excluded_report_order_statuses: [],
 	},

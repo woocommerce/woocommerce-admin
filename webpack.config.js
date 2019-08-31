@@ -48,6 +48,7 @@ const wcAdminPackages = [
 	'date',
 	'navigation',
 	'number',
+	'settings',
 ];
 
 const entryPoints = {};
@@ -147,6 +148,7 @@ const webpackConfig = {
 			'node_modules',
 		],
 		alias: {
+			'@woocommerce-admin/constants': path.resolve( __dirname, 'client/constants' ),
 			'gutenberg-components': path.resolve( __dirname, 'node_modules/@wordpress/components/src' ),
 			// @todo - remove once https://github.com/WordPress/gutenberg/pull/16196 is released.
 			'react-spring': 'react-spring/web.cjs',

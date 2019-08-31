@@ -10,7 +10,7 @@ namespace Automattic\WooCommerce\Admin;
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Facebook_Extension;	
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Facebook_Extension;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Historical_Data;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Order_Milestones;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Welcome_Message;
@@ -183,7 +183,7 @@ class FeaturePlugin {
 		remove_action( 'init', array( 'WC_Admin_Library', 'load_features' ) );
 		remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'register_scripts' ) );
 		remove_action( 'admin_enqueue_scripts', array( 'WC_Admin_Library', 'load_scripts' ), 15 );
-		remove_action( 'woocommerce_components_settings', array( 'WC_Admin_Library', 'add_component_settings' ) );
+		remove_action( 'woocommerce_shared_settings', array( 'WC_Admin_Library', 'add_component_settings' ) );
 		remove_filter( 'admin_body_class', array( 'WC_Admin_Library', 'add_admin_body_classes' ) );
 		remove_action( 'admin_menu', array( 'WC_Admin_Library', 'register_page_handler' ) );
 		remove_filter( 'admin_title', array( 'WC_Admin_Library', 'update_admin_title' ) );

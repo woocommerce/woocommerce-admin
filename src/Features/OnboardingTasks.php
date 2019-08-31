@@ -47,7 +47,7 @@ class OnboardingTasks {
 	 * Constructor
 	 */
 	public function __construct() {
-		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 30 ); // Run after Onboarding.
+		add_action( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 30 ); // Run after Onboarding.
 		add_action( 'admin_init', array( $this, 'set_active_task' ), 20 );
 		add_action( 'admin_init', array( $this, 'check_active_task_completion' ), 1 );
 	}
@@ -58,6 +58,11 @@ class OnboardingTasks {
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
+		// Only add wc-admin settings in admin context.
+		if ( ! is_admin() ) {
+			return $settings;
+		}
+
 		$tasks = get_transient( self::TASKS_TRANSIENT );
 
 		if ( ! $tasks ) {

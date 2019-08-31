@@ -49,7 +49,7 @@ class Loader {
 		add_action( 'init', array( __CLASS__, 'load_features' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
-		add_action( 'woocommerce_components_settings', array( __CLASS__, 'add_component_settings' ) );
+		add_filter( 'woocommerce_shared_settings', array( __CLASS__, 'get_shared_settings' ) );
 		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_page_handler' ) );
 		add_filter( 'admin_title', array( __CLASS__, 'update_admin_title' ) );
@@ -196,6 +196,22 @@ class Loader {
 		}
 
 		wp_register_script(
+			'wc-settings',
+			self::get_url( 'settings/index.js' ),
+			array(),
+			self::get_file_version( 'settings/index.js' ),
+			true
+		);
+
+		if ( ! did_action( 'woocommerce_shared_settings' ) ) {
+			wp_add_inline_script(
+				'wc-settings',
+				self::shared_settings_data(),
+				'before'
+			);
+		}
+
+		wp_register_script(
 			'wc-csv',
 			self::get_url( 'csv-export/index.js' ),
 			array(),
@@ -206,7 +222,7 @@ class Loader {
 		wp_register_script(
 			'wc-currency',
 			self::get_url( 'currency/index.js' ),
-			array( 'wc-number' ),
+			array( 'wc-number', 'wc-settings' ),
 			self::get_file_version( 'currency/index.js' ),
 			true
 		);
@@ -216,7 +232,7 @@ class Loader {
 		wp_register_script(
 			'wc-navigation',
 			self::get_url( 'navigation/index.js' ),
-			array(),
+			array( 'wc-settings' ),
 			self::get_file_version( 'navigation/index.js' ),
 			true
 		);
@@ -224,7 +240,7 @@ class Loader {
 		wp_register_script(
 			'wc-number',
 			self::get_url( 'number/index.js' ),
-			array(),
+			array( 'wc-settings' ),
 			self::get_file_version( 'number/index.js' ),
 			true
 		);
@@ -232,7 +248,7 @@ class Loader {
 		wp_register_script(
 			'wc-date',
 			self::get_url( 'date/index.js' ),
-			array( 'wp-date', 'wp-i18n' ),
+			array( 'wp-date', 'wp-i18n', 'wc-settings' ),
 			self::get_file_version( 'date/index.js' ),
 			true
 		);
@@ -255,6 +271,7 @@ class Loader {
 				'wc-date',
 				'wc-navigation',
 				'wc-number',
+				'wc-settings',
 			),
 			self::get_file_version( 'components/index.js' ),
 			true
@@ -286,7 +303,7 @@ class Loader {
 		wp_register_script(
 			WC_ADMIN_APP,
 			self::get_url( "{$entry}/index.js" ),
-			array( 'wc-components', 'wc-navigation', 'wp-date', 'wp-html-entities', 'wp-keycodes', 'wp-i18n' ),
+			array( 'wc-components', 'wc-navigation', 'wp-date', 'wp-html-entities', 'wp-keycodes', 'wp-i18n', 'wc-settings' ),
 			self::get_file_version( "{$entry}/index.js" ),
 			true
 		);
@@ -330,7 +347,102 @@ class Loader {
 		if ( count( $matches ) > 1 ) {
 			wp_enqueue_style( 'wc-components-ie' );
 		}
+	}
 
+	/**
+	 * Renders the shared settings inline script.
+	 */
+	public static function shared_settings_data() {
+		/**
+		 * Plugins should register settings needed in their app via this filter.
+		 *
+		 * @internal This filter can run in both admin and frontend context so ensure you check methods are available to use in any given context.
+		 * @internal The woocommerce/settings package will export all settings declared here.
+		 * @param $settings array Array of settings.
+		 */
+		$settings = apply_filters( 'woocommerce_shared_settings', array() );
+
+		return "var wcSettings = wcSettings || JSON.parse( decodeURIComponent( '" . rawurlencode( wp_json_encode( $settings ) ) . "' ) );";
+	}
+
+	/**
+	 * Defines a list of shared settings which are exposed by woocommerce/settings package.
+	 *
+	 * @internal This code will likely be duplicated between wc-admin, blocks, and woo core to ensure values are present. Once in core, this can be trimmed down.
+	 * @param array $settings Array of settings to expose for JS apps.
+	 * @return array
+	 */
+	public static function get_shared_settings( $settings ) {
+		global $wp_locale;
+
+		// Only add wc-admin settings in admin context.
+		if ( ! is_admin() ) {
+			return $settings;
+		}
+
+		$preload_data_endpoints = apply_filters( 'woocommerce_component_settings_preload_endpoints', array( '/wc/v3' ) );
+
+		if ( ! empty( $preload_data_endpoints ) ) {
+			$preload_data = array_reduce(
+				array_values( $preload_data_endpoints ),
+				'rest_preload_api_request'
+			);
+		}
+
+		$current_user_data = array();
+
+		foreach ( self::get_user_data_fields() as $user_field ) {
+			$current_user_data[ $user_field ] = json_decode( get_user_meta( get_current_user_id(), 'wc_admin_' . $user_field, true ) );
+		}
+
+		$currency = get_woocommerce_currency();
+		$settings = array_merge(
+			$settings,
+			array(
+				'adminUrl'             => admin_url(),
+				'commentModeration'    => get_option( 'comment_moderation' ),
+				'countries'            => WC()->countries->get_countries(),
+				'currency'             => array(
+					'code'              => $currency,
+					'precision'         => wc_get_price_decimals(),
+					'symbol'            => html_entity_decode( get_woocommerce_currency_symbol( $currency ) ),
+					'symbolPosition'    => get_option( 'woocommerce_currency_pos' ),
+					'decimalSeparator'  => wc_get_price_decimal_separator(),
+					'thousandSeparator' => wc_get_price_thousand_separator(),
+					'priceFormat'       => html_entity_decode( get_woocommerce_price_format() ),
+				),
+				'currentUserData'      => $current_user_data,
+				'dataEndpoints'        => array(),
+				'defaultDateRange'     => get_option( 'woocommerce_default_date_range' ),
+				'embedBreadcrumbs'     => self::is_embed_page() ? self::get_embed_breadcrumbs() : false,
+				'locale'               => array(
+					'siteLocale'    => get_locale(),
+					'userLocale'    => get_user_locale(),
+					'weekdaysShort' => array_values( $wp_locale->weekday_abbrev ),
+				),
+				'manageStock'          => get_option( 'woocommerce_manage_stock' ),
+				'notifyLowStockAmount' => get_option( 'woocommerce_notify_low_stock_amount' ),
+				'orderStatuses'        => self::get_order_statuses( wc_get_order_statuses() ),
+				'reviewsEnabled'       => get_option( 'woocommerce_enable_reviews' ),
+				'siteTitle'            => get_bloginfo( 'name' ),
+				'stockStatuses'        => wc_get_product_stock_status_options(),
+				'wcAdminSettings'      => self::get_custom_settings(),
+				'wcAssetUrl'           => plugins_url( 'assets/', WC_PLUGIN_FILE ),
+			)
+		);
+
+		if ( ! empty( $preload_data_endpoints ) ) {
+			foreach ( $preload_data_endpoints as $key => $endpoint ) {
+				// Handle error case: rest_do_request() doesn't guarantee success.
+				if ( empty( $preload_data[ $endpoint ] ) ) {
+					$settings['dataEndpoints'][ $key ] = array();
+				} else {
+					$settings['dataEndpoints'][ $key ] = $preload_data[ $endpoint ]['body'];
+				}
+			}
+		}
+
+		return $settings;
 	}
 
 	/**
@@ -512,56 +624,6 @@ class Loader {
 	}
 
 	/**
-	 * Hooks extra neccessary data into the component settings array already set in WooCommerce core.
-	 *
-	 * @param array $settings Array of component settings.
-	 * @return array Array of component settings.
-	 */
-	public static function add_component_settings( $settings ) {
-		$preload_data_endpoints = apply_filters( 'woocommerce_component_settings_preload_endpoints', array( '/wc/v3' ) );
-		if ( ! empty( $preload_data_endpoints ) ) {
-			$preload_data = array_reduce(
-				array_values( $preload_data_endpoints ),
-				'rest_preload_api_request'
-			);
-		}
-
-		$current_user_data = array();
-		foreach ( self::get_user_data_fields() as $user_field ) {
-			$current_user_data[ $user_field ] = json_decode( get_user_meta( get_current_user_id(), 'wc_admin_' . $user_field, true ) );
-		}
-
-		$settings['orderStatuses']        = self::get_order_statuses( wc_get_order_statuses() );
-		$settings['currentUserData']      = $current_user_data;
-		$settings['currency']             = self::get_currency_settings();
-		$settings['reviewsEnabled']       = get_option( 'woocommerce_enable_reviews' );
-		$settings['manageStock']          = get_option( 'woocommerce_manage_stock' );
-		$settings['commentModeration']    = get_option( 'comment_moderation' );
-		$settings['notifyLowStockAmount'] = get_option( 'woocommerce_notify_low_stock_amount' );
-		// @todo On merge, once plugin images are added to core WooCommerce, `wcAdminAssetUrl` can be retired,
-		// and `wcAssetUrl` can be used in its place throughout the codebase.
-		$settings['wcAdminAssetUrl'] = plugins_url( 'images/', plugin_dir_path( dirname( __DIR__ ) ) . 'woocommerce-admin.php' );
-
-		if ( ! empty( $preload_data_endpoints ) ) {
-			foreach ( $preload_data_endpoints as $key => $endpoint ) {
-				// Handle error case: rest_do_request() doesn't guarantee success.
-				if ( empty( $preload_data[ $endpoint ] ) ) {
-					$settings['dataEndpoints'][ $key ] = array();
-				} else {
-					$settings['dataEndpoints'][ $key ] = $preload_data[ $endpoint ]['body'];
-				}
-			}
-		}
-		$settings = self::get_custom_settings( $settings );
-
-		if ( self::is_embed_page() ) {
-			$settings['embedBreadcrumbs'] = self::get_embed_breadcrumbs();
-		}
-
-		return $settings;
-	}
-
-	/**
 	 * Format order statuses by removing a leading 'wc-' if present.
 	 *
 	 * @param array $statuses Order statuses.
@@ -631,48 +693,19 @@ class Loader {
 	/**
 	 * Gets custom settings used for WC Admin.
 	 *
-	 * @param array $settings Array of settings to merge into.
 	 * @return array
 	 */
-	public static function get_custom_settings( $settings ) {
+	public static function get_custom_settings() {
 		$wc_rest_settings_options_controller = new \WC_REST_Setting_Options_Controller();
 		$wc_admin_group_settings             = $wc_rest_settings_options_controller->get_group_settings( 'wc_admin' );
-		$settings['wcAdminSettings']         = array();
+		$settings                            = array();
 
 		foreach ( $wc_admin_group_settings as $setting ) {
 			if ( ! empty( $setting['id'] ) ) {
-				$settings['wcAdminSettings'][ $setting['id'] ] = $setting['value'];
+				$settings[ $setting['id'] ] = $setting['value'];
 			}
 		}
 		return $settings;
-	}
-
-	/**
-	 * Return an object defining the currecy options for the site's current currency
-	 *
-	 * @return  array  Settings for the current currency {
-	 *     Array of settings.
-	 *
-	 *     @type string $code       Currency code.
-	 *     @type string $precision  Number of decimals.
-	 *     @type string $symbol     Symbol for currency.
-	 * }
-	 */
-	public static function get_currency_settings() {
-		$code = get_woocommerce_currency();
-
-		return apply_filters(
-			'wc_currency_settings',
-			array(
-				'code'               => $code,
-				'precision'          => wc_get_price_decimals(),
-				'symbol'             => html_entity_decode( get_woocommerce_currency_symbol( $code ) ),
-				'position'           => get_option( 'woocommerce_currency_pos' ),
-				'decimal_separator'  => wc_get_price_decimal_separator(),
-				'thousand_separator' => wc_get_price_thousand_separator(),
-				'price_format'       => html_entity_decode( get_woocommerce_price_format() ),
-			)
-		);
 	}
 
 	/**

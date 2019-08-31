@@ -56,7 +56,7 @@ class Onboarding {
 		// Include WC Admin Onboarding classes.
 		OnboardingTasks::get_instance();
 
-		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 ); // Run after Automattic\WooCommerce\Admin\Loader.
+		add_action( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 ); // Run after Automattic\WooCommerce\Admin\Loader.
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
 		add_action( 'woocommerce_theme_installed', array( $this, 'delete_themes_transient' ) );
 		add_action( 'after_switch_theme', array( $this, 'delete_themes_transient' ) );
@@ -322,9 +322,9 @@ class Onboarding {
 
 		// Only fetch if the onboarding wizard is incomplete.
 		if ( $this->should_show_profiler() ) {
-			$settings['onboarding']['productTypes']  = self::get_allowed_product_types();
-			$settings['onboarding']['themes']        = self::get_themes();
-			$settings['onboarding']['activeTheme']   = get_option( 'stylesheet' );
+			$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
+			$settings['onboarding']['themes']       = self::get_themes();
+			$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
 		}
 
 		// Only fetch if the onboarding wizard OR the task list is incomplete.
