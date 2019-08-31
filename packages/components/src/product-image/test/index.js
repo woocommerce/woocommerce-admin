@@ -73,7 +73,7 @@ describe( 'ProductImage', () => {
 	} );
 
 	test( 'should render a placeholder image if no product images are found', () => {
-		global.wcSettings.wcAssetUrl = 'https://woocommerce.com/wp-content/plugins/woocommerce/assets/';
+		global.wcSharedSettings.wcAssetUrl = 'https://woocommerce.com/wp-content/plugins/woocommerce/assets/';
 		const product = {
 			name: 'Test Product',
 		};

@@ -362,7 +362,7 @@ class Loader {
 		 */
 		$settings = apply_filters( 'woocommerce_shared_settings', array() );
 
-		return "var wcSettings = wcSettings || JSON.parse( decodeURIComponent( '" . rawurlencode( wp_json_encode( $settings ) ) . "' ) );";
+		return "var wcSharedSettings = wcSharedSettings || JSON.parse( decodeURIComponent( '" . rawurlencode( wp_json_encode( $settings ) ) . "' ) );";
 	}
 
 	/**

@@ -21,7 +21,7 @@ const defaults = {
 	wcAssetUrl: '',
 };
 
-const globalSharedSettings = typeof global.wcSettings === 'object' ? global.wcSettings : {};
+const globalSharedSettings = typeof global.wcSharedSettings === 'object' ? global.wcSharedSettings : {};
 const allSettings = {
 	...defaults,
 	...globalSharedSettings,

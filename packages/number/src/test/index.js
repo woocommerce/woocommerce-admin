@@ -30,9 +30,9 @@ describe( 'numberFormat', () => {
 	} );
 
 	it( 'uses store currency settings, not locale', () => {
-		global.wcSettings.locale.siteLocale = 'en-US';
-		global.wcSettings.currency.decimal_separator = ',';
-		global.wcSettings.currency.thousand_separator = '.';
+		global.wcSharedSettings.locale.siteLocale = 'en-US';
+		global.wcSharedSettings.currency.decimal_separator = ',';
+		global.wcSharedSettings.currency.thousand_separator = '.';
 
 		expect( numberFormat( '12345.6789', 3 ) ).toBe( '12.345,679' );
 	} );

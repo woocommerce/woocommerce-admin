@@ -508,14 +508,14 @@ describe( 'getRangeLabel', () => {
 describe( 'loadLocaleData', () => {
 	beforeEach( () => {
 		// Reset to default settings
-		wcSettings.locale = {
+		wcSharedSettings.locale = {
 			userLocale: 'en_US',
 			weekdaysShort: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
 		};
 	} );
 
 	it( 'should load locale data on user locale', () => {
-		wcSettings.locale = {
+		wcSharedSettings.locale = {
 			userLocale: 'fr_FR',
 			weekdaysShort: [ 'dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam' ],
 		};
@@ -524,7 +524,7 @@ describe( 'loadLocaleData', () => {
 		moment.locale( 'fr_FR', {} );
 
 		loadLocaleData();
-		expect( moment.localeData().weekdaysMin() ).toEqual( wcSettings.locale.weekdaysShort );
+		expect( moment.localeData().weekdaysMin() ).toEqual( wcSharedSettings.locale.weekdaysShort );
 	} );
 } );
 

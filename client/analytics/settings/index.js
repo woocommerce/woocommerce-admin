@@ -118,7 +118,7 @@ class Settings extends Component {
 	persistChanges( state ) {
 		analyticsSettings.forEach( setting => {
 			const updatedValue = state.settings[ setting.name ];
-			wcSettings.wcAdminSettings[ setting.name ] = updatedValue;
+			wcSharedSettings.wcAdminSettings[ setting.name ] = updatedValue;
 			setting.initialValue = updatedValue;
 		} );
 	}

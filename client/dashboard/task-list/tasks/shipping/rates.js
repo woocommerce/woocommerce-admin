@@ -75,7 +75,7 @@ class ShippingRates extends Component {
 
 		// @todo This is a workaround to force the task to mark as complete.
 		// This should probably be updated to use wc-api so we can fetch shipping methods.
-		wcSettings.onboarding.shippingZonesCount = 1;
+		wcSharedSettings.onboarding.shippingZonesCount = 1;
 
 		createNotice( 'success', __( 'Your shipping rates have been updated.', 'woocommerce-admin' ) );
 
