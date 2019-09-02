@@ -27,6 +27,26 @@ class Products extends \WC_REST_Products_Controller {
 	protected $namespace = 'wc/v4';
 
 	/**
+	 * Register routes.
+	 */
+	public function register_routes() {
+		parent::register_routes();
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/import_sample_data',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'import_sample_data' ),
+					'permission_callback' => array( $this, 'create_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+	}
+
+	/**
 	 * Adds properties that can be embed via ?_embed=1.
 	 *
 	 * @return array
@@ -241,4 +261,75 @@ class Products extends \WC_REST_Products_Controller {
 		}
 		return $groupby;
 	}
+
+	/**
+	 * Import sample products from WooCommerce sample CSV.
+	 *
+	 * @return WP_Error|WP_REST_Response	 * 
+	 */
+	public static function import_sample_data() {
+		include_once WC_ABSPATH . 'includes/import/class-wc-product-csv-importer.php';
+		$file = WC_ABSPATH . 'sample-data/sample_products.csv';
+
+		if ( file_exists( $file ) && class_exists( 'WC_Product_CSV_Importer' ) ) {
+			// Override locale so we can return mappings from WooCommerce in English language stores.
+			global $locale;
+			$locale = false;
+			$importer_class = apply_filters( 'woocommerce_product_csv_importer_class', 'WC_Product_CSV_Importer' );
+			$args           = array( 'parse' => true, 'mapping' => self::get_header_mappings( $file ) );
+			$args           = apply_filters( 'woocommerce_product_csv_importer_args', $args, $importer_class );
+
+			$importer = new $importer_class( $file, $args );
+			$import   = $importer->import();
+			return rest_ensure_response( $import );
+		} else {
+			return new \WP_Error( 'woocommerce_rest_import_error', __( 'Sorry, the sample products data file was not found.', 'woocommerce-admin' ) );
+		}
+	}
+
+	/**
+	 * Get header mappings from CSV columns.
+	 *
+	 * @param string File path.
+	 * @return array Mapped headers.
+	 */
+	public static function get_header_mappings( $file ) {
+		include_once WC_ABSPATH . 'includes/admin/importers/mappings/default.php';
+
+		$importer_class  = apply_filters( 'woocommerce_product_csv_importer_class', 'WC_Product_CSV_Importer' );
+		$importer        = new $importer_class( $file, array() );
+		$raw_headers     = $importer->get_raw_keys();
+		$default_columns = wc_importer_default_english_mappings( array() );
+		$special_columns = wc_importer_default_special_english_mappings( array() );
+
+		$headers = array();
+		foreach ( $raw_headers as $key => $field ) {
+			$index             = $field;
+			$headers[ $index ] = $field;
+
+			if ( isset( $default_columns[ $field ] ) ) {
+				$headers[ $index ] = $default_columns[ $field ];
+			} else {
+				foreach ( $special_columns as $regex => $special_key ) {
+					if ( preg_match( self::sanitize_special_column_name_regex( $regex ), $field, $matches ) ) {
+						$headers[ $index ] = $special_key . $matches[1];
+						break;
+					}
+				}
+			}
+		}
+
+		return $headers;
+	}
+
+	/**
+	 * Sanitize special column name regex.
+	 *
+	 * @param  string $value Raw special column name.
+	 * @return string
+	 */
+	public static function sanitize_special_column_name_regex( $value ) {
+		return '/' . str_replace( array( '%d', '%s' ), '(.*)', trim( quotemeta( $value ) ) ) . '/';
+	}
+
 }
