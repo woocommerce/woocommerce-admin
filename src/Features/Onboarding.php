@@ -447,16 +447,17 @@ class Onboarding {
 				: '<p><a href="' . wc_admin_url( '&reset_task_list=0' ) . '" class="button button-primary">' . __( 'Disable', 'woocommerce-admin' ) . '</a></p>'
 			);
 
-			$help_tab['content'] .= '<h3>' . __( 'Calypso', 'woocommerce-admin' ) . '</h3>';
 
-			if ( class_exists( 'Jetpack' ) ) {
-				$help_tab['content'] .= '<p>' . __( 'Quickly access the Jetpack connection flow in Calypso.', 'woocommerce-admin' ) . '</p>';
-				$help_tab['content'] .= '<p><a href="' . wc_admin_url( '&test_wc_jetpack_connect=1' ) . '" class="button button-primary">' . __( 'Connect', 'woocommerce-admin' ) . '</a></p>';
+			if ( Loader::is_feature_enabled( 'devdocs' ) && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				$help_tab['content'] .= '<h3>' . __( 'Calypso / WordPress.com', 'woocommerce-admin' ) . '</h3>';
+				if ( class_exists( 'Jetpack' ) ) {
+					$help_tab['content'] .= '<p>' . __( 'Quickly access the Jetpack connection flow in Calypso.', 'woocommerce-admin' ) . '</p>';
+					$help_tab['content'] .= '<p><a href="' . wc_admin_url( '&test_wc_jetpack_connect=1' ) . '" class="button button-primary">' . __( 'Connect', 'woocommerce-admin' ) . '</a></p>';
+				}
+
+				$help_tab['content'] .= '<p>' . __( 'Quickly access the WooCommerce.com connection flow in Calypso.', 'woocommerce-admin' ) . '</p>';
+				$help_tab['content'] .= '<p><a href="' . wc_admin_url( '&test_wc_helper_connect=1' ) . '" class="button button-primary">' . __( 'Connect', 'woocommerce-admin' ) . '</a></p>';
 			}
-
-			$help_tab['content'] .= '<p>' . __( 'Quickly access the WooCommerce.com connection flow in Calypso.', 'woocommerce-admin' ) . '</p>';
-			$help_tab['content'] .= '<p><a href="' . wc_admin_url( '&test_wc_helper_connect=1' ) . '" class="button button-primary">' . __( 'Connect', 'woocommerce-admin' ) . '</a></p>';
-
 
 			$screen->add_help_tab( $help_tab );
 		}
@@ -502,13 +503,13 @@ class Onboarding {
 
 			$code = wp_remote_retrieve_response_code( $request );
 			if ( 200 !== $code ) {
-				wp_safe_redirect( wc_admin_url() );
+				wp_die( esc_html__( 'WooCommerce Helper was not able to connect to WooCommerce.com.', 'woocommerce-admin' ) );
 				exit;
 			}
 
 			$secret = json_decode( wp_remote_retrieve_body( $request ) );
 			if ( empty( $secret ) ) {
-				wp_safe_redirect( wc_admin_url() );
+				wp_die( esc_html__( 'WooCommerce Helper was not able to connect to WooCommerce.com.', 'woocommerce-admin' ) );
 				exit;
 			}
 
@@ -547,7 +548,7 @@ class Onboarding {
 		$request->set_body(
 			wp_json_encode(
 				array(
-					'completed' => $new_value,
+					'completed' => false,
 					'skipped'   => $new_value,
 				)
 			)
