@@ -9,7 +9,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import { getCouponLabels, getProductLabels } from 'lib/async-requests';
-import { ORDER_STATUSES } from '@woocommerce-admin/constants';
+import { ORDER_STATUSES } from '@woocommerce/settings';
 
 const ORDERS_REPORT_CHARTS_FILTER = 'woocommerce_admin_orders_report_charts';
 const ORDERS_REPORT_FILTERS_FILTER = 'woocommerce_admin_orders_report_filters';

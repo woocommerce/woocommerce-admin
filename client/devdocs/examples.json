@@ -16,7 +16,6 @@
   { "component": "Flag" },
   { "component": "Form" },
   { "component": "Gravatar" },
-  { "component": "ImageAsset" },
   { "component": "Link" },
   { "component": "List" },
   { "component": "OrderStatus" },

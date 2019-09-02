@@ -6,7 +6,7 @@ const defaults = {
 		precision: 2,
 		symbol: '$',
 		symbolPosition: 'left',
-		decimalSeparator: ',',
+		decimalSeparator: '.',
 		priceFormat: '%1$s%2$s',
 		thousandSeparator: ',',
 	},
@@ -21,10 +21,22 @@ const defaults = {
 	wcAssetUrl: '',
 };
 
-const globalSharedSettings = typeof global.wcSharedSettings === 'object' ? global.wcSharedSettings : {};
+const globalSharedSettings = typeof wcSharedSettings === 'object' ? wcSharedSettings : {};
+
+// Use defaults or global settings, depending on what is set.
 const allSettings = {
 	...defaults,
 	...globalSharedSettings,
+};
+
+allSettings.currency = {
+	...defaults.currency,
+	...allSettings.currency,
+};
+
+allSettings.locale = {
+	...defaults.locale,
+	...allSettings.locale,
 };
 
 export const ADMIN_URL = allSettings.adminUrl;

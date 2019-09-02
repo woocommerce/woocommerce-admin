@@ -28,6 +28,7 @@ const wooCommercePackages = [
 	'date',
 	'navigation',
 	'number',
+	'settings',
 ];
 
 wordPressPackages.forEach( lib => {
@@ -44,7 +45,15 @@ wooCommercePackages.forEach( lib => {
 
 global.wcSharedSettings = {
 	adminUrl: 'https://vagrant.local/wp/wp-admin/',
-	currency: { code: 'USD', precision: 2, symbol: '$' },
+	currency: {
+		code: 'USD',
+		precision: 2,
+		symbol: '$',
+		symbolPosition: 'left',
+		decimalSeparator: '.',
+		priceFormat: '%1$s%2$s',
+		thousandSeparator: ',',
+	},
 	date: {
 		dow: 0,
 	},
@@ -66,6 +75,7 @@ global.wcSharedSettings = {
 		woocommerce_actionable_order_statuses: [],
 		woocommerce_excluded_report_order_statuses: [],
 	},
+	wcAssetUrl: 'https://woocommerce.com/wp-content/plugins/woocommerce/assets/',
 };
 
 const config = require( '../../config/development.json' );

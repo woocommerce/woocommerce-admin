@@ -28,12 +28,4 @@ describe( 'numberFormat', () => {
 	it( 'calculates the correct decimals based on precision passed in', () => {
 		expect( numberFormat( '1337.4498', 2 ) ).toBe( '1,337.45' );
 	} );
-
-	it( 'uses store currency settings, not locale', () => {
-		global.wcSharedSettings.locale.siteLocale = 'en-US';
-		global.wcSharedSettings.currency.decimal_separator = ',';
-		global.wcSharedSettings.currency.thousand_separator = '.';
-
-		expect( numberFormat( '12345.6789', 3 ) ).toBe( '12.345,679' );
-	} );
 } );

@@ -55,7 +55,7 @@ exports[`ProductImage should render the passed alt prop 1`] = `
   alt="testing"
   className="woocommerce-product-image is-placeholder"
   height={60}
-  src="undefinedimages/placeholder.png"
+  src="https://woocommerce.com/wp-content/plugins/woocommerce/assets/images/placeholder.png"
   width={60}
 />
 `;

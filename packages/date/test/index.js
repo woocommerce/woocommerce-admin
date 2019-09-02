@@ -13,7 +13,6 @@ import {
 	getLastPeriod,
 	getCurrentPeriod,
 	getRangeLabel,
-	loadLocaleData,
 	getCurrentDates,
 	validateDateInputForRange,
 	dateValidationMessages,
@@ -23,6 +22,7 @@ import {
 	getChartTypeForQuery,
 	getAllowedIntervalsForQuery,
 } from '../src';
+import 'globals';
 
 describe( 'appendTimestamp', () => {
 	it( 'should append `start` timestamp', () => {
@@ -502,29 +502,6 @@ describe( 'getRangeLabel', () => {
 	it( 'should return correct string for dates in different years', () => {
 		const label = getRangeLabel( moment( '2017-04-01' ), moment( '2018-05-15' ) );
 		expect( label ).toBe( 'Apr 1, 2017 - May 15, 2018' );
-	} );
-} );
-
-describe( 'loadLocaleData', () => {
-	beforeEach( () => {
-		// Reset to default settings
-		wcSharedSettings.locale = {
-			userLocale: 'en_US',
-			weekdaysShort: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
-		};
-	} );
-
-	it( 'should load locale data on user locale', () => {
-		wcSharedSettings.locale = {
-			userLocale: 'fr_FR',
-			weekdaysShort: [ 'dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam' ],
-		};
-
-		// initialize locale. Gutenberg normaly does this, but not in test environment.
-		moment.locale( 'fr_FR', {} );
-
-		loadLocaleData();
-		expect( moment.localeData().weekdaysMin() ).toEqual( wcSharedSettings.locale.weekdaysShort );
 	} );
 } );
 
