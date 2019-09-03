@@ -22,14 +22,18 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
  */
 import withSelect from 'wc-api/with-select';
 import Plugins from '../steps/plugins';
+import Stripe from './stripe';
+import PayPal from './paypal';
 
 class Payments extends Component {
 	constructor() {
 		super( ...arguments );
 		this.state = {
 			step: 'choose',
+			showIndividualConfigs: false,
 		};
 		this.completeStep = this.completeStep.bind( this );
+		this.completePluginInstall = this.completePluginInstall.bind( this );
 	}
 
 	getInitialValues() {
@@ -63,6 +67,12 @@ class Payments extends Component {
 		} else {
 			getHistory().push( getNewPath( {}, '/', {} ) );
 		}
+	}
+
+	completePluginInstall() {
+		this.setState( { showIndividualConfigs: true }, function() {
+			this.completeStep();
+		} );
 	}
 
 	// If Jetpack is connected and WCS is enabled, we will offer a streamlined option.
@@ -216,6 +226,9 @@ class Payments extends Component {
 			values.klarna_payments ||
 			values.square;
 
+		const { showIndividualConfigs } = this.state;
+		const { activePlugins } = this.props;
+
 		const steps = [
 			{
 				key: 'choose',
@@ -238,9 +251,9 @@ class Payments extends Component {
 					'Install plugins required to offer the selected payment methods',
 					'woocommerce-admin'
 				),
-				content: (
+				content: ! showIndividualConfigs && (
 					<Plugins
-						onComplete={ this.completeStep }
+						onComplete={ this.completePluginInstall }
 						autoInstall
 						pluginSlugs={ this.getPluginsToInstall() }
 					/>
@@ -252,8 +265,26 @@ class Payments extends Component {
 				label: __( 'Configure payment methods', 'woocommerce-admin' ),
 				description: __( 'Set up your chosen payment methods', 'woocommerce-admin' ),
 				content: <Fragment />,
-				visible: true,
+				visible: ! showIndividualConfigs,
 			},
+			{
+				key: 'stripe',
+				label: __( 'Enable Stripe', 'woocommerce-admin' ),
+				description: __( 'Connect your store to your Stripe account', 'woocommerce-admin' ),
+				content: <Stripe />,
+				visible: showIndividualConfigs && activePlugins.includes( 'woocommerce-gateway-stripe' ),
+			},
+			{
+				key: 'paypal',
+				label: __( 'Enable PayPal Checkout', 'woocommerce-admin' ),
+				description: __( 'Connect your store to your PayPal account', 'woocommerce-admin' ),
+				content: <PayPal />,
+				visible:
+					showIndividualConfigs &&
+					activePlugins.includes( 'woocommerce-gateway-paypal-express-checkout' ),
+			},
+			// @todo Klarna
+			// @todo Square
 		];
 
 		return filter( steps, step => step.visible );
