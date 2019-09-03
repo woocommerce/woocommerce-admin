@@ -491,7 +491,7 @@ class Loader {
 	 * Edits Admin title based on section of wc-admin.
 	 *
 	 * @param string $admin_title Modifies admin title.
-	 * TODO: Can we do some URL rewriting so we can figure out which page they are on server side.
+	 * @todo Can we do some URL rewriting so we can figure out which page they are on server side?
 	 */
 	public static function update_admin_title( $admin_title ) {
 		if (
