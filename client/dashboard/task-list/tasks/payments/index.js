@@ -6,16 +6,17 @@
 import { __ } from '@wordpress/i18n';
 import { Fragment, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { filter, noop, keys, pickBy } from 'lodash';
+import { filter, noop, keys, pickBy, difference, last } from 'lodash';
 import { FormToggle, CheckboxControl } from '@wordpress/components';
 import { Button, TextControl } from 'newspack-components';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
 import { getCountryCode } from 'dashboard/utils';
 import { Form, Card, Stepper, List } from '@woocommerce/components';
-import { getHistory, getNewPath } from '@woocommerce/navigation';
+import { getAdminLink, getHistory, getNewPath, getQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -28,12 +29,60 @@ import PayPal from './paypal';
 class Payments extends Component {
 	constructor() {
 		super( ...arguments );
+
+		const query = getQuery();
+		let step = 'choose';
+		let showIndividualConfigs = false;
+
+		if ( '1' === query.installed && query.methods ) {
+			const methods = query.methods.split( ',' );
+			step = methods[ 0 ];
+			showIndividualConfigs = true;
+		}
+
+		if ( query.configured && query.methods ) {
+			const configured = query.configured.split( ',' );
+			const methods = query.methods.split( ',' );
+			step = difference( methods, configured )[ 0 ] || '';
+			showIndividualConfigs = true;
+		}
+
 		this.state = {
-			step: 'choose',
-			showIndividualConfigs: false,
+			step,
+			showIndividualConfigs,
 		};
+
 		this.completeStep = this.completeStep.bind( this );
 		this.completePluginInstall = this.completePluginInstall.bind( this );
+	}
+
+	componentDidMount() {
+		const query = getQuery();
+		if ( query.configured && query.methods ) {
+			const configured = query.configured.split( ',' );
+
+			if ( 'paypal' === last( configured ) ) {
+				this.props.createNotice(
+					'success',
+					__( 'PayPal connected sucessfully.', 'woocommerce-admin' )
+				);
+			}
+
+			if ( 'stripe' === last( configured ) ) {
+				this.props.createNotice(
+					'success',
+					__( 'Stripe connected successfully.', 'woocommerce-admin' )
+				);
+			}
+
+			const methods = query.methods.split( ',' );
+			const stepsLeft = difference( methods, configured ).length;
+
+			if ( 0 === stepsLeft ) {
+				getHistory().push( getNewPath( {}, '/', {} ) );
+				return;
+			}
+		}
 	}
 
 	getInitialValues() {
@@ -205,6 +254,23 @@ class Payments extends Component {
 		return filter( methods, method => method.visible );
 	}
 
+	getMethodsToConfigure() {
+		const query = getQuery();
+		if ( query.methods ) {
+			return query.methods.split( ',' );
+		}
+
+		const { values } = this.formData;
+		const methods = {
+			stripe: values.stripe,
+			paypal: values.paypal,
+			'klarna-checkout': values.klarna_checkout,
+			'klarna-payments': values.klarna_payments,
+			square: values.square,
+		};
+		return keys( pickBy( methods ) );
+	}
+
 	getPluginsToInstall() {
 		const { values } = this.formData;
 		const pluginSlugs = {
@@ -227,7 +293,12 @@ class Payments extends Component {
 			values.square;
 
 		const { showIndividualConfigs } = this.state;
-		const { activePlugins } = this.props;
+		const { activePlugins, countryCode, isJetpackConnected } = this.props;
+
+		const manualConfig =
+			isJetpackConnected && activePlugins.includes( 'woocommerce-services' ) ? false : true;
+
+		const methods = this.getMethodsToConfigure();
 
 		const steps = [
 			{
@@ -271,17 +342,27 @@ class Payments extends Component {
 				key: 'stripe',
 				label: __( 'Enable Stripe', 'woocommerce-admin' ),
 				description: __( 'Connect your store to your Stripe account', 'woocommerce-admin' ),
-				content: <Stripe />,
-				visible: showIndividualConfigs && activePlugins.includes( 'woocommerce-gateway-stripe' ),
+				content: (
+					<Stripe
+						manualConfig={ manualConfig }
+						createAccount={ values.create_stripe }
+						email={ values.stripe_email }
+						countryCode={ countryCode }
+						returnUrl={ getAdminLink(
+							`admin.php?page=wc-admin&task=payments&installed=1&configured=stripe&methods=${ methods.join(
+								','
+							) }`
+						) }
+					/>
+				),
+				visible: showIndividualConfigs && methods.includes( 'stripe' ),
 			},
 			{
 				key: 'paypal',
 				label: __( 'Enable PayPal Checkout', 'woocommerce-admin' ),
 				description: __( 'Connect your store to your PayPal account', 'woocommerce-admin' ),
 				content: <PayPal />,
-				visible:
-					showIndividualConfigs &&
-					activePlugins.includes( 'woocommerce-gateway-paypal-express-checkout' ),
+				visible: showIndividualConfigs && methods.includes( 'paypal' ),
 			},
 			// @todo Klarna
 			// @todo Square
@@ -343,6 +424,12 @@ export default compose(
 			profileItems: getProfileItems(),
 			activePlugins: getActivePlugins(),
 			isJetpackConnected: isJetpackConnected(),
+		};
+	} ),
+	withDispatch( dispatch => {
+		const { createNotice } = dispatch( 'core/notices' );
+		return {
+			createNotice,
 		};
 	} )
 )( Payments );
