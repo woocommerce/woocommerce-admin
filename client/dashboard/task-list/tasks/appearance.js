@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 import { Button, ImageUpload, TextControl } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
@@ -25,12 +26,14 @@ class Appearance extends Component {
 		super( props );
 
 		this.state = {
+			isPending: false,
 			logo: null,
 			stepIndex: 0,
 			storeNoticeText: props.options.woocommerce_demo_store_notice || '',
 		};
 
 		this.completeStep = this.completeStep.bind( this );
+		this.importProducts = this.importProducts.bind( this );
 		this.updateLogo = this.updateLogo.bind( this );
 		this.updateNotice = this.updateNotice.bind( this );
 	}
@@ -83,6 +86,25 @@ class Appearance extends Component {
 		}
 	}
 
+	async importProducts() {
+		const { createNotice } = this.props;
+		this.setState( { isPending: true } );
+
+		const result = await apiFetch( { path: '/wc/v4/products/import_sample_data', method: 'POST' } );
+		if ( result.failed && result.failed.length ) {
+			createNotice(
+				'error',
+				__( 'There was an error importing some of the demo products.', 'woocommerce-admin' )
+			);
+		} else {
+			createNotice( 'success', __( 'All demo products have been imported.', 'woocommerce-admin' ) );
+			wcSettings.onboarding.hasProducts = true;
+		}
+
+		this.setState( { isPending: false } );
+		this.completeStep();
+	}
+
 	updateLogo() {
 		const { options, themeMods, updateOptions } = this.props;
 		const { logo } = this.state;
@@ -103,7 +125,7 @@ class Appearance extends Component {
 	}
 
 	getSteps() {
-		const { logo, storeNoticeText } = this.state;
+		const { isPending, logo, storeNoticeText } = this.state;
 		const { isRequesting } = this.props;
 
 		const steps = [
@@ -116,13 +138,15 @@ class Appearance extends Component {
 				),
 				content: (
 					<Fragment>
-						<Button isPrimary>{ __( 'Import products', 'woocommerce-admin' ) }</Button>
+						<Button onClick={ this.importProducts } isBusy={ isPending } isPrimary>
+							{ __( 'Import products', 'woocommerce-admin' ) }
+						</Button>
 						<Button onClick={ () => this.completeStep() }>
 							{ __( 'Skip', 'woocommerce-admin' ) }
 						</Button>
 					</Fragment>
 				),
-				visible: true,
+				visible: ! wcSettings.onboarding.hasProducts,
 			},
 			{
 				key: 'homepage',
@@ -186,14 +210,14 @@ class Appearance extends Component {
 	}
 
 	render() {
-		const { stepIndex } = this.state;
+		const { isPending, stepIndex } = this.state;
 		const { isRequesting, hasErrors } = this.props;
 
 		return (
 			<div className="woocommerce-task-appearance">
 				<Card className="is-narrow">
 					<Stepper
-						isPending={ isRequesting && ! hasErrors }
+						isPending={ ( isRequesting && ! hasErrors ) || isPending }
 						isVertical
 						currentStep={ this.getSteps()[ stepIndex ].key }
 						steps={ this.getSteps() }
