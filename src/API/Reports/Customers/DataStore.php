@@ -338,7 +338,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * @param string $where_clause The generated WHERE clause.
 		 * @param array  $query_args   The original arguments for the request.
 		 */
-		$sql_query['where_clause'] = apply_filters( 'wc_admin_customers_where_clause', $where_clause, $query_args );
+		$sql_query_params['where_clause'] = apply_filters( 'wc_admin_customers_where_clause', $where_clause, $query_args );
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
