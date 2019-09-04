@@ -25,6 +25,11 @@ class Appearance extends Component {
 	constructor( props ) {
 		super( props );
 
+		this.stepVisibility = {
+			import: ! wcSettings.onboarding.hasProducts,
+			logo: ! wcSettings.onboarding.customLogo,
+		};
+
 		this.state = {
 			isPending: false,
 			logo: null,
@@ -86,23 +91,32 @@ class Appearance extends Component {
 		}
 	}
 
-	async importProducts() {
+	importProducts() {
 		const { createNotice } = this.props;
 		this.setState( { isPending: true } );
 
-		const result = await apiFetch( { path: '/wc/v4/products/import_sample_data', method: 'POST' } );
-		if ( result.failed && result.failed.length ) {
-			createNotice(
-				'error',
-				__( 'There was an error importing some of the demo products.', 'woocommerce-admin' )
-			);
-		} else {
-			createNotice( 'success', __( 'All demo products have been imported.', 'woocommerce-admin' ) );
-			wcSettings.onboarding.hasProducts = true;
-		}
+		apiFetch( { path: '/wc-admin/v1/onboarding/tasks/import_sample_products', method: 'POST' } )
+			.then( result => {
+				if ( result.failed && result.failed.length ) {
+					createNotice(
+						'error',
+						__( 'There was an error importing some of the demo products.', 'woocommerce-admin' )
+					);
+				} else {
+					createNotice(
+						'success',
+						__( 'All demo products have been imported.', 'woocommerce-admin' )
+					);
+					wcSettings.onboarding.hasProducts = true;
+				}
 
-		this.setState( { isPending: false } );
-		this.completeStep();
+				this.setState( { isPending: false } );
+				this.completeStep();
+			} )
+			.catch( error => {
+				createNotice( 'error', error.message );
+				this.setState( { isPending: false } );
+			} );
 	}
 
 	updateLogo() {
@@ -146,7 +160,7 @@ class Appearance extends Component {
 						</Button>
 					</Fragment>
 				),
-				visible: ! wcSettings.onboarding.hasProducts,
+				visible: this.stepVisibility.import,
 			},
 			{
 				key: 'homepage',
@@ -180,7 +194,7 @@ class Appearance extends Component {
 						</Button>
 					</Fragment>
 				),
-				visible: ! wcSettings.onboarding.customLogo,
+				visible: this.stepVisibility.logo,
 			},
 			{
 				key: 'notice',
