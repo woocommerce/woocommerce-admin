@@ -80,8 +80,28 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 				'avg_avg_order_value' => 0.0,
 			);
 
-			$selections       = $this->selected_columns( $query_args );
-			$sql_query_params = $this->get_sql_query_params( $query_args );
+			$selections        = $this->selected_columns( $query_args );
+			$sql_query_params  = $this->get_sql_query_params( $query_args );
+			$where_clause      = $sql_query_params['where_clause'];
+			$where_time_clause = $sql_query_params['where_time_clause'];
+			/**
+			 * Filter the customer stats WHERE clause before retrieving the customer stats data.
+			 *
+			 * Allows modification of the customer select criteria.
+			 *
+			 * @param string $where_clause The generated WHERE clause.
+			 * @param array  $query_args   The original arguments for the request.
+			 */
+			$sql_query_params['where_clause'] = apply_filters( 'wc_admin_customer_stats_where_clause', $where_clause, $query_args );
+			/**
+			 * Filter the customer stats WHERE `time` clause before retrieving the customer stats data.
+			 *
+			 * Allows modification of the customer select criteria.
+			 *
+			 * @param string $where_time_clause The generated WHERE clause.
+			 * @param array  $query_args        The original arguments for the request.
+			 */
+			$sql_query_params['where_time_clause'] = apply_filters( 'wc_admin_customer_stats_where_time_clause', $where_time_clause, $query_args );
 
 			$report_data = $wpdb->get_results(
 				"SELECT {$selections} FROM
