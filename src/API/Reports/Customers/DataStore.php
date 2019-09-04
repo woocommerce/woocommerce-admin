@@ -193,9 +193,19 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			}
 		}
 
+		$where_clause = '';
 		if ( $where_time_clauses ) {
-			$sql_query['where_time_clause'] = ' AND ' . implode( " {$match_operator} ", $where_time_clauses );
+			$where_clause = ' AND ' . implode( " {$match_operator} ", $where_time_clauses );
 		}
+		/**
+		 * Filter the customers WHERE `time` clause before retrieving the customers data.
+		 *
+		 * Allows modification of the customers select criteria.
+		 *
+		 * @param string $where_clause The generated WHERE clause.
+		 * @param array  $query_args   The original arguments for the request.
+		 */
+		$sql_query['where_time_clause'] = apply_filters( 'wc_admin_customers_where_time_clause', $where_clause, $query_args );
 
 		if ( $having_time_clauses ) {
 			$sql_query['having_clause'] = ' AND ' . implode( " {$match_operator} ", $having_time_clauses );
@@ -315,10 +325,20 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			}
 		}
 
+		$where_clause = '';
 		if ( $where_clauses ) {
 			$preceding_match                  = empty( $sql_query_params['where_time_clause'] ) ? ' AND ' : " {$match_operator} ";
-			$sql_query_params['where_clause'] = $preceding_match . implode( " {$match_operator} ", $where_clauses );
+			$where_clause = $preceding_match . implode( " {$match_operator} ", $where_clauses );
 		}
+		/**
+		 * Filter the customers WHERE clause before retrieving the customers data.
+		 *
+		 * Allows modification of the customers select criteria.
+		 *
+		 * @param string $where_clause The generated WHERE clause.
+		 * @param array  $query_args   The original arguments for the request.
+		 */
+		$sql_query['where_clause'] = apply_filters( 'wc_admin_customers_where_clause', $where_clause, $query_args );
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
