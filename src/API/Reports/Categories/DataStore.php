@@ -114,7 +114,16 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$sql_query_params['where_clause'] .= " AND ( {$order_status_filter} )";
 		}
 
-		$sql_query_params['where_clause'] .= " AND taxonomy = 'product_cat' ";
+		$where_clause = $sql_query_params['where_clause'] . " AND taxonomy = 'product_cat' ";
+		/**
+		 * Filter the notes WHERE clause before retrieving the category data.
+		 *
+		 * Allows modification of the notes select criteria.
+		 *
+		 * @param string $where_clause The generated WHERE clause.
+		 * @param array  $query_args   The original arguments for the request.
+		 */
+		$sql_query_params['where_clause'] = apply_filters( 'wc_admin_categories_where_clause', $where_clause, $query_args );
 
 		return $sql_query_params;
 	}
@@ -174,10 +183,20 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return string
 	 */
 	protected function get_included_categories_array( $query_args ) {
+		$category_ids = array();
 		if ( isset( $query_args['categories'] ) && is_array( $query_args['categories'] ) && count( $query_args['categories'] ) > 0 ) {
-			return $query_args['categories'];
+			$category_ids = $query_args['categories'];
 		}
-		return array();
+
+		/**
+		 * Filter the category IDs before retrieving category data.
+		 *
+		 * Allows filtering of the categories included in the category reports.
+		 *
+		 * @param array $category_ids List of category Ids.
+		 * @param array $query_args   The original arguments for the request.
+		 */
+		return apply_filters( 'wc_admin_categories_included_categories', $category_ids, $query_args );
 	}
 
 	/**
