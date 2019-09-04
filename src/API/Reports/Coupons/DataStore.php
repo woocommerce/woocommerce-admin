@@ -72,10 +72,21 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return array
 	 */
 	protected function get_included_coupons_array( $query_args ) {
+		$coupon_ids = array();
 		if ( isset( $query_args['coupons'] ) && is_array( $query_args['coupons'] ) && count( $query_args['coupons'] ) > 0 ) {
-			return $query_args['coupons'];
+			$coupon_ids = $query_args['coupons'];
 		}
-		return array();
+
+		/**
+		 * Filter the coupon IDs before retrieving coupon data.
+		 *
+		 * Allows filtering of the coupons included in the coupon reports.
+		 *
+		 * @param array $coupon_ids List of coupon Ids.
+		 * @param array $query_args The original arguments for the request.
+		 */
+		return apply_filters( 'wc_admin_coupons_included_coupons', $coupon_ids, $query_args );
+
 	}
 
 	/**
@@ -116,6 +127,17 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$sql_query_params['from_clause']  .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_coupon_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
 			$sql_query_params['where_clause'] .= " AND ( {$order_status_filter} )";
 		}
+
+		$where_clause = $sql_query_params['where_clause'];
+		/**
+		 * Filter the coupons WHERE clause before retrieving the coupons data.
+		 *
+		 * Allows modification of the coupons select criteria.
+		 *
+		 * @param string $where_clause The generated WHERE clause.
+		 * @param array  $query_args   The original arguments for the request.
+		 */
+		$sql_query_params['where_clause'] = apply_filters( 'wc_admin_coupons_where_clause', $where_clause, $query_args );
 
 		return $sql_query_params;
 	}
