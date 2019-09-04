@@ -302,6 +302,17 @@ class Loader {
 		);
 		wp_style_add_data( WC_ADMIN_APP, 'rtl', 'replace' );
 
+		// @todo - Generate an app IE css.
+		/*
+		wp_register_style(
+			'wc-admin-ie',
+			self::get_url( 'app/ie.css' ),
+			array( WC_ADMIN_APP ),
+			self::get_file_version( 'app/ie.css' )
+		);
+		wp_style_add_data( 'wc-admin-ie', 'rtl', 'replace' );
+		*/
+
 		wp_register_style(
 			'wc-material-icons',
 			'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined',
@@ -330,6 +341,8 @@ class Loader {
 		}
 		if ( count( $matches ) > 1 ) {
 			wp_enqueue_style( 'wc-components-ie' );
+			// @todo - Generate an app IE css.
+			// wp_enqueue_style( 'wc-admin-ie' );
 		}
 
 	}
