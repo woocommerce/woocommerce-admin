@@ -78,6 +78,15 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 			$coupons_where_clause .= " AND ( {$order_status_filter} )";
 		}
 
+		/**
+		 * Filter the coupon stats WHERE clause before retrieving the coupon stats data.
+		 *
+		 * Allows modification of the coupon stats select criteria.
+		 *
+		 * @param string $coupons_where_clause The generated WHERE clause.
+		 * @param array  $query_args           The original arguments for the request.
+		 */
+		$coupons_where_clause           = apply_filters( 'wc_admin_coupon_stats_where_clause', $coupons_where_clause, $query_args );
 		$totals_params                  = array_merge( $totals_params, $this->get_time_period_sql_params( $query_args, $order_coupon_lookup_table ) );
 		$totals_params['where_clause'] .= $coupons_where_clause;
 		$totals_params['from_clause']  .= $coupons_from_clause;
