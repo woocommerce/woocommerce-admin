@@ -33,7 +33,7 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
-	 * Test that Tasks data is returned by the endpoint.
+	 * Test that sample product data is imported.
 	 */
 	public function test_import_sample_products() {
 		wp_set_current_user( $this->user );
