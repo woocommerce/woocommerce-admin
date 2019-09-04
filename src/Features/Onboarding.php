@@ -60,6 +60,7 @@ class Onboarding {
 
 		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 ); // Run after Automattic\WooCommerce\Admin\Loader.
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
+		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_action( 'woocommerce_theme_installed', array( $this, 'delete_themes_transient' ) );
 		add_action( 'after_switch_theme', array( $this, 'delete_themes_transient' ) );
 		add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
@@ -336,6 +337,15 @@ class Onboarding {
 		}
 
 		return $settings;
+	}
+
+	public function preload_options( $options ) {
+		if ( ! $this->should_show_tasks() ) {
+			return $options;
+		}
+		$options[] = 'woocommerce_onboarding_payments';
+		$options[] = 'woocommerce_stripe_settings';
+		return $options;
 	}
 
 	/**
