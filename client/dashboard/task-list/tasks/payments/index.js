@@ -6,7 +6,7 @@
 import { __ } from '@wordpress/i18n';
 import { Fragment, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { filter, noop, keys, pickBy, difference, last } from 'lodash';
+import { filter, noop, keys, pickBy, difference } from 'lodash';
 import { FormToggle, CheckboxControl } from '@wordpress/components';
 import { Button, TextControl } from 'newspack-components';
 import { withDispatch } from '@wordpress/data';
@@ -30,59 +30,72 @@ class Payments extends Component {
 	constructor() {
 		super( ...arguments );
 
-		const query = getQuery();
 		let step = 'choose';
 		let showIndividualConfigs = false;
+		let forceStripeManual = false;
 
-		if ( '1' === query.installed && query.methods ) {
-			const methods = query.methods.split( ',' );
-			step = methods[ 0 ];
-			showIndividualConfigs = true;
+		const query = getQuery();
+		const { options } = this.props;
+		const { woocommerce_onboarding_payments, woocommerce_stripe_settings } = options;
+
+		const installed = woocommerce_onboarding_payments && woocommerce_onboarding_payments.installed;
+		const methods =
+			( woocommerce_onboarding_payments && woocommerce_onboarding_payments.methods ) || [];
+		const configured =
+			( woocommerce_onboarding_payments && woocommerce_onboarding_payments.configured ) || [];
+
+		// Handle redirect back from Stripe
+		if (
+			query[ 'stripe-connect' ] &&
+			'1' === query[ 'stripe-connect' ] &&
+			methods.includes( 'stripe' )
+		) {
+			const isStripeConnected =
+				( woocommerce_stripe_settings.publishable_key && woocommerce_stripe_settings.secret_key ) ||
+				false;
+			if ( isStripeConnected ) {
+				this.markConfigured( 'stripe' );
+				configured.push( 'stripe' );
+				this.props.createNotice(
+					'success',
+					__( 'Stripe connected successfully.', 'woocommerce-admin' )
+				);
+			} else {
+				step = 'stripe';
+				showIndividualConfigs = true;
+				// We could not connect via WCS or the user rejected the connection. Show fallback configuration fields.
+				forceStripeManual = true;
+			}
 		}
 
-		if ( query.configured && query.methods ) {
-			const configured = query.configured.split( ',' );
-			const methods = query.methods.split( ',' );
+		// Figure out which step to show initially if there are still steps to be configured, or redirect back to the task list.
+		if ( methods.length > 0 && configured.length > 0 ) {
 			step = difference( methods, configured )[ 0 ] || '';
+			showIndividualConfigs = true;
+			const stepsLeft = difference( methods, configured ).length;
+
+			if ( 0 === stepsLeft ) {
+				// @todo Mark as completed on the task list.
+				this.state = {
+					step: '',
+				};
+				getHistory().push( getNewPath( {}, '/', {} ) );
+				return;
+			}
+		} else if ( 1 === installed && methods.length > 0 ) {
+			// Methods have been installed but not configured yet.
+			step = methods[ 0 ];
 			showIndividualConfigs = true;
 		}
 
 		this.state = {
 			step,
 			showIndividualConfigs,
+			forceStripeManual,
 		};
-
 		this.completeStep = this.completeStep.bind( this );
+		this.markConfigured = this.markConfigured.bind( this );
 		this.completePluginInstall = this.completePluginInstall.bind( this );
-	}
-
-	componentDidMount() {
-		const query = getQuery();
-		if ( query.configured && query.methods ) {
-			const configured = query.configured.split( ',' );
-
-			if ( 'paypal' === last( configured ) ) {
-				this.props.createNotice(
-					'success',
-					__( 'PayPal connected sucessfully.', 'woocommerce-admin' )
-				);
-			}
-
-			if ( 'stripe' === last( configured ) ) {
-				this.props.createNotice(
-					'success',
-					__( 'Stripe connected successfully.', 'woocommerce-admin' )
-				);
-			}
-
-			const methods = query.methods.split( ',' );
-			const stepsLeft = difference( methods, configured ).length;
-
-			if ( 0 === stepsLeft ) {
-				getHistory().push( getNewPath( {}, '/', {} ) );
-				return;
-			}
-		}
 	}
 
 	getInitialValues() {
@@ -119,8 +132,31 @@ class Payments extends Component {
 	}
 
 	completePluginInstall() {
+		this.props.updateOptions( {
+			[ 'woocommerce_onboarding_payments' ]: {
+				installed: 1,
+				methods: this.getMethodsToConfigure(),
+			},
+		} );
+
 		this.setState( { showIndividualConfigs: true }, function() {
 			this.completeStep();
+		} );
+	}
+
+	markConfigured( method ) {
+		const { options } = this.props;
+		const configured =
+			( options &&
+				options.woocommerce_onboarding_payments &&
+				options.woocommerce_onboarding_payments.configured ) ||
+			[];
+		configured.push( method );
+		this.props.updateOptions( {
+			[ 'woocommerce_onboarding_payments' ]: {
+				...options.woocommerce_onboarding_payments,
+				configured,
+			},
 		} );
 	}
 
@@ -255,9 +291,13 @@ class Payments extends Component {
 	}
 
 	getMethodsToConfigure() {
-		const query = getQuery();
-		if ( query.methods ) {
-			return query.methods.split( ',' );
+		const { options } = this.props;
+		if (
+			options &&
+			options.woocommerce_onboarding_payments &&
+			options.woocommerce_onboarding_payments.methods
+		) {
+			return options.woocommerce_onboarding_payments.methods;
 		}
 
 		const { values } = this.formData;
@@ -292,7 +332,7 @@ class Payments extends Component {
 			values.klarna_payments ||
 			values.square;
 
-		const { showIndividualConfigs } = this.state;
+		const { showIndividualConfigs, forceStripeManual } = this.state;
 		const { activePlugins, countryCode, isJetpackConnected } = this.props;
 
 		const manualConfig =
@@ -344,15 +384,13 @@ class Payments extends Component {
 				description: __( 'Connect your store to your Stripe account', 'woocommerce-admin' ),
 				content: (
 					<Stripe
-						manualConfig={ manualConfig }
+						manualConfig={ forceStripeManual || manualConfig }
+						completeStep={ this.completeStep }
+						markConfigured={ this.markConfigured }
 						createAccount={ values.create_stripe }
 						email={ values.stripe_email }
 						countryCode={ countryCode }
-						returnUrl={ getAdminLink(
-							`admin.php?page=wc-admin&task=payments&installed=1&configured=stripe&methods=${ methods.join(
-								','
-							) }`
-						) }
+						returnUrl={ getAdminLink( 'admin.php?page=wc-admin&task=payments&stripe-connect=1' ) }
 					/>
 				),
 				visible: showIndividualConfigs && methods.includes( 'stripe' ),
@@ -409,12 +447,18 @@ export default compose(
 			getProfileItems,
 			isJetpackConnected,
 			getActivePlugins,
+			getOptions,
 		} = select( 'wc-api' );
 
 		const settings = getSettings( 'general' );
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
 		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
 		const countryCode = getCountryCode( settings.woocommerce_default_country );
+
+		const options = getOptions( [
+			'woocommerce_onboarding_payments',
+			'woocommerce_stripe_settings',
+		] );
 
 		return {
 			countryCode,
@@ -424,12 +468,15 @@ export default compose(
 			profileItems: getProfileItems(),
 			activePlugins: getActivePlugins(),
 			isJetpackConnected: isJetpackConnected(),
+			options,
 		};
 	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
+		const { updateOptions } = dispatch( 'wc-api' );
 		return {
 			createNotice,
+			updateOptions,
 		};
 	} )
 )( Payments );

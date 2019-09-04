@@ -3,17 +3,20 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import apiFetch from '@wordpress/api-fetch';
 import { withDispatch } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
 import { Modal } from '@wordpress/components';
-import { Button } from 'newspack-components';
+import { Button, TextControl } from 'newspack-components';
 
 /**
  * WooCommerce dependencies
  */
+import { Form, Link } from '@woocommerce/components';
+import withSelect from 'wc-api/with-select';
+import { WCS_NAMESPACE } from 'wc-api/constants';
 
 class Stripe extends Component {
 	constructor( props ) {
@@ -26,6 +29,8 @@ class Stripe extends Component {
 			showConnectionButtons: ! props.manualConfig && ! props.createAccount,
 			showManualConfiguration: props.manualConfig,
 		};
+
+		this.updateSettings = this.updateSettings.bind( this );
 	}
 
 	componentDidMount() {
@@ -51,7 +56,7 @@ class Stripe extends Component {
 		const { returnUrl } = this.props;
 		try {
 			const result = await apiFetch( {
-				path: '/wc/v1/connect/stripe/oauth/init', // @todo namespace
+				path: WCS_NAMESPACE + '/connect/stripe/oauth/init',
 				method: 'POST',
 				data: {
 					returnUrl,
@@ -77,10 +82,10 @@ class Stripe extends Component {
 	}
 
 	async autoCreateAccount() {
-		const { email, countryCode, returnUrl } = this.props;
+		const { email, countryCode } = this.props;
 		try {
 			const result = await apiFetch( {
-				path: '/wc/v1/connect/stripe/account', // @todo namespace
+				path: WCS_NAMESPACE + '/connect/stripe/account',
 				method: 'POST',
 				data: {
 					email,
@@ -89,7 +94,12 @@ class Stripe extends Component {
 			} );
 
 			if ( result ) {
-				window.location = returnUrl;
+				this.props.completeStep();
+				this.props.markConfigured( 'stripe' );
+				this.props.createNotice(
+					'success',
+					__( 'Stripe connected successfully.', 'woocommerce-admin' )
+				);
 				return;
 			}
 		} catch ( error ) {
@@ -137,12 +147,6 @@ class Stripe extends Component {
 		}
 	}
 
-	/*
-	<Button isDefault onClick={ () => setState( { isOpen: false } ) }>
-					My custom close button
-				</Button>
-				*/
-
 	renderErrorModal() {
 		const { errorTitle, errorMessage } = this.state;
 		return (
@@ -170,8 +174,113 @@ class Stripe extends Component {
 		);
 	}
 
+	async updateSettings( values ) {
+		const {
+			completeStep,
+			createNotice,
+			isSettingsError,
+			updateOptions,
+			markConfigured,
+		} = this.props;
+
+		await updateOptions( {
+			woocommerce_stripe_settings: {
+				...this.props.options.woocommerce_stripe_settings,
+				publishable_key: values.publishable_key,
+				secret_key: values.secret_key,
+			},
+		} );
+
+		if ( ! isSettingsError ) {
+			markConfigured( 'stripe' );
+			completeStep();
+		} else {
+			createNotice(
+				'error',
+				__( 'There was a problem saving your payment settings.', 'woocommerce-admin' )
+			);
+		}
+	}
+
+	getInitialConfigValues() {
+		return {
+			publishable_key: '',
+			secret_key: '',
+		};
+	}
+
+	validate( values ) {
+		const errors = {};
+
+		if ( ! values.publishable_key ) {
+			errors.publishable_key = __( 'Please enter your publishable key', 'woocommerce-admin' );
+		}
+		if ( ! values.secret_key ) {
+			errors.secret_key = __( 'Please enter your secret key', 'woocommerce-admin' );
+		}
+
+		return errors;
+	}
+
+	renderManualConfig() {
+		const stripeHelp = interpolateComponents( {
+			mixedString: __(
+				'Your API details can be obtained from your {{link}}Stripe account{{/link}}',
+				'woocommerce-admin'
+			),
+			components: {
+				link: <Link href="https://stripe.com/docs/account" target="_blank" type="external" />,
+			},
+		} );
+
+		return (
+			<Form
+				initialValues={ this.getInitialConfigValues() }
+				onSubmitCallback={ this.updateSettings }
+				validate={ this.validate }
+			>
+				{ ( { getInputProps, handleSubmit } ) => {
+					return (
+						<Fragment>
+							<TextControl
+								label={ __( 'Live Publishable Key', 'woocommerce-admin' ) }
+								required
+								{ ...getInputProps( 'publishable_key' ) }
+							/>
+							<TextControl
+								label={ __( 'Live Secret Key', 'woocommerce-admin' ) }
+								required
+								{ ...getInputProps( 'secret_key' ) }
+							/>
+
+							<Button onClick={ handleSubmit } isPrimary>
+								{ __( 'Proceed', 'woocommerce-admin' ) }
+							</Button>
+
+							<Button
+								onClick={ () => {
+									this.props.markConfigured( 'stripe' );
+									this.props.completeStep();
+								} }
+							>
+								{ __( 'Skip', 'woocommerce-admin' ) }
+							</Button>
+
+							<p>{ stripeHelp }</p>
+						</Fragment>
+					);
+				} }
+			</Form>
+		);
+	}
+
 	render() {
-		const { showErrorModal, showConnectionButtons, connectURL } = this.state;
+		const {
+			showErrorModal,
+			showConnectionButtons,
+			connectURL,
+			showManualConfiguration,
+		} = this.state;
 
 		if ( showErrorModal ) {
 			return this.renderErrorModal();
@@ -181,15 +290,28 @@ class Stripe extends Component {
 			return this.renderConnectButton();
 		}
 
+		if ( showManualConfiguration ) {
+			return this.renderManualConfig();
+		}
+
 		return null;
 	}
 }
 
 export default compose(
+	withSelect( select => {
+		const { getOptions } = select( 'wc-api' );
+		const options = getOptions( [ 'woocommerce_stripe_settings' ] );
+		return {
+			options,
+		};
+	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
+		const { updateOptions } = dispatch( 'wc-api' );
 		return {
 			createNotice,
+			updateOptions,
 		};
 	} )
 )( Stripe );
