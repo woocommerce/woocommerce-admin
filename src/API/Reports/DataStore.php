@@ -594,6 +594,18 @@ class DataStore {
 			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$datetime_str'";
 		}
 
+		$where_clause = $sql_query['where_time_clause'];
+		/**
+		 * Filter the reports WHERE clause before retrieving the data.
+		 *
+		 * Allows modification of the reports select criteria.
+		 *
+		 * @param string $where_clause The generated WHERE clause.
+		 * @param array  $query_args   The original arguments for the request.
+		 * @param string $table_name   The lookup table being queried.
+		 */
+		$sql_query['where_clause'] = apply_filters( 'wc_admin_reports_where_clause', $where_clause, $query_args, $table_name );
+
 		return $sql_query;
 	}
 
@@ -644,11 +656,21 @@ class DataStore {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return array
 	 */
-	protected function get_fields( $query_args ) {
+	protected function get_fields( $query_args ) { 
 		if ( isset( $query_args['fields'] ) && is_array( $query_args['fields'] ) ) {
-			return $query_args['fields'];
+			$field_list = $query_args['fields'];
+		} else {
+			$field_list = array_keys( $this->report_columns );
 		}
-		return array_keys( $this->report_columns );
+		/**
+		 * Filter the field list before retrieving report data.
+		 *
+		 * Allows filtering of the field list included in the reports.
+		 *
+		 * @param array $field_list List of to include in the result set.
+		 * @param array $query_args The original arguments for the request.
+		 */
+		return apply_filters( 'wc_admin_reports_get_fields', $field_list, $query_args );
 	}
 
 	/**
@@ -817,7 +839,15 @@ class DataStore {
 			}
 		}
 
-		return $included_products;
+		/**
+		 * Filter the included product IDs before retrieving report data.
+		 *
+		 * Allows filtering of the products included in reports.
+		 *
+		 * @param array $included_products List of product Ids.
+		 * @param array $query_args        The original arguments for the request.
+		 */
+		return apply_filters( 'wc_admin_reports_included_products', $included_products, $query_args );
 	}
 
 	/**
@@ -838,15 +868,10 @@ class DataStore {
 	 * @return string
 	 */
 	protected function get_included_variations( $query_args ) {
-		$included_variations = array();
-		$operator            = $this->get_match_operator( $query_args );
-
 		if ( isset( $query_args['variations'] ) && is_array( $query_args['variations'] ) && count( $query_args['variations'] ) > 0 ) {
-			$included_variations = array_filter( array_map( 'intval', $query_args['variations'] ) );
+			$query_args['variations'] = array_filter( array_map( 'intval', $query_args['variations'] ) );
 		}
-
-		$included_variations_str = implode( ',', $included_variations );
-		return $included_variations_str;
+		return $this->get_filtered_ids( $query_args, 'variations' );
 	}
 
 	/**
@@ -856,12 +881,7 @@ class DataStore {
 	 * @return string
 	 */
 	protected function get_excluded_products( $query_args ) {
-		$excluded_products_str = '';
-
-		if ( isset( $query_args['product_excludes'] ) && is_array( $query_args['product_excludes'] ) && count( $query_args['product_excludes'] ) > 0 ) {
-			$excluded_products_str = implode( ',', $query_args['product_excludes'] );
-		}
-		return $excluded_products_str;
+		return $this->get_filtered_ids( $query_args, 'product_excludes' );
 	}
 
 	/**
@@ -871,12 +891,7 @@ class DataStore {
 	 * @return string
 	 */
 	protected function get_included_coupons( $query_args ) {
-		$included_coupons_str = '';
-
-		if ( isset( $query_args['coupon_includes'] ) && is_array( $query_args['coupon_includes'] ) && count( $query_args['coupon_includes'] ) > 0 ) {
-			$included_coupons_str = implode( ',', $query_args['coupon_includes'] );
-		}
-		return $included_coupons_str;
+		return $this->get_filtered_ids( $query_args, 'coupon_includes' );
 	}
 
 	/**
@@ -886,12 +901,7 @@ class DataStore {
 	 * @return string
 	 */
 	protected function get_excluded_coupons( $query_args ) {
-		$excluded_coupons_str = '';
-
-		if ( isset( $query_args['coupon_excludes'] ) && is_array( $query_args['coupon_excludes'] ) && count( $query_args['coupon_excludes'] ) > 0 ) {
-			$excluded_coupons_str = implode( ',', $query_args['coupon_excludes'] );
-		}
-		return $excluded_coupons_str;
+		return $this->get_filtered_ids( $query_args, 'coupon_excludes' );
 	}
 
 	/**
@@ -901,12 +911,7 @@ class DataStore {
 	 * @return string
 	 */
 	protected function get_included_orders( $query_args ) {
-		$included_orders_str = '';
-
-		if ( isset( $query_args['order_includes'] ) && is_array( $query_args['order_includes'] ) && count( $query_args['order_includes'] ) > 0 ) {
-			$included_orders_str = implode( ',', $query_args['order_includes'] );
-		}
-		return $included_orders_str;
+		return $this->get_filtered_ids( $query_args, 'order_includes' );
 	}
 
 	/**
@@ -916,12 +921,7 @@ class DataStore {
 	 * @return string
 	 */
 	protected function get_excluded_orders( $query_args ) {
-		$excluded_orders_str = '';
-
-		if ( isset( $query_args['order_excludes'] ) && is_array( $query_args['order_excludes'] ) && count( $query_args['order_excludes'] ) > 0 ) {
-			$excluded_orders_str = implode( ',', $query_args['order_excludes'] );
-		}
-		return $excluded_orders_str;
+		return $this->get_filtered_ids( $query_args, 'order_excludes' );
 	}
 
 	/**
@@ -931,12 +931,7 @@ class DataStore {
 	 * @return string
 	 */
 	protected function get_included_users( $query_args ) {
-		$included_users_str = '';
-
-		if ( isset( $query_args['user_includes'] ) && is_array( $query_args['user_includes'] ) && count( $query_args['user_includes'] ) > 0 ) {
-			$included_users_str = implode( ',', $query_args['user_includes'] );
-		}
-		return $included_users_str;
+		return $this->get_filtered_ids( $query_args, 'user_includes' );
 	}
 
 	/**
@@ -946,12 +941,7 @@ class DataStore {
 	 * @return string
 	 */
 	protected function get_excluded_users( $query_args ) {
-		$excluded_users_str = '';
-
-		if ( isset( $query_args['user_excludes'] ) && is_array( $query_args['user_excludes'] ) && count( $query_args['user_excludes'] ) > 0 ) {
-			$excluded_users_str = implode( ',', $query_args['user_excludes'] );
-		}
-		return $excluded_users_str;
+		return $this->get_filtered_ids( $query_args, 'user_excludes' );
 	}
 
 	/**
@@ -1032,4 +1022,30 @@ class DataStore {
 		return $operator;
 	}
 
+	/**
+	 * Returns filtered comma separated ids, based on query arguments from the user.
+	 *
+	 * @param array  $query_args Parameters supplied by the user.
+	 * @param string $field      Query field to filter.
+	 * @return string
+	 */
+	protected function get_filtered_ids( $query_args, $field ) {
+		$ids_str = '';
+		$ids     = isset( $query_args[ $field ] ) && is_array( $query_args[ $field ] ) ? $query_args[ $field ] : array();
+
+		/**
+		 * Filter the IDs before retrieving report data.
+		 *
+		 * Allows filtering of the objects included or excluded from reports.
+		 *
+		 * @param array $ids List of object Ids.
+		 * @param array $query_args        The original arguments for the request.
+		 */
+		$ids = apply_filters( 'wc_admin_reports_ ' . $field, $ids, $query_args, $field );
+
+		if ( ! empty( $ids ) ) {
+			$ids_str = implode( ',', $ids );
+		}
+		return $ids_str;
+	}
 }
