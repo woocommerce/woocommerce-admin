@@ -185,16 +185,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return string
 	 */
 	protected function get_included_ip_addresses( $query_args ) {
-		$included_ips_str = '';
-
-		if ( isset( $query_args['ip_address_includes'] ) && is_array( $query_args['ip_address_includes'] ) && count( $query_args['ip_address_includes'] ) > 0 ) {
-			$ip_includes = array();
-			foreach ( $query_args['ip_address_includes'] as $ip ) {
-				$ip_includes[] = esc_sql( $ip );
-			}
-			$included_ips_str = implode( "','", $ip_includes );
-		}
-		return $included_ips_str;
+		return $this->get_filtered_ids( $query_args, 'ip_address_includes' );
 	}
 
 	/**
@@ -204,16 +195,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return string
 	 */
 	protected function get_excluded_ip_addresses( $query_args ) {
-		$excluded_ips_str = '';
-
-		if ( isset( $query_args['ip_address_excludes'] ) && is_array( $query_args['ip_address_excludes'] ) && count( $query_args['ip_address_excludes'] ) > 0 ) {
-			$ip_excludes = array();
-			foreach ( $query_args['ip_address_excludes'] as $ip ) {
-				$ip_excludes[] = esc_sql( $ip );
-			}
-			$excluded_ips_str = implode( ',', $ip_excludes );
-		}
-		return $excluded_ips_str;
+		return $this->get_filtered_ids( $query_args, 'ip_address_excludes' );
 	}
 
 	/**
@@ -223,12 +205,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return string
 	 */
 	protected function get_included_customers( $query_args ) {
-		$included_customers_str = '';
-
-		if ( isset( $query_args['customer_includes'] ) && is_array( $query_args['customer_includes'] ) && count( $query_args['customer_includes'] ) > 0 ) {
-			$included_customers_str = implode( ',', $query_args['customer_includes'] );
-		}
-		return $included_customers_str;
+		return $this->get_filtered_ids( $query_args, 'customer_includes' );
 	}
 
 	/**
@@ -238,12 +215,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return string
 	 */
 	protected function get_excluded_customers( $query_args ) {
-		$excluded_customer_str = '';
-
-		if ( isset( $query_args['customer_excludes'] ) && is_array( $query_args['customer_excludes'] ) && count( $query_args['customer_excludes'] ) > 0 ) {
-			$excluded_customer_str = implode( ',', $query_args['customer_excludes'] );
-		}
-		return $excluded_customer_str;
+		return $this->get_filtered_ids( $query_args, 'customer_excludes' );
 	}
 
 	/**
