@@ -123,8 +123,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		$sql_query_params    = array_merge( $sql_query_params, $this->get_from_sql_params( $query_args, $order_status_filter ) );
 
-		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
-			$allowed_taxes                     = implode( ',', $query_args['taxes'] );
+		$allowed_taxes = $this->get_filtered_ids( $query_args, 'taxes' );
+		if ( ! empty( $allowed_taxes ) ) {
 			$sql_query_params['where_clause'] .= " AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})";
 		}
 
