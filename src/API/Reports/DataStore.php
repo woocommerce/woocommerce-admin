@@ -440,7 +440,15 @@ class DataStore {
 	 * @return string
 	 */
 	protected function selected_columns( $query_args ) {
-		$selections = $this->report_columns;
+		/**
+		 * Filter the report columns before retrieving data.
+		 *
+		 * Allows filtering of the report columns included in reports.
+		 *
+		 * @param array $report_columns Associative list of columns.
+		 * @param array $query_args     The original arguments for the request.
+		 */
+		$selections = apply_filters( 'wc_admin_reports_selected_columns', $this->report_columns, $query_args );
 
 		if ( isset( $query_args['fields'] ) && is_array( $query_args['fields'] ) ) {
 			$keep = array();
