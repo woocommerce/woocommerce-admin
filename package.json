@@ -108,6 +108,7 @@
     "redux": "4.0.4"
   },
   "devDependencies": {
+    "@automattic/color-studio": "2.2.0",
     "@babel/cli": "7.5.5",
     "@babel/core": "7.5.5",
     "@babel/plugin-transform-async-to-generator": "7.5.0",
@@ -129,7 +130,6 @@
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-plugin-transform-es2015-template-literals": "6.22.0",
     "chalk": "2.4.2",
-    "@automattic/color-studio": "2.2.0",
     "concurrently": "4.1.2",
     "copy-webpack-plugin": "5.0.4",
     "cross-env": "5.2.1",
@@ -173,6 +173,7 @@
     "url-loader": "1.1.2",
     "webpack": "4.35.3",
     "webpack-cli": "3.3.4",
+    "webpack-fix-style-only-entries": "^0.3.1",
     "webpack-rtl-plugin": "2.0.0"
   },
   "engines": {
