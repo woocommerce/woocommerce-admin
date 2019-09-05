@@ -61,8 +61,8 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$data     = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 'success', $export['status'] );
-		$this->assertEquals( get_option( 'page_on_front' ), $export['post_id'] );
-		$this->assertEquals( htmlspecialchars_decode( get_edit_post_link( get_option( 'page_on_front' ) ) ), $export['edit_post_link'] );
+		$this->assertEquals( 'success', $data['status'] );
+		$this->assertEquals( get_option( 'page_on_front' ), $data['post_id'] );
+		$this->assertEquals( htmlspecialchars_decode( get_edit_post_link( get_option( 'page_on_front' ) ) ), $data['edit_post_link'] );
 	}
 }
