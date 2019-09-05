@@ -129,9 +129,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id IN ({$included_products})";
 		}
 
-		if ( count( $query_args['variations'] ) > 0 ) {
-			$allowed_variations_str            = implode( ',', $query_args['variations'] );
-			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.variation_id IN ({$allowed_variations_str})";
+		$allowed_variations = $this->get_filtered_ids( $query_args, 'variations' );
+		if ( ! empty( $allowed_variations ) ) {
+			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.variation_id IN ({$allowed_variations})";
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
