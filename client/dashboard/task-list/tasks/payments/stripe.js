@@ -10,6 +10,8 @@ import { withDispatch } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
 import { Modal } from '@wordpress/components';
 import { Button, TextControl } from 'newspack-components';
+import { getQuery } from '@woocommerce/navigation';
+import { get } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -34,8 +36,33 @@ class Stripe extends Component {
 	}
 
 	componentDidMount() {
-		const { createAccount } = this.props;
+		const { createAccount, options } = this.props;
 		const { showConnectionButtons } = this.state;
+
+		const query = getQuery();
+
+		// Handle redirect back from Stripe.
+		if ( query[ 'stripe-connect' ] && '1' === query[ 'stripe-connect' ] ) {
+			const stripeSettings = get( options, [ 'woocommerce_stripe_settings' ], [] );
+			const isStripeConnected = stripeSettings.publishable_key && stripeSettings.secret_key;
+
+			if ( isStripeConnected ) {
+				this.props.markConfigured( 'stripe' );
+				this.props.createNotice(
+					'success',
+					__( 'Stripe connected successfully.', 'woocommerce-admin' )
+				);
+				return;
+			}
+
+			/* eslint-disable react/no-did-mount-set-state */
+			this.setState( {
+				showConnectionButtons: false,
+				showManualConfiguration: true,
+			} );
+			/* eslint-enable react/no-did-mount-set-state */
+			return;
+		}
 
 		if ( createAccount ) {
 			this.autoCreateAccount();
@@ -55,6 +82,7 @@ class Stripe extends Component {
 	async fetchOAuthConnectURL() {
 		const { returnUrl } = this.props;
 		try {
+			this.props.setRequestPending( true );
 			const result = await apiFetch( {
 				path: WCS_NAMESPACE + '/connect/stripe/oauth/init',
 				method: 'POST',
@@ -63,16 +91,19 @@ class Stripe extends Component {
 				},
 			} );
 			if ( ! result || ! result.oauthUrl ) {
+				this.props.setRequestPending( false );
 				this.setState( {
 					showConnectionButtons: false,
 					showManualConfiguration: true,
 				} );
 				return;
 			}
+			this.props.setRequestPending( false );
 			this.setState( {
 				connectURL: result.oauthUrl,
 			} );
 		} catch ( error ) {
+			this.props.setRequestPending( false );
 			// Fallback to manual configuration if the OAuth URL cannot be grabbed.
 			this.setState( {
 				showConnectionButtons: false,
@@ -84,6 +115,7 @@ class Stripe extends Component {
 	async autoCreateAccount() {
 		const { email, countryCode } = this.props;
 		try {
+			this.props.setRequestPending( true );
 			const result = await apiFetch( {
 				path: WCS_NAMESPACE + '/connect/stripe/account',
 				method: 'POST',
@@ -94,7 +126,7 @@ class Stripe extends Component {
 			} );
 
 			if ( result ) {
-				this.props.completeStep();
+				this.props.setRequestPending( false );
 				this.props.markConfigured( 'stripe' );
 				this.props.createNotice(
 					'success',
@@ -103,6 +135,7 @@ class Stripe extends Component {
 				return;
 			}
 		} catch ( error ) {
+			this.props.setRequestPending( false );
 			let errorTitle, errorMessage;
 			// This seems to be the best way to handle this.
 			// github.com/Automattic/woocommerce-services/blob/cfb6173deb3c72897ee1d35b8fdcf29c5a93dea2/woocommerce-services.php#L563-L570
@@ -175,14 +208,9 @@ class Stripe extends Component {
 	}
 
 	async updateSettings( values ) {
-		const {
-			completeStep,
-			createNotice,
-			isSettingsError,
-			updateOptions,
-			markConfigured,
-		} = this.props;
+		const { createNotice, isSettingsError, updateOptions, markConfigured } = this.props;
 
+		this.props.setRequestPending( true );
 		await updateOptions( {
 			woocommerce_stripe_settings: {
 				...this.props.options.woocommerce_stripe_settings,
@@ -192,9 +220,10 @@ class Stripe extends Component {
 		} );
 
 		if ( ! isSettingsError ) {
+			this.props.setRequestPending( false );
 			markConfigured( 'stripe' );
-			completeStep();
 		} else {
+			this.props.setRequestPending( false );
 			createNotice(
 				'error',
 				__( 'There was a problem saving your payment settings.', 'woocommerce-admin' )
@@ -260,7 +289,6 @@ class Stripe extends Component {
 							<Button
 								onClick={ () => {
 									this.props.markConfigured( 'stripe' );
-									this.props.completeStep();
 								} }
 							>
 								{ __( 'Skip', 'woocommerce-admin' ) }

@@ -6,7 +6,7 @@
 import { __ } from '@wordpress/i18n';
 import { Fragment, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { filter, noop, keys, pickBy, difference } from 'lodash';
+import { get, filter, noop, keys, pickBy, difference } from 'lodash';
 import { FormToggle, CheckboxControl } from '@wordpress/components';
 import { Button, TextControl } from 'newspack-components';
 import { withDispatch } from '@wordpress/data';
@@ -16,7 +16,7 @@ import { withDispatch } from '@wordpress/data';
  */
 import { getCountryCode } from 'dashboard/utils';
 import { Form, Card, Stepper, List } from '@woocommerce/components';
-import { getAdminLink, getHistory, getNewPath, getQuery } from '@woocommerce/navigation';
+import { getAdminLink, getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -30,56 +30,27 @@ class Payments extends Component {
 	constructor() {
 		super( ...arguments );
 
+		this.completeStep = this.completeStep.bind( this );
+		this.markConfigured = this.markConfigured.bind( this );
+		this.setMethodRequestPending = this.setMethodRequestPending.bind( this );
+		this.completePluginInstall = this.completePluginInstall.bind( this );
+
+		const { methods, installed, configured } = this.props;
+
 		let step = 'choose';
 		let showIndividualConfigs = false;
-		let forceStripeManual = false;
-
-		const query = getQuery();
-		const { options } = this.props;
-		const { woocommerce_onboarding_payments, woocommerce_stripe_settings } = options;
-
-		const installed = woocommerce_onboarding_payments && woocommerce_onboarding_payments.installed;
-		const methods =
-			( woocommerce_onboarding_payments && woocommerce_onboarding_payments.methods ) || [];
-		const configured =
-			( woocommerce_onboarding_payments && woocommerce_onboarding_payments.configured ) || [];
-
-		// Handle redirect back from Stripe
-		if (
-			query[ 'stripe-connect' ] &&
-			'1' === query[ 'stripe-connect' ] &&
-			methods.includes( 'stripe' )
-		) {
-			const isStripeConnected =
-				( woocommerce_stripe_settings.publishable_key && woocommerce_stripe_settings.secret_key ) ||
-				false;
-			if ( isStripeConnected ) {
-				this.markConfigured( 'stripe' );
-				configured.push( 'stripe' );
-				this.props.createNotice(
-					'success',
-					__( 'Stripe connected successfully.', 'woocommerce-admin' )
-				);
-			} else {
-				step = 'stripe';
-				showIndividualConfigs = true;
-				// We could not connect via WCS or the user rejected the connection. Show fallback configuration fields.
-				forceStripeManual = true;
-			}
-		}
 
 		// Figure out which step to show initially if there are still steps to be configured, or redirect back to the task list.
 		if ( methods.length > 0 && configured.length > 0 ) {
 			step = difference( methods, configured )[ 0 ] || '';
 			showIndividualConfigs = true;
 			const stepsLeft = difference( methods, configured ).length;
-
 			if ( 0 === stepsLeft ) {
-				// @todo Mark as completed on the task list.
 				this.state = {
-					step: '',
+					step: 'done',
+					methodRequestPending: false,
 				};
-				getHistory().push( getNewPath( {}, '/', {} ) );
+				this.completeTask();
 				return;
 			}
 		} else if ( 1 === installed && methods.length > 0 ) {
@@ -91,11 +62,30 @@ class Payments extends Component {
 		this.state = {
 			step,
 			showIndividualConfigs,
-			forceStripeManual,
+			methodRequestPending: false,
 		};
-		this.completeStep = this.completeStep.bind( this );
-		this.markConfigured = this.markConfigured.bind( this );
-		this.completePluginInstall = this.completePluginInstall.bind( this );
+	}
+
+	componentDidUpdate( prevProps ) {
+		const { methods, configured } = this.props;
+		if (
+			prevProps.configured.length !== configured.length &&
+			methods.length > 0 &&
+			configured.length > 0
+		) {
+			const stepsLeft = difference( methods, configured );
+			const nextStep = stepsLeft[ 0 ];
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( {
+				step: nextStep,
+			} );
+			/* eslint-enable react/no-did-update-set-state */
+		}
+	}
+
+	completeTask() {
+		// @todo Mark as completed on the task list.
+		getHistory().push( getNewPath( {}, '/', {} ) );
 	}
 
 	getInitialValues() {
@@ -106,9 +96,7 @@ class Payments extends Component {
 			klarna_payments: false,
 			square: false,
 			create_stripe: false,
-			create_paypal: false,
 			stripe_email: '',
-			paypal_email: '',
 		};
 		return values;
 	}
@@ -145,18 +133,24 @@ class Payments extends Component {
 	}
 
 	markConfigured( method ) {
-		const { options } = this.props;
-		const configured =
-			( options &&
-				options.woocommerce_onboarding_payments &&
-				options.woocommerce_onboarding_payments.configured ) ||
-			[];
+		const { options, methods, configured } = this.props;
 		configured.push( method );
 		this.props.updateOptions( {
 			[ 'woocommerce_onboarding_payments' ]: {
 				...options.woocommerce_onboarding_payments,
 				configured,
 			},
+		} );
+
+		const stepsLeft = difference( methods, configured );
+		if ( 0 === stepsLeft.length ) {
+			this.completeTask();
+		}
+	}
+
+	setMethodRequestPending( status ) {
+		this.setState( {
+			methodRequestPending: status,
 		} );
 	}
 
@@ -183,34 +177,6 @@ class Payments extends Component {
 					<TextControl
 						label={ __( 'Email address', 'woocommerce-admin' ) }
 						{ ...getInputProps( 'stripe_email' ) }
-					/>
-				) }
-			</div>
-		);
-	}
-
-	renderWooCommerceServicesPayPalConnect() {
-		const { getInputProps, values } = this.formData;
-		if ( ! values.paypal ) {
-			return null;
-		}
-
-		const { isJetpackConnected, activePlugins } = this.props;
-		if ( ! isJetpackConnected || ! activePlugins.includes( 'woocommerce-services' ) ) {
-			return null;
-		}
-
-		return (
-			<div className="woocommerce-task-payments__woocommerce-services-options">
-				<CheckboxControl
-					label={ __( 'Create a Paypal account for me', 'woocommerce-admin' ) }
-					{ ...getInputProps( 'create_paypal' ) }
-				/>
-
-				{ values.create_paypal && (
-					<TextControl
-						label={ __( 'Email address', 'woocommerce-admin' ) }
-						{ ...getInputProps( 'paypal_email' ) }
 					/>
 				) }
 			</div>
@@ -245,7 +211,6 @@ class Payments extends Component {
 							"Safe and secure payments using credit cards or your customer's PayPal account.",
 							'woocommerce-admin'
 						) }
-						{ this.renderWooCommerceServicesPayPalConnect() }
 					</Fragment>
 				),
 				before: <div />, // @todo Logo
@@ -332,7 +297,7 @@ class Payments extends Component {
 			values.klarna_payments ||
 			values.square;
 
-		const { showIndividualConfigs, forceStripeManual } = this.state;
+		const { showIndividualConfigs } = this.state;
 		const { activePlugins, countryCode, isJetpackConnected } = this.props;
 
 		const manualConfig =
@@ -384,9 +349,9 @@ class Payments extends Component {
 				description: __( 'Connect your store to your Stripe account', 'woocommerce-admin' ),
 				content: (
 					<Stripe
-						manualConfig={ forceStripeManual || manualConfig }
-						completeStep={ this.completeStep }
+						manualConfig={ manualConfig }
 						markConfigured={ this.markConfigured }
+						setRequestPending={ this.setMethodRequestPending }
 						createAccount={ values.create_stripe }
 						email={ values.stripe_email }
 						countryCode={ countryCode }
@@ -399,7 +364,12 @@ class Payments extends Component {
 				key: 'paypal',
 				label: __( 'Enable PayPal Checkout', 'woocommerce-admin' ),
 				description: __( 'Connect your store to your PayPal account', 'woocommerce-admin' ),
-				content: <PayPal />,
+				content: (
+					<PayPal
+						markConfigured={ this.markConfigured }
+						setRequestPending={ this.setMethodRequestPending }
+					/>
+				),
 				visible: showIndividualConfigs && methods.includes( 'paypal' ),
 			},
 			// @todo Klarna
@@ -410,7 +380,7 @@ class Payments extends Component {
 	}
 
 	render() {
-		const { step } = this.state;
+		const { step, methodRequestPending } = this.state;
 		const { isSettingsRequesting } = this.props;
 		return (
 			<Form
@@ -425,7 +395,7 @@ class Payments extends Component {
 							<Card className="is-narrow">
 								<Stepper
 									isVertical
-									isPending={ isSettingsRequesting || 'install' === step }
+									isPending={ methodRequestPending || isSettingsRequesting || 'install' === step }
 									currentStep={ step }
 									steps={ this.getSteps() }
 								/>
@@ -455,10 +425,11 @@ export default compose(
 		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
 		const countryCode = getCountryCode( settings.woocommerce_default_country );
 
-		const options = getOptions( [
-			'woocommerce_onboarding_payments',
-			'woocommerce_stripe_settings',
-		] );
+		const options = getOptions( [ 'woocommerce_onboarding_payments' ] );
+
+		const methods = get( options, [ 'woocommerce_onboarding_payments', 'methods' ], [] );
+		const installed = get( options, [ 'woocommerce_onboarding_payments', 'installed' ], false );
+		const configured = get( options, [ 'woocommerce_onboarding_payments', 'configured' ], [] );
 
 		return {
 			countryCode,
@@ -469,6 +440,9 @@ export default compose(
 			activePlugins: getActivePlugins(),
 			isJetpackConnected: isJetpackConnected(),
 			options,
+			methods,
+			installed,
+			configured,
 		};
 	} ),
 	withDispatch( dispatch => {
