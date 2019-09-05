@@ -27,13 +27,6 @@ class OnboardingTasks {
 	const ACTIVE_TASK_TRANSIENT = 'wc_onboarding_active_task';
 
 	/**
-	 * Name of the tasks transient.
-	 *
-	 * @var string
-	 */
-	const TASKS_TRANSIENT = 'wc_onboarding_tasks';
-
-	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -66,27 +59,14 @@ class OnboardingTasks {
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
-		$tasks    = get_transient( self::TASKS_TRANSIENT );
 		$products = wp_count_posts( 'product' );
-
-		if ( ! $tasks ) {
-			$tasks     = array();
-			$task_list = array( 'products' );
-
-			foreach ( $task_list as $task ) {
-				$tasks[ $task ] = self::check_task_completion( $task );
-			}
-
-			set_transient( self::TASKS_TRANSIENT, $tasks, DAY_IN_SECONDS );
-		}
 
 		// @todo We may want to consider caching some of these and use to check against
 		// task completion along with cache busting for active tasks.
 		$settings['onboarding']['automatedTaxSupportedCountries'] = self::get_automated_tax_supported_countries();
 		$settings['onboarding']['customLogo']                     = get_theme_mod( 'custom_logo', false );
-		$settings['onboarding']['hasHomepage']                    = (boolean) get_option( 'woocommerce_onboarding_homepage_post_id', false );
-		$settings['onboarding']['hasProducts']                    = (int) $products->publish > 0 || (int) $products->draft > 0;
-		$settings['onboarding']['tasks']                          = $tasks;
+		$settings['onboarding']['hasHomepage']                    = self::check_task_completion( 'homepage' );
+		$settings['onboarding']['hasProducts']                    = self::check_task_completion( 'products' );
 		$settings['onboarding']['shippingZonesCount']             = count( \WC_Shipping_Zones::get_zones() );
 
 		return $settings;
@@ -123,7 +103,6 @@ class OnboardingTasks {
 
 		if ( self::check_task_completion( $active_task ) ) {
 			delete_transient( self::ACTIVE_TASK_TRANSIENT );
-			delete_transient( self::TASKS_TRANSIENT );
 			wp_safe_redirect( wc_admin_url() );
 			exit;
 		}
