@@ -76,8 +76,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$sql_query_params = array_merge( $sql_query_params, $this->get_limit_sql_params( $query_args ) );
 		$sql_query_params = array_merge( $sql_query_params, $this->get_order_by_sql_params( $query_args ) );
 
-		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
-			$allowed_taxes                     = implode( ',', $query_args['taxes'] );
+		$allowed_taxes = $this->get_filtered_ids( $query_args, 'taxes' );
+		if ( ! empty( $allowed_taxes ) ) {
 			$sql_query_params['where_clause'] .= " AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})";
 		}
 
@@ -104,8 +104,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$order_tax_lookup_table = $wpdb->prefix . self::TABLE_NAME;
 
-		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
-			$allowed_taxes       = implode( ',', $query_args['taxes'] );
+		$allowed_taxes = $this->get_filtered_ids( $query_args, 'taxes' );
+		if ( ! empty( $allowed_taxes ) ) {
 			$taxes_where_clause .= " AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})";
 		}
 
