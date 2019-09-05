@@ -1039,7 +1039,8 @@ class DataStore {
 		 * Allows filtering of the objects included or excluded from reports.
 		 *
 		 * @param array $ids List of object Ids.
-		 * @param array $query_args        The original arguments for the request.
+		 * @param array $query_args The original arguments for the request.
+		 * @param array $field      The field in the query arguments being filtered.
 		 */
 		$ids = apply_filters( 'wc_admin_reports_ ' . $field, $ids, $query_args, $field );
 
