@@ -1,3 +1,7 @@
+# Unreleased
+- Removed WC-Admin specific actions from `<TableCard />` component.
+- Export the `<CompareButton />` component.
+
 # 4.0.0
 - Added a new `<ScrollTo />` component.
 - Changed the `<List />` `description` prop to `content` and allowed content nodes to be passed in addition to strings.
