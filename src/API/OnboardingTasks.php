@@ -86,7 +86,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function create_homepage_permission_check( $request ) {
 		if ( ! wc_rest_check_post_permissions( 'page', 'create' ) || ! current_user_can( 'manage_options' ) ) {
-			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to create a new homepage.', 'woocommerce' ), array( 'status' => rest_authorization_required_code() ) );
+			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to create a new homepage.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -180,7 +180,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 			return array(
 				'status'         => 'success',
-				'message'        => __( 'Homepage created successfully.' ),
+				'message'        => __( 'Homepage created successfully.', 'woocommerce-admin' ),
 				'post_id'        => $post_id,
 				'edit_post_link' => htmlspecialchars_decode( get_edit_post_link( $post_id ) ),
 			);
