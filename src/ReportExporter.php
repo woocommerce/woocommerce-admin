@@ -214,18 +214,9 @@ class ReportExporter {
 				'filename' => "wc-{$report_type}-report-export-{$export_id}",
 			);
 			$download_url = add_query_arg( $query_args, admin_url() );
-			$user         = new \WP_User( $user_id );
-			$recipient    = $user->display_name . '<' . $user->user_email . '>';
-			$subject      = __( 'WooCommerce Admin: Your analytics export is ready.', 'woocommerce-admin' );
-			$message      = sprintf( __( 'Download your analytics export here: %s', 'woocommerce-admin' ), $download_url );
 
-			wp_mail(
-				apply_filters( 'woocommerce_admin_export_email_recipient', $recipient, $user_id, $export_id, $report_type ),
-				apply_filters( 'woocommerce_admin_export_email_subject', $subject, $user_id, $export_id, $report_type ),
-				apply_filters( 'woocommerce_admin_export_email_content', $message, $user_id, $export_id, $report_type ),
-				apply_filters( 'woocommerce_admin_export_email_headers', '', $user_id, $export_id, $report_type ),
-				apply_filters( 'woocommerce_admin_export_email_attachments', array(), $user_id, $export_id, $report_type )
-			);
+			$email = new ReportCSVEmail();
+			$email->trigger( $user_id, $report_type, $download_url );
 		}
 	}
 }
