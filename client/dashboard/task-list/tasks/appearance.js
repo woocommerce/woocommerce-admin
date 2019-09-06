@@ -19,6 +19,7 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
+import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 
 class Appearance extends Component {
@@ -97,7 +98,10 @@ class Appearance extends Component {
 		const { createNotice } = this.props;
 		this.setState( { isPending: true } );
 
-		apiFetch( { path: '/wc-admin/v1/onboarding/tasks/import_sample_products', method: 'POST' } )
+		apiFetch( {
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/import_sample_products`,
+			method: 'POST',
+		} )
 			.then( result => {
 				if ( result.failed && result.failed.length ) {
 					createNotice(
