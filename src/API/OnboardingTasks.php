@@ -59,7 +59,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function import_products_permission_check( $request ) {
 		if ( ! wc_rest_check_post_permissions( 'product', 'create' ) ) {
-			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to create resources.', 'woocommerce' ), array( 'status' => rest_authorization_required_code() ) );
+			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to create resources.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
