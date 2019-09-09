@@ -40,9 +40,6 @@ function wc_admin_install() {
 	\Automattic\WooCommerce\Admin\Install::create_tables();
 	\Automattic\WooCommerce\Admin\Install::create_events();
 
-	// Generate feature config file in case it hasn't yet been.
-	include_once dirname( dirname( __FILE__ ) ) . '/bin/generate-feature-config.php';
-
 	// Reload capabilities after install, see https://core.trac.wordpress.org/ticket/28374.
 	$GLOBALS['wp_roles'] = null; // WPCS: override ok.
 	wp_roles();
