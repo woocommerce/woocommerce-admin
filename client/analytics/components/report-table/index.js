@@ -25,9 +25,8 @@ import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 import { extendTableData } from './utils';
 import { recordEvent } from 'lib/tracks';
+import { TABLE_FILTER } from 'constants/hooks/filters';
 import './style.scss';
-
-const TABLE_FILTER = 'woocommerce_admin_report_table';
 
 /**
  * Component that extends `TableCard` to facilitate its usage in reports.
