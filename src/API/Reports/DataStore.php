@@ -291,7 +291,7 @@ class DataStore {
 	 * to fetch correct records.
 	 *
 	 * @param array  $intervals_query Array with clauses for the Intervals SQL query.
-	 * @param array  $query_args Query arguements.
+	 * @param array  $query_args Query arguments.
 	 * @param int    $db_interval_count Database interval count.
 	 * @param int    $expected_interval_count Expected interval count on the output.
 	 * @param string $table_name Name of the db table relevant for the date constraint.
