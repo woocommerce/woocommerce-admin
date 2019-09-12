@@ -5,6 +5,7 @@
  *
  * @format
  * @param {object} reportTableData.items - response from api requerst.
+ * @return {object} reportTableData
  */
 
 export const TABLE_FILTER = 'woocommerce_admin_report_table';
