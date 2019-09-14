@@ -39,6 +39,8 @@ function createApiClient( name, apiSpec ) {
 	};
 	store.subscribe( storeChanged );
 
+	storeChanged();
+
 	return apiClient;
 }
 
