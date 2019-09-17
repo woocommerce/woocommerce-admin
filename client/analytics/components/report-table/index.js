@@ -302,11 +302,10 @@ class ReportTable extends Component {
 			compareBy,
 			searchBy,
 			labels = {},
-			query,
 			...tableProps
 		} = this.props;
 
-		const { items } = tableData;
+		const { items, query } = tableData;
 
 		const isError = tableData.isError || primaryData.isError;
 
@@ -422,9 +421,7 @@ class ReportTable extends Component {
 					onSort={ this.onSort }
 					onPageChange={ this.onPageChange }
 					rows={ rows }
-					rowsPerPage={
-						parseInt( get( tableData, [ 'query', 'per_page' ] ) ) || QUERY_DEFAULTS.pageSize
-					}
+					rowsPerPage={ parseInt( query.per_page ) || QUERY_DEFAULTS.pageSize }
 					summary={ summary }
 					totalRows={ totalResults }
 					{ ...tableProps }
