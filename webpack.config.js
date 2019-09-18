@@ -63,7 +63,6 @@ const webpackConfig = {
 	mode: NODE_ENV,
 	entry: {
 		app: './client/index.js',
-		embedded: './client/embedded.js',
 		...entryPoints,
 	},
 	output: {
