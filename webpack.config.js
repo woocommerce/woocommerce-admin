@@ -143,7 +143,6 @@ const webpackConfig = {
 		extensions: [ '.json', '.js', '.jsx' ],
 		modules: [
 			path.join( __dirname, 'client' ),
-			path.join( __dirname, 'packages' ),
 			'node_modules',
 		],
 		alias: {
