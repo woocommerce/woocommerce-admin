@@ -11,7 +11,7 @@ import * as SHARED from '@woocommerce/settings';
  */
 import * as FALLBACKS from './fallbacks';
 
-// if `getSetting` is not set, then it was not available so let's do
+// If `getSetting` is not set, then it was not available so let's do
 // defaults.
 const SOURCE = ! SHARED || typeof SHARED.getSetting === 'undefined' ? FALLBACKS : SHARED;
 
