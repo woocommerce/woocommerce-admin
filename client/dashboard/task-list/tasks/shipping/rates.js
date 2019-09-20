@@ -17,7 +17,7 @@ import { Flag, Form } from '@woocommerce/components';
 import { getCurrencyFormatString } from '@woocommerce/currency';
 import { CURRENCY } from '@woocommerce/wc-admin-settings';
 
-const { symbol = '$', symbolPosition = 'left' } = CURRENCY;
+const { symbol, symbolPosition } = CURRENCY;
 
 class ShippingRates extends Component {
 	constructor() {
