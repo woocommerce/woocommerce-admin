@@ -19,7 +19,6 @@ import { CURRENCY as currency } from '@woocommerce/wc-admin-settings';
  * @returns {?String} A formatted string.
  */
 export function formatCurrency( number, currencySymbol ) {
-	// default to wc-admin-settings (and then to $) if currency symbol is not passed in
 	if ( ! currencySymbol ) {
 		currencySymbol = currency.symbol;
 	}
