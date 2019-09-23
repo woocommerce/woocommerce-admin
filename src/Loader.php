@@ -8,6 +8,8 @@
 
 namespace Automattic\WooCommerce\Admin;
 
+use \_WP_Dependency;
+
 /**
  * Loader Class.
  */
@@ -48,7 +50,7 @@ class Loader {
 	public function __construct() {
 		add_action( 'init', array( __CLASS__, 'load_features' ) );
 ;		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 11 );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 14 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
 		// old settings injection
 		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'add_component_settings' ) );
