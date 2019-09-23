@@ -53,13 +53,40 @@ export const SITE_TITLE = allSettings.siteTitle;
 export const WC_ASSET_URL = allSettings.wcAssetUrl;
 export const DEFAULT_DATE_RANGE = allSettings.defaultDateRange;
 
-// validation prop (optional) allows for providing a callback to validate/sanitize the setting
-export function getSetting( name, fallback = false, validation = value => value ) {
+/**
+ * Retrieves a setting value from the setting state.
+ *
+ * @export
+ * @param {string}   name                         The identifier for the setting.
+ * @param {mixed}    [fallback=false]             The value to use as a fallback
+ *                                                if the setting is not in the
+ *                                                state.
+ * @param {function} [filter=( val ) => val]  	  A callback for filtering the
+ *                                                value before it's returned.
+ *                                                Receives both the found value
+ *                                                (if it exists for the key) and
+ *                                                the provided fallback arg.
+ *
+ * @returns {mixed}  The value present in the settings state for the given
+ *                   name.
+ */
+export function getSetting( name, fallback = false, filter = val => val ) {
 	const value = allSettings.hasOwnProperty( name ) ? allSettings[ name ] : fallback;
-	return validation( value );
+	return filter( value, fallback );
 }
 
-export function setSetting( name, value, validation = val => val ) {
-	value = validation( value );
-	allSettings[ name ] = value;
+/**
+ * Sets a value to a property on the settings state.
+ *
+ * @export
+ * @param {string}   name                        The setting property key for the
+ *                                               setting being mutated.
+ * @param {mixed}    value                       The value to set.
+ * @param {function} [filter=( val ) => val]     Allows for providing a callback
+ *                                               to sanitize the setting (eg.
+ *                                               ensure it's a number)
+ */
+export function setSetting( name, value, filter = val => val ) {
+	value = filter( value );
+	allSettings[ name ] = filter( value );
 }
