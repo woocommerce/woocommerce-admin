@@ -167,14 +167,15 @@ class ReportTable extends Component {
 			endpoint,
 			getHeadersContent,
 			getRowsContent,
+			initiateReportExport,
 			query,
 			searchBy,
 			tableData,
 			title,
-			totalRows,
 		} = this.props;
 		const params = Object.assign( {}, query );
-		const { items } = tableData;
+		const { items, query: reportQuery } = tableData;
+		const { data, totalResults } = items;
 
 		// Delete unnecessary items from filename.
 		delete params.extended_info;
@@ -182,14 +183,16 @@ class ReportTable extends Component {
 			delete params[ searchBy ];
 		}
 
-		if ( items.length === totalRows ) {
+		if ( data && data.length === totalResults ) {
 			downloadCSVFile(
 				generateCSVFileName( title, params ),
-				generateCSVDataFromTable( getHeadersContent(), getRowsContent( items.data ) )
+				generateCSVDataFromTable( getHeadersContent(), getRowsContent( data ) )
 			);
+		} else {
+			initiateReportExport( endpoint, title, reportQuery );
 		}
 
-		recordEvent( 'analytics_table_download', { report: endpoint, rows: totalRows } );
+		recordEvent( 'analytics_table_download', { report: endpoint, rows: totalResults } );
 	}
 
 	onCompare() {
@@ -589,9 +592,10 @@ export default compose(
 		};
 	} ),
 	withDispatch( dispatch => {
-		const { updateCurrentUserData } = dispatch( 'wc-api' );
+		const { initiateReportExport, updateCurrentUserData } = dispatch( 'wc-api' );
 
 		return {
+			initiateReportExport,
 			updateCurrentUserData,
 		};
 	} )
