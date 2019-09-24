@@ -1,4 +1,7 @@
-```jsx
+/** @format */
+/**
+ * Internal dependencies
+ */
 import { ScrollTo } from '@woocommerce/components';
 
 const MyScrollTo = () => (
@@ -7,4 +10,5 @@ const MyScrollTo = () => (
 	</div>
 );
 
-```
+// The ScrollTo Component will trigger scrolling if rendered on the main docs page.
+export default MyScrollTo;

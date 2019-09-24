@@ -49,4 +49,3 @@
     * [TextControlWithAffixes](components/packages/text-control-with-affixes/README.md)
     * [ViewMoreList](components/packages/view-more-list/README.md)
     * [WebPreview](components/packages/web-preview/README.md)
->>>>>>> master
