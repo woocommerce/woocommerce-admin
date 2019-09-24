@@ -57,8 +57,11 @@ class Onboarding {
 		if ( $this->should_show_tasks() ) {
 			OnboardingTasks::get_instance();
 		}
-
-		add_action( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 ); // Run after Automattic\WooCommerce\Admin\Loader.
+		// old settings injection
+		// Run after Automattic\WooCommerce\Admin\Loader.
+		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
+		// new settings injection
+		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
 		add_action( 'woocommerce_theme_installed', array( $this, 'delete_themes_transient' ) );
 		add_action( 'after_switch_theme', array( $this, 'delete_themes_transient' ) );
@@ -417,7 +420,7 @@ class Onboarding {
 		}
 
 		$help_tabs = $screen->get_help_tabs();
-		
+
 		foreach ( $help_tabs as $help_tab ) {
 			if ( 'woocommerce_onboard_tab' !== $help_tab['id'] ) {
 				continue;

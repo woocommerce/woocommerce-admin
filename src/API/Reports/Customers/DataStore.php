@@ -75,8 +75,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Set up all the hooks for maintaining and populating table data.
 	 */
 	public static function init() {
-		add_action( 'woocommerce_new_customer', array( __CLASS__, 'update_registered_customer' ) );
-		add_action( 'woocommerce_update_customer', array( __CLASS__, 'update_registered_customer' ) );
 		add_action( 'edit_user_profile_update', array( __CLASS__, 'update_registered_customer' ) );
 		add_action( 'updated_user_meta', array( __CLASS__, 'update_registered_customer_via_last_active' ), 10, 3 );
 	}
@@ -517,6 +515,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'%s',
 			'%s',
 			'%s',
+			'%s',
 		);
 
 		// Add registered customer data.
@@ -658,6 +657,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'%s',
 			'%s',
 			'%s',
+			'%s',
 		);
 
 		$customer_id = self::get_customer_id_by_user_id( $user_id );
@@ -734,5 +734,4 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function get_cache_key( $params ) {
 		return 'woocommerce_' . self::TABLE_NAME . '_' . md5( wp_json_encode( $params ) );
 	}
-
 }
