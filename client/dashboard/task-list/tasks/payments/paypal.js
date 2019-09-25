@@ -119,6 +119,7 @@ class PayPal extends Component {
 				...this.props.options.woocommerce_ppec_paypal_settings,
 				api_username: values.api_username,
 				api_password: values.api_password,
+				enabled: 'yes',
 			},
 		} );
 
@@ -234,10 +235,10 @@ PayPal.defaultProps = {
 
 export default compose(
 	withSelect( select => {
-		const { getOptions, isOptionsRequesting } = select( 'wc-api' );
+		const { getOptions, isGetOptionsRequesting } = select( 'wc-api' );
 		const options = getOptions( [ 'woocommerce_ppec_paypal_settings' ] );
 		const optionsIsRequesting = Boolean(
-			isOptionsRequesting( [ 'woocommerce_ppec_paypal_settings' ] )
+			isGetOptionsRequesting( [ 'woocommerce_ppec_paypal_settings' ] )
 		);
 
 		return {

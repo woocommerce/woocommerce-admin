@@ -25,7 +25,6 @@ class Stripe extends Component {
 		super( props );
 
 		this.state = {
-			showErrorModal: false,
 			errorMessage: '',
 			connectURL: '',
 			showConnectionButtons: ! props.manualConfig && ! props.createAccount,
@@ -172,7 +171,6 @@ class Stripe extends Component {
 			}
 
 			this.setState( {
-				showErrorModal: true,
 				showConnectionButtons: true,
 				errorTitle,
 				errorMessage,
@@ -185,12 +183,16 @@ class Stripe extends Component {
 		return (
 			<Modal
 				title={ errorTitle }
-				onRequestClose={ () => this.setState( { showErrorModal: false } ) }
+				onRequestClose={ () => this.setState( { errorMessage: '', errorTitle: '' } ) }
 				className="woocommerce-task-payments__stripe-error-modal"
 			>
 				<div className="woocommerce-task-payments__stripe-error-wrapper">
 					<div className="woocommerce-task-payments__stripe-error-message">{ errorMessage }</div>
-					<Button isPrimary isDefault onClick={ () => this.setState( { showErrorModal: false } ) }>
+					<Button
+						isPrimary
+						isDefault
+						onClick={ () => this.setState( { errorMessage: '', errorTitle: '' } ) }
+					>
 						{ __( 'OK', 'woocommerce-admin' ) }
 					</Button>
 				</div>
@@ -216,6 +218,7 @@ class Stripe extends Component {
 				...this.props.options.woocommerce_stripe_settings,
 				publishable_key: values.publishable_key,
 				secret_key: values.secret_key,
+				enabled: 'yes',
 			},
 		} );
 
@@ -303,14 +306,9 @@ class Stripe extends Component {
 	}
 
 	render() {
-		const {
-			showErrorModal,
-			showConnectionButtons,
-			connectURL,
-			showManualConfiguration,
-		} = this.state;
+		const { errorMessage, showConnectionButtons, connectURL, showManualConfiguration } = this.state;
 
-		if ( showErrorModal ) {
+		if ( errorMessage ) {
 			return this.renderErrorModal();
 		}
 

@@ -418,7 +418,6 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	/**
 	 * Returns a URL that can be used to connect to PayPal.
 	 *
-	 * @param  object $rest_request Request details.
 	 * @return array Connect URL.
 	 */
 	public function connect_paypal() {
