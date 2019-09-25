@@ -52,14 +52,6 @@ class Square extends Component {
 		}
 	}
 
-	renderConnectButton() {
-		return (
-			<Button isPrimary isDefault onClick={ this.connect }>
-				{ __( 'Connect', 'woocommerce-admin' ) }
-			</Button>
-		);
-	}
-
 	async connect() {
 		const { updateOptions } = this.props;
 		this.props.setRequestPending( true );
@@ -78,7 +70,7 @@ class Square extends Component {
 
 		try {
 			const result = await apiFetch( {
-				path: WC_ADMIN_NAMESPACE + '/onboarding/plugins/connect-square2',
+				path: WC_ADMIN_NAMESPACE + '/onboarding/plugins/connect-square',
 				method: 'POST',
 			} );
 
