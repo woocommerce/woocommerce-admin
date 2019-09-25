@@ -17,9 +17,9 @@ const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-web
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // @todo Add a `beta` phase and build process so that we can separate final .org versions from beta GitHub versions.
-let WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'core';
+let WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'plugin';
 if ( [ 'development', 'plugin', 'core' ].indexOf( WC_ADMIN_PHASE ) === -1 ) {
-	WC_ADMIN_PHASE = 'core';
+	WC_ADMIN_PHASE = 'plugin';
 }
 const WC_ADMIN_CONFIG = require( path.join( __dirname, 'config', WC_ADMIN_PHASE + '.json' ) );
 
