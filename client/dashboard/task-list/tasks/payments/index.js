@@ -24,6 +24,7 @@ import { getAdminLink, getHistory, getNewPath } from '@woocommerce/navigation';
 import withSelect from 'wc-api/with-select';
 import Plugins from '../steps/plugins';
 import Stripe from './stripe';
+import Square from './square';
 import PayPal from './paypal';
 
 class Payments extends Component {
@@ -372,8 +373,19 @@ class Payments extends Component {
 				),
 				visible: showIndividualConfigs && methods.includes( 'paypal' ),
 			},
+			{
+				key: 'square',
+				label: __( 'Enable Square', 'woocommerce-admin' ),
+				description: __( 'Connect your store to your Square account', 'woocommerce-admin' ),
+				content: (
+					<Square
+						markConfigured={ this.markConfigured }
+						setRequestPending={ this.setMethodRequestPending }
+					/>
+				),
+				visible: showIndividualConfigs && methods.includes( 'square' ),
+			},
 			// @todo Klarna
-			// @todo Square
 		];
 
 		return filter( steps, step => step.visible );
