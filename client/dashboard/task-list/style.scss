@@ -202,6 +202,16 @@
 		margin-top: $gap-large;
 	}
 
+	.woocommerce-list__item .woocommerce-list__item-before {
+		max-width: 96px;
+		background: $studio-gray-0;
+		padding: $gap-small;
+
+		img {
+			max-width: 72px;
+		}
+	}
+
 	.woocommerce-list__item-title {
 		border-top: 1px solid $studio-gray-5;
 		padding-top: $gap;

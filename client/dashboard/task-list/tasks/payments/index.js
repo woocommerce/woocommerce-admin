@@ -200,7 +200,7 @@ class Payments extends Component {
 						{ this.renderWooCommerceServicesStripeConnect() }
 					</Fragment>
 				),
-				before: <div />, // @todo Logo
+				before: <img src={ wcSettings.wcAssetUrl + 'images/stripe.png' } alt="" />,
 				after: <FormToggle { ...getInputProps( 'stripe' ) } />,
 				visible: true,
 			},
@@ -214,7 +214,7 @@ class Payments extends Component {
 						) }
 					</Fragment>
 				),
-				before: <div />, // @todo Logo
+				before: <img src={ wcSettings.wcAssetUrl + 'images/paypal.png' } alt="" />,
 				after: <FormToggle { ...getInputProps( 'paypal' ) } />,
 				visible: true,
 			},
@@ -224,7 +224,7 @@ class Payments extends Component {
 					'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
 					'woocommerce-admin'
 				),
-				before: <div />, // @todo Logo
+				before: <img src={ wcSettings.wcAssetUrl + 'images/klarna-black.png' } alt="" />,
 				after: <FormToggle { ...getInputProps( 'klarna_checkout' ) } />,
 				visible: [ 'SE', 'FI', 'NO', 'NL' ].includes( countryCode ),
 			},
@@ -234,7 +234,7 @@ class Payments extends Component {
 					'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
 					'woocommerce-admin'
 				),
-				before: <div />, // @todo Logo
+				before: <img src={ wcSettings.wcAssetUrl + 'images/klarna-black.png' } alt="" />,
 				after: <FormToggle { ...getInputProps( 'klarna_payments' ) } />,
 				visible: [ 'DK', 'DE', 'AT' ].includes( countryCode ),
 			},
@@ -245,7 +245,7 @@ class Payments extends Component {
 						'Sell online and in store and track sales and inventory in one place.',
 					'woocommerce-admin'
 				),
-				before: <div />, // @todo Logo
+				before: <img src={ wcSettings.wcAssetUrl + 'images/klarna-black.png' } alt="" />,
 				after: <FormToggle { ...getInputProps( 'square' ) } />,
 				visible:
 					[ 'brick-mortar', 'brick-mortar-other' ].includes( profileItems.selling_venues ) &&
