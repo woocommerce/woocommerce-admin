@@ -176,6 +176,7 @@ class ReportTable extends Component {
 		const params = Object.assign( {}, query );
 		const { items, query: reportQuery } = tableData;
 		const { data, totalResults } = items;
+		let downloadType = 'browser';
 
 		// Delete unnecessary items from filename.
 		delete params.extended_info;
@@ -189,10 +190,15 @@ class ReportTable extends Component {
 				generateCSVDataFromTable( getHeadersContent(), getRowsContent( data ) )
 			);
 		} else {
+			downloadType = 'email';
 			initiateReportExport( endpoint, title, reportQuery );
 		}
 
-		recordEvent( 'analytics_table_download', { report: endpoint, rows: totalResults } );
+		recordEvent( 'analytics_table_download', {
+			report: endpoint,
+			rows: totalResults,
+			downloadType,
+		} );
 	}
 
 	onCompare() {
