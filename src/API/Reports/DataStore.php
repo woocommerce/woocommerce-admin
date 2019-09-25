@@ -68,6 +68,38 @@ class DataStore {
 	private $order = '';
 
 	/**
+	 * Assign table name in database class
+	 */
+	protected function set_db_table_name() {
+		global $wpdb;
+		$class = get_called_class();
+		if ( $class::TABLE_NAME ) {
+			$wpdb->{$class::TABLE_NAME} = $wpdb->prefix . $class::TABLE_NAME;
+		}
+	}
+
+	/**
+	 * Get table name from database class
+	 */
+	protected function get_db_table_name() {
+		global $wpdb;
+		$class = get_called_class();
+		return isset( $wpdb->{$class::TABLE_NAME} ) ? $wpdb->{$class::TABLE_NAME} : $class::TABLE_NAME;
+	}
+
+	/**
+	 * Prepend a query field name with the data store's table name.
+	 *
+	 * @param string $query      Query string to search.
+	 * @param string $field_name The target field name.
+	 *
+	 * @return string Updated query string.
+	 */
+	protected function prepend_table_name( $query, $field_name ) {
+		return str_replace( $field_name, $this->get_db_table_name() . '.' . $field_name, $query );
+	}
+
+	/**
 	 * Compares two report data objects by pre-defined object property and ASC/DESC ordering.
 	 *
 	 * @param stdClass $a Object a.
