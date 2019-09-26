@@ -345,6 +345,14 @@ class Onboarding {
 		return $settings;
 	}
 
+	public function preload_options( $options ) {
+		if ( ! $this->should_show_profiler() ) {
+			return $options;
+		}
+		$options[] = 'woocommerce_allow_tracking';
+		return $options;
+	}
+
 	/**
 	 * Preload options to prime state of the application.
 	 *
