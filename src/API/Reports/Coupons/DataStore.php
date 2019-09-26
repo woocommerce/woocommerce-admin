@@ -26,6 +26,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	const TABLE_NAME = 'wc_order_coupon_lookup';
 
 	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'coupons';
+
+	/**
 	 * Mapping columns to data type to return correct response types.
 	 *
 	 * @var array
@@ -340,16 +347,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . self::TABLE_NAME . '_' . md5( wp_json_encode( $params ) );
 	}
 
 	/**

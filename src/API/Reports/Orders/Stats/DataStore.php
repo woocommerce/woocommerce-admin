@@ -31,6 +31,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	const CRON_EVENT = 'wc_order_stats_update';
 
 	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'orders_stats';
+
+	/**
 	 * Type for each column to cast values correctly later.
 	 *
 	 * @var array
@@ -276,7 +283,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 			$unique_products            = $this->get_unique_product_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
 			$totals[0]['products']      = $unique_products;
-			$segmenter                   = new Segmenter( $query_args, $this->report_columns );
+			$segmenter                  = new Segmenter( $query_args, $this->report_columns );
 			$unique_coupons             = $this->get_unique_coupon_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
 			$totals[0]['coupons_count'] = $unique_coupons;
 			$totals[0]['segments']      = $segmenter->get_totals_segments( $totals_query, $table_name );
@@ -629,15 +636,5 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$customer_id
 			)
 		);
-	}
-
-	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . self::TABLE_NAME . '_stats_' . md5( wp_json_encode( $params ) );
 	}
 }

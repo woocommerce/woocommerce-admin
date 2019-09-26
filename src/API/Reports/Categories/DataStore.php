@@ -26,6 +26,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	const TABLE_NAME = 'wc_order_product_lookup';
 
 	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'categories';
+
+	/**
 	 * Order by setting used for sorting categories data.
 	 *
 	 * @var string
@@ -323,15 +330,5 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . self::TABLE_NAME . '_' . md5( wp_json_encode( $params ) );
 	}
 }

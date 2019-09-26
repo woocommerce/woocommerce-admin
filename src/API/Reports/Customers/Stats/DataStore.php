@@ -41,6 +41,13 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	);
 
 	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'customers_stats';
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -121,15 +128,5 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . self::TABLE_NAME . '_stats_' . md5( wp_json_encode( $params ) );
 	}
 }

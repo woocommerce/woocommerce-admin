@@ -26,6 +26,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	const TABLE_NAME = 'wc_customer_lookup';
 
 	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'customers';
+
+	/**
 	 * Mapping columns to data type to return correct response types.
 	 *
 	 * @var array
@@ -723,15 +730,5 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * @param int $order_id Order ID.
 		 */
 		do_action( 'woocommerce_reports_delete_customer', $customer_id );
-	}
-
-	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . self::TABLE_NAME . '_' . md5( wp_json_encode( $params ) );
 	}
 }
