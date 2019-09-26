@@ -29,8 +29,10 @@ function initiateExport( resourceNames, data, fetch ) {
 			const result = await fetch( {
 				path: url,
 				method: 'POST',
-				// @todo - add email param when PR #2899 is merged.
-				data: { report_args: data[ resourceName ] },
+				data: {
+					report_args: data[ resourceName ],
+					email: true,
+				},
 			} );
 
 			return {
