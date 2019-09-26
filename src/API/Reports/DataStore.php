@@ -78,9 +78,13 @@ class DataStore {
 	 * @var array
 	 */
 	private $sql_clauses = array(
+		'select'     => array(),
 		'from'       => array(),
 		'outer_from' => array(),
 		'where'      => array(),
+		'where_time' => array(),
+		'limit'      => array(),
+		'order_by'   => array(),
 	);
 
 	/**
@@ -119,7 +123,7 @@ class DataStore {
 	 * Add a SQL clause to be included when get_data is called.
 	 *
 	 * @param string $clause SQL clause.
-	 * @param string $type   Clause type (from|outer_from|where).
+	 * @param string $type   (select|from|outer_from|where|where_time|order_by|limit).
 	 */
 	protected function add_sql_clause( $clause, $type ) {
 		if ( isset( $this->sql_clauses[ $type ] ) && ! empty( $clause ) ) {
@@ -130,7 +134,9 @@ class DataStore {
 	/**
 	 * Get SQL clause by type.
 	 *
-	 * @param string $type    Clause type (from|outer_from|where).
+	 * @param string $type Clause type (select|from|outer_from|where|where_time|order_by|limit).
+	 *
+	 * @return string SQL clause.
 	 */
 	protected function get_sql_clause( $type ) {
 		if ( ! isset( $this->sql_clauses[ $type ] ) ) {
@@ -140,6 +146,17 @@ class DataStore {
 		$clauses = apply_filters( "wc_admin_clauses_{$type}", $this->sql_clauses[ $type ], $this->context );
 		$clauses = apply_filters( "wc_admin_clauses_{$type}_{$this->context}", $clauses );
 		return implode( ' ', $clauses );
+	}
+
+	/**
+	 * Clear SQL clauses by type.
+	 *
+	 * @param string $type Clause type (select|from|outer_from|where|where_time|order_by|limit).
+	 */
+	protected function clear_sql_clause( $type ) {
+		if ( isset( $this->sql_clauses[ $type ] ) ) {
+			$this->sql_clauses[ $type ] = array();
+		}
 	}
 
 	/**
@@ -467,6 +484,12 @@ class DataStore {
 			$intervals_query['where_time_clause'] .= " AND {$table_name}.date_created <= '$adj_before'";
 			$intervals_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$adj_after'";
 			$intervals_query['limit']              = 'LIMIT 0,' . $intervals_query['per_page'];
+			// @todo remove passed parameter assignment after down stream classes are updated.
+			$this->clear_sql_clause( 'where_time' );
+			$this->add_sql_clause( " AND {$table_name}.date_created <= '$adj_before'", 'where_time' );
+			$this->add_sql_clause( " AND {$table_name}.date_created >= '$adj_after'", 'where_time' );
+			$this->clear_sql_clause( 'limit' );
+			$this->add_sql_clause( 'LIMIT 0,' . $intervals_query['per_page'], 'limit' );
 		} else {
 			if ( 'asc' === $query_args['order'] ) {
 				$offset = ( ( $query_args['page'] - 1 ) * $intervals_query['per_page'] ) - ( $expected_interval_count - $db_interval_count );
@@ -478,6 +501,9 @@ class DataStore {
 					$count = $intervals_query['per_page'];
 				}
 				$intervals_query['limit'] = 'LIMIT ' . $offset . ',' . $count;
+				// @todo remove passed parameter assignment after down stream classes are updated.
+				$this->clear_sql_clause( 'limit' );
+				$this->add_sql_clause( 'LIMIT ' . $offset . ',' . $count, 'limit' );
 			}
 			// Otherwise no change in limit clause.
 			$query_args['adj_after']  = $query_args['after'];
@@ -649,6 +675,10 @@ class DataStore {
 			'where_time_clause' => '',
 			'where_clause'      => '',
 		);
+		// @todo remove $sql_query after down stream classes are updated.
+		$this->clear_sql_clause( 'from' );
+		$this->clear_sql_clause( 'where_time' );
+		$this->clear_sql_clause( 'where' );
 
 		if ( isset( $query_args['before'] ) && '' !== $query_args['before'] ) {
 			if ( is_a( $query_args['before'], 'WC_DateTime' ) ) {
@@ -657,7 +687,7 @@ class DataStore {
 				$datetime_str = $query_args['before']->format( TimeInterval::$sql_datetime_format );
 			}
 			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created <= '$datetime_str'";
-
+			$this->add_sql_clause( " AND {$table_name}.date_created <= '$datetime_str'", 'where_time' );
 		}
 
 		if ( isset( $query_args['after'] ) && '' !== $query_args['after'] ) {
@@ -667,6 +697,7 @@ class DataStore {
 				$datetime_str = $query_args['after']->format( TimeInterval::$sql_datetime_format );
 			}
 			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$datetime_str'";
+			$this->add_sql_clause( " AND {$table_name}.date_created >= '$datetime_str'", 'where_time' );
 		}
 
 		return $sql_query;
@@ -679,6 +710,7 @@ class DataStore {
 	 * @return array
 	 */
 	protected function get_limit_sql_params( $query_args ) {
+		$sql_query = array();
 		$sql_query['per_page'] = get_option( 'posts_per_page' );
 		if ( isset( $query_args['per_page'] ) && is_numeric( $query_args['per_page'] ) ) {
 			$sql_query['per_page'] = (int) $query_args['per_page'];
@@ -690,6 +722,9 @@ class DataStore {
 		}
 
 		$sql_query['limit'] = "LIMIT {$sql_query['offset']}, {$sql_query['per_page']}";
+		// @todo remove $sql_query assignment after down stream classes are updated.
+		$this->clear_sql_clause( 'limit' );
+		$this->add_sql_clause( "LIMIT {$sql_query['offset']}, {$sql_query['per_page']}", 'limit' );
 		return $sql_query;
 	}
 
@@ -758,13 +793,21 @@ class DataStore {
 		$sql_query['order_by_clause'] = '';
 		if ( isset( $query_args['orderby'] ) ) {
 			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
+			$order_by_clause              = $this->normalize_order_by( $query_args['orderby'] );
+		} else {
+			$order_by_clause = '';
 		}
 
 		if ( isset( $query_args['order'] ) ) {
 			$sql_query['order_by_clause'] .= ' ' . $query_args['order'];
+			$order_by_clause              .= ' ' . $query_args['order'];
 		} else {
 			$sql_query['order_by_clause'] .= ' DESC';
+			$order_by_clause              .= ' DESC';
 		}
+		// @todo remove $sql_query return.
+		$this->clear_sql_clause( 'order_by' );
+		$this->add_sql_clause( $order_by_clause, 'order_by' );
 
 		return $sql_query;
 	}
@@ -782,12 +825,19 @@ class DataStore {
 			'where_time_clause' => '',
 			'where_clause'      => '',
 		);
+		// @todo remove $intervals_query after down stream classes are updated.
+		$this->clear_sql_clause( 'from' );
+		$this->clear_sql_clause( 'where_time' );
+		$this->clear_sql_clause( 'where' );
 
+		// @todo the array_merges can be removed leaving just the function calls once downstream is updated.
 		$intervals_query = array_merge( $intervals_query, $this->get_time_period_sql_params( $query_args, $table_name ) );
 
 		if ( isset( $query_args['interval'] ) && '' !== $query_args['interval'] ) {
 			$interval                         = $query_args['interval'];
 			$intervals_query['select_clause'] = TimeInterval::db_datetime_format( $interval, $table_name );
+			$this->clear_sql_clause( 'select' );
+			$this->add_sql_clause( TimeInterval::db_datetime_format( $interval, $table_name ), 'select' );
 		}
 
 		$intervals_query = array_merge( $intervals_query, $this->get_limit_sql_params( $query_args ) );

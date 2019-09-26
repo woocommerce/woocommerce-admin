@@ -68,10 +68,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Constructor
 	 */
 	public function __construct() {
-		global $wpdb;
-		$table_name = $wpdb->prefix . self::TABLE_NAME;
-		// Avoid ambigious column order_id in SQL query.
-		$this->report_columns['orders_count'] = str_replace( 'order_id', $table_name . '.order_id', $this->report_columns['orders_count'] );
+		$this->set_db_table_name();
+		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
 	}
 
 	/**
