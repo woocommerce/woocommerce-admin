@@ -66,6 +66,22 @@ class DataStore {
 	 * @var string
 	 */
 	private $order = '';
+	/**
+	 * Data store context used to pass to filters.
+	 *
+	 * @var string
+	 */
+	private $context = 'reports';
+	/**
+	 * List of SQL clauses.
+	 *
+	 * @var array
+	 */
+	private $sql_clauses = array(
+		'from'       => array(),
+		'outer_from' => array(),
+		'where'      => array(),
+	);
 
 	/**
 	 * Assign table name in database class
@@ -97,6 +113,33 @@ class DataStore {
 	 */
 	protected function prepend_table_name( $query, $field_name ) {
 		return str_replace( $field_name, $this->get_db_table_name() . '.' . $field_name, $query );
+	}
+
+	/**
+	 * Add a SQL clause to be included when get_data is called.
+	 *
+	 * @param string $clause SQL clause.
+	 * @param string $type   Clause type (from|outer_from|where).
+	 */
+	protected function add_sql_clause( $clause, $type ) {
+		if ( isset( $this->sql_clauses[ $type ] ) && ! empty( $clause ) ) {
+			$this->sql_clauses[ $type ][] = $clause;
+		}
+	}
+
+	/**
+	 * Get SQL clause by type.
+	 *
+	 * @param string $type    Clause type (from|outer_from|where).
+	 */
+	protected function get_sql_clause( $type ) {
+		if ( ! isset( $this->sql_clauses[ $type ] ) ) {
+			return '';
+		}
+
+		$clauses = apply_filters( "wc_admin_clauses_{$type}", $this->sql_clauses[ $type ], $this->context );
+		$clauses = apply_filters( "wc_admin_clauses_{$type}_{$this->context}", $clauses );
+		return implode( ' ', $clauses );
 	}
 
 	/**
