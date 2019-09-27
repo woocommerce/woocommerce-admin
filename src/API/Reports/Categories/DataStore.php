@@ -63,6 +63,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		'orders_count'   => 'COUNT(DISTINCT order_id) as orders_count',
 		'products_count' => 'COUNT(DISTINCT product_id) as products_count',
 	);
+	/**
+	 * Data store context used to pass to filters.
+	 *
+	 * @var string
+	 */
+	private $context = 'categories';
 
 	/**
 	 * Constructor
@@ -80,73 +86,68 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
-		$order_product_lookup_table = $wpdb->prefix . self::TABLE_NAME;
+		$order_product_lookup_table = $this->get_db_table_name();
 
-		$sql_query_params = $this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
+		$this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
 
 		// join wp_order_product_lookup_table with relationships and taxonomies
 		// @todo How to handle custom product tables?
-		$sql_query_params['from_clause'] .= " LEFT JOIN {$wpdb->prefix}term_relationships ON {$order_product_lookup_table}.product_id = {$wpdb->prefix}term_relationships.object_id";
-		$sql_query_params['from_clause'] .= " LEFT JOIN {$wpdb->prefix}term_taxonomy ON {$wpdb->prefix}term_relationships.term_taxonomy_id = {$wpdb->prefix}term_taxonomy.term_taxonomy_id";
+		$this->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id" );
+		$this->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id" );
 
 		$included_categories = $this->get_included_categories( $query_args );
 		if ( $included_categories ) {
-			$sql_query_params['where_clause'] .= " AND {$wpdb->prefix}term_taxonomy.term_id IN ({$included_categories})";
+			$this->add_sql_clause( 'where', " AND {$wpdb->prefix}term_taxonomy.term_id IN ({$included_categories})" );
 
 			// Limit is left out here so that the grouping in code by PHP can be applied correctly.
 			// This also needs to be put after the term_taxonomy JOIN so that we can match the correct term name.
-			$sql_query_params = $this->get_order_by_params( $query_args, $sql_query_params, 'outer_from_clause', 'default_results.category_id' );
+			$this->get_order_by_params( $query_args, 'outer_from', 'default_results.category_id' );
 		} else {
-			$sql_query_params = $this->get_order_by_params( $query_args, $sql_query_params, 'from_clause', "{$wpdb->prefix}term_taxonomy.term_id" );
+			$this->get_order_by_params( $query_args, 'from', "{$wpdb->prefix}term_taxonomy.term_id" );
 		}
 
 		// @todo Only products in the category C or orders with products from category C (and, possibly others?).
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
-			$sql_query_params['where_clause'] .= " AND {$order_product_lookup_table}.product_id IN ({$included_products})";
+			$this->add_sql_clause( 'where', " AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$sql_query_params['from_clause']  .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
-			$sql_query_params['where_clause'] .= " AND ( {$order_status_filter} )";
+			$this->add_sql_clause( 'from', " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$this->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
 		}
 
-		$sql_query_params['where_clause'] .= " AND taxonomy = 'product_cat' ";
-
-		return $sql_query_params;
+		$this->add_sql_clause( 'where', " AND taxonomy = 'product_cat' " );
 	}
 
 	/**
 	 * Fills ORDER BY clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
-	 * @param array  $sql_query  Current SQL query array.
 	 * @param string $from_arg   Name of the FROM sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 * @return array
 	 */
-	protected function get_order_by_params( $query_args, $sql_query, $from_arg, $id_cell ) {
+	protected function get_order_by_params( $query_args, $from_arg, $id_cell ) {
 		global $wpdb;
-		$lookup_table = $wpdb->prefix . self::TABLE_NAME;
+		$lookup_table = $this->get_db_table_name();
 
-		$sql_query['order_by_clause'] = '';
+		$this->clear_sql_clause( array( 'order_by', 'outer_from' ) );
 		if ( isset( $query_args['orderby'] ) ) {
-			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
+			$order_by_clause = $this->normalize_order_by( $query_args['orderby'] );
+			$this->add_sql_clause( 'order_by', $order_by_clause );
 		}
 
-		$sql_query['outer_from_clause'] = '';
-		if ( false !== strpos( $sql_query['order_by_clause'], '_terms' ) ) {
-			$sql_query[ $from_arg ] .= " JOIN {$wpdb->prefix}terms AS _terms ON {$id_cell} = _terms.term_id";
+		if ( false !== strpos( $order_by_clause, '_terms' ) ) {
+			$this->add_sql_clause( $from_arg, " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
 		}
 
 		if ( isset( $query_args['order'] ) ) {
-			$sql_query['order_by_clause'] .= ' ' . $query_args['order'];
+			$this->add_sql_clause( 'order_by', $query_args['order'] );
 		} else {
-			$sql_query['order_by_clause'] .= ' DESC';
+			$this->add_sql_clause( 'order_by', ' DESC' );
 		}
-
-		return $sql_query;
 	}
 
 	/**
@@ -176,17 +177,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return $query_args['categories'];
 		}
 		return array();
-	}
-
-	/**
-	 * Returns comma separated ids of included categories, based on query arguments from the user.
-	 *
-	 * @param array $query_args Parameters supplied by the user.
-	 * @return string
-	 */
-	protected function get_included_categories( $query_args ) {
-		$included_categories = $this->get_included_categories_array( $query_args );
-		return implode( ',', $included_categories );
 	}
 
 	/**
@@ -227,7 +217,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . self::TABLE_NAME;
+		$table_name = $this->get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -256,8 +246,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			);
 
 			$selections          = $this->selected_columns( $query_args );
-			$sql_query_params    = $this->get_sql_query_params( $query_args );
 			$included_categories = $this->get_included_categories_array( $query_args );
+			$this->get_sql_query_params( $query_args );
 
 			if ( count( $included_categories ) > 0 ) {
 				$fields          = $this->get_fields( $query_args );
@@ -277,22 +267,22 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$categories_data = $wpdb->get_results(
 				"${prefix}
 					SELECT
-						{$wpdb->prefix}term_taxonomy.term_id as category_id,
+						{$wpdb->term_taxonomy}.term_id as category_id,
 						{$selections}
 					FROM
 						{$table_name}
-						{$sql_query_params['from_clause']}
+						{$this->get_sql_clause( 'from' )}
 					WHERE
 						1=1
-						{$sql_query_params['where_time_clause']}
-						{$sql_query_params['where_clause']}
+						{$this->get_sql_clause( 'where_time' )}
+						{$this->get_sql_clause( 'where' )}
 					GROUP BY
 						category_id
 				{$suffix}
 					{$right_join}
-					{$sql_query_params['outer_from_clause']}
+					{$this->get_sql_clause( 'outer_from' )}
 					ORDER BY
-						{$sql_query_params['order_by_clause']}
+						{$this->get_sql_clause( 'order_by' )}
 					",
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.

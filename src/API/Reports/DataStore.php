@@ -920,6 +920,16 @@ class DataStore extends SqlQuery {
 	}
 
 	/**
+	 * Returns comma separated ids of included categories, based on query arguments from the user.
+	 *
+	 * @param array $query_args Parameters supplied by the user.
+	 * @return string
+	 */
+	protected function get_included_categories( $query_args ) {
+		return $this->get_filtered_ids( $query_args, 'categories' );
+	}
+
+	/**
 	 * Returns comma separated ids of included coupons, based on query arguments from the user.
 	 *
 	 * @param array $query_args Parameters supplied by the user.
