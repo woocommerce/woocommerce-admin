@@ -29,6 +29,12 @@ class SqlQuery {
 		'limit'      => array(),
 		'order_by'   => array(),
 	);
+	/**
+	 * Data store context used to pass to filters.
+	 *
+	 * @var string
+	 */
+	private $context = '';
 
 	/**
 	 * Add a SQL clause to be included when get_data is called.
