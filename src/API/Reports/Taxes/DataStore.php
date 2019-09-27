@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStore as ReportsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
+use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
 
 /**
  * API\Reports\Taxes\DataStore.
@@ -387,5 +388,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * @param int $order_id    Order ID.
 		 */
 		do_action( 'woocommerce_reports_delete_tax', 0, $order_id );
+
+		ReportsCache::bump_version();
 	}
 }

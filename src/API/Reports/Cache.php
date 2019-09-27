@@ -67,7 +67,8 @@ class Cache {
 	 */
 	public static function set( $key, $value ) {
 		$version = self::get_version();
-		$result  = set_transient( $key . ':' . $version, $value );
+		// @todo - set an expiration? No other way to clean these up.
+		$result = set_transient( $key . ':' . $version, $value );
 
 		return $result;
 	}

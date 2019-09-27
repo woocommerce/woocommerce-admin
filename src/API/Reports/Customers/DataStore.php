@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStore as ReportsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
+use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
 
 /**
  * Admin\API\Reports\Customers\DataStore.
@@ -687,6 +688,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * @param int $customer_id Customer ID.
 		 */
 		do_action( 'woocommerce_reports_update_customer', $customer_id );
+
+		ReportsCache::bump_version();
+
 		return $results;
 	}
 
