@@ -23,13 +23,24 @@ class Cache {
 	const VERSION_OPTION = 'woocommerce_reports_cache_version';
 
 	/**
+	 * Default version number rollover threshold.
+	 */
+	const DEFAULT_VERSION_LIMIT = 99999;
+
+	/**
 	 * Increase cache version number.
 	 *
 	 * @return bool
 	 */
 	public static function bump_version() {
-		$version = self::get_version();
-		$version++; // @todo - reset this after a certain value? E.g. 9999?
+		/**
+		 * Upper limit to roll cache version back to zero.
+		 *
+		 * @param int $limit Limit.
+		 */
+		$limit   = apply_filters( 'woocommerce_reports_cache_version_limit', self::DEFAULT_VERSION_LIMIT );
+		$limit   = is_numeric( $limit ) ? (int) $limit : self::DEFAULT_VERSION_LIMIT;
+		$version = ( self::get_version() + 1 ) % $limit;
 
 		return update_option( self::VERSION_OPTION, $version );
 	}
@@ -67,8 +78,7 @@ class Cache {
 	 */
 	public static function set( $key, $value ) {
 		$version = self::get_version();
-		// @todo - set an expiration? No other way to clean these up.
-		$result = set_transient( $key . ':' . $version, $value );
+		$result  = set_transient( $key . ':' . $version, $value, DAY_IN_SECONDS );
 
 		return $result;
 	}
