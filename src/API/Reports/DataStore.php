@@ -37,7 +37,7 @@ class DataStore {
 	 *
 	 * @var string
 	 */
-	const TABLE_NAME = '';
+	private $table_name = '';
 
 	/**
 	 * Mapping columns to data type to return correct response types.
@@ -88,13 +88,12 @@ class DataStore {
 	);
 
 	/**
-	 * Assign table name in database class
+	 * Class constructor
 	 */
-	protected function set_db_table_name() {
+	protected function __construct() {
 		global $wpdb;
-		$class = get_called_class();
-		if ( $class::TABLE_NAME ) {
-			$wpdb->{$class::TABLE_NAME} = $wpdb->prefix . $class::TABLE_NAME;
+		if ( $this->table_name ) {
+			$wpdb->{$this->table_name} = $wpdb->prefix . $this->table_name;
 		}
 	}
 
@@ -103,8 +102,7 @@ class DataStore {
 	 */
 	protected function get_db_table_name() {
 		global $wpdb;
-		$class = get_called_class();
-		return isset( $wpdb->{$class::TABLE_NAME} ) ? $wpdb->{$class::TABLE_NAME} : $class::TABLE_NAME;
+		return isset( $wpdb->{$this->table_name} ) ? $wpdb->{$this->table_name} : $this->table_name;
 	}
 
 	/**

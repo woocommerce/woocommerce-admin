@@ -23,7 +23,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	const TABLE_NAME = 'wc_order_product_lookup';
+	private $table_name = 'wc_order_product_lookup';
 
 	/**
 	 * Order by setting used for sorting categories data.
@@ -68,7 +68,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->set_db_table_name();
+		parent::__construct();
 		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
 	}
 
