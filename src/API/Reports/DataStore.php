@@ -37,7 +37,7 @@ class DataStore extends SqlQuery {
 	 *
 	 * @var string
 	 */
-	private $table_name = '';
+	protected $table_name = '';
 
 	/**
 	 * Mapping columns to data type to return correct response types.

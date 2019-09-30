@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStore as ReportsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
+use \Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
 
 /**
  * API\Reports\Categories\DataStore.
@@ -23,7 +24,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	private $table_name = 'wc_order_product_lookup';
+	protected $table_name = 'wc_order_product_lookup';
 
 	/**
 	 * Order by setting used for sorting categories data.
@@ -38,6 +39,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @var string
 	 */
 	private $order = '';
+
+	/**
+	 * Subquery object for query nesting.
+	 *
+	 * @var SqlQuery
+	 */
+	private $subquery;
 
 	/**
 	 * Mapping columns to data type to return correct response types.
@@ -76,6 +84,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function __construct() {
 		parent::__construct();
 		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
+		$this->initialize_queries();
 	}
 
 	/**
@@ -89,15 +98,17 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$order_product_lookup_table = $this->get_db_table_name();
 
 		$this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
+		$this->subquery->add_sql_clause( 'where_time', $this->get_sql_clause( 'where_time' ) );
+		$this->clear_sql_clause( 'where_time' );
 
 		// join wp_order_product_lookup_table with relationships and taxonomies
 		// @todo How to handle custom product tables?
-		$this->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id" );
-		$this->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id" );
+		$this->subquery->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id" );
+		$this->subquery->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id" );
 
 		$included_categories = $this->get_included_categories( $query_args );
 		if ( $included_categories ) {
-			$this->add_sql_clause( 'where', " AND {$wpdb->prefix}term_taxonomy.term_id IN ({$included_categories})" );
+			$this->subquery->add_sql_clause( 'where', " AND {$wpdb->prefix}term_taxonomy.term_id IN ({$included_categories})" );
 
 			// Limit is left out here so that the grouping in code by PHP can be applied correctly.
 			// This also needs to be put after the term_taxonomy JOIN so that we can match the correct term name.
@@ -109,16 +120,16 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		// @todo Only products in the category C or orders with products from category C (and, possibly others?).
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
-			$this->add_sql_clause( 'where', " AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
+			$this->subquery->add_sql_clause( 'where', " AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$this->add_sql_clause( 'from', " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
-			$this->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
+			$this->subquery->add_sql_clause( 'from', " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$this->subquery->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
 		}
 
-		$this->add_sql_clause( 'where', " AND taxonomy = 'product_cat' " );
+		$this->subquery->add_sql_clause( 'where', " AND taxonomy = 'product_cat' " );
 	}
 
 	/**
@@ -140,7 +151,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		if ( false !== strpos( $order_by_clause, '_terms' ) ) {
-			$this->add_sql_clause( $from_arg, " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
+			if ( 'from' === $from_arg ) {
+				$this->subquery->add_sql_clause( 'from', " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
+			} else {
+				$this->add_sql_clause( $from_arg, " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
+			}
 		}
 
 		if ( isset( $query_args['order'] ) ) {
@@ -245,45 +260,29 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'page_no' => 0,
 			);
 
-			$selections          = $this->selected_columns( $query_args );
+			$this->subquery->add_sql_clause( 'select', $this->selected_columns( $query_args ) );
 			$included_categories = $this->get_included_categories_array( $query_args );
 			$this->get_sql_query_params( $query_args );
 
 			if ( count( $included_categories ) > 0 ) {
-				$fields          = $this->get_fields( $query_args );
-				$join_selections = $this->format_join_selections( array_merge( array( 'category_id' ), $fields ), array( 'category_id' ) );
-				$ids_table       = $this->get_ids_table( $included_categories, 'category_id' );
+				$fields    = $this->get_fields( $query_args );
+				$ids_table = $this->get_ids_table( $included_categories, 'category_id' );
 
-				$prefix     = "SELECT {$join_selections} FROM (";
-				$suffix     = ") AS {$table_name}";
-				$right_join = "RIGHT JOIN ( {$ids_table} ) AS default_results
-					ON default_results.category_id = {$table_name}.category_id";
+				$this->add_sql_clause( 'select', $this->format_join_selections( array_merge( array( 'category_id' ), $fields ), array( 'category_id' ) ) );
+				$this->add_sql_clause( 'from', '(' );
+				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
+				$this->add_sql_clause( 'from', ") AS {$table_name}" );
+				$this->add_sql_clause( 'right_join', "RIGHT JOIN ( {$ids_table} ) AS default_results
+					ON default_results.category_id = {$table_name}.category_id" );
+
+				$categories_query = $this->get_statement();
 			} else {
-				$prefix     = '';
-				$suffix     = '';
-				$right_join = '';
+				$this->subquery->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
+				$categories_query = $this->subquery->get_statement();
 			}
 
 			$categories_data = $wpdb->get_results(
-				"${prefix}
-					SELECT
-						{$wpdb->term_taxonomy}.term_id as category_id,
-						{$selections}
-					FROM
-						{$table_name}
-						{$this->get_sql_clause( 'from' )}
-					WHERE
-						1=1
-						{$this->get_sql_clause( 'where_time' )}
-						{$this->get_sql_clause( 'where' )}
-					GROUP BY
-						category_id
-				{$suffix}
-					{$right_join}
-					{$this->get_sql_clause( 'outer_from' )}
-					ORDER BY
-						{$this->get_sql_clause( 'order_by' )}
-					",
+				$categories_query,
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -320,6 +319,17 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return string
 	 */
 	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . self::TABLE_NAME . '_' . md5( wp_json_encode( $params ) );
+		return 'woocommerce_' . $this->get_db_table_name() . '_' . md5( wp_json_encode( $params ) );
+	}
+
+	/**
+	 * Initialize query objects.
+	 */
+	private function initialize_queries() {
+		global $wpdb;
+		$this->subquery = new SqlQuery();
+		$this->subquery->add_sql_clause( 'select', "{$wpdb->term_taxonomy}.term_id as category_id," );
+		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
+		$this->subquery->add_sql_clause( 'group_by', 'category_id' );
 	}
 }

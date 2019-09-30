@@ -24,8 +24,10 @@ class SqlQuery {
 		'select'     => array(),
 		'from'       => array(),
 		'outer_from' => array(),
+		'right_join' => array(),
 		'where'      => array(),
 		'where_time' => array(),
+		'group_by'   => array(),
 		'limit'      => array(),
 		'order_by'   => array(),
 	);
@@ -87,5 +89,42 @@ class SqlQuery {
 				$this->sql_clauses[ $type ] = array();
 			}
 		}
+	}
+
+	/**
+	 * Get the full SQL statement.
+	 *
+	 * @return string
+	 */
+	protected function get_statement() {
+
+		$statement = "
+			SELECT
+				{$this->get_sql_clause( 'select' )}
+			FROM
+				{$this->get_sql_clause( 'from' )}
+				{$this->get_sql_clause( 'right_join' )}
+				{$this->get_sql_clause( 'outer_from' )}
+			WHERE
+				1=1
+				{$this->get_sql_clause( 'where_time' )}
+				{$this->get_sql_clause( 'where' )}
+		";
+
+		if ( ! empty( $this->sql_clauses['group_by'] ) ) {
+			$statement .= "
+				GROUP BY
+					{$this->get_sql_clause( 'group_by' )}
+			";
+		}
+
+		if ( ! empty( $this->sql_clauses['order_by'] ) ) {
+			$statement .= "
+				ORDER BY
+					{$this->get_sql_clause( 'order_by' )}
+			";
+		}
+
+		return $statement . $this->get_sql_clause( 'limit' );
 	}
 }
