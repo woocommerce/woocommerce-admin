@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use \Automattic\WooCommerce\Admin\API\Reports\ExportableInterface;
+
 /**
  * Include dependencies.
  */
@@ -103,6 +105,7 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 	 * @return bool|WC_REST_Reports_Controller Report controller instance or boolean false on error.
 	 */
 	protected function map_report_controller() {
+		// @todo - Add filter to this list.
 		$controller_map = array(
 			'products'   => 'Automattic\WooCommerce\Admin\API\Reports\Products\Controller',
 			'variations' => 'Automattic\WooCommerce\Admin\API\Reports\Variations\Controller',
@@ -129,11 +132,17 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 	}
 
 	/**
-	 * Get the report columns from the schema.
+	 * Get the report columns from the controller.
 	 *
 	 * @return array Array of report column names.
 	 */
 	protected function get_report_columns() {
+		// Default to the report's defined export columns.
+		if ( $this->controller instanceof ExportableInterface ) {
+			return $this->controller->get_export_columns();
+		}
+
+		// Fallback to generating columns from the report schema.
 		$report_columns = array();
 		$report_schema  = $this->controller->get_item_schema();
 
@@ -198,12 +207,12 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 	}
 
 	/**
-	 * Take a report item and generate row data from it for export.
+	 * Generate row data from a raw report item.
 	 *
 	 * @param object $item Report item data.
 	 * @return array CSV row data.
 	 */
-	protected function generate_row_data( $item ) {
+	protected function get_raw_row_data( $item ) {
 		$columns = $this->get_column_names();
 		$row     = array();
 
@@ -234,6 +243,24 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 			}
 
 			$row[ $column_id ] = $value;
+		}
+
+		return $row;
+	}
+
+	/**
+	 * Get the export row for a given report item.
+	 *
+	 * @param object $item Report item data.
+	 * @return array CSV row data.
+	 */
+	protected function generate_row_data( $item ) {
+		// Default to the report's export method.
+		if ( $this->controller instanceof ExportableInterface ) {
+			return $this->controller->prepare_item_for_export( $item );
+		} else {
+			// Fallback to raw report data.
+			$row = $this->get_raw_row_data( $item );
 		}
 
 		return apply_filters( "woocommerce_export_{$this->export_type}_row_data", $row, $item );
