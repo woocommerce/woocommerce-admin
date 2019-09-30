@@ -2,6 +2,7 @@
 
 const defaults = {
 	adminUrl: '',
+	countries: [],
 	currency: {
 		code: 'USD',
 		precision: 2,
@@ -10,13 +11,6 @@ const defaults = {
 		decimalSeparator: '.',
 		priceFormat: '%1$s%2$s',
 		thousandSeparator: ',',
-	},
-	dataEndpoints: {
-		0: {},
-		countries: [],
-		jetpackStatus: {},
-		leaderboards: [],
-		performanceIndicators: [],
 	},
 	defaultDateRange: 'period=month&compare=previous_year',
 	locale: {
@@ -42,11 +36,6 @@ allSettings.currency = {
 	...allSettings.currency,
 };
 
-allSettings.dataEndpoints = {
-	...defaults.dataEndpoints,
-	...allSettings.dataEndpoints,
-};
-
 allSettings.locale = {
 	...defaults.locale,
 	...allSettings.locale,
@@ -56,7 +45,7 @@ allSettings.locale = {
 // import the constant. Otherwise use getSetting/setSetting for the value
 // reference.
 export const ADMIN_URL = allSettings.adminUrl;
-export const COUNTRIES = allSettings.dataEndpoints.countries;
+export const COUNTRIES = allSettings.countries;
 export const CURRENCY = allSettings.currency;
 export const LOCALE = allSettings.locale;
 export const ORDER_STATUSES = allSettings.orderStatuses;
