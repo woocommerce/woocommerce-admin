@@ -57,10 +57,10 @@ class Onboarding {
 		if ( $this->should_show_tasks() ) {
 			OnboardingTasks::get_instance();
 		}
-		// old settings injection.
+		// Old settings injection.
 		// Run after Automattic\WooCommerce\Admin\Loader.
 		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
-		// new settings injection.
+		// New settings injection.
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
@@ -345,6 +345,12 @@ class Onboarding {
 		return $settings;
 	}
 
+	/**
+	 * Preload options to prime WooCommerce Admin.
+	 *
+	 * @param array $options Array of preloaded options.
+	 * @return array
+	 */
 	public function preload_options( $options ) {
 		if ( ! $this->should_show_profiler() ) {
 			return $options;

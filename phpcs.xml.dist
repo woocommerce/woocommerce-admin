@@ -27,6 +27,12 @@
 		<exclude-pattern>tests/</exclude-pattern>
 	</rule>
 
+	<rule ref="PHPCompatibility.FunctionUse.NewFunctionParameters.ucwords_delimitersFound">
+		<exclude-pattern>src/*</exclude-pattern>
+		<exclude-pattern>tests/*</exclude-pattern>
+		<exclude-pattern>woocommerce-admin.php</exclude-pattern>
+	</rule>
+
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>src/*</exclude-pattern>
 		<exclude-pattern>tests/*</exclude-pattern>
