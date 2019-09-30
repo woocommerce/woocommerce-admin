@@ -11,13 +11,16 @@ namespace Automattic\WooCommerce\Admin\API\Reports\Orders;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\API\Reports\Controller as ReportsController;
+use \Automattic\WooCommerce\Admin\API\Reports\ExportableInterface;
+
 /**
  * REST API Reports orders controller class.
  *
  * @package WooCommerce/API
  * @extends \Automattic\WooCommerce\Admin\API\Reports\Controller
  */
-class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
+class Controller extends ReportsController implements ExportableInterface {
 
 	/**
 	 * Endpoint namespace.
@@ -409,5 +412,102 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 		);
 
 		return $params;
+	}
+
+	/**
+	 * Get order status column export value.
+	 *
+	 * @param array $status Order status from report row.
+	 * @return string
+	 */
+	protected function _get_order_status( $status ) {
+		$statuses = $this->get_order_status_labels();
+
+		return isset( $statuses[ $status ] ) ? $statuses[ $status ] : '';
+	}
+
+	/**
+	 * Get customer type column export value.
+	 *
+	 * @param array $type Customer type from report row.
+	 * @return string
+	 */
+	protected function _get_customer_type( $type ) {
+		switch ( $type ) {
+			case 'new':
+				return _x( 'New', 'customer type', 'woocommerce-admin' );
+			case 'returning':
+				return _x( 'Returning', 'customer type', 'woocommerce-admin' );
+			default:
+				return _x( 'N/A', 'customer type', 'woocommerce-admin' );
+		}
+	}
+
+	/**
+	 * Get products column export value.
+	 *
+	 * @param array $products Products from report row.
+	 * @return string
+	 */
+	protected function _get_products( $products ) {
+		$products_list = array();
+
+		foreach ( $products as $product ) {
+			$products_list[] = sprintf(
+				/* translators: 1: numeric product quantity, 2: name of product */
+				__( '%1$s× %2$s', 'woocommerce-admin' ),
+				$product['quantity'],
+				$product['name']
+			);
+		}
+
+		return implode( ', ', $products_list );
+	}
+
+	/**
+	 * Get coupons column export value.
+	 *
+	 * @param array $coupons Coupons from report row.
+	 * @return string
+	 */
+	protected function _get_coupons( $coupons ) {
+		return implode( ', ', wp_list_pluck( $coupons, 'code' ) );
+	}
+
+	/**
+	 * Get the column names for export.
+	 *
+	 * @return array Key value pair of Column ID => Label.
+	 */
+	public function get_export_columns() {
+		return array(
+			'date_created'   => __( 'Date', 'woocommerce-admin' ),
+			'order_number'   => __( 'Order #', 'woocommerce-admin' ),
+			'status'         => __( 'Status', 'woocommerce-admin' ),
+			'customer_type'  => __( 'Customer', 'woocommerce-admin' ),
+			'products'       => __( 'Product(s)', 'woocommerce-admin' ),
+			'num_items_sold' => __( 'Items Sold', 'woocommerce-admin' ),
+			'coupons'        => __( 'Coupon(s)', 'woocommerce-admin' ),
+			'net_total'      => __( 'N. Revenue', 'woocommerce-admin' ),
+		);
+	}
+
+	/**
+	 * Get the column values for export.
+	 *
+	 * @param array $item Single report item/row.
+	 * @return array Key value pair of Column ID => Row Value.
+	 */
+	public function prepare_item_for_export( $item ) {
+		return array(
+			'date_created'   => $item['date_created'],
+			'order_number'   => $item['order_number'],
+			'status'         => $this->_get_order_status( $item['status'] ),
+			'customer_type'  => $this->_get_customer_type( $item['customer_type'] ),
+			'products'       => $this->_get_products( $item['extended_info']['products'] ),
+			'num_items_sold' => $item['num_items_sold'],
+			'coupons'        => $this->_get_coupons( $item['extended_info']['coupons'] ),
+			'net_total'      => $item['net_total'],
+		);
 	}
 }
