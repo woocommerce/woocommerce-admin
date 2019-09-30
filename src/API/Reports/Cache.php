@@ -20,38 +20,22 @@ class Cache {
 	/**
 	 * Cache version. Used to invalidate all cached values.
 	 */
-	const VERSION_OPTION = 'woocommerce_reports_cache_version';
+	const VERSION_OPTION = 'woocommerce_reports';
 
 	/**
-	 * Default version number rollover threshold.
+	 * Invalidate cache.
 	 */
-	const DEFAULT_VERSION_LIMIT = 99999;
-
-	/**
-	 * Increase cache version number.
-	 *
-	 * @return bool
-	 */
-	public static function bump_version() {
-		/**
-		 * Upper limit to roll cache version back to zero.
-		 *
-		 * @param int $limit Limit.
-		 */
-		$limit   = apply_filters( 'woocommerce_reports_cache_version_limit', self::DEFAULT_VERSION_LIMIT );
-		$limit   = is_numeric( $limit ) ? (int) $limit : self::DEFAULT_VERSION_LIMIT;
-		$version = ( self::get_version() + 1 ) % $limit;
-
-		return update_option( self::VERSION_OPTION, $version );
+	public static function invalidate() {
+		\WC_Cache_Helper::get_transient_version( self::VERSION_OPTION, true );
 	}
 
 	/**
 	 * Get cache version number.
 	 *
-	 * @return int
+	 * @return string
 	 */
 	public static function get_version() {
-		$version = (int) get_option( self::VERSION_OPTION, 1 );
+		$version = \WC_Cache_Helper::get_transient_version( self::VERSION_OPTION );
 
 		return $version;
 	}
@@ -63,10 +47,17 @@ class Cache {
 	 * @return mixed
 	 */
 	public static function get( $key ) {
-		$version = self::get_version();
-		$value   = get_transient( $key . ':' . $version );
+		$transient_version = self::get_version();
+		$transient_value   = get_transient( $key );
 
-		return $value;
+		if (
+			isset( $transient_value['value'], $transient_value['version'] ) &&
+			$transient_value['version'] === $transient_version
+		) {
+			return $transient_value['value'];
+		}
+
+		return false;
 	}
 
 	/**
@@ -77,8 +68,13 @@ class Cache {
 	 * @return bool
 	 */
 	public static function set( $key, $value ) {
-		$version = self::get_version();
-		$result  = set_transient( $key . ':' . $version, $value, DAY_IN_SECONDS );
+		$transient_version = self::get_version();
+		$transient_value   = array(
+			'version' => $transient_version,
+			'value'   => $value,
+		);
+
+		$result = set_transient( $key, $transient_value, WEEK_IN_SECONDS );
 
 		return $result;
 	}

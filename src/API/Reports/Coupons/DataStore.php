@@ -443,7 +443,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 */
 		do_action( 'woocommerce_reports_delete_coupon', 0, $order_id );
 
-		ReportsCache::bump_version();
+		ReportsCache::invalidate();
 	}
 
 	/**
@@ -464,7 +464,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			array( 'coupon_id' => $post_id )
 		);
 
-		ReportsCache::bump_version();
+		ReportsCache::invalidate();
 	}
 
 	/**

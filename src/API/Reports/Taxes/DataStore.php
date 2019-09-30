@@ -389,6 +389,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 */
 		do_action( 'woocommerce_reports_delete_tax', 0, $order_id );
 
-		ReportsCache::bump_version();
+		ReportsCache::invalidate();
 	}
 }
