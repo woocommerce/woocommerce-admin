@@ -415,35 +415,6 @@ class Controller extends ReportsController implements ExportableInterface {
 	}
 
 	/**
-	 * Get order status column export value.
-	 *
-	 * @param array $status Order status from report row.
-	 * @return string
-	 */
-	protected function _get_order_status( $status ) {
-		$statuses = $this->get_order_status_labels();
-
-		return isset( $statuses[ $status ] ) ? $statuses[ $status ] : '';
-	}
-
-	/**
-	 * Get customer type column export value.
-	 *
-	 * @param array $type Customer type from report row.
-	 * @return string
-	 */
-	protected function _get_customer_type( $type ) {
-		switch ( $type ) {
-			case 'new':
-				return _x( 'New', 'customer type', 'woocommerce-admin' );
-			case 'returning':
-				return _x( 'Returning', 'customer type', 'woocommerce-admin' );
-			default:
-				return _x( 'N/A', 'customer type', 'woocommerce-admin' );
-		}
-	}
-
-	/**
 	 * Get products column export value.
 	 *
 	 * @param array $products Products from report row.
@@ -502,8 +473,8 @@ class Controller extends ReportsController implements ExportableInterface {
 		return array(
 			'date_created'   => $item['date_created'],
 			'order_number'   => $item['order_number'],
-			'status'         => $this->_get_order_status( $item['status'] ),
-			'customer_type'  => $this->_get_customer_type( $item['customer_type'] ),
+			'status'         => $item['status'],
+			'customer_type'  => $item['customer_type'],
 			'products'       => $this->_get_products( $item['extended_info']['products'] ),
 			'num_items_sold' => $item['num_items_sold'],
 			'coupons'        => $this->_get_coupons( $item['extended_info']['coupons'] ),
