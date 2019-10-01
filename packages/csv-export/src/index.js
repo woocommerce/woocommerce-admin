@@ -13,9 +13,19 @@ function getCSVRows( rows ) {
 	return Array.isArray( rows )
 		? rows
 				.map( row =>
-					row.map( rowItem =>
-						rowItem.value !== undefined && rowItem.value !== null ? rowItem.value.toString().replace( /,/g, ''
-					) : '' ).join( ',' )
+					row.map( rowItem => {
+						if ( undefined === rowItem.value || null === rowItem.value ) {
+							return '';
+						}
+
+						let stringValue = rowItem.value.toString();
+
+						if ( stringValue.includes( ',' ) || stringValue.includes( '"' ) ) {
+							stringValue = '"' + stringValue.replace( /"/g, '""' ) + '"';
+						}
+
+						return stringValue;
+					} ).join( ',' )
 				)
 				.join( '\n' )
 		: [];
