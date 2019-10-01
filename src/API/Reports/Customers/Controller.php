@@ -11,6 +11,7 @@ namespace Automattic\WooCommerce\Admin\API\Reports\Customers;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\API\Reports\ExportableTraits;
 use \Automattic\WooCommerce\Admin\API\Reports\ExportableInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
 
@@ -21,6 +22,10 @@ use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller implements ExportableInterface {
+	/**
+	 * Exportable traits.
+	 */
+	use ExportableTraits;
 
 	/**
 	 * Endpoint namespace.
@@ -556,8 +561,6 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 	 * @return array Key value pair of Column ID => Row Value.
 	 */
 	public function prepare_item_for_export( $item ) {
-		$decimals = wc_get_price_decimals();
-
 		return array(
 			'name'            => $item['name'],
 			'username'        => $item['username'],
@@ -565,8 +568,8 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 			'registered'      => $item['date_registered'],
 			'email'           => $item['email'],
 			'orders_count'    => $item['orders_count'],
-			'total_spend'     => number_format( $item['total_spend'], $decimals, '.', '' ), // See: getCurrencyFormatDecimal().
-			'avg_order_value' => number_format( $item['avg_order_value'], $decimals, '.', '' ), // See: getCurrencyFormatDecimal().
+			'total_spend'     => self::csv_number_format( $item['total_spend'] ),
+			'avg_order_value' => self::csv_number_format( $item['avg_order_value'] ),
 			'country'         => $item['country'],
 			'city'            => $item['city'],
 			'region'          => $item['state'],
