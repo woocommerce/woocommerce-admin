@@ -43,14 +43,11 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * Constructor
+	 * Data store context used to pass to filters.
+	 *
+	 * @var string
 	 */
-	public function __construct() {
-		global $wpdb;
-		$table_name = $wpdb->prefix . self::TABLE_NAME;
-		// Avoid ambigious column order_id in SQL query.
-		$this->report_columns['orders_count'] = str_replace( 'order_id', $table_name . '.order_id', $this->report_columns['orders_count'] );
-	}
+	protected static $context = 'coupon_stats';
 
 	/**
 	 * Updates the database query with parameters used for Products Stats report: categories and order status.
@@ -65,7 +62,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 		$coupons_where_clause = '';
 		$coupons_from_clause  = '';
 
-		$order_coupon_lookup_table = $wpdb->prefix . self::TABLE_NAME;
+		$order_coupon_lookup_table = $this->get_db_table_name();
 
 		$included_coupons = $this->get_included_coupons( $query_args );
 		if ( $included_coupons ) {
@@ -97,7 +94,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . self::TABLE_NAME;
+		$table_name = $this->get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -233,6 +230,6 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	 * @return string
 	 */
 	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . self::TABLE_NAME . '_stats_' . md5( wp_json_encode( $params ) );
+		return 'woocommerce_' . $this->table_name . '_stats_' . md5( wp_json_encode( $params ) );
 	}
 }

@@ -67,11 +67,17 @@ class DataStore extends SqlQuery {
 	 */
 	private $order = '';
 	/**
+	 * Query limit parameters.
+	 *
+	 * @var array
+	 */
+	private $limit_parameters = array();
+	/**
 	 * Data store context used to pass to filters.
 	 *
 	 * @var string
 	 */
-	private $context = 'reports';
+	protected static $context = 'reports';
 
 	/**
 	 * Class constructor
@@ -620,6 +626,9 @@ class DataStore extends SqlQuery {
 		);
 		// @todo remove $sql_query after down stream classes are updated.
 		$this->clear_sql_clause( array( 'from', 'where_time', 'where' ) );
+		if ( isset( $this->subquery ) ) {
+			$this->subquery->clear_sql_clause( 'where_time' );
+		}
 
 		if ( isset( $query_args['before'] ) && '' !== $query_args['before'] ) {
 			if ( is_a( $query_args['before'], 'WC_DateTime' ) ) {
@@ -628,7 +637,11 @@ class DataStore extends SqlQuery {
 				$datetime_str = $query_args['before']->format( TimeInterval::$sql_datetime_format );
 			}
 			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created <= '$datetime_str'";
-			$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$datetime_str'" );
+			if ( isset( $this->subquery ) ) {
+				$this->subquery->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$datetime_str'" );
+			} else {
+				$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$datetime_str'" );
+			}
 		}
 
 		if ( isset( $query_args['after'] ) && '' !== $query_args['after'] ) {
@@ -638,7 +651,11 @@ class DataStore extends SqlQuery {
 				$datetime_str = $query_args['after']->format( TimeInterval::$sql_datetime_format );
 			}
 			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$datetime_str'";
-			$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$datetime_str'" );
+			if ( isset( $this->subquery ) ) {
+				$this->subquery->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$datetime_str'" );
+			} else {
+				$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$datetime_str'" );
+			}
 		}
 
 		return $sql_query;
@@ -651,22 +668,36 @@ class DataStore extends SqlQuery {
 	 * @return array
 	 */
 	protected function get_limit_sql_params( $query_args ) {
+		$params = $this->get_limit_params( $query_args );
+
 		$sql_query = array();
-		$sql_query['per_page'] = get_option( 'posts_per_page' );
-		if ( isset( $query_args['per_page'] ) && is_numeric( $query_args['per_page'] ) ) {
-			$sql_query['per_page'] = (int) $query_args['per_page'];
-		}
-
-		$sql_query['offset'] = 0;
-		if ( isset( $query_args['page'] ) ) {
-			$sql_query['offset'] = ( (int) $query_args['page'] - 1 ) * $sql_query['per_page'];
-		}
-
-		$sql_query['limit'] = "LIMIT {$sql_query['offset']}, {$sql_query['per_page']}";
+		$sql_query['limit'] = "LIMIT {$params['offset']}, {$params['per_page']}";
 		// @todo remove $sql_query assignment after down stream classes are updated.
 		$this->clear_sql_clause( 'limit' );
-		$this->add_sql_clause( 'limit', "LIMIT {$sql_query['offset']}, {$sql_query['per_page']}" );
-		return $sql_query;
+		$this->add_sql_clause( 'limit', "LIMIT {$params['offset']}, {$params['per_page']}" );
+		return array_merge( $sql_query, $params );
+	}
+
+	/**
+	 * Fills LIMIT parameters of SQL request based on user supplied parameters.
+	 *
+	 * @param array $query_args Parameters supplied by the user.
+	 * @return array
+	 */
+	protected function get_limit_params( $query_args = array() ) {
+		if ( empty( $this->limit_parameters ) ) {
+			$this->limit_parameters['per_page'] = get_option( 'posts_per_page' );
+			if ( isset( $query_args['per_page'] ) && is_numeric( $query_args['per_page'] ) ) {
+				$this->limit_parameters['per_page'] = (int) $query_args['per_page'];
+			}
+	
+			$this->limit_parameters['offset'] = 0;
+			if ( isset( $query_args['page'] ) ) {
+				$this->limit_parameters['offset'] = ( (int) $query_args['page'] - 1 ) * $this->limit_parameters['per_page'];
+			}
+		}
+
+		return $this->limit_parameters;
 	}
 
 	/**
@@ -901,12 +932,12 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected function get_included_variations( $query_args ) {
+	protected static function get_included_variations( $query_args ) {
 		if ( isset( $query_args['variations'] ) && is_array( $query_args['variations'] ) && count( $query_args['variations'] ) > 0 ) {
 			$query_args['variations'] = array_filter( array_map( 'intval', $query_args['variations'] ) );
 		}
 
-		return $this->get_filtered_ids( $query_args, 'variations' );
+		return self::get_filtered_ids( $query_args, 'variations' );
 	}
 
 	/**
@@ -915,8 +946,8 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected function get_excluded_products( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'product_excludes' );
+	protected static function get_excluded_products( $query_args ) {
+		return self::get_filtered_ids( $query_args, 'product_excludes' );
 	}
 
 	/**
@@ -925,18 +956,19 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected function get_included_categories( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'categories' );
+	protected static function get_included_categories( $query_args ) {
+		return self::get_filtered_ids( $query_args, 'categories' );
 	}
 
 	/**
 	 * Returns comma separated ids of included coupons, based on query arguments from the user.
 	 *
-	 * @param array $query_args Parameters supplied by the user.
+	 * @param array  $query_args Parameters supplied by the user.
+	 * @param string $field      Field name in the parameter list.
 	 * @return string
 	 */
-	protected function get_included_coupons( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'coupon_includes' );
+	protected static function get_included_coupons( $query_args, $field = 'coupon_includes' ) {
+		return self::get_filtered_ids( $query_args, $field );
 	}
 
 	/**
@@ -945,8 +977,8 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected function get_excluded_coupons( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'coupon_excludes' );
+	protected static function get_excluded_coupons( $query_args ) {
+		return self::get_filtered_ids( $query_args, 'coupon_excludes' );
 	}
 
 	/**
@@ -955,8 +987,8 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected function get_included_orders( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'order_includes' );
+	protected static function get_included_orders( $query_args ) {
+		return self::get_filtered_ids( $query_args, 'order_includes' );
 	}
 
 	/**
@@ -965,8 +997,8 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected function get_excluded_orders( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'order_excludes' );
+	protected static function get_excluded_orders( $query_args ) {
+		return self::get_filtered_ids( $query_args, 'order_excludes' );
 	}
 
 	/**
@@ -975,8 +1007,8 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected function get_included_users( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'user_includes' );
+	protected static function get_included_users( $query_args ) {
+		return self::get_filtered_ids( $query_args, 'user_includes' );
 	}
 
 	/**
@@ -985,8 +1017,8 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected function get_excluded_users( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'user_excludes' );
+	protected static function get_excluded_users( $query_args ) {
+		return self::get_filtered_ids( $query_args, 'user_excludes' );
 	}
 
 	/**
@@ -1023,6 +1055,55 @@ class DataStore extends SqlQuery {
 		}
 
 		return implode( " $operator ", $subqueries );
+	}
+
+	/**
+	 * Add order status SQL clauses if included in query.
+	 *
+	 * @param array    $query_args Parameters supplied by the user.
+	 * @param string   $table_name Database table name.
+	 * @param SqlQuery $sql_query  Query object.
+	 */
+	protected function add_order_status_clause( $query_args, $table_name, &$sql_query ) {
+		global $wpdb;
+		$order_status_filter = $this->get_status_subquery( $query_args );
+		if ( $order_status_filter ) {
+			$sql_query->add_sql_clause( 'from', " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$sql_query->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
+		}
+	}
+
+	/**
+	 * Add order by SQL clause if included in query.
+	 *
+	 * @param array    $query_args Parameters supplied by the user.
+	 * @param SqlQuery $sql_query  Query object.
+	 * @return string Order by clause.
+	 */
+	protected function add_order_by_clause( $query_args, &$sql_query ) {
+		$order_by_clause = '';
+
+		$sql_query->clear_sql_clause( array( 'order_by' ) );
+		if ( isset( $query_args['orderby'] ) ) {
+			$order_by_clause = $this->normalize_order_by( $query_args['orderby'] );
+			$sql_query->add_sql_clause( 'order_by', $order_by_clause );
+		}
+
+		return $order_by_clause;
+	}
+
+	/**
+	 * Add order by order SQL clause.
+	 *
+	 * @param array    $query_args Parameters supplied by the user.
+	 * @param SqlQuery $sql_query  Query object.
+	 */
+	protected function add_orderby_order_clause( $query_args, &$sql_query ) {
+		if ( isset( $query_args['order'] ) ) {
+			$sql_query->add_sql_clause( 'order_by', $query_args['order'] );
+		} else {
+			$sql_query->add_sql_clause( 'order_by', ' DESC' );
+		}
 	}
 
 	/**
@@ -1074,7 +1155,7 @@ class DataStore extends SqlQuery {
 	 * @param string $field      Query field to filter.
 	 * @return string
 	 */
-	protected function get_filtered_ids( $query_args, $field ) {
+	protected static function get_filtered_ids( $query_args, $field ) {
 		$ids_str = '';
 		$ids     = isset( $query_args[ $field ] ) && is_array( $query_args[ $field ] ) ? $query_args[ $field ] : array();
 
@@ -1088,7 +1169,7 @@ class DataStore extends SqlQuery {
 		 * @param string $field      The object type.
 		 * @param string $context    The data store context.
 		 */
-		$ids = apply_filters( 'wc_admin_reports_ ' . $field, $ids, $query_args, $field, $this->context );
+		$ids = apply_filters( 'wc_admin_reports_ ' . $field, $ids, $query_args, $field, self::$context );
 
 		if ( ! empty( $ids ) ) {
 			$ids_str = implode( ',', $ids );
