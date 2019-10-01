@@ -199,9 +199,14 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 		$request->set_default_params( $defaults );
 		$request->set_query_params( $this->report_args );
 
-		$response         = $this->controller->get_items( $request );
-		$report_meta      = $response->get_headers();
-		$report_data      = $response->get_data();
+		$response    = $this->controller->get_items( $request );
+		$report_meta = $response->get_headers();
+		// Use WP_REST_Server::response_to_data() to embed links in data.
+		add_filter( 'woocommerce_rest_check_permissions', '__return_true' );
+		$rest_server = rest_get_server();
+		$report_data = $rest_server->response_to_data( $response, true );
+		remove_filter( 'woocommerce_rest_check_permissions', '__return_true' );
+
 		$this->total_rows = $report_meta['X-WP-Total'];
 		$this->row_data   = array_map( array( $this, 'generate_row_data' ), $report_data );
 	}
