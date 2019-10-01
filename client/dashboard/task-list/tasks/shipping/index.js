@@ -24,6 +24,7 @@ import Plugins from '../steps/plugins';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 
 class Shipping extends Component {
 	constructor() {
@@ -38,6 +39,7 @@ class Shipping extends Component {
 		this.state = this.initialState;
 
 		this.completeStep = this.completeStep.bind( this );
+		this.completeLocationStep = this.completeLocationStep.bind( this );
 	}
 
 	componentDidMount() {
@@ -126,6 +128,12 @@ class Shipping extends Component {
 		}
 	}
 
+	completeLocationStep() {
+		const { countryCode } = this.props;
+		recordEvent( 'tasklist_shipping_set_location', { country: countryCode } );
+		this.completeStep();
+	}
+
 	completeStep() {
 		const { step } = this.state;
 		const steps = this.getSteps();
@@ -147,7 +155,7 @@ class Shipping extends Component {
 				key: 'store_location',
 				label: __( 'Set store location', 'woocommerce-admin' ),
 				description: __( 'The address from which your business operates', 'woocommerce-admin' ),
-				content: <StoreLocation onComplete={ this.completeStep } { ...this.props } />,
+				content: <StoreLocation onComplete={ this.completeLocationStep } { ...this.props } />,
 				visible: true,
 			},
 			{
