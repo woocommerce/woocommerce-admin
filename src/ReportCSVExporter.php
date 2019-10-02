@@ -270,7 +270,7 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 	protected function generate_row_data( $item ) {
 		// Default to the report's export method.
 		if ( $this->controller instanceof ExportableInterface ) {
-			return $this->controller->prepare_item_for_export( $item );
+			$row = $this->controller->prepare_item_for_export( $item );
 		} else {
 			// Fallback to raw report data.
 			$row = $this->get_raw_row_data( $item );
