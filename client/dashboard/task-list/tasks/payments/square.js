@@ -11,10 +11,11 @@ import { withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
 /**
- * WooCommerce dependencies
+ * Internal dependencies
  */
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 
 class Square extends Component {
 	constructor( props ) {
@@ -32,6 +33,7 @@ class Square extends Component {
 		// Handle redirect back from Square
 		if ( query[ 'square-connect' ] ) {
 			if ( '1' === query[ 'square-connect' ] ) {
+				recordEvent( 'tasklist_payment_connect_method', { payment_method: 'square' } );
 				this.props.markConfigured( 'square' );
 				this.props.createNotice(
 					'success',

@@ -14,9 +14,14 @@ import interpolateComponents from 'interpolate-components';
 /**
  * WooCommerce dependencies
  */
-import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import { Form, Link } from '@woocommerce/components';
+
+/**
+ * Internal dependencies
+ */
+import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 
 class PayPal extends Component {
 	constructor( props ) {
@@ -37,6 +42,7 @@ class PayPal extends Component {
 		// Handle redirect back from PayPal
 		if ( query[ 'paypal-connect' ] ) {
 			if ( '1' === query[ 'paypal-connect' ] ) {
+				recordEvent( 'tasklist_payment_connect_method', { payment_method: 'paypal' } );
 				this.props.markConfigured( 'paypal' );
 				this.props.createNotice(
 					'success',
@@ -124,6 +130,7 @@ class PayPal extends Component {
 		} );
 
 		if ( ! isSettingsError ) {
+			recordEvent( 'tasklist_payment_connect_method', { payment_method: 'paypal' } );
 			this.props.setRequestPending( false );
 			markConfigured( 'paypal' );
 		} else {

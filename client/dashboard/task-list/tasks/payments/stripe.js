@@ -17,8 +17,13 @@ import { get } from 'lodash';
  * WooCommerce dependencies
  */
 import { Form, Link } from '@woocommerce/components';
+
+/**
+ * Internal dependencies
+ */
 import withSelect from 'wc-api/with-select';
 import { WCS_NAMESPACE } from 'wc-api/constants';
+import { recordEvent } from 'lib/tracks';
 
 class Stripe extends Component {
 	constructor( props ) {
@@ -44,6 +49,8 @@ class Stripe extends Component {
 		if ( query[ 'stripe-connect' ] && '1' === query[ 'stripe-connect' ] ) {
 			const stripeSettings = get( options, [ 'woocommerce_stripe_settings' ], [] );
 			const isStripeConnected = stripeSettings.publishable_key && stripeSettings.secret_key;
+
+			recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
 
 			if ( isStripeConnected ) {
 				this.props.markConfigured( 'stripe' );
@@ -125,6 +132,7 @@ class Stripe extends Component {
 			} );
 
 			if ( result ) {
+				recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
 				this.props.setRequestPending( false );
 				this.props.markConfigured( 'stripe' );
 				this.props.createNotice(
@@ -223,6 +231,7 @@ class Stripe extends Component {
 		} );
 
 		if ( ! isSettingsError ) {
+			recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
 			this.props.setRequestPending( false );
 			markConfigured( 'stripe' );
 		} else {
