@@ -450,7 +450,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	/**
 	 * Initialize query objects.
 	 */
-	private function initialize_queries() {
+	protected function initialize_queries() {
 		global $wpdb;
 		$this->subquery = new SqlQuery();
 		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );

@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\API\Reports\Coupons\DataStore as CouponsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
+use \Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
 
 /**
  * API\Reports\Coupons\Stats\DataStore.
@@ -50,6 +51,20 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	protected static $context = 'coupon_stats';
 
 	/**
+	 * Totals query object.
+	 *
+	 * @var SqlQuery
+	 */
+	protected $total_query;
+
+	/**
+	 * Intervals query object.
+	 *
+	 * @var SqlQuery
+	 */
+	protected $interval_query;
+
+	/**
 	 * Updates the database query with parameters used for Products Stats report: categories and order status.
 	 *
 	 * @param array $query_args       Query arguments supplied by the user.
@@ -82,6 +97,15 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 		$intervals_params                  = array_merge( $intervals_params, $this->get_intervals_sql_params( $query_args, $order_coupon_lookup_table ) );
 		$intervals_params['where_clause'] .= $coupons_where_clause;
 		$intervals_params['from_clause']  .= $coupons_from_clause;
+
+		$this->interval_query->add_sql_clause( 'limit', $intervals_params['limit'] );
+		$this->interval_query->add_sql_clause( 'order_by', $intervals_params['order_by_clause'] );
+		$this->interval_query->add_sql_clause( 'select', $intervals_params['select_clause'] );
+
+		foreach( array( 'from', 'where_time', 'where' ) as $clause ) {
+			$this->interval_query->add_sql_clause( $clause, $intervals_params[ $clause . '_clause' ] );
+			$this->total_query->add_sql_clause( $clause, $totals_params[ $clause . '_clause' ] );
+		}
 	}
 
 	/**
@@ -125,73 +149,45 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 			$selections      = $this->selected_columns( $query_args );
 			$totals_query    = array();
 			$intervals_query = array();
+			$limit_params    = $this->get_limit_params( $query_args );
 			$this->update_sql_query_params( $query_args, $totals_query, $intervals_query );
+			$this->interval_query->add_sql_clause( 'select', 'AS time_interval' );
 
 			$db_intervals = $wpdb->get_col(
-				"SELECT
-							{$intervals_query['select_clause']} AS time_interval
-						FROM
-							{$table_name}
-							{$intervals_query['from_clause']}
-						WHERE
-							1=1
-							{$intervals_query['where_time_clause']}
-							{$intervals_query['where_clause']}
-						GROUP BY
-							time_interval"
+				$this->interval_query->get_statement()
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			$db_interval_count       = count( $db_intervals );
 			$expected_interval_count = TimeInterval::intervals_between( $query_args['after'], $query_args['before'], $query_args['interval'] );
-			$total_pages             = (int) ceil( $expected_interval_count / $intervals_query['per_page'] );
+			$total_pages             = (int) ceil( $expected_interval_count / $limit_params['per_page'] );
 			if ( $query_args['page'] < 1 || $query_args['page'] > $total_pages ) {
 				return $data;
 			}
 
+			$this->total_query->add_sql_clause( 'select', $selections );
 			$totals = $wpdb->get_results(
-				"SELECT
-						{$selections}
-					FROM
-						{$table_name}
-						{$totals_query['from_clause']}
-					WHERE
-						1=1
-						{$totals_query['where_time_clause']}
-						{$totals_query['where_clause']}",
+				$this->total_query->get_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			if ( null === $totals ) {
 				return $data;
 			}
+
 			$segmenter             = new Segmenter( $query_args, $this->report_columns );
 			$totals[0]['segments'] = $segmenter->get_totals_segments( $totals_query, $table_name );
 			$totals                = (object) $this->cast_numbers( $totals[0] );
 
 			// Intervals.
 			$this->update_intervals_sql_params( $intervals_query, $query_args, $db_interval_count, $expected_interval_count, $table_name );
+			$this->interval_query->add_sql_clause( 'select', ", MAX({$table_name}.date_created) AS datetime_anchor" );
 
 			if ( '' !== $selections ) {
-				$selections = ', ' . $selections;
+				$this->interval_query->add_sql_clause( 'select', ', ' . $selections );
 			}
 
 			$intervals = $wpdb->get_results(
-				"SELECT
-							MAX({$table_name}.date_created) AS datetime_anchor,
-							{$intervals_query['select_clause']} AS time_interval
-							{$selections}
-						FROM
-							{$table_name}
-							{$intervals_query['from_clause']}
-						WHERE
-							1=1
-							{$intervals_query['where_time_clause']}
-							{$intervals_query['where_clause']}
-						GROUP BY
-							time_interval
-						ORDER BY
-							{$intervals_query['order_by_clause']}
-						{$intervals_query['limit']}",
+				$this->interval_query->get_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -231,5 +227,18 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	 */
 	protected function get_cache_key( $params ) {
 		return 'woocommerce_' . $this->table_name . '_stats_' . md5( wp_json_encode( $params ) );
+	}
+
+	/**
+	 * Initialize query objects.
+	 */
+	protected function initialize_queries() {
+		unset( $this->subquery );
+		$this->total_query = new SqlQuery();
+		$this->total_query->add_sql_clause( 'from', $this->get_db_table_name() );
+
+		$this->interval_query = new SqlQuery();
+		$this->interval_query->add_sql_clause( 'from', $this->get_db_table_name() );
+		$this->interval_query->add_sql_clause( 'group_by', 'time_interval' );
 	}
 }
