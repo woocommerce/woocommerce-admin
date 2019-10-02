@@ -116,6 +116,7 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 			'stock'      => 'Automattic\WooCommerce\Admin\API\Reports\Stock\Controller',
 			'downloads'  => 'Automattic\WooCommerce\Admin\API\Reports\Downloads\Controller',
 			'customers'  => 'Automattic\WooCommerce\Admin\API\Reports\Customers\Controller',
+			'revenue'    => 'Automattic\WooCommerce\Admin\API\Reports\Revenue\Stats\Controller',
 		);
 
 		if ( isset( $controller_map[ $this->report_type ] ) ) {
@@ -199,14 +200,21 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 		$request->set_default_params( $defaults );
 		$request->set_query_params( $this->report_args );
 
-		$response    = $this->controller->get_items( $request );
-		$report_meta = $response->get_headers();
+		// Does the controller have an export-specific item retrieval method?
+		// @todo - Potentially revisit. This is only for /revenue/stats/.
+		if ( is_callable( array( $this->controller, 'get_export_items' ) ) ) {
+			$response = $this->controller->get_export_items( $request );
+		} else {
+			$response = $this->controller->get_items( $request );
+		}
+
 		// Use WP_REST_Server::response_to_data() to embed links in data.
 		add_filter( 'woocommerce_rest_check_permissions', '__return_true' );
 		$rest_server = rest_get_server();
 		$report_data = $rest_server->response_to_data( $response, true );
 		remove_filter( 'woocommerce_rest_check_permissions', '__return_true' );
 
+		$report_meta      = $response->get_headers();
 		$this->total_rows = $report_meta['X-WP-Total'];
 		$this->row_data   = array_map( array( $this, 'generate_row_data' ), $report_data );
 	}
