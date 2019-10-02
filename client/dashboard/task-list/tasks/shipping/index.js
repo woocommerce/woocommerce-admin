@@ -39,7 +39,6 @@ class Shipping extends Component {
 		this.state = this.initialState;
 
 		this.completeStep = this.completeStep.bind( this );
-		this.completeLocationStep = this.completeLocationStep.bind( this );
 	}
 
 	componentDidMount() {
@@ -128,12 +127,6 @@ class Shipping extends Component {
 		}
 	}
 
-	completeLocationStep() {
-		const { countryCode } = this.props;
-		recordEvent( 'tasklist_shipping_set_location', { country: countryCode } );
-		this.completeStep();
-	}
-
 	completeStep() {
 		const { step } = this.state;
 		const steps = this.getSteps();
@@ -155,7 +148,16 @@ class Shipping extends Component {
 				key: 'store_location',
 				label: __( 'Set store location', 'woocommerce-admin' ),
 				description: __( 'The address from which your business operates', 'woocommerce-admin' ),
-				content: <StoreLocation onComplete={ this.completeLocationStep } { ...this.props } />,
+				content: (
+					<StoreLocation
+						onComplete={ values => {
+							const country = getCountryCode( values.countryState );
+							recordEvent( 'tasklist_shipping_set_location', { country } );
+							this.completeStep();
+						} }
+						{ ...this.props }
+					/>
+				),
 				visible: true,
 			},
 			{
@@ -184,8 +186,14 @@ class Shipping extends Component {
 				),
 				content: (
 					<Plugins
-						onComplete={ this.completeStep }
-						onSkip={ () => getHistory().push( getNewPath( {}, '/', {} ) ) }
+						onComplete={ () => {
+							recordEvent( 'tasklist_shipping_label_printing', { install: true } );
+							this.completeStep();
+						} }
+						onSkip={ () => {
+							recordEvent( 'tasklist_shipping_label_printing', { skip: true } );
+							getHistory().push( getNewPath( {}, '/', {} ) );
+						} }
 						{ ...this.props }
 					/>
 				),
@@ -198,7 +206,15 @@ class Shipping extends Component {
 					'Connect your store to WordPress.com to enable label printing',
 					'woocommerce-admin'
 				),
-				content: <Connect completeStep={ this.completeStep } { ...this.props } />,
+				content: (
+					<Connect
+						completeStep={ this.completeStep }
+						{ ...this.props }
+						onConnect={ () => {
+							recordEvent( 'tasklist_shipping_connect_store' );
+						} }
+					/>
+				),
 				visible: 'US' === countryCode,
 			},
 		];
