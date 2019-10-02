@@ -73,9 +73,10 @@ class List extends Component {
 		let nextSelectedIndex;
 		switch ( event.keyCode ) {
 			case UP:
-				nextSelectedIndex = null !== selectedIndex
-					? ( selectedIndex === 0 ? filteredOptions.length : selectedIndex ) - 1
-					: filteredOptions.length - 1;
+				nextSelectedIndex =
+					null !== selectedIndex
+						? ( selectedIndex === 0 ? filteredOptions.length : selectedIndex ) - 1
+						: filteredOptions.length - 1;
 				onChange( nextSelectedIndex );
 				this.scrollToOption( nextSelectedIndex );
 				event.preventDefault();
@@ -83,9 +84,8 @@ class List extends Component {
 				break;
 
 			case DOWN:
-				nextSelectedIndex = null !== selectedIndex
-					? ( selectedIndex + 1 ) % filteredOptions.length
-					: 0;
+				nextSelectedIndex =
+					null !== selectedIndex ? ( selectedIndex + 1 ) % filteredOptions.length : 0;
 				onChange( nextSelectedIndex );
 				this.scrollToOption( nextSelectedIndex );
 				event.preventDefault();
@@ -134,29 +134,29 @@ class List extends Component {
 
 	render() {
 		const { filteredOptions, instanceId, listboxId, selectedIndex, staticList } = this.props;
-		const listboxClasses = classnames( 'woocommerce-autocomplete__listbox', {
+		const listboxClasses = classnames( 'woocommerce-select-control__listbox', {
 			'is-static': staticList,
 		} );
 
 		return (
 			<div ref={ this.listbox } id={ listboxId } role="listbox" className={ listboxClasses }>
 				{ filteredOptions.map( ( option, index ) => (
-						<Button
-							ref={ this.getOptionRef( index ) }
-							key={ option.key }
-							id={ `woocommerce-autocomplete__option-${ instanceId }-${ option.key }` }
-							role="option"
-							aria-selected={ index === selectedIndex }
-							disabled={ option.isDisabled }
-							className={ classnames( 'woocommerce-autocomplete__option', {
-								'is-selected': index === selectedIndex,
-							} ) }
-							onClick={ () => this.select( option ) }
-							tabIndex="-1"
-						>
-							{ option.label }
-						</Button>
-					) ) }
+					<Button
+						ref={ this.getOptionRef( index ) }
+						key={ option.key }
+						id={ `woocommerce-select-control__option-${ instanceId }-${ option.key }` }
+						role="option"
+						aria-selected={ index === selectedIndex }
+						disabled={ option.isDisabled }
+						className={ classnames( 'woocommerce-select-control__option', {
+							'is-selected': index === selectedIndex,
+						} ) }
+						onClick={ () => this.select( option ) }
+						tabIndex="-1"
+					>
+						{ option.label }
+					</Button>
+				) ) }
 			</div>
 		);
 	}
@@ -169,17 +169,14 @@ List.propTypes = {
 	filteredOptions: PropTypes.arrayOf(
 		PropTypes.shape( {
 			isDisabled: PropTypes.bool,
-			key: PropTypes.oneOfType( [
-				PropTypes.number,
-				PropTypes.string,
-			] ).isRequired,
+			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
 			keywords: PropTypes.arrayOf( PropTypes.string ),
 			label: PropTypes.string,
 			value: PropTypes.any,
 		} )
 	).isRequired,
 	/**
-	 * ID of the main Autocomplete instance.
+	 * ID of the main SelectControl instance.
 	 */
 	instanceId: PropTypes.number,
 	/**

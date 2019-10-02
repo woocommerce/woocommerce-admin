@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { Autocomplete } from '@woocommerce/components';
+import { SelectControl } from '@woocommerce/components';
 
 /**
  * External dependencies
@@ -9,47 +9,47 @@ import { Autocomplete } from '@woocommerce/components';
 import { withState } from '@wordpress/compose';
 
 const options = [
-    {
-        key: 'apple',
+	{
+		key: 'apple',
 		label: 'Apple',
 		value: { id: 'apple' },
 	},
-    {
-        key: 'apricot',
+	{
+		key: 'apricot',
 		label: 'Apricot',
 		value: { id: 'apricot' },
 	},
 	{
-        key: 'banana',
+		key: 'banana',
 		label: 'Banana',
 		keywords: [ 'best', 'fruit' ],
 		value: { id: 'banana' },
 	},
 	{
-        key: 'blueberry',
+		key: 'blueberry',
 		label: 'Blueberry',
 		value: { id: 'blueberry' },
 	},
 	{
-        key: 'cherry',
+		key: 'cherry',
 		label: 'Cherry',
 		value: { id: 'cherry' },
 	},
 	{
-        key: 'cantaloupe',
+		key: 'cantaloupe',
 		label: 'Cantaloupe',
 		value: { id: 'cantaloupe' },
 	},
 	{
-        key: 'dragonfruit',
+		key: 'dragonfruit',
 		label: 'Dragon Fruit',
 		value: { id: 'dragonfruit' },
 	},
 	{
-        key: 'elderberry',
+		key: 'elderberry',
 		label: 'Elderberry',
 		value: { id: 'elderberry' },
-    },
+	},
 ];
 
 export default withState( {
@@ -58,29 +58,29 @@ export default withState( {
 	inlineSelected: [],
 } )( ( { singleSelected, multipleSelected, inlineSelected, setState } ) => (
 	<div>
-		<Autocomplete
+		<SelectControl
 			label="Single value"
-			onChange={ ( selected ) => setState( { singleSelected: selected } ) }
+			onChange={ selected => setState( { singleSelected: selected } ) }
 			options={ options }
 			placeholder="Start typing to filter options..."
 			selected={ singleSelected }
 		/>
 		<br />
-		<Autocomplete
+		<SelectControl
 			label="Inline tags"
 			multiple
 			inlineTags
-			onChange={ ( selected ) => setState( { inlineSelected: selected } ) }
+			onChange={ selected => setState( { inlineSelected: selected } ) }
 			options={ options }
 			placeholder="Start typing to filter options..."
 			selected={ inlineSelected }
 		/>
 		<br />
-		<Autocomplete
+		<SelectControl
 			hideBeforeSearch
 			label="Hidden options before search"
 			multiple
-			onChange={ ( selected ) => setState( { multipleSelected: selected } ) }
+			onChange={ selected => setState( { multipleSelected: selected } ) }
 			options={ options }
 			placeholder="Start typing to filter options..."
 			selected={ multipleSelected }

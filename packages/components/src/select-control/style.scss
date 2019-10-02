@@ -1,4 +1,6 @@
-.woocommerce-autocomplete {
+/** @format */
+
+.woocommerce-select-control {
 	position: relative;
 
 	.components-base-control {
@@ -11,7 +13,7 @@
 		padding: $gap-small $gap;
 		position: relative;
 
-		.woocommerce-autocomplete__tags {
+		.woocommerce-select-control__tags {
 			margin: $gap-small $gap-smallest 0 0;
 		}
 
@@ -33,7 +35,7 @@
 			font-size: 16px;
 		}
 
-		.woocommerce-autocomplete__control-input {
+		.woocommerce-select-control__control-input {
 			font-size: 16px;
 			border: 0;
 			box-shadow: none;
@@ -68,7 +70,7 @@
 		}
 	}
 
-	.woocommerce-autocomplete__tags {
+	.woocommerce-select-control__tags {
 		position: relative;
 		margin: $gap-small 0;
 
@@ -81,7 +83,7 @@
 		max-height: 24px;
 	}
 
-	.woocommerce-autocomplete__clear {
+	.woocommerce-select-control__clear {
 		position: absolute;
 		right: 0;
 		top: calc(50% - 10px);
@@ -91,7 +93,7 @@
 		}
 	}
 
-	.woocommerce-autocomplete__listbox {
+	.woocommerce-select-control__listbox {
 		background: $studio-white;
 		display: flex;
 		flex-direction: column;
@@ -111,7 +113,7 @@
 		}
 	}
 
-	.woocommerce-autocomplete__option {
+	.woocommerce-select-control__option {
 		padding: $gap;
 		min-height: 56px;
 		font-size: 16px;

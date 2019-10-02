@@ -21,7 +21,7 @@ import SearchControl from './control';
  * A search box which filters options while typing,
  * allowing a user to select from an option from a filtered list.
  */
-export class Autocomplete extends Component {
+export class SelectControl extends Component {
 	static getInitialState() {
 		return {
 			filteredOptions: [],
@@ -118,7 +118,14 @@ export class Autocomplete extends Component {
 	}
 
 	getFilteredOptions( query ) {
-		const { excludeSelectedOptions, getSearchExpression, maxResults, onFilter, options, selected } = this.props;
+		const {
+			excludeSelectedOptions,
+			getSearchExpression,
+			maxResults,
+			onFilter,
+			options,
+			selected,
+		} = this.props;
 		const selectedKeys = selected.map( option => option.key );
 		const filtered = [];
 
@@ -160,32 +167,30 @@ export class Autocomplete extends Component {
 
 		onSearch( query );
 		// Get all options if `hideBeforeSearch` is enabled and query is not null.
-		const filteredOptions = null !== query && ! query.length && ! hideBeforeSearch
-			? options
-			: this.getFilteredOptions( query );
-		this.setState( { selectedIndex: 0, filteredOptions, query: query || '' }, () => this.announce( filteredOptions ) );
+		const filteredOptions =
+			null !== query && ! query.length && ! hideBeforeSearch
+				? options
+				: this.getFilteredOptions( query );
+		this.setState( { selectedIndex: 0, filteredOptions, query: query || '' }, () =>
+			this.announce( filteredOptions )
+		);
 	}
 
 	render() {
-		const {
-			className,
-			inlineTags,
-			instanceId,
-			options,
-		} = this.props;
+		const { className, inlineTags, instanceId, options } = this.props;
 		const { selectedIndex } = this.state;
 
 		const isExpanded = this.isExpanded();
 		const hasTags = this.hasTags();
 		const { key: selectedKey = '' } = options[ selectedIndex ] || {};
-		const listboxId = isExpanded ? `woocommerce-autocomplete__listbox-${ instanceId }` : null;
+		const listboxId = isExpanded ? `woocommerce-select-control__listbox-${ instanceId }` : null;
 		const activeId = isExpanded
-			? `woocommerce-autocomplete__option-${ instanceId }-${ selectedKey }`
+			? `woocommerce-select-control__option-${ instanceId }-${ selectedKey }`
 			: null;
 
 		return (
 			<div
-				className={ classnames( 'woocommerce-autocomplete', className, {
+				className={ classnames( 'woocommerce-select-control', className, {
 					'has-inline-tags': hasTags && inlineTags,
 				} ) }
 				ref={ this.bindNode }
@@ -200,7 +205,7 @@ export class Autocomplete extends Component {
 					onSearch={ this.search }
 				/>
 				{ ! inlineTags && hasTags && <Tags { ...this.props } /> }
-				{ isExpanded &&
+				{ isExpanded && (
 					<List
 						{ ...this.props }
 						{ ...this.state }
@@ -211,13 +216,13 @@ export class Autocomplete extends Component {
 						onSelect={ this.selectOption }
 						onSearch={ this.search }
 					/>
-				}
+				) }
 			</div>
 		);
 	}
 }
 
-Autocomplete.propTypes = {
+SelectControl.propTypes = {
 	/**
 	 * Class name applied to parent div.
 	 */
@@ -238,10 +243,7 @@ Autocomplete.propTypes = {
 	/**
 	 * Help text to be appended beneath the input.
 	 */
-	help: PropTypes.oneOfType( [
-		PropTypes.string,
-		PropTypes.node,
-	] ),
+	help: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ),
 	/**
 	 * Render tags inside input, otherwise render below input.
 	 */
@@ -265,10 +267,7 @@ Autocomplete.propTypes = {
 	options: PropTypes.arrayOf(
 		PropTypes.shape( {
 			isDisabled: PropTypes.bool,
-			key: PropTypes.oneOfType( [
-				PropTypes.number,
-				PropTypes.string,
-			] ).isRequired,
+			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
 			keywords: PropTypes.arrayOf( PropTypes.string ),
 			label: PropTypes.string,
 			value: PropTypes.any,
@@ -285,10 +284,7 @@ Autocomplete.propTypes = {
 	 */
 	selected: PropTypes.arrayOf(
 		PropTypes.shape( {
-			key: PropTypes.oneOfType( [
-				PropTypes.number,
-				PropTypes.string,
-			] ).isRequired,
+			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
 			label: PropTypes.string,
 		} )
 	),
@@ -314,7 +310,7 @@ Autocomplete.propTypes = {
 	staticList: PropTypes.bool,
 };
 
-Autocomplete.defaultProps = {
+SelectControl.defaultProps = {
 	excludeSelectedOptions: true,
 	getSearchExpression: identity,
 	inlineTags: false,
@@ -333,4 +329,4 @@ export default compose( [
 	withSpokenMessages,
 	withInstanceId,
 	withFocusOutside, // this MUST be the innermost HOC as it calls handleFocusOutside
-] )( Autocomplete );
+] )( SelectControl );

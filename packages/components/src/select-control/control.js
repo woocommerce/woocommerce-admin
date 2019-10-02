@@ -70,39 +70,32 @@ class SearchControl extends Component {
 		} = this.props;
 		const { isActive } = this.state;
 
-		return <input
-			className="woocommerce-autocomplete__control-input"
-			id={ `woocommerce-autocomplete-${ instanceId }__control-input` }
-			ref={ this.input }
-			type={ 'search' }
-			value={ query }
-			placeholder={ isActive ? placeholder : '' }
-			onChange={ this.updateSearch( onSearch ) }
-			onFocus={ this.onFocus( onSearch ) }
-			onBlur={ this.onBlur }
-			onKeyDown={ this.onKeyDown }
-			role="combobox"
-			aria-autocomplete="list"
-			aria-expanded={ isExpanded }
-			aria-haspopup="true"
-			aria-owns={ listboxId }
-			aria-controls={ listboxId }
-			aria-activedescendant={ activeId }
-			aria-describedby={
-				hasTags && inlineTags ? `search-inline-input-${ instanceId }` : null
-			}
-		/>;
+		return (
+			<input
+				className="woocommerce-select-control__control-input"
+				id={ `woocommerce-select-control-${ instanceId }__control-input` }
+				ref={ this.input }
+				type={ 'search' }
+				value={ query }
+				placeholder={ isActive ? placeholder : '' }
+				onChange={ this.updateSearch( onSearch ) }
+				onFocus={ this.onFocus( onSearch ) }
+				onBlur={ this.onBlur }
+				onKeyDown={ this.onKeyDown }
+				role="combobox"
+				aria-autocomplete="list"
+				aria-expanded={ isExpanded }
+				aria-haspopup="true"
+				aria-owns={ listboxId }
+				aria-controls={ listboxId }
+				aria-activedescendant={ activeId }
+				aria-describedby={ hasTags && inlineTags ? `search-inline-input-${ instanceId }` : null }
+			/>
+		);
 	}
 
 	render() {
-		const {
-			hasTags,
-			help,
-			inlineTags,
-			instanceId,
-			label,
-			query,
-		} = this.props;
+		const { hasTags, help, inlineTags, instanceId, label, query } = this.props;
 		const { isActive } = this.state;
 
 		return (
@@ -113,7 +106,7 @@ class SearchControl extends Component {
 			// for the benefit of sighted users.
 			/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 			<div
-				className={ classnames( 'components-base-control', 'woocommerce-autocomplete__control', {
+				className={ classnames( 'components-base-control', 'woocommerce-select-control__control', {
 					empty: ! query.length,
 					'is-active': isActive,
 					'has-tags': inlineTags && hasTags,
@@ -127,26 +120,28 @@ class SearchControl extends Component {
 				{ inlineTags && <Tags { ...this.props } /> }
 
 				<div className="components-base-control__field">
-					{ !! label &&
+					{ !! label && (
 						<label
-							htmlFor={ `woocommerce-autocomplete-${ instanceId }__control-input` }
+							htmlFor={ `woocommerce-select-control-${ instanceId }__control-input` }
 							className="components-base-control__label"
 						>
 							{ label }
 						</label>
-					}
+					) }
 					{ this.renderInput() }
-					{ inlineTags && <span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
-						{ __( 'Move backward for selected items', 'woocommerce-admin' ) }
-					</span> }
-					{ !! help &&
+					{ inlineTags && (
+						<span id={ `search-inline-input-${ instanceId }` } className="screen-reader-text">
+							{ __( 'Move backward for selected items', 'woocommerce-admin' ) }
+						</span>
+					) }
+					{ !! help && (
 						<p
-							id={ `woocommerce-autocomplete-${ instanceId }__help` }
+							id={ `woocommerce-select-control-${ instanceId }__help` }
 							className="components-base-control__help"
 						>
 							{ help }
 						</p>
-					}
+					) }
 				</div>
 			</div>
 			/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
@@ -162,16 +157,13 @@ SearchControl.propTypes = {
 	/**
 	 * Help text to be appended beneath the input.
 	 */
-	help: PropTypes.oneOfType( [
-		PropTypes.string,
-		PropTypes.node,
-	] ),
+	help: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ),
 	/**
 	 * Render tags inside input, otherwise render below input.
 	 */
 	inlineTags: PropTypes.bool,
 	/**
-	 * ID of the main Autocomplete instance.
+	 * ID of the main SelectControl instance.
 	 */
 	instanceId: PropTypes.number,
 	/**
@@ -205,10 +197,7 @@ SearchControl.propTypes = {
 	 */
 	selected: PropTypes.arrayOf(
 		PropTypes.shape( {
-			key: PropTypes.oneOfType( [
-				PropTypes.number,
-				PropTypes.string,
-			] ).isRequired,
+			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
 			label: PropTypes.string,
 		} )
 	),
