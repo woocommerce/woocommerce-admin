@@ -246,24 +246,16 @@ class Start extends Component {
 						/>
 					</div>
 
-					<Button
-						isPrimary
-						onClick={ this.startWizard }
-						className="woocommerce-profile-wizard__continue"
-					>
-						{ __( 'Get started', 'woocommerce-admin' ) }
-					</Button>
-
-					<p>
+					<p className="woocommerce-profile-wizard__tos">
 						{ interpolateComponents( {
 							mixedString: __(
-								'By connecting your site you agree to our fascinating {{tosLink}}Terms of Service{{/tosLink}} and ' +
-									'to {{jetpackLink}}share details{{/jetpackLink}} with WordPress.com.',
+								'By connecting your site you agree to our fascinating {{tosLink}}Terms of Service{{/tosLink}} and to ' +
+									'{{detailsLink}}share details{{/detailsLink}} with WordPress.com. ',
 								'woocommerce-admin'
 							),
 							components: {
 								tosLink: <Link href="https://wordpress.com/tos" target="_blank" type="external" />,
-								jetpackLink: (
+								detailsLink: (
 									<Link
 										href="https://jetpack.com/support/what-data-does-jetpack-sync"
 										target="_blank"
@@ -273,6 +265,14 @@ class Start extends Component {
 							},
 						} ) }
 					</p>
+
+					<Button
+						isPrimary
+						onClick={ this.startWizard }
+						className="woocommerce-profile-wizard__continue"
+					>
+						{ __( 'Get started', 'woocommerce-admin' ) }
+					</Button>
 				</Card>
 
 				<p>
