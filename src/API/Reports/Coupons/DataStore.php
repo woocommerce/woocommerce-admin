@@ -13,6 +13,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\DataStore as ReportsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
 use \Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
+use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
 
 /**
  * API\Reports\Coupons\DataStore.
@@ -25,6 +26,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @var string
 	 */
 	protected $table_name = 'wc_order_coupon_lookup';
+
+	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'coupons';
 
 	/**
 	 * Mapping columns to data type to return correct response types.
@@ -233,8 +241,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
 
+		/*
+		 * We need to get the cache key here because
+		 * parent::update_intervals_sql_params() modifies $query_args.
+		 */
 		$cache_key = $this->get_cache_key( $query_args );
-		$data      = wp_cache_get( $cache_key, $this->cache_group );
+		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
 			$data = (object) array(
@@ -248,22 +260,25 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$included_coupons = $this->get_included_coupons_array( $query_args );
 			$limit_params     = $this->get_limit_params( $query_args );
 			$this->subquery->add_sql_clause( 'select', $selections );
-			$subquery         = $this->subquery->get_statement();
+			$subquery = $this->subquery->get_statement();
 			$this->get_sql_query_params( $query_args );
 
 			if ( count( $included_coupons ) > 0 ) {
 				$total_results = count( $included_coupons );
 				$total_pages   = (int) ceil( $total_results / $limit_params['per_page'] );
 
-				$fields          = $this->get_fields( $query_args );
-				$ids_table       = $this->get_ids_table( $included_coupons, 'coupon_id' );
+				$fields    = $this->get_fields( $query_args );
+				$ids_table = $this->get_ids_table( $included_coupons, 'coupon_id' );
 
 				$this->add_sql_clause( 'select', $this->format_join_selections( $fields, array( 'coupon_id' ) ) );
 				$this->add_sql_clause( 'from', '(' );
 				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
 				$this->add_sql_clause( 'from', ") AS {$table_name}" );
-				$this->add_sql_clause( 'right_join', "RIGHT JOIN ( {$ids_table} ) AS default_results
-					ON default_results.coupon_id = {$table_name}.coupon_id" );
+				$this->add_sql_clause(
+					'right_join',
+					"RIGHT JOIN ( {$ids_table} ) AS default_results
+					ON default_results.coupon_id = {$table_name}.coupon_id"
+				);
 
 				$coupons_query = $this->get_statement();
 			} else {
@@ -305,20 +320,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'page_no' => (int) $query_args['page'],
 			);
 
-			wp_cache_set( $cache_key, $data, $this->cache_group );
+			$this->set_cached_data( $cache_key, $data );
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . $this->table_name . '_' . md5( wp_json_encode( $params ) );
 	}
 
 	/**
@@ -407,6 +412,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * @param int $order_id  Order ID.
 		 */
 		do_action( 'woocommerce_reports_delete_coupon', 0, $order_id );
+
+		ReportsCache::invalidate();
 	}
 
 	/**
@@ -426,6 +433,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->get_db_table_name(),
 			array( 'coupon_id' => $post_id )
 		);
+
+		ReportsCache::invalidate();
 	}
 
 	/**
@@ -452,7 +461,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function initialize_queries() {
 		global $wpdb;
-		$this->subquery = new SqlQuery( $this->context . '_subquery' );
+		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', 'coupon_id' );
 	}

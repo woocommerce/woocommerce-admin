@@ -37,13 +37,13 @@ class SqlQuery {
 	 *
 	 * @var string
 	 */
-	private $context;
+	protected static $context;
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct( $context = '' ) {
-		$this->context = $context;
+		self::$context = $context;
 	}
 
 	/**
@@ -76,13 +76,13 @@ class SqlQuery {
 		 * @param array  $clauses The original arguments for the request.
 		 * @param string $context The data store context.
 		 */
-		$clauses = apply_filters( "wc_admin_clauses_{$type}", $this->sql_clauses[ $type ], $this->context );
+		$clauses = apply_filters( "wc_admin_clauses_{$type}", $this->sql_clauses[ $type ], self::$context );
 		/**
 		 * Filter SQL clauses by type and context.
 		 *
 		 * @param array  $clauses The original arguments for the request.
 		 */
-		$clauses = apply_filters( "wc_admin_clauses_{$type}_{$this->context}", $clauses );
+		$clauses = apply_filters( "wc_admin_clauses_{$type}_{self::$context}", $clauses );
 		return implode( ' ', $clauses );
 	}
 

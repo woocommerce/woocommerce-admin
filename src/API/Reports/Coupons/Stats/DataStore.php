@@ -51,6 +51,13 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	protected static $context = 'coupon_stats';
 
 	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'coupons_stats';
+
+	/**
 	 * Totals query object.
 	 *
 	 * @var SqlQuery
@@ -102,7 +109,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 		$this->interval_query->add_sql_clause( 'order_by', $intervals_params['order_by_clause'] );
 		$this->interval_query->add_sql_clause( 'select', $intervals_params['select_clause'] );
 
-		foreach( array( 'from', 'where_time', 'where' ) as $clause ) {
+		foreach ( array( 'from', 'where_time', 'where' ) as $clause ) {
 			$this->interval_query->add_sql_clause( $clause, $intervals_params[ $clause . '_clause' ] );
 			$this->total_query->add_sql_clause( $clause, $totals_params[ $clause . '_clause' ] );
 		}
@@ -135,8 +142,12 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
 
+		/*
+		 * We need to get the cache key here because
+		 * parent::update_intervals_sql_params() modifies $query_args.
+		 */
 		$cache_key = $this->get_cache_key( $query_args );
-		$data      = wp_cache_get( $cache_key, $this->cache_group );
+		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
 			$data = (object) array(
@@ -213,20 +224,10 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 			$segmenter->add_intervals_segments( $data, $intervals_query, $table_name );
 			$this->create_interval_subtotals( $data->intervals );
 
-			wp_cache_set( $cache_key, $data, $this->cache_group );
+			$this->set_cached_data( $cache_key, $data );
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . $this->table_name . '_stats_' . md5( wp_json_encode( $params ) );
 	}
 
 	/**
@@ -234,10 +235,10 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	 */
 	protected function initialize_queries() {
 		unset( $this->subquery );
-		$this->total_query = new SqlQuery( $this->context . '_total' );
+		$this->total_query = new SqlQuery( self::$context . '_total' );
 		$this->total_query->add_sql_clause( 'from', $this->get_db_table_name() );
 
-		$this->interval_query = new SqlQuery( $this->context . '_interval' );
+		$this->interval_query = new SqlQuery( self::$context . '_interval' );
 		$this->interval_query->add_sql_clause( 'from', $this->get_db_table_name() );
 		$this->interval_query->add_sql_clause( 'group_by', 'time_interval' );
 	}

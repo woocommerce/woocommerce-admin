@@ -12,7 +12,7 @@
 
 	<!-- Configs -->
 	<config name="minimum_supported_wp_version" value="4.7" />
-	<config name="testVersion" value="5.4-"/>
+	<config name="testVersion" value="5.6-"/>
 
 	<!-- Rules -->
 	<rule ref="WooCommerce-Core" />
@@ -31,6 +31,10 @@
 		<exclude-pattern>src/*</exclude-pattern>
 		<exclude-pattern>tests/*</exclude-pattern>
 		<exclude-pattern>woocommerce-admin.php</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+		<exclude-pattern>src/*</exclude-pattern>
 	</rule>
 
 	<rule ref="Generic.Commenting">

@@ -27,6 +27,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected $table_name = 'wc_order_product_lookup';
 
 	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'categories';
+
+	/**
 	 * Order by setting used for sorting categories data.
 	 *
 	 * @var string
@@ -83,7 +90,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
+		$this->report_columns['products_count'] = $this->prepend_table_name( $this->report_columns['products_count'], 'product_id' );
+		$this->report_columns['orders_count']   = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
 		$this->initialize_queries();
 	}
 
@@ -102,17 +110,17 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		// join wp_order_product_lookup_table with relationships and taxonomies
 		// @todo How to handle custom product tables?
 		$this->subquery->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id" );
-		$this->subquery->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id" );
+		$this->subquery->add_sql_clause( 'from', " LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_category_lookup}.category_id" );
 
 		$included_categories = $this->get_included_categories( $query_args );
 		if ( $included_categories ) {
-			$this->subquery->add_sql_clause( 'where', " AND {$wpdb->prefix}term_taxonomy.term_id IN ({$included_categories})" );
+			$this->subquery->add_sql_clause( 'where', " AND {$wpdb->wc_category_lookup}.category_tree_id IN ({$included_categories})" );
 
 			// Limit is left out here so that the grouping in code by PHP can be applied correctly.
 			// This also needs to be put after the term_taxonomy JOIN so that we can match the correct term name.
 			$this->get_order_by_params( $query_args, 'outer_from', 'default_results.category_id' );
 		} else {
-			$this->get_order_by_params( $query_args, 'from', "{$wpdb->prefix}term_taxonomy.term_id" );
+			$this->get_order_by_params( $query_args, 'from', "{$wpdb->wc_category_lookup}.category_tree_id" );
 		}
 
 		// @todo Only products in the category C or orders with products from category C (and, possibly others?).
@@ -122,7 +130,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		$this->add_order_status_clause( $query_args, $order_product_lookup_table, $this->subquery );
-		$this->subquery->add_sql_clause( 'where', " AND taxonomy = 'product_cat' " );
+		$this->subquery->add_sql_clause( 'where', " AND {$wpdb->wc_category_lookup}.category_tree_id IS NOT NULL" );
 	}
 
 	/**
@@ -234,8 +242,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
 
+		/*
+		 * We need to get the cache key here because
+		 * parent::update_intervals_sql_params() modifies $query_args.
+		 */
 		$cache_key = $this->get_cache_key( $query_args );
-		$data      = wp_cache_get( $cache_key, $this->cache_group );
+		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
 			$data = (object) array(
@@ -257,8 +269,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->add_sql_clause( 'from', '(' );
 				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
 				$this->add_sql_clause( 'from', ") AS {$table_name}" );
-				$this->add_sql_clause( 'right_join', "RIGHT JOIN ( {$ids_table} ) AS default_results
-					ON default_results.category_id = {$table_name}.category_id" );
+				$this->add_sql_clause(
+					'right_join',
+					"RIGHT JOIN ( {$ids_table} ) AS default_results
+					ON default_results.category_id = {$table_name}.category_id"
+				);
 
 				$categories_query = $this->get_statement();
 			} else {
@@ -291,20 +306,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'page_no' => (int) $query_args['page'],
 			);
 
-			wp_cache_set( $cache_key, $data, $this->cache_group );
+			$this->set_cached_data( $cache_key, $data );
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . $this->table_name . '_' . md5( wp_json_encode( $params ) );
 	}
 
 	/**
@@ -312,9 +317,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	private function initialize_queries() {
 		global $wpdb;
-		$this->subquery = new SqlQuery( $this->context . '_subquery' );
-		$this->subquery->add_sql_clause( 'select', "{$wpdb->term_taxonomy}.term_id as category_id," );
+		$this->subquery = new SqlQuery( self::$context . '_subquery' );
+		$this->subquery->add_sql_clause( 'select', "{$wpdb->wc_category_lookup}.category_tree_id as category_id," );
 		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
-		$this->subquery->add_sql_clause( 'group_by', 'category_id' );
+		$this->subquery->add_sql_clause( 'group_by', "{$wpdb->wc_category_lookup}.category_tree_id" );
 	}
 }

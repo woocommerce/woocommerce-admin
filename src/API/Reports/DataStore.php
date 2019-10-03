@@ -117,6 +117,44 @@ class DataStore extends SqlQuery {
 	}
 
 	/**
+	 * Returns string to be used as cache key for the data.
+	 *
+	 * @param array $params Query parameters.
+	 * @return string
+	 */
+	protected function get_cache_key( $params ) {
+		return implode(
+			'_',
+			array(
+				'wc_report',
+				$this->cache_key,
+				md5( wp_json_encode( $params ) ),
+			)
+		);
+	}
+
+	/**
+	 * Wrapper around Cache::get().
+	 *
+	 * @param string $cache_key Cache key.
+	 * @return mixed
+	 */
+	protected function get_cached_data( $cache_key ) {
+		return Cache::get( $cache_key );
+	}
+
+	/**
+	 * Wrapper around Cache::set().
+	 *
+	 * @param string $cache_key Cache key.
+	 * @param mixed  $value     New value.
+	 * @return bool
+	 */
+	protected function set_cached_data( $cache_key, $value ) {
+		return Cache::set( $cache_key, $value );
+	}
+
+	/**
 	 * Compares two report data objects by pre-defined object property and ASC/DESC ordering.
 	 *
 	 * @param stdClass $a Object a.
@@ -316,35 +354,21 @@ class DataStore extends SqlQuery {
 	 * @return bool
 	 */
 	protected function intervals_missing( $expected_interval_count, $db_records, $items_per_page, $page_no, $order, $order_by, $intervals_count ) {
-		if ( $expected_interval_count > $db_records ) {
-			if ( 'date' === $order_by ) {
-				$expected_intervals_on_page = $this->expected_intervals_on_page( $expected_interval_count, $items_per_page, $page_no );
-				if ( $intervals_count < $expected_intervals_on_page ) {
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				if ( 'desc' === $order ) {
-					if ( $page_no > floor( $db_records / $items_per_page ) ) {
-						return true;
-					} else {
-						return false;
-					}
-				} elseif ( 'asc' === $order ) {
-					if ( $page_no <= ceil( ( $expected_interval_count - $db_records ) / $items_per_page ) ) {
-						return true;
-					} else {
-						return false;
-					}
-				} else {
-					// Invalid ordering.
-					return false;
-				}
-			}
-		} else {
+		if ( $expected_interval_count <= $db_records ) {
 			return false;
 		}
+		if ( 'date' === $order_by ) {
+			$expected_intervals_on_page = $this->expected_intervals_on_page( $expected_interval_count, $items_per_page, $page_no );
+			return $intervals_count < $expected_intervals_on_page;
+		}
+		if ( 'desc' === $order ) {
+			return $page_no > floor( $db_records / $items_per_page );
+		}
+		if ( 'asc' === $order ) {
+			return $page_no <= ceil( ( $expected_interval_count - $db_records ) / $items_per_page );
+		}
+		// Invalid ordering.
+		return false;
 	}
 
 	/**
@@ -354,7 +378,7 @@ class DataStore extends SqlQuery {
 	 * to fetch correct records.
 	 *
 	 * @param array  $intervals_query Array with clauses for the Intervals SQL query.
-	 * @param array  $query_args Query arguements.
+	 * @param array  $query_args Query arguments.
 	 * @param int    $db_interval_count Database interval count.
 	 * @param int    $expected_interval_count Expected interval count on the output.
 	 * @param string $table_name Name of the db table relevant for the date constraint.
@@ -433,6 +457,7 @@ class DataStore extends SqlQuery {
 					$new_start_date->setTimestamp( $new_start_date_timestamp );
 				}
 			}
+			// @todo - Do this without modifying $query_args?
 			$query_args['adj_after']               = $new_start_date;
 			$query_args['adj_before']              = $new_end_date;
 			$adj_after                             = $new_start_date->format( TimeInterval::$sql_datetime_format );
@@ -462,6 +487,7 @@ class DataStore extends SqlQuery {
 				$this->add_sql_clause( 'limit', 'LIMIT ' . $offset . ',' . $count );
 			}
 			// Otherwise no change in limit clause.
+			// @todo - Do this without modifying $query_args?
 			$query_args['adj_after']  = $query_args['after'];
 			$query_args['adj_before'] = $query_args['before'];
 		}
@@ -677,7 +703,7 @@ class DataStore extends SqlQuery {
 	protected function get_limit_sql_params( $query_args ) {
 		$params = $this->get_limit_params( $query_args );
 
-		$sql_query = array();
+		$sql_query          = array();
 		$sql_query['limit'] = "LIMIT {$params['offset']}, {$params['per_page']}";
 		// @todo remove $sql_query assignment after down stream classes are updated.
 		$this->clear_sql_clause( 'limit' );
@@ -697,7 +723,7 @@ class DataStore extends SqlQuery {
 			if ( isset( $query_args['per_page'] ) && is_numeric( $query_args['per_page'] ) ) {
 				$this->limit_parameters['per_page'] = (int) $query_args['per_page'];
 			}
-	
+
 			$this->limit_parameters['offset'] = 0;
 			if ( isset( $query_args['page'] ) ) {
 				$this->limit_parameters['offset'] = ( (int) $query_args['page'] - 1 ) * $this->limit_parameters['per_page'];

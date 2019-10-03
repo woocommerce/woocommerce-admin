@@ -48,13 +48,14 @@ class Loader {
 	 * Hooks added here should be removed in `wc_admin_initialize` via the feature plugin.
 	 */
 	public function __construct() {
+		add_action( 'init', array( __CLASS__, 'define_tables' ) );
 		add_action( 'init', array( __CLASS__, 'load_features' ) );
-;		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 14 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
-		// old settings injection
+		// Old settings injection.
 		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'add_component_settings' ) );
-		// new settings injection
+		// New settings injection.
 		add_filter( 'woocommerce_shared_settings', array( __CLASS__, 'add_component_settings' ) );
 		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_page_handler' ) );
@@ -64,7 +65,7 @@ class Loader {
 		add_filter( 'woocommerce_settings_groups', array( __CLASS__, 'add_settings_group' ) );
 		add_filter( 'woocommerce_settings-wc_admin', array( __CLASS__, 'add_settings' ) );
 		add_action( 'admin_head', array( __CLASS__, 'remove_notices' ) );
-		add_action( 'admin_notices', array( __CLASS__, 'inject_before_notices' ) );
+		add_action( 'admin_notices', array( __CLASS__, 'inject_before_notices' ), -9999 );
 		add_action( 'admin_notices', array( __CLASS__, 'inject_after_notices' ), PHP_INT_MAX );
 
 		// priority is 20 to run after https://github.com/woocommerce/woocommerce/blob/a55ae325306fc2179149ba9b97e66f32f84fdd9c/includes/admin/class-wc-admin-menus.php#L165.
@@ -75,6 +76,23 @@ class Loader {
 		* Gutenberg has also disabled emojis. More on that here -> https://github.com/WordPress/gutenberg/pull/6151
 		*/
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	}
+
+	/**
+	 * Add custom tables to $wpdb object.
+	 */
+	public static function define_tables() {
+		global $wpdb;
+
+		// List of tables without prefixes.
+		$tables = array(
+			'wc_category_lookup' => 'wc_category_lookup',
+		);
+
+		foreach ( $tables as $name => $table ) {
+			$wpdb->$name    = $wpdb->prefix . $table;
+			$wpdb->tables[] = $table;
+		}
 	}
 
 	/**
@@ -141,7 +159,7 @@ class Loader {
 			$feature = 'Automattic\\WooCommerce\\Admin\\Features\\' . $feature;
 
 			if ( class_exists( $feature ) ) {
-				new $feature;
+				new $feature();
 			}
 		}
 	}
@@ -298,7 +316,7 @@ class Loader {
 			WC_ADMIN_APP,
 			self::get_url( 'app/style.css' ),
 			array( 'wc-components' ),
-			self::get_file_version('app/style.css' )
+			self::get_file_version( 'app/style.css' )
 		);
 		wp_style_add_data( WC_ADMIN_APP, 'rtl', 'replace' );
 
@@ -344,7 +362,7 @@ class Loader {
 	/**
 	 *  Returns true if we are on a "classic" (non JS app) powered admin page.
 	 *
-	 * @todo See usage in `admin.php`. This needs refactored and implemented properly in core.
+	 * TODO: See usage in `admin.php`. This needs refactored and implemented properly in core.
 	 */
 	public static function is_embed_page() {
 		return wc_admin_is_connected_page();
@@ -519,29 +537,41 @@ class Loader {
 	 * @return array Array of component settings.
 	 */
 	public static function add_component_settings( $settings ) {
+		if ( ! is_admin() ) {
+			return $settings;
+		}
+
 		if ( ! function_exists( 'wc_blocks_container' ) ) {
 			global $wp_locale;
 			// inject data not available via older versions of wc_blocks/woo.
-			$settings['orderStatuses']        = self::get_order_statuses( wc_get_order_statuses() );
-			$settings['currency']             = self::get_currency_settings();
-			$settings['locale'] = [
-				'siteLocale' => isset( $settings['siteLocale'] )
+			$settings['orderStatuses'] = self::get_order_statuses( wc_get_order_statuses() );
+			$settings['currency']      = self::get_currency_settings();
+			$settings['locale']        = [
+				'siteLocale'    => isset( $settings['siteLocale'] )
 					? $settings['siteLocale']
 					: get_locale(),
-				'userLocale' => isset( $settings['l10n']['userLocale'] )
+				'userLocale'    => isset( $settings['l10n']['userLocale'] )
 					? $settings['l10n']['userLocale']
 					: get_user_locale(),
 				'weekdaysShort' => isset( $settings['l10n']['weekdaysShort'] )
 					? $settings['l10n']['weekdaysShort']
-					: array_values( $wp_locale->weekday_abbrev )
+					: array_values( $wp_locale->weekday_abbrev ),
 			];
 		}
+
 		$preload_data_endpoints = apply_filters( 'woocommerce_component_settings_preload_endpoints', array( '/wc/v3' ) );
 		if ( ! empty( $preload_data_endpoints ) ) {
 			$preload_data = array_reduce(
 				array_values( $preload_data_endpoints ),
 				'rest_preload_api_request'
 			);
+		}
+
+		$preload_options = apply_filters( 'woocommerce_admin_preload_options', array() );
+		if ( ! empty( $preload_options ) ) {
+			foreach ( $preload_options as $option ) {
+				$settings['preloadOptions'][ $option ] = get_option( $option );
+			}
 		}
 
 		$current_user_data = array();
@@ -767,7 +797,7 @@ class Loader {
 				'wc-date',
 				'wc-components',
 			];
-			foreach( $handles_for_injection as $handle ) {
+			foreach ( $handles_for_injection as $handle ) {
 				$script = wp_scripts()->query( $handle, 'registered' );
 				if ( $script instanceof _WP_Dependency ) {
 					$script->deps[] = 'wc-settings';

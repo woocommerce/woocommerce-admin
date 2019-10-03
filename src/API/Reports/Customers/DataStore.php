@@ -13,6 +13,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\DataStore as ReportsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
 use \Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
+use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
 
 /**
  * Admin\API\Reports\Customers\DataStore.
@@ -25,6 +26,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @var string
 	 */
 	protected $table_name = 'wc_customer_lookup';
+
+	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'customers';
 
 	/**
 	 * Mapping columns to data type to return correct response types.
@@ -344,8 +352,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
 
+		/*
+		 * We need to get the cache key here because
+		 * parent::update_intervals_sql_params() modifies $query_args.
+		 */
 		$cache_key = $this->get_cache_key( $query_args );
-		$data      = wp_cache_get( $cache_key, $this->cache_group );
+		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
 			$data = (object) array(
@@ -365,7 +377,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				"
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
-			$params = $this->get_limit_params( $query_args );
+			$params      = $this->get_limit_params( $query_args );
 			$total_pages = (int) ceil( $db_records_count / $params['per_page'] );
 			if ( $query_args['page'] < 1 || $query_args['page'] > $total_pages ) {
 				return $data;
@@ -392,7 +404,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'page_no' => (int) $query_args['page'],
 			);
 
-			wp_cache_set( $cache_key, $data, $this->cache_group );
+			$this->set_cached_data( $cache_key, $data );
 		}
 
 		return $data;
@@ -639,6 +651,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * @param int $customer_id Customer ID.
 		 */
 		do_action( 'woocommerce_reports_update_customer', $customer_id );
+
+		ReportsCache::invalidate();
+
 		return $results;
 	}
 
@@ -689,21 +704,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	}
 
 	/**
-	 * Returns string to be used as cache key for the data.
-	 *
-	 * @param array $params Query parameters.
-	 * @return string
-	 */
-	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . $this->table_name . '_' . md5( wp_json_encode( $params ) );
-	}
-
-	/**
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
 		global $wpdb;
-		$this->subquery = new SqlQuery( $this->context . '_subquery' );
+		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
 		$this->subquery->add_sql_clause( 'select', "{$this->get_db_table_name()}.customer_id" );
 		$this->subquery->add_sql_clause( 'group_by', "{$this->get_db_table_name()}.customer_id" );
