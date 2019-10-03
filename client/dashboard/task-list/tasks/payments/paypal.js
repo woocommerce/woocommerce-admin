@@ -126,6 +126,10 @@ class PayPal extends Component {
 		if ( ! isSettingsError ) {
 			this.props.setRequestPending( false );
 			markConfigured( 'paypal' );
+			this.props.createNotice(
+				'success',
+				__( 'PayPal connected successfully.', 'woocommerce-admin' )
+			);
 		} else {
 			this.props.setRequestPending( false );
 			createNotice(

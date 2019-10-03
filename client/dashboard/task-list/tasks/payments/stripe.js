@@ -225,6 +225,10 @@ class Stripe extends Component {
 		if ( ! isSettingsError ) {
 			this.props.setRequestPending( false );
 			markConfigured( 'stripe' );
+			this.props.createNotice(
+				'success',
+				__( 'Stripe connected successfully.', 'woocommerce-admin' )
+			);
 		} else {
 			this.props.setRequestPending( false );
 			createNotice(
