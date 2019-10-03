@@ -24,20 +24,25 @@ import Control from './control';
 export class SelectControl extends Component {
 	static getInitialState() {
 		return {
-			filteredOptions: [],
-			selectedIndex: 0,
+			isExpanded: false,
 			query: '',
 		};
 	}
 
 	constructor( props ) {
 		super( props );
-		this.state = this.constructor.getInitialState();
+		this.state = {
+			...this.constructor.getInitialState(),
+			filteredOptions: [],
+			selectedIndex: 0,
+		};
 
 		this.bindNode = this.bindNode.bind( this );
+		this.decrementSelectedIndex = this.decrementSelectedIndex.bind( this );
+		this.incrementSelectedIndex = this.incrementSelectedIndex.bind( this );
 		this.search = this.search.bind( this );
 		this.selectOption = this.selectOption.bind( this );
-		this.updateSelectedIndex = this.updateSelectedIndex.bind( this );
+		this.setExpanded = this.setExpanded.bind( this );
 	}
 
 	bindNode( node ) {
@@ -58,12 +63,6 @@ export class SelectControl extends Component {
 
 	handleFocusOutside() {
 		this.reset();
-	}
-
-	isExpanded() {
-		const { filteredOptions, query } = this.state;
-
-		return filteredOptions.length > 0 || query;
 	}
 
 	hasTags() {
@@ -107,8 +106,23 @@ export class SelectControl extends Component {
 		this.reset( newSelected );
 	}
 
-	updateSelectedIndex( value ) {
-		this.setState( { selectedIndex: value } );
+	decrementSelectedIndex() {
+		const { selectedIndex } = this.state;
+		const options = this.getOptions();
+		const nextSelectedIndex =
+			null !== selectedIndex
+				? ( selectedIndex === 0 ? options.length : selectedIndex ) - 1
+				: options.length - 1;
+
+		this.setState( { selectedIndex: nextSelectedIndex } );
+	}
+
+	incrementSelectedIndex() {
+		const { selectedIndex } = this.state;
+		const options = this.getOptions();
+		const nextSelectedIndex = null !== selectedIndex ? ( selectedIndex + 1 ) % options.length : 0;
+
+		this.setState( { selectedIndex: nextSelectedIndex } );
 	}
 
 	announce( filteredOptions ) {
@@ -132,6 +146,12 @@ export class SelectControl extends Component {
 		} else {
 			debouncedSpeak( __( 'No results.', 'woocommerce-admin' ), 'assertive' );
 		}
+	}
+
+	getOptions() {
+		const { isSearchable, options } = this.props;
+		const { filteredOptions } = this.state;
+		return isSearchable ? filteredOptions : options;
 	}
 
 	getFilteredOptions( query ) {
@@ -178,6 +198,10 @@ export class SelectControl extends Component {
 		return onFilter( filtered );
 	}
 
+	setExpanded( value ) {
+		this.setState( { isExpanded: value } );
+	}
+
 	search( query ) {
 		const { hideBeforeSearch, onSearch, options } = this.props;
 
@@ -187,16 +211,21 @@ export class SelectControl extends Component {
 			null !== query && ! query.length && ! hideBeforeSearch
 				? options
 				: this.getFilteredOptions( query );
-		this.setState( { selectedIndex: 0, filteredOptions, query: query || '' }, () =>
-			this.announce( filteredOptions )
+		this.setState(
+			{
+				selectedIndex: 0,
+				filteredOptions,
+				isExpanded: Boolean( filteredOptions.length ),
+				query: query || '',
+			},
+			() => this.announce( filteredOptions )
 		);
 	}
 
 	render() {
 		const { className, inlineTags, instanceId, isSearchable, options } = this.props;
-		const { selectedIndex } = this.state;
+		const { isExpanded, selectedIndex } = this.state;
 
-		const isExpanded = this.isExpanded();
 		const hasTags = this.hasTags();
 		const { key: selectedKey = '' } = options[ selectedIndex ] || {};
 		const listboxId = isExpanded ? `woocommerce-select-control__listbox-${ instanceId }` : null;
@@ -221,6 +250,9 @@ export class SelectControl extends Component {
 					listboxId={ listboxId }
 					onSearch={ this.search }
 					selected={ this.getSelected() }
+					setExpanded={ this.setExpanded }
+					decrementSelectedIndex={ this.decrementSelectedIndex }
+					incrementSelectedIndex={ this.incrementSelectedIndex }
 				/>
 				{ ! inlineTags && hasTags && <Tags { ...this.props } selected={ this.getSelected() } /> }
 				{ isExpanded && (
@@ -230,9 +262,12 @@ export class SelectControl extends Component {
 						activeId={ activeId }
 						listboxId={ listboxId }
 						node={ this.node }
-						onChange={ this.updateSelectedIndex }
 						onSelect={ this.selectOption }
 						onSearch={ this.search }
+						options={ this.getOptions() }
+						decrementSelectedIndex={ this.decrementSelectedIndex }
+						incrementSelectedIndex={ this.incrementSelectedIndex }
+						setExpanded={ this.setExpanded }
 					/>
 				) }
 			</div>

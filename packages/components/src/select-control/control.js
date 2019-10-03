@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { BACKSPACE } from '@wordpress/keycodes';
+import { BACKSPACE, DOWN, UP } from '@wordpress/keycodes';
 import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -38,11 +38,15 @@ class Control extends Component {
 	}
 
 	onFocus( onSearch ) {
-		const { isSearchable } = this.props;
+		const { isSearchable, setExpanded } = this.props;
 
 		return event => {
 			this.setState( { isActive: true } );
-			onSearch( isSearchable ? event.target.value : '' );
+			if ( isSearchable ) {
+				onSearch( event.target.value );
+			} else {
+				setExpanded( true );
+			}
 		};
 	}
 
@@ -51,10 +55,31 @@ class Control extends Component {
 	}
 
 	onKeyDown( event ) {
-		const { selected, onChange, query } = this.props;
+		const {
+			decrementSelectedIndex,
+			incrementSelectedIndex,
+			selected,
+			onChange,
+			query,
+			setExpanded,
+		} = this.props;
 
 		if ( BACKSPACE === event.keyCode && ! query && selected.length ) {
 			onChange( [ ...selected.slice( 0, -1 ) ] );
+		}
+
+		if ( DOWN === event.keyCode ) {
+			incrementSelectedIndex();
+			setExpanded( true );
+			event.preventDefault();
+			event.stopPropagation();
+		}
+
+		if ( UP === event.keyCode ) {
+			decrementSelectedIndex();
+			setExpanded( true );
+			event.preventDefault();
+			event.stopPropagation();
 		}
 	}
 
