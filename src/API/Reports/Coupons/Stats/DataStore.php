@@ -234,10 +234,10 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	 */
 	protected function initialize_queries() {
 		unset( $this->subquery );
-		$this->total_query = new SqlQuery();
+		$this->total_query = new SqlQuery( $this->context . '_total' );
 		$this->total_query->add_sql_clause( 'from', $this->get_db_table_name() );
 
-		$this->interval_query = new SqlQuery();
+		$this->interval_query = new SqlQuery( $this->context . '_interval' );
 		$this->interval_query->add_sql_clause( 'from', $this->get_db_table_name() );
 		$this->interval_query->add_sql_clause( 'group_by', 'time_interval' );
 	}

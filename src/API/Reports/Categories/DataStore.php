@@ -312,7 +312,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	private function initialize_queries() {
 		global $wpdb;
-		$this->subquery = new SqlQuery();
+		$this->subquery = new SqlQuery( $this->context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', "{$wpdb->term_taxonomy}.term_id as category_id," );
 		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', 'category_id' );

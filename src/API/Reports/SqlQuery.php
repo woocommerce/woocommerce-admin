@@ -37,7 +37,14 @@ class SqlQuery {
 	 *
 	 * @var string
 	 */
-	private $context = '';
+	private $context;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct( $context = '' ) {
+		$this->context = $context;
+	}
 
 	/**
 	 * Add a SQL clause to be included when get_data is called.
