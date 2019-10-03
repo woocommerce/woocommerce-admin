@@ -255,7 +255,7 @@
 		margin: $gap 0;
 
 		&.is-active {
-			box-shadow: 0 0 0 1px #673d99;
+			box-shadow: 0 0 0 1px $studio-woocommerce-purple-60;
 		}
 
 		.components-base-control__field {
@@ -277,7 +277,7 @@
 			margin-top: 0;
 			top: 0;
 			right: $gap;
-			bottom: 16px;
+			bottom: $gap;
 			color: $studio-black;
 		}
 	}
