@@ -44,7 +44,8 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	 * Constructor.
 	 */
 	public function __construct() {
-		// This space intentionally left blank (to avoid parent constructor).
+		$this->set_db_table_name();
+		$this->initialize_queries();
 	}
 
 	/**
@@ -56,7 +57,7 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$customers_table_name = $wpdb->prefix . self::TABLE_NAME;
+		$customers_table_name = $this->get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -82,32 +83,23 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 
 			$selections       = $this->selected_columns( $query_args );
 			$sql_query_params = $this->get_sql_query_params( $query_args );
+			// Clear SQL clauses set for parent class queries that are different here.
+			$this->subquery->clear_sql_clause( 'select' );
+			$this->subquery->add_sql_clause( 'select', 'SUM( gross_total ) AS total_spend,' );
+			$this->subquery->add_sql_clause(
+				'select',
+				'CASE WHEN COUNT( order_id ) = 0 THEN NULL ELSE COUNT( order_id ) END AS orders_count,'
+			);
+			$this->subquery->add_sql_clause(
+				'select',
+				'CASE WHEN COUNT( order_id ) = 0 THEN 0 ELSE SUM( gross_total ) / COUNT( order_id ) END AS avg_order_value'
+			);
 
+			$this->clear_sql_clause( array( 'order_by', 'limit' ) );
+			$this->add_sql_clause( 'select', $selections );
+			$this->add_sql_clause( 'from', "({$this->subquery->get_statement()}) AS tt" );
 			$report_data = $wpdb->get_results(
-				"SELECT {$selections} FROM
-				(
-					SELECT
-						(
-							CASE WHEN COUNT( order_id ) = 0
-								THEN NULL
-								ELSE COUNT( order_id )
-							END
-						) as orders_count,
-      					SUM( gross_total ) as total_spend, 
-						( SUM( gross_total ) / COUNT( order_id ) ) as avg_order_value
-					FROM
-						{$customers_table_name}
-						{$sql_query_params['from_clause']}
-					WHERE
-						1=1
-						{$sql_query_params['where_time_clause']}
-						{$sql_query_params['where_clause']}
-					GROUP BY
-						{$customers_table_name}.customer_id
-					HAVING
-						1=1
-						{$sql_query_params['having_clause']}
-				) as tt",
+				$this->get_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -130,6 +122,6 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	 * @return string
 	 */
 	protected function get_cache_key( $params ) {
-		return 'woocommerce_' . self::TABLE_NAME . '_stats_' . md5( wp_json_encode( $params ) );
+		return 'woocommerce_' . $this->table_name . '_stats_' . md5( wp_json_encode( $params ) );
 	}
 }

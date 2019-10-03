@@ -28,6 +28,7 @@ class SqlQuery {
 		'where'      => array(),
 		'where_time' => array(),
 		'group_by'   => array(),
+		'having'     => array(),
 		'limit'      => array(),
 		'order_by'   => array(),
 	);
@@ -97,6 +98,10 @@ class SqlQuery {
 	 * @return string
 	 */
 	protected function get_statement() {
+		// Ensure the conditionally added clauses are always filtered.
+		$group_by = $this->get_sql_clause( 'group_by' );
+		$having   = $this->get_sql_clause( 'having' );
+		$order_by = $this->get_sql_clause( 'order_by' );
 
 		$statement = "
 			SELECT
@@ -111,17 +116,23 @@ class SqlQuery {
 				{$this->get_sql_clause( 'where' )}
 		";
 
-		if ( ! empty( $this->sql_clauses['group_by'] ) ) {
+		if ( ! empty( $group_by ) ) {
 			$statement .= "
 				GROUP BY
-					{$this->get_sql_clause( 'group_by' )}
+					{$group_by}
 			";
+			if ( ! empty( $having ) ) {
+				$statement .= "
+					HAVING
+						{$having}
+				";
+			}
 		}
 
-		if ( ! empty( $this->sql_clauses['order_by'] ) ) {
+		if ( ! empty( $order_by ) ) {
 			$statement .= "
 				ORDER BY
-					{$this->get_sql_clause( 'order_by' )}
+					{$order_by}
 			";
 		}
 

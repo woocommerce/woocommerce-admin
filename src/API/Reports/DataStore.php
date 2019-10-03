@@ -80,21 +80,28 @@ class DataStore extends SqlQuery {
 	protected static $context = 'reports';
 
 	/**
-	 * Class constructor
+	 * Class constructor.
 	 */
 	protected function __construct() {
-		global $wpdb;
-		if ( $this->table_name ) {
-			$wpdb->{$this->table_name} = $wpdb->prefix . $this->table_name;
-		}
+		$this->set_db_table_name();
 	}
 
 	/**
-	 * Get table name from database class
+	 * Get table name from database class.
 	 */
 	protected function get_db_table_name() {
 		global $wpdb;
 		return isset( $wpdb->{$this->table_name} ) ? $wpdb->{$this->table_name} : $this->table_name;
+	}
+
+	/**
+	 * Set table name from database class.
+	 */
+	protected function set_db_table_name() {
+		global $wpdb;
+		if ( $this->table_name && ! isset( $wpdb->{$this->table_name} ) ) {
+			$wpdb->{$this->table_name} = $wpdb->prefix . $this->table_name;
+		}
 	}
 
 	/**
@@ -762,6 +769,7 @@ class DataStore extends SqlQuery {
 	 * @return array
 	 */
 	protected function get_order_by_sql_params( $query_args ) {
+		// @todo remove $sql_query once all stores are refactored/
 		$sql_query['order_by_clause'] = '';
 		if ( isset( $query_args['orderby'] ) ) {
 			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
