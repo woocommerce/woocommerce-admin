@@ -253,18 +253,16 @@
 
 	.woocommerce-select-control__control {
 		margin: $gap 0;
+		padding-right: $gap + 24px;
 
 		&.is-active {
 			box-shadow: 0 0 0 1px $studio-woocommerce-purple-60;
 		}
 
-		.components-base-control__field {
-			max-width: calc(100% - 36px);
-		}
-
 		&::after {
 			display: block;
 			pointer-events: none;
+			cursor: pointer;
 			position: absolute;
 			float: right;
 			line-height: 56px;
