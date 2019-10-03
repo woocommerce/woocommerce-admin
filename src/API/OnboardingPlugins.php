@@ -127,6 +127,19 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 				'schema' => array( $this, 'get_connect_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/connect-square',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'connect_square' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_connect_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -440,6 +453,44 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 			'merchantId'  => md5( site_url( '/' ) . time() ),
 		);
 		$connect_url = add_query_arg( $query_args, wc_gateway_ppec()->ips->get_middleware_login_url( 'live' ) );
+
+		return( array(
+			'connectUrl' => $connect_url,
+		) );
+	}
+
+	/**
+	 * Returns a URL that can be used to connect to Square.
+	 *
+	 * @return array Connect URL.
+	 */
+	public function connect_square() {
+		if ( ! class_exists( '\WooCommerce\Square\Handlers\Connection' ) ) {
+			return new WP_Error( 'woocommerce_rest_helper_connect', __( 'There was an error connecting to Square.', 'woocommerce-admin' ), 500 );
+		}
+
+		$url = \WooCommerce\Square\Handlers\Connection::CONNECT_URL_PRODUCTION;
+
+		$redirect_url = wp_nonce_url( wc_admin_url( '&task=payments&square-connect-finish=1' ), 'wc_square_connected' );
+		$args         = array(
+			'redirect' => urlencode( urlencode( $redirect_url ) ),
+			'scopes'   => implode( ',', array(
+				'MERCHANT_PROFILE_READ',
+				'PAYMENTS_READ',
+				'PAYMENTS_WRITE',
+				'ORDERS_READ',
+				'ORDERS_WRITE',
+				'CUSTOMERS_READ',
+				'CUSTOMERS_WRITE',
+				'SETTLEMENTS_READ',
+				'ITEMS_READ',
+				'ITEMS_WRITE',
+				'INVENTORY_READ',
+				'INVENTORY_WRITE',
+			) ),
+		);
+
+		$connect_url = add_query_arg( $args, $url );
 
 		return( array(
 			'connectUrl' => $connect_url,

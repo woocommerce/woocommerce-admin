@@ -67,6 +67,7 @@ class Onboarding {
 		add_action( 'woocommerce_theme_installed', array( $this, 'delete_themes_transient' ) );
 		add_action( 'after_switch_theme', array( $this, 'delete_themes_transient' ) );
 		add_action( 'current_screen', array( $this, 'finish_paypal_connect' ) );
+		add_action( 'current_screen', array( $this, 'finish_square_connect' ) );
 		add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
 		add_action( 'current_screen', array( $this, 'reset_profiler' ) );
 		add_action( 'current_screen', array( $this, 'reset_task_list' ) );
@@ -452,6 +453,40 @@ class Onboarding {
 		add_filter( 'wp_redirect', array( $this, 'overwrite_paypal_redirect'), 10, 2 );
 		wc_gateway_ppec()->ips->maybe_received_credentials();
 		remove_filter( 'wp_redirect', array( $this, 'overwrite_paypal_redirect' ) );
+	}
+
+	/**
+	 * Instead of redirecting back to the payment settings page, we will redirect back to the payments task list with our status.
+	 */
+	public function overwrite_square_redirect( $location, $status ) {
+		$settings_page = 'page=wc-settings&tab=square';
+		if ( $settings_page === substr( $location, -strlen( $settings_page ) ) ) {
+			return wc_admin_url( '&task=payments&square-connect=1' );
+		}
+		return $location;
+	}
+
+	/**
+	 * Finishes the Square connection process by saving the correct settings.
+	 */
+	public function finish_square_connect() {
+		if (
+			! Loader::is_admin_page() ||
+			! isset( $_GET['square-connect-finish'] ) // WPCS: CSRF ok.
+		) {
+			return;
+		}
+
+		if ( ! class_exists( '\WooCommerce\Square\Plugin' ) ) {
+			return false;
+		}
+
+		$square = \WooCommerce\Square\Plugin::instance();
+
+		// @todo This is a bit hacky but works. Ideally, woocommerce-square would contain a filter for us.
+		add_filter( 'wp_redirect', array( $this, 'overwrite_square_redirect'), 10, 2 );
+		$square->get_connection_handler()->handle_connected();
+		remove_filter( 'wp_redirect', array( $this, 'overwrite_square_redirect' ) );
 	}
 
 	/**
