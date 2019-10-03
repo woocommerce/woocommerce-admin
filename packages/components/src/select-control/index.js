@@ -44,7 +44,7 @@ export class SelectControl extends Component {
 		this.node = node;
 	}
 
-	reset( selected = this.props.selected ) {
+	reset( selected = this.getSelected() ) {
 		const { multiple } = this.props;
 		const initialState = this.constructor.getInitialState();
 
@@ -76,15 +76,32 @@ export class SelectControl extends Component {
 		return selected.some( item => Boolean( item.label ) );
 	}
 
+	getSelected() {
+		const { multiple, options, selected } = this.props;
+
+		// Return the passed value if an array is provided.
+		if ( multiple || Array.isArray( selected ) ) {
+			return selected;
+		}
+
+		const selectedOption = options.find( option => option.key === selected );
+		return selectedOption ? [ selectedOption ] : [];
+	}
+
 	selectOption( option ) {
 		const { multiple, onChange, selected } = this.props;
 		const { query } = this.state;
 		const newSelected = multiple ? [ ...selected, option ] : [ option ];
 
-		// Check if this is already selected
-		const isSelected = findIndex( selected, { key: option.key } );
-		if ( -1 === isSelected ) {
-			onChange( newSelected, query );
+		// Trigger a change if the selected value is different and pass back
+		// an array or string depending on the original value.
+		if ( Array.isArray( selected ) ) {
+			const isSelected = findIndex( selected, { key: option.key } );
+			if ( -1 === isSelected ) {
+				onChange( newSelected, query );
+			}
+		} else if ( selected !== option.key ) {
+			onChange( option.key, query );
 		}
 
 		this.reset( newSelected );
@@ -124,9 +141,8 @@ export class SelectControl extends Component {
 			maxResults,
 			onFilter,
 			options,
-			selected,
 		} = this.props;
-		const selectedKeys = selected.map( option => option.key );
+		const selectedKeys = this.getSelected().map( option => option.key );
 		const filtered = [];
 
 		// Create a regular expression to filter the options.
@@ -204,8 +220,9 @@ export class SelectControl extends Component {
 					isExpanded={ isExpanded }
 					listboxId={ listboxId }
 					onSearch={ this.search }
+					selected={ this.getSelected() }
 				/>
-				{ ! inlineTags && hasTags && <Tags { ...this.props } /> }
+				{ ! inlineTags && hasTags && <Tags { ...this.props } selected={ this.getSelected() } /> }
 				{ isExpanded && (
 					<List
 						{ ...this.props }
@@ -283,16 +300,19 @@ SelectControl.propTypes = {
 	 */
 	placeholder: PropTypes.string,
 	/**
-	 * An array of objects describing selected values. If the label of the selected
-	 * value is omitted, the Tag of that value will not be rendered inside the
-	 * search box.
+	 * An array of objects describing selected values or optionally a string for a single value.
+	 * If the label of the selected value is omitted, the Tag of that value will not
+	 * be rendered inside the search box.
 	 */
-	selected: PropTypes.arrayOf(
-		PropTypes.shape( {
-			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
-			label: PropTypes.string,
-		} )
-	),
+	selected: PropTypes.oneOfType( [
+		PropTypes.string,
+		PropTypes.arrayOf(
+			PropTypes.shape( {
+				key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
+				label: PropTypes.string,
+			} )
+		),
+	] ),
 	/**
 	 * A limit for the number of results shown in the options menu.  Set to 0 for no limit.
 	 */
