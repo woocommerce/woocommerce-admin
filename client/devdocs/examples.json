@@ -28,7 +28,6 @@
   { "component": "Section" },
   { "component": "SegmentedSelection" },
   { "component": "SelectControl" },
-  { "component": "SimpleSelectControl" },
   { "component": "Spinner" },
   { "component": "SplitButton" },
   { "component": "Stepper" },
