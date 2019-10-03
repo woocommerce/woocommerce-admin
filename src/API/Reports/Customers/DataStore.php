@@ -83,7 +83,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		parent::__construct();
 		// Initialize some report columns that need disambiguation.
-		$this->report_columns['id']              = $this->get_db_table_name() . '.customer_id as id';
+		$this->report_columns['id']              = $this->prepend_table_name( $this->report_columns['id'], 'customer_id' );
 		$this->report_columns['date_last_order'] = "MAX( {$wpdb->prefix}wc_order_stats.date_created ) as date_last_order";
 		$this->initialize_queries();
 	}
