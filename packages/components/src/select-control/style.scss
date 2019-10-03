@@ -29,7 +29,6 @@
 		}
 
 		.components-base-control__label {
-			left: 52px;
 			position: absolute;
 			color: $studio-gray-50;
 			font-size: 16px;
@@ -45,9 +44,14 @@
 			padding-right: 0;
 			width: 100%;
 			line-height: 24px;
+			text-align: left;
 
 			&::-webkit-search-cancel-button {
 				display: none;
+			}
+
+			&:focus {
+				outline: none;
 			}
 		}
 
@@ -63,7 +67,6 @@
 		}
 
 		&.with-value .components-base-control__label,
-		&.is-active .components-base-control__label,
 		&.has-tags .components-base-control__label {
 			font-size: 12px;
 			margin-top: -$gap-small;
@@ -121,6 +124,17 @@
 		&.is-selected,
 		&:hover {
 			background: $studio-gray-0;
+		}
+	}
+
+	&.is-searchable {
+		.components-base-control__label {
+			left: 52px;
+		}
+
+		.components-base-control.is-active .components-base-control__label {
+			font-size: 12px;
+			margin-top: -$gap-small;
 		}
 	}
 }

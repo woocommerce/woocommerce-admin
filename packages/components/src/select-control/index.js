@@ -15,7 +15,7 @@ import { withInstanceId, compose } from '@wordpress/compose';
  */
 import List from './list';
 import Tags from './tags';
-import SearchControl from './control';
+import Control from './control';
 
 /**
  * A search box which filters options while typing,
@@ -177,7 +177,7 @@ export class SelectControl extends Component {
 	}
 
 	render() {
-		const { className, inlineTags, instanceId, options } = this.props;
+		const { className, inlineTags, instanceId, isSearchable, options } = this.props;
 		const { selectedIndex } = this.state;
 
 		const isExpanded = this.isExpanded();
@@ -192,10 +192,11 @@ export class SelectControl extends Component {
 			<div
 				className={ classnames( 'woocommerce-select-control', className, {
 					'has-inline-tags': hasTags && inlineTags,
+					'is-searchable': isSearchable,
 				} ) }
 				ref={ this.bindNode }
 			>
-				<SearchControl
+				<Control
 					{ ...this.props }
 					{ ...this.state }
 					activeId={ activeId }
@@ -248,6 +249,10 @@ SelectControl.propTypes = {
 	 * Render tags inside input, otherwise render below input.
 	 */
 	inlineTags: PropTypes.bool,
+	/**
+	 * Allow the select options to be filtered by search input.
+	 */
+	isSearchable: PropTypes.bool,
 	/**
 	 * A label to use for the main input.
 	 */
@@ -314,6 +319,7 @@ SelectControl.defaultProps = {
 	excludeSelectedOptions: true,
 	getSearchExpression: identity,
 	inlineTags: false,
+	isSearchable: false,
 	onChange: noop,
 	onFilter: identity,
 	onSearch: noop,

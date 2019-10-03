@@ -53,38 +53,69 @@ const options = [
 ];
 
 export default withState( {
+	simpleSelected: [],
+	simpleMultipleSelected: [],
 	singleSelected: [],
 	multipleSelected: [],
 	inlineSelected: [],
-} )( ( { singleSelected, multipleSelected, inlineSelected, setState } ) => (
-	<div>
-		<SelectControl
-			label="Single value"
-			onChange={ selected => setState( { singleSelected: selected } ) }
-			options={ options }
-			placeholder="Start typing to filter options..."
-			selected={ singleSelected }
-		/>
-		<br />
-		<SelectControl
-			label="Inline tags"
-			multiple
-			inlineTags
-			onChange={ selected => setState( { inlineSelected: selected } ) }
-			options={ options }
-			placeholder="Start typing to filter options..."
-			selected={ inlineSelected }
-		/>
-		<br />
-		<SelectControl
-			hideBeforeSearch
-			label="Hidden options before search"
-			multiple
-			onChange={ selected => setState( { multipleSelected: selected } ) }
-			options={ options }
-			placeholder="Start typing to filter options..."
-			selected={ multipleSelected }
-			showClearButton
-		/>
-	</div>
-) );
+} )(
+	( {
+		simpleSelected,
+		simpleMultipleSelected,
+		singleSelected,
+		multipleSelected,
+		inlineSelected,
+		setState,
+	} ) => (
+		<div>
+			<SelectControl
+				label="Simple single value"
+				onChange={ selected => setState( { simpleSelected: selected } ) }
+				options={ options }
+				placeholder="Start typing to filter options..."
+				selected={ simpleSelected }
+			/>
+			<br />
+			<SelectControl
+				label="Multiple values"
+				multiple
+				onChange={ selected => setState( { simpleMultipleSelected: selected } ) }
+				options={ options }
+				placeholder="Start typing to filter options..."
+				selected={ simpleMultipleSelected }
+			/>
+			<br />
+			<SelectControl
+				label="Single value searchable"
+				isSearchable
+				onChange={ selected => setState( { singleSelected: selected } ) }
+				options={ options }
+				placeholder="Start typing to filter options..."
+				selected={ singleSelected }
+			/>
+			<br />
+			<SelectControl
+				label="Inline tags searchable"
+				isSearchable
+				multiple
+				inlineTags
+				onChange={ selected => setState( { inlineSelected: selected } ) }
+				options={ options }
+				placeholder="Start typing to filter options..."
+				selected={ inlineSelected }
+			/>
+			<br />
+			<SelectControl
+				hideBeforeSearch
+				isSearchable
+				label="Hidden options before search"
+				multiple
+				onChange={ selected => setState( { multipleSelected: selected } ) }
+				options={ options }
+				placeholder="Start typing to filter options..."
+				selected={ multipleSelected }
+				showClearButton
+			/>
+		</div>
+	)
+);
