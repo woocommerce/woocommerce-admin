@@ -41,6 +41,8 @@ class SqlQuery {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param string $context Optional context passed to filters. Default empty string.
 	 */
 	public function __construct( $context = '' ) {
 		self::$context = $context;
@@ -70,19 +72,20 @@ class SqlQuery {
 			return '';
 		}
 
+		$context = self::$context;
 		/**
 		 * Filter SQL clauses by type and context.
 		 *
 		 * @param array  $clauses The original arguments for the request.
 		 * @param string $context The data store context.
 		 */
-		$clauses = apply_filters( "wc_admin_clauses_{$type}", $this->sql_clauses[ $type ], self::$context );
+		$clauses = apply_filters( "wc_admin_clauses_{$type}", $this->sql_clauses[ $type ], $context );
 		/**
 		 * Filter SQL clauses by type and context.
 		 *
 		 * @param array  $clauses The original arguments for the request.
 		 */
-		$clauses = apply_filters( "wc_admin_clauses_{$type}_{self::$context}", $clauses );
+		$clauses = apply_filters( "wc_admin_clauses_{$type}_{$context}", $clauses );
 		return implode( ' ', $clauses );
 	}
 
@@ -95,6 +98,21 @@ class SqlQuery {
 		foreach ( (array) $types as $type ) {
 			if ( isset( $this->sql_clauses[ $type ] ) ) {
 				$this->sql_clauses[ $type ] = array();
+			}
+		}
+	}
+
+	/**
+	 * Replace strings within SQL clauses by type.
+	 *
+	 * @param string $type    Clause type (select|from|outer_from|where|where_time|order_by|limit).
+	 * @param string $search  String to search for.
+	 * @param string $replace Replacement string.
+	 */
+	protected function str_replace_clause( $type, $search, $replace ) {
+		if ( isset( $this->sql_clauses[ $type ] ) ) {
+			foreach ( $this->sql_clauses[ $type ] as $key => $sql ) {
+				$this->sql_clauses[ $type ][ $key ] = str_replace( $search, $replace, $sql );
 			}
 		}
 	}

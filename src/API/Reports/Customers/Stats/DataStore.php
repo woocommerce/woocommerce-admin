@@ -48,6 +48,13 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	protected $cache_key = 'customers_stats';
 
 	/**
+	 * Data store context used to pass to filters.
+	 *
+	 * @var string
+	 */
+	protected static $context = 'customer_stats';
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {

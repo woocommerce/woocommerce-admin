@@ -82,7 +82,7 @@ class DataStore extends SqlQuery {
 	/**
 	 * Class constructor.
 	 */
-	protected function __construct() {
+	public function __construct() {
 		$this->set_db_table_name();
 	}
 
@@ -835,7 +835,7 @@ class DataStore extends SqlQuery {
 		$this->clear_sql_clause( array( 'from', 'where_time', 'where' ) );
 
 		// @todo the array_merges can be removed leaving just the function calls once downstream is updated.
-		$intervals_query = array_merge( $intervals_query, $this->get_time_period_sql_params( $query_args, $table_name ) );
+		$this->get_time_period_sql_params( $query_args, $table_name );
 
 		if ( isset( $query_args['interval'] ) && '' !== $query_args['interval'] ) {
 			$interval                         = $query_args['interval'];
