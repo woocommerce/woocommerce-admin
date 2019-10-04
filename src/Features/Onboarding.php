@@ -325,9 +325,8 @@ class Onboarding {
 		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
 
 		$settings['onboarding'] = array(
-			'industries'     => self::get_allowed_industries(),
-			'profile'        => $profile,
-			'taskListHidden' => ! $this->should_show_tasks(),
+			'industries' => self::get_allowed_industries(),
+			'profile'    => $profile,
 		);
 
 		// Only fetch if the onboarding wizard is incomplete.
@@ -355,6 +354,8 @@ class Onboarding {
 		if ( ! $this->should_show_tasks() && ! $this->should_show_profiler() ) {
 			return $options;
 		}
+		$options[] = 'woocommerce_task_list_hidden';
+		$options[] = 'woocommerce_task_list_prompt_shown';
 		$options[] = 'woocommerce_onboarding_payments';
 		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
