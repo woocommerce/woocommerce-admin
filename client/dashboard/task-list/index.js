@@ -26,9 +26,16 @@ import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 import withSelect from 'wc-api/with-select';
 
-const { customLogo, hasHomepage, hasProducts, shippingZonesCount } = getSetting( 'onboarding', {
+const {
+	customLogo,
+	hasHomepage,
+	hasPhysicalProducts,
+	hasProducts,
+	shippingZonesCount,
+} = getSetting( 'onboarding', {
 	customLogo: '',
 	hasHomePage: false,
+	hasPhysicalProducts: false,
 	hasProducts: false,
 	shippingZonesCount: 0,
 } );
@@ -104,7 +111,7 @@ class TaskDashboard extends Component {
 				onClick: () => updateQueryString( { task: 'shipping' } ),
 				container: <Shipping />,
 				className: shippingZonesCount > 0 ? 'is-complete' : null,
-				visible: true,
+				visible: profileItems.product_types.includes( 'physical' ) || hasPhysicalProducts,
 			},
 			{
 				key: 'tax',
