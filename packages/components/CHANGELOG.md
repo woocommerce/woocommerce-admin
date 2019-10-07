@@ -1,4 +1,4 @@
-# 4.1.0
+# 4.1.0 (Unreleased)
 - Renamed the `<Autocomplete />` component to `<SelectControl />`.
 - Added `isSearchable` prop to `<SelectControl />` to allow simple select dropdowns.
 - Removed the `<SimpleSelectControl />` component.
