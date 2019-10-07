@@ -99,7 +99,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$permission_table = $wpdb->prefix . 'woocommerce_downloadable_product_permissions';
 		$operator         = $this->get_match_operator( $query_args );
 		$where_filters    = array();
-		$subquery         = isset( $this->subquery ) ? $this->subquery : $this->interval_query;
+		if ( isset( $this->subquery ) ) {
+			$subquery =& $this->subquery;
+		} else {
+			$subquery =& $this->interval_query;
+		}
 
 		$where_time = $this->get_time_period_sql_params( $query_args, $lookup_table );
 		if ( $where_time ) {
@@ -213,7 +217,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		if ( isset( $query_args['ip_address_includes'] ) && is_array( $query_args['ip_address_includes'] ) && count( $query_args['ip_address_includes'] ) > 0 ) {
 			$query_args['ip_address_includes'] = array_map( 'esc_sql', $query_args['ip_address_includes'] );
 		}
-		return self::get_filtered_ids( $query_args, 'ip_address_includes' );
+		return self::get_filtered_ids( $query_args, 'ip_address_includes', "','" );
 	}
 
 	/**
@@ -226,7 +230,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		if ( isset( $query_args['ip_address_excludes'] ) && is_array( $query_args['ip_address_excludes'] ) && count( $query_args['ip_address_excludes'] ) > 0 ) {
 			$query_args['ip_address_excludes'] = array_map( 'esc_sql', $query_args['ip_address_excludes'] );
 		}
-		return self::get_filtered_ids( $query_args, 'ip_address_excludes' );
+		return self::get_filtered_ids( $query_args, 'ip_address_excludes', "','" );
 	}
 
 	/**

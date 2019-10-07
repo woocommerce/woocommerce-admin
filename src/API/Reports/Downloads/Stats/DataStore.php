@@ -96,9 +96,9 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 			$this->get_time_period_sql_params( $query_args, $table_name );
 			$this->get_intervals_sql_params( $query_args, $table_name );
 
+			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 			$this->interval_query->str_replace_clause( 'select', 'date_created', 'timestamp' );
 			$this->interval_query->str_replace_clause( 'where_time', 'date_created', 'timestamp' );
-			$this->interval_query->add_sql_clause( 'select', 'AS time_interval' );
 
 			$db_intervals = $wpdb->get_col(
 				$this->interval_query->get_statement()
@@ -155,7 +155,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 			if ( $this->intervals_missing( $expected_interval_count, $db_records_count, $params['per_page'], $query_args['page'], $query_args['order'], $query_args['orderby'], count( $intervals ) ) ) {
 				$this->fill_in_missing_intervals( $db_intervals, $query_args['adj_after'], $query_args['adj_before'], $query_args['interval'], $data );
 				$this->sort_intervals( $data, $query_args['orderby'], $query_args['order'] );
-				$this->remove_extra_records( $data, $query_args['page'], $intervals_query['per_page'], $db_records_count, $expected_interval_count, $query_args['orderby'], $query_args['order'] );
+				$this->remove_extra_records( $data, $query_args['page'], $params['per_page'], $db_records_count, $expected_interval_count, $query_args['orderby'], $query_args['order'] );
 			} else {
 				$this->update_interval_boundary_dates( $query_args['after'], $query_args['before'], $query_args['interval'], $data->intervals );
 			}

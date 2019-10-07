@@ -387,6 +387,8 @@ class DataStore extends SqlQuery {
 		if ( $db_interval_count === $expected_interval_count ) {
 			return;
 		}
+
+		$params   = $this->get_limit_params( $query_args );
 		$local_tz = new \DateTimeZone( wc_timezone_string() );
 		if ( 'date' === strtolower( $query_args['orderby'] ) ) {
 			// page X in request translates to slightly different dates in the db, in case some
@@ -396,7 +398,7 @@ class DataStore extends SqlQuery {
 			if ( 'asc' === strtolower( $query_args['order'] ) ) {
 				// ORDER BY date ASC.
 				$new_start_date    = $query_args['after'];
-				$intervals_to_skip = ( $query_args['page'] - 1 ) * $intervals_query['per_page'];
+				$intervals_to_skip = ( $query_args['page'] - 1 ) * $params['per_page'];
 				$latest_end_date   = $query_args['before'];
 				for ( $i = 0; $i < $intervals_to_skip; $i++ ) {
 					if ( $new_start_date > $latest_end_date ) {
@@ -409,7 +411,7 @@ class DataStore extends SqlQuery {
 				}
 
 				$new_end_date = clone $new_start_date;
-				for ( $i = 0; $i < $intervals_query['per_page']; $i++ ) {
+				for ( $i = 0; $i < $params['per_page']; $i++ ) {
 					if ( $new_end_date > $latest_end_date ) {
 						break;
 					}
@@ -427,7 +429,7 @@ class DataStore extends SqlQuery {
 			} else {
 				// ORDER BY date DESC.
 				$new_end_date        = $query_args['before'];
-				$intervals_to_skip   = ( $query_args['page'] - 1 ) * $intervals_query['per_page'];
+				$intervals_to_skip   = ( $query_args['page'] - 1 ) * $params['per_page'];
 				$earliest_start_date = $query_args['after'];
 				for ( $i = 0; $i < $intervals_to_skip; $i++ ) {
 					if ( $new_end_date < $earliest_start_date ) {
@@ -465,21 +467,21 @@ class DataStore extends SqlQuery {
 			$intervals_query['where_time_clause']  = '';
 			$intervals_query['where_time_clause'] .= " AND {$table_name}.date_created <= '$adj_before'";
 			$intervals_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$adj_after'";
-			$intervals_query['limit']              = 'LIMIT 0,' . $intervals_query['per_page'];
+			$intervals_query['limit']              = 'LIMIT 0,' . $params['per_page'];
 			// @todo remove passed parameter assignment after down stream classes are updated.
 			$this->clear_sql_clause( array( 'where_time', 'limit' ) );
 			$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$adj_before'" );
 			$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$adj_after'" );
-			$this->add_sql_clause( 'limit', 'LIMIT 0,' . $intervals_query['per_page'] );
+			$this->add_sql_clause( 'limit', 'LIMIT 0,' . $params['per_page'] );
 		} else {
 			if ( 'asc' === $query_args['order'] ) {
-				$offset = ( ( $query_args['page'] - 1 ) * $intervals_query['per_page'] ) - ( $expected_interval_count - $db_interval_count );
+				$offset = ( ( $query_args['page'] - 1 ) * $params['per_page'] ) - ( $expected_interval_count - $db_interval_count );
 				$offset = $offset < 0 ? 0 : $offset;
-				$count  = $query_args['page'] * $intervals_query['per_page'] - ( $expected_interval_count - $db_interval_count );
+				$count  = $query_args['page'] * $params['per_page'] - ( $expected_interval_count - $db_interval_count );
 				if ( $count < 0 ) {
 					$count = 0;
-				} elseif ( $count > $intervals_query['per_page'] ) {
-					$count = $intervals_query['per_page'];
+				} elseif ( $count > $params['per_page'] ) {
+					$count = $params['per_page'];
 				}
 				$intervals_query['limit'] = 'LIMIT ' . $offset . ',' . $count;
 				// @todo remove passed parameter assignment after down stream classes are updated.
@@ -1187,9 +1189,10 @@ class DataStore extends SqlQuery {
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param string $field      Query field to filter.
+	 * @param string $separator  Field separator.
 	 * @return string
 	 */
-	protected static function get_filtered_ids( $query_args, $field ) {
+	protected static function get_filtered_ids( $query_args, $field, $separator = ',' ) {
 		$ids_str = '';
 		$ids     = isset( $query_args[ $field ] ) && is_array( $query_args[ $field ] ) ? $query_args[ $field ] : array();
 
@@ -1206,7 +1209,7 @@ class DataStore extends SqlQuery {
 		$ids = apply_filters( 'wc_admin_reports_ ' . $field, $ids, $query_args, $field, self::$context );
 
 		if ( ! empty( $ids ) ) {
-			$ids_str = implode( ',', $ids );
+			$ids_str = implode( $separator, $ids );
 		}
 		return $ids_str;
 	}
