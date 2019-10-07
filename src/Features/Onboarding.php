@@ -346,30 +346,17 @@ class Onboarding {
 	}
 
 	/**
-	 * Preload options to prime WooCommerce Admin.
-	 *
-	 * @param array $options Array of preloaded options.
-	 * @return array
-	 */
-	public function preload_options( $options ) {
-		if ( ! $this->should_show_profiler() ) {
-			return $options;
-		}
-		$options[] = 'woocommerce_allow_tracking';
-		return $options;
-	}
-
-	/**
 	 * Preload options to prime state of the application.
 	 *
 	 * @param array $options Array of options to preload.
 	 * @return array
 	 */
 	public function preload_options( $options ) {
-		if ( ! $this->should_show_tasks() ) {
+		if ( ! $this->should_show_tasks() && ! $this->should_show_profiler() ) {
 			return $options;
 		}
 		$options[] = 'woocommerce_onboarding_payments';
+		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
 		return $options;
 	}
