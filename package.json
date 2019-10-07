@@ -67,7 +67,7 @@
     }
   },
   "dependencies": {
-    "@fresh-data/framework": "0.7.0-beta.0",
+    "@fresh-data/framework": "0.7.0",
     "@wordpress/api-fetch": "2.2.8",
     "@wordpress/components": "8.3.1",
     "@wordpress/data": "4.9.1",
