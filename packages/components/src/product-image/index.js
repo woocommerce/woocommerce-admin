@@ -5,7 +5,11 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import { getSetting } from '@woocommerce/wc-admin-settings';
+
+/**
+ * Internal dependencies
+ */
+import { placeholderWhiteBackground as placeholder } from './placeholder';
 
 /**
  * Use `ProductImage` to display a product's or variation's featured image.
@@ -27,7 +31,7 @@ const ProductImage = ( { product, alt, width, height, className, ...props } ) =>
 	return (
 		<img
 			className={ classes }
-			src={ src || getSetting( 'wcAssetUrl', '' ) + 'images/placeholder.png' }
+			src={ src || placeholder }
 			width={ width }
 			height={ height }
 			alt={ altText }
