@@ -211,7 +211,7 @@ class Appearance extends Component {
 						</Button>
 						<Button
 							onClick={ () => {
-								recordEvent( 'tasklist_appearance_create_homepage', { skipped: true } );
+								recordEvent( 'tasklist_appearance_create_homepage', { create_homepage: false } );
 								this.completeStep();
 							} }
 						>

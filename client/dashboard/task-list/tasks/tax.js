@@ -216,7 +216,7 @@ class Tax extends Component {
 							this.completeStep();
 						} }
 						onSkip={ () => {
-							recordEvent( 'tasklist_tax_install_extensions', { skip: true } );
+							recordEvent( 'tasklist_tax_install_extensions', { install_extensions: false } );
 							window.location.href = getAdminLink(
 								'admin.php?page=wc-settings&tab=tax&section=standard'
 							);
@@ -329,7 +329,9 @@ class Tax extends Component {
 							</Button>
 							<Button
 								onClick={ () => {
-									recordEvent( 'tasklist_tax_setup_automated_simple', { skip: true } );
+									recordEvent( 'tasklist_tax_setup_automated_simple', {
+										setup_automatically: false,
+									} );
 									this.setState( { automatedTaxEnabled: false }, this.updateAutomatedTax );
 								} }
 							>

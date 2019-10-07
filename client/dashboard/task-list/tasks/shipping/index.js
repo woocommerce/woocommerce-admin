@@ -191,7 +191,7 @@ class Shipping extends Component {
 							this.completeStep();
 						} }
 						onSkip={ () => {
-							recordEvent( 'tasklist_shipping_label_printing', { skip: true } );
+							recordEvent( 'tasklist_shipping_label_printing', { install: false } );
 							getHistory().push( getNewPath( {}, '/', {} ) );
 						} }
 						{ ...this.props }
