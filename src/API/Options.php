@@ -70,20 +70,36 @@ class Options extends \WC_REST_Data_Controller {
 	 * @return WP_Error|boolean
 	 */
 	public function get_item_permissions_check( $request ) {
-		$params      = explode( ',', $request['options'] );
-		$permissions = $this->get_option_permissions( $request );
+		$params = explode( ',', $request['options'] );
 
-		if ( ! is_array( $params ) ) {
+		if ( ! isset( $request['options'] ) || ! is_array( $params ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_view', __( 'You must supply an array of options.', 'woocommerce-admin' ), 500 );
 		}
 
 		foreach ( $params as $option ) {
-			if ( ! isset( $permissions[ $option ] ) || ! $permissions[ $option ] ) {
-				return new \WP_Error( 'woocommerce_rest_cannot_update', __( 'Sorry, you cannot manage these options.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
+			if ( ! $this->user_has_permission( $option, $request ) ) {
+				return new \WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot view these options.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check if the user has permission given an option name.
+	 *
+	 * @param  string          $option Option name.
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return boolean
+	 */
+	public function user_has_permission( $option, $request ) {
+		$permissions = $this->get_option_permissions( $request );
+
+		if ( isset( $permissions[ $option ] ) ) {
+			return $permissions[ $option ];
+		}
+
+		return current_user_can( 'manage_options' );
 	}
 
 	/**
@@ -93,15 +109,14 @@ class Options extends \WC_REST_Data_Controller {
 	 * @return WP_Error|boolean
 	 */
 	public function update_item_permissions_check( $request ) {
-		$params      = $request->get_json_params();
-		$permissions = $this->get_option_permissions( $request );
+		$params = $request->get_json_params();
 
 		if ( ! is_array( $params ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_update', __( 'You must supply an array of options and values.', 'woocommerce-admin' ), 500 );
 		}
 
 		foreach ( $params as $option_name => $option_value ) {
-			if ( ! isset( $permissions[ $option_name ] ) || ! $permissions[ $option_name ] ) {
+			if ( ! $this->user_has_permission( $option_name, $request ) ) {
 				return new \WP_Error( 'woocommerce_rest_cannot_update', __( 'Sorry, you cannot manage these options.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 			}
 		}

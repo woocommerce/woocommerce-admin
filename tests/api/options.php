@@ -34,14 +34,28 @@ class WC_Tests_API_Options extends WC_REST_Unit_Test_Case {
 
 	/**
 	 * Test getting options without valid permissions.
-	 *
-	 * @since 3.5.0
 	 */
 	public function test_get_options_without_permission() {
 		wp_set_current_user( 0 );
+
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params( array( 'options' => 'woocommerce_demo_store_notice' ) );
 		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	/**
+	 * Test updating options without valid permissions.
+	 */
+	public function test_update_options_without_permission() {
+		wp_set_current_user( 0 );
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'woocommerce_demo_store_notice' => 'Store notice updated.' ) ) );
+		$response = $this->server->dispatch( $request );
+
 		$this->assertEquals( 401, $response->get_status() );
 	}
 
