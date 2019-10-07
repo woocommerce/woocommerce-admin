@@ -21,7 +21,6 @@ import {
 	getQueryFromActiveFilters,
 	getHistory,
 } from '@woocommerce/navigation';
-import { LOCALE } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -37,8 +36,6 @@ const matches = [
 	{ value: 'all', label: __( 'All', 'woocommerce-admin' ) },
 	{ value: 'any', label: __( 'Any', 'woocommerce-admin' ) },
 ];
-
-const { siteLocale } = LOCALE;
 
 /**
  * Displays a configurable set of filters which can modify query parameters.
@@ -189,7 +186,7 @@ class AdvancedFilters extends Component {
 	}
 
 	isEnglish() {
-		return /en-/.test( siteLocale );
+		return /en[-|_]/.test( this.props.siteLocale );
 	}
 
 	onFilter() {
@@ -366,11 +363,16 @@ AdvancedFilters.propTypes = {
 	 * Function to be called after an advanced filter action has been taken.
 	 */
 	onAdvancedFilterAction: PropTypes.func,
+	/**
+	 * The locale for the site.
+	 */
+	siteLocale: PropTypes.string,
 };
 
 AdvancedFilters.defaultProps = {
 	query: {},
 	onAdvancedFilterAction: () => {},
+	siteLocale: 'en_US',
 };
 
 export default AdvancedFilters;
