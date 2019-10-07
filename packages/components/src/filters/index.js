@@ -41,6 +41,7 @@ class ReportFilters extends Component {
 			query,
 			path,
 			onAdvancedFilterAction,
+			currency,
 		} = this.props;
 		const { filters, param } = config;
 		if ( ! query[ param ] ) {
@@ -64,6 +65,7 @@ class ReportFilters extends Component {
 				<div key={ param } className="woocommerce-filters__advanced-filters">
 					<AdvancedFilters
 						siteLocale={ siteLocale }
+						currency={ currency }
 						config={ advancedFilters }
 						path={ path }
 						query={ query }
@@ -152,10 +154,18 @@ ReportFilters.propTypes = {
 	 * Function to be called after an advanced filter action has been taken.
 	 */
 	onAdvancedFilterAction: PropTypes.func,
+	/**
+	 * The currency settings for the site.
+	 */
+	currency: PropTypes.object,
 };
 
 ReportFilters.defaultProps = {
 	siteLocale: 'en_US',
+	currency: {
+		symbol: '$',
+		symbolPosition: 'left',
+	},
 	advancedFilters: {},
 	filters: [],
 	query: {},
