@@ -19,8 +19,20 @@ describe( 'SelectControl', () => {
 		{ key: '3', label: 'bar', value: { id: '3' } },
 	];
 
-	it( 'returns matching elements', () => {
+	it( 'returns all elements', () => {
 		const selectControl = mount( <SelectControl options={ options } /> );
+		selectControl.setState( {
+			query,
+		} );
+
+		selectControl.instance().search( query );
+		selectControl.update();
+
+		expect( selectControl.find( Button ).filter( '.' + optionClassname ).length ).toBe( 3 );
+	} );
+
+	it( 'returns matching elements', () => {
+		const selectControl = mount( <SelectControl isSearchable options={ options } /> );
 		selectControl.setState( {
 			query,
 		} );
@@ -34,6 +46,7 @@ describe( 'SelectControl', () => {
 	it( "doesn't return matching excluded elements", () => {
 		const selectControl = mount(
 			<SelectControl
+				isSearchable
 				options={ options }
 				selected={ [ options[ 1 ] ] }
 				excludeSelectedOptions
@@ -51,7 +64,7 @@ describe( 'SelectControl', () => {
 	} );
 
 	it( 'trims spaces from input', () => {
-		const selectControl = mount( <SelectControl options={ options } /> );
+		const selectControl = mount( <SelectControl isSearchable options={ options } /> );
 		selectControl.setState( {
 			query,
 		} );
@@ -63,7 +76,9 @@ describe( 'SelectControl', () => {
 	} );
 
 	it( 'limits results', () => {
-		const selectControl = mount( <SelectControl options={ options } maxResults={ 1 } /> );
+		const selectControl = mount(
+			<SelectControl isSearchable options={ options } maxResults={ 1 } />
+		);
 		selectControl.setState( {
 			query,
 		} );
@@ -75,7 +90,7 @@ describe( 'SelectControl', () => {
 	} );
 
 	it( 'shows options initially', () => {
-		const selectControl = mount( <SelectControl options={ options } /> );
+		const selectControl = mount( <SelectControl isSearchable options={ options } /> );
 
 		selectControl.instance().search( '' );
 		selectControl.update();
@@ -84,7 +99,9 @@ describe( 'SelectControl', () => {
 	} );
 
 	it( 'shows options after query', () => {
-		const selectControl = mount( <SelectControl options={ options } hideBeforeSearch /> );
+		const selectControl = mount(
+			<SelectControl isSearchable options={ options } hideBeforeSearch />
+		);
 
 		selectControl.instance().search( '' );
 		selectControl.update();
@@ -122,6 +139,7 @@ describe( 'SelectControl', () => {
 		};
 		const selectControl = mount(
 			<SelectControl
+				isSearchable
 				options={ queriedOptions }
 				onSearch={ queryOptions }
 				onFilter={ () => queriedOptions }
