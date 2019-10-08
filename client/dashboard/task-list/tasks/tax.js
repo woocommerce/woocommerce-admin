@@ -16,7 +16,7 @@ import { withDispatch } from '@wordpress/data';
  */
 import { Card, H, Stepper } from '@woocommerce/components';
 import { getAdminLink, getHistory, getNewPath } from '@woocommerce/navigation';
-import { getSetting } from '@woocommerce/wc-admin-settings';
+import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -129,6 +129,12 @@ class Tax extends Component {
 		} );
 
 		if ( ! isTaxSettingsError ) {
+			// @todo This is a workaround to force the task to mark as complete.
+			// This should probably be updated to use wc-api so we can fetch tax rates.
+			setSetting( 'onboarding', {
+				...getSetting( 'onboarding', {} ),
+				isTaxComplete: true,
+			} );
 			createNotice( 'success', __( 'Your tax settings have been updated.', 'woocommerce-admin' ) );
 			if ( automatedTaxEnabled ) {
 				getHistory().push( getNewPath( {}, '/', {} ) );
