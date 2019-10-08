@@ -442,7 +442,7 @@ class DataStore extends SqlQuery {
 				}
 
 				$new_start_date = clone $new_end_date;
-				for ( $i = 0; $i < $intervals_query['per_page']; $i++ ) {
+				for ( $i = 0; $i < $params['per_page']; $i++ ) {
 					if ( $new_start_date < $earliest_start_date ) {
 						break;
 					}
