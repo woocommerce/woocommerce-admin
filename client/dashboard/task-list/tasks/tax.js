@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { filter } from 'lodash';
+import { difference, filter } from 'lodash';
 import { FormToggle } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
@@ -182,7 +182,12 @@ class Tax extends Component {
 	}
 
 	getSteps() {
-		const { generalSettings, isGeneralSettingsRequesting } = this.props;
+		const {
+			generalSettings,
+			isGeneralSettingsRequesting,
+			isJetpackConnected,
+			pluginsToActivate,
+		} = this.props;
 
 		const steps = [
 			{
@@ -225,7 +230,7 @@ class Tax extends Component {
 						skipText={ __( 'Set up tax rates manually', 'woocommerce-admin' ) }
 					/>
 				),
-				visible: this.isSupportedCountry(),
+				visible: pluginsToActivate.length && this.isSupportedCountry(),
 			},
 			{
 				key: 'connect',
@@ -242,7 +247,7 @@ class Tax extends Component {
 						} }
 					/>
 				),
-				visible: this.isSupportedCountry(),
+				visible: ! isJetpackConnected && this.isSupportedCountry(),
 			},
 			{
 				key: 'automated_tax',
@@ -348,7 +353,13 @@ class Tax extends Component {
 
 export default compose(
 	withSelect( select => {
-		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
+		const {
+			getActivePlugins,
+			getSettings,
+			getSettingsError,
+			isGetSettingsRequesting,
+			isJetpackConnected,
+		} = select( 'wc-api' );
 
 		const generalSettings = getSettings( 'general' );
 		const isGeneralSettingsError = Boolean( getSettingsError( 'general' ) );
@@ -357,11 +368,8 @@ export default compose(
 		const isTaxSettingsError = Boolean( getSettingsError( 'tax' ) );
 		const isTaxSettingsRequesting = isGetSettingsRequesting( 'tax' );
 		const countryCode = getCountryCode( generalSettings.woocommerce_default_country );
-		// @todo This value should be fetched and updated via the wc-api.
-		const isJetpackConnected = false;
-		// @todo This should check against a list of already activated plugins and should be
-		// revisited after https://github.com/woocommerce/woocommerce-admin/pull/2825 is merged.
-		const pluginsToActivate = [ 'jetpack', 'woocommerce-services' ];
+		const activePlugins = getActivePlugins();
+		const pluginsToActivate = difference( [ 'jetpack', 'woocommerce-services' ], activePlugins );
 
 		return {
 			countryCode,
@@ -371,7 +379,7 @@ export default compose(
 			isTaxSettingsError,
 			isTaxSettingsRequesting,
 			taxSettings,
-			isJetpackConnected,
+			isJetpackConnected: isJetpackConnected(),
 			pluginsToActivate,
 		};
 	} ),
