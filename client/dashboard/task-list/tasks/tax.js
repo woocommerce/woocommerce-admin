@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { difference, filter } from 'lodash';
+import { difference, filter, get } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
 
@@ -100,12 +100,11 @@ class Tax extends Component {
 	}
 
 	isTaxJarSupported() {
-		const { countryCode, options } = this.props;
+		const { countryCode, wc_connect_options } = this.props;
 		const { automatedTaxSupportedCountries = [] } = getSetting( 'onboarding', {} );
 
 		return (
-			'1' === options.woocommerce_setup_jetpack_opted_in &&
-			automatedTaxSupportedCountries.includes( countryCode )
+			wc_connect_options.tos_accepted && automatedTaxSupportedCountries.includes( countryCode )
 		);
 	}
 
@@ -248,15 +247,16 @@ class Tax extends Component {
 	render() {
 		const { isPending, stepIndex } = this.state;
 		const { isGeneralSettingsRequesting, isTaxSettingsRequesting } = this.props;
+		const step = this.getSteps()[ stepIndex ];
 
 		return (
 			<div className="woocommerce-task-tax">
 				<Card className="is-narrow">
-					{ null !== stepIndex ? (
+					{ step ? (
 						<Stepper
 							isPending={ isPending || isGeneralSettingsRequesting || isTaxSettingsRequesting }
 							isVertical={ true }
-							currentStep={ this.getSteps()[ stepIndex ].key }
+							currentStep={ step.key }
 							steps={ this.getSteps() }
 						/>
 					) : (
@@ -332,7 +332,11 @@ export default compose(
 		const countryCode = getCountryCode( generalSettings.woocommerce_default_country );
 		const activePlugins = getActivePlugins();
 		const pluginsToActivate = difference( [ 'jetpack', 'woocommerce-services' ], activePlugins );
-		const options = getOptions( [ 'woocommerce_setup_jetpack_opted_in' ] );
+		const wc_connect_options = get(
+			getOptions( [ 'wc_connect_options' ] ),
+			'wc_connect_options',
+			{}
+		);
 
 		return {
 			countryCode,
@@ -344,7 +348,7 @@ export default compose(
 			taxSettings,
 			isJetpackConnected: isJetpackConnected(),
 			pluginsToActivate,
-			options,
+			wc_connect_options,
 		};
 	} ),
 	withDispatch( dispatch => {
