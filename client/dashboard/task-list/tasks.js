@@ -28,12 +28,14 @@ export function getTasks( { profileItems, options, query } ) {
 		hasHomepage,
 		hasPhysicalProducts,
 		hasProducts,
+		isTaxComplete,
 		shippingZonesCount,
 	} = getSetting( 'onboarding', {
 		customLogo: '',
 		hasHomePage: false,
 		hasPhysicalProducts: false,
 		hasProducts: false,
+		isTaxComplete: false,
 		shippingZonesCount: 0,
 	} );
 
@@ -95,8 +97,8 @@ export function getTasks( { profileItems, options, query } ) {
 			),
 			icon: 'account_balance',
 			container: <Tax />,
+			completed: isTaxComplete,
 			visible: true,
-			completed: true, // @todo completed logic
 		},
 		{
 			key: 'payments',

@@ -8,6 +8,7 @@ import { filter, get } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
 import { Snackbar, Icon, Button } from '@wordpress/components';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -24,11 +25,22 @@ import { recordEvent } from 'lib/tracks';
 import { getTasks } from './tasks';
 
 class TaskDashboard extends Component {
+	constructor( props ) {
+		super( props );
+		this.state = {
+			promptShown: props.promptShown,
+		};
+	}
+
 	componentDidMount() {
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
 
 		this.recordEvent();
+
+		if ( ! this.state.promptShown ) {
+			this.markPromptShown();
+		}
 	}
 
 	componentWillUnmount() {
@@ -48,6 +60,29 @@ class TaskDashboard extends Component {
 		} );
 	}
 
+	keepTaskCard() {
+		recordEvent( 'tasklist_completed', {
+			action: 'keep_card',
+		} );
+
+		this.setState( { promptShown: true } );
+	}
+
+	hideTaskCard( action ) {
+		recordEvent( 'tasklist_completed', {
+			action,
+		} );
+		this.props.updateOptions( {
+			[ 'woocommerce_task_list_hidden' ]: 'yes',
+		} );
+	}
+
+	markPromptShown() {
+		this.props.updateOptions( {
+			[ 'woocommerce_task_list_prompt_shown' ]: true,
+		} );
+	}
+
 	getCurrentTask() {
 		const { task } = this.props.query;
 		const currentTask = this.props.tasks.find( s => s.key === task );
@@ -60,7 +95,7 @@ class TaskDashboard extends Component {
 	}
 
 	renderPrompt() {
-		if ( this.props.promptShown ) {
+		if ( this.state.promptShown ) {
 			return null;
 		}
 
@@ -69,11 +104,11 @@ class TaskDashboard extends Component {
 				<span>{ __( 'Is this card useful?', 'woocommerce-admin' ) }</span>
 
 				<div className="woocommerce-task-card__prompt-actions">
-					<Button isLink onClick={ this.clearQuery }>
+					<Button isLink onClick={ () => this.hideTaskCard( 'hide_card' ) }>
 						{ __( 'No, hide it', 'woocommerce-admin' ) }
 					</Button>
 
-					<Button isLink onClick={ this.clearQuery }>
+					<Button isLink onClick={ () => this.keepTaskCard() }>
 						{ __( 'Yes, keep it', 'woocommerce-admin' ) }
 					</Button>
 				</div>
@@ -85,11 +120,13 @@ class TaskDashboard extends Component {
 		return (
 			<EllipsisMenu
 				label={ __( 'Task List Options', 'woocommerce-admin' ) }
-				renderContent={ ( { onToggle } ) => (
-					<MenuItem isClickable onInvoke={ onToggle }>
-						<Icon icon={ 'trash' } label={ __( 'Remove block' ) } />
-						{ __( 'Remove section', 'woocommerce-admin' ) }
-					</MenuItem>
+				renderContent={ () => (
+					<div className="woocommerce-task-card__section-controls">
+						<MenuItem isClickable onInvoke={ () => this.hideTaskCard( 'remove_card' ) }>
+							<Icon icon={ 'trash' } label={ __( 'Remove block' ) } />
+							{ __( 'Remove this card', 'woocommerce-admin' ) }
+						</MenuItem>
+					</div>
 				) }
 			/>
 		);
@@ -157,6 +194,12 @@ export default compose(
 			profileItems,
 			promptShown,
 			tasks,
+		};
+	} ),
+	withDispatch( dispatch => {
+		const { updateOptions } = dispatch( 'wc-api' );
+		return {
+			updateOptions,
 		};
 	} )
 )( TaskDashboard );

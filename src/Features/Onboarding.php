@@ -351,10 +351,12 @@ class Onboarding {
 	 * @return array
 	 */
 	public function preload_options( $options ) {
+		$options[] = 'woocommerce_task_list_hidden';
+
 		if ( ! $this->should_show_tasks() && ! $this->should_show_profiler() ) {
 			return $options;
 		}
-		$options[] = 'woocommerce_task_list_hidden';
+
 		$options[] = 'woocommerce_task_list_prompt_shown';
 		$options[] = 'woocommerce_onboarding_payments';
 		$options[] = 'woocommerce_allow_tracking';
