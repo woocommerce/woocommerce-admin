@@ -2,16 +2,14 @@
 /**
  * External dependencies
  */
-
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { TextControl as BaseComponent, withFocusOutside } from '@wordpress/components';
 
 /**
- * Internal dependencies
+ * An input field use for text inputs in forms.
  */
-
 const TextControl = withFocusOutside(
 	class extends Component {
 		constructor( props ) {
