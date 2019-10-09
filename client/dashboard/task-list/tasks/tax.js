@@ -4,10 +4,9 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
-import { FormToggle } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
 
@@ -68,11 +67,11 @@ class Tax extends Component {
 
 		// Show the success screen if all requirements are satisfied from the beginning.
 		if (
-			0 === stepIndex &&
+			null !== stepIndex &&
 			( ! pluginsToActivate.length &&
 				isCompleteAddress &&
 				isJetpackConnected &&
-				this.isSupportedCountry() )
+				this.isTaxJarSupported() )
 		) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( { stepIndex: null } );
@@ -100,10 +99,14 @@ class Tax extends Component {
 		}
 	}
 
-	isSupportedCountry() {
-		const { countryCode } = this.props;
+	isTaxJarSupported() {
+		const { countryCode, options } = this.props;
 		const { automatedTaxSupportedCountries = [] } = getSetting( 'onboarding', {} );
-		return automatedTaxSupportedCountries.includes( countryCode );
+
+		return (
+			'1' === options.woocommerce_setup_jetpack_opted_in &&
+			automatedTaxSupportedCountries.includes( countryCode )
+		);
 	}
 
 	completeStep() {
@@ -147,44 +150,6 @@ class Tax extends Component {
 				__( 'There was a problem updating your tax settings.', 'woocommerce-admin' )
 			);
 		}
-	}
-
-	getAutomatedTaxStepContent() {
-		const { automatedTaxEnabled } = this.state;
-		const { isTaxSettingsRequesting } = this.props;
-
-		return (
-			<Fragment>
-				<div className="woocommerce-task-tax__automated-tax-control">
-					<i className="material-icons-outlined">autorenew</i>
-					<div className="woocommerce-task-tax__automated-tax-control-inner">
-						<label
-							htmlFor="woocommerce-task-tax__automated-tax-control-input"
-							className="woocommerce-task-tax__automated-tax-control-label"
-						>
-							{ __( 'Automate sales tax calculations', 'woocommerce-adfmin' ) }
-						</label>
-						<FormToggle
-							id="woocommerce-task-tax__automated-tax-control-input"
-							checked={ automatedTaxEnabled }
-							onChange={ () => this.setState( { automatedTaxEnabled: ! automatedTaxEnabled } ) }
-						/>
-					</div>
-				</div>
-				<Button
-					isPrimary
-					onClick={ () => {
-						recordEvent( 'tasklist_tax_setup_automated_proceed', {
-							automated_taxes: automatedTaxEnabled,
-						} );
-						this.updateAutomatedTax();
-					} }
-					isBusy={ isTaxSettingsRequesting }
-				>
-					{ __( 'Complete task', 'woocommerce-admin' ) }
-				</Button>
-			</Fragment>
-		);
 	}
 
 	getSteps() {
@@ -236,7 +201,7 @@ class Tax extends Component {
 						skipText={ __( 'Set up tax rates manually', 'woocommerce-admin' ) }
 					/>
 				),
-				visible: pluginsToActivate.length && this.isSupportedCountry(),
+				visible: pluginsToActivate.length && this.isTaxJarSupported(),
 			},
 			{
 				key: 'connect',
@@ -253,17 +218,7 @@ class Tax extends Component {
 						} }
 					/>
 				),
-				visible: ! isJetpackConnected && this.isSupportedCountry(),
-			},
-			{
-				key: 'automated_tax',
-				label: __( 'Enable automated tax calculations', 'woocommerce-admin' ),
-				description: __(
-					'Sales taxes will be calculated automatically when a customer checks out',
-					'woocommerce-admin'
-				),
-				content: this.getAutomatedTaxStepContent(),
-				visible: this.isSupportedCountry(),
+				visible: ! isJetpackConnected && this.isTaxJarSupported(),
 			},
 			{
 				key: 'manual_configuration',
@@ -283,7 +238,7 @@ class Tax extends Component {
 						{ __( 'Configure', 'woocommerce-admin' ) }
 					</Button>
 				),
-				visible: ! this.isSupportedCountry(),
+				visible: ! this.isTaxJarSupported(),
 			},
 		];
 
@@ -361,6 +316,7 @@ export default compose(
 	withSelect( select => {
 		const {
 			getActivePlugins,
+			getOptions,
 			getSettings,
 			getSettingsError,
 			isGetSettingsRequesting,
@@ -376,6 +332,7 @@ export default compose(
 		const countryCode = getCountryCode( generalSettings.woocommerce_default_country );
 		const activePlugins = getActivePlugins();
 		const pluginsToActivate = difference( [ 'jetpack', 'woocommerce-services' ], activePlugins );
+		const options = getOptions( [ 'woocommerce_setup_jetpack_opted_in' ] );
 
 		return {
 			countryCode,
@@ -387,6 +344,7 @@ export default compose(
 			taxSettings,
 			isJetpackConnected: isJetpackConnected(),
 			pluginsToActivate,
+			options,
 		};
 	} ),
 	withDispatch( dispatch => {
