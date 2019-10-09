@@ -1,19 +1,19 @@
 /** @format */
 
 .muriel-input-text {
-	background: $muriel-white;
-	border: 1px solid $muriel-gray-200;
+	background: $studio-white;
+	border: 1px solid $studio-gray-20;
 	border-radius: 0;
 	box-shadow: none;
 	padding: 12px 12px 4px;
 	position: relative;
 
 	&:hover {
-		border-color: $dark-gray-400;
+		border-color: $studio-gray-40;
 	}
 
 	label {
-		color: $muriel-gray-500;
+		color: $studio-gray-50;
 		font-size: 14px;
 		line-height: 21px;
 
@@ -40,7 +40,7 @@
 		border-color: transparent;
 
 		input {
-			color: $muriel-gray-800;
+			color: $studio-gray-80;
 		}
 	}
 
@@ -50,7 +50,7 @@
 		}
 
 		input {
-			color: $muriel-gray-800;
+			color: $studio-gray-80;
 		}
 	}
 
@@ -59,7 +59,7 @@
 			display: none;
 		}
 		input {
-			color: $muriel-gray-500;
+			color: $studio-gray-50;
 		}
 	}
 
@@ -72,21 +72,21 @@
 			display: none;
 		}
 		input {
-			color: $muriel-gray-200;
+			color: $studio-gray-20;
 
 			/* Placeholder styling: */
 			&::placeholder {
 				/* Chrome, Firefox, Opera, Safari 10.1+ */
-				color: $muriel-gray-200;
+				color: $studio-gray-20;
 				opacity: 1; /* Firefox */
 			}
 			&:-ms-input-placeholder {
 				/* Internet Explorer 10-11 */
-				color: $muriel-gray-200;
+				color: $studio-gray-20;
 			}
 			&::-ms-input-placeholder {
 				/* Microsoft Edge */
-				color: $muriel-gray-200;
+				color: $studio-gray-20;
 			}
 		}
 	}
