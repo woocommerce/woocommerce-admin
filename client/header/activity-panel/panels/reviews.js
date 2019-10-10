@@ -95,7 +95,6 @@ class ReviewsPanel extends Component {
 
 		const manageReviewEvent = {
 			date: review.date_created_gmt,
-			review: review.id,
 			status: review.status,
 		};
 
