@@ -27,18 +27,11 @@ class Install {
 	 * @var array
 	 */
 	protected static $db_updates = array(
-		'0.19.0' => array(
-			'update_0190_order_status_index',
-			'update_0190_db_version',
+		'0.20.1' => array(
+			'wc_admin_update_0201_order_status_index',
+			'wc_admin_update_0201_db_version',
 		),
 	);
-
-	/**
-	 * Max DB index length. See wp_get_db_schema().
-	 *
-	 * @var integer
-	 */
-	protected static $max_index_length = 191;
 
 	/**
 	 * Hook in tabs.
@@ -106,7 +99,8 @@ class Install {
 			$collate = $wpdb->get_charset_collate();
 		}
 
-		$max_index_length = self::$max_index_length;
+		// Max DB index length. See wp_get_db_schema().
+		$max_index_length = 191;
 
 		$tables = "
 		CREATE TABLE {$wpdb->prefix}wc_order_stats (
@@ -297,10 +291,7 @@ class Install {
 					WC()->queue()->schedule_single(
 						time() + $loop,
 						'woocommerce_run_update_callback',
-						array(
-							// Maintain namespace separators through PHP and JSON encoding.
-							array( str_replace( '\\', '\\\\', __CLASS__ ), $update_callback ),
-						),
+						array( $update_callback ),
 						'woocommerce-db-updates'
 					);
 					$loop++;
@@ -314,7 +305,7 @@ class Install {
 	 *
 	 * @param string|null $version New WooCommerce Admin DB version or null.
 	 */
-	protected static function update_db_version( $version = null ) {
+	public static function update_db_version( $version = null ) {
 		delete_option( self::VERSION_OPTION );
 		add_option( self::VERSION_OPTION, is_null( $version ) ? WC_ADMIN_VERSION_NUMBER : $version );
 	}
@@ -348,37 +339,5 @@ class Install {
 		foreach ( $tables as $table ) {
 			$wpdb->query( "TRUNCATE TABLE {$table}" ); // WPCS: unprepared SQL ok.
 		}
-	}
-
-	/**
-	 * Update order stats `status` index length.
-	 * See: https://github.com/woocommerce/woocommerce-admin/issues/2969.
-	 */
-	public static function update_0190_order_status_index() {
-		global $wpdb;
-
-		$index = $wpdb->get_row( "SHOW INDEX FROM {$wpdb->prefix}wc_order_stats WHERE key_name = 'status'" );
-
-		if ( property_exists( $index, 'Sub_part' ) ) {
-			// The index was created with the right length. Time to bail.
-			if ( self::$max_index_length === $index->Sub_part ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-				return;
-			}
-
-			// We need to drop the index so it can be recreated.
-			$wpdb->query( "DROP INDEX `status` ON {$wpdb->prefix}wc_order_stats" );
-		}
-
-		$max_index_length = self::$max_index_length;
-
-		// Recreate the status index with a max length.
-		$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}wc_order_stats ADD INDEX status (status(%d))", $max_index_length ) );
-	}
-
-	/**
-	 * Update DB Version.
-	 */
-	public static function update_0190_db_version() {
-		self::update_db_version( '0.19.0' );
 	}
 }
