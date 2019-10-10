@@ -34,21 +34,21 @@ class UsageModal extends Component {
 	}
 
 	async componentDidUpdate( prevProps ) {
-		const { hasErrors, isRequesting } = this.props;
+		const { hasErrors, isRequesting, onClose, onContinue, createNotice } = this.props;
 		const isRequestSuccessful = ! isRequesting && prevProps.isRequesting && ! hasErrors;
 		const isRequestError = ! isRequesting && prevProps.isRequesting && hasErrors;
 
 		if ( isRequestSuccessful ) {
-			this.props.onClose();
-			this.props.onContinue();
+			onClose();
+			onContinue();
 		}
 
 		if ( isRequestError ) {
-			this.props.createNotice(
+			createNotice(
 				'error',
 				__( 'There was a problem updating your preferences.', 'woocommerce-admin' )
 			);
-			this.props.onClose();
+			onClose();
 		}
 	}
 
@@ -56,7 +56,7 @@ class UsageModal extends Component {
 		const { updateOptions } = this.props;
 		const allowTracking = this.state.allowTracking ? 'yes' : 'no';
 		updateOptions( {
-			[ 'woocommerce_allow_tracking' ]: allowTracking,
+			woocommerce_allow_tracking: allowTracking,
 		} );
 	}
 
