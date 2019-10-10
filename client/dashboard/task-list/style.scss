@@ -260,8 +260,12 @@
 	width: 100%;
 	min-width: 100%;
 	margin-bottom: $gap-large;
-	margin-top: -$gap;
+	margin-top: -$gap-smallest;
 	cursor: default;
+
+	.components-snackbar__content span {
+		margin-left: -$gap-large;
+	}
 
 	.woocommerce-task-card__prompt-actions {
 		button.is-link,
@@ -274,6 +278,23 @@
 
 		button.is-link:hover {
 			color: $studio-white;
+		}
+	}
+
+	.woocommerce-task-card__prompt-pointer {
+		border-bottom: 10px solid $core-grey-dark-700; /* Snackbar color */
+		border-left: 10px solid transparent;
+		border-right: 10px solid transparent;
+		position: relative;
+		width: 0;
+		height: 0;
+		display: inline-block;
+		top: -30px;
+	}
+
+	&:hover {
+		.woocommerce-task-card__prompt-pointer {
+			border-bottom-color: $core-grey-dark-900; /* Snackbar hover */
 		}
 	}
 }

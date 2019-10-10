@@ -56,7 +56,7 @@ export function getTasks( { profileItems, options, query } ) {
 			icon: 'extension',
 			container: <Connect query={ query } />,
 			visible: profileItems.items_purchased && ! profileItems.wccom_connected,
-			completed: true, //profileItems.wccom_connected,
+			completed: profileItems.wccom_connected,
 		},
 		{
 			key: 'products',

@@ -262,7 +262,7 @@ export default compose(
 		} );
 
 		const visibleTasks = filter( tasks, task => task.visible );
-		const completedTasks = filter( tasks, task => task.completed );
+		const completedTasks = filter( tasks, task => task.visible && task.completed );
 		const taskListCompleted = visibleTasks.length === completedTasks.length;
 
 		return {

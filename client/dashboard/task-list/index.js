@@ -25,22 +25,11 @@ import { recordEvent } from 'lib/tracks';
 import { getTasks } from './tasks';
 
 class TaskDashboard extends Component {
-	constructor( props ) {
-		super( props );
-		this.state = {
-			promptShown: props.promptShown,
-		};
-	}
-
 	componentDidMount() {
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
 
 		this.recordEvent();
-
-		if ( ! this.state.promptShown ) {
-			this.markPromptShown();
-		}
 	}
 
 	componentWillUnmount() {
@@ -65,7 +54,9 @@ class TaskDashboard extends Component {
 			action: 'keep_card',
 		} );
 
-		this.setState( { promptShown: true } );
+		this.props.updateOptions( {
+			woocommerce_task_list_prompt_shown: true,
+		} );
 	}
 
 	hideTaskCard( action ) {
@@ -73,13 +64,8 @@ class TaskDashboard extends Component {
 			action,
 		} );
 		this.props.updateOptions( {
-			[ 'woocommerce_task_list_hidden' ]: 'yes',
-		} );
-	}
-
-	markPromptShown() {
-		this.props.updateOptions( {
-			[ 'woocommerce_task_list_prompt_shown' ]: true,
+			woocommerce_task_list_hidden: 'yes',
+			woocommerce_task_list_prompt_shown: true,
 		} );
 	}
 
@@ -95,14 +81,16 @@ class TaskDashboard extends Component {
 	}
 
 	renderPrompt() {
-		if ( this.state.promptShown ) {
+		if ( this.props.promptShown ) {
 			return null;
 		}
 
 		return (
 			<Snackbar className="woocommerce-task-card__prompt">
-				<span>{ __( 'Is this card useful?', 'woocommerce-admin' ) }</span>
-
+				<div>
+					<div className="woocommerce-task-card__prompt-pointer" />
+					<span>{ __( 'Is this card useful?', 'woocommerce-admin' ) }</span>
+				</div>
 				<div className="woocommerce-task-card__prompt-actions">
 					<Button isLink onClick={ () => this.hideTaskCard( 'hide_card' ) }>
 						{ __( 'No, hide it', 'woocommerce-admin' ) }
