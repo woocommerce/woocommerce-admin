@@ -352,7 +352,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	/**
 	 * Initialize query objects.
 	 */
-	private function initialize_queries() {
+	protected function initialize_queries() {
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', self::get_db_table_name() . '.tax_rate_id' );
 		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );

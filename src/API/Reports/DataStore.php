@@ -91,7 +91,7 @@ class DataStore extends SqlQuery {
 	 */
 	protected static function get_db_table_name() {
 		global $wpdb;
-		return isset( $wpdb->{self::$table_name} ) ? $wpdb->{self::$table_name} : self::$table_name;
+		return isset( $wpdb->{static::$table_name} ) ? $wpdb->{static::$table_name} : static::$table_name;
 	}
 
 	/**
@@ -99,8 +99,8 @@ class DataStore extends SqlQuery {
 	 */
 	protected static function set_db_table_name() {
 		global $wpdb;
-		if ( self::$table_name && ! isset( $wpdb->{self::$table_name} ) ) {
-			$wpdb->{self::$table_name} = $wpdb->prefix . self::$table_name;
+		if ( static::$table_name && ! isset( $wpdb->{static::$table_name} ) ) {
+			$wpdb->{static::$table_name} = $wpdb->prefix . static::$table_name;
 		}
 	}
 
