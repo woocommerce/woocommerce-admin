@@ -77,7 +77,6 @@ class NumberFilter extends Component {
 		currencySymbol,
 		symbolPosition,
 	} ) {
-		console.log( symbolPosition, currencySymbol );
 		if ( 'currency' === type ) {
 			return (
 				0 === symbolPosition.indexOf( 'right' )
