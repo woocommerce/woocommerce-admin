@@ -288,12 +288,24 @@ class Install {
 		foreach ( self::get_db_update_callbacks() as $version => $update_callbacks ) {
 			if ( version_compare( $current_db_version, $version, '<' ) ) {
 				foreach ( $update_callbacks as $update_callback ) {
-					WC()->queue()->schedule_single(
-						time() + $loop,
-						'woocommerce_run_update_callback',
-						array( $update_callback ),
-						'woocommerce-db-updates'
+					$pending_jobs = WC()->queue()->search(
+						array(
+							'per_page' => 1,
+							'hook'     => 'woocommerce_run_update_callback',
+							'search'   => json_encode( array( $update_callback ) ),
+							'group'    => 'woocommerce-db-updates',
+						)
 					);
+
+					if ( empty( $pending_jobs ) ) {
+						WC()->queue()->schedule_single(
+							time() + $loop,
+							'woocommerce_run_update_callback',
+							array( $update_callback ),
+							'woocommerce-db-updates'
+						);
+					}
+
 					$loop++;
 				}
 			}
