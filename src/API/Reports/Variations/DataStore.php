@@ -24,7 +24,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected $table_name = 'wc_order_product_lookup';
+	protected static $table_name = 'wc_order_product_lookup';
 
 	/**
 	 * Cache identifier.
@@ -114,7 +114,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function get_from_sql_params( $query_args, $arg_name ) {
 		global $wpdb;
-		$order_product_lookup_table = $this->get_db_table_name();
+		$order_product_lookup_table = self::get_db_table_name();
 
 		if ( 'sku' === $query_args['orderby'] ) {
 			$join = " JOIN {$wpdb->postmeta} AS postmeta ON {$order_product_lookup_table}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
@@ -133,7 +133,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
-		$order_product_lookup_table = $this->get_db_table_name();
+		$order_product_lookup_table = self::get_db_table_name();
 
 		$this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
 		$this->get_limit_sql_params( $query_args );
@@ -171,7 +171,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function normalize_order_by( $order_by ) {
 		if ( 'date' === $order_by ) {
-			return $this->get_db_table_name() . '.date_created';
+			return self::get_db_table_name() . '.date_created';
 		}
 		if ( 'sku' === $order_by ) {
 			return 'meta_value';
@@ -246,7 +246,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $this->get_db_table_name();
+		$table_name = self::get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -358,7 +358,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	private function initialize_queries() {
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', 'product_id' );
-		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
+		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', 'product_id, variation_id' );
 	}
 }

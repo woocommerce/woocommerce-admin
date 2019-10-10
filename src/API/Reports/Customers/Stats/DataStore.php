@@ -71,7 +71,7 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$customers_table_name = $this->get_db_table_name();
+		$customers_table_name = self::get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(

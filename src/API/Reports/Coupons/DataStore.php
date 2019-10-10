@@ -25,7 +25,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected $table_name = 'wc_order_coupon_lookup';
+	protected static $table_name = 'wc_order_coupon_lookup';
 
 	/**
 	 * Cache identifier.
@@ -107,7 +107,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
-		$order_coupon_lookup_table = $this->get_db_table_name();
+		$order_coupon_lookup_table = self::get_db_table_name();
 
 		$this->get_time_period_sql_params( $query_args, $order_coupon_lookup_table );
 		$this->get_limit_sql_params( $query_args );
@@ -130,11 +130,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param string $from_arg   Name of the FROM sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
-	 * @return array
 	 */
 	protected function get_order_by_params( $query_args, $from_arg, $id_cell ) {
 		global $wpdb;
-		$lookup_table    = $this->get_db_table_name();
+		$lookup_table    = self::get_db_table_name();
 		$order_by_clause = $this->add_order_by_clause( $query_args, $this );
 		$this->clear_sql_clause( array( 'from', 'outer_from' ) );
 
@@ -224,7 +223,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $this->get_db_table_name();
+		$table_name = self::get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -360,7 +359,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			}
 
 			$result = $wpdb->replace(
-				$this->get_db_table_name(),
+				self::get_db_table_name(),
 				array(
 					'order_id'        => $order_id,
 					'coupon_id'       => $coupon_id,
@@ -400,7 +399,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM ${$this->get_db_table_name()} WHERE order_id = %d",
+				"DELETE FROM ${self::get_db_table_name()} WHERE order_id = %d",
 				$order_id
 			)
 		);
@@ -430,7 +429,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		$wpdb->delete(
-			$this->get_db_table_name(),
+			self::get_db_table_name(),
 			array( 'coupon_id' => $post_id )
 		);
 
@@ -461,7 +460,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function initialize_queries() {
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
-		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
+		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', 'coupon_id' );
 	}
 }

@@ -37,7 +37,7 @@ class DataStore extends SqlQuery {
 	 *
 	 * @var string
 	 */
-	protected $table_name = '';
+	protected static $table_name = '';
 
 	/**
 	 * Mapping columns to data type to return correct response types.
@@ -83,24 +83,24 @@ class DataStore extends SqlQuery {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->set_db_table_name();
+		self::set_db_table_name();
 	}
 
 	/**
 	 * Get table name from database class.
 	 */
-	protected function get_db_table_name() {
+	protected static function get_db_table_name() {
 		global $wpdb;
-		return isset( $wpdb->{$this->table_name} ) ? $wpdb->{$this->table_name} : $this->table_name;
+		return isset( $wpdb->{self::$table_name} ) ? $wpdb->{self::$table_name} : self::$table_name;
 	}
 
 	/**
 	 * Set table name from database class.
 	 */
-	protected function set_db_table_name() {
+	protected static function set_db_table_name() {
 		global $wpdb;
-		if ( $this->table_name && ! isset( $wpdb->{$this->table_name} ) ) {
-			$wpdb->{$this->table_name} = $wpdb->prefix . $this->table_name;
+		if ( self::$table_name && ! isset( $wpdb->{self::$table_name} ) ) {
+			$wpdb->{self::$table_name} = $wpdb->prefix . self::$table_name;
 		}
 	}
 
@@ -113,7 +113,7 @@ class DataStore extends SqlQuery {
 	 * @return string Updated query string.
 	 */
 	protected function prepend_table_name( $query, $field_name ) {
-		return str_replace( $field_name, $this->get_db_table_name() . '.' . $field_name, $query );
+		return str_replace( $field_name, self::get_db_table_name() . '.' . $field_name, $query );
 	}
 
 	/**

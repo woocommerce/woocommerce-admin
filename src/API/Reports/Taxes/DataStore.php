@@ -25,7 +25,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected $table_name = 'wc_order_tax_lookup';
+	protected static $table_name = 'wc_order_tax_lookup';
 
 	/**
 	 * Cache identifier.
@@ -110,7 +110,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function get_from_sql_params( $query_args, $order_status_filter ) {
 		global $wpdb;
-		$table_name = $this->get_db_table_name();
+		$table_name = self::get_db_table_name();
 
 		if ( $order_status_filter ) {
 			$this->subquery->add_sql_clause( 'from', " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
@@ -131,7 +131,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
 
-		$order_tax_lookup_table = $this->get_db_table_name();
+		$order_tax_lookup_table = self::get_db_table_name();
 
 		$this->get_time_period_sql_params( $query_args, $order_tax_lookup_table );
 		$this->get_limit_sql_params( $query_args );
@@ -158,7 +158,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $this->get_db_table_name();
+		$table_name = self::get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -294,7 +294,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		foreach ( $tax_items as $tax_item ) {
 			$result = $wpdb->replace(
-				$wpdb->prefix . self::TABLE_NAME,
+				self::get_db_table_name(),
 				array(
 					'order_id'     => $order->get_id(),
 					'date_created' => $order->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ),
@@ -336,14 +336,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function sync_on_order_delete( $order_id ) {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . self::TABLE_NAME;
-
-		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM ${table_name} WHERE order_id = %d",
-				$order_id
-			)
-		);
+		$wpdb->delete( self::get_db_table_name(), array( 'order_id', $order_id ) );
 
 		/**
 		 * Fires when tax's reports are removed from database.
@@ -361,8 +354,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	private function initialize_queries() {
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
-		$this->subquery->add_sql_clause( 'select', $this->get_db_table_name() . '.tax_rate_id' );
-		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
-		$this->subquery->add_sql_clause( 'group_by', $this->get_db_table_name() . '.tax_rate_id' );
+		$this->subquery->add_sql_clause( 'select', self::get_db_table_name() . '.tax_rate_id' );
+		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
+		$this->subquery->add_sql_clause( 'group_by', self::get_db_table_name() . '.tax_rate_id' );
 	}
 }

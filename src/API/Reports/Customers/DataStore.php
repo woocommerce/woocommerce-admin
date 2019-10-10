@@ -25,7 +25,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected $table_name = 'wc_customer_lookup';
+	protected static $table_name = 'wc_customer_lookup';
 
 	/**
 	 * Cache identifier.
@@ -137,7 +137,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param string $table_name Name of the db table relevant for the date constraint.
-	 * @return array
 	 */
 	protected function get_time_period_sql_params( $query_args, $table_name ) {
 		global $wpdb;
@@ -208,7 +207,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
-		$customer_lookup_table  = $this->get_db_table_name();
+		$customer_lookup_table  = self::get_db_table_name();
 		$order_stats_table_name = $wpdb->prefix . 'wc_order_stats';
 
 		$this->get_time_period_sql_params( $query_args, $customer_lookup_table );
@@ -336,7 +335,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$customers_table_name   = $this->get_db_table_name();
+		$customers_table_name   = self::get_db_table_name();
 		$order_stats_table_name = $wpdb->prefix . 'wc_order_stats';
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
@@ -505,7 +504,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$format[]                = '%s';
 		}
 
-		$result      = $wpdb->insert( $this->get_db_table_name(), $data, $format );
+		$result      = $wpdb->insert( self::get_db_table_name(), $data, $format );
 		$customer_id = $wpdb->insert_id;
 
 		/**
@@ -527,7 +526,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function get_guest_id_by_email( $email ) {
 		global $wpdb;
 
-		$table_name  = $this->get_db_table_name();
+		$table_name  = self::get_db_table_name();
 		$customer_id = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT customer_id FROM {$table_name} WHERE email = %s AND user_id IS NULL LIMIT 1",
@@ -547,7 +546,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function get_customer_id_by_user_id( $user_id ) {
 		global $wpdb;
 
-		$table_name  = $this->get_db_table_name();
+		$table_name  = self::get_db_table_name();
 		$customer_id = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT customer_id FROM {$table_name} WHERE user_id = %d LIMIT 1",
@@ -643,7 +642,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$format[]            = '%d';
 		}
 
-		$results = $wpdb->replace( $this->get_db_table_name(), $data, $format );
+		$results = $wpdb->replace( self::get_db_table_name(), $data, $format );
 
 		/**
 		 * Fires when customser's reports are updated.
@@ -687,7 +686,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		global $wpdb;
 		$customer_id = (int) $customer_id;
 
-		$wpdb->delete( $this->get_db_table_name(), array( 'customer_id', $customer_id ) );
+		$wpdb->delete( self::get_db_table_name(), array( 'customer_id', $customer_id ) );
 
 		/**
 		 * Fires when a customer is deleted.
@@ -702,8 +701,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function initialize_queries() {
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
-		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
-		$this->subquery->add_sql_clause( 'select', "{$this->get_db_table_name()}.customer_id" );
-		$this->subquery->add_sql_clause( 'group_by', "{$this->get_db_table_name()}.customer_id" );
+		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
+		$this->subquery->add_sql_clause( 'select', '{self::get_db_table_name()}.customer_id' );
+		$this->subquery->add_sql_clause( 'group_by', '{self::get_db_table_name()}.customer_id' );
 	}
 }

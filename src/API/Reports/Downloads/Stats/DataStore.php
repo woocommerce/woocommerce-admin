@@ -74,7 +74,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $this->get_db_table_name();
+		$table_name = self::get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -194,10 +194,10 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 	protected function initialize_queries() {
 		unset( $this->subquery );
 		$this->total_query = new SqlQuery( self::$context . '_total' );
-		$this->total_query->add_sql_clause( 'from', $this->get_db_table_name() );
+		$this->total_query->add_sql_clause( 'from', self::get_db_table_name() );
 
 		$this->interval_query = new SqlQuery( self::$context . '_interval' );
-		$this->interval_query->add_sql_clause( 'from', $this->get_db_table_name() );
+		$this->interval_query->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->interval_query->add_sql_clause( 'group_by', 'time_interval' );
 	}
 }

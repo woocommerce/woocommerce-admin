@@ -24,7 +24,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected $table_name = 'wc_download_log';
+	protected static $table_name = 'wc_download_log';
 
 	/**
 	 * Cache identifier.
@@ -95,7 +95,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
 
-		$lookup_table     = $this->get_db_table_name();
+		$lookup_table     = self::get_db_table_name();
 		$permission_table = $wpdb->prefix . 'woocommerce_downloadable_product_permissions';
 		$operator         = $this->get_match_operator( $query_args );
 		$where_filters    = array();
@@ -310,7 +310,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $this->get_db_table_name();
+		$table_name = self::get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -408,8 +408,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function initialize_queries() {
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
-		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
-		$this->subquery->add_sql_clause( 'select', "{$this->get_db_table_name()}.download_log_id" );
-		$this->subquery->add_sql_clause( 'group_by', "{$this->get_db_table_name()}.download_log_id" );
+		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
+		$this->subquery->add_sql_clause( 'select', '{self::get_db_table_name()}.download_log_id' );
+		$this->subquery->add_sql_clause( 'group_by', '{self::get_db_table_name()}.download_log_id' );
 	}
 }

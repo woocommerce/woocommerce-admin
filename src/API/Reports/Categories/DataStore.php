@@ -24,7 +24,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected $table_name = 'wc_order_product_lookup';
+	protected static $table_name = 'wc_order_product_lookup';
 
 	/**
 	 * Cache identifier.
@@ -99,11 +99,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Return the database query with parameters used for Categories report: time span and order status.
 	 *
 	 * @param array $query_args Query arguments supplied by the user.
-	 * @return array            Array of parameters used for SQL query.
 	 */
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
-		$order_product_lookup_table = $this->get_db_table_name();
+		$order_product_lookup_table = self::get_db_table_name();
 
 		$this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
 
@@ -139,11 +138,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param string $from_arg   Name of the FROM sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
-	 * @return array
 	 */
 	protected function get_order_by_params( $query_args, $from_arg, $id_cell ) {
 		global $wpdb;
-		$lookup_table    = $this->get_db_table_name();
+		$lookup_table    = self::get_db_table_name();
 		$order_by_clause = $this->add_order_by_clause( $query_args, $this );
 
 		$this->clear_sql_clause( array( 'outer_from' ) );
@@ -225,7 +223,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function get_data( $query_args ) {
 		global $wpdb;
 
-		$table_name = $this->get_db_table_name();
+		$table_name = self::get_db_table_name();
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
@@ -319,7 +317,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		global $wpdb;
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', "{$wpdb->wc_category_lookup}.category_tree_id as category_id," );
-		$this->subquery->add_sql_clause( 'from', $this->get_db_table_name() );
+		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', "{$wpdb->wc_category_lookup}.category_tree_id" );
 	}
 }
