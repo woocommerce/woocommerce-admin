@@ -505,7 +505,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$format[]                = '%s';
 		}
 
-		$result      = $wpdb->insert( $wpdb->prefix . self::TABLE_NAME, $data, $format );
+		$result      = $wpdb->insert( $this->get_db_table_name(), $data, $format );
 		$customer_id = $wpdb->insert_id;
 
 		/**
@@ -527,7 +527,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function get_guest_id_by_email( $email ) {
 		global $wpdb;
 
-		$table_name  = $wpdb->prefix . self::TABLE_NAME;
+		$table_name  = $this->get_db_table_name();
 		$customer_id = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT customer_id FROM {$table_name} WHERE email = %s AND user_id IS NULL LIMIT 1",
@@ -547,7 +547,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function get_customer_id_by_user_id( $user_id ) {
 		global $wpdb;
 
-		$table_name  = $wpdb->prefix . self::TABLE_NAME;
+		$table_name  = $this->get_db_table_name();
 		$customer_id = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT customer_id FROM {$table_name} WHERE user_id = %d LIMIT 1",
@@ -643,7 +643,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$format[]            = '%d';
 		}
 
-		$results = $wpdb->replace( $wpdb->prefix . self::TABLE_NAME, $data, $format );
+		$results = $wpdb->replace( $this->get_db_table_name(), $data, $format );
 
 		/**
 		 * Fires when customser's reports are updated.
@@ -686,14 +686,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function delete_customer( $customer_id ) {
 		global $wpdb;
 		$customer_id = (int) $customer_id;
-		$table_name  = $wpdb->prefix . self::TABLE_NAME;
 
-		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM ${table_name} WHERE customer_id = %d",
-				$customer_id
-			)
-		);
+		$wpdb->delete( $this->get_db_table_name(), array( 'customer_id', $customer_id ) );
 
 		/**
 		 * Fires when a customer is deleted.
