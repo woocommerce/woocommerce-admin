@@ -244,6 +244,29 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			return false;
 		}
 
+		// Process action removal. Actions are removed from
+		// the note if they aren't part of the changeset.
+		// See WC_Admin_Note::add_action().
+		$changed_actions = $note->get_actions( 'edit' );
+		$actions_to_keep = array();
+
+		foreach ( $changed_actions as $action ) {
+			if ( ! empty( $action->id ) ) {
+				$actions_to_keep[] = (int) $action->id;
+			}
+		}
+
+		$clear_actions_query = $wpdb->prepare(
+			"DELETE FROM {$wpdb->prefix}wc_admin_note_actions WHERE note_id = %d", $note->get_id()
+		);
+
+		if ( $actions_to_keep ) {
+			$clear_actions_query .= sprintf( ' AND action_id NOT IN (%s)', implode( ',', $actions_to_keep ) );
+		}
+
+		$wpdb->query( $clear_actions_query );
+
+		// Update/insert the actions in this changeset.
 		foreach ( $note->get_actions( 'edit' ) as $action ) {
 			$action_data = array(
 				'note_id'    => $note->get_id(),
