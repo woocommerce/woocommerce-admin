@@ -20,6 +20,9 @@ import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
 class InboxNoteAction extends Component {
 	constructor( props ) {
 		super( props );
+		this.state = {
+			inAction: false,
+		};
 
 		this.handleActionClick = this.handleActionClick.bind( this );
 	}
@@ -33,7 +36,7 @@ class InboxNoteAction extends Component {
 			window.open( href, '_blank' );
 		}
 
-		triggerNoteAction( noteId, action.id );
+		this.setState( { inAction: true }, () => triggerNoteAction( noteId, action.id ) );
 	}
 
 	render() {
@@ -42,8 +45,10 @@ class InboxNoteAction extends Component {
 			<Button
 				isDefault
 				isPrimary={ action.primary }
+				isBusy={ this.state.inAction }
+				disabled={ this.state.inAction }
 				href={ action.url || undefined }
-				onClick={ e => this.handleActionClick( e ) }
+				onClick={ this.handleActionClick }
 			>
 				{ action.label }
 			</Button>
