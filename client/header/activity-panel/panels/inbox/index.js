@@ -3,22 +3,17 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import { withDispatch } from '@wordpress/data';
 
 /**
- * WooCommerce dependencies
- */
-import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
-
-/**
  * Internal dependencies
  */
-import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
-import ActivityHeader from '../activity-header';
+import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
+import ActivityHeader from '../../activity-header';
+import NoteAction from './action';
 import { EmptyContent, Section } from '@woocommerce/components';
 import sanitizeHTML from 'lib/sanitize-html';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
@@ -36,18 +31,6 @@ class InboxPanel extends Component {
 			[ 'activity_panel_inbox_last_read' ]: this.mountTime,
 		};
 		this.props.updateCurrentUserData( userDataFields );
-	}
-
-	handleActionClick( event, note_id, action_id ) {
-		const { triggerNoteAction } = this.props;
-		const href = event.target.href || '';
-
-		if ( href.length && ! href.startsWith( adminUrl ) ) {
-			event.preventDefault();
-			window.open( href, '_blank' );
-		}
-
-		triggerNoteAction( note_id, action_id );
 	}
 
 	renderEmptyCard() {
@@ -78,14 +61,7 @@ class InboxPanel extends Component {
 				return [];
 			}
 			return note.actions.map( action => (
-				<Button
-					isDefault
-					isPrimary={ action.primary }
-					href={ action.url || undefined }
-					onClick={ e => this.handleActionClick( e, note.id, action.id ) }
-				>
-					{ action.label }
-				</Button>
+				<NoteAction noteId={ note.id } action={ action } />
 			) );
 		};
 
@@ -180,11 +156,10 @@ export default compose(
 		return { notes, isError, isRequesting, lastRead: userData.activity_panel_inbox_last_read };
 	} ),
 	withDispatch( dispatch => {
-		const { updateCurrentUserData, triggerNoteAction } = dispatch( 'wc-api' );
+		const { updateCurrentUserData } = dispatch( 'wc-api' );
 
 		return {
 			updateCurrentUserData,
-			triggerNoteAction,
 		};
 	} )
 )( InboxPanel );
