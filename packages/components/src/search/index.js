@@ -75,8 +75,7 @@ class Search extends Component {
 
 		options.forEach( option => {
 			const formattedOption = {
-				// @todo Should this be getOptionKey()?
-				key: option.id,
+				key: autocompleter.getOptionIdentifier( option ),
 				label: autocompleter.getOptionLabel( option, query ),
 				keywords: autocompleter.getOptionKeywords( option ),
 				value: option,

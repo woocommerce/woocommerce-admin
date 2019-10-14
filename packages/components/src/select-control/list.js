@@ -194,7 +194,7 @@ List.propTypes = {
 		PropTypes.shape( {
 			isDisabled: PropTypes.bool,
 			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
-			keywords: PropTypes.arrayOf( PropTypes.string ),
+			keywords: PropTypes.arrayOf( PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ) ),
 			label: PropTypes.oneOfType( [ PropTypes.string, PropTypes.object ] ),
 			value: PropTypes.any,
 		} )
