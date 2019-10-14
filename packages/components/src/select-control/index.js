@@ -199,22 +199,31 @@ export class SelectControl extends Component {
 	search( query ) {
 		const { hideBeforeSearch, onSearch, options } = this.props;
 		this.setState( { query } );
-		onSearch( options, query ).then( searchOptions => {
-			// Get all options if `hideBeforeSearch` is enabled and query is not null.
-			const filteredOptions =
-				null !== query && ! query.length && ! hideBeforeSearch
-					? searchOptions
-					: this.getFilteredOptions( searchOptions, query );
 
-			this.setState(
-				{
-					selectedIndex: 0,
-					filteredOptions,
-					isExpanded: Boolean( filteredOptions.length ),
-				},
-				() => this.announce( filteredOptions )
-			);
-		} );
+		const promise = ( this.activePromise = Promise.resolve( onSearch( options, query ) ).then(
+			searchOptions => {
+				if ( promise !== this.activePromise ) {
+					// Another promise has become active since this one was asked to resolve, so do nothing,
+					// or else we might end triggering a race condition updating the state.
+					return;
+				}
+
+				// Get all options if `hideBeforeSearch` is enabled and query is not null.
+				const filteredOptions =
+					null !== query && ! query.length && ! hideBeforeSearch
+						? searchOptions
+						: this.getFilteredOptions( searchOptions, query );
+
+				this.setState(
+					{
+						selectedIndex: 0,
+						filteredOptions,
+						isExpanded: Boolean( filteredOptions.length ),
+					},
+					() => this.announce( filteredOptions )
+				);
+			}
+		) );
 	}
 
 	render() {
@@ -359,7 +368,7 @@ SelectControl.propTypes = {
 	/**
 	 * The input type for the search box control.
 	 */
-	searchInputType: PropTypes.oneOf[ ( 'text', 'search', 'number', 'email', 'tel', 'url' ) ],
+	searchInputType: PropTypes.oneOf( [ 'text', 'search', 'number', 'email', 'tel', 'url' ] ),
 	/**
 	 * Only show list options after typing a search query.
 	 */
