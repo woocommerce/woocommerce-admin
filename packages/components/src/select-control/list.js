@@ -195,7 +195,7 @@ List.propTypes = {
 			isDisabled: PropTypes.bool,
 			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
 			keywords: PropTypes.arrayOf( PropTypes.string ),
-			label: PropTypes.string,
+			label: PropTypes.oneOfType( [ PropTypes.string, PropTypes.object ] ),
 			value: PropTypes.any,
 		} )
 	).isRequired,
