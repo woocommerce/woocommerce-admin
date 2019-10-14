@@ -54,7 +54,7 @@ class Start extends Component {
 	async skipWizard() {
 		const { createNotice, isProfileItemsError, updateProfileItems } = this.props;
 
-		await updateProfileItems( { skipped: true, wcs_jetpack: 'skipped' } );
+		await updateProfileItems( { wcs_jetpack: 'skipped' } );
 
 		if ( isProfileItemsError ) {
 			createNotice(
@@ -63,11 +63,18 @@ class Start extends Component {
 			);
 		} else {
 			recordEvent( 'storeprofiler_welcome_clicked', { get_started: true } );
+			return updateQueryString( { step: 'store-details' } );
 		}
 	}
 
 	async startWizard() {
-		const { createNotice, isProfileItemsError, updateProfileItems, updateOptions } = this.props;
+		const {
+			createNotice,
+			isProfileItemsError,
+			updateProfileItems,
+			updateOptions,
+			goToNextStep,
+		} = this.props;
 
 		await updateOptions( {
 			woocommerce_setup_jetpack_opted_in: true,
@@ -76,7 +83,7 @@ class Start extends Component {
 
 		if ( ! isProfileItemsError ) {
 			recordEvent( 'storeprofiler_welcome_clicked', { get_started: true } );
-			this.props.goToNextStep();
+			goToNextStep();
 		} else {
 			createNotice(
 				'error',
