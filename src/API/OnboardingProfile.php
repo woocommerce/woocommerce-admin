@@ -209,7 +209,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
 			),
-			'wcs_jetpack'         => array(
+			'plugins'             => array(
 				'type'              => 'string',
 				'description'       => __( 'How the Jetpack/WooCommerce Services step was handled.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
@@ -217,8 +217,10 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'validate_callback' => 'rest_validate_request_arg',
 				'enum'              => array(
 					'skipped',
+					'skipped-wcs',
 					'already-installed',
-					'wizard',
+					'installed-wcs',
+					'installed',
 				),
 			),
 			'account_type'        => array(
