@@ -18,6 +18,14 @@ if ( ! in_array( $phase, array( 'development', 'plugin', 'core' ), true ) ) {
 $config_json = file_get_contents( 'config/' . $phase . '.json' );
 $config      = json_decode( $config_json );
 
+if ( ! empty( $_SERVER['WC_ADMIN_ADDITIONAL_FEATURES'] ) ) {
+	$additional_features = json_decode( $_SERVER['WC_ADMIN_ADDITIONAL_FEATURES'], true );
+	if ( is_array( $additional_features ) ) {
+		foreach ( $additional_features as $feature => $enabled ) {
+			$config->features->$feature = $enabled;
+		}
+	}
+}
 
 if ( 'core' !== $phase ) {
 	$write  = "<?php\n";
