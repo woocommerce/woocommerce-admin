@@ -215,6 +215,7 @@ class ReportExporter {
 			);
 			$download_url = add_query_arg( $query_args, admin_url() );
 
+			\WC_Emails::instance();
 			$email = new ReportCSVEmail();
 			$email->trigger( $user_id, $report_type, $download_url );
 		}

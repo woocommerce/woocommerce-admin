@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Button, TextControl } from 'newspack-components';
+import { Button } from 'newspack-components';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { FormToggle } from '@wordpress/components';
@@ -13,9 +13,14 @@ import PropTypes from 'prop-types';
 /**
  * WooCommerce dependencies
  */
-import { Flag, Form } from '@woocommerce/components';
+import { Flag, Form, TextControl } from '@woocommerce/components';
 import { getCurrencyFormatString } from '@woocommerce/currency';
-import { CURRENCY } from '@woocommerce/wc-admin-settings';
+import { CURRENCY, getSetting, setSetting } from '@woocommerce/wc-admin-settings';
+
+/**
+ * Internal dependencies
+ */
+import { recordEvent } from 'lib/tracks';
 
 const { symbol, symbolPosition } = CURRENCY;
 
@@ -29,7 +34,17 @@ class ShippingRates extends Component {
 	async updateShippingZones( values ) {
 		const { createNotice, shippingZones } = this.props;
 
+		let restOfTheWorld = false;
+		let shippingCost = false;
 		shippingZones.map( zone => {
+			if ( 0 === zone.id ) {
+				restOfTheWorld = zone.toggleEnabled && values[ `${ zone.id }_enabled` ];
+			} else {
+				shippingCost =
+					'' !== values[ `${ zone.id }_rate` ] &&
+					parseFloat( values[ `${ zone.id }_rate` ] ) !== parseFloat( 0 );
+			}
+
 			const flatRateMethods = zone.methods
 				? zone.methods.filter( method => 'flat_rate' === method.method_id )
 				: [];
@@ -73,9 +88,17 @@ class ShippingRates extends Component {
 			}
 		} );
 
+		recordEvent( 'tasklist_shipping_set_costs', {
+			shipping_cost: shippingCost,
+			rest_world: restOfTheWorld,
+		} );
+
 		// @todo This is a workaround to force the task to mark as complete.
 		// This should probably be updated to use wc-api so we can fetch shipping methods.
-		wcSettings.onboarding.shippingZonesCount = 1;
+		setSetting( 'onboarding', {
+			...getSetting( 'onboarding', {} ),
+			shippingZonesCount: 1,
+		} );
 
 		createNotice( 'success', __( 'Your shipping rates have been updated.', 'woocommerce-admin' ) );
 

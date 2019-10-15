@@ -192,7 +192,7 @@ class Segmenter extends ReportsSegmenter {
 			// Restrict our search space for category comparisons.
 			if ( isset( $this->query_args['categories'] ) ) {
 				$category_ids      = implode( ',', $this->get_all_segments() );
-				$segmenting_where .= " AND wp_term_taxonomy.term_taxonomy_id IN ( $category_ids )";
+				$segmenting_where .= " AND {$wpdb->wc_category_lookup}.category_id IN ( $category_ids )";
 			}
 
 			$segments = $this->get_product_related_segments( $type, $segmenting_selections, $segmenting_from, $segmenting_where, $segmenting_groupby, $segmenting_dimension_name, $table_name, $query_params, $unique_orders_table );

@@ -2,7 +2,6 @@
  * Internal Dependencies
  */
 @import 'animation-slider/style.scss';
-@import 'autocomplete/style.scss';
 @import 'calendar/style.scss';
 @import 'card/style.scss';
 @import 'chart/style.scss';
@@ -27,13 +26,14 @@
 @import 'search-list-control/style.scss';
 @import 'section-header/style.scss';
 @import 'segmented-selection/style.scss';
-@import 'simple-select-control/style.scss';
+@import 'select-control/style.scss';
 @import 'split-button/style.scss';
 @import 'stepper/style.scss';
 @import 'spinner/style.scss';
 @import 'summary/style.scss';
 @import 'table/style.scss';
 @import 'tag/style.scss';
+@import 'text-control/style.scss';
 @import 'text-control-with-affixes/style.scss';
 @import 'view-more-list/style.scss';
 @import 'web-preview/style.scss';

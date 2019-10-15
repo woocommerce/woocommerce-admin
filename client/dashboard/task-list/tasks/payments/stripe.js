@@ -9,16 +9,17 @@ import apiFetch from '@wordpress/api-fetch';
 import { withDispatch } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
 import { Modal } from '@wordpress/components';
-import { Button, TextControl } from 'newspack-components';
+import { Button } from 'newspack-components';
 import { getQuery } from '@woocommerce/navigation';
 import { get } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import { Form, Link } from '@woocommerce/components';
+import { Form, Link, TextControl } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import { WCS_NAMESPACE } from 'wc-api/constants';
+import { recordEvent } from 'lib/tracks';
 
 class Stripe extends Component {
 	constructor( props ) {
@@ -46,6 +47,7 @@ class Stripe extends Component {
 			const isStripeConnected = stripeSettings.publishable_key && stripeSettings.secret_key;
 
 			if ( isStripeConnected ) {
+				recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
 				this.props.markConfigured( 'stripe' );
 				this.props.createNotice(
 					'success',
@@ -125,6 +127,7 @@ class Stripe extends Component {
 			} );
 
 			if ( result ) {
+				recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
 				this.props.setRequestPending( false );
 				this.props.markConfigured( 'stripe' );
 				this.props.createNotice(
@@ -223,6 +226,7 @@ class Stripe extends Component {
 		} );
 
 		if ( ! isSettingsError ) {
+			recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
 			this.props.setRequestPending( false );
 			markConfigured( 'stripe' );
 			this.props.createNotice(

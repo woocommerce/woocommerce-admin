@@ -1,7 +1,6 @@
 [
   { "component": "AdvancedFilters" },
   { "component": "AnimationSlider" },
-  { "component": "Autocomplete" },
   { "component": "Calendar" },
   { "component": "Card" },
   { "component": "Chart" },
@@ -28,13 +27,14 @@
   { "component": "SearchListControl" },
   { "component": "Section" },
   { "component": "SegmentedSelection" },
-  { "component": "SimpleSelectControl" },
+  { "component": "SelectControl" },
   { "component": "Spinner" },
   { "component": "SplitButton" },
   { "component": "Stepper" },
   { "component": "Summary" },
   { "component": "Table" },
   { "component": "Tag" },
+  { "component": "TextControl" },
   { "component": "TextControlWithAffixes" },
   { "component": "ViewMoreList" },
   { "component": "WebPreview" }

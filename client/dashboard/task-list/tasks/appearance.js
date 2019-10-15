@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Button, ImageUpload, TextControl } from 'newspack-components';
+import { Button, ImageUpload } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
@@ -13,22 +13,25 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, Stepper } from '@woocommerce/components';
+import { Card, Stepper, TextControl } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
+import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
+import { recordEvent } from 'lib/tracks';
 
 class Appearance extends Component {
 	constructor( props ) {
 		super( props );
+		const { hasHomepage, hasProducts } = getSetting( 'onboarding', {} );
 
 		this.stepVisibility = {
-			homepage: ! wcSettings.onboarding.hasHomepage,
-			import: ! wcSettings.onboarding.hasProducts,
+			homepage: ! hasHomepage,
+			import: ! hasProducts,
 		};
 
 		this.state = {
@@ -71,7 +74,10 @@ class Appearance extends Component {
 		if ( 'logo' === step && isRequestSuccessful ) {
 			createNotice( 'success', __( 'Store logo updated sucessfully.', 'woocommerce-admin' ) );
 			this.completeStep();
-			wcSettings.onboarding.customLogo = themeMods.custom_logo ? true : false;
+			setSetting( 'onboarding', {
+				...getSetting( 'onboarding', {} ),
+				customLogo: !! themeMods.custom_logo,
+			} );
 		}
 
 		if ( 'notice' === step && isRequestSuccessful ) {
@@ -113,7 +119,10 @@ class Appearance extends Component {
 						'success',
 						__( 'All demo products have been imported.', 'woocommerce-admin' )
 					);
-					wcSettings.onboarding.hasProducts = true;
+					setSetting( 'onboarding', {
+						...getSetting( 'onboarding', {} ),
+						hasProducts: true,
+					} );
 				}
 
 				this.setState( { isPending: false } );
@@ -128,6 +137,8 @@ class Appearance extends Component {
 	createHomepage() {
 		const { createNotice } = this.props;
 		this.setState( { isPending: true } );
+
+		recordEvent( 'tasklist_appearance_create_homepage', { create_homepage: true } );
 
 		apiFetch( { path: '/wc-admin/v1/onboarding/tasks/create_homepage', method: 'POST' } )
 			.then( response => {
@@ -149,6 +160,8 @@ class Appearance extends Component {
 		const { logo } = this.state;
 		const updateThemeMods = logo ? { ...themeMods, custom_logo: logo.id } : themeMods;
 
+		recordEvent( 'tasklist_appearance_upload_logo' );
+
 		updateOptions( {
 			[ `theme_mods_${ options.stylesheet }` ]: updateThemeMods,
 		} );
@@ -157,6 +170,10 @@ class Appearance extends Component {
 	updateNotice() {
 		const { updateOptions } = this.props;
 		const { storeNoticeText } = this.state;
+
+		recordEvent( 'tasklist_appearance_set_store_notice', {
+			added_text: Boolean( storeNoticeText.length ),
+		} );
 
 		updateOptions( {
 			woocommerce_demo_store: storeNoticeText.length ? 'yes' : 'no',
@@ -200,7 +217,12 @@ class Appearance extends Component {
 						<Button isPrimary onClick={ this.createHomepage }>
 							{ __( 'Create homepage', 'woocommerce-admin' ) }
 						</Button>
-						<Button onClick={ () => this.completeStep() }>
+						<Button
+							onClick={ () => {
+								recordEvent( 'tasklist_appearance_create_homepage', { create_homepage: false } );
+								this.completeStep();
+							} }
+						>
 							{ __( 'Skip', 'woocommerce-admin' ) }
 						</Button>
 					</Fragment>
