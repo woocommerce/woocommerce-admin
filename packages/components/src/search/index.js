@@ -137,10 +137,11 @@ class Search extends Component {
 					className={ classnames( 'woocommerce-search', className, {
 						'is-static-results': staticResults,
 					} ) }
+					disabled={ disabled }
 					hideBeforeSearch
 					inlineTags={ inlineTags }
 					isSearchable
-					disabled={ disabled }
+					label={ placeholder }
 					getSearchExpression={ autocompleter.getSearchExpression }
 					multiple
 					placeholder={ placeholder }
