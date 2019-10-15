@@ -57,10 +57,10 @@ class Onboarding {
 		if ( $this->should_show_tasks() ) {
 			OnboardingTasks::get_instance();
 		}
-		// old settings injection.
+		// Old settings injection.
 		// Run after Automattic\WooCommerce\Admin\Loader.
 		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
-		// new settings injection.
+		// New settings injection.
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
@@ -325,9 +325,8 @@ class Onboarding {
 		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
 
 		$settings['onboarding'] = array(
-			'industries'     => self::get_allowed_industries(),
-			'profile'        => $profile,
-			'taskListHidden' => ! $this->should_show_tasks(),
+			'industries' => self::get_allowed_industries(),
+			'profile'    => $profile,
 		);
 
 		// Only fetch if the onboarding wizard is incomplete.
@@ -352,10 +351,15 @@ class Onboarding {
 	 * @return array
 	 */
 	public function preload_options( $options ) {
-		if ( ! $this->should_show_tasks() ) {
+		$options[] = 'woocommerce_task_list_hidden';
+
+		if ( ! $this->should_show_tasks() && ! $this->should_show_profiler() ) {
 			return $options;
 		}
+
+		$options[] = 'woocommerce_task_list_prompt_shown';
 		$options[] = 'woocommerce_onboarding_payments';
+		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
 		return $options;
 	}
