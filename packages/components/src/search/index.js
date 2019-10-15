@@ -141,6 +141,7 @@ class Search extends Component {
 					inlineTags={ inlineTags }
 					isSearchable
 					disabled={ disabled }
+					getSearchExpression={ autocompleter.getSearchExpression }
 					multiple
 					placeholder={ placeholder }
 					onChange={ this.updateSelected }
