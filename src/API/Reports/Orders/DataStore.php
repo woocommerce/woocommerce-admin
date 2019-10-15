@@ -368,10 +368,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function get_products_by_order_ids( $order_ids ) {
 		global $wpdb;
 		$order_product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
+		$included_order_ids         = implode( ',', $order_ids );
 
-		$included_order_ids = implode( ',', $order_ids );
-
-		$products = $wpdb->get_results(
+		$products                   = $wpdb->get_results(
 			"SELECT order_id, ID as product_id, post_title as product_name, product_qty as product_quantity
 				FROM {$wpdb->posts}
 				JOIN {$order_product_lookup_table} ON {$order_product_lookup_table}.product_id = {$wpdb->posts}.ID
