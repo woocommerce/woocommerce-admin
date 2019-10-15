@@ -157,7 +157,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$this->subquery->add_sql_clause( 'from', " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
 			$this->subquery->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
 		}
 	}

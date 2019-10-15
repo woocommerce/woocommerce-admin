@@ -99,11 +99,11 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 
 		$this->get_time_period_sql_params( $query_args, $order_product_lookup_table );
 		$this->total_query->add_sql_clause( 'where', $products_where_clause );
-		$this->total_query->add_sql_clause( 'from', $products_from_clause );
+		$this->total_query->add_sql_clause( 'join', $products_from_clause );
 
 		$this->get_intervals_sql_params( $query_args, $order_product_lookup_table );
 		$this->interval_query->add_sql_clause( 'where', $products_where_clause );
-		$this->interval_query->add_sql_clause( 'from', $products_from_clause );
+		$this->interval_query->add_sql_clause( 'join', $products_from_clause );
 	}
 
 	/**
@@ -173,13 +173,13 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 
 			// @todo remove these assignements when refactoring segmenter classes to use query objects.
 			$totals_query          = array(
-				'from_clause'       => $this->total_query->get_sql_clause( 'from' ),
+				'from_clause'       => $this->total_query->get_sql_clause( 'join' ),
 				'where_time_clause' => $this->total_query->get_sql_clause( 'where_time' ),
 				'where_clause'      => $this->total_query->get_sql_clause( 'where' ),
 			);
 			$intervals_query       = array(
 				'select_clause'     => $this->get_sql_clause( 'select' ),
-				'from_clause'       => $this->interval_query->get_sql_clause( 'from' ),
+				'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
 				'where_time_clause' => $this->interval_query->get_sql_clause( 'where_time' ),
 				'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
 				'limit'             => $this->get_sql_clause( 'limit' ),

@@ -108,8 +108,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		// join wp_order_product_lookup_table with relationships and taxonomies
 		// @todo How to handle custom product tables?
-		$this->subquery->add_sql_clause( 'from', " LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id" );
-		$this->subquery->add_sql_clause( 'from', " LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_category_lookup}.category_id" );
+		$this->subquery->add_sql_clause( 'join', " LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id" );
+		$this->subquery->add_sql_clause( 'join', " LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_category_lookup}.category_id" );
 
 		$included_categories = $this->get_included_categories( $query_args );
 		if ( $included_categories ) {
@@ -147,13 +147,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->clear_sql_clause( array( 'outer_from' ) );
 		if ( false !== strpos( $order_by_clause, '_terms' ) ) {
 			if ( 'from' === $from_arg ) {
-				$this->subquery->add_sql_clause( 'from', " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
+				$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
 			} else {
 				$this->add_sql_clause( $from_arg, " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
 			}
 		}
-
-		$this->add_orderby_order_clause( $query_args, $this );
 	}
 
 	/**

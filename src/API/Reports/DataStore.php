@@ -469,9 +469,10 @@ class DataStore extends SqlQuery {
 			$intervals_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$adj_after'";
 			$intervals_query['limit']              = 'LIMIT 0,' . $params['per_page'];
 			// @todo remove passed parameter assignment after down stream classes are updated.
-			$this->clear_sql_clause( array( 'where_time', 'limit' ) );
-			$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$adj_before'" );
-			$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$adj_after'" );
+			$this->interval_query->clear_sql_clause( array( 'where_time', 'limit' ) );
+			$this->interval_query->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$adj_before'" );
+			$this->interval_query->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$adj_after'" );
+			$this->clear_sql_clause( 'limit' );
 			$this->add_sql_clause( 'limit', 'LIMIT 0,' . $params['per_page'] );
 		} else {
 			if ( 'asc' === $query_args['order'] ) {
@@ -1104,7 +1105,7 @@ class DataStore extends SqlQuery {
 		global $wpdb;
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$sql_query->add_sql_clause( 'from', " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$sql_query->add_sql_clause( 'join', " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
 			$sql_query->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
 		}
 	}

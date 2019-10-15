@@ -209,7 +209,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$order_stats_join = "JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
 			$this->update_sql_query_params( $query_args );
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
-			$this->interval_query->add_sql_clause( 'from', $order_stats_join );
+			$this->interval_query->add_sql_clause( 'join', $order_stats_join );
 			$this->interval_query->add_sql_clause( 'where_time', $this->get_sql_clause( 'where_time' ) );
 
 			$db_intervals            = $wpdb->get_col(
@@ -223,7 +223,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				return $data;
 			}
 			$this->total_query->add_sql_clause( 'select', $selections );
-			$this->total_query->add_sql_clause( 'from', $order_stats_join );
+			$this->total_query->add_sql_clause( 'join', $order_stats_join );
 			$this->total_query->add_sql_clause( 'where_time', $this->get_sql_clause( 'where_time' ) );
 
 			$totals = $wpdb->get_results(
@@ -237,13 +237,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 			// @todo remove these assignements when refactoring segmenter classes to use query objects.
 			$totals_query          = array(
-				'from_clause'       => $this->total_query->get_sql_clause( 'from' ),
+				'from_clause'       => $this->total_query->get_sql_clause( 'join' ),
 				'where_time_clause' => $this->total_query->get_sql_clause( 'where_time' ),
 				'where_clause'      => $this->total_query->get_sql_clause( 'where' ),
 			);
 			$intervals_query       = array(
 				'select_clause'     => $this->get_sql_clause( 'select' ),
-				'from_clause'       => $this->interval_query->get_sql_clause( 'from' ),
+				'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
 				'where_time_clause' => $this->interval_query->get_sql_clause( 'where_time' ),
 				'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
 			);
@@ -302,7 +302,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->total_query->add_sql_clause( 'from', self::get_db_table_name() );
 
 		$this->interval_query = new SqlQuery( self::$context . '_interval' );
-		$this->interval_query->add_sql_clause( 'join', 'time_interval' );
 		$this->interval_query->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->interval_query->add_sql_clause( 'group_by', 'time_interval' );
 	}

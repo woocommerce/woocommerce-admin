@@ -150,7 +150,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$included_coupons = $this->get_included_coupons( $query_args );
 		$excluded_coupons = $this->get_excluded_coupons( $query_args );
 		if ( $included_coupons || $excluded_coupons ) {
-			$this->subquery->add_sql_clause( 'from', " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id" );
+			$this->subquery->add_sql_clause( 'join', " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id" );
 		}
 		if ( $included_coupons ) {
 			$where_subquery[] = "{$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})";
@@ -162,7 +162,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$included_products = $this->get_included_products( $query_args );
 		$excluded_products = $this->get_excluded_products( $query_args );
 		if ( $included_products || $excluded_products ) {
-			$this->subquery->add_sql_clause( 'from', " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id" );
+			$this->subquery->add_sql_clause( 'join', " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id" );
 		}
 		if ( $included_products ) {
 			$where_subquery[] = "{$order_product_lookup_table}.product_id IN ({$included_products})";
@@ -370,7 +370,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$order_product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
 		$included_order_ids         = implode( ',', $order_ids );
 
-		$products                   = $wpdb->get_results(
+		$products = $wpdb->get_results(
 			"SELECT order_id, ID as product_id, post_title as product_name, product_qty as product_quantity
 				FROM {$wpdb->posts}
 				JOIN {$order_product_lookup_table} ON {$order_product_lookup_table}.product_id = {$wpdb->posts}.ID

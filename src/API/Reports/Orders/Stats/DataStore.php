@@ -160,7 +160,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$from_clause    .= $refund_subquery['from_clause'];
 		}
 
-		$where_filters = array_filter( $where_filters );
+		$where_filters   = array_filter( $where_filters );
 		$where_subclause = implode( " $operator ", $where_filters );
 
 		// Append status filter after to avoid matching ANY on default statuses.
@@ -175,9 +175,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		// To avoid requesting the subqueries twice, the result is applied to all queries passed to the method.
 		if ( $where_subclause ) {
 			$this->total_query->add_sql_clause( 'where', " AND ( $where_subclause )" );
-			$this->total_query->add_sql_clause( 'from', $from_clause );
+			$this->total_query->add_sql_clause( 'join', $from_clause );
 			$this->interval_query->add_sql_clause( 'where', " AND ( $where_subclause )" );
-			$this->interval_query->add_sql_clause( 'from', $from_clause );
+			$this->interval_query->add_sql_clause( 'join', $from_clause );
 		}
 	}
 
@@ -259,8 +259,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'page_no'   => 0,
 			);
 
-			$selections  = $this->selected_columns( $query_args );
-			$params      = $this->get_limit_params( $query_args );
+			$selections = $this->selected_columns( $query_args );
+			$params     = $this->get_limit_params( $query_args );
 			$this->get_time_period_sql_params( $query_args, $table_name );
 			$this->get_intervals_sql_params( $query_args, $table_name );
 			$coupon_join = "LEFT JOIN (
@@ -278,7 +278,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			// Additional filtering for Orders report.
 			$this->orders_stats_sql_filter( $query_args );
 			$this->total_query->add_sql_clause( 'select', $selections );
-			$this->total_query->add_sql_clause( 'from', $coupon_join );
+			$this->total_query->add_sql_clause( 'join', $coupon_join );
 			$totals = $wpdb->get_results(
 				$this->total_query->get_statement(),
 				ARRAY_A
@@ -286,14 +286,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			if ( null === $totals ) {
 				return new WP_Error( 'woocommerce_reports_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'woocommerce-admin' ) );
 			}
-			$totals_query = array(
-				'from_clause' => $this->total_query->get_sql_clause( 'from' ),
+			$totals_query    = array(
+				'from_clause'       => $this->total_query->get_sql_clause( 'join' ),
 				'where_time_clause' => $this->total_query->get_sql_clause( 'where_time' ),
-				'where_clause' => $this->total_query->get_sql_clause( 'where' ),
+				'where_clause'      => $this->total_query->get_sql_clause( 'where' ),
 			);
-			$intervals_query       = array(
+			$intervals_query = array(
 				'select_clause'     => $this->get_sql_clause( 'select' ),
-				'from_clause'       => $this->interval_query->get_sql_clause( 'from' ),
+				'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
 				'where_time_clause' => $this->interval_query->get_sql_clause( 'where_time' ),
 				'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
 				'limit'             => $this->get_sql_clause( 'limit' ),
@@ -308,7 +308,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$totals                     = (object) $this->cast_numbers( $totals[0] );
 
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
-			$this->interval_query->add_sql_clause( 'from', $coupon_join );
+			$this->interval_query->add_sql_clause( 'join', $coupon_join );
 			$db_intervals = $wpdb->get_col(
 				$this->interval_query->get_statement()
 			); // WPCS: cache ok, DB call ok, , unprepared SQL ok.
@@ -510,7 +510,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	public static function delete_order( $post_id ) {
 		global $wpdb;
-		$order_id   = (int) $post_id;
+		$order_id = (int) $post_id;
 
 		if ( 'shop_order' !== get_post_type( $order_id ) && 'shop_order_refund' !== get_post_type( $order_id ) ) {
 			return;

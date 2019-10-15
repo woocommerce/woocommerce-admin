@@ -111,6 +111,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 		$this->get_limit_sql_params( $query_args );
 
+		// @todo DRY these up as in order stats.
 		$included_products = $this->get_included_products( $query_args );
 		$excluded_products = $this->get_excluded_products( $query_args );
 		if ( $included_products ) {
@@ -203,7 +204,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$subquery->add_sql_clause( 'where', " AND ( $where_subclause )" );
 		}
 
-		$subquery->add_sql_clause( 'from', " JOIN {$permission_table} as product_permissions ON {$lookup_table}.permission_id = product_permissions.permission_id" );
+		$subquery->add_sql_clause( 'join', " JOIN {$permission_table} as product_permissions ON {$lookup_table}.permission_id = product_permissions.permission_id" );
 		$this->get_order_by( $query_args );
 	}
 
@@ -291,7 +292,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		if ( false !== strpos( $order_by, '_products' ) ) {
-			$this->subquery->add_sql_clause( 'from', " JOIN {$wpdb->posts} AS _products ON product_permissions.product_id = _products.ID" );
+			$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->posts} AS _products ON product_permissions.product_id = _products.ID" );
 		}
 
 		if ( isset( $query_args['order'] ) ) {
