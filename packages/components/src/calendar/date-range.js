@@ -25,6 +25,10 @@ import DateInput from './input';
 import phrases from './phrases';
 
 const isRTL = () => document.documentElement.dir === 'rtl';
+// Blur event sources
+const CONTAINER_DIV = 'container';
+const NEXT_MONTH_CLICK = 'onNextMonthClick';
+const PREV_MONTH_CLICK = 'onPrevMonthClick';
 
 /**
  * This is wrapper for a [react-dates](https://github.com/airbnb/react-dates) powered calendar.
@@ -41,25 +45,52 @@ class DateRange extends Component {
 	}
 
 	/*
-	* Todo: We should remove this function when possible.
-	* It is kept because focus is lost when we click on the previous and next
-	* month buttons or clicking on a date in the calendar.
-	* This focus loss closes the date picker popover.
-	* Ideally we should add an upstream commit on react-dates to fix this issue.
-	*/
-	keepFocusInside() {
+	 * Todo: We should remove this function when possible.
+	 * It is kept because focus is lost when we click on the previous and next
+	 * month buttons or clicking on a date in the calendar.
+	 * This focus loss closes the date picker popover.
+	 * Ideally we should add an upstream commit on react-dates to fix this issue.
+	 *
+	 * See: https://github.com/WordPress/gutenberg/pull/17201.
+	 */
+	keepFocusInside( blurSource, e ) {
 		if ( ! this.nodeRef.current ) {
 			return;
 		}
-		// If focus was lost.
-		if ( ! document.activeElement || ! this.nodeRef.current.contains( document.activeElement ) ) {
-			// Retrieve the focus region div.
+
+		// Blur triggered internal to the DayPicker component.
+		if (
+			CONTAINER_DIV === blurSource &&
+			e.target &&
+			(
+				e.target.classList.contains( 'DayPickerNavigation_button' ) ||
+				e.target.classList.contains( 'CalendarDay' )
+			)
+		) {
+			// DayPickerNavigation or CalendarDay mouseUp() is blurring,
+			// so switch focus to the DayPicker's focus region.
 			const focusRegion = this.nodeRef.current.querySelector( '.DayPicker_focusRegion' );
-			if ( ! focusRegion ) {
-				return;
+			if ( focusRegion ) {
+				focusRegion.focus();
 			}
-			// Keep the focus on focus region.
-			focusRegion.focus();
+
+			return;
+		}
+
+		// Blur triggered after next/prev click callback props.
+		if (
+			PREV_MONTH_CLICK === blurSource ||
+			NEXT_MONTH_CLICK === blurSource
+		) {
+			// DayPicker's updateStateAfterMonthTransition() is about to blur
+			// the activeElement, so focus a DayPickerNavigation button so the next
+			// blur event gets fixed by the above logic path.
+			const focusRegion = this.nodeRef.current.querySelector( '.DayPickerNavigation_button' );
+			if ( focusRegion ) {
+				focusRegion.focus();
+			}
+
+			return;
 		}
 	}
 
@@ -165,9 +196,11 @@ class DateRange extends Component {
 				<div
 					className="woocommerce-calendar__react-dates"
 					ref={ this.nodeRef }
-					onBlur={ this.keepFocusInside }
+					onBlur={ partial( this.keepFocusInside, CONTAINER_DIV ) }
 				>
 					<DayPickerRangeController
+						onNextMonthClick={ partial( this.keepFocusInside, NEXT_MONTH_CLICK ) }
+						onPrevMonthClick={ partial( this.keepFocusInside, PREV_MONTH_CLICK ) }
 						onDatesChange={ this.onDatesChange }
 						onFocusChange={ this.onFocusChange }
 						focusedInput={ focusedInput }
