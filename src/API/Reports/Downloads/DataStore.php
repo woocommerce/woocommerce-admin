@@ -96,82 +96,63 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 		$this->get_limit_sql_params( $query_args );
 
-		// @todo DRY these up as in order stats.
-		$included_products = $this->get_included_products( $query_args );
-		$excluded_products = $this->get_excluded_products( $query_args );
-		if ( $included_products ) {
-			$where_filters[] = " {$lookup_table}.permission_id IN (
-			SELECT
-				DISTINCT {$permission_table}.permission_id
-			FROM
-				{$permission_table}
-			WHERE
-				{$permission_table}.product_id IN ({$included_products})
-			)";
-		}
-
-		if ( $excluded_products ) {
-			$where_filters[] = " {$lookup_table}.permission_id NOT IN (
-			SELECT
-				DISTINCT {$permission_table}.permission_id
-			FROM
-				{$permission_table}
-			WHERE
-				{$permission_table}.product_id IN ({$excluded_products})
-			)";
-		}
-
-		$included_orders = $this->get_included_orders( $query_args );
-		$excluded_orders = $this->get_excluded_orders( $query_args );
-		if ( $included_orders ) {
-			$where_filters[] = " {$lookup_table}.permission_id IN (
-			SELECT
-				DISTINCT {$permission_table}.permission_id
-			FROM
-				{$permission_table}
-			WHERE
-				{$permission_table}.order_id IN ({$included_orders})
-			)";
-		}
-
-		if ( $excluded_orders ) {
-			$where_filters[] = " {$lookup_table}.permission_id NOT IN (
-			SELECT
-				DISTINCT {$permission_table}.permission_id
-			FROM
-				{$permission_table}
-			WHERE
-				{$permission_table}.order_id IN ({$excluded_orders})
-			)";
-		}
+		$where_filters[] = $this->get_object_where_filter(
+			$lookup_table,
+			'permission_id',
+			'woocommerce_downloadable_product_permissions',
+			'product_id',
+			'IN',
+			$this->get_included_products( $query_args )
+		);
+		$where_filters[] = $this->get_object_where_filter(
+			$lookup_table,
+			'permission_id',
+			'woocommerce_downloadable_product_permissions',
+			'product_id',
+			'NOT IN',
+			$this->get_excluded_products( $query_args )
+		);
+		$where_filters[] = $this->get_object_where_filter(
+			$lookup_table,
+			'permission_id',
+			'woocommerce_downloadable_product_permissions',
+			'order_id',
+			'IN',
+			$this->get_included_orders( $query_args )
+		);
+		$where_filters[] = $this->get_object_where_filter(
+			$lookup_table,
+			'permission_id',
+			'woocommerce_downloadable_product_permissions',
+			'order_id',
+			'NOT IN',
+			$this->get_excluded_orders( $query_args )
+		);
 
 		$customer_lookup_table = $wpdb->prefix . 'wc_customer_lookup';
+		$customer_lookup       = "SELECT {$customer_lookup_table}.user_id FROM {$customer_lookup_table} WHERE {$customer_lookup_table}.customer_id IN (%s)";
 		$included_customers    = $this->get_included_customers( $query_args );
 		$excluded_customers    = $this->get_excluded_customers( $query_args );
 		if ( $included_customers ) {
-			$where_filters[] = " {$lookup_table}.permission_id IN (
-			SELECT
-				DISTINCT {$permission_table}.permission_id
-			FROM
-				{$permission_table}
-			WHERE
-				{{$permission_table}.user_id IN (
-					SELECT {$customer_lookup_table}.user_id FROM {$customer_lookup_table} WHERE {$customer_lookup_table}.customer_id IN ({$included_customers})
-				)
-			)";
+			$where_filters[] = $this->get_object_where_filter(
+				$lookup_table,
+				'permission_id',
+				'woocommerce_downloadable_product_permissions',
+				'order_id',
+				'IN',
+				sprintf( $customer_lookup, $included_customers )
+			);
 		}
 
 		if ( $excluded_customers ) {
-			$where_filters[] = " {$lookup_table}.permission_id NOT IN (
-			SELECT
-				DISTINCT {$permission_table}.permission_id
-			FROM
-				{$permission_table}
-			WHERE
-				{$permission_table}.user_id IN (
-					SELECT {$customer_lookup_table}.user_id FROM {$customer_lookup_table} WHERE {$customer_lookup_table}.customer_id IN ({$excluded_customers})
-				)
-			)";
+			$where_filters[] = $this->get_object_where_filter(
+				$lookup_table,
+				'permission_id',
+				'woocommerce_downloadable_product_permissions',
+				'order_id',
+				'NOT IN',
+				sprintf( $customer_lookup, $excluded_customers )
+			);
 		}
 
 		$included_ip_addresses = $this->get_included_ip_addresses( $query_args );
@@ -184,6 +165,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$where_filters[] = " {$lookup_table}.user_ip_address NOT IN ('{$excluded_ip_addresses}')";
 		}
 
+		$where_filters   = array_filter( $where_filters );
 		$where_subclause = implode( " $operator ", $where_filters );
 		if ( $where_subclause ) {
 			$subquery->add_sql_clause( 'where', " AND ( $where_subclause )" );

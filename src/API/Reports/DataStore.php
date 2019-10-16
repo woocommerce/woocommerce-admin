@@ -945,6 +945,35 @@ class DataStore extends SqlQuery {
 	}
 
 	/**
+	 * Get WHERE filter by object ids subquery.
+	 *
+	 * @param string $select_table Select table name.
+	 * @param string $select_field Select table object ID field name.
+	 * @param string $filter_table Lookup table name.
+	 * @param string $filter_field Lookup table object ID field name.
+	 * @param string $compare      Comparison string (IN|NOT IN).
+	 * @param string $id_list      Comma separated ID list.
+	 *
+	 * @return string
+	 */
+	protected function get_object_where_filter( $select_table, $select_field, $filter_table, $filter_field, $compare, $id_list ) {
+		global $wpdb;
+		if ( empty( $id_list ) ) {
+			return '';
+		}
+
+		$lookup_name = isset( $wpdb->$filter_table ) ? $wpdb->$filter_table : $wpdb->prefix . $filter_table;
+		return " {$select_table}.{$select_field} {$compare} (
+			SELECT
+				DISTINCT {$filter_table}.{$select_field}
+			FROM
+				{$filter_table}
+			WHERE
+				{$filter_table}.{$field} IN ({$id_list})
+		)";
+	}
+
+	/**
 	 * Returns an array of ids of allowed products, based on query arguments from the user.
 	 *
 	 * @param array $query_args Parameters supplied by the user.

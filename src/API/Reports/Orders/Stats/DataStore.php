@@ -123,12 +123,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$where_filters = array();
 
 		// Products filters.
-		$where_filters[] = $this->get_object_where_filter( 'wc_order_product_lookup', 'product_id', 'IN', $this->get_included_products( $query_args ) );
-		$where_filters[] = $this->get_object_where_filter( 'wc_order_product_lookup', 'product_id', 'NOT IN', $this->get_excluded_products( $query_args ) );
+		$where_filters[] = $this->get_object_where_filter( $orders_stats_table, 'order_id', 'wc_order_product_lookup', 'product_id', 'IN', $this->get_included_products( $query_args ) );
+		$where_filters[] = $this->get_object_where_filter( $orders_stats_table, 'order_id', 'wc_order_product_lookup', 'product_id', 'NOT IN', $this->get_excluded_products( $query_args ) );
 
 		// Coupons filters.
-		$where_filters[] = $this->get_object_where_filter( 'wc_order_coupon_lookup', 'coupon_id', 'IN', $this->get_included_coupons( $query_args ) );
-		$where_filters[] = $this->get_object_where_filter( 'wc_order_coupon_lookup', 'coupon_id', 'NOT IN', $this->get_excluded_coupons( $query_args ) );
+		$where_filters[] = $this->get_object_where_filter( $orders_stats_table, 'order_id', 'wc_order_coupon_lookup', 'coupon_id', 'IN', $this->get_included_coupons( $query_args ) );
+		$where_filters[] = $this->get_object_where_filter( $orders_stats_table, 'order_id', 'wc_order_coupon_lookup', 'coupon_id', 'NOT IN', $this->get_excluded_coupons( $query_args ) );
 
 		$where_filters[] = $this->get_customer_subquery( $query_args );
 		$refund_subquery = $this->get_refund_subquery( $query_args );
@@ -158,32 +158,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 	}
 
-	/**
-	 * Get WHERE filter by object ids subquery.
-	 *
-	 * @param string $table   Lookup table name.
-	 * @param string $field   Lookup table object ID field name.
-	 * @param string $compare Comparison string (IN|NOT IN).
-	 * @param string $id_list Comma separated ID list.
-	 *
-	 * @return string
-	 */
-	private function get_object_where_filter( $table, $field, $compare, $id_list ) {
-		global $wpdb;
-		if ( empty( $id_list ) ) {
-			return '';
-		}
-
-		$lookup_name = isset( $wpdb->$table ) ? $wpdb->$table : $wpdb->prefix . $table;
-		return " {$table_name}.order_id {$compare} (
-			SELECT
-				DISTINCT {$lookup_name}.order_id
-			FROM
-				{$lookup_name}
-			WHERE
-				{$lookup_name}.{$field} IN ({$id_list})
-		)";
-	}
 	/**
 	 * Returns the report data based on parameters supplied by the user.
 	 *
