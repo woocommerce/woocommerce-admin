@@ -80,10 +80,33 @@ class DataStore extends SqlQuery {
 	protected static $context = 'reports';
 
 	/**
+	 * Subquery object for query nesting.
+	 *
+	 * @var SqlQuery
+	 */
+	protected $subquery;
+
+	/**
+	 * Totals query object.
+	 *
+	 * @var SqlQuery
+	 */
+	protected $total_query;
+
+	/**
+	 * Intervals query object.
+	 *
+	 * @var SqlQuery
+	 */
+	protected $interval_query;
+
+	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
 		self::set_db_table_name();
+		$this->assign_report_columns();
+		$this->initialize_queries();
 	}
 
 	/**
@@ -113,7 +136,7 @@ class DataStore extends SqlQuery {
 	 * @return string Updated query string.
 	 */
 	protected function prepend_table_name( $query, $field_name ) {
-		return str_replace( $field_name, self::get_db_table_name() . '.' . $field_name, $query );
+		return str_replace( $field_name, static::get_db_table_name() . '.' . $field_name, $query );
 	}
 
 	/**
@@ -1214,4 +1237,14 @@ class DataStore extends SqlQuery {
 		}
 		return $ids_str;
 	}
+
+	/**
+	 * Assign report columns once full table name has been assigned.
+	 */
+	protected function assign_report_columns() {}
+
+	/**
+	 * Initialize query objects.
+	 */
+	protected function initialize_queries() {}
 }

@@ -77,23 +77,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected static $context = 'customers';
 
 	/**
-	 * Subquery object for query nesting.
-	 *
-	 * @var SqlQuery
+	 * Assign report columns once full table name has been assigned.
 	 */
-	protected $subquery;
-
-	/**
-	 * Constructor.
-	 */
-	public function __construct() {
+	protected function assign_report_columns() {
 		global $wpdb;
-
-		parent::__construct();
-		// Initialize some report columns that need disambiguation.
 		$this->report_columns['id']              = $this->prepend_table_name( $this->report_columns['id'], 'customer_id' );
 		$this->report_columns['date_last_order'] = "MAX( {$wpdb->prefix}wc_order_stats.date_created ) as date_last_order";
-		$this->initialize_queries();
 	}
 
 	/**

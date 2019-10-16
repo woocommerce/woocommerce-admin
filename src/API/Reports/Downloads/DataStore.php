@@ -73,21 +73,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected static $context = 'downloads';
 
 	/**
-	 * Subquery object for query nesting.
-	 *
-	 * @var SqlQuery
-	 */
-	protected $subquery;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		parent::__construct();
-		$this->initialize_queries();
-	}
-
-	/**
 	 * Updates the database query with parameters used for downloads report.
 	 *
 	 * @param array $query_args Query arguments supplied by the user.

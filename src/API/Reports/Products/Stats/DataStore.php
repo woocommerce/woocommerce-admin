@@ -56,20 +56,6 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 	protected static $context = 'product_stats';
 
 	/**
-	 * Totals query object.
-	 *
-	 * @var SqlQuery
-	 */
-	protected $total_query;
-
-	/**
-	 * Intervals query object.
-	 *
-	 * @var SqlQuery
-	 */
-	protected $interval_query;
-
-	/**
 	 * Updates the database query with parameters used for Products Stats report: categories and order status.
 	 *
 	 * @param array $query_args       Query arguments supplied by the user.

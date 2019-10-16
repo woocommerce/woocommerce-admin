@@ -48,13 +48,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	private $order = '';
 
 	/**
-	 * Subquery object for query nesting.
-	 *
-	 * @var SqlQuery
-	 */
-	protected $subquery;
-
-	/**
 	 * Mapping columns to data type to return correct response types.
 	 *
 	 * @var array
@@ -88,11 +81,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
-		parent::__construct();
+	protected function assign_report_columns() {
 		$this->report_columns['products_count'] = $this->prepend_table_name( $this->report_columns['products_count'], 'product_id' );
 		$this->report_columns['orders_count']   = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
-		$this->initialize_queries();
 	}
 
 	/**

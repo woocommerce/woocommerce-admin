@@ -67,27 +67,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected static $context = 'tax_stats';
 
 	/**
-	 * Totals query object.
-	 *
-	 * @var SqlQuery
+	 * Assign report columns once full table name has been assigned.
 	 */
-	protected $total_query;
-
-	/**
-	 * Intervals query object.
-	 *
-	 * @var SqlQuery
-	 */
-	protected $interval_query;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		parent::__construct();
-		// Avoid ambigious columns in SQL query.
+	protected function assign_report_columns() {
 		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
-		$this->initialize_queries();
 	}
 
 	/**

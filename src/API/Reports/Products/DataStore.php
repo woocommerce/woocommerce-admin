@@ -98,20 +98,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected static $context = 'products';
 
 	/**
-	 * Subquery object for query nesting.
-	 *
-	 * @var SqlQuery
+	 * Assign report columns once full table name has been assigned.
 	 */
-	protected $subquery;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		parent::__construct();
-		// Avoid ambigious columns in SQL query.
+	protected function assign_report_columns() {
 		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
-		$this->initialize_queries();
 	}
 
 	/**
@@ -159,7 +149,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Updates the database query with parameters used for Products report: categories and order status.
 	 *
 	 * @param array $query_args Query arguments supplied by the user.
-	 * @return array            Array of parameters used for SQL query.
 	 */
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;

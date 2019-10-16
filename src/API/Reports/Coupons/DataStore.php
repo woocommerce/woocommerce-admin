@@ -64,19 +64,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected static $context = 'coupons';
 
 	/**
-	 * Subquery object for query nesting.
-	 *
-	 * @var SqlQuery
+	 * Assign report columns once full table name has been assigned.
 	 */
-	protected $subquery;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		parent::__construct();
+	protected function assign_report_columns() {
 		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
-		$this->initialize_queries();
 	}
 
 	/**

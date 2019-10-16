@@ -52,20 +52,6 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 	protected static $context = 'download_stats';
 
 	/**
-	 * Totals query object.
-	 *
-	 * @var SqlQuery
-	 */
-	protected $total_query;
-
-	/**
-	 * Intervals query object.
-	 *
-	 * @var SqlQuery
-	 */
-	protected $interval_query;
-
-	/**
 	 * Returns the report data based on parameters supplied by the user.
 	 *
 	 * @param array $query_args  Query parameters.
