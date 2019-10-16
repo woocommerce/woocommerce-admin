@@ -393,9 +393,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$table_name     = self::get_db_table_name();
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
-		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
-		$this->subquery->add_sql_clause( 'select', '{self::get_db_table_name()}.download_log_id' );
-		$this->subquery->add_sql_clause( 'group_by', '{self::get_db_table_name()}.download_log_id' );
+		$this->subquery->add_sql_clause( 'from', $table_name );
+		$this->subquery->add_sql_clause( 'select', "{$table_name}.download_log_id" );
+		$this->subquery->add_sql_clause( 'group_by', "{$table_name}.download_log_id" );
 	}
 }

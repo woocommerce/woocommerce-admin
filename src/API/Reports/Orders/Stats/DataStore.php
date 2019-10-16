@@ -493,7 +493,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return;
 		}
 
-		$wpdb->delete( self::get_db_table_name(), array( 'order_id', $order_id ) );
+		$wpdb->delete( self::get_db_table_name(), array( 'order_id' => $order_id ) );
 		/**
 		 * Fires when orders stats are deleted.
 		 *

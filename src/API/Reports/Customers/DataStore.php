@@ -675,7 +675,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		global $wpdb;
 		$customer_id = (int) $customer_id;
 
-		$wpdb->delete( self::get_db_table_name(), array( 'customer_id', $customer_id ) );
+		$wpdb->delete( self::get_db_table_name(), array( 'customer_id' => $customer_id ) );
 
 		/**
 		 * Fires when a customer is deleted.
