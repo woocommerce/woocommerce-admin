@@ -24,10 +24,10 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-					search,
-					per_page: 10,
-					orderby: 'count',
-				}
+				search,
+				per_page: 10,
+				orderby: 'count',
+			}
 			: {};
 		return apiFetch( { path: addQueryArgs( '/wc/v4/products/categories', query ) } );
 	},

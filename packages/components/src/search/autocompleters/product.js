@@ -26,10 +26,10 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-					search,
-					per_page: 10,
-					orderby: 'popularity',
-				}
+				search,
+				per_page: 10,
+				orderby: 'popularity',
+			}
 			: {};
 		return apiFetch( { path: addQueryArgs( '/wc/v4/products', query ) } );
 	},

@@ -22,10 +22,10 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-					search,
-					searchby: 'username',
-					per_page: 10,
-				}
+				search,
+				searchby: 'username',
+				per_page: 10,
+			}
 			: {};
 		return apiFetch( { path: addQueryArgs( '/wc/v4/customers', query ) } );
 	},

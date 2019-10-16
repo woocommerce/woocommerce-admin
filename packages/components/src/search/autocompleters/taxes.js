@@ -24,9 +24,9 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-					code: search,
-					per_page: 10,
-				}
+				code: search,
+				per_page: 10,
+			}
 			: {};
 		return apiFetch( { path: addQueryArgs( '/wc/v4/taxes', query ) } );
 	},

@@ -44,9 +44,9 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-					search,
-					per_page: 10,
-				}
+				search,
+				per_page: 10,
+			}
 			: {};
 		const product = getQuery().products;
 		if ( ! product || product.includes( ',' ) ) {

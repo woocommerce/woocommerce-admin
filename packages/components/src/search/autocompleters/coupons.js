@@ -24,9 +24,9 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-					search,
-					per_page: 10,
-				}
+				search,
+				per_page: 10,
+			}
 			: {};
 		return apiFetch( { path: addQueryArgs( '/wc/v4/coupons', query ) } );
 	},

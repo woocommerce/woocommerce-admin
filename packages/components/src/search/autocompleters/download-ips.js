@@ -22,8 +22,8 @@ export default {
 	options( match ) {
 		const query = match
 			? {
-					match,
-				}
+				match,
+			}
 			: {};
 		return apiFetch( { path: addQueryArgs( '/wc/v4/data/download-ips', query ) } );
 	},

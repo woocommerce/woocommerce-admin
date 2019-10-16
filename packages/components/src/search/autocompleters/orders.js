@@ -22,9 +22,9 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-					number: search,
-					per_page: 10,
-				}
+				number: search,
+				per_page: 10,
+			}
 			: {};
 		return apiFetch( { path: addQueryArgs( '/wc/v4/orders', query ) } );
 	},
