@@ -6,7 +6,7 @@ import 'core-js/fn/object/assign';
 import 'core-js/fn/array/from';
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { Component } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import { DayPickerRangeController } from 'react-dates';
 import moment from 'moment';
 import { partial } from 'lodash';
@@ -36,6 +36,31 @@ class DateRange extends Component {
 		this.onDatesChange = this.onDatesChange.bind( this );
 		this.onFocusChange = this.onFocusChange.bind( this );
 		this.onInputChange = this.onInputChange.bind( this );
+		this.nodeRef = createRef();
+		this.keepFocusInside = this.keepFocusInside.bind( this );
+	}
+
+	/*
+	* Todo: We should remove this function when possible.
+	* It is kept because focus is lost when we click on the previous and next
+	* month buttons or clicking on a date in the calendar.
+	* This focus loss closes the date picker popover.
+	* Ideally we should add an upstream commit on react-dates to fix this issue.
+	*/
+	keepFocusInside() {
+		if ( ! this.nodeRef.current ) {
+			return;
+		}
+		// If focus was lost.
+		if ( ! document.activeElement || ! this.nodeRef.current.contains( document.activeElement ) ) {
+			// Retrieve the focus region div.
+			const focusRegion = this.nodeRef.current.querySelector( '.DayPicker_focusRegion' );
+			if ( ! focusRegion ) {
+				return;
+			}
+			// Keep the focus on focus region.
+			focusRegion.focus();
+		}
 	}
 
 	onDatesChange( { startDate, endDate } ) {
@@ -137,7 +162,11 @@ class DateRange extends Component {
 						onFocus={ () => this.onFocusChange( 'endDate' ) }
 					/>
 				</div>
-				<div className="woocommerce-calendar__react-dates">
+				<div
+					className="woocommerce-calendar__react-dates"
+					ref={ this.nodeRef }
+					onBlur={ this.keepFocusInside }
+				>
 					<DayPickerRangeController
 						onDatesChange={ this.onDatesChange }
 						onFocusChange={ this.onFocusChange }
