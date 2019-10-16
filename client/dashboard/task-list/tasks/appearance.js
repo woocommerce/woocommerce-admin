@@ -146,7 +146,7 @@ class Appearance extends Component {
 
 				this.setState( { isPending: false } );
 				if ( response.edit_post_link ) {
-					window.location = `${ response.edit_post_link }&wc_onboarding_active_task=homepage`;
+					window.location = `${ response.edit_post_link }&wc-onboarding=homepage`;
 				}
 			} )
 			.catch( error => {
