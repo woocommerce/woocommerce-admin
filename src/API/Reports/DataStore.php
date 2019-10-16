@@ -114,7 +114,7 @@ class DataStore extends SqlQuery {
 	 */
 	protected static function get_db_table_name() {
 		global $wpdb;
-		return isset( $wpdb->{static::$table_name} ) ? $wpdb->{static::$table_name} : static::$table_name;
+		return isset( $wpdb->{static::$table_name} ) ? $wpdb->{static::$table_name} : $wpdb->prefix . static::$table_name;
 	}
 
 	/**
