@@ -143,6 +143,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->add_sql_clause( $from_arg, " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
 			}
 		}
+		$this->add_orderby_order_clause( $query_args, $this );
 	}
 
 	/**
@@ -237,6 +238,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'data'    => array(),
 				'total'   => 0,

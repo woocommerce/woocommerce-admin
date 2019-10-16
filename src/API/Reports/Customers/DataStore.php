@@ -306,7 +306,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$this->subquery->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
+			$this->subquery->add_sql_clause( 'join', " AND ( {$order_status_filter} )" );
 		}
 
 		if ( $having_clauses ) {
@@ -348,6 +348,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'data'    => array(),
 				'total'   => 0,
@@ -689,6 +691,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		$table_name     = self::get_db_table_name();
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'from', $table_name );

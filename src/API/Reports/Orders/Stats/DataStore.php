@@ -118,23 +118,53 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$from_clause        = '';
 		$orders_stats_table = self::get_db_table_name();
+		$product_lookup     = $wpdb->prefix . 'wc_order_product_lookup';
+		$coupon_lookup      = $wpdb->prefix . 'wc_order_coupon_lookup';
 		$operator           = $this->get_match_operator( $query_args );
 
 		$where_filters = array();
 
 		// Products filters.
-		$where_filters[] = $this->get_object_where_filter( $orders_stats_table, 'order_id', 'wc_order_product_lookup', 'product_id', 'IN', $this->get_included_products( $query_args ) );
-		$where_filters[] = $this->get_object_where_filter( $orders_stats_table, 'order_id', 'wc_order_product_lookup', 'product_id', 'NOT IN', $this->get_excluded_products( $query_args ) );
+		$where_filters[] = $this->get_object_where_filter(
+			$orders_stats_table,
+			'order_id',
+			$product_lookup,
+			'product_id',
+			'IN',
+			$this->get_included_products( $query_args )
+		);
+		$where_filters[] = $this->get_object_where_filter(
+			$orders_stats_table,
+			'order_id',
+			$product_lookup,
+			'product_id',
+			'NOT IN',
+			$this->get_excluded_products( $query_args )
+		);
 
 		// Coupons filters.
-		$where_filters[] = $this->get_object_where_filter( $orders_stats_table, 'order_id', 'wc_order_coupon_lookup', 'coupon_id', 'IN', $this->get_included_coupons( $query_args ) );
-		$where_filters[] = $this->get_object_where_filter( $orders_stats_table, 'order_id', 'wc_order_coupon_lookup', 'coupon_id', 'NOT IN', $this->get_excluded_coupons( $query_args ) );
+		$where_filters[] = $this->get_object_where_filter(
+			$orders_stats_table,
+			'order_id',
+			$coupon_lookup,
+			'coupon_id',
+			'IN',
+			$this->get_included_coupons( $query_args )
+		);
+		$where_filters[] = $this->get_object_where_filter(
+			$orders_stats_table,
+			'order_id',
+			$coupon_lookup,
+			'coupon_id',
+			'NOT IN',
+			$this->get_excluded_coupons( $query_args )
+		);
 
 		$where_filters[] = $this->get_customer_subquery( $query_args );
 		$refund_subquery = $this->get_refund_subquery( $query_args );
+		$from_clause    .= $refund_subquery['from_clause'];
 		if ( $refund_subquery['where_clause'] ) {
 			$where_filters[] = $refund_subquery['where_clause'];
-			$from_clause    .= $refund_subquery['from_clause'];
 		}
 
 		$where_filters   = array_filter( $where_filters );
@@ -202,6 +232,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'totals'    => (object) array(),
 				'intervals' => (object) array(),
@@ -211,9 +243,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			);
 
 			$selections = $this->selected_columns( $query_args );
-			$params     = $this->get_limit_params( $query_args );
 			$this->get_time_period_sql_params( $query_args, $table_name );
 			$this->get_intervals_sql_params( $query_args, $table_name );
+			$where_time  = $this->get_sql_clause( 'where_time' );
+			$params      = $this->get_limit_sql_params( $query_args );
 			$coupon_join = "LEFT JOIN (
 						SELECT
 							order_id,
@@ -230,6 +263,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->orders_stats_sql_filter( $query_args );
 			$this->total_query->add_sql_clause( 'select', $selections );
 			$this->total_query->add_sql_clause( 'join', $coupon_join );
+			$this->total_query->add_sql_clause( 'where_time', $where_time );
 			$totals = $wpdb->get_results(
 				$this->total_query->get_statement(),
 				ARRAY_A
@@ -239,27 +273,28 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			}
 			$totals_query    = array(
 				'from_clause'       => $this->total_query->get_sql_clause( 'join' ),
-				'where_time_clause' => $this->total_query->get_sql_clause( 'where_time' ),
+				'where_time_clause' => $where_time,
 				'where_clause'      => $this->total_query->get_sql_clause( 'where' ),
 			);
 			$intervals_query = array(
 				'select_clause'     => $this->get_sql_clause( 'select' ),
 				'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
-				'where_time_clause' => $this->interval_query->get_sql_clause( 'where_time' ),
+				'where_time_clause' => $where_time,
 				'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
 				'limit'             => $this->get_sql_clause( 'limit' ),
 			);
 
-			$unique_products            = $this->get_unique_product_count( $coupon_join, $totals_query['where_time_clause'], $totals_query['where_clause'] );
+			$unique_products            = $this->get_unique_product_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
 			$totals[0]['products']      = $unique_products;
 			$segmenter                  = new Segmenter( $query_args, $this->report_columns );
-			$unique_coupons             = $this->get_unique_coupon_count( $coupon_join, $totals_query['where_time_clause'], $totals_query['where_clause'] );
+			$unique_coupons             = $this->get_unique_coupon_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
 			$totals[0]['coupons_count'] = $unique_coupons;
 			$totals[0]['segments']      = $segmenter->get_totals_segments( $totals_query, $table_name );
 			$totals                     = (object) $this->cast_numbers( $totals[0] );
 
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 			$this->interval_query->add_sql_clause( 'join', $coupon_join );
+			$this->interval_query->add_sql_clause( 'where_time', $where_time );
 			$db_intervals = $wpdb->get_col(
 				$this->interval_query->get_statement()
 			); // WPCS: cache ok, DB call ok, , unprepared SQL ok.
@@ -582,6 +617,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		unset( $this->subquery );
 		$this->total_query = new SqlQuery( self::$context . '_total' );
 		$this->total_query->add_sql_clause( 'from', self::get_db_table_name() );

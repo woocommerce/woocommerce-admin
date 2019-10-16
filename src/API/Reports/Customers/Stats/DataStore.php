@@ -92,6 +92,8 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'customers_count'     => 0,
 				'avg_orders_count'    => 0,
@@ -110,7 +112,7 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 			);
 			$this->subquery->add_sql_clause(
 				'select',
-				'CASE WHEN COUNT( order_id ) = 0 THEN 0 ELSE SUM( gross_total ) / COUNT( order_id ) END AS avg_order_value'
+				'CASE WHEN COUNT( order_id ) = 0 THEN NULL ELSE SUM( gross_total ) / COUNT( order_id ) END AS avg_order_value'
 			);
 
 			$this->clear_sql_clause( array( 'order_by', 'limit' ) );

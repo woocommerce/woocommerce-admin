@@ -262,6 +262,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'data'    => array(),
 				'total'   => 0,
@@ -274,7 +276,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->get_sql_query_params( $query_args );
 			$params = $this->get_limit_params( $query_args );
 			if ( count( $included_products ) > 0 && count( $query_args['variations'] ) > 0 ) {
-
+				$this->subquery->add_sql_clause( 'select', $this->selected_columns( $query_args ) );
 				if ( 'date' === $query_args['orderby'] ) {
 					$this->subquery->add_sql_clause( 'select', ", {$table_name}.date_created" );
 				}
@@ -346,6 +348,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', 'product_id' );
 		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );

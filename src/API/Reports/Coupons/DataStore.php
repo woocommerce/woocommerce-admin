@@ -135,6 +135,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->add_sql_clause( $from_arg, " JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID" );
 			}
 		}
+		$this->add_orderby_order_clause( $query_args, $this );
 	}
 
 	/**
@@ -237,6 +238,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'data'    => array(),
 				'total'   => 0,
@@ -248,7 +251,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$included_coupons = $this->get_included_coupons_array( $query_args );
 			$limit_params     = $this->get_limit_params( $query_args );
 			$this->subquery->add_sql_clause( 'select', $selections );
-			$subquery = $this->subquery->get_statement();
 			$this->get_sql_query_params( $query_args );
 
 			if ( count( $included_coupons ) > 0 ) {
@@ -386,13 +388,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function sync_on_order_delete( $order_id ) {
 		global $wpdb;
 
-		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM ${self::get_db_table_name()} WHERE order_id = %d",
-				$order_id
-			)
-		);
-
+		$wpdb->delete( self::get_db_table_name(), array( 'order_id' => $order_id ) );
 		/**
 		 * Fires when coupon's reports are removed from database.
 		 *
@@ -448,6 +444,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', 'coupon_id' );

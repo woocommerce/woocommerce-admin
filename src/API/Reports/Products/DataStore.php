@@ -129,7 +129,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			case 'sku':
 				$join = " JOIN {$wpdb->postmeta} AS postmeta ON {$id_cell} = postmeta.post_id AND postmeta.meta_key = '_sku'";
 				break;
-			case '':
+			case 'variations':
 				$join = " LEFT JOIN ( SELECT post_parent, COUNT(*) AS variations FROM {$wpdb->posts} WHERE post_type = 'product_variation' GROUP BY post_parent ) AS _variations ON {$id_cell} = _variations.post_parent";
 				break;
 			default:
@@ -138,7 +138,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 		if ( $join ) {
 			if ( 'from' === $arg_name ) {
-				$this->subquery->add_sql_clause( $arg_name, $join );
+				$this->subquery->add_sql_clause( 'join', $join );
 			} else {
 				$this->add_sql_clause( $arg_name, $join );
 			}
@@ -294,6 +294,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'data'    => array(),
 				'total'   => 0,
@@ -318,6 +320,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$join_selections = $this->format_join_selections( $fields, array( 'product_id' ) );
 				$ids_table       = $this->get_ids_table( $included_products, 'product_id' );
 
+				$this->subquery->clear_sql_clause( 'select' );
+				$this->subquery->add_sql_clause( 'select', $selections );
 				$this->add_sql_clause( 'select', $join_selections );
 				$this->add_sql_clause( 'from', '(' );
 				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
@@ -491,6 +495,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', 'product_id' );
 		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );

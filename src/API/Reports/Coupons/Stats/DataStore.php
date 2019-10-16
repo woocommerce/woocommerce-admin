@@ -136,6 +136,8 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'data'    => array(),
 				'total'   => 0,
@@ -220,6 +222,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		unset( $this->subquery );
 		$this->total_query = new SqlQuery( self::$context . '_total' );
 		$this->total_query->add_sql_clause( 'from', self::get_db_table_name() );

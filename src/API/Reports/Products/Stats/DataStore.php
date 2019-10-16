@@ -128,6 +128,8 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$selections = $this->selected_columns( $query_args );
 			$params     = $this->get_limit_params( $query_args );
 
@@ -237,6 +239,7 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		unset( $this->subquery );
 		$this->total_query = new SqlQuery( self::$context . '_total' );
 		$this->total_query->add_sql_clause( 'from', self::get_db_table_name() );

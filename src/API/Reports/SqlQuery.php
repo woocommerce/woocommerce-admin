@@ -123,7 +123,7 @@ class SqlQuery {
 	 *
 	 * @return string
 	 */
-	protected function get_statement() {
+	public function get_statement() {
 		// Ensure the conditionally added clauses are always filtered.
 		$group_by = $this->get_sql_clause( 'group_by' );
 		$having   = $this->get_sql_clause( 'having' );
@@ -151,6 +151,7 @@ class SqlQuery {
 			if ( ! empty( $having ) ) {
 				$statement .= "
 					HAVING
+						1=1
 						{$having}
 				";
 			}
@@ -164,5 +165,24 @@ class SqlQuery {
 		}
 
 		return $statement . $this->get_sql_clause( 'limit' );
+	}
+
+	/**
+	 * Reinitialize the clause array.
+	 */
+	public function clear_all_clauses() {
+		$this->sql_clauses = array(
+			'select'     => array(),
+			'from'       => array(),
+			'join'       => array(),
+			'outer_from' => array(),
+			'right_join' => array(),
+			'where'      => array(),
+			'where_time' => array(),
+			'group_by'   => array(),
+			'having'     => array(),
+			'limit'      => array(),
+			'order_by'   => array(),
+		);
 	}
 }

@@ -99,7 +99,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$where_filters[] = $this->get_object_where_filter(
 			$lookup_table,
 			'permission_id',
-			'woocommerce_downloadable_product_permissions',
+			$permission_table,
 			'product_id',
 			'IN',
 			$this->get_included_products( $query_args )
@@ -107,7 +107,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$where_filters[] = $this->get_object_where_filter(
 			$lookup_table,
 			'permission_id',
-			'woocommerce_downloadable_product_permissions',
+			$permission_table,
 			'product_id',
 			'NOT IN',
 			$this->get_excluded_products( $query_args )
@@ -115,7 +115,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$where_filters[] = $this->get_object_where_filter(
 			$lookup_table,
 			'permission_id',
-			'woocommerce_downloadable_product_permissions',
+			$permission_table,
 			'order_id',
 			'IN',
 			$this->get_included_orders( $query_args )
@@ -123,7 +123,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$where_filters[] = $this->get_object_where_filter(
 			$lookup_table,
 			'permission_id',
-			'woocommerce_downloadable_product_permissions',
+			$permission_table,
 			'order_id',
 			'NOT IN',
 			$this->get_excluded_orders( $query_args )
@@ -137,8 +137,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$where_filters[] = $this->get_object_where_filter(
 				$lookup_table,
 				'permission_id',
-				'woocommerce_downloadable_product_permissions',
-				'order_id',
+				$permission_table,
+				'user_id',
 				'IN',
 				sprintf( $customer_lookup, $included_customers )
 			);
@@ -148,8 +148,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$where_filters[] = $this->get_object_where_filter(
 				$lookup_table,
 				'permission_id',
-				'woocommerce_downloadable_product_permissions',
-				'order_id',
+				$permission_table,
+				'user_id',
 				'NOT IN',
 				sprintf( $customer_lookup, $excluded_customers )
 			);
@@ -301,6 +301,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'data'    => array(),
 				'total'   => 0,
@@ -375,6 +377,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		$table_name     = self::get_db_table_name();
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'from', $table_name );

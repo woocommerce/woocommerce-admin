@@ -106,7 +106,6 @@ class DataStore extends SqlQuery {
 	public function __construct() {
 		self::set_db_table_name();
 		$this->assign_report_columns();
-		$this->initialize_queries();
 	}
 
 	/**
@@ -744,16 +743,14 @@ class DataStore extends SqlQuery {
 	 * @return array
 	 */
 	protected function get_limit_params( $query_args = array() ) {
-		if ( empty( $this->limit_parameters ) ) {
-			$this->limit_parameters['per_page'] = get_option( 'posts_per_page' );
-			if ( isset( $query_args['per_page'] ) && is_numeric( $query_args['per_page'] ) ) {
-				$this->limit_parameters['per_page'] = (int) $query_args['per_page'];
-			}
+		$this->limit_parameters['per_page'] = get_option( 'posts_per_page' );
+		if ( isset( $query_args['per_page'] ) && is_numeric( $query_args['per_page'] ) ) {
+			$this->limit_parameters['per_page'] = (int) $query_args['per_page'];
+		}
 
-			$this->limit_parameters['offset'] = 0;
-			if ( isset( $query_args['page'] ) ) {
-				$this->limit_parameters['offset'] = ( (int) $query_args['page'] - 1 ) * $this->limit_parameters['per_page'];
-			}
+		$this->limit_parameters['offset'] = 0;
+		if ( isset( $query_args['page'] ) ) {
+			$this->limit_parameters['offset'] = ( (int) $query_args['page'] - 1 ) * $this->limit_parameters['per_page'];
 		}
 
 		return $this->limit_parameters;
@@ -825,21 +822,15 @@ class DataStore extends SqlQuery {
 		$sql_query['order_by_clause'] = '';
 		if ( isset( $query_args['orderby'] ) ) {
 			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
-			$order_by_clause              = $this->normalize_order_by( $query_args['orderby'] );
+			$order_by_clause = $this->normalize_order_by( $query_args['orderby'] );
 		} else {
 			$order_by_clause = '';
 		}
 
-		if ( isset( $query_args['order'] ) ) {
-			$sql_query['order_by_clause'] .= ' ' . $query_args['order'];
-			$order_by_clause              .= ' ' . $query_args['order'];
-		} else {
-			$sql_query['order_by_clause'] .= ' DESC';
-			$order_by_clause              .= ' DESC';
-		}
 		// @todo remove $sql_query return.
 		$this->clear_sql_clause( 'order_by' );
 		$this->add_sql_clause( 'order_by', $order_by_clause );
+		$this->add_orderby_order_clause( $query_args, $this );
 
 		return $sql_query;
 	}
@@ -969,7 +960,7 @@ class DataStore extends SqlQuery {
 			FROM
 				{$filter_table}
 			WHERE
-				{$filter_table}.{$field} IN ({$id_list})
+				{$filter_table}.{$filter_field} IN ({$id_list})
 		)";
 	}
 
@@ -1271,9 +1262,4 @@ class DataStore extends SqlQuery {
 	 * Assign report columns once full table name has been assigned.
 	 */
 	protected function assign_report_columns() {}
-
-	/**
-	 * Initialize query objects.
-	 */
-	protected function initialize_queries() {}
 }

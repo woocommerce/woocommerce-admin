@@ -172,6 +172,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
+
 			$data = (object) array(
 				'data'    => array(),
 				'total'   => 0,
@@ -193,6 +195,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$fields          = $this->get_fields( $query_args );
 				$join_selections = $this->format_join_selections( $fields, array( 'tax_rate_id' ), $outer_selections );
 				$ids_table       = $this->get_ids_table( $query_args['taxes'], 'tax_rate_id' );
+
+				$this->subquery->clear_sql_clause( 'select' );
+				$this->subquery->add_sql_clause( 'select', $this->selected_columns( array( 'fields' => $inner_selections ) ) );
 				$this->add_sql_clause( 'select', $join_selections );
 				$this->add_sql_clause( 'from', '(' );
 				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
@@ -343,6 +348,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		$this->subquery = new SqlQuery( self::$context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', self::get_db_table_name() . '.tax_rate_id' );
 		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );

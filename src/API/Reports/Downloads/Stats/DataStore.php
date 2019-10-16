@@ -84,6 +84,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
+			$this->initialize_queries();
 			$selections = $this->selected_columns( $query_args );
 			$this->get_sql_query_params( $query_args );
 			$this->get_time_period_sql_params( $query_args, $table_name );
@@ -110,7 +111,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 			$this->update_intervals_sql_params( $intervals, $query_args, $db_records_count, $expected_interval_count, $table_name );
 			$this->interval_query->str_replace_clause( 'where_time', 'date_created', 'timestamp' );
 			$this->total_query->add_sql_clause( 'select', $selections );
-
+			$this->total_query->add_sql_clause( 'where', $this->interval_query->get_sql_clause( 'where' ) );
 			$totals = $wpdb->get_results(
 				$this->total_query->get_statement(),
 				ARRAY_A
@@ -178,6 +179,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 	 * Initialize query objects.
 	 */
 	protected function initialize_queries() {
+		$this->clear_all_clauses();
 		unset( $this->subquery );
 		$this->total_query = new SqlQuery( self::$context . '_total' );
 		$this->total_query->add_sql_clause( 'from', self::get_db_table_name() );
