@@ -56,7 +56,7 @@ export default class VariationsReportTable extends Component {
 			},
 			{
 				label: __( 'N. Revenue', 'woocommerce-admin' ),
-				screenReaderLabel: __( 'Net Revenue', 'woocommerce-admin' ),
+				screenReaderLabel: __( 'Net Sales', 'woocommerce-admin' ),
 				key: 'net_revenue',
 				required: true,
 				isSortable: true,
@@ -162,7 +162,7 @@ export default class VariationsReportTable extends Component {
 				value: numberFormat( items_sold ),
 			},
 			{
-				label: __( 'net revenue', 'woocommerce-admin' ),
+				label: __( 'Net Sales', 'woocommerce-admin' ),
 				value: formatCurrency( net_revenue ),
 			},
 			{

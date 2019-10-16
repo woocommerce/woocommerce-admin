@@ -14,7 +14,7 @@ export default [
 		key: 'description',
 	},
 	{
-		label: 'Gross Revenue',
+		label: 'Total Sales',
 		key: 'gross_revenue',
 	},
 	{
@@ -34,7 +34,7 @@ export default [
 		key: 'shipping',
 	},
 	{
-		label: 'Net Revenue',
+		label: 'Net Sales',
 		key: 'net_revenue',
 	},
 	{

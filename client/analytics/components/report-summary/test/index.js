@@ -20,7 +20,7 @@ describe( 'ReportSummary', () => {
 	) {
 		const selectedChart = {
 			key: 'gross_revenue',
-			label: 'Gross Revenue',
+			label: 'Total Sales',
 			type,
 		};
 		const charts = [ selectedChart ];

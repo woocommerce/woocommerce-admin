@@ -21,7 +21,7 @@ const data = {
 };
 const selectedChart = {
 	key: 'gross_revenue',
-	label: 'Gross Revenue',
+	label: 'Total Sales',
 	type: 'currency',
 };
 

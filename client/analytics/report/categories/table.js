@@ -47,7 +47,7 @@ class CategoriesReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Net Revenue', 'woocommerce-admin' ),
+				label: __( 'Net Sales', 'woocommerce-admin' ),
 				key: 'net_revenue',
 				isSortable: true,
 				isNumeric: true,
@@ -123,7 +123,7 @@ class CategoriesReportTable extends Component {
 				value: numberFormat( items_sold ),
 			},
 			{
-				label: __( 'net sales', 'woocommerce-admin' ),
+				label: __( 'Net Sales', 'woocommerce-admin' ),
 				value: formatCurrency( net_revenue ),
 			},
 			{
