@@ -123,7 +123,7 @@ class CategoriesReportTable extends Component {
 				value: numberFormat( items_sold ),
 			},
 			{
-				label: __( 'Net Sales', 'woocommerce-admin' ),
+				label: __( 'net sales', 'woocommerce-admin' ),
 				value: formatCurrency( net_revenue ),
 			},
 			{
