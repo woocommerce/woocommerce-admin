@@ -5,8 +5,22 @@
 import moment from 'moment';
 import { saveAs } from 'browser-filesaver';
 
+function escapeCSVValue( value ) {
+	let stringValue = value.toString();
+
+	if ( stringValue.match( /[,"\s]/ ) ) {
+		stringValue = '"' + stringValue.replace( /"/g, '""' ) + '"';
+	}
+
+	return stringValue;
+}
+
 function getCSVHeaders( headers ) {
-	return Array.isArray( headers ) ? headers.map( header => header.label ).join( ',' ) : [];
+	return Array.isArray( headers )
+		? headers
+			.map( header => escapeCSVValue( header.label ) )
+			.join( ',' )
+		: [];
 }
 
 function getCSVRows( rows ) {
@@ -18,13 +32,7 @@ function getCSVRows( rows ) {
 							return '';
 						}
 
-						let stringValue = rowItem.value.toString();
-
-						if ( stringValue.includes( ',' ) || stringValue.includes( '"' ) ) {
-							stringValue = '"' + stringValue.replace( /"/g, '""' ) + '"';
-						}
-
-						return stringValue;
+						return escapeCSVValue( rowItem.value );
 					} ).join( ',' )
 				)
 				.join( '\n' )
