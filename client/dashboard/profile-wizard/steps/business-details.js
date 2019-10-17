@@ -127,7 +127,8 @@ class BusinessDetails extends Component {
 
 		return _x(
 			format( min ) + ' - ' + format( max ),
-			'store product count range or revenue range',
+			'store product count range or revenue range, range should be modified' +
+				'to better match currency if the conversion differs greatly from USD',
 			'woocommerce-admin'
 		);
 	}
