@@ -9,6 +9,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use Automattic\WooCommerce\Admin\API\Reports\Taxes\Stats\DataStore;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Onboarding;
 
 /**
  * Contains the logic for completing onboarding tasks.
@@ -43,6 +44,7 @@ class OnboardingTasks {
 	 */
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_media_scripts' ) );
+		add_action( 'admin_init', array( $this, 'add_completion_note' ) );
 		// Old settings injection.
 		// Run after Onboarding.
 		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 30 );
@@ -170,5 +172,12 @@ class OnboardingTasks {
 		);
 
 		return $tax_supported_countries;
+	}
+
+	/**
+	 * Add the task list completion note after completing all tasks.
+	 */
+	public static function add_completion_note() {
+		WC_Admin_Notes_Onboarding::add_task_list_complete_note();
 	}
 }
