@@ -49,6 +49,7 @@ class Query extends ReportsQuery {
 				'taxes',
 				'shipping',
 				'net_revenue',
+				'gross_sales',
 			),
 		);
 	}

@@ -47,6 +47,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected $column_types = array(
 		'orders_count'            => 'intval',
 		'num_items_sold'          => 'intval',
+		'gross_sales'             => 'floatval',
 		'gross_revenue'           => 'floatval',
 		'coupons'                 => 'floatval',
 		'coupons_count'           => 'intval',
@@ -75,9 +76,18 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function assign_report_columns() {
 		$table_name = self::get_db_table_name();
 		// Avoid ambigious columns in SQL query.
+		$gross_sales =
+			"( SUM({$table_name}.gross_total)" .
+			" + SUM(coupon_total)" .
+			" - SUM({$table_name}.tax_total)" .
+			" - SUM({$table_name}.shipping_total)" .
+			" + ABS( SUM( CASE WHEN {$table_name}.gross_total < 0 THEN {$table_name}.gross_total END ) )" .
+			" ) as gross_sales";
+
 		$this->report_columns = array(
 			'orders_count'            => "SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) as orders_count",
 			'num_items_sold'          => "SUM({$table_name}.num_items_sold) as num_items_sold",
+			'gross_sales'             => $gross_sales,
 			'gross_revenue'           => "SUM({$table_name}.gross_total) AS gross_revenue",
 			'coupons'                 => 'SUM(discount_amount) AS coupons',
 			'coupons_count'           => 'coupons_count',

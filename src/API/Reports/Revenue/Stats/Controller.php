@@ -237,6 +237,14 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
+			'gross_sales'    => array(
+				'description' => __( 'Gross Sales.', 'woocommerce-admin' ),
+				'type'        => 'number',
+				'context'     => array( 'view', 'edit' ),
+				'readonly'    => true,
+				'indicator'   => true,
+				'format'      => 'currency',
+			),
 		);
 
 		$segments = array(
