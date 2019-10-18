@@ -119,17 +119,17 @@ class BusinessDetails extends Component {
 	}
 
 	getNumberRangeString( min, max = false, format = numberFormat ) {
-		// The localized strings below do not use sprintf to allow
-		// formatting the range on a per currency basis via translation.
 		if ( ! max ) {
-			return _x( format( min ) + '+', 'store product count or revenue', 'woocommerce-admin' );
+			return sprintf(
+				_x( '%s+', 'store product count or revenue', 'woocommerce-admin' ),
+				format( min )
+			);
 		}
 
-		return _x(
-			format( min ) + ' - ' + format( max ),
-			'store product count range or revenue range, range should be modified' +
-				'to better match currency if the conversion differs greatly from USD',
-			'woocommerce-admin'
+		return sprintf(
+			_x( '%1$s - %2$s', 'store product count or revenue range', 'woocommerce-admin' ),
+			format( min ),
+			format( max )
 		);
 	}
 
@@ -249,10 +249,9 @@ class BusinessDetails extends Component {
 			},
 			{
 				key: 'more-than-250000',
-				label: _x(
-					'More than ' + formatCurrency( 250000 ),
-					'More than a certain revenue amount',
-					'woocommerce-admin'
+				label: sprintf(
+					_x( 'More than %s', 'More than a certain revenue amount', 'woocommerce-admin' ),
+					formatCurrency( 250000 )
 				),
 			},
 		];
