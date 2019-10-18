@@ -21,29 +21,17 @@ const onboardingHomepageNotice = () => {
 	const post = select( 'core/editor' ).getCurrentPost();
 
 	const noticeMeta = {
-		wasSavingPost: select( 'core/editor' ).isSavingPost(),
-		wasAutosavingPost: select( 'core/editor' ).isAutosavingPost(),
 		wasPublishingPost: select( 'core/editor' ).isPublishingPost(),
 		wasStatus: post.status,
 	};
 
 	subscribe( () => {
-		const isSavingPost = select( 'core/editor' ).isSavingPost();
-		const isAutosavingPost = select( 'core/editor' ).isAutosavingPost();
 		const isPublishingPost = select( 'core/editor' ).isPublishingPost();
 		const isStatus = select( 'core/editor' ).getCurrentPost().status;
 
-		// This triggers when the homepage is first published.
 		const shouldTriggerAdminNotice =
-			noticeMeta.wasSavingPost &&
-			! isSavingPost &&
-			noticeMeta.wasPublishingPost &&
-			! isPublishingPost &&
-			! noticeMeta.wasAutosavingPos &&
-			'publish' === isStatus;
+			'publish' === isStatus && noticeMeta.wasPublishingPost && ! isStatus.isPublishingPost;
 
-		noticeMeta.wasSavingPost = isSavingPost;
-		noticeMeta.wasAutosavingPost = isAutosavingPost;
 		noticeMeta.wasPublishingPost = isPublishingPost;
 		noticeMeta.wasStatus = isStatus;
 
@@ -65,11 +53,11 @@ const onboardingHomepageNotice = () => {
 				dispatch( 'core/notices' ).createSuccessNotice(
 					__( 'Your homepage was published.', 'woocommerce-admin' ),
 					{
-						id: 'ONBOARDING_HOME_PAGE_NOTICE',
+						id: 'WOOCOMMERCE_ONBOARDING_HOME_PAGE_NOTICE',
 						actions: [
 							{
 								url: getAdminLink( 'admin.php?page=wc-admin&task=appearance' ),
-								label: 'Continue setup.',
+								label: __( 'Continue setup.', 'woocommerce-admin' ),
 							},
 						],
 					}

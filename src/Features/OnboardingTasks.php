@@ -175,7 +175,7 @@ class OnboardingTasks {
 	 */
 	function add_onboarding_homepage_notice_admin_script( $hook ) {
 		global $post;
-		if ( $hook == 'post.php' && 'page' === $post->post_type && isset( $_GET[ 'wc-onboarding' ] ) && 'homepage' === $_GET[ 'wc-onboarding' ] ) { // WPCS: csrf ok.
+		if ( $hook == 'post.php' && 'page' === $post->post_type && isset( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) && 'homepage' === $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) { // WPCS: csrf ok.
 			wp_enqueue_script(  'onboarding-homepage-notice', Loader::get_url( 'wp-admin-scripts/onboarding-homepage-notice.js' ), array( 'wc-navigation' ) );
 		}
 	}
