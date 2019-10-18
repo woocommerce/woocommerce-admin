@@ -43,8 +43,14 @@ class OnboardingTasks {
 	 * Constructor
 	 */
 	public function __construct() {
+		// This hook needs to run when options are updated via REST.		
+		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'add_completion_note' ), 10, 2 );
+
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_media_scripts' ) );
-		add_action( 'admin_init', array( $this, 'add_completion_note' ) );
 		// Old settings injection.
 		// Run after Onboarding.
 		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 30 );
@@ -176,8 +182,13 @@ class OnboardingTasks {
 
 	/**
 	 * Add the task list completion note after completing all tasks.
+	 *
+	 * @param mixed $old_value Old value.
+	 * @param mixed $new_value New value.
 	 */
-	public static function add_completion_note() {
-		WC_Admin_Notes_Onboarding::add_task_list_complete_note();
+	public static function add_completion_note( $old_value, $new_value ) {
+		if ( $new_value ) {
+			WC_Admin_Notes_Onboarding::add_task_list_complete_note();
+		}
 	}
 }
