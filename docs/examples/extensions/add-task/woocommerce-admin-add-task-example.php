@@ -33,6 +33,10 @@ function add_task_register_script() {
 		true
 	);
 
+	$client_data = array(
+		'isComplete' => get_option( 'woocommerce_admin_add_task_example_complete', false ),
+	);
+	wp_localize_script( 'add-task', 'addTaskData', $client_data );
 	wp_enqueue_script( 'add-task' );
 }
 add_action( 'admin_enqueue_scripts', 'add_task_register_script' );
