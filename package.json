@@ -102,10 +102,8 @@
     "newspack-components": "0.1.5",
     "prismjs": "1.17.1",
     "qs": "6.9.0",
-    "react": "16.10.2",
     "react-click-outside": "3.0.1",
     "react-dates": "17.2.0",
-    "react-dom": "16.10.2",
     "react-router-dom": "5.1.0",
     "react-transition-group": "2.9.0",
     "redux": "4.0.4"
