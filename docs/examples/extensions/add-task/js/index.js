@@ -50,7 +50,7 @@ const markTaskIncomplete = () => {
 const Task = () => {
 	return (
 		<Card className="is-narrow">
-			{ __( 'Example task card content.' ) }
+			{ __( 'Example task card content.', 'plugin-domain' ) }
 			<br />
 			<br />
 			<div>
@@ -76,8 +76,8 @@ addFilter( 'woocommerce_onboarding_task_list', 'plugin-domain', tasks => {
 		...tasks,
 		{
 			key: 'example',
-			title: __( 'Example', 'woocommerce-admin' ),
-			content: __( 'This is an example task.', 'wooocommerce-admin' ),
+			title: __( 'Example', 'plugin-domain' ),
+			content: __( 'This is an example task.', 'plugin-domain' ),
 			icon: 'info',
 			container: <Task />,
 			completed: addTaskData.isComplete,
