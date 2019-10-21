@@ -30,13 +30,15 @@ class InboxNoteAction extends Component {
 	handleActionClick( event ) {
 		const { action, noteId, triggerNoteAction } = this.props;
 		const href = event.target.href || '';
+		let inAction = true;
 
 		if ( href.length && ! href.startsWith( adminUrl ) ) {
 			event.preventDefault();
+			inAction = false; // link buttons shouldn't be "busy".
 			window.open( href, '_blank' );
 		}
 
-		this.setState( { inAction: true }, () => triggerNoteAction( noteId, action.id ) );
+		this.setState( { inAction }, () => triggerNoteAction( noteId, action.id ) );
 	}
 
 	render() {
