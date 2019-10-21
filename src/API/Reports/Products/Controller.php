@@ -418,8 +418,14 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 		);
 
 		if ( 'yes' === get_option( 'woocommerce_manage_stock' ) ) {
-			$export_item['stock_status'] = $this->_get_stock_status( $item['extended_info']['stock_status'] );
-			$export_item['stock']        = $item['extended_info']['stock_quantity'];
+			if ( $item['extended_info']['manage_stock'] ) {
+				$export_item['stock_status'] = $this->_get_stock_status( $item['extended_info']['stock_status'] );
+				$export_item['stock']        = $item['extended_info']['stock_quantity'];
+			} else {
+				$export_item['stock_status'] = __( 'N/A', 'woocommerce-admin' );
+				$export_item['stock']        = __( 'N/A', 'woocommerce-admin' );
+			}
+			
 		}
 
 		return $export_item;
