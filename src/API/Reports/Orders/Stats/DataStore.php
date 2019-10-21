@@ -242,9 +242,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'page_no'   => 0,
 			);
 
-			$selections = $this->selected_columns( $query_args );
+			$selections  = $this->selected_columns( $query_args );
 			$this->get_time_period_sql_params( $query_args, $table_name );
 			$this->get_intervals_sql_params( $query_args, $table_name );
+			$this->get_order_by_sql_params( $query_args );
 			$where_time  = $this->get_sql_clause( 'where_time' );
 			$params      = $this->get_limit_sql_params( $query_args );
 			$coupon_join = "LEFT JOIN (
@@ -314,7 +315,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			if ( '' !== $selections ) {
 				$this->interval_query->add_sql_clause( 'select', ', ' . $selections );
 			}
-
 			$intervals = $wpdb->get_results(
 				$this->interval_query->get_statement(),
 				ARRAY_A

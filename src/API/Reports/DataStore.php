@@ -162,6 +162,7 @@ class DataStore extends SqlQuery {
 	 * @return mixed
 	 */
 	protected function get_cached_data( $cache_key ) {
+		return false;
 		return Cache::get( $cache_key );
 	}
 
@@ -486,11 +487,6 @@ class DataStore extends SqlQuery {
 			$query_args['adj_before']              = $new_end_date;
 			$adj_after                             = $new_start_date->format( TimeInterval::$sql_datetime_format );
 			$adj_before                            = $new_end_date->format( TimeInterval::$sql_datetime_format );
-			$intervals_query['where_time_clause']  = '';
-			$intervals_query['where_time_clause'] .= " AND {$table_name}.date_created <= '$adj_before'";
-			$intervals_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$adj_after'";
-			$intervals_query['limit']              = 'LIMIT 0,' . $params['per_page'];
-			// @todo remove passed parameter assignment after down stream classes are updated.
 			$this->interval_query->clear_sql_clause( array( 'where_time', 'limit' ) );
 			$this->interval_query->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$adj_before'" );
 			$this->interval_query->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$adj_after'" );
@@ -506,8 +502,7 @@ class DataStore extends SqlQuery {
 				} elseif ( $count > $params['per_page'] ) {
 					$count = $params['per_page'];
 				}
-				$intervals_query['limit'] = 'LIMIT ' . $offset . ',' . $count;
-				// @todo remove passed parameter assignment after down stream classes are updated.
+
 				$this->clear_sql_clause( 'limit' );
 				$this->add_sql_clause( 'limit', 'LIMIT ' . $offset . ',' . $count );
 			}
@@ -674,15 +669,8 @@ class DataStore extends SqlQuery {
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param string $table_name Name of the db table relevant for the date constraint.
-	 * @return array
 	 */
 	protected function get_time_period_sql_params( $query_args, $table_name ) {
-		$sql_query = array(
-			'from_clause'       => '',
-			'where_time_clause' => '',
-			'where_clause'      => '',
-		);
-		// @todo remove $sql_query after down stream classes are updated.
 		$this->clear_sql_clause( array( 'from', 'where_time', 'where' ) );
 		if ( isset( $this->subquery ) ) {
 			$this->subquery->clear_sql_clause( 'where_time' );
@@ -694,7 +682,6 @@ class DataStore extends SqlQuery {
 			} else {
 				$datetime_str = $query_args['before']->format( TimeInterval::$sql_datetime_format );
 			}
-			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created <= '$datetime_str'";
 			if ( isset( $this->subquery ) ) {
 				$this->subquery->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$datetime_str'" );
 			} else {
@@ -708,15 +695,12 @@ class DataStore extends SqlQuery {
 			} else {
 				$datetime_str = $query_args['after']->format( TimeInterval::$sql_datetime_format );
 			}
-			$sql_query['where_time_clause'] .= " AND {$table_name}.date_created >= '$datetime_str'";
 			if ( isset( $this->subquery ) ) {
 				$this->subquery->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$datetime_str'" );
 			} else {
 				$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$datetime_str'" );
 			}
 		}
-
-		return $sql_query;
 	}
 
 	/**
@@ -728,12 +712,9 @@ class DataStore extends SqlQuery {
 	protected function get_limit_sql_params( $query_args ) {
 		$params = $this->get_limit_params( $query_args );
 
-		$sql_query          = array();
-		$sql_query['limit'] = "LIMIT {$params['offset']}, {$params['per_page']}";
-		// @todo remove $sql_query assignment after down stream classes are updated.
 		$this->clear_sql_clause( 'limit' );
 		$this->add_sql_clause( 'limit', "LIMIT {$params['offset']}, {$params['per_page']}" );
-		return array_merge( $sql_query, $params );
+		return $params;
 	}
 
 	/**
@@ -815,24 +796,17 @@ class DataStore extends SqlQuery {
 	 * Fills ORDER BY clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array $query_args Parameters supplied by the user.
-	 * @return array
 	 */
 	protected function get_order_by_sql_params( $query_args ) {
-		// @todo remove $sql_query once all stores are refactored/
-		$sql_query['order_by_clause'] = '';
 		if ( isset( $query_args['orderby'] ) ) {
-			$sql_query['order_by_clause'] = $this->normalize_order_by( $query_args['orderby'] );
 			$order_by_clause = $this->normalize_order_by( $query_args['orderby'] );
 		} else {
 			$order_by_clause = '';
 		}
 
-		// @todo remove $sql_query return.
 		$this->clear_sql_clause( 'order_by' );
 		$this->add_sql_clause( 'order_by', $order_by_clause );
 		$this->add_orderby_order_clause( $query_args, $this );
-
-		return $sql_query;
 	}
 
 	/**
@@ -840,32 +814,17 @@ class DataStore extends SqlQuery {
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
 	 * @param string $table_name Name of the db table relevant for the date constraint.
-	 * @return array
 	 */
 	protected function get_intervals_sql_params( $query_args, $table_name ) {
-		$intervals_query = array(
-			'from_clause'       => '',
-			'where_time_clause' => '',
-			'where_clause'      => '',
-		);
-		// @todo remove $intervals_query after down stream classes are updated.
 		$this->clear_sql_clause( array( 'from', 'where_time', 'where' ) );
 
-		// @todo the array_merges can be removed leaving just the function calls once downstream is updated.
 		$this->get_time_period_sql_params( $query_args, $table_name );
 
 		if ( isset( $query_args['interval'] ) && '' !== $query_args['interval'] ) {
 			$interval                         = $query_args['interval'];
-			$intervals_query['select_clause'] = TimeInterval::db_datetime_format( $interval, $table_name );
 			$this->clear_sql_clause( 'select' );
 			$this->add_sql_clause( 'select', TimeInterval::db_datetime_format( $interval, $table_name ) );
 		}
-
-		$intervals_query = array_merge( $intervals_query, $this->get_limit_sql_params( $query_args ) );
-
-		$intervals_query = array_merge( $intervals_query, $this->get_order_by_sql_params( $query_args ) );
-
-		return $intervals_query;
 	}
 
 	/**
