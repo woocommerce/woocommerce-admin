@@ -19,7 +19,7 @@ export const charts = applyFilters( REVENUE_REPORT_CHARTS_FILTER, [
 	},
 	{
 		key: 'refunds',
-		label: __( 'Refunds', 'woocommerce-admin' ),
+		label: __( 'Returns', 'woocommerce-admin' ),
 		order: 'desc',
 		orderby: 'refunds',
 		type: 'currency',

@@ -57,7 +57,7 @@ class RevenueReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Refunds', 'woocommerce-admin' ),
+				label: __( 'Returns', 'woocommerce-admin' ),
 				key: 'refunds',
 				required: false,
 				isSortable: true,
@@ -190,7 +190,7 @@ class RevenueReportTable extends Component {
 				value: formatCurrency( gross_sales ),
 			},
 			{
-				label: __( 'refunds', 'woocommerce-admin' ),
+				label: __( 'returns', 'woocommerce-admin' ),
 				value: formatCurrency( refunds ),
 			},
 			{
