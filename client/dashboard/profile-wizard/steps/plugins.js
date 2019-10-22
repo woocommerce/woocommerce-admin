@@ -13,7 +13,7 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce depdencies
  */
 import { H, Stepper, Card } from '@woocommerce/components';
-import { getNewPath, updateQueryString } from '@woocommerce/navigation';
+import { getNewPath, updateQueryString, getAdminLink } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -21,7 +21,6 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
-import { pluginNames } from 'wc-api/onboarding/constants';
 
 const pluginsToInstall = [ 'jetpack', 'woocommerce-services' ];
 const { activePlugins = [] } = getSetting( 'onboarding', {} );
@@ -40,9 +39,11 @@ class Plugins extends Component {
 	}
 
 	componentDidMount() {
-		if ( 0 === plugins.length ) {
+		const { isJetpackConnected } = this.props;
+		if ( 0 === plugins.length && isJetpackConnected ) {
 			return updateQueryString( { step: 'store-details' } );
 		}
+
 		this.props.installPlugins( plugins );
 	}
 
@@ -53,6 +54,7 @@ class Plugins extends Component {
 			installedPlugins,
 			activatedPlugins,
 			jetpackConnectUrl,
+			isJetpackConnected,
 		} = this.props;
 
 		if ( jetpackConnectUrl ) {
@@ -75,7 +77,8 @@ class Plugins extends Component {
 		if (
 			! plugins.includes( 'jetpack' ) &&
 			prevProps.activatedPlugins.length !== plugins.length &&
-			activatedPlugins.length === plugins.length
+			activatedPlugins.length === plugins.length &&
+			isJetpackConnected
 		) {
 			/* eslint-disable react/no-did-update-set-state */
 			return updateQueryString( { step: 'store-details' } );
@@ -98,12 +101,32 @@ class Plugins extends Component {
 	}
 
 	render() {
-		const { hasErrors, isRequesting } = this.props;
+		const { hasErrors, isRequesting, isJetpackConnected } = this.props;
 		const { step } = this.state;
 
-		const pluginLabel = plugins.includes( 'jetpack' )
-			? Object.values( pluginNames ).join( ' & ' )
-			: pluginNames[ 'woocommerce-services' ];
+		if ( 0 === plugins.length && ! isJetpackConnected ) {
+			return (
+				<Fragment>
+					<H className="woocommerce-profile-wizard__header-title">
+						{ __( 'Connecting your store', 'woocommerce-admin' ) }
+					</H>
+
+					<p>
+						{ __(
+							'You will be redirected to WordPress.com to continue connecting your site.',
+							'woocommerce-admin'
+						) }{' '}
+					</p>
+				</Fragment>
+			);
+		}
+
+		let pluginLabel = __( 'Jetpack & WooCommerce Services', 'woocommerce-admin' );
+		if ( plugins.includes( 'jetpack' ) && ! plugins.includes( 'woocommerce-services' ) ) {
+			pluginLabel = __( 'Jetpack', 'woocommerce-admin' );
+		} else if ( ! plugins.includes( 'jetpack' ) && plugins.includes( 'woocommerce-services' ) ) {
+			pluginLabel = __( 'WooCommerce Services', 'woocommerce-admin' );
+		}
 
 		return (
 			<Fragment>
@@ -159,6 +182,7 @@ export default compose(
 			getPluginActivationErrors,
 			isPluginActivateRequesting,
 			isPluginInstallRequesting,
+			isJetpackConnected,
 		} = select( 'wc-api' );
 
 		const isRequesting =
@@ -170,12 +194,16 @@ export default compose(
 		const installedPlugins = Object.keys( getPluginInstallations( plugins ) );
 
 		const queryArgs = {
-			redirect_url: getNewPath( { step: 'store-details' } ),
+			redirect_url: getAdminLink( getNewPath( { step: 'store-details' } ) ),
 		};
 		const isJetpackConnectUrlRequesting = isGetJetpackConnectUrlRequesting( queryArgs );
 		const jetpackConnectUrlError = getJetpackConnectUrlError( queryArgs );
 		let jetpackConnectUrl = null;
-		if ( activatedPlugins.includes( 'jetpack' ) ) {
+		if (
+			activatedPlugins.includes( 'jetpack' ) ||
+			( 0 === plugins.length && ! isJetpackConnected() ) ||
+			( activatedPlugins.includes( 'woocommerce-services' ) && ! isJetpackConnected() )
+		) {
 			jetpackConnectUrl = getJetpackConnectUrl( queryArgs );
 		}
 
@@ -199,6 +227,7 @@ export default compose(
 			errors,
 			hasErrors,
 			isRequesting,
+			isJetpackConnected: isJetpackConnected(),
 		};
 	} ),
 	withDispatch( dispatch => {
