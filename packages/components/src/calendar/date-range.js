@@ -58,6 +58,8 @@ class DateRange extends Component {
 			return;
 		}
 
+		const { losesFocusTo } = this.props;
+
 		// Blur triggered internal to the DayPicker component.
 		if (
 			CONTAINER_DIV === blurSource &&
@@ -75,6 +77,26 @@ class DateRange extends Component {
 				)
 			)
 		) {
+			// Allow other DayPicker elements to take focus.
+			if (
+				e.relatedTarget &&
+				(
+					e.relatedTarget.classList.contains( 'DayPickerNavigation_button' ) ||
+					e.relatedTarget.classList.contains( 'CalendarDay' )
+				)
+			) {
+				return;
+			}
+
+			// Allow elements inside a specified ref to take focus.
+			if (
+				e.relatedTarget &&
+				losesFocusTo &&
+				losesFocusTo.contains( e.relatedTarget )
+			) {
+				return;
+			}
+
 			// DayPickerNavigation or CalendarDay mouseUp() is blurring,
 			// so switch focus to the DayPicker's focus region.
 			const focusRegion = this.nodeRef.current.querySelector( '.DayPicker_focusRegion' );
@@ -274,6 +296,11 @@ DateRange.propTypes = {
 	 * The date format in moment.js-style tokens.
 	 */
 	shortDateFormat: PropTypes.string.isRequired,
+	/**
+	 * A ref that the DateRange can lose focus to.
+	 * See: https://github.com/woocommerce/woocommerce-admin/pull/2929.
+	 */
+	losesFocusTo: PropTypes.instanceOf( Element ),
 };
 
 export default withViewportMatch( {
