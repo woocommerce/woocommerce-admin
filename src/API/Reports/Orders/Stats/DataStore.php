@@ -78,8 +78,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		// Avoid ambigious columns in SQL query.
 		$refunds = 
 			"( ABS( SUM( CASE WHEN {$table_name}.gross_total < 0 THEN {$table_name}.gross_total ELSE 0 END ) )" .
-			"+ ABS( SUM( CASE WHEN {$table_name}.tax_total < 0 THEN {$table_name}.tax_total ELSE 0 END ) )" .
-			"+ ABS( SUM( CASE WHEN {$table_name}.shipping_total < 0 THEN {$table_name}.shipping_total ELSE 0 END ) ) )";
+			" - ABS( SUM( CASE WHEN {$table_name}.tax_total < 0 THEN {$table_name}.tax_total ELSE 0 END ) )" .
+			" - ABS( SUM( CASE WHEN {$table_name}.shipping_total < 0 THEN {$table_name}.shipping_total ELSE 0 END ) ) )";
 		$gross_sales =
 			"( SUM({$table_name}.gross_total)" .
 			" + SUM(coupon_total)" .
