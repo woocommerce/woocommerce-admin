@@ -65,6 +65,14 @@ class DateRange extends Component {
 			(
 				e.target.classList.contains( 'DayPickerNavigation_button' ) ||
 				e.target.classList.contains( 'CalendarDay' )
+			) &&
+			(
+				// Allow other DayPicker elements to take focus.
+				! e.relatedTarget ||
+				(
+					! e.relatedTarget.classList.contains( 'DayPickerNavigation_button' ) &&
+					! e.relatedTarget.classList.contains( 'CalendarDay' )
+				)
 			)
 		) {
 			// DayPickerNavigation or CalendarDay mouseUp() is blurring,
@@ -197,6 +205,7 @@ class DateRange extends Component {
 					className="woocommerce-calendar__react-dates"
 					ref={ this.nodeRef }
 					onBlur={ partial( this.keepFocusInside, CONTAINER_DIV ) }
+					tabIndex={ -1 }
 				>
 					<DayPickerRangeController
 						onNextMonthClick={ partial( this.keepFocusInside, NEXT_MONTH_CLICK ) }
