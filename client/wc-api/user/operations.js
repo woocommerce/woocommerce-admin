@@ -71,6 +71,7 @@ function userToUserDataResource( user ) {
 		}
 		return JSON.parse( data );
 	} );
+	userData.email = user.email;
 	return { [ 'current-user-data' ]: { data: userData } };
 }
 

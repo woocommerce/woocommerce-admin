@@ -13,7 +13,7 @@ import { recordEvent } from 'lib/tracks';
  * Internal depdencies
  */
 import { getCountryCode } from 'dashboard/utils';
-import { H, Card, Form } from '@woocommerce/components';
+import { H, Card, Form, TextControl } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import {
 	StoreAddress,
@@ -22,12 +22,14 @@ import {
 import UsageModal from './usage-modal';
 
 class StoreDetails extends Component {
-	constructor() {
-		super( ...arguments );
+	constructor( props ) {
+		super( props );
 
 		this.state = {
 			showUsageModal: false,
 		};
+
+		const { email } = props.userData;
 
 		this.initialValues = {
 			addressLine1: '',
@@ -35,6 +37,8 @@ class StoreDetails extends Component {
 			city: '',
 			countryState: '',
 			postCode: '',
+			email,
+			emailSubscribe: false,
 			isClient: false,
 		};
 
@@ -119,6 +123,19 @@ class StoreDetails extends Component {
 									/>
 								) }
 								<StoreAddress getInputProps={ getInputProps } />
+
+								<TextControl
+									label={ __( 'Email', 'woocommerce-admin' ) }
+									{ ...getInputProps( 'email' ) }
+								/>
+								<CheckboxControl
+									label={ __(
+										'Get tips, product updates, and inspiration straight to your mailbox',
+										'woocommerce-admin'
+									) }
+									{ ...getInputProps( 'emailSubscribe' ) }
+								/>
+
 								<CheckboxControl
 									label={ __( "I'm setting up a store for a client", 'woocommerce-admin' ) }
 									{ ...getInputProps( 'isClient' ) }
@@ -144,6 +161,7 @@ export default compose(
 			isGetSettingsRequesting,
 			getProfileItemsError,
 			getProfileItems,
+			getCurrentUserData,
 		} = select( 'wc-api' );
 
 		const profileItems = getProfileItems();
@@ -153,6 +171,8 @@ export default compose(
 		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
 		const isProfileItemsError = Boolean( getProfileItemsError() );
 
+		const userData = getCurrentUserData();
+
 		return {
 			getSettings,
 			isProfileItemsError,
@@ -160,6 +180,7 @@ export default compose(
 			isSettingsError,
 			isSettingsRequesting,
 			settings,
+			userData,
 		};
 	} ),
 	withDispatch( dispatch => {
