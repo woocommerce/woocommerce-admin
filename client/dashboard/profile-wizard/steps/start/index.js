@@ -162,8 +162,7 @@ class Start extends Component {
 					'Save time at the Post Office by printing USPS shipping labels at home.',
 					'woocommerce-admin'
 				),
-				visible:
-					activePlugins.includes( 'jetpack' ) && ! activePlugins.includes( 'woocommerce-services' ),
+				visible: activePlugins.includes( 'jetpack' ),
 			},
 			{
 				title: __( 'Simple payment setup', 'woocommerce-admin' ),
@@ -172,8 +171,7 @@ class Start extends Component {
 					'WooCommerce Services enables us to provision Stripe and Paypal accounts quickly and easily for you.',
 					'woocommerce-admin'
 				),
-				visible:
-					activePlugins.includes( 'jetpack' ) && ! activePlugins.includes( 'woocommerce-services' ),
+				visible: activePlugins.includes( 'jetpack' ),
 			},
 		];
 	}
