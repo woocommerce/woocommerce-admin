@@ -263,7 +263,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			// Additional filtering for Orders report.
 			$this->orders_stats_sql_filter( $query_args );
 			$this->total_query->add_sql_clause( 'select', $selections );
-			$this->total_query->add_sql_clause( 'join', $coupon_join );
+			$this->total_query->add_sql_clause( 'left_join', $coupon_join );
 			$this->total_query->add_sql_clause( 'where_time', $where_time );
 			$totals = $wpdb->get_results(
 				$this->total_query->get_statement(),
@@ -294,7 +294,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$totals                     = (object) $this->cast_numbers( $totals[0] );
 
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
-			$this->interval_query->add_sql_clause( 'join', $coupon_join );
+			$this->interval_query->add_sql_clause( 'left_join', $coupon_join );
 			$this->interval_query->add_sql_clause( 'where_time', $where_time );
 			$db_intervals = $wpdb->get_col(
 				$this->interval_query->get_statement()

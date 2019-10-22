@@ -23,6 +23,7 @@ class SqlQuery {
 	private $sql_clauses = array(
 		'select'     => array(),
 		'from'       => array(),
+		'left_join'  => array(),
 		'join'       => array(),
 		'right_join' => array(),
 		'where'      => array(),
@@ -31,6 +32,22 @@ class SqlQuery {
 		'having'     => array(),
 		'limit'      => array(),
 		'order_by'   => array(),
+	);
+	/**
+	 * SQL clause merge filters.
+	 *
+	 * @var array
+	 */
+	private $sql_filters = array(
+		'where' => array(
+			'where',
+			'where_time',
+		),
+		'join' => array(
+			'right_join',
+			'join',
+			'left_join',
+		),
 	);
 	/**
 	 * Data store context used to pass to filters.
@@ -51,7 +68,7 @@ class SqlQuery {
 	/**
 	 * Add a SQL clause to be included when get_data is called.
 	 *
-	 * @param string $type   (select|from|outer_from|where|where_time|order_by|limit).
+	 * @param string $type   Clause type.
 	 * @param string $clause SQL clause.
 	 */
 	protected function add_sql_clause( $type, $clause ) {
@@ -63,13 +80,27 @@ class SqlQuery {
 	/**
 	 * Get SQL clause by type.
 	 *
-	 * @param string $type Clause type (select|from|outer_from|where|where_time|order_by|limit).
+	 * @param string $type     Clause type.
+	 * @param string $handling Whether to filter the return value (filtered|unfiltered). Default unfiltered. 
 	 *
 	 * @return string SQL clause.
 	 */
-	protected function get_sql_clause( $type ) {
+	protected function get_sql_clause( $type, $handling = 'unfiltered' ) {
 		if ( ! isset( $this->sql_clauses[ $type ] ) ) {
 			return '';
+		}
+
+		if ( 'unfiltered' === $handling ) {
+			return implode( ' ', $this->sql_clauses[ $type ] );
+		}
+
+		if ( isset( $this->sql_filters[ $type ] ) ) {
+			$clauses = array();
+			foreach( $this->sql_filters[ $type ] as $subset ) {
+				$clauses = array_merge( $clauses, $this->sql_clauses[ $subset ] );
+			}
+		} else {
+			$clauses = $this->sql_clauses[ $type ];
 		}
 
 		$context = self::$context;
@@ -79,7 +110,7 @@ class SqlQuery {
 		 * @param array  $clauses The original arguments for the request.
 		 * @param string $context The data store context.
 		 */
-		$clauses = apply_filters( "wc_admin_clauses_{$type}", $this->sql_clauses[ $type ], $context );
+		$clauses = apply_filters( "wc_admin_clauses_{$type}", $clauses, $context );
 		/**
 		 * Filter SQL clauses by type and context.
 		 *
@@ -92,7 +123,7 @@ class SqlQuery {
 	/**
 	 * Clear SQL clauses by type.
 	 *
-	 * @param string|array $types Clause type (select|from|outer_from|where|where_time|order_by|limit).
+	 * @param string|array $types Clause type.
 	 */
 	protected function clear_sql_clause( $types ) {
 		foreach ( (array) $types as $type ) {
@@ -105,7 +136,7 @@ class SqlQuery {
 	/**
 	 * Replace strings within SQL clauses by type.
 	 *
-	 * @param string $type    Clause type (select|from|outer_from|where|where_time|order_by|limit).
+	 * @param string $type    Clause type.
 	 * @param string $search  String to search for.
 	 * @param string $replace Replacement string.
 	 */
@@ -123,22 +154,22 @@ class SqlQuery {
 	 * @return string
 	 */
 	public function get_statement() {
-		// Ensure the conditionally added clauses are always filtered.
-		$group_by = $this->get_sql_clause( 'group_by' );
-		$having   = $this->get_sql_clause( 'having' );
-		$order_by = $this->get_sql_clause( 'order_by' );
+		$join     = $this->get_sql_clause( 'join', 'filtered' );
+		$where    = $this->get_sql_clause( 'where', 'filtered' );
+		$group_by = $this->get_sql_clause( 'group_by', 'filtered' );
+		$having   = $this->get_sql_clause( 'having', 'filtered' );
+		$order_by = $this->get_sql_clause( 'order_by', 'filtered' );
+
 
 		$statement = "
 			SELECT
-				{$this->get_sql_clause( 'select' )}
+				{$this->get_sql_clause( 'select', 'filtered' )}
 			FROM
-				{$this->get_sql_clause( 'from' )}
-				{$this->get_sql_clause( 'right_join' )}
-				{$this->get_sql_clause( 'join' )}
+				{$this->get_sql_clause( 'from', 'filtered' )}
+				{$join}
 			WHERE
 				1=1
-				{$this->get_sql_clause( 'where_time' )}
-				{$this->get_sql_clause( 'where' )}
+				{$where}
 		";
 
 		if ( ! empty( $group_by ) ) {
@@ -162,7 +193,7 @@ class SqlQuery {
 			";
 		}
 
-		return $statement . $this->get_sql_clause( 'limit' );
+		return $statement . $this->get_sql_clause( 'limit', 'filtered' );
 	}
 
 	/**
@@ -172,8 +203,8 @@ class SqlQuery {
 		$this->sql_clauses = array(
 			'select'     => array(),
 			'from'       => array(),
+			'left_join'  => array(),
 			'join'       => array(),
-			'outer_from' => array(),
 			'right_join' => array(),
 			'where'      => array(),
 			'where_time' => array(),

@@ -121,6 +121,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function get_from_sql_params( $query_args, $arg_name, $id_cell ) {
 		global $wpdb;
 
+		$type = 'join';
 		// Order by product name requires extra JOIN.
 		switch ( $query_args['orderby'] ) {
 			case 'product_name':
@@ -130,7 +131,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$join = " JOIN {$wpdb->postmeta} AS postmeta ON {$id_cell} = postmeta.post_id AND postmeta.meta_key = '_sku'";
 				break;
 			case 'variations':
-				$join = " LEFT JOIN ( SELECT post_parent, COUNT(*) AS variations FROM {$wpdb->posts} WHERE post_type = 'product_variation' GROUP BY post_parent ) AS _variations ON {$id_cell} = _variations.post_parent";
+				$type = 'left_join';
+				$join = "LEFT JOIN ( SELECT post_parent, COUNT(*) AS variations FROM {$wpdb->posts} WHERE post_type = 'product_variation' GROUP BY post_parent ) AS _variations ON {$id_cell} = _variations.post_parent";
 				break;
 			default:
 				$join = '';
@@ -142,7 +144,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			} else {
 				$query =& $this;
 			}
-			$query->add_sql_clause( 'join', $join );
+			$query->add_sql_clause( $type, $join );
 		}
 	}
 
