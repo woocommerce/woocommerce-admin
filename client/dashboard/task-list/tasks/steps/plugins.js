@@ -41,6 +41,8 @@ class Plugins extends Component {
 			installedPlugins,
 			isRequesting,
 			pluginSlugs,
+			onError,
+			hasErrors,
 		} = this.props;
 
 		const newErrors = difference( errors, prevProps.errors );
@@ -61,6 +63,10 @@ class Plugins extends Component {
 				__( 'Plugins were successfully installed and activated.', 'woocommerce-admin' )
 			);
 			onComplete();
+		}
+
+		if ( ! prevProps.hasErrors && hasErrors ) {
+			onError();
 		}
 	}
 
