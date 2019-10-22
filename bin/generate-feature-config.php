@@ -11,7 +11,8 @@
  * - plugin: For the standalone feature plugin, for GitHub and WordPress.org.
  * - core: Stable features for WooCommerce core merge.
  */
-$phase = getenv( 'WC_ADMIN_PHASE' ) ? getenv( 'WC_ADMIN_PHASE' ) : ''; // WPCS: sanitization ok.
+
+$phase = getenv( 'WC_ADMIN_PHASE' );
 
 if ( ! in_array( $phase, array( 'development', 'plugin', 'core' ), true ) ) {
 	$phase = 'plugin'; // Default to plugin when running `npm run build`.
