@@ -115,7 +115,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Fills FROM clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
-	 * @param string $arg_name   Name of the FROM sql param.
+	 * @param string $arg_name   Target of the JOIN sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 */
 	protected function get_from_sql_params( $query_args, $arg_name, $id_cell ) {
@@ -137,11 +137,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				break;
 		}
 		if ( $join ) {
-			if ( 'from' === $arg_name ) {
-				$this->subquery->add_sql_clause( 'join', $join );
+			if ( 'inner' === $arg_name ) {
+				$query =& $this->subquery;
 			} else {
-				$this->add_sql_clause( $arg_name, $join );
+				$query =& $this;
 			}
+			$query->add_sql_clause( 'join', $join );
 		}
 	}
 
@@ -160,10 +161,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
-			$this->get_from_sql_params( $query_args, 'outer_from', 'default_results.product_id' );
+			$this->get_from_sql_params( $query_args, 'outer', 'default_results.product_id' );
 			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
 		} else {
-			$this->get_from_sql_params( $query_args, 'from', "{$order_product_lookup_table}.product_id" );
+			$this->get_from_sql_params( $query_args, 'inner', "{$order_product_lookup_table}.product_id" );
 		}
 
 		$included_variations = $this->get_included_variations( $query_args );

@@ -100,20 +100,24 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Fills FROM clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
-	 * @param string $arg_name   Name of the FROM sql param.
+	 * @param string $arg_name   Target of the JOIN sql param.
 	 */
 	protected function get_from_sql_params( $query_args, $arg_name ) {
 		global $wpdb;
-		$order_product_lookup_table = self::get_db_table_name();
 
-		if ( 'sku' === $query_args['orderby'] ) {
-			$join = " JOIN {$wpdb->postmeta} AS postmeta ON {$order_product_lookup_table}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
-			if ( 'from' === $arg_name ) {
-				$this->subquery->add_sql_clause( $arg_name, $join );
-			} else {
-				$this->add_sql_clause( $arg_name, $join );
-			}
+		if ( 'sku' !== $query_args['orderby'] ) {
+			return;
 		}
+
+		$table_name = self::get_db_table_name();
+		$join       = "JOIN {$wpdb->postmeta} AS postmeta ON {$table_name}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
+
+		if ( 'inner' === $arg_name ) {
+			$query =& $this->subquery;
+		} else {
+			$query =& $this;
+		}
+		$query->add_sql_clause( 'join', $join );
 	}
 
 	/**
@@ -130,9 +134,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->get_order_by_sql_params( $query_args );
 
 		if ( count( $query_args['variations'] ) > 0 ) {
-			$this->get_from_sql_params( $query_args, 'outer_from' );
+			$this->get_from_sql_params( $query_args, 'outer' );
 		} else {
-			$this->get_from_sql_params( $query_args, 'from' );
+			$this->get_from_sql_params( $query_args, 'inner' );
 		}
 
 		$included_products = $this->get_included_products( $query_args );

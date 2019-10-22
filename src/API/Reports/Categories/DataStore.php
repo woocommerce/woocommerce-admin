@@ -108,9 +108,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 			// Limit is left out here so that the grouping in code by PHP can be applied correctly.
 			// This also needs to be put after the term_taxonomy JOIN so that we can match the correct term name.
-			$this->get_order_by_params( $query_args, 'outer_from', 'default_results.category_id' );
+			$this->get_order_by_params( $query_args, 'outer', 'default_results.category_id' );
 		} else {
-			$this->get_order_by_params( $query_args, 'from', "{$wpdb->wc_category_lookup}.category_tree_id" );
+			$this->get_order_by_params( $query_args, 'inner', "{$wpdb->wc_category_lookup}.category_tree_id" );
 		}
 
 		// @todo Only products in the category C or orders with products from category C (and, possibly others?).
@@ -127,23 +127,24 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Fills ORDER BY clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
-	 * @param string $from_arg   Name of the FROM sql param.
+	 * @param string $from_arg   Target of the JOIN sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 */
 	protected function get_order_by_params( $query_args, $from_arg, $id_cell ) {
 		global $wpdb;
 		$lookup_table    = self::get_db_table_name();
 		$order_by_clause = $this->add_order_by_clause( $query_args, $this );
-
-		$this->clear_sql_clause( array( 'outer_from' ) );
-		if ( false !== strpos( $order_by_clause, '_terms' ) ) {
-			if ( 'from' === $from_arg ) {
-				$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
-			} else {
-				$this->add_sql_clause( $from_arg, "JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
-			}
-		}
 		$this->add_orderby_order_clause( $query_args, $this );
+
+		if ( false !== strpos( $order_by_clause, '_terms' ) ) {
+			$join = "JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id";
+			if ( 'inner' === $from_arg ) {
+				$query =& $this->subquery;
+			} else {
+				$query =& $this;
+			}
+			$query->add_sql_clause( 'join', $join );
+		}
 	}
 
 	/**

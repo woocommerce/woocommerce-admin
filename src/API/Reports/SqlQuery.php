@@ -24,7 +24,6 @@ class SqlQuery {
 		'select'     => array(),
 		'from'       => array(),
 		'join'       => array(),
-		'outer_from' => array(),
 		'right_join' => array(),
 		'where'      => array(),
 		'where_time' => array(),
@@ -134,9 +133,8 @@ class SqlQuery {
 				{$this->get_sql_clause( 'select' )}
 			FROM
 				{$this->get_sql_clause( 'from' )}
-				{$this->get_sql_clause( 'join' )}
 				{$this->get_sql_clause( 'right_join' )}
-				{$this->get_sql_clause( 'outer_from' )}
+				{$this->get_sql_clause( 'join' )}
 			WHERE
 				1=1
 				{$this->get_sql_clause( 'where_time' )}

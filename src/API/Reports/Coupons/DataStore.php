@@ -107,9 +107,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		if ( $included_coupons ) {
 			$this->subquery->add_sql_clause( 'where', "AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})" );
 
-			$this->get_order_by_params( $query_args, 'outer_from', 'default_results.coupon_id' );
+			$this->get_order_by_params( $query_args, 'outer', 'default_results.coupon_id' );
 		} else {
-			$this->get_order_by_params( $query_args, 'from', "{$order_coupon_lookup_table}.coupon_id" );
+			$this->get_order_by_params( $query_args, 'inner', "{$order_coupon_lookup_table}.coupon_id" );
 		}
 
 		$this->add_order_status_clause( $query_args, $order_coupon_lookup_table, $this->subquery );
@@ -119,23 +119,25 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Fills ORDER BY clause of SQL request based on user supplied parameters.
 	 *
 	 * @param array  $query_args Parameters supplied by the user.
-	 * @param string $from_arg   Name of the FROM sql param.
+	 * @param string $from_arg   Target of the JOIN sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 */
 	protected function get_order_by_params( $query_args, $from_arg, $id_cell ) {
 		global $wpdb;
 		$lookup_table    = self::get_db_table_name();
 		$order_by_clause = $this->add_order_by_clause( $query_args, $this );
-		$this->clear_sql_clause( array( 'from', 'outer_from' ) );
+		$this->add_orderby_order_clause( $query_args, $this );
+
+		if ( 'inner' === $from_arg ) {
+			$query =& $this->subquery;
+		} else {
+			$query =& $this;
+		}
+		$query->clear_sql_clause( 'join' );
 
 		if ( false !== strpos( $order_by_clause, '_coupons' ) ) {
-			if ( 'from' === $from_arg ) {
-				$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID" );
-			} else {
-				$this->add_sql_clause( $from_arg, "JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID" );
-			}
+			$query->add_sql_clause( 'join', "JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID" );
 		}
-		$this->add_orderby_order_clause( $query_args, $this );
 	}
 
 	/**
