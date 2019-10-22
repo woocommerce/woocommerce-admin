@@ -105,7 +105,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$included_coupons = self::get_included_coupons( $query_args );
 		if ( $included_coupons ) {
-			$this->subquery->add_sql_clause( 'where', " AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})" );
+			$this->subquery->add_sql_clause( 'where', "AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})" );
 
 			$this->get_order_by_params( $query_args, 'outer_from', 'default_results.coupon_id' );
 		} else {
@@ -130,9 +130,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		if ( false !== strpos( $order_by_clause, '_coupons' ) ) {
 			if ( 'from' === $from_arg ) {
-				$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID" );
+				$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID" );
 			} else {
-				$this->add_sql_clause( $from_arg, " JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID" );
+				$this->add_sql_clause( $from_arg, "JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID" );
 			}
 		}
 		$this->add_orderby_order_clause( $query_args, $this );

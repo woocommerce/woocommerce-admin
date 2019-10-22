@@ -181,11 +181,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		if ( $where_time_clauses ) {
-			$this->subquery->add_sql_clause( 'where_time', ' AND ' . implode( " {$match_operator} ", $where_time_clauses ) );
+			$this->subquery->add_sql_clause( 'where_time', 'AND ' . implode( " {$match_operator} ", $where_time_clauses ) );
 		}
 
 		if ( $having_time_clauses ) {
-			$this->subquery->add_sql_clause( 'having', ' AND ' . implode( " {$match_operator} ", $having_time_clauses ) );
+			$this->subquery->add_sql_clause( 'having', 'AND ' . implode( " {$match_operator} ", $having_time_clauses ) );
 		}
 	}
 
@@ -202,7 +202,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->get_time_period_sql_params( $query_args, $customer_lookup_table );
 		$this->get_limit_sql_params( $query_args );
 		$this->get_order_by_sql_params( $query_args );
-		$this->subquery->add_sql_clause( 'join', " LEFT JOIN {$order_stats_table_name} ON {$customer_lookup_table}.customer_id = {$order_stats_table_name}.customer_id" );
+		$this->subquery->add_sql_clause( 'join', "LEFT JOIN {$order_stats_table_name} ON {$customer_lookup_table}.customer_id = {$order_stats_table_name}.customer_id" );
 
 		$match_operator = $this->get_match_operator( $query_args );
 		$where_clauses  = array();
@@ -306,7 +306,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$this->subquery->add_sql_clause( 'join', " AND ( {$order_status_filter} )" );
+			$this->subquery->add_sql_clause( 'join', "AND ( {$order_status_filter} )" );
 		}
 
 		if ( $having_clauses ) {

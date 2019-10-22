@@ -161,20 +161,20 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
 			$this->get_from_sql_params( $query_args, 'outer_from', 'default_results.product_id' );
-			$this->subquery->add_sql_clause( 'where', " AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
+			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
 		} else {
 			$this->get_from_sql_params( $query_args, 'from', "{$order_product_lookup_table}.product_id" );
 		}
 
 		$included_variations = $this->get_included_variations( $query_args );
 		if ( $included_variations ) {
-			$this->subquery->add_sql_clause( 'where', " AND {$order_product_lookup_table}.variation_id IN ({$included_variations})" );
+			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id IN ({$included_variations})" );
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
-			$this->subquery->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
+			$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$this->subquery->add_sql_clause( 'where', "AND ( {$order_status_filter} )" );
 		}
 	}
 

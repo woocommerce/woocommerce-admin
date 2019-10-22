@@ -77,7 +77,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Updates the database query with parameters used for Taxes report: categories and order status.
 	 *
 	 * @param array $query_args Query arguments supplied by the user.
-	 * @return array            Array of parameters used for SQL query.
 	 */
 	protected function get_sql_query_params( $query_args ) {
 		global $wpdb;
@@ -90,15 +89,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
 			$allowed_taxes = self::get_filtered_ids( $query_args, 'taxes' );
-			$this->interval_query->add_sql_clause( 'where', " AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})" );
+			$this->interval_query->add_sql_clause( 'where', "AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})" );
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$this->interval_query->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
+			$this->interval_query->add_sql_clause( 'where', "AND ( {$order_status_filter} )" );
 		}
-
-		return $sql_query_params;
 	}
 
 	/**

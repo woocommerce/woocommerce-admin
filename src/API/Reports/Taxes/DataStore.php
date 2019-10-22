@@ -103,13 +103,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$table_name = self::get_db_table_name();
 
 		if ( $order_status_filter ) {
-			$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
 		}
 
 		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
-			$this->add_sql_clause( 'outer_from', " JOIN {$wpdb->prefix}woocommerce_tax_rates ON default_results.tax_rate_id = {$wpdb->prefix}woocommerce_tax_rates.tax_rate_id" );
+			$this->add_sql_clause( 'outer_from', "JOIN {$wpdb->prefix}woocommerce_tax_rates ON default_results.tax_rate_id = {$wpdb->prefix}woocommerce_tax_rates.tax_rate_id" );
 		} else {
-			$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->prefix}woocommerce_tax_rates ON {$table_name}.tax_rate_id = {$wpdb->prefix}woocommerce_tax_rates.tax_rate_id" );
+			$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->prefix}woocommerce_tax_rates ON {$table_name}.tax_rate_id = {$wpdb->prefix}woocommerce_tax_rates.tax_rate_id" );
 		}
 	}
 
@@ -131,11 +131,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		if ( isset( $query_args['taxes'] ) && ! empty( $query_args['taxes'] ) ) {
 			$allowed_taxes = self::get_filtered_ids( $query_args, 'taxes' );
-			$this->subquery->add_sql_clause( 'where', " AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})" );
+			$this->subquery->add_sql_clause( 'where', "AND {$order_tax_lookup_table}.tax_rate_id IN ({$allowed_taxes})" );
 		}
 
 		if ( $order_status_filter ) {
-			$this->subquery->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
+			$this->subquery->add_sql_clause( 'where', "AND ( {$order_status_filter} )" );
 		}
 	}
 

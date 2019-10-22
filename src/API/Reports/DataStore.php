@@ -162,7 +162,6 @@ class DataStore extends SqlQuery {
 	 * @return mixed
 	 */
 	protected function get_cached_data( $cache_key ) {
-		return false;
 		return Cache::get( $cache_key );
 	}
 
@@ -488,8 +487,8 @@ class DataStore extends SqlQuery {
 			$adj_after                             = $new_start_date->format( TimeInterval::$sql_datetime_format );
 			$adj_before                            = $new_end_date->format( TimeInterval::$sql_datetime_format );
 			$this->interval_query->clear_sql_clause( array( 'where_time', 'limit' ) );
-			$this->interval_query->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$adj_before'" );
-			$this->interval_query->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$adj_after'" );
+			$this->interval_query->add_sql_clause( 'where_time', "AND {$table_name}.date_created <= '$adj_before'" );
+			$this->interval_query->add_sql_clause( 'where_time', "AND {$table_name}.date_created >= '$adj_after'" );
 			$this->clear_sql_clause( 'limit' );
 			$this->add_sql_clause( 'limit', 'LIMIT 0,' . $params['per_page'] );
 		} else {
@@ -683,9 +682,9 @@ class DataStore extends SqlQuery {
 				$datetime_str = $query_args['before']->format( TimeInterval::$sql_datetime_format );
 			}
 			if ( isset( $this->subquery ) ) {
-				$this->subquery->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$datetime_str'" );
+				$this->subquery->add_sql_clause( 'where_time', "AND {$table_name}.date_created <= '$datetime_str'" );
 			} else {
-				$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created <= '$datetime_str'" );
+				$this->add_sql_clause( 'where_time', "AND {$table_name}.date_created <= '$datetime_str'" );
 			}
 		}
 
@@ -696,9 +695,9 @@ class DataStore extends SqlQuery {
 				$datetime_str = $query_args['after']->format( TimeInterval::$sql_datetime_format );
 			}
 			if ( isset( $this->subquery ) ) {
-				$this->subquery->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$datetime_str'" );
+				$this->subquery->add_sql_clause( 'where_time', "AND {$table_name}.date_created >= '$datetime_str'" );
 			} else {
-				$this->add_sql_clause( 'where_time', " AND {$table_name}.date_created >= '$datetime_str'" );
+				$this->add_sql_clause( 'where_time', "AND {$table_name}.date_created >= '$datetime_str'" );
 			}
 		}
 	}
@@ -1107,8 +1106,8 @@ class DataStore extends SqlQuery {
 		global $wpdb;
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$sql_query->add_sql_clause( 'join', " JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
-			$sql_query->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
+			$sql_query->add_sql_clause( 'join', "JOIN {$wpdb->prefix}wc_order_stats ON {$table_name}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$sql_query->add_sql_clause( 'where', "AND ( {$order_status_filter} )" );
 		}
 	}
 
@@ -1141,7 +1140,7 @@ class DataStore extends SqlQuery {
 		if ( isset( $query_args['order'] ) ) {
 			$sql_query->add_sql_clause( 'order_by', $query_args['order'] );
 		} else {
-			$sql_query->add_sql_clause( 'order_by', ' DESC' );
+			$sql_query->add_sql_clause( 'order_by', 'DESC' );
 		}
 	}
 

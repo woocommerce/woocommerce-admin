@@ -181,9 +181,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		// To avoid requesting the subqueries twice, the result is applied to all queries passed to the method.
 		if ( $where_subclause ) {
-			$this->total_query->add_sql_clause( 'where', " AND ( $where_subclause )" );
+			$this->total_query->add_sql_clause( 'where', "AND ( $where_subclause )" );
 			$this->total_query->add_sql_clause( 'join', $from_clause );
-			$this->interval_query->add_sql_clause( 'where', " AND ( $where_subclause )" );
+			$this->interval_query->add_sql_clause( 'where', "AND ( $where_subclause )" );
 			$this->interval_query->add_sql_clause( 'join', $from_clause );
 		}
 	}

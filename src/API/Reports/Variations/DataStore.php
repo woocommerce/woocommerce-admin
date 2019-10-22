@@ -137,18 +137,18 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
-			$this->subquery->add_sql_clause( 'where', " AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
+			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
 		}
 
 		if ( count( $query_args['variations'] ) > 0 ) {
 			$allowed_variations_str = self::get_filtered_ids( $query_args, 'variations' );
-			$this->subquery->add_sql_clause( 'where', " AND {$order_product_lookup_table}.variation_id IN ({$allowed_variations_str})" );
+			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id IN ({$allowed_variations_str})" );
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
-			$this->subquery->add_sql_clause( 'where', " AND ( {$order_status_filter} )" );
+			$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$this->subquery->add_sql_clause( 'where', "AND ( {$order_status_filter} )" );
 		}
 	}
 

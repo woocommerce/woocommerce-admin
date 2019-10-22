@@ -158,20 +158,20 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$included_ip_addresses = $this->get_included_ip_addresses( $query_args );
 		$excluded_ip_addresses = $this->get_excluded_ip_addresses( $query_args );
 		if ( $included_ip_addresses ) {
-			$where_filters[] = " {$lookup_table}.user_ip_address IN ('{$included_ip_addresses}')";
+			$where_filters[] = "{$lookup_table}.user_ip_address IN ('{$included_ip_addresses}')";
 		}
 
 		if ( $excluded_ip_addresses ) {
-			$where_filters[] = " {$lookup_table}.user_ip_address NOT IN ('{$excluded_ip_addresses}')";
+			$where_filters[] = "{$lookup_table}.user_ip_address NOT IN ('{$excluded_ip_addresses}')";
 		}
 
 		$where_filters   = array_filter( $where_filters );
 		$where_subclause = implode( " $operator ", $where_filters );
 		if ( $where_subclause ) {
-			$subquery->add_sql_clause( 'where', " AND ( $where_subclause )" );
+			$subquery->add_sql_clause( 'where', "AND ( $where_subclause )" );
 		}
 
-		$subquery->add_sql_clause( 'join', " JOIN {$permission_table} as product_permissions ON {$lookup_table}.permission_id = product_permissions.permission_id" );
+		$subquery->add_sql_clause( 'join', "JOIN {$permission_table} as product_permissions ON {$lookup_table}.permission_id = product_permissions.permission_id" );
 		$this->get_order_by( $query_args );
 	}
 
@@ -259,14 +259,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		if ( false !== strpos( $order_by, '_products' ) ) {
-			$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->posts} AS _products ON product_permissions.product_id = _products.ID" );
+			$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->posts} AS _products ON product_permissions.product_id = _products.ID" );
 		}
 
-		if ( isset( $query_args['order'] ) ) {
-			$this->add_sql_clause( 'order_by', $query_args['order'] );
-		} else {
-			$this->add_sql_clause( 'order_by', ' DESC' );
-		}
+		$this->add_orderby_order_clause( $query_args, $this );
 	}
 
 	/**

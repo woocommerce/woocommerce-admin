@@ -99,12 +99,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		// join wp_order_product_lookup_table with relationships and taxonomies
 		// @todo How to handle custom product tables?
-		$this->subquery->add_sql_clause( 'join', " LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id" );
-		$this->subquery->add_sql_clause( 'join', " LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_category_lookup}.category_id" );
+		$this->subquery->add_sql_clause( 'join', "LEFT JOIN {$wpdb->term_relationships} ON {$order_product_lookup_table}.product_id = {$wpdb->term_relationships}.object_id" );
+		$this->subquery->add_sql_clause( 'join', "LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_category_lookup}.category_id" );
 
 		$included_categories = $this->get_included_categories( $query_args );
 		if ( $included_categories ) {
-			$this->subquery->add_sql_clause( 'where', " AND {$wpdb->wc_category_lookup}.category_tree_id IN ({$included_categories})" );
+			$this->subquery->add_sql_clause( 'where', "AND {$wpdb->wc_category_lookup}.category_tree_id IN ({$included_categories})" );
 
 			// Limit is left out here so that the grouping in code by PHP can be applied correctly.
 			// This also needs to be put after the term_taxonomy JOIN so that we can match the correct term name.
@@ -116,11 +116,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		// @todo Only products in the category C or orders with products from category C (and, possibly others?).
 		$included_products = $this->get_included_products( $query_args );
 		if ( $included_products ) {
-			$this->subquery->add_sql_clause( 'where', " AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
+			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
 		}
 
 		$this->add_order_status_clause( $query_args, $order_product_lookup_table, $this->subquery );
-		$this->subquery->add_sql_clause( 'where', " AND {$wpdb->wc_category_lookup}.category_tree_id IS NOT NULL" );
+		$this->subquery->add_sql_clause( 'where', "AND {$wpdb->wc_category_lookup}.category_tree_id IS NOT NULL" );
 	}
 
 	/**
@@ -138,9 +138,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->clear_sql_clause( array( 'outer_from' ) );
 		if ( false !== strpos( $order_by_clause, '_terms' ) ) {
 			if ( 'from' === $from_arg ) {
-				$this->subquery->add_sql_clause( 'join', " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
+				$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
 			} else {
-				$this->add_sql_clause( $from_arg, " JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
+				$this->add_sql_clause( $from_arg, "JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id" );
 			}
 		}
 		$this->add_orderby_order_clause( $query_args, $this );

@@ -104,7 +104,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$status_subquery = $this->get_status_subquery( $query_args );
 		if ( $status_subquery ) {
 			if ( empty( $query_args['status_is'] ) && empty( $query_args['status_is_not'] ) ) {
-				$this->subquery->add_sql_clause( 'where', " AND {$status_subquery}" );
+				$this->subquery->add_sql_clause( 'where', "AND {$status_subquery}" );
 			} else {
 				$where_subquery[] = $status_subquery;
 			}
@@ -134,7 +134,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$included_coupons = $this->get_included_coupons( $query_args );
 		$excluded_coupons = $this->get_excluded_coupons( $query_args );
 		if ( $included_coupons || $excluded_coupons ) {
-			$this->subquery->add_sql_clause( 'join', " JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id" );
+			$this->subquery->add_sql_clause( 'join', "JOIN {$order_coupon_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_coupon_lookup_table}.order_id" );
 		}
 		if ( $included_coupons ) {
 			$where_subquery[] = "{$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})";
@@ -146,7 +146,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$included_products = $this->get_included_products( $query_args );
 		$excluded_products = $this->get_excluded_products( $query_args );
 		if ( $included_products || $excluded_products ) {
-			$this->subquery->add_sql_clause( 'join', " JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id" );
+			$this->subquery->add_sql_clause( 'join', "JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id" );
 		}
 		if ( $included_products ) {
 			$where_subquery[] = "{$order_product_lookup_table}.product_id IN ({$included_products})";
@@ -156,7 +156,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		if ( 0 < count( $where_subquery ) ) {
-			$this->subquery->add_sql_clause( 'where', ' AND (' . implode( " {$operator} ", $where_subquery ) . ')' );
+			$this->subquery->add_sql_clause( 'where', 'AND (' . implode( " {$operator} ", $where_subquery ) . ')' );
 		}
 	}
 
