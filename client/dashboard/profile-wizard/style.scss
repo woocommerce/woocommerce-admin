@@ -40,7 +40,7 @@
 		}
 	}
 
-	.muriel-checkbox input[type='checkbox']:checked:before {
+	.muriel-checkbox input[type='checkbox']:checked::before {
 		margin-left: -4px;
 		margin-top: -3px;
 	}

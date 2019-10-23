@@ -436,6 +436,8 @@ class Loader {
 	 * @param string $admin_body_class Body class to add.
 	 */
 	public static function add_admin_body_classes( $admin_body_class = '' ) {
+		global $wp_version;
+
 		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
 			return $admin_body_class;
 		}
@@ -455,6 +457,11 @@ class Loader {
 		$features = self::get_features();
 		foreach ( $features as $feature_key ) {
 			$classes[] = sanitize_html_class( 'woocommerce-feature-enabled-' . $feature_key );
+		}
+
+		// WordPress returns the version string in the body, but we would have to list multiple versions in our CSS to target older versions.
+		if ( ! version_compare( $wp_version, '5.2.4', '>' ) ) { // Checks greater than latest (5.2.4) to catch versions like 5.3-RC2-* correctly.
+			$classes[] = 'wp-version-less-than-5-3';
 		}
 
 		$admin_body_class = implode( ' ', array_unique( $classes ) );
