@@ -56,7 +56,9 @@ class InboxPanel extends Component {
 
 		const notesArray = Object.keys( notes ).map( key => notes[ key ] );
 
-		return notesArray.map( note => <InboxNoteCard note={ note } lastRead={ lastRead } /> );
+		return notesArray.map( note => (
+			<InboxNoteCard key={ note.id } note={ note } lastRead={ lastRead } />
+		) );
 	}
 
 	render() {

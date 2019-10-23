@@ -5,6 +5,7 @@
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import Gridicon from 'gridicons';
+import VisibilitySensor from 'react-visibility-sensor';
 
 /**
  * Internal dependencies
@@ -13,8 +14,27 @@ import { ActivityCard } from '../../activity-card';
 import NoteAction from './action';
 import sanitizeHTML from 'lib/sanitize-html';
 import classnames from 'classnames';
+import { recordEvent } from 'lib/tracks';
 
 class InboxNoteCard extends Component {
+	constructor( props ) {
+		super( props );
+		this.onVisible = this.onVisible.bind( this );
+		this.hasBeenSeen = false;
+	}
+
+	// Trigger a view Tracks event when the note is seen.
+	onVisible( isVisible ) {
+		if ( isVisible && ! this.hasBeenSeen ) {
+			const { note } = this.props;
+			const { content, name, title } = note;
+
+			recordEvent( 'inbox_note_view', { content, name, title } );
+
+			this.hasBeenSeen = true;
+		}
+	}
+
 	render() {
 		const { lastRead, note } = this.props;
 
@@ -26,23 +46,24 @@ class InboxNoteCard extends Component {
 		};
 
 		return (
-			<ActivityCard
-				key={ note.id }
-				className={ classnames( 'woocommerce-inbox-activity-card', {
-					actioned: 'unactioned' !== note.status,
-				} ) }
-				title={ note.title }
-				date={ note.date_created }
-				icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
-				unread={
-					! lastRead ||
-					! note.date_created_gmt ||
-					new Date( note.date_created_gmt + 'Z' ).getTime() > lastRead
-				}
-				actions={ getButtonsFromActions( note ) }
-			>
-				<span dangerouslySetInnerHTML={ sanitizeHTML( note.content ) } />
-			</ActivityCard>
+			<VisibilitySensor onChange={ this.onVisible }>
+				<ActivityCard
+					className={ classnames( 'woocommerce-inbox-activity-card', {
+						actioned: 'unactioned' !== note.status,
+					} ) }
+					title={ note.title }
+					date={ note.date_created }
+					icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
+					unread={
+						! lastRead ||
+						! note.date_created_gmt ||
+						new Date( note.date_created_gmt + 'Z' ).getTime() > lastRead
+					}
+					actions={ getButtonsFromActions( note ) }
+				>
+					<span dangerouslySetInnerHTML={ sanitizeHTML( note.content ) } />
+				</ActivityCard>
+			</VisibilitySensor>
 		);
 	}
 }
