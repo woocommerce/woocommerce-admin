@@ -203,6 +203,10 @@ class BusinessDetails extends Component {
 	render() {
 		const productCountOptions = [
 			{
+				key: '0',
+				label: __( "I don't have any products yet.", 'woocommerce-admin' ),
+			},
+			{
 				key: '1-10',
 				label: this.getNumberRangeString( 1, 10 ),
 			},
