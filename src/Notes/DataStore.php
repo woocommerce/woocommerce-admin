@@ -267,7 +267,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		$wpdb->query( $clear_actions_query );
 
 		// Update/insert the actions in this changeset.
-		foreach ( $note->get_actions( 'edit' ) as $action ) {
+		foreach ( $changed_actions as $action ) {
 			$action_data = array(
 				'note_id'    => $note->get_id(),
 				'name'       => $action->name,
@@ -297,6 +297,9 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 				$data_format
 			);
 		}
+
+		// Update actions from DB (to grab new IDs).
+		$this->read_actions( $note );
 	}
 
 	/**
