@@ -24,6 +24,7 @@ import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { formatCurrency } from '@woocommerce/currency';
 import Plugins from 'dashboard/task-list/tasks/steps/plugins';
+import { pluginNames } from 'wc-api/onboarding/constants';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
@@ -151,10 +152,6 @@ class BusinessDetails extends Component {
 	renderBusinessExtensionHelpText( values ) {
 		const { isInstallingExtensions } = this.state;
 		const extensions = this.getBusinessExtensions( values );
-		const extensionSlugs = {
-			'facebook-for-woocommerce': __( 'Facebook for WooCommerce', 'woocommerce-admin' ),
-			'mailchimp-for-woocommerce': __( 'Mailchimp for WooCommerce', 'woocommerce-admin' ),
-		};
 
 		if ( 0 === extensions.length ) {
 			return null;
@@ -162,7 +159,7 @@ class BusinessDetails extends Component {
 
 		const extensionsList = extensions
 			.map( extension => {
-				return extensionSlugs[ extension ];
+				return pluginNames[ extension ];
 			} )
 			.join( ', ' );
 
@@ -227,6 +224,9 @@ class BusinessDetails extends Component {
 				{ installExtensions && (
 					<Plugins
 						onComplete={ () => {
+							goToNextStep();
+						} }
+						onSkip={ () => {
 							goToNextStep();
 						} }
 						onError={ () => {

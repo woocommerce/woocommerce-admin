@@ -93,9 +93,14 @@ class Plugins extends Component {
 
 		if ( hasErrors ) {
 			return (
-				<Button isPrimary onClick={ () => location.reload() }>
-					{ __( 'Retry', 'woocommerce-admin' ) }
-				</Button>
+				<Fragment>
+					<Button isPrimary isBusy={ isRequesting } onClick={ this.installAndActivatePlugins }>
+						{ __( 'Retry', 'woocommerce-admin' ) }
+					</Button>
+					<Button onClick={ this.skipInstaller }>
+						{ __( 'Continue without installing', 'woocommerce-admin' ) }
+					</Button>
+				</Fragment>
 			);
 		}
 
