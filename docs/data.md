@@ -9,17 +9,17 @@ The `SqlQuery` class is a SQL Query statement object. Its properties consist of
 
 - A `context` string identifying the context of the query.
 - SQL clause (`type`) string arrays used to construct the SQL statement:
- - `select`
- - `from`
- - `right_join`
- - `join`
- - `left_join`
- - `where`
- - `where_time`
- - `group_by`
- - `having`
- - `order_by`
- - `limit`
+  - `select`
+  - `from`
+  - `right_join`
+  - `join`
+  - `left_join`
+  - `where`
+  - `where_time`
+  - `group_by`
+  - `having`
+  - `order_by`
+  - `limit`
 
 ### Reports Data Stores
 
