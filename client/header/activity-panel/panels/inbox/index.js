@@ -13,12 +13,10 @@ import { withDispatch } from '@wordpress/data';
  */
 import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
 import ActivityHeader from '../../activity-header';
-import NoteAction from './action';
+import InboxNoteCard from './card';
 import { EmptyContent, Section } from '@woocommerce/components';
-import sanitizeHTML from 'lib/sanitize-html';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
-import classnames from 'classnames';
 
 class InboxPanel extends Component {
 	constructor( props ) {
@@ -56,36 +54,9 @@ class InboxPanel extends Component {
 			return this.renderEmptyCard();
 		}
 
-		const getButtonsFromActions = note => {
-			if ( ! note.actions ) {
-				return [];
-			}
-			return note.actions.map( action => (
-				<NoteAction noteId={ note.id } action={ action } />
-			) );
-		};
-
 		const notesArray = Object.keys( notes ).map( key => notes[ key ] );
 
-		return notesArray.map( note => (
-			<ActivityCard
-				key={ note.id }
-				className={ classnames( 'woocommerce-inbox-activity-card', {
-					actioned: 'unactioned' !== note.status,
-				} ) }
-				title={ note.title }
-				date={ note.date_created }
-				icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
-				unread={
-					! lastRead ||
-					! note.date_created_gmt ||
-					new Date( note.date_created_gmt + 'Z' ).getTime() > lastRead
-				}
-				actions={ getButtonsFromActions( note ) }
-			>
-				<span dangerouslySetInnerHTML={ sanitizeHTML( note.content ) } />
-			</ActivityCard>
-		) );
+		return notesArray.map( note => <InboxNoteCard note={ note } lastRead={ lastRead } /> );
 	}
 
 	render() {
