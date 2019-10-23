@@ -27,9 +27,21 @@ class InboxNoteCard extends Component {
 	onVisible( isVisible ) {
 		if ( isVisible && ! this.hasBeenSeen ) {
 			const { note } = this.props;
-			const { content, name, title } = note;
+			const {
+				content: note_content,
+				name: note_name,
+				title: note_title,
+				type: note_type,
+				icon: note_icon,
+			} = note;
 
-			recordEvent( 'inbox_note_view', { content, name, title } );
+			recordEvent( 'inbox_note_view', {
+				note_content,
+				note_name,
+				note_title,
+				note_type,
+				note_icon,
+			} );
 
 			this.hasBeenSeen = true;
 		}
