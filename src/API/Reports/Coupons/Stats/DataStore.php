@@ -37,11 +37,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	 *
 	 * @var array
 	 */
-	protected $report_columns = array(
-		'amount'        => 'SUM(discount_amount) as amount',
-		'coupons_count' => 'COUNT(DISTINCT coupon_id) as coupons_count',
-		'orders_count'  => 'COUNT(DISTINCT order_id) as orders_count',
-	);
+	protected $report_columns;
 
 	/**
 	 * Data store context used to pass to filters.
@@ -56,6 +52,18 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 	 * @var string
 	 */
 	protected $cache_key = 'coupons_stats';
+
+	/**
+	 * Assign report columns once full table name has been assigned.
+	 */
+	protected function assign_report_columns() {
+		$table_name = self::get_db_table_name();
+		$this->report_columns = array(
+			'amount'        => 'SUM(discount_amount) as amount',
+			'coupons_count' => 'COUNT(DISTINCT coupon_id) as coupons_count',
+			'orders_count'  => "COUNT(DISTINCT {$table_name}.order_id) as orders_count",
+		);
+	}
 
 	/**
 	 * Updates the database query with parameters used for Products Stats report: categories and order status.

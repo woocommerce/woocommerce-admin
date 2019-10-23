@@ -51,26 +51,26 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL columns to select in the db query and their mapping to SQL code.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array(
-		'id'          => 'download_log_id as id',
-		'date'        => 'timestamp as date_gmt',
-		'download_id' => 'product_permissions.download_id',
-		'product_id'  => 'product_permissions.product_id',
-		'order_id'    => 'product_permissions.order_id',
-		'user_id'     => 'product_permissions.user_id',
-		'ip_address'  => 'user_ip_address as ip_address',
-	);
-
-	/**
 	 * Data store context used to pass to filters.
 	 *
 	 * @var string
 	 */
 	protected static $context = 'downloads';
+
+	/**
+	 * Assign report columns once full table name has been assigned.
+	 */
+	protected function assign_report_columns() {
+		$this->report_columns = array(
+			'id'          => 'download_log_id as id',
+			'date'        => 'timestamp as date_gmt',
+			'download_id' => 'product_permissions.download_id',
+			'product_id'  => 'product_permissions.product_id',
+			'order_id'    => 'product_permissions.order_id',
+			'user_id'     => 'product_permissions.user_id',
+			'ip_address'  => 'user_ip_address as ip_address',
+		);
+	}
 
 	/**
 	 * Updates the database query with parameters used for downloads report.

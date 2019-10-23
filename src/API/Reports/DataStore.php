@@ -46,13 +46,6 @@ class DataStore extends SqlQuery {
 	 */
 	protected $column_types = array();
 
-	/**
-	 * SQL columns to select in the db query.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array();
-
 	// @todo This does not really belong here, maybe factor out the comparison as separate class?
 	/**
 	 * Order by property, used in the cmp function.
@@ -124,18 +117,6 @@ class DataStore extends SqlQuery {
 		if ( static::$table_name && ! isset( $wpdb->{static::$table_name} ) ) {
 			$wpdb->{static::$table_name} = $wpdb->prefix . static::$table_name;
 		}
-	}
-
-	/**
-	 * Prepend a query field name with the data store's table name.
-	 *
-	 * @param string $query      Query string to search.
-	 * @param string $field_name The target field name.
-	 *
-	 * @return string Updated query string.
-	 */
-	protected function prepend_table_name( $query, $field_name ) {
-		return str_replace( $field_name, static::get_db_table_name() . '.' . $field_name, $query );
 	}
 
 	/**

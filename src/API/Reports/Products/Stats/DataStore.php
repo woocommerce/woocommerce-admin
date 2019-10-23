@@ -36,24 +36,25 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL columns to select in the db query.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array(
-		'items_sold'       => 'SUM(product_qty) as items_sold',
-		'net_revenue'      => 'SUM(product_net_revenue) AS net_revenue',
-		'orders_count'     => 'COUNT( DISTINCT ( CASE WHEN product_gross_revenue >= 0 THEN order_id END ) ) as orders_count',
-		'products_count'   => 'COUNT(DISTINCT product_id) as products_count',
-		'variations_count' => 'COUNT(DISTINCT variation_id) as variations_count',
-	);
-
-	/**
 	 * Data store context used to pass to filters.
 	 *
 	 * @var string
 	 */
 	protected static $context = 'product_stats';
+
+	/**
+	 * Assign report columns once full table name has been assigned.
+	 */
+	protected function assign_report_columns() {
+		$table_name = self::get_db_table_name();
+		$this->report_columns = array(
+			'items_sold'       => 'SUM(product_qty) as items_sold',
+			'net_revenue'      => 'SUM(product_net_revenue) AS net_revenue',
+			'orders_count'     => "COUNT( DISTINCT ( CASE WHEN product_gross_revenue >= 0 THEN {$table_name}.order_id END ) ) as orders_count",
+			'products_count'   => 'COUNT(DISTINCT product_id) as products_count',
+			'variations_count' => 'COUNT(DISTINCT variation_id) as variations_count',
+		);
+	}
 
 	/**
 	 * Updates the database query with parameters used for Products Stats report: categories and order status.

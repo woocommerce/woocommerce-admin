@@ -48,28 +48,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL columns to select in the db query and their mapping to SQL code.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array(
-		'id'               => 'customer_id as id',
-		'user_id'          => 'user_id',
-		'username'         => 'username',
-		'name'             => "CONCAT_WS( ' ', first_name, last_name ) as name", // @todo What does this mean for RTL?
-		'email'            => 'email',
-		'country'          => 'country',
-		'city'             => 'city',
-		'state'            => 'state',
-		'postcode'         => 'postcode',
-		'date_registered'  => 'date_registered',
-		'date_last_active' => 'IF( date_last_active <= "0000-00-00 00:00:00", NULL, date_last_active ) AS date_last_active',
-		'orders_count'     => 'SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) as orders_count',
-		'total_spend'      => 'SUM( gross_total ) as total_spend',
-		'avg_order_value'  => '( SUM( gross_total ) / COUNT( order_id ) ) as avg_order_value',
-	);
-
-	/**
 	 * Data store context used to pass to filters.
 	 *
 	 * @var string
@@ -81,8 +59,24 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function assign_report_columns() {
 		global $wpdb;
-		$this->report_columns['id']              = $this->prepend_table_name( $this->report_columns['id'], 'customer_id' );
-		$this->report_columns['date_last_order'] = "MAX( {$wpdb->prefix}wc_order_stats.date_created ) as date_last_order";
+		$table_name = self::get_db_table_name();
+		$this->report_columns = array(
+			'id'               => "{$table_name}.customer_id as id",
+			'user_id'          => 'user_id',
+			'username'         => 'username',
+			'name'             => "CONCAT_WS( ' ', first_name, last_name ) as name", // @todo What does this mean for RTL?
+			'email'            => 'email',
+			'country'          => 'country',
+			'city'             => 'city',
+			'state'            => 'state',
+			'postcode'         => 'postcode',
+			'date_registered'  => 'date_registered',
+			'date_last_active' => 'IF( date_last_active <= "0000-00-00 00:00:00", NULL, date_last_active ) AS date_last_active',
+			'date_last_order'  => "MAX( {$wpdb->prefix}wc_order_stats.date_created ) as date_last_order",
+			'orders_count'     => 'SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) as orders_count',
+			'total_spend'      => 'SUM( gross_total ) as total_spend',
+			'avg_order_value'  => '( SUM( gross_total ) / COUNT( order_id ) ) as avg_order_value',
+		);
 	}
 
 	/**

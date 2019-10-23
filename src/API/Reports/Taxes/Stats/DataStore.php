@@ -47,19 +47,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL columns to select in the db query.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array(
-		'tax_codes'    => 'COUNT(DISTINCT tax_rate_id) as tax_codes',
-		'total_tax'    => 'SUM(total_tax) AS total_tax',
-		'order_tax'    => 'SUM(order_tax) as order_tax',
-		'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',
-		'orders_count' => 'COUNT( DISTINCT ( CASE WHEN parent_id = 0 THEN order_id END ) ) as orders_count',
-	);
-
-	/**
 	 * Data store context used to pass to filters.
 	 *
 	 * @var string
@@ -70,7 +57,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Assign report columns once full table name has been assigned.
 	 */
 	protected function assign_report_columns() {
-		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
+		$table_name = self::get_db_table_name();
+		$this->report_columns = array(
+			'tax_codes'    => 'COUNT(DISTINCT tax_rate_id) as tax_codes',
+			'total_tax'    => 'SUM(total_tax) AS total_tax',
+			'order_tax'    => 'SUM(order_tax) as order_tax',
+			'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',
+			'orders_count' => "COUNT( DISTINCT ( CASE WHEN parent_id = 0 THEN {$table_name}.order_id END ) ) as orders_count",
+		);
 	}
 
 	/**

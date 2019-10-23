@@ -53,24 +53,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL columns to select in the db query and their mapping to SQL code.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array(
-		'tax_rate_id'  => 'tax_rate_id',
-		'name'         => 'tax_rate_name as name',
-		'tax_rate'     => 'tax_rate',
-		'country'      => 'tax_rate_country as country',
-		'state'        => 'tax_rate_state as state',
-		'priority'     => 'tax_rate_priority as priority',
-		'total_tax'    => 'SUM(total_tax) as total_tax',
-		'order_tax'    => 'SUM(order_tax) as order_tax',
-		'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',
-		'orders_count' => 'COUNT( DISTINCT ( CASE WHEN total_tax >= 0 THEN order_id END ) ) as orders_count',
-	);
-
-	/**
 	 * Data store context used to pass to filters.
 	 *
 	 * @var string
@@ -81,8 +63,19 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Assign report columns once full table name has been assigned.
 	 */
 	protected function assign_report_columns() {
-		$this->report_columns['tax_rate_id']  = $this->prepend_table_name( $this->report_columns['tax_rate_id'], 'tax_rate_id' );
-		$this->report_columns['orders_count'] = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
+		$table_name = self::get_db_table_name();
+		$this->report_columns = array(
+			'tax_rate_id'  => "{$table_name}.tax_rate_id",
+			'name'         => 'tax_rate_name as name',
+			'tax_rate'     => 'tax_rate',
+			'country'      => 'tax_rate_country as country',
+			'state'        => 'tax_rate_state as state',
+			'priority'     => 'tax_rate_priority as priority',
+			'total_tax'    => 'SUM(total_tax) as total_tax',
+			'order_tax'    => 'SUM(order_tax) as order_tax',
+			'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',
+			'orders_count' => "COUNT( DISTINCT ( CASE WHEN total_tax >= 0 THEN {$table_name}.order_id END ) ) as orders_count",
+		);
 	}
 
 	/**

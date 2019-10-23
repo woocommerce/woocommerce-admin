@@ -29,15 +29,6 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL columns to select in the db query and their mapping to SQL code.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array(
-		'download_count' => 'COUNT(DISTINCT download_log_id) as download_count',
-	);
-
-	/**
 	 * Cache identifier.
 	 *
 	 * @var string
@@ -50,6 +41,15 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 	 * @var string
 	 */
 	protected static $context = 'download_stats';
+
+	/**
+	 * Assign report columns once full table name has been assigned.
+	 */
+	protected function assign_report_columns() {
+		$this->report_columns = array(
+			'download_count' => 'COUNT(DISTINCT download_log_id) as download_count',
+		);
+	}
 
 	/**
 	 * Returns the report data based on parameters supplied by the user.

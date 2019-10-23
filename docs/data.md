@@ -9,17 +9,17 @@ The `SqlQuery` class is a SQL Query statement object. Its properties consist of
 
 - A `context` string identifying the context of the query.
 - SQL clause (`type`) string arrays used to construct the SQL statement:
--- `select`
--- `from`
--- `join`
--- `outer_from`
--- `right_join`
--- `where`
--- `where_time`
--- `group_by`
--- `having`
--- `limit`
--- `order_by`
+ - `select`
+ - `from`
+ - `right_join`
+ - `join`
+ - `left_join`
+ - `where`
+ - `where_time`
+ - `group_by`
+ - `having`
+ - `order_by`
+ - `limit`
 
 ### Reports Data Stores
 
@@ -51,7 +51,18 @@ Query contexts are named as follows:
 
 ### Filters
 
-When a SQL clause (or all clauses when getting the full statement) is retrieved the clause array is passed through the following two filters where `$type` is the clause type and `$context` is the query object context.
+When getting the full statement the clause arrays are passed through two filters where `$context` is the query object context and `$type` is:
+
+- `select`
+- `from`
+- `join` = `right_join` + `join` + `left_join`
+- `where` = `where` + `where_time`
+- `group_by`
+- `having`
+- `order_by`
+- `limit`
+
+The filters are:
 
 - `apply_filters( "wc_admin_clauses_{$type}", $clauses, $context );`
 - `apply_filters( "wc_admin_clauses_{$type}_{$context}", $clauses );`

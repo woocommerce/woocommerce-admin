@@ -63,13 +63,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL definition for each column.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array();
-
-	/**
 	 * Data store context used to pass to filters.
 	 *
 	 * @var string

@@ -61,17 +61,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL columns to select in the db query.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array(
-		'items_sold'     => 'SUM(product_qty) as items_sold',
-		'net_revenue'    => 'SUM(product_net_revenue) AS net_revenue',
-		'orders_count'   => 'COUNT(DISTINCT order_id) as orders_count',
-		'products_count' => 'COUNT(DISTINCT product_id) as products_count',
-	);
-	/**
 	 * Data store context used to pass to filters.
 	 *
 	 * @var string
@@ -79,11 +68,16 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected static $context = 'categories';
 
 	/**
-	 * Constructor
+	 * Assign report columns once full table name has been assigned.
 	 */
 	protected function assign_report_columns() {
-		$this->report_columns['products_count'] = $this->prepend_table_name( $this->report_columns['products_count'], 'product_id' );
-		$this->report_columns['orders_count']   = $this->prepend_table_name( $this->report_columns['orders_count'], 'order_id' );
+		$table_name = self::get_db_table_name();
+		$this->report_columns = array(
+			'items_sold'     => 'SUM(product_qty) as items_sold',
+			'net_revenue'    => 'SUM(product_net_revenue) AS net_revenue',
+			'orders_count'   => "COUNT(DISTINCT {$table_name}.order_id) as orders_count",
+			'products_count' => "COUNT(DISTINCT {$table_name}.product_id) as products_count",
+		);
 	}
 
 	/**

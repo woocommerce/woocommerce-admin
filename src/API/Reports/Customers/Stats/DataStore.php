@@ -29,18 +29,6 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	);
 
 	/**
-	 * SQL columns to select in the db query and their mapping to SQL code.
-	 *
-	 * @var array
-	 */
-	protected $report_columns = array(
-		'customers_count'     => 'COUNT( * ) as customers_count',
-		'avg_orders_count'    => 'AVG( orders_count ) as avg_orders_count',
-		'avg_total_spend'     => 'AVG( total_spend ) as avg_total_spend',
-		'avg_avg_order_value' => 'AVG( avg_order_value ) as avg_avg_order_value',
-	);
-
-	/**
 	 * Cache identifier.
 	 *
 	 * @var string
@@ -55,11 +43,15 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	protected static $context = 'customer_stats';
 
 	/**
-	 * Constructor.
+	 * Assign report columns once full table name has been assigned.
 	 */
-	public function __construct() {
-		$this->set_db_table_name();
-		$this->initialize_queries();
+	protected function assign_report_columns() {
+		$this->report_columns = array(
+			'customers_count'     => 'COUNT( * ) as customers_count',
+			'avg_orders_count'    => 'AVG( orders_count ) as avg_orders_count',
+			'avg_total_spend'     => 'AVG( total_spend ) as avg_total_spend',
+			'avg_avg_order_value' => 'AVG( avg_order_value ) as avg_avg_order_value',
+		);
 	}
 
 	/**
