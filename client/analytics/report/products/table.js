@@ -227,7 +227,7 @@ class ProductsReportTable extends Component {
 				value: numberFormat( items_sold ),
 			},
 			{
-				label: __( 'net revenue', 'woocommerce-admin' ),
+				label: __( 'net product revenue', 'woocommerce-admin' ),
 				value: formatCurrency( net_revenue ),
 			},
 			{
