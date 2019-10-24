@@ -427,7 +427,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$tax_amount += isset( $tax_data['total'][ $tax_item_id ] ) ? $tax_data['total'][ $tax_item_id ] : 0;
 			}
 
-			$net_revenue = round( $order_item->get_subtotal( 'edit' ), $decimals );
+			$net_revenue = round( $order_item->get_total( 'edit' ), $decimals );
 			if ( $round_tax ) {
 				$tax_amount = round( $tax_amount, $decimals );
 			}
