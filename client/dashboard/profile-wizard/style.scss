@@ -40,11 +40,6 @@
 		}
 	}
 
-	.muriel-checkbox input[type='checkbox']:checked::before {
-		margin-left: -4px;
-		margin-top: -3px;
-	}
-
 	.woocommerce-profile-wizard__container {
 		.woocommerce-profile-wizard__tos {
 			font-size: 12px;
@@ -225,6 +220,11 @@
 			position: relative;
 			padding: $gap-small $gap;
 			min-height: 56px;
+
+			input[type='checkbox']:checked::before {
+				left: -1px;
+				top: 0;
+			}
 
 			&::after {
 				content: '';
