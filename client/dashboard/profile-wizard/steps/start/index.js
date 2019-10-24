@@ -28,6 +28,7 @@ import PrintIcon from './images/print';
 import withSelect from 'wc-api/with-select';
 import UsageModal from '../usage-modal';
 import { recordEvent } from 'lib/tracks';
+import { pluginNames } from 'wc-api/onboarding/constants';
 
 class Start extends Component {
 	constructor( props ) {
@@ -195,12 +196,16 @@ class Start extends Component {
 		const { showUsageModal, continueAction } = this.state;
 		const { isJetpackConnected, activePlugins } = this.props;
 
-		let pluginNames = __( 'Jetpack & WooCommerce Services', 'woocommerce-admin' );
-		if ( ! isJetpackConnected && activePlugins.includes( 'woocommerce-services' ) ) {
-			pluginNames = __( 'Jetpack', 'woocommerce-admin' );
-		} else if ( isJetpackConnected && ! activePlugins.includes( 'woocommerce-services' ) ) {
-			pluginNames = __( 'WooCommerce Services', 'woocommerce-admin' );
+		const pluginsToInstall = [];
+		if ( ! isJetpackConnected ) {
+			pluginsToInstall.push( 'jetpack' );
 		}
+		if ( ! activePlugins.includes( 'woocommerce-services' ) ) {
+			pluginsToInstall.push( 'woocommerce-services' );
+		}
+		const pluginNamesString = pluginsToInstall
+			.map( pluginSlug => pluginNames[ pluginSlug ] )
+			.join( ' & ' );
 
 		return (
 			<Fragment>
@@ -224,7 +229,7 @@ class Start extends Component {
 									'{{strong}}%s{{/strong}}.',
 								'woocommerce-admin'
 							),
-							pluginNames
+							pluginNamesString
 						),
 						components: {
 							strong: <strong />,
@@ -270,7 +275,7 @@ class Start extends Component {
 						className="woocommerce-profile-wizard__skip"
 						onClick={ () => this.setState( { showUsageModal: true, continueAction: 'skip' } ) }
 					>
-						{ sprintf( __( 'Proceed without %s', 'woocommerce-admin' ), pluginNames ) }
+						{ sprintf( __( 'Proceed without %s', 'woocommerce-admin' ), pluginNamesString ) }
 					</Button>
 				</p>
 			</Fragment>

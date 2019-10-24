@@ -21,6 +21,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
+import { pluginNames } from 'wc-api/onboarding/constants';
 
 const pluginsToInstall = [ 'jetpack', 'woocommerce-services' ];
 const { activePlugins = [] } = getSetting( 'onboarding', {} );
@@ -121,12 +122,7 @@ class Plugins extends Component {
 			);
 		}
 
-		let pluginLabel = __( 'Jetpack & WooCommerce Services', 'woocommerce-admin' );
-		if ( plugins.includes( 'jetpack' ) && ! plugins.includes( 'woocommerce-services' ) ) {
-			pluginLabel = __( 'Jetpack', 'woocommerce-admin' );
-		} else if ( ! plugins.includes( 'jetpack' ) && plugins.includes( 'woocommerce-services' ) ) {
-			pluginLabel = __( 'WooCommerce Services', 'woocommerce-admin' );
-		}
+		const pluginLabel = plugins.map( pluginSlug => pluginNames[ pluginSlug ] ).join( ' & ' );
 
 		return (
 			<Fragment>
