@@ -8,7 +8,12 @@ import { saveAs } from 'browser-filesaver';
 function escapeCSVValue( value ) {
 	let stringValue = value.toString();
 
-	if ( stringValue.match( /[,"\s]/ ) ) {
+	// Prevent CSV injection.
+	// See: http://www.contextis.com/resources/blog/comma-separated-vulnerabilities/
+	// See: WC_CSV_Exporter::escape_data()
+	if ( [ '=', '+', '-', '@' ].includes( stringValue.charAt( 0 ) ) ) {
+		stringValue = "'" + stringValue;
+	} else if ( stringValue.match( /[,"\s]/ ) ) {
 		stringValue = '"' + stringValue.replace( /"/g, '""' ) + '"';
 	}
 

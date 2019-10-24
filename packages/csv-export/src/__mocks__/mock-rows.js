@@ -38,5 +38,9 @@ export default [
 			display: '€200.00',
 			value: 200,
 		},
+		{
+			display: '-123',
+			value: -123,
+		},
 	],
 ];
