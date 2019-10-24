@@ -97,9 +97,48 @@ class Payments extends Component {
 		getHistory().push( getNewPath( {}, '/', {} ) );
 	}
 
+	isStripeEnabledByDefault() {
+		const { countryCode } = this.props;
+		// Stripe should be checked by default in the following countries: https://stripe.com/global.
+		const supportedCountries = [
+			'AU',
+			'AT',
+			'BE',
+			'CA',
+			'DK',
+			'EE',
+			'FI',
+			'FR',
+			'DE',
+			'GR',
+			'HK',
+			'IE',
+			'IT',
+			'JP',
+			'LV',
+			'LT',
+			'LU',
+			'MY',
+			'NL',
+			'NZ',
+			'NO',
+			'PL',
+			'PT',
+			'SG',
+			'SK',
+			'SI',
+			'ES',
+			'SE',
+			'CH',
+			'GB',
+			'US',
+		];
+		return supportedCountries.includes( countryCode );
+	}
+
 	getInitialValues() {
 		const values = {
-			stripe: false,
+			stripe: this.isStripeEnabledByDefault(),
 			paypal: false,
 			klarna_checkout: false,
 			klarna_payments: false,
@@ -451,7 +490,6 @@ class Payments extends Component {
 
 	render() {
 		const { step, methodRequestPending } = this.state;
-		const { isSettingsRequesting } = this.props;
 		return (
 			<Form
 				initialValues={ this.getInitialValues() }
@@ -465,7 +503,7 @@ class Payments extends Component {
 							<Card className="is-narrow">
 								<Stepper
 									isVertical
-									isPending={ methodRequestPending || isSettingsRequesting || 'install' === step }
+									isPending={ methodRequestPending || 'install' === step }
 									currentStep={ step }
 									steps={ this.getSteps() }
 								/>
@@ -480,22 +518,15 @@ class Payments extends Component {
 
 export default compose(
 	withSelect( select => {
-		const {
-			getSettings,
-			getSettingsError,
-			isGetSettingsRequesting,
-			getProfileItems,
-			isJetpackConnected,
-			getActivePlugins,
-			getOptions,
-		} = select( 'wc-api' );
+		const { getProfileItems, isJetpackConnected, getActivePlugins, getOptions } = select(
+			'wc-api'
+		);
 
-		const settings = getSettings( 'general' );
-		const isSettingsError = Boolean( getSettingsError( 'general' ) );
-		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
-		const countryCode = getCountryCode( settings.woocommerce_default_country );
-
-		const options = getOptions( [ 'woocommerce_onboarding_payments' ] );
+		const options = getOptions( [
+			'woocommerce_onboarding_payments',
+			'woocommerce_default_country',
+		] );
+		const countryCode = getCountryCode( options.woocommerce_default_country );
 
 		const methods = get( options, [ 'woocommerce_onboarding_payments', 'methods' ], [] );
 		const installed = get( options, [ 'woocommerce_onboarding_payments', 'installed' ], false );
@@ -505,9 +536,6 @@ export default compose(
 
 		return {
 			countryCode,
-			isSettingsError,
-			isSettingsRequesting,
-			settings,
 			profileItems: getProfileItems(),
 			activePlugins: getActivePlugins(),
 			isJetpackConnected: isJetpackConnected(),

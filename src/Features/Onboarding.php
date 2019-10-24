@@ -362,6 +362,7 @@ class Onboarding {
 		$options[] = 'woocommerce_onboarding_payments';
 		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
+		$options[] = 'woocommerce_default_country';
 
 		return $options;
 	}
