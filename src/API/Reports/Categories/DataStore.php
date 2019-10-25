@@ -65,7 +65,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected static $context = 'categories';
+	protected $context = 'categories';
 
 	/**
 	 * Assign report columns once full table name has been assigned.
@@ -302,7 +302,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function initialize_queries() {
 		global $wpdb;
-		$this->subquery = new SqlQuery( self::$context . '_subquery' );
+		$this->subquery = new SqlQuery( $this->context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', "{$wpdb->wc_category_lookup}.category_tree_id as category_id," );
 		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', "{$wpdb->wc_category_lookup}.category_tree_id" );

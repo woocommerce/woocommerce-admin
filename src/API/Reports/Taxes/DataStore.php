@@ -57,7 +57,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected static $context = 'taxes';
+	protected $context = 'taxes';
 
 	/**
 	 * Assign report columns once full table name has been assigned.
@@ -342,7 +342,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function initialize_queries() {
 		$this->clear_all_clauses();
-		$this->subquery = new SqlQuery( self::$context . '_subquery' );
+		$this->subquery = new SqlQuery( $this->context . '_subquery' );
 		$this->subquery->add_sql_clause( 'select', self::get_db_table_name() . '.tax_rate_id' );
 		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', self::get_db_table_name() . '.tax_rate_id' );

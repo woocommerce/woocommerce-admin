@@ -70,7 +70,7 @@ class DataStore extends SqlQuery {
 	 *
 	 * @var string
 	 */
-	protected static $context = 'reports';
+	protected $context = 'reports';
 
 	/**
 	 * Subquery object for query nesting.
@@ -952,7 +952,7 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected static function get_included_variations( $query_args ) {
+	protected function get_included_variations( $query_args ) {
 		if ( isset( $query_args['variations'] ) && is_array( $query_args['variations'] ) && count( $query_args['variations'] ) > 0 ) {
 			$query_args['variations'] = array_filter( array_map( 'intval', $query_args['variations'] ) );
 		}
@@ -966,7 +966,7 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected static function get_excluded_products( $query_args ) {
+	protected function get_excluded_products( $query_args ) {
 		return self::get_filtered_ids( $query_args, 'product_excludes' );
 	}
 
@@ -976,7 +976,7 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected static function get_included_categories( $query_args ) {
+	protected function get_included_categories( $query_args ) {
 		return self::get_filtered_ids( $query_args, 'categories' );
 	}
 
@@ -987,7 +987,7 @@ class DataStore extends SqlQuery {
 	 * @param string $field      Field name in the parameter list.
 	 * @return string
 	 */
-	protected static function get_included_coupons( $query_args, $field = 'coupon_includes' ) {
+	protected function get_included_coupons( $query_args, $field = 'coupon_includes' ) {
 		return self::get_filtered_ids( $query_args, $field );
 	}
 
@@ -997,7 +997,7 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected static function get_excluded_coupons( $query_args ) {
+	protected function get_excluded_coupons( $query_args ) {
 		return self::get_filtered_ids( $query_args, 'coupon_excludes' );
 	}
 
@@ -1007,7 +1007,7 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected static function get_included_orders( $query_args ) {
+	protected function get_included_orders( $query_args ) {
 		return self::get_filtered_ids( $query_args, 'order_includes' );
 	}
 
@@ -1017,7 +1017,7 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected static function get_excluded_orders( $query_args ) {
+	protected function get_excluded_orders( $query_args ) {
 		return self::get_filtered_ids( $query_args, 'order_excludes' );
 	}
 
@@ -1027,7 +1027,7 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected static function get_included_users( $query_args ) {
+	protected function get_included_users( $query_args ) {
 		return self::get_filtered_ids( $query_args, 'user_includes' );
 	}
 
@@ -1037,7 +1037,7 @@ class DataStore extends SqlQuery {
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
-	protected static function get_excluded_users( $query_args ) {
+	protected function get_excluded_users( $query_args ) {
 		return self::get_filtered_ids( $query_args, 'user_excludes' );
 	}
 
@@ -1176,7 +1176,7 @@ class DataStore extends SqlQuery {
 	 * @param string $separator  Field separator.
 	 * @return string
 	 */
-	protected static function get_filtered_ids( $query_args, $field, $separator = ',' ) {
+	protected function get_filtered_ids( $query_args, $field, $separator = ',' ) {
 		$ids_str = '';
 		$ids     = isset( $query_args[ $field ] ) && is_array( $query_args[ $field ] ) ? $query_args[ $field ] : array();
 
@@ -1190,7 +1190,7 @@ class DataStore extends SqlQuery {
 		 * @param string $field      The object type.
 		 * @param string $context    The data store context.
 		 */
-		$ids = apply_filters( 'wc_admin_reports_ ' . $field, $ids, $query_args, $field, self::$context );
+		$ids = apply_filters( 'wc_admin_reports_ ' . $field, $ids, $query_args, $field, $this->context );
 
 		if ( ! empty( $ids ) ) {
 			$ids_str = implode( $separator, $ids );

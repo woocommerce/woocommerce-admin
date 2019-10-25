@@ -55,7 +55,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected static $context = 'downloads';
+	protected $context = 'downloads';
 
 	/**
 	 * Assign report columns once full table name has been assigned.
@@ -375,7 +375,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function initialize_queries() {
 		$this->clear_all_clauses();
 		$table_name     = self::get_db_table_name();
-		$this->subquery = new SqlQuery( self::$context . '_subquery' );
+		$this->subquery = new SqlQuery( $this->context . '_subquery' );
 		$this->subquery->add_sql_clause( 'from', $table_name );
 		$this->subquery->add_sql_clause( 'select', "{$table_name}.download_log_id" );
 		$this->subquery->add_sql_clause( 'group_by', "{$table_name}.download_log_id" );

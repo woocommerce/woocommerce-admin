@@ -40,7 +40,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 	 *
 	 * @var string
 	 */
-	protected static $context = 'download_stats';
+	protected $context = 'download_stats';
 
 	/**
 	 * Assign report columns once full table name has been assigned.
@@ -181,10 +181,10 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 	protected function initialize_queries() {
 		$this->clear_all_clauses();
 		unset( $this->subquery );
-		$this->total_query = new SqlQuery( self::$context . '_total' );
+		$this->total_query = new SqlQuery( $this->context . '_total' );
 		$this->total_query->add_sql_clause( 'from', self::get_db_table_name() );
 
-		$this->interval_query = new SqlQuery( self::$context . '_interval' );
+		$this->interval_query = new SqlQuery( $this->context . '_interval' );
 		$this->interval_query->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->interval_query->add_sql_clause( 'group_by', 'time_interval' );
 	}
