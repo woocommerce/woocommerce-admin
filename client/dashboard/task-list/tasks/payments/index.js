@@ -16,7 +16,7 @@ import { withDispatch } from '@wordpress/data';
  */
 import { Form, Card, Stepper, TextControl, List } from '@woocommerce/components';
 import { getAdminLink, getHistory, getNewPath } from '@woocommerce/navigation';
-import { WC_ASSET_URL as wcAssetUrl } from '@woocommerce/wc-admin-settings';
+import { WC_ASSET_URL as wcAssetUrl, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -97,48 +97,16 @@ class Payments extends Component {
 		getHistory().push( getNewPath( {}, '/', {} ) );
 	}
 
-	isStripeEnabledByDefault() {
+	isStripeEnabled() {
 		const { countryCode } = this.props;
-		// Stripe should be checked by default in the following countries: https://stripe.com/global.
-		const supportedCountries = [
-			'AU',
-			'AT',
-			'BE',
-			'CA',
-			'DK',
-			'EE',
-			'FI',
-			'FR',
-			'DE',
-			'GR',
-			'HK',
-			'IE',
-			'IT',
-			'JP',
-			'LV',
-			'LT',
-			'LU',
-			'MY',
-			'NL',
-			'NZ',
-			'NO',
-			'PL',
-			'PT',
-			'SG',
-			'SK',
-			'SI',
-			'ES',
-			'SE',
-			'CH',
-			'GB',
-			'US',
-		];
-		return supportedCountries.includes( countryCode );
+		const stripeCountries = getSetting( 'onboarding', { stripeSupportedCountries: [] } )
+			.stripeSupportedCountries;
+		return stripeCountries.includes( countryCode );
 	}
 
 	getInitialValues() {
 		const values = {
-			stripe: this.isStripeEnabledByDefault(),
+			stripe: this.isStripeEnabled(),
 			paypal: false,
 			klarna_checkout: false,
 			klarna_payments: false,
@@ -252,7 +220,7 @@ class Payments extends Component {
 				),
 				before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
 				after: <FormToggle { ...getInputProps( 'stripe' ) } />,
-				visible: true,
+				visible: this.isStripeEnabled(),
 			},
 			{
 				key: 'paypal',

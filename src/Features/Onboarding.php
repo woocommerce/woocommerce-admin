@@ -338,7 +338,8 @@ class Onboarding {
 
 		// Only fetch if the onboarding wizard OR the task list is incomplete.
 		if ( self::should_show_profiler() || self::should_show_tasks() ) {
-			$settings['onboarding']['activePlugins'] = self::get_active_plugins();
+			$settings['onboarding']['activePlugins']            = self::get_active_plugins();
+			$settings['onboarding']['stripeSupportedCountries'] = self::get_stripe_supported_countries();
 		}
 
 		return $settings;
@@ -379,6 +380,25 @@ class Onboarding {
 		}
 		$endpoints['jetpackStatus'] = '/jetpack/v4/connection';
 		return $endpoints;
+	}
+
+	/**
+	 * Returns a list of Stripe supported countries. This method can be removed once merged to core.
+	 *
+	 * @param array $endpoints Array of preloaded endpoints.
+	 * @return array
+	 */
+	private static function get_stripe_supported_countries() {
+		$wc_countries = WC()->countries;
+		if ( method_exists( $wc_countries, 'get_stripe_supported_countries' ) ) {
+			return $wc_countries->get_stripe_supported_countries();
+		}
+
+		// @todo Remove this fallback once we are targeting a version of WooCommerce with the above method. https://github.com/woocommerce/woocommerce/pull/24897.
+		return array(
+			'AU', 'AT', 'BE', 'CA', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HK', 'IE', 'IT', 'JP', 'LV', 'LT', 'LU', 'MY', 'NL', 'NZ', 'NO',
+			'PL', 'PT', 'SG', 'SK', 'SI', 'ES', 'SE', 'CH', 'GB', 'US',
+		);
 	}
 
 	/**
