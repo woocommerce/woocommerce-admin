@@ -98,6 +98,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 		$this->interval_query->add_sql_clause( 'limit', $this->get_sql_clause( 'limit' ) );
 		$this->interval_query->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
 		$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) );
+		$this->interval_query->add_sql_clause( 'select', 'AS time_interval' );
 
 		foreach ( array( 'join', 'where_time', 'where' ) as $clause ) {
 			$this->interval_query->add_sql_clause( $clause, $clauses[ $clause ] );
@@ -154,7 +155,6 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 			$intervals_query = array();
 			$limit_params    = $this->get_limit_sql_params( $query_args );
 			$this->update_sql_query_params( $query_args, $totals_query, $intervals_query );
-			$this->interval_query->add_sql_clause( 'select', 'AS time_interval' );
 
 			$db_intervals = $wpdb->get_col(
 				$this->interval_query->get_statement()

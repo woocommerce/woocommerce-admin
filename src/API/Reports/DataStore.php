@@ -957,7 +957,7 @@ class DataStore extends SqlQuery {
 			$query_args['variations'] = array_filter( array_map( 'intval', $query_args['variations'] ) );
 		}
 
-		return self::get_filtered_ids( $query_args, 'variations' );
+		return $this->get_filtered_ids( $query_args, 'variations' );
 	}
 
 	/**
@@ -967,7 +967,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_excluded_products( $query_args ) {
-		return self::get_filtered_ids( $query_args, 'product_excludes' );
+		return $this->get_filtered_ids( $query_args, 'product_excludes' );
 	}
 
 	/**
@@ -977,7 +977,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_included_categories( $query_args ) {
-		return self::get_filtered_ids( $query_args, 'categories' );
+		return $this->get_filtered_ids( $query_args, 'categories' );
 	}
 
 	/**
@@ -988,7 +988,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_included_coupons( $query_args, $field = 'coupon_includes' ) {
-		return self::get_filtered_ids( $query_args, $field );
+		return $this->get_filtered_ids( $query_args, $field );
 	}
 
 	/**
@@ -998,7 +998,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_excluded_coupons( $query_args ) {
-		return self::get_filtered_ids( $query_args, 'coupon_excludes' );
+		return $this->get_filtered_ids( $query_args, 'coupon_excludes' );
 	}
 
 	/**
@@ -1008,7 +1008,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_included_orders( $query_args ) {
-		return self::get_filtered_ids( $query_args, 'order_includes' );
+		return $this->get_filtered_ids( $query_args, 'order_includes' );
 	}
 
 	/**
@@ -1018,7 +1018,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_excluded_orders( $query_args ) {
-		return self::get_filtered_ids( $query_args, 'order_excludes' );
+		return $this->get_filtered_ids( $query_args, 'order_excludes' );
 	}
 
 	/**
@@ -1028,7 +1028,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_included_users( $query_args ) {
-		return self::get_filtered_ids( $query_args, 'user_includes' );
+		return $this->get_filtered_ids( $query_args, 'user_includes' );
 	}
 
 	/**
@@ -1038,7 +1038,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_excluded_users( $query_args ) {
-		return self::get_filtered_ids( $query_args, 'user_excludes' );
+		return $this->get_filtered_ids( $query_args, 'user_excludes' );
 	}
 
 	/**
@@ -1109,6 +1109,7 @@ class DataStore extends SqlQuery {
 			$sql_query->add_sql_clause( 'order_by', $order_by_clause );
 		}
 
+		// Return ORDER BY clause to allow adding the sort field(s) to query via a JOIN.
 		return $order_by_clause;
 	}
 

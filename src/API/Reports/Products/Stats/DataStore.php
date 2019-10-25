@@ -91,6 +91,7 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 		$this->get_intervals_sql_params( $query_args, $order_product_lookup_table );
 		$this->interval_query->add_sql_clause( 'where', $products_where_clause );
 		$this->interval_query->add_sql_clause( 'join', $products_from_clause );
+		$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 	}
 
 	/**
@@ -136,7 +137,6 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 
 			$this->update_sql_query_params( $query_args );
 			$this->get_limit_sql_params( $query_args );
-			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 			$this->interval_query->add_sql_clause( 'where_time', $this->get_sql_clause( 'where_time' ) );
 
 			$db_intervals = $wpdb->get_col(
