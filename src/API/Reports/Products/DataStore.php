@@ -134,11 +134,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 		if ( $join ) {
 			if ( 'inner' === $arg_name ) {
-				$query =& $this->subquery;
+				$this->subquery->add_sql_clause( $type, $join );
 			} else {
-				$query =& $this;
+				$this->add_sql_clause( $type, $join );
 			}
-			$query->add_sql_clause( $type, $join );
 		}
 	}
 

@@ -84,15 +84,15 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$permission_table = $wpdb->prefix . 'woocommerce_downloadable_product_permissions';
 		$operator         = $this->get_match_operator( $query_args );
 		$where_filters    = array();
-		if ( isset( $this->subquery ) ) {
-			$subquery =& $this->subquery;
-		} else {
-			$subquery =& $this->interval_query;
-		}
+		$join             = "JOIN {$permission_table} as product_permissions ON {$lookup_table}.permission_id = product_permissions.permission_id";
 
 		$where_time = $this->get_time_period_sql_params( $query_args, $lookup_table );
 		if ( $where_time ) {
-			$subquery->add_sql_clause( 'where_time', $where_time );
+			if ( isset( $this->subquery ) ) {
+				$this->subquery->add_sql_clause( 'where_time', $where_time );
+			} else {
+				$this->interval_query->add_sql_clause( 'where_time', $where_time );
+			}
 		}
 		$this->get_limit_sql_params( $query_args );
 
@@ -168,10 +168,18 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$where_filters   = array_filter( $where_filters );
 		$where_subclause = implode( " $operator ", $where_filters );
 		if ( $where_subclause ) {
-			$subquery->add_sql_clause( 'where', "AND ( $where_subclause )" );
+			if ( isset( $this->subquery ) ) {
+				$this->subquery->add_sql_clause( 'where', "AND ( $where_subclause )" );
+			} else {
+				$this->interval_query->add_sql_clause( 'where', "AND ( $where_subclause )" );
+			}
 		}
 
-		$subquery->add_sql_clause( 'join', "JOIN {$permission_table} as product_permissions ON {$lookup_table}.permission_id = product_permissions.permission_id" );
+		if ( isset( $this->subquery ) ) {
+			$this->subquery->add_sql_clause( 'join', $join );
+		} else {
+			$this->interval_query->add_sql_clause( 'join', $join );
+		}
 		$this->get_order_by( $query_args );
 	}
 
