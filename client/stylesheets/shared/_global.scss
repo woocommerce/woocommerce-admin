@@ -143,3 +143,13 @@
 		background-color: $studio-white;
 	}
 }
+
+body.woocommerce-page {
+	.components-button.is-button.is-primary {
+		color: $studio-white;
+
+		&:hover {
+			color: $studio-white;
+		}
+	}
+}
