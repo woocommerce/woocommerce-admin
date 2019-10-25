@@ -405,6 +405,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$existing_items = array_flip( $existing_items );
 		$order_items    = $order->get_items();
 		$num_updated    = 0;
+		$decimals       = wc_get_price_decimals();
+		$round_tax      = 'no' === get_option( 'woocommerce_tax_round_at_subtotal' );
 
 		foreach ( $order_items as $order_item ) {
 			$order_item_id       = $order_item->get_id();
@@ -429,7 +431,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$tax_amount += isset( $tax_data['total'][ $tax_item_id ] ) ? $tax_data['total'][ $tax_item_id ] : 0;
 			}
 
-			$net_revenue = $order_item->get_subtotal( 'edit' );
+			$net_revenue = round( $order_item->get_total( 'edit' ), $decimals );
+			if ( $round_tax ) {
+				$tax_amount = round( $tax_amount, $decimals );
+			}
 
 			$result = $wpdb->replace(
 				$wpdb->prefix . self::TABLE_NAME,
