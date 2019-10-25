@@ -8,6 +8,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import { recordEvent } from 'lib/tracks';
+import { without } from 'lodash';
 
 /**
  * Internal depdencies
@@ -20,6 +21,7 @@ import {
 	validateStoreAddress,
 } from '../../components/settings/general/store-address';
 import UsageModal from './usage-modal';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 class StoreDetails extends Component {
 	constructor() {
@@ -30,16 +32,128 @@ class StoreDetails extends Component {
 		};
 
 		this.initialValues = {
-			addressLine1: '',
+			addressLine1: '123',
 			addressLine2: '',
-			city: '',
+			city: 'Test',
 			countryState: '',
-			postCode: '',
+			postCode: '123',
 			isClient: false,
 		};
 
 		this.onContinue = this.onContinue.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
+	}
+
+	deriveCurrencySettings( countryState ) {
+		if ( ! countryState ) {
+			return null;
+		}
+
+		let region = getCountryCode( countryState );
+		const euCountries = without(
+			getSetting( 'onboarding', { euCountries: [] } ).euCountries,
+			'GB'
+		);
+		if ( euCountries.includes( region ) ) {
+			region = 'EU';
+		}
+
+		// See https://github.com/woocommerce/woocommerce-admin/issues/3101.
+		const currencyData = {
+			US: {
+				code: 'USD',
+				position: 'left',
+				grouping: ',',
+				decimal: '.',
+				precision: 2,
+			},
+			EU: {
+				code: 'EUR',
+				position: 'left',
+				grouping: '.',
+				decimal: ',',
+				precision: 2,
+			},
+			IN: {
+				code: 'INR',
+				position: 'left',
+				grouping: ',',
+				decimal: '.',
+				precision: 2,
+			},
+			GB: {
+				code: 'GBP',
+				position: 'left',
+				grouping: ',',
+				decimal: '.',
+				precision: 2,
+			},
+			BR: {
+				code: 'BRL',
+				position: 'left',
+				grouping: '.',
+				decimal: ',',
+				precision: 2,
+			},
+			VN: {
+				code: 'VND',
+				position: 'right',
+				grouping: '.',
+				decimal: ',',
+				precision: 1,
+			},
+			ID: {
+				code: 'IDR',
+				position: 'left',
+				grouping: '.',
+				decimal: ',',
+				precision: 0,
+			},
+			BD: {
+				code: 'BDT',
+				position: 'left',
+				grouping: ',',
+				decimal: '.',
+				precision: 0,
+			},
+			PK: {
+				code: 'PKR',
+				position: 'left',
+				grouping: ',',
+				decimal: '.',
+				precision: 2,
+			},
+			RU: {
+				code: 'RUB',
+				position: 'right',
+				grouping: ' ',
+				decimal: ',',
+				precision: 2,
+			},
+			TR: {
+				code: 'TRY',
+				position: 'left',
+				grouping: '.',
+				decimal: ',',
+				precision: 2,
+			},
+			MX: {
+				code: 'MXN',
+				position: 'left',
+				grouping: ',',
+				decimal: '.',
+				precision: 2,
+			},
+			CA: {
+				code: 'CAD',
+				position: 'left',
+				grouping: ',',
+				decimal: '.',
+				precision: 2,
+			},
+		};
+
+		return currencyData[ region ] || currencyData.US;
 	}
 
 	onSubmit( values ) {
@@ -63,10 +177,15 @@ class StoreDetails extends Component {
 			isProfileItemsError,
 		} = this.props;
 
+		const currencySettings = this.deriveCurrencySettings( values.countryState );
+
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
+			derived_currency: currencySettings.code,
 			setup_client: values.isClient,
 		} );
+
+		// @todo Set settings.
 
 		await updateSettings( {
 			general: {
