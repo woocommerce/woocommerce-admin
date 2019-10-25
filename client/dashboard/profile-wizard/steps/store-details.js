@@ -13,7 +13,7 @@ import { without } from 'lodash';
 /**
  * Internal depdencies
  */
-import { getCountryCode } from 'dashboard/utils';
+import { getCountryCode, getCurrencyData } from 'dashboard/utils';
 import { H, Card, Form } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import {
@@ -32,11 +32,11 @@ class StoreDetails extends Component {
 		};
 
 		this.initialValues = {
-			addressLine1: '123',
+			addressLine1: '',
 			addressLine2: '',
-			city: 'Test',
+			city: '',
 			countryState: '',
-			postCode: '123',
+			postCode: '',
 			isClient: false,
 		};
 
@@ -58,101 +58,7 @@ class StoreDetails extends Component {
 			region = 'EU';
 		}
 
-		// See https://github.com/woocommerce/woocommerce-admin/issues/3101.
-		const currencyData = {
-			US: {
-				code: 'USD',
-				position: 'left',
-				grouping: ',',
-				decimal: '.',
-				precision: 2,
-			},
-			EU: {
-				code: 'EUR',
-				position: 'left',
-				grouping: '.',
-				decimal: ',',
-				precision: 2,
-			},
-			IN: {
-				code: 'INR',
-				position: 'left',
-				grouping: ',',
-				decimal: '.',
-				precision: 2,
-			},
-			GB: {
-				code: 'GBP',
-				position: 'left',
-				grouping: ',',
-				decimal: '.',
-				precision: 2,
-			},
-			BR: {
-				code: 'BRL',
-				position: 'left',
-				grouping: '.',
-				decimal: ',',
-				precision: 2,
-			},
-			VN: {
-				code: 'VND',
-				position: 'right',
-				grouping: '.',
-				decimal: ',',
-				precision: 1,
-			},
-			ID: {
-				code: 'IDR',
-				position: 'left',
-				grouping: '.',
-				decimal: ',',
-				precision: 0,
-			},
-			BD: {
-				code: 'BDT',
-				position: 'left',
-				grouping: ',',
-				decimal: '.',
-				precision: 0,
-			},
-			PK: {
-				code: 'PKR',
-				position: 'left',
-				grouping: ',',
-				decimal: '.',
-				precision: 2,
-			},
-			RU: {
-				code: 'RUB',
-				position: 'right',
-				grouping: ' ',
-				decimal: ',',
-				precision: 2,
-			},
-			TR: {
-				code: 'TRY',
-				position: 'left',
-				grouping: '.',
-				decimal: ',',
-				precision: 2,
-			},
-			MX: {
-				code: 'MXN',
-				position: 'left',
-				grouping: ',',
-				decimal: '.',
-				precision: 2,
-			},
-			CA: {
-				code: 'CAD',
-				position: 'left',
-				grouping: ',',
-				decimal: '.',
-				precision: 2,
-			},
-		};
-
+		const currencyData = getCurrencyData();
 		return currencyData[ region ] || currencyData.US;
 	}
 
@@ -185,8 +91,6 @@ class StoreDetails extends Component {
 			setup_client: values.isClient,
 		} );
 
-		// @todo Set settings.
-
 		await updateSettings( {
 			general: {
 				woocommerce_store_address: values.addressLine1,
@@ -194,6 +98,11 @@ class StoreDetails extends Component {
 				woocommerce_default_country: values.countryState,
 				woocommerce_store_city: values.city,
 				woocommerce_store_postcode: values.postCode,
+				woocommerce_currency: currencySettings.code,
+				woocommerce_currency_pos: currencySettings.position,
+				woocommerce_price_thousand_sep: currencySettings.grouping,
+				woocommerce_price_decimal_sep: currencySettings.decimal,
+				woocommerce_price_num_decimals: currencySettings.precision,
 			},
 		} );
 
