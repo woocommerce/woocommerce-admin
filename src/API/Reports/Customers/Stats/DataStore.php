@@ -109,9 +109,9 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 
 			$this->clear_sql_clause( array( 'order_by', 'limit' ) );
 			$this->add_sql_clause( 'select', $selections );
-			$this->add_sql_clause( 'from', "({$this->subquery->get_statement()}) AS tt" );
+			$this->add_sql_clause( 'from', "({$this->subquery->get_query_statement()}) AS tt" );
 			$report_data = $wpdb->get_results(
-				$this->get_statement(),
+				$this->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 

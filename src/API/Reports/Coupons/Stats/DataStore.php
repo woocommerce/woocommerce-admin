@@ -157,7 +157,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 			$this->update_sql_query_params( $query_args, $totals_query, $intervals_query );
 
 			$db_intervals = $wpdb->get_col(
-				$this->interval_query->get_statement()
+				$this->interval_query->get_query_statement()
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 			$db_interval_count       = count( $db_intervals );
@@ -169,7 +169,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 
 			$this->total_query->add_sql_clause( 'select', $selections );
 			$totals = $wpdb->get_results(
-				$this->total_query->get_statement(),
+				$this->total_query->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -190,7 +190,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 			}
 
 			$intervals = $wpdb->get_results(
-				$this->interval_query->get_statement(),
+				$this->interval_query->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 

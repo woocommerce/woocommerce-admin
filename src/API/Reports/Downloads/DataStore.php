@@ -311,7 +311,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 			$db_records_count = (int) $wpdb->get_var(
 				"SELECT COUNT(*) FROM (
-					{$this->subquery->get_statement()}
+					{$this->subquery->get_query_statement()}
 				) AS tt"
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -327,7 +327,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->subquery->add_sql_clause( 'limit', $this->get_sql_clause( 'limit' ) );
 
 			$download_data = $wpdb->get_results(
-				$this->subquery->get_statement(),
+				$this->subquery->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 

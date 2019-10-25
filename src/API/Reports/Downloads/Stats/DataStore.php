@@ -95,7 +95,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 			$this->interval_query->str_replace_clause( 'where_time', 'date_created', 'timestamp' );
 
 			$db_intervals = $wpdb->get_col(
-				$this->interval_query->get_statement()
+				$this->interval_query->get_query_statement()
 			); // WPCS: cache ok, DB call ok, , unprepared SQL ok.
 
 			$db_records_count = count( $db_intervals );
@@ -113,7 +113,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 			$this->total_query->add_sql_clause( 'select', $selections );
 			$this->total_query->add_sql_clause( 'where', $this->interval_query->get_sql_clause( 'where' ) );
 			$totals = $wpdb->get_results(
-				$this->total_query->get_statement(),
+				$this->total_query->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -129,7 +129,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 			}
 
 			$intervals = $wpdb->get_results(
-				$this->interval_query->get_statement(),
+				$this->interval_query->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 

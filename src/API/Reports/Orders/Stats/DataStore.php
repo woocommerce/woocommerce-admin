@@ -259,7 +259,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->total_query->add_sql_clause( 'left_join', $coupon_join );
 			$this->total_query->add_sql_clause( 'where_time', $where_time );
 			$totals = $wpdb->get_results(
-				$this->total_query->get_statement(),
+				$this->total_query->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 			if ( null === $totals ) {
@@ -290,7 +290,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->interval_query->add_sql_clause( 'left_join', $coupon_join );
 			$this->interval_query->add_sql_clause( 'where_time', $where_time );
 			$db_intervals = $wpdb->get_col(
-				$this->interval_query->get_statement()
+				$this->interval_query->get_query_statement()
 			); // WPCS: cache ok, DB call ok, , unprepared SQL ok.
 
 			$db_interval_count       = count( $db_intervals );
@@ -309,7 +309,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->interval_query->add_sql_clause( 'select', ', ' . $selections );
 			}
 			$intervals = $wpdb->get_results(
-				$this->interval_query->get_statement(),
+				$this->interval_query->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 

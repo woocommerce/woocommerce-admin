@@ -258,7 +258,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 				$this->add_sql_clause( 'select', $this->format_join_selections( $fields, array( 'coupon_id' ) ) );
 				$this->add_sql_clause( 'from', '(' );
-				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
+				$this->add_sql_clause( 'from', $this->subquery->get_query_statement() );
 				$this->add_sql_clause( 'from', ") AS {$table_name}" );
 				$this->add_sql_clause(
 					'right_join',
@@ -266,17 +266,17 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 					ON default_results.coupon_id = {$table_name}.coupon_id"
 				);
 
-				$coupons_query = $this->get_statement();
+				$coupons_query = $this->get_query_statement();
 			} else {
 				$this->subquery->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
-				$coupons_query = $this->subquery->get_statement();
+				$coupons_query = $this->subquery->get_query_statement();
 
 				$this->subquery->clear_sql_clause( array( 'select', 'order_by' ) );
 				$this->subquery->add_sql_clause( 'select', 'coupon_id' );
 
 				$db_records_count = (int) $wpdb->get_var(
 					"SELECT COUNT(*) FROM (
-								{$this->subquery->get_statement()}
+								{$this->subquery->get_query_statement()}
 								) AS tt"
 				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 

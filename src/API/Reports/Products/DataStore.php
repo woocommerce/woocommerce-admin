@@ -321,7 +321,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->subquery->add_sql_clause( 'select', $selections );
 				$this->add_sql_clause( 'select', $join_selections );
 				$this->add_sql_clause( 'from', '(' );
-				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
+				$this->add_sql_clause( 'from', $this->subquery->get_query_statement() );
 				$this->add_sql_clause( 'from', ") AS {$table_name}" );
 				$this->add_sql_clause(
 					'right_join',
@@ -329,11 +329,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 					ON default_results.product_id = {$table_name}.product_id"
 				);
 
-				$products_query = $this->get_statement();
+				$products_query = $this->get_query_statement();
 			} else {
 				$db_records_count = (int) $wpdb->get_var(
 					"SELECT COUNT(*) FROM (
-						{$this->subquery->get_statement()}
+						{$this->subquery->get_query_statement()}
 					) AS tt"
 				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -348,7 +348,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->subquery->add_sql_clause( 'select', $selections );
 				$this->subquery->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
 				$this->subquery->add_sql_clause( 'limit', $this->get_sql_clause( 'limit' ) );
-				$products_query = $this->subquery->get_statement();
+				$products_query = $this->subquery->get_query_statement();
 			}
 
 			$product_data = $wpdb->get_results(

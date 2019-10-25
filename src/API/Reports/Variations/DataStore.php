@@ -288,7 +288,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 				$this->add_sql_clause( 'select', $join_selections );
 				$this->add_sql_clause( 'from', '(' );
-				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
+				$this->add_sql_clause( 'from', $this->subquery->get_query_statement() );
 				$this->add_sql_clause( 'from', ") AS {$table_name}" );
 				$this->add_sql_clause(
 					'right_join',
@@ -296,11 +296,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 					ON default_results.variation_id = {$table_name}.variation_id"
 				);
 
-				$variations_query = $this->get_statement();
+				$variations_query = $this->get_query_statement();
 			} else {
 				$db_records_count = (int) $wpdb->get_var(
 					"SELECT COUNT(*) FROM (
-						{$this->subquery->get_statement()}
+						{$this->subquery->get_query_statement()}
 					) AS tt"
 				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -314,7 +314,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->subquery->clear_sql_clause( 'select' );
 				$this->subquery->add_sql_clause( 'select', $this->selected_columns( $query_args ) );
 				$this->subquery->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
-				$variations_query = $this->subquery->get_statement();
+				$variations_query = $this->subquery->get_query_statement();
 			}
 
 			$product_data = $wpdb->get_results(

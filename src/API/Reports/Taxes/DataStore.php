@@ -193,7 +193,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->subquery->add_sql_clause( 'select', $this->selected_columns( array( 'fields' => $inner_selections ) ) );
 				$this->add_sql_clause( 'select', $join_selections );
 				$this->add_sql_clause( 'from', '(' );
-				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
+				$this->add_sql_clause( 'from', $this->subquery->get_query_statement() );
 				$this->add_sql_clause( 'from', ") AS {$table_name}" );
 				$this->add_sql_clause(
 					'right_join',
@@ -201,11 +201,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 					ON default_results.tax_rate_id = {$table_name}.tax_rate_id"
 				);
 
-				$taxes_query = $this->get_statement();
+				$taxes_query = $this->get_query_statement();
 			} else {
 				$db_records_count = (int) $wpdb->get_var(
 					"SELECT COUNT(*) FROM (
-						{$this->subquery->get_statement()}
+						{$this->subquery->get_query_statement()}
 					) AS tt"
 				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -219,7 +219,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->subquery->clear_sql_clause( 'select' );
 				$this->subquery->add_sql_clause( 'select', $this->selected_columns( $query_args ) );
 				$this->subquery->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
-				$taxes_query = $this->subquery->get_statement();
+				$taxes_query = $this->subquery->get_query_statement();
 			}
 
 			$tax_data = $wpdb->get_results(

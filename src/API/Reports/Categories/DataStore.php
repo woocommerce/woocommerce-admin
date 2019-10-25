@@ -252,7 +252,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 				$this->add_sql_clause( 'select', $this->format_join_selections( array_merge( array( 'category_id' ), $fields ), array( 'category_id' ) ) );
 				$this->add_sql_clause( 'from', '(' );
-				$this->add_sql_clause( 'from', $this->subquery->get_statement() );
+				$this->add_sql_clause( 'from', $this->subquery->get_query_statement() );
 				$this->add_sql_clause( 'from', ") AS {$table_name}" );
 				$this->add_sql_clause(
 					'right_join',
@@ -260,10 +260,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 					ON default_results.category_id = {$table_name}.category_id"
 				);
 
-				$categories_query = $this->get_statement();
+				$categories_query = $this->get_query_statement();
 			} else {
 				$this->subquery->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
-				$categories_query = $this->subquery->get_statement();
+				$categories_query = $this->subquery->get_query_statement();
 			}
 
 			$categories_data = $wpdb->get_results(

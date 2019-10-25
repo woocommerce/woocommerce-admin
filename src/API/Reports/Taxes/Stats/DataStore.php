@@ -189,7 +189,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->interval_query->add_sql_clause( 'join', $order_stats_join );
 
 			$db_intervals            = $wpdb->get_col(
-				$this->interval_query->get_statement()
+				$this->interval_query->get_query_statement()
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 			$db_interval_count       = count( $db_intervals );
 			$expected_interval_count = TimeInterval::intervals_between( $query_args['after'], $query_args['before'], $query_args['interval'] );
@@ -203,7 +203,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->total_query->add_sql_clause( 'where_time', $this->get_sql_clause( 'where_time' ) );
 
 			$totals = $wpdb->get_results(
-				$this->total_query->get_statement(),
+				$this->total_query->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -237,7 +237,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->interval_query->add_sql_clause( 'limit', $this->get_sql_clause( 'limit' ) );
 
 			$intervals = $wpdb->get_results(
-				$this->interval_query->get_statement(),
+				$this->interval_query->get_query_statement(),
 				ARRAY_A
 			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 

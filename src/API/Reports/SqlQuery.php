@@ -156,7 +156,7 @@ class SqlQuery {
 	 *
 	 * @return string
 	 */
-	public function get_statement() {
+	public function get_query_statement() {
 		$join     = $this->get_sql_clause( 'join', 'filtered' );
 		$where    = $this->get_sql_clause( 'where', 'filtered' );
 		$group_by = $this->get_sql_clause( 'group_by', 'filtered' );
