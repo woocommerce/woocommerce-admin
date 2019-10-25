@@ -110,6 +110,7 @@ class Control extends Component {
 
 		return (
 			<input
+				autoComplete="off"
 				className="woocommerce-select-control__control-input"
 				id={ `woocommerce-select-control-${ instanceId }__control-input` }
 				ref={ this.input }
