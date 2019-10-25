@@ -94,6 +94,7 @@ export function StoreAddress( props ) {
 			/>
 
 			<SelectControl
+				autofill="country_state"
 				label={ __( 'Country / State', 'woocommerce-admin' ) }
 				required
 				options={ countryStateOptions }
