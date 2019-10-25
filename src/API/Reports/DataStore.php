@@ -704,9 +704,10 @@ class DataStore extends SqlQuery {
 	 * @return array
 	 */
 	protected function get_limit_params( $query_args = array() ) {
-		$this->limit_parameters['per_page'] = get_option( 'posts_per_page' );
 		if ( isset( $query_args['per_page'] ) && is_numeric( $query_args['per_page'] ) ) {
 			$this->limit_parameters['per_page'] = (int) $query_args['per_page'];
+		} else {
+			$this->limit_parameters['per_page'] = get_option( 'posts_per_page' );
 		}
 
 		$this->limit_parameters['offset'] = 0;
