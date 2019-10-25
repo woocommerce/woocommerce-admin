@@ -389,12 +389,7 @@ class Onboarding {
 	 * @return array
 	 */
 	private static function get_stripe_supported_countries() {
-		$wc_countries = WC()->countries;
-		if ( method_exists( $wc_countries, 'get_stripe_supported_countries' ) ) {
-			return $wc_countries->get_stripe_supported_countries();
-		}
-
-		// @todo Remove this fallback once we are targeting a version of WooCommerce with the above method. https://github.com/woocommerce/woocommerce/pull/24897.
+		// https://stripe.com/global.
 		return array(
 			'AU', 'AT', 'BE', 'CA', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HK', 'IE', 'IT', 'JP', 'LV', 'LT', 'LU', 'MY', 'NL', 'NZ', 'NO',
 			'PL', 'PT', 'SG', 'SK', 'SI', 'ES', 'SE', 'CH', 'GB', 'US',
