@@ -112,7 +112,7 @@ class Onboarding {
 			array(
 				'fashion-apparel-accessories' => __( 'Fashion, apparel & accessories', 'woocommerce-admin' ),
 				'health-beauty'               => __( 'Health & beauty', 'woocommerce-admin' ),
-				'art-music-photography'       => __( 'Art, music, & photography', 'woocommerce-admin' ),
+				'art-music-photography'       => __( 'Art, music & photography', 'woocommerce-admin' ),
 				'electronics-computers'       => __( 'Electronics & computers', 'woocommerce-admin' ),
 				'food-drink'                  => __( 'Food & drink', 'woocommerce-admin' ),
 				'home-furniture-garden'       => __( 'Home, furniture & garden', 'woocommerce-admin' ),
