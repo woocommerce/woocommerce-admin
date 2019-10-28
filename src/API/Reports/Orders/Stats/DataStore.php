@@ -265,6 +265,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			if ( null === $totals ) {
 				return new WP_Error( 'woocommerce_reports_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'woocommerce-admin' ) );
 			}
+
+			// @todo remove these assignements when refactoring segmenter classes to use query objects.
 			$totals_query    = array(
 				'from_clause'       => $this->total_query->get_sql_clause( 'join' ),
 				'where_time_clause' => $where_time,
