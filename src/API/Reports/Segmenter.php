@@ -415,7 +415,8 @@ class Segmenter {
 			if ( isset( $this->query_args['coupons'] ) ) {
 				$args['include'] = $this->query_args['coupons'];
 			}
-			$coupons        = CouponsDataStore::get_coupons( $args );
+			$coupons_store  = new CouponsDataStore();
+			$coupons        = $coupons_store->get_coupons( $args );
 			$segments       = wp_list_pluck( $coupons, 'ID' );
 			$segment_labels = wp_list_pluck( $coupons, 'post_title', 'ID' );
 			$segment_labels = array_map( 'wc_format_coupon_code', $segment_labels );

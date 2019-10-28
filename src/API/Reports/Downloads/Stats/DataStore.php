@@ -107,8 +107,7 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 				return array();
 			}
 
-			$intervals = array();
-			$this->update_intervals_sql_params( $intervals, $query_args, $db_records_count, $expected_interval_count, $table_name );
+			$this->update_intervals_sql_params( $query_args, $db_records_count, $expected_interval_count, $table_name );
 			$this->interval_query->str_replace_clause( 'where_time', 'date_created', 'timestamp' );
 			$this->total_query->add_sql_clause( 'select', $selections );
 			$this->total_query->add_sql_clause( 'where', $this->interval_query->get_sql_clause( 'where' ) );

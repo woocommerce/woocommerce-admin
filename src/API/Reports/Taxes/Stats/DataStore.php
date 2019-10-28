@@ -226,7 +226,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$segmenter             = new Segmenter( $query_args, $this->report_columns );
 			$totals[0]['segments'] = $segmenter->get_totals_segments( $totals_query, $table_name );
 
-			$this->update_intervals_sql_params( $intervals_query, $query_args, $db_interval_count, $expected_interval_count, $table_name );
+			$this->update_intervals_sql_params( $query_args, $db_interval_count, $expected_interval_count, $table_name );
 
 			if ( '' !== $selections ) {
 				$this->interval_query->add_sql_clause( 'select', ', ' . $selections );

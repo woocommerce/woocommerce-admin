@@ -151,7 +151,7 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 			}
 
 			$intervals = array();
-			$this->update_intervals_sql_params( $intervals, $query_args, $db_interval_count, $expected_interval_count, $table_name );
+			$this->update_intervals_sql_params( $query_args, $db_interval_count, $expected_interval_count, $table_name );
 			$this->total_query->add_sql_clause( 'select', $selections );
 			$this->total_query->add_sql_clause( 'where_time', $this->get_sql_clause( 'where_time' ) );
 
@@ -171,6 +171,7 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 				'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
 				'where_time_clause' => $this->interval_query->get_sql_clause( 'where_time' ),
 				'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
+				'order_by'          => $this->get_sql_clause( 'order_by' ),
 				'limit'             => $this->get_sql_clause( 'limit' ),
 			);
 			$segmenter             = new Segmenter( $query_args, $this->report_columns );

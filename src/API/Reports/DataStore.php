@@ -380,13 +380,12 @@ class DataStore extends SqlQuery {
 	 * If there are less records in the database than time intervals, then we need to remap offset in SQL query
 	 * to fetch correct records.
 	 *
-	 * @param array  $intervals_query Array with clauses for the Intervals SQL query.
 	 * @param array  $query_args Query arguments.
 	 * @param int    $db_interval_count Database interval count.
 	 * @param int    $expected_interval_count Expected interval count on the output.
 	 * @param string $table_name Name of the db table relevant for the date constraint.
 	 */
-	protected function update_intervals_sql_params( &$intervals_query, &$query_args, $db_interval_count, $expected_interval_count, $table_name ) {
+	protected function update_intervals_sql_params( &$query_args, $db_interval_count, $expected_interval_count, $table_name ) {
 		if ( $db_interval_count === $expected_interval_count ) {
 			return;
 		}

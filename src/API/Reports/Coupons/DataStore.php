@@ -426,11 +426,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @param array $args Array of args to filter the query by. Supports `include`.
 	 * @return array Array of results.
 	 */
-	public static function get_coupons( $args ) {
+	public function get_coupons( $args ) {
 		global $wpdb;
 		$query = "SELECT ID, post_title FROM {$wpdb->posts} WHERE post_type='shop_coupon'";
 
-		$included_coupons = self::get_included_coupons( $args, 'include' );
+		$included_coupons = $this->get_included_coupons( $args, 'include' );
 		if ( ! empty( $included_coupons ) ) {
 			$query .= " AND ID IN ({$included_coupons})";
 		}

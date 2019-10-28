@@ -177,12 +177,24 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 				return $data;
 			}
 
+			$totals_query    = array(
+				'from_clause'       => $this->total_query->get_sql_clause( 'join' ),
+				'where_time_clause' => $this->total_query->get_sql_clause( 'where_time' ),
+				'where_clause'      => $this->total_query->get_sql_clause( 'where' ),
+			);
+			$intervals_query = array(
+				'select_clause'     => $this->get_sql_clause( 'select' ),
+				'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
+				'where_time_clause' => $this->interval_query->get_sql_clause( 'where_time' ),
+				'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
+				'limit'             => $this->get_sql_clause( 'limit' ),
+			);
 			$segmenter             = new Segmenter( $query_args, $this->report_columns );
 			$totals[0]['segments'] = $segmenter->get_totals_segments( $totals_query, $table_name );
 			$totals                = (object) $this->cast_numbers( $totals[0] );
 
 			// Intervals.
-			$this->update_intervals_sql_params( $intervals_query, $query_args, $db_interval_count, $expected_interval_count, $table_name );
+			$this->update_intervals_sql_params( $query_args, $db_interval_count, $expected_interval_count, $table_name );
 			$this->interval_query->add_sql_clause( 'select', ", MAX({$table_name}.date_created) AS datetime_anchor" );
 
 			if ( '' !== $selections ) {
