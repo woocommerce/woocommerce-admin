@@ -54,24 +54,17 @@ class WC_Admin_Notes_Tracking_Opt_In {
 			return;
 		}
 		
-		/* translators: 1: link to WooCommerce.com settings, 2: link to WooCommerce.com tracking documentation. */
+		/* translators: 1: open link to WooCommerce.com settings, 2: open link to WooCommerce.com tracking documentation, 3: close link tag. */
 		$content_format = __(
-			'Gathering usage data allows us to improve WooCommerce. Your store will be considered as we evaluate new features, judge the quality of an update, or determine if an improvement makes sense. You can always visit the <a href="%1$s" target="_blank">Settings</a> and choose to stop sharing data. <a href="%2$s" target="_blank">Read more</a> about what data we collect.',
+			'Gathering usage data allows us to improve WooCommerce. Your store will be considered as we evaluate new features, judge the quality of an update, or determine if an improvement makes sense. You can always visit the %1$sSettings%3$s and choose to stop sharing data. %2$sRead more%3$s about what data we collect.',
 			'woocommerce-admin'
 		);
 
 		$note_content = sprintf(
-			wp_kses(
-				$content_format,
-				array(
-					'a' => array(
-						'href'   => true,
-						'target' => true,
-					),
-				)
-			),
-			admin_url( 'admin.php?page=wc-settings&tab=advanced&section=woocommerce_com' ),
-			'https://woocommerce.com/usage-tracking'
+			$content_format,
+			'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=advanced&section=woocommerce_com' ) ) . '" target="_blank">',
+			'<a href="https://woocommerce.com/usage-tracking" target="_blank">',
+			'</a>'
 		);
 
 		$note = new WC_Admin_Note();
