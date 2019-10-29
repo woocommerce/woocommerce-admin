@@ -21,14 +21,6 @@ import ProfileWizard from './profile-wizard';
 import withSelect from 'wc-api/with-select';
 
 class Dashboard extends Component {
-	constructor() {
-		super( ...arguments );
-
-		this.state = {
-			isRedirecting: false,
-		};
-	}
-
 	componentDidUpdate( prevProps ) {
 		const profileItems = get( this.props, 'profileItems', {} );
 		const prevProfileItems = get( prevProps, 'profileItems', {} );
@@ -69,7 +61,7 @@ class Dashboard extends Component {
 			return;
 		}
 
-		this.setState( { isRedirecting: true } );
+		document.body.classList.add( 'woocommerce-admin-is-loading' );
 
 		const url = addQueryArgs( 'https://woocommerce.com/cart', {
 			'wccom-back': window.location.href,
@@ -80,11 +72,6 @@ class Dashboard extends Component {
 
 	render() {
 		const { path, profileItems, query } = this.props;
-		const { isRedirecting } = this.state;
-
-		if ( isRedirecting ) {
-			return null;
-		}
 
 		if ( window.wcAdminFeatures.onboarding && ! profileItems.completed ) {
 			return <ProfileWizard query={ query } />;
