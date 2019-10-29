@@ -16,6 +16,7 @@ import {
 	getAllowedIntervalsForQuery,
 	getCurrentDates,
 	getDateFormatsForInterval,
+	getDateParamsFromQuery,
 	getIntervalForQuery,
 	getChartTypeForQuery,
 	getPreviousDate,
@@ -74,6 +75,7 @@ export class ReportChart extends Component {
 	getTimeChartData() {
 		const { query, primaryData, secondaryData, selectedChart } = this.props;
 		const currentInterval = getIntervalForQuery( query );
+		const { period } = getDateParamsFromQuery( query );
 		const { primary, secondary } = getCurrentDates( query );
 
 		const chartData = primaryData.data.intervals.map( function( interval, index ) {
@@ -82,7 +84,8 @@ export class ReportChart extends Component {
 				primary.after,
 				secondary.after,
 				query.compare,
-				currentInterval
+				currentInterval,
+				period
 			);
 
 			const secondaryInterval = secondaryData.data.intervals[ index ];

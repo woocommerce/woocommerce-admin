@@ -156,9 +156,7 @@ export function getLastPeriod( period, compare ) {
 			'week' === period
 				? primaryStart
 						.clone()
-						.subtract( 1, 'years' )
-						.week( primaryStart.week() )
-						.startOf( 'week' )
+						.subtract( 364, 'days' )
 				: primaryStart.clone().subtract( 1, 'years' );
 		secondaryEnd = secondaryStart.clone().endOf( period );
 	}
@@ -193,9 +191,7 @@ export function getCurrentPeriod( period, compare ) {
 			'week' === period
 				? primaryStart
 						.clone()
-						.subtract( 1, 'years' )
-						.week( primaryStart.week() )
-						.startOf( 'week' )
+						.subtract( 364, 'days' )
 				: primaryStart.clone().subtract( 1, 'years' );
 		secondaryEnd = secondaryStart.clone().add( daysSoFar, 'days' );
 	}
@@ -348,12 +344,16 @@ export const getDateDifferenceInDays = ( date, date2 ) => {
  * @param {String|Moment.moment} date2 - secondary start
  * @param {String} compare - `previous_period`  or `previous_year`
  * @param {String} interval - interval
+ * @param {string} period - period value, ie `week`
  * @return {Moment.moment}  - Calculated date
  */
-export const getPreviousDate = ( date, date1, date2, compare, interval ) => {
+export const getPreviousDate = ( date, date1, date2, compare, interval, period ) => {
 	const dateMoment = moment( date );
 
 	if ( 'previous_year' === compare ) {
+		if ( 'week' === period ) {
+			return dateMoment.clone().subtract( 364, 'days' );
+		}
 		return dateMoment.clone().subtract( 1, 'years' );
 	}
 
