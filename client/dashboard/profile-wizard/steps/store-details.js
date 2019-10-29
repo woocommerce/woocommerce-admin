@@ -13,8 +13,9 @@ import { without } from 'lodash';
 /**
  * Internal depdencies
  */
-import { getCountryCode, getCurrencyData } from 'dashboard/utils';
+import { getCountryCode } from 'dashboard/utils';
 import { H, Card, Form } from '@woocommerce/components';
+import { getCurrencyData } from '@woocommerce/currency';
 import withSelect from 'wc-api/with-select';
 import {
 	StoreAddress,
