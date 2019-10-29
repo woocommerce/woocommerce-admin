@@ -32,13 +32,17 @@ class Dashboard extends Component {
 	}
 
 	getProductIds() {
+		const productIds = [];
 		const profileItems = get( this.props, 'profileItems', {} );
 
-		const productIds = profileItems.product_types.map(
-			type =>
-				wcSettings.onboarding.productTypes[ type ] &&
-				wcSettings.onboarding.productTypes[ type ].product
-		);
+		profileItems.product_types.forEach( product_type => {
+			if (
+				wcSettings.onboarding.productTypes[ product_type ] &&
+				wcSettings.onboarding.productTypes[ product_type ].product
+			) {
+				productIds.push( wcSettings.onboarding.productTypes[ product_type ].product );
+			}
+		} );
 
 		const theme = wcSettings.onboarding.themes.find(
 			themeData => themeData.slug === profileItems.theme
