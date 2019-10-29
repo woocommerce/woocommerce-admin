@@ -97,7 +97,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->get_time_period_sql_params( $query_args, $order_coupon_lookup_table );
 		$this->get_limit_sql_params( $query_args );
 
-		$included_coupons = self::get_included_coupons( $query_args );
+		$included_coupons = $this->get_included_coupons( $query_args, 'coupons' );
 		if ( $included_coupons ) {
 			$this->subquery->add_sql_clause( 'where', "AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})" );
 

@@ -80,7 +80,7 @@ class DataStore extends CouponsDataStore implements DataStoreInterface {
 
 		$order_coupon_lookup_table = self::get_db_table_name();
 
-		$included_coupons = $this->get_included_coupons( $query_args );
+		$included_coupons = $this->get_included_coupons( $query_args, 'coupons' );
 		if ( $included_coupons ) {
 			$clauses['where'] .= " AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})";
 		}
