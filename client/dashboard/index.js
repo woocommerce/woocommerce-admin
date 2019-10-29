@@ -8,6 +8,11 @@ import { compose } from '@wordpress/compose';
 import { get } from 'lodash';
 
 /**
+ * WooCommerce dependencies
+ */
+import { updateQueryString } from '@woocommerce/navigation';
+
+/**
  * Internal dependencies
  */
 import './style.scss';
@@ -29,6 +34,7 @@ class Dashboard extends Component {
 		const prevProfileItems = get( prevProps, 'profileItems', {} );
 
 		if ( profileItems.completed && ! prevProfileItems.completed ) {
+			updateQueryString( {}, '/', {} );
 			this.redirectToCart();
 		}
 	}
