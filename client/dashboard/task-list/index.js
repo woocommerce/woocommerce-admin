@@ -38,6 +38,15 @@ class TaskDashboard extends Component {
 		}
 	}
 
+	componentDidUpdate( prevProps ) {
+		const { task: prevTask } = prevProps.query;
+		const { task } = this.props.query;
+
+		if ( prevTask !== task ) {
+			window.document.documentElement.scrollTop = 0;
+		}
+	}
+
 	componentWillUnmount() {
 		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-task-dashboard__body' );
