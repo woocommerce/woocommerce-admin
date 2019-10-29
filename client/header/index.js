@@ -19,7 +19,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import './style.scss';
-import ActivityPanel from './activity-panel';
+import ActivityPanel from './activity-panel/slotfill';
 import { recordEvent } from 'lib/tracks';
 
 class Header extends Component {
