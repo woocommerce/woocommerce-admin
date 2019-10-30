@@ -275,7 +275,11 @@ class ActivityPanel extends Component {
 					/>
 					<div className={ panelClasses }>
 						<SlotFillProvider>
-							<Tabs currentTab={ currentTab } handleClick={ this.togglePanel } />
+							<Tabs
+								currentTab={ currentTab }
+								handleClick={ this.togglePanel }
+								isPanelOpen={ isPanelOpen }
+							/>
 							<Panel
 								currentTab={ currentTab }
 								isOpen={ isPanelOpen }

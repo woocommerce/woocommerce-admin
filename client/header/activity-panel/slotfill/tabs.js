@@ -18,13 +18,15 @@ class Tabs extends Component {
 		return (
 			<Fill>
 				{ fillProps => {
-					const { currentTab, handleClick } = fillProps;
+					const { currentTab, handleClick, isPanelOpen } = fillProps;
 					const selected = name === currentTab;
 					const className = classnames( 'woocommerce-layout__activity-panel-tab', {
 						'is-active': selected,
 						'has-unread': unread,
 					} );
-					const tabIndex = -1;
+
+					// Only make this item tabbable if it is the currently selected item, or the panel is closed.
+					const tabIndex = selected || ! isPanelOpen ? null : -1;
 
 					return (
 						<IconButton
@@ -52,7 +54,7 @@ class Tabs extends Component {
 	};
 
 	render() {
-		const { currentTab, handleClick } = this.props;
+		const { currentTab, handleClick, isPanelOpen } = this.props;
 
 		return (
 			<NavigableMenu
@@ -60,7 +62,7 @@ class Tabs extends Component {
 				orientation="horizontal"
 				className="woocommerce-layout__activity-panel-tabs"
 			>
-				<Slot fillProps={ { currentTab, handleClick } } />
+				<Slot fillProps={ { currentTab, handleClick, isPanelOpen } } />
 			</NavigableMenu>
 		);
 	}
