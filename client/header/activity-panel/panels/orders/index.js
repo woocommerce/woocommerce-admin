@@ -11,8 +11,9 @@ import { Component, Fragment } from '@wordpress/element';
  */
 import withSelect from 'wc-api/with-select';
 import { getUnreadOrders } from '../../unread-indicators';
-import Tabs from '../tabs';
-import Panel from '../panel';
+import Tabs from '../../slotfill/tabs';
+import Panel from '../../slotfill/panel';
+import OrdersPanelContent from './panel-content';
 
 class Orders extends Component {
 	render() {
@@ -27,7 +28,7 @@ class Orders extends Component {
 					unread={ hasUnreadOrders }
 				/>
 				<Panel.Content name="orders" title={ __( 'Orders', 'woocommerce-admin' ) }>
-					Test orders panel content
+					{ () => <OrdersPanelContent hasActionableOrders={ hasUnreadOrders } /> }
 				</Panel.Content>
 			</Fragment>
 		);

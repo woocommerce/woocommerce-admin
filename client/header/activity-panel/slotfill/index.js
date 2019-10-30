@@ -18,14 +18,13 @@ import '../style.scss';
 import ActivityPanelToggleBubble from '../toggle-bubble';
 import { H, Section } from '@woocommerce/components';
 import Inbox from '../panels/inbox';
-import OrdersPanel from '../panels/orders';
+import Orders from '../panels/orders';
 import StockPanel from '../panels/stock';
 import { recordEvent } from 'lib/tracks';
 import Reviews from '../panels/reviews';
 import WordPressNotices from '../wordpress-notices';
 import Tabs from './tabs';
 import Panel from './panel';
-import Orders from './panels/orders';
 import Stock from './panels/stock';
 
 const manageStock = getSetting( 'manageStock', 'no' );

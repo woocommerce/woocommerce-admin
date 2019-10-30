@@ -22,13 +22,13 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
-import ActivityHeader from '../activity-header';
-import ActivityOutboundLink from '../activity-outbound-link';
+import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
+import ActivityHeader from '../../activity-header';
+import ActivityOutboundLink from '../../activity-outbound-link';
 import { DEFAULT_ACTIONABLE_STATUSES, QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 
-class OrdersPanel extends Component {
+class OrdersPanelContent extends Component {
 	renderEmptyCard() {
 		const { hasNonActionableOrders } = this.props;
 		if ( hasNonActionableOrders ) {
@@ -243,13 +243,13 @@ class OrdersPanel extends Component {
 	}
 }
 
-OrdersPanel.propTypes = {
+OrdersPanelContent.propTypes = {
 	orders: PropTypes.array.isRequired,
 	isError: PropTypes.bool,
 	isRequesting: PropTypes.bool,
 };
 
-OrdersPanel.defaultProps = {
+OrdersPanelContent.defaultProps = {
 	orders: [],
 	isError: false,
 	isRequesting: false,
@@ -337,4 +337,4 @@ export default compose(
 			orderStatuses,
 		};
 	} )
-)( OrdersPanel );
+)( OrdersPanelContent );
