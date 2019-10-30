@@ -5,6 +5,7 @@
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { createSlotFill } from '@wordpress/components';
+import { isFunction } from 'lodash';
 
 /**
  * Internal dependencies
@@ -46,7 +47,7 @@ class Panel extends Component {
 									key={ 'activity-panel-' + currentTab }
 									id={ 'activity-panel-' + currentTab }
 								>
-									{ children }
+									{ isFunction( children ) ? children() : children }
 								</div>
 							</div>
 						)

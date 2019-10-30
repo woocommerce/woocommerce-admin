@@ -11,8 +11,9 @@ import { Component, Fragment } from '@wordpress/element';
  */
 import withSelect from 'wc-api/with-select';
 import { getUnapprovedReviews } from '../../unread-indicators';
-import Tabs from '../tabs';
-import Panel from '../panel';
+import Tabs from '../../slotfill/tabs';
+import Panel from '../../slotfill/panel';
+import ReviewsPanelContent from './panel-content';
 
 class Reviews extends Component {
 	render() {
@@ -23,7 +24,7 @@ class Reviews extends Component {
 			<Fragment>
 				<Tabs.Item name="reviews" title={ title } icon="star" unread={ hasUnapprovedReviews } />
 				<Panel.Content name="reviews" title={ title }>
-					Test reviews panel content
+					{ () => <ReviewsPanelContent hasUnapprovedReviews={ hasUnapprovedReviews } /> }
 				</Panel.Content>
 			</Fragment>
 		);

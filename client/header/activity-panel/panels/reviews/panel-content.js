@@ -27,14 +27,14 @@ import { getAdminLink } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
-import ActivityHeader from '../activity-header';
+import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
+import ActivityHeader from '../../activity-header';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import sanitizeHTML from 'lib/sanitize-html';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 
-class ReviewsPanel extends Component {
+class ReviewsPanelContent extends Component {
 	constructor() {
 		super();
 
@@ -264,13 +264,13 @@ class ReviewsPanel extends Component {
 	}
 }
 
-ReviewsPanel.propTypes = {
+ReviewsPanelContent.propTypes = {
 	reviews: PropTypes.array.isRequired,
 	isError: PropTypes.bool,
 	isRequesting: PropTypes.bool,
 };
 
-ReviewsPanel.defaultProps = {
+ReviewsPanelContent.defaultProps = {
 	reviews: [],
 	isError: false,
 	isRequesting: false,
@@ -319,4 +319,4 @@ export default withSelect( ( select, props ) => {
 		isRequesting,
 		lastApprovedReviewTime,
 	};
-} )( ReviewsPanel );
+} )( ReviewsPanelContent );

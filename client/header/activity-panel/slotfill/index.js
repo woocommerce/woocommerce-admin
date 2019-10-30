@@ -27,7 +27,6 @@ import Tabs from './tabs';
 import Panel from './panel';
 import Inbox from './panels/inbox';
 import Orders from './panels/orders';
-import Reviews from './panels/reviews';
 import Stock from './panels/stock';
 
 const manageStock = getSetting( 'manageStock', 'no' );
@@ -288,7 +287,7 @@ class ActivityPanel extends Component {
 							/>
 							<Inbox />
 							<Orders />
-							{ 'yes' === reviewsEnabled && <Reviews /> }
+							{ 'yes' === reviewsEnabled && <ReviewsPanel /> }
 							{ 'yes' === manageStock && <Stock /> }
 						</SlotFillProvider>
 					</div>
