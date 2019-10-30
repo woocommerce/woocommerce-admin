@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { escapeRegExp } from 'lodash';
 import { Fragment } from '@wordpress/element';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -83,22 +83,30 @@ export function getCountryStateAutofill( options, countryState, setValue ) {
 	const [ autofillCountry, setAutofillCountry ] = useState( '' );
 	const [ autofillState, setAutofillState ] = useState( '' );
 
-	let filteredOptions = [];
-	if ( autofillState.length || autofillCountry.length ) {
-		const countrySearch = new RegExp( escapeRegExp( autofillCountry.replace( /\s/g, '' ) ), 'i' );
-		filteredOptions = options.filter( option =>
-			countrySearch.test( option.label.replace( '-', '' ).replace( /\s/g, '' ) )
-		);
-	}
-	if ( autofillCountry.length && autofillState.length ) {
-		const stateSearch = new RegExp( escapeRegExp( autofillState.replace( /\s/g, '' ) ), 'i' );
-		filteredOptions = filteredOptions.filter( option =>
-			stateSearch.test( option.label.replace( '-', '' ).replace( /\s/g, '' ) )
-		);
-	}
-	if ( 1 === filteredOptions.length && countryState !== filteredOptions[ 0 ].key ) {
-		setValue( 'countryState', filteredOptions[ 0 ].key );
-	}
+	useEffect(
+		() => {
+			let filteredOptions = [];
+			if ( autofillState.length || autofillCountry.length ) {
+				const countrySearch = new RegExp(
+					escapeRegExp( autofillCountry.replace( /\s/g, '' ) ),
+					'i'
+				);
+				filteredOptions = options.filter( option =>
+					countrySearch.test( option.label.replace( '-', '' ).replace( /\s/g, '' ) )
+				);
+			}
+			if ( autofillCountry.length && autofillState.length ) {
+				const stateSearch = new RegExp( escapeRegExp( autofillState.replace( /\s/g, '' ) ), 'i' );
+				filteredOptions = filteredOptions.filter( option =>
+					stateSearch.test( option.label.replace( '-', '' ).replace( /\s/g, '' ) )
+				);
+			}
+			if ( 1 === filteredOptions.length && countryState !== filteredOptions[ 0 ].key ) {
+				setValue( 'countryState', filteredOptions[ 0 ].key );
+			}
+		},
+		[ autofillCountry, autofillState ]
+	);
 
 	return (
 		<Fragment>
