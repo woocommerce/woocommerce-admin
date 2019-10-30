@@ -41,7 +41,7 @@ class ActivityPanel extends Component {
 		this.state = {
 			isPanelOpen: false,
 			mobileOpen: false,
-			currentTab: 'orders',
+			currentTab: '',
 			isPanelSwitching: false,
 			hasWordPressNotices: false,
 		};
@@ -236,14 +236,20 @@ class ActivityPanel extends Component {
 	}
 
 	render() {
-		const tabs = this.getTabs();
-		const { currentTab, mobileOpen, hasWordPressNotices } = this.state;
+		const {
+			currentTab,
+			mobileOpen,
+			hasWordPressNotices,
+			isPanelOpen,
+			isPanelSwitching,
+		} = this.state;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
 			'is-mobile-open': this.state.mobileOpen,
 		} );
 
-		const hasUnread = hasWordPressNotices || tabs.some( tab => tab.unread );
+		// @todo - somehow trigger this from the fills?
+		const hasUnread = false;
 		const viewLabel = hasUnread
 			? __( 'View Activity Panel, you have unread activity', 'woocommerce-admin' )
 			: __( 'View Activity Panel', 'woocommerce-admin' );
@@ -270,8 +276,13 @@ class ActivityPanel extends Component {
 					/>
 					<div className={ panelClasses }>
 						<SlotFillProvider>
-							<Tabs currentTab={ currentTab } />
-							<Panel currentTab={ currentTab } />
+							<Tabs currentTab={ currentTab } handleClick={ this.togglePanel } />
+							<Panel
+								currentTab={ currentTab }
+								isOpen={ isPanelOpen }
+								isSwitching={ isPanelSwitching }
+								handleTransitionEnd={ this.clearPanel }
+							/>
 							<Orders />
 						</SlotFillProvider>
 					</div>

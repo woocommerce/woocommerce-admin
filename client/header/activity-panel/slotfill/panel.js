@@ -14,35 +14,45 @@ const { Fill, Slot } = createSlotFill( 'WooCommerceActivityPanel' );
 
 class Panel extends Component {
 	static Content = props => {
-		const { name, title, children, currentTab, isPanelOpen, isPanelSwitching } = props;
-		console.log( 'Panel.Content', props );
-		const isActive = name === currentTab;
-		const classNames = classnames( 'woocommerce-layout__activity-panel-wrapper', {
-			'is-open': isPanelOpen,
-			'is-switching': isPanelSwitching,
-		} );
+		const { name, title, children } = props;
 
 		return (
-			isActive && (
-				<Fill>
-					<div
-						className={ classNames }
-						tabIndex={ 0 }
-						role="tabpanel"
-						aria-label={ title }
-						// onTransitionEnd={ this.clearPanel }
-						// onAnimationEnd={ this.clearPanel }
-					>
-						<div
-							className="woocommerce-layout__activity-panel-content"
-							key={ 'activity-panel-' + currentTab }
-							id={ 'activity-panel-' + currentTab }
-						>
-							{ children }
-						</div>
-					</div>
-				</Fill>
-			)
+			<Fill>
+				{ fillProps => {
+					const {
+						currentTab, // rename to currentPanel ?
+						isOpen,
+						isSwitching,
+						handleTransitionEnd,
+					} = fillProps;
+					const isActive = name === currentTab;
+					const classNames = classnames( 'woocommerce-layout__activity-panel-wrapper', {
+						'is-open': isOpen,
+						'is-switching': isSwitching,
+					} );
+
+					return (
+						isActive && (
+							<div
+								className={ classNames }
+								tabIndex={ 0 }
+								role="tabpanel"
+								aria-label={ title }
+								onTransitionEnd={ handleTransitionEnd }
+								onAnimationEnd={ handleTransitionEnd }
+							>
+								<div
+									className="woocommerce-layout__activity-panel-content"
+									key={ 'activity-panel-' + currentTab }
+									id={ 'activity-panel-' + currentTab }
+								>
+									{ children }
+								</div>
+							</div>
+						)
+					);
+				} }
+			</Fill>
 		);
 	};
 
