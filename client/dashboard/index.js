@@ -10,6 +10,7 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { updateQueryString } from '@woocommerce/navigation';
 
 /**
@@ -34,19 +35,18 @@ class Dashboard extends Component {
 	getProductIds() {
 		const productIds = [];
 		const profileItems = get( this.props, 'profileItems', {} );
+		const onboarding = getSetting( 'onboarding', {} );
 
 		profileItems.product_types.forEach( product_type => {
 			if (
-				wcSettings.onboarding.productTypes[ product_type ] &&
-				wcSettings.onboarding.productTypes[ product_type ].product
+				onboarding.productTypes[ product_type ] &&
+				onboarding.productTypes[ product_type ].product
 			) {
-				productIds.push( wcSettings.onboarding.productTypes[ product_type ].product );
+				productIds.push( onboarding.productTypes[ product_type ].product );
 			}
 		} );
 
-		const theme = wcSettings.onboarding.themes.find(
-			themeData => themeData.slug === profileItems.theme
-		);
+		const theme = onboarding.themes.find( themeData => themeData.slug === profileItems.theme );
 
 		if ( theme && theme.id && ! theme.is_installed ) {
 			productIds.push( theme.id );
