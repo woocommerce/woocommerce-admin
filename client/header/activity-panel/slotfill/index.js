@@ -17,15 +17,14 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 import '../style.scss';
 import ActivityPanelToggleBubble from '../toggle-bubble';
 import { H, Section } from '@woocommerce/components';
-import InboxPanel from '../panels/inbox';
+import Inbox from '../panels/inbox';
 import OrdersPanel from '../panels/orders';
 import StockPanel from '../panels/stock';
 import { recordEvent } from 'lib/tracks';
-import ReviewsPanel from '../panels/reviews';
+import Reviews from '../panels/reviews';
 import WordPressNotices from '../wordpress-notices';
 import Tabs from './tabs';
 import Panel from './panel';
-import Inbox from './panels/inbox';
 import Orders from './panels/orders';
 import Stock from './panels/stock';
 
@@ -287,7 +286,7 @@ class ActivityPanel extends Component {
 							/>
 							<Inbox />
 							<Orders />
-							{ 'yes' === reviewsEnabled && <ReviewsPanel /> }
+							{ 'yes' === reviewsEnabled && <Reviews /> }
 							{ 'yes' === manageStock && <Stock /> }
 						</SlotFillProvider>
 					</div>
