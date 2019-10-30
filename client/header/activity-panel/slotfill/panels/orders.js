@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 // import classnames from 'classnames';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -18,17 +18,19 @@ class Orders extends Component {
 	render() {
 		const { hasUnreadOrders } = this.props;
 
-		return [
-			<Tabs.Item
-				name="orders"
-				title={ __( 'Orders', 'woocommerce-admin' ) }
-				icon="pages"
-				unread={ hasUnreadOrders }
-			/>,
-			<Panel.Content name="orders" title={ __( 'Orders', 'woocommerce-admin' ) }>
-				Test orders panel content
-			</Panel.Content>,
-		];
+		return (
+			<Fragment>
+				<Tabs.Item
+					name="orders"
+					title={ __( 'Orders', 'woocommerce-admin' ) }
+					icon="pages"
+					unread={ hasUnreadOrders }
+				/>
+				<Panel.Content name="orders" title={ __( 'Orders', 'woocommerce-admin' ) }>
+					Test orders panel content
+				</Panel.Content>
+			</Fragment>
+		);
 	}
 }
 

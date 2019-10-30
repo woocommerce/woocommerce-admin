@@ -25,7 +25,10 @@ import ReviewsPanel from '../panels/reviews';
 import WordPressNotices from '../wordpress-notices';
 import Tabs from './tabs';
 import Panel from './panel';
+import Inbox from './panels/inbox';
 import Orders from './panels/orders';
+import Reviews from './panels/reviews';
+import Stock from './panels/stock';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
@@ -283,7 +286,10 @@ class ActivityPanel extends Component {
 								isSwitching={ isPanelSwitching }
 								handleTransitionEnd={ this.clearPanel }
 							/>
+							<Inbox />
 							<Orders />
+							{ 'yes' === reviewsEnabled && <Reviews /> }
+							{ 'yes' === manageStock && <Stock /> }
 						</SlotFillProvider>
 					</div>
 				</Section>
