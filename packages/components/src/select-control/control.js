@@ -134,14 +134,14 @@ class Control extends Component {
 	}
 
 	getInputValue() {
-		const { isSearchable, multiple, query, selected } = this.props;
+		const { isFocused, isSearchable, multiple, query, selected } = this.props;
 		const selectedValue = selected.length ? selected[ 0 ].label : '';
 
 		if ( ! isSearchable && multiple ) {
 			return '';
 		}
 
-		return isSearchable ? query : selectedValue;
+		return isSearchable && isFocused ? query : selectedValue;
 	}
 
 	render() {

@@ -25,6 +25,7 @@ export class SelectControl extends Component {
 	static getInitialState() {
 		return {
 			isExpanded: false,
+			isFocused: false,
 			query: '',
 		};
 	}
@@ -199,7 +200,7 @@ export class SelectControl extends Component {
 
 	search( query ) {
 		const { hideBeforeSearch, onSearch, options } = this.props;
-		this.setState( { query } );
+		this.setState( { query, isFocused: true } );
 
 		const promise = ( this.activePromise = Promise.resolve( onSearch( options, query ) ).then(
 			searchOptions => {
@@ -238,7 +239,7 @@ export class SelectControl extends Component {
 
 	render() {
 		const { autofill, className, inlineTags, instanceId, isSearchable, options } = this.props;
-		const { isExpanded, selectedIndex } = this.state;
+		const { isExpanded, isFocused, selectedIndex } = this.state;
 
 		const hasTags = this.hasTags();
 		const { key: selectedKey = '' } = options[ selectedIndex ] || {};
@@ -251,6 +252,7 @@ export class SelectControl extends Component {
 			<div
 				className={ classnames( 'woocommerce-select-control', className, {
 					'has-inline-tags': hasTags && inlineTags,
+					'is-focused': isFocused,
 					'is-searchable': isSearchable,
 				} ) }
 				ref={ this.bindNode }
