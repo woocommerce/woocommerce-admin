@@ -155,19 +155,19 @@ export function StoreAddress( props ) {
 				{ ...getInputProps( 'addressLine2' ) }
 			/>
 
-			{ getCountryStateAutofill(
-				countryStateOptions,
-				getInputProps( 'countryState' ).value,
-				setValue
-			) }
-
 			<SelectControl
 				label={ __( 'Country / State', 'woocommerce-admin' ) }
 				required
 				options={ countryStateOptions }
 				isSearchable
 				{ ...getInputProps( 'countryState' ) }
-			/>
+			>
+				{ getCountryStateAutofill(
+					countryStateOptions,
+					getInputProps( 'countryState' ).value,
+					setValue
+				) }
+			</SelectControl>
 
 			<TextControl
 				label={ __( 'City', 'woocommerce-admin' ) }

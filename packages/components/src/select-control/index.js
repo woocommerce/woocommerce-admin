@@ -238,7 +238,15 @@ export class SelectControl extends Component {
 	}
 
 	render() {
-		const { autofill, className, inlineTags, instanceId, isSearchable, options } = this.props;
+		const {
+			autofill,
+			children,
+			className,
+			inlineTags,
+			instanceId,
+			isSearchable,
+			options,
+		} = this.props;
 		const { isExpanded, isFocused, selectedIndex } = this.state;
 
 		const hasTags = this.hasTags();
@@ -266,6 +274,7 @@ export class SelectControl extends Component {
 						tabIndex="-1"
 					/>
 				) }
+				{ children }
 				<Control
 					{ ...this.props }
 					{ ...this.state }
@@ -305,6 +314,10 @@ SelectControl.propTypes = {
 	 * Name to use for the autofill field, not used if no string is passed.
 	 */
 	autofill: PropTypes.string,
+	/**
+	 * A renderable component (or string) which will be displayed before the `Control` of this component.
+	 */
+	children: PropTypes.node,
 	/**
 	 * Class name applied to parent div.
 	 */
