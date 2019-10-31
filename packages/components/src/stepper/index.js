@@ -24,11 +24,7 @@ class Stepper extends Component {
 			return null;
 		}
 
-		return (
-			<div className="woocommerce-stepper_content">
-				{ step.content }
-			</div>
-		);
+		return <div className="woocommerce-stepper_content">{ step.content }</div>;
 	}
 
 	render() {
@@ -49,32 +45,33 @@ class Stepper extends Component {
 							'is-complete': 'undefined' !== typeof isComplete ? isComplete : currentIndex > i,
 						} );
 
-						const icon = isCurrentStep && isPending ? <Spinner /> : (
-							<div className="woocommerce-stepper__step-icon">
-								<span className="woocommerce-stepper__step-number">{ i + 1 }</span>
-								<CheckIcon />
-							</div>
-						);
+						const icon =
+							isCurrentStep && isPending ? (
+								<Spinner />
+							) : (
+								<div className="woocommerce-stepper__step-icon">
+									<span className="woocommerce-stepper__step-number">{ i + 1 }</span>
+									<CheckIcon />
+								</div>
+							);
 
 						return (
-							<Fragment key={ key } >
-								<div
-									className={ stepClassName }
-								>
-									{ icon }
-									<div className="woocommerce-stepper__step-text">
-										<span className="woocommerce-stepper__step-label">
-											{ label }
-										</span>
-										{ description &&
-											<span className="woocommerce-stepper__step-description">
-												{ description }
-											</span>
-										}
-										{ isCurrentStep && isVertical && this.renderCurrentStepContent() }
+							<Fragment key={ key }>
+								<div className={ stepClassName }>
+									<div className="woocommerce-stepper__step-label-wrapper">
+										{ icon }
+										<div className="woocommerce-stepper__step-text">
+											<span className="woocommerce-stepper__step-label">{ label }</span>
+											{ description && (
+												<span className="woocommerce-stepper__step-description">
+													{ description }
+												</span>
+											) }
+										</div>
 									</div>
+									{ isCurrentStep && isVertical && this.renderCurrentStepContent() }
 								</div>
-									{ ! isVertical && <div className="woocommerce-stepper__step-divider" /> }
+								{ ! isVertical && <div className="woocommerce-stepper__step-divider" /> }
 							</Fragment>
 						);
 					} ) }
