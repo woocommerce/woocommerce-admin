@@ -16,7 +16,8 @@
 		margin-right: auto;
 	}
 
-	.muriel-button.components-button {
+	.muriel-button.components-button,
+	.components-modal__frame .components-button.is-button {
 		height: 40px;
 		min-width: 106px;
 		margin: $gap $gap-smaller 0 0;
