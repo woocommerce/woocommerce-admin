@@ -171,6 +171,8 @@ class WordPressNotices extends Component {
 		notices.classList.remove( 'woocommerce-layout__notice-list-hide' );
 		screenMeta && screenMeta.classList.add( 'is-hidden-by-notices' );
 		screenLinks && screenLinks.classList.add( 'is-hidden-by-notices' );
+
+		this.maybeAddDismissEvents();
 	}
 
 	hideNotices() {
