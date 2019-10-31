@@ -36,6 +36,7 @@ class Theme extends Component {
 
 		this.state = {
 			activeTab: 'all',
+			chosen: null,
 			demo: null,
 			uploadedThemes: [],
 		};
@@ -98,6 +99,7 @@ class Theme extends Component {
 	async onChoose( theme, location = '' ) {
 		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
 
+		this.setState( { chosen: theme } );
 		recordEvent( 'storeprofiler_store_theme_choose', { theme, location } );
 		await updateProfileItems( { theme } );
 
@@ -105,6 +107,7 @@ class Theme extends Component {
 			// @todo This should send profile information to woocommerce.com.
 			goToNextStep();
 		} else {
+			this.setState( { chosen: null } );
 			createNotice(
 				'error',
 				__( 'There was a problem selecting your store theme.', 'woocommerce-admin' )
@@ -127,6 +130,7 @@ class Theme extends Component {
 
 	renderTheme( theme ) {
 		const { demo_url, has_woocommerce_support, image, slug, title } = theme;
+		const { chosen } = this.state;
 
 		return (
 			<Card className="woocommerce-profile-wizard__theme" key={ theme.slug }>
@@ -154,6 +158,7 @@ class Theme extends Component {
 							isPrimary={ Boolean( demo_url ) }
 							isDefault={ ! Boolean( demo_url ) }
 							onClick={ () => this.onChoose( slug, 'card' ) }
+							isBusy={ chosen === slug }
 						>
 							{ __( 'Choose', 'woocommerce-admin' ) }
 						</Button>
@@ -222,7 +227,7 @@ class Theme extends Component {
 
 	render() {
 		const themes = this.getThemes();
-		const { demo } = this.state;
+		const { chosen, demo } = this.state;
 
 		return (
 			<Fragment>
@@ -262,7 +267,12 @@ class Theme extends Component {
 					) }
 				</TabPanel>
 				{ demo && (
-					<ThemePreview theme={ demo } onChoose={ this.onChoose } onClose={ this.onClosePreview } />
+					<ThemePreview
+						theme={ demo }
+						onChoose={ this.onChoose }
+						onClose={ this.onClosePreview }
+						isBusy={ chosen === demo.slug }
+					/>
 				) }
 			</Fragment>
 		);
