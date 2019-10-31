@@ -118,6 +118,19 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/wccom-cart',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'wccom_cart' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_connect_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/connect-paypal',
 			array(
 				array(
@@ -414,6 +427,34 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 		return array(
 			'success' => true,
 		);
+	}
+
+	/**
+	 * Generates a cart URL for purchasing products from WooCommerce.com.
+	 * Adds the connection nonce and other connection params so extensions and themes can be automatically installed after purchase.
+	 *
+	 * @param  object $rest_request Request details.
+	 * @return array Cart URL for WooCommerce.com
+	 */
+	public function wccom_cart( $rest_request ) {
+		// Make sure the profile wizard is marked completed when we return.
+		$profile = array_merge( get_option( 'wc_onboarding_profile', array() ), array( 'completed' => true ) );
+		update_option( 'wc_onboarding_profile', $profile );
+
+		$cart_url = add_query_arg(
+			array(
+				'wccom-site'          => site_url(),
+				'wccom-back'          => $rest_request['wccom-back'],
+				'wccom-replace-with'  => $rest_request['wccom-replace-with'],
+				'wccom-woo-version'   => WC_VERSION,
+				'wccom-connect-nonce' => wp_create_nonce( 'connect' ),
+			),
+			'https://woocommerce.com/cart'
+		);
+
+		return( array(
+			'cartUrl' => $cart_url,
+		) );
 	}
 
 	/**

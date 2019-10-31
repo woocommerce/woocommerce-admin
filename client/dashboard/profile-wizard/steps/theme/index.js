@@ -3,13 +3,13 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { addQueryArgs } from '@wordpress/url';
+import apiFetch from '@wordpress/api-fetch';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
 import { get } from 'lodash';
-import { getAdminLink, updateQueryString } from '@woocommerce/navigation';
+import { getAdminLink } from '@woocommerce/navigation';
 import Gridicon from 'gridicons';
 import { TabPanel, Tooltip } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
@@ -17,13 +17,14 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, H } from '@woocommerce/components';
+import { Card, H, Spinner } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal depdencies
  */
 import withSelect from 'wc-api/with-select';
+import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import ThemeUploader from './uploader';
@@ -38,6 +39,7 @@ class Theme extends Component {
 			activeTab: 'all',
 			chosen: null,
 			demo: null,
+			cart: false,
 			uploadedThemes: [],
 		};
 
@@ -48,12 +50,28 @@ class Theme extends Component {
 		this.openDemo = this.openDemo.bind( this );
 	}
 
-	componentWillUnmount() {
-		const productIds = this.getProductIds();
-		if ( productIds.length ) {
-			this.redirectToCart();
-		} else {
-			updateQueryString( {}, '/', {} );
+	componentDidUpdate( prevProps ) {
+		const { isGetProfileItemsRequesting, isError, createNotice, goToNextStep } = this.props;
+		const { chosen } = this.state;
+
+		if ( prevProps.isGetProfileItemsRequesting && ! isGetProfileItemsRequesting && chosen ) {
+			if ( ! isError ) {
+				// @todo This should send profile information to woocommerce.com.
+				const productIds = this.getProductIds();
+				if ( productIds.length ) {
+					this.redirectToCart();
+				} else {
+					goToNextStep();
+				}
+			} else {
+				/* eslint-disable react/no-did-update-set-state */
+				this.setState( { chosen: null } );
+				createNotice(
+					'error',
+					__( 'There was a problem selecting your store theme.', 'woocommerce-admin' )
+				);
+				/* eslint-enable react/no-did-update-set-state */
+			}
 		}
 	}
 
@@ -86,33 +104,29 @@ class Theme extends Component {
 			return;
 		}
 
-		document.body.classList.add( 'woocommerce-admin-is-loading' );
-
 		const productIds = this.getProductIds();
-		const url = addQueryArgs( 'https://woocommerce.com/cart', {
-			'wccom-back': getAdminLink( getNewPath( {}, '/', {} ) ),
-			'wccom-replace-with': productIds.join( ',' ),
+		const backUrl = getAdminLink( getNewPath( {}, '/', {} ) );
+
+		this.setState( { cart: true } );
+
+		apiFetch( {
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/plugins/wccom-cart`,
+			method: 'POST',
+			data: {
+				'wccom-back': backUrl,
+				'wccom-replace-with': productIds.join( ',' ),
+			},
+		} ).then( result => {
+			window.location = result.cartUrl;
 		} );
-		window.location = url;
 	}
 
 	async onChoose( theme, location = '' ) {
-		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
+		const { updateProfileItems } = this.props;
 
 		this.setState( { chosen: theme } );
 		recordEvent( 'storeprofiler_store_theme_choose', { theme, location } );
 		await updateProfileItems( { theme } );
-
-		if ( ! isError ) {
-			// @todo This should send profile information to woocommerce.com.
-			goToNextStep();
-		} else {
-			this.setState( { chosen: null } );
-			createNotice(
-				'error',
-				__( 'There was a problem selecting your store theme.', 'woocommerce-admin' )
-			);
-		}
 	}
 
 	onClosePreview() {
@@ -227,7 +241,23 @@ class Theme extends Component {
 
 	render() {
 		const themes = this.getThemes();
-		const { chosen, demo } = this.state;
+		const { chosen, demo, cart } = this.state;
+
+		if ( cart ) {
+			return (
+				<div className="woocommerce-profile-wizard__step-setup">
+					<H className="woocommerce-profile-wizard__header-title">
+						{ __( 'Setting up your store', 'woocommerce-admin' ) }
+					</H>
+
+					<p>
+						{ __( 'Continuing to WooCommerce.com to finish your purchase.', 'woocommerce-admin' ) }
+					</p>
+
+					<Spinner />
+				</div>
+			);
+		}
 
 		return (
 			<Fragment>
@@ -281,10 +311,13 @@ class Theme extends Component {
 
 export default compose(
 	withSelect( select => {
-		const { getProfileItems, getProfileItemsError } = select( 'wc-api' );
+		const { getProfileItems, getProfileItemsError, isGetProfileItemsRequesting } = select(
+			'wc-api'
+		);
 
 		return {
 			isError: Boolean( getProfileItemsError() ),
+			isGetProfileItemsRequesting: isGetProfileItemsRequesting(),
 			profileItems: getProfileItems(),
 		};
 	} ),
