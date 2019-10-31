@@ -16,6 +16,19 @@
 
 		.woocommerce-stepper__step-label-wrapper {
 			display: flex;
+			text-align: left;
+			border: 0;
+			background-color: transparent;
+			padding: 0;
+
+			&:focus {
+				outline: none;
+				box-shadow: none;
+			}
+		}
+
+		button.woocommerce-stepper__step-label-wrapper {
+			cursor: pointer;
 		}
 
 		.woocommerce-stepper__step-text {
@@ -44,7 +57,7 @@
 			display: block;
 			margin-right: $gap-small;
 			max-height: $step-icon-size;
-			min-width: auto;
+			min-width: 24px;
 			width: 24px;
 			border-radius: 50%;
 			background: $studio-blue-50;

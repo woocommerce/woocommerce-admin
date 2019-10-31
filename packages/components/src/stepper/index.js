@@ -38,7 +38,7 @@ class Stepper extends Component {
 			<div className={ stepperClassName }>
 				<div className="woocommerce-stepper__steps">
 					{ steps.map( ( step, i ) => {
-						const { key, label, description, isComplete } = step;
+						const { key, label, description, isComplete, onClick } = step;
 						const isCurrentStep = key === currentStep;
 						const stepClassName = classnames( 'woocommerce-stepper__step', {
 							'is-active': isCurrentStep,
@@ -55,10 +55,15 @@ class Stepper extends Component {
 								</div>
 							);
 
+						const LabelWrapper = 'function' === typeof onClick ? 'button' : 'div';
+
 						return (
 							<Fragment key={ key }>
 								<div className={ stepClassName }>
-									<div className="woocommerce-stepper__step-label-wrapper">
+									<LabelWrapper
+										className="woocommerce-stepper__step-label-wrapper"
+										onClick={ 'function' === typeof onClick ? () => onClick( key ) : null }
+									>
 										{ icon }
 										<div className="woocommerce-stepper__step-text">
 											<span className="woocommerce-stepper__step-label">{ label }</span>
@@ -68,7 +73,7 @@ class Stepper extends Component {
 												</span>
 											) }
 										</div>
-									</div>
+									</LabelWrapper>
 									{ isCurrentStep && isVertical && this.renderCurrentStepContent() }
 								</div>
 								{ ! isVertical && <div className="woocommerce-stepper__step-divider" /> }
@@ -98,13 +103,9 @@ Stepper.propTypes = {
 	steps: PropTypes.arrayOf(
 		PropTypes.shape( {
 			/**
-			 * Key used to identify step.
+			 * Content displayed when the step is active.
 			 */
-			key: PropTypes.string.isRequired,
-			/**
-			 * Label displayed in stepper.
-			 */
-			label: PropTypes.string.isRequired,
+			content: PropTypes.node,
 			/**
 			 * Description displayed beneath the label.
 			 */
@@ -114,9 +115,17 @@ Stepper.propTypes = {
 			 */
 			isComplete: PropTypes.bool,
 			/**
-			 * Content displayed when the step is active.
+			 * Key used to identify step.
 			 */
-			content: PropTypes.node,
+			key: PropTypes.string.isRequired,
+			/**
+			 * Label displayed in stepper.
+			 */
+			label: PropTypes.string.isRequired,
+			/**
+			 * A function to be called when the step label is clicked.
+			 */
+			onClick: PropTypes.func,
 		} )
 	).isRequired,
 
