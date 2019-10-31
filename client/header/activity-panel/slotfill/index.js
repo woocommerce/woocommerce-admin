@@ -7,8 +7,8 @@ import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
-import { IconButton, NavigableMenu, SlotFillProvider } from '@wordpress/components';
-import { partial, uniqueId, find } from 'lodash';
+import { IconButton, SlotFillProvider } from '@wordpress/components';
+import { uniqueId } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -35,8 +35,6 @@ class ActivityPanel extends Component {
 		this.togglePanel = this.togglePanel.bind( this );
 		this.clearPanel = this.clearPanel.bind( this );
 		this.toggleMobile = this.toggleMobile.bind( this );
-		this.renderTab = this.renderTab.bind( this );
-		this.updateNoticeFlag = this.updateNoticeFlag.bind( this );
 		this.state = {
 			isPanelOpen: false,
 			mobileOpen: false,
@@ -103,135 +101,6 @@ class ActivityPanel extends Component {
 		if ( isPanelOpen ) {
 			this.togglePanel( currentTab );
 		}
-	}
-
-	updateNoticeFlag( noticeCount ) {
-		this.setState( {
-			hasWordPressNotices: noticeCount > 0,
-		} );
-	}
-
-	// @todo Pull in dynamic unread status/count
-	getTabs() {
-		const { hasUnreadNotes, hasUnreadOrders, hasUnapprovedReviews, hasUnreadStock } = this.props;
-		return [
-			{
-				name: 'inbox',
-				title: __( 'Inbox', 'woocommerce-admin' ),
-				icon: <Gridicon icon="mail" />,
-				unread: hasUnreadNotes,
-			},
-			{
-				name: 'orders',
-				title: __( 'Orders', 'woocommerce-admin' ),
-				icon: <Gridicon icon="pages" />,
-				unread: hasUnreadOrders,
-			},
-			'yes' === manageStock
-				? {
-						name: 'stock',
-						title: __( 'Stock', 'woocommerce-admin' ),
-						icon: <Gridicon icon="clipboard" />,
-						unread: hasUnreadStock,
-					}
-				: null,
-			'yes' === reviewsEnabled
-				? {
-						name: 'reviews',
-						title: __( 'Reviews', 'woocommerce-admin' ),
-						icon: <Gridicon icon="star" />,
-						unread: hasUnapprovedReviews,
-					}
-				: null,
-		].filter( Boolean );
-	}
-
-	getPanelContent( tab ) {
-		switch ( tab ) {
-			case 'inbox':
-				return <InboxPanel />;
-			case 'orders':
-				const { hasUnreadOrders } = this.props;
-				return <OrdersPanel hasActionableOrders={ hasUnreadOrders } />;
-			case 'stock':
-				return <StockPanel />;
-			case 'reviews':
-				const { hasUnapprovedReviews } = this.props;
-				return <ReviewsPanel hasUnapprovedReviews={ hasUnapprovedReviews } />;
-			default:
-				return null;
-		}
-	}
-
-	renderPanel() {
-		const { isPanelOpen, currentTab, isPanelSwitching } = this.state;
-
-		const tab = find( this.getTabs(), { name: currentTab } );
-		if ( ! tab ) {
-			return <div className="woocommerce-layout__activity-panel-wrapper" />;
-		}
-
-		const classNames = classnames( 'woocommerce-layout__activity-panel-wrapper', {
-			'is-open': isPanelOpen,
-			'is-switching': isPanelSwitching,
-		} );
-
-		return (
-			<div
-				className={ classNames }
-				tabIndex={ 0 }
-				role="tabpanel"
-				aria-label={ tab.title }
-				onTransitionEnd={ this.clearPanel }
-				onAnimationEnd={ this.clearPanel }
-			>
-				<div
-					className="woocommerce-layout__activity-panel-content"
-					key={ 'activity-panel-' + currentTab }
-					id={ 'activity-panel-' + currentTab }
-				>
-					{ this.getPanelContent( currentTab ) }
-				</div>
-			</div>
-		);
-	}
-
-	renderTab( tab, i ) {
-		const { currentTab, isPanelOpen } = this.state;
-		const className = classnames( 'woocommerce-layout__activity-panel-tab', {
-			'is-active': isPanelOpen && tab.name === currentTab,
-			'has-unread': tab.unread,
-		} );
-
-		const selected = tab.name === currentTab;
-		let tabIndex = -1;
-
-		// Only make this item tabbable if it is the currently selected item, or the panel is closed and the item is the first item
-		// If wpnotices is currently selected, tabindex below should be  -1 and <WordPressNotices /> will become the tabbed element.
-		if ( selected || ( ! isPanelOpen && i === 0 && 'wpnotices' !== currentTab ) ) {
-			tabIndex = null;
-		}
-
-		return (
-			<IconButton
-				role="tab"
-				className={ className }
-				tabIndex={ tabIndex }
-				aria-selected={ selected }
-				aria-controls={ 'activity-panel-' + tab.name }
-				key={ 'activity-panel-tab-' + tab.name }
-				id={ 'activity-panel-tab-' + tab.name }
-				onClick={ partial( this.togglePanel, tab.name ) }
-				icon={ tab.icon }
-			>
-				{ tab.title }{' '}
-				{ tab.unread && (
-					<span className="screen-reader-text">
-						{ __( 'unread activity', 'woocommerce-admin' ) }
-					</span>
-				) }
-			</IconButton>
-		);
 	}
 
 	render() {
