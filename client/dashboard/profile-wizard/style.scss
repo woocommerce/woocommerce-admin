@@ -331,23 +331,6 @@
 	}
 }
 
-.woocommerce-profile-wizard__step-setup {
-	margin-top: 90px;
-
-	.woocommerce-spinner {
-		margin-top: 150px;
-		width: 80px;
-		min-width: 80px;
-		height: 80px;
-		max-height: 80px;
-
-		circle {
-			stroke: $studio-woocommerce-purple-60;
-			stroke-width: 8px;
-		}
-	}
-}
-
 .woocommerce-profile-wizard__header.is-stepper {
 	svg > g {
 		transform: initial;

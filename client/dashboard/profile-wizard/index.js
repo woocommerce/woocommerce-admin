@@ -21,7 +21,6 @@ import Industry from './steps/industry';
 import Plugins from './steps/plugins';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
-import Setup from './steps/setup';
 import Start from './steps/start';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
@@ -62,10 +61,6 @@ const getSteps = () => {
 		key: 'theme',
 		container: Theme,
 		label: __( 'Theme', 'woocommerce-admin' ),
-	} );
-	steps.push( {
-		key: 'setup',
-		container: Setup,
 	} );
 	return steps;
 };
@@ -135,9 +130,7 @@ class ProfileWizard extends Component {
 
 		return (
 			<Fragment>
-				{ step.label && (
-					<ProfileWizardHeader currentStep={ step.key } steps={ steps.filter( s => s.label ) } />
-				) }
+				<ProfileWizardHeader currentStep={ step.key } steps={ steps } />
 				<div className="woocommerce-profile-wizard__container">{ container }</div>
 			</Fragment>
 		);

@@ -3,10 +3,13 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
+import { addQueryArgs } from '@wordpress/url';
 import { Button } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
+import { get } from 'lodash';
+import { getAdminLink, updateQueryString } from '@woocommerce/navigation';
 import Gridicon from 'gridicons';
 import { TabPanel, Tooltip } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
@@ -25,6 +28,7 @@ import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
+import { getNewPath } from '../../../../../packages/navigation/src';
 
 class Theme extends Component {
 	constructor() {
@@ -41,6 +45,54 @@ class Theme extends Component {
 		this.onClosePreview = this.onClosePreview.bind( this );
 		this.onSelectTab = this.onSelectTab.bind( this );
 		this.openDemo = this.openDemo.bind( this );
+	}
+
+	componentWillUnmount() {
+		const productIds = this.getProductIds();
+		if ( productIds.length ) {
+			this.redirectToCart();
+		} else {
+			updateQueryString( {}, '/', {} );
+		}
+	}
+
+	getProductIds() {
+		const productIds = [];
+		const profileItems = get( this.props, 'profileItems', {} );
+
+		profileItems.product_types.forEach( product_type => {
+			if (
+				wcSettings.onboarding.productTypes[ product_type ] &&
+				wcSettings.onboarding.productTypes[ product_type ].product
+			) {
+				productIds.push( wcSettings.onboarding.productTypes[ product_type ].product );
+			}
+		} );
+
+		const theme = wcSettings.onboarding.themes.find(
+			themeData => themeData.slug === profileItems.theme
+		);
+
+		if ( theme && theme.id && ! theme.is_installed ) {
+			productIds.push( theme.id );
+		}
+
+		return productIds;
+	}
+
+	redirectToCart() {
+		if ( ! window.wcAdminFeatures.onboarding ) {
+			return;
+		}
+
+		document.body.classList.add( 'woocommerce-admin-is-loading' );
+
+		const productIds = this.getProductIds();
+		const url = addQueryArgs( 'https://woocommerce.com/cart', {
+			'wccom-back': getAdminLink( getNewPath( {}, '/', {} ) ),
+			'wccom-replace-with': productIds.join( ',' ),
+		} );
+		window.location = url;
 	}
 
 	async onChoose( theme, location = '' ) {
@@ -219,11 +271,12 @@ class Theme extends Component {
 
 export default compose(
 	withSelect( select => {
-		const { getProfileItemsError } = select( 'wc-api' );
+		const { getProfileItems, getProfileItemsError } = select( 'wc-api' );
 
-		const isError = Boolean( getProfileItemsError() );
-
-		return { isError };
+		return {
+			isError: Boolean( getProfileItemsError() ),
+			profileItems: getProfileItems(),
+		};
 	} ),
 	withDispatch( dispatch => {
 		const { updateProfileItems } = dispatch( 'wc-api' );
