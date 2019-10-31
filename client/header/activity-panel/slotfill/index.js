@@ -22,7 +22,7 @@ import Orders from '../panels/orders';
 import Stock from '../panels/stock';
 import { recordEvent } from 'lib/tracks';
 import Reviews from '../panels/reviews';
-import WordPressNotices from '../wordpress-notices';
+import WordPressNotices from '../panels/wordpress-notices';
 import Tabs from './tabs';
 import Panel from './panel';
 

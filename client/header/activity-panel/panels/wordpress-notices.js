@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import Tabs from './slotfill/tabs';
+import Tabs from '../slotfill/tabs';
 
 class WordPressNotices extends Component {
 	constructor() {
