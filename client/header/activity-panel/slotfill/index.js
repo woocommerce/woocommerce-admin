@@ -235,17 +235,13 @@ class ActivityPanel extends Component {
 	}
 
 	render() {
-		const {
-			currentTab,
-			mobileOpen,
-			hasWordPressNotices,
-			isPanelOpen,
-			isPanelSwitching,
-		} = this.state;
+		const { currentTab, mobileOpen, isPanelOpen, isPanelSwitching } = this.state;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
 			'is-mobile-open': this.state.mobileOpen,
 		} );
+
+		const hasWordPressNotices = Boolean( document.getElementById( 'wp__notice-list' ) );
 
 		// @todo - somehow trigger this from the fills?
 		const hasUnread = false;
@@ -277,7 +273,7 @@ class ActivityPanel extends Component {
 						<SlotFillProvider>
 							<Tabs
 								currentTab={ currentTab }
-								handleClick={ this.togglePanel }
+								handleTabClick={ this.togglePanel }
 								isPanelOpen={ isPanelOpen }
 							/>
 							<Panel
@@ -290,6 +286,9 @@ class ActivityPanel extends Component {
 							<Orders />
 							{ 'yes' === reviewsEnabled && <Reviews /> }
 							{ 'yes' === manageStock && <Stock /> }
+							{ hasWordPressNotices && (
+								<WordPressNotices currentTab={ currentTab } togglePanel={ this.togglePanel } />
+							) }
 						</SlotFillProvider>
 					</div>
 				</Section>

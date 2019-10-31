@@ -7,18 +7,17 @@ import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { createSlotFill, IconButton, NavigableMenu } from '@wordpress/components';
 import Gridicon from 'gridicons';
-import { partial } from 'lodash';
 
 const { Fill, Slot } = createSlotFill( 'WooCommerceActivityPanelTabs' );
 
 class Tabs extends Component {
 	static Item = props => {
-		const { name, title, icon, unread } = props;
+		const { name, title, icon, unread, customTabClick } = props;
 
 		return (
 			<Fill>
 				{ fillProps => {
-					const { currentTab, handleClick, isPanelOpen } = fillProps;
+					const { currentTab, handleTabClick, isPanelOpen } = fillProps;
 					const selected = name === currentTab;
 					const className = classnames( 'woocommerce-layout__activity-panel-tab', {
 						'is-active': selected,
@@ -37,7 +36,10 @@ class Tabs extends Component {
 							aria-controls={ 'activity-panel-' + name }
 							key={ 'activity-panel-tab-' + name }
 							id={ 'activity-panel-tab-' + name }
-							onClick={ partial( handleClick, name ) }
+							onClick={ () => {
+								customTabClick && customTabClick();
+								handleTabClick( name );
+							} }
 							icon={ <Gridicon icon={ icon } /> }
 						>
 							{ title }{' '}
@@ -54,7 +56,7 @@ class Tabs extends Component {
 	};
 
 	render() {
-		const { currentTab, handleClick, isPanelOpen } = this.props;
+		const { currentTab, handleTabClick, isPanelOpen } = this.props;
 
 		return (
 			<NavigableMenu
@@ -62,7 +64,7 @@ class Tabs extends Component {
 				orientation="horizontal"
 				className="woocommerce-layout__activity-panel-tabs"
 			>
-				<Slot fillProps={ { currentTab, handleClick, isPanelOpen } } />
+				<Slot fillProps={ { currentTab, handleTabClick, isPanelOpen } } />
 			</NavigableMenu>
 		);
 	}

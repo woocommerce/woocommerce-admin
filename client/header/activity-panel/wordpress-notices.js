@@ -3,22 +3,23 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import Gridicon from 'gridicons';
-import { IconButton } from '@wordpress/components';
-import { intersection, noop, partial } from 'lodash';
+import { intersection, noop } from 'lodash';
 import PropTypes from 'prop-types';
+
+/**
+ * Internal dependencies
+ */
+import Tabs from './slotfill/tabs';
 
 class WordPressNotices extends Component {
 	constructor() {
 		super();
 		this.state = {
-			count: 0,
+			count: null,
 			notices: null,
 			screenLinks: null,
 			screenMeta: null,
-			noticesOpen: false,
 			hasEventListeners: false,
 		};
 
@@ -26,6 +27,7 @@ class WordPressNotices extends Component {
 		this.showNotices = this.showNotices.bind( this );
 		this.hideNotices = this.hideNotices.bind( this );
 		this.initialize = this.initialize.bind( this );
+		this.toggleNotices = this.toggleNotices.bind( this );
 	}
 
 	componentDidMount() {
@@ -37,13 +39,8 @@ class WordPressNotices extends Component {
 		}
 	}
 
-	componentDidUpdate( prevProps ) {
-		if ( ! prevProps.showNotices && this.props.showNotices ) {
-			this.showNotices();
-			this.maybeAddDismissEvents();
-		}
-
-		if ( prevProps.showNotices && ! this.props.showNotices ) {
+	componentDidUpdate() {
+		if ( 'wpnotices' !== this.props.currentTab ) {
 			this.hideNotices();
 		}
 	}
@@ -69,7 +66,6 @@ class WordPressNotices extends Component {
 
 	initialize() {
 		const notices = document.getElementById( 'wp__notice-list' );
-		const noticesOpen = notices.classList.contains( 'woocommerce-layout__notice-list-show' );
 		const screenMeta = document.getElementById( 'screen-meta' );
 		const screenLinks = document.getElementById( 'screen-meta-links' );
 
@@ -94,8 +90,7 @@ class WordPressNotices extends Component {
 			}
 		}
 
-		this.props.onCountUpdate( count );
-		this.setState( { count, notices, noticesOpen, screenMeta, screenLinks } );
+		this.setState( { count, notices, screenMeta, screenLinks } );
 
 		// Move collapsed WordPress notifications into the main wc-admin body
 		collapsedTargetArea.insertAdjacentElement( 'beforeend', notices );
@@ -111,7 +106,7 @@ class WordPressNotices extends Component {
 			dismissNotices[ key ].removeEventListener( 'click', this.updateCount );
 		}, this );
 
-		this.setState( { noticesOpen: false, hasEventListeners: false } );
+		this.setState( { hasEventListeners: false } );
 		this.hideNotices();
 	}
 
@@ -150,10 +145,10 @@ class WordPressNotices extends Component {
 	updateCount() {
 		const updatedCount = this.state.count - 1;
 		this.setState( { count: updatedCount } );
-		this.props.onCountUpdate( updatedCount );
 
 		if ( updatedCount < 1 ) {
-			this.props.togglePanel( 'wpnotices' ); // Close the panel since all of the notices have been closed.
+			// Close the panel since all of the notices have been closed.
+			this.props.togglePanel( 'wpnotices' );
 		}
 	}
 
@@ -186,44 +181,39 @@ class WordPressNotices extends Component {
 		screenLinks && screenLinks.classList.remove( 'is-hidden-by-notices' );
 	}
 
+	toggleNotices() {
+		const { currentTab } = this.props;
+
+		if ( 'wpnotices' === currentTab ) {
+			this.hideNotices();
+		} else {
+			this.showNotices();
+		}
+	}
+
 	render() {
 		const { count } = this.state;
-		const { showNotices, togglePanel } = this.props;
-
-		if ( count < 1 ) {
-			return null;
-		}
-
-		const className = classnames( 'woocommerce-layout__activity-panel-tab', {
-			'woocommerce-layout__activity-panel-tab-wordpress-notices': true,
-			'is-active': showNotices,
-		} );
 
 		return (
-			<IconButton
-				key="wpnotices"
-				className={ className }
-				onClick={ partial( togglePanel, 'wpnotices' ) }
-				icon={ <Gridicon icon="my-sites" /> }
-				role="tab"
-				tabIndex={ showNotices ? null : -1 }
-			>
-				{ __( 'Notices', 'woocommerce-admin' ) }{' '}
-				<span className="screen-reader-text">{ __( 'unread activity', 'woocommerce-admin' ) }</span>
-			</IconButton>
+			<Tabs.Item
+				name="wpnotices"
+				title={ __( 'Notices', 'woocommerce-admin' ) }
+				icon="my-sites"
+				unread={ null === count || 0 < count }
+				customTabClick={ this.toggleNotices }
+			/>
 		);
 	}
 }
 
 WordPressNotices.propTypes = {
-	showNotices: PropTypes.bool,
+	currentTab: PropTypes.string,
 	togglePanel: PropTypes.func,
-	onCountUpdate: PropTypes.func,
 };
 
 WordPressNotices.defaultProps = {
+	currentTab: '',
 	togglePanel: noop,
-	onCountUpdate: noop,
 };
 
 export default WordPressNotices;
