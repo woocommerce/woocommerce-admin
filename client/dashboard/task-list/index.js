@@ -157,6 +157,11 @@ class TaskDashboard extends Component {
 	}
 
 	closeWelcomeModal() {
+		// Prevent firing this event before the modal is seen.
+		if ( document.body.classList.contains( 'woocommerce-admin-is-loading' ) ) {
+			return;
+		}
+
 		this.setState( { isWelcomeModalOpen: false } );
 		this.props.updateOptions( {
 			woocommerce_task_list_welcome_modal_dismissed: true,
