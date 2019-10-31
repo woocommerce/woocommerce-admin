@@ -230,14 +230,16 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * Returns a homepage template to be inserted into a post. A different template will be used depending on the number of products.
 	 *
 	 * @param int $post_id ID of the homepage template.
+	 * @return string Template contents.
 	 */
-	private static function update_homepage_template( $post_id ) {
+	private static function get_homepage_template( $post_id ) {
 		$products = wp_count_posts( 'product' );
 		if ( $products->publish >= 4 ) {
-			$images       = self::sideload_homepage_images( $post_id, 1 );
-			$image_1      = ! empty( $images[0] ) ? $images[0] : '';
-			$cover        = self::get_homepage_cover_block( $image_1 );
-			$post_content = $cover . '
+			$images  = self::sideload_homepage_images( $post_id, 1 );
+			$image_1 = ! empty( $images[0] ) ? $images[0] : '';
+			$cover   = self::get_homepage_cover_block( $image_1 );
+
+			return $cover . '
 				<!-- wp:heading {"align":"center"} -->
 				<h2 style="text-align:center">' . __( 'Shop by Category', 'woocommerce-admin' ) . '</h2>
 				<!-- /wp:heading -->
@@ -269,21 +271,15 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				<div class="wp-block-woocommerce-product-best-sellers">[products limit="4" columns="4" best_selling="1"]</div>
 				<!-- /wp:woocommerce/product-best-sellers -->
 			';
-
-			wp_update_post( array(
-				'ID'           => $post_id,
-				'post_content' => $post_content,
-			) );
-
-			return;
 		}
 
-		$images       = self::sideload_homepage_images( $post_id, 3 );
-		$image_1      = ! empty( $images[0] ) ? $images[0] : '';
-		$image_2      = ! empty( $images[1] ) ? $images[1] : '';
-		$image_3      = ! empty( $images[2] ) ? $images[2] : '';
-		$cover        = self::get_homepage_cover_block( $image_1 );
-		$post_content = $cover . '
+		$images  = self::sideload_homepage_images( $post_id, 3 );
+		$image_1 = ! empty( $images[0] ) ? $images[0] : '';
+		$image_2 = ! empty( $images[1] ) ? $images[1] : '';
+		$image_3 = ! empty( $images[2] ) ? $images[2] : '';
+		$cover   = self::get_homepage_cover_block( $image_1 );
+
+		return $cover . '
 		<!-- wp:heading {"align":"center"} -->
 		<h2 class="has-text-align-center">' . __( 'New products', 'woocommerce-admin' ). '</h2>
 		<!-- /wp:heading -->
@@ -295,11 +291,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		self::get_homepage_media_block( $image_3, 'right' ) . '
 
 		<!-- wp:woocommerce/featured-product /-->';
-
-		wp_update_post( array(
-			'ID'           => $post_id,
-			'post_content' => $post_content,
-		) );
 	}
 
 	/**
@@ -379,12 +370,18 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				'post_title'   => __( 'Homepage', 'woocommerce-admin' ),
 				'post_type'    => 'page',
 				'post_status'  => 'draft',
-				'post_content' => '',
+				'post_content' => '', // Template content is updated below, so images can be attached to the post.
 			)
 		);
 
 		if ( ! is_wp_error( $post_id ) ) {
-			self::update_homepage_template( $post_id );
+
+			$template = self::get_homepage_template( $post_id );
+			wp_update_post( array(
+				 'ID'          => $post_id,
+				'post_content' => $template,
+			) );
+
 			update_option( 'woocommerce_onboarding_homepage_post_id', $post_id );
 
 			return array(
