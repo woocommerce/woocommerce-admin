@@ -32,15 +32,19 @@ class BusinessDetails extends Component {
 	constructor( props ) {
 		super();
 		const profileItems = get( props, 'profileItems', {} );
-		const businessExtensions = get( profileItems, 'business_extensions', [] );
+		const businessExtensions = get( profileItems, 'business_extensions', false );
 
 		this.initialValues = {
 			other_platform: profileItems.other_platform || '',
 			product_count: profileItems.product_count || '',
 			selling_venues: profileItems.selling_venues || '',
 			revenue: profileItems.revenue || '',
-			'facebook-for-woocommerce': businessExtensions.includes( 'facebook-for-woocommerce' ),
-			'mailchimp-for-woocommerce': businessExtensions.includes( 'mailchimp-for-woocommerce' ),
+			'facebook-for-woocommerce': businessExtensions
+				? businessExtensions.includes( 'facebook-for-woocommerce' )
+				: true,
+			'mailchimp-for-woocommerce': businessExtensions
+				? businessExtensions.includes( 'mailchimp-for-woocommerce' )
+				: true,
 		};
 
 		this.state = {
