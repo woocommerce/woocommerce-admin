@@ -5,6 +5,7 @@
 import { select, subscribe, dispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
+import domReady from '@wordpress/dom-ready';
 
 /**
  * WooCommerce dependencies
@@ -67,7 +68,7 @@ const onboardingHomepageNotice = () => {
 	} );
 };
 
-wp.domReady( () => {
+domReady( function() {
 	if ( 'page' === select( 'core/editor' ).getCurrentPostType() ) {
 		onboardingHomepageNotice();
 	}
