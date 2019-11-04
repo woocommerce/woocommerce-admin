@@ -21,11 +21,11 @@ export default class ProfileWizardHeader extends Component {
 	renderStepper() {
 		const { currentStep, steps } = this.props;
 		const visibleSteps = filter( steps, step => !! step.label );
-		const currentStepIndex = visibleSteps.findIndex( s => s.key === currentStep );
 
-		visibleSteps.map( step => {
-			const stepIndex = visibleSteps.findIndex( s => s.key === step.key );
-			if ( stepIndex < currentStepIndex ) {
+		visibleSteps.map( ( step, index ) => {
+			const previousStep = visibleSteps[ index - 1 ];
+
+			if ( ! previousStep || previousStep.isComplete ) {
 				step.onClick = key => updateQueryString( { step: key } );
 			}
 			return step;
