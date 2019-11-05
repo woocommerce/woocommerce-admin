@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from 'newspack-components';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter, get } from 'lodash';
 import interpolateComponents from 'interpolate-components';
@@ -13,7 +13,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, H, Stepper } from '@woocommerce/components';
+import { Card, H, Link, Stepper } from '@woocommerce/components';
 import { getAdminLink, getHistory, getNewPath } from '@woocommerce/navigation';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
@@ -251,9 +251,28 @@ class Tax extends Component {
 					'woocommerce-admin'
 				),
 				content: (
-					<Button isPrimary isBusy={ isPending } onClick={ this.configureTaxRates }>
-						{ __( 'Configure', 'woocommerce-admin' ) }
-					</Button>
+					<Fragment>
+						<Button isPrimary isBusy={ isPending } onClick={ this.configureTaxRates }>
+							{ __( 'Configure', 'woocommerce-admin' ) }
+						</Button>
+						<p>
+							{ interpolateComponents( {
+								mixedString: __(
+									'By clicking "Configure" you\'re enabling tax rates and calculations. More info {{link}}here{{/link}}.',
+									'woocommerce-admin'
+								),
+								components: {
+									link: (
+										<Link
+											href="https://docs.woocommerce.com/document/setting-up-taxes-in-woocommerce/#section-1"
+											target="_blank"
+											type="external"
+										/>
+									),
+								},
+							} ) }
+						</p>
+					</Fragment>
 				),
 				visible: ! this.isTaxJarSupported(),
 			},
