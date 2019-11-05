@@ -345,6 +345,7 @@ class Onboarding {
 		// Only fetch if the onboarding wizard OR the task list is incomplete.
 		if ( self::should_show_profiler() || self::should_show_tasks() ) {
 			$settings['onboarding']['activePlugins'] = self::get_active_plugins();
+			$settings['onboarding']['connectNonce']  = wp_create_nonce( 'connect' );
 		}
 
 		return $settings;
