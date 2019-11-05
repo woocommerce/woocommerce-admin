@@ -16,7 +16,7 @@ import { getAdminLink } from '@woocommerce/navigation';
  */
 const showTaxCompletionNotice = () => {
 	dispatch( 'core/notices' ).createSuccessNotice(
-		__( 'Your tax tax settings have been saved.', 'woocommerce-admin' ),
+		__( 'Your tax settings have been saved.', 'woocommerce-admin' ),
 		{
 			id: 'WOOCOMMERCE_ONBOARDING_TAX_NOTICE',
 			actions: [
