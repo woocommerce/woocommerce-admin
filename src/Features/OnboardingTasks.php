@@ -61,6 +61,7 @@ class OnboardingTasks {
 		add_action( 'admin_init', array( $this, 'set_active_task' ), 20 );
 		add_filter( 'post_updated_messages', array( $this, 'update_product_success_message' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ), 10, 1 );
 	}
 
 	/**
@@ -92,7 +93,7 @@ class OnboardingTasks {
 			)
 		) > 0;
 		$settings['onboarding']['hasProducts']                    = self::check_task_completion( 'products' );
-		$settings['onboarding']['isTaxComplete']                  = 'yes' === get_option( 'wc_connect_taxes_enabled' ) || count( DataStore::get_taxes( array() ) ) > 0;
+		$settings['onboarding']['isTaxComplete']                  = self::check_task_completion( 'tax' );
 		$settings['onboarding']['shippingZonesCount']             = count( \WC_Shipping_Zones::get_zones() );
 
 		return $settings;
@@ -154,6 +155,8 @@ class OnboardingTasks {
 				$post      = get_post( $homepage_id );
 				$completed = $post && 'publish' === $post->post_status;
 				return $completed;
+			case 'tax':
+				return 'yes' === get_option( 'wc_connect_taxes_enabled' ) || count( DataStore::get_taxes( array() ) ) > 0;
 		}
 		return false;
 	}
@@ -177,6 +180,20 @@ class OnboardingTasks {
 		global $post;
 		if ( $hook == 'post.php' && 'page' === $post->post_type && isset( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) && 'homepage' === $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) { // WPCS: csrf ok.
 			wp_enqueue_script(  'onboarding-homepage-notice', Loader::get_url( 'wp-admin-scripts/onboarding-homepage-notice.js' ), array( 'wc-navigation' ) );
+		}
+	}
+
+	/**
+	 * Adds a notice to return to the task list when the save button is clicked on tax settings pages.
+	 */
+	function add_onboarding_tax_notice_admin_script() {
+		if (
+			'wc-settings' === $_GET[ 'page' ] &&
+			'tax' === $_GET[ 'tab' ] &&
+			isset( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) &&
+			'tax' === $_GET[ self::ACTIVE_TASK_TRANSIENT ]
+		) {
+			wp_enqueue_script(  'onboarding-tax-notice', Loader::get_url( 'wp-admin-scripts/onboarding-tax-notice.js' ), array( 'wc-navigation', 'wp-i18n', 'wp-data' ) );
 		}
 	}
 

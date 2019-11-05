@@ -139,7 +139,9 @@ class Tax extends Component {
 				},
 			} );
 		} else {
-			window.location = getAdminLink( 'admin.php?page=wc-settings&tab=tax&section=standard' );
+			window.location = getAdminLink(
+				'admin.php?page=wc-settings&tab=tax&section=standard&wc_onboarding_active_task=tax'
+			);
 		}
 	}
 
