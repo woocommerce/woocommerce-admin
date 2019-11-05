@@ -143,17 +143,6 @@ class Init {
 			$endpoints['/wc/v4/coupons'][1] = $endpoints['/wc/v4/coupons'][3];
 		}
 
-		// Override /wc/v4/customers.
-		if ( isset( $endpoints['/wc/v4/customers'] )
-			&& isset( $endpoints['/wc/v4/customers'][3] )
-			&& isset( $endpoints['/wc/v4/customers'][2] )
-			&& $endpoints['/wc/v4/customers'][2]['callback'][0] instanceof \Automattic\WooCommerce\Admin\API\Customers
-			&& $endpoints['/wc/v4/customers'][3]['callback'][0] instanceof \Automattic\WooCommerce\Admin\API\Customers
-		) {
-			$endpoints['/wc/v4/customers'][0] = $endpoints['/wc/v4/customers'][2];
-			$endpoints['/wc/v4/customers'][1] = $endpoints['/wc/v4/customers'][3];
-		}
-
 		// Override /wc/v4/orders/$id.
 		if ( isset( $endpoints['/wc/v4/orders/(?P<id>[\d]+)'] )
 			&& isset( $endpoints['/wc/v4/orders/(?P<id>[\d]+)'][5] )
