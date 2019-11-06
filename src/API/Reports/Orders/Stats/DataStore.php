@@ -76,12 +76,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function assign_report_columns() {
 		$table_name = self::get_db_table_name();
 		// Avoid ambigious columns in SQL query.
+		$refunds = "ABS( SUM( CASE WHEN {$table_name}.net_total < 0 THEN {$table_name}.net_total ELSE 0 END ) )";
 		$gross_sales =
 			"( SUM({$table_name}.total_sales)" .
 			" + SUM(discount_amount)" .
 			" - SUM({$table_name}.tax_total)" .
 			" - SUM({$table_name}.shipping_total)" .
-			" + SUM({$table_name}.refund_amount)" .
+			" + {$refunds}" .
 			" ) as gross_sales";
 
 		$this->report_columns = array(
@@ -91,7 +92,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'gross_revenue'           => "SUM({$table_name}.total_sales) AS gross_revenue",
 			'coupons'                 => 'SUM(discount_amount) AS coupons',
 			'coupons_count'           => 'coupons_count',
-			'refunds'                 => "SUM({$table_name}.refund_amount) AS refunds",
+			'refunds'                 => "{$refunds} AS refunds",
 			'taxes'                   => "SUM({$table_name}.tax_total) AS taxes",
 			'shipping'                => "SUM({$table_name}.shipping_total) AS shipping",
 			'net_revenue'             => "SUM({$table_name}.net_total) AS net_revenue",
@@ -496,8 +497,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			if ( $parent_order ) {
 				$data['parent_id']     = $parent_order->get_id();
 				$format[]              = '%d';
-				$data['refund_amount'] = self::get_refunded_amount( $order );
-				$format[]              = '%f';
 			}
 		} else {
 			$data['returning_customer'] = self::is_returning_customer( $order );
@@ -572,21 +571,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected static function get_net_total( $order ) {
 		$net_total = floatval( $order->get_total() ) - floatval( $order->get_total_tax() ) - floatval( $order->get_shipping_total() );
 		return (float) $net_total;
-	}
-
-	/**
-	 * Calculate the amount of the order that was refunded.
-	 *
-	 * @param WC_Order_Refund $refund_order The refund order object.
-	 * @return float The refunded amount.
-	 */
-	public static function get_refunded_amount( $refund_order ) {
-		// Refund = total amount refunded less refunded tax and shipping.
-		$order_refund    = abs( min( 0.0, $refund_order->get_total() ) );
-		$tax_refund      = abs( min( 0.0, $refund_order->get_total_tax() ) );
-		$shipping_refund = abs( min( 0.0, $refund_order->get_shipping_total() ) );
-
-		return ( $order_refund - $tax_refund - $shipping_refund );
 	}
 
 	/**
