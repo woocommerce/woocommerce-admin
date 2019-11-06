@@ -135,6 +135,7 @@ class Install {
 			returning_customer boolean DEFAULT NULL,
 			status varchar(200) NOT NULL,
 			customer_id BIGINT UNSIGNED NOT NULL,
+			refund_amount double DEFAULT 0 NOT NULL,
 			PRIMARY KEY (order_id),
 			KEY date_created (date_created),
 			KEY customer_id (customer_id),
