@@ -82,7 +82,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			" - ABS( SUM( CASE WHEN {$table_name}.shipping_total < 0 THEN {$table_name}.shipping_total ELSE 0 END ) ) )";
 		$gross_sales =
 			"( SUM({$table_name}.gross_total)" .
-			" + SUM(coupon_total)" .
+			" + SUM(discount_amount)" .
 			" - SUM({$table_name}.tax_total)" .
 			" - SUM({$table_name}.shipping_total)" .
 			" + {$refunds}" .
@@ -473,7 +473,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'date_created_gmt'   => gmdate( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ),
 			'num_items_sold'     => self::get_num_items_sold( $order ),
 			'gross_total'        => $order->get_total(),
-			'coupon_total'       => $order->get_total_discount(),
 			'tax_total'          => $order->get_total_tax(),
 			'shipping_total'     => $order->get_shipping_total(),
 			'net_total'          => self::get_net_total( $order ),
@@ -487,7 +486,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'%s',
 			'%s',
 			'%d',
-			'%f',
 			'%f',
 			'%f',
 			'%f',
