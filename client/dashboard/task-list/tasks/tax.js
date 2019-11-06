@@ -256,21 +256,23 @@ class Tax extends Component {
 							{ __( 'Configure', 'woocommerce-admin' ) }
 						</Button>
 						<p>
-							{ interpolateComponents( {
-								mixedString: __(
-									'By clicking "Configure" you\'re enabling tax rates and calculations. More info {{link}}here{{/link}}.',
-									'woocommerce-admin'
-								),
-								components: {
-									link: (
-										<Link
-											href="https://docs.woocommerce.com/document/setting-up-taxes-in-woocommerce/#section-1"
-											target="_blank"
-											type="external"
-										/>
+							{ 'yes' !== generalSettings.woocommerce_calc_taxes &&
+								interpolateComponents( {
+									mixedString: __(
+										'By clicking "Configure" you\'re enabling tax rates and calculations.' +
+											'More info {{link}}here{{/link}}.',
+										'woocommerce-admin'
 									),
-								},
-							} ) }
+									components: {
+										link: (
+											<Link
+												href="https://docs.woocommerce.com/document/setting-up-taxes-in-woocommerce/#section-1"
+												target="_blank"
+												type="external"
+											/>
+										),
+									},
+								} ) }
 						</p>
 					</Fragment>
 				),
