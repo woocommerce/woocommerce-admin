@@ -8,9 +8,9 @@ import { intersection, noop } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
-import Tabs from '../slotfill/tabs';
+import { Tabs } from '@woocommerce/components';
 
 class WordPressNotices extends Component {
 	constructor() {

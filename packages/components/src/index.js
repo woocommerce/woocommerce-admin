@@ -5,6 +5,7 @@
 // Turn on react-dates classes/styles, see https://github.com/airbnb/react-dates#initialize
 import 'react-dates/initialize';
 
+export { Panel, Tabs } from './activity-panel';
 export { default as AdvancedFilters } from './advanced-filters';
 export { default as AnimationSlider } from './animation-slider';
 export { default as Chart } from './chart';

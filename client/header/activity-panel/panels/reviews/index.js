@@ -11,9 +11,12 @@ import { Component, Fragment } from '@wordpress/element';
  */
 import withSelect from 'wc-api/with-select';
 import { getUnapprovedReviews } from '../../unread-indicators';
-import Tabs from '../../slotfill/tabs';
-import Panel from '../../slotfill/panel';
 import ReviewsPanelContent from './panel-content';
+
+/**
+ * WooCommerce dependencies
+ */
+import { Panel, Tabs } from '@woocommerce/components';
 
 class Reviews extends Component {
 	render() {

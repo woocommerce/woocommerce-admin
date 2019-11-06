@@ -16,15 +16,13 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 import '../style.scss';
 import ActivityPanelToggleBubble from '../toggle-bubble';
-import { H, Section } from '@woocommerce/components';
+import { H, Section, Tabs, Panel } from '@woocommerce/components';
 import Inbox from '../panels/inbox';
 import Orders from '../panels/orders';
 import Stock from '../panels/stock';
 import { recordEvent } from 'lib/tracks';
 import Reviews from '../panels/reviews';
 import WordPressNotices from '../panels/wordpress-notices';
-import Tabs from './tabs';
-import Panel from './panel';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );

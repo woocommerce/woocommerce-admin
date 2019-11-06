@@ -19,6 +19,9 @@ if ( ! process.env.SKIP_JSX_PRAGMA_TRANSFORM ) {
 	} ] );
 }
 
+// Allow classProperties.
+plugins.push( [ 'transform-class-properties' ] );
+
 const overrideOptions = ( target, targetName, options ) => {
 	if ( get( target, [ 'file', 'request' ] ) === targetName ) {
 		return [ targetName, Object.assign(

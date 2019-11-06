@@ -9,7 +9,7 @@ import { createSlotFill, IconButton, NavigableMenu } from '@wordpress/components
 import Gridicon from 'gridicons';
 
 const { Fill, Slot } = createSlotFill( 'WooCommerceActivityPanelTabs' );
-
+console.log( 'Tabs', { Fill, Slot } );
 class Tabs extends Component {
 	static Item = props => {
 		const { name, title, icon, unread, customTabClick } = props;

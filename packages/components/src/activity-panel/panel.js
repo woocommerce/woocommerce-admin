@@ -12,7 +12,7 @@ import { isFunction } from 'lodash';
  */
 
 const { Fill, Slot } = createSlotFill( 'WooCommerceActivityPanel' );
-
+console.log( 'Panel', { Fill, Slot } );
 class Panel extends Component {
 	static Content = props => {
 		const { name, title, children } = props;
