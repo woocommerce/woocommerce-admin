@@ -77,7 +77,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$table_name = self::get_db_table_name();
 		// Avoid ambigious columns in SQL query.
 		$gross_sales =
-			"( SUM({$table_name}.gross_total)" .
+			"( SUM({$table_name}.total_sales)" .
 			" + SUM(discount_amount)" .
 			" - SUM({$table_name}.tax_total)" .
 			" - SUM({$table_name}.shipping_total)" .
@@ -88,7 +88,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'orders_count'            => "SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) as orders_count",
 			'num_items_sold'          => "SUM({$table_name}.num_items_sold) as num_items_sold",
 			'gross_sales'             => $gross_sales,
-			'gross_revenue'           => "SUM({$table_name}.gross_total) AS gross_revenue",
+			'gross_revenue'           => "SUM({$table_name}.total_sales) AS gross_revenue",
 			'coupons'                 => 'SUM(discount_amount) AS coupons',
 			'coupons_count'           => 'coupons_count',
 			'refunds'                 => "SUM({$table_name}.refund_amount) AS refunds",
@@ -468,7 +468,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
 			'date_created_gmt'   => gmdate( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ),
 			'num_items_sold'     => self::get_num_items_sold( $order ),
-			'gross_total'        => $order->get_total(),
+			'total_sales'        => $order->get_total(),
 			'tax_total'          => $order->get_total_tax(),
 			'shipping_total'     => $order->get_shipping_total(),
 			'net_total'          => self::get_net_total( $order ),

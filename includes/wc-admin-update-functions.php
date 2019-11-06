@@ -41,3 +41,20 @@ function wc_admin_update_0201_order_status_index() {
 function wc_admin_update_0201_db_version() {
 	Installer::update_db_version( '0.20.1' );
 }
+
+/**
+ * Rename "gross_total" to "total_sales".
+ * See: https://github.com/woocommerce/woocommerce-admin/issues/3175
+ */
+function wc_admin_update_0210_rename_gross_sales() {
+	global $wpdb;
+
+	$wpdb->query( "ALTER TABLE {$wpdb->prefix}wc_order_stats CHANGE gross_total total_sales DOUBLE" );
+}
+
+/**
+ * Update DB Version.
+ */
+function wc_admin_update_0210_db_version() {
+	Installer::update_db_version( '0.21.0' );
+}

@@ -69,10 +69,10 @@ class Segmenter extends ReportsSegmenter {
 	protected function segment_selections_orders( $order_stats_table, $overrides = array() ) {
 		$columns_mapping = array(
 			'num_items_sold'          => "SUM($order_stats_table.num_items_sold) as num_items_sold",
-			'gross_revenue'           => "SUM($order_stats_table.gross_total) AS gross_revenue",
+			'gross_revenue'           => "SUM($order_stats_table.total_sales) AS gross_revenue",
 			'coupons'                 => "SUM($order_stats_table.discount_amount) AS coupons",
 			'coupons_count'           => 'COUNT( DISTINCT(coupon_lookup_left_join.coupon_id) ) AS coupons_count',
-			'refunds'                 => "SUM( CASE WHEN $order_stats_table.parent_id != 0 THEN $order_stats_table.gross_total END ) AS refunds",
+			'refunds'                 => "SUM( CASE WHEN $order_stats_table.parent_id != 0 THEN $order_stats_table.total_sales END ) AS refunds",
 			'taxes'                   => "SUM($order_stats_table.tax_total) AS taxes",
 			'shipping'                => "SUM($order_stats_table.shipping_total) AS shipping",
 			'net_revenue'             => "SUM($order_stats_table.net_total) AS net_revenue",
