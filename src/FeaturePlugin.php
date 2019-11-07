@@ -56,7 +56,7 @@ class FeaturePlugin {
 		$this->define_constants();
 		register_activation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 		register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_deactivation' ) );
-		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
+		self::on_plugins_loaded(); // because the action has already been called.
 		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
 	}
 
@@ -282,6 +282,18 @@ class FeaturePlugin {
 	 * @param array $features Array of feature slugs.
 	 */
 	public function replace_supported_features( $features ) {
+		/** This function doesn't exist yet. */
+		function wc_admin_get_feature_config() {
+			return array(
+				'activity-panels'                  => true,
+				'analytics'                        => true,
+				'analytics-dashboard'              => true,
+				'analytics-dashboard/customizable' => true,
+				'devdocs'                          => true,
+				'onboarding'                       => true,
+				'store-alerts'                     => true,
+			);
+		}
 		$feature_config = apply_filters( 'wc_admin_get_feature_config', wc_admin_get_feature_config() );
 		$features       = array_keys( array_filter( $feature_config ) );
 		return $features;
