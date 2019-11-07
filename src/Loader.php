@@ -137,8 +137,8 @@ class Loader {
 			return false;
 		}
 
-		$onboarding_opt_in        = get_option( 'wc_onboarding_opt_in', false );
-		$onboarding_filter_opt_in = defined( 'WOOCOMMERCE_ADMIN_SHOW_ONBOARDING' ) && true === WOOCOMMERCE_ADMIN_SHOW_ONBOARDING;
+		$onboarding_opt_in        = 'yes' === get_option( 'wc_onboarding_opt_in', 'no' );
+		$onboarding_filter_opt_in = defined( 'WOOCOMMERCE_ADMIN_ONBOARDING_ENABLED' ) && true === WOOCOMMERCE_ADMIN_ONBOARDING_ENABLED;
 
 		if ( self::is_dev() || $onboarding_filter_opt_in || $onboarding_opt_in ) {
 			return true;
