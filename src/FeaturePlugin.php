@@ -282,18 +282,6 @@ class FeaturePlugin {
 	 * @param array $features Array of feature slugs.
 	 */
 	public function replace_supported_features( $features ) {
-		/** This function doesn't exist yet. */
-		function wc_admin_get_feature_config() {
-			return array(
-				'activity-panels'                  => true,
-				'analytics'                        => true,
-				'analytics-dashboard'              => true,
-				'analytics-dashboard/customizable' => true,
-				'devdocs'                          => true,
-				'onboarding'                       => true,
-				'store-alerts'                     => true,
-			);
-		}
 		$feature_config = apply_filters( 'wc_admin_get_feature_config', wc_admin_get_feature_config() );
 		$features       = array_keys( array_filter( $feature_config ) );
 		return $features;

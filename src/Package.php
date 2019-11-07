@@ -9,6 +9,24 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
+require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/core-functions.php';
+require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/feature-config.php';
+require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/page-controller-functions.php';
+require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/wc-admin-update-functions.php';
+
+/** This function doesn't exist yet. */
+function wc_admin_get_feature_config() {
+	return array(
+		'activity-panels'                  => true,
+		'analytics'                        => true,
+		'analytics-dashboard'              => true,
+		'analytics-dashboard/customizable' => true,
+		'devdocs'                          => true,
+		'onboarding'                       => true,
+		'store-alerts'                     => true,
+	);
+}
+
 /**
  * Main package class.
  */
