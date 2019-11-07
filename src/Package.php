@@ -2,7 +2,7 @@
 /**
  * Returns information about the package and handles init.
  *
- * @package Automattic/WooCommerce/ExamplePackage
+ * @package Automattic/WooCommerce/WCAdmin
  */
 
 namespace Automattic\WooCommerce\WCAdmin;
