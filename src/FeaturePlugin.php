@@ -221,7 +221,7 @@ class FeaturePlugin {
 
 		if ( ! $woocommerce_minimum_met ) {
 			$errors[] = sprintf(
-				/* translators: URL of WooCommerce plugin */
+				/* translators: 1: URL of WooCommerce plugin, 2: The minimum WooCommerce version number */
 				__( 'The WooCommerce Admin feature plugin requires <a href="%1$s">WooCommerce</a> %2$s or greater to be installed and active.', 'woocommerce-admin' ),
 				'https://wordpress.org/plugins/woocommerce/',
 				$minimum_woocommerce_version
@@ -230,7 +230,7 @@ class FeaturePlugin {
 
 		if ( ! $wordpress_minimum_met ) {
 			$errors[] = sprintf(
-				/* translators: 1: URL of WordPress.org, 2: URL of WooCommerce plugin */
+				/* translators: 1: URL of WordPress.org, 2: The minimum WordPress version number */
 				__( 'The WooCommerce Admin feature plugin requires <a href="%1$s">WordPress</a> %2$s or greater to be installed and active.', 'woocommerce-admin' ),
 				'https://wordpress.org/',
 				$minimum_wordpress_version
