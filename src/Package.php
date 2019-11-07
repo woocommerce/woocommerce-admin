@@ -5,9 +5,7 @@
  * @package Automattic/WooCommerce/WCAdmin
  */
 
-namespace Automattic\WooCommerce\WCAdmin;
-
-use \Automattic\WooCommerce\Admin\FeaturePlugin;
+namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 

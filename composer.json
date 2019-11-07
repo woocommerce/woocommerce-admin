@@ -42,7 +42,7 @@
       "includes/wc-admin-update-functions.php"
     ],
     "psr-4": {
-      "Automattic\\WooCommerce\\WCAdmin\\": "src/"
+      "Automattic\\WooCommerce\\Admin\\": "src/"
     }
   }
 }
