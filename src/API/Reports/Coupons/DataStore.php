@@ -375,7 +375,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return true;
 		}
 
-		$table_name         = $wpdb->prefix . self::TABLE_NAME;
+		$table_name         = self::get_db_table_name();
 		$existing_items     = $wpdb->get_col( $wpdb->prepare( "SELECT coupon_id FROM {$table_name} WHERE order_id = %d", $order_id ) );
 		$existing_items     = array_flip( $existing_items );
 		$coupon_items       = $order->get_items( 'coupon' );
