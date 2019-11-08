@@ -60,7 +60,7 @@ class WC_Admin_Tests_Reports_Revenue_Stats extends WC_Unit_Test_Case {
 			'totals'    => array(
 				'orders_count'            => 1,
 				'num_items_sold'          => 4,
-				'gross_revenue'           => 97,
+				'total_sales'             => 97,
 				'coupons'                 => 20,
 				'coupons_count'           => 1,
 				'refunds'                 => 0,
@@ -84,7 +84,7 @@ class WC_Admin_Tests_Reports_Revenue_Stats extends WC_Unit_Test_Case {
 					'subtotals'      => array(
 						'orders_count'            => 1,
 						'num_items_sold'          => 4,
-						'gross_revenue'           => 97,
+						'total_sales'             => 97,
 						'coupons'                 => 20,
 						'coupons_count'           => 1,
 						'refunds'                 => 0,
@@ -112,7 +112,7 @@ class WC_Admin_Tests_Reports_Revenue_Stats extends WC_Unit_Test_Case {
 			'totals'    => array(
 				'orders_count'   => 1,
 				'num_items_sold' => 4,
-				'gross_revenue'  => 97,
+				'total_sales'    => 97,
 				'coupons'        => 20,
 				'coupons_count'  => 1,
 				'refunds'        => 0,
@@ -132,7 +132,7 @@ class WC_Admin_Tests_Reports_Revenue_Stats extends WC_Unit_Test_Case {
 					'subtotals'      => array(
 						'orders_count'   => 1,
 						'num_items_sold' => 4,
-						'gross_revenue'  => 97,
+						'total_sales'    => 97,
 						'coupons'        => 20,
 						'coupons_count'  => 1,
 						'refunds'        => 0,

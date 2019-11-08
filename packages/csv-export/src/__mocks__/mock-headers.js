@@ -15,7 +15,7 @@ export default [
 	},
 	{
 		label: 'Total Sales',
-		key: 'gross_revenue',
+		key: 'total_sales',
 	},
 	{
 		label: 'Refunds',

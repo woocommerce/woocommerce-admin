@@ -51,10 +51,10 @@ export const charts = applyFilters( REVENUE_REPORT_CHARTS_FILTER, [
 		type: 'currency',
 	},
 	{
-		key: 'gross_revenue',
+		key: 'total_sales',
 		label: __( 'Total Sales', 'woocommerce-admin' ),
 		order: 'desc',
-		orderby: 'gross_revenue',
+		orderby: 'total_sales',
 		type: 'currency',
 	},
 ] );

@@ -20,7 +20,7 @@ const data = {
 	isRequesting: false,
 };
 const selectedChart = {
-	key: 'gross_revenue',
+	key: 'total_sales',
 	label: 'Total Sales',
 	type: 'currency',
 };

@@ -93,7 +93,7 @@ class RevenueReportTable extends Component {
 			},
 			{
 				label: __( 'Total Sales', 'woocommerce-admin' ),
-				key: 'gross_revenue',
+				key: 'total_sales',
 				required: true,
 				isSortable: true,
 				isNumeric: true,
@@ -106,7 +106,7 @@ class RevenueReportTable extends Component {
 			const {
 				coupons,
 				gross_sales,
-				gross_revenue,
+				total_sales,
 				net_revenue,
 				orders_count,
 				refunds,
@@ -158,8 +158,8 @@ class RevenueReportTable extends Component {
 					value: getCurrencyFormatDecimal( shipping ),
 				},
 				{
-					display: renderCurrency( gross_revenue ),
-					value: getCurrencyFormatDecimal( gross_revenue ),
+					display: renderCurrency( total_sales ),
+					value: getCurrencyFormatDecimal( total_sales ),
 				},
 			];
 		} );
@@ -169,7 +169,7 @@ class RevenueReportTable extends Component {
 		const {
 			orders_count = 0,
 			gross_sales = 0,
-			gross_revenue = 0,
+			total_sales = 0,
 			refunds = 0,
 			coupons = 0,
 			taxes = 0,
@@ -211,7 +211,7 @@ class RevenueReportTable extends Component {
 			},
 			{
 				label: __( 'total sales', 'woocommerce-admin' ),
-				value: formatCurrency( gross_revenue ),
+				value: formatCurrency( total_sales ),
 			},
 		];
 	}

@@ -27,7 +27,7 @@ class Segmenter extends ReportsSegmenter {
 	protected function get_segment_selections_product_level( $products_table ) {
 		$columns_mapping = array(
 			'num_items_sold' => "SUM($products_table.product_qty) as num_items_sold",
-			'gross_revenue'  => "SUM($products_table.product_gross_revenue) AS gross_revenue",
+			'total_sales'    => "SUM($products_table.product_gross_revenue) AS total_sales",
 			'coupons'        => 'SUM( coupon_lookup_left_join.discount_amount ) AS coupons',
 			'coupons_count'  => 'COUNT( DISTINCT( coupon_lookup_left_join.coupon_id ) ) AS coupons_count',
 			'refunds'        => "SUM( CASE WHEN $products_table.product_gross_revenue < 0 THEN $products_table.product_gross_revenue ELSE 0 END ) AS refunds",
@@ -69,7 +69,7 @@ class Segmenter extends ReportsSegmenter {
 	protected function segment_selections_orders( $order_stats_table, $overrides = array() ) {
 		$columns_mapping = array(
 			'num_items_sold'          => "SUM($order_stats_table.num_items_sold) as num_items_sold",
-			'gross_revenue'           => "SUM($order_stats_table.total_sales) AS gross_revenue",
+			'total_sales'             => "SUM($order_stats_table.total_sales) AS total_sales",
 			'coupons'                 => "SUM($order_stats_table.discount_amount) AS coupons",
 			'coupons_count'           => 'COUNT( DISTINCT(coupon_lookup_left_join.coupon_id) ) AS coupons_count',
 			'refunds'                 => "SUM( CASE WHEN $order_stats_table.parent_id != 0 THEN $order_stats_table.total_sales END ) AS refunds",

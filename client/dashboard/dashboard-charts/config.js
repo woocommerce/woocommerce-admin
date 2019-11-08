@@ -31,7 +31,7 @@ const defaultCharts = [
 	{
 		label: __( 'Total Sales', 'woocommerce-admin' ),
 		report: 'revenue',
-		key: 'gross_revenue',
+		key: 'total_sales',
 	},
 	{
 		label: __( 'Net Sales', 'woocommerce-admin' ),
