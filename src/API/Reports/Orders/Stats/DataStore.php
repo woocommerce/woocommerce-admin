@@ -76,22 +76,22 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function assign_report_columns() {
 		$table_name = self::get_db_table_name();
 		// Avoid ambigious columns in SQL query.
-		$refunds = "ABS( SUM( CASE WHEN {$table_name}.net_total < 0 THEN {$table_name}.net_total ELSE 0 END ) )";
+		$refunds     = "ABS( SUM( CASE WHEN {$table_name}.net_total < 0 THEN {$table_name}.net_total ELSE 0 END ) )";
 		$gross_sales =
 			"( SUM({$table_name}.total_sales)" .
-			" + SUM(discount_amount)" .
+			' + COALESCE( SUM(discount_amount), 0 )' . // SUM() all nulls gives null.
 			" - SUM({$table_name}.tax_total)" .
 			" - SUM({$table_name}.shipping_total)" .
 			" + {$refunds}" .
-			" ) as gross_sales";
+			' ) as gross_sales';
 
 		$this->report_columns = array(
 			'orders_count'            => "SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) as orders_count",
 			'num_items_sold'          => "SUM({$table_name}.num_items_sold) as num_items_sold",
 			'gross_sales'             => $gross_sales,
-			'coupons'                 => 'SUM(discount_amount) AS coupons',
-			'coupons_count'           => 'coupons_count',
 			'total_sales'             => "SUM({$table_name}.total_sales) AS total_sales",
+			'coupons'                 => 'COALESCE( SUM(discount_amount), 0 ) AS coupons', // SUM() all nulls gives null.
+			'coupons_count'           => 'COALESCE( coupons_count, 0 ) as coupons_count',
 			'refunds'                 => "{$refunds} AS refunds",
 			'taxes'                   => "SUM({$table_name}.tax_total) AS taxes",
 			'shipping'                => "SUM({$table_name}.shipping_total) AS shipping",
@@ -314,11 +314,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 			$unique_products            = $this->get_unique_product_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
 			$totals[0]['products']      = $unique_products;
-			$segmenter                  = new Segmenter( $query_args, $this->report_columns );
+			$segmenter                  = new Segmenter( $table_name, $query_args, $this->report_columns );
 			$unique_coupons             = $this->get_unique_coupon_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
 			$totals[0]['coupons_count'] = $unique_coupons;
-			$totals[0]['segments']      = $segmenter->get_totals_segments( $totals_query, $table_name );
-			$totals                     = (object) $this->cast_numbers( $totals[0] );
+			$totals[0]['segments']      = $segmenter->get_totals_segments( $totals_query );
+			error_log( "\$totals[0]['segments']:" . var_export( $totals[0]['segments'], true ) );
+			$totals = (object) $this->cast_numbers( $totals[0] );
 
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 			$this->interval_query->add_sql_clause( 'left_join', $coupon_join );
@@ -371,7 +372,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			} else {
 				$this->update_interval_boundary_dates( $query_args['after'], $query_args['before'], $query_args['interval'], $data->intervals );
 			}
-			$segmenter->add_intervals_segments( $data, $intervals_query, $table_name );
+			$segmenter->add_intervals_segments( $data, $intervals_query );
 			$this->create_interval_subtotals( $data->intervals );
 
 			$this->set_cached_data( $cache_key, $data );
@@ -495,8 +496,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		if ( 'shop_order_refund' === $order->get_type() ) {
 			$parent_order = wc_get_order( $order->get_parent_id() );
 			if ( $parent_order ) {
-				$data['parent_id']     = $parent_order->get_id();
-				$format[]              = '%d';
+				$data['parent_id'] = $parent_order->get_id();
+				$format[]          = '%d';
 			}
 		} else {
 			$data['returning_customer'] = self::is_returning_customer( $order );
