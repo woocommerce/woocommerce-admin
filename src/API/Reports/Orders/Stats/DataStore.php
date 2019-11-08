@@ -314,12 +314,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 			$unique_products            = $this->get_unique_product_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
 			$totals[0]['products']      = $unique_products;
-			$segmenter                  = new Segmenter( $table_name, $query_args, $this->report_columns );
+			$segmenter                  = new Segmenter( $query_args, $this->report_columns );
 			$unique_coupons             = $this->get_unique_coupon_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
 			$totals[0]['coupons_count'] = $unique_coupons;
-			$totals[0]['segments']      = $segmenter->get_totals_segments( $totals_query );
-			error_log( "\$totals[0]['segments']:" . var_export( $totals[0]['segments'], true ) );
-			$totals = (object) $this->cast_numbers( $totals[0] );
+			$totals[0]['segments']      = $segmenter->get_totals_segments( $totals_query, $table_name );
+			$totals                     = (object) $this->cast_numbers( $totals[0] );
 
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 			$this->interval_query->add_sql_clause( 'left_join', $coupon_join );
@@ -372,7 +371,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			} else {
 				$this->update_interval_boundary_dates( $query_args['after'], $query_args['before'], $query_args['interval'], $data->intervals );
 			}
-			$segmenter->add_intervals_segments( $data, $intervals_query );
+			$segmenter->add_intervals_segments( $data, $intervals_query, $table_name );
 			$this->create_interval_subtotals( $data->intervals );
 
 			$this->set_cached_data( $cache_key, $data );

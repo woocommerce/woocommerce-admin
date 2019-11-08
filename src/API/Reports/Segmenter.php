@@ -106,7 +106,7 @@ class Segmenter {
 			}
 
 			unset( $segment_data[ $segment_dimension ] );
-			$segment_datum = array(
+			$segment_datum                 = array(
 				'segment_id'    => $segment_id,
 				'segment_label' => $segment_labels[ $segment_id ],
 				'subtotals'     => $segment_data,
@@ -391,7 +391,7 @@ class Segmenter {
 			// This is to catch simple products with prior sales converted into variable products.
 			// See: https://github.com/woocommerce/woocommerce-admin/issues/2719.
 			if ( empty( $this->query_args['variations'] ) ) {
-				$parent_object = wc_get_product( $this->query_args['product_includes'][0] );
+				$parent_object     = wc_get_product( $this->query_args['product_includes'][0] );
 				$segments[]        = 0;
 				$segment_labels[0] = $parent_object->get_name();
 			}
@@ -492,21 +492,21 @@ class Segmenter {
 	 * Adds zeroes for segments not present in the data selection.
 	 *
 	 * @param array $segments Array of segments from the database for given data points.
+	 * @param array $columns Optional. Array of columns expected for each segment. Defaults to all report columns.
 	 *
 	 * @return array
 	 */
-	protected function fill_in_missing_segments( $segments ) {
-
+	protected function fill_in_missing_segments( $segments, $columns = array() ) {
 		$segment_subtotals = array();
-		if ( isset( $this->query_args['fields'] ) && is_array( $this->query_args['fields'] ) ) {
-			foreach ( $this->query_args['fields'] as $field ) {
-				if ( isset( $this->report_columns[ $field ] ) ) {
-					$segment_subtotals[ $field ] = 0;
+		if ( is_array( $columns ) && ! empty( $columns ) ) {
+			foreach ( $columns as $column ) {
+				if ( isset( $this->report_columns[ $column ] ) ) {
+					$segment_subtotals[ $column ] = 0;
 				}
 			}
 		} else {
-			foreach ( $this->report_columns as $field => $sql_clause ) {
-				$segment_subtotals[ $field ] = 0;
+			foreach ( $this->report_columns as $column => $sql_clause ) {
+				$segment_subtotals[ $column ] = 0;
 			}
 		}
 		if ( ! is_array( $segments ) ) {
@@ -531,14 +531,19 @@ class Segmenter {
 	}
 
 	/**
-	 * Adds missing segments to intervals, modifies $data.
+	 * Adds zeroes for interval segments not present in the data selection.
 	 *
-	 * @param stdClass $data Response data.
+	 * @param array $segments Array of interval segments from the database for given data points.
+	 * @param array $columns Optional. Array of columns expected for each segment. Defaults to all report columns.
+	 *
+	 * @return array
 	 */
-	protected function fill_in_missing_interval_segments( &$data ) {
-		foreach ( $data->intervals as $order_id => $interval_data ) {
-			$data->intervals[ $order_id ]['segments'] = $this->fill_in_missing_segments( $data->intervals[ $order_id ]['segments'] );
+	protected function fill_in_missing_interval_segments( $segments, $columns = array() ) {
+		foreach ( $segments as $interval => $interval_data ) {
+			$segments[ $interval ]['segments'] = $this->fill_in_missing_segments( $segments[ $interval ]['segments'], $columns );
 		}
+
+		return $segments;
 	}
 
 	/**
@@ -620,7 +625,8 @@ class Segmenter {
 	 */
 	public function get_totals_segments( $query_params, $table_name ) {
 		$segments = $this->get_segments( 'totals', $query_params, $table_name );
-		return $this->fill_in_missing_segments( $segments );
+
+		return $segments;
 	}
 
 	/**
@@ -632,7 +638,7 @@ class Segmenter {
 	 */
 	public function add_intervals_segments( &$data, $intervals_query, $table_name ) {
 		$intervals_segments = $this->get_segments( 'intervals', $intervals_query, $table_name );
+
 		$this->assign_segments_to_intervals( $data->intervals, $intervals_segments );
-		$this->fill_in_missing_interval_segments( $data );
 	}
 }
