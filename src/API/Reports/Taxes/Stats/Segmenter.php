@@ -142,16 +142,10 @@ class Segmenter extends ReportsSegmenter {
 		if ( 'tax_rate_id' === $this->query_args['segmentby'] ) {
 			$tax_rate_level_columns = $this->get_segment_selections_order_level( $table_name );
 			$segmenting_select      = $this->prepare_selections( $tax_rate_level_columns );
-			$segmentation_columns   = array_keys( $tax_rate_level_columns );
+			$this->report_columns   = $tax_rate_level_columns;
 			$segmenting_groupby     = $table_name . '.tax_rate_id';
 
 			$segments = $this->get_order_related_segments( $type, $segmenting_select, $segmenting_from, $segmenting_where, $segmenting_groupby, $table_name, $query_params );
-		}
-
-		if ( 'intervals' === $type ) {
-			$segments = $this->fill_in_missing_interval_segments( $segments, $segmentation_columns );
-		} elseif ( 'totals' === $type ) {
-			$segments = $this->fill_in_missing_segments( $segments, $segmentation_columns );
 		}
 
 		return $segments;

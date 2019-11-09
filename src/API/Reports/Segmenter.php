@@ -492,21 +492,20 @@ class Segmenter {
 	 * Adds zeroes for segments not present in the data selection.
 	 *
 	 * @param array $segments Array of segments from the database for given data points.
-	 * @param array $columns Optional. Array of columns expected for each segment. Defaults to all report columns.
 	 *
 	 * @return array
 	 */
-	protected function fill_in_missing_segments( $segments, $columns = array() ) {
+	protected function fill_in_missing_segments( $segments ) {
 		$segment_subtotals = array();
-		if ( is_array( $columns ) && ! empty( $columns ) ) {
-			foreach ( $columns as $column ) {
-				if ( isset( $this->report_columns[ $column ] ) ) {
-					$segment_subtotals[ $column ] = 0;
+		if ( isset( $this->query_args['fields'] ) && is_array( $this->query_args['fields'] ) ) {
+			foreach ( $this->query_args['fields'] as $field ) {
+				if ( isset( $this->report_columns[ $field ] ) ) {
+					$segment_subtotals[ $field ] = 0;
 				}
 			}
 		} else {
-			foreach ( $this->report_columns as $column => $sql_clause ) {
-				$segment_subtotals[ $column ] = 0;
+			foreach ( $this->report_columns as $field => $sql_clause ) {
+				$segment_subtotals[ $field ] = 0;
 			}
 		}
 		if ( ! is_array( $segments ) ) {
@@ -531,19 +530,14 @@ class Segmenter {
 	}
 
 	/**
-	 * Adds zeroes for interval segments not present in the data selection.
+	 * Adds missing segments to intervals, modifies $data.
 	 *
-	 * @param array $segments Array of interval segments from the database for given data points.
-	 * @param array $columns Optional. Array of columns expected for each segment. Defaults to all report columns.
-	 *
-	 * @return array
+	 * @param stdClass $data Response data.
 	 */
-	protected function fill_in_missing_interval_segments( $segments, $columns = array() ) {
-		foreach ( $segments as $interval => $interval_data ) {
-			$segments[ $interval ]['segments'] = $this->fill_in_missing_segments( $segments[ $interval ]['segments'], $columns );
+	protected function fill_in_missing_interval_segments( &$data ) {
+		foreach ( $data->intervals as $order_id => $interval_data ) {
+			$data->intervals[ $order_id ]['segments'] = $this->fill_in_missing_segments( $data->intervals[ $order_id ]['segments'] );
 		}
-
-		return $segments;
 	}
 
 	/**
@@ -625,6 +619,7 @@ class Segmenter {
 	 */
 	public function get_totals_segments( $query_params, $table_name ) {
 		$segments = $this->get_segments( 'totals', $query_params, $table_name );
+		$segments = $this->fill_in_missing_segments( $segments );
 
 		return $segments;
 	}
@@ -640,5 +635,6 @@ class Segmenter {
 		$intervals_segments = $this->get_segments( 'intervals', $intervals_query, $table_name );
 
 		$this->assign_segments_to_intervals( $data->intervals, $intervals_segments );
+		$this->fill_in_missing_interval_segments( $data );
 	}
 }

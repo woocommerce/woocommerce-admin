@@ -160,7 +160,7 @@ class Segmenter extends ReportsSegmenter {
 			$segmenting_selections     = array(
 				'product_level' => $this->prepare_selections( $product_level_columns ),
 			);
-			$segmentation_columns      = array_keys( $product_level_columns );
+			$this->report_columns      = $product_level_columns;
 			$segmenting_from           = '';
 			$segmenting_groupby        = $product_segmenting_table . '.product_id';
 			$segmenting_dimension_name = 'product_id';
@@ -175,7 +175,7 @@ class Segmenter extends ReportsSegmenter {
 			$segmenting_selections     = array(
 				'product_level' => $this->prepare_selections( $product_level_columns ),
 			);
-			$segmentation_columns      = array_keys( $product_level_columns );
+			$this->report_columns      = $product_level_columns;
 			$segmenting_from           = '';
 			$segmenting_where          = "AND $product_segmenting_table.product_id = {$this->query_args['product_includes'][0]}";
 			$segmenting_groupby        = $product_segmenting_table . '.variation_id';
@@ -187,7 +187,7 @@ class Segmenter extends ReportsSegmenter {
 			$segmenting_selections     = array(
 				'product_level' => $this->prepare_selections( $product_level_columns ),
 			);
-			$segmentation_columns      = array_keys( $product_level_columns );
+			$this->report_columns      = $product_level_columns;
 			$segmenting_from           = "
 			LEFT JOIN {$wpdb->term_relationships} ON {$product_segmenting_table}.product_id = {$wpdb->term_relationships}.object_id
 			LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->wc_category_lookup}.category_id
@@ -203,12 +203,6 @@ class Segmenter extends ReportsSegmenter {
 			}
 
 			$segments = $this->get_product_related_segments( $type, $segmenting_selections, $segmenting_from, $segmenting_where, $segmenting_groupby, $segmenting_dimension_name, $table_name, $query_params, $unique_orders_table );
-		}
-
-		if ( 'intervals' === $type ) {
-			$segments = $this->fill_in_missing_interval_segments( $segments, $segmentation_columns );
-		} elseif ( 'totals' === $type ) {
-			$segments = $this->fill_in_missing_segments( $segments, $segmentation_columns );
 		}
 
 		return $segments;
