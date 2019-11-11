@@ -42,7 +42,7 @@ const onboardingHomepageNotice = () => {
 				}, 0 );
 
 				apiFetch( {
-					path: '/wc-admin/v1/options',
+					path: '/wc-admin/options',
 					method: 'POST',
 					data: {
 						show_on_front: 'page',

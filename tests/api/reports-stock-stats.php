@@ -15,7 +15,7 @@ class WC_Tests_API_Reports_Stock_Stats extends WC_REST_Unit_Test_Case {
 	 *
 	 * @var string
 	 */
-	protected $endpoint = '/wc/v4/reports/stock/stats';
+	protected $endpoint = '/wc-analytics/reports/stock/stats';
 
 	/**
 	 * Setup test reports stock data.
