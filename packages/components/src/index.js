@@ -60,3 +60,4 @@ export { default as TextControlWithAffixes } from './text-control-with-affixes';
 export { default as useFilters } from './higher-order/use-filters';
 export { default as ViewMoreList } from './view-more-list';
 export { default as WebPreview } from './web-preview';
+export { SlotFillProvider } from '@wordpress/components';

@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
-import { IconButton, SlotFillProvider } from '@wordpress/components';
+import { IconButton } from '@wordpress/components';
 import { uniqueId } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
@@ -16,7 +16,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 import '../style.scss';
 import ActivityPanelToggleBubble from '../toggle-bubble';
-import { H, Section, Tabs, Panel } from '@woocommerce/components';
+import { H, Section, Tabs, Panel, SlotFillProvider } from '@woocommerce/components';
 import Inbox from '../panels/inbox';
 import Orders from '../panels/orders';
 import Stock from '../panels/stock';
