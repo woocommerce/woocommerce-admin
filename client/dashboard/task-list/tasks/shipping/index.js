@@ -180,11 +180,17 @@ class Shipping extends Component {
 			{
 				key: 'label_printing',
 				label: __( 'Enable shipping label printing', 'woocommerce-admin' ),
-				description: __(
-					'With WooCommerce Services and Jetpack you can save time at the ' +
-						'Post Office by printing your shipping labels at home',
-					'woocommerce-admin'
-				),
+				description: [ 'GB', 'CA', 'AU' ].includes( countryCode )
+					? __(
+							'We recommend using ShipStation to save time at the post office by printing your shipping ' +
+								'labels at home. Try ShipStation free for 30 days. Learn more.',
+							'woocommerce-admin'
+						)
+					: __(
+							'With WooCommerce Services and Jetpack you can save time at the ' +
+								'Post Office by printing your shipping labels at home',
+							'woocommerce-admin'
+						),
 				content: (
 					<Plugins
 						onComplete={ () => {
@@ -195,6 +201,11 @@ class Shipping extends Component {
 							recordEvent( 'tasklist_shipping_label_printing', { install: false } );
 							getHistory().push( getNewPath( {}, '/', {} ) );
 						} }
+						pluginSlugs={
+							[ 'GB', 'CA', 'AU' ].includes( countryCode )
+								? [ 'woocommerce-shipstation-integration' ]
+								: [ 'jetpack', 'woocommerce-services' ]
+						}
 						{ ...this.props }
 					/>
 				),
@@ -259,11 +270,9 @@ export default compose(
 		return { countryCode, countryName, isSettingsError, isSettingsRequesting, settings };
 	} ),
 	withDispatch( dispatch => {
-		const { createNotice } = dispatch( 'core/notices' );
 		const { updateSettings } = dispatch( 'wc-api' );
 
 		return {
-			createNotice,
 			updateSettings,
 		};
 	} )
