@@ -270,9 +270,11 @@ export default compose(
 		return { countryCode, countryName, isSettingsError, isSettingsRequesting, settings };
 	} ),
 	withDispatch( dispatch => {
+		const { createNotice } = dispatch( 'core/notices' );
 		const { updateSettings } = dispatch( 'wc-api' );
 
 		return {
+			createNotice,
 			updateSettings,
 		};
 	} )
