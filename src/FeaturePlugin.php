@@ -17,6 +17,7 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Welcome_Message;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Woo_Subscriptions_Notes;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Tracking_Opt_In;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Payments;
+use \Automattic\WooCommerce\Admin\Features\Navigation;
 
 /**
  * Feature plugin main class.
@@ -172,6 +173,7 @@ class FeaturePlugin {
 		Events::instance()->init();
 		new API\Init();
 		ReportExporter::init();
+		Navigation::instance()->init();
 
 		// CRUD classes.
 		WC_Admin_Notes::init();
