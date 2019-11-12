@@ -92,10 +92,9 @@ class ActivityPanel extends Component {
 
 	// On smaller screen, the panel buttons are hidden behind a toggle.
 	toggleMobile() {
-		const tabs = this.getTabs();
 		this.setState( state => ( {
 			mobileOpen: ! state.mobileOpen,
-			currentTab: state.mobileOpen ? '' : tabs[ 0 ].name,
+			currentTab: state.mobileOpen ? '' : 'inbox',
 			isPanelOpen: ! state.mobileOpen,
 		} ) );
 	}
