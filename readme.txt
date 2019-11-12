@@ -2,7 +2,7 @@
 Contributors: automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.2.0
-Tested up to: 5.2.1
+Tested up to: 5.3.0
 Requires PHP: 5.6.20
 Stable tag: 1.0.0
 License: GPLv3
@@ -36,7 +36,7 @@ WooCommerce Admin also allows store owners to customize a new dashboard screen w
 
 * WordPress 5.2
 * WooCommerce 3.6.0 or greater
-* PHP version 5.4 or greater. PHP 7.2 or greater is recommended
+* PHP version 5.6.20 or greater. PHP 7.2 or greater is recommended
 * MySQL version 5.0 or greater. MySQL 5.6 or greater is recommended
 
 Visit the [WooCommerce server requirements documentation](https://docs.woocommerce.com/document/server-requirements/) for a detailed list of server requirements.
@@ -47,7 +47,7 @@ Automatic installation is the easiest option, as WordPress handles the file tran
 1. Log in to your WordPress dashboard.
 2. Go to: Plugins > Add New.
 3. Enter “WooCommerce Admin” in the Search field, and view details about its point release, the rating and description.
-4. Select “Install Now” when you’re ready
+4. Select “Install Now” when you’re ready.
 
 = Manual installation =
 
@@ -70,6 +70,21 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 3. Analytics
 
 == Changelog ==
+
+= 0.21.0 2019-10-30 =
+
+- Fix: report export format when generated server-side. #2987 (Analytics, Packages)
+- Tweak: automatically update DB version during plugin updates. #3113
+- Tweak: add visual feedback for Inbox Note Actions #3039 (Activity Panel, Build, Inbox)
+- Fix: Address discrepancies in Revenue totals between Analytics screens. #3095 (Analytics)
+- Tweak: track inbox note views. #3096 (Activity Panel, Build, Inbox)
+- Dev: Fix asset image URL and business extension images #3062
+- Dev: Fix broken plugin builds by adding missing feature flag check #3053 (Build)
+- Enhancement: add management link to Reviews panel. #3011 (Activity Panel)
+- Fix: Error in category comparison chart. #3027 (Analytics, REST API)
+- Dev: Add the ability to create custom plugin builds #3044 (Build)
+- Fix: create table error during import. #3022 (Analytics, Build)
+- Tweak: Moved WC-Admin specific actions from TableCard to ReportTable. #2900 (Build, Components, Packages)
 
 = 0.20.1 2019-09-24 =
 

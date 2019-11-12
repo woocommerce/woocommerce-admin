@@ -104,6 +104,8 @@ class Appearance extends Component {
 		const { createNotice } = this.props;
 		this.setState( { isPending: true } );
 
+		recordEvent( 'tasklist_appearance_import_demo', {} );
+
 		apiFetch( {
 			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/import_sample_products`,
 			method: 'POST',
@@ -140,7 +142,7 @@ class Appearance extends Component {
 
 		recordEvent( 'tasklist_appearance_create_homepage', { create_homepage: true } );
 
-		apiFetch( { path: '/wc-admin/v1/onboarding/tasks/create_homepage', method: 'POST' } )
+		apiFetch( { path: '/wc-admin/onboarding/tasks/create_homepage', method: 'POST' } )
 			.then( response => {
 				createNotice( response.status, response.message );
 
@@ -190,7 +192,7 @@ class Appearance extends Component {
 				key: 'import',
 				label: __( 'Import demo products', 'woocommerce-admin' ),
 				description: __(
-					'We’ll add some products that it will make it easier to see what your store looks like.',
+					'We’ll add some products that will make it easier to see what your store looks like',
 					'woocommerce-admin'
 				),
 				content: (

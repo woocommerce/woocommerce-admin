@@ -16,7 +16,7 @@ import { withDispatch } from '@wordpress/data';
  */
 import { Form, Card, Stepper, TextControl, List } from '@woocommerce/components';
 import { getAdminLink, getHistory, getNewPath } from '@woocommerce/navigation';
-import { WC_ASSET_URL as wcAssetUrl } from '@woocommerce/wc-admin-settings';
+import { WC_ASSET_URL as wcAssetUrl, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -97,15 +97,23 @@ class Payments extends Component {
 		getHistory().push( getNewPath( {}, '/', {} ) );
 	}
 
+	isStripeEnabled() {
+		const { countryCode } = this.props;
+		const stripeCountries = getSetting( 'onboarding', { stripeSupportedCountries: [] } )
+			.stripeSupportedCountries;
+		return stripeCountries.includes( countryCode );
+	}
+
 	getInitialValues() {
+		const stripeEmail = getSetting( 'onboarding', { userEmail: '' } ).userEmail;
 		const values = {
-			stripe: false,
+			stripe: this.isStripeEnabled(),
 			paypal: false,
 			klarna_checkout: false,
 			klarna_payments: false,
 			square: false,
-			create_stripe: false,
-			stripe_email: '',
+			create_stripe: this.isStripeEnabled(),
+			stripe_email: ( this.isStripeEnabled() && stripeEmail ) || '',
 		};
 		return values;
 	}
@@ -213,7 +221,7 @@ class Payments extends Component {
 				),
 				before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
 				after: <FormToggle { ...getInputProps( 'stripe' ) } />,
-				visible: true,
+				visible: this.isStripeEnabled(),
 			},
 			{
 				key: 'paypal',
@@ -386,7 +394,7 @@ class Payments extends Component {
 						manualConfig={ manualConfig }
 						markConfigured={ this.markConfigured }
 						setRequestPending={ this.setMethodRequestPending }
-						createAccount={ values.create_stripe }
+						createAccount={ values.create_stripe && ! manualConfig }
 						email={ values.stripe_email }
 						countryCode={ countryCode }
 						returnUrl={ getAdminLink( 'admin.php?page=wc-admin&task=payments&stripe-connect=1' ) }
@@ -451,7 +459,6 @@ class Payments extends Component {
 
 	render() {
 		const { step, methodRequestPending } = this.state;
-		const { isSettingsRequesting } = this.props;
 		return (
 			<Form
 				initialValues={ this.getInitialValues() }
@@ -465,7 +472,7 @@ class Payments extends Component {
 							<Card className="is-narrow">
 								<Stepper
 									isVertical
-									isPending={ methodRequestPending || isSettingsRequesting || 'install' === step }
+									isPending={ methodRequestPending || 'install' === step }
 									currentStep={ step }
 									steps={ this.getSteps() }
 								/>
@@ -480,22 +487,15 @@ class Payments extends Component {
 
 export default compose(
 	withSelect( select => {
-		const {
-			getSettings,
-			getSettingsError,
-			isGetSettingsRequesting,
-			getProfileItems,
-			isJetpackConnected,
-			getActivePlugins,
-			getOptions,
-		} = select( 'wc-api' );
+		const { getProfileItems, isJetpackConnected, getActivePlugins, getOptions } = select(
+			'wc-api'
+		);
 
-		const settings = getSettings( 'general' );
-		const isSettingsError = Boolean( getSettingsError( 'general' ) );
-		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
-		const countryCode = getCountryCode( settings.woocommerce_default_country );
-
-		const options = getOptions( [ 'woocommerce_onboarding_payments' ] );
+		const options = getOptions( [
+			'woocommerce_onboarding_payments',
+			'woocommerce_default_country',
+		] );
+		const countryCode = getCountryCode( options.woocommerce_default_country );
 
 		const methods = get( options, [ 'woocommerce_onboarding_payments', 'methods' ], [] );
 		const installed = get( options, [ 'woocommerce_onboarding_payments', 'installed' ], false );
@@ -505,9 +505,6 @@ export default compose(
 
 		return {
 			countryCode,
-			isSettingsError,
-			isSettingsRequesting,
-			settings,
 			profileItems: getProfileItems(),
 			activePlugins: getActivePlugins(),
 			isJetpackConnected: isJetpackConnected(),

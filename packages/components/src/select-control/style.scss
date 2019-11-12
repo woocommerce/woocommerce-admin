@@ -31,6 +31,8 @@
 
 		.components-base-control__label {
 			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
 			color: $studio-gray-50;
 			font-size: 16px;
 		}
@@ -73,6 +75,11 @@
 			font-size: 12px;
 			margin-top: -$gap-small;
 		}
+	}
+
+	.woocommerce-select-control__autofill-input {
+		position: absolute;
+		z-index: -1;
 	}
 
 	.woocommerce-select-control__tags {

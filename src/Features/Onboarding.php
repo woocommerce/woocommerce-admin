@@ -49,6 +49,11 @@ class Onboarding {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
+
+		if ( ! Loader::is_onboarding_enabled() ) {
+			return;
+		}
+
 		// Include WC Admin Onboarding classes.
 		if ( self::should_show_tasks() ) {
 			OnboardingTasks::get_instance();
@@ -65,6 +70,7 @@ class Onboarding {
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
+		add_filter( 'woocommerce_admin_preload_settings', array( $this, 'preload_settings' ) );
 		add_action( 'woocommerce_theme_installed', array( $this, 'delete_themes_transient' ) );
 		add_action( 'after_switch_theme', array( $this, 'delete_themes_transient' ) );
 		add_action( 'current_screen', array( $this, 'finish_paypal_connect' ) );
@@ -110,12 +116,12 @@ class Onboarding {
 		return apply_filters(
 			'woocommerce_admin_onboarding_industries',
 			array(
-				'fashion-apparel-accessories' => __( 'Fashion, apparel & accessories', 'woocommerce-admin' ),
-				'health-beauty'               => __( 'Health & beauty', 'woocommerce-admin' ),
-				'art-music-photography'       => __( 'Art, music, & photography', 'woocommerce-admin' ),
-				'electronics-computers'       => __( 'Electronics & computers', 'woocommerce-admin' ),
-				'food-drink'                  => __( 'Food & drink', 'woocommerce-admin' ),
-				'home-furniture-garden'       => __( 'Home, furniture & garden', 'woocommerce-admin' ),
+				'fashion-apparel-accessories' => __( 'Fashion, apparel, and accessories', 'woocommerce-admin' ),
+				'health-beauty'               => __( 'Health and beauty', 'woocommerce-admin' ),
+				'art-music-photography'       => __( 'Art, music, and photography', 'woocommerce-admin' ),
+				'electronics-computers'       => __( 'Electronics and computers', 'woocommerce-admin' ),
+				'food-drink'                  => __( 'Food and drink', 'woocommerce-admin' ),
+				'home-furniture-garden'       => __( 'Home, furniture, and garden', 'woocommerce-admin' ),
 				'other'                       => __( 'Other', 'woocommerce-admin' ),
 			)
 		);
@@ -172,12 +178,15 @@ class Onboarding {
 
 			if ( ! is_wp_error( $theme_data ) ) {
 				$theme_data = json_decode( $theme_data['body'] );
-				usort( $theme_data->products, function ($product_1, $product_2) {
-					if ( 'Storefront' === $product_1->slug ) {
-						return -1;
+				usort(
+					$theme_data->products,
+					function ( $product_1, $product_2 ) {
+						if ( 'Storefront' === $product_1->slug ) {
+							return -1;
+						}
+						return $product_1->id < $product_2->id ? 1 : -1;
 					}
-					return $product_1->id < $product_2->id ? 1 : -1;
-				} );
+				);
 
 				foreach ( $theme_data->products as $theme ) {
 					$slug                                       = sanitize_title( $theme->slug );
@@ -344,7 +353,12 @@ class Onboarding {
 
 		// Only fetch if the onboarding wizard OR the task list is incomplete.
 		if ( self::should_show_profiler() || self::should_show_tasks() ) {
-			$settings['onboarding']['activePlugins'] = self::get_active_plugins();
+			$settings['onboarding']['activePlugins']            = self::get_active_plugins();
+			$settings['onboarding']['stripeSupportedCountries'] = self::get_stripe_supported_countries();
+			$settings['onboarding']['euCountries']              = WC()->countries->get_european_union_countries();
+			$settings['onboarding']['connectNonce']             = wp_create_nonce( 'connect' );
+			$current_user                                       = wp_get_current_user();
+			$settings['onboarding']['userEmail']                = esc_html( $current_user->user_email );
 		}
 
 		return $settings;
@@ -364,10 +378,28 @@ class Onboarding {
 		}
 
 		$options[] = 'wc_connect_options';
+		$options[] = 'woocommerce_task_list_welcome_modal_dismissed';
 		$options[] = 'woocommerce_task_list_prompt_shown';
 		$options[] = 'woocommerce_onboarding_payments';
 		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
+		$options[] = 'woocommerce_default_country';
+
+		return $options;
+	}
+
+	/**
+	 * Preload WC setting options to prime state of the application.
+	 *
+	 * @param array $options Array of options to preload.
+	 * @return array
+	 */
+	public function preload_settings( $options ) {
+		if ( ! self::should_show_profiler() ) {
+			return $options;
+		}
+
+		$options[] = 'general';
 
 		return $options;
 	}
@@ -387,6 +419,48 @@ class Onboarding {
 	}
 
 	/**
+	 * Returns a list of Stripe supported countries. This method can be removed once merged to core.
+	 *
+	 * @return array
+	 */
+	private static function get_stripe_supported_countries() {
+		// https://stripe.com/global.
+		return array(
+			'AU',
+			'AT',
+			'BE',
+			'CA',
+			'DK',
+			'EE',
+			'FI',
+			'FR',
+			'DE',
+			'GR',
+			'HK',
+			'IE',
+			'IT',
+			'JP',
+			'LV',
+			'LT',
+			'LU',
+			'MY',
+			'NL',
+			'NZ',
+			'NO',
+			'PL',
+			'PT',
+			'SG',
+			'SK',
+			'SI',
+			'ES',
+			'SE',
+			'CH',
+			'GB',
+			'US',
+		);
+	}
+
+	/**
 	 * Gets an array of plugins that can be installed & activated via the onboarding wizard.
 	 *
 	 * @todo Handle edgecase of where installed plugins may have versioned folder names (i.e. `jetpack-master/jetpack.php`).
@@ -395,15 +469,16 @@ class Onboarding {
 		return apply_filters(
 			'woocommerce_onboarding_plugins_whitelist',
 			array(
-				'facebook-for-woocommerce'        => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
-				'mailchimp-for-woocommerce'       => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
-				'jetpack'                         => 'jetpack/jetpack.php',
-				'woocommerce-services'            => 'woocommerce-services/woocommerce-services.php',
-				'woocommerce-gateway-stripe'      => 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php',
+				'facebook-for-woocommerce'            => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
+				'mailchimp-for-woocommerce'           => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
+				'jetpack'                             => 'jetpack/jetpack.php',
+				'woocommerce-services'                => 'woocommerce-services/woocommerce-services.php',
+				'woocommerce-gateway-stripe'          => 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php',
 				'woocommerce-gateway-paypal-express-checkout' => 'woocommerce-gateway-paypal-express-checkout/woocommerce-gateway-paypal-express-checkout.php',
-				'klarna-checkout-for-woocommerce' => 'klarna-checkout-for-woocommerce/klarna-checkout-for-woocommerce.php',
-				'klarna-payments-for-woocommerce' => 'klarna-payments-for-woocommerce/klarna-payments-for-woocommerce.php',
-				'woocommerce-square'              => 'woocommerce-square/woocommerce-square.php',
+				'klarna-checkout-for-woocommerce'     => 'klarna-checkout-for-woocommerce/klarna-checkout-for-woocommerce.php',
+				'klarna-payments-for-woocommerce'     => 'klarna-payments-for-woocommerce/klarna-payments-for-woocommerce.php',
+				'woocommerce-square'                  => 'woocommerce-square/woocommerce-square.php',
+				'woocommerce-shipstation-integration' => 'woocommerce-shipstation-integration/woocommerce-shipstation.php',
 			)
 		);
 	}
@@ -589,7 +664,7 @@ class Onboarding {
 				)
 			);
 
-			$connect_url = \Jetpack::init()->build_connect_url( true, $redirect_url, 'woocommerce-setup-wizard' );
+			$connect_url = \Jetpack::init()->build_connect_url( true, $redirect_url, 'woocommerce-onboarding' );
 			$connect_url = add_query_arg( array( 'calypso_env' => $calypso_env ), $connect_url );
 
 			wp_redirect( $connect_url );
@@ -662,7 +737,7 @@ class Onboarding {
 			)
 		);
 
-		$request = new \WP_REST_Request( 'POST', '/wc-admin/v1/onboarding/profile' );
+		$request = new \WP_REST_Request( 'POST', '/wc-admin/onboarding/profile' );
 		$request->set_headers( array( 'content-type' => 'application/json' ) );
 		$request->set_body(
 			wp_json_encode(

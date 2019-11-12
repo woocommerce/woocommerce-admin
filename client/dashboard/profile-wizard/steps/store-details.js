@@ -3,43 +3,71 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 import { Button, CheckboxControl } from 'newspack-components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import { recordEvent } from 'lib/tracks';
+import { without, get } from 'lodash';
 
 /**
  * Internal depdencies
  */
 import { getCountryCode } from 'dashboard/utils';
 import { H, Card, Form } from '@woocommerce/components';
+import { getCurrencyData } from '@woocommerce/currency';
 import withSelect from 'wc-api/with-select';
 import {
 	StoreAddress,
 	validateStoreAddress,
 } from '../../components/settings/general/store-address';
 import UsageModal from './usage-modal';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 class StoreDetails extends Component {
-	constructor() {
+	constructor( props ) {
 		super( ...arguments );
+		const settings = get( props, 'settings', false );
+		const profileItems = get( props, 'profileItems', {} );
 
 		this.state = {
 			showUsageModal: false,
 		};
 
 		this.initialValues = {
-			addressLine1: '',
-			addressLine2: '',
-			city: '',
-			countryState: '',
-			postCode: '',
-			isClient: false,
+			addressLine1: settings.woocommerce_store_address || '',
+			addressLine2: settings.woocommerce_store_address_2 || '',
+			city: settings.woocommerce_store_city || '',
+			countryState: settings.woocommerce_default_country || '',
+			postCode: settings.woocommerce_store_postcode || '',
+			isClient: profileItems.setup_client || false,
 		};
 
 		this.onContinue = this.onContinue.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
+	}
+
+	componentWillUnmount() {
+		apiFetch( { path: '/wc-admin/onboarding/tasks/create_store_pages', method: 'POST' } );
+	}
+
+	deriveCurrencySettings( countryState ) {
+		if ( ! countryState ) {
+			return null;
+		}
+
+		let region = getCountryCode( countryState );
+		const euCountries = without(
+			getSetting( 'onboarding', { euCountries: [] } ).euCountries,
+			'GB'
+		);
+		if ( euCountries.includes( region ) ) {
+			region = 'EU';
+		}
+
+		const currencyData = getCurrencyData();
+		return currencyData[ region ] || currencyData.US;
 	}
 
 	onSubmit( values ) {
@@ -63,8 +91,11 @@ class StoreDetails extends Component {
 			isProfileItemsError,
 		} = this.props;
 
+		const currencySettings = this.deriveCurrencySettings( values.countryState );
+
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
+			derived_currency: currencySettings.code,
 			setup_client: values.isClient,
 		} );
 
@@ -75,6 +106,11 @@ class StoreDetails extends Component {
 				woocommerce_default_country: values.countryState,
 				woocommerce_store_city: values.city,
 				woocommerce_store_postcode: values.postCode,
+				woocommerce_currency: currencySettings.code,
+				woocommerce_currency_pos: currencySettings.position,
+				woocommerce_price_thousand_sep: currencySettings.grouping,
+				woocommerce_price_decimal_sep: currencySettings.decimal,
+				woocommerce_price_num_decimals: currencySettings.precision,
 			},
 		} );
 
@@ -92,6 +128,7 @@ class StoreDetails extends Component {
 
 	render() {
 		const { showUsageModal } = this.state;
+
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
@@ -110,7 +147,7 @@ class StoreDetails extends Component {
 						onSubmitCallback={ this.onSubmit }
 						validate={ validateStoreAddress }
 					>
-						{ ( { getInputProps, handleSubmit, values, isValidForm } ) => (
+						{ ( { getInputProps, handleSubmit, values, isValidForm, setValue } ) => (
 							<Fragment>
 								{ showUsageModal && (
 									<UsageModal
@@ -118,7 +155,7 @@ class StoreDetails extends Component {
 										onClose={ () => this.setState( { showUsageModal: false } ) }
 									/>
 								) }
-								<StoreAddress getInputProps={ getInputProps } />
+								<StoreAddress getInputProps={ getInputProps } setValue={ setValue } />
 								<CheckboxControl
 									label={ __( "I'm setting up a store for a client", 'woocommerce-admin' ) }
 									{ ...getInputProps( 'isClient' ) }
@@ -146,11 +183,11 @@ export default compose(
 			getProfileItems,
 		} = select( 'wc-api' );
 
-		const profileItems = getProfileItems();
-
 		const settings = getSettings( 'general' );
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
 		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
+
+		const profileItems = getProfileItems();
 		const isProfileItemsError = Boolean( getProfileItemsError() );
 
 		return {
