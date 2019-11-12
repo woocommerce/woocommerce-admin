@@ -167,8 +167,8 @@ class WordPressNotices extends Component {
 
 	showNotices() {
 		const { notices, screenLinks, screenMeta } = this.state;
-		notices.classList.add( 'woocommerce-layout__notice-list-show' );
-		notices.classList.remove( 'woocommerce-layout__notice-list-hide' );
+		notices && notices.classList.add( 'woocommerce-layout__notice-list-show' );
+		notices && notices.classList.remove( 'woocommerce-layout__notice-list-hide' );
 		screenMeta && screenMeta.classList.add( 'is-hidden-by-notices' );
 		screenLinks && screenLinks.classList.add( 'is-hidden-by-notices' );
 
@@ -177,8 +177,8 @@ class WordPressNotices extends Component {
 
 	hideNotices() {
 		const { notices, screenLinks, screenMeta } = this.state;
-		notices.classList.add( 'woocommerce-layout__notice-list-hide' );
-		notices.classList.remove( 'woocommerce-layout__notice-list-show' );
+		notices && notices.classList.add( 'woocommerce-layout__notice-list-hide' );
+		notices && notices.classList.remove( 'woocommerce-layout__notice-list-show' );
 		screenMeta && screenMeta.classList.remove( 'is-hidden-by-notices' );
 		screenLinks && screenLinks.classList.remove( 'is-hidden-by-notices' );
 	}
