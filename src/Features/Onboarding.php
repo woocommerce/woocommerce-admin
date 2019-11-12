@@ -357,6 +357,8 @@ class Onboarding {
 			$settings['onboarding']['stripeSupportedCountries'] = self::get_stripe_supported_countries();
 			$settings['onboarding']['euCountries']              = WC()->countries->get_european_union_countries();
 			$settings['onboarding']['connectNonce']             = wp_create_nonce( 'connect' );
+			$current_user                                       = wp_get_current_user();
+			$settings['onboarding']['userEmail']                = esc_html( $current_user->user_email );
 		}
 
 		return $settings;
@@ -467,15 +469,16 @@ class Onboarding {
 		return apply_filters(
 			'woocommerce_onboarding_plugins_whitelist',
 			array(
-				'facebook-for-woocommerce'        => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
-				'mailchimp-for-woocommerce'       => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
-				'jetpack'                         => 'jetpack/jetpack.php',
-				'woocommerce-services'            => 'woocommerce-services/woocommerce-services.php',
-				'woocommerce-gateway-stripe'      => 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php',
+				'facebook-for-woocommerce'            => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
+				'mailchimp-for-woocommerce'           => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
+				'jetpack'                             => 'jetpack/jetpack.php',
+				'woocommerce-services'                => 'woocommerce-services/woocommerce-services.php',
+				'woocommerce-gateway-stripe'          => 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php',
 				'woocommerce-gateway-paypal-express-checkout' => 'woocommerce-gateway-paypal-express-checkout/woocommerce-gateway-paypal-express-checkout.php',
-				'klarna-checkout-for-woocommerce' => 'klarna-checkout-for-woocommerce/klarna-checkout-for-woocommerce.php',
-				'klarna-payments-for-woocommerce' => 'klarna-payments-for-woocommerce/klarna-payments-for-woocommerce.php',
-				'woocommerce-square'              => 'woocommerce-square/woocommerce-square.php',
+				'klarna-checkout-for-woocommerce'     => 'klarna-checkout-for-woocommerce/klarna-checkout-for-woocommerce.php',
+				'klarna-payments-for-woocommerce'     => 'klarna-payments-for-woocommerce/klarna-payments-for-woocommerce.php',
+				'woocommerce-square'                  => 'woocommerce-square/woocommerce-square.php',
+				'woocommerce-shipstation-integration' => 'woocommerce-shipstation-integration/woocommerce-shipstation.php',
 			)
 		);
 	}
