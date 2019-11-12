@@ -16,7 +16,7 @@ import InboxPanelContent from './panel-content';
 /**
  * WooCommerce dependencies
  */
-import { Panel, Tabs } from '@woocommerce/components';
+import { ActivityPanelContent, ActivityPanelTab } from '@woocommerce/components';
 
 class Inbox extends Component {
 	render() {
@@ -25,10 +25,10 @@ class Inbox extends Component {
 
 		return (
 			<Fragment>
-				<Tabs.Item name="inbox" title={ title } icon="mail" unread={ hasUnreadNotes } />
-				<Panel.Content name="inbox" title={ title }>
+				<ActivityPanelTab name="inbox" title={ title } icon="mail" unread={ hasUnreadNotes } />
+				<ActivityPanelContent name="inbox" title={ title }>
 					{ () => <InboxPanelContent /> }
-				</Panel.Content>
+				</ActivityPanelContent>
 			</Fragment>
 		);
 	}

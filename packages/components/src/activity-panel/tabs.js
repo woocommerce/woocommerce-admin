@@ -9,10 +9,10 @@ import { createSlotFill, IconButton, NavigableMenu } from '@wordpress/components
 import Gridicon from 'gridicons';
 
 const { Fill, Slot } = createSlotFill( 'WooCommerceActivityPanelTabs' );
-console.log( 'Tabs', { Fill, Slot } );
-class Tabs extends Component {
-	static Item = props => {
-		const { name, title, icon, unread, customTabClick } = props;
+
+class ActivityPanelTab extends Component {
+	render() {
+		const { name, title, icon, unread, customTabClick } = this.props;
 
 		return (
 			<Fill>
@@ -53,21 +53,21 @@ class Tabs extends Component {
 				} }
 			</Fill>
 		);
-	};
-
-	render() {
-		const { currentTab, handleTabClick, isPanelOpen } = this.props;
-
-		return (
-			<NavigableMenu
-				role="tablist"
-				orientation="horizontal"
-				className="woocommerce-layout__activity-panel-tabs"
-			>
-				<Slot fillProps={ { currentTab, handleTabClick, isPanelOpen } } />
-			</NavigableMenu>
-		);
 	}
 }
 
-export default Tabs;
+ActivityPanelTab.Slot = ( props ) => {
+	const { currentTab, handleTabClick, isPanelOpen } = props;
+
+	return (
+		<NavigableMenu
+			role="tablist"
+			orientation="horizontal"
+			className="woocommerce-layout__activity-panel-tabs"
+		>
+			<Slot fillProps={ { currentTab, handleTabClick, isPanelOpen } } />
+		</NavigableMenu>
+	);
+};
+
+export default ActivityPanelTab;

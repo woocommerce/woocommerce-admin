@@ -16,7 +16,7 @@ import StockPanelContent from './panel-content';
 /**
  * WooCommerce dependencies
  */
-import { Panel, Tabs } from '@woocommerce/components';
+import { ActivityPanelContent, ActivityPanelTab } from '@woocommerce/components';
 
 class Stock extends Component {
 	render() {
@@ -25,10 +25,10 @@ class Stock extends Component {
 
 		return (
 			<Fragment>
-				<Tabs.Item name="stock" title={ title } icon="clipboard" unread={ hasLowStock } />
-				<Panel.Content name="stock" title={ title }>
+				<ActivityPanelTab name="stock" title={ title } icon="clipboard" unread={ hasLowStock } />
+				<ActivityPanelContent name="stock" title={ title }>
 					{ () => <StockPanelContent /> }
-				</Panel.Content>
+				</ActivityPanelContent>
 			</Fragment>
 		);
 	}

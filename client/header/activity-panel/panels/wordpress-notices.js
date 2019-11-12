@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 /**
  * WooCommerce dependencies
  */
-import { Tabs } from '@woocommerce/components';
+import { ActivityPanelTab } from '@woocommerce/components';
 
 class WordPressNotices extends Component {
 	constructor() {
@@ -197,7 +197,7 @@ class WordPressNotices extends Component {
 		const { count } = this.state;
 
 		return (
-			<Tabs.Item
+			<ActivityPanelTab
 				name="wpnotices"
 				title={ __( 'Notices', 'woocommerce-admin' ) }
 				icon="my-sites"

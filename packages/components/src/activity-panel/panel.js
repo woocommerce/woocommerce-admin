@@ -7,15 +7,11 @@ import { Component } from '@wordpress/element';
 import { createSlotFill } from '@wordpress/components';
 import { isFunction } from 'lodash';
 
-/**
- * Internal dependencies
- */
-
 const { Fill, Slot } = createSlotFill( 'WooCommerceActivityPanel' );
-console.log( 'Panel', { Fill, Slot } );
-class Panel extends Component {
-	static Content = props => {
-		const { name, title, children } = props;
+
+class ActivityPanelContent extends Component {
+	render() {
+		const { name, title, children } = this.props;
 
 		return (
 			<Fill>
@@ -55,11 +51,11 @@ class Panel extends Component {
 				} }
 			</Fill>
 		);
-	};
-
-	render() {
-		return <Slot fillProps={ this.props } />;
 	}
 }
 
-export default Panel;
+ActivityPanelContent.Slot = ( props ) => (
+	<Slot fillProps={ props } />
+);
+
+export default ActivityPanelContent;

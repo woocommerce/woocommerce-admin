@@ -1,2 +1,2 @@
-export { default as Panel } from './panel';
-export { default as Tabs } from './tabs';
+export { default as ActivityPanelContent } from './panel';
+export { default as ActivityPanelTab } from './tabs';

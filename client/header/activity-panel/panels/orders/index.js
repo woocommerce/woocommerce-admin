@@ -16,7 +16,7 @@ import OrdersPanelContent from './panel-content';
 /**
  * WooCommerce dependencies
  */
-import { Panel, Tabs } from '@woocommerce/components';
+import { ActivityPanelContent, ActivityPanelTab } from '@woocommerce/components';
 
 class Orders extends Component {
 	render() {
@@ -24,15 +24,15 @@ class Orders extends Component {
 
 		return (
 			<Fragment>
-				<Tabs.Item
+				<ActivityPanelTab
 					name="orders"
 					title={ __( 'Orders', 'woocommerce-admin' ) }
 					icon="pages"
 					unread={ hasUnreadOrders }
 				/>
-				<Panel.Content name="orders" title={ __( 'Orders', 'woocommerce-admin' ) }>
+				<ActivityPanelContent name="orders" title={ __( 'Orders', 'woocommerce-admin' ) }>
 					{ () => <OrdersPanelContent hasActionableOrders={ hasUnreadOrders } /> }
-				</Panel.Content>
+				</ActivityPanelContent>
 			</Fragment>
 		);
 	}

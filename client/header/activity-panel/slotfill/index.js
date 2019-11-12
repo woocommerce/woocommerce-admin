@@ -17,7 +17,13 @@ import { PluginArea } from '@wordpress/plugins';
  */
 import '../style.scss';
 import ActivityPanelToggleBubble from '../toggle-bubble';
-import { H, Section, Tabs, Panel, SlotFillProvider } from '@woocommerce/components';
+import {
+	ActivityPanelContent,
+	ActivityPanelTab,
+	H,
+	Section,
+	SlotFillProvider,
+} from '@woocommerce/components';
 import Inbox from '../panels/inbox';
 import Orders from '../panels/orders';
 import Stock from '../panels/stock';
@@ -139,12 +145,12 @@ class ActivityPanel extends Component {
 					/>
 					<div className={ panelClasses }>
 						<SlotFillProvider>
-							<Tabs
+							<ActivityPanelTab.Slot
 								currentTab={ currentTab }
 								handleTabClick={ this.togglePanel }
 								isPanelOpen={ isPanelOpen }
 							/>
-							<Panel
+							<ActivityPanelContent.Slot
 								currentTab={ currentTab }
 								isOpen={ isPanelOpen }
 								isSwitching={ isPanelSwitching }

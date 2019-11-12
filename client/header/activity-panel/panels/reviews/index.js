@@ -16,7 +16,7 @@ import ReviewsPanelContent from './panel-content';
 /**
  * WooCommerce dependencies
  */
-import { Panel, Tabs } from '@woocommerce/components';
+import { ActivityPanelContent, ActivityPanelTab } from '@woocommerce/components';
 
 class Reviews extends Component {
 	render() {
@@ -25,10 +25,15 @@ class Reviews extends Component {
 
 		return (
 			<Fragment>
-				<Tabs.Item name="reviews" title={ title } icon="star" unread={ hasUnapprovedReviews } />
-				<Panel.Content name="reviews" title={ title }>
+				<ActivityPanelTab
+					name="reviews"
+					title={ title }
+					icon="star"
+					unread={ hasUnapprovedReviews }
+				/>
+				<ActivityPanelContent name="reviews" title={ title }>
 					{ () => <ReviewsPanelContent hasUnapprovedReviews={ hasUnapprovedReviews } /> }
-				</Panel.Content>
+				</ActivityPanelContent>
 			</Fragment>
 		);
 	}
