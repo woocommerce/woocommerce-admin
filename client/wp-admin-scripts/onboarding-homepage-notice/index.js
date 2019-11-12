@@ -34,10 +34,7 @@ const saveStarted = () => {
  * @return {Promise} Promise for overlay existence.
  */
 const saveCompleted = () => {
-	if (
-		null === document.querySelector( '.components-notice__content' ) &&
-		null === document.querySelector( '.components-snackbar__content' )
-	) {
+	if ( null === document.querySelector( '.post-publish-panel__postpublish' ) ) {
 		const promise = new Promise( resolve => {
 			requestAnimationFrame( resolve );
 		} );
