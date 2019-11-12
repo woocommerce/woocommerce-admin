@@ -10,6 +10,7 @@ import Gridicon from 'gridicons';
 import { IconButton } from '@wordpress/components';
 import { uniqueId } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { PluginArea } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
@@ -153,6 +154,7 @@ class ActivityPanel extends Component {
 							<Orders />
 							{ 'yes' === reviewsEnabled && <Reviews /> }
 							{ 'yes' === manageStock && <Stock /> }
+							<PluginArea />
 							{ hasWordPressNotices && (
 								<WordPressNotices currentTab={ currentTab } togglePanel={ this.togglePanel } />
 							) }

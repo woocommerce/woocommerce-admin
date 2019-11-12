@@ -305,7 +305,15 @@ class Loader {
 		wp_register_script(
 			WC_ADMIN_APP,
 			self::get_url( 'app/index.js' ),
-			array( 'wc-components', 'wc-navigation', 'wp-date', 'wp-html-entities', 'wp-keycodes', 'wp-i18n' ),
+			array(
+				'wc-components',
+				'wc-navigation',
+				'wp-date',
+				'wp-html-entities',
+				'wp-keycodes',
+				'wp-i18n',
+				'wp-plugins',
+			),
 			self::get_file_version( 'app/index.js' ),
 			true
 		);
