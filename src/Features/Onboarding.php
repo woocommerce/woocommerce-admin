@@ -699,6 +699,10 @@ class Onboarding {
 				$help_tab['content'] .= '<p><a href="' . wc_admin_url( '&test_wc_helper_connect=1' ) . '" class="button button-primary">' . __( 'Connect', 'woocommerce-admin' ) . '</a></p>';
 			}
 
+			$help_tab['content'] .= '<h3>' . __( 'New onboarding experience', 'woocommerce-admin' ) . '</h3>';
+			$help_tab['content'] .= '<p>' . __( 'To disable the new WooCommerce onboarding experience, click the button below.', 'woocommerce-admin' ) . '</p>';
+			$help_tab['content'] .= '<p><a href="' . wc_admin_url( '&enable_onboarding=0' ) . '" class="button button-primary">' . __( 'Disable', 'woocommerce-admin' ) . '</a></p>';
+
 			$screen->add_help_tab( $help_tab );
 		}
 	}
