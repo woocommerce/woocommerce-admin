@@ -14,7 +14,7 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { Card, Stepper, TextControl } from '@woocommerce/components';
-import { getHistory, getNewPath } from '@woocommerce/navigation';
+import { getHistory, getNewPath, getQuery } from '@woocommerce/navigation';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -46,6 +46,13 @@ class Appearance extends Component {
 		this.importProducts = this.importProducts.bind( this );
 		this.updateLogo = this.updateLogo.bind( this );
 		this.updateNotice = this.updateNotice.bind( this );
+	}
+
+	componentDidMount() {
+		const { from } = getQuery();
+		if ( 'homepage' === from ) {
+			recordEvent( 'tasklist_appearance_continue_setup', {} );
+		}
 	}
 
 	async componentDidUpdate( prevProps ) {
