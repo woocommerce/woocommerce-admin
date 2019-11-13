@@ -31,9 +31,9 @@ class Install {
 			'wc_admin_update_0201_order_status_index',
 			'wc_admin_update_0201_db_version',
 		),
-		'0.21.0' => array(
-			'wc_admin_update_0210_rename_gross_sales',
-			'wc_admin_update_0210_db_version',
+		'0.23.0' => array(
+			'wc_admin_update_0230_rename_gross_total',
+			'wc_admin_update_0230_db_version',
 		),
 	);
 
