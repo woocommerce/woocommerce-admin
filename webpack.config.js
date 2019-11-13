@@ -64,6 +64,8 @@ wcAdminPackages.forEach( name => {
 
 const wpAdminScripts = [
 	'onboarding-homepage-notice',
+	'onboarding-product-notice',
+	'onboarding-tax-notice',
 ];
 wpAdminScripts.forEach( name => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
