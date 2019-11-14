@@ -113,14 +113,15 @@ export function queueRecordEvent( eventName, eventProperties ) {
  * Record a page view to Tracks
  *
  * @param {String} path the page/path to record a page view for
+ * @param {Object} extraProperties extra event properties to include in the event
  */
 
-export function recordPageView( path ) {
+export function recordPageView( path, extraProperties ) {
 	if ( ! path ) {
 		return;
 	}
 
-	recordEvent( 'page_view', { path } );
+	recordEvent( 'page_view', { path, ...extraProperties } );
 
 	// Process queue.
 	tracksQueue.process();
