@@ -286,26 +286,38 @@ class BusinessDetails extends Component {
 				key: 'up-to-2500',
 				label: sprintf(
 					_x( 'Up to %s', 'Up to a certain revenue amount', 'woocommerce-admin' ),
-					formatCurrency( 2500 )
+					formatCurrency( _x( '2500', 'equivalent of $2500 USD', 'woocommerce-admin' ) )
 				),
 			},
 			{
 				key: '2500-10000',
-				label: this.getNumberRangeString( 2500, 10000, formatCurrency ),
+				label: this.getNumberRangeString(
+					_x( '2500', 'equivalent of $2500 USD', 'woocommerce-admin' ),
+					_x( '10000', 'equivalent of $10000 USD', 'woocommerce-admin' ),
+					formatCurrency
+				),
 			},
 			{
 				key: '10000-50000',
-				label: this.getNumberRangeString( 10000, 50000, formatCurrency ),
+				label: this.getNumberRangeString(
+					_x( '10000', 'equivalent of $10000 USD', 'woocommerce-admin' ),
+					_x( '50000', 'equivalent of $50000 USD', 'woocommerce-admin' ),
+					formatCurrency
+				),
 			},
 			{
 				key: '50000-250000',
-				label: this.getNumberRangeString( 50000, 250000, formatCurrency ),
+				label: this.getNumberRangeString(
+					_x( '50000', 'equivalent of $50000 USD', 'woocommerce-admin' ),
+					_x( '250000', 'equivalent of $250000 USD', 'woocommerce-admin' ),
+					formatCurrency
+				),
 			},
 			{
 				key: 'more-than-250000',
 				label: sprintf(
 					_x( 'More than %s', 'More than a certain revenue amount', 'woocommerce-admin' ),
-					formatCurrency( 250000 )
+					formatCurrency( _x( '250000', 'equivalent of $250000 USD', 'woocommerce-admin' ) )
 				),
 			},
 		];
