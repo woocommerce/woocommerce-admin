@@ -201,8 +201,11 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 		}
 
 		return array(
-			'customer' => array(
-				'href' => rest_url( sprintf( '/%s/customers/%d', $this->namespace, $object['user_id'] ) ),
+			'customer'   => array(
+				'href' => rest_url( sprintf( '/%s/customers/%d', $this->namespace, $object['id'] ) ),
+			),
+			'collection' => array(
+				'href' => rest_url( sprintf( '/%s/customers', $this->namespace ) ),
 			),
 		);
 	}
