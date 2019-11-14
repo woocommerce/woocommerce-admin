@@ -49,9 +49,8 @@ class Onboarding {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
-
 		// Adds the ability to toggle the new onboarding experience on or off.
-		// @todo We should consider when we want to remove the abillity to toggle this feature.
+		// @todo This option should be removed when merging the onboarding feature to core.
 		add_action( 'current_screen', array( $this, 'enable_onboarding' ) );
 
 		if ( ! Loader::is_onboarding_enabled() ) {
