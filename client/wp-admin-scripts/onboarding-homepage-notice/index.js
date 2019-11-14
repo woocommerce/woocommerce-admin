@@ -13,6 +13,11 @@ import domReady from '@wordpress/dom-ready';
 import { getAdminLink } from '@woocommerce/navigation';
 
 /**
+ * Internal dependencies
+ */
+import { queueRecordEvent } from 'lib/tracks';
+
+/**
  * Returns a promise and resolves when the post begins to publish.
  *
  * @return {Promise} Promise for overlay existence.
@@ -78,7 +83,10 @@ const onboardingHomepageNotice = () => {
 				actions: [
 					{
 						label: __( 'Continue setup.', 'woocommerce-admin' ),
-						url: getAdminLink( 'admin.php?page=wc-admin&task=appearance&from=homepage' ),
+						onClick: () => {
+							queueRecordEvent( 'tasklist_appearance_continue_setup', {} );
+							window.location = getAdminLink( 'admin.php?page=wc-admin&task=appearance' );
+						},
 					},
 				],
 			}
