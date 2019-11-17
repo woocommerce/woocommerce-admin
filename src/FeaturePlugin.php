@@ -55,6 +55,12 @@ class FeaturePlugin {
 	 */
 	public function init() {
 		$this->define_constants();
+
+		require_once WC_ADMIN_ABSPATH . '/includes/core-functions.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/page-controller-functions.php';
+		require_once WC_ADMIN_ABSPATH . '/includes/wc-admin-update-functions.php';
+
 		register_activation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 		register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_deactivation' ) );
 		if ( did_action( 'plugins_loaded' ) ) {
