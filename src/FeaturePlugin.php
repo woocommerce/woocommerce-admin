@@ -57,7 +57,11 @@ class FeaturePlugin {
 		$this->define_constants();
 		register_activation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 		register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_deactivation' ) );
-		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
+		if ( did_action( 'plugins_loaded' ) ) {
+			self::on_plugins_loaded();
+		} else {
+			add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
+		}
 		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
 	}
 
