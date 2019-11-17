@@ -9,11 +9,6 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
-require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/core-functions.php';
-require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/feature-config.php';
-require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/page-controller-functions.php';
-require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/wc-admin-update-functions.php';
-
 /**
  * Main package class.
  */

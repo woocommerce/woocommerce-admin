@@ -9,7 +9,7 @@
 
 use \Automattic\WooCommerce\Admin\Loader;
 
-if ( ! function_exists( 'wc_admin_number_format' ) ) {
+//if ( ! function_exists( 'wc_admin_number_format' ) ) {
 	/**
 	 * Format a number using the decimal and thousands separator settings in WooCommerce.
 	 *
@@ -25,9 +25,9 @@ if ( ! function_exists( 'wc_admin_number_format' ) ) {
 			$currency_settings['thousandSeparator']
 		);
 	}
-}
+//}
 
-if ( ! function_exists( 'wc_admin_url' ) ) {
+//if ( ! function_exists( 'wc_admin_url' ) ) {
 	/**
 	 * Retrieves a URL to relative path inside WooCommerce admin with
 	 * the provided query parameters.
@@ -45,9 +45,9 @@ if ( ! function_exists( 'wc_admin_url' ) ) {
 
 		return admin_url( 'admin.php?page=wc-admin' . $path, dirname( __FILE__ ) );
 	}
-}
+//}
 
-if ( ! function_exists( 'wc_admin_record_tracks_event' ) ) {
+//if ( ! function_exists( 'wc_admin_record_tracks_event' ) ) {
 	/**
 	 * Record an event using Tracks.
 	 *
@@ -69,4 +69,4 @@ if ( ! function_exists( 'wc_admin_record_tracks_event' ) ) {
 
 		WC_Tracks::record_event( $event_name, $properties );
 	}
-}
+//}

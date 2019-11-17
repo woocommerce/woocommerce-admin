@@ -9,7 +9,7 @@
 
 use \Automattic\WooCommerce\Admin\Install as Installer;
 
-if ( ! function_exists( 'wc_admin_update_0201_order_status_index' ) ) {
+//if ( ! function_exists( 'wc_admin_update_0201_order_status_index' ) ) {
 	/**
 	 * Update order stats `status` index length.
 	 * See: https://github.com/woocommerce/woocommerce-admin/issues/2969.
@@ -35,13 +35,13 @@ if ( ! function_exists( 'wc_admin_update_0201_order_status_index' ) ) {
 		// Recreate the status index with a max length.
 		$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}wc_order_stats ADD INDEX status (status(%d))", $max_index_length ) );
 	}
-}
+//}
 
-if ( ! function_exists( 'wc_admin_update_0201_db_version' ) ) {
+//if ( ! function_exists( 'wc_admin_update_0201_db_version' ) ) {
 	/**
 	 * Update DB Version.
 	 */
 	function wc_admin_update_0201_db_version() {
 		Installer::update_db_version( '0.20.1' );
 	}
-}
+//}

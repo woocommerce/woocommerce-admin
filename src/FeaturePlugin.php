@@ -54,6 +54,11 @@ class FeaturePlugin {
 	 * Init the feature plugin, only if we can detect both Gutenberg and WooCommerce.
 	 */
 	public function init() {
+		require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/core-functions.php';
+		require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/feature-config.php';
+		require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/page-controller-functions.php';
+		require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/wc-admin-update-functions.php';
+
 		$this->define_constants();
 		register_activation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 		register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, array( $this, 'on_deactivation' ) );
