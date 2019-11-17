@@ -27,6 +27,11 @@ class Package {
 	 * Only initialize for WP 5.2 or greater.
 	 */
 	public static function init() {
+		require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/core-functions.php';
+		require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/feature-config.php';
+		require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/page-controller-functions.php';
+		require_once WC_ABSPATH . 'packages/woocommerce-admin/includes/wc-admin-update-functions.php';
+
 		$wordpress_minimum_met = version_compare( get_bloginfo( 'version' ), '5.2', '>=' );
 		if ( ! $wordpress_minimum_met ) {
 			return;

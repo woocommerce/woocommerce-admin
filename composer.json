@@ -36,6 +36,12 @@
     "classmap": [
       "includes/"
     ],
+    "files": [
+      "includes/core-functions.php",
+      "includes/feature-config.php",
+      "includes/page-controller-functions.php",
+      "includes/wc-admin-update-functions.php"
+    ],
     "psr-4": {
       "Automattic\\WooCommerce\\Admin\\": "src/"
     }
