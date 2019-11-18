@@ -10,9 +10,9 @@ import { Tooltip } from '@wordpress/components';
  * WooCommerce dependencies
  */
 import { defaultTableDateFormat } from '@woocommerce/date';
-import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { Date, Link } from '@woocommerce/components';
-import { numberFormat } from '@woocommerce/number';
+import { numberFormat } from 'lib/number-format';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 const { countries } = getSetting( 'dataEndpoints', { countries: {} } );

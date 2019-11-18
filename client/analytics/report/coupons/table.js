@@ -11,9 +11,9 @@ import { map } from 'lodash';
  */
 import { Date, Link } from '@woocommerce/components';
 import { defaultTableDateFormat } from '@woocommerce/date';
-import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { numberFormat } from '@woocommerce/number';
+import { numberFormat } from 'lib/number-format';
 
 /**
  * Internal dependencies

@@ -11,8 +11,8 @@ import { map } from 'lodash';
  */
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { defaultTableDateFormat } from '@woocommerce/date';
-import { formatCurrency, renderCurrency } from '@woocommerce/currency';
-import { numberFormat } from '@woocommerce/number';
+import { formatCurrency, renderCurrency } from 'lib/currency-format';
+import { numberFormat } from 'lib/number-format';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**

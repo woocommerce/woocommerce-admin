@@ -13,8 +13,8 @@ import { get } from 'lodash';
  */
 import { appendTimestamp, defaultTableDateFormat, getCurrentDates } from '@woocommerce/date';
 import { Date, Link } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from '@woocommerce/currency';
-import { numberFormat } from '@woocommerce/number';
+import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/currency-format';
+import { numberFormat } from 'lib/number-format';
 
 /**
  * Internal dependencies

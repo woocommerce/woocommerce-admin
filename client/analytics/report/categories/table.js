@@ -10,10 +10,10 @@ import { map } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from '@woocommerce/currency';
+import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
-import { numberFormat } from '@woocommerce/number';
+import { numberFormat } from 'lib/number-format';
 
 /**
  * Internal dependencies

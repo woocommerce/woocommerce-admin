@@ -10,43 +10,25 @@ import { isNumber, isString } from 'lodash';
  */
 import { numberFormat } from '@woocommerce/number';
 
+const DEFAULTS = {
+	code: 'USD',
+	precision: 2,
+	symbol: '$',
+	symbolPosition: 'left',
+	decimalSeparator: '.',
+	priceFormat: '%1$s%2$s',
+	thousandSeparator: ',',
+};
+
 export default class Currency {
-	code = 'USD';
-	precision = 2;
-	symbol = '$';
-	symbolPosition = 'left';
-	decimalSeparator = '.';
-	priceFormat = '%1$s%2$s';
-	thousandSeparator = ',';
-
 	constructor( config = {} ) {
-		if ( isString( config.code ) ) {
-			this.code = config.code;
-		}
-
-		if ( isNumber( config.precision ) ) {
-			this.precision = config.precision;
-		}
-
-		if ( isString( config.symbol ) ) {
-			this.symbol = config.symbol;
-		}
-
-		if ( isString( config.symbolPosition ) ) {
-			this.symbolPosition = config.symbolPosition;
-		}
-
-		if ( isString( config.decimalSeparator ) ) {
-			this.decimalSeparator = config.decimalSeparator;
-		}
-
-		if ( isString( config.priceFormat ) ) {
-			this.priceFormat = config.priceFormat;
-		}
-
-		if ( isString( config.thousandSeparator ) ) {
-			this.thousandSeparator = config.thousandSeparator;
-		}
+		this.code = isString( config.code ) ? config.code : DEFAULTS.code;
+		this.precision = isNumber( config.precision ) ? config.precision : DEFAULTS.precision;
+		this.symbol = isString( config.symbol ) ? config.symbol : DEFAULTS.symbol;
+		this.symbolPosition = isString( config.symbolPosition ) ? config.symbolPosition : DEFAULTS.symbolPosition;
+		this.decimalSeparator = isString( config.decimalSeparator ) ? config.decimalSeparator : DEFAULTS.decimalSeparator;
+		this.priceFormat = isString( config.priceFormat ) ? config.priceFormat : DEFAULTS.priceFormat;
+		this.thousandSeparator = isString( config.thousandSeparator ) ? config.thousandSeparator : DEFAULTS.thousandSeparator;
 	}
 
 	/**

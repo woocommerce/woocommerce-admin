@@ -51,7 +51,7 @@ export function formatValue( numberConfig, type, value ) {
 		case 'average':
 			return Math.round( value );
 		case 'number':
-			return numberFormat( numberConfig, value );
+			return numberFormat( { ...numberConfig, precision: null }, value );
 	}
 }
 
