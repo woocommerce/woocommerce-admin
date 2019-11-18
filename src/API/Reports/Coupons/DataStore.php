@@ -56,7 +56,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Assign report columns once full table name has been assigned.
 	 */
 	protected function assign_report_columns() {
-		$table_name = self::get_db_table_name();
+		$table_name           = self::get_db_table_name();
 		$this->report_columns = array(
 			'coupon_id'    => 'coupon_id',
 			'amount'       => 'SUM(discount_amount) as amount',
@@ -90,20 +90,20 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @param array $query_args Query arguments supplied by the user.
 	 */
-	protected function get_sql_query_params( $query_args ) {
+	protected function add_sql_query_params( $query_args ) {
 		global $wpdb;
 		$order_coupon_lookup_table = self::get_db_table_name();
 
-		$this->get_time_period_sql_params( $query_args, $order_coupon_lookup_table );
+		$this->add_time_period_sql_params( $query_args, $order_coupon_lookup_table );
 		$this->get_limit_sql_params( $query_args );
 
 		$included_coupons = $this->get_included_coupons( $query_args, 'coupons' );
 		if ( $included_coupons ) {
 			$this->subquery->add_sql_clause( 'where', "AND {$order_coupon_lookup_table}.coupon_id IN ({$included_coupons})" );
 
-			$this->get_order_by_params( $query_args, 'outer', 'default_results.coupon_id' );
+			$this->add_order_by_params( $query_args, 'outer', 'default_results.coupon_id' );
 		} else {
-			$this->get_order_by_params( $query_args, 'inner', "{$order_coupon_lookup_table}.coupon_id" );
+			$this->add_order_by_params( $query_args, 'inner', "{$order_coupon_lookup_table}.coupon_id" );
 		}
 
 		$this->add_order_status_clause( $query_args, $order_coupon_lookup_table, $this->subquery );
@@ -116,7 +116,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @param string $from_arg   Target of the JOIN sql param.
 	 * @param string $id_cell    ID cell identifier, like `table_name.id_column_name`.
 	 */
-	protected function get_order_by_params( $query_args, $from_arg, $id_cell ) {
+	protected function add_order_by_params( $query_args, $from_arg, $id_cell ) {
 		global $wpdb;
 		$lookup_table    = self::get_db_table_name();
 		$order_by_clause = $this->add_order_by_clause( $query_args, $this );
@@ -249,7 +249,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$included_coupons = $this->get_included_coupons_array( $query_args );
 			$limit_params     = $this->get_limit_params( $query_args );
 			$this->subquery->add_sql_clause( 'select', $selections );
-			$this->get_sql_query_params( $query_args );
+			$this->add_sql_query_params( $query_args );
 
 			if ( count( $included_coupons ) > 0 ) {
 				$total_results = count( $included_coupons );
