@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
@@ -50,13 +51,15 @@ export class Leaderboard extends Component {
 		const { isRequesting, isError, totalRows, title } = this.props;
 		const rows = this.getFormattedRows();
 
+		const classes = classnames( 'woocommerce-leaderboard', 'woocommerce-analytics__card' );
+
 		if ( isError ) {
-			return <ReportError className="woocommerce-leaderboard" isError />;
+			return <ReportError className={ classes } isError />;
 		}
 
 		if ( ! isRequesting && rows.length === 0 ) {
 			return (
-				<Card title={ title } className="woocommerce-leaderboard woocommerce-analytics__card">
+				<Card title={ title } className={ classes }>
 					<EmptyTable>
 						{ __( 'No data recorded for the selected time period.', 'woocommerce-admin' ) }
 					</EmptyTable>
@@ -66,7 +69,7 @@ export class Leaderboard extends Component {
 
 		return (
 			<TableCard
-				className="woocommerce-leaderboard"
+				className={ classes }
 				headers={ this.getFormattedHeaders() }
 				isLoading={ isRequesting }
 				rows={ rows }
