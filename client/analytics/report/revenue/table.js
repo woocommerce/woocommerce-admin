@@ -14,7 +14,7 @@ import { get } from 'lodash';
 import { appendTimestamp, defaultTableDateFormat, getCurrentDates } from '@woocommerce/date';
 import { Date, Link } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/currency-format';
-import { numberFormat } from 'lib/number-format';
+import { formatValue } from 'lib/number-format';
 
 /**
  * Internal dependencies
@@ -113,7 +113,7 @@ class RevenueReportTable extends Component {
 					href={ 'edit.php?post_type=shop_order&m=' + formatDate( 'Ymd', row.date_start ) }
 					type="wp-admin"
 				>
-					{ numberFormat( orders_count ) }
+					{ formatValue( 'number', orders_count ) }
 				</Link>
 			);
 			return [
@@ -166,11 +166,11 @@ class RevenueReportTable extends Component {
 		return [
 			{
 				label: _n( 'day', 'days', totalResults, 'woocommerce-admin' ),
-				value: numberFormat( totalResults ),
+				value: formatValue( 'number', totalResults ),
 			},
 			{
 				label: _n( 'order', 'orders', orders_count, 'woocommerce-admin' ),
-				value: numberFormat( orders_count ),
+				value: formatValue( 'number', orders_count ),
 			},
 			{
 				label: __( 'gross revenue', 'woocommerce-admin' ),
