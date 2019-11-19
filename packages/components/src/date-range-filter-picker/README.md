@@ -15,12 +15,11 @@ Select a range of dates or single dates
 
 ### Props
 
-Required props are marked with `*`.
-
 Name    | Type     | Default | Description
 ------- | -------- | ------- | ---
 `query` | Object | `{}` | The query string represented in object form
 `onRangeSelect` | Function | `null` | Callback called when selection is made
+`storeDate` | object | `null` | (required) Date utility function object bound to store settings.
 
 ## URL as the source of truth
 
