@@ -25,6 +25,7 @@ import { recordEvent } from 'lib/tracks';
 import TaskList from './task-list';
 import { getTasks } from './task-list/tasks';
 import { isOnboardingEnabled } from 'dashboard/utils';
+import * as storeDate from 'lib/date';
 
 class CustomizableDashboard extends Component {
 	constructor( props ) {
@@ -214,7 +215,7 @@ class CustomizableDashboard extends Component {
 					! taskListHidden &&
 					taskListCompleted && <TaskList query={ query } inline /> }
 
-				<ReportFilters query={ query } path={ path } />
+				<ReportFilters query={ query } path={ path } storeDate={ storeDate } />
 				{ sections.map( ( section, index ) => {
 					if ( section.isVisible ) {
 						return (

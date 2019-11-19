@@ -8,11 +8,6 @@ import { Dropdown } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
 /**
- * WooCommerce dependencies
- */
-import { getCurrentDates, getDateParamsFromQuery, isoDateFormat } from '@woocommerce/date';
-
-/**
  * Internal dependencies
  */
 import DatePickerContent from './content';
@@ -37,7 +32,9 @@ class DateRangeFilterPicker extends Component {
 	}
 
 	getResetState() {
-		const { period, compare, before, after } = getDateParamsFromQuery( this.props.query );
+		const { storeDate, query } = this.props;
+		const { getDateParamsFromQuery } = storeDate;
+		const { period, compare, before, after } = getDateParamsFromQuery( query );
 		return {
 			period,
 			compare,
@@ -56,7 +53,7 @@ class DateRangeFilterPicker extends Component {
 	}
 
 	onSelect( selectedTab, onClose ) {
-		const { onRangeSelect } = this.props;
+		const { isoDateFormat, onRangeSelect } = this.props;
 		return event => {
 			const { period, compare, after, before } = this.state;
 			const data = {
@@ -76,7 +73,9 @@ class DateRangeFilterPicker extends Component {
 	}
 
 	getButtonLabel() {
-		const { primary, secondary } = getCurrentDates( this.props.query );
+		const { storeDate, query } = this.props;
+		const { getCurrentDates } = storeDate;
+		const { primary, secondary } = getCurrentDates( query );
 		return [
 			`${ primary.label } (${ primary.range })`,
 			`${ __( 'vs.', 'woocommerce-admin' ) } ${ secondary.label } (${ secondary.range })`,
@@ -164,6 +163,14 @@ DateRangeFilterPicker.propTypes = {
 	 * The query string represented in object form.
 	 */
 	query: PropTypes.object,
+	/**
+	 * Store date utility instance.
+	 */
+	storeDate: PropTypes.shape( {
+		isoDateFormat: PropTypes.string.isRequired,
+		getDateParamsFromQuery: PropTypes.func.isRequired,
+		getCurrentDates: PropTypes.func.isRequired,
+	} ).isRequired,
 };
 
 DateRangeFilterPicker.defaultProps = {

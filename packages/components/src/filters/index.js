@@ -83,7 +83,14 @@ class ReportFilters extends Component {
 	}
 
 	render() {
-		const { filters, query, path, showDatePicker, onFilterSelect } = this.props;
+		const {
+			filters,
+			query,
+			path,
+			showDatePicker,
+			onFilterSelect,
+			storeDate,
+		} = this.props;
 		return (
 			<Fragment>
 				<H className="screen-reader-text">{ __( 'Filters', 'woocommerce-admin' ) }</H>
@@ -94,6 +101,7 @@ class ReportFilters extends Component {
 								key={ JSON.stringify( query ) }
 								query={ query }
 								onRangeSelect={ this.onRangeSelect }
+								storeDate={ storeDate }
 							/>
 						) }
 						{ filters.map( config => {
@@ -158,6 +166,14 @@ ReportFilters.propTypes = {
 	 * The currency formatting instance for the site.
 	 */
 	currency: PropTypes.object.isRequired,
+	/**
+	 * Store date utility instance.
+	 */
+	storeDate: PropTypes.shape( {
+		isoDateFormat: PropTypes.string.isRequired,
+		getDateParamsFromQuery: PropTypes.func.isRequired,
+		getCurrentDates: PropTypes.func.isRequired,
+	} ).isRequired,
 };
 
 ReportFilters.defaultProps = {

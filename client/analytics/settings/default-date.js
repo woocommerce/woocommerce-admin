@@ -3,6 +3,12 @@
  * External dependencies
  */
 import { parse, stringify } from 'qs';
+
+/**
+ * Internal dependencies
+ */
+import * as storeDate from 'lib/date';
+
 /**
  * WooCommerce dependencies
  */
@@ -18,7 +24,7 @@ const DefaultDate = ( { value, onChange } ) => {
 		} );
 	};
 	const query = parse( value.replace( /&amp;/g, '&' ) );
-	return <DateRangeFilterPicker query={ query } onRangeSelect={ change } />;
+	return <DateRangeFilterPicker query={ query } onRangeSelect={ change } storeDate={ storeDate } />;
 };
 
 export default DefaultDate;

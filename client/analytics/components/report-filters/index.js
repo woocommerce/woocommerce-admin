@@ -17,6 +17,7 @@ import { LOCALE } from '@woocommerce/wc-admin-settings';
  */
 import { recordEvent } from 'lib/tracks';
 import { Currency } from 'lib/currency-format';
+import * as storeDate from 'lib/date';
 
 export default class ReportFilters extends Component {
 	constructor() {
@@ -76,6 +77,7 @@ export default class ReportFilters extends Component {
 				onDateSelect={ this.trackDateSelect }
 				onFilterSelect={ this.trackFilterSelect }
 				onAdvancedFilterAction={ this.trackAdvancedFilterAction }
+				storeDate={ storeDate }
 			/>
 		);
 	}
