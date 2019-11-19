@@ -211,7 +211,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 				$logger_source
 			);
 			$logger->debug(
-				wc_print_r( $api, true ),
+				'api: ' . wc_print_r( $api, true ),
 				$logger_source
 			);
 			return new \WP_Error( 'woocommerce_rest_plugin_install', __( 'The requested plugin could not be installed.', 'woocommerce-admin' ), 500 );
@@ -226,7 +226,15 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 				$logger_source
 			);
 			$logger->debug(
-				wc_print_r( $result, true ),
+				'upgrader: ' . wc_print_r( $upgrader, true ),
+				$logger_source
+			);
+			$logger->debug(
+				'api: ' . wc_print_r( $api, true ),
+				$logger_source
+			);
+			$logger->debug(
+				'result: ' . wc_print_r( $result, true ),
 				$logger_source
 			);
 			return new \WP_Error( 'woocommerce_rest_plugin_install', __( 'The requested plugin could not be installed.', 'woocommerce-admin' ), 500 );
