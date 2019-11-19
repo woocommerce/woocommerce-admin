@@ -3,7 +3,6 @@
  * External dependencies
  */
 import { sprintf } from '@wordpress/i18n';
-import { isNumber, isString } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -22,13 +21,15 @@ const DEFAULTS = {
 
 export default class Currency {
 	constructor( config = {} ) {
-		this.code = isString( config.code ) ? config.code : DEFAULTS.code;
-		this.precision = isNumber( config.precision ) ? config.precision : DEFAULTS.precision;
-		this.symbol = isString( config.symbol ) ? config.symbol : DEFAULTS.symbol;
-		this.symbolPosition = isString( config.symbolPosition ) ? config.symbolPosition : DEFAULTS.symbolPosition;
-		this.decimalSeparator = isString( config.decimalSeparator ) ? config.decimalSeparator : DEFAULTS.decimalSeparator;
-		this.priceFormat = isString( config.priceFormat ) ? config.priceFormat : DEFAULTS.priceFormat;
-		this.thousandSeparator = isString( config.thousandSeparator ) ? config.thousandSeparator : DEFAULTS.thousandSeparator;
+		this.code = ( config.code || DEFAULTS.code ).toString();
+		this.symbol = ( config.symbol || DEFAULTS.symbol ).toString();
+		this.symbolPosition = ( config.symbolPosition || DEFAULTS.symbolPosition ).toString();
+		this.decimalSeparator = ( config.decimalSeparator || DEFAULTS.decimalSeparator ).toString();
+		this.priceFormat = ( config.priceFormat || DEFAULTS.priceFormat ).toString();
+		this.thousandSeparator = ( config.thousandSeparator || DEFAULTS.thousandSeparator ).toString();
+
+		const precisionNumber = parseInt( config.precision, 10 );
+		this.precision = isNaN( precisionNumber ) ? DEFAULTS.precision : precisionNumber;
 	}
 
 	/**
