@@ -275,12 +275,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 				$this->subquery->clear_sql_clause( array( 'select', 'order_by' ) );
 				$this->subquery->add_sql_clause( 'select', 'coupon_id' );
+				$coupon_subquery = "SELECT COUNT(*) FROM (
+					{$this->subquery->get_query_statement()}
+				) AS tt";
 
 				$db_records_count = (int) $wpdb->get_var(
-					"SELECT COUNT(*) FROM (
-								{$this->subquery->get_query_statement()}
-								) AS tt"
-				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+					$coupon_subquery // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				);
 
 				$total_results = $db_records_count;
 				$total_pages   = (int) ceil( $db_records_count / $limit_params['per_page'] );
@@ -290,10 +291,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			}
 
 			$coupon_data = $wpdb->get_results(
-				$coupons_query,
+				$coupons_query, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				ARRAY_A
-			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
-
+			);
 			if ( null === $coupon_data ) {
 				return $data;
 			}
@@ -335,8 +335,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return true;
 		}
 
-		$table_name         = self::get_db_table_name();
-		$existing_items     = $wpdb->get_col( $wpdb->prepare( "SELECT coupon_id FROM {$table_name} WHERE order_id = %d", $order_id ) );
+		$table_name     = self::get_db_table_name();
+		$existing_items = $wpdb->get_col(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT coupon_id FROM {$table_name} WHERE order_id = %d",
+				$order_id
+			)
+		);
 		$existing_items     = array_flip( $existing_items );
 		$coupon_items       = $order->get_items( 'coupon' );
 		$coupon_items_count = count( $coupon_items );
@@ -386,6 +392,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			array_unshift( $existing_items, $order_id );
 			$wpdb->query(
 				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 					"DELETE FROM {$table_name} WHERE order_id = %d AND coupon_id in ({$format})",
 					$existing_items
 				)
@@ -452,7 +459,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$query .= " AND ID IN ({$included_coupons})";
 		}
 
-		return $wpdb->get_results( $query );  // WPCS: cache ok, DB call ok, unprepared SQL ok.
+		return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
