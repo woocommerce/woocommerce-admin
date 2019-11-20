@@ -113,20 +113,29 @@ abstract class BaseSync {
 	}
 
 	/**
-	 * Get an action tag name from the action slug.
+	 * Get all available sync actions.
+	 * Used to determine action hook names and clear events.
 	 *
-	 * @param string $action_name The action slug.
-	 * @return string
+	 * @return array
 	 */
-	public static function get_action( $action_name ) {
-		$actions = array(
+	public static function get_actions() {
+		return array(
 			'import_batch_init' => 'wc-admin_import_batch_init_' . static::NAME,
 			'import_batch'      => 'wc-admin_import_batch_' . static::NAME,
 			'delete_batch_init' => 'wc-admin_delete_batch_init_' . static::NAME,
 			'delete_batch'      => 'wc-admin_delete_batch_' . static::NAME,
 			'import'            => 'wc-admin_import_' . static::NAME,
 		);
+	}
 
+	/**
+	 * Get an action tag name from the action slug.
+	 *
+	 * @param string $action_name The action slug.
+	 * @return string
+	 */
+	public static function get_action( $action_name ) {
+		$actions = static::get_actions();
 		return $actions[ $action_name ];
 	}
 
@@ -190,7 +199,7 @@ abstract class BaseSync {
 
 		$num_batches = ceil( $items->total / $batch_size );
 
-		self::queue_batches( 1, $num_batches, static::get_action( 'import_batch' ), array( $days, $skip_existing ) );
+		self::queue_batches( 1, $num_batches, self::get_action( 'import_batch' ), array( $days, $skip_existing ) );
 	}
 
 	/**
@@ -397,5 +406,25 @@ abstract class BaseSync {
 		ReportsCache::invalidate();
 
 		wc_admin_record_tracks_event( 'delete_import_data_job_complete', array( 'type' => static::NAME ) );
+	}
+
+	/**
+	 * Clears all queued actions.
+	 */
+	public static function clear_queued_actions() {
+		$store = \ActionScheduler::store();
+
+		if ( is_a( $store, 'Automattic\WooCommerce\Admin\Overrides\WPPostStore' ) ) {
+			// If we're using our data store, call our bespoke deletion method.
+			$actions = static::get_actions();
+			$store->clear_pending_wcadmin_actions( $actions );
+		} elseif ( version_compare( \ActionScheduler_Versions::instance()->latest_version(), '3.0', '>=' ) ) {
+			$store->cancel_actions_by_group( static::QUEUE_GROUP );
+		} else {
+			$actions = static::get_actions();
+			foreach ( $actions as $action ) {
+				self::queue()->cancel_all( $action, null, static::QUEUE_GROUP );
+			}
+		}
 	}
 }

@@ -22,8 +22,7 @@ class ReportsSync {
 	 */
 	public static function init() {
 		// Initialize syncing hooks.
-		$syncs = self::get_syncs();
-		foreach ( $syncs as $sync ) {
+		foreach ( self::get_syncs() as $sync ) {
 			$sync::init();
 		}
 		add_action( 'woocommerce_update_product', array( __CLASS__, 'clear_stock_count_cache' ) );
@@ -67,8 +66,7 @@ class ReportsSync {
 		}
 
 		self::reset_import_stats( $days, $skip_existing );
-		$syncs = self::get_syncs();
-		foreach ( $syncs as $sync ) {
+		foreach ( self::get_syncs() as $sync ) {
 			// @todo This needs to be updated; should we queue dependent actions directly inside the sync?
 			if ( $sync::DEPENDENCY ) {
 				$sync::queue_dependent_action( $sync::get_action( 'import_batch_init' ), array( $days, $skip_existing ), $sync::DEPENDENCY );
@@ -128,8 +126,7 @@ class ReportsSync {
 	public static function get_import_totals( $days, $skip_existing ) {
 		$totals = array();
 
-		$syncs = self::get_syncs();
-		foreach ( $syncs as $sync ) {
+		foreach ( self::get_syncs() as $sync ) {
 			$items                 = $sync::get_items( 1, 1, $days, $skip_existing );
 			$totals[ $sync::NAME ] = $items->total;
 		}
@@ -141,28 +138,8 @@ class ReportsSync {
 	 * Clears all queued actions.
 	 */
 	public static function clear_queued_actions() {
-		$store = \ActionScheduler::store();
-
-		if ( is_a( $store, 'Automattic\WooCommerce\Admin\orides\WPPostStore' ) ) {
-			// If we're using our data store, call our bespoke deletion method.
-			$action_types = array(
-				self::QUEUE_BATCH_ACTION,
-				self::QUEUE_DEPENDENT_ACTION,
-				self::CUSTOMERS_IMPORT_BATCH_ACTION,
-				self::CUSTOMERS_DELETE_BATCH_INIT,
-				self::CUSTOMERS_DELETE_BATCH_ACTION,
-				self::ORDERS_IMPORT_BATCH_ACTION,
-				self::ORDERS_IMPORT_BATCH_INIT,
-				self::ORDERS_DELETE_BATCH_INIT,
-				self::ORDERS_DELETE_BATCH_ACTION,
-				self::SINGLE_CUSTOMER_IMPORT_ACTION,
-				self::SINGLE_ORDER_IMPORT_ACTION,
-			);
-			$store->clear_pending_wcadmin_actions( $action_types );
-		} elseif ( version_compare( \ActionScheduler_Versions::instance()->latest_version(), '3.0', '>=' ) ) {
-			$store->cancel_actions_by_group( self::QUEUE_GROUP );
-		} else {
-			self::queue()->cancel_all( null, array(), self::QUEUE_GROUP );
+		foreach ( self::get_syncs() as $sync ) {
+			$sync::clear_queued_actions();
 		}
 	}
 
