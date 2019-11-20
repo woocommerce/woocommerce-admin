@@ -50,7 +50,7 @@ class CustomersSync extends BaseSync {
 			add_action( 'pre_user_query', array( __CLASS__, 'exclude_existing_customers_from_query' ) );
 		}
 
-		$customer_roles = apply_filters( 'woocommerce_admin_import_customer_roles', array( 'customer' ) );
+		$customer_roles = apply_filters( 'woocommerce_analytics_import_customer_roles', array( 'customer' ) );
 		$customer_query = new \WP_User_Query(
 			array(
 				'fields'   => 'ID',

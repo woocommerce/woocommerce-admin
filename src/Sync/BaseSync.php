@@ -146,7 +146,7 @@ abstract class BaseSync {
 		 * @param int    $batch_size Batch size.
 		 * @param string $action Batch action name.
 		 */
-		return apply_filters( 'wc_admin_report_regenerate_batch_size', $batch_size, $action );
+		return apply_filters( 'woocommerce_analytics_regenerate_batch_size', $batch_size, $action );
 	}
 
 	/**
@@ -235,7 +235,7 @@ abstract class BaseSync {
 	 * @return void
 	 */
 	public static function schedule_import( $item_id ) {
-		if ( apply_filters( 'woocommerce_skip_import_scheduling', false ) ) {
+		if ( apply_filters( 'woocommerce_analytics_disable_import_scheduling', false ) ) {
 			static::import( $item_id );
 			return;
 		}
