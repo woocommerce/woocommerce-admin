@@ -52,8 +52,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 
 		$data_store = new OrdersStatsDataStore();
 
-		$start_time = date( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
-		$end_time   = date( 'Y-m-d H:59:59', $order->get_date_created()->getOffsetTimestamp() );
+		$start_time = gmdate( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
+		$end_time   = gmdate( 'Y-m-d H:59:59', $order->get_date_created()->getOffsetTimestamp() );
 
 		$args           = array(
 			'interval' => 'hour',
@@ -81,7 +81,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			),
 			'intervals' => array(
 				array(
-					'interval'       => date( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
+					'interval'       => gmdate( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
 					'date_start'     => $start_time,
 					'date_start_gmt' => $start_time,
 					'date_end'       => $end_time,
@@ -131,7 +131,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			),
 			'intervals' => array(
 				array(
-					'interval'       => date( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
+					'interval'       => gmdate( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
 					'date_start'     => $start_time,
 					'date_start_gmt' => $start_time,
 					'date_end'       => $end_time,
@@ -197,8 +197,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 
 		$data_store = new OrdersStatsDataStore();
 
-		$start_time = date( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
-		$end_time   = date( 'Y-m-d H:59:59', $order->get_date_created()->getOffsetTimestamp() );
+		$start_time = gmdate( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
+		$end_time   = gmdate( 'Y-m-d H:59:59', $order->get_date_created()->getOffsetTimestamp() );
 
 		// Query default statuses that should not include excluded or refunded order statuses.
 		$args           = array(
@@ -227,7 +227,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			),
 			'intervals' => array(
 				array(
-					'interval'       => date( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
+					'interval'       => gmdate( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
 					'date_start'     => $start_time,
 					'date_start_gmt' => $start_time,
 					'date_end'       => $end_time,
@@ -286,7 +286,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			),
 			'intervals' => array(
 				array(
-					'interval'       => date( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
+					'interval'       => gmdate( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
 					'date_start'     => $start_time,
 					'date_start_gmt' => $start_time,
 					'date_end'       => $end_time,
@@ -366,8 +366,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 
 		$data_store = new OrdersStatsDataStore();
 
-		$start_time = date( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
-		$end_time   = date( 'Y-m-d H:59:59', $order->get_date_created()->getOffsetTimestamp() );
+		$start_time = gmdate( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
+		$end_time   = gmdate( 'Y-m-d H:59:59', $order->get_date_created()->getOffsetTimestamp() );
 
 		// Query all refunds.
 		$args           = array(
@@ -397,7 +397,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			),
 			'intervals' => array(
 				array(
-					'interval'       => date( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
+					'interval'       => gmdate( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
 					'date_start'     => $start_time,
 					'date_start_gmt' => $start_time,
 					'date_end'       => $end_time,
@@ -456,7 +456,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			),
 			'intervals' => array(
 				array(
-					'interval'       => date( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
+					'interval'       => gmdate( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
 					'date_start'     => $start_time,
 					'date_start_gmt' => $start_time,
 					'date_end'       => $end_time,
@@ -515,7 +515,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			),
 			'intervals' => array(
 				array(
-					'interval'       => date( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
+					'interval'       => gmdate( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
 					'date_start'     => $start_time,
 					'date_start_gmt' => $start_time,
 					'date_end'       => $end_time,
@@ -574,7 +574,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 			),
 			'intervals' => array(
 				array(
-					'interval'       => date( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
+					'interval'       => gmdate( 'Y-m-d H', $order->get_date_created()->getOffsetTimestamp() ),
 					'date_start'     => $start_time,
 					'date_start_gmt' => $start_time,
 					'date_end'       => $end_time,
@@ -4750,7 +4750,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		);
 
 		// Expected Intervals section construction.
-		$expected_intervals = [];
+		$expected_intervals = array();
 		// Even in case this runs exactly at the hour turn second, there should still be 6 intervals:
 		// e.g. 20:30:51 -(minus 5 hours)- 15:30:51 means intervals 15:30:51--15:59:59, 16:00-16:59, 17, 18, 19, 20:00-20:30, i.e. 6 intervals
 		// also if this run exactly at 20:00 -(minus 5 hours)- 15:00, then intervals should be 15:00-15:59, 16, 17, 18, 19, 20:00-20:00.
@@ -4899,7 +4899,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		);
 
 		// Expected Intervals section construction.
-		$expected_intervals = [];
+		$expected_intervals = array();
 		$interval_count     = $hour_offset + 1;
 		for ( $i = 0; $i < $interval_count; $i ++ ) {
 			if ( 0 === $i ) {
@@ -5056,7 +5056,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		);
 
 		// Expected Intervals section construction.
-		$expected_intervals = [];
+		$expected_intervals = array();
 		$interval_count     = 11;
 		for ( $i = 0; $i < $interval_count; $i ++ ) {
 			if ( 0 === $i ) {
@@ -5549,7 +5549,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		);
 
 		// Expected Intervals section construction.
-		$expected_intervals = [];
+		$expected_intervals = array();
 		// Even in case this runs exactly at the hour turn second, there should still be 6 intervals:
 		// e.g. 20:30:51 -(minus 5 hours)- 15:30:51 means intervals 15:30:51--15:59:59, 16:00-16:59, 17, 18, 19, 20:00-20:30, i.e. 6 intervals
 		// also if this run exactly at 20:00 -(minus 5 hours)- 15:00, then intervals should be 15:00-15:59, 16, 17, 18, 19, 20:00-20:00.
@@ -5735,7 +5735,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		 *
 		 * To change ordering by orders_count, just pop last two and push them to the front (aka unshift in php).
 		 */
-		$expected_intervals = [];
+		$expected_intervals = array();
 		$interval_count     = $hour_offset + 1;
 		for ( $i = $interval_count - 1; $i >= 0; $i -- ) {
 			if ( 0 === $i ) {
@@ -5910,7 +5910,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		 *
 		 * so last two need to be put first (last one second, second last one first).
 		 */
-		$expected_intervals = [];
+		$expected_intervals = array();
 		$interval_count     = 11;
 		for ( $i = $interval_count - 1; $i >= 0; $i -- ) {
 			if ( 0 === $i ) {
@@ -6204,8 +6204,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 
 		WC_Helper_Queue::run_all_pending();
 
-		$start_time  = date( 'Y-m-d H:00:00', $order_0->get_date_created()->getOffsetTimestamp() );
-		$end_time    = date( 'Y-m-d H:59:59', $order_0->get_date_created()->getOffsetTimestamp() );
+		$start_time  = gmdate( 'Y-m-d H:00:00', $order_0->get_date_created()->getOffsetTimestamp() );
+		$end_time    = gmdate( 'Y-m-d H:59:59', $order_0->get_date_created()->getOffsetTimestamp() );
 		$query_args  = array(
 			'interval' => 'hour',
 			'after'    => $start_time,
@@ -6225,8 +6225,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending();
 
 		// Time frame includes both orders -> customer is a new customer.
-		$start_time = date( 'Y-m-d H:00:00', $order_0->get_date_created()->getOffsetTimestamp() );
-		$end_time   = date( 'Y-m-d H:59:59', $order_1->get_date_created()->getOffsetTimestamp() );
+		$start_time = gmdate( 'Y-m-d H:00:00', $order_0->get_date_created()->getOffsetTimestamp() );
+		$end_time   = gmdate( 'Y-m-d H:59:59', $order_1->get_date_created()->getOffsetTimestamp() );
 		$query_args = array(
 			'interval' => 'hour',
 			'after'    => $start_time,
@@ -6241,8 +6241,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$after_order_0 = new DateTime();
 		$after_order_0->setTimestamp( $order_0_time + 1 );
 
-		$start_time = date( 'Y-m-d H:i:s', $order_0_time + 1 );
-		$end_time   = date( 'Y-m-d H:59:59', $order_1->get_date_created()->getOffsetTimestamp() );
+		$start_time = gmdate( 'Y-m-d H:i:s', $order_0_time + 1 );
+		$end_time   = gmdate( 'Y-m-d H:59:59', $order_1->get_date_created()->getOffsetTimestamp() );
 		$query_args = array(
 			'interval' => 'hour',
 			'after'    => $start_time,
@@ -6265,8 +6265,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending();
 
 		// Time frame includes second and third order -> there is one returning customer.
-		$start_time  = date( 'Y-m-d H:i:s', $order_0_time + 1 );
-		$end_time    = date( 'Y-m-d H:59:59', $order_2->get_date_created()->getOffsetTimestamp() );
+		$start_time  = gmdate( 'Y-m-d H:i:s', $order_0_time + 1 );
+		$end_time    = gmdate( 'Y-m-d H:59:59', $order_2->get_date_created()->getOffsetTimestamp() );
 		$query_args  = array(
 			'interval' => 'day', // to skip cache.
 			'after'    => $start_time,
@@ -6315,8 +6315,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 
 		WC_Helper_Queue::run_all_pending();
 
-		$start_time  = date( 'Y-m-d H:00:00', $order_0->get_date_created()->getOffsetTimestamp() );
-		$end_time    = date( 'Y-m-d H:59:59', $order_0->get_date_created()->getOffsetTimestamp() );
+		$start_time  = gmdate( 'Y-m-d H:00:00', $order_0->get_date_created()->getOffsetTimestamp() );
+		$end_time    = gmdate( 'Y-m-d H:59:59', $order_0->get_date_created()->getOffsetTimestamp() );
 		$query_args  = array(
 			'interval' => 'hour',
 			'after'    => $start_time,
@@ -6336,8 +6336,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending();
 
 		// Time frame includes both orders -> customer is a new customer.
-		$start_time = date( 'Y-m-d H:00:00', $order_0->get_date_created()->getOffsetTimestamp() );
-		$end_time   = date( 'Y-m-d H:59:59', $order_1->get_date_created()->getOffsetTimestamp() );
+		$start_time = gmdate( 'Y-m-d H:00:00', $order_0->get_date_created()->getOffsetTimestamp() );
+		$end_time   = gmdate( 'Y-m-d H:59:59', $order_1->get_date_created()->getOffsetTimestamp() );
 		$query_args = array(
 			'interval' => 'hour',
 			'after'    => $start_time,
@@ -6352,8 +6352,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$after_order_0 = new DateTime();
 		$after_order_0->setTimestamp( $order_0_time + 1 );
 
-		$start_time = date( 'Y-m-d H:i:s', $order_0_time + 1 );
-		$end_time   = date( 'Y-m-d H:59:59', $order_1->get_date_created()->getOffsetTimestamp() );
+		$start_time = gmdate( 'Y-m-d H:i:s', $order_0_time + 1 );
+		$end_time   = gmdate( 'Y-m-d H:59:59', $order_1->get_date_created()->getOffsetTimestamp() );
 		$query_args = array(
 			'interval' => 'hour',
 			'after'    => $start_time,
@@ -6376,8 +6376,8 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending();
 
 		// Time frame includes second and third order -> there is one returning customer.
-		$start_time  = date( 'Y-m-d H:i:s', $order_0_time + 1 );
-		$end_time    = date( 'Y-m-d H:59:59', $order_2->get_date_created()->getOffsetTimestamp() );
+		$start_time  = gmdate( 'Y-m-d H:i:s', $order_0_time + 1 );
+		$end_time    = gmdate( 'Y-m-d H:59:59', $order_2->get_date_created()->getOffsetTimestamp() );
 		$query_args  = array(
 			'interval' => 'day', // to skip cache.
 			'after'    => $start_time,
