@@ -19,21 +19,57 @@ You can also set the following configuration flag in your `wp-config.php`:
 
 ## New REST API endpoints
 
-@todo
+To power the new onboarding flow client side, new REST API endpoints have been introduced. These are purpose built endpoints that exist under the `/wc-admin/onboarding/` namespace, and are not meant to be shipped in the core rest API package. The source is stored in `src/API/OnboardingPlugins.php`, `src/API/OnboardingProfile.php`, and `src/API/OnboardingTasks.php` respectively.
 
-## Onboarding filters and hooks
+* POST `/wc-admin/onboarding/plugins/install` - Installs a requested plugin, if present in the `woocommerce_onboarding_plugins_whitelist` array.
+* GET `/wc-admin/onboarding/plugins/active` - Returns a list of the currently active plugins.
+* POST `/wc-admin/onboarding/plugins/activate` - Activates the requested plugins,  if present in the `woocommerce_onboarding_plugins_whitelist` array. Multiple plugins can be passed to activate at once.
+* GET `/wc-admin/onboarding/plugins/connect-jetpack` - Generates a URL for connecting to Jetpack. A `redirect_url` is accepted, which is used upon a successful connection.
+* POST `/wc-admin/onboarding/plugins/request-wccom-connect` - Generates a URL for the WooCommerce.com connection process.
+* POST `/wc-admin/onboarding/plugins/finish-wccom-connect` - Finishes the WooCommerce.com connection process by storing the received access token.
+* POST `/wc-admin/onboarding/plugins/connect-paypal` - Generates a URL for connecting to PayPal during the payments task.
+* POST `/wc-admin/onboarding/plugins/connect-square` - Generates a URL for connecting to Square during the payments task.
+* GET `/wc-admin/onboarding/profile` - Returns the information gathered during the profile wizard. See the `woocommerce_onboarding_profile_properties` array for a list of fields.
+* POST `/wc-admin/onboarding/profile` - Sets data for the profile wizard. See the `woocommerce_onboarding_profile_properties` array for a list of fields.
+* POST `/wc-admin/onboarding/tasks/import_sample_products` - Used for importing sample products during the appearance task.
+* POST `/wc-admin/onboarding/tasks/create_store_pages` - Used for creating default store pages (like my account and checkout) during the profile wizard.
+* POST `/wc-admin/onboarding/tasks/create_homepage` - Used for creating a homepage using Gutenberg templates.
 
-@todo
+## Onboarding filters
+
+* `woocommerce_onboarding_profile_properties` filters the properties we track as part of the profile wizard (such as information from store/business details steps).
+* `woocommerce_rest_onboarding_profile_object_query` filters the query arguments for requests to `/wc-admin/onboarding/profile`.
+* `woocommerce_rest_prepare_onboarding_profile` filters the response for requests to `/wc-admin/onboarding/profile`.
+* `rest_onboarding_profile_collection_params` filters the collection parameters for requests to  `/wc-admin/onboarding/profile`.
+* `woocommerce_admin_onboarding_industries` filters the list of allowed industries displayed in the profile wizard.
+* `woocommerce_admin_onboarding_industry_image` filters the images used for homepage templates in the appearance task. When creating a homepage, example images are used based on industry. These images are stored in `images/onboarding`.
+* `woocommerce_admin_onboarding_product_types` filters the product types displayed in the profile wizard.
+* `woocommerce_onboarding_plugins_whitelist` filters the list of plugins that can installed & activated via onboarding. This acts as a whitelist so only certain plugins can be used via the `/wc-admin/onboarding/profile/install` and `/wc-admin/onboarding/profile/activate` endpoints.
+* `woocommerce_admin_onboarding_themes` filters the themes displayed in the profile wizard.
+* `woocommerce_onboarding_jetpack_connect_redirect_url` filters the Jetpack connection URL outlined in the Jetpack connection section below.
+* `woocommerce_onboarding_task_list` filters the list of tasks on the task list dashboard. This allows extensions to add new tasks. See [the extension docs](https://github.com/woocommerce/woocommerce-admin/tree/42015d17a919e8f9e54ba75869c50b04b8dc9241/docs/examples/extensions) for an example of how to do this.
+
 
 ## Options and settings
 
-@todo
+A few new WordPress options have been introduced to store information and settings during setup. It may be necessary to manual delete these options from your `wp_options` database to test a certain task or feature.
+
+* `woocommerce_onboarding_payments`. Since the payments step requires multiple redirects to payment providers to setup accounts, we cache the current progress of the payments step in an option, so that we can quickly drop users back into the correct part of the task.
+* `woocommerce_task_list_welcome_modal_dismissed`. This option is used to show a congratulations modal during the transition between the profile wizard and task list.
+* `woocommerce_task_list_prompt_shown`. This option is used to conditionally show the "Is this card useful?" snackbar notice, shown once right after a user completes all the task list tasks.
+
+We also use existing options from WooCommerce Core or extensions like WooCommerce Services or Stripe. The list below may not be complete, as new tasks are introduced, but you can generally find usage of these by searching for the [getOptions selector](https://github.com/woocommerce/woocommerce-admin/search?q=getOptions&unscoped_q=getOptions).
+
+* `woocommerce_setup_jetpack_opted_in` and `wc_connect_options` are both used to control Jetpack's Terms of Service opt-in, which is necessary to set for a user during the connection process, so that they can use services like automated tax rates.
+* `woocommerce_allow_tracking` is used to control Tracks opt-in, allowing us to gather usage data from WooCommerce Admin and WooCommerce core.
+* `woocommerce_demo_store` and `woocommerce_demo_store_notice` are used on the appearance task for the store notice step.
+* `woocommerce_ppec_paypal_settings` and `woocommerce_stripe_settings` are used in the payments task and connection steps.
 
 ## WooCommerce.com Connection
 
 During the profile wizard, merchants can select paid product type extensions (like WooCommerce Memberships) or a paid theme. To make installation easier and to finish purchasing, it is necessary to make a [WooCommerce.com connection](https://docs.woocommerce.com/document/managing-woocommerce-com-subscriptions/). We also prompt users to connect on the task list if they chose extensions in the profile wizard, but did not finish connecting.
 
-To make the connection from the new oboarding experience possible, we build our own connection endpoints [/wc-admin/onboarding/plugins/request-wccom-connect](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L298-L355) and [/wc-admin/onboarding/plugins/finish-wccom-connect](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L357-L417).
+To make the connection from the new onboarding experience possible, we build our own connection endpoints [/wc-admin/onboarding/plugins/request-wccom-connect](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L298-L355) and [/wc-admin/onboarding/plugins/finish-wccom-connect](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L357-L417).
 
 Both of these endpoints use WooCommerce Core's `WC_Helper_API` directly. The main difference with our connection (compared to the connection on the subscriptions page) is the addition of two additional query string parameters:
 
@@ -44,9 +80,9 @@ To disconnect from WooCommerce.com, go to `WooCommerce > Extensions > WooCommerc
 
 ## Jetpack Connection
 
-Using Jetpack & WooCommerce Services allows us to offer additional features to new WooCommerce users as well as simplifiy parts of the setup process. For example, we can do automated tax calculations for certain countries, significantly simplifing the tax task. To make this work, the user needs to be connected to a WordPress.com account. This also means development and testing of these features needs to be done on a Jetpack connected site. Search the MGS & the Feld  Guide for additional resources on testing Jetpack with local setups.
+Using Jetpack & WooCommerce Services allows us to offer additional features to new WooCommerce users as well as simplify parts of the setup process. For example, we can do automated tax calculations for certain countries, significantly simplifying the tax task. To make this work, the user needs to be connected to a WordPress.com account. This also means development and testing of these features needs to be done on a Jetpack connected site. Search the MGS & the Feld  Guide for additional resources on testing Jetpack with local setups.
 
-We have a special Jetpack connection flow designed specifically for WooCommerce onboarding, so that the user feels that they are connecting as part of a coheisive experience. To access this flow, we have a custom Jetpack connection endpoint [/wc-admin/onboarding/plugins/connect-jetpack](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L273-L296).
+We have a special Jetpack connection flow designed specifically for WooCommerce onboarding, so that the user feels that they are connecting as part of a cohesive experience. To access this flow, we have a custom Jetpack connection endpoint [/wc-admin/onboarding/plugins/connect-jetpack](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L273-L296).
 
 We use Jetpack's `build_connect_url` function directly, but add the following two query parameters:
 
@@ -61,9 +97,9 @@ To disconnect from Jetpack, go to `Jetpack > Dashboard > Connections > Site conn
 
 ### `calypso_env`
 
-Both the WooCommerce.com & Jetpack connection processes (outlined below) send the user to [Calypso](https://github.com/Automattic/wp-calypso), the interface that powers WordPress.com, to signup or login.
+Both the WooCommerce.com & Jetpack connection processes (outlined below) send the user to [Calypso](https://github.com/Automattic/wp-calypso), the interface that powers WordPress.com, to sign-up or login.
 
-By default, a merchant will end up on a production version of Calypso (https://worddpress.com). If we make changes to the Calypso part of the flow and want to test them, we can do so with a `calypso_env` query parameter passed by both of our connection methods.
+By default, a merchant will end up on a production version of Calypso (https://wordpress.com). If we make changes to the Calypso part of the flow and want to test them, we can do so with a `calypso_env` query parameter passed by both of our connection methods.
 
 To change the value of `calypso_env`, set `WOOCOMMERCE_CALYPSO_ENVIRONMENT` to one of the following values in your `wp-config.php`:
 
@@ -75,7 +111,7 @@ To change the value of `calypso_env`, set `WOOCOMMERCE_CALYPSO_ENVIRONMENT` to o
 
 ### Feature Flags
 
-Logic for the Calypso flows are gated behind two separate [Calypso feature flags](https://github.com/Automattic/wp-calypso/tree/master/config#feature-flags). Since Calypso's login, signup, and Jetpack authentication is spread throughout a few different files, searching for these feature flags is the best way to locate logic.
+Logic for the Calypso flows are gated behind two separate [Calypso feature flags](https://github.com/Automattic/wp-calypso/tree/master/config#feature-flags). Since Calypso's login, sign-up, and Jetpack authentication code is spread throughout a few different files, searching for these feature flags is the best way to locate parts of the flow for development.
 
 * [`woocommerce/onboarding-oauth`](https://github.com/Automattic/wp-calypso/search?q=woocommerce%2Fonboarding-oauth&unscoped_q=woocommerce%2Fonboarding-oauth), which enables the updated WooCommerce.com connection flow.
 * [`jetpack/connect/woocommerce`](https://github.com/Automattic/wp-calypso/search?q=%22jetpack%2Fconnect%2Fwoocommerce%22&unscoped_q=%22jetpack%2Fconnect%2Fwoocommerce%22), which enables the updated Jetpack connection flow.
