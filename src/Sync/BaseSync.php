@@ -220,9 +220,11 @@ abstract class BaseSync {
 			static::import( $id );
 		}
 
-		// @todo Should we just grab static::get_total_imported() and read imported count?
-		$imported_count = static::get_total_imported();
-		update_option( 'wc_admin_import_count_' . static::NAME, $imported_count + count( $items->ids ) );
+		$import_stats                             = get_option( 'wc_admin_import_stats', array() );
+		$imported_count                           = absint( $import_stats[ static::NAME ]['imported'] ) + count( $items->ids );
+		$import_stats[ static::NAME ]['imported'] = $imported_count;
+		update_option( 'wc_admin_import_stats', $import_stats );
+
 		$properties['imported_count'] = $imported_count;
 
 		wc_admin_record_tracks_event( 'import_job_complete', $properties );

@@ -87,23 +87,39 @@ class ReportsSync {
 	 * @param bool     $skip_existing Skip exisiting records.
 	 */
 	public static function reset_import_stats( $days, $skip_existing ) {
-		$totals = self::get_import_totals( $days, $skip_existing );
-		update_option( 'wc_admin_import_customers_count', 0 );
-		update_option( 'wc_admin_import_orders_count', 0 );
-		update_option( 'wc_admin_import_customers_total', $totals['customers'] );
-		update_option( 'wc_admin_import_orders_total', $totals['orders'] );
+		$import_stats = get_option( 'wc_admin_import_stats', array() );
+		$totals       = self::get_import_totals( $days, $skip_existing );
+
+		foreach ( self::get_syncs() as $sync ) {
+			$import_stats[ $sync::NAME ]['imported'] = 0;
+			$import_stats[ $sync::NAME ]['total']    = $totals[ $sync::NAME ];
+		}
 
 		// Update imported from date if older than previous.
-		$previous_import_date = get_option( 'wc_admin_imported_from_date' );
+		$previous_import_date = $import_stats['import_from'];
 		$current_import_date  = $days ? date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ) : -1;
 
 		if ( ! $previous_import_date || -1 === $current_import_date || new \DateTime( $previous_import_date ) > new \DateTime( $current_import_date ) ) {
-			update_option( 'wc_admin_imported_from_date', $current_import_date );
+			$import_stats['import_from'] = $current_import_date;
 		}
+
+		update_option( 'wc_admin_import_stats', $import_stats );
 	}
 
 	/**
-	 * Get the import totals for customers and orders.
+	 * Get stats for current import.
+	 *
+	 * @return array
+	 */
+	public static function get_import_stats() {
+		$import_stats                 = get_option( 'wc_admin_import_stats', array() );
+		$import_stats['is_importing'] = self::is_importing();
+
+		return $import_stats;
+	}
+
+	/**
+	 * Get the import totals for all syncs.
 	 *
 	 * @param int|bool $days Number of days to import.
 	 * @param bool     $skip_existing Skip exisiting records.
@@ -166,11 +182,7 @@ class ReportsSync {
 		self::queue_dependent_action( self::CUSTOMERS_DELETE_BATCH_INIT, array(), self::ORDERS_DELETE_BATCH_INIT );
 
 		// Delete import options.
-		delete_option( 'wc_admin_import_customers_count' );
-		delete_option( 'wc_admin_import_orders_count' );
-		delete_option( 'wc_admin_import_customers_total' );
-		delete_option( 'wc_admin_import_orders_total' );
-		delete_option( 'wc_admin_imported_from_date' );
+		delete_option( 'wc_admin_import_stats' );
 
 		return __( 'Report table data is being deleted.', 'woocommerce-admin' );
 	}
