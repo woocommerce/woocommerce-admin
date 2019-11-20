@@ -19,7 +19,6 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import './style.scss';
 import OrdersReport from './orders';
 import ProductsReport from './products';
 import RevenueReport from './revenue';
