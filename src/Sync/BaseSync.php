@@ -31,16 +31,6 @@ abstract class BaseSync {
 	const QUEUE_BATCH_ACTION = 'wc-admin_queue_batches';
 
 	/**
-	 * Action hook for queuing an action after another is complete.
-	 */
-	const QUEUE_DEPENDENT_ACTION = 'wc-admin_queue_dependent_action';
-
-	/**
-	 * Dependency to run before batch importing.
-	 */
-	const DEPENDENCY = false;
-
-	/**
 	 * Batch action size.
 	 */
 	const BATCH_QUEUE_SIZE = 100;
@@ -71,6 +61,7 @@ abstract class BaseSync {
 		add_action( static::get_action( 'delete_batch_init' ), array( static::class, 'delete_batch_init' ), 10, 3 );
 		add_action( static::get_action( 'delete_batch' ), array( static::class, 'delete_batch' ), 10, 4 );
 		add_action( static::get_action( 'import' ), array( static::class, 'import' ) );
+		add_action( static::get_action( 'schedule_action' ), array( static::class, 'schedule_action' ), 10, 2 );
 	}
 
 	/**
@@ -127,18 +118,39 @@ abstract class BaseSync {
 			'delete_batch_init' => 'wc-admin_delete_batch_init_' . static::NAME,
 			'delete_batch'      => 'wc-admin_delete_batch_' . static::NAME,
 			'import'            => 'wc-admin_import_' . static::NAME,
+			'schedule_action'   => 'wc-admin_schedule_action_' . static::NAME,
 		);
 	}
 
 	/**
-	 * Get an action tag name from the action slug.
+	 * Get an action tag name from the action name.
 	 *
-	 * @param string $action_name The action slug.
+	 * @param string $action_name The action name.
 	 * @return string|null
 	 */
 	public static function get_action( $action_name ) {
 		$actions = static::get_actions();
 		return isset( $actions[ $action_name ] ) ? $actions[ $action_name ] : null;
+	}
+
+	/**
+	 * Returns an array of actions and dependencies as key => value pairs.
+	 *
+	 * @return array
+	 */
+	public static function get_dependencies() {
+		return array();
+	}
+
+	/**
+	 * Get dependencies associated with an action.
+	 *
+	 * @param string $action_name The action slug.
+	 * @return string|null
+	 */
+	public static function get_dependency( $action_name ) {
+		$dependencies = static::get_dependencies();
+		return isset( $dependencies[ $action_name ] ) ? $dependencies[ $action_name ] : null;
 	}
 
 	/**
@@ -263,11 +275,11 @@ abstract class BaseSync {
 		if ( $existing_jobs ) {
 			$existing_job = current( $existing_jobs );
 
-			// Bail out if there's a pending single action, or a pending dependent action.
+			// Bail out if there's a pending single action, or a pending scheduled actions.
 			if (
 				( static::get_action( $action_name ) === $existing_job->get_hook() ) ||
 				(
-					self::QUEUE_DEPENDENT_ACTION === $existing_job->get_hook() &&
+					static::get_action( 'schedule_action' ) === $existing_job->get_hook() &&
 					in_array( self::get_action( $action_name ), $existing_job->get_args(), true )
 				)
 			) {
@@ -282,16 +294,20 @@ abstract class BaseSync {
 	 * @param string $action_name Action name.
 	 */
 	public static function get_next_blocking_job( $action_name ) {
-		// @todo Get the actual dependency hook.
-		$dependency_hook = '';
-		$blocking_jobs   = self::queue()->search(
+		$dependency = self::get_dependency( $action_name );
+
+		if ( ! $dependency ) {
+			return;
+		}
+
+		$blocking_jobs = self::queue()->search(
 			array(
 				'status'   => 'pending',
 				'orderby'  => 'date',
 				'order'    => 'DESC',
 				'per_page' => 1,
 				'claimed'  => false,
-				'search'   => $dependency_hook, // search is used instead of hook to find queued batch creation.
+				'search'   => $dependency, // search is used instead of hook to find queued batch creation.
 				'group'    => self::QUEUE_GROUP,
 			)
 		);
@@ -309,7 +325,7 @@ abstract class BaseSync {
 				// Also, ensure that the next schedule is a DateTime (it can be null).
 				if (
 					is_a( $next_job_schedule, 'DateTime' ) &&
-					( self::QUEUE_DEPENDENT_ACTION !== $blocking_job_hook )
+					( static::get_action( 'schedule_action' ) !== $blocking_job_hook )
 				) {
 					return $blocking_job;
 				}
@@ -345,11 +361,10 @@ abstract class BaseSync {
 		// or schedule to run now if no blocking jobs exist.
 		$blocking_job = static::get_next_blocking_job( $action_name );
 		if ( $blocking_job ) {
-			$dependency_hook = '';
 			self::queue()->schedule_single(
 				$blocking_job->get_schedule()->next()->getTimestamp() + 5,
-				$action_hook,
-				array( $action_name, $args, $dependency_hook ),
+				static::get_action( 'schedule_action' ),
+				array( $action_name, $args ),
 				static::QUEUE_GROUP
 			);
 		} else {

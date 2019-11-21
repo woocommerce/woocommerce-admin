@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin\Sync;
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDataStore;
+use \Automattic\WooCommerce\Admin\Sync\OrdersSync;
 
 /**
  * CustomersSync Class.
@@ -29,6 +30,17 @@ class CustomersSync extends BaseSync {
 
 		CustomersDataStore::init();
 		parent::init();
+	}
+
+	/**
+	 * Add customer dependencies.
+	 *
+	 * @return array
+	 */
+	public static function get_dependencies() {
+		return array(
+			'delete_batch_init' => OrdersSync::get_action( 'delete_batch_init' ),
+		);
 	}
 
 	/**

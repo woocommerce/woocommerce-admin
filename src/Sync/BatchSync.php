@@ -23,7 +23,6 @@ class BatchSync extends BaseSync {
 	 */
 	public static function init() {
 		add_action( self::get_action( 'queue_batches' ), array( __CLASS__, 'queue_batches' ), 10, 4 );
-		add_action( self::get_action( 'queue_dependent_action' ), array( __CLASS__, 'queue_dependent_action' ), 10, 3 );
 	}
 
 	/**
@@ -34,8 +33,7 @@ class BatchSync extends BaseSync {
 	 */
 	public static function get_actions() {
 		return array(
-			'queue_batches'          => self::QUEUE_BATCH_ACTION,
-			'queue_dependent_action' => self::QUEUE_DEPENDENT_ACTION,
+			'queue_batches' => self::QUEUE_BATCH_ACTION,
 		);
 	}
 }

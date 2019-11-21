@@ -14,6 +14,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\DataStore as OrdersSt
 use \Automattic\WooCommerce\Admin\API\Reports\Products\DataStore as ProductsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Taxes\DataStore as TaxesDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
+use \Automattic\WooCommerce\Admin\Sync\CustomersSync;
 
 /**
  * OrdersSync Class.
@@ -42,6 +43,18 @@ class OrdersSync extends BaseSync {
 		TaxesDataStore::init();
 
 		parent::init();
+	}
+
+	/**
+	 * Add customer dependencies.
+	 *
+	 * @return array
+	 */
+	public static function get_dependencies() {
+		return array(
+			'import_batch_init' => CustomersSync::get_action( 'import_batch_init' ),
+			'import'            => CustomersSync::get_action( 'import' ),
+		);
 	}
 
 	/**
