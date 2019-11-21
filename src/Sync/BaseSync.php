@@ -348,7 +348,7 @@ abstract class BaseSync {
 		}
 
 		if ( apply_filters( 'woocommerce_analytics_disable_import_scheduling', false ) ) {
-			static::$action_name( $item_id );
+			call_user_func_array( array( static::class, $action_name ), $args );
 			return;
 		}
 
