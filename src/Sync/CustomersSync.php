@@ -88,10 +88,22 @@ class CustomersSync extends BaseSync {
 
 	/**
 	 * Get total number of rows imported.
+	 *
+	 * @return int
 	 */
 	public static function get_total_imported() {
 		global $wpdb;
 		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_customer_lookup" );
+	}
+
+	/**
+	 * Schedule import.
+	 *
+	 * @param int $user_id User ID.
+	 * @return void
+	 */
+	public static function schedule_import( $user_id ) {
+		self::schedule_action( 'import', array( $user_id ) );
 	}
 
 	/**

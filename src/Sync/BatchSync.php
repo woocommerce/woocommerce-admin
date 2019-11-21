@@ -38,17 +38,4 @@ class BatchSync extends BaseSync {
 			'queue_dependent_action' => self::QUEUE_DEPENDENT_ACTION,
 		);
 	}
-
-	/**
-	 * We don't want to run batches directly from here.
-	 *
-	 * @param integer|boolean $days Number of days to import.
-	 * @param boolean         $skip_existing Skip exisiting records.
-	 */
-	public static function import_batch_init( $days, $skip_existing ) {}
-
-	/**
-	 * Batches aren't store and don't need to be deleted.
-	 */
-	public static function delete_batch_init() {}
 }

@@ -67,12 +67,7 @@ class ReportsSync {
 
 		self::reset_import_stats( $days, $skip_existing );
 		foreach ( self::get_syncs() as $sync ) {
-			// @todo This needs to be updated; should we queue dependent actions directly inside the sync?
-			if ( $sync::DEPENDENCY ) {
-				$sync::queue_dependent_action( $sync::get_action( 'import_batch_init' ), array( $days, $skip_existing ), $sync::DEPENDENCY );
-			} else {
-				$sync::import_batch_init( $days, $skip_existing );
-			}
+			$sync::schedule_action( 'import_batch_init', array( $days, $skip_existing ) );
 		}
 
 		return __( 'Report table data is being rebuilt.  Please allow some time for data to fully populate.', 'woocommerce-admin' );
@@ -153,8 +148,7 @@ class ReportsSync {
 		self::clear_queued_actions();
 
 		foreach ( self::get_syncs() as $sync ) {
-			// @todo This should delete items with dependencies first.
-			$sync::delete_batch_init();
+			$sync::schedule_action( 'delete_batch_init', array() );
 		}
 
 		// Delete import options.

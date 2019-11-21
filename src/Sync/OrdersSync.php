@@ -114,7 +114,7 @@ class OrdersSync extends BaseSync {
 			return;
 		}
 
-		self::schedule_import( $post_id );
+		self::schedule_action( 'import', array( $post_id ) );
 	}
 
 	/**
@@ -162,7 +162,7 @@ class OrdersSync extends BaseSync {
 		}
 
 		// Otherwise assume an error occurred and reschedule.
-		self::schedule_import( $order_id );
+		self::schedule_action( 'import', array( $order_id ) );
 	}
 
 	/**

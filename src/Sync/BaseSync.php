@@ -134,11 +134,11 @@ abstract class BaseSync {
 	 * Get an action tag name from the action slug.
 	 *
 	 * @param string $action_name The action slug.
-	 * @return string
+	 * @return string|null
 	 */
 	public static function get_action( $action_name ) {
 		$actions = static::get_actions();
-		return $actions[ $action_name ];
+		return isset( $actions[ $action_name ] ) ? $actions[ $action_name ] : null;
 	}
 
 	/**
@@ -242,25 +242,20 @@ abstract class BaseSync {
 	}
 
 	/**
-	 * Schedule an action to import a single item.
+	 * Check if existing jobs exist for an action and arguments.
 	 *
-	 * @param int $item_id Item ID.
-	 * @return void
+	 * @param string $action_name Action name.
+	 * @param array  $args Array of arguments to pass to action.
+	 * @return bool
 	 */
-	public static function schedule_import( $item_id ) {
-		if ( apply_filters( 'woocommerce_analytics_disable_import_scheduling', false ) ) {
-			static::import( $item_id );
-			return;
-		}
-
-		// Look for existing jobs with this ID to prevent duplicating import efforts.
+	public static function has_existing_jobs( $action_name, $args ) {
 		$existing_jobs = self::queue()->search(
 			array(
 				'status'   => 'pending',
 				'per_page' => 1,
 				'claimed'  => false,
-				'hook'     => static::get_action( 'import' ),
-				'search'   => "[{$item_id}]",
+				'hook'     => static::get_action( $action_name ),
+				'search'   => '[' . implode( ',', $args ) . ']',
 				'group'    => self::QUEUE_GROUP,
 			)
 		);
@@ -268,21 +263,98 @@ abstract class BaseSync {
 		if ( $existing_jobs ) {
 			$existing_job = current( $existing_jobs );
 
-			// Bail out if there's a pending single import action, or a pending dependent action.
+			// Bail out if there's a pending single action, or a pending dependent action.
 			if (
-				( static::get_action( 'import' ) === $existing_job->get_hook() ) ||
+				( static::get_action( $action_name ) === $existing_job->get_hook() ) ||
 				(
 					self::QUEUE_DEPENDENT_ACTION === $existing_job->get_hook() &&
-					in_array( self::get_action( 'import' ), $existing_job->get_args(), true )
+					in_array( self::get_action( $action_name ), $existing_job->get_args(), true )
 				)
 			) {
-				return;
+				return true;
+			}
+		}
+	}
+
+	/**
+	 * Get the next blocking job for an action.
+	 *
+	 * @param string $action_name Action name.
+	 */
+	public static function get_next_blocking_job( $action_name ) {
+		// @todo Get the actual dependency hook.
+		$dependency_hook = '';
+		$blocking_jobs   = self::queue()->search(
+			array(
+				'status'   => 'pending',
+				'orderby'  => 'date',
+				'order'    => 'DESC',
+				'per_page' => 1,
+				'claimed'  => false,
+				'search'   => $dependency_hook, // search is used instead of hook to find queued batch creation.
+				'group'    => self::QUEUE_GROUP,
+			)
+		);
+
+		$next_job_schedule = null;
+		$blocking_job_hook = null;
+
+		if ( is_array( $blocking_jobs ) ) {
+			foreach ( $blocking_jobs as $blocking_job ) {
+				$blocking_job_hook = $blocking_job->get_hook();
+				$next_job_schedule = $blocking_job->get_schedule()->next();
+
+				// Eliminate the false positive scenario where the blocking job is
+				// actually another queued dependent action awaiting the same prerequisite.
+				// Also, ensure that the next schedule is a DateTime (it can be null).
+				if (
+					is_a( $next_job_schedule, 'DateTime' ) &&
+					( self::QUEUE_DEPENDENT_ACTION !== $blocking_job_hook )
+				) {
+					return $blocking_job;
+				}
 			}
 		}
 
-		self::queue()->schedule_single( time() + 5, static::get_action( 'import' ), array( $item_id ), self::QUEUE_GROUP );
-		// @todo If dependent actions exist, do this.
-		// self::queue_dependent_action( self::SINGLE_ORDER_IMPORT_ACTION, array( $item_id ), self::CUSTOMERS_IMPORT_BATCH_ACTION );
+		return false;
+	}
+
+	/**
+	 * Schedule an action to run and check for dependencies.
+	 *
+	 * @param string $action_name Action name.
+	 * @param array  $args Array of arguments to pass to action.
+	 */
+	public static function schedule_action( $action_name, $args ) {
+		$action_hook = static::get_action( $action_name );
+		if ( ! $action_hook ) {
+			return;
+		}
+
+		if ( apply_filters( 'woocommerce_analytics_disable_import_scheduling', false ) ) {
+			static::$action_name( $item_id );
+			return;
+		}
+
+		// Check for existing jobs and bail if they already exist.
+		if ( static::has_existing_jobs( $action_name, $args ) ) {
+			return;
+		}
+
+		// Check if any blocking jobs exist and schedule after they've completed
+		// or schedule to run now if no blocking jobs exist.
+		$blocking_job = static::get_next_blocking_job( $action_name );
+		if ( $blocking_job ) {
+			$dependency_hook = '';
+			self::queue()->schedule_single(
+				$blocking_job->get_schedule()->next()->getTimestamp() + 5,
+				$action_hook,
+				array( $action_name, $args, $dependency_hook ),
+				static::QUEUE_GROUP
+			);
+		} else {
+			self::queue()->schedule_single( time() + 5, $action_hook, $args, static::QUEUE_GROUP );
+		}
 	}
 
 	/**
@@ -328,54 +400,6 @@ abstract class BaseSync {
 			}
 		}
 	}
-
-	/**
-	 * Queue an action to run after another.
-	 *
-	 * @param string $action Action to run after prerequisite.
-	 * @param array  $action_args Action arguments.
-	 * @param string $prerequisite_action Prerequisite action.
-	 */
-	public static function queue_dependent_action( $action, $action_args, $prerequisite_action ) {
-		$blocking_jobs = self::queue()->search(
-			array(
-				'status'   => 'pending',
-				'orderby'  => 'date',
-				'order'    => 'DESC',
-				'per_page' => 1,
-				'claimed'  => false,
-				'search'   => $prerequisite_action, // search is used instead of hook to find queued batch creation.
-				'group'    => self::QUEUE_GROUP,
-			)
-		);
-
-		$next_job_schedule = null;
-		$blocking_job_hook = null;
-
-		if ( $blocking_jobs ) {
-			$blocking_job      = current( $blocking_jobs );
-			$blocking_job_hook = $blocking_job->get_hook();
-			$next_job_schedule = $blocking_job->get_schedule()->next();
-		}
-
-		// Eliminate the false positive scenario where the blocking job is
-		// actually another queued dependent action awaiting the same prerequisite.
-		// Also, ensure that the next schedule is a DateTime (it can be null).
-		if (
-			is_a( $next_job_schedule, 'DateTime' ) &&
-			( self::QUEUE_DEPENDENT_ACTION !== $blocking_job_hook )
-		) {
-			self::queue()->schedule_single(
-				$next_job_schedule->getTimestamp() + 5,
-				self::QUEUE_DEPENDENT_ACTION,
-				array( $action, $action_args, $prerequisite_action ),
-				self::QUEUE_GROUP
-			);
-		} else {
-			self::queue()->schedule_single( time() + 5, $action, $action_args, self::QUEUE_GROUP );
-		}
-	}
-
 
 	/**
 	 * Queue item deletion in batches.
