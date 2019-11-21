@@ -467,7 +467,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'state'            => $order->get_billing_state( 'edit' ),
 			'postcode'         => $order->get_billing_postcode( 'edit' ),
 			'country'          => $order->get_billing_country( 'edit' ),
-			'date_last_active' => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
+			'date_last_active' => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ), // phpcs:ignore WordPress.DateTime.RestrictedFunctions
 		);
 		$format = array(
 			'%s',
@@ -609,7 +609,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'postcode'         => $customer->get_billing_postcode( 'edit' ),
 			'country'          => $customer->get_billing_country( 'edit' ),
 			'date_registered'  => $customer->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ),
-			'date_last_active' => $last_active ? date( 'Y-m-d H:i:s', $last_active ) : null,
+			'date_last_active' => $last_active ? date( 'Y-m-d H:i:s', $last_active ) : null, // phpcs:ignore WordPress.DateTime.RestrictedFunctions
 		);
 		$format      = array(
 			'%d',
