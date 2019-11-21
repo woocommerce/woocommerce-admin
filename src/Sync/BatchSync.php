@@ -46,4 +46,9 @@ class BatchSync extends BaseSync {
 	 * @param boolean         $skip_existing Skip exisiting records.
 	 */
 	public static function import_batch_init( $days, $skip_existing ) {}
+
+	/**
+	 * Batches aren't store and don't need to be deleted.
+	 */
+	public static function delete_batch_init() {}
 }

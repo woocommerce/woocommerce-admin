@@ -94,7 +94,7 @@ class ReportsSync {
 		}
 
 		// Update imported from date if older than previous.
-		$previous_import_date = $import_stats['imported_from'];
+		$previous_import_date = isset( $import_stats['imported_from'] ) ? $import_stats['imported_from'] : null;
 		$current_import_date  = $days ? date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ) : -1;
 
 		if ( ! $previous_import_date || -1 === $current_import_date || new \DateTime( $previous_import_date ) > new \DateTime( $current_import_date ) ) {
@@ -152,11 +152,10 @@ class ReportsSync {
 		// Cancel all pending import jobs.
 		self::clear_queued_actions();
 
-		// Delete orders in batches.
-		self::queue()->schedule_single( time() + 5, self::ORDERS_DELETE_BATCH_INIT, array(), self::QUEUE_GROUP );
-
-		// Delete customers after order data is deleted.
-		self::queue_dependent_action( self::CUSTOMERS_DELETE_BATCH_INIT, array(), self::ORDERS_DELETE_BATCH_INIT );
+		foreach ( self::get_syncs() as $sync ) {
+			// @todo This should delete items with dependencies first.
+			$sync::delete_batch_init();
+		}
 
 		// Delete import options.
 		delete_option( 'wc_admin_import_stats' );
