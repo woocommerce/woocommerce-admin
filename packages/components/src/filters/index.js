@@ -177,14 +177,10 @@ ReportFilters.propTypes = {
 		primaryDate: PropTypes.shape( {
 			label: PropTypes.string.isRequired,
 			range: PropTypes.string.isRequired,
-			after: PropTypes.instanceOf( moment ).isRequired,
-			before: PropTypes.instanceOf( moment ).isRequired,
 		} ).isRequired,
 		secondaryDate: PropTypes.shape( {
 			label: PropTypes.string.isRequired,
 			range: PropTypes.string.isRequired,
-			after: PropTypes.instanceOf( moment ).isRequired,
-			before: PropTypes.instanceOf( moment ).isRequired,
 		} ).isRequired,
 	} ).isRequired,
 };
