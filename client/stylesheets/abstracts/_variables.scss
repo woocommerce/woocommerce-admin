@@ -1,5 +1,12 @@
 /** @format */
 
+@import 'node_modules/@wordpress/base-styles/colors';
+@import 'node_modules/@wordpress/base-styles/variables';
+@import 'node_modules/@wordpress/base-styles/mixins';
+@import 'node_modules/@wordpress/base-styles/breakpoints';
+@import 'node_modules/@wordpress/base-styles/animations';
+@import 'node_modules/@wordpress/base-styles/z-index';
+
 $fallback-gutter: 24px;
 $fallback-gutter-large: 40px;
 $gutter: var(--main-gap);
@@ -38,17 +45,17 @@ $default-font-size: 13px;
 $default-line-height: 1.4;
 $white: $studio-white;
 $black: $studio-black;
-$blue-medium-900: #006589;
-$blue-medium-800: #00739c;
-$blue-medium-700: #007fac;
-$blue-medium-600: #008dbe;
-$blue-medium-500: #00a0d2;
-$blue-medium-400: #33b3db;
-$blue-medium-300: #66c6e4;
-$blue-medium-200: #bfe7f3;
-$blue-medium-100: #e5f5fa;
-$blue-medium-highlight: #b3e7fe;
-$blue-medium-focus: #007cba;
+//$blue-medium-900: #006589;
+//$blue-medium-800: #00739c;
+//$blue-medium-700: #007fac;
+//$blue-medium-600: #008dbe;
+//$blue-medium-500: #00a0d2;
+//$blue-medium-400: #33b3db;
+//$blue-medium-300: #66c6e4;
+//$blue-medium-200: #bfe7f3;
+//$blue-medium-100: #e5f5fa;
+//$blue-medium-highlight: #b3e7fe;
+//$blue-medium-focus: #007cba;
 $light-gray-100: $core-grey-light-100;
 $light-gray-200: $core-grey-light-200;
 $light-gray-300: $core-grey-light-300;
@@ -71,13 +78,50 @@ $alert-red: $error-red;
 $alert-yellow: $notice-yellow;
 $alert-green: $valid-green;
 $toggle-border-width: 2px;
-$radius-round-rectangle: 4px;
-$icon-button-size: 36px;
-$icon-button-size-small: 24px;
-$grid-size-small: 4px;
-$grid-size: 8px;
-$grid-size-large: 16px;
-$grid-size-xlarge: 24px;
+//$radius-round-rectangle: 4px;
+//$icon-button-size: 36px;
+//$icon-button-size-small: 24px;
+//$grid-size-small: 4px;
+//$grid-size: 8px;
+//$grid-size-large: 16px;
+//$grid-size-xlarge: 24px;
+//$shadow-popover: 0 3px 30px rgba($dark-gray-900, 0.1);
+//$panel-header-height: 50px;
+//$panel-padding: 16px;
+//$shadow-modal: 0 3px 30px rgba($dark-gray-900, 0.2);
+//$modal-min-width: 360px;
+//$radius-round: 50%;
+
+// Gutenberg mixins, also temporary until we use base-styles
+//@mixin menu-style__neutral() {
+//	border: none;
+//	box-shadow: none;
+//}
+//@mixin menu-style__hover() {
+//	color: $dark-gray-900;
+//	border: none;
+//	box-shadow: none;
+//	background: $light-gray-200;
+//}
+//@mixin menu-style__focus() {
+//	color: $dark-gray-900;
+//	border: none;
+//	box-shadow: none;
+//	outline-offset: -2px;
+//	outline: 1px dotted $dark-gray-500;
+//}
+@mixin edit-post__fade-in-animation($speed: 0.2s, $delay: 0s) {
+	animation: edit-post__fade-in-animation $speed ease-out $delay;
+	animation-fill-mode: forwards;
+	@include reduce-motion('animation');
+}
+//@mixin input-style__neutral() {
+//	box-shadow: 0 0 0 transparent;
+//	transition: box-shadow 0.1s linear;
+//	border-radius: $radius-round-rectangle;
+//	border: $border-width solid $dark-gray-200;
+//	@include reduce-motion("transition");
+//}
 
 // Newspack variables. These are temporary until we move away from Newspack components.
 $muriel-white: $studio-white;
