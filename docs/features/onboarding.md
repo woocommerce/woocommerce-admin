@@ -37,7 +37,7 @@ To power the new onboarding flow client side, new REST API endpoints have been i
 
 ## Onboarding filters
 
-* `woocommerce_onboarding_profile_properties` filters the properties we track as part of the profile wizard (such as information from store/business details steps).
+* `woocommerce_onboarding_profile_properties` filters the properties we track as part of the profile wizard (such as information from store/business details steps). When the `completed` property is set to true, the profile wizard is completely dismissed and hidden.
 * `woocommerce_rest_onboarding_profile_object_query` filters the query arguments for requests to `/wc-admin/onboarding/profile`.
 * `woocommerce_rest_prepare_onboarding_profile` filters the response for requests to `/wc-admin/onboarding/profile`.
 * `rest_onboarding_profile_collection_params` filters the collection parameters for requests to  `/wc-admin/onboarding/profile`.
@@ -46,7 +46,7 @@ To power the new onboarding flow client side, new REST API endpoints have been i
 * `woocommerce_admin_onboarding_product_types` filters the product types displayed in the profile wizard.
 * `woocommerce_onboarding_plugins_whitelist` filters the list of plugins that can installed & activated via onboarding. This acts as a whitelist so only certain plugins can be used via the `/wc-admin/onboarding/profile/install` and `/wc-admin/onboarding/profile/activate` endpoints.
 * `woocommerce_admin_onboarding_themes` filters the themes displayed in the profile wizard.
-* `woocommerce_onboarding_jetpack_connect_redirect_url` filters the Jetpack connection URL outlined in the Jetpack connection section below.
+* `woocommerce_onboarding_jetpack_connect_redirect_url` filters the Jetpack connection redirect URL outlined in the Jetpack connection section below.
 * `woocommerce_onboarding_task_list` filters the list of tasks on the task list dashboard. This allows extensions to add new tasks. See [the extension docs](https://github.com/woocommerce/woocommerce-admin/tree/42015d17a919e8f9e54ba75869c50b04b8dc9241/docs/examples/extensions) for an example of how to do this.
 
 
@@ -54,9 +54,11 @@ To power the new onboarding flow client side, new REST API endpoints have been i
 
 A few new WordPress options have been introduced to store information and settings during setup. It may be necessary to manual delete these options from your `wp_options` database to test a certain task or feature.
 
-* `woocommerce_onboarding_payments`. Since the payments step requires multiple redirects to payment providers to setup accounts, we cache the current progress of the payments step in an option, so that we can quickly drop users back into the correct part of the task.
+
+* `woocommerce_task_list_hidden`. This option is used to conditionally show the entire task list. The task list can be hidden by the user after they have completed all tasks. Hiding the wizard stops it from showing in both full screen mode, and the collapsed inline version that shows above the dashboard analytics cards.
 * `woocommerce_task_list_welcome_modal_dismissed`. This option is used to show a congratulations modal during the transition between the profile wizard and task list.
 * `woocommerce_task_list_prompt_shown`. This option is used to conditionally show the "Is this card useful?" snackbar notice, shown once right after a user completes all the task list tasks.
+* `woocommerce_onboarding_payments`. Since the payments step requires multiple redirects to payment providers to setup accounts, we cache the current progress of the payments step in an option, so that we can quickly drop users back into the correct part of the task.
 
 We also use existing options from WooCommerce Core or extensions like WooCommerce Services or Stripe. The list below may not be complete, as new tasks are introduced, but you can generally find usage of these by searching for the [getOptions selector](https://github.com/woocommerce/woocommerce-admin/search?q=getOptions&unscoped_q=getOptions).
 
