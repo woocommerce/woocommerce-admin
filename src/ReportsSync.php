@@ -37,10 +37,13 @@ class ReportsSync {
 	 * @return array
 	 */
 	public static function get_syncs() {
-		return array(
-			new BatchSync(),
-			new CustomersSync(),
-			new OrdersSync(),
+		return apply_filters(
+			'woocommerce_admin_report_syncs',
+			array(
+				new BatchSync(),
+				new CustomersSync(),
+				new OrdersSync(),
+			)
 		);
 	}
 
