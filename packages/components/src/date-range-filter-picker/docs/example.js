@@ -6,7 +6,6 @@ import { DateRangeFilterPicker } from '@woocommerce/components';
 import {
 	getDateParamsFromQuery,
 	getCurrentDates,
-	isoDateFormat,
 	loadLocaleData,
 } from '@woocommerce/date';
 
@@ -24,16 +23,18 @@ const localeSettings = {
 };
 loadLocaleData( localeSettings );
 
-// Fetch store default date range and compose with date utility functions.
 const defaultDateRange = 'period=month&compare=previous_year';
 const storeGetDateParamsFromQuery = partialRight( getDateParamsFromQuery, defaultDateRange );
 const storeGetCurrentDates = partialRight( getCurrentDates, defaultDateRange );
-
-// Package date utilities for filter picker component.
-const storeDate = {
-	getDateParamsFromQuery: storeGetDateParamsFromQuery,
-	getCurrentDates: storeGetCurrentDates,
-	isoDateFormat,
+const { period, compare, before, after } = storeGetDateParamsFromQuery( query );
+const { primary: primaryDate, secondary: secondaryDate } = storeGetCurrentDates( query );
+const dateQuery = {
+	period,
+	compare,
+	before,
+	after,
+	primaryDate,
+	secondaryDate,
 };
 
 export default () => (
@@ -41,6 +42,6 @@ export default () => (
 		key="daterange"
 		query={ query }
 		onRangeSelect={ () => {} }
-		storeDate={ storeDate }
+		dateQuery={ dateQuery }
 	/>
 );

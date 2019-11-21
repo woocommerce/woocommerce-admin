@@ -7,7 +7,7 @@ import { parse, stringify } from 'qs';
 /**
  * Internal dependencies
  */
-import * as storeDate from 'lib/date';
+import { getCurrentDates, getDateParamsFromQuery } from 'lib/date';
 
 /**
  * WooCommerce dependencies
@@ -24,7 +24,17 @@ const DefaultDate = ( { value, onChange } ) => {
 		} );
 	};
 	const query = parse( value.replace( /&amp;/g, '&' ) );
-	return <DateRangeFilterPicker query={ query } onRangeSelect={ change } storeDate={ storeDate } />;
+	const { period, compare, before, after } = getDateParamsFromQuery( query );
+	const { primary: primaryDate, secondary: secondaryDate } = getCurrentDates( query );
+	const dateQuery = {
+		period,
+		compare,
+		before,
+		after,
+		primaryDate,
+		secondaryDate,
+	};
+	return <DateRangeFilterPicker query={ query } onRangeSelect={ change } dateQuery={ dateQuery } />;
 };
 
 export default DefaultDate;

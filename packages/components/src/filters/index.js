@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { find } from 'lodash';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 /**
  * WooCommerce dependencies
@@ -84,12 +85,12 @@ class ReportFilters extends Component {
 
 	render() {
 		const {
+			dateQuery,
 			filters,
 			query,
 			path,
 			showDatePicker,
 			onFilterSelect,
-			storeDate,
 		} = this.props;
 		return (
 			<Fragment>
@@ -99,9 +100,8 @@ class ReportFilters extends Component {
 						{ showDatePicker && (
 							<DateRangeFilterPicker
 								key={ JSON.stringify( query ) }
-								query={ query }
+								dateQuery={ dateQuery }
 								onRangeSelect={ this.onRangeSelect }
-								storeDate={ storeDate }
 							/>
 						) }
 						{ filters.map( config => {
@@ -167,12 +167,25 @@ ReportFilters.propTypes = {
 	 */
 	currency: PropTypes.object.isRequired,
 	/**
-	 * Store date utility instance.
+	 * The date query string represented in object form.
 	 */
-	storeDate: PropTypes.shape( {
-		isoDateFormat: PropTypes.string.isRequired,
-		getDateParamsFromQuery: PropTypes.func.isRequired,
-		getCurrentDates: PropTypes.func.isRequired,
+	dateQuery: PropTypes.shape( {
+		period: PropTypes.string.isRequired,
+		compare: PropTypes.string.isRequired,
+		before: PropTypes.instanceOf( moment ),
+		after: PropTypes.instanceOf( moment ),
+		primaryDate: PropTypes.shape( {
+			label: PropTypes.string.isRequired,
+			range: PropTypes.string.isRequired,
+			after: PropTypes.instanceOf( moment ).isRequired,
+			before: PropTypes.instanceOf( moment ).isRequired,
+		} ).isRequired,
+		secondaryDate: PropTypes.shape( {
+			label: PropTypes.string.isRequired,
+			range: PropTypes.string.isRequired,
+			after: PropTypes.instanceOf( moment ).isRequired,
+			before: PropTypes.instanceOf( moment ).isRequired,
+		} ).isRequired,
 	} ).isRequired,
 };
 

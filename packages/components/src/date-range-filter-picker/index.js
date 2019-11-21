@@ -6,6 +6,7 @@ import { Component, createRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Dropdown } from '@wordpress/components';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 /**
  * Internal dependencies
@@ -32,9 +33,7 @@ class DateRangeFilterPicker extends Component {
 	}
 
 	getResetState() {
-		const { storeDate, query } = this.props;
-		const { getDateParamsFromQuery } = storeDate;
-		const { period, compare, before, after } = getDateParamsFromQuery( query );
+		const { period, compare, before, after } = this.props.dateQuery;
 		return {
 			period,
 			compare,
@@ -73,12 +72,10 @@ class DateRangeFilterPicker extends Component {
 	}
 
 	getButtonLabel() {
-		const { storeDate, query } = this.props;
-		const { getCurrentDates } = storeDate;
-		const { primary, secondary } = getCurrentDates( query );
+		const { primaryDate, secondaryDate } = this.props.dateQuery;
 		return [
-			`${ primary.label } (${ primary.range })`,
-			`${ __( 'vs.', 'woocommerce-admin' ) } ${ secondary.label } (${ secondary.range })`,
+			`${ primaryDate.label } (${ primaryDate.range })`,
+			`${ __( 'vs.', 'woocommerce-admin' ) } ${ secondaryDate.label } (${ secondaryDate.range })`,
 		];
 	}
 
@@ -160,21 +157,26 @@ DateRangeFilterPicker.propTypes = {
 	 */
 	onRangeSelect: PropTypes.func.isRequired,
 	/**
-	 * The query string represented in object form.
+	 * The date query string represented in object form.
 	 */
-	query: PropTypes.object,
-	/**
-	 * Store date utility instance.
-	 */
-	storeDate: PropTypes.shape( {
-		isoDateFormat: PropTypes.string.isRequired,
-		getDateParamsFromQuery: PropTypes.func.isRequired,
-		getCurrentDates: PropTypes.func.isRequired,
+	dateQuery: PropTypes.shape( {
+		period: PropTypes.string.isRequired,
+		compare: PropTypes.string.isRequired,
+		before: PropTypes.instanceOf( moment ),
+		after: PropTypes.instanceOf( moment ),
+		primaryDate: PropTypes.shape( {
+			label: PropTypes.string.isRequired,
+			range: PropTypes.string.isRequired,
+			after: PropTypes.instanceOf( moment ).isRequired,
+			before: PropTypes.instanceOf( moment ).isRequired,
+		} ).isRequired,
+		secondaryDate: PropTypes.shape( {
+			label: PropTypes.string.isRequired,
+			range: PropTypes.string.isRequired,
+			after: PropTypes.instanceOf( moment ).isRequired,
+			before: PropTypes.instanceOf( moment ).isRequired,
+		} ).isRequired,
 	} ).isRequired,
-};
-
-DateRangeFilterPicker.defaultProps = {
-	query: {},
 };
 
 export default DateRangeFilterPicker;

@@ -17,7 +17,7 @@ import { LOCALE } from '@woocommerce/wc-admin-settings';
  */
 import { recordEvent } from 'lib/tracks';
 import { Currency } from 'lib/currency-format';
-import * as storeDate from 'lib/date';
+import { getCurrentDates, getDateParamsFromQuery } from 'lib/date';
 
 export default class ReportFilters extends Component {
 	constructor() {
@@ -65,6 +65,16 @@ export default class ReportFilters extends Component {
 
 	render() {
 		const { advancedFilters, filters, path, query, showDatePicker } = this.props;
+		const { period, compare, before, after } = getDateParamsFromQuery( query );
+		const { primary: primaryDate, secondary: secondaryDate } = getCurrentDates( query );
+		const dateQuery = {
+			period,
+			compare,
+			before,
+			after,
+			primaryDate,
+			secondaryDate,
+		};
 		return (
 			<Filters
 				query={ query }
@@ -77,7 +87,7 @@ export default class ReportFilters extends Component {
 				onDateSelect={ this.trackDateSelect }
 				onFilterSelect={ this.trackFilterSelect }
 				onAdvancedFilterAction={ this.trackAdvancedFilterAction }
-				storeDate={ storeDate }
+				dateQuery={ dateQuery }
 			/>
 		);
 	}
