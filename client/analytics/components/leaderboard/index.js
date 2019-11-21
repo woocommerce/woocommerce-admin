@@ -3,7 +3,6 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
@@ -50,8 +49,7 @@ export class Leaderboard extends Component {
 	render() {
 		const { isRequesting, isError, totalRows, title } = this.props;
 		const rows = this.getFormattedRows();
-
-		const classes = classnames( 'woocommerce-leaderboard', 'woocommerce-analytics__card' );
+		const classes = 'woocommerce-leaderboard woocommerce-analytics__card';
 
 		if ( isError ) {
 			return <ReportError className={ classes } isError />;
