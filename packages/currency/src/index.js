@@ -30,6 +30,8 @@ export default class Currency {
 
 		const precisionNumber = parseInt( config.precision, 10 );
 		this.precision = isNaN( precisionNumber ) ? DEFAULTS.precision : precisionNumber;
+
+		Object.freeze( this );
 	}
 
 	/**
