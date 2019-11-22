@@ -148,6 +148,7 @@ class Settings extends Component {
 		// TODO: remove this optimistic set of isDirty to false once #2541 is resolved.
 		this.setState( { saving: true, isDirty: false } );
 
+		// On save, reset persisted query properties of Nav Menu links to default
 		query.period = undefined;
 		query.compare = undefined;
 		query.before = undefined;
