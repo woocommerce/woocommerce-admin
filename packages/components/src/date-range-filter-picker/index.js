@@ -6,7 +6,6 @@ import { Component, createRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Dropdown } from '@wordpress/components';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 /**
  * Internal dependencies
@@ -32,16 +31,25 @@ class DateRangeFilterPicker extends Component {
 		this.resetCustomValues = this.resetCustomValues.bind( this );
 	}
 
+	formatDate( date, format ) {
+		if ( date.isMoment && date.isMoment() ) {
+			return date.format( format );
+		}
+
+		return '';
+	}
+
 	getResetState() {
 		const { period, compare, before, after } = this.props.dateQuery;
+
 		return {
 			period,
 			compare,
 			before,
 			after,
 			focusedInput: 'startDate',
-			afterText: after ? after.format( shortDateFormat ) : '',
-			beforeText: before ? before.format( shortDateFormat ) : '',
+			afterText: this.formatDate( after, shortDateFormat ),
+			beforeText: this.formatDate( before, shortDateFormat ),
 			afterError: null,
 			beforeError: null,
 		};
@@ -60,8 +68,8 @@ class DateRangeFilterPicker extends Component {
 				compare,
 			};
 			if ( 'custom' === selectedTab ) {
-				data.after = after ? after.format( isoDateFormat ) : '';
-				data.before = before ? before.format( isoDateFormat ) : '';
+				data.after = this.formatDate( after, isoDateFormat );
+				data.before = this.formatDate( before, isoDateFormat );
 			} else {
 				data.after = undefined;
 				data.before = undefined;
@@ -162,8 +170,8 @@ DateRangeFilterPicker.propTypes = {
 	dateQuery: PropTypes.shape( {
 		period: PropTypes.string.isRequired,
 		compare: PropTypes.string.isRequired,
-		before: PropTypes.instanceOf( moment ),
-		after: PropTypes.instanceOf( moment ),
+		before: PropTypes.object,
+		after: PropTypes.object,
 		primaryDate: PropTypes.shape( {
 			label: PropTypes.string.isRequired,
 			range: PropTypes.string.isRequired,

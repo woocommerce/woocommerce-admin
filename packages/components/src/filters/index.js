@@ -6,7 +6,6 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { find } from 'lodash';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 /**
  * WooCommerce dependencies
@@ -172,8 +171,8 @@ ReportFilters.propTypes = {
 	dateQuery: PropTypes.shape( {
 		period: PropTypes.string.isRequired,
 		compare: PropTypes.string.isRequired,
-		before: PropTypes.instanceOf( moment ),
-		after: PropTypes.instanceOf( moment ),
+		before: PropTypes.object,
+		after: PropTypes.object,
 		primaryDate: PropTypes.shape( {
 			label: PropTypes.string.isRequired,
 			range: PropTypes.string.isRequired,
