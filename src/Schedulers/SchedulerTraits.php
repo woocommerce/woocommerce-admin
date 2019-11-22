@@ -1,44 +1,31 @@
 <?php
 /**
- * Base syncing related functions and actions.
+ * Traits for scheduling actions and dependencies.
  *
  * @package WooCommerce Admin/Classes
  */
 
-namespace Automattic\WooCommerce\Admin\Sync;
+namespace Automattic\WooCommerce\Admin\Schedulers;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
-
 /**
- * BaseSync class.
+ * SchedulerTraits class.
  */
-abstract class BaseSync {
+trait SchedulerTraits {
 	/**
-	 * Slug to identify the import data type.
+	 * Slug to identify the scheduler.
+	 *
+	 * @var string|null
 	 */
-	const NAME = null;
+	public static $name = null;
 
 	/**
 	 * Action scheduler group.
+	 *
+	 * @var string|null
 	 */
-	const QUEUE_GROUP = 'wc-admin-data';
-
-	/**
-	 * Batch action size.
-	 */
-	const BATCH_QUEUE_SIZE = 100;
-
-	/**
-	 * Import batch size.
-	 */
-	const BATCH_IMPORT_SIZE = 25;
-
-	/**
-	 * Delete batch size.
-	 */
-	const BATCH_DELETE_SIZE = 10;
+	public static $group = 'wc-admin-data';
 
 	/**
 	 * Queue instance.
@@ -80,41 +67,10 @@ abstract class BaseSync {
 	}
 
 	/**
-	 * Returns true if an import is in progress.
-	 *
-	 * @return bool
-	 */
-	public static function is_importing() {
-		$pending_jobs = self::queue()->search(
-			array(
-				'status'   => 'pending',
-				'per_page' => 1,
-				'claimed'  => false,
-				'search'   => 'import',
-				'group'    => self::QUEUE_GROUP,
-			)
-		);
-
-		return ! empty( $pending_jobs );
-	}
-
-	/**
-	 * Get all available sync actions.
+	 * Get all available scheduling actions.
 	 * Used to determine action hook names and clear events.
-	 *
-	 * @return array
 	 */
-	public static function get_actions() {
-		return array(
-			'import_batch_init' => 'wc-admin_import_batch_init_' . static::NAME,
-			'import_batch'      => 'wc-admin_import_batch_' . static::NAME,
-			'delete_batch_init' => 'wc-admin_delete_batch_init_' . static::NAME,
-			'delete_batch'      => 'wc-admin_delete_batch_' . static::NAME,
-			'import'            => 'wc-admin_import_' . static::NAME,
-			'schedule_action'   => 'wc-admin_schedule_action_' . static::NAME,
-			'queue_batches'     => 'wc-admin_queue_batch_' . static::NAME,
-		);
-	}
+	public static function get_actions() {}
 
 	/**
 	 * Get an action tag name from the action name.
@@ -148,14 +104,23 @@ abstract class BaseSync {
 	}
 
 	/**
-	 * Returns the batch size for regenerating reports.
-	 * Note: can differ per batch action.
+	 * Batch action size.
+	 */
+	public static function get_batch_sizes() {
+		return array(
+			'queue_batches' => 100,
+		);
+	}
+
+	/**
+	 * Returns the batch size for an action.
 	 *
 	 * @param string $action Single batch action name.
 	 * @return int Batch size.
 	 */
 	public static function get_batch_size( $action ) {
-		$batch_size = defined( static::class . "::BATCH_{$action}_SIZE" ) ? constant( static::class . "::BATCH_{$action}_SIZE" ) : 25;
+		$batch_sizes = static::get_batch_sizes();
+		$batch_size  = isset( $batch_sizes[ $action ] ) ? $batch_sizes[ $action ] : 25;
 
 		/**
 		 * Filter the batch size for regenerating a report table.
@@ -164,87 +129,6 @@ abstract class BaseSync {
 		 * @param string $action Batch action name.
 		 */
 		return apply_filters( 'woocommerce_analytics_regenerate_batch_size', $batch_size, $action );
-	}
-
-	/**
-	 * Get items based on query and return IDs along with total available.
-	 *
-	 * @param int      $limit Number of records to retrieve.
-	 * @param int      $page  Page number.
-	 * @param int|bool $days Number of days prior to current date to limit search results.
-	 * @param bool     $skip_existing Skip already imported items.
-	 */
-	public static function get_items( $limit, $page, $days, $skip_existing ) {
-		return (object) array(
-			'ids'   => array(),
-			'total' => null,
-		);
-	}
-
-	/**
-	 * Get total number of items already imported.
-	 *
-	 * @return null
-	 */
-	public static function get_total_imported() {
-		return null;
-	}
-
-
-	/**
-	 * Queue the imports into multiple batches.
-	 *
-	 * @param integer|boolean $days Number of days to import.
-	 * @param boolean         $skip_existing Skip exisiting records.
-	 */
-	public static function import_batch_init( $days, $skip_existing ) {
-		$batch_size = static::get_batch_size( 'IMPORT' );
-		$items      = static::get_items( 1, 1, $days, $skip_existing );
-
-		if ( 0 === $items->total ) {
-			return;
-		}
-
-		$num_batches = ceil( $items->total / $batch_size );
-
-		self::queue_batches( 1, $num_batches, 'import_batch', array( $days, $skip_existing ) );
-	}
-
-	/**
-	 * Imports a batch of items to update.
-	 *
-	 * @param int      $batch_number Batch number to import (essentially a query page number).
-	 * @param int|bool $days Number of days to import.
-	 * @param bool     $skip_existing Skip exisiting records.
-	 * @return void
-	 */
-	public static function import_batch( $batch_number, $days, $skip_existing ) {
-		$batch_size = static::get_batch_size( 'IMPORT' );
-
-		$properties = array(
-			'batch_number' => $batch_number,
-			'batch_size'   => $batch_size,
-			'type'         => static::NAME,
-		);
-		wc_admin_record_tracks_event( 'import_job_start', $properties );
-
-		// When we are skipping already imported items, the table of items to import gets smaller in
-		// every batch, so we want to always import the first page.
-		$page  = $skip_existing ? 1 : $batch_number;
-		$items = static::get_items( $batch_size, $page, $days, $skip_existing );
-
-		foreach ( $items->ids as $id ) {
-			static::import( $id );
-		}
-
-		$import_stats                             = get_option( 'wc_admin_import_stats', array() );
-		$imported_count                           = absint( $import_stats[ static::NAME ]['imported'] ) + count( $items->ids );
-		$import_stats[ static::NAME ]['imported'] = $imported_count;
-		update_option( 'wc_admin_import_stats', $import_stats );
-
-		$properties['imported_count'] = $imported_count;
-
-		wc_admin_record_tracks_event( 'import_job_complete', $properties );
 	}
 
 	/**
@@ -262,7 +146,7 @@ abstract class BaseSync {
 				'claimed'  => false,
 				'hook'     => static::get_action( $action_name ),
 				'search'   => '[' . implode( ',', $args ) . ']',
-				'group'    => self::QUEUE_GROUP,
+				'group'    => self::$group,
 			)
 		);
 
@@ -302,7 +186,7 @@ abstract class BaseSync {
 				'per_page' => 1,
 				'claimed'  => false,
 				'search'   => $dependency, // search is used instead of hook to find queued batch creation.
-				'group'    => self::QUEUE_GROUP,
+				'group'    => self::$group,
 			)
 		);
 
@@ -341,7 +225,7 @@ abstract class BaseSync {
 			return;
 		}
 
-		if ( apply_filters( 'woocommerce_analytics_disable_import_scheduling', false ) ) {
+		if ( apply_filters( 'woocommerce_analytics_disable_action_scheduling', false ) ) {
 			call_user_func_array( array( static::class, $action_name ), $args );
 			return;
 		}
@@ -359,10 +243,10 @@ abstract class BaseSync {
 				$blocking_job->get_schedule()->next()->getTimestamp() + 5,
 				static::get_action( 'schedule_action' ),
 				array( $action_name, $args ),
-				static::QUEUE_GROUP
+				static::$group
 			);
 		} else {
-			self::queue()->schedule_single( time() + 5, $action_hook, $args, static::QUEUE_GROUP );
+			self::queue()->schedule_single( time() + 5, $action_hook, $args, static::$group );
 		}
 	}
 
@@ -377,7 +261,7 @@ abstract class BaseSync {
 	 * @return void
 	 */
 	public static function queue_batches( $range_start, $range_end, $single_batch_action, $action_args = array() ) {
-		$batch_size       = static::get_batch_size( 'QUEUE' );
+		$batch_size       = static::get_batch_size( 'queue' );
 		$range_size       = 1 + ( $range_end - $range_start );
 		$action_timestamp = time() + 5;
 
@@ -409,39 +293,6 @@ abstract class BaseSync {
 	}
 
 	/**
-	 * Queue item deletion in batches.
-	 */
-	public static function delete_batch_init() {
-		global $wpdb;
-		$batch_size = static::get_batch_size( 'DELETE' );
-		$count      = static::get_total_imported();
-
-		if ( 0 === $count ) {
-			return;
-		}
-
-		$num_batches = ceil( $count / $batch_size );
-
-		self::queue_batches( 1, $num_batches, 'delete_batch' );
-	}
-
-	/**
-	 * Delete a batch by passing the count to be deleted to the child delete method.
-	 *
-	 * @return void
-	 */
-	public static function delete_batch() {
-		wc_admin_record_tracks_event( 'delete_import_data_job_start', array( 'type' => static::NAME ) );
-
-		$batch_size = static::get_batch_size( static::get_batch_size( 'DELETE' ) );
-		static::delete( $batch_size );
-
-		ReportsCache::invalidate();
-
-		wc_admin_record_tracks_event( 'delete_import_data_job_complete', array( 'type' => static::NAME ) );
-	}
-
-	/**
 	 * Clears all queued actions.
 	 */
 	public static function clear_queued_actions() {
@@ -452,11 +303,11 @@ abstract class BaseSync {
 			$actions = static::get_actions();
 			$store->clear_pending_wcadmin_actions( $actions );
 		} elseif ( version_compare( \ActionScheduler_Versions::instance()->latest_version(), '3.0', '>=' ) ) {
-			$store->cancel_actions_by_group( static::QUEUE_GROUP );
+			$store->cancel_actions_by_group( static::$group );
 		} else {
 			$actions = static::get_actions();
 			foreach ( $actions as $action ) {
-				self::queue()->cancel_all( $action, null, static::QUEUE_GROUP );
+				self::queue()->cancel_all( $action, null, static::$group );
 			}
 		}
 	}

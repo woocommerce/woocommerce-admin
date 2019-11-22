@@ -5,21 +5,23 @@
  * @package WooCommerce Admin/Classes
  */
 
-namespace Automattic\WooCommerce\Admin\Sync;
+namespace Automattic\WooCommerce\Admin\Schedulers;
 
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDataStore;
-use \Automattic\WooCommerce\Admin\Sync\OrdersSync;
+use \Automattic\WooCommerce\Admin\Schedulers\OrdersScheduler;
 
 /**
- * CustomersSync Class.
+ * CustomersScheduler Class.
  */
-class CustomersSync extends BaseSync {
+class CustomersScheduler extends ImportScheduler {
 	/**
-	 * Slug to identify the import data type.
+	 * Slug to identify the scheduler.
+	 *
+	 * @var string|null
 	 */
-	const NAME = 'customers';
+	public static $name = 'customers';
 
 	/**
 	 * Attach customer lookup update hooks.
@@ -39,7 +41,7 @@ class CustomersSync extends BaseSync {
 	 */
 	public static function get_dependencies() {
 		return array(
-			'delete_batch_init' => OrdersSync::get_action( 'delete_batch_init' ),
+			'delete_batch_init' => OrdersScheduler::get_action( 'delete_batch_init' ),
 		);
 	}
 

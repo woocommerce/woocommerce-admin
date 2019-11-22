@@ -5,7 +5,7 @@
  * @package WooCommerce Admin/Classes
  */
 
-namespace Automattic\WooCommerce\Admin\Sync;
+namespace Automattic\WooCommerce\Admin\Schedulers;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,16 +14,18 @@ use \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\DataStore as OrdersSt
 use \Automattic\WooCommerce\Admin\API\Reports\Products\DataStore as ProductsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Taxes\DataStore as TaxesDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
-use \Automattic\WooCommerce\Admin\Sync\CustomersSync;
+use \Automattic\WooCommerce\Admin\Schedulers\CustomersScheduler;
 
 /**
- * OrdersSync Class.
+ * OrdersScheduler Class.
  */
-class OrdersSync extends BaseSync {
+class OrdersScheduler extends ImportScheduler {
 	/**
-	 * Slug to identify the import data type.
+	 * Slug to identify the scheduler.
+	 *
+	 * @var string|null
 	 */
-	const NAME = 'orders';
+	public static $name = 'orders';
 
 	/**
 	 * Attach order lookup update hooks.
@@ -52,8 +54,8 @@ class OrdersSync extends BaseSync {
 	 */
 	public static function get_dependencies() {
 		return array(
-			'import_batch_init' => CustomersSync::get_action( 'import_batch_init' ),
-			'import'            => CustomersSync::get_action( 'import' ),
+			'import_batch_init' => CustomersScheduler::get_action( 'import_batch_init' ),
+			'import'            => CustomersScheduler::get_action( 'import' ),
 		);
 	}
 

@@ -9,8 +9,8 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Sync\CustomersSync;
-use Automattic\WooCommerce\Admin\Sync\OrdersSync;
+use Automattic\WooCommerce\Admin\Schedulers\CustomersScheduler;
+use Automattic\WooCommerce\Admin\Schedulers\OrdersScheduler;
 
 /**
  * ReportsSync Class.
@@ -20,9 +20,9 @@ class ReportsSync {
 	 * Hook in sync methods.
 	 */
 	public static function init() {
-		// Initialize syncing hooks.
-		foreach ( self::get_syncs() as $sync ) {
-			$sync::init();
+		// Initialize scheduler hooks.
+		foreach ( self::get_schedulers() as $scheduler ) {
+			$scheduler::init();
 		}
 		add_action( 'woocommerce_update_product', array( __CLASS__, 'clear_stock_count_cache' ) );
 		add_action( 'woocommerce_new_product', array( __CLASS__, 'clear_stock_count_cache' ) );
@@ -35,12 +35,12 @@ class ReportsSync {
 	 *
 	 * @return array
 	 */
-	public static function get_syncs() {
+	public static function get_schedulers() {
 		return apply_filters(
 			'woocommerce_admin_report_syncs',
 			array(
-				new CustomersSync(),
-				new OrdersSync(),
+				new CustomersScheduler(),
+				new OrdersScheduler(),
 			)
 		);
 	}
@@ -51,8 +51,8 @@ class ReportsSync {
 	 * @return bool
 	 */
 	public static function is_importing() {
-		foreach ( self::get_syncs() as $sync ) {
-			if ( $sync::is_importing() ) {
+		foreach ( self::get_schedulers() as $scheduler ) {
+			if ( $scheduler::is_importing() ) {
 				return true;
 			}
 		}
@@ -72,8 +72,8 @@ class ReportsSync {
 		}
 
 		self::reset_import_stats( $days, $skip_existing );
-		foreach ( self::get_syncs() as $sync ) {
-			$sync::schedule_action( 'import_batch_init', array( $days, $skip_existing ) );
+		foreach ( self::get_schedulers() as $scheduler ) {
+			$scheduler::schedule_action( 'import_batch_init', array( $days, $skip_existing ) );
 		}
 
 		return __( 'Report table data is being rebuilt.  Please allow some time for data to fully populate.', 'woocommerce-admin' );
@@ -89,9 +89,9 @@ class ReportsSync {
 		$import_stats = get_option( 'wc_admin_import_stats', array() );
 		$totals       = self::get_import_totals( $days, $skip_existing );
 
-		foreach ( self::get_syncs() as $sync ) {
-			$import_stats[ $sync::NAME ]['imported'] = 0;
-			$import_stats[ $sync::NAME ]['total']    = $totals[ $sync::NAME ];
+		foreach ( self::get_schedulers() as $scheduler ) {
+			$import_stats[ $scheduler::$name ]['imported'] = 0;
+			$import_stats[ $scheduler::$name ]['total']    = $totals[ $scheduler::$name ];
 		}
 
 		// Update imported from date if older than previous.
@@ -127,9 +127,9 @@ class ReportsSync {
 	public static function get_import_totals( $days, $skip_existing ) {
 		$totals = array();
 
-		foreach ( self::get_syncs() as $sync ) {
-			$items                 = $sync::get_items( 1, 1, $days, $skip_existing );
-			$totals[ $sync::NAME ] = $items->total;
+		foreach ( self::get_schedulers() as $scheduler ) {
+			$items                       = $scheduler::get_items( 1, 1, $days, $skip_existing );
+			$totals[ $scheduler::$name ] = $items->total;
 		}
 
 		return $totals;
@@ -139,8 +139,8 @@ class ReportsSync {
 	 * Clears all queued actions.
 	 */
 	public static function clear_queued_actions() {
-		foreach ( self::get_syncs() as $sync ) {
-			$sync::clear_queued_actions();
+		foreach ( self::get_schedulers() as $scheduler ) {
+			$scheduler::clear_queued_actions();
 		}
 	}
 
@@ -153,8 +153,8 @@ class ReportsSync {
 		// Cancel all pending import jobs.
 		self::clear_queued_actions();
 
-		foreach ( self::get_syncs() as $sync ) {
-			$sync::schedule_action( 'delete_batch_init', array() );
+		foreach ( self::get_schedulers() as $scheduler ) {
+			$scheduler::schedule_action( 'delete_batch_init', array() );
 		}
 
 		// Delete import options.
