@@ -9,7 +9,6 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Sync\BatchSync;
 use Automattic\WooCommerce\Admin\Sync\CustomersSync;
 use Automattic\WooCommerce\Admin\Sync\OrdersSync;
 
@@ -40,7 +39,6 @@ class ReportsSync {
 		return apply_filters(
 			'woocommerce_admin_report_syncs',
 			array(
-				new BatchSync(),
 				new CustomersSync(),
 				new OrdersSync(),
 			)
@@ -53,7 +51,12 @@ class ReportsSync {
 	 * @return bool
 	 */
 	public static function is_importing() {
-		return BatchSync::is_importing();
+		foreach ( self::get_syncs() as $sync ) {
+			if ( $sync::is_importing() ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

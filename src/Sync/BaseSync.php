@@ -26,11 +26,6 @@ abstract class BaseSync {
 	const QUEUE_GROUP = 'wc-admin-data';
 
 	/**
-	 * Action hook for reducing a range of batches down to single actions.
-	 */
-	const QUEUE_BATCH_ACTION = 'wc-admin_queue_batches';
-
-	/**
 	 * Batch action size.
 	 */
 	const BATCH_QUEUE_SIZE = 100;
@@ -56,12 +51,13 @@ abstract class BaseSync {
 	 * Add import and delete hooks.
 	 */
 	public static function init() {
-		add_action( static::get_action( 'import_batch_init' ), array( static::class, 'import_batch_init' ), 10, 3 );
-		add_action( static::get_action( 'import_batch' ), array( static::class, 'import_batch' ), 10, 4 );
-		add_action( static::get_action( 'delete_batch_init' ), array( static::class, 'delete_batch_init' ), 10, 3 );
-		add_action( static::get_action( 'delete_batch' ), array( static::class, 'delete_batch' ), 10, 4 );
+		add_action( static::get_action( 'import_batch_init' ), array( static::class, 'import_batch_init' ), 10, 2 );
+		add_action( static::get_action( 'import_batch' ), array( static::class, 'import_batch' ), 10, 3 );
+		add_action( static::get_action( 'delete_batch_init' ), array( static::class, 'delete_batch_init' ) );
+		add_action( static::get_action( 'delete_batch' ), array( static::class, 'delete_batch' ) );
 		add_action( static::get_action( 'import' ), array( static::class, 'import' ) );
 		add_action( static::get_action( 'schedule_action' ), array( static::class, 'schedule_action' ), 10, 2 );
+		add_action( static::get_action( 'queue_batches' ), array( __CLASS__, 'queue_batches' ), 10, 4 );
 	}
 
 	/**
@@ -119,6 +115,7 @@ abstract class BaseSync {
 			'delete_batch'      => 'wc-admin_delete_batch_' . static::NAME,
 			'import'            => 'wc-admin_import_' . static::NAME,
 			'schedule_action'   => 'wc-admin_schedule_action_' . static::NAME,
+			'queue_batches'     => 'wc-admin_queue_batch_' . static::NAME,
 		);
 	}
 
@@ -213,7 +210,7 @@ abstract class BaseSync {
 
 		$num_batches = ceil( $items->total / $batch_size );
 
-		self::queue_batches( 1, $num_batches, self::get_action( 'import_batch' ), array( $days, $skip_existing ) );
+		self::queue_batches( 1, $num_batches, 'import_batch', array( $days, $skip_existing ) );
 	}
 
 	/**
@@ -400,18 +397,16 @@ abstract class BaseSync {
 					return;
 				}
 
-				self::queue()->schedule_single(
-					$action_timestamp,
-					self::QUEUE_BATCH_ACTION,
-					array( $batch_start, $batch_end, $single_batch_action, $action_args ),
-					self::QUEUE_GROUP
+				self::schedule_action(
+					'queue_batch',
+					array( $batch_start, $batch_end, $single_batch_action, $action_args )
 				);
 			}
 		} else {
 			// Otherwise, queue the single batches.
 			for ( $i = $range_start; $i <= $range_end; $i++ ) {
 				$batch_action_args = array_merge( array( $i ), $action_args );
-				self::queue()->schedule_single( $action_timestamp, $single_batch_action, $batch_action_args, self::QUEUE_GROUP );
+				self::schedule_action( $single_batch_action, $batch_action_args );
 			}
 		}
 	}
@@ -430,7 +425,7 @@ abstract class BaseSync {
 
 		$num_batches = ceil( $count / $batch_size );
 
-		self::queue_batches( 1, $num_batches, static::get_action( 'delete_batch' ) );
+		self::queue_batches( 1, $num_batches, 'delete_batch' );
 	}
 
 	/**
