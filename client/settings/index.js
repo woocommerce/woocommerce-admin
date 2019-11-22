@@ -26,11 +26,4 @@ export const DEFAULT_DATE_RANGE = SOURCE.DEFAULT_DATE_RANGE;
 
 export const getSetting = SOURCE.getSetting;
 export const setSetting = SOURCE.setSetting;
-
-/**
- * Returns a string with the site's wp-admin URL appended. JS version of `admin_url`.
- *
- * @param {String} path Relative path.
- * @return {String} Full admin URL.
- */
-export const getAdminLink = path => ( ADMIN_URL || '' ) + path;
+export const getAdminLink = SOURCE.getAdminLink;
