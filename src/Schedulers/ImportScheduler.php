@@ -19,7 +19,10 @@ abstract class ImportScheduler {
 	/**
 	 * Scheduler traits.
 	 */
-	use SchedulerTraits;
+	use SchedulerTraits {
+		get_actions as get_scheduler_actions;
+		get_batch_sizes as get_scheduler_batch_sizes;
+	}
 
 	/**
 	 * Returns true if an import is in progress.
@@ -46,12 +49,15 @@ abstract class ImportScheduler {
 	 * @retun array
 	 */
 	public static function get_batch_sizes() {
-		// @todo Use the default trait queue size.
-		return array(
-			'delete' => 10,
-			'import' => 25,
-			'queue'  => 100,
+		return array_merge(
+			self::get_scheduler_batch_sizes(),
+			array(
+				'delete' => 10,
+				'import' => 25,
+				'queue'  => 100,
+			)
 		);
+
 	}
 
 	/**
@@ -61,15 +67,15 @@ abstract class ImportScheduler {
 	 * @return array
 	 */
 	public static function get_actions() {
-		// @todo Use queue_batches action from the trait.
-		return array(
-			'import_batch_init' => 'wc-admin_import_batch_init_' . static::$name,
-			'import_batch'      => 'wc-admin_import_batch_' . static::$name,
-			'delete_batch_init' => 'wc-admin_delete_batch_init_' . static::$name,
-			'delete_batch'      => 'wc-admin_delete_batch_' . static::$name,
-			'import'            => 'wc-admin_import_' . static::$name,
-			'schedule_action'   => 'wc-admin_schedule_action_' . static::$name,
-			'queue_batches'     => 'wc-admin_queue_batch_' . static::$name,
+		return array_merge(
+			self::get_scheduler_actions(),
+			array(
+				'import_batch_init' => 'wc-admin_import_batch_init_' . static::$name,
+				'import_batch'      => 'wc-admin_import_batch_' . static::$name,
+				'delete_batch_init' => 'wc-admin_delete_batch_init_' . static::$name,
+				'delete_batch'      => 'wc-admin_delete_batch_' . static::$name,
+				'import'            => 'wc-admin_import_' . static::$name,
+			)
 		);
 	}
 

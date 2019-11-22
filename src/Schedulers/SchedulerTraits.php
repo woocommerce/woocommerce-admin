@@ -70,7 +70,12 @@ trait SchedulerTraits {
 	 * Get all available scheduling actions.
 	 * Used to determine action hook names and clear events.
 	 */
-	public static function get_actions() {}
+	public static function get_actions() {
+		return array(
+			'schedule_action' => 'wc-admin_schedule_action_' . static::$name,
+			'queue_batches'   => 'wc-admin_queue_batches_' . static::$name,
+		);
+	}
 
 	/**
 	 * Get an action tag name from the action name.
@@ -279,7 +284,7 @@ trait SchedulerTraits {
 				}
 
 				self::schedule_action(
-					'queue_batch',
+					'queue_batches',
 					array( $batch_start, $batch_end, $single_batch_action, $action_args )
 				);
 			}
