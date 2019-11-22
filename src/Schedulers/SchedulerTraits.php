@@ -224,7 +224,7 @@ trait SchedulerTraits {
 	 * @param string $action_name Action name.
 	 * @param array  $args Array of arguments to pass to action.
 	 */
-	public static function schedule_action( $action_name, $args ) {
+	public static function schedule_action( $action_name, $args = array() ) {
 		$action_hook = static::get_action( $action_name );
 		if ( ! $action_hook ) {
 			return;
@@ -266,7 +266,7 @@ trait SchedulerTraits {
 	 * @return void
 	 */
 	public static function queue_batches( $range_start, $range_end, $single_batch_action, $action_args = array() ) {
-		$batch_size       = static::get_batch_size( 'queue' );
+		$batch_size       = static::get_batch_size( 'queue_batches' );
 		$range_size       = 1 + ( $range_end - $range_start );
 		$action_timestamp = time() + 5;
 
@@ -285,7 +285,7 @@ trait SchedulerTraits {
 
 				self::schedule_action(
 					'queue_batches',
-					array( $batch_start, $batch_end, $single_batch_action, $action_args )
+					array( $batch_start, $batch_end, $single_batch_action, '[' . implode( ',', $action_args ) . ']' )
 				);
 			}
 		} else {
