@@ -125,5 +125,5 @@ export function getTasks( { profileItems, options, query } ) {
 		},
 	];
 
-	return applyFilters( 'woocommerce_onboarding_task_list', tasks, query );
+	return applyFilters( 'woocommerce_admin_onboarding_task_list', tasks, query );
 }

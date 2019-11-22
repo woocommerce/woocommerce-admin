@@ -475,7 +475,7 @@ class Onboarding {
 	 */
 	public static function get_allowed_plugins() {
 		return apply_filters(
-			'woocommerce_onboarding_plugins_whitelist',
+			'woocommerce_admin_onboarding_plugins_whitelist',
 			array(
 				'facebook-for-woocommerce'            => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
 				'mailchimp-for-woocommerce'           => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
