@@ -128,6 +128,7 @@ class Settings extends Component {
 
 	saveChanges = source => {
 		const { settings } = this.state;
+		const { query } = this.props;
 		this.persistChanges( this.state );
 		this.props.updateSettings( { wc_admin: settings } );
 
@@ -146,6 +147,14 @@ class Settings extends Component {
 
 		// TODO: remove this optimistic set of isDirty to false once #2541 is resolved.
 		this.setState( { saving: true, isDirty: false } );
+
+		query.period = undefined;
+		query.compare = undefined;
+		query.before = undefined;
+		query.after = undefined;
+		query.interval = undefined;
+		query.type = undefined;
+		window.wpNavMenuUrlUpdate( query );
 	};
 
 	handleInputChange( e ) {
