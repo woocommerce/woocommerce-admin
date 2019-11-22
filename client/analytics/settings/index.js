@@ -117,13 +117,13 @@ class Settings extends Component {
 	 * @param {object} state - State
 	 */
 	persistChanges( state ) {
-		const settings = getSetting( 'wcAdminSetting', {} );
+		const settings = getSetting( 'wcAdminSettings', {} );
 		analyticsSettings.forEach( setting => {
 			const updatedValue = state.settings[ setting.name ];
 			settings[ setting.name ] = updatedValue;
 			setting.initialValue = updatedValue;
 		} );
-		setSetting( 'wcAdminSetting', settings );
+		setSetting( 'wcAdminSettings', settings );
 	}
 
 	saveChanges = source => {
