@@ -48,16 +48,13 @@ abstract class BaseSync {
 	protected static $queue = null;
 
 	/**
-	 * Add import and delete hooks.
+	 * Add all actions as hooks.
 	 */
 	public static function init() {
-		add_action( static::get_action( 'import_batch_init' ), array( static::class, 'import_batch_init' ), 10, 2 );
-		add_action( static::get_action( 'import_batch' ), array( static::class, 'import_batch' ), 10, 3 );
-		add_action( static::get_action( 'delete_batch_init' ), array( static::class, 'delete_batch_init' ) );
-		add_action( static::get_action( 'delete_batch' ), array( static::class, 'delete_batch' ) );
-		add_action( static::get_action( 'import' ), array( static::class, 'import' ) );
-		add_action( static::get_action( 'schedule_action' ), array( static::class, 'schedule_action' ), 10, 2 );
-		add_action( static::get_action( 'queue_batches' ), array( __CLASS__, 'queue_batches' ), 10, 4 );
+		foreach ( self::get_actions() as $action_name => $action_hook ) {
+			$method = new \ReflectionMethod( static::class, $action_name );
+			add_action( $action_hook, array( static::class, $action_name ), 10, $method->getNumberOfParameters() );
+		}
 	}
 
 	/**
