@@ -137,6 +137,27 @@ trait SchedulerTraits {
 	}
 
 	/**
+	 * Flatten multidimensional arrays to store for scheduling.
+	 *
+	 * @param array $args Argument array.
+	 * @return string
+	 */
+	public static function flatten_args( $args ) {
+		$flattened = array();
+
+		foreach ( $args as $arg ) {
+			if ( is_array( $arg ) ) {
+				$flattened[] = self::flatten_args( $arg );
+			} else {
+				$flattened[] = $arg;
+			}
+		}
+
+		$string = '[' . implode( ',', $flattened ) . ']';
+		return $string;
+	}
+
+	/**
 	 * Check if existing jobs exist for an action and arguments.
 	 *
 	 * @param string $action_name Action name.
@@ -150,7 +171,7 @@ trait SchedulerTraits {
 				'per_page' => 1,
 				'claimed'  => false,
 				'hook'     => static::get_action( $action_name ),
-				'search'   => '[' . implode( ',', $args ) . ']',
+				'search'   => self::flatten_args( $args ),
 				'group'    => self::$group,
 			)
 		);
@@ -285,7 +306,7 @@ trait SchedulerTraits {
 
 				self::schedule_action(
 					'queue_batches',
-					array( $batch_start, $batch_end, $single_batch_action, '[' . implode( ',', $action_args ) . ']' )
+					array( $batch_start, $batch_end, $single_batch_action, $action_args )
 				);
 			}
 		} else {
