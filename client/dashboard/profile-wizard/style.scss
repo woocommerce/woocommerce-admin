@@ -27,7 +27,7 @@
 		color: $studio-gray-60;
 		text-align: left;
 
-		.muriel-button {
+		button.is-button {
 			display: flex;
 			margin: $gap-smaller auto 0;
 			width: 310px;
@@ -331,7 +331,7 @@
 		margin-left: 44px;
 		min-height: 28px;
 
-		button.muriel-button {
+		button.is-button {
 			margin: 0;
 			height: 40px;
 			min-width: auto;
@@ -384,9 +384,7 @@
 		}
 
 		button.is-primary {
-			min-width: 160px;
 			align-self: flex-end;
-			margin-bottom: 0;
 		}
 
 		.muriel-checkbox input[type='checkbox']:checked {

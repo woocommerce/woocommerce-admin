@@ -30,6 +30,17 @@
 	}
 }
 
+.woocommerce-layout .components-button.is-button,
+.woocommerce-page .components-modal__frame .components-button.is-button {
+	height: 48px;
+	padding-left: 25px;
+	padding-right: 25px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 18px;
+	font-weight: 500;
+}
+
 .woocommerce-layout {
 	a:link,
 	a:visited,

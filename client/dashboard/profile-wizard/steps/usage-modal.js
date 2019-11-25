@@ -3,13 +3,13 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, CheckboxControl } from 'newspack-components';
+import { CheckboxControl } from 'newspack-components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import { get } from 'lodash';
 import interpolateComponents from 'interpolate-components';
-import { FormToggle, Modal } from '@wordpress/components';
+import { Button, FormToggle, Modal } from '@wordpress/components';
 
 /**
  * Internal dependencies
