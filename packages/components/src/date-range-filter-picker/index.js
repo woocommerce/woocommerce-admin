@@ -32,7 +32,7 @@ class DateRangeFilterPicker extends Component {
 	}
 
 	formatDate( date, format ) {
-		if ( date.isMoment && date.isMoment() ) {
+		if ( date && date.isMoment && date.isMoment() ) {
 			return date.format( format );
 		}
 
