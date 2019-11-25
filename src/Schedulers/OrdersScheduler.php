@@ -55,7 +55,6 @@ class OrdersScheduler extends ImportScheduler {
 	public static function get_dependencies() {
 		return array(
 			'import_batch_init' => CustomersScheduler::get_action( 'import_batch_init' ),
-			'import'            => CustomersScheduler::get_action( 'import' ),
 		);
 	}
 

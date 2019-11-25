@@ -40,6 +40,7 @@ trait SchedulerTraits {
 	public static function init() {
 		foreach ( self::get_actions() as $action_name => $action_hook ) {
 			$method = new \ReflectionMethod( static::class, $action_name );
+			add_action( $action_hook, array( static::class, 'check_dependencies' ), 5, $method->getNumberOfParameters() );
 			add_action( $action_hook, array( static::class, $action_name ), 10, $method->getNumberOfParameters() );
 		}
 	}
@@ -210,9 +211,8 @@ trait SchedulerTraits {
 				'orderby'  => 'date',
 				'order'    => 'DESC',
 				'per_page' => 1,
-				'claimed'  => false,
 				'search'   => $dependency, // search is used instead of hook to find queued batch creation.
-				'group'    => self::$group,
+				'group'    => static::$group,
 			)
 		);
 
@@ -240,12 +240,40 @@ trait SchedulerTraits {
 	}
 
 	/**
+	 * Check for blocking jobs and reschedule if any exist.
+	 */
+	public static function check_dependencies() {
+		$action_hook = current_action();
+		$action_name = array_search( current_action(), static::get_actions(), true );
+		$args        = func_get_args();
+
+		// Check if any blocking jobs exist and schedule after they've completed
+		// or schedule to run now if no blocking jobs exist.
+		$blocking_job = static::get_next_blocking_job( $action_name );
+		if ( $blocking_job ) {
+			self::queue()->schedule_single(
+				$blocking_job->get_schedule()->next()->getTimestamp() + 60,
+				$action_hook,
+				$args,
+				static::$group
+			);
+
+			remove_action( $action_hook, array( static::class, $action_name ), 10 );
+		}
+	}
+
+	/**
 	 * Schedule an action to run and check for dependencies.
 	 *
 	 * @param string $action_name Action name.
 	 * @param array  $args Array of arguments to pass to action.
 	 */
 	public static function schedule_action( $action_name, $args = array() ) {
+		// Check for existing jobs and bail if they already exist.
+		if ( static::has_existing_jobs( $action_name, $args ) ) {
+			return;
+		}
+
 		$action_hook = static::get_action( $action_name );
 		if ( ! $action_hook ) {
 			return;
@@ -256,24 +284,7 @@ trait SchedulerTraits {
 			return;
 		}
 
-		// Check for existing jobs and bail if they already exist.
-		if ( static::has_existing_jobs( $action_name, $args ) ) {
-			return;
-		}
-
-		// Check if any blocking jobs exist and schedule after they've completed
-		// or schedule to run now if no blocking jobs exist.
-		$blocking_job = static::get_next_blocking_job( $action_name );
-		if ( $blocking_job ) {
-			self::queue()->schedule_single(
-				$blocking_job->get_schedule()->next()->getTimestamp() + 5,
-				static::get_action( 'schedule_action' ),
-				array( $action_name, $args ),
-				static::$group
-			);
-		} else {
-			self::queue()->schedule_single( time() + 5, $action_hook, $args, static::$group );
-		}
+		self::queue()->schedule_single( time() + 5, $action_hook, $args, static::$group );
 	}
 
 	/**
