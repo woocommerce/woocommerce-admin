@@ -251,7 +251,7 @@ trait SchedulerTraits {
 		$blocking_job = static::get_next_blocking_job( $action_name );
 		if ( $blocking_job ) {
 			self::queue()->schedule_single(
-				$blocking_job->get_schedule()->next()->getTimestamp() + 60,
+				$blocking_job->get_schedule()->next()->getTimestamp() + 5,
 				$action_hook,
 				$args,
 				static::$group
