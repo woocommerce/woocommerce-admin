@@ -90,7 +90,7 @@ class Payments extends Component {
 
 	completeTask() {
 		this.props.updateOptions( {
-			[ 'woocommerce_onboarding_payments' ]: {
+			[ 'woocommerce_task_list_payments' ]: {
 				completed: 1,
 			},
 		} );
@@ -139,7 +139,7 @@ class Payments extends Component {
 	completePluginInstall() {
 		const { completed } = this.props;
 		this.props.updateOptions( {
-			[ 'woocommerce_onboarding_payments' ]: {
+			[ 'woocommerce_task_list_payments' ]: {
 				completed: completed || false,
 				installed: 1,
 				methods: this.getMethodsToConfigure(),
@@ -155,8 +155,8 @@ class Payments extends Component {
 		const { options, methods, configured } = this.props;
 		configured.push( method );
 		this.props.updateOptions( {
-			[ 'woocommerce_onboarding_payments' ]: {
-				...options.woocommerce_onboarding_payments,
+			[ 'woocommerce_task_list_payments' ]: {
+				...options.woocommerce_task_list_payments,
 				configured,
 			},
 		} );
@@ -283,10 +283,10 @@ class Payments extends Component {
 		const { options } = this.props;
 		if (
 			options &&
-			options.woocommerce_onboarding_payments &&
-			options.woocommerce_onboarding_payments.methods
+			options.woocommerce_task_list_payments &&
+			options.woocommerce_task_list_payments.methods
 		) {
-			return options.woocommerce_onboarding_payments.methods;
+			return options.woocommerce_task_list_payments.methods;
 		}
 
 		const { values } = this.formData;
@@ -492,16 +492,16 @@ export default compose(
 		);
 
 		const options = getOptions( [
-			'woocommerce_onboarding_payments',
+			'woocommerce_task_list_payments',
 			'woocommerce_default_country',
 		] );
 		const countryCode = getCountryCode( options.woocommerce_default_country );
 
-		const methods = get( options, [ 'woocommerce_onboarding_payments', 'methods' ], [] );
-		const installed = get( options, [ 'woocommerce_onboarding_payments', 'installed' ], false );
-		const configured = get( options, [ 'woocommerce_onboarding_payments', 'configured' ], [] );
+		const methods = get( options, [ 'woocommerce_task_list_payments', 'methods' ], [] );
+		const installed = get( options, [ 'woocommerce_task_list_payments', 'installed' ], false );
+		const configured = get( options, [ 'woocommerce_task_list_payments', 'configured' ], [] );
 
-		const completed = get( options, [ 'woocommerce_onboarding_payments', 'completed' ], false );
+		const completed = get( options, [ 'woocommerce_task_list_payments', 'completed' ], false );
 
 		return {
 			countryCode,

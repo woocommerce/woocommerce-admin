@@ -43,7 +43,7 @@ export function getTasks( { profileItems, options, query } ) {
 
 	const paymentsCompleted = get(
 		options,
-		[ 'woocommerce_onboarding_payments', 'completed' ],
+		[ 'woocommerce_task_list_payments', 'completed' ],
 		false
 	);
 
