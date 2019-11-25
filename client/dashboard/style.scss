@@ -134,19 +134,6 @@
 
 	.muriel-button.is-button {
 		height: 48px;
-
-		&.is-busy {
-			cursor: progress;
-			/* stylelint-disable function-parentheses-space-inside, function-comma-space-after */
-			background-image: linear-gradient(
-				-45deg,
-				$studio-pink-50 28%,
-				color($studio-pink-50 shade(30%)) 28%,
-				color($studio-pink-50 shade(30%)) 72%,
-				$studio-pink-50 72%
-			) !important; // Gutenberg & PostCSS Add the gradient late in output, based on the 'primary' color, which in our case is purple. Our busy state should be pink.
-			/* stylelint-enable */
-		}
 	}
 
 	.muriel-checkbox input[type='checkbox']:checked {
@@ -186,5 +173,31 @@
 				border-color: $studio-woocommerce-purple-60;
 			}
 		}
+	}
+}
+
+.woocommerce-task-dashboard__container .components-button.is-button,
+.woocommerce-profile-wizard__body .components-button.is-button,
+.woocommerce-page .components-modal__frame .components-button.is-button {
+	height: 48px;
+	padding-left: 25px;
+	padding-right: 25px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 18px;
+	font-weight: 500;
+
+	&.is-primary.is-busy,
+	&.is-primary.is-busy:active:enabled {
+		cursor: progress;
+		/* stylelint-disable function-parentheses-space-inside, function-comma-space-after */
+		background-image: linear-gradient(
+			-45deg,
+			$studio-pink-50 28%,
+			color($studio-pink-50 shade(30%)) 28%,
+			color($studio-pink-50 shade(30%)) 72%,
+			$studio-pink-50 72%
+		) !important; // Gutenberg & PostCSS Add the gradient late in output, based on the 'primary' color, which in our case is purple. Our busy state should be pink.
+		/* stylelint-enable */
 	}
 }

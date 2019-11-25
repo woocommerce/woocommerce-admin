@@ -16,12 +16,14 @@
 		margin-right: auto;
 	}
 
-	.muriel-button.components-button,
+	.woocommerce-task-dashboard__container .components-button:not(.components-icon-button),
 	.components-modal__frame .components-button.is-button {
 		height: 40px;
 		min-width: 106px;
 		margin: $gap $gap-smaller 0 0;
 		justify-content: center;
+		font-size: 14px;
+		font-weight: 500;
 
 		&:not(.is-primary) {
 			color: $studio-pink-50;
