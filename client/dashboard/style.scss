@@ -123,24 +123,6 @@
 		}
 	}
 
-	.muriel-checkbox label.components-checkbox-control__label {
-		margin-left: $gap-smaller;
-	}
-
-	.muriel-checkbox input[type='checkbox'] {
-		width: 18px;
-		height: 18px;
-	}
-
-	.muriel-button.is-button {
-		height: 48px;
-	}
-
-	.muriel-checkbox input[type='checkbox']:checked {
-		background-color: $studio-woocommerce-purple-60;
-		border-color: $studio-woocommerce-purple-60;
-	}
-
 	.components-form-toggle {
 		display: inline-block;
 
@@ -161,10 +143,6 @@
 
 		.components-base-control__field {
 			margin-bottom: 0;
-		}
-
-		.muriel-checkbox label.components-checkbox-control__label {
-			margin-left: $gap-large;
 		}
 
 		&.is-checked {

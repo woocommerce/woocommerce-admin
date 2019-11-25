@@ -304,9 +304,10 @@
 		margin-left: $gap-larger;
 		padding-top: $gap;
 
-		.components-base-control__field {
-			align-items: center;
-			display: flex;
+		svg.dashicon.components-checkbox-control__checked {
+			display: block;
+			left: -38px;
+			top: -1px;
 		}
 
 		.components-checkbox-control__input {
@@ -369,7 +370,7 @@
 }
 
 .woocommerce-task-appearance {
-	.muriel-image-upload {
+	.woocommerce-image-upload {
 		margin-bottom: $gap-smallest;
 	}
 }
