@@ -4,7 +4,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { ImageUpload } from 'newspack-components';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
@@ -14,7 +13,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, Stepper, TextControl } from '@woocommerce/components';
+import { Card, Stepper, TextControl, ImageUpload } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
