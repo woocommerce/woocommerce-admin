@@ -75,6 +75,7 @@ class OnboardingTasks {
 	 * Add task items to component settings.
 	 *
 	 * @param array $settings Component settings.
+	 * @return array
 	 */
 	public function component_settings( $settings ) {
 		$products = wp_count_posts( 'product' );
@@ -83,7 +84,7 @@ class OnboardingTasks {
 		// task completion along with cache busting for active tasks.
 		$settings['onboarding']['automatedTaxSupportedCountries'] = self::get_automated_tax_supported_countries();
 		$settings['onboarding']['customLogo']                     = get_theme_mod( 'custom_logo', false );
-		$settings['onboarding']['hasHomepage']                    = self::check_task_completion( 'homepage' );
+		$settings['onboarding']['hasHomepage']                    = self::check_task_completion( 'homepage' ) || 'classic' === get_option( 'classic-editor-replace' );
 		$settings['onboarding']['hasPhysicalProducts']            = count(
 			wc_get_products(
 				array(
@@ -130,6 +131,8 @@ class OnboardingTasks {
 
 	/**
 	 * Check for active task completion, and clears the transient.
+	 *
+	 * @return bool
 	 */
 	public static function is_active_task_complete() {
 		$active_task = self::get_active_task();
@@ -150,7 +153,7 @@ class OnboardingTasks {
 	 * Check for task completion of a given task.
 	 *
 	 * @param string $task Name of task.
-	 * @return bool;
+	 * @return bool
 	 */
 	public static function check_task_completion( $task ) {
 		switch ( $task ) {

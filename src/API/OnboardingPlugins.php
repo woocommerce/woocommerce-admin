@@ -160,7 +160,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * Installs the requested plugin.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return array Plugin Status
+	 * @return WP_Error|array Plugin Status
 	 */
 	public function install_plugin( $request ) {
 		$allowed_plugins = Onboarding::get_allowed_plugins();
@@ -199,7 +199,21 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 			)
 		);
 
+		// Log extra debug for plugin installation.
+		$logger        = wc_get_logger();
+		$logger_source = array(
+			'source' => 'woocommerce-admin',
+		);
+
 		if ( is_wp_error( $api ) ) {
+			$logger->info(
+				sprintf( 'The requested plugin `%s` could not be installed. plugins_api call failed.', sanitize_key( $slug ) ),
+				$logger_source
+			);
+			$logger->debug(
+				'api: ' . wc_print_r( $api, true ),
+				$logger_source
+			);
 			return new \WP_Error( 'woocommerce_rest_plugin_install', __( 'The requested plugin could not be installed.', 'woocommerce-admin' ), 500 );
 		}
 
@@ -207,6 +221,22 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 		$result   = $upgrader->install( $api->download_link );
 
 		if ( is_wp_error( $result ) || is_null( $result ) ) {
+			$logger->info(
+				sprintf( 'The requested plugin `%s` could not be installed. install call failed.', sanitize_key( $slug ) ),
+				$logger_source
+			);
+			$logger->debug(
+				'upgrader: ' . wc_print_r( $upgrader, true ),
+				$logger_source
+			);
+			$logger->debug(
+				'api: ' . wc_print_r( $api, true ),
+				$logger_source
+			);
+			$logger->debug(
+				'result: ' . wc_print_r( $result, true ),
+				$logger_source
+			);
 			return new \WP_Error( 'woocommerce_rest_plugin_install', __( 'The requested plugin could not be installed.', 'woocommerce-admin' ), 500 );
 		}
 
@@ -234,7 +264,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * Activate the requested plugin.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return array Plugin Status
+	 * @return WP_Error|array Plugin Status
 	 */
 	public function activate_plugins( $request ) {
 		$allowed_plugins = Onboarding::get_allowed_plugins();
@@ -274,14 +304,14 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * Generates a Jetpack Connect URL.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return array Connection URL for Jetpack
+	 * @return WP_Error|array Connection URL for Jetpack
 	 */
 	public function connect_jetpack( $request ) {
 		if ( ! class_exists( '\Jetpack' ) ) {
 			return new \WP_Error( 'woocommerce_rest_jetpack_not_active', __( 'Jetpack is not installed or active.', 'woocommerce-admin' ), 404 );
 		}
 
-		$redirect_url = apply_filters( 'woocommerce_onboarding_jetpack_connect_redirect_url', esc_url_raw( $request['redirect_url'] ) );
+		$redirect_url = apply_filters( 'woocommerce_admin_onboarding_jetpack_connect_redirect_url', esc_url_raw( $request['redirect_url'] ) );
 		$connect_url  = \Jetpack::init()->build_connect_url( true, $redirect_url, 'woocommerce-onboarding' );
 
 		// @todo When implementing user-facing split testing, this should be abled to a default of 'production'.
@@ -298,7 +328,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	/**
 	 *  Kicks off the WCCOM Connect process.
 	 *
-	 * @return array Connection URL for WooCommerce.com
+	 * @return WP_Error|array Connection URL for WooCommerce.com
 	 */
 	public function request_wccom_connect() {
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-api.php';
@@ -358,7 +388,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * Finishes connecting to WooCommerce.com.
 	 *
 	 * @param  object $rest_request Request details.
-	 * @return array Contains success status.
+	 * @return WP_Error|array Contains success status.
 	 */
 	public function finish_wccom_connect( $rest_request ) {
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper.php';
@@ -419,7 +449,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	/**
 	 * Returns a URL that can be used to connect to PayPal.
 	 *
-	 * @return array Connect URL.
+	 * @return WP_Error|array Connect URL.
 	 */
 	public function connect_paypal() {
 		if ( ! function_exists( 'wc_gateway_ppec' ) ) {
@@ -450,7 +480,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	/**
 	 * Returns a URL that can be used to connect to Square.
 	 *
-	 * @return array Connect URL.
+	 * @return WP_Error|array Connect URL.
 	 */
 	public function connect_square() {
 		if ( ! class_exists( '\WooCommerce\Square\Handlers\Connection' ) ) {

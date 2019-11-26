@@ -17,10 +17,10 @@ const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-web
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// @todo Add a `beta` phase and build process so that we can separate final .org versions from beta GitHub versions.
-let WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'core';
+// generate-feature-config.php defaults to 'plugin', so lets match that here.
+let WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'plugin';
 if ( [ 'development', 'plugin', 'core' ].indexOf( WC_ADMIN_PHASE ) === -1 ) {
-	WC_ADMIN_PHASE = 'core';
+	WC_ADMIN_PHASE = 'plugin';
 }
 const WC_ADMIN_CONFIG = require( path.join( __dirname, 'config', WC_ADMIN_PHASE + '.json' ) );
 const WC_ADMIN_ADDITIONAL_FEATURES = process.env.WC_ADMIN_ADDITIONAL_FEATURES &&
@@ -144,6 +144,12 @@ const webpackConfig = {
 						query: {
 							includePaths: [ 'client/stylesheets/abstracts' ],
 							data:
+								'@import "node_modules/@wordpress/base-styles/_colors.scss"; ' +
+								'@import "node_modules/@wordpress/base-styles/_variables.scss"; ' +
+								'@import "node_modules/@wordpress/base-styles/_mixins.scss"; ' +
+								'@import "node_modules/@wordpress/base-styles/_breakpoints.scss"; ' +
+								'@import "node_modules/@wordpress/base-styles/_animations.scss"; ' +
+								'@import "node_modules/@wordpress/base-styles/_z-index.scss"; ' +
 								'@import "_colors"; ' +
 								'@import "_variables"; ' +
 								'@import "_breakpoints"; ' +

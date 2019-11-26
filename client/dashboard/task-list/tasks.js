@@ -11,8 +11,8 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
-import { updateQueryString, getAdminLink } from '@woocommerce/navigation';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -34,7 +34,7 @@ export function getTasks( { profileItems, options, query } ) {
 		shippingZonesCount,
 	} = getSetting( 'onboarding', {
 		customLogo: '',
-		hasHomePage: false,
+		hasHomepage: false,
 		hasPhysicalProducts: false,
 		hasProducts: false,
 		isTaxComplete: false,
@@ -43,7 +43,7 @@ export function getTasks( { profileItems, options, query } ) {
 
 	const paymentsCompleted = get(
 		options,
-		[ 'woocommerce_onboarding_payments', 'completed' ],
+		[ 'woocommerce_task_list_payments', 'completed' ],
 		false
 	);
 
@@ -125,5 +125,5 @@ export function getTasks( { profileItems, options, query } ) {
 		},
 	];
 
-	return applyFilters( 'woocommerce_onboarding_task_list', tasks, query );
+	return applyFilters( 'woocommerce_admin_onboarding_task_list', tasks, query );
 }

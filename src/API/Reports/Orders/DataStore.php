@@ -45,7 +45,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		'status'           => 'strval',
 		'customer_id'      => 'intval',
 		'net_total'        => 'floatval',
-		'gross_total'      => 'floatval',
+		'total_sales'      => 'floatval',
 		'num_items_sold'   => 'intval',
 		'customer_type'    => 'strval',
 	);
@@ -71,7 +71,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'status'           => "REPLACE({$table_name}.status, 'wc-', '') as status",
 			'customer_id'      => "{$table_name}.customer_id",
 			'net_total'        => "{$table_name}.net_total",
-			'gross_total'      => "{$table_name}.gross_total",
+			'total_sales'      => "{$table_name}.total_sales",
 			'num_items_sold'   => "{$table_name}.num_items_sold",
 			'customer_type'    => "(CASE WHEN {$table_name}.returning_customer = 1 THEN 'returning' WHEN {$table_name}.returning_customer = 0 THEN 'new' ELSE '' END) as customer_type",
 		);
@@ -82,7 +82,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @param array $query_args Query arguments supplied by the user.
 	 */
-	protected function get_sql_query_params( $query_args ) {
+	protected function add_sql_query_params( $query_args ) {
 		global $wpdb;
 		$order_stats_lookup_table   = self::get_db_table_name();
 		$order_coupon_lookup_table  = $wpdb->prefix . 'wc_order_coupon_lookup';
@@ -91,9 +91,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$operator                   = $this->get_match_operator( $query_args );
 		$where_subquery             = array();
 
-		$this->get_time_period_sql_params( $query_args, $order_stats_lookup_table );
+		$this->add_time_period_sql_params( $query_args, $order_stats_lookup_table );
 		$this->get_limit_sql_params( $query_args );
-		$this->get_order_by_sql_params( $query_args );
+		$this->add_order_by_sql_params( $query_args );
 
 		$status_subquery = $this->get_status_subquery( $query_args );
 		if ( $status_subquery ) {
@@ -221,7 +221,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 			$selections = $this->selected_columns( $query_args );
 			$params     = $this->get_limit_params( $query_args );
-			$this->get_sql_query_params( $query_args );
+			$this->add_sql_query_params( $query_args );
 			$db_records_count = (int) $wpdb->get_var(
 				"SELECT COUNT(*) FROM (
 					{$this->subquery->get_query_statement()}

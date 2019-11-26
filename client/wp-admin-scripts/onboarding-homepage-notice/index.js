@@ -10,7 +10,12 @@ import domReady from '@wordpress/dom-ready';
 /**
  * WooCommerce dependencies
  */
-import { getAdminLink } from '@woocommerce/navigation';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
+
+/**
+ * Internal dependencies
+ */
+import { queueRecordEvent } from 'lib/tracks';
 
 /**
  * Returns a promise and resolves when the post begins to publish.
@@ -61,7 +66,7 @@ const onboardingHomepageNotice = () => {
 			null !== document.querySelector( '.components-snackbar__content' ) ? 'snackbar' : 'default';
 
 		apiFetch( {
-			path: '/wc-admin/v1/options',
+			path: '/wc-admin/options',
 			method: 'POST',
 			data: {
 				show_on_front: 'page',
@@ -77,8 +82,11 @@ const onboardingHomepageNotice = () => {
 				type: notificationType,
 				actions: [
 					{
-						url: getAdminLink( 'admin.php?page=wc-admin&task=appearance' ),
 						label: __( 'Continue setup.', 'woocommerce-admin' ),
+						onClick: () => {
+							queueRecordEvent( 'tasklist_appearance_continue_setup', {} );
+							window.location = getAdminLink( 'admin.php?page=wc-admin&task=appearance' );
+						},
 					},
 				],
 			}

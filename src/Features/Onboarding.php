@@ -63,6 +63,9 @@ class Onboarding {
 			OnboardingTasks::get_instance();
 		}
 
+		// Rest API hooks need to run before is_admin() checks.
+		add_filter( 'woocommerce_rest_prepare_themes', array( $this, 'add_uploaded_theme_data' ) );
+
 		if ( ! is_admin() ) {
 			return;
 		}
@@ -84,7 +87,6 @@ class Onboarding {
 		add_action( 'current_screen', array( $this, 'reset_task_list' ) );
 		add_action( 'current_screen', array( $this, 'calypso_tests' ) );
 		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
-		add_filter( 'woocommerce_rest_prepare_themes', array( $this, 'add_uploaded_theme_data' ) );
 		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
 	}
 
@@ -259,7 +261,7 @@ class Onboarding {
 	}
 
 	/**
-	 * Check if theme has declared support for WooCommerce
+	 * Check if theme has declared support for WooCommerce.
 	 *
 	 * @param WP_Theme $theme Theme to check.
 	 * @return bool
@@ -308,17 +310,24 @@ class Onboarding {
 		$products     = array();
 
 		// Map product data by ID.
-		foreach ( $product_data->products as $product_datum ) {
-			$products[ $product_datum->id ] = $product_datum;
+		if ( isset( $product_data ) && isset( $product_data->products ) ) {
+			foreach ( $product_data->products as $product_datum ) {
+				if ( isset( $product_datum->id ) ) {
+					$products[ $product_datum->id ] = $product_datum;
+				}
+			}
 		}
 
 		// Loop over product types and append data.
 		foreach ( $product_types as $key => $product_type ) {
-			if ( isset( $product_type['product'] ) ) {
+			if ( isset( $product_type['product'] ) && isset( $products[ $product_type['product'] ] ) ) {
 				/* translators: Amount of product per year (e.g. Bookings - $240.00 per year) */
 				$product_types[ $key ]['label']      .= sprintf( __( ' — %s per year', 'woocommerce-admin' ), html_entity_decode( $products[ $product_type['product'] ]->price ) );
 				$product_types[ $key ]['description'] = $products[ $product_type['product'] ]->excerpt;
 				$product_types[ $key ]['more_url']    = $products[ $product_type['product'] ]->link;
+			} elseif ( isset( $product_type['product'] ) ) {
+				/* translators: site currency symbol (used to show that the product costs money) */
+				$product_types[ $key ]['label'] .= sprintf( __( ' — %s', 'woocommerce-admin' ), html_entity_decode( get_woocommerce_currency_symbol() ) );
 			}
 		}
 
@@ -385,7 +394,7 @@ class Onboarding {
 		$options[] = 'wc_connect_options';
 		$options[] = 'woocommerce_task_list_welcome_modal_dismissed';
 		$options[] = 'woocommerce_task_list_prompt_shown';
-		$options[] = 'woocommerce_onboarding_payments';
+		$options[] = 'woocommerce_task_list_payments';
 		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
 		$options[] = 'woocommerce_default_country';
@@ -468,11 +477,12 @@ class Onboarding {
 	/**
 	 * Gets an array of plugins that can be installed & activated via the onboarding wizard.
 	 *
+	 * @return array
 	 * @todo Handle edgecase of where installed plugins may have versioned folder names (i.e. `jetpack-master/jetpack.php`).
 	 */
 	public static function get_allowed_plugins() {
 		return apply_filters(
-			'woocommerce_onboarding_plugins_whitelist',
+			'woocommerce_admin_onboarding_plugins_whitelist',
 			array(
 				'facebook-for-woocommerce'            => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
 				'mailchimp-for-woocommerce'           => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',

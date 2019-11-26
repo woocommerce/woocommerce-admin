@@ -10,10 +10,10 @@ import { map, get } from 'lodash';
  * WooCommerce dependencies
  */
 import { Link } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
+import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { numberFormat } from '@woocommerce/number';
-import { getSetting } from '@woocommerce/wc-admin-settings';
+import { formatValue } from 'lib/number-format';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -55,8 +55,8 @@ export default class VariationsReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'N. Revenue', 'woocommerce-admin' ),
-				screenReaderLabel: __( 'Net Revenue', 'woocommerce-admin' ),
+				label: __( 'Net Sales', 'woocommerce-admin' ),
+				screenReaderLabel: __( 'Net Sales', 'woocommerce-admin' ),
 				key: 'net_revenue',
 				required: true,
 				isSortable: true,
@@ -97,7 +97,7 @@ export default class VariationsReportTable extends Component {
 				filter: 'advanced',
 				product_includes: query.products,
 			} );
-			const editPostLink = `post.php?post=${ product_id }&action=edit`;
+			const editPostLink = getAdminLink( `post.php?post=${ product_id }&action=edit` );
 
 			return [
 				{
@@ -113,7 +113,7 @@ export default class VariationsReportTable extends Component {
 					value: sku,
 				},
 				{
-					display: numberFormat( items_sold ),
+					display: formatValue( 'number', items_sold ),
 					value: items_sold,
 				},
 				{
@@ -155,19 +155,19 @@ export default class VariationsReportTable extends Component {
 		return [
 			{
 				label: _n( 'variation sold', 'variations sold', variations_count, 'woocommerce-admin' ),
-				value: numberFormat( variations_count ),
+				value: formatValue( 'number', variations_count ),
 			},
 			{
 				label: _n( 'item sold', 'items sold', items_sold, 'woocommerce-admin' ),
-				value: numberFormat( items_sold ),
+				value: formatValue( 'number', items_sold ),
 			},
 			{
-				label: __( 'net revenue', 'woocommerce-admin' ),
+				label: __( 'net sales', 'woocommerce-admin' ),
 				value: formatCurrency( net_revenue ),
 			},
 			{
 				label: _n( 'orders', 'orders', orders_count, 'woocommerce-admin' ),
-				value: numberFormat( orders_count ),
+				value: formatValue( 'number', orders_count ),
 			},
 		];
 	}

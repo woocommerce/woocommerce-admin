@@ -13,7 +13,7 @@ import { keys, get, pickBy } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { numberFormat } from '@woocommerce/number';
+import { numberFormat } from 'lib/number-format';
 import { getSetting, CURRENCY as currency } from '@woocommerce/wc-admin-settings';
 
 /**

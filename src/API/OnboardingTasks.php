@@ -117,8 +117,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		if ( file_exists( $file ) && class_exists( 'WC_Product_CSV_Importer' ) ) {
 			// Override locale so we can return mappings from WooCommerce in English language stores.
-			global $locale;
-			$locale         = false; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			add_filter( 'locale', '__return_false', 9999 );
 			$importer_class = apply_filters( 'woocommerce_product_csv_importer_class', 'WC_Product_CSV_Importer' );
 			$args           = array(
 				'parse'   => true,
@@ -384,13 +383,18 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	/**
 	 * Creates base store starter pages like my account and checkout.
 	 * Note that WC_Install::create_pages already checks if pages exist before creating them again.
+	 *
+	 * @return bool
 	 */
 	public static function create_store_pages() {
 		\WC_Install::create_pages();
+		return true;
 	}
 
 	/**
 	 * Create a homepage from a template.
+	 *
+	 * @return WP_Error|array
 	 */
 	public static function create_homepage() {
 		$post_id = wp_insert_post(
