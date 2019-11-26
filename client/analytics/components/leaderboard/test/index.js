@@ -8,8 +8,8 @@ import { mount, shallow } from 'enzyme';
 /**
  * WooCommerce dependencies
  */
-import { formatCurrency, getCurrencyFormatDecimal } from '@woocommerce/currency';
-import { numberFormat } from '@woocommerce/number';
+import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
+import { numberFormat } from 'lib/number-format';
 
 /**
  * Internal dependencies
@@ -50,7 +50,7 @@ const headers = [
 		label: 'Orders',
 	},
 	{
-		label: 'Net Revenue',
+		label: 'Net Sales',
 	},
 ];
 

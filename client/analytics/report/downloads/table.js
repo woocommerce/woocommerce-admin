@@ -13,7 +13,8 @@ import moment from 'moment';
 import { defaultTableDateFormat, getCurrentDates } from '@woocommerce/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { numberFormat } from '@woocommerce/number';
+import { formatValue } from 'lib/number-format';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -111,7 +112,10 @@ export default class CouponsReportTable extends Component {
 				},
 				{
 					display: (
-						<Link href={ `post.php?post=${ order_id }&action=edit` } type="wp-admin">
+						<Link
+							href={ getAdminLink( `post.php?post=${ order_id }&action=edit` ) }
+							type="wp-admin"
+						>
 							{ order_number }
 						</Link>
 					),
@@ -140,11 +144,11 @@ export default class CouponsReportTable extends Component {
 		return [
 			{
 				label: _n( 'day', 'days', days, 'woocommerce-admin' ),
-				value: numberFormat( days ),
+				value: formatValue( 'number', days ),
 			},
 			{
 				label: _n( 'download', 'downloads', download_count, 'woocommerce-admin' ),
-				value: numberFormat( download_count ),
+				value: formatValue( 'number', download_count ),
 			},
 		];
 	}

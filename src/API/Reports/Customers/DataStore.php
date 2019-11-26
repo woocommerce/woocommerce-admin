@@ -74,8 +74,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'date_last_active' => 'IF( date_last_active <= "0000-00-00 00:00:00", NULL, date_last_active ) AS date_last_active',
 			'date_last_order'  => "MAX( {$wpdb->prefix}wc_order_stats.date_created ) as date_last_order",
 			'orders_count'     => 'SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) as orders_count',
-			'total_spend'      => 'SUM( gross_total ) as total_spend',
-			'avg_order_value'  => 'CASE WHEN SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) = 0 THEN NULL ELSE SUM( gross_total ) / SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) END AS avg_order_value',
+			'total_spend'      => 'SUM( total_sales ) as total_spend',
+			'avg_order_value'  => 'CASE WHEN SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) = 0 THEN NULL ELSE SUM( total_sales ) / SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) END AS avg_order_value',
 		);
 	}
 
@@ -259,11 +259,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'format' => '%d',
 			),
 			'total_spend'     => array(
-				'column' => 'SUM( gross_total )',
+				'column' => 'SUM( total_sales )',
 				'format' => '%f',
 			),
 			'avg_order_value' => array(
-				'column' => '( SUM( gross_total ) / COUNT( order_id ) )',
+				'column' => '( SUM( total_sales ) / COUNT( order_id ) )',
 				'format' => '%f',
 			),
 		);
@@ -467,7 +467,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'state'            => $order->get_billing_state( 'edit' ),
 			'postcode'         => $order->get_billing_postcode( 'edit' ),
 			'country'          => $order->get_billing_country( 'edit' ),
-			'date_last_active' => date( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ), // phpcs:ignore WordPress.DateTime.RestrictedFunctions
+			'date_last_active' => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
 		);
 		$format = array(
 			'%s',
@@ -609,7 +609,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'postcode'         => $customer->get_billing_postcode( 'edit' ),
 			'country'          => $customer->get_billing_country( 'edit' ),
 			'date_registered'  => $customer->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ),
-			'date_last_active' => $last_active ? date( 'Y-m-d H:i:s', $last_active ) : null, // phpcs:ignore WordPress.DateTime.RestrictedFunctions
+			'date_last_active' => $last_active ? gmdate( 'Y-m-d H:i:s', $last_active ) : null,
 		);
 		$format      = array(
 			'%d',
