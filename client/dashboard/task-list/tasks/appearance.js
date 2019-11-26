@@ -55,10 +55,18 @@ class Appearance extends Component {
 		const isRequestSuccessful = ! isRequesting && prevProps.isRequesting && ! hasErrors;
 
 		if ( themeMods && prevProps.themeMods.custom_logo !== themeMods.custom_logo ) {
-			await wp.media.attachment( themeMods.custom_logo ).fetch();
-			const logoUrl = wp.media.attachment( themeMods.custom_logo ).get( 'url' );
 			/* eslint-disable react/no-did-update-set-state */
-			this.setState( { logo: { id: themeMods.custom_logo, url: logoUrl } } );
+			this.setState( { isPending: true } );
+			wp.media
+				.attachment( themeMods.custom_logo )
+				.fetch()
+				.then( () => {
+					const logoUrl = wp.media.attachment( themeMods.custom_logo ).get( 'url' );
+					this.setState( {
+						isPending: false,
+						logo: { id: themeMods.custom_logo, url: logoUrl },
+					} );
+				} );
 			/* eslint-enable react/no-did-update-set-state */
 		}
 
