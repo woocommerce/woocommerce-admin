@@ -184,7 +184,8 @@
 		position: relative;
 
 		.muriel-input-text input {
-			left: $gap * 2;
+			left: $gap;
+			max-width: 90%;
 		}
 
 		.components-base-control {
@@ -196,7 +197,7 @@
 			display: none;
 			position: absolute;
 			left: $gap;
-			top: 28px;
+			top: 25px;
 			z-index: 1;
 			font-size: 16px;
 			line-height: 24px;
