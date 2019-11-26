@@ -6,6 +6,7 @@ import { DateRangeFilterPicker } from '@woocommerce/components';
 import {
 	getDateParamsFromQuery,
 	getCurrentDates,
+	isoDateFormat,
 	loadLocaleData,
 } from '@woocommerce/date';
 
@@ -43,5 +44,6 @@ export default () => (
 		query={ query }
 		onRangeSelect={ () => {} }
 		dateQuery={ dateQuery }
+		isoDateFormat={ isoDateFormat }
 	/>
 );

@@ -7,7 +7,7 @@ import { parse, stringify } from 'qs';
 /**
  * Internal dependencies
  */
-import { getCurrentDates, getDateParamsFromQuery } from 'lib/date';
+import { getCurrentDates, getDateParamsFromQuery, isoDateFormat } from 'lib/date';
 
 /**
  * WooCommerce dependencies
@@ -34,7 +34,14 @@ const DefaultDate = ( { value, onChange } ) => {
 		primaryDate,
 		secondaryDate,
 	};
-	return <DateRangeFilterPicker query={ query } onRangeSelect={ change } dateQuery={ dateQuery } />;
+	return (
+		<DateRangeFilterPicker
+			query={ query }
+			onRangeSelect={ change }
+			dateQuery={ dateQuery }
+			isoDateFormat={ isoDateFormat }
+		/>
+	);
 };
 
 export default DefaultDate;

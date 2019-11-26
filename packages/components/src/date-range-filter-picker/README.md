@@ -6,10 +6,46 @@ Select a range of dates or single dates
 ## Usage
 
 ```jsx
+import {
+	getDateParamsFromQuery,
+	getCurrentDates,
+	isoDateFormat,
+	loadLocaleData,
+} from '@woocommerce/date';
+
+/**
+ * External dependencies
+ */
+import { partialRight } from 'lodash';
+
+const query = {};
+
+// Fetch locale from store settings and load for date functions.
+const localeSettings = {
+	userLocale: 'fr_FR',
+	weekdaysShort: [ 'dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam' ],
+};
+loadLocaleData( localeSettings );
+
+const defaultDateRange = 'period=month&compare=previous_year';
+const storeGetDateParamsFromQuery = partialRight( getDateParamsFromQuery, defaultDateRange );
+const storeGetCurrentDates = partialRight( getCurrentDates, defaultDateRange );
+const { period, compare, before, after } = storeGetDateParamsFromQuery( query );
+const { primary: primaryDate, secondary: secondaryDate } = storeGetCurrentDates( query );
+const dateQuery = {
+	period,
+	compare,
+	before,
+	after,
+	primaryDate,
+	secondaryDate,
+};
 
 <DateRangeFilterPicker
 	key="daterange"
 	onRangeSelect={ () => {} }
+	dateQuery={ dateQuery }
+	isoDateFormat={ isoDateFormat }
 />
 ```
 
@@ -17,9 +53,9 @@ Select a range of dates or single dates
 
 Name    | Type     | Default | Description
 ------- | -------- | ------- | ---
-`query` | Object | `{}` | The query string represented in object form
+`isDateFormat` | string | `null` | (required) ISO date format string
 `onRangeSelect` | Function | `null` | Callback called when selection is made
-`storeDate` | object | `null` | (required) Date utility function object bound to store settings.
+`dateQuery` | object | `null` | (required) Date initialization object
 
 ## URL as the source of truth
 

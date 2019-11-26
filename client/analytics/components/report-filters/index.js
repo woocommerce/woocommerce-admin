@@ -17,7 +17,7 @@ import { LOCALE } from '@woocommerce/wc-admin-settings';
  */
 import { recordEvent } from 'lib/tracks';
 import { Currency } from 'lib/currency-format';
-import { getCurrentDates, getDateParamsFromQuery } from 'lib/date';
+import { getCurrentDates, getDateParamsFromQuery, isoDateFormat } from 'lib/date';
 
 export default class ReportFilters extends Component {
 	constructor() {
@@ -88,6 +88,7 @@ export default class ReportFilters extends Component {
 				onFilterSelect={ this.trackFilterSelect }
 				onAdvancedFilterAction={ this.trackAdvancedFilterAction }
 				dateQuery={ dateQuery }
+				isoDateFormat={ isoDateFormat }
 			/>
 		);
 	}

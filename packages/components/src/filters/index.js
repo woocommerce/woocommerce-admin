@@ -90,6 +90,7 @@ class ReportFilters extends Component {
 			path,
 			showDatePicker,
 			onFilterSelect,
+			isoDateFormat,
 		} = this.props;
 		return (
 			<Fragment>
@@ -101,6 +102,7 @@ class ReportFilters extends Component {
 								key={ JSON.stringify( query ) }
 								dateQuery={ dateQuery }
 								onRangeSelect={ this.onRangeSelect }
+								isoDateFormat={ isoDateFormat }
 							/>
 						) }
 						{ filters.map( config => {
@@ -182,6 +184,10 @@ ReportFilters.propTypes = {
 			range: PropTypes.string.isRequired,
 		} ).isRequired,
 	} ).isRequired,
+	/**
+	 * ISO date format string.
+	 */
+	isoDateFormat: PropTypes.string.isRequired,
 };
 
 ReportFilters.defaultProps = {
