@@ -34,11 +34,10 @@ const Settings = ( { createNotice, query } ) => {
 		updateAndPersistSettings,
 		updateSettings,
 		orderStatuses,
-		defaultDateRange,
 		wcAdminSettings,
-	} = useSettings( 'wc_admin', [ 'wcAdminSettings', 'orderStatuses', 'defaultDateRange' ] );
+	} = useSettings( 'wc_admin', [ 'wcAdminSettings', 'orderStatuses' ] );
 	const hasSaved = useRef( false );
-	const config = getConfig( orderStatuses, defaultDateRange );
+	const config = getConfig( orderStatuses );
 
 	useEffect(
 		() => {

@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
  * WooCommerce dependencies
  */
 import { EmptyContent } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
  * Component to render when there is an error in a report component due to data
@@ -18,7 +17,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
  */
 class ReportError extends Component {
 	render() {
-		const { className, isError, isEmpty } = this.props;
+		const { className, isError, isEmpty, getAdminLink } = this.props;
 		let title, actionLabel, actionURL, actionCallback;
 
 		if ( isError ) {

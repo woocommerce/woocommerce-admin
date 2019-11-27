@@ -14,14 +14,13 @@ import { defaultTableDateFormat, getCurrentDates } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
 
-export default class CouponsReportTable extends Component {
+class CouponsReportTable extends Component {
 	constructor() {
 		super();
 
@@ -67,7 +66,7 @@ export default class CouponsReportTable extends Component {
 	}
 
 	getRowsContent( downloads ) {
-		const { query } = this.props;
+		const { query, getAdminLink } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
 		return map( downloads, download => {
@@ -154,7 +153,7 @@ export default class CouponsReportTable extends Component {
 	}
 
 	render() {
-		const { query, filters, advancedFilters } = this.props;
+		const { query, filters, advancedFilters, getAdminLink } = this.props;
 
 		return (
 			<ReportTable
@@ -170,7 +169,10 @@ export default class CouponsReportTable extends Component {
 				columnPrefsKey="downloads_report_columns"
 				filters={ filters }
 				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
 			/>
 		);
 	}
 }
+
+export default CouponsReportTable;

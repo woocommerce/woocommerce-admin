@@ -13,7 +13,6 @@ import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { defaultTableDateFormat } from 'lib/date';
 import { formatCurrency, renderCurrency } from 'lib/currency-format';
 import { formatValue } from 'lib/number-format';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -103,7 +102,7 @@ export default class OrdersReportTable extends Component {
 	}
 
 	getRowsContent( tableData ) {
-		const { query } = this.props;
+		const { query, orderStatuses } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		return map( tableData, row => {
 			const {
@@ -165,7 +164,7 @@ export default class OrdersReportTable extends Component {
 						<OrderStatus
 							className="woocommerce-orders-table__status"
 							order={ { status } }
-							orderStatusMap={ getSetting( 'orderStatuses', {} ) }
+							orderStatusMap={ orderStatuses }
 						/>
 					),
 					value: status,
@@ -276,7 +275,7 @@ export default class OrdersReportTable extends Component {
 	}
 
 	render() {
-		const { query, filters, advancedFilters } = this.props;
+		const { query, filters, advancedFilters, getAdminLink } = this.props;
 
 		return (
 			<ReportTable
@@ -292,6 +291,7 @@ export default class OrdersReportTable extends Component {
 				columnPrefsKey="orders_report_columns"
 				filters={ filters }
 				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
 			/>
 		);
 	}

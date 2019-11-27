@@ -8,13 +8,14 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { find } from 'lodash';
+import { withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
 import { useFilters } from '@woocommerce/components';
 import { getQuery, getSearchWords } from '@woocommerce/navigation';
-import { getSetting } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -31,12 +32,10 @@ import StockReport from './stock';
 import CustomersReport from './customers';
 import ReportError from 'analytics/components/report-error';
 import { searchItemsByString } from 'wc-api/items/utils';
-import withSelect from 'wc-api/with-select';
 
 export const REPORTS_FILTER = 'woocommerce_admin_reports_list';
-const manageStock = getSetting( 'manageStock', 'no' );
 
-export const getReports = () => {
+export const getReports = manageStock => {
 	const reports = [
 		{
 			report: 'revenue',
@@ -118,13 +117,13 @@ class Report extends Component {
 			return null;
 		}
 
-		const { params, isError } = this.props;
+		const { params, isError, manageStock } = this.props;
 
 		if ( isError ) {
 			return <ReportError isError />;
 		}
 
-		const report = find( getReports(), { report: params.report } );
+		const report = find( getReports( manageStock ), { report: params.report } );
 		if ( ! report ) {
 			return null;
 		}
@@ -140,11 +139,13 @@ Report.propTypes = {
 export default compose(
 	useFilters( REPORTS_FILTER ),
 	withSelect( ( select, props ) => {
+		const { getSetting } = select( SETTINGS_STORE_NAME );
+		const manageStock = getSetting( 'wc_admin', 'manageStock', 'no' );
 		const query = getQuery();
 		const { search } = query;
 
 		if ( ! search ) {
-			return {};
+			return { manageStock };
 		}
 
 		const { report } = props.params;
@@ -159,6 +160,7 @@ export default compose(
 			return {
 				isError,
 				isRequesting,
+				manageStock,
 			};
 		}
 
@@ -169,6 +171,7 @@ export default compose(
 				...props.query,
 				[ mappedReport ]: ids.join( ',' ),
 			},
+			manageStock,
 		};
 	} )
 )( Report );

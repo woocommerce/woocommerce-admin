@@ -2,8 +2,13 @@
 /**
  * External dependencies
  */
-import { Component, Fragment } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
+
+/**
+ * WooCommerce dependencies
+ */
+import { useSettings } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -15,46 +20,55 @@ import ReportSummary from 'analytics/components/report-summary';
 import RevenueReportTable from './table';
 import ReportFilters from 'analytics/components/report-filters';
 
-export default class RevenueReport extends Component {
-	render() {
-		const { path, query } = this.props;
+const RevenueReport = ( { path, query } ) => {
+	const { locale, getAdminLink, currency } = useSettings( 'wc_admin', [
+		'locale',
+		'getAdminLink',
+		'currency',
+	] );
 
-		return (
-			<Fragment>
-				<ReportFilters
-					query={ query }
-					path={ path }
-					report="revenue"
-					filters={ filters }
-					advancedFilters={ advancedFilters }
-				/>
-				<ReportSummary
-					charts={ charts }
-					endpoint="revenue"
-					query={ query }
-					selectedChart={ getSelectedChart( query.chart, charts ) }
-					filters={ filters }
-					advancedFilters={ advancedFilters }
-				/>
-				<ReportChart
-					endpoint="revenue"
-					path={ path }
-					query={ query }
-					selectedChart={ getSelectedChart( query.chart, charts ) }
-					filters={ filters }
-					advancedFilters={ advancedFilters }
-				/>
-				<RevenueReportTable
-					query={ query }
-					filters={ filters }
-					advancedFilters={ advancedFilters }
-				/>
-			</Fragment>
-		);
-	}
-}
+	return (
+		<Fragment>
+			<ReportFilters
+				query={ query }
+				path={ path }
+				report="revenue"
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+				locale={ locale }
+			/>
+			<ReportSummary
+				charts={ charts }
+				endpoint="revenue"
+				query={ query }
+				selectedChart={ getSelectedChart( query.chart, charts ) }
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
+			/>
+			<ReportChart
+				endpoint="revenue"
+				path={ path }
+				query={ query }
+				selectedChart={ getSelectedChart( query.chart, charts ) }
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
+				currency={ currency }
+			/>
+			<RevenueReportTable
+				query={ query }
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
+			/>
+		</Fragment>
+	);
+};
 
 RevenueReport.propTypes = {
 	path: PropTypes.string.isRequired,
 	query: PropTypes.object.isRequired,
 };
+
+export default RevenueReport;

@@ -134,7 +134,7 @@ class CategoriesReportTable extends Component {
 	}
 
 	render() {
-		const { advancedFilters, filters, isRequesting, query } = this.props;
+		const { advancedFilters, filters, isRequesting, query, getAdminLink } = this.props;
 
 		const labels = {
 			helpText: __( 'Check at least two categories below to compare', 'woocommerce-admin' ),
@@ -162,6 +162,7 @@ class CategoriesReportTable extends Component {
 				columnPrefsKey="categories_report_columns"
 				filters={ filters }
 				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
 			/>
 		);
 	}

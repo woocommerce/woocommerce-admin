@@ -11,7 +11,6 @@ import { Component } from '@wordpress/element';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -19,9 +18,7 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import ReportTable from 'analytics/components/report-table';
 import { isLowStock } from './utils';
 
-const stockStatuses = getSetting( 'stockStatuses', {} );
-
-export default class StockReportTable extends Component {
+class StockReportTable extends Component {
 	constructor() {
 		super();
 
@@ -59,7 +56,7 @@ export default class StockReportTable extends Component {
 	}
 
 	getRowsContent( products ) {
-		const { query } = this.props;
+		const { query, stockStatuses, getAdminLink } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
 		return products.map( product => {
@@ -146,7 +143,7 @@ export default class StockReportTable extends Component {
 	}
 
 	render() {
-		const { advancedFilters, filters, query } = this.props;
+		const { advancedFilters, filters, query, getAdminLink } = this.props;
 
 		return (
 			<ReportTable
@@ -163,7 +160,10 @@ export default class StockReportTable extends Component {
 				title={ __( 'Stock', 'woocommerce-admin' ) }
 				filters={ filters }
 				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
 			/>
 		);
 	}
 }
+
+export default StockReportTable;

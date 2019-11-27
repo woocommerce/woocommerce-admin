@@ -302,6 +302,7 @@ class ReportTable extends Component {
 			compareBy,
 			searchBy,
 			labels = {},
+			getAdminLink,
 			...tableProps
 		} = this.props;
 
@@ -310,7 +311,7 @@ class ReportTable extends Component {
 		const isError = tableData.isError || primaryData.isError;
 
 		if ( isError ) {
-			return <ReportError isError />;
+			return <ReportError isError getAdminLink={ getAdminLink } />;
 		}
 
 		const isLoading = isRequesting || tableData.isRequesting || primaryData.isRequesting;

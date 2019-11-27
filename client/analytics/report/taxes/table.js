@@ -149,7 +149,7 @@ export default class TaxesReportTable extends Component {
 	}
 
 	render() {
-		const { advancedFilters, filters, isRequesting, query } = this.props;
+		const { advancedFilters, filters, isRequesting, query, getAdminLink } = this.props;
 
 		return (
 			<ReportTable
@@ -169,6 +169,7 @@ export default class TaxesReportTable extends Component {
 				columnPrefsKey="taxes_report_columns"
 				filters={ filters }
 				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
 			/>
 		);
 	}

@@ -21,7 +21,6 @@ import {
 	getPreviousDate,
 } from 'lib/date';
 import { Chart } from '@woocommerce/components';
-import { CURRENCY } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -125,6 +124,7 @@ export class ReportChart extends Component {
 			selectedChart,
 			showHeaderControls,
 			primaryData,
+			currency,
 		} = this.props;
 		const currentInterval = getIntervalForQuery( query );
 		const allowedIntervals = getAllowedIntervalsForQuery( query );
@@ -158,16 +158,16 @@ export class ReportChart extends Component {
 				valueType={ selectedChart.type }
 				xFormat={ formats.xFormat }
 				x2Format={ formats.x2Format }
-				currency={ CURRENCY }
+				currency={ currency }
 			/>
 		);
 	}
 
 	renderItemComparison() {
-		const { isRequesting, primaryData } = this.props;
+		const { isRequesting, primaryData, getAdminLink } = this.props;
 
 		if ( primaryData.isError ) {
-			return <ReportError isError />;
+			return <ReportError isError getAdminLink={ getAdminLink } />;
 		}
 
 		const isChartRequesting = isRequesting || primaryData.isRequesting;
@@ -177,10 +177,10 @@ export class ReportChart extends Component {
 	}
 
 	renderTimeComparison() {
-		const { isRequesting, primaryData, secondaryData } = this.props;
+		const { isRequesting, primaryData, secondaryData, getAdminLink } = this.props;
 
 		if ( ! primaryData || primaryData.isError || secondaryData.isError ) {
-			return <ReportError isError />;
+			return <ReportError isError getAdminLink={ getAdminLink } />;
 		}
 
 		const isChartRequesting =

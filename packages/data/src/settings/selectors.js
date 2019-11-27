@@ -44,7 +44,7 @@ export const getIsDirty = ( state, group, keys = [] ) => {
 export const getSettingsForGroup = ( state, group, keys ) => {
 	const allSettings = getSettings( state, group );
 	return keys.reduce( ( accumulator, key ) => {
-		accumulator[ key ] = allSettings[ key ] || null;
+		accumulator[ key ] = allSettings[ key ];
 		return accumulator;
 	}, {} );
 };

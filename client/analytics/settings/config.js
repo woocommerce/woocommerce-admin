@@ -22,8 +22,9 @@ const DEFAULT_ORDER_STATUSES = [
 	'pending',
 	'on-hold',
 ];
+const DEFAULT_DATE_RANGE = 'period=month&compare=previous_year';
 
-export const getConfig = ( orderStatuses, defaultDateRange ) => {
+export const getConfig = orderStatuses => {
 	const filteredOrderStatuses = Object.keys( orderStatuses )
 		.filter( status => status !== 'refunded' )
 		.map( key => {
@@ -103,7 +104,7 @@ export const getConfig = ( orderStatuses, defaultDateRange ) => {
 					'the default date range.',
 				'woocommerce-admin'
 			),
-			defaultValue: defaultDateRange,
+			defaultValue: DEFAULT_DATE_RANGE,
 		},
 	} );
 };

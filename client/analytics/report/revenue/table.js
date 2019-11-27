@@ -218,7 +218,7 @@ class RevenueReportTable extends Component {
 	}
 
 	render() {
-		const { advancedFilters, filters, tableData, query } = this.props;
+		const { advancedFilters, filters, tableData, query, getAdminLink } = this.props;
 
 		return (
 			<ReportTable
@@ -232,6 +232,7 @@ class RevenueReportTable extends Component {
 				columnPrefsKey="revenue_report_columns"
 				filters={ filters }
 				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
 			/>
 		);
 	}

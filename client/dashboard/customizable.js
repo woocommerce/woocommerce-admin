@@ -7,13 +7,14 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { partial, filter, get } from 'lodash';
 import { IconButton, Icon, Dropdown, Button } from '@wordpress/components';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 
 /**
  * WooCommerce dependencies
  */
 import { H } from '@woocommerce/components';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -21,7 +22,7 @@ import { H } from '@woocommerce/components';
 import './style.scss';
 import defaultSections from './default-sections';
 import Section from './section';
-import withSelect from 'wc-api/with-select';
+import withWCApiSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import TaskList from './task-list';
 import { getAllTasks } from './task-list/tasks';
@@ -198,7 +199,7 @@ class CustomizableDashboard extends Component {
 	}
 
 	render() {
-		const { query, path, taskListHidden, taskListCompleted } = this.props;
+		const { query, path, taskListHidden, taskListCompleted, locale } = this.props;
 		const { sections } = this.state;
 		const visibleSectionKeys = sections
 			.filter( section => section.isVisible )
@@ -238,6 +239,7 @@ class CustomizableDashboard extends Component {
 					dateQuery={ dateQuery }
 					isoDateFormat={ isoDateFormat }
 					filters={ filters }
+					locale={ locale }
 				/>
 				{ sections.map( ( section, index ) => {
 					if ( section.isVisible ) {
@@ -267,7 +269,13 @@ class CustomizableDashboard extends Component {
 }
 
 export default compose(
-	withSelect( ( select, props ) => {
+	withSelect( select => {
+		const { getSetting } = select( SETTINGS_STORE_NAME );
+		return {
+			locale: getSetting( 'wc_admin', 'locale' ),
+		};
+	} ),
+	withWCApiSelect( ( select, props ) => {
 		const { getCurrentUserData, getProfileItems, getOptions } = select( 'wc-api' );
 		const userData = getCurrentUserData();
 

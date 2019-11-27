@@ -55,11 +55,12 @@ export class ReportSummary extends Component {
 			summaryData,
 			endpoint,
 			report,
+			getAdminLink,
 		} = this.props;
 		const { isError, isRequesting: isSummaryDataRequesting } = summaryData;
 
 		if ( isError ) {
-			return <ReportError isError />;
+			return <ReportError isError getAdminLink={ getAdminLink } />;
 		}
 
 		if ( isRequesting || isSummaryDataRequesting ) {

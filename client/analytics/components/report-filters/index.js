@@ -10,7 +10,6 @@ import { omitBy, isUndefined, snakeCase } from 'lodash';
  * WooCommerce dependencies
  */
 import { ReportFilters as Filters } from '@woocommerce/components';
-import { LOCALE } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -64,7 +63,7 @@ export default class ReportFilters extends Component {
 	}
 
 	render() {
-		const { advancedFilters, filters, path, query, showDatePicker } = this.props;
+		const { advancedFilters, filters, path, query, showDatePicker, locale } = this.props;
 		const { period, compare, before, after } = getDateParamsFromQuery( query );
 		const { primary: primaryDate, secondary: secondaryDate } = getCurrentDates( query );
 		const dateQuery = {
@@ -78,7 +77,7 @@ export default class ReportFilters extends Component {
 		return (
 			<Filters
 				query={ query }
-				siteLocale={ LOCALE.siteLocale }
+				siteLocale={ locale.siteLocale }
 				currency={ Currency }
 				path={ path }
 				filters={ filters }

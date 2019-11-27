@@ -2,8 +2,13 @@
 /**
  * External dependencies
  */
-import { Component, Fragment } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
+
+/**
+ * WooCommerce dependencies
+ */
+import { useSettings } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -12,25 +17,37 @@ import { advancedFilters, showDatePicker, filters } from './config';
 import StockReportTable from './table';
 import ReportFilters from 'analytics/components/report-filters';
 
-export default class StockReport extends Component {
-	render() {
-		const { query, path } = this.props;
-		return (
-			<Fragment>
-				<ReportFilters
-					query={ query }
-					path={ path }
-					showDatePicker={ showDatePicker }
-					filters={ filters }
-					advancedFilters={ advancedFilters }
-					report="stock"
-				/>
-				<StockReportTable query={ query } filters={ filters } advancedFilters={ advancedFilters } />
-			</Fragment>
-		);
-	}
-}
+const StockReport = ( { query, path } ) => {
+	const { locale, getAdminLink, stockStatuses = {} } = useSettings( 'wc_admin', [
+		'locale',
+		'getAdminLink',
+		'stockStatuses',
+	] );
+
+	return (
+		<Fragment>
+			<ReportFilters
+				query={ query }
+				path={ path }
+				showDatePicker={ showDatePicker }
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+				report="stock"
+				locale={ locale }
+			/>
+			<StockReportTable
+				query={ query }
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+				getAdminLink={ getAdminLink }
+				stockStatuses={ stockStatuses }
+			/>
+		</Fragment>
+	);
+};
 
 StockReport.propTypes = {
 	query: PropTypes.object.isRequired,
 };
+
+export default StockReport;
