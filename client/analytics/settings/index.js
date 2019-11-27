@@ -4,10 +4,10 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import { Component, Fragment } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
+import { Component, Fragment, useRef } from '@wordpress/element';
+import { compose, createHigherOrderComponent } from '@wordpress/compose';
 import { partial, remove, transform } from 'lodash';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, useDispatch, useSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -22,8 +22,8 @@ import './index.scss';
 import { analyticsSettings } from './config';
 import Setting from './setting';
 import HistoricalData from './historical-data';
-import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
+import { SETTINGS_STORE_NAME } from '../../data/settings';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
@@ -87,8 +87,7 @@ class Settings extends Component {
 
 	componentDidUpdate() {
 		const { createNotice, isError, isRequesting } = this.props;
-		const { saving, isDirty } = this.state;
-		let newIsDirtyState = isDirty;
+		const { saving } = this.state;
 
 		if ( saving && ! isRequesting ) {
 			if ( ! isError ) {
@@ -96,7 +95,6 @@ class Settings extends Component {
 					'success',
 					__( 'Your settings have been successfully saved.', 'woocommerce-admin' )
 				);
-				newIsDirtyState = false;
 			} else {
 				createNotice(
 					'error',
@@ -104,7 +102,10 @@ class Settings extends Component {
 				);
 			}
 			/* eslint-disable react/no-did-update-set-state */
-			this.setState( { saving: false, isDirty: newIsDirtyState } );
+			this.setState( state => ( {
+				saving: false,
+				isDirty: ! state.isDirty,
+			} ) );
 			/* eslint-enable react/no-did-update-set-state */
 		}
 	}
@@ -216,22 +217,62 @@ class Settings extends Component {
 }
 
 export default compose(
-	withSelect( select => {
-		const { getSettings, getSettingsError, isGetSettingsRequesting } = select( 'wc-api' );
+	createHigherOrderComponent(
+		WrappedComponent => props => {
+			const settings = useRef( getSetting( 'preloadSettings', { wc_admin: {} } ) );
+			useSelect( ( select, registry ) => {
+				if ( ! settings.current ) {
+					return;
+				}
 
-		const settings = getSettings( 'wc_admin' );
-		const isError = Boolean( getSettingsError( 'wc_admin' ) );
-		const isRequesting = isGetSettingsRequesting( 'wc_admin' );
+				const { isResolving, hasFinishedResolution } = select( SETTINGS_STORE_NAME );
+				const { startResolution, finishResolution, hydrateSettings } = registry.dispatch(
+					SETTINGS_STORE_NAME
+				);
 
-		return { getSettings, isError, isRequesting, settings };
-	} ),
+				if (
+					! isResolving( 'getSettings', [ 'wc_admin' ] ) &&
+					! hasFinishedResolution( 'getSettings', [ 'wc_admin' ] )
+				) {
+					startResolution( 'getSettings', [ 'wc_admin' ] );
+					hydrateSettings( settings.current );
+					finishResolution( 'getSettings', [ 'wc_admin' ] );
+				}
+			}, [] );
+			return <WrappedComponent { ...props } />;
+		},
+		'withHydration'
+	),
+	createHigherOrderComponent(
+		WrappedComponent => props => {
+			const { persistAllSettings } = useDispatch( SETTINGS_STORE_NAME );
+			const { settings, isError, isRequesting } = useSelect( select => {
+				const store = select( SETTINGS_STORE_NAME );
+				return {
+					settings: store.getSettings( 'wc_admin' ),
+					isError: Boolean( store.getLastSettingsErrorForGroup( 'wc_admin' ) ),
+					isRequesting: store.isResolving( 'getSettings', [ 'wc_admin' ] ),
+				};
+			}, [] );
+			return (
+				<WrappedComponent
+					updateSettings={ persistAllSettings }
+					settings={ settings }
+					isError={ isError }
+					isRequesting={ isRequesting }
+					{ ...props }
+				/>
+			);
+		},
+		'withSettings'
+	),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateSettings } = dispatch( 'wc-api' );
+		// const { updateSettings } = dispatch( 'wc-api' );
 
 		return {
 			createNotice,
-			updateSettings,
+			// updateSettings,
 		};
 	} )
 )( useFilters( SETTINGS_FILTER )( Settings ) );
