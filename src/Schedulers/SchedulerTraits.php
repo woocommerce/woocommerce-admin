@@ -241,7 +241,7 @@ trait SchedulerTraits {
 	 */
 	public static function do_action_or_reschedule() {
 		$action_hook = current_action();
-		$action_name = array_search( current_action(), static::get_actions(), true );
+		$action_name = array_search( $action_hook, static::get_actions(), true );
 		$args        = func_get_args();
 
 		// Check if any blocking jobs exist and schedule after they've completed
