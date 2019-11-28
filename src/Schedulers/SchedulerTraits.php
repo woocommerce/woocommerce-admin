@@ -40,7 +40,7 @@ trait SchedulerTraits {
 	public static function init() {
 		foreach ( self::get_actions() as $action_name => $action_hook ) {
 			$method = new \ReflectionMethod( static::class, $action_name );
-			add_action( $action_hook, array( static::class, 'do_action_or_reschedule' ), 5, $method->getNumberOfParameters() );
+			add_action( $action_hook, array( static::class, 'do_action_or_reschedule' ), 10, $method->getNumberOfParameters() );
 		}
 	}
 
@@ -256,11 +256,8 @@ trait SchedulerTraits {
 				$args,
 				static::$group
 			);
-
-			// We need to remove the action in case multiple jobs are being run at the same time.
-			remove_action( $action_hook, array( static::class, $action_name ), 10 );
 		} else {
-			add_action( $action_hook, array( static::class, $action_name ), 10, count( $args ) );
+			call_user_func_array( array( static::class, $action_name ), $args );
 		}
 	}
 
