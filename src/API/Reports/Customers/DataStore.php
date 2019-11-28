@@ -60,6 +60,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function assign_report_columns() {
 		global $wpdb;
 		$table_name           = self::get_db_table_name();
+		$orders_count         = 'SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END )';
+		$total_spend          = 'SUM( total_sales )';
 		$this->report_columns = array(
 			'id'               => "{$table_name}.customer_id as id",
 			'user_id'          => 'user_id',
@@ -73,9 +75,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'date_registered'  => 'date_registered',
 			'date_last_active' => 'IF( date_last_active <= "0000-00-00 00:00:00", NULL, date_last_active ) AS date_last_active',
 			'date_last_order'  => "MAX( {$wpdb->prefix}wc_order_stats.date_created ) as date_last_order",
-			'orders_count'     => 'SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) as orders_count',
-			'total_spend'      => 'SUM( total_sales ) as total_spend',
-			'avg_order_value'  => 'CASE WHEN SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) = 0 THEN NULL ELSE SUM( total_sales ) / SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END ) END AS avg_order_value',
+			'orders_count'     => "{$orders_count} as orders_count",
+			'total_spend'      => "{$total_spend} as total_spend",
+			'avg_order_value'  => "CASE WHEN {$orders_count} = 0 THEN NULL ELSE {$total_spend} / {$orders_count} END AS avg_order_value",
 		);
 	}
 
