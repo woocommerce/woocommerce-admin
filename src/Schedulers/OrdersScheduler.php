@@ -23,7 +23,7 @@ class OrdersScheduler extends ImportScheduler {
 	/**
 	 * Slug to identify the scheduler.
 	 *
-	 * @var string|null
+	 * @var string
 	 */
 	public static $name = 'orders';
 

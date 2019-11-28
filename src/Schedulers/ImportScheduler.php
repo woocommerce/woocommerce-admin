@@ -20,7 +20,7 @@ abstract class ImportScheduler {
 	 * Scheduler traits.
 	 */
 	use SchedulerTraits {
-		get_actions as get_scheduler_actions;
+		get_actions as get_default_scheduler_actions;
 		get_batch_sizes as get_scheduler_batch_sizes;
 	}
 
@@ -68,7 +68,7 @@ abstract class ImportScheduler {
 	 */
 	public static function get_actions() {
 		return array_merge(
-			self::get_scheduler_actions(),
+			self::get_default_scheduler_actions(),
 			array(
 				'import_batch_init' => 'wc-admin_import_batch_init_' . static::$name,
 				'import_batch'      => 'wc-admin_import_batch_' . static::$name,

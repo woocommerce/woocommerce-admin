@@ -18,10 +18,17 @@ use \Automattic\WooCommerce\Admin\Schedulers\SchedulerTraits;
  */
 class ReportExporter {
 	/**
+	 * Slug to identify the scheduler.
+	 *
+	 * @var string
+	 */
+	public static $name = 'report_exporter';
+
+	/**
 	 * Scheduler traits.
 	 */
 	use SchedulerTraits {
-		get_actions as get_scheduler_actions;
+		get_actions as get_default_scheduler_actions;
 		init as scheduler_init;
 	}
 
@@ -43,7 +50,7 @@ class ReportExporter {
 	 */
 	public static function get_actions() {
 		return array_merge(
-			self::get_scheduler_actions(),
+			self::get_default_scheduler_actions(),
 			array(
 				'export_report'              => 'woocommerce_admin_report_export',
 				'email_report_download_link' => 'woocommerce_admin_email_report_download_link',
