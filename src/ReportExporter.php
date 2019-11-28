@@ -65,7 +65,7 @@ class ReportExporter {
 	 */
 	public static function get_dependencies() {
 		return array(
-			'export_report' => self::get_action( 'email_report_download_link' ),
+			'email_report_download_link' => self::get_action( 'export_report' ),
 		);
 	}
 
@@ -105,7 +105,7 @@ class ReportExporter {
 
 			if ( $send_email ) {
 				$email_action_args = array( get_current_user_id(), $export_id, $report_type );
-				self::queue_batches( 1, $num_batches, 'email_report_download_link', $email_action_args );
+				self::schedule_action( 'email_report_download_link', $email_action_args );
 			}
 		}
 

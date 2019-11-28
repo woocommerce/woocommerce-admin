@@ -14,13 +14,6 @@ defined( 'ABSPATH' ) || exit;
  */
 trait SchedulerTraits {
 	/**
-	 * Slug to identify the scheduler.
-	 *
-	 * @var string|null
-	 */
-	public static $name = null;
-
-	/**
 	 * Action scheduler group.
 	 *
 	 * @var string|null
