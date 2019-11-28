@@ -13,7 +13,7 @@ import { keys, get, pickBy } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { numberFormat } from 'lib/number-format';
+import { formatValue } from 'lib/number-format';
 import { getSetting, CURRENCY as currency } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -139,18 +139,18 @@ class BusinessDetails extends Component {
 		return keys( pickBy( values ) ).filter( name => this.extensions.includes( name ) );
 	}
 
-	getNumberRangeString( min, max = false, format = numberFormat ) {
+	getNumberRangeString( min, max = false, format = formatValue ) {
 		if ( ! max ) {
 			return sprintf(
 				_x( '%s+', 'store product count or revenue', 'woocommerce-admin' ),
-				format( min )
+				format( 'number', min )
 			);
 		}
 
 		return sprintf(
 			_x( '%1$s - %2$s', 'store product count or revenue range', 'woocommerce-admin' ),
-			format( min ),
-			format( max )
+			format( 'number', min ),
+			format( 'number', max )
 		);
 	}
 
