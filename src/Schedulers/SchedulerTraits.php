@@ -190,18 +190,21 @@ trait SchedulerTraits {
 				return true;
 			}
 		}
+
+		return false;
 	}
 
 	/**
 	 * Get the next blocking job for an action.
 	 *
 	 * @param string $action_name Action name.
+	 * @return false|ActionScheduler_Action
 	 */
 	public static function get_next_blocking_job( $action_name ) {
 		$dependency = self::get_dependency( $action_name );
 
 		if ( ! $dependency ) {
-			return;
+			return false;
 		}
 
 		$blocking_jobs = self::queue()->search(
@@ -223,13 +226,8 @@ trait SchedulerTraits {
 				$blocking_job_hook = $blocking_job->get_hook();
 				$next_job_schedule = $blocking_job->get_schedule()->next();
 
-				// Eliminate the false positive scenario where the blocking job is
-				// actually another queued dependent action awaiting the same prerequisite.
-				// Also, ensure that the next schedule is a DateTime (it can be null).
-				if (
-					is_a( $next_job_schedule, 'DateTime' ) &&
-					( static::get_action( 'schedule_action' ) !== $blocking_job_hook )
-				) {
+				// Ensure that the next schedule is a DateTime (it can be null).
+				if ( is_a( $next_job_schedule, 'DateTime' ) ) {
 					return $blocking_job;
 				}
 			}
