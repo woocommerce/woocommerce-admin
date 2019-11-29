@@ -54,7 +54,11 @@ class Appearance extends Component {
 		const step = this.getSteps()[ stepIndex ].key;
 		const isRequestSuccessful = ! isRequesting && prevProps.isRequesting && ! hasErrors;
 
-		if ( themeMods && prevProps.themeMods.custom_logo !== themeMods.custom_logo ) {
+		if (
+			themeMods &&
+			themeMods.custom_logo &&
+			prevProps.themeMods.custom_logo !== themeMods.custom_logo
+		) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( { isPending: true } );
 			wp.media
