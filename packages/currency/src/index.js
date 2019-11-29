@@ -27,11 +27,32 @@ export default class Currency {
 		this.symbol = currency.symbol.toString();
 		this.symbolPosition = currency.symbolPosition.toString();
 		this.decimalSeparator = currency.decimalSeparator.toString();
-		this.priceFormat = currency.priceFormat.toString();
+		this.priceFormat = currency.priceFormat ? currency.priceFormat.toString() : this.getPriceFormat( currency );
 		this.thousandSeparator = currency.thousandSeparator.toString();
 
 		const precisionNumber = parseInt( currency.precision, 10 );
 		this.precision = precisionNumber;
+	}
+
+	/**
+	 * Get the default price format from a currency.
+	 *
+	 * @param {Object} currency Currency configuration.
+	 * @return {String} Price format.
+	 */
+	getPriceFormat( currency ) {
+		switch ( currency.symbolPosition ) {
+			case 'left':
+				return '%1$s%2$s';
+			case 'right':
+				return '%2$s%1$s';
+			case 'left_space':
+				return '%1$s&nbsp;%2$s';
+			case 'right_space':
+				return '%2$s&nbsp;%1$s';
+		}
+
+		return '%1$s%2$s';
 	}
 
 	/**
@@ -117,7 +138,6 @@ export function getCurrencyData() {
 			thousandSeparator: ',',
 			decimalSeparator: '.',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		EU: {
 			code: 'EUR',
@@ -126,7 +146,6 @@ export function getCurrencyData() {
 			thousandSeparator: '.',
 			decimalSeparator: ',',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		IN: {
 			code: 'INR',
@@ -135,7 +154,6 @@ export function getCurrencyData() {
 			thousandSeparator: ',',
 			decimalSeparator: '.',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		GB: {
 			code: 'GBP',
@@ -144,7 +162,6 @@ export function getCurrencyData() {
 			thousandSeparator: ',',
 			decimalSeparator: '.',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		BR: {
 			code: 'BRL',
@@ -153,7 +170,6 @@ export function getCurrencyData() {
 			thousandSeparator: '.',
 			decimalSeparator: ',',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		VN: {
 			code: 'VND',
@@ -162,7 +178,6 @@ export function getCurrencyData() {
 			thousandSeparator: '.',
 			decimalSeparator: ',',
 			precision: 1,
-			priceFormat: '%1$s%2$s',
 		},
 		ID: {
 			code: 'IDR',
@@ -171,7 +186,6 @@ export function getCurrencyData() {
 			thousandSeparator: '.',
 			decimalSeparator: ',',
 			precision: 0,
-			priceFormat: '%1$s%2$s',
 		},
 		BD: {
 			code: 'BDT',
@@ -180,7 +194,6 @@ export function getCurrencyData() {
 			thousandSeparator: ',',
 			decimalSeparator: '.',
 			precision: 0,
-			priceFormat: '%1$s%2$s',
 		},
 		PK: {
 			code: 'PKR',
@@ -189,7 +202,6 @@ export function getCurrencyData() {
 			thousandSeparator: ',',
 			decimalSeparator: '.',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		RU: {
 			code: 'RUB',
@@ -198,7 +210,6 @@ export function getCurrencyData() {
 			thousandSeparator: ' ',
 			decimalSeparator: ',',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		TR: {
 			code: 'TRY',
@@ -207,7 +218,6 @@ export function getCurrencyData() {
 			thousandSeparator: '.',
 			decimalSeparator: ',',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		MX: {
 			code: 'MXN',
@@ -216,7 +226,6 @@ export function getCurrencyData() {
 			thousandSeparator: ',',
 			decimalSeparator: '.',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 		CA: {
 			code: 'CAD',
@@ -225,7 +234,6 @@ export function getCurrencyData() {
 			thousandSeparator: ',',
 			decimalSeparator: '.',
 			precision: 2,
-			priceFormat: '%1$s%2$s',
 		},
 	};
 }
