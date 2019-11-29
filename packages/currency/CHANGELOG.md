@@ -2,7 +2,7 @@
 
 ## Breaking changes
 - Decouple from global `wcSettings` object.
-- The currency package has been rewritten to export a `Currency` class instead of serveral utility functions.
+- The currency package has been rewritten to export a `Currency` class instead of several utility functions.
 
 ## Other changes
 - Remove lodash dependency.
