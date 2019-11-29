@@ -22,6 +22,7 @@ import { getSetting, CURRENCY as currency } from '@woocommerce/wc-admin-settings
 import { H, Card, SelectControl, Form } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
+import { formatCurrency } from 'lib/currency-format';
 import Plugins from 'dashboard/task-list/tasks/steps/plugins';
 import { pluginNames } from 'wc-api/onboarding/constants';
 
@@ -276,38 +277,35 @@ class BusinessDetails extends Component {
 		const revenueOptions = [
 			{
 				key: 'none',
-				label: _x( "$0 (I'm just getting started)", '$0 revenue amount', 'woocommerce-admin' ),
+				label: sprintf(
+					_x( "%s (I'm just getting started)", '$0 revenue amount', 'woocommerce-admin' ),
+					formatCurrency( 0 )
+				),
 			},
 			{
 				key: 'up-to-2500',
-				label: _x( 'Up to $2500 USD', 'equivalent of $2500 USD', 'woocommerce-admin' ),
+				label: sprintf(
+					_x( 'Up to %s', 'Up to a certain revenue amount', 'woocommerce-admin' ),
+					formatCurrency( 2500 )
+				),
 			},
 			{
 				key: '2500-10000',
-				label: _x( '$2500 to $10,000 USD', 'equivalent of $2500-10,000 USD', 'woocommerce-admin' ),
+				label: this.getNumberRangeString( 2500, 10000, formatCurrency ),
 			},
 			{
 				key: '10000-50000',
-				label: _x(
-					'$2500 to $10,000 USD',
-					'equivalent of $10,000-50,000 USD',
-					'woocommerce-admin'
-				),
+				label: this.getNumberRangeString( 10000, 50000, formatCurrency ),
 			},
 			{
 				key: '50000-250000',
-				label: _x(
-					'$50,000 to $250,000 USD',
-					'equivalent of $50,000-250,000 USD',
-					'woocommerce-admin'
-				),
+				label: this.getNumberRangeString( 50000, 250000, formatCurrency ),
 			},
 			{
 				key: 'more-than-250000',
-				label: _x(
-					'More than $250,000 USD',
-					'equivalent of more than $250,000 USD',
-					'woocommerce-admin'
+				label: sprintf(
+					_x( 'More than %s', 'More than a certain revenue amount', 'woocommerce-admin' ),
+					formatCurrency( 250000 )
 				),
 			},
 		];
