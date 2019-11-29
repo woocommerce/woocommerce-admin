@@ -12,7 +12,6 @@ import { numberFormat } from '@woocommerce/number';
 export default class Currency {
 	constructor( currency = null ) {
 		if ( ! this.code ) {
-			currency = currency ? currency : getCurrencyData( 'US' );
 			this.setCurrency( currency );
 		}
 	}
@@ -23,14 +22,17 @@ export default class Currency {
 	 * @param {Object} currency An object containing currency configuration settings.
 	 */
 	setCurrency( currency ) {
-		this.code = currency.code.toString();
-		this.symbol = currency.symbol.toString();
-		this.symbolPosition = currency.symbolPosition.toString();
-		this.decimalSeparator = currency.decimalSeparator.toString();
-		this.priceFormat = currency.priceFormat ? currency.priceFormat.toString() : this.getPriceFormat( currency );
-		this.thousandSeparator = currency.thousandSeparator.toString();
+		const defaultCurrency = getCurrencyData().US;
+		const config = { ...defaultCurrency, ...currency };
 
-		const precisionNumber = parseInt( currency.precision, 10 );
+		this.code = config.code.toString();
+		this.symbol = config.symbol.toString();
+		this.symbolPosition = config.symbolPosition.toString();
+		this.decimalSeparator = config.decimalSeparator.toString();
+		this.priceFormat = config.priceFormat ? config.priceFormat.toString() : this.getPriceFormat( config );
+		this.thousandSeparator = config.thousandSeparator.toString();
+
+		const precisionNumber = parseInt( config.precision, 10 );
 		this.precision = precisionNumber;
 	}
 
