@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import PropTypes from 'prop-types';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -52,6 +53,33 @@ class Connect extends Component {
 		);
 	}
 }
+
+Connect.propTypes = {
+	/**
+	 * Method to create a displayed notice.
+	 */
+	createNotice: PropTypes.func.isRequired,
+	/**
+	 * Human readable error message.
+	 */
+	error: PropTypes.string,
+	/**
+	 * Bool to determine if the "Retry" button should be displayed.
+	 */
+	hasErrors: PropTypes.bool,
+	/**
+	 * Bool to check if the connection URL is still being requested.
+	 */
+	isRequesting: PropTypes.bool,
+	/**
+	 * Generated Jetpack connection URL.
+	 */
+	jetpackConnectUrl: PropTypes.string,
+	/**
+	 * Redirect URL to encode as a URL param for the connection path.
+	 */
+	redirectUrl: PropTypes.string,
+};
 
 export default compose(
 	withSelect( ( select, props ) => {
