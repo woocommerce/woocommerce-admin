@@ -6,6 +6,28 @@
  */
 
 /**
+ * Get the currencies available.
+ *
+ * @return array
+ */
+function get_currencies() {
+	return array(
+		array(
+			'label' => __( 'United States Dollar', 'woocommerce-admin' ),
+			'value' => 'USD',
+		),
+		array(
+			'label' => __( 'New Zealand Dollar', 'woocommerce-admin' ),
+			'value' => 'NZD',
+		),
+		array(
+			'label' => __( 'South African Rand', 'woocommerce-admin' ),
+			'value' => 'ZAR',
+		),
+	);
+}
+
+/**
  * Register the JS.
  */
 function add_report_register_script() {
@@ -23,12 +45,21 @@ function add_report_register_script() {
 			'wp-i18n',
 			'wp-plugins',
 			'wc-components',
+			'wc-settings',
 		),
 		filemtime( dirname( __FILE__ ) . '/dist/index.js' ),
 		true
 	);
 
 	wp_enqueue_script( 'sql-modification' );
+	// todo: This is not the right way to interact with wcSettings. Update once 3.9 is available.
+	wp_add_inline_script(
+		'sql-modification',
+		"wcSettings.multiCurrency = JSON.parse( decodeURIComponent( '"
+		. esc_js( rawurlencode( wp_json_encode( get_currencies() ) ) )
+		. "' ) );",
+		'before'
+	);
 }
 add_action( 'admin_enqueue_scripts', 'add_report_register_script' );
 

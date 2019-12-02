@@ -13,11 +13,7 @@ const addCurrencyFilters = filters => {
 			param: 'currency',
 			showFilters: () => true,
 			defaultValue: 'USD',
-			filters: [
-				{ label: __( 'United States Dollar', 'woocommerce-admin' ), value: 'USD' },
-				{ label: __( 'New Zealand Dollar', 'woocommerce-admin' ), value: 'NZD' },
-				{ label: __( 'South African Rand', 'woocommerce-admin' ), value: 'ZAR' },
-			],
+			filters: [ ...wcSettings.multiCurrency ],
 		},
 		...filters,
 	];
