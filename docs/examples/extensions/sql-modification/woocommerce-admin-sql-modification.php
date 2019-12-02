@@ -52,6 +52,7 @@ function add_report_register_script() {
 	);
 
 	wp_enqueue_script( 'sql-modification' );
+
 	// todo: This is not the right way to interact with wcSettings. Update once 3.9 is available.
 	wp_add_inline_script(
 		'sql-modification',
@@ -99,10 +100,7 @@ function add_join_subquery( $clauses ) {
 
 	return $clauses;
 }
-
-add_filter( 'wc_admin_clauses_join_orders_subquery', 'add_join_subquery' );
-add_filter( 'wc_admin_clauses_join_order_stats_total', 'add_join_subquery' );
-add_filter( 'wc_admin_clauses_join_order_stats_interval', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join', 'add_join_subquery' );
 
 /**
  * Add a WHERE clause.
@@ -121,7 +119,4 @@ function add_where_subquery( $clauses ) {
 
 	return $clauses;
 }
-
-add_filter( 'wc_admin_clauses_where_orders_subquery', 'add_where_subquery' );
-add_filter( 'wc_admin_clauses_where_order_stats_total', 'add_where_subquery' );
-add_filter( 'wc_admin_clauses_where_order_stats_interval', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where', 'add_where_subquery' );

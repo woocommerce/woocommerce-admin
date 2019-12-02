@@ -13,7 +13,7 @@ const addCurrencyFilters = filters => {
 			param: 'currency',
 			showFilters: () => true,
 			defaultValue: 'USD',
-			filters: [ ...wcSettings.multiCurrency ],
+			filters: [ ...wcSettings.multiCurrency || [] ],
 		},
 		...filters,
 	];
