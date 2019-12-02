@@ -54,7 +54,7 @@ class Connect extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select, props ) => {
 		const {
 			getJetpackConnectUrl,
 			isGetJetpackConnectUrlRequesting,
@@ -62,7 +62,7 @@ export default compose(
 		} = select( 'wc-api' );
 
 		const queryArgs = {
-			redirect_url: window.location.href,
+			redirect_url: props.redirectUrl || window.location.href,
 		};
 		const isRequesting = isGetJetpackConnectUrlRequesting( queryArgs );
 		const error = getJetpackConnectUrlError( queryArgs );

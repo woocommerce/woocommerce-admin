@@ -231,6 +231,7 @@ class Shipping extends Component {
 				),
 				content: (
 					<Connect
+						redirectUrl={ getNewPath( {}, '/', {} ) }
 						completeStep={ this.completeStep }
 						{ ...this.props }
 						onConnect={ () => {
