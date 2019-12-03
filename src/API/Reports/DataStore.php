@@ -1190,7 +1190,7 @@ class DataStore extends SqlQuery {
 		 * @param string $field      The object type.
 		 * @param string $context    The data store context.
 		 */
-		$ids = apply_filters( 'wc_admin_reports_ ' . $field, $ids, $query_args, $field, $this->context );
+		$ids = apply_filters( 'woocommerce_analytics_ ' . $field, $ids, $query_args, $field, $this->context );
 
 		if ( ! empty( $ids ) ) {
 			$ids_str = implode( $separator, $ids );

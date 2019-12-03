@@ -528,7 +528,7 @@ class ReportsSync {
 		 * @param int    $batch_size Batch size.
 		 * @param string $action Batch action name.
 		 */
-		return apply_filters( 'wc_admin_report_regenerate_batch_size', $batch_size, $action );
+		return apply_filters( 'woocommerce_analytics_regenerate_batch_size', $batch_size, $action );
 	}
 
 	/**

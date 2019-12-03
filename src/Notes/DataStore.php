@@ -19,7 +19,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 	 * @param WC_Admin_Note $note Admin note.
 	 */
 	public function create( &$note ) {
-		$date_created = current_time( 'timestamp', 1 );
+		$date_created = time();
 		$note->set_date_created( $date_created );
 
 		global $wpdb;
@@ -257,7 +257,8 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		}
 
 		$clear_actions_query = $wpdb->prepare(
-			"DELETE FROM {$wpdb->prefix}wc_admin_note_actions WHERE note_id = %d", $note->get_id()
+			"DELETE FROM {$wpdb->prefix}wc_admin_note_actions WHERE note_id = %d",
+			$note->get_id()
 		);
 
 		if ( $actions_to_keep ) {
@@ -405,7 +406,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		 * @param string $where_clauses The generated WHERE clause.
 		 * @param array  $args          The original arguments for the request.
 		 */
-		return apply_filters( 'wc_admin_notes_where_clauses', $where_clauses, $args );
+		return apply_filters( 'woocommerce_admin_notes_where_clauses', $where_clauses, $args );
 	}
 
 	/**
