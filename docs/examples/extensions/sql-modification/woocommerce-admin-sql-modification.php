@@ -86,6 +86,13 @@ function apply_currency_arg( $args ) {
 add_filter( 'woocommerce_reports_revenue_query_args', 'apply_currency_arg' );
 add_filter( 'woocommerce_reports_orders_query_args', 'apply_currency_arg' );
 add_filter( 'woocommerce_reports_orders_stats_query_args', 'apply_currency_arg' );
+add_filter( 'woocommerce_reports_products_query_args', 'apply_currency_arg' );
+add_filter( 'woocommerce_reports_products_stats_query_args', 'apply_currency_arg' );
+add_filter( 'woocommerce_reports_categories_query_args', 'apply_currency_arg' );
+add_filter( 'woocommerce_reports_coupons_query_args', 'apply_currency_arg' );
+add_filter( 'woocommerce_reports_coupons_stats_query_args', 'apply_currency_arg' );
+add_filter( 'woocommerce_reports_taxes_query_args', 'apply_currency_arg' );
+add_filter( 'woocommerce_reports_taxes_stats_query_args', 'apply_currency_arg' );
 
 /**
  * Add a JOIN clause.

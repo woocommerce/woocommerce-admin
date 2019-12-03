@@ -21,3 +21,7 @@ const addCurrencyFilters = filters => {
 
 addFilter( 'woocommerce_admin_revenue_report_filters', 'plugin-domain', addCurrencyFilters );
 addFilter( 'woocommerce_admin_orders_report_filters', 'plugin-domain', addCurrencyFilters );
+addFilter( 'woocommerce_admin_products_report_filters', 'plugin-domain', addCurrencyFilters );
+addFilter( 'woocommerce_admin_categories_report_filters', 'plugin-domain', addCurrencyFilters );
+addFilter( 'woocommerce_admin_coupons_report_filters', 'plugin-domain', addCurrencyFilters );
+addFilter( 'woocommerce_admin_taxes_report_filters', 'plugin-domain', addCurrencyFilters );
