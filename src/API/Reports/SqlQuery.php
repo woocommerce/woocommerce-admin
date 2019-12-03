@@ -106,9 +106,6 @@ class SqlQuery {
 		} else {
 			$clauses = $this->sql_clauses[ $type ];
 		}
-		error_log( 'wtf' );
-		error_log( "wc_admin_clauses_{$type}" );
-		error_log( "wc_admin_clauses_{$type}_{$this->context}" );
 
 		/**
 		 * Filter SQL clauses by type and context.
