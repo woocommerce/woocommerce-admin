@@ -278,14 +278,16 @@ class BusinessDetails extends Component {
 			{
 				key: 'none',
 				label: sprintf(
-					_x( "%s (I'm just getting started)", '$0 revenue amount', 'woocommerce-admin' ),
+					/* translators: %s: $0 revenue amount */
+					__( "%s (I'm just getting started)", 'woocommerce-admin' ),
 					formatCurrency( 0 )
 				),
 			},
 			{
 				key: 'up-to-2500',
 				label: sprintf(
-					_x( 'Up to %s', 'Up to a certain revenue amount', 'woocommerce-admin' ),
+					/* translators: %s: A given revenue amount, e.g., $2500 */
+					__( 'Up to %s', 'woocommerce-admin' ),
 					formatCurrency( 2500 )
 				),
 			},
