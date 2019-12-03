@@ -218,7 +218,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return stdClass|WP_Error Data.
 	 */
 	public function get_data( $query_args ) {
-		// error_log(print_r($query_args, TRUE));
 		global $wpdb;
 
 		$table_name = self::get_db_table_name();
