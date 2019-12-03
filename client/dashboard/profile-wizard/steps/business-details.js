@@ -306,7 +306,8 @@ class BusinessDetails extends Component {
 			{
 				key: 'more-than-250000',
 				label: sprintf(
-					_x( 'More than %s', 'More than a certain revenue amount', 'woocommerce-admin' ),
+					/* translators: %s: A given revenue amount, e.g., $250000 */
+					__( 'More than %s', 'woocommerce-admin' ),
 					formatCurrency( 250000 )
 				),
 			},
