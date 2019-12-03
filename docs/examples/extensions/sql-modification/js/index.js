@@ -67,3 +67,10 @@ const addTableColumn = reportTableData => {
 };
 
 addFilter( 'woocommerce_admin_report_table', 'plugin-domain', addTableColumn );
+
+const persistQueries = params => {
+	params.push( 'currency' );
+	return params;
+};
+
+addFilter( 'woocommerce_admin_persisted_queries', 'plugin-domain', persistQueries );
