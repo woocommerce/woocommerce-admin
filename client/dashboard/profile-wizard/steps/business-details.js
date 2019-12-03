@@ -139,18 +139,18 @@ class BusinessDetails extends Component {
 		return keys( pickBy( values ) ).filter( name => this.extensions.includes( name ) );
 	}
 
-	getNumberRangeString( min, max = false, format = formatValue ) {
+	getNumberRangeString( min, max = false ) {
 		if ( ! max ) {
 			return sprintf(
 				_x( '%s+', 'store product count or revenue', 'woocommerce-admin' ),
-				format( 'number', min )
+				formatValue( 'number', min )
 			);
 		}
 
 		return sprintf(
 			_x( '%1$s - %2$s', 'store product count or revenue range', 'woocommerce-admin' ),
-			format( 'number', min ),
-			format( 'number', max )
+			formatValue( 'number', min ),
+			formatValue( 'number', max )
 		);
 	}
 
