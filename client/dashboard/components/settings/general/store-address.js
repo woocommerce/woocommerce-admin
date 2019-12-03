@@ -146,12 +146,14 @@ export function StoreAddress( props ) {
 			<TextControl
 				label={ __( 'Address line 1', 'woocommerce-admin' ) }
 				required
+				autoComplete="address-line1"
 				{ ...getInputProps( 'addressLine1' ) }
 			/>
 
 			<TextControl
 				label={ __( 'Address line 2 (optional)', 'woocommerce-admin' ) }
 				required
+				autoComplete="address-line2"
 				{ ...getInputProps( 'addressLine2' ) }
 			/>
 
@@ -173,11 +175,13 @@ export function StoreAddress( props ) {
 				label={ __( 'City', 'woocommerce-admin' ) }
 				required
 				{ ...getInputProps( 'city' ) }
+				autoComplete="address-level2"
 			/>
 
 			<TextControl
 				label={ __( 'Post code', 'woocommerce-admin' ) }
 				required
+				autoComplete="postal-code"
 				{ ...getInputProps( 'postCode' ) }
 			/>
 		</div>
