@@ -204,7 +204,7 @@ class Loader {
 	 * @todo The entry point for the embed needs moved to this class as well.
 	 */
 	public static function register_page_handler() {
-		$analytics_cap = apply_filters( 'woocommerce_admin_analytics_menu_capability', 'view_woocommerce_reports' );
+		$analytics_cap = apply_filters( 'woocommerce_analytics_menu_capability', 'view_woocommerce_reports' );
 		wc_admin_register_page(
 			array(
 				'id'         => 'woocommerce-dashboard', // Expected to be overridden if dashboard is enabled.

@@ -546,7 +546,7 @@ class DataStore extends SqlQuery {
 	protected static function get_excluded_report_order_statuses() {
 		$excluded_statuses = \WC_Admin_Settings::get_option( 'woocommerce_excluded_report_order_statuses', array( 'pending', 'failed', 'cancelled' ) );
 		$excluded_statuses = array_merge( array( 'trash' ), $excluded_statuses );
-		return apply_filters( 'woocommerce_reports_excluded_order_statuses', $excluded_statuses );
+		return apply_filters( 'woocommerce_analytics_excluded_order_statuses', $excluded_statuses );
 	}
 
 	/**

@@ -502,7 +502,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 *
 		 * @param int $customer_id Customer ID.
 		 */
-		do_action( 'woocommerce_reports_new_customer', $customer_id );
+		do_action( 'woocommerce_analytics_new_customer', $customer_id );
 
 		return $result ? $customer_id : false;
 	}
@@ -642,7 +642,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 *
 		 * @param int $customer_id Customer ID.
 		 */
-		do_action( 'woocommerce_reports_update_customer', $customer_id );
+		do_action( 'woocommerce_analytics_update_customer', $customer_id );
 
 		ReportsCache::invalidate();
 
@@ -686,7 +686,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 *
 		 * @param int $order_id Order ID.
 		 */
-		do_action( 'woocommerce_reports_delete_customer', $customer_id );
+		do_action( 'woocommerce_analytics_delete_customer', $customer_id );
 	}
 
 	/**
