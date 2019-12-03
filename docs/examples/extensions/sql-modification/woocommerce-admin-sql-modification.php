@@ -103,7 +103,7 @@ add_filter( 'woocommerce_reports_taxes_stats_query_args', 'apply_currency_arg' )
 function add_join_subquery( $clauses ) {
 	global $wpdb;
 
-	$clauses[] = "JOIN {$wpdb->postmeta} postmeta ON {$wpdb->prefix}wc_order_stats.order_id = postmeta.post_id";
+	$clauses[] = "JOIN {$wpdb->postmeta} currency_postmeta ON {$wpdb->prefix}wc_order_stats.order_id = currency_postmeta.post_id";
 
 	return $clauses;
 }
@@ -122,8 +122,22 @@ function add_where_subquery( $clauses ) {
 		$currency = sanitize_text_field( wp_unslash( $_GET['currency'] ) );
 	}
 
-	$clauses[] = "AND postmeta.meta_key = '_order_currency' AND postmeta.meta_value = '{$currency}'";
+	$clauses[] = "AND currency_postmeta.meta_key = '_order_currency' AND currency_postmeta.meta_value = '{$currency}'";
 
 	return $clauses;
 }
 add_filter( 'wc_admin_clauses_where', 'add_where_subquery' );
+
+/**
+ * Add a SELECT clause.
+ *
+ * @param array $clauses an array of WHERE query strings.
+ * @return array augmented clauses.
+ */
+function add_select_subquery( $clauses ) {
+	$clauses[] = ", currency_postmeta.meta_value AS currency";
+
+	return $clauses;
+}
+
+add_filter( 'wc_admin_clauses_select', 'add_select_subquery' );
