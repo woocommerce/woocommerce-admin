@@ -59,7 +59,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 	 * Method to read a note.
 	 *
 	 * @param WC_Admin_Note $note Admin note.
-	 * @throws Exception Throws exception when invalid data is found.
+	 * @throws \Exception Throws exception when invalid data is found.
 	 */
 	public function read( &$note ) {
 		global $wpdb;
@@ -265,7 +265,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$clear_actions_query .= sprintf( ' AND action_id NOT IN (%s)', implode( ',', $actions_to_keep ) );
 		}
 
-		$wpdb->query( $clear_actions_query );
+		$wpdb->query( $clear_actions_query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		// Update/insert the actions in this changeset.
 		foreach ( $changed_actions as $action ) {
@@ -324,10 +324,11 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		$where_clauses = $this->get_notes_where_clauses( $args );
 
 		$query = $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			"SELECT note_id, title, content FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses} ORDER BY {$args['orderby']} {$args['order']} LIMIT %d, %d",
 			$offset,
 			$args['per_page']
-		); // WPCS: unprepared SQL ok.
+		);
 
 		return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
@@ -350,7 +351,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		);
 
 		if ( ! empty( $where_clauses ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses}" );
 		}
 
