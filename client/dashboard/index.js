@@ -37,13 +37,14 @@ class Dashboard extends Component {
 		const productIds = [];
 		const profileItems = get( this.props, 'profileItems', {} );
 		const onboarding = getSetting( 'onboarding', {} );
+		const productTypes = profileItems.product_types || [];
 
-		profileItems.product_types.forEach( product_type => {
+		productTypes.forEach( productType => {
 			if (
-				onboarding.productTypes[ product_type ] &&
-				onboarding.productTypes[ product_type ].product
+				onboarding.productTypes[ productType ] &&
+				onboarding.productTypes[ productType ].product
 			) {
-				productIds.push( onboarding.productTypes[ product_type ].product );
+				productIds.push( onboarding.productTypes[ productType ].product );
 			}
 		} );
 
