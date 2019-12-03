@@ -86,20 +86,21 @@ export function getCountryStateAutofill( options, countryState, setValue ) {
 	useEffect(
 		() => {
 			let filteredOptions = [];
+			const countrySearch = new RegExp( escapeRegExp( autofillCountry ), 'i' );
 			if ( autofillState.length || autofillCountry.length ) {
-				const countrySearch = new RegExp(
-					escapeRegExp( autofillCountry.replace( /\s/g, '' ) ),
-					'i'
-				);
-				filteredOptions = options.filter( option =>
-					countrySearch.test( option.label.replace( '-', '' ).replace( /\s/g, '' ) )
-				);
+				filteredOptions = options.filter( option => countrySearch.test( option.label ) );
 			}
 			if ( autofillCountry.length && autofillState.length ) {
 				const stateSearch = new RegExp( escapeRegExp( autofillState.replace( /\s/g, '' ) ), 'i' );
 				filteredOptions = filteredOptions.filter( option =>
 					stateSearch.test( option.label.replace( '-', '' ).replace( /\s/g, '' ) )
 				);
+
+				if ( filteredOptions.length > 1 ) {
+					filteredOptions = filteredOptions.filter(
+						option => countrySearch.test( option.key ) || stateSearch.test( option.key )
+					);
+				}
 			}
 			if ( 1 === filteredOptions.length && countryState !== filteredOptions[ 0 ].key ) {
 				setValue( 'countryState', filteredOptions[ 0 ].key );
@@ -117,6 +118,7 @@ export function getCountryStateAutofill( options, countryState, setValue ) {
 				type="text"
 				className="woocommerce-select-control__autofill-input"
 				tabIndex="-1"
+				autoComplete="country"
 			/>
 
 			<input
@@ -126,6 +128,7 @@ export function getCountryStateAutofill( options, countryState, setValue ) {
 				type="text"
 				className="woocommerce-select-control__autofill-input"
 				tabIndex="-1"
+				autoComplete="address-level1"
 			/>
 		</Fragment>
 	);
