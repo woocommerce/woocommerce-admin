@@ -119,6 +119,10 @@
 	.woocommerce-split-button__menu-toggle.is-active:hover {
 		border-color: $core-grey-light-800;
 	}
+
+	.components-tooltip:not(.is-without-arrow):not(.is-mobile)::after {
+		border-color: $core-grey-dark-900;
+	}
 }
 
 .woocommerce-split-button.is-primary {
