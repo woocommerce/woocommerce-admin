@@ -1,3 +1,4 @@
+/** @format */
 /**
  * External dependencies
  */
@@ -13,7 +14,7 @@ const addCurrencyFilters = filters => {
 			param: 'currency',
 			showFilters: () => true,
 			defaultValue: 'USD',
-			filters: [ ...wcSettings.multiCurrency || [] ],
+			filters: [ ...( wcSettings.multiCurrency || [] ) ],
 		},
 		...filters,
 	];
@@ -25,3 +26,44 @@ addFilter( 'woocommerce_admin_products_report_filters', 'plugin-domain', addCurr
 addFilter( 'woocommerce_admin_categories_report_filters', 'plugin-domain', addCurrencyFilters );
 addFilter( 'woocommerce_admin_coupons_report_filters', 'plugin-domain', addCurrencyFilters );
 addFilter( 'woocommerce_admin_taxes_report_filters', 'plugin-domain', addCurrencyFilters );
+
+const addTableColumn = reportTableData => {
+	const includedReports = [
+		'revenue',
+		'products',
+		'orders',
+		'products',
+		'categories',
+		'coupons',
+		'taxes',
+	];
+	if ( ! includedReports.includes( reportTableData.endpoint ) ) {
+		return reportTableData;
+	}
+
+	const newHeaders = [
+		{
+			label: 'Currency',
+			key: 'currency',
+		},
+		...reportTableData.headers,
+	];
+	const newRows = reportTableData.rows.map( ( row, index ) => {
+		const item = reportTableData.items.data[ index ];
+		const newRow = [
+			{
+				display: item.currency,
+				value: item.currency,
+			},
+			...row,
+		];
+		return newRow;
+	} );
+
+	reportTableData.headers = newHeaders;
+	reportTableData.rows = newRows;
+
+	return reportTableData;
+};
+
+addFilter( 'woocommerce_admin_report_table', 'plugin-domain', addTableColumn );

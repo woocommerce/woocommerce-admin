@@ -135,7 +135,7 @@ add_filter( 'wc_admin_clauses_where', 'add_where_subquery' );
  * @return array augmented clauses.
  */
 function add_select_subquery( $clauses ) {
-	$clauses[] = ", currency_postmeta.meta_value AS currency";
+	$clauses[] = ', currency_postmeta.meta_value AS currency';
 
 	return $clauses;
 }
