@@ -5,6 +5,8 @@
  */
 import { select as d3Select } from 'd3-selection';
 import moment from 'moment';
+import ReactDOMServer from 'react-dom/server';
+import { isValidElement } from '@wordpress/element';
 
 class ChartTooltip {
 	constructor() {
@@ -19,11 +21,7 @@ class ChartTooltip {
 		this.margin = 24;
 	}
 
-	calculateXPosition(
-		elementCoords,
-		chartCoords,
-		elementWidthRatio,
-	) {
+	calculateXPosition( elementCoords, chartCoords, elementWidthRatio ) {
 		const tooltipSize = this.ref.getBoundingClientRect();
 		const d3BaseCoords = this.ref.parentNode.querySelector( '.d3-base' ).getBoundingClientRect();
 		const leftMargin = Math.max( d3BaseCoords.left, chartCoords.left );
@@ -55,10 +53,7 @@ class ChartTooltip {
 		return xPosition;
 	}
 
-	calculateYPosition(
-		elementCoords,
-		chartCoords,
-	) {
+	calculateYPosition( elementCoords, chartCoords ) {
 		if ( this.position === 'below' ) {
 			return chartCoords.height;
 		}
@@ -81,15 +76,8 @@ class ChartTooltip {
 		}
 
 		return {
-			x: this.calculateXPosition(
-				elementCoords,
-				chartCoords,
-				elementWidthRatio,
-			),
-			y: this.calculateYPosition(
-				elementCoords,
-				chartCoords,
-			),
+			x: this.calculateXPosition( elementCoords, chartCoords, elementWidthRatio ),
+			y: this.calculateYPosition( elementCoords, chartCoords ),
 		};
 	}
 
@@ -97,8 +85,7 @@ class ChartTooltip {
 		d3Select( this.chart )
 			.selectAll( '.barfocus, .focus-grid' )
 			.attr( 'opacity', '0' );
-		d3Select( this.ref )
-			.style( 'visibility', 'hidden' );
+		d3Select( this.ref ).style( 'visibility', 'hidden' );
 	}
 
 	getTooltipRowLabel( d, row ) {
@@ -117,8 +104,12 @@ class ChartTooltip {
 			.attr( 'opacity', '1' );
 		const position = this.calculatePosition( triggerElement, elementWidthRatio );
 
-		const keys = this.visibleKeys.map(
-			row => `
+		const keys = this.visibleKeys.map( row => {
+			const value = this.valueFormat( d[ row.key ].value );
+			const renderedValue = isValidElement( value )
+				? ReactDOMServer.renderToString( value )
+				: value;
+			return `
 					<li class="key-row">
 						<div class="key-container">
 							<span
@@ -127,14 +118,12 @@ class ChartTooltip {
 							</span>
 							<span class="key-key">${ this.getTooltipRowLabel( d, row ) }</span>
 						</div>
-						<span class="key-value">${ this.valueFormat( d[ row.key ].value ) }</span>
+						<span class="key-value">${ renderedValue }</span>
 					</li>
-				`
-		);
+				`;
+		} );
 
-		const tooltipTitle = this.title
-			? this.title
-			: this.labelFormat( moment( d.date ).toDate() );
+		const tooltipTitle = this.title ? this.title : this.labelFormat( moment( d.date ).toDate() );
 
 		d3Select( this.ref )
 			.style( 'left', position.x + 'px' )
