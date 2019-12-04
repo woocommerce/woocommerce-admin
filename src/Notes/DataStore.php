@@ -407,7 +407,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		 * @param string $where_clauses The generated WHERE clause.
 		 * @param array  $args          The original arguments for the request.
 		 */
-		return apply_filters( 'woocommerce_notes_where_clauses', $where_clauses, $args );
+		return apply_filters( 'woocommerce_note_where_clauses', $where_clauses, $args );
 	}
 
 	/**
