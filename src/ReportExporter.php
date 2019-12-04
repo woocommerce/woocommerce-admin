@@ -28,7 +28,6 @@ class ReportExporter {
 	 * Scheduler traits.
 	 */
 	use SchedulerTraits {
-		get_actions as get_default_scheduler_actions;
 		init as scheduler_init;
 	}
 
@@ -48,13 +47,10 @@ class ReportExporter {
 	 *
 	 * @return array
 	 */
-	public static function get_actions() {
-		return array_merge(
-			self::get_default_scheduler_actions(),
-			array(
-				'export_report'              => 'woocommerce_admin_report_export',
-				'email_report_download_link' => 'woocommerce_admin_email_report_download_link',
-			)
+	public static function get_scheduler_actions() {
+		return array(
+			'export_report'              => 'woocommerce_admin_report_export',
+			'email_report_download_link' => 'woocommerce_admin_email_report_download_link',
 		);
 	}
 

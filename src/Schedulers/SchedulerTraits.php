@@ -60,13 +60,30 @@ trait SchedulerTraits {
 	}
 
 	/**
+	 * Gets the default scheduler actions for batching and scheduling actions.
+	 */
+	public static function get_default_scheduler_actions() {
+		return array(
+			'schedule_action' => 'wc-admin_schedule_action_' . static::$name,
+			'queue_batches'   => 'wc-admin_queue_batches_' . static::$name,
+		);
+	}
+
+	/**
+	 * Gets the actions for this specific scheduler.
+	 *
+	 * @return array
+	 */
+	abstract public static function get_scheduler_actions();
+
+	/**
 	 * Get all available scheduling actions.
 	 * Used to determine action hook names and clear events.
 	 */
 	public static function get_actions() {
-		return array(
-			'schedule_action' => 'wc-admin_schedule_action_' . static::$name,
-			'queue_batches'   => 'wc-admin_queue_batches_' . static::$name,
+		return array_merge(
+			static::get_default_scheduler_actions(),
+			static::get_scheduler_actions()
 		);
 	}
 

@@ -20,7 +20,6 @@ abstract class ImportScheduler {
 	 * Scheduler traits.
 	 */
 	use SchedulerTraits {
-		get_actions as get_default_scheduler_actions;
 		get_batch_sizes as get_scheduler_batch_sizes;
 	}
 
@@ -66,16 +65,13 @@ abstract class ImportScheduler {
 	 *
 	 * @return array
 	 */
-	public static function get_actions() {
-		return array_merge(
-			self::get_default_scheduler_actions(),
-			array(
-				'import_batch_init' => 'wc-admin_import_batch_init_' . static::$name,
-				'import_batch'      => 'wc-admin_import_batch_' . static::$name,
-				'delete_batch_init' => 'wc-admin_delete_batch_init_' . static::$name,
-				'delete_batch'      => 'wc-admin_delete_batch_' . static::$name,
-				'import'            => 'wc-admin_import_' . static::$name,
-			)
+	public static function get_scheduler_actions() {
+		return array(
+			'import_batch_init' => 'wc-admin_import_batch_init_' . static::$name,
+			'import_batch'      => 'wc-admin_import_batch_' . static::$name,
+			'delete_batch_init' => 'wc-admin_delete_batch_init_' . static::$name,
+			'delete_batch'      => 'wc-admin_delete_batch_' . static::$name,
+			'import'            => 'wc-admin_import_' . static::$name,
 		);
 	}
 
@@ -87,21 +83,14 @@ abstract class ImportScheduler {
 	 * @param int|bool $days Number of days prior to current date to limit search results.
 	 * @param bool     $skip_existing Skip already imported items.
 	 */
-	public static function get_items( $limit, $page, $days, $skip_existing ) {
-		return (object) array(
-			'ids'   => array(),
-			'total' => null,
-		);
-	}
+	abstract public static function get_items( $limit, $page, $days, $skip_existing );
 
 	/**
 	 * Get total number of items already imported.
 	 *
 	 * @return null
 	 */
-	public static function get_total_imported() {
-		return null;
-	}
+	abstract public static function get_total_imported();
 
 	/**
 	 * Queue the imports into multiple batches.
