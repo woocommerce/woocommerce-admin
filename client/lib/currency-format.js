@@ -9,16 +9,6 @@ import { CURRENCY } from '@woocommerce/wc-admin-settings';
  */
 import Currency from '@woocommerce/currency';
 
-import { addFilter } from '@wordpress/hooks';
-
-addFilter( 'woocommerce_admin_custom_currency', 'plugin-domain', function() {
-	return ( { symbol, number } ) => (
-		<div>
-			{ symbol } 💸 { number } 😜
-		</div>
-	);
-} );
-
 // Pass the site currency settings to our instance.
 const storeCurrency = new Currency( CURRENCY );
 
