@@ -107,7 +107,24 @@ function add_join_subquery( $clauses ) {
 
 	return $clauses;
 }
-add_filter( 'wc_admin_clauses_join', 'add_join_subquery' );
+
+add_filter( 'wc_admin_clauses_join_orders_subquery', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join_order_stats_total', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join_order_stats_interval', 'add_join_subquery' );
+
+add_filter( 'wc_admin_clauses_join_products_subquery', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join_product_stats_total', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join_product_stats_interval', 'add_join_subquery' );
+
+add_filter( 'wc_admin_clauses_join_categories_subquery', 'add_join_subquery' );
+
+add_filter( 'wc_admin_clauses_join_coupons_subquery', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join_coupons_stats_total', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join_coupons_stats_interval', 'add_join_subquery' );
+
+add_filter( 'wc_admin_clauses_join_taxes_subquery', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join_tax_stats_total', 'add_join_subquery' );
+add_filter( 'wc_admin_clauses_join_tax_stats_interval', 'add_join_subquery' );
 
 /**
  * Add a WHERE clause.
@@ -126,7 +143,23 @@ function add_where_subquery( $clauses ) {
 
 	return $clauses;
 }
-add_filter( 'wc_admin_clauses_where', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_orders_subquery', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_order_stats_total', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_order_stats_interval', 'add_where_subquery' );
+
+add_filter( 'wc_admin_clauses_where_products_subquery', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_product_stats_total', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_product_stats_interval', 'add_where_subquery' );
+
+add_filter( 'wc_admin_clauses_where_categories_subquery', 'add_where_subquery' );
+
+add_filter( 'wc_admin_clauses_where_coupons_subquery', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_coupons_stats_total', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_coupons_stats_interval', 'add_where_subquery' );
+
+add_filter( 'wc_admin_clauses_where_taxes_subquery', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_tax_stats_total', 'add_where_subquery' );
+add_filter( 'wc_admin_clauses_where_tax_stats_interval', 'add_where_subquery' );
 
 /**
  * Add a SELECT clause.
@@ -140,4 +173,20 @@ function add_select_subquery( $clauses ) {
 	return $clauses;
 }
 
-add_filter( 'wc_admin_clauses_select', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_orders_subquery', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_order_stats_total', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_order_stats_interval', 'add_select_subquery' );
+
+add_filter( 'wc_admin_clauses_select_products_subquery', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_product_stats_total', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_product_stats_interval', 'add_select_subquery' );
+
+add_filter( 'wc_admin_clauses_select_categories_subquery', 'add_select_subquery' );
+
+add_filter( 'wc_admin_clauses_select_coupons_subquery', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_coupons_stats_total', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_coupons_stats_interval', 'add_select_subquery' );
+
+add_filter( 'wc_admin_clauses_select_taxes_subquery', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_tax_stats_total', 'add_select_subquery' );
+add_filter( 'wc_admin_clauses_select_tax_stats_interval', 'add_select_subquery' );

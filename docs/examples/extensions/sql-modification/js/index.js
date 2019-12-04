@@ -26,6 +26,7 @@ addFilter( 'woocommerce_admin_products_report_filters', 'plugin-domain', addCurr
 addFilter( 'woocommerce_admin_categories_report_filters', 'plugin-domain', addCurrencyFilters );
 addFilter( 'woocommerce_admin_coupons_report_filters', 'plugin-domain', addCurrencyFilters );
 addFilter( 'woocommerce_admin_taxes_report_filters', 'plugin-domain', addCurrencyFilters );
+addFilter( 'woocommerce_admin_dashboard_filters', 'plugin-domain', addCurrencyFilters );
 
 const addTableColumn = reportTableData => {
 	const includedReports = [
