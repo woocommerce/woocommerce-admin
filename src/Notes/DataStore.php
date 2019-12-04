@@ -52,7 +52,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		 *
 		 * @param int $note_id Note ID.
 		 */
-		do_action( 'woocommerce_new_note', $note_id );
+		do_action( 'woocommerce_note_created', $note_id );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			 *
 			 * @param int $note_id Note ID.
 			 */
-			do_action( 'woocommerce_admin_note_loaded', $note );
+			do_action( 'woocommerce_note_loaded', $note );
 		} elseif ( $note_row ) {
 			$note->set_name( $note_row->name );
 			$note->set_type( $note_row->type );
@@ -110,7 +110,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			 *
 			 * @param int $note_id Note ID.
 			 */
-			do_action( 'woocommerce_admin_note_loaded', $note );
+			do_action( 'woocommerce_note_loaded', $note );
 		} else {
 			throw new \Exception( __( 'Invalid data store for admin note.', 'woocommerce-admin' ) );
 		}
@@ -166,7 +166,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		 *
 		 * @param int $note_id Note ID.
 		 */
-		do_action( 'woocommerce_update_note', $note->get_id() );
+		do_action( 'woocommerce_note_updated', $note->get_id() );
 	}
 
 	/**
@@ -185,11 +185,11 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		}
 
 		/**
-		 * Fires when an admin note is updated.
+		 * Fires when an admin note is deleted.
 		 *
 		 * @param int $note_id Note ID.
 		 */
-		do_action( 'woocommerce_delete_note', $note_id );
+		do_action( 'woocommerce_note_deleted', $note_id );
 	}
 
 	/**
@@ -407,7 +407,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		 * @param string $where_clauses The generated WHERE clause.
 		 * @param array  $args          The original arguments for the request.
 		 */
-		return apply_filters( 'woocommerce_admin_notes_where_clauses', $where_clauses, $args );
+		return apply_filters( 'woocommerce_notes_where_clauses', $where_clauses, $args );
 	}
 
 	/**
