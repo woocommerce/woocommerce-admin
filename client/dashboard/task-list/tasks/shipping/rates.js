@@ -4,22 +4,21 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Button } from 'newspack-components';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
-import { FormToggle } from '@wordpress/components';
+import { Button, FormToggle } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
 /**
  * WooCommerce dependencies
  */
 import { Flag, Form, TextControl } from '@woocommerce/components';
-import { getCurrencyFormatString } from '@woocommerce/currency';
 import { CURRENCY, getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
+import { getCurrencyFormatString } from 'lib/currency-format';
 import { recordEvent } from 'lib/tracks';
 
 const { symbol, symbolPosition } = CURRENCY;

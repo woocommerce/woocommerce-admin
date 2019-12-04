@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Button, ImageUpload } from 'newspack-components';
+import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter, isEmpty } from 'lodash';
@@ -13,7 +13,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, Stepper, TextControl } from '@woocommerce/components';
+import { Card, Stepper, TextControl, ImageUpload } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
@@ -54,7 +54,11 @@ class Appearance extends Component {
 		const step = this.getSteps()[ stepIndex ].key;
 		const isRequestSuccessful = ! isRequesting && prevProps.isRequesting && ! hasErrors;
 
-		if ( themeMods && prevProps.themeMods.custom_logo !== themeMods.custom_logo ) {
+		if (
+			themeMods &&
+			themeMods.custom_logo &&
+			prevProps.themeMods.custom_logo !== themeMods.custom_logo
+		) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( { isPending: true } );
 			wp.media
@@ -82,10 +86,6 @@ class Appearance extends Component {
 		if ( 'logo' === step && isRequestSuccessful ) {
 			createNotice( 'success', __( 'Store logo updated sucessfully.', 'woocommerce-admin' ) );
 			this.completeStep();
-			setSetting( 'onboarding', {
-				...getSetting( 'onboarding', {} ),
-				customLogo: !! themeMods.custom_logo,
-			} );
 		}
 
 		if ( 'notice' === step && isRequestSuccessful ) {
@@ -168,7 +168,7 @@ class Appearance extends Component {
 	updateLogo() {
 		const { options, themeMods, updateOptions } = this.props;
 		const { logo } = this.state;
-		const updateThemeMods = logo ? { ...themeMods, custom_logo: logo.id } : themeMods;
+		const updateThemeMods = { ...themeMods, custom_logo: logo ? logo.id : null };
 
 		recordEvent( 'tasklist_appearance_upload_logo' );
 

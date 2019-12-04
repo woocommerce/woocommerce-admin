@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Button, CheckboxControl } from 'newspack-components';
+import { Button, CheckboxControl } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
@@ -12,18 +12,23 @@ import { recordEvent } from 'lib/tracks';
 import { without, get } from 'lodash';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
-import { getCountryCode } from 'dashboard/utils';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { H, Card, Form } from '@woocommerce/components';
 import { getCurrencyData } from '@woocommerce/currency';
-import withSelect from 'wc-api/with-select';
+
+/**
+ * Internal dependencies
+ */
+import { setCurrency } from 'lib/currency-format';
+import { getCountryCode } from 'dashboard/utils';
 import {
 	StoreAddress,
 	validateStoreAddress,
 } from '../../components/settings/general/store-address';
 import UsageModal from './usage-modal';
-import { getSetting } from '@woocommerce/wc-admin-settings';
+import withSelect from 'wc-api/with-select';
 
 class StoreDetails extends Component {
 	constructor( props ) {
@@ -98,6 +103,7 @@ class StoreDetails extends Component {
 		} = this.props;
 
 		const currencySettings = this.deriveCurrencySettings( values.countryState );
+		setCurrency( currencySettings );
 
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
@@ -113,9 +119,9 @@ class StoreDetails extends Component {
 				woocommerce_store_city: values.city,
 				woocommerce_store_postcode: values.postCode,
 				woocommerce_currency: currencySettings.code,
-				woocommerce_currency_pos: currencySettings.position,
-				woocommerce_price_thousand_sep: currencySettings.grouping,
-				woocommerce_price_decimal_sep: currencySettings.decimal,
+				woocommerce_currency_pos: currencySettings.symbolPosition,
+				woocommerce_price_thousand_sep: currencySettings.thousandSeparator,
+				woocommerce_price_decimal_sep: currencySettings.decimalSeparator,
 				woocommerce_price_num_decimals: currencySettings.precision,
 			},
 		} );
@@ -162,10 +168,13 @@ class StoreDetails extends Component {
 									/>
 								) }
 								<StoreAddress getInputProps={ getInputProps } setValue={ setValue } />
-								<CheckboxControl
-									label={ __( "I'm setting up a store for a client", 'woocommerce-admin' ) }
-									{ ...getInputProps( 'isClient' ) }
-								/>
+
+								<div className="woocommerce-profile-wizard__client">
+									<CheckboxControl
+										label={ __( "I'm setting up a store for a client", 'woocommerce-admin' ) }
+										{ ...getInputProps( 'isClient' ) }
+									/>
+								</div>
 
 								<Button isPrimary onClick={ handleSubmit } disabled={ ! isValidForm }>
 									{ __( 'Continue', 'woocommerce-admin' ) }
