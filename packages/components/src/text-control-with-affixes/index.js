@@ -6,6 +6,7 @@ import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { BaseControl } from '@wordpress/components';
 import { withInstanceId } from '@wordpress/compose';
+import classnames from 'classnames';
 
 /**
  * This component is essentially a wrapper (really a reimplementation) around the
@@ -40,9 +41,15 @@ class TextControlWithAffixes extends Component {
 			describedby.push( `${ id }__suffix` );
 		}
 
+		const affixesClasses = classnames( 'text-control-with-affixes', {
+			'text-control-with-prefix': prefix,
+			'text-control-with-suffix': suffix,
+			disabled: this.props.disabled,
+		} );
+
 		return (
 			<BaseControl label={ label } id={ id } help={ help } className={ className }>
-				<div className="text-control-with-affixes">
+				<div className={ affixesClasses }>
 					{ prefix && (
 						<span
 							id={ `${ id }__prefix` }
