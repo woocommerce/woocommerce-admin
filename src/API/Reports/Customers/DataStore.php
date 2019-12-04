@@ -662,7 +662,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return false;
 		}
 
-		$customer_roles = (array) apply_filters( 'woocommerce_admin_customer_roles', array( 'customer' ) );
+		$customer_roles = (array) apply_filters( 'woocommerce_analytics_customer_roles', array( 'customer' ) );
 		if ( $customer->get_order_count() < 1 && ! in_array( $customer->get_role(), $customer_roles, true ) ) {
 			return false;
 		}
