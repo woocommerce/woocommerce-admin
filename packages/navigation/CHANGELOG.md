@@ -1,3 +1,7 @@
+# (unreleased)
+
+- `getPersistedQuery` Add a filter for extensions to add a persisted query, `woocommerce_admin_persisted_queries`.
+
 # 3.0.0
 
 - `getHistory` updated to reflect path parameters in url query.

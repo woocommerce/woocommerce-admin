@@ -53,7 +53,7 @@ function add_report_register_script() {
 
 	wp_enqueue_script( 'sql-modification' );
 
-	// todo: This is not the right way to interact with wcSettings. Update once 3.9 is available.
+	// todo: This is not the right way to interact with wcSettings. Update once WooCommerce 3.9 is available.
 	wp_add_inline_script(
 		'sql-modification',
 		"wcSettings.multiCurrency = JSON.parse( decodeURIComponent( '"
@@ -84,13 +84,18 @@ function apply_currency_arg( $args ) {
 }
 
 add_filter( 'woocommerce_reports_revenue_query_args', 'apply_currency_arg' );
+
 add_filter( 'woocommerce_reports_orders_query_args', 'apply_currency_arg' );
 add_filter( 'woocommerce_reports_orders_stats_query_args', 'apply_currency_arg' );
+
 add_filter( 'woocommerce_reports_products_query_args', 'apply_currency_arg' );
 add_filter( 'woocommerce_reports_products_stats_query_args', 'apply_currency_arg' );
+
 add_filter( 'woocommerce_reports_categories_query_args', 'apply_currency_arg' );
+
 add_filter( 'woocommerce_reports_coupons_query_args', 'apply_currency_arg' );
 add_filter( 'woocommerce_reports_coupons_stats_query_args', 'apply_currency_arg' );
+
 add_filter( 'woocommerce_reports_taxes_query_args', 'apply_currency_arg' );
 add_filter( 'woocommerce_reports_taxes_stats_query_args', 'apply_currency_arg' );
 
