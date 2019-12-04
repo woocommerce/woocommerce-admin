@@ -66,4 +66,11 @@ if ( is_readable( $autoloader ) ) {
 	return;
 }
 
+function amperageAddPriceSuffix($format, $currency_pos) {
+	$currency = get_woocommerce_currency();
+	$format = '%1$s%2$s <span class="woocommerce-Price-currencyFormat">'.$currency.'</span>';
+	return $format;
+}
+add_action('woocommerce_price_format', 'amperageAddPriceSuffix', 1, 2);
+
 FeaturePlugin::instance()->init();

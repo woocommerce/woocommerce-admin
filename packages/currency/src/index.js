@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { sprintf } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * WooCommerce dependencies
@@ -29,21 +30,32 @@ export default class Currency {
 		this.symbol = config.symbol.toString();
 		this.symbolPosition = config.symbolPosition.toString();
 		this.decimalSeparator = config.decimalSeparator.toString();
-		this.priceFormat = config.priceFormat ? config.priceFormat.toString() : this.getPriceFormat( config );
+		this.priceFormat = this.getPriceFormat( config );
 		this.thousandSeparator = config.thousandSeparator.toString();
+		this.customFormat = applyFilters( 'woocommerce_admin_custom_currency' );
 
 		const precisionNumber = parseInt( config.precision, 10 );
 		this.precision = precisionNumber;
 	}
 
+	stripTags( str ) {
+		const tmp = document.createElement( 'DIV' );
+		tmp.innerHTML = str;
+		return tmp.textContent || tmp.innerText || '';
+	}
+
 	/**
 	 * Get the default price format from a currency.
 	 *
-	 * @param {Object} currency Currency configuration.
+	 * @param {Object} config Currency configuration.
 	 * @return {String} Price format.
 	 */
-	getPriceFormat( currency ) {
-		switch ( currency.symbolPosition ) {
+	getPriceFormat( config ) {
+		if ( config.priceFormat ) {
+			return this.stripTags( config.priceFormat.toString() );
+		}
+
+		switch ( config.symbolPosition ) {
 			case 'left':
 				return '%1$s%2$s';
 			case 'right':
@@ -65,6 +77,17 @@ export default class Currency {
 	 */
 	formatCurrency( number ) {
 		const formattedNumber = numberFormat( this, number );
+
+		if ( this.customFormat ) {
+			const CustomCurrency = this.customFormat;
+			return (
+				<CustomCurrency
+					format={ this.priceFormat }
+					symbol={ this.symbol }
+					number={ formattedNumber }
+				/>
+			);
+		}
 
 		if ( '' === formattedNumber ) {
 			return formattedNumber;

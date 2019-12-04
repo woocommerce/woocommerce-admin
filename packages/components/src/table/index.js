@@ -266,7 +266,7 @@ TableCard.propTypes = {
 		PropTypes.arrayOf(
 			PropTypes.shape( {
 				display: PropTypes.node,
-				value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number, PropTypes.bool ] ),
+				value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number, PropTypes.bool, PropTypes.node ] ),
 			} )
 		)
 	).isRequired,
@@ -285,7 +285,7 @@ TableCard.propTypes = {
 	summary: PropTypes.arrayOf(
 		PropTypes.shape( {
 			label: PropTypes.node,
-			value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ),
+			value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number, PropTypes.node ] ),
 		} )
 	),
 	/**
