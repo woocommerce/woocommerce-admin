@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
 const addCurrencyFilters = filters => {
 	return [
 		{
-			label: __( 'Currency', 'woocommerce-admin' ),
+			label: __( 'Currency', 'plugin-domain' ),
 			staticParams: [],
 			param: 'currency',
 			showFilters: () => true,

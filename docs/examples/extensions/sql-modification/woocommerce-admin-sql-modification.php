@@ -45,7 +45,6 @@ function add_report_register_script() {
 			'wp-i18n',
 			'wp-plugins',
 			'wc-components',
-			'wc-settings',
 		),
 		filemtime( dirname( __FILE__ ) . '/dist/index.js' ),
 		true
