@@ -97,11 +97,24 @@ export function getCountryStateAutofill( options, countryState, setValue ) {
 				);
 
 				if ( filteredOptions.length > 1 ) {
-					filteredOptions = filteredOptions.filter(
-						option => countrySearch.test( option.key ) || stateSearch.test( option.key )
-					);
+					let countryKeyOptions = [];
+					countryKeyOptions = filteredOptions.filter( option => countrySearch.test( option.key ) );
+
+					if ( countryKeyOptions.length > 0 ) {
+						filteredOptions = countryKeyOptions;
+					}
+				}
+
+				if ( filteredOptions.length > 1 ) {
+					let stateKeyOptions = [];
+					stateKeyOptions = filteredOptions.filter( option => stateSearch.test( option.key ) );
+
+					if ( 1 === stateKeyOptions.length ) {
+						filteredOptions = stateKeyOptions;
+					}
 				}
 			}
+
 			if ( 1 === filteredOptions.length && countryState !== filteredOptions[ 0 ].key ) {
 				setValue( 'countryState', filteredOptions[ 0 ].key );
 			}
