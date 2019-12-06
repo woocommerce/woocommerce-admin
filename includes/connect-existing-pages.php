@@ -449,8 +449,8 @@ wc_admin_connect_page(
 	array(
 		'id'        => 'woocommerce-status-logs',
 		'parent'    => 'woocommerce-status',
-		'screen_id' => 'woocommerce_page_wc-status-tools',
-		'title'     => __( 'Tools', 'woocommerce-admin' ),
+		'screen_id' => 'woocommerce_page_wc-status-logs',
+		'title'     => __( 'Logs', 'woocommerce-admin' ),
 	)
 );
 
