@@ -4,9 +4,44 @@
  *
  * @package Woocommerce Admin
  */
+use Automattic\WooCommerce\Admin\PageController;
 
 $admin_page_base    = 'admin.php';
 $posttype_list_base = 'edit.php';
+
+add_filter(
+	'woocommerce_navigation_is_connected_page',
+	function( $is_connected, $current_page ) {
+		if ( false === $is_connected ) {
+			$screen_id = PageController::get_instance()->get_current_screen_id();
+
+			if ( preg_match( '/^woocommerce_page_wc\-settings\-/', $screen_id ) ) {
+				$is_connected = true;
+
+				add_filter(
+					'woocommerce_navigation_get_breadcrumbs',
+					function() {
+						global $current_tab;
+						$tabs = apply_filters( 'woocommerce_settings_tabs_array', array() );
+
+						return array(
+							array(
+								add_query_arg( 'page', 'wc-settings', 'admin.php' ),
+								__( 'Settings', 'woocommerce-admin' ),
+							),
+							$tabs[ $current_tab ],
+						);
+					}
+				);
+			}
+		}
+
+		return $is_connected;
+
+	},
+	10,
+	2
+);
 
 // WooCommerce > Settings > General (default tab).
 wc_admin_connect_page(
