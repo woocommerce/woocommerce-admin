@@ -10,6 +10,9 @@ import { IconButton } from '@wordpress/components';
 import { intersection, noop, partial } from 'lodash';
 import PropTypes from 'prop-types';
 
+// Height of the activity header in px.
+const HEADER_HEIGHT = 56;
+
 class WordPressNotices extends Component {
 	constructor() {
 		super();
@@ -176,6 +179,12 @@ class WordPressNotices extends Component {
 		notices.classList.remove( 'woocommerce-layout__notice-list-hide' );
 		screenMeta && screenMeta.classList.add( 'is-hidden-by-notices' );
 		screenLinks && screenLinks.classList.add( 'is-hidden-by-notices' );
+
+		const noticePosition = notices.getBoundingClientRect();
+		if ( noticePosition.y < HEADER_HEIGHT ) {
+			window.scrollBy( 0, noticePosition.y - HEADER_HEIGHT );
+		}
+		this.setState( { noticesOpen: true } );
 	}
 
 	hideNotices() {
@@ -184,6 +193,8 @@ class WordPressNotices extends Component {
 		notices.classList.remove( 'woocommerce-layout__notice-list-show' );
 		screenMeta && screenMeta.classList.remove( 'is-hidden-by-notices' );
 		screenLinks && screenLinks.classList.remove( 'is-hidden-by-notices' );
+
+		this.setState( { noticesOpen: false } );
 	}
 
 	render() {
