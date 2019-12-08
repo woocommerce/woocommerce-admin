@@ -14,6 +14,7 @@ import { withDispatch, useDispatch, useSelect } from '@wordpress/data';
  */
 import { SectionHeader, useFilters, ScrollTo } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -23,7 +24,6 @@ import { analyticsSettings } from './config';
 import Setting from './setting';
 import HistoricalData from './historical-data';
 import { recordEvent } from 'lib/tracks';
-import { SETTINGS_STORE_NAME } from '../../data/settings';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
