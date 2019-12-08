@@ -1,1 +1,1 @@
-export const Hello = () => console.log( 'hello' );
+export { SETTINGS_STORE_NAME } from './settings';
