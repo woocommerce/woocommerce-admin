@@ -11,6 +11,9 @@ import { render } from '@wordpress/element';
 import './stylesheets/_index.scss';
 import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
 import 'wc-api/wp-data-store';
+import { Hello } from '@woocommerce/data';
+
+Hello();
 
 const appRoot = document.getElementById( 'root' );
 
