@@ -1,0 +1,5877 @@
+# Copyright (C) 2019 WooCommerce
+# This file is distributed under the same license as the WooCommerce Admin package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Admin 0.23.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-admin\n"
+"POT-Creation-Date: 2019-12-08 18:40:07+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Country: United States\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
+"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-Bookmarks: \n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: grunt-wp-i18n 1.0.3\n"
+
+#: docs/examples/extensions/add-report/woocommerce-admin-add-report-example.php:43
+msgid "Example"
+msgstr ""
+
+#: docs/examples/extensions/sql-modification/woocommerce-admin-sql-modification.php:16
+msgid "United States Dollar"
+msgstr ""
+
+#: docs/examples/extensions/sql-modification/woocommerce-admin-sql-modification.php:20
+msgid "New Zealand Dollar"
+msgstr ""
+
+#: docs/examples/extensions/sql-modification/woocommerce-admin-sql-modification.php:24
+msgid "South African Rand"
+msgstr ""
+
+#: includes/connect-existing-pages.php:17 languages/woocommerce-admin.php:1890
+#: src/Features/Analytics.php:142
+msgid "Settings"
+msgstr ""
+
+#: includes/connect-existing-pages.php:18
+#: includes/connect-existing-pages.php:32
+msgid "General"
+msgstr ""
+
+#: includes/connect-existing-pages.php:31
+#: includes/connect-existing-pages.php:495 languages/woocommerce-admin.php:177
+#: src/API/Reports/Categories/Controller.php:335 src/Features/Analytics.php:100
+#: src/ReportCSVEmail.php:36
+msgid "Products"
+msgstr ""
+
+#: includes/connect-existing-pages.php:50
+msgid "Inventory"
+msgstr ""
+
+#: includes/connect-existing-pages.php:60
+msgid "Downloadable products"
+msgstr ""
+
+#: includes/connect-existing-pages.php:71
+msgid "Tax"
+msgstr ""
+
+#: includes/connect-existing-pages.php:90 languages/woocommerce-admin.php:790
+#: src/API/Reports/Revenue/Stats/Controller.php:198
+#: src/API/Reports/Revenue/Stats/Controller.php:456
+msgid "Shipping"
+msgstr ""
+
+#: includes/connect-existing-pages.php:91
+#: includes/connect-existing-pages.php:110
+msgid "Shipping zones"
+msgstr ""
+
+#: includes/connect-existing-pages.php:111
+msgid "Edit zone"
+msgstr ""
+
+#: includes/connect-existing-pages.php:129
+msgid "Shipping options"
+msgstr ""
+
+#: includes/connect-existing-pages.php:139
+msgid "Shipping classes"
+msgstr ""
+
+#: includes/connect-existing-pages.php:149
+msgid "Payments"
+msgstr ""
+
+#: includes/connect-existing-pages.php:166
+msgid "Direct bank transfer"
+msgstr ""
+
+#: includes/connect-existing-pages.php:176
+msgid "Check payments"
+msgstr ""
+
+#: includes/connect-existing-pages.php:186
+msgid "Cash on delivery"
+msgstr ""
+
+#: includes/connect-existing-pages.php:196
+msgid "PayPal"
+msgstr ""
+
+#: includes/connect-existing-pages.php:206
+msgid "Accounts & Privacy"
+msgstr ""
+
+#: includes/connect-existing-pages.php:216
+msgid "Emails"
+msgstr ""
+
+#: includes/connect-existing-pages.php:237
+msgid "Edit email"
+msgstr ""
+
+#: includes/connect-existing-pages.php:249
+msgid "Integration"
+msgstr ""
+
+#: includes/connect-existing-pages.php:268
+msgid "Advanced"
+msgstr ""
+
+#: includes/connect-existing-pages.php:269
+msgid "Page setup"
+msgstr ""
+
+#: includes/connect-existing-pages.php:287
+msgid "REST API"
+msgstr ""
+
+#: includes/connect-existing-pages.php:297
+msgid "Webhooks"
+msgstr ""
+
+#: includes/connect-existing-pages.php:307
+msgid "Legacy API"
+msgstr ""
+
+#: includes/connect-existing-pages.php:317
+msgid "WooCommerce.com"
+msgstr ""
+
+#: includes/connect-existing-pages.php:326
+#: includes/connect-existing-pages.php:388 languages/woocommerce-admin.php:94
+#: src/API/Leaderboards.php:128 src/API/Leaderboards.php:258
+#: src/API/Reports/Categories/Controller.php:336
+#: src/API/Reports/Coupons/Controller.php:303
+#: src/API/Reports/Customers/Controller.php:577
+#: src/API/Reports/Orders/Stats/Controller.php:164
+#: src/API/Reports/Products/Controller.php:390
+#: src/API/Reports/Revenue/Stats/Controller.php:451
+#: src/API/Reports/Taxes/Controller.php:310
+#: src/API/Reports/Variations/Controller.php:361 src/Features/Analytics.php:94
+#: src/ReportCSVEmail.php:35
+msgid "Orders"
+msgstr ""
+
+#: includes/connect-existing-pages.php:337
+#: includes/connect-existing-pages.php:367
+#: includes/connect-existing-pages.php:506
+msgid "Add New"
+msgstr ""
+
+#: includes/connect-existing-pages.php:347
+msgid "Edit Order"
+msgstr ""
+
+#: includes/connect-existing-pages.php:356 languages/woocommerce-admin.php:231
+#: src/API/Reports/Revenue/Stats/Controller.php:454
+#: src/Features/Analytics.php:112 src/ReportCSVEmail.php:38
+msgid "Coupons"
+msgstr ""
+
+#: includes/connect-existing-pages.php:377
+msgid "Edit Coupon"
+msgstr ""
+
+#: includes/connect-existing-pages.php:387
+msgid "Reports"
+msgstr ""
+
+#: includes/connect-existing-pages.php:400 languages/woocommerce-admin.php:430
+#: src/Features/Analytics.php:136 src/ReportCSVEmail.php:42
+msgid "Customers"
+msgstr ""
+
+#: includes/connect-existing-pages.php:410 languages/woocommerce-admin.php:567
+#: src/API/Reports/Products/Controller.php:397
+#: src/API/Reports/Stock/Controller.php:530
+#: src/API/Reports/Variations/Controller.php:366 src/Features/Analytics.php:130
+#: src/ReportCSVEmail.php:41
+msgid "Stock"
+msgstr ""
+
+#: includes/connect-existing-pages.php:420 languages/woocommerce-admin.php:559
+#: src/API/Reports/Revenue/Stats/Controller.php:455
+#: src/Features/Analytics.php:118 src/ReportCSVEmail.php:39
+msgid "Taxes"
+msgstr ""
+
+#: includes/connect-existing-pages.php:430 languages/woocommerce-admin.php:707
+#: src/API/Reports/Orders/Controller.php:479
+#: src/API/Reports/Products/Controller.php:396
+#: src/API/Reports/Stock/Controller.php:529
+#: src/API/Reports/Variations/Controller.php:365
+msgid "Status"
+msgstr ""
+
+#: includes/connect-existing-pages.php:431
+msgid "System status"
+msgstr ""
+
+#: includes/connect-existing-pages.php:443
+#: includes/connect-existing-pages.php:453
+msgid "Tools"
+msgstr ""
+
+#: includes/connect-existing-pages.php:463
+msgid "Scheduled Actions"
+msgstr ""
+
+#: includes/connect-existing-pages.php:473
+msgid "Extensions"
+msgstr ""
+
+#: includes/connect-existing-pages.php:474
+msgid "Browse Extensions"
+msgstr ""
+
+#: includes/connect-existing-pages.php:486
+msgid "WooCommerce.com Subscriptions"
+msgstr ""
+
+#: includes/connect-existing-pages.php:516
+msgid "Edit Product"
+msgstr ""
+
+#: includes/connect-existing-pages.php:526
+msgid "Import Products"
+msgstr ""
+
+#: includes/connect-existing-pages.php:536
+msgid "Export Products"
+msgstr ""
+
+#: includes/connect-existing-pages.php:546
+msgid "Product categories"
+msgstr ""
+
+#: includes/connect-existing-pages.php:556
+msgid "Edit category"
+msgstr ""
+
+#: includes/connect-existing-pages.php:566
+msgid "Product tags"
+msgstr ""
+
+#: includes/connect-existing-pages.php:576
+msgid "Edit tag"
+msgstr ""
+
+#: includes/connect-existing-pages.php:586
+msgid "Attributes"
+msgstr ""
+
+#: includes/connect-existing-pages.php:596
+msgid "Edit attribute"
+msgstr ""
+
+#: includes/emails/html-admin-report-export-download.php:17
+msgid "Download your %s Report"
+msgstr ""
+
+#: includes/emails/plain-admin-report-export-download.php:15
+#. translators: %1$s: report name, %2$s: download URL
+msgid "Download your %1$s Report: %2$s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:5
+msgid "No data recorded for the selected time period."
+msgstr ""
+
+#: languages/woocommerce-admin.php:8
+msgid "No data for the current search"
+msgstr ""
+
+#: languages/woocommerce-admin.php:11
+msgid "No data for the selected date range"
+msgstr ""
+
+#: languages/woocommerce-admin.php:14
+msgid "There was an error getting your stats. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:21
+msgid "Reload"
+msgstr ""
+
+#: languages/woocommerce-admin.php:24
+msgid "No results could be found for this date range."
+msgstr ""
+
+#: languages/woocommerce-admin.php:27
+msgid "View Orders"
+msgstr ""
+
+#: languages/woocommerce-admin.php:32
+msgid "Previous Period:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:36
+msgid "Previous Year:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:39
+msgid "Select All"
+msgstr ""
+
+#: languages/woocommerce-admin.php:42
+msgid "Check at least two items below to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:49
+msgid "Compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:52
+msgid "Search by item name"
+msgstr ""
+
+#: languages/woocommerce-admin.php:55
+msgid "Download"
+msgstr ""
+
+#: languages/woocommerce-admin.php:64 src/API/Leaderboards.php:194
+#: src/API/Leaderboards.php:324 src/API/Reports/Categories/Controller.php:333
+#: src/API/Reports/Orders/Controller.php:482
+#: src/API/Reports/Products/Controller.php:388
+#: src/API/Reports/Products/Stats/Controller.php:160
+#: src/API/Reports/Variations/Controller.php:359
+msgid "Items Sold"
+msgstr ""
+
+#: languages/woocommerce-admin.php:76 src/API/Leaderboards.php:197
+#: src/API/Leaderboards.php:327
+msgid "Net Sales"
+msgstr ""
+
+#: languages/woocommerce-admin.php:104
+msgid "Show"
+msgstr ""
+
+#: languages/woocommerce-admin.php:107
+msgid "All Categories"
+msgstr ""
+
+#: languages/woocommerce-admin.php:110
+msgid "Type to search for a category"
+msgstr ""
+
+#: languages/woocommerce-admin.php:113
+msgid "Single Category"
+msgstr ""
+
+#: languages/woocommerce-admin.php:119
+msgid "Comparison"
+msgstr ""
+
+#: languages/woocommerce-admin.php:123
+msgid "Check at least two categories below to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:126
+msgid "Search for categories to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:129
+msgid "Compare Categories"
+msgstr ""
+
+#: languages/woocommerce-admin.php:133
+msgid "%d products"
+msgstr ""
+
+#: languages/woocommerce-admin.php:136
+msgid "%d categories"
+msgstr ""
+
+#: languages/woocommerce-admin.php:139
+msgid "category"
+msgid_plural "categories"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:145
+msgid "item sold"
+msgid_plural "items sold"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:152
+msgid "net sales"
+msgstr ""
+
+#: languages/woocommerce-admin.php:159
+msgid "order"
+msgid_plural "orders"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:162
+msgid "Search by category name"
+msgstr ""
+
+#: languages/woocommerce-admin.php:166 src/Features/Analytics.php:106
+#: src/ReportCSVEmail.php:37
+msgid "Categories"
+msgstr ""
+
+#: languages/woocommerce-admin.php:170 src/API/Leaderboards.php:191
+#: src/API/Reports/Categories/Controller.php:332
+#: src/API/Reports/Products/Controller.php:391
+msgid "Category"
+msgstr ""
+
+#: languages/woocommerce-admin.php:181
+#: src/API/Reports/Coupons/Stats/Controller.php:160
+msgid "Discounted Orders"
+msgstr ""
+
+#: languages/woocommerce-admin.php:184
+msgid "Amount"
+msgstr ""
+
+#: languages/woocommerce-admin.php:187
+msgid "All Coupons"
+msgstr ""
+
+#: languages/woocommerce-admin.php:190
+msgid "Type to search for a coupon"
+msgstr ""
+
+#: languages/woocommerce-admin.php:193
+msgid "Single Coupon"
+msgstr ""
+
+#: languages/woocommerce-admin.php:196
+msgid "Compare Coupon Codes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:199
+msgid "Check at least two coupon codes below to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:202
+msgid "%d coupons"
+msgstr ""
+
+#: languages/woocommerce-admin.php:208
+#: src/API/Reports/Coupons/Controller.php:319
+#: src/API/Reports/Products/Controller.php:425
+#: src/API/Reports/Products/Controller.php:426
+msgid "N/A"
+msgstr ""
+
+#: languages/woocommerce-admin.php:212
+msgid "coupon"
+msgid_plural "coupons"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:215
+msgid "amount discounted"
+msgstr ""
+
+#: languages/woocommerce-admin.php:218
+msgid "Percentage"
+msgstr ""
+
+#: languages/woocommerce-admin.php:221
+msgid "Fixed cart"
+msgstr ""
+
+#: languages/woocommerce-admin.php:224
+msgid "Fixed product"
+msgstr ""
+
+#: languages/woocommerce-admin.php:234 src/API/Leaderboards.php:125
+#: src/API/Reports/Coupons/Controller.php:302
+msgid "Coupon Code"
+msgstr ""
+
+#: languages/woocommerce-admin.php:237 src/API/Leaderboards.php:131
+#: src/API/Reports/Coupons/Controller.php:304
+msgid "Amount Discounted"
+msgstr ""
+
+#: languages/woocommerce-admin.php:240
+#: src/API/Reports/Coupons/Controller.php:305
+msgid "Created"
+msgstr ""
+
+#: languages/woocommerce-admin.php:243
+#: src/API/Reports/Coupons/Controller.php:306
+msgid "Expires"
+msgstr ""
+
+#: languages/woocommerce-admin.php:246
+#: src/API/Reports/Coupons/Controller.php:307
+msgid "Type"
+msgstr ""
+
+#: languages/woocommerce-admin.php:249
+msgid "Remove country filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:252
+msgid "Select a country filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:256
+msgid "{{title}}Country{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:259
+msgid "Select country"
+msgstr ""
+
+#: languages/woocommerce-admin.php:264
+#: src/API/Reports/Customers/Controller.php:573
+msgid "Username"
+msgstr ""
+
+#: languages/woocommerce-admin.php:268
+msgid "Search customer username"
+msgstr ""
+
+#: languages/woocommerce-admin.php:272
+msgid "Remove customer username filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:276
+msgid "Select a customer username filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:281
+msgid "{{title}}Username{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:285
+msgid "Select customer username"
+msgstr ""
+
+#: languages/woocommerce-admin.php:289
+#: src/API/Reports/Customers/Controller.php:576
+msgid "Email"
+msgstr ""
+
+#: languages/woocommerce-admin.php:292
+msgid "Search customer email"
+msgstr ""
+
+#: languages/woocommerce-admin.php:295
+msgid "Remove customer email filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:298
+msgid "Select a customer email filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:302
+msgid "{{title}}Email{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:305
+msgid "Select customer email"
+msgstr ""
+
+#: languages/woocommerce-admin.php:308
+msgid "No. of Orders"
+msgstr ""
+
+#: languages/woocommerce-admin.php:311
+msgid "Remove order filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:314
+msgid "Select an order count filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:317
+msgid "{{title}}No. of Orders{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:321 src/API/Leaderboards.php:261
+#: src/API/Reports/Customers/Controller.php:578
+msgid "Total Spend"
+msgstr ""
+
+#: languages/woocommerce-admin.php:324
+msgid "Remove total spend filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:327
+msgid "Select a total spend filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:330
+msgid "{{title}}Total Spend{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:334
+#: src/API/Reports/Customers/Controller.php:579
+msgid "AOV"
+msgstr ""
+
+#: languages/woocommerce-admin.php:337
+msgid "Remove average order value filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:340
+msgid "Select an average order value filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:343
+msgid "{{title}}AOV{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:346
+msgid "Registered"
+msgstr ""
+
+#: languages/woocommerce-admin.php:349
+msgid "Remove registered filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:352
+msgid "Select a registered filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:356
+msgid "{{title}}Registered{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:359
+msgid "All Customers"
+msgstr ""
+
+#: languages/woocommerce-admin.php:362
+msgid "Last active"
+msgstr ""
+
+#: languages/woocommerce-admin.php:365
+msgid "Remove last active filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:368
+msgid "Select a last active filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:372
+msgid "{{title}}Last active{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:375
+msgid "Select registered date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:378
+msgid "Type to search for a customer"
+msgstr ""
+
+#: languages/woocommerce-admin.php:381
+msgid "Single Customer"
+msgstr ""
+
+#: languages/woocommerce-admin.php:386
+msgid "Advanced Filters"
+msgstr ""
+
+#: languages/woocommerce-admin.php:390
+#: src/API/Reports/Customers/Controller.php:572
+msgid "Name"
+msgstr ""
+
+#: languages/woocommerce-admin.php:393
+msgid "Remove customer name filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:396
+msgid "Select a customer name filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:400
+msgid "{{title}}Name{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:403
+msgid "Select customer name"
+msgstr ""
+
+#: languages/woocommerce-admin.php:407
+#: src/API/Reports/Customers/Controller.php:580
+msgid "Country"
+msgstr ""
+
+#: languages/woocommerce-admin.php:411
+msgid "Search"
+msgstr ""
+
+#: languages/woocommerce-admin.php:414
+msgid "customer"
+msgid_plural "customers"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:417
+msgid "average order"
+msgid_plural "average orders"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:420
+msgid "average lifetime spend"
+msgstr ""
+
+#: languages/woocommerce-admin.php:423
+msgid "average order value"
+msgstr ""
+
+#: languages/woocommerce-admin.php:426
+msgid "Search by customer name"
+msgstr ""
+
+#: languages/woocommerce-admin.php:433
+#: src/API/Reports/Customers/Controller.php:574
+msgid "Last Active"
+msgstr ""
+
+#: languages/woocommerce-admin.php:436
+#: src/API/Reports/Customers/Controller.php:575
+msgid "Sign Up"
+msgstr ""
+
+#: languages/woocommerce-admin.php:441
+msgid "Average Order Value"
+msgstr ""
+
+#: languages/woocommerce-admin.php:445
+#: src/API/Reports/Customers/Controller.php:581
+msgid "City"
+msgstr ""
+
+#: languages/woocommerce-admin.php:448
+#: src/API/Reports/Customers/Controller.php:582
+msgid "Region"
+msgstr ""
+
+#: languages/woocommerce-admin.php:451
+#: src/API/Reports/Customers/Controller.php:583
+msgid "Postal Code"
+msgstr ""
+
+#: languages/woocommerce-admin.php:454
+msgid "Order number"
+msgstr ""
+
+#: languages/woocommerce-admin.php:457
+msgid "Search order number"
+msgstr ""
+
+#: languages/woocommerce-admin.php:460
+msgid "Remove order number filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:463
+msgid "Select a order number filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:467
+msgid "{{title}}Order number{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:470
+msgid "Select order number"
+msgstr ""
+
+#: languages/woocommerce-admin.php:473
+msgid "IP Address"
+msgstr ""
+
+#: languages/woocommerce-admin.php:476
+msgid "Search IP address"
+msgstr ""
+
+#: languages/woocommerce-admin.php:479
+msgid "Remove IP address filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:482
+msgid "Select an IP address filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:486
+msgid "{{title}}IP Address{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:489
+msgid "Select IP address"
+msgstr ""
+
+#: languages/woocommerce-admin.php:495
+#: src/API/Reports/Downloads/Stats/Controller.php:146
+#: src/Features/Analytics.php:124 src/Features/Onboarding.php:150
+#: src/ReportCSVEmail.php:40
+msgid "Downloads"
+msgstr ""
+
+#: languages/woocommerce-admin.php:498
+msgid "All Downloads"
+msgstr ""
+
+#: languages/woocommerce-admin.php:501 src/API/Leaderboards.php:321
+msgid "Product"
+msgstr ""
+
+#: languages/woocommerce-admin.php:504
+msgid "Remove product filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:508
+msgid "Select a product filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:513
+msgid "{{title}}Product{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:516
+msgid "Select product"
+msgstr ""
+
+#: languages/woocommerce-admin.php:520
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:523
+msgid "download"
+msgid_plural "downloads"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:528
+#: src/API/Reports/Downloads/Controller.php:392
+#: src/API/Reports/Orders/Controller.php:477
+#: src/API/Reports/Revenue/Stats/Controller.php:450
+msgid "Date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:532
+#: src/API/Reports/Downloads/Controller.php:393
+#: src/API/Reports/Products/Controller.php:386
+msgid "Product Title"
+msgstr ""
+
+#: languages/woocommerce-admin.php:535
+#: src/API/Reports/Downloads/Controller.php:394
+msgid "File Name"
+msgstr ""
+
+#: languages/woocommerce-admin.php:539
+#: src/API/Reports/Downloads/Controller.php:395
+#: src/API/Reports/Orders/Controller.php:478
+msgid "Order #"
+msgstr ""
+
+#: languages/woocommerce-admin.php:543
+msgid "Order Number"
+msgstr ""
+
+#: languages/woocommerce-admin.php:546
+#: src/API/Reports/Downloads/Controller.php:396
+msgid "User Name"
+msgstr ""
+
+#: languages/woocommerce-admin.php:549
+#: src/API/Reports/Downloads/Controller.php:397
+msgid "IP"
+msgstr ""
+
+#: languages/woocommerce-admin.php:553 src/Features/Analytics.php:88
+#: src/ReportCSVEmail.php:34
+msgid "Revenue"
+msgstr ""
+
+#: languages/woocommerce-admin.php:570
+msgid "Select products"
+msgstr ""
+
+#: languages/woocommerce-admin.php:573
+msgid "Coupon Codes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:576
+msgid "Search coupons"
+msgstr ""
+
+#: languages/woocommerce-admin.php:579
+msgid "Remove coupon filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:582
+msgid "Select a coupon filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:586
+msgid "{{title}}Coupon Code{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:589
+msgid "Select coupon codes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:592
+msgid "Customer Type"
+msgstr ""
+
+#: languages/woocommerce-admin.php:595
+msgid "Remove customer filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:598
+msgid "Select a customer filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:602
+msgid "{{title}}Customer is{{/title}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:605
+msgid "Select a customer type"
+msgstr ""
+
+#: languages/woocommerce-admin.php:608
+msgid "New"
+msgstr ""
+
+#: languages/woocommerce-admin.php:611
+msgid "Returning"
+msgstr ""
+
+#: languages/woocommerce-admin.php:615
+#: src/API/Reports/Revenue/Stats/Controller.php:214
+#: src/API/Reports/Revenue/Stats/Controller.php:453
+msgid "Refunds"
+msgstr ""
+
+#: languages/woocommerce-admin.php:618
+msgid "Remove refunds filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:621
+msgid "Select a refund filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:624
+msgid "{{title}}Refunds{{/title}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:627
+msgid "Select a refund type"
+msgstr ""
+
+#: languages/woocommerce-admin.php:631
+msgid "All"
+msgstr ""
+
+#: languages/woocommerce-admin.php:634
+msgid "Partially refunded"
+msgstr ""
+
+#: languages/woocommerce-admin.php:637
+msgid "Fully refunded"
+msgstr ""
+
+#: languages/woocommerce-admin.php:640
+msgid "None"
+msgstr ""
+
+#: languages/woocommerce-admin.php:643
+msgid "Tax Rates"
+msgstr ""
+
+#: languages/woocommerce-admin.php:646
+msgid "Search tax rates"
+msgstr ""
+
+#: languages/woocommerce-admin.php:649
+msgid "Remove tax rate filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:652
+msgid "Select a tax rate filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:656
+msgid "{{title}}Tax Rate{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:659
+msgid "Select tax rates"
+msgstr ""
+
+#: languages/woocommerce-admin.php:662
+msgid "Average Items Per Order"
+msgstr ""
+
+#: languages/woocommerce-admin.php:665
+msgid "All Orders"
+msgstr ""
+
+#: languages/woocommerce-admin.php:668
+msgid "Order Status"
+msgstr ""
+
+#: languages/woocommerce-admin.php:671
+msgid "Remove order status filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:674
+msgid "Select an order status filter match"
+msgstr ""
+
+#: languages/woocommerce-admin.php:678
+msgid "{{title}}Order Status{{/title}} {{rule /}} {{filter /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:681
+msgid "Select an order status"
+msgstr ""
+
+#: languages/woocommerce-admin.php:684
+msgid "Search products"
+msgstr ""
+
+#: languages/woocommerce-admin.php:687
+msgid "Remove products filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:690
+msgid "%s× %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:693
+msgid "new customer"
+msgid_plural "new customers"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:696
+msgid "returning customer"
+msgid_plural "returning customers"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:701
+msgid "product"
+msgid_plural "products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:710
+#: src/API/Reports/Orders/Controller.php:480
+msgid "Customer"
+msgstr ""
+
+#: languages/woocommerce-admin.php:713
+#: src/API/Reports/Orders/Controller.php:481
+msgid "Product(s)"
+msgstr ""
+
+#: languages/woocommerce-admin.php:716
+#: src/API/Reports/Orders/Controller.php:483
+msgid "Coupon(s)"
+msgstr ""
+
+#: languages/woocommerce-admin.php:720
+msgid "Check at least two variations below to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:723
+msgid "Search for variations to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:726
+msgid "Compare Variations"
+msgstr ""
+
+#: languages/woocommerce-admin.php:730
+msgid "All Products"
+msgstr ""
+
+#: languages/woocommerce-admin.php:733
+msgid "Type to search for a product"
+msgstr ""
+
+#: languages/woocommerce-admin.php:736
+msgid "Single Product"
+msgstr ""
+
+#: languages/woocommerce-admin.php:740
+msgid "Check at least two products below to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:743
+msgid "Search for products to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:746
+msgid "Compare Products"
+msgstr ""
+
+#: languages/woocommerce-admin.php:749
+msgid "All Variations"
+msgstr ""
+
+#: languages/woocommerce-admin.php:752
+msgid "%d variations"
+msgstr ""
+
+#: languages/woocommerce-admin.php:755
+msgid "variation sold"
+msgid_plural "variations sold"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:759
+msgid "orders"
+msgid_plural "orders"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:762
+msgid "Search by variation name or SKU"
+msgstr ""
+
+#: languages/woocommerce-admin.php:766
+#: src/API/Reports/Products/Controller.php:392
+msgid "Variations"
+msgstr ""
+
+#: languages/woocommerce-admin.php:769
+#: src/API/Reports/Variations/Controller.php:357
+msgid "Product / Variation Title"
+msgstr ""
+
+#: languages/woocommerce-admin.php:774
+#: src/API/Reports/Products/Controller.php:387
+#: src/API/Reports/Stock/Controller.php:528
+#: src/API/Reports/Variations/Controller.php:358
+msgid "SKU"
+msgstr ""
+
+#: languages/woocommerce-admin.php:777
+msgid "Search by product name or SKU"
+msgstr ""
+
+#: languages/woocommerce-admin.php:781
+msgid "Gross Sales"
+msgstr ""
+
+#: languages/woocommerce-admin.php:785
+msgid "Returns"
+msgstr ""
+
+#: languages/woocommerce-admin.php:795
+#: src/API/Reports/Revenue/Stats/Controller.php:452
+msgid "Total Sales"
+msgstr ""
+
+#: languages/woocommerce-admin.php:798
+msgid "gross sales"
+msgstr ""
+
+#: languages/woocommerce-admin.php:801
+msgid "returns"
+msgstr ""
+
+#: languages/woocommerce-admin.php:804
+msgid "coupons"
+msgstr ""
+
+#: languages/woocommerce-admin.php:807
+msgid "taxes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:810
+msgid "shipping"
+msgstr ""
+
+#: languages/woocommerce-admin.php:813
+msgid "total sales"
+msgstr ""
+
+#: languages/woocommerce-admin.php:816
+msgid "Out of Stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:819
+msgid "Low Stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:822
+msgid "In Stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:825
+msgid "On Backorder"
+msgstr ""
+
+#: languages/woocommerce-admin.php:828
+msgid "out of stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:831
+msgid "low stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:834
+msgid "on backorder"
+msgstr ""
+
+#: languages/woocommerce-admin.php:838
+msgid "in stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:841 src/API/Reports/Stock/Controller.php:527
+msgid "Product / Variation"
+msgstr ""
+
+#: languages/woocommerce-admin.php:846 src/API/Reports/Taxes/Controller.php:307
+msgid "Total Tax"
+msgstr ""
+
+#: languages/woocommerce-admin.php:851 src/API/Reports/Taxes/Controller.php:308
+msgid "Order Tax"
+msgstr ""
+
+#: languages/woocommerce-admin.php:856 src/API/Reports/Taxes/Controller.php:309
+msgid "Shipping Tax"
+msgstr ""
+
+#: languages/woocommerce-admin.php:859
+msgid "All Taxes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:862
+msgid "Check at least two tax codes below to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:865
+msgid "Search for tax codes to compare"
+msgstr ""
+
+#: languages/woocommerce-admin.php:868
+msgid "Compare Tax Codes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:871
+msgid "%d taxes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:874
+msgid "tax code"
+msgid_plural "tax codes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:877
+msgid "total tax"
+msgstr ""
+
+#: languages/woocommerce-admin.php:880
+msgid "order tax"
+msgstr ""
+
+#: languages/woocommerce-admin.php:883
+msgid "shipping tax"
+msgstr ""
+
+#: languages/woocommerce-admin.php:886 src/API/Reports/Taxes/Controller.php:305
+msgid "Tax Code"
+msgstr ""
+
+#: languages/woocommerce-admin.php:889 src/API/Reports/Taxes/Controller.php:306
+msgid "Rate"
+msgstr ""
+
+#: languages/woocommerce-admin.php:893
+msgid "TAX"
+msgstr ""
+
+#: languages/woocommerce-admin.php:896
+msgid "Custom Statuses"
+msgstr ""
+
+#: languages/woocommerce-admin.php:899
+msgid ""
+"Orders with these statuses require action on behalf of the store "
+"admin.These orders will show up in the Orders tab under the activity panel."
+msgstr ""
+
+#: languages/woocommerce-admin.php:902
+msgid "Default Date Range:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:905
+msgid ""
+"Select a default date range. When no range is selected, reports will be "
+"viewed by the default date range."
+msgstr ""
+
+#: languages/woocommerce-admin.php:908
+msgid "Exclude the %s status from reports"
+msgstr ""
+
+#: languages/woocommerce-admin.php:911
+msgid "Excluded Statuses:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:914
+msgid ""
+"Orders with these statuses are excluded from the totals in your reports. "
+"The {{strong}}Refunded{{/strong}} status can not be excluded."
+msgstr ""
+
+#: languages/woocommerce-admin.php:917
+msgid "Actionable Statuses:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:920
+msgid "Stop Import"
+msgstr ""
+
+#: languages/woocommerce-admin.php:923
+msgid "Imported data will not be lost if the import is stopped."
+msgstr ""
+
+#: languages/woocommerce-admin.php:926
+msgid "Navigating away from this page will not affect the import."
+msgstr ""
+
+#: languages/woocommerce-admin.php:929
+msgid "Start"
+msgstr ""
+
+#: languages/woocommerce-admin.php:932
+msgid "Re-import Data"
+msgstr ""
+
+#: languages/woocommerce-admin.php:935
+msgid "Delete Previously Imported Data"
+msgstr ""
+
+#: languages/woocommerce-admin.php:938
+msgid "There was a problem rebuilding your report data."
+msgstr ""
+
+#: languages/woocommerce-admin.php:941
+msgid "There was a problem stopping your current import."
+msgstr ""
+
+#: languages/woocommerce-admin.php:947
+msgid "MM/DD/YYYY"
+msgstr ""
+
+#: languages/woocommerce-admin.php:950
+msgid "There was a problem deleting your previous data."
+msgstr ""
+
+#: languages/woocommerce-admin.php:954
+msgid "Import Historical Data"
+msgstr ""
+
+#: languages/woocommerce-admin.php:957
+msgid ""
+"This tool populates historical analytics data by processing customers and "
+"orders created prior to activating WooCommerce Admin."
+msgstr ""
+
+#: languages/woocommerce-admin.php:960
+msgid "Registered Customers"
+msgstr ""
+
+#: languages/woocommerce-admin.php:963
+msgid "Orders and Refunds"
+msgstr ""
+
+#: languages/woocommerce-admin.php:966
+msgid "Beginning on"
+msgstr ""
+
+#: languages/woocommerce-admin.php:969
+msgid "%(progress)s of %(total)s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:972
+msgid "Imported %(label)s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:975
+msgid "Skip previously imported customers and orders"
+msgstr ""
+
+#: languages/woocommerce-admin.php:978
+msgid "Nothing To Import"
+msgstr ""
+
+#: languages/woocommerce-admin.php:981
+msgid "Ready To Import"
+msgstr ""
+
+#: languages/woocommerce-admin.php:984
+msgid "Initializing"
+msgstr ""
+
+#: languages/woocommerce-admin.php:987
+msgid "Importing Customers"
+msgstr ""
+
+#: languages/woocommerce-admin.php:990
+msgid "Importing Orders"
+msgstr ""
+
+#: languages/woocommerce-admin.php:993
+msgid "Finalizing"
+msgstr ""
+
+#: languages/woocommerce-admin.php:996
+msgid "Historical data from %s onward imported"
+msgstr ""
+
+#: languages/woocommerce-admin.php:999
+msgid "Status:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1002
+msgid "There was an error saving your settings.  Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1005
+msgid "Analytics Settings"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1008
+msgid "Reset Defaults"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1011
+msgid "Save Settings"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1014
+msgid "You have unsaved changes. If you proceed, they will be lost."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1017
+msgid "Are you sure you want to reset all settings to default values?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1020
+msgid "Your settings have been successfully saved."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1023
+msgid "Address line 1"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1026
+msgid "Address line 2 (optional)"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1029
+msgid "Country / State"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1032
+msgid "Post code"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1035
+msgid "Please add an address"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1038
+msgid "Please select a country and state"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1041
+msgid "Please add a city"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1044
+msgid "Please add a post code"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1047
+msgid "Add more sections"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1050
+msgid "Dashboard Sections"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1053
+msgid "Add %s section"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1057
+msgid "%s Report"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1060
+msgid "Gross discounted"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1064
+msgid "By hour"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1068
+msgid "By day"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1072
+msgid "By week"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1076
+msgid "By month"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1080
+msgid "By quarter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1084
+msgid "By year"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1088
+msgid "Charts"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1092
+msgid "Line chart"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1096
+msgid "Bar chart"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1099
+msgid "Choose which charts to display"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1102
+msgid "Performance"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1106
+msgid "Leaderboards"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1109
+msgid "Choose which leaderboards to display and other settings"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1112
+msgid "Rows Per Table"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1115
+msgid "Jetpack + WooCommerce"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "WooCommerce"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1122
+msgid "Theme"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1125
+msgid "There was a problem completing the profiler."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1128
+msgid "Store Details"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1131
+msgid "Industry"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1134
+msgid "Product Types"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1137
+msgid "Business Details"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1140
+msgid "There was a problem updating your business details."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1143
+msgid "This field is required"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1146
+msgid "Installing the following plugins: %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1149
+msgid "The following plugins will be installed for free: %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1152
+#: src/Notes/WC_Admin_Notes_Facebook_Extension.php:64
+msgid "Market on Facebook"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1155
+msgid ""
+"Grow your business by targeting the right people and driving sales with "
+"Facebook."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1158
+msgid "Contact customers with Mailchimp"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1161
+msgid ""
+"Send targeted campaigns, recover abandoned carts and much more with "
+"Mailchimp."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1164
+msgid "I don't have any products yet."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1168
+msgid "%s (I'm just getting started)"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1172
+msgid "Up to %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1176
+msgid "More than %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1179
+msgid "No"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1182
+msgid "Yes, on another platform"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1185
+msgid "Yes, in person at physical stores and/or events"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1188
+msgid "Yes, on another platform and in person at physical stores and/or events"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1191
+msgid "Shopify"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1194
+msgid "BigCommerce"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1197
+msgid "Magento"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1200
+msgid "Wix"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1203 src/Features/Onboarding.php:132
+msgid "Other"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1206
+msgid "Tell us about your business"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1209
+msgid ""
+"We'd love to know if you are just getting started or you already have a "
+"business in place."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1212
+msgid "How many products do you plan to sell?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1215
+msgid "Currently selling elsewhere?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1218
+msgid "What's your current annual revenue?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1221
+msgid "Which platform is the store using?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1231
+msgid "Continue"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1234
+msgid "There was a problem updating your industries."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1237
+msgid "Please select at least one industry"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1240
+msgid "In which industry does the store operate?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1244
+msgid "Choose any that apply"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1247
+msgid "Connecting your store"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1250
+msgid "You will be redirected to WordPress.com to continue connecting your site."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1253
+msgid "Enhance your store setup"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1256
+msgid "Install %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1259
+msgid "Activate %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1264
+msgid "Retry"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1267
+msgid "Activate & continue"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1272
+#: src/Notes/WC_Admin_Notes_Facebook_Extension.php:71
+#: src/Notes/WC_Admin_Notes_Mobile_App.php:56
+#: src/Notes/WC_Admin_Notes_Order_Milestones.php:241
+#: src/Notes/WC_Admin_Notes_Welcome_Message.php:49
+msgid "Learn more"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1275
+msgid "Please select at least one product type"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1278
+msgid "There was a problem updating your product types."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1281
+msgid "What type of products will be listed?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1285
+msgid "There was a problem updating your preferences."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1288
+msgid "Security"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1291
+msgid ""
+"Jetpack automatically blocks brute force attacks to protect your store from "
+"unauthorized access."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1294
+msgid "Sales Tax"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1297
+msgid ""
+"With WooCommerce Services we ensure that the correct rate of tax is charged "
+"on all of your orders."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1300
+msgid "Speed"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1303
+msgid ""
+"Cache your images and static files on our own powerful global network of "
+"servers and speed up your site."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1306
+msgid "Mobile App"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1309
+msgid ""
+"Your store in your pocket. Manage orders, receive sales notifications, and "
+"more. Only with a Jetpack connection."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1312
+msgid "Print your own shipping labels"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1315
+msgid "Save time at the Post Office by printing USPS shipping labels at home."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1318
+msgid "Simple payment setup"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1321
+msgid ""
+"WooCommerce Services enables us to provision Stripe and Paypal accounts "
+"quickly and easily for you."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1324
+msgid "Start setting up your WooCommerce store"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1327
+msgid ""
+"Simplify and enhance the setup of your store with the free features and "
+"benefits offered by {{strong}}%s{{/strong}}."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1330
+msgid ""
+"By connecting your site you agree to our fascinating {{tosLink}}Terms of "
+"Service{{/tosLink}} and to {{detailsLink}}share details{{/detailsLink}} "
+"with WordPress.com. "
+msgstr ""
+
+#: languages/woocommerce-admin.php:1333
+msgid "Get started"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1336
+msgid "Proceed without %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1339
+msgid "There was a problem saving your store details."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1342
+msgid "Where is your store based?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1345
+msgid "This will help us configure your store and get you started quickly"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1348
+msgid "I'm setting up a store for a client"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1351
+msgid "This theme does not support WooCommerce."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1355
+msgid "Choose"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1358
+msgid "Live Demo"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1361
+msgid "Currently active theme"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1364
+msgid "Installed"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1367
+msgid "Free"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1370
+msgid "%s per year"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1373
+msgid "Choose a theme"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1376
+msgid ""
+"Choose how your store appears to customers. And don't worry, you can always "
+"switch themes and edit them later."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1379
+msgid "All themes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1382
+msgid "Paid themes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1385
+msgid "Free themes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1388
+msgid "There was a problem selecting your store theme."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1391
+msgid "{{strong}}%s{{/strong}} developed by WooCommerce"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1394
+msgid "Upload a theme"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1397
+msgid "Drop a theme zip file here to upload"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1400
+msgid "Drop your theme zip file here"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1403
+msgid "Uploading theme"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1406
+msgid "Your theme is being uploaded"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1409
+msgid ""
+"Learn more about how usage tracking works, and how you'll be helping "
+"{{link}}here{{/link}}."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1412
+msgid "Help improve WooCommerce with usage tracking"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1415
+msgid "Enable usage tracking and help improve WooCommerce"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1418
+msgid "Section Title"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1421
+msgid "Move up"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1424
+msgid "Move Down"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1428
+msgid "Remove block"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1431
+msgid "Remove section"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1434
+msgid "Store Performance"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1437
+msgid "Choose which analytics to display and the section name"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1440
+msgid "Display Stats:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1443
+msgid "Is this card useful?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1446
+msgid "No, hide it"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1449
+msgid "Yes, keep it"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1452
+msgid "Task List Options"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1455
+msgid "Remove this card"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1458
+msgid "Woo hoo - you're almost there!"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1461
+msgid ""
+"Based on the information you provided we’ve prepared some final set up "
+"tasks for you to perform."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1464
+msgid "Once complete your store will be ready for launch - exciting!"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1467
+msgid "Set up your store and start selling"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1470
+msgid ""
+"Below you’ll find a list of the most important steps to get your store up "
+"and running."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1473
+msgid "Set up payments"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1476
+msgid "Select which payment providers you’d like to use and configure them"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1479
+msgid "Connect your store to WooCommerce.com"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1482
+msgid "Install and manage your extensions directly from your Dashboard"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1485
+#: src/Notes/WC_Admin_Notes_Add_First_Product.php:45
+msgid "Add your first product"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1488
+msgid "Add products manually, import from a sheet or migrate from another platform"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1491
+msgid "Personalize your store"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1494
+msgid "Create a custom homepage and upload your logo"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1497
+msgid "Set up shipping"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1500
+msgid "Configure some basic shipping rates to get started"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1503
+msgid "Set up tax"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1506
+msgid "Choose how to configure tax rates - manually or automatically"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1509
+msgid "There was an error importing some of the demo products."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1512
+msgid "All demo products have been imported."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1515
+msgid "Import demo products"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1518
+msgid ""
+"We’ll add some products that will make it easier to see what your store "
+"looks like"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1521
+msgid "Import products"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1524
+msgid "Create a custom homepage"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1527
+msgid "Create a new homepage and customize it to suit your needs"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1530
+msgid "Create homepage"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1533
+msgid "Upload a logo"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1536
+msgid "Ensure your store is on-brand by adding your logo"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1542
+msgid "Proceed"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1548
+msgid "Skip"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1551
+msgid "Set a store notice"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1554
+msgid "Optionally display a prominent notice across all pages of your store"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1557
+msgid "Store notice text"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1561
+msgid "Complete task"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1564
+msgid "Store logo updated sucessfully."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1567
+msgid "Store notice updated sucessfully."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1570
+msgid ""
+"You must click approve to install your extensions and connect to "
+"WooCommerce.com."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1573 src/API/OnboardingPlugins.php:339
+#: src/API/OnboardingPlugins.php:344 src/API/OnboardingPlugins.php:401
+#: src/API/OnboardingPlugins.php:406 src/API/OnboardingPlugins.php:422
+msgid "There was an error connecting to WooCommerce.com. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1576
+msgid "Store connected to WooCommerce.com and extensions are being installed."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1579
+msgid "Create a Stripe account for me"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1582
+msgid "Email address"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1585
+msgid "Credit cards - powered by Stripe"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1588
+msgid ""
+"Accept debit and credit cards in 135+ currencies, methods such as Alipay, "
+"and one-touch checkout with Apple Pay."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1591
+msgid "PayPal Checkout"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1594
+msgid ""
+"Safe and secure payments using credit cards or your customer's PayPal "
+"account."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1597
+msgid "Klarna Checkout"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1600
+msgid "Klarna Payments"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1603
+msgid ""
+"Choose the payment that you want, pay now, pay later or slice it. No credit "
+"card numbers, no passwords, no worries."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1606
+msgid "Square"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1609
+msgid ""
+"Securely accept credit and debit cards with one low rate, no surprise fees "
+"(custom rates available). Sell online and in store and track sales and "
+"inventory in one place."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1612
+msgid "Choose payment methods"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1615
+msgid "Select which payment methods you'd like to use"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1618
+msgid "Install selected methods"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1621
+msgid "Install plugins required to offer the selected payment methods"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1624
+msgid "Configure payment methods"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1627
+msgid "Set up your chosen payment methods"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1630
+msgid "Enable Stripe"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1633
+msgid "Connect your store to your Stripe account"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1636
+msgid "Enable PayPal Checkout"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1639
+msgid "Connect your store to your PayPal account"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1642
+msgid "Enable Square"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1645
+msgid "Connect your store to your Square account"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1648
+msgid "Klarna"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1651
+msgid ""
+"Klarna can be configured under your {{link}}store settings{{/link}}. Figure "
+"out {{helpLink}}what you need{{/helpLink}}."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1657 src/Features/Onboarding.php:713
+#: src/Features/Onboarding.php:717
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:193
+msgid "Connect"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1660
+msgid "PayPal connected successfully."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1664
+msgid "There was a problem saving your payment settings."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1667
+msgid "Please enter your API username"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1670
+msgid "Please enter your API password"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1673
+msgid "Your API details can be obtained from your {{link}}PayPal account{{/link}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1676
+msgid "API Username"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1679
+msgid "API Password"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1682
+msgid "Square connected successfully."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1685
+msgid ""
+"There was an error connecting to Square. Please try again or skip to "
+"connect later in store settings."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1688
+msgid "Stripe"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1691
+msgid ""
+"We tried to create a Stripe account automatically for "
+"{{strong}}%s{{/strong}}, but an error occured. Please try connecting "
+"manually to continue."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1694
+msgid "You already have a Stripe account"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1697
+msgid ""
+"We tried to create a Stripe account automatically for "
+"{{strong}}%s{{/strong}}, but one already exists. Please sign in and connect "
+"to continue."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1700
+msgid "OK"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1703
+msgid "Stripe connected successfully."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1706
+msgid "Please enter your publishable key"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1709
+msgid "Please enter your secret key"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1712
+msgid "Your API details can be obtained from your {{link}}Stripe account{{/link}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1715
+msgid "Live Publishable Key"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1718
+msgid "Live Secret Key"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1721
+msgid "Add manually (recommended)"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1724
+msgid "For small stores we recommend adding products manually"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1727
+msgid "Import"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1730
+msgid "For larger stores we recommend importing all products at once via CSV file"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1733
+msgid "Migrate"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1736
+msgid ""
+"For stores currently selling elsewhere we suggest using a product migration "
+"service"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1740
+msgid "Set store location"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1744
+msgid "The address from which your business operates"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1747
+msgid "Set shipping costs"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1750
+msgid "Define how much customers pay to ship to different destinations"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1753
+msgid "Enable shipping label printing"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1756
+msgid ""
+"We recommend using ShipStation to save time at the post office by printing "
+"your shipping labels at home. Try ShipStation free for 30 days. "
+"{{link}}Learn more{{/link}}."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1759
+msgid ""
+"With WooCommerce Services and Jetpack you can save time at the Post Office "
+"by printing your shipping labels at home"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1763
+msgid "Connect your store"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1766
+msgid "Connect your store to WordPress.com to enable label printing"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1769
+msgid "Rest of the world"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1772
+msgid "Your shipping rates have been updated."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1775
+msgid "Free shipping"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1778
+msgid "Shipping rates can not be negative numbers."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1781
+msgid "Shipping cost"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1784
+msgid "There was a problem saving your store location."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1787
+msgid "Continue without installing"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1790
+msgid "Install & enable"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1793
+msgid "No thanks"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1796
+msgid "Plugins were successfully installed and activated."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1799
+msgid "Your tax settings have been updated."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1802
+msgid "There was a problem updating your tax settings."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1805
+msgid "Install Jetpack and WooCommerce Services"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1808
+msgid ""
+"Jetpack and WooCommerce Services allow you to automate sales tax "
+"calculations"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1811
+msgid "Set up tax rates manually"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1814
+msgid ""
+"Connect your store to WordPress.com to enable automated sales tax "
+"calculations"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1817
+msgid "Configure tax rates"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1820
+msgid "Head over to the tax rate settings screen to configure your tax rates"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1823
+msgid "Configure"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1826
+msgid ""
+"By clicking \"Configure\" you're enabling tax rates and calculations.More "
+"info {{link}}here{{/link}}."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1829
+msgid "Good news!"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1832
+msgid ""
+"{{strong}}Jetpack{{/strong}} and {{strong}}WooCommerce Services{{/strong}} "
+"can automate your sales tax calculations for you."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1835
+msgid "Yes please"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1838
+msgid "No thanks, I'll configure taxes manually"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1842
+msgid "Inbox"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1846
+msgid "Reviews"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1850
+msgid "unread activity"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1853
+msgid "View Activity Panel, you have unread activity"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1856
+msgid "View Activity Panel"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1859
+msgid "Store Activity"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1862
+msgid "Close Activity Panel"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1865
+msgid "Your inbox is empty"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1868
+msgid ""
+"As things begin to happen in your store your inbox will start to fill up. "
+"You'll see things like achievements, new feature announcements, extension "
+"recommendations and more!"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1871
+msgid "There was an error getting your inbox. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1874
+msgid ""
+"Order {{orderLink}}#%(orderNumber)s{{/orderLink}} %(customerString)s "
+"{{destinationFlag/}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1877
+msgid "%d product"
+msgid_plural "%d products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:1880
+msgid "Begin fulfillment"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1883
+msgid "Manage all orders"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1886
+msgid ""
+"You currently don't have any actionable statuses. To display orders here, "
+"select orders that require further review in settings."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1893
+msgid "There was an error getting your orders. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1896
+msgid "No orders to ship"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1899
+msgid "Good job, you've fulfilled all of your new orders!"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1902
+msgid "You have no orders to fulfill"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1905
+msgid ""
+"You're still waiting for your customers to make their first orders. While "
+"you wait why not learn how to manage orders?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1908
+msgid "placed by {{customerLink}}%(customerName)s{{/customerLink}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1911
+msgid "Manage"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1914
+msgid "You have no reviews to moderate"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1917
+msgid "We noticed that it's been a while since your products had any reviews."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1920
+msgid "View all Reviews"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1923
+msgid ""
+"Awesome, you've moderated all of your product reviews. How about responding "
+"to some of those negative reviews?"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1926
+msgid "Your customers haven't started reviewing your products."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1929
+msgid ""
+"Take some time to learn about best practices for collecting and using your "
+"reviews."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1932
+msgid "There was an error getting your reviews. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1935
+msgid "No reviews to moderate"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1938
+msgid ""
+"{{productLink}}%s{{/productLink}} reviewed by "
+"{{authorLink}}%s{{/authorLink}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1941
+msgid "Verified customer"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1944
+msgid "%d in stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1947
+msgid "Save"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1950
+msgid "Cancel"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1953
+msgid "Update stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1956
+msgid "Your stock is in good shape."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1959
+msgid "You currently have no products running low on stock."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1962
+msgid "There was an error getting your low stock products. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:1965
+msgid "No products with low stock"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1968
+msgid "Notices"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1971
+msgid "%1$s &lsaquo; %2$s &#8212; WooCommerce"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1974 src/Features/AnalyticsDashboard.php:85
+msgid "Dashboard"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1977 src/Features/Analytics.php:81
+msgid "Analytics"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1980
+msgid "Next Week"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1983
+msgid "Next Month"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1986
+msgid "Remind Me Later"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1989
+msgid "Previous Alert"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1992
+msgid "{{current /}} of {{total /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1995
+msgid "Next Alert"
+msgstr ""
+
+#: languages/woocommerce-admin.php:1998
+msgid "Later Today"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2001
+msgid "Tomorrow"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2004
+msgid "Your %s Report will be emailed to you."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2007
+msgid "There was a problem exporting your %s Report. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2010
+msgid "%s stock updated."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2013
+msgid "%s stock could not be updated."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2016 src/API/OnboardingPlugins.php:309
+msgid "Jetpack"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2019
+msgid "WooCommerce Services"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2022
+msgid "Mailchimp for WooCommerce"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2025
+msgid "Facebook for WooCommerce"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2028
+msgid "WooCommerce ShipStation Gateway"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2031
+msgid "There was an error installing %s. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2034
+msgid "There was an error connecting to %s. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2037
+msgid "There was an error activating %s. Please try again."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2040
+msgid "Your homepage was published."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2045
+msgid "Continue setup."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2048
+msgid "You created your first product!"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2051
+msgid "You've added your first tax rate!"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2055
+msgid "MMM D, YYYY"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2058
+msgid "Choose to apply any or all filters"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2061
+msgid "Add a Filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2064
+msgid "Filter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2067
+msgid "Clear all filters"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2070
+msgid "Any"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2074
+msgid "%(field)s range start"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2078
+msgid "%(field)s range end"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2081
+msgid "Choose a date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2084
+msgid "Date input describing a selected date in format %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2087
+msgid "select a date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2090
+msgid "Start Date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2093
+msgid "Date input describing a selected date range's start date in format %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2096
+msgid "to"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2099
+msgid "End Date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2102
+msgid "Date input describing a selected date range's end date in format %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2105
+msgid "Interact with the calendar and select start and end dates."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2108
+msgid "Clear Date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2111
+msgid "Clear Dates"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2114
+msgid "Move backward to switch to the previous month."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2117
+msgid "Move forward to switch to the next month."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2120
+msgid "Enter key"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2123
+msgid "Right and left arrow keys"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2126
+msgid "up and down arrow keys"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2129
+msgid "page up and page down keys"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2132
+msgid "Home and end keys"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2135
+msgid "Escape key"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2138
+msgid "Question mark"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2141
+msgid "Select the date in focus."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2144
+msgid "Move backward (left) and forward (right) by one day."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2147
+msgid "Move backward (up) and forward (down) by one week."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2150
+msgid "Switch months."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2153
+msgid "Go to the first or last day of a week."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2156
+msgid "Return to the date input field."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2159
+msgid ""
+"Press the down arrow key to interact with the calendar and\n"
+"  select a date."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2163
+msgid "Select %s as a start date."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2166
+msgid "Select %s as an end date."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2169
+msgid "%s is not selectable."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2172
+msgid "Selected. %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2175
+msgid "Calendar"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2178
+msgid "Close"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2181
+msgid "You may select up to %d items."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2185
+msgid "Your requested data is loading"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2190
+msgid "Clear all"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2193
+msgid "Total %d"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2197
+msgid "compare to"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2201
+msgid "Custom"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2204
+msgid "Reset"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2207
+msgid "Update"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2210
+msgid "Select date range and comparison"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2213
+msgid "select a date range"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2216
+msgid "Presets"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2219
+msgid "vs."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2222
+msgid "Date Range"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2225
+msgid "select a preset period"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2228
+msgid "filter report to show:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2231
+msgid "Filters"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2234
+msgid "Select or upload image"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2237
+msgid "Select"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2240
+msgid "Remove image"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2243
+msgid "Add an image"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2246
+msgid "Page %d of %d"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2249
+msgid "Previous Page"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2252
+msgid "Next Page"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2255
+msgid "Go to page"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2258
+msgid "Rows per page"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2261
+msgid "%1$s out of %2$s stars."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2264
+msgid "Clear all selected items"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2267
+msgid "Results"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2270
+msgid "No items found."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2273
+msgid "No results for %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2276
+msgid "Search for items"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2279
+msgid "%d item selected"
+msgid_plural "%d items selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:2282
+msgid "Search results updated."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2285
+msgid "All categories with titles that include {{query /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2288
+msgid "All coupons with codes that include {{query /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2291
+msgid "All customers with names that include {{query /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2294
+msgid "All products with titles that include {{query /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2297
+msgid "All taxes with codes that include {{query /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2300
+msgid "Move backward for selected items"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2303
+msgid "%d result found, use up and down arrow keys to navigate."
+msgid_plural "%d results found, use up and down arrow keys to navigate."
+msgstr[0] ""
+msgstr[1] ""
+
+#: languages/woocommerce-admin.php:2306
+msgid "No results."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2309
+msgid "%1$s (%2$s of %3$s)"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2312
+msgid "Performance Indicators"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2315
+msgid ""
+"List of data points available for filtering. Use arrow keys to cycle "
+"through the list. Click a data point for a detailed report."
+msgstr ""
+
+#: languages/woocommerce-admin.php:2318
+msgid "Up %d%% from %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2321
+msgid "Down %d%% from %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2324
+msgid "No change from %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2327
+msgid "%d%%"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2330
+msgid "Choose which values to display"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2333
+msgid "Columns:"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2336
+msgid "(scroll to see more)"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2339
+msgid "Sort by %s in ascending order"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2342
+msgid "Sort by %s in descending order"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2345
+msgid "No data to display"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2348
+msgid "Remove %s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2351
+msgid "+%d more"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2354
+msgid "Processing Order"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2357
+msgid "Pending Order"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2360
+msgid "Completed Order"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2363
+msgid "MMM D"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2366
+msgid "Today"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2369
+msgid "Yesterday"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2372
+msgid "Week to Date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2375
+msgid "Last Week"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2378
+msgid "Month to Date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2381
+msgid "Last Month"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2384
+msgid "Quarter to Date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2387
+msgid "Last Quarter"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2390
+msgid "Week of %B %-d, %Y"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2393
+msgid "Year to Date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2396
+msgid "MMMM D, YYYY"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2399
+msgid "D MMMM YYYY LT"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2402
+msgid "dddd, D MMMM YYYY LT"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2405
+msgid "HH:mm"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2408
+msgid "Last Year"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2411
+msgid "Invalid date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2414
+msgid "Select a date in the past"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2417
+msgid "Start date must be before end date"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2420
+msgid "Previous Period"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2423
+msgid "Previous Year"
+msgstr ""
+
+#: src/API/Coupons.php:37
+msgid "Limit results to coupons with codes matching a given string."
+msgstr ""
+
+#: src/API/Customers.php:53 src/API/Notes.php:63
+msgid "Unique ID for the resource."
+msgstr ""
+
+#: src/API/Data.php:41
+msgid "An endpoint used for searching download logs for a specific IP address."
+msgstr ""
+
+#: src/API/DataDownloadIPs.php:75
+msgid "Invalid request. Please pass the match parameter."
+msgstr ""
+
+#: src/API/DataDownloadIPs.php:139
+msgid "A partial IP address can be passed and matching results will be returned."
+msgstr ""
+
+#: src/API/DataDownloadIPs.php:160
+msgid "IP address."
+msgstr ""
+
+#: src/API/Leaderboards.php:122
+msgid "Top Coupons - Number of Orders"
+msgstr ""
+
+#: src/API/Leaderboards.php:188
+msgid "Top Categories - Items Sold"
+msgstr ""
+
+#: src/API/Leaderboards.php:252
+msgid "Top Customers - Total Spend"
+msgstr ""
+
+#: src/API/Leaderboards.php:255
+msgid "Customer Name"
+msgstr ""
+
+#: src/API/Leaderboards.php:318
+msgid "Top Products - Items Sold"
+msgstr ""
+
+#: src/API/Leaderboards.php:438 src/API/Notes.php:343
+#: src/API/Reports/Categories/Controller.php:222
+#: src/API/Reports/Coupons/Controller.php:228
+#: src/API/Reports/Coupons/Stats/Controller.php:274
+#: src/API/Reports/Customers/Controller.php:352
+#: src/API/Reports/Downloads/Controller.php:253
+#: src/API/Reports/Downloads/Stats/Controller.php:231
+#: src/API/Reports/Orders/Controller.php:260
+#: src/API/Reports/Orders/Stats/Controller.php:333
+#: src/API/Reports/Products/Controller.php:259
+#: src/API/Reports/Products/Stats/Controller.php:315
+#: src/API/Reports/Revenue/Stats/Controller.php:360
+#: src/API/Reports/Stock/Controller.php:430
+#: src/API/Reports/Taxes/Controller.php:234
+#: src/API/Reports/Taxes/Stats/Controller.php:311
+#: src/API/Reports/Variations/Controller.php:261
+msgid "Current page of the collection."
+msgstr ""
+
+#: src/API/Leaderboards.php:446 src/API/Notes.php:351
+#: src/API/Reports/Categories/Controller.php:230
+#: src/API/Reports/Coupons/Controller.php:236
+#: src/API/Reports/Coupons/Stats/Controller.php:282
+#: src/API/Reports/Customers/Controller.php:360
+#: src/API/Reports/Downloads/Controller.php:261
+#: src/API/Reports/Downloads/Stats/Controller.php:239
+#: src/API/Reports/Orders/Controller.php:268
+#: src/API/Reports/Orders/Stats/Controller.php:341
+#: src/API/Reports/Products/Controller.php:267
+#: src/API/Reports/Products/Stats/Controller.php:323
+#: src/API/Reports/Revenue/Stats/Controller.php:368
+#: src/API/Reports/Stock/Controller.php:438
+#: src/API/Reports/Taxes/Controller.php:242
+#: src/API/Reports/Taxes/Stats/Controller.php:319
+#: src/API/Reports/Variations/Controller.php:269
+msgid "Maximum number of items to be returned in result set."
+msgstr ""
+
+#: src/API/Leaderboards.php:455 src/API/Reports/Categories/Controller.php:239
+#: src/API/Reports/Coupons/Controller.php:245
+#: src/API/Reports/Coupons/Stats/Controller.php:291
+#: src/API/Reports/Downloads/Controller.php:270
+#: src/API/Reports/Downloads/Stats/Controller.php:248
+#: src/API/Reports/Orders/Controller.php:277
+#: src/API/Reports/Orders/Stats/Controller.php:350
+#: src/API/Reports/PerformanceIndicators/Controller.php:512
+#: src/API/Reports/Products/Controller.php:276
+#: src/API/Reports/Products/Stats/Controller.php:332
+#: src/API/Reports/Revenue/Stats/Controller.php:377
+#: src/API/Reports/Taxes/Controller.php:251
+#: src/API/Reports/Taxes/Stats/Controller.php:328
+#: src/API/Reports/Variations/Controller.php:278
+msgid "Limit response to resources published after a given ISO8601 compliant date."
+msgstr ""
+
+#: src/API/Leaderboards.php:461 src/API/Reports/Categories/Controller.php:245
+#: src/API/Reports/Coupons/Controller.php:251
+#: src/API/Reports/Coupons/Stats/Controller.php:297
+#: src/API/Reports/Downloads/Controller.php:276
+#: src/API/Reports/Downloads/Stats/Controller.php:254
+#: src/API/Reports/Orders/Controller.php:283
+#: src/API/Reports/Orders/Stats/Controller.php:356
+#: src/API/Reports/PerformanceIndicators/Controller.php:518
+#: src/API/Reports/Products/Controller.php:282
+#: src/API/Reports/Products/Stats/Controller.php:338
+#: src/API/Reports/Revenue/Stats/Controller.php:383
+#: src/API/Reports/Taxes/Controller.php:257
+#: src/API/Reports/Taxes/Stats/Controller.php:334
+#: src/API/Reports/Variations/Controller.php:284
+msgid "Limit response to resources published before a given ISO8601 compliant date."
+msgstr ""
+
+#: src/API/Leaderboards.php:467
+msgid "URL query to persist across links."
+msgstr ""
+
+#: src/API/Leaderboards.php:487
+msgid "Leaderboard ID."
+msgstr ""
+
+#: src/API/Leaderboards.php:493
+msgid "Displayed title for the leaderboard."
+msgstr ""
+
+#: src/API/Leaderboards.php:499
+msgid "Table headers."
+msgstr ""
+
+#: src/API/Leaderboards.php:506
+msgid "Table column header."
+msgstr ""
+
+#: src/API/Leaderboards.php:516
+msgid "Table rows."
+msgstr ""
+
+#: src/API/Leaderboards.php:523
+msgid "Table cell display."
+msgstr ""
+
+#: src/API/Leaderboards.php:529
+msgid "Table cell value."
+msgstr ""
+
+#: src/API/NoteActions.php:34
+msgid "Unique ID for the Note."
+msgstr ""
+
+#: src/API/NoteActions.php:38
+msgid "Unique ID for the Note Action."
+msgstr ""
+
+#: src/API/NoteActions.php:65 src/API/NoteActions.php:84 src/API/Notes.php:94
+#: src/API/Notes.php:207
+msgid "Sorry, there is no resource with that ID."
+msgstr ""
+
+#: src/API/Notes.php:175 src/API/Notes.php:189 src/API/OnboardingProfile.php:76
+#: src/API/Reports/Controller.php:63
+msgid "Sorry, you cannot list resources."
+msgstr ""
+
+#: src/API/Notes.php:238 src/API/OnboardingProfile.php:90
+#: src/API/Reports/Import/Controller.php:113
+msgid "Sorry, you cannot edit this resource."
+msgstr ""
+
+#: src/API/Notes.php:323 src/API/Reports/Categories/Controller.php:251
+#: src/API/Reports/Coupons/Controller.php:257
+#: src/API/Reports/Coupons/Stats/Controller.php:303
+#: src/API/Reports/Customers/Controller.php:369
+#: src/API/Reports/Downloads/Controller.php:282
+#: src/API/Reports/Downloads/Stats/Controller.php:260
+#: src/API/Reports/Orders/Controller.php:289
+#: src/API/Reports/Orders/Stats/Controller.php:362
+#: src/API/Reports/Products/Controller.php:288
+#: src/API/Reports/Products/Stats/Controller.php:344
+#: src/API/Reports/Revenue/Stats/Controller.php:389
+#: src/API/Reports/Stock/Controller.php:471
+#: src/API/Reports/Taxes/Controller.php:263
+#: src/API/Reports/Taxes/Stats/Controller.php:340
+#: src/API/Reports/Variations/Controller.php:290
+msgid "Order sort attribute ascending or descending."
+msgstr ""
+
+#: src/API/Notes.php:330 src/API/Reports/Categories/Controller.php:258
+#: src/API/Reports/Coupons/Controller.php:264
+#: src/API/Reports/Coupons/Stats/Controller.php:310
+#: src/API/Reports/Customers/Controller.php:376
+#: src/API/Reports/Downloads/Controller.php:289
+#: src/API/Reports/Downloads/Stats/Controller.php:267
+#: src/API/Reports/Orders/Controller.php:296
+#: src/API/Reports/Orders/Stats/Controller.php:369
+#: src/API/Reports/Products/Controller.php:295
+#: src/API/Reports/Products/Stats/Controller.php:351
+#: src/API/Reports/Revenue/Stats/Controller.php:396
+#: src/API/Reports/Stock/Controller.php:478
+#: src/API/Reports/Taxes/Controller.php:270
+#: src/API/Reports/Taxes/Stats/Controller.php:347
+#: src/API/Reports/Variations/Controller.php:297
+msgid "Sort collection by object attribute."
+msgstr ""
+
+#: src/API/Notes.php:360
+msgid "Type of note."
+msgstr ""
+
+#: src/API/Notes.php:370
+msgid "Status of note."
+msgstr ""
+
+#: src/API/Notes.php:394
+msgid "ID of the note record."
+msgstr ""
+
+#: src/API/Notes.php:400
+msgid "Name of the note."
+msgstr ""
+
+#: src/API/Notes.php:406
+msgid "The type of the note (e.g. error, warning, etc.)."
+msgstr ""
+
+#: src/API/Notes.php:412
+msgid "Locale used for the note title and content."
+msgstr ""
+
+#: src/API/Notes.php:418
+msgid "Title of the note."
+msgstr ""
+
+#: src/API/Notes.php:424
+msgid "Content of the note."
+msgstr ""
+
+#: src/API/Notes.php:430
+msgid "Icon (gridicon) for the note."
+msgstr ""
+
+#: src/API/Notes.php:436
+msgid "Content data for the note. JSON string. Available for re-localization."
+msgstr ""
+
+#: src/API/Notes.php:442
+msgid "The status of the note (e.g. unactioned, actioned)."
+msgstr ""
+
+#: src/API/Notes.php:447
+msgid "Source of the note."
+msgstr ""
+
+#: src/API/Notes.php:453
+msgid "Date the note was created."
+msgstr ""
+
+#: src/API/Notes.php:459
+msgid "Date the note was created (GMT)."
+msgstr ""
+
+#: src/API/Notes.php:465
+msgid "Date after which the user should be reminded of the note, if any."
+msgstr ""
+
+#: src/API/Notes.php:471
+msgid "Date after which the user should be reminded of the note, if any (GMT)."
+msgstr ""
+
+#: src/API/Notes.php:477
+msgid "Whether or a user can request to be reminded about the note."
+msgstr ""
+
+#: src/API/Notes.php:483
+msgid "An array of actions, if any, for the note."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:154
+msgid "Sorry, you cannot manage plugins."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:169
+msgid "Invalid plugin."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:207
+#. translators: %s: plugin slug (example: woocommerce-services)
+msgid "The requested plugin `%s` could not be installed. Plugin API call failed."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:222
+#. translators: %s: plugin slug (example: woocommerce-services)
+msgid "The requested plugin `%s` could not be installed."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:261
+msgid "Invalid plugins."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:273
+#. translators: %s: plugin slug (example: woocommerce-services)
+msgid "Invalid plugin %s."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:278
+msgid "The requested plugins could not be activated."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:297
+msgid "Jetpack is not installed or active."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:322 src/API/OnboardingPlugins.php:385
+msgid "There was an error loading the WooCommerce.com Helper API."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:442
+msgid "There was an error connecting to PayPal."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:473
+msgid "There was an error connecting to Square."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:519
+msgid "Plugin slug."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:525
+msgid "Plugin name."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:531
+msgid "Plugin status."
+msgstr ""
+
+#: src/API/OnboardingPlugins.php:551
+msgid "Action that should be completed to connect Jetpack."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:136
+msgid "Onboarding profile data has been updated."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:207
+msgid "Whether or not the profile was completed."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:214
+msgid "How the Jetpack/WooCommerce Services step was handled."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:228
+msgid "Account type used for Jetpack."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:240
+msgid "Industry."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:252
+msgid "Types of products sold."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:264
+msgid "Number of products to be added."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:278
+msgid "Other places the store is selling products."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:291
+msgid "Current annual revenue of the store."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:306
+msgid "Name of other platform used to sell."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:320
+msgid "Extra business extensions to install."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:332
+msgid "Selected store theme."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:340
+msgid "Whether or not the user opted to purchase items now or later."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:347
+msgid "Whether or not this store was setup for a client."
+msgstr ""
+
+#: src/API/OnboardingProfile.php:354
+msgid ""
+"Whether or not the store was connected to WooCommerce.com during the "
+"extension flow."
+msgstr ""
+
+#: src/API/OnboardingTasks.php:89
+msgid "Sorry, you are not allowed to create resources."
+msgstr ""
+
+#: src/API/OnboardingTasks.php:103
+msgid "Sorry, you are not allowed to create new pages."
+msgstr ""
+
+#: src/API/OnboardingTasks.php:132
+msgid "Sorry, the sample products data file was not found."
+msgstr ""
+
+#: src/API/OnboardingTasks.php:190 src/API/OnboardingTasks.php:205
+msgid "Write title…"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:191 src/API/OnboardingTasks.php:206
+msgid "Welcome to the store"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:195 src/API/OnboardingTasks.php:210
+msgid "Write a short welcome message here"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:199 src/API/OnboardingTasks.php:214
+msgid "Go shopping"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:232 src/API/OnboardingTasks.php:239
+msgid "Content…"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:260
+msgid "Shop by Category"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:266
+msgid "New In"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:272
+msgid "Fan Favorites"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:278
+msgid "On Sale"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:284
+msgid "Best Sellers"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:300
+msgid "New Products"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:402
+msgid "Homepage"
+msgstr ""
+
+#: src/API/OnboardingTasks.php:423
+msgid "Homepage created successfully."
+msgstr ""
+
+#: src/API/Options.php:76
+msgid "You must supply an array of options."
+msgstr ""
+
+#: src/API/Options.php:81
+msgid "Sorry, you cannot view these options."
+msgstr ""
+
+#: src/API/Options.php:115
+msgid "You must supply an array of options and values."
+msgstr ""
+
+#: src/API/Options.php:120
+msgid "Sorry, you cannot manage these options."
+msgstr ""
+
+#: src/API/Options.php:202
+msgid "Array of options with associated values."
+msgstr ""
+
+#: src/API/Orders.php:37
+msgid "Limit result set to orders matching part of an order number."
+msgstr ""
+
+#: src/API/ProductVariations.php:36 src/API/Products.php:68
+msgid "Search by similar product name or sku."
+msgstr ""
+
+#: src/API/ProductVariations.php:86
+msgid "Product parent name."
+msgstr ""
+
+#: src/API/ProductVariations.php:91
+msgid "Product type."
+msgstr ""
+
+#: src/API/ProductVariations.php:98 src/API/Reports/Stock/Controller.php:379
+msgid "Product parent ID."
+msgstr ""
+
+#: src/API/Products.php:62
+msgid "Limit result set to products that are low or out of stock."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:78
+msgid "Invalid response from data store."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:170
+msgid "Category ID."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:176
+msgid "Amount of items sold."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:182
+#: src/API/Reports/Revenue/Stats/Controller.php:169
+msgid "Total Sales."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:188
+#: src/API/Reports/Coupons/Controller.php:169
+#: src/API/Reports/Products/Stats/Controller.php:175
+#: src/API/Reports/Revenue/Stats/Controller.php:223
+#: src/API/Reports/Taxes/Controller.php:214
+#: src/API/Reports/Taxes/Stats/Controller.php:193
+msgid "Number of orders."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:194
+msgid "Amount of products."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:204
+msgid "Category name."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:272
+#: src/API/Reports/Coupons/Stats/Controller.php:322
+#: src/API/Reports/Downloads/Stats/Controller.php:277
+#: src/API/Reports/Orders/Stats/Controller.php:381
+#: src/API/Reports/Products/Stats/Controller.php:368
+#: src/API/Reports/Revenue/Stats/Controller.php:414
+#: src/API/Reports/Taxes/Stats/Controller.php:360
+msgid "Time interval to use for buckets in the returned data."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:286
+#: src/API/Reports/Orders/Controller.php:367
+#: src/API/Reports/Orders/Stats/Controller.php:405
+msgid "Limit result set to items that have the specified order status."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:296
+#: src/API/Reports/Orders/Controller.php:377
+#: src/API/Reports/Orders/Stats/Controller.php:416
+msgid "Limit result set to items that don't have the specified order status."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:306
+msgid ""
+"Limit result set to all items that have the specified term assigned in the "
+"categories taxonomy."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:315
+msgid "Add additional piece of info about each category to the report."
+msgstr ""
+
+#: src/API/Reports/Categories/Controller.php:334
+#: src/API/Reports/Revenue/Stats/Controller.php:457
+msgid "Net Revenue"
+msgstr ""
+
+#: src/API/Reports/Categories/DataStore.php:273
+#: src/API/Reports/Orders/Stats/DataStore.php:298
+#: src/API/Reports/Orders/Stats/DataStore.php:351
+#: src/API/Reports/Products/Stats/DataStore.php:181
+#: src/API/Reports/Products/Stats/DataStore.php:197
+#: src/API/Reports/Taxes/Stats/DataStore.php:191
+msgid "Sorry, fetching revenue data failed."
+msgstr ""
+
+#: src/API/Reports/Controller.php:81
+msgid ""
+"Batch endpoint for getting specific performance indicators from `stats` "
+"endpoints."
+msgstr ""
+
+#: src/API/Reports/Controller.php:85
+msgid "Stats about revenue."
+msgstr ""
+
+#: src/API/Reports/Controller.php:89
+msgid "Stats about orders."
+msgstr ""
+
+#: src/API/Reports/Controller.php:93
+msgid "Products detailed reports."
+msgstr ""
+
+#: src/API/Reports/Controller.php:97
+msgid "Stats about products."
+msgstr ""
+
+#: src/API/Reports/Controller.php:101
+msgid "Product categories detailed reports."
+msgstr ""
+
+#: src/API/Reports/Controller.php:105
+msgid "Stats about product categories."
+msgstr ""
+
+#: src/API/Reports/Controller.php:109
+msgid "Coupons detailed reports."
+msgstr ""
+
+#: src/API/Reports/Controller.php:113
+msgid "Stats about coupons."
+msgstr ""
+
+#: src/API/Reports/Controller.php:117
+msgid "Taxes detailed reports."
+msgstr ""
+
+#: src/API/Reports/Controller.php:121
+msgid "Stats about taxes."
+msgstr ""
+
+#: src/API/Reports/Controller.php:125
+msgid "Product downloads detailed reports."
+msgstr ""
+
+#: src/API/Reports/Controller.php:129
+msgid "Product download files detailed reports."
+msgstr ""
+
+#: src/API/Reports/Controller.php:133
+msgid "Stats about product downloads."
+msgstr ""
+
+#: src/API/Reports/Controller.php:137
+msgid "Customers detailed reports."
+msgstr ""
+
+#: src/API/Reports/Controller.php:257
+msgid "An alphanumeric identifier for the resource."
+msgstr ""
+
+#: src/API/Reports/Controller.php:263
+msgid "A human-readable description of the resource."
+msgstr ""
+
+#: src/API/Reports/Controller.php:269
+msgid "API path."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:157
+msgid "Coupon ID."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:163
+#: src/API/Reports/Coupons/Stats/Controller.php:146
+msgid "Net discount amount."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:179
+msgid "Coupon code."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:185
+msgid "Coupon creation date."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:191
+msgid "Coupon creation date in GMT."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:197
+msgid "Coupon expiration date."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:203
+msgid "Coupon expiration date in GMT."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:210
+msgid "Coupon discount type."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:276
+#: src/API/Reports/Coupons/Stats/Controller.php:336
+msgid "Limit result set to coupons assigned specific coupon IDs."
+msgstr ""
+
+#: src/API/Reports/Coupons/Controller.php:285
+#: src/API/Reports/Orders/Controller.php:411
+msgid "Add additional piece of info about each coupon to the report."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:154
+msgid "Number of coupons."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:161
+msgid "Number of discounted orders."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:171
+#: src/API/Reports/Orders/Stats/Controller.php:225
+#: src/API/Reports/Products/Stats/Controller.php:184
+#: src/API/Reports/Revenue/Stats/Controller.php:252
+#: src/API/Reports/Taxes/Stats/Controller.php:208
+msgid "Reports data grouped by segment condition."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:179
+#: src/API/Reports/Orders/Stats/Controller.php:233
+#: src/API/Reports/Products/Stats/Controller.php:192
+#: src/API/Reports/Revenue/Stats/Controller.php:260
+#: src/API/Reports/Taxes/Stats/Controller.php:216
+msgid "Segment identificator."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:185
+#: src/API/Reports/Coupons/Stats/Controller.php:250
+#: src/API/Reports/Downloads/Stats/Controller.php:207
+#: src/API/Reports/Orders/Stats/Controller.php:239
+#: src/API/Reports/Orders/Stats/Controller.php:309
+#: src/API/Reports/Products/Stats/Controller.php:205
+#: src/API/Reports/Products/Stats/Controller.php:270
+#: src/API/Reports/Revenue/Stats/Controller.php:266
+#: src/API/Reports/Revenue/Stats/Controller.php:336
+#: src/API/Reports/Taxes/Stats/Controller.php:222
+#: src/API/Reports/Taxes/Stats/Controller.php:287
+msgid "Interval subtotals."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:204
+#: src/API/Reports/Customers/Stats/Controller.php:166
+#: src/API/Reports/Downloads/Stats/Controller.php:161
+#: src/API/Reports/Orders/Stats/Controller.php:263
+#: src/API/Reports/Products/Stats/Controller.php:224
+#: src/API/Reports/Revenue/Stats/Controller.php:290
+#: src/API/Reports/Stock/Stats/Controller.php:118
+#: src/API/Reports/Taxes/Stats/Controller.php:241
+msgid "Totals data."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:211
+#: src/API/Reports/Downloads/Stats/Controller.php:168
+#: src/API/Reports/Orders/Stats/Controller.php:270
+#: src/API/Reports/Products/Stats/Controller.php:231
+#: src/API/Reports/Revenue/Stats/Controller.php:297
+#: src/API/Reports/Taxes/Stats/Controller.php:248
+msgid "Reports data grouped by intervals."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:219
+#: src/API/Reports/Downloads/Stats/Controller.php:176
+#: src/API/Reports/Orders/Stats/Controller.php:278
+#: src/API/Reports/Products/Stats/Controller.php:239
+#: src/API/Reports/Revenue/Stats/Controller.php:305
+#: src/API/Reports/Taxes/Stats/Controller.php:256
+msgid "Type of interval."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:226
+#: src/API/Reports/Downloads/Stats/Controller.php:183
+#: src/API/Reports/Orders/Stats/Controller.php:285
+#: src/API/Reports/Products/Stats/Controller.php:246
+#: src/API/Reports/Revenue/Stats/Controller.php:312
+#: src/API/Reports/Taxes/Stats/Controller.php:263
+msgid "The date the report start, in the site's timezone."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:232
+#: src/API/Reports/Downloads/Stats/Controller.php:189
+#: src/API/Reports/Orders/Stats/Controller.php:291
+#: src/API/Reports/Products/Stats/Controller.php:252
+#: src/API/Reports/Revenue/Stats/Controller.php:318
+#: src/API/Reports/Taxes/Stats/Controller.php:269
+msgid "The date the report start, as GMT."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:238
+#: src/API/Reports/Downloads/Stats/Controller.php:195
+#: src/API/Reports/Orders/Stats/Controller.php:297
+#: src/API/Reports/Products/Stats/Controller.php:258
+#: src/API/Reports/Revenue/Stats/Controller.php:324
+#: src/API/Reports/Taxes/Stats/Controller.php:275
+msgid "The date the report end, in the site's timezone."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:244
+#: src/API/Reports/Downloads/Stats/Controller.php:201
+#: src/API/Reports/Orders/Stats/Controller.php:303
+#: src/API/Reports/Products/Stats/Controller.php:264
+#: src/API/Reports/Revenue/Stats/Controller.php:330
+#: src/API/Reports/Taxes/Stats/Controller.php:281
+msgid "The date the report end, as GMT."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Controller.php:345
+#: src/API/Reports/Orders/Stats/Controller.php:505
+#: src/API/Reports/Products/Stats/Controller.php:409
+#: src/API/Reports/Revenue/Stats/Controller.php:428
+#: src/API/Reports/Taxes/Stats/Controller.php:383
+msgid "Segment the response by additional constraint."
+msgstr ""
+
+#: src/API/Reports/Coupons/Stats/Segmenter.php:285
+#: src/API/Reports/Orders/Stats/Segmenter.php:380
+#: src/API/Reports/Products/Stats/Segmenter.php:171
+msgid ""
+"product_includes parameter need to specify exactly one product when "
+"segmenting by variation."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:225
+#: src/API/Reports/Orders/Controller.php:202
+msgid "Customer ID."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:231
+msgid "User ID."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:237
+msgid "Name."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:243
+msgid "Username."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:249
+#: src/API/Reports/Taxes/Controller.php:178
+msgid "Country."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:255
+msgid "City."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:261
+msgid "Region."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:267
+msgid "Postal code."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:273
+msgid "Date registered."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:279
+msgid "Date registered GMT."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:285
+msgid "Date last active."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:291
+msgid "Date last active GMT."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:297
+msgid "Order count."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:303
+msgid "Total spend."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:309
+msgid "Avg order value."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:328
+#: src/API/Reports/Customers/Controller.php:477
+#: src/API/Reports/Customers/Stats/Controller.php:187
+#: src/API/Reports/Customers/Stats/Controller.php:281
+msgid ""
+"Limit response to objects registered before (or at) a given ISO8601 "
+"compliant datetime."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:334
+#: src/API/Reports/Customers/Controller.php:483
+#: src/API/Reports/Customers/Stats/Controller.php:193
+#: src/API/Reports/Customers/Stats/Controller.php:287
+msgid ""
+"Limit response to objects registered after (or at) a given ISO8601 "
+"compliant datetime."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:340
+msgid ""
+"Limit response to resources with orders published after a given ISO8601 "
+"compliant date."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:346
+msgid ""
+"Limit response to resources with orders published before a given ISO8601 "
+"compliant date."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:395
+#: src/API/Reports/Customers/Stats/Controller.php:199
+#: src/API/Reports/Downloads/Stats/Controller.php:291
+#: src/API/Reports/Orders/Stats/Controller.php:395
+#: src/API/Reports/Products/Controller.php:319
+msgid ""
+"Indicates whether all the conditions should be true for the resulting set, "
+"or if any one of them is sufficient. Match affects the following "
+"parameters: status_is, status_is_not, product_includes, product_excludes, "
+"coupon_includes, coupon_excludes, customer, categories"
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:405
+#: src/API/Reports/Customers/Stats/Controller.php:209
+msgid ""
+"Limit response to objects with a customer field containing the search term. "
+"Searches the field provided by `searchby`."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:420
+#: src/API/Reports/Customers/Stats/Controller.php:224
+msgid "Limit response to objects with specfic names."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:425
+#: src/API/Reports/Customers/Stats/Controller.php:229
+msgid "Limit response to objects excluding specfic names."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:430
+#: src/API/Reports/Customers/Stats/Controller.php:234
+msgid "Limit response to objects with specfic usernames."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:435
+#: src/API/Reports/Customers/Stats/Controller.php:239
+msgid "Limit response to objects excluding specfic usernames."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:440
+#: src/API/Reports/Customers/Stats/Controller.php:244
+msgid "Limit response to objects including emails."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:445
+#: src/API/Reports/Customers/Stats/Controller.php:249
+msgid "Limit response to objects excluding emails."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:450
+#: src/API/Reports/Customers/Stats/Controller.php:254
+msgid "Limit response to objects with specfic countries."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:455
+#: src/API/Reports/Customers/Stats/Controller.php:259
+msgid "Limit response to objects excluding specfic countries."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:460
+#: src/API/Reports/Customers/Stats/Controller.php:264
+msgid ""
+"Limit response to objects last active before (or at) a given ISO8601 "
+"compliant datetime."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:466
+#: src/API/Reports/Customers/Stats/Controller.php:270
+msgid ""
+"Limit response to objects last active after (or at) a given ISO8601 "
+"compliant datetime."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:472
+#: src/API/Reports/Customers/Controller.php:489
+#: src/API/Reports/Customers/Stats/Controller.php:276
+#: src/API/Reports/Customers/Stats/Controller.php:293
+msgid ""
+"Limit response to objects last active between two given ISO8601 compliant "
+"datetime."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:494
+#: src/API/Reports/Customers/Stats/Controller.php:298
+msgid ""
+"Limit response to objects with an order count greater than or equal to "
+"given integer."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:500
+#: src/API/Reports/Customers/Stats/Controller.php:304
+msgid ""
+"Limit response to objects with an order count less than or equal to given "
+"integer."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:506
+#: src/API/Reports/Customers/Stats/Controller.php:310
+msgid "Limit response to objects with an order count between two given integers."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:511
+#: src/API/Reports/Customers/Stats/Controller.php:315
+msgid ""
+"Limit response to objects with a total order spend greater than or equal to "
+"given number."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:516
+#: src/API/Reports/Customers/Stats/Controller.php:320
+msgid ""
+"Limit response to objects with a total order spend less than or equal to "
+"given number."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:521
+#: src/API/Reports/Customers/Stats/Controller.php:325
+msgid ""
+"Limit response to objects with a total order spend between two given "
+"numbers."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:526
+#: src/API/Reports/Customers/Stats/Controller.php:330
+msgid ""
+"Limit response to objects with an average order spend greater than or equal "
+"to given number."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:531
+#: src/API/Reports/Customers/Stats/Controller.php:335
+msgid ""
+"Limit response to objects with an average order spend less than or equal to "
+"given number."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:536
+#: src/API/Reports/Customers/Stats/Controller.php:340
+msgid ""
+"Limit response to objects with an average order spend between two given "
+"numbers."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:541
+#: src/API/Reports/Customers/Stats/Controller.php:345
+msgid ""
+"Limit response to objects with last order before (or at) a given ISO8601 "
+"compliant datetime."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:547
+#: src/API/Reports/Customers/Stats/Controller.php:351
+msgid ""
+"Limit response to objects with last order after (or at) a given ISO8601 "
+"compliant datetime."
+msgstr ""
+
+#: src/API/Reports/Customers/Controller.php:553
+#: src/API/Reports/Customers/Stats/Controller.php:357
+msgid "Limit result to items with specified customer ids."
+msgstr ""
+
+#: src/API/Reports/Customers/Stats/Controller.php:133
+msgid "Number of customers."
+msgstr ""
+
+#: src/API/Reports/Customers/Stats/Controller.php:139
+msgid "Average number of orders."
+msgstr ""
+
+#: src/API/Reports/Customers/Stats/Controller.php:145
+msgid "Average total spend per customer."
+msgstr ""
+
+#: src/API/Reports/Customers/Stats/Controller.php:152
+msgid "Average AOV per customer."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:164
+msgid "ID."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:170
+#: src/API/Reports/Downloads/Controller.php:206
+#: src/API/Reports/Products/Controller.php:162
+#: src/API/Reports/Variations/Controller.php:170
+#: src/API/Reports/Variations/Controller.php:176
+msgid "Product ID."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:173
+msgid "The date of the download, in the site's timezone."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:179
+msgid "The date of the download, as GMT."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:188
+msgid "Download ID."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:194
+msgid "File name."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:200
+msgid "File URL."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:212
+#: src/API/Reports/Orders/Controller.php:172
+msgid "Order ID."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:218
+#: src/API/Reports/Orders/Controller.php:178
+msgid "Order Number."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:224
+msgid "User ID for the downloader."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:230
+msgid "User name of the downloader."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:236
+msgid "IP address for the downloader."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:299
+msgid ""
+"Indicates whether all the conditions should be true for the resulting set, "
+"or if any one of them is sufficient. Match affects the following "
+"parameters: products, orders, username, ip_address."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:309
+#: src/API/Reports/Downloads/Stats/Controller.php:301
+#: src/API/Reports/Orders/Controller.php:307
+#: src/API/Reports/Orders/Stats/Controller.php:426
+msgid "Limit result set to items that have the specified product(s) assigned."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:319
+#: src/API/Reports/Downloads/Stats/Controller.php:311
+#: src/API/Reports/Orders/Controller.php:317
+#: src/API/Reports/Orders/Stats/Controller.php:436
+msgid "Limit result set to items that don't have the specified product(s) assigned."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:329
+#: src/API/Reports/Downloads/Stats/Controller.php:320
+#: src/API/Reports/Orders/Controller.php:418
+msgid "Limit result set to items that have the specified order ids."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:338
+#: src/API/Reports/Downloads/Stats/Controller.php:329
+#: src/API/Reports/Orders/Controller.php:427
+msgid "Limit result set to items that don't have the specified order ids."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:347
+msgid "Limit response to objects that have the specified user ids."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:356
+msgid "Limit response to objects that don't have the specified user ids."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:365
+#: src/API/Reports/Downloads/Stats/Controller.php:356
+msgid "Limit response to objects that have a specified ip address."
+msgstr ""
+
+#: src/API/Reports/Downloads/Controller.php:374
+#: src/API/Reports/Downloads/Stats/Controller.php:365
+msgid "Limit response to objects that don't have a specified ip address."
+msgstr ""
+
+#: src/API/Reports/Downloads/Stats/Controller.php:147
+msgid "Number of downloads."
+msgstr ""
+
+#: src/API/Reports/Downloads/Stats/Controller.php:338
+msgid "Limit response to objects that have the specified customer ids."
+msgstr ""
+
+#: src/API/Reports/Downloads/Stats/Controller.php:347
+msgid "Limit response to objects that don't have the specified customer ids."
+msgstr ""
+
+#: src/API/Reports/Downloads/Stats/DataStore.php:120
+#: src/API/Reports/Downloads/Stats/DataStore.php:136
+msgid "Sorry, fetching downloads data failed."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:79
+msgid "Parameters to pass on to the exported report."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:84
+msgid "When true, email a link to download the export to the requesting user."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:103
+#: src/API/Reports/Import/Controller.php:218
+msgid "Regeneration status."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:109
+#: src/API/Reports/Import/Controller.php:224
+msgid "Regenerate data message."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:132
+msgid "Percentage complete."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:138
+msgid "Export download URL."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:167
+msgid "There is no data to export for the given request."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:175
+msgid "Your report file is being generated."
+msgstr ""
+
+#: src/API/Reports/Export/Controller.php:210
+msgid "Sorry, there is no export with that ID."
+msgstr ""
+
+#: src/API/Reports/Import/Controller.php:190
+msgid "Number of days to import."
+msgstr ""
+
+#: src/API/Reports/Import/Controller.php:197
+msgid "Skip importing existing order data."
+msgstr ""
+
+#: src/API/Reports/Import/Controller.php:246
+msgid "All pending and in-progress import actions have been cancelled."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:184
+msgid "Date the order was created, in the site's timezone."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:190
+msgid "Date the order was created, as GMT."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:196
+msgid "Order status."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:208
+#: src/API/Reports/Products/Controller.php:168
+#: src/API/Reports/Products/Stats/Controller.php:161
+#: src/API/Reports/Variations/Controller.php:182
+msgid "Number of items sold."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:214
+msgid "Net total revenue."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:220
+msgid "Returning or new customer."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:230
+msgid "List of order product IDs, names, quantities."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:236
+msgid "List of order coupons."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:242
+msgid "Order customer information."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:327
+#: src/API/Reports/Orders/Stats/Controller.php:445
+msgid "Limit result set to items that have the specified coupon(s) assigned."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:337
+#: src/API/Reports/Orders/Stats/Controller.php:454
+#: src/API/Reports/Orders/Stats/Controller.php:483
+msgid "Limit result set to items that don't have the specified coupon(s) assigned."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:347
+#: src/API/Reports/Orders/Stats/Controller.php:463
+msgid "Limit result set to items that have the specified tax rate(s) assigned."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:357
+#: src/API/Reports/Orders/Stats/Controller.php:473
+msgid ""
+"Limit result set to items that don't have the specified tax rate(s) "
+"assigned."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:387
+msgid "Limit result set to returning or new customers."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:398
+#: src/API/Reports/Orders/Stats/Controller.php:492
+msgid "Limit result set to specific types of refunds."
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:451
+#. translators: 1: numeric product quantity, 2: name of product
+msgid "%1$s× %2$s"
+msgstr ""
+
+#: src/API/Reports/Orders/Controller.php:484
+#: src/API/Reports/Products/Controller.php:389
+#: src/API/Reports/Variations/Controller.php:360
+msgid "N. Revenue"
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:157
+#: src/API/Reports/Products/Stats/Controller.php:168
+#: src/API/Reports/Revenue/Stats/Controller.php:177
+msgid "Net Sales."
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:165
+msgid "Number of orders"
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:172
+msgid "Average order value."
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:180
+msgid "Average items per order"
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:186
+msgid "Number of items sold"
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:192
+#: src/API/Reports/Revenue/Stats/Controller.php:185
+msgid "Amount discounted by coupons."
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:198
+#: src/API/Reports/Revenue/Stats/Controller.php:191
+msgid "Unique coupons count."
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:204
+msgid "Number of orders done by returning customers"
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:210
+msgid "Number of orders done by new customers"
+msgstr ""
+
+#: src/API/Reports/Orders/Stats/Controller.php:216
+msgid "Number of distinct products sold."
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:130
+msgid "Sorry, fetching performance indicators failed."
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:278
+msgid "A list of stats to query must be provided."
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:433
+#: src/API/Reports/Stock/Controller.php:373
+msgid "Unique identifier for the resource."
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:440
+msgid "The specific chart this stat referrers to."
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:446
+msgid "Human readable label for the stat."
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:452
+msgid "Format of the stat."
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:459
+msgid ""
+"Value of the stat. Returns null if the stat does not exist or cannot be "
+"loaded."
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:490
+msgid "There was an issue loading the report endpoints"
+msgstr ""
+
+#: src/API/Reports/PerformanceIndicators/Controller.php:500
+#. translators: Allowed values is a list of stat endpoints.
+msgid "Limit response to specific report stats. Allowed values: %s."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:174
+#: src/API/Reports/Variations/Controller.php:188
+msgid "Total Net Sales of all items sold."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:180
+#: src/API/Reports/Variations/Controller.php:194
+msgid "Number of orders product appeared in."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:187
+#: src/API/Reports/Stock/Controller.php:385
+#: src/API/Reports/Variations/Controller.php:201
+msgid "Product name."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:193
+#: src/API/Reports/Variations/Controller.php:207
+msgid "Product price."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:199
+#: src/API/Reports/Variations/Controller.php:213
+msgid "Product image."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:205
+#: src/API/Reports/Variations/Controller.php:219
+msgid "Product link."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:211
+msgid "Product category IDs."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:217
+#: src/API/Reports/Variations/Controller.php:231
+msgid "Product inventory status."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:223
+#: src/API/Reports/Variations/Controller.php:237
+msgid "Product inventory quantity."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:229
+#: src/API/Reports/Variations/Controller.php:243
+msgid "Product inventory threshold for low stock."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:235
+msgid "Product variations IDs."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:241
+msgid "Product SKU."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:310
+#: src/API/Reports/Products/Stats/Controller.php:382
+msgid "Limit result to items from the specified categories."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:329
+#: src/API/Reports/Products/Stats/Controller.php:391
+#: src/API/Reports/Variations/Controller.php:310
+msgid "Limit result to items with specified product ids."
+msgstr ""
+
+#: src/API/Reports/Products/Controller.php:339
+#: src/API/Reports/Variations/Controller.php:328
+msgid "Add additional piece of info about each product to the report."
+msgstr ""
+
+#: src/API/Reports/Products/DataStore.php:229
+#. translators: %s is product name
+msgid "%s (Deleted)"
+msgstr ""
+
+#: src/API/Reports/Products/DataStore.php:229
+msgid "(Deleted)"
+msgstr ""
+
+#: src/API/Reports/Products/Stats/Controller.php:198
+msgid "Human readable segment label, either product or variation name."
+msgstr ""
+
+#: src/API/Reports/Products/Stats/Controller.php:400
+#: src/API/Reports/Variations/Controller.php:319
+msgid "Limit result to items with specified variation ids."
+msgstr ""
+
+#: src/API/Reports/Query.php:24
+#. translators: %s: Method name
+msgid "Method '%s' not implemented. Must be overridden in subclass."
+msgstr ""
+
+#: src/API/Reports/Revenue/Stats/Controller.php:199
+msgid "Total of shipping."
+msgstr ""
+
+#: src/API/Reports/Revenue/Stats/Controller.php:207
+msgid "Total of taxes."
+msgstr ""
+
+#: src/API/Reports/Revenue/Stats/Controller.php:215
+msgid "Total of refunds."
+msgstr ""
+
+#: src/API/Reports/Revenue/Stats/Controller.php:229
+msgid "Items sold."
+msgstr ""
+
+#: src/API/Reports/Revenue/Stats/Controller.php:235
+msgid "Products sold."
+msgstr ""
+
+#: src/API/Reports/Revenue/Stats/Controller.php:241
+msgid "Gross Sales."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:391
+msgid "Unique identifier."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:397
+msgid "Stock status."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:404
+msgid "Stock quantity."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:410
+msgid "Manage stock."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:447
+msgid "Ensure result set excludes specific IDs."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:456
+msgid "Limit result set to specific ids."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:465
+msgid "Offset the result set by a specific number of items."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:493
+msgid "Limit result set to those of particular parent IDs."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:502
+msgid "Limit result set to all items except those of a particular parent ID."
+msgstr ""
+
+#: src/API/Reports/Stock/Controller.php:511
+msgid "Limit result set to items assigned a stock report type."
+msgstr ""
+
+#: src/API/Reports/Stock/Stats/Controller.php:88
+msgid "Number of products."
+msgstr ""
+
+#: src/API/Reports/Stock/Stats/Controller.php:94
+msgid "Number of low stock products."
+msgstr ""
+
+#: src/API/Reports/Stock/Stats/Controller.php:105
+#. translators: Stock status. Example: "Number of low stock products
+msgid "Number of %s products."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:160
+msgid "Tax rate ID."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:166
+msgid "Tax rate name."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:172
+msgid "Tax rate."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:184
+msgid "State."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:190
+msgid "Priority."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:196
+#: src/API/Reports/Taxes/Stats/Controller.php:169
+msgid "Total tax."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:202
+#: src/API/Reports/Taxes/Stats/Controller.php:177
+msgid "Order tax."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:208
+#: src/API/Reports/Taxes/Stats/Controller.php:185
+msgid "Shipping tax."
+msgstr ""
+
+#: src/API/Reports/Taxes/Controller.php:286
+msgid "Limit result set to items assigned one or more tax rates."
+msgstr ""
+
+#: src/API/Reports/Taxes/Stats/Controller.php:199
+msgid "Amount of tax codes."
+msgstr ""
+
+#: src/API/Reports/Taxes/Stats/Controller.php:374
+msgid ""
+"Limit result set to all items that have the specified term assigned in the "
+"taxes taxonomy."
+msgstr ""
+
+#: src/API/Reports/Taxes/Stats/DataStore.php:225
+msgid "Sorry, fetching tax data failed."
+msgstr ""
+
+#: src/API/Reports/TimeInterval.php:589 src/API/Reports/TimeInterval.php:621
+#. translators: 1: parameter name
+msgid "%1$s is not a numerically indexed array."
+msgstr ""
+
+#: src/API/Reports/TimeInterval.php:601
+#. translators: %s: parameter name
+msgid "%s must contain 2 numbers."
+msgstr ""
+
+#: src/API/Reports/TimeInterval.php:633
+#. translators: %s: parameter name
+msgid "%s must contain 2 valid dates."
+msgstr ""
+
+#: src/API/Reports/Variations/Controller.php:225
+msgid "Product attributes."
+msgstr ""
+
+#: src/API/Taxes.php:37
+msgid "Search by similar tax code."
+msgstr ""
+
+#: src/API/Taxes.php:42
+msgid "Limit result set to items that have the specified rate ID(s) assigned."
+msgstr ""
+
+#: src/API/Themes.php:65
+msgid "Sorry, you are not allowed to install themes on this site."
+msgstr ""
+
+#: src/API/Themes.php:80
+msgid "Specified file failed upload test."
+msgstr ""
+
+#: src/API/Themes.php:164
+msgid "Theme installation status."
+msgstr ""
+
+#: src/API/Themes.php:170
+msgid "Theme installation message."
+msgstr ""
+
+#: src/API/Themes.php:176
+msgid "Uploaded theme."
+msgstr ""
+
+#: src/API/Themes.php:195
+msgid "A zip file of the theme to be uploaded."
+msgstr ""
+
+#: src/FeaturePlugin.php:246
+#. translators: 1: URL of WooCommerce plugin, 2: The minimum WooCommerce
+#. version number
+msgid ""
+"The WooCommerce Admin feature plugin requires <a "
+"href=\"%1$s\">WooCommerce</a> %2$s or greater to be installed and active."
+msgstr ""
+
+#: src/FeaturePlugin.php:255
+#. translators: 1: URL of WordPress.org, 2: The minimum WordPress version
+#. number
+msgid ""
+"The WooCommerce Admin feature plugin requires <a "
+"href=\"%1$s\">WordPress</a> %2$s or greater to be installed and active."
+msgstr ""
+
+#: src/FeaturePlugin.php:303
+msgid ""
+"You have installed a development version of WooCommerce Admin which "
+"requires files to be built. From the plugin directory, run <code>npm "
+"install</code> to install dependencies, <code>npm run build</code> to build "
+"the files."
+msgstr ""
+
+#: src/FeaturePlugin.php:306
+#. translators: 1: URL of GitHub Repository build page
+msgid ""
+"Or you can download a pre-built version of the plugin by visiting <a "
+"href=\"%1$s\">the releases page in the repository</a>."
+msgstr ""
+
+#: src/Features/Onboarding.php:126
+msgid "Fashion, apparel, and accessories"
+msgstr ""
+
+#: src/Features/Onboarding.php:127
+msgid "Health and beauty"
+msgstr ""
+
+#: src/Features/Onboarding.php:128
+msgid "Art, music, and photography"
+msgstr ""
+
+#: src/Features/Onboarding.php:129
+msgid "Electronics and computers"
+msgstr ""
+
+#: src/Features/Onboarding.php:130
+msgid "Food and drink"
+msgstr ""
+
+#: src/Features/Onboarding.php:131
+msgid "Home, furniture, and garden"
+msgstr ""
+
+#: src/Features/Onboarding.php:146
+msgid "Physical products"
+msgstr ""
+
+#: src/Features/Onboarding.php:147
+msgid "Products you ship to customers."
+msgstr ""
+
+#: src/Features/Onboarding.php:151
+msgid "Virtual products that customers download."
+msgstr ""
+
+#: src/Features/Onboarding.php:154
+msgid "Subscriptions"
+msgstr ""
+
+#: src/Features/Onboarding.php:158
+msgid "Memberships"
+msgstr ""
+
+#: src/Features/Onboarding.php:162
+msgid "Composite Products"
+msgstr ""
+
+#: src/Features/Onboarding.php:166
+msgid "Bookings"
+msgstr ""
+
+#: src/Features/Onboarding.php:325
+#. translators: Amount of product per year (e.g. Bookings - $240.00 per year)
+msgid " — %s per year"
+msgstr ""
+
+#: src/Features/Onboarding.php:330
+#. translators: site currency symbol (used to show that the product costs
+#. money)
+msgid " — %s"
+msgstr ""
+
+#: src/Features/Onboarding.php:632 src/Features/Onboarding.php:720
+msgid "New onboarding experience"
+msgstr ""
+
+#: src/Features/Onboarding.php:633
+msgid ""
+"If you want to try out the new WooCommerce onboarding experience, click the "
+"button below."
+msgstr ""
+
+#: src/Features/Onboarding.php:634 src/Features/Onboarding.php:699
+#: src/Features/Onboarding.php:705
+msgid "Enable"
+msgstr ""
+
+#: src/Features/Onboarding.php:693
+msgid "WooCommerce Onboarding"
+msgstr ""
+
+#: src/Features/Onboarding.php:695
+msgid "Profile Setup Wizard"
+msgstr ""
+
+#: src/Features/Onboarding.php:696
+msgid ""
+"If you need to enable or disable the setup wizard again, please click on "
+"the button below."
+msgstr ""
+
+#: src/Features/Onboarding.php:698 src/Features/Onboarding.php:706
+#: src/Features/Onboarding.php:722
+msgid "Disable"
+msgstr ""
+
+#: src/Features/Onboarding.php:702
+msgid "Task List"
+msgstr ""
+
+#: src/Features/Onboarding.php:703
+msgid ""
+"If you need to enable or disable the task list, please click on the button "
+"below."
+msgstr ""
+
+#: src/Features/Onboarding.php:710
+msgid "Calypso / WordPress.com"
+msgstr ""
+
+#: src/Features/Onboarding.php:712
+msgid "Quickly access the Jetpack connection flow in Calypso."
+msgstr ""
+
+#: src/Features/Onboarding.php:716
+msgid "Quickly access the WooCommerce.com connection flow in Calypso."
+msgstr ""
+
+#: src/Features/Onboarding.php:721
+msgid ""
+"To disable the new WooCommerce onboarding experience, click the button "
+"below."
+msgstr ""
+
+#: src/Features/Onboarding.php:769 src/Features/Onboarding.php:775
+msgid "WooCommerce Helper was not able to connect to WooCommerce.com."
+msgstr ""
+
+#: src/Loader.php:562
+#. translators: %1$s: updated title, %2$s: blog info name
+msgid "%1$s &lsaquo; %2$s"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Admin"
+msgstr ""
+
+#: src/Loader.php:694
+msgid "Settings for WooCommerce admin reporting."
+msgstr ""
+
+#: src/Loader.php:710
+msgid "Excluded report order statuses"
+msgstr ""
+
+#: src/Loader.php:711
+msgid "Statuses that should not be included when calculating report totals."
+msgstr ""
+
+#: src/Loader.php:719
+msgid "Actionable order statuses"
+msgstr ""
+
+#: src/Loader.php:720
+msgid "Statuses that require extra action on behalf of the store admin."
+msgstr ""
+
+#: src/Loader.php:728 src/Loader.php:729
+msgid "Default Date Range"
+msgstr ""
+
+#: src/Notes/DataStore.php:115
+msgid "Invalid data store for admin note."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:303
+msgid "The admin note name prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:316
+msgid "The admin note type prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:324
+#. translators: %s: admin note type.
+msgid "The admin note type prop (%s) is not one of the supported types."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:340
+msgid "The admin note locale prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:353
+msgid "The admin note title prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:384
+msgid "The admin note content prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:397
+msgid "The admin note icon prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:414
+msgid "The admin note content_data prop must be an instance of stdClass."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:427
+msgid "The admin note status prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:435
+#. translators: %s: admin note status property.
+msgid "The admin note status prop (%s) is not one of the supported statuses."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:451
+msgid "The admin note source prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:464
+msgid "The admin note date prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:512
+msgid "The admin note action name prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Note.php:516
+msgid "The admin note action label prop cannot be empty."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Add_First_Product.php:42
+msgid ""
+"Grow your revenue by adding products to your store. Add products manually, "
+"import from a sheet, or migrate from another platform."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Add_First_Product.php:52
+msgid "Add a product"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Facebook_Extension.php:61
+msgid ""
+"Grow your business by targeting the right people and driving sales with "
+"Facebook. You can install this free extension now."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Facebook_Extension.php:72
+msgid "Install now"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Facebook_Extension.php:101
+msgid ""
+"You're almost ready to start driving sales with Facebook. Complete the "
+"setup steps to control how WooCommerce integrates with your Facebook store."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Facebook_Extension.php:102
+msgid "Market on Facebook — Installed"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Facebook_Extension.php:108
+msgid "Setup"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Giving_Feedback_Notes.php:52
+msgid "Review your experience"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Giving_Feedback_Notes.php:53
+msgid ""
+"If you like WooCommerce Admin please leave us a 5 star rating. A huge "
+"thanks in advance!"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Giving_Feedback_Notes.php:61
+msgid "Review"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Historical_Data.php:44
+msgid "WooCommerce Admin: Historical Analytics Data"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Historical_Data.php:45
+msgid ""
+"To view your historical analytics data, you must process your existing "
+"orders and customers."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Historical_Data.php:54
+msgid "Get Started"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Mobile_App.php:46
+msgid ""
+"Install the WooCommerce mobile app to manage orders, receive sales "
+"notifications, and view key metrics — wherever you are."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Mobile_App.php:49
+msgid "Install Woo mobile app"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_New_Sales_Record.php:87
+#. translators: 1 and 4: Date (e.g. October 16th), 2 and 3: Amount (e.g.
+#. $160.00)
+msgid ""
+"Woohoo, %1$s was your record day for sales! Net Sales was %2$s beating the "
+"previous record of %3$s set on %4$s."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_New_Sales_Record.php:108
+msgid "New sales record!"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_New_Sales_Record.php:115
+msgid "View report"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Onboarding.php:37
+msgid "Congratulations - your store is ready for launch!"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Onboarding.php:38
+msgid "You’re ready to take your first order - may the sales roll in!"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Onboarding.php:46
+msgid "Market my store"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Onboarding_Email_Marketing.php:48
+msgid ""
+"We're here for you — get tips, product updates, and inspiration straight to "
+"your mailbox."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Onboarding_Email_Marketing.php:51
+msgid "Tips, product updates, and inspiration"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Onboarding_Email_Marketing.php:58
+msgid "Yes please!"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Order_Milestones.php:184
+msgid "First order"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Order_Milestones.php:196
+#. translators: Number of orders processed.
+msgid "Congratulations on processing %s orders!"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Order_Milestones.php:213
+msgid ""
+"Congratulations on getting your first order from a customer! Learn how to "
+"manage your orders."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Order_Milestones.php:215
+msgid ""
+"You've hit the 10 orders milestone! Look at you go. Browse some WooCommerce "
+"success stories for inspiration."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Order_Milestones.php:224
+msgid ""
+"Another order milestone! Take a look at your Orders Report to review your "
+"orders to date."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Order_Milestones.php:247
+msgid "Browse"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Order_Milestones.php:260
+msgid "Review your orders"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Settings_Notes.php:41
+msgid "Looking for the Store Notice setting?"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Settings_Notes.php:42
+msgid "It can now be found in the Customizer."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Settings_Notes.php:50
+msgid "Open Customizer"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Tracking_Opt_In.php:58
+#. translators: 1: open link to WooCommerce.com settings, 2: open link to
+#. WooCommerce.com tracking documentation, 3: close link tag.
+msgid ""
+"Gathering usage data allows us to improve WooCommerce. Your store will be "
+"considered as we evaluate new features, judge the quality of an update, or "
+"determine if an improvement makes sense. You can always visit the "
+"%1$sSettings%3$s and choose to stop sharing data. %2$sRead more%3$s about "
+"what data we collect."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Tracking_Opt_In.php:71
+msgid "Help WooCommerce improve with usage tracking"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Tracking_Opt_In.php:78
+msgid "Dismiss"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Tracking_Opt_In.php:79
+msgid "Activate usage tracking"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Welcome_Message.php:40
+msgid "New feature(s)"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Welcome_Message.php:41
+msgid ""
+"Welcome to the new WooCommerce experience! In this new release you'll be "
+"able to have a glimpse of how your store is doing in the Dashboard, manage "
+"important aspects of your business (such as managing orders, stock, "
+"reviews) from anywhere in the interface, dive into your store data with a "
+"completely new Analytics section and more!"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:184
+msgid "Connect to WooCommerce.com"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:185
+msgid "Connect to get important product notifications and updates."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:313
+#. translators: name of the extension subscription expiring soon
+msgid "%s subscription expiring soon"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:319
+#. translators: number of days until the subscription expires
+msgid ""
+"Your subscription expires in %d days. Enable autorenew to avoid losing "
+"updates and access to support."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:343
+msgid "Enable Autorenew"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:375
+#. translators: name of the extension subscription that expired
+msgid "%s subscription expired"
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:381
+#. translators: date the subscription expired, e.g. Jun 7th 2018
+msgid ""
+"Your subscription expired on %s. Get a new subscription to continue "
+"receiving updates and access to support."
+msgstr ""
+
+#: src/Notes/WC_Admin_Notes_Woo_Subscriptions_Notes.php:407
+msgid "Renew Subscription"
+msgstr ""
+
+#: src/PageController.php:197
+msgid ""
+"Current page retrieval should be called on or after the `current_screen` "
+"hook."
+msgstr ""
+
+#: src/ReportCSVEmail.php:74
+msgid "Your Report Download"
+msgstr ""
+
+#: src/ReportCSVEmail.php:83
+msgid "[{site_title}]: Your {report_name} Report download is ready"
+msgstr ""
+
+#: src/ReportsSync.php:147
+msgid ""
+"An import is already in progress.  Please allow the previous import to "
+"complete before beginning a new one."
+msgstr ""
+
+#: src/ReportsSync.php:154
+msgid ""
+"Report table data is being rebuilt.  Please allow some time for data to "
+"fully populate."
+msgstr ""
+
+#: src/ReportsSync.php:275
+msgid "Report table data is being deleted."
+msgstr ""
+
+#: vendor/autoload_packages.php:100
+#: vendor/automattic/jetpack-autoloader/src/autoload.php:100
+#. translators: %s Name of a PHP Class
+msgid "Not all plugins have loaded yet but we requested the class %s"
+msgstr ""
+
+#: woocommerce-admin.php:38 woocommerce-admin.php:56
+#. translators: 1: composer command. 2: plugin directory
+msgid ""
+"Your installation of the WooCommerce Admin feature plugin is incomplete. "
+"Please run %1$s within the %2$s directory."
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/woocommerce/woocommerce-admin"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"A new JavaScript-driven interface for managing your store. The plugin "
+"includes new and improved reports, and a dashboard to monitor all the "
+"important key metrics of your site."
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://woocommerce.com/"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2426
+msgctxt ""
+"A sentence describing filters for Customers. See screen shot for context: "
+"https://cloudup.com/cCsm3GeXJbE"
+msgid "Customers Match {{select /}} Filters"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2430
+msgctxt "customer names"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2434
+msgctxt "customer names"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2438
+msgctxt "countries"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2442
+msgctxt "countries"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2447
+msgctxt "customer usernames"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2452
+msgctxt "customer usernames"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2456
+msgctxt "customer emails"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2460
+msgctxt "customer emails"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2464
+msgctxt "number of orders"
+msgid "Less Than"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2468
+msgctxt "number of orders"
+msgid "More Than"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2472
+msgctxt "number of orders"
+msgid "Between"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2476
+msgctxt "total spend by customer"
+msgid "Less Than"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2480
+msgctxt "total spend by customer"
+msgid "More Than"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2484
+msgctxt "total spend by customer"
+msgid "Between"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2488
+msgctxt "average order value of customer"
+msgid "Less Than"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2491
+msgctxt "average order value of customer"
+msgid "More Than"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2495
+msgctxt "average order value of customer"
+msgid "Between"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2499
+msgctxt "date"
+msgid "Before"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2503
+msgctxt "date"
+msgid "After"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2507
+msgctxt "date"
+msgid "Between"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2510
+msgctxt ""
+"A sentence describing filters for Downloads. See screen shot for context: "
+"https://cloudup.com/ccxhyH2mEDg"
+msgid "Downloads Match {{select /}} Filters"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2515
+msgctxt "products"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2520
+msgctxt "products"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2524
+msgctxt "order numbers"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2528
+msgctxt "order numbers"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2532
+msgctxt "IP addresses"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2536
+msgctxt "IP addresses"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2539
+msgctxt ""
+"A sentence describing filters for Orders. See screen shot for context: "
+"https://cloudup.com/cSsUY9VeCVJ"
+msgid "Orders Match {{select /}} Filters"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2543
+msgctxt "order status"
+msgid "Is"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2547
+msgctxt "order status"
+msgid "Is Not"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2551
+msgctxt "coupon code"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2555
+msgctxt "coupon code"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2559
+msgctxt "tax rate"
+msgid "Includes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2563
+msgctxt "tax rate"
+msgid "Excludes"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2566
+msgctxt "customer type"
+msgid "N/A"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2569
+msgctxt "customer type"
+msgid "New"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2572
+msgctxt "customer type"
+msgid "Returning"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2577
+msgctxt "Indication of a low quantity"
+msgid "Low"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2580
+msgctxt "categories"
+msgid "+%d more"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2583
+msgctxt "store product count or revenue"
+msgid "%s+"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2586
+msgctxt "store product count or revenue range"
+msgid "%1$s - %2$s"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2589
+msgctxt "Date range inputs arranged on a single line"
+msgid "{{after /}}{{span}} and {{/span}}{{before /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2592
+msgctxt "Numerical range inputs arranged on a single line"
+msgid "{{rangeStart /}}{{span}} and {{/span}}{{rangeEnd /}}"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2596
+msgctxt "maximum value input"
+msgid "%(field)s maximum amount"
+msgstr ""
+
+#: languages/woocommerce-admin.php:2600
+msgctxt "minimum value input"
+msgid "%(field)s minimum amount"
+msgstr ""
