@@ -72,8 +72,8 @@ class OrdersScheduler extends ImportScheduler {
 		$offset       = $page > 1 ? ( $page - 1 ) * $limit : 0;
 
 		if ( is_int( $days ) ) {
-			$days_ago      = date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) );
-			$where_clause .= " AND post_date >= '{$days_ago}'";
+			$days_ago      = gmdate( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) );
+			$where_clause .= " AND post_date_gmt >= '{$days_ago}'";
 		}
 
 		if ( $skip_existing ) {
@@ -96,7 +96,7 @@ class OrdersScheduler extends ImportScheduler {
 				WHERE post_type IN ( 'shop_order', 'shop_order_refund' )
 				AND post_status NOT IN ( 'wc-auto-draft', 'auto-draft', 'trash' )
 				{$where_clause}
-				ORDER BY post_date ASC
+				ORDER BY post_date_gmt ASC
 				LIMIT %d
 				OFFSET %d",
 				$limit,

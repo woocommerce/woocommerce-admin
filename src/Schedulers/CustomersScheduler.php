@@ -56,7 +56,7 @@ class CustomersScheduler extends ImportScheduler {
 	public static function get_items( $limit = 10, $page = 1, $days = false, $skip_existing = false ) {
 		if ( is_int( $days ) ) {
 			$query_args['date_query'] = array(
-				'after' => date( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ),
+				'after' => gmdate( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ),
 			);
 		}
 
