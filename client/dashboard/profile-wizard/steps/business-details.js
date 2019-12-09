@@ -141,6 +141,11 @@ class BusinessDetails extends Component {
 	}
 
 	convertCurrency( value ) {
+		const region = getCurrencyRegion( this.props.settings.woocommerce_default_country );
+		if ( 'US' === region ) {
+			return value;
+		}
+
 		// These are rough exchange rates from USD.  Precision is not paramount.
 		// The keys here should match the keys in `getCurrencyData`.
 		const exchangeRates = {
@@ -159,10 +164,11 @@ class BusinessDetails extends Component {
 			CA: 1.32,
 		};
 
-		const region = getCurrencyRegion( this.props.settings.woocommerce_default_country );
 		const exchangeRate = exchangeRates[ region ] || exchangeRates.US;
+		const digits = exchangeRate.toString().split( '.' )[ 0 ].length;
+		const multiplier = Math.pow( 10, 2 + digits );
 
-		return Math.round( value * exchangeRate / 1000 ) * 1000;
+		return Math.round( value * exchangeRate / multiplier ) * multiplier;
 	}
 
 	numberFormat( value ) {
