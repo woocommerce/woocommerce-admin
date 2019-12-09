@@ -54,6 +54,16 @@ class CustomersScheduler extends ImportScheduler {
 	 * @param bool     $skip_existing Skip already imported customers.
 	 */
 	public static function get_items( $limit = 10, $page = 1, $days = false, $skip_existing = false ) {
+		$customer_roles = apply_filters( 'woocommerce_analytics_import_customer_roles', array( 'customer' ) );
+		$query_args     = array(
+			'fields'   => 'ID',
+			'orderby'  => 'ID',
+			'order'    => 'ASC',
+			'number'   => $limit,
+			'paged'    => $page,
+			'role__in' => $customer_roles,
+		);
+
 		if ( is_int( $days ) ) {
 			$query_args['date_query'] = array(
 				'after' => gmdate( 'Y-m-d 00:00:00', time() - ( DAY_IN_SECONDS * $days ) ),
@@ -64,17 +74,7 @@ class CustomersScheduler extends ImportScheduler {
 			add_action( 'pre_user_query', array( __CLASS__, 'exclude_existing_customers_from_query' ) );
 		}
 
-		$customer_roles = apply_filters( 'woocommerce_analytics_import_customer_roles', array( 'customer' ) );
-		$customer_query = new \WP_User_Query(
-			array(
-				'fields'   => 'ID',
-				'orderby'  => 'ID',
-				'order'    => 'ASC',
-				'number'   => $limit,
-				'paged'    => $page,
-				'role__in' => $customer_roles,
-			)
-		);
+		$customer_query = new \WP_User_Query( $query_args );
 
 		remove_action( 'pre_user_query', array( __CLASS__, 'exclude_existing_customers_from_query' ) );
 
