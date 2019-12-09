@@ -158,25 +158,19 @@ class OrdersScheduler extends ImportScheduler {
 			return;
 		}
 
-		$result = array_sum(
-			array(
-				OrdersStatsDataStore::sync_order( $order_id ),
-				ProductsDataStore::sync_order_products( $order_id ),
-				CouponsDataStore::sync_order_coupons( $order_id ),
-				TaxesDataStore::sync_order_taxes( $order_id ),
-			)
+		$results = array(
+			OrdersStatsDataStore::sync_order( $order_id ),
+			ProductsDataStore::sync_order_products( $order_id ),
+			CouponsDataStore::sync_order_coupons( $order_id ),
+			TaxesDataStore::sync_order_taxes( $order_id ),
 		);
 
 		ReportsCache::invalidate();
 
-		// If all updates were either skipped or successful, we're done.
-		// The update methods return -1 for skip, or a boolean success indicator.
-		if ( 4 === absint( $result ) ) {
-			return;
+		// Check if any syncs returned false or -1 and reschedule their import if so.
+		if ( count( array_intersect( $results, array( -1, false ) ) ) ) {
+			self::schedule_action( 'import', array( $order_id ) );
 		}
-
-		// Otherwise assume an error occurred and reschedule.
-		self::schedule_action( 'import', array( $order_id ) );
 	}
 
 	/**
