@@ -1,6 +1,6 @@
 {
   "name": "@woocommerce/admin-library",
-  "version": "0.22.0",
+  "version": "0.23.1",
   "homepage": "https://woocommerce.github.io/woocommerce-admin/",
   "repository": {
     "type": "git",
@@ -124,7 +124,7 @@
     "@wordpress/jest-preset-default": "5.1.1",
     "@wordpress/postcss-themes": "1.0.5",
     "ast-types": "0.13.2",
-    "autoprefixer": "9.7.2",
+    "autoprefixer": "9.7.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.0.3",
     "babel-loader": "8.0.6",
@@ -134,8 +134,8 @@
     "concurrently": "4.1.2",
     "copy-webpack-plugin": "5.0.5",
     "cross-env": "6.0.3",
-    "css-loader": "3.2.0",
-    "deasync": "0.1.15",
+    "css-loader": "3.3.0",
+    "deasync": "0.1.16",
     "deep-freeze": "0.0.1",
     "docsify-cli": "4.4.0",
     "enzyme-adapter-react-16": "1.15.1",
