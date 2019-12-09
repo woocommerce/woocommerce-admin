@@ -174,6 +174,11 @@ class Shipping extends Component {
 				),
 				content: (
 					<ShippingRates
+						buttonText={
+							[ 'US', 'GB', 'CA', 'AU' ].includes( countryCode )
+								? __( 'Proceed', 'woocommerce-admin' )
+								: __( 'Complete task', 'woocommerce-admin' )
+						}
 						shippingZones={ this.state.shippingZones }
 						onComplete={ this.completeStep }
 						{ ...this.props }
