@@ -37,7 +37,7 @@ class ReportsSync {
 	 */
 	public static function get_schedulers() {
 		return apply_filters(
-			'woocommerce_admin_report_syncs',
+			'woocommerce_analytics_report_schedulers',
 			array(
 				new CustomersScheduler(),
 				new OrdersScheduler(),
