@@ -10,8 +10,8 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
-import { updateQueryString } from '@woocommerce/navigation';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getNewPath, updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -63,6 +63,9 @@ class Dashboard extends Component {
 		}
 
 		const productIds = this.getProductIds();
+		const backUrl = getAdminLink( getNewPath( {}, '/', {} ) );
+		const { connectNonce } = getSetting( 'onboarding', {} );
+
 		if ( ! productIds.length ) {
 			return;
 		}
@@ -70,8 +73,11 @@ class Dashboard extends Component {
 		document.body.classList.add( 'woocommerce-admin-is-loading' );
 
 		const url = addQueryArgs( 'https://woocommerce.com/cart', {
-			'wccom-back': window.location.href,
+			'wccom-site': getSetting( 'siteUrl' ),
+			'wccom-woo-version': getSetting( 'wcVersion' ),
 			'wccom-replace-with': productIds.join( ',' ),
+			'wccom-connect-nonce': connectNonce,
+			'wccom-back': backUrl,
 		} );
 		window.location = url;
 	}
