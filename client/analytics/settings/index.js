@@ -267,11 +267,9 @@ export default compose(
 	),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
-		// const { updateSettings } = dispatch( 'wc-api' );
 
 		return {
 			createNotice,
-			// updateSettings,
 		};
 	} )
 )( useFilters( SETTINGS_FILTER )( Settings ) );
