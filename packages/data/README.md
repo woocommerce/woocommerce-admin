@@ -15,5 +15,28 @@ _This package assumes that your code will run in an **ES2015+** environment. If 
 ## Usage
 
 ```JS
-import Store from '@woocommerce/data';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { withSelect } from '@wordpress/data';
+
+function Settings( { settings } ) {
+	return (
+		<ul>
+			{ settings.map( setting => (
+				<li>{ setting.name }</li>
+			) ) }
+		</ul>
+	);
+}
+
+const MySettings = withSelect( select => {
+	const { getSettings } = select( SETTINGS_STORE_NAME );
+
+	return {
+		settings: getSettings(),
+	};
+} )( Settings );
+
+// Rendered in the application:
+//
+//  <MySettings />
 ```
