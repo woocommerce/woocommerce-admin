@@ -177,7 +177,7 @@ class Settings extends Component {
 
 	render() {
 		const { createNotice, query } = this.props;
-		const { hasError } = this.state;
+		const { hasError, saving } = this.state;
 		if ( hasError ) {
 			return null;
 		}
@@ -198,7 +198,7 @@ class Settings extends Component {
 						<Button isDefault onClick={ this.resetDefaults }>
 							{ __( 'Reset Defaults', 'woocommerce-admin' ) }
 						</Button>
-						<Button isPrimary onClick={ this.saveChanges }>
+						<Button isPrimary isBusy={ saving } onClick={ this.saveChanges }>
 							{ __( 'Save Settings', 'woocommerce-admin' ) }
 						</Button>
 					</div>
