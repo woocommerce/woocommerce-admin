@@ -141,6 +141,15 @@ class Loader {
 	}
 
 	/**
+	 * Helper function indicating whether the current user has the required analytics capability.
+	 *
+	 * @return bool
+	 */
+	public static function user_can_analytics() {
+		return current_user_can( static::get_analytics_capability() );
+	}
+
+	/**
 	 * Returns if a specific wc-admin feature is enabled.
 	 *
 	 * @param  string $feature Feature slug.
@@ -401,7 +410,7 @@ class Loader {
 			return;
 		}
 
-		if ( ! current_user_can( static::get_analytics_capability() ) ) {
+		if ( ! static::user_can_analytics() ) {
 			return;
 		}
 
@@ -451,7 +460,7 @@ class Loader {
 	 * @param array $section Section to create breadcrumb from.
 	 */
 	private static function output_breadcrumbs( $section ) {
-		if ( ! current_user_can( static::get_analytics_capability() ) ) {
+		if ( ! static::user_can_analytics() ) {
 			return;
 		}
 		?>
@@ -474,7 +483,7 @@ class Loader {
 			return;
 		}
 
-		if ( ! current_user_can( static::get_analytics_capability() ) ) {
+		if ( ! static::user_can_analytics() ) {
 			return;
 		}
 
