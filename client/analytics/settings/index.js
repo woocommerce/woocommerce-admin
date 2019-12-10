@@ -146,8 +146,7 @@ class Settings extends Component {
 			recordEvent( 'analytics_settings_save', eventProps );
 		}
 
-		// TODO: remove this optimistic set of isDirty to false once #2541 is resolved.
-		this.setState( { saving: true, isDirty: false } );
+		this.setState( { saving: true } );
 
 		// On save, reset persisted query properties of Nav Menu links to default
 		query.period = undefined;
