@@ -34,15 +34,24 @@ class ReportsSync {
 	 * Get classes for syncing data.
 	 *
 	 * @return array
+	 * @throws \Exception Throws exception when invalid data is found.
 	 */
 	public static function get_schedulers() {
-		return apply_filters(
+		$schedulers = apply_filters(
 			'woocommerce_analytics_report_schedulers',
 			array(
 				new CustomersScheduler(),
 				new OrdersScheduler(),
 			)
 		);
+
+		foreach ( $schedulers as $scheduler ) {
+			if ( ! is_subclass_of( $scheduler, 'Automattic\WooCommerce\Admin\Schedulers\ImportScheduler' ) ) {
+				throw new \Exception( __( 'Report sync schedulers should be derived from the Automattic\WooCommerce\Admin\Schedulers\ImportScheduler class.', 'woocommerce-admin' ) );
+			}
+		}
+
+		return $schedulers;
 	}
 
 	/**
