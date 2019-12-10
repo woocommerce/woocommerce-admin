@@ -16,9 +16,12 @@ _This package assumes that your code will run in an **ES2015+** environment. If 
 
 ```JS
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
-import { withSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 
-function Settings( { settings } ) {
+function MySettings() {
+	const settings = useSelect( select => {
+		return select( SETTINGS_STORE_NAME ).getSettings();
+	} );
 	return (
 		<ul>
 			{ settings.map( setting => (
@@ -27,14 +30,6 @@ function Settings( { settings } ) {
 		</ul>
 	);
 }
-
-const MySettings = withSelect( select => {
-	const { getSettings } = select( SETTINGS_STORE_NAME );
-
-	return {
-		settings: getSettings(),
-	};
-} )( Settings );
 
 // Rendered in the application:
 //
