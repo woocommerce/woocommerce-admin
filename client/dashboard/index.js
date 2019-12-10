@@ -10,7 +10,7 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { getNewPath, updateQueryString } from '@woocommerce/navigation';
 
 /**
@@ -63,7 +63,7 @@ class Dashboard extends Component {
 		}
 
 		const productIds = this.getProductIds();
-		const backUrl = getAdminLink( getNewPath( {}, '/', {} ) );
+		const backPath = getNewPath( {}, '/', {} );
 		const { connectNonce } = getSetting( 'onboarding', {} );
 
 		if ( ! productIds.length ) {
@@ -77,7 +77,7 @@ class Dashboard extends Component {
 			'wccom-woo-version': getSetting( 'wcVersion' ),
 			'wccom-replace-with': productIds.join( ',' ),
 			'wccom-connect-nonce': connectNonce,
-			'wccom-back': backUrl,
+			'wccom-back': backPath,
 		} );
 		window.location = url;
 	}
