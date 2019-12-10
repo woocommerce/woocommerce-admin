@@ -173,7 +173,7 @@ abstract class ImportScheduler {
 	public static function delete_batch() {
 		wc_admin_record_tracks_event( 'delete_import_data_job_start', array( 'type' => static::$name ) );
 
-		$batch_size = static::get_batch_size( static::get_batch_size( 'delete' ) );
+		$batch_size = static::get_batch_size( 'delete' );
 		static::delete( $batch_size );
 
 		ReportsCache::invalidate();
