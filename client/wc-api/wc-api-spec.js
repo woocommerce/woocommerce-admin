@@ -12,7 +12,6 @@ import options from './options';
 import reportItems from './reports/items';
 import reportStats from './reports/stats';
 import reviews from './reviews';
-import settings from './settings';
 import user from './user';
 
 function createWcApiSpec() {
@@ -24,7 +23,6 @@ function createWcApiSpec() {
 			...notes.mutations,
 			...onboarding.mutations,
 			...options.mutations,
-			...settings.mutations,
 			...user.mutations,
 		},
 		selectors: {
@@ -36,7 +34,6 @@ function createWcApiSpec() {
 			...reportItems.selectors,
 			...reportStats.selectors,
 			...reviews.selectors,
-			...settings.selectors,
 			...user.selectors,
 		},
 		operations: {
@@ -55,7 +52,6 @@ function createWcApiSpec() {
 					...reportItems.operations.read( resourceNames ),
 					...reportStats.operations.read( resourceNames ),
 					...reviews.operations.read( resourceNames ),
-					...settings.operations.read( resourceNames ),
 					...user.operations.read( resourceNames ),
 				];
 			},
@@ -66,7 +62,6 @@ function createWcApiSpec() {
 					...notes.operations.update( resourceNames, data ),
 					...onboarding.operations.update( resourceNames, data ),
 					...options.operations.update( resourceNames, data ),
-					...settings.operations.update( resourceNames, data ),
 					...user.operations.update( resourceNames, data ),
 				];
 			},
