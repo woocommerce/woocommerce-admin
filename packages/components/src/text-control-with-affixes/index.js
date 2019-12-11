@@ -25,6 +25,7 @@ class TextControlWithAffixes extends Component {
 			prefix,
 			suffix,
 			type,
+			disabled,
 			...props
 		} = this.props;
 
@@ -44,7 +45,7 @@ class TextControlWithAffixes extends Component {
 		const affixesClasses = classnames( 'text-control-with-affixes', {
 			'text-control-with-prefix': prefix,
 			'text-control-with-suffix': suffix,
-			disabled: this.props.disabled,
+			disabled,
 		} );
 
 		return (
@@ -66,6 +67,7 @@ class TextControlWithAffixes extends Component {
 						value={ value }
 						onChange={ onChangeValue }
 						aria-describedby={ describedby.join( ' ' ) }
+						disabled={ disabled }
 						{ ...props }
 					/>
 
@@ -121,6 +123,10 @@ TextControlWithAffixes.propTypes = {
 	 * Markup to be appended at the end of the input.
 	 */
 	suffix: PropTypes.node,
+	/**
+	 * Whether or not the input is disabled.
+	 */
+	disabled: PropTypes.bool,
 };
 
 export default withInstanceId( TextControlWithAffixes );
