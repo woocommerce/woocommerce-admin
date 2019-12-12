@@ -6,12 +6,11 @@
  */
 
 /**
- * Get the currencies available.
- *
- * @return array
+ * Make the currency settings available to the javascript client using
+ * AssetDataRegistry, available in WooCommerce 3.9.
  */
-function get_currencies() {
-	return array(
+function add_currency_settings() {
+	$currencies = array(
 		array(
 			'label' => __( 'United States Dollar', 'woocommerce-admin' ),
 			'value' => 'USD',
@@ -25,6 +24,12 @@ function get_currencies() {
 			'value' => 'ZAR',
 		),
 	);
+
+	$data_registry = Automattic\WooCommerce\Blocks\Package::container()->get(
+		Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry::class
+	);
+
+	$data_registry->add( 'multiCurrency', $currencies );
 }
 
 /**
@@ -35,6 +40,8 @@ function add_report_register_script() {
 	if ( ! class_exists( 'Automattic\WooCommerce\Admin\Loader' ) || ! \Automattic\WooCommerce\Admin\Loader::is_admin_page() ) {
 		return;
 	}
+
+	add_currency_settings();
 
 	wp_register_script(
 		'sql-modification',
@@ -51,15 +58,6 @@ function add_report_register_script() {
 	);
 
 	wp_enqueue_script( 'sql-modification' );
-
-	// todo: This is not the right way to interact with wcSettings. Update once WooCommerce 3.9 is available.
-	wp_add_inline_script(
-		'sql-modification',
-		"wcSettings.multiCurrency = JSON.parse( decodeURIComponent( '"
-		. esc_js( rawurlencode( wp_json_encode( get_currencies() ) ) )
-		. "' ) );",
-		'before'
-	);
 }
 add_action( 'admin_enqueue_scripts', 'add_report_register_script' );
 
