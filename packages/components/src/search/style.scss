@@ -21,15 +21,8 @@
 		font-size: 13px;
 		width: 100%;
 		padding: 3px 2px 3px 36px;
-
-		// WP 5.3+ introduced rounder corners and darker borders.
-		body.branch-5-3 & {
-			border-radius: 4px;
-		}
-
-		body.branch-5-3 &:not(.is-active) {
-			border-color: $core-form-grey;
-		}
+		border-radius: 4px;
+		border-color: $core-form-grey;
 
 		&.is-active {
 			border-color: $studio-woocommerce-purple-60;

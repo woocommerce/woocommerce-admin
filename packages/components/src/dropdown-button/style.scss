@@ -39,10 +39,8 @@
 	&.is-multi-line .woocommerce-dropdown-button__labels {
 		flex-direction: column;
 	}
-}
 
-body.branch-5-3.woocommerce-page {
-	.woocommerce-dropdown-button:not(:focus):not(.is-open) {
+	&:not(:focus):not(.is-open) {
 		border-color: $core-form-grey;
 	}
 }

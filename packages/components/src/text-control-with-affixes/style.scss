@@ -18,10 +18,6 @@
 				border-left: 1px solid $core-grey-light-500;
 			}
 		}
-
-		body.branch-5-2 & {
-			border-radius: 0;
-		}
 	}
 
 	&.text-control-with-prefix input {
@@ -48,11 +44,6 @@
 	flex: 1 0 auto;
 	font-size: 14px;
 	line-height: 1.5;
-
-	body.branch-5-2 & {
-		border-color: $core-grey-light-500;
-		border-radius: 0;
-	}
 
 	.disabled & {
 		background: rgba(255, 255, 255, 0.5);

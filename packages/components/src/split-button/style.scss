@@ -104,13 +104,6 @@
 	}
 
 	.woocommerce-split-button__menu-toggle.is-active,
-	.woocommerce-split-button__menu-toggle.is-active:hover,
-	.woocommerce-split-button__menu-toggle.is-active > svg,
-	.woocommerce-split-button__menu-toggle.is-active:hover > svg {
-		background: initial;
-	}
-
-	.woocommerce-split-button__menu-toggle.is-active,
 	.woocommerce-split-button__menu-toggle.is-active:hover {
 		border-color: $core-grey-light-800;
 	}
