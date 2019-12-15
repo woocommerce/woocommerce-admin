@@ -8,6 +8,38 @@
 /**
  * Make the currency settings available to the javascript client using
  * AssetDataRegistry, available in WooCommerce 3.9.
+ *
+ * The add_currency_settings function is a most basic example, but below is
+ * a more elaborate example of how one might use AssetDataRegistry in classes.
+ *
+	```php
+	<?php
+
+	class MyClassWithAssetData {
+		private $asset_data_registry;
+		public function __construct( Automattic\WooCommerce\Blocks\AssetDataRegistry $asset_data_registry ) {
+			$this->asset_data_registry = $asset_data_registry;
+		}
+
+		protected function some_method_adding_assets() {
+			$this->asset_data_registry->add( 'myData', [ 'foo' => 'bar' ] );
+		}
+	}
+
+	// somewhere in the extensions bootstrap
+	class Bootstrap {
+		protected $container;
+		public function __construct( Automattic\WooCommerce\Blocks\Container $container ) {
+			$this->container = $container;
+			$this->container->register( MyClassWithAssetData::class, function( $blocks_container ) => {
+				return new MyClassWithAssetData( $blocks_container->get( Automattic\WooCommerce\Blocks\AssetDataRegistry::class ) );
+			} );
+		}
+	}
+
+	// now anywhere MyClassWithAssetData is instantiated it will automatically be
+	// constructed with the AssetDataRegistry
+	```
  */
 function add_currency_settings() {
 	$currencies = array(
