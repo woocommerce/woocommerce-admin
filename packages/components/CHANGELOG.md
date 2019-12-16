@@ -1,5 +1,6 @@
 # 4.1.0 (Unreleased)
 - Added `<ImageUpload />` component.
+- Fix CompareFilter options format (key prop vs. id).
 
 # 4.0.0
 
