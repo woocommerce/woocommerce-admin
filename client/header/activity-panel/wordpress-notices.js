@@ -81,11 +81,9 @@ class WordPressNotices extends Component {
 			document.getElementById( 'woocommerce-layout__notice-list' );
 
 		let count = 0;
-		for ( let i = 0; i <= notices.children.length; i++ ) {
-			const notice = notices.children[ i ];
-			if ( ! notice ) {
-				continue;
-			} else if ( 0 === notice.innerHTML.length ) {
+
+		for ( const notice of Array.from( notices.children ) ) {
+			if ( 0 === notice.innerHTML.length ) {
 				// Ignore empty elements in this part of the DOM.
 				continue;
 			} else if ( ! this.shouldCollapseNotice( notice ) ) {
