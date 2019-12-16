@@ -13,14 +13,6 @@ import { NAMESPACE } from '../constants';
 import { STORE_NAME } from './constants';
 import TYPES from './action-types';
 
-export function hydrateSettings( data, time = new Date() ) {
-	return {
-		type: TYPES.HYDRATE_SETTINGS,
-		data,
-		time,
-	};
-}
-
 export function updateSettingsForGroup( group, data, time = new Date() ) {
 	return {
 		type: TYPES.UPDATE_SETTINGS_FOR_GROUP,

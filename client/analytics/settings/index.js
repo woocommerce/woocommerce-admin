@@ -4,23 +4,22 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import { Component, Fragment, useRef } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { compose, createHigherOrderComponent } from '@wordpress/compose';
-import { partial, remove, transform } from 'lodash';
+import { remove } from 'lodash';
 import { withDispatch, useDispatch, useSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
 import { SectionHeader, useFilters, ScrollTo } from '@woocommerce/components';
-import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import './index.scss';
-import { analyticsSettings } from './config';
+import { getConfig } from './config';
 import Setting from './setting';
 import HistoricalData from './historical-data';
 import { recordEvent } from 'lib/tracks';
@@ -31,11 +30,7 @@ class Settings extends Component {
 	constructor() {
 		super( ...arguments );
 
-		const settings = {};
-		analyticsSettings.forEach( setting => ( settings[ setting.name ] = setting.initialValue ) );
-
 		this.state = {
-			settings,
 			saving: false,
 			isDirty: false,
 		};
@@ -79,9 +74,15 @@ class Settings extends Component {
 				__( 'Are you sure you want to reset all settings to default values?', 'woocommerce-admin' )
 			)
 		) {
-			const settings = {};
-			analyticsSettings.forEach( setting => ( settings[ setting.name ] = setting.defaultValue ) );
-			this.setState( { settings }, partial( this.saveChanges, 'reset' ) );
+			const { settings, updateSettings } = this.props;
+			const config = getConfig( settings );
+			const resetSettings = Object.keys( config ).reduce( ( result, setting ) => {
+				result[ setting ] = config[ setting ].defaultValue;
+				return result;
+			}, {} );
+			updateSettings( 'wc_admin', { wcAdminSettings: resetSettings } );
+			// todo: make sure this save changes occurs after the settings are updated
+			this.saveChanges( 'reset' );
 		}
 	};
 
@@ -110,40 +111,15 @@ class Settings extends Component {
 		}
 	}
 
-	/**
-	 * Ensure changes are reflected to parameters on the window as well as
-	 * the config for construction of this component when re-navigating to
-	 * the settings page.
-	 *
-	 * @param {object} state - State
-	 */
-	persistChanges( state ) {
-		const settings = getSetting( 'wcAdminSettings', {} );
-		analyticsSettings.forEach( setting => {
-			const updatedValue = state.settings[ setting.name ];
-			settings[ setting.name ] = updatedValue;
-			setting.initialValue = updatedValue;
-		} );
-		setSetting( 'wcAdminSettings', settings );
-	}
-
 	saveChanges = source => {
-		const { settings } = this.state;
-		const { query } = this.props;
-		this.persistChanges( this.state );
-		this.props.updateSettings( { wc_admin: settings } );
+		const { query, settings } = this.props;
+		const { wcAdminSettings } = settings;
+		this.props.saveSettings( 'wc_admin', wcAdminSettings );
 
 		if ( 'reset' === source ) {
 			recordEvent( 'analytics_settings_reset_defaults' );
 		} else {
-			const eventProps = transform(
-				analyticsSettings,
-				( props, setting ) => {
-					props[ setting.name ] = settings[ setting.name ];
-				},
-				{}
-			);
-			recordEvent( 'analytics_settings_save', eventProps );
+			recordEvent( 'analytics_settings_save', wcAdminSettings );
 		}
 
 		this.setState( { saving: true } );
@@ -160,38 +136,45 @@ class Settings extends Component {
 
 	handleInputChange( e ) {
 		const { checked, name, type, value } = e.target;
-		const { settings } = this.state;
+		const { settings, updateSettings } = this.props;
+		const { wcAdminSettings } = settings;
+		const nextSettings = { ...wcAdminSettings };
 
 		if ( 'checkbox' === type ) {
 			if ( checked ) {
-				settings[ name ].push( value );
+				nextSettings[ name ].push( value );
 			} else {
-				remove( settings[ name ], v => v === value );
+				remove( nextSettings[ name ], v => v === value );
 			}
 		} else {
-			settings[ name ] = value;
+			nextSettings[ name ] = value;
 		}
 
-		this.setState( { settings, isDirty: true } );
+		updateSettings( 'wc_admin', { wcAdminSettings: nextSettings } );
+
+		this.setState( { isDirty: true } );
 	}
 
 	render() {
-		const { createNotice, query } = this.props;
 		const { hasError, saving } = this.state;
 		if ( hasError ) {
 			return null;
 		}
+		const { createNotice, query, settings } = this.props;
+		const { wcAdminSettings } = settings;
+		const config = getConfig( settings );
 
 		return (
 			<Fragment>
 				<SectionHeader title={ __( 'Analytics Settings', 'woocommerce-admin' ) } />
 				<div className="woocommerce-settings__wrapper">
-					{ analyticsSettings.map( setting => (
+					{ Object.keys( config ).map( setting => (
 						<Setting
 							handleChange={ this.handleInputChange }
-							value={ this.state.settings[ setting.name ] }
-							key={ setting.name }
-							{ ...setting }
+							value={ wcAdminSettings[ setting ] }
+							key={ setting }
+							name={ setting }
+							{ ...config[ setting ] }
 						/>
 					) ) }
 					<div className="woocommerce-settings__actions">
@@ -218,33 +201,9 @@ class Settings extends Component {
 export default compose(
 	createHigherOrderComponent(
 		WrappedComponent => props => {
-			const settings = useRef( getSetting( 'preloadSettings', { wc_admin: {} } ) );
-			useSelect( ( select, registry ) => {
-				if ( ! settings.current ) {
-					return;
-				}
-
-				const { isResolving, hasFinishedResolution } = select( SETTINGS_STORE_NAME );
-				const { startResolution, finishResolution, hydrateSettings } = registry.dispatch(
-					SETTINGS_STORE_NAME
-				);
-
-				if (
-					! isResolving( 'getSettings', [ 'wc_admin' ] ) &&
-					! hasFinishedResolution( 'getSettings', [ 'wc_admin' ] )
-				) {
-					startResolution( 'getSettings', [ 'wc_admin' ] );
-					hydrateSettings( settings.current );
-					finishResolution( 'getSettings', [ 'wc_admin' ] );
-				}
-			}, [] );
-			return <WrappedComponent { ...props } />;
-		},
-		'withHydration'
-	),
-	createHigherOrderComponent(
-		WrappedComponent => props => {
-			const { persistAllSettings } = useDispatch( SETTINGS_STORE_NAME );
+			const { persistSettingsForGroup, updateSettingsForGroup } = useDispatch(
+				SETTINGS_STORE_NAME
+			);
 			const { settings, isError, isRequesting } = useSelect( select => {
 				const store = select( SETTINGS_STORE_NAME );
 				return {
@@ -253,9 +212,11 @@ export default compose(
 					isRequesting: store.isResolving( 'getSettings', [ 'wc_admin' ] ),
 				};
 			}, [] );
+
 			return (
 				<WrappedComponent
-					updateSettings={ persistAllSettings }
+					saveSettings={ persistSettingsForGroup }
+					updateSettings={ updateSettingsForGroup }
 					settings={ settings }
 					isError={ isError }
 					isRequesting={ isRequesting }

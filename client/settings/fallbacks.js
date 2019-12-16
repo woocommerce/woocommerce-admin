@@ -53,6 +53,10 @@ export const SITE_TITLE = allSettings.siteTitle;
 export const WC_ASSET_URL = allSettings.wcAssetUrl;
 export const DEFAULT_DATE_RANGE = allSettings.defaultDateRange;
 
+export function getAllSettings() {
+	return allSettings;
+}
+
 /**
  * Retrieves a setting value from the setting state.
  *

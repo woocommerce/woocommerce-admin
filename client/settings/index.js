@@ -30,3 +30,4 @@ export const setSetting = SOURCE.setSetting;
 // this needs to be shimmed separately because WooCommerce Blocks plugin version
 // might have `SHARED.getSetting` and thus `fallbacks.js` will not get loaded.
 export const getAdminLink = SOURCE.getAdminLink || FALLBACKS.getAdminLink;
+export const getAllSettings = SOURCE.getAllSettings || FALLBACKS.getAllSettings;

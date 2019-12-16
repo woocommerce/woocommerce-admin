@@ -24,27 +24,6 @@ const updateGroupDataInNewState = ( newState, { group, groupIds, data, time, err
 const receiveSettings = ( state = {}, { type, group, data, error, time } ) => {
 	const newState = {};
 	switch ( type ) {
-		// replaces all settings in state.
-		case TYPES.HYDRATE_SETTINGS:
-			const groups = Object.keys( data );
-			groups.forEach( groupName => {
-				// index
-				const groupIds = Object.keys( data[ groupName ] );
-				newState[ groupName ] = {
-					lastReceived: time,
-					data: groupIds,
-					error,
-				};
-				updateGroupDataInNewState( newState, {
-					groupName,
-					groupIds,
-					data: data[ groupName ],
-					time,
-					error,
-				} );
-			} );
-			state = newState;
-			break;
 		case TYPES.UPDATE_SETTINGS_FOR_GROUP:
 		case TYPES.UPDATE_ERROR_FOR_GROUP:
 			const groupIds = data ? Object.keys( data ) : [];

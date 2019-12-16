@@ -3,20 +3,13 @@
 /**
  * Internal dependencies
  */
-import { NAMESPACE } from '../constants';
 import { updateSettingsForGroup, updateErrorForGroup } from './actions';
-
-/**
- * External dependencies
- */
-import { apiFetch } from '@wordpress/data-controls';
+import { getAllSettings } from '@woocommerce/wc-admin-settings';
 
 export function* getSettings( group ) {
-	const url = `${ NAMESPACE }/settings/${ group }`;
 	try {
-		const results = yield apiFetch( { path: url } );
-		yield updateSettingsForGroup( group, results );
+		return updateSettingsForGroup( group, getAllSettings() );
 	} catch ( e ) {
-		yield updateErrorForGroup( group, null, e );
+		return yield updateErrorForGroup( group, null, e );
 	}
 }
