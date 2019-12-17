@@ -9,13 +9,11 @@ import interpolateComponents from 'interpolate-components';
 /**
  * Internal dependencies
  */
-import { DEFAULT_ACTIONABLE_STATUSES } from 'wc-api/constants';
 import DefaultDate from './default-date';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
-const DEFAULT_DATE_RANGE = 'period=month&compare=previous_year';
-
-const defaultOrderStatuses = [
+const DEFAULT_ACTIONABLE_STATUSES = [ 'processing', 'on-hold' ];
+const DEFAULT_ORDER_STATUSES = [
 	'completed',
 	'processing',
 	'refunded',
@@ -26,7 +24,7 @@ const defaultOrderStatuses = [
 ];
 
 export const getConfig = settings => {
-	const { orderStatuses: ORDER_STATUSES } = settings;
+	const { ORDER_STATUSES, DEFAULT_DATE_RANGE } = settings;
 
 	const orderStatuses = Object.keys( ORDER_STATUSES )
 		.filter( status => status !== 'refunded' )
@@ -48,13 +46,15 @@ export const getConfig = settings => {
 			options: [
 				{
 					key: 'defaultStatuses',
-					options: orderStatuses.filter( status => defaultOrderStatuses.includes( status.value ) ),
+					options: orderStatuses.filter( status =>
+						DEFAULT_ORDER_STATUSES.includes( status.value )
+					),
 				},
 				{
 					key: 'customStatuses',
 					label: __( 'Custom Statuses', 'woocommerce-admin' ),
 					options: orderStatuses.filter(
-						status => ! defaultOrderStatuses.includes( status.value )
+						status => ! DEFAULT_ORDER_STATUSES.includes( status.value )
 					),
 				},
 			],
@@ -76,13 +76,15 @@ export const getConfig = settings => {
 			options: [
 				{
 					key: 'defaultStatuses',
-					options: orderStatuses.filter( status => defaultOrderStatuses.includes( status.value ) ),
+					options: orderStatuses.filter( status =>
+						DEFAULT_ORDER_STATUSES.includes( status.value )
+					),
 				},
 				{
 					key: 'customStatuses',
 					label: __( 'Custom Statuses', 'woocommerce-admin' ),
 					options: orderStatuses.filter(
-						status => ! defaultOrderStatuses.includes( status.value )
+						status => ! DEFAULT_ORDER_STATUSES.includes( status.value )
 					),
 				},
 			],

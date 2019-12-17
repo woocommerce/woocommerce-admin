@@ -54,7 +54,17 @@ export const WC_ASSET_URL = allSettings.wcAssetUrl;
 export const DEFAULT_DATE_RANGE = allSettings.defaultDateRange;
 
 export function getAllSettings() {
-	return allSettings;
+	return {
+		...allSettings,
+		ADMIN_URL,
+		COUNTRIES,
+		CURRENCY,
+		LOCALE,
+		ORDER_STATUSES,
+		SITE_TITLE,
+		WC_ASSET_URL,
+		DEFAULT_DATE_RANGE,
+	};
 }
 
 /**
