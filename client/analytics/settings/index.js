@@ -81,8 +81,8 @@ class Settings extends Component {
 				return result;
 			}, {} );
 			updateSettings( 'wc_admin', { wcAdminSettings: resetSettings } );
-			// todo: make sure this save changes occurs after the settings are updated
-			this.saveChanges( 'reset' );
+			this.saveChanges( 'reset', resetSettings );
+			this.setState( { isDirty: true } );
 		}
 	};
 
@@ -111,10 +111,10 @@ class Settings extends Component {
 		}
 	}
 
-	saveChanges = source => {
+	saveChanges = ( source, data ) => {
 		const { query, settings } = this.props;
 		const { wcAdminSettings } = settings;
-		this.props.saveSettings( 'wc_admin', wcAdminSettings );
+		this.props.saveSettings( 'wc_admin', data ? data : wcAdminSettings );
 
 		if ( 'reset' === source ) {
 			recordEvent( 'analytics_settings_reset_defaults' );
