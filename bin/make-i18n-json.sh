@@ -13,4 +13,4 @@ for T in `find languages -name "*.po"`
 	done
 
 # Make the JSON files
-wp i18n make-json languages
+wp i18n make-json languages --no-purge
