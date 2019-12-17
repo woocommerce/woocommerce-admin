@@ -30,10 +30,12 @@
 		}
 	}
 
-	.woocommerce-task-dashboard__container
-		.woocommerce-task-card__prompt-actions
-		.components-button:not(.components-icon-button) {
-		color: $studio-white;
+	.woocommerce-task-dashboard__container {
+		.woocommerce-task-card__prompt-actions {
+			.components-button:not(.components-icon-button) {
+				color: $studio-white;
+			}
+		}
 	}
 
 	.woocommerce-list {
