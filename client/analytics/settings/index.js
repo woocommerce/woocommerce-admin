@@ -121,11 +121,11 @@ class Settings extends Component {
 		const { query, setSetting } = this.props;
 
 		if ( 'reset' === source ) {
-			setSetting( { wcAdminSettings: data } );
+			setSetting( 'wcAdminSettings', data );
 			recordEvent( 'analytics_settings_reset_defaults' );
 		} else {
 			const { settings } = this.state;
-			setSetting( { wcAdminSettings: settings } );
+			setSetting( 'wcAdminSettings', settings );
 			recordEvent( 'analytics_settings_save', settings );
 		}
 

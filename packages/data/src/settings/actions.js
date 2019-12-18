@@ -42,32 +42,23 @@ const resultsToSettings = data => {
 };
 
 /**
- * Request data requires a flat object for a payload.
- * todo: confirm this assumption when updating Onboarding. A refactor may be required.
+ * Sets a value to a property on the settings state.
  *
- * @param {object} settings - settingts object
- * @return {object} A settings object in data form.
+ * @export
+ * @param {string}   group                       The settings group.
+ * @param {string}   name                        The setting property key for the
+ *                                               setting being mutated.
+ * @param {mixed}    value                       The value to set.
+ * @param {function} [filter=( val ) => val]     Allows for providing a callback
+ *                                               to sanitize the setting (eg.
+ *                                               ensure it's a number)
  */
-const settingsToData = settings => {
-	const data = {};
-	Object.keys( settings ).forEach( prop => {
-		if ( 'object' === typeof settings[ prop ] ) {
-			Object.keys( settings[ prop ] ).forEach( subProp => {
-				data[ subProp ] = settings[ prop ][ subProp ];
-			} );
-		} else {
-			data[ prop ] = settings[ prop ];
-		}
-	} );
-	return data;
-};
-
-export function* setSettingsForGroup( group, settings ) {
+export function* setSettingsForGroup( group, name, value, filter = val => val ) {
+	const data = filter( value );
 	yield dispatch( STORE_NAME, 'startResolution', 'setSetting', [ group ] );
-	yield dispatch( STORE_NAME, 'updateSettingsForGroup', [ group, settings ] );
+	yield dispatch( STORE_NAME, 'updateSettingsForGroup', [ group, { [ name ]: data } ] );
 
 	const url = `${ NAMESPACE }/settings/${ group }/batch`;
-	const data = settingsToData( settings );
 	const update = Object.keys( data ).map( key => {
 		return { id: key, value: data[ key ] };
 	} );
