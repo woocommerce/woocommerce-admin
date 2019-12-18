@@ -54,17 +54,16 @@ export const WC_ASSET_URL = allSettings.wcAssetUrl;
 export const DEFAULT_DATE_RANGE = allSettings.defaultDateRange;
 
 export function getAllSettings() {
-	return {
-		...allSettings,
-		ADMIN_URL,
-		COUNTRIES,
-		CURRENCY,
-		LOCALE,
-		ORDER_STATUSES,
-		SITE_TITLE,
-		WC_ASSET_URL,
-		DEFAULT_DATE_RANGE,
-	};
+	allSettings.ADMIN_URL = ADMIN_URL;
+	allSettings.COUNTRIES = COUNTRIES;
+	allSettings.CURRENCY = CURRENCY;
+	allSettings.LOCALE = LOCALE;
+	allSettings.ORDER_STATUSES = ORDER_STATUSES;
+	allSettings.SITE_TITLE = SITE_TITLE;
+	allSettings.WC_ASSET_URL = WC_ASSET_URL;
+	allSettings.DEFAULT_DATE_RANGE = DEFAULT_DATE_RANGE;
+
+	return allSettings;
 }
 
 /**
