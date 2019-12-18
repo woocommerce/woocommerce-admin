@@ -6,7 +6,7 @@
 import { updateSettingsForGroup, updateErrorForGroup } from './actions';
 import { getAllSettings } from '@woocommerce/wc-admin-settings';
 
-export function* getSettings( group ) {
+export function* getSetting( group ) {
 	try {
 		return updateSettingsForGroup( group, getAllSettings() );
 	} catch ( e ) {

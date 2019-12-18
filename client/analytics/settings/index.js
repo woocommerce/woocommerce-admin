@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose, createHigherOrderComponent } from '@wordpress/compose';
-import { remove } from 'lodash';
+import { remove, partial } from 'lodash';
 import { withDispatch, useDispatch, useSelect } from '@wordpress/data';
 
 /**
@@ -74,13 +74,15 @@ class Settings extends Component {
 				__( 'Are you sure you want to reset all settings to default values?', 'woocommerce-admin' )
 			)
 		) {
-			const { settings, updateSettings } = this.props;
-			const config = getConfig( settings );
+			const { getSetting, setSetting } = this.props;
+			const orderStatuses = getSetting( 'ORDER_STATUSES' );
+			const defaultDateRange = getSetting( 'DEFAULT_DATE_RANGE' );
+			const config = getConfig( orderStatuses, defaultDateRange );
 			const resetSettings = Object.keys( config ).reduce( ( result, setting ) => {
 				result[ setting ] = config[ setting ].defaultValue;
 				return result;
 			}, {} );
-			updateSettings( 'wc_admin', { wcAdminSettings: resetSettings } );
+			setSetting( { wcAdminSettings: resetSettings } );
 			this.saveChanges( 'reset', resetSettings );
 			this.setState( { isDirty: true } );
 		}
@@ -112,14 +114,14 @@ class Settings extends Component {
 	}
 
 	saveChanges = ( source, data ) => {
-		const { query, settings } = this.props;
-		const { wcAdminSettings } = settings;
-		this.props.saveSettings( 'wc_admin', data ? data : wcAdminSettings );
+		const { query, persistSetting, getSetting } = this.props;
+		const settings = getSetting( 'wcAdminSettings' );
+		persistSetting( data ? data : settings );
 
 		if ( 'reset' === source ) {
 			recordEvent( 'analytics_settings_reset_defaults' );
 		} else {
-			recordEvent( 'analytics_settings_save', wcAdminSettings );
+			recordEvent( 'analytics_settings_save', settings );
 		}
 
 		this.setState( { saving: true } );
@@ -136,9 +138,9 @@ class Settings extends Component {
 
 	handleInputChange( e ) {
 		const { checked, name, type, value } = e.target;
-		const { settings, updateSettings } = this.props;
-		const { wcAdminSettings } = settings;
-		const nextSettings = { ...wcAdminSettings };
+		const { getSetting, setSetting } = this.props;
+		const settings = getSetting( 'wcAdminSettings' );
+		const nextSettings = { ...settings };
 
 		if ( 'checkbox' === type ) {
 			if ( checked ) {
@@ -150,7 +152,7 @@ class Settings extends Component {
 			nextSettings[ name ] = value;
 		}
 
-		updateSettings( 'wc_admin', { wcAdminSettings: nextSettings } );
+		setSetting( { wcAdminSettings: nextSettings } );
 
 		this.setState( { isDirty: true } );
 	}
@@ -160,9 +162,11 @@ class Settings extends Component {
 		if ( hasError ) {
 			return null;
 		}
-		const { createNotice, query, settings } = this.props;
-		const { wcAdminSettings } = settings;
-		const config = getConfig( settings );
+		const { createNotice, query, getSetting } = this.props;
+		const settings = getSetting( 'wcAdminSettings' );
+		const orderStatuses = getSetting( 'ORDER_STATUSES' );
+		const defaultDateRange = getSetting( 'DEFAULT_DATE_RANGE' );
+		const config = getConfig( orderStatuses, defaultDateRange );
 
 		return (
 			<Fragment>
@@ -171,7 +175,7 @@ class Settings extends Component {
 					{ Object.keys( config ).map( setting => (
 						<Setting
 							handleChange={ this.handleInputChange }
-							value={ wcAdminSettings[ setting ] }
+							value={ settings[ setting ] }
 							key={ setting }
 							name={ setting }
 							{ ...config[ setting ] }
@@ -199,33 +203,39 @@ class Settings extends Component {
 }
 
 export default compose(
-	createHigherOrderComponent(
-		WrappedComponent => props => {
-			const { persistSettingsForGroup, updateSettingsForGroup } = useDispatch(
-				SETTINGS_STORE_NAME
-			);
-			const { settings, isError, isRequesting } = useSelect( select => {
-				const store = select( SETTINGS_STORE_NAME );
-				return {
-					settings: store.getSettings( 'wc_admin' ),
-					isError: Boolean( store.getLastSettingsErrorForGroup( 'wc_admin' ) ),
-					isRequesting: store.isResolving( 'getSettings', [ 'wc_admin' ] ),
-				};
-			}, [] );
+	( group =>
+		createHigherOrderComponent(
+			WrappedComponent => props => {
+				const { persistSettingsForGroup, updateSettingsForGroup } = useDispatch(
+					SETTINGS_STORE_NAME
+				);
+				const { getSetting, setSetting, persistSetting, isError, isRequesting } = useSelect(
+					select => {
+						const store = select( SETTINGS_STORE_NAME );
+						return {
+							// isRequesting: store.isResolving( 'getSetting', [ group ] ),
+							// isError: Boolean( store.getLastSettingsErrorForGroup( group ) ),
+							getSetting: partial( store.getSetting, group ),
+							setSetting: partial( updateSettingsForGroup, group ),
+							persistSetting: partial( persistSettingsForGroup, group ),
+						};
+					},
+					[]
+				);
 
-			return (
-				<WrappedComponent
-					saveSettings={ persistSettingsForGroup }
-					updateSettings={ updateSettingsForGroup }
-					settings={ settings }
-					isError={ isError }
-					isRequesting={ isRequesting }
-					{ ...props }
-				/>
-			);
-		},
-		'withSettings'
-	),
+				return (
+					<WrappedComponent
+						getSetting={ getSetting }
+						setSetting={ setSetting }
+						persistSetting={ persistSetting }
+						isError={ false }
+						isRequesting={ false }
+						{ ...props }
+					/>
+				);
+			},
+			'withSettings'
+		) )( 'wc_admin' ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
 

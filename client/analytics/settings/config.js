@@ -23,18 +23,16 @@ const DEFAULT_ORDER_STATUSES = [
 	'on-hold',
 ];
 
-export const getConfig = settings => {
-	const { ORDER_STATUSES, DEFAULT_DATE_RANGE } = settings;
-
-	const orderStatuses = Object.keys( ORDER_STATUSES )
+export const getConfig = ( orderStatuses, defaultDateRange ) => {
+	const filteredOrderStatuses = Object.keys( orderStatuses )
 		.filter( status => status !== 'refunded' )
 		.map( key => {
 			return {
 				value: key,
-				label: ORDER_STATUSES[ key ],
+				label: orderStatuses[ key ],
 				description: sprintf(
 					__( 'Exclude the %s status from reports', 'woocommerce-admin' ),
-					ORDER_STATUSES[ key ]
+					orderStatuses[ key ]
 				),
 			};
 		} );
@@ -46,14 +44,14 @@ export const getConfig = settings => {
 			options: [
 				{
 					key: 'defaultStatuses',
-					options: orderStatuses.filter( status =>
+					options: filteredOrderStatuses.filter( status =>
 						DEFAULT_ORDER_STATUSES.includes( status.value )
 					),
 				},
 				{
 					key: 'customStatuses',
 					label: __( 'Custom Statuses', 'woocommerce-admin' ),
-					options: orderStatuses.filter(
+					options: filteredOrderStatuses.filter(
 						status => ! DEFAULT_ORDER_STATUSES.includes( status.value )
 					),
 				},
@@ -76,14 +74,14 @@ export const getConfig = settings => {
 			options: [
 				{
 					key: 'defaultStatuses',
-					options: orderStatuses.filter( status =>
+					options: filteredOrderStatuses.filter( status =>
 						DEFAULT_ORDER_STATUSES.includes( status.value )
 					),
 				},
 				{
 					key: 'customStatuses',
 					label: __( 'Custom Statuses', 'woocommerce-admin' ),
-					options: orderStatuses.filter(
+					options: filteredOrderStatuses.filter(
 						status => ! DEFAULT_ORDER_STATUSES.includes( status.value )
 					),
 				},
@@ -105,7 +103,7 @@ export const getConfig = settings => {
 					'the default date range.',
 				'woocommerce-admin'
 			),
-			defaultValue: DEFAULT_DATE_RANGE,
+			defaultValue: defaultDateRange,
 		},
 	} );
 };
