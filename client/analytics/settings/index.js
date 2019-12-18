@@ -5,15 +5,15 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
-import { compose, createHigherOrderComponent } from '@wordpress/compose';
-import { remove, partial } from 'lodash';
-import { withDispatch, useDispatch, useSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
+import { remove } from 'lodash';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
 import { SectionHeader, useFilters, ScrollTo } from '@woocommerce/components';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { withSettings } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -77,7 +77,7 @@ class Settings extends Component {
 				__( 'Are you sure you want to reset all settings to default values?', 'woocommerce-admin' )
 			)
 		) {
-			const { getSetting, setSetting } = this.props;
+			const { getSetting } = this.props;
 			const orderStatuses = getSetting( 'ORDER_STATUSES' );
 			const defaultDateRange = getSetting( 'DEFAULT_DATE_RANGE' );
 			const config = getConfig( orderStatuses, defaultDateRange );
@@ -85,17 +85,18 @@ class Settings extends Component {
 				result[ setting ] = config[ setting ].defaultValue;
 				return result;
 			}, {} );
-			setSetting( { wcAdminSettings: resetSettings } );
-			this.saveChanges( 'reset', resetSettings );
-			this.setState( { isDirty: true } );
+			this.setState( { isDirty: true, settings: resetSettings }, () => {
+				this.saveChanges( 'reset', resetSettings );
+			} );
 		}
 	};
 
 	componentDidUpdate() {
-		const { createNotice, isError, isRequesting } = this.props;
+		const { createNotice, isRequestingSetting, getSettingError } = this.props;
 		const { saving } = this.state;
+		const isError = getSettingError();
 
-		if ( saving && ! isRequesting ) {
+		if ( saving && ! isRequestingSetting ) {
 			if ( ! isError ) {
 				createNotice(
 					'success',
@@ -118,12 +119,13 @@ class Settings extends Component {
 
 	saveChanges = ( source, data ) => {
 		const { query, setSetting } = this.props;
-		const { settings } = this.state;
-		setSetting( { wcAdminSettings: data ? data : settings } );
 
 		if ( 'reset' === source ) {
+			setSetting( { wcAdminSettings: data } );
 			recordEvent( 'analytics_settings_reset_defaults' );
 		} else {
+			const { settings } = this.state;
+			setSetting( { wcAdminSettings: settings } );
 			recordEvent( 'analytics_settings_save', settings );
 		}
 
@@ -204,38 +206,7 @@ class Settings extends Component {
 }
 
 export default compose(
-	( group =>
-		createHigherOrderComponent(
-			WrappedComponent => props => {
-				const { persistSettingsForGroup, updateSettingsForGroup } = useDispatch(
-					SETTINGS_STORE_NAME
-				);
-				const { getSetting, setSetting, persistSetting, isError, isRequesting } = useSelect(
-					select => {
-						const store = select( SETTINGS_STORE_NAME );
-						return {
-							// isRequesting: store.isResolving( 'getSetting', [ group ] ),
-							// isError: Boolean( store.getLastSettingsErrorForGroup( group ) ),
-							getSetting: partial( store.getSetting, group ),
-							setSetting: partial( persistSettingsForGroup, group ),
-						};
-					},
-					[]
-				);
-
-				return (
-					<WrappedComponent
-						getSetting={ getSetting }
-						setSetting={ setSetting }
-						persistSetting={ persistSetting }
-						isError={ false }
-						isRequesting={ false }
-						{ ...props }
-					/>
-				);
-			},
-			'withSettings'
-		) )( 'wc_admin' ),
+	withSettings( 'wc_admin' ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
 
