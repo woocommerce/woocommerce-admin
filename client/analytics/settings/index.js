@@ -27,12 +27,15 @@ import { recordEvent } from 'lib/tracks';
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
 class Settings extends Component {
-	constructor() {
-		super( ...arguments );
+	constructor( props ) {
+		super( props );
+
+		const settings = props.getSetting( 'wcAdminSettings' );
 
 		this.state = {
 			saving: false,
 			isDirty: false,
+			settings: { ...settings },
 		};
 
 		this.handleInputChange = this.handleInputChange.bind( this );
@@ -114,9 +117,9 @@ class Settings extends Component {
 	}
 
 	saveChanges = ( source, data ) => {
-		const { query, persistSetting, getSetting } = this.props;
-		const settings = getSetting( 'wcAdminSettings' );
-		persistSetting( data ? data : settings );
+		const { query, setSetting } = this.props;
+		const { settings } = this.state;
+		setSetting( { wcAdminSettings: data ? data : settings } );
 
 		if ( 'reset' === source ) {
 			recordEvent( 'analytics_settings_reset_defaults' );
@@ -138,8 +141,7 @@ class Settings extends Component {
 
 	handleInputChange( e ) {
 		const { checked, name, type, value } = e.target;
-		const { getSetting, setSetting } = this.props;
-		const settings = getSetting( 'wcAdminSettings' );
+		const { settings } = this.state;
 		const nextSettings = { ...settings };
 
 		if ( 'checkbox' === type ) {
@@ -152,18 +154,17 @@ class Settings extends Component {
 			nextSettings[ name ] = value;
 		}
 
-		setSetting( { wcAdminSettings: nextSettings } );
+		// setSetting( { wcAdminSettings: nextSettings } );
 
-		this.setState( { isDirty: true } );
+		this.setState( { isDirty: true, settings: nextSettings } );
 	}
 
 	render() {
-		const { hasError, saving } = this.state;
+		const { hasError, saving, settings } = this.state;
 		if ( hasError ) {
 			return null;
 		}
 		const { createNotice, query, getSetting } = this.props;
-		const settings = getSetting( 'wcAdminSettings' );
 		const orderStatuses = getSetting( 'ORDER_STATUSES' );
 		const defaultDateRange = getSetting( 'DEFAULT_DATE_RANGE' );
 		const config = getConfig( orderStatuses, defaultDateRange );
@@ -216,8 +217,7 @@ export default compose(
 							// isRequesting: store.isResolving( 'getSetting', [ group ] ),
 							// isError: Boolean( store.getLastSettingsErrorForGroup( group ) ),
 							getSetting: partial( store.getSetting, group ),
-							setSetting: partial( updateSettingsForGroup, group ),
-							persistSetting: partial( persistSettingsForGroup, group ),
+							setSetting: partial( persistSettingsForGroup, group ),
 						};
 					},
 					[]

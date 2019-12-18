@@ -14,6 +14,7 @@ import { STORE_NAME } from './constants';
 import TYPES from './action-types';
 
 export function updateSettingsForGroup( group, data, time = new Date() ) {
+	console.log( 'updateing' );
 	return {
 		type: TYPES.UPDATE_SETTINGS_FOR_GROUP,
 		group,
@@ -41,12 +42,28 @@ const resultsToSettings = data => {
 	return resources;
 };
 
-export function* persistSettingsForGroup( group, data ) {
+const settingsToData = settings => {
+	const data = {};
+	Object.keys( settings ).forEach( s => {
+		if ( 'object' === typeof settings[ s ] ) {
+			Object.keys( settings[ s ] ).forEach( p => {
+				data[ p ] = settings[ s ][ p ];
+			} );
+		} else {
+			data[ s ] = settings[ s ];
+		}
+	} );
+	return data;
+};
+
+export function* persistSettingsForGroup( group, settings ) {
+	const data = settingsToData( settings );
+	yield dispatch( STORE_NAME, 'updateSettingsForGroup', [ group, settings ] );
 	const url = `${ NAMESPACE }/settings/${ group }/batch`;
 	const settingsData = Object.keys( data ).map( key => {
 		return { id: key, value: data[ key ] };
 	} );
-	yield dispatch( STORE_NAME, 'startResolution', 'getSettings', [ group ] );
+	yield dispatch( STORE_NAME, 'startResolution', 'getSetting', [ group ] );
 	try {
 		let results = yield apiFetch( {
 			path: url,
@@ -61,7 +78,7 @@ export function* persistSettingsForGroup( group, data ) {
 	} catch ( e ) {
 		yield updateErrorForGroup( group, null, e );
 	}
-	yield dispatch( STORE_NAME, 'finishResolution', 'getSettings', [ group ] );
+	yield dispatch( STORE_NAME, 'finishResolution', 'getSetting', [ group ] );
 }
 
 export function* persistAllSettings( data ) {
