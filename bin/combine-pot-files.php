@@ -21,6 +21,16 @@ for ( $index = 1; $index <= 2; $index++ ) {
 }
 
 /**
+ * Check whether an output locale has been requested.
+ */
+if ( isset( $argv[3] ) && 0 === stripos( $argv[3], 'lang=' ) ) {
+	$locale = substr( $argv[3], 5 );
+	$target_file = preg_replace( '|\.pot?|', "-{$locale}.po", $argv[2] );
+} else {
+	$target_file = $argv[2];
+}
+
+/**
  * Parse a .pot file into an array.
  *
  * @param string $file_name Pot file name.
@@ -63,11 +73,16 @@ function woocommerce_admin_parse_pot( $file_name ) {
 	return $originals;
 }
 
+// Read the translation files.
 $originals_1 = woocommerce_admin_parse_pot( $argv[1] );
 $originals_2 = woocommerce_admin_parse_pot( $argv[2] );
+// Delete the original sources.
+unlink( $argv[1] );
+unlink( $argv[2] );
+// We don't want two .pot headers in the output.
 array_shift( $originals_1 );
 
-$fh = fopen( $argv[2], 'w' );
+$fh = fopen( $target_file, 'w' );
 foreach ( $originals_2 as $message => $original ) {
 	// Use the complete message section to match strings to be translated.
 	if ( isset( $originals_1[ $message ] ) ) {
@@ -85,4 +100,5 @@ foreach ( $originals_1 as $message => $original ) {
 }
 
 fclose( $fh );
-unlink( $argv[1] );
+
+echo "Created {$target_file}\n";

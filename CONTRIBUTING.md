@@ -20,6 +20,7 @@ Language packs are automatically generated once 95% of the plugin's strings are 
 
 ### Testing translations in development without language packs
 
+1. Requires `WP-CLI` version 2.1.0 or greater.
 1. Generate a translation file with `npm run i18n`.
 1. Rename `woocommerce-admin.pot` file to the following format: `woocommerce-admin-xx_YY.po` (Where xx_YY is your locale, like it_IT).
 1. Generate needed JSON files for JavaScript-based strings: `npm run i18n:json`.
