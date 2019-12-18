@@ -4,7 +4,7 @@
  * @format
  */
 
-import { select, apiFetch, dispatch } from '@wordpress/data-controls';
+import { apiFetch, dispatch } from '@wordpress/data-controls';
 
 /**
  * Internal Dependencies
@@ -41,27 +41,34 @@ const resultsToSettings = data => {
 	return resources;
 };
 
+/**
+ * Request data requires a flat object for a payload.
+ * todo: confirm this assumption when updating Onboarding. A refactor may be required.
+ *
+ * @param {object} settings - settingts object
+ * @return {object} A settings object in data form.
+ */
 const settingsToData = settings => {
 	const data = {};
-	Object.keys( settings ).forEach( s => {
-		if ( 'object' === typeof settings[ s ] ) {
-			Object.keys( settings[ s ] ).forEach( p => {
-				data[ p ] = settings[ s ][ p ];
+	Object.keys( settings ).forEach( prop => {
+		if ( 'object' === typeof settings[ prop ] ) {
+			Object.keys( settings[ prop ] ).forEach( subProp => {
+				data[ subProp ] = settings[ prop ][ subProp ];
 			} );
 		} else {
-			data[ s ] = settings[ s ];
+			data[ prop ] = settings[ prop ];
 		}
 	} );
 	return data;
 };
 
-export function* persistSettingsForGroup( group, settings ) {
+export function* setSettingsForGroup( group, settings ) {
 	yield dispatch( STORE_NAME, 'startResolution', 'setSetting', [ group ] );
 	yield dispatch( STORE_NAME, 'updateSettingsForGroup', [ group, settings ] );
 
 	const url = `${ NAMESPACE }/settings/${ group }/batch`;
 	const data = settingsToData( settings );
-	const settingsData = Object.keys( data ).map( key => {
+	const update = Object.keys( data ).map( key => {
 		return { id: key, value: data[ key ] };
 	} );
 
@@ -69,7 +76,7 @@ export function* persistSettingsForGroup( group, settings ) {
 		let results = yield apiFetch( {
 			path: url,
 			method: 'POST',
-			data: { update: settingsData },
+			data: { update },
 		} );
 		results = resultsToSettings( results );
 		if ( ! results ) {
@@ -80,16 +87,6 @@ export function* persistSettingsForGroup( group, settings ) {
 		yield updateErrorForGroup( group, null, e );
 	}
 	yield dispatch( STORE_NAME, 'finishResolution', 'setSetting', [ group ] );
-}
-
-export function* persistAllSettings( data ) {
-	const settingsGroups = yield select( STORE_NAME, 'getSettingsGroupNames' );
-	while ( settingsGroups.length > 0 ) {
-		const group = settingsGroups.pop();
-		if ( data[ group ] ) {
-			yield* persistSettingsForGroup( group, data[ group ] );
-		}
-	}
 }
 
 export function clearSettings() {

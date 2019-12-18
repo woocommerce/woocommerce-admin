@@ -156,8 +156,6 @@ class Settings extends Component {
 			nextSettings[ name ] = value;
 		}
 
-		// setSetting( { wcAdminSettings: nextSettings } );
-
 		this.setState( { isDirty: true, settings: nextSettings } );
 	}
 
