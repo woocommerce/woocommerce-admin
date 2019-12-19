@@ -13,7 +13,7 @@ import { withDispatch, withSelect } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { SectionHeader, useFilters, ScrollTo } from '@woocommerce/components';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { SETTINGS_STORE_NAME, useSettings } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -25,6 +25,12 @@ import HistoricalData from './historical-data';
 import { recordEvent } from 'lib/tracks';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
+
+const MyFunctionalComponent = () => {
+	const useResult = useSettings( 'wc_admin', [ 'orderStatuses', 'defaultDateRange' ] );
+	console.log( useResult );
+	return <div>HELLO WORLD!</div>;
+};
 
 class Settings extends Component {
 	constructor( props ) {
@@ -164,6 +170,7 @@ class Settings extends Component {
 
 		return (
 			<Fragment>
+				<MyFunctionalComponent />
 				<SectionHeader title={ __( 'Analytics Settings', 'woocommerce-admin' ) } />
 				<div className="woocommerce-settings__wrapper">
 					{ Object.keys( config ).map( setting => (

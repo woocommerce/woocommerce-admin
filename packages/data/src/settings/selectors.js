@@ -26,6 +26,33 @@ export const getSettings = ( state, group ) => {
 	return settings;
 };
 
+const getDirtyKeys = ( state, group ) => {
+	return state[ group ].dirty || [];
+};
+
+export const getIsDirty = ( state, group, keys = [] ) => {
+	const dirtyMap = getDirtyKeys( state, group );
+	// if empty array bail
+	if ( dirtyMap.length === 0 ) {
+		return false;
+	}
+	// if at least one of the keys is in the dirty map then the state is dirty
+	// meaning it hasn't been persisted.
+	return keys.some( ( key ) => dirtyMap.includes( key ) );
+};
+
+export const getSettingsForGroup = ( state, group, keys ) => {
+	const allSettings = getSettings( state, group );
+	return keys.reduce( ( accumulator, key ) => {
+		accumulator[ key ] = allSettings[ key ] || null;
+		return accumulator;
+	}, {} );
+};
+
+export const getIsPersisting = ( state, group ) => {
+	return state[ group ] && Boolean( state[ group ].isPersisting );
+};
+
 /**
  * Retrieves a setting value from the setting store.
  *

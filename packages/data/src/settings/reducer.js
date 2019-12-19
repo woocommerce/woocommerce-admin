@@ -21,7 +21,10 @@ const updateGroupDataInNewState = ( newState, { group, groupIds, data, time, err
 	return newState;
 };
 
-const receiveSettings = ( state = {}, { type, group, data, error, time } ) => {
+const receiveSettings = (
+	state = {},
+	{ type, group, data, error, time, dirtyKeys, persisting }
+) => {
 	const newState = {};
 	switch ( type ) {
 		case TYPES.UPDATE_SETTINGS_FOR_GROUP:
@@ -41,8 +44,10 @@ const receiveSettings = ( state = {}, { type, group, data, error, time } ) => {
 					...state,
 					[ group ]: {
 						data: state[ group ] ? [ ...state[ group ].data, ...groupIds ] : groupIds,
-						error: undefined,
+						error,
 						lastReceived: time,
+						dirty: [ dirtyKeys ],
+						persisting,
 					},
 					...updateGroupDataInNewState( newState, {
 						group,
