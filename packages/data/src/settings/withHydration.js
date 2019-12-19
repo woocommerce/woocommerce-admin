@@ -11,7 +11,7 @@ import { useSelect } from '@wordpress/data';
  */
 import { STORE_NAME } from './constants';
 
-export const withHydration = group => OriginalComponent => {
+export const withSettingsHydration = group => OriginalComponent => {
 	return ( props ) => {
 		const settings = useRef( getAllSettings() );
 		useSelect( ( select, registry ) => {

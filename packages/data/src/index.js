@@ -1,2 +1,2 @@
 export { SETTINGS_STORE_NAME } from './settings';
-export { withHydration } from './settings/withHydration';
+export { withSettingsHydration } from './settings/withHydration';
