@@ -71,6 +71,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 0.23.1 2019-12-08 =
+
+- Fix: undefined function error.
+
 = 0.23.0 2019-12-06 =
 
 - Dev: Add currency extension #3328 (Packages)
