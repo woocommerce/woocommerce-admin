@@ -11,17 +11,17 @@ import { render } from '@wordpress/element';
 import './stylesheets/_index.scss';
 import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
 import 'wc-api/wp-data-store';
-import withSettingsHydration from '@woocommerce/data';
+import { withHydration } from '@woocommerce/data';
 
 const appRoot = document.getElementById( 'root' );
 const settingsGroup = 'wc_admin';
 
 if ( appRoot ) {
-	const HydratedPageLayout = withSettingsHydration( settingsGroup )( PageLayout );
+	const HydratedPageLayout = withHydration( settingsGroup )( PageLayout );
 	render( <HydratedPageLayout />, appRoot );
 } else {
 	const embeddedRoot = document.getElementById( 'woocommerce-embedded-root' );
-	const HydratedEmbedLayout = withSettingsHydration( settingsGroup )( EmbedLayout );
+	const HydratedEmbedLayout = withHydration( settingsGroup )( EmbedLayout );
 	// Render the header.
 	render( <HydratedEmbedLayout />, embeddedRoot );
 
