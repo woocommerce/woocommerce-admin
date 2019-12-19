@@ -19,19 +19,11 @@ export const withSettingsHydration = group => OriginalComponent => {
 				return;
 			}
 
-			const { isResolving, hasFinishedResolution } = select( STORE_NAME );
-			const { startResolution, finishResolution, updateSettingsForGroup } = registry.dispatch(
+			const { updateSettingsForGroup } = registry.dispatch(
 				STORE_NAME
 			);
 
-			if (
-				! isResolving( 'getSettings', [ group ] ) &&
-				! hasFinishedResolution( 'getSettings', [ group ] )
-			) {
-				startResolution( 'getSettings', [ group ] );
-				updateSettingsForGroup( group, settings.current );
-				finishResolution( 'getSettings', [ group ] );
-			}
+			updateSettingsForGroup( group, settings.current );
 		}, [] );
 
 		return <OriginalComponent { ...props } />;
