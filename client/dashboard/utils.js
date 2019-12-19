@@ -37,7 +37,7 @@ export function getCurrencyRegion( countryState ) {
 }
 
 /**
- * Gets the product IDs for items selected for purchase.
+ * Gets the product IDs for items based on the product types and theme selected in the onboarding profiler.
  *
  * @param {object} profileItems Onboarding profile.
  * @return {array} Product Ids.
@@ -58,6 +58,7 @@ export function getProductIdsForCart( profileItems ) {
 
 	const theme = onboarding.themes.find( themeData => themeData.slug === profileItems.theme );
 
+	// @todo -- Split out free themes so that they are not considered for purchase, and install those from WordPress.org on the theme step.
 	if ( theme && theme.id && ! theme.is_installed ) {
 		productIds.push( theme.id );
 	}

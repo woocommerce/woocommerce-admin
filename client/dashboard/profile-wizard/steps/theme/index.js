@@ -51,7 +51,6 @@ class Theme extends Component {
 		const isRequestError = ! isGetProfileItemsRequesting && prevProps.isRequesting && isError;
 
 		if ( isRequestSuccessful ) {
-			// @todo This should send profile information to woocommerce.com.
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( { chosen: null } );
 			/* eslint-enable react/no-did-update-set-state */

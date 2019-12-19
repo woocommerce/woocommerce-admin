@@ -25,18 +25,16 @@ import { getProductIdsForCart } from 'dashboard/utils';
 import sanitizeHTML from 'lib/sanitize-html';
 
 class CartModal extends Component {
-	componentDidMount() {
-		document.body.classList.add( 'woocommerce-admin-full-screen' );
-		document.body.classList.add( 'woocommerce-profile-wizard__body' );
+	constructor( props ) {
+		super( props );
+		this.state = {
+			isRedirecting: false,
+		};
 	}
 
-	componentWillUnmount() {
-		document.body.classList.remove( 'woocommerce-admin-full-screen' );
-		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
-	}
-
-	redirectToCart() {
-		const { productIds } = this.props;
+	onClickNow() {
+		const { productIds, onClickNow } = this.props;
+		this.setState( { isRedirecting: true } );
 		const backPath = getNewPath( {}, '/', {} );
 		const { connectNonce } = getSetting( 'onboarding', {} );
 
@@ -51,6 +49,12 @@ class CartModal extends Component {
 			'wccom-connect-nonce': connectNonce,
 			'wccom-back': backPath,
 		} );
+
+		if ( onClickNow ) {
+			onClickNow( url );
+			return;
+		}
+
 		window.location = url;
 	}
 
@@ -75,7 +79,7 @@ class CartModal extends Component {
 				return theme.id === productId;
 			} );
 
-			if ( themeInfo && themeInfo.slug !== 'Storefront' ) {
+			if ( themeInfo ) {
 				listItems.push( {
 					title: sprintf(
 						__( '%s — %s per year', 'woocommerce-admin' ),
@@ -91,6 +95,7 @@ class CartModal extends Component {
 	}
 
 	render() {
+		const { isRedirecting } = this.state;
 		return (
 			<Modal
 				title={ __(
@@ -102,7 +107,7 @@ class CartModal extends Component {
 			>
 				{ this.renderProducts() }
 
-				<p>
+				<p className="woocommerce-cart-modal__help-text">
 					{ __(
 						"You won't have access to this functionality until the extensions have been purchased and installed.",
 						'woocommerce-admin'
@@ -110,11 +115,11 @@ class CartModal extends Component {
 				</p>
 
 				<div className="woocommerce-cart-modal__actions">
-					<Button isLink onClick={ () => this.props.onClose() }>
+					<Button isLink onClick={ () => this.props.onClickLater() }>
 						{ __( "I'll do it later", 'woocommerce-admin' ) }
 					</Button>
 
-					<Button isPrimary isDefault onClick={ () => this.redirectToCart() }>
+					<Button isPrimary isDefault isBusy={ isRedirecting } onClick={ () => this.onClickNow() }>
 						{ __( 'Purchase & install now', 'woocommerce-admin' ) }
 					</Button>
 				</div>
