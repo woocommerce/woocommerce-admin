@@ -6,14 +6,14 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { remove } from 'lodash';
-import { withDispatch } from '@wordpress/data';
+import { partial, remove } from 'lodash';
+import { withDispatch, withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
 import { SectionHeader, useFilters, ScrollTo } from '@woocommerce/components';
-import { withSettings } from '@woocommerce/data';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -30,12 +30,10 @@ class Settings extends Component {
 	constructor( props ) {
 		super( props );
 
-		const settings = props.getSetting( 'wcAdminSettings' );
-
 		this.state = {
 			saving: false,
 			isDirty: false,
-			settings: { ...settings },
+			settings: { ...props.settings },
 		};
 
 		this.handleInputChange = this.handleInputChange.bind( this );
@@ -77,9 +75,7 @@ class Settings extends Component {
 				__( 'Are you sure you want to reset all settings to default values?', 'woocommerce-admin' )
 			)
 		) {
-			const { getSetting } = this.props;
-			const orderStatuses = getSetting( 'ORDER_STATUSES' );
-			const defaultDateRange = getSetting( 'DEFAULT_DATE_RANGE' );
+			const { orderStatuses, defaultDateRange } = this.props;
 			const config = getConfig( orderStatuses, defaultDateRange );
 			const resetSettings = Object.keys( config ).reduce( ( result, setting ) => {
 				result[ setting ] = config[ setting ].defaultValue;
@@ -92,12 +88,11 @@ class Settings extends Component {
 	};
 
 	componentDidUpdate() {
-		const { createNotice, isRequestingSetting, getSettingError } = this.props;
+		const { createNotice, isRequestingSetting, settingsError } = this.props;
 		const { saving } = this.state;
-		const isError = getSettingError();
 
 		if ( saving && ! isRequestingSetting ) {
-			if ( ! isError ) {
+			if ( ! settingsError ) {
 				createNotice(
 					'success',
 					__( 'Your settings have been successfully saved.', 'woocommerce-admin' )
@@ -164,9 +159,7 @@ class Settings extends Component {
 		if ( hasError ) {
 			return null;
 		}
-		const { createNotice, query, getSetting } = this.props;
-		const orderStatuses = getSetting( 'ORDER_STATUSES' );
-		const defaultDateRange = getSetting( 'DEFAULT_DATE_RANGE' );
+		const { createNotice, query, orderStatuses, defaultDateRange } = this.props;
 		const config = getConfig( orderStatuses, defaultDateRange );
 
 		return (
@@ -204,12 +197,23 @@ class Settings extends Component {
 }
 
 export default compose(
-	withSettings( 'wc_admin' ),
+	withSelect( select => {
+		const { isResolving, getSetting, getLastSettingsErrorForGroup } = select( SETTINGS_STORE_NAME );
+		return {
+			isRequesting: isResolving( 'setSetting', [ 'wc_admin' ] ),
+			settings: getSetting( 'wc_admin', 'wcAdminSettings' ),
+			settingsError: Boolean( getLastSettingsErrorForGroup( 'wc_admin' ) ),
+			orderStatuses: getSetting( 'wc_admin', 'ORDER_STATUSES' ),
+			defaultDateRange: getSetting( 'wc_admin', 'DEFAULT_DATE_RANGE' ),
+		};
+	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
+		const { setSettingsForGroup } = dispatch( SETTINGS_STORE_NAME );
 
 		return {
 			createNotice,
+			setSetting: partial( setSettingsForGroup, 'wc_admin' ),
 		};
 	} )
 )( useFilters( SETTINGS_FILTER )( Settings ) );
