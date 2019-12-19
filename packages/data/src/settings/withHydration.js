@@ -11,29 +11,23 @@ import { useSelect } from '@wordpress/data';
  */
 import { STORE_NAME } from './constants';
 
-export const withHydration = group => OriginalComponent => {
-	return ( props ) => {
-		const settings = useRef( getAllSettings() );
-		useSelect( ( select, registry ) => {
-			if ( ! settings.current ) {
-				return;
-			}
+export default function withSettingsHydration( group ) {
+	return OriginalComponent => {
+		return ( props ) => {
+			const settings = useRef( getAllSettings() );
+			useSelect( ( select, registry ) => {
+				if ( ! settings.current ) {
+					return;
+				}
 
-			const { isResolving, hasFinishedResolution } = select( STORE_NAME );
-			const { startResolution, finishResolution, updateSettingsForGroup } = registry.dispatch(
-				STORE_NAME
-			);
+				const { updateSettingsForGroup } = registry.dispatch(
+					STORE_NAME
+				);
 
-			if (
-				! isResolving( 'getSettings', [ group ] ) &&
-				! hasFinishedResolution( 'getSettings', [ group ] )
-			) {
-				startResolution( 'getSettings', [ group ] );
 				updateSettingsForGroup( group, settings.current );
-				finishResolution( 'getSettings', [ group ] );
-			}
-		}, [] );
+			}, [] );
 
-		return <OriginalComponent { ...props } />;
+			return <OriginalComponent { ...props } />;
+		};
 	};
-};
+}
