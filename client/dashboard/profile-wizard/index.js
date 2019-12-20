@@ -34,7 +34,7 @@ class ProfileWizard extends Component {
 		super( ...arguments );
 		this.state = {
 			showCartModal: false,
-			cartRedirect: false,
+			cartRedirectUrl: null,
 		};
 		this.goToNextStep = this.goToNextStep.bind( this );
 	}
@@ -65,11 +65,11 @@ class ProfileWizard extends Component {
 	}
 
 	componentWillUnmount() {
-		const { cartRedirect } = this.state;
+		const { cartRedirectUrl } = this.state;
 
-		if ( cartRedirect ) {
+		if ( cartRedirectUrl ) {
 			document.body.classList.add( 'woocommerce-admin-is-loading' );
-			window.location = cartRedirect;
+			window.location = cartRedirectUrl;
 		}
 
 		document.documentElement.classList.add( 'wp-toolbar' );
@@ -164,9 +164,9 @@ class ProfileWizard extends Component {
 		}
 	}
 
-	markCompleteAndPurchase( cartRedirect ) {
+	markCompleteAndPurchase( cartRedirectUrl ) {
 		const { updateProfileItems } = this.props;
-		this.setState( { cartRedirect } );
+		this.setState( { cartRedirectUrl } );
 		updateProfileItems( { completed: true } );
 	}
 
@@ -187,8 +187,10 @@ class ProfileWizard extends Component {
 				{ showCartModal && (
 					<CartModal
 						onClose={ () => this.setState( { showCartModal: false } ) }
-						onClickNow={ cartRedirect => this.markCompleteAndPurchase( cartRedirect ) }
-						onClickLater={ () => this.props.updateProfileItems( { completed: true } ) }
+						onClickPurchaseNow={ cartRedirectUrl =>
+							this.markCompleteAndPurchase( cartRedirectUrl )
+						}
+						onClickPurchaseLater={ () => this.props.updateProfileItems( { completed: true } ) }
 					/>
 				) }
 				<ProfileWizardHeader currentStep={ step.key } steps={ steps } />

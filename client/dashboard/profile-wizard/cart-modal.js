@@ -28,13 +28,14 @@ class CartModal extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
-			isRedirecting: false,
+			purchaseNowButtonBusy: false,
+			purchaseLaterButtonBusy: false,
 		};
 	}
 
-	onClickNow() {
-		const { productIds, onClickNow } = this.props;
-		this.setState( { isRedirecting: true } );
+	onClickPurchaseNow() {
+		const { productIds, onClickPurchaseNow } = this.props;
+		this.setState( { purchaseNowButtonBusy: true } );
 		const backPath = getNewPath( {}, '/', {} );
 		const { connectNonce } = getSetting( 'onboarding', {} );
 
@@ -50,12 +51,17 @@ class CartModal extends Component {
 			'wccom-back': backPath,
 		} );
 
-		if ( onClickNow ) {
-			onClickNow( url );
+		if ( onClickPurchaseNow ) {
+			onClickPurchaseNow( url );
 			return;
 		}
 
 		window.location = url;
+	}
+
+	onClickPurchaseLater() {
+		this.setState( { purchaseLaterButtonBusy: true } );
+		this.props.onClickPurchaseLater();
 	}
 
 	renderProducts() {
@@ -95,7 +101,7 @@ class CartModal extends Component {
 	}
 
 	render() {
-		const { isRedirecting } = this.state;
+		const { purchaseNowButtonBusy, purchaseLaterButtonBusy } = this.state;
 		return (
 			<Modal
 				title={ __(
@@ -115,11 +121,20 @@ class CartModal extends Component {
 				</p>
 
 				<div className="woocommerce-cart-modal__actions">
-					<Button isLink onClick={ () => this.props.onClickLater() }>
+					<Button
+						isLink
+						isBusy={ purchaseLaterButtonBusy }
+						onClick={ () => this.onClickPurchaseLater() }
+					>
 						{ __( "I'll do it later", 'woocommerce-admin' ) }
 					</Button>
 
-					<Button isPrimary isDefault isBusy={ isRedirecting } onClick={ () => this.onClickNow() }>
+					<Button
+						isPrimary
+						isDefault
+						isBusy={ purchaseNowButtonBusy }
+						onClick={ () => this.onClickPurchaseNow() }
+					>
 						{ __( 'Purchase & install now', 'woocommerce-admin' ) }
 					</Button>
 				</div>
