@@ -47,6 +47,7 @@ export const useSettings = ( group, settingsKeys = [] ) => {
 	);
 	const updateAndPersistSettings = useCallback(
 		( name, data ) => {
+			setIsDirty( group, [ name ] );
 			updateAndPersistSettingsForGroup( group, { [ name ]: data } );
 		},
 		[ group ]

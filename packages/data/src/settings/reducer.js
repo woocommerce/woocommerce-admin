@@ -28,7 +28,6 @@ const receiveSettings = (
 	const newState = {};
 	switch ( type ) {
 		case TYPES.SET_IS_PERSISTING:
-			console.log( 'setting isPerssisting: ' +  persisting );
 			state = {
 				...state,
 				[ group ]: {
