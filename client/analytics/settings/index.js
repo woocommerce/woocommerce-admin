@@ -38,6 +38,7 @@ const Settings = ( { createNotice, query } ) => {
 		defaultDateRange,
 		wcAdminSettings,
 	} = useSettings( 'wc_admin', [ 'wcAdminSettings', 'orderStatuses', 'defaultDateRange' ] );
+	console.log( isPersisting );
 	const hasSaved = useRef( false );
 	const config = getConfig( orderStatuses, defaultDateRange );
 
@@ -95,7 +96,7 @@ const Settings = ( { createNotice, query } ) => {
 
 	const saveChanges = () => {
 		persistSettings();
-		recordEvent( 'analytics_settings_save', settings );
+		recordEvent( 'analytics_settings_save', wcAdminSettings );
 
 		// On save, reset persisted query properties of Nav Menu links to default
 		query.period = undefined;
@@ -156,7 +157,15 @@ const Settings = ( { createNotice, query } ) => {
 	);
 };
 
-export default useFilters( SETTINGS_FILTER )( Settings );
+export default compose(
+	withDispatch( dispatch => {
+		const { createNotice } = dispatch( 'core/notices' );
+
+		return {
+			createNotice,
+		};
+	} )
+)( useFilters( SETTINGS_FILTER )( Settings ) );
 
 // class Settings extends Component {
 // 	constructor( props ) {

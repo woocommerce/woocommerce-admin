@@ -5,6 +5,7 @@
  */
 
 import { apiFetch, select, dispatch } from '@wordpress/data-controls';
+import { concat } from 'lodash';
 
 /**
  * Internal Dependencies
@@ -68,11 +69,15 @@ export function* persistSettingsForGroup( group ) {
 	}
 
 	// get data slice for keys
-	const dirtyData = yield select( STORE_NAME, 'getSettingsForGroupSlice', group, dirtyKeys );
+	const dirtyData = yield select( STORE_NAME, 'getSettingsForGroup', group, dirtyKeys );
 	const url = `${ NAMESPACE }/settings/${ group }/batch`;
-	const update = dirtyKeys.map( key => {
-		return { id: key, value: dirtyData[ key ] };
-	} );
+	const update = dirtyKeys.reduce( ( updates, key ) => {
+		const u = Object.keys( dirtyData[ key ] ).map( k => {
+			return { id: k, value: dirtyData[ key ][ k ] };
+		} );
+		return concat( updates, u );
+		// return { id: key, value: dirtyData[ key ] };
+	}, [] );
 	try {
 		const results = yield apiFetch( {
 			path: url,

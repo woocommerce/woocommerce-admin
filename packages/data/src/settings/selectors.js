@@ -26,7 +26,7 @@ export const getSettings = ( state, group ) => {
 	return settings;
 };
 
-const getDirtyKeys = ( state, group ) => {
+export const getDirtyKeys = ( state, group ) => {
 	return state[ group ].dirty || [];
 };
 
@@ -50,7 +50,7 @@ export const getSettingsForGroup = ( state, group, keys ) => {
 };
 
 export const getIsPersisting = ( state, group ) => {
-	return state[ group ] && Boolean( state[ group ].isPersisting );
+	return state[ group ] && Boolean( state[ group ].persisting );
 };
 
 /**

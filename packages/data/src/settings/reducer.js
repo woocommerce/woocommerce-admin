@@ -23,16 +23,26 @@ const updateGroupDataInNewState = ( newState, { group, groupIds, data, time, err
 
 const receiveSettings = (
 	state = {},
-	{ type, group, data, error, time, dirtyKeys, persisting }
+	{ type, group, data, error, time, dirtyKeys, persisting, clear }
 ) => {
 	const newState = {};
 	switch ( type ) {
+		case TYPES.SET_IS_PERSISTING:
+			console.log( 'setting isPerssisting: ' +  persisting );
+			state = {
+				...state,
+				[ group ]: {
+					...state[ group ],
+					persisting,
+				},
+			};
+			break;
 		case TYPES.SET_IS_DIRTY:
 			state = {
 				...state,
 				[ group ]: {
 					...state[ group ],
-					dirty: union( state[ group ].dirty || [], dirtyKeys ),
+					dirty: clear ? [] : union( state[ group ].dirty || [], dirtyKeys ),
 				},
 			};
 			break;
@@ -44,7 +54,7 @@ const receiveSettings = (
 					...state,
 					[ group ]: {
 						data: state[ group ] ? state[ group ].data : [],
-						error: error,
+						error,
 						lastReceived: time,
 					},
 				};
@@ -55,7 +65,8 @@ const receiveSettings = (
 						data: state[ group ] ? [ ...state[ group ].data, ...groupIds ] : groupIds,
 						error,
 						lastReceived: time,
-						persisting,
+						persisting: state[ group ] ? state[ group ].persisting : false,
+						dirty: state[ group ] ? state[ group ].dirty : [],
 					},
 					...updateGroupDataInNewState( newState, {
 						group,
