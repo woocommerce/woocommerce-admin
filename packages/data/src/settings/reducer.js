@@ -1,8 +1,8 @@
+/** @format */
 /**
- * /* @format
- *
- * @format
+ * External dependencies
  */
+import { union } from 'lodash';
 
 /**
  * Internal dependencies
@@ -27,6 +27,15 @@ const receiveSettings = (
 ) => {
 	const newState = {};
 	switch ( type ) {
+		case TYPES.SET_IS_DIRTY:
+			state = {
+				...state,
+				[ group ]: {
+					...state[ group ],
+					dirty: union( state[ group ].dirty || [], dirtyKeys ),
+				},
+			};
+			break;
 		case TYPES.UPDATE_SETTINGS_FOR_GROUP:
 		case TYPES.UPDATE_ERROR_FOR_GROUP:
 			const groupIds = data ? Object.keys( data ) : [];
@@ -46,7 +55,6 @@ const receiveSettings = (
 						data: state[ group ] ? [ ...state[ group ].data, ...groupIds ] : groupIds,
 						error,
 						lastReceived: time,
-						dirty: [ dirtyKeys ],
 						persisting,
 					},
 					...updateGroupDataInNewState( newState, {

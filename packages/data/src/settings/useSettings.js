@@ -8,7 +8,7 @@ import { useCallback } from '@wordpress/element';
 
 export const useSettings = ( group, settingsKeys = [] ) => {
 	const { requestedSettings, settingsError, isPersisting, isDirty } = useSelect(
-		( select ) => {
+		select => {
 			const {
 				getLastSettingsErrorForGroup,
 				getSettingsForGroup,
@@ -24,12 +24,16 @@ export const useSettings = ( group, settingsKeys = [] ) => {
 		},
 		[ group, settingsKeys ]
 	);
-	const { persistSettingsForGroup, updateAndPersistSettingsForGroup, updateSettingsForGroup } = useDispatch( STORE_NAME );
+	const {
+		persistSettingsForGroup,
+		updateAndPersistSettingsForGroup,
+		updateSettingsForGroup,
+		setIsDirty,
+	} = useDispatch( STORE_NAME );
 	const updateSettings = useCallback(
 		( name, data ) => {
-			// this action would also mark the specific keys from this slice as dirty
-			// if they changed (see new action example)
 			updateSettingsForGroup( group, { [ name ]: data } );
+			setIsDirty( group, [ name ] );
 		},
 		[ group ]
 	);
