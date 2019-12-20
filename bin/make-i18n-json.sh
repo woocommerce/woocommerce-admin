@@ -11,9 +11,9 @@ fi
 for T in `find languages -name "*.po"`
 	do
 		sed \
-			-e 's/#: client[^:]*:/#: dist\/app\/index.js:/gp' \
-			-e 's/#: packages\/components[^:]*:/#: dist\/components\/index.js:/gp' \
-			-e 's/#: packages\/date[^:]*:/#: dist\/date\/index.js:/gp' \
+			-e 's/ client\/[^:]*:/ dist\/app\/index.js:/gp' \
+			-e 's/ packages\/components[^:]*:/ dist\/components\/index.js:/gp' \
+			-e 's/ packages\/date[^:]*:/ dist\/date\/index.js:/gp' \
 			$T | uniq > $T-build
 		rm $T
 		mv $T-build $T
