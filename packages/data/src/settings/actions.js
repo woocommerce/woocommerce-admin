@@ -4,7 +4,7 @@
  * @format
  */
 
-import { apiFetch, select, dispatch } from '@wordpress/data-controls';
+import { apiFetch, select } from '@wordpress/data-controls';
 import { concat } from 'lodash';
 
 /**
@@ -71,6 +71,8 @@ export function* persistSettingsForGroup( group ) {
 	// get data slice for keys
 	const dirtyData = yield select( STORE_NAME, 'getSettingsForGroup', group, dirtyKeys );
 	const url = `${ NAMESPACE }/settings/${ group }/batch`;
+
+	// todo: update should be an array of objects like { id: key, value: dirtyData[ key ] }.
 	const update = dirtyKeys.reduce( ( updates, key ) => {
 		const u = Object.keys( dirtyData[ key ] ).map( k => {
 			return { id: k, value: dirtyData[ key ][ k ] };
@@ -94,54 +96,6 @@ export function* persistSettingsForGroup( group ) {
 	}
 	// finally set the persisting state
 	yield setIsPersisting( group, false );
-}
-
-const resultsToSettings = data => {
-	if ( typeof data.update === 'undefined' ) {
-		return;
-	}
-	const resources = {};
-	data.update.forEach( setting => ( resources[ setting.id ] = setting.value ) );
-	return resources;
-};
-
-/**
- * Sets a value to a property on the settings state.
- *
- * @export
- * @param {string}   group                       The settings group.
- * @param {string}   name                        The setting property key for the
- *                                               setting being mutated.
- * @param {mixed}    value                       The value to set.
- * @param {function} [filter=( val ) => val]     Allows for providing a callback
- *                                               to sanitize the setting (eg.
- *                                               ensure it's a number)
- */
-export function* setSettingsForGroup( group, name, value, filter = val => val ) {
-	const data = filter( value );
-	yield dispatch( STORE_NAME, 'startResolution', 'setSetting', [ group ] );
-	yield dispatch( STORE_NAME, 'updateSettingsForGroup', [ group, { [ name ]: data } ] );
-
-	const url = `${ NAMESPACE }/settings/${ group }/batch`;
-	const update = Object.keys( data ).map( key => {
-		return { id: key, value: data[ key ] };
-	} );
-
-	try {
-		let results = yield apiFetch( {
-			path: url,
-			method: 'POST',
-			data: { update },
-		} );
-		results = resultsToSettings( results );
-		if ( ! results ) {
-			throw new Error( 'settings did not update' );
-		}
-		yield updateSettingsForGroup( group, results );
-	} catch ( e ) {
-		yield updateErrorForGroup( group, null, e );
-	}
-	yield dispatch( STORE_NAME, 'finishResolution', 'setSetting', [ group ] );
 }
 
 export function clearSettings() {
