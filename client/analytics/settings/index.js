@@ -109,10 +109,7 @@ const Settings = ( { createNotice, query } ) => {
 
 	const handleInputChange = e => {
 		const { checked, name, type, value } = e.target;
-		const nextSettings = {
-			orderStatuses,
-			defaultRange,
-		};
+		const nextSettings = { ...wcAdminSettings };
 
 		if ( 'checkbox' === type ) {
 			if ( checked ) {
@@ -123,7 +120,7 @@ const Settings = ( { createNotice, query } ) => {
 		} else {
 			nextSettings[ name ] = value;
 		}
-		updateSettings( nextSettings );
+		updateSettings( 'wcAdminSettings', nextSettings );
 	};
 
 	return (
