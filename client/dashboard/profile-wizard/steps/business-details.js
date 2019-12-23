@@ -370,6 +370,10 @@ class BusinessDetails extends Component {
 				label: __( 'Yes, on another platform', 'woocommerce-admin' ),
 			},
 			{
+				key: 'other-woocommerce',
+				label: __( 'Yes, I own a different store powered by WooCommerce', 'woocommerce-admin' ),
+			},
+			{
 				key: 'brick-mortar',
 				label: __( 'Yes, in person at physical stores and/or events', 'woocommerce-admin' ),
 			},
