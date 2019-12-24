@@ -274,9 +274,6 @@ class TaskDashboard extends Component {
 					<CartModal
 						onClose={ () => this.toggleCartModal() }
 						onClickPurchaseLater={ () => this.toggleCartModal() }
-						onClickPurchaseNow={ cartRedirectUrl =>
-							this.markCompleteAndPurchase( cartRedirectUrl )
-						}
 					/>
 				) }
 			</Fragment>
