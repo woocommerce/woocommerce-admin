@@ -90,8 +90,10 @@ class TaskDashboard extends Component {
 		if ( this.getCurrentTask() ) {
 			return;
 		}
+
 		const { profileItems } = this.props;
 		const tasks = this.getTasks();
+
 		recordEvent( 'tasklist_view', {
 			number_tasks: tasks.length,
 			store_connected: profileItems.wccom_connected,
