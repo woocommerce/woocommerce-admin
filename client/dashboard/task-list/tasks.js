@@ -25,7 +25,7 @@ import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 
-export function getTasks( { profileItems, options, query, toggleCartModal } ) {
+export function getAllTasks( { profileItems, options, query, toggleCartModal } ) {
 	const {
 		hasHomepage,
 		hasPhysicalProducts,

@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { filter, get } from 'lodash';
+import { get } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
 import { Snackbar, Icon, Button, Modal } from '@wordpress/components';
@@ -21,7 +21,7 @@ import { updateQueryString } from '@woocommerce/navigation';
  */
 import './style.scss';
 import CartModal from '../components/cart-modal';
-import { getTasks } from './tasks';
+import { getAllTasks } from './tasks';
 import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
 
@@ -66,12 +66,12 @@ class TaskDashboard extends Component {
 	getTasks() {
 		const { profileItems, query, taskListPayments } = this.props;
 
-		return getTasks( {
+		return getAllTasks( {
 			profileItems,
 			options: taskListPayments,
 			query: query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
-		} );
+		} ).filter( task => task.visible );
 	}
 
 	recordTaskView() {
@@ -91,7 +91,7 @@ class TaskDashboard extends Component {
 			return;
 		}
 		const { profileItems } = this.props;
-		const tasks = filter( this.getTasks(), task => task.visible );
+		const tasks = this.getTasks();
 		recordEvent( 'tasklist_view', {
 			number_tasks: tasks.length,
 			store_connected: profileItems.wccom_connected,
@@ -231,7 +231,7 @@ class TaskDashboard extends Component {
 		const { inline } = this.props;
 		const { isCartModalOpen, isWelcomeModalOpen } = this.state;
 		const currentTask = this.getCurrentTask();
-		const listTasks = filter( this.getTasks(), task => task.visible ).map( task => {
+		const listTasks = this.getTasks().map( task => {
 			task.className = classNames( task.completed ? 'is-complete' : null, task.className );
 			task.before = task.completed ? (
 				<i className="material-icons-outlined">check_circle</i>
