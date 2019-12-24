@@ -51,7 +51,8 @@ export function getProductIdsForCart( profileItems ) {
 	productTypes.forEach( productType => {
 		if (
 			onboarding.productTypes[ productType ] &&
-			onboarding.productTypes[ productType ].product
+			onboarding.productTypes[ productType ].product &&
+			! onboarding.installedPlugins.includes( onboarding.productTypes[ productType ].slug )
 		) {
 			productIds.push( onboarding.productTypes[ productType ].product );
 		}
