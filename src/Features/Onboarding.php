@@ -196,10 +196,11 @@ class Onboarding {
 				);
 
 				foreach ( $theme_data->products as $theme ) {
-					$slug                                       = sanitize_title( $theme->slug );
+					$slug                                       = sanitize_title_with_dashes( $theme->slug );
 					$themes[ $slug ]                            = (array) $theme;
 					$themes[ $slug ]['is_installed']            = false;
 					$themes[ $slug ]['has_woocommerce_support'] = true;
+					$themes[ $slug ]['slug']                    = $slug;
 				}
 			}
 
@@ -497,6 +498,7 @@ class Onboarding {
 			)
 		);
 	}
+
 	/**
 	 * Get a list of active plugins, relevent to the onboarding wizard.
 	 *
@@ -513,6 +515,22 @@ class Onboarding {
 			$active_plugins[] = $slug;
 		}
 		return $active_plugins;
+	}
+
+	/**
+	 * Gets an array of themes that can be installed & activated via the onboarding wizard.
+	 *
+	 * @return array
+	 */
+	public static function get_allowed_themes() {
+		$allowed_themes = array_map(
+			function( $theme ) {
+				return $theme['slug'];
+			},
+			self::get_themes()
+		);
+
+		return apply_filters( 'woocommerce_admin_onboarding_themes_whitelist', $allowed_themes );
 	}
 
 	/**
