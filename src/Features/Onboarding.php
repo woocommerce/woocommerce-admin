@@ -523,12 +523,16 @@ class Onboarding {
 	 * @return array
 	 */
 	public static function get_allowed_themes() {
-		$allowed_themes = array_map(
-			function( $theme ) {
-				return $theme['slug'];
-			},
-			self::get_themes()
-		);
+		$allowed_themes = array();
+		$themes         = self::get_themes();
+
+		foreach ( $themes as $theme ) {
+			$price = preg_replace( '/&#?[a-z0-9]+;/i', '', $theme['price'] );
+
+			if ( $theme['is_installed'] || '0.00' === $price ) {
+				$allowed_themes[] = $theme['slug'];
+			}
+		}
 
 		return apply_filters( 'woocommerce_admin_onboarding_themes_whitelist', $allowed_themes );
 	}
