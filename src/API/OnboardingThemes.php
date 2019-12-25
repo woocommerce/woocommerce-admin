@@ -50,6 +50,19 @@ class OnboardingThemes extends \WC_REST_Data_Controller {
 				'schema' => array( $this, 'get_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/activate',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'activate_theme' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -138,6 +151,39 @@ class OnboardingThemes extends \WC_REST_Data_Controller {
 			'name'   => $api->name,
 			'status' => 'success',
 		);
+	}
+
+	/**
+	 * Activate the requested theme.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|array Theme activation status.
+	 */
+	public function activate_theme( $request ) {
+		$allowed_themes = Onboarding::get_allowed_themes();
+		$theme          = sanitize_title_with_dashes( $request['theme'] );
+		if ( ! in_array( $theme, $allowed_themes, true ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_theme', __( 'Invalid theme.', 'woocommerce-admin' ), 404 );
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/theme.php';
+
+		$installed_themes = wp_get_themes();
+
+		if ( ! in_array( $theme, array_keys( $installed_themes ), true ) ) {
+			/* translators: %s: theme slug (example: woocommerce-services) */
+			return new \WP_Error( 'woocommerce_rest_invalid_theme', sprintf( __( 'Invalid theme %s.', 'woocommerce-admin' ), $slug ), 404 );
+		}
+
+		$result = switch_theme( $theme );
+		if ( ! is_null( $result ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_theme', sprintf( __( 'The requested theme could not be activated.', 'woocommerce-admin' ), $slug ), 500 );
+		}
+
+		return( array(
+			'slug'   => $theme,
+			'status' => 'success',
+		) );
 	}
 
 	/**
