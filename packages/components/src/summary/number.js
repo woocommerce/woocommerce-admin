@@ -142,7 +142,7 @@ SummaryNumber.propTypes = {
 	 * A string or number value to display - a string is allowed so we can accept currency formatting.
 	 * If omitted, this section won't display.
 	 */
-	prevValue: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string, PropTypes.node ] ),
+	prevValue: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 	/**
 	 * A boolean used to indicate that a negative delta is "good", and should be styled like a positive (and vice-versa).
 	 */
@@ -154,7 +154,7 @@ SummaryNumber.propTypes = {
 	/**
 	 * A string or number value to display - a string is allowed so we can accept currency formatting.
 	 */
-	value: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string, PropTypes.node ] ),
+	value: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 	/**
 	 * A function to be called after a SummaryNumber, rendered as a link, is clicked.
 	 */

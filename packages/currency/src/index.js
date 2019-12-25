@@ -3,7 +3,6 @@
  * External dependencies
  */
 import { sprintf } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 
 /**
  * WooCommerce dependencies
@@ -32,7 +31,6 @@ export default class Currency {
 		this.decimalSeparator = config.decimalSeparator.toString();
 		this.priceFormat = this.getPriceFormat( config );
 		this.thousandSeparator = config.thousandSeparator.toString();
-		this.customFormat = applyFilters( 'woocommerce_admin_custom_currency' );
 
 		const precisionNumber = parseInt( config.precision, 10 );
 		this.precision = precisionNumber;
@@ -77,17 +75,6 @@ export default class Currency {
 	 */
 	formatCurrency( number ) {
 		const formattedNumber = numberFormat( this, number );
-
-		if ( this.customFormat ) {
-			const CustomCurrency = this.customFormat;
-			return (
-				<CustomCurrency
-					format={ this.priceFormat }
-					symbol={ this.symbol }
-					number={ formattedNumber }
-				/>
-			);
-		}
 
 		if ( '' === formattedNumber ) {
 			return formattedNumber;
