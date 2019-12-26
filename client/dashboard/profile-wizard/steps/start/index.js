@@ -269,7 +269,7 @@ class Start extends Component {
 					</Button>
 				</Card>
 
-				{ pluginNamesString && (
+				{ 0 !== pluginsToInstall.length && (
 					<p>
 						<Button
 							isLink
