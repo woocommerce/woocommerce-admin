@@ -15,7 +15,7 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { Card, H } from '@woocommerce/components';
-import { getSetting } from '@woocommerce/wc-admin-settings';
+import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -70,9 +70,18 @@ class Theme extends Component {
 	}
 
 	onChoose( theme, location = '' ) {
-		this.setState( { chosen: theme } );
-		recordEvent( 'storeprofiler_store_theme_choose', { theme, location } );
-		this.installTheme( theme );
+		const { updateProfileItems } = this.props;
+		const { price, slug } = theme;
+		const { activeTheme = '' } = getSetting( 'onboarding', {} );
+
+		this.setState( { chosen: slug } );
+		recordEvent( 'storeprofiler_store_theme_choose', { theme: slug, location } );
+
+		if ( theme !== activeTheme && this.getPriceValue( price ) <= 0 ) {
+			this.installTheme( slug );
+		} else {
+			updateProfileItems( { theme: slug } );
+		}
 	}
 
 	installTheme( slug ) {
@@ -100,6 +109,10 @@ class Theme extends Component {
 						response.name
 					)
 				);
+				setSetting( 'onboarding', {
+					...getSetting( 'onboarding', {} ),
+					activeTheme: response.slug,
+				} );
 				updateProfileItems( { theme: slug } );
 			} )
 			.catch( response => {
@@ -155,7 +168,7 @@ class Theme extends Component {
 						<Button
 							isPrimary={ Boolean( demo_url ) }
 							isDefault={ ! Boolean( demo_url ) }
-							onClick={ () => this.onChoose( slug, 'card' ) }
+							onClick={ () => this.onChoose( theme, 'card' ) }
 							isBusy={ chosen === slug }
 						>
 							{ __( 'Choose', 'woocommerce-admin' ) }
