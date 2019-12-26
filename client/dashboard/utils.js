@@ -59,8 +59,7 @@ export function getProductIdsForCart( profileItems ) {
 
 	const theme = onboarding.themes.find( themeData => themeData.slug === profileItems.theme );
 
-	// @todo -- Split out free themes so that they are not considered for purchase, and install those from WordPress.org on the theme step.
-	if ( theme && theme.id && ! theme.is_installed ) {
+	if ( theme && theme.id && ! theme.is_installed && getPriceValue( theme.price ) > 0 ) {
 		productIds.push( theme.id );
 	}
 
