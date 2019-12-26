@@ -3,6 +3,7 @@
 /**
  * External dependencies
  */
+import { decodeEntities } from '@wordpress/html-entities';
 import { without } from 'lodash';
 
 /**
@@ -64,6 +65,16 @@ export function getProductIdsForCart( profileItems ) {
 	}
 
 	return productIds;
+}
+
+/**
+ * Get the value of a price from a string, removing any non-numeric characters.
+ *
+ * @param {string} string Price string.
+ * @return {number} Number value.
+ */
+export function getPriceValue( string ) {
+	return Number( decodeEntities( string ).replace( /[^0-9.-]+/g, '' ) );
 }
 
 /**

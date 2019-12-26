@@ -25,6 +25,7 @@ import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
+import { getPriceValue } from 'dashboard/utils';
 
 class Theme extends Component {
 	constructor() {
@@ -77,7 +78,7 @@ class Theme extends Component {
 		this.setState( { chosen: slug } );
 		recordEvent( 'storeprofiler_store_theme_choose', { theme: slug, location } );
 
-		if ( theme !== activeTheme && this.getPriceValue( price ) <= 0 ) {
+		if ( theme !== activeTheme && getPriceValue( price ) <= 0 ) {
 			this.installTheme( slug );
 		} else {
 			updateProfileItems( { theme: slug } );
@@ -193,7 +194,7 @@ class Theme extends Component {
 		}
 		if ( is_installed ) {
 			return __( 'Installed', 'woocommerce-admin' );
-		} else if ( this.getPriceValue( price ) <= 0 ) {
+		} else if ( getPriceValue( price ) <= 0 ) {
 			return __( 'Free', 'woocommerce-admin' );
 		}
 
@@ -217,9 +218,9 @@ class Theme extends Component {
 
 		switch ( activeTab ) {
 			case 'paid':
-				return allThemes.filter( theme => this.getPriceValue( theme.price ) > 0 );
+				return allThemes.filter( theme => getPriceValue( theme.price ) > 0 );
 			case 'free':
-				return allThemes.filter( theme => this.getPriceValue( theme.price ) <= 0 );
+				return allThemes.filter( theme => getPriceValue( theme.price ) <= 0 );
 			case 'all':
 			default:
 				return allThemes;
