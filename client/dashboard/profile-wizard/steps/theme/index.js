@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -68,12 +69,43 @@ class Theme extends Component {
 		}
 	}
 
-	async onChoose( theme, location = '' ) {
-		const { updateProfileItems } = this.props;
-
+	onChoose( theme, location = '' ) {
 		this.setState( { chosen: theme } );
 		recordEvent( 'storeprofiler_store_theme_choose', { theme, location } );
-		updateProfileItems( { theme } );
+		this.installTheme( theme );
+	}
+
+	installTheme( slug ) {
+		const { createNotice } = this.props;
+
+		apiFetch( { path: '/wc-admin/onboarding/themes/install?theme=' + slug, method: 'POST' } )
+			.then( () => {
+				this.activateTheme( slug );
+			} )
+			.catch( response => {
+				this.setState( { chosen: null } );
+				createNotice( 'error', response.message );
+			} );
+	}
+
+	activateTheme( slug ) {
+		const { createNotice, updateProfileItems } = this.props;
+
+		apiFetch( { path: '/wc-admin/onboarding/themes/activate?theme=' + slug, method: 'POST' } )
+			.then( response => {
+				createNotice(
+					'success',
+					sprintf(
+						__( '%s was installed and activated on your site.', 'woocommerce-admin' ),
+						response.name
+					)
+				);
+				updateProfileItems( { theme: slug } );
+			} )
+			.catch( response => {
+				this.setState( { chosen: null } );
+				createNotice( 'error', response.message );
+			} );
 	}
 
 	onClosePreview() {
