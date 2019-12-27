@@ -124,7 +124,9 @@ class BusinessDetails extends Component {
 			} else if ( 'revenue' === name ) {
 				if (
 					! values.revenue.length &&
-					[ 'other', 'brick-mortar', 'brick-mortar-other' ].includes( values.selling_venues )
+					[ 'other', 'brick-mortar', 'brick-mortar-other', 'other-woocommerce' ].includes(
+						values.selling_venues
+					)
 				) {
 					errors.revenue = __( 'This field is required', 'woocommerce-admin' );
 				}
@@ -445,7 +447,7 @@ class BusinessDetails extends Component {
 										{ ...getInputProps( 'selling_venues' ) }
 									/>
 
-									{ [ 'other', 'brick-mortar', 'brick-mortar-other' ].includes(
+									{ [ 'other', 'brick-mortar', 'brick-mortar-other', 'other-woocommerce' ].includes(
 										values.selling_venues
 									) && (
 										<SelectControl
