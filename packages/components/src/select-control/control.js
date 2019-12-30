@@ -51,6 +51,12 @@ class Control extends Component {
 	}
 
 	onBlur() {
+		const { onBlur } = this.props;
+
+		if ( 'function' === typeof onBlur ) {
+			onBlur();
+		}
+
 		this.setState( { isActive: false } );
 	}
 
@@ -234,6 +240,10 @@ Control.propTypes = {
 	 * ID used for a11y in the listbox.
 	 */
 	listboxId: PropTypes.string,
+	/**
+	 * Function called when the input is blurred.
+	 */
+	onBlur: PropTypes.func,
 	/**
 	 * Function called when selected results change, passed result list.
 	 */
