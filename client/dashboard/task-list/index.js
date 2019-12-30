@@ -172,7 +172,13 @@ class TaskDashboard extends Component {
 	}
 
 	toggleCartModal() {
-		this.setState( { isCartModalOpen: ! this.state.isCartModalOpen } );
+		const { isCartModalOpen } = this.state;
+
+		if ( ! isCartModalOpen ) {
+			recordEvent( 'tasklist_purchase_extensions' );
+		}
+
+		this.setState( { isCartModalOpen: ! isCartModalOpen } );
 	}
 
 	closeWelcomeModal() {
