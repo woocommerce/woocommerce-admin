@@ -59,7 +59,7 @@ export function getAllTasks( { profileItems, options, query, toggleCartModal } )
 			),
 			icon: 'extension',
 			container: null,
-			onClick: () => toggleCartModal(),
+			onClick: () => ( remainingProductIds.length ? toggleCartModal() : null ),
 			visible: productIds.length,
 			completed: ! remainingProductIds.length,
 		},
