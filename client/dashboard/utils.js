@@ -41,9 +41,10 @@ export function getCurrencyRegion( countryState ) {
  * Gets the product IDs for items based on the product types and theme selected in the onboarding profiler.
  *
  * @param {object} profileItems Onboarding profile.
+ * @param {bool} includeInstalledItems Include installed items in returned product IDs.
  * @return {array} Product Ids.
  */
-export function getProductIdsForCart( profileItems ) {
+export function getProductIdsForCart( profileItems, includeInstalledItems = false ) {
 	const productIds = [];
 	const onboarding = getSetting( 'onboarding', {} );
 	const productTypes = profileItems.product_types || [];
@@ -52,7 +53,8 @@ export function getProductIdsForCart( profileItems ) {
 		if (
 			onboarding.productTypes[ productType ] &&
 			onboarding.productTypes[ productType ].product &&
-			! onboarding.installedPlugins.includes( onboarding.productTypes[ productType ].slug )
+			( includeInstalledItems ||
+				! onboarding.installedPlugins.includes( onboarding.productTypes[ productType ].slug ) )
 		) {
 			productIds.push( onboarding.productTypes[ productType ].product );
 		}
@@ -60,7 +62,12 @@ export function getProductIdsForCart( profileItems ) {
 
 	const theme = onboarding.themes.find( themeData => themeData.slug === profileItems.theme );
 
-	if ( theme && theme.id && ! theme.is_installed && getPriceValue( theme.price ) > 0 ) {
+	if (
+		theme &&
+		theme.id &&
+		getPriceValue( theme.price ) > 0 &&
+		( includeInstalledItems || ! theme.is_installed )
+	) {
 		productIds.push( theme.id );
 	}
 

@@ -40,7 +40,8 @@ export function getAllTasks( { profileItems, options, query, toggleCartModal } )
 		shippingZonesCount: 0,
 	} );
 
-	const productIds = getProductIdsForCart( profileItems );
+	const productIds = getProductIdsForCart( profileItems, true );
+	const remainingProductIds = getProductIdsForCart( profileItems );
 
 	const paymentsCompleted = get(
 		options,
@@ -60,7 +61,7 @@ export function getAllTasks( { profileItems, options, query, toggleCartModal } )
 			container: null,
 			onClick: () => toggleCartModal(),
 			visible: productIds.length,
-			completed: ! productIds.length,
+			completed: ! remainingProductIds.length,
 		},
 		{
 			key: 'connect',
