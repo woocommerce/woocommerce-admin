@@ -23,6 +23,7 @@ import { List } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import { getProductIdsForCart } from 'dashboard/utils';
 import sanitizeHTML from 'lib/sanitize-html';
+import { recordEvent } from 'lib/tracks';
 
 class CartModal extends Component {
 	constructor( props ) {
@@ -43,6 +44,11 @@ class CartModal extends Component {
 			return;
 		}
 
+		recordEvent( 'tasklist_modal_proceed_checkout', {
+			product_ids: productIds,
+			purchase_install: false,
+		} );
+
 		const url = addQueryArgs( 'https://woocommerce.com/cart', {
 			'wccom-site': getSetting( 'siteUrl' ),
 			'wccom-woo-version': getSetting( 'wcVersion' ),
@@ -60,6 +66,13 @@ class CartModal extends Component {
 	}
 
 	onClickPurchaseLater() {
+		const { productIds } = this.props;
+
+		recordEvent( 'tasklist_modal_proceed_checkout', {
+			product_ids: productIds,
+			purchase_install: false,
+		} );
+
 		this.setState( { purchaseLaterButtonBusy: true } );
 		this.props.onClickPurchaseLater();
 	}
