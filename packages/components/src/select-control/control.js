@@ -157,7 +157,7 @@ class Control extends Component {
 	}
 
 	render() {
-		const { hasTags, help, inlineTags, instanceId, isSearchable, label, query } = this.props;
+		const { className, hasTags, help, inlineTags, instanceId, isSearchable, label, query } = this.props;
 		const { isActive } = this.state;
 
 		return (
@@ -168,7 +168,7 @@ class Control extends Component {
 			// for the benefit of sighted users.
 			/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 			<div
-				className={ classnames( 'components-base-control', 'woocommerce-select-control__control', {
+				className={ classnames( 'components-base-control', 'woocommerce-select-control__control', className, {
 					empty: ! query.length,
 					'is-active': isActive,
 					'has-tags': inlineTags && hasTags,
