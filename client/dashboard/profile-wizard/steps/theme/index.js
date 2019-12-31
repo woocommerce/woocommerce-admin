@@ -137,7 +137,8 @@ class Theme extends Component {
 	}
 
 	skipStep() {
-		recordEvent( 'storeprofiler_store_theme_skip_step' );
+		const { activeTheme = '' } = getSetting( 'onboarding', {} );
+		recordEvent( 'storeprofiler_store_theme_skip_step', { activeTheme } );
 		this.props.goToNextStep();
 	}
 
@@ -207,7 +208,7 @@ class Theme extends Component {
 		return sprintf( __( '%s per year', 'woocommerce-admin' ), decodeEntities( price ) );
 	}
 
-	doesCurrentThemeSupportWooCommerce() {
+	doesActiveThemeSupportWooCommerce() {
 		const { activeTheme = '' } = getSetting( 'onboarding', {} );
 		const allThemes = this.getThemes();
 		const currentTheme = allThemes.find( theme => theme.slug === activeTheme );
@@ -253,7 +254,7 @@ class Theme extends Component {
 	render() {
 		const { activeTab, chosen, demo } = this.state;
 		const themes = this.getThemes( activeTab );
-		const currentThemeSupportsWooCommerce = this.doesCurrentThemeSupportWooCommerce();
+		const activeThemeSupportsWooCommerce = this.doesActiveThemeSupportWooCommerce();
 
 		return (
 			<Fragment>
@@ -300,7 +301,7 @@ class Theme extends Component {
 						isBusy={ chosen === demo.slug }
 					/>
 				) }
-				{ currentThemeSupportsWooCommerce && (
+				{ activeThemeSupportsWooCommerce && (
 					<p>
 						<Button
 							isLink
