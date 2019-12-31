@@ -77,6 +77,17 @@ class CartModal extends Component {
 		this.props.onClickPurchaseLater();
 	}
 
+	onClose() {
+		const { onClose, productIds } = this.props;
+
+		recordEvent( 'tasklist_modal_proceed_checkout', {
+			product_ids: productIds,
+			purchase_install: false,
+		} );
+
+		onClose();
+	}
+
 	renderProducts() {
 		const { productIds } = this.props;
 		const { productTypes = {}, themes = [] } = getSetting( 'onboarding', {} );
@@ -121,7 +132,7 @@ class CartModal extends Component {
 					'Would you like to purchase and install the following features now?',
 					'woocommerce-admin'
 				) }
-				onRequestClose={ () => this.props.onClose() }
+				onRequestClose={ () => this.onClose() }
 				className="woocommerce-cart-modal"
 			>
 				{ this.renderProducts() }
