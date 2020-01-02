@@ -197,7 +197,13 @@ class Appearance extends Component {
 			added_text: Boolean( storeNoticeText.length ),
 		} );
 
+		setSetting( 'onboarding', {
+			...getSetting( 'onboarding', {} ),
+			isAppearanceComplete: true,
+		} );
+
 		updateOptions( {
+			woocommerce_task_list_appearance_complete: true,
 			woocommerce_demo_store: storeNoticeText.length ? 'yes' : 'no',
 			woocommerce_demo_store_notice: storeNoticeText,
 		} );
@@ -337,7 +343,11 @@ export default compose(
 		const isRequesting =
 			Boolean( isUpdateOptionsRequesting( [ `theme_mods_${ stylesheet }` ] ) ) ||
 			Boolean(
-				isUpdateOptionsRequesting( [ 'woocommerce_demo_store', 'woocommerce_demo_store_notice' ] )
+				isUpdateOptionsRequesting( [
+					'woocommerce_task_list_appearance_complete',
+					'woocommerce_demo_store',
+					'woocommerce_demo_store_notice',
+				] )
 			);
 
 		return { errors, getOptionsError, hasErrors, isRequesting, options };
