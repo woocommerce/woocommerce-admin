@@ -87,6 +87,10 @@ class Search extends Component {
 	}
 
 	fetchOptions( previousOptions, query ) {
+		if ( ! query ) {
+			return [];
+		}
+
 		const autocompleter = this.getAutocompleter();
 		return autocompleter.options( query ).then( async response => {
 			const options = this.getFormattedOptions( response, query );
