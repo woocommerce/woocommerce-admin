@@ -38,8 +38,20 @@ abstract class ImportScheduler {
 				'group'    => self::$group,
 			)
 		);
+		if ( empty( $pending_jobs ) ) {
+			$in_progress = self::queue()->search(
+				array(
+					'status'   => 'in-progress',
+					'per_page' => 1,
+					'search'   => 'import',
+					'group'    => self::$group,
+				)
+			);
+		} else {
+			$in_progress = true;
+		}
 
-		return ! empty( $pending_jobs );
+		return ! empty( $in_progress );
 	}
 
 	/**
