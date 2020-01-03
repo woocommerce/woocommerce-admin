@@ -211,8 +211,8 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 				'format'      => 'currency',
 			),
 			'refunds'        => array(
-				'title'       => __( 'Refunds', 'woocommerce-admin' ),
-				'description' => __( 'Total of refunds.', 'woocommerce-admin' ),
+				'title'       => __( 'Returns', 'woocommerce-admin' ),
+				'description' => __( 'Total of returns.', 'woocommerce-admin' ),
 				'type'        => 'number',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
