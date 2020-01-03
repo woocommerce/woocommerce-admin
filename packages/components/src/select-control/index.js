@@ -5,7 +5,7 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import { escapeRegExp, findIndex, identity, noop } from 'lodash';
+import { debounce, escapeRegExp, findIndex, identity, noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { withFocusOutside, withSpokenMessages } from '@wordpress/components';
 import { withInstanceId, compose } from '@wordpress/compose';
@@ -42,6 +42,7 @@ export class SelectControl extends Component {
 		this.decrementSelectedIndex = this.decrementSelectedIndex.bind( this );
 		this.incrementSelectedIndex = this.incrementSelectedIndex.bind( this );
 		this.onAutofillChange = this.onAutofillChange.bind( this );
+		this.updateFilteredOptions = debounce( this.updateFilteredOptions, 500 );
 		this.search = this.search.bind( this );
 		this.selectOption = this.selectOption.bind( this );
 		this.setExpanded = this.setExpanded.bind( this );
@@ -199,8 +200,12 @@ export class SelectControl extends Component {
 	}
 
 	search( query ) {
-		const { hideBeforeSearch, onSearch, options } = this.props;
 		this.setState( { query, isFocused: true } );
+		this.updateFilteredOptions( query );
+	}
+
+	updateFilteredOptions( query ) {
+		const { hideBeforeSearch, options, onSearch } = this.props;
 
 		const promise = ( this.activePromise = Promise.resolve( onSearch( options, query ) ).then(
 			searchOptions => {
