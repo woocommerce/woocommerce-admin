@@ -42,7 +42,7 @@ export class SelectControl extends Component {
 		this.decrementSelectedIndex = this.decrementSelectedIndex.bind( this );
 		this.incrementSelectedIndex = this.incrementSelectedIndex.bind( this );
 		this.onAutofillChange = this.onAutofillChange.bind( this );
-		this.updateFilteredOptions = debounce( this.updateFilteredOptions, 500 );
+		this.updateFilteredOptions = debounce( this.updateFilteredOptions, props.searchDebounceTime );
 		this.search = this.search.bind( this );
 		this.selectOption = this.selectOption.bind( this );
 		this.setExpanded = this.setExpanded.bind( this );
@@ -389,6 +389,10 @@ SelectControl.propTypes = {
 	 */
 	placeholder: PropTypes.string,
 	/**
+	 * Time in milliseconds to debounce the search function after typing.
+	 */
+	searchDebounceTime: PropTypes.number,
+	/**
 	 * An array of objects describing selected values or optionally a string for a single value.
 	 * If the label of the selected value is omitted, the Tag of that value will not
 	 * be rendered inside the search box.
@@ -439,6 +443,7 @@ SelectControl.defaultProps = {
 	onSearch: options => Promise.resolve( options ),
 	maxResults: 0,
 	multiple: false,
+	searchDebounceTime: 0,
 	searchInputType: 'search',
 	selected: [],
 	showClearButton: false,
