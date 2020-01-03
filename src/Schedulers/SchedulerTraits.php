@@ -274,8 +274,9 @@ trait SchedulerTraits {
 	 *
 	 * @param string $action_name Action name.
 	 * @param array  $args Array of arguments to pass to action.
+	 * @param int    $timestamp Time to schedule the action. Optional.
 	 */
-	public static function schedule_action( $action_name, $args = array() ) {
+	public static function schedule_action( $action_name, $args = array(), $timestamp = null ) {
 		// Check for existing jobs and bail if they already exist.
 		if ( static::has_existing_jobs( $action_name, $args ) ) {
 			return;
@@ -291,7 +292,12 @@ trait SchedulerTraits {
 			return;
 		}
 
-		self::queue()->schedule_single( time() + 5, $action_hook, $args, static::$group );
+		if ( null === $timestamp ) {
+			$timestamp = time() + 5;
+		} else {
+			$timestamp = (int) $timestamp;
+		}
+		self::queue()->schedule_single( $timestamp, $action_hook, $args, static::$group );
 	}
 
 	/**
