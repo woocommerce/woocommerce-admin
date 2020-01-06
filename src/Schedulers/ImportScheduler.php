@@ -51,7 +51,7 @@ abstract class ImportScheduler {
 			$in_progress = true;
 		}
 
-		return ! empty( $in_progress );
+		return ! empty( $pending_jobs ) || ! empty( $in_progress );
 	}
 
 	/**
