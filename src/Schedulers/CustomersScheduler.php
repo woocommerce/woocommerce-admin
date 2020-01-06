@@ -196,29 +196,30 @@ class CustomersScheduler extends ImportScheduler {
 		}
 
 		// Long form query because $wpdb->update rejects [deleted].
-		$updated = $wpdb->query(
+		$deleted_text = __( '[deleted]', 'woocommerce-admin' );
+		$updated      = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->prefix}wc_customer_lookup
 					SET
+						user_id = NULL,
 						username = %s,
 						first_name = %s,
 						last_name = %s,
 						email = %s,
-						country = %s,
+						country = '',
 						postcode = %s,
 						city = %s,
 						state = %s
 					WHERE
 						customer_id = %d",
 				array(
-					'[deleted]',
-					'[deleted]',
-					'[deleted]',
+					$deleted_text,
+					$deleted_text,
+					$deleted_text,
 					'deleted@site.invalid',
-					'[deleted]',
-					'[deleted]',
-					'[deleted]',
-					'[deleted]',
+					$deleted_text,
+					$deleted_text,
+					$deleted_text,
 					$customer_id,
 				)
 			)
