@@ -214,7 +214,7 @@ class CustomersScheduler extends ImportScheduler {
 					'[deleted]',
 					'[deleted]',
 					'[deleted]',
-					'deleted@site.invald',
+					'deleted@site.invalid',
 					'[deleted]',
 					'[deleted]',
 					'[deleted]',
