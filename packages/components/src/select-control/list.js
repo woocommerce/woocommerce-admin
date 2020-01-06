@@ -112,7 +112,12 @@ class List extends Component {
 				break;
 
 			case ESCAPE:
+				setExpanded( false );
+				onSearch( null );
+				return;
+
 			case TAB:
+				this.select( options[ selectedIndex ] );
 				setExpanded( false );
 				onSearch( null );
 				return;
