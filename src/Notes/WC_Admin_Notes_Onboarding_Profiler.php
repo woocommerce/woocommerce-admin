@@ -20,6 +20,14 @@ class WC_Admin_Notes_Onboarding_Profiler {
 	const NOTE_NAME = 'wc-admin-onboarding-profiler-reminder';
 
 	/**
+	 * Attach hooks.
+	 */
+	public function __construct() {
+		add_action( 'admin_init', array( $this, 'add_reminder' ) );
+		add_action( 'update_option_wc_onboarding_profile', array( $this, 'update_status_on_complete' ), 10, 2 );
+	}
+
+	/**
 	 * Creates a note to remind store owners to complete the profiler.
 	 */
 	public static function add_reminder() {
@@ -56,6 +64,32 @@ class WC_Admin_Notes_Onboarding_Profiler {
 			false
 		);
 
+		$note->save();
+	}
+
+	/**
+	 * Updates the note status when the profiler is completed.
+	 *
+	 * @param mixed $old_value Old value.
+	 * @param mixed $new_value New value.
+	 */
+	public static function update_status_on_complete( $old_value, $new_value ) {
+		if (
+			( isset( $old_value['complete'] ) && $old_value['completed'] ) ||
+			! isset( $new_value['completed'] ) ||
+			! $new_value['completed']
+		) {
+			return;
+		}
+
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+		if ( empty( $note_ids ) ) {
+			return;
+		}
+
+		$note = new WC_Admin_Note( $note_ids[0] );
+		$note->set_status( 'actioned' );
 		$note->save();
 	}
 }
