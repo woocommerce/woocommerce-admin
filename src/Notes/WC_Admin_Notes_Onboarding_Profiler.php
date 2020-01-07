@@ -42,16 +42,16 @@ class WC_Admin_Notes_Onboarding_Profiler {
 		$note->set_content_data( (object) array() );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(
-			'continue',
+			'continue-profiler',
 			__( 'Continue Store Setup', 'woocommerce-admin' ),
-			false,
-			'actioned',
+			wc_admin_url(),
+			'unactioned',
 			true
 		);
 		$note->add_action(
-			'skip',
+			'skip-profiler',
 			__( 'Skip Setup', 'woocommerce-admin' ),
-			false,
+			wc_admin_url( '&reset_profiler=0' ),
 			'actioned',
 			false
 		);
