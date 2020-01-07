@@ -44,6 +44,7 @@ class CustomersScheduler extends ImportScheduler {
 	public static function get_dependencies() {
 		return array(
 			'delete_batch_init' => OrdersScheduler::get_action( 'delete_batch_init' ),
+			'anonymize'         => self::get_action( 'import' ),
 		);
 	}
 
@@ -143,7 +144,7 @@ class CustomersScheduler extends ImportScheduler {
 	public static function schedule_anonymize( $order ) {
 		if ( is_a( $order, 'WC_Order' ) ) {
 			// Postpone until any pending updates are completed.
-			self::schedule_action( 'anonymize', array( $order->get_id() ), time() + MINUTE_IN_SECONDS + 5 );
+			self::schedule_action( 'anonymize', array( $order->get_id() ) );
 		}
 	}
 
