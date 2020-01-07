@@ -35,6 +35,7 @@ class Appearance extends Component {
 		};
 
 		this.state = {
+			isDirty: false,
 			isPending: false,
 			logo: null,
 			stepIndex: 0,
@@ -210,7 +211,7 @@ class Appearance extends Component {
 	}
 
 	getSteps() {
-		const { isPending, logo, storeNoticeText } = this.state;
+		const { isDirty, isPending, logo, storeNoticeText } = this.state;
 		const { isRequesting } = this.props;
 
 		const steps = [
@@ -263,8 +264,16 @@ class Appearance extends Component {
 				description: __( 'Ensure your store is on-brand by adding your logo', 'woocommerce-admin' ),
 				content: isPending ? null : (
 					<Fragment>
-						<ImageUpload image={ logo } onChange={ image => this.setState( { logo: image } ) } />
-						<Button onClick={ this.updateLogo } isBusy={ isRequesting } isPrimary>
+						<ImageUpload
+							image={ logo }
+							onChange={ image => this.setState( { isDirty: true, logo: image } ) }
+						/>
+						<Button
+							disabled={ ! logo && ! isDirty }
+							onClick={ this.updateLogo }
+							isBusy={ isRequesting }
+							isPrimary
+						>
 							{ __( 'Proceed', 'woocommerce-admin' ) }
 						</Button>
 						<Button onClick={ () => this.completeStep() }>
