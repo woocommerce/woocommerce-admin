@@ -47,8 +47,6 @@ abstract class ImportScheduler {
 					'group'    => self::$group,
 				)
 			);
-		} else {
-			$in_progress = true;
 		}
 
 		return ! empty( $pending_jobs ) || ! empty( $in_progress );
