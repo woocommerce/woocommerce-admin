@@ -9,6 +9,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\Loader;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Onboarding_Profiler;
 
 /**
  * Contains backend logic for the onboarding profile and checklist feature.
@@ -89,6 +90,14 @@ class Onboarding {
 		add_action( 'current_screen', array( $this, 'redirect_wccom_install' ) );
 		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
 		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
+		add_filter( 'admin_init', array( $this, 'add_profiler_reminder_note' ) );
+	}
+
+	/**
+	 * Add reminder note to complete profiler.
+	 */
+	public static function add_profiler_reminder_note() {
+		WC_Admin_Notes_Onboarding_Profiler::add_reminder();
 	}
 
 	/**
