@@ -26,6 +26,7 @@ class WC_Admin_Notes_Onboarding_Profiler {
 		add_action( 'admin_init', array( $this, 'add_reminder' ) );
 		add_action( 'update_option_wc_onboarding_profile', array( $this, 'update_status_on_complete' ), 10, 2 );
 		add_action( 'woocommerce_note_action_continue-profiler', array( $this, 'track_continue_profiler' ) );
+		add_action( 'woocommerce_note_action_skip-profiler', array( $this, 'track_skip_profiler' ) );
 	}
 
 	/**
@@ -33,6 +34,13 @@ class WC_Admin_Notes_Onboarding_Profiler {
 	 */
 	public static function track_continue_profiler() {
 		wc_admin_record_tracks_event( 'onboarding_continue_profiler' );
+	}
+
+	/**
+	 * Track when a user skips the profiler via the note.
+	 */
+	public static function track_skip_profiler() {
+		wc_admin_record_tracks_event( 'onboarding_skip_profiler' );
 	}
 
 	/**
