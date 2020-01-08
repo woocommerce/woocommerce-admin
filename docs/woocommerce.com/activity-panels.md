@@ -24,7 +24,7 @@ This Inbox Panel is dedicated to informational content coming from multiple sour
 
 ![Orders Activity Panel](images/activity-panels-orders.png)
 
-The Orders Panel displays Orders that are in need of fulfillment. You can click "begin fulfilment" to go to the Order Details screen.
+The Orders Panel displays Orders that are considered "actionable". Orders needing fulfillment are shown by default. You can click "begin fulfillment" to go to the Order Details screen.
 
 ![Orders Activity Panel](images/activity-panels-orders-empty.png)
 
