@@ -175,17 +175,25 @@ class WC_Tests_API_Reports_Categories extends WC_REST_Unit_Test_Case {
 		$product = new WC_Product_Simple();
 		$product->set_name( 'Test Product 2' );
 		$product->set_regular_price( 100 );
-		$second_category_id = wp_create_category( 'Second Category' );
+		$second_category    = wp_insert_term( 'Second Category', 'product_cat' );
+		$second_category_id = $second_category['term_id'];
 		$product->set_category_ids( array( $second_category_id ) );
 		$product->save();
 
+		$order = WC_Helper_Order::create_order( 1, $product );
+		$order->set_status( 'completed' );
+		$order->set_total( 400 ); // $100 x 4.
+		$order->save();
+
 		WC_Helper_Queue::run_all_pending();
+		CategoryLookup::instance()->regenerate();
 
 		$uncategorized_term = get_term_by( 'slug', 'uncategorized', 'product_cat' );
 		$params             = array(
-			'orderby'    => 'category',
-			'order'      => 'desc',
-			'categories' => $uncategorized_term->term_id . ',' . $second_category_id,
+			'orderby'       => 'category',
+			'order'         => 'desc',
+			'interval'      => 'week',
+			'extended_info' => true,
 		);
 
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
