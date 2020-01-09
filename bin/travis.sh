@@ -5,9 +5,9 @@ if [ $1 == 'before' ]; then
 	cd "$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/"
 	npm run build:feature-config
 	if [[ ${RUN_PHPCS} == 1 ]]; then
-		composer update
+		composer install
 	else
-		composer update --no-dev
+		composer install --no-dev
 	fi
 
 fi
