@@ -7,6 +7,6 @@ if [ $1 == 'before' ]; then
 	composer install
 
 	if [[ ${RANDOM_ORDER} == 1 ]]; then
-		composer require phpunit/phpunit:^7.5
+		composer require phpunit/phpunit:~7.4
 	fi
 fi
