@@ -4,10 +4,9 @@
 if [ $1 == 'before' ]; then
 	cd "$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/"
 	npm run build:feature-config
-	if [[ ${RUN_PHPCS} == 1 ]]; then
-		composer install
-	else
-		composer install --no-dev
-	fi
+	composer install
 
+	if [[ ${RANDOM_ORDER} == 1 ]]; then
+		composer require phpunit/phpunit:^7.5
+	fi
 fi
