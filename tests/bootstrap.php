@@ -91,6 +91,14 @@ function _manually_load_plugin() {
 	update_option( 'woocommerce_calc_taxes', 'yes' );
 	define( 'WOOCOMMERCE_ADMIN_ONBOARDING_ENABLED', true );
 
+	// Fix alpha builds of WP (like on VVV).
+	global $wp_version;
+	$alpha_tag = strpos( $wp_version, '-alpha' );
+	if ( false !== $alpha_tag ) {
+		// phpcs:ignore
+		$wp_version = substr( $wp_version, 0, $alpha_tag );
+	}
+
 	require_once wc_dir() . '/woocommerce.php';
 	require dirname( __DIR__ ) . '/vendor/autoload.php';
 
