@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * WC_Admin_Notes_Woo_Subscriptions_Notes
  */
 class WC_Admin_Notes_Woo_Subscriptions_Notes {
-	const LAST_REFRESH_OPTION_KEY = 'wc-admin-wc-helper-last-refresh';
+	const LAST_REFRESH_OPTION_KEY = 'woocommerce_admin-wc-helper-last-refresh';
 	const CONNECTION_NOTE_NAME    = 'wc-admin-wc-helper-connection';
 	const SUBSCRIPTION_NOTE_NAME  = 'wc-admin-wc-helper-subscription';
 	const NOTIFY_WHEN_DAYS_LEFT   = 60;
