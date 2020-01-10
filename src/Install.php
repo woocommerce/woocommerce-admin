@@ -391,15 +391,17 @@ class Install {
 	}
 
 	/**
-	 * Delete all data from tables.
+	 * Drop WooCommerce Admin tables.
+	 *
+	 * @return void
 	 */
-	public static function delete_table_data() {
+	public static function drop_tables() {
 		global $wpdb;
 
 		$tables = self::get_tables();
 
 		foreach ( $tables as $table ) {
-			$wpdb->query( "TRUNCATE TABLE {$table}" ); // WPCS: unprepared SQL ok.
+			$wpdb->query( "DROP TABLE IF EXISTS {$table}" ); // WPCS: unprepared SQL ok.
 		}
 	}
 }
