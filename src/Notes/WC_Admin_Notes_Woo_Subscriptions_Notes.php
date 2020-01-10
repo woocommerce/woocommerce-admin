@@ -358,7 +358,7 @@ class WC_Admin_Notes_Woo_Subscriptions_Notes {
 		$product_name = $subscription['product_name'];
 		$product_page = $subscription['product_url'];
 		$expires      = intval( $subscription['expires'] );
-		$expires_date = date( 'F jS', $expires );
+		$expires_date = gmdate( 'F jS', $expires );
 
 		$note = $this->find_note_for_product_id( $product_id );
 		if ( $note ) {
