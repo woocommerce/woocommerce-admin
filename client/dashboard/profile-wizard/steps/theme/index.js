@@ -177,7 +177,6 @@ class Theme extends Component {
 						{ slug === activeTheme ? (
 							<Button
 								isPrimary
-								isDefault={ ! Boolean( demo_url ) }
 								onClick={ () => this.onChoose( theme, 'card' ) }
 								isBusy={ chosen === slug }
 							>

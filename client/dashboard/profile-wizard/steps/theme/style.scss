@@ -113,10 +113,16 @@
 			&.is-default {
 				border-color: $studio-pink-50;
 				color: $studio-pink-50;
+				background: transparent;
 			}
 
 			&.is-primary {
 				color: $studio-white;
+			}
+
+			&.is-tertiary {
+				font-size: 14px;
+				font-weight: 500;
 			}
 		}
 	}
