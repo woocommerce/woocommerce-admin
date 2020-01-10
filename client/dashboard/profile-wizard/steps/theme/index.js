@@ -193,7 +193,7 @@ class Theme extends Component {
 							</Button>
 						) }
 						{ demo_url && (
-							<Button isDefault onClick={ () => this.openDemo( theme ) }>
+							<Button isTertiary onClick={ () => this.openDemo( theme ) }>
 								{ __( 'Live demo', 'woocommerce-admin' ) }
 							</Button>
 						) }
