@@ -38,11 +38,13 @@ class Control extends Component {
 	}
 
 	onFocus( onSearch ) {
-		const { isSearchable, setExpanded } = this.props;
+		const { isSearchable, setExpanded, showAllOnFocus, updateFilteredOptions } = this.props;
 
 		return event => {
 			this.setState( { isActive: true } );
-			if ( isSearchable ) {
+			if ( isSearchable && showAllOnFocus ) {
+				updateFilteredOptions( '' );
+			} else if ( isSearchable ) {
 				onSearch( event.target.value );
 			} else {
 				setExpanded( true );
@@ -271,6 +273,10 @@ Control.propTypes = {
 			label: PropTypes.string,
 		} )
 	),
+	/**
+	 * Show all options on focusing, even if a query exists.
+	 */
+	showAllOnFocus: PropTypes.bool,
 };
 
 export default Control;
