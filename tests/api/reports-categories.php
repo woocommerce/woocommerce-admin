@@ -164,7 +164,8 @@ class WC_Tests_API_Reports_Categories extends WC_REST_Unit_Test_Case {
 		$product->set_regular_price( 25 );
 		$product->save();
 
-		$order = WC_Helper_Order::create_order( 1, $product );
+		$customer = WC_Helper_Customer::create_customer( 'sortcustomer', 'wcadminuser2', 'sortcustomer@woo.local' );
+		$order    = WC_Helper_Order::create_order( $customer->get_id(), $product );
 		$order->set_status( 'completed' );
 		$order->set_total( 100 ); // $25 x 4.
 		$order->save();
@@ -180,7 +181,7 @@ class WC_Tests_API_Reports_Categories extends WC_REST_Unit_Test_Case {
 		$product->set_category_ids( array( $second_category_id ) );
 		$product->save();
 
-		$order = WC_Helper_Order::create_order( 1, $product );
+		$order = WC_Helper_Order::create_order( $customer->get_id(), $product );
 		$order->set_status( 'completed' );
 		$order->set_total( 400 ); // $100 x 4.
 		$order->save();
