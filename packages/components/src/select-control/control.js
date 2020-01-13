@@ -43,6 +43,7 @@ class Control extends Component {
 		return event => {
 			this.setState( { isActive: true } );
 			if ( isSearchable && showAllOnFocus ) {
+				event.target.select();
 				updateFilteredOptions( '' );
 			} else if ( isSearchable ) {
 				onSearch( event.target.value );
