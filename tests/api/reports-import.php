@@ -107,7 +107,7 @@ class WC_Tests_API_Reports_Import extends WC_REST_Unit_Test_Case {
 		$order_2->save();
 
 		// Delete order stats so we can test import API.
-		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'scheduled-action'" );
+		ReportsSync::clear_queued_actions();
 		$wpdb->query( "DELETE FROM {$wpdb->prefix}wc_order_stats" );
 
 		// Use the days param to only process orders in the last day.
@@ -151,7 +151,7 @@ class WC_Tests_API_Reports_Import extends WC_REST_Unit_Test_Case {
 		);
 
 		// Delete scheduled actions to avoid default order processing.
-		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'scheduled-action'" );
+		ReportsSync::clear_queued_actions();
 
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
 		$request->set_query_params( array( 'skip_existing' => '1' ) );

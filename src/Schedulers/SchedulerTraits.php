@@ -264,8 +264,14 @@ trait SchedulerTraits {
 		// or schedule to run now if no blocking jobs exist.
 		$blocking_job = static::get_next_blocking_job( $action_name );
 		if ( $blocking_job ) {
+			$schedule = $blocking_job->get_schedule();
+			if ( method_exists( $schedule, 'get_date' ) ) {
+				$next = $schedule->get_date();
+			} else {
+				$next = $schedule->next();
+			}
 			self::queue()->schedule_single(
-				$blocking_job->get_schedule()->next()->getTimestamp() + 5,
+				$next->getTimestamp() + 5,
 				$action_hook,
 				$args,
 				static::$group

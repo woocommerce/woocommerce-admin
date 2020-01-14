@@ -8,6 +8,7 @@
 use \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\DataStore as OrdersStatsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\Query as OrdersStatsQuery;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
+use \Automattic\WooCommerce\Admin\ReportsSync;
 
 /**
  * Class WC_Tests_Reports_Orders_Stats
@@ -743,6 +744,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 	public function test_populate_and_query_multiple_intervals() {
 		global $wpdb;
 		WC_Helper_Reports::reset_stats_dbs();
+		ReportsSync::clear_queued_actions();
 
 		// 4 different products.
 		$product_1_price = 25;
