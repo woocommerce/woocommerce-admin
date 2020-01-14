@@ -78,6 +78,9 @@ class FeaturePlugin {
 			add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
 		}
 		add_filter( 'action_scheduler_store_class', array( $this, 'replace_actionscheduler_store_class' ) );
+
+		// Register Action Scheduler.
+		require_once WC_ADMIN_ABSPATH . '/vendor/action-scheduler/action-scheduler.php';
 	}
 
 	/**
