@@ -50,7 +50,7 @@ export const getSettingsForGroup = ( state, group, keys ) => {
 };
 
 export const getIsPersisting = ( state, group ) => {
-	return state[ group ] && Boolean( state[ group ].persisting );
+	return state[ group ] && Boolean( state[ group ].isPersisting );
 };
 
 /**
