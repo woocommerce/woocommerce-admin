@@ -14,61 +14,56 @@ import { NAMESPACE } from '../constants';
 import { STORE_NAME } from './constants';
 import TYPES from './action-types';
 
-export function updateSettingsForGroup( group, data, time = new Date() ) {
+export function updateSettings( data, time = new Date() ) {
 	return {
 		type: TYPES.UPDATE_SETTINGS_FOR_GROUP,
-		group,
 		data,
 		time,
 	};
 }
 
-export function updateErrorForGroup( group, data, error, time = new Date() ) {
+export function updateError( data, error, time = new Date() ) {
 	return {
 		type: TYPES.UPDATE_ERROR_FOR_GROUP,
-		group,
 		data,
 		error,
 		time,
 	};
 }
 
-export function setIsPersisting( group, isPersisting ) {
+export function setIsPersisting( isPersisting ) {
 	return {
 		type: TYPES.SET_IS_PERSISTING,
-		group,
 		isPersisting,
 	};
 }
 
-export function clearIsDirty( group ) {
+export function clearIsDirty() {
 	return {
 		type: TYPES.CLEAR_IS_DIRTY,
-		group,
 	};
 }
 
 // allows updating and persisting immediately in one action.
-export function* updateAndPersistSettingsForGroup( group, data ) {
-	yield updateSettingsForGroup( group, data );
-	yield* persistSettingsForGroup( group );
+export function* updateAndPersistSettingsForGroup( data ) {
+	yield updateSettings( data );
+	yield* persistSettings();
 }
 
-// this would replace setSettingsForGroup
-export function* persistSettingsForGroup( group ) {
+export function* persistSettings() {
 	// first dispatch the is persisting action
-	yield setIsPersisting( group, true );
+	yield setIsPersisting( true );
 	// get all dirty keys with select control
-	const dirtyKeys = yield select( STORE_NAME, 'getDirtyKeys', group );
+	const dirtyKeys = yield select( STORE_NAME, 'getDirtyKeys' );
 	// if there is nothing dirty, bail
 	if ( dirtyKeys.length === 0 ) {
-		yield setIsPersisting( group, false );
+		yield setIsPersisting( false );
 		return;
 	}
 
 	// get data slice for keys
-	const dirtyData = yield select( STORE_NAME, 'getSettingsForGroup', group, dirtyKeys );
-	const url = `${ NAMESPACE }/settings/${ group }/batch`;
+	const dirtyData = yield select( STORE_NAME, 'getSettingsForKeys', dirtyKeys );
+	const url = `${ NAMESPACE }/settings/wc_admin/batch`;
 
 	const update = dirtyKeys.reduce( ( updates, key ) => {
 		const u = Object.keys( dirtyData[ key ] ).map( k => {
@@ -86,12 +81,12 @@ export function* persistSettingsForGroup( group ) {
 			throw new Error( 'settings did not update' );
 		}
 		// remove dirtyKeys from map - note we're only doing this if there is no error.
-		yield clearIsDirty( group );
+		yield clearIsDirty();
 	} catch ( e ) {
-		yield updateErrorForGroup( group, null, e );
+		yield updateError( null, e );
 	}
 	// finally set the persisting state
-	yield setIsPersisting( group, false );
+	yield setIsPersisting( false );
 }
 
 export function clearSettings() {
