@@ -70,7 +70,6 @@ export function* persistSettingsForGroup( group ) {
 	const dirtyData = yield select( STORE_NAME, 'getSettingsForGroup', group, dirtyKeys );
 	const url = `${ NAMESPACE }/settings/${ group }/batch`;
 
-	// todo: update should be an array of objects like { id: key, value: dirtyData[ key ] }.
 	const update = dirtyKeys.reduce( ( updates, key ) => {
 		const u = Object.keys( dirtyData[ key ] ).map( k => {
 			return { id: k, value: dirtyData[ key ][ k ] };
