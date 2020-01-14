@@ -8,18 +8,27 @@ import { union } from 'lodash';
  * Internal dependencies
  */
 import TYPES from './action-types';
-import { getResourceName } from '../utils';
 
-const updateGroupDataInNewState = ( newState, { group, groupIds, data, time, error } ) => {
-	groupIds.forEach( id => {
-		newState[ getResourceName( group, id ) ] = {
+const updateDataInNewState = ( newState, { ids, data, error, time } ) => {
+	ids.forEach( id => {
+		newState[ id ] = {
 			data: data[ id ],
-			lastReceived: time,
 			error,
+			lastReceived: time,
 		};
 	} );
 	return newState;
 };
+
+// const _state = {
+// 	isPersisting,
+// 	dirty,
+// 	error,
+// 	lastReceived,
+// 	data: {
+// 		'my_id': { data, lastReceived, error },
+// 	},
+// };
 
 const receiveSettings = ( state = {}, { type, group, data, error, time, isPersisting } ) => {
 	const newState = {};
@@ -27,56 +36,33 @@ const receiveSettings = ( state = {}, { type, group, data, error, time, isPersis
 		case TYPES.SET_IS_PERSISTING:
 			state = {
 				...state,
-				[ group ]: {
-					...state[ group ],
-					isPersisting,
-				},
+				isPersisting,
 			};
 			break;
 		case TYPES.CLEAR_IS_DIRTY:
 			state = {
 				...state,
-				[ group ]: {
-					...state[ group ],
-					dirty: [],
-				},
+				dirty: [],
 			};
 			break;
 		case TYPES.UPDATE_SETTINGS_FOR_GROUP:
 		case TYPES.UPDATE_ERROR_FOR_GROUP:
-			const groupIds = data ? Object.keys( data ) : [];
+			const ids = data ? Object.keys( data ) : [];
 			if ( data === null ) {
 				state = {
 					...state,
-					[ group ]: {
-						data: state[ group ] ? state[ group ].data : [],
-						error,
-						lastReceived: time,
-					},
+					error,
+					lastReceived: time,
+					ids: state.ids || [],
 				};
 			} else {
 				state = {
 					...state,
-					[ group ]: {
-						data:
-							state[ group ] && state[ group ].data
-								? [ ...state[ group ].data, ...groupIds ]
-								: groupIds,
-						error,
-						lastReceived: time,
-						isPersisting: state[ group ] ? Boolean( state[ group ].isPersisting ) : false,
-						dirty:
-							state[ group ] && state[ group ].dirty
-								? union( state[ group ].dirty, groupIds )
-								: groupIds,
-					},
-					...updateGroupDataInNewState( newState, {
-						group,
-						groupIds,
-						data,
-						time,
-						error,
-					} ),
+					error,
+					lastReceived: time,
+					dirty: state.dirty ? union( state.dirty, ids ) : ids,
+					ids: state[ group ].ids ? [ ...state[ group ].ids, ...ids ] : ids,
+					...updateDataInNewState( newState, { ids, data, error, time } ),
 				};
 			}
 			break;
