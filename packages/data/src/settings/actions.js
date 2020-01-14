@@ -45,7 +45,7 @@ export function clearIsDirty() {
 }
 
 // allows updating and persisting immediately in one action.
-export function* updateAndPersistSettingsForGroup( data ) {
+export function* updateAndPersistSettings( data ) {
 	yield updateSettings( data );
 	yield* persistSettings();
 }
