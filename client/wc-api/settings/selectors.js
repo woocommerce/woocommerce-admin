@@ -15,7 +15,6 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 import { DEFAULT_REQUIREMENT } from '../constants';
 import { getResourceName } from '../utils';
-import { analyticsSettings } from 'analytics/settings/config';
 
 const getSettings = ( getResource, requireResource ) => (
 	group,
@@ -61,9 +60,7 @@ const isGetSettingsRequesting = getResource => group => {
 
 	// Mutation operations for `wc_admin` settings update a different resource (batch endpoint) in fresh-data.
 	// As such we must use lastReceived stamp from that resource to properly compare lastRequested to lastReceived.
-	const settingName = analyticsSettings.length
-		? analyticsSettings[ 0 ].name
-		: 'woocommerce_actionable_order_statuses';
+	const settingName = 'woocommerce_actionable_order_statuses';
 	const { lastReceived: lastMutationReceived } = getResource(
 		getResourceName( 'settings/wc_admin', settingName )
 	);

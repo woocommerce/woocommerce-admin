@@ -1,8 +1,8 @@
+/** @format */
 /**
- * /* @format
- *
- * @format
+ * External dependencies
  */
+import { union } from 'lodash';
 
 /**
  * Internal dependencies
@@ -21,29 +21,26 @@ const updateGroupDataInNewState = ( newState, { group, groupIds, data, time, err
 	return newState;
 };
 
-const receiveSettings = ( state = {}, { type, group, data, error, time } ) => {
+const receiveSettings = ( state = {}, { type, group, data, error, time, isPersisting } ) => {
 	const newState = {};
 	switch ( type ) {
-		// replaces all settings in state.
-		case TYPES.HYDRATE_SETTINGS:
-			const groups = Object.keys( data );
-			groups.forEach( groupName => {
-				// index
-				const groupIds = Object.keys( data[ groupName ] );
-				newState[ groupName ] = {
-					lastReceived: time,
-					data: groupIds,
-					error,
-				};
-				updateGroupDataInNewState( newState, {
-					groupName,
-					groupIds,
-					data: data[ groupName ],
-					time,
-					error,
-				} );
-			} );
-			state = newState;
+		case TYPES.SET_IS_PERSISTING:
+			state = {
+				...state,
+				[ group ]: {
+					...state[ group ],
+					isPersisting,
+				},
+			};
+			break;
+		case TYPES.CLEAR_IS_DIRTY:
+			state = {
+				...state,
+				[ group ]: {
+					...state[ group ],
+					dirty: [],
+				},
+			};
 			break;
 		case TYPES.UPDATE_SETTINGS_FOR_GROUP:
 		case TYPES.UPDATE_ERROR_FOR_GROUP:
@@ -53,7 +50,7 @@ const receiveSettings = ( state = {}, { type, group, data, error, time } ) => {
 					...state,
 					[ group ]: {
 						data: state[ group ] ? state[ group ].data : [],
-						error: error,
+						error,
 						lastReceived: time,
 					},
 				};
@@ -61,9 +58,17 @@ const receiveSettings = ( state = {}, { type, group, data, error, time } ) => {
 				state = {
 					...state,
 					[ group ]: {
-						data: state[ group ] ? [ ...state[ group ].data, ...groupIds ] : groupIds,
-						error: undefined,
+						data:
+							state[ group ] && state[ group ].data
+								? [ ...state[ group ].data, ...groupIds ]
+								: groupIds,
+						error,
 						lastReceived: time,
+						isPersisting: state[ group ] ? Boolean( state[ group ].isPersisting ) : false,
+						dirty:
+							state[ group ] && state[ group ].dirty
+								? union( state[ group ].dirty, groupIds )
+								: groupIds,
 					},
 					...updateGroupDataInNewState( newState, {
 						group,
