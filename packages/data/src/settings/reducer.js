@@ -21,10 +21,7 @@ const updateGroupDataInNewState = ( newState, { group, groupIds, data, time, err
 	return newState;
 };
 
-const receiveSettings = (
-	state = {},
-	{ type, group, data, error, time, isPersisting }
-) => {
+const receiveSettings = ( state = {}, { type, group, data, error, time, isPersisting } ) => {
 	const newState = {};
 	switch ( type ) {
 		case TYPES.SET_IS_PERSISTING:
@@ -61,10 +58,13 @@ const receiveSettings = (
 				state = {
 					...state,
 					[ group ]: {
-						data: state[ group ] ? [ ...state[ group ].data, ...groupIds ] : groupIds,
+						data:
+							state[ group ] && state[ group ].data
+								? [ ...state[ group ].data, ...groupIds ]
+								: groupIds,
 						error,
 						lastReceived: time,
-						isPersisting: state[ group ] ? state[ group ].isPersisting : false,
+						isPersisting: state[ group ] ? Boolean( state[ group ].isPersisting ) : false,
 						dirty:
 							state[ group ] && state[ group ].dirty
 								? union( state[ group ].dirty, groupIds )
