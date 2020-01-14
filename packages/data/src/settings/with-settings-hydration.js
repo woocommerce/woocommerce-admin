@@ -3,7 +3,6 @@
  * External dependencies
  */
 import { useRef } from '@wordpress/element';
-import { getAllSettings } from '@woocommerce/wc-admin-settings';
 import { useSelect } from '@wordpress/data';
 
 /**
@@ -11,12 +10,12 @@ import { useSelect } from '@wordpress/data';
  */
 import { STORE_NAME } from './constants';
 
-export const withSettingsHydration = group => OriginalComponent => {
+export const withSettingsHydration = ( group, settings ) => OriginalComponent => {
 	return props => {
-		const settings = useRef( getAllSettings() );
+		const settingsRef = useRef( settings );
 
 		useSelect( ( select, registry ) => {
-			if ( ! settings.current ) {
+			if ( ! settingsRef.current ) {
 				return;
 			}
 
@@ -33,7 +32,7 @@ export const withSettingsHydration = group => OriginalComponent => {
 				! hasFinishedResolution( 'getSettings', [ group ] )
 			) {
 				startResolution( 'getSettings', [ group ] );
-				updateSettingsForGroup( group, settings.current );
+				updateSettingsForGroup( group, settingsRef.current );
 				clearIsDirty( group );
 				finishResolution( 'getSettings', [ group ] );
 			}
