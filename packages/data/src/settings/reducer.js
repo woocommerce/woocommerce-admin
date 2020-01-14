@@ -23,7 +23,7 @@ const updateGroupDataInNewState = ( newState, { group, groupIds, data, time, err
 
 const receiveSettings = (
 	state = {},
-	{ type, group, data, error, time, dirtyKeys, persisting, clear }
+	{ type, group, data, error, time, persisting }
 ) => {
 	const newState = {};
 	switch ( type ) {
@@ -36,12 +36,12 @@ const receiveSettings = (
 				},
 			};
 			break;
-		case TYPES.SET_IS_DIRTY:
+		case TYPES.CLEAR_IS_DIRTY:
 			state = {
 				...state,
 				[ group ]: {
 					...state[ group ],
-					dirty: clear ? [] : union( state[ group ].dirty || [], dirtyKeys ),
+					dirty: [],
 				},
 			};
 			break;
@@ -65,7 +65,10 @@ const receiveSettings = (
 						error,
 						lastReceived: time,
 						persisting: state[ group ] ? state[ group ].persisting : false,
-						dirty: state[ group ] ? state[ group ].dirty : [],
+						dirty:
+							state[ group ] && state[ group ].dirty
+								? union( state[ group ].dirty, groupIds )
+								: groupIds,
 					},
 					...updateGroupDataInNewState( newState, {
 						group,

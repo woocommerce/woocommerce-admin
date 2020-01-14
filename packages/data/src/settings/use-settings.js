@@ -28,12 +28,10 @@ export const useSettings = ( group, settingsKeys = [] ) => {
 		persistSettingsForGroup,
 		updateAndPersistSettingsForGroup,
 		updateSettingsForGroup,
-		setIsDirty,
 	} = useDispatch( STORE_NAME );
 	const updateSettings = useCallback(
 		( name, data ) => {
 			updateSettingsForGroup( group, { [ name ]: data } );
-			setIsDirty( group, [ name ] );
 		},
 		[ group ]
 	);
@@ -47,7 +45,6 @@ export const useSettings = ( group, settingsKeys = [] ) => {
 	);
 	const updateAndPersistSettings = useCallback(
 		( name, data ) => {
-			setIsDirty( group, [ name ] );
 			updateAndPersistSettingsForGroup( group, { [ name ]: data } );
 		},
 		[ group ]

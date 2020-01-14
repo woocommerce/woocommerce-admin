@@ -41,12 +41,10 @@ export function setIsPersisting( group, persisting ) {
 	};
 }
 
-export function setIsDirty( group, dirtyKeys, clear = false ) {
+export function clearIsDirty( group ) {
 	return {
-		type: TYPES.SET_IS_DIRTY,
+		type: TYPES.CLEAR_IS_DIRTY,
 		group,
-		dirtyKeys,
-		clear,
 	};
 }
 
@@ -78,7 +76,6 @@ export function* persistSettingsForGroup( group ) {
 			return { id: k, value: dirtyData[ key ][ k ] };
 		} );
 		return concat( updates, u );
-		// return { id: key, value: dirtyData[ key ] };
 	}, [] );
 	try {
 		const results = yield apiFetch( {
@@ -90,7 +87,7 @@ export function* persistSettingsForGroup( group ) {
 			throw new Error( 'settings did not update' );
 		}
 		// remove dirtyKeys from map - note we're only doing this if there is no error.
-		yield setIsDirty( group, dirtyKeys, true );
+		yield clearIsDirty( group );
 	} catch ( e ) {
 		yield updateErrorForGroup( group, null, e );
 	}

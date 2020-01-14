@@ -12,7 +12,7 @@ import { useSelect } from '@wordpress/data';
 import { STORE_NAME } from './constants';
 
 export const withSettingsHydration = group => OriginalComponent => {
-	return ( props ) => {
+	return props => {
 		const settings = useRef( getAllSettings() );
 
 		useSelect( ( select, registry ) => {
@@ -21,9 +21,12 @@ export const withSettingsHydration = group => OriginalComponent => {
 			}
 
 			const { isResolving, hasFinishedResolution } = select( STORE_NAME );
-			const { startResolution, finishResolution, updateSettingsForGroup } = registry.dispatch(
-				STORE_NAME
-			);
+			const {
+				startResolution,
+				finishResolution,
+				updateSettingsForGroup,
+				clearIsDirty,
+			} = registry.dispatch( STORE_NAME );
 
 			if (
 				! isResolving( 'getSettings', [ group ] ) &&
@@ -31,6 +34,7 @@ export const withSettingsHydration = group => OriginalComponent => {
 			) {
 				startResolution( 'getSettings', [ group ] );
 				updateSettingsForGroup( group, settings.current );
+				clearIsDirty( group );
 				finishResolution( 'getSettings', [ group ] );
 			}
 		}, [] );
