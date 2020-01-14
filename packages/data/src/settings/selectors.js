@@ -3,35 +3,35 @@
 /**
  * Internal dependencies
  */
-import { getResourceName, getResourcePrefix } from '../utils';
+// import { getResourceName, getResourcePrefix } from '../utils';
+//
+// export const getSettingsGroupNames = state => {
+// 	const groupNames = new Set(
+// 		Object.keys( state ).map( resourceName => {
+// 			return getResourcePrefix( resourceName );
+// 		} )
+// 	);
+// 	return [ ...groupNames ];
+// };
 
-export const getSettingsGroupNames = state => {
-	const groupNames = new Set(
-		Object.keys( state ).map( resourceName => {
-			return getResourcePrefix( resourceName );
-		} )
-	);
-	return [ ...groupNames ];
-};
-
-export const getSettings = ( state, group ) => {
+export const getSettings = state => {
 	const settings = {};
-	const settingIds = state[ group ].data || [];
+	const settingIds = state.ids || [];
 	if ( settingIds.length === 0 ) {
 		return settings;
 	}
 	settingIds.forEach( id => {
-		settings[ id ] = state[ getResourceName( group, id ) ].data;
+		settings[ id ] = state[ id ].data;
 	} );
 	return settings;
 };
 
-export const getDirtyKeys = ( state, group ) => {
-	return state[ group ].dirty || [];
+export const getDirtyKeys = state => {
+	return state.dirty || [];
 };
 
-export const getIsDirty = ( state, group, keys = [] ) => {
-	const dirtyMap = getDirtyKeys( state, group );
+export const getIsDirty = ( state, keys = [] ) => {
+	const dirtyMap = getDirtyKeys( state );
 	// if empty array bail
 	if ( dirtyMap.length === 0 ) {
 		return false;
@@ -41,16 +41,16 @@ export const getIsDirty = ( state, group, keys = [] ) => {
 	return keys.some( ( key ) => dirtyMap.includes( key ) );
 };
 
-export const getSettingsForGroup = ( state, group, keys ) => {
-	const allSettings = getSettings( state, group );
+export const getSettingsForKeys = ( state, keys ) => {
+	const allSettings = getSettings( state );
 	return keys.reduce( ( accumulator, key ) => {
 		accumulator[ key ] = allSettings[ key ] || null;
 		return accumulator;
 	}, {} );
 };
 
-export const getIsPersisting = ( state, group ) => {
-	return state[ group ] && Boolean( state[ group ].isPersisting );
+export const getIsPersisting = ( state ) => {
+	return Boolean( state.isPersisting );
 };
 
 /**
@@ -58,7 +58,6 @@ export const getIsPersisting = ( state, group ) => {
  *
  * @export
  * @param {object}   state                        State param added by wp.data.
- * @param {string}   group                        The settings group.
  * @param {string}   name                         The identifier for the setting.
  * @param {mixed}    [fallback=false]             The value to use as a fallback
  *                                                if the setting is not in the
@@ -72,20 +71,15 @@ export const getIsPersisting = ( state, group ) => {
  * @returns {mixed}  The value present in the settings state for the given
  *                   name.
  */
-export function getSetting( state, group, name, fallback = false, filter = val => val ) {
-	const resourceName = getResourceName( group, name );
-	const value = ( state[ resourceName ] && state[ resourceName ].data ) || fallback;
+export function getSetting( state, name, fallback = false, filter = val => val ) {
+	const value = ( state[ name ] && state[ name ].data ) || fallback;
 	return filter( value, fallback );
 }
 
-export const getLastSettingsErrorForGroup = ( state, group ) => {
-	const settingsIds = state[ group ].data;
-	if ( settingsIds.length === 0 ) {
-		return state[ group ].error;
-	}
-	return [ ...settingsIds ].pop().error;
+export const getLastSettingsError = state => {
+	return state.error;
 };
 
-export const getSettingsError = ( state, group, id ) => {
-	return state[ getResourceName( group, id ) ].error;
+export const getSettingsError = ( state, id ) => {
+	return state[ id ].error;
 };
