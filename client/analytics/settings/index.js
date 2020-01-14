@@ -6,7 +6,6 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Fragment, useEffect, useRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { remove } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -118,9 +117,9 @@ const Settings = ( { createNotice, query } ) => {
 
 		if ( 'checkbox' === type ) {
 			if ( checked ) {
-				nextSettings[ name ].push( value );
+				nextSettings[ name ] = [ ...nextSettings[ name ], value ];
 			} else {
-				remove( nextSettings[ name ], v => v === value );
+				nextSettings[ name ] = nextSettings[ name ].filter( v => v !== value );
 			}
 		} else {
 			nextSettings[ name ] = value;
