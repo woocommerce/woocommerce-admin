@@ -1,19 +1,5 @@
 /** @format */
 
-/**
- * Internal dependencies
- */
-// import { getResourceName, getResourcePrefix } from '../utils';
-//
-// export const getSettingsGroupNames = state => {
-// 	const groupNames = new Set(
-// 		Object.keys( state ).map( resourceName => {
-// 			return getResourcePrefix( resourceName );
-// 		} )
-// 	);
-// 	return [ ...groupNames ];
-// };
-
 export const getSettings = state => {
 	const settings = {};
 	const settingIds = state.ids || [];

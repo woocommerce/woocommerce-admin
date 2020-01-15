@@ -28,13 +28,13 @@ export const withSettingsHydration = settings => OriginalComponent => {
 			} = registry.dispatch( STORE_NAME );
 
 			if (
-				! isResolving( 'getSettings' ) &&
-				! hasFinishedResolution( 'getSettings' )
+				! isResolving( 'getSettings', [ 'seemingly-required-string' ] ) &&
+				! hasFinishedResolution( 'getSettings', [ 'seemingly-required-string' ] )
 			) {
-				startResolution( 'getSettings' );
-				updateSettings( settingsRef.current );
+				startResolution( 'getSettings', [ 'seemingly-required-string' ] );
+				updateSettings( settingsRef.current, 'seemingly-required-string' );
 				clearIsDirty();
-				finishResolution( 'getSettings' );
+				finishResolution( 'getSettings', [ 'seemingly-required-string' ] );
 			}
 		}, [] );
 
