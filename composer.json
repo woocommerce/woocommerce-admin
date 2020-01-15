@@ -21,7 +21,7 @@
       "php": "7.1"
     },
     "preferred-install": {
-	    "woocommerce/action-scheduler": "dist"
+	    "woocommerce/action-scheduler": "source"
     }
   },
   "scripts": {
