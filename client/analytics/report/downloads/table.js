@@ -6,6 +6,7 @@ import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { map } from 'lodash';
 import moment from 'moment';
+import { withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -14,14 +15,14 @@ import { defaultTableDateFormat, getCurrentDates } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
 
-export default class CouponsReportTable extends Component {
+class CouponsReportTable extends Component {
 	constructor() {
 		super();
 
@@ -67,7 +68,7 @@ export default class CouponsReportTable extends Component {
 	}
 
 	getRowsContent( downloads ) {
-		const { query } = this.props;
+		const { query, getAdminLink } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
 		return map( downloads, download => {
@@ -174,3 +175,11 @@ export default class CouponsReportTable extends Component {
 		);
 	}
 }
+
+export default withSelect( select => {
+	const { getSetting } = select( SETTINGS_STORE_NAME );
+
+	return {
+		getAdminLink: getSetting( 'getAdminLink' ),
+	};
+} )( CouponsReportTable );

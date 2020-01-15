@@ -3,9 +3,14 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
+
+/**
+ * WooCommerce dependencies
+ */
+import { useSettings } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -20,98 +25,105 @@ import VariationsReportTable from './table-variations';
 import withSelect from 'wc-api/with-select';
 import ReportFilters from 'analytics/components/report-filters';
 
-class ProductsReport extends Component {
-	getChartMeta() {
-		const { query, isSingleProductView, isSingleProductVariable } = this.props;
-		const isCompareView =
-			'compare-products' === query.filter &&
-			query.products &&
-			query.products.split( ',' ).length > 1;
+const getChartMeta = props => {
+	const { query, isSingleProductView, isSingleProductVariable } = props;
+	const isCompareView =
+		'compare-products' === query.filter && query.products && query.products.split( ',' ).length > 1;
 
-		const mode =
-			isCompareView || ( isSingleProductView && isSingleProductVariable )
-				? 'item-comparison'
-				: 'time-comparison';
-		const compareObject =
-			isSingleProductView && isSingleProductVariable ? 'variations' : 'products';
-		const label =
-			isSingleProductView && isSingleProductVariable
-				? __( '%d variations', 'woocommerce-admin' )
-				: __( '%d products', 'woocommerce-admin' );
+	const mode =
+		isCompareView || ( isSingleProductView && isSingleProductVariable )
+			? 'item-comparison'
+			: 'time-comparison';
+	const compareObject = isSingleProductView && isSingleProductVariable ? 'variations' : 'products';
+	const label =
+		isSingleProductView && isSingleProductVariable
+			? __( '%d variations', 'woocommerce-admin' )
+			: __( '%d products', 'woocommerce-admin' );
 
-		return {
-			compareObject,
-			itemsLabel: label,
-			mode,
-		};
+	return {
+		compareObject,
+		itemsLabel: label,
+		mode,
+	};
+};
+
+const ProductsReport = props => {
+	const { compareObject, itemsLabel, mode } = getChartMeta( props );
+	const { path, query, isError, isRequesting, isSingleProductVariable } = props;
+
+	if ( isError ) {
+		return <ReportError isError />;
 	}
 
-	render() {
-		const { compareObject, itemsLabel, mode } = this.getChartMeta();
-		const { path, query, isError, isRequesting, isSingleProductVariable } = this.props;
+	const { getAdminLink, manageStock = 'no', stockStatuses = {} } = useSettings( [
+		'getAdminLink',
+		'manageStock',
+		'stockStatuses',
+	] );
 
-		if ( isError ) {
-			return <ReportError isError />;
-		}
+	const chartQuery = {
+		...query,
+	};
 
-		const chartQuery = {
-			...query,
-		};
+	if ( 'item-comparison' === mode ) {
+		chartQuery.segmentby = 'products' === compareObject ? 'product' : 'variation';
+	}
 
-		if ( 'item-comparison' === mode ) {
-			chartQuery.segmentby = 'products' === compareObject ? 'product' : 'variation';
-		}
-
-		return (
-			<Fragment>
-				<ReportFilters
+	return (
+		<Fragment>
+			<ReportFilters
+				query={ query }
+				path={ path }
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+				report="products"
+			/>
+			<ReportSummary
+				mode={ mode }
+				charts={ charts }
+				endpoint="products"
+				isRequesting={ isRequesting }
+				query={ chartQuery }
+				selectedChart={ getSelectedChart( query.chart, charts ) }
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+			/>
+			<ReportChart
+				mode={ mode }
+				filters={ filters }
+				advancedFilters={ advancedFilters }
+				endpoint="products"
+				isRequesting={ isRequesting }
+				itemsLabel={ itemsLabel }
+				path={ path }
+				query={ chartQuery }
+				selectedChart={ getSelectedChart( chartQuery.chart, charts ) }
+			/>
+			{ isSingleProductVariable ? (
+				<VariationsReportTable
+					baseSearchQuery={ { filter: 'single_product' } }
+					isRequesting={ isRequesting }
 					query={ query }
-					path={ path }
 					filters={ filters }
 					advancedFilters={ advancedFilters }
-					report="products"
+					getAdminLink={ getAdminLink }
+					manageStock={ manageStock }
+					stockStatuses={ stockStatuses }
 				/>
-				<ReportSummary
-					mode={ mode }
-					charts={ charts }
-					endpoint="products"
+			) : (
+				<ProductsReportTable
 					isRequesting={ isRequesting }
-					query={ chartQuery }
-					selectedChart={ getSelectedChart( query.chart, charts ) }
+					query={ query }
 					filters={ filters }
 					advancedFilters={ advancedFilters }
+					getAdminLink={ getAdminLink }
+					manageStock={ manageStock }
+					stockStatuses={ stockStatuses }
 				/>
-				<ReportChart
-					mode={ mode }
-					filters={ filters }
-					advancedFilters={ advancedFilters }
-					endpoint="products"
-					isRequesting={ isRequesting }
-					itemsLabel={ itemsLabel }
-					path={ path }
-					query={ chartQuery }
-					selectedChart={ getSelectedChart( chartQuery.chart, charts ) }
-				/>
-				{ isSingleProductVariable ? (
-					<VariationsReportTable
-						baseSearchQuery={ { filter: 'single_product' } }
-						isRequesting={ isRequesting }
-						query={ query }
-						filters={ filters }
-						advancedFilters={ advancedFilters }
-					/>
-				) : (
-					<ProductsReportTable
-						isRequesting={ isRequesting }
-						query={ query }
-						filters={ filters }
-						advancedFilters={ advancedFilters }
-					/>
-				) }
-			</Fragment>
-		);
-	}
-}
+			) }
+		</Fragment>
+	);
+};
 
 ProductsReport.propTypes = {
 	path: PropTypes.string.isRequired,

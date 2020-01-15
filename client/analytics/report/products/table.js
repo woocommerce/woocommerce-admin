@@ -14,7 +14,6 @@ import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/cu
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link, Tag } from '@woocommerce/components';
 import { formatValue } from 'lib/number-format';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -25,9 +24,6 @@ import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
 import './style.scss';
 
-const manageStock = getSetting( 'manageStock', 'no' );
-const stockStatuses = getSetting( 'stockStatuses', {} );
-
 class ProductsReportTable extends Component {
 	constructor() {
 		super();
@@ -37,6 +33,7 @@ class ProductsReportTable extends Component {
 	}
 
 	getHeadersContent() {
+		const { manageStock } = this.props;
 		return [
 			{
 				label: __( 'Product Title', 'woocommerce-admin' ),
@@ -99,7 +96,7 @@ class ProductsReportTable extends Component {
 	}
 
 	getRowsContent( data = [] ) {
-		const { query } = this.props;
+		const { query, stockStatuses, manageStock, getAdminLink } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
 		return map( data, row => {

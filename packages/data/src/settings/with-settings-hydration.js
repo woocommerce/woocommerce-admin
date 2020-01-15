@@ -10,6 +10,11 @@ import { useSelect } from '@wordpress/data';
  */
 import { STORE_NAME } from './constants';
 
+const getHelperFunctions = settings => {
+	const getAdminLink = path => ( settings.adminUrl || '' ) + path;
+	return { getAdminLink };
+};
+
 export const withSettingsHydration = settings => OriginalComponent => {
 	return props => {
 		const settingsRef = useRef( settings );
@@ -33,6 +38,7 @@ export const withSettingsHydration = settings => OriginalComponent => {
 			) {
 				startResolution( 'getSettings', [] );
 				updateSettings( settingsRef.current );
+				updateSettings( getHelperFunctions( settingsRef.current ) );
 				clearIsDirty();
 				finishResolution( 'getSettings', [] );
 			}

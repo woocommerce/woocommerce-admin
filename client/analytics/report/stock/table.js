@@ -4,6 +4,7 @@
  */
 import { __, _n, _x } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
+import { withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -11,7 +12,7 @@ import { Component } from '@wordpress/element';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -19,9 +20,7 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import ReportTable from 'analytics/components/report-table';
 import { isLowStock } from './utils';
 
-const stockStatuses = getSetting( 'stockStatuses', {} );
-
-export default class StockReportTable extends Component {
+class StockReportTable extends Component {
 	constructor() {
 		super();
 
@@ -59,7 +58,7 @@ export default class StockReportTable extends Component {
 	}
 
 	getRowsContent( products ) {
-		const { query } = this.props;
+		const { query, stockStatuses, getAdminLink } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
 		return products.map( product => {
@@ -167,3 +166,12 @@ export default class StockReportTable extends Component {
 		);
 	}
 }
+
+export default withSelect( select => {
+	const { getSetting } = select( SETTINGS_STORE_NAME );
+
+	return {
+		stockStatuses: getSetting( 'stockStatuses', {} ),
+		getAdminLink: getSetting( 'getAdminLink' ),
+	};
+} )( StockReportTable );

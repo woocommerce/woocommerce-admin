@@ -13,9 +13,6 @@ import { defaultTableDateFormat } from 'lib/date';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from 'lib/number-format';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-
-const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 
 /**
  * Internal dependencies
@@ -104,7 +101,7 @@ export default class CustomersReportTable extends Component {
 		];
 	}
 
-	getCountryName( code ) {
+	getCountryName( code, countries ) {
 		return typeof countries[ code ] !== 'undefined' ? countries[ code ] : null;
 	}
 
@@ -125,7 +122,8 @@ export default class CustomersReportTable extends Component {
 				state,
 				country,
 			} = customer;
-			const countryName = this.getCountryName( country );
+			const { countries, getAdminLink } = this.props;
+			const countryName = this.getCountryName( country, countries );
 
 			const customerNameLink = user_id ? (
 				<Link href={ getAdminLink( 'user-edit.php?user_id=' + user_id ) } type="wp-admin">
