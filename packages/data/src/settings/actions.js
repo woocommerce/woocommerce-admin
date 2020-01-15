@@ -16,7 +16,7 @@ import TYPES from './action-types';
 
 export function updateSettings( data, time = new Date() ) {
 	return {
-		type: TYPES.UPDATE_SETTINGS_FOR_GROUP,
+		type: TYPES.UPDATE_SETTINGS,
 		data,
 		time,
 	};
@@ -24,7 +24,7 @@ export function updateSettings( data, time = new Date() ) {
 
 export function updateError( data, error, time = new Date() ) {
 	return {
-		type: TYPES.UPDATE_ERROR_FOR_GROUP,
+		type: TYPES.UPDATE_ERROR,
 		data,
 		error,
 		time,

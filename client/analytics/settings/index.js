@@ -36,7 +36,7 @@ const Settings = ( { createNotice, query } ) => {
 		orderStatuses,
 		defaultDateRange,
 		wcAdminSettings,
-	} = useSettings( 'wc_admin', [ 'wcAdminSettings', 'orderStatuses', 'defaultDateRange' ] );
+	} = useSettings( [ 'wcAdminSettings', 'orderStatuses', 'defaultDateRange' ] );
 	const hasSaved = useRef( false );
 	const config = getConfig( orderStatuses, defaultDateRange );
 
