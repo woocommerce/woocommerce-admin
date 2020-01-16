@@ -64,7 +64,10 @@ class Install {
 		// Add wc-admin report tables to list of WooCommerce tables.
 		add_filter( 'woocommerce_install_get_tables', array( __CLASS__, 'add_tables' ) );
 
-		// Handle option name migrations.
+		// Migrate option names by filtering their default values.
+		// This attaches a targeted filter for each migrated option name that will retreive
+		// the old value and use it as the default for the new option. This default
+		// will be used in the first retreival of the new option.
 		foreach ( self::$migrated_options as $new_option => $old_option ) {
 			add_filter( "default_option_{$new_option}", array( __CLASS__, 'handle_option_migration' ), 10, 2 );
 		}
