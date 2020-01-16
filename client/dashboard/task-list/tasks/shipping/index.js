@@ -38,8 +38,10 @@ class Shipping extends Component {
 			shippingZones: [],
 		};
 
+		// Cache active plugins to prevent removal mid-step.
+		const { activePlugins = [] } = getSetting( 'onboarding', {} );
+		this.activePlugins = activePlugins;
 		this.state = this.initialState;
-
 		this.completeStep = this.completeStep.bind( this );
 	}
 
@@ -150,9 +152,8 @@ class Shipping extends Component {
 		}
 	}
 
-	getSteps() {
+	getPluginsToActivate() {
 		const { countryCode, isJetpackConnected } = this.props;
-		const { activePlugins = [] } = getSetting( 'onboarding', {} );
 
 		const plugins = [];
 		if ( [ 'GB', 'CA', 'AU' ].includes( countryCode ) ) {
@@ -164,7 +165,11 @@ class Shipping extends Component {
 				plugins.push( 'jetpack' );
 			}
 		}
-		const pluginsToInstall = difference( plugins, activePlugins );
+		return difference( plugins, this.activePlugins );
+	}
+
+	getSteps() {
+		const pluginsToActivate = this.getPluginsToActivate();
 
 		const steps = [
 			{
@@ -193,7 +198,7 @@ class Shipping extends Component {
 				content: (
 					<ShippingRates
 						buttonText={
-							pluginsToInstall.length
+							pluginsToActivate.length
 								? __( 'Proceed', 'woocommerce-admin' )
 								: __( 'Complete task', 'woocommerce-admin' )
 						}
@@ -207,7 +212,7 @@ class Shipping extends Component {
 			{
 				key: 'label_printing',
 				label: __( 'Enable shipping label printing', 'woocommerce-admin' ),
-				description: plugins.includes( 'woocommerce-shipstation-integration' )
+				description: pluginsToActivate.includes( 'woocommerce-shipstation-integration' )
 					? interpolateComponents( {
 							mixedString: __(
 								'We recommend using ShipStation to save time at the post office by printing your shipping ' +
@@ -232,18 +237,24 @@ class Shipping extends Component {
 				content: (
 					<Plugins
 						onComplete={ () => {
-							recordEvent( 'tasklist_shipping_label_printing', { install: true, plugins } );
+							recordEvent( 'tasklist_shipping_label_printing', {
+								install: true,
+								pluginsToActivate,
+							} );
 							this.completeStep();
 						} }
 						onSkip={ () => {
-							recordEvent( 'tasklist_shipping_label_printing', { install: false, plugins } );
+							recordEvent( 'tasklist_shipping_label_printing', {
+								install: false,
+								pluginsToActivate,
+							} );
 							getHistory().push( getNewPath( {}, '/', {} ) );
 						} }
-						pluginSlugs={ pluginsToInstall }
+						pluginSlugs={ pluginsToActivate }
 						{ ...this.props }
 					/>
 				),
-				visible: pluginsToInstall.length,
+				visible: pluginsToActivate.length,
 			},
 			{
 				key: 'connect',
@@ -262,7 +273,7 @@ class Shipping extends Component {
 						} }
 					/>
 				),
-				visible: pluginsToInstall.includes( 'jetpack' ),
+				visible: pluginsToActivate.includes( 'jetpack' ),
 			},
 		];
 
