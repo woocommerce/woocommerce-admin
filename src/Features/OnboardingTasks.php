@@ -66,6 +66,26 @@ class OnboardingTasks {
 
 		// Update payment cache on payment gateways update.
 		add_action( 'update_option_woocommerce_stripe_settings', array( $this, 'check_stripe_completion' ), 10, 2 );
+		add_action( 'update_option_woocommerce_paypal_settings', array( $this, 'check_paypal_completion' ), 10, 2 );
+	}
+
+	/**
+	 * Check if Paypal payment settings are complete.
+	 *
+	 * @param mixed $old_value Old value.
+	 * @param array $value Current value.
+	 */
+	public static function check_paypal_completion( $old_value, $value ) {
+		if (
+			! isset( $value['enabled'] ) ||
+			'yes' !== $value['enabled'] ||
+			! isset( $value['email'] ) ||
+			empty( $value['email'] )
+		) {
+			return;
+		}
+
+		self::maybe_update_payments_cache();
 	}
 
 	/**
