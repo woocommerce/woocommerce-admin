@@ -63,6 +63,43 @@ class OnboardingTasks {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_import_notice_admin_script' ) );
+
+		// Update payment cache on payment gateways update.
+		add_action( 'update_option_woocommerce_stripe_settings', array( $this, 'check_stripe_completion' ), 10, 2 );
+	}
+
+	/**
+	 * Check if Stripe payment settings are complete.
+	 *
+	 * @param mixed $old_value Old value.
+	 * @param array $value Current value.
+	 */
+	public static function check_stripe_completion( $old_value, $value ) {
+		if (
+			! isset( $value['enabled'] ) ||
+			'yes' !== $value['enabled'] ||
+			! isset( $value['publishable_key'] ) ||
+			empty( $value['publishable_key'] ) ||
+			! isset( $value['secret_key'] ) ||
+			empty( $value['secret_key'] )
+		) {
+			return;
+		}
+
+		self::maybe_update_payments_cache();
+	}
+
+	/**
+	 * Update the payments cache to complete if not already.
+	 */
+	public static function maybe_update_payments_cache() {
+		$task_list_payments = get_option( 'woocommerce_task_list_payments', array() );
+		if ( isset( $task_list_payments['completed'] ) && $task_list_payments['completed'] ) {
+			return;
+		}
+
+		$task_list_payments['completed'] = 1;
+		update_option( 'woocommerce_task_list_payments', $task_list_payments );
 	}
 
 	/**
