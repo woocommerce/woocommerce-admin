@@ -236,6 +236,7 @@ trait SchedulerTraits {
 		if ( is_array( $blocking_jobs ) ) {
 			foreach ( $blocking_jobs as $blocking_job ) {
 				$blocking_job_hook = $blocking_job->get_hook();
+				// next() was deprecated in AS 3.0 and superseded by get_date().
 				if ( method_exists( $blocking_job->get_schedule(), 'get_date' ) ) {
 					$next_job_schedule = $blocking_job->get_schedule()->get_date();
 				} else {
@@ -265,6 +266,7 @@ trait SchedulerTraits {
 		$blocking_job = static::get_next_blocking_job( $action_name );
 		if ( $blocking_job ) {
 			$schedule = $blocking_job->get_schedule();
+			// next() was deprecated in AS 3.0 and superseded by get_date().
 			if ( method_exists( $schedule, 'get_date' ) ) {
 				$next = $schedule->get_date();
 			} else {
