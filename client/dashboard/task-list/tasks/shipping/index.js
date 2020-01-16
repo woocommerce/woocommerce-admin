@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { filter } from 'lodash';
+import { difference, filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
 
@@ -152,16 +152,19 @@ class Shipping extends Component {
 
 	getSteps() {
 		const { countryCode, isJetpackConnected } = this.props;
-		let plugins = [];
+		const { activePlugins = [] } = getSetting( 'onboarding', {} );
+
+		const plugins = [];
 		if ( [ 'GB', 'CA', 'AU' ].includes( countryCode ) ) {
-			plugins = [ 'woocommerce-shipstation-integration' ];
+			plugins.push( 'woocommerce-shipstation-integration' );
 		} else if ( 'US' === countryCode ) {
-			plugins = [ 'woocommerce-services' ];
+			plugins.push( 'woocommerce-services' );
 
 			if ( ! isJetpackConnected ) {
 				plugins.push( 'jetpack' );
 			}
 		}
+		const pluginsToInstall = difference( plugins, activePlugins );
 
 		const steps = [
 			{
@@ -190,7 +193,7 @@ class Shipping extends Component {
 				content: (
 					<ShippingRates
 						buttonText={
-							plugins.length
+							pluginsToInstall.length
 								? __( 'Proceed', 'woocommerce-admin' )
 								: __( 'Complete task', 'woocommerce-admin' )
 						}
@@ -236,11 +239,11 @@ class Shipping extends Component {
 							recordEvent( 'tasklist_shipping_label_printing', { install: false, plugins } );
 							getHistory().push( getNewPath( {}, '/', {} ) );
 						} }
-						pluginSlugs={ plugins }
+						pluginSlugs={ pluginsToInstall }
 						{ ...this.props }
 					/>
 				),
-				visible: plugins.length,
+				visible: pluginsToInstall.length,
 			},
 			{
 				key: 'connect',
@@ -259,7 +262,7 @@ class Shipping extends Component {
 						} }
 					/>
 				),
-				visible: plugins.includes( 'jetpack' ),
+				visible: pluginsToInstall.includes( 'jetpack' ),
 			},
 		];
 
