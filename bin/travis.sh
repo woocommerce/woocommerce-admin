@@ -5,7 +5,7 @@ if [ "$1" == 'before' ]; then
 	cd "$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/"
 	npm run build:feature-config
 	# Load PHPUnit version in dev dependencies for PHP ^7.2 until WP unit tests support PHPUnit 8.X
-	if [[ "$RUN_PHPCS" == "1" || "$RUN_RANDOM" == "1" || "$TRAVIS_PHP_VERSION" == "7.2" ]]; then
+	if [[ "$COMPOSE_DEV" == "1" ]]; then
 		composer install
 	else
 		composer install --no-dev
