@@ -21,10 +21,16 @@
       "php": "7.1"
     },
     "preferred-install": {
-	    "woocommerce/action-scheduler": "source"
+	    "woocommerce/action-scheduler": "dist"
     }
   },
   "scripts": {
+    "post-install-cmd": [
+      "sh ./bin/composer-package-update.sh"
+    ],
+    "post-update-cmd": [
+      "sh ./bin/composer-package-update.sh"
+    ],
     "test": [
       "phpunit"
     ],
