@@ -159,15 +159,16 @@ class Payments extends Component {
 	markConfigured( method ) {
 		const { options, methods, configured } = this.props;
 		configured.push( method );
+		const stepsLeft = difference( methods, configured );
+
 		this.props.updateOptions( {
 			[ 'woocommerce_task_list_payments' ]: {
 				...options.woocommerce_task_list_payments,
 				configured,
-				completed: 1,
+				completed: 0 === stepsLeft.length ? 1 : 0,
 			},
 		} );
 
-		const stepsLeft = difference( methods, configured );
 		if ( 0 === stepsLeft.length ) {
 			this.completeTask();
 		}
