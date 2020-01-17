@@ -1,7 +1,7 @@
 {
 	"extends": "stylelint-config-wordpress",
 	"ignoreFiles": [
-        "./css/main.scss"
+        "./vendor/**/*.scss"
     ],
 	"rules": {
 		"at-rule-empty-line-before": null,
