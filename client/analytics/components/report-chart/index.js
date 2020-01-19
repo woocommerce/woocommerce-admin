@@ -268,6 +268,10 @@ ReportChart.propTypes = {
 	 * Currency object found in settings.
 	 */
 	currency: PropTypes.object.isRequired,
+	/**
+	 * Helper function for creating internal links.
+	 */
+	getAdminLink: PropTypes.func.isRequired,
 };
 
 ReportChart.defaultProps = {
