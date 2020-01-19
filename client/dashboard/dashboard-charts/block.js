@@ -11,7 +11,7 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { Card } from '@woocommerce/components';
 import { getHistory, getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getAdminLink, CURRENCY } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -66,6 +66,8 @@ class ChartBlock extends Component {
 						path={ path }
 						selectedChart={ charts[ 0 ] }
 						showHeaderControls={ false }
+						getAdminLink={ getAdminLink }
+						currency={ CURRENCY }
 					/>
 				</Card>
 			</div>
