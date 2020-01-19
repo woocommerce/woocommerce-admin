@@ -10,6 +10,15 @@ import { useSelect } from '@wordpress/data';
  */
 import { STORE_NAME } from './constants';
 
+/**
+ * Add helper functions to the settings object. This ia a legacy way
+ * of interacting with settings.
+ *
+ * @todo house these functions elsewhere because they're not really settings.
+ *
+ * @param {object} settings - settings global.
+ * @return {object} - object of functions to add to settings global.
+ */
 const getHelperFunctions = settings => {
 	const getAdminLink = path => ( settings.adminUrl || '' ) + path;
 	return { getAdminLink };
