@@ -101,7 +101,7 @@ export default class CustomersReportTable extends Component {
 		];
 	}
 
-	getCountryName( code, countries ) {
+	getCountryName( code, countries = {} ) {
 		return typeof countries[ code ] !== 'undefined' ? countries[ code ] : null;
 	}
 
