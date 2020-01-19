@@ -170,6 +170,10 @@ ReportSummary.propTypes = {
 	 * Report name, if different than the endpoint.
 	 */
 	report: PropTypes.string,
+	/**
+	 * Helper function for creating internal links.
+	 */
+	getAdminLink: PropTypes.func.isRequired,
 };
 
 ReportSummary.defaultProps = {

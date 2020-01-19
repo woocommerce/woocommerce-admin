@@ -118,4 +118,8 @@ ReportFilters.propTypes = {
 	 * The report where filter are placed.
 	 */
 	report: PropTypes.string.isRequired,
+	/**
+	 * Locale object found in settings.
+	 */
+	locale: PropTypes.object.isRequired,
 };

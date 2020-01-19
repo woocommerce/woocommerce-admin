@@ -264,6 +264,10 @@ ReportChart.propTypes = {
 		 */
 		type: PropTypes.oneOf( [ 'average', 'number', 'currency' ] ).isRequired,
 	} ).isRequired,
+	/**
+	 * Currency object found in settings.
+	 */
+	currency: PropTypes.object.isRequired,
 };
 
 ReportChart.defaultProps = {

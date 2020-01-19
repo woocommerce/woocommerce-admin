@@ -57,6 +57,10 @@ ReportError.propTypes = {
 	 * Boolean representing whether the issue is that there is no data.
 	 */
 	isEmpty: PropTypes.bool,
+	/**
+	 * Helper function for creating internal links.
+	 */
+	getAdminLink: PropTypes.func.isRequired,
 };
 
 ReportError.defaultProps = {

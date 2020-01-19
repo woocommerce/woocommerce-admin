@@ -514,6 +514,10 @@ ReportTable.propTypes = {
 	 * String to display as the title of the table.
 	 */
 	title: PropTypes.string.isRequired,
+	/**
+	 * Helper function for creating internal links.
+	 */
+	getAdminLink: PropTypes.func.isRequired,
 };
 
 ReportTable.defaultProps = {
