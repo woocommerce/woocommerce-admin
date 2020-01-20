@@ -934,6 +934,9 @@ class Onboarding {
 
 	/**
 	 * When updating WooCommerce, mark the profiler and task list complete.
+	 *
+	 * @todo The `maybe_enable_setup_wizard()` method should be revamped on onboarding enable in core.
+	 * See https://github.com/woocommerce/woocommerce/blob/1ca791f8f2325fe2ee0947b9c47e6a4627366374/includes/class-wc-install.php#L341
 	 */
 	public static function maybe_mark_complete() {
 		// The install notice still exists so don't complete the profiler.
