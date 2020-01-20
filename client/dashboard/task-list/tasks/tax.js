@@ -239,9 +239,10 @@ class Tax extends Component {
 					<Connect
 						{ ...this.props }
 						onConnect={ () => {
-							recordEvent( 'tasklist_tax_connect_store' );
+							recordEvent( 'tasklist_tax_connect_store', { connect: true } );
 						} }
 						onSkip={ () => {
+							queueRecordEvent( 'tasklist_tax_connect_store', { connect: false } );
 							window.location.href = getAdminLink(
 								'admin.php?page=wc-settings&tab=tax&section=standard'
 							);
