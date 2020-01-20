@@ -241,6 +241,12 @@ class Tax extends Component {
 						onConnect={ () => {
 							recordEvent( 'tasklist_tax_connect_store' );
 						} }
+						onSkip={ () => {
+							window.location.href = getAdminLink(
+								'admin.php?page=wc-settings&tab=tax&section=standard'
+							);
+						} }
+						skipText={ __( 'Set up tax rates manually', 'woocommerce-admin' ) }
 					/>
 				),
 				visible: ! isJetpackConnected && this.isTaxJarSupported(),
