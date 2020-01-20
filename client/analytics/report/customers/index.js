@@ -23,7 +23,7 @@ const CustomersReport = ( { isRequesting, query, path } ) => {
 		'getAdminLink',
 		'locale',
 	] );
-	const { countries = { countries: {} } } = dataEndpoints;
+	const { countries = [] } = dataEndpoints;
 	const advancedFilters = getAdvancedFilters( countries );
 	const tableQuery = {
 		orderby: 'date_last_active',

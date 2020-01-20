@@ -101,8 +101,9 @@ export default class CustomersReportTable extends Component {
 		];
 	}
 
-	getCountryName( code, countries ) {
-		return typeof countries[ code ] !== 'undefined' ? countries[ code ] : null;
+	getCountryName( code, countries = [] ) {
+		const country = countries.find( c => code === c.code ) || {};
+		return country.name || null;
 	}
 
 	getRowsContent( customers ) {
