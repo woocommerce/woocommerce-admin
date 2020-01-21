@@ -4,7 +4,7 @@ cd "$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/"
 phpunit --version
 if [[ {$RUN_RANDOM} == 1 ]]; then
 	./vendor/bin/phpunit -c phpunit.xml.dist --order-by=random
-elif [[ {$COMPOSE_DEV} == 1 ]]; then
+elif [[ {$COMPOSER_DEV} == 1 ]]; then
 	./vendor/bin/phpunit -c phpunit.xml.dist
 else
 	phpunit -c phpunit.xml.dist
