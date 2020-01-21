@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 WORKING_DIR="$PWD"
 cd "$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/"
-phpunit --version
+./vendor/bin/phpunit --version
 if [[ {$RUN_RANDOM} == 1 ]]; then
 	./vendor/bin/phpunit -c phpunit.xml.dist --order-by=random
-elif [[ {$COMPOSER_DEV} == 1 ]]; then
-	./vendor/bin/phpunit -c phpunit.xml.dist
 else
-	phpunit -c phpunit.xml.dist
+	./vendor/bin/phpunit -c phpunit.xml.dist
 fi
 TEST_RESULT=$?
 cd "$WORKING_DIR"
