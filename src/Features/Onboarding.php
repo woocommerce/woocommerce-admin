@@ -37,6 +37,16 @@ class Onboarding {
 	const PRODUCT_DATA_TRANSIENT = 'wc_onboarding_product_data';
 
 	/**
+	 * Profile data option name.
+	 */
+	const PROFILE_DATA_OPTION = 'woocommerce_onboarding_profile';
+
+	/**
+	 * Onboarding opt-in option name.
+	 */
+	const OPT_IN_OPTION = 'woocommerce_onboarding_opt_in';
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -91,8 +101,21 @@ class Onboarding {
 		add_action( 'current_screen', array( $this, 'reset_task_list' ) );
 		add_action( 'current_screen', array( $this, 'calypso_tests' ) );
 		add_action( 'current_screen', array( $this, 'redirect_wccom_install' ) );
+		add_action( 'current_screen', array( $this, 'redirect_old_onboarding' ) );
 		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
 		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
+	}
+
+	/**
+	 * Redirect the old onboarding wizard to the profiler.
+	 */
+	public static function redirect_old_onboarding() {
+		$current_page = isset( $_GET['page'] ) ? wc_clean( wp_unslash( $_GET['page'] ) ) : false; // phpcs:ignore csrf okay.
+
+		if ( 'wc-setup' === $current_page ) {
+			delete_transient( '_wc_activation_redirect' );
+			wp_safe_redirect( wc_admin_url() );
+		}
 	}
 
 	/**
@@ -101,7 +124,7 @@ class Onboarding {
 	 * @return bool
 	 */
 	public static function should_show_profiler() {
-		$onboarding_data = get_option( 'wc_onboarding_profile', array() );
+		$onboarding_data = get_option( self::PROFILE_DATA_OPTION, array() );
 
 		$is_completed = isset( $onboarding_data['completed'] ) && true === $onboarding_data['completed'];
 
@@ -354,7 +377,7 @@ class Onboarding {
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
-		$profile = get_option( 'wc_onboarding_profile', array() );
+		$profile = get_option( self::PROFILE_DATA_OPTION, array() );
 
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-options.php';
 		$wccom_auth                 = \WC_Helper_Options::get( 'auth' );
@@ -701,7 +724,7 @@ class Onboarding {
 			)
 		);
 
-		update_option( 'wc_onboarding_opt_in', $enabled ? 'yes' : 'no' );
+		update_option( self::OPT_IN_OPTION, $enabled ? 'yes' : 'no' );
 		wp_safe_redirect( wc_admin_url() );
 		exit;
 	}
@@ -730,7 +753,7 @@ class Onboarding {
 			$screen->remove_help_tab( 'woocommerce_onboard_tab' );
 
 			$task_list_hidden = get_option( 'woocommerce_task_list_hidden', 'no' );
-			$onboarding_data  = get_option( 'wc_onboarding_profile', array() );
+			$onboarding_data  = get_option( self::PROFILE_DATA_OPTION, array() );
 			$is_completed     = isset( $onboarding_data['completed'] ) && true === $onboarding_data['completed'];
 			$is_enabled       = ! $is_completed;
 
