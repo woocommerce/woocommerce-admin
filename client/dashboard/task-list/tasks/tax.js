@@ -276,7 +276,7 @@ class Tax extends Component {
 								interpolateComponents( {
 									mixedString: __(
 										'By clicking "Configure" you\'re enabling tax rates and calculations.' +
-											'More info {{link}}here{{/link}}.',
+											' More info {{link}}here{{/link}}.',
 										'woocommerce-admin'
 									),
 									components: {
