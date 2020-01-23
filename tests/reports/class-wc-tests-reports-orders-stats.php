@@ -894,9 +894,6 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 							$order->calculate_totals();
 							$order->save();
 
-							// Added to troubleshoot intermittent test failure.
-							WC_Helper_Queue::run_all_pending();
-
 							$orders[] = $order;
 
 							// One order with 2 products: product_4 and selected product.
