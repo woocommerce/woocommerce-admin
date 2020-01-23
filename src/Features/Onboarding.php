@@ -236,12 +236,7 @@ class Onboarding {
 			$active_theme     = get_option( 'stylesheet' );
 
 			foreach ( $installed_themes as $slug => $theme ) {
-				$theme_data = self::get_theme_data( $theme );
-
-				if ( ! $theme_data['has_woocommerce_support'] && $active_theme !== $slug ) {
-					continue;
-				}
-
+				$theme_data       = self::get_theme_data( $theme );
 				$installed_themes = wp_get_themes();
 				$themes[ $slug ]  = $theme_data;
 			}
