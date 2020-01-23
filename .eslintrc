@@ -14,6 +14,7 @@
 		"wp": true,
 		"wpApiSettings": true,
 		"wcSettings": true,
+		"page": true,
 	},
 	"settings": {
 		"react": {
