@@ -38,6 +38,8 @@ class WC_Helper_Queue {
 		$queue_runner = new ActionScheduler_QueueRunner();
 
 		while ( $jobs = self::get_all_pending() ) {
+			// For unit tests, process pending jobs in the order they were created.
+			ksort( $jobs, SORT_NUMERIC );
 			foreach ( $jobs as $job_id => $job ) {
 				$queue_runner->process_action( $job_id );
 			}
