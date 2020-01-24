@@ -4,7 +4,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { Button, FormToggle } from '@wordpress/components';
 import PropTypes from 'prop-types';
@@ -12,7 +11,7 @@ import PropTypes from 'prop-types';
 /**
  * WooCommerce dependencies
  */
-import { Flag, Form, TextControl } from '@woocommerce/components';
+import { Flag, Form, TextControlWithAffixes } from '@woocommerce/components';
 import { CURRENCY, getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -106,7 +105,7 @@ class ShippingRates extends Component {
 
 	renderInputPrefix() {
 		if ( 0 === symbolPosition.indexOf( 'right' ) ) {
-			return;
+			return null;
 		}
 		return <span className="woocommerce-shipping-rate__control-prefix">{ symbol }</span>;
 	}
@@ -197,26 +196,21 @@ class ShippingRates extends Component {
 												) }
 											</div>
 											{ ( ! zone.toggleEnabled || values[ `${ zone.id }_enabled` ] ) && (
-												<div
-													className={ classnames( 'woocommerce-shipping-rate__control-wrapper', {
-														'has-value': values[ `${ zone.id }_rate` ],
-													} ) }
-												>
-													{ this.renderInputPrefix() }
-													<TextControl
-														label={ __( 'Shipping cost', 'woocommerce-admin' ) }
-														required
-														{ ...getInputProps( `${ zone.id }_rate` ) }
-														onBlur={ () => {
-															setTouched( `${ zone.id }_rate` );
-															setValue(
-																`${ zone.id }_rate`,
-																getCurrencyFormatString( values[ `${ zone.id }_rate` ] )
-															);
-														} }
-													/>
-													{ this.renderInputSuffix( values[ `${ zone.id }_rate` ] ) }
-												</div>
+												<TextControlWithAffixes
+													label={ __( 'Shipping cost', 'woocommerce-admin' ) }
+													required
+													{ ...getInputProps( `${ zone.id }_rate` ) }
+													onBlur={ () => {
+														setTouched( `${ zone.id }_rate` );
+														setValue(
+															`${ zone.id }_rate`,
+															getCurrencyFormatString( values[ `${ zone.id }_rate` ] )
+														);
+													} }
+													prefix={ this.renderInputPrefix() }
+													suffix={ this.renderInputSuffix( values[ `${ zone.id }_rate` ] ) }
+													className="muriel-input-text woocommerce-shipping-rate__control-wrapper"
+												/>
 											) }
 										</div>
 									</div>
