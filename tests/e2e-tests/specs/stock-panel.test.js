@@ -7,13 +7,15 @@
  */
 import { StoreOwnerFlow } from '../../../../../tests/e2e-tests/utils/flows';
 import {
+	clickTab,
 	setCheckbox,
+	settingsPageSaveChanges,
 	unsetCheckbox,
 	verifyCheckboxIsSet,
 	verifyCheckboxIsUnset,
-	settingsPageSaveChanges,
 	// verifyValueOfInputField,
 } from '../../../../../tests/e2e-tests/utils';
+import { verifyAndPublish } from '../../../../../tests/e2e-tests/utils/components';
 
 const goToInventorySettings = async () => {
 	// Go to inventory settings page
@@ -71,5 +73,37 @@ describe( 'Store owner can manage stock levels from activity panel', () => {
 
 		// Verify that the stock panel button is rendered.
 		await expect( page ).toMatchElement( '#activity-panel-tab-stock' );
+	} );
+
+	it( 'shows products that are low in stock', async () => {
+		// await expect( page ).toClick( '#activity-panel-tab-stock' );
+		// await new Promise(r => setTimeout(r, 5000));
+
+		// Create a product that is low in stock.
+
+		// Go to "add product" page.
+		await StoreOwnerFlow.openNewProduct();
+
+		// Make sure we're on the add order page.
+		await expect( page.title() ).resolves.toMatch( 'Add new product' );
+
+		// Set product data.
+		await expect( page ).toFill( '#title', 'Low in stock product' );
+		await clickTab( 'General' );
+		await expect( page ).toFill( '#_regular_price', '9.99' );
+		await clickTab( 'Inventory' );
+		await expect( page ).toClick( '#_manage_stock' );
+		await page.waitForSelector( '#_stock' );
+		await expect( page ).toFill( '#_stock', '1' );
+
+		// Publish product.
+		verifyAndPublish();
+
+		// Verify that the stock panel indicates unread.
+		await expect( page ).toMatchElement( '#activity-panel-tab-stock.has-unread' );
+
+		// Open stock panel.
+		await expect( page ).toClick( '#activity-panel-tab-stock' );
+		await page.waitForSelector( '.woocommerce-stock-activity-card:not(.is-loading)' );
 	} );
 } );
