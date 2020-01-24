@@ -122,6 +122,15 @@ class ShippingRates extends Component {
 		) : null;
 	}
 
+	getFormattedRate( value ) {
+		const currencyString = getCurrencyFormatString( value );
+		if ( ! value.length || ! currencyString.length ) {
+			return getCurrencyFormatString( 0 );
+		}
+
+		return getCurrencyFormatString( value );
+	}
+
 	getInitialValues() {
 		const values = {};
 
@@ -131,7 +140,7 @@ class ShippingRates extends Component {
 					? zone.methods.filter( method => 'flat_rate' === method.method_id )
 					: [];
 			const rate = flatRateMethods.length
-				? flatRateMethods[ 0 ].settings.cost.value
+				? this.getFormattedRate( flatRateMethods[ 0 ].settings.cost.value )
 				: getCurrencyFormatString( 0 );
 			values[ `${ zone.id }_rate` ] = rate;
 
@@ -204,7 +213,7 @@ class ShippingRates extends Component {
 														setTouched( `${ zone.id }_rate` );
 														setValue(
 															`${ zone.id }_rate`,
-															getCurrencyFormatString( values[ `${ zone.id }_rate` ] )
+															this.getFormattedRate( values[ `${ zone.id }_rate` ] )
 														);
 													} }
 													prefix={ this.renderInputPrefix() }
