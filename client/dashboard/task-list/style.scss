@@ -193,15 +193,29 @@
 			margin-bottom: 0;
 		}
 
+		.components-base-control__label {
+			display: block;
+			position: relative;
+			top: -8px;
+			width: 100%;
+			font-size: 12px;
+		}
+
 		.text-control-with-affixes__prefix,
 		.text-control-with-affixes__suffix {
-			display: none;
 			font-size: 16px;
 			line-height: 24px;
 			color: $studio-gray-50;
 			border: 0;
 			padding: 0;
 			align-items: center;
+			display: flex;
+			top: -12px;
+		}
+
+		.components-text-control__input {
+			position: relative;
+			top: -12px;
 		}
 
 		.text-control-with-affixes__prefix {
@@ -210,14 +224,6 @@
 
 		.text-control-with-affixes__suffix {
 			margin-left: $gap-smallest;
-		}
-
-		&.with-value {
-			.text-control-with-affixes__prefix,
-			.text-control-with-affixes__suffix {
-				display: flex;
-				top: -12px;
-			}
 		}
 	}
 }
