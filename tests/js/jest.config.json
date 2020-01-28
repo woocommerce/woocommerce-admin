@@ -21,7 +21,8 @@
   "testPathIgnorePatterns": [
     "/node_modules/",
     "<rootDir>/.*/build/",
-    "<rootDir>/.*/build-module/"
+    "<rootDir>/.*/build-module/",
+    "<rootDir>/tests/e2e-tests"
   ],
   "verbose": true
 }
