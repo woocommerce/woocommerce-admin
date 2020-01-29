@@ -179,7 +179,8 @@
     "webpack": "4.41.5",
     "webpack-cli": "3.3.10",
     "webpack-fix-style-only-entries": "0.4.0",
-    "webpack-rtl-plugin": "2.0.0"
+    "webpack-rtl-plugin": "2.0.0",
+    "woocommerce": "git+https://github.com/woocommerce/woocommerce.git"
   },
   "engines": {
     "node": ">=8.0.0",
