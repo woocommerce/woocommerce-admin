@@ -5,16 +5,23 @@
 	"parser": "babel-eslint",
 	"extends": [ "wpcalypso/react", "plugin:jsx-a11y/recommended" ],
 	"plugins": [ "jsx-a11y", "jest" ],
+	"extends": [
+		"plugin:jest/recommended"
+	],
 	"env": {
 		"browser": true,
 		"jest/globals": true,
 		"node": true,
+		"es6": true,
 	},
 	"globals": {
 		"wp": true,
 		"wpApiSettings": true,
 		"wcSettings": true,
 		"page": true,
+		"browser": true,
+		"context": true,
+		"jestPuppeteer": true
 	},
 	"settings": {
 		"react": {
