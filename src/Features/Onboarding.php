@@ -713,7 +713,7 @@ class Onboarding {
 		$enabled = 1 === absint( $_GET['enable_onboarding'] ); // phpcs:ignore CSRF ok.
 
 		wc_admin_record_tracks_event(
-			'wcadmin_onboarding_toggled',
+			'onboarding_toggled',
 			array(
 				'previous'  => ! $enabled,
 				'new_value' => $enabled,
