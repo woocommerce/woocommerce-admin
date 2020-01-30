@@ -123,6 +123,7 @@
     "@wordpress/base-styles": "1.2.0",
     "@wordpress/browserslist-config": "2.6.0",
     "@wordpress/custom-templated-path-webpack-plugin": "1.5.0",
+    "@wordpress/e2e-test-utils": "^4.1.0",
     "@wordpress/jest-preset-default": "5.3.1",
     "@wordpress/postcss-themes": "1.0.5",
     "ast-types": "0.13.2",
@@ -134,6 +135,7 @@
     "babel-plugin-transform-es2015-template-literals": "6.22.0",
     "chalk": "3.0.0",
     "concurrently": "5.0.2",
+    "config": "^3.2.5",
     "copy-webpack-plugin": "5.1.1",
     "cross-env": "6.0.3",
     "css-loader": "3.4.2",
@@ -180,7 +182,7 @@
     "webpack-cli": "3.3.10",
     "webpack-fix-style-only-entries": "0.4.0",
     "webpack-rtl-plugin": "2.0.0",
-    "woocommerce": "git+https://github.com/woocommerce/woocommerce.git"
+    "woocommerce": "git+https://github.com/woocommerce/woocommerce.git#try/wc-admin-e2e-test"
   },
   "engines": {
     "node": ">=8.0.0",
