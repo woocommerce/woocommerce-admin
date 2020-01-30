@@ -14,21 +14,26 @@ const testEnvVars = {
 	NODE_CONFIG_DIR: 'tests/e2e-tests/config',
 };
 
+let jestCommand = 'jest';
+const jestArgs = [
+	'--maxWorkers=1',
+	'--config=tests/e2e-tests/config/jest.config.js',
+	'--rootDir=./',
+	'--verbose',
+	program.args,
+];
+
 if ( program.dev ) {
 	testEnvVars.JEST_PUPPETEER_CONFIG = 'tests/e2e-tests/config/jest-puppeteer.dev.config.js';
+	jestCommand = 'npx';
+	jestArgs.unshift( 'ndb', 'jest' );
 }
 
 const envVars = Object.assign( {}, process.env, testEnvVars );
 
 const jestProcess = spawnSync(
-	'jest',
-	[
-		'--maxWorkers=1',
-		'--config=tests/e2e-tests/config/jest.config.js',
-		'--rootDir=./',
-		'--verbose',
-		program.args,
-	],
+	jestCommand,
+	jestArgs,
 	{
 		stdio: 'inherit',
 		env: envVars,
