@@ -64,6 +64,9 @@ class Onboarding {
 		// @todo This option should be removed when merging the onboarding feature to core.
 		add_action( 'current_screen', array( $this, 'enable_onboarding' ) );
 		add_action( 'woocommerce_updated', array( $this, 'maybe_mark_complete' ) );
+		// Track the onboarding toggle event earlier so they are captured before redirecting.
+		add_action( 'add_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
+		add_action( 'update_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
 
 		if ( ! Loader::is_onboarding_enabled() ) {
 			add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
@@ -712,17 +715,25 @@ class Onboarding {
 
 		$enabled = 1 === absint( $_GET['enable_onboarding'] ); // phpcs:ignore CSRF ok.
 
-		wc_admin_record_tracks_event(
-			'onboarding_toggled',
-			array(
-				'previous'  => ! $enabled,
-				'new_value' => $enabled,
-			)
-		);
-
 		update_option( self::OPT_IN_OPTION, $enabled ? 'yes' : 'no' );
 		wp_safe_redirect( wc_admin_url() );
 		exit;
+	}
+
+	/**
+	 * Track changes to the onboarding option.
+	 *
+	 * @param mixed  $mixed Option name or previous value if option previously existed.
+	 * @param string $value Value of the updated option.
+	 */
+	public static function track_onboarding_toggle( $mixed, $value ) {
+		wc_admin_record_tracks_event(
+			'onboarding_toggled',
+			array(
+				'previous_value' => ! $value,
+				'new_value'      => $value,
+			)
+		);
 	}
 
 	/**
