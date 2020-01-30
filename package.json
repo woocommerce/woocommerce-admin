@@ -53,7 +53,7 @@
     "prestart": "npm run -s install-if-deps-outdated && php ./bin/update-version.php",
     "start": "cross-env WC_ADMIN_PHASE=development npm run build:packages && cross-env WC_ADMIN_PHASE=development npm run build:feature-config && concurrently \"cross-env WC_ADMIN_PHASE=development webpack --watch\" \"node ./bin/packages/watch.js\"",
     "pretest": "npm run -s install-if-no-packages",
-    "test": "wp-scripts test-unit-js --config tests/js/jest.config.json",
+    "test": "wp-scripts test-unit-js --config tests/js/jest.config.js",
     "test:e2e": "./tests/bin/e2e-test-integration.js",
     "test:e2e-dev": "./tests/bin/e2e-test-integration.js --dev",
     "test:help": "wp-scripts test-unit-js --help",
