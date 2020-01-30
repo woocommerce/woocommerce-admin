@@ -79,8 +79,8 @@ class FeaturePlugin {
 		}
 
 		// Register Action Scheduler when WC Admin is an active plugin.
-		if ( is_file( WC_ADMIN_ABSPATH . '/vendor/action-scheduler/action-scheduler.php' ) ) {
-			require_once WC_ADMIN_ABSPATH . '/vendor/action-scheduler/action-scheduler.php';
+		if ( is_file( WC_ADMIN_ABSPATH . '/external/action-scheduler/action-scheduler.php' ) ) {
+			require_once WC_ADMIN_ABSPATH . '/external/action-scheduler/action-scheduler.php';
 		}
 	}
 

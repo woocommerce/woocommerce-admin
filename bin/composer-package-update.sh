@@ -24,9 +24,6 @@ fi
 # Convert textdomains
 output 3 "Updating package textdomains..."
 
-# Replace text domains within packages with woocommerce
-find ./vendor/action-scheduler -iname '*.php' -exec sed -i.bak -e "s/'action-scheduler' /'woocommerce-admin' /g" -e "s/\"action-scheduler\" /'woocommerce-admin' /g" {} \;
-
-# Cleanup backup files
-find ./vendor/action-scheduler -name "*.bak" -type f -delete
+# Replace text domains within packages with woocommerce-admin
+npm run i18n:packages --no-warnings
 output 2 "Done!"

@@ -43,7 +43,7 @@
   },
   "extra": {
     "installer-paths": {
-      "vendor/action-scheduler": ["woocommerce/action-scheduler"]
+      "external/action-scheduler": ["woocommerce/action-scheduler"]
     },
     "scripts-description": {
       "test": "Run unit tests",
