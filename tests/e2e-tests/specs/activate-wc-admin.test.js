@@ -5,15 +5,15 @@
 /**
  * Internal dependencies
  */
-import { StoreOwnerFlow } from '../../../../../tests/e2e-tests/utils/flows';
+import { StoreOwnerFlow } from '@woocommerce/e2e-tests/utils/flows';
 
 describe( 'Store owner can login and make sure WooCommerce Admin is activate', () => {
 	it( 'can login', async () => {
 		await StoreOwnerFlow.login();
 	} );
 
-	it( 'can make sure WooCommerce is activated. If not, activate it', async () => {
-		const slug = 'woocommerce';
+	it( 'can make sure WooCommerce Admin is activated. If not, activate it', async () => {
+		const slug = 'woocommerce-admin';
 		await StoreOwnerFlow.openPlugins();
 		const disableLink = await page.$( `tr[data-slug="${ slug }"] .deactivate a` );
 		if ( disableLink ) {

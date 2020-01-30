@@ -5,7 +5,7 @@
 /**
  * Internal dependencies
  */
-import { StoreOwnerFlow } from '../../../../../tests/e2e-tests/utils/flows';
+import { StoreOwnerFlow } from '@woocommerce/e2e-tests/utils/flows';
 import {
 	clickTab,
 	setCheckbox,
@@ -14,8 +14,8 @@ import {
 	verifyCheckboxIsSet,
 	verifyCheckboxIsUnset,
 	// verifyValueOfInputField,
-} from '../../../../../tests/e2e-tests/utils';
-import { verifyAndPublish } from '../../../../../tests/e2e-tests/utils/components';
+} from '@woocommerce/e2e-tests/utils';
+import { verifyAndPublish } from '@woocommerce/e2e-tests/utils/components';
 
 const config = require( 'config' );
 const baseUrl = config.get( 'url' );
