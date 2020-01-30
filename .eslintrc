@@ -3,11 +3,12 @@
 {
 	"root": true,
 	"parser": "babel-eslint",
-	"extends": [ "wpcalypso/react", "plugin:jsx-a11y/recommended" ],
-	"plugins": [ "jsx-a11y", "jest" ],
 	"extends": [
+		"wpcalypso/react",
+		"plugin:jsx-a11y/recommended",
 		"plugin:jest/recommended"
 	],
+	"plugins": [ "jsx-a11y", "jest" ],
 	"env": {
 		"browser": true,
 		"jest/globals": true,

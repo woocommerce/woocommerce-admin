@@ -2,7 +2,10 @@ module.exports = function( api ) {
 	api.cache( true );
 
 	return {
-		presets: [ '@wordpress/babel-preset-default' ],
+		presets: [
+			'@wordpress/babel-preset-default',
+			'@babel/preset-env',
+		],
 		plugins: [
 			'@babel/plugin-transform-async-to-generator',
 			'transform-class-properties',
