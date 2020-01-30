@@ -174,6 +174,10 @@ const webpackConfig = {
 				__dirname,
 				'client/settings/index.js'
 			),
+			'@woocommerce/e2e-tests': path.resolve(
+				__dirname,
+				'node_modules/woocommerce/tests/e2e-tests'
+			),
 		},
 	},
 	plugins: [
