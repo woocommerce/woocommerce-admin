@@ -66,13 +66,13 @@ function wc_admin_update_0230_db_version() {
 /**
  * Remove the note unsnoozing scheduled action.
  */
-function wc_admin_update_0241_remove_unsnooze_action() {
+function wc_admin_update_0251_remove_unsnooze_action() {
 	wc_unschedule_action( WC_Admin_Notes::UNSNOOZE_HOOK, array(), WC_Admin_Notes::QUEUE_GROUP );
 }
 
 /**
  * Update DB Version.
  */
-function wc_admin_update_0241_db_version() {
-	Installer::update_db_version( '0.24.1' );
+function wc_admin_update_0251_db_version() {
+	Installer::update_db_version( '0.25.1' );
 }
