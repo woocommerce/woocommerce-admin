@@ -14,6 +14,7 @@ import { applyFilters } from '@wordpress/hooks';
  * WooCommerce dependencies
  */
 import { H } from '@woocommerce/components';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -198,7 +199,7 @@ class CustomizableDashboard extends Component {
 	}
 
 	render() {
-		const { query, path, taskListHidden, taskListCompleted } = this.props;
+		const { query, path, taskListHidden, taskListCompleted, defaultDateRange } = this.props;
 		const { sections } = this.state;
 		const visibleSectionKeys = sections
 			.filter( section => section.isVisible )
@@ -213,8 +214,11 @@ class CustomizableDashboard extends Component {
 			return <TaskList query={ query } />;
 		}
 
-		const { period, compare, before, after } = getDateParamsFromQuery( query );
-		const { primary: primaryDate, secondary: secondaryDate } = getCurrentDates( query );
+		const { period, compare, before, after } = getDateParamsFromQuery( query, defaultDateRange );
+		const { primary: primaryDate, secondary: secondaryDate } = getCurrentDates(
+			query,
+			defaultDateRange
+		);
 		const dateQuery = {
 			period,
 			compare,
@@ -270,9 +274,13 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { getCurrentUserData, getProfileItems, getOptions } = select( 'wc-api' );
 		const userData = getCurrentUserData();
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
 		const withSelectData = {
 			userPrefSections: userData.dashboard_sections,
+			defaultDateRange,
 		};
 
 		if ( isOnboardingEnabled() ) {

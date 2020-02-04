@@ -2,12 +2,10 @@
 /**
  * External dependencies
  */
-import { partialRight } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * WooCommerce dependencies
@@ -36,13 +34,6 @@ import {
 	validateDateInputForRange,
 } from '@woocommerce/date';
 
-// Compose methods with store settings.
-const {
-	woocommerce_default_date_range: defaultDateRange = 'period=month&compare=previous_year',
-} = getSetting( 'wcAdminSettings', {} );
-const storeGetDateParamsFromQuery = partialRight( getDateParamsFromQuery, defaultDateRange );
-const storeGetCurrentDates = partialRight( getCurrentDates, defaultDateRange );
-
 // Export the expected API for the consuming app.
 export {
 	isoDateFormat,
@@ -53,8 +44,8 @@ export {
 	getRangeLabel,
 	getLastPeriod,
 	getCurrentPeriod,
-	storeGetDateParamsFromQuery as getDateParamsFromQuery,
-	storeGetCurrentDates as getCurrentDates,
+	getDateParamsFromQuery,
+	getCurrentDates,
 	getDateDifferenceInDays,
 	getPreviousDate,
 	getAllowedIntervalsForQuery,

@@ -15,6 +15,7 @@ import { appendTimestamp, defaultTableDateFormat, getCurrentDates } from 'lib/da
 import { Date, Link } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/currency-format';
 import { formatValue } from 'lib/number-format';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -240,7 +241,10 @@ class RevenueReportTable extends Component {
 export default compose(
 	withSelect( ( select, props ) => {
 		const { query, filters, advancedFilters } = props;
-		const datesFromQuery = getCurrentDates( query );
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
+		const datesFromQuery = getCurrentDates( query, defaultDateRange );
 		const { getReportStats, getReportStatsError, isReportStatsRequesting } = select( 'wc-api' );
 
 		// @todo Support hour here when viewing a single day
