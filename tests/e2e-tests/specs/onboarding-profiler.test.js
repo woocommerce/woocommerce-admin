@@ -7,6 +7,9 @@
  */
 import { StoreOwnerFlow } from '@woocommerce/e2e-tests/utils/flows';
 
+const config = require( 'config' );
+const baseUrl = config.get( 'url' );
+
 describe( 'Store owner can enable or disable onboarding', () => {
 	beforeAll( async () => {
 		await StoreOwnerFlow.login();
@@ -26,5 +29,22 @@ describe( 'Store owner can enable or disable onboarding', () => {
 		] );
 
 		await expect( page ).toMatchElement( '.woocommerce-profile-wizard__body' );
+	} );
+
+	it( 'walks through the profiler', async () => {
+		// Open the dashboard/profiler.
+		await page.goto( baseUrl + 'wp-admin/admin.php?page=wc-admin', {
+			waitUntil: 'networkidle0',
+		} );
+
+		// Start step.
+		await expect( page ).toClick( 'button', { text: 'Get started' } );
+		await expect( page ).toMatchElement( '.woocommerce-profile-wizard__usage-modal' );
+		await expect( page ).toClick( 'button', { text: 'Continue' } );
+
+		// Store details.
+		await page.waitForNavigation( { waitUntil: 'networkidle0' } );
+		await expect( page ).toMatchElement( '.woocommerce-profile-wizard__plugins-actions' );
+		await expect( page ).toClick( 'button', { text: 'Activate & continue' } );
 	} );
 } );
