@@ -34,3 +34,45 @@ Using the customization menu in the top right corner of the section, you can tog
 | Shipping | The shipping charges associated with an order or refund. | Revenue Report > Shipping | 
 | Downloads | Total count of downloaded files | Downloads Report > Download Count | 
 | Gross Sales | Sale price of product(s) x quantity ordered. Does not include refunds, coupons, taxes or shipping | Revenue Report > Gross Sales | 
+
+## Charts Section
+The next section displayed by default is Charts. The customization menu again allows you to toggle the display of charts that are most useful for your Store. The following charts are available to display in this section:
+
+| Chart Name  | Description  | Links To ( Report Name > Chart Name ) |
+|---|---|---|
+| Total Sales | Gross Sales - Returns - Coupons + Taxes + Shipping | Revenue Report > Total Sales | 
+| Net Sales | Gross Sales - Returns - Coupons | Revenue Report > Net Sales |
+| Orders | The number of new orders placed for a selected date range | Orders Report > Orders |
+| Average Order Value | Net Sales / Orders | Orders Report > Average Order Value | 
+| Items Sold | The discrete number of items sold. | Products Report > Items Sold | 
+| Refunds | Money returned to the customer via a refund | Revenue Report > Refunds | 
+| Discounted Orders | The count of orders with a coupon applied. | Coupons Report > Orders Count | 
+| Gross Discount Amount | Total sum of discounts from coupons. | Coupons Report > Amount | 
+| Total Tax | Order Tax + Shipping Tax | Taxes Report > Total Tax | 
+| Order Tax | The total of tax applied to items in an order | Taxes Report > Order Tax | 
+| Shipping Tax | The total of tax applied to shipping in an order | Taxes Report > Shipping Tax | 
+| Shipping | The shipping charges associated with an order or refund. | Revenue Report > Shipping | 
+| Downloads | Total count of downloaded files | Downloads Report > Download Count | 
+
+### Chart Interval Options
+Furthermore the charts section has a control which allows you to set the time interval to display in the charts. The options displayed in the interval drop down are determined by how long of a date range you currently have selected in the Date Picker.
+
+| Length of Date Range  | Interval Options  |
+|---|---|
+| One year or more | 'day', 'week', 'month', 'quarter', 'year' |
+| 90 days to 1 year | 'day', 'week', 'month', 'quarter' |
+| 1 month - 89 days | 'day', 'week', 'month' |
+| 1 week - 28 days | 'day', 'week' |
+| 1 day - 1 week  | 'day' |
+| 1 day | 'day', 'hour' |
+
+### Chart Type Option
+The last way you can customize the appearance of the charts is the ability to toggle between Line and Bar charts. Your selection chosen here will be saved to your user options and used on subsequent visits to the WooCommerce Dashboard.
+
+## Leaderboard Section
+The final section on the Dashboard allows you to view four different "Leaderboards" for your store's statistics. Like the other two sections, you can also toggle the visibility of the leaderboards via the customization menu. By default you have the following four Leaderboards to choose from:
+
+- Top Customers, Total Spend
+- Top Coupons, Number of Orders
+- Top Categories, Items Sold
+- Top Products, Items Sold
