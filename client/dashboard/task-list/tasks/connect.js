@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -25,7 +24,7 @@ class Connect extends Component {
 		document.body.classList.add( 'woocommerce-admin-is-loading' );
 		const { query } = this.props;
 
-		if ( '1' === query.deny ) {
+		if ( query.deny === '1' ) {
 			this.errorMessage(
 				__(
 					'You must click approve to install your extensions and connect to WooCommerce.com.',

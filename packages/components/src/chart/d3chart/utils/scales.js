@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -12,11 +10,12 @@ import moment from 'moment';
 
 /**
  * Describes getXScale
- * @param {array} uniqueDates - from `getUniqueDates`
+ *
+ * @param {Array} uniqueDates - from `getUniqueDates`
  * @param {number} width - calculated width of the charting space
  * @param {boolean} compact - whether the chart must be compact (without padding
  between days)
- * @returns {function} a D3 scale of the dates
+ * @return {Function} a D3 scale of the dates
  */
 export const getXScale = ( uniqueDates, width, compact = false ) =>
 	d3ScaleBand()
@@ -26,11 +25,12 @@ export const getXScale = ( uniqueDates, width, compact = false ) =>
 
 /**
  * Describes getXGroupScale
- * @param {array} orderedKeys - from `getOrderedKeys`
- * @param {function} xScale - from `getXScale`
+ *
+ * @param {Array} orderedKeys - from `getOrderedKeys`
+ * @param {Function} xScale - from `getXScale`
  * @param {boolean} compact - whether the chart must be compact (without padding
  between days)
- * @returns {function} a D3 scale for each category within the xScale range
+ * @return {Function} a D3 scale for each category within the xScale range
  */
 export const getXGroupScale = ( orderedKeys, xScale, compact = false ) =>
 	d3ScaleBand()
@@ -42,9 +42,10 @@ export const getXGroupScale = ( orderedKeys, xScale, compact = false ) =>
 
 /**
  * Describes getXLineScale
- * @param {array} uniqueDates - from `getUniqueDates`
+ *
+ * @param {Array} uniqueDates - from `getUniqueDates`
  * @param {number} width - calculated width of the charting space
- * @returns {function} a D3 scaletime for each date
+ * @return {Function} a D3 scaletime for each date
  */
 export const getXLineScale = ( uniqueDates, width ) =>
 	d3ScaleTime()
@@ -60,7 +61,7 @@ export const getXLineScale = ( uniqueDates, width ) =>
 const getYValueLimits = ( data ) => {
 	let maxYValue = Number.NEGATIVE_INFINITY;
 	let minYValue = Number.POSITIVE_INFINITY;
-	data.map( ( d ) => {
+	data.forEach( ( d ) => {
 		for ( const [ key, item ] of Object.entries( d ) ) {
 			if (
 				key !== 'date' &&
@@ -94,6 +95,7 @@ export const calculateStep = ( minValue, maxValue ) => {
 	const maxAbsValue = Math.max( -minValue, maxValue );
 	const maxLimit = ( 4 / 3 ) * maxAbsValue;
 	const pow3Y =
+		// eslint-disable-next-line no-bitwise
 		Math.pow( 10, ( ( Math.log( maxLimit ) * Math.LOG10E + 1 ) | 0 ) - 2 ) *
 		3;
 	const step = ( Math.ceil( maxLimit / pow3Y ) * pow3Y ) / 3;
@@ -108,8 +110,9 @@ export const calculateStep = ( minValue, maxValue ) => {
 /**
  * Returns the lower and upper limits of the Y scale and the calculated step to use in the axis, rounding
  * them to the nearest thousand, ten-thousand, million etc. In case it is a decimal number, ceils it.
- * @param {array} data - The chart component's `data` prop.
- * @returns {object} Object containing the `lower` and `upper` limits and a `step` value.
+ *
+ * @param {Array} data - The chart component's `data` prop.
+ * @return {Object} Object containing the `lower` and `upper` limits and a `step` value.
  */
 export const getYScaleLimits = ( data ) => {
 	const { lower: minValue, upper: maxValue } = getYValueLimits( data );
@@ -134,10 +137,11 @@ export const getYScaleLimits = ( data ) => {
 
 /**
  * Describes getYScale
+ *
  * @param {number} height - calculated height of the charting space
  * @param {number} yMin - minimum y value
  * @param {number} yMax - maximum y value
- * @returns {function} the D3 linear scale from 0 to the value from `getYMax`
+ * @return {Function} the D3 linear scale from 0 to the value from `getYMax`
  */
 export const getYScale = ( height, yMin, yMax ) =>
 	d3ScaleLinear()

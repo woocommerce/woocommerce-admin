@@ -1,4 +1,4 @@
-/** @format */
+/* eslint-disable no-alert */
 /**
  * Internal dependencies
  */
@@ -28,6 +28,7 @@ const listItems = [
 	{
 		title: 'Clickable list item',
 		content: 'List item description text',
+		// eslint-disable-next-line no-undef
 		onClick: () => alert( 'List item clicked' ),
 	},
 ];

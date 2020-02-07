@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -18,11 +17,15 @@ import { computeSuggestionMatch } from './utils';
 import ProductImage from '../../product-image';
 
 /**
+ * @typedef {Object} Completer
+ */
+
+/**
  * Create a variation name by concatenating each of the variation's
  * attribute option strings.
  *
- * @param {object} variation - variation returned by the api
- * @returns {string} - variation name
+ * @param {Object} variation - variation returned by the api
+ * @return {string} - variation name
  */
 function getVariationName( variation ) {
 	return variation.attributes.reduce(
@@ -51,6 +54,7 @@ export default {
 			: {};
 		const product = getQuery().products;
 		if ( ! product || product.includes( ',' ) ) {
+			// eslint-disable-next-line no-console
 			console.warn(
 				'Invalid product id supplied to Variations autocompleter'
 			);

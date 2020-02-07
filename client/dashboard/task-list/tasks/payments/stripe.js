@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -42,7 +41,7 @@ class Stripe extends Component {
 		const query = getQuery();
 
 		// Handle redirect back from Stripe.
-		if ( query[ 'stripe-connect' ] && '1' === query[ 'stripe-connect' ] ) {
+		if ( query[ 'stripe-connect' ] && query[ 'stripe-connect' ] === '1' ) {
 			const stripeSettings = get(
 				options,
 				[ 'woocommerce_stripe_settings' ],
@@ -83,7 +82,7 @@ class Stripe extends Component {
 
 	componentDidUpdate( prevProps, prevState ) {
 		if (
-			false === prevState.showConnectionButtons &&
+			prevState.showConnectionButtons === false &&
 			this.state.showConnectionButtons
 		) {
 			this.fetchOAuthConnectURL();
@@ -154,10 +153,9 @@ class Stripe extends Component {
 			// This seems to be the best way to handle this.
 			// github.com/Automattic/woocommerce-services/blob/cfb6173deb3c72897ee1d35b8fdcf29c5a93dea2/woocommerce-services.php#L563-L570
 			if (
-				-1 ===
 				error.message.indexOf(
 					'Account already exists for the provided email'
-				)
+				) === -1
 			) {
 				errorTitle = __( 'Stripe', 'woocommerce-admin' );
 				errorMessage = interpolateComponents( {

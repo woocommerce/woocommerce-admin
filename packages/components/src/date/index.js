@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -9,7 +7,7 @@ import { format as formatDate } from '@wordpress/date';
 /**
  * Use the `Date` component to display accessible dates or times.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const Date = ( { date, machineFormat, screenReaderFormat, visibleFormat } ) => {
 	return (

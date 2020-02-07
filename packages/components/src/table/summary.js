@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -7,7 +6,7 @@ import PropTypes from 'prop-types';
 /**
  * A component to display summarized table data - the list of data passed in on a single line.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const TableSummary = ( { data } ) => {
 	return (

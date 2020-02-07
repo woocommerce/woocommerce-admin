@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -80,7 +78,7 @@ function settingsToSettingsResource( resourceName, settings ) {
 }
 
 function settingToSettingsResource( resourceName, data ) {
-	if ( 'undefined' === typeof data.update ) {
+	if ( typeof data.update === 'undefined' ) {
 		return '';
 	}
 

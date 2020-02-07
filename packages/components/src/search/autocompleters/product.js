@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -14,6 +13,9 @@ import interpolateComponents from 'interpolate-components';
 import { computeSuggestionMatch } from './utils';
 import ProductImage from '../../product-image';
 
+/**
+ * @typedef {Object} Completer
+ */
 /**
  * A products completer.
  * See https://github.com/WordPress/gutenberg/tree/master/packages/components/src/autocomplete#the-completer-interface
@@ -62,7 +64,7 @@ export default {
 		);
 		const titleOption = {
 			key: 'title',
-			label: label,
+			label,
 			value: { id: query, name: query },
 		};
 

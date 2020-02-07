@@ -1,4 +1,3 @@
-/** @format */
 /* eslint-disable no-console */
 /**
  * External dependencies
@@ -93,7 +92,7 @@ function buildDocs( fileName, route, content, multiple = false ) {
 	let mdFileName = getMdFileName( fileName, route );
 
 	// We symlink our package docs.
-	if ( 'packages' === route ) {
+	if ( route === 'packages' ) {
 		mdFileName = mdFileName.replace(
 			'docs/components/packages',
 			'packages/components/src'
@@ -134,7 +133,7 @@ function buildDocs( fileName, route, content, multiple = false ) {
 /**
  * Convert documentation object to a markdown string.
  *
- * @param { object } docObject The parsed documentation object.
+ * @param {Object} docObject The parsed documentation object.
  * @return { string } Generated markdown.
  */
 function generateMarkdown( docObject ) {

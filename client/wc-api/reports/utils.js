@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -31,12 +29,12 @@ import * as reportsUtils from './utils';
  * Add filters and advanced filters values to a query object.
  *
  * @param  {Objedt} options                   arguments
- * @param  {String} options.endpoint          Report API Endpoint
+ * @param  {string} options.endpoint          Report API Endpoint
  * @param  {Object} options.query             Query parameters in the url
  * @param  {Array}  options.limitBy           Properties used to limit the results. It will be used in the API call to send the IDs.
  * @param  {Array}  [options.filters]         config filters
  * @param  {Object} [options.advancedFilters] config advanced filters
- * @returns {Object} A query object with the values from filters and advanced fitlters applied.
+ * @return {Object} A query object with the values from filters and advanced fitlters applied.
  */
 export function getFilterQuery( options ) {
 	const {
@@ -71,13 +69,13 @@ const noIntervalEndpoints = [ 'stock', 'customers' ];
  * Add timestamp to advanced filter parameters involving date. The api
  * expects a timestamp for these values similar to `before` and `after`.
  *
- * @param {object} config - advancedFilters config object.
- * @param {object} activeFilter - an active filter.
- * @returns {object} - an active filter with timestamp added to date values.
+ * @param {Object} config - advancedFilters config object.
+ * @param {Object} activeFilter - an active filter.
+ * @return {Object} - an active filter with timestamp added to date values.
  */
 export function timeStampFilterDates( config, activeFilter ) {
 	const advancedFilterConfig = config.filters[ activeFilter.key ];
-	if ( 'Date' !== get( advancedFilterConfig, [ 'input', 'component' ] ) ) {
+	if ( get( advancedFilterConfig, [ 'input', 'component' ] ) !== 'Date' ) {
 		return activeFilter;
 	}
 
@@ -110,7 +108,7 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
 		return {};
 	}
 
-	if ( 'advanced' === queryValue ) {
+	if ( queryValue === 'advanced' ) {
 		const activeFilters = getActiveFiltersFromQuery(
 			query,
 			advancedFilters.filters
@@ -163,8 +161,8 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
  * Returns true if a report object is empty.
  *
  * @param  {Object}  report   Report to check
- * @param  {String}  endpoint Endpoint slug
- * @return {Boolean}        True if report is data is empty.
+ * @param  {string}  endpoint Endpoint slug
+ * @return {boolean}        True if report is data is empty.
  */
 export function isReportDataEmpty( report, endpoint ) {
 	if ( ! report ) {
@@ -180,7 +178,7 @@ export function isReportDataEmpty( report, endpoint ) {
 	const checkIntervals = ! includes( noIntervalEndpoints, endpoint );
 	if (
 		checkIntervals &&
-		( ! report.data.intervals || 0 === report.data.intervals.length )
+		( ! report.data.intervals || report.data.intervals.length === 0 )
 	) {
 		return true;
 	}
@@ -189,12 +187,13 @@ export function isReportDataEmpty( report, endpoint ) {
 
 /**
  * Constructs and returns a query associated with a Report data request.
+ *
  * @param  {Objedt} options           arguments
- * @param  {String} options.endpoint  Report API Endpoint
- * @param  {String} options.dataType  'primary' or 'secondary'.
+ * @param  {string} options.endpoint  Report API Endpoint
+ * @param  {string} options.dataType  'primary' or 'secondary'.
  * @param  {Object} options.query     Query parameters in the url.
  * @param  {Array}  options.limitBy   Properties used to limit the results. It will be used in the API call to send the IDs.
- * @returns {Object} data request query parameters.
+ * @return {Object} data request query parameters.
  */
 function getRequestQuery( options ) {
 	const { endpoint, dataType, query } = options;
@@ -224,7 +223,7 @@ function getRequestQuery( options ) {
  * Returns summary number totals needed to render a report page.
  *
  * @param  {Objedt} options           arguments
- * @param  {String} options.endpoint  Report API Endpoint
+ * @param  {string} options.endpoint  Report API Endpoint
  * @param  {Object} options.query     Query parameters in the url
  * @param  {Object} options.select    Instance of @wordpress/select
  * @param  {Array}  options.limitBy   Properties used to limit the results. It will be used in the API call to send the IDs.
@@ -279,9 +278,10 @@ export function getSummaryNumbers( options ) {
 
 /**
  * Returns all of the data needed to render a chart with summary numbers on a report page.
+ *
  * @param  {Objedt} options           arguments
- * @param  {String} options.endpoint  Report API Endpoint
- * @param  {String} options.dataType  'primary' or 'secondary'
+ * @param  {string} options.endpoint  Report API Endpoint
+ * @param  {string} options.dataType  'primary' or 'secondary'
  * @param  {Object} options.query     Query parameters in the url
  * @param  {Object} options.select    Instance of @wordpress/select
  * @param  {Array}  options.limitBy   Properties used to limit the results. It will be used in the API call to send the IDs.
@@ -366,8 +366,8 @@ export function getReportChartData( options ) {
 /**
  * Returns a formatting function or string to be used by d3-format
  *
- * @param  {String} type Type of number, 'currency', 'number', 'percent', 'average'
- * @return {String|Function}  returns a number format based on the type or an overriding formatting function
+ * @param  {string} type Type of number, 'currency', 'number', 'percent', 'average'
+ * @return {string|Function}  returns a number format based on the type or an overriding formatting function
  */
 export function getTooltipValueFormat( type ) {
 	switch ( type ) {
@@ -419,7 +419,7 @@ export function getReportTableQuery( options ) {
  * Returns table data needed to render a report page.
  *
  * @param  {Object} options                arguments
- * @param  {String} options.endpoint       Report API Endpoint
+ * @param  {string} options.endpoint       Report API Endpoint
  * @param  {Object} options.query          Query parameters in the url
  * @param  {Object} options.select         Instance of @wordpress/select
  * @param  {Object} options.tableQuery     Query parameters specific for that endpoint

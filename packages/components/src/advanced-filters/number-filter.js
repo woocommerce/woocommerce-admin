@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -26,25 +25,25 @@ class NumberFilter extends Component {
 
 	getScreenReaderText( filter, config ) {
 		const { currency } = this.props;
-		const inputType = get( config, [ 'input', 'type' ], 'number' );
 		const rule = find( config.rules, { value: filter.rule } ) || {};
 		let [ rangeStart, rangeEnd ] = isArray( filter.value )
 			? filter.value
 			: [ filter.value ];
 
 		// Return nothing if we're missing input(s)
-		if ( ! rangeStart || ( 'between' === rule.value && ! rangeEnd ) ) {
+		if ( ! rangeStart || ( rule.value === 'between' && ! rangeEnd ) ) {
 			return '';
 		}
+		const inputType = get( config, [ 'input', 'type' ], 'number' );
 
-		if ( 'currency' === inputType ) {
+		if ( inputType === 'currency' ) {
 			rangeStart = currency.formatCurrency( rangeStart );
 			rangeEnd = currency.formatCurrency( rangeEnd );
 		}
 
 		let filterStr = rangeStart;
 
-		if ( 'between' === rule.value ) {
+		if ( rule.value === 'between' ) {
 			filterStr = interpolateComponents( {
 				mixedString: this.getBetweenString(),
 				components: {
@@ -74,8 +73,8 @@ class NumberFilter extends Component {
 		currencySymbol,
 		symbolPosition,
 	} ) {
-		if ( 'currency' === type ) {
-			return 0 === symbolPosition.indexOf( 'right' ) ? (
+		if ( type === 'currency' ) {
+			return symbolPosition.indexOf( 'right' ) === 0 ? (
 				<TextControlWithAffixes
 					suffix={
 						<span
@@ -122,11 +121,11 @@ class NumberFilter extends Component {
 	getFilterInputs() {
 		const { config, filter, onFilterChange, currency } = this.props;
 		const { symbol: currencySymbol, symbolPosition } = currency;
-		const inputType = get( config, [ 'input', 'type' ], 'number' );
 
-		if ( 'between' === filter.rule ) {
+		if ( filter.rule === 'between' ) {
 			return this.getRangeInput();
 		}
+		const inputType = get( config, [ 'input', 'type' ], 'number' );
 
 		const [ rangeStart, rangeEnd ] = isArray( filter.value )
 			? filter.value
@@ -139,7 +138,7 @@ class NumberFilter extends Component {
 
 		let labelFormat = '';
 
-		if ( 'lessthan' === filter.rule ) {
+		if ( filter.rule === 'lessthan' ) {
 			/* eslint-disable-next-line max-len */
 			/* translators: Sentence fragment, "maximum amount" refers to a numeric value the field must be less than. Screenshot for context: https://cloudup.com/cmv5CLyMPNQ */
 			labelFormat = _x(
@@ -252,7 +251,7 @@ class NumberFilter extends Component {
 							className,
 							'woocommerce-filters-advanced__input-range',
 							{
-								'is-between': 'between' === rule,
+								'is-between': rule === 'between',
 							}
 						) }
 					>

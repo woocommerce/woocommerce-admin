@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -50,7 +49,7 @@ class SelectFilter extends Component {
 	}
 
 	getScreenReaderText( filter, config ) {
-		if ( '' === filter.value ) {
+		if ( filter.value === '' ) {
 			return '';
 		}
 

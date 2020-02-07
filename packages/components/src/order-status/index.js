@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -9,7 +7,7 @@ import PropTypes from 'prop-types';
 /**
  * Use `OrderStatus` to display a badge with human-friendly text describing the current order status.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const OrderStatus = ( { order, className, orderStatusMap } ) => {
 	const { status } = order;

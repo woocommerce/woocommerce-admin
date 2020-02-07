@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -35,7 +34,7 @@ class DateRangeFilterPicker extends Component {
 		if (
 			date &&
 			date._isAMomentObject &&
-			'function' === typeof date.format
+			typeof date.format === 'function'
 		) {
 			return date.format( format );
 		}
@@ -68,10 +67,10 @@ class DateRangeFilterPicker extends Component {
 		return ( event ) => {
 			const { period, compare, after, before } = this.state;
 			const data = {
-				period: 'custom' === selectedTab ? 'custom' : period,
+				period: selectedTab === 'custom' ? 'custom' : period,
 				compare,
 			};
-			if ( 'custom' === selectedTab ) {
+			if ( selectedTab === 'custom' ) {
 				data.after = this.formatDate( after, isoDateFormat );
 				data.before = this.formatDate( before, isoDateFormat );
 			} else {
@@ -95,7 +94,7 @@ class DateRangeFilterPicker extends Component {
 
 	isValidSelection( selectedTab ) {
 		const { compare, after, before } = this.state;
-		if ( 'custom' === selectedTab ) {
+		if ( selectedTab === 'custom' ) {
 			return compare && after && before;
 		}
 		return true;

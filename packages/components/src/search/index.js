@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -115,12 +114,12 @@ class Search extends Component {
 	}
 
 	appendFreeTextSearch( options, query ) {
-		const autocompleter = this.getAutocompleter();
 		const { allowFreeTextSearch } = this.props;
 
 		if ( ! allowFreeTextSearch ) {
 			return options;
 		}
+		const autocompleter = this.getAutocompleter();
 
 		return [ ...autocompleter.getFreeTextOptions( query ), ...options ];
 	}

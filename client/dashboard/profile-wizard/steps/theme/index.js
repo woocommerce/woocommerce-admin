@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -315,7 +314,7 @@ class Theme extends Component {
 	}
 
 	handleUploadComplete( upload ) {
-		if ( 'success' === upload.status && upload.theme_data ) {
+		if ( upload.status === 'success' && upload.theme_data ) {
 			this.setState( {
 				uploadedThemes: [
 					...this.state.uploadedThemes,

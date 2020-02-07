@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -38,7 +37,7 @@ function getDescription( description = '' ) {
  * Get a single prop's details formatted for markdown.
  *
  * @param { string } propName Prop name.
- * @param { object } prop Prop details as retrieved from component docs.
+ * @param {Object} prop Prop details as retrieved from component docs.
  * @return { string } Formatted string.
  */
 function getProp( propName, prop ) {
@@ -63,7 +62,7 @@ function getProp( propName, prop ) {
 /**
  * Get a single prop's default value.
  *
- * @param { object } value Default value as retrieved from component docs.
+ * @param {Object} value Default value as retrieved from component docs.
  * @return { string } Formatted string.
  */
 function getPropDefaultValue( value ) {
@@ -76,7 +75,7 @@ function getPropDefaultValue( value ) {
 /**
  * Get props and prop details formatted for markdown.
  *
- * @param { object } props Component props as retrieved from component docs.
+ * @param {Object} props Component props as retrieved from component docs.
  * @return { string } Formatted string.
  */
 function getProps( props = {} ) {
@@ -90,7 +89,7 @@ function getProps( props = {} ) {
 		'Name | Type | Default | Description',
 		'--- | --- | --- | ---',
 	];
-	Object.keys( props ).map( ( key ) => {
+	Object.keys( props ).forEach( ( key ) => {
 		lines.push( getProp( key, props[ key ] ) );
 	} );
 
@@ -100,7 +99,7 @@ function getProps( props = {} ) {
 /**
  * Get a single prop's type.
  *
- * @param { object } type Prop type as retrieved from component docs.
+ * @param {Object} type Prop type as retrieved from component docs.
  * @return { string } Formatted string.
  */
 function getPropType( type ) {

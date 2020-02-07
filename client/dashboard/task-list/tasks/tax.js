@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -82,11 +81,11 @@ class Tax extends Component {
 
 		// Show the success screen if all requirements are satisfied from the beginning.
 		if (
-			null !== stepIndex &&
+			stepIndex !== null &&
 			! pluginsToActivate.length &&
-				isCompleteAddress &&
-				isJetpackConnected &&
-				this.isTaxJarSupported()
+			isCompleteAddress &&
+			isJetpackConnected &&
+			this.isTaxJarSupported()
 		) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( { stepIndex: null } );
@@ -94,7 +93,7 @@ class Tax extends Component {
 			return;
 		}
 
-		if ( 'store_location' === currentStepKey && isCompleteAddress ) {
+		if ( currentStepKey === 'store_location' && isCompleteAddress ) {
 			this.completeStep();
 		}
 
@@ -106,18 +105,18 @@ class Tax extends Component {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
 				automatedTaxEnabled:
-					'yes' === taxSettings.wc_connect_taxes_enabled
+					taxSettings.wc_connect_taxes_enabled === 'yes'
 						? true
 						: false,
 			} );
 			/* eslint-enable react/no-did-update-set-state */
 		}
 
-		if ( 'connect' === currentStepKey && isJetpackConnected ) {
+		if ( currentStepKey === 'connect' && isJetpackConnected ) {
 			this.completeStep();
 		}
 
-		if ( isPending && 'yes' === woocommerce_calc_taxes ) {
+		if ( isPending && woocommerce_calc_taxes === 'yes' ) {
 			window.location = getAdminLink(
 				'admin.php?page=wc-settings&tab=tax&section=standard'
 			);
@@ -153,7 +152,7 @@ class Tax extends Component {
 	configureTaxRates() {
 		const { generalSettings, updateSettings } = this.props;
 
-		if ( 'yes' !== generalSettings.woocommerce_calc_taxes ) {
+		if ( generalSettings.woocommerce_calc_taxes !== 'yes' ) {
 			this.setState( { isPending: true } );
 			updateSettings( {
 				general: {
@@ -327,8 +326,8 @@ class Tax extends Component {
 							{ __( 'Configure', 'woocommerce-admin' ) }
 						</Button>
 						<p>
-							{ 'yes' !==
-								generalSettings.woocommerce_calc_taxes &&
+							{ generalSettings.woocommerce_calc_taxes !==
+								'yes' &&
 								interpolateComponents( {
 									mixedString: __(
 										/*eslint-disable max-len*/

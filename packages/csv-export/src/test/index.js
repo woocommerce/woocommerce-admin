@@ -1,4 +1,4 @@
-/** @format */
+/* eslint-disable jest/no-mocks-import */
 /**
  * External dependencies
  */
@@ -65,6 +65,7 @@ describe( 'downloadCSVFile', () => {
 		const fileName = 'test.csv';
 		downloadCSVFile( fileName, mockCSVData );
 
+		// eslint-disable-next-line no-undef
 		const blob = new Blob( [ mockCSVData ], {
 			type: 'text/csv;charset=utf-8',
 		} );

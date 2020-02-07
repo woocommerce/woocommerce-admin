@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -61,7 +60,7 @@ class Control extends Component {
 	onBlur() {
 		const { onBlur } = this.props;
 
-		if ( 'function' === typeof onBlur ) {
+		if ( typeof onBlur === 'function' ) {
 			onBlur();
 		}
 
@@ -204,7 +203,7 @@ class Control extends Component {
 					'woocommerce-select-control__control',
 					className,
 					{
-						empty: ! query || 0 === query.length,
+						empty: ! query || query.length === 0,
 						'is-active': isActive,
 						'has-tags': inlineTags && hasTags,
 						'with-value': this.getInputValue().length,

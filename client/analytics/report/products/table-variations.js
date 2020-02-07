@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -68,13 +67,13 @@ export default class VariationsReportTable extends Component {
 				isSortable: true,
 				isNumeric: true,
 			},
-			'yes' === manageStock
+			manageStock === 'yes'
 				? {
 						label: __( 'Status', 'woocommerce-admin' ),
 						key: 'stock_status',
 				  }
 				: null,
-			'yes' === manageStock
+			manageStock === 'yes'
 				? {
 						label: __( 'Stock', 'woocommerce-admin' ),
 						key: 'stock',
@@ -139,7 +138,7 @@ export default class VariationsReportTable extends Component {
 					),
 					value: orders_count,
 				},
-				'yes' === manageStock
+				manageStock === 'yes'
 					? {
 							display: isLowStock(
 								stock_status,
@@ -159,7 +158,7 @@ export default class VariationsReportTable extends Component {
 							value: stockStatuses[ stock_status ],
 					  }
 					: null,
-				'yes' === manageStock
+				manageStock === 'yes'
 					? {
 							display: stock_quantity,
 							value: stock_quantity,

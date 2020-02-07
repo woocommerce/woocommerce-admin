@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -28,7 +27,7 @@ class ProductsReport extends Component {
 			isSingleProductVariable,
 		} = this.props;
 		const isCompareView =
-			'compare-products' === query.filter &&
+			query.filter === 'compare-products' &&
 			query.products &&
 			query.products.split( ',' ).length > 1;
 
@@ -70,9 +69,9 @@ class ProductsReport extends Component {
 			...query,
 		};
 
-		if ( 'item-comparison' === mode ) {
+		if ( mode === 'item-comparison' ) {
 			chartQuery.segmentby =
-				'products' === compareObject ? 'product' : 'variation';
+				compareObject === 'products' ? 'product' : 'variation';
 		}
 
 		return (
@@ -140,7 +139,7 @@ export default compose(
 		const isSingleProductView =
 			! query.search &&
 			query.products &&
-			1 === query.products.split( ',' ).length;
+			query.products.split( ',' ).length === 1;
 		if ( isRequesting ) {
 			return {
 				query: {
@@ -162,7 +161,7 @@ export default compose(
 			const isVariable =
 				products &&
 				products.get( productId ) &&
-				'variable' === products.get( productId ).type;
+				products.get( productId ).type === 'variable';
 			const isProductsRequesting = isGetItemsRequesting(
 				'products',
 				includeArgs

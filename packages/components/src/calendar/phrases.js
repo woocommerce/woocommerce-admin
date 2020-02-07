@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -47,8 +46,7 @@ export default {
 		'woocommerce-admin'
 	),
 	keyboardNavigationInstructions: __(
-		`Press the down arrow key to interact with the calendar and
-  select a date.`,
+		'Press the down arrow key to interact with the calendar and select a date.',
 		'woocommerce-admin'
 	),
 	chooseAvailableStartDate: ( { date } ) =>

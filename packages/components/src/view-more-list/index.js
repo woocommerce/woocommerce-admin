@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -13,7 +12,7 @@ import Tag from '../tag';
 /**
  * This component displays a 'X more' button that displays a list of items on a popover when clicked.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const ViewMoreList = ( { items } ) => {
 	return (

@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * Internal dependencies
  */
@@ -81,7 +79,7 @@ export function getUnapprovedReviews( select ) {
 		isGetReviewsRequesting,
 	} = select( 'wc-api' );
 	const reviewsEnabled = getSetting( 'reviewsEnabled' );
-	if ( 'yes' === reviewsEnabled ) {
+	if ( reviewsEnabled === 'yes' ) {
 		const actionableReviewsQuery = {
 			page: 1,
 			// @todo we are not using this review, so when the endpoint supports it,

@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -12,6 +10,10 @@ import apiFetch from '@wordpress/api-fetch';
  */
 import { computeSuggestionMatch } from './utils';
 import Flag from '../../flag';
+
+/**
+ * @typedef {Object} Completer
+ */
 
 // Cache countries to avoid repeated requests.
 let allCountries = null;

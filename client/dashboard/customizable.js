@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -154,7 +153,7 @@ class CustomizableDashboard extends Component {
 
 			const eventProps = {
 				key: movedSection.key,
-				direction: 0 < change ? 'down' : 'up',
+				direction: change > 0 ? 'down' : 'up',
 			};
 			recordEvent( 'dash_section_order_change', eventProps );
 		} else {
@@ -166,10 +165,10 @@ class CustomizableDashboard extends Component {
 	renderAddMore() {
 		const { sections } = this.state;
 		const hiddenSections = sections.filter(
-			( section ) => false === section.isVisible
+			( section ) => section.isVisible === false
 		);
 
-		if ( 0 === hiddenSections.length ) {
+		if ( hiddenSections.length === 0 ) {
 			return null;
 		}
 
@@ -339,12 +338,11 @@ export default compose(
 			withSelectData.taskListCompleted =
 				visibleTasks.length === completedTasks.length;
 			withSelectData.taskListHidden =
-				'yes' ===
 				get(
 					getOptions( [ 'woocommerce_task_list_hidden' ] ),
 					[ 'woocommerce_task_list_hidden' ],
 					'no'
-				);
+				) === 'yes';
 		}
 
 		return withSelectData;

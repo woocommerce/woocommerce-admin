@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -63,7 +62,7 @@ class FilterPicker extends Component {
 		const { query: nextQuery, config } = this.props;
 		if ( prevQuery[ config.param ] !== nextQuery[ [ config.param ] ] ) {
 			const selectedFilter = this.getFilter();
-			if ( selectedFilter && 'Search' === selectedFilter.component ) {
+			if ( selectedFilter && selectedFilter.component === 'Search' ) {
 				/* eslint-disable react/no-did-update-set-state */
 				this.setState( { nav: selectedFilter.path || [] } );
 				/* eslint-enable react/no-did-update-set-state */
@@ -94,7 +93,7 @@ class FilterPicker extends Component {
 	}
 
 	getButtonLabel( selectedFilter ) {
-		if ( 'Search' === selectedFilter.component ) {
+		if ( selectedFilter.component === 'Search' ) {
 			const { selectedTag } = this.state;
 			return [
 				selectedTag && selectedTag.label,

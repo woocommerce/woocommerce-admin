@@ -1,4 +1,3 @@
-/** @format */
 /**
  * Internal dependencies
  */
@@ -10,7 +9,7 @@ const query = {};
 const compareFilter = {
 	type: 'products',
 	param: 'product',
-	getLabels: function() {
+	getLabels() {
 		return Promise.resolve( [] );
 	},
 	labels: {

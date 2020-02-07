@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -14,6 +13,6 @@ export default ( name ) => {
 
 	return createStore(
 		reducer,
-		devTools && devTools( { name: name, instanceId: name } )
+		devTools && devTools( { name, instanceId: name } )
 	);
 };

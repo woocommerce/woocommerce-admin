@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -663,7 +662,7 @@ describe( 'getLastPeriod', () => {
 			).toBe( true );
 		} );
 
-		it( 'should return correct values for previous_period', () => {
+		it( 'should return correct values for previous_year', () => {
 			const dateValue = getLastPeriod( 'year', 'previous_year' );
 			const twoYearsAgoEnd = twoYearsAgoStart.clone().endOf( 'year' );
 

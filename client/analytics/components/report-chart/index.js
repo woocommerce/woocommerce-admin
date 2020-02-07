@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -180,7 +179,7 @@ export class ReportChart extends Component {
 				title={ selectedChart.label }
 				tooltipLabelFormat={ formats.tooltipLabelFormat }
 				tooltipTitle={
-					( 'time-comparison' === mode && selectedChart.label ) ||
+					( mode === 'time-comparison' && selectedChart.label ) ||
 					null
 				}
 				tooltipValueFormat={ getTooltipValueFormat(
@@ -236,7 +235,7 @@ export class ReportChart extends Component {
 
 	render() {
 		const { mode } = this.props;
-		if ( 'item-comparison' === mode ) {
+		if ( mode === 'item-comparison' ) {
 			return this.renderItemComparison();
 		}
 		return this.renderTimeComparison();
@@ -375,7 +374,7 @@ export default compose(
 			advancedFilters,
 		} );
 
-		if ( 'item-comparison' === chartMode ) {
+		if ( chartMode === 'item-comparison' ) {
 			return {
 				...newProps,
 				primaryData,

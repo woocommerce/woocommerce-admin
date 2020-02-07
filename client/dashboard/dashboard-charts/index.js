@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -49,7 +48,7 @@ class DashboardCharts extends Component {
 		return () => {
 			this.setState( { chartType } );
 			const userDataFields = {
-				[ 'dashboard_chart_type' ]: chartType,
+				dashboard_chart_type: chartType,
 			};
 			this.props.updateCurrentUserData( userDataFields );
 			recordEvent( 'dash_charts_type_toggle', { chart_type: chartType } );
@@ -158,7 +157,7 @@ class DashboardCharts extends Component {
 	setInterval = ( interval ) => {
 		this.setState( { interval }, () => {
 			const userDataFields = {
-				[ 'dashboard_chart_interval' ]: this.state.interval,
+				dashboard_chart_interval: this.state.interval,
 			};
 			this.props.updateCurrentUserData( userDataFields );
 			recordEvent( 'dash_charts_interval', { interval } );

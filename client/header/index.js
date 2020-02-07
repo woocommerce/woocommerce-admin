@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -54,7 +53,7 @@ class Header extends Component {
 		const isScrolled = window.pageYOffset > this.threshold - 20;
 		if ( isScrolled !== this.state.isScrolled ) {
 			this.setState( {
-				isScrolled: isScrolled,
+				isScrolled,
 			} );
 		}
 	}

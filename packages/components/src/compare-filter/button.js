@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -10,7 +8,7 @@ import { Button, Tooltip } from '@wordpress/components';
 /**
  * A button used when comparing items, if `count` is less than 2 a hoverable tooltip is added with `helpText`.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const CompareButton = ( {
 	className,

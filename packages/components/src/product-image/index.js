@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -16,7 +15,7 @@ import { placeholderWhiteBackground as placeholder } from './placeholder';
  * If no image can be found, a placeholder matching the front-end image
  * placeholder will be displayed.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const ProductImage = ( {
 	product,

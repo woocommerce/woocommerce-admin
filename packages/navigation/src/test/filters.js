@@ -1,4 +1,3 @@
-/** @format */
 /**
  * Internal dependencies
  */
@@ -59,18 +58,21 @@ describe( 'getActiveFiltersFromQuery', () => {
 		expect( activeFilters.length ).toBe( 3 );
 
 		// with_select
+		// eslint-disable-next-line camelcase
 		const with_select = activeFilters[ 0 ];
 		expect( with_select.key ).toBe( 'with_select' );
 		expect( with_select.rule ).toBe( 'is' );
 		expect( with_select.value ).toBe( 'pending' );
 
 		// with_search
+		// eslint-disable-next-line camelcase
 		const with_search = activeFilters[ 1 ];
 		expect( with_search.key ).toBe( 'with_search' );
 		expect( with_search.rule ).toBe( 'includes' );
 		expect( with_search.value ).toEqual( '1,2,3' );
 
 		// with_search
+		// eslint-disable-next-line camelcase
 		const with_no_rules = activeFilters[ 2 ];
 		expect( with_no_rules.key ).toBe( 'with_no_rules' );
 		expect( with_no_rules.rule ).toBeUndefined();

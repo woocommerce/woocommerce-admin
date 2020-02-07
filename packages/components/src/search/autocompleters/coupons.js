@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -11,6 +10,10 @@ import interpolateComponents from 'interpolate-components';
  * Internal dependencies
  */
 import { computeSuggestionMatch } from './utils';
+
+/**
+ * @typedef {Object} Completer
+ */
 
 /**
  * A coupon completer.
@@ -59,7 +62,7 @@ export default {
 		);
 		const codeOption = {
 			key: 'code',
-			label: label,
+			label,
 			value: { id: query, code: query },
 		};
 

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -137,7 +136,7 @@ class StorePerformance extends Component {
 
 		const { compare } = getDateParamsFromQuery( query );
 		const prevLabel =
-			'previous_period' === compare
+			compare === 'previous_period'
 				? __( 'Previous Period:', 'woocommerce-admin' )
 				: __( 'Previous Year:', 'woocommerce-admin' );
 		return (
@@ -168,7 +167,7 @@ class StorePerformance extends Component {
 									chart: primaryItem.chart,
 								} ) ) ||
 							'';
-						const isCurrency = 'currency' === primaryItem.format;
+						const isCurrency = primaryItem.format === 'currency';
 
 						const delta = calculateDelta(
 							primaryItem.value,

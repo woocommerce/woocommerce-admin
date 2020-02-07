@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -61,7 +59,7 @@ class Payments extends Component {
 			step = difference( methods, configured )[ 0 ] || '';
 			showIndividualConfigs = true;
 			const stepsLeft = difference( methods, configured ).length;
-			if ( 0 === stepsLeft ) {
+			if ( stepsLeft === 0 ) {
 				this.state = {
 					step: 'done',
 					methodRequestPending: false,
@@ -69,7 +67,7 @@ class Payments extends Component {
 				this.completeTask();
 				return;
 			}
-		} else if ( 1 === installed && methods.length > 0 ) {
+		} else if ( installed === 1 && methods.length > 0 ) {
 			// Methods have been installed but not configured yet.
 			step = methods[ 0 ];
 			showIndividualConfigs = true;
@@ -157,7 +155,7 @@ class Payments extends Component {
 	completePluginInstall() {
 		const { completed } = this.props;
 		this.props.updateOptions( {
-			[ 'woocommerce_task_list_payments' ]: {
+			woocommerce_task_list_payments: {
 				completed: completed || false,
 				installed: 1,
 				methods: this.getMethodsToConfigure(),
@@ -175,14 +173,14 @@ class Payments extends Component {
 		const stepsLeft = difference( methods, configured );
 
 		this.props.updateOptions( {
-			[ 'woocommerce_task_list_payments' ]: {
+			woocommerce_task_list_payments: {
 				...options.woocommerce_task_list_payments,
 				configured,
-				completed: 0 === stepsLeft.length ? 1 : 0,
+				completed: stepsLeft.length === 0 ? 1 : 0,
 			},
 		} );
 
-		if ( 0 === stepsLeft.length ) {
+		if ( stepsLeft.length === 0 ) {
 			this.completeTask();
 		}
 	}
@@ -550,7 +548,7 @@ class Payments extends Component {
 									isVertical
 									isPending={
 										methodRequestPending ||
-										'install' === step
+										step === 'install'
 									}
 									currentStep={ step }
 									steps={ this.getSteps() }

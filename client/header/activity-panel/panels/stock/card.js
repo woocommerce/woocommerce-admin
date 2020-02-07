@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -164,7 +163,7 @@ class ProductStockCard extends Component {
 		);
 		let subtitle = null;
 
-		if ( 'variation' === product.type ) {
+		if ( product.type === 'variation' ) {
 			subtitle = Object.values( product.attributes )
 				.map( ( attr ) => attr.option )
 				.join( ', ' );

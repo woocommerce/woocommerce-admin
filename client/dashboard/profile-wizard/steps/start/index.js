@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -54,7 +53,7 @@ class Start extends Component {
 			tosAccepted
 		) {
 			// Don't track event again if they revisit the start page.
-			if ( 'already-installed' !== profileItems.plugins ) {
+			if ( profileItems.plugins !== 'already-installed' ) {
 				recordEvent(
 					'wcadmin_storeprofiler_already_installed_plugins',
 					{}
@@ -240,7 +239,7 @@ class Start extends Component {
 				{ showUsageModal && (
 					<UsageModal
 						onContinue={ () =>
-							'wizard' === continueAction
+							continueAction === 'wizard'
 								? this.startWizard()
 								: this.skipWizard()
 						}
@@ -318,7 +317,7 @@ class Start extends Component {
 					</Button>
 				</Card>
 
-				{ 0 !== pluginsToInstall.length && (
+				{ pluginsToInstall.length !== 0 && (
 					<p>
 						<Button
 							isLink

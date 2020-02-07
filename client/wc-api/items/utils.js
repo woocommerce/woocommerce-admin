@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -13,7 +11,7 @@ import { appendTimestamp, getCurrentDates } from 'lib/date';
  * Returns leaderboard data to render a leaderboard table.
  *
  * @param  {Objedt} options                 arguments
- * @param  {String} options.id              Leaderboard ID
+ * @param  {string} options.id              Leaderboard ID
  * @param  {Integer} options.per_page       Per page limit
  * @param  {Object} options.persisted_query Persisted query passed to endpoint
  * @param  {Object} options.query           Query parameters in the url
@@ -55,8 +53,8 @@ export function getLeaderboard( options ) {
  * Returns items based on a search query.
  *
  * @param  {Object}   select    Instance of @wordpress/select
- * @param  {String}   endpoint  Report API Endpoint
- * @param  {String[]} search    Array of search strings.
+ * @param  {string}   endpoint  Report API Endpoint
+ * @param  {string[]} search    Array of search strings.
  * @return {Object}   Object containing API request information and the matching items.
  */
 export function searchItemsByString( select, endpoint, search ) {

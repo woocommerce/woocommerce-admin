@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -13,7 +12,7 @@ import { withState, withInstanceId } from '@wordpress/compose';
  * This component can be used to show an item styled as a "tag", optionally with an `X` + "remove"
  * or with a popover that is shown on click.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const Tag = ( {
 	id,

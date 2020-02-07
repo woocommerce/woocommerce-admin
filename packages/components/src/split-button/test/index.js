@@ -1,7 +1,7 @@
+/* eslint-disable no-alert */
 /**
  * External dependencies
  *
- * @format
  */
 import Gridicon from 'gridicons';
 import renderer from 'react-test-renderer';
@@ -14,10 +14,12 @@ import SplitButton from '../';
 const controls = [
 	{
 		label: 'Up',
+		// eslint-disable-next-line no-undef
 		onClick: () => alert( 'Primary Up clicked' ),
 	},
 	{
 		label: 'Right',
+		// eslint-disable-next-line no-undef
 		onClick: () => alert( 'Primary Right clicked' ),
 	},
 ];

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -9,8 +8,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Add a dropdown to a report.
  *
- * @param {array} filters - set of filters in a report.
- * @return {array} amended set of filters.
+ * @param {Array} filters - set of filters in a report.
+ * @return {Array} amended set of filters.
  */
 const addCurrencyFilters = ( filters ) => {
 	return [
@@ -66,8 +65,8 @@ addFilter(
  * Add a column to a report table. Include a header and
  * manipulate each row to handle the added parameter.
  *
- * @param {object} reportTableData - table data.
- * @return {object} - table data.
+ * @param {Object} reportTableData - table data.
+ * @return {Object} - table data.
  */
 const addTableColumn = ( reportTableData ) => {
 	const includedReports = [
@@ -114,8 +113,8 @@ addFilter( 'woocommerce_admin_report_table', 'plugin-domain', addTableColumn );
  * Add 'currency' to the list of persisted queries so that the parameter remains
  * when navigating from report to report.
  *
- * @param {array} params - array of report slugs.
- * @return {array} - array of report slugs including 'currency'.
+ * @param {Array} params - array of report slugs.
+ * @return {Array} - array of report slugs including 'currency'.
  */
 const persistQueries = ( params ) => {
 	params.push( 'currency' );

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * Internal dependencies
  */
@@ -26,6 +25,7 @@ const validate = ( values ) => {
 	return errors;
 };
 
+// eslint-disable-next-line no-console
 const onSubmitCallback = ( values ) => console.log( values );
 const initialValues = {
 	firstName: '',

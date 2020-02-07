@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -26,7 +25,7 @@ export class Leaderboard extends Component {
 	getFormattedHeaders() {
 		return this.props.headers.map( ( header, i ) => {
 			return {
-				isLeftAligned: 0 === i,
+				isLeftAligned: i === 0,
 				hiddenByDefault: false,
 				isSortable: false,
 				key: header.label,
@@ -54,12 +53,13 @@ export class Leaderboard extends Component {
 
 	render() {
 		const { isRequesting, isError, totalRows, title } = this.props;
-		const rows = this.getFormattedRows();
 		const classes = 'woocommerce-leaderboard woocommerce-analytics__card';
 
 		if ( isError ) {
 			return <ReportError className={ classes } isError />;
 		}
+
+		const rows = this.getFormattedRows();
 
 		if ( ! isRequesting && rows.length === 0 ) {
 			return (

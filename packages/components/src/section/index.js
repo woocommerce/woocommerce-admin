@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -17,8 +16,8 @@ const Level = createContext( 2 );
  * (`h2`, `h3`, …) you can use `<H />` to create "section headings", which look to the parent `<Section />`s for the appropriate
  * heading level.
  *
- * @param { object } props -
- * @return { object } -
+ * @param {Object} props -
+ * @return {Object} -
  */
 export function H( props ) {
 	return (
@@ -34,7 +33,7 @@ export function H( props ) {
 /**
  * The section wrapper, used to indicate a sub-section (and change the header level context).
  *
- * @return { object } -
+ * @return {Object} -
  */
 export function Section( { component, children, ...props } ) {
 	const Component = component || 'div';
@@ -42,7 +41,7 @@ export function Section( { component, children, ...props } ) {
 		<Level.Consumer>
 			{ ( level ) => (
 				<Level.Provider value={ level + 1 }>
-					{ false === component ? (
+					{ component === false ? (
 						children
 					) : (
 						<Component { ...props }>{ children }</Component>

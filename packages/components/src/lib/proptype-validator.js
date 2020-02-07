@@ -1,5 +1,3 @@
-/** @format */
-
 export function validateComponent( component ) {
 	return ( props, propName, componentName ) => {
 		// Not a required prop, we can drop early.

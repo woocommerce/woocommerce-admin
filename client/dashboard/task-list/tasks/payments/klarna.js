@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -26,23 +25,22 @@ class Klarna extends Component {
 
 	continue() {
 		const slug =
-			'checkout' === this.props.plugin
+			this.props.plugin === 'checkout'
 				? 'klarna-checkout'
 				: 'klarna-payments';
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: slug,
 		} );
 		this.props.markConfigured( slug );
-		return;
 	}
 
 	render() {
 		const slug =
-			'checkout' === this.props.plugin
+			this.props.plugin === 'checkout'
 				? 'klarna-checkout'
 				: 'klarna-payments';
 		const section =
-			'checkout' === this.props.plugin ? 'kco' : 'klarna_payments';
+			this.props.plugin === 'checkout' ? 'kco' : 'klarna_payments';
 
 		const link = (
 			<Link

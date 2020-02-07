@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -17,7 +16,7 @@ import Link from '../link';
  */
 class List extends Component {
 	handleKeyDown( event, onClick ) {
-		if ( 'function' === typeof onClick && event.keyCode === ENTER ) {
+		if ( typeof onClick === 'function' && event.keyCode === ENTER ) {
 			onClick();
 		}
 	}
@@ -39,7 +38,7 @@ class List extends Component {
 						target,
 						title,
 					} = item;
-					const hasAction = 'function' === typeof onClick || href;
+					const hasAction = typeof onClick === 'function' || href;
 					const itemClassName = classnames(
 						'woocommerce-list__item',
 						itemClasses,
@@ -51,7 +50,7 @@ class List extends Component {
 
 					const innerTagProps = {
 						className: 'woocommerce-list__item-inner',
-						onClick: 'function' === typeof onClick ? onClick : null,
+						onClick: typeof onClick === 'function' ? onClick : null,
 						'aria-disabled': hasAction ? 'false' : null,
 						tabIndex: hasAction ? '0' : null,
 						role: hasAction ? 'menuitem' : null,
@@ -59,7 +58,7 @@ class List extends Component {
 							hasAction ? this.handleKeyDown( e, onClick ) : null,
 						target: href ? target : null,
 						type: href ? 'external' : null,
-						href: href,
+						href,
 					};
 
 					return (

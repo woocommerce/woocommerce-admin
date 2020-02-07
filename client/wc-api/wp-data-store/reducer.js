@@ -1,11 +1,10 @@
-/** @format */
-
 const defaultState = {
 	resources: {},
 };
 
 /**
  * Primary reducer for fresh-data apiclient data.
+ *
  * @param {Object} state The base state for fresh-data.
  * @param {Object} action Action object to be processed.
  * @return {Object} The new state, or the previous state if this action doesn't belong to fresh-data.

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -106,7 +105,7 @@ export class SelectControl extends Component {
 		// an array or string depending on the original value.
 		if ( Array.isArray( selected ) ) {
 			const isSelected = findIndex( selected, { key: option.key } );
-			if ( -1 === isSelected ) {
+			if ( isSelected === -1 ) {
 				onChange( newSelected, query );
 			}
 		} else if ( selected !== option.key ) {
@@ -118,7 +117,7 @@ export class SelectControl extends Component {
 		const { selectedIndex } = this.state;
 		const options = this.getOptions();
 		const nextSelectedIndex =
-			null !== selectedIndex
+			selectedIndex !== null
 				? ( selectedIndex === 0 ? options.length : selectedIndex ) - 1
 				: options.length - 1;
 
@@ -129,7 +128,7 @@ export class SelectControl extends Component {
 		const { selectedIndex } = this.state;
 		const options = this.getOptions();
 		const nextSelectedIndex =
-			null !== selectedIndex ? ( selectedIndex + 1 ) % options.length : 0;
+			selectedIndex !== null ? ( selectedIndex + 1 ) % options.length : 0;
 
 		this.setState( { selectedIndex: nextSelectedIndex } );
 	}
@@ -194,7 +193,7 @@ export class SelectControl extends Component {
 
 			// Merge label into keywords
 			let { keywords = [] } = option;
-			if ( 'string' === typeof option.label ) {
+			if ( typeof option.label === 'string' ) {
 				keywords = [ ...keywords, option.label ];
 			}
 
@@ -239,7 +238,7 @@ export class SelectControl extends Component {
 
 			// Get all options if `hideBeforeSearch` is enabled and query is not null.
 			const filteredOptions =
-				null !== query && ! query.length && ! hideBeforeSearch
+				query !== null && ! query.length && ! hideBeforeSearch
 					? searchOptions
 					: this.getFilteredOptions( searchOptions, query );
 
@@ -261,7 +260,7 @@ export class SelectControl extends Component {
 			event.target.value
 		);
 
-		if ( 1 === filteredOptions.length ) {
+		if ( filteredOptions.length === 1 ) {
 			this.selectOption( filteredOptions[ 0 ] );
 		}
 	}

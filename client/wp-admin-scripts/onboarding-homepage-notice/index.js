@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -40,7 +39,7 @@ const saveStarted = () => {
  */
 const saveCompleted = () => {
 	if (
-		null === document.querySelector( '.post-publish-panel__postpublish' )
+		document.querySelector( '.post-publish-panel__postpublish' ) === null
 	) {
 		const promise = new Promise( ( resolve ) => {
 			requestAnimationFrame( resolve );
@@ -65,7 +64,7 @@ const onboardingHomepageNotice = () => {
 	saveCompleted().then( () => {
 		const postId = document.querySelector( '#post_ID' ).value;
 		const notificationType =
-			null !== document.querySelector( '.components-snackbar__content' )
+			document.querySelector( '.components-snackbar__content' ) !== null
 				? 'snackbar'
 				: 'default';
 

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -128,7 +127,7 @@ class AdvancedFilters extends Component {
 		onAdvancedFilterAction( 'remove', activeFilters[ index ] );
 		activeFilters.splice( index, 1 );
 		this.setState( { activeFilters } );
-		if ( 0 === activeFilters.length ) {
+		if ( activeFilters.length === 0 ) {
 			const history = getHistory();
 			history.push( this.getUpdateHref( [] ) );
 		}
@@ -178,7 +177,7 @@ class AdvancedFilters extends Component {
 				filterConfig.input.options
 			);
 		}
-		if ( filterConfig.input && 'Search' === filterConfig.input.component ) {
+		if ( filterConfig.input && filterConfig.input.component === 'Search' ) {
 			newFilter.value = '';
 		}
 		this.setState( ( state ) => {
@@ -239,7 +238,7 @@ class AdvancedFilters extends Component {
 		const updateHref = this.getUpdateHref( activeFilters, match );
 		const updateDisabled =
 			'admin.php' + window.location.search === updateHref ||
-			0 === activeFilters.length;
+			activeFilters.length === 0;
 		const isEnglish = this.isEnglish();
 		return (
 			<Card
@@ -258,7 +257,7 @@ class AdvancedFilters extends Component {
 								className="woocommerce-filters-advanced__list-item"
 								key={ key }
 							>
-								{ 'SelectControl' === input.component && (
+								{ input.component === 'SelectControl' && (
 									<SelectFilter
 										className="woocommerce-filters-advanced__fieldset-item"
 										filter={ filter }
@@ -267,7 +266,7 @@ class AdvancedFilters extends Component {
 										isEnglish={ isEnglish }
 									/>
 								) }
-								{ 'Search' === input.component && (
+								{ input.component === 'Search' && (
 									<SearchFilter
 										className="woocommerce-filters-advanced__fieldset-item"
 										filter={ filter }
@@ -277,7 +276,7 @@ class AdvancedFilters extends Component {
 										query={ query }
 									/>
 								) }
-								{ 'Number' === input.component && (
+								{ input.component === 'Number' && (
 									<NumberFilter
 										className="woocommerce-filters-advanced__fieldset-item"
 										filter={ filter }
@@ -288,7 +287,7 @@ class AdvancedFilters extends Component {
 										currency={ currency }
 									/>
 								) }
-								{ 'Currency' === input.component && (
+								{ input.component === 'Currency' && (
 									<NumberFilter
 										className="woocommerce-filters-advanced__fieldset-item"
 										filter={ filter }
@@ -307,7 +306,7 @@ class AdvancedFilters extends Component {
 										currency={ currency }
 									/>
 								) }
-								{ 'Date' === input.component && (
+								{ input.component === 'Date' && (
 									<DateFilter
 										className="woocommerce-filters-advanced__fieldset-item"
 										filter={ filter }

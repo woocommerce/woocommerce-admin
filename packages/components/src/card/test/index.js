@@ -1,7 +1,5 @@
 /**
  * External dependencies
- *
- * @format
  */
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';

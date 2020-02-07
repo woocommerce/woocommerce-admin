@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -189,7 +187,7 @@ function activatePluginToResource( response, items ) {
 
 	const resources = {
 		[ resourceName ]: { data: items },
-		[ 'active-plugins' ]: { data: response.active },
+		'active-plugins': { data: response.active },
 	};
 	Object.keys( items ).forEach( ( key ) => {
 		const item = items[ key ];

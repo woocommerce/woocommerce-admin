@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -21,11 +20,11 @@ export default class CategoriesReport extends Component {
 	getChartMeta() {
 		const { query } = this.props;
 		const isCompareView =
-			'compare-categories' === query.filter &&
+			query.filter === 'compare-categories' &&
 			query.categories &&
 			query.categories.split( ',' ).length > 1;
 		const isSingleCategoryView =
-			'single_category' === query.filter && !! query.categories;
+			query.filter === 'single_category' && !! query.categories;
 
 		const mode =
 			isCompareView || isSingleCategoryView
@@ -50,7 +49,7 @@ export default class CategoriesReport extends Component {
 			...query,
 		};
 
-		if ( 'item-comparison' === mode ) {
+		if ( mode === 'item-comparison' ) {
 			chartQuery.segmentby = isSingleCategoryView
 				? 'product'
 				: 'category';

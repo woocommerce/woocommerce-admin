@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -155,7 +154,7 @@ class StoreAlerts extends Component {
 					...snoozeOptions,
 				] }
 				onChange={ ( value ) => {
-					if ( '0' === value ) {
+					if ( value === '0' ) {
 						return;
 					}
 
@@ -193,7 +192,7 @@ class StoreAlerts extends Component {
 					hasMultipleAlerts={ preloadAlertCount > 1 }
 				/>
 			);
-		} else if ( 0 === alerts.length ) {
+		} else if ( alerts.length === 0 ) {
 			return null;
 		}
 
@@ -205,8 +204,8 @@ class StoreAlerts extends Component {
 			'woocommerce-store-alerts',
 			'woocommerce-analytics__card',
 			{
-				'is-alert-error': 'error' === type,
-				'is-alert-update': 'update' === type,
+				'is-alert-error': type === 'error',
+				'is-alert-update': type === 'update',
 			}
 		);
 
@@ -223,7 +222,7 @@ class StoreAlerts extends Component {
 							<IconButton
 								icon="arrow-left-alt2"
 								onClick={ this.previousAlert }
-								disabled={ 0 === currentIndex }
+								disabled={ currentIndex === 0 }
 								label={ __(
 									'Previous Alert',
 									'woocommerce-admin'
@@ -287,7 +286,7 @@ export default compose(
 		};
 
 		// Filter out notes that may have been marked actioned or not delayed after the initial request
-		const filterNotes = ( note ) => 'unactioned' === note.status;
+		const filterNotes = ( note ) => note.status === 'unactioned';
 		const alerts = getNotes( alertsQuery ).filter( filterNotes );
 
 		const isLoading = isGetNotesRequesting( alertsQuery );

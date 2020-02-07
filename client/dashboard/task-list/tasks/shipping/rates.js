@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -39,19 +38,19 @@ class ShippingRates extends Component {
 		let restOfTheWorld = false;
 		let shippingCost = false;
 		shippingZones.map( ( zone ) => {
-			if ( 0 === zone.id ) {
+			if ( zone.id === 0 ) {
 				restOfTheWorld =
 					zone.toggleEnabled && values[ `${ zone.id }_enabled` ];
 			} else {
 				shippingCost =
-					'' !== values[ `${ zone.id }_rate` ] &&
+					values[ `${ zone.id }_rate` ] !== '' &&
 					parseFloat( values[ `${ zone.id }_rate` ] ) !==
 						parseFloat( 0 );
 			}
 
 			const flatRateMethods = zone.methods
 				? zone.methods.filter(
-						( method ) => 'flat_rate' === method.method_id
+						( method ) => method.method_id === 'flat_rate'
 				  )
 				: [];
 
@@ -115,7 +114,7 @@ class ShippingRates extends Component {
 	}
 
 	renderInputPrefix() {
-		if ( 0 === symbolPosition.indexOf( 'right' ) ) {
+		if ( symbolPosition.indexOf( 'right' ) === 0 ) {
 			return null;
 		}
 		return (
@@ -126,7 +125,7 @@ class ShippingRates extends Component {
 	}
 
 	renderInputSuffix( rate ) {
-		if ( 0 === symbolPosition.indexOf( 'right' ) ) {
+		if ( symbolPosition.indexOf( 'right' ) === 0 ) {
 			return (
 				<span className="woocommerce-shipping-rate__control-suffix">
 					{ symbol }
@@ -157,7 +156,7 @@ class ShippingRates extends Component {
 			const flatRateMethods =
 				zone.methods && zone.methods.length
 					? zone.methods.filter(
-							( method ) => 'flat_rate' === method.method_id
+							( method ) => method.method_id === 'flat_rate'
 					  )
 					: [];
 			const rate = flatRateMethods.length

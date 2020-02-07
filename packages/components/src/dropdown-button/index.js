@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -10,8 +9,8 @@ import classnames from 'classnames';
  * A button useful for a launcher of a dropdown component. The button is 100% width of its container and displays
  * single or multiple lines rendered as `<span/>` elments.
  *
- * @param { object } props Props passed to component.
- * @return { object } -
+ * @param {Object} props Props passed to component.
+ * @return {Object} -
  */
 const DropdownButton = ( props ) => {
 	const { labels, isOpen, ...otherProps } = props;

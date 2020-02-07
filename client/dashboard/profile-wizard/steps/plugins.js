@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -41,7 +40,7 @@ class Plugins extends Component {
 
 	componentDidMount() {
 		const { isJetpackConnected } = this.props;
-		if ( 0 === plugins.length && isJetpackConnected ) {
+		if ( plugins.length === 0 && isJetpackConnected ) {
 			return updateQueryString( { step: 'store-details' } );
 		}
 
@@ -110,7 +109,7 @@ class Plugins extends Component {
 		} = this.props;
 		const { step } = this.state;
 
-		if ( 0 === plugins.length && ! isJetpackConnected ) {
+		if ( plugins.length === 0 && ! isJetpackConnected ) {
 			return (
 				<Fragment>
 					<H className="woocommerce-profile-wizard__header-title">
@@ -134,7 +133,7 @@ class Plugins extends Component {
 		// Shows the "Activate & continue" button as busy during the request and redirect, so users see feedback.
 		const activateButtonBusy =
 			isRequesting ||
-			( ! isJetpackConnected && null !== jetpackConnectUrl );
+			( ! isJetpackConnected && jetpackConnectUrl !== null );
 
 		return (
 			<Fragment>
@@ -175,7 +174,7 @@ class Plugins extends Component {
 							</Button>
 						) }
 
-						{ ! hasErrors && 'activate' === step && (
+						{ ! hasErrors && step === 'activate' && (
 							<Button
 								isPrimary
 								isBusy={ activateButtonBusy }
@@ -226,7 +225,7 @@ export default compose(
 		let jetpackConnectUrlError = null;
 		if (
 			activatedPlugins.includes( 'jetpack' ) ||
-			( 0 === plugins.length && ! isJetpackConnected() ) ||
+			( plugins.length === 0 && ! isJetpackConnected() ) ||
 			( activatedPlugins.includes( 'woocommerce-services' ) &&
 				! isJetpackConnected() )
 		) {

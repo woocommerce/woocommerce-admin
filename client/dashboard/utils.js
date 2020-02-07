@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -43,9 +41,9 @@ export function getCurrencyRegion( countryState ) {
 /**
  * Gets the product IDs for items based on the product types and theme selected in the onboarding profiler.
  *
- * @param {object} profileItems Onboarding profile.
+ * @param {Object} profileItems Onboarding profile.
  * @param {bool} includeInstalledItems Include installed items in returned product IDs.
- * @return {array} Product Ids.
+ * @return {Array} Product Ids.
  */
 export function getProductIdsForCart(
 	profileItems,

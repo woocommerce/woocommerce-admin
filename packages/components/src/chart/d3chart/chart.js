@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -163,18 +161,21 @@ class D3Chart extends Component {
 		this.createTooltip( g.node(), params.getColor, params.visibleKeys );
 
 		drawAxis( g, params, scales, formats, margin, isRTL() );
+		// eslint-disable-next-line no-unused-expressions
 		chartType === 'line' &&
 			drawLines( g, data, params, scales, formats, this.tooltip );
+		// eslint-disable-next-line no-unused-expressions
 		chartType === 'bar' &&
 			drawBars( g, data, params, scales, formats, this.tooltip );
 	}
 
 	shouldBeCompact() {
 		const { data, chartType, width } = this.props;
-		const margin = this.getMargin();
+
 		if ( chartType !== 'bar' ) {
 			return false;
 		}
+		const margin = this.getMargin();
 		const widthWithoutMargins = width - margin.left - margin.right;
 		const columnsPerDate =
 			data && data.length ? Object.keys( data[ 0 ] ).length - 1 : 0;
@@ -200,10 +201,10 @@ class D3Chart extends Component {
 
 	getWidth() {
 		const { data, chartType, width } = this.props;
-		const margin = this.getMargin();
 		if ( chartType !== 'bar' ) {
 			return width;
 		}
+		const margin = this.getMargin();
 		const columnsPerDate =
 			data && data.length ? Object.keys( data[ 0 ] ).length - 1 : 0;
 		const minimumWidth = this.shouldBeCompact()

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -25,7 +24,7 @@ import { H, Section } from '../section';
  * Add a collection of report filters to a page. This uses `DatePicker` & `FilterPicker` for the "basic" filters, and `AdvancedFilters`
  * or a comparison card if "advanced" or "compare" are picked from `FilterPicker`.
  *
- * @return { object } -
+ * @return {Object} -
  */
 class ReportFilters extends Component {
 	constructor() {
@@ -48,7 +47,7 @@ class ReportFilters extends Component {
 			return null;
 		}
 
-		if ( 0 === query[ param ].indexOf( 'compare' ) ) {
+		if ( query[ param ].indexOf( 'compare' ) === 0 ) {
 			const filter = find( filters, { value: query[ param ] } );
 			if ( ! filter ) {
 				return null;
@@ -67,7 +66,7 @@ class ReportFilters extends Component {
 				</div>
 			);
 		}
-		if ( 'advanced' === query[ param ] ) {
+		if ( query[ param ] === 'advanced' ) {
 			return (
 				<div
 					key={ param }
@@ -129,6 +128,7 @@ class ReportFilters extends Component {
 									/>
 								);
 							}
+							return null;
 						} ) }
 					</div>
 					{ filters.map( this.renderCard ) }

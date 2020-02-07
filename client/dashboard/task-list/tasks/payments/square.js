@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -32,7 +31,7 @@ class Square extends Component {
 		const query = getQuery();
 		// Handle redirect back from Square
 		if ( query[ 'square-connect' ] ) {
-			if ( '1' === query[ 'square-connect' ] ) {
+			if ( query[ 'square-connect' ] === '1' ) {
 				recordEvent( 'tasklist_payment_connect_method', {
 					payment_method: 'square',
 				} );
@@ -41,22 +40,21 @@ class Square extends Component {
 					'success',
 					__( 'Square connected successfully.', 'woocommerce-admin' )
 				);
-				return;
 			}
 		}
 	}
 
 	componentDidUpdate( prevProps ) {
 		if (
-			false === prevProps.optionsIsRequesting &&
-			true === this.props.optionsIsRequesting
+			prevProps.optionsIsRequesting === false &&
+			this.props.optionsIsRequesting === true
 		) {
 			this.props.setRequestPending( true );
 		}
 
 		if (
-			true === prevProps.optionsIsRequesting &&
-			false === this.props.optionsIsRequesting
+			prevProps.optionsIsRequesting === true &&
+			this.props.optionsIsRequesting === false
 		) {
 			this.props.setRequestPending( false );
 		}

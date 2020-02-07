@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -33,7 +32,7 @@ import { recordEvent } from 'lib/tracks';
  */
 export class ReportSummary extends Component {
 	formatVal( val, type ) {
-		return 'currency' === type
+		return type === 'currency'
 			? formatCurrency( val )
 			: formatValue( type, val );
 	}
@@ -95,7 +94,7 @@ export class ReportSummary extends Component {
 						href={ href }
 						label={ label }
 						prevLabel={
-							'previous_period' === compare
+							compare === 'previous_period'
 								? __( 'Previous Period:', 'woocommerce-admin' )
 								: __( 'Previous Year:', 'woocommerce-admin' )
 						}

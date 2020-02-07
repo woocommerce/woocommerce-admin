@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -128,7 +127,7 @@ class Settings extends Component {
 	 * the config for construction of this component when re-navigating to
 	 * the settings page.
 	 *
-	 * @param {object} state - State
+	 * @param {Object} state - State
 	 */
 	persistChanges( state ) {
 		const settings = getSetting( 'wcAdminSettings', {} );
@@ -146,7 +145,7 @@ class Settings extends Component {
 		this.persistChanges( this.state );
 		this.props.updateSettings( { wc_admin: settings } );
 
-		if ( 'reset' === source ) {
+		if ( source === 'reset' ) {
 			recordEvent( 'analytics_settings_reset_defaults' );
 		} else {
 			const eventProps = transform(
@@ -176,7 +175,7 @@ class Settings extends Component {
 		const { checked, name, type, value } = e.target;
 		const { settings } = this.state;
 
-		if ( 'checkbox' === type ) {
+		if ( type === 'checkbox' ) {
 			if ( checked ) {
 				settings[ name ].push( value );
 			} else {

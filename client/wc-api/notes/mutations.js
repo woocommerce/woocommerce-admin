@@ -1,5 +1,3 @@
-/** @format */
-
 const updateNote = ( operations ) => ( noteId, noteFields ) => {
 	const resourceKey = 'note';
 	operations.update( [ resourceKey ], {

@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -11,7 +9,7 @@ import { get } from 'lodash';
 /**
  * Use the `Flag` component to display a country's flag using the operating system's emojis.
  *
- * @return { object } - React component.
+ * @return {Object} - React component.
  */
 const Flag = ( { code, order, className, size, hideFromScreenReader } ) => {
 	const classes = classnames( 'woocommerce-flag', className );

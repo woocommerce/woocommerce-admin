@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -36,19 +35,19 @@ class EmptyContent extends Component {
 
 	renderActionButtons( type ) {
 		const actionLabel =
-			'secondary' === type
+			type === 'secondary'
 				? this.props.secondaryActionLabel
 				: this.props.actionLabel;
 		const actionURL =
-			'secondary' === type
+			type === 'secondary'
 				? this.props.secondaryActionURL
 				: this.props.actionURL;
 		const actionCallback =
-			'secondary' === type
+			type === 'secondary'
 				? this.props.secondaryActionCallback
 				: this.props.actionCallback;
 
-		const isPrimary = 'secondary' === type ? false : true;
+		const isPrimary = type === 'secondary' ? false : true;
 
 		if ( actionURL && actionCallback ) {
 			return (

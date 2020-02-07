@@ -64,10 +64,10 @@ describe( 'textContent()', () => {
 
 	test( 'array component', () => {
 		const component = [
-			<h1>a</h1>,
+			<h1 key="1">a</h1>,
 			'b',
 			'c',
-			<div>
+			<div key="2">
 				<h2>x</h2>y
 			</div>,
 		];

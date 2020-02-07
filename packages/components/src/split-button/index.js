@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -15,7 +14,7 @@ import { noop } from 'lodash';
 /**
  * A component for displaying a button with a main action plus a secondary set of actions behind a menu toggle.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const SplitButton = ( {
 	isPrimary,

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -69,7 +68,7 @@ class TaskDashboard extends Component {
 		return getAllTasks( {
 			profileItems,
 			options: taskListPayments,
-			query: query,
+			query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
 		} ).filter( ( task ) => task.visible );
 	}

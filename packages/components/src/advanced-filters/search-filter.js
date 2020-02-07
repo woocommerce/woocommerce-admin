@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -72,7 +71,7 @@ class SearchFilter extends Component {
 	getScreenReaderText( filter, config ) {
 		const { selected } = this.state;
 
-		if ( 0 === selected.length ) {
+		if ( selected.length === 0 ) {
 			return '';
 		}
 

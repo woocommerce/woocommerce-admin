@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -12,7 +11,7 @@ const tracksDebug = debug( 'wc-admin:tracks' );
 /**
  * Record an event to Tracks
  *
- * @param {String} eventName The name of the event to record, don't include the wcadmin_ prefix
+ * @param {string} eventName The name of the event to record, don't include the wcadmin_ prefix
  * @param {Object} eventProperties event properties to include in the event
  */
 
@@ -21,8 +20,8 @@ export function recordEvent( eventName, eventProperties ) {
 
 	if (
 		! window.wcTracks ||
-		'function' !== typeof window.wcTracks.recordEvent ||
-		'development' === process.env.NODE_ENV
+		typeof window.wcTracks.recordEvent !== 'function' ||
+		process.env.NODE_ENV === 'development'
 	) {
 		return false;
 	}
@@ -31,11 +30,11 @@ export function recordEvent( eventName, eventProperties ) {
 }
 
 const tracksQueue = {
-	localStorageKey: function() {
+	localStorageKey() {
 		return 'tracksQueue';
 	},
 
-	clear: function() {
+	clear() {
 		if ( ! window.localStorage ) {
 			return;
 		}
@@ -43,7 +42,7 @@ const tracksQueue = {
 		window.localStorage.removeItem( tracksQueue.localStorageKey() );
 	},
 
-	get: function() {
+	get() {
 		if ( ! window.localStorage ) {
 			return [];
 		}
@@ -58,7 +57,7 @@ const tracksQueue = {
 		return items;
 	},
 
-	add: function( ...args ) {
+	add( ...args ) {
 		if ( ! window.localStorage ) {
 			// If unable to queue, run it now.
 			tracksDebug( 'Unable to queue, running now', { args } );
@@ -79,7 +78,7 @@ const tracksQueue = {
 		);
 	},
 
-	process: function() {
+	process() {
 		if ( ! window.localStorage ) {
 			return; // Not possible.
 		}
@@ -90,7 +89,7 @@ const tracksQueue = {
 		tracksDebug( 'Processing items in queue.', items );
 
 		items.forEach( ( item ) => {
-			if ( 'object' === typeof item ) {
+			if ( typeof item === 'object' ) {
 				tracksDebug( 'Processing item in queue.', item );
 				recordEvent.apply( null, item.args || undefined );
 			}
@@ -106,7 +105,7 @@ const tracksQueue = {
  * `window.location`. This is an example of a race condition that should be avoided by enqueueing the event,
  * and therefore running it on the next pageview.
  *
- * @param {String} eventName The name of the event to record, don't include the wcadmin_ prefix
+ * @param {string} eventName The name of the event to record, don't include the wcadmin_ prefix
  * @param {Object} eventProperties event properties to include in the event
  */
 
@@ -117,7 +116,7 @@ export function queueRecordEvent( eventName, eventProperties ) {
 /**
  * Record a page view to Tracks
  *
- * @param {String} path the page/path to record a page view for
+ * @param {string} path the page/path to record a page view for
  * @param {Object} extraProperties extra event properties to include in the event
  */
 

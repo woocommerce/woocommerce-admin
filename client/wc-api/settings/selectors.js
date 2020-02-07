@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -58,7 +56,7 @@ const isGetSettingsRequesting = ( getResource ) => ( group ) => {
 	}
 
 	// This selector is used by other "groups", so return early if not looking at wc_admin settings.
-	if ( 'wc_admin' !== group ) {
+	if ( group !== 'wc_admin' ) {
 		return lastRequested > lastReceived;
 	}
 

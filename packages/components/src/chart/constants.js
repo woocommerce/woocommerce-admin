@@ -1,5 +1,3 @@
-/** @format */
-
 // This is the max number of items that can be selected/shown on a chart at one time.
 // If this number changes, the color scale also needs to be adjusted.
 export const selectionLimit = 5;

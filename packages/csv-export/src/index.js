@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -36,7 +35,7 @@ function getCSVRows( rows ) {
 						.map( ( rowItem ) => {
 							if (
 								undefined === rowItem.value ||
-								null === rowItem.value
+								rowItem.value === null
 							) {
 								return '';
 							}
@@ -54,7 +53,7 @@ function getCSVRows( rows ) {
  *
  * @param   {Array.<Object>}        headers    Object with table header information
  * @param   {Array.Array.<Object>}  rows       Object with table rows information
- * @returns {String}                           Table contents in a CSV format
+ * @return {string}                           Table contents in a CSV format
  */
 export function generateCSVDataFromTable( headers, rows ) {
 	return [ getCSVHeaders( headers ), getCSVRows( rows ) ]
@@ -66,9 +65,9 @@ export function generateCSVDataFromTable( headers, rows ) {
  * Generates a file name for CSV files based on the provided name, the current date
  * and the provided params, which are all appended with hyphens.
  *
- * @param   {String}  [name='']     Name of the file
+ * @param   {string}  [name='']     Name of the file
  * @param   {Object}  [params={}]   Object of key-values to append to the file name
- * @returns {String}                Formatted file name
+ * @return {string}                Formatted file name
  */
 export function generateCSVFileName( name = '', params = {} ) {
 	const fileNameSections = [
@@ -92,10 +91,11 @@ export function generateCSVFileName( name = '', params = {} ) {
 /**
  * Downloads a CSV file with the given file name and contents
  *
- * @param   {String}  fileName     Name of the file to download
- * @param   {String}  content      Contents of the file to download
+ * @param   {string}  fileName     Name of the file to download
+ * @param   {string}  content      Contents of the file to download
  */
 export function downloadCSVFile( fileName, content ) {
+	// eslint-disable-next-line no-undef
 	const blob = new Blob( [ content ], { type: 'text/csv;charset=utf-8' } );
 
 	saveAs( blob, fileName );

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -63,7 +62,7 @@ class InboxNoteCard extends Component {
 			<VisibilitySensor onChange={ this.onVisible }>
 				<ActivityCard
 					className={ classnames( 'woocommerce-inbox-activity-card', {
-						actioned: 'unactioned' !== note.status,
+						actioned: note.status !== 'unactioned',
 					} ) }
 					title={ note.title }
 					date={ note.date_created }

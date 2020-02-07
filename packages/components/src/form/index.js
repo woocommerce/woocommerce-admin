@@ -59,7 +59,7 @@ class Form extends Component {
 
 		// Handle native events.
 		if ( value.target ) {
-			if ( 'checkbox' === value.target.type ) {
+			if ( value.target.type === 'checkbox' ) {
 				this.setValue( name, ! values[ name ] );
 			} else {
 				this.setValue( name, value.target.value );

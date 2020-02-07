@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -31,7 +30,7 @@ class DatePickerContent extends Component {
 		 * then a preset should be selected. This logic selects the default, otherwise
 		 * `custom` value for period will result in no selection.
 		 */
-		if ( 'period' === tab && 'custom' === period ) {
+		if ( tab === 'period' && period === 'custom' ) {
 			onUpdate( { period: 'today' } );
 		}
 	}
@@ -86,7 +85,7 @@ class DatePickerContent extends Component {
 						className="woocommerce-filters-date__tabs"
 						activeClass="is-active"
 						initialTabName={
-							'custom' === period ? 'custom' : 'period'
+							period === 'custom' ? 'custom' : 'period'
 						}
 						onSelect={ this.onTabSelect }
 					>

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -17,7 +16,7 @@ import Link from '../link';
 /**
  * A component to show a value, label, and an optional change percentage. Can also act as a link to a specific report focus.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const SummaryNumber = ( {
 	delta,

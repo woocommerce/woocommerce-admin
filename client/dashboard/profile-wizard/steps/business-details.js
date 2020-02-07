@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -86,7 +85,7 @@ class BusinessDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: product_count,
-			already_selling: 'no' !== selling_venues,
+			already_selling: selling_venues !== 'no',
 			currency: currency.code,
 			revenue,
 			used_platform: other_platform,
@@ -113,7 +112,7 @@ class BusinessDetails extends Component {
 		await updateProfileItems( updates );
 
 		if ( ! isError ) {
-			if ( 0 === businessExtensions.length ) {
+			if ( businessExtensions.length === 0 ) {
 				goToNextStep();
 				return;
 			}
@@ -137,7 +136,7 @@ class BusinessDetails extends Component {
 		const errors = {};
 
 		Object.keys( values ).map( ( name ) => {
-			if ( 'other_platform' === name ) {
+			if ( name === 'other_platform' ) {
 				if (
 					! values.other_platform.length &&
 					[ 'other', 'brick-mortar-other' ].includes(
@@ -149,7 +148,7 @@ class BusinessDetails extends Component {
 						'woocommerce-admin'
 					);
 				}
-			} else if ( 'revenue' === name ) {
+			} else if ( name === 'revenue' ) {
 				if (
 					! values.revenue.length &&
 					[
@@ -188,7 +187,7 @@ class BusinessDetails extends Component {
 		const region = getCurrencyRegion(
 			this.props.settings.woocommerce_default_country
 		);
-		if ( 'US' === region ) {
+		if ( region === 'US' ) {
 			return value;
 		}
 
@@ -248,7 +247,7 @@ class BusinessDetails extends Component {
 		const { isInstallingExtensions } = this.state;
 		const extensions = this.getBusinessExtensions( values );
 
-		if ( 0 === extensions.length ) {
+		if ( extensions.length === 0 ) {
 			return null;
 		}
 
@@ -513,7 +512,7 @@ class BusinessDetails extends Component {
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
 					// Show extensions when the currently selling elsewhere checkbox has been answered.
-					const showExtensions = '' !== values.selling_venues;
+					const showExtensions = values.selling_venues !== '';
 					return (
 						<Fragment>
 							<H className="woocommerce-profile-wizard__header-title">

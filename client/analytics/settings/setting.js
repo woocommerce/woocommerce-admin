@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -96,7 +95,7 @@ class Setting extends Component {
 	handleInputCallback = () => {
 		const { createNotice, callback } = this.props;
 
-		if ( 'function' !== typeof callback ) {
+		if ( typeof callback !== 'function' ) {
 			return;
 		}
 

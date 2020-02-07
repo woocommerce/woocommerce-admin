@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -66,7 +65,7 @@ class TableCard extends Component {
 	getShowCols( headers ) {
 		return headers
 			.map( ( { key, visible } ) => {
-				if ( 'undefined' === typeof visible || visible ) {
+				if ( typeof visible === 'undefined' || visible ) {
 					return key;
 				}
 				return false;
@@ -229,8 +228,8 @@ class TableCard extends Component {
 				) }
 
 				<Pagination
-					key={ parseInt( query.paged ) || 1 }
-					page={ parseInt( query.paged ) || 1 }
+					key={ parseInt( query.paged, 10 ) || 1 }
+					page={ parseInt( query.paged, 10 ) || 1 }
 					perPage={ rowsPerPage }
 					total={ totalRows }
 					onPageChange={ this.onPageChange }

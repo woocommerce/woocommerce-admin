@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -119,8 +118,6 @@ class DateRange extends Component {
 			if ( focusRegion ) {
 				focusRegion.focus();
 			}
-
-			return;
 		}
 	}
 
@@ -313,6 +310,7 @@ DateRange.propTypes = {
 	 * A ref that the DateRange can lose focus to.
 	 * See: https://github.com/woocommerce/woocommerce-admin/pull/2929.
 	 */
+	// eslint-disable-next-line no-undef
 	losesFocusTo: PropTypes.instanceOf( Element ),
 };
 

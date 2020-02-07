@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -31,7 +30,7 @@ class WordPressNotices extends Component {
 
 	componentDidMount() {
 		this.handleWooCommerceEmbedPage();
-		if ( 'complete' === document.readyState ) {
+		if ( document.readyState === 'complete' ) {
 			this.initialize();
 		} else {
 			window.addEventListener( 'DOMContentLoaded', this.initialize );
@@ -61,7 +60,7 @@ class WordPressNotices extends Component {
 		const headerEnds = document.getElementsByClassName( 'wp-header-end' );
 		for ( let i = 0; i < headerEnds.length; i++ ) {
 			const headerEnd = headerEnds.item( i );
-			if ( 'woocommerce-layout__notice-catcher' !== headerEnd.id ) {
+			if ( headerEnd.id !== 'woocommerce-layout__notice-catcher' ) {
 				headerEnd.className = '';
 				headerEnd.id = 'wp__notice-list-uncollapsed';
 			}
@@ -87,7 +86,7 @@ class WordPressNotices extends Component {
 		let count = 0;
 
 		for ( const notice of Array.from( notices.children ) ) {
-			if ( 0 === notice.innerHTML.length ) {
+			if ( notice.innerHTML.length === 0 ) {
 				// Ignore empty elements in this part of the DOM.
 				continue;
 			} else if ( ! this.shouldCollapseNotice( notice ) ) {
@@ -152,21 +151,20 @@ class WordPressNotices extends Component {
 		for ( let i = 0; i < noticesToShow.length; i++ ) {
 			const [ id, includeClasses, excludeClasses ] = noticesToShow[ i ];
 
-			const idMatch = null === id || id === element.id;
+			const idMatch = id === null || id === element.id;
 			let classMatch = true;
 
 			if ( Array.isArray( includeClasses ) ) {
 				classMatch =
-					0 <
-					intersection( element.classList, includeClasses ).length;
+					intersection( element.classList, includeClasses ).length >
+					0;
 			}
 
 			if ( Array.isArray( excludeClasses ) ) {
 				classMatch =
 					classMatch &&
-					0 ===
-						intersection( element.classList, excludeClasses )
-							.length;
+					intersection( element.classList, excludeClasses ).length ===
+						0;
 			}
 
 			if ( idMatch && classMatch ) {

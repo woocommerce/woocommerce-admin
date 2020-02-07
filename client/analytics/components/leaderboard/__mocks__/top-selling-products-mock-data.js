@@ -1,5 +1,3 @@
-/** @format */
-
 /*
 The data returned by /reports/products will contain a product_id ref
 And as such will require data layer logic for products to fully build the table

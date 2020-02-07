@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -120,10 +119,9 @@ class List extends Component {
 				this.select( options[ selectedIndex ] );
 				setExpanded( false );
 				onSearch( null );
-				return;
+				break;
 
 			default:
-				return;
 		}
 	}
 
@@ -207,6 +205,7 @@ List.propTypes = {
 	/**
 	 * Parent node to bind keyboard events to.
 	 */
+	// eslint-disable-next-line no-undef
 	node: PropTypes.instanceOf( Element ).isRequired,
 	/**
 	 * Function to execute when an option is selected.

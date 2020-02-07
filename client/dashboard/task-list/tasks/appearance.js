@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -105,7 +104,7 @@ class Appearance extends Component {
 			/* eslint-enable react/no-did-update-set-state */
 		}
 
-		if ( 'logo' === step && isRequestSuccessful ) {
+		if ( step === 'logo' && isRequestSuccessful ) {
 			createNotice(
 				'success',
 				__( 'Store logo updated sucessfully.', 'woocommerce-admin' )
@@ -113,7 +112,7 @@ class Appearance extends Component {
 			this.completeStep();
 		}
 
-		if ( 'notice' === step && isRequestSuccessful ) {
+		if ( step === 'notice' && isRequestSuccessful ) {
 			createNotice(
 				'success',
 				__(

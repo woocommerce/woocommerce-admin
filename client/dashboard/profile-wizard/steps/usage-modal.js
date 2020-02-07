@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -151,7 +150,7 @@ export default compose(
 
 		const options = getOptions( [ 'woocommerce_allow_tracking' ] );
 		const allowTracking =
-			'yes' === get( options, [ 'woocommerce_allow_tracking' ], false );
+			get( options, [ 'woocommerce_allow_tracking' ], false ) === 'yes';
 		const isRequesting = Boolean(
 			isUpdateOptionsRequesting( [ 'woocommerce_allow_tracking' ] )
 		);

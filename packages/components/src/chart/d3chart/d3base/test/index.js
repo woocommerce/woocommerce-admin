@@ -1,7 +1,6 @@
 /**
  * External dependencies
  *
- * @format
  */
 import { shallow, mount } from 'enzyme';
 import { noop } from 'lodash';

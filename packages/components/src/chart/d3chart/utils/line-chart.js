@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -15,12 +13,13 @@ import { smallBreak, wideBreak } from './breakpoints';
 
 /**
  * Describes getDateSpaces
- * @param {array} data - The chart component's `data` prop.
- * @param {array} uniqueDates - from `getUniqueDates`
- * @param {array} visibleKeys - visible keys from the input data for the chart
+ *
+ * @param {Array} data - The chart component's `data` prop.
+ * @param {Array} uniqueDates - from `getUniqueDates`
+ * @param {Array} visibleKeys - visible keys from the input data for the chart
  * @param {number} width - calculated width of the charting space
- * @param {function} xScale - from `getXLineScale`
- * @returns {array} that includes the date, start (x position) and width to mode the mouseover rectangles
+ * @param {Function} xScale - from `getXLineScale`
+ * @return {Array} that includes the date, start (x position) and width to mode the mouseover rectangles
  */
 export const getDateSpaces = (
 	data,
@@ -70,9 +69,10 @@ export const getDateSpaces = (
 
 /**
  * Describes getLine
- * @param {function} xScale - from `getXLineScale`.
- * @param {function} yScale - from `getYScale`.
- * @returns {function} the D3 line function for plotting all category values
+ *
+ * @param {Function} xScale - from `getXLineScale`.
+ * @param {Function} yScale - from `getYScale`.
+ * @return {Function} the D3 line function for plotting all category values
  */
 export const getLine = ( xScale, yScale ) =>
 	d3Line()
@@ -81,9 +81,10 @@ export const getLine = ( xScale, yScale ) =>
 
 /**
  * Describes `getLineData`
- * @param {array} data - The chart component's `data` prop.
- * @param {array} orderedKeys - from `getOrderedKeys`.
- * @returns {array} an array objects with a category `key` and an array of `values` with `date` and `value` properties
+ *
+ * @param {Array} data - The chart component's `data` prop.
+ * @param {Array} orderedKeys - from `getOrderedKeys`.
+ * @return {Array} an array objects with a category `key` and an array of `values` with `date` and `value` properties
  */
 export const getLineData = ( data, orderedKeys ) =>
 	orderedKeys.map( ( row ) => ( {
@@ -127,6 +128,7 @@ export const drawLines = ( node, data, params, scales, formats, tooltip ) => {
 	lineStroke = width <= smallBreak ? 1.25 : lineStroke;
 	const dotRadius = width <= wideBreak ? 4 : 6;
 
+	// eslint-disable-next-line no-unused-expressions
 	params.uniqueDates.length > 1 &&
 		series
 			.append( 'path' )
@@ -143,6 +145,7 @@ export const drawLines = ( node, data, params, scales, formats, tooltip ) => {
 
 	const minDataPointSpacing = 36;
 
+	// eslint-disable-next-line no-unused-expressions
 	width / params.uniqueDates.length > minDataPointSpacing &&
 		series
 			.selectAll( 'circle' )

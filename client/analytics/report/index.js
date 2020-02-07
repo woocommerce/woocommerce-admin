@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -73,7 +72,7 @@ export const getReports = () => {
 			title: __( 'Downloads', 'woocommerce-admin' ),
 			component: DownloadsReport,
 		},
-		'yes' === manageStock
+		manageStock === 'yes'
 			? {
 					report: 'stock',
 					title: __( 'Stock', 'woocommerce-admin' ),
@@ -151,7 +150,7 @@ export default compose(
 		const searchWords = getSearchWords( query );
 		// Single Category view in Categories Report uses the products endpoint, so search must also.
 		const mappedReport =
-			'categories' === report && 'single_category' === query.filter
+			report === 'categories' && query.filter === 'single_category'
 				? 'products'
 				: report;
 		const itemsResult = searchItemsByString(

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -12,7 +11,7 @@ import crypto from 'crypto';
 /**
  * Display a users Gravatar.
  *
- * @return { object } -
+ * @return {Object} -
  */
 const Gravatar = ( { alt, title, size, user, className } ) => {
 	const classes = classnames( 'woocommerce-gravatar', className, {

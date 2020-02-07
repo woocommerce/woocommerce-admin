@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -86,13 +85,13 @@ class ProductsReportTable extends Component {
 				key: 'variations',
 				isSortable: true,
 			},
-			'yes' === manageStock
+			manageStock === 'yes'
 				? {
 						label: __( 'Status', 'woocommerce-admin' ),
 						key: 'stock_status',
 				  }
 				: null,
-			'yes' === manageStock
+			manageStock === 'yes'
 				? {
 						label: __( 'Stock', 'woocommerce-admin' ),
 						key: 'stock',
@@ -235,7 +234,7 @@ class ProductsReportTable extends Component {
 					display: formatValue( 'number', variations.length ),
 					value: variations.length,
 				},
-				'yes' === manageStock
+				manageStock === 'yes'
 					? {
 							display: manage_stock
 								? stockStatus
@@ -245,7 +244,7 @@ class ProductsReportTable extends Component {
 								: null,
 					  }
 					: null,
-				'yes' === manageStock
+				manageStock === 'yes'
 					? {
 							display: manage_stock
 								? formatValue( 'number', stock_quantity )

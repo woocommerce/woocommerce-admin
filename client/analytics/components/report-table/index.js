@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -131,7 +130,7 @@ class ReportTable extends Component {
 		}
 
 		if ( source ) {
-			if ( 'goto' === source ) {
+			if ( source === 'goto' ) {
 				recordEvent( 'analytics_table_go_to_page', {
 					report: endpoint,
 					page: newPage,
@@ -286,7 +285,7 @@ class ReportTable extends Component {
 	getCheckbox( i ) {
 		const { ids = [] } = this.props;
 		const { selectedRows } = this.state;
-		const isChecked = -1 !== selectedRows.indexOf( ids[ i ] );
+		const isChecked = selectedRows.indexOf( ids[ i ] ) !== -1;
 		return {
 			display: (
 				<CheckboxControl
@@ -351,7 +350,7 @@ class ReportTable extends Component {
 			isRequesting || tableData.isRequesting || primaryData.isRequesting;
 		const totals = get( primaryData, [ 'data', 'totals' ], {} );
 		const totalResults = items.totalResults;
-		const downloadable = 0 < totalResults;
+		const downloadable = totalResults > 0;
 		// Search words are in the query string, not the table query.
 		const searchWords = getSearchWords( this.props.query );
 		const searchedLabels = searchWords.map( ( v ) => ( {
@@ -364,13 +363,13 @@ class ReportTable extends Component {
 		 *
 		 * Enables manipulation of data used to create a report table.
 		 *
-		 * @param {object} reportTableData - data used to create the table.
+		 * @param {Object} reportTableData - data used to create the table.
 		 * @param {string} reportTableData.endpoint - table api endpoint.
-		 * @param {array} reportTableData.headers - table headers data.
-		 * @param {array} reportTableData.rows - table rows data.
-		 * @param {object} reportTableData.totals - total aggregates for request.
-		 * @param {array} reportTableData.summary - summary numbers data.
-		 * @param {object} reportTableData.items - response from api requerst.
+		 * @param {Array} reportTableData.headers - table headers data.
+		 * @param {Array} reportTableData.rows - table rows data.
+		 * @param {Object} reportTableData.totals - total aggregates for request.
+		 * @param {Array} reportTableData.summary - summary numbers data.
+		 * @param {Object} reportTableData.items - response from api requerst.
 		 */
 		const filteredTableProps = applyFilters( TABLE_FILTER, {
 			endpoint,

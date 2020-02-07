@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -71,7 +70,7 @@ class Chart extends Component {
 
 	getDataKeys() {
 		const { data, filterParam, mode, query } = this.props;
-		if ( 'item-comparison' === mode ) {
+		if ( mode === 'item-comparison' ) {
 			const selectedIds = filterParam
 				? getIdsFromQuery( query[ filterParam ] )
 				: [];
@@ -149,7 +148,7 @@ class Chart extends Component {
 					label,
 					total:
 						legendTotals &&
-						'undefined' !== typeof legendTotals[ key ]
+						typeof legendTotals[ key ] !== 'undefined'
 							? legendTotals[ key ]
 							: data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
 					visible: visibleKeys.includes( key ),
@@ -157,7 +156,7 @@ class Chart extends Component {
 			}
 		);
 
-		if ( 'item-comparison' === mode ) {
+		if ( mode === 'item-comparison' ) {
 			return updatedKeys
 				.sort( ( a, b ) => b.total - a.total )
 				.filter(

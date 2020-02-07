@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -15,7 +14,7 @@ function createStore( name ) {
 
 	return createReduxStore(
 		reducer,
-		devTools && devTools( { name: name, instanceId: name } )
+		devTools && devTools( { name, instanceId: name } )
 	);
 }
 

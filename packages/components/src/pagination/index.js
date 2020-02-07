@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -53,8 +51,8 @@ class Pagination extends Component {
 	perPageChange( perPage ) {
 		const { onPerPageChange, onPageChange, total, page } = this.props;
 
-		onPerPageChange( parseInt( perPage ) );
-		const newMaxPage = Math.ceil( total / parseInt( perPage ) );
+		onPerPageChange( parseInt( perPage, 10 ) );
+		const newMaxPage = Math.ceil( total / parseInt( perPage, 10 ) );
 		if ( page > newMaxPage ) {
 			onPageChange( newMaxPage );
 		}

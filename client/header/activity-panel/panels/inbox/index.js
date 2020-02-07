@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -26,7 +25,7 @@ class InboxPanel extends Component {
 
 	componentWillUnmount() {
 		const userDataFields = {
-			[ 'activity_panel_inbox_last_read' ]: this.mountTime,
+			activity_panel_inbox_last_read: this.mountTime,
 		};
 		this.props.updateCurrentUserData( userDataFields );
 	}
@@ -50,7 +49,7 @@ class InboxPanel extends Component {
 	renderNotes() {
 		const { lastRead, notes } = this.props;
 
-		if ( 0 === Object.keys( notes ).length ) {
+		if ( Object.keys( notes ).length === 0 ) {
 			return this.renderEmptyCard();
 		}
 

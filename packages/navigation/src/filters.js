@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -36,8 +35,8 @@ export function flattenFilters( filters ) {
 /**
  * Given a query object, return an array of activeFilters, if any.
  *
- * @param {object} query - query oject
- * @param {object} config - config object
+ * @param {Object} query - query oject
+ * @param {Object} config - config object
  * @return {activeFilters[]} - array of activeFilters
  */
 export function getActiveFiltersFromQuery( query, config ) {
@@ -76,8 +75,8 @@ export function getActiveFiltersFromQuery( query, config ) {
  * Get the default option's value from the configuration object for a given filter. The first
  * option is used as default if no `defaultOption` is provided.
  *
- * @param {object} config - a filter config object.
- * @param {array} options - select options.
+ * @param {Object} config - a filter config object.
+ * @param {Array} options - select options.
  * @return {string|undefined}  - the value of the default option.
  */
 export function getDefaultOptionValue( config, options ) {
@@ -98,13 +97,17 @@ export function getDefaultOptionValue( config, options ) {
 }
 
 /**
+ * @typedef {Object} activeFilters
+ */
+
+/**
  * Given activeFilters, create a new query object to update the url. Use previousFilters to
  * Remove unused params.
  *
  * @param {activeFilters[]} activeFilters - activeFilters shown in the UI
- * @param {object} query - the current url query object
- * @param {object} config - config object
- * @return {object} - query object representing the new parameters
+ * @param {Object} query - the current url query object
+ * @param {Object} config - config object
+ * @return {Object} - query object representing the new parameters
  */
 export function getQueryFromActiveFilters( activeFilters, query, config ) {
 	const previousFilters = getActiveFiltersFromQuery( query, config );
@@ -114,7 +117,7 @@ export function getQueryFromActiveFilters( activeFilters, query, config ) {
 	}, {} );
 	const nextData = activeFilters.reduce( ( data, filter ) => {
 		if (
-			'between' === filter.rule &&
+			filter.rule === 'between' &&
 			( ! Array.isArray( filter.value ) ||
 				filter.value.some( ( value ) => ! value ) )
 		) {

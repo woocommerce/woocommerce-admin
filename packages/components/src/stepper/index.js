@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -59,7 +58,7 @@ class Stepper extends Component {
 							{
 								'is-active': isCurrentStep,
 								'is-complete':
-									'undefined' !== typeof isComplete
+									typeof isComplete !== 'undefined'
 										? isComplete
 										: currentIndex > i,
 							}
@@ -78,7 +77,7 @@ class Stepper extends Component {
 							);
 
 						const LabelWrapper =
-							'function' === typeof onClick ? 'button' : 'div';
+							typeof onClick === 'function' ? 'button' : 'div';
 
 						return (
 							<Fragment key={ key }>
@@ -86,7 +85,7 @@ class Stepper extends Component {
 									<LabelWrapper
 										className="woocommerce-stepper__step-label-wrapper"
 										onClick={
-											'function' === typeof onClick
+											typeof onClick === 'function'
 												? () => onClick( key )
 												: null
 										}

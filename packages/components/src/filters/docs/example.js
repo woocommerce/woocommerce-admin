@@ -1,4 +1,3 @@
-/** @format */
 /**
  * Internal dependencies
  */
@@ -190,7 +189,7 @@ const advancedFilters = {
 const compareFilter = {
 	type: 'products',
 	param: 'product',
-	getLabels: function() {
+	getLabels() {
 		return Promise.resolve( [] );
 	},
 	labels: {

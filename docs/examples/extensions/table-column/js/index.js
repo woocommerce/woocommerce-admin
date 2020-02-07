@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -11,7 +10,7 @@ addFilter(
 	'plugin-domain',
 	( reportTableData ) => {
 		if (
-			'products' !== reportTableData.endpoint ||
+			reportTableData.endpoint !== 'products' ||
 			! reportTableData.items ||
 			! reportTableData.items.data ||
 			! reportTableData.items.data.length

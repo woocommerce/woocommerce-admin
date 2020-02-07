@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -55,7 +54,7 @@ class HistoricalData extends Component {
 		const { createNotice } = this.props;
 		apiFetch( { path, method: 'POST' } )
 			.then( ( response ) => {
-				if ( 'success' === response.status ) {
+				if ( response.status === 'success' ) {
 					createNotice( 'success', response.message );
 				} else {
 					createNotice( 'error', errorMessage );
@@ -88,7 +87,7 @@ class HistoricalData extends Component {
 		const { notes, updateNote } = this.props;
 
 		const historicalDataNote = notes.find(
-			( note ) => 'wc-admin-historical-data' === note.name
+			( note ) => note.name === 'wc-admin-historical-data'
 		);
 		if ( historicalDataNote ) {
 			updateNote( historicalDataNote.id, { status: 'actioned' } );

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -9,6 +8,10 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal dependencies
  */
 import { computeSuggestionMatch } from './utils';
+
+/**
+ * @typedef {Object} Completer
+ */
 
 /**
  * A orders autocompleter.

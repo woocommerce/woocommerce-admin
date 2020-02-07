@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -84,7 +83,7 @@ export function getCountryStateOptions() {
  * Get the autofill countryState fields and set value from filtered options.
  *
  * @param {Array} options Array of filterable options.
- * @param {String} countryState The value of the countryState field.
+ * @param {string} countryState The value of the countryState field.
  * @param {Function} setValue Set value of the countryState input.
  * @return {Object} React component.
  */
@@ -131,14 +130,14 @@ export function getCountryStateAutofill( options, countryState, setValue ) {
 					stateSearch.test( option.key )
 				);
 
-				if ( 1 === stateKeyOptions.length ) {
+				if ( stateKeyOptions.length === 1 ) {
 					filteredOptions = stateKeyOptions;
 				}
 			}
 		}
 
 		if (
-			1 === filteredOptions.length &&
+			filteredOptions.length === 1 &&
 			countryState !== filteredOptions[ 0 ].key
 		) {
 			setValue( 'countryState', filteredOptions[ 0 ].key );

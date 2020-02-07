@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -20,7 +19,7 @@ class ScrollTo extends Component {
 		if ( this.ref.current && this.ref.current.offsetTop ) {
 			window.scrollTo(
 				0,
-				this.ref.current.offsetTop + parseInt( offset )
+				this.ref.current.offsetTop + parseInt( offset, 10 )
 			);
 		} else {
 			setTimeout( this.scrollTo, 250 );

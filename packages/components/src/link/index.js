@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -41,7 +40,7 @@ class Link extends Component {
 			'data-link-type': type,
 		};
 
-		if ( 'wc-admin' === type ) {
+		if ( type === 'wc-admin' ) {
 			passProps.onClick = partial(
 				this.wcAdminLinkHandler,
 				passProps.onClick

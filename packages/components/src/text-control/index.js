@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -37,7 +36,7 @@ const TextControl = withFocusOutside(
 			const { isFocused } = this.state;
 			const { className, onClick, ...otherProps } = this.props;
 			const { label, value, disabled } = otherProps;
-			const isEmpty = '' === value;
+			const isEmpty = value === '';
 			const isActive = isFocused && ! disabled;
 
 			return (
@@ -47,7 +46,7 @@ const TextControl = withFocusOutside(
 						'muriel-input-text',
 						className,
 						{
-							disabled: disabled,
+							disabled,
 							empty: isEmpty,
 							active: isActive,
 							'with-value': ! isEmpty,

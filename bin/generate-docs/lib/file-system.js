@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -36,14 +35,14 @@ function getExportedFileList( filePath ) {
 	const files = [];
 	types.visit( ast, {
 		// This method will be called for any node with .type "ExportNamedDeclaration":
-		visitExportNamedDeclaration: function( nodePath ) {
+		visitExportNamedDeclaration( nodePath ) {
 			const { node } = nodePath;
 			if (
 				namedTypes.Literal.check( node.source ) &&
 				isArray( node.specifiers ) &&
 				namedTypes.ExportSpecifier.check( node.specifiers[ 0 ] )
 			) {
-				if ( -1 === node.source.value.indexOf( 'use-filters' ) ) {
+				if ( node.source.value.indexOf( 'use-filters' ) === -1 ) {
 					files.push( node.source.value );
 				}
 			}
@@ -71,7 +70,7 @@ function getMdFileName( filepath, route, absolute = true ) {
 	let name = fileParts[ 1 ].replace( 'src/', '' ).split( '/' )[ 0 ];
 
 	// Package components have a different structure.
-	if ( 'packages' === route ) {
+	if ( route === 'packages' ) {
 		name += '/README';
 	}
 
@@ -84,9 +83,9 @@ function getMdFileName( filepath, route, absolute = true ) {
 /**
  * Get an array of files exported from in the given file
  *
- * @param { array } files A list of files, presumably in the components directory.
+ * @param {Array} files A list of files, presumably in the components directory.
  * @param { string } basePath The absolute path to the components directory.
- * @return { array } Updated array with absolute paths to all files.
+ * @return {Array} Updated array with absolute paths to all files.
  */
 function getRealFilePaths( files, basePath = PACKAGES_FOLDER ) {
 	files.sort();
@@ -127,7 +126,7 @@ function isFile( file ) {
 /**
  * Create a table of contents given a list of markdown files.
  *
- * @param { array } files A list of files, presumably in the components directory.
+ * @param {Array} files A list of files, presumably in the components directory.
  * @param { string } route Folder where the docs are stored.
  * @param { string } title Title of the TOC section
  * @return { string } TOC contents.

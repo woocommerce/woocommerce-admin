@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -100,7 +99,7 @@ class ProfileWizard extends Component {
 			container: Plugins,
 			isComplete:
 				profileItems.hasOwnProperty( 'plugins' ) &&
-				null !== profileItems.plugins,
+				profileItems.plugins !== null,
 		} );
 		steps.push( {
 			key: 'store-details',
@@ -108,7 +107,7 @@ class ProfileWizard extends Component {
 			label: __( 'Store Details', 'woocommerce-admin' ),
 			isComplete:
 				profileItems.hasOwnProperty( 'setup_client' ) &&
-				null !== profileItems.setup_client,
+				profileItems.setup_client !== null,
 		} );
 		steps.push( {
 			key: 'industry',
@@ -116,7 +115,7 @@ class ProfileWizard extends Component {
 			label: __( 'Industry', 'woocommerce-admin' ),
 			isComplete:
 				profileItems.hasOwnProperty( 'industry' ) &&
-				null !== profileItems.industry,
+				profileItems.industry !== null,
 		} );
 		steps.push( {
 			key: 'product-types',
@@ -124,7 +123,7 @@ class ProfileWizard extends Component {
 			label: __( 'Product Types', 'woocommerce-admin' ),
 			isComplete:
 				profileItems.hasOwnProperty( 'product_types' ) &&
-				null !== profileItems.product_types,
+				profileItems.product_types !== null,
 		} );
 		steps.push( {
 			key: 'business-details',
@@ -132,7 +131,7 @@ class ProfileWizard extends Component {
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
 				profileItems.hasOwnProperty( 'product_count' ) &&
-				null !== profileItems.product_count,
+				profileItems.product_count !== null,
 		} );
 		steps.push( {
 			key: 'theme',
@@ -140,7 +139,7 @@ class ProfileWizard extends Component {
 			label: __( 'Theme', 'woocommerce-admin' ),
 			isComplete:
 				profileItems.hasOwnProperty( 'theme' ) &&
-				null !== profileItems.theme,
+				profileItems.theme !== null,
 		} );
 		return steps;
 	}
@@ -163,7 +162,7 @@ class ProfileWizard extends Component {
 		);
 		const nextStep = this.getSteps()[ currentStepIndex + 1 ];
 
-		if ( 'undefined' === typeof nextStep ) {
+		if ( typeof nextStep === 'undefined' ) {
 			this.possiblyShowCart();
 			return;
 		}
@@ -189,7 +188,7 @@ class ProfileWizard extends Component {
 		updateProfileItems( { completed: true } );
 
 		const profilerNote = notes.find(
-			( note ) => 'wc-admin-onboarding-profiler-reminder' === note.name
+			( note ) => note.name === 'wc-admin-onboarding-profiler-reminder'
 		);
 		if ( profilerNote ) {
 			updateNote( profilerNote.id, { status: 'actioned' } );

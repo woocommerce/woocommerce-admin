@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -40,7 +39,7 @@ class Leaderboards extends Component {
 	setRowsPerTable = ( rows ) => {
 		this.setState( { rowsPerTable: parseInt( rows ) } );
 		const userDataFields = {
-			[ 'dashboard_leaderboard_rows' ]: parseInt( rows ),
+			dashboard_leaderboard_rows: parseInt( rows ),
 		};
 		this.props.updateCurrentUserData( userDataFields );
 	};

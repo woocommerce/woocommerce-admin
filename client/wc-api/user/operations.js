@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -23,7 +21,7 @@ function readCurrentUserData( resourceNames, fetch ) {
 				.then( userToUserDataResource )
 				.catch( ( error ) => {
 					return {
-						[ 'current-user-data' ]: {
+						'current-user-data': {
 							error: String( error.message ),
 						},
 					};
@@ -70,12 +68,12 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 
 function userToUserDataResource( user ) {
 	const userData = mapValues( user.woocommerce_meta, ( data ) => {
-		if ( ! data || 0 === data.length ) {
+		if ( ! data || data.length === 0 ) {
 			return '';
 		}
 		return JSON.parse( data );
 	} );
-	return { [ 'current-user-data' ]: { data: userData } };
+	return { 'current-user-data': { data: userData } };
 }
 
 export default {

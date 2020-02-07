@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -152,7 +151,7 @@ export class Controller extends Component {
  * as is.
  *
  * @param {HTMLElement} item - Sidebar anchor link.
- * @param {object} nextQuery - A query object to be added to updated hrefs.
+ * @param {Object} nextQuery - A query object to be added to updated hrefs.
  * @param {Array} excludedScreens - wc-admin screens to avoid updating.
  */
 export function updateLinkHref( item, nextQuery, excludedScreens ) {
@@ -217,7 +216,7 @@ window.wpNavMenuClassChange = function( page, url ) {
 	} );
 
 	const pageUrl =
-		'/' === url
+		url === '/'
 			? 'admin.php?page=wc-admin'
 			: 'admin.php?page=wc-admin&path=' + encodeURIComponent( url );
 	const currentItemsSelector =

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -77,7 +76,7 @@ class StoreDetails extends Component {
 	onSubmit( values ) {
 		const { profileItems } = this.props;
 
-		if ( 'already-installed' === profileItems.plugins ) {
+		if ( profileItems.plugins === 'already-installed' ) {
 			this.setState( { showUsageModal: true } );
 			return;
 		}

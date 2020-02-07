@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -62,13 +61,13 @@ class DateFilter extends Component {
 		const { before, after } = this.state;
 
 		// Return nothing if we're missing input(s)
-		if ( ! before || ( 'between' === rule.value && ! after ) ) {
+		if ( ! before || ( rule.value === 'between' && ! after ) ) {
 			return '';
 		}
 
 		let filterStr = before.format( dateStringFormat );
 
-		if ( 'between' === rule.value ) {
+		if ( rule.value === 'between' ) {
 			filterStr = interpolateComponents( {
 				mixedString: this.getBetweenString(),
 				components: {
@@ -121,12 +120,12 @@ class DateFilter extends Component {
 			let nextAfter = null;
 			let nextBefore = null;
 
-			if ( 'after' === input ) {
+			if ( input === 'after' ) {
 				nextAfter = date.format( isoDateFormat );
 				nextBefore = before ? before.format( isoDateFormat ) : null;
 			}
 
-			if ( 'before' === input ) {
+			if ( input === 'before' ) {
 				nextAfter = after ? after.format( isoDateFormat ) : null;
 				nextBefore = date.format( isoDateFormat );
 			}
@@ -155,7 +154,7 @@ class DateFilter extends Component {
 			afterError,
 		} = this.state;
 
-		if ( 'between' === filter.rule ) {
+		if ( filter.rule === 'between' ) {
 			return interpolateComponents( {
 				mixedString: this.getBetweenString(),
 				components: {
@@ -205,7 +204,7 @@ class DateFilter extends Component {
 	onRuleChange( value ) {
 		const { onFilterChange, filter, updateFilter } = this.props;
 		const { before } = this.state;
-		if ( 'between' === filter.rule && 'between' !== value ) {
+		if ( filter.rule === 'between' && value !== 'between' ) {
 			updateFilter( {
 				key: filter.key,
 				rule: value,
@@ -243,7 +242,7 @@ class DateFilter extends Component {
 							className,
 							'woocommerce-filters-advanced__input-range',
 							{
-								'is-between': 'between' === rule,
+								'is-between': rule === 'between',
 							}
 						) }
 					>

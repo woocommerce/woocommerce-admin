@@ -1,5 +1,3 @@
-/** @format */
-
 /**
  * External dependencies
  */
@@ -37,7 +35,7 @@ function read( resourceNames, fetch = apiFetch ) {
 		const endpoint = typeEndpointMap[ prefix ];
 		const query = getResourceIdentifier( resourceName );
 		const url = addQueryArgs( `${ NAMESPACE }/${ endpoint }`, query );
-		const isUnboundedRequest = -1 === query.per_page;
+		const isUnboundedRequest = query.per_page === -1;
 
 		try {
 			const response = await fetch( {

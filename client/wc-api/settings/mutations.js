@@ -1,5 +1,3 @@
-/** @format */
-
 const updateSettings = ( operations ) => ( settingFields ) => {
 	const resourceKey = 'settings';
 	Object.keys( settingFields ).map( ( group ) =>

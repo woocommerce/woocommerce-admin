@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -61,10 +60,10 @@ class ActivityPanel extends Component {
 
 		// The WordPress Notices tab is handled differently, since they are displayed inline, so the panel should be closed,
 		// Close behavior of the expanded notices is based on current tab.
-		if ( 'wpnotices' === tabName ) {
+		if ( tabName === 'wpnotices' ) {
 			this.setState( ( state ) => ( {
-				currentTab: 'wpnotices' === state.currentTab ? '' : tabName,
-				mobileOpen: 'wpnotices' !== state.currentTab,
+				currentTab: state.currentTab === 'wpnotices' ? '' : tabName,
+				mobileOpen: state.currentTab !== 'wpnotices',
 				isPanelOpen: false,
 			} ) );
 			return;
@@ -73,8 +72,8 @@ class ActivityPanel extends Component {
 		this.setState( ( state ) => {
 			if (
 				tabName === state.currentTab ||
-				'' === state.currentTab ||
-				'wpnotices' === state.currentTab
+				state.currentTab === '' ||
+				state.currentTab === 'wpnotices'
 			) {
 				return {
 					isPanelOpen: ! state.isPanelOpen,
@@ -137,7 +136,7 @@ class ActivityPanel extends Component {
 				icon: <Gridicon icon="pages" />,
 				unread: hasUnreadOrders,
 			},
-			'yes' === manageStock
+			manageStock === 'yes'
 				? {
 						name: 'stock',
 						title: __( 'Stock', 'woocommerce-admin' ),
@@ -145,7 +144,7 @@ class ActivityPanel extends Component {
 						unread: hasUnreadStock,
 				  }
 				: null,
-			'yes' === reviewsEnabled
+			reviewsEnabled === 'yes'
 				? {
 						name: 'reviews',
 						title: __( 'Reviews', 'woocommerce-admin' ),
@@ -232,7 +231,7 @@ class ActivityPanel extends Component {
 		// If wpnotices is currently selected, tabindex below should be  -1 and <WordPressNotices /> will become the tabbed element.
 		if (
 			selected ||
-			( ! isPanelOpen && i === 0 && 'wpnotices' !== currentTab )
+			( ! isPanelOpen && i === 0 && currentTab !== 'wpnotices' )
 		) {
 			tabIndex = null;
 		}
@@ -320,7 +319,7 @@ class ActivityPanel extends Component {
 								document.getElementById( 'wp__notice-list' )
 							) && (
 								<WordPressNotices
-									showNotices={ 'wpnotices' === currentTab }
+									showNotices={ currentTab === 'wpnotices' }
 									togglePanel={ this.togglePanel }
 									onCountUpdate={ this.updateNoticeFlag }
 								/>

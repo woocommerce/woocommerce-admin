@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -37,7 +36,7 @@ class PayPal extends Component {
 		const query = getQuery();
 		// Handle redirect back from PayPal
 		if ( query[ 'paypal-connect' ] ) {
-			if ( '1' === query[ 'paypal-connect' ] ) {
+			if ( query[ 'paypal-connect' ] === '1' ) {
 				recordEvent( 'tasklist_payment_connect_method', {
 					payment_method: 'paypal',
 				} );
@@ -64,22 +63,22 @@ class PayPal extends Component {
 
 	componentDidUpdate( prevProps, prevState ) {
 		if (
-			true === prevState.showManualConfiguration &&
-			false === this.state.showManualConfiguration
+			prevState.showManualConfiguration === true &&
+			this.state.showManualConfiguration === false
 		) {
 			this.fetchOAuthConnectURL();
 		}
 
 		if (
-			false === prevProps.optionsIsRequesting &&
-			true === this.props.optionsIsRequesting
+			prevProps.optionsIsRequesting === false &&
+			this.props.optionsIsRequesting === true
 		) {
 			this.props.setRequestPending( true );
 		}
 
 		if (
-			true === prevProps.optionsIsRequesting &&
-			false === this.props.optionsIsRequesting
+			prevProps.optionsIsRequesting === true &&
+			this.props.optionsIsRequesting === false
 		) {
 			this.props.setRequestPending( false );
 		}

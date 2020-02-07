@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -20,7 +19,7 @@ export default class CouponsReport extends Component {
 	getChartMeta() {
 		const { query } = this.props;
 		const isCompareView =
-			'compare-coupons' === query.filter &&
+			query.filter === 'compare-coupons' &&
 			query.coupons &&
 			query.coupons.split( ',' ).length > 1;
 
@@ -41,7 +40,7 @@ export default class CouponsReport extends Component {
 			...query,
 		};
 
-		if ( 'item-comparison' === mode ) {
+		if ( mode === 'item-comparison' ) {
 			chartQuery.segmentby = 'coupon';
 		}
 

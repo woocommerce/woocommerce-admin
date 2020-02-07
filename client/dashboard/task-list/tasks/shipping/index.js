@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -66,7 +65,7 @@ class Shipping extends Component {
 		await Promise.all(
 			zones.map( async ( zone ) => {
 				// "Rest of the world zone"
-				if ( 0 === zone.id ) {
+				if ( zone.id === 0 ) {
 					zone.methods = await apiFetch( {
 						path: `/wc/v3/shipping/zones/${ zone.id }/methods`,
 					} );
@@ -123,7 +122,7 @@ class Shipping extends Component {
 		const { step } = this.state;
 
 		if (
-			'store_location' === step &&
+			step === 'store_location' &&
 			woocommerce_store_address &&
 			woocommerce_default_country &&
 			woocommerce_store_postcode
@@ -132,9 +131,9 @@ class Shipping extends Component {
 		}
 
 		if (
-			'rates' === step &&
+			step === 'rates' &&
 			( prevProps.countryCode !== countryCode ||
-				'rates' !== prevState.step )
+				prevState.step !== 'rates' )
 		) {
 			this.fetchShippingZones();
 		}
@@ -167,7 +166,7 @@ class Shipping extends Component {
 		const plugins = [];
 		if ( [ 'GB', 'CA', 'AU' ].includes( countryCode ) ) {
 			plugins.push( 'woocommerce-shipstation-integration' );
-		} else if ( 'US' === countryCode ) {
+		} else if ( countryCode === 'US' ) {
 			plugins.push( 'woocommerce-services' );
 
 			if ( ! isJetpackConnected ) {

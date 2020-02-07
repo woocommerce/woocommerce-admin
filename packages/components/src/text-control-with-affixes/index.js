@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -63,8 +62,8 @@ class TextControlWithAffixes extends Component {
 		}
 
 		const baseControlClasses = classnames( className, {
-			'with-value': '' !== value,
-			empty: '' === value,
+			'with-value': value !== '',
+			empty: value === '',
 			active: isFocused && ! disabled,
 		} );
 
