@@ -9,4 +9,4 @@ export default {
 	component: Rating,
 };
 
-export const Default = () => <Rating rating={ 4 } totalStars={ 5 } />;
+export const Default = () => <Rating rating={ 4.6 } totalStars={ 5 } />;
