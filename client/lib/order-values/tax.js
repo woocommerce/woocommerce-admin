@@ -12,7 +12,10 @@ import { find, get } from 'lodash';
  */
 export function getOrderDiscountTax( order ) {
 	const coupons = get( order, 'coupon_lines', [] );
-	const tax = coupons.reduce( ( sum, value ) => sum + parseFloat( value.discount_tax ), 0 );
+	const tax = coupons.reduce(
+		( sum, value ) => sum + parseFloat( value.discount_tax ),
+		0
+	);
 	return parseFloat( tax ) || 0;
 }
 
@@ -50,7 +53,10 @@ export function getOrderFeeTax( order, id ) {
  */
 export function getOrderFeeTotalTax( order ) {
 	const lines = get( order, 'fee_lines', [] );
-	return lines.reduce( ( sum, value ) => sum + getOrderFeeTax( order, value.id ), 0 );
+	return lines.reduce(
+		( sum, value ) => sum + getOrderFeeTax( order, value.id ),
+		0
+	);
 }
 
 /**
@@ -72,7 +78,10 @@ export function getOrderShippingTax( order ) {
  */
 export function getOrderSubtotalTax( order ) {
 	const items = get( order, 'line_items', [] );
-	return items.reduce( ( sum, value ) => sum + getOrderLineItemTax( order, value.id ), 0 );
+	return items.reduce(
+		( sum, value ) => sum + getOrderLineItemTax( order, value.id ),
+		0
+	);
 }
 
 /**

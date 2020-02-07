@@ -4,7 +4,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { IconButton, Button, Dashicon, SelectControl } from '@wordpress/components';
+import {
+	IconButton,
+	Button,
+	Dashicon,
+	SelectControl,
+} from '@wordpress/components';
 import classnames from 'classnames';
 import interpolateComponents from 'interpolate-components';
 import { compose } from '@wordpress/compose';
@@ -66,7 +71,7 @@ class StoreAlerts extends Component {
 
 	renderActions( alert ) {
 		const { triggerNoteAction, updateNote } = this.props;
-		const actions = alert.actions.map( action => {
+		const actions = alert.actions.map( ( action ) => {
 			return (
 				<Button
 					key={ action.name }
@@ -124,8 +129,11 @@ class StoreAlerts extends Component {
 			},
 		];
 
-		const setReminderDate = snoozeOption => {
-			updateNote( alert.id, { status: 'snoozed', date_reminder: snoozeOption.value } );
+		const setReminderDate = ( snoozeOption ) => {
+			updateNote( alert.id, {
+				status: 'snoozed',
+				date_reminder: snoozeOption.value,
+			} );
 
 			const eventProps = {
 				alert_name: alert.name,
@@ -146,12 +154,14 @@ class StoreAlerts extends Component {
 					},
 					...snoozeOptions,
 				] }
-				onChange={ value => {
+				onChange={ ( value ) => {
 					if ( '0' === value ) {
 						return;
 					}
 
-					const reminderOption = snoozeOptions.find( option => option.value === value );
+					const reminderOption = snoozeOptions.find(
+						( option ) => option.value === value
+					);
 					const reminderDate = {
 						value,
 						label: reminderOption && reminderOption.label,
@@ -173,10 +183,16 @@ class StoreAlerts extends Component {
 
 	render() {
 		const alerts = this.props.alerts || [];
-		const preloadAlertCount = getSetting( 'alertCount', 0, count => parseInt( count, 10 ) );
+		const preloadAlertCount = getSetting( 'alertCount', 0, ( count ) =>
+			parseInt( count, 10 )
+		);
 
 		if ( preloadAlertCount > 0 && this.props.isLoading ) {
-			return <StoreAlertsPlaceholder hasMultipleAlerts={ preloadAlertCount > 1 } />;
+			return (
+				<StoreAlertsPlaceholder
+					hasMultipleAlerts={ preloadAlertCount > 1 }
+				/>
+			);
 		} else if ( 0 === alerts.length ) {
 			return null;
 		}
@@ -185,10 +201,14 @@ class StoreAlerts extends Component {
 		const numberOfAlerts = alerts.length;
 		const alert = alerts[ currentIndex ];
 		const type = alert.type;
-		const className = classnames( 'woocommerce-store-alerts', 'woocommerce-analytics__card', {
-			'is-alert-error': 'error' === type,
-			'is-alert-update': 'update' === type,
-		} );
+		const className = classnames(
+			'woocommerce-store-alerts',
+			'woocommerce-analytics__card',
+			{
+				'is-alert-error': 'error' === type,
+				'is-alert-update': 'update' === type,
+			}
+		);
 
 		return (
 			<Card
@@ -204,7 +224,10 @@ class StoreAlerts extends Component {
 								icon="arrow-left-alt2"
 								onClick={ this.previousAlert }
 								disabled={ 0 === currentIndex }
-								label={ __( 'Previous Alert', 'woocommerce-admin' ) }
+								label={ __(
+									'Previous Alert',
+									'woocommerce-admin'
+								) }
 							/>
 							<span
 								className="woocommerce-store-alerts__pagination-label"
@@ -212,10 +235,21 @@ class StoreAlerts extends Component {
 								aria-live="polite"
 							>
 								{ interpolateComponents( {
-									mixedString: __( '{{current /}} of {{total /}}', 'woocommerce-admin' ),
+									mixedString: __(
+										'{{current /}} of {{total /}}',
+										'woocommerce-admin'
+									),
 									components: {
-										current: <Fragment>{ currentIndex + 1 }</Fragment>,
-										total: <Fragment>{ numberOfAlerts }</Fragment>,
+										current: (
+											<Fragment>
+												{ currentIndex + 1 }
+											</Fragment>
+										),
+										total: (
+											<Fragment>
+												{ numberOfAlerts }
+											</Fragment>
+										),
 									},
 								} ) }
 							</span>
@@ -223,7 +257,10 @@ class StoreAlerts extends Component {
 								icon="arrow-right-alt2"
 								onClick={ this.nextAlert }
 								disabled={ numberOfAlerts - 1 === currentIndex }
-								label={ __( 'Next Alert', 'woocommerce-admin' ) }
+								label={ __(
+									'Next Alert',
+									'woocommerce-admin'
+								) }
 							/>
 						</div>
 					)
@@ -240,7 +277,7 @@ class StoreAlerts extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const { getNotes, isGetNotesRequesting } = select( 'wc-api' );
 		const alertsQuery = {
 			page: 1,
@@ -250,7 +287,7 @@ export default compose(
 		};
 
 		// Filter out notes that may have been marked actioned or not delayed after the initial request
-		const filterNotes = note => 'unactioned' === note.status;
+		const filterNotes = ( note ) => 'unactioned' === note.status;
 		const alerts = getNotes( alertsQuery ).filter( filterNotes );
 
 		const isLoading = isGetNotesRequesting( alertsQuery );
@@ -260,7 +297,7 @@ export default compose(
 			isLoading,
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { triggerNoteAction, updateNote } = dispatch( 'wc-api' );
 
 		return {

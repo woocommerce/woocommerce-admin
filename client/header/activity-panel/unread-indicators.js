@@ -7,7 +7,12 @@ import { DEFAULT_ACTIONABLE_STATUSES } from 'wc-api/constants';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 export function getUnreadNotes( select ) {
-	const { getCurrentUserData, getNotes, getNotesError, isGetNotesRequesting } = select( 'wc-api' );
+	const {
+		getCurrentUserData,
+		getNotes,
+		getNotesError,
+		isGetNotesRequesting,
+	} = select( 'wc-api' );
 	const userData = getCurrentUserData();
 	if ( ! userData ) {
 		return null;
@@ -36,7 +41,12 @@ export function getUnreadNotes( select ) {
 }
 
 export function getUnreadOrders( select ) {
-	const { getItems, getItemsTotalCount, getItemsError, isGetItemsRequesting } = select( 'wc-api' );
+	const {
+		getItems,
+		getItemsTotalCount,
+		getItemsError,
+		isGetItemsRequesting,
+	} = select( 'wc-api' );
 	const {
 		woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
 	} = getSetting( 'wcAdminSettings', {} );
@@ -65,7 +75,11 @@ export function getUnreadOrders( select ) {
 }
 
 export function getUnapprovedReviews( select ) {
-	const { getReviewsTotalCount, getReviewsError, isGetReviewsRequesting } = select( 'wc-api' );
+	const {
+		getReviewsTotalCount,
+		getReviewsError,
+		isGetReviewsRequesting,
+	} = select( 'wc-api' );
 	const reviewsEnabled = getSetting( 'reviewsEnabled' );
 	if ( 'yes' === reviewsEnabled ) {
 		const actionableReviewsQuery = {
@@ -75,9 +89,15 @@ export function getUnapprovedReviews( select ) {
 			per_page: 1,
 			status: 'hold',
 		};
-		const totalActionableReviews = getReviewsTotalCount( actionableReviewsQuery );
-		const isActionableReviewsError = Boolean( getReviewsError( actionableReviewsQuery ) );
-		const isActionableReviewsRequesting = isGetReviewsRequesting( actionableReviewsQuery );
+		const totalActionableReviews = getReviewsTotalCount(
+			actionableReviewsQuery
+		);
+		const isActionableReviewsError = Boolean(
+			getReviewsError( actionableReviewsQuery )
+		);
+		const isActionableReviewsRequesting = isGetReviewsRequesting(
+			actionableReviewsQuery
+		);
 
 		if ( ! isActionableReviewsError && ! isActionableReviewsRequesting ) {
 			return totalActionableReviews > 0;

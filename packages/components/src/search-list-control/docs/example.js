@@ -24,12 +24,14 @@ export default withState( {
 
 	return (
 		<div>
-			<button onClick={ () => setState( { loading: ! loading } ) }>Toggle loading state</button>
+			<button onClick={ () => setState( { loading: ! loading } ) }>
+				Toggle loading state
+			</button>
 			<SearchListControl
 				list={ list }
 				isLoading={ loading }
 				selected={ selected }
-				onChange={ items => setState( { selected: items } ) }
+				onChange={ ( items ) => setState( { selected: items } ) }
 			/>
 		</div>
 	);

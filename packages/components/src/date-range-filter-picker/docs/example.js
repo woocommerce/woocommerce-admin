@@ -17,10 +17,15 @@ import { partialRight } from 'lodash';
 const query = {};
 
 const defaultDateRange = 'period=month&compare=previous_year';
-const storeGetDateParamsFromQuery = partialRight( getDateParamsFromQuery, defaultDateRange );
+const storeGetDateParamsFromQuery = partialRight(
+	getDateParamsFromQuery,
+	defaultDateRange
+);
 const storeGetCurrentDates = partialRight( getCurrentDates, defaultDateRange );
 const { period, compare, before, after } = storeGetDateParamsFromQuery( query );
-const { primary: primaryDate, secondary: secondaryDate } = storeGetCurrentDates( query );
+const { primary: primaryDate, secondary: secondaryDate } = storeGetCurrentDates(
+	query
+);
 const dateQuery = {
 	period,
 	compare,

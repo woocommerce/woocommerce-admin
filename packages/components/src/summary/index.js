@@ -38,7 +38,7 @@ const SummaryList = ( { children, isDropdownBreakpoint, label } ) => {
 		return summaryMenu;
 	}
 
-	const selected = items.find( item => !! item.props.selected );
+	const selected = items.find( ( item ) => !! item.props.selected );
 	if ( ! selected ) {
 		return summaryMenu;
 	}
@@ -48,8 +48,10 @@ const SummaryList = ( { children, isDropdownBreakpoint, label } ) => {
 			className="woocommerce-summary"
 			position="bottom"
 			headerTitle={ label }
-			renderToggle={ ( { isOpen, onToggle } ) => cloneElement( selected, { onToggle, isOpen } ) }
-			renderContent={ renderContentArgs => (
+			renderToggle={ ( { isOpen, onToggle } ) =>
+				cloneElement( selected, { onToggle, isOpen } )
+			}
+			renderContent={ ( renderContentArgs ) => (
 				<Menu
 					label={ label }
 					orientation={ orientation }

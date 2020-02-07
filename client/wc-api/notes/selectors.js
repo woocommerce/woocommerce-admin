@@ -17,16 +17,18 @@ const getNotes = ( getResource, requireResource ) => (
 ) => {
 	const resourceName = getResourceName( 'note-query', query );
 	const ids = requireResource( requirement, resourceName ).data || [];
-	const notes = ids.map( id => getResource( getResourceName( 'note', id ) ).data || {} );
+	const notes = ids.map(
+		( id ) => getResource( getResourceName( 'note', id ) ).data || {}
+	);
 	return notes;
 };
 
-const getNotesError = getResource => ( query = {} ) => {
+const getNotesError = ( getResource ) => ( query = {} ) => {
 	const resourceName = getResourceName( 'note-query', query );
 	return getResource( resourceName ).error;
 };
 
-const isGetNotesRequesting = getResource => ( query = {} ) => {
+const isGetNotesRequesting = ( getResource ) => ( query = {} ) => {
 	const resourceName = getResourceName( 'note-query', query );
 	const { lastRequested, lastReceived } = getResource( resourceName );
 

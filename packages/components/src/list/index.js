@@ -29,11 +29,24 @@ class List extends Component {
 		return (
 			<ul className={ listClassName } role="menu">
 				{ items.map( ( item, i ) => {
-					const { after, before, className: itemClasses, content, href, onClick, target, title } = item;
+					const {
+						after,
+						before,
+						className: itemClasses,
+						content,
+						href,
+						onClick,
+						target,
+						title,
+					} = item;
 					const hasAction = 'function' === typeof onClick || href;
-					const itemClassName = classnames( 'woocommerce-list__item', itemClasses, {
-						'has-action': hasAction,
-					} );
+					const itemClassName = classnames(
+						'woocommerce-list__item',
+						itemClasses,
+						{
+							'has-action': hasAction,
+						}
+					);
 					const InnerTag = href ? Link : 'div';
 
 					const innerTagProps = {
@@ -42,42 +55,40 @@ class List extends Component {
 						'aria-disabled': hasAction ? 'false' : null,
 						tabIndex: hasAction ? '0' : null,
 						role: hasAction ? 'menuitem' : null,
-						onKeyDown: ( e ) => hasAction ? this.handleKeyDown( e, onClick ) : null,
+						onKeyDown: ( e ) =>
+							hasAction ? this.handleKeyDown( e, onClick ) : null,
 						target: href ? target : null,
 						type: href ? 'external' : null,
 						href: href,
 					};
 
 					return (
-						<li
-							className={ itemClassName }
-							key={ i }
-						>
+						<li className={ itemClassName } key={ i }>
 							<InnerTag { ...innerTagProps }>
-								{ before &&
+								{ before && (
 									<div className="woocommerce-list__item-before">
 										{ before }
 									</div>
-								}
+								) }
 								<div className="woocommerce-list__item-text">
 									<span className="woocommerce-list__item-title">
 										{ title }
 									</span>
-									{ content &&
+									{ content && (
 										<span className="woocommerce-list__item-content">
 											{ content }
 										</span>
-									}
+									) }
 								</div>
-								{ after &&
+								{ after && (
 									<div className="woocommerce-list__item-after">
 										{ after }
 									</div>
-								}
+								) }
 							</InnerTag>
 						</li>
-                    );
-                } ) }
+					);
+				} ) }
 			</ul>
 		);
 	}

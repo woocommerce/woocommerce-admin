@@ -24,9 +24,13 @@ export default class CategoriesReport extends Component {
 			'compare-categories' === query.filter &&
 			query.categories &&
 			query.categories.split( ',' ).length > 1;
-		const isSingleCategoryView = 'single_category' === query.filter && !! query.categories;
+		const isSingleCategoryView =
+			'single_category' === query.filter && !! query.categories;
 
-		const mode = isCompareView || isSingleCategoryView ? 'item-comparison' : 'time-comparison';
+		const mode =
+			isCompareView || isSingleCategoryView
+				? 'item-comparison'
+				: 'time-comparison';
 		const itemsLabel = isSingleCategoryView
 			? __( '%d products', 'woocommerce-admin' )
 			: __( '%d categories', 'woocommerce-admin' );
@@ -47,7 +51,9 @@ export default class CategoriesReport extends Component {
 		};
 
 		if ( 'item-comparison' === mode ) {
-			chartQuery.segmentby = isSingleCategoryView ? 'product' : 'category';
+			chartQuery.segmentby = isSingleCategoryView
+				? 'product'
+				: 'category';
 		}
 
 		return (
@@ -63,7 +69,11 @@ export default class CategoriesReport extends Component {
 					charts={ charts }
 					endpoint="products"
 					isRequesting={ isRequesting }
-					limitProperties={ isSingleCategoryView ? [ 'products', 'categories' ] : [ 'categories' ] }
+					limitProperties={
+						isSingleCategoryView
+							? [ 'products', 'categories' ]
+							: [ 'categories' ]
+					}
 					query={ chartQuery }
 					selectedChart={ getSelectedChart( query.chart, charts ) }
 					filters={ filters }
@@ -75,7 +85,11 @@ export default class CategoriesReport extends Component {
 					advancedFilters={ advancedFilters }
 					mode={ mode }
 					endpoint="products"
-					limitProperties={ isSingleCategoryView ? [ 'products', 'categories' ] : [ 'categories' ] }
+					limitProperties={
+						isSingleCategoryView
+							? [ 'products', 'categories' ]
+							: [ 'categories' ]
+					}
 					path={ path }
 					query={ chartQuery }
 					isRequesting={ isRequesting }

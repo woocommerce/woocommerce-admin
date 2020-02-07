@@ -59,18 +59,22 @@ const Tag = ( {
 					{ labelTextNode }
 				</span>
 			) }
-			{ popoverContents &&
-				isVisible && (
-					<Popover onClose={ () => setState( () => ( { isVisible: false } ) ) }>
-						{ popoverContents }
-					</Popover>
-				) }
+			{ popoverContents && isVisible && (
+				<Popover
+					onClose={ () => setState( () => ( { isVisible: false } ) ) }
+				>
+					{ popoverContents }
+				</Popover>
+			) }
 			{ remove && (
 				<IconButton
 					className="woocommerce-tag__remove"
 					icon={ <Dashicon icon="dismiss" size={ 20 } /> }
 					onClick={ remove( id ) }
-					label={ sprintf( __( 'Remove %s', 'woocommerce-admin' ), label ) }
+					label={ sprintf(
+						__( 'Remove %s', 'woocommerce-admin' ),
+						label
+					) }
 					aria-describedby={ labelId }
 				/>
 			) }
@@ -82,10 +86,7 @@ Tag.propTypes = {
 	/**
 	 * The ID for this item, used in the remove function.
 	 */
-	id: PropTypes.oneOfType( [
-		PropTypes.number,
-		PropTypes.string,
-	] ),
+	id: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 
 	/**
 	 * The name for this item, displayed as the tag's text.

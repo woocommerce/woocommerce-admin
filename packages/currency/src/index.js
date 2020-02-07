@@ -97,7 +97,10 @@ export default class Currency {
 		if ( Number.isNaN( number ) ) {
 			return 0;
 		}
-		return Math.round( number * Math.pow( 10, this.precision ) ) / Math.pow( 10, this.precision );
+		return (
+			Math.round( number * Math.pow( 10, this.precision ) ) /
+			Math.pow( 10, this.precision )
+		);
 	}
 
 	/**
@@ -128,7 +131,11 @@ export default class Currency {
 			number = parseFloat( number );
 		}
 		if ( number < 0 ) {
-			return <span className="is-negative">{ this.formatCurrency( number ) }</span>;
+			return (
+				<span className="is-negative">
+					{ this.formatCurrency( number ) }
+				</span>
+			);
 		}
 		return this.formatCurrency( number );
 	}

@@ -43,13 +43,19 @@ function getHistory() {
 					pathname,
 				};
 			},
-			createHref: ( ...args ) => browserHistory.createHref.apply( browserHistory, args ),
-			push: ( ...args ) => browserHistory.push.apply( browserHistory, args ),
-			replace: ( ...args ) => browserHistory.replace.apply( browserHistory, args ),
+			createHref: ( ...args ) =>
+				browserHistory.createHref.apply( browserHistory, args ),
+			push: ( ...args ) =>
+				browserHistory.push.apply( browserHistory, args ),
+			replace: ( ...args ) =>
+				browserHistory.replace.apply( browserHistory, args ),
 			go: ( ...args ) => browserHistory.go.apply( browserHistory, args ),
-			goBack: ( ...args ) => browserHistory.goBack.apply( browserHistory, args ),
-			goForward: ( ...args ) => browserHistory.goForward.apply( browserHistory, args ),
-			block: ( ...args ) => browserHistory.block.apply( browserHistory, args ),
+			goBack: ( ...args ) =>
+				browserHistory.goBack.apply( browserHistory, args ),
+			goForward: ( ...args ) =>
+				browserHistory.goForward.apply( browserHistory, args ),
+			block: ( ...args ) =>
+				browserHistory.block.apply( browserHistory, args ),
 			listen: function( listener ) {
 				return browserHistory.listen( () => {
 					listener( this.location, this.action );

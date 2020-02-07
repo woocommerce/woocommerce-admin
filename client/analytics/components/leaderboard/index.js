@@ -36,10 +36,16 @@ export class Leaderboard extends Component {
 	}
 
 	getFormattedRows() {
-		return this.props.rows.map( row => {
-			return row.map( column => {
+		return this.props.rows.map( ( row ) => {
+			return row.map( ( column ) => {
 				return {
-					display: <div dangerouslySetInnerHTML={ sanitizeHTML( column.display ) } />,
+					display: (
+						<div
+							dangerouslySetInnerHTML={ sanitizeHTML(
+								column.display
+							) }
+						/>
+					),
 					value: column.value,
 				};
 			} );
@@ -59,7 +65,10 @@ export class Leaderboard extends Component {
 			return (
 				<Card title={ title } className={ classes }>
 					<EmptyTable>
-						{ __( 'No data recorded for the selected time period.', 'woocommerce-admin' ) }
+						{ __(
+							'No data recorded for the selected time period.',
+							'woocommerce-admin'
+						) }
 					</EmptyTable>
 				</Card>
 			);
@@ -104,7 +113,11 @@ Leaderboard.propTypes = {
 		PropTypes.arrayOf(
 			PropTypes.shape( {
 				display: PropTypes.node,
-				value: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number, PropTypes.bool ] ),
+				value: PropTypes.oneOfType( [
+					PropTypes.string,
+					PropTypes.number,
+					PropTypes.bool,
+				] ),
 			} )
 		)
 	).isRequired,

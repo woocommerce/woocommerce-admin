@@ -40,8 +40,11 @@ class MenuItem extends Component {
 			}
 			if ( event.keyCode === DOWN ) {
 				event.preventDefault();
-				const nextElementToFocus = event.target.nextSibling ||
-					event.target.parentNode.querySelector( '.woocommerce-ellipsis-menu__item' );
+				const nextElementToFocus =
+					event.target.nextSibling ||
+					event.target.parentNode.querySelector(
+						'.woocommerce-ellipsis-menu__item'
+					);
 				nextElementToFocus.focus();
 			}
 		}
@@ -71,7 +74,7 @@ class MenuItem extends Component {
 							checked={ checked }
 							onChange={ this.props.onInvoke }
 							onFocus={ this.onFocusFormToggle }
-							onClick={ e => e.stopPropagation() }
+							onClick={ ( e ) => e.stopPropagation() }
 							tabIndex="-1"
 						/>
 						{ children }

@@ -13,12 +13,15 @@ import reducer from './reducer';
 function createStore( name ) {
 	const devTools = window.__REDUX_DEVTOOLS_EXTENSION__;
 
-	return createReduxStore( reducer, devTools && devTools( { name: name, instanceId: name } ) );
+	return createReduxStore(
+		reducer,
+		devTools && devTools( { name: name, instanceId: name } )
+	);
 }
 
 function createDataHandlers( store ) {
 	return {
-		dataRequested: resourceNames => {
+		dataRequested: ( resourceNames ) => {
 			// This is a temporary fix until it can be resolved upstream in fresh-data.
 			// See: https://github.com/woocommerce/woocommerce-admin/pull/2387/files#r292355276
 			if ( document.hidden ) {
@@ -31,7 +34,7 @@ function createDataHandlers( store ) {
 				time: new Date(),
 			} );
 		},
-		dataReceived: resources => {
+		dataReceived: ( resources ) => {
 			store.dispatch( {
 				type: 'FRESH_DATA_RECEIVED',
 				resources,

@@ -26,7 +26,12 @@ export default class StoreLocation extends Component {
 	}
 
 	async onSubmit( values ) {
-		const { onComplete, createNotice, isSettingsError, updateSettings } = this.props;
+		const {
+			onComplete,
+			createNotice,
+			isSettingsError,
+			updateSettings,
+		} = this.props;
 
 		await updateSettings( {
 			general: {
@@ -43,7 +48,10 @@ export default class StoreLocation extends Component {
 		} else {
 			createNotice(
 				'error',
-				__( 'There was a problem saving your store location.', 'woocommerce-admin' )
+				__(
+					'There was a problem saving your store location.',
+					'woocommerce-admin'
+				)
 			);
 		}
 	}
@@ -83,7 +91,10 @@ export default class StoreLocation extends Component {
 			>
 				{ ( { getInputProps, handleSubmit, setValue } ) => (
 					<Fragment>
-						<StoreAddress getInputProps={ getInputProps } setValue={ setValue } />
+						<StoreAddress
+							getInputProps={ getInputProps }
+							setValue={ setValue }
+						/>
 						<Button isPrimary onClick={ handleSubmit }>
 							{ __( 'Continue', 'woocommerce-admin' ) }
 						</Button>

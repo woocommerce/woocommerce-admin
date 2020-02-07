@@ -14,8 +14,14 @@ const { namedTypes } = types;
  */
 const { camelCaseDash } = require( './formatting' );
 
-const ANALYTICS_FOLDER = path.resolve( __dirname, '../../../client/analytics/components/' );
-const PACKAGES_FOLDER = path.resolve( __dirname, '../../../packages/components/src/' );
+const ANALYTICS_FOLDER = path.resolve(
+	__dirname,
+	'../../../client/analytics/components/'
+);
+const PACKAGES_FOLDER = path.resolve(
+	__dirname,
+	'../../../packages/components/src/'
+);
 const DOCS_FOLDER = path.resolve( __dirname, '../../../docs/components/' );
 
 /**
@@ -84,7 +90,7 @@ function getMdFileName( filepath, route, absolute = true ) {
  */
 function getRealFilePaths( files, basePath = PACKAGES_FOLDER ) {
 	files.sort();
-	return files.map( file => {
+	return files.map( ( file ) => {
 		const fullPath = path.resolve( basePath, file );
 		if ( isFile( fullPath ) ) {
 			return fullPath;
@@ -127,17 +133,18 @@ function isFile( file ) {
  * @return { string } TOC contents.
  */
 function getTocSection( files, route, title ) {
-	const mdFiles = files.map( f => getMdFileName( f, route, false ) ).sort();
+	const mdFiles = files
+		.map( ( f ) => getMdFileName( f, route, false ) )
+		.sort();
 
-	const toc = uniq( mdFiles ).map( doc => {
-		const name = camelCaseDash( doc.replace( '.md', '' ).split( '/' )[ 0 ] );
+	const toc = uniq( mdFiles ).map( ( doc ) => {
+		const name = camelCaseDash(
+			doc.replace( '.md', '' ).split( '/' )[ 0 ]
+		);
 		return `    * [${ name }](components/${ route }/${ doc })`;
 	} );
 
-	return [
-		'  * [' + title + '](components/' + route + '/)',
-		...toc,
-	];
+	return [ '  * [' + title + '](components/' + route + '/)', ...toc ];
 }
 
 module.exports = {

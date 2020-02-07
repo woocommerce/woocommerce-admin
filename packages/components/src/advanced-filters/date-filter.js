@@ -28,7 +28,9 @@ class DateFilter extends Component {
 	constructor( { filter } ) {
 		super( ...arguments );
 
-		const [ isoAfter, isoBefore ] = Array.isArray( filter.value ) ? filter.value : [ null, filter.value ];
+		const [ isoAfter, isoBefore ] = Array.isArray( filter.value )
+			? filter.value
+			: [ null, filter.value ];
 		const after = isoAfter ? toMoment( isoDateFormat, isoAfter ) : null;
 		const before = isoBefore ? toMoment( isoDateFormat, isoBefore ) : null;
 
@@ -70,8 +72,16 @@ class DateFilter extends Component {
 			filterStr = interpolateComponents( {
 				mixedString: this.getBetweenString(),
 				components: {
-					after: <Fragment>{ after.format( dateStringFormat ) }</Fragment>,
-					before: <Fragment>{ before.format( dateStringFormat ) }</Fragment>,
+					after: (
+						<Fragment>
+							{ after.format( dateStringFormat ) }
+						</Fragment>
+					),
+					before: (
+						<Fragment>
+							{ before.format( dateStringFormat ) }
+						</Fragment>
+					),
 					span: <Fragment />,
 				},
 			} );
@@ -122,7 +132,10 @@ class DateFilter extends Component {
 			}
 
 			if ( nextAfter && nextBefore ) {
-				onFilterChange( filter.key, 'value', [ nextAfter, nextBefore ] );
+				onFilterChange( filter.key, 'value', [
+					nextAfter,
+					nextBefore,
+				] );
 			}
 		}
 	}
@@ -133,7 +146,14 @@ class DateFilter extends Component {
 
 	getFilterInputs() {
 		const { filter } = this.props;
-		const { before, beforeText, beforeError, after, afterText, afterError } = this.state;
+		const {
+			before,
+			beforeText,
+			beforeError,
+			after,
+			afterText,
+			afterError,
+		} = this.state;
 
 		if ( 'between' === filter.rule ) {
 			return interpolateComponents( {
@@ -144,7 +164,10 @@ class DateFilter extends Component {
 							date={ after }
 							text={ afterText }
 							error={ afterError }
-							onUpdate={ partial( this.onRangeDateChange, 'after' ) }
+							onUpdate={ partial(
+								this.onRangeDateChange,
+								'after'
+							) }
 							dateFormat={ dateFormat }
 							isInvalidDate={ this.isFutureDate }
 						/>
@@ -154,7 +177,10 @@ class DateFilter extends Component {
 							date={ before }
 							text={ beforeText }
 							error={ beforeError }
-							onUpdate={ partial( this.onRangeDateChange, 'before' ) }
+							onUpdate={ partial(
+								this.onRangeDateChange,
+								'before'
+							) }
 							dateFormat={ dateFormat }
 							isInvalidDate={ this.isFutureDate }
 						/>
@@ -201,7 +227,10 @@ class DateFilter extends Component {
 				title: <span className={ className } />,
 				rule: (
 					<SelectControl
-						className={ classnames( className, 'woocommerce-filters-advanced__rule' ) }
+						className={ classnames(
+							className,
+							'woocommerce-filters-advanced__rule'
+						) }
 						options={ rules }
 						value={ rule }
 						onChange={ this.onRuleChange }
@@ -210,9 +239,13 @@ class DateFilter extends Component {
 				),
 				filter: (
 					<div
-						className={ classnames( className, 'woocommerce-filters-advanced__input-range', {
-							'is-between': 'between' === rule,
-						} ) }
+						className={ classnames(
+							className,
+							'woocommerce-filters-advanced__input-range',
+							{
+								'is-between': 'between' === rule,
+							}
+						) }
 					>
 						{ this.getFilterInputs() }
 					</div>
@@ -221,16 +254,28 @@ class DateFilter extends Component {
 		} );
 		/*eslint-disable jsx-a11y/no-noninteractive-tabindex*/
 		return (
-			<fieldset className="woocommerce-filters-advanced__line-item" tabIndex="0">
-				<legend className="screen-reader-text">{ labels.add || '' }</legend>
+			<fieldset
+				className="woocommerce-filters-advanced__line-item"
+				tabIndex="0"
+			>
+				<legend className="screen-reader-text">
+					{ labels.add || '' }
+				</legend>
 				<div
-					className={ classnames( 'woocommerce-filters-advanced__fieldset', {
-						'is-english': isEnglish,
-					} ) }
+					className={ classnames(
+						'woocommerce-filters-advanced__fieldset',
+						{
+							'is-english': isEnglish,
+						}
+					) }
 				>
 					{ children }
 				</div>
-				{ screenReaderText && <span className="screen-reader-text">{ screenReaderText }</span> }
+				{ screenReaderText && (
+					<span className="screen-reader-text">
+						{ screenReaderText }
+					</span>
+				) }
 			</fieldset>
 		);
 		/*eslint-enable jsx-a11y/no-noninteractive-tabindex*/

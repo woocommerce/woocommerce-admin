@@ -24,11 +24,13 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-				search,
-				per_page: 10,
-			}
+					search,
+					per_page: 10,
+			  }
 			: {};
-		return apiFetch( { path: addQueryArgs( '/wc-analytics/coupons', query ) } );
+		return apiFetch( {
+			path: addQueryArgs( '/wc-analytics/coupons', query ),
+		} );
 	},
 	isDebounced: true,
 	getOptionIdentifier( coupon ) {
@@ -41,10 +43,15 @@ export default {
 		const label = (
 			<span key="name" className="woocommerce-search__result-name">
 				{ interpolateComponents( {
-					mixedString: __( 'All coupons with codes that include {{query /}}', 'woocommerce-admin' ),
+					mixedString: __(
+						'All coupons with codes that include {{query /}}',
+						'woocommerce-admin'
+					),
 					components: {
 						query: (
-							<strong className="components-form-token-field__suggestion-match">{ query }</strong>
+							<strong className="components-form-token-field__suggestion-match">
+								{ query }
+							</strong>
 						),
 					},
 				} ) }
@@ -61,7 +68,11 @@ export default {
 	getOptionLabel( coupon, query ) {
 		const match = computeSuggestionMatch( coupon.code, query ) || {};
 		return (
-			<span key="name" className="woocommerce-search__result-name" aria-label={ coupon.code }>
+			<span
+				key="name"
+				className="woocommerce-search__result-name"
+				aria-label={ coupon.code }
+			>
 				{ match.suggestionBeforeMatch }
 				<strong className="components-form-token-field__suggestion-match">
 					{ match.suggestionMatch }

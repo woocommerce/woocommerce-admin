@@ -105,7 +105,7 @@ export default class OrdersReportTable extends Component {
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		return map( tableData, row => {
+		return map( tableData, ( row ) => {
 			const {
 				currency,
 				customer_type,
@@ -122,7 +122,7 @@ export default class OrdersReportTable extends Component {
 
 			const formattedProducts = products
 				.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
-				.map( item => ( {
+				.map( ( item ) => ( {
 					label: item.name,
 					quantity: item.quantity,
 					href: getNewPath( persistedQuery, '/analytics/products', {
@@ -131,7 +131,7 @@ export default class OrdersReportTable extends Component {
 					} ),
 				} ) );
 
-			const formattedCoupons = coupons.map( coupon => ( {
+			const formattedCoupons = coupons.map( ( coupon ) => ( {
 				label: coupon.code,
 				href: getNewPath( persistedQuery, '/analytics/coupons', {
 					filter: 'single_coupon',
@@ -141,7 +141,12 @@ export default class OrdersReportTable extends Component {
 
 			return [
 				{
-					display: <Date date={ date_created } visibleFormat={ defaultTableDateFormat } />,
+					display: (
+						<Date
+							date={ date_created }
+							visibleFormat={ defaultTableDateFormat }
+						/>
+					),
 					value: date_created,
 				},
 				{
@@ -176,8 +181,10 @@ export default class OrdersReportTable extends Component {
 				},
 				{
 					display: this.renderList(
-						formattedProducts.length ? [ formattedProducts[ 0 ] ] : [],
-						formattedProducts.map( product => ( {
+						formattedProducts.length
+							? [ formattedProducts[ 0 ] ]
+							: [],
+						formattedProducts.map( ( product ) => ( {
 							label: sprintf(
 								__( '%s× %s', 'woocommerce-admin' ),
 								product.quantity,
@@ -188,7 +195,11 @@ export default class OrdersReportTable extends Component {
 					),
 					value: formattedProducts
 						.map( ( { quantity, label } ) =>
-							sprintf( __( '%s× %s', 'woocommerce-admin' ), quantity, label )
+							sprintf(
+								__( '%s× %s', 'woocommerce-admin' ),
+								quantity,
+								label
+							)
 						)
 						.join( ', ' ),
 				},
@@ -198,10 +209,14 @@ export default class OrdersReportTable extends Component {
 				},
 				{
 					display: this.renderList(
-						formattedCoupons.length ? [ formattedCoupons[ 0 ] ] : [],
+						formattedCoupons.length
+							? [ formattedCoupons[ 0 ] ]
+							: [],
 						formattedCoupons
 					),
-					value: formattedCoupons.map( coupon => coupon.label ).join( ', ' ),
+					value: formattedCoupons
+						.map( ( coupon ) => coupon.label )
+						.join( ', ' ),
 				},
 				{
 					display: renderCurrency( net_total, currency ),
@@ -223,11 +238,21 @@ export default class OrdersReportTable extends Component {
 		} = totals;
 		return [
 			{
-				label: _n( 'order', 'orders', orders_count, 'woocommerce-admin' ),
+				label: _n(
+					'order',
+					'orders',
+					orders_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', orders_count ),
 			},
 			{
-				label: _n( 'new customer', 'new customers', num_new_customers, 'woocommerce-admin' ),
+				label: _n(
+					'new customer',
+					'new customers',
+					num_new_customers,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', num_new_customers ),
 			},
 			{
@@ -240,15 +265,30 @@ export default class OrdersReportTable extends Component {
 				value: formatValue( 'number', num_returning_customers ),
 			},
 			{
-				label: _n( 'product', 'products', products, 'woocommerce-admin' ),
+				label: _n(
+					'product',
+					'products',
+					products,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', products ),
 			},
 			{
-				label: _n( 'item sold', 'items sold', num_items_sold, 'woocommerce-admin' ),
+				label: _n(
+					'item sold',
+					'items sold',
+					num_items_sold,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', num_items_sold ),
 			},
 			{
-				label: _n( 'coupon', 'coupons', coupons_count, 'woocommerce-admin' ),
+				label: _n(
+					'coupon',
+					'coupons',
+					coupons_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', coupons_count ),
 			},
 			{
@@ -270,7 +310,9 @@ export default class OrdersReportTable extends Component {
 		return (
 			<Fragment>
 				{ this.renderLinks( visibleItems ) }
-				{ popoverItems.length > 1 && <ViewMoreList items={ this.renderLinks( popoverItems ) } /> }
+				{ popoverItems.length > 1 && (
+					<ViewMoreList items={ this.renderLinks( popoverItems ) } />
+				) }
 			</Fragment>
 		);
 	}

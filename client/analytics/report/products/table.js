@@ -10,7 +10,11 @@ import { map } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/currency-format';
+import {
+	formatCurrency,
+	getCurrencyFormatDecimal,
+	renderCurrency,
+} from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link, Tag } from '@woocommerce/components';
 import { formatValue } from 'lib/number-format';
@@ -86,14 +90,14 @@ class ProductsReportTable extends Component {
 				? {
 						label: __( 'Status', 'woocommerce-admin' ),
 						key: 'stock_status',
-					}
+				  }
 				: null,
 			'yes' === manageStock
 				? {
 						label: __( 'Stock', 'woocommerce-admin' ),
 						key: 'stock',
 						isNumeric: true,
-					}
+				  }
 				: null,
 		].filter( Boolean );
 	}
@@ -102,7 +106,7 @@ class ProductsReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
-		return map( data, row => {
+		return map( data, ( row ) => {
 			const { product_id, items_sold, net_revenue, orders_count } = row;
 			const extended_info = row.extended_info || {};
 			const {
@@ -115,24 +119,47 @@ class ProductsReportTable extends Component {
 				stock_quantity,
 				variations = [],
 			} = extended_info;
-			const ordersLink = getNewPath( persistedQuery, '/analytics/orders', {
-				filter: 'advanced',
-				product_includes: product_id,
-			} );
-			const productDetailLink = getNewPath( persistedQuery, '/analytics/products', {
-				filter: 'single_product',
-				products: product_id,
-			} );
+			const ordersLink = getNewPath(
+				persistedQuery,
+				'/analytics/orders',
+				{
+					filter: 'advanced',
+					product_includes: product_id,
+				}
+			);
+			const productDetailLink = getNewPath(
+				persistedQuery,
+				'/analytics/products',
+				{
+					filter: 'single_product',
+					products: product_id,
+				}
+			);
 			const { categories } = this.props;
 
 			const productCategories =
 				( category_ids &&
-					category_ids.map( category_id => categories.get( category_id ) ).filter( Boolean ) ) ||
+					category_ids
+						.map( ( category_id ) => categories.get( category_id ) )
+						.filter( Boolean ) ) ||
 				[];
 
-			const stockStatus = isLowStock( stock_status, stock_quantity, low_stock_amount ) ? (
-				<Link href={ getAdminLink( 'post.php?action=edit&post=' + product_id ) } type="wp-admin">
-					{ _x( 'Low', 'Indication of a low quantity', 'woocommerce-admin' ) }
+			const stockStatus = isLowStock(
+				stock_status,
+				stock_quantity,
+				low_stock_amount
+			) ? (
+				<Link
+					href={ getAdminLink(
+						'post.php?action=edit&post=' + product_id
+					) }
+					type="wp-admin"
+				>
+					{ _x(
+						'Low',
+						'Indication of a low quantity',
+						'woocommerce-admin'
+					) }
 				</Link>
 			) : (
 				stockStatuses[ stock_status ]
@@ -171,27 +198,38 @@ class ProductsReportTable extends Component {
 					display: (
 						<div className="woocommerce-table__product-categories">
 							{ productCategories[ 0 ] && (
-								<CategoryBreacrumbs category={ productCategories[ 0 ] } categories={ categories } />
+								<CategoryBreacrumbs
+									category={ productCategories[ 0 ] }
+									categories={ categories }
+								/>
 							) }
 							{ productCategories.length > 1 && (
 								<Tag
 									label={ sprintf(
-										_x( '+%d more', 'categories', 'woocommerce-admin' ),
+										_x(
+											'+%d more',
+											'categories',
+											'woocommerce-admin'
+										),
 										productCategories.length - 1
 									) }
-									popoverContents={ productCategories.map( category => (
-										<CategoryBreacrumbs
-											category={ category }
-											categories={ categories }
-											key={ category.id }
-											query={ query }
-										/>
-									) ) }
+									popoverContents={ productCategories.map(
+										( category ) => (
+											<CategoryBreacrumbs
+												category={ category }
+												categories={ categories }
+												key={ category.id }
+												query={ query }
+											/>
+										)
+									) }
 								/>
 							) }
 						</div>
 					),
-					value: productCategories.map( category => category.name ).join( ', ' ),
+					value: productCategories
+						.map( ( category ) => category.name )
+						.join( ', ' ),
 				},
 				{
 					display: formatValue( 'number', variations.length ),
@@ -199,9 +237,13 @@ class ProductsReportTable extends Component {
 				},
 				'yes' === manageStock
 					? {
-							display: manage_stock ? stockStatus : __( 'N/A', 'woocommerce-admin' ),
-							value: manage_stock ? stockStatuses[ stock_status ] : null,
-						}
+							display: manage_stock
+								? stockStatus
+								: __( 'N/A', 'woocommerce-admin' ),
+							value: manage_stock
+								? stockStatuses[ stock_status ]
+								: null,
+					  }
 					: null,
 				'yes' === manageStock
 					? {
@@ -209,21 +251,36 @@ class ProductsReportTable extends Component {
 								? formatValue( 'number', stock_quantity )
 								: __( 'N/A', 'woocommerce-admin' ),
 							value: stock_quantity,
-						}
+					  }
 					: null,
 			].filter( Boolean );
 		} );
 	}
 
 	getSummary( totals ) {
-		const { products_count = 0, items_sold = 0, net_revenue = 0, orders_count = 0 } = totals;
+		const {
+			products_count = 0,
+			items_sold = 0,
+			net_revenue = 0,
+			orders_count = 0,
+		} = totals;
 		return [
 			{
-				label: _n( 'product', 'products', products_count, 'woocommerce-admin' ),
+				label: _n(
+					'product',
+					'products',
+					products_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', products_count ),
 			},
 			{
-				label: _n( 'item sold', 'items sold', items_sold, 'woocommerce-admin' ),
+				label: _n(
+					'item sold',
+					'items sold',
+					items_sold,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', items_sold ),
 			},
 			{
@@ -231,7 +288,12 @@ class ProductsReportTable extends Component {
 				value: formatCurrency( net_revenue ),
 			},
 			{
-				label: _n( 'orders', 'orders', orders_count, 'woocommerce-admin' ),
+				label: _n(
+					'orders',
+					'orders',
+					orders_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', orders_count ),
 			},
 		];
@@ -248,8 +310,14 @@ class ProductsReportTable extends Component {
 		} = this.props;
 
 		const labels = {
-			helpText: __( 'Check at least two products below to compare', 'woocommerce-admin' ),
-			placeholder: __( 'Search by product name or SKU', 'woocommerce-admin' ),
+			helpText: __(
+				'Check at least two products below to compare',
+				'woocommerce-admin'
+			),
+			placeholder: __(
+				'Search by product name or SKU',
+				'woocommerce-admin'
+			),
 		};
 
 		return (
@@ -283,11 +351,16 @@ class ProductsReportTable extends Component {
 export default compose(
 	withSelect( ( select, props ) => {
 		const { query, isRequesting } = props;
-		if ( isRequesting || ( query.search && ! ( query.products && query.products.length ) ) ) {
+		if (
+			isRequesting ||
+			( query.search && ! ( query.products && query.products.length ) )
+		) {
 			return {};
 		}
 
-		const { getItems, getItemsError, isGetItemsRequesting } = select( 'wc-api' );
+		const { getItems, getItemsError, isGetItemsRequesting } = select(
+			'wc-api'
+		);
 		const tableQuery = {
 			per_page: -1,
 		};

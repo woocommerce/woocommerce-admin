@@ -12,11 +12,22 @@ import { Button, Tooltip } from '@wordpress/components';
  *
  * @return { object } -
  */
-const CompareButton = ( { className, count, children, disabled, helpText, onClick } ) =>
+const CompareButton = ( {
+	className,
+	count,
+	children,
+	disabled,
+	helpText,
+	onClick,
+} ) =>
 	! disabled && count < 2 ? (
 		<Tooltip text={ helpText }>
 			<span className={ className }>
-				<Button className="woocommerce-compare-button" isDefault disabled={ true }>
+				<Button
+					className="woocommerce-compare-button"
+					isDefault
+					disabled={ true }
+				>
 					{ children }
 				</Button>
 			</span>

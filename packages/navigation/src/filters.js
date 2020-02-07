@@ -12,7 +12,7 @@ import { compact, find, get, omit } from 'lodash';
  */
 export function flattenFilters( filters ) {
 	const allFilters = [];
-	filters.forEach( f => {
+	filters.forEach( ( f ) => {
 		if ( ! f.subFilters ) {
 			allFilters.push( f );
 		} else {
@@ -42,11 +42,13 @@ export function flattenFilters( filters ) {
  */
 export function getActiveFiltersFromQuery( query, config ) {
 	return compact(
-		Object.keys( config ).map( configKey => {
+		Object.keys( config ).map( ( configKey ) => {
 			const filter = config[ configKey ];
 			if ( filter.rules ) {
-				const match = find( filter.rules, rule => {
-					return query.hasOwnProperty( getUrlKey( configKey, rule.value ) );
+				const match = find( filter.rules, ( rule ) => {
+					return query.hasOwnProperty(
+						getUrlKey( configKey, rule.value )
+					);
 				} );
 
 				if ( match ) {
@@ -84,7 +86,9 @@ export function getDefaultOptionValue( config, options ) {
 		const option = find( options, { value: defaultOption } );
 		if ( ! option ) {
 			/* eslint-disable no-console */
-			console.warn( `invalid defaultOption ${ defaultOption } supplied to ${ config.labels.add }` );
+			console.warn(
+				`invalid defaultOption ${ defaultOption } supplied to ${ config.labels.add }`
+			);
 			/* eslint-enable */
 			return undefined;
 		}
@@ -111,7 +115,8 @@ export function getQueryFromActiveFilters( activeFilters, query, config ) {
 	const nextData = activeFilters.reduce( ( data, filter ) => {
 		if (
 			'between' === filter.rule &&
-			( ! Array.isArray( filter.value ) || filter.value.some( value => ! value ) )
+			( ! Array.isArray( filter.value ) ||
+				filter.value.some( ( value ) => ! value ) )
 		) {
 			return data;
 		}

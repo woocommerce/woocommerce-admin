@@ -34,7 +34,9 @@ export const getXScale = ( uniqueDates, width, compact = false ) =>
  */
 export const getXGroupScale = ( orderedKeys, xScale, compact = false ) =>
 	d3ScaleBand()
-		.domain( orderedKeys.filter( d => d.visible ).map( d => d.key ) )
+		.domain(
+			orderedKeys.filter( ( d ) => d.visible ).map( ( d ) => d.key )
+		)
 		.rangeRound( [ 0, xScale.bandwidth() ] )
 		.padding( compact ? 0 : 0.07 );
 
@@ -48,19 +50,30 @@ export const getXLineScale = ( uniqueDates, width ) =>
 	d3ScaleTime()
 		.domain( [
 			moment( uniqueDates[ 0 ], 'YYYY-MM-DD HH:mm' ).toDate(),
-			moment( uniqueDates[ uniqueDates.length - 1 ], 'YYYY-MM-DD HH:mm' ).toDate(),
+			moment(
+				uniqueDates[ uniqueDates.length - 1 ],
+				'YYYY-MM-DD HH:mm'
+			).toDate(),
 		] )
 		.rangeRound( [ 0, width ] );
 
-const getYValueLimits = data => {
+const getYValueLimits = ( data ) => {
 	let maxYValue = Number.NEGATIVE_INFINITY;
 	let minYValue = Number.POSITIVE_INFINITY;
-	data.map( d => {
+	data.map( ( d ) => {
 		for ( const [ key, item ] of Object.entries( d ) ) {
-			if ( key !== 'date' && Number.isFinite( item.value ) && item.value > maxYValue ) {
+			if (
+				key !== 'date' &&
+				Number.isFinite( item.value ) &&
+				item.value > maxYValue
+			) {
 				maxYValue = item.value;
 			}
-			if ( key !== 'date' && Number.isFinite( item.value ) && item.value < minYValue ) {
+			if (
+				key !== 'date' &&
+				Number.isFinite( item.value ) &&
+				item.value < minYValue
+			) {
 				minYValue = item.value;
 			}
 		}
@@ -79,9 +92,11 @@ export const calculateStep = ( minValue, maxValue ) => {
 	}
 
 	const maxAbsValue = Math.max( -minValue, maxValue );
-	const maxLimit = 4 / 3 * maxAbsValue;
-	const pow3Y = Math.pow( 10, ( ( Math.log( maxLimit ) * Math.LOG10E + 1 ) | 0 ) - 2 ) * 3;
-	const step = Math.ceil( maxLimit / pow3Y ) * pow3Y / 3;
+	const maxLimit = ( 4 / 3 ) * maxAbsValue;
+	const pow3Y =
+		Math.pow( 10, ( ( Math.log( maxLimit ) * Math.LOG10E + 1 ) | 0 ) - 2 ) *
+		3;
+	const step = ( Math.ceil( maxLimit / pow3Y ) * pow3Y ) / 3;
 
 	if ( maxValue < 1 && minValue > -1 ) {
 		return Math.round( step * 4 ) / 4;
@@ -96,7 +111,7 @@ export const calculateStep = ( minValue, maxValue ) => {
  * @param {array} data - The chart component's `data` prop.
  * @returns {object} Object containing the `lower` and `upper` limits and a `step` value.
  */
-export const getYScaleLimits = data => {
+export const getYScaleLimits = ( data ) => {
 	const { lower: minValue, upper: maxValue } = getYValueLimits( data );
 	const step = calculateStep( minValue, maxValue );
 	const limits = { lower: 0, upper: 0, step };
@@ -126,5 +141,8 @@ export const getYScaleLimits = data => {
  */
 export const getYScale = ( height, yMin, yMax ) =>
 	d3ScaleLinear()
-		.domain( [ Math.min( yMin, 0 ), yMax === 0 && yMin === 0 ? 1 : Math.max( yMax, 0 ) ] )
+		.domain( [
+			Math.min( yMin, 0 ),
+			yMax === 0 && yMin === 0 ? 1 : Math.max( yMax, 0 ),
+		] )
 		.rangeRound( [ height, 0 ] );

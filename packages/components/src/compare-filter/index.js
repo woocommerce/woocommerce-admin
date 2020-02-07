@@ -41,10 +41,16 @@ export class CompareFilter extends Component {
 		}
 	}
 
-	componentDidUpdate( { param: prevParam, query: prevQuery }, { selected: prevSelected } ) {
+	componentDidUpdate(
+		{ param: prevParam, query: prevQuery },
+		{ selected: prevSelected }
+	) {
 		const { getLabels, param, query } = this.props;
 		const { selected } = this.state;
-		if ( prevParam !== param || ( prevSelected.length > 0 && selected.length === 0 ) ) {
+		if (
+			prevParam !== param ||
+			( prevSelected.length > 0 && selected.length === 0 )
+		) {
 			this.clearQuery();
 			return;
 		}
@@ -73,7 +79,7 @@ export class CompareFilter extends Component {
 	updateQuery() {
 		const { param, path, query } = this.props;
 		const { selected } = this.state;
-		const idList = selected.map( p => p.key );
+		const idList = selected.map( ( p ) => p.key );
 		updateQueryString( { [ param ]: idList.join( ',' ) }, path, query );
 	}
 
@@ -81,13 +87,16 @@ export class CompareFilter extends Component {
 		const { labels, type } = this.props;
 		const { selected } = this.state;
 		return (
-			<Card title={ labels.title } className="woocommerce-filters__compare woocommerce-analytics__card">
+			<Card
+				title={ labels.title }
+				className="woocommerce-filters__compare woocommerce-analytics__card"
+			>
 				<div className="woocommerce-filters__compare-body">
 					<Search
 						type={ type }
 						selected={ selected }
 						placeholder={ labels.placeholder }
-						onChange={ value => {
+						onChange={ ( value ) => {
 							this.setState( { selected: value } );
 						} }
 					/>

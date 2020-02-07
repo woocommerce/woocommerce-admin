@@ -36,48 +36,63 @@ export function getRequestByIdString( path, handleData = identity ) {
 			include: idList.join( ',' ),
 			per_page: idList.length,
 		};
-		return apiFetch( { path: addQueryArgs( pathString, payload ) } ).then( data =>
-			data.map( handleData )
-		);
+		return apiFetch( {
+			path: addQueryArgs( pathString, payload ),
+		} ).then( ( data ) => data.map( handleData ) );
 	};
 }
 
 export const getCategoryLabels = getRequestByIdString(
 	NAMESPACE + '/products/categories',
-	category => ( {
+	( category ) => ( {
 		key: category.id,
 		label: category.name,
 	} )
 );
 
-export const getCouponLabels = getRequestByIdString( NAMESPACE + '/coupons', coupon => ( {
-	key: coupon.id,
-	label: coupon.code,
-} ) );
+export const getCouponLabels = getRequestByIdString(
+	NAMESPACE + '/coupons',
+	( coupon ) => ( {
+		key: coupon.id,
+		label: coupon.code,
+	} )
+);
 
-export const getCustomerLabels = getRequestByIdString( NAMESPACE + '/customers', customer => ( {
-	key: customer.id,
-	label: customer.name,
-} ) );
+export const getCustomerLabels = getRequestByIdString(
+	NAMESPACE + '/customers',
+	( customer ) => ( {
+		key: customer.id,
+		label: customer.name,
+	} )
+);
 
-export const getProductLabels = getRequestByIdString( NAMESPACE + '/products', product => ( {
-	key: product.id,
-	label: product.name,
-} ) );
+export const getProductLabels = getRequestByIdString(
+	NAMESPACE + '/products',
+	( product ) => ( {
+		key: product.id,
+		label: product.name,
+	} )
+);
 
-export const getTaxRateLabels = getRequestByIdString( NAMESPACE + '/taxes', tax_rate => ( {
-	key: tax_rate.id,
-	label: getTaxCode( tax_rate ),
-} ) );
+export const getTaxRateLabels = getRequestByIdString(
+	NAMESPACE + '/taxes',
+	( tax_rate ) => ( {
+		key: tax_rate.id,
+		label: getTaxCode( tax_rate ),
+	} )
+);
 
 export const getVariationLabels = getRequestByIdString(
-	query => NAMESPACE + `/products/${ query.products }/variations`,
-	variation => {
+	( query ) => NAMESPACE + `/products/${ query.products }/variations`,
+	( variation ) => {
 		return {
 			key: variation.id,
 			label: variation.attributes.reduce(
 				( desc, attribute, index, arr ) =>
-					desc + `${ attribute.option }${ arr.length === index + 1 ? '' : ', ' }`,
+					desc +
+					`${ attribute.option }${
+						arr.length === index + 1 ? '' : ', '
+					}`,
 				''
 			),
 		};

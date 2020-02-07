@@ -42,7 +42,12 @@ class Start extends Component {
 	}
 
 	componentDidMount() {
-		const { updateProfileItems, profileItems, tosAccepted, isJetpackConnected } = this.props;
+		const {
+			updateProfileItems,
+			profileItems,
+			tosAccepted,
+			isJetpackConnected,
+		} = this.props;
 		if (
 			isJetpackConnected &&
 			this.props.activePlugins.includes( 'woocommerce-services' ) &&
@@ -50,7 +55,10 @@ class Start extends Component {
 		) {
 			// Don't track event again if they revisit the start page.
 			if ( 'already-installed' !== profileItems.plugins ) {
-				recordEvent( 'wcadmin_storeprofiler_already_installed_plugins', {} );
+				recordEvent(
+					'wcadmin_storeprofiler_already_installed_plugins',
+					{}
+				);
 			}
 
 			updateProfileItems( { plugins: 'already-installed' } );
@@ -72,10 +80,16 @@ class Start extends Component {
 		if ( isProfileItemsError ) {
 			createNotice(
 				'error',
-				__( 'There was a problem updating your preferences.', 'woocommerce-admin' )
+				__(
+					'There was a problem updating your preferences.',
+					'woocommerce-admin'
+				)
 			);
 		} else {
-			recordEvent( 'storeprofiler_welcome_clicked', { get_started: true, plugins } );
+			recordEvent( 'storeprofiler_welcome_clicked', {
+				get_started: true,
+				plugins,
+			} );
 			return updateQueryString( { step: 'store-details' } );
 		}
 	}
@@ -98,12 +112,18 @@ class Start extends Component {
 		await updateProfileItems( { plugins } );
 
 		if ( ! isProfileItemsError ) {
-			recordEvent( 'storeprofiler_welcome_clicked', { get_started: true, plugins } );
+			recordEvent( 'storeprofiler_welcome_clicked', {
+				get_started: true,
+				plugins,
+			} );
 			goToNextStep();
 		} else {
 			createNotice(
 				'error',
-				__( 'There was a problem updating your preferences.', 'woocommerce-admin' )
+				__(
+					'There was a problem updating your preferences.',
+					'woocommerce-admin'
+				)
 			);
 		}
 	}
@@ -115,7 +135,9 @@ class Start extends Component {
 			<div className="woocommerce-profile-wizard__benefit" key={ title }>
 				{ icon }
 				<div className="woocommerce-profile-wizard__benefit-content">
-					<H className="woocommerce-profile-wizard__benefit-title">{ title }</H>
+					<H className="woocommerce-profile-wizard__benefit-title">
+						{ title }
+					</H>
 					<p>{ description }</p>
 				</div>
 			</div>
@@ -141,7 +163,9 @@ class Start extends Component {
 					'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
 					'woocommerce-admin'
 				),
-				visible: ! activePlugins.includes( 'woocommerce-services' ) || ! tosAccepted,
+				visible:
+					! activePlugins.includes( 'woocommerce-services' ) ||
+					! tosAccepted,
 			},
 			{
 				title: __( 'Speed', 'woocommerce-admin' ),
@@ -162,7 +186,10 @@ class Start extends Component {
 				visible: ! isJetpackConnected,
 			},
 			{
-				title: __( 'Print your own shipping labels', 'woocommerce-admin' ),
+				title: __(
+					'Print your own shipping labels',
+					'woocommerce-admin'
+				),
 				icon: <PrintIcon />,
 				description: __(
 					'Save time at the Post Office by printing USPS shipping labels at home.',
@@ -185,9 +212,10 @@ class Start extends Component {
 	renderBenefits() {
 		return (
 			<div className="woocommerce-profile-wizard__benefits">
-				{ filter( this.getBenefits(), benefit => benefit.visible ).map( benefit =>
-					this.renderBenefit( benefit )
-				) }
+				{ filter(
+					this.getBenefits(),
+					( benefit ) => benefit.visible
+				).map( ( benefit ) => this.renderBenefit( benefit ) ) }
 			</div>
 		);
 	}
@@ -204,7 +232,7 @@ class Start extends Component {
 			pluginsToInstall.push( 'woocommerce-services' );
 		}
 		const pluginNamesString = pluginsToInstall
-			.map( pluginSlug => pluginNames[ pluginSlug ] )
+			.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
 			.join( ' & ' );
 
 		return (
@@ -212,13 +240,23 @@ class Start extends Component {
 				{ showUsageModal && (
 					<UsageModal
 						onContinue={ () =>
-							'wizard' === continueAction ? this.startWizard() : this.skipWizard()
+							'wizard' === continueAction
+								? this.startWizard()
+								: this.skipWizard()
 						}
-						onClose={ () => this.setState( { showUsageModal: false, continueAction: '' } ) }
+						onClose={ () =>
+							this.setState( {
+								showUsageModal: false,
+								continueAction: '',
+							} )
+						}
 					/>
 				) }
 				<H className="woocommerce-profile-wizard__header-title">
-					{ __( 'Start setting up your WooCommerce store', 'woocommerce-admin' ) }
+					{ __(
+						'Start setting up your WooCommerce store',
+						'woocommerce-admin'
+					) }
 				</H>
 
 				<p>
@@ -248,7 +286,13 @@ class Start extends Component {
 								'woocommerce-admin'
 							),
 							components: {
-								tosLink: <Link href="https://wordpress.com/tos" target="_blank" type="external" />,
+								tosLink: (
+									<Link
+										href="https://wordpress.com/tos"
+										target="_blank"
+										type="external"
+									/>
+								),
 								detailsLink: (
 									<Link
 										href="https://jetpack.com/support/what-data-does-jetpack-sync"
@@ -262,7 +306,12 @@ class Start extends Component {
 
 					<Button
 						isPrimary
-						onClick={ () => this.setState( { showUsageModal: true, continueAction: 'wizard' } ) }
+						onClick={ () =>
+							this.setState( {
+								showUsageModal: true,
+								continueAction: 'wizard',
+							} )
+						}
 						className="woocommerce-profile-wizard__continue"
 					>
 						{ __( 'Get started', 'woocommerce-admin' ) }
@@ -274,9 +323,17 @@ class Start extends Component {
 						<Button
 							isLink
 							className="woocommerce-profile-wizard__skip"
-							onClick={ () => this.setState( { showUsageModal: true, continueAction: 'skip' } ) }
+							onClick={ () =>
+								this.setState( {
+									showUsageModal: true,
+									continueAction: 'skip',
+								} )
+							}
 						>
-							{ sprintf( __( 'Proceed without %s', 'woocommerce-admin' ), pluginNamesString ) }
+							{ sprintf(
+								__( 'Proceed without %s', 'woocommerce-admin' ),
+								pluginNamesString
+							) }
 						</Button>
 					</p>
 				) }
@@ -286,7 +343,7 @@ class Start extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const {
 			getProfileItemsError,
 			getActivePlugins,
@@ -297,8 +354,12 @@ export default compose(
 
 		const isProfileItemsError = Boolean( getProfileItemsError() );
 
-		const options = getOptions( [ 'woocommerce_setup_jetpack_opted_in', 'wc_connect_options' ] );
-		const tosAccepted = get( options, [ 'wc_connect_options' ], {} ).tos_accepted;
+		const options = getOptions( [
+			'woocommerce_setup_jetpack_opted_in',
+			'wc_connect_options',
+		] );
+		const tosAccepted = get( options, [ 'wc_connect_options' ], {} )
+			.tos_accepted;
 
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
@@ -311,7 +372,7 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { updateProfileItems, updateOptions } = dispatch( 'wc-api' );
 		const { createNotice } = dispatch( 'core/notices' );
 

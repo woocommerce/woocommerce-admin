@@ -20,7 +20,9 @@ import { getHasItemsClass } from './utils';
 class SummaryListPlaceholder extends Component {
 	render() {
 		const { isDropdownBreakpoint } = this.props;
-		const numberOfItems = isDropdownBreakpoint ? 1 : this.props.numberOfItems;
+		const numberOfItems = isDropdownBreakpoint
+			? 1
+			: this.props.numberOfItems;
 
 		const hasItemsClass = getHasItemsClass( numberOfItems );
 		const classes = classnames( 'woocommerce-summary', {
@@ -28,9 +30,12 @@ class SummaryListPlaceholder extends Component {
 			'is-placeholder': true,
 		} );
 
-		const rows = range( numberOfItems ).map( i => {
+		const rows = range( numberOfItems ).map( ( i ) => {
 			return (
-				<li className="woocommerce-summary__item-container is-placeholder" key={ i }>
+				<li
+					className="woocommerce-summary__item-container is-placeholder"
+					key={ i }
+				>
 					<span className="woocommerce-summary__item">
 						<span className="woocommerce-summary__item-label" />
 						<span className="woocommerce-summary__item-data">

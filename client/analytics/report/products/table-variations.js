@@ -72,14 +72,14 @@ export default class VariationsReportTable extends Component {
 				? {
 						label: __( 'Status', 'woocommerce-admin' ),
 						key: 'stock_status',
-					}
+				  }
 				: null,
 			'yes' === manageStock
 				? {
 						label: __( 'Stock', 'woocommerce-admin' ),
 						key: 'stock',
 						isNumeric: true,
-					}
+				  }
 				: null,
 		].filter( Boolean );
 	}
@@ -88,16 +88,27 @@ export default class VariationsReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
-		return map( data, row => {
+		return map( data, ( row ) => {
 			const { items_sold, net_revenue, orders_count, product_id } = row;
 			const extended_info = row.extended_info || {};
-			const { stock_status, stock_quantity, low_stock_amount, sku } = extended_info;
+			const {
+				stock_status,
+				stock_quantity,
+				low_stock_amount,
+				sku,
+			} = extended_info;
 			const name = get( row, [ 'extended_info', 'name' ], '' );
-			const ordersLink = getNewPath( persistedQuery, '/analytics/orders', {
-				filter: 'advanced',
-				product_includes: query.products,
-			} );
-			const editPostLink = getAdminLink( `post.php?post=${ product_id }&action=edit` );
+			const ordersLink = getNewPath(
+				persistedQuery,
+				'/analytics/orders',
+				{
+					filter: 'advanced',
+					product_includes: query.products,
+				}
+			);
+			const editPostLink = getAdminLink(
+				`post.php?post=${ product_id }&action=edit`
+			);
 
 			return [
 				{
@@ -130,35 +141,58 @@ export default class VariationsReportTable extends Component {
 				},
 				'yes' === manageStock
 					? {
-							display: isLowStock( stock_status, stock_quantity, low_stock_amount ) ? (
+							display: isLowStock(
+								stock_status,
+								stock_quantity,
+								low_stock_amount
+							) ? (
 								<Link href={ editPostLink } type="wp-admin">
-									{ _x( 'Low', 'Indication of a low quantity', 'woocommerce-admin' ) }
+									{ _x(
+										'Low',
+										'Indication of a low quantity',
+										'woocommerce-admin'
+									) }
 								</Link>
 							) : (
 								stockStatuses[ stock_status ]
 							),
 							value: stockStatuses[ stock_status ],
-						}
+					  }
 					: null,
 				'yes' === manageStock
 					? {
 							display: stock_quantity,
 							value: stock_quantity,
-						}
+					  }
 					: null,
 			].filter( Boolean );
 		} );
 	}
 
 	getSummary( totals ) {
-		const { variations_count = 0, items_sold = 0, net_revenue = 0, orders_count = 0 } = totals;
+		const {
+			variations_count = 0,
+			items_sold = 0,
+			net_revenue = 0,
+			orders_count = 0,
+		} = totals;
 		return [
 			{
-				label: _n( 'variation sold', 'variations sold', variations_count, 'woocommerce-admin' ),
+				label: _n(
+					'variation sold',
+					'variations sold',
+					variations_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', variations_count ),
 			},
 			{
-				label: _n( 'item sold', 'items sold', items_sold, 'woocommerce-admin' ),
+				label: _n(
+					'item sold',
+					'items sold',
+					items_sold,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', items_sold ),
 			},
 			{
@@ -166,18 +200,35 @@ export default class VariationsReportTable extends Component {
 				value: formatCurrency( net_revenue ),
 			},
 			{
-				label: _n( 'orders', 'orders', orders_count, 'woocommerce-admin' ),
+				label: _n(
+					'orders',
+					'orders',
+					orders_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', orders_count ),
 			},
 		];
 	}
 
 	render() {
-		const { advancedFilters, baseSearchQuery, filters, isRequesting, query } = this.props;
+		const {
+			advancedFilters,
+			baseSearchQuery,
+			filters,
+			isRequesting,
+			query,
+		} = this.props;
 
 		const labels = {
-			helpText: __( 'Check at least two variations below to compare', 'woocommerce-admin' ),
-			placeholder: __( 'Search by variation name or SKU', 'woocommerce-admin' ),
+			helpText: __(
+				'Check at least two variations below to compare',
+				'woocommerce-admin'
+			),
+			placeholder: __(
+				'Search by variation name or SKU',
+				'woocommerce-admin'
+			),
 		};
 
 		return (

@@ -12,7 +12,11 @@ import PropTypes from 'prop-types';
  * WooCommerce dependencies
  */
 import { Flag, Form, TextControlWithAffixes } from '@woocommerce/components';
-import { CURRENCY, getSetting, setSetting } from '@woocommerce/wc-admin-settings';
+import {
+	CURRENCY,
+	getSetting,
+	setSetting,
+} from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -34,23 +38,27 @@ class ShippingRates extends Component {
 
 		let restOfTheWorld = false;
 		let shippingCost = false;
-		shippingZones.map( zone => {
+		shippingZones.map( ( zone ) => {
 			if ( 0 === zone.id ) {
-				restOfTheWorld = zone.toggleEnabled && values[ `${ zone.id }_enabled` ];
+				restOfTheWorld =
+					zone.toggleEnabled && values[ `${ zone.id }_enabled` ];
 			} else {
 				shippingCost =
 					'' !== values[ `${ zone.id }_rate` ] &&
-					parseFloat( values[ `${ zone.id }_rate` ] ) !== parseFloat( 0 );
+					parseFloat( values[ `${ zone.id }_rate` ] ) !==
+						parseFloat( 0 );
 			}
 
 			const flatRateMethods = zone.methods
-				? zone.methods.filter( method => 'flat_rate' === method.method_id )
+				? zone.methods.filter(
+						( method ) => 'flat_rate' === method.method_id
+				  )
 				: [];
 
 			if ( zone.toggleEnabled && ! values[ `${ zone.id }_enabled` ] ) {
 				// Disable any flat rate methods that exist if toggled off.
 				if ( flatRateMethods.length ) {
-					flatRateMethods.map( method => {
+					flatRateMethods.map( ( method ) => {
 						apiFetch( {
 							method: 'POST',
 							path: `/wc/v3/shipping/zones/${ zone.id }/methods/${ method.instance_id }`,
@@ -98,7 +106,10 @@ class ShippingRates extends Component {
 			shippingZonesCount: 1,
 		} );
 
-		createNotice( 'success', __( 'Your shipping rates have been updated.', 'woocommerce-admin' ) );
+		createNotice(
+			'success',
+			__( 'Your shipping rates have been updated.', 'woocommerce-admin' )
+		);
 
 		this.props.onComplete();
 	}
@@ -107,12 +118,20 @@ class ShippingRates extends Component {
 		if ( 0 === symbolPosition.indexOf( 'right' ) ) {
 			return null;
 		}
-		return <span className="woocommerce-shipping-rate__control-prefix">{ symbol }</span>;
+		return (
+			<span className="woocommerce-shipping-rate__control-prefix">
+				{ symbol }
+			</span>
+		);
 	}
 
 	renderInputSuffix( rate ) {
 		if ( 0 === symbolPosition.indexOf( 'right' ) ) {
-			return <span className="woocommerce-shipping-rate__control-suffix">{ symbol }</span>;
+			return (
+				<span className="woocommerce-shipping-rate__control-suffix">
+					{ symbol }
+				</span>
+			);
 		}
 
 		return parseFloat( rate ) === parseFloat( 0 ) ? (
@@ -134,13 +153,17 @@ class ShippingRates extends Component {
 	getInitialValues() {
 		const values = {};
 
-		this.props.shippingZones.forEach( zone => {
+		this.props.shippingZones.forEach( ( zone ) => {
 			const flatRateMethods =
 				zone.methods && zone.methods.length
-					? zone.methods.filter( method => 'flat_rate' === method.method_id )
+					? zone.methods.filter(
+							( method ) => 'flat_rate' === method.method_id
+					  )
 					: [];
 			const rate = flatRateMethods.length
-				? this.getFormattedRate( flatRateMethods[ 0 ].settings.cost.value )
+				? this.getFormattedRate(
+						flatRateMethods[ 0 ].settings.cost.value
+				  )
 				: getCurrencyFormatString( 0 );
 			values[ `${ zone.id }_rate` ] = rate;
 
@@ -157,11 +180,16 @@ class ShippingRates extends Component {
 	validate( values ) {
 		const errors = {};
 
-		const rates = Object.keys( values ).filter( field => field.endsWith( '_rate' ) );
+		const rates = Object.keys( values ).filter( ( field ) =>
+			field.endsWith( '_rate' )
+		);
 
-		rates.forEach( rate => {
+		rates.forEach( ( rate ) => {
 			if ( values[ rate ] < 0 ) {
-				errors[ rate ] = __( 'Shipping rates can not be negative numbers.', 'woocommerce-admin' );
+				errors[ rate ] = __(
+					'Shipping rates can not be negative numbers.',
+					'woocommerce-admin'
+				);
 			}
 		} );
 
@@ -181,43 +209,86 @@ class ShippingRates extends Component {
 				onSubmitCallback={ this.updateShippingZones }
 				validate={ this.validate }
 			>
-				{ ( { getInputProps, handleSubmit, setTouched, setValue, values } ) => {
+				{ ( {
+					getInputProps,
+					handleSubmit,
+					setTouched,
+					setValue,
+					values,
+				} ) => {
 					return (
 						<Fragment>
 							<div className="woocommerce-shipping-rates">
-								{ shippingZones.map( zone => (
-									<div className="woocommerce-shipping-rate" key={ zone.id }>
+								{ shippingZones.map( ( zone ) => (
+									<div
+										className="woocommerce-shipping-rate"
+										key={ zone.id }
+									>
 										<div className="woocommerce-shipping-rate__icon">
 											{ zone.locations ? (
-												zone.locations.map( location => (
-													<Flag size={ 24 } code={ location.code } key={ location.code } />
-												) )
+												zone.locations.map(
+													( location ) => (
+														<Flag
+															size={ 24 }
+															code={
+																location.code
+															}
+															key={
+																location.code
+															}
+														/>
+													)
+												)
 											) : (
 												// Icon used for zones without locations or "Rest of the world".
-												<i className="material-icons-outlined">public</i>
+												<i className="material-icons-outlined">
+													public
+												</i>
 											) }
 										</div>
 										<div className="woocommerce-shipping-rate__main">
 											<div className="woocommerce-shipping-rate__name">
 												{ zone.name }
 												{ zone.toggleEnabled && (
-													<FormToggle { ...getInputProps( `${ zone.id }_enabled` ) } />
+													<FormToggle
+														{ ...getInputProps(
+															`${ zone.id }_enabled`
+														) }
+													/>
 												) }
 											</div>
-											{ ( ! zone.toggleEnabled || values[ `${ zone.id }_enabled` ] ) && (
+											{ ( ! zone.toggleEnabled ||
+												values[
+													`${ zone.id }_enabled`
+												] ) && (
 												<TextControlWithAffixes
-													label={ __( 'Shipping cost', 'woocommerce-admin' ) }
+													label={ __(
+														'Shipping cost',
+														'woocommerce-admin'
+													) }
 													required
-													{ ...getInputProps( `${ zone.id }_rate` ) }
+													{ ...getInputProps(
+														`${ zone.id }_rate`
+													) }
 													onBlur={ () => {
-														setTouched( `${ zone.id }_rate` );
+														setTouched(
+															`${ zone.id }_rate`
+														);
 														setValue(
 															`${ zone.id }_rate`,
-															this.getFormattedRate( values[ `${ zone.id }_rate` ] )
+															this.getFormattedRate(
+																values[
+																	`${ zone.id }_rate`
+																]
+															)
 														);
 													} }
 													prefix={ this.renderInputPrefix() }
-													suffix={ this.renderInputSuffix( values[ `${ zone.id }_rate` ] ) }
+													suffix={ this.renderInputSuffix(
+														values[
+															`${ zone.id }_rate`
+														]
+													) }
 													className="muriel-input-text woocommerce-shipping-rate__control-wrapper"
 												/>
 											) }
@@ -227,7 +298,8 @@ class ShippingRates extends Component {
 							</div>
 
 							<Button isPrimary onClick={ handleSubmit }>
-								{ buttonText || __( 'Update', 'woocommerce-admin' ) }
+								{ buttonText ||
+									__( 'Update', 'woocommerce-admin' ) }
 							</Button>
 						</Fragment>
 					);

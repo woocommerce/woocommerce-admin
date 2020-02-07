@@ -26,12 +26,12 @@ const typeEndpointMap = {
 };
 
 function read( resourceNames, fetch = apiFetch ) {
-	const filteredNames = resourceNames.filter( name => {
+	const filteredNames = resourceNames.filter( ( name ) => {
 		const prefix = getResourcePrefix( name );
 		return Boolean( typeEndpointMap[ prefix ] );
 	} );
 
-	return filteredNames.map( async resourceName => {
+	return filteredNames.map( async ( resourceName ) => {
 		const prefix = getResourcePrefix( resourceName );
 		const endpoint = typeEndpointMap[ prefix ];
 		const query = getResourceIdentifier( resourceName );
@@ -43,8 +43,12 @@ function read( resourceNames, fetch = apiFetch ) {
 		try {
 			const response = await fetch( fetchArgs );
 			const report = await response.json();
-			const totalResults = parseInt( response.headers.get( 'x-wp-total' ) );
-			const totalPages = parseInt( response.headers.get( 'x-wp-totalpages' ) );
+			const totalResults = parseInt(
+				response.headers.get( 'x-wp-total' )
+			);
+			const totalPages = parseInt(
+				response.headers.get( 'x-wp-totalpages' )
+			);
 
 			return {
 				[ resourceName ]: {

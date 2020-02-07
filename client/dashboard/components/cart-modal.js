@@ -90,11 +90,14 @@ class CartModal extends Component {
 
 	renderProducts() {
 		const { productIds } = this.props;
-		const { productTypes = {}, themes = [] } = getSetting( 'onboarding', {} );
+		const { productTypes = {}, themes = [] } = getSetting(
+			'onboarding',
+			{}
+		);
 		const listItems = [];
 
-		productIds.forEach( productId => {
-			const productInfo = find( productTypes, productType => {
+		productIds.forEach( ( productId ) => {
+			const productInfo = find( productTypes, ( productType ) => {
 				return productType.product === productId;
 			} );
 
@@ -105,7 +108,7 @@ class CartModal extends Component {
 				} );
 			}
 
-			const themeInfo = find( themes, theme => {
+			const themeInfo = find( themes, ( theme ) => {
 				return theme.id === productId;
 			} );
 
@@ -116,7 +119,13 @@ class CartModal extends Component {
 						themeInfo.title,
 						decodeEntities( themeInfo.price )
 					),
-					content: <span dangerouslySetInnerHTML={ sanitizeHTML( themeInfo.excerpt ) } />,
+					content: (
+						<span
+							dangerouslySetInnerHTML={ sanitizeHTML(
+								themeInfo.excerpt
+							) }
+						/>
+					),
 				} );
 			}
 		} );
@@ -168,7 +177,7 @@ class CartModal extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const { getProfileItems } = select( 'wc-api' );
 		const profileItems = getProfileItems();
 		const productIds = getProductIdsForCart( profileItems );

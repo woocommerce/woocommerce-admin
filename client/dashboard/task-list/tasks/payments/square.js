@@ -33,7 +33,9 @@ class Square extends Component {
 		// Handle redirect back from Square
 		if ( query[ 'square-connect' ] ) {
 			if ( '1' === query[ 'square-connect' ] ) {
-				recordEvent( 'tasklist_payment_connect_method', { payment_method: 'square' } );
+				recordEvent( 'tasklist_payment_connect_method', {
+					payment_method: 'square',
+				} );
 				this.props.markConfigured( 'square' );
 				this.props.createNotice(
 					'success',
@@ -45,11 +47,17 @@ class Square extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		if ( false === prevProps.optionsIsRequesting && true === this.props.optionsIsRequesting ) {
+		if (
+			false === prevProps.optionsIsRequesting &&
+			true === this.props.optionsIsRequesting
+		) {
 			this.props.setRequestPending( true );
 		}
 
-		if ( true === prevProps.optionsIsRequesting && false === this.props.optionsIsRequesting ) {
+		if (
+			true === prevProps.optionsIsRequesting &&
+			false === this.props.optionsIsRequesting
+		) {
 			this.props.setRequestPending( false );
 		}
 	}
@@ -115,7 +123,7 @@ class Square extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const { getOptions, isGetOptionsRequesting } = select( 'wc-api' );
 		const options = getOptions( [ 'woocommerce_stripe_settings' ] );
 		const optionsIsRequesting = Boolean(
@@ -127,7 +135,7 @@ export default compose(
 			optionsIsRequesting,
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 		const { updateOptions } = dispatch( 'wc-api' );
 		return {

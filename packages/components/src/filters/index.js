@@ -55,14 +55,24 @@ class ReportFilters extends Component {
 			}
 			const { settings = {} } = filter;
 			return (
-				<div key={ param } className="woocommerce-filters__advanced-filters">
-					<CompareFilter path={ path } query={ query } { ...settings } />
+				<div
+					key={ param }
+					className="woocommerce-filters__advanced-filters"
+				>
+					<CompareFilter
+						path={ path }
+						query={ query }
+						{ ...settings }
+					/>
 				</div>
 			);
 		}
 		if ( 'advanced' === query[ param ] ) {
 			return (
-				<div key={ param } className="woocommerce-filters__advanced-filters">
+				<div
+					key={ param }
+					className="woocommerce-filters__advanced-filters"
+				>
 					<AdvancedFilters
 						siteLocale={ siteLocale }
 						currency={ currency }
@@ -94,7 +104,9 @@ class ReportFilters extends Component {
 		} = this.props;
 		return (
 			<Fragment>
-				<H className="screen-reader-text">{ __( 'Filters', 'woocommerce-admin' ) }</H>
+				<H className="screen-reader-text">
+					{ __( 'Filters', 'woocommerce-admin' ) }
+				</H>
 				<Section component="div" className="woocommerce-filters">
 					<div className="woocommerce-filters__basic-filters">
 						{ showDatePicker && (
@@ -105,7 +117,7 @@ class ReportFilters extends Component {
 								isoDateFormat={ isoDateFormat }
 							/>
 						) }
-						{ filters.map( config => {
+						{ filters.map( ( config ) => {
 							if ( config.showFilters( query ) ) {
 								return (
 									<FilterPicker

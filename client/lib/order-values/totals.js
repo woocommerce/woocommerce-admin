@@ -12,7 +12,10 @@ import { find, get } from 'lodash';
  */
 export function getOrderDiscountTotal( order ) {
 	const coupons = get( order, 'coupon_lines', [] );
-	const total = coupons.reduce( ( sum, value ) => sum + parseFloat( value.discount ), 0 );
+	const total = coupons.reduce(
+		( sum, value ) => sum + parseFloat( value.discount ),
+		0
+	);
 	return parseFloat( total ) || 0;
 }
 
@@ -39,7 +42,10 @@ export function getOrderFeeCost( order, id ) {
  */
 export function getOrderFeeTotal( order ) {
 	const fees = get( order, 'fee_lines', [] );
-	const total = fees.reduce( ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	const total = fees.reduce(
+		( sum, value ) => sum + parseFloat( value.total ),
+		0
+	);
 	return parseFloat( total ) || 0;
 }
 
@@ -65,7 +71,10 @@ export function getOrderItemCost( order, id ) {
  */
 export function getOrderRefundTotal( order ) {
 	const refunds = get( order, 'refunds', [] );
-	const total = refunds.reduce( ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	const total = refunds.reduce(
+		( sum, value ) => sum + parseFloat( value.total ),
+		0
+	);
 	return parseFloat( total ) || 0;
 }
 
@@ -77,7 +86,10 @@ export function getOrderRefundTotal( order ) {
  */
 export function getOrderShippingTotal( order ) {
 	const shipping = get( order, 'shipping_lines', [] );
-	const total = shipping.reduce( ( sum, value ) => sum + parseFloat( value.total ), 0 );
+	const total = shipping.reduce(
+		( sum, value ) => sum + parseFloat( value.total ),
+		0
+	);
 	return parseFloat( total ) || 0;
 }
 
@@ -89,7 +101,10 @@ export function getOrderShippingTotal( order ) {
  */
 export function getOrderSubtotal( order ) {
 	const items = get( order, 'line_items', [] );
-	const total = items.reduce( ( sum, value ) => sum + parseFloat( value.subtotal ), 0 );
+	const total = items.reduce(
+		( sum, value ) => sum + parseFloat( value.subtotal ),
+		0
+	);
 	return parseFloat( total ) || 0;
 }
 

@@ -74,7 +74,10 @@ export default class CustomersReportTable extends Component {
 			},
 			{
 				label: __( 'AOV', 'woocommerce-admin' ),
-				screenReaderLabel: __( 'Average Order Value', 'woocommerce-admin' ),
+				screenReaderLabel: __(
+					'Average Order Value',
+					'woocommerce-admin'
+				),
 				key: 'avg_order_value',
 				isNumeric: true,
 			},
@@ -105,11 +108,13 @@ export default class CustomersReportTable extends Component {
 	}
 
 	getCountryName( code ) {
-		return typeof countries[ code ] !== 'undefined' ? countries[ code ] : null;
+		return typeof countries[ code ] !== 'undefined'
+			? countries[ code ]
+			: null;
 	}
 
 	getRowsContent( customers ) {
-		return customers.map( customer => {
+		return customers.map( ( customer ) => {
 			const {
 				avg_order_value,
 				date_last_active,
@@ -128,7 +133,10 @@ export default class CustomersReportTable extends Component {
 			const countryName = this.getCountryName( country );
 
 			const customerNameLink = user_id ? (
-				<Link href={ getAdminLink( 'user-edit.php?user_id=' + user_id ) } type="wp-admin">
+				<Link
+					href={ getAdminLink( 'user-edit.php?user_id=' + user_id ) }
+					type="wp-admin"
+				>
 					{ name }
 				</Link>
 			) : (
@@ -136,13 +144,19 @@ export default class CustomersReportTable extends Component {
 			);
 
 			const dateLastActive = date_last_active ? (
-				<Date date={ date_last_active } visibleFormat={ defaultTableDateFormat } />
+				<Date
+					date={ date_last_active }
+					visibleFormat={ defaultTableDateFormat }
+				/>
 			) : (
 				'—'
 			);
 
 			const dateRegistered = date_registered ? (
-				<Date date={ date_registered } visibleFormat={ defaultTableDateFormat } />
+				<Date
+					date={ date_registered }
+					visibleFormat={ defaultTableDateFormat }
+				/>
 			) : (
 				'—'
 			);
@@ -218,11 +232,21 @@ export default class CustomersReportTable extends Component {
 		} = totals;
 		return [
 			{
-				label: _n( 'customer', 'customers', customers_count, 'woocommerce-admin' ),
+				label: _n(
+					'customer',
+					'customers',
+					customers_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', customers_count ),
 			},
 			{
-				label: _n( 'average order', 'average orders', avg_orders_count, 'woocommerce-admin' ),
+				label: _n(
+					'average order',
+					'average orders',
+					avg_orders_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', avg_orders_count ),
 			},
 			{
@@ -248,7 +272,12 @@ export default class CustomersReportTable extends Component {
 				isRequesting={ isRequesting }
 				itemIdField="id"
 				query={ query }
-				labels={ { placeholder: __( 'Search by customer name', 'woocommerce-admin' ) } }
+				labels={ {
+					placeholder: __(
+						'Search by customer name',
+						'woocommerce-admin'
+					),
+				} }
 				searchBy="customers"
 				title={ __( 'Customers', 'woocommerce-admin' ) }
 				columnPrefsKey="customers_report_columns"

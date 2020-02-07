@@ -61,7 +61,10 @@ class DatePickerContent extends Component {
 		return (
 			<div>
 				<H className="screen-reader-text" tabIndex="0">
-					{ __( 'Select date range and comparison', 'woocommerce-admin' ) }
+					{ __(
+						'Select date range and comparison',
+						'woocommerce-admin'
+					) }
 				</H>
 				<Section component={ false }>
 					<H className="woocommerce-filters-date__text">
@@ -82,13 +85,18 @@ class DatePickerContent extends Component {
 						] }
 						className="woocommerce-filters-date__tabs"
 						activeClass="is-active"
-						initialTabName={ 'custom' === period ? 'custom' : 'period' }
+						initialTabName={
+							'custom' === period ? 'custom' : 'period'
+						}
 						onSelect={ this.onTabSelect }
 					>
-						{ selected => (
+						{ ( selected ) => (
 							<Fragment>
 								{ selected.name === 'period' && (
-									<PresetPeriods onSelect={ onUpdate } period={ period } />
+									<PresetPeriods
+										onSelect={ onUpdate }
+										period={ period }
+									/>
 								) }
 								{ selected.name === 'custom' && (
 									<DateRange
@@ -102,41 +110,71 @@ class DatePickerContent extends Component {
 										afterError={ afterError }
 										beforeError={ beforeError }
 										shortDateFormat={ shortDateFormat }
-										losesFocusTo={ this.controlsRef.current }
+										losesFocusTo={
+											this.controlsRef.current
+										}
 									/>
 								) }
 								<div
-									className={ classnames( 'woocommerce-filters-date__content-controls', {
-										'is-custom': selected.name === 'custom',
-									} ) }
+									className={ classnames(
+										'woocommerce-filters-date__content-controls',
+										{
+											'is-custom':
+												selected.name === 'custom',
+										}
+									) }
 									ref={ this.controlsRef }
 								>
 									<H className="woocommerce-filters-date__text">
-										{ __( 'compare to', 'woocommerce-admin' ) }
+										{ __(
+											'compare to',
+											'woocommerce-admin'
+										) }
 									</H>
-									<ComparePeriods onSelect={ onUpdate } compare={ compare } />
+									<ComparePeriods
+										onSelect={ onUpdate }
+										compare={ compare }
+									/>
 									<div className="woocommerce-filters-date__button-group">
 										{ selected.name === 'custom' && (
 											<Button
 												className="woocommerce-filters-date__button"
 												isDefault
 												onClick={ resetCustomValues }
-												disabled={ ! ( after || before ) }
+												disabled={
+													! ( after || before )
+												}
 											>
-												{ __( 'Reset', 'woocommerce-admin' ) }
+												{ __(
+													'Reset',
+													'woocommerce-admin'
+												) }
 											</Button>
 										) }
 										{ isValidSelection( selected.name ) ? (
 											<Button
 												className="woocommerce-filters-date__button"
-												onClick={ onSelect( selected.name, onClose ) }
+												onClick={ onSelect(
+													selected.name,
+													onClose
+												) }
 												isPrimary
 											>
-												{ __( 'Update', 'woocommerce-admin' ) }
+												{ __(
+													'Update',
+													'woocommerce-admin'
+												) }
 											</Button>
 										) : (
-											<Button className="woocommerce-filters-date__button" isPrimary disabled>
-												{ __( 'Update', 'woocommerce-admin' ) }
+											<Button
+												className="woocommerce-filters-date__button"
+												isPrimary
+												disabled
+											>
+												{ __(
+													'Update',
+													'woocommerce-admin'
+												) }
 											</Button>
 										) }
 									</div>

@@ -10,10 +10,17 @@ import { dispatch } from '@wordpress/data';
  */
 import { getResourceName } from '../utils';
 
-const initiateReportExport = operations => async ( reportType, reportTitle, reportArgs ) => {
+const initiateReportExport = ( operations ) => async (
+	reportType,
+	reportTitle,
+	reportArgs
+) => {
 	const { createNotice } = dispatch( 'core/notices' );
 
-	const resourceName = getResourceName( `report-export-${ reportType }`, reportArgs );
+	const resourceName = getResourceName(
+		`report-export-${ reportType }`,
+		reportArgs
+	);
 
 	const result = await operations.update( [ resourceName ], {
 		[ resourceName ]: reportArgs,
@@ -24,7 +31,13 @@ const initiateReportExport = operations => async ( reportType, reportTitle, repo
 	if ( response && response.success ) {
 		createNotice(
 			'success',
-			sprintf( __( 'Your %s Report will be emailed to you.', 'woocommerce-admin' ), reportTitle )
+			sprintf(
+				__(
+					'Your %s Report will be emailed to you.',
+					'woocommerce-admin'
+				),
+				reportTitle
+			)
 		);
 	}
 	if ( response && response.error ) {

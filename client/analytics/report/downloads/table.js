@@ -70,7 +70,7 @@ export default class CouponsReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
-		return map( downloads, download => {
+		return map( downloads, ( download ) => {
 			const {
 				_embedded,
 				date,
@@ -84,14 +84,23 @@ export default class CouponsReportTable extends Component {
 			} = download;
 			const { name: productName } = _embedded.product[ 0 ];
 
-			const productLink = getNewPath( persistedQuery, '/analytics/products', {
-				filter: 'single_product',
-				products: product_id,
-			} );
+			const productLink = getNewPath(
+				persistedQuery,
+				'/analytics/products',
+				{
+					filter: 'single_product',
+					products: product_id,
+				}
+			);
 
 			return [
 				{
-					display: <Date date={ date } visibleFormat={ defaultTableDateFormat } />,
+					display: (
+						<Date
+							date={ date }
+							visibleFormat={ defaultTableDateFormat }
+						/>
+					),
 					value: date,
 				},
 				{
@@ -113,7 +122,9 @@ export default class CouponsReportTable extends Component {
 				{
 					display: (
 						<Link
-							href={ getAdminLink( `post.php?post=${ order_id }&action=edit` ) }
+							href={ getAdminLink(
+								`post.php?post=${ order_id }&action=edit`
+							) }
 							type="wp-admin"
 						>
 							{ order_number }
@@ -147,7 +158,12 @@ export default class CouponsReportTable extends Component {
 				value: formatValue( 'number', days ),
 			},
 			{
-				label: _n( 'download', 'downloads', download_count, 'woocommerce-admin' ),
+				label: _n(
+					'download',
+					'downloads',
+					download_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', download_count ),
 			},
 		];

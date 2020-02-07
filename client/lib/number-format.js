@@ -15,4 +15,8 @@ const storeNumberFormat = partial( numberFormat, CURRENCY );
 const storeFormatValue = partial( formatValue, CURRENCY );
 
 // Export the expected API for the consuming app.
-export { storeNumberFormat as numberFormat, storeFormatValue as formatValue, calculateDelta };
+export {
+	storeNumberFormat as numberFormat,
+	storeFormatValue as formatValue,
+	calculateDelta,
+};

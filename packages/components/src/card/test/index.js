@@ -13,7 +13,9 @@ import Card from '../';
 
 describe( 'Card', () => {
 	test( 'it renders correctly', () => {
-		const tree = renderer.create( <Card title="A Card Example" /> ).toJSON();
+		const tree = renderer
+			.create( <Card title="A Card Example" /> )
+			.toJSON();
 		expect( tree ).toMatchSnapshot();
 	} );
 

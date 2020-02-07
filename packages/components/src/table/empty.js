@@ -13,7 +13,10 @@ import PropTypes from 'prop-types';
  */
 const EmptyTable = ( { children, numberOfRows } ) => {
 	return (
-		<div className="woocommerce-table is-empty" style={ { '--number-of-rows': numberOfRows } }>
+		<div
+			className="woocommerce-table is-empty"
+			style={ { '--number-of-rows': numberOfRows } }
+		>
 			{ children }
 		</div>
 	);

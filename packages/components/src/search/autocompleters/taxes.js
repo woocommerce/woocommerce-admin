@@ -24,11 +24,13 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-				code: search,
-				per_page: 10,
-			}
+					code: search,
+					per_page: 10,
+			  }
 			: {};
-		return apiFetch( { path: addQueryArgs( '/wc-analytics/taxes', query ) } );
+		return apiFetch( {
+			path: addQueryArgs( '/wc-analytics/taxes', query ),
+		} );
 	},
 	isDebounced: true,
 	getOptionIdentifier( tax ) {
@@ -41,10 +43,15 @@ export default {
 		const label = (
 			<span key="name" className="woocommerce-search__result-name">
 				{ interpolateComponents( {
-					mixedString: __( 'All taxes with codes that include {{query /}}', 'woocommerce-admin' ),
+					mixedString: __(
+						'All taxes with codes that include {{query /}}',
+						'woocommerce-admin'
+					),
 					components: {
 						query: (
-							<strong className="components-form-token-field__suggestion-match">{ query }</strong>
+							<strong className="components-form-token-field__suggestion-match">
+								{ query }
+							</strong>
 						),
 					},
 				} ) }
@@ -61,7 +68,11 @@ export default {
 	getOptionLabel( tax, query ) {
 		const match = computeSuggestionMatch( getTaxCode( tax ), query ) || {};
 		return (
-			<span key="name" className="woocommerce-search__result-name" aria-label={ tax.code }>
+			<span
+				key="name"
+				className="woocommerce-search__result-name"
+				aria-label={ tax.code }
+			>
 				{ match.suggestionBeforeMatch }
 				<strong className="components-form-token-field__suggestion-match">
 					{ match.suggestionMatch }

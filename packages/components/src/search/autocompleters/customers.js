@@ -24,12 +24,14 @@ export default {
 	options( name ) {
 		const query = name
 			? {
-				search: name,
-				searchby: 'name',
-				per_page: 10,
-			}
+					search: name,
+					searchby: 'name',
+					per_page: 10,
+			  }
 			: {};
-		return apiFetch( { path: addQueryArgs( '/wc-analytics/customers', query ) } );
+		return apiFetch( {
+			path: addQueryArgs( '/wc-analytics/customers', query ),
+		} );
 	},
 	isDebounced: true,
 	getOptionIdentifier( customer ) {
@@ -48,7 +50,9 @@ export default {
 					),
 					components: {
 						query: (
-							<strong className="components-form-token-field__suggestion-match">{ query }</strong>
+							<strong className="components-form-token-field__suggestion-match">
+								{ query }
+							</strong>
 						),
 					},
 				} ) }
@@ -65,7 +69,11 @@ export default {
 	getOptionLabel( customer, query ) {
 		const match = computeSuggestionMatch( customer.name, query ) || {};
 		return (
-			<span key="name" className="woocommerce-search__result-name" aria-label={ customer.name }>
+			<span
+				key="name"
+				className="woocommerce-search__result-name"
+				aria-label={ customer.name }
+			>
 				{ match.suggestionBeforeMatch }
 				<strong className="components-form-token-field__suggestion-match">
 					{ match.suggestionMatch }

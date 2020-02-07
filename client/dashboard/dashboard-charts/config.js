@@ -97,8 +97,10 @@ const defaultCharts = [
 
 export const uniqCharts = applyFilters(
 	DASHBOARD_CHARTS_FILTER,
-	defaultCharts.map( chartDef => ( {
-		...charts[ chartDef.report ].find( chart => chart.key === chartDef.key ),
+	defaultCharts.map( ( chartDef ) => ( {
+		...charts[ chartDef.report ].find(
+			( chart ) => chart.key === chartDef.key
+		),
 		label: chartDef.label,
 		endpoint: chartDef.report,
 	} ) )

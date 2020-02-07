@@ -24,12 +24,14 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-				search,
-				per_page: 10,
-				orderby: 'count',
-			}
+					search,
+					per_page: 10,
+					orderby: 'count',
+			  }
 			: {};
-		return apiFetch( { path: addQueryArgs( '/wc-analytics/products/categories', query ) } );
+		return apiFetch( {
+			path: addQueryArgs( '/wc-analytics/products/categories', query ),
+		} );
 	},
 	isDebounced: true,
 	getOptionIdentifier( category ) {
@@ -48,7 +50,9 @@ export default {
 					),
 					components: {
 						query: (
-							<strong className="components-form-token-field__suggestion-match">{ query }</strong>
+							<strong className="components-form-token-field__suggestion-match">
+								{ query }
+							</strong>
 						),
 					},
 				} ) }
@@ -66,7 +70,11 @@ export default {
 		const match = computeSuggestionMatch( cat.name, query ) || {};
 		// @todo Bring back ProductImage, but allow for product category image
 		return (
-			<span key="name" className="woocommerce-search__result-name" aria-label={ cat.name }>
+			<span
+				key="name"
+				className="woocommerce-search__result-name"
+				aria-label={ cat.name }
+			>
 				{ match.suggestionBeforeMatch }
 				<strong className="components-form-token-field__suggestion-match">
 					{ match.suggestionMatch }

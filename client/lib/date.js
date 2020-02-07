@@ -40,7 +40,10 @@ import {
 const {
 	woocommerce_default_date_range: defaultDateRange = 'period=month&compare=previous_year',
 } = getSetting( 'wcAdminSettings', {} );
-const storeGetDateParamsFromQuery = partialRight( getDateParamsFromQuery, defaultDateRange );
+const storeGetDateParamsFromQuery = partialRight(
+	getDateParamsFromQuery,
+	defaultDateRange
+);
 const storeGetCurrentDates = partialRight( getCurrentDates, defaultDateRange );
 
 // Export the expected API for the consuming app.

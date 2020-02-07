@@ -32,7 +32,11 @@ class DateRangeFilterPicker extends Component {
 	}
 
 	formatDate( date, format ) {
-		if ( date && date._isAMomentObject && ( 'function' === typeof date.format ) ) {
+		if (
+			date &&
+			date._isAMomentObject &&
+			'function' === typeof date.format
+		) {
 			return date.format( format );
 		}
 
@@ -61,7 +65,7 @@ class DateRangeFilterPicker extends Component {
 
 	onSelect( selectedTab, onClose ) {
 		const { isoDateFormat, onRangeSelect } = this.props;
-		return event => {
+		return ( event ) => {
 			const { period, compare, after, before } = this.state;
 			const data = {
 				period: 'custom' === selectedTab ? 'custom' : period,
@@ -83,7 +87,9 @@ class DateRangeFilterPicker extends Component {
 		const { primaryDate, secondaryDate } = this.props.dateQuery;
 		return [
 			`${ primaryDate.label } (${ primaryDate.range })`,
-			`${ __( 'vs.', 'woocommerce-admin' ) } ${ secondaryDate.label } (${ secondaryDate.range })`,
+			`${ __( 'vs.', 'woocommerce-admin' ) } ${ secondaryDate.label } (${
+				secondaryDate.range
+			})`,
 		];
 	}
 
@@ -121,7 +127,9 @@ class DateRangeFilterPicker extends Component {
 		} = this.state;
 		return (
 			<div className="woocommerce-filters-filter">
-				<span className="woocommerce-filters-label">{ __( 'Date Range', 'woocommerce-admin' ) }:</span>
+				<span className="woocommerce-filters-label">
+					{ __( 'Date Range', 'woocommerce-admin' ) }:
+				</span>
 				<Dropdown
 					ref={ this.dropdownRef }
 					contentClassName="woocommerce-filters-date__content"

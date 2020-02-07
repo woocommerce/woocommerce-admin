@@ -31,7 +31,9 @@ describe( 'ActivityCardPlaceholder', () => {
 	} );
 
 	test( 'should render a card placeholder with all optional placeholder', () => {
-		const card = shallow( <ActivityCardPlaceholder hasAction hasDate hasSubtitle /> );
+		const card = shallow(
+			<ActivityCardPlaceholder hasAction hasDate hasSubtitle />
+		);
 		expect( card ).toMatchSnapshot();
 	} );
 

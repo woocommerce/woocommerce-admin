@@ -128,7 +128,9 @@ describe( 'getOrderTotal', () => {
 	} );
 
 	it( 'should get the sum of line_item totals regardless of coupons', () => {
-		expect( getOrderTotal( orderWithCoupons ).toFixed( 2 ) ).toBe( '74.67' );
+		expect( getOrderTotal( orderWithCoupons ).toFixed( 2 ) ).toBe(
+			'74.67'
+		);
 	} );
 
 	it( 'should return 0 if there is nothing in the order', () => {

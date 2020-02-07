@@ -9,10 +9,7 @@ import { utcParse as d3UTCParse } from 'd3-time-format';
  */
 import dummyOrders from './fixtures/dummy-orders';
 import orderedKeys from './fixtures/dummy-ordered-keys';
-import {
-	getOrderedKeys,
-	isDataEmpty,
-} from '../index';
+import { getOrderedKeys, isDataEmpty } from '../index';
 
 const parseDate = d3UTCParse( '%Y-%m-%dT%H:%M:%S' );
 const testOrderedKeys = getOrderedKeys( dummyOrders );
@@ -60,7 +57,7 @@ describe( 'isDataEmpty', () => {
 		expect( isDataEmpty( data, 100 ) ).toBeTruthy();
 	} );
 
-	it( 'should return false if at least one data values doesn\'t match the base value', () => {
+	it( "should return false if at least one data values doesn't match the base value", () => {
 		const data = [
 			{
 				lorem: {
@@ -83,8 +80,7 @@ describe( 'isDataEmpty', () => {
 				ipsum: {
 					value: null,
 				},
-				dolor: {
-				},
+				dolor: {},
 			},
 		];
 		expect( isDataEmpty( data, 100 ) ).toBeTruthy();

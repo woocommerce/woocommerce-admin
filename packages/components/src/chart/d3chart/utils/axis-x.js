@@ -44,13 +44,20 @@ const calculateMaxXTicks = ( width, mode ) => {
 };
 
 /**
-* Filter out irrelevant dates so only the first date of each month is kept.
-* @param {array} dates - string dates.
-* @returns {array} Filtered dates.
-*/
-const getFirstDatePerMonth = dates => {
+ * Filter out irrelevant dates so only the first date of each month is kept.
+ * @param {array} dates - string dates.
+ * @returns {array} Filtered dates.
+ */
+const getFirstDatePerMonth = ( dates ) => {
 	return dates.filter(
-	( date, i ) => i === 0 || moment( date ).toDate().getMonth() !== moment( dates[ i - 1 ] ).toDate().getMonth()
+		( date, i ) =>
+			i === 0 ||
+			moment( date )
+				.toDate()
+				.getMonth() !==
+				moment( dates[ i - 1 ] )
+					.toDate()
+					.getMonth()
 	);
 };
 
@@ -59,9 +66,9 @@ const getFirstDatePerMonth = dates => {
  * @param {array} dates - an array of dates
  * @returns {boolean} whether the first and last date are different hours from the same date.
  */
-const areDatesInTheSameDay = dates => {
-	const firstDate = moment( dates [ 0 ] ).toDate();
-	const lastDate = moment( dates [ dates.length - 1 ] ).toDate();
+const areDatesInTheSameDay = ( dates ) => {
+	const firstDate = moment( dates[ 0 ] ).toDate();
+	const lastDate = moment( dates[ dates.length - 1 ] ).toDate();
 	return (
 		firstDate.getDate() === lastDate.getDate() &&
 		firstDate.getMonth() === lastDate.getMonth() &&
@@ -70,11 +77,11 @@ const areDatesInTheSameDay = dates => {
 };
 
 /**
-* Describes `smallestFactor`
-* @param {number} inputNum - any double or integer
-* @returns {integer} smallest factor of num
-*/
-const getFactors = inputNum => {
+ * Describes `smallestFactor`
+ * @param {number} inputNum - any double or integer
+ * @returns {integer} smallest factor of num
+ */
+const getFactors = ( inputNum ) => {
 	const numFactors = [];
 	for ( let i = 1; i <= Math.floor( Math.sqrt( inputNum ) ); i++ ) {
 		if ( inputNum % i === 0 ) {
@@ -104,7 +111,7 @@ const calculateXTicksIncrementFactor = ( uniqueDates, maxTicks ) => {
 		i += 1;
 	}
 
-	return factors.find( f => uniqueDates.length / f < maxTicks );
+	return factors.find( ( f ) => uniqueDates.length / f < maxTicks );
 };
 
 /**
@@ -145,24 +152,35 @@ export const getXTicks = ( uniqueDates, width, mode, interval ) => {
 	) {
 		uniqueDates = getFirstDatePerMonth( uniqueDates );
 	}
-	if ( uniqueDates.length <= maxTicks ||
-			( interval === 'hour' && areDatesInTheSameDay( uniqueDates ) && width > smallBreak ) ) {
+	if (
+		uniqueDates.length <= maxTicks ||
+		( interval === 'hour' &&
+			areDatesInTheSameDay( uniqueDates ) &&
+			width > smallBreak )
+	) {
 		return uniqueDates;
 	}
 
-	const incrementFactor = calculateXTicksIncrementFactor( uniqueDates, maxTicks );
+	const incrementFactor = calculateXTicksIncrementFactor(
+		uniqueDates,
+		maxTicks
+	);
 
 	return getXTicksFromIncrementFactor( uniqueDates, incrementFactor );
 };
 
 /**
-* Compares 2 strings and returns a list of words that are unique from s2
-* @param {string} s1 - base string to compare against
-* @param {string} s2 - string to compare against the base string
-* @param {string|Object} splitChar - character or RegExp to use to deliminate words
-* @returns {array} of unique words that appear in s2 but not in s1, the base string
-*/
-export const compareStrings = ( s1, s2, splitChar = new RegExp( [ ' |,' ], 'g' ) ) => {
+ * Compares 2 strings and returns a list of words that are unique from s2
+ * @param {string} s1 - base string to compare against
+ * @param {string} s2 - string to compare against the base string
+ * @param {string|Object} splitChar - character or RegExp to use to deliminate words
+ * @returns {array} of unique words that appear in s2 but not in s1, the base string
+ */
+export const compareStrings = (
+	s1,
+	s2,
+	splitChar = new RegExp( [ ' |,' ], 'g' )
+) => {
 	const string1 = s1.split( splitChar );
 	const string2 = s2.split( splitChar );
 	const diff = new Array();
@@ -176,45 +194,56 @@ export const compareStrings = ( s1, s2, splitChar = new RegExp( [ ' |,' ], 'g' )
 const removeDuplicateDates = ( d, i, ticks, formatter ) => {
 	const monthDate = moment( d ).toDate();
 	let prevMonth = i !== 0 ? ticks[ i - 1 ] : ticks[ i ];
-	prevMonth = prevMonth instanceof Date ? prevMonth : moment( prevMonth ).toDate();
+	prevMonth =
+		prevMonth instanceof Date ? prevMonth : moment( prevMonth ).toDate();
 	return i === 0
 		? formatter( monthDate )
-		: compareStrings( formatter( prevMonth ), formatter( monthDate ) ).join( ' ' );
+		: compareStrings( formatter( prevMonth ), formatter( monthDate ) ).join(
+				' '
+		  );
 };
 
 export const drawXAxis = ( node, params, scales, formats ) => {
 	const height = scales.yScale.range()[ 0 ];
-	let ticks = getXTicks( params.uniqueDates, scales.xScale.range()[ 1 ], params.mode, params.interval );
+	let ticks = getXTicks(
+		params.uniqueDates,
+		scales.xScale.range()[ 1 ],
+		params.mode,
+		params.interval
+	);
 	if ( params.chartType === 'line' ) {
-		ticks = ticks.map( d => moment( d ).toDate() );
+		ticks = ticks.map( ( d ) => moment( d ).toDate() );
 	}
 
-	node
-		.append( 'g' )
+	node.append( 'g' )
 		.attr( 'class', 'axis' )
 		.attr( 'aria-hidden', 'true' )
 		.attr( 'transform', `translate(0, ${ height })` )
 		.call(
 			d3AxisBottom( scales.xScale )
 				.tickValues( ticks )
-				.tickFormat( ( d, i ) => params.interval === 'hour'
-					? formats.xFormat( d instanceof Date ? d : moment( d ).toDate() )
-					: removeDuplicateDates( d, i, ticks, formats.xFormat ) )
+				.tickFormat( ( d, i ) =>
+					params.interval === 'hour'
+						? formats.xFormat(
+								d instanceof Date ? d : moment( d ).toDate()
+						  )
+						: removeDuplicateDates( d, i, ticks, formats.xFormat )
+				)
 		);
 
-	node
-		.append( 'g' )
+	node.append( 'g' )
 		.attr( 'class', 'axis axis-month' )
 		.attr( 'aria-hidden', 'true' )
 		.attr( 'transform', `translate(0, ${ height + 14 })` )
 		.call(
 			d3AxisBottom( scales.xScale )
 				.tickValues( ticks )
-				.tickFormat( ( d, i ) => removeDuplicateDates( d, i, ticks, formats.x2Format ) )
+				.tickFormat( ( d, i ) =>
+					removeDuplicateDates( d, i, ticks, formats.x2Format )
+				)
 		);
 
-	node
-		.append( 'g' )
+	node.append( 'g' )
 		.attr( 'class', 'pipes' )
 		.attr( 'transform', `translate(0, ${ height })` )
 		.call(

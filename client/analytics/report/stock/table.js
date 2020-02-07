@@ -62,7 +62,7 @@ export default class StockReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
-		return products.map( product => {
+		return products.map( ( product ) => {
 			const {
 				id,
 				manage_stock,
@@ -74,10 +74,14 @@ export default class StockReportTable extends Component {
 				low_stock_amount,
 			} = product;
 
-			const productDetailLink = getNewPath( persistedQuery, '/analytics/products', {
-				filter: 'single_product',
-				products: parent_id || id,
-			} );
+			const productDetailLink = getNewPath(
+				persistedQuery,
+				'/analytics/products',
+				{
+					filter: 'single_product',
+					products: parent_id || id,
+				}
+			);
 
 			const nameLink = (
 				<Link href={ productDetailLink } type="wc-admin">
@@ -85,10 +89,20 @@ export default class StockReportTable extends Component {
 				</Link>
 			);
 
-			const editProductLink = getAdminLink( 'post.php?action=edit&post=' + ( parent_id || id ) );
-			const stockStatusLink = isLowStock( stock_status, stock_quantity, low_stock_amount ) ? (
+			const editProductLink = getAdminLink(
+				'post.php?action=edit&post=' + ( parent_id || id )
+			);
+			const stockStatusLink = isLowStock(
+				stock_status,
+				stock_quantity,
+				low_stock_amount
+			) ? (
 				<Link href={ editProductLink } type="wp-admin">
-					{ _x( 'Low', 'Indication of a low quantity', 'woocommerce-admin' ) }
+					{ _x(
+						'Low',
+						'Indication of a low quantity',
+						'woocommerce-admin'
+					) }
 				</Link>
 			) : (
 				<Link href={ editProductLink } type="wp-admin">
@@ -120,10 +134,21 @@ export default class StockReportTable extends Component {
 	}
 
 	getSummary( totals ) {
-		const { products = 0, outofstock = 0, lowstock = 0, instock = 0, onbackorder = 0 } = totals;
+		const {
+			products = 0,
+			outofstock = 0,
+			lowstock = 0,
+			instock = 0,
+			onbackorder = 0,
+		} = totals;
 		return [
 			{
-				label: _n( 'product', 'products', products, 'woocommerce-admin' ),
+				label: _n(
+					'product',
+					'products',
+					products,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', products ),
 			},
 			{

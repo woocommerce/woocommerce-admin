@@ -10,8 +10,10 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import { getProductLabels, getVariationLabels } from 'lib/async-requests';
 
-const PRODUCTS_REPORT_CHARTS_FILTER = 'woocommerce_admin_products_report_charts';
-const PRODUCTS_REPORT_FILTERS_FILTER = 'woocommerce_admin_products_report_filters';
+const PRODUCTS_REPORT_CHARTS_FILTER =
+	'woocommerce_admin_products_report_charts';
+const PRODUCTS_REPORT_FILTERS_FILTER =
+	'woocommerce_admin_products_report_filters';
 const PRODUCTS_REPORT_ADVANCED_FILTERS_FILTER =
 	'woocommerce_admin_products_report_advanced_filters';
 
@@ -61,7 +63,10 @@ const filterConfig = {
 						param: 'products',
 						getLabels: getProductLabels,
 						labels: {
-							placeholder: __( 'Type to search for a product', 'woocommerce-admin' ),
+							placeholder: __(
+								'Type to search for a product',
+								'woocommerce-admin'
+							),
 							button: __( 'Single Product', 'woocommerce-admin' ),
 						},
 					},
@@ -77,8 +82,14 @@ const filterConfig = {
 				param: 'products',
 				getLabels: getProductLabels,
 				labels: {
-					helpText: __( 'Check at least two products below to compare', 'woocommerce-admin' ),
-					placeholder: __( 'Search for products to compare', 'woocommerce-admin' ),
+					helpText: __(
+						'Check at least two products below to compare',
+						'woocommerce-admin'
+					),
+					placeholder: __(
+						'Search for products to compare',
+						'woocommerce-admin'
+					),
 					title: __( 'Compare Products', 'woocommerce-admin' ),
 					update: __( 'Compare', 'woocommerce-admin' ),
 				},
@@ -88,8 +99,10 @@ const filterConfig = {
 };
 
 const variationsConfig = {
-	showFilters: query =>
-		'single_product' === query.filter && !! query.products && query[ 'is-variable' ],
+	showFilters: ( query ) =>
+		'single_product' === query.filter &&
+		!! query.products &&
+		query[ 'is-variable' ],
 	staticParams: [ 'filter', 'products' ],
 	param: 'filter-variations',
 	filters: [
@@ -107,8 +120,14 @@ const variationsConfig = {
 				param: 'variations',
 				getLabels: getVariationLabels,
 				labels: {
-					helpText: __( 'Check at least two variations below to compare', 'woocommerce-admin' ),
-					placeholder: __( 'Search for variations to compare', 'woocommerce-admin' ),
+					helpText: __(
+						'Check at least two variations below to compare',
+						'woocommerce-admin'
+					),
+					placeholder: __(
+						'Search for variations to compare',
+						'woocommerce-admin'
+					),
 					title: __( 'Compare Variations', 'woocommerce-admin' ),
 					update: __( 'Compare', 'woocommerce-admin' ),
 				},
@@ -122,4 +141,7 @@ export const filters = applyFilters( PRODUCTS_REPORT_FILTERS_FILTER, [
 	variationsConfig,
 ] );
 
-export const advancedFilters = applyFilters( PRODUCTS_REPORT_ADVANCED_FILTERS_FILTER, {} );
+export const advancedFilters = applyFilters(
+	PRODUCTS_REPORT_ADVANCED_FILTERS_FILTER,
+	{}
+);

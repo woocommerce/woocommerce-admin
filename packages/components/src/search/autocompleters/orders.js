@@ -22,11 +22,13 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-				number: search,
-				per_page: 10,
-			}
+					number: search,
+					per_page: 10,
+			  }
 			: {};
-		return apiFetch( { path: addQueryArgs( '/wc-analytics/orders', query ) } );
+		return apiFetch( {
+			path: addQueryArgs( '/wc-analytics/orders', query ),
+		} );
 	},
 	isDebounced: true,
 	getOptionIdentifier( order ) {

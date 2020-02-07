@@ -9,8 +9,16 @@ import moment from 'moment';
 /**
  * WooCommerce dependencies
  */
-import { appendTimestamp, getCurrentDates, getIntervalForQuery } from 'lib/date';
-import { flattenFilters, getActiveFiltersFromQuery, getUrlKey } from '@woocommerce/navigation';
+import {
+	appendTimestamp,
+	getCurrentDates,
+	getIntervalForQuery,
+} from 'lib/date';
+import {
+	flattenFilters,
+	getActiveFiltersFromQuery,
+	getUrlKey,
+} from '@woocommerce/navigation';
 import { formatCurrency } from 'lib/currency-format';
 
 /**
@@ -31,7 +39,13 @@ import * as reportsUtils from './utils';
  * @returns {Object} A query object with the values from filters and advanced fitlters applied.
  */
 export function getFilterQuery( options ) {
-	const { endpoint, query, limitBy, filters = [], advancedFilters = {} } = options;
+	const {
+		endpoint,
+		query,
+		limitBy,
+		filters = [],
+		advancedFilters = {},
+	} = options;
 	if ( query.search ) {
 		const limitProperties = limitBy || [ endpoint ];
 		return limitProperties.reduce( ( result, limitProperty ) => {
@@ -41,8 +55,13 @@ export function getFilterQuery( options ) {
 	}
 
 	return filters
-		.map( filter => getQueryFromConfig( filter, advancedFilters, query ) )
-		.reduce( ( result, configQuery ) => Object.assign( result, configQuery ), {} );
+		.map( ( filter ) =>
+			getQueryFromConfig( filter, advancedFilters, query )
+		)
+		.reduce(
+			( result, configQuery ) => Object.assign( result, configQuery ),
+			{}
+		);
 }
 
 // Some stats endpoints don't have interval data, so they can ignore after/before params and omit that part of the response.
@@ -92,23 +111,32 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
 	}
 
 	if ( 'advanced' === queryValue ) {
-		const activeFilters = getActiveFiltersFromQuery( query, advancedFilters.filters );
+		const activeFilters = getActiveFiltersFromQuery(
+			query,
+			advancedFilters.filters
+		);
 
 		if ( activeFilters.length === 0 ) {
 			return {};
 		}
 
-		return activeFilters.map( filter => timeStampFilterDates( advancedFilters, filter ) ).reduce(
-			( result, activeFilter ) => {
-				const { key, rule, value } = activeFilter;
-				result[ getUrlKey( key, rule ) ] = value;
-				return result;
-			},
-			{ match: query.match || 'all' }
-		);
+		return activeFilters
+			.map( ( filter ) =>
+				timeStampFilterDates( advancedFilters, filter )
+			)
+			.reduce(
+				( result, activeFilter ) => {
+					const { key, rule, value } = activeFilter;
+					result[ getUrlKey( key, rule ) ] = value;
+					return result;
+				},
+				{ match: query.match || 'all' }
+			);
 	}
 
-	const filter = find( flattenFilters( config.filters ), { value: queryValue } );
+	const filter = find( flattenFilters( config.filters ), {
+		value: queryValue,
+	} );
 
 	if ( ! filter ) {
 		return {};
@@ -150,7 +178,10 @@ export function isReportDataEmpty( report, endpoint ) {
 	}
 
 	const checkIntervals = ! includes( noIntervalEndpoints, endpoint );
-	if ( checkIntervals && ( ! report.data.intervals || 0 === report.data.intervals.length ) ) {
+	if (
+		checkIntervals &&
+		( ! report.data.intervals || 0 === report.data.intervals.length )
+	) {
 		return true;
 	}
 	return false;
@@ -179,11 +210,14 @@ function getRequestQuery( options ) {
 				order: 'asc',
 				interval,
 				per_page: MAX_PER_PAGE,
-				after: appendTimestamp( datesFromQuery[ dataType ].after, 'start' ),
+				after: appendTimestamp(
+					datesFromQuery[ dataType ].after,
+					'start'
+				),
 				before: appendTimestamp( end, 'end' ),
 				segmentby: query.segmentby,
 				...filterQuery,
-			};
+		  };
 }
 
 /**
@@ -198,7 +232,11 @@ function getRequestQuery( options ) {
  */
 export function getSummaryNumbers( options ) {
 	const { endpoint, select } = options;
-	const { getReportStats, getReportStatsError, isReportStatsRequesting } = select( 'wc-api' );
+	const {
+		getReportStats,
+		getReportStatsError,
+		isReportStatsRequesting,
+	} = select( 'wc-api' );
 	const response = {
 		isRequesting: false,
 		isError: false,
@@ -216,9 +254,13 @@ export function getSummaryNumbers( options ) {
 		return { ...response, isError: true };
 	}
 
-	const primaryTotals = ( primary && primary.data && primary.data.totals ) || null;
+	const primaryTotals =
+		( primary && primary.data && primary.data.totals ) || null;
 
-	const secondaryQuery = getRequestQuery( { ...options, dataType: 'secondary' } );
+	const secondaryQuery = getRequestQuery( {
+		...options,
+		dataType: 'secondary',
+	} );
 	const secondary = getReportStats( endpoint, secondaryQuery );
 	if ( isReportStatsRequesting( endpoint, secondaryQuery ) ) {
 		return { ...response, isRequesting: true };
@@ -226,9 +268,13 @@ export function getSummaryNumbers( options ) {
 		return { ...response, isError: true };
 	}
 
-	const secondaryTotals = ( secondary && secondary.data && secondary.data.totals ) || null;
+	const secondaryTotals =
+		( secondary && secondary.data && secondary.data.totals ) || null;
 
-	return { ...response, totals: { primary: primaryTotals, secondary: secondaryTotals } };
+	return {
+		...response,
+		totals: { primary: primaryTotals, secondary: secondaryTotals },
+	};
 }
 
 /**
@@ -243,7 +289,11 @@ export function getSummaryNumbers( options ) {
  */
 export function getReportChartData( options ) {
 	const { endpoint, select } = options;
-	const { getReportStats, getReportStatsError, isReportStatsRequesting } = select( 'wc-api' );
+	const {
+		getReportStats,
+		getReportStatsError,
+		isReportStatsRequesting,
+	} = select( 'wc-api' );
 
 	const response = {
 		isEmpty: false,
@@ -352,8 +402,12 @@ export function getReportTableQuery( options ) {
 	return {
 		orderby: query.orderby || 'date',
 		order: query.order || 'desc',
-		after: noIntervals ? undefined : appendTimestamp( datesFromQuery.primary.after, 'start' ),
-		before: noIntervals ? undefined : appendTimestamp( datesFromQuery.primary.before, 'end' ),
+		after: noIntervals
+			? undefined
+			: appendTimestamp( datesFromQuery.primary.after, 'start' ),
+		before: noIntervals
+			? undefined
+			: appendTimestamp( datesFromQuery.primary.before, 'end' ),
 		page: query.paged || 1,
 		per_page: query.per_page || QUERY_DEFAULTS.pageSize,
 		...filterQuery,
@@ -373,7 +427,11 @@ export function getReportTableQuery( options ) {
  */
 export function getReportTableData( options ) {
 	const { endpoint, select } = options;
-	const { getReportItems, getReportItemsError, isReportItemsRequesting } = select( 'wc-api' );
+	const {
+		getReportItems,
+		getReportItemsError,
+		isReportItemsRequesting,
+	} = select( 'wc-api' );
 
 	const tableQuery = reportsUtils.getReportTableQuery( options );
 	const response = {

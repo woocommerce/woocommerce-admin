@@ -20,7 +20,7 @@ export default withState( {
 				type="products"
 				placeholder="Search for a product"
 				selected={ selected }
-				onChange={ items => setState( { selected: items } ) }
+				onChange={ ( items ) => setState( { selected: items } ) }
 			/>
 		</Section>
 		<H>Tags Inline with Input</H>
@@ -29,7 +29,7 @@ export default withState( {
 				type="products"
 				placeholder="Search for a product"
 				selected={ inlineSelected }
-				onChange={ items => setState( { inlineSelected: items } ) }
+				onChange={ ( items ) => setState( { inlineSelected: items } ) }
 				inlineTags
 			/>
 		</Section>

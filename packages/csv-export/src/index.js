@@ -23,22 +23,27 @@ function escapeCSVValue( value ) {
 function getCSVHeaders( headers ) {
 	return Array.isArray( headers )
 		? headers
-			.map( header => escapeCSVValue( header.label ) )
-			.join( ',' )
+				.map( ( header ) => escapeCSVValue( header.label ) )
+				.join( ',' )
 		: [];
 }
 
 function getCSVRows( rows ) {
 	return Array.isArray( rows )
 		? rows
-				.map( row =>
-					row.map( rowItem => {
-						if ( undefined === rowItem.value || null === rowItem.value ) {
-							return '';
-						}
+				.map( ( row ) =>
+					row
+						.map( ( rowItem ) => {
+							if (
+								undefined === rowItem.value ||
+								null === rowItem.value
+							) {
+								return '';
+							}
 
-						return escapeCSVValue( rowItem.value );
-					} ).join( ',' )
+							return escapeCSVValue( rowItem.value );
+						} )
+						.join( ',' )
 				)
 				.join( '\n' )
 		: [];
@@ -53,7 +58,7 @@ function getCSVRows( rows ) {
  */
 export function generateCSVDataFromTable( headers, rows ) {
 	return [ getCSVHeaders( headers ), getCSVRows( rows ) ]
-		.filter( text => text.length )
+		.filter( ( text ) => text.length )
 		.join( '\n' );
 }
 
@@ -70,11 +75,16 @@ export function generateCSVFileName( name = '', params = {} ) {
 		name.toLowerCase().replace( /[^a-z0-9]/g, '-' ),
 		moment().format( 'YYYY-MM-DD' ),
 		Object.keys( params )
-			.map( key =>
-				key.toLowerCase().replace( /[^a-z0-9]/g, '-' ) +
-				'-' + decodeURIComponent( params[ key ] ).toLowerCase().replace( /[^a-z0-9]/g, '-' )
-			).join( '_' ),
-	].filter( text => text.length );
+			.map(
+				( key ) =>
+					key.toLowerCase().replace( /[^a-z0-9]/g, '-' ) +
+					'-' +
+					decodeURIComponent( params[ key ] )
+						.toLowerCase()
+						.replace( /[^a-z0-9]/g, '-' )
+			)
+			.join( '_' ),
+	].filter( ( text ) => text.length );
 
 	return fileNameSections.join( '_' ) + '.csv';
 }

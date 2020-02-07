@@ -21,8 +21,12 @@ function readCurrentUserData( resourceNames, fetch ) {
 		return [
 			fetch( { path: url } )
 				.then( userToUserDataResource )
-				.catch( error => {
-					return { [ 'current-user-data' ]: { error: String( error.message ) } };
+				.catch( ( error ) => {
+					return {
+						[ 'current-user-data' ]: {
+							error: String( error.message ),
+						},
+					};
 				} ),
 		];
 	}
@@ -56,7 +60,7 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 		return [
 			fetch( { path: url, method: 'POST', data: user } )
 				.then( userToUserDataResource )
-				.catch( error => {
+				.catch( ( error ) => {
 					return { [ resourceName ]: { error } };
 				} ),
 		];
@@ -65,7 +69,7 @@ function updateCurrentUserData( resourceNames, data, fetch ) {
 }
 
 function userToUserDataResource( user ) {
-	const userData = mapValues( user.woocommerce_meta, data => {
+	const userData = mapValues( user.woocommerce_meta, ( data ) => {
 		if ( ! data || 0 === data.length ) {
 			return '';
 		}

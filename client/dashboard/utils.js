@@ -29,7 +29,10 @@ export function getCountryCode( countryState ) {
 
 export function getCurrencyRegion( countryState ) {
 	let region = getCountryCode( countryState );
-	const euCountries = without( getSetting( 'onboarding', { euCountries: [] } ).euCountries, 'GB' );
+	const euCountries = without(
+		getSetting( 'onboarding', { euCountries: [] } ).euCountries,
+		'GB'
+	);
 	if ( euCountries.includes( region ) ) {
 		region = 'EU';
 	}
@@ -44,7 +47,10 @@ export function getCurrencyRegion( countryState ) {
  * @param {bool} includeInstalledItems Include installed items in returned product IDs.
  * @return {array} Product Ids.
  */
-export function getProductIdsForCart( profileItems, includeInstalledItems = false ) {
+export function getProductIdsForCart(
+	profileItems,
+	includeInstalledItems = false
+) {
 	const productIds = [];
 	const onboarding = getSetting( 'onboarding', {} );
 	const productTypes = profileItems.product_types || [];
@@ -55,18 +61,22 @@ export function getProductIdsForCart( profileItems, includeInstalledItems = fals
 		return productIds;
 	}
 
-	productTypes.forEach( productType => {
+	productTypes.forEach( ( productType ) => {
 		if (
 			onboarding.productTypes[ productType ] &&
 			onboarding.productTypes[ productType ].product &&
 			( includeInstalledItems ||
-				! onboarding.installedPlugins.includes( onboarding.productTypes[ productType ].slug ) )
+				! onboarding.installedPlugins.includes(
+					onboarding.productTypes[ productType ].slug
+				) )
 		) {
 			productIds.push( onboarding.productTypes[ productType ].product );
 		}
 	} );
 
-	const theme = onboarding.themes.find( themeData => themeData.slug === profileItems.theme );
+	const theme = onboarding.themes.find(
+		( themeData ) => themeData.slug === profileItems.theme
+	);
 
 	if (
 		theme &&

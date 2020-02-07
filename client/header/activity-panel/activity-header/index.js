@@ -15,12 +15,21 @@ import { EllipsisMenu, H } from '@woocommerce/components';
 class ActivityHeader extends Component {
 	render() {
 		const { title, className, menu } = this.props;
-		const cardClassName = classnames( 'woocommerce-layout__activity-panel-header', className );
+		const cardClassName = classnames(
+			'woocommerce-layout__activity-panel-header',
+			className
+		);
 
 		return (
 			<div className={ cardClassName }>
-				<H className="woocommerce-layout__activity-panel-header-title">{ title }</H>
-				{ menu && <div className="woocommerce-layout__activity-panel-header-menu">{ menu }</div> }
+				<H className="woocommerce-layout__activity-panel-header-title">
+					{ title }
+				</H>
+				{ menu && (
+					<div className="woocommerce-layout__activity-panel-header-menu">
+						{ menu }
+					</div>
+				) }
 			</div>
 		);
 	}

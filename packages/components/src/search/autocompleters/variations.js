@@ -27,7 +27,8 @@ import ProductImage from '../../product-image';
 function getVariationName( variation ) {
 	return variation.attributes.reduce(
 		( desc, attribute, index, arr ) =>
-			desc + `${ attribute.option }${ arr.length === index + 1 ? '' : ', ' }`,
+			desc +
+			`${ attribute.option }${ arr.length === index + 1 ? '' : ', ' }`,
 		''
 	);
 }
@@ -44,15 +45,22 @@ export default {
 	options( search ) {
 		const query = search
 			? {
-				search,
-				per_page: 10,
-			}
+					search,
+					per_page: 10,
+			  }
 			: {};
 		const product = getQuery().products;
 		if ( ! product || product.includes( ',' ) ) {
-			console.warn( 'Invalid product id supplied to Variations autocompleter' );
+			console.warn(
+				'Invalid product id supplied to Variations autocompleter'
+			);
 		}
-		return apiFetch( { path: addQueryArgs( `/wc-analytics/products/${ product }/variations`, query ) } );
+		return apiFetch( {
+			path: addQueryArgs(
+				`/wc-analytics/products/${ product }/variations`,
+				query
+			),
+		} );
 	},
 	isDebounced: true,
 	getOptionIdentifier( variation ) {
@@ -62,7 +70,9 @@ export default {
 		return [ getVariationName( variation ), variation.sku ];
 	},
 	getOptionLabel( variation, query ) {
-		const match = computeSuggestionMatch( getVariationName( variation ), query ) || {};
+		const match =
+			computeSuggestionMatch( getVariationName( variation ), query ) ||
+			{};
 		return (
 			<Fragment>
 				<ProductImage
@@ -72,7 +82,8 @@ export default {
 					width={ 18 }
 					height={ 18 }
 					alt=""
-				/>,
+				/>
+				,
 				<span
 					key="name"
 					className="woocommerce-search__result-name"
@@ -83,7 +94,8 @@ export default {
 						{ match.suggestionMatch }
 					</strong>
 					{ match.suggestionAfterMatch }
-				</span>,
+				</span>
+				,
 			</Fragment>
 		);
 	},

@@ -18,9 +18,12 @@ class EllipsisMenu extends Component {
 		}
 
 		const renderEllipsis = ( { onToggle, isOpen } ) => {
-			const toggleClassname = classnames( 'woocommerce-ellipsis-menu__toggle', {
-				'is-opened': isOpen,
-			} );
+			const toggleClassname = classnames(
+				'woocommerce-ellipsis-menu__toggle',
+				{
+					'is-opened': isOpen,
+				}
+			);
 
 			return (
 				<IconButton
@@ -33,7 +36,7 @@ class EllipsisMenu extends Component {
 			);
 		};
 
-		const renderMenu = renderContentArgs => (
+		const renderMenu = ( renderContentArgs ) => (
 			<NavigableMenu className="woocommerce-ellipsis-menu__content">
 				{ renderContent( renderContentArgs ) }
 			</NavigableMenu>

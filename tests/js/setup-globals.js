@@ -16,10 +16,7 @@ global.wp = {
 
 global.wc = {};
 
-const wordPressPackages = [
-	'element',
-	'date',
-];
+const wordPressPackages = [ 'element', 'date' ];
 
 const wooCommercePackages = [
 	'components',
@@ -67,13 +64,13 @@ global.wcSettings = {
 	},
 };
 
-wordPressPackages.forEach( lib => {
+wordPressPackages.forEach( ( lib ) => {
 	Object.defineProperty( global.wp, lib, {
 		get: () => require( `@wordpress/${ lib }` ),
 	} );
 } );
 
-wooCommercePackages.forEach( lib => {
+wooCommercePackages.forEach( ( lib ) => {
 	Object.defineProperty( global.wc, lib, {
 		get: () => require( `@woocommerce/${ lib }` ),
 	} );
@@ -82,4 +79,7 @@ wooCommercePackages.forEach( lib => {
 const config = require( '../../config/development.json' );
 window.wcAdminFeatures = config && config.features ? config.features : {};
 
-setLocaleData( { '': { domain: 'woocommerce-admin', lang: 'en_US' } }, 'woocommerce-admin' );
+setLocaleData(
+	{ '': { domain: 'woocommerce-admin', lang: 'en_US' } },
+	'woocommerce-admin'
+);

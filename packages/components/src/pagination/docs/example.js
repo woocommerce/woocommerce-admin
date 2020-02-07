@@ -18,6 +18,8 @@ export default withState( {
 		perPage={ perPage }
 		total={ 500 }
 		onPageChange={ ( newPage ) => setState( { page: newPage } ) }
-		onPerPageChange={ ( newPerPage ) => setState( { perPage: newPerPage } ) }
+		onPerPageChange={ ( newPerPage ) =>
+			setState( { perPage: newPerPage } )
+		}
 	/>
 ) );

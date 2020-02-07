@@ -4,7 +4,8 @@
  */
 import { FilterPicker } from '@woocommerce/components';
 
-const path = ( new URL( document.location ) ).searchParams.get( 'path' ) || '/devdocs';
+const path =
+	new URL( document.location ).searchParams.get( 'path' ) || '/devdocs';
 const query = {
 	meal: 'breakfast',
 };
@@ -26,8 +27,16 @@ const config = {
 					value: 'fish',
 					path: [ 'lunch' ],
 					subFilters: [
-						{ label: 'Snapper', value: 'snapper', path: [ 'lunch', 'fish' ] },
-						{ label: 'Cod', value: 'cod', path: [ 'lunch', 'fish' ] },
+						{
+							label: 'Snapper',
+							value: 'snapper',
+							path: [ 'lunch', 'fish' ],
+						},
+						{
+							label: 'Cod',
+							value: 'cod',
+							path: [ 'lunch', 'fish' ],
+						},
 						// Specify a custom component to render (Work in Progress)
 						{
 							label: 'Other',

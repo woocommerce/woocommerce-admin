@@ -5,7 +5,10 @@
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
-import { TextControl as BaseComponent, withFocusOutside } from '@wordpress/components';
+import {
+	TextControl as BaseComponent,
+	withFocusOutside,
+} from '@wordpress/components';
 
 /**
  * An input field use for text inputs in forms.
@@ -39,14 +42,21 @@ const TextControl = withFocusOutside(
 
 			return (
 				<BaseComponent
-					className={ classnames( 'muriel-component', 'muriel-input-text', className, {
-						disabled: disabled,
-						empty: isEmpty,
-						active: isActive,
-						'with-value': ! isEmpty,
-					} ) }
+					className={ classnames(
+						'muriel-component',
+						'muriel-input-text',
+						className,
+						{
+							disabled: disabled,
+							empty: isEmpty,
+							active: isActive,
+							'with-value': ! isEmpty,
+						}
+					) }
 					placeholder={ label }
-					onClick={ event => this.handleOnClick( event, onClick ) }
+					onClick={ ( event ) =>
+						this.handleOnClick( event, onClick )
+					}
 					onFocus={ () => this.setState( { isFocused: true } ) }
 					{ ...otherProps }
 				/>

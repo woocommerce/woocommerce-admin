@@ -40,7 +40,11 @@ class ImageUpload extends Component {
 
 	handleImageSelect() {
 		const { onChange } = this.props;
-		const attachment = this.state.frame.state().get( 'selection' ).first().toJSON();
+		const attachment = this.state.frame
+			.state()
+			.get( 'selection' )
+			.first()
+			.toJSON();
 		onChange( attachment );
 	}
 
@@ -54,18 +58,36 @@ class ImageUpload extends Component {
 		return (
 			<Fragment>
 				{ !! image && (
-				<div className={ classNames( 'woocommerce-image-upload', 'has-image', className ) }>
-					<div className="woocommerce-image-upload__image-preview">
-						<img src={ image.url } alt="" />
+					<div
+						className={ classNames(
+							'woocommerce-image-upload',
+							'has-image',
+							className
+						) }
+					>
+						<div className="woocommerce-image-upload__image-preview">
+							<img src={ image.url } alt="" />
+						</div>
+						<Button
+							className="woocommerce-image-upload__remove-image"
+							onClick={ this.removeImage }
+						>
+							{ __( 'Remove image', 'woocommerce-admin' ) }
+						</Button>
 					</div>
-					<Button className="woocommerce-image-upload__remove-image" onClick={ this.removeImage }>
-						{ __( 'Remove image', 'woocommerce-admin' ) }
-					</Button>
-				</div>
 				) }
 				{ ! image && (
-					<div className={ classNames( 'woocommerce-image-upload', 'no-image', className ) }>
-						<Button className="woocommerce-image-upload__add-image" onClick={ this.openModal }>
+					<div
+						className={ classNames(
+							'woocommerce-image-upload',
+							'no-image',
+							className
+						) }
+					>
+						<Button
+							className="woocommerce-image-upload__add-image"
+							onClick={ this.openModal }
+						>
 							{ __( 'Add an image', 'woocommerce-admin' ) }
 						</Button>
 					</div>

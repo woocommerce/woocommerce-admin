@@ -17,10 +17,15 @@ const encodedBreadcrumb = [
 
 describe( 'Header', () => {
 	test( 'should render decoded breadcrumb name', () => {
-		const header = shallow( <Header sections={ encodedBreadcrumb } isEmbedded={ true } />, {
-			disableLifecycleMethods: true,
-		} );
-		expect( header.text().includes( 'Accounts &amp; Privacy' ) ).toBe( false );
+		const header = shallow(
+			<Header sections={ encodedBreadcrumb } isEmbedded={ true } />,
+			{
+				disableLifecycleMethods: true,
+			}
+		);
+		expect( header.text().includes( 'Accounts &amp; Privacy' ) ).toBe(
+			false
+		);
 		expect( header.text().includes( 'Accounts & Privacy' ) ).toBe( true );
 	} );
 } );

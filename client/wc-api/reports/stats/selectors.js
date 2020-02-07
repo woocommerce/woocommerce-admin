@@ -16,19 +16,28 @@ const getReportStats = ( getResource, requireResource ) => (
 	query = {},
 	requirement = DEFAULT_REQUIREMENT
 ) => {
-	const resourceName = getResourceName( `report-stats-query-${ type }`, query );
+	const resourceName = getResourceName(
+		`report-stats-query-${ type }`,
+		query
+	);
 	const data = requireResource( requirement, resourceName ) || {};
 
 	return data;
 };
 
-const getReportStatsError = getResource => ( type, query = {} ) => {
-	const resourceName = getResourceName( `report-stats-query-${ type }`, query );
+const getReportStatsError = ( getResource ) => ( type, query = {} ) => {
+	const resourceName = getResourceName(
+		`report-stats-query-${ type }`,
+		query
+	);
 	return getResource( resourceName ).error;
 };
 
-const isReportStatsRequesting = getResource => ( type, query = {} ) => {
-	const resourceName = getResourceName( `report-stats-query-${ type }`, query );
+const isReportStatsRequesting = ( getResource ) => ( type, query = {} ) => {
+	const resourceName = getResourceName(
+		`report-stats-query-${ type }`,
+		query
+	);
 	const { lastRequested, lastReceived } = getResource( resourceName );
 
 	if ( isNil( lastRequested ) || isNil( lastReceived ) ) {

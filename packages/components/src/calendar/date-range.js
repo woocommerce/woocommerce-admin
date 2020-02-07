@@ -64,26 +64,22 @@ class DateRange extends Component {
 		if (
 			CONTAINER_DIV === blurSource &&
 			e.target &&
-			(
-				e.target.classList.contains( 'DayPickerNavigation_button' ) ||
-				e.target.classList.contains( 'CalendarDay' )
-			) &&
-			(
-				// Allow other DayPicker elements to take focus.
-				! e.relatedTarget ||
-				(
-					! e.relatedTarget.classList.contains( 'DayPickerNavigation_button' ) &&
-					! e.relatedTarget.classList.contains( 'CalendarDay' )
-				)
-			)
+			( e.target.classList.contains( 'DayPickerNavigation_button' ) ||
+				e.target.classList.contains( 'CalendarDay' ) ) &&
+			// Allow other DayPicker elements to take focus.
+			( ! e.relatedTarget ||
+				( ! e.relatedTarget.classList.contains(
+					'DayPickerNavigation_button'
+				) &&
+					! e.relatedTarget.classList.contains( 'CalendarDay' ) ) )
 		) {
 			// Allow other DayPicker elements to take focus.
 			if (
 				e.relatedTarget &&
-				(
-					e.relatedTarget.classList.contains( 'DayPickerNavigation_button' ) ||
-					e.relatedTarget.classList.contains( 'CalendarDay' )
-				)
+				( e.relatedTarget.classList.contains(
+					'DayPickerNavigation_button'
+				) ||
+					e.relatedTarget.classList.contains( 'CalendarDay' ) )
 			) {
 				return;
 			}
@@ -99,7 +95,9 @@ class DateRange extends Component {
 
 			// DayPickerNavigation or CalendarDay mouseUp() is blurring,
 			// so switch focus to the DayPicker's focus region.
-			const focusRegion = this.nodeRef.current.querySelector( '.DayPicker_focusRegion' );
+			const focusRegion = this.nodeRef.current.querySelector(
+				'.DayPicker_focusRegion'
+			);
 			if ( focusRegion ) {
 				focusRegion.focus();
 			}
@@ -115,7 +113,9 @@ class DateRange extends Component {
 			// DayPicker's updateStateAfterMonthTransition() is about to blur
 			// the activeElement, so focus a DayPickerNavigation button so the next
 			// blur event gets fixed by the above logic path.
-			const focusRegion = this.nodeRef.current.querySelector( '.DayPickerNavigation_button' );
+			const focusRegion = this.nodeRef.current.querySelector(
+				'.DayPickerNavigation_button'
+			);
 			if ( focusRegion ) {
 				focusRegion.focus();
 			}
@@ -206,7 +206,9 @@ class DateRange extends Component {
 						) }
 						onFocus={ () => this.onFocusChange( 'startDate' ) }
 					/>
-					<div className="woocommerce-calendar__inputs-to">{ __( 'to', 'woocommerce-admin' ) }</div>
+					<div className="woocommerce-calendar__inputs-to">
+						{ __( 'to', 'woocommerce-admin' ) }
+					</div>
 					<DateInput
 						value={ beforeText }
 						onChange={ partial( this.onInputChange, 'before' ) }
@@ -230,8 +232,14 @@ class DateRange extends Component {
 					tabIndex={ -1 }
 				>
 					<DayPickerRangeController
-						onNextMonthClick={ partial( this.keepFocusInside, NEXT_MONTH_CLICK ) }
-						onPrevMonthClick={ partial( this.keepFocusInside, PREV_MONTH_CLICK ) }
+						onNextMonthClick={ partial(
+							this.keepFocusInside,
+							NEXT_MONTH_CLICK
+						) }
+						onPrevMonthClick={ partial(
+							this.keepFocusInside,
+							PREV_MONTH_CLICK
+						) }
 						onDatesChange={ this.onDatesChange }
 						onFocusChange={ this.onFocusChange }
 						focusedInput={ focusedInput }
@@ -240,13 +248,18 @@ class DateRange extends Component {
 						orientation={ 'horizontal' }
 						numberOfMonths={ isDoubleCalendar ? 2 : 1 }
 						isOutsideRange={ ( date ) => {
-							return isInvalidDate && isInvalidDate( date.toDate() );
+							return (
+								isInvalidDate && isInvalidDate( date.toDate() )
+							);
 						} }
 						minimumNights={ 0 }
 						hideKeyboardShortcutsPanel
 						noBorder
 						isRTL={ isRTL() }
-						initialVisibleMonth={ this.setTnitialVisibleMonth( isDoubleCalendar, before ) }
+						initialVisibleMonth={ this.setTnitialVisibleMonth(
+							isDoubleCalendar,
+							before
+						) }
 						phrases={ phrases }
 					/>
 				</div>

@@ -27,8 +27,8 @@ import { RegistryConsumer } from '@wordpress/data';
  *
  * @return {Component} Enhanced component with merged state data props.
  */
-const withSelect = mapSelectToProps =>
-	createHigherOrderComponent( WrappedComponent => {
+const withSelect = ( mapSelectToProps ) =>
+	createHigherOrderComponent( ( WrappedComponent ) => {
 		/**
 		 * Default merge props. A constant value is used as the fallback since it
 		 * can be more efficiently shallow compared in case component is repeatedly
@@ -69,7 +69,11 @@ const withSelect = mapSelectToProps =>
 					if ( isFunction( selectorsForKey ) ) {
 						// This store has special handling for its selectors.
 						// We give it a context, and we check for a "resolve"
-						const { selectors, onComplete, onUnmount } = selectorsForKey( context );
+						const {
+							selectors,
+							onComplete,
+							onUnmount,
+						} = selectorsForKey( context );
 						onComplete && onCompletes.push( onComplete );
 						onUnmount && ( this.onUnmounts[ key ] = onUnmount );
 						storeSelectors[ key ] = selectors;
@@ -78,18 +82,24 @@ const withSelect = mapSelectToProps =>
 					}
 				};
 
-				const select = key => {
+				const select = ( key ) => {
 					if ( ! storeSelectors[ key ] ) {
-						getStoreFromRegistry( key, props.registry, componentContext );
+						getStoreFromRegistry(
+							key,
+							props.registry,
+							componentContext
+						);
 					}
 
 					return storeSelectors[ key ];
 				};
 
-				const selectedProps = mapSelectToProps( select, props.ownProps ) || DEFAULT_MERGE_PROPS;
+				const selectedProps =
+					mapSelectToProps( select, props.ownProps ) ||
+					DEFAULT_MERGE_PROPS;
 
 				// Complete the select for those stores which support it.
-				onCompletes.forEach( onComplete => onComplete() );
+				onCompletes.forEach( ( onComplete ) => onComplete() );
 				return selectedProps;
 			}
 
@@ -108,12 +118,15 @@ const withSelect = mapSelectToProps =>
 			componentWillUnmount() {
 				this.canRunSelection = false;
 				this.unsubscribe();
-				Object.keys( this.onUnmounts ).forEach( key => this.onUnmounts[ key ]() );
+				Object.keys( this.onUnmounts ).forEach( ( key ) =>
+					this.onUnmounts[ key ]()
+				);
 			}
 
 			shouldComponentUpdate( nextProps, nextState ) {
 				// Cycle subscription if registry changes.
-				const hasRegistryChanged = nextProps.registry !== this.props.registry;
+				const hasRegistryChanged =
+					nextProps.registry !== this.props.registry;
 				if ( hasRegistryChanged ) {
 					this.unsubscribe();
 					this.subscribe( nextProps.registry );
@@ -122,7 +135,8 @@ const withSelect = mapSelectToProps =>
 				// Treat a registry change as equivalent to `ownProps`, to reflect
 				// `mergeProps` to rendered component if and only if updated.
 				const hasPropsChanged =
-					hasRegistryChanged || ! isShallowEqual( this.props.ownProps, nextProps.ownProps );
+					hasRegistryChanged ||
+					! isShallowEqual( this.props.ownProps, nextProps.ownProps );
 
 				// Only render if props have changed or merge props have been updated
 				// from the store subscriber.
@@ -178,13 +192,23 @@ const withSelect = mapSelectToProps =>
 			}
 
 			render() {
-				return <WrappedComponent { ...this.props.ownProps } { ...this.mergeProps } />;
+				return (
+					<WrappedComponent
+						{ ...this.props.ownProps }
+						{ ...this.mergeProps }
+					/>
+				);
 			}
 		}
 
-		return ownProps => (
+		return ( ownProps ) => (
 			<RegistryConsumer>
-				{ registry => <ComponentWithSelect ownProps={ ownProps } registry={ registry } /> }
+				{ ( registry ) => (
+					<ComponentWithSelect
+						ownProps={ ownProps }
+						registry={ registry }
+					/>
+				) }
 			</RegistryConsumer>
 		);
 	}, 'withSelect' );

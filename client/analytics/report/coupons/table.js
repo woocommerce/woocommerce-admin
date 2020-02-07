@@ -71,15 +71,24 @@ export default class CouponsReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
-		return map( coupons, coupon => {
+		return map( coupons, ( coupon ) => {
 			const { amount, coupon_id, orders_count } = coupon;
 			const extended_info = coupon.extended_info || {};
-			const { code, date_created, date_expires, discount_type } = extended_info;
+			const {
+				code,
+				date_created,
+				date_expires,
+				discount_type,
+			} = extended_info;
 
-			const couponUrl = getNewPath( persistedQuery, '/analytics/coupons', {
-				filter: 'single_coupon',
-				coupons: coupon_id,
-			} );
+			const couponUrl = getNewPath(
+				persistedQuery,
+				'/analytics/coupons',
+				{
+					filter: 'single_coupon',
+					coupons: coupon_id,
+				}
+			);
 			const couponLink = (
 				<Link href={ couponUrl } type="wc-admin">
 					{ code }
@@ -110,12 +119,20 @@ export default class CouponsReportTable extends Component {
 					value: getCurrencyFormatDecimal( amount ),
 				},
 				{
-					display: <Date date={ date_created } visibleFormat={ defaultTableDateFormat } />,
+					display: (
+						<Date
+							date={ date_created }
+							visibleFormat={ defaultTableDateFormat }
+						/>
+					),
 					value: date_created,
 				},
 				{
 					display: date_expires ? (
-						<Date date={ date_expires } visibleFormat={ defaultTableDateFormat } />
+						<Date
+							date={ date_expires }
+							visibleFormat={ defaultTableDateFormat }
+						/>
 					) : (
 						__( 'N/A', 'woocommerce-admin' )
 					),
@@ -133,11 +150,21 @@ export default class CouponsReportTable extends Component {
 		const { coupons_count = 0, orders_count = 0, amount = 0 } = totals;
 		return [
 			{
-				label: _n( 'coupon', 'coupons', coupons_count, 'woocommerce-admin' ),
+				label: _n(
+					'coupon',
+					'coupons',
+					coupons_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', coupons_count ),
 			},
 			{
-				label: _n( 'order', 'orders', orders_count, 'woocommerce-admin' ),
+				label: _n(
+					'order',
+					'orders',
+					orders_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', orders_count ),
 			},
 			{

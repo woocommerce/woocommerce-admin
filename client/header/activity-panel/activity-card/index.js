@@ -16,29 +16,53 @@ import { H, Section } from '@woocommerce/components';
 
 class ActivityCard extends Component {
 	render() {
-		const { actions, className, children, date, icon, subtitle, title, unread } = this.props;
-		const cardClassName = classnames( 'woocommerce-activity-card', className );
+		const {
+			actions,
+			className,
+			children,
+			date,
+			icon,
+			subtitle,
+			title,
+			unread,
+		} = this.props;
+		const cardClassName = classnames(
+			'woocommerce-activity-card',
+			className
+		);
 		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
 
 		return (
 			<section className={ cardClassName }>
-				{ unread && <span className="woocommerce-activity-card__unread" /> }
+				{ unread && (
+					<span className="woocommerce-activity-card__unread" />
+				) }
 				<span className="woocommerce-activity-card__icon" aria-hidden>
 					{ icon }
 				</span>
 				<header className="woocommerce-activity-card__header">
-					<H className="woocommerce-activity-card__title">{ title }</H>
-					{ subtitle && <div className="woocommerce-activity-card__subtitle">{ subtitle }</div> }
+					<H className="woocommerce-activity-card__title">
+						{ title }
+					</H>
+					{ subtitle && (
+						<div className="woocommerce-activity-card__subtitle">
+							{ subtitle }
+						</div>
+					) }
 					{ date && (
 						<span className="woocommerce-activity-card__date">
 							{ moment.utc( date ).fromNow() }
 						</span>
 					) }
 				</header>
-				<Section className="woocommerce-activity-card__body">{ children }</Section>
+				<Section className="woocommerce-activity-card__body">
+					{ children }
+				</Section>
 				{ actions && (
 					<footer className="woocommerce-activity-card__actions">
-						{ actionsList.map( ( item, i ) => cloneElement( item, { key: i } ) ) }
+						{ actionsList.map( ( item, i ) =>
+							cloneElement( item, { key: i } )
+						) }
 					</footer>
 				) }
 			</section>
@@ -47,13 +71,17 @@ class ActivityCard extends Component {
 }
 
 ActivityCard.propTypes = {
-	actions: PropTypes.oneOfType( [ PropTypes.arrayOf( PropTypes.element ), PropTypes.element ] ),
+	actions: PropTypes.oneOfType( [
+		PropTypes.arrayOf( PropTypes.element ),
+		PropTypes.element,
+	] ),
 	className: PropTypes.string,
 	children: PropTypes.node.isRequired,
 	date: PropTypes.string,
 	icon: PropTypes.node,
 	subtitle: PropTypes.node,
-	title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ).isRequired,
+	title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] )
+		.isRequired,
 	unread: PropTypes.bool,
 };
 

@@ -75,8 +75,12 @@ class TextControlWithAffixes extends Component {
 		} );
 
 		return (
-			<BaseControl label={ label } id={ id } help={ help } className={ baseControlClasses }
-				onClick={ event => this.handleOnClick( event, onClick ) }
+			<BaseControl
+				label={ label }
+				id={ id }
+				help={ help }
+				className={ baseControlClasses }
+				onClick={ ( event ) => this.handleOnClick( event, onClick ) }
 			>
 				<div className={ affixesClasses }>
 					{ prefix && (

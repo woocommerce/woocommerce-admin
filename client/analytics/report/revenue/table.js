@@ -11,9 +11,17 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { appendTimestamp, defaultTableDateFormat, getCurrentDates } from 'lib/date';
+import {
+	appendTimestamp,
+	defaultTableDateFormat,
+	getCurrentDates,
+} from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/currency-format';
+import {
+	formatCurrency,
+	getCurrencyFormatDecimal,
+	renderCurrency,
+} from 'lib/currency-format';
 import { formatValue } from 'lib/number-format';
 
 /**
@@ -103,7 +111,7 @@ class RevenueReportTable extends Component {
 	}
 
 	getRowsContent( data = [] ) {
-		return data.map( row => {
+		return data.map( ( row ) => {
 			const {
 				coupons,
 				gross_sales,
@@ -119,7 +127,10 @@ class RevenueReportTable extends Component {
 			// we need to know which kind of report this is, and parse the `label` to get this row's date
 			const orderLink = (
 				<Link
-					href={ 'edit.php?post_type=shop_order&m=' + formatDate( 'Ymd', row.date_start ) }
+					href={
+						'edit.php?post_type=shop_order&m=' +
+						formatDate( 'Ymd', row.date_start )
+					}
 					type="wp-admin"
 				>
 					{ formatValue( 'number', orders_count ) }
@@ -127,7 +138,12 @@ class RevenueReportTable extends Component {
 			);
 			return [
 				{
-					display: <Date date={ row.date_start } visibleFormat={ defaultTableDateFormat } />,
+					display: (
+						<Date
+							date={ row.date_start }
+							visibleFormat={ defaultTableDateFormat }
+						/>
+					),
 					value: row.date_start,
 				},
 				{
@@ -183,7 +199,12 @@ class RevenueReportTable extends Component {
 				value: formatValue( 'number', totalResults ),
 			},
 			{
-				label: _n( 'order', 'orders', orders_count, 'woocommerce-admin' ),
+				label: _n(
+					'order',
+					'orders',
+					orders_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', orders_count ),
 			},
 			{
@@ -241,7 +262,11 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { query, filters, advancedFilters } = props;
 		const datesFromQuery = getCurrentDates( query );
-		const { getReportStats, getReportStatsError, isReportStatsRequesting } = select( 'wc-api' );
+		const {
+			getReportStats,
+			getReportStatsError,
+			isReportStatsRequesting,
+		} = select( 'wc-api' );
 
 		// @todo Support hour here when viewing a single day
 		const tableQuery = {
@@ -262,8 +287,13 @@ export default compose(
 			advancedFilters,
 		} );
 		const revenueData = getReportStats( 'revenue', filteredTableQuery );
-		const isError = Boolean( getReportStatsError( 'revenue', filteredTableQuery ) );
-		const isRequesting = isReportStatsRequesting( 'revenue', filteredTableQuery );
+		const isError = Boolean(
+			getReportStatsError( 'revenue', filteredTableQuery )
+		);
+		const isRequesting = isReportStatsRequesting(
+			'revenue',
+			filteredTableQuery
+		);
 
 		return {
 			tableData: {

@@ -10,7 +10,10 @@ class StoreAlertsPlaceholder extends Component {
 		const { hasMultipleAlerts } = this.props;
 
 		return (
-			<div className="woocommerce-card woocommerce-store-alerts is-loading" aria-hidden>
+			<div
+				className="woocommerce-card woocommerce-store-alerts is-loading"
+				aria-hidden
+			>
 				<div className="woocommerce-card__header">
 					<div className="woocommerce-card__title woocommerce-card__header-item">
 						<span className="is-placeholder" />

@@ -28,7 +28,8 @@ Date.propTypes = {
 	/**
 	 * Date to use in the component.
 	 */
-	date: PropTypes.oneOfType( [ PropTypes.string, PropTypes.object ] ).isRequired,
+	date: PropTypes.oneOfType( [ PropTypes.string, PropTypes.object ] )
+		.isRequired,
 	/**
 	 * Date format used in the `datetime` prop of the `time` element.
 	 */

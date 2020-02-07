@@ -70,11 +70,15 @@ class WordPressNotices extends Component {
 
 	initialize() {
 		const notices = document.getElementById( 'wp__notice-list' );
-		const noticesOpen = notices.classList.contains( 'woocommerce-layout__notice-list-show' );
+		const noticesOpen = notices.classList.contains(
+			'woocommerce-layout__notice-list-show'
+		);
 		const screenMeta = document.getElementById( 'screen-meta' );
 		const screenLinks = document.getElementById( 'screen-meta-links' );
 
-		const collapsedTargetArea = document.getElementById( 'woocommerce-layout__notice-list' );
+		const collapsedTargetArea = document.getElementById(
+			'woocommerce-layout__notice-list'
+		);
 		const uncollapsedTargetArea =
 			document.getElementById( 'wp__notice-list-uncollapsed' ) ||
 			document.getElementById( 'ajax-response' ) ||
@@ -87,14 +91,23 @@ class WordPressNotices extends Component {
 				// Ignore empty elements in this part of the DOM.
 				continue;
 			} else if ( ! this.shouldCollapseNotice( notice ) ) {
-				uncollapsedTargetArea.insertAdjacentElement( 'afterend', notice );
+				uncollapsedTargetArea.insertAdjacentElement(
+					'afterend',
+					notice
+				);
 			} else {
 				count++;
 			}
 		}
 
 		this.props.onCountUpdate( count );
-		this.setState( { count, notices, noticesOpen, screenMeta, screenLinks } );
+		this.setState( {
+			count,
+			notices,
+			noticesOpen,
+			screenMeta,
+			screenLinks,
+		} );
 
 		// Move collapsed WordPress notifications into the main wc-admin body
 		collapsedTargetArea.insertAdjacentElement( 'beforeend', notices );
@@ -105,9 +118,14 @@ class WordPressNotices extends Component {
 			.getElementById( 'wpbody-content' )
 			.insertAdjacentElement( 'afterbegin', this.state.notices );
 
-		const dismissNotices = document.getElementsByClassName( 'notice-dismiss' );
+		const dismissNotices = document.getElementsByClassName(
+			'notice-dismiss'
+		);
 		Object.keys( dismissNotices ).forEach( function( key ) {
-			dismissNotices[ key ].removeEventListener( 'click', this.updateCount );
+			dismissNotices[ key ].removeEventListener(
+				'click',
+				this.updateCount
+			);
 		}, this );
 
 		this.setState( { noticesOpen: false, hasEventListeners: false } );
@@ -123,7 +141,11 @@ class WordPressNotices extends Component {
 				[ null, [ 'jetpack-jitm-message' ] ],
 				[ 'woocommerce_errors', null ],
 				[ null, [ 'hidden' ] ],
-				[ 'message', [ 'notice', 'updated' ], [ 'woocommerce-message' ] ],
+				[
+					'message',
+					[ 'notice', 'updated' ],
+					[ 'woocommerce-message' ],
+				],
 			]
 		);
 
@@ -134,19 +156,33 @@ class WordPressNotices extends Component {
 			let classMatch = true;
 
 			if ( Array.isArray( includeClasses ) ) {
-				classMatch = 0 < intersection( element.classList, includeClasses ).length;
+				classMatch =
+					0 <
+					intersection( element.classList, includeClasses ).length;
 			}
 
 			if ( Array.isArray( excludeClasses ) ) {
-				classMatch = classMatch && 0 === intersection( element.classList, excludeClasses ).length;
+				classMatch =
+					classMatch &&
+					0 ===
+						intersection( element.classList, excludeClasses )
+							.length;
 			}
 
 			if ( idMatch && classMatch ) {
-				return applyFilters( 'woocommerce_admin_should_hide_notice', false, element );
+				return applyFilters(
+					'woocommerce_admin_should_hide_notice',
+					false,
+					element
+				);
 			}
 		}
 
-		return applyFilters( 'woocommerce_admin_should_hide_notice', true, element );
+		return applyFilters(
+			'woocommerce_admin_should_hide_notice',
+			true,
+			element
+		);
 	}
 
 	updateCount() {
@@ -201,10 +237,13 @@ class WordPressNotices extends Component {
 			return null;
 		}
 
-		const className = classnames( 'woocommerce-layout__activity-panel-tab', {
-			'woocommerce-layout__activity-panel-tab-wordpress-notices': true,
-			'is-active': showNotices,
-		} );
+		const className = classnames(
+			'woocommerce-layout__activity-panel-tab',
+			{
+				'woocommerce-layout__activity-panel-tab-wordpress-notices': true,
+				'is-active': showNotices,
+			}
+		);
 
 		return (
 			<IconButton
@@ -215,8 +254,10 @@ class WordPressNotices extends Component {
 				role="tab"
 				tabIndex={ showNotices ? null : -1 }
 			>
-				{ __( 'Notices', 'woocommerce-admin' ) }{' '}
-				<span className="screen-reader-text">{ __( 'unread activity', 'woocommerce-admin' ) }</span>
+				{ __( 'Notices', 'woocommerce-admin' ) }{ ' ' }
+				<span className="screen-reader-text">
+					{ __( 'unread activity', 'woocommerce-admin' ) }
+				</span>
 			</IconButton>
 		);
 	}

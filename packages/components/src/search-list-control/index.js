@@ -29,7 +29,15 @@ const defaultMessages = {
 	noResults: __( 'No results for %s', 'woocommerce-admin' ),
 	search: __( 'Search for items', 'woocommerce-admin' ),
 	selected: ( n ) =>
-		sprintf( _n( '%d item selected', '%d items selected', n, 'woocommerce-admin' ), n ),
+		sprintf(
+			_n(
+				'%d item selected',
+				'%d items selected',
+				n,
+				'woocommerce-admin'
+			),
+			n
+		),
 	updated: __( 'Search results updated.', 'woocommerce-admin' ),
 };
 
@@ -62,7 +70,10 @@ export class SearchListControl extends Component {
 				onChange( [] );
 			}
 			const i = findIndex( selected, { id } );
-			onChange( [ ...selected.slice( 0, i ), ...selected.slice( i + 1 ) ] );
+			onChange( [
+				...selected.slice( 0, i ),
+				...selected.slice( i + 1 ),
+			] );
 		};
 	}
 
@@ -100,7 +111,9 @@ export class SearchListControl extends Component {
 		const filteredList = list
 			.map( ( item ) => ( re.test( item.name ) ? item : false ) )
 			.filter( Boolean );
-		return isHierarchical ? buildTermsTree( filteredList, list ) : filteredList;
+		return isHierarchical
+			? buildTermsTree( filteredList, list )
+			: filteredList;
 	}
 
 	defaultRenderItem( args ) {
@@ -153,7 +166,9 @@ export class SearchListControl extends Component {
 						/>
 					</span>
 					<span className="woocommerce-search-list__not-found-text">
-						{ search ? sprintf( messages.noResults, search ) : messages.noItems }
+						{ search
+							? sprintf( messages.noResults, search )
+							: messages.noItems }
 					</span>
 				</div>
 			);
@@ -194,7 +209,12 @@ export class SearchListControl extends Component {
 					) : null }
 				</div>
 				{ selected.map( ( item, i ) => (
-					<Tag key={ i } label={ item.name } id={ item.id } remove={ this.onRemove } />
+					<Tag
+						key={ i }
+						label={ item.name }
+						id={ item.id }
+						remove={ this.onRemove }
+					/>
 				) ) }
 			</div>
 		);

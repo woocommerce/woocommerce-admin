@@ -30,17 +30,20 @@ export function reduceRequested( state, action ) {
 }
 
 export function reduceReceived( state, action ) {
-	const newResources = Object.keys( action.resources ).reduce( ( resources, name ) => {
-		const resource = { ...action.resources[ name ] };
-		if ( resource.data ) {
-			resource.lastReceived = action.time;
-		}
-		if ( resource.error ) {
-			resource.lastError = action.time;
-		}
-		resources[ name ] = resource;
-		return resources;
-	}, {} );
+	const newResources = Object.keys( action.resources ).reduce(
+		( resources, name ) => {
+			const resource = { ...action.resources[ name ] };
+			if ( resource.data ) {
+				resource.lastReceived = action.time;
+			}
+			if ( resource.error ) {
+				resource.lastError = action.time;
+			}
+			resources[ name ] = resource;
+			return resources;
+		},
+		{}
+	);
 	return reduceResources( state, newResources );
 }
 

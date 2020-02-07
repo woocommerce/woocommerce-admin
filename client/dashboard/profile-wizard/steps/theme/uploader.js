@@ -7,7 +7,11 @@ import apiFetch from '@wordpress/api-fetch';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { DropZoneProvider, DropZone, FormFileUpload } from '@wordpress/components';
+import {
+	DropZoneProvider,
+	DropZone,
+	FormFileUpload,
+} from '@wordpress/components';
 import Gridicon from 'gridicons';
 import { noop } from 'lodash';
 import PropTypes from 'prop-types';
@@ -48,12 +52,12 @@ class ThemeUploader extends Component {
 		body.append( 'pluginzip', file );
 
 		return apiFetch( { path: '/wc-admin/themes', method: 'POST', body } )
-			.then( response => {
+			.then( ( response ) => {
 				onUploadComplete( response );
 				this.setState( { isUploading: false } );
 				createNotice( response.status, response.message );
 			} )
-			.catch( error => {
+			.catch( ( error ) => {
 				this.setState( { isUploading: false } );
 				if ( error && error.message ) {
 					createNotice( 'error', error.message );
@@ -74,15 +78,29 @@ class ThemeUploader extends Component {
 				<DropZoneProvider>
 					{ ! isUploading ? (
 						<Fragment>
-							<FormFileUpload accept=".zip" onChange={ this.handleFilesUpload }>
+							<FormFileUpload
+								accept=".zip"
+								onChange={ this.handleFilesUpload }
+							>
 								<Gridicon icon="cloud-upload" />
 								<H className="woocommerce-theme-uploader__title">
-									{ __( 'Upload a theme', 'woocommerce-admin' ) }
+									{ __(
+										'Upload a theme',
+										'woocommerce-admin'
+									) }
 								</H>
-								<p>{ __( 'Drop a theme zip file here to upload', 'woocommerce-admin' ) }</p>
+								<p>
+									{ __(
+										'Drop a theme zip file here to upload',
+										'woocommerce-admin'
+									) }
+								</p>
 							</FormFileUpload>
 							<DropZone
-								label={ __( 'Drop your theme zip file here', 'woocommerce-admin' ) }
+								label={ __(
+									'Drop your theme zip file here',
+									'woocommerce-admin'
+								) }
 								onFilesDrop={ this.handleFilesDrop }
 							/>
 						</Fragment>
@@ -92,7 +110,12 @@ class ThemeUploader extends Component {
 							<H className="woocommerce-theme-uploader__title">
 								{ __( 'Uploading theme', 'woocommerce-admin' ) }
 							</H>
-							<p>{ __( 'Your theme is being uploaded', 'woocommerce-admin' ) }</p>
+							<p>
+								{ __(
+									'Your theme is being uploaded',
+									'woocommerce-admin'
+								) }
+							</p>
 						</Fragment>
 					) }
 				</DropZoneProvider>
@@ -117,7 +140,7 @@ ThemeUploader.defaultProps = {
 };
 
 export default compose(
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 		return { createNotice };
 	} )

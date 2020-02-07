@@ -21,7 +21,7 @@ class Pagination extends Component {
 		super( props );
 
 		this.state = {
-				inputValue: this.props.page,
+			inputValue: this.props.page,
 		};
 
 		this.previousPage = this.previousPage.bind( this );
@@ -62,7 +62,7 @@ class Pagination extends Component {
 
 	onInputChange( event ) {
 		this.setState( {
-				inputValue: event.target.value,
+			inputValue: event.target.value,
 		} );
 	}
 
@@ -70,7 +70,13 @@ class Pagination extends Component {
 		const { onPageChange, page } = this.props;
 		const newPage = parseInt( event.target.value, 10 );
 
-		if ( newPage !== page && Number.isFinite( newPage ) && newPage > 0 && this.pageCount && this.pageCount >= newPage ) {
+		if (
+			newPage !== page &&
+			Number.isFinite( newPage ) &&
+			newPage > 0 &&
+			this.pageCount &&
+			this.pageCount >= newPage
+		) {
 			onPageChange( newPage, 'goto' );
 		}
 	}
@@ -101,7 +107,11 @@ class Pagination extends Component {
 					role="status"
 					aria-live="polite"
 				>
-					{ sprintf( __( 'Page %d of %d', 'woocommerce-admin' ), page, this.pageCount ) }
+					{ sprintf(
+						__( 'Page %d of %d', 'woocommerce-admin' ),
+						page,
+						this.pageCount
+					) }
 				</span>
 				<div className="woocommerce-pagination__page-arrows-buttons">
 					<IconButton
@@ -129,14 +139,20 @@ class Pagination extends Component {
 		const { page } = this.props;
 		const { inputValue } = this.state;
 		const isError = page < 1 || page > this.pageCount;
-		const inputClass = classNames( 'woocommerce-pagination__page-picker-input', {
-			'has-error': isError,
-		} );
+		const inputClass = classNames(
+			'woocommerce-pagination__page-picker-input',
+			{
+				'has-error': isError,
+			}
+		);
 
 		const instanceId = uniqueId( 'woocommerce-pagination-page-picker-' );
 		return (
 			<div className="woocommerce-pagination__page-picker">
-				<label htmlFor={ instanceId } className="woocommerce-pagination__page-picker-label">
+				<label
+					htmlFor={ instanceId }
+					className="woocommerce-pagination__page-picker-label"
+				>
 					{ __( 'Go to page', 'woocommerce-admin' ) }
 					<input
 						id={ instanceId }
@@ -157,7 +173,7 @@ class Pagination extends Component {
 
 	renderPerPagePicker() {
 		// @todo Replace this with a styleized Select drop-down/control?
-		const pickerOptions = PER_PAGE_OPTIONS.map( option => {
+		const pickerOptions = PER_PAGE_OPTIONS.map( ( option ) => {
 			return { value: option, label: option };
 		} );
 
@@ -182,7 +198,9 @@ class Pagination extends Component {
 		if ( this.pageCount <= 1 ) {
 			return (
 				( total > PER_PAGE_OPTIONS[ 0 ] && (
-					<div className={ classes }>{ this.renderPerPagePicker() }</div>
+					<div className={ classes }>
+						{ this.renderPerPagePicker() }
+					</div>
 				) ) ||
 				null
 			);

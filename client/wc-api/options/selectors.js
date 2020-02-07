@@ -23,13 +23,16 @@ const getOptions = ( getResource, requireResource ) => (
 	const resourceName = getResourceName( 'options', optionNames );
 	const options = {};
 
-	const names = requireResource( requirement, resourceName ).data || optionNames;
+	const names =
+		requireResource( requirement, resourceName ).data || optionNames;
 
-	names.forEach( name => {
+	names.forEach( ( name ) => {
 		const data = getSetting(
 			'preloadOptions',
 			{},
-			po => getResource( getResourceName( 'options', name ) ).data || po[ name ]
+			( po ) =>
+				getResource( getResourceName( 'options', name ) ).data ||
+				po[ name ]
 		);
 		if ( data ) {
 			options[ name ] = data;
@@ -38,12 +41,14 @@ const getOptions = ( getResource, requireResource ) => (
 	return options;
 };
 
-const getOptionsError = getResource => optionNames => {
+const getOptionsError = ( getResource ) => ( optionNames ) => {
 	return getResource( getResourceName( 'options', optionNames ) ).error;
 };
 
-const isGetOptionsRequesting = getResource => optionNames => {
-	const { lastReceived, lastRequested } = getResource( getResourceName( 'options', optionNames ) );
+const isGetOptionsRequesting = ( getResource ) => ( optionNames ) => {
+	const { lastReceived, lastRequested } = getResource(
+		getResourceName( 'options', optionNames )
+	);
 
 	if ( ! isNil( lastRequested ) && isNil( lastReceived ) ) {
 		return true;
@@ -52,7 +57,7 @@ const isGetOptionsRequesting = getResource => optionNames => {
 	return lastRequested > lastReceived;
 };
 
-const isUpdateOptionsRequesting = getResource => optionNames => {
+const isUpdateOptionsRequesting = ( getResource ) => ( optionNames ) => {
 	const { lastReceived, lastRequested } = getResource(
 		getResourceName( 'options-update', optionNames )
 	);

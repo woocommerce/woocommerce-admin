@@ -44,7 +44,7 @@ class AnimationSlider extends Component {
 						{ ...this.props }
 						onExited={ this.onExited }
 					>
-						{ status => children( { status } ) }
+						{ ( status ) => children( { status } ) }
 					</CSSTransition>
 				</TransitionGroup>
 			</div>

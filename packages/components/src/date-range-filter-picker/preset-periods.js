@@ -22,7 +22,10 @@ class PresetPeriods extends Component {
 		const { onSelect, period } = this.props;
 		return (
 			<SegmentedSelection
-				options={ filter( presetValues, preset => preset.value !== 'custom' ) }
+				options={ filter(
+					presetValues,
+					( preset ) => preset.value !== 'custom'
+				) }
 				selected={ period }
 				onSelect={ onSelect }
 				name="period"

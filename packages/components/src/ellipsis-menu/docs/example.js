@@ -2,11 +2,7 @@
 /**
  * Internal dependencies
  */
-import {
-	EllipsisMenu,
-	MenuItem,
-	MenuTitle,
-} from '@woocommerce/components';
+import { EllipsisMenu, MenuItem, MenuTitle } from '@woocommerce/components';
 
 /**
  * External dependencies
@@ -19,7 +15,8 @@ export default withState( {
 	showCustomers: true,
 	showOrders: true,
 } )( ( { setState, showCustomers, showOrders } ) => (
-	<EllipsisMenu label="Choose which analytics to display"
+	<EllipsisMenu
+		label="Choose which analytics to display"
 		renderContent={ ( { onToggle } ) => (
 			<Fragment>
 				<MenuTitle>Display Stats</MenuTitle>
@@ -27,7 +24,9 @@ export default withState( {
 					isCheckbox
 					isClickable
 					checked={ showCustomers }
-					onInvoke={ () => setState( { showCustomers: ! showCustomers } ) }
+					onInvoke={ () =>
+						setState( { showCustomers: ! showCustomers } )
+					}
 				>
 					Show Customers
 				</MenuItem>
@@ -39,10 +38,7 @@ export default withState( {
 				>
 					Show Orders
 				</MenuItem>
-				<MenuItem
-					isClickable
-					onInvoke={ onToggle }
-				>
+				<MenuItem isClickable onInvoke={ onToggle }>
 					<Icon icon="no-alt" />
 					Close Menu
 				</MenuItem>

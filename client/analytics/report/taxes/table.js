@@ -10,7 +10,11 @@ import { map } from 'lodash';
  * WooCommerce dependencies
  */
 import { Link } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/currency-format';
+import {
+	formatCurrency,
+	getCurrencyFormatDecimal,
+	renderCurrency,
+} from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { getTaxCode } from './utils';
 import { formatValue } from 'lib/number-format';
@@ -71,16 +75,27 @@ export default class TaxesReportTable extends Component {
 	}
 
 	getRowsContent( taxes ) {
-		return map( taxes, tax => {
+		return map( taxes, ( tax ) => {
 			const { query } = this.props;
-			const { order_tax, orders_count, tax_rate, tax_rate_id, total_tax, shipping_tax } = tax;
+			const {
+				order_tax,
+				orders_count,
+				tax_rate,
+				tax_rate_id,
+				total_tax,
+				shipping_tax,
+			} = tax;
 			const taxCode = getTaxCode( tax );
 
 			const persistedQuery = getPersistedQuery( query );
-			const ordersTaxLink = getNewPath( persistedQuery, '/analytics/orders', {
-				filter: 'advanced',
-				tax_rate_includes: tax_rate_id,
-			} );
+			const ordersTaxLink = getNewPath(
+				persistedQuery,
+				'/analytics/orders',
+				{
+					filter: 'advanced',
+					tax_rate_includes: tax_rate_id,
+				}
+			);
 			const taxLink = (
 				<Link href={ ordersTaxLink } type="wc-admin">
 					{ taxCode }
@@ -126,7 +141,12 @@ export default class TaxesReportTable extends Component {
 		} = totals;
 		return [
 			{
-				label: _n( 'tax code', 'tax codes', tax_codes, 'woocommerce-admin' ),
+				label: _n(
+					'tax code',
+					'tax codes',
+					tax_codes,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', tax_codes ),
 			},
 			{
@@ -142,7 +162,12 @@ export default class TaxesReportTable extends Component {
 				value: formatCurrency( shipping_tax ),
 			},
 			{
-				label: _n( 'order', 'orders', orders_count, 'woocommerce-admin' ),
+				label: _n(
+					'order',
+					'orders',
+					orders_count,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', orders_count ),
 			},
 		];

@@ -26,7 +26,7 @@ export const getUniqueKeys = ( data ) => {
 		data.reduce( ( acc, curr ) => acc.concat( Object.keys( curr ) ), [] )
 	);
 
-	return [ ...keys ].filter( key => key !== 'date' );
+	return [ ...keys ].filter( ( key ) => key !== 'date' );
 };
 
 /**
@@ -38,7 +38,7 @@ export const getOrderedKeys = ( data ) => {
 	const keys = getUniqueKeys( data );
 
 	return keys
-		.map( key => ( {
+		.map( ( key ) => ( {
 			key,
 			focus: true,
 			total: data.reduce( ( a, c ) => a + c[ key ].value, 0 ),
@@ -55,9 +55,7 @@ export const getOrderedKeys = ( data ) => {
  */
 export const getUniqueDates = ( data, dateParser ) => {
 	const parseDate = d3UTCParse( dateParser );
-	const dates = new Set(
-		data.map( d => d.date )
-	);
+	const dates = new Set( data.map( ( d ) => d.date ) );
 	return [ ...dates ].sort( ( a, b ) => parseDate( a ) - parseDate( b ) );
 };
 
@@ -71,7 +69,11 @@ export const getUniqueDates = ( data, dateParser ) => {
 export const isDataEmpty = ( data, baseValue = 0 ) => {
 	for ( let i = 0; i < data.length; i++ ) {
 		for ( const [ key, item ] of Object.entries( data[ i ] ) ) {
-			if ( key !== 'date' && ! isNil( item.value ) && item.value !== baseValue ) {
+			if (
+				key !== 'date' &&
+				! isNil( item.value ) &&
+				item.value !== baseValue
+			) {
 				return false;
 			}
 		}

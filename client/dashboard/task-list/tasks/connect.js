@@ -91,7 +91,9 @@ class Connect extends Component {
 				},
 			} );
 			if ( connectResponse && connectResponse.success ) {
-				await this.props.updateProfileItems( { wccom_connected: true } );
+				await this.props.updateProfileItems( {
+					wccom_connected: true,
+				} );
 				if ( ! this.props.isProfileItemsError ) {
 					this.props.createNotice(
 						'success',
@@ -103,7 +105,9 @@ class Connect extends Component {
 
 					// @todo Show a notice for when extensions are correctly installed.
 
-					document.body.classList.remove( 'woocommerce-admin-is-loading' );
+					document.body.classList.remove(
+						'woocommerce-admin-is-loading'
+					);
 					getHistory().push( this.baseQuery() );
 				} else {
 					this.errorMessage();
@@ -123,14 +127,14 @@ class Connect extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const { getProfileItemsError } = select( 'wc-api' );
 
 		const isProfileItemsError = Boolean( getProfileItemsError() );
 
 		return { isProfileItemsError };
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 		const { updateProfileItems } = dispatch( 'wc-api' );
 		return {

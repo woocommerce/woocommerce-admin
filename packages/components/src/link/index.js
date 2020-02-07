@@ -42,7 +42,10 @@ class Link extends Component {
 		};
 
 		if ( 'wc-admin' === type ) {
-			passProps.onClick = partial( this.wcAdminLinkHandler, passProps.onClick );
+			passProps.onClick = partial(
+				this.wcAdminLinkHandler,
+				passProps.onClick
+			);
 		}
 
 		return (

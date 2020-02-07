@@ -45,12 +45,23 @@ const SummaryNumber = ( {
 	let icon = delta > 0 ? 'arrow-up' : 'arrow-down';
 	let screenReaderLabel =
 		delta > 0
-			? sprintf( __( 'Up %d%% from %s', 'woocommerce-admin' ), delta, prevLabel )
-			: sprintf( __( 'Down %d%% from %s', 'woocommerce-admin' ), Math.abs( delta ), prevLabel );
+			? sprintf(
+					__( 'Up %d%% from %s', 'woocommerce-admin' ),
+					delta,
+					prevLabel
+			  )
+			: sprintf(
+					__( 'Down %d%% from %s', 'woocommerce-admin' ),
+					Math.abs( delta ),
+					prevLabel
+			  );
 	if ( ! delta ) {
 		// delta is zero or falsey
 		icon = 'arrow-right';
-		screenReaderLabel = sprintf( __( 'No change from %s', 'woocommerce-admin' ), prevLabel );
+		screenReaderLabel = sprintf(
+			__( 'No change from %s', 'woocommerce-admin' ),
+			prevLabel
+		);
 	}
 
 	let Container;
@@ -77,33 +88,54 @@ const SummaryNumber = ( {
 	return (
 		<li className={ liClasses }>
 			<Container { ...containerProps }>
-				<span className="woocommerce-summary__item-label">{ label }</span>
+				<span className="woocommerce-summary__item-label">
+					{ label }
+				</span>
 
 				<span className="woocommerce-summary__item-data">
 					<span className="woocommerce-summary__item-value">
-						{ ! isNil( value ) ? value : __( 'N/A', 'woocommerce-admin' ) }
+						{ ! isNil( value )
+							? value
+							: __( 'N/A', 'woocommerce-admin' ) }
 					</span>
 					<div
 						className="woocommerce-summary__item-delta"
 						role="presentation"
 						aria-label={ screenReaderLabel }
 					>
-						<Gridicon className="woocommerce-summary__item-delta-icon" icon={ icon } size={ 18 } />
+						<Gridicon
+							className="woocommerce-summary__item-delta-icon"
+							icon={ icon }
+							size={ 18 }
+						/>
 						<span className="woocommerce-summary__item-delta-value">
 							{ ! isNil( delta )
-								? sprintf( __( '%d%%', 'woocommerce-admin' ), delta )
+								? sprintf(
+										__( '%d%%', 'woocommerce-admin' ),
+										delta
+								  )
 								: __( 'N/A', 'woocommerce-admin' ) }
 						</span>
 					</div>
 				</span>
-				<span className="woocommerce-summary__item-prev-label">{ prevLabel }</span>
-				{ ' ' /* Add a real space so the line breaks here, and not in the label text. */ }
+				<span className="woocommerce-summary__item-prev-label">
+					{ prevLabel }
+				</span>
+				{
+					' ' /* Add a real space so the line breaks here, and not in the label text. */
+				}
 				<span className="woocommerce-summary__item-prev-value">
-					{ ! isNil( prevValue ) ? prevValue : __( 'N/A', 'woocommerce-admin' ) }
+					{ ! isNil( prevValue )
+						? prevValue
+						: __( 'N/A', 'woocommerce-admin' ) }
 				</span>
 
 				{ onToggle ? (
-					<Gridicon className="woocommerce-summary__toggle" icon="chevron-down" size={ 24 } />
+					<Gridicon
+						className="woocommerce-summary__toggle"
+						icon="chevron-down"
+						size={ 24 }
+					/>
 				) : null }
 			</Container>
 		</li>

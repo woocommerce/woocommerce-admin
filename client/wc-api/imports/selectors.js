@@ -18,7 +18,7 @@ const getImportStatus = ( getResource, requireResource ) => (
 	return requireResource( requirement, resourceName ).data || {};
 };
 
-const isGetImportStatusRequesting = getResource => timestamp => {
+const isGetImportStatusRequesting = ( getResource ) => ( timestamp ) => {
 	const resourceName = getResourceName( 'import-status', timestamp );
 	const { lastRequested, lastReceived } = getResource( resourceName );
 

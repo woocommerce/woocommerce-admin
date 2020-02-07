@@ -51,7 +51,9 @@ class ReportTable extends Component {
 		super( props );
 
 		const { query, compareBy } = this.props;
-		const selectedRows = query.filter ? getIdsFromQuery( query[ compareBy ] ) : [];
+		const selectedRows = query.filter
+			? getIdsFromQuery( query[ compareBy ] )
+			: [];
 		this.state = { selectedRows };
 
 		this.onColumnsChange = this.onColumnsChange.bind( this );
@@ -70,8 +72,12 @@ class ReportTable extends Component {
 		const { compareBy, query } = this.props;
 
 		if ( query.filter || prevQuery.filter ) {
-			const prevIds = prevQuery.filter ? getIdsFromQuery( prevQuery[ compareBy ] ) : [];
-			const currentIds = query.filter ? getIdsFromQuery( query[ compareBy ] ) : [];
+			const prevIds = prevQuery.filter
+				? getIdsFromQuery( prevQuery[ compareBy ] )
+				: [];
+			const currentIds = query.filter
+				? getIdsFromQuery( query[ compareBy ] )
+				: [];
 			if ( ! isEqual( prevIds.sort(), currentIds.sort() ) ) {
 				/* eslint-disable react/no-did-update-set-state */
 				this.setState( {
@@ -83,9 +89,16 @@ class ReportTable extends Component {
 	}
 
 	onColumnsChange( shownColumns, toggledColumn ) {
-		const { columnPrefsKey, endpoint, getHeadersContent, updateCurrentUserData } = this.props;
-		const columns = getHeadersContent().map( header => header.key );
-		const hiddenColumns = columns.filter( column => ! shownColumns.includes( column ) );
+		const {
+			columnPrefsKey,
+			endpoint,
+			getHeadersContent,
+			updateCurrentUserData,
+		} = this.props;
+		const columns = getHeadersContent().map( ( header ) => header.key );
+		const hiddenColumns = columns.filter(
+			( column ) => ! shownColumns.includes( column )
+		);
 
 		if ( columnPrefsKey ) {
 			const userDataFields = {
@@ -119,9 +132,15 @@ class ReportTable extends Component {
 
 		if ( source ) {
 			if ( 'goto' === source ) {
-				recordEvent( 'analytics_table_go_to_page', { report: endpoint, page: newPage } );
+				recordEvent( 'analytics_table_go_to_page', {
+					report: endpoint,
+					page: newPage,
+				} );
 			} else {
-				recordEvent( 'analytics_table_page_click', { report: endpoint, direction: source } );
+				recordEvent( 'analytics_table_page_click', {
+					report: endpoint,
+					direction: source,
+				} );
 			}
 		}
 	}
@@ -149,14 +168,14 @@ class ReportTable extends Component {
 	filterShownHeaders( headers, hiddenKeys ) {
 		// If no user preferences, set visibilty based on column default.
 		if ( ! hiddenKeys ) {
-			return headers.map( header => ( {
+			return headers.map( ( header ) => ( {
 				...header,
 				visible: header.required || ! header.hiddenByDefault,
 			} ) );
 		}
 
 		// Set visibilty based on user preferences.
-		return headers.map( header => ( {
+		return headers.map( ( header ) => ( {
 			...header,
 			visible: header.required || ! hiddenKeys.includes( header.key ),
 		} ) );
@@ -187,7 +206,10 @@ class ReportTable extends Component {
 		if ( data && data.length === totalResults ) {
 			downloadCSVFile(
 				generateCSVFileName( title, params ),
-				generateCSVDataFromTable( getHeadersContent(), getRowsContent( data ) )
+				generateCSVDataFromTable(
+					getHeadersContent(),
+					getRowsContent( data )
+				)
 			);
 		} else {
 			downloadType = 'email';
@@ -205,7 +227,11 @@ class ReportTable extends Component {
 		const { compareBy, compareParam } = this.props;
 		const { selectedRows } = this.state;
 		if ( compareBy ) {
-			onQueryChange( 'compare' )( compareBy, compareParam, selectedRows.join( ',' ) );
+			onQueryChange( 'compare' )(
+				compareBy,
+				compareParam,
+				selectedRows.join( ',' )
+			);
 		}
 	}
 
@@ -213,7 +239,7 @@ class ReportTable extends Component {
 		const { baseSearchQuery, compareParam, searchBy } = this.props;
 		// A comma is used as a separator between search terms, so we want to escape
 		// any comma they contain.
-		const labels = values.map( v => v.label.replace( ',', '%2C' ) );
+		const labels = values.map( ( v ) => v.label.replace( ',', '%2C' ) );
 		if ( labels.length ) {
 			updateQueryString( {
 				filter: undefined,
@@ -248,7 +274,10 @@ class ReportTable extends Component {
 			this.setState( ( { selectedRows } ) => {
 				const index = selectedRows.indexOf( ids[ i ] );
 				return {
-					selectedRows: [ ...selectedRows.slice( 0, index ), ...selectedRows.slice( index + 1 ) ],
+					selectedRows: [
+						...selectedRows.slice( 0, index ),
+						...selectedRows.slice( index + 1 ),
+					],
 				};
 			} );
 		}
@@ -259,7 +288,12 @@ class ReportTable extends Component {
 		const { selectedRows } = this.state;
 		const isChecked = -1 !== selectedRows.indexOf( ids[ i ] );
 		return {
-			display: <CheckboxControl onChange={ partial( this.selectRow, i ) } checked={ isChecked } />,
+			display: (
+				<CheckboxControl
+					onChange={ partial( this.selectRow, i ) }
+					checked={ isChecked }
+				/>
+			),
 			value: false,
 		};
 	}
@@ -313,13 +347,17 @@ class ReportTable extends Component {
 			return <ReportError isError />;
 		}
 
-		const isLoading = isRequesting || tableData.isRequesting || primaryData.isRequesting;
+		const isLoading =
+			isRequesting || tableData.isRequesting || primaryData.isRequesting;
 		const totals = get( primaryData, [ 'data', 'totals' ], {} );
 		const totalResults = items.totalResults;
 		const downloadable = 0 < totalResults;
 		// Search words are in the query string, not the table query.
 		const searchWords = getSearchWords( this.props.query );
-		const searchedLabels = searchWords.map( v => ( { key: v, label: v } ) );
+		const searchedLabels = searchWords.map( ( v ) => ( {
+			key: v,
+			label: v,
+		} ) );
 
 		/**
 		 * Filter report table.
@@ -354,11 +392,18 @@ class ReportTable extends Component {
 		}
 
 		// Hide any headers based on user prefs, if loaded.
-		const filteredHeaders = this.filterShownHeaders( headers, userPrefColumns );
-		const className = classnames( 'woocommerce-report-table', 'woocommerce-analytics__card', {
-			'has-compare': !! compareBy,
-			'has-search': !! searchBy,
-		} );
+		const filteredHeaders = this.filterShownHeaders(
+			headers,
+			userPrefColumns
+		);
+		const className = classnames(
+			'woocommerce-report-table',
+			'woocommerce-analytics__card',
+			{
+				'has-compare': !! compareBy,
+				'has-search': !! searchBy,
+			}
+		);
 
 		return (
 			<Fragment>
@@ -377,12 +422,16 @@ class ReportTable extends Component {
 								count={ selectedRows.length }
 								helpText={
 									labels.helpText ||
-									__( 'Check at least two items below to compare', 'woocommerce-admin' )
+									__(
+										'Check at least two items below to compare',
+										'woocommerce-admin'
+									)
 								}
 								onClick={ this.onCompare }
 								disabled={ ! downloadable }
 							>
-								{ labels.compareButton || __( 'Compare', 'woocommerce-admin' ) }
+								{ labels.compareButton ||
+									__( 'Compare', 'woocommerce-admin' ) }
 							</CompareButton>
 						),
 						searchBy && (
@@ -392,7 +441,11 @@ class ReportTable extends Component {
 								key="search"
 								onChange={ this.onSearchChange }
 								placeholder={
-									labels.placeholder || __( 'Search by item name', 'woocommerce-admin' )
+									labels.placeholder ||
+									__(
+										'Search by item name',
+										'woocommerce-admin'
+									)
 								}
 								selected={ searchedLabels }
 								showClearButton={ true }
@@ -410,7 +463,8 @@ class ReportTable extends Component {
 							>
 								<DownloadIcon />
 								<span className="woocommerce-table__download-button__label">
-									{ labels.downloadButton || __( 'Download', 'woocommerce-admin' ) }
+									{ labels.downloadButton ||
+										__( 'Download', 'woocommerce-admin' ) }
 								</span>
 							</IconButton>
 						),
@@ -422,7 +476,9 @@ class ReportTable extends Component {
 					onSort={ this.onSort }
 					onPageChange={ this.onPageChange }
 					rows={ rows }
-					rowsPerPage={ parseInt( query.per_page ) || QUERY_DEFAULTS.pageSize }
+					rowsPerPage={
+						parseInt( query.per_page ) || QUERY_DEFAULTS.pageSize
+					}
 					summary={ summary }
 					totalRows={ totalResults }
 					{ ...tableProps }
@@ -553,16 +609,24 @@ export default compose(
 			const userData = getCurrentUserData();
 
 			userPrefColumns =
-				userData && userData[ columnPrefsKey ] ? userData[ columnPrefsKey ] : userPrefColumns;
+				userData && userData[ columnPrefsKey ]
+					? userData[ columnPrefsKey ]
+					: userPrefColumns;
 		}
 
-		if ( isRequesting || ( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) ) ) {
+		if (
+			isRequesting ||
+			( query.search &&
+				! ( query[ endpoint ] && query[ endpoint ].length ) )
+		) {
 			return {
 				userPrefColumns,
 			};
 		}
 		// Variations and Category charts are powered by the /reports/products/stats endpoint.
-		const chartEndpoint = [ 'variations', 'categories' ].includes( endpoint )
+		const chartEndpoint = [ 'variations', 'categories' ].includes(
+			endpoint
+		)
 			? 'products'
 			: endpoint;
 		const primaryData = getSummary
@@ -574,23 +638,40 @@ export default compose(
 					filters,
 					advancedFilters,
 					tableQuery,
-				} )
+			  } )
 			: {};
 		const queriedTableData =
 			tableData ||
-			getReportTableData( { endpoint, query, select, tableQuery, filters, advancedFilters } );
-		const extendedTableData = extendTableData( select, props, queriedTableData );
+			getReportTableData( {
+				endpoint,
+				query,
+				select,
+				tableQuery,
+				filters,
+				advancedFilters,
+			} );
+		const extendedTableData = extendTableData(
+			select,
+			props,
+			queriedTableData
+		);
 
 		return {
 			primaryData,
-			ids: itemIdField ? extendedTableData.items.data.map( item => item[ itemIdField ] ) : [],
+			ids: itemIdField
+				? extendedTableData.items.data.map(
+						( item ) => item[ itemIdField ]
+				  )
+				: [],
 			tableData: extendedTableData,
 			query: { ...tableQuery, ...query },
 			userPrefColumns,
 		};
 	} ),
-	withDispatch( dispatch => {
-		const { initiateReportExport, updateCurrentUserData } = dispatch( 'wc-api' );
+	withDispatch( ( dispatch ) => {
+		const { initiateReportExport, updateCurrentUserData } = dispatch(
+			'wc-api'
+		);
 
 		return {
 			initiateReportExport,

@@ -70,8 +70,10 @@ export const DEFAULT_DATE_RANGE = allSettings.defaultDateRange;
  * @returns {mixed}  The value present in the settings state for the given
  *                   name.
  */
-export function getSetting( name, fallback = false, filter = val => val ) {
-	const value = allSettings.hasOwnProperty( name ) ? allSettings[ name ] : fallback;
+export function getSetting( name, fallback = false, filter = ( val ) => val ) {
+	const value = allSettings.hasOwnProperty( name )
+		? allSettings[ name ]
+		: fallback;
 	return filter( value, fallback );
 }
 
@@ -86,7 +88,7 @@ export function getSetting( name, fallback = false, filter = val => val ) {
  *                                               to sanitize the setting (eg.
  *                                               ensure it's a number)
  */
-export function setSetting( name, value, filter = val => val ) {
+export function setSetting( name, value, filter = ( val ) => val ) {
 	allSettings[ name ] = filter( value );
 }
 

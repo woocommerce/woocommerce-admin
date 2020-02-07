@@ -54,7 +54,9 @@ class InboxNoteCard extends Component {
 			if ( ! note.actions ) {
 				return [];
 			}
-			return note.actions.map( action => <NoteAction noteId={ note.id } action={ action } /> );
+			return note.actions.map( ( action ) => (
+				<NoteAction noteId={ note.id } action={ action } />
+			) );
 		};
 
 		return (
@@ -69,11 +71,14 @@ class InboxNoteCard extends Component {
 					unread={
 						! lastRead ||
 						! note.date_created_gmt ||
-						new Date( note.date_created_gmt + 'Z' ).getTime() > lastRead
+						new Date( note.date_created_gmt + 'Z' ).getTime() >
+							lastRead
 					}
 					actions={ getButtonsFromActions( note ) }
 				>
-					<span dangerouslySetInnerHTML={ sanitizeHTML( note.content ) } />
+					<span
+						dangerouslySetInnerHTML={ sanitizeHTML( note.content ) }
+					/>
 				</ActivityCard>
 			</VisibilitySensor>
 		);

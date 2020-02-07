@@ -60,7 +60,7 @@ export function getIdsFromQuery( queryString = '' ) {
 	return uniq(
 		queryString
 			.split( ',' )
-			.map( id => parseInt( id, 10 ) )
+			.map( ( id ) => parseInt( id, 10 ) )
 			.filter( Boolean )
 	);
 }
@@ -86,7 +86,9 @@ export function getSearchWords( query = navUtils.getQuery() ) {
 			"Invalid 'search' type. getSearchWords expects query's 'search' property to be a string."
 		);
 	}
-	return search.split( ',' ).map( searchWord => searchWord.replace( '%2C', ',' ) );
+	return search
+		.split( ',' )
+		.map( ( searchWord ) => searchWord.replace( '%2C', ',' ) );
 }
 
 /**
@@ -97,7 +99,11 @@ export function getSearchWords( query = navUtils.getQuery() ) {
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
  * @return {String}  Updated URL merging query params into existing params.
  */
-export function getNewPath( query, path = getPath(), currentQuery = getQuery() ) {
+export function getNewPath(
+	query,
+	path = getPath(),
+	currentQuery = getQuery()
+) {
 	const args = { page: 'wc-admin', ...currentQuery, ...query };
 	if ( '/' !== path ) {
 		args.path = path;
@@ -129,7 +135,8 @@ export function getQuery() {
 export function onQueryChange( param, path = getPath(), query = getQuery() ) {
 	switch ( param ) {
 		case 'sort':
-			return ( key, dir ) => updateQueryString( { orderby: key, order: dir }, path, query );
+			return ( key, dir ) =>
+				updateQueryString( { orderby: key, order: dir }, path, query );
 		case 'compare':
 			return ( key, queryParam, ids ) =>
 				updateQueryString(
@@ -142,7 +149,8 @@ export function onQueryChange( param, path = getPath(), query = getQuery() ) {
 					query
 				);
 		default:
-			return value => updateQueryString( { [ param ]: value }, path, query );
+			return ( value ) =>
+				updateQueryString( { [ param ]: value }, path, query );
 	}
 }
 
@@ -153,7 +161,11 @@ export function onQueryChange( param, path = getPath(), query = getQuery() ) {
  * @param {String} path Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
  */
-export function updateQueryString( query, path = getPath(), currentQuery = getQuery() ) {
+export function updateQueryString(
+	query,
+	path = getPath(),
+	currentQuery = getQuery()
+) {
 	const newPath = getNewPath( query, path, currentQuery );
 	getHistory().push( newPath );
 }

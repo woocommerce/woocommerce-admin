@@ -48,7 +48,9 @@ const tracksQueue = {
 			return [];
 		}
 
-		let items = window.localStorage.getItem( tracksQueue.localStorageKey() );
+		let items = window.localStorage.getItem(
+			tracksQueue.localStorageKey()
+		);
 
 		items = items ? JSON.parse( items ) : [];
 		items = Array.isArray( items ) ? items : [];
@@ -71,7 +73,10 @@ const tracksQueue = {
 		items = items.slice( -100 ); // Upper limit.
 
 		tracksDebug( 'Adding new item to queue.', newItem );
-		window.localStorage.setItem( tracksQueue.localStorageKey(), JSON.stringify( items ) );
+		window.localStorage.setItem(
+			tracksQueue.localStorageKey(),
+			JSON.stringify( items )
+		);
 	},
 
 	process: function() {
@@ -84,7 +89,7 @@ const tracksQueue = {
 
 		tracksDebug( 'Processing items in queue.', items );
 
-		items.forEach( item => {
+		items.forEach( ( item ) => {
 			if ( 'object' === typeof item ) {
 				tracksDebug( 'Processing item in queue.', item );
 				recordEvent.apply( null, item.args || undefined );

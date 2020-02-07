@@ -42,7 +42,10 @@ export class SelectControl extends Component {
 		this.decrementSelectedIndex = this.decrementSelectedIndex.bind( this );
 		this.incrementSelectedIndex = this.incrementSelectedIndex.bind( this );
 		this.onAutofillChange = this.onAutofillChange.bind( this );
-		this.updateFilteredOptions = debounce( this.updateFilteredOptions.bind( this ), props.searchDebounceTime );
+		this.updateFilteredOptions = debounce(
+			this.updateFilteredOptions.bind( this ),
+			props.searchDebounceTime
+		);
 		this.search = this.search.bind( this );
 		this.selectOption = this.selectOption.bind( this );
 		this.setExpanded = this.setExpanded.bind( this );
@@ -75,7 +78,7 @@ export class SelectControl extends Component {
 			return false;
 		}
 
-		return selected.some( item => Boolean( item.label ) );
+		return selected.some( ( item ) => Boolean( item.label ) );
 	}
 
 	getSelected() {
@@ -86,7 +89,9 @@ export class SelectControl extends Component {
 			return selected;
 		}
 
-		const selectedOption = options.find( option => option.key === selected );
+		const selectedOption = options.find(
+			( option ) => option.key === selected
+		);
 		return selectedOption ? [ selectedOption ] : [];
 	}
 
@@ -123,7 +128,8 @@ export class SelectControl extends Component {
 	incrementSelectedIndex() {
 		const { selectedIndex } = this.state;
 		const options = this.getOptions();
-		const nextSelectedIndex = null !== selectedIndex ? ( selectedIndex + 1 ) % options.length : 0;
+		const nextSelectedIndex =
+			null !== selectedIndex ? ( selectedIndex + 1 ) % options.length : 0;
 
 		this.setState( { selectedIndex: nextSelectedIndex } );
 	}
@@ -147,7 +153,10 @@ export class SelectControl extends Component {
 				'assertive'
 			);
 		} else {
-			debouncedSpeak( __( 'No results.', 'woocommerce-admin' ), 'assertive' );
+			debouncedSpeak(
+				__( 'No results.', 'woocommerce-admin' ),
+				'assertive'
+			);
 		}
 	}
 
@@ -158,18 +167,28 @@ export class SelectControl extends Component {
 	}
 
 	getFilteredOptions( options, query ) {
-		const { excludeSelectedOptions, getSearchExpression, maxResults, onFilter } = this.props;
-		const selectedKeys = this.getSelected().map( option => option.key );
+		const {
+			excludeSelectedOptions,
+			getSearchExpression,
+			maxResults,
+			onFilter,
+		} = this.props;
+		const selectedKeys = this.getSelected().map( ( option ) => option.key );
 		const filtered = [];
 
 		// Create a regular expression to filter the options.
-		const expression = getSearchExpression( escapeRegExp( query ? query.trim() : '' ) );
+		const expression = getSearchExpression(
+			escapeRegExp( query ? query.trim() : '' )
+		);
 		const search = expression ? new RegExp( expression, 'i' ) : /^$/;
 
 		for ( let i = 0; i < options.length; i++ ) {
 			const option = options[ i ];
 
-			if ( excludeSelectedOptions && selectedKeys.includes( option.key ) ) {
+			if (
+				excludeSelectedOptions &&
+				selectedKeys.includes( option.key )
+			) {
 				continue;
 			}
 
@@ -179,7 +198,9 @@ export class SelectControl extends Component {
 				keywords = [ ...keywords, option.label ];
 			}
 
-			const isMatch = keywords.some( keyword => search.test( keyword ) );
+			const isMatch = keywords.some( ( keyword ) =>
+				search.test( keyword )
+			);
 			if ( ! isMatch ) {
 				continue;
 			}
@@ -207,35 +228,38 @@ export class SelectControl extends Component {
 	updateFilteredOptions( query ) {
 		const { hideBeforeSearch, options, onSearch } = this.props;
 
-		const promise = ( this.activePromise = Promise.resolve( onSearch( options, query ) ).then(
-			searchOptions => {
-				if ( promise !== this.activePromise ) {
-					// Another promise has become active since this one was asked to resolve, so do nothing,
-					// or else we might end triggering a race condition updating the state.
-					return;
-				}
-
-				// Get all options if `hideBeforeSearch` is enabled and query is not null.
-				const filteredOptions =
-					null !== query && ! query.length && ! hideBeforeSearch
-						? searchOptions
-						: this.getFilteredOptions( searchOptions, query );
-
-				this.setState(
-					{
-						selectedIndex: 0,
-						filteredOptions,
-						isExpanded: Boolean( filteredOptions.length ),
-					},
-					() => this.announce( filteredOptions )
-				);
+		const promise = ( this.activePromise = Promise.resolve(
+			onSearch( options, query )
+		).then( ( searchOptions ) => {
+			if ( promise !== this.activePromise ) {
+				// Another promise has become active since this one was asked to resolve, so do nothing,
+				// or else we might end triggering a race condition updating the state.
+				return;
 			}
-		) );
+
+			// Get all options if `hideBeforeSearch` is enabled and query is not null.
+			const filteredOptions =
+				null !== query && ! query.length && ! hideBeforeSearch
+					? searchOptions
+					: this.getFilteredOptions( searchOptions, query );
+
+			this.setState(
+				{
+					selectedIndex: 0,
+					filteredOptions,
+					isExpanded: Boolean( filteredOptions.length ),
+				},
+				() => this.announce( filteredOptions )
+			);
+		} ) );
 	}
 
 	onAutofillChange( event ) {
 		const { options } = this.props;
-		const filteredOptions = this.getFilteredOptions( options, event.target.value );
+		const filteredOptions = this.getFilteredOptions(
+			options,
+			event.target.value
+		);
 
 		if ( 1 === filteredOptions.length ) {
 			this.selectOption( filteredOptions[ 0 ] );
@@ -257,18 +281,24 @@ export class SelectControl extends Component {
 
 		const hasTags = this.hasTags();
 		const { key: selectedKey = '' } = options[ selectedIndex ] || {};
-		const listboxId = isExpanded ? `woocommerce-select-control__listbox-${ instanceId }` : null;
+		const listboxId = isExpanded
+			? `woocommerce-select-control__listbox-${ instanceId }`
+			: null;
 		const activeId = isExpanded
 			? `woocommerce-select-control__option-${ instanceId }-${ selectedKey }`
 			: null;
 
 		return (
 			<div
-				className={ classnames( 'woocommerce-select-control', className, {
-					'has-inline-tags': hasTags && inlineTags,
-					'is-focused': isFocused,
-					'is-searchable': isSearchable,
-				} ) }
+				className={ classnames(
+					'woocommerce-select-control',
+					className,
+					{
+						'has-inline-tags': hasTags && inlineTags,
+						'is-focused': isFocused,
+						'is-searchable': isSearchable,
+					}
+				) }
 				ref={ this.bindNode }
 			>
 				{ autofill && (
@@ -296,7 +326,9 @@ export class SelectControl extends Component {
 					decrementSelectedIndex={ this.decrementSelectedIndex }
 					incrementSelectedIndex={ this.incrementSelectedIndex }
 				/>
-				{ ! inlineTags && hasTags && <Tags { ...this.props } selected={ this.getSelected() } /> }
+				{ ! inlineTags && hasTags && (
+					<Tags { ...this.props } selected={ this.getSelected() } />
+				) }
 				{ isExpanded && (
 					<List
 						{ ...this.props }
@@ -379,9 +411,15 @@ SelectControl.propTypes = {
 	options: PropTypes.arrayOf(
 		PropTypes.shape( {
 			isDisabled: PropTypes.bool,
-			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
-			keywords: PropTypes.arrayOf( PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ) ),
-			label: PropTypes.oneOfType( [ PropTypes.string, PropTypes.object ] ),
+			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] )
+				.isRequired,
+			keywords: PropTypes.arrayOf(
+				PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] )
+			),
+			label: PropTypes.oneOfType( [
+				PropTypes.string,
+				PropTypes.object,
+			] ),
 			value: PropTypes.any,
 		} )
 	).isRequired,
@@ -402,7 +440,10 @@ SelectControl.propTypes = {
 		PropTypes.string,
 		PropTypes.arrayOf(
 			PropTypes.shape( {
-				key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
+				key: PropTypes.oneOfType( [
+					PropTypes.number,
+					PropTypes.string,
+				] ).isRequired,
 				label: PropTypes.string,
 			} )
 		),
@@ -422,7 +463,14 @@ SelectControl.propTypes = {
 	/**
 	 * The input type for the search box control.
 	 */
-	searchInputType: PropTypes.oneOf( [ 'text', 'search', 'number', 'email', 'tel', 'url' ] ),
+	searchInputType: PropTypes.oneOf( [
+		'text',
+		'search',
+		'number',
+		'email',
+		'tel',
+		'url',
+	] ),
 	/**
 	 * Only show list options after typing a search query.
 	 */
@@ -445,7 +493,7 @@ SelectControl.defaultProps = {
 	isSearchable: false,
 	onChange: noop,
 	onFilter: identity,
-	onSearch: options => Promise.resolve( options ),
+	onSearch: ( options ) => Promise.resolve( options ),
 	maxResults: 0,
 	multiple: false,
 	searchDebounceTime: 0,

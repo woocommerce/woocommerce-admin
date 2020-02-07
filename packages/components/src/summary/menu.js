@@ -34,9 +34,7 @@ const Menu = ( { label, orientation, itemCount, items } ) => {
 					'woocommerce-admin'
 				) }
 			</p>
-			<ul className={ classes }>
-				{ items }
-			</ul>
+			<ul className={ classes }>{ items }</ul>
 		</NavigableMenu>
 	);
 };

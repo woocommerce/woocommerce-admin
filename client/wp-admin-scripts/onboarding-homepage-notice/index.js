@@ -24,7 +24,7 @@ import { queueRecordEvent } from 'lib/tracks';
  */
 const saveStarted = () => {
 	if ( document.querySelector( '.editor-post-publish-button' ) === null ) {
-		const promise = new Promise( resolve => {
+		const promise = new Promise( ( resolve ) => {
 			requestAnimationFrame( resolve );
 		} );
 		return promise.then( () => saveStarted() );
@@ -39,8 +39,10 @@ const saveStarted = () => {
  * @return {Promise} Promise for overlay existence.
  */
 const saveCompleted = () => {
-	if ( null === document.querySelector( '.post-publish-panel__postpublish' ) ) {
-		const promise = new Promise( resolve => {
+	if (
+		null === document.querySelector( '.post-publish-panel__postpublish' )
+	) {
+		const promise = new Promise( ( resolve ) => {
 			requestAnimationFrame( resolve );
 		} );
 		return promise.then( () => saveCompleted() );
@@ -63,7 +65,9 @@ const onboardingHomepageNotice = () => {
 	saveCompleted().then( () => {
 		const postId = document.querySelector( '#post_ID' ).value;
 		const notificationType =
-			null !== document.querySelector( '.components-snackbar__content' ) ? 'snackbar' : 'default';
+			null !== document.querySelector( '.components-snackbar__content' )
+				? 'snackbar'
+				: 'default';
 
 		apiFetch( {
 			path: '/wc-admin/options',
@@ -76,7 +80,10 @@ const onboardingHomepageNotice = () => {
 
 		dispatch( 'core/notices' ).removeNotice( 'SAVE_POST_NOTICE_ID' );
 		dispatch( 'core/notices' ).createSuccessNotice(
-			__( "🏠 Nice work creating your store's homepage!", 'woocommerce-admin' ),
+			__(
+				"🏠 Nice work creating your store's homepage!",
+				'woocommerce-admin'
+			),
 			{
 				id: 'WOOCOMMERCE_ONBOARDING_HOME_PAGE_NOTICE',
 				type: notificationType,
@@ -84,8 +91,13 @@ const onboardingHomepageNotice = () => {
 					{
 						label: __( 'Continue setup.', 'woocommerce-admin' ),
 						onClick: () => {
-							queueRecordEvent( 'tasklist_appearance_continue_setup', {} );
-							window.location = getAdminLink( 'admin.php?page=wc-admin&task=appearance' );
+							queueRecordEvent(
+								'tasklist_appearance_continue_setup',
+								{}
+							);
+							window.location = getAdminLink(
+								'admin.php?page=wc-admin&task=appearance'
+							);
 						},
 					},
 				],
@@ -95,13 +107,20 @@ const onboardingHomepageNotice = () => {
 };
 
 domReady( () => {
-	const publishButton = document.querySelector( '.editor-post-publish-panel__toggle' );
+	const publishButton = document.querySelector(
+		'.editor-post-publish-panel__toggle'
+	);
 	if ( publishButton ) {
 		publishButton.addEventListener( 'click', function() {
 			saveStarted().then( () => {
-				const confirmButton = document.querySelector( '.editor-post-publish-button' );
+				const confirmButton = document.querySelector(
+					'.editor-post-publish-button'
+				);
 				if ( confirmButton ) {
-					confirmButton.addEventListener( 'click', onboardingHomepageNotice );
+					confirmButton.addEventListener(
+						'click',
+						onboardingHomepageNotice
+					);
 				}
 			} );
 		} );

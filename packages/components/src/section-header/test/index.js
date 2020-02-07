@@ -16,7 +16,9 @@ describe( 'SectionHeader', () => {
 	} );
 
 	test( 'it renders correctly', () => {
-		const tree = renderer.create( <SectionHeader title="A SectionHeader Example" /> ).toJSON();
+		const tree = renderer
+			.create( <SectionHeader title="A SectionHeader Example" /> )
+			.toJSON();
 		expect( tree ).toMatchSnapshot();
 	} );
 } );

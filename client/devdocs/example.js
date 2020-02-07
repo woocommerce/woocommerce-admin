@@ -18,9 +18,7 @@ class Example extends Component {
 		let exampleComponent;
 
 		try {
-			exampleComponent = require( `../../packages/components/src/${
-				this.props.filePath
-			}/docs/example` );
+			exampleComponent = require( `../../packages/components/src/${ this.props.filePath }/docs/example` );
 		} catch ( e ) {
 			// eslint-disable-next-line no-console
 			console.error( e );
@@ -31,7 +29,9 @@ class Example extends Component {
 		}
 
 		this.setState( {
-			example: React.createElement( exampleComponent.default || exampleComponent ),
+			example: React.createElement(
+				exampleComponent.default || exampleComponent
+			),
 		} );
 	}
 

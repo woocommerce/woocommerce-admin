@@ -23,7 +23,9 @@ import { appendTimestamp, getCurrentDates } from 'lib/date';
 export function getLeaderboard( options ) {
 	const endpoint = 'leaderboards';
 	const { per_page, persisted_query, query, select } = options;
-	const { getItems, getItemsError, isGetItemsRequesting } = select( 'wc-api' );
+	const { getItems, getItemsError, isGetItemsRequesting } = select(
+		'wc-api'
+	);
 	const response = {
 		isRequesting: false,
 		isError: false,
@@ -58,12 +60,14 @@ export function getLeaderboard( options ) {
  * @return {Object}   Object containing API request information and the matching items.
  */
 export function searchItemsByString( select, endpoint, search ) {
-	const { getItems, getItemsError, isGetItemsRequesting } = select( 'wc-api' );
+	const { getItems, getItemsError, isGetItemsRequesting } = select(
+		'wc-api'
+	);
 
 	const items = {};
 	let isRequesting = false;
 	let isError = false;
-	search.forEach( searchWord => {
+	search.forEach( ( searchWord ) => {
 		const query = {
 			search: searchWord,
 			per_page: 10,

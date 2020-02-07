@@ -1,6 +1,6 @@
 /** @format */
 
-const updateCurrentUserData = operations => userDataFields => {
+const updateCurrentUserData = ( operations ) => ( userDataFields ) => {
 	const resourceKey = 'current-user-data';
 	operations.update( [ resourceKey ], { [ resourceKey ]: userDataFields } );
 };

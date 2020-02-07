@@ -13,16 +13,22 @@ import classnames from 'classnames';
  * @param { object } props Props passed to component.
  * @return { object } -
  */
-const DropdownButton = props => {
+const DropdownButton = ( props ) => {
 	const { labels, isOpen, ...otherProps } = props;
 	const buttonClasses = classnames( 'woocommerce-dropdown-button', {
 		'is-open': isOpen,
 		'is-multi-line': labels.length > 1,
 	} );
 	return (
-		<Button className={ buttonClasses } aria-expanded={ isOpen } { ...otherProps }>
+		<Button
+			className={ buttonClasses }
+			aria-expanded={ isOpen }
+			{ ...otherProps }
+		>
 			<div className="woocommerce-dropdown-button__labels">
-				{ labels.map( ( label, i ) => <span key={ i }>{ label }</span> ) }
+				{ labels.map( ( label, i ) => (
+					<span key={ i }>{ label }</span>
+				) ) }
 			</div>
 		</Button>
 	);

@@ -47,7 +47,9 @@ function getProp( propName, prop ) {
 	cols.push( getPropType( prop.type, propName ) );
 	cols.push( '`' + getPropDefaultValue( prop.defaultValue ) + '`' );
 
-	let description = ( prop.description || '' ).replace( /(\r\n|\n|\r)+/gm, ' ' ).replace( /\.$/, '' );
+	let description = ( prop.description || '' )
+		.replace( /(\r\n|\n|\r)+/gm, ' ' )
+		.replace( /\.$/, '' );
 
 	if ( prop.required ) {
 		description = '(required) ' + description;
@@ -88,7 +90,7 @@ function getProps( props = {} ) {
 		'Name | Type | Default | Description',
 		'--- | --- | --- | ---',
 	];
-	Object.keys( props ).map( key => {
+	Object.keys( props ).map( ( key ) => {
 		lines.push( getProp( key, props[ key ] ) );
 	} );
 
@@ -123,21 +125,30 @@ function getPropType( type ) {
 	switch ( type.name ) {
 		case 'arrayOf':
 			// replacing "Object" is a hack for shape proptypes.
-			value = 'Array\n' + getPropType( type.value ).replace( 'Object\n', '' );
+			value =
+				'Array\n' + getPropType( type.value ).replace( 'Object\n', '' );
 			break;
 		case 'objectOf':
 			// replacing "Object" is a hack for shape proptypes.
-			value = 'Object\n' + getPropType( type.value ).replace( 'Object\n', '' );
+			value =
+				'Object\n' +
+				getPropType( type.value ).replace( 'Object\n', '' );
 			break;
 		case 'shape':
-			value = map( type.value, ( v, key ) => `\n  - ${ key }: ` + getPropType( v ) ).join( '' );
+			value = map(
+				type.value,
+				( v, key ) => `\n  - ${ key }: ` + getPropType( v )
+			).join( '' );
 			value = 'Object\n' + value.replace( /^\n/, '' );
 			break;
 		case 'enum':
-			value = 'One of: ' + type.value.map( v => v.value ).join( ', ' );
+			value =
+				'One of: ' + type.value.map( ( v ) => v.value ).join( ', ' );
 			break;
 		case 'union':
-			value = 'One of type: ' + type.value.map( v => v.name ).join( ', ' );
+			value =
+				'One of type: ' +
+				type.value.map( ( v ) => v.name ).join( ', ' );
 			break;
 		default:
 			value =

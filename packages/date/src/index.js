@@ -44,8 +44,14 @@ export const presetValues = [
 ];
 
 export const periods = [
-	{ value: 'previous_period', label: __( 'Previous Period', 'woocommerce-admin' ) },
-	{ value: 'previous_year', label: __( 'Previous Year', 'woocommerce-admin' ) },
+	{
+		value: 'previous_period',
+		label: __( 'Previous Period', 'woocommerce-admin' ),
+	},
+	{
+		value: 'previous_year',
+		label: __( 'Previous Year', 'woocommerce-admin' ),
+	},
 ];
 
 /**
@@ -101,7 +107,8 @@ export function toMoment( format, str ) {
 export function getRangeLabel( after, before ) {
 	const isSameYear = after.year() === before.year();
 	const isSameMonth = isSameYear && after.month() === before.month();
-	const isSameDay = isSameYear && isSameMonth && after.isSame( before, 'day' );
+	const isSameDay =
+		isSameYear && isSameMonth && after.isSame( before, 'day' );
 	const fullDateFormat = __( 'MMM D, YYYY', 'woocommerce-admin' );
 	const monthDayFormat = __( 'MMM D', 'woocommerce-admin' );
 
@@ -113,9 +120,13 @@ export function getRangeLabel( after, before ) {
 			.format( fullDateFormat )
 			.replace( afterDate, `${ afterDate } - ${ before.date() }` );
 	} else if ( isSameYear ) {
-		return `${ after.format( monthDayFormat ) } - ${ before.format( fullDateFormat ) }`;
+		return `${ after.format( monthDayFormat ) } - ${ before.format(
+			fullDateFormat
+		) }`;
 	}
-	return `${ after.format( fullDateFormat ) } - ${ before.format( fullDateFormat ) }`;
+	return `${ after.format( fullDateFormat ) } - ${ before.format(
+		fullDateFormat
+	) }`;
 }
 
 /**
@@ -179,7 +190,10 @@ export function getCurrentPeriod( period, compare ) {
 	} else {
 		secondaryStart = primaryStart.clone().subtract( 1, 'years' );
 		// Set the end time to 23:59:59.
-		secondaryEnd = secondaryStart.clone().add( daysSoFar + 1, 'days' ).subtract( 1, 'seconds' );
+		secondaryEnd = secondaryStart
+			.clone()
+			.add( daysSoFar + 1, 'days' )
+			.subtract( 1, 'seconds' );
 	}
 	return {
 		primaryStart,
@@ -225,7 +239,9 @@ function getDateValue( period, compare, after, before ) {
 			const difference = before.diff( after, 'days' );
 			if ( 'previous_period' === compare ) {
 				const secondaryEnd = after.clone().subtract( 1, 'days' );
-				const secondaryStart = secondaryEnd.clone().subtract( difference, 'days' );
+				const secondaryStart = secondaryEnd
+					.clone()
+					.subtract( difference, 'days' );
 				return {
 					primaryStart: after,
 					primaryEnd: before,
@@ -253,7 +269,10 @@ function getDateValue( period, compare, after, before ) {
  * @param {string} defaultDateRange - the store's default date range
  * @return {DateParams} - date parameters derived from query parameters with added defaults
  */
-export const getDateParamsFromQuery = ( query, defaultDateRange = 'period=month&compare=previous_year' ) => {
+export const getDateParamsFromQuery = (
+	query,
+	defaultDateRange = 'period=month&compare=previous_year'
+) => {
 	const { period, compare, after, before } = query;
 	if ( period && compare ) {
 		return {
@@ -284,24 +303,31 @@ export const getDateParamsFromQuery = ( query, defaultDateRange = 'period=month&
  * @param {string} defaultDateRange - the store's default date range
  * @return {{primary: DateValue, secondary: DateValue}} - Primary and secondary DateValue objects
  */
-export const getCurrentDates = ( query, defaultDateRange = 'period=month&compare=previous_year' ) => {
-	const { period, compare, after, before } = getDateParamsFromQuery( query, defaultDateRange );
-	const { primaryStart, primaryEnd, secondaryStart, secondaryEnd } = getDateValue(
-		period,
-		compare,
-		after,
-		before
+export const getCurrentDates = (
+	query,
+	defaultDateRange = 'period=month&compare=previous_year'
+) => {
+	const { period, compare, after, before } = getDateParamsFromQuery(
+		query,
+		defaultDateRange
 	);
+	const {
+		primaryStart,
+		primaryEnd,
+		secondaryStart,
+		secondaryEnd,
+	} = getDateValue( period, compare, after, before );
 
 	return {
 		primary: {
-			label: find( presetValues, item => item.value === period ).label,
+			label: find( presetValues, ( item ) => item.value === period )
+				.label,
 			range: getRangeLabel( primaryStart, primaryEnd ),
 			after: primaryStart,
 			before: primaryEnd,
 		},
 		secondary: {
-			label: find( periods, item => item.value === compare ).label,
+			label: find( periods, ( item ) => item.value === compare ).label,
 			range: getRangeLabel( secondaryStart, secondaryEnd ),
 			after: secondaryStart,
 			before: secondaryEnd,
@@ -356,7 +382,10 @@ export function getAllowedIntervalsForQuery( query ) {
 	let allowed = [];
 	if ( 'custom' === query.period ) {
 		const { primary } = getCurrentDates( query );
-		const differenceInDays = getDateDifferenceInDays( primary.before, primary.after );
+		const differenceInDays = getDateDifferenceInDays(
+			primary.before,
+			primary.after
+		);
 		if ( differenceInDays >= 365 ) {
 			allowed = [ 'day', 'week', 'month', 'quarter', 'year' ];
 		} else if ( differenceInDays >= 90 ) {
@@ -473,8 +502,14 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 				xFormat = '%b';
 				x2Format = '%Y';
 			}
-			screenReaderFormat = __( 'Week of %B %-d, %Y', 'woocommerce-admin' );
-			tooltipLabelFormat = __( 'Week of %B %-d, %Y', 'woocommerce-admin' );
+			screenReaderFormat = __(
+				'Week of %B %-d, %Y',
+				'woocommerce-admin'
+			);
+			tooltipLabelFormat = __(
+				'Week of %B %-d, %Y',
+				'woocommerce-admin'
+			);
 			break;
 		case 'quarter':
 		case 'month':
@@ -525,8 +560,14 @@ export function loadLocaleData( { userLocale, weekdaysShort } ) {
 export const dateValidationMessages = {
 	invalid: __( 'Invalid date', 'woocommerce-admin' ),
 	future: __( 'Select a date in the past', 'woocommerce-admin' ),
-	startAfterEnd: __( 'Start date must be before end date', 'woocommerce-admin' ),
-	endBeforeStart: __( 'Start date must be before end date', 'woocommerce-admin' ),
+	startAfterEnd: __(
+		'Start date must be before end date',
+		'woocommerce-admin'
+	),
+	endBeforeStart: __(
+		'Start date must be before end date',
+		'woocommerce-admin'
+	),
 };
 
 /**
@@ -541,7 +582,13 @@ export const dateValidationMessages = {
  * @param {Moment|null} validatedDate.date - A resulting Moment date object or null, if invalid
  * @param {string} validatedDate.error - An optional error message if date is invalid
  */
-export function validateDateInputForRange( type, value, before, after, format ) {
+export function validateDateInputForRange(
+	type,
+	value,
+	before,
+	after,
+	format
+) {
 	const date = toMoment( format, value );
 	if ( ! date ) {
 		return {

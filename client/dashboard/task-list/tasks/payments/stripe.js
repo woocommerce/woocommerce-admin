@@ -27,7 +27,8 @@ class Stripe extends Component {
 		this.state = {
 			errorMessage: '',
 			connectURL: '',
-			showConnectionButtons: ! props.manualConfig && ! props.createAccount,
+			showConnectionButtons:
+				! props.manualConfig && ! props.createAccount,
 			showManualConfiguration: props.manualConfig,
 		};
 
@@ -42,11 +43,18 @@ class Stripe extends Component {
 
 		// Handle redirect back from Stripe.
 		if ( query[ 'stripe-connect' ] && '1' === query[ 'stripe-connect' ] ) {
-			const stripeSettings = get( options, [ 'woocommerce_stripe_settings' ], [] );
-			const isStripeConnected = stripeSettings.publishable_key && stripeSettings.secret_key;
+			const stripeSettings = get(
+				options,
+				[ 'woocommerce_stripe_settings' ],
+				[]
+			);
+			const isStripeConnected =
+				stripeSettings.publishable_key && stripeSettings.secret_key;
 
 			if ( isStripeConnected ) {
-				recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
+				recordEvent( 'tasklist_payment_connect_method', {
+					payment_method: 'stripe',
+				} );
 				this.props.markConfigured( 'stripe' );
 				this.props.createNotice(
 					'success',
@@ -74,7 +82,10 @@ class Stripe extends Component {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		if ( false === prevState.showConnectionButtons && this.state.showConnectionButtons ) {
+		if (
+			false === prevState.showConnectionButtons &&
+			this.state.showConnectionButtons
+		) {
 			this.fetchOAuthConnectURL();
 		}
 	}
@@ -126,7 +137,9 @@ class Stripe extends Component {
 			} );
 
 			if ( result ) {
-				recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
+				recordEvent( 'tasklist_payment_connect_method', {
+					payment_method: 'stripe',
+				} );
 				this.props.setRequestPending( false );
 				this.props.markConfigured( 'stripe' );
 				this.props.createNotice(
@@ -140,7 +153,12 @@ class Stripe extends Component {
 			let errorTitle, errorMessage;
 			// This seems to be the best way to handle this.
 			// github.com/Automattic/woocommerce-services/blob/cfb6173deb3c72897ee1d35b8fdcf29c5a93dea2/woocommerce-services.php#L563-L570
-			if ( -1 === error.message.indexOf( 'Account already exists for the provided email' ) ) {
+			if (
+				-1 ===
+				error.message.indexOf(
+					'Account already exists for the provided email'
+				)
+			) {
 				errorTitle = __( 'Stripe', 'woocommerce-admin' );
 				errorMessage = interpolateComponents( {
 					mixedString: sprintf(
@@ -156,7 +174,10 @@ class Stripe extends Component {
 					},
 				} );
 			} else {
-				errorTitle = __( 'You already have a Stripe account', 'woocommerce-admin' );
+				errorTitle = __(
+					'You already have a Stripe account',
+					'woocommerce-admin'
+				);
 				errorMessage = interpolateComponents( {
 					mixedString: sprintf(
 						__(
@@ -185,15 +206,24 @@ class Stripe extends Component {
 		return (
 			<Modal
 				title={ errorTitle }
-				onRequestClose={ () => this.setState( { errorMessage: '', errorTitle: '' } ) }
+				onRequestClose={ () =>
+					this.setState( { errorMessage: '', errorTitle: '' } )
+				}
 				className="woocommerce-task-payments__stripe-error-modal"
 			>
 				<div className="woocommerce-task-payments__stripe-error-wrapper">
-					<div className="woocommerce-task-payments__stripe-error-message">{ errorMessage }</div>
+					<div className="woocommerce-task-payments__stripe-error-message">
+						{ errorMessage }
+					</div>
 					<Button
 						isPrimary
 						isDefault
-						onClick={ () => this.setState( { errorMessage: '', errorTitle: '' } ) }
+						onClick={ () =>
+							this.setState( {
+								errorMessage: '',
+								errorTitle: '',
+							} )
+						}
 					>
 						{ __( 'OK', 'woocommerce-admin' ) }
 					</Button>
@@ -212,7 +242,12 @@ class Stripe extends Component {
 	}
 
 	async updateSettings( values ) {
-		const { createNotice, isSettingsError, updateOptions, markConfigured } = this.props;
+		const {
+			createNotice,
+			isSettingsError,
+			updateOptions,
+			markConfigured,
+		} = this.props;
 
 		this.props.setRequestPending( true );
 		await updateOptions( {
@@ -225,7 +260,9 @@ class Stripe extends Component {
 		} );
 
 		if ( ! isSettingsError ) {
-			recordEvent( 'tasklist_payment_connect_method', { payment_method: 'stripe' } );
+			recordEvent( 'tasklist_payment_connect_method', {
+				payment_method: 'stripe',
+			} );
 			this.props.setRequestPending( false );
 			markConfigured( 'stripe' );
 			this.props.createNotice(
@@ -236,7 +273,10 @@ class Stripe extends Component {
 			this.props.setRequestPending( false );
 			createNotice(
 				'error',
-				__( 'There was a problem saving your payment settings.', 'woocommerce-admin' )
+				__(
+					'There was a problem saving your payment settings.',
+					'woocommerce-admin'
+				)
 			);
 		}
 	}
@@ -252,10 +292,16 @@ class Stripe extends Component {
 		const errors = {};
 
 		if ( ! values.publishable_key ) {
-			errors.publishable_key = __( 'Please enter your publishable key', 'woocommerce-admin' );
+			errors.publishable_key = __(
+				'Please enter your publishable key',
+				'woocommerce-admin'
+			);
 		}
 		if ( ! values.secret_key ) {
-			errors.secret_key = __( 'Please enter your secret key', 'woocommerce-admin' );
+			errors.secret_key = __(
+				'Please enter your secret key',
+				'woocommerce-admin'
+			);
 		}
 
 		return errors;
@@ -268,7 +314,13 @@ class Stripe extends Component {
 				'woocommerce-admin'
 			),
 			components: {
-				link: <Link href="https://stripe.com/docs/account" target="_blank" type="external" />,
+				link: (
+					<Link
+						href="https://stripe.com/docs/account"
+						target="_blank"
+						type="external"
+					/>
+				),
 			},
 		} );
 
@@ -282,12 +334,18 @@ class Stripe extends Component {
 					return (
 						<Fragment>
 							<TextControl
-								label={ __( 'Live Publishable Key', 'woocommerce-admin' ) }
+								label={ __(
+									'Live Publishable Key',
+									'woocommerce-admin'
+								) }
 								required
 								{ ...getInputProps( 'publishable_key' ) }
 							/>
 							<TextControl
-								label={ __( 'Live Secret Key', 'woocommerce-admin' ) }
+								label={ __(
+									'Live Secret Key',
+									'woocommerce-admin'
+								) }
 								required
 								{ ...getInputProps( 'secret_key' ) }
 							/>
@@ -313,7 +371,12 @@ class Stripe extends Component {
 	}
 
 	render() {
-		const { errorMessage, showConnectionButtons, connectURL, showManualConfiguration } = this.state;
+		const {
+			errorMessage,
+			showConnectionButtons,
+			connectURL,
+			showManualConfiguration,
+		} = this.state;
 
 		if ( errorMessage ) {
 			return this.renderErrorModal();
@@ -332,14 +395,14 @@ class Stripe extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const { getOptions } = select( 'wc-api' );
 		const options = getOptions( [ 'woocommerce_stripe_settings' ] );
 		return {
 			options,
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 		const { updateOptions } = dispatch( 'wc-api' );
 		return {

@@ -25,19 +25,32 @@ class Klarna extends Component {
 	}
 
 	continue() {
-		const slug = 'checkout' === this.props.plugin ? 'klarna-checkout' : 'klarna-payments';
-		recordEvent( 'tasklist_payment_connect_method', { payment_method: slug } );
+		const slug =
+			'checkout' === this.props.plugin
+				? 'klarna-checkout'
+				: 'klarna-payments';
+		recordEvent( 'tasklist_payment_connect_method', {
+			payment_method: slug,
+		} );
 		this.props.markConfigured( slug );
 		return;
 	}
 
 	render() {
-		const slug = 'checkout' === this.props.plugin ? 'klarna-checkout' : 'klarna-payments';
-		const section = 'checkout' === this.props.plugin ? 'kco' : 'klarna_payments';
+		const slug =
+			'checkout' === this.props.plugin
+				? 'klarna-checkout'
+				: 'klarna-payments';
+		const section =
+			'checkout' === this.props.plugin ? 'kco' : 'klarna_payments';
 
 		const link = (
 			<Link
-				href={ adminUrl + 'admin.php?page=wc-settings&tab=checkout&section=' + section }
+				href={
+					adminUrl +
+					'admin.php?page=wc-settings&tab=checkout&section=' +
+					section
+				}
 				target="_blank"
 				type="external"
 			/>
@@ -45,7 +58,11 @@ class Klarna extends Component {
 
 		const helpLink = (
 			<Link
-				href={ 'https://docs.woocommerce.com/document/' + slug + '/#section-3' }
+				href={
+					'https://docs.woocommerce.com/document/' +
+					slug +
+					'/#section-3'
+				}
 				target="_blank"
 				type="external"
 			/>
