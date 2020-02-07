@@ -8,8 +8,7 @@ import { addDecorator } from '@storybook/react';
 /**
  * Internal dependencies
  */
-// import './style.scss';
-// commented for now, will come back when we have a scss webpack loader configured
+import './style.scss';
 
 addDecorator( withA11y );
 addDecorator( withKnobs );
