@@ -33,11 +33,11 @@ export function updateErrorForGroup( group, data, error, time = new Date() ) {
 	};
 }
 
-export function setIsPersisting( group, isPersisting ) {
+export function setIsRequesting( group, isRequesting ) {
 	return {
-		type: TYPES.SET_IS_PERSISTING,
+		type: TYPES.SET_IS_REQUESTING,
 		group,
-		isPersisting,
+		isRequesting,
 	};
 }
 
@@ -57,12 +57,12 @@ export function* updateAndPersistSettingsForGroup( group, data ) {
 // this would replace setSettingsForGroup
 export function* persistSettingsForGroup( group ) {
 	// first dispatch the is persisting action
-	yield setIsPersisting( group, true );
+	yield setIsRequesting( group, true );
 	// get all dirty keys with select control
 	const dirtyKeys = yield select( STORE_NAME, 'getDirtyKeys', group );
 	// if there is nothing dirty, bail
 	if ( dirtyKeys.length === 0 ) {
-		yield setIsPersisting( group, false );
+		yield setIsRequesting( group, false );
 		return;
 	}
 
@@ -91,7 +91,7 @@ export function* persistSettingsForGroup( group ) {
 		yield updateErrorForGroup( group, null, e );
 	}
 	// finally set the persisting state
-	yield setIsPersisting( group, false );
+	yield setIsRequesting( group, false );
 }
 
 export function clearSettings() {

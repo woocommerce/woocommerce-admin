@@ -7,18 +7,18 @@ import { STORE_NAME } from './constants';
 import { useCallback } from '@wordpress/element';
 
 export const useSettings = ( group, settingsKeys = [] ) => {
-	const { requestedSettings, settingsError, isPersisting, isDirty } = useSelect(
+	const { requestedSettings, settingsError, isRequesting, isDirty } = useSelect(
 		select => {
 			const {
 				getLastSettingsErrorForGroup,
 				getSettingsForGroup,
 				getIsDirty,
-				getIsPersisting,
+				isGetSettingsRequesting,
 			} = select( STORE_NAME );
 			return {
 				requestedSettings: getSettingsForGroup( group, settingsKeys ),
 				settingsError: Boolean( getLastSettingsErrorForGroup( group ) ),
-				isPersisting: getIsPersisting( group ),
+				isRequesting: isGetSettingsRequesting( group ),
 				isDirty: getIsDirty( group, settingsKeys ),
 			};
 		},
@@ -51,7 +51,7 @@ export const useSettings = ( group, settingsKeys = [] ) => {
 	);
 	return {
 		settingsError,
-		isPersisting,
+		isRequesting,
 		isDirty,
 		...requestedSettings,
 		persistSettings,

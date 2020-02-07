@@ -13,6 +13,7 @@ import { controls } from '@wordpress/data-controls';
 import { STORE_NAME } from './constants';
 import * as selectors from './selectors';
 import * as actions from './actions';
+import * as resolvers from './resolvers';
 import reducer from './reducer';
 
 registerStore( STORE_NAME, {
@@ -20,6 +21,7 @@ registerStore( STORE_NAME, {
 	actions,
 	controls,
 	selectors,
+	resolvers,
 } );
 
 export const SETTINGS_STORE_NAME = STORE_NAME;

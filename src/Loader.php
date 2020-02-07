@@ -347,6 +347,7 @@ class Loader {
 				'moment',
 				'wp-api-fetch',
 				'wp-data',
+				'wp-data-controls',
 				'wp-element',
 				'wp-hooks',
 				'wp-html-entities',

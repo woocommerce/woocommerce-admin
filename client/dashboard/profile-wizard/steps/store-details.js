@@ -7,7 +7,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Button, CheckboxControl } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { recordEvent } from 'lib/tracks';
 
 /**
@@ -15,6 +15,7 @@ import { recordEvent } from 'lib/tracks';
  */
 import { H, Card, Form } from '@woocommerce/components';
 import { getCurrencyData } from '@woocommerce/currency';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -26,7 +27,7 @@ import {
 	validateStoreAddress,
 } from '../../components/settings/general/store-address';
 import UsageModal from './usage-modal';
-import withSelect from 'wc-api/with-select';
+import withWCApiSelect from 'wc-api/with-select';
 
 class StoreDetails extends Component {
 	constructor( props ) {
@@ -85,9 +86,9 @@ class StoreDetails extends Component {
 			createNotice,
 			goToNextStep,
 			isSettingsError,
-			updateSettings,
 			updateProfileItems,
 			isProfileItemsError,
+			updateAndPersistSettingsForGroup,
 		} = this.props;
 
 		const currencySettings = this.deriveCurrencySettings( values.countryState );
@@ -99,7 +100,7 @@ class StoreDetails extends Component {
 			setup_client: values.isClient,
 		} );
 
-		await updateSettings( {
+		await updateAndPersistSettingsForGroup( 'general', {
 			general: {
 				woocommerce_store_address: values.addressLine1,
 				woocommerce_store_address_2: values.addressLine2,
@@ -177,26 +178,27 @@ class StoreDetails extends Component {
 }
 
 export default compose(
-	withSelect( select => {
-		const {
-			getSettings,
-			getSettingsError,
-			isGetSettingsRequesting,
-			getProfileItemsError,
-			getProfileItems,
-		} = select( 'wc-api' );
-
-		const settings = getSettings( 'general' );
-		const isSettingsError = Boolean( getSettingsError( 'general' ) );
-		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
+	withWCApiSelect( select => {
+		const { getProfileItemsError, getProfileItems } = select( 'wc-api' );
 
 		const profileItems = getProfileItems();
 		const isProfileItemsError = Boolean( getProfileItemsError() );
 
 		return {
-			getSettings,
 			isProfileItemsError,
 			profileItems,
+		};
+	} ),
+	withSelect( select => {
+		const { getSettings, getSettingsError, isGetSettingsRequesting } = select(
+			SETTINGS_STORE_NAME
+		);
+
+		const { general: settings = {} } = getSettings( 'general' );
+		const isSettingsError = Boolean( getSettingsError( 'general' ) );
+		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
+
+		return {
 			isSettingsError,
 			isSettingsRequesting,
 			settings,
@@ -204,12 +206,13 @@ export default compose(
 	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateSettings, updateProfileItems } = dispatch( 'wc-api' );
+		const { updateProfileItems } = dispatch( 'wc-api' );
+		const { updateAndPersistSettingsForGroup } = dispatch( SETTINGS_STORE_NAME );
 
 		return {
 			createNotice,
-			updateSettings,
 			updateProfileItems,
+			updateAndPersistSettingsForGroup,
 		};
 	} )
 )( StoreDetails );

@@ -8,7 +8,7 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -16,6 +16,7 @@ import { withDispatch } from '@wordpress/data';
 import { Card, Link, Stepper } from '@woocommerce/components';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -25,7 +26,7 @@ import { getCountryCode } from 'dashboard/utils';
 import Plugins from '../steps/plugins';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
-import withSelect from 'wc-api/with-select';
+import withWCApiSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 
 class Shipping extends Component {
@@ -300,12 +301,19 @@ class Shipping extends Component {
 }
 
 export default compose(
+	withWCApiSelect( select => {
+		const { isJetpackConnected } = select( 'wc-api' );
+
+		return {
+			isJetpackConnected: isJetpackConnected(),
+		};
+	} ),
 	withSelect( select => {
-		const { getSettings, getSettingsError, isGetSettingsRequesting, isJetpackConnected } = select(
-			'wc-api'
+		const { getSettings, getSettingsError, isGetSettingsRequesting } = select(
+			SETTINGS_STORE_NAME
 		);
 
-		const settings = getSettings( 'general' );
+		const { general: settings = {} } = getSettings( 'general' );
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
 		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
 
@@ -318,7 +326,6 @@ export default compose(
 		return {
 			countryCode,
 			countryName,
-			isJetpackConnected: isJetpackConnected(),
 			isSettingsError,
 			isSettingsRequesting,
 			settings,
@@ -326,11 +333,9 @@ export default compose(
 	} ),
 	withDispatch( dispatch => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateSettings } = dispatch( 'wc-api' );
 
 		return {
 			createNotice,
-			updateSettings,
 		};
 	} )
 )( Shipping );

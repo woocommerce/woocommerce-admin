@@ -28,7 +28,7 @@ const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 const Settings = ( { createNotice, query } ) => {
 	const {
 		settingsError,
-		isPersisting,
+		isRequesting,
 		isDirty,
 		persistSettings,
 		updateAndPersistSettings,
@@ -56,11 +56,11 @@ const Settings = ( { createNotice, query } ) => {
 
 	useEffect(
 		() => {
-			if ( isPersisting ) {
+			if ( isRequesting ) {
 				hasSaved.current = true;
 				return;
 			}
-			if ( ! isPersisting && hasSaved.current ) {
+			if ( ! isRequesting && hasSaved.current ) {
 				if ( ! settingsError ) {
 					createNotice(
 						'success',
@@ -75,7 +75,7 @@ const Settings = ( { createNotice, query } ) => {
 				hasSaved.current = false;
 			}
 		},
-		[ isPersisting, settingsError, createNotice ]
+		[ isRequesting, settingsError, createNotice ]
 	);
 
 	const resetDefaults = () => {
@@ -141,7 +141,7 @@ const Settings = ( { createNotice, query } ) => {
 					<Button isDefault onClick={ resetDefaults }>
 						{ __( 'Reset Defaults', 'woocommerce-admin' ) }
 					</Button>
-					<Button isPrimary isBusy={ isPersisting } onClick={ saveChanges }>
+					<Button isPrimary isBusy={ isRequesting } onClick={ saveChanges }>
 						{ __( 'Save Settings', 'woocommerce-admin' ) }
 					</Button>
 				</div>

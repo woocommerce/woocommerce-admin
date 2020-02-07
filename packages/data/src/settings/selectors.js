@@ -16,7 +16,7 @@ export const getSettingsGroupNames = state => {
 
 export const getSettings = ( state, group ) => {
 	const settings = {};
-	const settingIds = state[ group ].data || [];
+	const settingIds = state[ group ] && state[ group ].data || [];
 	if ( settingIds.length === 0 ) {
 		return settings;
 	}
@@ -44,13 +44,13 @@ export const getIsDirty = ( state, group, keys = [] ) => {
 export const getSettingsForGroup = ( state, group, keys ) => {
 	const allSettings = getSettings( state, group );
 	return keys.reduce( ( accumulator, key ) => {
-		accumulator[ key ] = allSettings[ key ] || null;
+		accumulator[ key ] = allSettings[ key ] || {};
 		return accumulator;
 	}, {} );
 };
 
-export const getIsPersisting = ( state, group ) => {
-	return state[ group ] && Boolean( state[ group ].isPersisting );
+export const isGetSettingsRequesting = ( state, group ) => {
+	return state[ group ] && Boolean( state[ group ].isRequesting );
 };
 
 /**
@@ -87,5 +87,8 @@ export const getLastSettingsErrorForGroup = ( state, group ) => {
 };
 
 export const getSettingsError = ( state, group, id ) => {
-	return state[ getResourceName( group, id ) ].error;
+	if ( ! id ) {
+		return state[ group ] && state[ group ].error || false;
+	}
+	return state[ getResourceName( group, id ) ].error || false;
 };

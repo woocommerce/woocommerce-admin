@@ -6,7 +6,7 @@ import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Button, FormToggle } from '@wordpress/components';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, get, pickBy } from 'lodash';
 
 /**
@@ -14,12 +14,13 @@ import { keys, get, pickBy } from 'lodash';
  */
 import { formatValue } from 'lib/number-format';
 import { getSetting, CURRENCY as currency } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import { H, Card, SelectControl, Form } from '@woocommerce/components';
-import withSelect from 'wc-api/with-select';
+import withWCApiSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { formatCurrency } from 'lib/currency-format';
 import Plugins from 'dashboard/task-list/tasks/steps/plugins';
@@ -515,14 +516,26 @@ class BusinessDetails extends Component {
 }
 
 export default compose(
-	withSelect( select => {
-		const { getProfileItems, getProfileItemsError, getSettings } = select( 'wc-api' );
-
-		const settings = getSettings( 'general' );
+	withWCApiSelect( select => {
+		const { getProfileItems, getProfileItemsError } = select( 'wc-api' );
 
 		return {
 			isError: Boolean( getProfileItemsError() ),
 			profileItems: getProfileItems(),
+		};
+	} ),
+	withSelect( select => {
+		const { getSettings, getSettingsError, isGetSettingsRequesting } = select(
+			SETTINGS_STORE_NAME
+		);
+
+		const { general: settings = {} } = getSettings( 'general' );
+		const isSettingsError = Boolean( getSettingsError( 'general' ) );
+		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
+
+		return {
+			isSettingsError,
+			isSettingsRequesting,
 			settings,
 		};
 	} ),
