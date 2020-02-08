@@ -9,6 +9,8 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Update_Version;
+
 /**
  * Main package class.
  */
@@ -39,6 +41,12 @@ class Package {
 
 		// Avoid double initialization when the feature plugin is in use.
 		if ( defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
+			if ( version_compare( WC_ADMIN_VERSION_NUMBER, self::VERSION, '<' ) ) {
+				WC_Admin_Notes_Update_Version::add_note();
+			} else {
+				WC_Admin_Notes_Update_Version::delete_note();
+			}
+
 			return;
 		}
 
