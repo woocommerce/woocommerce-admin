@@ -18,6 +18,13 @@ class WC_Admin_Notes_Update_Version {
 	const NOTE_NAME = 'wc-admin-update-version';
 
 	/**
+	 * Attach hooks.
+	 */
+	public function __construct() {
+		add_action( 'init', array( $this, 'deactivate_feature_plugin' ) );
+	}
+
+	/**
 	 * Creates the note to deactivate the older version.
 	 */
 	public static function add_note() {
@@ -38,7 +45,7 @@ class WC_Admin_Notes_Update_Version {
 		$note->add_action(
 			'deactivate-feature-plugin',
 			__( 'Deactivate', 'woocommerce-admin' ),
-			wc_admin_url(),
+			wc_admin_url( '&action=deactivate-feature-plugin' ),
 			'unactioned',
 			true
 		);
@@ -50,5 +57,26 @@ class WC_Admin_Notes_Update_Version {
 	 */
 	public static function delete_note() {
 		WC_Admin_Notes::delete_notes_with_name( self::NOTE_NAME );
+	}
+
+	/**
+	 * Deactivate feature plugin.
+	 */
+	public function deactivate_feature_plugin() {
+		/* phpcs:disable WordPress.Security.NonceVerification */
+		if (
+			! isset( $_GET['page'] ) ||
+			'wc-admin' !== $_GET['page'] ||
+			! isset( $_GET['action'] ) ||
+			'deactivate-feature-plugin' !== $_GET['action'] ||
+			! defined( 'WC_ADMIN_PLUGIN_FILE' )
+		) {
+			return;
+		}
+		/* phpcs:enable */
+
+		$deactivate_url = admin_url( 'plugins.php?action=deactivate&plugin=' . rawurlencode( WC_ADMIN_PLUGIN_FILE ) . '&plugin_status=all&paged=1&_wpnonce=' . wp_create_nonce( 'deactivate-plugin_' . WC_ADMIN_PLUGIN_FILE ) );
+		wp_safe_redirect( $deactivate_url );
+		exit;
 	}
 }
