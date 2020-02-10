@@ -113,10 +113,10 @@ class RevenueReportTable extends Component {
 		return data.map( ( row ) => {
 			const {
 				coupons,
-				gross_sales,
-				total_sales,
-				net_revenue,
-				orders_count,
+				gross_sales: grossSales,
+				total_sales: totalSales,
+				net_revenue: netRevenue,
+				orders_count: ordersCount,
 				refunds,
 				shipping,
 				taxes,
@@ -132,7 +132,7 @@ class RevenueReportTable extends Component {
 					}
 					type="wp-admin"
 				>
-					{ formatValue( 'number', orders_count ) }
+					{ formatValue( 'number', ordersCount ) }
 				</Link>
 			);
 			return [
@@ -147,11 +147,11 @@ class RevenueReportTable extends Component {
 				},
 				{
 					display: orderLink,
-					value: Number( orders_count ),
+					value: Number( ordersCount ),
 				},
 				{
-					display: renderCurrency( gross_sales ),
-					value: getCurrencyFormatDecimal( gross_sales ),
+					display: renderCurrency( grossSales ),
+					value: getCurrencyFormatDecimal( grossSales ),
 				},
 				{
 					display: formatCurrency( refunds ),
@@ -162,8 +162,8 @@ class RevenueReportTable extends Component {
 					value: getCurrencyFormatDecimal( coupons ),
 				},
 				{
-					display: renderCurrency( net_revenue ),
-					value: getCurrencyFormatDecimal( net_revenue ),
+					display: renderCurrency( netRevenue ),
+					value: getCurrencyFormatDecimal( netRevenue ),
 				},
 				{
 					display: renderCurrency( taxes ),
@@ -174,8 +174,8 @@ class RevenueReportTable extends Component {
 					value: getCurrencyFormatDecimal( shipping ),
 				},
 				{
-					display: renderCurrency( total_sales ),
-					value: getCurrencyFormatDecimal( total_sales ),
+					display: renderCurrency( totalSales ),
+					value: getCurrencyFormatDecimal( totalSales ),
 				},
 			];
 		} );
@@ -183,14 +183,14 @@ class RevenueReportTable extends Component {
 
 	getSummary( totals, totalResults = 0 ) {
 		const {
-			orders_count = 0,
-			gross_sales = 0,
-			total_sales = 0,
+			orders_count: ordersCount = 0,
+			gross_sales: grossSales = 0,
+			total_sales: totalSales = 0,
 			refunds = 0,
 			coupons = 0,
 			taxes = 0,
 			shipping = 0,
-			net_revenue = 0,
+			net_revenue: netRevenue = 0,
 		} = totals;
 		return [
 			{
@@ -201,14 +201,14 @@ class RevenueReportTable extends Component {
 				label: _n(
 					'order',
 					'orders',
-					orders_count,
+					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', orders_count ),
+				value: formatValue( 'number', ordersCount ),
 			},
 			{
 				label: __( 'gross sales', 'woocommerce-admin' ),
-				value: formatCurrency( gross_sales ),
+				value: formatCurrency( grossSales ),
 			},
 			{
 				label: __( 'returns', 'woocommerce-admin' ),
@@ -220,7 +220,7 @@ class RevenueReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( net_revenue ),
+				value: formatCurrency( netRevenue ),
 			},
 			{
 				label: __( 'taxes', 'woocommerce-admin' ),
@@ -232,7 +232,7 @@ class RevenueReportTable extends Component {
 			},
 			{
 				label: __( 'total sales', 'woocommerce-admin' ),
-				value: formatCurrency( total_sales ),
+				value: formatCurrency( totalSales ),
 			},
 		];
 	}

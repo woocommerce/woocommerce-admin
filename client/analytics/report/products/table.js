@@ -106,24 +106,29 @@ class ProductsReportTable extends Component {
 		const persistedQuery = getPersistedQuery( query );
 
 		return map( data, ( row ) => {
-			const { product_id, items_sold, net_revenue, orders_count } = row;
-			const extended_info = row.extended_info || {};
 			const {
-				category_ids,
-				low_stock_amount,
-				manage_stock,
+				product_id: productId,
+				items_sold: itemsSold,
+				net_revenue: netRevenue,
+				orders_count: ordersCount,
+			} = row;
+			const extendedInfo = row.extended_info || {};
+			const {
+				category_ids: categoryIds,
+				low_stock_amount: lowStockAmount,
+				manage_stock: extendedInfoManageStock,
 				name,
 				sku,
-				stock_status,
-				stock_quantity,
+				stock_status: extendedInfoStockStatus,
+				stock_quantity: stockQuantity,
 				variations = [],
-			} = extended_info;
+			} = extendedInfo;
 			const ordersLink = getNewPath(
 				persistedQuery,
 				'/analytics/orders',
 				{
 					filter: 'advanced',
-					product_includes: product_id,
+					product_includes: productId,
 				}
 			);
 			const productDetailLink = getNewPath(
@@ -131,26 +136,26 @@ class ProductsReportTable extends Component {
 				'/analytics/products',
 				{
 					filter: 'single_product',
-					products: product_id,
+					products: productId,
 				}
 			);
 			const { categories } = this.props;
 
 			const productCategories =
-				( category_ids &&
-					category_ids
-						.map( ( category_id ) => categories.get( category_id ) )
+				( categoryIds &&
+					categoryIds
+						.map( categoryId => categories.get( categoryId ) )
 						.filter( Boolean ) ) ||
 				[];
 
 			const stockStatus = isLowStock(
-				stock_status,
-				stock_quantity,
-				low_stock_amount
+				extendedInfoStockStatus,
+				stockQuantity,
+				lowStockAmount
 			) ? (
 				<Link
 					href={ getAdminLink(
-						'post.php?action=edit&post=' + product_id
+						'post.php?action=edit&post=' + productId
 					) }
 					type="wp-admin"
 				>
@@ -161,7 +166,7 @@ class ProductsReportTable extends Component {
 					) }
 				</Link>
 			) : (
-				stockStatuses[ stock_status ]
+				stockStatuses[ extendedInfoStockStatus ]
 			);
 
 			return [
@@ -178,20 +183,20 @@ class ProductsReportTable extends Component {
 					value: sku,
 				},
 				{
-					display: formatValue( 'number', items_sold ),
-					value: items_sold,
+					display: formatValue( 'number', itemsSold ),
+					value: itemsSold,
 				},
 				{
-					display: renderCurrency( net_revenue ),
-					value: getCurrencyFormatDecimal( net_revenue ),
+					display: renderCurrency( netRevenue ),
+					value: getCurrencyFormatDecimal( netRevenue ),
 				},
 				{
 					display: (
 						<Link href={ ordersLink } type="wc-admin">
-							{ orders_count }
+							{ ordersCount }
 						</Link>
 					),
-					value: orders_count,
+					value: ordersCount,
 				},
 				{
 					display: (
@@ -236,20 +241,20 @@ class ProductsReportTable extends Component {
 				},
 				manageStock === 'yes'
 					? {
-							display: manage_stock
+							display: extendedInfoManageStock
 								? stockStatus
 								: __( 'N/A', 'woocommerce-admin' ),
-							value: manage_stock
-								? stockStatuses[ stock_status ]
+							value: extendedInfoManageStock
+								? stockStatuses[ extendedInfoStockStatus ]
 								: null,
 					  }
 					: null,
 				manageStock === 'yes'
 					? {
-							display: manage_stock
-								? formatValue( 'number', stock_quantity )
+							display: extendedInfoManageStock
+								? formatValue( 'number', stockQuantity )
 								: __( 'N/A', 'woocommerce-admin' ),
-							value: stock_quantity,
+							value: stockQuantity,
 					  }
 					: null,
 			].filter( Boolean );
@@ -258,42 +263,42 @@ class ProductsReportTable extends Component {
 
 	getSummary( totals ) {
 		const {
-			products_count = 0,
-			items_sold = 0,
-			net_revenue = 0,
-			orders_count = 0,
+			products_count: productsCount = 0,
+			items_sold: itemsSold = 0,
+			net_revenue: netRevenue = 0,
+			orders_count: ordersCount = 0,
 		} = totals;
 		return [
 			{
 				label: _n(
 					'product',
 					'products',
-					products_count,
+					productsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', products_count ),
+				value: formatValue( 'number', productsCount ),
 			},
 			{
 				label: _n(
 					'item sold',
 					'items sold',
-					items_sold,
+					itemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', items_sold ),
+				value: formatValue( 'number', itemsSold ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( net_revenue ),
+				value: formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(
 					'orders',
 					'orders',
-					orders_count,
+					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', orders_count ),
+				value: formatValue( 'number', ordersCount ),
 			},
 		];
 	}
