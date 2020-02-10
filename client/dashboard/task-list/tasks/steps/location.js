@@ -59,19 +59,19 @@ export default class StoreLocation extends Component {
 		const { settings } = this.props;
 
 		const {
-			woocommerce_store_address,
-			woocommerce_store_address_2,
-			woocommerce_store_city,
-			woocommerce_default_country,
-			woocommerce_store_postcode,
+			woocommerce_store_address: storeAddress,
+			woocommerce_store_address_2: storeAddress2,
+			woocommerce_store_city: storeCity,
+			woocommerce_default_country: defaultCountry,
+			woocommerce_store_postcode: storePostcode,
 		} = settings;
 
 		return {
-			addressLine1: woocommerce_store_address || '',
-			addressLine2: woocommerce_store_address_2 || '',
-			city: woocommerce_store_city || '',
-			countryState: woocommerce_default_country || '',
-			postCode: woocommerce_store_postcode || '',
+			addressLine1: storeAddress || '',
+			addressLine2: storeAddress2 || '',
+			city: storeCity || '',
+			countryState: defaultCountry || '',
+			postCode: storePostcode || '',
 		};
 	}
 

@@ -115,17 +115,17 @@ class Shipping extends Component {
 	componentDidUpdate( prevProps, prevState ) {
 		const { countryCode, settings } = this.props;
 		const {
-			woocommerce_store_address,
-			woocommerce_default_country,
-			woocommerce_store_postcode,
+			woocommerce_store_address: storeAddress,
+			woocommerce_default_country: defaultCountry,
+			woocommerce_store_postcode: storePostcode,
 		} = settings;
 		const { step } = this.state;
 
 		if (
 			step === 'store_location' &&
-			woocommerce_store_address &&
-			woocommerce_default_country &&
-			woocommerce_store_postcode
+			storeAddress &&
+			defaultCountry &&
+			storePostcode
 		) {
 			this.completeStep();
 		}

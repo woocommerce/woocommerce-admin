@@ -42,7 +42,7 @@ class Connect extends Component {
 		return (
 			<Fragment>
 				{ hasErrors ? (
-					<Button isPrimary onClick={ () => location.reload() }>
+					<Button isPrimary onClick={ () => window.location.reload() }>
 						{ __( 'Retry', 'woocommerce-admin' ) }
 					</Button>
 				) : (

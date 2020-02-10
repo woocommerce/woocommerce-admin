@@ -37,7 +37,7 @@ class ShippingRates extends Component {
 
 		let restOfTheWorld = false;
 		let shippingCost = false;
-		shippingZones.map( ( zone ) => {
+		shippingZones.forEach( zone => {
 			if ( zone.id === 0 ) {
 				restOfTheWorld =
 					zone.toggleEnabled && values[ `${ zone.id }_enabled` ];
@@ -57,7 +57,7 @@ class ShippingRates extends Component {
 			if ( zone.toggleEnabled && ! values[ `${ zone.id }_enabled` ] ) {
 				// Disable any flat rate methods that exist if toggled off.
 				if ( flatRateMethods.length ) {
-					flatRateMethods.map( ( method ) => {
+					flatRateMethods.forEach( method => {
 						apiFetch( {
 							method: 'POST',
 							path: `/wc/v3/shipping/zones/${ zone.id }/methods/${ method.instance_id }`,

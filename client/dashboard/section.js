@@ -48,8 +48,6 @@ export default class Section extends Component {
 	render() {
 		const {
 			component: SectionComponent,
-			onChangeHiddenBlocks,
-			onTitleUpdate,
 			...props
 		} = this.props;
 		const { titleInput } = this.state;

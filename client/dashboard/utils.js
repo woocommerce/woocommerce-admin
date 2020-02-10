@@ -12,7 +12,6 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Gets the country code from a country:state value string.
  *
- * @format
  * @param {string} countryState Country state string, e.g. US:GA.
  * @return {string} Country string.
  */
@@ -42,7 +41,7 @@ export function getCurrencyRegion( countryState ) {
  * Gets the product IDs for items based on the product types and theme selected in the onboarding profiler.
  *
  * @param {Object} profileItems Onboarding profile.
- * @param {bool} includeInstalledItems Include installed items in returned product IDs.
+ * @param {boolean} includeInstalledItems Include installed items in returned product IDs.
  * @return {Array} Product Ids.
  */
 export function getProductIdsForCart(
@@ -104,7 +103,7 @@ export function getPriceValue( string ) {
  * While we preform an a/b test of onboarding, the feature will be enabled within the plugin build,
  * but only if the user recieved the test/opted in.
  *
- * @return {bool} True if the onboarding is enabled.
+ * @return {boolean} True if the onboarding is enabled.
  */
 export function isOnboardingEnabled() {
 	if ( ! window.wcAdminFeatures.onboarding ) {

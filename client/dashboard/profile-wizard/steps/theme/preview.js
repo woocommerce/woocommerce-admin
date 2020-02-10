@@ -54,7 +54,7 @@ class ThemePreview extends Component {
 
 	render() {
 		const { isBusy, onChoose, onClose, theme } = this.props;
-		const { demo_url, slug, title } = theme;
+		const { demo_url: demoUrl, slug, title } = theme;
 		const { device: currentDevice } = this.state;
 
 		return (
@@ -111,7 +111,7 @@ class ThemePreview extends Component {
 					</Button>
 				</div>
 				<WebPreview
-					src={ demo_url }
+					src={ demoUrl }
 					title={ title }
 					className={ `is-${ currentDevice }` }
 				/>

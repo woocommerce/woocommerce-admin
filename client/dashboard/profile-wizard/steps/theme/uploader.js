@@ -47,7 +47,7 @@ class ThemeUploader extends Component {
 		const { createNotice, onUploadComplete } = this.props;
 		this.setState( { isUploading: true } );
 
-		const body = new FormData();
+		const body = new window.FormData();
 		body.append( 'pluginzip', file );
 
 		return apiFetch( { path: '/wc-admin/themes', method: 'POST', body } )

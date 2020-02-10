@@ -65,18 +65,18 @@ class Tax extends Component {
 			taxSettings,
 		} = this.props;
 		const {
-			woocommerce_calc_taxes,
-			woocommerce_store_address,
-			woocommerce_default_country,
-			woocommerce_store_postcode,
+			woocommerce_calc_taxes: calcTaxes,
+			woocommerce_store_address: storeAddress,
+			woocommerce_default_country: defaultCountry,
+			woocommerce_store_postcode: storePostCode,
 		} = generalSettings;
 		const { isPending, stepIndex } = this.state;
 		const currentStep = this.getSteps()[ stepIndex ];
 		const currentStepKey = currentStep && currentStep.key;
 		const isCompleteAddress = Boolean(
-			woocommerce_store_address &&
-				woocommerce_default_country &&
-				woocommerce_store_postcode
+			storeAddress &&
+			defaultCountry &&
+			storePostCode
 		);
 
 		// Show the success screen if all requirements are satisfied from the beginning.
@@ -116,7 +116,7 @@ class Tax extends Component {
 			this.completeStep();
 		}
 
-		if ( isPending && woocommerce_calc_taxes === 'yes' ) {
+		if ( isPending && calcTaxes === 'yes' ) {
 			window.location = getAdminLink(
 				'admin.php?page=wc-settings&tab=tax&section=standard'
 			);
@@ -476,9 +476,9 @@ export default compose(
 			'wc_connect_options',
 			'woocommerce_setup_jetpack_opted_in',
 		] );
-		const wc_connect_options = get( options, 'wc_connect_options', {} );
+		const connectOptions = get( options, 'wc_connect_options', {} );
 		const tosAccepted =
-			wc_connect_options.tos_accepted ||
+			connectOptions.tos_accepted ||
 			options.woocommerce_setup_jetpack_opted_in;
 
 		return {
