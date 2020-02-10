@@ -76,28 +76,28 @@ class BusinessDetails extends Component {
 			updateProfileItems,
 		} = this.props;
 		const {
-			other_platform,
-			product_count,
+			other_platform: otherPlatform,
+			product_count: productCount,
 			revenue,
-			selling_venues,
+			selling_venues: sellingVenues,
 		} = values;
 		const businessExtensions = this.getBusinessExtensions( values );
 
 		recordEvent( 'storeprofiler_store_business_details_continue', {
-			product_number: product_count,
-			already_selling: selling_venues !== 'no',
+			product_number: productCount,
+			already_selling: sellingVenues !== 'no',
 			currency: currency.code,
 			revenue,
-			used_platform: other_platform,
+			used_platform: otherPlatform,
 			install_facebook: values[ 'facebook-for-woocommerce' ],
 			install_mailchimp: values[ 'mailchimp-for-woocommerce' ],
 		} );
 
 		const _updates = {
-			other_platform,
-			product_count,
+			other_platform: otherPlatform,
+			product_count: productCount,
 			revenue,
-			selling_venues,
+			selling_venues: sellingVenues,
 			business_extensions: businessExtensions,
 		};
 
@@ -135,7 +135,7 @@ class BusinessDetails extends Component {
 	validate( values ) {
 		const errors = {};
 
-		Object.keys( values ).map( ( name ) => {
+		Object.keys( values ).forEach( name => {
 			if ( name === 'other_platform' ) {
 				if (
 					! values.other_platform.length &&

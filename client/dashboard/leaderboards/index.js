@@ -32,14 +32,14 @@ class Leaderboards extends Component {
 		super( ...arguments );
 
 		this.state = {
-			rowsPerTable: parseInt( props.userPrefLeaderboardRows ) || 5,
+			rowsPerTable: parseInt( props.userPrefLeaderboardRows, 10 ) || 5,
 		};
 	}
 
 	setRowsPerTable = ( rows ) => {
-		this.setState( { rowsPerTable: parseInt( rows ) } );
+		this.setState( { rowsPerTable: parseInt( rows, 10 ) } );
 		const userDataFields = {
-			dashboard_leaderboard_rows: parseInt( rows ),
+			dashboard_leaderboard_rows: parseInt( rows, 10 ),
 		};
 		this.props.updateCurrentUserData( userDataFields );
 	};
@@ -138,7 +138,7 @@ class Leaderboards extends Component {
 
 		return allLeaderboards.map( ( leaderboard ) => {
 			if ( hiddenBlocks.includes( leaderboard.id ) ) {
-				return;
+				return undefined;
 			}
 
 			return (

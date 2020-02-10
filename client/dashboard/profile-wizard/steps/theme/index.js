@@ -169,7 +169,7 @@ class Theme extends Component {
 	}
 
 	renderTheme( theme ) {
-		const { demo_url, has_woocommerce_support, image, slug, title } = theme;
+		const { demo_url: demoUrl, has_woocommerce_support: hasSupport, image, slug, title } = theme;
 		const { chosen } = this.state;
 		const { activeTheme = '' } = getSetting( 'onboarding', {} );
 
@@ -189,7 +189,7 @@ class Theme extends Component {
 				<div className="woocommerce-profile-wizard__theme-details">
 					<H className="woocommerce-profile-wizard__theme-name">
 						{ title }
-						{ ! has_woocommerce_support && (
+						{ ! hasSupport && (
 							<Tooltip
 								text={ __(
 									'This theme does not support WooCommerce.',
@@ -231,7 +231,7 @@ class Theme extends Component {
 								{ __( 'Choose', 'woocommerce-admin' ) }
 							</Button>
 						) }
-						{ demo_url && (
+						{ demoUrl && (
 							<Button
 								isTertiary
 								onClick={ () => this.openDemo( theme ) }
@@ -246,13 +246,13 @@ class Theme extends Component {
 	}
 
 	getThemeStatus( theme ) {
-		const { is_installed, price, slug } = theme;
+		const { is_installed: isInstalled, price, slug } = theme;
 		const { activeTheme = '' } = getSetting( 'onboarding', {} );
 
 		if ( activeTheme === slug ) {
 			return __( 'Currently active theme', 'woocommerce-admin' );
 		}
-		if ( is_installed ) {
+		if ( isInstalled ) {
 			return __( 'Installed', 'woocommerce-admin' );
 		} else if ( getPriceValue( price ) <= 0 ) {
 			return __( 'Free', 'woocommerce-admin' );

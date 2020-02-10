@@ -126,22 +126,22 @@ class ProductTypes extends Component {
 									components: {
 										moreLink: productTypes[ slug ]
 											.more_url ? (
-											<Link
-												href={
-													productTypes[ slug ]
-														.more_url
-												}
-												target="_blank"
-												type="external"
-												onClick={ () =>
-													this.onLearnMore( slug )
-												}
-											>
-												{ __(
-													'Learn more',
-													'woocommerce-admin'
-												) }
-											</Link>
+												<Link
+													href={
+														productTypes[ slug ]
+															.more_url
+													}
+													target="_blank"
+													type="external"
+													onClick={ () =>
+														this.onLearnMore( slug )
+													}
+												>
+													{ __(
+														'Learn more',
+														'woocommerce-admin'
+													) }
+												</Link>
 										) : (
 											''
 										),

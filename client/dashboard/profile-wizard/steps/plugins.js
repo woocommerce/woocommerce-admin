@@ -168,7 +168,7 @@ class Plugins extends Component {
 						{ hasErrors && (
 							<Button
 								isPrimary
-								onClick={ () => location.reload() }
+								onClick={ () => window.location.reload() }
 							>
 								{ __( 'Retry', 'woocommerce-admin' ) }
 							</Button>

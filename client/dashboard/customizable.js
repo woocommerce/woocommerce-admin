@@ -227,9 +227,6 @@ class CustomizableDashboard extends Component {
 	render() {
 		const { query, path, taskListHidden, taskListCompleted } = this.props;
 		const { sections } = this.state;
-		const visibleSectionKeys = sections
-			.filter( ( section ) => section.isVisible )
-			.map( ( section ) => section.key );
 
 		if (
 			isOnboardingEnabled() &&
@@ -255,6 +252,10 @@ class CustomizableDashboard extends Component {
 			primaryDate,
 			secondaryDate,
 		};
+
+		const visibleSectionKeys = sections
+			.filter( ( section ) => section.isVisible )
+			.map( ( section ) => section.key );
 
 		return (
 			<Fragment>
