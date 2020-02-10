@@ -36,10 +36,8 @@ class CartModal extends Component {
 	onClickPurchaseNow() {
 		const { productIds, onClickPurchaseNow } = this.props;
 		this.setState( { purchaseNowButtonBusy: true } );
-		const backPath = getNewPath( {}, '/', {} );
-		const { connectNonce } = getSetting( 'onboarding', {} );
-
 		if ( ! productIds.length ) {
+
 			return;
 		}
 
@@ -47,6 +45,9 @@ class CartModal extends Component {
 			product_ids: productIds,
 			purchase_install: false,
 		} );
+
+		const { connectNonce } = getSetting( 'onboarding', {} );
+		const backPath = getNewPath( {}, '/', {} );
 
 		const url = addQueryArgs( 'https://woocommerce.com/cart', {
 			'wccom-site': getSetting( 'siteUrl' ),

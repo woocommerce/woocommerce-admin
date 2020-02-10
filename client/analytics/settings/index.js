@@ -76,6 +76,7 @@ class Settings extends Component {
 
 	resetDefaults = () => {
 		if (
+			// eslint-disable-next-line no-alert
 			window.confirm(
 				__(
 					'Are you sure you want to reset all settings to default values?',

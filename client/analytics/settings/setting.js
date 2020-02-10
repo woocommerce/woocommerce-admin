@@ -32,7 +32,6 @@ class Setting extends Component {
 			component,
 		} = this.props;
 		const { disabled } = this.state;
-		const id = uniqueId( name );
 
 		switch ( inputType ) {
 			case 'checkboxGroup':
@@ -78,6 +77,7 @@ class Setting extends Component {
 				);
 			case 'text':
 			default:
+				const id = uniqueId( name );
 				return (
 					<input
 						id={ id }

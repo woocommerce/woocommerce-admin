@@ -64,13 +64,13 @@ export default class StockReportTable extends Component {
 		return products.map( ( product ) => {
 			const {
 				id,
-				manage_stock,
+				manage_stock: manageStock,
 				name,
-				parent_id,
+				parent_id: parentId,
 				sku,
-				stock_quantity,
-				stock_status,
-				low_stock_amount,
+				stock_quantity: stockQuantity,
+				stock_status: stockStatus,
+				low_stock_amount: lowStockAmount,
 			} = product;
 
 			const productDetailLink = getNewPath(
@@ -78,7 +78,7 @@ export default class StockReportTable extends Component {
 				'/analytics/products',
 				{
 					filter: 'single_product',
-					products: parent_id || id,
+					products: parentId || id,
 				}
 			);
 
@@ -89,12 +89,12 @@ export default class StockReportTable extends Component {
 			);
 
 			const editProductLink = getAdminLink(
-				'post.php?action=edit&post=' + ( parent_id || id )
+				'post.php?action=edit&post=' + ( parentId || id )
 			);
 			const stockStatusLink = isLowStock(
-				stock_status,
-				stock_quantity,
-				low_stock_amount
+				stockStatus,
+				stockQuantity,
+				lowStockAmount
 			) ? (
 				<Link href={ editProductLink } type="wp-admin">
 					{ _x(
@@ -105,7 +105,7 @@ export default class StockReportTable extends Component {
 				</Link>
 			) : (
 				<Link href={ editProductLink } type="wp-admin">
-					{ stockStatuses[ stock_status ] }
+					{ stockStatuses[ stockStatus ] }
 				</Link>
 			);
 
@@ -120,13 +120,13 @@ export default class StockReportTable extends Component {
 				},
 				{
 					display: stockStatusLink,
-					value: stock_status,
+					value: stockStatus,
 				},
 				{
-					display: manage_stock
-						? formatValue( 'number', stock_quantity )
+					display: manageStock
+						? formatValue( 'number', stockQuantity )
 						: __( 'N/A', 'woocommerce-admin' ),
-					value: stock_quantity,
+					value: stockQuantity,
 				},
 			];
 		} );

@@ -26,9 +26,9 @@ const defaultOrderStatuses = [
 ];
 
 const {
-	woocommerce_actionable_order_statuses,
-	woocommerce_excluded_report_order_statuses,
-	woocommerce_default_date_range,
+	woocommerce_actionable_order_statuses: actionableStatuses,
+	woocommerce_excluded_report_order_statuses: excludedStatuses,
+	woocommerce_default_date_range: defaultDateRange,
 } = getSetting( 'wcAdminSettings', {
 	woocommerce_actionable_order_statuses: [],
 	woocommerce_excluded_report_order_statuses: [],
@@ -36,15 +36,15 @@ const {
 } );
 
 const actionableOrderStatuses = Array.isArray(
-	woocommerce_actionable_order_statuses
+	actionableStatuses
 )
-	? woocommerce_actionable_order_statuses
+	? actionableStatuses
 	: [];
 
 const excludedOrderStatuses = Array.isArray(
-	woocommerce_excluded_report_order_statuses
+	excludedStatuses
 )
-	? woocommerce_excluded_report_order_statuses
+	? excludedStatuses
 	: [];
 
 const orderStatuses = Object.keys( ORDER_STATUSES )
@@ -132,7 +132,7 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 				'the default date range.',
 			'woocommerce-admin'
 		),
-		initialValue: woocommerce_default_date_range,
+		initialValue: defaultDateRange,
 		defaultValue: DEFAULT_DATE_RANGE,
 	},
 ] );
