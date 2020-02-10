@@ -23,7 +23,7 @@ class ImageUpload extends Component {
 			return;
 		}
 
-		this.state.frame = wp.media( {
+		const frame = wp.media( {
 			title: __( 'Select or upload image' ),
 			button: {
 				text: __( 'Select' ),
@@ -34,8 +34,10 @@ class ImageUpload extends Component {
 			multiple: false,
 		} );
 
-		this.state.frame.on( 'select', this.handleImageSelect );
-		this.state.frame.open();
+		frame.on( 'select', this.handleImageSelect );
+		frame.open();
+
+		this.setState( { frame } );
 	}
 
 	handleImageSelect() {
