@@ -1,9 +1,4 @@
 /**
- * @format
- * @jest-environment jsdom
- */
-
-/**
  * External dependencies
  */
 import dompurify from 'dompurify';

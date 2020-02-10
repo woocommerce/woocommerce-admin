@@ -7,7 +7,7 @@ import { find, get } from 'lodash';
  * Get the total tax for the discount value
  *
  * @param {Object} order An order as returned from API
- * @return {Float} Tax amount as a decimal number
+ * @return {number} Tax amount as a decimal number
  */
 export function getOrderDiscountTax( order ) {
 	const coupons = get( order, 'coupon_lines', [] );
@@ -23,7 +23,7 @@ export function getOrderDiscountTax( order ) {
  *
  * @param {Object} order An order as returned from API
  * @param {number} id The ID of the line_item
- * @return {Float} Tax amount as a decimal number
+ * @return {number} Tax amount as a decimal number
  */
 export function getOrderLineItemTax( order, id ) {
 	const items = get( order, 'line_items', [] );
@@ -36,7 +36,7 @@ export function getOrderLineItemTax( order, id ) {
  *
  * @param {Object} order An order as returned from API
  * @param {number} id The ID of a fee line in this order
- * @return {Float} Tax amount as a decimal number
+ * @return {number} Tax amount as a decimal number
  */
 export function getOrderFeeTax( order, id ) {
 	const items = get( order, 'fee_lines', [] );
@@ -48,7 +48,7 @@ export function getOrderFeeTax( order, id ) {
  * Get the total tax for all fees in an order (total of all fee lines)
  *
  * @param {Object} order An order as returned from API
- * @return {Float} Tax amount as a decimal number
+ * @return {number} Tax amount as a decimal number
  */
 export function getOrderFeeTotalTax( order ) {
 	const lines = get( order, 'fee_lines', [] );
@@ -62,7 +62,7 @@ export function getOrderFeeTotalTax( order ) {
  * Get the total tax for the shipping value
  *
  * @param {Object} order An order as returned from API
- * @return {Float} Tax amount as a decimal number
+ * @return {number} Tax amount as a decimal number
  */
 export function getOrderShippingTax( order ) {
 	const tax = get( order, 'shipping_lines[0].taxes[0].total', 0 );
@@ -73,7 +73,7 @@ export function getOrderShippingTax( order ) {
  * Get the total tax for the subtotal value (total of all line items)
  *
  * @param {Object} order An order as returned from API
- * @return {Float} Tax amount as a decimal number
+ * @return {number} Tax amount as a decimal number
  */
 export function getOrderSubtotalTax( order ) {
 	const items = get( order, 'line_items', [] );
@@ -87,7 +87,7 @@ export function getOrderSubtotalTax( order ) {
  * Get the total tax for the total value
  *
  * @param {Object} order An order as returned from API
- * @return {Float} Tax amount as a decimal number
+ * @return {number} Tax amount as a decimal number
  */
 export function getOrderTotalTax( order ) {
 	const subtotal = getOrderSubtotalTax( order );

@@ -56,7 +56,7 @@ export const DEFAULT_DATE_RANGE = allSettings.defaultDateRange;
  *
  * @export
  * @param {string}   name                         The identifier for the setting.
- * @param {mixed}    [fallback=false]             The value to use as a fallback
+ * @param {*}    [fallback=false]             The value to use as a fallback
  *                                                if the setting is not in the
  *                                                state.
  * @param {Function} [filter=( val ) => val]  	  A callback for filtering the
@@ -65,7 +65,7 @@ export const DEFAULT_DATE_RANGE = allSettings.defaultDateRange;
  *                                                (if it exists for the key) and
  *                                                the provided fallback arg.
  *
- * @return {mixed}  The value present in the settings state for the given
+ * @return {*}  The value present in the settings state for the given
  *                   name.
  */
 export function getSetting( name, fallback = false, filter = ( val ) => val ) {
@@ -81,7 +81,7 @@ export function getSetting( name, fallback = false, filter = ( val ) => val ) {
  * @export
  * @param {string}   name                        The setting property key for the
  *                                               setting being mutated.
- * @param {mixed}    value                       The value to set.
+ * @param {*}    value                       The value to set.
  * @param {Function} [filter=( val ) => val]     Allows for providing a callback
  *                                               to sanitize the setting (eg.
  *                                               ensure it's a number)

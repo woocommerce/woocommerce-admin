@@ -7,7 +7,7 @@ import { find, get } from 'lodash';
  * Get the total for the discount value
  *
  * @param {Object} order An order as returned from API
- * @return {Float} Total amount as a decimal number
+ * @return {number} Total amount as a decimal number
  */
 export function getOrderDiscountTotal( order ) {
 	const coupons = get( order, 'coupon_lines', [] );
@@ -23,7 +23,7 @@ export function getOrderDiscountTotal( order ) {
  *
  * @param {Object} order An order as returned from API
  * @param {number} id The ID of the fee_line
- * @return {Float} The total fee amount as a decimal number
+ * @return {number} The total fee amount as a decimal number
  */
 export function getOrderFeeCost( order, id ) {
 	const item = find( get( order, 'fee_lines', [] ), { id } );
@@ -37,7 +37,7 @@ export function getOrderFeeCost( order, id ) {
  * Get the fee total on a given order
  *
  * @param {Object} order An order as returned from API
- * @return {Float} The total fee amount as a decimal number
+ * @return {number} The total fee amount as a decimal number
  */
 export function getOrderFeeTotal( order ) {
 	const fees = get( order, 'fee_lines', [] );
@@ -53,7 +53,7 @@ export function getOrderFeeTotal( order ) {
  *
  * @param {Object} order An order as returned from API
  * @param {number} id The ID of the line_item
- * @return {Float} Total amount as a decimal number
+ * @return {number} Total amount as a decimal number
  */
 export function getOrderItemCost( order, id ) {
 	const item = find( get( order, 'line_items', [] ), { id } );
@@ -66,7 +66,7 @@ export function getOrderItemCost( order, id ) {
  * Get the refund value on a given order
  *
  * @param {Object} order An order as returned from API
- * @return {Float} The refund amount as a decimal number
+ * @return {number} The refund amount as a decimal number
  */
 export function getOrderRefundTotal( order ) {
 	const refunds = get( order, 'refunds', [] );
@@ -81,7 +81,7 @@ export function getOrderRefundTotal( order ) {
  * Get the total for the shipping value
  *
  * @param {Object} order An order as returned from API
- * @return {Float} Total amount as a decimal number
+ * @return {number} Total amount as a decimal number
  */
 export function getOrderShippingTotal( order ) {
 	const shipping = get( order, 'shipping_lines', [] );
@@ -96,7 +96,7 @@ export function getOrderShippingTotal( order ) {
  * Get the total for the subtotal value (total of all line items)
  *
  * @param {Object} order An order as returned from API
- * @return {Float} Total amount as a decimal number
+ * @return {number} Total amount as a decimal number
  */
 export function getOrderSubtotal( order ) {
 	const items = get( order, 'line_items', [] );
@@ -111,7 +111,7 @@ export function getOrderSubtotal( order ) {
  * Get the total value on a given order
  *
  * @param {Object} order An order as returned from API
- * @return {Float} The total amount as a decimal number
+ * @return {number} The total amount as a decimal number
  */
 export function getOrderTotal( order ) {
 	const discount = getOrderDiscountTotal( order );

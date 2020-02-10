@@ -75,9 +75,9 @@ export const getProductLabels = getRequestByIdString(
 
 export const getTaxRateLabels = getRequestByIdString(
 	NAMESPACE + '/taxes',
-	( tax_rate ) => ( {
-		key: tax_rate.id,
-		label: getTaxCode( tax_rate ),
+	taxRate => ( {
+		key: taxRate.id,
+		label: getTaxCode( taxRate ),
 	} )
 );
 

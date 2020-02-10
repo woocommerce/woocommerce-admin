@@ -1,7 +1,5 @@
 /**
  * External dependencies
- *
- * @format
  */
 
 import * as SHARED from '@woocommerce/settings';
