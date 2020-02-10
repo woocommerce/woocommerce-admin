@@ -4,8 +4,6 @@
  *
  * @todo Remove this and use `@wordpress/data` `withSelect` instead after
  * this PR is merged: https://github.com/WordPress/gutenberg/pull/11460
- *
- * @format
  */
 
 /**
@@ -74,8 +72,12 @@ const withSelect = ( mapSelectToProps ) =>
 							onComplete,
 							onUnmount,
 						} = selectorsForKey( context );
-						onComplete && onCompletes.push( onComplete );
-						onUnmount && ( this.onUnmounts[ key ] = onUnmount );
+						if ( onComplete ) {
+							onCompletes.push( onComplete );
+						}
+						if ( onUnmount ) {
+							this.onUnmounts[ key ] = onUnmount
+						}
 						storeSelectors[ key ] = selectors;
 					} else {
 						storeSelectors[ key ] = selectorsForKey;

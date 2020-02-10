@@ -44,7 +44,7 @@ function readNoteQueries( resourceNames, fetch ) {
 			} );
 
 			const notes = await response.json();
-			const totalCount = parseInt( response.headers.get( 'x-wp-total' ) );
+			const totalCount = parseInt( response.headers.get( 'x-wp-total' ), 10 );
 			const ids = notes.map( ( note ) => note.id );
 			const noteResources = notes.reduce( ( resources, note ) => {
 				resources[ getResourceName( 'note', note.id ) ] = {

@@ -28,7 +28,7 @@ import * as reportsUtils from './utils';
 /**
  * Add filters and advanced filters values to a query object.
  *
- * @param  {Objedt} options                   arguments
+ * @param  {Object} options                   arguments
  * @param  {string} options.endpoint          Report API Endpoint
  * @param  {Object} options.query             Query parameters in the url
  * @param  {Array}  options.limitBy           Properties used to limit the results. It will be used in the API call to send the IDs.
@@ -188,7 +188,7 @@ export function isReportDataEmpty( report, endpoint ) {
 /**
  * Constructs and returns a query associated with a Report data request.
  *
- * @param  {Objedt} options           arguments
+ * @param  {Object} options           arguments
  * @param  {string} options.endpoint  Report API Endpoint
  * @param  {string} options.dataType  'primary' or 'secondary'.
  * @param  {Object} options.query     Query parameters in the url.
@@ -222,7 +222,7 @@ function getRequestQuery( options ) {
 /**
  * Returns summary number totals needed to render a report page.
  *
- * @param  {Objedt} options           arguments
+ * @param  {Object} options           arguments
  * @param  {string} options.endpoint  Report API Endpoint
  * @param  {Object} options.query     Query parameters in the url
  * @param  {Object} options.select    Instance of @wordpress/select
@@ -246,13 +246,13 @@ export function getSummaryNumbers( options ) {
 	};
 
 	const primaryQuery = getRequestQuery( { ...options, dataType: 'primary' } );
-	const primary = getReportStats( endpoint, primaryQuery );
 	if ( isReportStatsRequesting( endpoint, primaryQuery ) ) {
 		return { ...response, isRequesting: true };
 	} else if ( getReportStatsError( endpoint, primaryQuery ) ) {
 		return { ...response, isError: true };
 	}
 
+	const primary = getReportStats( endpoint, primaryQuery );
 	const primaryTotals =
 		( primary && primary.data && primary.data.totals ) || null;
 
@@ -260,13 +260,13 @@ export function getSummaryNumbers( options ) {
 		...options,
 		dataType: 'secondary',
 	} );
-	const secondary = getReportStats( endpoint, secondaryQuery );
 	if ( isReportStatsRequesting( endpoint, secondaryQuery ) ) {
 		return { ...response, isRequesting: true };
 	} else if ( getReportStatsError( endpoint, secondaryQuery ) ) {
 		return { ...response, isError: true };
 	}
 
+	const secondary = getReportStats( endpoint, secondaryQuery );
 	const secondaryTotals =
 		( secondary && secondary.data && secondary.data.totals ) || null;
 
@@ -279,7 +279,7 @@ export function getSummaryNumbers( options ) {
 /**
  * Returns all of the data needed to render a chart with summary numbers on a report page.
  *
- * @param  {Objedt} options           arguments
+ * @param  {Object} options           arguments
  * @param  {string} options.endpoint  Report API Endpoint
  * @param  {string} options.dataType  'primary' or 'secondary'
  * @param  {Object} options.query     Query parameters in the url
@@ -306,13 +306,20 @@ export function getReportChartData( options ) {
 	};
 
 	const requestQuery = getRequestQuery( options );
+	// Disable eslint rule requiring `stats` to be defined below because the next two if statements
+	// depend on `getReportStats` to have been called.
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const stats = getReportStats( endpoint, requestQuery );
 
 	if ( isReportStatsRequesting( endpoint, requestQuery ) ) {
 		return { ...response, isRequesting: true };
-	} else if ( getReportStatsError( endpoint, requestQuery ) ) {
+	}
+
+	if ( getReportStatsError( endpoint, requestQuery ) ) {
 		return { ...response, isError: true };
-	} else if ( isReportDataEmpty( stats, endpoint ) ) {
+	}
+
+	if ( isReportDataEmpty( stats, endpoint ) ) {
 		return { ...response, isEmpty: true };
 	}
 
@@ -387,7 +394,7 @@ export function getTooltipValueFormat( type ) {
 /**
  * Returns query needed for a request to populate a table.
  *
- * @param  {Objedt} options              arguments
+ * @param  {Object} options              arguments
  * @param  {Object} options.query        Query parameters in the url
  * @param  {Object} options.tableQuery   Query parameters specific for that endpoint
  * @return {Object} Object    Table data response
@@ -444,12 +451,12 @@ export function getReportTableData( options ) {
 		},
 	};
 
-	const items = getReportItems( endpoint, tableQuery );
 	if ( isReportItemsRequesting( endpoint, tableQuery ) ) {
 		return { ...response, isRequesting: true };
 	} else if ( getReportItemsError( endpoint, tableQuery ) ) {
 		return { ...response, isError: true };
 	}
 
+	const items = getReportItems( endpoint, tableQuery );
 	return { ...response, items };
 }
