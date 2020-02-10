@@ -46,7 +46,9 @@ class ProductStockCard extends Component {
 				quantity: product.stock_quantity,
 			},
 			() => {
-				this.quantityInput && this.quantityInput.focus();
+				if ( this.quantityInput ) {
+					this.quantityInput.focus();
+				}
 			}
 		);
 	}
@@ -84,17 +86,17 @@ class ProductStockCard extends Component {
 
 		if ( editing ) {
 			return [
-				<Button type="submit" isPrimary>
+				<Button key="save" type="submit" isPrimary>
 					{ __( 'Save', 'woocommerce-admin' ) }
 				</Button>,
-				<Button type="reset">
+				<Button key="cancel" type="reset">
 					{ __( 'Cancel', 'woocommerce-admin' ) }
 				</Button>,
 			];
 		}
 
 		return [
-			<Button isDefault onClick={ this.beginEdit }>
+			<Button key="update" isDefault onClick={ this.beginEdit }>
 				{ __( 'Update stock', 'woocommerce-admin' ) }
 			</Button>,
 		];

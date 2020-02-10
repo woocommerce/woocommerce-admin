@@ -1,7 +1,5 @@
 /**
  * External dependencies
- *
- * @format
  */
 import { shallow } from 'enzyme';
 

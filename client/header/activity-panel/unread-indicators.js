@@ -23,6 +23,9 @@ export function getUnreadNotes( select ) {
 		order: 'desc',
 	};
 
+	// Disable eslint rule requiring `latestNote` to be defined below because the next two statements
+	// depend on `getNotes` to have been called.
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const latestNote = getNotes( notesQuery );
 	const isError = Boolean( getNotesError( notesQuery ) );
 	const isRequesting = isGetNotesRequesting( notesQuery );
@@ -61,6 +64,10 @@ export function getUnreadOrders( select ) {
 	};
 
 	getItems( 'orders', ordersQuery );
+
+	// Disable eslint rule requiring `latestNote` to be defined below because the next two statements
+	// depend on `getItemsTotalCount` to have been called.
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const totalOrders = getItemsTotalCount( 'orders', ordersQuery );
 	const isError = Boolean( getItemsError( 'orders', ordersQuery ) );
 	const isRequesting = isGetItemsRequesting( 'orders', ordersQuery );
@@ -114,12 +121,12 @@ export function getUnreadStock( select ) {
 		status: 'publish',
 	};
 	getItems( 'products', productsQuery );
-	const lowInStockCount = getItemsTotalCount( 'products', productsQuery );
 	const isError = Boolean( getItemsError( 'products', productsQuery ) );
 
 	if ( isError ) {
 		return null;
 	}
 
+	const lowInStockCount = getItemsTotalCount( 'products', productsQuery );
 	return lowInStockCount > 0;
 }

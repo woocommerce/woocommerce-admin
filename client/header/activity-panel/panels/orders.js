@@ -89,14 +89,14 @@ class OrdersPanel extends Component {
 		}
 
 		const getCustomerString = ( order ) => {
-			const extended_info = order.extended_info || {};
-			const { first_name, last_name } = extended_info.customer || {};
+			const extendedInfo = order.extended_info || {};
+			const { first_name: firstName, last_name: lastName } = extendedInfo.customer || {};
 
-			if ( ! first_name && ! last_name ) {
+			if ( ! firstName && ! lastName ) {
 				return '';
 			}
 
-			const name = [ first_name, last_name ].join( ' ' );
+			const name = [ firstName, lastName ].join( ' ' );
 			return sprintf(
 				__(
 					/* translators: describes who placed an order, e.g. Order #123 placed by John Doe */
@@ -110,8 +110,8 @@ class OrdersPanel extends Component {
 		};
 
 		const orderCardTitle = ( order ) => {
-			const { extended_info, order_id, order_number } = order;
-			const { customer } = extended_info || {};
+			const { extended_info: extendedInfo, order_id: orderId, orderNumber } = order;
+			const { customer } = extendedInfo || {};
 			const customerUrl = customer.customer_id
 				? getNewPath( {}, '/analytics/customers', {
 						filter: 'single_customer',
@@ -128,7 +128,7 @@ class OrdersPanel extends Component {
 								'woocommerce-admin'
 							),
 							{
-								orderNumber: order_number,
+								orderNumber,
 								customerString: getCustomerString( order ),
 							}
 						),
@@ -136,7 +136,7 @@ class OrdersPanel extends Component {
 							orderLink: (
 								<Link
 									href={ getAdminLink(
-										'post.php?action=edit&post=' + order_id
+										'post.php?action=edit&post=' + orderId
 									) }
 									type="wp-admin"
 								/>
@@ -160,10 +160,10 @@ class OrdersPanel extends Component {
 
 		const cards = [];
 		orders.forEach( ( order ) => {
-			const extended_info = order.extended_info || {};
+			const extendedInfo = order.extended_info || {};
 			const productsCount =
-				extended_info && extended_info.products
-					? extended_info.products.length
+				extendedInfo && extendedInfo.products
+					? extendedInfo.products.length
 					: 0;
 
 			const total = order.total_sales;

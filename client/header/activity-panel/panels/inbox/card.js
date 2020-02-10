@@ -26,20 +26,13 @@ class InboxNoteCard extends Component {
 	onVisible( isVisible ) {
 		if ( isVisible && ! this.hasBeenSeen ) {
 			const { note } = this.props;
-			const {
-				content: note_content,
-				name: note_name,
-				title: note_title,
-				type: note_type,
-				icon: note_icon,
-			} = note;
 
 			recordEvent( 'inbox_note_view', {
-				note_content,
-				note_name,
-				note_title,
-				note_type,
-				note_icon,
+				note_content: note.content,
+				note_name: note.name,
+				note_title: note.title,
+				note_type: note.type,
+				note_icon: note.icon,
 			} );
 
 			this.hasBeenSeen = true;
@@ -54,7 +47,7 @@ class InboxNoteCard extends Component {
 				return [];
 			}
 			return note.actions.map( ( action ) => (
-				<NoteAction noteId={ note.id } action={ action } />
+				<NoteAction key={ note.id } noteId={ note.id } action={ action } />
 			) );
 		};
 

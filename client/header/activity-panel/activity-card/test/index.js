@@ -100,10 +100,10 @@ describe( 'ActivityCard', () => {
 			<ActivityCard
 				title="Inbox message"
 				actions={ [
-					<Button isPrimary onClick={ noop }>
+					<Button key="action1" isPrimary onClick={ noop }>
 						Action 1
 					</Button>,
-					<Button isDefault onClick={ noop }>
+					<Button key="action2" isDefault onClick={ noop }>
 						Action 2
 					</Button>,
 				] }

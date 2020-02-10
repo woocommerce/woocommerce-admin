@@ -210,8 +210,12 @@ class WordPressNotices extends Component {
 		const { notices, screenLinks, screenMeta } = this.state;
 		notices.classList.add( 'woocommerce-layout__notice-list-show' );
 		notices.classList.remove( 'woocommerce-layout__notice-list-hide' );
-		screenMeta && screenMeta.classList.add( 'is-hidden-by-notices' );
-		screenLinks && screenLinks.classList.add( 'is-hidden-by-notices' );
+		if ( screenMeta ) {
+			screenMeta.classList.add( 'is-hidden-by-notices' );
+		}
+		if ( screenLinks ) {
+			screenLinks.classList.add( 'is-hidden-by-notices' );
+		}
 
 		window.scrollBy( 0, window.scrollY * -1 );
 		this.setState( { noticesOpen: true } );
@@ -221,8 +225,12 @@ class WordPressNotices extends Component {
 		const { notices, screenLinks, screenMeta } = this.state;
 		notices.classList.add( 'woocommerce-layout__notice-list-hide' );
 		notices.classList.remove( 'woocommerce-layout__notice-list-show' );
-		screenMeta && screenMeta.classList.remove( 'is-hidden-by-notices' );
-		screenLinks && screenLinks.classList.remove( 'is-hidden-by-notices' );
+		if ( screenMeta ) {
+			screenMeta.classList.remove( 'is-hidden-by-notices' );
+		}
+		if ( screenLinks ) {
+			screenLinks.classList.remove( 'is-hidden-by-notices' );
+		}
 
 		this.setState( { noticesOpen: false } );
 	}
