@@ -24,7 +24,7 @@ import { queueRecordEvent } from 'lib/tracks';
 const saveStarted = () => {
 	if ( document.querySelector( '.editor-post-publish-button' ) === null ) {
 		const promise = new Promise( ( resolve ) => {
-			requestAnimationFrame( resolve );
+			window.requestAnimationFrame( resolve );
 		} );
 		return promise.then( () => saveStarted() );
 	}
@@ -42,7 +42,7 @@ const saveCompleted = () => {
 		document.querySelector( '.post-publish-panel__postpublish' ) === null
 	) {
 		const promise = new Promise( ( resolve ) => {
-			requestAnimationFrame( resolve );
+			window.requestAnimationFrame( resolve );
 		} );
 		return promise.then( () => saveCompleted() );
 	}
