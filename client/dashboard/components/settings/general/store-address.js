@@ -85,13 +85,15 @@ export function getCountryStateOptions() {
  * @param {Array} options Array of filterable options.
  * @param {string} countryState The value of the countryState field.
  * @param {Function} setValue Set value of the countryState input.
+ * @param {Function} _useState React useState.
+ * @param {Function} _useEffect React useEffect.
  * @return {Object} React component.
  */
-export function getCountryStateAutofill( options, countryState, setValue ) {
-	const [ autofillCountry, setAutofillCountry ] = useState( '' );
-	const [ autofillState, setAutofillState ] = useState( '' );
+export function getCountryStateAutofill( options, countryState, setValue, _useState, _useEffect ) {
+	const [ autofillCountry, setAutofillCountry ] = _useState( '' );
+	const [ autofillState, setAutofillState ] = _useState( '' );
 
-	useEffect( () => {
+	_useEffect( () => {
 		let filteredOptions = [];
 		const countrySearch = new RegExp(
 			escapeRegExp( autofillCountry ),
@@ -210,7 +212,9 @@ export function StoreAddress( props ) {
 				{ getCountryStateAutofill(
 					countryStateOptions,
 					getInputProps( 'countryState' ).value,
-					setValue
+					setValue,
+					useState,
+					useEffect,
 				) }
 			</SelectControl>
 
