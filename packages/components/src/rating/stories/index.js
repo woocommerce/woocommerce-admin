@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { number } from '@storybook/addon-knobs';
+
+/**
  * Internal dependencies
  */
 import Rating from '../';
@@ -9,4 +14,4 @@ export default {
 	component: Rating,
 };
 
-export const Default = () => <Rating rating={ 4.6 } totalStars={ 5 } />;
+export const Default = () => <Rating rating={ number( 'Rating', 4.5 ) } totalStars={ number( 'Total Stars', 5 ) } />;
