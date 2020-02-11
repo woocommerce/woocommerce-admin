@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Component, findDOMNode } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
 import PropTypes from 'prop-types';
@@ -28,6 +28,8 @@ class Header extends Component {
 			isScrolled: false,
 		};
 
+		this.headerRef = createRef();
+
 		this.onWindowScroll = this.onWindowScroll.bind( this );
 		this.updateIsScrolled = this.updateIsScrolled.bind( this );
 		this.trackLinkClick = this.trackLinkClick.bind( this );
@@ -35,7 +37,7 @@ class Header extends Component {
 	}
 
 	componentDidMount() {
-		this.threshold = findDOMNode( this ).offsetTop;
+		this.threshold = this.headerRef.current.offsetTop;
 		window.addEventListener( 'scroll', this.onWindowScroll );
 		this.updateIsScrolled();
 	}
@@ -110,7 +112,7 @@ class Header extends Component {
 		const firstBreadCrumbPath = 'admin.php?page=wc-admin';
 
 		return (
-			<div className={ className }>
+			<div className={ className } ref={ this.headerRef }>
 				<h1 className="woocommerce-layout__header-breadcrumbs">
 					<span>
 						<Link
