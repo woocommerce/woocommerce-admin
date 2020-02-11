@@ -14,4 +14,10 @@ export default {
 	component: Rating,
 };
 
-export const Default = () => <Rating rating={ number( 'Rating', 4.5 ) } totalStars={ number( 'Total Stars', 5 ) } />;
+export const Default = () => (
+	<Rating
+		rating={ number( 'Rating', 4.5 ) }
+		totalStars={ number( 'Total Stars', Rating.defaultProps.totalStars ) }
+		size={ number( 'Size', Rating.defaultProps.size ) }
+	/>
+);
