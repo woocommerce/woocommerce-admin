@@ -324,12 +324,14 @@ class ReportTable extends Component {
 			getRowsContent,
 			getSummary,
 			isRequesting,
-			itemIdField,
 			primaryData,
 			tableData,
+			endpoint,
 			// These props are not used in the render function, but are destructured
 			// so they are not included in the `tableProps` variable.
-			endpoint,
+			// eslint-disable-next-line no-unused-vars
+			itemIdField,
+			// eslint-disable-next-line no-unused-vars
 			tableQuery,
 			userPrefColumns,
 			compareBy,
@@ -476,7 +478,7 @@ class ReportTable extends Component {
 					onPageChange={ this.onPageChange }
 					rows={ rows }
 					rowsPerPage={
-						parseInt( query.per_page ) || QUERY_DEFAULTS.pageSize
+						parseInt( query.per_page, 10 ) || QUERY_DEFAULTS.pageSize
 					}
 					summary={ summary }
 					totalRows={ totalResults }

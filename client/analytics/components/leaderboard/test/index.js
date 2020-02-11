@@ -1,7 +1,5 @@
 /**
  * External dependencies
- *
- * @format
  */
 import { mount, shallow } from 'enzyme';
 
@@ -18,23 +16,23 @@ import { Leaderboard } from '../';
 import mockData from '../__mocks__/top-selling-products-mock-data';
 
 const rows = mockData.map( ( row ) => {
-	const { name, items_sold, net_revenue, orders_count } = row;
+	const { name, items_sold: itemsSold, net_revenue: netRevenue, orders_count: ordersCount } = row;
 	return [
 		{
 			display: '<a href="#">' + name + '</a>',
 			value: name,
 		},
 		{
-			display: numberFormat( items_sold ),
-			value: items_sold,
+			display: numberFormat( itemsSold ),
+			value: itemsSold,
 		},
 		{
-			display: numberFormat( orders_count ),
-			value: orders_count,
+			display: numberFormat( ordersCount ),
+			value: ordersCount,
 		},
 		{
-			display: formatCurrency( net_revenue ),
-			value: getCurrencyFormatDecimal( net_revenue ),
+			display: formatCurrency( netRevenue ),
+			value: getCurrencyFormatDecimal( netRevenue ),
 		},
 	];
 } );

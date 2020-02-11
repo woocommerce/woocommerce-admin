@@ -71,21 +71,21 @@ export default class CouponsReportTable extends Component {
 		const persistedQuery = getPersistedQuery( query );
 
 		return map( coupons, ( coupon ) => {
-			const { amount, coupon_id, orders_count } = coupon;
-			const extended_info = coupon.extended_info || {};
+			const { amount, coupon_id: couponId, orders_count: ordersCount } = coupon;
+			const extendedInfo = coupon.extended_info || {};
 			const {
 				code,
-				date_created,
-				date_expires,
-				discount_type,
-			} = extended_info;
+				date_created: dateCreated,
+				date_expires: dateExpires,
+				discount_type: discountType,
+			} = extendedInfo;
 
 			const couponUrl = getNewPath(
 				persistedQuery,
 				'/analytics/coupons',
 				{
 					filter: 'single_coupon',
-					coupons: coupon_id,
+					coupons: couponId,
 				}
 			);
 			const couponLink = (
@@ -96,11 +96,11 @@ export default class CouponsReportTable extends Component {
 
 			const ordersUrl = getNewPath( persistedQuery, '/analytics/orders', {
 				filter: 'advanced',
-				coupon_includes: coupon_id,
+				coupon_includes: couponId,
 			} );
 			const ordersLink = (
 				<Link href={ ordersUrl } type="wc-admin">
-					{ formatValue( 'number', orders_count ) }
+					{ formatValue( 'number', ordersCount ) }
 				</Link>
 			);
 
@@ -111,7 +111,7 @@ export default class CouponsReportTable extends Component {
 				},
 				{
 					display: ordersLink,
-					value: orders_count,
+					value: ordersCount,
 				},
 				{
 					display: formatCurrency( amount ),
@@ -120,51 +120,51 @@ export default class CouponsReportTable extends Component {
 				{
 					display: (
 						<Date
-							date={ date_created }
+							date={ dateCreated }
 							visibleFormat={ defaultTableDateFormat }
 						/>
 					),
-					value: date_created,
+					value: dateCreated,
 				},
 				{
-					display: date_expires ? (
+					display: dateExpires ? (
 						<Date
-							date={ date_expires }
+							date={ dateExpires }
 							visibleFormat={ defaultTableDateFormat }
 						/>
 					) : (
 						__( 'N/A', 'woocommerce-admin' )
 					),
-					value: date_expires,
+					value: dateExpires,
 				},
 				{
-					display: this.getCouponType( discount_type ),
-					value: discount_type,
+					display: this.getCouponType( discountType ),
+					value: discountType,
 				},
 			];
 		} );
 	}
 
 	getSummary( totals ) {
-		const { coupons_count = 0, orders_count = 0, amount = 0 } = totals;
+		const { coupons_count: couponsCount = 0, orders_count: ordersCount = 0, amount = 0 } = totals;
 		return [
 			{
 				label: _n(
 					'coupon',
 					'coupons',
-					coupons_count,
+					couponsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', coupons_count ),
+				value: formatValue( 'number', couponsCount ),
 			},
 			{
 				label: _n(
 					'order',
 					'orders',
-					orders_count,
+					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', orders_count ),
+				value: formatValue( 'number', ordersCount ),
 			},
 			{
 				label: __( 'amount discounted', 'woocommerce-admin' ),
@@ -173,13 +173,13 @@ export default class CouponsReportTable extends Component {
 		];
 	}
 
-	getCouponType( discount_type ) {
+	getCouponType( discountType ) {
 		const couponTypes = {
 			percent: __( 'Percentage', 'woocommerce-admin' ),
 			fixed_cart: __( 'Fixed cart', 'woocommerce-admin' ),
 			fixed_product: __( 'Fixed product', 'woocommerce-admin' ),
 		};
-		return couponTypes[ discount_type ];
+		return couponTypes[ discountType ];
 	}
 
 	render() {

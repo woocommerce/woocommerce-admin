@@ -73,14 +73,14 @@ class CategoriesReportTable extends Component {
 	getRowsContent( categoryStats ) {
 		return map( categoryStats, ( categoryStat ) => {
 			const {
-				category_id,
-				items_sold,
-				net_revenue,
-				products_count,
-				orders_count,
+				category_id: categoryId,
+				items_sold: itemsSold,
+				net_revenue: netRevenue,
+				products_count: productsCount,
+				orders_count: ordersCount,
 			} = categoryStat;
 			const { categories, query } = this.props;
-			const category = categories.get( category_id );
+			const category = categories.get( categoryId );
 			const persistedQuery = getPersistedQuery( query );
 
 			return [
@@ -95,12 +95,12 @@ class CategoriesReportTable extends Component {
 					value: category && category.name,
 				},
 				{
-					display: formatValue( 'number', items_sold ),
-					value: items_sold,
+					display: formatValue( 'number', itemsSold ),
+					value: itemsSold,
 				},
 				{
-					display: renderCurrency( net_revenue ),
-					value: getCurrencyFormatDecimal( net_revenue ),
+					display: renderCurrency( netRevenue ),
+					value: getCurrencyFormatDecimal( netRevenue ),
 				},
 				{
 					display: category && (
@@ -115,21 +115,21 @@ class CategoriesReportTable extends Component {
 							) }
 							type="wc-admin"
 						>
-							{ formatValue( 'number', products_count ) }
+							{ formatValue( 'number', productsCount ) }
 						</Link>
 					),
-					value: products_count,
+					value: productsCount,
 				},
 				{
-					display: formatValue( 'number', orders_count ),
-					value: orders_count,
+					display: formatValue( 'number', ordersCount ),
+					value: ordersCount,
 				},
 			];
 		} );
 	}
 
 	getSummary( totals, totalResults = 0 ) {
-		const { items_sold = 0, net_revenue = 0, orders_count = 0 } = totals;
+		const { items_sold: itemsSold = 0, net_revenue: netRevenue = 0, orders_count: ordersCount = 0 } = totals;
 		return [
 			{
 				label: _n(
@@ -144,23 +144,23 @@ class CategoriesReportTable extends Component {
 				label: _n(
 					'item sold',
 					'items sold',
-					items_sold,
+					itemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', items_sold ),
+				value: formatValue( 'number', itemsSold ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( net_revenue ),
+				value: formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(
 					'order',
 					'orders',
-					orders_count,
+					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', orders_count ),
+				value: formatValue( 'number', ordersCount ),
 			},
 		];
 	}

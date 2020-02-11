@@ -107,17 +107,17 @@ export default class OrdersReportTable extends Component {
 		return map( tableData, ( row ) => {
 			const {
 				currency,
-				customer_type,
-				date_created,
-				net_total,
-				num_items_sold,
-				order_id,
-				order_number,
-				parent_id,
+				customer_type: customerType,
+				date_created: dateCreated,
+				net_total: netTotal,
+				num_items_sold: numItemsSold,
+				order_id: orderId,
+				order_number: orderNumber,
+				parent_id: parentId,
 				status,
 			} = row;
-			const extended_info = row.extended_info || {};
-			const { coupons, products } = extended_info;
+			const extendedInfo = row.extended_info || {};
+			const { coupons, products } = extendedInfo;
 
 			const formattedProducts = products
 				.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
@@ -142,27 +142,27 @@ export default class OrdersReportTable extends Component {
 				{
 					display: (
 						<Date
-							date={ date_created }
+							date={ dateCreated }
 							visibleFormat={ defaultTableDateFormat }
 						/>
 					),
-					value: date_created,
+					value: dateCreated,
 				},
 				{
 					display: (
 						<Link
 							href={
 								'post.php?post=' +
-								( parent_id ? parent_id : order_id ) +
+								( parentId ? parentId : orderId ) +
 								'&action=edit' +
-								( parent_id ? '#order_refunds' : '' )
+								( parentId ? '#order_refunds' : '' )
 							}
 							type="wp-admin"
 						>
-							{ order_number }
+							{ orderNumber }
 						</Link>
 					),
-					value: order_number,
+					value: orderNumber,
 				},
 				{
 					display: (
@@ -175,8 +175,8 @@ export default class OrdersReportTable extends Component {
 					value: status,
 				},
 				{
-					display: this.getCustomerType( customer_type ),
-					value: customer_type,
+					display: this.getCustomerType( customerType ),
+					value: customerType,
 				},
 				{
 					display: this.renderList(
@@ -203,8 +203,8 @@ export default class OrdersReportTable extends Component {
 						.join( ', ' ),
 				},
 				{
-					display: formatValue( 'number', num_items_sold ),
-					value: num_items_sold,
+					display: formatValue( 'number', numItemsSold ),
+					value: numItemsSold,
 				},
 				{
 					display: this.renderList(
@@ -218,8 +218,8 @@ export default class OrdersReportTable extends Component {
 						.join( ', ' ),
 				},
 				{
-					display: renderCurrency( net_total, currency ),
-					value: net_total,
+					display: renderCurrency( netTotal, currency ),
+					value: netTotal,
 				},
 			];
 		} );
@@ -227,41 +227,41 @@ export default class OrdersReportTable extends Component {
 
 	getSummary( totals ) {
 		const {
-			orders_count = 0,
-			num_new_customers = 0,
-			num_returning_customers = 0,
+			orders_count: ordersCount = 0,
+			num_new_customers: numNewCustomers = 0,
+			num_returning_customers: numReturningCustomers = 0,
 			products = 0,
-			num_items_sold = 0,
-			coupons_count = 0,
-			net_revenue = 0,
+			num_items_sold: numItemsSold = 0,
+			coupons_count: couponsCount = 0,
+			net_revenue: netRevenue = 0,
 		} = totals;
 		return [
 			{
 				label: _n(
 					'order',
 					'orders',
-					orders_count,
+					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', orders_count ),
+				value: formatValue( 'number', ordersCount ),
 			},
 			{
 				label: _n(
 					'new customer',
 					'new customers',
-					num_new_customers,
+					numNewCustomers,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', num_new_customers ),
+				value: formatValue( 'number', numNewCustomers ),
 			},
 			{
 				label: _n(
 					'returning customer',
 					'returning customers',
-					num_returning_customers,
+					numReturningCustomers,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', num_returning_customers ),
+				value: formatValue( 'number', numReturningCustomers ),
 			},
 			{
 				label: _n(
@@ -276,23 +276,23 @@ export default class OrdersReportTable extends Component {
 				label: _n(
 					'item sold',
 					'items sold',
-					num_items_sold,
+					numItemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', num_items_sold ),
+				value: formatValue( 'number', numItemsSold ),
 			},
 			{
 				label: _n(
 					'coupon',
 					'coupons',
-					coupons_count,
+					couponsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', coupons_count ),
+				value: formatValue( 'number', couponsCount ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( net_revenue ),
+				value: formatCurrency( netRevenue ),
 			},
 		];
 	}

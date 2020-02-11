@@ -73,12 +73,12 @@ export default class CouponsReportTable extends Component {
 			const {
 				_embedded,
 				date,
-				file_name,
-				file_path,
-				ip_address,
-				order_id,
-				order_number,
-				product_id,
+				file_name: fileName,
+				file_path: filePath,
+				ip_address: ipAddress,
+				order_id: orderId,
+				order_number: orderNumber,
+				product_id: productId,
 				username,
 			} = download;
 			const { name: productName } = _embedded.product[ 0 ];
@@ -88,7 +88,7 @@ export default class CouponsReportTable extends Component {
 				'/analytics/products',
 				{
 					filter: 'single_product',
-					products: product_id,
+					products: productId,
 				}
 			);
 
@@ -112,39 +112,39 @@ export default class CouponsReportTable extends Component {
 				},
 				{
 					display: (
-						<Link href={ file_path } type="external">
-							{ file_name }
+						<Link href={ filePath } type="external">
+							{ fileName }
 						</Link>
 					),
-					value: file_name,
+					value: fileName,
 				},
 				{
 					display: (
 						<Link
 							href={ getAdminLink(
-								`post.php?post=${ order_id }&action=edit`
+								`post.php?post=${ orderId }&action=edit`
 							) }
 							type="wp-admin"
 						>
-							{ order_number }
+							{ orderNumber }
 						</Link>
 					),
-					value: order_number,
+					value: orderNumber,
 				},
 				{
 					display: username,
 					value: username,
 				},
 				{
-					display: ip_address,
-					value: ip_address,
+					display: ipAddress,
+					value: ipAddress,
 				},
 			];
 		} );
 	}
 
 	getSummary( totals ) {
-		const { download_count = 0 } = totals;
+		const { download_count: downloadCount = 0 } = totals;
 		const { query } = this.props;
 		const dates = getCurrentDates( query );
 		const after = moment( dates.primary.after );
@@ -160,10 +160,10 @@ export default class CouponsReportTable extends Component {
 				label: _n(
 					'download',
 					'downloads',
-					download_count,
+					downloadCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', download_count ),
+				value: formatValue( 'number', downloadCount ),
 			},
 		];
 	}

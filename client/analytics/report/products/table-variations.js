@@ -88,14 +88,14 @@ export default class VariationsReportTable extends Component {
 		const persistedQuery = getPersistedQuery( query );
 
 		return map( data, ( row ) => {
-			const { items_sold, net_revenue, orders_count, product_id } = row;
-			const extended_info = row.extended_info || {};
+			const { items_sold: itemsSold, net_revenue: netRevenue, orders_count: ordersCount, product_id: productId } = row;
+			const extendedInfo = row.extended_info || {};
 			const {
-				stock_status,
-				stock_quantity,
-				low_stock_amount,
+				stock_status: stockStatus,
+				stock_quantity: stockQuantity,
+				low_stock_amount: lowStockAmount,
 				sku,
-			} = extended_info;
+			} = extendedInfo;
 			const name = get( row, [ 'extended_info', 'name' ], '' );
 			const ordersLink = getNewPath(
 				persistedQuery,
@@ -106,7 +106,7 @@ export default class VariationsReportTable extends Component {
 				}
 			);
 			const editPostLink = getAdminLink(
-				`post.php?post=${ product_id }&action=edit`
+				`post.php?post=${ productId }&action=edit`
 			);
 
 			return [
@@ -123,27 +123,27 @@ export default class VariationsReportTable extends Component {
 					value: sku,
 				},
 				{
-					display: formatValue( 'number', items_sold ),
-					value: items_sold,
+					display: formatValue( 'number', itemsSold ),
+					value: itemsSold,
 				},
 				{
-					display: formatCurrency( net_revenue ),
-					value: getCurrencyFormatDecimal( net_revenue ),
+					display: formatCurrency( netRevenue ),
+					value: getCurrencyFormatDecimal( netRevenue ),
 				},
 				{
 					display: (
 						<Link href={ ordersLink } type="wc-admin">
-							{ orders_count }
+							{ ordersCount }
 						</Link>
 					),
-					value: orders_count,
+					value: ordersCount,
 				},
 				manageStock === 'yes'
 					? {
 							display: isLowStock(
-								stock_status,
-								stock_quantity,
-								low_stock_amount
+								stockStatus,
+								stockQuantity,
+								lowStockAmount
 							) ? (
 								<Link href={ editPostLink } type="wp-admin">
 									{ _x(
@@ -153,15 +153,15 @@ export default class VariationsReportTable extends Component {
 									) }
 								</Link>
 							) : (
-								stockStatuses[ stock_status ]
+								stockStatuses[ stockStatus ]
 							),
-							value: stockStatuses[ stock_status ],
+							value: stockStatuses[ stockStatus ],
 					  }
 					: null,
 				manageStock === 'yes'
 					? {
-							display: stock_quantity,
-							value: stock_quantity,
+							display: stockQuantity,
+							value: stockQuantity,
 					  }
 					: null,
 			].filter( Boolean );
@@ -170,42 +170,42 @@ export default class VariationsReportTable extends Component {
 
 	getSummary( totals ) {
 		const {
-			variations_count = 0,
-			items_sold = 0,
-			net_revenue = 0,
-			orders_count = 0,
+			variations_count: variationsCount = 0,
+			items_sold: itemsSold = 0,
+			net_revenue: netRevenue = 0,
+			orders_count: ordersCount = 0,
 		} = totals;
 		return [
 			{
 				label: _n(
 					'variation sold',
 					'variations sold',
-					variations_count,
+					variationsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', variations_count ),
+				value: formatValue( 'number', variationsCount ),
 			},
 			{
 				label: _n(
 					'item sold',
 					'items sold',
-					items_sold,
+					itemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', items_sold ),
+				value: formatValue( 'number', itemsSold ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( net_revenue ),
+				value: formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(
 					'orders',
 					'orders',
-					orders_count,
+					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', orders_count ),
+				value: formatValue( 'number', ordersCount ),
 			},
 		];
 	}

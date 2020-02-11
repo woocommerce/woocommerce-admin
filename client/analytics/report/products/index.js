@@ -154,7 +154,7 @@ export default compose(
 			'wc-api'
 		);
 		if ( isSingleProductView ) {
-			const productId = parseInt( query.products );
+			const productId = parseInt( query.products, 10 );
 			const includeArgs = { include: productId };
 			// TODO Look at similar usage to populate tags in the Search component.
 			const products = getItems( 'products', includeArgs );
