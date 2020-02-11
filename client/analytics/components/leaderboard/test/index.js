@@ -13,7 +13,7 @@ import { numberFormat } from 'lib/number-format';
  * Internal dependencies
  */
 import { Leaderboard } from '../';
-import mockData from '../__mocks__/top-selling-products-mock-data';
+import mockData from '../data/top-selling-products-mock-data';
 
 const rows = mockData.map( ( row ) => {
 	const { name, items_sold: itemsSold, net_revenue: netRevenue, orders_count: ordersCount } = row;
