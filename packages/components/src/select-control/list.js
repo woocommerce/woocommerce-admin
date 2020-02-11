@@ -151,8 +151,8 @@ class List extends Component {
 		const listboxClasses = classnames( 'woocommerce-select-control__listbox', {
 			'is-static': staticList,
 		} );
-		const hasValues = options ? options[ 0 ].value.id !== '' : false;
-		if ( ! hasValues ) {
+		const optionsHaveValues = options ? options[ 0 ].value.id !== '' : false;
+		if ( ! optionsHaveValues ) {
 			return null;
 		}
 
