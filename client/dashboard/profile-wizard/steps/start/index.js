@@ -262,8 +262,7 @@ class Start extends Component {
 					{ interpolateComponents( {
 						mixedString: sprintf(
 							__(
-								'Simplify and enhance the setup of your store with the free features and benefits offered by ' +
-									'{{strong}}%s{{/strong}}.',
+								'Simplify and enhance the setup of your store with the free features and benefits offered by {{strong}}%s{{/strong}}.',
 								'woocommerce-admin'
 							),
 							pluginNamesString

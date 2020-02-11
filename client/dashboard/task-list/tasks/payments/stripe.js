@@ -161,8 +161,7 @@ class Stripe extends Component {
 				errorMessage = interpolateComponents( {
 					mixedString: sprintf(
 						__(
-							'We tried to create a Stripe account automatically for {{strong}}%s{{/strong}}, but an error occured. ' +
-								'Please try connecting manually to continue.',
+							'We tried to create a Stripe account automatically for {{strong}}%s{{/strong}}, but an error occured. Please try connecting manually to continue.',
 							'woocommerce-admin'
 						),
 						email
@@ -179,8 +178,7 @@ class Stripe extends Component {
 				errorMessage = interpolateComponents( {
 					mixedString: sprintf(
 						__(
-							'We tried to create a Stripe account automatically for {{strong}}%s{{/strong}}, but one already exists. ' +
-								'Please sign in and connect to continue.',
+							'We tried to create a Stripe account automatically for {{strong}}%s{{/strong}}, but one already exists. Please sign in and connect to continue.',
 							'woocommerce-admin'
 						),
 						email
