@@ -68,6 +68,7 @@
   },
   "dependencies": {
     "@fresh-data/framework": "0.6.1",
+    "@woocommerce/e2e-env": "file:packages/e2e-env",
     "@wordpress/api-fetch": "2.2.8",
     "@wordpress/components": "8.5.0",
     "@wordpress/data": "4.13.0",
