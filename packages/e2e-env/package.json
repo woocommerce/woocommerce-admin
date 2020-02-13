@@ -41,6 +41,7 @@
     "docker:down": "./bin/docker-compose.js down",
     "docker:clear-all": "docker rmi --force $(docker images -q)",
     "docker:ssh": "docker exec -it woo-blocks_wordpress-www_1 /bin/bash",
+    "install-wp-tests": "./bin/install-wp-tests.sh",
     "test:e2e": "./bin/e2e-test-integration.js",
     "test:e2e-dev": "./bin/e2e-test-integration.js --dev"
   }
