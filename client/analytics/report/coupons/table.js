@@ -14,6 +14,7 @@ import { defaultTableDateFormat } from 'lib/date';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -70,6 +71,7 @@ export default class CouponsReportTable extends Component {
 	getRowsContent( coupons ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
+		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
 
 		return map( coupons, coupon => {
 			const { amount, coupon_id, orders_count } = coupon;
@@ -110,12 +112,12 @@ export default class CouponsReportTable extends Component {
 					value: getCurrencyFormatDecimal( amount ),
 				},
 				{
-					display: <Date date={ date_created } visibleFormat={ defaultTableDateFormat } />,
+					display: <Date date={ date_created } visibleFormat={ dateFormat } />,
 					value: date_created,
 				},
 				{
 					display: date_expires ? (
-						<Date date={ date_expires } visibleFormat={ defaultTableDateFormat } />
+						<Date date={ date_expires } visibleFormat={ dateFormat } />
 					) : (
 						__( 'N/A', 'woocommerce-admin' )
 					),
