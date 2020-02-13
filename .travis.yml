@@ -2,7 +2,7 @@ version: ~> 1.0
 
 import:
   - source: packages/e2e-env/.travis.yml # TODO: figure out how to specify this when in node_modules/.
-    mode: deep_merge_append # default mode. options are: deep_merge_prepend, deep_merge, merge.
+    mode: deep_merge_prepend # default mode. options are: deep_merge_append, deep_merge, merge.
 
 # dist: trusty
 
