@@ -320,10 +320,10 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		foreach ( $industries as $industry_slug => $label ) {
 			$file_path = WC_ADMIN_ABSPATH . 'images/onboarding/' . $industry_slug . '.jpg';
 			if ( 'other' === $industry_slug || ! file_exists( $file_path ) ) {
-				$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', plugins_url( 'images/onboarding/other.jpg', WC_ADMIN_PLUGIN_FILE ), $industry_slug );
+				$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', 'https://woocommerce.files.wordpress.com/2020/02/other.jpg', $industry_slug );
 				continue;
 			}
-			$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', plugins_url( 'images/onboarding/' . $industry_slug . '.jpg', WC_ADMIN_PLUGIN_FILE ), $industry_slug );
+			$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', 'https://woocommerce.files.wordpress.com/2020/02/' . $industry_slug . '.jpg', $industry_slug );
 		}
 		return $industry_images;
 	}
