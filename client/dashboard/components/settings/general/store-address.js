@@ -85,15 +85,13 @@ export function getCountryStateOptions() {
  * @param {Array} options Array of filterable options.
  * @param {string} countryState The value of the countryState field.
  * @param {Function} setValue Set value of the countryState input.
- * @param {Function} _useState React useState.
- * @param {Function} _useEffect React useEffect.
  * @return {Object} React component.
  */
-export function getCountryStateAutofill( options, countryState, setValue, _useState, _useEffect ) {
-	const [ autofillCountry, setAutofillCountry ] = _useState( '' );
-	const [ autofillState, setAutofillState ] = _useState( '' );
+export function useGetCountryStateAutofill( options, countryState, setValue ) {
+	const [ autofillCountry, setAutofillCountry ] = useState( '' );
+	const [ autofillState, setAutofillState ] = useState( '' );
 
-	_useEffect( () => {
+	useEffect( () => {
 		let filteredOptions = [];
 		const countrySearch = new RegExp(
 			escapeRegExp( autofillCountry ),
@@ -182,6 +180,11 @@ export function getCountryStateAutofill( options, countryState, setValue, _useSt
 export function StoreAddress( props ) {
 	const { getInputProps, setValue } = props;
 	const countryStateOptions = useMemo( () => getCountryStateOptions(), [] );
+	const counryStateAutofil = useGetCountryStateAutofill(
+		countryStateOptions,
+		getInputProps( 'countryState' ).value,
+		setValue
+	);
 
 	return (
 		<div className="woocommerce-store-address-fields">
@@ -209,13 +212,7 @@ export function StoreAddress( props ) {
 				{ ...getInputProps( 'countryState' ) }
 				controlClassName={ getInputProps( 'countryState' ).className }
 			>
-				{ getCountryStateAutofill(
-					countryStateOptions,
-					getInputProps( 'countryState' ).value,
-					setValue,
-					useState,
-					useEffect,
-				) }
+				{ counryStateAutofil }
 			</SelectControl>
 
 			<TextControl
