@@ -13,6 +13,7 @@ import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { formatCurrency, renderCurrency } from 'lib/currency-format';
 import { formatValue } from 'lib/number-format';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { defaultTableDateFormat } from 'lib/date';
 
 /**
  * Internal dependencies
@@ -104,7 +105,7 @@ export default class OrdersReportTable extends Component {
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const dateFormat = getSetting( 'dateFormat' );
+		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
 
 		return map( tableData, row => {
 			const {

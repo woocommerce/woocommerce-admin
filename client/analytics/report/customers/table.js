@@ -13,6 +13,7 @@ import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from 'lib/number-format';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { defaultTableDateFormat } from 'lib/date';
 
 const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 
@@ -108,7 +109,7 @@ export default class CustomersReportTable extends Component {
 	}
 
 	getRowsContent( customers ) {
-		const dateFormat = getSetting( 'dateFormat' );
+		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
 
 		return customers.map( customer => {
 			const {

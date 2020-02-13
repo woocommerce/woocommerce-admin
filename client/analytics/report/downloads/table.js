@@ -10,7 +10,7 @@ import moment from 'moment';
 /**
  * WooCommerce dependencies
  */
-import { getCurrentDates } from 'lib/date';
+import { getCurrentDates, defaultTableDateFormat } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
@@ -69,7 +69,7 @@ export default class CouponsReportTable extends Component {
 	getRowsContent( downloads ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const dateFormat = getSetting( 'dateFormat' );
+		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
 
 		return map( downloads, download => {
 			const {
