@@ -37,10 +37,8 @@
     "access": "public"
   },
   "scripts": {
-    "docker:up": "docker-compose up -d",
-    "docker:up:build": "docker-compose up --build -d",
-    "docker:down": "docker-compose down",
-    "docker:down:reset": "docker-compose down -v",
+    "docker:up": "./bin/docker-compose.js up",
+    "docker:down": "./bin/docker-compose.js down",
     "docker:clear-all": "docker rmi --force $(docker images -q)",
     "docker:ssh": "docker exec -it woo-blocks_wordpress-www_1 /bin/bash",
     "test:e2e": "./bin/e2e-test-integration.js",
