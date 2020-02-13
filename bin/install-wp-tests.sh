@@ -30,7 +30,7 @@ install_deps() {
 		git checkout -B $BRANCH origin/$BRANCH
 		# Activate the plugin
 		cd "$WP_CORE_DIR"
-		php wp-cli.phar plugin activate woocommerce-admin
+		php wp-cli.phar plugin activate woocommerce-admin --path=$WP_CORE_DIR
 
 	fi
 
