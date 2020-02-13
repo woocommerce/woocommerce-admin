@@ -14,7 +14,7 @@ import { getCurrentDates } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -69,7 +69,7 @@ export default class CouponsReportTable extends Component {
 	getRowsContent( downloads ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const { dateFormat } = window.wcSettings;
+		const dateFormat = getSetting( 'dateFormat' );
 
 		return map( downloads, download => {
 			const {

@@ -108,7 +108,7 @@ export default class CustomersReportTable extends Component {
 	}
 
 	getRowsContent( customers ) {
-		const { dateFormat } = window.wcSettings;
+		const dateFormat = getSetting( 'dateFormat' );
 
 		return customers.map( customer => {
 			const {

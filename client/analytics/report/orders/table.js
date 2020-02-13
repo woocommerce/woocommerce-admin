@@ -104,7 +104,7 @@ export default class OrdersReportTable extends Component {
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const { dateFormat } = window.wcSettings;
+		const dateFormat = getSetting( 'dateFormat' );
 
 		return map( tableData, row => {
 			const {
