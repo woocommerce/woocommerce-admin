@@ -11,7 +11,7 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { appendTimestamp, defaultTableDateFormat, getCurrentDates } from 'lib/date';
+import { appendTimestamp, getCurrentDates } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { formatCurrency, getCurrencyFormatDecimal, renderCurrency } from 'lib/currency-format';
 import { formatValue } from 'lib/number-format';
@@ -103,6 +103,8 @@ class RevenueReportTable extends Component {
 	}
 
 	getRowsContent( data = [] ) {
+		const { dateFormat } = window.wcSettings;
+
 		return data.map( row => {
 			const {
 				coupons,
@@ -127,7 +129,7 @@ class RevenueReportTable extends Component {
 			);
 			return [
 				{
-					display: <Date date={ row.date_start } visibleFormat={ defaultTableDateFormat } />,
+					display: <Date date={ row.date_start } visibleFormat={ dateFormat } />,
 					value: row.date_start,
 				},
 				{

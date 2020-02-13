@@ -10,7 +10,6 @@ import { map } from 'lodash';
  * WooCommerce dependencies
  */
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
-import { defaultTableDateFormat } from 'lib/date';
 import { formatCurrency, renderCurrency } from 'lib/currency-format';
 import { formatValue } from 'lib/number-format';
 import { getSetting } from '@woocommerce/wc-admin-settings';
@@ -105,6 +104,8 @@ export default class OrdersReportTable extends Component {
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
+		const { dateFormat } = window.wcSettings;
+
 		return map( tableData, row => {
 			const {
 				currency,
@@ -141,7 +142,7 @@ export default class OrdersReportTable extends Component {
 
 			return [
 				{
-					display: <Date date={ date_created } visibleFormat={ defaultTableDateFormat } />,
+					display: <Date date={ date_created } visibleFormat={ dateFormat } />,
 					value: date_created,
 				},
 				{

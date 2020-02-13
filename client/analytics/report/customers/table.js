@@ -9,7 +9,6 @@ import { Tooltip } from '@wordpress/components';
 /**
  * WooCommerce dependencies
  */
-import { defaultTableDateFormat } from 'lib/date';
 import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from 'lib/number-format';
@@ -109,6 +108,8 @@ export default class CustomersReportTable extends Component {
 	}
 
 	getRowsContent( customers ) {
+		const { dateFormat } = window.wcSettings;
+
 		return customers.map( customer => {
 			const {
 				avg_order_value,
@@ -136,13 +137,13 @@ export default class CustomersReportTable extends Component {
 			);
 
 			const dateLastActive = date_last_active ? (
-				<Date date={ date_last_active } visibleFormat={ defaultTableDateFormat } />
+				<Date date={ date_last_active } visibleFormat={ dateFormat } />
 			) : (
 				'—'
 			);
 
 			const dateRegistered = date_registered ? (
-				<Date date={ date_registered } visibleFormat={ defaultTableDateFormat } />
+				<Date date={ date_registered } visibleFormat={ dateFormat } />
 			) : (
 				'—'
 			);
