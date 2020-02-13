@@ -21,7 +21,7 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
  */
 import ReportTable from 'analytics/components/report-table';
 
-export default class CouponsReportTable extends Component {
+export default class DownloadsReportTable extends Component {
 	constructor() {
 		super();
 
