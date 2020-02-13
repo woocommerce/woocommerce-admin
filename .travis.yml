@@ -42,7 +42,7 @@ jobs:
 before_script:
   # - phpenv config-rm xdebug.ini
   - export PATH="$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/vendor/bin:$PATH"
-  - bash bin/install-wp-tests.sh
+  - bash bin/install-wp-tests.sh wc_e2e_tests root '' localhost
   - bash bin/travis.sh before
   - node --version
   - npm --version
