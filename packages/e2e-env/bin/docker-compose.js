@@ -26,6 +26,7 @@ program
     .parse( process.argv );
 
 const appPath = getAppPath();
+const envVars = {};
 
 if ( appPath ) {
     // Look for a Docker compose file in the dependent app's path.
@@ -49,6 +50,9 @@ if ( appPath ) {
             );
         }
     }
+
+    // Provide an "app name" to use in Docker container names.
+    envVars.APP_NAME = path.basename( appPath );
 }
 
 // Ensure that the first Docker compose file loaded is from our local env.
@@ -59,7 +63,7 @@ const dockerProcess = spawnSync(
 	dockerArgs,
 	{
 		stdio: 'inherit',
-		env: Object.assign( {}, process.env ),
+		env: Object.assign( {}, process.env, envVars ),
 	}
 );
 

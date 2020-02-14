@@ -1,5 +1,3 @@
-ARG APP_INIT
-
 FROM wordpress:cli-php7.4
 
 USER root

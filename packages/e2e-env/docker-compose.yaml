@@ -3,6 +3,7 @@ version: '3.3'
 services:
 
   db:
+    container_name: "${APP_NAME}_db"
     image: mariadb:10.4
     restart: on-failure
     environment:
@@ -14,6 +15,7 @@ services:
       - db:/var/lib/mysql
 
   wordpress-www:
+    container_name: "${APP_NAME}_wordpress-www"
     depends_on:
       - db
     build:
@@ -32,13 +34,12 @@ services:
       - wordpress:/var/www/html
 
   wordpress-cli:
+    container_name: "${APP_NAME}_wordpress-cli"
     depends_on:
       - db
       - wordpress-www
     build:
         context: ./docker/wp-cli
-        args:
-          APP_INIT: "${APP_INIT}"
     restart: on-failure
     environment:
         WORDPRESS_PORT: 8084
