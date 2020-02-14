@@ -197,7 +197,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			<!-- /wp:paragraph -->
 
 			<!-- wp:button {"align":"center"} -->
-			<div class="wp-block-button aligncenter"><a href="' . $shop_url . '" class="wp-block-button__link">' . __( 'Go shopping', 'woocommerce-admin' ) . '</a></div>
+			<div class="wp-block-button aligncenter"><a href="' . esc_url( $shop_url ) . '" class="wp-block-button__link">' . __( 'Go shopping', 'woocommerce-admin' ) . '</a></div>
 			<!-- /wp:button --></div></div>
 			<!-- /wp:cover -->';
 		}
@@ -212,7 +212,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		<!-- /wp:paragraph -->
 
 		<!-- wp:button {"align":"center"} -->
-		<div class="wp-block-button aligncenter"><a href="' . $shop_url . '" class="wp-block-button__link">' . __( 'Go shopping', 'woocommerce-admin' ) . '</a></div>
+		<div class="wp-block-button aligncenter"><a href="' . esc_url( $shop_url ) . '" class="wp-block-button__link">' . __( 'Go shopping', 'woocommerce-admin' ) . '</a></div>
 		<!-- /wp:button --></div></div>
 		<!-- /wp:cover -->';
 	}
