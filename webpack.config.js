@@ -9,6 +9,7 @@ const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const { DefinePlugin } = require( 'webpack' );
 const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
+const { webpackAlias: coreE2EAlias } = require( '@woocommerce/e2e-env' );
 
 /**
  * WordPress dependencies
@@ -174,6 +175,7 @@ const webpackConfig = {
 				__dirname,
 				'client/settings/index.js'
 			),
+			...coreE2EAlias,
 		},
 	},
 	plugins: [
