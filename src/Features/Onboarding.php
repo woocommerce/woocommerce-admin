@@ -60,13 +60,7 @@ class Onboarding {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
-		// Adds the ability to toggle the new onboarding experience on or off.
-		// @todo This option should be removed when merging the onboarding feature to core.
-		add_action( 'current_screen', array( $this, 'enable_onboarding' ) );
-		add_action( 'woocommerce_updated', array( $this, 'maybe_mark_complete' ) );
-		// Track the onboarding toggle event earlier so they are captured before redirecting.
-		add_action( 'add_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
-		add_action( 'update_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
+		$this->add_toggle_actions();
 
 		if ( ! Loader::is_onboarding_enabled() ) {
 			add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
@@ -108,6 +102,18 @@ class Onboarding {
 		add_action( 'current_screen', array( $this, 'redirect_old_onboarding' ) );
 		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
 		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
+	}
+
+	/**
+	 * Adds the ability to toggle the new onboarding experience on or off.
+	 */
+	private function add_toggle_actions() {
+		// @todo This toggle option should be removed when a/b testing is complete.
+		add_action( 'current_screen', array( $this, 'enable_onboarding' ) );
+		add_action( 'woocommerce_updated', array( $this, 'maybe_mark_complete' ) );
+		// Track the onboarding toggle event earlier so they are captured before redirecting.
+		add_action( 'add_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
+		add_action( 'update_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
 	}
 
 	/**
