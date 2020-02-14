@@ -152,13 +152,14 @@ class Onboarding {
 		return apply_filters(
 			'woocommerce_admin_onboarding_industries',
 			array(
-				'fashion-apparel-accessories' => __( 'Fashion, apparel, and accessories', 'woocommerce-admin' ),
-				'health-beauty'               => __( 'Health and beauty', 'woocommerce-admin' ),
-				'art-music-photography'       => __( 'Art, music, and photography', 'woocommerce-admin' ),
-				'electronics-computers'       => __( 'Electronics and computers', 'woocommerce-admin' ),
-				'food-drink'                  => __( 'Food and drink', 'woocommerce-admin' ),
-				'home-furniture-garden'       => __( 'Home, furniture, and garden', 'woocommerce-admin' ),
-				'other'                       => __( 'Other', 'woocommerce-admin' ),
+				'fashion-apparel-accessories'		=> __( 'Fashion, apparel, and accessories', 'woocommerce-admin' ),
+				'health-beauty'             		=> __( 'Health and beauty', 'woocommerce-admin' ),
+				'art-music-photography'       		=> __( 'Art, music, and photography', 'woocommerce-admin' ),
+				'electronics-computers'       		=> __( 'Electronics and computers', 'woocommerce-admin' ),
+				'food-drink'                  		=> __( 'Food and drink', 'woocommerce-admin' ),
+				'home-furniture-garden'				=> __( 'Home, furniture, and garden', 'woocommerce-admin' ),
+				'cbd-other-hemp-derived-products'	=> __( 'CBD and other hemp-derived products', 'woocommerce-admin' ),
+				'other'                       		=> __( 'Other', 'woocommerce-admin' ),
 			)
 		);
 	}
