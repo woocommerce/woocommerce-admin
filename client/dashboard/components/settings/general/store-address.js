@@ -180,7 +180,7 @@ export function useGetCountryStateAutofill( options, countryState, setValue ) {
 export function StoreAddress( props ) {
 	const { getInputProps, setValue } = props;
 	const countryStateOptions = useMemo( () => getCountryStateOptions(), [] );
-	const counryStateAutofil = useGetCountryStateAutofill(
+	const counryStateAutofill = useGetCountryStateAutofill(
 		countryStateOptions,
 		getInputProps( 'countryState' ).value,
 		setValue
@@ -212,7 +212,7 @@ export function StoreAddress( props ) {
 				{ ...getInputProps( 'countryState' ) }
 				controlClassName={ getInputProps( 'countryState' ).className }
 			>
-				{ counryStateAutofil }
+				{ counryStateAutofill }
 			</SelectControl>
 
 			<TextControl
