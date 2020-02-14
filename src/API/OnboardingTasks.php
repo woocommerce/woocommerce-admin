@@ -185,7 +185,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return string Block content.
 	 */
 	private static function get_homepage_cover_block( $image ) {
-		$shop_url = site_url( '/?post_type=product' );
+		$shop_url = get_permalink( woocommerce_get_page_id( 'shop' ) );
 		if ( ! empty( $image['url'] ) && ! empty( $image['id'] ) ) {
 			return '<!-- wp:cover {"url":"' . esc_url( $image['url'] ) . '","id":' . intval( $image['id'] ) . '} -->
 			<div class="wp-block-cover has-background-dim" style="background-image:url(' . esc_url( $image['url'] ) . ')"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","fontSize":"large"} -->
