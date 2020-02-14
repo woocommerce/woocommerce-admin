@@ -1,8 +1,14 @@
+const e2eBabelConfig = require( '@woocommerce/e2e-env' ).babelConfig;
+
 module.exports = function( api ) {
 	api.cache( true );
 
 	return {
-		presets: [ '@wordpress/babel-preset-default' ],
+		...e2eBabelConfig,
+		presets: [
+			...e2eBabelConfig.presets,
+			'@wordpress/babel-preset-default',
+		],
 		plugins: [
 			'@babel/plugin-transform-async-to-generator',
 			'transform-class-properties',

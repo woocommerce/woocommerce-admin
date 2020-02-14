@@ -1,5 +1,5 @@
 /** @format */
-const baseConfig = require( '@woocommerce/e2e-env/.eslintrc.js' );
+const baseConfig = require( '@woocommerce/e2e-env' ).esLintConfig;
 
 module.exports = {
 	...baseConfig,
