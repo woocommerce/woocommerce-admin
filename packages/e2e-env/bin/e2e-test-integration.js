@@ -23,6 +23,20 @@ const testEnvVars = {
 	),
 };
 
+let jestCommand = 'jest';
+const jestArgs = [
+	'--maxWorkers=1',
+	'--rootDir=./',
+	'--verbose',
+	...program.args,
+];
+
+if ( program.dev ) {
+	testEnvVars.JEST_PUPPETEER_CONFIG = 'tests/e2e-tests/config/jest-puppeteer.dev.config.js';
+	jestCommand = 'npx';
+	jestArgs.unshift( 'ndb', 'jest' );
+}
+
 if ( program.dev ) {
 	testEnvVars.JEST_PUPPETEER_CONFIG = path.resolve(
 		__dirname,
@@ -44,15 +58,11 @@ if ( appPath ) {
 	}
 }
 
+jestArgs.push( '--config=' + configPath );
+
 const jestProcess = spawnSync(
-	'jest',
-	[
-		'--maxWorkers=1',
-		'--config=' + configPath,
-		'--rootDir=./',
-		'--verbose',
-		program.args,
-	],
+	jestCommand,
+	jestArgs,
 	{
 		stdio: 'inherit',
 		env: envVars,
