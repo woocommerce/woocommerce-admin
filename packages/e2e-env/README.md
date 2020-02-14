@@ -8,7 +8,7 @@ A reusable and extendable E2E testing environment for WooCommerce extensions.
 npm install @woocommerce/e2e-env --save
 ```
 
-## Usage
+## Configuration
 
 The `@woocommerce/e2e-env` package exports configuration objects that can be consumed in JavaScript config files in your project. Additionally, it contains several files to serve as the base for a Docker container and Travis CI setup.
 
@@ -127,7 +127,7 @@ services:
 
 You can provide an initialization script that will run in the WP-CLI Docker container. Place an executable file at `tests/e2e-tests/docker/initialize.sh` in your project and it will be copied into the container and executed. While you can run any commands you wish, the intent here is to use WP-CLI to set up your testing environment. E.g.:
 
-```sh
+```
 #!/bin/bash
 
 echo "Initializing WooCommerce E2E"
@@ -150,4 +150,25 @@ import:
     mode: deep_merge_prepend # Merge the package config first.
 
 ....
+```
+
+## Usage
+
+Start Docker
+
+```bash
+npm explore @woocommerce/e2e-env -- npm run docker:up
+```
+
+Run E2E Tests
+
+```bash
+npm explore @woocommerce/e2e-env -- npm run test:e2e
+npm explore @woocommerce/e2e-env -- npm run test:e2e-dev
+```
+
+Stop Docker
+
+```bash
+npm explore @woocommerce/e2e-env -- npm run docker:down
 ```
