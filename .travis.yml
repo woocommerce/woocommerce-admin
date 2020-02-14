@@ -1,16 +1,11 @@
 version: ~> 1.0
 
 import:
-  - source: packages/e2e-env/.travis.yml # TODO: figure out how to specify this when in node_modules/.
-    mode: deep_merge_prepend # default mode. options are: deep_merge_append, deep_merge, merge.
+  # This path will differ for projects using the published package.
+  - source: packages/e2e-env/.travis.yml
+  # Merge the package config first.
+    mode: deep_merge_prepend
 
-# dist: trusty
-
-# sudo: required
-
-# language: php
-
-# matrix:
 jobs:
   include:
   - name: "PHP 7.3 unit tests, PHP Coding standards check and JS tests"
@@ -35,27 +30,17 @@ jobs:
     php: 7.3
     env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress RUN_RANDOM=1 COMPOSER_DEV=1
 
-
-# before_install:
-#   - nvm install 'lts/*'
-
 before_script:
-  # - phpenv config-rm xdebug.ini
   - export PATH="$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/vendor/bin:$PATH"
   - bash bin/install-wp-tests.sh wc_e2e_tests root '' localhost
   - bash bin/travis.sh before
   - node --version
   - npm --version
-  # - timedatectl
 
 script:
   - bash bin/js_lint_test.sh
   - bash bin/phpunit.sh
   - bash bin/phpcs.sh
-
-# branches:
-#   only:
-#     - master
 
 before_deploy:
   # Remove our unneeded symlink.
