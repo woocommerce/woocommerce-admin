@@ -32,16 +32,12 @@ const jestArgs = [
 ];
 
 if ( program.dev ) {
-	testEnvVars.JEST_PUPPETEER_CONFIG = 'tests/e2e-tests/config/jest-puppeteer.dev.config.js';
-	jestCommand = 'npx';
-	jestArgs.unshift( 'ndb', 'jest' );
-}
-
-if ( program.dev ) {
 	testEnvVars.JEST_PUPPETEER_CONFIG = path.resolve(
 		__dirname,
 		'../config/jest-puppeteer.dev.config.js'
 	);
+	jestCommand = 'npx';
+	jestArgs.unshift( 'ndb', 'jest' );
 }
 
 const envVars = Object.assign( {}, process.env, testEnvVars );
