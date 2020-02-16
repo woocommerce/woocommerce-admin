@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -71,28 +70,37 @@ export default class DownloadsReportTable extends Component {
 		const persistedQuery = getPersistedQuery( query );
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
 
-		return map( downloads, download => {
+		return map( downloads, ( download ) => {
 			const {
 				_embedded,
 				date,
-				file_name,
-				file_path,
-				ip_address,
-				order_id,
-				order_number,
-				product_id,
+				file_name: fileName,
+				file_path: filePath,
+				ip_address: ipAddress,
+				order_id: orderId,
+				order_number: orderNumber,
+				product_id: productId,
 				username,
 			} = download;
 			const { name: productName } = _embedded.product[ 0 ];
 
-			const productLink = getNewPath( persistedQuery, '/analytics/products', {
-				filter: 'single_product',
-				products: product_id,
-			} );
+			const productLink = getNewPath(
+				persistedQuery,
+				'/analytics/products',
+				{
+					filter: 'single_product',
+					products: productId,
+				}
+			);
 
 			return [
 				{
-					display: <Date date={ date } visibleFormat={ dateFormat } />,
+					display: (
+						<Date
+							date={ date }
+							visibleFormat={ dateFormat }
+						/>
+					),
 					value: date,
 				},
 				{
@@ -105,37 +113,39 @@ export default class DownloadsReportTable extends Component {
 				},
 				{
 					display: (
-						<Link href={ file_path } type="external">
-							{ file_name }
+						<Link href={ filePath } type="external">
+							{ fileName }
 						</Link>
 					),
-					value: file_name,
+					value: fileName,
 				},
 				{
 					display: (
 						<Link
-							href={ getAdminLink( `post.php?post=${ order_id }&action=edit` ) }
+							href={ getAdminLink(
+								`post.php?post=${ orderId }&action=edit`
+							) }
 							type="wp-admin"
 						>
-							{ order_number }
+							{ orderNumber }
 						</Link>
 					),
-					value: order_number,
+					value: orderNumber,
 				},
 				{
 					display: username,
 					value: username,
 				},
 				{
-					display: ip_address,
-					value: ip_address,
+					display: ipAddress,
+					value: ipAddress,
 				},
 			];
 		} );
 	}
 
 	getSummary( totals ) {
-		const { download_count = 0 } = totals;
+		const { download_count: downloadCount = 0 } = totals;
 		const { query } = this.props;
 		const dates = getCurrentDates( query );
 		const after = moment( dates.primary.after );
@@ -148,8 +158,13 @@ export default class DownloadsReportTable extends Component {
 				value: formatValue( 'number', days ),
 			},
 			{
-				label: _n( 'download', 'downloads', download_count, 'woocommerce-admin' ),
-				value: formatValue( 'number', download_count ),
+				label: _n(
+					'download',
+					'downloads',
+					downloadCount,
+					'woocommerce-admin'
+				),
+				value: formatValue( 'number', downloadCount ),
 			},
 		];
 	}
