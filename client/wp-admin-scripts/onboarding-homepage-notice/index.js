@@ -23,9 +23,13 @@ import { queueRecordEvent } from 'lib/tracks';
  * @return {Promise} Promise for overlay existence.
  */
 const saveStarted = () => {
-	if ( document.querySelector( '.editor-post-publish-button' ) === null ) {
-		const promise = new Promise( resolve => {
-			requestAnimationFrame( resolve );
+	if (
+		! document
+			.querySelector( '.editor-post-publish-button' )
+			.classList.contains( 'is-busy' )
+	) {
+		const promise = new Promise( ( resolve ) => {
+			window.requestAnimationFrame( resolve );
 		} );
 		return promise.then( () => saveStarted() );
 	}
@@ -39,9 +43,13 @@ const saveStarted = () => {
  * @return {Promise} Promise for overlay existence.
  */
 const saveCompleted = () => {
-	if ( null === document.querySelector( '.post-publish-panel__postpublish' ) ) {
-		const promise = new Promise( resolve => {
-			requestAnimationFrame( resolve );
+	if (
+		document
+			.querySelector( '.editor-post-publish-button' )
+			.classList.contains( 'is-busy' )
+	) {
+		const promise = new Promise( ( resolve ) => {
+			window.requestAnimationFrame( resolve );
 		} );
 		return promise.then( () => saveCompleted() );
 	}
@@ -95,15 +103,13 @@ const onboardingHomepageNotice = () => {
 };
 
 domReady( () => {
-	const publishButton = document.querySelector( '.editor-post-publish-panel__toggle' );
+	const publishButton = document.querySelector(
+		'.editor-post-publish-button'
+	);
 	if ( publishButton ) {
-		publishButton.addEventListener( 'click', function() {
-			saveStarted().then( () => {
-				const confirmButton = document.querySelector( '.editor-post-publish-button' );
-				if ( confirmButton ) {
-					confirmButton.addEventListener( 'click', onboardingHomepageNotice );
-				}
-			} );
-		} );
+		publishButton.addEventListener(
+			'click',
+			saveStarted().then( () => onboardingHomepageNotice() )
+		);
 	}
 } );
