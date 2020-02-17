@@ -41,5 +41,12 @@ export const pluginNames = {
 		'WooCommerce ShipStation Gateway',
 		'woocommerce-admin'
 	),
+<<<<<<< HEAD
 	'woocommerce-square': __( 'WooCommerce Square', 'woocommerce-admin' ),
+=======
+	'google-ads': __(
+		'Google Shopping',
+		'woocommerce-admin'
+	),
+>>>>>>> 1d9272fd... Onboarding: business step: add Google Ads extension install
 };
