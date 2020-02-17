@@ -45,6 +45,9 @@ class BusinessDetails extends Component {
 			'mailchimp-for-woocommerce': businessExtensions
 				? businessExtensions.includes( 'mailchimp-for-woocommerce' )
 				: true,
+			'google-ads': businessExtensions
+				? businessExtensions.includes( 'google-ads' )
+				: true,
 		};
 
 		this.state = {
@@ -53,7 +56,11 @@ class BusinessDetails extends Component {
 			extensionInstallError: false,
 		};
 
-		this.extensions = [ 'facebook-for-woocommerce', 'mailchimp-for-woocommerce' ];
+		this.extensions = [
+			'facebook-for-woocommerce',
+			'mailchimp-for-woocommerce',
+			'google-ads',
+		];
 
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
@@ -72,6 +79,7 @@ class BusinessDetails extends Component {
 			used_platform: other_platform,
 			install_facebook: values[ 'facebook-for-woocommerce' ],
 			install_mailchimp: values[ 'mailchimp-for-woocommerce' ],
+			install_google_ads: values[ 'google-ads' ],
 		} );
 
 		const _updates = {
@@ -257,6 +265,18 @@ class BusinessDetails extends Component {
 				icon: 'onboarding/mailchimp.png',
 				description: __(
 					'Send targeted campaigns, recover abandoned carts and much more with Mailchimp.',
+					'woocommerce-admin'
+				),
+			},
+			{
+				slug: 'google-ads',
+				title: __(
+					'Drive sales with Google Shopping',
+					'woocommerce-admin'
+				),
+				icon: 'onboarding/google-ads.png',
+				description: __(
+					'Get in front of new customers on Google and secure $150 in ads credit with Kliken’s integration.',
 					'woocommerce-admin'
 				),
 			},
