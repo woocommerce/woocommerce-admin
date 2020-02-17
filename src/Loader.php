@@ -343,6 +343,14 @@ class Loader {
 		wp_set_script_translations( 'wc-date', 'woocommerce-admin' );
 
 		wp_register_script(
+			'navigation',
+			self::get_url( 'navigation/index.js' ),
+			array(),
+			self::get_file_version( 'navigation/index.js' ),
+			true
+		);
+
+		wp_register_script(
 			'wc-components',
 			self::get_url( 'components/index.js' ),
 			array(
@@ -503,11 +511,17 @@ class Loader {
 	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
 	 */
 	public static function embed_page_header() {
-		if ( ! self::is_embed_page() ) {
+		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
 			return;
 		}
 
 		if ( ! static::user_can_analytics() ) {
+			return;
+		}
+
+		self::embed_navigation_menu();
+
+		if ( ! self::is_embed_page() ) {
 			return;
 		}
 
@@ -525,6 +539,16 @@ class Loader {
 				</div>
 			</div>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Set up a div for the navigation menu.
+	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
+	 */
+	protected static function embed_navigation_menu() {
+		?>
+		<div id="woocommerce-embedded-navigation"></div>
 		<?php
 	}
 

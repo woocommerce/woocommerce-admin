@@ -27,6 +27,13 @@ class Navigation {
 	const CAPABILITY = 1;
 
 	/**
+	 * Array index of menu callback.
+	 *
+	 * @var int
+	 */
+	const CALLBACK = 2;
+
+	/**
 	 * Array index of menu CSS class string.
 	 *
 	 * @var int
@@ -47,7 +54,6 @@ class Navigation {
 	 */
 	protected $store_capabilities = array(
 		'manage_woocommerce',
-		'edit_products',
 		'view_woocommerce_reports',
 	);
 
@@ -67,9 +73,20 @@ class Navigation {
 	 * @var array
 	 */
 	protected $post_types = array(
+		'bookable_resource',
+		'event_ticket',
 		'product',
 		'shop_coupon',
 		'shop_order',
+		'shop_subscription',
+		'wc_booking',
+		'wc_membership_plan',
+		'wc_pickup_location',
+		'wc_product_tab',
+		'wc_user_membership',
+		'wc_voucher',
+		'wc_zapier_feed',
+		'wishlist',
 	);
 
 	/**
@@ -83,7 +100,24 @@ class Navigation {
 		'wc-settings',
 		'wc-status',
 		'wc-addons',
+		'woocommerce',
+		'checkout_field_editor',
+		'csv_import_suite',
+		'lightspeed-import-page',
+		'sc-about',
+		'wc-smart-coupons',
+		'wc_checkout_add_ons',
+		'wc_customer_order_csv_export',
+		'wc_dynamic_pricing',
+		'wc_pre_orders',
 	);
+
+	/**
+	 * Store related menu items.
+	 *
+	 * @var array
+	 */
+	protected $store_menu = array();
 
 	/**
 	 * Get class instance.
@@ -108,6 +142,7 @@ class Navigation {
 	public function maybe_enable_navigation() {
 		if ( is_admin() && ! apply_filters( 'woocommerce_use_legacy_navigation', false ) ) {
 			add_filter( 'add_menu_classes', array( $this, 'update_navigation' ) );
+			add_action( 'admin_footer', array( $this, 'output_menu' ) );
 		}
 	}
 
@@ -118,9 +153,24 @@ class Navigation {
 	 * @return array
 	 */
 	public function update_navigation( $menu ) {
-		global $pagenow, $plugin_page, $typenow;
+		global $pagenow, $plugin_page;
 
-		$store_capabilities = apply_filters( 'woocommerce_navigation_store_capabilities', $this->store_capabilities );
+		// Get post type if adding/editing a post.
+		$typenow = '';
+		if ( in_array( $pagenow, array( 'edit.php', 'post.php', 'post-new.php' ) ) ) {
+			if ( isset( $_GET['post'] ) ) {
+				$typenow = get_post_type( (int) $_GET['post'] );
+			} elseif ( isset( $_GET['post_type'] ) ) {
+				$typenow = $_GET['post_type'];
+			}
+		}
+
+		// Add editing store post types to capabilities list.
+		$store_capabilities = $this->store_capabilities;
+		foreach( $this->post_types as $post_type ) {
+			$store_capabilities[] = 'edit_' . $post_type . 's';
+		}
+		$store_capabilities = apply_filters( 'woocommerce_navigation_store_capabilities', $store_capabilities );
 		$permanent_items    = apply_filters( 'woocommerce_navigation_permanent_items', $this->permanent_items );
 		$post_types         = apply_filters( 'woocommerce_navigation_post_types', $this->post_types );
 
@@ -159,18 +209,83 @@ class Navigation {
 		}
 
 		foreach ( $menu as $index => $item ) {
-			// Skip separators and permanent pages.
-			if ( ! isset( $item[ self::HANDLE ] ) || in_array( $item[ self::HANDLE ], $permanent_items, true ) ) {
+			// Skip separators.
+			if ( ! isset( $item[ self::HANDLE ] ) ) {
+				continue;
+			}
+			// Handle permanent pages.
+			if ( in_array( $item[ self::HANDLE ], $permanent_items, true ) ) {
+				if ( $managing_store ) {
+					$this->store_menu[] = $item;
+				}
 				continue;
 			}
 
-			// Hide menu items if they don't match the current site/store context.
 			$is_store_page = in_array( $item[ self::CAPABILITY ], $store_capabilities, true );
-			if ( $is_store_page !== $managing_store ) {
+			// Save the menu item if managing store and it's a store page.
+			if ( $is_store_page && $managing_store ) {
+				$this->store_menu[] = $item;
+			}
+			// Hide menu items if they are store context.
+			if ( $is_store_page ) {
 				$menu[ $index ][ self::CSS_CLASSES ] .= ' hide-if-js';
 			}
 		}
 
+		// todo: add filter to body class when managing store to add the folded class.
 		return $menu;
+	}
+
+	/**
+	 * Convert a WordPress menu callback to a URL.
+	 *
+	 * @param string $callback Menu callback.
+	 * @return string
+	 */
+	protected function get_callback_url( $callback ) {
+		$pos  = strpos( $callback, '?' );
+		$file = $pos > 0 ? substr( $callback, 0, $pos ) : $callback;
+		if ( file_exists( ABSPATH . "/wp-admin/$file" ) ) {
+			return $callback;
+		}
+		return 'admin.php?page=' . $callback;
+	}
+
+	/**
+	 * Add the menu to the page output.
+	 */
+	public function output_menu() {
+		global $submenu, $parent_file, $typenow, $self;
+
+		$navigation = array();
+		foreach( $this->store_menu as $item ) {
+			unset( $item[ self::CAPABILITY ], $item[ self::CSS_CLASSES ] );
+
+			$children = array();
+			if ( 'menu-dashboard' !== $item[ self::HANDLE ] ) {
+				foreach ( $submenu[ $item[ self::CALLBACK ] ] as $child ) {
+					unset( $child[ self::CAPABILITY ] );
+					$child[ self::CALLBACK ] = $this->get_callback_url( $child[ self::CALLBACK ] );
+					$child[0]                = wp_strip_all_tags( $child[0] );
+					$children[]              = $child;
+				}
+			}
+
+			unset( $item[ self::HANDLE ] );
+			$item['current'] = ( $parent_file && $item[ self::CALLBACK ] == $parent_file ) || ( empty( $typenow ) && $self == $item[ self::CALLBACK ] );
+
+			if ( 'woocommerce' === $item[ self::CALLBACK ] ) {
+				$item[ self::CALLBACK ] = $this->get_callback_url( 'wc-admin' );
+			} else {
+				$item[ self::CALLBACK ] = $this->get_callback_url( $item[ self::CALLBACK ] );
+			}
+			$item['children'] = $children;
+			$navigation[]     = $item;
+		}
+?>
+<script>
+var wcNavigation = wcNavigation || JSON.parse( decodeURIComponent( '<?php echo rawurlencode( wp_json_encode( $navigation ) ); ?>' ) );
+</script>
+<?php
 	}
 }
