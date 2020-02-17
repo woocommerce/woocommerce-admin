@@ -72,26 +72,11 @@ class Onboarding {
 			OnboardingTasks::get_instance();
 		}
 
-		// Rest API hooks need to run before is_admin() checks.
-		add_filter( 'woocommerce_rest_prepare_themes', array( $this, 'add_uploaded_theme_data' ) );
-
 		// Add onboarding notes.
 		new WC_Admin_Notes_Onboarding_Profiler();
 
-		if ( ! is_admin() ) {
-			return;
-		}
-
-		// Old settings injection.
-		// Run after Automattic\WooCommerce\Admin\Loader.
-		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
-		// New settings injection.
-		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
-		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
-		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
-		add_filter( 'woocommerce_admin_preload_settings', array( $this, 'preload_settings' ) );
-		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
-		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
+		$this->add_actions();
+		$this->add_filters();
 	}
 
 	/**
@@ -126,6 +111,29 @@ class Onboarding {
 		add_action( 'current_screen', array( $this, 'calypso_tests' ) );
 		add_action( 'current_screen', array( $this, 'redirect_wccom_install' ) );
 		add_action( 'current_screen', array( $this, 'redirect_old_onboarding' ) );
+	}
+
+	/**
+	 * Add onboarding filters.
+	 */
+	private function add_filters() {
+		// Rest API hooks need to run before is_admin() checks.
+		add_filter( 'woocommerce_rest_prepare_themes', array( $this, 'add_uploaded_theme_data' ) );
+
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		// Old settings injection.
+		// Run after Automattic\WooCommerce\Admin\Loader.
+		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
+		// New settings injection.
+		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
+		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
+		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
+		add_filter( 'woocommerce_admin_preload_settings', array( $this, 'preload_settings' ) );
+		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
+		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
 	}
 
 	/**
