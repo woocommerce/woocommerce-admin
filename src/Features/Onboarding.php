@@ -62,11 +62,6 @@ class Onboarding {
 	public function __construct() {
 		$this->add_toggle_actions();
 
-		if ( ! Loader::is_onboarding_enabled() ) {
-			add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
-			return;
-		}
-
 		// Include WC Admin Onboarding classes.
 		if ( self::should_show_tasks() ) {
 			OnboardingTasks::get_instance();
@@ -89,6 +84,11 @@ class Onboarding {
 		// Track the onboarding toggle event earlier so they are captured before redirecting.
 		add_action( 'add_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
 		add_action( 'update_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
+
+		if ( ! Loader::is_onboarding_enabled() ) {
+			add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
+			return;
+		}
 	}
 
 	/**
