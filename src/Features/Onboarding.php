@@ -67,9 +67,14 @@ class Onboarding {
 			OnboardingTasks::get_instance();
 		}
 
+		if ( ! Loader::is_onboarding_enabled() ) {
+			return;
+		}
+
 		// Add onboarding notes.
 		new WC_Admin_Notes_Onboarding_Profiler();
 
+		// Add actions and filters.
 		$this->add_actions();
 		$this->add_filters();
 	}
@@ -87,7 +92,6 @@ class Onboarding {
 
 		if ( ! Loader::is_onboarding_enabled() ) {
 			add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
-			return;
 		}
 	}
 
