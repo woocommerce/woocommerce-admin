@@ -163,14 +163,29 @@ class Appearance extends Component {
 
 		recordEvent( 'tasklist_appearance_create_homepage', { create_homepage: true } );
 
-		apiFetch( { path: '/wc-admin/onboarding/tasks/create_homepage', method: 'POST' } )
-			.then( response => {
-				createNotice( response.status, response.message );
+		apiFetch( {
+			path: '/wc-admin/onboarding/tasks/create_homepage',
+			method: 'POST',
+		} )
+			.then( ( response ) => {
+				createNotice( response.status, response.message, {
+					actions: response.edit_post_link
+						? [
+								{
+									label: __(
+										'Customize',
+										'woocommerce-admin'
+									),
+									onClick: () => {
+										window.location = `${ response.edit_post_link }&wc_onboarding_active_task=homepage`;
+									},
+								},
+						  ]
+						: null,
+				} );
 
 				this.setState( { isPending: false } );
-				if ( response.edit_post_link ) {
-					window.location = `${ response.edit_post_link }&wc_onboarding_active_task=homepage`;
-				}
+				this.completeStep();
 			} )
 			.catch( error => {
 				createNotice( 'error', error.message );
