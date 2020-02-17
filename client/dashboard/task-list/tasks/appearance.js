@@ -264,7 +264,11 @@ class Appearance extends Component {
 				),
 				content: (
 					<Fragment>
-						<Button isPrimary onClick={ this.createHomepage }>
+						<Button
+							isPrimary
+							isBusy={ isPending }
+							onClick={ this.createHomepage }
+						>
 							{ __( 'Create homepage', 'woocommerce-admin' ) }
 						</Button>
 						<Button
