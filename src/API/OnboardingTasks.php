@@ -401,7 +401,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			array(
 				'post_title'   => __( 'Homepage', 'woocommerce-admin' ),
 				'post_type'    => 'page',
-				'post_status'  => 'draft',
+				'post_status'  => 'publish',
 				'post_content' => '', // Template content is updated below, so images can be attached to the post.
 			)
 		);
