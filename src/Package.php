@@ -5,7 +5,7 @@
  * @package Automattic/WooCommerce/WCAdmin
  */
 
-namespace Automattic\WooCommerce\Admin;
+namespace Automattic\WooCommerce\Admin\Compose;
 
 defined( 'ABSPATH' ) || exit;
 
