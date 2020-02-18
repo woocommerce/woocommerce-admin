@@ -61,12 +61,71 @@ class ActivityPanels {
 	}
 
 	/**
+	 * Determines if there are out of stock or low stock products.
+	 *
+	 * @return boolean
+	 */
+	public function has_low_stock_products() {
+		global $wpdb;
+
+		// Bail early if store does not manage stock, or Woo version < 3.6 needs lookup tables.
+		if (
+			'yes' !== get_option( 'woocommerce_manage_stock' ) ||
+			version_compare( get_option( 'woocommerce_db_version', null ), '3.6', '<' )
+		) {
+			return false;
+		}
+
+		$stock   = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
+		$nostock = absint( max( get_option( 'woocommerce_notify_no_stock_amount' ), 0 ) );
+
+		$transient_name   = 'woocommerce_admin_low_stock_count';
+		$lowinstock_count = get_transient( $transient_name );
+
+		if ( false === $lowinstock_count ) {
+			$lowinstock_count = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT( product_id )
+					FROM {$wpdb->wc_product_meta_lookup} AS lookup
+					INNER JOIN {$wpdb->posts} as posts ON lookup.product_id = posts.ID
+					WHERE stock_quantity <= %d
+					AND stock_quantity > %d
+					AND posts.post_status = 'publish'",
+					$stock,
+					$nostock
+				)
+			);
+			set_transient( $transient_name, $lowinstock_count, HOUR_IN_SECONDS );
+		}
+
+		$transient_name   = 'woocommerce_admin_outofstock_count';
+		$outofstock_count = get_transient( $transient_name );
+
+		if ( false === $outofstock_count ) {
+			$outofstock_count = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT( product_id )
+					FROM {$wpdb->wc_product_meta_lookup} AS lookup
+					INNER JOIN {$wpdb->posts} as posts ON lookup.product_id = posts.ID
+					WHERE stock_quantity <= %d
+					AND posts.post_status = 'publish'",
+					$nostock
+				)
+			);
+			set_transient( $transient_name, $outofstock_count, HOUR_IN_SECONDS );
+		}
+
+		return $lowinstock_count > 0 || $outofstock_count > 0;
+	}
+
+	/**
 	 * Add alert count to the component settings.
 	 *
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
 		$settings['alertCount'] = WC_Admin_Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
+		$settings['hasLowStockAlerts'] = $this->has_low_stock_products();
 		return $settings;
 	}
 
