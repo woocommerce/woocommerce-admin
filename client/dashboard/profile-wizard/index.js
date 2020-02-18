@@ -10,6 +10,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { updateQueryString } from '@woocommerce/navigation';
 
 /**
@@ -88,20 +89,10 @@ class ProfileWizard extends Component {
 	}
 
 	getSteps() {
-		const { profileItems } = this.props;
+		const { isJetpackConnected, profileItems } = this.props;
+		const { activePlugins = [] } = getSetting( 'onboarding', {} );
 		const steps = [];
 
-		steps.push( {
-			key: 'start',
-			container: Start,
-		} );
-		steps.push( {
-			key: 'plugins',
-			container: Plugins,
-			isComplete:
-				profileItems.hasOwnProperty( 'plugins' ) &&
-				profileItems.plugins !== null,
-		} );
 		steps.push( {
 			key: 'store-details',
 			container: StoreDetails,
@@ -142,6 +133,22 @@ class ProfileWizard extends Component {
 				profileItems.hasOwnProperty( 'theme' ) &&
 				profileItems.theme !== null,
 		} );
+		if (
+			! activePlugins.includes( 'woocommerce-services' ) ||
+			! isJetpackConnected
+		) {
+			steps.push( {
+				key: 'start',
+				container: Start,
+			} );
+			steps.push( {
+				key: 'plugins',
+				container: Plugins,
+				isComplete:
+					profileItems.hasOwnProperty( 'plugins' ) &&
+					profileItems.plugins !== null,
+			} );
+		}
 		return steps;
 	}
 
@@ -245,9 +252,12 @@ class ProfileWizard extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getNotes, getProfileItems, getProfileItemsError } = select(
-			'wc-api'
-		);
+		const {
+			getNotes,
+			getProfileItems,
+			getProfileItemsError,
+			isJetpackConnected,
+		} = select( 'wc-api' );
 
 		const notesQuery = {
 			page: 1,
@@ -259,6 +269,7 @@ export default compose(
 
 		return {
 			isError: Boolean( getProfileItemsError() ),
+			isJetpackConnected: isJetpackConnected(),
 			notes,
 			profileItems: getProfileItems(),
 		};
