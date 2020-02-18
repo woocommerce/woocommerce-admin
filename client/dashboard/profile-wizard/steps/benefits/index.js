@@ -29,7 +29,7 @@ import UsageModal from '../usage-modal';
 import { recordEvent } from 'lib/tracks';
 import { pluginNames } from 'wc-api/onboarding/constants';
 
-class Start extends Component {
+class Benefits extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
@@ -380,4 +380,4 @@ export default compose(
 			updateOptions,
 		};
 	} )
-)( Start );
+)( Benefits );

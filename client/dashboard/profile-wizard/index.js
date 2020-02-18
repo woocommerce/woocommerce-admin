@@ -16,6 +16,7 @@ import { updateQueryString } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
+import Benefits from './steps/benefits';
 import BusinessDetails from './steps/business-details';
 import CartModal from '../components/cart-modal';
 import Industry from './steps/industry';
@@ -24,7 +25,6 @@ import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import { recordEvent } from 'lib/tracks';
-import Start from './steps/start';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
 import withSelect from 'wc-api/with-select';
@@ -138,8 +138,8 @@ class ProfileWizard extends Component {
 			! isJetpackConnected
 		) {
 			steps.push( {
-				key: 'start',
-				container: Start,
+				key: 'benefits',
+				container: Benefits,
 			} );
 			steps.push( {
 				key: 'plugins',
