@@ -25,17 +25,12 @@ import SpeedIcon from './images/flash_on';
 import MobileAppIcon from './images/phone_android';
 import PrintIcon from './images/print';
 import withSelect from 'wc-api/with-select';
-import UsageModal from '../usage-modal';
 import { recordEvent } from 'lib/tracks';
 import { pluginNames } from 'wc-api/onboarding/constants';
 
 class Benefits extends Component {
 	constructor( props ) {
 		super( props );
-		this.state = {
-			showUsageModal: false,
-			continueAction: '',
-		};
 		this.startWizard = this.startWizard.bind( this );
 		this.skipWizard = this.skipWizard.bind( this );
 	}
@@ -220,7 +215,6 @@ class Benefits extends Component {
 	}
 
 	render() {
-		const { showUsageModal, continueAction } = this.state;
 		const { isJetpackConnected, activePlugins } = this.props;
 
 		const pluginsToInstall = [];
@@ -236,21 +230,6 @@ class Benefits extends Component {
 
 		return (
 			<Fragment>
-				{ showUsageModal && (
-					<UsageModal
-						onContinue={ () =>
-							continueAction === 'wizard'
-								? this.startWizard()
-								: this.skipWizard()
-						}
-						onClose={ () =>
-							this.setState( {
-								showUsageModal: false,
-								continueAction: '',
-							} )
-						}
-					/>
-				) }
 				<H className="woocommerce-profile-wizard__header-title">
 					{ __(
 						'Start setting up your WooCommerce store',
@@ -304,12 +283,7 @@ class Benefits extends Component {
 
 					<Button
 						isPrimary
-						onClick={ () =>
-							this.setState( {
-								showUsageModal: true,
-								continueAction: 'wizard',
-							} )
-						}
+						onClick={ this.startWizard }
 						className="woocommerce-profile-wizard__continue"
 					>
 						{ __( 'Get started', 'woocommerce-admin' ) }
@@ -321,12 +295,7 @@ class Benefits extends Component {
 						<Button
 							isLink
 							className="woocommerce-profile-wizard__skip"
-							onClick={ () =>
-								this.setState( {
-									showUsageModal: true,
-									continueAction: 'skip',
-								} )
-							}
+							onClick={ this.skipWizard }
 						>
 							{ sprintf(
 								__( 'Proceed without %s', 'woocommerce-admin' ),
