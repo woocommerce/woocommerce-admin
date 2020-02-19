@@ -45,8 +45,15 @@ class Industry extends Component {
 		}
 
 		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
+		const selectedIndustriesList = this.state.selected.map( industry => industry.slug );
+		const industriesWithDetail = filter( this.state.selected, value => {
+			return typeof value.detail !== 'undefined';
+		} );
 
-		recordEvent( 'storeprofiler_store_industry_continue', { store_industry: this.state.selected } );
+		recordEvent( 'storeprofiler_store_industry_continue', {
+			store_industry: selectedIndustriesList,
+			industriesWithDetail,
+		} );
 		await updateProfileItems( { industry: this.state.selected } );
 
 		if ( ! isError ) {
