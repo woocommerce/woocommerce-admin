@@ -4,7 +4,6 @@
  */
 import { dispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import domReady from '@wordpress/dom-ready';
 
 /**
@@ -69,18 +68,8 @@ const onboardingHomepageNotice = () => {
 	saveButton.classList.add( 'is-clicked' );
 
 	saveCompleted().then( () => {
-		const postId = document.querySelector( '#post_ID' ).value;
 		const notificationType =
 			null !== document.querySelector( '.components-snackbar__content' ) ? 'snackbar' : 'default';
-
-		apiFetch( {
-			path: '/wc-admin/options',
-			method: 'POST',
-			data: {
-				show_on_front: 'page',
-				page_on_front: postId,
-			},
-		} );
 
 		dispatch( 'core/notices' ).removeNotice( 'SAVE_POST_NOTICE_ID' );
 		dispatch( 'core/notices' ).createSuccessNotice(

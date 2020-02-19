@@ -416,6 +416,8 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				)
 			);
 
+			update_option( 'show_on_front', 'page' );
+			update_option( 'page_on_front', $post_id );
 			update_option( 'woocommerce_onboarding_homepage_post_id', $post_id );
 
 			return array(
