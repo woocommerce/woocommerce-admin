@@ -68,10 +68,26 @@ class ProfileWizard extends Component {
 	}
 
 	componentDidMount() {
+		const { profileItems, updateProfileItems } = this.props;
+
 		document.documentElement.classList.remove( 'wp-toolbar' );
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 		document.body.classList.add( 'woocommerce-admin-full-screen' );
+
+		// Track plugins if already installed.
+		if (
+			this.activePlugins.includes( 'woocommerce-services' ) &&
+			this.activePlugins.includes( 'jetpack' ) &&
+			profileItems.plugins !== 'already-installed'
+		) {
+			recordEvent(
+				'wcadmin_storeprofiler_already_installed_plugins',
+				{}
+			);
+
+			updateProfileItems( { plugins: 'already-installed' } );
+		}
 	}
 
 	componentWillUnmount() {
@@ -89,7 +105,7 @@ class ProfileWizard extends Component {
 	}
 
 	getSteps() {
-		const { profileItems, updateProfileItems } = this.props;
+		const { profileItems } = this.props;
 		const steps = [];
 
 		steps.push( {
@@ -152,16 +168,6 @@ class ProfileWizard extends Component {
 					container: Plugins,
 				} );
 			}
-		} else {
-			// Don't track event again if they revisit the profiler.
-			if ( profileItems.plugins !== 'already-installed' ) {
-				recordEvent(
-					'wcadmin_storeprofiler_already_installed_plugins',
-					{}
-				);
-			}
-
-			updateProfileItems( { plugins: 'already-installed' } );
 		}
 		return steps;
 	}
