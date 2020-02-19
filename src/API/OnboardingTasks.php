@@ -186,13 +186,13 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	private static function get_homepage_cover_block( $image ) {
 		if ( ! empty( $image['url'] ) && ! empty( $image['id'] ) ) {
-			return '<!-- wp:cover {"url":"' . esc_url( $image['url'] ) . '","id":' . intval( $image['id'] ) . '} -->
-			<div class="wp-block-cover has-background-dim" style="background-image:url(' . esc_url( $image['url'] ) . ')"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","fontSize":"large"} -->
+			return '<!-- wp:cover {"url":"' . esc_url( $image['url'] ) . '","id":' . intval( $image['id'] ) . ',"dimRatio":0} -->
+			<div class="wp-block-cover" style="background-image:url(' . esc_url( $image['url'] ) . ')"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","textColor":"white","fontSize":"large"} -->
 			<p class="has-text-align-center has-large-font-size">' . __( 'Welcome to the store', 'woocommerce-admin' ) . '</p>
 			<!-- /wp:paragraph -->
 
-			<!-- wp:paragraph {"align":"center"} -->
-			<p class="has-text-align-center">' . __( 'Write a short welcome message here', 'woocommerce-admin' ) . '</p>
+			<!-- wp:paragraph {"align":"center","textColor":"white"} -->
+			<p class="has-text-color has-text-align-center">' . __( 'Write a short welcome message here', 'woocommerce-admin' ) . '</p>
 			<!-- /wp:paragraph -->
 
 			<!-- wp:button {"align":"center"} -->
@@ -201,13 +201,13 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			<!-- /wp:cover -->';
 		}
 
-		return '<!-- wp:cover {"overlayColor":"very-dark-gray"} -->
-		<div class="wp-block-cover has-very-dark-gray-background-color has-background-dim"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","fontSize":"large"} -->
-		<p class="has-text-align-center has-large-font-size">' . __( 'Welcome to the store', 'woocommerce-admin' ) . '</p>
+		return '<!-- wp:cover {"dimRatio":0} -->
+		<div class="wp-block-cover"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","textColor":"white","fontSize":"large"} -->
+		<p class="has-text-color has-text-align-center has-large-font-size">' . __( 'Welcome to the store', 'woocommerce-admin' ) . '</p>
 		<!-- /wp:paragraph -->
 
-		<!-- wp:paragraph {"align":"center"} -->
-		<p class="has-text-align-center">' . __( 'Write a short welcome message here', 'woocommerce-admin' ) . '</p>
+		<!-- wp:paragraph {"align":"center","textColor":"white"} -->
+		<p class="has-text-color has-text-align-center">' . __( 'Write a short welcome message here', 'woocommerce-admin' ) . '</p>
 		<!-- /wp:paragraph -->
 
 		<!-- wp:button {"align":"center"} -->
@@ -318,12 +318,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$industry_images = array();
 		$industries      = Onboarding::get_allowed_industries();
 		foreach ( $industries as $industry_slug => $label ) {
-			$file_path = WC_ADMIN_ABSPATH . 'images/onboarding/' . $industry_slug . '.jpg';
-			if ( 'other' === $industry_slug || ! file_exists( $file_path ) ) {
-				$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', plugins_url( 'images/onboarding/other.jpg', WC_ADMIN_PLUGIN_FILE ), $industry_slug );
-				continue;
-			}
-			$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', plugins_url( 'images/onboarding/' . $industry_slug . '.jpg', WC_ADMIN_PLUGIN_FILE ), $industry_slug );
+			$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', plugins_url( 'images/onboarding/other-small.jpg', WC_ADMIN_PLUGIN_FILE ), $industry_slug );
 		}
 		return $industry_images;
 	}
