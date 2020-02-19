@@ -38,6 +38,9 @@ class ProfileWizard extends Component {
 			showCartModal: false,
 			cartRedirectUrl: null,
 		};
+
+		const { activePlugins = [] } = getSetting( 'onboarding', {} );
+		this.activePlugins = activePlugins;
 		this.goToNextStep = this.goToNextStep.bind( this );
 	}
 
@@ -90,7 +93,6 @@ class ProfileWizard extends Component {
 
 	getSteps() {
 		const { isJetpackConnected, profileItems } = this.props;
-		const { activePlugins = [] } = getSetting( 'onboarding', {} );
 		const steps = [];
 
 		steps.push( {
@@ -134,7 +136,7 @@ class ProfileWizard extends Component {
 				profileItems.theme !== null,
 		} );
 		if (
-			! activePlugins.includes( 'woocommerce-services' ) ||
+			! this.activePlugins.includes( 'woocommerce-services' ) ||
 			! isJetpackConnected
 		) {
 			steps.push( {
@@ -177,7 +179,6 @@ class ProfileWizard extends Component {
 		} );
 
 		const nextStep = this.getSteps()[ currentStepIndex + 1 ];
-
 		if ( typeof nextStep === 'undefined' ) {
 			this.possiblyShowCart();
 			return;
