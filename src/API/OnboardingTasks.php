@@ -186,8 +186,8 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	private static function get_homepage_cover_block( $image ) {
 		if ( ! empty( $image['url'] ) && ! empty( $image['id'] ) ) {
-			return '<!-- wp:cover {"url":"' . esc_url( $image['url'] ) . '","id":' . intval( $image['id'] ) . '} -->
-			<div class="wp-block-cover has-background-dim" style="background-image:url(' . esc_url( $image['url'] ) . ')"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","textColor":"white","fontSize":"large"} -->
+			return '<!-- wp:cover {"url":"' . esc_url( $image['url'] ) . '","id":' . intval( $image['id'] ) . ',"dimRatio":0} -->
+			<div class="wp-block-cover" style="background-image:url(' . esc_url( $image['url'] ) . ')"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","textColor":"white","fontSize":"large"} -->
 			<p class="has-text-align-center has-large-font-size">' . __( 'Welcome to the store', 'woocommerce-admin' ) . '</p>
 			<!-- /wp:paragraph -->
 
@@ -201,8 +201,8 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			<!-- /wp:cover -->';
 		}
 
-		return '<!-- wp:cover {"overlayColor":"very-dark-gray"} -->
-		<div class="wp-block-cover has-very-dark-gray-background-color has-background-dim"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","textColor":"white","fontSize":"large"} -->
+		return '<!-- wp:cover {"dimRatio":0} -->
+		<div class="wp-block-cover"><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"' . __( 'Write title…', 'woocommerce-admin' ) . '","textColor":"white","fontSize":"large"} -->
 		<p class="has-text-color has-text-align-center has-large-font-size">' . __( 'Welcome to the store', 'woocommerce-admin' ) . '</p>
 		<!-- /wp:paragraph -->
 
