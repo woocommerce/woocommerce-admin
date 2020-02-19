@@ -60,6 +60,13 @@ class Benefits extends Component {
 		}
 	}
 
+	componentDidUpdate( prevProps ) {
+		const { goToNextStep, profileItems } = this.props;
+		if ( profileItems.plugins !== prevProps.profileItems.plugins ) {
+			goToNextStep();
+		}
+	}
+
 	async skipWizard() {
 		const {
 			createNotice,
@@ -84,17 +91,13 @@ class Benefits extends Component {
 				get_started: true,
 				plugins,
 			} );
-			return updateQueryString( { step: 'store-details' } );
 		}
 	}
 
 	async startWizard() {
 		const {
-			createNotice,
-			isProfileItemsError,
 			updateProfileItems,
 			updateOptions,
-			goToNextStep,
 			isJetpackConnected,
 		} = this.props;
 
@@ -103,23 +106,11 @@ class Benefits extends Component {
 		} );
 
 		const plugins = isJetpackConnected ? 'installed-wcs' : 'installed';
-		await updateProfileItems( { plugins } );
-
-		if ( ! isProfileItemsError ) {
-			recordEvent( 'storeprofiler_welcome_clicked', {
-				get_started: true,
-				plugins,
-			} );
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating your preferences.',
-					'woocommerce-admin'
-				)
-			);
-		}
+		recordEvent( 'storeprofiler_welcome_clicked', {
+			get_started: true,
+			plugins,
+		} );
+		updateProfileItems( { plugins } );
 	}
 
 	renderBenefit( benefit ) {
