@@ -92,7 +92,7 @@ class ProfileWizard extends Component {
 	}
 
 	getSteps() {
-		const { isJetpackConnected, profileItems } = this.props;
+		const { profileItems } = this.props;
 		const steps = [];
 
 		steps.push( {
@@ -137,7 +137,7 @@ class ProfileWizard extends Component {
 		} );
 		if (
 			! this.activePlugins.includes( 'woocommerce-services' ) ||
-			! isJetpackConnected
+			! this.activePlugins.includes( 'jetpack' )
 		) {
 			steps.push( {
 				key: 'benefits',
@@ -256,12 +256,9 @@ class ProfileWizard extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getNotes,
-			getProfileItems,
-			getProfileItemsError,
-			isJetpackConnected,
-		} = select( 'wc-api' );
+		const { getNotes, getProfileItems, getProfileItemsError } = select(
+			'wc-api'
+		);
 
 		const notesQuery = {
 			page: 1,
@@ -273,7 +270,6 @@ export default compose(
 
 		return {
 			isError: Boolean( getProfileItemsError() ),
-			isJetpackConnected: isJetpackConnected(),
 			notes,
 			profileItems: getProfileItems(),
 		};
