@@ -12,7 +12,7 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { H, Stepper, Card } from '@woocommerce/components';
-import { getNewPath, updateQueryString } from '@woocommerce/navigation';
+import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -39,9 +39,10 @@ class Plugins extends Component {
 	}
 
 	componentDidMount() {
-		const { isJetpackConnected } = this.props;
+		const { goToNextStep, isJetpackConnected } = this.props;
 		if ( plugins.length === 0 && isJetpackConnected ) {
-			return updateQueryString( { step: 'store-details' } );
+			goToNextStep();
+			return;
 		}
 
 		this.props.installPlugins( plugins );
@@ -51,6 +52,7 @@ class Plugins extends Component {
 		const {
 			createNotice,
 			errors,
+			goToNextStep,
 			installedPlugins,
 			activatedPlugins,
 			jetpackConnectUrl,
@@ -73,16 +75,14 @@ class Plugins extends Component {
 			/* eslint-enable react/no-did-update-set-state */
 		}
 
-		// If Jetpack was already connected, we can go to store details after WCS is activated.
+		// If Jetpack was already connected, we can complete the profiler after WCS is activated.
 		if (
 			! plugins.includes( 'jetpack' ) &&
 			prevProps.activatedPlugins.length !== plugins.length &&
 			activatedPlugins.length === plugins.length &&
 			isJetpackConnected
 		) {
-			/* eslint-disable react/no-did-update-set-state */
-			return updateQueryString( { step: 'store-details' } );
-			/* eslint-enable react/no-did-update-set-state */
+			goToNextStep();
 		}
 	}
 
@@ -215,9 +215,7 @@ export default compose(
 		);
 
 		const queryArgs = {
-			redirect_url: getAdminLink(
-				getNewPath( { step: 'store-details' } )
-			),
+			redirect_url: getAdminLink( getNewPath( {} ) ),
 		};
 
 		let jetpackConnectUrl = null;
