@@ -87,21 +87,6 @@ export function getUnapprovedReviews( select ) {
 	return false;
 }
 
-export function getUnreadStock( select ) {
-	const { getItems, getItemsError, getItemsTotalCount } = select( 'wc-api' );
-	const productsQuery = {
-		page: 1,
-		per_page: 1,
-		low_in_stock: true,
-		status: 'publish',
-	};
-	getItems( 'products', productsQuery );
-	const lowInStockCount = getItemsTotalCount( 'products', productsQuery );
-	const isError = Boolean( getItemsError( 'products', productsQuery ) );
-
-	if ( isError ) {
-		return null;
-	}
-
-	return lowInStockCount > 0;
+export function getUnreadStock() {
+	return getSetting( 'hasLowStock', false );
 }
