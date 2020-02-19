@@ -31,8 +31,8 @@ import { pluginNames } from 'wc-api/onboarding/constants';
 class Benefits extends Component {
 	constructor( props ) {
 		super( props );
-		this.startWizard = this.startWizard.bind( this );
-		this.skipWizard = this.skipWizard.bind( this );
+		this.startPluginInstall = this.startPluginInstall.bind( this );
+		this.skipPluginInstall = this.skipPluginInstall.bind( this );
 	}
 
 	componentDidMount() {
@@ -67,7 +67,7 @@ class Benefits extends Component {
 		}
 	}
 
-	async skipWizard() {
+	async skipPluginInstall() {
 		const {
 			createNotice,
 			isProfileItemsError,
@@ -94,7 +94,7 @@ class Benefits extends Component {
 		}
 	}
 
-	async startWizard() {
+	async startPluginInstall() {
 		const {
 			updateProfileItems,
 			updateOptions,
@@ -274,7 +274,7 @@ class Benefits extends Component {
 
 					<Button
 						isPrimary
-						onClick={ this.startWizard }
+						onClick={ this.startPluginInstall }
 						className="woocommerce-profile-wizard__continue"
 					>
 						{ __( 'Get started', 'woocommerce-admin' ) }
@@ -286,7 +286,7 @@ class Benefits extends Component {
 						<Button
 							isLink
 							className="woocommerce-profile-wizard__skip"
-							onClick={ this.skipWizard }
+							onClick={ this.skipPluginInstall }
 						>
 							{ sprintf(
 								__( 'Proceed without %s', 'woocommerce-admin' ),
