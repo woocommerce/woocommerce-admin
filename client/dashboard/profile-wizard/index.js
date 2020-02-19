@@ -89,7 +89,7 @@ class ProfileWizard extends Component {
 	}
 
 	getSteps() {
-		const { profileItems } = this.props;
+		const { profileItems, updateProfileItems } = this.props;
 		const steps = [];
 
 		steps.push( {
@@ -132,6 +132,7 @@ class ProfileWizard extends Component {
 				profileItems.hasOwnProperty( 'theme' ) &&
 				profileItems.theme !== null,
 		} );
+
 		if (
 			! this.activePlugins.includes( 'woocommerce-services' ) ||
 			! this.activePlugins.includes( 'jetpack' )
@@ -150,6 +151,16 @@ class ProfileWizard extends Component {
 					container: Plugins,
 				} );
 			}
+		} else {
+			// Don't track event again if they revisit the profiler.
+			if ( profileItems.plugins !== 'already-installed' ) {
+				recordEvent(
+					'wcadmin_storeprofiler_already_installed_plugins',
+					{}
+				);
+			}
+
+			updateProfileItems( { plugins: 'already-installed' } );
 		}
 		return steps;
 	}

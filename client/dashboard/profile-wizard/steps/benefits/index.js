@@ -13,7 +13,6 @@ import { filter, get } from 'lodash';
  * WooCommerce dependencies
  */
 import { Card, H, Link } from '@woocommerce/components';
-import { updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -38,31 +37,6 @@ class Benefits extends Component {
 		this.skipPluginInstall = this.skipPluginInstall.bind( this );
 	}
 
-	componentDidMount() {
-		const {
-			updateProfileItems,
-			profileItems,
-			tosAccepted,
-			isJetpackConnected,
-		} = this.props;
-		if (
-			isJetpackConnected &&
-			this.props.activePlugins.includes( 'woocommerce-services' ) &&
-			tosAccepted
-		) {
-			// Don't track event again if they revisit the start page.
-			if ( profileItems.plugins !== 'already-installed' ) {
-				recordEvent(
-					'wcadmin_storeprofiler_already_installed_plugins',
-					{}
-				);
-			}
-
-			updateProfileItems( { plugins: 'already-installed' } );
-			return updateQueryString( { step: 'store-details' } );
-		}
-	}
-
 	componentDidUpdate( prevProps ) {
 		const { goToNextStep, isRequesting } = this.props;
 		const { isPending } = this.state;
@@ -75,15 +49,17 @@ class Benefits extends Component {
 
 	async skipPluginInstall() {
 		const {
+			activePlugins,
 			createNotice,
 			isProfileItemsError,
 			updateProfileItems,
-			isJetpackConnected,
 		} = this.props;
 
 		this.setState( { isPending: true } );
 
-		const plugins = isJetpackConnected ? 'skipped-wcs' : 'skipped';
+		const plugins = activePlugins.includes( 'jetpack' )
+			? 'skipped-wcs'
+			: 'skipped';
 		await updateProfileItems( { plugins } );
 
 		if ( isProfileItemsError ) {
@@ -103,11 +79,7 @@ class Benefits extends Component {
 	}
 
 	async startPluginInstall() {
-		const {
-			updateProfileItems,
-			updateOptions,
-			isJetpackConnected,
-		} = this.props;
+		const { activePlugins, updateProfileItems, updateOptions } = this.props;
 
 		this.setState( { isPending: true } );
 
@@ -115,7 +87,9 @@ class Benefits extends Component {
 			woocommerce_setup_jetpack_opted_in: true,
 		} );
 
-		const plugins = isJetpackConnected ? 'installed-wcs' : 'installed';
+		const plugins = activePlugins.includes( 'jetpack' )
+			? 'installed-wcs'
+			: 'installed';
 		recordEvent( 'storeprofiler_install_plugins', {
 			install: true,
 			plugins,
@@ -140,7 +114,7 @@ class Benefits extends Component {
 	}
 
 	getBenefits() {
-		const { activePlugins, isJetpackConnected, tosAccepted } = this.props;
+		const { activePlugins, tosAccepted } = this.props;
 		return [
 			{
 				title: __( 'Security', 'woocommerce-admin' ),
@@ -149,7 +123,7 @@ class Benefits extends Component {
 					'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
 					'woocommerce-admin'
 				),
-				visible: ! isJetpackConnected,
+				visible: ! activePlugins.includes( 'jetpack' ),
 			},
 			{
 				title: __( 'Sales Tax', 'woocommerce-admin' ),
@@ -169,7 +143,7 @@ class Benefits extends Component {
 					'Cache your images and static files on our own powerful global network of servers and speed up your site.',
 					'woocommerce-admin'
 				),
-				visible: ! isJetpackConnected,
+				visible: ! activePlugins.includes( 'jetpack' ),
 			},
 			{
 				title: __( 'Mobile App', 'woocommerce-admin' ),
@@ -178,7 +152,7 @@ class Benefits extends Component {
 					'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
 					'woocommerce-admin'
 				),
-				visible: ! isJetpackConnected,
+				visible: ! activePlugins.includes( 'jetpack' ),
 			},
 			{
 				title: __(
@@ -190,7 +164,7 @@ class Benefits extends Component {
 					'Save time at the Post Office by printing USPS shipping labels at home.',
 					'woocommerce-admin'
 				),
-				visible: isJetpackConnected || ! tosAccepted,
+				visible: activePlugins.includes( 'jetpack' ) || ! tosAccepted,
 			},
 			{
 				title: __( 'Simple payment setup', 'woocommerce-admin' ),
@@ -199,7 +173,7 @@ class Benefits extends Component {
 					'WooCommerce Services enables us to provision Stripe and Paypal accounts quickly and easily for you.',
 					'woocommerce-admin'
 				),
-				visible: isJetpackConnected || ! tosAccepted,
+				visible: activePlugins.includes( 'jetpack' ) || ! tosAccepted,
 			},
 		];
 	}
@@ -216,11 +190,11 @@ class Benefits extends Component {
 	}
 
 	render() {
-		const { isJetpackConnected, activePlugins } = this.props;
+		const { activePlugins } = this.props;
 		const { isPending } = this.state;
 
 		const pluginsToInstall = [];
-		if ( ! isJetpackConnected ) {
+		if ( ! activePlugins.includes( 'jetpack' ) ) {
 			pluginsToInstall.push( 'jetpack' );
 		}
 		if ( ! activePlugins.includes( 'woocommerce-services' ) ) {
@@ -321,7 +295,6 @@ export default compose(
 			getOptions,
 			getProfileItems,
 			isGetProfileItemsRequesting,
-			isJetpackConnected,
 		} = select( 'wc-api' );
 
 		const isProfileItemsError = Boolean( getProfileItemsError() );
@@ -341,7 +314,6 @@ export default compose(
 			activePlugins,
 			tosAccepted,
 			profileItems,
-			isJetpackConnected: isJetpackConnected(),
 			isRequesting: isGetProfileItemsRequesting(),
 		};
 	} ),
