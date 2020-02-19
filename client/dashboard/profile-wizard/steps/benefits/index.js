@@ -63,12 +63,13 @@ class Benefits extends Component {
 		}
 	}
 
-	componentDidUpdate() {
+	componentDidUpdate( prevProps ) {
 		const { goToNextStep, isRequesting } = this.props;
 		const { isPending } = this.state;
 
-		if ( ! isRequesting && isPending ) {
+		if ( ! isRequesting && prevProps.isRequesting && isPending ) {
 			goToNextStep();
+			this.setState( { isPending: false } );
 		}
 	}
 
