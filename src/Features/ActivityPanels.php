@@ -23,6 +23,11 @@ class ActivityPanels {
 	protected static $instance = null;
 
 	/**
+	 * Low Stock Transient Name.
+	 */
+	const LOW_STOCK_TRANSIENT_NAME = 'woocommerce_admin_low_out_of_stock_count';
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -42,6 +47,7 @@ class ActivityPanels {
 		// New settings injection.
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
 		add_action( 'woocommerce_updated', array( $this, 'woocommerce_updated_note' ) );
+		add_action( 'woocommerce_update_product', array( __CLASS__, 'clear_low_out_of_stock_count_transient' ) );
 	}
 
 	/**
@@ -76,46 +82,29 @@ class ActivityPanels {
 			return false;
 		}
 
-		$stock   = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
-		$nostock = absint( max( get_option( 'woocommerce_notify_no_stock_amount' ), 0 ) );
+		$low_stock_out_of_stock_count = get_transient( self::LOW_STOCK_TRANSIENT_NAME );
 
-		$transient_name   = 'woocommerce_admin_low_stock_count';
-		$lowinstock_count = get_transient( $transient_name );
-
-		if ( false === $lowinstock_count ) {
-			$lowinstock_count = (int) $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COUNT( product_id )
-					FROM {$wpdb->wc_product_meta_lookup} AS lookup
-					INNER JOIN {$wpdb->posts} as posts ON lookup.product_id = posts.ID
-					WHERE stock_quantity <= %d
-					AND stock_quantity > %d
-					AND posts.post_status = 'publish'",
-					$stock,
-					$nostock
-				)
+		if ( false === $low_stock_out_of_stock_count ) {
+			$low_stock_out_of_stock_count = (int) $wpdb->get_var(
+				"SELECT COUNT( product_id )
+				FROM {$wpdb->wc_product_meta_lookup} AS lookup
+				INNER JOIN {$wpdb->posts} as posts ON lookup.product_id = posts.ID
+				WHERE stock_status IN ( 'onbackorder', 'outofstock' )
+				AND posts.post_status = 'publish'"
 			);
-			set_transient( $transient_name, $lowinstock_count, HOUR_IN_SECONDS );
+			set_transient( $self::LOW_STOCK_TRANSIENT_NAME, $low_stock_out_of_stock_count, HOUR_IN_SECONDS );
 		}
+		return $low_stock_out_of_stock_count > 0;
+	}
 
-		$transient_name   = 'woocommerce_admin_outofstock_count';
-		$outofstock_count = get_transient( $transient_name );
-
-		if ( false === $outofstock_count ) {
-			$outofstock_count = (int) $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COUNT( product_id )
-					FROM {$wpdb->wc_product_meta_lookup} AS lookup
-					INNER JOIN {$wpdb->posts} as posts ON lookup.product_id = posts.ID
-					WHERE stock_quantity <= %d
-					AND posts.post_status = 'publish'",
-					$nostock
-				)
-			);
-			set_transient( $transient_name, $outofstock_count, HOUR_IN_SECONDS );
-		}
-
-		return $lowinstock_count > 0 || $outofstock_count > 0;
+	/**
+	 * Clears transient for out of stock indicator
+	 *
+	 * @return boolean
+	 */
+	public function clear_low_out_of_stock_count_transient() {
+		delete_transient( self::LOW_STOCK_TRANSIENT_NAME );
+		return true;
 	}
 
 	/**
@@ -124,8 +113,8 @@ class ActivityPanels {
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
-		$settings['alertCount'] = WC_Admin_Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
-		$settings['hasLowStockAlerts'] = $this->has_low_stock_products();
+		$settings['alertCount']  = WC_Admin_Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
+		$settings['hasLowStock'] = $this->has_low_stock_products();
 		return $settings;
 	}
 
