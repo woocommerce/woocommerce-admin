@@ -141,13 +141,16 @@ class ProfileWizard extends Component {
 				key: 'benefits',
 				container: Benefits,
 			} );
-			steps.push( {
-				key: 'plugins',
-				container: Plugins,
-				isComplete:
-					profileItems.hasOwnProperty( 'plugins' ) &&
-					profileItems.plugins !== null,
-			} );
+
+			if (
+				profileItems.plugins.length &&
+				profileItems.plugins.startsWith( 'installed' )
+			) {
+				steps.push( {
+					key: 'plugins',
+					container: Plugins,
+				} );
+			}
 		}
 		return steps;
 	}
