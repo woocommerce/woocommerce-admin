@@ -18,7 +18,6 @@ import { updateQueryString } from '@woocommerce/navigation';
  */
 import Benefits from './steps/benefits';
 import BusinessDetails from './steps/business-details';
-import CartModal from '../components/cart-modal';
 import Industry from './steps/industry';
 import Plugins from './steps/plugins';
 import ProductTypes from './steps/product-types';
@@ -28,14 +27,12 @@ import { recordEvent } from 'lib/tracks';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
 import withSelect from 'wc-api/with-select';
-import { getProductIdsForCart } from 'dashboard/utils';
 import './style.scss';
 
 class ProfileWizard extends Component {
 	constructor() {
 		super( ...arguments );
 		this.state = {
-			showCartModal: false,
 			cartRedirectUrl: null,
 		};
 
@@ -180,24 +177,11 @@ class ProfileWizard extends Component {
 
 		const nextStep = this.getSteps()[ currentStepIndex + 1 ];
 		if ( typeof nextStep === 'undefined' ) {
-			this.possiblyShowCart();
+			this.completeProfiler();
 			return;
 		}
 
 		return updateQueryString( { step: nextStep.key } );
-	}
-
-	possiblyShowCart() {
-		const { profileItems } = this.props;
-
-		// @todo This should also send profile information to woocommerce.com.
-
-		const productIds = getProductIdsForCart( profileItems );
-		if ( productIds.length ) {
-			this.setState( { showCartModal: true } );
-		} else {
-			this.completeProfiler();
-		}
 	}
 
 	completeProfiler() {
@@ -213,14 +197,8 @@ class ProfileWizard extends Component {
 		}
 	}
 
-	markCompleteAndPurchase( cartRedirectUrl ) {
-		this.setState( { cartRedirectUrl } );
-		this.completeProfiler();
-	}
-
 	render() {
 		const { query } = this.props;
-		const { showCartModal } = this.state;
 		const step = this.getCurrentStep();
 
 		const container = createElement( step.container, {
@@ -234,17 +212,6 @@ class ProfileWizard extends Component {
 
 		return (
 			<Fragment>
-				{ showCartModal && (
-					<CartModal
-						onClose={ () =>
-							this.setState( { showCartModal: false } )
-						}
-						onClickPurchaseNow={ ( cartRedirectUrl ) =>
-							this.markCompleteAndPurchase( cartRedirectUrl )
-						}
-						onClickPurchaseLater={ () => this.completeProfiler() }
-					/>
-				) }
 				<ProfileWizardHeader currentStep={ step.key } steps={ steps } />
 				<div className="woocommerce-profile-wizard__container">
 					{ container }
