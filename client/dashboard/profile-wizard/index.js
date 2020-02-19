@@ -143,7 +143,8 @@ class ProfileWizard extends Component {
 			} );
 
 			if (
-				profileItems.plugins.length &&
+				profileItems.hasOwnProperty( 'plugins' ) &&
+				profileItems.plugins !== null &&
 				profileItems.plugins.startsWith( 'installed' )
 			) {
 				steps.push( {
