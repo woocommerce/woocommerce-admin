@@ -92,7 +92,7 @@ class ActivityPanels {
 				WHERE stock_status IN ( 'onbackorder', 'outofstock' )
 				AND posts.post_status = 'publish'"
 			);
-			set_transient( $self::LOW_STOCK_TRANSIENT_NAME, $low_stock_out_of_stock_count, HOUR_IN_SECONDS );
+			set_transient( self::LOW_STOCK_TRANSIENT_NAME, $low_stock_out_of_stock_count, HOUR_IN_SECONDS );
 		}
 		return $low_stock_out_of_stock_count > 0;
 	}
