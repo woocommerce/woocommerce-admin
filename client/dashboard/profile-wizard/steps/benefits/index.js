@@ -95,8 +95,8 @@ class Benefits extends Component {
 				)
 			);
 		} else {
-			recordEvent( 'storeprofiler_welcome_clicked', {
-				get_started: true,
+			recordEvent( 'storeprofiler_install_plugins', {
+				install: false,
 				plugins,
 			} );
 		}
@@ -116,8 +116,8 @@ class Benefits extends Component {
 		} );
 
 		const plugins = isJetpackConnected ? 'installed-wcs' : 'installed';
-		recordEvent( 'storeprofiler_welcome_clicked', {
-			get_started: true,
+		recordEvent( 'storeprofiler_install_plugins', {
+			install: true,
 			plugins,
 		} );
 		updateProfileItems( { plugins } );
