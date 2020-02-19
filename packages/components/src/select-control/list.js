@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -120,10 +119,9 @@ class List extends Component {
 				this.select( options[ selectedIndex ] );
 				setExpanded( false );
 				onSearch( null );
-				return;
+				break;
 
 			default:
-				return;
 		}
 	}
 
@@ -134,7 +132,9 @@ class List extends Component {
 		// native browser event has already bubbled so we can't stopPropagation
 		// and avoid RichText getting the event from TinyMCE, hence we must
 		// register a native event handler.
-		const handler = isListening ? 'addEventListener' : 'removeEventListener';
+		const handler = isListening
+			? 'addEventListener'
+			: 'removeEventListener';
 		node[ handler ]( 'keydown', this.handleKeyDown, true );
 	}
 
@@ -147,17 +147,31 @@ class List extends Component {
 	}
 
 	render() {
-		const { instanceId, listboxId, options, selectedIndex, staticList } = this.props;
-		const listboxClasses = classnames( 'woocommerce-select-control__listbox', {
-			'is-static': staticList,
-		} );
+		const {
+			instanceId,
+			listboxId,
+			options,
+			selectedIndex,
+			staticList,
+		} = this.props;
 		const optionsHaveValues = options ? options[ 0 ].value.id !== '' : false;
 		if ( ! optionsHaveValues ) {
 			return null;
 		}
+		const listboxClasses = classnames(
+			'woocommerce-select-control__listbox',
+			{
+				'is-static': staticList,
+			}
+		);
 
 		return (
-			<div ref={ this.listbox } id={ listboxId } role="listbox" className={ listboxClasses }>
+			<div
+				ref={ this.listbox }
+				id={ listboxId }
+				role="listbox"
+				className={ listboxClasses }
+			>
 				{ options.map( ( option, index ) => (
 					<Button
 						ref={ this.getOptionRef( index ) }
@@ -166,9 +180,12 @@ class List extends Component {
 						role="option"
 						aria-selected={ index === selectedIndex }
 						disabled={ option.isDisabled }
-						className={ classnames( 'woocommerce-select-control__option', {
-							'is-selected': index === selectedIndex,
-						} ) }
+						className={ classnames(
+							'woocommerce-select-control__option',
+							{
+								'is-selected': index === selectedIndex,
+							}
+						) }
 						onClick={ () => this.select( option ) }
 						tabIndex="-1"
 					>
@@ -192,6 +209,7 @@ List.propTypes = {
 	/**
 	 * Parent node to bind keyboard events to.
 	 */
+	// eslint-disable-next-line no-undef
 	node: PropTypes.instanceOf( Element ).isRequired,
 	/**
 	 * Function to execute when an option is selected.
@@ -203,9 +221,15 @@ List.propTypes = {
 	options: PropTypes.arrayOf(
 		PropTypes.shape( {
 			isDisabled: PropTypes.bool,
-			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ).isRequired,
-			keywords: PropTypes.arrayOf( PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ) ),
-			label: PropTypes.oneOfType( [ PropTypes.string, PropTypes.object ] ),
+			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] )
+				.isRequired,
+			keywords: PropTypes.arrayOf(
+				PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] )
+			),
+			label: PropTypes.oneOfType( [
+				PropTypes.string,
+				PropTypes.object,
+			] ),
 			value: PropTypes.any,
 		} )
 	).isRequired,

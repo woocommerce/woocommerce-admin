@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -44,13 +43,21 @@ class ProfileWizard extends Component {
 	componentDidUpdate( prevProps ) {
 		const { step: prevStep } = prevProps.query;
 		const { step } = this.props.query;
-		const { isError, isGetProfileItemsRequesting, createNotice } = this.props;
+		const {
+			isError,
+			isGetProfileItemsRequesting,
+			createNotice,
+		} = this.props;
 
-		const isRequestError = ! isGetProfileItemsRequesting && prevProps.isRequesting && isError;
+		const isRequestError =
+			! isGetProfileItemsRequesting && prevProps.isRequesting && isError;
 		if ( isRequestError ) {
 			createNotice(
 				'error',
-				__( 'There was a problem finishing the profile wizard.', 'woocommerce-admin' )
+				__(
+					'There was a problem finishing the profile wizard.',
+					'woocommerce-admin'
+				)
 			);
 		}
 
@@ -91,47 +98,56 @@ class ProfileWizard extends Component {
 		steps.push( {
 			key: 'plugins',
 			container: Plugins,
-			isComplete: profileItems.hasOwnProperty( 'plugins' ) && null !== profileItems.plugins,
+			isComplete:
+				profileItems.hasOwnProperty( 'plugins' ) &&
+				profileItems.plugins !== null,
 		} );
 		steps.push( {
 			key: 'store-details',
 			container: StoreDetails,
 			label: __( 'Store Details', 'woocommerce-admin' ),
 			isComplete:
-				profileItems.hasOwnProperty( 'setup_client' ) && null !== profileItems.setup_client,
+				profileItems.hasOwnProperty( 'setup_client' ) &&
+				profileItems.setup_client !== null,
 		} );
 		steps.push( {
 			key: 'industry',
 			container: Industry,
 			label: __( 'Industry', 'woocommerce-admin' ),
-			isComplete: profileItems.hasOwnProperty( 'industry' ) && null !== profileItems.industry,
+			isComplete:
+				profileItems.hasOwnProperty( 'industry' ) &&
+				profileItems.industry !== null,
 		} );
 		steps.push( {
 			key: 'product-types',
 			container: ProductTypes,
 			label: __( 'Product Types', 'woocommerce-admin' ),
 			isComplete:
-				profileItems.hasOwnProperty( 'product_types' ) && null !== profileItems.product_types,
+				profileItems.hasOwnProperty( 'product_types' ) &&
+				profileItems.product_types !== null,
 		} );
 		steps.push( {
 			key: 'business-details',
 			container: BusinessDetails,
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
-				profileItems.hasOwnProperty( 'product_count' ) && null !== profileItems.product_count,
+				profileItems.hasOwnProperty( 'product_count' ) &&
+				profileItems.product_count !== null,
 		} );
 		steps.push( {
 			key: 'theme',
 			container: Theme,
 			label: __( 'Theme', 'woocommerce-admin' ),
-			isComplete: profileItems.hasOwnProperty( 'theme' ) && null !== profileItems.theme,
+			isComplete:
+				profileItems.hasOwnProperty( 'theme' ) &&
+				profileItems.theme !== null,
 		} );
 		return steps;
 	}
 
 	getCurrentStep() {
 		const { step } = this.props.query;
-		const currentStep = this.getSteps().find( s => s.key === step );
+		const currentStep = this.getSteps().find( ( s ) => s.key === step );
 
 		if ( ! currentStep ) {
 			return this.getSteps()[ 0 ];
@@ -152,7 +168,7 @@ class ProfileWizard extends Component {
 
 		const nextStep = this.getSteps()[ currentStepIndex + 1 ];
 
-		if ( 'undefined' === typeof nextStep ) {
+		if ( typeof nextStep === 'undefined' ) {
 			this.possiblyShowCart();
 			return;
 		}
@@ -179,7 +195,7 @@ class ProfileWizard extends Component {
 		recordEvent( 'storeprofiler_complete' );
 
 		const profilerNote = notes.find(
-			note => 'wc-admin-onboarding-profiler-reminder' === note.name
+			( note ) => note.name === 'wc-admin-onboarding-profiler-reminder'
 		);
 		if ( profilerNote ) {
 			updateNote( profilerNote.id, { status: 'actioned' } );
@@ -201,29 +217,37 @@ class ProfileWizard extends Component {
 			step,
 			goToNextStep: this.goToNextStep,
 		} );
-		const steps = this.getSteps().map( _step => pick( _step, [ 'key', 'label', 'isComplete' ] ) );
+		const steps = this.getSteps().map( ( _step ) =>
+			pick( _step, [ 'key', 'label', 'isComplete' ] )
+		);
 
 		return (
 			<Fragment>
 				{ showCartModal && (
 					<CartModal
-						onClose={ () => this.setState( { showCartModal: false } ) }
-						onClickPurchaseNow={ cartRedirectUrl =>
+						onClose={ () =>
+							this.setState( { showCartModal: false } )
+						}
+						onClickPurchaseNow={ ( cartRedirectUrl ) =>
 							this.markCompleteAndPurchase( cartRedirectUrl )
 						}
 						onClickPurchaseLater={ () => this.completeProfiler() }
 					/>
 				) }
 				<ProfileWizardHeader currentStep={ step.key } steps={ steps } />
-				<div className="woocommerce-profile-wizard__container">{ container }</div>
+				<div className="woocommerce-profile-wizard__container">
+					{ container }
+				</div>
 			</Fragment>
 		);
 	}
 }
 
 export default compose(
-	withSelect( select => {
-		const { getNotes, getProfileItems, getProfileItemsError } = select( 'wc-api' );
+	withSelect( ( select ) => {
+		const { getNotes, getProfileItems, getProfileItemsError } = select(
+			'wc-api'
+		);
 
 		const notesQuery = {
 			page: 1,
@@ -239,7 +263,7 @@ export default compose(
 			profileItems: getProfileItems(),
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { updateNote, updateProfileItems } = dispatch( 'wc-api' );
 		const { createNotice } = dispatch( 'core/notices' );
 
