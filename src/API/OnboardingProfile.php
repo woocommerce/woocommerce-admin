@@ -241,6 +241,9 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'context'           => array( 'view' ),
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
+				'items'             => array(
+					'type' => 'json',
+				),
 			),
 			'product_types'       => array(
 				'type'              => 'array',

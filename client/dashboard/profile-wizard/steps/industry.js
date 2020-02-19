@@ -31,11 +31,11 @@ class Industry extends Component {
 		this.state = {
 			error: null,
 			selected: profileItems.industry || [],
-			textInputListContent: [],
+			textInputListContent: {},
 		};
 		this.onContinue = this.onContinue.bind( this );
-		this.onChange = this.onChange.bind( this );
-		this.onInputChange = this.onInputChange.bind( this );
+		this.onIndustryChange = this.onIndustryChange.bind( this );
+		this.onDetailChange = this.onDetailChange.bind( this );
 	}
 
 	async onContinue() {
@@ -66,7 +66,7 @@ class Industry extends Component {
 		this.setState( { error } );
 	}
 
-	onChange( slug ) {
+	onIndustryChange( slug ) {
 		this.setState(
 			state => {
 				const newSelected = state.selected;
@@ -91,13 +91,16 @@ class Industry extends Component {
 		);
 	}
 
-	onInputChange( value, slug ) {
+	onDetailChange( value, slug ) {
 		this.setState( state => {
 			const newSelected = state.selected;
+			const newTextInputListContent = state.textInputListContent;
 			const industryIndex = findIndex( newSelected, { slug: slug } );
 			newSelected[ industryIndex ].detail = value;
+			newTextInputListContent[ slug ] = value;
 			return {
 				selected: newSelected,
+				textInputListContent: newTextInputListContent,
 			};
 		} );
 	}
@@ -124,7 +127,7 @@ class Industry extends Component {
 									<CheckboxControl
 										key={ `checkbox-control-${ slug }` }
 										label={ industries[ slug ].label }
-										onChange={ () => this.onChange( slug ) }
+										onChange={ () => this.onIndustryChange( slug ) }
 										checked={ selectedIndustry || false }
 										className="woocommerce-profile-wizard__checkbox"
 									/>
@@ -134,7 +137,7 @@ class Industry extends Component {
 												key={ `text-control-${ selectedIndustry.slug }` }
 												label={ industries[ selectedIndustry.slug ].description_label }
 												value={ selectedIndustry.detail || textInputListContent[ slug ] || '' }
-												onChange={ value => this.onInputChange( value, selectedIndustry.slug ) }
+												onChange={ value => this.onDetailChange( value, selectedIndustry.slug ) }
 												className="woocommerce-profile-wizard__text"
 											/>
 										) }
