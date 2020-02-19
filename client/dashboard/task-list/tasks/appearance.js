@@ -20,9 +20,9 @@ import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
+import { queueRecordEvent, recordEvent } from 'lib/tracks';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
 
 class Appearance extends Component {
 	constructor( props ) {
@@ -177,6 +177,10 @@ class Appearance extends Component {
 										'woocommerce-admin'
 									),
 									onClick: () => {
+										queueRecordEvent(
+											'tasklist_appearance_customize_homepage',
+											{}
+										);
 										window.location = `${ response.edit_post_link }&wc_onboarding_active_task=homepage`;
 									},
 								},
