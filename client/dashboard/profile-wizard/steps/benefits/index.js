@@ -31,6 +31,9 @@ import { pluginNames } from 'wc-api/onboarding/constants';
 class Benefits extends Component {
 	constructor( props ) {
 		super( props );
+		this.state = {
+			isPending: false,
+		};
 		this.startPluginInstall = this.startPluginInstall.bind( this );
 		this.skipPluginInstall = this.skipPluginInstall.bind( this );
 	}
@@ -60,9 +63,11 @@ class Benefits extends Component {
 		}
 	}
 
-	componentDidUpdate( prevProps ) {
-		const { goToNextStep, profileItems } = this.props;
-		if ( profileItems.plugins !== prevProps.profileItems.plugins ) {
+	componentDidUpdate() {
+		const { goToNextStep, isRequesting } = this.props;
+		const { isPending } = this.state;
+
+		if ( ! isRequesting && isPending ) {
 			goToNextStep();
 		}
 	}
@@ -74,6 +79,8 @@ class Benefits extends Component {
 			updateProfileItems,
 			isJetpackConnected,
 		} = this.props;
+
+		this.setState( { isPending: true } );
 
 		const plugins = isJetpackConnected ? 'skipped-wcs' : 'skipped';
 		await updateProfileItems( { plugins } );
@@ -100,6 +107,8 @@ class Benefits extends Component {
 			updateOptions,
 			isJetpackConnected,
 		} = this.props;
+
+		this.setState( { isPending: true } );
 
 		await updateOptions( {
 			woocommerce_setup_jetpack_opted_in: true,
@@ -207,6 +216,7 @@ class Benefits extends Component {
 
 	render() {
 		const { isJetpackConnected, activePlugins } = this.props;
+		const { isPending } = this.state;
 
 		const pluginsToInstall = [];
 		if ( ! isJetpackConnected ) {
@@ -274,6 +284,7 @@ class Benefits extends Component {
 
 					<Button
 						isPrimary
+						isBusy={ isPending }
 						onClick={ this.startPluginInstall }
 						className="woocommerce-profile-wizard__continue"
 					>
@@ -285,6 +296,7 @@ class Benefits extends Component {
 					<p>
 						<Button
 							isLink
+							isBusy={ isPending }
 							className="woocommerce-profile-wizard__skip"
 							onClick={ this.skipPluginInstall }
 						>
@@ -307,6 +319,7 @@ export default compose(
 			getActivePlugins,
 			getOptions,
 			getProfileItems,
+			isGetProfileItemsRequesting,
 			isJetpackConnected,
 		} = select( 'wc-api' );
 
@@ -328,6 +341,7 @@ export default compose(
 			tosAccepted,
 			profileItems,
 			isJetpackConnected: isJetpackConnected(),
+			isRequesting: isGetProfileItemsRequesting(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
