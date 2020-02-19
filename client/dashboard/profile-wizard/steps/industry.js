@@ -52,7 +52,7 @@ class Industry extends Component {
 
 		recordEvent( 'storeprofiler_store_industry_continue', {
 			store_industry: selectedIndustriesList,
-			industriesWithDetail,
+			industries_with_detail: industriesWithDetail,
 		} );
 		await updateProfileItems( { industry: this.state.selected } );
 
