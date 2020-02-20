@@ -352,7 +352,17 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		// Make sure we have at least {$number_of_images} images.
 		if ( count( $images_to_sideload ) < $number_of_images ) {
 			for ( $i = count( $images_to_sideload ); $i < $number_of_images; $i++ ) {
-				$images_to_sideload[] = ! empty( $profile['industry'] ) && ! empty( $available_images[ $profile['industry'][0] ] ) ? $available_images[ $profile['industry'][0] ] : $available_images['other'];
+				// Fill up missing image slots with the first selected industry, or other.
+				$industry = 'other';
+				if (
+					! empty( $profile['industry'] ) &&
+					! empty( $profile['industry'][0] ) &&
+					! empty( $profile['industry'][0]['slug'] )
+				) {
+					$industry = $profile['industry'][0]['slug'];
+				}
+
+				$images_to_sideload[] = empty( $available_images[ $industry ] ) ? $available_images['other'] : $available_images[ $industry ];
 			}
 		}
 
