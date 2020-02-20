@@ -7,7 +7,7 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
-import { filter, get } from 'lodash';
+import { filter } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -17,13 +17,11 @@ import { Card, H, Link } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import CardIcon from './images/card';
 import Logo from './logo';
-import SecurityIcon from './images/security';
-import SalesTaxIcon from './images/local_atm';
-import SpeedIcon from './images/flash_on';
-import MobileAppIcon from './images/phone_android';
-import PrintIcon from './images/print';
+import ManagementIcon from './images/management';
+import SalesTaxIcon from './images/sales_tax';
+import ShippingLabels from './images/shipping_labels';
+import SpeedIcon from './images/speed';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { pluginNames } from 'wc-api/onboarding/constants';
@@ -115,38 +113,11 @@ class Benefits extends Component {
 	}
 
 	getBenefits() {
-		const { isJetpackActive, isWcsActive, tosAccepted } = this.props;
+		const { isJetpackActive, isWcsActive } = this.props;
 		return [
 			{
-				title: __( 'Security', 'woocommerce-admin' ),
-				icon: <SecurityIcon />,
-				description: __(
-					'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
-					'woocommerce-admin'
-				),
-				visible: ! isJetpackActive,
-			},
-			{
-				title: __( 'Sales Tax', 'woocommerce-admin' ),
-				icon: <SalesTaxIcon />,
-				description: __(
-					'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
-					'woocommerce-admin'
-				),
-				visible: ! isWcsActive || ! tosAccepted,
-			},
-			{
-				title: __( 'Speed', 'woocommerce-admin' ),
-				icon: <SpeedIcon />,
-				description: __(
-					'Cache your images and static files on our own powerful global network of servers and speed up your site.',
-					'woocommerce-admin'
-				),
-				visible: ! isJetpackActive,
-			},
-			{
-				title: __( 'Mobile App', 'woocommerce-admin' ),
-				icon: <MobileAppIcon />,
+				title: __( 'Store management on the go', 'woocommerce-admin' ),
+				icon: <ManagementIcon />,
 				description: __(
 					'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
 					'woocommerce-admin'
@@ -154,25 +125,34 @@ class Benefits extends Component {
 				visible: ! isJetpackActive,
 			},
 			{
-				title: __(
-					'Print your own shipping labels',
-					'woocommerce-admin'
-				),
-				icon: <PrintIcon />,
+				title: __( 'Automated sales taxes', 'woocommerce-admin' ),
+				icon: <SalesTaxIcon />,
 				description: __(
-					'Save time at the Post Office by printing USPS shipping labels at home.',
+					'Ensure that the correct rate of tax is charged on all of your orders automatically, and print shipping labels at home.',
 					'woocommerce-admin'
 				),
-				visible: isJetpackActive || ! tosAccepted,
+				visible: ! isWcsActive || ! isJetpackActive,
 			},
 			{
-				title: __( 'Simple payment setup', 'woocommerce-admin' ),
-				icon: <CardIcon />,
+				title: __( 'Improved speed & security', 'woocommerce-admin' ),
+				icon: <SpeedIcon />,
 				description: __(
-					'WooCommerce Services enables us to provision Stripe and Paypal accounts quickly and easily for you.',
+					'Automatically block brute force attacks and speed up your store using our powerful, global server network to cache images.',
 					'woocommerce-admin'
 				),
-				visible: isJetpackActive || ! tosAccepted,
+				visible: ! isJetpackActive,
+			},
+			{
+				title: __(
+					'Print shipping labels at home',
+					'woocommerce-admin'
+				),
+				icon: <ShippingLabels />,
+				description: __(
+					'Save time at the post office by printing shipping labels for your orders at home.',
+					'woocommerce-admin'
+				),
+				visible: isJetpackActive && ! isWcsActive,
 			},
 		];
 	}
@@ -275,20 +255,11 @@ export default compose(
 		const {
 			getProfileItemsError,
 			getActivePlugins,
-			getOptions,
 			getProfileItems,
 			isGetProfileItemsRequesting,
 		} = select( 'wc-api' );
 
 		const isProfileItemsError = Boolean( getProfileItemsError() );
-
-		const options = getOptions( [
-			'woocommerce_setup_jetpack_opted_in',
-			'wc_connect_options',
-		] );
-		const tosAccepted = get( options, [ 'wc_connect_options' ], {} )
-			.tos_accepted;
-
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 		const isJetpackActive = activePlugins.includes( 'jetpack' );
@@ -298,7 +269,6 @@ export default compose(
 			isJetpackActive,
 			isProfileItemsError,
 			isWcsActive,
-			tosAccepted,
 			profileItems,
 			isRequesting: isGetProfileItemsRequesting(),
 		};
