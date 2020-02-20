@@ -5,7 +5,11 @@
  * @package Automattic/WooCommerce/WCAdmin
  */
 
-namespace Automattic\WooCommerce\Admin\Compose;
+/**
+ * This namespace isn't compatible with the PSR-4
+ * which ensures that the copy in the standalone plugin will not be autoloaded.
+ */
+namespace Automattic\WooCommerce\Admin\Composer;
 
 defined( 'ABSPATH' ) || exit;
 
