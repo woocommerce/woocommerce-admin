@@ -3,7 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
@@ -204,7 +204,7 @@ class Benefits extends Component {
 			.join( ' & ' );
 
 		return (
-			<Fragment>
+			<Card className="woocommerce-profile-wizard__benefits-card">
 				<Logo />
 				<H className="woocommerce-profile-wizard__header-title">
 					{ __(
@@ -213,59 +213,42 @@ class Benefits extends Component {
 					) }
 				</H>
 
-				<p>
+				{ this.renderBenefits() }
+
+				<p className="woocommerce-profile-wizard__tos">
 					{ interpolateComponents( {
-						mixedString: sprintf(
-							__(
-								'Simplify and enhance the setup of your store with the free features and benefits offered by {{strong}}%s{{/strong}}.',
-								'woocommerce-admin'
-							),
-							pluginNamesString
+						mixedString: __(
+							'By connecting your site you agree to our fascinating {{tosLink}}Terms of Service{{/tosLink}} and to ' +
+								'{{detailsLink}}share details{{/detailsLink}} with WordPress.com. ',
+							'woocommerce-admin'
 						),
 						components: {
-							strong: <strong />,
+							tosLink: (
+								<Link
+									href="https://wordpress.com/tos"
+									target="_blank"
+									type="external"
+								/>
+							),
+							detailsLink: (
+								<Link
+									href="https://jetpack.com/support/what-data-does-jetpack-sync"
+									target="_blank"
+									type="external"
+								/>
+							),
 						},
 					} ) }
 				</p>
 
-				<Card>
-					{ this.renderBenefits() }
-
-					<p className="woocommerce-profile-wizard__tos">
-						{ interpolateComponents( {
-							mixedString: __(
-								'By connecting your site you agree to our fascinating {{tosLink}}Terms of Service{{/tosLink}} and to ' +
-									'{{detailsLink}}share details{{/detailsLink}} with WordPress.com. ',
-								'woocommerce-admin'
-							),
-							components: {
-								tosLink: (
-									<Link
-										href="https://wordpress.com/tos"
-										target="_blank"
-										type="external"
-									/>
-								),
-								detailsLink: (
-									<Link
-										href="https://jetpack.com/support/what-data-does-jetpack-sync"
-										target="_blank"
-										type="external"
-									/>
-								),
-							},
-						} ) }
-					</p>
-
-					<Button
-						isPrimary
-						isBusy={ isPending }
-						onClick={ this.startPluginInstall }
-						className="woocommerce-profile-wizard__continue"
-					>
-						{ __( 'Get started', 'woocommerce-admin' ) }
-					</Button>
-				</Card>
+				<Button
+					isPrimary
+					isBusy={ isPending }
+					onClick={ this.startPluginInstall }
+					className="woocommerce-profile-wizard__continue"
+				>
+					{ __( 'Get started', 'woocommerce-admin' ) }
+				</Button>
 
 				{ pluginsToInstall.length !== 0 && (
 					<p>
@@ -282,7 +265,7 @@ class Benefits extends Component {
 						</Button>
 					</p>
 				) }
-			</Fragment>
+			</Card>
 		);
 	}
 }

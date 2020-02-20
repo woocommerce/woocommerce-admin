@@ -336,6 +336,20 @@
 	}
 }
 
+.woocommerce-profile-wizard__benefits-card.woocommerce-card {
+	max-width: 1013px;
+	text-align: center;
+
+	.woocommerce-card__body {
+		padding: $gap-large * 2;
+	}
+
+	.woocommerce-profile-wizard__header-title {
+		margin-top: $gap-large;
+		margin-bottom: $gap-large;
+	}
+}
+
 .woocommerce-profile-wizard__plugins-card {
 	.woocommerce-profile-wizard__plugins-actions {
 		text-align: left;
