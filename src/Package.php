@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin\Compose;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Update_Version;
+use Automattic\WooCommerce\Admin\FeaturePlugin;
 
 /**
  * Main package class.
