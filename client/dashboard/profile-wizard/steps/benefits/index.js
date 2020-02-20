@@ -18,6 +18,7 @@ import { Card, H, Link } from '@woocommerce/components';
  * Internal dependencies
  */
 import CardIcon from './images/card';
+import Logo from './logo';
 import SecurityIcon from './images/security';
 import SalesTaxIcon from './images/local_atm';
 import SpeedIcon from './images/flash_on';
@@ -204,9 +205,10 @@ class Benefits extends Component {
 
 		return (
 			<Fragment>
+				<Logo />
 				<H className="woocommerce-profile-wizard__header-title">
 					{ __(
-						'Start enhancing your WooCommerce store',
+						'Enhance your store with Jetpack',
 						'woocommerce-admin'
 					) }
 				</H>
