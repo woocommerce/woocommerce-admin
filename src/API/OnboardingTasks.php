@@ -396,7 +396,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			array(
 				'post_title'   => __( 'Homepage', 'woocommerce-admin' ),
 				'post_type'    => 'page',
-				'post_status'  => 'draft',
+				'post_status'  => 'publish',
 				'post_content' => '', // Template content is updated below, so images can be attached to the post.
 			)
 		);
@@ -411,11 +411,13 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				)
 			);
 
+			update_option( 'show_on_front', 'page' );
+			update_option( 'page_on_front', $post_id );
 			update_option( 'woocommerce_onboarding_homepage_post_id', $post_id );
 
 			return array(
 				'status'         => 'success',
-				'message'        => __( 'Homepage created successfully.', 'woocommerce-admin' ),
+				'message'        => __( 'Homepage created.', 'woocommerce-admin' ),
 				'post_id'        => $post_id,
 				'edit_post_link' => htmlspecialchars_decode( get_edit_post_link( $post_id ) ),
 			);

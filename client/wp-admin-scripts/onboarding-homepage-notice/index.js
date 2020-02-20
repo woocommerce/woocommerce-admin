@@ -4,7 +4,6 @@
  */
 import { dispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import domReady from '@wordpress/dom-ready';
 
 /**
@@ -23,9 +22,13 @@ import { queueRecordEvent } from 'lib/tracks';
  * @return {Promise} Promise for overlay existence.
  */
 const saveStarted = () => {
-	if ( document.querySelector( '.editor-post-publish-button' ) === null ) {
-		const promise = new Promise( resolve => {
-			requestAnimationFrame( resolve );
+	if (
+		! document
+			.querySelector( '.editor-post-publish-button' )
+			.classList.contains( 'is-busy' )
+	) {
+		const promise = new Promise( ( resolve ) => {
+			window.requestAnimationFrame( resolve );
 		} );
 		return promise.then( () => saveStarted() );
 	}
@@ -39,9 +42,13 @@ const saveStarted = () => {
  * @return {Promise} Promise for overlay existence.
  */
 const saveCompleted = () => {
-	if ( null === document.querySelector( '.post-publish-panel__postpublish' ) ) {
-		const promise = new Promise( resolve => {
-			requestAnimationFrame( resolve );
+	if (
+		document
+			.querySelector( '.editor-post-publish-button' )
+			.classList.contains( 'is-busy' )
+	) {
+		const promise = new Promise( ( resolve ) => {
+			window.requestAnimationFrame( resolve );
 		} );
 		return promise.then( () => saveCompleted() );
 	}
@@ -61,18 +68,8 @@ const onboardingHomepageNotice = () => {
 	saveButton.classList.add( 'is-clicked' );
 
 	saveCompleted().then( () => {
-		const postId = document.querySelector( '#post_ID' ).value;
 		const notificationType =
 			null !== document.querySelector( '.components-snackbar__content' ) ? 'snackbar' : 'default';
-
-		apiFetch( {
-			path: '/wc-admin/options',
-			method: 'POST',
-			data: {
-				show_on_front: 'page',
-				page_on_front: postId,
-			},
-		} );
 
 		dispatch( 'core/notices' ).removeNotice( 'SAVE_POST_NOTICE_ID' );
 		dispatch( 'core/notices' ).createSuccessNotice(
@@ -95,15 +92,13 @@ const onboardingHomepageNotice = () => {
 };
 
 domReady( () => {
-	const publishButton = document.querySelector( '.editor-post-publish-panel__toggle' );
+	const publishButton = document.querySelector(
+		'.editor-post-publish-button'
+	);
 	if ( publishButton ) {
-		publishButton.addEventListener( 'click', function() {
-			saveStarted().then( () => {
-				const confirmButton = document.querySelector( '.editor-post-publish-button' );
-				if ( confirmButton ) {
-					confirmButton.addEventListener( 'click', onboardingHomepageNotice );
-				}
-			} );
-		} );
+		publishButton.addEventListener(
+			'click',
+			saveStarted().then( () => onboardingHomepageNotice() )
+		);
 	}
 } );
