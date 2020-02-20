@@ -208,7 +208,7 @@ class Benefits extends Component {
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
 					{ __(
-						'Start setting up your WooCommerce store',
+						'Start enhancing your WooCommerce store',
 						'woocommerce-admin'
 					) }
 				</H>
