@@ -79,13 +79,13 @@ class TaskDashboard extends Component {
 		const { isJetpackConnected } = this.props;
 		const plugins = [ 'jetpack', 'woocommerce-services' ];
 		const { activePlugins, installedPlugins } = getSetting( 'onboarding', {} );
-		const installedPluginsStore = intersection( installedPlugins, plugins );
-		const activePluginsStore = intersection( activePlugins, plugins );
+		const matchedInstalledPlugins = intersection( installedPlugins, plugins );
+		const matchedActivePlugins = intersection( activePlugins, plugins );
 		return {
-			wcs_installed: installedPluginsStore.includes( 'woocommerce-services' ),
-			wcs_active: activePluginsStore.includes( 'woocommerce-services' ),
-			jetpack_installed: installedPluginsStore.includes( 'jetpack' ),
-			jetpack_active: activePluginsStore.includes( 'jetpack' ),
+			wcs_installed: matchedInstalledPlugins.includes( 'woocommerce-services' ),
+			wcs_active: matchedActivePlugins.includes( 'woocommerce-services' ),
+			jetpack_installed: matchedInstalledPlugins.includes( 'jetpack' ),
+			jetpack_active: matchedActivePlugins.includes( 'jetpack' ),
 			jetpack_connected: isJetpackConnected,
 		};
 	}
