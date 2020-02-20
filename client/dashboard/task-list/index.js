@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { get } from 'lodash';
+import { get, intersection } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
 import { Snackbar, Icon, Button, Modal } from '@wordpress/components';
@@ -15,6 +15,7 @@ import { withDispatch } from '@wordpress/data';
  */
 import { Card, List, MenuItem, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -74,8 +75,24 @@ class TaskDashboard extends Component {
 		} ).filter( task => task.visible );
 	}
 
+	getPluginsInformation() {
+		const { isJetpackConnected } = this.props;
+		const plugins = [ 'jetpack', 'woocommerce-services' ];
+		const { activePlugins, installedPlugins } = getSetting( 'onboarding', {} );
+		const installedPluginsStore = intersection( installedPlugins, plugins );
+		const activePluginsStore = intersection( activePlugins, plugins );
+		return {
+			wcs_installed: installedPluginsStore.includes( 'woocommerce-services' ),
+			wcs_active: activePluginsStore.includes( 'woocommerce-services' ),
+			jetpack_installed: installedPluginsStore.includes( 'jetpack' ),
+			jetpack_active: activePluginsStore.includes( 'jetpack' ),
+			jetpack_connected: isJetpackConnected,
+		};
+	}
+
 	recordTaskView() {
 		const { task } = this.props.query;
+		const pluginsInformation = this.getPluginsInformation();
 
 		if ( ! task ) {
 			return;
@@ -83,6 +100,7 @@ class TaskDashboard extends Component {
 
 		recordEvent( 'task_view', {
 			task_name: task,
+			...pluginsInformation,
 		} );
 	}
 
@@ -291,7 +309,7 @@ class TaskDashboard extends Component {
 
 export default compose(
 	withSelect( select => {
-		const { getProfileItems, getOptions } = select( 'wc-api' );
+		const { getProfileItems, getOptions, isJetpackConnected } = select( 'wc-api' );
 		const profileItems = getProfileItems();
 
 		const options = getOptions( [
@@ -311,6 +329,7 @@ export default compose(
 			profileItems,
 			promptShown,
 			taskListPayments,
+			isJetpackConnected: isJetpackConnected(),
 		};
 	} ),
 	withDispatch( dispatch => {
