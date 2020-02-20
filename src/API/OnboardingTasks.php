@@ -341,7 +341,11 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		if ( ! empty( $profile['industry'] ) ) {
 			foreach ( $profile['industry'] as $selected_industry ) {
-				$images_to_sideload[] = ! empty( $available_images[ $selected_industry ] ) ? $available_images[ $selected_industry ] : $available_images['other'];
+				if ( ! is_array( $selected_industry ) || empty( $selected_industry['slug'] ) ) {
+					continue;
+				}
+				$industry_slug        = $selected_industry['slug'];
+				$images_to_sideload[] = ! empty( $available_images[ $industry_slug ] ) ? $available_images[ $industry_slug ] : $available_images['other'];
 			}
 		}
 
