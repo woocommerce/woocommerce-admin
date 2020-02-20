@@ -64,18 +64,6 @@
 		align-items: center;
 		justify-content: center;
 		background: $studio-white;
-
-		svg.woocommerce-profile-wizard__header-logo > g {
-			transform: translateX(12%);
-		}
-
-		svg.woocommerce-profile-wizard__header-logo-with-jetpack > g {
-			transform: translateX(25%);
-		}
-
-		.woocommerce-profile-wizard__plus {
-			stroke: $studio-gray-80;
-		}
 	}
 
 	.woocommerce-profile-wizard__header-title {
@@ -363,7 +351,7 @@
 	}
 }
 
-.woocommerce-profile-wizard__header.is-stepper {
+.woocommerce-profile-wizard__header {
 	svg > g {
 		transform: initial;
 	}
