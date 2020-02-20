@@ -477,13 +477,8 @@ class Payments extends Component {
 				),
 				content: (
 					<PayFast
-						manualConfig={ manualConfig }
 						markConfigured={ this.markConfigured }
 						setRequestPending={ this.setMethodRequestPending }
-						createAccount={ values.create_payfast && ! manualConfig }
-						returnUrl={ getAdminLink(
-							'admin.php?page=wc-admin&task=payments&payfast-connect=1'
-						) }
 					/>
 				),
 				visible: showIndividualConfigs && methods.includes( 'payfast' )
