@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * WC_Admin_Notes_Update_Version.
  */
 class WC_Admin_Notes_Update_Version {
-	const NOTE_NAME = 'wc-admin-update-version';
+	const NOTE_NAME = 'wc-admin-deactivate-plugin';
 
 	/**
 	 * Attach hooks.
