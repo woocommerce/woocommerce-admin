@@ -5,9 +5,16 @@
  * @package Automattic/WooCommerce/WCAdmin
  */
 
-namespace Automattic\WooCommerce\Admin;
+/**
+ * This namespace isn't compatible with the PSR-4
+ * which ensures that the copy in the standalone plugin will not be autoloaded.
+ */
+namespace Automattic\WooCommerce\Admin\Composer;
 
 defined( 'ABSPATH' ) || exit;
+
+use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Deactivate_Plugin;
+use Automattic\WooCommerce\Admin\FeaturePlugin;
 
 /**
  * Main package class.
@@ -39,6 +46,13 @@ class Package {
 
 		// Avoid double initialization when the feature plugin is in use.
 		if ( defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
+			$update_version = new WC_Admin_Notes_Deactivate_Plugin();
+			if ( version_compare( WC_ADMIN_VERSION_NUMBER, self::VERSION, '<' ) ) {
+				$update_version::add_note();
+			} else {
+				$update_version::delete_note();
+			}
+
 			return;
 		}
 
