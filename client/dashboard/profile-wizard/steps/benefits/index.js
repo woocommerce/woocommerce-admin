@@ -224,30 +224,34 @@ class Benefits extends Component {
 					} ) }
 				</p>
 
-				<Button
-					isPrimary
-					isBusy={ isPending }
-					onClick={ this.startPluginInstall }
-					className="woocommerce-profile-wizard__continue"
-				>
-					{ __( 'Get started', 'woocommerce-admin' ) }
-				</Button>
+				<div className="woocommerce-profile-wizard__card-actions">
+					<Button
+						isPrimary
+						isBusy={ isPending }
+						onClick={ this.startPluginInstall }
+						className="woocommerce-profile-wizard__continue"
+					>
+						{ __( 'Yes please!', 'woocommerce-admin' ) }
+					</Button>
+					<Button
+						isDefault
+						isBusy={ isPending }
+						className="woocommerce-profile-wizard__skip"
+						onClick={ this.skipPluginInstall }
+					>
+						{ __( 'No thanks', 'woocommerce-admin' ) }
+					</Button>
+				</div>
 
-				{ pluginsToInstall.length !== 0 && (
-					<p>
-						<Button
-							isLink
-							isBusy={ isPending }
-							className="woocommerce-profile-wizard__skip"
-							onClick={ this.skipPluginInstall }
-						>
-							{ sprintf(
-								__( 'Proceed without %s', 'woocommerce-admin' ),
-								pluginNamesString
-							) }
-						</Button>
-					</p>
-				) }
+				<p className="woocommerce-profile-wizard__benefits-install-notice">
+					{ sprintf(
+						__(
+							'%s plugins will be installed & activated for free.',
+							'woocommerce-admin'
+						),
+						pluginNamesString
+					) }
+				</p>
 			</Card>
 		);
 	}

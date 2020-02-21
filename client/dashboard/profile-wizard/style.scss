@@ -5,13 +5,6 @@
 		color: $studio-pink-50;
 	}
 
-	.woocommerce-profile-wizard__skip.components-button.is-link {
-		color: $studio-gray-60;
-		margin-top: 0;
-		margin-bottom: 0;
-		font-weight: normal;
-	}
-
 	.woocommerce-profile-wizard__continue {
 		line-height: 32px;
 	}
@@ -383,6 +376,26 @@
 	.woocommerce-profile-wizard__header-title {
 		margin-top: $gap-large;
 		margin-bottom: $gap-large;
+	}
+
+	.woocommerce-profile-wizard__card-actions {
+		margin-top: $gap;
+		display: inline-flex;
+
+		.components-button {
+			width: auto;
+
+			&:first-child {
+				margin-right: $gap;
+			}
+		}
+	}
+
+	.woocommerce-profile-wizard__benefits-install-notice {
+		margin-top: $gap-large;
+		margin-bottom: 0;
+		font-size: 14px;
+		color: $studio-gray-40;
 	}
 }
 
