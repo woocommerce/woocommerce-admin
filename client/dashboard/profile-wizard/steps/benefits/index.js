@@ -5,14 +5,13 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import interpolateComponents from 'interpolate-components';
 import { withDispatch } from '@wordpress/data';
 import { filter } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import { Card, H, Link } from '@woocommerce/components';
+import { Card, H } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -197,32 +196,6 @@ class Benefits extends Component {
 				</H>
 
 				{ this.renderBenefits() }
-
-				<p className="woocommerce-profile-wizard__tos">
-					{ interpolateComponents( {
-						mixedString: __(
-							'By connecting your site you agree to our fascinating {{tosLink}}Terms of Service{{/tosLink}} and to ' +
-								'{{detailsLink}}share details{{/detailsLink}} with WordPress.com. ',
-							'woocommerce-admin'
-						),
-						components: {
-							tosLink: (
-								<Link
-									href="https://wordpress.com/tos"
-									target="_blank"
-									type="external"
-								/>
-							),
-							detailsLink: (
-								<Link
-									href="https://jetpack.com/support/what-data-does-jetpack-sync"
-									target="_blank"
-									type="external"
-								/>
-							),
-						},
-					} ) }
-				</p>
 
 				<div className="woocommerce-profile-wizard__card-actions">
 					<Button
