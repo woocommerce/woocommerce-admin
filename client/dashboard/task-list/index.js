@@ -4,7 +4,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { get, intersection } from 'lodash';
+import { get } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
 import { Snackbar, Icon, Button, Modal } from '@wordpress/components';
@@ -77,15 +77,12 @@ class TaskDashboard extends Component {
 
 	getPluginsInformation() {
 		const { isJetpackConnected } = this.props;
-		const plugins = [ 'jetpack', 'woocommerce-services' ];
 		const { activePlugins, installedPlugins } = getSetting( 'onboarding', {} );
-		const matchedInstalledPlugins = intersection( installedPlugins, plugins );
-		const matchedActivePlugins = intersection( activePlugins, plugins );
 		return {
-			wcs_installed: matchedInstalledPlugins.includes( 'woocommerce-services' ),
-			wcs_active: matchedActivePlugins.includes( 'woocommerce-services' ),
-			jetpack_installed: matchedInstalledPlugins.includes( 'jetpack' ),
-			jetpack_active: matchedActivePlugins.includes( 'jetpack' ),
+			wcs_installed: installedPlugins.includes( 'woocommerce-services' ),
+			wcs_active: activePlugins.includes( 'woocommerce-services' ),
+			jetpack_installed: installedPlugins.includes( 'jetpack' ),
+			jetpack_active: activePlugins.includes( 'jetpack' ),
 			jetpack_connected: isJetpackConnected,
 		};
 	}
