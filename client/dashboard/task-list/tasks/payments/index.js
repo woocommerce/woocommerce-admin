@@ -234,24 +234,6 @@ class Payments extends Component {
 
 		const methods = [
 			{
-				key: 'payfast',
-				title: __(
-					'PayFast',
-					'woocommerce-admin'
-				),
-				content: (
-					<Fragment>
-						{ __(
-							'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.',
-							'woocommerce-admin'
-						) }
-					</Fragment>
-				),
-				before: <img src={ wcAssetUrl + 'images/payfast.png' } alt="PayFast logo" />,
-				after: <FormToggle { ...getInputProps( 'payfast' ) } />,
-				visible: [ 'ZA' ].includes( countryCode ),
-			},
-			{
 				key: 'stripe',
 				title: __(
 					'Credit cards - powered by Stripe',
@@ -338,6 +320,26 @@ class Payments extends Component {
 						profileItems.selling_venues
 					) &&
 					[ 'US', 'CA', 'JP', 'GB', 'AU' ].includes( countryCode ),
+			},
+			{
+				key: 'payfast',
+				title: __( 'PayFast', 'woocommerce-admin' ),
+				content: (
+					<Fragment>
+						{ __(
+							'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.',
+							'woocommerce-admin'
+						) }
+					</Fragment>
+				),
+				before: (
+					<img
+						src={ wcAssetUrl + 'images/payfast.png' }
+						alt="PayFast logo"
+					/>
+				),
+				after: <FormToggle { ...getInputProps( 'payfast' ) } />,
+				visible: [ 'ZA' ].includes( countryCode ),
 			},
 		];
 
@@ -469,21 +471,6 @@ class Payments extends Component {
 				visible: ! showIndividualConfigs,
 			},
 			{
-				key: 'payfast',
-				label: __( 'Enable PayFast', 'woocommerce-admin' ),
-				description: __(
-					'Connect your store to your PayFast account',
-					'woocommerce-admin'
-				),
-				content: (
-					<PayFast
-						markConfigured={ this.markConfigured }
-						setRequestPending={ this.setMethodRequestPending }
-					/>
-				),
-				visible: showIndividualConfigs && methods.includes( 'payfast' )
-			},
-			{
 				key: 'stripe',
 				label: __( 'Enable Stripe', 'woocommerce-admin' ),
 				description: __(
@@ -564,6 +551,21 @@ class Payments extends Component {
 				visible:
 					showIndividualConfigs &&
 					methods.includes( 'klarna-payments' ),
+			},
+			{
+				key: 'payfast',
+				label: __( 'Enable PayFast', 'woocommerce-admin' ),
+				description: __(
+					'Connect your store to your PayFast account',
+					'woocommerce-admin'
+				),
+				content: (
+					<PayFast
+						markConfigured={ this.markConfigured }
+						setRequestPending={ this.setMethodRequestPending }
+					/>
+				),
+				visible: showIndividualConfigs && methods.includes( 'payfast' ),
 			},
 		];
 
