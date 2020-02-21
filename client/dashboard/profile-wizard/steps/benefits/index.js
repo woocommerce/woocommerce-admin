@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
@@ -183,15 +183,15 @@ class Benefits extends Component {
 		}
 		const pluginNamesString = pluginsToInstall
 			.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
-			.join( ' & ' );
+			.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
 
 		return (
 			<Card className="woocommerce-profile-wizard__benefits-card">
 				<Logo />
 				<H className="woocommerce-profile-wizard__header-title">
-					{ __(
-						'Enhance your store with Jetpack',
-						'woocommerce-admin'
+					{ sprintf(
+						__( 'Enhance your store with %s', 'woocommerce-admin' ),
+						pluginNamesString
 					) }
 				</H>
 
@@ -204,7 +204,12 @@ class Benefits extends Component {
 						onClick={ this.startPluginInstall }
 						className="woocommerce-profile-wizard__continue"
 					>
-						{ __( 'Yes please!', 'woocommerce-admin' ) }
+						{ pluginsToInstall.length === 1
+							? sprintf(
+									__( 'Install %s', 'woocommerce-admin' ),
+									pluginNamesString
+							  )
+							: __( 'Yes please!', 'woocommerce-admin' ) }
 					</Button>
 					<Button
 						isDefault
@@ -219,10 +224,16 @@ class Benefits extends Component {
 				<p className="woocommerce-profile-wizard__benefits-install-notice">
 					{ sprintf(
 						__(
-							'%s plugins will be installed & activated for free.',
+							'%s %s will be installed & activated for free.',
 							'woocommerce-admin'
 						),
-						pluginNamesString
+						pluginNamesString,
+						_n(
+							'plugin',
+							'plugins',
+							pluginsToInstall.length,
+							'woocommerce-admin'
+						)
 					) }
 				</p>
 			</Card>
