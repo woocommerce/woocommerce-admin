@@ -8,6 +8,7 @@ import { shallow } from 'enzyme';
  * Internal dependencies
  */
 import { Search } from '../index';
+import { computeSuggestionMatch } from '../autocompleters/utils';
 
 describe( 'Search', () => {
 	it( 'shows the free text search option', () => {
@@ -32,6 +33,12 @@ describe( 'Search', () => {
 		const options = search.instance().appendFreeTextSearch( [], '' );
 
 		expect( options.length ).toBe( 0 );
+	} );
+
+	it( 'returns an object with decoded text', () => {
+		const decodedText = computeSuggestionMatch( 'A test &amp; a &#97;&#101;&#115;&#116;', 'test' );
+		const expected = '{"suggestionBeforeMatch":"A ","suggestionMatch":"test","suggestionAfterMatch":" & a aest"}';
+		expect( JSON.stringify( decodedText ) ).toBe( expected );
 	} );
 } );
 
