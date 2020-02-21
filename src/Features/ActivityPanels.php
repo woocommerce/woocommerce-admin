@@ -102,7 +102,7 @@ class ActivityPanels {
 	 *
 	 * @return boolean
 	 */
-	public function clear_low_out_of_stock_count_transient() {
+	public static function clear_low_out_of_stock_count_transient() {
 		delete_transient( self::LOW_STOCK_TRANSIENT_NAME );
 		return true;
 	}
