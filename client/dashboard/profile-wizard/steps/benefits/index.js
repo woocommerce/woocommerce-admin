@@ -100,10 +100,13 @@ class Benefits extends Component {
 		const { description, icon, title } = benefit;
 
 		return (
-			<div className="woocommerce-profile-wizard__benefit" key={ title }>
+			<div
+				className="woocommerce-profile-wizard__benefit-card"
+				key={ title }
+			>
 				{ icon }
-				<div className="woocommerce-profile-wizard__benefit-content">
-					<H className="woocommerce-profile-wizard__benefit-title">
+				<div className="woocommerce-profile-wizard__benefit-card-content">
+					<H className="woocommerce-profile-wizard__benefit-card-title">
 						{ title }
 					</H>
 					<p>{ description }</p>

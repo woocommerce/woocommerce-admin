@@ -172,6 +172,42 @@
 		}
 	}
 
+	.woocommerce-profile-wizard__benefits {
+		display: grid;
+		grid-gap: $gap;
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+
+	.woocommerce-profile-wizard__benefits-logo {
+		display: block;
+		margin: 0 auto;
+	}
+
+	.woocommerce-profile-wizard__benefit-card {
+		display: flex;
+		flex-direction: column;
+		background: $studio-gray-0;
+		width: 295px;
+		text-align: left;
+
+		.woocommerce-profile-wizard__benefit-card-title {
+			font-size: 16px;
+			font-weight: 600;
+			margin-top: 0;
+			margin-bottom: $gap-smaller;
+		}
+
+		.woocommerce-profile-wizard__benefit-card-content {
+			padding: #{$gap-small * 2} #{$gap * 2} #{$gap * 2} #{$gap * 2};
+
+			p {
+				padding: 0;
+				margin: 0;
+				font-size: 14px;
+			}
+		}
+	}
+
 	.woocommerce-profile-wizard__business-extension {
 		background: #f6f6f6;
 		padding-right: 4px;

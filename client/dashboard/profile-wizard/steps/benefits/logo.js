@@ -14,6 +14,7 @@ class Logo extends Component {
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
 				ariaLabel={ __( 'WooCommerce + Jetpack', 'woocommerce-admin' ) }
+				className="woocommerce-profile-wizard__benefits-logo"
 			>
 				<path
 					d="M139.071 45.4503C150.906 45.4503 160.5 35.7679 160.5 23.824C160.5 11.8802 150.906 2.19775 139.071 2.19775C127.236 2.19775 117.642 11.8802 117.642 23.824C117.642 35.7679 127.236 45.4503 139.071 45.4503Z"
