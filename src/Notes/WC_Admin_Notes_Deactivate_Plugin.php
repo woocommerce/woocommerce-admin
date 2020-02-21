@@ -12,9 +12,9 @@ namespace Automattic\WooCommerce\Admin\Notes;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WC_Admin_Notes_Update_Version.
+ * WC_Admin_Notes_Deactivate_Plugin.
  */
-class WC_Admin_Notes_Update_Version {
+class WC_Admin_Notes_Deactivate_Plugin {
 	const NOTE_NAME = 'wc-admin-deactivate-plugin';
 
 	/**
