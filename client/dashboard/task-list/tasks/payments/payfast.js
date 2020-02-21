@@ -17,7 +17,6 @@ import { Form, Link, TextControl } from '@woocommerce/components';
  * Internal dependencies
  */
 import { recordEvent } from 'lib/tracks';
-import withSelect from 'wc-api/with-select';
 
 class PayFast extends Component {
 	getInitialConfigValues = () => {
@@ -72,7 +71,6 @@ class PayFast extends Component {
 
 		await updateOptions( {
 			woocommerce_payfast_settings: {
-				...this.props.options.woocommerce_payfast_settings,
 				merchant_id: values.merchant_id,
 				merchant_key: values.merchant_key,
 				pass_phrase: values.pass_phrase,
@@ -172,17 +170,6 @@ class PayFast extends Component {
 }
 
 export default compose(
-	withSelect( ( select ) => {
-		const { getOptions } = select( 'wc-api' );
-		const options = getOptions( [
-			'woocommerce_payfast_settings',
-			'woocommerce_currency',
-		] );
-
-		return {
-			options,
-		};
-	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 		const { updateOptions } = dispatch( 'wc-api' );
