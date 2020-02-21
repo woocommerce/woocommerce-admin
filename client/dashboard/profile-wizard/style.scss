@@ -156,6 +156,11 @@
 		display: grid;
 		grid-gap: $gap;
 		grid-template-columns: 1fr 1fr 1fr;
+
+		@include breakpoint( '<960px' ) {
+			justify-items: center;
+			grid-template-columns: 1fr;
+		}
 	}
 
 	.woocommerce-profile-wizard__benefits-logo {
@@ -167,7 +172,9 @@
 		display: flex;
 		flex-direction: column;
 		background: $studio-gray-0;
-		width: 295px;
+		width: 100%;
+		max-width: 295px;
+		overflow: hidden;
 		text-align: left;
 
 		.woocommerce-profile-wizard__benefit-card-title {
