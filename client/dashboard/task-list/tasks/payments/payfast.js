@@ -66,6 +66,10 @@ class PayFast extends Component {
 
 		setRequestPending( true );
 
+		// Because the PayFast extension only works with the South African Rand
+		// currency, force the store to use it
+		await updateOptions( { woocommerce_currency: 'ZAR' } );
+
 		await updateOptions( {
 			woocommerce_payfast_settings: {
 				...this.props.options.woocommerce_payfast_settings,
@@ -170,7 +174,10 @@ class PayFast extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOptions } = select( 'wc-api' );
-		const options = getOptions( [ 'woocommerce_payfast_settings' ] );
+		const options = getOptions( [
+			'woocommerce_payfast_settings',
+			'woocommerce_currency',
+		] );
 
 		return {
 			options,

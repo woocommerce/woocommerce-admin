@@ -330,6 +330,12 @@ class Payments extends Component {
 							'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.',
 							'woocommerce-admin'
 						) }
+						<p>
+							{ __(
+								'Selecting this extension will configure your store to use South African rands as the selected currency.',
+								'woocommerce-admin'
+							) }
+						</p>
 					</Fragment>
 				),
 				before: (
