@@ -26,7 +26,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.25.1';
+	const VERSION = '0.26.0';
 
 	/**
 	 * Init the package.
