@@ -29,7 +29,7 @@ import {
  * A search box which autocompletes results while typing, allowing for the user to select an existing object
  * (product, order, customer, etc). Currently only products are supported.
  */
-class Search extends Component {
+export class Search extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
@@ -113,6 +113,10 @@ class Search extends Component {
 	appendFreeTextSearch( options, query ) {
 		const autocompleter = this.getAutocompleter();
 		const { allowFreeTextSearch } = this.props;
+
+		if ( ! query || ! query.length ) {
+			return [];
+		}
 
 		if ( ! allowFreeTextSearch ) {
 			return options;
