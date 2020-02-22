@@ -110,7 +110,11 @@ class OrdersPanel extends Component {
 		};
 
 		const orderCardTitle = ( order ) => {
-			const { extended_info: extendedInfo, order_id: orderId, orderNumber } = order;
+			const {
+				extended_info: extendedInfo,
+				order_id: orderId,
+				order_number: orderNumber,
+			} = order;
 			const { customer } = extendedInfo || {};
 			const customerUrl = customer.customer_id
 				? getNewPath( {}, '/analytics/customers', {
