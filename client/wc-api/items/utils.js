@@ -38,13 +38,17 @@ export function getLeaderboard( options ) {
 		persisted_query: JSON.stringify( persistedQuery ),
 	};
 
+	// Disable eslint rule requiring `leaderboards` to be defined below because
+	// the next two if statements depend on `getItems` to have been called.
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
+	const leaderboards = getItems( endpoint, leaderboardQuery );
+
 	if ( isGetItemsRequesting( endpoint, leaderboardQuery ) ) {
 		return { ...response, isRequesting: true };
 	} else if ( getItemsError( endpoint, leaderboardQuery ) ) {
 		return { ...response, isError: true };
 	}
 
-	const leaderboards = getItems( endpoint, leaderboardQuery );
 	const leaderboard = leaderboards.get( options.id );
 	return { ...response, rows: leaderboard.rows };
 }
