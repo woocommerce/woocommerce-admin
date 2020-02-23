@@ -341,14 +341,25 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		if ( ! empty( $profile['industry'] ) ) {
 			foreach ( $profile['industry'] as $selected_industry ) {
-				$images_to_sideload[] = ! empty( $available_images[ $selected_industry ] ) ? $available_images[ $selected_industry ] : $available_images['other'];
+				if ( is_string( $selected_industry ) ) {
+					$industry_slug = $selected_industry;
+				} elseif ( is_array( $selected_industry ) && ! empty( $selected_industry['slug'] ) ) {
+					$industry_slug = $selected_industry['slug'];
+				} else {
+					continue;
+				}
+				// Capture the first industry for use in our minimum images logic.
+				$first_industry       = isset( $first_industry ) ? $first_industry : $industry_slug;
+				$images_to_sideload[] = ! empty( $available_images[ $industry_slug ] ) ? $available_images[ $industry_slug ] : $available_images['other'];
 			}
 		}
 
 		// Make sure we have at least {$number_of_images} images.
 		if ( count( $images_to_sideload ) < $number_of_images ) {
 			for ( $i = count( $images_to_sideload ); $i < $number_of_images; $i++ ) {
-				$images_to_sideload[] = ! empty( $profile['industry'] ) && ! empty( $available_images[ $profile['industry'][0] ] ) ? $available_images[ $profile['industry'][0] ] : $available_images['other'];
+				// Fill up missing image slots with the first selected industry, or other.
+				$industry             = $first_industry ? $first_industry : 'other';
+				$images_to_sideload[] = empty( $available_images[ $industry ] ) ? $available_images['other'] : $available_images[ $industry ];
 			}
 		}
 

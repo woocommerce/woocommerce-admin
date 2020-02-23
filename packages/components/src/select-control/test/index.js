@@ -176,23 +176,4 @@ describe( 'SelectControl', () => {
 			expect( selectControl.find( Button ).filter( '.' + optionClassname ).length ).toBe( 1 );
 		}, 0 );
 	} );
-
-	it( "doesn't show options with an empty search", () => {
-		const optionsEmptyValue = [
-			{ key: '1', label: 'lorem 1', value: { id: '' } },
-        ];
-		const optionControlClassname = 'woocommerce-select-control__listbox';
-		const selectControl = mount(
-			<SelectControl
-				options={ optionsEmptyValue }
-			/>
-		);
-
-		selectControl.instance().search( '' );
-		selectControl.update();
-
-		setTimeout( function() {
-			expect( selectControl.find( '.' + optionControlClassname ).length ).toBe( 0 );
-		}, 0 );
-	} );
 } );
