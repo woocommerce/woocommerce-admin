@@ -4,6 +4,7 @@
  */
 import { __, _n, _x } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
+import { decodeEntities } from '@wordpress/html-entities';
 
 /**
  * WooCommerce dependencies
@@ -66,13 +67,14 @@ export default class StockReportTable extends Component {
 			const {
 				id,
 				manage_stock,
-				name,
 				parent_id,
 				sku,
 				stock_quantity,
 				stock_status,
 				low_stock_amount,
 			} = product;
+
+			const name = decodeEntities( product.name );
 
 			const productDetailLink = getNewPath( persistedQuery, '/analytics/products', {
 				filter: 'single_product',
