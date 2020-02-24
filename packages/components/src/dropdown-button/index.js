@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { Button } from '@wordpress/components';
+import { decodeEntities } from '@wordpress/html-entities';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -22,7 +23,7 @@ const DropdownButton = props => {
 	return (
 		<Button className={ buttonClasses } aria-expanded={ isOpen } { ...otherProps }>
 			<div className="woocommerce-dropdown-button__labels">
-				{ labels.map( ( label, i ) => <span key={ i }>{ label }</span> ) }
+				{ labels.map( ( label, i ) => <span key={ i }>{ decodeEntities( label ) }</span> ) }
 			</div>
 		</Button>
 	);
