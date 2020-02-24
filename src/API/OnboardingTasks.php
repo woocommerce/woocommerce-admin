@@ -358,7 +358,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		if ( count( $images_to_sideload ) < $number_of_images ) {
 			for ( $i = count( $images_to_sideload ); $i < $number_of_images; $i++ ) {
 				// Fill up missing image slots with the first selected industry, or other.
-				$industry             = $first_industry ? $first_industry : 'other';
+				$industry             = isset( $first_industry ) ? $first_industry : 'other';
 				$images_to_sideload[] = empty( $available_images[ $industry ] ) ? $available_images['other'] : $available_images[ $industry ];
 			}
 		}
