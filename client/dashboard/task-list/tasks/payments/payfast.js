@@ -66,10 +66,9 @@ class PayFast extends Component {
 		setRequestPending( true );
 
 		// Because the PayFast extension only works with the South African Rand
-		// currency, force the store to use it
-		await updateOptions( { woocommerce_currency: 'ZAR' } );
-
+		// currency, force the store to use it while setting the PayFast settings
 		await updateOptions( {
+			woocommerce_currency: 'ZAR',
 			woocommerce_payfast_settings: {
 				merchant_id: values.merchant_id,
 				merchant_key: values.merchant_key,
