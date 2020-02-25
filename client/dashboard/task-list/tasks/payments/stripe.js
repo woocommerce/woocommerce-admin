@@ -15,96 +15,96 @@ import { get } from 'lodash';
  * WooCommerce dependencies
  */
 import { Form, Link, TextControl } from '@woocommerce/components';
-import withSelect from 'wc-api/with-select';
-import { WCS_NAMESPACE } from 'wc-api/constants';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from 'lib/tracks';
+import { WCS_NAMESPACE } from 'wc-api/constants';
+import withSelect from 'wc-api/with-select';
+
+/**
+ * Internal dependencies
+ */
+import { getCountryCode } from 'dashboard/utils';
 
 class Stripe extends Component {
 	constructor( props ) {
 		super( props );
 
 		this.state = {
-			errorMessage: '',
-			connectURL: '',
-			showConnectionButtons:
-				! props.manualConfig && ! props.createAccount,
-			showManualConfiguration: props.manualConfig,
+			autoConnectFailed: false,
+			connectURL: null,
+			errorTitle: null,
+			errorMessage: null,
 		};
 
+		this.autoCreateAccount = this.autoCreateAccount.bind( this );
 		this.updateSettings = this.updateSettings.bind( this );
 	}
 
 	componentDidMount() {
-		const { createAccount, options } = this.props;
-		const { showConnectionButtons } = this.state;
-
+		const { stripeSettings } = this.props;
 		const query = getQuery();
 
 		// Handle redirect back from Stripe.
 		if ( query[ 'stripe-connect' ] && query[ 'stripe-connect' ] === '1' ) {
-			const stripeSettings = get(
-				options,
-				[ 'woocommerce_stripe_settings' ],
-				[]
-			);
 			const isStripeConnected =
 				stripeSettings.publishable_key && stripeSettings.secret_key;
 
 			if ( isStripeConnected ) {
-				recordEvent( 'tasklist_payment_connect_method', {
-					payment_method: 'stripe',
-				} );
-				this.props.markConfigured( 'stripe' );
-				this.props.createNotice(
-					'success',
-					__( 'Stripe connected successfully.', 'woocommerce-admin' )
-				);
+				this.completeMethod();
 				return;
 			}
 
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState( {
-				showConnectionButtons: false,
-				showManualConfiguration: true,
+				autoConnectFailed: true,
 			} );
 			/* eslint-enable react/no-did-mount-set-state */
-			return;
 		}
 
-		if ( createAccount ) {
-			this.autoCreateAccount();
-		}
-
-		if ( showConnectionButtons ) {
+		if ( ! this.requiresManualConfig() ) {
 			this.fetchOAuthConnectURL();
 		}
 	}
 
-	componentDidUpdate( prevProps, prevState ) {
-		if (
-			prevState.showConnectionButtons === false &&
-			this.state.showConnectionButtons
-		) {
-			this.fetchOAuthConnectURL();
-		}
+	requiresManualConfig() {
+		const { activePlugins, isJetpackConnected } = this.props;
+		const { autoConnectFailed } = this.state;
+
+		return isJetpackConnected &&
+			activePlugins.includes( 'woocommerce-services' ) &&
+			! autoConnectFailed
+			? false
+			: true;
+	}
+
+	completeMethod() {
+		recordEvent( 'tasklist_payment_connect_method', {
+			payment_method: 'stripe',
+		} );
+		this.props.setRequestPending( false );
+		this.props.createNotice(
+			'success',
+			__( 'Stripe connected successfully.', 'woocommerce-admin' )
+		);
+		this.props.markConfigured( 'stripe' );
 	}
 
 	async fetchOAuthConnectURL() {
-		const { returnUrl } = this.props;
 		try {
 			this.props.setRequestPending( true );
 			const result = await apiFetch( {
 				path: WCS_NAMESPACE + '/connect/stripe/oauth/init',
 				method: 'POST',
 				data: {
-					returnUrl,
+					returnUrl: getAdminLink(
+						'admin.php?page=wc-admin&task=payments&method=stripe&stripe-connect=1'
+					),
 				},
 			} );
 			if ( ! result || ! result.oauthUrl ) {
 				this.props.setRequestPending( false );
 				this.setState( {
-					showConnectionButtons: false,
-					showManualConfiguration: true,
+					autoConnectFailed: true,
 				} );
 				return;
 			}
@@ -114,16 +114,17 @@ class Stripe extends Component {
 			} );
 		} catch ( error ) {
 			this.props.setRequestPending( false );
-			// Fallback to manual configuration if the OAuth URL cannot be grabbed.
 			this.setState( {
-				showConnectionButtons: false,
-				showManualConfiguration: true,
+				autoConnectFailed: true,
 			} );
 		}
 	}
 
-	async autoCreateAccount() {
-		const { email, countryCode } = this.props;
+	async autoCreateAccount( values ) {
+		const { countryCode } = this.props;
+		const { connectURL } = this.state;
+		const { email } = values;
+
 		try {
 			this.props.setRequestPending( true );
 			const result = await apiFetch( {
@@ -136,29 +137,13 @@ class Stripe extends Component {
 			} );
 
 			if ( result ) {
-				recordEvent( 'tasklist_payment_connect_method', {
-					payment_method: 'stripe',
-				} );
-				this.props.setRequestPending( false );
-				this.props.markConfigured( 'stripe' );
-				this.props.createNotice(
-					'success',
-					__( 'Stripe connected successfully.', 'woocommerce-admin' )
-				);
+				this.completeMethod();
 				return;
 			}
-		} catch ( error ) {
-			this.props.setRequestPending( false );
-			let errorTitle, errorMessage;
-			// This seems to be the best way to handle this.
-			// github.com/Automattic/woocommerce-services/blob/cfb6173deb3c72897ee1d35b8fdcf29c5a93dea2/woocommerce-services.php#L563-L570
-			if (
-				error.message.indexOf(
-					'Account already exists for the provided email'
-				) === -1
-			) {
-				errorTitle = __( 'Stripe', 'woocommerce-admin' );
-				errorMessage = interpolateComponents( {
+		} catch {
+			if ( ! connectURL ) {
+				const errorTitle = __( 'Stripe', 'woocommerce-admin' );
+				const errorMessage = interpolateComponents( {
 					mixedString: sprintf(
 						__(
 							'We tried to create a Stripe account automatically for {{strong}}%s{{/strong}}, but an error occured. Please try connecting manually to continue.',
@@ -170,30 +155,16 @@ class Stripe extends Component {
 						strong: <strong />,
 					},
 				} );
-			} else {
-				errorTitle = __(
-					'You already have a Stripe account',
-					'woocommerce-admin'
-				);
-				errorMessage = interpolateComponents( {
-					mixedString: sprintf(
-						__(
-							'We tried to create a Stripe account automatically for {{strong}}%s{{/strong}}, but one already exists. Please sign in and connect to continue.',
-							'woocommerce-admin'
-						),
-						email
-					),
-					components: {
-						strong: <strong />,
-					},
-				} );
-			}
 
-			this.setState( {
-				showConnectionButtons: true,
-				errorTitle,
-				errorMessage,
-			} );
+				this.setState( {
+					autoConnectFailed: true,
+					errorTitle,
+					errorMessage,
+				} );
+			} else {
+				// An account with that email may exist so send them to Stripe to connect via oAuth.
+				window.location = connectURL;
+			}
 		}
 	}
 
@@ -203,7 +174,7 @@ class Stripe extends Component {
 			<Modal
 				title={ errorTitle }
 				onRequestClose={ () =>
-					this.setState( { errorMessage: '', errorTitle: '' } )
+					this.setState( { errorMessage: null, errorTitle: null } )
 				}
 				className="woocommerce-task-payments__stripe-error-modal"
 			>
@@ -216,8 +187,8 @@ class Stripe extends Component {
 						isDefault
 						onClick={ () =>
 							this.setState( {
-								errorMessage: '',
-								errorTitle: '',
+								errorMessage: null,
+								errorTitle: null,
 							} )
 						}
 					>
@@ -228,12 +199,36 @@ class Stripe extends Component {
 		);
 	}
 
-	renderConnectButton() {
-		const { connectURL } = this.state;
+	renderAutoConnect() {
 		return (
-			<Button isPrimary isDefault href={ connectURL }>
-				{ __( 'Connect', 'woocommerce-admin' ) }
-			</Button>
+			<Form
+				initialValues={ {
+					email: '',
+				} }
+				onSubmitCallback={ this.autoCreateAccount }
+				validate={ this.validateAutoConnect }
+			>
+				{ ( { getInputProps, handleSubmit } ) => {
+					return (
+						<div className="woocommerce-task-payments__woocommerce-services-options">
+							<TextControl
+								label={ __(
+									'Email address',
+									'woocommerce-admin'
+								) }
+								{ ...getInputProps( 'email' ) }
+							/>
+							<Button
+								isPrimary
+								isDefault
+								onClick={ handleSubmit }
+							>
+								{ __( 'Connect', 'woocommerce-admin' ) }
+							</Button>
+						</div>
+					);
+				} }
+			</Form>
 		);
 	}
 
@@ -242,13 +237,13 @@ class Stripe extends Component {
 			createNotice,
 			isSettingsError,
 			updateOptions,
-			markConfigured,
+			stripeSettings,
 		} = this.props;
 
 		this.props.setRequestPending( true );
 		await updateOptions( {
 			woocommerce_stripe_settings: {
-				...this.props.options.woocommerce_stripe_settings,
+				...stripeSettings,
 				publishable_key: values.publishable_key,
 				secret_key: values.secret_key,
 				enabled: 'yes',
@@ -256,15 +251,7 @@ class Stripe extends Component {
 		} );
 
 		if ( ! isSettingsError ) {
-			recordEvent( 'tasklist_payment_connect_method', {
-				payment_method: 'stripe',
-			} );
-			this.props.setRequestPending( false );
-			markConfigured( 'stripe' );
-			this.props.createNotice(
-				'success',
-				__( 'Stripe connected successfully.', 'woocommerce-admin' )
-			);
+			this.completeMethod();
 		} else {
 			this.props.setRequestPending( false );
 			createNotice(
@@ -284,7 +271,7 @@ class Stripe extends Component {
 		};
 	}
 
-	validate( values ) {
+	validateManualConfig( values ) {
 		const errors = {};
 
 		if ( ! values.publishable_key ) {
@@ -298,6 +285,16 @@ class Stripe extends Component {
 				'Please enter your secret key',
 				'woocommerce-admin'
 			);
+		}
+
+		return errors;
+	}
+
+	validateAutoConnect( values ) {
+		const errors = {};
+
+		if ( ! values.email ) {
+			errors.email = __( 'Please enter your email', 'woocommerce-admin' );
 		}
 
 		return errors;
@@ -324,7 +321,7 @@ class Stripe extends Component {
 			<Form
 				initialValues={ this.getInitialConfigValues() }
 				onSubmitCallback={ this.updateSettings }
-				validate={ this.validate }
+				validate={ this.validateManualConfig }
 			>
 				{ ( { getInputProps, handleSubmit } ) => {
 					return (
@@ -367,35 +364,43 @@ class Stripe extends Component {
 	}
 
 	render() {
-		const {
-			errorMessage,
-			showConnectionButtons,
-			connectURL,
-			showManualConfiguration,
-		} = this.state;
+		const { errorMessage } = this.state;
 
 		if ( errorMessage ) {
 			return this.renderErrorModal();
 		}
 
-		if ( showConnectionButtons && connectURL ) {
-			return this.renderConnectButton();
+		if ( ! this.requiresManualConfig() ) {
+			return this.renderAutoConnect();
 		}
 
-		if ( showManualConfiguration ) {
-			return this.renderManualConfig();
-		}
-
-		return null;
+		return this.renderManualConfig();
 	}
 }
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getOptions } = select( 'wc-api' );
-		const options = getOptions( [ 'woocommerce_stripe_settings' ] );
-		return {
+		const { isJetpackConnected, getActivePlugins, getOptions } = select(
+			'wc-api'
+		);
+		const options = getOptions( [
+			'woocommerce_stripe_settings',
+			'woocommerce_default_country',
+		] );
+		const countryCode = getCountryCode(
+			options.woocommerce_default_country
+		);
+		const stripeSettings = get(
 			options,
+			[ 'woocommerce_stripe_settings' ],
+			[]
+		);
+
+		return {
+			activePlugins: getActivePlugins(),
+			countryCode,
+			isJetpackConnected: isJetpackConnected(),
+			stripeSettings,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
