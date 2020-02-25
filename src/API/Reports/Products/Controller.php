@@ -70,8 +70,8 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 		$data = array();
 
 		foreach ( $products_data->data as $product_data ) {
-			$item   = $this->prepare_item_for_response( $product_data, $request );
-			if ( isset( $item->data['extended_info']['name'] ) ){
+			$item = $this->prepare_item_for_response( $product_data, $request );
+			if ( isset( $item->data['extended_info']['name'] ) ) {
 				$item->data['extended_info']['name'] = wp_strip_all_tags( $item->data['extended_info']['name'] );
 			}
 			$data[] = $this->prepare_response_for_collection( $item );
