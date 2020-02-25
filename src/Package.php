@@ -29,6 +29,13 @@ class Package {
 	const VERSION = '0.26.0';
 
 	/**
+	 * Package active.
+	 *
+	 * @var bool
+	 */
+	private static $package_active = false;
+
+	/**
 	 * Init the package.
 	 *
 	 * Only initialize for WP 5.3 or greater.
@@ -59,6 +66,7 @@ class Package {
 			return;
 		}
 
+		self::$package_active = true;
 		FeaturePlugin::instance()->init();
 	}
 
@@ -69,6 +77,24 @@ class Package {
 	 */
 	public static function get_version() {
 		return self::VERSION;
+	}
+
+	/**
+	 * Return the active version of WC Admin.
+	 *
+	 * @return string
+	 */
+	public static function get_active_version() {
+		return self::$package_active ? self::VERSION : WC_ADMIN_VERSION_NUMBER;
+	}
+
+	/**
+	 * Return whether the package is active.
+	 *
+	 * @return bool
+	 */
+	public static function is_package_active() {
+		return self::$package_active;
 	}
 
 	/**
