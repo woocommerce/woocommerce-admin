@@ -36,8 +36,8 @@ describe( 'Search', () => {
 	} );
 
 	it( 'returns an object with decoded text', () => {
-		const decodedText = computeSuggestionMatch( 'A test &amp; a &#97;&#101;&#115;&#116;', 'test' );
-		const expected = '{"suggestionBeforeMatch":"A ","suggestionMatch":"test","suggestionAfterMatch":" & a aest"}';
+		const decodedText = computeSuggestionMatch( 'A test &amp; a &#116;&#101;&#115;&#116;', 'test' );
+		const expected = '{"suggestionBeforeMatch":"A ","suggestionMatch":"test","suggestionAfterMatch":" & a test"}';
 		expect( JSON.stringify( decodedText ) ).toBe( expected );
 	} );
 } );
