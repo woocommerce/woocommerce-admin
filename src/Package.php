@@ -31,7 +31,7 @@ class Package {
 	/**
 	 * Package active.
 	 *
-	 * @var string
+	 * @var bool
 	 */
 	private static $package_active = false;
 
