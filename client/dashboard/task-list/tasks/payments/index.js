@@ -12,7 +12,11 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { Card, H, List, TextControl } from '@woocommerce/components';
-import { getHistory, getNewPath } from '@woocommerce/navigation';
+import {
+	getHistory,
+	getNewPath,
+	updateQueryString,
+} from '@woocommerce/navigation';
 import {
 	WC_ASSET_URL as wcAssetUrl,
 	getAdminLink,
@@ -207,7 +211,6 @@ class Payments extends Component {
 					</Fragment>
 				),
 				before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
-				after: <FormToggle />,
 				visible: this.isStripeEnabled(),
 			},
 			{
@@ -222,7 +225,6 @@ class Payments extends Component {
 					</Fragment>
 				),
 				before: <img src={ wcAssetUrl + 'images/paypal.png' } alt="" />,
-				after: <FormToggle />,
 				visible: true,
 			},
 			{
@@ -238,7 +240,6 @@ class Payments extends Component {
 						alt=""
 					/>
 				),
-				after: <FormToggle />,
 				visible: [ 'SE', 'FI', 'NO', 'NL' ].includes( countryCode ),
 			},
 			{
@@ -254,7 +255,6 @@ class Payments extends Component {
 						alt=""
 					/>
 				),
-				after: <FormToggle />,
 				visible: [ 'DK', 'DE', 'AT' ].includes( countryCode ),
 			},
 			{
@@ -271,7 +271,6 @@ class Payments extends Component {
 						alt=""
 					/>
 				),
-				after: <FormToggle />,
 				visible:
 					[ 'brick-mortar', 'brick-mortar-other' ].includes(
 						profileItems.selling_venues
@@ -301,7 +300,6 @@ class Payments extends Component {
 						alt="PayFast logo"
 					/>
 				),
-				after: <FormToggle />,
 				visible: [ 'ZA' ].includes( countryCode ),
 			},
 		];
@@ -542,8 +540,8 @@ class Payments extends Component {
 			<div className="woocommerce-task-payments">
 				{ methods.map( ( method ) => {
 					const {
-						after,
 						before,
+						container,
 						content,
 						key,
 						title,
@@ -571,7 +569,17 @@ class Payments extends Component {
 								</p>
 							</div>
 							<div className="woocommerce-task-payment__after">
-								{ after }
+								{ container ? (
+									<Button
+										isPrimary={ key === 'stripe' }
+										isDefault={ key !== 'stripe' }
+										onClick={ () =>
+											updateQueryString( { method: key } )
+										}
+									/>
+								) : (
+									<FormToggle />
+								) }
 							</div>
 						</Card>
 					);
