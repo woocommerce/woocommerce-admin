@@ -5,13 +5,13 @@ import { __ } from '@wordpress/i18n';
 import { Fragment, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { get, filter, keys, pickBy, difference } from 'lodash';
-import { Button, FormToggle, CheckboxControl } from '@wordpress/components';
+import { Button, FormToggle } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { Card, H, List, TextControl } from '@woocommerce/components';
+import { Card, H, List } from '@woocommerce/components';
 import {
 	getHistory,
 	getNewPath,
@@ -19,7 +19,6 @@ import {
 } from '@woocommerce/navigation';
 import {
 	WC_ASSET_URL as wcAssetUrl,
-	getAdminLink,
 	getSetting,
 } from '@woocommerce/wc-admin-settings';
 
@@ -156,41 +155,6 @@ class Payments extends Component {
 		} );
 	}
 
-	// If Jetpack is connected and WCS is enabled, we will offer a streamlined option.
-	renderWooCommerceServicesStripeConnect() {
-		const { getInputProps, values } = this.formData;
-		if ( ! values.stripe ) {
-			return null;
-		}
-
-		const { isJetpackConnected, activePlugins } = this.props;
-		if (
-			! isJetpackConnected ||
-			! activePlugins.includes( 'woocommerce-services' )
-		) {
-			return null;
-		}
-
-		return (
-			<div className="woocommerce-task-payments__woocommerce-services-options">
-				<CheckboxControl
-					label={ __(
-						'Create a Stripe account for me',
-						'woocommerce-admin'
-					) }
-					{ ...getInputProps( 'create_stripe' ) }
-				/>
-
-				{ values.create_stripe && (
-					<TextControl
-						label={ __( 'Email address', 'woocommerce-admin' ) }
-						{ ...getInputProps( 'stripe_email' ) }
-					/>
-				) }
-			</div>
-		);
-	}
-
 	getMethodOptions() {
 		const { countryCode, profileItems } = this.props;
 
@@ -212,6 +176,12 @@ class Payments extends Component {
 				),
 				before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
 				visible: this.isStripeEnabled(),
+				container: (
+					<Stripe
+						markConfigured={ this.markConfigured }
+						setRequestPending={ this.setMethodRequestPending }
+					/>
+				),
 			},
 			{
 				key: 'paypal',
@@ -370,13 +340,6 @@ class Payments extends Component {
 			values.payfast;
 
 		const { showIndividualConfigs } = this.state;
-		const { activePlugins, countryCode, isJetpackConnected } = this.props;
-
-		const manualConfig =
-			isJetpackConnected &&
-			activePlugins.includes( 'woocommerce-services' )
-				? false
-				: true;
 
 		const methods = this.getMethodsToConfigure();
 
@@ -430,28 +393,6 @@ class Payments extends Component {
 				),
 				content: <Fragment />,
 				visible: ! showIndividualConfigs,
-			},
-			{
-				key: 'stripe',
-				label: __( 'Enable Stripe', 'woocommerce-admin' ),
-				description: __(
-					'Connect your store to your Stripe account',
-					'woocommerce-admin'
-				),
-				content: (
-					<Stripe
-						manualConfig={ manualConfig }
-						markConfigured={ this.markConfigured }
-						setRequestPending={ this.setMethodRequestPending }
-						createAccount={ values.create_stripe && ! manualConfig }
-						email={ values.stripe_email }
-						countryCode={ countryCode }
-						returnUrl={ getAdminLink(
-							'admin.php?page=wc-admin&task=payments&stripe-connect=1'
-						) }
-					/>
-				),
-				visible: showIndividualConfigs && methods.includes( 'stripe' ),
 			},
 			{
 				key: 'paypal',
@@ -534,7 +475,19 @@ class Payments extends Component {
 	}
 
 	render() {
+		const { query } = this.props;
 		const methods = this.getMethodOptions();
+		const currentMethod = methods.find(
+			( method ) => method.key === query.method
+		);
+
+		if ( query.method && currentMethod ) {
+			return (
+				<Card className="woocommerce-task-payment-method is-narrow">
+					{ currentMethod.container }
+				</Card>
+			);
+		}
 
 		return (
 			<div className="woocommerce-task-payments">
@@ -576,7 +529,9 @@ class Payments extends Component {
 										onClick={ () =>
 											updateQueryString( { method: key } )
 										}
-									/>
+									>
+										{ __( 'Set up', 'woocommerce-admin' ) }
+									</Button>
 								) : (
 									<FormToggle />
 								) }
