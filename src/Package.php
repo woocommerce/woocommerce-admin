@@ -80,7 +80,7 @@ class Package {
 	}
 
 	/**
-	 * Return the active version WC Admin.
+	 * Return the active version of WC Admin.
 	 *
 	 * @return string
 	 */
