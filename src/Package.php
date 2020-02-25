@@ -53,6 +53,9 @@ class Package {
 				$update_version::delete_note();
 			}
 
+			// Register a deactivation hook for the feature plugin.
+			register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, array( __CLASS__, 'on_deactivation' ) );
+
 			return;
 		}
 
@@ -75,5 +78,13 @@ class Package {
 	 */
 	public static function get_path() {
 		return dirname( __DIR__ );
+	}
+
+	/**
+	 * Add deactivation hook for versions of the plugin that don't have the deactivation note.
+	 */
+	public static function on_deactivation() {
+		$update_version = new WC_Admin_Notes_Deactivate_Plugin();
+		$update_version::delete_note();
 	}
 }
