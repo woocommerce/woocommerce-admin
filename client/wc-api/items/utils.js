@@ -18,6 +18,7 @@ import { appendTimestamp, getCurrentDates } from 'lib/date';
  * @param  {Object} options.persisted_query Persisted query passed to endpoint
  * @param  {Object} options.query           Query parameters in the url
  * @param  {Object} options.select          Instance of @wordpress/select
+ * @param  {String} options.defaultDateRange   User specified default date range.
  * @return {Object} Object containing leaderboard responses.
  */
 export function getLeaderboard( options ) {
@@ -30,7 +31,7 @@ export function getLeaderboard( options ) {
 		rows: [],
 	};
 
-	const datesFromQuery = getCurrentDates( query );
+	const datesFromQuery = getCurrentDates( query, options.defaultDateRange );
 	const leaderboardQuery = {
 		after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
 		before: appendTimestamp( datesFromQuery.primary.before, 'end' ),

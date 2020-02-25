@@ -1,9 +1,14 @@
 /** @format */
 
 /**
+ * WooCommerce dependencies
+ */
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+
+/**
  * Internal dependencies
  */
-import { DEFAULT_ACTIONABLE_STATUSES } from 'wc-api/constants';
+import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 export function getUnreadNotes( select ) {
@@ -37,9 +42,10 @@ export function getUnreadNotes( select ) {
 
 export function getUnreadOrders( select ) {
 	const { getItems, getItemsTotalCount, getItemsError, isGetItemsRequesting } = select( 'wc-api' );
+	const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
 	const {
 		woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
-	} = getSetting( 'wcAdminSettings', {} );
+	} = getMutableSetting( 'wc_admin', 'wcAdminSettings', {} );
 
 	if ( ! orderStatuses.length ) {
 		return false;

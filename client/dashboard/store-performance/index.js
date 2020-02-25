@@ -17,6 +17,7 @@ import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { calculateDelta, formatValue } from 'lib/number-format';
 import { formatCurrency } from 'lib/currency-format';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -110,6 +111,7 @@ class StorePerformance extends Component {
 			primaryData,
 			secondaryData,
 			userIndicators,
+			defaultDateRange,
 		} = this.props;
 		if ( primaryRequesting || secondaryRequesting ) {
 			return <SummaryListPlaceholder numberOfItems={ userIndicators.length } />;
@@ -121,7 +123,7 @@ class StorePerformance extends Component {
 
 		const persistedQuery = getPersistedQuery( query );
 
-		const { compare } = getDateParamsFromQuery( query );
+		const { compare } = getDateParamsFromQuery( query, defaultDateRange );
 		const prevLabel =
 			'previous_period' === compare
 				? __( 'Previous Period:', 'woocommerce-admin' )
@@ -193,8 +195,11 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { hiddenBlocks, query } = props;
 		const { getReportItems, getReportItemsError, isReportItemsRequesting } = select( 'wc-api' );
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
-		const datesFromQuery = getCurrentDates( query );
+		const datesFromQuery = getCurrentDates( query, defaultDateRange );
 		const endPrimary = datesFromQuery.primary.before;
 		const endSecondary = datesFromQuery.secondary.before;
 		const userIndicators = indicators.filter(
@@ -207,6 +212,7 @@ export default compose(
 				hiddenBlocks,
 				userIndicators,
 				indicators,
+				defaultDateRange,
 			};
 		}
 
@@ -243,6 +249,7 @@ export default compose(
 			secondaryData,
 			secondaryError,
 			secondaryRequesting,
+			defaultDateRange,
 		};
 	} ),
 	withDispatch( dispatch => {

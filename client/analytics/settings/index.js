@@ -18,7 +18,7 @@ import { useSettings } from '@woocommerce/data';
  * Internal dependencies
  */
 import './index.scss';
-import { getConfig } from './config';
+import { config } from './config';
 import Setting from './setting';
 import HistoricalData from './historical-data';
 import { recordEvent } from 'lib/tracks';
@@ -33,12 +33,9 @@ const Settings = ( { createNotice, query } ) => {
 		persistSettings,
 		updateAndPersistSettings,
 		updateSettings,
-		orderStatuses,
-		defaultDateRange,
 		wcAdminSettings,
-	} = useSettings( 'wc_admin', [ 'wcAdminSettings', 'orderStatuses', 'defaultDateRange' ] );
+	} = useSettings( 'wc_admin', [ 'wcAdminSettings' ] );
 	const hasSaved = useRef( false );
-	const config = getConfig( orderStatuses, defaultDateRange );
 
 	useEffect(
 		() => {

@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
  */
 import { Card, EmptyTable, TableCard } from '@woocommerce/components';
 import { getPersistedQuery } from '@woocommerce/navigation';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -127,12 +128,17 @@ Leaderboard.defaultProps = {
 export default compose(
 	withSelect( ( select, props ) => {
 		const { id, query, totalRows } = props;
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
+
 		const leaderboardQuery = {
 			id,
 			per_page: totalRows,
 			persisted_query: getPersistedQuery( query ),
 			query,
 			select,
+			defaultDateRange,
 		};
 		const leaderboardData = getLeaderboard( leaderboardQuery );
 

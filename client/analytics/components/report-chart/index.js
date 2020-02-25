@@ -22,6 +22,7 @@ import {
 } from 'lib/date';
 import { Chart } from '@woocommerce/components';
 import { CURRENCY } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -72,9 +73,9 @@ export class ReportChart extends Component {
 	}
 
 	getTimeChartData() {
-		const { query, primaryData, secondaryData, selectedChart } = this.props;
+		const { query, primaryData, secondaryData, selectedChart, defaultDateRange } = this.props;
 		const currentInterval = getIntervalForQuery( query );
-		const { primary, secondary } = getCurrentDates( query );
+		const { primary, secondary } = getCurrentDates( query, defaultDateRange );
 
 		const chartData = primaryData.data.intervals.map( function( interval, index ) {
 			const secondaryDate = getPreviousDate(
@@ -291,10 +292,14 @@ export default compose(
 		const selectedFilter = getSelectedFilter( filters, query );
 		const filterParam = get( selectedFilter, [ 'settings', 'param' ] );
 		const chartMode = props.mode || getChartMode( selectedFilter, query ) || 'time-comparison';
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
 		const newProps = {
 			mode: chartMode,
 			filterParam,
+			defaultDateRange,
 		};
 
 		if ( isRequesting ) {
@@ -318,6 +323,7 @@ export default compose(
 			limitBy,
 			filters,
 			advancedFilters,
+			defaultDateRange,
 		} );
 
 		if ( 'item-comparison' === chartMode ) {
@@ -335,6 +341,7 @@ export default compose(
 			limitBy,
 			filters,
 			advancedFilters,
+			defaultDateRange,
 		} );
 		return {
 			...newProps,
