@@ -4,20 +4,14 @@
 import { __ } from '@wordpress/i18n';
 import { Fragment, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { get, filter, noop, keys, pickBy, difference } from 'lodash';
+import { get, filter, keys, pickBy, difference } from 'lodash';
 import { Button, FormToggle, CheckboxControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import {
-	Form,
-	Card,
-	Stepper,
-	TextControl,
-	List,
-} from '@woocommerce/components';
+import { Card, H, List, TextControl } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {
 	WC_ASSET_URL as wcAssetUrl,
@@ -49,36 +43,6 @@ class Payments extends Component {
 			this
 		);
 		this.completePluginInstall = this.completePluginInstall.bind( this );
-
-		const { methods, installed, configured } = this.props;
-
-		let step = 'choose';
-		let showIndividualConfigs = false;
-
-		// Figure out which step to show initially if there are still steps to be configured, or redirect back to the task list.
-		if ( methods.length > 0 && configured.length > 0 ) {
-			step = difference( methods, configured )[ 0 ] || '';
-			showIndividualConfigs = true;
-			const stepsLeft = difference( methods, configured ).length;
-			if ( stepsLeft === 0 ) {
-				this.state = {
-					step: 'done',
-					methodRequestPending: false,
-				};
-				this.completeTask();
-				return;
-			}
-		} else if ( installed === 1 && methods.length > 0 ) {
-			// Methods have been installed but not configured yet.
-			step = methods[ 0 ];
-			showIndividualConfigs = true;
-		}
-
-		this.state = {
-			step,
-			showIndividualConfigs,
-			methodRequestPending: false,
-		};
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -134,11 +98,6 @@ class Payments extends Component {
 			payfast: false,
 		};
 		return values;
-	}
-
-	validate() {
-		const errors = {};
-		return errors;
 	}
 
 	completeStep() {
@@ -229,7 +188,6 @@ class Payments extends Component {
 	}
 
 	getMethodOptions() {
-		const { getInputProps } = this.formData;
 		const { countryCode, profileItems } = this.props;
 
 		const methods = [
@@ -246,11 +204,10 @@ class Payments extends Component {
 								'and one-touch checkout with Apple Pay.',
 							'woocommerce-admin'
 						) }
-						{ this.renderWooCommerceServicesStripeConnect() }
 					</Fragment>
 				),
 				before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
-				after: <FormToggle { ...getInputProps( 'stripe' ) } />,
+				after: <FormToggle />,
 				visible: this.isStripeEnabled(),
 			},
 			{
@@ -265,7 +222,7 @@ class Payments extends Component {
 					</Fragment>
 				),
 				before: <img src={ wcAssetUrl + 'images/paypal.png' } alt="" />,
-				after: <FormToggle { ...getInputProps( 'paypal' ) } />,
+				after: <FormToggle />,
 				visible: true,
 			},
 			{
@@ -281,7 +238,7 @@ class Payments extends Component {
 						alt=""
 					/>
 				),
-				after: <FormToggle { ...getInputProps( 'klarna_checkout' ) } />,
+				after: <FormToggle />,
 				visible: [ 'SE', 'FI', 'NO', 'NL' ].includes( countryCode ),
 			},
 			{
@@ -297,7 +254,7 @@ class Payments extends Component {
 						alt=""
 					/>
 				),
-				after: <FormToggle { ...getInputProps( 'klarna_payments' ) } />,
+				after: <FormToggle />,
 				visible: [ 'DK', 'DE', 'AT' ].includes( countryCode ),
 			},
 			{
@@ -314,7 +271,7 @@ class Payments extends Component {
 						alt=""
 					/>
 				),
-				after: <FormToggle { ...getInputProps( 'square' ) } />,
+				after: <FormToggle />,
 				visible:
 					[ 'brick-mortar', 'brick-mortar-other' ].includes(
 						profileItems.selling_venues
@@ -344,7 +301,7 @@ class Payments extends Component {
 						alt="PayFast logo"
 					/>
 				),
-				after: <FormToggle { ...getInputProps( 'payfast' ) } />,
+				after: <FormToggle />,
 				visible: [ 'ZA' ].includes( countryCode ),
 			},
 		];
@@ -579,32 +536,47 @@ class Payments extends Component {
 	}
 
 	render() {
-		const { step, methodRequestPending } = this.state;
+		const methods = this.getMethodOptions();
+
 		return (
-			<Form
-				initialValues={ this.getInitialValues() }
-				onSubmitCallback={ noop }
-				validate={ this.validate }
-			>
-				{ ( formData ) => {
-					this.formData = formData;
+			<div className="woocommerce-task-payments">
+				{ methods.map( ( method ) => {
+					const {
+						after,
+						before,
+						content,
+						key,
+						title,
+						visible,
+					} = method;
+
+					if ( ! visible ) {
+						return null;
+					}
+
 					return (
-						<div className="woocommerce-task-payments">
-							<Card className="is-narrow">
-								<Stepper
-									isVertical
-									isPending={
-										methodRequestPending ||
-										step === 'install'
-									}
-									currentStep={ step }
-									steps={ this.getSteps() }
-								/>
-							</Card>
-						</div>
+						<Card
+							key={ key }
+							className="woocommerce-task-payment is-narrow"
+						>
+							<div className="woocommerce-task-payment__before">
+								{ before }
+							</div>
+							<div className="woocommerce-task-payment__text">
+								<H className="woocommerce-task-payment__title">
+									{ title }
+								</H>
+								<p className="woocommerce-task-payment__content">
+									{ content }
+								</p>
+							</div>
+							<div className="woocommerce-task-payment__after">
+								{ after }
+							</div>
+						</Card>
 					);
-				} }
-			</Form>
+				} ) }
+			</div>
 		);
 	}
 }
