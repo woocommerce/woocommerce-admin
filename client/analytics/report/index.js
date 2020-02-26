@@ -95,6 +95,19 @@ export const getReports = () => {
 	return applyFilters( REPORTS_FILTER, reports );
 };
 
+/**
+ * The Customers Report will not have the `report` param supplied by the router/
+ * because it no longer exists under the path `/analytics/:report`. Use `props.path`/
+ * instead to determine if the Customers Report is being rendered.
+ *
+ * @param {object} params -url parameters
+ * @param {string} path - url path
+ * @returns {string} - report parameter
+ */
+const getReportParam = ( { params, path } ) => {
+	return params.report || path.replace( /^\/+/, '' );
+};
+
 class Report extends Component {
 	constructor() {
 		super( ...arguments );
@@ -118,13 +131,13 @@ class Report extends Component {
 			return null;
 		}
 
-		const { params, path, isError } = this.props;
+		const { isError } = this.props;
 
 		if ( isError ) {
 			return <ReportError isError />;
 		}
 
-		const reportParam = params.report || path.replace( /^\/+/, '' );
+		const reportParam = getReportParam( this.props );
 
 		const report = find( getReports(), { report: reportParam } );
 		if ( ! report ) {
@@ -149,7 +162,7 @@ export default compose(
 			return {};
 		}
 
-		const { report } = props.params;
+		const report = getReportParam( props );
 		const searchWords = getSearchWords( query );
 		// Single Category view in Categories Report uses the products endpoint, so search must also.
 		const mappedReport =
