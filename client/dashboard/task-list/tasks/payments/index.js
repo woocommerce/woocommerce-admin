@@ -41,26 +41,6 @@ class Payments extends Component {
 		super( ...arguments );
 
 		this.markConfigured = this.markConfigured.bind( this );
-		this.setMethodRequestPending = this.setMethodRequestPending.bind(
-			this
-		);
-	}
-
-	componentDidUpdate( prevProps ) {
-		const { methods, configured } = this.props;
-		if (
-			prevProps.configured.length !== configured.length &&
-			methods.length > 0 &&
-			configured.length > 0
-		) {
-			const stepsLeft = difference( methods, configured );
-			const nextStep = stepsLeft[ 0 ];
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( {
-				step: nextStep,
-			} );
-			/* eslint-enable react/no-did-update-set-state */
-		}
 	}
 
 	completeTask() {
@@ -85,22 +65,6 @@ class Payments extends Component {
 		return stripeCountries.includes( countryCode );
 	}
 
-	getInitialValues() {
-		const stripeEmail = getSetting( 'onboarding', { userEmail: '' } )
-			.userEmail;
-		const values = {
-			stripe: this.isStripeEnabled(),
-			paypal: false,
-			klarna_checkout: false,
-			klarna_payments: false,
-			square: false,
-			create_stripe: this.isStripeEnabled(),
-			stripe_email: ( this.isStripeEnabled() && stripeEmail ) || '',
-			payfast: false,
-		};
-		return values;
-	}
-
 	markConfigured( method ) {
 		const { options, methods, configured } = this.props;
 		configured.push( method );
@@ -117,12 +81,6 @@ class Payments extends Component {
 		if ( stepsLeft.length === 0 ) {
 			this.completeTask();
 		}
-	}
-
-	setMethodRequestPending( status ) {
-		this.setState( {
-			methodRequestPending: status,
-		} );
 	}
 
 	getMethodOptions() {
@@ -147,12 +105,7 @@ class Payments extends Component {
 				before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
 				visible: this.isStripeEnabled(),
 				plugins: [ 'woocommerce-gateway-stripe' ],
-				container: (
-					<Stripe
-						markConfigured={ this.markConfigured }
-						setRequestPending={ this.setMethodRequestPending }
-					/>
-				),
+				container: <Stripe markConfigured={ this.markConfigured } />,
 			},
 			{
 				key: 'paypal',
@@ -248,28 +201,6 @@ class Payments extends Component {
 		return filter( methods, ( method ) => method.visible );
 	}
 
-	getMethodsToConfigure() {
-		const { options } = this.props;
-		if (
-			options &&
-			options.woocommerce_task_list_payments &&
-			options.woocommerce_task_list_payments.methods
-		) {
-			return options.woocommerce_task_list_payments.methods;
-		}
-
-		const { values } = this.formData;
-		const methods = {
-			stripe: values.stripe,
-			paypal: values.paypal,
-			'klarna-checkout': values.klarna_checkout,
-			'klarna-payments': values.klarna_payments,
-			square: values.square,
-			payfast: values.payfast,
-		};
-		return keys( pickBy( methods ) );
-	}
-
 	getPluginsToInstall() {
 		const { values } = this.formData;
 		const pluginSlugs = {
@@ -284,10 +215,6 @@ class Payments extends Component {
 	}
 
 	getSteps() {
-		const { showIndividualConfigs } = this.state;
-
-		const methods = this.getMethodsToConfigure();
-
 		const steps = [
 			{
 				key: 'paypal',
@@ -296,13 +223,7 @@ class Payments extends Component {
 					'Connect your store to your PayPal account',
 					'woocommerce-admin'
 				),
-				content: (
-					<PayPal
-						markConfigured={ this.markConfigured }
-						setRequestPending={ this.setMethodRequestPending }
-					/>
-				),
-				visible: showIndividualConfigs && methods.includes( 'paypal' ),
+				content: <PayPal markConfigured={ this.markConfigured } />,
 			},
 			{
 				key: 'square',
@@ -311,13 +232,7 @@ class Payments extends Component {
 					'Connect your store to your Square account',
 					'woocommerce-admin'
 				),
-				content: (
-					<Square
-						markConfigured={ this.markConfigured }
-						setRequestPending={ this.setMethodRequestPending }
-					/>
-				),
-				visible: showIndividualConfigs && methods.includes( 'square' ),
+				content: <Square markConfigured={ this.markConfigured } />,
 			},
 			{
 				key: 'klarna-checkout',
@@ -326,13 +241,9 @@ class Payments extends Component {
 				content: (
 					<Klarna
 						markConfigured={ this.markConfigured }
-						setRequestPending={ this.setMethodRequestPending }
 						plugin={ 'checkout' }
 					/>
 				),
-				visible:
-					showIndividualConfigs &&
-					methods.includes( 'klarna-checkout' ),
 			},
 			{
 				key: 'klarna-payments',
@@ -341,13 +252,9 @@ class Payments extends Component {
 				content: (
 					<Klarna
 						markConfigured={ this.markConfigured }
-						setRequestPending={ this.setMethodRequestPending }
 						plugin={ 'payments' }
 					/>
 				),
-				visible:
-					showIndividualConfigs &&
-					methods.includes( 'klarna-payments' ),
 			},
 			{
 				key: 'payfast',
@@ -356,13 +263,7 @@ class Payments extends Component {
 					'Connect your store to your PayFast account',
 					'woocommerce-admin'
 				),
-				content: (
-					<PayFast
-						markConfigured={ this.markConfigured }
-						setRequestPending={ this.setMethodRequestPending }
-					/>
-				),
-				visible: showIndividualConfigs && methods.includes( 'payfast' ),
+				content: <PayFast markConfigured={ this.markConfigured } />,
 			},
 		];
 
@@ -491,12 +392,9 @@ class Payments extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getProfileItems,
-			isJetpackConnected,
-			getActivePlugins,
-			getOptions,
-		} = select( 'wc-api' );
+		const { getProfileItems, getActivePlugins, getOptions } = select(
+			'wc-api'
+		);
 
 		const options = getOptions( [
 			'woocommerce_task_list_payments',
@@ -532,7 +430,6 @@ export default compose(
 			countryCode,
 			profileItems: getProfileItems(),
 			activePlugins: getActivePlugins(),
-			isJetpackConnected: isJetpackConnected(),
 			options,
 			methods,
 			installed,
