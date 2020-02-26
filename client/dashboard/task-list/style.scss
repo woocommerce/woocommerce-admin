@@ -317,6 +317,10 @@
 
 	.woocommerce-task-payment__after {
 		margin-left: $gap-larger;
+
+		.components-button.is-button {
+			margin: 0;
+		}
 	}
 
 	@include breakpoint( '<600px' ) {
