@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Fragment, cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { get, filter, keys, pickBy, difference } from 'lodash';
+import { get, filter, difference } from 'lodash';
 import { Button, FormToggle } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
@@ -120,6 +120,8 @@ class Payments extends Component {
 				),
 				before: <img src={ wcAssetUrl + 'images/paypal.png' } alt="" />,
 				visible: true,
+				plugins: [ 'woocommerce-gateway-paypal-express-checkout' ],
+				container: <PayPal markConfigured={ this.markConfigured } />,
 			},
 			{
 				key: 'klarna_checkout',
@@ -135,6 +137,13 @@ class Payments extends Component {
 					/>
 				),
 				visible: [ 'SE', 'FI', 'NO', 'NL' ].includes( countryCode ),
+				plugins: [ 'klarna-checkout-for-woocommerce' ],
+				container: (
+					<Klarna
+						markConfigured={ this.markConfigured }
+						plugin={ 'checkout' }
+					/>
+				),
 			},
 			{
 				key: 'klarna_payments',
@@ -150,6 +159,13 @@ class Payments extends Component {
 					/>
 				),
 				visible: [ 'DK', 'DE', 'AT' ].includes( countryCode ),
+				plugins: [ 'klarna-payments-for-woocommerce' ],
+				container: (
+					<Klarna
+						markConfigured={ this.markConfigured }
+						plugin={ 'payments' }
+					/>
+				),
 			},
 			{
 				key: 'square',
@@ -170,6 +186,8 @@ class Payments extends Component {
 						profileItems.selling_venues
 					) &&
 					[ 'US', 'CA', 'JP', 'GB', 'AU' ].includes( countryCode ),
+				plugins: [ 'woocommerce-square' ],
+				container: <Square markConfigured={ this.markConfigured } />,
 			},
 			{
 				key: 'payfast',
@@ -195,79 +213,12 @@ class Payments extends Component {
 					/>
 				),
 				visible: [ 'ZA' ].includes( countryCode ),
+				plugins: [ 'woocommerce-payfast-gateway' ],
+				container: <PayFast markConfigured={ this.markConfigured } />,
 			},
 		];
 
 		return filter( methods, ( method ) => method.visible );
-	}
-
-	getPluginsToInstall() {
-		const { values } = this.formData;
-		const pluginSlugs = {
-			'woocommerce-gateway-stripe': values.stripe,
-			'woocommerce-gateway-paypal-express-checkout': values.paypal,
-			'klarna-checkout-for-woocommerce': values.klarna_checkout,
-			'klarna-payments-for-woocommerce': values.klarna_payments,
-			'woocommerce-square': values.square,
-			'woocommerce-payfast-gateway': values.payfast,
-		};
-		return keys( pickBy( pluginSlugs ) );
-	}
-
-	getSteps() {
-		const steps = [
-			{
-				key: 'paypal',
-				label: __( 'Enable PayPal Checkout', 'woocommerce-admin' ),
-				description: __(
-					'Connect your store to your PayPal account',
-					'woocommerce-admin'
-				),
-				content: <PayPal markConfigured={ this.markConfigured } />,
-			},
-			{
-				key: 'square',
-				label: __( 'Enable Square', 'woocommerce-admin' ),
-				description: __(
-					'Connect your store to your Square account',
-					'woocommerce-admin'
-				),
-				content: <Square markConfigured={ this.markConfigured } />,
-			},
-			{
-				key: 'klarna-checkout',
-				label: __( 'Klarna', 'woocommerce-admin' ),
-				description: '',
-				content: (
-					<Klarna
-						markConfigured={ this.markConfigured }
-						plugin={ 'checkout' }
-					/>
-				),
-			},
-			{
-				key: 'klarna-payments',
-				label: __( 'Klarna', 'woocommerce-admin' ),
-				description: '',
-				content: (
-					<Klarna
-						markConfigured={ this.markConfigured }
-						plugin={ 'payments' }
-					/>
-				),
-			},
-			{
-				key: 'payfast',
-				label: __( 'Enable PayFast', 'woocommerce-admin' ),
-				description: __(
-					'Connect your store to your PayFast account',
-					'woocommerce-admin'
-				),
-				content: <PayFast markConfigured={ this.markConfigured } />,
-			},
-		];
-
-		return filter( steps, ( step ) => step.visible );
 	}
 
 	getCurrentMethod() {
