@@ -10,7 +10,7 @@ import interpolateComponents from 'interpolate-components';
  * WooCommerce dependencies
  */
 import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
-import { Link } from '@woocommerce/components';
+import { Link, Stepper } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -24,23 +24,22 @@ class Klarna extends Component {
 	}
 
 	continue() {
+		const { markConfigured, plugin } = this.props;
+
 		const slug =
-			this.props.plugin === 'checkout'
-				? 'klarna-checkout'
-				: 'klarna-payments';
+			plugin === 'checkout' ? 'klarna-checkout' : 'klarna-payments';
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: slug,
 		} );
-		this.props.markConfigured( slug );
+		markConfigured( slug );
 	}
 
-	render() {
+	renderConnectStep() {
+		const { plugin } = this.props;
+
 		const slug =
-			this.props.plugin === 'checkout'
-				? 'klarna-checkout'
-				: 'klarna-payments';
-		const section =
-			this.props.plugin === 'checkout' ? 'kco' : 'klarna_payments';
+			plugin === 'checkout' ? 'klarna-checkout' : 'klarna-payments';
+		const section = plugin === 'checkout' ? 'kco' : 'klarna_payments';
 
 		const link = (
 			<Link
@@ -83,6 +82,26 @@ class Klarna extends Component {
 					{ __( 'Continue', 'woocommerce-admin' ) }
 				</Button>
 			</Fragment>
+		);
+	}
+
+	render() {
+		const { installStep } = this.props;
+
+		return (
+			<Stepper
+				isVertical
+				isPending={ ! installStep.isComplete }
+				currentStep={ installStep.isComplete ? 'connect' : 'install' }
+				steps={ [
+					installStep,
+					{
+						key: 'connect',
+						label: __( 'Connect your Klarna account' ),
+						content: this.renderConnectStep(),
+					},
+				] }
+			/>
 		);
 	}
 }
