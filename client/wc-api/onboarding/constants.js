@@ -21,4 +21,8 @@ export const pluginNames = {
 		'WooCommerce ShipStation Gateway',
 		'woocommerce-admin'
 	),
+	'woocommerce-gateway-stripe': __(
+		'WooCommerce Stripe',
+		'woocommerce-admin'
+	),
 };
