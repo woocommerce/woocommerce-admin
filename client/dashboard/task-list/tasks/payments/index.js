@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Fragment, cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { get, filter, difference } from 'lodash';
+import { get, filter } from 'lodash';
 import { Button, FormToggle } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
@@ -66,21 +66,18 @@ class Payments extends Component {
 	}
 
 	markConfigured( method ) {
-		const { options, methods, configured } = this.props;
-		configured.push( method );
-		const stepsLeft = difference( methods, configured );
+		const { options, configured } = this.props;
+		if ( configured.includes( method ) ) {
+			return;
+		}
 
+		configured.push( method );
 		this.props.updateOptions( {
 			woocommerce_task_list_payments: {
 				...options.woocommerce_task_list_payments,
 				configured,
-				completed: stepsLeft.length === 0 ? 1 : 0,
 			},
 		} );
-
-		if ( stepsLeft.length === 0 ) {
-			this.completeTask();
-		}
 	}
 
 	getMethodOptions() {
@@ -355,26 +352,10 @@ export default compose(
 			options.woocommerce_default_country
 		);
 
-		const methods = get(
-			options,
-			[ 'woocommerce_task_list_payments', 'methods' ],
-			[]
-		);
-		const installed = get(
-			options,
-			[ 'woocommerce_task_list_payments', 'installed' ],
-			false
-		);
 		const configured = get(
 			options,
 			[ 'woocommerce_task_list_payments', 'configured' ],
 			[]
-		);
-
-		const completed = get(
-			options,
-			[ 'woocommerce_task_list_payments', 'completed' ],
-			false
 		);
 
 		return {
@@ -382,10 +363,7 @@ export default compose(
 			profileItems: getProfileItems(),
 			activePlugins: getActivePlugins(),
 			options,
-			methods,
-			installed,
 			configured,
-			completed,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
