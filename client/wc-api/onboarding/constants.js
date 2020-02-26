@@ -32,6 +32,10 @@ export const pluginNames = {
 		'WooCommerce Stripe',
 		'woocommerce-admin'
 	),
+	'woocommerce-payfast-gateway': __(
+		'WooCommerce PayFast',
+		'woocommerce-admin'
+	),
 	'woocommerce-services': __( 'WooCommerce Services', 'woocommerce-admin' ),
 	'woocommerce-shipstation-integration': __(
 		'WooCommerce ShipStation Gateway',

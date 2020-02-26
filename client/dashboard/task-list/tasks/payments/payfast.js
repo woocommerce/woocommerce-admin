@@ -11,7 +11,8 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Form, Link, TextControl } from '@woocommerce/components';
+import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -85,12 +86,12 @@ class PayFast extends Component {
 		}
 	}
 
-	updateSettings = async ( values ) => {
+	updateSettings = ( values ) => {
 		const { updateOptions } = this.props;
 
 		// Because the PayFast extension only works with the South African Rand
 		// currency, force the store to use it while setting the PayFast settings
-		await updateOptions( {
+		updateOptions( {
 			woocommerce_currency: 'ZAR',
 			woocommerce_payfast_settings: {
 				merchant_id: values.merchant_id,
@@ -101,7 +102,8 @@ class PayFast extends Component {
 		} );
 	};
 
-	render() {
+	renderConnectStep() {
+		const { isOptionsRequesting } = this.props;
 		const helpText = interpolateComponents( {
 			mixedString: __(
 				'Your API details can be obtained from your {{link}}PayFast account{{/link}}',
@@ -151,12 +153,23 @@ class PayFast extends Component {
 								required
 								{ ...getInputProps( 'pass_phrase' ) }
 							/>
-							<Button onClick={ handleSubmit } isPrimary>
+							<Button
+								isPrimary
+								isBusy={ isOptionsRequesting }
+								onClick={ handleSubmit }
+							>
 								{ __( 'Proceed', 'woocommerce-admin' ) }
 							</Button>
 							<Button
+								isBusy={ isOptionsRequesting }
 								onClick={ () => {
-									this.props.markConfigured( 'payfast' );
+									getHistory().push(
+										getNewPath(
+											{ task: 'payments' },
+											'/',
+											{}
+										)
+									);
 								} }
 							>
 								{ __( 'Skip', 'woocommerce-admin' ) }
@@ -166,6 +179,29 @@ class PayFast extends Component {
 					);
 				} }
 			</Form>
+		);
+	}
+
+	render() {
+		const { installStep, isOptionsRequesting } = this.props;
+
+		return (
+			<Stepper
+				isVertical
+				isPending={ ! installStep.isComplete || isOptionsRequesting }
+				currentStep={ installStep.isComplete ? 'connect' : 'install' }
+				steps={ [
+					installStep,
+					{
+						key: 'connect',
+						label: __(
+							'Connect your PayFast account',
+							'woocommerce-admin'
+						),
+						content: this.renderConnectStep(),
+					},
+				] }
+			/>
 		);
 	}
 }
