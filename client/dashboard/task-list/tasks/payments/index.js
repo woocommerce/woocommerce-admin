@@ -78,6 +78,8 @@ class Payments extends Component {
 				configured,
 			},
 		} );
+
+		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
 	}
 
 	getMethodOptions() {
