@@ -8,14 +8,14 @@ import apiFetch from '@wordpress/api-fetch';
 import { withDispatch } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
 import { Button, Modal } from '@wordpress/components';
-import { getQuery } from '@woocommerce/navigation';
 import { get } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import { Form, Link, TextControl } from '@woocommerce/components';
+import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getQuery, getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from 'lib/tracks';
 import { WCS_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
@@ -349,7 +349,13 @@ class Stripe extends Component {
 
 							<Button
 								onClick={ () => {
-									this.props.markConfigured( 'stripe' );
+									getHistory().push(
+										getNewPath(
+											{ task: 'payments' },
+											'/',
+											{}
+										)
+									);
 								} }
 							>
 								{ __( 'Skip', 'woocommerce-admin' ) }
@@ -363,18 +369,52 @@ class Stripe extends Component {
 		);
 	}
 
-	render() {
+	getConnectStep() {
 		const { errorMessage } = this.state;
+		const connectStep = {
+			key: 'connect',
+			label: __( 'Connect your Stripe account', 'woocommerce-admin' ),
+		};
 
 		if ( errorMessage ) {
-			return this.renderErrorModal();
+			return {
+				...connectStep,
+				content: this.renderErrorModal(),
+			};
 		}
 
 		if ( ! this.requiresManualConfig() ) {
-			return this.renderAutoConnect();
+			return {
+				...connectStep,
+				description: __(
+					'A Stripe account is required to process payments. We’ll create an account for you if you don’t have one already.',
+					'woocommerce-admin'
+				),
+				content: this.renderAutoConnect(),
+			};
 		}
 
-		return this.renderManualConfig();
+		return {
+			...connectStep,
+			description: __(
+				'Connect your store to your Stripe account. Don’t have a Stripe account? Create one.',
+				'woocommerce-admin'
+			),
+			content: this.renderManualConfig(),
+		};
+	}
+
+	render() {
+		const { installStep } = this.props;
+
+		return (
+			<Stepper
+				isVertical
+				isPending={ ! installStep.isComplete }
+				currentStep={ installStep.isComplete ? 'connect' : 'install' }
+				steps={ [ installStep, this.getConnectStep() ] }
+			/>
+		);
 	}
 }
 
