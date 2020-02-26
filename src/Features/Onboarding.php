@@ -676,7 +676,7 @@ class Onboarding {
 	public function overwrite_square_redirect( $location, $status ) {
 		$settings_page = 'page=wc-settings&tab=square';
 		if ( substr( $location, -strlen( $settings_page ) ) === $settings_page ) {
-			return wc_admin_url( '&task=payments&square-connect=1' );
+			return wc_admin_url( '&task=payments&method=square&square-connect=1' );
 		}
 		return $location;
 	}

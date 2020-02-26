@@ -37,4 +37,5 @@ export const pluginNames = {
 		'WooCommerce ShipStation Gateway',
 		'woocommerce-admin'
 	),
+	'woocommerce-square': __( 'WooCommerce Square', 'woocommerce-admin' ),
 };

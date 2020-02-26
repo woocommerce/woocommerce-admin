@@ -491,7 +491,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 
 		$url = \WooCommerce\Square\Handlers\Connection::CONNECT_URL_PRODUCTION;
 
-		$redirect_url = wp_nonce_url( wc_admin_url( '&task=payments&square-connect-finish=1' ), 'wc_square_connected' );
+		$redirect_url = wp_nonce_url( wc_admin_url( '&task=payments&method=square&square-connect-finish=1' ), 'wc_square_connected' );
 		$args         = array(
 			'redirect' => rawurlencode( rawurlencode( $redirect_url ) ),
 			'scopes'   => implode(
