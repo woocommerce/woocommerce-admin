@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
-import { Fragment, Component } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
+import { Fragment, cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { get, filter, keys, pickBy, difference } from 'lodash';
 import { Button, FormToggle } from '@wordpress/components';
@@ -11,7 +11,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, H, List } from '@woocommerce/components';
+import { Card, H } from '@woocommerce/components';
 import {
 	getHistory,
 	getNewPath,
@@ -32,6 +32,7 @@ import Plugins from '../steps/plugins';
 import Stripe from './stripe';
 import Square from './square';
 import PayPal from './paypal';
+import { pluginNames } from 'wc-api/onboarding/constants';
 import Klarna from './klarna';
 import PayFast from './payfast';
 
@@ -39,13 +40,10 @@ class Payments extends Component {
 	constructor() {
 		super( ...arguments );
 
-		this.chooseMethods = this.chooseMethods.bind( this );
-		this.completeStep = this.completeStep.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
 		this.setMethodRequestPending = this.setMethodRequestPending.bind(
 			this
 		);
-		this.completePluginInstall = this.completePluginInstall.bind( this );
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -103,34 +101,6 @@ class Payments extends Component {
 		return values;
 	}
 
-	completeStep() {
-		const { step } = this.state;
-		const steps = this.getSteps();
-		const currentStepIndex = steps.findIndex( ( s ) => s.key === step );
-		const nextStep = steps[ currentStepIndex + 1 ];
-
-		if ( nextStep ) {
-			this.setState( { step: nextStep.key } );
-		} else {
-			getHistory().push( getNewPath( {}, '/', {} ) );
-		}
-	}
-
-	completePluginInstall() {
-		const { completed } = this.props;
-		this.props.updateOptions( {
-			woocommerce_task_list_payments: {
-				completed: completed || false,
-				installed: 1,
-				methods: this.getMethodsToConfigure(),
-			},
-		} );
-
-		this.setState( { showIndividualConfigs: true }, function() {
-			this.completeStep();
-		} );
-	}
-
 	markConfigured( method ) {
 		const { options, methods, configured } = this.props;
 		configured.push( method );
@@ -176,6 +146,7 @@ class Payments extends Component {
 				),
 				before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
 				visible: this.isStripeEnabled(),
+				plugins: [ 'woocommerce-gateway-stripe' ],
 				container: (
 					<Stripe
 						markConfigured={ this.markConfigured }
@@ -312,88 +283,12 @@ class Payments extends Component {
 		return keys( pickBy( pluginSlugs ) );
 	}
 
-	chooseMethods() {
-		const methodsDisplayed = this.getMethodOptions().map(
-			( method ) => method.key
-		);
-		const methodsChosen = this.getMethodsToConfigure();
-		const { values } = this.formData;
-		const createAccount = values.create_stripe || false;
-
-		recordEvent( 'wcadmin_tasklist_payment_choose_method', {
-			payment_methods_displayed: methodsDisplayed,
-			payment_methods_chosen: methodsChosen,
-			create_stripe_account: createAccount,
-		} );
-
-		this.completeStep();
-	}
-
 	getSteps() {
-		const { values } = this.formData;
-		const isMethodSelected =
-			values.stripe ||
-			values.paypal ||
-			values.klarna_checkout ||
-			values.klarna_payments ||
-			values.square ||
-			values.payfast;
-
 		const { showIndividualConfigs } = this.state;
 
 		const methods = this.getMethodsToConfigure();
 
 		const steps = [
-			{
-				key: 'choose',
-				label: __( 'Choose payment methods', 'woocommerce-admin' ),
-				description: __(
-					"Select which payment methods you'd like to use",
-					'woocommerce-admin'
-				),
-				content: (
-					<Fragment>
-						<List items={ this.getMethodOptions() } />
-						<Button
-							onClick={ this.chooseMethods }
-							isPrimary
-							disabled={ ! isMethodSelected }
-						>
-							{ __( 'Proceed', 'woocommerce-admin' ) }
-						</Button>
-					</Fragment>
-				),
-				visible: true,
-			},
-			{
-				key: 'install',
-				label: __( 'Install selected methods', 'woocommerce-admin' ),
-				description: __(
-					'Install plugins required to offer the selected payment methods',
-					'woocommerce-admin'
-				),
-				content: ! showIndividualConfigs && (
-					<Plugins
-						onComplete={ () => {
-							this.completePluginInstall();
-							recordEvent( 'tasklist_payment_install_method' );
-						} }
-						autoInstall
-						pluginSlugs={ this.getPluginsToInstall() }
-					/>
-				),
-				visible: true,
-			},
-			{
-				key: 'configure',
-				label: __( 'Configure payment methods', 'woocommerce-admin' ),
-				description: __(
-					'Set up your chosen payment methods',
-					'woocommerce-admin'
-				),
-				content: <Fragment />,
-				visible: ! showIndividualConfigs,
-			},
 			{
 				key: 'paypal',
 				label: __( 'Enable PayPal Checkout', 'woocommerce-admin' ),
@@ -474,20 +369,70 @@ class Payments extends Component {
 		return filter( steps, ( step ) => step.visible );
 	}
 
-	render() {
+	getCurrentMethod() {
 		const { query } = this.props;
-		const methods = this.getMethodOptions();
-		const currentMethod = methods.find(
-			( method ) => method.key === query.method
-		);
 
-		if ( query.method && currentMethod ) {
+		if ( ! query.method ) {
+			return;
+		}
+
+		const methods = this.getMethodOptions();
+
+		return methods.find( ( method ) => method.key === query.method );
+	}
+
+	getInstallStep() {
+		const currentMethod = this.getCurrentMethod();
+
+		if ( ! currentMethod.plugins || ! currentMethod.plugins.length ) {
+			return;
+		}
+
+		const { activePlugins } = this.props;
+		const pluginsToInstall = currentMethod.plugins.filter(
+			( method ) => ! activePlugins.includes( method )
+		);
+		const pluginNamesString = currentMethod.plugins
+			.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
+			.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
+
+		return {
+			key: 'install',
+			label: sprintf(
+				__( 'Install %s', 'woocommerce-admin' ),
+				pluginNamesString
+			),
+			content: (
+				<Plugins
+					onComplete={ () => {
+						recordEvent( 'tasklist_payment_install_method', {
+							plugins: currentMethod.plugins,
+						} );
+					} }
+					autoInstall
+					pluginSlugs={ currentMethod.plugins }
+				/>
+			),
+			isComplete: ! pluginsToInstall.length,
+		};
+	}
+
+	render() {
+		const currentMethod = this.getCurrentMethod();
+		const { query } = this.props;
+
+		if ( currentMethod ) {
 			return (
 				<Card className="woocommerce-task-payment-method is-narrow">
-					{ currentMethod.container }
+					{ cloneElement( currentMethod.container, {
+						query,
+						installStep: this.getInstallStep(),
+					} ) }
 				</Card>
 			);
 		}
+
+		const methods = this.getMethodOptions();
 
 		return (
 			<div className="woocommerce-task-payments">
