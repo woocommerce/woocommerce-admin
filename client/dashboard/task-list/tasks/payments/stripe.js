@@ -34,6 +34,7 @@ class Stripe extends Component {
 			connectURL: null,
 			errorTitle: null,
 			errorMessage: null,
+			isPending: true,
 		};
 
 		this.autoCreateAccount = this.autoCreateAccount.bind( this );
@@ -66,6 +67,28 @@ class Stripe extends Component {
 		}
 	}
 
+	componentDidUpdate( prevProps ) {
+		const {
+			createNotice,
+			isOptionsRequesting,
+			hasOptionsError,
+		} = this.props;
+
+		if ( prevProps.isOptionsRequesting && ! isOptionsRequesting ) {
+			if ( ! hasOptionsError ) {
+				this.completeMethod();
+			} else {
+				createNotice(
+					'error',
+					__(
+						'There was a problem saving your payment setings',
+						'woocommerce-admin'
+					)
+				);
+			}
+		}
+	}
+
 	requiresManualConfig() {
 		const { activePlugins, isJetpackConnected } = this.props;
 		const { autoConnectFailed } = this.state;
@@ -78,20 +101,25 @@ class Stripe extends Component {
 	}
 
 	completeMethod() {
+		const { createNotice, markConfigured } = this.props;
+
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: 'stripe',
 		} );
-		this.props.setRequestPending( false );
-		this.props.createNotice(
+
+		this.setState( { isPending: false } );
+
+		createNotice(
 			'success',
 			__( 'Stripe connected successfully.', 'woocommerce-admin' )
 		);
-		this.props.markConfigured( 'stripe' );
+
+		markConfigured( 'stripe' );
 	}
 
 	async fetchOAuthConnectURL() {
 		try {
-			this.props.setRequestPending( true );
+			this.setState( { isPending: true } );
 			const result = await apiFetch( {
 				path: WCS_NAMESPACE + '/connect/stripe/oauth/init',
 				method: 'POST',
@@ -102,20 +130,20 @@ class Stripe extends Component {
 				},
 			} );
 			if ( ! result || ! result.oauthUrl ) {
-				this.props.setRequestPending( false );
 				this.setState( {
 					autoConnectFailed: true,
+					isPending: false,
 				} );
 				return;
 			}
-			this.props.setRequestPending( false );
 			this.setState( {
 				connectURL: result.oauthUrl,
+				isPending: false,
 			} );
 		} catch ( error ) {
-			this.props.setRequestPending( false );
 			this.setState( {
 				autoConnectFailed: true,
+				isPending: false,
 			} );
 		}
 	}
@@ -126,7 +154,8 @@ class Stripe extends Component {
 		const { email } = values;
 
 		try {
-			this.props.setRequestPending( true );
+			this.setState( { isPending: true } );
+
 			const result = await apiFetch( {
 				path: WCS_NAMESPACE + '/connect/stripe/account',
 				method: 'POST',
@@ -160,6 +189,7 @@ class Stripe extends Component {
 					autoConnectFailed: true,
 					errorTitle,
 					errorMessage,
+					isPending: false,
 				} );
 			} else {
 				// An account with that email may exist so send them to Stripe to connect via oAuth.
@@ -200,6 +230,8 @@ class Stripe extends Component {
 	}
 
 	renderAutoConnect() {
+		const { isPending } = this.state;
+
 		return (
 			<Form
 				initialValues={ {
@@ -221,6 +253,7 @@ class Stripe extends Component {
 							<Button
 								isPrimary
 								isDefault
+								isBusy={ isPending }
 								onClick={ handleSubmit }
 							>
 								{ __( 'Connect', 'woocommerce-admin' ) }
@@ -232,16 +265,10 @@ class Stripe extends Component {
 		);
 	}
 
-	async updateSettings( values ) {
-		const {
-			createNotice,
-			isSettingsError,
-			updateOptions,
-			stripeSettings,
-		} = this.props;
+	updateSettings( values ) {
+		const { updateOptions, stripeSettings } = this.props;
 
-		this.props.setRequestPending( true );
-		await updateOptions( {
+		updateOptions( {
 			woocommerce_stripe_settings: {
 				...stripeSettings,
 				publishable_key: values.publishable_key,
@@ -249,19 +276,6 @@ class Stripe extends Component {
 				enabled: 'yes',
 			},
 		} );
-
-		if ( ! isSettingsError ) {
-			this.completeMethod();
-		} else {
-			this.props.setRequestPending( false );
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your payment settings.',
-					'woocommerce-admin'
-				)
-			);
-		}
 	}
 
 	getInitialConfigValues() {
@@ -301,6 +315,7 @@ class Stripe extends Component {
 	}
 
 	renderManualConfig() {
+		const { isOptionsRequesting } = this.props;
 		const stripeHelp = interpolateComponents( {
 			mixedString: __(
 				'Your API details can be obtained from your {{link}}Stripe account{{/link}}',
@@ -343,11 +358,16 @@ class Stripe extends Component {
 								{ ...getInputProps( 'secret_key' ) }
 							/>
 
-							<Button onClick={ handleSubmit } isPrimary>
+							<Button
+								isPrimary
+								isBusy={ isOptionsRequesting }
+								onClick={ handleSubmit }
+							>
 								{ __( 'Proceed', 'woocommerce-admin' ) }
 							</Button>
 
 							<Button
+								isBusy={ isOptionsRequesting }
 								onClick={ () => {
 									getHistory().push(
 										getNewPath(
@@ -405,12 +425,12 @@ class Stripe extends Component {
 	}
 
 	render() {
-		const { installStep } = this.props;
+		const { installStep, isOptionsRequesting } = this.props;
 
 		return (
 			<Stepper
 				isVertical
-				isPending={ ! installStep.isComplete }
+				isPending={ ! installStep.isComplete || isOptionsRequesting }
 				currentStep={ installStep.isComplete ? 'connect' : 'install' }
 				steps={ [ installStep, this.getConnectStep() ] }
 			/>
@@ -420,9 +440,13 @@ class Stripe extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { isJetpackConnected, getActivePlugins, getOptions } = select(
-			'wc-api'
-		);
+		const {
+			getActivePlugins,
+			getOptions,
+			getOptionsError,
+			isJetpackConnected,
+			isUpdateOptionsRequesting,
+		} = select( 'wc-api' );
 		const options = getOptions( [
 			'woocommerce_stripe_settings',
 			'woocommerce_default_country',
@@ -435,11 +459,19 @@ export default compose(
 			[ 'woocommerce_stripe_settings' ],
 			[]
 		);
+		const isOptionsRequesting = Boolean(
+			isUpdateOptionsRequesting( [ 'woocommerce_stripe_settings' ] )
+		);
+		const hasOptionsError = getOptionsError( [
+			'woocommerce_stripe_settings',
+		] );
 
 		return {
 			activePlugins: getActivePlugins(),
 			countryCode,
+			hasOptionsError,
 			isJetpackConnected: isJetpackConnected(),
+			isOptionsRequesting,
 			stripeSettings,
 		};
 	} ),
