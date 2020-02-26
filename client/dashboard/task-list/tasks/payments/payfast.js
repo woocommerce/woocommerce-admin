@@ -17,6 +17,7 @@ import { Form, Link, TextControl } from '@woocommerce/components';
  * Internal dependencies
  */
 import { recordEvent } from 'lib/tracks';
+import withSelect from 'wc-api/with-select';
 
 class PayFast extends Component {
 	getInitialConfigValues = () => {
@@ -54,16 +55,38 @@ class PayFast extends Component {
 		return errors;
 	};
 
-	updateSettings = async ( values ) => {
+	componentDidUpdate( prevProps ) {
 		const {
 			createNotice,
-			isSettingsError,
-			updateOptions,
+			isOptionsRequesting,
+			hasOptionsError,
 			markConfigured,
-			setRequestPending,
 		} = this.props;
 
-		setRequestPending( true );
+		if ( prevProps.isOptionsRequesting && ! isOptionsRequesting ) {
+			if ( ! hasOptionsError ) {
+				recordEvent( 'tasklist_payment_connect_method', {
+					payment_method: 'payfast',
+				} );
+				markConfigured( 'payfast' );
+				createNotice(
+					'success',
+					__( 'PayFast connected successfully', 'woocommerce-admin' )
+				);
+			} else {
+				createNotice(
+					'error',
+					__(
+						'There was a problem saving your payment setings',
+						'woocommerce-admin'
+					)
+				);
+			}
+		}
+	}
+
+	updateSettings = async ( values ) => {
+		const { updateOptions } = this.props;
 
 		// Because the PayFast extension only works with the South African Rand
 		// currency, force the store to use it while setting the PayFast settings
@@ -76,27 +99,6 @@ class PayFast extends Component {
 				enabled: 'yes',
 			},
 		} );
-
-		if ( ! isSettingsError ) {
-			recordEvent( 'tasklist_payment_connect_method', {
-				payment_method: 'payfast',
-			} );
-			setRequestPending( false );
-			markConfigured( 'payfast' );
-			createNotice(
-				'success',
-				__( 'PayFast connected successfully', 'woocommerce-admin' )
-			);
-		} else {
-			setRequestPending( false );
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your payment setings',
-					'woocommerce-admin'
-				)
-			);
-		}
 	};
 
 	render() {
@@ -169,6 +171,26 @@ class PayFast extends Component {
 }
 
 export default compose(
+	withSelect( ( select ) => {
+		const { getOptionsError, isUpdateOptionsRequesting } = select(
+			'wc-api'
+		);
+		const isOptionsRequesting = Boolean(
+			isUpdateOptionsRequesting( [
+				'woocommerce_currency',
+				'woocommerce_payfast_settings',
+			] )
+		);
+		const hasOptionsError = getOptionsError( [
+			'woocommerce_currency',
+			'woocommerce_payfast_settings',
+		] );
+
+		return {
+			hasOptionsError,
+			isOptionsRequesting,
+		};
+	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 		const { updateOptions } = dispatch( 'wc-api' );
