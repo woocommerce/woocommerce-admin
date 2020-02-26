@@ -12,6 +12,14 @@ export const pluginNames = {
 		'woocommerce-admin'
 	),
 	jetpack: __( 'Jetpack', 'woocommerce-admin' ),
+	'klarna-checkout-for-woocommerce': __(
+		'Klarna Checkout for WooCommerce',
+		'woocommerce-admin'
+	),
+	'klarna-payments-for-woocommerce': __(
+		'Klarna Payments for WooCommerce',
+		'woocommerce-admin'
+	),
 	'mailchimp-for-woocommerce': __(
 		'Mailchimp for WooCommerce',
 		'woocommerce-admin'
