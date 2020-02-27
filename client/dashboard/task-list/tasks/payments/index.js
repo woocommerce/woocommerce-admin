@@ -40,6 +40,7 @@ class Payments extends Component {
 	constructor() {
 		super( ...arguments );
 
+		this.recommendedMethod = 'stripe';
 		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
 		this.skipTask = this.skipTask.bind( this );
@@ -341,6 +342,17 @@ class Payments extends Component {
 							className="woocommerce-task-payment is-narrow"
 						>
 							<div className="woocommerce-task-payment__before">
+								{ key === this.recommendedMethod &&
+									! configured.includes( key ) && (
+										<div className="woocommerce-task-payment__recommended-ribbon">
+											<span>
+												{ __(
+													'Recommended',
+													'woocommerce-admin'
+												) }
+											</span>
+										</div>
+									) }
 								{ before }
 							</div>
 							<div className="woocommerce-task-payment__text">
@@ -354,8 +366,12 @@ class Payments extends Component {
 							<div className="woocommerce-task-payment__after">
 								{ container ? (
 									<Button
-										isPrimary={ key === 'stripe' }
-										isDefault={ key !== 'stripe' }
+										isPrimary={
+											key === this.recommendedMethod
+										}
+										isDefault={
+											key !== this.recommendedMethod
+										}
 										onClick={ () => {
 											recordEvent(
 												'tasklist_payment_setup',
