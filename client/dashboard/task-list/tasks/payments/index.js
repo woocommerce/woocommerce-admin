@@ -98,6 +98,9 @@ class Payments extends Component {
 
 	markConfigured( method ) {
 		const { options, configured, updateOptions } = this.props;
+
+		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
+
 		if ( configured.includes( method ) ) {
 			return;
 		}
@@ -113,8 +116,6 @@ class Payments extends Component {
 				configured,
 			},
 		} );
-
-		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
 	}
 
 	getMethodOptions() {
