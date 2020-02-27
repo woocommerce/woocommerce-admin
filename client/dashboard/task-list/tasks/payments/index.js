@@ -40,11 +40,24 @@ class Payments extends Component {
 	constructor() {
 		super( ...arguments );
 
+		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
+		this.skipTask = this.skipTask.bind( this );
 	}
 
 	completeTask() {
-		const { createNotice } = this.props;
+		const { configured, createNotice, options, updateOptions } = this.props;
+
+		updateOptions( {
+			woocommerce_task_list_payments: {
+				...options.woocommerce_task_list_payments,
+				completed: 1,
+			},
+		} );
+
+		recordEvent( 'tasklist_payment_done', {
+			configured,
+		} );
 
 		createNotice(
 			'success',
@@ -53,6 +66,23 @@ class Payments extends Component {
 				'woocommerce-admin'
 			)
 		);
+
+		getHistory().push( getNewPath( {}, '/', {} ) );
+	}
+
+	skipTask() {
+		const { options, updateOptions } = this.props;
+
+		updateOptions( {
+			woocommerce_task_list_payments: {
+				...options.woocommerce_task_list_payments,
+				completed: 1,
+			},
+		} );
+
+		recordEvent( 'tasklist_payment_skip_task', {
+			options: this.getMethodOptions().map( ( method ) => method.key ),
+		} );
 
 		getHistory().push( getNewPath( {}, '/', {} ) );
 	}
@@ -274,7 +304,7 @@ class Payments extends Component {
 
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { query } = this.props;
+		const { configured, query } = this.props;
 
 		if ( currentMethod ) {
 			return (
@@ -339,6 +369,20 @@ class Payments extends Component {
 						</Card>
 					);
 				} ) }
+				<div className="woocommerce-task-payments__actions">
+					{ configured.length === 0 ? (
+						<Button isLink onClick={ this.skipTask }>
+							{ __(
+								'My store doesn’t take payments',
+								'woocommerce-admin'
+							) }
+						</Button>
+					) : (
+						<Button isPrimary onClick={ this.completeTask }>
+							{ __( 'Done', 'woocommerce-admin' ) }
+						</Button>
+					) }
+				</div>
 			</div>
 		);
 	}

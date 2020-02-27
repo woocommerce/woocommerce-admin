@@ -351,6 +351,21 @@
 	}
 }
 
+.woocommerce-task-dashboard__container .woocommerce-task-payments .woocommerce-task-payments__actions {
+	text-align: center;
+
+	button.components-button.is-primary {
+		margin: 0;
+	}
+
+	button.components-button.is-link {
+		margin: 0;
+		height: auto;
+		color: $studio-gray-60;
+		font-weight: normal;
+	}
+}
+
 .woocommerce-task-appearance {
 	.woocommerce-image-upload {
 		margin-bottom: $gap-smallest;
