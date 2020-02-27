@@ -72,10 +72,10 @@ class Tax extends Component {
 		// Show the success screen if all requirements are satisfied from the beginning.
 		if (
 			null !== stepIndex &&
-			( ! pluginsToActivate.length &&
-				isCompleteAddress &&
-				isJetpackConnected &&
-				this.isTaxJarSupported() )
+			! pluginsToActivate.length &&
+			isCompleteAddress &&
+			isJetpackConnected &&
+			this.isTaxJarSupported()
 		) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( { stepIndex: null } );
@@ -148,16 +148,19 @@ class Tax extends Component {
 	}
 
 	async updateAutomatedTax() {
-		const { createNotice, isTaxSettingsError, updateSettings } = this.props;
+		const { createNotice, isGeneralSettingsError, isTaxSettingsError, updateSettings } = this.props;
 		const { automatedTaxEnabled } = this.state;
 
 		await updateSettings( {
+			general: {
+				woocommerce_calc_taxes: 'yes',
+			},
 			tax: {
 				wc_connect_taxes_enabled: automatedTaxEnabled ? 'yes' : 'no',
 			},
 		} );
 
-		if ( ! isTaxSettingsError ) {
+		if ( ! isTaxSettingsError && ! isGeneralSettingsError ) {
 			// @todo This is a workaround to force the task to mark as complete.
 			// This should probably be updated to use wc-api so we can fetch tax rates.
 			setSetting( 'onboarding', {
@@ -214,11 +217,15 @@ class Tax extends Component {
 				content: (
 					<Plugins
 						onComplete={ () => {
-							recordEvent( 'tasklist_tax_install_extensions', { install_extensions: true } );
+							recordEvent( 'tasklist_tax_install_extensions', {
+								install_extensions: true,
+							} );
 							this.completeStep();
 						} }
 						onSkip={ () => {
-							queueRecordEvent( 'tasklist_tax_install_extensions', { install_extensions: false } );
+							queueRecordEvent( 'tasklist_tax_install_extensions', {
+								install_extensions: false,
+							} );
 							window.location.href = getAdminLink(
 								'admin.php?page=wc-settings&tab=tax&section=standard'
 							);
@@ -242,7 +249,9 @@ class Tax extends Component {
 							recordEvent( 'tasklist_tax_connect_store', { connect: true } );
 						} }
 						onSkip={ () => {
-							queueRecordEvent( 'tasklist_tax_connect_store', { connect: false } );
+							queueRecordEvent( 'tasklist_tax_connect_store', {
+								connect: false,
+							} );
 							window.location.href = getAdminLink(
 								'admin.php?page=wc-settings&tab=tax&section=standard'
 							);
