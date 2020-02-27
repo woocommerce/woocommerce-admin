@@ -356,9 +356,20 @@ class Payments extends Component {
 									<Button
 										isPrimary={ key === 'stripe' }
 										isDefault={ key !== 'stripe' }
-										onClick={ () =>
-											updateQueryString( { method: key } )
-										}
+										onClick={ () => {
+											recordEvent(
+												'tasklist_payment_setup',
+												{
+													options: this.getMethodOptions().map(
+														( option ) => option.key
+													),
+													selected: key,
+												}
+											);
+											updateQueryString( {
+												method: key,
+											} );
+										} }
 									>
 										{ __( 'Set up', 'woocommerce-admin' ) }
 									</Button>
