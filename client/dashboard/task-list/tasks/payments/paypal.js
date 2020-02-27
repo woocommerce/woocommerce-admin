@@ -42,9 +42,9 @@ class PayPal extends Component {
 					'success',
 					__( 'PayPal connected successfully.', 'woocommerce-admin' )
 				);
+				markConfigured( 'paypal' );
 				return;
 			}
-			markConfigured( 'paypal' );
 
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState( {
