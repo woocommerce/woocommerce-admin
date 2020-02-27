@@ -302,7 +302,11 @@ class Tax extends Component {
 
 	render() {
 		const { isPending, stepIndex } = this.state;
-		const { isGeneralSettingsRequesting, isTaxSettingsRequesting } = this.props;
+		const {
+			isGeneralSettingsRequesting,
+			isTaxSettingsRequesting,
+			isJetpackRequesting,
+		} = this.props;
 		const step = this.getSteps()[ stepIndex ];
 
 		return (
@@ -310,7 +314,12 @@ class Tax extends Component {
 				<Card className="is-narrow">
 					{ step ? (
 						<Stepper
-							isPending={ isPending || isGeneralSettingsRequesting || isTaxSettingsRequesting }
+							isPending={
+								isPending ||
+								isGeneralSettingsRequesting ||
+								isTaxSettingsRequesting ||
+								isJetpackRequesting
+							}
 							isVertical={ true }
 							currentStep={ step.key }
 							steps={ this.getSteps() }
@@ -369,15 +378,21 @@ class Tax extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select, props ) => {
 		const {
 			getActivePlugins,
 			getOptions,
 			getSettings,
 			getSettingsError,
 			isGetSettingsRequesting,
+			isGetJetpackConnectUrlRequesting,
 			isJetpackConnected,
 		} = select( 'wc-api' );
+
+		const jetpackQueryArgs = {
+			redirect_url: props.redirectUrl || window.location.href,
+		};
+		const isJetpackRequesting = isGetJetpackConnectUrlRequesting( jetpackQueryArgs );
 
 		const generalSettings = getSettings( 'general' );
 		const isGeneralSettingsError = Boolean( getSettingsError( 'general' ) );
@@ -404,6 +419,7 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 			pluginsToActivate,
 			tosAccepted,
+			isJetpackRequesting,
 		};
 	} ),
 	withDispatch( dispatch => {

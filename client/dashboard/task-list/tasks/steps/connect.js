@@ -47,7 +47,7 @@ class Connect extends Component {
 						{ __( 'Retry', 'woocommerce-admin' ) }
 					</Button>
 				) : (
-					<Button isBusy={ isRequesting } isPrimary onClick={ this.connectJetpack }>
+					<Button disabled={ isRequesting } isPrimary onClick={ this.connectJetpack }>
 						{ __( 'Connect', 'woocommerce-admin' ) }
 					</Button>
 				) }
