@@ -14,7 +14,6 @@ import { compose } from '@wordpress/compose';
 import { getQuery, getHistory, getNewPath } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
 import { Stepper } from '@woocommerce/components';
 
 class Square extends Component {
@@ -30,29 +29,27 @@ class Square extends Component {
 	}
 
 	componentDidMount() {
+		const { createNotice, markConfigured } = this.props;
 		const query = getQuery();
 		// Handle redirect back from Square
 		if ( query[ 'square-connect' ] ) {
 			if ( query[ 'square-connect' ] === '1' ) {
-				recordEvent( 'tasklist_payment_connect_method', {
-					payment_method: 'square',
-				} );
-				this.props.createNotice(
+				createNotice(
 					'success',
 					__( 'Square connected successfully.', 'woocommerce-admin' )
 				);
-				this.props.markConfigured( 'square' );
+				markConfigured( 'square' );
 			}
 		}
 	}
 
 	async connect() {
-		const { updateOptions } = this.props;
+		const { createNotice, options, updateOptions } = this.props;
 		this.setState( { isPending: true } );
 
 		updateOptions( {
 			woocommerce_stripe_settings: {
-				...this.props.options.woocommerce_stripe_settings,
+				...options.woocommerce_stripe_settings,
 				enabled: 'yes',
 			},
 		} );
@@ -70,7 +67,7 @@ class Square extends Component {
 
 			if ( ! result || ! result.connectUrl ) {
 				this.setState( { connectionFailed: true, isPending: false } );
-				this.props.createNotice( 'error', errorMessage );
+				createNotice( 'error', errorMessage );
 				return;
 			}
 
@@ -78,7 +75,7 @@ class Square extends Component {
 			window.location = result.connectUrl;
 		} catch ( error ) {
 			this.setState( { connectionFailed: true, isPending: false } );
-			this.props.createNotice( 'error', errorMessage );
+			createNotice( 'error', errorMessage );
 		}
 	}
 
@@ -95,29 +92,42 @@ class Square extends Component {
 					installStep,
 					{
 						key: 'connect',
-						label: __( 'Connect your Square account', 'woocommerce-admin' ),
-						description: __( 'A Square account is required to process payments. You will be redirected to the Square website to create the connection.', 'woocommerce-admin' ),
-						content: <Fragment>
-							<Button isPrimary isDefault isBusy={ isPending } onClick={ this.connect }>
-								{ __( 'Connect', 'woocommerce-admin' ) }
-							</Button>
-							{ connectionFailed && (
-							<Button
-								onClick={ () => {
-									getHistory().push(
-										getNewPath(
-											{ task: 'payments' },
-											'/',
-											{}
-										)
-									);
-								} }
-							>
-								{ __( 'Skip', 'woocommerce-admin' ) }
-							</Button>
-						) }
-						</Fragment>
-					}
+						label: __(
+							'Connect your Square account',
+							'woocommerce-admin'
+						),
+						description: __(
+							'A Square account is required to process payments. You will be redirected to the Square website to create the connection.',
+							'woocommerce-admin'
+						),
+						content: (
+							<Fragment>
+								<Button
+									isPrimary
+									isDefault
+									isBusy={ isPending }
+									onClick={ this.connect }
+								>
+									{ __( 'Connect', 'woocommerce-admin' ) }
+								</Button>
+								{ connectionFailed && (
+									<Button
+										onClick={ () => {
+											getHistory().push(
+												getNewPath(
+													{ task: 'payments' },
+													'/',
+													{}
+												)
+											);
+										} }
+									>
+										{ __( 'Skip', 'woocommerce-admin' ) }
+									</Button>
+								) }
+							</Fragment>
+						),
+					},
 				] }
 			/>
 		);

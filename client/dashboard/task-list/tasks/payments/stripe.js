@@ -16,7 +16,6 @@ import { get } from 'lodash';
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { getQuery, getHistory, getNewPath } from '@woocommerce/navigation';
-import { recordEvent } from 'lib/tracks';
 import { WCS_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 
@@ -102,10 +101,6 @@ class Stripe extends Component {
 
 	completeMethod() {
 		const { createNotice, markConfigured } = this.props;
-
-		recordEvent( 'tasklist_payment_connect_method', {
-			payment_method: 'stripe',
-		} );
 
 		this.setState( { isPending: false } );
 

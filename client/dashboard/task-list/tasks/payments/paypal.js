@@ -14,7 +14,6 @@ import { withDispatch } from '@wordpress/data';
  */
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getQuery, getHistory, getNewPath } from '@woocommerce/navigation';
-import { recordEvent } from 'lib/tracks';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 
@@ -33,21 +32,19 @@ class PayPal extends Component {
 
 	componentDidMount() {
 		const { autoConnectFailed } = this.state;
+		const { createNotice, markConfigured } = this.props;
 
 		const query = getQuery();
 		// Handle redirect back from PayPal
 		if ( query[ 'paypal-connect' ] ) {
 			if ( query[ 'paypal-connect' ] === '1' ) {
-				recordEvent( 'tasklist_payment_connect_method', {
-					payment_method: 'paypal',
-				} );
-				this.props.createNotice(
+				createNotice(
 					'success',
 					__( 'PayPal connected successfully.', 'woocommerce-admin' )
 				);
 				return;
 			}
-			this.props.markConfigured( 'paypal' );
+			markConfigured( 'paypal' );
 
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState( {
@@ -100,13 +97,14 @@ class PayPal extends Component {
 		const {
 			createNotice,
 			isSettingsError,
+			options,
 			updateOptions,
 			markConfigured,
 		} = this.props;
 
 		await updateOptions( {
 			woocommerce_ppec_paypal_settings: {
-				...this.props.options.woocommerce_ppec_paypal_settings,
+				...options.woocommerce_ppec_paypal_settings,
 				api_username: values.api_username,
 				api_password: values.api_password,
 				enabled: 'yes',
@@ -114,10 +112,7 @@ class PayPal extends Component {
 		} );
 
 		if ( ! isSettingsError ) {
-			recordEvent( 'tasklist_payment_connect_method', {
-				payment_method: 'paypal',
-			} );
-			this.props.createNotice(
+			createNotice(
 				'success',
 				__( 'PayPal connected successfully.', 'woocommerce-admin' )
 			);

@@ -66,13 +66,17 @@ class Payments extends Component {
 	}
 
 	markConfigured( method ) {
-		const { options, configured } = this.props;
+		const { options, configured, updateOptions } = this.props;
 		if ( configured.includes( method ) ) {
 			return;
 		}
 
+		recordEvent( 'tasklist_payment_connect_method', {
+			payment_method: method,
+		} );
+
 		configured.push( method );
-		this.props.updateOptions( {
+		updateOptions( {
 			woocommerce_task_list_payments: {
 				...options.woocommerce_task_list_payments,
 				configured,

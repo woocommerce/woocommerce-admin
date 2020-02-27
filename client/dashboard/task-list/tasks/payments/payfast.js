@@ -17,7 +17,6 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
 
 class PayFast extends Component {
@@ -66,9 +65,6 @@ class PayFast extends Component {
 
 		if ( prevProps.isOptionsRequesting && ! isOptionsRequesting ) {
 			if ( ! hasOptionsError ) {
-				recordEvent( 'tasklist_payment_connect_method', {
-					payment_method: 'payfast',
-				} );
 				markConfigured( 'payfast' );
 				createNotice(
 					'success',

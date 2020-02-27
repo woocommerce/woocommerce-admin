@@ -12,11 +12,6 @@ import interpolateComponents from 'interpolate-components';
 import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
 import { Link, Stepper } from '@woocommerce/components';
 
-/**
- * Internal dependencies
- */
-import { recordEvent } from 'lib/tracks';
-
 class Klarna extends Component {
 	constructor( props ) {
 		super( props );
@@ -28,9 +23,7 @@ class Klarna extends Component {
 
 		const slug =
 			plugin === 'checkout' ? 'klarna-checkout' : 'klarna-payments';
-		recordEvent( 'tasklist_payment_connect_method', {
-			payment_method: slug,
-		} );
+
 		markConfigured( slug );
 	}
 
