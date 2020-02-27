@@ -579,7 +579,7 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 			'orders_count'    => __( 'Orders', 'woocommerce-admin' ),
 			'total_spend'     => __( 'Total Spend', 'woocommerce-admin' ),
 			'avg_order_value' => __( 'AOV', 'woocommerce-admin' ),
-			'country'         => __( 'Country', 'woocommerce-admin' ),
+			'country'         => __( 'Country / Region', 'woocommerce-admin' ),
 			'city'            => __( 'City', 'woocommerce-admin' ),
 			'region'          => __( 'Region', 'woocommerce-admin' ),
 			'postcode'        => __( 'Postal Code', 'woocommerce-admin' ),
