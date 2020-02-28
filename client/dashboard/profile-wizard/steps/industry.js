@@ -49,8 +49,10 @@ class Industry extends Component {
 			isError,
 			updateProfileItems,
 		} = this.props;
-		const selectedIndustriesList = this.state.selected.map( industry => industry.slug );
-		const industriesWithDetail = filter( this.state.selected, value => {
+		const selectedIndustriesList = this.state.selected.map(
+			( industry ) => industry.slug
+		);
+		const industriesWithDetail = filter( this.state.selected, ( value ) => {
 			return typeof value.detail !== 'undefined';
 		} );
 
@@ -84,19 +86,22 @@ class Industry extends Component {
 		this.setState(
 			( state ) => {
 				const newSelected = state.selected;
-				const selectedIndustry = find( newSelected, { slug: slug } );
+				const selectedIndustry = find( newSelected, { slug } );
 				if ( selectedIndustry ) {
 					const newTextInputListContent = state.textInputListContent;
 					newTextInputListContent[ slug ] = selectedIndustry.detail;
 					return {
 						selected:
-							filter( state.selected, value => {
+							filter( state.selected, ( value ) => {
 								return value.slug !== slug;
 							} ) || [],
 						textInputListContent: newTextInputListContent,
 					};
 				}
-				newSelected.push( { slug, detail: state.textInputListContent[ slug ] } );
+				newSelected.push( {
+					slug,
+					detail: state.textInputListContent[ slug ],
+				} );
 				return {
 					selected: newSelected,
 				};
@@ -106,10 +111,10 @@ class Industry extends Component {
 	}
 
 	onDetailChange( value, slug ) {
-		this.setState( state => {
+		this.setState( ( state ) => {
 			const newSelected = state.selected;
 			const newTextInputListContent = state.textInputListContent;
-			const industryIndex = findIndex( newSelected, { slug: slug } );
+			const industryIndex = findIndex( newSelected, { slug } );
 			newSelected[ industryIndex ].detail = value;
 			newTextInputListContent[ slug ] = value;
 			return {
@@ -136,15 +141,17 @@ class Industry extends Component {
 				</p>
 				<Card>
 					<div className="woocommerce-profile-wizard__checkbox-group">
-						{ Object.keys( industries ).map( slug => {
-							const selectedIndustry = find( selected, { slug: slug } );
+						{ Object.keys( industries ).map( ( slug ) => {
+							const selectedIndustry = find( selected, { slug } );
 
 							return (
 								<div key={ `div-${ slug }` }>
 									<CheckboxControl
 										key={ `checkbox-control-${ slug }` }
 										label={ industries[ slug ].label }
-										onChange={ () => this.onIndustryChange( slug ) }
+										onChange={ () =>
+											this.onIndustryChange( slug )
+										}
 										checked={ selectedIndustry || false }
 										className="woocommerce-profile-wizard__checkbox"
 									/>
@@ -152,9 +159,24 @@ class Industry extends Component {
 										selectedIndustry && (
 											<TextControl
 												key={ `text-control-${ selectedIndustry.slug }` }
-												label={ industries[ selectedIndustry.slug ].description_label }
-												value={ selectedIndustry.detail || textInputListContent[ slug ] || '' }
-												onChange={ value => this.onDetailChange( value, selectedIndustry.slug ) }
+												label={
+													industries[
+														selectedIndustry.slug
+													].description_label
+												}
+												value={
+													selectedIndustry.detail ||
+													textInputListContent[
+														slug
+													] ||
+													''
+												}
+												onChange={ ( value ) =>
+													this.onDetailChange(
+														value,
+														selectedIndustry.slug
+													)
+												}
 												className="woocommerce-profile-wizard__text"
 											/>
 										) }

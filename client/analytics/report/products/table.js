@@ -124,7 +124,7 @@ class ProductsReportTable extends Component {
 				variations = [],
 			} = extendedInfo;
 
-			const name = decodeEntities( extended_info.name );
+			const name = decodeEntities( extendedInfo.name );
 			const ordersLink = getNewPath(
 				persistedQuery,
 				'/analytics/orders',
@@ -146,7 +146,7 @@ class ProductsReportTable extends Component {
 			const productCategories =
 				( categoryIds &&
 					categoryIds
-						.map( categoryId => categories.get( categoryId ) )
+						.map( ( categoryId ) => categories.get( categoryId ) )
 						.filter( Boolean ) ) ||
 				[];
 
