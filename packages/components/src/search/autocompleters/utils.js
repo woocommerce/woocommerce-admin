@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { decodeEntities } from '@wordpress/html-entities';
 
 /**
  * Parse a string suggestion, split apart by where the first matching query is.
@@ -19,9 +20,9 @@ export function computeSuggestionMatch( suggestion, query ) {
 	const indexOfMatch = suggestion.toLocaleLowerCase().indexOf( query.toLocaleLowerCase() );
 
 	return {
-		suggestionBeforeMatch: suggestion.substring( 0, indexOfMatch ),
-		suggestionMatch: suggestion.substring( indexOfMatch, indexOfMatch + query.length ),
-		suggestionAfterMatch: suggestion.substring( indexOfMatch + query.length ),
+		suggestionBeforeMatch: decodeEntities( suggestion.substring( 0, indexOfMatch ) ),
+		suggestionMatch: decodeEntities( suggestion.substring( indexOfMatch, indexOfMatch + query.length ) ),
+		suggestionAfterMatch: decodeEntities( suggestion.substring( indexOfMatch + query.length ) ),
 	};
 }
 

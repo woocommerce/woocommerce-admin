@@ -5,6 +5,7 @@
 import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { decodeEntities } from '@wordpress/html-entities';
 import { map } from 'lodash';
 
 /**
@@ -109,12 +110,13 @@ class ProductsReportTable extends Component {
 				category_ids,
 				low_stock_amount,
 				manage_stock,
-				name,
 				sku,
 				stock_status,
 				stock_quantity,
 				variations = [],
 			} = extended_info;
+			const name = decodeEntities( extended_info.name );
+
 			const ordersLink = getNewPath( persistedQuery, '/analytics/orders', {
 				filter: 'advanced',
 				product_includes: product_id,
