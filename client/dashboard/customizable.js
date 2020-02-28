@@ -225,19 +225,19 @@ class CustomizableDashboard extends Component {
 	}
 
 	render() {
-		const { 
-			query, 
-			path, 
-			taskListHidden, 
-			taskListCompleted, 
+		const {
+			query,
+			path,
+			taskListHidden,
+			taskListCompleted,
 			skipStoreSetup,
-			doThisLater, 
+			doThisLater,
 			requesting,
 		} = this.props;
 		const { sections } = this.state;
 
 		if ( requesting ) {
-			return <Spinner/>;
+			return <Spinner />;
 		}
 
 		if (
@@ -266,7 +266,8 @@ class CustomizableDashboard extends Component {
 			primaryDate,
 			secondaryDate,
 		};
-		const showTaskList = isOnboardingEnabled() &&
+		const showTaskList =
+			isOnboardingEnabled() &&
 			wcSettings.onboarding &&
 			! taskListHidden &&
 			! taskListCompleted &&
@@ -330,12 +331,12 @@ class CustomizableDashboard extends Component {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { 
+		const {
 			getCurrentUserData,
 			getProfileItems,
-			isGetProfileItemsRequesting, 
+			isGetProfileItemsRequesting,
 			getOptions,
-			isGetOptionsRequesting, 
+			isGetOptionsRequesting,
 		} = select( 'wc-api' );
 		const userData = getCurrentUserData();
 		const withSelectData = {
@@ -364,21 +365,32 @@ export default compose(
 					[ 'woocommerce_task_list_hidden' ],
 					'no'
 				) === 'yes';
-			
+
 			const options = getOptions( [
 				'woocommerce_task_list_skip_store_setup',
 				'woocommerce_task_list_do_this_later',
 			] );
 
-			withSelectData.skipStoreSetup = get( options, [ 'woocommerce_task_list_skip_store_setup' ], false );
-			withSelectData.doThisLater = get( options, [ 'woocommerce_task_list_do_this_later' ], false );
-			withSelectData.requesting = withSelectData.requesting || isGetProfileItemsRequesting();
-			withSelectData.requesting = withSelectData.requesting || isGetOptionsRequesting( [
-				'woocommerce_task_list_payments',
-				'woocommerce_task_list_hidden',
-				'woocommerce_task_list_skip_store_setup',
-				'woocommerce_task_list_do_this_later',
-			] );
+			withSelectData.skipStoreSetup = get(
+				options,
+				[ 'woocommerce_task_list_skip_store_setup' ],
+				false
+			);
+			withSelectData.doThisLater = get(
+				options,
+				[ 'woocommerce_task_list_do_this_later' ],
+				false
+			);
+			withSelectData.requesting =
+				withSelectData.requesting || isGetProfileItemsRequesting();
+			withSelectData.requesting =
+				withSelectData.requesting ||
+				isGetOptionsRequesting( [
+					'woocommerce_task_list_payments',
+					'woocommerce_task_list_hidden',
+					'woocommerce_task_list_skip_store_setup',
+					'woocommerce_task_list_do_this_later',
+				] );
 		}
 
 		return withSelectData;

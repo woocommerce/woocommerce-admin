@@ -3,6 +3,4 @@
  */
 import { LinkButton } from '@woocommerce/components';
 
-export default () => (
-    <LinkButton onClick={ () => {} }>Click me</LinkButton>
-);
+export default () => <LinkButton onClick={ () => {} }>Click me</LinkButton>;
