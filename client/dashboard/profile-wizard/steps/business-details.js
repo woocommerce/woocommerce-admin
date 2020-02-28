@@ -499,6 +499,22 @@ class BusinessDetails extends Component {
 				label: __( 'Wix', 'woocommerce-admin' ),
 			},
 			{
+				key: 'amazon',
+				label: __( 'Amazon', 'woocommerce-admin' ),
+			},
+			{
+				key: 'ebay',
+				label: __( 'eBay', 'woocommerce-admin' ),
+			},
+			{
+				key: 'etsy',
+				label: __( 'Etsy', 'woocommerce-admin' ),
+			},
+			{
+				key: 'squarespace',
+				label: __( 'Squarespace', 'woocommerce-admin' ),
+			},
+			{
 				key: 'other',
 				label: __( 'Other', 'woocommerce-admin' ),
 			},
