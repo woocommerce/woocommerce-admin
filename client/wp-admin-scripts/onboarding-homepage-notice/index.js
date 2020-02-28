@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -69,11 +68,16 @@ const onboardingHomepageNotice = () => {
 
 	saveCompleted().then( () => {
 		const notificationType =
-			null !== document.querySelector( '.components-snackbar__content' ) ? 'snackbar' : 'default';
+			document.querySelector( '.components-snackbar__content' ) !== null
+				? 'snackbar'
+				: 'default';
 
 		dispatch( 'core/notices' ).removeNotice( 'SAVE_POST_NOTICE_ID' );
 		dispatch( 'core/notices' ).createSuccessNotice(
-			__( "🏠 Nice work creating your store's homepage!", 'woocommerce-admin' ),
+			__(
+				"🏠 Nice work creating your store's homepage!",
+				'woocommerce-admin'
+			),
 			{
 				id: 'WOOCOMMERCE_ONBOARDING_HOME_PAGE_NOTICE',
 				type: notificationType,
@@ -81,8 +85,13 @@ const onboardingHomepageNotice = () => {
 					{
 						label: __( 'Continue setup.', 'woocommerce-admin' ),
 						onClick: () => {
-							queueRecordEvent( 'tasklist_appearance_continue_setup', {} );
-							window.location = getAdminLink( 'admin.php?page=wc-admin&task=appearance' );
+							queueRecordEvent(
+								'tasklist_appearance_continue_setup',
+								{}
+							);
+							window.location = getAdminLink(
+								'admin.php?page=wc-admin&task=appearance'
+							);
 						},
 					},
 				],

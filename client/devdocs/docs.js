@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -12,7 +11,7 @@ Prism.languages.es6 = Prism.languages.javascript;
 
 // Configure marked to use Prism for code-block highlighting.
 marked.setOptions( {
-	highlight: function( code, language ) {
+	highlight( code, language ) {
 		const syntax = Prism.languages[ language ];
 		return syntax ? Prism.highlight( code, syntax ) : code;
 	},
@@ -29,7 +28,7 @@ class Docs extends Component {
 
 	getReadme() {
 		const { filePath } = this.props;
-		const readme = require( `../../packages/components/src/${ filePath }/README.md` );
+		const readme = require( `../../packages/components/src/${ filePath }/README.md` ).default;
 
 		if ( ! readme ) {
 			return;

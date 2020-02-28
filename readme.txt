@@ -87,6 +87,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Create Onboarding homepage without redirect #3727
 - Add: Deactivation note for feature plugin #3687
 - Dev: Travis tests on Github for release branch #3751
+=======
+= 0.25.1 2020-02-07 =
+
+- Dev: Enable onboarding #3651 (Onboarding) 
+- Now `decodeEntities` method is used to correct the breadcrumb. #3653 (Activity Panel) 
+- Fix: Fix styling of search control in report table header and filters. #3603 (Analytics, Components, Packages) 
+🤯
 
 = 0.25.0 2020-01-29 =
 

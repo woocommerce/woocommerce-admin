@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -44,7 +43,12 @@ class Industry extends Component {
 			return;
 		}
 
-		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
+		const {
+			createNotice,
+			goToNextStep,
+			isError,
+			updateProfileItems,
+		} = this.props;
 		const selectedIndustriesList = this.state.selected.map( industry => industry.slug );
 		const industriesWithDetail = filter( this.state.selected, value => {
 			return typeof value.detail !== 'undefined';
@@ -61,7 +65,10 @@ class Industry extends Component {
 		} else {
 			createNotice(
 				'error',
-				__( 'There was a problem updating your industries.', 'woocommerce-admin' )
+				__(
+					'There was a problem updating your industries.',
+					'woocommerce-admin'
+				)
 			);
 		}
 	}
@@ -75,7 +82,7 @@ class Industry extends Component {
 
 	onIndustryChange( slug ) {
 		this.setState(
-			state => {
+			( state ) => {
 				const newSelected = state.selected;
 				const selectedIndustry = find( newSelected, { slug: slug } );
 				if ( selectedIndustry ) {
@@ -119,7 +126,10 @@ class Industry extends Component {
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
-					{ __( 'In which industry does the store operate?', 'woocommerce-admin' ) }
+					{ __(
+						'In which industry does the store operate?',
+						'woocommerce-admin'
+					) }
 				</H>
 				<p className="woocommerce-profile-wizard__intro-paragraph">
 					{ __( 'Choose any that apply' ) }
@@ -151,10 +161,18 @@ class Industry extends Component {
 								</div>
 							);
 						} ) }
-						{ error && <span className="woocommerce-profile-wizard__error">{ error }</span> }
+						{ error && (
+							<span className="woocommerce-profile-wizard__error">
+								{ error }
+							</span>
+						) }
 					</div>
 
-					<Button isPrimary onClick={ this.onContinue } disabled={ ! selected.length }>
+					<Button
+						isPrimary
+						onClick={ this.onContinue }
+						disabled={ ! selected.length }
+					>
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</Card>
@@ -164,7 +182,7 @@ class Industry extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const { getProfileItems, getProfileItemsError } = select( 'wc-api' );
 
 		return {
@@ -172,7 +190,7 @@ export default compose(
 			profileItems: getProfileItems(),
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { updateProfileItems } = dispatch( 'wc-api' );
 		const { createNotice } = dispatch( 'core/notices' );
 

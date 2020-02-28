@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -70,9 +69,9 @@ class TaskDashboard extends Component {
 		return getAllTasks( {
 			profileItems,
 			options: taskListPayments,
-			query: query,
+			query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
-		} ).filter( task => task.visible );
+		} ).filter( ( task ) => task.visible );
 	}
 
 	getPluginsInformation() {
@@ -137,7 +136,7 @@ class TaskDashboard extends Component {
 
 	getCurrentTask() {
 		const { task } = this.props.query;
-		const currentTask = this.getTasks().find( s => s.key === task );
+		const currentTask = this.getTasks().find( ( s ) => s.key === task );
 
 		if ( ! currentTask ) {
 			return null;
@@ -155,9 +154,14 @@ class TaskDashboard extends Component {
 			<Snackbar className="woocommerce-task-card__prompt">
 				<div className="woocommerce-task-card__prompt-pointer" />
 				<div className="woocommerce-task-card__prompt-content">
-					<span>{ __( 'Is this card useful?', 'woocommerce-admin' ) }</span>
+					<span>
+						{ __( 'Is this card useful?', 'woocommerce-admin' ) }
+					</span>
 					<div className="woocommerce-task-card__prompt-actions">
-						<Button isLink onClick={ () => this.hideTaskCard( 'hide_card' ) }>
+						<Button
+							isLink
+							onClick={ () => this.hideTaskCard( 'hide_card' ) }
+						>
 							{ __( 'No, hide it', 'woocommerce-admin' ) }
 						</Button>
 
@@ -176,8 +180,16 @@ class TaskDashboard extends Component {
 				label={ __( 'Task List Options', 'woocommerce-admin' ) }
 				renderContent={ () => (
 					<div className="woocommerce-task-card__section-controls">
-						<MenuItem isClickable onInvoke={ () => this.hideTaskCard( 'remove_card' ) }>
-							<Icon icon={ 'trash' } label={ __( 'Remove block' ) } />
+						<MenuItem
+							isClickable
+							onInvoke={ () =>
+								this.hideTaskCard( 'remove_card' )
+							}
+						>
+							<Icon
+								icon={ 'trash' }
+								label={ __( 'Remove block' ) }
+							/>
 							{ __( 'Remove this card', 'woocommerce-admin' ) }
 						</MenuItem>
 					</div>
@@ -198,7 +210,9 @@ class TaskDashboard extends Component {
 
 	closeWelcomeModal() {
 		// Prevent firing this event before the modal is seen.
-		if ( document.body.classList.contains( 'woocommerce-admin-is-loading' ) ) {
+		if (
+			document.body.classList.contains( 'woocommerce-admin-is-loading' )
+		) {
 			return;
 		}
 
@@ -221,7 +235,10 @@ class TaskDashboard extends Component {
 						>
 							🚀
 						</span>
-						{ __( "Woo hoo - you're almost there!", 'woocommerce-admin' ) }
+						{ __(
+							"Woo hoo - you're almost there!",
+							'woocommerce-admin'
+						) }
 					</Fragment>
 				}
 				onRequestClose={ () => this.closeWelcomeModal() }
@@ -242,7 +259,11 @@ class TaskDashboard extends Component {
 							) }
 						</p>
 					</div>
-					<Button isPrimary isDefault onClick={ () => this.closeWelcomeModal() }>
+					<Button
+						isPrimary
+						isDefault
+						onClick={ () => this.closeWelcomeModal() }
+					>
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</div>
@@ -254,14 +275,19 @@ class TaskDashboard extends Component {
 		const { inline } = this.props;
 		const { isCartModalOpen, isWelcomeModalOpen } = this.state;
 		const currentTask = this.getCurrentTask();
-		const listTasks = this.getTasks().map( task => {
-			task.className = classNames( task.completed ? 'is-complete' : null, task.className );
+		const listTasks = this.getTasks().map( ( task ) => {
+			task.className = classNames(
+				task.completed ? 'is-complete' : null,
+				task.className
+			);
 			task.before = task.completed ? (
 				<i className="material-icons-outlined">check_circle</i>
 			) : (
 				<i className="material-icons-outlined">{ task.icon }</i>
 			);
-			task.after = <i className="material-icons-outlined">chevron_right</i>;
+			task.after = (
+				<i className="material-icons-outlined">chevron_right</i>
+			);
 
 			if ( ! task.onClick ) {
 				task.onClick = () => updateQueryString( { task: task.key } );
@@ -279,7 +305,10 @@ class TaskDashboard extends Component {
 						<Fragment>
 							<Card
 								className="woocommerce-task-card"
-								title={ __( 'Set up your store and start selling', 'woocommerce-admin' ) }
+								title={ __(
+									'Set up your store and start selling',
+									'woocommerce-admin'
+								) }
 								description={ __(
 									'Below you’ll find a list of the most important steps to get your store up and running.',
 									'woocommerce-admin'
@@ -313,13 +342,19 @@ export default compose(
 			'woocommerce_task_list_prompt_shown',
 			'woocommerce_task_list_welcome_modal_dismissed',
 		] );
-		const promptShown = get( options, [ 'woocommerce_task_list_prompt_shown' ], false );
+		const promptShown = get(
+			options,
+			[ 'woocommerce_task_list_prompt_shown' ],
+			false
+		);
 		const modalDismissed = get(
 			options,
 			[ 'woocommerce_task_list_welcome_modal_dismissed' ],
 			false
 		);
-		const taskListPayments = getOptions( [ 'woocommerce_task_list_payments' ] );
+		const taskListPayments = getOptions( [
+			'woocommerce_task_list_payments',
+		] );
 
 		return {
 			modalDismissed,
@@ -329,7 +364,7 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { updateOptions } = dispatch( 'wc-api' );
 		return {
 			updateOptions,
