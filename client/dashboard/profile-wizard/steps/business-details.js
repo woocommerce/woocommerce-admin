@@ -135,7 +135,7 @@ class BusinessDetails extends Component {
 	validate( values ) {
 		const errors = {};
 
-		Object.keys( values ).forEach( name => {
+		Object.keys( values ).forEach( ( name ) => {
 			if ( name === 'other_platform' ) {
 				if (
 					! values.other_platform.length &&
@@ -531,7 +531,7 @@ class BusinessDetails extends Component {
 								<Fragment>
 									<SelectControl
 										label={ __(
-											'How many products do you plan to sell?',
+											'How many products do you plan to display?',
 											'woocommerce-admin'
 										) }
 										options={ productCountOptions }
