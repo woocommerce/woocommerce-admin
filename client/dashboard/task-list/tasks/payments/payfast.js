@@ -12,7 +12,6 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
-import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -156,20 +155,7 @@ class PayFast extends Component {
 							>
 								{ __( 'Proceed', 'woocommerce-admin' ) }
 							</Button>
-							<Button
-								isBusy={ isOptionsRequesting }
-								onClick={ () => {
-									getHistory().push(
-										getNewPath(
-											{ task: 'payments' },
-											'/',
-											{}
-										)
-									);
-								} }
-							>
-								{ __( 'Skip', 'woocommerce-admin' ) }
-							</Button>
+
 							<p>{ helpText }</p>
 						</Fragment>
 					);

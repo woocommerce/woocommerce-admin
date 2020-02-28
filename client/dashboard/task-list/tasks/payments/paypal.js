@@ -13,7 +13,7 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
-import { getQuery, getHistory, getNewPath } from '@woocommerce/navigation';
+import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 
@@ -205,20 +205,6 @@ class PayPal extends Component {
 								disabled={ isOptionsRequesting }
 							>
 								{ __( 'Proceed', 'woocommerce-admin' ) }
-							</Button>
-
-							<Button
-								onClick={ () => {
-									getHistory().push(
-										getNewPath(
-											{ task: 'payments' },
-											'/',
-											{}
-										)
-									);
-								} }
-							>
-								{ __( 'Skip', 'woocommerce-admin' ) }
 							</Button>
 
 							<p>{ help }</p>

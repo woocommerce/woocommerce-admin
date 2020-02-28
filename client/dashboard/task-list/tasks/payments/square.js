@@ -11,7 +11,7 @@ import { compose } from '@wordpress/compose';
 /**
  * WooCommerce dependencies
  */
-import { getQuery, getHistory, getNewPath } from '@woocommerce/navigation';
+import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 import { Stepper } from '@woocommerce/components';
@@ -21,7 +21,6 @@ class Square extends Component {
 		super( props );
 
 		this.state = {
-			connectionFailed: false,
 			isPending: false,
 		};
 
@@ -66,7 +65,7 @@ class Square extends Component {
 			} );
 
 			if ( ! result || ! result.connectUrl ) {
-				this.setState( { connectionFailed: true, isPending: false } );
+				this.setState( { isPending: false } );
 				createNotice( 'error', errorMessage );
 				return;
 			}
@@ -74,14 +73,14 @@ class Square extends Component {
 			this.setState( { isPending: true } );
 			window.location = result.connectUrl;
 		} catch ( error ) {
-			this.setState( { connectionFailed: true, isPending: false } );
+			this.setState( { isPending: false } );
 			createNotice( 'error', errorMessage );
 		}
 	}
 
 	render() {
 		const { installStep } = this.props;
-		const { connectionFailed, isPending } = this.state;
+		const { isPending } = this.state;
 
 		return (
 			<Stepper
@@ -110,21 +109,6 @@ class Square extends Component {
 								>
 									{ __( 'Connect', 'woocommerce-admin' ) }
 								</Button>
-								{ connectionFailed && (
-									<Button
-										onClick={ () => {
-											getHistory().push(
-												getNewPath(
-													{ task: 'payments' },
-													'/',
-													{}
-												)
-											);
-										} }
-									>
-										{ __( 'Skip', 'woocommerce-admin' ) }
-									</Button>
-								) }
 							</Fragment>
 						),
 					},
