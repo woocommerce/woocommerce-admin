@@ -84,33 +84,9 @@ class Layout extends Component {
 		recordPageView( path );
 	}
 
-	hideOrShowMenuItemsForTaskList = ( show ) => {
-		const topLevelPageWooCommerceLi = document.getElementById(
-			'toplevel_page_woocommerce'
-		);
-		const allSubmenuItems = [
-			...topLevelPageWooCommerceLi.children[ 1 ].children,
-		];
-		const submenuItemsToHide = allSubmenuItems.filter(
-			( x ) =>
-				! x.classList.contains( 'wp-submenu-head' ) &&
-				! x.classList.contains( 'wp-first-item' )
-		);
-
-		submenuItemsToHide.forEach( ( x ) => ( x.hidden = ! show ) );
-
-		const dashboardLi = allSubmenuItems.filter( ( x ) =>
-			x.classList.contains( 'wp-first-item' )
-		)[ 0 ];
-
-		dashboardLi.children[ 0 ].innerHTML = show ? 'Dashboard' : 'Setup';
-	};
-
 	render() {
 		const { isEmbedded, ...restProps } = this.props;
 		const { breadcrumbs } = this.props.page;
-
-		this.hideOrShowMenuItemsForTaskList( false );
 
 		return (
 			<div className="woocommerce-layout">

@@ -422,9 +422,12 @@ export default compose(
 			profileItems,
 			promptShown,
 			taskListPayments,
+<<<<<<< HEAD
 			isJetpackConnected: isJetpackConnected(),
+=======
 			skipStoreSetup,
 			doThisLater,
+>>>>>>> d657ebf5... Hook up buttons to task list, hook up options to onboarding-experience to set up the menu
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

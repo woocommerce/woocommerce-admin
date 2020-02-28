@@ -18,6 +18,7 @@
 	{ "component": "ImageAsset" },
 	{ "component": "ImageUpload" },
 	{ "component": "Link" },
+	{ "component": "LinkButton" },
 	{ "component": "List" },
 	{ "component": "OrderStatus" },
 	{ "component": "Pagination" },

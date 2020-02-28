@@ -88,6 +88,7 @@ const webpackConfig = {
 		app: './client/index.js',
 		ie: './client/ie.scss',
 		...entryPoints,
+		'onboarding-experience': './client/onboarding-experience.js',
 	},
 	output: {
 		filename: ( data ) => {
