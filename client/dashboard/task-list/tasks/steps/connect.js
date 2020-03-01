@@ -97,6 +97,10 @@ Connect.propTypes = {
 	 * Text used for the skip connection button.
 	 */
 	skipText: PropTypes.string,
+	/**
+	 * Control the `isPending` logic of the parent containing the Stepper.
+	 */
+	setIsPending: PropTypes.func.isRequired,
 };
 
 export default compose(
