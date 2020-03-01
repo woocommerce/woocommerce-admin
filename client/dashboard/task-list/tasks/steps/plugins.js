@@ -24,11 +24,7 @@ class Plugins extends Component {
 	}
 
 	componentDidMount() {
-		const { autoInstall } = this.props;
-
-		if ( autoInstall ) {
-			this.installAndActivatePlugins();
-		}
+		this.installAndActivatePlugins();
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -89,7 +85,7 @@ class Plugins extends Component {
 	}
 
 	render() {
-		const { hasErrors, isRequesting, skipText, autoInstall, pluginSlugs } = this.props;
+		const { hasErrors, isRequesting, skipText } = this.props;
 
 		if ( hasErrors ) {
 			return (
@@ -99,20 +95,6 @@ class Plugins extends Component {
 					</Button>
 					<Button onClick={ this.skipInstaller }>
 						{ __( 'Continue without installing', 'woocommerce-admin' ) }
-					</Button>
-				</Fragment>
-			);
-		}
-
-		if ( autoInstall ) {
-			return null;
-		}
-
-		if ( 0 === pluginSlugs.length ) {
-			return (
-				<Fragment>
-					<Button isPrimary isBusy={ isRequesting } onClick={ this.skipInstaller }>
-						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</Fragment>
 			);
@@ -147,15 +129,10 @@ Plugins.propTypes = {
 	/**
 	 * If installation should happen automatically, or require user confirmation.
 	 */
-	autoInstall: PropTypes.bool,
-	/**
-	 * An array of plugin slugs to install. Must be supported by the onboarding plugins API.
-	 */
 	pluginSlugs: PropTypes.arrayOf( PropTypes.string ),
 };
 
 Plugins.defaultProps = {
-	autoInstall: false,
 	onError: noop,
 	pluginSlugs: [ 'jetpack', 'woocommerce-services' ],
 };

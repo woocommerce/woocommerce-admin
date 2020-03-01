@@ -93,15 +93,15 @@ class BusinessDetails extends Component {
 		await updateProfileItems( updates );
 
 		if ( ! isError ) {
-			if ( 0 === businessExtensions.length ) {
-				goToNextStep();
-				return;
-			}
-
-			this.setState( {
-				installExtensions: true,
-				isInstallingExtensions: true,
-			} );
+			this.setState(
+				{
+					installExtensions: true,
+					isInstallingExtensions: true,
+				},
+				() => {
+					goToNextStep();
+				}
+			);
 		} else {
 			createNotice(
 				'error',
@@ -238,8 +238,7 @@ class BusinessDetails extends Component {
 	}
 
 	renderBusinessExtensions( values, getInputProps ) {
-		const { installExtensions, extensionInstallError } = this.state;
-		const { goToNextStep } = this.props;
+		const { installExtensions } = this.state;
 		const extensionsToInstall = this.getBusinessExtensions( values );
 		const extensionBenefits = [
 			{
@@ -288,10 +287,10 @@ class BusinessDetails extends Component {
 					<div className="woocommerce-profile-wizard__card-actions">
 						<Plugins
 							onComplete={ () => {
-								goToNextStep();
+								this.onContinue( values );
 							} }
 							onSkip={ () => {
-								goToNextStep();
+								this.onContinue( values );
 							} }
 							onError={ () => {
 								this.setState( {
@@ -299,7 +298,6 @@ class BusinessDetails extends Component {
 									isInstallingExtensions: false,
 								} );
 							} }
-							autoInstall={ ! extensionInstallError }
 							pluginSlugs={ extensionsToInstall }
 						/>
 					</div>
