@@ -19,14 +19,14 @@ class Connect extends Component {
 		super( props );
 
 		this.connectJetpack = this.connectJetpack.bind( this );
-		props.setIsPending( true );
+		props.setIsStepPending( true );
 	}
 
 	componentDidUpdate( prevProps ) {
-		const { createNotice, error, isRequesting, setIsPending } = this.props;
+		const { createNotice, error, isRequesting, setIsStepPending } = this.props;
 
 		if ( prevProps.isRequesting && ! isRequesting ) {
-			setIsPending( false );
+			setIsStepPending( false );
 		}
 
 		if ( error && error !== prevProps.error ) {
@@ -100,11 +100,11 @@ Connect.propTypes = {
 	/**
 	 * Control the `isPending` logic of the parent containing the Stepper.
 	 */
-	setIsPending: PropTypes.func,
+	setIsStepPending: PropTypes.func,
 };
 
 Connect.defaultProps = {
-	setIsPending: () => {},
+	setIsStepPending: () => {},
 };
 
 export default compose(

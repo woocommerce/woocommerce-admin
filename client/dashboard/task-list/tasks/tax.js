@@ -37,6 +37,7 @@ class Tax extends Component {
 			automatedTaxEnabled: true,
 			// Cache the value of pluginsToActivate so that we can show/hide tasks based on it, but not have them update mid task.
 			pluginsToActivate: props.pluginsToActivate,
+			isStepPending: false,
 		};
 
 		this.state = this.initialState;
@@ -44,7 +45,7 @@ class Tax extends Component {
 		this.completeStep = this.completeStep.bind( this );
 		this.configureTaxRates = this.configureTaxRates.bind( this );
 		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
-		this.setIsPending = this.setIsPending.bind( this );
+		this.setIsStepPending = this.setIsStepPending.bind( this );
 	}
 
 	componentDidMount() {
@@ -182,8 +183,8 @@ class Tax extends Component {
 		}
 	}
 
-	setIsPending( value ) {
-		this.setState( { isPending: value } );
+	setIsStepPending( value ) {
+		this.setState( { isStepPending: value } );
 	}
 
 	getSteps() {
@@ -243,7 +244,7 @@ class Tax extends Component {
 				content: (
 					<Connect
 						{ ...this.props }
-						setIsPending={ this.setIsPending }
+						setIsStepPending={ this.setIsStepPending }
 						onConnect={ () => {
 							recordEvent( 'tasklist_tax_connect_store', { connect: true } );
 						} }
@@ -307,7 +308,7 @@ class Tax extends Component {
 	}
 
 	render() {
-		const { isPending, stepIndex } = this.state;
+		const { isPending, stepIndex, isStepPending } = this.state;
 		const { isGeneralSettingsRequesting, isTaxSettingsRequesting } = this.props;
 		const step = this.getSteps()[ stepIndex ];
 
@@ -316,7 +317,9 @@ class Tax extends Component {
 				<Card className="is-narrow">
 					{ step ? (
 						<Stepper
-							isPending={ isPending || isGeneralSettingsRequesting || isTaxSettingsRequesting }
+							isPending={
+								isPending || isGeneralSettingsRequesting || isTaxSettingsRequesting || isStepPending
+							}
 							isVertical={ true }
 							currentStep={ step.key }
 							steps={ this.getSteps() }
