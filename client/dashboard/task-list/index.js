@@ -12,7 +12,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, List, MenuItem, EllipsisMenu, LinkButton } from '@woocommerce/components';
+import { Card, List, MenuItem, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
@@ -277,13 +277,13 @@ class TaskDashboard extends Component {
 
 	onSkipStoreSetup = () => {
 		const completedTasksNames = this.getTasks()
-			.filter( x => x.completed )
-			.map( x => x.title );
+			.filter( ( x ) => x.completed )
+			.map( ( x ) => x.title );
 
 		recordEvent( 'wcadmin_tasklist_skip', {
 			completed_tasks: completedTasksNames.length,
 			completed_tasks_names: completedTasksNames,
-			skip_option: 'skip store setup'
+			skip_option: 'skip store setup',
 		} );
 
 		this.props.updateOptions( {
@@ -293,13 +293,13 @@ class TaskDashboard extends Component {
 
 	onDoThisLater = () => {
 		const completedTasksNames = this.getTasks()
-			.filter( x => x.completed )
-			.map( x => x.title );
+			.filter( ( x ) => x.completed )
+			.map( ( x ) => x.title );
 
 		recordEvent( 'wcadmin_tasklist_skip', {
 			completed_tasks: completedTasksNames.length,
 			completed_tasks_names: completedTasksNames,
-			skip_option: 'i\'ll do this later'
+			skip_option: "i'll do this later",
 		} );
 
 		this.props.updateOptions( {
@@ -313,15 +313,15 @@ class TaskDashboard extends Component {
 		return (
 			<div style={ { textAlign: 'center' } }>
 				{ ! skipStoreSetup && (
-					<LinkButton onClick={ this.onSkipStoreSetup }>
+					<Button isLink={ true } onClick={ this.onSkipStoreSetup }>
 						{ __( 'Skip store setup', 'woocommerce-admin' ) }
-					</LinkButton>				
+					</Button>
 				) }
 				{ ! skipStoreSetup && ! doThisLater && ' | ' }
 				{ ! doThisLater && (
-					<LinkButton onClick={ this.onDoThisLater }>
-						{ __( 'I\'ll do this later', 'woocommerce-admin' ) }
-					</LinkButton>
+					<Button isLink={ true } onClick={ this.onDoThisLater }>
+						{ __( "I'll do this later", 'woocommerce-admin' ) }
+					</Button>
 				) }
 			</div>
 		);
@@ -413,9 +413,19 @@ export default compose(
 			[ 'woocommerce_task_list_welcome_modal_dismissed' ],
 			false
 		);
-		const taskListPayments = getOptions( [ 'woocommerce_task_list_payments' ] );
-		const skipStoreSetup = get( options, [ 'woocommerce_task_list_skip_store_setup' ], false );
-		const doThisLater = get( options, [ 'woocommerce_task_list_do_this_later' ], false );
+		const taskListPayments = getOptions( [
+			'woocommerce_task_list_payments',
+		] );
+		const skipStoreSetup = get(
+			options,
+			[ 'woocommerce_task_list_skip_store_setup' ],
+			false
+		);
+		const doThisLater = get(
+			options,
+			[ 'woocommerce_task_list_do_this_later' ],
+			false
+		);
 
 		return {
 			modalDismissed,

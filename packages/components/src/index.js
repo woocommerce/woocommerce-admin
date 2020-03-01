@@ -25,7 +25,6 @@ export { default as Gravatar } from './gravatar';
 export { H, Section } from './section';
 export { default as ImageUpload } from './image-upload';
 export { default as Link } from './link';
-export { default as LinkButton } from './link-button';
 export { default as List } from './list';
 export { default as MenuItem } from './ellipsis-menu/menu-item';
 export { default as MenuTitle } from './ellipsis-menu/menu-title';
