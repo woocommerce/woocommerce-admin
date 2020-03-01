@@ -44,6 +44,7 @@ class Tax extends Component {
 		this.completeStep = this.completeStep.bind( this );
 		this.configureTaxRates = this.configureTaxRates.bind( this );
 		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
+		this.setIsPending = this.setIsPending.bind( this );
 	}
 
 	componentDidMount() {
@@ -181,6 +182,10 @@ class Tax extends Component {
 		}
 	}
 
+	setIsPending( value ) {
+		this.setState( { isPending: value } );
+	}
+
 	getSteps() {
 		const { generalSettings, isGeneralSettingsRequesting, isJetpackConnected } = this.props;
 		const { isPending, pluginsToActivate } = this.state;
@@ -238,6 +243,7 @@ class Tax extends Component {
 				content: (
 					<Connect
 						{ ...this.props }
+						setIsPending={ this.setIsPending }
 						onConnect={ () => {
 							recordEvent( 'tasklist_tax_connect_store', { connect: true } );
 						} }
@@ -302,11 +308,7 @@ class Tax extends Component {
 
 	render() {
 		const { isPending, stepIndex } = this.state;
-		const {
-			isGeneralSettingsRequesting,
-			isTaxSettingsRequesting,
-			isJetpackRequesting,
-		} = this.props;
+		const { isGeneralSettingsRequesting, isTaxSettingsRequesting } = this.props;
 		const step = this.getSteps()[ stepIndex ];
 
 		return (
@@ -314,12 +316,7 @@ class Tax extends Component {
 				<Card className="is-narrow">
 					{ step ? (
 						<Stepper
-							isPending={
-								isPending ||
-								isGeneralSettingsRequesting ||
-								isTaxSettingsRequesting ||
-								isJetpackRequesting
-							}
+							isPending={ isPending || isGeneralSettingsRequesting || isTaxSettingsRequesting }
 							isVertical={ true }
 							currentStep={ step.key }
 							steps={ this.getSteps() }
@@ -378,21 +375,15 @@ class Tax extends Component {
 }
 
 export default compose(
-	withSelect( ( select, props ) => {
+	withSelect( select => {
 		const {
 			getActivePlugins,
 			getOptions,
 			getSettings,
 			getSettingsError,
 			isGetSettingsRequesting,
-			isGetJetpackConnectUrlRequesting,
 			isJetpackConnected,
 		} = select( 'wc-api' );
-
-		const jetpackQueryArgs = {
-			redirect_url: props.redirectUrl || window.location.href,
-		};
-		const isJetpackRequesting = isGetJetpackConnectUrlRequesting( jetpackQueryArgs );
 
 		const generalSettings = getSettings( 'general' );
 		const isGeneralSettingsError = Boolean( getSettingsError( 'general' ) );
@@ -419,7 +410,6 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 			pluginsToActivate,
 			tosAccepted,
-			isJetpackRequesting,
 		};
 	} ),
 	withDispatch( dispatch => {

@@ -15,14 +15,19 @@ import { withDispatch } from '@wordpress/data';
 import withSelect from 'wc-api/with-select';
 
 class Connect extends Component {
-	constructor() {
-		super( ...arguments );
+	constructor( props ) {
+		super( props );
 
 		this.connectJetpack = this.connectJetpack.bind( this );
+		props.setIsPending( true );
 	}
 
 	componentDidUpdate( prevProps ) {
-		const { createNotice, error } = this.props;
+		const { createNotice, error, isRequesting, setIsPending } = this.props;
+
+		if ( prevProps.isRequesting && ! isRequesting ) {
+			setIsPending( false );
+		}
 
 		if ( error && error !== prevProps.error ) {
 			createNotice( 'error', error );
