@@ -100,7 +100,11 @@ Connect.propTypes = {
 	/**
 	 * Control the `isPending` logic of the parent containing the Stepper.
 	 */
-	setIsPending: PropTypes.func.isRequired,
+	setIsPending: PropTypes.func,
+};
+
+Connect.defaultProps = {
+	setIsPending: () => {},
 };
 
 export default compose(
