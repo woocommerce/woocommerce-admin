@@ -49,17 +49,15 @@ class Benefits extends Component {
 
 	async skipPluginInstall() {
 		const {
-			activePlugins,
 			createNotice,
+			isJetpackActive,
 			isProfileItemsError,
 			updateProfileItems,
 		} = this.props;
 
 		this.setState( { isPending: true } );
 
-		const plugins = activePlugins.includes( 'jetpack' )
-			? 'skipped-wcs'
-			: 'skipped';
+		const plugins = isJetpackActive ? 'skipped-wcs' : 'skipped';
 		await updateProfileItems( { plugins } );
 
 		if ( isProfileItemsError ) {
@@ -79,7 +77,11 @@ class Benefits extends Component {
 	}
 
 	async startPluginInstall() {
-		const { activePlugins, updateProfileItems, updateOptions } = this.props;
+		const {
+			isJetpackActive,
+			updateProfileItems,
+			updateOptions,
+		} = this.props;
 
 		this.setState( { isPending: true } );
 
@@ -87,9 +89,7 @@ class Benefits extends Component {
 			woocommerce_setup_jetpack_opted_in: true,
 		} );
 
-		const plugins = activePlugins.includes( 'jetpack' )
-			? 'installed-wcs'
-			: 'installed';
+		const plugins = isJetpackActive ? 'installed-wcs' : 'installed';
 		recordEvent( 'storeprofiler_install_plugins', {
 			install: true,
 			plugins,
@@ -114,7 +114,7 @@ class Benefits extends Component {
 	}
 
 	getBenefits() {
-		const { activePlugins, tosAccepted } = this.props;
+		const { isJetpackActive, isWcsActive, tosAccepted } = this.props;
 		return [
 			{
 				title: __( 'Security', 'woocommerce-admin' ),
@@ -123,7 +123,7 @@ class Benefits extends Component {
 					'Jetpack automatically blocks brute force attacks to protect your store from unauthorized access.',
 					'woocommerce-admin'
 				),
-				visible: ! activePlugins.includes( 'jetpack' ),
+				visible: ! isJetpackActive,
 			},
 			{
 				title: __( 'Sales Tax', 'woocommerce-admin' ),
@@ -132,9 +132,7 @@ class Benefits extends Component {
 					'With WooCommerce Services we ensure that the correct rate of tax is charged on all of your orders.',
 					'woocommerce-admin'
 				),
-				visible:
-					! activePlugins.includes( 'woocommerce-services' ) ||
-					! tosAccepted,
+				visible: ! isWcsActive || ! tosAccepted,
 			},
 			{
 				title: __( 'Speed', 'woocommerce-admin' ),
@@ -143,7 +141,7 @@ class Benefits extends Component {
 					'Cache your images and static files on our own powerful global network of servers and speed up your site.',
 					'woocommerce-admin'
 				),
-				visible: ! activePlugins.includes( 'jetpack' ),
+				visible: ! isJetpackActive,
 			},
 			{
 				title: __( 'Mobile App', 'woocommerce-admin' ),
@@ -152,7 +150,7 @@ class Benefits extends Component {
 					'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
 					'woocommerce-admin'
 				),
-				visible: ! activePlugins.includes( 'jetpack' ),
+				visible: ! isJetpackActive,
 			},
 			{
 				title: __(
@@ -164,7 +162,7 @@ class Benefits extends Component {
 					'Save time at the Post Office by printing USPS shipping labels at home.',
 					'woocommerce-admin'
 				),
-				visible: activePlugins.includes( 'jetpack' ) || ! tosAccepted,
+				visible: isJetpackActive || ! tosAccepted,
 			},
 			{
 				title: __( 'Simple payment setup', 'woocommerce-admin' ),
@@ -173,7 +171,7 @@ class Benefits extends Component {
 					'WooCommerce Services enables us to provision Stripe and Paypal accounts quickly and easily for you.',
 					'woocommerce-admin'
 				),
-				visible: activePlugins.includes( 'jetpack' ) || ! tosAccepted,
+				visible: isJetpackActive || ! tosAccepted,
 			},
 		];
 	}
@@ -190,14 +188,14 @@ class Benefits extends Component {
 	}
 
 	render() {
-		const { activePlugins } = this.props;
+		const { isJetpackActive, isWcsActive } = this.props;
 		const { isPending } = this.state;
 
 		const pluginsToInstall = [];
-		if ( ! activePlugins.includes( 'jetpack' ) ) {
+		if ( ! isJetpackActive ) {
 			pluginsToInstall.push( 'jetpack' );
 		}
-		if ( ! activePlugins.includes( 'woocommerce-services' ) ) {
+		if ( ! isWcsActive ) {
 			pluginsToInstall.push( 'woocommerce-services' );
 		}
 		const pluginNamesString = pluginsToInstall
@@ -308,10 +306,13 @@ export default compose(
 
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
+		const isJetpackActive = activePlugins.includes( 'jetpack' );
+		const isWcsActive = activePlugins.includes( 'woocommerce-services' );
 
 		return {
+			isJetpackActive,
 			isProfileItemsError,
-			activePlugins,
+			isWcsActive,
 			tosAccepted,
 			profileItems,
 			isRequesting: isGetProfileItemsRequesting(),
