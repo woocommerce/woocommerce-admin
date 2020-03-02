@@ -4,7 +4,6 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { get } from 'lodash';
 import { Button, FormToggle } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
@@ -72,17 +71,18 @@ class Payments extends Component {
 	}
 
 	completeTask() {
-		const { configured, createNotice, options, updateOptions } = this.props;
+		const { createNotice, methods, updateOptions } = this.props;
 
 		updateOptions( {
 			woocommerce_task_list_payments: {
-				...options.woocommerce_task_list_payments,
 				completed: 1,
 			},
 		} );
 
 		recordEvent( 'tasklist_payment_done', {
-			configured,
+			configured: methods
+				.filter( ( method ) => method.isConfigured )
+				.map( ( method ) => method.key ),
 		} );
 
 		createNotice(
@@ -97,11 +97,10 @@ class Payments extends Component {
 	}
 
 	skipTask() {
-		const { methods, options, updateOptions } = this.props;
+		const { methods, updateOptions } = this.props;
 
 		updateOptions( {
 			woocommerce_task_list_payments: {
-				...options.woocommerce_task_list_payments,
 				completed: 1,
 			},
 		} );
@@ -114,24 +113,10 @@ class Payments extends Component {
 	}
 
 	markConfigured( method ) {
-		const { options, configured, updateOptions } = this.props;
-
 		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
-
-		if ( configured.includes( method ) ) {
-			return;
-		}
 
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: method,
-		} );
-
-		configured.push( method );
-		updateOptions( {
-			woocommerce_task_list_payments: {
-				...options.woocommerce_task_list_payments,
-				configured,
-			},
 		} );
 	}
 
@@ -199,8 +184,11 @@ class Payments extends Component {
 
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { configured, methods, query } = this.props;
+		const { methods, query } = this.props;
 		const { enabledMethods } = this.state;
+		const configuredMethods = methods.filter(
+			( method ) => method.isConfigured
+		).length;
 
 		if ( currentMethod ) {
 			return (
@@ -238,7 +226,7 @@ class Payments extends Component {
 						>
 							<div className="woocommerce-task-payment__before">
 								{ key === this.recommendedMethod &&
-									! configured.includes( key ) && (
+									! isConfigured && (
 										<div className="woocommerce-task-payment__recommended-ribbon">
 											<span>
 												{ __(
@@ -298,7 +286,7 @@ class Payments extends Component {
 					);
 				} ) }
 				<div className="woocommerce-task-payments__actions">
-					{ configured.length === 0 ? (
+					{ configuredMethods.length === 0 ? (
 						<Button isLink onClick={ this.skipTask }>
 							{ __(
 								'My store doesn’t take payments',
@@ -329,7 +317,6 @@ export default compose(
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 		const options = getOptions( [
-			'woocommerce_task_list_payments',
 			'woocommerce_default_country',
 			'woocommerce_stripe_settings',
 			'woocommerce_ppec_paypal_settings',
@@ -350,12 +337,6 @@ export default compose(
 			profileItems,
 		} );
 
-		const configured = get(
-			options,
-			[ 'woocommerce_task_list_payments', 'configured' ],
-			[]
-		);
-
 		const errors = {};
 		const requesting = {};
 		methods.forEach( ( method ) => {
@@ -373,7 +354,6 @@ export default compose(
 			profileItems,
 			activePlugins,
 			options,
-			configured,
 			methods,
 			requesting,
 		};
