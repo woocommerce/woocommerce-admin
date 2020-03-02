@@ -95,13 +95,16 @@ export const advancedFilters = applyFilters( CUSTOMERS_REPORT_ADVANCED_FILTERS_F
 		},
 		country: {
 			labels: {
-				add: __( 'Country', 'woocommerce-admin' ),
+				add: __( 'Country / Region', 'woocommerce-admin' ),
 				placeholder: __( 'Search', 'woocommerce-admin' ),
-				remove: __( 'Remove country filter', 'woocommerce-admin' ),
-				rule: __( 'Select a country filter match', 'woocommerce-admin' ),
+				remove: __( 'Remove country / region filter', 'woocommerce-admin' ),
+				rule: __( 'Select a country / region filter match', 'woocommerce-admin' ),
 				/* translators: A sentence describing a Product filter. See screen shot for context: https://cloudup.com/cCsm3GeXJbE */
-				title: __( '{{title}}Country{{/title}} {{rule /}} {{filter /}}', 'woocommerce-admin' ),
-				filter: __( 'Select country', 'woocommerce-admin' ),
+				title: __(
+					'{{title}}Country / Region{{/title}} {{rule /}} {{filter /}}',
+					'woocommerce-admin'
+				),
+				filter: __( 'Select country / region', 'woocommerce-admin' ),
 			},
 			rules: [
 				{
