@@ -63,8 +63,9 @@ const getEntry = async ( pullRequest ) => {
 	const authorTag = collaborator ? '' : `👏 @${ pullRequest.author.login }`;
 	const devNote = devNoteSuffix( pullRequest.labels.nodes );
 	let title;
-	if ( /### Changelog\r\n\r\n> /.test( pullRequest.body ) ) {
-		const bodyParts = pullRequest.body.split( '### Changelog\r\n\r\n> ' );
+	if ( /### Changelog Note:/.test( pullRequest.body ) ) {
+		
+		const bodyParts = pullRequest.body.split( '### Changelog Note:' );
 		const note = bodyParts[ bodyParts.length - 1 ];
 		title = note
 			// Remove comment prompt

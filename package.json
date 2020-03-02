@@ -59,11 +59,10 @@
     "example": "webpack --config docs/examples/extensions/examples.config.js --watch",
     "pre-release": "./bin/pre-release.sh",
     "create-wc-extension": "node ./bin/starter-pack/starter-pack.js",
-    "changelog": "node ./bin/changelog",
-    "changelog:zenhub": "node ./bin/changelog --changelogSrcType='ZENHUB_RELEASE'"
+    "changelog": "node ./bin/changelog --changelogSrcType='ZENHUB_RELEASE'"
   },
   "changelog": {
-    "labelPrefix": "type:",
+    "labelPrefix": "[Type]",
     "skipLabel": "skip-changelog",
     "defaultPrefix": "dev",
     "repo": "woocommerce/woocommerce-admin"
