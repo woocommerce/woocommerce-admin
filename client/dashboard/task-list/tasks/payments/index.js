@@ -2,9 +2,9 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Fragment, cloneElement, Component } from '@wordpress/element';
+import { cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { get, filter } from 'lodash';
+import { get } from 'lodash';
 import { Button, FormToggle } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
@@ -17,10 +17,6 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import {
-	WC_ASSET_URL as wcAssetUrl,
-	getSetting,
-} from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -29,16 +25,21 @@ import { recordEvent } from 'lib/tracks';
 import { getCountryCode } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
 import Plugins from '../steps/plugins';
-import Stripe from './stripe';
-import Square from './square';
-import PayPal from './paypal';
 import { pluginNames } from 'wc-api/onboarding/constants';
-import Klarna from './klarna';
-import PayFast from './payfast';
+import { getPaymentMethods } from './methods';
 
 class Payments extends Component {
-	constructor() {
+	constructor( props ) {
 		super( ...arguments );
+		const { methods } = props;
+
+		const enabledMethods = {};
+		methods.forEach(
+			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
+		);
+		this.state = {
+			enabledMethods,
+		};
 
 		this.recommendedMethod = 'stripe';
 		this.completeTask = this.completeTask.bind( this );
@@ -72,7 +73,7 @@ class Payments extends Component {
 	}
 
 	skipTask() {
-		const { options, updateOptions } = this.props;
+		const { methods, options, updateOptions } = this.props;
 
 		updateOptions( {
 			woocommerce_task_list_payments: {
@@ -82,18 +83,10 @@ class Payments extends Component {
 		} );
 
 		recordEvent( 'tasklist_payment_skip_task', {
-			options: this.getMethodOptions().map( ( method ) => method.key ),
+			options: methods.map( ( method ) => method.key ),
 		} );
 
 		getHistory().push( getNewPath( {}, '/', {} ) );
-	}
-
-	isStripeEnabled() {
-		const { countryCode } = this.props;
-		const stripeCountries = getSetting( 'onboarding', {
-			stripeSupportedCountries: [],
-		} ).stripeSupportedCountries;
-		return stripeCountries.includes( countryCode );
 	}
 
 	markConfigured( method ) {
@@ -118,240 +111,12 @@ class Payments extends Component {
 		} );
 	}
 
-	getMethodOptions() {
-		const {
-			activePlugins,
-			countryCode,
-			options,
-			profileItems,
-			updateOptions,
-		} = this.props;
-
-		const methods = [
-			{
-				key: 'stripe',
-				title: __(
-					'Credit cards - powered by Stripe',
-					'woocommerce-admin'
-				),
-				content: (
-					<Fragment>
-						{ __(
-							'Accept debit and credit cards in 135+ currencies, methods such as Alipay, ' +
-								'and one-touch checkout with Apple Pay.',
-							'woocommerce-admin'
-						) }
-					</Fragment>
-				),
-				before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
-				visible: this.isStripeEnabled(),
-				plugins: [ 'woocommerce-gateway-stripe' ],
-				container: <Stripe markConfigured={ this.markConfigured } />,
-				isConfigured:
-					options.woocommerce_stripe_settings.publishable_key &&
-					options.woocommerce_stripe_settings.secret_key,
-				isEnabled:
-					options.woocommerce_stripe_settings.enabled === 'yes',
-				toggle: ( isEnabled ) => {
-					updateOptions( {
-						woocommerce_stripe_settings: {
-							...options.woocommerce_stripe_settings,
-							enabled: isEnabled ? 'no' : 'yes',
-						},
-					} );
-				},
-			},
-			{
-				key: 'paypal',
-				title: __( 'PayPal Checkout', 'woocommerce-admin' ),
-				content: (
-					<Fragment>
-						{ __(
-							"Safe and secure payments using credit cards or your customer's PayPal account.",
-							'woocommerce-admin'
-						) }
-					</Fragment>
-				),
-				before: <img src={ wcAssetUrl + 'images/paypal.png' } alt="" />,
-				visible: true,
-				plugins: [ 'woocommerce-gateway-paypal-express-checkout' ],
-				container: <PayPal markConfigured={ this.markConfigured } />,
-				isConfigured:
-					options.woocommerce_ppec_paypal_settings.api_username &&
-					options.woocommerce_ppec_paypal_settings.api_password,
-				isEnabled:
-					options.woocommerce_ppec_paypal_settings.enabled === 'yes',
-				toggle: ( isEnabled ) => {
-					updateOptions( {
-						woocommerce_ppec_paypal_settings: {
-							...options.woocommerce_ppec_paypal_settings,
-							enabled: isEnabled ? 'no' : 'yes',
-						},
-					} );
-				},
-			},
-			{
-				key: 'klarna_checkout',
-				title: __( 'Klarna Checkout', 'woocommerce-admin' ),
-				content: __(
-					'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
-					'woocommerce-admin'
-				),
-				before: (
-					<img
-						src={ wcAssetUrl + 'images/klarna-black.png' }
-						alt=""
-					/>
-				),
-				visible: [ 'SE', 'FI', 'NO', 'NL' ].includes( countryCode ),
-				plugins: [ 'klarna-checkout-for-woocommerce' ],
-				container: (
-					<Klarna
-						markConfigured={ this.markConfigured }
-						plugin={ 'checkout' }
-					/>
-				),
-				// @todo This should check actual Klarna connection information.
-				isConfigured: activePlugins.includes(
-					'klarna-checkout-for-woocommerce'
-				),
-				isEnabled: options.woocommerce_kco_settings.enabled === 'yes',
-				toggle: ( isEnabled ) => {
-					updateOptions( {
-						woocommerce_kco_settings: {
-							...options.woocommerce_kco_settings,
-							enabled: isEnabled ? 'no' : 'yes',
-						},
-					} );
-				},
-			},
-			{
-				key: 'klarna_payments',
-				title: __( 'Klarna Payments', 'woocommerce-admin' ),
-				content: __(
-					'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
-					'woocommerce-admin'
-				),
-				before: (
-					<img
-						src={ wcAssetUrl + 'images/klarna-black.png' }
-						alt=""
-					/>
-				),
-				visible: [ 'DK', 'DE', 'AT' ].includes( countryCode ),
-				plugins: [ 'klarna-payments-for-woocommerce' ],
-				container: (
-					<Klarna
-						markConfigured={ this.markConfigured }
-						plugin={ 'payments' }
-					/>
-				),
-				// @todo This should check actual Klarna connection information.
-				isConfigured: activePlugins.includes(
-					'klarna-payments-for-woocommerce'
-				),
-				isEnabled:
-					options.woocommerce_klarna_payments_settings.enabled ===
-					'yes',
-				toggle: ( isEnabled ) => {
-					updateOptions( {
-						woocommerce_klarna_payments_settings: {
-							...options.woocommerce_klarna_payments_settings,
-							enabled: isEnabled ? 'no' : 'yes',
-						},
-					} );
-				},
-			},
-			{
-				key: 'square',
-				title: __( 'Square', 'woocommerce-admin' ),
-				content: __(
-					'Securely accept credit and debit cards with one low rate, no surprise fees (custom rates available). ' +
-						'Sell online and in store and track sales and inventory in one place.',
-					'woocommerce-admin'
-				),
-				before: (
-					<img
-						src={ wcAssetUrl + 'images/square-black.png' }
-						alt=""
-					/>
-				),
-				visible:
-					[ 'brick-mortar', 'brick-mortar-other' ].includes(
-						profileItems.selling_venues
-					) &&
-					[ 'US', 'CA', 'JP', 'GB', 'AU' ].includes( countryCode ),
-				plugins: [ 'woocommerce-square' ],
-				container: <Square markConfigured={ this.markConfigured } />,
-				isConfigured:
-					options.wc_square_refresh_tokens &&
-					options.wc_square_refresh_tokens.length,
-				isEnabled:
-					options.woocommerce_square_credit_card_settings.enabled ===
-					'yes',
-				toggle: ( isEnabled ) => {
-					updateOptions( {
-						woocommerce_square_credit_card_settings: {
-							...options.woocommerce_square_credit_card_settings,
-							enabled: isEnabled ? 'no' : 'yes',
-						},
-					} );
-				},
-			},
-			{
-				key: 'payfast',
-				title: __( 'PayFast', 'woocommerce-admin' ),
-				content: (
-					<Fragment>
-						{ __(
-							'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.',
-							'woocommerce-admin'
-						) }
-						<p>
-							{ __(
-								'Selecting this extension will configure your store to use South African rands as the selected currency.',
-								'woocommerce-admin'
-							) }
-						</p>
-					</Fragment>
-				),
-				before: (
-					<img
-						src={ wcAssetUrl + 'images/payfast.png' }
-						alt="PayFast logo"
-					/>
-				),
-				visible: [ 'ZA' ].includes( countryCode ),
-				plugins: [ 'woocommerce-payfast-gateway' ],
-				container: <PayFast markConfigured={ this.markConfigured } />,
-				isConfigured:
-					options.woocommerce_payfast_settings.merchant_id &&
-					options.woocommerce_payfast_settings.merchant_key &&
-					options.woocommerce_payfast_settings.pass_phrase,
-				isEnabled:
-					options.woocommerce_payfast_settings.enabled === 'yes',
-				toggle: ( isEnabled ) => {
-					updateOptions( {
-						woocommerce_payfast_settings: {
-							...options.woocommerce_payfast_settings,
-							enabled: isEnabled ? 'no' : 'yes',
-						},
-					} );
-				},
-			},
-		];
-
-		return filter( methods, ( method ) => method.visible );
-	}
-
 	getCurrentMethod() {
-		const { query } = this.props;
+		const { methods, query } = this.props;
 
 		if ( ! query.method ) {
 			return;
 		}
-
-		const methods = this.getMethodOptions();
 
 		return methods.find( ( method ) => method.key === query.method );
 	}
@@ -392,9 +157,26 @@ class Payments extends Component {
 		};
 	}
 
+	toggleMethod( key ) {
+		const { methods, options, updateOptions } = this.props;
+		const { enabledMethods } = this.state;
+		const method = methods.find( ( option ) => option.key === key );
+
+		enabledMethods[ key ] = ! enabledMethods[ key ];
+		this.setState( { enabledMethods } );
+
+		updateOptions( {
+			[ method.optionName ]: {
+				...options[ method.optionName ],
+				enabled: method.isEnabled ? 'no' : 'yes',
+			},
+		} );
+	}
+
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { configured, query } = this.props;
+		const { configured, methods, query } = this.props;
+		const { enabledMethods } = this.state;
 
 		if ( currentMethod ) {
 			return (
@@ -402,12 +184,11 @@ class Payments extends Component {
 					{ cloneElement( currentMethod.container, {
 						query,
 						installStep: this.getInstallStep(),
+						markConfigured: this.markConfigured,
 					} ) }
 				</Card>
 			);
 		}
-
-		const methods = this.getMethodOptions();
 
 		return (
 			<div className="woocommerce-task-payments">
@@ -417,10 +198,8 @@ class Payments extends Component {
 						container,
 						content,
 						isConfigured,
-						isEnabled,
 						key,
 						title,
-						toggle,
 						visible,
 					} = method;
 
@@ -468,7 +247,7 @@ class Payments extends Component {
 											recordEvent(
 												'tasklist_payment_setup',
 												{
-													options: this.getMethodOptions().map(
+													options: methods.map(
 														( option ) => option.key
 													),
 													selected: key,
@@ -483,8 +262,10 @@ class Payments extends Component {
 									</Button>
 								) : (
 									<FormToggle
-										checked={ isEnabled }
-										onChange={ () => toggle( isEnabled ) }
+										checked={ enabledMethods[ key ] }
+										onChange={ () =>
+											this.toggleMethod( key )
+										}
 										onClick={ ( e ) => e.stopPropagation() }
 									/>
 								) }
@@ -517,6 +298,8 @@ export default compose(
 			'wc-api'
 		);
 
+		const activePlugins = getActivePlugins();
+		const profileItems = getProfileItems();
 		const options = getOptions( [
 			'woocommerce_task_list_payments',
 			'woocommerce_default_country',
@@ -532,6 +315,13 @@ export default compose(
 			options.woocommerce_default_country
 		);
 
+		const methods = getPaymentMethods( {
+			activePlugins,
+			countryCode,
+			options,
+			profileItems,
+		} );
+
 		const configured = get(
 			options,
 			[ 'woocommerce_task_list_payments', 'configured' ],
@@ -540,10 +330,11 @@ export default compose(
 
 		return {
 			countryCode,
-			profileItems: getProfileItems(),
-			activePlugins: getActivePlugins(),
+			profileItems,
+			activePlugins,
 			options,
 			configured,
+			methods,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
