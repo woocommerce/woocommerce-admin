@@ -47,6 +47,30 @@ class Payments extends Component {
 		this.skipTask = this.skipTask.bind( this );
 	}
 
+	componentDidUpdate( prevProps ) {
+		const { createNotice, errors, methods, requesting } = this.props;
+
+		methods.forEach( ( method ) => {
+			const { key, title } = method;
+			if (
+				prevProps.requesting[ key ] &&
+				! requesting[ key ] &&
+				errors[ key ]
+			) {
+				createNotice(
+					'error',
+					sprintf(
+						__(
+							'There was a problem updating settings for %s',
+							'woocommerce-admin'
+						),
+						title
+					)
+				);
+			}
+		} );
+	}
+
 	completeTask() {
 		const { configured, createNotice, options, updateOptions } = this.props;
 
@@ -294,9 +318,13 @@ class Payments extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems, getActivePlugins, getOptions } = select(
-			'wc-api'
-		);
+		const {
+			getProfileItems,
+			getActivePlugins,
+			getOptions,
+			getUpdateOptionsError,
+			isUpdateOptionsRequesting,
+		} = select( 'wc-api' );
 
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
@@ -328,13 +356,26 @@ export default compose(
 			[]
 		);
 
+		const errors = {};
+		const requesting = {};
+		methods.forEach( ( method ) => {
+			errors[ method.key ] = Boolean(
+				getUpdateOptionsError( [ method.optionName ] )
+			);
+			requesting[ method.key ] = Boolean(
+				isUpdateOptionsRequesting( [ method.optionName ] )
+			);
+		} );
+
 		return {
 			countryCode,
+			errors,
 			profileItems,
 			activePlugins,
 			options,
 			configured,
 			methods,
+			requesting,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
