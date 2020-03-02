@@ -141,7 +141,8 @@ class Payments extends Component {
 				visible: this.isStripeEnabled(),
 				plugins: [ 'woocommerce-gateway-stripe' ],
 				container: <Stripe markConfigured={ this.markConfigured } />,
-				isConfigured: options.woocommerce_stripe_settings.publishable_key && options.woocommerce_stripe_settings.secret_key
+				isConfigured: options.woocommerce_stripe_settings.publishable_key && options.woocommerce_stripe_settings.secret_key,
+				isEnabled: options.woocommerce_stripe_settings.enabled === 'yes',
 			},
 			{
 				key: 'paypal',
@@ -158,7 +159,8 @@ class Payments extends Component {
 				visible: true,
 				plugins: [ 'woocommerce-gateway-paypal-express-checkout' ],
 				container: <PayPal markConfigured={ this.markConfigured } />,
-				isConfigured: options.woocommerce_ppec_paypal_settings.api_username && options.woocommerce_ppec_paypal_settings.api_password
+				isConfigured: options.woocommerce_ppec_paypal_settings.api_username && options.woocommerce_ppec_paypal_settings.api_password,
+				isEnabled: options.woocommerce_ppec_paypal_settings.enabled === 'yes',
 			},
 			{
 				key: 'klarna_checkout',
@@ -182,7 +184,8 @@ class Payments extends Component {
 					/>
 				),
 				// @todo This should check actual Klarna connection information.
-				isConfigured: activePlugins.includes( 'klarna-checkout-for-woocommerce' )
+				isConfigured: activePlugins.includes( 'klarna-checkout-for-woocommerce' ),
+				isEnabled: options.woocommerce_kco_settings.enabled === 'yes',
 			},
 			{
 				key: 'klarna_payments',
@@ -206,7 +209,8 @@ class Payments extends Component {
 					/>
 				),
 				// @todo This should check actual Klarna connection information.
-				isConfigured: activePlugins.includes( 'klarna-payments-for-woocommerce' )
+				isConfigured: activePlugins.includes( 'klarna-payments-for-woocommerce' ),
+				isEnabled: options.woocommerce_klarna_payments_settings.enabled === 'yes',
 			},
 			{
 				key: 'square',
@@ -230,6 +234,7 @@ class Payments extends Component {
 				plugins: [ 'woocommerce-square' ],
 				container: <Square markConfigured={ this.markConfigured } />,
 				isConfigured: options.wc_square_refresh_tokens && options.wc_square_refresh_tokens.length,
+				isEnabled: options.woocommerce_square_credit_card_settings.enabled === 'yes',
 			},
 			{
 				key: 'payfast',
@@ -258,6 +263,7 @@ class Payments extends Component {
 				plugins: [ 'woocommerce-payfast-gateway' ],
 				container: <PayFast markConfigured={ this.markConfigured } />,
 				isConfigured: options.woocommerce_payfast_settings.merchant_id && options.woocommerce_payfast_settings.merchant_key && options.woocommerce_payfast_settings.pass_phrase,
+				isEnabled: options.woocommerce_payfast_settings.enabled === 'yes',
 			},
 		];
 
@@ -437,6 +443,9 @@ export default compose(
 			'woocommerce_stripe_settings',
 			'woocommerce_ppec_paypal_settings',
 			'woocommerce_payfast_settings',
+			'woocommerce_square_credit_card_settings',
+			'woocommerce_klarna_payments_settings',
+			'woocommerce_kco_settings',
 			'wc_square_refresh_tokens',
 		] );
 		const countryCode = getCountryCode(

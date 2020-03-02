@@ -494,8 +494,11 @@ class Onboarding {
 		$options[] = 'woocommerce_stripe_settings';
 		$options[] = 'woocommerce_ppec_paypal_settings';
 		$options[] = 'wc_square_refresh_tokens';
+		$options[] = 'woocommerce_square_credit_card_settings';
 		$options[] = 'woocommerce_payfast_settings';
 		$options[] = 'woocommerce_default_country';
+		$options[] = 'woocommerce_kco_settings';
+		$options[] = 'woocommerce_klarna_payments_settings';
 
 		return $options;
 	}
