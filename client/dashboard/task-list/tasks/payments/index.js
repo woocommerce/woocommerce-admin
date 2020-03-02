@@ -119,7 +119,13 @@ class Payments extends Component {
 	}
 
 	getMethodOptions() {
-		const { activePlugins, countryCode, options, profileItems } = this.props;
+		const {
+			activePlugins,
+			countryCode,
+			options,
+			profileItems,
+			updateOptions,
+		} = this.props;
 
 		const methods = [
 			{
@@ -141,8 +147,19 @@ class Payments extends Component {
 				visible: this.isStripeEnabled(),
 				plugins: [ 'woocommerce-gateway-stripe' ],
 				container: <Stripe markConfigured={ this.markConfigured } />,
-				isConfigured: options.woocommerce_stripe_settings.publishable_key && options.woocommerce_stripe_settings.secret_key,
-				isEnabled: options.woocommerce_stripe_settings.enabled === 'yes',
+				isConfigured:
+					options.woocommerce_stripe_settings.publishable_key &&
+					options.woocommerce_stripe_settings.secret_key,
+				isEnabled:
+					options.woocommerce_stripe_settings.enabled === 'yes',
+				toggle: ( isEnabled ) => {
+					updateOptions( {
+						woocommerce_stripe_settings: {
+							...options.woocommerce_stripe_settings,
+							enabled: isEnabled ? 'no' : 'yes',
+						},
+					} );
+				},
 			},
 			{
 				key: 'paypal',
@@ -159,8 +176,19 @@ class Payments extends Component {
 				visible: true,
 				plugins: [ 'woocommerce-gateway-paypal-express-checkout' ],
 				container: <PayPal markConfigured={ this.markConfigured } />,
-				isConfigured: options.woocommerce_ppec_paypal_settings.api_username && options.woocommerce_ppec_paypal_settings.api_password,
-				isEnabled: options.woocommerce_ppec_paypal_settings.enabled === 'yes',
+				isConfigured:
+					options.woocommerce_ppec_paypal_settings.api_username &&
+					options.woocommerce_ppec_paypal_settings.api_password,
+				isEnabled:
+					options.woocommerce_ppec_paypal_settings.enabled === 'yes',
+				toggle: ( isEnabled ) => {
+					updateOptions( {
+						woocommerce_ppec_paypal_settings: {
+							...options.woocommerce_ppec_paypal_settings,
+							enabled: isEnabled ? 'no' : 'yes',
+						},
+					} );
+				},
 			},
 			{
 				key: 'klarna_checkout',
@@ -184,8 +212,18 @@ class Payments extends Component {
 					/>
 				),
 				// @todo This should check actual Klarna connection information.
-				isConfigured: activePlugins.includes( 'klarna-checkout-for-woocommerce' ),
+				isConfigured: activePlugins.includes(
+					'klarna-checkout-for-woocommerce'
+				),
 				isEnabled: options.woocommerce_kco_settings.enabled === 'yes',
+				toggle: ( isEnabled ) => {
+					updateOptions( {
+						woocommerce_kco_settings: {
+							...options.woocommerce_kco_settings,
+							enabled: isEnabled ? 'no' : 'yes',
+						},
+					} );
+				},
 			},
 			{
 				key: 'klarna_payments',
@@ -209,8 +247,20 @@ class Payments extends Component {
 					/>
 				),
 				// @todo This should check actual Klarna connection information.
-				isConfigured: activePlugins.includes( 'klarna-payments-for-woocommerce' ),
-				isEnabled: options.woocommerce_klarna_payments_settings.enabled === 'yes',
+				isConfigured: activePlugins.includes(
+					'klarna-payments-for-woocommerce'
+				),
+				isEnabled:
+					options.woocommerce_klarna_payments_settings.enabled ===
+					'yes',
+				toggle: ( isEnabled ) => {
+					updateOptions( {
+						woocommerce_klarna_payments_settings: {
+							...options.woocommerce_klarna_payments_settings,
+							enabled: isEnabled ? 'no' : 'yes',
+						},
+					} );
+				},
 			},
 			{
 				key: 'square',
@@ -233,8 +283,20 @@ class Payments extends Component {
 					[ 'US', 'CA', 'JP', 'GB', 'AU' ].includes( countryCode ),
 				plugins: [ 'woocommerce-square' ],
 				container: <Square markConfigured={ this.markConfigured } />,
-				isConfigured: options.wc_square_refresh_tokens && options.wc_square_refresh_tokens.length,
-				isEnabled: options.woocommerce_square_credit_card_settings.enabled === 'yes',
+				isConfigured:
+					options.wc_square_refresh_tokens &&
+					options.wc_square_refresh_tokens.length,
+				isEnabled:
+					options.woocommerce_square_credit_card_settings.enabled ===
+					'yes',
+				toggle: ( isEnabled ) => {
+					updateOptions( {
+						woocommerce_square_credit_card_settings: {
+							...options.woocommerce_square_credit_card_settings,
+							enabled: isEnabled ? 'no' : 'yes',
+						},
+					} );
+				},
 			},
 			{
 				key: 'payfast',
@@ -262,8 +324,20 @@ class Payments extends Component {
 				visible: [ 'ZA' ].includes( countryCode ),
 				plugins: [ 'woocommerce-payfast-gateway' ],
 				container: <PayFast markConfigured={ this.markConfigured } />,
-				isConfigured: options.woocommerce_payfast_settings.merchant_id && options.woocommerce_payfast_settings.merchant_key && options.woocommerce_payfast_settings.pass_phrase,
-				isEnabled: options.woocommerce_payfast_settings.enabled === 'yes',
+				isConfigured:
+					options.woocommerce_payfast_settings.merchant_id &&
+					options.woocommerce_payfast_settings.merchant_key &&
+					options.woocommerce_payfast_settings.pass_phrase,
+				isEnabled:
+					options.woocommerce_payfast_settings.enabled === 'yes',
+				toggle: ( isEnabled ) => {
+					updateOptions( {
+						woocommerce_payfast_settings: {
+							...options.woocommerce_payfast_settings,
+							enabled: isEnabled ? 'no' : 'yes',
+						},
+					} );
+				},
 			},
 		];
 
@@ -343,8 +417,10 @@ class Payments extends Component {
 						container,
 						content,
 						isConfigured,
+						isEnabled,
 						key,
 						title,
+						toggle,
 						visible,
 					} = method;
 
@@ -406,7 +482,11 @@ class Payments extends Component {
 										{ __( 'Set up', 'woocommerce-admin' ) }
 									</Button>
 								) : (
-									<FormToggle />
+									<FormToggle
+										checked={ isEnabled }
+										onChange={ () => toggle( isEnabled ) }
+										onClick={ ( e ) => e.stopPropagation() }
+									/>
 								) }
 							</div>
 						</Card>
