@@ -1,6 +1,6 @@
 # Orders Report
 
-The Orders Report provides insight about the order of your store.
+The Orders Report provides insight about your store's orders.
 
 By default, orders with included statuses are listed by order date descending. 
 
