@@ -330,6 +330,7 @@ export default compose(
 			'woocommerce_klarna_payments_settings',
 			'woocommerce_kco_settings',
 			'wc_square_refresh_tokens',
+			'woocommerce_cod_settings',
 		] );
 		const countryCode = getCountryCode(
 			options.woocommerce_default_country

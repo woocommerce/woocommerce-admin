@@ -17,6 +17,7 @@ import {
 /**
  * Internal dependencies
  */
+import CodIcon from './images/cod';
 import Stripe from './stripe';
 import Square from './square';
 import PayPal from './paypal';
@@ -191,6 +192,18 @@ export function getPaymentMethods( {
 				options.woocommerce_payfast_settings &&
 				options.woocommerce_payfast_settings.enabled === 'yes',
 			optionName: 'woocommerce_payfast_settings',
+		},
+		{
+			key: 'cod',
+			title: __( 'Cash on delivery', 'woocommerce-admin' ),
+			content: __(
+				'Take payments in cash upon delivery.',
+				'woocommerce-admin'
+			),
+			before: <CodIcon />,
+			visible: true,
+			isEnabled: options.woocommerce_cod_settings.enabled === 'yes',
+			optionName: 'woocommerce_cod_settings',
 		},
 	];
 
