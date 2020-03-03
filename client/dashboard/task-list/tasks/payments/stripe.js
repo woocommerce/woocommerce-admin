@@ -92,11 +92,11 @@ class Stripe extends Component {
 		const { activePlugins, isJetpackConnected } = this.props;
 		const { autoConnectFailed } = this.state;
 
-		return isJetpackConnected &&
-			activePlugins.includes( 'woocommerce-services' ) &&
-			! autoConnectFailed
-			? false
-			: true;
+		return (
+			! isJetpackConnected ||
+			! activePlugins.includes( 'woocommerce-services' ) ||
+			autoConnectFailed
+		);
 	}
 
 	completeMethod() {
