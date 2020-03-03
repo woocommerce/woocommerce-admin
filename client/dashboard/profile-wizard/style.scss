@@ -155,11 +155,12 @@
 	.woocommerce-profile-wizard__benefits {
 		display: grid;
 		grid-gap: $gap;
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-auto-columns: 1fr;
+		grid-auto-flow: column;
 
 		@include breakpoint( '<960px' ) {
 			justify-items: center;
-			grid-template-columns: 1fr;
+			grid-auto-flow: row;
 		}
 	}
 
@@ -360,7 +361,8 @@
 }
 
 .woocommerce-profile-wizard__benefits-card.woocommerce-card {
-	max-width: 1013px;
+	display: inline-block;
+	max-width: 100%;
 	text-align: center;
 
 	.woocommerce-card__body {
