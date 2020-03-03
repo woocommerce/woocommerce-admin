@@ -90,7 +90,10 @@ class Klarna extends Component {
 					installStep,
 					{
 						key: 'connect',
-						label: __( 'Connect your Klarna account' ),
+						label: __(
+							'Connect your Klarna account',
+							'woocommerce-admin'
+						),
 						content: this.renderConnectStep(),
 					},
 				] }
