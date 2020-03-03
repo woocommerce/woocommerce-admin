@@ -174,6 +174,11 @@ class Payments extends Component {
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 		this.setState( { enabledMethods } );
 
+		recordEvent( 'tasklist_payment_toggle', {
+			enabled: ! method.isEnabled,
+			payment_method: key,
+		} );
+
 		updateOptions( {
 			[ method.optionName ]: {
 				...options[ method.optionName ],
