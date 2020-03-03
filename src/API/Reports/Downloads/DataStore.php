@@ -61,9 +61,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Assign report columns once full table name has been assigned.
 	 */
 	protected function assign_report_columns() {
+		$local_tz   = new \DateTimeZone( wc_timezone_string() );
+		$offset     = $local_tz->getOffset( new \DateTime() ) / 3600;
+		$sign       = $offset >= 0 ? '+' : '-';
+		$offset_str = $sign . (string) $offset . ':00';
+
 		$this->report_columns = array(
 			'id'          => 'download_log_id as id',
-			'date'        => 'timestamp as date_gmt',
+			'date'        => 'CONVERT_TZ(timestamp, \'+00:00\',\'' . $offset_str . '\') as date_gmt',
 			'download_id' => 'product_permissions.download_id',
 			'product_id'  => 'product_permissions.product_id',
 			'order_id'    => 'product_permissions.order_id',
@@ -297,6 +302,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
 
+		// wc_download_log table is in UTC, so we must convert the query as well.
+		foreach ( array( 'before', 'after' ) as $query_arg_key ) {
+			$utc_tz       = new \DateTimeZone( 'UTC' );
+			$utc_datetime = $query_args[ $query_arg_key ];
+			$utc_datetime->setTimezone( $utc_tz );
+			$query_args[ $query_arg_key ] = $utc_datetime;
+		}
+
 		/*
 		 * We need to get the cache key here because
 		 * parent::update_intervals_sql_params() modifies $query_args.
@@ -304,7 +317,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$cache_key = $this->get_cache_key( $query_args );
 		$data      = $this->get_cached_data( $cache_key );
 
-		if ( false === $data ) {
+		if ( true ) {
 			$this->initialize_queries();
 
 			$data = (object) array(

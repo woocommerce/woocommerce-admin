@@ -76,6 +76,14 @@ class DataStore extends DownloadsDataStore implements DataStoreInterface {
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
 
+		// wc_download_log table is in UTC, so we must convert the query as well.
+		foreach ( array( 'before', 'after' ) as $query_arg_key ) {
+			$utc_tz       = new \DateTimeZone( 'UTC' );
+			$utc_datetime = $query_args[ $query_arg_key ];
+			$utc_datetime->setTimezone( $utc_tz );
+			$query_args[ $query_arg_key ] = $utc_datetime;
+		}
+
 		/*
 		 * We need to get the cache key here because
 		 * parent::update_intervals_sql_params() modifies $query_args.
