@@ -204,12 +204,7 @@ class Benefits extends Component {
 						onClick={ this.startPluginInstall }
 						className="woocommerce-profile-wizard__continue"
 					>
-						{ pluginsToInstall.length === 1
-							? sprintf(
-									__( 'Install %s', 'woocommerce-admin' ),
-									pluginNamesString
-							  )
-							: __( 'Yes please!', 'woocommerce-admin' ) }
+						{ __( 'Yes please!', 'woocommerce-admin' ) }
 					</Button>
 					<Button
 						isDefault
