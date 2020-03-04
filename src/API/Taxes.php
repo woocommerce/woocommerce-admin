@@ -99,9 +99,8 @@ class Taxes extends \WC_REST_Taxes_Controller {
 		// Filter by tax code.
 		$tax_code_search = $prepared_args['search'];
 		if ( $tax_code_search ) {
-			$tax_code_search = $wpdb->esc_like( $tax_code_search );
-			$tax_code_search = ' \'%' . $tax_code_search . '%\'';
-			$query          .= ' AND CONCAT_WS( "-", NULLIF(tax_rate_country, ""), NULLIF(tax_rate_state, ""), NULLIF(tax_rate_name, ""), NULLIF(tax_rate_priority, "") ) LIKE ' . $tax_code_search;
+			$code_like = '%' . $wpdb->esc_like( $tax_code_search ) . '%';
+			$query    .= $wpdb->prepare( ' AND CONCAT_WS( "-", NULLIF(tax_rate_country, ""), NULLIF(tax_rate_state, ""), NULLIF(tax_rate_name, ""), NULLIF(tax_rate_priority, "") ) LIKE %s', $code_like );
 		}
 
 		// Filter by included tax rate IDs.
