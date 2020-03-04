@@ -75,6 +75,9 @@ class Loader {
 		add_filter( 'woocommerce_settings-wc_admin', array( __CLASS__, 'add_settings' ) );
 		add_filter( 'option_woocommerce_actionable_order_statuses', array( __CLASS__, 'filter_invalid_statuses' ) );
 		add_filter( 'option_woocommerce_excluded_report_order_statuses', array( __CLASS__, 'filter_invalid_statuses' ) );
+		add_action( 'admin_head', array( __CLASS__, 'remove_notices' ) );
+		add_action( 'admin_notices', array( __CLASS__, 'inject_before_notices' ), -9999 );
+		add_action( 'admin_notices', array( __CLASS__, 'inject_after_notices' ), PHP_INT_MAX );
 
 		// priority is 20 to run after https://github.com/woocommerce/woocommerce/blob/a55ae325306fc2179149ba9b97e66f32f84fdd9c/includes/admin/class-wc-admin-menus.php#L165.
 		add_action( 'admin_head', array( __CLASS__, 'remove_app_entry_page_menu_item' ), 20 );
@@ -537,6 +540,42 @@ class Loader {
 
 		$admin_body_class = implode( ' ', array_unique( $classes ) );
 		return " $admin_body_class ";
+	}
+
+
+	/**
+	 * Removes notices that should not be displayed on WC Admin pages.
+	 */
+	public static function remove_notices() {
+		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
+			return;
+		}
+
+		// Hello Dolly.
+		if ( function_exists( 'hello_dolly' ) ) {
+			remove_action( 'admin_notices', 'hello_dolly' );
+		}
+	}
+
+	/**
+	 * Runs before admin notices action and hides them.
+	 */
+	public static function inject_before_notices() {
+		if ( ( ! self::is_admin_page() && ! self::is_embed_page() ) ) {
+			return;
+		}
+		echo '<div class="woocommerce-layout__notice-list-hide" id="wp__notice-list">';
+		echo '<div class="wp-header-end" id="woocommerce-layout__notice-catcher"></div>'; // https://github.com/WordPress/WordPress/blob/f6a37e7d39e2534d05b9e542045174498edfe536/wp-admin/js/common.js#L737.
+	}
+
+	/**
+	 * Runs after admin notices and closes div.
+	 */
+	public static function inject_after_notices() {
+		if ( ( ! self::is_admin_page() && ! self::is_embed_page() ) ) {
+			return;
+		}
+		echo '</div>';
 	}
 
 	/**
