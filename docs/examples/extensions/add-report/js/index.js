@@ -18,7 +18,7 @@ const Report = ( { path, query } ) => {
 			<TableCard
 				title="Apples"
 				headers={ [
-					{ label: 'Type', key: 'type' },
+					{ label: 'Type', key: 'type', isLeftAligned: true },
 					{ label: 'Color', key: 'color' },
 					{ label: 'Taste', key: 'taste' },
 				] }
