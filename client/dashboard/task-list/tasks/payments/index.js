@@ -379,6 +379,7 @@ class Payments extends Component {
 							this.completePluginInstall();
 							recordEvent( 'tasklist_payment_install_method' );
 						} }
+						autoInstall
 						pluginSlugs={ this.getPluginsToInstall() }
 					/>
 				),
