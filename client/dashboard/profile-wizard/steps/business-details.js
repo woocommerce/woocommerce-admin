@@ -20,7 +20,7 @@ import {
 /**
  * Internal dependencies
  */
-import { H, Card, SelectControl, Form } from '@woocommerce/components';
+import { H, Card, SelectControl, Form, TextControl } from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { formatCurrency } from 'lib/currency-format';
@@ -42,6 +42,7 @@ class BusinessDetails extends Component {
 
 		this.initialValues = {
 			other_platform: profileItems.other_platform || '',
+			other_platform_name: profileItems.other_platform_name || '',
 			product_count: profileItems.product_count || '',
 			selling_venues: profileItems.selling_venues || '',
 			revenue: profileItems.revenue || '',
@@ -77,6 +78,7 @@ class BusinessDetails extends Component {
 		} = this.props;
 		const {
 			other_platform: otherPlatform,
+			other_platform_name: otherPlatformName,
 			product_count: productCount,
 			revenue,
 			selling_venues: sellingVenues,
@@ -89,12 +91,14 @@ class BusinessDetails extends Component {
 			currency: currency.code,
 			revenue,
 			used_platform: otherPlatform,
+			used_platform_name: otherPlatformName,
 			install_facebook: values[ 'facebook-for-woocommerce' ],
 			install_mailchimp: values[ 'mailchimp-for-woocommerce' ],
 		} );
 
 		const _updates = {
 			other_platform: otherPlatform,
+			other_platform_name: otherPlatformName,
 			product_count: productCount,
 			revenue,
 			selling_venues: sellingVenues,
@@ -105,7 +109,13 @@ class BusinessDetails extends Component {
 		const updates = {};
 		Object.keys( _updates ).forEach( ( key ) => {
 			if ( _updates[ key ] !== '' ) {
-				updates[ key ] = _updates[ key ];
+				// "other_platform_name" value is saved only when "other" platform is selected
+				if (
+					key !== 'other_platform_name' ||
+					( key === 'other_platform_name' && _updates.other_platform === 'other' )
+				) {
+					updates[ key ] = _updates[ key ];
+				}
 			}
 		} );
 
@@ -147,6 +157,10 @@ class BusinessDetails extends Component {
 						'This field is required',
 						'woocommerce-admin'
 					);
+				}
+			} else if ( name === 'other_platform_name' ) {
+				if ( ! values.other_platform_name && values.other_platform === 'other' ) {
+					errors.other_platform_name = __( 'This field is required', 'woocommerce-admin' );
 				}
 			} else if ( name === 'revenue' ) {
 				if (
@@ -529,6 +543,7 @@ class BusinessDetails extends Component {
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
 					// Show extensions when the currently selling elsewhere checkbox has been answered.
 					const showExtensions = values.selling_venues !== '';
+					const otherPlatform = getInputProps( 'other_platform' );
 					return (
 						<Fragment>
 							<H className="woocommerce-profile-wizard__header-title">
@@ -586,17 +601,26 @@ class BusinessDetails extends Component {
 										'other',
 										'brick-mortar-other',
 									].includes( values.selling_venues ) && (
-										<SelectControl
-											label={ __(
-												'Which platform is the store using?',
-												'woocommerce-admin'
+										<Fragment>
+											<SelectControl
+												label={ __(
+													'Which platform is the store using?',
+													'woocommerce-admin'
+												) }
+												options={ otherPlatformOptions }
+												required
+												{ ...otherPlatform }
+											/>
+											{ otherPlatform.selected === 'other' && (
+												<TextControl
+													label={ __( 'What is the platform name?', 'woocommerce-admin' ) }
+													required
+													{ ...getInputProps(
+														'other_platform_name'
+													) }
+												/>
 											) }
-											options={ otherPlatformOptions }
-											required
-											{ ...getInputProps(
-												'other_platform'
-											) }
-										/>
+										</Fragment>
 									) }
 
 									{ showExtensions &&

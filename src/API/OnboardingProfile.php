@@ -318,6 +318,13 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 					'other',
 				),
 			),
+			'other_platform_name' => array(
+				'type'              => 'string',
+				'description'       => __( 'Name of other platform used to sell (not listed).', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+			),
 			'business_extensions' => array(
 				'type'              => 'array',
 				'description'       => __( 'Extra business extensions to install.', 'woocommerce-admin' ),
