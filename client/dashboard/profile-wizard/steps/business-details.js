@@ -238,7 +238,7 @@ class BusinessDetails extends Component {
 	}
 
 	renderBusinessExtensions( values, getInputProps ) {
-		const { installExtensions } = this.state;
+		const { installExtensions, extensionInstallError } = this.state;
 		const { goToNextStep } = this.props;
 		const extensionsToInstall = this.getBusinessExtensions( values );
 		const extensionBenefits = [
@@ -299,7 +299,7 @@ class BusinessDetails extends Component {
 									isInstallingExtensions: false,
 								} );
 							} }
-							autoInstall
+							autoInstall={ ! extensionInstallError }
 							pluginSlugs={ extensionsToInstall }
 						/>
 					</div>

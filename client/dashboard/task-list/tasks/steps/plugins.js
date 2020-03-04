@@ -57,7 +57,7 @@ class Plugins extends Component {
 			activatePlugins( pluginSlugs );
 		}
 
-		if ( activatedPlugins.length === pluginSlugs.length ) {
+		if ( pluginSlugs.length > 0 && activatedPlugins.length === pluginSlugs.length ) {
 			createNotice(
 				'success',
 				__( 'Plugins were successfully installed and activated.', 'woocommerce-admin' )
@@ -89,7 +89,7 @@ class Plugins extends Component {
 	}
 
 	render() {
-		const { hasErrors, isRequesting, skipText, autoInstall } = this.props;
+		const { hasErrors, isRequesting, skipText, autoInstall, pluginSlugs } = this.props;
 
 		if ( hasErrors ) {
 			return (
@@ -106,6 +106,16 @@ class Plugins extends Component {
 
 		if ( autoInstall ) {
 			return null;
+		}
+
+		if ( 0 === pluginSlugs.length ) {
+			return (
+				<Fragment>
+					<Button isPrimary isBusy={ isRequesting } onClick={ this.skipInstaller }>
+						{ __( 'Continue', 'woocommerce-admin' ) }
+					</Button>
+				</Fragment>
+			);
 		}
 
 		return (
