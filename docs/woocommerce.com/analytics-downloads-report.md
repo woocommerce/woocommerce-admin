@@ -1,6 +1,6 @@
 # Downloads Report
 
-The Downloads Report provides insight into the performance of your store's downloadable products. Downloads counts are a total including multiple from the same IP address.
+The Downloads Report provides insight into the performance of your store's downloadable products. Downloads counts are a total including multiple from the same IP address. Please note that timestamps are representantive of UTC time as opposed to local timezone as other reports are.
 
 ### All Downloads View
 
