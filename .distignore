@@ -6,6 +6,7 @@
 .gitlab-ci.yml
 .travis.yml
 .DS_Store
+.zipignore
 Thumbs.db
 behat.yml
 bin
