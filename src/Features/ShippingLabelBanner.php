@@ -100,7 +100,13 @@ class ShippingLabelBanner {
 	 * @param string $hook current page hook.
 	 */
 	public function add_print_shipping_label_script( $hook ) {
-		wp_enqueue_script( 'print-shipping-label-banner', Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ), array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'wp-components' ), WC_ADMIN_VERSION_NUMBER, true );
+		wp_enqueue_script(
+			'print-shipping-label-banner',
+			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ),
+			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment' ),
+			WC_ADMIN_VERSION_NUMBER,
+			true
+		);
 	}
 
 	/**
