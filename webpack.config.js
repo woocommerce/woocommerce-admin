@@ -77,6 +77,7 @@ const wpAdminScripts = [
 	'onboarding-product-notice',
 	'onboarding-product-import-notice',
 	'onboarding-tax-notice',
+	'print-shipping-label-banner',
 ];
 wpAdminScripts.forEach( ( name ) => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
