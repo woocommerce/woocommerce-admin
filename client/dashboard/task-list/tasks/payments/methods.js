@@ -17,6 +17,8 @@ import {
 /**
  * Internal dependencies
  */
+import Bacs from './bacs';
+import BacsIcon from './images/bacs';
 import CodIcon from './images/cod';
 import Stripe from './stripe';
 import Square from './square';
@@ -202,8 +204,22 @@ export function getPaymentMethods( {
 			),
 			before: <CodIcon />,
 			visible: true,
-			isEnabled: options.woocommerce_cod_settings.enabled === 'yes',
+			isEnabled: options.woocommerce_cod_settings && options.woocommerce_cod_settings.enabled === 'yes',
 			optionName: 'woocommerce_cod_settings',
+		},
+		{
+			key: 'bacs',
+			title: __( 'Direct bank transfer', 'woocommerce-admin' ),
+			content: __(
+				'Take payments via bank transfer.',
+				'woocommerce-admin'
+			),
+			before: <BacsIcon />,
+			visible: true,
+			container: <Bacs />,
+			isConfigured: options.woocommerce_bacs_accounts && options.woocommerce_bacs_accounts.length,
+			isEnabled: options.woocommerce_bacs_settings && options.woocommerce_bacs_settings.enabled === 'yes',
+			optionName: 'woocommerce_bacs_settings',
 		},
 	];
 
