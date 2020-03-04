@@ -63,7 +63,7 @@ class Tax extends Component {
 			woocommerce_default_country,
 			woocommerce_store_postcode,
 		} = generalSettings;
-		const { isPending, stepIndex } = this.state;
+		const { stepIndex } = this.state;
 		const currentStep = this.getSteps()[ stepIndex ];
 		const currentStepKey = currentStep && currentStep.key;
 		const isCompleteAddress = Boolean(
@@ -103,7 +103,10 @@ class Tax extends Component {
 			this.completeStep();
 		}
 
-		if ( isPending && 'yes' === woocommerce_calc_taxes ) {
+		if (
+			'no' === prevProps.generalSettings.woocommerce_calc_taxes &&
+			'yes' === woocommerce_calc_taxes
+		) {
 			window.location = getAdminLink( 'admin.php?page=wc-settings&tab=tax&section=standard' );
 		}
 	}
