@@ -113,6 +113,15 @@ class Payments extends Component {
 	}
 
 	markConfigured( method ) {
+		const { enabledMethods } = this.state;
+
+		this.setState( {
+			enabledMethods: {
+				...enabledMethods,
+				[ method ]: true,
+			},
+		} );
+
 		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
 
 		recordEvent( 'tasklist_payment_connect_method', {
