@@ -5,4 +5,4 @@
 npm run build
 composer install
 rm woocommerce-admin.zip
-zip -r woocommerce-admin.zip ./ -x@\.zipignore
+./bin/make-zip.sh woocommerce-admin.zip
