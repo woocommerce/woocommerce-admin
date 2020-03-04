@@ -44,6 +44,7 @@ class Tax extends Component {
 		this.completeStep = this.completeStep.bind( this );
 		this.configureTaxRates = this.configureTaxRates.bind( this );
 		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
+		this.setIsPending = this.setIsPending.bind( this );
 	}
 
 	componentDidMount() {
@@ -62,7 +63,7 @@ class Tax extends Component {
 			woocommerce_default_country,
 			woocommerce_store_postcode,
 		} = generalSettings;
-		const { isPending, stepIndex } = this.state;
+		const { stepIndex } = this.state;
 		const currentStep = this.getSteps()[ stepIndex ];
 		const currentStepKey = currentStep && currentStep.key;
 		const isCompleteAddress = Boolean(
@@ -102,7 +103,10 @@ class Tax extends Component {
 			this.completeStep();
 		}
 
-		if ( isPending && 'yes' === woocommerce_calc_taxes ) {
+		if (
+			'no' === prevProps.generalSettings.woocommerce_calc_taxes &&
+			'yes' === woocommerce_calc_taxes
+		) {
 			window.location = getAdminLink( 'admin.php?page=wc-settings&tab=tax&section=standard' );
 		}
 	}
@@ -184,6 +188,10 @@ class Tax extends Component {
 		}
 	}
 
+	setIsPending( value ) {
+		this.setState( { isPending: value } );
+	}
+
 	getSteps() {
 		const { generalSettings, isGeneralSettingsRequesting, isJetpackConnected } = this.props;
 		const { isPending, pluginsToActivate } = this.state;
@@ -245,6 +253,7 @@ class Tax extends Component {
 				content: (
 					<Connect
 						{ ...this.props }
+						setIsPending={ this.setIsPending }
 						onConnect={ () => {
 							recordEvent( 'tasklist_tax_connect_store', { connect: true } );
 						} }
