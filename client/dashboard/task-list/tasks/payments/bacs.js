@@ -55,7 +55,10 @@ class PayFast extends Component {
 				markConfigured( 'bacs' );
 				createNotice(
 					'success',
-					__( 'Direct bank transfer details added successfully', 'woocommerce-admin' )
+					__(
+						'Direct bank transfer details added successfully',
+						'woocommerce-admin'
+					)
 				);
 			} else {
 				createNotice(
@@ -92,54 +95,71 @@ class PayFast extends Component {
 				{ ( { getInputProps, handleSubmit } ) => {
 					return (
 						<Fragment>
-							<H>{ __( 'Add your bank details', 'woocommerce-admin' ) }</H>
-							<p>{ __( 'These details are required to receive payments via bank transfer', 'woocommerce-admin' ) }</p>
-							<TextControl
-								label={ __(
-									'Account name',
+							<H>
+								{ __(
+									'Add your bank details',
 									'woocommerce-admin'
 								) }
-								required
-								{ ...getInputProps( 'account_name' ) }
-							/>
-							<TextControl
-								label={ __(
-									'Account number',
+							</H>
+							<p>
+								{ __(
+									'These details are required to receive payments via bank transfer',
 									'woocommerce-admin'
 								) }
-								required
-								{ ...getInputProps( 'account_number' ) }
-							/>
-							<TextControl
-								label={ __(
-									'Sort code',
-									'woocommerce-admin'
-								) }
-								required
-								{ ...getInputProps( 'sort_code' ) }
-							/>
-							<TextControl
-								label={ __(
-									'IBAN',
-									'woocommerce-admin'
-								) }
-								required
-								{ ...getInputProps( 'iban' ) }
-							/>
-							<TextControl
-								label={ __(
-									'BIC / Swift',
-									'woocommerce-admin'
-								) }
-								required
-								{ ...getInputProps( 'bic' ) }
-							/>
+							</p>
+							<div className="woocommerce-task-payment-method__fields">
+								<TextControl
+									label={ __(
+										'Account name',
+										'woocommerce-admin'
+									) }
+									required
+									{ ...getInputProps( 'account_name' ) }
+								/>
+								<TextControl
+									label={ __(
+										'Account number',
+										'woocommerce-admin'
+									) }
+									required
+									{ ...getInputProps( 'account_number' ) }
+								/>
+								<TextControl
+									label={ __(
+										'Bank name',
+										'woocommerce-admin'
+									) }
+									required
+									{ ...getInputProps( 'bank_name' ) }
+								/>
+								<TextControl
+									label={ __(
+										'Sort code',
+										'woocommerce-admin'
+									) }
+									required
+									{ ...getInputProps( 'sort_code' ) }
+								/>
+								<TextControl
+									label={ __( 'IBAN', 'woocommerce-admin' ) }
+									required
+									{ ...getInputProps( 'iban' ) }
+								/>
+								<TextControl
+									label={ __(
+										'BIC / Swift',
+										'woocommerce-admin'
+									) }
+									required
+									{ ...getInputProps( 'bic' ) }
+								/>
+							</div>
 							<Button
 								isPrimary
 								isBusy={ isOptionsRequesting }
 								onClick={ handleSubmit }
 							>
-								{ __( 'Proceed', 'woocommerce-admin' ) }
+								{ __( 'Save', 'woocommerce-admin' ) }
 							</Button>
 						</Fragment>
 					);
@@ -155,9 +175,15 @@ export default compose(
 			'wc-api'
 		);
 		const isOptionsRequesting = Boolean(
-			isUpdateOptionsRequesting( ['woocommerce_bacs_settings', 'woocommerce_bacs_accounts'] )
+			isUpdateOptionsRequesting( [
+				'woocommerce_bacs_settings',
+				'woocommerce_bacs_accounts',
+			] )
 		);
-		const hasOptionsError = getOptionsError( [ 'woocommerce_bacs_settings', 'woocommerce_bacs_accounts' ] );
+		const hasOptionsError = getOptionsError( [
+			'woocommerce_bacs_settings',
+			'woocommerce_bacs_accounts',
+		] );
 
 		return {
 			hasOptionsError,
