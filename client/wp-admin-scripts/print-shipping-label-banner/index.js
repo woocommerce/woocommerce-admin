@@ -22,17 +22,17 @@ class ShippingBanner extends Component {
 	}
 
 	closeDismissModal = () => this.setState( { isDismissModalOpen: false } );
-
 	openDismissModal = () => {
 		this.setState( { isDismissModalOpen: true } );
 		// TODO: tracking
 	};
 
-	remindMeLaterClicked = () => {
-		this.closeDismissModal();
+	hideBanner = () => {
 		this.setState( { showShippingBanner: false } );
-		// TODO: Maybe set counter for when to show again, or just show on next page load.
+	};
 
+	openDismissModal = () => {
+		this.setState( { isDismissModalOpen: true } );
 		// TODO: tracking
 	};
 
@@ -40,17 +40,6 @@ class ShippingBanner extends Component {
 		// TODO: install and activate WCS
 		// TODO: open WCS modal
 		// TODO: Tracking
-	};
-
-	closeForeverClicked = () => {
-		this.closeDismissModal();
-		this.setState( { showShippingBanner: false } );
-		// TODO: Persist something so the banner never appears again.
-	};
-
-	dismissModalCloseButtonClicked = () => {
-		this.closeDismissModal();
-		// TODO: tracking
 	};
 
 	render() {
@@ -91,7 +80,11 @@ class ShippingBanner extends Component {
 						) }
 					</span>
 				</button>
-				{ isDismissModalOpen && <DismissModal /> }
+				<DismissModal
+					visible={ isDismissModalOpen }
+					onClose={ this.closeDismissModal }
+					onCloseAll={ this.hideBanner }
+				/>
 			</div>
 		);
 	}
