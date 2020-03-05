@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { Button, Modal } from '@wordpress/components';
+import { dispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -11,17 +12,23 @@ import { Button, Modal } from '@wordpress/components';
 import '../style.scss';
 
 export default class DismissModal extends Component {
+	setDismissed = ( timestamp ) => {
+		dispatch( 'wc-api' ).updateOptions( {
+			woocommerce_shipping_dismissed_timestamp: timestamp,
+		} );
+	};
+
 	remindMeLaterClicked = () => {
 		const { onCloseAll } = this.props;
-		onCloseAll();
-		// TODO: Maybe set counter for when to show again, or just show on next page load.
-
+		this.setDismissed( Date.now() );
 		// TODO: tracking
+		onCloseAll();
 	};
 
 	closeForeverClicked = () => {
 		const { onCloseAll } = this.props;
-		// TODO: Persist something so the banner never appears again.
+		this.setDismissed( -1 );
+		// TODO: tracking
 		onCloseAll();
 	};
 
