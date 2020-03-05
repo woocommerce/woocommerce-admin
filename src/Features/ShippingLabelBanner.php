@@ -82,7 +82,7 @@ class ShippingLabelBanner {
 	public function add_meta_boxes( $post_type, $post ) {
 		if ( $this->should_show_meta_box() ) {
 			add_meta_box(
-				'woocommerce-order-label',
+				'woocommerce-admin-print-label',
 				__( 'Shipping Label', 'woocommerce-admin' ),
 				array( $this, 'meta_box' ),
 				null,
@@ -100,11 +100,18 @@ class ShippingLabelBanner {
 	 * @param string $hook current page hook.
 	 */
 	public function add_print_shipping_label_script( $hook ) {
+		wp_enqueue_style(
+			'print-shipping-label-banner-style',
+			Loader::get_url( 'print-shipping-label-banner/style.css' ),
+			array(),
+			Loader::get_file_version( 'print-shipping-label-banner/style.css' )
+		);
+
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment' ),
-			WC_ADMIN_VERSION_NUMBER,
+			Loader::get_file_version( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			true
 		);
 	}
