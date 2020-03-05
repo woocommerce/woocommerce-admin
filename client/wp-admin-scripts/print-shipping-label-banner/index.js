@@ -3,12 +3,13 @@
  */
 import { __ } from '@wordpress/i18n';
 import { render, Component } from '@wordpress/element';
-import { ExternalLink, Button, Modal } from '@wordpress/components';
+import { ExternalLink, Button } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
+import DismissModal from './dismiss-modal';
 const metaBox = document.getElementById( 'wc-admin-shipping-banner-root' );
 
 class ShippingBanner extends Component {
@@ -21,57 +22,19 @@ class ShippingBanner extends Component {
 	}
 
 	closeDismissModal = () => this.setState( { isDismissModalOpen: false } );
-
 	openDismissModal = () => {
 		this.setState( { isDismissModalOpen: true } );
 		// TODO: tracking
 	};
 
-	remindMeLaterClicked = () => {
-		this.closeDismissModal();
+	hideBanner = () => {
 		this.setState( { showShippingBanner: false } );
-		// TODO: Maybe set counter for when to show again, or just show on next page load.
-
-		// TODO: tracking
 	};
 
 	createShippingLabelClicked = () => {
 		// TODO: install and activate WCS
 		// TODO: open WCS modal
 		// TODO: Tracking
-	};
-
-	closeForeverClicked = () => {
-		this.closeDismissModal();
-		this.setState( { showShippingBanner: false } );
-		// TODO: Persist something so the banner never appears again.
-	};
-
-	dismissModalCloseButtonClicked = () => {
-		this.closeDismissModal();
-		// TODO: tracking
-	};
-
-	renderDismissModal = () => {
-		return (
-			<Modal
-				title="Are you sure?"
-				onRequestClose={ this.dismissModalCloseButtonClicked }
-			>
-				<p>
-					{ __(
-						'With WooCommerce Services you can Print shipping labels from your WooCommerce dashboard at the lowest USPS rates.',
-						'woocommerce-admin'
-					) }
-				</p>
-				<Button onClick={ this.remindMeLaterClicked }>
-					{ __( 'Remind me later', 'woocommerce-admin' ) }
-				</Button>
-				<Button isPrimary onClick={ this.closeForeverClicked }>
-					{ __( "I don't need this", 'woocommerce-admin' ) }
-				</Button>
-			</Modal>
-		);
 	};
 
 	render() {
@@ -112,7 +75,11 @@ class ShippingBanner extends Component {
 						) }
 					</span>
 				</button>
-				{ isDismissModalOpen && this.renderDismissModal() }
+				<DismissModal
+					visible={ isDismissModalOpen }
+					onClose={ this.closeDismissModal }
+					onCloseAll={ this.hideBanner }
+				/>
 			</div>
 		);
 	}
