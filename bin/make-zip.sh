@@ -19,20 +19,16 @@ output() {
 
 output 2 "Creating archive... 🎁"
 
-build_files=$(ls dist/*/*.{js,css})
 ZIP_FILE=$1
 
-zip -r ${ZIP_FILE} \
-	woocommerce-admin.php \
-	uninstall.php \
-	includes/ \
-	images/ \
-	$build_files \
-	languages/woocommerce-admin.pot \
-	readme.txt \
-	src/ \
-	vendor/ \
-     -x \
+# Folders listed first then individual files
+zip -r ${ZIP_FILE} . \
+	-x \
+	.git/\* \
+	tests/\* \
+	bin/\* \
+	config/\* \
+	node_modules/\* \
 	vendor/bin/\* \
 	vendor/dealerdirect/\* \
 	vendor/doctrine/\* \
@@ -46,4 +42,31 @@ zip -r ${ZIP_FILE} \
 	vendor/theseer/\* \
 	vendor/webmozart/\* \
 	vendor/woocommerce/\* \
-	vendor/wp-coding-standards/\*
+	vendor/wp-coding-standards/\* \
+	.distignore \
+	.editorconfig \
+	.gitignore \
+	.gitlab-ci.yml \
+	.travis.yml \
+	.DS_Store \
+	.zipignore \
+	Thumbs.db \
+	behat.yml \
+	circle.yml \
+	composer.json \
+	composer.lock \
+	Gruntfile.js \
+	package.json \
+	package-lock.json \
+	phpunit.xml \
+	phpunit.xml.dist \
+	multisite.xml \
+	multisite.xml.dist \
+	phpcs.xml \
+	phpcs.xml.dist \
+	README.md \
+	wp-cli.local.yml \
+	yarn.lock \
+	*.sql \
+	*.tar.gz \
+	*.zip
