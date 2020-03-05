@@ -85,6 +85,17 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Activity Panels: Remove W Panel #3827
 - Fix: Tracking on migrated options #3828
 
+= 0.26.1 2020-02-26 =
+
+- Fix: Remove free text Search option when no query exists #3755
+- Fix: StoreAlert: Fix typo in API description #3757 👏 @akirk
+- Fix: WP Coding Standards PR Regressions #3760
+- Fix: OBW: sideloading image test error #3762
+- Fix: coding standards violations #3763
+- Fix: Product titles include encoded entities #3765
+- Fix: Add deactivation hook to Package.php #3770
+- Fix: Add active version functions #3772
+
 = 0.26.0 2020-02-21 =
 
 - Fix: Warning in product data store when tax amount is non-numeric. #3656
