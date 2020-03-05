@@ -77,6 +77,7 @@ const wpAdminScripts = [
 	'onboarding-product-notice',
 	'onboarding-product-import-notice',
 	'onboarding-tax-notice',
+	'onboarding-menu-experience',
 ];
 wpAdminScripts.forEach( ( name ) => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
@@ -88,7 +89,6 @@ const webpackConfig = {
 		app: './client/index.js',
 		ie: './client/ie.scss',
 		...entryPoints,
-		'onboarding-experience': './client/onboarding-experience.js',
 	},
 	output: {
 		filename: ( data ) => {

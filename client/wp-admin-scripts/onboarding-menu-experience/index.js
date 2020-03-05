@@ -9,7 +9,7 @@ import { get, filter } from 'lodash';
  * Internal dependencies
  */
 import withSelect from 'wc-api/with-select';
-import { getAllTasks } from './dashboard/task-list/tasks';
+import { getAllTasks } from '../../dashboard/task-list/tasks';
 import { isOnboardingEnabled } from 'dashboard/utils';
 
 function hideOrShowMenuItemsForTaskList( show ) {

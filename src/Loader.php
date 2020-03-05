@@ -403,22 +403,12 @@ class Loader {
 			array(),
 			self::get_file_version( 'https://fonts.googleapis.com/icon?family=Material+Icons' )
 		);
-
-		wp_register_script(
-			'wc-onboarding-experience',
-			self::get_url( 'onboarding-experience/index.js' ),
-			array( WC_ADMIN_APP ),
-			self::get_file_version( 'onboarding-experience/index.js' ),
-			true
-		);
 	}
 
 	/**
 	 * Loads the required scripts on the correct pages.
 	 */
 	public static function load_scripts() {
-		wp_enqueue_script( 'wc-onboarding-experience' );
-
 		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
 			return;
 		}
