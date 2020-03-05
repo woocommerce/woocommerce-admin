@@ -313,13 +313,20 @@ class Stripe extends Component {
 		const { isOptionsRequesting } = this.props;
 		const stripeHelp = interpolateComponents( {
 			mixedString: __(
-				'Your API details can be obtained from your {{link}}Stripe account{{/link}}',
+				'Your API details can be obtained from your {{docsLink}}Stripe account{{/docsLink}}.  Don’t have a Stripe account? {{registerLink}}Create one.{{/registerLink}}',
 				'woocommerce-admin'
 			),
 			components: {
-				link: (
+				docsLink: (
 					<Link
-						href="https://stripe.com/docs/account"
+						href="https://stripe.com/docs/keys"
+						target="_blank"
+						type="external"
+					/>
+				),
+				registerLink: (
+					<Link
+						href="https://dashboard.stripe.com/register"
 						target="_blank"
 						type="external"
 					/>
@@ -370,7 +377,7 @@ class Stripe extends Component {
 	}
 
 	getConnectStep() {
-		const { errorMessage } = this.state;
+		const { autoConnectFailed, connectURL, errorMessage } = this.state;
 		const connectStep = {
 			key: 'connect',
 			label: __( 'Connect your Stripe account', 'woocommerce-admin' ),
@@ -384,6 +391,11 @@ class Stripe extends Component {
 		}
 
 		if ( ! this.requiresManualConfig() ) {
+			// We may still be fetching the connect URL.
+			if ( ! autoConnectFailed && ! connectURL ) {
+				return connectStep;
+			}
+
 			return {
 				...connectStep,
 				description: __(
@@ -406,11 +418,14 @@ class Stripe extends Component {
 
 	render() {
 		const { installStep, isOptionsRequesting } = this.props;
+		const { isPending } = this.state;
 
 		return (
 			<Stepper
 				isVertical
-				isPending={ ! installStep.isComplete || isOptionsRequesting }
+				isPending={
+					! installStep.isComplete || isOptionsRequesting || isPending
+				}
 				currentStep={ installStep.isComplete ? 'connect' : 'install' }
 				steps={ [ installStep, this.getConnectStep() ] }
 			/>
