@@ -6,6 +6,8 @@ import { Component } from '@wordpress/element';
 import { Button, Modal } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
+import { recordEvent } from 'lib/tracks';
+import { trackBannerEvent } from '../lib/banner-tracks';
 
 /**
  * Internal dependencies
@@ -22,8 +24,11 @@ export class DismissModal extends Component {
 	remindMeLaterClicked = () => {
 		const { onCloseAll } = this.props;
 		this.setDismissed( Date.now() );
-		// TODO: tracking
 		onCloseAll();
+
+		trackBannerEvent(
+			'shipping_banner_dismiss_modal_remind_me_later_click'
+		);
 	};
 
 	closeForeverClicked = () => {
@@ -31,6 +36,9 @@ export class DismissModal extends Component {
 		this.setDismissed( -1 );
 		// TODO: tracking
 		onCloseAll();
+		trackBannerEvent(
+			'shipping_banner_dismiss_modal_close_forever_click'
+		);
 	};
 
 	render() {
