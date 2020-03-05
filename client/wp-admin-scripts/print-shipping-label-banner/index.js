@@ -31,11 +31,6 @@ class ShippingBanner extends Component {
 		this.setState( { showShippingBanner: false } );
 	};
 
-	openDismissModal = () => {
-		this.setState( { isDismissModalOpen: true } );
-		// TODO: tracking
-	};
-
 	createShippingLabelClicked = () => {
 		// TODO: install and activate WCS
 		// TODO: open WCS modal

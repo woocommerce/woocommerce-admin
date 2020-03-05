@@ -19,12 +19,6 @@ export default class DismissModal extends Component {
 		// TODO: tracking
 	};
 
-	dismissModalCloseButtonClicked = () => {
-		const { onCloseAll } = this.props;
-		onCloseAll();
-		// TODO: tracking
-	};
-
 	closeForeverClicked = () => {
 		const { onCloseAll } = this.props;
 		// TODO: Persist something so the banner never appears again.
