@@ -54,9 +54,12 @@ export function getPaymentMethods( {
 			plugins: [ 'woocommerce-gateway-stripe' ],
 			container: <Stripe />,
 			isConfigured:
+				options.woocommerce_stripe_settings &&
 				options.woocommerce_stripe_settings.publishable_key &&
 				options.woocommerce_stripe_settings.secret_key,
-			isEnabled: options.woocommerce_stripe_settings.enabled === 'yes',
+			isEnabled:
+				options.woocommerce_stripe_settings &&
+				options.woocommerce_stripe_settings.enabled === 'yes',
 			optionName: 'woocommerce_stripe_settings',
 		},
 		{
@@ -75,9 +78,11 @@ export function getPaymentMethods( {
 			plugins: [ 'woocommerce-gateway-paypal-express-checkout' ],
 			container: <PayPal />,
 			isConfigured:
+				options.woocommerce_ppec_paypal_settings &&
 				options.woocommerce_ppec_paypal_settings.api_username &&
 				options.woocommerce_ppec_paypal_settings.api_password,
 			isEnabled:
+				options.woocommerce_ppec_paypal_settings &&
 				options.woocommerce_ppec_paypal_settings.enabled === 'yes',
 			optionName: 'woocommerce_ppec_paypal_settings',
 		},
@@ -98,7 +103,9 @@ export function getPaymentMethods( {
 			isConfigured: activePlugins.includes(
 				'klarna-checkout-for-woocommerce'
 			),
-			isEnabled: options.woocommerce_kco_settings.enabled === 'yes',
+			isEnabled:
+				options.woocommerce_kco_settings &&
+				options.woocommerce_kco_settings.enabled === 'yes',
 			optionName: 'woocommerce_kco_settings',
 		},
 		{
@@ -119,6 +126,7 @@ export function getPaymentMethods( {
 				'klarna-payments-for-woocommerce'
 			),
 			isEnabled:
+				options.woocommerce_klarna_payments_settings &&
 				options.woocommerce_klarna_payments_settings.enabled === 'yes',
 			optionName: 'woocommerce_klarna_payments_settings',
 		},
@@ -143,8 +151,9 @@ export function getPaymentMethods( {
 				options.wc_square_refresh_tokens &&
 				options.wc_square_refresh_tokens.length,
 			isEnabled:
+				options.woocommerce_square_credit_card_settings &&
 				options.woocommerce_square_credit_card_settings.enabled ===
-				'yes',
+					'yes',
 			optionName: 'woocommerce_square_credit_card_settings',
 		},
 		{
@@ -174,10 +183,13 @@ export function getPaymentMethods( {
 			plugins: [ 'woocommerce-payfast-gateway' ],
 			container: <PayFast />,
 			isConfigured:
+				options.woocommerce_payfast_settings &&
 				options.woocommerce_payfast_settings.merchant_id &&
 				options.woocommerce_payfast_settings.merchant_key &&
 				options.woocommerce_payfast_settings.pass_phrase,
-			isEnabled: options.woocommerce_payfast_settings.enabled === 'yes',
+			isEnabled:
+				options.woocommerce_payfast_settings &&
+				options.woocommerce_payfast_settings.enabled === 'yes',
 			optionName: 'woocommerce_payfast_settings',
 		},
 	];
