@@ -71,6 +71,20 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.0.0 2020-03-5 =
+
+- Fix: Customers Report: fix missing report param in search #3778
+- Fix: OBW Connect: Fix requesting state #3786
+- Fix: OBW: Fix retry plugin install button disappearing #3787
+- Fix: Update Country Labeling to Match Core #3790
+- Fix: Onboarding: Enable taxes when automatic taxes are setup #3795
+- Dev: Onboarding: Remove old development flags #3809
+- Fix: Padding on Jetpack notices when activity panel is present. $3418
+- Fix: Taxes Report search. #3815
+- Fix: Taxes Report search bug and adds initial documentation. #3816
+- Fix: Activity Panels: Remove W Panel #3827
+- Fix: Tracking on migrated options #3828
+
 = 0.26.0 2020-02-21 =
 
 - Fix: Warning in product data store when tax amount is non-numeric. #3656
