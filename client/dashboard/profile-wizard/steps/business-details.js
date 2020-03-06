@@ -20,7 +20,13 @@ import {
 /**
  * Internal dependencies
  */
-import { H, Card, SelectControl, Form, TextControl } from '@woocommerce/components';
+import {
+	H,
+	Card,
+	SelectControl,
+	Form,
+	TextControl,
+} from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { formatCurrency } from 'lib/currency-format';
@@ -98,7 +104,8 @@ class BusinessDetails extends Component {
 
 		const _updates = {
 			other_platform: otherPlatform,
-			other_platform_name: otherPlatformName,
+			other_platform_name:
+				otherPlatform === 'other' ? otherPlatformName : '',
 			product_count: productCount,
 			revenue,
 			selling_venues: sellingVenues,
@@ -109,13 +116,7 @@ class BusinessDetails extends Component {
 		const updates = {};
 		Object.keys( _updates ).forEach( ( key ) => {
 			if ( _updates[ key ] !== '' ) {
-				// "other_platform_name" value is saved only when "other" platform is selected
-				if (
-					key !== 'other_platform_name' ||
-					( key === 'other_platform_name' && _updates.other_platform === 'other' )
-				) {
-					updates[ key ] = _updates[ key ];
-				}
+				updates[ key ] = _updates[ key ];
 			}
 		} );
 
@@ -159,8 +160,14 @@ class BusinessDetails extends Component {
 					);
 				}
 			} else if ( name === 'other_platform_name' ) {
-				if ( ! values.other_platform_name && values.other_platform === 'other' ) {
-					errors.other_platform_name = __( 'This field is required', 'woocommerce-admin' );
+				if (
+					! values.other_platform_name &&
+					values.other_platform === 'other'
+				) {
+					errors.other_platform_name = __(
+						'This field is required',
+						'woocommerce-admin'
+					);
 				}
 			} else if ( name === 'revenue' ) {
 				if (
@@ -543,7 +550,6 @@ class BusinessDetails extends Component {
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
 					// Show extensions when the currently selling elsewhere checkbox has been answered.
 					const showExtensions = values.selling_venues !== '';
-					const otherPlatform = getInputProps( 'other_platform' );
 					return (
 						<Fragment>
 							<H className="woocommerce-profile-wizard__header-title">
@@ -609,11 +615,17 @@ class BusinessDetails extends Component {
 												) }
 												options={ otherPlatformOptions }
 												required
-												{ ...otherPlatform }
+												{ ...getInputProps(
+													'other_platform'
+												) }
 											/>
-											{ otherPlatform.selected === 'other' && (
+											{ values.other_platform ===
+												'other' && (
 												<TextControl
-													label={ __( 'What is the platform name?', 'woocommerce-admin' ) }
+													label={ __(
+														'What is the platform name?',
+														'woocommerce-admin'
+													) }
 													required
 													{ ...getInputProps(
 														'other_platform_name'
