@@ -27,6 +27,10 @@ class ShippingBanner extends Component {
 		};
 	}
 
+	componentDidMount() {
+		trackBannerEvent( 'shipping_banner_show', this.props );
+	}
+
 	closeDismissModal = () => {
 		this.setState( { isDismissModalOpen: false } );
 		trackBannerEvent(
@@ -59,8 +63,6 @@ class ShippingBanner extends Component {
 		if ( ! showShippingBanner ) {
 			return null;
 		}
-
-		trackBannerEvent( 'shipping_banner_show', this.props );
 
 		return (
 			<div>
