@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -63,23 +62,27 @@ export default class StockReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 
-		return products.map( product => {
+		return products.map( ( product ) => {
 			const {
 				id,
 				manage_stock,
 				parent_id,
 				sku,
-				stock_quantity,
-				stock_status,
-				low_stock_amount,
+				stock_quantity: stockQuantity,
+				stock_status: stockStatus,
+				low_stock_amount: lowStockAmount,
 			} = product;
 
 			const name = decodeEntities( product.name );
 
-			const productDetailLink = getNewPath( persistedQuery, '/analytics/products', {
-				filter: 'single_product',
-				products: parent_id || id,
-			} );
+			const productDetailLink = getNewPath(
+				persistedQuery,
+				'/analytics/products',
+				{
+					filter: 'single_product',
+					products: parentId || id,
+				}
+			);
 
 			const nameLink = (
 				<Link href={ productDetailLink } type="wc-admin">
@@ -87,14 +90,24 @@ export default class StockReportTable extends Component {
 				</Link>
 			);
 
-			const editProductLink = getAdminLink( 'post.php?action=edit&post=' + ( parent_id || id ) );
-			const stockStatusLink = isLowStock( stock_status, stock_quantity, low_stock_amount ) ? (
+			const editProductLink = getAdminLink(
+				'post.php?action=edit&post=' + ( parentId || id )
+			);
+			const stockStatusLink = isLowStock(
+				stockStatus,
+				stockQuantity,
+				lowStockAmount
+			) ? (
 				<Link href={ editProductLink } type="wp-admin">
-					{ _x( 'Low', 'Indication of a low quantity', 'woocommerce-admin' ) }
+					{ _x(
+						'Low',
+						'Indication of a low quantity',
+						'woocommerce-admin'
+					) }
 				</Link>
 			) : (
 				<Link href={ editProductLink } type="wp-admin">
-					{ stockStatuses[ stock_status ] }
+					{ stockStatuses[ stockStatus ] }
 				</Link>
 			);
 
@@ -109,23 +122,34 @@ export default class StockReportTable extends Component {
 				},
 				{
 					display: stockStatusLink,
-					value: stock_status,
+					value: stockStatus,
 				},
 				{
-					display: manage_stock
-						? formatValue( 'number', stock_quantity )
+					display: manageStock
+						? formatValue( 'number', stockQuantity )
 						: __( 'N/A', 'woocommerce-admin' ),
-					value: stock_quantity,
+					value: stockQuantity,
 				},
 			];
 		} );
 	}
 
 	getSummary( totals ) {
-		const { products = 0, outofstock = 0, lowstock = 0, instock = 0, onbackorder = 0 } = totals;
+		const {
+			products = 0,
+			outofstock = 0,
+			lowstock = 0,
+			instock = 0,
+			onbackorder = 0,
+		} = totals;
 		return [
 			{
-				label: _n( 'product', 'products', products, 'woocommerce-admin' ),
+				label: _n(
+					'product',
+					'products',
+					products,
+					'woocommerce-admin'
+				),
 				value: formatValue( 'number', products ),
 			},
 			{

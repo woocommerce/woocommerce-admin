@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -37,17 +36,17 @@ class CartModal extends Component {
 	onClickPurchaseNow() {
 		const { productIds, onClickPurchaseNow } = this.props;
 		this.setState( { purchaseNowButtonBusy: true } );
-		const backPath = getNewPath( {}, '/', {} );
-		const { connectNonce } = getSetting( 'onboarding', {} );
-
 		if ( ! productIds.length ) {
 			return;
 		}
 
 		recordEvent( 'tasklist_modal_proceed_checkout', {
 			product_ids: productIds,
-			purchase_install: false,
+			purchase_install: true,
 		} );
+
+		const { connectNonce } = getSetting( 'onboarding', {} );
+		const backPath = getNewPath( {}, '/', {} );
 
 		const url = addQueryArgs( 'https://woocommerce.com/cart', {
 			'wccom-site': getSetting( 'siteUrl' ),
@@ -90,11 +89,14 @@ class CartModal extends Component {
 
 	renderProducts() {
 		const { productIds } = this.props;
-		const { productTypes = {}, themes = [] } = getSetting( 'onboarding', {} );
+		const { productTypes = {}, themes = [] } = getSetting(
+			'onboarding',
+			{}
+		);
 		const listItems = [];
 
-		productIds.forEach( productId => {
-			const productInfo = find( productTypes, productType => {
+		productIds.forEach( ( productId ) => {
+			const productInfo = find( productTypes, ( productType ) => {
 				return productType.product === productId;
 			} );
 
@@ -105,7 +107,7 @@ class CartModal extends Component {
 				} );
 			}
 
-			const themeInfo = find( themes, theme => {
+			const themeInfo = find( themes, ( theme ) => {
 				return theme.id === productId;
 			} );
 
@@ -116,7 +118,13 @@ class CartModal extends Component {
 						themeInfo.title,
 						decodeEntities( themeInfo.price )
 					),
-					content: <span dangerouslySetInnerHTML={ sanitizeHTML( themeInfo.excerpt ) } />,
+					content: (
+						<span
+							dangerouslySetInnerHTML={ sanitizeHTML(
+								themeInfo.excerpt
+							) }
+						/>
+					),
 				} );
 			}
 		} );
@@ -168,7 +176,7 @@ class CartModal extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const { getProfileItems } = select( 'wc-api' );
 		const profileItems = getProfileItems();
 		const productIds = getProductIdsForCart( profileItems );

@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -44,9 +43,16 @@ class Industry extends Component {
 			return;
 		}
 
-		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
-		const selectedIndustriesList = this.state.selected.map( industry => industry.slug );
-		const industriesWithDetail = filter( this.state.selected, value => {
+		const {
+			createNotice,
+			goToNextStep,
+			isError,
+			updateProfileItems,
+		} = this.props;
+		const selectedIndustriesList = this.state.selected.map(
+			( industry ) => industry.slug
+		);
+		const industriesWithDetail = filter( this.state.selected, ( value ) => {
 			return typeof value.detail !== 'undefined';
 		} );
 
@@ -61,7 +67,10 @@ class Industry extends Component {
 		} else {
 			createNotice(
 				'error',
-				__( 'There was a problem updating your industries.', 'woocommerce-admin' )
+				__(
+					'There was a problem updating your industries.',
+					'woocommerce-admin'
+				)
 			);
 		}
 	}
@@ -75,21 +84,24 @@ class Industry extends Component {
 
 	onIndustryChange( slug ) {
 		this.setState(
-			state => {
+			( state ) => {
 				const newSelected = state.selected;
-				const selectedIndustry = find( newSelected, { slug: slug } );
+				const selectedIndustry = find( newSelected, { slug } );
 				if ( selectedIndustry ) {
 					const newTextInputListContent = state.textInputListContent;
 					newTextInputListContent[ slug ] = selectedIndustry.detail;
 					return {
 						selected:
-							filter( state.selected, value => {
+							filter( state.selected, ( value ) => {
 								return value.slug !== slug;
 							} ) || [],
 						textInputListContent: newTextInputListContent,
 					};
 				}
-				newSelected.push( { slug, detail: state.textInputListContent[ slug ] } );
+				newSelected.push( {
+					slug,
+					detail: state.textInputListContent[ slug ],
+				} );
 				return {
 					selected: newSelected,
 				};
@@ -99,10 +111,10 @@ class Industry extends Component {
 	}
 
 	onDetailChange( value, slug ) {
-		this.setState( state => {
+		this.setState( ( state ) => {
 			const newSelected = state.selected;
 			const newTextInputListContent = state.textInputListContent;
-			const industryIndex = findIndex( newSelected, { slug: slug } );
+			const industryIndex = findIndex( newSelected, { slug } );
 			newSelected[ industryIndex ].detail = value;
 			newTextInputListContent[ slug ] = value;
 			return {
@@ -119,22 +131,27 @@ class Industry extends Component {
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
-					{ __( 'In which industry does the store operate?', 'woocommerce-admin' ) }
+					{ __(
+						'In which industry does the store operate?',
+						'woocommerce-admin'
+					) }
 				</H>
 				<p className="woocommerce-profile-wizard__intro-paragraph">
 					{ __( 'Choose any that apply' ) }
 				</p>
 				<Card>
 					<div className="woocommerce-profile-wizard__checkbox-group">
-						{ Object.keys( industries ).map( slug => {
-							const selectedIndustry = find( selected, { slug: slug } );
+						{ Object.keys( industries ).map( ( slug ) => {
+							const selectedIndustry = find( selected, { slug } );
 
 							return (
 								<div key={ `div-${ slug }` }>
 									<CheckboxControl
 										key={ `checkbox-control-${ slug }` }
 										label={ industries[ slug ].label }
-										onChange={ () => this.onIndustryChange( slug ) }
+										onChange={ () =>
+											this.onIndustryChange( slug )
+										}
 										checked={ selectedIndustry || false }
 										className="woocommerce-profile-wizard__checkbox"
 									/>
@@ -142,19 +159,42 @@ class Industry extends Component {
 										selectedIndustry && (
 											<TextControl
 												key={ `text-control-${ selectedIndustry.slug }` }
-												label={ industries[ selectedIndustry.slug ].description_label }
-												value={ selectedIndustry.detail || textInputListContent[ slug ] || '' }
-												onChange={ value => this.onDetailChange( value, selectedIndustry.slug ) }
+												label={
+													industries[
+														selectedIndustry.slug
+													].description_label
+												}
+												value={
+													selectedIndustry.detail ||
+													textInputListContent[
+														slug
+													] ||
+													''
+												}
+												onChange={ ( value ) =>
+													this.onDetailChange(
+														value,
+														selectedIndustry.slug
+													)
+												}
 												className="woocommerce-profile-wizard__text"
 											/>
 										) }
 								</div>
 							);
 						} ) }
-						{ error && <span className="woocommerce-profile-wizard__error">{ error }</span> }
+						{ error && (
+							<span className="woocommerce-profile-wizard__error">
+								{ error }
+							</span>
+						) }
 					</div>
 
-					<Button isPrimary onClick={ this.onContinue } disabled={ ! selected.length }>
+					<Button
+						isPrimary
+						onClick={ this.onContinue }
+						disabled={ ! selected.length }
+					>
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</Card>
@@ -164,7 +204,7 @@ class Industry extends Component {
 }
 
 export default compose(
-	withSelect( select => {
+	withSelect( ( select ) => {
 		const { getProfileItems, getProfileItemsError } = select( 'wc-api' );
 
 		return {
@@ -172,7 +212,7 @@ export default compose(
 			profileItems: getProfileItems(),
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { updateProfileItems } = dispatch( 'wc-api' );
 		const { createNotice } = dispatch( 'core/notices' );
 

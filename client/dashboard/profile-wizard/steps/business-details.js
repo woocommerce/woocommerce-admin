@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -13,12 +12,21 @@ import { keys, get, pickBy } from 'lodash';
  * WooCommerce dependencies
  */
 import { formatValue } from 'lib/number-format';
-import { getSetting, CURRENCY as currency } from '@woocommerce/wc-admin-settings';
+import {
+	getSetting,
+	CURRENCY as currency,
+} from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import { H, Card, SelectControl, Form } from '@woocommerce/components';
+import {
+	H,
+	Card,
+	SelectControl,
+	Form,
+	TextControl,
+} from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { formatCurrency } from 'lib/currency-format';
@@ -32,10 +40,15 @@ class BusinessDetails extends Component {
 	constructor( props ) {
 		super();
 		const profileItems = get( props, 'profileItems', {} );
-		const businessExtensions = get( profileItems, 'business_extensions', false );
+		const businessExtensions = get(
+			profileItems,
+			'business_extensions',
+			false
+		);
 
 		this.initialValues = {
 			other_platform: profileItems.other_platform || '',
+			other_platform_name: profileItems.other_platform_name || '',
 			product_count: profileItems.product_count || '',
 			selling_venues: profileItems.selling_venues || '',
 			revenue: profileItems.revenue || '',
@@ -53,38 +66,55 @@ class BusinessDetails extends Component {
 			extensionInstallError: false,
 		};
 
-		this.extensions = [ 'facebook-for-woocommerce', 'mailchimp-for-woocommerce' ];
+		this.extensions = [
+			'facebook-for-woocommerce',
+			'mailchimp-for-woocommerce',
+		];
 
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
 	}
 
 	async onContinue( values ) {
-		const { createNotice, goToNextStep, isError, updateProfileItems } = this.props;
-		const { other_platform, product_count, revenue, selling_venues } = values;
+		const {
+			createNotice,
+			goToNextStep,
+			isError,
+			updateProfileItems,
+		} = this.props;
+		const {
+			other_platform: otherPlatform,
+			other_platform_name: otherPlatformName,
+			product_count: productCount,
+			revenue,
+			selling_venues: sellingVenues,
+		} = values;
 		const businessExtensions = this.getBusinessExtensions( values );
 
 		recordEvent( 'storeprofiler_store_business_details_continue', {
-			product_number: product_count,
-			already_selling: 'no' !== selling_venues,
+			product_number: productCount,
+			already_selling: sellingVenues !== 'no',
 			currency: currency.code,
 			revenue,
-			used_platform: other_platform,
+			used_platform: otherPlatform,
+			used_platform_name: otherPlatformName,
 			install_facebook: values[ 'facebook-for-woocommerce' ],
 			install_mailchimp: values[ 'mailchimp-for-woocommerce' ],
 		} );
 
 		const _updates = {
-			other_platform,
-			product_count,
+			other_platform: otherPlatform,
+			other_platform_name:
+				otherPlatform === 'other' ? otherPlatformName : '',
+			product_count: productCount,
 			revenue,
-			selling_venues,
+			selling_venues: sellingVenues,
 			business_extensions: businessExtensions,
 		};
 
 		// Remove possible empty values like `revenue` and `other_platform`.
 		const updates = {};
-		Object.keys( _updates ).forEach( key => {
+		Object.keys( _updates ).forEach( ( key ) => {
 			if ( _updates[ key ] !== '' ) {
 				updates[ key ] = _updates[ key ];
 			}
@@ -93,7 +123,7 @@ class BusinessDetails extends Component {
 		await updateProfileItems( updates );
 
 		if ( ! isError ) {
-			if ( 0 === businessExtensions.length ) {
+			if ( businessExtensions.length === 0 ) {
 				goToNextStep();
 				return;
 			}
@@ -105,7 +135,10 @@ class BusinessDetails extends Component {
 		} else {
 			createNotice(
 				'error',
-				__( 'There was a problem updating your business details.', 'woocommerce-admin' )
+				__(
+					'There was a problem updating your business details.',
+					'woocommerce-admin'
+				)
 			);
 		}
 	}
@@ -113,25 +146,52 @@ class BusinessDetails extends Component {
 	validate( values ) {
 		const errors = {};
 
-		Object.keys( values ).map( name => {
-			if ( 'other_platform' === name ) {
+		Object.keys( values ).forEach( ( name ) => {
+			if ( name === 'other_platform' ) {
 				if (
 					! values.other_platform.length &&
-					[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
-				) {
-					errors.other_platform = __( 'This field is required', 'woocommerce-admin' );
-				}
-			} else if ( 'revenue' === name ) {
-				if (
-					! values.revenue.length &&
-					[ 'other', 'brick-mortar', 'brick-mortar-other', 'other-woocommerce' ].includes(
+					[ 'other', 'brick-mortar-other' ].includes(
 						values.selling_venues
 					)
 				) {
-					errors.revenue = __( 'This field is required', 'woocommerce-admin' );
+					errors.other_platform = __(
+						'This field is required',
+						'woocommerce-admin'
+					);
 				}
-			} else if ( ! this.extensions.includes( name ) && ! values[ name ].length ) {
-				errors[ name ] = __( 'This field is required', 'woocommerce-admin' );
+			} else if ( name === 'other_platform_name' ) {
+				if (
+					! values.other_platform_name &&
+					values.other_platform === 'other'
+				) {
+					errors.other_platform_name = __(
+						'This field is required',
+						'woocommerce-admin'
+					);
+				}
+			} else if ( name === 'revenue' ) {
+				if (
+					! values.revenue.length &&
+					[
+						'other',
+						'brick-mortar',
+						'brick-mortar-other',
+						'other-woocommerce',
+					].includes( values.selling_venues )
+				) {
+					errors.revenue = __(
+						'This field is required',
+						'woocommerce-admin'
+					);
+				}
+			} else if (
+				! this.extensions.includes( name ) &&
+				! values[ name ].length
+			) {
+				errors[ name ] = __(
+					'This field is required',
+					'woocommerce-admin'
+				);
 			}
 		} );
 
@@ -139,12 +199,16 @@ class BusinessDetails extends Component {
 	}
 
 	getBusinessExtensions( values ) {
-		return keys( pickBy( values ) ).filter( name => this.extensions.includes( name ) );
+		return keys( pickBy( values ) ).filter( ( name ) =>
+			this.extensions.includes( name )
+		);
 	}
 
 	convertCurrency( value ) {
-		const region = getCurrencyRegion( this.props.settings.woocommerce_default_country );
-		if ( 'US' === region ) {
+		const region = getCurrencyRegion(
+			this.props.settings.woocommerce_default_country
+		);
+		if ( region === 'US' ) {
 			return value;
 		}
 
@@ -170,7 +234,7 @@ class BusinessDetails extends Component {
 		const digits = exchangeRate.toString().split( '.' )[ 0 ].length;
 		const multiplier = Math.pow( 10, 2 + digits );
 
-		return Math.round( value * exchangeRate / multiplier ) * multiplier;
+		return Math.round( ( value * exchangeRate ) / multiplier ) * multiplier;
 	}
 
 	numberFormat( value ) {
@@ -180,13 +244,21 @@ class BusinessDetails extends Component {
 	getNumberRangeString( min, max = false, format = this.numberFormat ) {
 		if ( ! max ) {
 			return sprintf(
-				_x( '%s+', 'store product count or revenue', 'woocommerce-admin' ),
+				_x(
+					'%s+',
+					'store product count or revenue',
+					'woocommerce-admin'
+				),
 				format( min )
 			);
 		}
 
 		return sprintf(
-			_x( '%1$s - %2$s', 'store product count or revenue range', 'woocommerce-admin' ),
+			_x(
+				'%1$s - %2$s',
+				'store product count or revenue range',
+				'woocommerce-admin'
+			),
 			format( min ),
 			format( max )
 		);
@@ -196,12 +268,12 @@ class BusinessDetails extends Component {
 		const { isInstallingExtensions } = this.state;
 		const extensions = this.getBusinessExtensions( values );
 
-		if ( 0 === extensions.length ) {
+		if ( extensions.length === 0 ) {
 			return null;
 		}
 
 		const extensionsList = extensions
-			.map( extension => {
+			.map( ( extension ) => {
 				return pluginNames[ extension ];
 			} )
 			.join( ', ' );
@@ -253,7 +325,10 @@ class BusinessDetails extends Component {
 			},
 			{
 				slug: 'mailchimp-for-woocommerce',
-				title: __( 'Contact customers with Mailchimp', 'woocommerce-admin' ),
+				title: __(
+					'Contact customers with Mailchimp',
+					'woocommerce-admin'
+				),
 				icon: 'onboarding/mailchimp.png',
 				description: __(
 					'Send targeted campaigns, recover abandoned carts and much more with Mailchimp.',
@@ -265,13 +340,21 @@ class BusinessDetails extends Component {
 		return (
 			<Fragment>
 				<div className="woocommerce-profile-wizard__benefits">
-					{ extensionBenefits.map( benefit => (
-						<div className="woocommerce-profile-wizard__benefit" key={ benefit.title }>
+					{ extensionBenefits.map( ( benefit ) => (
+						<div
+							className="woocommerce-profile-wizard__benefit"
+							key={ benefit.title }
+						>
 							<div className="woocommerce-profile-wizard__business-extension">
-								<img src={ wcAdminAssetUrl + benefit.icon } alt="" />
+								<img
+									src={ wcAdminAssetUrl + benefit.icon }
+									alt=""
+								/>
 							</div>
 							<div className="woocommerce-profile-wizard__benefit-content">
-								<H className="woocommerce-profile-wizard__benefit-title">{ benefit.title }</H>
+								<H className="woocommerce-profile-wizard__benefit-title">
+									{ benefit.title }
+								</H>
 								<p>{ benefit.description }</p>
 							</div>
 							<div className="woocommerce-profile-wizard__benefit-toggle">
@@ -313,7 +396,10 @@ class BusinessDetails extends Component {
 		const productCountOptions = [
 			{
 				key: '0',
-				label: __( "I don't have any products yet.", 'woocommerce-admin' ),
+				label: __(
+					"I don't have any products yet.",
+					'woocommerce-admin'
+				),
 			},
 			{
 				key: '1-10',
@@ -395,11 +481,17 @@ class BusinessDetails extends Component {
 			},
 			{
 				key: 'other-woocommerce',
-				label: __( 'Yes, I own a different store powered by WooCommerce', 'woocommerce-admin' ),
+				label: __(
+					'Yes, I own a different store powered by WooCommerce',
+					'woocommerce-admin'
+				),
 			},
 			{
 				key: 'brick-mortar',
-				label: __( 'Yes, in person at physical stores and/or events', 'woocommerce-admin' ),
+				label: __(
+					'Yes, in person at physical stores and/or events',
+					'woocommerce-admin'
+				),
 			},
 			{
 				key: 'brick-mortar-other',
@@ -428,6 +520,22 @@ class BusinessDetails extends Component {
 				label: __( 'Wix', 'woocommerce-admin' ),
 			},
 			{
+				key: 'amazon',
+				label: __( 'Amazon', 'woocommerce-admin' ),
+			},
+			{
+				key: 'ebay',
+				label: __( 'eBay', 'woocommerce-admin' ),
+			},
+			{
+				key: 'etsy',
+				label: __( 'Etsy', 'woocommerce-admin' ),
+			},
+			{
+				key: 'squarespace',
+				label: __( 'Squarespace', 'woocommerce-admin' ),
+			},
+			{
 				key: 'other',
 				label: __( 'Other', 'woocommerce-admin' ),
 			},
@@ -441,11 +549,14 @@ class BusinessDetails extends Component {
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
 					// Show extensions when the currently selling elsewhere checkbox has been answered.
-					const showExtensions = '' !== values.selling_venues;
+					const showExtensions = values.selling_venues !== '';
 					return (
 						<Fragment>
 							<H className="woocommerce-profile-wizard__header-title">
-								{ __( 'Tell us about your business', 'woocommerce-admin' ) }
+								{ __(
+									'Tell us about your business',
+									'woocommerce-admin'
+								) }
 							</H>
 							<p>
 								{ __(
@@ -456,40 +567,79 @@ class BusinessDetails extends Component {
 							<Card>
 								<Fragment>
 									<SelectControl
-										label={ __( 'How many products do you plan to sell?', 'woocommerce-admin' ) }
+										label={ __(
+											'How many products do you plan to display?',
+											'woocommerce-admin'
+										) }
 										options={ productCountOptions }
 										required
 										{ ...getInputProps( 'product_count' ) }
 									/>
 
 									<SelectControl
-										label={ __( 'Currently selling elsewhere?', 'woocommerce-admin' ) }
+										label={ __(
+											'Currently selling elsewhere?',
+											'woocommerce-admin'
+										) }
 										options={ sellingVenueOptions }
 										required
 										{ ...getInputProps( 'selling_venues' ) }
 									/>
 
-									{ [ 'other', 'brick-mortar', 'brick-mortar-other', 'other-woocommerce' ].includes(
-										values.selling_venues
-									) && (
+									{ [
+										'other',
+										'brick-mortar',
+										'brick-mortar-other',
+										'other-woocommerce',
+									].includes( values.selling_venues ) && (
 										<SelectControl
-											label={ __( "What's your current annual revenue?", 'woocommerce-admin' ) }
+											label={ __(
+												"What's your current annual revenue?",
+												'woocommerce-admin'
+											) }
 											options={ revenueOptions }
 											required
 											{ ...getInputProps( 'revenue' ) }
 										/>
 									) }
 
-									{ [ 'other', 'brick-mortar-other' ].includes( values.selling_venues ) && (
-										<SelectControl
-											label={ __( 'Which platform is the store using?', 'woocommerce-admin' ) }
-											options={ otherPlatformOptions }
-											required
-											{ ...getInputProps( 'other_platform' ) }
-										/>
+									{ [
+										'other',
+										'brick-mortar-other',
+									].includes( values.selling_venues ) && (
+										<Fragment>
+											<SelectControl
+												label={ __(
+													'Which platform is the store using?',
+													'woocommerce-admin'
+												) }
+												options={ otherPlatformOptions }
+												required
+												{ ...getInputProps(
+													'other_platform'
+												) }
+											/>
+											{ values.other_platform ===
+												'other' && (
+												<TextControl
+													label={ __(
+														'What is the platform name?',
+														'woocommerce-admin'
+													) }
+													required
+													{ ...getInputProps(
+														'other_platform_name'
+													) }
+												/>
+											) }
+										</Fragment>
 									) }
 
-									{ showExtensions && this.renderBusinessExtensions( values, getInputProps ) }
+									{ showExtensions &&
+										this.renderBusinessExtensions(
+											values,
+											getInputProps
+										) }
 
 									{ ! extensionInstallError && (
 										<Button
@@ -499,13 +649,17 @@ class BusinessDetails extends Component {
 											disabled={ ! isValidForm }
 											isBusy={ isInstallingExtensions }
 										>
-											{ __( 'Continue', 'woocommerce-admin' ) }
+											{ __(
+												'Continue',
+												'woocommerce-admin'
+											) }
 										</Button>
 									) }
 								</Fragment>
 							</Card>
 
-							{ showExtensions && this.renderBusinessExtensionHelpText( values ) }
+							{ showExtensions &&
+								this.renderBusinessExtensionHelpText( values ) }
 						</Fragment>
 					);
 				} }
@@ -515,8 +669,10 @@ class BusinessDetails extends Component {
 }
 
 export default compose(
-	withSelect( select => {
-		const { getProfileItems, getProfileItemsError, getSettings } = select( 'wc-api' );
+	withSelect( ( select ) => {
+		const { getProfileItems, getProfileItemsError, getSettings } = select(
+			'wc-api'
+		);
 
 		const settings = getSettings( 'general' );
 
@@ -526,7 +682,7 @@ export default compose(
 			settings,
 		};
 	} ),
-	withDispatch( dispatch => {
+	withDispatch( ( dispatch ) => {
 		const { updateProfileItems } = dispatch( 'wc-api' );
 		const { createNotice } = dispatch( 'core/notices' );
 

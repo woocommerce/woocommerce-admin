@@ -176,9 +176,8 @@ class Loader {
 
 		$onboarding_opt_in        = 'yes' === get_option( Onboarding::OPT_IN_OPTION, 'no' );
 		$legacy_onboarding_opt_in = 'yes' === get_option( 'wc_onboarding_opt_in', 'no' );
-		$onboarding_filter_opt_in = defined( 'WOOCOMMERCE_ADMIN_ONBOARDING_ENABLED' ) && true === WOOCOMMERCE_ADMIN_ONBOARDING_ENABLED;
 
-		if ( self::is_dev() || $onboarding_filter_opt_in || $onboarding_opt_in || $legacy_onboarding_opt_in ) {
+		if ( $onboarding_opt_in || $legacy_onboarding_opt_in ) {
 			return true;
 		}
 
@@ -690,6 +689,7 @@ class Loader {
 		$settings['wcVersion']         = WC_VERSION;
 		$settings['siteUrl']           = site_url();
 		$settings['onboardingEnabled'] = self::is_onboarding_enabled();
+		$settings['dateFormat']        = get_option( 'date_format' );
 
 		if ( ! empty( $preload_data_endpoints ) ) {
 			$settings['dataEndpoints'] = isset( $settings['dataEndpoints'] )
