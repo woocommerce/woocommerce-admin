@@ -52,7 +52,7 @@ export const advancedFilters = applyFilters(
 		filters: {
 			product: {
 				labels: {
-					add: __( 'Product', 'woocommerce-admin' ),
+					add: __( 'Product Title', 'woocommerce-admin' ),
 					placeholder: __( 'Search', 'woocommerce-admin' ),
 					remove: __( 'Remove product filter', 'woocommerce-admin' ),
 					rule: __(
@@ -145,7 +145,7 @@ export const advancedFilters = applyFilters(
 			},
 			order: {
 				labels: {
-					add: __( 'Order number', 'woocommerce-admin' ),
+					add: __( 'Order #', 'woocommerce-admin' ),
 					placeholder: __(
 						'Search order number',
 						'woocommerce-admin'
