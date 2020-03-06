@@ -337,6 +337,10 @@ class OnboardingTasks {
 	 * not shown).
 	 */
 	public function add_onboarding_menu_experience_script() {
+		if ( ! Loader::is_onboarding_enabled() ) {
+			return;
+		}
+
 		wp_enqueue_script(
 			'onboarding-menu-experience',
 			Loader::get_url( 'wp-admin-scripts/onboarding-menu-experience.js' ),
