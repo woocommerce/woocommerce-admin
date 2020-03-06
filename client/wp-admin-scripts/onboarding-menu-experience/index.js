@@ -4,6 +4,7 @@
 import { render, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { get, filter } from 'lodash';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -33,7 +34,9 @@ function hideOrShowMenuItemsForTaskList( show ) {
 		x.classList.contains( 'wp-first-item' )
 	)[ 0 ];
 
-	dashboardLi.children[ 0 ].innerHTML = show ? 'Dashboard' : 'Setup';
+	dashboardLi.children[ 0 ].innerHTML = show
+		? __( 'Dashboard' )
+		: __( 'Setup' );
 }
 
 // This is an empty component that is created just to get access to withSelect
