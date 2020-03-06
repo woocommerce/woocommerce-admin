@@ -85,7 +85,7 @@ class BusinessDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: productCount,
-			already_selling: sellingVenues !== 'no',
+			already_selling: sellingVenues,
 			currency: currency.code,
 			revenue,
 			used_platform: otherPlatform,
@@ -135,7 +135,7 @@ class BusinessDetails extends Component {
 	validate( values ) {
 		const errors = {};
 
-		Object.keys( values ).forEach( name => {
+		Object.keys( values ).forEach( ( name ) => {
 			if ( name === 'other_platform' ) {
 				if (
 					! values.other_platform.length &&
