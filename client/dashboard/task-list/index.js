@@ -89,18 +89,6 @@ class TaskDashboard extends Component {
 		};
 	}
 
-	getPluginsInformation() {
-		const { isJetpackConnected } = this.props;
-		const { activePlugins, installedPlugins } = getSetting( 'onboarding', {} );
-		return {
-			wcs_installed: installedPlugins.includes( 'woocommerce-services' ),
-			wcs_active: activePlugins.includes( 'woocommerce-services' ),
-			jetpack_installed: installedPlugins.includes( 'jetpack' ),
-			jetpack_active: activePlugins.includes( 'jetpack' ),
-			jetpack_connected: isJetpackConnected,
-		};
-	}
-
 	recordTaskView() {
 		const { task } = this.props.query;
 		// eslint-disable-next-line @wordpress/no-unused-vars-before-return
@@ -350,8 +338,10 @@ class TaskDashboard extends Component {
 }
 
 export default compose(
-	withSelect( select => {
-		const { getProfileItems, getOptions, isJetpackConnected } = select( 'wc-api' );
+	withSelect( ( select ) => {
+		const { getProfileItems, getOptions, isJetpackConnected } = select(
+			'wc-api'
+		);
 		const profileItems = getProfileItems();
 
 		const options = getOptions( [

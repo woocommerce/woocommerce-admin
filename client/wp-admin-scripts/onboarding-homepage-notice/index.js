@@ -68,7 +68,9 @@ const onboardingHomepageNotice = () => {
 
 	saveCompleted().then( () => {
 		const notificationType =
-			null !== document.querySelector( '.components-snackbar__content' ) ? 'snackbar' : 'default';
+			document.querySelector( '.components-snackbar__content' ) !== null
+				? 'snackbar'
+				: 'default';
 
 		dispatch( 'core/notices' ).removeNotice( 'SAVE_POST_NOTICE_ID' );
 		dispatch( 'core/notices' ).createSuccessNotice(

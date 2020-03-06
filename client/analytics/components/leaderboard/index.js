@@ -53,12 +53,13 @@ export class Leaderboard extends Component {
 
 	render() {
 		const { isRequesting, isError, totalRows, title } = this.props;
-		const rows = this.getFormattedRows();
 		const classes = 'woocommerce-leaderboard';
 
 		if ( isError ) {
 			return <ReportError className={ classes } isError />;
 		}
+
+		const rows = this.getFormattedRows();
 
 		if ( ! isRequesting && rows.length === 0 ) {
 			return (

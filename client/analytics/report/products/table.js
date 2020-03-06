@@ -108,24 +108,39 @@ class ProductsReportTable extends Component {
 
 		return map( data, ( row ) => {
 			const {
-				category_ids,
-				low_stock_amount,
-				manage_stock,
+				product_id: productId,
+				items_sold: itemsSold,
+				net_revenue: netRevenue,
+				orders_count: ordersCount,
+			} = row;
+			const extendedInfo = row.extended_info || {};
+			const {
+				category_ids: categoryIds,
+				low_stock_amount: lowStockAmount,
+				manage_stock: extendedInfoManageStock,
 				sku,
 				stock_status: extendedInfoStockStatus,
 				stock_quantity: stockQuantity,
 				variations = [],
-			} = extended_info;
-			const name = decodeEntities( extended_info.name );
+			} = extendedInfo;
 
-			const ordersLink = getNewPath( persistedQuery, '/analytics/orders', {
-				filter: 'advanced',
-				product_includes: product_id,
-			} );
-			const productDetailLink = getNewPath( persistedQuery, '/analytics/products', {
-				filter: 'single_product',
-				products: product_id,
-			} );
+			const name = decodeEntities( extendedInfo.name );
+			const ordersLink = getNewPath(
+				persistedQuery,
+				'/analytics/orders',
+				{
+					filter: 'advanced',
+					product_includes: productId,
+				}
+			);
+			const productDetailLink = getNewPath(
+				persistedQuery,
+				'/analytics/products',
+				{
+					filter: 'single_product',
+					products: productId,
+				}
+			);
 			const { categories } = this.props;
 
 			const productCategories =

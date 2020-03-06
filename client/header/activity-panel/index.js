@@ -55,8 +55,8 @@ class ActivityPanel extends Component {
 			recordEvent( 'activity_panel_open', { tab: tabName } );
 		}
 
-		this.setState( state => {
-			if ( tabName === state.currentTab || '' === state.currentTab ) {
+		this.setState( ( state ) => {
+			if ( tabName === state.currentTab || state.currentTab === '' ) {
 				return {
 					isPanelOpen: ! state.isPanelOpen,
 					currentTab: tabName,
@@ -238,7 +238,7 @@ class ActivityPanel extends Component {
 			'is-mobile-open': this.state.mobileOpen,
 		} );
 
-		const hasUnread = tabs.some( tab => tab.unread );
+		const hasUnread = tabs.some( ( tab ) => tab.unread );
 		const viewLabel = hasUnread
 			? __(
 					'View Activity Panel, you have unread activity',

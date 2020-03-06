@@ -58,7 +58,10 @@ class Plugins extends Component {
 			activatePlugins( pluginSlugs );
 		}
 
-		if ( pluginSlugs.length > 0 && activatedPlugins.length === pluginSlugs.length ) {
+		if (
+			pluginSlugs.length > 0 &&
+			activatedPlugins.length === pluginSlugs.length
+		) {
 			createNotice(
 				'success',
 				__(
@@ -93,7 +96,13 @@ class Plugins extends Component {
 	}
 
 	render() {
-		const { hasErrors, isRequesting, skipText, autoInstall, pluginSlugs } = this.props;
+		const {
+			hasErrors,
+			isRequesting,
+			skipText,
+			autoInstall,
+			pluginSlugs,
+		} = this.props;
 
 		if ( hasErrors ) {
 			return (
@@ -119,10 +128,14 @@ class Plugins extends Component {
 			return null;
 		}
 
-		if ( 0 === pluginSlugs.length ) {
+		if ( pluginSlugs.length === 0 ) {
 			return (
 				<Fragment>
-					<Button isPrimary isBusy={ isRequesting } onClick={ this.skipInstaller }>
+					<Button
+						isPrimary
+						isBusy={ isRequesting }
+						onClick={ this.skipInstaller }
+					>
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</Fragment>

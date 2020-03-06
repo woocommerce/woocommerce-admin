@@ -65,8 +65,8 @@ export default class StockReportTable extends Component {
 		return products.map( ( product ) => {
 			const {
 				id,
-				manage_stock,
-				parent_id,
+				manage_stock: manageStock,
+				parent_id: parentId,
 				sku,
 				stock_quantity: stockQuantity,
 				stock_status: stockStatus,

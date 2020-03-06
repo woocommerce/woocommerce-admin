@@ -75,14 +75,12 @@ class Tax extends Component {
 		const currentStep = this.getSteps()[ stepIndex ];
 		const currentStepKey = currentStep && currentStep.key;
 		const isCompleteAddress = Boolean(
-			storeAddress &&
-			defaultCountry &&
-			storePostCode
+			storeAddress && defaultCountry && storePostCode
 		);
 
 		// Show the success screen if all requirements are satisfied from the beginning.
 		if (
-			null !== stepIndex &&
+			stepIndex !== null &&
 			! pluginsToActivate.length &&
 			isCompleteAddress &&
 			isJetpackConnected &&
@@ -117,11 +115,13 @@ class Tax extends Component {
 			this.completeStep();
 		}
 
-		if (
-			'no' === prevProps.generalSettings.woocommerce_calc_taxes &&
-			'yes' === woocommerce_calc_taxes
-		) {
-			window.location = getAdminLink( 'admin.php?page=wc-settings&tab=tax&section=standard' );
+		const {
+			woocommerce_calc_taxes: prevCalcTaxes,
+		} = prevProps.generalSettings;
+		if ( prevCalcTaxes === 'no' && calcTaxes === 'yes' ) {
+			window.location = getAdminLink(
+				'admin.php?page=wc-settings&tab=tax&section=standard'
+			);
 		}
 	}
 
@@ -169,7 +169,12 @@ class Tax extends Component {
 	}
 
 	async updateAutomatedTax() {
-		const { createNotice, isGeneralSettingsError, isTaxSettingsError, updateSettings } = this.props;
+		const {
+			createNotice,
+			isGeneralSettingsError,
+			isTaxSettingsError,
+			updateSettings,
+		} = this.props;
 		const { automatedTaxEnabled } = this.state;
 
 		await updateSettings( {
@@ -268,9 +273,12 @@ class Tax extends Component {
 							this.completeStep();
 						} }
 						onSkip={ () => {
-							queueRecordEvent( 'tasklist_tax_install_extensions', {
-								install_extensions: false,
-							} );
+							queueRecordEvent(
+								'tasklist_tax_install_extensions',
+								{
+									install_extensions: false,
+								}
+							);
 							window.location.href = getAdminLink(
 								'admin.php?page=wc-settings&tab=tax&section=standard'
 							);
