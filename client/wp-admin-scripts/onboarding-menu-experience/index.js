@@ -13,30 +13,40 @@ import withSelect from 'wc-api/with-select';
 import { getAllTasks } from '../../dashboard/task-list/tasks';
 import { isOnboardingEnabled } from 'dashboard/utils';
 
+// Build a setup anchor
+const setupAnchor = document.createElement( 'a' );
+setupAnchor.href = '/wp-admin/admin.php?page=wc-admin';
+setupAnchor.classList.add( 'wp-first-item' );
+setupAnchor.setAttribute( 'aria-current', 'page' );
+setupAnchor.innerHTML = __( 'Setup' );
+
+// Build a list item and append the setup anchor as a child
+const setupAnchorLi = document.createElement( 'li' );
+setupAnchorLi.classList.add( 'wp-first-item' );
+setupAnchorLi.classList.add( 'current' );
+setupAnchorLi.appendChild( setupAnchor );
+setupAnchorLi.hidden = true;
+
+// Get the top level WooCommerce list item and append the setup list item
+// to the list that the WooCommerce list item contains
+const topLevelPageWooCommerceLi = document.getElementById(
+	'toplevel_page_woocommerce'
+);
+topLevelPageWooCommerceLi.children[ 1 ].append( setupAnchorLi );
+
 function hideOrShowMenuItemsForTaskList( show ) {
-	const topLevelPageWooCommerceLi = document.getElementById(
-		'toplevel_page_woocommerce'
-	);
 	const allSubmenuItems = [
 		...topLevelPageWooCommerceLi.children[ 1 ].children,
 	];
 	const submenuItemsToHide = allSubmenuItems.filter(
-		( x ) =>
-			! x.classList.contains( 'wp-submenu-head' ) &&
-			! x.classList.contains( 'wp-first-item' )
+		( x ) => ! x.classList.contains( 'wp-submenu-head' )
 	);
 
 	submenuItemsToHide.forEach( ( x ) => {
 		x.hidden = ! show;
 	} );
 
-	const dashboardLi = allSubmenuItems.filter( ( x ) =>
-		x.classList.contains( 'wp-first-item' )
-	)[ 0 ];
-
-	dashboardLi.children[ 0 ].innerHTML = show
-		? __( 'Dashboard' )
-		: __( 'Setup' );
+	setupAnchorLi.hidden = show;
 }
 
 // This is an empty component that is created just to get access to withSelect
