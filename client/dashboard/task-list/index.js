@@ -292,13 +292,13 @@ class TaskDashboard extends Component {
 	};
 
 	onDoThisLater = () => {
-		const completedTasksNames = this.getTasks()
+		const completedTasksKeys = this.getTasks()
 			.filter( ( x ) => x.completed )
-			.map( ( x ) => x.title );
+			.map( ( x ) => x.key );
 
 		recordEvent( 'wcadmin_tasklist_skip', {
-			completed_tasks: completedTasksNames.length,
-			completed_tasks_names: completedTasksNames,
+			completed_tasks: completedTasksKeys.length,
+			completed_tasks_names: completedTasksKeys,
 			skip_option: "i'll do this later",
 		} );
 
