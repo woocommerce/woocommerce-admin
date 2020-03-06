@@ -283,7 +283,7 @@ class TaskDashboard extends Component {
 		recordEvent( 'wcadmin_tasklist_skip', {
 			completed_tasks: completedTasksNames.length,
 			completed_tasks_names: completedTasksNames,
-			skip_option: 'skip store setup',
+			reason: 'skip',
 		} );
 
 		this.props.updateOptions( {
@@ -299,7 +299,7 @@ class TaskDashboard extends Component {
 		recordEvent( 'wcadmin_tasklist_skip', {
 			completed_tasks: completedTasksKeys.length,
 			completed_tasks_names: completedTasksKeys,
-			skip_option: "i'll do this later",
+			reason: 'later',
 		} );
 
 		this.props.updateOptions( {
