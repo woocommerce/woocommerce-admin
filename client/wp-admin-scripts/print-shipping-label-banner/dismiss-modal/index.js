@@ -26,8 +26,7 @@ export class DismissModal extends Component {
 		onCloseAll();
 
 		trackBannerEvent(
-			'shipping_banner_dismiss_modal_remind_me_later_click',
-			this.props
+			'shipping_banner_dismiss_modal_remind_me_later_click'
 		);
 	};
 
@@ -36,10 +35,7 @@ export class DismissModal extends Component {
 		this.setDismissed( -1 );
 		// TODO: tracking
 		onCloseAll();
-		trackBannerEvent(
-			'shipping_banner_dismiss_modal_close_forever_click',
-			this.props
-		);
+		trackBannerEvent( 'shipping_banner_dismiss_modal_close_forever_click' );
 	};
 
 	render() {

@@ -28,20 +28,17 @@ class ShippingBanner extends Component {
 	}
 
 	componentDidMount() {
-		trackBannerEvent( 'shipping_banner_show', this.props );
+		trackBannerEvent( 'shipping_banner_show' );
 	}
 
 	closeDismissModal = () => {
 		this.setState( { isDismissModalOpen: false } );
-		trackBannerEvent(
-			'shipping_banner_dismiss_modal_close_button_click',
-			this.props
-		);
+		trackBannerEvent( 'shipping_banner_dismiss_modal_close_button_click' );
 	};
 
 	openDismissModal = () => {
 		this.setState( { isDismissModalOpen: true } );
-		trackBannerEvent( 'shipping_banner_dimiss_click', this.props );
+		trackBannerEvent( 'shipping_banner_dimiss_click' );
 	};
 
 	hideBanner = () => {
@@ -51,11 +48,11 @@ class ShippingBanner extends Component {
 	createShippingLabelClicked = () => {
 		// TODO: install and activate WCS
 		// TODO: open WCS modal
-		trackBannerEvent( 'shipping_banner_create_label_click', this.props );
+		trackBannerEvent( 'shipping_banner_create_label_click' );
 	};
 
 	woocommerceServiceLinkClicked = () => {
-		trackBannerEvent( 'shipping_banner_woocommerce_service_link_click', this.props );
+		trackBannerEvent( 'shipping_banner_woocommerce_service_link_click' );
 	};
 
 	render() {

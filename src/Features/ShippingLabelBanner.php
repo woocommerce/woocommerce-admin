@@ -36,6 +36,8 @@ class ShippingLabelBanner {
 			return;
 		}
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 6, 2 );
+		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
+		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
 	}
 
 	/**
@@ -128,7 +130,7 @@ class ShippingLabelBanner {
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ),
-			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wc-components', WC_ADMIN_APP ),
+			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wc-components', 'wp-api-fetch', WC_ADMIN_APP ),
 			Loader::get_file_version( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			true
 		);
@@ -168,5 +170,21 @@ class ShippingLabelBanner {
 	 */
 	private function is_supported_currency( $currency_code ) {
 		return in_array( $currency_code, $this->supported_currencies, true );
+	}
+
+	/**
+	 * Return a set of shared settings for the react component. The settings can be
+	 * retrieve in component with getSetting('shippingBanner');
+	 *
+	 * @param array $settings Component settings.
+	 * @return array
+	 */
+	public function component_settings( $settings ) {
+		$active_plugins    = Onboarding::get_active_plugins();
+		$installed_plugins = Onboarding::get_installed_plugins();
+
+		$settings['shippingBanner']['isJetPackInstalled']             = in_array( 'jetpack', $installed_plugins, true );
+		$settings['shippingBanner']['isWooCommerceServicesInstalled'] = in_array( 'woocommerce-services', $installed_plugins, true );
+		return $settings;
 	}
 }
