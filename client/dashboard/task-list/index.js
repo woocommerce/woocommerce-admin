@@ -287,7 +287,7 @@ class TaskDashboard extends Component {
 		} );
 
 		this.props.updateOptions( {
-			woocommerce_task_list_hidden: true,
+			woocommerce_task_list_hidden: 'yes',
 		} );
 	};
 
@@ -416,11 +416,8 @@ export default compose(
 		const taskListPayments = getOptions( [
 			'woocommerce_task_list_payments',
 		] );
-		const taskListHidden = get(
-			options,
-			[ 'woocommerce_task_list_hidden' ],
-			false
-		);
+		const taskListHidden =
+			get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) === 'yes';
 		const doThisLater = get(
 			options,
 			[ 'woocommerce_task_list_do_this_later' ],

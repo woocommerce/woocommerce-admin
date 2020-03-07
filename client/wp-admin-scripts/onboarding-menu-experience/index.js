@@ -78,7 +78,7 @@ const WrappedComponent = compose(
 			false
 		);
 		const taskListHidden =
-			get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) === 'yes';
+			get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) !== 'no';
 		const profileItems = getProfileItems();
 		const profileItemsRequesting = isGetProfileItemsRequesting();
 		const tasks = getAllTasks( {
