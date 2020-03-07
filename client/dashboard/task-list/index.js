@@ -308,16 +308,14 @@ class TaskDashboard extends Component {
 	};
 
 	renderSkipActions() {
-		const { taskListHidden, doThisLater } = this.props;
+		const { doThisLater } = this.props;
 
 		return (
 			<div style={ { textAlign: 'center' } }>
-				{ ! taskListHidden && (
-					<Button isLink={ true } onClick={ this.onSkipStoreSetup }>
-						{ __( 'Skip store setup', 'woocommerce-admin' ) }
-					</Button>
-				) }
-				{ ! taskListHidden && ! doThisLater && ' | ' }
+				<Button isLink={ true } onClick={ this.onSkipStoreSetup }>
+					{ __( 'Skip store setup', 'woocommerce-admin' ) }
+				</Button>
+				{ ! doThisLater && ' | ' }
 				{ ! doThisLater && (
 					<Button isLink={ true } onClick={ this.onDoThisLater }>
 						{ __( "I'll do this later", 'woocommerce-admin' ) }
