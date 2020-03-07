@@ -276,13 +276,13 @@ class TaskDashboard extends Component {
 	}
 
 	onSkipStoreSetup = () => {
-		const completedTasksNames = this.getTasks()
+		const completedTaskKeys = this.getTasks()
 			.filter( ( x ) => x.completed )
-			.map( ( x ) => x.title );
+			.map( ( x ) => x.key );
 
 		recordEvent( 'wcadmin_tasklist_skip', {
-			completed_tasks: completedTasksNames.length,
-			completed_tasks_names: completedTasksNames,
+			completed_tasks_count: completedTaskKeys.length,
+			completed_tasks: completedTaskKeys,
 			reason: 'skip',
 		} );
 
@@ -292,13 +292,13 @@ class TaskDashboard extends Component {
 	};
 
 	onDoThisLater = () => {
-		const completedTasksKeys = this.getTasks()
+		const completedTaskKeys = this.getTasks()
 			.filter( ( x ) => x.completed )
 			.map( ( x ) => x.key );
 
 		recordEvent( 'wcadmin_tasklist_skip', {
-			completed_tasks: completedTasksKeys.length,
-			completed_tasks_names: completedTasksKeys,
+			completed_tasks_count: completedTaskKeys.length,
+			completed_tasks: completedTaskKeys,
 			reason: 'later',
 		} );
 
