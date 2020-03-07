@@ -311,13 +311,21 @@ class TaskDashboard extends Component {
 		const { doThisLater } = this.props;
 
 		return (
-			<div style={ { textAlign: 'center' } }>
-				<Button isLink={ true } onClick={ this.onSkipStoreSetup }>
+			<div className="skip-actions">
+				<Button
+					isLink={ true }
+					className="is-secondary"
+					onClick={ this.onSkipStoreSetup }
+				>
 					{ __( 'Skip store setup', 'woocommerce-admin' ) }
 				</Button>
 				{ ! doThisLater && ' | ' }
 				{ ! doThisLater && (
-					<Button isLink={ true } onClick={ this.onDoThisLater }>
+					<Button
+						isLink={ true }
+						className="is-secondary"
+						onClick={ this.onDoThisLater }
+					>
 						{ __( "I'll do this later", 'woocommerce-admin' ) }
 					</Button>
 				) }
