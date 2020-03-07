@@ -361,9 +361,10 @@ export default compose(
 				'woocommerce_task_list_hidden',
 				'woocommerce_task_list_do_this_later',
 			] );
-			withSelectData.taskListHidden =
-				get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) ===
-				'yes';
+			withSelectData.taskListHidden = get(
+				options,
+				[ 'woocommerce_task_list_hidden' ], 'no'
+			) === 'yes';
 			withSelectData.doThisLater = get(
 				options,
 				[ 'woocommerce_task_list_do_this_later' ],
