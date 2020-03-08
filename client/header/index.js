@@ -124,7 +124,7 @@ class Header extends Component {
 							type={ isEmbedded ? 'wp-admin' : 'wc-admin' }
 							onClick={ this.trackLinkClick }
 						>
-							{ __( 'WooCommerce', 'woocommerce' ) }
+							{ __( 'WooCommerce', 'woocommerce-admin' ) }
 						</Link>
 					</span>
 					{ _sections.map( ( section, i ) => {
