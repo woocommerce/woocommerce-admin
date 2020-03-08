@@ -6,8 +6,6 @@ import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
 import PropTypes from 'prop-types';
-import { compose } from '@wordpress/compose';
-import { get, isArray } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -22,7 +20,6 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import './style.scss';
 import ActivityPanel from './activity-panel';
 import { recordEvent } from 'lib/tracks';
-import withSelect from 'wc-api/with-select';
 
 class Header extends Component {
 	constructor() {
@@ -102,7 +99,7 @@ class Header extends Component {
 	}
 
 	render() {
-		const { sections, isEmbedded, brandingName } = this.props;
+		const { sections, isEmbedded } = this.props;
 		const { isScrolled } = this.state;
 		const _sections = Array.isArray( sections ) ? sections : [ sections ];
 
@@ -127,7 +124,7 @@ class Header extends Component {
 							type={ isEmbedded ? 'wp-admin' : 'wc-admin' }
 							onClick={ this.trackLinkClick }
 						>
-							{ brandingName }
+							{ __( 'WooCommerce', 'woocommerce' ) }
 						</Link>
 					</span>
 					{ _sections.map( ( section, i ) => {
@@ -164,42 +161,10 @@ class Header extends Component {
 Header.propTypes = {
 	sections: PropTypes.node.isRequired,
 	isEmbedded: PropTypes.bool,
-	brandingName: PropTypes.string,
 };
 
 Header.defaultProps = {
 	isEmbedded: false,
 };
 
-export default compose(
-	withSelect( ( select, props ) => {
-		const { getOptions } = select( 'wc-api' );
-		const options = getOptions( [
-			'woocommerce_branding_name',
-			'active_plugins',
-		] );
-		const activePlugins = get( options, [ 'active_plugins' ], '' ) || [];
-		// So, if there are no disabled plugins in sequence, activePlugins is an
-		// array. If there _are_ disabled plugins, activePlugins is a hash. If it's
-		// not an array, convert it into an array using the hash values.
-		const activePluginsAsArray = isArray( activePlugins )
-			? activePlugins
-			: Object.values( activePlugins );
-		const brandingPluginIsInstalled =
-			activePluginsAsArray.indexOf(
-				'woocommerce-branding/woocommerce-branding.php'
-			) !== -1;
-		const brandingName = get(
-			options,
-			[ 'woocommerce_branding_name' ],
-			__( 'WooCommerce', 'woocommerce-admin' )
-		);
-
-		return {
-			brandingName: brandingPluginIsInstalled
-				? brandingName
-				: __( 'WooCommerce', 'woocommerce-admin' ),
-			...props,
-		};
-	} )
-)( Header );
+export default Header;
