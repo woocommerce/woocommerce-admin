@@ -31,6 +31,10 @@ export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 export const getPages = () => {
 	const pages = [];
 
+	const initialBreadcrumbs = [
+		[ '', __( 'WooCommerce', 'woocommerce-admin' ) ],
+	];
+
 	if ( window.wcAdminFeatures.devdocs ) {
 		pages.push( {
 			container: DevDocs,
@@ -40,10 +44,10 @@ export const getPages = () => {
 				const component = searchParams.get( 'component' );
 
 				if ( component ) {
-					return [ [ '/devdocs', 'Documentation' ], component ];
+					return [ ...initialBreadcrumbs, [ '/devdocs', 'Documentation' ], component ];
 				}
 
-				return [ 'Documentation' ];
+				return [ ...initialBreadcrumbs, 'Documentation' ];
 			},
 			wpOpenMenu: 'toplevel_page_woocommerce',
 		} );
@@ -53,7 +57,7 @@ export const getPages = () => {
 		pages.push( {
 			container: Dashboard,
 			path: '/',
-			breadcrumbs: [ __( 'Dashboard', 'woocommerce-admin' ) ],
+			breadcrumbs: [ ...initialBreadcrumbs, __( 'Dashboard', 'woocommerce-admin' ) ],
 			wpOpenMenu: 'toplevel_page_woocommerce',
 		} );
 	}
@@ -74,7 +78,7 @@ export const getPages = () => {
 		pages.push( {
 			container: AnalyticsReport,
 			path: '/customers',
-			breadcrumbs: [ __( 'Customers', 'woocommerce-admin' ) ],
+			breadcrumbs: [ ...initialBreadcrumbs, __( 'Customers', 'woocommerce-admin' ) ],
 			wpOpenMenu: 'toplevel_page_woocommerce',
 		} );
 		pages.push( {
