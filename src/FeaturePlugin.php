@@ -65,6 +65,11 @@ class FeaturePlugin {
 
 		$this->define_constants();
 
+		if ( ! is_readable( WC_ADMIN_ABSPATH . '/includes/feature-config.php' ) ) {
+			add_action( 'admin_notices', array( $this, 'render_build_notice' ) );
+			return;
+		}
+
 		require_once WC_ADMIN_ABSPATH . '/includes/core-functions.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/page-controller-functions.php';
