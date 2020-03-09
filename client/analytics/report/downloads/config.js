@@ -52,7 +52,7 @@ export const advancedFilters = applyFilters(
 		filters: {
 			product: {
 				labels: {
-					add: __( 'Product Title', 'woocommerce-admin' ),
+					add: __( 'Product', 'woocommerce-admin' ),
 					placeholder: __( 'Search', 'woocommerce-admin' ),
 					remove: __( 'Remove product filter', 'woocommerce-admin' ),
 					rule: __(
@@ -61,7 +61,7 @@ export const advancedFilters = applyFilters(
 					),
 					/* translators: A sentence describing a Product filter. See screen shot for context: https://cloudup.com/ccxhyH2mEDg */
 					title: __(
-						'{{title}}Product Title{{/title}} {{rule /}} {{filter /}}',
+						'{{title}}Product{{/title}} {{rule /}} {{filter /}}',
 						'woocommerce-admin'
 					),
 					filter: __( 'Select product', 'woocommerce-admin' ),
