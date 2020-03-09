@@ -23,9 +23,9 @@ trait NoteTraits {
 	 */
 	public static function wc_admin_active_for( $seconds ) {
 		// Getting install timestamp reference class-wc-admin-install.php.
-		$wc_admin_installed = get_option( 'woocommerce_admin_install_timestamp', false );
+		$wc_admin_installed = (int) get_option( 'woocommerce_admin_install_timestamp', false );
 
-		if ( false === $wc_admin_installed ) {
+		if ( ! $wc_admin_installed ) {
 			update_option( 'woocommerce_admin_install_timestamp', time() );
 
 			return false;
