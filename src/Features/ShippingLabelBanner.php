@@ -9,24 +9,19 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\Loader;
+use \Automattic\WooCommerce\Admin\Features\ShippingLabelBannerDisplayRules;
 
 /**
  * Shows print shipping label banner on edit order page.
  */
 class ShippingLabelBanner {
-	/**
-	 * Supported countries by USPS, see: https://webpmt.usps.gov/pmt010.cfm
-	 *
-	 * @var array
-	 */
-	private $supported_countries = array( 'US', 'AS', 'PR', 'VI', 'GU', 'MP', 'UM', 'FM', 'MH' );
 
 	/**
-	 * Array of supported currency codes.
+	 * Singleton for the display rules class
 	 *
-	 * @var array
+	 * @var ShippingLabelBannerDisplayRules
 	 */
-	private $supported_currencies = array( 'USD' );
+	private $shipping_label_banner_display_rules;
 
 	/**
 	 * Constructor
@@ -44,33 +39,11 @@ class ShippingLabelBanner {
 	 * @return bool
 	 */
 	private function should_show_meta_box() {
-		$order = wc_get_order();
-
-		if ( ! $order ) {
-			return false;
-		}
-		// Restrict showing the metabox to supported store currencies.
-		$base_currency = get_woocommerce_currency();
-		if ( ! $this->is_supported_currency( $base_currency ) ) {
-			return false;
+		if ( ! $this->shipping_label_banner_display_rules ) {
+			$this->shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules();
 		}
 
-		$base_location = wc_get_base_location();
-		if ( ! $this->is_supported_country( $base_location['country'] ) ) {
-			return false;
-		}
-
-		// At this point (no packaging data), only show if there's at least one existing and shippable product.
-		foreach ( $order->get_items() as $item ) {
-			if ( $item instanceof \WC_Order_Item_Product ) {
-				$product = $item->get_product();
-				if ( $product && $product->needs_shipping() ) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return $this->shipping_label_banner_display_rules->should_display_banner();
 	}
 
 	/**
@@ -129,27 +102,5 @@ class ShippingLabelBanner {
 			Shipping label banner goes here
 		</div>
 		<?php
-	}
-
-	/**
-	 * Check if country code is supported by WCS.
-	 *
-	 * @param string $country_code Country code.
-	 *
-	 * @return bool
-	 */
-	private function is_supported_country( $country_code ) {
-		return in_array( $country_code, $this->supported_countries, true );
-	}
-
-	/**
-	 * Check if currency code is supported by WCS.
-	 *
-	 * @param string $currency_code Currency code.
-	 *
-	 * @return bool
-	 */
-	private function is_supported_currency( $currency_code ) {
-		return in_array( $currency_code, $this->supported_currencies, true );
 	}
 }
