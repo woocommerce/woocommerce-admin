@@ -47,6 +47,10 @@ class ShippingLabelBannerDisplayRules {
 			return false;
 		}
 
+		if ( $this->wcs_disconnected() ) {
+			return false;
+		}
+
 		if ( $this->jetpack_disconnected() ) {
 			return false;
 		}
@@ -90,12 +94,21 @@ class ShippingLabelBannerDisplayRules {
 	}
 
 	/**
+	 * Check if WooCommerce Services is inactive
+	 *
+	 * @return bool
+	 */
+	private function wcs_disconnected() {
+		return ! is_plugin_active( 'woocommerce-services/woocommerce-services.php' );
+	}
+
+	/**
 	 * Check if jetpack is inactive or disconnected
 	 *
 	 * @return bool
 	 */
 	private function jetpack_disconnected() {
-		return ! class_exists( '\\Jetpack' ) || ! \Jetpack::is_active();
+		return ! is_plugin_active( 'jetpack/jetpack.php' );
 	}
 
 	/**
