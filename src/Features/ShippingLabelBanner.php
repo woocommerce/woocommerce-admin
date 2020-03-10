@@ -78,7 +78,7 @@ class ShippingLabelBanner {
 	/**
 	 * Add metabox to order page.
 	 *
-	 * @param string  $post_type current post type.
+	 * @param string   $post_type current post type.
 	 * @param \WP_Post $post Current post object.
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
@@ -92,8 +92,8 @@ class ShippingLabelBanner {
 				'normal',
 				'high',
 				array(
-					'context' => 'shipping_label',
-					'order_id' => $post->ID,
+					'context'               => 'shipping_label',
+					'order_id'              => $post->ID,
 					'shippable_items_count' => $this->count_shippable_items( $order ),
 
 				)
@@ -102,7 +102,13 @@ class ShippingLabelBanner {
 		}
 	}
 
-	private function count_shippable_items( \WC_Order $order) {
+	/**
+	 * Count shippable items
+	 *
+	 * @param \WC_Order $order Current order.
+	 * @return int
+	 */
+	private function count_shippable_items( \WC_Order $order ) {
 		$count = 0;
 		foreach ( $order->get_items() as $item ) {
 			if ( $item instanceof \WC_Order_Item_Product ) {
@@ -139,7 +145,7 @@ class ShippingLabelBanner {
 	/**
 	 * Render placeholder metabox.
 	 *
-	 * @param \WP_Post $post current post.
+	 * @param WP_Post $post current post.
 	 * @param array   $args empty args.
 	 */
 	public function meta_box( $post, $args ) {
