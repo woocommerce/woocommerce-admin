@@ -19,7 +19,6 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 */
 	private $active_plugins = array();
 
-
 	/**
 	 * Shipping label banner display rules manager.
 	 *
@@ -33,10 +32,9 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	public function setUp() {
 		parent::setup();
 
-		global $active_plugins;
-		$active_plugins['jetpack'] = 'jetpack/jetpack.php';
-		$active_plugins['wcs']     = 'woocommerce-services/woocommerce-services.php';
-		update_option( 'active_plugins', $active_plugins );
+		$this->active_plugins['jetpack'] = 'jetpack/jetpack.php';
+		$this->active_plugins['wcs']     = 'woocommerce-services/woocommerce-services.php';
+		update_option( 'active_plugins', $this->active_plugins );
 
 		$this->shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules();
 
@@ -57,8 +55,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when Jetpack is not active
 	 */
 	public function test_display_banner_if_jetpack_disconnected() {
-		global $active_plugins;
-		unset( $active_plugins['jetpack'] );
+		unset( $this->active_plugins['jetpack'] );
 		$this->set_active_plugins();
 
 		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner(), false );
@@ -131,8 +128,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when WooCommerce Services is already installed.
 	 */
 	public function test_display_banner_if_wcs_not_installed() {
-		global $active_plugins;
-		unset( $active_plugins['wcs'] );
+		unset( $this->active_plugins['wcs'] );
 
 		$this->set_active_plugins();
 
@@ -164,7 +160,6 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Manages the state of installed plugins
 	 */
 	private function set_active_plugins() {
-		global $active_plugins;
-		update_option( 'active_plugins', array_values( $active_plugins ) );
+		update_option( 'active_plugins', array_values( $this->active_plugins ) );
 	}
 }
