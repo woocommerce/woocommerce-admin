@@ -23,13 +23,6 @@ const getPullRequestType = ( labels ) => {
 	return typeLabel.name.replace( `${ pkg.changelog.labelPrefix } `, '' );
 };
 
-const devNoteSuffix = ( labels ) => {
-	const noteLabel = labels.find( ( label ) =>
-		label.name.includes( pkg.changelog.devNoteLabel )
-	);
-	return noteLabel ? ' [DN]' : '';
-};
-
 const isCollaborator = async ( username ) => {
 	return requestPromise( {
 		url: `https://api.github.com/orgs/${
@@ -49,6 +42,14 @@ const isCollaborator = async ( username ) => {
 		} );
 };
 
+const getLabels = labels => {
+	return labels
+		.filter( label => ! /\[.*\]/.test( label.name ) )
+		.map( label => label.name )
+		.join( ', ' );
+
+};
+
 const getEntry = async ( pullRequest ) => {
 	if (
 		pullRequest.labels.nodes.some(
@@ -61,7 +62,8 @@ const getEntry = async ( pullRequest ) => {
 	const collaborator = await isCollaborator( pullRequest.author.login );
 	const type = getPullRequestType( pullRequest.labels.nodes );
 	const authorTag = collaborator ? '' : `👏 @${ pullRequest.author.login }`;
-	const devNote = devNoteSuffix( pullRequest.labels.nodes );
+	const labels = getLabels( pullRequest.labels.nodes );
+	const labelTags = labels ? `(${ labels })` : '';
 	let title;
 	if ( /### Changelog Note:/.test( pullRequest.body ) ) {
 		
@@ -80,7 +82,7 @@ const getEntry = async ( pullRequest ) => {
 	} else {
 		title = `${ type }: ${ pullRequest.title }`;
 	}
-	return `- ${ title } [#${ pullRequest.number }](${ pullRequest.url })${ devNote } ${ authorTag }`;
+	return `- ${ title } [#${ pullRequest.number }](${ pullRequest.url }) ${ labelTags } ${ authorTag }`;
 };
 
 module.exports = {
