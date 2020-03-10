@@ -687,6 +687,9 @@ class Loader {
 		$settings['siteUrl']           = site_url();
 		$settings['onboardingEnabled'] = self::is_onboarding_enabled();
 		$settings['dateFormat']        = get_option( 'date_format' );
+		// Plugins that depend on changing the translation work on the server but not the client - looking at
+		// WooCommerce Branding here - so pass through the translation of 'WooCommerce' to wcSettings.
+		$settings['woocommerceTranslation'] = __( 'WooCommerce', 'woocommerce-admin' );
 
 		if ( ! empty( $preload_data_endpoints ) ) {
 			$settings['dataEndpoints'] = isset( $settings['dataEndpoints'] )
