@@ -27,7 +27,14 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	private $shipping_label_banner_display_rules;
 
 	/**
-	 * Setup for tests.
+	 * Stores the default WordPress options stored in teh database.
+	 *
+	 * @var array
+	 */
+	private static $default_options;
+
+	/**
+	 * Setup for every single test.
 	 */
 	public function setUp() {
 		parent::setup();
@@ -43,6 +50,27 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		$this->create_order();
 	}
 
+
+	/**
+	 * Setup for the whole test class.
+	 */
+	public static function setUpBeforeClass() {
+		parent::setUpBeforeClass();
+
+		self::$default_options = wp_load_alloptions();
+	}
+
+	/**
+	 * Cleans up test data once all test have run.
+	 */
+	public static function tearDownAfterClass() {
+		parent::tearDownAfterClass();
+
+		foreach ( self::$default_options as $option_name => $option_value ) {
+			update_option( $option_name, $option_value );
+		}
+	}
+
 	/**
 	 * Test if the banner is displayed when Jetpack is active and connected.
 	 */
@@ -52,7 +80,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test if the banner is hidden when Jetpack is not active
+	 * Test if the banner is hidden when Jetpack is not active.
 	 */
 	public function test_display_banner_if_jetpack_disconnected() {
 		unset( $this->active_plugins['jetpack'] );
