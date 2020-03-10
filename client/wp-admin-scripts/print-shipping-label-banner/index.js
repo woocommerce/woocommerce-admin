@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { render, Component } from '@wordpress/element';
 import { ExternalLink, Button } from '@wordpress/components';
 
@@ -10,7 +10,12 @@ import { ExternalLink, Button } from '@wordpress/components';
  */
 import './style.scss';
 import DismissModal from './dismiss-modal';
+import { getSetting } from '@woocommerce/wc-admin-settings';
+
+const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 const metaBox = document.getElementById( 'wc-admin-shipping-banner-root' );
+const args = metaBox.dataset.args && JSON.parse( metaBox.dataset.args ) || {};
+
 
 class ShippingBanner extends Component {
 	constructor( props ) {
@@ -39,42 +44,47 @@ class ShippingBanner extends Component {
 
 	render() {
 		const { isDismissModalOpen, showShippingBanner } = this.state;
-
+		const { itemsCount } = this.props;
 		if ( ! showShippingBanner ) {
 			return null;
 		}
 
 		return (
 			<div>
-				<h3>
-					{ __(
-						'Fulfill X items with WooCommerce Shipping',
-						'woocommerce-admin'
-					) }
-				</h3>
-				<p>
-					{ __(
-						'Print discounted shipping labels with a click. This will install WooCommerce Services.'
-					) }
-					<ExternalLink href="woocommerce.com">
-						Learn More
-					</ExternalLink>
-				</p>
-				<Button isPrimary onClick={ this.createShippingLabelClicked }>
-					{ __( 'Create shipping label' ) }
-				</Button>
-				<button
-					onClick={ this.openDismissModal }
-					type="button"
-					className="notice-dismiss"
-				>
-					<span className="screen-reader-text">
-						{ __(
-							'Close Print Label Banner.',
+				<div className="wc-admin-shipping-banner-container">
+					<img className="wc-admin-shipping-banner-illustration" src={ wcAdminAssetUrl + 'shippingillustration.svg' } alt={ __( 'Shipping ', 'woocommerce-admin' ) } />
+					<h3>
+						{ sprintf( _n(
+							'Fulfill %d item with WooCommerce Shipping',
+							'Fulfill %d items with WooCommerce Shipping',
+							itemsCount,
 							'woocommerce-admin'
+						), itemsCount ) }
+					</h3>
+					<p>
+						{ __(
+							'Print discounted shipping labels with a click. This will install WooCommerce Services. '
 						) }
-					</span>
-				</button>
+						<ExternalLink href="woocommerce.com">
+							{ __('Learn More', 'woocommerce-admin' ) }
+						</ExternalLink>
+					</p>
+					<Button isPrimary onClick={ this.createShippingLabelClicked }>
+						{ __( 'Create shipping label' ) }
+					</Button>
+					<button
+						onClick={ this.openDismissModal }
+						type="button"
+						className="notice-dismiss"
+					>
+						<span className="screen-reader-text">
+							{ __(
+								'Close Print Label Banner.',
+								'woocommerce-admin'
+							) }
+						</span>
+					</button>
+				</div>
 				<DismissModal
 					visible={ isDismissModalOpen }
 					onClose={ this.closeDismissModal }
@@ -86,4 +96,4 @@ class ShippingBanner extends Component {
 }
 
 // Render the header.
-render( <ShippingBanner />, metaBox );
+render( <ShippingBanner itemsCount={ args.shippable_items_count} />, metaBox );
