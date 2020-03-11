@@ -4,16 +4,17 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { Button, Modal } from '@wordpress/components';
-import { dispatch } from '@wordpress/data';
+import { withDispatch } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 
 /**
  * Internal dependencies
  */
 import '../style.scss';
 
-export default class DismissModal extends Component {
+export class DismissModal extends Component {
 	setDismissed = ( timestamp ) => {
-		dispatch( 'wc-api' ).updateOptions( {
+		this.props.updateOptions( {
 			woocommerce_shipping_dismissed_timestamp: timestamp,
 		} );
 	};
@@ -57,3 +58,10 @@ export default class DismissModal extends Component {
 		);
 	}
 }
+
+export default compose(
+	withDispatch( ( dispatch ) => {
+		const { updateOptions } = dispatch( 'wc-api' );
+		return { updateOptions };
+	} )
+)( DismissModal );
