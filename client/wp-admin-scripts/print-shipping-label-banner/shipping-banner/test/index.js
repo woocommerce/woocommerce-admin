@@ -64,9 +64,11 @@ describe( 'Tracking events in shippingBanner', () => {
 	} );
 
 	it( 'should record an event when user clicks "x" to dismiss the banner', () => {
-		const learnMoreLink = shippingBannerWrapper.find( '.notice-dismiss' );
-		expect( learnMoreLink.length ).toBe( 1 );
-		learnMoreLink.simulate( 'click' );
+		const noticeDimissButton = shippingBannerWrapper.find(
+			'.notice-dismiss'
+		);
+		expect( noticeDimissButton.length ).toBe( 1 );
+		noticeDimissButton.simulate( 'click' );
 		expect( recordEvent ).toHaveBeenCalledWith(
 			'shipping_banner_dimiss_click',
 			expectedTrackingData
