@@ -81,7 +81,7 @@ export default class CustomersReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Country / Region', 'woocommerce-admin' ),
+				label: __( 'Country', 'woocommerce-admin' ),
 				key: 'country',
 				isSortable: true,
 			},

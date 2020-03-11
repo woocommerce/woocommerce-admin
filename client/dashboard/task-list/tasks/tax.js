@@ -47,7 +47,6 @@ class Tax extends Component {
 		this.completeStep = this.completeStep.bind( this );
 		this.configureTaxRates = this.configureTaxRates.bind( this );
 		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
-		this.setIsPending = this.setIsPending.bind( this );
 	}
 
 	componentDidMount() {
@@ -71,11 +70,13 @@ class Tax extends Component {
 			woocommerce_default_country: defaultCountry,
 			woocommerce_store_postcode: storePostCode,
 		} = generalSettings;
-		const { stepIndex } = this.state;
+		const { isPending, stepIndex } = this.state;
 		const currentStep = this.getSteps()[ stepIndex ];
 		const currentStepKey = currentStep && currentStep.key;
 		const isCompleteAddress = Boolean(
-			storeAddress && defaultCountry && storePostCode
+			storeAddress &&
+			defaultCountry &&
+			storePostCode
 		);
 
 		// Show the success screen if all requirements are satisfied from the beginning.
@@ -115,10 +116,7 @@ class Tax extends Component {
 			this.completeStep();
 		}
 
-		const {
-			woocommerce_calc_taxes: prevCalcTaxes,
-		} = prevProps.generalSettings;
-		if ( prevCalcTaxes === 'no' && calcTaxes === 'yes' ) {
+		if ( isPending && calcTaxes === 'yes' ) {
 			window.location = getAdminLink(
 				'admin.php?page=wc-settings&tab=tax&section=standard'
 			);
@@ -169,24 +167,16 @@ class Tax extends Component {
 	}
 
 	async updateAutomatedTax() {
-		const {
-			createNotice,
-			isGeneralSettingsError,
-			isTaxSettingsError,
-			updateSettings,
-		} = this.props;
+		const { createNotice, isTaxSettingsError, updateSettings } = this.props;
 		const { automatedTaxEnabled } = this.state;
 
 		await updateSettings( {
-			general: {
-				woocommerce_calc_taxes: 'yes',
-			},
 			tax: {
 				wc_connect_taxes_enabled: automatedTaxEnabled ? 'yes' : 'no',
 			},
 		} );
 
-		if ( ! isTaxSettingsError && ! isGeneralSettingsError ) {
+		if ( ! isTaxSettingsError ) {
 			// @todo This is a workaround to force the task to mark as complete.
 			// This should probably be updated to use wc-api so we can fetch tax rates.
 			setSetting( 'onboarding', {
@@ -214,10 +204,6 @@ class Tax extends Component {
 				)
 			);
 		}
-	}
-
-	setIsPending( value ) {
-		this.setState( { isPending: value } );
 	}
 
 	getSteps() {
@@ -275,9 +261,7 @@ class Tax extends Component {
 						onSkip={ () => {
 							queueRecordEvent(
 								'tasklist_tax_install_extensions',
-								{
-									install_extensions: false,
-								}
+								{ install_extensions: false }
 							);
 							window.location.href = getAdminLink(
 								'admin.php?page=wc-settings&tab=tax&section=standard'
@@ -301,7 +285,6 @@ class Tax extends Component {
 				content: (
 					<Connect
 						{ ...this.props }
-						setIsPending={ this.setIsPending }
 						onConnect={ () => {
 							recordEvent( 'tasklist_tax_connect_store', {
 								connect: true,

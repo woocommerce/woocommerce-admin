@@ -30,7 +30,10 @@ export function validateStoreAddress( values ) {
 		);
 	}
 	if ( ! values.countryState.length ) {
-		errors.countryState = __( 'Please select a country / region', 'woocommerce-admin' );
+		errors.countryState = __(
+			'Please select a country and state',
+			'woocommerce-admin'
+		);
 	}
 	if ( ! values.city.length ) {
 		errors.city = __( 'Please add a city', 'woocommerce-admin' );
@@ -200,7 +203,7 @@ export function StoreAddress( props ) {
 			/>
 
 			<SelectControl
-				label={ __( 'Country / Region', 'woocommerce-admin' ) }
+				label={ __( 'Country / State', 'woocommerce-admin' ) }
 				required
 				options={ countryStateOptions }
 				excludeSelectedOptions={ false }
