@@ -20,11 +20,11 @@ export class DismissModal extends Component {
 	};
 
 	remindMeLaterClicked = () => {
-		const { onCloseAll } = this.props;
+		const { onCloseAll, trackBannerEvent } = this.props;
 		this.setDismissed( Date.now() );
 		onCloseAll();
 
-		this.props.trackBannerEvent(
+		trackBannerEvent(
 			'shipping_banner_dismiss_modal_remind_me_later_click'
 		);
 	};

@@ -55,3 +55,41 @@ describe( 'Option Save events in DismissModal', () => {
 		global.Date.now = realDateNow;
 	} );
 } );
+
+describe( 'Tracking events in DismissModal', () => {
+	const trackBannerEvent = jest.fn();
+
+	let dismissModalWrapper;
+
+	beforeEach( () => {
+		dismissModalWrapper = shallow(
+			<DismissModal
+				visible={ true }
+				onClose={ jest.fn() }
+				onCloseAll={ jest.fn() }
+				trackBannerEvent={ trackBannerEvent }
+				updateOptions={ jest.fn() }
+			/>
+		);
+	} );
+
+	it( 'should record an event when user clicks "I don\'t need this"', () => {
+		const actionButtons = dismissModalWrapper.find( Button );
+		expect( actionButtons.length ).toBe( 2 );
+		const iDoNotNeedThisButton = actionButtons.last();
+		iDoNotNeedThisButton.simulate( 'click' );
+		expect( trackBannerEvent ).toHaveBeenCalledWith(
+			'shipping_banner_dismiss_modal_close_forever_click'
+		);
+	} );
+
+	it( 'should record an event when user clicks "Remind me later"', () => {
+		const actionButtons = dismissModalWrapper.find( Button );
+		expect( actionButtons.length ).toBe( 2 );
+		const remindMeLaterButton = actionButtons.first();
+		remindMeLaterButton.simulate( 'click' );
+		expect( trackBannerEvent ).toHaveBeenCalledWith(
+			'shipping_banner_dismiss_modal_remind_me_later_click'
+		);
+	} );
+} );
