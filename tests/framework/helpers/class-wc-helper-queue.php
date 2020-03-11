@@ -42,4 +42,14 @@ class WC_Helper_Queue {
 			}
 		}
 	}
+
+	/**
+	 * Cancel all pending actions.
+	 *
+	 * @return void
+	 */
+	public static function cancel_all_pending() {
+		ActionScheduler_Store::instance()->cancel_actions_by_group( 'wc-admin-data' );
+		ActionScheduler_Store::instance()->cancel_actions_by_group( 'wc-admin-notes' );
+	}
 }
