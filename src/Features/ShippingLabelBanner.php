@@ -77,9 +77,10 @@ class ShippingLabelBanner {
 	 * Add metabox to order page.
 	 *
 	 * @param string  $post_type current post type.
-	 * @param WP_Post $post Current post object.
+	 * @param \WP_Post $post Current post object.
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
+		$order = wc_get_order( $post );
 		if ( $this->should_show_meta_box() ) {
 			add_meta_box(
 				'woocommerce-admin-print-label',
@@ -88,12 +89,29 @@ class ShippingLabelBanner {
 				null,
 				'normal',
 				'high',
-				array( 'context' => 'shipping_label' )
+				array(
+					'context' => 'shipping_label',
+					'order_id' => $post->ID,
+					'shippable_items_count' => $this->count_shippable_items( $order ),
+
+				)
 			);
 			add_action( 'admin_enqueue_scripts', array( $this, 'add_print_shipping_label_script' ) );
 		}
 	}
 
+	private function count_shippable_items( \WC_Order $order) {
+		$count = 0;
+		foreach ( $order->get_items() as $item ) {
+			if ( $item instanceof \WC_Order_Item_Product ) {
+				$product = $item->get_product();
+				if ( $product && $product->needs_shipping() ) {
+					$count += $item->get_quantity();
+				}
+			}
+		}
+		return $count;
+	}
 	/**
 	 * Adds JS to order page to render shipping banner.
 	 *
@@ -110,7 +128,7 @@ class ShippingLabelBanner {
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ),
-			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', WC_ADMIN_APP ),
+			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wc-components', WC_ADMIN_APP ),
 			Loader::get_file_version( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			true
 		);
@@ -119,14 +137,13 @@ class ShippingLabelBanner {
 	/**
 	 * Render placeholder metabox.
 	 *
-	 * @param WP_Post $post current post.
+	 * @param \WP_Post $post current post.
 	 * @param array   $args empty args.
 	 */
 	public function meta_box( $post, $args ) {
 
 		?>
-		<div id="wc-admin-shipping-banner-root" class=" woocommerce <?php echo esc_attr( 'wc-connect-create-shipping-label' ); ?>" data-args="<?php echo esc_attr( wp_json_encode( array() ) ); ?>">
-			Shipping label banner goes here
+		<div id="wc-admin-shipping-banner-root" class=" woocommerce <?php echo esc_attr( 'wc-admin-shipping-banner' ); ?>" data-args="<?php echo esc_attr( wp_json_encode( $args['args'] ) ); ?>">
 		</div>
 		<?php
 	}
