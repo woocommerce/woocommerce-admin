@@ -12,7 +12,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * WooCommerce dependencies
  */
-import { H, Spinner } from '@woocommerce/components';
+import { H } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -231,13 +231,8 @@ class CustomizableDashboard extends Component {
 			taskListHidden,
 			taskListCompleted,
 			doThisLater,
-			requesting,
 		} = this.props;
 		const { sections } = this.state;
-
-		if ( requesting ) {
-			return <Spinner />;
-		}
 
 		if (
 			isOnboardingEnabled() &&
