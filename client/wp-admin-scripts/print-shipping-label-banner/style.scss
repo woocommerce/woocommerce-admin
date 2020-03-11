@@ -1,29 +1,32 @@
 @import '@wordpress/components/build-style/style';
 
 #woocommerce-admin-print-label {
+	min-height: 100px;
+
 	.hndle,
 	.handlediv {
 		display: none;
 	}
-
 	.wc-admin-shipping-banner-illustration {
 		float: left;
-		margin: 5px 11px 50px -3px;
+		margin: -2px 8px 50px -2px;
 	}
 
 	h3 {
-		margin: 15px 0 1px;
+		margin: 17px 0 0;
 		font-size: 1.15em;
 	}
 
 	p {
 		max-width: 75%;
-		margin: 3px 0 11px;
+		margin: 2px 0 11px;
 		font-size: 15px;
 		line-height: 19px;
 	}
 
 	.components-button.is-button {
+		float: right;
+		margin: 18px 61px 18px 25px;
 		padding: 0 30px;
 		background: color(theme(button));
 		border-color: color(theme(button));
@@ -52,8 +55,8 @@
 	}
 
 	.notice-dismiss {
-		top: -12px;
-		right: 3px;
+		top: 14px;
+		right: 18px;
 	}
 
 }

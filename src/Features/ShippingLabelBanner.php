@@ -128,7 +128,7 @@ class ShippingLabelBanner {
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ),
-			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment' ),
+			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wc-components' ),
 			Loader::get_file_version( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			true
 		);
@@ -144,7 +144,6 @@ class ShippingLabelBanner {
 
 		?>
 		<div id="wc-admin-shipping-banner-root" class=" woocommerce <?php echo esc_attr( 'wc-admin-shipping-banner' ); ?>" data-args="<?php echo esc_attr( wp_json_encode( $args['args'] ) ); ?>">
-			Shipping label banner goes here
 		</div>
 		<?php
 	}

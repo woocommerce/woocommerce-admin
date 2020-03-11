@@ -3,7 +3,9 @@
  */
 import { __, sprintf, _n } from '@wordpress/i18n';
 import { render, Component } from '@wordpress/element';
-import { ExternalLink, Button } from '@wordpress/components';
+import { Button } from '@wordpress/components';
+import interpolateComponents from 'interpolate-components';
+import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -53,25 +55,39 @@ class ShippingBanner extends Component {
 			<div>
 				<div className="wc-admin-shipping-banner-container">
 					<img className="wc-admin-shipping-banner-illustration" src={ wcAdminAssetUrl + 'shippingillustration.svg' } alt={ __( 'Shipping ', 'woocommerce-admin' ) } />
-					<h3>
-						{ sprintf( _n(
-							'Fulfill %d item with WooCommerce Shipping',
-							'Fulfill %d items with WooCommerce Shipping',
-							itemsCount,
-							'woocommerce-admin'
-						), itemsCount ) }
-					</h3>
-					<p>
-						{ __(
-							'Print discounted shipping labels with a click. This will install WooCommerce Services. '
-						) }
-						<ExternalLink href="woocommerce.com">
-							{ __('Learn More', 'woocommerce-admin' ) }
-						</ExternalLink>
-					</p>
 					<Button isPrimary onClick={ this.createShippingLabelClicked }>
 						{ __( 'Create shipping label' ) }
 					</Button>
+					<h3>
+						{ __(
+							'Print discounted shipping labels with a click.',
+							'woocommerce-admin'
+						) }
+					</h3>
+					<p>
+						{ interpolateComponents( {
+							mixedString: __(
+								'By clicking "Create shipping label", {{wcsLink}}WooCommerce Services{{/wcsLink}} will be installed and you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
+								'woocommerce-admin'
+							),
+							components: {
+								tosLink: (
+									<Link
+										href="https://wordpress.com/tos"
+										target="_blank"
+										type="external"
+									/>
+								),
+								wcsLink: (
+									<Link
+										href="https://woocommerce.com/products/shipping/"
+										target="_blank"
+										type="external"
+									/>
+								),
+							},
+						} ) }
+					</p>
 					<button
 						onClick={ this.openDismissModal }
 						type="button"
