@@ -17,7 +17,7 @@ import withSelect from 'wc-api/with-select';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
-class ShippingBanner extends Component {
+export class ShippingBanner extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
