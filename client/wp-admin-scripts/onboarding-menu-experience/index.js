@@ -18,7 +18,7 @@ const setupAnchor = document.createElement( 'a' );
 setupAnchor.href = '/wp-admin/admin.php?page=wc-admin';
 setupAnchor.classList.add( 'wp-first-item' );
 setupAnchor.setAttribute( 'aria-current', 'page' );
-setupAnchor.innerHTML = __( 'Setup' );
+setupAnchor.innerHTML = __( 'Setup', 'woocommerce-admin' );
 
 // Build a list item and append the setup anchor as a child
 const setupAnchorLi = document.createElement( 'li' );
