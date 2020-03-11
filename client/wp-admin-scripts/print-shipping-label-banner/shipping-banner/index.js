@@ -57,12 +57,11 @@ class ShippingBanner extends Component {
 	};
 
 	trackBannerEvent = ( eventName ) => {
+		const { activePlugins, isJetpackConnected } = this.props;
 		recordEvent( eventName, {
-			jetpack_installed: this.activePlugins.includes( 'jetpack' ),
-			jetpack_connected: this.isJetpackConnected,
-			wcs_installed: this.activePlugins.includes(
-				'woocommerce-services'
-			),
+			jetpack_installed: activePlugins.includes( 'jetpack' ),
+			jetpack_connected: isJetpackConnected,
+			wcs_installed: activePlugins.includes( 'woocommerce-services' ),
 		} );
 	};
 

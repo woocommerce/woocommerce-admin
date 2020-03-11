@@ -179,18 +179,18 @@ class ShippingLabelBanner {
 	}
 
 	/**
-	 * Return a set of shared settings for the react component. The settings can be
-	 * retrieve in component with getSetting('shippingBanner');
+	 * Return the settings for the component for wc-api to use. If onboarding
+	 * is active, return its settings. Otherwise, loads "activePlugins" since
+	 * that's the ones we need to get installation status for WCS and Jetpack.
 	 *
 	 * @param array $settings Component settings.
 	 * @return array
 	 */
 	public function component_settings( $settings ) {
-		$active_plugins    = Onboarding::get_active_plugins();
-		$installed_plugins = Onboarding::get_installed_plugins();
-
-		$settings['shippingBanner']['isJetPackInstalled']             = in_array( 'jetpack', $installed_plugins, true );
-		$settings['shippingBanner']['isWooCommerceServicesInstalled'] = in_array( 'woocommerce-services', $installed_plugins, true );
+		if ( Loader::is_onboarding_enabled() ) {
+			return $settings;
+		}
+		$settings['onboarding']['activePlugins'] = Onboarding::get_active_plugins();
 		return $settings;
 	}
 }
