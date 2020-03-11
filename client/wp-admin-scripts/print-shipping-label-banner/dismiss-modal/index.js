@@ -30,13 +30,10 @@ export class DismissModal extends Component {
 	};
 
 	closeForeverClicked = () => {
-		const { onCloseAll } = this.props;
+		const { onCloseAll, trackBannerEvent } = this.props;
 		this.setDismissed( -1 );
-		// TODO: tracking
 		onCloseAll();
-		this.props.trackBannerEvent(
-			'shipping_banner_dismiss_modal_close_forever_click'
-		);
+		trackBannerEvent( 'shipping_banner_dismiss_modal_close_forever_click' );
 	};
 
 	render() {
