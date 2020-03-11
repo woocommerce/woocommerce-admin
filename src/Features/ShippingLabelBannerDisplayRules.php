@@ -47,11 +47,12 @@ class ShippingLabelBannerDisplayRules {
 			return false;
 		}
 
-		if ( $this->wcs_disconnected() ) {
-			return false;
-		}
-
-		if ( $this->jetpack_disconnected() ) {
+		if ( $this->jetpack_disconnected() ||
+			$this->wcs_not_installed() ||
+			$this->ups_not_installed() ||
+			$this->fedex_not_installed() ||
+			$this->shipstation_not_installed() ||
+			$this->shippingeasy_not_installed() ) {
 			return false;
 		}
 
@@ -98,7 +99,7 @@ class ShippingLabelBannerDisplayRules {
 	 *
 	 * @return bool
 	 */
-	private function wcs_disconnected() {
+	private function wcs_not_installed() {
 		return ! is_plugin_active( 'woocommerce-services/woocommerce-services.php' );
 	}
 
@@ -109,6 +110,42 @@ class ShippingLabelBannerDisplayRules {
 	 */
 	private function jetpack_disconnected() {
 		return ! is_plugin_active( 'jetpack/jetpack.php' );
+	}
+
+	/**
+	 * Check if Fedex shipping method is not installed
+	 *
+	 * @return bool
+	 */
+	private function fedex_not_installed() {
+		return ! is_plugin_active( 'woocommerce-shipping-fedex/woocommerce-shipping-fedex.php' );
+	}
+
+	/**
+	 * Check if UPS shipping method is not installed
+	 *
+	 * @return bool
+	 */
+	private function ups_not_installed() {
+		return ! is_plugin_active( 'woocommerce-shipping-ups/woocommerce-shipping-ups.php' );
+	}
+
+	/**
+	 * Check if ShippingEasy shipping method is not installed
+	 *
+	 * @return bool
+	 */
+	private function shippingeasy_not_installed() {
+		return ! is_plugin_active( 'woocommerce-shippingeasy/woocommerce-shippingeasy.php' );
+	}
+
+	/**
+	 * Check if Shipstation shipping method is not installed
+	 *
+	 * @return bool
+	 */
+	private function shipstation_not_installed() {
+		return ! is_plugin_active( 'woocommerce-shipstation/woocommerce-shipstation.php' );
 	}
 
 	/**

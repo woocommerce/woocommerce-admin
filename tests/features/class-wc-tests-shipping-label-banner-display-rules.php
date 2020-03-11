@@ -39,9 +39,14 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	public function setUp() {
 		parent::setup();
 
-		$this->active_plugins['jetpack'] = 'jetpack/jetpack.php';
-		$this->active_plugins['wcs']     = 'woocommerce-services/woocommerce-services.php';
-		update_option( 'active_plugins', $this->active_plugins );
+		$this->active_plugins['jetpack']      = 'jetpack/jetpack.php';
+		$this->active_plugins['wcs']          = 'woocommerce-services/woocommerce-services.php';
+		$this->active_plugins['fedex']        = 'woocommerce-shipping-fedex/woocommerce-shipping-fedex.php';
+		$this->active_plugins['ups']          = 'woocommerce-shipping-ups/woocommerce-shipping-ups.php';
+		$this->active_plugins['shippingeasy'] = 'woocommerce-shippingeasy/woocommerce-shippingeasy.php';
+		$this->active_plugins['shipstation']  = 'woocommerce-shipstation/woocommerce-shipstation.php';
+
+		$this->set_active_plugins();
 
 		$this->shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules();
 
@@ -153,7 +158,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test if the banner is hidden when WooCommerce Services is already installed.
+	 * Test if the banner is hidden when WooCommerce Services is not installed.
 	 */
 	public function test_display_banner_if_wcs_not_installed() {
 		unset( $this->active_plugins['wcs'] );
@@ -163,6 +168,49 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner(), false );
 	}
 
+	/**
+	 * Test if the banner is hidden when WooCommerce Fedex Shipping is not installed.
+	 */
+	public function test_display_banner_if_fedex_not_installed() {
+		unset( $this->active_plugins['fedex'] );
+
+		$this->set_active_plugins();
+
+		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner(), false );
+	}
+
+	/**
+	 * Test if the banner is hidden when WooCommerce UPS Shipping is not installed.
+	 */
+	public function test_display_banner_if_ups_not_installed() {
+		unset( $this->active_plugins['ups'] );
+
+		$this->set_active_plugins();
+
+		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner(), false );
+	}
+
+	/**
+	 * Test if the banner is hidden when WooCommerce ShippingEasy Shipping is not installed.
+	 */
+	public function test_display_banner_if_shippingeasy_not_installed() {
+		unset( $this->active_plugins['shippingeasy'] );
+
+		$this->set_active_plugins();
+
+		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner(), false );
+	}
+
+	/**
+	 * Test if the banner is hidden when WooCommerce Shipstation Shipping is not installed.
+	 */
+	public function test_display_banner_if_shipstation_not_installed() {
+		unset( $this->active_plugins['shipstation'] );
+
+		$this->set_active_plugins();
+
+		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner(), false );
+	}
 
 	/**
 	 * Creates a test order.
