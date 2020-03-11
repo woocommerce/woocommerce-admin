@@ -28,7 +28,6 @@ describe( 'Tracking events in shippingBanner', () => {
 	beforeEach( () => {
 		shippingBannerWrapper = shallow(
 			<ShippingBanner
-				itemsCount="5"
 				isJetpackConnected={ isJetpackConnected }
 				activePlugins={ activePlugins }
 			/>
@@ -53,12 +52,13 @@ describe( 'Tracking events in shippingBanner', () => {
 		);
 	} );
 
-	it( 'should record an event when user clicks "learn more"', () => {
-		const learnMoreLink = shippingBannerWrapper.find( ExternalLink );
-		expect( learnMoreLink.length ).toBe( 1 );
-		learnMoreLink.simulate( 'click' );
+	it( 'should record an event when user clicks "WooCommerce Service"', () => {
+		const links = shippingBannerWrapper.find( ExternalLink );
+		expect( links.length ).toBe( 2 );
+		const wcsLink = links.first();
+		wcsLink.simulate( 'click' );
 		expect( recordEvent ).toHaveBeenCalledWith(
-			'shipping_banner_learn_more_click',
+			'shipping_banner_woocommerce_service_link_click',
 			expectedTrackingData
 		);
 	} );

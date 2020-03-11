@@ -1,11 +1,12 @@
 /**
  * External dependencies
  */
-import { __, sprintf, _n } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
-import { Button, Link } from '@wordpress/components';
+import { Button, ExternalLink } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { recordEvent } from 'lib/tracks';
+import interpolateComponents from 'interpolate-components';
 
 /**
  * Internal dependencies
@@ -53,7 +54,9 @@ export class ShippingBanner extends Component {
 	};
 
 	woocommerceServiceLinkClicked = () => {
-		this.trackBannerEvent( 'shipping_banner_woocommerce_service_link_click' );
+		this.trackBannerEvent(
+			'shipping_banner_woocommerce_service_link_click'
+		);
 	};
 
 	trackBannerEvent = ( eventName ) => {
@@ -67,7 +70,6 @@ export class ShippingBanner extends Component {
 
 	render() {
 		const { isDismissModalOpen, showShippingBanner } = this.state;
-		const { itemsCount } = this.props;
 		if ( ! showShippingBanner ) {
 			return null;
 		}
@@ -75,8 +77,15 @@ export class ShippingBanner extends Component {
 		return (
 			<div>
 				<div className="wc-admin-shipping-banner-container">
-                    <img className="wc-admin-shipping-banner-illustration" src={ wcAdminAssetUrl + 'shippingillustration.svg' } alt={ __( 'Shipping ', 'woocommerce-admin' ) } />
-					<Button isPrimary onClick={ this.createShippingLabelClicked }>
+					<img
+						className="wc-admin-shipping-banner-illustration"
+						src={ wcAdminAssetUrl + 'shippingillustration.svg' }
+						alt={ __( 'Shipping ', 'woocommerce-admin' ) }
+					/>
+					<Button
+						isPrimary
+						onClick={ this.createShippingLabelClicked }
+					>
 						{ __( 'Create shipping label' ) }
 					</Button>
 					<h3>
@@ -86,25 +95,27 @@ export class ShippingBanner extends Component {
 						) }
 					</h3>
 					<p>
-                    { interpolateComponents( {
+						{ interpolateComponents( {
 							mixedString: __(
 								'By clicking "Create shipping label", {{wcsLink}}WooCommerce Services{{/wcsLink}} will be installed and you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
 								'woocommerce-admin'
 							),
 							components: {
 								tosLink: (
-									<Link
+									<ExternalLink
 										href="https://wordpress.com/tos"
 										target="_blank"
 										type="external"
 									/>
 								),
 								wcsLink: (
-									<Link
+									<ExternalLink
 										href="https://woocommerce.com/products/shipping/"
 										target="_blank"
 										type="external"
-										onClick={ this.woocommerceServiceLinkClicked }
+										onClick={
+											this.woocommerceServiceLinkClicked
+										}
 									/>
 								),
 							},
