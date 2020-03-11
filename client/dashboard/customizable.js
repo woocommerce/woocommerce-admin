@@ -241,7 +241,6 @@ class CustomizableDashboard extends Component {
 
 		if (
 			isOnboardingEnabled() &&
-			wcSettings.onboarding &&
 			! taskListHidden &&
 			( query.task || ! taskListCompleted ) &&
 			! doThisLater
@@ -265,10 +264,7 @@ class CustomizableDashboard extends Component {
 			secondaryDate,
 		};
 		const showTaskList =
-			isOnboardingEnabled() &&
-			wcSettings.onboarding &&
-			! taskListHidden &&
-			! taskListCompleted;
+			isOnboardingEnabled() && ! taskListHidden && ! taskListCompleted;
 
 		const visibleSectionKeys = sections
 			.filter( ( section ) => section.isVisible )
@@ -361,10 +357,9 @@ export default compose(
 				'woocommerce_task_list_hidden',
 				'woocommerce_task_list_do_this_later',
 			] );
-			withSelectData.taskListHidden = get(
-				options,
-				[ 'woocommerce_task_list_hidden' ], 'no'
-			) === 'yes';
+			withSelectData.taskListHidden =
+				get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) ===
+				'yes';
 			withSelectData.doThisLater = get(
 				options,
 				[ 'woocommerce_task_list_do_this_later' ],
