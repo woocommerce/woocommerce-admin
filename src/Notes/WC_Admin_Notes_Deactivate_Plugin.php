@@ -8,6 +8,7 @@
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
+use Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
 
 defined( 'ABSPATH' ) || exit;
 
