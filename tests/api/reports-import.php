@@ -110,6 +110,8 @@ class WC_Tests_API_Reports_Import extends WC_REST_Unit_Test_Case {
 		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'scheduled-action'" );
 		$wpdb->query( "DELETE FROM {$wpdb->prefix}wc_order_stats" );
 
+		WC_Helper_Queue::run_all_pending();
+
 		// Use the days param to only process orders in the last day.
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
 		$request->set_query_params( array( 'days' => '1' ) );
@@ -134,7 +136,7 @@ class WC_Tests_API_Reports_Import extends WC_REST_Unit_Test_Case {
 		$reports  = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertCount( 1, $reports );
+		$this->assertCount( 2, $reports );
 		$this->assertEquals( $order_2->get_id(), $reports[0]['order_id'] );
 
 		// Use the skip existing params to skip processing customers/orders.
@@ -152,6 +154,8 @@ class WC_Tests_API_Reports_Import extends WC_REST_Unit_Test_Case {
 
 		// Delete scheduled actions to avoid default order processing.
 		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'scheduled-action'" );
+
+		WC_Helper_Queue::run_all_pending();
 
 		$request = new WP_REST_Request( 'POST', $this->endpoint );
 		$request->set_query_params( array( 'skip_existing' => '1' ) );
@@ -178,7 +182,11 @@ class WC_Tests_API_Reports_Import extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertCount( 2, $reports );
-		$this->assertEquals( 'completed', $reports[0]['status'] );
+		foreach ( $reports as $report ) {
+			if ( $report['order_id'] === $order_1->get_id() ) {
+				$this->assertEquals( 'completed', $report['status'] );
+			}
+		}
 	}
 
 	/**
