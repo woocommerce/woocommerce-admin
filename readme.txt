@@ -71,6 +71,18 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.0.1 2020-03-12 =
+
+- Fix: Add Report Extension Example: Add default props to ReportFilters
+- Fix: Product report sorting by SKU when some products don't have SKUs
+- Dev: Add Changelog script
+- Fix: type warning on install timestamp in PHP 7.4
+- Fix: PHP error when WooCommerce core is Network Active on Multisites.
+- Fix: missing database table errors on WooCommerce upgrade.
+- Fix: undefined const WC_ADMIN_VERSION_NUMBER when WP < 5.3
+- Dev: Fix failing tests after WC core merge.
+- Dev: Bump WooCommerce tested up to tag
+
 = 1.0.0 2020-03-5 =
 
 - Fix: Customers Report: fix missing report param in search #3778
