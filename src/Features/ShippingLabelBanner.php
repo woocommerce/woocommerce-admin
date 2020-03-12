@@ -36,6 +36,8 @@ class ShippingLabelBanner {
 			return;
 		}
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 6, 2 );
+		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
+		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
 	}
 
 	/**
@@ -76,7 +78,7 @@ class ShippingLabelBanner {
 	/**
 	 * Add metabox to order page.
 	 *
-	 * @param string  $post_type current post type.
+	 * @param string   $post_type current post type.
 	 * @param \WP_Post $post Current post object.
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
@@ -90,8 +92,8 @@ class ShippingLabelBanner {
 				'normal',
 				'high',
 				array(
-					'context' => 'shipping_label',
-					'order_id' => $post->ID,
+					'context'               => 'shipping_label',
+					'order_id'              => $post->ID,
 					'shippable_items_count' => $this->count_shippable_items( $order ),
 
 				)
@@ -100,7 +102,13 @@ class ShippingLabelBanner {
 		}
 	}
 
-	private function count_shippable_items( \WC_Order $order) {
+	/**
+	 * Count shippable items
+	 *
+	 * @param \WC_Order $order Current order.
+	 * @return int
+	 */
+	private function count_shippable_items( \WC_Order $order ) {
 		$count = 0;
 		foreach ( $order->get_items() as $item ) {
 			if ( $item instanceof \WC_Order_Item_Product ) {
@@ -128,7 +136,7 @@ class ShippingLabelBanner {
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ),
-			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wc-components', WC_ADMIN_APP ),
+			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wc-components', 'wp-api-fetch', WC_ADMIN_APP ),
 			Loader::get_file_version( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			true
 		);
@@ -137,7 +145,7 @@ class ShippingLabelBanner {
 	/**
 	 * Render placeholder metabox.
 	 *
-	 * @param \WP_Post $post current post.
+	 * @param WP_Post $post current post.
 	 * @param array   $args empty args.
 	 */
 	public function meta_box( $post, $args ) {
@@ -168,5 +176,21 @@ class ShippingLabelBanner {
 	 */
 	private function is_supported_currency( $currency_code ) {
 		return in_array( $currency_code, $this->supported_currencies, true );
+	}
+
+	/**
+	 * Return the settings for the component for wc-api to use. If onboarding
+	 * is active, return its settings. Otherwise, loads "activePlugins" since
+	 * that's the ones we need to get installation status for WCS and Jetpack.
+	 *
+	 * @param array $settings Component settings.
+	 * @return array
+	 */
+	public function component_settings( $settings ) {
+		if ( Loader::is_onboarding_enabled() ) {
+			return $settings;
+		}
+		$settings['onboarding']['activePlugins'] = Onboarding::get_active_plugins();
+		return $settings;
 	}
 }

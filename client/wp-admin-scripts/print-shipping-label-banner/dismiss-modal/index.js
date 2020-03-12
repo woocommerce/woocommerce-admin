@@ -20,17 +20,20 @@ export class DismissModal extends Component {
 	};
 
 	remindMeLaterClicked = () => {
-		const { onCloseAll } = this.props;
+		const { onCloseAll, trackBannerEvent } = this.props;
 		this.setDismissed( Date.now() );
-		// TODO: tracking
 		onCloseAll();
+
+		trackBannerEvent(
+			'shipping_banner_dismiss_modal_remind_me_later_click'
+		);
 	};
 
 	closeForeverClicked = () => {
-		const { onCloseAll } = this.props;
+		const { onCloseAll, trackBannerEvent } = this.props;
 		this.setDismissed( -1 );
-		// TODO: tracking
 		onCloseAll();
+		trackBannerEvent( 'shipping_banner_dismiss_modal_close_forever_click' );
 	};
 
 	render() {
