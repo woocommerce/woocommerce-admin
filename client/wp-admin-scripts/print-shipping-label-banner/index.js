@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf, _n } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { render, Component } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
@@ -16,8 +16,6 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 const metaBox = document.getElementById( 'wc-admin-shipping-banner-root' );
-const args = metaBox.dataset.args && JSON.parse( metaBox.dataset.args ) || {};
-
 
 class ShippingBanner extends Component {
 	constructor( props ) {
@@ -46,7 +44,6 @@ class ShippingBanner extends Component {
 
 	render() {
 		const { isDismissModalOpen, showShippingBanner } = this.state;
-		const { itemsCount } = this.props;
 		if ( ! showShippingBanner ) {
 			return null;
 		}
@@ -54,8 +51,15 @@ class ShippingBanner extends Component {
 		return (
 			<div>
 				<div className="wc-admin-shipping-banner-container">
-					<img className="wc-admin-shipping-banner-illustration" src={ wcAdminAssetUrl + 'shippingillustration.svg' } alt={ __( 'Shipping ', 'woocommerce-admin' ) } />
-					<Button isPrimary onClick={ this.createShippingLabelClicked }>
+					<img
+						className="wc-admin-shipping-banner-illustration"
+						src={ wcAdminAssetUrl + 'shippingillustration.svg' }
+						alt={ __( 'Shipping ', 'woocommerce-admin' ) }
+					/>
+					<Button
+						isPrimary
+						onClick={ this.createShippingLabelClicked }
+					>
 						{ __( 'Create shipping label' ) }
 					</Button>
 					<h3>
@@ -112,4 +116,4 @@ class ShippingBanner extends Component {
 }
 
 // Render the header.
-render( <ShippingBanner itemsCount={ args.shippable_items_count} />, metaBox );
+render( <ShippingBanner />, metaBox );
