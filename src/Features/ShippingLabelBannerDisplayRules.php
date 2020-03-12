@@ -14,6 +14,14 @@ use \Automattic\WooCommerce\Admin\Loader;
  * Determines whether or not the Shipping Label Banner should be displayed
  */
 class ShippingLabelBannerDisplayRules {
+
+	/**
+	 * Minimum supported Jetpack version.
+	 *
+	 * @var string
+	 */
+	private $min_jetpack_version = '4.4';
+
 	/**
 	 * Supported countries by USPS, see: https://webpmt.usps.gov/pmt010.cfm
 	 *
@@ -29,9 +37,11 @@ class ShippingLabelBannerDisplayRules {
 	private $supported_currencies = array( 'USD' );
 
 	/**
-	 * Determines whether or not the banner should be displayed
+	 * Determines whether or not the banner should be displayed.
+	 *
+	 * @param string $jetpack_version Installed Jetpack version to check.
 	 */
-	public function should_display_banner() {
+	public function should_display_banner( $jetpack_version ) {
 		$woocommerce_shipping_ab_active     = get_option( 'woocommerce_shipping_ab_active' );
 		$woocommerce_product_needs_shipping = false;
 		$woocommerce_store_in_us            = false;
@@ -48,6 +58,7 @@ class ShippingLabelBannerDisplayRules {
 		}
 
 		if ( $this->jetpack_disconnected() ||
+			$this->jetpack_not_up_to_date( $jetpack_version ) ||
 			$this->wcs_not_installed() ||
 			$this->ups_not_installed() ||
 			$this->fedex_not_installed() ||
@@ -56,8 +67,7 @@ class ShippingLabelBannerDisplayRules {
 			return false;
 		}
 
-		global $post;
-		$order = wc_get_order( $post->ID );
+		$order = wc_get_order( get_post()->ID );
 
 		if ( ! $order ) {
 			return false;
@@ -110,6 +120,16 @@ class ShippingLabelBannerDisplayRules {
 	 */
 	private function jetpack_disconnected() {
 		return ! is_plugin_active( 'jetpack/jetpack.php' );
+	}
+
+	/**
+	 * Check if Jetpack version is supported.
+	 *
+	 * @param string $jetpack_version Installed Jetpack version to check.
+	 * @return bool
+	 */
+	private function jetpack_not_up_to_date( $jetpack_version ) {
+		return version_compare( $jetpack_version, $this->min_jetpack_version, '<' );
 	}
 
 	/**

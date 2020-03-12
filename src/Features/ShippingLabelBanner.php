@@ -43,7 +43,7 @@ class ShippingLabelBanner {
 			$this->shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules();
 		}
 
-		return $this->shipping_label_banner_display_rules->should_display_banner();
+		return $this->shipping_label_banner_display_rules->should_display_banner( JETPACK__VERSION );
 	}
 
 	/**
