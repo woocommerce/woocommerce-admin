@@ -45,8 +45,8 @@ class BusinessDetails extends Component {
 			'mailchimp-for-woocommerce': businessExtensions
 				? businessExtensions.includes( 'mailchimp-for-woocommerce' )
 				: true,
-			'google-ads': businessExtensions
-				? businessExtensions.includes( 'google-ads' )
+			'kliken-marketing-for-google': businessExtensions
+				? businessExtensions.includes( 'kliken-marketing-for-google' )
 				: true,
 		};
 
@@ -59,7 +59,7 @@ class BusinessDetails extends Component {
 		this.extensions = [
 			'facebook-for-woocommerce',
 			'mailchimp-for-woocommerce',
-			'google-ads',
+			'kliken-marketing-for-google',
 		];
 
 		this.onContinue = this.onContinue.bind( this );
@@ -79,7 +79,7 @@ class BusinessDetails extends Component {
 			used_platform: other_platform,
 			install_facebook: values[ 'facebook-for-woocommerce' ],
 			install_mailchimp: values[ 'mailchimp-for-woocommerce' ],
-			install_google_ads: values[ 'google-ads' ],
+			install_google_ads: values[ 'kliken-marketing-for-google' ],
 		} );
 
 		const _updates = {
@@ -269,7 +269,7 @@ class BusinessDetails extends Component {
 				),
 			},
 			{
-				slug: 'google-ads',
+				slug: 'kliken-marketing-for-google',
 				title: __(
 					'Drive sales with Google Shopping',
 					'woocommerce-admin'
