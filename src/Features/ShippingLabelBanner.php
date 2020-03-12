@@ -128,7 +128,7 @@ class ShippingLabelBanner {
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ),
-			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wc-components' ),
+			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wc-components', WC_ADMIN_APP ),
 			Loader::get_file_version( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			true
 		);
