@@ -230,7 +230,6 @@ class CustomizableDashboard extends Component {
 			path,
 			taskListHidden,
 			taskListCompleted,
-			skipStoreSetup,
 			doThisLater,
 			requesting,
 		} = this.props;
@@ -245,7 +244,6 @@ class CustomizableDashboard extends Component {
 			wcSettings.onboarding &&
 			! taskListHidden &&
 			( query.task || ! taskListCompleted ) &&
-			! skipStoreSetup &&
 			! doThisLater
 		) {
 			return <TaskList query={ query } />;
@@ -270,8 +268,7 @@ class CustomizableDashboard extends Component {
 			isOnboardingEnabled() &&
 			wcSettings.onboarding &&
 			! taskListHidden &&
-			! taskListCompleted &&
-			! skipStoreSetup;
+			! taskListCompleted;
 
 		const visibleSectionKeys = sections
 			.filter( ( section ) => section.isVisible )
@@ -359,23 +356,14 @@ export default compose(
 
 			withSelectData.taskListCompleted =
 				visibleTasks.length === completedTasks.length;
-			withSelectData.taskListHidden =
-				get(
-					getOptions( [ 'woocommerce_task_list_hidden' ] ),
-					[ 'woocommerce_task_list_hidden' ],
-					'no'
-				) === 'yes';
 
 			const options = getOptions( [
-				'woocommerce_task_list_skip_store_setup',
+				'woocommerce_task_list_hidden',
 				'woocommerce_task_list_do_this_later',
 			] );
-
-			withSelectData.skipStoreSetup = get(
-				options,
-				[ 'woocommerce_task_list_skip_store_setup' ],
-				false
-			);
+			withSelectData.taskListHidden =
+				get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) ===
+				'yes';
 			withSelectData.doThisLater = get(
 				options,
 				[ 'woocommerce_task_list_do_this_later' ],
@@ -388,8 +376,6 @@ export default compose(
 				isGetOptionsRequesting( [
 					'woocommerce_task_list_payments',
 					'woocommerce_task_list_hidden',
-					'woocommerce_task_list_skip_store_setup',
-					'woocommerce_task_list_do_this_later',
 				] );
 		}
 

@@ -67,17 +67,11 @@ const WrappedComponent = compose(
 			isGetProfileItemsRequesting,
 		} = select( 'wc-api' );
 		const optionNames = [
-			'woocommerce_task_list_skip_store_setup',
 			'woocommerce_task_list_do_this_later',
 			'woocommerce_task_list_hidden',
 		];
 		const options = getOptions( optionNames );
 		const optionsRequesting = isGetOptionsRequesting( optionNames );
-		const skipStoreSetup = get(
-			options,
-			[ 'woocommerce_task_list_skip_store_setup' ],
-			false
-		);
 		const doThisLater = get(
 			options,
 			[ 'woocommerce_task_list_do_this_later' ],
@@ -103,7 +97,6 @@ const WrappedComponent = compose(
 			showMenu:
 				taskListHidden ||
 				taskListCompleted ||
-				skipStoreSetup ||
 				doThisLater ||
 				optionsRequesting ||
 				profileItemsRequesting,

@@ -287,7 +287,7 @@ class TaskDashboard extends Component {
 		} );
 
 		this.props.updateOptions( {
-			woocommerce_task_list_skip_store_setup: true,
+			woocommerce_task_list_hidden: true,
 		} );
 	};
 
@@ -308,16 +308,16 @@ class TaskDashboard extends Component {
 	};
 
 	renderSkipActions() {
-		const { skipStoreSetup, doThisLater } = this.props;
+		const { taskListHidden, doThisLater } = this.props;
 
 		return (
 			<div style={ { textAlign: 'center' } }>
-				{ ! skipStoreSetup && (
+				{ ! taskListHidden && (
 					<Button isLink={ true } onClick={ this.onSkipStoreSetup }>
 						{ __( 'Skip store setup', 'woocommerce-admin' ) }
 					</Button>
 				) }
-				{ ! skipStoreSetup && ! doThisLater && ' | ' }
+				{ ! taskListHidden && ! doThisLater && ' | ' }
 				{ ! doThisLater && (
 					<Button isLink={ true } onClick={ this.onDoThisLater }>
 						{ __( "I'll do this later", 'woocommerce-admin' ) }
@@ -400,7 +400,7 @@ export default compose(
 		const options = getOptions( [
 			'woocommerce_task_list_prompt_shown',
 			'woocommerce_task_list_welcome_modal_dismissed',
-			'woocommerce_task_list_skip_store_setup',
+			'woocommerce_task_list_hidden',
 			'woocommerce_task_list_do_this_later',
 		] );
 		const promptShown = get(
@@ -416,9 +416,9 @@ export default compose(
 		const taskListPayments = getOptions( [
 			'woocommerce_task_list_payments',
 		] );
-		const skipStoreSetup = get(
+		const taskListHidden = get(
 			options,
-			[ 'woocommerce_task_list_skip_store_setup' ],
+			[ 'woocommerce_task_list_hidden' ],
 			false
 		);
 		const doThisLater = get(
@@ -433,7 +433,7 @@ export default compose(
 			promptShown,
 			taskListPayments,
 			isJetpackConnected: isJetpackConnected(),
-			skipStoreSetup,
+			taskListHidden,
 			doThisLater,
 		};
 	} ),
