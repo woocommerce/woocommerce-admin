@@ -35,6 +35,29 @@ export class ShippingBanner extends Component {
 		this.trackBannerEvent( 'shipping_banner_show' );
 	}
 
+	componentDidUpdate( prevProps ) {
+		const {
+			activatePlugins,
+			activatedPlugins,
+			installedPlugins,
+			wcsPluginSlug,
+			hasErrors,
+			// errors
+		} = this.props;
+
+		if ( installedPlugins.length > prevProps.installedPlugins.length ) {
+			activatePlugins( [ wcsPluginSlug ] );
+		}
+		if ( activatedPlugins.includes( wcsPluginSlug ) ) {
+			// TODO: Add success notice after installation #32
+			// console.log("Successfully activated wcs.");
+		}
+		if ( hasErrors ) {
+			// TODO: Add error handling #33
+			// console.log("Errors during activation or installation", errors);
+		}
+	}
+
 	closeDismissModal = () => {
 		this.setState( { isDismissModalOpen: false } );
 		this.trackBannerEvent(
@@ -52,18 +75,17 @@ export class ShippingBanner extends Component {
 	};
 
 	createShippingLabelClicked = () => {
-		// TODO: install and activate WCS
 		// TODO: open WCS modal
 		this.trackBannerEvent( 'shipping_banner_create_label_click' );
-		this.installAndActivatePlugins( 'woocommerce-services' );
+		this.installAndActivatePlugins( this.props.wcsPluginSlug );
 	};
 
 	async installAndActivatePlugins( pluginSlug ) {
 		// Avoid double activating.
-		const { installPlugins } = this.props;
-		// if ( isRequesting ) {
-		// 	return false;
-		// }
+		const { installPlugins, isRequesting } = this.props;
+		if ( isRequesting ) {
+			return false;
+		}
 		installPlugins( [ pluginSlug ] );
 	}
 
@@ -78,7 +100,7 @@ export class ShippingBanner extends Component {
 		recordEvent( eventName, {
 			jetpack_installed: activePlugins.includes( 'jetpack' ),
 			jetpack_connected: isJetpackConnected,
-			wcs_installed: activePlugins.includes( 'woocommerce-services' ),
+			wcs_installed: activePlugins.includes( this.props.wcsPluginSlug ),
 		} );
 	};
 
@@ -170,10 +192,47 @@ export class ShippingBanner extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getActivePlugins, isJetpackConnected } = select( 'wc-api' );
+		const wcsPluginSlug = 'woocommerce-services';
+		const {
+			getActivePlugins,
+			getPluginInstallations,
+			getPluginActivations,
+			getPluginActivationErrors,
+			getPluginInstallationErrors,
+			isJetpackConnected,
+			isPluginActivateRequesting,
+			isPluginInstallRequesting,
+		} = select( 'wc-api' );
+		const isRequesting =
+			isPluginActivateRequesting() || isPluginInstallRequesting();
+		const installationErrors = getPluginInstallationErrors( [
+			wcsPluginSlug,
+		] );
+		const installedPlugins = Object.keys(
+			getPluginInstallations( [ wcsPluginSlug ] )
+		);
+		const activationErrors = getPluginActivationErrors( [ wcsPluginSlug ] );
+		const activatedPlugins = Object.keys(
+			getPluginActivations( [ wcsPluginSlug ] )
+		);
+		const errors = [];
+		Object.keys( activationErrors ).map( ( plugin ) =>
+			errors.push( activationErrors[ plugin ].message )
+		);
+		Object.keys( installationErrors ).map( ( plugin ) =>
+			errors.push( installationErrors[ plugin ].message )
+		);
+		const hasErrors = Boolean( errors.length );
+
 		return {
 			activePlugins: getActivePlugins(),
 			isJetpackConnected: isJetpackConnected(),
+			isRequesting,
+			installedPlugins,
+			activatedPlugins,
+			wcsPluginSlug,
+			errors,
+			hasErrors,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
