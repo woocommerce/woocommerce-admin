@@ -35,7 +35,7 @@ class WC_Admin_Notes_Personalize_Store {
 			return;
 		}
 
-		// Show the note after task list is done
+		// Show the note after task list is done.
 		$is_task_list_complete = get_option( 'woocommerce_task_list_complete', false );
 
 		// We want to show the note after day 5.
