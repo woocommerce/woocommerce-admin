@@ -313,7 +313,7 @@ class TaskDashboard extends Component {
 		return (
 			<div className="skip-actions">
 				<Button
-					isLink={ true }
+					isLink
 					className="is-secondary"
 					onClick={ this.onSkipStoreSetup }
 				>
@@ -322,7 +322,7 @@ class TaskDashboard extends Component {
 				{ ! doThisLater && ' | ' }
 				{ ! doThisLater && (
 					<Button
-						isLink={ true }
+						isLink
 						className="is-secondary"
 						onClick={ this.onDoThisLater }
 					>
