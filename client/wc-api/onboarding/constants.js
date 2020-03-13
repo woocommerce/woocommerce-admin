@@ -17,8 +17,5 @@ export const pluginNames = {
 		'woocommerce-admin'
 	),
 	'woocommerce-square': __( 'WooCommerce Square', 'woocommerce-admin' ),
-	'google-ads': __(
-		'Google Shopping',
-		'woocommerce-admin'
-	),
+	'kliken-marketing-for-google': __( 'Google Shopping', 'woocommerce-admin' ),
 };

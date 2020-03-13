@@ -325,7 +325,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 					'enum' => array(
 						'mailchimp-for-woocommerce',
 						'facebook-for-woocommerce',
-						'google-ads',
+						'kliken-marketing-for-google',
 					),
 					'type' => 'string',
 				),
