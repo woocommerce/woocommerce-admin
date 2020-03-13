@@ -79,3 +79,46 @@ describe( 'Tracking events in shippingBanner', () => {
 		);
 	} );
 } );
+
+describe( 'Create shipping label button', () => {
+	let shippingBannerWrapper;
+	const installPlugins = jest.fn();
+	const activatePlugins = jest.fn();
+	const activePlugins = {
+		includes: jest.fn().mockReturnValue( true ),
+	};
+
+	beforeEach( () => {
+		shippingBannerWrapper = shallow(
+			<ShippingBanner
+				isJetpackConnected={ jest.fn() }
+				activatePlugins={ activatePlugins }
+				activePlugins={ activePlugins }
+				activatedPlugins={ [] }
+				installPlugins={ installPlugins }
+				installedPlugins={ [] }
+				wcsPluginSlug={ 'woocommerce-services' }
+				hasErrors={ false }
+			/>
+		);
+	} );
+
+	it( 'should install WooCommerce Services when button is clicked', () => {
+		const createShippingLabelButton = shippingBannerWrapper.find( Button );
+		expect( createShippingLabelButton.length ).toBe( 1 );
+		createShippingLabelButton.simulate( 'click' );
+		expect( installPlugins ).toHaveBeenCalledWith( [
+			'woocommerce-services',
+		] );
+	} );
+
+	it( 'should activate WooCommerce Services when installation finishes', () => {
+		// Cause a 'componentDidUpdate' by changing the props.
+		shippingBannerWrapper.setProps( {
+			installedPlugins: [ 'woocommerce-services' ],
+		} );
+		expect( activatePlugins ).toHaveBeenCalledWith( [
+			'woocommerce-services',
+		] );
+	} );
+} );

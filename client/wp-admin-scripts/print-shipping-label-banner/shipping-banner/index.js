@@ -75,9 +75,10 @@ export class ShippingBanner extends Component {
 	};
 
 	createShippingLabelClicked = () => {
+		const { wcsPluginSlug } = this.props;
 		// TODO: open WCS modal
 		this.trackBannerEvent( 'shipping_banner_create_label_click' );
-		this.installAndActivatePlugins( this.props.wcsPluginSlug );
+		this.installAndActivatePlugins( wcsPluginSlug );
 	};
 
 	async installAndActivatePlugins( pluginSlug ) {
@@ -96,11 +97,11 @@ export class ShippingBanner extends Component {
 	};
 
 	trackBannerEvent = ( eventName ) => {
-		const { activePlugins, isJetpackConnected } = this.props;
+		const { activePlugins, isJetpackConnected, wcsPluginSlug } = this.props;
 		recordEvent( eventName, {
 			jetpack_installed: activePlugins.includes( 'jetpack' ),
 			jetpack_connected: isJetpackConnected,
-			wcs_installed: activePlugins.includes( this.props.wcsPluginSlug ),
+			wcs_installed: activePlugins.includes( wcsPluginSlug ),
 		} );
 	};
 
