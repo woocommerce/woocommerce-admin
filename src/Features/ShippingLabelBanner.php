@@ -187,10 +187,12 @@ class ShippingLabelBanner {
 	 * @return array
 	 */
 	public function component_settings( $settings ) {
-		if ( Loader::is_onboarding_enabled() ) {
-			return $settings;
+		if ( ! isset( $settings['onboarding'] ) ) {
+			$settings['onboarding'] = array();
 		}
-		$settings['onboarding']['activePlugins'] = Onboarding::get_active_plugins();
+		if ( ! isset( $settings['onboarding']['activePlugins'] ) ) {
+			$settings['onboarding']['activePlugins'] = Onboarding::get_active_plugins();
+		}
 		return $settings;
 	}
 }
