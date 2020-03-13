@@ -10,8 +10,11 @@
 namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+<<<<<<< HEAD
 use Automattic\WooCommerce\Admin\PluginsHelper;
+=======
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Install_Jetpack_Plugin;
+>>>>>>> #3793 create admin note if Jetpack plugin doesn't work during OBW
 
 defined( 'ABSPATH' ) || exit;
 
