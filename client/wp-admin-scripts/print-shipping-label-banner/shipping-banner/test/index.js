@@ -30,6 +30,10 @@ describe( 'Tracking events in shippingBanner', () => {
 			<ShippingBanner
 				isJetpackConnected={ isJetpackConnected }
 				activePlugins={ activePlugins }
+				activatedPlugins={ [] }
+				installedPlugins={ [] }
+				wcsPluginSlug={ 'woocommerce-services' }
+				hasErrors={ false }
 			/>
 		);
 	} );
