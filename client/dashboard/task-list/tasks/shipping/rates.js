@@ -66,7 +66,7 @@ class ShippingRates extends Component {
 		shippingZones.forEach( ( zone ) => {
 			if ( zone.id === 0 ) {
 				restOfTheWorld =
-					zone.toggleEnabled && values[ `${ zone.id }_enabled` ];
+					zone.toggleable && values[ `${ zone.id }_enabled` ];
 			} else {
 				shippingCost =
 					values[ `${ zone.id }_rate` ] !== '' &&
@@ -84,7 +84,7 @@ class ShippingRates extends Component {
 				? this.getShippingMethods( zone, methodType )[ 0 ]
 				: null;
 
-			if ( zone.toggleEnabled && ! values[ `${ zone.id }_enabled` ] ) {
+			if ( zone.toggleable && ! values[ `${ zone.id }_enabled` ] ) {
 				// Disable any shipping methods that exist if toggled off.
 				this.disableShippingMethods( zone, shippingMethods );
 				return;
@@ -261,7 +261,7 @@ class ShippingRates extends Component {
 										<div className="woocommerce-shipping-rate__main">
 											<div className="woocommerce-shipping-rate__name">
 												{ zone.name }
-												{ zone.toggleEnabled && (
+												{ zone.toggleable && (
 													<FormToggle
 														{ ...getInputProps(
 															`${ zone.id }_enabled`
@@ -269,7 +269,7 @@ class ShippingRates extends Component {
 													/>
 												) }
 											</div>
-											{ ( ! zone.toggleEnabled ||
+											{ ( ! zone.toggleable ||
 												values[
 													`${ zone.id }_enabled`
 												] ) && (
