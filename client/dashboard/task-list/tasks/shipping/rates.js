@@ -32,13 +32,13 @@ class ShippingRates extends Component {
 		this.updateShippingZones = this.updateShippingZones.bind( this );
 	}
 
-	getShippingMethods( zone ) {
+	getShippingMethods( zone, type = null ) {
+		if ( ! type ) {
+			return zone.methods;
+		}
+
 		return zone.methods
-			? zone.methods.filter( ( method ) =>
-					[ 'flat_rate', 'free_shipping' ].includes(
-						method.method_id
-					)
-			  )
+			? zone.methods.filter( ( method ) => method.method_id === type )
 			: [];
 	}
 
@@ -76,27 +76,27 @@ class ShippingRates extends Component {
 				return;
 			}
 
-			if ( shippingMethods.length ) {
-				// Update the existing method.
-				apiFetch( {
-					method: 'POST',
-					path: `/wc/v3/shipping/zones/${ zone.id }/methods/${ shippingMethods[ 0 ].instance_id }`,
-					data: {
-						enabled: true,
-						settings: { cost: values[ `${ zone.id }_rate` ] },
-					},
-				} );
-			} else {
-				// Add new method if one doesn't exist.
-				apiFetch( {
-					method: 'POST',
-					path: `/wc/v3/shipping/zones/${ zone.id }/methods`,
-					data: {
-						method_id: 'flat_rate',
-						settings: { cost: values[ `${ zone.id }_rate` ] },
-					},
-				} );
-			}
+			const methodType =
+				parseFloat( values[ `${ zone.id }_rate` ] ) === parseFloat( 0 )
+					? 'free_shipping'
+					: 'flat_rate';
+			const shippingMethod = this.getShippingMethods( zone, methodType )
+				.length
+				? this.getShippingMethods( zone, methodType )[ 0 ]
+				: null;
+
+			apiFetch( {
+				method: 'POST',
+				path: shippingMethod
+					? // Update the first existing method if one exists, otherwise create a new one.
+					  `/wc/v3/shipping/zones/${ zone.id }/methods/${ shippingMethod.instance_id }`
+					: `/wc/v3/shipping/zones/${ zone.id }/methods`,
+				data: {
+					method_id: methodType,
+					enabled: true,
+					settings: { cost: values[ `${ zone.id }_rate` ] },
+				},
+			} );
 		} );
 
 		recordEvent( 'tasklist_shipping_set_costs', {
