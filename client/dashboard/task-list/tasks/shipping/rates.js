@@ -42,6 +42,22 @@ class ShippingRates extends Component {
 			: [];
 	}
 
+	disableShippingMethods( zone, methods ) {
+		if ( ! methods.length ) {
+			return;
+		}
+
+		methods.forEach( ( method ) => {
+			apiFetch( {
+				method: 'POST',
+				path: `/wc/v3/shipping/zones/${ zone.id }/methods/${ method.instance_id }`,
+				data: {
+					enabled: false,
+				},
+			} );
+		} );
+	}
+
 	async updateShippingZones( values ) {
 		const { createNotice, shippingZones } = this.props;
 
@@ -59,23 +75,6 @@ class ShippingRates extends Component {
 			}
 
 			const shippingMethods = this.getShippingMethods( zone );
-
-			if ( zone.toggleEnabled && ! values[ `${ zone.id }_enabled` ] ) {
-				// Disable any flat rate or free shipping methods that exist if toggled off.
-				if ( shippingMethods.length ) {
-					shippingMethods.forEach( ( method ) => {
-						apiFetch( {
-							method: 'POST',
-							path: `/wc/v3/shipping/zones/${ zone.id }/methods/${ method.instance_id }`,
-							data: {
-								enabled: false,
-							},
-						} );
-					} );
-				}
-				return;
-			}
-
 			const methodType =
 				parseFloat( values[ `${ zone.id }_rate` ] ) === parseFloat( 0 )
 					? 'free_shipping'
@@ -84,6 +83,19 @@ class ShippingRates extends Component {
 				.length
 				? this.getShippingMethods( zone, methodType )[ 0 ]
 				: null;
+
+			if ( zone.toggleEnabled && ! values[ `${ zone.id }_enabled` ] ) {
+				// Disable any shipping methods that exist if toggled off.
+				this.disableShippingMethods( zone, shippingMethods );
+				return;
+			} else if ( shippingMethod ) {
+				// Disable all methods except the one being updated.
+				const methodsToDisable = shippingMethods.filter(
+					( method ) =>
+						method.instance_id !== shippingMethod.instance_id
+				);
+				this.disableShippingMethods( zone, methodsToDisable );
+			}
 
 			apiFetch( {
 				method: 'POST',
