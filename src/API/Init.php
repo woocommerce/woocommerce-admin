@@ -74,7 +74,7 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\Themes',
 		);
 
-		if ( Loader::is_onboarding_enabled() ) {
+		if ( Loader::is_onboarding_enabled() || Loader::is_feature_enabled( 'shipping-label-banner' ) ) {
 			$controllers = array_merge(
 				$controllers,
 				array(
