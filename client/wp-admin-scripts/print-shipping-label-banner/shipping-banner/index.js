@@ -15,6 +15,7 @@ import '../style.scss';
 import DismissModal from '../dismiss-modal';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import withSelect from 'wc-api/with-select';
+import SetupNotice, { setupErrorTypes } from '../setup-notice';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
@@ -24,6 +25,8 @@ export class ShippingBanner extends Component {
 		this.state = {
 			showShippingBanner: true, // TODO: update to get state when closedForever is clicked
 			isDismissModalOpen: false,
+			isSetupError: true, // TODO: this should be false by default once we're actually setting the value.
+			setupErrorReason: setupErrorTypes.SETUP,
 		};
 	}
 
@@ -69,7 +72,12 @@ export class ShippingBanner extends Component {
 	};
 
 	render() {
-		const { isDismissModalOpen, showShippingBanner } = this.state;
+		const {
+			isDismissModalOpen,
+			showShippingBanner,
+			isSetupError,
+			setupErrorReason,
+		} = this.state;
 		if ( ! showShippingBanner ) {
 			return null;
 		}
@@ -121,6 +129,10 @@ export class ShippingBanner extends Component {
 							},
 						} ) }
 					</p>
+					<SetupNotice
+						isSetupError={ isSetupError }
+						errorReason={ setupErrorReason }
+					/>
 					<button
 						onClick={ this.openDismissModal }
 						type="button"

@@ -39,6 +39,20 @@
 		top: 14px;
 		right: 18px;
 	}
+
+	.wc-admin-shipping-banner-install-error {
+		color: #d63638;
+		> .gridicon {
+			width: 16px;
+			height: 16px;
+			margin-right: 3px;
+			vertical-align: middle;
+			margin-top: -2px;
+			path {
+				fill: #d63638;
+			}
+		}
+	}
 }
 
 .components-modal__frame.wc-admin-shipping-banner__dismiss-modal {
