@@ -284,25 +284,31 @@ class BusinessDetails extends Component {
 
 		return (
 			<Fragment>
-				<div className="woocommerce-profile-wizard__benefits">
-					{ extensionBenefits.map( benefit => (
-						<div className="woocommerce-profile-wizard__benefit" key={ benefit.title }>
-							<div className="woocommerce-profile-wizard__business-extension">
-								<img src={ wcAdminAssetUrl + benefit.icon } alt="" />
-							</div>
-							<div className="woocommerce-profile-wizard__benefit-content">
-								<H className="woocommerce-profile-wizard__benefit-title">{ benefit.title }</H>
-								<p>{ benefit.description }</p>
-							</div>
-							<div className="woocommerce-profile-wizard__benefit-toggle">
-								<FormToggle
-									checked={ values[ benefit.slug ] }
-									{ ...getInputProps( benefit.slug ) }
-								/>
-							</div>
+				{ extensionBenefits.map( ( benefit ) => (
+					<div
+						className="woocommerce-profile-wizard__benefit"
+						key={ benefit.title }
+					>
+						<div className="woocommerce-profile-wizard__business-extension">
+							<img
+								src={ wcAdminAssetUrl + benefit.icon }
+								alt=""
+							/>
 						</div>
-					) ) }
-				</div>
+						<div className="woocommerce-profile-wizard__benefit-content">
+							<H className="woocommerce-profile-wizard__benefit-title">
+								{ benefit.title }
+							</H>
+							<p>{ benefit.description }</p>
+						</div>
+						<div className="woocommerce-profile-wizard__benefit-toggle">
+							<FormToggle
+								checked={ values[ benefit.slug ] }
+								{ ...getInputProps( benefit.slug ) }
+							/>
+						</div>
+					</div>
+				) ) }
 
 				{ installExtensions && (
 					<div className="woocommerce-profile-wizard__card-actions">
