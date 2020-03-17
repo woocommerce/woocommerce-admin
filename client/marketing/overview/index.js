@@ -1,11 +1,12 @@
 /**
  * External dependencies
  */
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
+import './style.scss';
 import InstalledExtensions from './installed-extensions';
 import RecommendedExtensions from './recommended-extensions';
 import KnowledgeBase from './knowledge-base';
@@ -13,11 +14,11 @@ import KnowledgeBase from './knowledge-base';
 class MarketingOverview extends Component {
 	render() {
 		return (
-			<Fragment>
+			<div className="woocommerce-marketing-overview">
 				<InstalledExtensions />
 				<RecommendedExtensions />
 				<KnowledgeBase />
-			</Fragment>
+			</div>
 		);
 	}
 }
