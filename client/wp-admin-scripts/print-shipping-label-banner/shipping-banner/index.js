@@ -135,7 +135,9 @@ export class ShippingBanner extends Component {
 						alt={ __( 'Shipping ', 'woocommerce-admin' ) }
 					/>
 					<Button
+						disabled={ this.props.isRequesting }
 						isPrimary
+						isBusy={ this.props.isRequesting }
 						onClick={ this.createShippingLabelClicked }
 					>
 						{ __( 'Create shipping label' ) }
@@ -181,6 +183,7 @@ export class ShippingBanner extends Component {
 						onClick={ this.openDismissModal }
 						type="button"
 						className="notice-dismiss"
+						disabled={ this.props.isRequesting }
 					>
 						<span className="screen-reader-text">
 							{ __(
