@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -27,10 +26,10 @@ const Timeline = ( { className, items } ) => {
 		days[ dayNum ].push( item );
 	} );
 
-	if ( 0 === items.count ) {
+	if ( 0 === items.length ) {
 		return (
 			<div className={ timelineClassName }>
-				<p class="timeline_no_events">
+				<p className="timeline_no_events">
 					{ __( 'No events to display' ) }
 				</p>
 			</div>
@@ -46,14 +45,16 @@ const Timeline = ( { className, items } ) => {
 						<li key={ dayNum }>
 							{ dayString }
 							<ul>
-								{ day.map( function( item ) {
-									const timeString = moment( item.datetime ).format( 'h:mma' );
+								{ day.map( function( item, itemIndex ) {
+									const itemTimeString = moment( item.datetime ).format( 'h:mma' );
+									const itemKey = dayNum + '-' + itemIndex;
 									return (
-										<li>
-											{ item.headline } <span>{ timeString }</span>
-											{ item.body.map( function( line ) {
+										<li key={ itemKey } >
+											{ item.headline } <span>{ itemTimeString }</span>
+											{ item.body.map( function( line, bodyLineIndex ) {
+												const bodyLineKey = dayNum + '-' + itemIndex + '-' + bodyLineIndex;
 												return (
-													<p>
+													<p key={ bodyLineKey }>
 														{ line }
 													</p>
 												);
