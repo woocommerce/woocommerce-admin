@@ -138,7 +138,24 @@ describe( 'ShippingBanner', () => {
 			'should perform a request to accept the TOS and get WCS assets to load'
 		);
 
-		it.todo( 'should load WCS assets when a path is provided' );
+		it( 'should load WCS assets when a path is provided', () => {
+			const createElementMock = jest.fn();
+			const documentMock = {
+				createElement: createElementMock,
+			};
+			window.document = documentMock;
+
+			const openWcsModal = jest.fn();
+			shippingBannerWrapper.instance().openWcsModal = openWcsModal;
+			shippingBannerWrapper
+				.instance()
+				.loadWcsAssets( {
+					js: '/path/to/wcs.js',
+					css: '/path/to/wcs.css',
+				} );
+			expect( createElementMock ).toHaveBeenCalledWith( 'script' );
+			expect( openWcsModal ).toHaveBeenCalledTimes( 1 );
+		} );
 
 		it( 'should open WCS modal', () => {
 			window.wcsGetAppStore = jest.fn();

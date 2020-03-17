@@ -116,7 +116,7 @@ export class ShippingBanner extends Component {
 				script.src = js;
 				script.async = true;
 				script.onload = resolve;
-				script.onerror = reject;
+				script.onerror = reject; //TODO: handle errors
 				document.body.appendChild( script );
 			} ),
 			new Promise( ( resolve, reject ) => {
@@ -127,7 +127,7 @@ export class ShippingBanner extends Component {
 				link.href = css;
 				link.media = 'all';
 				link.onload = resolve;
-				link.onerror = reject;
+				link.onerror = reject; //TODO: handle errors
 				head.appendChild( link );
 			} ),
 		] ).then( () => {
