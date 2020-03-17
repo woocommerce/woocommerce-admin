@@ -7,6 +7,7 @@ import { get } from 'lodash';
 import { IconButton } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
+import { recordEvent } from 'lib/tracks';
 
 /**
  * WooCommerce dependencies
@@ -17,6 +18,7 @@ import { Card } from '@woocommerce/components';
  * Internal dependencies
  */
 import withSelect from 'wc-api/with-select';
+import WelcomeImage from './images/welcome.png';
 
 class WelcomeCard extends Component {
 	constructor( props ) {
@@ -29,6 +31,8 @@ class WelcomeCard extends Component {
 		this.props.updateOptions( {
 			woocommerce_marketing_overview_welcome_hidden: 'yes',
 		} );
+
+		recordEvent( 'marketing_dismiss_welcome', {} );
 	}
 
 	render() {
@@ -49,7 +53,7 @@ class WelcomeCard extends Component {
 					className="woocommerce-marketing-overview-welcome-card__hide-button"
 				/>
 				<h3>{ __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce.', 'woocommerce-admin' ) }</h3>
-
+				<img  src={WelcomeImage} alt=""/>
 			</Card>
 		)
 	}
