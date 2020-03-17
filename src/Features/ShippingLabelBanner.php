@@ -40,10 +40,35 @@ class ShippingLabelBanner {
 	 */
 	private function should_show_meta_box() {
 		if ( ! $this->shipping_label_banner_display_rules ) {
-			$this->shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules();
+			$jetpack_version   = null;
+			$jetpack_connected = null;
+			$wcs_version       = null;
+			$wcs_tos_accepted  = null;
+
+			if ( class_exists( 'Jetpack_Data' ) ) {
+				$user_token = Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
+
+				$jetpack_connected = isset( $user_token->external_user_id );
+				$jetpack_version   = JETPACK_VERSION;
+			}
+
+			if ( class_exists( 'WC_Connect_Loader' ) ) {
+				$wcs_version = WC_Connect_Loader::get_wcs_version();
+			}
+			if ( class_exists( 'WC_Connect_Options' ) ) {
+				$wcs_tos_accepted = WC_Connect_Options::get_option( 'tos_accepted' );
+			}
+
+			$this->shipping_label_banner_display_rules =
+				new ShippingLabelBannerDisplayRules(
+					$jetpack_version,
+					$jetpack_connected,
+					$wcs_version,
+					$wcs_tos_accepted
+				);
 		}
 
-		return $this->shipping_label_banner_display_rules->should_display_banner( JETPACK__VERSION );
+		return $this->shipping_label_banner_display_rules->should_display_banner();
 	}
 
 	/**

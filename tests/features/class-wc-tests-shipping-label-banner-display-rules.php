@@ -31,7 +31,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 *
 	 * @var string
 	 */
-	private $jetpack_version = '4.4';
+	private $valid_jetpack_version = '4.4';
 
 	/**
 	 * Stores the default WordPress options stored in teh database.
@@ -52,21 +52,11 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	public function setUp() {
 		parent::setup();
 
-		$this->shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules();
-
-		$this->active_plugins['jetpack']      = 'jetpack/jetpack.php';
-		$this->active_plugins['wcs']          = 'woocommerce-services/woocommerce-services.php';
-		$this->active_plugins['fedex']        = 'woocommerce-shipping-fedex/woocommerce-shipping-fedex.php';
-		$this->active_plugins['ups']          = 'woocommerce-shipping-ups/woocommerce-shipping-ups.php';
-		$this->active_plugins['shippingeasy'] = 'woocommerce-shippingeasy/woocommerce-shippingeasy.php';
-		$this->active_plugins['shipstation']  = 'woocommerce-shipstation/woocommerce-shipstation.php';
-
-		$this->set_active_plugins();
+		$this->active_plugins = array();
+		$this->install_plugin( 'jetpack/jetpack.php' );
 
 		update_option( 'woocommerce_default_country', 'US' );
 		update_option( 'woocommerce_currency', 'USD' );
-		update_option( 'woocommerce_shipping_ab_active', null );
-
 	}
 
 	/**
@@ -92,12 +82,27 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test if the banner is displayed when Jetpack is active and connected.
+	 * Test if the banner is displayed when all conditions are satisfied:
+	 *   - Banner NOT dismissed
+	 *   - Jetpack >= 4.4 installed and active
+	 *   - Jetpack Connected
+	 *   - No incompatible extensions installed:
+	 *       - Shipstation not installed
+	 *       - UPS not Installed
+	 *       - Fedex not installed
+	 *       - ShippingEasy not installed
+	 *   - Order contains physical products which need to be shipped (we should check that the order status is not set to complete)
+	 *   - Store is located in US
+	 *   - Store currency is set to USD
+	 *   - WCS plugin not installed OR WCS is installed *AND* ToS have NOT been accepted *AND* WCS version is 1.22.5 or greater
+	 *     (The 1.22.5 or greater requirement is so we can launch the shipping modal from the banner)
 	 */
-	public function test_display_banner_if_jetpack_connected() {
+	public function test_display_banner_if_all_conditions_are_met() {
 		$this->with_order(
 			function( $that ) {
-				$that->assertEquals( $that->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), true );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), true );
 			}
 		);
 	}
@@ -106,19 +111,9 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when Jetpack is not active.
 	 */
 	public function test_if_banner_hidden_when_jetpack_disconnected() {
-		unset( $this->active_plugins['jetpack'] );
-		$this->set_active_plugins();
+		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( null, null, null, null );
 
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
-	}
-
-	/**
-	 * Test if the banner is displayed when an A/B test flag is enabled.
-	 */
-	public function test_display_banner_if_a_b_flag_enabled() {
-		update_option( 'woocommerce_shipping_ab_active', true );
-
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), true );
+		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 	}
 
 	/**
@@ -126,8 +121,9 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 */
 	public function test_if_banner_hidden_when_dismiss_option_enabled() {
 		update_option( 'woocommerce_shipping_dismissed_timestamp', -1 );
+		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
 
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
+		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 	}
 
 	/**
@@ -137,43 +133,46 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		$two_hours_from_now = time() + ( 2 * 60 * 60 );
 		update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_now );
 
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
+		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+
+		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 	}
 
 	/**
 	 * Test if the banner is hidden when a dismiss banner option is checked for 24 hours.
 	 */
 	public function test_show_banner_if_dismiss_after_24h_option_enabled_has_expired() {
+		$two_hours_from_now = time() - ( 2 * 60 * 60 );
+		update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_now );
+
 		$this->with_order(
 			function( $that ) {
-				$two_hours_from_now = time() - ( 2 * 60 * 60 );
-				update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_now );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
 
-				$that->assertEquals( $that->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), true );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), true );
 			}
 		);
 	}
 
 	/**
-	 * Test if the banner is displayed when the order has physical items.
+	 * Test if the banner is hidden when no shippable product available.
 	 */
-	public function test_display_banner_if_order_with_physical_items() {
-		$this->with_order(
-			function( $that ) {
-				$that->assertEquals( $that->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), true );
-			}
-		);
+	public function test_if_banner_hidden_when_no_shippable_product() {
+		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+
+		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 	}
 
 	/**
 	 * Test if the banner is displayed when the store is in the US.
 	 */
 	public function test_if_banner_hidden_when_store_is_not_in_us() {
+		update_option( 'woocommerce_default_country', 'ES' );
 		$this->with_order(
 			function( $that ) {
-				update_option( 'woocommerce_default_country', 'ES' );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
 
-				$that->assertEquals( $that->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
 		);
 	}
@@ -182,77 +181,72 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is displayed when the store's currency is USD.
 	 */
 	public function test_if_banner_hidden_when_currency_is_not_usd() {
+		update_option( 'woocommerce_currency', 'EUR' );
 		$this->with_order(
 			function( $that ) {
-				update_option( 'woocommerce_currency', 'EUR' );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
 
-				$that->assertEquals( $that->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
 		);
 	}
 
 	/**
-	 * Test if the banner is hidden when WooCommerce Services is not installed.
+	 * Test if the banner is hidden when WooCommerce Fedex Shipping is installed.
 	 */
-	public function test_if_banner_hidden_when_wcs_not_installed() {
-		unset( $this->active_plugins['wcs'] );
+	public function test_if_banner_hidden_when_fedex_installed() {
+		$this->install_plugin( 'woocommerce-shipping-fedex/woocommerce-shipping-fedex.php' );
 
-		$this->set_active_plugins();
-
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
-	}
-
-	/**
-	 * Test if the banner is hidden when WooCommerce Fedex Shipping is not installed.
-	 */
-	public function test_if_banner_hidden_when_fedex_not_installed() {
-		unset( $this->active_plugins['fedex'] );
-
-		$this->set_active_plugins();
-
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
-	}
-
-	/**
-	 * Test if the banner is hidden when WooCommerce UPS Shipping is not installed.
-	 */
-	public function test_if_banner_hidden_when_ups_not_installed() {
-		unset( $this->active_plugins['ups'] );
-
-		$this->set_active_plugins();
-
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
-	}
-
-	/**
-	 * Test if the banner is hidden when WooCommerce ShippingEasy Shipping is not installed.
-	 */
-	public function test_if_banner_hidden_when_shippingeasy_not_installed() {
-		unset( $this->active_plugins['shippingeasy'] );
-
-		$this->set_active_plugins();
-
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
-	}
-
-	/**
-	 * Test if the banner is hidden when WooCommerce Shipstation Shipping is not installed.
-	 */
-	public function test_if_banner_hidden_when_shipstation_not_installed() {
-		unset( $this->active_plugins['shipstation'] );
-
-		$this->set_active_plugins();
-
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
-	}
-
-	/**
-	 * Test if the banner is displayed when Jetpack version is at least 4.4.
-	 */
-	public function test_if_banner_hidden_when_jetpack_version_is_new() {
 		$this->with_order(
 			function( $that ) {
-				$that->assertEquals( $that->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), true );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+			}
+		);
+	}
+
+	/**
+	 * Test if the banner is hidden when WooCommerce UPS Shipping is installed.
+	 */
+	public function test_if_banner_hidden_when_ups_installed() {
+		$this->install_plugin( 'woocommerce-shipping-ups/woocommerce-shipping-ups.php' );
+
+		$this->with_order(
+			function( $that ) {
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+			}
+		);
+	}
+
+	/**
+	 * Test if the banner is hidden when WooCommerce ShippingEasy Shipping is installed.
+	 */
+	public function test_if_banner_hidden_when_shippingeasy_installed() {
+		$this->install_plugin( 'woocommerce-shippingeasy/woocommerce-shippingeasy.php' );
+
+		$this->with_order(
+			function( $that ) {
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+			}
+		);
+	}
+
+	/**
+	 * Test if the banner is hidden when WooCommerce Shipstation Shipping is installed.
+	 */
+	public function test_if_banner_hidden_when_shipstation_installed() {
+		$this->install_plugin( 'woocommerce-shipstation/woocommerce-shipstation.php' );
+
+		$this->with_order(
+			function( $that ) {
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
 		);
 	}
@@ -261,8 +255,43 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when Jetpack version is not at least 4.4.
 	 */
 	public function test_if_banner_hidden_when_jetpack_version_is_old() {
-		$this->jetpack_version = '4.3';
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner( $this->jetpack_version ), false );
+		$this->with_order(
+			function( $that ) {
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.3', true, '1.22.5', false );
+
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+			}
+		);
+	}
+
+	/**
+	 * Test if the banner is hidden when the WooCommerce Services Terms of Service has been already accepted.
+	 */
+	public function test_if_banner_hidden_when_wcs_tos_accepted() {
+		$this->install_plugin( 'woocommerce-services/woocommerce-services.php' );
+
+		$this->with_order(
+			function( $that ) {
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', true );
+
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+			}
+		);
+	}
+
+	/**
+	 * Test if the banner is hidden when WooCommerce Services is installed but not up to date.
+	 */
+	public function test_if_banner_hidden_when_wcs_not_installed() {
+		$this->install_plugin( 'woocommerce-services/woocommerce-services.php' );
+
+		$this->with_order(
+			function( $that ) {
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.4', false );
+
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+			}
+		);
 	}
 
 	/**
@@ -316,9 +345,12 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Manages the state of installed plugins
+	 * Manages the state of installed plugins.
+	 *
+	 * @param string $plugin_path plugin path to install.
 	 */
-	private function set_active_plugins() {
+	private function install_plugin( $plugin_path ) {
+		$this->active_plugins[] = $plugin_path;
 		update_option( 'active_plugins', array_values( $this->active_plugins ) );
 	}
 }

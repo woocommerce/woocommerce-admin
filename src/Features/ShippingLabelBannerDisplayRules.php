@@ -16,11 +16,47 @@ use \Automattic\WooCommerce\Admin\Loader;
 class ShippingLabelBannerDisplayRules {
 
 	/**
+	 * Holds the installed Jetpack version.
+	 *
+	 * @var string
+	 */
+	private $jetpack_version;
+
+
+	/**
+	 * Whether or not the installed Jetpack is connected.
+	 *
+	 * @var bool
+	 */
+	private $jetpack_connected;
+
+	/**
+	 * Holds the installed WooCommerce Services version.
+	 *
+	 * @var string
+	 */
+	private $wcs_version;
+
+	/**
+	 * Whether or not the WooCommerce Services ToS has been accepted.
+	 *
+	 * @var bool
+	 */
+	private $wcs_tos_accepted;
+
+	/**
 	 * Minimum supported Jetpack version.
 	 *
 	 * @var string
 	 */
 	private $min_jetpack_version = '4.4';
+
+	/**
+	 * Minimum supported WooCommerce Services version.
+	 *
+	 * @var string
+	 */
+	private $min_wcs_version = '1.22.5';
 
 	/**
 	 * Supported countries by USPS, see: https://webpmt.usps.gov/pmt010.cfm
@@ -36,34 +72,119 @@ class ShippingLabelBannerDisplayRules {
 	 */
 	private $supported_currencies = array( 'USD' );
 
+
 	/**
-	 * Determines whether or not the banner should be displayed.
+	 * Constructor.
 	 *
 	 * @param string $jetpack_version Installed Jetpack version to check.
+	 * @param bool   $jetpack_connected Is Jetpack connected?.
+	 * @param string $wcs_version Installed WooCommerce Services version to check.
+	 * @param bool   $wcs_tos_accepted WooCommerce Services Terms of Service accepted?.
 	 */
-	public function should_display_banner( $jetpack_version ) {
-		$woocommerce_shipping_ab_active     = get_option( 'woocommerce_shipping_ab_active' );
-		$woocommerce_product_needs_shipping = false;
-		$woocommerce_store_in_us            = false;
-		$woocommerce_store_currency_in_usd  = false;
-		$base_currency                      = get_woocommerce_currency();
-		$base_location                      = wc_get_base_location();
+	public function __construct( $jetpack_version, $jetpack_connected, $wcs_version, $wcs_tos_accepted ) {
+		$this->jetpack_version   = $jetpack_version;
+		$this->jetpack_connected = $jetpack_connected;
+		$this->wcs_version       = $wcs_version;
+		$this->wcs_tos_accepted  = $wcs_tos_accepted;
+	}
 
-		if ( $woocommerce_shipping_ab_active ) {
-			return true;
-		}
+	/**
+	 * Determines whether or not the banner should be displayed.
+	 */
+	public function should_display_banner() {
+		return $this->banner_not_dismissed() &&
+			$this->jetpack_installed_and_active( $this->jetpack_version ) &&
+			$this->jetpack_up_to_date( $this->jetpack_version ) &&
+			$this->jetpack_connected &&
+			$this->ups_not_installed() &&
+			$this->fedex_not_installed() &&
+			$this->shippingeasy_not_installed() &&
+			$this->shipstation_not_installed() &&
+			$this->order_has_shippable_products() &&
+			$this->store_in_us_and_usd() &&
+			( $this->wcs_not_installed() || (
+				$this->wcs_up_to_date() && ! $this->wcs_tos_accepted
+			) );
+	}
 
-		if ( $this->banner_dismissed() ) {
-			return false;
-		}
+	/**
+	 * Checks if the banner was not dismissed by the user.
+	 *
+	 * @return bool
+	 */
+	private function banner_not_dismissed() {
+		$dismissed_timestamp = get_option( 'woocommerce_shipping_dismissed_timestamp' );
 
-		if ( $this->jetpack_disconnected() ||
-			$this->jetpack_not_up_to_date( $jetpack_version ) ||
-			$this->wcs_not_installed() ||
-			$this->ups_not_installed() ||
-			$this->fedex_not_installed() ||
-			$this->shipstation_not_installed() ||
-			$this->shippingeasy_not_installed() ) {
+		$dismissed_for_good = -1 === $dismissed_timestamp;
+		$dismissed_24h      = time() < $dismissed_timestamp;
+
+		return ! $dismissed_for_good && ! $dismissed_24h;
+	}
+
+	/**
+	 * Checks if jetpack is installed and active.
+	 *
+	 * @param string $jetpack_version Jetpack version to check.
+	 * @return bool
+	 */
+	private function jetpack_installed_and_active( $jetpack_version ) {
+		return ! ! $jetpack_version;
+	}
+
+	/**
+	 * Checks if Jetpack version is supported.
+	 *
+	 * @param string $jetpack_version Installed Jetpack version to check.
+	 * @return bool
+	 */
+	private function jetpack_up_to_date( $jetpack_version ) {
+		return version_compare( $jetpack_version, $this->min_jetpack_version, '>=' );
+	}
+
+	/**
+	 * Checks if Fedex shipping method is not installed.
+	 *
+	 * @return bool
+	 */
+	private function fedex_not_installed() {
+		return ! is_plugin_active( 'woocommerce-shipping-fedex/woocommerce-shipping-fedex.php' );
+	}
+
+	/**
+	 * Checks if UPS shipping method is not installed.
+	 *
+	 * @return bool
+	 */
+	private function ups_not_installed() {
+		return ! is_plugin_active( 'woocommerce-shipping-ups/woocommerce-shipping-ups.php' );
+	}
+
+	/**
+	 * Checks if ShippingEasy shipping method is not installed.
+	 *
+	 * @return bool
+	 */
+	private function shippingeasy_not_installed() {
+		return ! is_plugin_active( 'woocommerce-shippingeasy/woocommerce-shippingeasy.php' );
+	}
+
+	/**
+	 * Checks if Shipstation shipping method is not installed.
+	 *
+	 * @return bool
+	 */
+	private function shipstation_not_installed() {
+		return ! is_plugin_active( 'woocommerce-shipstation/woocommerce-shipstation.php' );
+	}
+
+	/**
+	 * Checks if there's a shippable product in the current order.
+	 *
+	 * @return bool
+	 */
+	private function order_has_shippable_products() {
+		$post = get_post();
+		if ( ! $post ) {
 			return false;
 		}
 
@@ -78,34 +199,28 @@ class ShippingLabelBannerDisplayRules {
 				$product = $item->get_product();
 
 				if ( $product && $product->needs_shipping() ) {
-					$woocommerce_product_needs_shipping = true;
+					return true;
 				}
 			}
 		}
 
-		$woocommerce_store_currency_in_usd = $this->is_supported_currency( $base_currency );
-
-		$woocommerce_store_in_us = $this->is_supported_country( $base_location['country'] );
-
-		return $woocommerce_product_needs_shipping && $woocommerce_store_currency_in_usd && $woocommerce_store_in_us;
+		return false;
 	}
 
 	/**
-	 * Check if the banner was dismissed by the user
+	 * Checks if the store is in the US and has its default currency set to USD.
 	 *
 	 * @return bool
 	 */
-	private function banner_dismissed() {
-		$dismissed_timestamp = get_option( 'woocommerce_shipping_dismissed_timestamp' );
+	private function store_in_us_and_usd() {
+		$base_currency = get_woocommerce_currency();
+		$base_location = wc_get_base_location();
 
-		$dismissed_for_good = -1 === $dismissed_timestamp;
-		$dismissed_24h      = time() < $dismissed_timestamp;
-
-		return $dismissed_for_good || $dismissed_24h;
+		return in_array( $base_currency, $this->supported_currencies, true ) && in_array( $base_location['country'], $this->supported_countries, true );
 	}
 
 	/**
-	 * Check if WooCommerce Services is inactive
+	 * Checks if WooCommerce Services is not installed.
 	 *
 	 * @return bool
 	 */
@@ -114,79 +229,9 @@ class ShippingLabelBannerDisplayRules {
 	}
 
 	/**
-	 * Check if jetpack is inactive or disconnected
-	 *
-	 * @return bool
+	 * Checks if WooCommerce Services is up to date.
 	 */
-	private function jetpack_disconnected() {
-		return ! is_plugin_active( 'jetpack/jetpack.php' );
-	}
-
-	/**
-	 * Check if Jetpack version is supported.
-	 *
-	 * @param string $jetpack_version Installed Jetpack version to check.
-	 * @return bool
-	 */
-	private function jetpack_not_up_to_date( $jetpack_version ) {
-		return version_compare( $jetpack_version, $this->min_jetpack_version, '<' );
-	}
-
-	/**
-	 * Check if Fedex shipping method is not installed
-	 *
-	 * @return bool
-	 */
-	private function fedex_not_installed() {
-		return ! is_plugin_active( 'woocommerce-shipping-fedex/woocommerce-shipping-fedex.php' );
-	}
-
-	/**
-	 * Check if UPS shipping method is not installed
-	 *
-	 * @return bool
-	 */
-	private function ups_not_installed() {
-		return ! is_plugin_active( 'woocommerce-shipping-ups/woocommerce-shipping-ups.php' );
-	}
-
-	/**
-	 * Check if ShippingEasy shipping method is not installed
-	 *
-	 * @return bool
-	 */
-	private function shippingeasy_not_installed() {
-		return ! is_plugin_active( 'woocommerce-shippingeasy/woocommerce-shippingeasy.php' );
-	}
-
-	/**
-	 * Check if Shipstation shipping method is not installed
-	 *
-	 * @return bool
-	 */
-	private function shipstation_not_installed() {
-		return ! is_plugin_active( 'woocommerce-shipstation/woocommerce-shipstation.php' );
-	}
-
-	/**
-	 * Check if country code is supported by WCS.
-	 *
-	 * @param string $country_code Country code.
-	 *
-	 * @return bool
-	 */
-	private function is_supported_country( $country_code ) {
-		return in_array( $country_code, $this->supported_countries, true );
-	}
-
-	/**
-	 * Check if currency code is supported by WCS.
-	 *
-	 * @param string $currency_code Currency code.
-	 *
-	 * @return bool
-	 */
-	private function is_supported_currency( $currency_code ) {
-		return in_array( $currency_code, $this->supported_currencies, true );
+	private function wcs_up_to_date() {
+		return $this->wcs_version && version_compare( $this->wcs_version, $this->min_wcs_version, '>=' );
 	}
 }
