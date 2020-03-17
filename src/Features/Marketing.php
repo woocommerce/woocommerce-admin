@@ -34,6 +34,7 @@ class Marketing {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_pages' ) );
+		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 	}
 
 	/**
@@ -58,4 +59,17 @@ class Marketing {
 			}
 		}
 	}
+
+	/**
+	 * Preload options to prime state of the application.
+	 *
+	 * @param array $options Array of options to preload.
+	 * @return array
+	 */
+	public function preload_options( $options ) {
+		$options[] = 'woocommerce_marketing_overview_welcome_hidden';
+
+		return $options;
+	}
+
 }

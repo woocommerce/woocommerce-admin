@@ -3,33 +3,39 @@
  */
 import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { get } from 'lodash';
 import { IconButton } from '@wordpress/components';
+import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
 import { Card } from '@woocommerce/components';
 
+/**
+ * Internal dependencies
+ */
+import withSelect from 'wc-api/with-select';
+
 class WelcomeCard extends Component {
 	constructor( props ) {
 		super( props );
-
-		this.state = {
-			isHidden: false,
-		};
 
 		this.hide = this.hide.bind( this );
 	}
 
 	hide() {
-		this.setState( { isHidden: true } );
+		this.props.updateOptions( {
+			woocommerce_marketing_overview_welcome_hidden: 'yes',
+		} );
 	}
 
 	render() {
-		const { isHidden } = this.state;
+		const { isHidden } = this.props;
 
 		if ( isHidden ) {
-			return '';
+			return null;
 		}
 
 		return (
@@ -49,4 +55,21 @@ class WelcomeCard extends Component {
 	}
 }
 
-export default WelcomeCard;
+export default compose(
+	withSelect( ( select ) => {
+		const { getOptions } = select( 'wc-api' );
+		const options = getOptions( [ 'woocommerce_marketing_overview_welcome_hidden' ] );
+		const isHidden = get( options, [ 'woocommerce_marketing_overview_welcome_hidden' ], 'no' ) === 'yes';
+
+		return {
+			isHidden,
+		};
+	} ),
+	withDispatch( ( dispatch ) => {
+		const { updateOptions } = dispatch( 'wc-api' );
+		return {
+			updateOptions,
+		};
+	} )
+)( WelcomeCard );
+
