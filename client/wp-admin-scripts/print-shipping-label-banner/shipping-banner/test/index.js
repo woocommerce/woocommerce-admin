@@ -132,13 +132,57 @@ describe( 'ShippingBanner', () => {
 			] );
 		} );
 
-		beforeEach( () => {} );
-
 		it.todo(
 			'should perform a request to accept the TOS and get WCS assets to load'
 		);
 
-		it.todo( 'should load WCS assets when a path is provided' );
+		it( 'should load WCS assets when a path is provided', () => {
+			const scriptMock = {};
+			const linkMock = {};
+			const createElementMockReturn = {
+				script: scriptMock,
+				link: linkMock,
+			};
+			const createElementMock = jest.fn( ( tagName ) => {
+				return createElementMockReturn[ tagName ];
+			} );
+			document.createElement = createElementMock;
+
+			const getElementsByTagNameMock = jest.fn();
+			const headMock = {
+				appendChild: jest.fn(),
+			};
+			getElementsByTagNameMock.mockReturnValueOnce( [ headMock ] );
+			document.getElementsByTagName = getElementsByTagNameMock;
+
+			const appendChildMock = jest.fn();
+			document.body.appendChild = appendChildMock;
+
+			const openWcsModalMock = jest.fn();
+			shippingBannerWrapper.instance().openWcsModal = openWcsModalMock;
+
+			shippingBannerWrapper.instance().loadWcsAssets( {
+				js: '/path/to/wcs.js',
+				css: '/path/to/wcs.css',
+			} );
+
+			expect( createElementMock ).toHaveBeenCalledWith( 'script' );
+			expect( createElementMock ).toHaveNthReturnedWith( 1, scriptMock );
+			expect( scriptMock.async ).toEqual( true );
+			expect( scriptMock.src ).toEqual( '/path/to/wcs.js' );
+			expect( appendChildMock ).toHaveBeenCalledWith( scriptMock );
+
+			expect( getElementsByTagNameMock ).toHaveBeenCalledWith( 'head' );
+			expect( getElementsByTagNameMock ).toHaveReturnedWith( [
+				headMock,
+			] );
+			expect( createElementMock ).toHaveBeenCalledWith( 'link' );
+			expect( createElementMock ).toHaveNthReturnedWith( 2, linkMock );
+			expect( linkMock.rel ).toEqual( 'stylesheet' );
+			expect( linkMock.type ).toEqual( 'text/css' );
+			expect( linkMock.href ).toEqual( '/path/to/wcs.css' );
+			expect( linkMock.media ).toEqual( 'all' );
+		} );
 
 		it( 'should open WCS modal', () => {
 			window.wcsGetAppStore = jest.fn();
