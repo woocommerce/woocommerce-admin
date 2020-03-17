@@ -42,6 +42,7 @@ export class ShippingBanner extends Component {
 			installedPlugins,
 			wcsPluginSlug,
 			hasErrors,
+			wcsAssetsPaths,
 			// errors
 		} = this.props;
 
@@ -51,6 +52,9 @@ export class ShippingBanner extends Component {
 		if ( activatedPlugins.includes( wcsPluginSlug ) ) {
 			// TODO: Add success notice after installation #32
 			// console.log("Successfully activated wcs.");
+		}
+		if ( wcsAssetsPaths ) {
+			this.loadWcsAssets( wcsAssetsPaths );
 		}
 		if ( hasErrors ) {
 			// TODO: Add error handling #33
@@ -104,6 +108,53 @@ export class ShippingBanner extends Component {
 			wcs_installed: activePlugins.includes( wcsPluginSlug ),
 		} );
 	};
+
+	loadWcsAssets( { js, css } ) {
+		Promise.all( [
+			new Promise( ( resolve, reject ) => {
+				const script = document.createElement( 'script' );
+				script.src = js;
+				script.async = true;
+				script.onload = resolve;
+				script.onerror = reject;
+				document.body.appendChild( script );
+			} ),
+			new Promise( ( resolve, reject ) => {
+				const head = document.getElementsByTagName( 'head' )[ 0 ];
+				const link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = css;
+				link.media = 'all';
+				link.onload = resolve;
+				link.onerror = reject;
+				head.appendChild( link );
+			} ),
+		] ).then( () => {
+			this.openWcsModal();
+		} );
+	}
+
+	openWcsModal() {
+		if ( window.wcsGetAppStore ) {
+			const { orderId } = this.props;
+
+			const wcsStore = window.wcsGetAppStore(
+				'wc-connect-create-shipping-label'
+			);
+			const state = wcsStore.getState();
+			const siteId = state.ui.selectedSiteId; // TODO: it feels messy to extract siteid here. Maybe WCS could expose something to handle this bit internally.
+
+			// TODO: we need to test whether or not WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW works in
+			// all cases. Calling this event directly skips some of the normal initialization that would work so
+			// we may need to introduce a special event for this purpose.
+			wcsStore.dispatch( {
+				type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
+				orderId,
+				siteId,
+			} );
+		}
+	}
 
 	render() {
 		const {
