@@ -5,6 +5,7 @@
 		"analytics-dashboard": true,
 		"analytics-dashboard/customizable": true,
 		"devdocs": false,
+		"marketing": false,
 		"onboarding": true,
 		"store-alerts": true
 	}
