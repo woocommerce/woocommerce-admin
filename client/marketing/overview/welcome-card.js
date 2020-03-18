@@ -53,7 +53,7 @@ class WelcomeCard extends Component {
 					onClick={ this.hide }
 					className="woocommerce-marketing-overview-welcome-card__hide-button"
 				/>
-				<img src={WelcomeImage} alt=""/>
+				<img src={ WelcomeImage } alt="" />
 				<h3>{ __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce', 'woocommerce-admin' ) }</h3>
 			</Card>
 		)
