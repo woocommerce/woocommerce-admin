@@ -45,6 +45,17 @@ class PluginsHelper {
 	}
 
 	/**
+	 * Checks if a plugin is installed.
+	 *
+	 * @param string $plugin_slug The plugin directory slug e.g. 'facebook-for-woocommerce'
+	 *
+	 * @return bool
+	 */
+	public static function is_plugin_installed( $plugin_slug ) {
+		return in_array( $plugin_slug, self::get_installed_plugin_slugs() );
+	}
+
+	/**
 	 * Checks if a plugin is active.
 	 *
 	 * @param string $plugin_slug The plugin directory slug e.g. 'mailchimp-for-woocommerce'
