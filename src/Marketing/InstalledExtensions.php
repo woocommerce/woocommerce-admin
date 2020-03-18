@@ -16,6 +16,8 @@ class InstalledExtensions {
 
 	/**
 	 * Gets an array of plugin data for the "Installed marketing extensions" card.
+	 *
+	 * Valid extensions statuses are: installed, activated, configured
 	 */
 	public static function get_data() {
 		$data = [
@@ -74,7 +76,7 @@ class InstalledExtensions {
 	 * @return array|false
 	 */
 	protected static function get_extension_base_data( $slug ) {
-		$status      = PluginsHelper::is_plugin_active( $slug ) ? 'active' : 'installed';
+		$status      = PluginsHelper::is_plugin_active( $slug ) ? 'activated' : 'installed';
 		$plugin_data = PluginsHelper::get_plugin_data( $slug );
 
 		if ( ! $plugin_data ) {
