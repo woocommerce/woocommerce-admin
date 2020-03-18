@@ -346,7 +346,7 @@ class BusinessDetails extends Component {
 					'Drive sales with Google Shopping',
 					'woocommerce-admin'
 				),
-				icon: 'onboarding/google-ads.png',
+				icon: 'onboarding/g-shopping.png',
 				description: __(
 					'Get in front of new customers on Google and secure $150 in ads credit with Kliken’s integration.',
 					'woocommerce-admin'
