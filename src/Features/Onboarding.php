@@ -310,7 +310,7 @@ class Onboarding {
 			}
 
 			// Add the WooCommerce support tag for default themes that don't explicitly declare support.
-			if ( wc_is_wp_default_theme_active() ) {
+			if ( function_exists( 'wc_is_wp_default_theme_active' ) && wc_is_wp_default_theme_active() ) {
 				$themes[ $active_theme ]['has_woocommerce_support'] = true;
 			}
 
