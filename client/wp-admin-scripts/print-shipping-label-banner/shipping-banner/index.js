@@ -52,6 +52,7 @@ export class ShippingBanner extends Component {
 		if ( activatedPlugins.includes( wcsPluginSlug ) ) {
 			// TODO: Add success notice after installation #32
 			// console.log("Successfully activated wcs.");
+			this.acceptTosAndGetWCSAssets();
 		}
 		if ( wcsAssetsPaths ) {
 			this.loadWcsAssets( wcsAssetsPaths );
@@ -109,6 +110,16 @@ export class ShippingBanner extends Component {
 		} );
 	};
 
+	acceptTosAndGetWCSAssets() {
+		const { acceptTos, getWcsAssets } = this.props;
+
+		Promise.all( [ acceptTos(), getWcsAssets() ] ).then(
+			( [ , wcsAssets ] ) => {
+				this.setProps( 'wcsAssets', wcsAssets );
+			}
+		);
+	}
+
 	loadWcsAssets( { js, css } ) {
 		Promise.all( [
 			new Promise( ( resolve, reject ) => {
@@ -137,7 +148,9 @@ export class ShippingBanner extends Component {
 
 	openWcsModal() {
 		if ( window.wcsGetAppStore ) {
-			const { orderId } = this.props;
+			const orderId = new URL( window.location.href ).searchParams.get(
+				'post'
+			);
 
 			const wcsStore = window.wcsGetAppStore(
 				'wc-connect-create-shipping-label'
@@ -255,6 +268,10 @@ export default compose(
 			isPluginActivateRequesting,
 			isPluginInstallRequesting,
 		} = select( 'wc-api' );
+		const { acceptTos, getWcsAssets } = select(
+			'print-shipping-label-banner'
+		);
+
 		const isRequesting =
 			isPluginActivateRequesting() || isPluginInstallRequesting();
 		const installationErrors = getPluginInstallationErrors( [
@@ -285,6 +302,8 @@ export default compose(
 			wcsPluginSlug,
 			errors,
 			hasErrors,
+			acceptTos,
+			getWcsAssets,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
