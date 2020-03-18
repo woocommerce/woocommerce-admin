@@ -13,20 +13,21 @@ import { ShippingBanner } from '../index.js';
 jest.mock( 'lib/tracks' );
 jest.mock( '@woocommerce/wc-admin-settings' );
 
-describe( 'Tracking events in shippingBanner', () => {
+describe( 'Tracking impression in shippingBanner', () => {
 	const expectedTrackingData = {
+		banner_name: 'wcadmin_install_wcs_prompt',
 		jetpack_connected: true,
 		jetpack_installed: true,
 		wcs_installed: true,
 	};
+
 	const isJetpackConnected = true;
 	const activePlugins = {
 		includes: jest.fn().mockReturnValue( true ),
 	};
-	let shippingBannerWrapper;
 
 	beforeEach( () => {
-		shippingBannerWrapper = shallow(
+		shallow(
 			<ShippingBanner
 				isJetpackConnected={ isJetpackConnected }
 				activePlugins={ activePlugins }
@@ -42,8 +43,40 @@ describe( 'Tracking events in shippingBanner', () => {
 	it( 'should record an event when user sees banner loaded', () => {
 		expect( recordEvent ).toHaveBeenCalledTimes( 1 );
 		expect( recordEvent ).toHaveBeenCalledWith(
-			'shipping_banner_show',
+			'banner_impression',
 			expectedTrackingData
+		);
+	} );
+} );
+
+describe( 'Tracking clicks in shippingBanner', () => {
+	const isJetpackConnected = true;
+	const activePlugins = {
+		includes: jest.fn().mockReturnValue( true ),
+	};
+	let shippingBannerWrapper;
+
+	const getExpectedTrackingData = ( element ) => {
+		return {
+			banner_name: 'wcadmin_install_wcs_prompt',
+			jetpack_connected: true,
+			jetpack_installed: true,
+			wcs_installed: true,
+			element,
+		};
+	};
+
+	beforeEach( () => {
+		shippingBannerWrapper = shallow(
+			<ShippingBanner
+				isJetpackConnected={ isJetpackConnected }
+				activePlugins={ activePlugins }
+				activatedPlugins={ [] }
+				installedPlugins={ [] }
+				wcsPluginSlug={ 'woocommerce-services' }
+				activationErrors={ [] }
+				installationErrors={ [] }
+			/>
 		);
 	} );
 
@@ -52,8 +85,8 @@ describe( 'Tracking events in shippingBanner', () => {
 		expect( createShippingLabelButton.length ).toBe( 1 );
 		createShippingLabelButton.simulate( 'click' );
 		expect( recordEvent ).toHaveBeenCalledWith(
-			'shipping_banner_create_label_click',
-			expectedTrackingData
+			'banner_element_clicked',
+			getExpectedTrackingData( 'shipping_banner_create_label' )
 		);
 	} );
 
@@ -63,8 +96,10 @@ describe( 'Tracking events in shippingBanner', () => {
 		const wcsLink = links.first();
 		wcsLink.simulate( 'click' );
 		expect( recordEvent ).toHaveBeenCalledWith(
-			'shipping_banner_woocommerce_service_link_click',
-			expectedTrackingData
+			'banner_element_clicked',
+			getExpectedTrackingData(
+				'shipping_banner_woocommerce_service_link'
+			)
 		);
 	} );
 
@@ -75,8 +110,8 @@ describe( 'Tracking events in shippingBanner', () => {
 		expect( noticeDimissButton.length ).toBe( 1 );
 		noticeDimissButton.simulate( 'click' );
 		expect( recordEvent ).toHaveBeenCalledWith(
-			'shipping_banner_dimiss_click',
-			expectedTrackingData
+			'banner_element_clicked',
+			getExpectedTrackingData( 'shipping_banner_dimiss' )
 		);
 	} );
 } );

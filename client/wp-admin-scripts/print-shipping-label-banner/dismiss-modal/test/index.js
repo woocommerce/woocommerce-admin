@@ -20,7 +20,7 @@ describe( 'Option Save events in DismissModal', () => {
 				visible={ true }
 				onClose={ jest.fn() }
 				onCloseAll={ jest.fn() }
-				trackBannerEvent={ jest.fn() }
+				trackElementClicked={ jest.fn() }
 				updateOptions={ spyUpdateOptions }
 			/>
 		);
@@ -57,7 +57,7 @@ describe( 'Option Save events in DismissModal', () => {
 } );
 
 describe( 'Tracking events in DismissModal', () => {
-	const trackBannerEvent = jest.fn();
+	const trackElementClicked = jest.fn();
 
 	let dismissModalWrapper;
 
@@ -67,7 +67,7 @@ describe( 'Tracking events in DismissModal', () => {
 				visible={ true }
 				onClose={ jest.fn() }
 				onCloseAll={ jest.fn() }
-				trackBannerEvent={ trackBannerEvent }
+				trackElementClicked={ trackElementClicked }
 				updateOptions={ jest.fn() }
 			/>
 		);
@@ -78,8 +78,8 @@ describe( 'Tracking events in DismissModal', () => {
 		expect( actionButtons.length ).toBe( 2 );
 		const iDoNotNeedThisButton = actionButtons.last();
 		iDoNotNeedThisButton.simulate( 'click' );
-		expect( trackBannerEvent ).toHaveBeenCalledWith(
-			'shipping_banner_dismiss_modal_close_forever_click'
+		expect( trackElementClicked ).toHaveBeenCalledWith(
+			'shipping_banner_dismiss_modal_close_forever'
 		);
 	} );
 
@@ -88,8 +88,8 @@ describe( 'Tracking events in DismissModal', () => {
 		expect( actionButtons.length ).toBe( 2 );
 		const remindMeLaterButton = actionButtons.first();
 		remindMeLaterButton.simulate( 'click' );
-		expect( trackBannerEvent ).toHaveBeenCalledWith(
-			'shipping_banner_dismiss_modal_remind_me_later_click'
+		expect( trackElementClicked ).toHaveBeenCalledWith(
+			'shipping_banner_dismiss_modal_remind_me_later'
 		);
 	} );
 } );
