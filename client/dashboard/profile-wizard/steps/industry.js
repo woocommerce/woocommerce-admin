@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { Button, CheckboxControl } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { filter, find, findIndex, forEach, get } from 'lodash';
+import { filter, find, findIndex, get } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -53,18 +53,15 @@ class Industry extends Component {
 			( industry ) => industry.slug
 		);
 
-		// With this 'forEach' we'll record all the 'industries_with_detail' available.
-		// For now it's only being used for the input 'Other'.
-		forEach( this.state.selected, ( value ) => {
-			if ( typeof value.detail !== 'undefined' ) {
-				recordEvent( 'storeprofiler_store_industry_continue', {
-					industries_with_detail: value.detail,
-				} );
-			}
-		} );
+		// Here the selected industries are converted to a string that is a comma separated list
+		const industriesWithDetail = this.state.selected
+			.map( ( industry ) => industry.detail )
+			.filter( ( n ) => n )
+			.join( ',' );
 
 		recordEvent( 'storeprofiler_store_industry_continue', {
 			store_industry: selectedIndustriesList,
+			industries_with_detail: industriesWithDetail,
 		} );
 		await updateProfileItems( { industry: this.state.selected } );
 
