@@ -80,10 +80,12 @@ export class ShippingBanner extends Component {
 	};
 
 	createShippingLabelClicked = () => {
-		const { wcsPluginSlug } = this.props;
-		// TODO: open WCS modal
+		const { wcsPluginSlug, activePlugins } = this.props;
 		this.trackBannerEvent( 'shipping_banner_create_label_click' );
-		this.installAndActivatePlugins( wcsPluginSlug );
+		if ( ! activePlugins.includes( wcsPluginSlug ) ) {
+			this.installAndActivatePlugins( wcsPluginSlug );
+		}
+		// TODO: open WCS modal
 	};
 
 	async installAndActivatePlugins( pluginSlug ) {
@@ -146,6 +148,21 @@ export class ShippingBanner extends Component {
 		} );
 	}
 
+	getInstallText = () => {
+		const { activePlugins, wcsPluginSlug } = this.props;
+		if ( activePlugins.includes( wcsPluginSlug ) ) {
+			// If WCS is active, then the only remaining step is to agree to the ToS.
+			return __(
+				'You\'ve already installed WooCommerce Shipping. By clicking "Create shipping label", you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
+				'woocommerce-admin'
+			);
+		}
+		return __(
+			'By clicking "Create shipping label", {{wcsLink}}WooCommerce Services{{/wcsLink}} will be installed and you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
+			'woocommerce-admin'
+		);
+	};
+
 	openWcsModal() {
 		if ( window.wcsGetAppStore ) {
 			const orderId = new URL( window.location.href ).searchParams.get(
@@ -202,10 +219,7 @@ export class ShippingBanner extends Component {
 					</h3>
 					<p>
 						{ interpolateComponents( {
-							mixedString: __(
-								'By clicking "Create shipping label", {{wcsLink}}WooCommerce Services{{/wcsLink}} will be installed and you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
-								'woocommerce-admin'
-							),
+							mixedString: this.getInstallText(),
 							components: {
 								tosLink: (
 									<ExternalLink
