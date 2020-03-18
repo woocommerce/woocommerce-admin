@@ -40,7 +40,6 @@ export class ShippingBanner extends Component {
 			activatedPlugins,
 			installedPlugins,
 			wcsPluginSlug,
-			hasErrors,
 			wcsAssetsPaths,
 			// errors
 		} = this.props;
@@ -50,15 +49,10 @@ export class ShippingBanner extends Component {
 		}
 		if ( activatedPlugins.includes( wcsPluginSlug ) ) {
 			// TODO: Add success notice after installation #32
-			// console.log("Successfully activated wcs.");
 			this.acceptTosAndGetWCSAssets();
 		}
 		if ( wcsAssetsPaths ) {
 			this.loadWcsAssets( wcsAssetsPaths );
-		}
-		if ( hasErrors ) {
-			// TODO: Add error handling #33
-			// console.log("Errors during activation or installation", errors);
 		}
 	}
 
@@ -134,9 +128,9 @@ export class ShippingBanner extends Component {
 	acceptTosAndGetWCSAssets() {
 		const { acceptTos, getWcsAssets } = this.props;
 
-		Promise.all( [ acceptTos(), getWcsAssets() ] ).then(
+		return Promise.all( [ acceptTos(), getWcsAssets() ] ).then(
 			( [ , wcsAssets ] ) => {
-				this.setProps( 'wcsAssets', wcsAssets );
+				this.loadWcsAssets( wcsAssets );
 			}
 		);
 	}
