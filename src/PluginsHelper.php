@@ -100,25 +100,19 @@ class PluginsHelper {
 	/**
 	 * Get plugin data.
 	 *
-	 * @param string $plugin_slug The plugin directory slug e.g. 'mailchimp-for-woocommerce'
+	 * @param string $plugin Path to the plugin file relative to the plugins directory or the plugin directory name.
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
-	public static function get_plugin_data( $plugin_slug ) {
+	public static function get_plugin_data( $plugin ) {
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
+		$plugin_path = self::get_plugin_path_from_slug( $plugin );
 		$plugins = get_plugins();
 
-		foreach( $plugins as $plugin_path => $data ) {
-			$path_parts = explode( '/', $plugin_path );
-			if ( $path_parts[0] === $plugin_slug ) {
-				return $data;
-			}
-		}
-
-		return false;
+		return isset( $plugins[ $plugin_path ] ) ? $plugins[ $plugin_path ] : false;
 	}
 
 }
