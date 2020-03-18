@@ -20,6 +20,10 @@ class PluginsHelper {
 	 * @return array
 	 */
 	public static function get_installed_plugin_slugs() {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
 		return array_map(
 			function( $plugin_path ) {
 				$path_parts = explode( '/', $plugin_path );
@@ -64,6 +68,30 @@ class PluginsHelper {
 	 */
 	public static function is_plugin_active( $plugin_slug ) {
 		return in_array( $plugin_slug, self::get_active_plugin_slugs() );
+	}
+
+	/**
+	 * Get plugin data.
+	 *
+	 * @param string $plugin_slug The plugin directory slug e.g. 'mailchimp-for-woocommerce'
+	 *
+	 * @return array|bool
+	 */
+	public static function get_plugin_data( $plugin_slug ) {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$plugins = get_plugins();
+
+		foreach( $plugins as $plugin_path => $data ) {
+			$path_parts = explode( '/', $plugin_path );
+			if ( $path_parts[0] === $plugin_slug ) {
+				return $data;
+			}
+		}
+
+		return false;
 	}
 
 }
