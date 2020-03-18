@@ -36,7 +36,7 @@ class InstalledExtensions {
 	protected static function get_mailchimp_extension_data() {
 		$slug = 'mailchimp-for-woocommerce';
 
-		if ( ! PluginsHelper::is_plugin_installed( $slug ) ) {
+		if ( ! PluginsHelper::is_plugin_installed( $slug ) || ! function_exists( 'mailchimp_is_configured' ) ) {
 			return false;
 		}
 
@@ -45,7 +45,9 @@ class InstalledExtensions {
 		$data['docsUrl']     = 'https://mailchimp.com/help/connect-or-disconnect-mailchimp-for-woocommerce/';
 		$data['settingsUrl'] = admin_url( 'admin.php?page=mailchimp-woocommerce' );
 
-		// todo check if fully setup
+		if ( mailchimp_is_configured() ) {
+			$data['status'] = 'configured';
+		}
 
 		return $data;
 	}
