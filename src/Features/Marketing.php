@@ -8,6 +8,9 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
+use Automattic\WooCommerce\Admin\Marketing\InstalledExtensions;
+use Automattic\WooCommerce\Admin\Loader;
+
 /**
  * Contains backend logic for the Marketing feature.
  */
@@ -35,6 +38,7 @@ class Marketing {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_pages' ) );
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
+		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 30 );
 	}
 
 	/**
@@ -70,6 +74,23 @@ class Marketing {
 		$options[] = 'woocommerce_marketing_overview_welcome_hidden';
 
 		return $options;
+	}
+
+	/**
+	 * Add settings for marketing feature.
+	 *
+	 * @param array $settings Component settings.
+	 * @return array
+	 */
+	public function component_settings( $settings ) {
+		// Bail early if not on a wc-admin powered page
+		if ( ! Loader::is_admin_page() ) {
+			return $settings;
+		}
+
+		$settings['marketing']['installedExtensions'] = InstalledExtensions::get_data();
+
+		return $settings;
 	}
 
 }
