@@ -4,10 +4,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { registerStore } from '@wordpress/data';
 
-const DEFAULT_STATE = {
-	wcsAssets: {},
-	tosAccepted: false,
-};
+const DEFAULT_STATE = {};
 
 const actions = {
 	updateTos( accepted ) {
@@ -24,10 +21,12 @@ const actions = {
 		};
 	},
 
-	fetchFromAPI( path ) {
+	fetchFromAPI( path, method = 'GET', data = null ) {
 		return {
 			type: 'FETCH_FROM_API',
 			path,
+			method,
+			data,
 		};
 	},
 };
@@ -68,20 +67,26 @@ registerStore( 'print-shipping-label-banner', {
 
 	controls: {
 		FETCH_FROM_API( action ) {
-			return apiFetch( { path: action.path } );
+			return apiFetch( {
+				path: action.path,
+				method: action.method,
+				data: action.data,
+			} );
 		},
 	},
 
 	resolvers: {
 		*acceptTos() {
-			const path = '/accept/tos';
-			const tosAccepted = yield actions.fetchFromAPI( path );
-			return actions.updateTos( tosAccepted );
+			const path = '/wc/v1/connect/tos';
+			const { accepted } = yield actions.fetchFromAPI( path, 'POST', {
+				accepted: true,
+			} );
+			return actions.updateTos( accepted );
 		},
 		*getWcsAssets() {
-			const path = '/get/wcs/assets';
+			const path = '/wc/v1/connect/assets';
 			const wcsAssets = yield actions.fetchFromAPI( path );
-			return actions.updateAssets( wcsAssets );
+			return actions.updateWcsAssets( wcsAssets );
 		},
 	},
 } );

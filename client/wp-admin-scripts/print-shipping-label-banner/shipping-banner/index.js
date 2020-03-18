@@ -135,7 +135,10 @@ export class ShippingBanner extends Component {
 		);
 	}
 
-	loadWcsAssets( { js, css } ) {
+	loadWcsAssets( { assets } ) {
+		const js = assets.wc_connect_admin_script;
+		const styles = assets.wc_connect_admin_style;
+
 		Promise.all( [
 			new Promise( ( resolve, reject ) => {
 				const script = document.createElement( 'script' );
@@ -150,7 +153,7 @@ export class ShippingBanner extends Component {
 				const link = document.createElement( 'link' );
 				link.rel = 'stylesheet';
 				link.type = 'text/css';
-				link.href = css;
+				link.href = styles;
 				link.media = 'all';
 				link.onload = resolve;
 				link.onerror = reject; //TODO: handle errors
