@@ -152,7 +152,7 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.0.0' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.0.2' );
 	}
 
 	/**
@@ -258,7 +258,7 @@ class FeaturePlugin {
 	 *
 	 * @return bool
 	 */
-	public function has_satisfied_dependencies() {
+	protected function has_satisfied_dependencies() {
 		$dependency_errors = $this->get_dependency_errors();
 		return 0 === count( $dependency_errors );
 	}
