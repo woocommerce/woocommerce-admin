@@ -31,6 +31,8 @@ class ShippingLabelBanner {
 			return;
 		}
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 6, 2 );
+		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
+		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
 	}
 
 	/**
@@ -80,10 +82,11 @@ class ShippingLabelBanner {
 	/**
 	 * Add metabox to order page.
 	 *
-	 * @param string  $post_type current post type.
-	 * @param WP_Post $post Current post object.
+	 * @param string   $post_type current post type.
+	 * @param \WP_Post $post Current post object.
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
+		$order = wc_get_order( $post );
 		if ( $this->should_show_meta_box() ) {
 			add_meta_box(
 				'woocommerce-admin-print-label',
@@ -92,29 +95,53 @@ class ShippingLabelBanner {
 				null,
 				'normal',
 				'high',
-				array( 'context' => 'shipping_label' )
+				array(
+					'context'               => 'shipping_label',
+					'order_id'              => $post->ID,
+					'shippable_items_count' => $this->count_shippable_items( $order ),
+
+				)
 			);
 			add_action( 'admin_enqueue_scripts', array( $this, 'add_print_shipping_label_script' ) );
 		}
 	}
 
 	/**
+	 * Count shippable items
+	 *
+	 * @param \WC_Order $order Current order.
+	 * @return int
+	 */
+	private function count_shippable_items( \WC_Order $order ) {
+		$count = 0;
+		foreach ( $order->get_items() as $item ) {
+			if ( $item instanceof \WC_Order_Item_Product ) {
+				$product = $item->get_product();
+				if ( $product && $product->needs_shipping() ) {
+					$count += $item->get_quantity();
+				}
+			}
+		}
+		return $count;
+	}
+	/**
 	 * Adds JS to order page to render shipping banner.
 	 *
 	 * @param string $hook current page hook.
 	 */
 	public function add_print_shipping_label_script( $hook ) {
+		$rtl = is_rtl() ? '-rtl' : '';
 		wp_enqueue_style(
 			'print-shipping-label-banner-style',
-			Loader::get_url( 'print-shipping-label-banner/style.css' ),
-			array(),
+			Loader::get_url( "print-shipping-label-banner/style{$rtl}.css" ),
+			array( 'wp-components' ),
 			Loader::get_file_version( 'print-shipping-label-banner/style.css' )
 		);
 
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner.js' ),
-			array( 'wc-navigation', 'wp-i18n', 'wp-data', 'wp-element', 'moment' ),
+			array( 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wp-api-fetch', WC_ADMIN_APP ),
 			Loader::get_file_version( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			true
 		);
@@ -129,9 +156,26 @@ class ShippingLabelBanner {
 	public function meta_box( $post, $args ) {
 
 		?>
-		<div id="wc-admin-shipping-banner-root" class=" woocommerce <?php echo esc_attr( 'wc-connect-create-shipping-label' ); ?>" data-args="<?php echo esc_attr( wp_json_encode( array() ) ); ?>">
-			Shipping label banner goes here
+		<div id="wc-admin-shipping-banner-root" class=" woocommerce <?php echo esc_attr( 'wc-admin-shipping-banner' ); ?>" data-args="<?php echo esc_attr( wp_json_encode( $args['args'] ) ); ?>">
 		</div>
 		<?php
+	}
+
+	/**
+	 * Return the settings for the component for wc-api to use. If onboarding
+	 * is active, return its settings. Otherwise, loads "activePlugins" since
+	 * that's the ones we need to get installation status for WCS and Jetpack.
+	 *
+	 * @param array $settings Component settings.
+	 * @return array
+	 */
+	public function component_settings( $settings ) {
+		if ( ! isset( $settings['onboarding'] ) ) {
+			$settings['onboarding'] = array();
+		}
+		if ( ! isset( $settings['onboarding']['activePlugins'] ) ) {
+			$settings['onboarding']['activePlugins'] = Onboarding::get_active_plugins();
+		}
+		return $settings;
 	}
 }
