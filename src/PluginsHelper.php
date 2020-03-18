@@ -44,4 +44,15 @@ class PluginsHelper {
 		);
 	}
 
+	/**
+	 * Checks if a plugin is active.
+	 *
+	 * @param string $plugin_slug The plugin directory slug e.g. 'mailchimp-for-woocommerce'
+	 *
+	 * @return bool
+	 */
+	public static function is_plugin_active( $plugin_slug ) {
+		return in_array( $plugin_slug, self::get_active_plugin_slugs() );
+	}
+
 }
