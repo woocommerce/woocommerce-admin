@@ -109,14 +109,14 @@ export class ShippingBanner extends Component {
 		this.trackElementClicked( 'shipping_banner_woocommerce_service_link' );
 	};
 
-	trackBannerEvent = ( eventName, trackingProps = {} ) => {
+	trackBannerEvent = ( eventName, customProps = {} ) => {
 		const { activePlugins, isJetpackConnected, wcsPluginSlug } = this.props;
 		recordEvent( eventName, {
 			banner_name: 'wcadmin_install_wcs_prompt',
 			jetpack_installed: activePlugins.includes( 'jetpack' ),
 			jetpack_connected: isJetpackConnected,
 			wcs_installed: activePlugins.includes( wcsPluginSlug ),
-			...trackingProps,
+			...customProps,
 		} );
 	};
 
