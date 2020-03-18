@@ -169,11 +169,8 @@ export class ShippingBanner extends Component {
 				'wc-connect-create-shipping-label'
 			);
 			const state = wcsStore.getState();
-			const siteId = state.ui.selectedSiteId; // TODO: it feels messy to extract siteid here. Maybe WCS could expose something to handle this bit internally.
+			const siteId = state.ui.selectedSiteId;
 
-			// TODO: we need to test whether or not WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW works in
-			// all cases. Calling this event directly skips some of the normal initialization that would work so
-			// we may need to introduce a special event for this purpose.
 			wcsStore.dispatch( {
 				type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
 				orderId,
