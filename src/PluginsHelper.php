@@ -15,6 +15,33 @@ namespace Automattic\WooCommerce\Admin;
 class PluginsHelper {
 
 	/**
+	 * Get the path to the plugin file relative to the plugins directory from the plugin slug.
+	 *
+	 * E.g. 'woocommerce' returns 'woocommerce/woocommerce.php'
+	 *
+	 * @param string $slug
+	 *
+	 * @return string|false
+	 */
+	public static function get_plugin_path_from_slug( $slug ) {
+		$plugins = get_plugins();
+
+		if ( strstr( $slug, '/' ) ) {
+			// The slug is already a plugin path
+			return $slug;
+		}
+
+		foreach ( $plugins as $plugin_path => $data ) {
+			$path_parts = explode( '/', $plugin_path );
+			if ( $path_parts[0] === $slug ) {
+				return $plugin_path;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get an array of installed plugin slugs.
 	 *
 	 * @return array
