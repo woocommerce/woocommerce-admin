@@ -78,23 +78,25 @@ class PluginsHelper {
 	/**
 	 * Checks if a plugin is installed.
 	 *
-	 * @param string $plugin_slug The plugin directory slug e.g. 'facebook-for-woocommerce'
+	 * @param string $plugin Path to the plugin file relative to the plugins directory or the plugin directory name.
 	 *
 	 * @return bool
 	 */
-	public static function is_plugin_installed( $plugin_slug ) {
-		return in_array( $plugin_slug, self::get_installed_plugin_slugs() );
+	public static function is_plugin_installed( $plugin ) {
+		$plugin_path = self::get_plugin_path_from_slug( $plugin );
+		return array_key_exists( $plugin_path, get_plugins() );
 	}
 
 	/**
 	 * Checks if a plugin is active.
 	 *
-	 * @param string $plugin_slug The plugin directory slug e.g. 'mailchimp-for-woocommerce'
+	 * @param string $plugin Path to the plugin file relative to the plugins directory or the plugin directory name.
 	 *
 	 * @return bool
 	 */
-	public static function is_plugin_active( $plugin_slug ) {
-		return in_array( $plugin_slug, self::get_active_plugin_slugs() );
+	public static function is_plugin_active( $plugin ) {
+		$plugin_path = self::get_plugin_path_from_slug( $plugin );
+		return in_array( $plugin_path, get_option( 'active_plugins', array() ), true );
 	}
 
 	/**
