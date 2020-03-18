@@ -109,7 +109,7 @@ class ShippingLabelBannerDisplayRules {
 		// If it doesn't exist yet, generate it for later use and save it, so we always show the same to this user.
 		if ( ! $ab_test ) {
 			$ab_test = 1 !== wp_rand( 1, 4 ) ? 'a' : 'b'; // 25% of users. b gets the prompt.
-			update_option( 'woocommerce_shipping_prompt_ab', $ab_test );
+			update_option( 'woocommerce_shipping_prompt_ab', $ab_test, false );
 		}
 
 		return 'b' === $ab_test;
