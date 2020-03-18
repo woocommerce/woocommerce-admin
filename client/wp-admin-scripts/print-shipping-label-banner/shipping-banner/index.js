@@ -31,7 +31,7 @@ export class ShippingBanner extends Component {
 	}
 
 	componentDidMount() {
-		this.trackBannerEvent( 'shipping_banner_show' );
+		this.trackImpression();
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -75,14 +75,14 @@ export class ShippingBanner extends Component {
 
 	closeDismissModal = () => {
 		this.setState( { isDismissModalOpen: false } );
-		this.trackBannerEvent(
-			'shipping_banner_dismiss_modal_close_button_click'
+		this.trackElementClicked(
+			'shipping_banner_dismiss_modal_close_button'
 		);
 	};
 
 	openDismissModal = () => {
 		this.setState( { isDismissModalOpen: true } );
-		this.trackBannerEvent( 'shipping_banner_dimiss_click' );
+		this.trackElementClicked( 'shipping_banner_dimiss' );
 	};
 
 	hideBanner = () => {
@@ -92,7 +92,7 @@ export class ShippingBanner extends Component {
 	createShippingLabelClicked = () => {
 		const { wcsPluginSlug } = this.props;
 		// TODO: open WCS modal
-		this.trackBannerEvent( 'shipping_banner_create_label_click' );
+		this.trackElementClicked( 'shipping_banner_create_label' );
 		this.installAndActivatePlugins( wcsPluginSlug );
 	};
 
@@ -106,17 +106,27 @@ export class ShippingBanner extends Component {
 	}
 
 	woocommerceServiceLinkClicked = () => {
-		this.trackBannerEvent(
-			'shipping_banner_woocommerce_service_link_click'
-		);
+		this.trackElementClicked( 'shipping_banner_woocommerce_service_link' );
 	};
 
-	trackBannerEvent = ( eventName ) => {
+	trackBannerEvent = ( eventName, trackingProps = {} ) => {
 		const { activePlugins, isJetpackConnected, wcsPluginSlug } = this.props;
 		recordEvent( eventName, {
+			banner_name: 'wcadmin_install_wcs_prompt',
 			jetpack_installed: activePlugins.includes( 'jetpack' ),
 			jetpack_connected: isJetpackConnected,
 			wcs_installed: activePlugins.includes( wcsPluginSlug ),
+			...trackingProps,
+		} );
+	};
+
+	trackImpression = () => {
+		this.trackBannerEvent( 'banner_impression' );
+	};
+
+	trackElementClicked = ( element ) => {
+		this.trackBannerEvent( 'banner_element_clicked', {
+			element,
 		} );
 	};
 
@@ -194,7 +204,7 @@ export class ShippingBanner extends Component {
 					visible={ isDismissModalOpen }
 					onClose={ this.closeDismissModal }
 					onCloseAll={ this.hideBanner }
-					trackBannerEvent={ this.trackBannerEvent }
+					trackElementClicked={ this.trackElementClicked }
 				/>
 			</div>
 		);

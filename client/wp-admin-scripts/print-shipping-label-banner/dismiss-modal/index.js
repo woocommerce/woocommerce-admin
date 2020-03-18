@@ -20,20 +20,18 @@ export class DismissModal extends Component {
 	};
 
 	remindMeLaterClicked = () => {
-		const { onCloseAll, trackBannerEvent } = this.props;
+		const { onCloseAll, trackElementClicked } = this.props;
 		this.setDismissed( Date.now() );
 		onCloseAll();
 
-		trackBannerEvent(
-			'shipping_banner_dismiss_modal_remind_me_later_click'
-		);
+		trackElementClicked( 'shipping_banner_dismiss_modal_remind_me_later' );
 	};
 
 	closeForeverClicked = () => {
-		const { onCloseAll, trackBannerEvent } = this.props;
+		const { onCloseAll, trackElementClicked } = this.props;
 		this.setDismissed( -1 );
 		onCloseAll();
-		trackBannerEvent( 'shipping_banner_dismiss_modal_close_forever_click' );
+		trackElementClicked( 'shipping_banner_dismiss_modal_close_forever' );
 	};
 
 	render() {
@@ -44,7 +42,11 @@ export class DismissModal extends Component {
 		}
 
 		return (
-			<Modal title="Are you sure?" onRequestClose={ onClose } className="wc-admin-shipping-banner__dismiss-modal">
+			<Modal
+				title="Are you sure?"
+				onRequestClose={ onClose }
+				className="wc-admin-shipping-banner__dismiss-modal"
+			>
 				<p className="wc-admin-shipping-banner__dismiss-modal-help-text">
 					{ __(
 						'With WooCommerce Services you can Print shipping labels from your WooCommerce dashboard at the lowest USPS rates.',
