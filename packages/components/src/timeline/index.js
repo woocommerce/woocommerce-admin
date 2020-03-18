@@ -9,6 +9,16 @@ import { __ } from '@wordpress/i18n';
 const Timeline = ( { className, items } ) => {
 	const timelineClassName = classnames( 'woocommerce-timeline', className );
 
+	if ( items.length === 0 ) {
+		return (
+			<div className={ timelineClassName }>
+				<p className="timeline_no_events">
+					{ __( 'No events to display' ) }
+				</p>
+			</div>
+		);
+	}
+
 	// Sort all the items reverse chronologically
 	items.sort( function( a, b ) {
 		return a.datetime - b.datetime;
@@ -26,16 +36,6 @@ const Timeline = ( { className, items } ) => {
 		days[ dayNum ].push( item );
 	} );
 
-	if ( 0 === items.length ) {
-		return (
-			<div className={ timelineClassName }>
-				<p className="timeline_no_events">
-					{ __( 'No events to display' ) }
-				</p>
-			</div>
-		);
-	}
-
 	return (
 		<div className={ timelineClassName }>
 			<ul>
@@ -46,13 +46,24 @@ const Timeline = ( { className, items } ) => {
 							{ dayString }
 							<ul>
 								{ day.map( function( item, itemIndex ) {
-									const itemTimeString = moment( item.datetime ).format( 'h:mma' );
+									const itemTimeString = moment(
+										item.datetime
+									).format( 'h:mma' );
 									const itemKey = dayNum + '-' + itemIndex;
 									return (
-										<li key={ itemKey } >
-											{ item.headline } <span>{ itemTimeString }</span>
-											{ item.body.map( function( line, bodyLineIndex ) {
-												const bodyLineKey = dayNum + '-' + itemIndex + '-' + bodyLineIndex;
+										<li key={ itemKey }>
+											{ item.headline }{ ' ' }
+											<span>{ itemTimeString }</span>
+											{ item.body.map( function(
+												line,
+												bodyLineIndex
+											) {
+												const bodyLineKey =
+													dayNum +
+													'-' +
+													itemIndex +
+													'-' +
+													bodyLineIndex;
 												return (
 													<p key={ bodyLineKey }>
 														{ line }
@@ -96,9 +107,7 @@ Timeline.propTypes = {
 			/**
 			 * Body displayed for the list item.
 			 */
-			body: PropTypes.arrayOf(
-				PropTypes.string
-			),
+			body: PropTypes.arrayOf( PropTypes.string ),
 		} )
 	).isRequired,
 };
