@@ -34,7 +34,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	private static $modified_options = array(
 		'woocommerce_default_country'              => null,
 		'woocommerce_currency'                     => null,
-		'woocommerce_shipping_ab_active'           => null,
+		'woocommerce_shipping_prompt_ab'           => null,
 		'woocommerce_shipping_dismissed_timestamp' => null,
 	);
 
@@ -91,7 +91,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 			function( $that ) {
 				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), true );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), true );
 			}
 		);
 	}
@@ -102,7 +102,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	public function test_if_banner_hidden_when_jetpack_disconnected() {
 		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( null, null, null, null, null );
 
-		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+		$this->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 	}
 
 	/**
@@ -112,7 +112,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		update_option( 'woocommerce_shipping_dismissed_timestamp', -1 );
 		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
-		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+		$this->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 	}
 
 	/**
@@ -124,7 +124,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 
 		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
-		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+		$this->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 	}
 
 	/**
@@ -138,7 +138,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 			function( $that ) {
 				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), true );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), true );
 			}
 		);
 	}
@@ -149,7 +149,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	public function test_if_banner_hidden_when_no_shippable_product() {
 		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
-		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+		$this->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 	}
 
 	/**
@@ -161,7 +161,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 			function( $that ) {
 				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 			}
 		);
 	}
@@ -175,7 +175,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 			function( $that ) {
 				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 			}
 		);
 	}
@@ -188,7 +188,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 			function( $that ) {
 				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, true );
 
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 			}
 		);
 	}
@@ -201,7 +201,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 			function( $that ) {
 				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.3', true, '1.22.5', false, false );
 
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 			}
 		);
 	}
@@ -214,7 +214,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 			function( $that ) {
 				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', true, false );
 
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 			}
 		);
 	}
@@ -227,9 +227,27 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 			function( $that ) {
 				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.4', false, false );
 
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_allow_banner(), false );
 			}
 		);
+	}
+
+	/**
+	 * Test if the banner is displayed when site is in 'b' group.
+	 */
+	public function test_display_banner_if_b_flag() {
+		update_option( 'woocommerce_shipping_prompt_ab', 'b' );
+
+		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner(), true );
+	}
+
+	/**
+	 * Test if the banner is displayed when site is in 'a' group.
+	 */
+	public function test_no_display_banner_if_a_flag() {
+		update_option( 'woocommerce_shipping_prompt_ab', 'a' );
+
+		$this->assertEquals( $this->shipping_label_banner_display_rules->should_allow_banner(), false );
 	}
 
 	/**
