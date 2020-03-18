@@ -76,6 +76,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Onboarding: business step: add Google Ads extension install #3725
 - Dev: Update prestart script so readme.txt stable tag is updated #3911
 - Tweak: create database tables on an earlier hook to avoid conflicts with core WooCommerce. #3896 
+- Fix - Made the admin note loading more resilient to prevent failures when loading notes with invalid content_data. #3926
 
 = 1.0.1 2020-03-12 =
 
