@@ -26,7 +26,6 @@ export class ShippingBanner extends Component {
 		this.state = {
 			showShippingBanner: true, // TODO: update to get state when closedForever is clicked
 			isDismissModalOpen: false,
-			isSetupError: true, // TODO: this should be false by default once we're actually setting the value.
 			setupErrorReason: setupErrorTypes.SETUP,
 		};
 	}
@@ -41,8 +40,6 @@ export class ShippingBanner extends Component {
 			activatedPlugins,
 			installedPlugins,
 			wcsPluginSlug,
-			hasErrors,
-			// errors
 		} = this.props;
 
 		if ( installedPlugins.length > prevProps.installedPlugins.length ) {
@@ -52,11 +49,29 @@ export class ShippingBanner extends Component {
 			// TODO: Add success notice after installation #32
 			// console.log("Successfully activated wcs.");
 		}
-		if ( hasErrors ) {
-			// TODO: Add error handling #33
-			// console.log("Errors during activation or installation", errors);
-		}
 	}
+
+	hasActivationError = () => {
+		return Boolean( this.props.activationErrors.length );
+	};
+
+	hasInstallationError = () => {
+		return Boolean( this.props.installationErrors.length );
+	};
+
+	isSetupError = () => {
+		return this.hasActivationError() || this.hasInstallationError();
+	};
+
+	setupErrorReason = () => {
+		if ( this.hasInstallationError() ) {
+			return setupErrorTypes.INSTALL;
+		}
+		if ( this.hasActivationError() ) {
+			return setupErrorTypes.ACTIVATE;
+		}
+		return setupErrorTypes.SETUP;
+	};
 
 	closeDismissModal = () => {
 		this.setState( { isDismissModalOpen: false } );
@@ -106,12 +121,7 @@ export class ShippingBanner extends Component {
 	};
 
 	render() {
-		const {
-			isDismissModalOpen,
-			showShippingBanner,
-			isSetupError,
-			setupErrorReason,
-		} = this.state;
+		const { isDismissModalOpen, showShippingBanner } = this.state;
 		if ( ! showShippingBanner ) {
 			return null;
 		}
@@ -164,8 +174,8 @@ export class ShippingBanner extends Component {
 						} ) }
 					</p>
 					<SetupNotice
-						isSetupError={ isSetupError }
-						errorReason={ setupErrorReason }
+						isSetupError={ this.isSetupError() }
+						errorReason={ this.setupErrorReason() }
 					/>
 					<button
 						onClick={ this.openDismissModal }
@@ -206,24 +216,26 @@ export default compose(
 		} = select( 'wc-api' );
 		const isRequesting =
 			isPluginActivateRequesting() || isPluginInstallRequesting();
-		const installationErrors = getPluginInstallationErrors( [
+		const allInstallationErrors = getPluginInstallationErrors( [
 			wcsPluginSlug,
 		] );
 		const installedPlugins = Object.keys(
 			getPluginInstallations( [ wcsPluginSlug ] )
 		);
-		const activationErrors = getPluginActivationErrors( [ wcsPluginSlug ] );
+		const allActivationErrors = getPluginActivationErrors( [
+			wcsPluginSlug,
+		] );
 		const activatedPlugins = Object.keys(
 			getPluginActivations( [ wcsPluginSlug ] )
 		);
-		const errors = [];
-		Object.keys( activationErrors ).map( ( plugin ) =>
-			errors.push( activationErrors[ plugin ].message )
+		const activationErrors = [];
+		const installationErrors = [];
+		Object.keys( allActivationErrors ).map( ( plugin ) =>
+			activationErrors.push( allActivationErrors[ plugin ].message )
 		);
-		Object.keys( installationErrors ).map( ( plugin ) =>
-			errors.push( installationErrors[ plugin ].message )
+		Object.keys( allInstallationErrors ).map( ( plugin ) =>
+			installationErrors.push( allInstallationErrors[ plugin ].message )
 		);
-		const hasErrors = Boolean( errors.length );
 
 		return {
 			activePlugins: getActivePlugins(),
@@ -232,8 +244,8 @@ export default compose(
 			installedPlugins,
 			activatedPlugins,
 			wcsPluginSlug,
-			errors,
-			hasErrors,
+			activationErrors,
+			installationErrors,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

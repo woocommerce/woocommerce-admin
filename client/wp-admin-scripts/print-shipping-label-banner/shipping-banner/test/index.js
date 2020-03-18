@@ -33,7 +33,8 @@ describe( 'Tracking events in shippingBanner', () => {
 				activatedPlugins={ [] }
 				installedPlugins={ [] }
 				wcsPluginSlug={ 'woocommerce-services' }
-				hasErrors={ false }
+				activationErrors={ [] }
+				installationErrors={ [] }
 			/>
 		);
 	} );
@@ -98,7 +99,8 @@ describe( 'Create shipping label button', () => {
 				installPlugins={ installPlugins }
 				installedPlugins={ [] }
 				wcsPluginSlug={ 'woocommerce-services' }
-				hasErrors={ false }
+				activationErrors={ [] }
+				installationErrors={ [] }
 			/>
 		);
 	} );
@@ -120,5 +122,64 @@ describe( 'Create shipping label button', () => {
 		expect( activatePlugins ).toHaveBeenCalledWith( [
 			'woocommerce-services',
 		] );
+	} );
+} );
+
+describe( 'Setup error message', () => {
+	let shippingBannerWrapper;
+	const activePlugins = {
+		includes: jest.fn().mockReturnValue( true ),
+	};
+
+	beforeEach( () => {
+		shippingBannerWrapper = shallow(
+			<ShippingBanner
+				isJetpackConnected={ jest.fn() }
+				activatePlugins={ jest.fn() }
+				activePlugins={ activePlugins }
+				activatedPlugins={ [] }
+				installPlugins={ jest.fn() }
+				installedPlugins={ [] }
+				wcsPluginSlug={ 'woocommerce-services' }
+				activationErrors={ [] }
+				installationErrors={ [] }
+			/>
+		);
+	} );
+
+	it( 'should not show if there is no error', () => {
+		expect( shippingBannerWrapper.instance().isSetupError() ).toBe( false );
+		expect( shippingBannerWrapper.instance().hasActivationError() ).toBe(
+			false
+		);
+		expect( shippingBannerWrapper.instance().hasInstallationError() ).toBe(
+			false
+		);
+	} );
+
+	it( 'should show if there is activation error', () => {
+		shippingBannerWrapper.setProps( {
+			activationErrors: [ 'Can not activate' ],
+		} );
+		expect( shippingBannerWrapper.instance().isSetupError() ).toBe( true );
+		expect( shippingBannerWrapper.instance().hasActivationError() ).toBe(
+			true
+		);
+		expect( shippingBannerWrapper.instance().hasInstallationError() ).toBe(
+			false
+		);
+	} );
+
+	it( 'should show if there is installation error', () => {
+		shippingBannerWrapper.setProps( {
+			installationErrors: [ 'Can not activate' ],
+		} );
+		expect( shippingBannerWrapper.instance().isSetupError() ).toBe( true );
+		expect( shippingBannerWrapper.instance().hasActivationError() ).toBe(
+			false
+		);
+		expect( shippingBannerWrapper.instance().hasInstallationError() ).toBe(
+			true
+		);
 	} );
 } );
