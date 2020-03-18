@@ -9,24 +9,19 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\Loader;
+use \Automattic\WooCommerce\Admin\Features\ShippingLabelBannerDisplayRules;
 
 /**
  * Shows print shipping label banner on edit order page.
  */
 class ShippingLabelBanner {
-	/**
-	 * Supported countries by USPS, see: https://webpmt.usps.gov/pmt010.cfm
-	 *
-	 * @var array
-	 */
-	private $supported_countries = array( 'US', 'AS', 'PR', 'VI', 'GU', 'MP', 'UM', 'FM', 'MH' );
 
 	/**
-	 * Array of supported currency codes.
+	 * Singleton for the display rules class
 	 *
-	 * @var array
+	 * @var ShippingLabelBannerDisplayRules
 	 */
-	private $supported_currencies = array( 'USD' );
+	private $shipping_label_banner_display_rules;
 
 	/**
 	 * Constructor
@@ -46,33 +41,42 @@ class ShippingLabelBanner {
 	 * @return bool
 	 */
 	private function should_show_meta_box() {
-		$order = wc_get_order();
+		if ( ! $this->shipping_label_banner_display_rules ) {
+			$jetpack_version   = null;
+			$jetpack_connected = null;
+			$wcs_version       = null;
+			$wcs_tos_accepted  = null;
 
-		if ( ! $order ) {
-			return false;
-		}
-		// Restrict showing the metabox to supported store currencies.
-		$base_currency = get_woocommerce_currency();
-		if ( ! $this->is_supported_currency( $base_currency ) ) {
-			return false;
-		}
+			if ( class_exists( '\Jetpack_Data' ) ) {
+				$user_token = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
 
-		$base_location = wc_get_base_location();
-		if ( ! $this->is_supported_country( $base_location['country'] ) ) {
-			return false;
-		}
-
-		// At this point (no packaging data), only show if there's at least one existing and shippable product.
-		foreach ( $order->get_items() as $item ) {
-			if ( $item instanceof \WC_Order_Item_Product ) {
-				$product = $item->get_product();
-				if ( $product && $product->needs_shipping() ) {
-					return true;
-				}
+				$jetpack_connected = isset( $user_token->external_user_id );
+				$jetpack_version   = JETPACK__VERSION;
 			}
+
+			if ( class_exists( '\WC_Connect_Loader' ) ) {
+				$wcs_version = \WC_Connect_Loader::get_wcs_version();
+			}
+			if ( class_exists( '\WC_Connect_Options' ) ) {
+				$wcs_tos_accepted = \WC_Connect_Options::get_option( 'tos_accepted' );
+			}
+
+			$incompatible_plugins = class_exists( '\WC_Shipping_Fedex_Init' ) ||
+				class_exists( '\WC_Shipping_UPS_Init' ) ||
+				class_exists( '\WC_Integration_ShippingEasy' ) ||
+				class_exists( '\WC_ShipStation_Integration' );
+
+			$this->shipping_label_banner_display_rules =
+				new ShippingLabelBannerDisplayRules(
+					$jetpack_version,
+					$jetpack_connected,
+					$wcs_version,
+					$wcs_tos_accepted,
+					$incompatible_plugins
+				);
 		}
 
-		return false;
+		return $this->shipping_label_banner_display_rules->should_display_banner();
 	}
 
 	/**
@@ -155,28 +159,6 @@ class ShippingLabelBanner {
 		<div id="wc-admin-shipping-banner-root" class=" woocommerce <?php echo esc_attr( 'wc-admin-shipping-banner' ); ?>" data-args="<?php echo esc_attr( wp_json_encode( $args['args'] ) ); ?>">
 		</div>
 		<?php
-	}
-
-	/**
-	 * Check if country code is supported by WCS.
-	 *
-	 * @param string $country_code Country code.
-	 *
-	 * @return bool
-	 */
-	private function is_supported_country( $country_code ) {
-		return in_array( $country_code, $this->supported_countries, true );
-	}
-
-	/**
-	 * Check if currency code is supported by WCS.
-	 *
-	 * @param string $currency_code Currency code.
-	 *
-	 * @return bool
-	 */
-	private function is_supported_currency( $currency_code ) {
-		return in_array( $currency_code, $this->supported_currencies, true );
 	}
 
 	/**
