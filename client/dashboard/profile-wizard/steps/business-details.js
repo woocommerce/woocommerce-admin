@@ -322,7 +322,7 @@ class BusinessDetails extends Component {
 			{
 				slug: 'facebook-for-woocommerce',
 				title: __( 'Market on Facebook', 'woocommerce-admin' ),
-				icon: 'onboarding/facebook.png',
+				icon: 'onboarding/fb-woocommerce.png',
 				description: __(
 					'Grow your business by targeting the right people and driving sales with Facebook.',
 					'woocommerce-admin'
