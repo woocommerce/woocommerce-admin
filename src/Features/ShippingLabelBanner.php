@@ -59,12 +59,18 @@ class ShippingLabelBanner {
 				$wcs_tos_accepted = WC_Connect_Options::get_option( 'tos_accepted' );
 			}
 
+			$incompatible_plugins = class_exists( 'WC_Shipping_Fedex_Init' ) ||
+				class_exists( 'WC_Shipping_UPS_Init' ) ||
+				class_exists( 'WC_Integration_ShippingEasy' ) ||
+				class_exists( 'WC_ShipStation_Integration' );
+
 			$this->shipping_label_banner_display_rules =
 				new ShippingLabelBannerDisplayRules(
 					$jetpack_version,
 					$jetpack_connected,
 					$wcs_version,
-					$wcs_tos_accepted
+					$wcs_tos_accepted,
+					$incompatible_plugins
 				);
 		}
 

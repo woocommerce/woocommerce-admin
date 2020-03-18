@@ -38,6 +38,13 @@ class ShippingLabelBannerDisplayRules {
 	private $wcs_version;
 
 	/**
+	 * Whether or not there're plugins installed incompatible with the banner.
+	 *
+	 * @var bool
+	 */
+	private $no_incompatible_plugins_installed;
+
+	/**
 	 * Whether or not the WooCommerce Services ToS has been accepted.
 	 *
 	 * @var bool
@@ -80,12 +87,14 @@ class ShippingLabelBannerDisplayRules {
 	 * @param bool   $jetpack_connected Is Jetpack connected?.
 	 * @param string $wcs_version Installed WooCommerce Services version to check.
 	 * @param bool   $wcs_tos_accepted WooCommerce Services Terms of Service accepted?.
+	 * @param bool   $incompatible_plugins_installed Are there any incompatible plugins installed?.
 	 */
-	public function __construct( $jetpack_version, $jetpack_connected, $wcs_version, $wcs_tos_accepted ) {
-		$this->jetpack_version   = $jetpack_version;
-		$this->jetpack_connected = $jetpack_connected;
-		$this->wcs_version       = $wcs_version;
-		$this->wcs_tos_accepted  = $wcs_tos_accepted;
+	public function __construct( $jetpack_version, $jetpack_connected, $wcs_version, $wcs_tos_accepted, $incompatible_plugins_installed ) {
+		$this->jetpack_version                   = $jetpack_version;
+		$this->jetpack_connected                 = $jetpack_connected;
+		$this->wcs_version                       = $wcs_version;
+		$this->wcs_tos_accepted                  = $wcs_tos_accepted;
+		$this->no_incompatible_plugins_installed = ! $incompatible_plugins_installed;
 	}
 
 	/**
@@ -93,13 +102,10 @@ class ShippingLabelBannerDisplayRules {
 	 */
 	public function should_display_banner() {
 		return $this->banner_not_dismissed() &&
-			$this->jetpack_installed_and_active( $this->jetpack_version ) &&
-			$this->jetpack_up_to_date( $this->jetpack_version ) &&
+			$this->jetpack_installed_and_active() &&
+			$this->jetpack_up_to_date() &&
 			$this->jetpack_connected &&
-			$this->ups_not_installed() &&
-			$this->fedex_not_installed() &&
-			$this->shippingeasy_not_installed() &&
-			$this->shipstation_not_installed() &&
+			$this->no_incompatible_plugins_installed &&
 			$this->order_has_shippable_products() &&
 			$this->store_in_us_and_usd() &&
 			( $this->wcs_not_installed() || (
@@ -124,57 +130,19 @@ class ShippingLabelBannerDisplayRules {
 	/**
 	 * Checks if jetpack is installed and active.
 	 *
-	 * @param string $jetpack_version Jetpack version to check.
 	 * @return bool
 	 */
-	private function jetpack_installed_and_active( $jetpack_version ) {
-		return ! ! $jetpack_version;
+	private function jetpack_installed_and_active() {
+		return ! ! $this->jetpack_version;
 	}
 
 	/**
 	 * Checks if Jetpack version is supported.
 	 *
-	 * @param string $jetpack_version Installed Jetpack version to check.
 	 * @return bool
 	 */
-	private function jetpack_up_to_date( $jetpack_version ) {
-		return version_compare( $jetpack_version, $this->min_jetpack_version, '>=' );
-	}
-
-	/**
-	 * Checks if Fedex shipping method is not installed.
-	 *
-	 * @return bool
-	 */
-	private function fedex_not_installed() {
-		return ! is_plugin_active( 'woocommerce-shipping-fedex/woocommerce-shipping-fedex.php' );
-	}
-
-	/**
-	 * Checks if UPS shipping method is not installed.
-	 *
-	 * @return bool
-	 */
-	private function ups_not_installed() {
-		return ! is_plugin_active( 'woocommerce-shipping-ups/woocommerce-shipping-ups.php' );
-	}
-
-	/**
-	 * Checks if ShippingEasy shipping method is not installed.
-	 *
-	 * @return bool
-	 */
-	private function shippingeasy_not_installed() {
-		return ! is_plugin_active( 'woocommerce-shippingeasy/woocommerce-shippingeasy.php' );
-	}
-
-	/**
-	 * Checks if Shipstation shipping method is not installed.
-	 *
-	 * @return bool
-	 */
-	private function shipstation_not_installed() {
-		return ! is_plugin_active( 'woocommerce-shipstation/woocommerce-shipstation.php' );
+	private function jetpack_up_to_date() {
+		return version_compare( $this->jetpack_version, $this->min_jetpack_version, '>=' );
 	}
 
 	/**
@@ -225,7 +193,7 @@ class ShippingLabelBannerDisplayRules {
 	 * @return bool
 	 */
 	private function wcs_not_installed() {
-		return ! is_plugin_active( 'woocommerce-services/woocommerce-services.php' );
+		return ! $this->wcs_version;
 	}
 
 	/**

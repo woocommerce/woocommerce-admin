@@ -13,13 +13,6 @@ use \Automattic\WooCommerce\Admin\Features\ShippingLabelBannerDisplayRules;
 class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 
 	/**
-	 * List of active plugins.
-	 *
-	 * @var array
-	 */
-	private $active_plugins = array();
-
-	/**
 	 * Shipping label banner display rules manager.
 	 *
 	 * @var object
@@ -43,7 +36,6 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		'woocommerce_currency'                     => null,
 		'woocommerce_shipping_ab_active'           => null,
 		'woocommerce_shipping_dismissed_timestamp' => null,
-		'active_plugins'                           => null,
 	);
 
 	/**
@@ -51,9 +43,6 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 */
 	public function setUp() {
 		parent::setup();
-
-		$this->active_plugins = array();
-		$this->install_plugin( 'jetpack/jetpack.php' );
 
 		update_option( 'woocommerce_default_country', 'US' );
 		update_option( 'woocommerce_currency', 'USD' );
@@ -100,7 +89,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	public function test_display_banner_if_all_conditions_are_met() {
 		$this->with_order(
 			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
 				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), true );
 			}
@@ -111,7 +100,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when Jetpack is not active.
 	 */
 	public function test_if_banner_hidden_when_jetpack_disconnected() {
-		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( null, null, null, null );
+		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( null, null, null, null, null );
 
 		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 	}
@@ -121,7 +110,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 */
 	public function test_if_banner_hidden_when_dismiss_option_enabled() {
 		update_option( 'woocommerce_shipping_dismissed_timestamp', -1 );
-		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
 		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 	}
@@ -133,7 +122,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		$two_hours_from_now = time() + ( 2 * 60 * 60 );
 		update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_now );
 
-		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
 		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 	}
@@ -147,7 +136,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 
 		$this->with_order(
 			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
 				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), true );
 			}
@@ -158,7 +147,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when no shippable product available.
 	 */
 	public function test_if_banner_hidden_when_no_shippable_product() {
-		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
 		$this->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 	}
@@ -170,7 +159,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		update_option( 'woocommerce_default_country', 'ES' );
 		$this->with_order(
 			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
 				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
@@ -184,7 +173,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		update_option( 'woocommerce_currency', 'EUR' );
 		$this->with_order(
 			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
 				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
@@ -192,59 +181,12 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test if the banner is hidden when WooCommerce Fedex Shipping is installed.
+	 * Test if the banner is hidden when an incompatible plugin is installed
 	 */
-	public function test_if_banner_hidden_when_fedex_installed() {
-		$this->install_plugin( 'woocommerce-shipping-fedex/woocommerce-shipping-fedex.php' );
-
+	public function test_if_banner_hidden_when_incompatible_plugin_installed() {
 		$this->with_order(
 			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
-
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
-			}
-		);
-	}
-
-	/**
-	 * Test if the banner is hidden when WooCommerce UPS Shipping is installed.
-	 */
-	public function test_if_banner_hidden_when_ups_installed() {
-		$this->install_plugin( 'woocommerce-shipping-ups/woocommerce-shipping-ups.php' );
-
-		$this->with_order(
-			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
-
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
-			}
-		);
-	}
-
-	/**
-	 * Test if the banner is hidden when WooCommerce ShippingEasy Shipping is installed.
-	 */
-	public function test_if_banner_hidden_when_shippingeasy_installed() {
-		$this->install_plugin( 'woocommerce-shippingeasy/woocommerce-shippingeasy.php' );
-
-		$this->with_order(
-			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
-
-				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
-			}
-		);
-	}
-
-	/**
-	 * Test if the banner is hidden when WooCommerce Shipstation Shipping is installed.
-	 */
-	public function test_if_banner_hidden_when_shipstation_installed() {
-		$this->install_plugin( 'woocommerce-shipstation/woocommerce-shipstation.php' );
-
-		$this->with_order(
-			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, true );
 
 				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
@@ -257,7 +199,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	public function test_if_banner_hidden_when_jetpack_version_is_old() {
 		$this->with_order(
 			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.3', true, '1.22.5', false );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.3', true, '1.22.5', false, false );
 
 				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
@@ -268,11 +210,9 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when the WooCommerce Services Terms of Service has been already accepted.
 	 */
 	public function test_if_banner_hidden_when_wcs_tos_accepted() {
-		$this->install_plugin( 'woocommerce-services/woocommerce-services.php' );
-
 		$this->with_order(
 			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', true );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', true, false );
 
 				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
@@ -283,11 +223,9 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when WooCommerce Services is installed but not up to date.
 	 */
 	public function test_if_banner_hidden_when_wcs_not_installed() {
-		$this->install_plugin( 'woocommerce-services/woocommerce-services.php' );
-
 		$this->with_order(
 			function( $that ) {
-				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.4', false );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.4', false, false );
 
 				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
 			}
@@ -344,13 +282,4 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 		$this->destroy_order( $order );
 	}
 
-	/**
-	 * Manages the state of installed plugins.
-	 *
-	 * @param string $plugin_path plugin path to install.
-	 */
-	private function install_plugin( $plugin_path ) {
-		$this->active_plugins[] = $plugin_path;
-		update_option( 'active_plugins', array_values( $this->active_plugins ) );
-	}
 }
