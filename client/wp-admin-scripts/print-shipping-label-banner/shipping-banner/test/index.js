@@ -161,6 +161,7 @@ describe( 'Create shipping label button', () => {
 		const createElementMock = jest.fn( ( tagName ) => {
 			return createElementMockReturn[ tagName ];
 		} );
+		const createElement = document.createElement;
 		document.createElement = createElementMock;
 
 		const getElementsByTagNameMock = jest.fn();
@@ -177,8 +178,10 @@ describe( 'Create shipping label button', () => {
 		shippingBannerWrapper.instance().openWcsModal = openWcsModalMock;
 
 		shippingBannerWrapper.instance().loadWcsAssets( {
-			js: '/path/to/wcs.js',
-			css: '/path/to/wcs.css',
+			assets: {
+				wc_connect_admin_script: '/path/to/wcs.js',
+				wc_connect_admin_style: '/path/to/wcs.css',
+			},
 		} );
 
 		expect( createElementMock ).toHaveBeenCalledWith( 'script' );
@@ -195,6 +198,8 @@ describe( 'Create shipping label button', () => {
 		expect( linkMock.type ).toEqual( 'text/css' );
 		expect( linkMock.href ).toEqual( '/path/to/wcs.css' );
 		expect( linkMock.media ).toEqual( 'all' );
+
+		document.createElement = createElement;
 	} );
 
 	it( 'should open WCS modal', () => {
@@ -202,6 +207,11 @@ describe( 'Create shipping label button', () => {
 		const getState = jest.fn();
 		const dispatch = jest.fn();
 		window.wcsGetAppStore.mockReturnValueOnce( { getState, dispatch } );
+		delete window.location; // jsdom won't allow to rewrite window.location unless deleted first
+		window.location = {
+			href:
+				'http://wcship.test/wp-admin/post.php?post=ORDER_ID&action=edit',
+		};
 		getState.mockReturnValueOnce( {
 			ui: {
 				selectedSiteId: 'SITE_ID',
