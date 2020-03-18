@@ -53,10 +53,6 @@ class PluginsHelper {
 	 * @return array
 	 */
 	public static function get_installed_plugin_slugs() {
-		if ( ! function_exists( 'get_plugins' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
 		return array_map(
 			function( $plugin_path ) {
 				$path_parts = explode( '/', $plugin_path );
@@ -127,10 +123,6 @@ class PluginsHelper {
 	 * @return array|false
 	 */
 	public static function get_plugin_data( $plugin ) {
-		if ( ! function_exists( 'get_plugins' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
 		$plugin_path = self::get_plugin_path_from_slug( $plugin );
 		$plugins = get_plugins();
 
