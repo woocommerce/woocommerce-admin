@@ -40,8 +40,6 @@ export class ShippingBanner extends Component {
 			activatedPlugins,
 			installedPlugins,
 			wcsPluginSlug,
-			wcsAssetsPaths,
-			// errors
 		} = this.props;
 
 		if ( installedPlugins.length > prevProps.installedPlugins.length ) {
@@ -50,9 +48,6 @@ export class ShippingBanner extends Component {
 		if ( activatedPlugins.includes( wcsPluginSlug ) ) {
 			// TODO: Add success notice after installation #32
 			this.acceptTosAndGetWCSAssets();
-		}
-		if ( wcsAssetsPaths ) {
-			this.loadWcsAssets( wcsAssetsPaths );
 		}
 	}
 
