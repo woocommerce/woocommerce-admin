@@ -152,7 +152,8 @@ describe( 'In the process of installing or activating WooCommerce Service', () =
 				installPlugins={ jest.fn() }
 				installedPlugins={ [] }
 				wcsPluginSlug={ 'woocommerce-services' }
-				hasErrors={ false }
+				activationErrors={ [] }
+				installationErrors={ [] }
 				isRequesting={ true }
 			/>
 		);
