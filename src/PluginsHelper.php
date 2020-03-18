@@ -86,7 +86,7 @@ class PluginsHelper {
 	 */
 	public static function is_plugin_installed( $plugin ) {
 		$plugin_path = self::get_plugin_path_from_slug( $plugin );
-		return array_key_exists( $plugin_path, get_plugins() );
+		return $plugin_path ? array_key_exists( $plugin_path, get_plugins() ) : false;
 	}
 
 	/**
@@ -98,7 +98,7 @@ class PluginsHelper {
 	 */
 	public static function is_plugin_active( $plugin ) {
 		$plugin_path = self::get_plugin_path_from_slug( $plugin );
-		return in_array( $plugin_path, get_option( 'active_plugins', array() ), true );
+		return $plugin_path ? in_array( $plugin_path, get_option( 'active_plugins', array() ), true ) : false;
 	}
 
 	/**
