@@ -33,7 +33,8 @@ describe( 'Tracking events in shippingBanner', () => {
 				activatedPlugins={ [] }
 				installedPlugins={ [] }
 				wcsPluginSlug={ 'woocommerce-services' }
-				hasErrors={ false }
+				activationErrors={ [] }
+				installationErrors={ [] }
 			/>
 		);
 	} );
@@ -98,7 +99,9 @@ describe( 'Create shipping label button', () => {
 				installPlugins={ installPlugins }
 				installedPlugins={ [] }
 				wcsPluginSlug={ 'woocommerce-services' }
-				hasErrors={ false }
+				activationErrors={ [] }
+				installationErrors={ [] }
+				isRequesting={ false }
 			/>
 		);
 	} );
@@ -120,5 +123,111 @@ describe( 'Create shipping label button', () => {
 		expect( activatePlugins ).toHaveBeenCalledWith( [
 			'woocommerce-services',
 		] );
+	} );
+
+	it( 'should show a busy loading state when installing or activating ', () => {
+		shippingBannerWrapper.setProps( {
+			isRequesting: true,
+		} );
+		const createShippingLabelButton = shippingBannerWrapper.find( Button );
+		expect( createShippingLabelButton.length ).toBe( 1 );
+		expect( createShippingLabelButton.prop( 'disabled' ) ).toBe( true );
+		expect( createShippingLabelButton.prop( 'isBusy' ) ).toBe( true );
+	} );
+} );
+
+describe( 'In the process of installing or activating WooCommerce Service', () => {
+	let shippingBannerWrapper;
+	const activePlugins = {
+		includes: jest.fn().mockReturnValue( true ),
+	};
+
+	beforeEach( () => {
+		shippingBannerWrapper = shallow(
+			<ShippingBanner
+				isJetpackConnected={ jest.fn() }
+				activatePlugins={ jest.fn() }
+				activePlugins={ activePlugins }
+				activatedPlugins={ [] }
+				installPlugins={ jest.fn() }
+				installedPlugins={ [] }
+				wcsPluginSlug={ 'woocommerce-services' }
+				activationErrors={ [] }
+				installationErrors={ [] }
+				isRequesting={ true }
+			/>
+		);
+	} );
+
+	it( 'should show a busy loading state on "Create shipping label"', () => {
+		const createShippingLabelButton = shippingBannerWrapper.find( Button );
+		expect( createShippingLabelButton.length ).toBe( 1 );
+		expect( createShippingLabelButton.prop( 'disabled' ) ).toBe( true );
+		expect( createShippingLabelButton.prop( 'isBusy' ) ).toBe( true );
+	} );
+
+	it( 'should disable the dismiss button ', () => {
+		const dismissButton = shippingBannerWrapper.find( '.notice-dismiss' );
+		expect( dismissButton.length ).toBe( 1 );
+		expect( dismissButton.prop( 'disabled' ) ).toBe( true );
+	} );
+} );
+
+describe( 'Setup error message', () => {
+	let shippingBannerWrapper;
+	const activePlugins = {
+		includes: jest.fn().mockReturnValue( true ),
+	};
+
+	beforeEach( () => {
+		shippingBannerWrapper = shallow(
+			<ShippingBanner
+				isJetpackConnected={ jest.fn() }
+				activatePlugins={ jest.fn() }
+				activePlugins={ activePlugins }
+				activatedPlugins={ [] }
+				installPlugins={ jest.fn() }
+				installedPlugins={ [] }
+				wcsPluginSlug={ 'woocommerce-services' }
+				activationErrors={ [] }
+				installationErrors={ [] }
+			/>
+		);
+	} );
+
+	it( 'should not show if there is no error', () => {
+		expect( shippingBannerWrapper.instance().isSetupError() ).toBe( false );
+		expect( shippingBannerWrapper.instance().hasActivationError() ).toBe(
+			false
+		);
+		expect( shippingBannerWrapper.instance().hasInstallationError() ).toBe(
+			false
+		);
+	} );
+
+	it( 'should show if there is activation error', () => {
+		shippingBannerWrapper.setProps( {
+			activationErrors: [ 'Can not activate' ],
+		} );
+		expect( shippingBannerWrapper.instance().isSetupError() ).toBe( true );
+		expect( shippingBannerWrapper.instance().hasActivationError() ).toBe(
+			true
+		);
+		expect( shippingBannerWrapper.instance().hasInstallationError() ).toBe(
+			false
+		);
+	} );
+
+	it( 'should show if there is installation error', () => {
+		shippingBannerWrapper.setProps( {
+			installationErrors: [ 'Can not activate' ],
+		} );
+		expect( shippingBannerWrapper.instance().isSetupError() ).toBe( true );
+		expect( shippingBannerWrapper.instance().hasActivationError() ).toBe(
+			false
+		);
+		expect( shippingBannerWrapper.instance().hasInstallationError() ).toBe(
+			true
+		);
 	} );
 } );
