@@ -239,7 +239,6 @@ export default compose(
 		Object.keys( allInstallationErrors ).map( ( plugin ) =>
 			installationErrors.push( allInstallationErrors[ plugin ].message )
 		);
-
 		return {
 			activePlugins: getActivePlugins(),
 			isJetpackConnected: isJetpackConnected(),
