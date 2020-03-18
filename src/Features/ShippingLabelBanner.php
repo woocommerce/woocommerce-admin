@@ -45,24 +45,24 @@ class ShippingLabelBanner {
 			$wcs_version       = null;
 			$wcs_tos_accepted  = null;
 
-			if ( class_exists( 'Jetpack_Data' ) ) {
-				$user_token = Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
+			if ( class_exists( '\Jetpack_Data' ) ) {
+				$user_token = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
 
 				$jetpack_connected = isset( $user_token->external_user_id );
-				$jetpack_version   = JETPACK_VERSION;
+				$jetpack_version   = JETPACK__VERSION;
 			}
 
-			if ( class_exists( 'WC_Connect_Loader' ) ) {
-				$wcs_version = WC_Connect_Loader::get_wcs_version();
+			if ( class_exists( '\WC_Connect_Loader' ) ) {
+				$wcs_version = \WC_Connect_Loader::get_wcs_version();
 			}
-			if ( class_exists( 'WC_Connect_Options' ) ) {
-				$wcs_tos_accepted = WC_Connect_Options::get_option( 'tos_accepted' );
+			if ( class_exists( '\WC_Connect_Options' ) ) {
+				$wcs_tos_accepted = \WC_Connect_Options::get_option( 'tos_accepted' );
 			}
 
-			$incompatible_plugins = class_exists( 'WC_Shipping_Fedex_Init' ) ||
-				class_exists( 'WC_Shipping_UPS_Init' ) ||
-				class_exists( 'WC_Integration_ShippingEasy' ) ||
-				class_exists( 'WC_ShipStation_Integration' );
+			$incompatible_plugins = class_exists( '\WC_Shipping_Fedex_Init' ) ||
+				class_exists( '\WC_Shipping_UPS_Init' ) ||
+				class_exists( '\WC_Integration_ShippingEasy' ) ||
+				class_exists( '\WC_ShipStation_Integration' );
 
 			$this->shipping_label_banner_display_rules =
 				new ShippingLabelBannerDisplayRules(
