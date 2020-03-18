@@ -101,6 +101,7 @@ describe( 'Create shipping label button', () => {
 				wcsPluginSlug={ 'woocommerce-services' }
 				activationErrors={ [] }
 				installationErrors={ [] }
+				isRequesting={ false }
 			/>
 		);
 	} );
@@ -122,6 +123,53 @@ describe( 'Create shipping label button', () => {
 		expect( activatePlugins ).toHaveBeenCalledWith( [
 			'woocommerce-services',
 		] );
+	} );
+
+	it( 'should show a busy loading state when installing or activating ', () => {
+		shippingBannerWrapper.setProps( {
+			isRequesting: true,
+		} );
+		const createShippingLabelButton = shippingBannerWrapper.find( Button );
+		expect( createShippingLabelButton.length ).toBe( 1 );
+		expect( createShippingLabelButton.prop( 'disabled' ) ).toBe( true );
+		expect( createShippingLabelButton.prop( 'isBusy' ) ).toBe( true );
+	} );
+} );
+
+describe( 'In the process of installing or activating WooCommerce Service', () => {
+	let shippingBannerWrapper;
+	const activePlugins = {
+		includes: jest.fn().mockReturnValue( true ),
+	};
+
+	beforeEach( () => {
+		shippingBannerWrapper = shallow(
+			<ShippingBanner
+				isJetpackConnected={ jest.fn() }
+				activatePlugins={ jest.fn() }
+				activePlugins={ activePlugins }
+				activatedPlugins={ [] }
+				installPlugins={ jest.fn() }
+				installedPlugins={ [] }
+				wcsPluginSlug={ 'woocommerce-services' }
+				activationErrors={ [] }
+				installationErrors={ [] }
+				isRequesting={ true }
+			/>
+		);
+	} );
+
+	it( 'should show a busy loading state on "Create shipping label"', () => {
+		const createShippingLabelButton = shippingBannerWrapper.find( Button );
+		expect( createShippingLabelButton.length ).toBe( 1 );
+		expect( createShippingLabelButton.prop( 'disabled' ) ).toBe( true );
+		expect( createShippingLabelButton.prop( 'isBusy' ) ).toBe( true );
+	} );
+
+	it( 'should disable the dismiss button ', () => {
+		const dismissButton = shippingBannerWrapper.find( '.notice-dismiss' );
+		expect( dismissButton.length ).toBe( 1 );
+		expect( dismissButton.prop( 'disabled' ) ).toBe( true );
 	} );
 } );
 
