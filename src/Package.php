@@ -65,7 +65,7 @@ class Package {
 		}
 
 		$feature_plugin_instance = FeaturePlugin::instance();
-		$satisfied_dependencies  = $feature_plugin_instance->has_satisfied_dependencies();
+		$satisfied_dependencies  = is_callable( array( $feature_plugin_instance, 'has_satisfied_dependencies' ) ) && $feature_plugin_instance->has_satisfied_dependencies();
 		if ( ! $satisfied_dependencies ) {
 			return;
 		}
