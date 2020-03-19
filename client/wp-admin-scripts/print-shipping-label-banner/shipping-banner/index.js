@@ -225,7 +225,7 @@ export class ShippingBanner extends Component {
 			);
 		}
 		return __(
-			'By clicking "Create shipping label", {{wcsLink}}WooCommerce Services{{/wcsLink}} will be installed and you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
+			'By clicking "Create shipping label", {{wcsLink}}WooCommerce Shipping{{/wcsLink}} will be installed and you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
 			'woocommerce-admin'
 		);
 	};
@@ -277,6 +277,7 @@ export class ShippingBanner extends Component {
 					</h3>
 					<p>
 						{ interpolateComponents( {
+
 							mixedString: this.getInstallText(),
 							components: {
 								tosLink: (
