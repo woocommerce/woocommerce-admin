@@ -9,7 +9,12 @@ import { __ } from '@wordpress/i18n';
  */
 import { Card } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import InstalledExtensionRow from "./installed-extension-row";
+
+/**
+ * Internal dependencies
+ */
+import './style.scss'
+import InstalledExtensionRow from "./row";
 
 class InstalledExtensions extends Component {
 	constructor( props ) {
