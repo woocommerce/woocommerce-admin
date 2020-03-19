@@ -141,6 +141,13 @@ class ShippingLabelBanner {
 			Loader::get_file_version( 'wp-admin-scripts/print-shipping-label-banner.js' ),
 			true
 		);
+
+		$payload = array(
+			'nonce'   => wp_create_nonce( 'wp_rest' ),
+			'baseURL' => get_rest_url(),
+		);
+
+		wp_localize_script( 'print-shipping-label-banner', 'wcConnectData', $payload );
 	}
 
 	/**
