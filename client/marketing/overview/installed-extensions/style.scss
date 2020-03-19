@@ -1,0 +1,24 @@
+.woocommerce-marketing-installed-extensions-card {
+	.woocommerce-card__body {
+		padding: 0;
+	}
+
+	&__item {
+		padding: 24px;
+	}
+
+	&__item:not(:last-child) {
+		border-bottom: 1px solid $core-grey-light-500;
+	}
+
+	&__item-actions {
+		float: right;
+	}
+
+	&__item-description {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 550px;
+	}
+}
