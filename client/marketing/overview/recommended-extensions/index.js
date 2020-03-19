@@ -9,6 +9,11 @@ import { __ } from '@wordpress/i18n';
  */
 import { Card } from '@woocommerce/components';
 
+/**
+ * Internal dependencies
+ */
+import './style.scss'
+
 class RecommendedExtensions extends Component {
 	render() {
 		return (
