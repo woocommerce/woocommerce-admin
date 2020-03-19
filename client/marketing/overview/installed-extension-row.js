@@ -6,9 +6,58 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
+/**
+ * WooCommerce dependencies
+ */
+import { Link } from '@woocommerce/components';
+
 class InstalledExtensionRow extends Component {
 
-	getLinks() {}
+	getLinks() {
+		const { docsUrl, settingsUrl, supportUrl, dashboardUrl } = this.props;
+		const links = [];
+
+		if ( docsUrl ) {
+			links.push( {
+				key: 'docs',
+				href: docsUrl,
+				text: __( 'Docs', 'woocommerce-admin' ),
+			} );
+		}
+		if ( supportUrl ) {
+			links.push( {
+				key: 'support',
+				href: docsUrl,
+				text: __( 'Get support', 'woocommerce-admin' ),
+			} );
+		}
+		if ( settingsUrl ) {
+			links.push( {
+				key: 'settings',
+				href: docsUrl,
+				text: __( 'Settings', 'woocommerce-admin' ),
+			} );
+		}
+		if ( dashboardUrl ) {
+			links.push( {
+				key: 'dashboard',
+				href: docsUrl,
+				text: __( 'Dashboard', 'woocommerce-admin' ),
+			} );
+		}
+
+		return (
+			<ul className="woocommerce-marketing-installed-extensions-card__item-links">
+				{ links.map( ( link ) => {
+					return (
+						<li key={ link.key }>
+							<Link href={ link.href } type="external">{ link.text }</Link>
+						</li>
+					)
+				} ) }
+			</ul>
+		)
+	}
 
 	getActiveButton() {
 		return (
@@ -31,7 +80,7 @@ class InstalledExtensionRow extends Component {
 	}
 
 	render() {
-		const { name, slug, description, status } = this.props;
+		const { name, description, status } = this.props;
 		let actions = null;
 
 		switch ( status ) {
@@ -47,7 +96,7 @@ class InstalledExtensionRow extends Component {
 		}
 
 		return (
-			<div className="woocommerce-marketing-installed-extensions-card__item" key={ slug }>
+			<div className="woocommerce-marketing-installed-extensions-card__item">
 				<div className="woocommerce-marketing-installed-extensions-card__item-actions">
 					{ actions }
 				</div>
@@ -60,8 +109,13 @@ class InstalledExtensionRow extends Component {
 
 InstalledExtensionRow.propTypes = {
 	name: PropTypes.string.isRequired,
+	slug: PropTypes.string.isRequired,
 	description: PropTypes.string.isRequired,
 	status: PropTypes.string.isRequired,
+	settingsUrl: PropTypes.string.isRequired,
+	docsUrl: PropTypes.string,
+	supportUrl: PropTypes.string,
+	dashboardUrl: PropTypes.string,
 };
 
 export default InstalledExtensionRow;
