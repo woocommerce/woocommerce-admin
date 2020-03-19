@@ -15,6 +15,9 @@ describe( 'Option Save events in DismissModal', () => {
 	let dismissModalWrapper;
 
 	beforeEach( () => {
+		document.body.innerHTML =
+			document.body.innerHTML +
+			'<div id="woocommerce-admin-print-label">';
 		dismissModalWrapper = shallow(
 			<DismissModal
 				visible={ true }
@@ -91,5 +94,48 @@ describe( 'Tracking events in DismissModal', () => {
 		expect( trackElementClicked ).toHaveBeenCalledWith(
 			'shipping_banner_dismiss_modal_remind_me_later'
 		);
+	} );
+} );
+
+describe( 'Dismissing modal', () => {
+	let dismissModalWrapper;
+
+	beforeEach( () => {
+		document.body.innerHTML =
+			document.body.innerHTML +
+			'<div id="woocommerce-admin-print-label">';
+		dismissModalWrapper = shallow(
+			<DismissModal
+				visible={ true }
+				onClose={ jest.fn() }
+				onCloseAll={ jest.fn() }
+				trackElementClicked={ jest.fn() }
+				updateOptions={ jest.fn() }
+			/>
+		);
+	} );
+
+	test( 'Should hide the banner by clicking permanent dismissal', () => {
+		const actionButtons = dismissModalWrapper.find( Button );
+		expect( actionButtons.length ).toBe( 2 );
+		const permanenttDismissButton = actionButtons.last();
+		permanenttDismissButton.simulate( 'click' );
+
+		const bannerStyle = document.getElementById(
+			'woocommerce-admin-print-label'
+		).style;
+		expect( bannerStyle.display ).toBe( 'none' );
+	} );
+
+	test( 'Should hide the banner by clicking  temporary dismissal', () => {
+		const actionButtons = dismissModalWrapper.find( Button );
+		expect( actionButtons.length ).toBe( 2 );
+		const remindMeLaterButton = actionButtons.first();
+		remindMeLaterButton.simulate( 'click' );
+
+		const bannerStyle = document.getElementById(
+			'woocommerce-admin-print-label'
+		).style;
+		expect( bannerStyle.display ).toBe( 'none' );
 	} );
 } );
