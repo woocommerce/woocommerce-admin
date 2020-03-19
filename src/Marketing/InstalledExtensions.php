@@ -29,6 +29,18 @@ class InstalledExtensions {
 	}
 
 	/**
+	 * Get allowed plugins.
+	 *
+	 * @return array
+	 */
+	public static function get_allowed_plugins() {
+		return [
+			'mailchimp-for-woocommerce',
+			'facebook-for-woocommerce'
+		];
+	}
+
+	/**
 	 * Get MailChimp extension data.
 	 *
 	 * @return array|bool
