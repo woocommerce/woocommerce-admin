@@ -56,6 +56,7 @@ class InstalledExtensions {
 
 		$data['docsUrl']     = 'https://mailchimp.com/help/connect-or-disconnect-mailchimp-for-woocommerce/';
 		$data['settingsUrl'] = admin_url( 'admin.php?page=mailchimp-woocommerce' );
+		$data['supportUrl'] = 'https://woocommerce.com/contact-us/';
 
 		if ( mailchimp_is_configured() ) {
 			$data['status'] = 'configured';
@@ -78,7 +79,9 @@ class InstalledExtensions {
 
 		$data = self::get_extension_base_data( $slug );
 
-		// todo fill props
+		$data['settingsUrl'] = admin_url( 'admin.php?page=wc-settings&tab=integration&section=facebookcommerce' );
+		$data['docsUrl'] = 'https://docs.woocommerce.com/document/facebook-for-woocommerce/';
+		$data['supportUrl'] = 'https://woocommerce.com/contact-us/';
 
 		return $data;
 	}
