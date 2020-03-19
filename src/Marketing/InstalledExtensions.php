@@ -85,6 +85,10 @@ class InstalledExtensions {
 			$data['status'] = 'configured';
 		}
 
+		$data['settingsUrl'] = facebook_for_woocommerce()->get_settings_url();
+		$data['docsUrl'] = facebook_for_woocommerce()->get_documentation_url();
+		$data['supportUrl'] = facebook_for_woocommerce()->get_support_url();
+
 		return $data;
 	}
 
