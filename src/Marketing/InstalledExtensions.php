@@ -48,18 +48,20 @@ class InstalledExtensions {
 	protected static function get_mailchimp_extension_data() {
 		$slug = 'mailchimp-for-woocommerce';
 
-		if ( ! PluginsHelper::is_plugin_installed( $slug ) || ! function_exists( 'mailchimp_is_configured' ) ) {
+		if ( ! PluginsHelper::is_plugin_installed( $slug ) ) {
 			return false;
 		}
 
 		$data = self::get_extension_base_data( $slug );
 
-		$data['docsUrl']     = 'https://mailchimp.com/help/connect-or-disconnect-mailchimp-for-woocommerce/';
-		$data['settingsUrl'] = admin_url( 'admin.php?page=mailchimp-woocommerce' );
-		$data['supportUrl'] = 'https://woocommerce.com/contact-us/';
+		if ( 'activated' === $data['status'] && function_exists( 'mailchimp_is_configured' ) ) {
+			$data['docsUrl']     = 'https://mailchimp.com/help/connect-or-disconnect-mailchimp-for-woocommerce/';
+			$data['settingsUrl'] = admin_url( 'admin.php?page=mailchimp-woocommerce' );
+			$data['supportUrl'] = 'https://woocommerce.com/contact-us/';
 
-		if ( mailchimp_is_configured() ) {
-			$data['status'] = 'configured';
+			if ( mailchimp_is_configured() ) {
+				$data['status'] = 'configured';
+			}
 		}
 
 		return $data;
@@ -73,21 +75,23 @@ class InstalledExtensions {
 	protected static function get_facebook_extension_data() {
 		$slug = 'facebook-for-woocommerce';
 
-		if ( ! PluginsHelper::is_plugin_installed( $slug ) || ! function_exists( 'facebook_for_woocommerce' ) ) {
+		if ( ! PluginsHelper::is_plugin_installed( $slug ) ) {
 			return false;
 		}
 
 		$data = self::get_extension_base_data( $slug );
 
-		$integration = facebook_for_woocommerce()->get_integration();
+		if ( 'activated' === $data['status'] && function_exists( 'facebook_for_woocommerce' ) ) {
+			$integration = facebook_for_woocommerce()->get_integration();
 
-		if ( $integration->is_configured() ) {
-			$data['status'] = 'configured';
+			if ( $integration->is_configured() ) {
+				$data['status'] = 'configured';
+			}
+
+			$data['settingsUrl'] = facebook_for_woocommerce()->get_settings_url();
+			$data['docsUrl'] = facebook_for_woocommerce()->get_documentation_url();
+			$data['supportUrl'] = facebook_for_woocommerce()->get_support_url();
 		}
-
-		$data['settingsUrl'] = facebook_for_woocommerce()->get_settings_url();
-		$data['docsUrl'] = facebook_for_woocommerce()->get_documentation_url();
-		$data['supportUrl'] = facebook_for_woocommerce()->get_support_url();
 
 		return $data;
 	}
