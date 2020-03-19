@@ -224,25 +224,9 @@ class CustomizableDashboard extends Component {
 		);
 	}
 
-	render() {
-		const {
-			query,
-			path,
-			taskListHidden,
-			taskListCompleted,
-			doThisLater,
-		} = this.props;
+	renderDashboardReports() {
+		const { query, path } = this.props;
 		const { sections } = this.state;
-
-		if (
-			isOnboardingEnabled() &&
-			! taskListHidden &&
-			( query.task || ! taskListCompleted ) &&
-			! doThisLater
-		) {
-			return <TaskList query={ query } />;
-		}
-
 		const { period, compare, before, after } = getDateParamsFromQuery(
 			query
 		);
@@ -258,17 +242,12 @@ class CustomizableDashboard extends Component {
 			primaryDate,
 			secondaryDate,
 		};
-		const showTaskList =
-			isOnboardingEnabled() && ! taskListHidden && ! taskListCompleted;
-
 		const visibleSectionKeys = sections
 			.filter( ( section ) => section.isVisible )
 			.map( ( section ) => section.key );
 
 		return (
 			<Fragment>
-				{ showTaskList && <TaskList query={ query } inline /> }
-
 				<ReportFilters
 					report="dashboard"
 					query={ query }
@@ -312,6 +291,30 @@ class CustomizableDashboard extends Component {
 					return null;
 				} ) }
 				{ this.renderAddMore() }
+			</Fragment>
+		);
+	}
+
+	render() {
+		const {
+			query,
+			taskListHidden,
+			taskListCompleted,
+			doThisLater,
+		} = this.props;
+
+		const isTaskListEnabled = isOnboardingEnabled() && ! taskListHidden;
+
+		const isDashboardShown =
+			! isTaskListEnabled ||
+			( ! query.task && ( doThisLater || taskListCompleted ) );
+
+		return (
+			<Fragment>
+				{ isTaskListEnabled && (
+					<TaskList query={ query } inline={ isDashboardShown } />
+				) }
+				{ isDashboardShown && this.renderDashboardReports() }
 			</Fragment>
 		);
 	}
