@@ -172,11 +172,12 @@ class ShippingRates extends Component {
 
 		this.props.shippingZones.forEach( ( zone ) => {
 			const shippingMethods = this.getShippingMethods( zone );
-			const rate = shippingMethods.length
-				? this.getFormattedRate(
-						shippingMethods[ 0 ].settings.cost.value
-				  )
-				: getCurrencyFormatString( 0 );
+			const rate =
+				shippingMethods.length && shippingMethods[ 0 ].settings.cost
+					? this.getFormattedRate(
+							shippingMethods[ 0 ].settings.cost.value
+					  )
+					: getCurrencyFormatString( 0 );
 			values[ `${ zone.id }_rate` ] = rate;
 
 			if ( shippingMethods.length && shippingMethods[ 0 ].enabled ) {
