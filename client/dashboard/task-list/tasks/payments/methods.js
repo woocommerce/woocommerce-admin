@@ -4,7 +4,7 @@
 
 import { __ } from '@wordpress/i18n';
 import { Fragment } from '@wordpress/element';
-import { filter } from 'lodash';
+import { filter, some } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -31,11 +31,15 @@ export function getPaymentMethods( {
 	countryCode,
 	options,
 	profileItems,
-	hasCbdIndustry,
 } ) {
 	const stripeCountries = getSetting( 'onboarding', {
 		stripeSupportedCountries: [],
 	} ).stripeSupportedCountries;
+
+	const hasCbdIndustry =
+		some( profileItems.industry, {
+			slug: 'cbd-other-hemp-derived-products',
+		} ) || false;
 
 	const methods = [
 		{
