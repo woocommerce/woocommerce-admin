@@ -56,7 +56,7 @@ export class DismissModal extends Component {
 			>
 				<p className="wc-admin-shipping-banner__dismiss-modal-help-text">
 					{ __(
-						'With WooCommerce Services you can Print shipping labels from your WooCommerce dashboard at the lowest USPS rates.',
+						'With WooCommerce Shipping you can Print shipping labels from your WooCommerce dashboard at the lowest USPS rates.',
 						'woocommerce-admin'
 					) }
 				</p>
