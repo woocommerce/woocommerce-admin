@@ -36,6 +36,7 @@ export class ShippingBanner extends Component {
 			orderId: parseInt( orderId, 10 ),
 			wcsAssetsLoaded: false,
 			wcsAssetsLoading: false,
+			wcsSetupError: false,
 		};
 	}
 
@@ -82,7 +83,11 @@ export class ShippingBanner extends Component {
 	};
 
 	isSetupError = () => {
-		return this.hasActivationError() || this.hasInstallationError();
+		return (
+			this.hasActivationError() ||
+			this.hasInstallationError() ||
+			this.state.wcsSetupError
+		);
 	};
 
 	setupErrorReason = () => {
@@ -159,7 +164,7 @@ export class ShippingBanner extends Component {
 		acceptWcsTos()
 			.then( () => getWcsAssets() )
 			.then( ( wcsAssets ) => this.loadWcsAssets( wcsAssets ) )
-			.catch();
+			.catch( () => this.setState( { wcsSetupError: true } ) );
 	}
 
 	loadWcsAssets( { assets } ) {
