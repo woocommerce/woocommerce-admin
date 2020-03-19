@@ -264,6 +264,9 @@ export class ShippingBanner extends Component {
 					),
 				},
 			} );
+			document.getElementById(
+				'woocommerce-admin-print-label'
+			).style.display = 'none';
 		}
 	}
 
