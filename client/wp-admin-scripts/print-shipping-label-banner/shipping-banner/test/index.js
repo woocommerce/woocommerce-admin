@@ -88,7 +88,7 @@ describe( 'Create shipping label button', () => {
 	const activePlugins = {
 		includes: jest.fn().mockReturnValue( true ),
 	};
-	const acceptTos = jest.fn( () => Promise.resolve() );
+	const acceptTos = jest.fn( () => Promise.resolve( true ) );
 	const wcsAssets = {};
 	const getWcsAssets = jest.fn( () => {
 		return Promise.resolve( wcsAssets );

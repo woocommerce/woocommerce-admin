@@ -128,16 +128,15 @@ export class ShippingBanner extends Component {
 		} );
 	};
 
-	acceptTosAndGetWCSAssets() {
+	async acceptTosAndGetWCSAssets() {
 		const { acceptTos, getWcsAssets } = this.props;
 
-		return Promise.all( [ acceptTos(), getWcsAssets() ] ).then(
-			( [ , wcsAssets ] ) => {
-				if ( wcsAssets ) {
-					this.loadWcsAssets( wcsAssets );
-				}
-			}
-		);
+		const accepted = await acceptTos();
+
+		if ( accepted ) {
+			const wcsAssets = await getWcsAssets();
+			this.loadWcsAssets( wcsAssets );
+		}
 	}
 
 	loadWcsAssets( { assets } ) {
