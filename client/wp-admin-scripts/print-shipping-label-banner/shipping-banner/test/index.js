@@ -153,7 +153,7 @@ describe( 'Create shipping label button', () => {
 		);
 	} );
 
-	it( 'should install WooCommerce Services when button is clicked', () => {
+	it( 'should install WooCommerce Shipping when button is clicked', () => {
 		const createShippingLabelButton = shippingBannerWrapper.find( Button );
 		expect( createShippingLabelButton.length ).toBe( 1 );
 		createShippingLabelButton.simulate( 'click' );
@@ -162,7 +162,7 @@ describe( 'Create shipping label button', () => {
 		] );
 	} );
 
-	it( 'should activate WooCommerce Services when installation finishes', () => {
+	it( 'should activate WooCommerce Shipping when installation finishes', () => {
 		// Cause a 'componentDidUpdate' by changing the props.
 		shippingBannerWrapper.setProps( {
 			installedPlugins: [ 'woocommerce-services' ],
