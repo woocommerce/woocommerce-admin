@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { partial, filter, get } from 'lodash';
+import { partial, get } from 'lodash';
 import { IconButton, Icon, Dropdown, Button } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
@@ -23,7 +23,6 @@ import Section from './section';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import TaskList from './task-list';
-import { getAllTasks } from './task-list/tasks';
 import { isOnboardingEnabled } from 'dashboard/utils';
 import {
 	getCurrentDates,
@@ -299,7 +298,7 @@ class CustomizableDashboard extends Component {
 		const {
 			query,
 			taskListHidden,
-			taskListCompleted,
+			taskListComplete,
 			doThisLater,
 		} = this.props;
 
@@ -307,7 +306,7 @@ class CustomizableDashboard extends Component {
 
 		const isDashboardShown =
 			! isTaskListEnabled ||
-			( ! query.task && ( doThisLater || taskListCompleted ) );
+			( ! query.task && ( doThisLater || taskListComplete ) );
 
 		return (
 			<Fragment>
@@ -321,10 +320,9 @@ class CustomizableDashboard extends Component {
 }
 
 export default compose(
-	withSelect( ( select, props ) => {
+	withSelect( ( select ) => {
 		const {
 			getCurrentUserData,
-			getProfileItems,
 			isGetProfileItemsRequesting,
 			getOptions,
 			isGetOptionsRequesting,
@@ -336,28 +334,19 @@ export default compose(
 		};
 
 		if ( isOnboardingEnabled() ) {
-			const profileItems = getProfileItems();
-			const tasks = getAllTasks( {
-				profileItems,
-				options: getOptions( [ 'woocommerce_task_list_payments' ] ),
-				query: props.query,
-			} );
-			const visibleTasks = filter( tasks, ( task ) => task.visible );
-			const completedTasks = filter(
-				tasks,
-				( task ) => task.visible && task.completed
-			);
-
-			withSelectData.taskListCompleted =
-				visibleTasks.length === completedTasks.length;
-
 			const options = getOptions( [
+				'woocommerce_task_list_complete',
 				'woocommerce_task_list_hidden',
 				'woocommerce_task_list_do_this_later',
 			] );
 			withSelectData.taskListHidden =
 				get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) ===
 				'yes';
+			withSelectData.taskListComplete = get(
+				options,
+				[ 'woocommerce_task_list_complete' ],
+				false
+			);
 			withSelectData.doThisLater = get(
 				options,
 				[ 'woocommerce_task_list_do_this_later' ],
