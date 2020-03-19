@@ -46,6 +46,7 @@ class OnboardingTasks {
 	public function __construct() {
 		// This hook needs to run when options are updated via REST.
 		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'add_completion_note' ), 10, 2 );
+		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'track_completion' ), 10, 2 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -288,6 +289,18 @@ class OnboardingTasks {
 	public static function add_completion_note( $old_value, $new_value ) {
 		if ( $new_value ) {
 			WC_Admin_Notes_Onboarding::add_task_list_complete_note();
+		}
+	}
+
+	/**
+	 * Records an event when all tasks are completed in the task list.
+	 *
+	 * @param mixed $old_value Old value.
+	 * @param mixed $new_value New value.
+	 */
+	public static function track_completion( $old_value, $new_value ) {
+		if ( $new_value ) {
+			wc_admin_record_tracks_event( 'tasklist_tasks_completed' );
 		}
 	}
 }
