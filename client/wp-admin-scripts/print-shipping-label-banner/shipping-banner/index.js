@@ -23,10 +23,18 @@ const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 export class ShippingBanner extends Component {
 	constructor( props ) {
 		super( props );
+
+		const orderId = new URL( window.location.href ).searchParams.get(
+			'post'
+		);
+
 		this.state = {
 			showShippingBanner: true, // TODO: update to get state when closedForever is clicked
 			isDismissModalOpen: false,
 			setupErrorReason: setupErrorTypes.SETUP,
+			orderId: parseInt( orderId, 10 ),
+			wcsAssetsLoaded: false,
+			wcsAssetsLoading: false,
 		};
 	}
 
@@ -47,7 +55,7 @@ export class ShippingBanner extends Component {
 		}
 		if ( activatedPlugins.includes( wcsPluginSlug ) ) {
 			// TODO: Add success notice after installation #32
-			// console.log("Successfully activated wcs.");
+			this.acceptTosAndGetWCSAssets();
 		}
 	}
 
@@ -129,6 +137,82 @@ export class ShippingBanner extends Component {
 			element,
 		} );
 	};
+
+	async acceptTosAndGetWCSAssets() {
+		const { acceptTos, getWcsAssets } = this.props;
+
+		const accepted = await acceptTos();
+
+		if ( accepted ) {
+			const wcsAssets = await getWcsAssets();
+			this.loadWcsAssets( wcsAssets );
+		}
+	}
+
+	loadWcsAssets( { assets } ) {
+		if ( this.state.wcsAssetsLoaded || this.state.wcsAssetsLoading ) {
+			this.openWcsModal();
+			return;
+		}
+
+		this.setState( { wcsAssetsLoading: true } );
+
+		const js = assets.wc_connect_admin_script;
+		const styles = assets.wc_connect_admin_style;
+
+		const shippingLabelContainer = document.createElement( 'div' );
+		const { orderId } = this.state;
+
+		shippingLabelContainer.className =
+			'wcc-root woocommerce wc-connect-create-shipping-label';
+		shippingLabelContainer.dataset.args = JSON.stringify( {
+			orderId,
+			context: 'shipping_label',
+		} );
+		document.body.appendChild( shippingLabelContainer );
+
+		Promise.all( [
+			new Promise( ( resolve, reject ) => {
+				const script = document.createElement( 'script' );
+				script.src = js;
+				script.async = true;
+				script.onload = resolve;
+				script.onerror = reject;
+				document.body.appendChild( script );
+			} ),
+			new Promise( ( resolve, reject ) => {
+				const head = document.getElementsByTagName( 'head' )[ 0 ];
+				const link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = styles;
+				link.media = 'all';
+				link.onload = resolve;
+				link.onerror = reject;
+				head.appendChild( link );
+			} ),
+		] ).then( () => {
+			this.setState( { wcsAssetsLoaded: true, wcsAssetsLoading: false } );
+			this.openWcsModal();
+		} );
+	}
+
+	openWcsModal() {
+		if ( window.wcsGetAppStore ) {
+			const wcsStore = window.wcsGetAppStore(
+				'wc-connect-create-shipping-label'
+			);
+			const state = wcsStore.getState();
+			const { orderId } = this.state;
+			const siteId = state.ui.selectedSiteId;
+
+			wcsStore.dispatch( {
+				type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
+				orderId,
+				siteId,
+			} );
+		}
+	}
 
 	render() {
 		const { isDismissModalOpen, showShippingBanner } = this.state;
@@ -227,6 +311,10 @@ export default compose(
 			isPluginActivateRequesting,
 			isPluginInstallRequesting,
 		} = select( 'wc-api' );
+		const { acceptTos, getWcsAssets } = select(
+			'print-shipping-label-banner'
+		);
+
 		const isRequesting =
 			isPluginActivateRequesting() || isPluginInstallRequesting();
 		const allInstallationErrors = getPluginInstallationErrors( [
@@ -258,6 +346,8 @@ export default compose(
 			wcsPluginSlug,
 			activationErrors,
 			installationErrors,
+			acceptTos,
+			getWcsAssets,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
