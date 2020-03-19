@@ -71,6 +71,7 @@ describe( 'Tracking clicks in shippingBanner', () => {
 			<ShippingBanner
 				isJetpackConnected={ isJetpackConnected }
 				activePlugins={ activePlugins }
+				installPlugins={ jest.fn() }
 				activatedPlugins={ [] }
 				installedPlugins={ [] }
 				wcsPluginSlug={ 'woocommerce-services' }
@@ -172,16 +173,6 @@ describe( 'Create shipping label button', () => {
 		] );
 	} );
 
-	it( 'should show a busy loading state when installing or activating ', () => {
-		shippingBannerWrapper.setProps( {
-			isRequesting: true,
-		} );
-		const createShippingLabelButton = shippingBannerWrapper.find( Button );
-		expect( createShippingLabelButton.length ).toBe( 1 );
-		expect( createShippingLabelButton.prop( 'disabled' ) ).toBe( true );
-		expect( createShippingLabelButton.prop( 'isBusy' ) ).toBe( true );
-	} );
-
 	it( 'should perform a request to accept the TOS and get WCS assets to load', async () => {
 		const loadWcsAssetsMock = jest.fn();
 		shippingBannerWrapper.instance().loadWcsAssets = loadWcsAssetsMock;
@@ -270,7 +261,7 @@ describe( 'Create shipping label button', () => {
 	} );
 } );
 
-describe( 'In the process of installing or activating WooCommerce Service', () => {
+describe( 'In the process of installing, activating, loading assets for WooCommerce Service', () => {
 	let shippingBannerWrapper;
 	const activePlugins = {
 		includes: jest.fn().mockReturnValue( true ),
@@ -294,6 +285,7 @@ describe( 'In the process of installing or activating WooCommerce Service', () =
 	} );
 
 	it( 'should show a busy loading state on "Create shipping label"', () => {
+		shippingBannerWrapper.setState( { isShippingLabelButtonBusy: true } );
 		const createShippingLabelButton = shippingBannerWrapper.find( Button );
 		expect( createShippingLabelButton.length ).toBe( 1 );
 		expect( createShippingLabelButton.prop( 'disabled' ) ).toBe( true );
@@ -301,6 +293,7 @@ describe( 'In the process of installing or activating WooCommerce Service', () =
 	} );
 
 	it( 'should disable the dismiss button ', () => {
+		shippingBannerWrapper.setState( { isShippingLabelButtonBusy: true } );
 		const dismissButton = shippingBannerWrapper.find( '.notice-dismiss' );
 		expect( dismissButton.length ).toBe( 1 );
 		expect( dismissButton.prop( 'disabled' ) ).toBe( true );
