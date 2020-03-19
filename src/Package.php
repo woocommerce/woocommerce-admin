@@ -48,17 +48,6 @@ class Package {
 	 * Only initialize for WP 5.3 or greater.
 	 */
 	public static function init() {
-		$feature_plugin_instance = FeaturePlugin::instance();
-		$satisfied_dependencies  = $feature_plugin_instance->has_satisfied_dependencies();
-		if ( ! $satisfied_dependencies ) {
-			return;
-		}
-
-		// Indicate to the feature plugin that the core package exists.
-		if ( ! defined( 'WC_ADMIN_PACKAGE_EXISTS' ) ) {
-			define( 'WC_ADMIN_PACKAGE_EXISTS', true );
-		}
-
 		// Avoid double initialization when the feature plugin is in use.
 		if ( defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
 			self::$active_version = WC_ADMIN_VERSION_NUMBER;
@@ -73,6 +62,17 @@ class Package {
 			register_deactivation_hook( WC_ADMIN_PLUGIN_FILE, array( __CLASS__, 'on_deactivation' ) );
 
 			return;
+		}
+
+		$feature_plugin_instance = FeaturePlugin::instance();
+		$satisfied_dependencies  = is_callable( array( $feature_plugin_instance, 'has_satisfied_dependencies' ) ) && $feature_plugin_instance->has_satisfied_dependencies();
+		if ( ! $satisfied_dependencies ) {
+			return;
+		}
+
+		// Indicate to the feature plugin that the core package exists.
+		if ( ! defined( 'WC_ADMIN_PACKAGE_EXISTS' ) ) {
+			define( 'WC_ADMIN_PACKAGE_EXISTS', true );
 		}
 
 		self::$package_active = true;
