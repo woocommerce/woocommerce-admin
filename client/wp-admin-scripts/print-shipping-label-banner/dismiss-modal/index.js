@@ -19,11 +19,17 @@ export class DismissModal extends Component {
 		} );
 	};
 
+	hideBanner = () => {
+		document.getElementById(
+			'woocommerce-admin-print-label'
+		).style.display = 'none';
+	};
+
 	remindMeLaterClicked = () => {
 		const { onCloseAll, trackElementClicked } = this.props;
 		this.setDismissed( Date.now() );
 		onCloseAll();
-
+		this.hideBanner();
 		trackElementClicked( 'shipping_banner_dismiss_modal_remind_me_later' );
 	};
 
@@ -31,6 +37,7 @@ export class DismissModal extends Component {
 		const { onCloseAll, trackElementClicked } = this.props;
 		this.setDismissed( -1 );
 		onCloseAll();
+		this.hideBanner();
 		trackElementClicked( 'shipping_banner_dismiss_modal_close_forever' );
 	};
 
