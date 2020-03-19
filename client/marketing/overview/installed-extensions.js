@@ -35,7 +35,7 @@ class InstalledExtensions extends Component {
 				className="woocommerce-marketing-installed-extensions-card"
 			>
 				{ extensions.map( ( extension ) => {
-					return <InstalledExtensionRow { ...extension } />
+					return <InstalledExtensionRow key={ extension.slug } { ...extension } />
 				} ) }
 			</Card>
 		)
