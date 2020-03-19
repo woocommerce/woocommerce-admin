@@ -73,15 +73,17 @@ class InstalledExtensions {
 	protected static function get_facebook_extension_data() {
 		$slug = 'facebook-for-woocommerce';
 
-		if ( ! PluginsHelper::is_plugin_installed( $slug ) ) {
+		if ( ! PluginsHelper::is_plugin_installed( $slug ) || ! function_exists( 'facebook_for_woocommerce' ) ) {
 			return false;
 		}
 
 		$data = self::get_extension_base_data( $slug );
 
-		$data['settingsUrl'] = admin_url( 'admin.php?page=wc-settings&tab=integration&section=facebookcommerce' );
-		$data['docsUrl'] = 'https://docs.woocommerce.com/document/facebook-for-woocommerce/';
-		$data['supportUrl'] = 'https://woocommerce.com/contact-us/';
+		$integration = facebook_for_woocommerce()->get_integration();
+
+		if ( $integration->is_configured() ) {
+			$data['status'] = 'configured';
+		}
 
 		return $data;
 	}
