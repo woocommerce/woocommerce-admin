@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.3.0
 Tested up to: 5.3.2
 Requires PHP: 5.6.20
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/license.txt
 
@@ -70,6 +70,12 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 3. Analytics
 
 == Changelog ==
+
+= 1.0.3 2020-03-19 =
+
+- Fix: Stop calling protected has_satisfied_dependencies() on outdated plugin. #3938
+- Fix: Rename image assets in OBW business details step. #3931
+- Fix: Stop using WP Post store for Action Scheduler. #3936
 
 = 1.0.2 2020-03-18 =
 
