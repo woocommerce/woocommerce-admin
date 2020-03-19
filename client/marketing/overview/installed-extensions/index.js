@@ -34,6 +34,10 @@ class InstalledExtensions extends Component {
 	render() {
 		const { extensions } = this.state;
 
+		if ( extensions.length === 0 ) {
+			return null
+		}
+
 		return (
 			<Card
 				title={ __( 'Installed marketing extensions', 'woocommerce-admin' ) }
