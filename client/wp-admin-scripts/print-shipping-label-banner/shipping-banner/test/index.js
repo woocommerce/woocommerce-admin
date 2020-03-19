@@ -88,11 +88,16 @@ describe( 'Create shipping label button', () => {
 	const activePlugins = {
 		includes: jest.fn().mockReturnValue( true ),
 	};
-	const acceptTos = jest.fn();
+	const acceptTos = jest.fn( () => Promise.resolve() );
 	const wcsAssets = {};
 	const getWcsAssets = jest.fn( () => {
-		return wcsAssets;
+		return Promise.resolve( wcsAssets );
 	} );
+
+	delete window.location; // jsdom won't allow to rewrite window.location unless deleted first
+	window.location = {
+		href: 'http://wcship.test/wp-admin/post.php?post=1000&action=edit',
+	};
 
 	beforeEach( () => {
 		shippingBannerWrapper = shallow(
@@ -154,7 +159,9 @@ describe( 'Create shipping label button', () => {
 	it( 'should load WCS assets when a path is provided', () => {
 		const scriptMock = {};
 		const linkMock = {};
+		const divMock = { dataset: { args: null } };
 		const createElementMockReturn = {
+			div: divMock,
 			script: scriptMock,
 			link: linkMock,
 		};
@@ -185,7 +192,10 @@ describe( 'Create shipping label button', () => {
 		} );
 
 		expect( createElementMock ).toHaveBeenCalledWith( 'script' );
-		expect( createElementMock ).toHaveNthReturnedWith( 1, scriptMock );
+		expect( createElementMock ).toHaveNthReturnedWith( 1, divMock );
+
+		expect( createElementMock ).toHaveBeenCalledWith( 'script' );
+		expect( createElementMock ).toHaveNthReturnedWith( 2, scriptMock );
 		expect( scriptMock.async ).toEqual( true );
 		expect( scriptMock.src ).toEqual( '/path/to/wcs.js' );
 		expect( appendChildMock ).toHaveBeenCalledWith( scriptMock );
@@ -193,7 +203,7 @@ describe( 'Create shipping label button', () => {
 		expect( getElementsByTagNameMock ).toHaveBeenCalledWith( 'head' );
 		expect( getElementsByTagNameMock ).toHaveReturnedWith( [ headMock ] );
 		expect( createElementMock ).toHaveBeenCalledWith( 'link' );
-		expect( createElementMock ).toHaveNthReturnedWith( 2, linkMock );
+		expect( createElementMock ).toHaveNthReturnedWith( 3, linkMock );
 		expect( linkMock.rel ).toEqual( 'stylesheet' );
 		expect( linkMock.type ).toEqual( 'text/css' );
 		expect( linkMock.href ).toEqual( '/path/to/wcs.css' );
@@ -207,11 +217,6 @@ describe( 'Create shipping label button', () => {
 		const getState = jest.fn();
 		const dispatch = jest.fn();
 		window.wcsGetAppStore.mockReturnValueOnce( { getState, dispatch } );
-		delete window.location; // jsdom won't allow to rewrite window.location unless deleted first
-		window.location = {
-			href:
-				'http://wcship.test/wp-admin/post.php?post=ORDER_ID&action=edit',
-		};
 		getState.mockReturnValueOnce( {
 			ui: {
 				selectedSiteId: 'SITE_ID',
@@ -224,7 +229,7 @@ describe( 'Create shipping label button', () => {
 		expect( getState ).toHaveBeenCalledTimes( 1 );
 		expect( dispatch ).toHaveBeenCalledWith( {
 			type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
-			orderId: 'ORDER_ID',
+			orderId: 1000,
 			siteId: 'SITE_ID',
 		} );
 	} );

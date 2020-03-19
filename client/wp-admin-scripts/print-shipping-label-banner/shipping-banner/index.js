@@ -23,10 +23,16 @@ const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 export class ShippingBanner extends Component {
 	constructor( props ) {
 		super( props );
+
+		const orderId = new URL( window.location.href ).searchParams.get(
+			'post'
+		);
+
 		this.state = {
 			showShippingBanner: true, // TODO: update to get state when closedForever is clicked
 			isDismissModalOpen: false,
 			setupErrorReason: setupErrorTypes.SETUP,
+			orderId: parseInt( orderId, 10 ),
 		};
 	}
 
@@ -125,7 +131,9 @@ export class ShippingBanner extends Component {
 
 		return Promise.all( [ acceptTos(), getWcsAssets() ] ).then(
 			( [ , wcsAssets ] ) => {
-				this.loadWcsAssets( wcsAssets );
+				if ( wcsAssets ) {
+					this.loadWcsAssets( wcsAssets );
+				}
 			}
 		);
 	}
@@ -133,6 +141,16 @@ export class ShippingBanner extends Component {
 	loadWcsAssets( { assets } ) {
 		const js = assets.wc_connect_admin_script;
 		const styles = assets.wc_connect_admin_style;
+
+		const shippingLabelContainer = document.createElement( 'div' );
+		const { orderId } = this.state;
+		shippingLabelContainer.className =
+			'wcc-root woocommerce wc-connect-create-shipping-label';
+		shippingLabelContainer.dataset.args = JSON.stringify( {
+			orderId,
+			context: 'shipping_label',
+		} );
+		document.body.appendChild( shippingLabelContainer );
 
 		Promise.all( [
 			new Promise( ( resolve, reject ) => {
@@ -161,14 +179,11 @@ export class ShippingBanner extends Component {
 
 	openWcsModal() {
 		if ( window.wcsGetAppStore ) {
-			const orderId = new URL( window.location.href ).searchParams.get(
-				'post'
-			);
-
 			const wcsStore = window.wcsGetAppStore(
 				'wc-connect-create-shipping-label'
 			);
 			const state = wcsStore.getState();
+			const { orderId } = this.state;
 			const siteId = state.ui.selectedSiteId;
 
 			wcsStore.dispatch( {
