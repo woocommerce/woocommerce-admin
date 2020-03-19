@@ -35,26 +35,38 @@ class TaskDashboard extends Component {
 	}
 
 	componentDidMount() {
+		const { incompleteTasks, updateOptions } = this.props;
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
 
 		this.recordTaskView();
 		this.recordTaskListView();
 
-		if ( this.props.inline ) {
-			this.props.updateOptions( {
+		if ( ! incompleteTasks.length ) {
+			updateOptions( {
 				woocommerce_task_list_complete: true,
 			} );
 		}
 	}
 
 	componentDidUpdate( prevProps ) {
-		const { task: prevTask } = prevProps.query;
-		const { task } = this.props.query;
+		const { incompleteTasks, query, updateOptions } = this.props;
+		const {
+			incompleteTasks: prevIncompleteTasks,
+			query: prevQuery,
+		} = prevProps;
+		const { task: prevTask } = prevQuery;
+		const { task } = query;
 
 		if ( prevTask !== task ) {
 			window.document.documentElement.scrollTop = 0;
 			this.recordTaskView();
+		}
+
+		if ( ! incompleteTasks.length && prevIncompleteTasks.length ) {
+			updateOptions( {
+				woocommerce_task_list_complete: true,
+			} );
 		}
 	}
 
@@ -399,7 +411,7 @@ class TaskDashboard extends Component {
 }
 
 export default compose(
-	withSelect( ( select ) => {
+	withSelect( ( select, props ) => {
 		const { getProfileItems, getOptions, isJetpackConnected } = select(
 			'wc-api'
 		);
@@ -424,12 +436,18 @@ export default compose(
 		const taskListPayments = getOptions( [
 			'woocommerce_task_list_payments',
 		] );
-		const taskListHidden =
-			get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) === 'yes';
 		const doThisLater = get(
 			options,
 			[ 'woocommerce_task_list_do_this_later' ],
 			false
+		);
+		const tasks = getAllTasks( {
+			profileItems,
+			options: getOptions( [ 'woocommerce_task_list_payments' ] ),
+			query: props.query,
+		} );
+		const incompleteTasks = tasks.filter(
+			( task ) => task.visible && ! task.completed
 		);
 
 		return {
@@ -438,8 +456,8 @@ export default compose(
 			promptShown,
 			taskListPayments,
 			isJetpackConnected: isJetpackConnected(),
-			taskListHidden,
 			doThisLater,
+			incompleteTasks,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
