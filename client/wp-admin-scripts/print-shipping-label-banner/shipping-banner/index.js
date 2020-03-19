@@ -33,6 +33,8 @@ export class ShippingBanner extends Component {
 			isDismissModalOpen: false,
 			setupErrorReason: setupErrorTypes.SETUP,
 			orderId: parseInt( orderId, 10 ),
+			wcsAssetsLoaded: false,
+			wcsAssetsLoading: false,
 		};
 	}
 
@@ -139,11 +141,19 @@ export class ShippingBanner extends Component {
 	}
 
 	loadWcsAssets( { assets } ) {
+		if ( this.state.wcsAssetsLoaded || this.state.wcsAssetsLoading ) {
+			this.openWcsModal();
+			return;
+		}
+
+		this.setState( { wcsAssetsLoading: true } );
+
 		const js = assets.wc_connect_admin_script;
 		const styles = assets.wc_connect_admin_style;
 
 		const shippingLabelContainer = document.createElement( 'div' );
 		const { orderId } = this.state;
+
 		shippingLabelContainer.className =
 			'wcc-root woocommerce wc-connect-create-shipping-label';
 		shippingLabelContainer.dataset.args = JSON.stringify( {
@@ -173,6 +183,7 @@ export class ShippingBanner extends Component {
 				head.appendChild( link );
 			} ),
 		] ).then( () => {
+			this.setState( { wcsAssetsLoaded: true, wcsAssetsLoading: false } );
 			this.openWcsModal();
 		} );
 	}
