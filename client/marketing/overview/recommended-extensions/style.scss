@@ -1,10 +1,58 @@
 .woocommerce-marketing-recommended-extensions-card {
 	.woocommerce-card__body {
+		padding: 12px;
+	}
 
-		.components-spinner {
-			float: none;
-			margin: 45px auto 50px;
-			display: block;
+	.components-spinner {
+		float: none;
+		margin: 45px auto 50px;
+		display: block;
+	}
+
+	&__items {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	&__item {
+		display: block;
+		padding: 12px;
+		width: 25%;
+		text-decoration: none;
+		position: relative;
+
+		h4 {
+			color: $core-grey-dark-800;
+			margin: -2px 0 5px;
+			font-size: 16px;
+			line-height: 1.3;
+		}
+
+		p {
+			color: $core-grey-dark-500;
+			margin: 0;
+		}
+
+		&:hover {
+			h4 {
+				color: #0071A1;
+			}
+			p {
+				color: $core-grey-dark-900;
+			}
 		}
 	}
+
+	&__item-text {
+		padding-left: 46px;
+	}
+
+	&__item-img {
+		width: 36px;
+		height: 36px;
+		position: absolute;
+		top: 12px;
+		left: 12px;
+	}
+
 }
