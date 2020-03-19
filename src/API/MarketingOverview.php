@@ -60,6 +60,19 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 				'schema' => array( $this, 'get_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/recommended',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_recommended_plugins' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -104,6 +117,29 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Return installed marketing extensions data.
+	 *
+	 * @param \WP_REST_Request $request Request data.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function get_recommended_plugins( $request ) {
+		$all_recommended = [
+			// todo
+		];
+
+		$uninstalled = [];
+
+		foreach ( $all_recommended as $plugin ) {
+			if ( ! PluginsHelper::is_plugin_installed( $plugin['plugin'] ) ) {
+				$uninstalled[] = $plugin;
+			}
+		}
+
+		return rest_ensure_response( $uninstalled );
 	}
 
 }
