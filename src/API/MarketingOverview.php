@@ -9,6 +9,9 @@
 
 namespace Automattic\WooCommerce\Admin\API;
 
+use Automattic\WooCommerce\Admin\Marketing\InstalledExtensions;
+use Automattic\WooCommerce\Admin\PluginsHelper;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -37,8 +40,70 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 	 * Register routes.
 	 */
 	public function register_routes() {
-
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/activate-plugin',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'activate_plugin' ),
+					'permission_callback' => array( $this, 'install_plugins_permissions_check' ),
+					'args'                => array(
+						'plugin' => array(
+							'required'          => true,
+							'type'              => 'string',
+							'validate_callback' => 'rest_validate_request_arg',
+							'sanitize_callback' => 'sanitize_title_with_dashes',
+						)
+					)
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
 	}
 
+	/**
+	 * Return installed marketing extensions data.
+	 *
+	 * @param \WP_REST_Request $request Request data.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function activate_plugin( $request ) {
+		$allowed_plugins = InstalledExtensions::get_allowed_plugins();
+		$plugin_slug     = $request->get_param( 'plugin' );
+
+		if (
+			! PluginsHelper::is_plugin_installed( $plugin_slug ) ||
+			! in_array( $plugin_slug, $allowed_plugins, true )
+		) {
+			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
+		}
+
+		$result = activate_plugin( PluginsHelper::get_plugin_path_from_slug( $plugin_slug ) );
+
+		if ( ! is_null( $result ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'The plugin could not be activated.', 'woocommerce-admin' ), 500 );
+		}
+
+		return rest_ensure_response( array(
+			'status' => 'success',
+		) );
+	}
+
+	/**
+	 * Check if a given request has access to manage plugins.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 *
+	 * @return \WP_Error|boolean
+	 */
+	public function install_plugins_permissions_check( $request ) {
+		if ( ! current_user_can( 'install_plugins' ) ) {
+			return new \WP_Error( 'woocommerce_rest_cannot_update', __( 'Sorry, you cannot manage plugins.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
 
 }
