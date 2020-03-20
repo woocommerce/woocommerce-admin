@@ -112,7 +112,7 @@ InstalledExtensionRow.propTypes = {
 	slug: PropTypes.string.isRequired,
 	description: PropTypes.string.isRequired,
 	status: PropTypes.string.isRequired,
-	settingsUrl: PropTypes.string.isRequired,
+	settingsUrl: PropTypes.string,
 	docsUrl: PropTypes.string,
 	supportUrl: PropTypes.string,
 	dashboardUrl: PropTypes.string,
