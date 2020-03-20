@@ -162,8 +162,8 @@ export class ShippingBanner extends Component {
 		} );
 	};
 
-	async acceptTosAndGetWCSAssets() {
-		acceptWcsTos()
+	acceptTosAndGetWCSAssets() {
+		return acceptWcsTos()
 			.then( () => getWcsAssets() )
 			.then( ( wcsAssets ) => this.loadWcsAssets( wcsAssets ) )
 			.catch( () => this.setState( { wcsSetupError: true } ) );
@@ -339,7 +339,6 @@ export class ShippingBanner extends Component {
 					</h3>
 					<p>
 						{ interpolateComponents( {
-
 							mixedString: this.getInstallText(),
 							components: {
 								tosLink: (

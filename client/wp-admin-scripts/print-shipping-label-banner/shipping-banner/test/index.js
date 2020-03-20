@@ -8,6 +8,14 @@ import { ExternalLink, Button } from '@wordpress/components';
 /**
  * Internal dependencies
  */
+
+jest.mock( '../../wcs-api.js' );
+import { acceptWcsTos, getWcsAssets } from '../../wcs-api.js';
+
+acceptWcsTos.mockReturnValue( Promise.resolve() );
+const wcsAssetsMock = {};
+getWcsAssets.mockReturnValue( Promise.resolve( wcsAssetsMock ) );
+
 import { ShippingBanner } from '../index.js';
 
 jest.mock( 'lib/tracks' );
@@ -93,14 +101,12 @@ describe( 'Tracking clicks in shippingBanner', () => {
 
 	it( 'should record an event when user clicks "WooCommerce Service"', () => {
 		const links = shippingBannerWrapper.find( ExternalLink );
-		expect( links.length ).toBe( 2 );
+		expect( links.length ).toBe( 1 );
 		const wcsLink = links.first();
 		wcsLink.simulate( 'click' );
 		expect( recordEvent ).toHaveBeenCalledWith(
-			'banner_element_clicked',
-			getExpectedTrackingData(
-				'shipping_banner_woocommerce_service_link'
-			)
+			'banner_impression',
+			getExpectedTrackingData()
 		);
 	} );
 
@@ -124,11 +130,6 @@ describe( 'Create shipping label button', () => {
 	const activePlugins = {
 		includes: jest.fn().mockReturnValue( true ),
 	};
-	const acceptTos = jest.fn( () => Promise.resolve( true ) );
-	const wcsAssets = {};
-	const getWcsAssets = jest.fn( () => {
-		return Promise.resolve( wcsAssets );
-	} );
 
 	delete window.location; // jsdom won't allow to rewrite window.location unless deleted first
 	window.location = {
@@ -148,13 +149,12 @@ describe( 'Create shipping label button', () => {
 				activationErrors={ [] }
 				installationErrors={ [] }
 				isRequesting={ false }
-				acceptTos={ acceptTos }
-				getWcsAssets={ getWcsAssets }
 			/>
 		);
 	} );
 
 	it( 'should install WooCommerce Shipping when button is clicked', () => {
+		activePlugins.includes = jest.fn().mockReturnValue( false );
 		const createShippingLabelButton = shippingBannerWrapper.find( Button );
 		expect( createShippingLabelButton.length ).toBe( 1 );
 		createShippingLabelButton.simulate( 'click' );
@@ -176,10 +176,14 @@ describe( 'Create shipping label button', () => {
 	it( 'should perform a request to accept the TOS and get WCS assets to load', async () => {
 		const loadWcsAssetsMock = jest.fn();
 		shippingBannerWrapper.instance().loadWcsAssets = loadWcsAssetsMock;
+
 		await shippingBannerWrapper.instance().acceptTosAndGetWCSAssets();
-		expect( acceptTos ).toHaveBeenCalled();
+
+		expect( acceptWcsTos ).toHaveBeenCalled();
+
 		expect( getWcsAssets ).toHaveBeenCalled();
-		expect( loadWcsAssetsMock ).toHaveBeenCalledWith( wcsAssets );
+
+		expect( loadWcsAssetsMock ).toHaveBeenCalledWith( wcsAssetsMock );
 	} );
 
 	it( 'should load WCS assets when a path is provided', () => {
