@@ -1,11 +1,13 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Component, Fragment } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { compose } from '@wordpress/compose';
 import { Spinner } from '@wordpress/components';
 import classnames from 'classnames';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -34,6 +36,8 @@ class RecommendedExtensions extends Component {
 	}
 
 	async fetchExtensions() {
+		const { createNotice } = this.props;
+
 		try {
 			const response = await apiFetch( {
 				path: `${ WC_ADMIN_NAMESPACE }/marketing/overview/recommended?per_page=6`,
@@ -48,8 +52,10 @@ class RecommendedExtensions extends Component {
 			}
 			throw new Error();
 		} catch ( err ) {
-			console.log( err );
-			// todo handle error
+			this.setState( { isLoading: false } );
+			createNotice( 'success',
+				__( 'There was an error loading recommended extensions.', 'woocommerce-admin' )
+			);
 		}
 	}
 
@@ -89,4 +95,13 @@ class RecommendedExtensions extends Component {
 	}
 }
 
-export default RecommendedExtensions;
+export default compose(
+	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
+
+		return {
+			createNotice,
+		};
+	} )
+)( RecommendedExtensions );
+
