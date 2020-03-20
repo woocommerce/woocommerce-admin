@@ -26,7 +26,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.26.1';
+	const VERSION = '1.0.3';
 
 	/**
 	 * Package active.
@@ -36,24 +36,22 @@ class Package {
 	private static $package_active = false;
 
 	/**
+	 * Active version
+	 *
+	 * @var bool
+	 */
+	private static $active_version = null;
+
+	/**
 	 * Init the package.
 	 *
 	 * Only initialize for WP 5.3 or greater.
 	 */
 	public static function init() {
-		$wordpress_minimum_met = version_compare( get_bloginfo( 'version' ), '5.3', '>=' );
-		if ( ! $wordpress_minimum_met ) {
-			return;
-		}
-
-		// Indicate to the feature plugin that the core package exists.
-		if ( ! defined( 'WC_ADMIN_PACKAGE_EXISTS' ) ) {
-			define( 'WC_ADMIN_PACKAGE_EXISTS', true );
-		}
-
 		// Avoid double initialization when the feature plugin is in use.
 		if ( defined( 'WC_ADMIN_VERSION_NUMBER' ) ) {
-			$update_version = new WC_Admin_Notes_Deactivate_Plugin();
+			self::$active_version = WC_ADMIN_VERSION_NUMBER;
+			$update_version       = new WC_Admin_Notes_Deactivate_Plugin();
 			if ( version_compare( WC_ADMIN_VERSION_NUMBER, self::VERSION, '<' ) ) {
 				$update_version::add_note();
 			} else {
@@ -66,8 +64,23 @@ class Package {
 			return;
 		}
 
+		$feature_plugin_instance = FeaturePlugin::instance();
+		$satisfied_dependencies  = is_callable( array( $feature_plugin_instance, 'has_satisfied_dependencies' ) ) && $feature_plugin_instance->has_satisfied_dependencies();
+		if ( ! $satisfied_dependencies ) {
+			return;
+		}
+
+		// Indicate to the feature plugin that the core package exists.
+		if ( ! defined( 'WC_ADMIN_PACKAGE_EXISTS' ) ) {
+			define( 'WC_ADMIN_PACKAGE_EXISTS', true );
+		}
+
 		self::$package_active = true;
-		FeaturePlugin::instance()->init();
+		self::$active_version = self::VERSION;
+		$feature_plugin_instance->init();
+
+		// Unhook the custom Action Scheduler data store class in active older versions of WC Admin.
+		remove_filter( 'action_scheduler_store_class', array( $feature_plugin_instance, 'replace_actionscheduler_store_class' ) );
 	}
 
 	/**
@@ -85,7 +98,7 @@ class Package {
 	 * @return string
 	 */
 	public static function get_active_version() {
-		return self::$package_active ? self::VERSION : WC_ADMIN_VERSION_NUMBER;
+		return self::$active_version;
 	}
 
 	/**

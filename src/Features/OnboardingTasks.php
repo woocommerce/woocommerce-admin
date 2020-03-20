@@ -63,92 +63,7 @@ class OnboardingTasks {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_import_notice_admin_script' ) );
-
-		// Update payment cache on payment gateways update.
-		add_action( 'update_option_woocommerce_stripe_settings', array( $this, 'check_stripe_completion' ), 10, 2 );
-		add_action( 'add_option_woocommerce_stripe_settings', array( $this, 'check_stripe_completion' ), 10, 2 );
-		add_action( 'update_option_woocommerce_ppec_paypal_settings', array( $this, 'check_paypal_completion' ), 10, 2 );
-		add_action( 'add_option_woocommerce_ppec_paypal_settings', array( $this, 'check_paypal_completion' ), 10, 2 );
-		add_action( 'add_option_wc_square_refresh_tokens', array( $this, 'check_square_completion' ), 10, 2 );
-	}
-
-	/**
-	 * Check if Square payment settings are complete.
-	 *
-	 * @param string $option Option name.
-	 * @param array  $value Current value.
-	 */
-	public static function check_square_completion( $option, $value ) {
-		if ( empty( $value ) ) {
-			return;
-		}
-
-		self::mark_payment_method_configured( 'square' );
-	}
-
-
-	/**
-	 * Check if Paypal payment settings are complete.
-	 *
-	 * @param mixed $old_value Old value.
-	 * @param array $value Current value.
-	 */
-	public static function check_paypal_completion( $old_value, $value ) {
-		if (
-			! isset( $value['enabled'] ) ||
-			'yes' !== $value['enabled'] ||
-			! isset( $value['api_username'] ) ||
-			empty( $value['api_username'] ) ||
-			! isset( $value['api_password'] ) ||
-			empty( $value['api_password'] )
-		) {
-			return;
-		}
-
-		self::mark_payment_method_configured( 'paypal' );
-	}
-
-	/**
-	 * Check if Stripe payment settings are complete.
-	 *
-	 * @param mixed $old_value Old value.
-	 * @param array $value Current value.
-	 */
-	public static function check_stripe_completion( $old_value, $value ) {
-		if (
-			! isset( $value['enabled'] ) ||
-			'yes' !== $value['enabled'] ||
-			! isset( $value['publishable_key'] ) ||
-			empty( $value['publishable_key'] ) ||
-			! isset( $value['secret_key'] ) ||
-			empty( $value['secret_key'] )
-		) {
-			return;
-		}
-
-		self::mark_payment_method_configured( 'stripe' );
-	}
-
-	/**
-	 * Update the payments cache to complete if not already.
-	 *
-	 * @param string $payment_method Payment method slug.
-	 */
-	public static function mark_payment_method_configured( $payment_method ) {
-		$task_list_payments         = get_option( 'woocommerce_task_list_payments', array() );
-		$payment_methods            = isset( $task_list_payments['methods'] ) ? $task_list_payments['methods'] : array();
-		$configured_payment_methods = isset( $task_list_payments['configured'] ) ? $task_list_payments['configured'] : array();
-
-		if ( ! in_array( $payment_method, $configured_payment_methods, true ) ) {
-			$configured_payment_methods[]     = $payment_method;
-			$task_list_payments['configured'] = $configured_payment_methods;
-		}
-
-		if ( 0 === count( array_diff( $payment_methods, $configured_payment_methods ) ) ) {
-			$task_list_payments['completed'] = 1;
-		}
-
-		update_option( 'woocommerce_task_list_payments', $task_list_payments );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_menu_experience_script' ) );
 	}
 
 	/**
@@ -200,8 +115,8 @@ class OnboardingTasks {
 	 * Temporarily store the active task to persist across page loads when neccessary (such as publishing a product). Most tasks do not need to do this.
 	 */
 	public static function set_active_task() {
-		if ( isset( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) ) { // WPCS: csrf ok.
-			$task = sanitize_title_with_dashes( wp_unslash( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) );
+		if ( isset( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) ) { // phpcs:ignore csrf ok.
+			$task = sanitize_title_with_dashes( wp_unslash( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) ); // phpcs:ignore csrf ok.
 
 			if ( self::check_task_completion( $task ) ) {
 				return;
@@ -211,7 +126,7 @@ class OnboardingTasks {
 				self::ACTIVE_TASK_TRANSIENT,
 				$task,
 				DAY_IN_SECONDS
-			); // WPCS: csrf ok.
+			);
 		}
 	}
 
@@ -328,6 +243,25 @@ class OnboardingTasks {
 			delete_transient( self::ACTIVE_TASK_TRANSIENT );
 			wp_enqueue_script( 'onboarding-product-import-notice', Loader::get_url( 'wp-admin-scripts/onboarding-product-import-notice.js' ), array( 'wc-navigation', 'wp-i18n', 'wp-data' ), WC_ADMIN_VERSION_NUMBER, true );
 		}
+	}
+
+	/**
+	 * Add a script that does some fine tuning around the WooCommerce menu experience during onboarding
+	 * (hiding menu items while the task list is showing and the rest of the WooCommerce dashboard is
+	 * not shown).
+	 */
+	public function add_onboarding_menu_experience_script() {
+		if ( ! Loader::is_onboarding_enabled() ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'onboarding-menu-experience',
+			Loader::get_url( 'wp-admin-scripts/onboarding-menu-experience.js' ),
+			array( WC_ADMIN_APP ),
+			Loader::get_file_version( 'wp-admin-scripts/onboarding-menu-experience.js' ),
+			true
+		);
 	}
 
 	/**

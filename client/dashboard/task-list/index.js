@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Component, cloneElement, Fragment } from '@wordpress/element';
 import { get } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
@@ -275,8 +275,66 @@ class TaskDashboard extends Component {
 		);
 	}
 
+	onSkipStoreSetup = () => {
+		const completedTaskKeys = this.getTasks()
+			.filter( ( x ) => x.completed )
+			.map( ( x ) => x.key );
+
+		recordEvent( 'wcadmin_tasklist_skip', {
+			completed_tasks_count: completedTaskKeys.length,
+			completed_tasks: completedTaskKeys,
+			reason: 'skip',
+		} );
+
+		this.props.updateOptions( {
+			woocommerce_task_list_hidden: 'yes',
+		} );
+	};
+
+	onDoThisLater = () => {
+		const completedTaskKeys = this.getTasks()
+			.filter( ( x ) => x.completed )
+			.map( ( x ) => x.key );
+
+		recordEvent( 'wcadmin_tasklist_skip', {
+			completed_tasks_count: completedTaskKeys.length,
+			completed_tasks: completedTaskKeys,
+			reason: 'later',
+		} );
+
+		this.props.updateOptions( {
+			woocommerce_task_list_do_this_later: true,
+		} );
+	};
+
+	renderSkipActions() {
+		const { doThisLater } = this.props;
+
+		return (
+			<div className="skip-actions">
+				<Button
+					isLink
+					className="is-secondary"
+					onClick={ this.onSkipStoreSetup }
+				>
+					{ __( 'Skip store setup', 'woocommerce-admin' ) }
+				</Button>
+				{ ! doThisLater && ' | ' }
+				{ ! doThisLater && (
+					<Button
+						isLink
+						className="is-secondary"
+						onClick={ this.onDoThisLater }
+					>
+						{ __( "I'll do this later", 'woocommerce-admin' ) }
+					</Button>
+				) }
+			</div>
+		);
+	}
+
 	render() {
-		const { inline } = this.props;
+		const { inline, query } = this.props;
 		const { isCartModalOpen, isWelcomeModalOpen } = this.state;
 		const currentTask = this.getCurrentTask();
 		const listTasks = this.getTasks().map( ( task ) => {
@@ -304,7 +362,9 @@ class TaskDashboard extends Component {
 			<Fragment>
 				<div className="woocommerce-task-dashboard__container">
 					{ currentTask ? (
-						currentTask.container
+						cloneElement( currentTask.container, {
+							query,
+						} )
 					) : (
 						<Fragment>
 							<Card
@@ -323,6 +383,7 @@ class TaskDashboard extends Component {
 							</Card>
 							{ inline && this.renderPrompt() }
 							{ isWelcomeModalOpen && this.renderWelcomeModal() }
+							{ this.renderSkipActions() }
 						</Fragment>
 					) }
 				</div>
@@ -347,6 +408,8 @@ export default compose(
 		const options = getOptions( [
 			'woocommerce_task_list_prompt_shown',
 			'woocommerce_task_list_welcome_modal_dismissed',
+			'woocommerce_task_list_hidden',
+			'woocommerce_task_list_do_this_later',
 		] );
 		const promptShown = get(
 			options,
@@ -361,6 +424,13 @@ export default compose(
 		const taskListPayments = getOptions( [
 			'woocommerce_task_list_payments',
 		] );
+		const taskListHidden =
+			get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) === 'yes';
+		const doThisLater = get(
+			options,
+			[ 'woocommerce_task_list_do_this_later' ],
+			false
+		);
 
 		return {
 			modalDismissed,
@@ -368,6 +438,8 @@ export default compose(
 			promptShown,
 			taskListPayments,
 			isJetpackConnected: isJetpackConnected(),
+			taskListHidden,
+			doThisLater,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

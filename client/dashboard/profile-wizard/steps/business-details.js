@@ -20,7 +20,13 @@ import {
 /**
  * Internal dependencies
  */
-import { H, Card, SelectControl, Form } from '@woocommerce/components';
+import {
+	H,
+	Card,
+	SelectControl,
+	Form,
+	TextControl,
+} from '@woocommerce/components';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { formatCurrency } from 'lib/currency-format';
@@ -42,6 +48,7 @@ class BusinessDetails extends Component {
 
 		this.initialValues = {
 			other_platform: profileItems.other_platform || '',
+			other_platform_name: profileItems.other_platform_name || '',
 			product_count: profileItems.product_count || '',
 			selling_venues: profileItems.selling_venues || '',
 			revenue: profileItems.revenue || '',
@@ -50,6 +57,9 @@ class BusinessDetails extends Component {
 				: true,
 			'mailchimp-for-woocommerce': businessExtensions
 				? businessExtensions.includes( 'mailchimp-for-woocommerce' )
+				: true,
+			'kliken-marketing-for-google': businessExtensions
+				? businessExtensions.includes( 'kliken-marketing-for-google' )
 				: true,
 		};
 
@@ -62,6 +72,7 @@ class BusinessDetails extends Component {
 		this.extensions = [
 			'facebook-for-woocommerce',
 			'mailchimp-for-woocommerce',
+			'kliken-marketing-for-google',
 		];
 
 		this.onContinue = this.onContinue.bind( this );
@@ -77,6 +88,7 @@ class BusinessDetails extends Component {
 		} = this.props;
 		const {
 			other_platform: otherPlatform,
+			other_platform_name: otherPlatformName,
 			product_count: productCount,
 			revenue,
 			selling_venues: sellingVenues,
@@ -85,16 +97,20 @@ class BusinessDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: productCount,
-			already_selling: sellingVenues !== 'no',
+			already_selling: sellingVenues,
 			currency: currency.code,
 			revenue,
 			used_platform: otherPlatform,
+			used_platform_name: otherPlatformName,
 			install_facebook: values[ 'facebook-for-woocommerce' ],
 			install_mailchimp: values[ 'mailchimp-for-woocommerce' ],
+			install_google_ads: values[ 'kliken-marketing-for-google' ],
 		} );
 
 		const _updates = {
 			other_platform: otherPlatform,
+			other_platform_name:
+				otherPlatform === 'other' ? otherPlatformName : '',
 			product_count: productCount,
 			revenue,
 			selling_venues: sellingVenues,
@@ -135,7 +151,7 @@ class BusinessDetails extends Component {
 	validate( values ) {
 		const errors = {};
 
-		Object.keys( values ).forEach( name => {
+		Object.keys( values ).forEach( ( name ) => {
 			if ( name === 'other_platform' ) {
 				if (
 					! values.other_platform.length &&
@@ -144,6 +160,16 @@ class BusinessDetails extends Component {
 					)
 				) {
 					errors.other_platform = __(
+						'This field is required',
+						'woocommerce-admin'
+					);
+				}
+			} else if ( name === 'other_platform_name' ) {
+				if (
+					! values.other_platform_name &&
+					values.other_platform === 'other'
+				) {
+					errors.other_platform_name = __(
 						'This field is required',
 						'woocommerce-admin'
 					);
@@ -289,14 +315,14 @@ class BusinessDetails extends Component {
 	}
 
 	renderBusinessExtensions( values, getInputProps ) {
-		const { installExtensions } = this.state;
+		const { installExtensions, extensionInstallError } = this.state;
 		const { goToNextStep } = this.props;
 		const extensionsToInstall = this.getBusinessExtensions( values );
 		const extensionBenefits = [
 			{
 				slug: 'facebook-for-woocommerce',
 				title: __( 'Market on Facebook', 'woocommerce-admin' ),
-				icon: 'onboarding/facebook.png',
+				icon: 'onboarding/fb-woocommerce.png',
 				description: __(
 					'Grow your business by targeting the right people and driving sales with Facebook.',
 					'woocommerce-admin'
@@ -314,37 +340,47 @@ class BusinessDetails extends Component {
 					'woocommerce-admin'
 				),
 			},
+			{
+				slug: 'kliken-marketing-for-google',
+				title: __(
+					'Drive sales with Google Shopping',
+					'woocommerce-admin'
+				),
+				icon: 'onboarding/g-shopping.png',
+				description: __(
+					'Get in front of new customers on Google and secure $150 in ads credit with Kliken’s integration.',
+					'woocommerce-admin'
+				),
+			},
 		];
 
 		return (
 			<Fragment>
-				<div className="woocommerce-profile-wizard__benefits">
-					{ extensionBenefits.map( ( benefit ) => (
-						<div
-							className="woocommerce-profile-wizard__benefit"
-							key={ benefit.title }
-						>
-							<div className="woocommerce-profile-wizard__business-extension">
-								<img
-									src={ wcAdminAssetUrl + benefit.icon }
-									alt=""
-								/>
-							</div>
-							<div className="woocommerce-profile-wizard__benefit-content">
-								<H className="woocommerce-profile-wizard__benefit-title">
-									{ benefit.title }
-								</H>
-								<p>{ benefit.description }</p>
-							</div>
-							<div className="woocommerce-profile-wizard__benefit-toggle">
-								<FormToggle
-									checked={ values[ benefit.slug ] }
-									{ ...getInputProps( benefit.slug ) }
-								/>
-							</div>
+				{ extensionBenefits.map( ( benefit ) => (
+					<div
+						className="woocommerce-profile-wizard__benefit"
+						key={ benefit.title }
+					>
+						<div className="woocommerce-profile-wizard__business-extension">
+							<img
+								src={ wcAdminAssetUrl + benefit.icon }
+								alt=""
+							/>
 						</div>
-					) ) }
-				</div>
+						<div className="woocommerce-profile-wizard__benefit-content">
+							<H className="woocommerce-profile-wizard__benefit-title">
+								{ benefit.title }
+							</H>
+							<p>{ benefit.description }</p>
+						</div>
+						<div className="woocommerce-profile-wizard__benefit-toggle">
+							<FormToggle
+								checked={ values[ benefit.slug ] }
+								{ ...getInputProps( benefit.slug ) }
+							/>
+						</div>
+					</div>
+				) ) }
 
 				{ installExtensions && (
 					<div className="woocommerce-profile-wizard__card-actions">
@@ -361,7 +397,7 @@ class BusinessDetails extends Component {
 									isInstallingExtensions: false,
 								} );
 							} }
-							autoInstall
+							autoInstall={ ! extensionInstallError }
 							pluginSlugs={ extensionsToInstall }
 						/>
 					</div>
@@ -499,6 +535,22 @@ class BusinessDetails extends Component {
 				label: __( 'Wix', 'woocommerce-admin' ),
 			},
 			{
+				key: 'amazon',
+				label: __( 'Amazon', 'woocommerce-admin' ),
+			},
+			{
+				key: 'ebay',
+				label: __( 'eBay', 'woocommerce-admin' ),
+			},
+			{
+				key: 'etsy',
+				label: __( 'Etsy', 'woocommerce-admin' ),
+			},
+			{
+				key: 'squarespace',
+				label: __( 'Squarespace', 'woocommerce-admin' ),
+			},
+			{
 				key: 'other',
 				label: __( 'Other', 'woocommerce-admin' ),
 			},
@@ -531,7 +583,7 @@ class BusinessDetails extends Component {
 								<Fragment>
 									<SelectControl
 										label={ __(
-											'How many products do you plan to sell?',
+											'How many products do you plan to display?',
 											'woocommerce-admin'
 										) }
 										options={ productCountOptions }
@@ -570,17 +622,32 @@ class BusinessDetails extends Component {
 										'other',
 										'brick-mortar-other',
 									].includes( values.selling_venues ) && (
-										<SelectControl
-											label={ __(
-												'Which platform is the store using?',
-												'woocommerce-admin'
+										<Fragment>
+											<SelectControl
+												label={ __(
+													'Which platform is the store using?',
+													'woocommerce-admin'
+												) }
+												options={ otherPlatformOptions }
+												required
+												{ ...getInputProps(
+													'other_platform'
+												) }
+											/>
+											{ values.other_platform ===
+												'other' && (
+												<TextControl
+													label={ __(
+														'What is the platform name?',
+														'woocommerce-admin'
+													) }
+													required
+													{ ...getInputProps(
+														'other_platform_name'
+													) }
+												/>
 											) }
-											options={ otherPlatformOptions }
-											required
-											{ ...getInputProps(
-												'other_platform'
-											) }
-										/>
+										</Fragment>
 									) }
 
 									{ showExtensions &&
