@@ -13,7 +13,7 @@ const Timeline = ( { className, items } ) => {
 		return (
 			<div className={ timelineClassName }>
 				<p className="timeline_no_events">
-					{ __( 'No events to display' ) }
+					{ __( 'No events to display', 'woocommerce-admin' ) }
 				</p>
 			</div>
 		);
