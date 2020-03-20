@@ -13,7 +13,7 @@ import { Link } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { Button } from '../../components';
+import { Button, ProductIcon } from '../../components';
 
 class InstalledExtensionRow extends Component {
 
@@ -89,7 +89,7 @@ class InstalledExtensionRow extends Component {
 	}
 
 	render() {
-		const { name, description, status } = this.props;
+		const { name, description, status, icon } = this.props;
 		let actions = null;
 
 		switch ( status ) {
@@ -109,6 +109,7 @@ class InstalledExtensionRow extends Component {
 				<div className="woocommerce-marketing-installed-extensions-card__item-actions">
 					{ actions }
 				</div>
+				<ProductIcon src={ icon } />
 				<h4>{ name }</h4>
 				{ status === 'configured' || (
 					<p className="woocommerce-marketing-installed-extensions-card__item-description">{ description }</p>
