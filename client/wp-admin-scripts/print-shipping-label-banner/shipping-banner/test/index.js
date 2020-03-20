@@ -200,6 +200,12 @@ describe( 'Create shipping label button', () => {
 			script: scriptMock,
 			link: linkMock,
 		};
+
+		window.jQuery = jest.fn();
+		window.jQuery.mockReturnValue( {
+			sortable: jest.fn(),
+		} );
+
 		const createElementMock = jest.fn( ( tagName ) => {
 			return createElementMockReturn[ tagName ];
 		} );
@@ -212,6 +218,11 @@ describe( 'Create shipping label button', () => {
 		};
 		getElementsByTagNameMock.mockReturnValueOnce( [ headMock ] );
 		document.getElementsByTagName = getElementsByTagNameMock;
+		const getElementByIdMock = jest.fn();
+		getElementByIdMock.mockReturnValue( {
+			insertAdjacentHTML: jest.fn(),
+		} );
+		document.getElementById = getElementByIdMock;
 
 		const appendChildMock = jest.fn();
 		document.body.appendChild = appendChildMock;
@@ -227,10 +238,7 @@ describe( 'Create shipping label button', () => {
 		} );
 
 		expect( createElementMock ).toHaveBeenCalledWith( 'script' );
-		expect( createElementMock ).toHaveNthReturnedWith( 1, divMock );
-
-		expect( createElementMock ).toHaveBeenCalledWith( 'script' );
-		expect( createElementMock ).toHaveNthReturnedWith( 2, scriptMock );
+		expect( createElementMock ).toHaveNthReturnedWith( 1, scriptMock );
 		expect( scriptMock.async ).toEqual( true );
 		expect( scriptMock.src ).toEqual( '/path/to/wcs.js' );
 		expect( appendChildMock ).toHaveBeenCalledWith( scriptMock );
@@ -238,7 +246,7 @@ describe( 'Create shipping label button', () => {
 		expect( getElementsByTagNameMock ).toHaveBeenCalledWith( 'head' );
 		expect( getElementsByTagNameMock ).toHaveReturnedWith( [ headMock ] );
 		expect( createElementMock ).toHaveBeenCalledWith( 'link' );
-		expect( createElementMock ).toHaveNthReturnedWith( 3, linkMock );
+		expect( createElementMock ).toHaveNthReturnedWith( 2, linkMock );
 		expect( linkMock.rel ).toEqual( 'stylesheet' );
 		expect( linkMock.type ).toEqual( 'text/css' );
 		expect( linkMock.href ).toEqual( '/path/to/wcs.css' );

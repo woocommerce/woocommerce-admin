@@ -99,7 +99,6 @@ class ShippingLabelBanner {
 					'context'               => 'shipping_label',
 					'order_id'              => $post->ID,
 					'shippable_items_count' => $this->count_shippable_items( $order ),
-
 				)
 			);
 			add_action( 'admin_enqueue_scripts', array( $this, 'add_print_shipping_label_script' ) );
@@ -147,8 +146,9 @@ class ShippingLabelBanner {
 		);
 
 		$payload = array(
-			'nonce'   => wp_create_nonce( 'wp_rest' ),
-			'baseURL' => get_rest_url(),
+			'nonce'                 => wp_create_nonce( 'wp_rest' ),
+			'baseURL'               => get_rest_url(),
+			'wcs_server_connection' => true,
 		);
 
 		wp_localize_script( 'print-shipping-label-banner', 'wcConnectData', $payload );
@@ -157,8 +157,8 @@ class ShippingLabelBanner {
 	/**
 	 * Render placeholder metabox.
 	 *
-	 * @param WP_Post $post current post.
-	 * @param array   $args empty args.
+	 * @param \WP_Post $post current post.
+	 * @param array    $args empty args.
 	 */
 	public function meta_box( $post, $args ) {
 

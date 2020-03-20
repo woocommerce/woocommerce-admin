@@ -149,6 +149,26 @@ export class ShippingBanner extends Component {
 		}
 	}
 
+	generateMetaBoxHtml( title, args ) {
+		const argsJsonString = JSON.stringify( args ).replace( /"/g, '&quot;' ); // JS has no native html_entities so we just replace.
+
+		const togglePanelText = __( 'Toggle panel:', 'woocommerce-admin' );
+
+		return `
+<div id="woocommerce-order-label" class="postbox ">
+	<button type="button" class="handlediv" aria-expanded="true">
+		<span class="screen-reader-text">${ togglePanelText } ${ title }</span>
+		<span class="toggle-indicator" aria-hidden="true"></span>
+	</button>
+	<h2 class="hndle"><span>${ title }</span></h2>
+	<div class="inside">
+		<div class="wcc-root woocommerce wc-connect-create-shipping-label" data-args="${ argsJsonString }">
+		</div>
+	</div>
+</div>
+`;
+	}
+
 	loadWcsAssets( { assets } ) {
 		if ( this.state.wcsAssetsLoaded || this.state.wcsAssetsLoading ) {
 			this.openWcsModal();
@@ -160,16 +180,38 @@ export class ShippingBanner extends Component {
 		const js = assets.wc_connect_admin_script;
 		const styles = assets.wc_connect_admin_style;
 
-		const shippingLabelContainer = document.createElement( 'div' );
 		const { orderId } = this.state;
+		const { itemsCount } = this.props;
 
-		shippingLabelContainer.className =
-			'wcc-root woocommerce wc-connect-create-shipping-label';
-		shippingLabelContainer.dataset.args = JSON.stringify( {
-			orderId,
-			context: 'shipping_label',
-		} );
-		document.body.appendChild( shippingLabelContainer );
+		const shippingLabelContainerHtml = this.generateMetaBoxHtml(
+			__( 'Shipping Label', 'woocommerce-admin' ),
+			{
+				orderId,
+				context: 'shipping_label',
+				items: itemsCount,
+			}
+		);
+		// Insert shipping label metabox just above main order details box.
+		document
+			.getElementById( 'woocommerce-order-data' )
+			.insertAdjacentHTML( 'beforebegin', shippingLabelContainerHtml );
+
+		const shipmentTrackingHtml = this.generateMetaBoxHtml(
+			__( 'Shipment Tracking', 'woocommerce-admin' ),
+			{
+				orderId,
+				context: 'shipment_tracking',
+				items: itemsCount,
+			}
+		);
+		// Insert tracking metabox in the side after the order actions.
+		document
+			.getElementById( 'woocommerce-order-actions' )
+			.insertAdjacentHTML( 'afterend', shipmentTrackingHtml );
+
+		// Need to refresh so the new metaboxes are sortable.
+		window.jQuery( '#normal-sortables' ).sortable( 'refresh' );
+		window.jQuery( '#side-sortables' ).sortable( 'refresh' );
 
 		Promise.all( [
 			new Promise( ( resolve, reject ) => {
@@ -211,6 +253,20 @@ export class ShippingBanner extends Component {
 				orderId,
 				siteId,
 			} );
+			wcsStore.dispatch( {
+				type: 'NOTICE_CREATE',
+				notice: {
+					duration: 10000,
+					status: 'is-success',
+					text: __(
+						'Plugin installed and activated',
+						'woocommerce-admin'
+					),
+				},
+			} );
+			document.getElementById(
+				'woocommerce-admin-print-label'
+			).style.display = 'none';
 		}
 	}
 
