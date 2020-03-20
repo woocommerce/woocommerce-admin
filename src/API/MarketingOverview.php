@@ -70,6 +70,9 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_recommended_plugins' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'args' => array(
+						'per_page' => $this->get_collection_params()['per_page'],
+					)
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -143,6 +146,7 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 	public function get_recommended_plugins( $request ) {
 		$all_plugins = Marketing::get_instance()->get_recommended_plugins();
 		$valid_plugins = [];
+		$per_page = $request->get_param( 'per_page' );
 
 		foreach ( $all_plugins as $plugin ) {
 			if ( ! PluginsHelper::is_plugin_installed( $plugin['plugin'] ) ) {
@@ -150,7 +154,7 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 			}
 		}
 
-		return rest_ensure_response( $valid_plugins );
+		return rest_ensure_response( array_slice( $valid_plugins, 0, $per_page ) );
 	}
 
 	/**
