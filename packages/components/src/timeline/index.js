@@ -9,7 +9,7 @@ import { __ } from '@wordpress/i18n';
 const Timeline = ( { className, items } ) => {
 	const timelineClassName = classnames( 'woocommerce-timeline', className );
 
-	if ( items.length === 0 ) {
+	if ( ! items || items.length === 0 ) {
 		return (
 			<div className={ timelineClassName }>
 				<p className="timeline_no_events">
