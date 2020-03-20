@@ -7,6 +7,7 @@
 
 namespace Automattic\WooCommerce\Admin\Marketing;
 
+use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
@@ -58,6 +59,7 @@ class InstalledExtensions {
 			$data['docsUrl']     = 'https://mailchimp.com/help/connect-or-disconnect-mailchimp-for-woocommerce/';
 			$data['settingsUrl'] = admin_url( 'admin.php?page=mailchimp-woocommerce' );
 			$data['supportUrl'] = 'https://woocommerce.com/contact-us/';
+			$data['icon'] = Loader::get_url( 'images/marketing/mailchimp.svg' );
 
 			if ( mailchimp_is_configured() ) {
 				$data['status'] = 'configured';
@@ -91,6 +93,7 @@ class InstalledExtensions {
 			$data['settingsUrl'] = facebook_for_woocommerce()->get_settings_url();
 			$data['docsUrl'] = facebook_for_woocommerce()->get_documentation_url();
 			$data['supportUrl'] = facebook_for_woocommerce()->get_support_url();
+			$data['icon'] = Loader::get_url( 'images/marketing/facebook.svg' );
 		}
 
 		return $data;
