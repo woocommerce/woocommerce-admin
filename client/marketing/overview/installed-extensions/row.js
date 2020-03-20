@@ -106,7 +106,9 @@ class InstalledExtensionRow extends Component {
 					{ actions }
 				</div>
 				<h4>{ name }</h4>
-				<p className="woocommerce-marketing-installed-extensions-card__item-description">{ description }</p>
+				{ status === 'configured' || (
+					<p className="woocommerce-marketing-installed-extensions-card__item-description">{ description }</p>
+				) }
 			</div>
 		)
 	}
