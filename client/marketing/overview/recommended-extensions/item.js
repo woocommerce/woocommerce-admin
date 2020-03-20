@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import './style.scss'
+import { ProductIcon } from '../../components/';
 
 class RecommendedExtensionsItem extends Component {
 	render() {
@@ -17,7 +18,8 @@ class RecommendedExtensionsItem extends Component {
 		return (
 			<a href={ url }
 				className={ classNameBase }>
-				<img src={ icon } className={ `${ classNameBase }__img` } alt={ title } />
+				<ProductIcon src={ icon } />
+
 				<div className={ `${ classNameBase }__text` }>
 					<h4>{ title }</h4>
 					<p>{ description }</p>
