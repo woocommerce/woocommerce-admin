@@ -59,10 +59,14 @@ class InstalledExtensionRow extends Component {
 		)
 	}
 
-	getActiveButton() {
+	getActivateButton() {
+		const { activatePlugin, isLoading } = this.props;
+
 		return (
 			<Button
 				isDefault
+				onClick={ activatePlugin }
+				disabled={ isLoading }
 			>
 				{ __( 'Activate', 'woocommerce-admin' ) }
 			</Button>
@@ -73,6 +77,7 @@ class InstalledExtensionRow extends Component {
 		return (
 			<Button
 				isDefault
+				href={ this.props.settingsUrl }
 			>
 				{ __( 'Finish setup', 'woocommerce-admin' ) }
 			</Button>
@@ -85,7 +90,7 @@ class InstalledExtensionRow extends Component {
 
 		switch ( status ) {
 			case 'installed':
-				actions = this.getActiveButton();
+				actions = this.getActivateButton();
 				break;
 			case 'activated':
 				actions = this.getFinishSetupButton();
@@ -107,6 +112,10 @@ class InstalledExtensionRow extends Component {
 	}
 }
 
+InstalledExtensionRow.defaultProps = {
+	isLoading: false,
+};
+
 InstalledExtensionRow.propTypes = {
 	name: PropTypes.string.isRequired,
 	slug: PropTypes.string.isRequired,
@@ -116,6 +125,7 @@ InstalledExtensionRow.propTypes = {
 	docsUrl: PropTypes.string,
 	supportUrl: PropTypes.string,
 	dashboardUrl: PropTypes.string,
+	activatePlugin: PropTypes.func.isRequired,
 };
 
 export default InstalledExtensionRow;
