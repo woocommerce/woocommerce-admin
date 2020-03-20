@@ -17,6 +17,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 import withSelect from 'wc-api/with-select';
 import SetupNotice, { setupErrorTypes } from '../setup-notice';
 import { withDispatch } from '@wordpress/data';
+import { getWcsAssets, acceptWcsTos } from '../wcs-api';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
@@ -35,6 +36,7 @@ export class ShippingBanner extends Component {
 			orderId: parseInt( orderId, 10 ),
 			wcsAssetsLoaded: false,
 			wcsAssetsLoading: false,
+			wcsSetupError: false,
 			isShippingLabelButtonBusy: false,
 		};
 	}
@@ -44,20 +46,33 @@ export class ShippingBanner extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const {
-			activatePlugins,
-			activatedPlugins,
-			installedPlugins,
-			wcsPluginSlug,
-		} = this.props;
+		const { activatePlugins, wcsPluginSlug } = this.props;
 
-		if ( installedPlugins.length > prevProps.installedPlugins.length ) {
+		if ( this.justInstalledWcs( prevProps ) ) {
 			activatePlugins( [ wcsPluginSlug ] );
 		}
-		if ( activatedPlugins.includes( wcsPluginSlug ) ) {
+		if ( this.justActivatedWcs( prevProps ) ) {
 			// TODO: Add success notice after installation #32
 			this.acceptTosAndGetWCSAssets();
 		}
+	}
+
+	justInstalledWcs( prevProps ) {
+		const { installedPlugins, wcsPluginSlug } = this.props;
+		const wcsNowInstalled = installedPlugins.includes( wcsPluginSlug );
+		const wcsPrevInstalled = prevProps.installedPlugins.includes(
+			wcsPluginSlug
+		);
+		return wcsNowInstalled && ! wcsPrevInstalled;
+	}
+
+	justActivatedWcs( prevProps ) {
+		const { activatedPlugins, wcsPluginSlug } = this.props;
+		const wcsNowActivated = activatedPlugins.includes( wcsPluginSlug );
+		const wcsPrevActivated = prevProps.activatedPlugins.includes(
+			wcsPluginSlug
+		);
+		return wcsNowActivated && ! wcsPrevActivated;
 	}
 
 	hasActivationError = () => {
@@ -69,7 +84,11 @@ export class ShippingBanner extends Component {
 	};
 
 	isSetupError = () => {
-		return this.hasActivationError() || this.hasInstallationError();
+		return (
+			this.hasActivationError() ||
+			this.hasInstallationError() ||
+			this.state.wcsSetupError
+		);
 	};
 
 	setupErrorReason = () => {
@@ -99,11 +118,14 @@ export class ShippingBanner extends Component {
 	};
 
 	createShippingLabelClicked = () => {
-		const { wcsPluginSlug } = this.props;
-		// TODO: open WCS modal
+		const { wcsPluginSlug, activePlugins } = this.props;
 		this.setState( { isShippingLabelButtonBusy: true } );
 		this.trackElementClicked( 'shipping_banner_create_label' );
-		this.installAndActivatePlugins( wcsPluginSlug );
+		if ( ! activePlugins.includes( wcsPluginSlug ) ) {
+			this.installAndActivatePlugins( wcsPluginSlug );
+		} else {
+			this.acceptTosAndGetWCSAssets();
+		}
 	};
 
 	installAndActivatePlugins( pluginSlug ) {
@@ -141,14 +163,10 @@ export class ShippingBanner extends Component {
 	};
 
 	async acceptTosAndGetWCSAssets() {
-		const { acceptTos, getWcsAssets } = this.props;
-
-		const accepted = await acceptTos();
-
-		if ( accepted ) {
-			const wcsAssets = await getWcsAssets();
-			this.loadWcsAssets( wcsAssets );
-		}
+		acceptWcsTos()
+			.then( () => getWcsAssets() )
+			.then( ( wcsAssets ) => this.loadWcsAssets( wcsAssets ) )
+			.catch( () => this.setState( { wcsSetupError: true } ) );
 	}
 
 	generateMetaBoxHtml( title, args ) {
@@ -245,6 +263,21 @@ export class ShippingBanner extends Component {
 		} );
 	}
 
+	getInstallText = () => {
+		const { activePlugins, wcsPluginSlug } = this.props;
+		if ( activePlugins.includes( wcsPluginSlug ) ) {
+			// If WCS is active, then the only remaining step is to agree to the ToS.
+			return __(
+				'You\'ve already installed WooCommerce Shipping. By clicking "Create shipping label", you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
+				'woocommerce-admin'
+			);
+		}
+		return __(
+			'By clicking "Create shipping label", {{wcsLink}}WooCommerce Shipping{{/wcsLink}} will be installed and you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
+			'woocommerce-admin'
+		);
+	};
+
 	openWcsModal() {
 		if ( window.wcsGetAppStore ) {
 			const wcsStore = window.wcsGetAppStore(
@@ -306,10 +339,8 @@ export class ShippingBanner extends Component {
 					</h3>
 					<p>
 						{ interpolateComponents( {
-							mixedString: __(
-								'By clicking "Create shipping label", {{wcsLink}}WooCommerce Shipping{{/wcsLink}} will be installed and you agree to its {{tosLink}}Terms of Service{{/tosLink}}.',
-								'woocommerce-admin'
-							),
+
+							mixedString: this.getInstallText(),
 							components: {
 								tosLink: (
 									<ExternalLink
@@ -373,9 +404,6 @@ export default compose(
 			isPluginActivateRequesting,
 			isPluginInstallRequesting,
 		} = select( 'wc-api' );
-		const { acceptTos, getWcsAssets } = select(
-			'print-shipping-label-banner'
-		);
 
 		const isRequesting =
 			isPluginActivateRequesting() || isPluginInstallRequesting();
@@ -408,8 +436,6 @@ export default compose(
 			wcsPluginSlug,
 			activationErrors,
 			installationErrors,
-			acceptTos,
-			getWcsAssets,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
