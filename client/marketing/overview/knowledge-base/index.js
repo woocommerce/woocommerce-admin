@@ -139,8 +139,6 @@ class KnowledgeBase extends Component {
 			) );
 		}
 
-		console.log(pages);
-
 		return (
 			<Card
 				title={ __( 'WooCommerce knowledge base', 'woocommerce-admin' ) }
