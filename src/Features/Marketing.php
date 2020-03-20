@@ -16,6 +16,13 @@ use Automattic\WooCommerce\Admin\Loader;
  */
 class Marketing {
 	/**
+	 * Name of recommended plugins transient.
+	 *
+	 * @var string
+	 */
+	const RECOMMENDED_PLUGINS_TRANSIENT = 'wc_marketing_recommended_plugins';
+
+	/**
 	 * Class instance.
 	 *
 	 * @var Marketing instance
@@ -91,6 +98,30 @@ class Marketing {
 		$settings['marketing']['installedExtensions'] = InstalledExtensions::get_data();
 
 		return $settings;
+	}
+
+	/**
+	 * Load recommended plugins from WooCommerce.com
+	 *
+	 * @return array
+	 */
+	public function get_recommended_plugins() {
+		$plugins = get_transient( self::RECOMMENDED_PLUGINS_TRANSIENT );
+
+		if ( false === $plugins ) {
+			// TODO update URL
+			$request = wp_remote_get( 'https://ephemeral-findingsimple-20200320.atomicsites.blog/wp-json/wccom/marketing-tab/1.0/recommendations.json' );
+			$plugins = [];
+
+			if ( ! is_wp_error( $request ) && 200 === $request['response']['code'] ) {
+				$plugins = json_decode( $request['body'], true );
+			}
+
+			// Cache an empty result to avoid repeated failed requests
+			set_transient( self::RECOMMENDED_PLUGINS_TRANSIENT, $plugins, DAY_IN_SECONDS );
+		}
+
+		return array_values( $plugins );
 	}
 
 }
