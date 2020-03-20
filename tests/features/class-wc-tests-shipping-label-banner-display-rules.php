@@ -13,13 +13,6 @@ use \Automattic\WooCommerce\Admin\Features\ShippingLabelBannerDisplayRules;
 class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 
 	/**
-	 * Shipping label banner display rules manager.
-	 *
-	 * @var object
-	 */
-	private $shipping_label_banner_display_rules;
-
-	/**
 	 * Jetpack version to test the display manager.
 	 *
 	 * @var string
@@ -236,18 +229,28 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is displayed when site is in 'b' group.
 	 */
 	public function test_display_banner_if_b_flag() {
-		update_option( 'woocommerce_shipping_prompt_ab', 'b' );
+		$this->with_order(
+			function( $that ) {
+				update_option( 'woocommerce_shipping_prompt_ab', 'b' );
 
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_display_banner(), true );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), true );
+			}
+		);
 	}
 
 	/**
 	 * Test if the banner is displayed when site is in 'a' group.
 	 */
 	public function test_no_display_banner_if_a_flag() {
-		update_option( 'woocommerce_shipping_prompt_ab', 'a' );
+		$this->with_order(
+			function( $that ) {
+				update_option( 'woocommerce_shipping_prompt_ab', 'a' );
 
-		$this->assertEquals( $this->shipping_label_banner_display_rules->should_allow_banner(), false );
+				$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
+				$that->assertEquals( $shipping_label_banner_display_rules->should_display_banner(), false );
+			}
+		);
 	}
 
 	/**
