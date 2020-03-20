@@ -5,6 +5,17 @@
 
 	&__item {
 		padding: 24px;
+
+		h4 {
+			font-weight: 400;
+			font-size: 16px;
+			margin: 0 0 5px;
+		}
+
+		p {
+			color: $core-grey-dark-500;
+			margin: 0;
+		}
 	}
 
 	&__item:not(:last-child) {
@@ -20,5 +31,22 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		max-width: 550px;
+	}
+
+	&__item-links {
+		margin: 0;
+		padding: 0;
+
+		li {
+			display: inline-block;
+			margin: 0 0 0 30px;
+		}
+
+		a {
+			font-weight: 600;
+			color: $core-blue-dark-900 !important;
+			text-decoration: none;
+			font-size: 14px;
+		}
 	}
 }
