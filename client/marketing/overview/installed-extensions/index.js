@@ -51,8 +51,9 @@ class InstalledExtensions extends Component {
 					createNotice( 'success',
 						__( 'The extension has been successfully activated.', 'woocommerce-admin' )
 					);
+				} else {
+					throw new Error();
 				}
-				throw new Error();
 			} )
 			.catch( () => {
 				createNotice( 'success',
