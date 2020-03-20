@@ -7,6 +7,7 @@ import { Button, ExternalLink } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { recordEvent } from 'lib/tracks';
 import interpolateComponents from 'interpolate-components';
+import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
@@ -30,7 +31,7 @@ export class ShippingBanner extends Component {
 		);
 
 		this.state = {
-			showShippingBanner: true, // TODO: update to get state when closedForever is clicked
+			showShippingBanner: true,
 			isDismissModalOpen: false,
 			setupErrorReason: setupErrorTypes.SETUP,
 			orderId: parseInt( orderId, 10 ),
@@ -42,7 +43,11 @@ export class ShippingBanner extends Component {
 	}
 
 	componentDidMount() {
-		this.trackImpression();
+		const { showShippingBanner } = this.state;
+
+		if ( showShippingBanner ) {
+			this.trackImpression();
+		}
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -52,7 +57,6 @@ export class ShippingBanner extends Component {
 			activatePlugins( [ wcsPluginSlug ] );
 		}
 		if ( this.justActivatedWcs( prevProps ) ) {
-			// TODO: Add success notice after installation #32
 			this.acceptTosAndGetWCSAssets();
 		}
 	}
@@ -229,9 +233,11 @@ export class ShippingBanner extends Component {
 			.getElementById( 'woocommerce-order-actions' )
 			.insertAdjacentHTML( 'afterend', shipmentTrackingHtml );
 
-		// Need to refresh so the new metaboxes are sortable.
-		window.jQuery( '#normal-sortables' ).sortable( 'refresh' );
-		window.jQuery( '#side-sortables' ).sortable( 'refresh' );
+		if ( window.jQuery ) {
+			// Need to refresh so the new metaboxes are sortable.
+			window.jQuery( '#normal-sortables' ).sortable( 'refresh' );
+			window.jQuery( '#side-sortables' ).sortable( 'refresh' );
+		}
 
 		Promise.all( [
 			new Promise( ( resolve, reject ) => {
@@ -310,7 +316,11 @@ export class ShippingBanner extends Component {
 	}
 
 	render() {
-		const { isDismissModalOpen, showShippingBanner } = this.state;
+		const {
+			isDismissModalOpen,
+			showShippingBanner,
+			isShippingLabelButtonBusy,
+		} = this.state;
 		if ( ! showShippingBanner ) {
 			return null;
 		}
@@ -324,12 +334,12 @@ export class ShippingBanner extends Component {
 						alt={ __( 'Shipping ', 'woocommerce-admin' ) }
 					/>
 					<Button
-						disabled={ this.state.isShippingLabelButtonBusy }
+						disabled={ isShippingLabelButtonBusy }
 						isPrimary
-						isBusy={ this.state.isShippingLabelButtonBusy }
+						isBusy={ isShippingLabelButtonBusy }
 						onClick={ this.createShippingLabelClicked }
 					>
-						{ __( 'Create shipping label' ) }
+						{ __( 'Create shipping label', 'woocommerce-admin' ) }
 					</Button>
 					<h3>
 						{ __(
@@ -389,6 +399,20 @@ export class ShippingBanner extends Component {
 		);
 	}
 }
+
+ShippingBanner.propTypes = {
+	itemsCount: PropTypes.number.isRequired,
+	isJetpackConnected: PropTypes.bool.isRequired,
+	activatedPlugins: PropTypes.array.isRequired,
+	activePlugins: PropTypes.array.isRequired,
+	installedPlugins: PropTypes.array.isRequired,
+	wcsPluginSlug: PropTypes.string.isRequired,
+	activationErrors: PropTypes.array.isRequired,
+	installationErrors: PropTypes.array.isRequired,
+	activatePlugins: PropTypes.func.isRequired,
+	installPlugins: PropTypes.func.isRequired,
+	isRequesting: PropTypes.bool.isRequired,
+};
 
 export default compose(
 	withSelect( ( select ) => {

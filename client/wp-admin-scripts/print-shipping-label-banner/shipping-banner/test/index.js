@@ -28,22 +28,22 @@ describe( 'Tracking impression in shippingBanner', () => {
 		jetpack_installed: true,
 		wcs_installed: true,
 	};
-
-	const isJetpackConnected = true;
-	const activePlugins = {
-		includes: jest.fn().mockReturnValue( true ),
-	};
+	const wcsPluginSlug = 'it-does-n-t-matter-since-its-a-prop';
 
 	beforeEach( () => {
 		shallow(
 			<ShippingBanner
-				isJetpackConnected={ isJetpackConnected }
-				activePlugins={ activePlugins }
+				isJetpackConnected={ true }
 				activatedPlugins={ [] }
-				installedPlugins={ [] }
-				wcsPluginSlug={ 'woocommerce-services' }
+				activePlugins={ [ wcsPluginSlug, 'jetpack' ] }
+				installedPlugins={ [ wcsPluginSlug, 'jetpack' ] }
 				activationErrors={ [] }
 				installationErrors={ [] }
+				itemsCount={ 1 }
+				wcsPluginSlug={ wcsPluginSlug }
+				activatePlugins={ jest.fn() }
+				installPlugins={ jest.fn() }
+				isRequesting={ false }
 			/>
 		);
 	} );
@@ -59,9 +59,6 @@ describe( 'Tracking impression in shippingBanner', () => {
 
 describe( 'Tracking clicks in shippingBanner', () => {
 	const isJetpackConnected = true;
-	const activePlugins = {
-		includes: jest.fn().mockReturnValue( true ),
-	};
 	let shippingBannerWrapper;
 
 	const getExpectedTrackingData = ( element ) => {
@@ -73,18 +70,22 @@ describe( 'Tracking clicks in shippingBanner', () => {
 			element,
 		};
 	};
+	const wcsPluginSlug = 'it-does-n-t-matter-since-its-a-prop';
 
 	beforeEach( () => {
 		shippingBannerWrapper = shallow(
 			<ShippingBanner
 				isJetpackConnected={ isJetpackConnected }
-				activePlugins={ activePlugins }
-				installPlugins={ jest.fn() }
 				activatedPlugins={ [] }
-				installedPlugins={ [] }
-				wcsPluginSlug={ 'woocommerce-services' }
+				activePlugins={ [ wcsPluginSlug, 'jetpack' ] }
+				installedPlugins={ [ wcsPluginSlug, 'jetpack' ] }
+				installPlugins={ jest.fn() }
+				activatePlugins={ jest.fn() }
+				wcsPluginSlug={ wcsPluginSlug }
 				activationErrors={ [] }
 				installationErrors={ [] }
+				isRequesting={ false }
+				itemsCount={ 1 }
 			/>
 		);
 	} );
@@ -127,10 +128,6 @@ describe( 'Create shipping label button', () => {
 	let shippingBannerWrapper;
 	const installPlugins = jest.fn();
 	const activatePlugins = jest.fn();
-	const activePlugins = {
-		includes: jest.fn().mockReturnValue( true ),
-	};
-
 	delete window.location; // jsdom won't allow to rewrite window.location unless deleted first
 	window.location = {
 		href: 'http://wcship.test/wp-admin/post.php?post=1000&action=edit',
@@ -139,9 +136,9 @@ describe( 'Create shipping label button', () => {
 	beforeEach( () => {
 		shippingBannerWrapper = shallow(
 			<ShippingBanner
-				isJetpackConnected={ jest.fn() }
+				isJetpackConnected={ true }
 				activatePlugins={ activatePlugins }
-				activePlugins={ activePlugins }
+				activePlugins={ [] }
 				activatedPlugins={ [] }
 				installPlugins={ installPlugins }
 				installedPlugins={ [] }
@@ -149,12 +146,12 @@ describe( 'Create shipping label button', () => {
 				activationErrors={ [] }
 				installationErrors={ [] }
 				isRequesting={ false }
+				itemsCount={ 1 }
 			/>
 		);
 	} );
 
 	it( 'should install WooCommerce Shipping when button is clicked', () => {
-		activePlugins.includes = jest.fn().mockReturnValue( false );
 		const createShippingLabelButton = shippingBannerWrapper.find( Button );
 		expect( createShippingLabelButton.length ).toBe( 1 );
 		createShippingLabelButton.simulate( 'click' );
@@ -294,16 +291,13 @@ describe( 'Create shipping label button', () => {
 
 describe( 'In the process of installing, activating, loading assets for WooCommerce Service', () => {
 	let shippingBannerWrapper;
-	const activePlugins = {
-		includes: jest.fn().mockReturnValue( true ),
-	};
 
 	beforeEach( () => {
 		shippingBannerWrapper = shallow(
 			<ShippingBanner
-				isJetpackConnected={ jest.fn() }
+				isJetpackConnected={ true }
 				activatePlugins={ jest.fn() }
-				activePlugins={ activePlugins }
+				activePlugins={ [ 'jetpack', 'woocommerce-services' ] }
 				activatedPlugins={ [] }
 				installPlugins={ jest.fn() }
 				installedPlugins={ [] }
@@ -311,6 +305,7 @@ describe( 'In the process of installing, activating, loading assets for WooComme
 				activationErrors={ [] }
 				installationErrors={ [] }
 				isRequesting={ true }
+				itemsCount={ 1 }
 			/>
 		);
 	} );
@@ -333,22 +328,21 @@ describe( 'In the process of installing, activating, loading assets for WooComme
 
 describe( 'Setup error message', () => {
 	let shippingBannerWrapper;
-	const activePlugins = {
-		includes: jest.fn().mockReturnValue( true ),
-	};
 
 	beforeEach( () => {
 		shippingBannerWrapper = shallow(
 			<ShippingBanner
-				isJetpackConnected={ jest.fn() }
+				isJetpackConnected={ true }
 				activatePlugins={ jest.fn() }
-				activePlugins={ activePlugins }
+				activePlugins={ [ 'jetpack', 'woocommerce-services' ] }
 				activatedPlugins={ [] }
 				installPlugins={ jest.fn() }
 				installedPlugins={ [] }
 				wcsPluginSlug={ 'woocommerce-services' }
 				activationErrors={ [] }
 				installationErrors={ [] }
+				itemsCount={ 1 }
+				isRequesting={ false }
 			/>
 		);
 	} );

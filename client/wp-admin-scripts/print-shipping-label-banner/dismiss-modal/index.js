@@ -50,7 +50,7 @@ export class DismissModal extends Component {
 
 		return (
 			<Modal
-				title="Are you sure?"
+				title={ __( 'Are you sure?', 'woocommerce-admin' ) }
 				onRequestClose={ onClose }
 				className="wc-admin-shipping-banner__dismiss-modal"
 			>
