@@ -9,6 +9,7 @@
 
 namespace Automattic\WooCommerce\Admin\API;
 
+use Automattic\WooCommerce\Admin\Features\Marketing;
 use Automattic\WooCommerce\Admin\Marketing\InstalledExtensions;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
@@ -140,19 +141,16 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_recommended_plugins( $request ) {
-		$all_recommended = [
-			// todo
-		];
+		$all_plugins = Marketing::get_instance()->get_recommended_plugins();
+		$valid_plugins = [];
 
-		$uninstalled = [];
-
-		foreach ( $all_recommended as $plugin ) {
+		foreach ( $all_plugins as $plugin ) {
 			if ( ! PluginsHelper::is_plugin_installed( $plugin['plugin'] ) ) {
-				$uninstalled[] = $plugin;
+				$valid_plugins[] = $plugin;
 			}
 		}
 
-		return rest_ensure_response( $uninstalled );
+		return rest_ensure_response( $valid_plugins );
 	}
 
 	/**
