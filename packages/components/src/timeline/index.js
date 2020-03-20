@@ -6,6 +6,31 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 
+const daysToTimelineItems = ( day, dayNum ) => {
+	const dayToTimelineItem = ( item, itemIndex ) => {
+		const itemTimeString = moment( item.datetime ).format( 'h:mma' );
+		const itemKey = dayNum + '-' + itemIndex;
+		return (
+			<li key={ itemKey }>
+				{ item.headline } <span>{ itemTimeString }</span>
+				{ item.body.map( function( line, bodyLineIndex ) {
+					const bodyLineKey =
+						dayNum + '-' + itemIndex + '-' + bodyLineIndex;
+					return <p key={ bodyLineKey }>{ line }</p>;
+				} ) }
+			</li>
+		);
+	};
+
+	const dayString = moment( dayNum.toString() ).format( 'MMMM D, YYYY' );
+	return (
+		<li key={ dayNum }>
+			{ dayString }
+			<ul>{ day.map( dayToTimelineItem ) }</ul>
+		</li>
+	);
+};
+
 const Timeline = ( { className, items } ) => {
 	const timelineClassName = classnames( 'woocommerce-timeline', className );
 
@@ -38,46 +63,7 @@ const Timeline = ( { className, items } ) => {
 
 	return (
 		<div className={ timelineClassName }>
-			<ul>
-				{ days.map( function( day, dayNum ) {
-					const dayString = moment( dayNum ).format( 'MMMM D, YYYY' );
-					return (
-						<li key={ dayNum }>
-							{ dayString }
-							<ul>
-								{ day.map( function( item, itemIndex ) {
-									const itemTimeString = moment(
-										item.datetime
-									).format( 'h:mma' );
-									const itemKey = dayNum + '-' + itemIndex;
-									return (
-										<li key={ itemKey }>
-											{ item.headline }{ ' ' }
-											<span>{ itemTimeString }</span>
-											{ item.body.map( function(
-												line,
-												bodyLineIndex
-											) {
-												const bodyLineKey =
-													dayNum +
-													'-' +
-													itemIndex +
-													'-' +
-													bodyLineIndex;
-												return (
-													<p key={ bodyLineKey }>
-														{ line }
-													</p>
-												);
-											} ) }
-										</li>
-									);
-								} ) }
-							</ul>
-						</li>
-					);
-				} ) }
-			</ul>
+			<ul>{ days.map( daysToTimelineItems ) }</ul>
 		</div>
 	);
 };
