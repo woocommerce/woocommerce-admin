@@ -21,12 +21,20 @@ class InstalledExtensions {
 	 * Valid extensions statuses are: installed, activated, configured
 	 */
 	public static function get_data() {
-		$data = [
-			self::get_mailchimp_extension_data(),
-			self::get_facebook_extension_data(),
-		];
+		$data = [];
 
-		return array_filter( $data );
+		$mailchimp = self::get_mailchimp_extension_data();
+		$facebook = self::get_facebook_extension_data();
+
+		if ( $mailchimp ) {
+			$data[] = $mailchimp;
+		}
+
+		if ( $facebook ) {
+			$data[] = $facebook;
+		}
+
+		return $data;
 	}
 
 	/**
