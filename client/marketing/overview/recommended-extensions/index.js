@@ -36,7 +36,7 @@ class RecommendedExtensions extends Component {
 	async fetchExtensions() {
 		try {
 			const response = await apiFetch( {
-				path: `${ WC_ADMIN_NAMESPACE }/marketing/overview/recommended`,
+				path: `${ WC_ADMIN_NAMESPACE }/marketing/overview/recommended?per_page=6`,
 				method: 'GET',
 			} );
 			if ( response ) {
