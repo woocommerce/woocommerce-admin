@@ -35,6 +35,7 @@ export class ShippingBanner extends Component {
 			orderId: parseInt( orderId, 10 ),
 			wcsAssetsLoaded: false,
 			wcsAssetsLoading: false,
+			isShippingLabelButtonBusy: false,
 		};
 	}
 
@@ -100,11 +101,12 @@ export class ShippingBanner extends Component {
 	createShippingLabelClicked = () => {
 		const { wcsPluginSlug } = this.props;
 		// TODO: open WCS modal
+		this.setState( { isShippingLabelButtonBusy: true } );
 		this.trackElementClicked( 'shipping_banner_create_label' );
 		this.installAndActivatePlugins( wcsPluginSlug );
 	};
 
-	async installAndActivatePlugins( pluginSlug ) {
+	installAndActivatePlugins( pluginSlug ) {
 		// Avoid double activating.
 		const { installPlugins, isRequesting } = this.props;
 		if ( isRequesting ) {
@@ -234,7 +236,11 @@ export class ShippingBanner extends Component {
 				head.appendChild( link );
 			} ),
 		] ).then( () => {
-			this.setState( { wcsAssetsLoaded: true, wcsAssetsLoading: false } );
+			this.setState( {
+				wcsAssetsLoaded: true,
+				wcsAssetsLoading: false,
+				isShippingLabelButtonBusy: false,
+			} );
 			this.openWcsModal();
 		} );
 	}
@@ -285,9 +291,9 @@ export class ShippingBanner extends Component {
 						alt={ __( 'Shipping ', 'woocommerce-admin' ) }
 					/>
 					<Button
-						disabled={ this.props.isRequesting }
+						disabled={ this.state.isShippingLabelButtonBusy }
 						isPrimary
-						isBusy={ this.props.isRequesting }
+						isBusy={ this.state.isShippingLabelButtonBusy }
 						onClick={ this.createShippingLabelClicked }
 					>
 						{ __( 'Create shipping label' ) }
@@ -333,7 +339,7 @@ export class ShippingBanner extends Component {
 						onClick={ this.openDismissModal }
 						type="button"
 						className="notice-dismiss"
-						disabled={ this.props.isRequesting }
+						disabled={ this.state.isShippingLabelButtonBusy }
 					>
 						<span className="screen-reader-text">
 							{ __(
