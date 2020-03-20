@@ -1,0 +1,111 @@
+.container {
+	overflow: hidden;
+	width: 100%;
+}
+
+.woocommerce-marketing-knowledgebase-card__page {
+	margin-bottom: 16px;
+	width: 100%;
+	display: flex;
+
+	@include breakpoint( '<960px' ) {
+		display: block;
+	}
+}
+
+.woocommerce-marketing-knowledgebase-card__post {
+	display: flex;
+	width: 100%;
+
+	@include breakpoint( '<960px' ) {
+		margin-bottom: 24px;
+	}
+
+	> img {
+		display: block;
+		width: 100%;
+		margin-right: 16px;
+		flex: 1;
+	}
+
+	> div {
+		flex: 1;
+
+		@include breakpoint( '<960px' ) {
+			flex: 2;
+		}
+	}
+
+	h3 {
+		margin-top: 0;
+		margin-bottom: 8px;
+		font-size: 16px;
+		line-height: 24px;
+		font-weight: 600;
+		white-space: normal;
+	}
+
+	.woocommerce-marketing-knowledgebase-card__post-meta {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		font-size: 12px;
+		line-height: 16px;
+
+		.author {
+			margin-right: 5px;
+		}
+	}
+}
+
+.page-with-single-post {
+	padding-right: 16px;
+
+	.woocommerce-marketing-knowledgebase-card__post {
+		> div {
+			flex: 3;
+
+			@include breakpoint( '<960px' ) {
+				flex: 2;
+			}
+		}
+	}
+}
+
+.woocommerce-pagination__page-arrows {
+	display: inline-flex;
+	align-items: baseline;
+	border: 1px solid $button-border;
+	border-radius: 4px;
+	background: $button;
+
+	.components-button {
+		height: 30px;
+		width: 32px;
+	}
+
+	.components-button:not(:disabled):not([aria-disabled='true']) {
+		color: $wp-admin-sidebar;
+		justify-content: center;
+	}
+
+	.components-icon-button:not(:disabled):not([aria-disabled='true']):hover {
+		color: $core-grey-dark-300;
+	}
+
+	button:first-child {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		border-right: 2px solid darken($button, 10%);
+	}
+
+	button:last-child {
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+}
+
+.woocommerce-pagination__page-arrows-label {
+	margin-top: $spacing / 2;
+	margin-right: $spacing / 2;
+}

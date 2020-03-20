@@ -1,0 +1,78 @@
+@keyframes slide-in-left {
+	0% {
+		transform: translateX(100%);
+	}
+	100% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes slide-out-left {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-100%);
+	}
+}
+
+@keyframes slide-in-right {
+	0% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes slide-out-right {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(100%);
+	}
+}
+
+$duration: 300ms;
+
+/**
+The CSSTransition element creates a containing div without a class
+ */
+.woocommerce-slide-animation {
+	display: block;
+	width: 100%;
+	overflow: hidden;
+
+	& > div {
+		width: 100%;
+		white-space: normal;
+		overflow: hidden;
+		display: block;
+		position: relative;
+	}
+
+	.slide-enter,
+	.slide-enter-active {
+		display: none;
+	}
+
+	&.animate-left .slide-enter-done {
+		animation: slide-in-left;
+		animation-duration: $duration;
+		animation-timing-function: ease-out;
+	}
+
+	&.animate-right .slide-enter-done {
+		animation: slide-in-right;
+		animation-duration: $duration;
+		animation-timing-function: ease-out;
+	}
+
+	@media screen and (prefers-reduced-motion: reduce) {
+		.slide-enter-active,
+		.slide-exit-active {
+			animation: none !important;
+		}
+	}
+}
