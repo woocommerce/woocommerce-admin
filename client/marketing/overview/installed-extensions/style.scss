@@ -4,7 +4,9 @@
 	}
 
 	&__item {
-		padding: 24px;
+		padding: 18px 24px;
+		display: flex;
+		align-items: center;
 
 		h4 {
 			font-weight: 400;
@@ -49,5 +51,13 @@
 			text-decoration: none;
 			font-size: 14px;
 		}
+	}
+
+	.woocommere-admin-marketing-product-icon {
+		margin-right: 14px;
+	}
+
+	&__item-text {
+		flex-grow: 2;
 	}
 }
