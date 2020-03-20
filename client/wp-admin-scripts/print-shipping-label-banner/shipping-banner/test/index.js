@@ -208,14 +208,17 @@ describe( 'Create shipping label button', () => {
 			appendChild: jest.fn(),
 		};
 		getElementsByTagNameMock.mockReturnValueOnce( [ headMock ] );
+		const getElementsByTagName = document.getElementsByTagName;
 		document.getElementsByTagName = getElementsByTagNameMock;
 		const getElementByIdMock = jest.fn();
 		getElementByIdMock.mockReturnValue( {
 			insertAdjacentHTML: jest.fn(),
 		} );
+		const getElementById = document.getElementById;
 		document.getElementById = getElementByIdMock;
 
 		const appendChildMock = jest.fn();
+		const appendChild = document.body.appendChild;
 		document.body.appendChild = appendChildMock;
 
 		const openWcsModalMock = jest.fn();
@@ -244,6 +247,9 @@ describe( 'Create shipping label button', () => {
 		expect( linkMock.media ).toEqual( 'all' );
 
 		document.createElement = createElement;
+		document.getElementById = getElementById;
+		document.body.appendChild = appendChild;
+		document.getElementsByTagName = getElementsByTagName;
 	} );
 
 	it( 'should open WCS modal', () => {
@@ -256,6 +262,14 @@ describe( 'Create shipping label button', () => {
 				selectedSiteId: 'SITE_ID',
 			},
 		} );
+
+		const getElementByIdMock = jest.fn();
+		getElementByIdMock.mockReturnValue( {
+			style: { display: null },
+		} );
+		const getElementById = document.getElementById;
+		document.getElementById = getElementByIdMock;
+
 		shippingBannerWrapper.instance().openWcsModal();
 		expect( window.wcsGetAppStore ).toHaveBeenCalledWith(
 			'wc-connect-create-shipping-label'
@@ -266,6 +280,11 @@ describe( 'Create shipping label button', () => {
 			orderId: 1000,
 			siteId: 'SITE_ID',
 		} );
+		expect( getElementByIdMock ).toHaveBeenCalledWith(
+			'woocommerce-admin-print-label'
+		);
+
+		document.getElementById = getElementById;
 	} );
 } );
 
