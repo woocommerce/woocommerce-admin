@@ -5,6 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Component, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
+import classnames from 'classnames';
 
 /**
  * WooCommerce dependencies
@@ -16,7 +17,7 @@ import { Card } from '@woocommerce/components';
  */
 import { WC_ADMIN_NAMESPACE } from '../../../wc-api/constants';
 import './style.scss'
-import PlaceholderImg from './hubspot.svg';
+import RecommendedExtensionsItem from './item';
 
 class RecommendedExtensions extends Component {
 	constructor( props ) {
@@ -47,34 +48,38 @@ class RecommendedExtensions extends Component {
 			}
 			throw new Error();
 		} catch ( err ) {
+			console.log( err );
 			// todo handle error
 		}
 	}
 
 	render() {
 		const { extensions, isLoading } = this.state;
-		const classNameBase = 'woocommerce-marketing-recommended-extensions-card';
+
+		if ( extensions.length === 0 && ! isLoading ) {
+			return null;
+		}
 
 		return (
 			<Card
 				title={ __( 'Recommended extensions', 'woocommerce-admin' ) }
 				description={ __( 'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.', 'woocommerce-admin' ) }
-				className={ classNameBase }
+				className="woocommerce-marketing-recommended-extensions-card"
 			>
 				<Fragment>
 					{ isLoading && <Spinner /> }
 					{ isLoading || (
-						<div className={ `${ classNameBase }__items` }>
+						<div className={ classnames( {
+							'woocommerce-marketing-recommended-extensions-card__items': true,
+							'woocommerce-marketing-recommended-extensions-card__items--1-col': extensions.length === 1,
+							'woocommerce-marketing-recommended-extensions-card__items--2-col': extensions.length === 2,
+							'woocommerce-marketing-recommended-extensions-card__items--4-col': extensions.length === 4,
+						} ) }>
 							{ isLoading || extensions.map( ( extension ) => (
-								<a key={ extension.product }
-									href="#"
-									className={ `${ classNameBase }__item` }>
-									<img src={ PlaceholderImg } className={ `${ classNameBase }__item-img` } />
-									<div className={ `${ classNameBase }__item-text` }>
-										<h4>{ extension.title }</h4>
-										<p>{ extension.description }</p>
-									</div>
-								</a>
+								<RecommendedExtensionsItem
+									key={ extension.product }
+									{ ...extension }
+								/>
 							) ) }
 						</div>
 					) }
