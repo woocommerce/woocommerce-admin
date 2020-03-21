@@ -57,7 +57,7 @@ function wc_admin_filter_core_page_breadcrumbs( $breadcrumbs ) {
 	$screen_id              = PageController::get_instance()->get_current_screen_id();
 	$pages_to_connect       = wc_admin_get_core_pages_to_connect();
 	$woocommerce_breadcrumb = array(
-		admin_url( 'admin.php?page=wc-admin' ),
+		'admin.php?page=wc-admin',
 		__( 'WooCommerce', 'woocommerce-admin' ),
 	);
 
