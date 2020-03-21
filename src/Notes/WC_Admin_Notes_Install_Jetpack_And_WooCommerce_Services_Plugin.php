@@ -61,7 +61,7 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 	/**
 	 * Action the Install Jetpack notes, if any exists.
 	 */
-	public static function remove_install_jetpack_and_woocommerce_services_note() {
+	public static function action_install_jetpack_and_woocommerce_services_note() {
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
 
