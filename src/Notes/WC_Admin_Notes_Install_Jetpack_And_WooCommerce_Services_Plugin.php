@@ -13,9 +13,9 @@ namespace Automattic\WooCommerce\Admin\Notes;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WC_Admin_Notes_Install_Jetpack_Plugin
+ * WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin
  */
-class WC_Admin_Notes_Install_Jetpack_Plugin {
+class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 	const NOTE_NAME = 'wc-admin-install-jetpack-plugin';
 
 	/**
@@ -56,5 +56,20 @@ class WC_Admin_Notes_Install_Jetpack_Plugin {
 		);
 
 		$note->save();
+	}
+
+	/**
+	 * Action the Install Jetpack notes, if any exists.
+	 */
+	public static function remove_install_jetpack_and_woocommerce_services_note() {
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+
+		foreach ( $note_ids as $note_id ) {
+			$note = new WC_Admin_Note( $note_id );
+
+			$note->set_status( 'actioned' );
+			$note->save();
+		}
 	}
 }
