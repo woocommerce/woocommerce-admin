@@ -24,8 +24,8 @@ class WC_Admin_Notes_Install_Jetpack_Plugin {
 	 * @param string $slug The slug of the plugin being installed.
 	 */
 	public static function possibly_add_install_jetpack_note( $slug ) {
-		// Exit early if we're not installing the Jetpack plugin.
-		if ( 'jetpack' !== $slug ) {
+		// Exit early if we're not installing the Jetpack or the WooCommerce Services plugins.
+		if ( 'jetpack' !== $slug && 'woocommerce-services' !== $slug ) {
 			return;
 		}
 
