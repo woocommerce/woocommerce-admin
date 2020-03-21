@@ -20,8 +20,15 @@ class WC_Admin_Notes_Install_Jetpack_Plugin {
 
 	/**
 	 * Possibly add the Install Jetpack note.
+	 *
+	 * @param string $slug The slug of the plugin being installed.
 	 */
-	public static function possibly_add_install_jetpack_note() {
+	public static function possibly_add_install_jetpack_note( $slug ) {
+		// Exit early if we're not installing the Jetpack plugin.
+		if ( 'jetpack' !== $slug ) {
+			return;
+		}
+
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
 		// Exit early if there is already a note to install Jetpack.

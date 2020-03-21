@@ -177,11 +177,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * @param string $slug The slug of the plugin being installed.
 	 */
 	private function create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug ) {
-		if ( 'jetpack' !== $slug ) {
-			return;
-		}
-
-		WC_Admin_Notes_Install_Jetpack_Plugin::possibly_add_install_jetpack_note();
+		WC_Admin_Notes_Install_Jetpack_Plugin::possibly_add_install_jetpack_note( $slug );
 	}
 
 	/**
