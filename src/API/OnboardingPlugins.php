@@ -174,6 +174,8 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	/**
 	 * Create an alert notification in response to an error installing a plugin.
 	 *
+	 * @todo This should be moved to a filter to make this API more generic and less plugin-specific.
+	 *
 	 * @param string $slug The slug of the plugin being installed.
 	 */
 	private function create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug ) {
