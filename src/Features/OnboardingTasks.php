@@ -47,6 +47,8 @@ class OnboardingTasks {
 		// This hook needs to run when options are updated via REST.
 		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'add_completion_note' ), 10, 2 );
 		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'track_completion' ), 10, 2 );
+		add_action( 'add_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
+		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -301,6 +303,21 @@ class OnboardingTasks {
 	public static function track_completion( $old_value, $new_value ) {
 		if ( $new_value ) {
 			wc_admin_record_tracks_event( 'tasklist_tasks_completed' );
+		}
+	}
+
+	/**
+	 * Records an event for individual task completion.
+	 *
+	 * @param mixed $old_value Old value.
+	 * @param mixed $new_value New value.
+	 */
+	public static function track_task_completion( $old_value, $new_value ) {
+		$old_value       = is_array( $old_value ) ? $old_value : array();
+		$untracked_tasks = array_diff( $new_value, $old_value );
+
+		foreach ( $untracked_tasks as $task ) {
+			wc_admin_record_tracks_event( 'tasklist_task_completed', array( 'task_name' => $task ) );
 		}
 	}
 }
