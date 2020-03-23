@@ -59,7 +59,7 @@ class Benefits extends Component {
 			this.setState( { isPending: false } );
 		}
 
-		if ( isActioned && ! isInstalling && ! isPending ) {
+		if ( isActioned && ! isInstalling && ! isPending && ! isRequesting ) {
 			goToNextStep();
 		}
 	}
