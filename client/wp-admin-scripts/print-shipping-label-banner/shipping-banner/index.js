@@ -173,13 +173,13 @@ export class ShippingBanner extends Component {
 			.catch( () => this.setState( { wcsSetupError: true } ) );
 	}
 
-	generateMetaBoxHtml( title, args ) {
+	generateMetaBoxHtml( nodeId, title, args ) {
 		const argsJsonString = JSON.stringify( args ).replace( /"/g, '&quot;' ); // JS has no native html_entities so we just replace.
 
 		const togglePanelText = __( 'Toggle panel:', 'woocommerce-admin' );
 
 		return `
-<div id="woocommerce-order-label" class="postbox ">
+<div id="${ nodeId }" class="postbox">
 	<button type="button" class="handlediv" aria-expanded="true">
 		<span class="screen-reader-text">${ togglePanelText } ${ title }</span>
 		<span class="toggle-indicator" aria-hidden="true"></span>
@@ -208,6 +208,7 @@ export class ShippingBanner extends Component {
 		const { itemsCount } = this.props;
 
 		const shippingLabelContainerHtml = this.generateMetaBoxHtml(
+			'woocommerce-order-label',
 			__( 'Shipping Label', 'woocommerce-admin' ),
 			{
 				orderId,
@@ -221,6 +222,7 @@ export class ShippingBanner extends Component {
 			.insertAdjacentHTML( 'beforebegin', shippingLabelContainerHtml );
 
 		const shipmentTrackingHtml = this.generateMetaBoxHtml(
+			'woocommerce-order-shipment-tracking',
 			__( 'Shipment Tracking', 'woocommerce-admin' ),
 			{
 				orderId,
@@ -237,6 +239,8 @@ export class ShippingBanner extends Component {
 			// Need to refresh so the new metaboxes are sortable.
 			window.jQuery( '#normal-sortables' ).sortable( 'refresh' );
 			window.jQuery( '#side-sortables' ).sortable( 'refresh' );
+
+			window.jQuery( '#woocommerce-order-label' ).hide();
 		}
 
 		Promise.all( [
@@ -312,6 +316,12 @@ export class ShippingBanner extends Component {
 			document.getElementById(
 				'woocommerce-admin-print-label'
 			).style.display = 'none';
+
+			this.whenNodeAdded( 'label-purchase-modal', () => {
+				if ( window.jQuery ) {
+					window.jQuery( '#woocommerce-order-label' ).show();
+				}
+			} );
 		}
 	}
 
@@ -397,6 +407,30 @@ export class ShippingBanner extends Component {
 				/>
 			</div>
 		);
+	}
+
+	whenNodeAdded( nodeId, callback ) {
+		const targetNode = document.getElementsByTagName( 'body' )[ 0 ];
+
+		const config = { attributes: false, childList: true, subtree: true };
+
+		const observer = new MutationObserver(
+			( mutationsList, observerInstance ) => {
+				for ( const mutation of mutationsList ) {
+					if ( mutation.type === 'childList' ) {
+						if (
+							document.getElementsByClassName( nodeId ).length > 0
+						) {
+							callback();
+							observerInstance.disconnect();
+							break;
+						}
+					}
+				}
+			}
+		);
+
+		observer.observe( targetNode, config );
 	}
 }
 
