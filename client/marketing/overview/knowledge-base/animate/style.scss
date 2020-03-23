@@ -1,78 +1,70 @@
-@keyframes slide-in-left {
-	0% {
-		transform: translateX(100%);
-	}
-	100% {
-		transform: translateX(0);
-	}
-}
-
-@keyframes slide-out-left {
-	0% {
-		transform: translateX(0);
-	}
-	100% {
-		transform: translateX(-100%);
-	}
-}
-
-@keyframes slide-in-right {
-	0% {
-		transform: translateX(-100%);
-	}
-	100% {
-		transform: translateX(0);
-	}
-}
-
-@keyframes slide-out-right {
-	0% {
-		transform: translateX(0);
-	}
-	100% {
-		transform: translateX(100%);
-	}
-}
-
-$duration: 300ms;
+$duration: 500ms;
 
 /**
 The CSSTransition element creates a containing div without a class
  */
-.woocommerce-slide-animation {
+.woocommerce-slider-animation {
 	display: block;
 	width: 100%;
 	overflow: hidden;
 
+	// slide container
 	& > div {
 		width: 100%;
 		white-space: normal;
 		overflow: hidden;
 		display: block;
 		position: relative;
+		height: 100%;
 	}
 
-	.slide-enter,
-	.slide-enter-active {
-		display: none;
+	// slide
+	& > div > div {
+		top: 0;
+		left: 0;
+		width: 100%;
+		transition: transform 300ms ease;
+		position: relative;
 	}
 
-	&.animate-left .slide-enter-done {
-		animation: slide-in-left;
-		animation-duration: $duration;
-		animation-timing-function: ease-out;
+	.slide-enter, .slide-exit {
+		position: absolute;
 	}
 
-	&.animate-right .slide-enter-done {
-		animation: slide-in-right;
-		animation-duration: $duration;
-		animation-timing-function: ease-out;
+	&.animate-left {
+		.slide-enter {
+			transform: translateX(-100%);
+		}
+		.slide-enter-active {
+			transform: translateX(0%);
+		}
+		.slide-exit {
+			transform: translateX(0%);
+		}
+		.slide-exit-active {
+			transform: translateX(100%);
+		}
+	}
+
+	&.animate-right {
+		.slide-enter {
+			transform: translateX(100%);
+		}
+		.slide-enter-active {
+			transform: translateX(0%);
+		}
+		.slide-exit {
+			transform: translateX(0%);
+		}
+		.slide-exit-active {
+			transform: translateX(-100%);
+		}
 	}
 
 	@media screen and (prefers-reduced-motion: reduce) {
 		.slide-enter-active,
 		.slide-exit-active {
-			animation: none !important;
+			transition: none !important;
 		}
 	}
 }
