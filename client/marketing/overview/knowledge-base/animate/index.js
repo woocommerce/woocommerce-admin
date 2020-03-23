@@ -16,9 +16,11 @@ class Animate extends Component {
 		super();
 		this.state = {
 			animate: null,
+			height: null,
 		};
 		this.container = createRef();
 		this.onExited = this.onExited.bind( this );
+		this.onEnter = this.onEnter.bind( this );
 	}
 
 	onExited() {
@@ -28,21 +30,37 @@ class Animate extends Component {
 		}
 	}
 
+	/**
+	 * Fix slider height before a slide enters because slides are absolutely position
+	 */
+	onEnter() {
+		const newSlide = this.container.current.getElementsByClassName( 'slide-enter' )[ 0 ];
+		this.setState( { height: newSlide.offsetHeight } );
+	}
+
 	render() {
 		const { children, animationKey, animate } = this.props;
+		const { height } = this.state;
 		const containerClasses = classnames(
-			'woocommerce-slide-animation',
+			'woocommerce-slider-animation',
 			animate && `animate-${ animate }`
 		);
+		const style = {};
+		if ( height ) {
+			style.height = height;
+		}
 		return (
-			<div className={ containerClasses } ref={ this.container }>
+			<div className={ containerClasses }
+				ref={ this.container }
+				style={ style }>
 				<TransitionGroup>
 					<CSSTransition
-						timeout={ 200 }
+						timeout={ 600 }
 						classNames="slide"
 						key={ animationKey }
 						{ ...this.props }
 						onExited={ this.onExited }
+						onEnter={ this.onEnter }
 					>
 						{ ( status ) => children( { status } ) }
 					</CSSTransition>
