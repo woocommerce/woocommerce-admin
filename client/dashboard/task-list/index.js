@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, cloneElement, Fragment } from '@wordpress/element';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
 import { Snackbar, Icon, Button, Modal } from '@wordpress/components';
@@ -47,11 +47,14 @@ class TaskDashboard extends Component {
 				woocommerce_task_list_complete: true,
 			} );
 		}
+
+		this.possiblyTrackCompletedTasks();
 	}
 
 	componentDidUpdate( prevProps ) {
-		const { incompleteTasks, query, updateOptions } = this.props;
+		const { completedTaskKeys, incompleteTasks, query, updateOptions } = this.props;
 		const {
+			completedTaskKeys: prevCompletedTaskKeys,
 			incompleteTasks: prevIncompleteTasks,
 			query: prevQuery,
 		} = prevProps;
@@ -66,6 +69,20 @@ class TaskDashboard extends Component {
 		if ( ! incompleteTasks.length && prevIncompleteTasks.length ) {
 			updateOptions( {
 				woocommerce_task_list_complete: true,
+			} );
+		}
+
+		if ( ! isEqual( prevCompletedTaskKeys, completedTaskKeys ) ) {
+			this.possiblyTrackCompletedTasks();
+		}
+	}
+
+	possiblyTrackCompletedTasks() {
+		const { completedTaskKeys, trackedCompletedTasks, updateOptions } = this.props;
+
+		if ( ! isEqual( trackedCompletedTasks, completedTaskKeys ) ) {
+			updateOptions( {
+				woocommerce_task_list_tracked_completed_tasks: completedTaskKeys,
 			} );
 		}
 	}
@@ -422,6 +439,7 @@ export default compose(
 			'woocommerce_task_list_welcome_modal_dismissed',
 			'woocommerce_task_list_hidden',
 			'woocommerce_task_list_do_this_later',
+			'woocommerce_task_list_tracked_completed_tasks',
 		] );
 		const promptShown = get(
 			options,
@@ -441,11 +459,17 @@ export default compose(
 			[ 'woocommerce_task_list_do_this_later' ],
 			false
 		);
+		const trackedCompletedTasks = get(
+			options,
+			[ 'woocommerce_task_list_tracked_completed_tasks' ],
+			[]
+		);
 		const tasks = getAllTasks( {
 			profileItems,
 			options: getOptions( [ 'woocommerce_task_list_payments' ] ),
 			query: props.query,
 		} );
+		const completedTaskKeys = tasks.filter( task => task.completed ).map( task => task.key );
 		const incompleteTasks = tasks.filter(
 			( task ) => task.visible && ! task.completed
 		);
@@ -458,6 +482,8 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 			doThisLater,
 			incompleteTasks,
+			trackedCompletedTasks,
+			completedTaskKeys,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
