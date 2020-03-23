@@ -21,7 +21,9 @@
 	width: 100%;
 
 	@include breakpoint( '<960px' ) {
-		margin-bottom: 24px;
+		&:not(:last-child) {
+			margin-bottom: 16px;
+		}
 	}
 
 	> img {
