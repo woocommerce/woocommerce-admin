@@ -10,6 +10,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import './style.scss'
 import { ProductIcon } from '../../components/';
+import { recordEvent } from 'lib/tracks';
 
 /**
  * WooCommerce dependencies
@@ -18,6 +19,12 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 
 class RecommendedExtensionsItem extends Component {
+
+	onProductClick = () => {
+		const { title } = this.props;
+		recordEvent( 'marketing_recommended_extension', { name: title } );
+	}
+
 	render() {
 		const { title, description, icon, url } = this.props;
 		const classNameBase = 'woocommerce-marketing-recommended-extensions-item';
@@ -34,7 +41,9 @@ class RecommendedExtensionsItem extends Component {
 
 		return (
 			<a href={ connect_url }
-				className={ classNameBase }>
+				className={ classNameBase }
+				onClick={ this.onProductClick }
+			>
 				<ProductIcon src={ icon } />
 
 				<div className={ `${ classNameBase }__text` }>
