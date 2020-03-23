@@ -209,7 +209,7 @@ class Benefits extends Component {
 				<div className="woocommerce-profile-wizard__card-actions">
 					<Button
 						isPrimary
-						isBusy={ isPending }
+						isBusy={ isInstalling || isPending }
 						onClick={ this.startPluginInstall }
 						className="woocommerce-profile-wizard__continue"
 					>
