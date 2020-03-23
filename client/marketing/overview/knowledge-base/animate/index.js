@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Component, createRef } from '@wordpress/element';
+import { Component, createRef, Fragment } from '@wordpress/element';
 import classnames from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
@@ -49,6 +49,7 @@ class Animate extends Component {
 		if ( height ) {
 			style.height = height;
 		}
+
 		return (
 			<div className={ containerClasses }
 				ref={ this.container }
@@ -56,14 +57,13 @@ class Animate extends Component {
 				<TransitionGroup>
 					<CSSTransition
 						// timeout should be slightly longer than the CSS animation
-						timeout={ 350 }
+						timeout={ 450 }
 						classNames="slide"
 						key={ animationKey }
-						{ ...this.props }
 						onExited={ this.onExited }
 						onEnter={ this.onEnter }
 					>
-						{ ( status ) => children( { status } ) }
+						<Fragment>{ children }</Fragment>
 					</CSSTransition>
 				</TransitionGroup>
 			</div>
@@ -72,10 +72,6 @@ class Animate extends Component {
 }
 
 Animate.propTypes = {
-	/**
-	 * A function returning rendered content with argument status, reflecting `CSSTransition` status.
-	 */
-	children: PropTypes.func.isRequired,
 	/**
 	 * A unique identifier for each slideable page.
 	 */

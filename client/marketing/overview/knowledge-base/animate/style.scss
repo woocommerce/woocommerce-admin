@@ -1,5 +1,3 @@
-$duration: 500ms;
-
 /**
 The CSSTransition element creates a containing div without a class
  */
@@ -23,7 +21,7 @@ The CSSTransition element creates a containing div without a class
 		top: 0;
 		left: 0;
 		width: 100%;
-		transition: transform 300ms ease;
+		transition: transform 400ms ease-in;
 		position: relative;
 	}
 
@@ -31,7 +29,7 @@ The CSSTransition element creates a containing div without a class
 		position: absolute;
 	}
 
-	&.animate-left {
+	&.animate-right {
 		.slide-enter {
 			transform: translateX(-100%);
 		}
@@ -46,7 +44,7 @@ The CSSTransition element creates a containing div without a class
 		}
 	}
 
-	&.animate-right {
+	&.animate-left {
 		.slide-enter {
 			transform: translateX(100%);
 		}
