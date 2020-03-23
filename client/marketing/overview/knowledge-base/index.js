@@ -96,15 +96,14 @@ class KnowledgeBase extends Component {
 			<div className={ pageClass }>
 				{ currentPosts.map( ( post, index ) => {
 					return (
-						<div className="woocommerce-marketing-knowledgebase-card__post" key={ index }>
+						<a className="woocommerce-marketing-knowledgebase-card__post" href={ post.link } key={ index }>
 							<div className="woocommerce-marketing-knowledgebase-card__post-img">
 								<img src={ post.image } alt=""/>
 							</div>
 							<div>
 								<h3>{ post.title }</h3>
-								by { post.author_name }
 							</div>
-						</div>
+						</a>
 					)
 				} ) }
 			</div>

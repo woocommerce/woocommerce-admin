@@ -25,6 +25,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
+	text-decoration: none;
 
 	&:not(:last-child) {
 		margin-bottom: 16px;
@@ -70,6 +71,13 @@
 		line-height: 24px;
 		font-weight: 600;
 		white-space: normal;
+		color: $core-grey-dark-800;
+	}
+
+	&:hover {
+		h3 {
+			color: $core-blue-dark-900;
+		}
 	}
 
 	&-meta {
@@ -109,6 +117,11 @@
 	.components-button {
 		height: 30px;
 		width: 32px;
+
+		&:hover {
+			border: 1px solid $core-blue-dark-900;
+			color: $core-blue-dark-900;
+		}
 	}
 
 	.components-button:not(:disabled):not([aria-disabled='true']) {
@@ -117,7 +130,7 @@
 	}
 
 	.components-icon-button:not(:disabled):not([aria-disabled='true']):hover {
-		color: $core-grey-dark-300;
+		color: $core-blue-dark-900;
 	}
 
 	button:first-child {
