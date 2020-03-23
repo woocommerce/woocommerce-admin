@@ -17,7 +17,7 @@ import { Gravatar } from '@woocommerce/components';
  */
 import './style.scss'
 import PlaceholderImage from './images/placeholder.png';
-import { default as Animate } from './animate';;
+import { default as Animate } from './animate';
 
 class KnowledgeBase extends Component {
 
@@ -99,45 +99,37 @@ class KnowledgeBase extends Component {
 		} ) );
 	}
 
-	render() {
 
-		const { page, animate, posts } = this.state;
-
-		// group posts in to pages, each page has 2 posts
-		const pages = [];
-		const page_content = [];
-
-		const previousLinkClass = classNames( 'woocommerce-pagination__page-arrows-buttons', {
-			'is-active': page > 1,
+	/**
+	 * Get the 2 posts we need for the current page
+	 */
+	getCurrentSlide() {
+		const { page, posts } = this.state;
+		const currentPosts = posts.slice( page * 2, page * 2 + 2 );
+		const pageClass = classNames( 'woocommerce-marketing-knowledgebase-card__page', {
+			'page-with-single-post': currentPosts.length === 1,
 		} );
 
-		const nextLinkClass = classNames( 'woocommerce-pagination__page-arrows-buttons', {
-			'is-active': page < this.pageCount,
-		} );
-
-		let i;
-		for ( i = 0; i < posts.length; i += 2 ) {
-
-			const pageClass = classNames( 'woocommerce-marketing-knowledgebase-card__page', {
-				'page-with-single-post': ( typeof posts[ i + 1 ] === 'undefined' ),
-			} );
-
-			pages.push( (
-				<div className={ pageClass }>
-					{ posts.slice( i, i + 2 ).map( ( post, index ) => {
-						return (
-							<div className="woocommerce-marketing-knowledgebase-card__post" key={ index } >
-								<img src={ post.thumbnail } alt=""/>
-								<div>
-									<h3>{ post.title }</h3>
-									by { post.author_name }
-								</div>
+		return (
+			<div className={ pageClass }>
+				{ currentPosts.map( ( post, index ) => {
+					return (
+						<div className="woocommerce-marketing-knowledgebase-card__post" key={ index }>
+							<img src={ post.thumbnail } alt=""/>
+							<div>
+								<h3>{ post.title }</h3>
+								by { post.author_name }
 							</div>
-						)
-					} ) }
-				</div>
-			) );
-		}
+						</div>
+					)
+				} ) }
+			</div>
+		);
+	}
+
+	render() {
+		const { page, animate, posts } = this.state;
+		const slidesCount = Math.ceil( posts.length / 2 );
 
 		return (
 			<Card
@@ -147,13 +139,13 @@ class KnowledgeBase extends Component {
 			>
 				<div className="container">
 					<Animate animationKey={ page } animate={ animate }>
-						{ () => ( <React.Fragment>{ pages[ page ] }</React.Fragment> ) }
+						{ () => ( <Fragment>{ this.getCurrentSlide() }</Fragment> ) }
 					</Animate>
 				</div>
 
 				<div className="woocommerce-pagination__page-arrows">
 					<IconButton
-						className={ previousLinkClass }
+						className="woocommerce-pagination__page-arrows-buttons"
 						disabled={ page === 0 }
 						onClick={ this.back }
 						icon="arrow-left-alt2"
@@ -161,8 +153,8 @@ class KnowledgeBase extends Component {
 						size={ 18 }
 					/>
 					<IconButton
-						className={ nextLinkClass }
-						disabled={ page === pages.length - 1 }
+						className="woocommerce-pagination__page-arrows-buttons"
+						disabled={ page === slidesCount - 1 }
 						onClick={ this.forward }
 						icon="arrow-right-alt2"
 						label={ __( 'Next', 'woocommerce-admin' ) }
