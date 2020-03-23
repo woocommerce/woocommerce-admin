@@ -23,6 +23,13 @@ class Marketing {
 	const RECOMMENDED_PLUGINS_TRANSIENT = 'wc_marketing_recommended_plugins';
 
 	/**
+	 * Name of knowledge base post transient.
+	 *
+	 * @var string
+	 */
+	const KNOWLEDGE_BASE_TRANSIENT = 'wc_marketing_knowledge_base';
+
+	/**
 	 * Class instance.
 	 *
 	 * @var Marketing instance
@@ -123,6 +130,35 @@ class Marketing {
 		}
 
 		return array_values( $plugins );
+	}
+
+
+	public function get_knowledge_base_posts() {
+		$posts = get_transient( self::KNOWLEDGE_BASE_TRANSIENT );
+
+		if ( false === $posts ) {
+			$request = wp_remote_get( 'https://woocommerce.com/wp-json/wp/v2/posts?categories=1744&page=1&per_page=8' );
+			$posts   = [];
+
+			if ( ! is_wp_error( $request ) && 200 === $request['response']['code'] ) {
+				$raw_posts = json_decode( $request['body'], true );
+
+				foreach ( $raw_posts as $raw_post ) {
+					$post = [
+						'title' => $raw_post['title']['rendered'],
+						'date'  => $raw_post['date_gmt'],
+						'link'  => $raw_post['link'],
+						'image' => $raw_post['jetpack_featured_media_url'],
+					];
+
+					$posts[] = $post;
+				}
+			}
+
+			set_transient( self::KNOWLEDGE_BASE_TRANSIENT, $posts, DAY_IN_SECONDS );
+		}
+
+		return $posts;
 	}
 
 }
