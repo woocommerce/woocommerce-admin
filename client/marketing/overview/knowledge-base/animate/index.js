@@ -21,6 +21,20 @@ class Animate extends Component {
 		this.container = createRef();
 		this.onExited = this.onExited.bind( this );
 		this.onEnter = this.onEnter.bind( this );
+		this.updateSliderHeight = this.updateSliderHeight.bind( this );
+	}
+
+	componentDidMount() {
+		window.addEventListener( 'resize', this.updateSliderHeight );
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener( 'resize', this.updateSliderHeight )
+	}
+
+	updateSliderHeight() {
+		const slide = this.container.current.getElementsByClassName( 'woocommerce-marketing-knowledgebase-card__page' )[ 0 ];
+		this.setState( { height: slide.offsetHeight } );
 	}
 
 	onExited() {
