@@ -145,7 +145,7 @@ class Marketing {
 
 				foreach ( $raw_posts as $raw_post ) {
 					$post = [
-						'title' => $raw_post['title']['rendered'],
+						'title' => html_entity_decode( $raw_post['title']['rendered'] ),
 						'date'  => $raw_post['date_gmt'],
 						'link'  => $raw_post['link'],
 						'image' => $raw_post['jetpack_featured_media_url'],
