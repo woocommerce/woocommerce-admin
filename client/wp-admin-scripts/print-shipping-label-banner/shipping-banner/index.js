@@ -334,6 +334,38 @@ export class ShippingBanner extends Component {
 						src={ wcAdminAssetUrl + 'shippingillustration.svg' }
 						alt={ __( 'Shipping ', 'woocommerce-admin' ) }
 					/>
+					<div className="wc-admin-shipping-banner-blob">
+						<h3>
+							{ __(
+								'Print discounted shipping labels with a click.',
+								'woocommerce-admin'
+							) }
+						</h3>
+						<p>
+							{ interpolateComponents( {
+								mixedString: this.state.installText,
+								components: {
+									tosLink: (
+										<ExternalLink
+											href="https://wordpress.com/tos"
+											target="_blank"
+											type="external"
+										/>
+									),
+									wcsLink: (
+										<ExternalLink
+											href="https://woocommerce.com/products/shipping/"
+											target="_blank"
+											type="external"
+											onClick={
+												this.woocommerceServiceLinkClicked
+											}
+										/>
+									),
+								},
+							} ) }
+						</p>
+					</div>
 					<Button
 						disabled={ isShippingLabelButtonBusy }
 						isPrimary
@@ -342,36 +374,6 @@ export class ShippingBanner extends Component {
 					>
 						{ __( 'Create shipping label', 'woocommerce-admin' ) }
 					</Button>
-					<h3>
-						{ __(
-							'Print discounted shipping labels with a click.',
-							'woocommerce-admin'
-						) }
-					</h3>
-					<p>
-						{ interpolateComponents( {
-							mixedString: this.state.installText,
-							components: {
-								tosLink: (
-									<ExternalLink
-										href="https://wordpress.com/tos"
-										target="_blank"
-										type="external"
-									/>
-								),
-								wcsLink: (
-									<ExternalLink
-										href="https://woocommerce.com/products/shipping/"
-										target="_blank"
-										type="external"
-										onClick={
-											this.woocommerceServiceLinkClicked
-										}
-									/>
-								),
-							},
-						} ) }
-					</p>
 					<SetupNotice
 						isSetupError={ this.isSetupError() }
 						errorReason={ this.setupErrorReason() }
