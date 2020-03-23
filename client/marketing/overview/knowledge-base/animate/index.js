@@ -55,7 +55,8 @@ class Animate extends Component {
 				style={ style }>
 				<TransitionGroup>
 					<CSSTransition
-						timeout={ 600 }
+						// timeout should be slightly longer than the CSS animation
+						timeout={ 350 }
 						classNames="slide"
 						key={ animationKey }
 						{ ...this.props }
