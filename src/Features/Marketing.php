@@ -96,6 +96,7 @@ class Marketing {
 		}
 
 		$settings['marketing']['installedExtensions'] = InstalledExtensions::get_data();
+		$settings['marketing']['connectNonce']        = wp_create_nonce( 'connect' );
 
 		return $settings;
 	}
