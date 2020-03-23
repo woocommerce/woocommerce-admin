@@ -32,7 +32,7 @@ class RecommendedExtensionsItem extends Component {
 		const { connectNonce } = getSetting( 'marketing', {} );
 		const backPath = getNewPath( {} );
 
-		const connect_url = addQueryArgs( url, {
+		const connectURL = addQueryArgs( url, {
 			'wccom-site': getSetting( 'siteUrl' ),
 			'wccom-back': backPath,
 			'wccom-woo-version': getSetting( 'wcVersion' ),
@@ -40,7 +40,7 @@ class RecommendedExtensionsItem extends Component {
 		} );
 
 		return (
-			<a href={ connect_url }
+			<a href={ connectURL }
 				className={ classNameBase }
 				onClick={ this.onProductClick }
 			>
