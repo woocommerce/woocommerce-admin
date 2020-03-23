@@ -39,6 +39,7 @@ export class ShippingBanner extends Component {
 			wcsAssetsLoading: false,
 			wcsSetupError: false,
 			isShippingLabelButtonBusy: false,
+			installText: this.getInstallText(),
 		};
 	}
 
@@ -349,7 +350,7 @@ export class ShippingBanner extends Component {
 					</h3>
 					<p>
 						{ interpolateComponents( {
-							mixedString: this.getInstallText(),
+							mixedString: this.state.installText,
 							components: {
 								tosLink: (
 									<ExternalLink
