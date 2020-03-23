@@ -332,6 +332,7 @@ export default compose(
 		const profileItems = getProfileItems();
 		const options = getOptions( [
 			'woocommerce_default_country',
+			'woocommerce_woocommerce_payments_settings',
 			'woocommerce_stripe_settings',
 			'woocommerce_ppec_paypal_settings',
 			'woocommerce_payfast_settings',

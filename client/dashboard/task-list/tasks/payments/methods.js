@@ -22,6 +22,7 @@ import BacsIcon from './images/bacs';
 import CodIcon from './images/cod';
 import Stripe from './stripe';
 import Square from './square';
+import WCPay from './wcpay';
 import PayPal from './paypal';
 import Klarna from './klarna';
 import PayFast from './payfast';
@@ -70,6 +71,34 @@ export function getPaymentMethods( {
 				options.woocommerce_stripe_settings &&
 				options.woocommerce_stripe_settings.enabled === 'yes',
 			optionName: 'woocommerce_stripe_settings',
+		},
+		{
+			key: 'wcpay',
+			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
+			content: (
+				<Fragment>
+					{ __(
+						'Accept credit card payments the easy way! No setup fees. No ' +
+							'monthly fees. Just 2.9% + $0.30 per transaction ' +
+							'on U.S.-issued cards',
+						'woocommerce-admin'
+					) }
+					{ __(
+						'By clicking "Setup," you agree to the Terms of Service',
+						'woocommerce-admin'
+					) }
+				</Fragment>
+			),
+			before: <img src={ wcAssetUrl + 'images/wcpay.png' } alt="" />,
+			visible: [ 'US' ].includes( countryCode ) && ! hasCbdIndustry,
+			plugins: [ 'woocommerce-payments' ],
+			container: <WCPay />,
+			isConfigured: activePlugins.includes( 'woocommerce-payments' ),
+			isEnabled:
+				options.woocommerce_woocommerce_payments_settings &&
+				options.woocommerce_woocommerce_payments_settings.enabled ===
+					'yes',
+			optionName: 'woocommerce_woocommerce_payments_settings',
 		},
 		{
 			key: 'paypal',
