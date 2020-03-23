@@ -119,11 +119,9 @@ class KnowledgeBase extends Component {
 				description={ __( 'Learn the ins and outs of successful marketing from the experts at WooCommerce.', 'woocommerce-admin' ) }
 				className="woocommerce-marketing-knowledgebase-card"
 			>
-				<div className="container">
 					<Animate animationKey={ page } animate={ animate }>
 						{ this.getCurrentSlide() }
 					</Animate>
-				</div>
 
 				<div className="woocommerce-pagination__page-arrows">
 					<IconButton
