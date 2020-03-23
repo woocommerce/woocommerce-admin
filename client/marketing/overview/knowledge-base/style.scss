@@ -23,26 +23,43 @@
 
 .woocommerce-marketing-knowledgebase-card__post {
 	display: flex;
+	flex-wrap: wrap;
 	width: 100%;
 
-	@include breakpoint( '<960px' ) {
+	&:not(:last-child) {
+		margin-bottom: 16px;
+	}
+
+	@include breakpoint( '>960px' ) {
+		flex-wrap: nowrap;
+
 		&:not(:last-child) {
-			margin-bottom: 16px;
+			margin-bottom: 0;
+			padding-right: 16px;
 		}
 	}
 
-	> img {
-		display: block;
+	&-img {
+		// Make image container height relative to width
 		width: 100%;
-		margin-right: 16px;
-		flex: 1;
-	}
+		padding-bottom: 67%;
+		overflow: hidden;
+		position: relative;
+		flex: none;
 
-	> div {
-		flex: 1;
+		@include breakpoint( '>960px' ) {
+			width: 150px;
+			height: 100px;
+			margin-right: 16px;
+			padding-bottom: 0;
+		}
 
-		@include breakpoint( '<960px' ) {
-			flex: 2;
+		img {
+			position: absolute;
+			top: 0;
+			left: 0;
+			display: block;
+			width: 100%;
 		}
 	}
 
@@ -55,7 +72,7 @@
 		white-space: normal;
 	}
 
-	.woocommerce-marketing-knowledgebase-card__post-meta {
+	&-meta {
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
