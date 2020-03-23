@@ -21,6 +21,7 @@ import './style.scss'
 import { default as Animate } from './animate';
 import apiFetch from "@wordpress/api-fetch";
 import { WC_ADMIN_NAMESPACE } from "../../../wc-api/constants";
+import { recordEvent } from 'lib/tracks';
 
 class KnowledgeBase extends Component {
 
@@ -69,6 +70,7 @@ class KnowledgeBase extends Component {
 			page: state.page + 1,
 			animate: 'left',
 		} ) );
+		recordEvent( 'marketing_knowledge_carousel', { direction: 'forward', page: this.state.page + 1 } );
 	}
 
 	back() {
@@ -76,6 +78,7 @@ class KnowledgeBase extends Component {
 			page: state.page - 1,
 			animate: 'right',
 		} ) );
+		recordEvent( 'marketing_knowledge_carousel', { direction: 'back', page: this.state.page - 1 } );
 	}
 
 
