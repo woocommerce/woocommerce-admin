@@ -139,7 +139,7 @@ class KnowledgeBase extends Component {
 			>
 				<div className="container">
 					<Animate animationKey={ page } animate={ animate }>
-						{ () => ( <Fragment>{ this.getCurrentSlide() }</Fragment> ) }
+						{ this.getCurrentSlide() }
 					</Animate>
 				</div>
 
