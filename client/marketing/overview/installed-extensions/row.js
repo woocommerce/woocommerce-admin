@@ -14,6 +14,7 @@ import { Link } from '@woocommerce/components';
  * Internal dependencies
  */
 import { Button, ProductIcon } from '../../components';
+import { recordEvent } from 'lib/tracks';
 
 class InstalledExtensionRow extends Component {
 
@@ -55,7 +56,13 @@ class InstalledExtensionRow extends Component {
 				{ links.map( ( link ) => {
 					return (
 						<li key={ link.key }>
-							<Link href={ link.href } type="external">{ link.text }</Link>
+							<Link
+								href={ link.href }
+								type="external"
+								onClick={ this.onLinkClick.bind(this, link) }
+							>
+								{ link.text }
+							</Link>
 						</li>
 					)
 				} ) }
@@ -63,13 +70,29 @@ class InstalledExtensionRow extends Component {
 		)
 	}
 
+	onLinkClick( link ) {
+		const { name} = this.props;
+		recordEvent( 'marketing_installed_options', { name, link: link.key } );
+	}
+
+	onActivateClick = () => {
+		const { activatePlugin, name } = this.props;
+		recordEvent( 'marketing_installed_activate', { name } );
+		activatePlugin();
+	}
+
+	onFinishSetupClick = () => {
+		const { name } = this.props;
+		recordEvent( 'marketing_installed_finish_setup', { name } );
+	}
+
 	getActivateButton() {
-		const { activatePlugin, isLoading } = this.props;
+		const { isLoading } = this.props;
 
 		return (
 			<Button
 				isDefault
-				onClick={ activatePlugin }
+				onClick={ this.onActivateClick }
 				disabled={ isLoading }
 			>
 				{ __( 'Activate', 'woocommerce-admin' ) }
@@ -82,6 +105,7 @@ class InstalledExtensionRow extends Component {
 			<Button
 				isDefault
 				href={ this.props.settingsUrl }
+				onClick={ this.onFinishSetupClick }
 			>
 				{ __( 'Finish setup', 'woocommerce-admin' ) }
 			</Button>
