@@ -18,6 +18,7 @@ import { Card, H } from '@woocommerce/components';
  */
 import Logo from './logo';
 import ManagementIcon from './images/management';
+import Plugins from 'dashboard/task-list/tasks/steps/plugins';
 import SalesTaxIcon from './images/sales_tax';
 import ShippingLabels from './images/shipping_labels';
 import SpeedIcon from './images/speed';
@@ -29,19 +30,34 @@ class Benefits extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
+			isActioned: false,
+			isInstalling: false,
 			isPending: false,
 		};
+
+		const { isJetpackActive, isWcsActive } = props;
+		this.pluginsToInstall = [];
+		if ( ! isJetpackActive ) {
+			this.pluginsToInstall.push( 'jetpack' );
+		}
+		if ( ! isWcsActive ) {
+			this.pluginsToInstall.push( 'woocommerce-services' );
+		}
+
 		this.startPluginInstall = this.startPluginInstall.bind( this );
 		this.skipPluginInstall = this.skipPluginInstall.bind( this );
 	}
 
 	componentDidUpdate( prevProps ) {
 		const { goToNextStep, isRequesting } = this.props;
-		const { isPending } = this.state;
+		const { isActioned, isInstalling, isPending } = this.state;
 
-		if ( ! isRequesting && prevProps.isRequesting && isPending ) {
-			goToNextStep();
+		if ( ! isRequesting && prevProps.isRequesting ) {
 			this.setState( { isPending: false } );
+		}
+
+		if ( isActioned && ! isInstalling && ! isPending ) {
+			goToNextStep();
 		}
 	}
 
@@ -53,7 +69,7 @@ class Benefits extends Component {
 			updateProfileItems,
 		} = this.props;
 
-		this.setState( { isPending: true } );
+		this.setState( { isActioned: true, isPending: true } );
 
 		const plugins = isJetpackActive ? 'skipped-wcs' : 'skipped';
 		await updateProfileItems( { plugins } );
@@ -81,7 +97,11 @@ class Benefits extends Component {
 			updateOptions,
 		} = this.props;
 
-		this.setState( { isPending: true } );
+		this.setState( {
+			isActioned: true,
+			isInstalling: true,
+			isPending: true,
+		} );
 
 		await updateOptions( {
 			woocommerce_setup_jetpack_opted_in: true,
@@ -171,17 +191,9 @@ class Benefits extends Component {
 	}
 
 	render() {
-		const { isJetpackActive, isWcsActive } = this.props;
-		const { isPending } = this.state;
+		const { isInstalling, isPending } = this.state;
 
-		const pluginsToInstall = [];
-		if ( ! isJetpackActive ) {
-			pluginsToInstall.push( 'jetpack' );
-		}
-		if ( ! isWcsActive ) {
-			pluginsToInstall.push( 'woocommerce-services' );
-		}
-		const pluginNamesString = pluginsToInstall
+		const pluginNamesString = this.pluginsToInstall
 			.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
 			.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
 
@@ -214,6 +226,19 @@ class Benefits extends Component {
 					>
 						{ __( 'No thanks', 'woocommerce-admin' ) }
 					</Button>
+
+					{ isInstalling && (
+						<Plugins
+							autoInstall
+							onComplete={ () =>
+								this.setState( { isInstalling: false } )
+							}
+							onError={ () =>
+								this.setState( { isInstalling: false } )
+							}
+							pluginSlugs={ this.pluginsToInstall }
+						/>
+					) }
 				</div>
 
 				<p className="woocommerce-profile-wizard__benefits-install-notice">
@@ -226,7 +251,7 @@ class Benefits extends Component {
 						_n(
 							'plugin',
 							'plugins',
-							pluginsToInstall.length,
+							this.pluginsToInstall.length,
 							'woocommerce-admin'
 						)
 					) }
