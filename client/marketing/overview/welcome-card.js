@@ -8,7 +8,6 @@ import { IconButton } from '@wordpress/components';
 import Gridicon from 'gridicons';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
-import { recordEvent } from 'lib/tracks';
 
 /**
  * WooCommerce dependencies
@@ -18,6 +17,7 @@ import { Card } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
+import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
 import WelcomeImage from './images/welcome.png';
 
@@ -33,7 +33,7 @@ class WelcomeCard extends Component {
 			woocommerce_marketing_overview_welcome_hidden: 'yes',
 		} );
 
-		recordEvent( 'marketing_dismiss_welcome', {} );
+		recordEvent( 'marketing_intro_close', {} );
 	}
 
 	render() {
