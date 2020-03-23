@@ -13,8 +13,10 @@ import './style.scss';
 class ProductIcon extends Component {
 	render() {
 		return (
-			<img src={ this.props.src }
+			<img
+				src={ this.props.src }
 				className={ classnames( this.props.className, 'woocommere-admin-marketing-product-icon' ) }
+				alt=""
 			/>
 		);
 	}
