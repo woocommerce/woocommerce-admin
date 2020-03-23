@@ -1,10 +1,10 @@
 /**
  * External dependencies
  */
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
-import { IconButton } from '@wordpress/components';
+import { IconButton, Spinner } from '@wordpress/components';
 import classNames from 'classnames';
 import { withDispatch } from '@wordpress/data';
 
@@ -31,7 +31,7 @@ class KnowledgeBase extends Component {
 			posts: [],
 			page: 0,
 			animate: null,
-			isLoading: false,
+			isLoading: true,
 		};
 		this.forward = this.forward.bind( this );
 		this.back = this.back.bind( this );
@@ -110,7 +110,7 @@ class KnowledgeBase extends Component {
 	}
 
 	render() {
-		const { page, animate, posts } = this.state;
+		const { page, animate, posts, isLoading } = this.state;
 		const slidesCount = Math.ceil( posts.length / 2 );
 
 		return (
@@ -119,28 +119,37 @@ class KnowledgeBase extends Component {
 				description={ __( 'Learn the ins and outs of successful marketing from the experts at WooCommerce.', 'woocommerce-admin' ) }
 				className="woocommerce-marketing-knowledgebase-card"
 			>
-					<Animate animationKey={ page } animate={ animate }>
-						{ this.getCurrentSlide() }
-					</Animate>
+				{ isLoading && <Spinner /> }
+				{ isLoading || (
+					<div className="woocommerce-marketing-knowledgebase-card__slider">
+						<div className="woocommerce-marketing-knowledgebase-card__slider-slides">
+							<Animate animationKey={ page } animate={ animate }>
+								{ this.getCurrentSlide() }
+							</Animate>
+						</div>
 
-				<div className="woocommerce-pagination__page-arrows">
-					<IconButton
-						className="woocommerce-pagination__page-arrows-buttons"
-						disabled={ page === 0 }
-						onClick={ this.back }
-						icon="arrow-left-alt2"
-						label={ __( 'Previous', 'woocommerce-admin' ) }
-						size={ 18 }
-					/>
-					<IconButton
-						className="woocommerce-pagination__page-arrows-buttons"
-						disabled={ page === slidesCount - 1 }
-						onClick={ this.forward }
-						icon="arrow-right-alt2"
-						label={ __( 'Next', 'woocommerce-admin' ) }
-						size={ 18 }
-					/>
-				</div>
+						<div className="woocommerce-pagination__page-arrows">
+							<IconButton
+								className="woocommerce-pagination__page-arrows-buttons"
+								disabled={ page === 0 }
+								onClick={ this.back }
+								icon="arrow-left-alt2"
+								label={ __( 'Previous', 'woocommerce-admin' ) }
+								size={ 18 }
+							/>
+							<IconButton
+								className="woocommerce-pagination__page-arrows-buttons"
+								disabled={ page === slidesCount - 1 }
+								onClick={ this.forward }
+								icon="arrow-right-alt2"
+								label={ __( 'Next', 'woocommerce-admin' ) }
+								size={ 18 }
+							/>
+						</div>
+					</div>
+				) }
+
+
 			</Card>
 		)
 	}
