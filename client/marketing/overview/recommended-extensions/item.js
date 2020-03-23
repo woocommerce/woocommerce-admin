@@ -16,7 +16,7 @@ import { recordEvent } from 'lib/tracks';
  * WooCommerce dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import { getNewPath } from '@woocommerce/navigation';
 
 class RecommendedExtensionsItem extends Component {
 
