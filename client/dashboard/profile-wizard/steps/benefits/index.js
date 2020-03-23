@@ -35,12 +35,15 @@ class Benefits extends Component {
 			isPending: false,
 		};
 
-		const { isJetpackActive, isWcsActive } = props;
+		this.isJetpackActive = props.activePlugins.includes( 'jetpack' );
+		this.isWcsActive = props.activePlugins.includes(
+			'woocommerce-services'
+		);
 		this.pluginsToInstall = [];
-		if ( ! isJetpackActive ) {
+		if ( ! this.isJetpackActive ) {
 			this.pluginsToInstall.push( 'jetpack' );
 		}
-		if ( ! isWcsActive ) {
+		if ( ! this.isWcsActive ) {
 			this.pluginsToInstall.push( 'woocommerce-services' );
 		}
 
@@ -64,14 +67,13 @@ class Benefits extends Component {
 	async skipPluginInstall() {
 		const {
 			createNotice,
-			isJetpackActive,
 			isProfileItemsError,
 			updateProfileItems,
 		} = this.props;
 
 		this.setState( { isActioned: true, isPending: true } );
 
-		const plugins = isJetpackActive ? 'skipped-wcs' : 'skipped';
+		const plugins = this.isJetpackActive ? 'skipped-wcs' : 'skipped';
 		await updateProfileItems( { plugins } );
 
 		if ( isProfileItemsError ) {
@@ -91,11 +93,7 @@ class Benefits extends Component {
 	}
 
 	async startPluginInstall() {
-		const {
-			isJetpackActive,
-			updateProfileItems,
-			updateOptions,
-		} = this.props;
+		const { updateProfileItems, updateOptions } = this.props;
 
 		this.setState( {
 			isActioned: true,
@@ -107,7 +105,7 @@ class Benefits extends Component {
 			woocommerce_setup_jetpack_opted_in: true,
 		} );
 
-		const plugins = isJetpackActive ? 'installed-wcs' : 'installed';
+		const plugins = this.isJetpackActive ? 'installed-wcs' : 'installed';
 		recordEvent( 'storeprofiler_install_plugins', {
 			install: true,
 			plugins,
@@ -135,7 +133,6 @@ class Benefits extends Component {
 	}
 
 	getBenefits() {
-		const { isJetpackActive, isWcsActive } = this.props;
 		return [
 			{
 				title: __( 'Store management on the go', 'woocommerce-admin' ),
@@ -144,7 +141,7 @@ class Benefits extends Component {
 					'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
 					'woocommerce-admin'
 				),
-				visible: ! isJetpackActive,
+				visible: ! this.isJetpackActive,
 			},
 			{
 				title: __( 'Automated sales taxes', 'woocommerce-admin' ),
@@ -153,7 +150,7 @@ class Benefits extends Component {
 					'Ensure that the correct rate of tax is charged on all of your orders automatically, and print shipping labels at home.',
 					'woocommerce-admin'
 				),
-				visible: ! isWcsActive || ! isJetpackActive,
+				visible: ! this.isWcsActive || ! this.isJetpackActive,
 			},
 			{
 				title: __( 'Improved speed & security', 'woocommerce-admin' ),
@@ -162,7 +159,7 @@ class Benefits extends Component {
 					'Automatically block brute force attacks and speed up your store using our powerful, global server network to cache images.',
 					'woocommerce-admin'
 				),
-				visible: ! isJetpackActive,
+				visible: ! this.isJetpackActive,
 			},
 			{
 				title: __(
@@ -174,7 +171,7 @@ class Benefits extends Component {
 					'Save time at the post office by printing shipping labels for your orders at home.',
 					'woocommerce-admin'
 				),
-				visible: isJetpackActive && ! isWcsActive,
+				visible: this.isJetpackActive && ! this.isWcsActive,
 			},
 		];
 	}
@@ -273,13 +270,10 @@ export default compose(
 		const isProfileItemsError = Boolean( getProfileItemsError() );
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
-		const isJetpackActive = activePlugins.includes( 'jetpack' );
-		const isWcsActive = activePlugins.includes( 'woocommerce-services' );
 
 		return {
-			isJetpackActive,
+			activePlugins,
 			isProfileItemsError,
-			isWcsActive,
 			profileItems,
 			isRequesting: isGetProfileItemsRequesting(),
 		};
