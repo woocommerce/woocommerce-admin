@@ -34,7 +34,7 @@ class Animate extends Component {
 
 	updateSliderHeight() {
 		const slide = this.container.current.getElementsByClassName( 'woocommerce-marketing-knowledgebase-card__page' )[ 0 ];
-		this.setState( { height: slide.offsetHeight } );
+		this.setState( { height: slide.clientHeight } );
 	}
 
 	onExited() {
@@ -49,7 +49,7 @@ class Animate extends Component {
 	 */
 	onEnter() {
 		const newSlide = this.container.current.getElementsByClassName( 'slide-enter' )[ 0 ];
-		this.setState( { height: newSlide.offsetHeight } );
+		this.setState( { height: newSlide.clientHeight } );
 	}
 
 	render() {
@@ -71,7 +71,7 @@ class Animate extends Component {
 				<TransitionGroup>
 					<CSSTransition
 						// timeout should be slightly longer than the CSS animation
-						timeout={ 450 }
+						timeout={ 320 }
 						classNames="slide"
 						key={ animationKey }
 						onExited={ this.onExited }
