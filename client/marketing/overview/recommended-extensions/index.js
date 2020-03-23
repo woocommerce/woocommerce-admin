@@ -28,7 +28,7 @@ class RecommendedExtensions extends Component {
 		this.state = {
 			isLoading: true,
 			extensions: [],
-		}
+		};
 	}
 
 	componentDidMount() {

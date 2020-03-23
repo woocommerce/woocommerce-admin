@@ -2,9 +2,11 @@
  * External dependencies
  */
 import { Component, Fragment } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { IconButton } from '@wordpress/components';
 import classNames from 'classnames';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -16,8 +18,9 @@ import { Gravatar } from '@woocommerce/components';
  * Internal dependencies
  */
 import './style.scss'
-import PlaceholderImage from './images/placeholder.png';
 import { default as Animate } from './animate';
+import apiFetch from "@wordpress/api-fetch";
+import { WC_ADMIN_NAMESPACE } from "../../../wc-api/constants";
 
 class KnowledgeBase extends Component {
 
@@ -27,6 +30,7 @@ class KnowledgeBase extends Component {
 			posts: [],
 			page: 0,
 			animate: null,
+			isLoading: false,
 		};
 		this.forward = this.forward.bind( this );
 		this.back = this.back.bind( this );
@@ -36,53 +40,28 @@ class KnowledgeBase extends Component {
 		this.fetchPosts();
 	}
 
-	fetchPosts() {
+	async fetchPosts() {
+		const { createNotice } = this.props;
 
-		// todo pull from api
-		const posts = [
-			{
-				id: 1,
-				title: 'Post Title 1',
-				link: 'http://wordpress.org',
-				author_name: 'Jason',
-				gravatar: '',
-				thumbnail: PlaceholderImage,
-			},
-			{
-				id: 2,
-				title: 'Post Title 2',
-				link: 'http://wordpress.org',
-				author_name: 'Jason',
-				gravatar: '',
-				thumbnail: PlaceholderImage,
-			},
-			{
-				id: 3,
-				title: 'Post Title 3',
-				link: 'http://wordpress.org',
-				author_name: 'Jason',
-				gravatar: '',
-				thumbnail: PlaceholderImage,
-			},
-			{
-				id: 4,
-				title: 'Post Title 4',
-				link: 'http://wordpress.org',
-				author_name: 'Jason',
-				gravatar: '',
-				thumbnail: PlaceholderImage,
-			},
-			{
-				id: 5,
-				title: 'Post Title 5',
-				link: 'http://wordpress.org',
-				author_name: 'Jason',
-				gravatar: '',
-				thumbnail: PlaceholderImage,
+		try {
+			const response = await apiFetch( {
+				path: `${ WC_ADMIN_NAMESPACE }/marketing/overview/knowledge-base`,
+				method: 'GET',
+			} );
+			if ( response ) {
+				this.setState( {
+					isLoading: false,
+					posts: response,
+				} );
+				return;
 			}
-		];
-
-		this.setState( { posts } );
+			throw new Error();
+		} catch ( err ) {
+			this.setState( { isLoading: false } );
+			createNotice( 'success',
+				__( 'There was an error loading knowledge base posts.', 'woocommerce-admin' )
+			);
+		}
 	}
 
 	forward() {
@@ -166,4 +145,12 @@ class KnowledgeBase extends Component {
 	}
 }
 
-export default KnowledgeBase;
+export default compose(
+	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
+
+		return {
+			createNotice,
+		};
+	} )
+)( KnowledgeBase );
