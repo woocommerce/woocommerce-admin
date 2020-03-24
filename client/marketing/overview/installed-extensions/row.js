@@ -75,13 +75,13 @@ class InstalledExtensionRow extends Component {
 		recordEvent( 'marketing_installed_options', { name, link: link.key } );
 	}
 
-	onActivateClick = () => {
+	onActivateClick() {
 		const { activatePlugin, name } = this.props;
 		recordEvent( 'marketing_installed_activate', { name } );
 		activatePlugin();
 	}
 
-	onFinishSetupClick = () => {
+	onFinishSetupClick() {
 		const { name } = this.props;
 		recordEvent( 'marketing_installed_finish_setup', { name } );
 	}

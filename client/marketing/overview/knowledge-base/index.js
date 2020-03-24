@@ -4,7 +4,7 @@
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
-import { IconButton, Spinner } from '@wordpress/components';
+import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
 import { withDispatch } from '@wordpress/data';
 
@@ -12,7 +12,6 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { Card, Pagination } from '@woocommerce/components';
-import { Gravatar } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -99,7 +98,7 @@ class KnowledgeBase extends Component {
 					return (
 						<a className="woocommerce-marketing-knowledgebase-card__post" href={ post.link } key={ index }>
 							<div className="woocommerce-marketing-knowledgebase-card__post-img">
-								<img src={ post.image } alt=""/>
+								<img src={ post.image } alt="" />
 							</div>
 							<div className="woocommerce-marketing-knowledgebase-card__post-text">
 								<h3>{ post.title }</h3>
