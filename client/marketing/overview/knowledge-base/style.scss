@@ -1,7 +1,3 @@
-.woocommerce-slider-animation {
-	margin-bottom: 16px;
-}
-
 .woocommerce-marketing-knowledgebase-card {
 
 	.woocommerce-pagination {
@@ -12,108 +8,89 @@
 		}
 	}
 
-}
+	&__page {
+		width: 100%;
+		display: flex;
 
-.woocommerce-marketing-knowledgebase-card__page {
-	width: 100%;
-	display: flex;
-
-	@include breakpoint( '<960px' ) {
-		display: block;
+		@include breakpoint( '<960px' ) {
+			display: block;
+		}
 	}
-}
 
-
-.woocommerce-marketing-knowledgebase-card {
 	.components-spinner {
 		float: none;
 		margin: 45px auto 50px;
 		display: block;
 	}
-}
 
-
-.woocommerce-marketing-knowledgebase-card__post {
-	display: flex;
-	flex-wrap: wrap;
-	width: 100%;
-	text-decoration: none;
-
-	&:not(:last-child) {
-		margin-bottom: 16px;
-	}
-
-	@include breakpoint( '>960px' ) {
-		flex-wrap: nowrap;
+	&__post {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		text-decoration: none;
 
 		&:not(:last-child) {
-			margin-bottom: 0;
-			padding-right: 16px;
+			margin-bottom: 16px;
 		}
-	}
-
-	&-img {
-		// Make image container height relative to width
-		width: 100%;
-		padding-bottom: 67%;
-		overflow: hidden;
-		position: relative;
-		flex: none;
 
 		@include breakpoint( '>960px' ) {
-			width: 150px;
-			height: 100px;
-			margin-right: 16px;
-			padding-bottom: 0;
+			flex-wrap: nowrap;
+
+			&:not(:last-child) {
+				margin-bottom: 0;
+				padding-right: 16px;
+			}
 		}
 
-		img {
-			position: absolute;
-			top: 0;
-			left: 0;
-			display: block;
+		&-img {
+			// Make image container height relative to width
 			width: 100%;
+			padding-bottom: 67%;
+			overflow: hidden;
+			position: relative;
+			flex: none;
+
+			@include breakpoint( '>960px' ) {
+				width: 150px;
+				height: 100px;
+				margin-right: 16px;
+				padding-bottom: 0;
+			}
+
+			img {
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: block;
+				width: 100%;
+			}
 		}
-	}
 
-	h3 {
-		margin-top: 0;
-		margin-bottom: 8px;
-		font-size: 16px;
-		line-height: 24px;
-		font-weight: 600;
-		white-space: normal;
-		color: $core-grey-dark-800;
-	}
-
-	&:hover {
 		h3 {
-			color: $core-blue-dark-900;
+			margin-top: 0;
+			margin-bottom: 8px;
+			font-size: 16px;
+			line-height: 24px;
+			font-weight: 600;
+			white-space: normal;
+			color: $core-grey-dark-800;
 		}
-	}
 
-	&-meta {
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
-		font-size: 12px;
-		line-height: 16px;
-
-		.author {
-			margin-right: 5px;
+		&:hover {
+			h3 {
+				color: $core-blue-dark-900;
+			}
 		}
-	}
-}
 
-.page-with-single-post {
-	padding-right: 16px;
+		&-meta {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			font-size: 12px;
+			line-height: 16px;
 
-	.woocommerce-marketing-knowledgebase-card__post {
-		> div {
-			flex: 3;
-
-			@include breakpoint( '<960px' ) {
-				flex: 2;
+			.author {
+				margin-right: 5px;
 			}
 		}
 	}
