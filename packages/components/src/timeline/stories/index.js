@@ -24,22 +24,43 @@ export const Filled = () => (
 	<Timeline
 		items={ [
 			{
-				datetime: itemDate( 'event 1 date', new Date( 'Jan 20 2020' ) ),
+				datetime: itemDate(
+					'event 1 date',
+					new Date( 2020, 0, 20, 1, 30 )
+				),
 				body: [
 					text( 'event 1, first event', 'foo happened' ),
 					text( 'event 1, second event', 'bar happened' ),
 				],
-				headline: text( 'event 1, headline', 'headline' ),
-				gridicon: text( 'event 1 gridicon', 'plus' ),
+				headline: text( 'event 1, headline', '2 events in body' ),
+				gridicon: text(
+					'event 1 gridicon',
+					text( 'event 1 gridicon', 'checkmark' )
+				),
 			},
 			{
-				datetime: itemDate( 'event 2 date', new Date( 'Jan 22 2020' ) ),
-				body: [
-					text( 'event 2, first event', 'foo happened' ),
-					text( 'event 2, second event', 'bar happened' ),
-				],
-				headline: text( 'event 2, headline', 'headline' ),
-				gridicon: text( 'event 2 gridicon', 'plus' ),
+				datetime: itemDate(
+					'event 2 date',
+					new Date( 2020, 0, 20, 23, 45 )
+				),
+				body: [],
+				headline: text( 'event 2, headline', 'empty body' ),
+				gridicon: text(
+					'event 2 gridicon',
+					text( 'event 2 gridicon', 'checkmark' )
+				),
+			},
+			{
+				datetime: itemDate(
+					'event 3 date',
+					new Date( 2020, 0, 22, 15, 13 )
+				),
+				body: [ text( 'event 3, second event', 'baz happened' ) ],
+				headline: text( 'event 3, headline', '1 event in body' ),
+				gridicon: text(
+					'event 3 gridicon',
+					text( 'event 3 gridicion', 'checkmark' )
+				),
 			},
 		] }
 	/>
