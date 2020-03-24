@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Component, createRef, Fragment } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
