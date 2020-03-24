@@ -6,30 +6,10 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 
-const daysToTimelineItems = ( day, dayNum ) => {
-	const dayToTimelineItem = ( item, itemIndex ) => {
-		const itemTimeString = moment( item.datetime ).format( 'h:mma' );
-		const itemKey = dayNum + '-' + itemIndex;
-		return (
-			<li key={ itemKey }>
-				{ item.headline } <span>{ itemTimeString }</span>
-				{ item.body.map( function( line, bodyLineIndex ) {
-					const bodyLineKey =
-						dayNum + '-' + itemIndex + '-' + bodyLineIndex;
-					return <p key={ bodyLineKey }>{ line }</p>;
-				} ) }
-			</li>
-		);
-	};
-
-	const dayString = moment( dayNum.toString() ).format( 'MMMM D, YYYY' );
-	return (
-		<li key={ dayNum }>
-			{ dayString }
-			<ul>{ day.map( dayToTimelineItem ) }</ul>
-		</li>
-	);
-};
+/**
+ * Internal dependencies
+ */
+import TimelineGroup from './timeline-group';
 
 const Timeline = ( { className, items } ) => {
 	const timelineClassName = classnames( 'woocommerce-timeline', className );
@@ -45,14 +25,14 @@ const Timeline = ( { className, items } ) => {
 	}
 
 	// Sort all the items reverse chronologically
-	items.sort( function( a, b ) {
+	items.sort( ( a, b ) => {
 		return a.datetime - b.datetime;
 	} );
 
 	// Group the items into local day collections
 	const days = [];
 
-	items.forEach( function( item ) {
+	items.forEach( ( item ) => {
 		const itemLocalDatetime = moment.unix( item.datetime );
 		const dayNum = parseInt( itemLocalDatetime.format( 'YYYYMMDD' ), 10 );
 		if ( ! ( dayNum in days ) ) {
@@ -61,9 +41,13 @@ const Timeline = ( { className, items } ) => {
 		days[ dayNum ].push( item );
 	} );
 
+	const timelineGroups = days.map( ( day, dayIndex ) => (
+		<TimelineGroup key={ dayIndex } items={ day } groupKey={ dayIndex } />
+	) );
+
 	return (
 		<div className={ timelineClassName }>
-			<ul>{ days.map( daysToTimelineItems ) }</ul>
+			<ul>{ timelineGroups }</ul>
 		</div>
 	);
 };
