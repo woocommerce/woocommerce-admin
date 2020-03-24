@@ -32,21 +32,21 @@ class InstalledExtensionRow extends Component {
 		if ( supportUrl ) {
 			links.push( {
 				key: 'support',
-				href: docsUrl,
+				href: supportUrl,
 				text: __( 'Get support', 'woocommerce-admin' ),
 			} );
 		}
 		if ( settingsUrl ) {
 			links.push( {
 				key: 'settings',
-				href: docsUrl,
+				href: settingsUrl,
 				text: __( 'Settings', 'woocommerce-admin' ),
 			} );
 		}
 		if ( dashboardUrl ) {
 			links.push( {
 				key: 'dashboard',
-				href: docsUrl,
+				href: dashboardUrl,
 				text: __( 'Dashboard', 'woocommerce-admin' ),
 			} );
 		}
