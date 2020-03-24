@@ -1,7 +1,4 @@
-/**
-The CSSTransition element creates a containing div without a class
- */
-.woocommerce-slider-animation {
+.woocommerce-marketing-slider {
 	display: block;
 	width: 100%;
 	overflow: hidden;
@@ -16,8 +13,7 @@ The CSSTransition element creates a containing div without a class
 		height: 100%;
 	}
 
-	// slide
-	& > div > div {
+	&__slide {
 		top: 0;
 		left: 0;
 		width: 100%;

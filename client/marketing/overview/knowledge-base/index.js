@@ -18,10 +18,10 @@ import { Gravatar } from '@woocommerce/components';
  * Internal dependencies
  */
 import './style.scss'
-import { default as Animate } from './animate';
 import apiFetch from "@wordpress/api-fetch";
 import { WC_ADMIN_NAMESPACE } from "../../../wc-api/constants";
 import { recordEvent } from 'lib/tracks';
+import { Slider } from '../../components';
 
 class KnowledgeBase extends Component {
 
@@ -124,9 +124,9 @@ class KnowledgeBase extends Component {
 				{ isLoading || (
 					<div className="woocommerce-marketing-knowledgebase-card__slider">
 						<div className="woocommerce-marketing-knowledgebase-card__slider-slides">
-							<Animate animationKey={ page } animate={ animate }>
+							<Slider animationKey={ page } animate={ animate }>
 								{ this.getCurrentSlide() }
-							</Animate>
+							</Slider>
 						</div>
 						<Pagination
 							page={ page }
