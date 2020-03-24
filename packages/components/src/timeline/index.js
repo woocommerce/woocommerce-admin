@@ -9,6 +9,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import Card from '../card';
 import TimelineGroup from './timeline-group';
 
 const Timeline = ( props ) => {
@@ -48,9 +49,9 @@ const Timeline = ( props ) => {
 	) );
 
 	return (
-		<div className={ timelineClassName }>
+		<Card title={ 'Timeline' } className={ timelineClassName }>
 			<ul>{ timelineGroups }</ul>
-		</div>
+		</Card>
 	);
 };
 
