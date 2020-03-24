@@ -297,6 +297,26 @@ export class ShippingBanner extends Component {
 			const { orderId } = this.state;
 			const siteId = state.ui.selectedSiteId;
 
+			const wcsStoreUnsubscribe = wcsStore.subscribe( () => {
+				const latestState = wcsStore.getState();
+				const siteState =
+					latestState.extensions.woocommerce.woocommerceServices[
+						siteId
+					];
+				if ( siteState ) {
+					const orderState = siteState.shippingLabel[ orderId ];
+					if ( orderState ) {
+						if ( orderState.showPurchaseDialog ) {
+							if ( window.jQuery ) {
+								window
+									.jQuery( '#woocommerce-order-label' )
+									.show();
+							}
+							wcsStoreUnsubscribe();
+						}
+					}
+				}
+			} );
 			wcsStore.dispatch( {
 				type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
 				orderId,
@@ -316,12 +336,6 @@ export class ShippingBanner extends Component {
 			document.getElementById(
 				'woocommerce-admin-print-label'
 			).style.display = 'none';
-
-			this.whenNodeAdded( 'label-purchase-modal', () => {
-				if ( window.jQuery ) {
-					window.jQuery( '#woocommerce-order-label' ).show();
-				}
-			} );
 		}
 	}
 
@@ -407,30 +421,6 @@ export class ShippingBanner extends Component {
 				/>
 			</div>
 		);
-	}
-
-	whenNodeAdded( nodeId, callback ) {
-		const targetNode = document.getElementsByTagName( 'body' )[ 0 ];
-
-		const config = { attributes: false, childList: true, subtree: true };
-
-		const observer = new MutationObserver(
-			( mutationsList, observerInstance ) => {
-				for ( const mutation of mutationsList ) {
-					if ( mutation.type === 'childList' ) {
-						if (
-							document.getElementsByClassName( nodeId ).length > 0
-						) {
-							callback();
-							observerInstance.disconnect();
-							break;
-						}
-					}
-				}
-			}
-		);
-
-		observer.observe( targetNode, config );
 	}
 }
 

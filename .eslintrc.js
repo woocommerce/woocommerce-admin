@@ -5,7 +5,6 @@ module.exports = {
 	},
 	globals: {
 		wcSettings: true,
-		MutationObserver: true,
 	},
 	plugins: [ 'jest' ],
 	rules: {
