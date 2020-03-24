@@ -11,7 +11,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card } from '@woocommerce/components';
+import { Card, Pagination } from '@woocommerce/components';
 import { Gravatar } from '@woocommerce/components';
 
 /**
@@ -29,12 +29,11 @@ class KnowledgeBase extends Component {
 		super( props );
 		this.state = {
 			posts: [],
-			page: 0,
+			page: 1,
 			animate: null,
 			isLoading: true,
 		};
-		this.forward = this.forward.bind( this );
-		this.back = this.back.bind( this );
+		this.onPaginationPageChange = this.onPaginationPageChange.bind( this );
 	}
 
 	componentDidMount() {
@@ -65,20 +64,22 @@ class KnowledgeBase extends Component {
 		}
 	}
 
-	forward() {
-		this.setState( ( state ) => ( {
-			page: state.page + 1,
-			animate: 'left',
-		} ) );
-		recordEvent( 'marketing_knowledge_carousel', { direction: 'forward', page: this.state.page + 1 } );
-	}
+	onPaginationPageChange( newPage ) {
+		const { page } = this.state;
+		let animate;
 
-	back() {
-		this.setState( ( state ) => ( {
-			page: state.page - 1,
-			animate: 'right',
-		} ) );
-		recordEvent( 'marketing_knowledge_carousel', { direction: 'back', page: this.state.page - 1 } );
+		if ( newPage > page ) {
+			animate = 'left';
+			recordEvent( 'marketing_knowledge_carousel', { direction: 'forward', page: newPage } );
+		} else {
+			animate = 'right';
+			recordEvent( 'marketing_knowledge_carousel', { direction: 'back', page: newPage } );
+		}
+
+		this.setState( {
+			page: newPage,
+			animate,
+		} );
 	}
 
 
@@ -87,7 +88,7 @@ class KnowledgeBase extends Component {
 	 */
 	getCurrentSlide() {
 		const { page, posts } = this.state;
-		const currentPosts = posts.slice( page * 2, page * 2 + 2 );
+		const currentPosts = posts.slice( ( page - 1 ) * 2, ( page - 1 ) * 2 + 2 );
 		const pageClass = classNames( 'woocommerce-marketing-knowledgebase-card__page', {
 			'page-with-single-post': currentPosts.length === 1,
 		} );
@@ -112,7 +113,6 @@ class KnowledgeBase extends Component {
 
 	render() {
 		const { page, animate, posts, isLoading } = this.state;
-		const slidesCount = Math.ceil( posts.length / 2 );
 
 		return (
 			<Card
@@ -128,25 +128,14 @@ class KnowledgeBase extends Component {
 								{ this.getCurrentSlide() }
 							</Animate>
 						</div>
-
-						<div className="woocommerce-pagination__page-arrows">
-							<IconButton
-								className="woocommerce-pagination__page-arrows-buttons"
-								disabled={ page === 0 }
-								onClick={ this.back }
-								icon="arrow-left-alt2"
-								label={ __( 'Previous', 'woocommerce-admin' ) }
-								size={ 18 }
-							/>
-							<IconButton
-								className="woocommerce-pagination__page-arrows-buttons"
-								disabled={ page === slidesCount - 1 }
-								onClick={ this.forward }
-								icon="arrow-right-alt2"
-								label={ __( 'Next', 'woocommerce-admin' ) }
-								size={ 18 }
-							/>
-						</div>
+						<Pagination
+							page={ page }
+							perPage={ 2 }
+							total={ posts.length }
+							onPageChange={ this.onPaginationPageChange }
+							showPagePicker={ false }
+							showPerPagePicker={ false }
+						/>
 					</div>
 				) }
 
