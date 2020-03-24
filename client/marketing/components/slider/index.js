@@ -11,11 +11,10 @@ import PropTypes from 'prop-types';
  */
 import './style.scss'
 
-class Animate extends Component {
-	constructor() {
-		super();
+class Slider extends Component {
+	constructor( props ) {
+		super( props );
 		this.state = {
-			animate: null,
 			height: null,
 		};
 		this.container = createRef();
@@ -24,7 +23,11 @@ class Animate extends Component {
 		this.updateSliderHeight = this.updateSliderHeight.bind( this );
 	}
 
+	/**
+	 * Update the slider height on Resize
+	 */
 	componentDidMount() {
+		// Update the slider height on Resize
 		window.addEventListener( 'resize', this.updateSliderHeight );
 	}
 
@@ -33,7 +36,7 @@ class Animate extends Component {
 	}
 
 	updateSliderHeight() {
-		const slide = this.container.current.getElementsByClassName( 'woocommerce-marketing-knowledgebase-card__page' )[ 0 ];
+		const slide = this.container.current.getElementsByClassName( 'woocommerce-marketing-slider__slide' )[ 0 ];
 		this.setState( { height: slide.clientHeight } );
 	}
 
@@ -56,7 +59,7 @@ class Animate extends Component {
 		const { children, animationKey, animate } = this.props;
 		const { height } = this.state;
 		const containerClasses = classnames(
-			'woocommerce-slider-animation',
+			'woocommerce-marketing-slider',
 			animate && `animate-${ animate }`
 		);
 		const style = {};
@@ -77,7 +80,7 @@ class Animate extends Component {
 						onExited={ this.onExited }
 						onEnter={ this.onEnter }
 					>
-						<Fragment>{ children }</Fragment>
+						<div className="woocommerce-marketing-slider__slide">{ children }</div>
 					</CSSTransition>
 				</TransitionGroup>
 			</div>
@@ -85,7 +88,7 @@ class Animate extends Component {
 	}
 }
 
-Animate.propTypes = {
+Slider.propTypes = {
 	/**
 	 * A unique identifier for each slideable page.
 	 */
@@ -100,4 +103,4 @@ Animate.propTypes = {
 	onExited: PropTypes.func,
 };
 
-export default Animate;
+export default Slider;
