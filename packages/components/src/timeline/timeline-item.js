@@ -16,7 +16,7 @@ const TimelineItem = ( props ) => {
 		const bodyLineKey = itemKey + '-' + bodyLineIndex;
 		return <p key={ bodyLineKey }>{ line }</p>;
 	} );
-	const itemTimeString = moment( item.datetime ).format( 'h:mma' );
+	const itemTimeString = moment.unix( item.datetime ).format( 'h:mma' );
 
 	return (
 		<li className={ itemClassName }>
