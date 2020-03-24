@@ -11,7 +11,8 @@ import { __ } from '@wordpress/i18n';
  */
 import TimelineGroup from './timeline-group';
 
-const Timeline = ( { className, items } ) => {
+const Timeline = ( props ) => {
+	const { className, items } = props;
 	const timelineClassName = classnames( 'woocommerce-timeline', className );
 
 	if ( ! items || items.length === 0 ) {

@@ -1,11 +1,13 @@
 /**
  * External dependencies
  */
+import classnames from 'classnames';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 
 const TimelineItem = ( props ) => {
-	const { item, itemKey } = props;
+	const { item, itemKey, className } = props;
+	const itemClassName = classnames( 'woocommerce-timeline-item', className );
 
 	const itemBody = item.body.map( ( line, bodyLineIndex ) => {
 		const bodyLineKey = itemKey + '-' + bodyLineIndex;
@@ -14,7 +16,7 @@ const TimelineItem = ( props ) => {
 	const itemTimeString = moment( item.datetime ).format( 'h:mma' );
 
 	return (
-		<li>
+		<li className={ itemClassName }>
 			{ item.headline } <span>{ itemTimeString }</span>
 			{ itemBody }
 		</li>

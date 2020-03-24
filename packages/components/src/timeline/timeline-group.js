@@ -3,6 +3,7 @@
  */
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -10,7 +11,11 @@ import PropTypes from 'prop-types';
 import TimelineItem from './timeline-item';
 
 const TimelineGroup = ( props ) => {
-	const { items, groupKey } = props;
+	const { items, groupKey, className } = props;
+	const groupClassName = classnames(
+		'woocommerce-timeline-group',
+		className
+	);
 
 	const timelineItems = items.map( ( item, itemIndex ) => {
 		const itemKey = groupKey + '-' + itemIndex;
@@ -21,7 +26,7 @@ const TimelineGroup = ( props ) => {
 	const dayString = moment( groupKey ).format( 'MMMM D, YYYY' );
 
 	return (
-		<li>
+		<li className={ groupClassName }>
 			{ dayString }
 			<ul>{ timelineItems }</ul>
 		</li>
