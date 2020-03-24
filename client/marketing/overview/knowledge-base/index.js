@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
@@ -119,24 +119,24 @@ class KnowledgeBase extends Component {
 				description={ __( 'Learn the ins and outs of successful marketing from the experts at WooCommerce.', 'woocommerce-admin' ) }
 				className="woocommerce-marketing-knowledgebase-card"
 			>
-				{ isLoading && <Spinner /> }
-				{ isLoading || (
-					<div className="woocommerce-marketing-knowledgebase-card__posts">
-						<Slider animationKey={ page } animate={ animate }>
-							{ this.getCurrentSlide() }
-						</Slider>
-						<Pagination
-							page={ page }
-							perPage={ 2 }
-							total={ posts.length }
-							onPageChange={ this.onPaginationPageChange }
-							showPagePicker={ false }
-							showPerPagePicker={ false }
-						/>
-					</div>
-				) }
-
-
+				<Fragment>
+					{ isLoading && <Spinner /> }
+					{ isLoading || (
+						<div className="woocommerce-marketing-knowledgebase-card__posts">
+							<Slider animationKey={ page } animate={ animate }>
+								{ this.getCurrentSlide() }
+							</Slider>
+							<Pagination
+								page={ page }
+								perPage={ 2 }
+								total={ posts.length }
+								onPageChange={ this.onPaginationPageChange }
+								showPagePicker={ false }
+								showPerPagePicker={ false }
+							/>
+						</div>
+					) }
+				</Fragment>
 			</Card>
 		)
 	}
