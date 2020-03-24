@@ -11,16 +11,14 @@ import TimelineItem from './timeline-item';
 
 const TimelineGroup = ( props ) => {
 	const { items, groupKey } = props;
-	const dayString = moment( groupKey.toString() ).format( 'MMMM D, YYYY' );
 
-	const dayToTimelineItem = ( item, itemIndex ) => {
+	const timelineItems = items.map( ( item, itemIndex ) => {
 		const itemKey = groupKey + '-' + itemIndex;
 		return (
 			<TimelineItem key={ itemKey } item={ item } itemKey={ itemKey } />
 		);
-	};
-
-	const timelineItems = items.map( dayToTimelineItem );
+	} );
+	const dayString = moment( groupKey ).format( 'MMMM D, YYYY' );
 
 	return (
 		<li>
@@ -58,7 +56,7 @@ TimelineGroup.propTypes = {
 			body: PropTypes.arrayOf( PropTypes.string ),
 		} )
 	).isRequired,
-	groupKey: PropTypes.number.isRequired,
+	groupKey: PropTypes.string.isRequired,
 };
 
 export default TimelineGroup;

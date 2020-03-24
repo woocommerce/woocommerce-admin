@@ -29,20 +29,21 @@ const Timeline = ( { className, items } ) => {
 		return a.datetime - b.datetime;
 	} );
 
-	// Group the items into local day collections
-	const days = [];
+	// Group items by days.
+	// TODO: Maybe the items passed into the Timeline component
+	// should already be grouped and sorted?
+	const groups = items.reduce( ( acc, curr ) => {
+		const itemLocalDatetime = moment.unix( curr.datetime );
+		const formattedDate = itemLocalDatetime.format( 'YYYYMMDD' );
 
-	items.forEach( ( item ) => {
-		const itemLocalDatetime = moment.unix( item.datetime );
-		const dayNum = parseInt( itemLocalDatetime.format( 'YYYYMMDD' ), 10 );
-		if ( ! ( dayNum in days ) ) {
-			days[ dayNum ] = [];
-		}
-		days[ dayNum ].push( item );
-	} );
+		return {
+			...acc,
+			[ formattedDate ]: [ ...( acc[ formattedDate ] || [] ), curr ],
+		};
+	}, {} );
 
-	const timelineGroups = days.map( ( day, dayIndex ) => (
-		<TimelineGroup key={ dayIndex } items={ day } groupKey={ dayIndex } />
+	const timelineGroups = Object.keys( groups ).map( ( key ) => (
+		<TimelineGroup key={ key } items={ groups[ key ] } groupKey={ key } />
 	) );
 
 	return (

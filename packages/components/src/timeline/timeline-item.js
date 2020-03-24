@@ -7,11 +7,11 @@ import PropTypes from 'prop-types';
 const TimelineItem = ( props ) => {
 	const { item, itemKey } = props;
 
-	const itemTimeString = moment( item.datetime ).format( 'h:mma' );
 	const itemBody = item.body.map( ( line, bodyLineIndex ) => {
 		const bodyLineKey = itemKey + '-' + bodyLineIndex;
 		return <p key={ bodyLineKey }>{ line }</p>;
 	} );
+	const itemTimeString = moment( item.datetime ).format( 'h:mma' );
 
 	return (
 		<li>
