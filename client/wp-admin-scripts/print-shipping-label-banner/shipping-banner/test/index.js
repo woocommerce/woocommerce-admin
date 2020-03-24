@@ -383,3 +383,75 @@ describe( 'Setup error message', () => {
 		);
 	} );
 } );
+
+describe( 'The message in the banner', () => {
+	const createShippingBannerWrapper = ( {
+		activePlugins,
+		installedPlugins,
+	} ) =>
+		shallow(
+			<ShippingBanner
+				isJetpackConnected={ true }
+				activatePlugins={ jest.fn() }
+				activePlugins={ activePlugins }
+				activatedPlugins={ [] }
+				installPlugins={ jest.fn() }
+				installedPlugins={ installedPlugins }
+				wcsPluginSlug={ 'woocommerce-services' }
+				activationErrors={ [] }
+				installationErrors={ [] }
+				isRequesting={ true }
+				itemsCount={ 1 }
+			/>
+		);
+
+	const notActivatedMessage =
+		'By clicking "Create shipping label", WooCommerce Shipping will be installed and you agree to its Terms of Service.';
+	const activatedMessage =
+		'You\'ve already installed WooCommerce Shipping. By clicking "Create shipping label", you agree to its Terms of Service.';
+
+	it( 'should show install text "By clicking "Create shipping label"..." when first loaded.', () => {
+		const shippingBannerWrapper = createShippingBannerWrapper( {
+			activePlugins: [],
+			installedPlugins: [],
+		} );
+		const createShippingLabelText = shippingBannerWrapper.find( 'p' );
+		expect( createShippingLabelText.text() ).toBe( notActivatedMessage );
+	} );
+
+	it( 'should continue to show the initial message "By clicking "Create shipping label"..." after WooCommerce Service is installed successfully.', () => {
+		const shippingBannerWrapper = createShippingBannerWrapper( {
+			activePlugins: [],
+			installedPlugins: [ 'woocommerce-services' ],
+		} );
+		// Mock installation and activation successful
+		shippingBannerWrapper.setProps( {
+			activePlugins: [ 'woocommerce-services' ],
+		} );
+		const createShippingLabelText = shippingBannerWrapper.find( 'p' );
+		expect( createShippingLabelText.text() ).toBe( notActivatedMessage );
+	} );
+
+	it( 'should continue to show the initial message "By clicking "Create shipping label"..." after WooCommerce Service is installed and activated successfully.', () => {
+		const shippingBannerWrapper = createShippingBannerWrapper( {
+			activePlugins: [],
+			installedPlugins: [],
+		} );
+		// Mock installation and activation successful
+		shippingBannerWrapper.setProps( {
+			activePlugins: [ 'woocommerce-services' ],
+			installedPlugins: [ 'woocommerce-services' ],
+		} );
+		const createShippingLabelText = shippingBannerWrapper.find( 'p' );
+		expect( createShippingLabelText.text() ).toBe( notActivatedMessage );
+	} );
+
+	it( 'should show install text "By clicking "You\'ve already installed WooCommerce Shipping."..." when WooCommerce Service is already installed.', () => {
+		const shippingBannerWrapper = createShippingBannerWrapper( {
+			activePlugins: [ 'woocommerce-services' ],
+			installedPlugins: [ 'woocommerce-services' ],
+		} );
+		const createShippingLabelText = shippingBannerWrapper.find( 'p' );
+		expect( createShippingLabelText.text() ).toBe( activatedMessage );
+	} );
+} );
