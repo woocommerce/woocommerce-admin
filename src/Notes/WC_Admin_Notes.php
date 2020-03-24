@@ -26,7 +26,7 @@ class WC_Admin_Notes {
 		add_action( 'admin_init', array( __CLASS__, 'schedule_unsnooze_notes' ) );
 
 		$notes_filters = new WC_Admin_Notes_Filters();
-		add_action( 'init', array( $notes_filters->init() ) );
+		add_action( 'init', array( $notes_filters, 'init' ) );
 	}
 
 	/**
