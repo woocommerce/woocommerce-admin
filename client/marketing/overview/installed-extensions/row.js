@@ -18,6 +18,13 @@ import { recordEvent } from 'lib/tracks';
 
 class InstalledExtensionRow extends Component {
 
+	constructor( props ) {
+		super( props );
+
+		this.onActivateClick = this.onActivateClick.bind( this );
+		this.onFinishSetupClick = this.onFinishSetupClick.bind( this );
+	}
+
 	getLinks() {
 		const { docsUrl, settingsUrl, supportUrl, dashboardUrl } = this.props;
 		const links = [];
@@ -59,7 +66,7 @@ class InstalledExtensionRow extends Component {
 							<Link
 								href={ link.href }
 								type="external"
-								onClick={ this.onLinkClick.bind(this, link) }
+								onClick={ this.onLinkClick.bind( this, link ) }
 							>
 								{ link.text }
 							</Link>
@@ -71,7 +78,7 @@ class InstalledExtensionRow extends Component {
 	}
 
 	onLinkClick( link ) {
-		const { name} = this.props;
+		const { name } = this.props;
 		recordEvent( 'marketing_installed_options', { name, link: link.key } );
 	}
 
