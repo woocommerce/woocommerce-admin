@@ -13,6 +13,7 @@
 		display: flex;
 		align-items: center;
 		margin-top: 18px;
+		margin-bottom: 6px;
 	}
 
 	.wc-admin-shipping-banner-illustration {
@@ -126,12 +127,8 @@
 			flex-wrap: wrap;
 			justify-content: center;
 		}
-
 		.components-button.is-button {
 			margin: 10px 0 0 0;
-		}
-		.wc-admin-shipping-banner-blob {
-			margin-right: 40px;
 		}
 		p {
 			margin: 5px 15px;
