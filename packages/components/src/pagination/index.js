@@ -188,7 +188,7 @@ class Pagination extends Component {
 	}
 
 	render() {
-		const { total, perPage, className } = this.props;
+		const { total, perPage, className, showPagePicker, showPerPagePicker } = this.props;
 		this.pageCount = Math.ceil( total / perPage );
 
 		const classes = classNames( 'woocommerce-pagination', className );
@@ -207,8 +207,8 @@ class Pagination extends Component {
 		return (
 			<div className={ classes }>
 				{ this.renderPageArrows() }
-				{ this.renderPagePicker() }
-				{ this.renderPerPagePicker() }
+				{ showPagePicker && this.renderPagePicker() }
+				{ showPerPagePicker && this.renderPerPagePicker() }
 			</div>
 		);
 	}
@@ -239,11 +239,21 @@ Pagination.propTypes = {
 	 * Additional classNames.
 	 */
 	className: PropTypes.string,
+	/**
+	 * Whether the page picker should be rendered.
+	 */
+	showPagePicker: PropTypes.bool,
+	/**
+	 * Whether the perPage picker should be rendered.
+	 */
+	showPerPagePicker: PropTypes.bool,
 };
 
 Pagination.defaultProps = {
 	onPageChange: noop,
 	onPerPageChange: noop,
+	showPagePicker: true,
+	showPerPagePicker: true,
 };
 
 export default Pagination;
