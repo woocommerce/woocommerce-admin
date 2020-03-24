@@ -4,6 +4,9 @@
 import classnames from 'classnames';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import GridIcon from 'gridicons';
+
+const GRIDICON_SIZE = 18;
 
 const TimelineItem = ( props ) => {
 	const { item, itemKey, className } = props;
@@ -17,8 +20,16 @@ const TimelineItem = ( props ) => {
 
 	return (
 		<li className={ itemClassName }>
-			{ item.headline } <span>{ itemTimeString }</span>
-			{ itemBody }
+			<div className={ 'woocommerce-timeline-item__title' }>
+				<p className={ 'woocommerce-timeline-item__headline' }>
+					<GridIcon icon={ item.gridicon } size={ GRIDICON_SIZE } />
+					<span>{ item.headline }</span>
+				</p>
+				<span>{ itemTimeString }</span>
+			</div>
+			<div className={ 'woocommerce-timeline-item__body' }>
+				{ itemBody }
+			</div>
 		</li>
 	);
 };

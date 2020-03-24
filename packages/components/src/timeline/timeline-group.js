@@ -27,8 +27,11 @@ const TimelineGroup = ( props ) => {
 
 	return (
 		<li className={ groupClassName }>
-			{ dayString }
+			<p className={ 'woocommerce-timeline-group__title' }>
+				{ dayString }
+			</p>
 			<ul>{ timelineItems }</ul>
+			<hr />
 		</li>
 	);
 };

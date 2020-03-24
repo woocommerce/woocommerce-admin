@@ -1,0 +1,62 @@
+
+.woocommerce-timeline {
+	ul {
+		list-style-type: none;
+		padding-left: 0;
+	}
+
+	hr {
+		float: right;
+		width: calc(100% - 56px);
+		margin-left: 0;
+		margin-right: 0;
+		// Color is according to design, we should probably find a suitable color variable.
+		border: 0.5px solid #e3dfe2;
+	}
+
+	.woocommerce-timeline-group {
+		padding: $gap;
+
+		.woocommerce-timeline-group__title {
+			text-transform: uppercase;
+			font-weight: 600;
+		}
+	}
+
+	.woocommerce-timeline-item {
+		padding-bottom: $gap;
+
+		.woocommerce-timeline-item__title {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.woocommerce-timeline-item__headline {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+
+			span {
+				padding: $gap;
+			}
+
+			svg {
+				fill: $studio-white;
+				background: $studio-gray-10;
+				border-radius: 9999px;
+				padding: $gap-smaller;
+			}
+		}
+		.woocommerce-timeline-item__body {
+			border-left: 1px solid $studio-gray-10;
+			padding: $gap 0 $gap 2*$gap;
+			margin-left: $gap;
+		}
+	}
+}
+
+// Hide last <hr /> element.
+.woocommerce-timeline ul :last-child.woocommerce-timeline-group hr:last-child {
+	display: none;
+}
