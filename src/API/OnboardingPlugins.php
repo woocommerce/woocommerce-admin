@@ -321,6 +321,8 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 
 			$result = activate_plugin( $path );
 			if ( ! is_null( $result ) ) {
+				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
+
 				return new \WP_Error( 'woocommerce_rest_invalid_plugin', sprintf( __( 'The requested plugins could not be activated.', 'woocommerce-admin' ), $slug ), 500 );
 			}
 		}
