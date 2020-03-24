@@ -84,4 +84,9 @@ Timeline.propTypes = {
 	).isRequired,
 };
 
+Timeline.defaultProps = {
+	className: '',
+	items: [],
+};
+
 export default Timeline;

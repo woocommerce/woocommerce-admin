@@ -64,4 +64,10 @@ TimelineGroup.propTypes = {
 	groupKey: PropTypes.string.isRequired,
 };
 
+TimelineGroup.defaultProps = {
+	className: '',
+	items: [],
+	groupKey: '00000000',
+};
+
 export default TimelineGroup;

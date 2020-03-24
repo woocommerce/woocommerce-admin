@@ -55,4 +55,10 @@ TimelineItem.propTypes = {
 	itemKey: PropTypes.string.isRequired,
 };
 
+TimelineItem.defaultProps = {
+	className: '',
+	item: {},
+	itemKey: '00000000-0',
+};
+
 export default TimelineItem;
