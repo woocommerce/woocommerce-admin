@@ -5,33 +5,33 @@
 		padding-left: 0;
 	}
 
-	hr {
-		float: right;
-		width: calc(100% - 56px);
-		margin-left: 0;
-		margin-right: 0;
-		// Color is according to design, we should probably find a suitable color variable.
-		border: 0.5px solid #e3dfe2;
-	}
-
 	.woocommerce-timeline-group {
-		padding: $gap;
-
 		.woocommerce-timeline-group__title {
 			text-transform: uppercase;
 			font-weight: 600;
+			font-size: 12px;
+			color: $studio-gray-90;
+		}
+
+		hr {
+			float: right;
+			width: calc(100% - #{ $gap-largest });
+			// Color is according to design, we should probably find a suitable color variable.
+			border: 0.5px solid #e3dfe2;
+			margin: $gap-largest 0;
 		}
 	}
 
 	.woocommerce-timeline-item {
-		padding-bottom: $gap;
-
 		.woocommerce-timeline-item__title {
 			display: flex;
 			flex-direction: row;
 			justify-content: space-between;
 			align-items: center;
+			font-size: 16px;
+			color: $studio-gray-80;
 		}
+
 		.woocommerce-timeline-item__headline {
 			display: flex;
 			flex-direction: row;
@@ -48,10 +48,13 @@
 				padding: $gap-smaller;
 			}
 		}
+
 		.woocommerce-timeline-item__body {
 			border-left: 1px solid $studio-gray-10;
-			padding: $gap 0 $gap 2*$gap;
+			padding: $gap $gap-larger;
 			margin-left: $gap;
+			color: $studio-gray-60;
+			font-size: 14px;
 		}
 	}
 }
