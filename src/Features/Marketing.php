@@ -137,7 +137,16 @@ class Marketing {
 		$posts = get_transient( self::KNOWLEDGE_BASE_TRANSIENT );
 
 		if ( false === $posts ) {
-			$request = wp_remote_get( 'https://woocommerce.com/wp-json/wp/v2/posts?categories=1744&page=1&per_page=8' );
+			$request_url = add_query_arg(
+				array(
+					'categories' => 1744,
+					'page' => 1,
+					'per_page' => 8,
+					'_embed' => 1
+				),
+				'https://woocommerce.com/wp-json/wp/v2/posts'
+			);
+			$request = wp_remote_get( $request_url );
 			$posts   = [];
 
 			if ( ! is_wp_error( $request ) && 200 === $request['response']['code'] ) {
@@ -148,8 +157,20 @@ class Marketing {
 						'title' => html_entity_decode( $raw_post['title']['rendered'] ),
 						'date'  => $raw_post['date_gmt'],
 						'link'  => $raw_post['link'],
-						'image' => $raw_post['jetpack_featured_media_url'],
 					];
+
+					$featured_media = $raw_post['_embedded']['wp:featuredmedia'];
+
+					if ( count( $featured_media ) > 0 ) {
+						$image         = current( $featured_media );
+						$post['image'] = add_query_arg(
+							array(
+								'resize' => '650,340',
+								'crop'   => 1,
+							),
+							$image['source_url']
+						);
+					}
 
 					$posts[] = $post;
 				}

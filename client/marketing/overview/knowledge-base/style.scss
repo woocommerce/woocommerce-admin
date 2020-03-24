@@ -1,7 +1,12 @@
 .woocommerce-marketing-knowledgebase-card {
 
+	.woocommerce-marketing-slider {
+		margin: 0 0 14px;
+	}
+
 	.woocommerce-pagination {
 		justify-content: flex-start;
+		flex-direction: row; // Required for mobile
 
 		&__page-arrows-label {
 			display: none;
@@ -43,16 +48,17 @@
 		}
 
 		&-img {
-			// Make image container height relative to width
 			width: 100%;
-			padding-bottom: 67%;
+			// Make image container height relative to width
+			padding-bottom: 52%;
 			overflow: hidden;
 			position: relative;
 			flex: none;
+			border-radius: 3px;
 
 			@include breakpoint( '>960px' ) {
-				width: 150px;
-				height: 100px;
+				width: 160px;
+				height: 84px;
 				margin-right: 16px;
 				padding-bottom: 0;
 			}
@@ -63,6 +69,14 @@
 				left: 0;
 				display: block;
 				width: 100%;
+			}
+		}
+
+		&-text {
+			margin: 10px 0 0;
+
+			@include breakpoint('>960px') {
+				margin: 0;
 			}
 		}
 

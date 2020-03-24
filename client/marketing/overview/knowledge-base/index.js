@@ -101,7 +101,7 @@ class KnowledgeBase extends Component {
 							<div className="woocommerce-marketing-knowledgebase-card__post-img">
 								<img src={ post.image } alt=""/>
 							</div>
-							<div>
+							<div className="woocommerce-marketing-knowledgebase-card__post-text">
 								<h3>{ post.title }</h3>
 							</div>
 						</a>
@@ -122,12 +122,10 @@ class KnowledgeBase extends Component {
 			>
 				{ isLoading && <Spinner /> }
 				{ isLoading || (
-					<div className="woocommerce-marketing-knowledgebase-card__slider">
-						<div className="woocommerce-marketing-knowledgebase-card__slider-slides">
-							<Slider animationKey={ page } animate={ animate }>
-								{ this.getCurrentSlide() }
-							</Slider>
-						</div>
+					<div className="woocommerce-marketing-knowledgebase-card__posts">
+						<Slider animationKey={ page } animate={ animate }>
+							{ this.getCurrentSlide() }
+						</Slider>
 						<Pagination
 							page={ page }
 							perPage={ 2 }
