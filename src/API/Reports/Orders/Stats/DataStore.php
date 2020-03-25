@@ -227,6 +227,49 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	}
 
 	/**
+	 * Retrieve stats totals.
+	 *
+	 * @param array $query_args Query parameters.
+	 * @param array $selected_columns SQL column selections.
+	 * @return object Totals object.
+	 */
+	public function get_totals( $query_args, $selected_columns ) {
+		global $wpdb;
+
+		$table_name = self::get_db_table_name();
+		$where_time = $this->get_sql_clause( 'where_time' );
+
+		$this->total_query->add_sql_clause( 'select', $selected_columns );
+		$this->total_query->add_sql_clause( 'where_time', $where_time );
+
+		$totals = $wpdb->get_results(
+			$this->total_query->get_query_statement(),
+			ARRAY_A
+		); // phpcs:ignore cache ok, DB call ok, unprepared SQL ok.
+
+		if ( null === $totals ) {
+			return new WP_Error( 'woocommerce_analytics_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'woocommerce-admin' ) );
+		}
+
+		// @todo Remove these assignements when refactoring segmenter classes to use query objects.
+		$totals_query = array(
+			'from_clause'       => $this->total_query->get_sql_clause( 'join' ),
+			'where_time_clause' => $where_time,
+			'where_clause'      => $this->total_query->get_sql_clause( 'where' ),
+		);
+
+		$unique_products            = $this->get_unique_product_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
+		$totals[0]['products']      = $unique_products;
+		$segmenter                  = new Segmenter( $query_args, $this->report_columns );
+		$unique_coupons             = $this->get_unique_coupon_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
+		$totals[0]['coupons_count'] = $unique_coupons;
+		$totals[0]['segments']      = $segmenter->get_totals_segments( $totals_query, $table_name );
+		$totals                     = (object) $this->cast_numbers( $totals[0] );
+
+		return $totals;
+	}
+
+	/**
 	 * Returns the report data based on parameters supplied by the user.
 	 *
 	 * @param array $query_args  Query parameters.
@@ -286,27 +329,18 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->add_time_period_sql_params( $query_args, $table_name );
 			$this->add_intervals_sql_params( $query_args, $table_name );
 			$this->add_order_by_sql_params( $query_args );
-			$where_time  = $this->get_sql_clause( 'where_time' );
-			$params      = $this->get_limit_sql_params( $query_args );
+			$where_time = $this->get_sql_clause( 'where_time' );
+			$params     = $this->get_limit_sql_params( $query_args );
 
 			// Additional filtering for Orders report.
 			$this->orders_stats_sql_filter( $query_args );
-			$this->total_query->add_sql_clause( 'select', $selections );
-			$this->total_query->add_sql_clause( 'where_time', $where_time );
-			$totals = $wpdb->get_results(
-				$this->total_query->get_query_statement(),
-				ARRAY_A
-			); // phpcs:ignore cache ok, DB call ok, unprepared SQL ok.
-			if ( null === $totals ) {
-				return new WP_Error( 'woocommerce_analytics_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'woocommerce-admin' ) );
+
+			$totals = $this->get_totals( $query_args, $selections );
+			if ( is_wp_error( $totals ) ) {
+				return $totals;
 			}
 
 			// @todo Remove these assignements when refactoring segmenter classes to use query objects.
-			$totals_query    = array(
-				'from_clause'       => $this->total_query->get_sql_clause( 'join' ),
-				'where_time_clause' => $where_time,
-				'where_clause'      => $this->total_query->get_sql_clause( 'where' ),
-			);
 			$intervals_query = array(
 				'select_clause'     => $this->get_sql_clause( 'select' ),
 				'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
@@ -314,14 +348,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
 				'limit'             => $this->get_sql_clause( 'limit' ),
 			);
-
-			$unique_products            = $this->get_unique_product_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
-			$totals[0]['products']      = $unique_products;
-			$segmenter                  = new Segmenter( $query_args, $this->report_columns );
-			$unique_coupons             = $this->get_unique_coupon_count( $totals_query['from_clause'], $totals_query['where_time_clause'], $totals_query['where_clause'] );
-			$totals[0]['coupons_count'] = $unique_coupons;
-			$totals[0]['segments']      = $segmenter->get_totals_segments( $totals_query, $table_name );
-			$totals                     = (object) $this->cast_numbers( $totals[0] );
 
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 			$this->interval_query->add_sql_clause( 'where_time', $where_time );
@@ -373,6 +399,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			} else {
 				$this->update_interval_boundary_dates( $query_args['after'], $query_args['before'], $query_args['interval'], $data->intervals );
 			}
+			$segmenter = new Segmenter( $query_args, $this->report_columns );
 			$segmenter->add_intervals_segments( $data, $intervals_query, $table_name );
 			$this->create_interval_subtotals( $data->intervals );
 
