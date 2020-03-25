@@ -12,41 +12,69 @@ import { __ } from '@wordpress/i18n';
 import Card from '../card';
 import TimelineGroup from './timeline-group';
 
+export const groupByOptions = {
+	DAY: 'day',
+	WEEK: 'week',
+	MONTH: 'month',
+};
+
+export const orderByOptions = {
+	ASC: 'asc',
+	DESC: 'desc',
+};
+
 const Timeline = ( props ) => {
-	const { className, items } = props;
+	const { className, items, groupBy, orderBy } = props;
+
 	const timelineClassName = classnames( 'woocommerce-timeline', className );
 
+	// Early return in case no data was passed to the component.
 	if ( ! items || items.length === 0 ) {
 		return (
-			<div className={ timelineClassName }>
+			<Card title={ 'Timeline' } className={ timelineClassName }>
 				<p className="timeline_no_events">
-					{ __( 'No events to display', 'woocommerce-admin' ) }
+					{ __( 'No data to display', 'woocommerce-admin' ) }
 				</p>
-			</div>
+			</Card>
 		);
 	}
 
-	// Sort all the items reverse chronologically
-	items.sort( ( a, b ) => {
-		return a.datetime - b.datetime;
-	} );
+	// Reducer used for grouping items.
+	const itemsToGroups = ( groups, item ) => {
+		const timeToMoment = ( ts ) => moment.unix( ts );
+		const haveSameMoment = ( g, i ) =>
+			timeToMoment( g.id ).isSame( timeToMoment( i.datetime ), groupBy );
 
-	// Group items by days.
-	// TODO: Maybe the items passed into the Timeline component
-	// should already be grouped and sorted?
-	const groups = items.reduce( ( acc, curr ) => {
-		const itemLocalDatetime = moment.unix( curr.datetime );
-		const formattedDate = itemLocalDatetime.format( 'YYYYMMDD' );
+		const groupIndex = groups.findIndex( ( g ) =>
+			haveSameMoment( g, item )
+		);
+		if ( groupIndex < 0 ) {
+			return [
+				...groups,
+				{
+					id: item.datetime,
+					title: timeToMoment( item.datetime ).format(
+						'MMMM D, YYYY'
+					),
+					items: [ item ],
+				},
+			];
+		}
 
-		return {
-			...acc,
-			[ formattedDate ]: [ ...( acc[ formattedDate ] || [] ), curr ],
-		};
-	}, {} );
+		groups[ groupIndex ].items.push( item );
+		return groups;
+	};
 
-	const timelineGroups = Object.keys( groups ).map( ( key ) => (
-		<TimelineGroup key={ key } items={ groups[ key ] } groupKey={ key } />
-	) );
+	const sortAscending = ( groupA, groupB ) => groupA.id - groupB.id;
+	const sortDescending = ( groupA, groupB ) => groupB.id - groupA.id;
+	const sortMethod =
+		orderByOptions.ASC === orderBy ? sortAscending : sortDescending;
+
+	// Group items together, sort, and map to Timeline groups.
+	const timelineGroups = items
+		.reduce( itemsToGroups, [] )
+		.sort( sortMethod )
+		.map( ( g ) => <TimelineGroup key={ g.id.toString() } group={ g } /> );
 
 	return (
 		<Card title={ 'Timeline' } className={ timelineClassName }>
@@ -83,11 +111,21 @@ Timeline.propTypes = {
 			body: PropTypes.arrayOf( PropTypes.string ),
 		} )
 	).isRequired,
+	/**
+	 * Defines how items should be grouped together.
+	 */
+	groupBy: PropTypes.oneOf( [ 'day', 'week', 'month' ] ),
+	/**
+	 * Defines how groups should be ordered.
+	 */
+	orderBy: PropTypes.oneOf( [ 'asc', 'desc' ] ),
 };
 
 Timeline.defaultProps = {
 	className: '',
 	items: [],
+	groupBy: 'day',
+	orderBy: 'asc',
 };
 
 export default Timeline;

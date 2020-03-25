@@ -9,11 +9,11 @@ import GridIcon from 'gridicons';
 const GRIDICON_SIZE = 18;
 
 const TimelineItem = ( props ) => {
-	const { item, itemKey, className } = props;
+	const { item, className } = props;
 	const itemClassName = classnames( 'woocommerce-timeline-item', className );
 
 	const itemBody = item.body.map( ( line, bodyLineIndex ) => {
-		const bodyLineKey = itemKey + '-' + bodyLineIndex;
+		const bodyLineKey = item.datetime + '-' + bodyLineIndex;
 		return <p key={ bodyLineKey }>{ line }</p>;
 	} );
 	const itemTimeString = moment.unix( item.datetime ).format( 'h:mma' );
@@ -60,16 +60,11 @@ TimelineItem.propTypes = {
 		 */
 		body: PropTypes.arrayOf( PropTypes.string ),
 	} ).isRequired,
-	/**
-	 * The index of this item in the items array.
-	 */
-	itemKey: PropTypes.string.isRequired,
 };
 
 TimelineItem.defaultProps = {
 	className: '',
 	item: {},
-	itemKey: '00000000-0',
 };
 
 export default TimelineItem;
