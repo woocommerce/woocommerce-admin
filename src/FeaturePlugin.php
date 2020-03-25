@@ -17,6 +17,7 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Welcome_Message;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Woo_Subscriptions_Notes;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Tracking_Opt_In;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Payments;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin;
 
 /**
  * Feature plugin main class.
@@ -188,6 +189,7 @@ class FeaturePlugin {
 		new WC_Admin_Notes_Facebook_Extension();
 		new WC_Admin_Notes_Tracking_Opt_In();
 		new WC_Admin_Notes_WooCommerce_Payments();
+		new WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin();
 	}
 
 	/**

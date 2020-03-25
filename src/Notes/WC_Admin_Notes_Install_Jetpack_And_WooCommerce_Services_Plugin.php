@@ -19,6 +19,13 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 	const NOTE_NAME = 'wc-admin-install-jetpack-plugin';
 
 	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		add_action( 'woocommerce_note_action_install-jetpack-and-woocommerce-services-plugins', array( $this, 'install_jetpack_and_woocommerce_services_plugins' ) );
+	}
+
+	/**
 	 * Possibly add the Install Jetpack note.
 	 *
 	 * @param string $slug The slug of the plugin being installed.
@@ -48,9 +55,9 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(
-			'install-jetpack-plugin',
+			'install-jetpack-and-woocommerce-services-plugins',
 			__( 'Install plugins', 'woocommerce-admin' ),
-			admin_url( 'admin.php?page=wc-admin&step=plugins' ),
+			false,
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);
@@ -68,8 +75,49 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 		foreach ( $note_ids as $note_id ) {
 			$note = new WC_Admin_Note( $note_id );
 
-			$note->set_status( 'actioned' );
+			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 			$note->save();
 		}
+	}
+
+	/**
+	 * Install the Jetpack and WooCommerce Services plugins in response to the action
+	 * being clicked in the admin note.
+	 *
+	 * @param WC_Admin_Note $note The note being actioned.
+	 */
+	public function install_jetpack_and_woocommerce_services_plugins( $note ) {
+		if ( self::NOTE_NAME !== $note->get_name() ) {
+			return;
+		}
+
+		$this->install_and_activate_plugin( 'jetpack' );
+		$this->install_and_activate_plugin( 'woocommerce-services' );
+	}
+
+	/**
+	 * Installs and activates the specified plugin.
+	 *
+	 * @param string $plugin The plugin slug.
+	 *
+	 * @return boolean If the plugin was installed and activated.
+	 */
+	private function install_and_activate_plugin( $plugin ) {
+		$install_request = array( 'plugin' => $plugin );
+		$installer       = new \Automattic\WooCommerce\Admin\API\OnboardingPlugins();
+		$result          = $installer->install_plugin( $install_request );
+
+		if ( is_wp_error( $result ) ) {
+			return false;
+		}
+
+		$activate_request = array( 'plugins' => $plugin );
+		$result           = $installer->activate_plugins( $activate_request );
+
+		if ( is_wp_error( $result ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }
