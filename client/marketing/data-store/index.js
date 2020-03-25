@@ -15,7 +15,7 @@ const { installedExtensions } = getSetting( 'marketing', {} );
 
 const DEFAULT_STATE = {
 	installedPlugins: installedExtensions,
-	installingPlugin: ''
+	activatingPlugin: ''
 };
 
 registerStore( STORE_KEY, {
@@ -26,10 +26,10 @@ registerStore( STORE_KEY, {
 					...state,
 					installedPlugins: action.plugins,
 				};
-			case 'SET_INSTALLING_PLUGIN':
+			case 'SET_ACTIVATING_PLUGIN':
 				return {
 					...state,
-					installingPlugin: action.pluginSlug,
+					activatingPlugin: action.pluginSlug,
 				};
 		}
 
@@ -42,8 +42,8 @@ registerStore( STORE_KEY, {
 		getInstalledPlugins( state ) {
 			return state.installedPlugins;
 		},
-		getInstallingPlugin( state ) {
-			return state.installingPlugin;
+		getActivatingPlugin( state ) {
+			return state.activatingPlugin;
 		},
 	},
 

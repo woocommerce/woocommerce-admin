@@ -26,7 +26,7 @@ class InstalledExtensions extends Component {
 	}
 
 	render() {
-		const { extensions, installingExtension } = this.props;
+		const { extensions, activatingExtension } = this.props;
 
 		if ( extensions.length === 0 ) {
 			return null
@@ -43,7 +43,7 @@ class InstalledExtensions extends Component {
 							key={ extension.slug }
 							{ ...extension }
 							activatePlugin={ () => this.activatePlugin( extension.slug ) }
-							isLoading={ extension.slug === installingExtension }
+							isLoading={ extension.slug === activatingExtension }
 						/>
 					);
 				} ) }
@@ -54,11 +54,11 @@ class InstalledExtensions extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getInstalledPlugins, getInstallingPlugin } = select( STORE_KEY );
+		const { getInstalledPlugins, getActivatingPlugin } = select( STORE_KEY );
 
 		return {
 			extensions: getInstalledPlugins(),
-			installingExtension: getInstallingPlugin(),
+			activatingExtension: getActivatingPlugin(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
