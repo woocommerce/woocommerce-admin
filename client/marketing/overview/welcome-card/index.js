@@ -4,7 +4,7 @@
 import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { IconButton } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import Gridicon from 'gridicons';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
@@ -48,12 +48,13 @@ class WelcomeCard extends Component {
 			<Card
 				className="woocommerce-marketing-overview-welcome-card"
 			>
-				<IconButton
-					icon=<Gridicon icon="cross" />
+				<Button
 					label={ __( 'Hide', 'woocommerce-admin' ) }
 					onClick={ this.hide }
 					className="woocommerce-marketing-overview-welcome-card__hide-button"
-				/>
+				>
+					<Gridicon icon="cross" />
+				</Button>
 				<img src={ WelcomeImage } alt="" />
 				<h3>{ __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce', 'woocommerce-admin' ) }</h3>
 			</Card>
