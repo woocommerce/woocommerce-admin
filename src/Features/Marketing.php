@@ -154,9 +154,11 @@ class Marketing {
 
 				foreach ( $raw_posts as $raw_post ) {
 					$post = [
-						'title' => html_entity_decode( $raw_post['title']['rendered'] ),
-						'date'  => $raw_post['date_gmt'],
-						'link'  => $raw_post['link'],
+						'title'           => html_entity_decode( $raw_post['title']['rendered'] ),
+						'date'            => $raw_post['date_gmt'],
+						'link'            => $raw_post['link'],
+						'author_name'     => 'Jason Conroy',
+						'author_gravatar' => get_avatar_url( 'test@gmail.com' ),
 					];
 
 					$featured_media = $raw_post['_embedded']['wp:featuredmedia'];
