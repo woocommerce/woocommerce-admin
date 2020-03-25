@@ -62,11 +62,11 @@ class WCPay extends Component {
 		);
 
 		try {
-			// TODO - connect url = wp-admin + ?wcpay-connect=1
+			// Fetch the business verification (connect) URL (Stripe KYC) from the backend
 			const result = await apiFetch( {
 				path:
 					WC_ADMIN_NAMESPACE +
-					'/onboarding/plugins/woocommerce-payments',
+					'/onboarding/plugins/connect-wcpay',
 				method: 'POST',
 			} );
 
@@ -98,11 +98,11 @@ class WCPay extends Component {
 					{
 						key: 'connect',
 						label: __(
-							'Connect your WooCommerce Payments account',
+							'Verify business details',
 							'woocommerce-admin'
 						),
 						description: __(
-							'A WooCommerce Payments account (powered by Stripe) is required to process payments. You will be redirected to a Stripe website to create the account.',
+							'Verify your business details with our payment partner, Stripe.',
 							'woocommerce-admin'
 						),
 						content: (
@@ -113,7 +113,7 @@ class WCPay extends Component {
 									isBusy={ isPending }
 									onClick={ this.connect }
 								>
-									{ __( 'Connect', 'woocommerce-admin' ) }
+									{ __( 'Verify details', 'woocommerce-admin' ) }
 								</Button>
 							</Fragment>
 						),

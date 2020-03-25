@@ -93,7 +93,7 @@ export function getPaymentMethods( {
 			visible: [ 'US' ].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
-			isConfigured: activePlugins.includes( 'woocommerce-payments' ),
+			isConfigured: false, // activePlugins.includes( 'woocommerce-payments' ),
 			isEnabled:
 				options.woocommerce_woocommerce_payments_settings &&
 				options.woocommerce_woocommerce_payments_settings.enabled ===
