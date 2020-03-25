@@ -174,13 +174,13 @@ export class ShippingBanner extends Component {
 			.catch( () => this.setState( { wcsSetupError: true } ) );
 	}
 
-	generateMetaBoxHtml( title, args ) {
+	generateMetaBoxHtml( nodeId, title, args ) {
 		const argsJsonString = JSON.stringify( args ).replace( /"/g, '&quot;' ); // JS has no native html_entities so we just replace.
 
 		const togglePanelText = __( 'Toggle panel:', 'woocommerce-admin' );
 
 		return `
-<div id="woocommerce-order-label" class="postbox ">
+<div id="${ nodeId }" class="postbox">
 	<button type="button" class="handlediv" aria-expanded="true">
 		<span class="screen-reader-text">${ togglePanelText } ${ title }</span>
 		<span class="toggle-indicator" aria-hidden="true"></span>
@@ -209,6 +209,7 @@ export class ShippingBanner extends Component {
 		const { itemsCount } = this.props;
 
 		const shippingLabelContainerHtml = this.generateMetaBoxHtml(
+			'woocommerce-order-label',
 			__( 'Shipping Label', 'woocommerce-admin' ),
 			{
 				orderId,
@@ -222,6 +223,7 @@ export class ShippingBanner extends Component {
 			.insertAdjacentHTML( 'beforebegin', shippingLabelContainerHtml );
 
 		const shipmentTrackingHtml = this.generateMetaBoxHtml(
+			'woocommerce-order-shipment-tracking',
 			__( 'Shipment Tracking', 'woocommerce-admin' ),
 			{
 				orderId,
@@ -238,6 +240,8 @@ export class ShippingBanner extends Component {
 			// Need to refresh so the new metaboxes are sortable.
 			window.jQuery( '#normal-sortables' ).sortable( 'refresh' );
 			window.jQuery( '#side-sortables' ).sortable( 'refresh' );
+
+			window.jQuery( '#woocommerce-order-label' ).hide();
 		}
 
 		Promise.all( [
@@ -294,6 +298,26 @@ export class ShippingBanner extends Component {
 			const { orderId } = this.state;
 			const siteId = state.ui.selectedSiteId;
 
+			const wcsStoreUnsubscribe = wcsStore.subscribe( () => {
+				const latestState = wcsStore.getState();
+				const siteState =
+					latestState.extensions.woocommerce.woocommerceServices[
+						siteId
+					];
+				if ( siteState ) {
+					const orderState = siteState.shippingLabel[ orderId ];
+					if ( orderState ) {
+						if ( orderState.showPurchaseDialog ) {
+							if ( window.jQuery ) {
+								window
+									.jQuery( '#woocommerce-order-label' )
+									.show();
+							}
+							wcsStoreUnsubscribe();
+						}
+					}
+				}
+			} );
 			wcsStore.dispatch( {
 				type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
 				orderId,
