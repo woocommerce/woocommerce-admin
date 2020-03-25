@@ -5,6 +5,7 @@
 import { __ } from '@wordpress/i18n';
 import { Fragment } from '@wordpress/element';
 import { filter, some } from 'lodash';
+import interpolateComponents from 'interpolate-components';
 
 /**
  * WooCommerce dependencies
@@ -13,6 +14,7 @@ import {
 	getSetting,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
+import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -41,6 +43,37 @@ export function getPaymentMethods( {
 		some( profileItems.industry, {
 			slug: 'cbd-other-hemp-derived-products',
 		} ) || false;
+
+	const tosLink = (
+		<Link
+			href={ 'https://wordpress.com/tos/' }
+			target="_blank"
+			type="external"
+		/>
+	);
+
+	const tosPrompt = interpolateComponents( {
+		mixedString: __(
+			'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}.',
+			'woocommerce-admin'
+		),
+		components: {
+			link: tosLink,
+		},
+	} );
+
+	// @todo This should check actual connection information.
+	const wcPayIsConfigured = activePlugins.includes( 'woocommerce-payments' );
+
+	const wcPaySettingsLink = (
+		<Link
+			href={
+				'/wp-admin/admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments'
+			}
+		>
+			{ __( 'Settings', 'woocommerce-admin' ) }
+		</Link>
+	);
 
 	const methods = [
 		{
@@ -80,13 +113,11 @@ export function getPaymentMethods( {
 					{ __(
 						'Accept credit card payments the easy way! No setup fees. No ' +
 							'monthly fees. Just 2.9% + $0.30 per transaction ' +
-							'on U.S.-issued cards',
+							'on U.S. issued cards. ',
 						'woocommerce-admin'
 					) }
-					{ __(
-						'By clicking "Setup," you agree to the Terms of Service',
-						'woocommerce-admin'
-					) }
+					{ wcPayIsConfigured && wcPaySettingsLink }
+					{ ! wcPayIsConfigured && <p>{ tosPrompt }</p> }
 				</Fragment>
 			),
 			before: (
@@ -99,7 +130,7 @@ export function getPaymentMethods( {
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			// @todo This should check actual connection information.
-			isConfigured: activePlugins.includes( 'woocommerce-payments' ),
+			isConfigured: wcPayIsConfigured,
 			isEnabled:
 				options.woocommerce_woocommerce_payments_settings &&
 				options.woocommerce_woocommerce_payments_settings.enabled ===
