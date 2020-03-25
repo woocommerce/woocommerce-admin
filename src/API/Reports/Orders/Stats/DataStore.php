@@ -209,6 +209,21 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->interval_query->add_sql_clause( 'where', "AND ( $where_subclause )" );
 			$this->interval_query->add_sql_clause( 'join', $from_clause );
 		}
+
+		$coupon_join = "LEFT JOIN (
+			SELECT
+				order_id,
+				SUM(discount_amount) AS discount_amount,
+				COUNT(DISTINCT coupon_id) AS coupons_count
+			FROM
+				{$wpdb->prefix}wc_order_coupon_lookup
+			GROUP BY
+				order_id
+			) order_coupon_lookup
+			ON order_coupon_lookup.order_id = {$wpdb->prefix}wc_order_stats.order_id";
+
+		$this->total_query->add_sql_clause( 'left_join', $coupon_join );
+		$this->interval_query->add_sql_clause( 'left_join', $coupon_join );
 	}
 
 	/**
@@ -273,22 +288,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->add_order_by_sql_params( $query_args );
 			$where_time  = $this->get_sql_clause( 'where_time' );
 			$params      = $this->get_limit_sql_params( $query_args );
-			$coupon_join = "LEFT JOIN (
-						SELECT
-							order_id,
-							SUM(discount_amount) AS discount_amount,
-							COUNT(DISTINCT coupon_id) AS coupons_count
-						FROM
-							{$wpdb->prefix}wc_order_coupon_lookup
-						GROUP BY
-							order_id
-						) order_coupon_lookup
-						ON order_coupon_lookup.order_id = {$wpdb->prefix}wc_order_stats.order_id";
 
 			// Additional filtering for Orders report.
 			$this->orders_stats_sql_filter( $query_args );
 			$this->total_query->add_sql_clause( 'select', $selections );
-			$this->total_query->add_sql_clause( 'left_join', $coupon_join );
 			$this->total_query->add_sql_clause( 'where_time', $where_time );
 			$totals = $wpdb->get_results(
 				$this->total_query->get_query_statement(),
@@ -321,7 +324,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$totals                     = (object) $this->cast_numbers( $totals[0] );
 
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
-			$this->interval_query->add_sql_clause( 'left_join', $coupon_join );
 			$this->interval_query->add_sql_clause( 'where_time', $where_time );
 			$db_intervals = $wpdb->get_col(
 				$this->interval_query->get_query_statement()
