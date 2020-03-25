@@ -1,0 +1,35 @@
+.woocommerce-marketing-overview-welcome-card {
+	position: relative;
+
+	.woocommerce-card__body {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		@include breakpoint( '>960px' ) {
+			padding: 32px 108px;
+		}
+	}
+
+	&__hide-button {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+
+	h3 {
+		font-size: 24px;
+		line-height: 32px;
+		font-weight: normal;
+		margin-left: 20px;
+
+		@include breakpoint( '<960px' ) {
+			font-size: 20px;
+			line-height: 26px;
+		}
+	}
+
+	img {
+		max-width: 231px;
+	}
+}

@@ -17,6 +17,7 @@ import { Card } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
+import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
 import WelcomeImage from './images/welcome.png';
