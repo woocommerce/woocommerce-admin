@@ -8,26 +8,31 @@
 	.handlediv {
 		display: none;
 	}
+
+	.wc-admin-shipping-banner-container {
+		display: flex;
+		align-items: center;
+		margin-top: 18px;
+		margin-bottom: 6px;
+	}
+
 	.wc-admin-shipping-banner-illustration {
-		float: left;
-		margin: -2px 8px 36px -2px;
+		margin-right: 8px;
 	}
 
 	h3 {
-		margin: 17px 0 0;
+		margin: 0;
 		font-size: 1.15em;
 	}
 
 	p {
-		max-width: 75%;
 		margin: 2px 0 11px;
 		font-size: 15px;
 		line-height: 19px;
 	}
 
 	.components-button.is-button {
-		float: right;
-		margin: 18px 61px 10px 25px;
+		margin: 10px 61px 10px auto;
 		padding: 0 30px;
 		font-size: 14px;
 		font-weight: 500;
@@ -116,22 +121,14 @@
 
 @media (max-width: 1080px) {
 	#woocommerce-admin-print-label {
-		min-height: 169px;
 		text-align: center;
-		padding-bottom: 55px;
-		.components-button.is-button {
-			float: none;
-			left: 50%;
-			-webkit-transform: translateX(-50%);
-			transform: translateX(-50%);
-			position: absolute;
-			bottom: -30px;
-			margin: 0;
+
+		.wc-admin-shipping-banner-container {
+			flex-wrap: wrap;
+			justify-content: center;
 		}
-		.wc-admin-shipping-banner-illustration {
-			float: none;
-			margin: 11px auto 0;
-			display: block;
+		.components-button.is-button {
+			margin: 10px 0 0 0;
 		}
 		p {
 			margin: 5px 15px;
