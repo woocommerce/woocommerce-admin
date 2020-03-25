@@ -4,75 +4,29 @@
 import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
+import { withSelect, withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
 import { Card } from '@woocommerce/components';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
 import './style.scss'
 import InstalledExtensionRow from './row';
-import { activatePlugin, fetchPluginData } from './store';
+import { STORE_KEY } from '../../data-store/constants';
 
 class InstalledExtensions extends Component {
-	constructor( props ) {
-		super( props );
-
-		this.state = {
-			extensions: [],
-		};
-	}
-
-	componentDidMount() {
-		const { installedExtensions } = getSetting( 'marketing', {} );
-
-		this.setState( { extensions: installedExtensions } )
-	}
 
 	activatePlugin( pluginSlug ) {
-		const { createNotice } = this.props;
-		const extensions = [ ...this.state.extensions ];
-
-		// Set extension as loading
-		const index = extensions.findIndex( ( extension ) => extension.slug === pluginSlug );
-		extensions[ index ].isLoading = true;
-
-		this.setState( { extensions } );
-
-		activatePlugin( pluginSlug )
-			.then( ( response ) => {
-				if ( response.status === 'success' ) {
-					this.updatePluginData();
-					createNotice( 'success',
-						__( 'The extension has been successfully activated.', 'woocommerce-admin' )
-					);
-				} else {
-					throw new Error();
-				}
-			} )
-			.catch( () => {
-				createNotice( 'success',
-					__( 'There was an error trying to activate the extension.', 'woocommerce-admin' )
-				);
-			} );
-	}
-
-	updatePluginData() {
-		fetchPluginData()
-			.then( ( response ) => {
-				if ( response ) {
-					this.setState( { extensions: response } );
-				}
-			} );
+		const { activateInstalledPlugin } = this.props;
+		activateInstalledPlugin( pluginSlug );
 	}
 
 	render() {
-		const { extensions } = this.state;
+		const { extensions, installingExtension } = this.props;
 
 		if ( extensions.length === 0 ) {
 			return null
@@ -89,6 +43,7 @@ class InstalledExtensions extends Component {
 							key={ extension.slug }
 							{ ...extension }
 							activatePlugin={ () => this.activatePlugin( extension.slug ) }
+							isLoading={ extension.slug === installingExtension }
 						/>
 					);
 				} ) }
@@ -98,11 +53,19 @@ class InstalledExtensions extends Component {
 }
 
 export default compose(
-	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
+	withSelect( ( select ) => {
+		const { getInstalledPlugins, getInstallingPlugin } = select( STORE_KEY );
 
 		return {
-			createNotice,
+			extensions: getInstalledPlugins(),
+			installingExtension: getInstallingPlugin(),
+		};
+	} ),
+	withDispatch( ( dispatch ) => {
+		const { activateInstalledPlugin } = dispatch( STORE_KEY );
+
+		return {
+			activateInstalledPlugin,
 		};
 	} )
 )( InstalledExtensions );

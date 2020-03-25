@@ -11,6 +11,7 @@ import InstalledExtensions from './installed-extensions';
 import RecommendedExtensions from './recommended-extensions';
 import KnowledgeBase from './knowledge-base';
 import WelcomeCard from './welcome-card';
+import '../data-store';
 
 class MarketingOverview extends Component {
 	render() {
