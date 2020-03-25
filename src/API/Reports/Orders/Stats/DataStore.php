@@ -338,20 +338,29 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		if ( false === $data ) {
 			$this->initialize_queries();
 
-			$data = (object) array(
+			$data   = (object) array(
 				'totals'    => (object) array(),
 				'intervals' => (object) array(),
 				'total'     => 0,
 				'pages'     => 0,
 				'page_no'   => 0,
 			);
+			$params = $this->get_limit_sql_params( $query_args );
 
+			// Bail if the requested page is out of range.
+			$expected_interval_count = TimeInterval::intervals_between( $query_args['after'], $query_args['before'], $query_args['interval'] );
+			$total_pages             = (int) ceil( $expected_interval_count / $params['per_page'] );
+
+			if ( $query_args['page'] < 1 || $query_args['page'] > $total_pages ) {
+				return $data;
+			}
+
+			// Start querying for data.
 			$selections = $this->selected_columns( $query_args );
 			$this->add_time_period_sql_params( $query_args, $table_name );
 			$this->add_intervals_sql_params( $query_args, $table_name );
 			$this->add_order_by_sql_params( $query_args );
 			$where_time = $this->get_sql_clause( 'where_time' );
-			$params     = $this->get_limit_sql_params( $query_args );
 
 			// Additional filtering for Orders report.
 			$this->orders_stats_sql_filter( $query_args );
@@ -372,13 +381,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 			$this->interval_query->add_sql_clause( 'where_time', $where_time );
-
-			$expected_interval_count = TimeInterval::intervals_between( $query_args['after'], $query_args['before'], $query_args['interval'] );
-			$total_pages             = (int) ceil( $expected_interval_count / $params['per_page'] );
-
-			if ( $query_args['page'] < 1 || $query_args['page'] > $total_pages ) {
-				return $data;
-			}
 
 			// Determine how many intervals of data we have.
 			$db_intervals      = $this->get_db_intervals();
