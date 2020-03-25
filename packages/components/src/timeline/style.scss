@@ -13,7 +13,7 @@
 			font-weight: 600;
 			text-transform: uppercase;
 
-			margin: 0;
+			margin: 0 0 $gap 0;
 		}
 
 		hr {
@@ -42,17 +42,26 @@
 			display: flex;
 			align-items: center;
 			flex-direction: row;
+			margin: $gap-small 0; 
 
 			span {
-				padding: $gap;
+				padding: 0 $gap;
 			}
 
 			svg {
 				fill: $studio-white;
+				width: 16px;
+				min-width: 16px;
+				height: 16px;
 				padding: $gap-smallest;
 				background: $studio-gray-10;
 				border-radius: 9999px;
 			}
+		}
+
+		.woocommerce-timeline-item__timestamp {
+			font-size: 14px;
+			line-height: 16px;
 		}
 
 		.woocommerce-timeline-item__body {
@@ -62,8 +71,8 @@
 			color: $studio-gray-60;
 			font-size: 14px;
 
-			margin: 0 calc(#{ $gap-small } + 1px);
-			padding: $gap-smaller $gap-larger;
+			margin: 0 $gap-small;
+			padding: $gap-smallest $gap-larger;
 			border-left: 1px solid $studio-gray-10;
 		}
 	}

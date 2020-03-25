@@ -25,7 +25,7 @@ const TimelineItem = ( props ) => {
 					<GridIcon icon={ item.gridicon } size={ GRIDICON_SIZE } />
 					<span>{ item.headline }</span>
 				</p>
-				<span>{ itemTimeString }</span>
+				<span className={ 'woocommerce-timeline-item__timestamp' }>{ itemTimeString }</span>
 			</div>
 			<p className={ 'woocommerce-timeline-item__body' }>{ itemBody }</p>
 		</li>
