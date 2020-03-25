@@ -34,7 +34,7 @@ export function receiveInstalledPlugins( plugins ) {
 
 export function receiveActivatingPlugin( pluginSlug ) {
 	return {
-		type: 'SET_INSTALLING_PLUGIN',
+		type: 'SET_ACTIVATING_PLUGIN',
 		pluginSlug,
 	};
 }
