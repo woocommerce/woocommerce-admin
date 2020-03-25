@@ -1,41 +1,47 @@
 
 .woocommerce-timeline {
 	ul {
-		list-style-type: none;
+		margin: 0;
 		padding-left: 0;
+		list-style-type: none;
 	}
 
 	.woocommerce-timeline-group {
 		.woocommerce-timeline-group__title {
-			text-transform: uppercase;
-			font-weight: 600;
-			font-size: 12px;
 			color: $studio-gray-90;
+			font-size: 12px;
+			font-weight: 600;
+			text-transform: uppercase;
+
+			margin: 0;
 		}
 
 		hr {
 			float: right;
 			width: calc(100% - #{ $gap-largest });
+
+			margin-bottom: $gap;
+
 			// Color is according to design, we should probably find a suitable color variable.
 			border: 0.5px solid #e3dfe2;
-			margin: $gap-largest 0;
 		}
 	}
 
 	.woocommerce-timeline-item {
 		.woocommerce-timeline-item__title {
 			display: flex;
+			align-items: center;
 			flex-direction: row;
 			justify-content: space-between;
-			align-items: center;
-			font-size: 16px;
+
 			color: $studio-gray-80;
+			font-size: 16px;
 		}
 
 		.woocommerce-timeline-item__headline {
 			display: flex;
-			flex-direction: row;
 			align-items: center;
+			flex-direction: row;
 
 			span {
 				padding: $gap;
@@ -43,18 +49,22 @@
 
 			svg {
 				fill: $studio-white;
+				padding: $gap-smallest;
 				background: $studio-gray-10;
 				border-radius: 9999px;
-				padding: $gap-smallest;
 			}
 		}
 
 		.woocommerce-timeline-item__body {
-			border-left: 1px solid $studio-gray-10;
-			padding: $gap $gap-larger;
-			margin-left: calc(#{ $gap-small } + 1px);
+			display: flex;
+			flex-direction: column;
+
 			color: $studio-gray-60;
 			font-size: 14px;
+
+			margin: 0 calc(#{ $gap-small } + 1px);
+			padding: $gap-smaller $gap-larger;
+			border-left: 1px solid $studio-gray-10;
 		}
 	}
 }

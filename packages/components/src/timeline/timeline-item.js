@@ -14,7 +14,7 @@ const TimelineItem = ( props ) => {
 
 	const itemBody = item.body.map( ( line, bodyLineIndex ) => {
 		const bodyLineKey = item.datetime + '-' + bodyLineIndex;
-		return <p key={ bodyLineKey }>{ line }</p>;
+		return <span key={ bodyLineKey }>{ line }</span>;
 	} );
 	const itemTimeString = moment.unix( item.datetime ).format( 'h:mma' );
 
@@ -27,9 +27,7 @@ const TimelineItem = ( props ) => {
 				</p>
 				<span>{ itemTimeString }</span>
 			</div>
-			<div className={ 'woocommerce-timeline-item__body' }>
-				{ itemBody }
-			</div>
+			<p className={ 'woocommerce-timeline-item__body' }>{ itemBody }</p>
 		</li>
 	);
 };
