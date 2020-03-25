@@ -27,8 +27,7 @@ export const Default = () => {
 			showPagePicker={ boolean( 'Page Picker', true ) }
 			showPerPagePicker={ boolean( 'Per Page Picker', true ) }
 			onPageChange={ ( newPage ) => setPage( newPage ) }
-			onPerPageChange={ ( newPerPage ) => setPerPage( newPerPage )
-			}
+			onPerPageChange={ ( newPerPage ) => setPerPage( newPerPage ) }
 		/>
 	);
 };
