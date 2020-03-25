@@ -30,11 +30,10 @@ class RecommendedExtensionsItem extends Component {
 		const classNameBase = 'woocommerce-marketing-recommended-extensions-item';
 
 		const { connectNonce } = getSetting( 'marketing', {} );
-		const backPath = getNewPath( {} );
 
 		const connectURL = addQueryArgs( url, {
 			'wccom-site': getSetting( 'siteUrl' ),
-			'wccom-back': backPath,
+			'wccom-back': '/wp-admin/' + getNewPath( {} ),
 			'wccom-woo-version': getSetting( 'wcVersion' ),
 			'wccom-connect-nonce': connectNonce,
 		} );
