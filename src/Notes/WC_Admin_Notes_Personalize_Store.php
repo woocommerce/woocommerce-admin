@@ -31,7 +31,7 @@ class WC_Admin_Notes_Personalize_Store {
 	public static function possibly_add_personalize_store_note() {
 		// Only show the note to stores with homepage.
 		$homepage_id = get_option( 'woocommerce_onboarding_homepage_post_id', false );
-		if ( 0 > $homepage_id ) {
+		if ( ! $homepage_id ) {
 			return;
 		}
 
