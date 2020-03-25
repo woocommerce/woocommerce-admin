@@ -257,7 +257,12 @@ describe( 'Create shipping label button', () => {
 		window.wcsGetAppStore = jest.fn();
 		const getState = jest.fn();
 		const dispatch = jest.fn();
-		window.wcsGetAppStore.mockReturnValueOnce( { getState, dispatch } );
+		const subscribe = jest.fn();
+		window.wcsGetAppStore.mockReturnValueOnce( {
+			getState,
+			dispatch,
+			subscribe,
+		} );
 		getState.mockReturnValueOnce( {
 			ui: {
 				selectedSiteId: 'SITE_ID',
@@ -276,11 +281,7 @@ describe( 'Create shipping label button', () => {
 			'wc-connect-create-shipping-label'
 		);
 		expect( getState ).toHaveBeenCalledTimes( 1 );
-		expect( dispatch ).toHaveBeenCalledWith( {
-			type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
-			orderId: 1000,
-			siteId: 'SITE_ID',
-		} );
+		expect( subscribe ).toHaveBeenCalledTimes( 1 );
 		expect( getElementByIdMock ).toHaveBeenCalledWith(
 			'woocommerce-admin-print-label'
 		);

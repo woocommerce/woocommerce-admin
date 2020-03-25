@@ -300,6 +300,7 @@ export class ShippingBanner extends Component {
 
 			const wcsStoreUnsubscribe = wcsStore.subscribe( () => {
 				const latestState = wcsStore.getState();
+
 				const siteState =
 					latestState.extensions.woocommerce.woocommerceServices[
 						siteId
@@ -307,33 +308,53 @@ export class ShippingBanner extends Component {
 				if ( siteState ) {
 					const orderState = siteState.shippingLabel[ orderId ];
 					if ( orderState ) {
-						if ( orderState.showPurchaseDialog ) {
+						if (
+							! orderState.showPurchaseDialog &&
+							! orderState.isFetching
+						) {
+							wcsStore.dispatch( {
+								type:
+									'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
+								orderId,
+								siteId,
+							} );
+							wcsStore.dispatch( {
+								type: 'NOTICE_CREATE',
+								notice: {
+									duration: 10000,
+									status: 'is-success',
+									text: __(
+										'Plugin installed and activated',
+										'woocommerce-admin'
+									),
+								},
+							} );
+						} else if ( orderState.showPurchaseDialog ) {
 							if ( window.jQuery ) {
 								window
 									.jQuery( '#woocommerce-order-label' )
 									.show();
 							}
 							wcsStoreUnsubscribe();
+							wcsStore.dispatch( {
+								type:
+									'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_CONFIRM_ADDRESS_SUGGESTION',
+								siteId,
+								orderId,
+								group: 'origin',
+							} );
+							wcsStore.dispatch( {
+								type:
+									'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_CONFIRM_ADDRESS_SUGGESTION',
+								siteId,
+								orderId,
+								group: 'destination',
+							} );
 						}
 					}
 				}
 			} );
-			wcsStore.dispatch( {
-				type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
-				orderId,
-				siteId,
-			} );
-			wcsStore.dispatch( {
-				type: 'NOTICE_CREATE',
-				notice: {
-					duration: 10000,
-					status: 'is-success',
-					text: __(
-						'Plugin installed and activated',
-						'woocommerce-admin'
-					),
-				},
-			} );
+
 			document.getElementById(
 				'woocommerce-admin-print-label'
 			).style.display = 'none';
