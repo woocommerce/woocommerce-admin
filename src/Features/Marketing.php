@@ -132,7 +132,11 @@ class Marketing {
 		return array_values( $plugins );
 	}
 
-
+	/**
+	 * Load knowledge base posts from WooCommerce.com
+	 *
+	 * @return array
+	 */
 	public function get_knowledge_base_posts() {
 		$posts = get_transient( self::KNOWLEDGE_BASE_TRANSIENT );
 
