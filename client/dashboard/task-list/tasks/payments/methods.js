@@ -77,35 +77,6 @@ export function getPaymentMethods( {
 
 	const methods = [
 		{
-			key: 'stripe',
-			title: __(
-				'Credit cards - powered by Stripe',
-				'woocommerce-admin'
-			),
-			content: (
-				<Fragment>
-					{ __(
-						'Accept debit and credit cards in 135+ currencies, methods such as Alipay, ' +
-							'and one-touch checkout with Apple Pay.',
-						'woocommerce-admin'
-					) }
-				</Fragment>
-			),
-			before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
-			visible:
-				stripeCountries.includes( countryCode ) && ! hasCbdIndustry,
-			plugins: [ 'woocommerce-gateway-stripe' ],
-			container: <Stripe />,
-			isConfigured:
-				options.woocommerce_stripe_settings &&
-				options.woocommerce_stripe_settings.publishable_key &&
-				options.woocommerce_stripe_settings.secret_key,
-			isEnabled:
-				options.woocommerce_stripe_settings &&
-				options.woocommerce_stripe_settings.enabled === 'yes',
-			optionName: 'woocommerce_stripe_settings',
-		},
-		{
 			key: 'wcpay',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
@@ -136,6 +107,35 @@ export function getPaymentMethods( {
 				options.woocommerce_woocommerce_payments_settings.enabled ===
 					'yes',
 			optionName: 'woocommerce_woocommerce_payments_settings',
+		},
+		{
+			key: 'stripe',
+			title: __(
+				'Credit cards - powered by Stripe',
+				'woocommerce-admin'
+			),
+			content: (
+				<Fragment>
+					{ __(
+						'Accept debit and credit cards in 135+ currencies, methods such as Alipay, ' +
+							'and one-touch checkout with Apple Pay.',
+						'woocommerce-admin'
+					) }
+				</Fragment>
+			),
+			before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
+			visible:
+				stripeCountries.includes( countryCode ) && ! hasCbdIndustry,
+			plugins: [ 'woocommerce-gateway-stripe' ],
+			container: <Stripe />,
+			isConfigured:
+				options.woocommerce_stripe_settings &&
+				options.woocommerce_stripe_settings.publishable_key &&
+				options.woocommerce_stripe_settings.secret_key,
+			isEnabled:
+				options.woocommerce_stripe_settings &&
+				options.woocommerce_stripe_settings.enabled === 'yes',
+			optionName: 'woocommerce_stripe_settings',
 		},
 		{
 			key: 'paypal',

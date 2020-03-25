@@ -42,6 +42,12 @@ class Payments extends Component {
 		};
 
 		this.recommendedMethod = 'stripe';
+		methods.forEach( ( method ) => {
+			if ( method.key === 'wcpay' && method.visible ) {
+				this.recommendedMethod = 'wcpay';
+			}
+		} );
+
 		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
 		this.skipTask = this.skipTask.bind( this );
