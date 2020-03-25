@@ -64,9 +64,7 @@ class WCPay extends Component {
 		try {
 			// Fetch the business verification (connect) URL (Stripe KYC) from the backend
 			const result = await apiFetch( {
-				path:
-					WC_ADMIN_NAMESPACE +
-					'/onboarding/plugins/connect-wcpay',
+				path: WC_ADMIN_NAMESPACE + '/onboarding/plugins/connect-wcpay',
 				method: 'POST',
 			} );
 
@@ -113,7 +111,10 @@ class WCPay extends Component {
 									isBusy={ isPending }
 									onClick={ this.connect }
 								>
-									{ __( 'Verify details', 'woocommerce-admin' ) }
+									{ __(
+										'Verify details',
+										'woocommerce-admin'
+									) }
 								</Button>
 							</Fragment>
 						),
@@ -127,9 +128,13 @@ class WCPay extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOptions, isGetOptionsRequesting } = select( 'wc-api' );
-		const options = getOptions( [ 'woocommerce_wcpay_settings' ] );
+		const options = getOptions( [
+			'woocommerce_woocommerce_payments_settings',
+		] );
 		const optionsIsRequesting = Boolean(
-			isGetOptionsRequesting( [ 'woocommerce_wcpay_settings' ] )
+			isGetOptionsRequesting( [
+				'woocommerce_woocommerce_payments_settings',
+			] )
 		);
 
 		return {
