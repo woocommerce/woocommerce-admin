@@ -89,11 +89,17 @@ export function getPaymentMethods( {
 					) }
 				</Fragment>
 			),
-			before: <img src={ wcAssetUrl + 'images/wcpay.png' } alt="" />,
+			before: (
+				<img
+					src={ wcAssetUrl + 'images/woocommerce_logo.png' }
+					alt=""
+				/>
+			),
 			visible: [ 'US' ].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
-			isConfigured: false, // activePlugins.includes( 'woocommerce-payments' ),
+			// @todo This should check actual connection information.
+			isConfigured: activePlugins.includes( 'woocommerce-payments' ),
 			isEnabled:
 				options.woocommerce_woocommerce_payments_settings &&
 				options.woocommerce_woocommerce_payments_settings.enabled ===

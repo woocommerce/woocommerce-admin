@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
+import classnames from 'classnames';
 import { cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Button, FormToggle } from '@wordpress/components';
@@ -233,11 +234,16 @@ class Payments extends Component {
 						return null;
 					}
 
+					const classes = classnames(
+						'woocommerce-task-payment',
+						'is-narrow',
+						! isConfigured &&
+							'woocommerce-task-payment-not-configured',
+						'woocommerce-task-payment-' + key
+					);
+
 					return (
-						<Card
-							key={ key }
-							className="woocommerce-task-payment is-narrow"
-						>
+						<Card key={ key } className={ classes }>
 							<div className="woocommerce-task-payment__before">
 								{ key === this.recommendedMethod &&
 									! isConfigured && (
