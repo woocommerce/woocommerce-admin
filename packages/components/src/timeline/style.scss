@@ -45,14 +45,14 @@
 				fill: $studio-white;
 				background: $studio-gray-10;
 				border-radius: 9999px;
-				padding: $gap-smaller;
+				padding: $gap-smallest;
 			}
 		}
 
 		.woocommerce-timeline-item__body {
 			border-left: 1px solid $studio-gray-10;
 			padding: $gap $gap-larger;
-			margin-left: $gap;
+			margin-left: calc(#{ $gap-small } + 1px);
 			color: $studio-gray-60;
 			font-size: 14px;
 		}
