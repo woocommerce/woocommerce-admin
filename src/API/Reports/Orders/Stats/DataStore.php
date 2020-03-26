@@ -270,27 +270,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	}
 
 	/**
-	 * Get the time intervals in the database.
-	 *
-	 * @return array Time intervals in the database.
-	 */
-	public function get_db_intervals() {
-		global $wpdb;
-
-		$db_interval_query = new SqlQuery( $this->context . '_db_intervals' );
-		$db_interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
-		$db_interval_query->add_sql_clause( 'from', self::get_db_table_name() );
-		$db_interval_query->add_sql_clause( 'where_time', $this->get_sql_clause( 'where_time' ) );
-		$db_interval_query->add_sql_clause( 'group_by', 'time_interval' );
-
-		$db_intervals = $wpdb->get_col(
-			$db_interval_query->get_query_statement()
-		); // phpcs:ignore cache ok, DB call ok, , unprepared SQL ok.
-
-		return $db_intervals;
-	}
-
-	/**
 	 * Retrieve stats intervals.
 	 *
 	 * @param array $query_args Query parameters.
@@ -301,10 +280,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	public function get_intervals( $query_args, $selected_columns, $params, $expected_interval_count ) {
 		global $wpdb;
-
-		// Determine how many intervals of data we have.
-		$db_intervals      = $this->get_db_intervals();
-		$db_interval_count = count( $db_intervals );
 
 		$table_name = self::get_db_table_name();
 		$where_time = $this->get_sql_clause( 'where_time' );
@@ -320,6 +295,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
 		$this->interval_query->add_sql_clause( 'where_time', $where_time );
+
+		$db_intervals      = $wpdb->get_col(
+			$this->interval_query->get_query_statement()
+		); // phpcs:ignore cache ok, DB call ok, , unprepared SQL ok.
+		$db_interval_count = count( $db_intervals );
 
 		$this->update_intervals_sql_params( $query_args, $db_interval_count, $expected_interval_count, $table_name );
 		$this->interval_query->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
