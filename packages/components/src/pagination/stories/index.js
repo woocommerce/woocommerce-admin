@@ -26,6 +26,7 @@ export const Default = () => {
 			total={ number( 'Total', 500 ) }
 			showPagePicker={ boolean( 'Page Picker', true ) }
 			showPerPagePicker={ boolean( 'Per Page Picker', true ) }
+			showPageArrowsLabel={ boolean( 'Page Arrows Label', true ) }
 			onPageChange={ ( newPage ) => setPage( newPage ) }
 			onPerPageChange={ ( newPerPage ) => setPerPage( newPerPage ) }
 		/>

@@ -28,3 +28,4 @@ Name | Type | Default | Description
 `className` | String | `null` | Additional classNames
 `showPagePicker` | Boolean | `true` | Whether the page picker should be shown.
 `showPerPagePicker` | Boolean | `true` | Whether the per page picker should shown.
+`showPageArrowsLabel` | Boolean | `true` | Whether the page arrows label should be shown.

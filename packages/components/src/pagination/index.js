@@ -84,7 +84,7 @@ class Pagination extends Component {
 	}
 
 	renderPageArrows() {
-		const { page } = this.props;
+		const { page, showPageArrowsLabel } = this.props;
 
 		if ( this.pageCount <= 1 ) {
 			return null;
@@ -100,17 +100,19 @@ class Pagination extends Component {
 
 		return (
 			<div className="woocommerce-pagination__page-arrows">
-				<span
-					className="woocommerce-pagination__page-arrows-label"
-					role="status"
-					aria-live="polite"
-				>
-					{ sprintf(
-						__( 'Page %d of %d', 'woocommerce-admin' ),
-						page,
-						this.pageCount
-					) }
-				</span>
+				{ showPageArrowsLabel && (
+					<span
+						className="woocommerce-pagination__page-arrows-label"
+						role="status"
+						aria-live="polite"
+					>
+						{ sprintf(
+							__( 'Page %d of %d', 'woocommerce-admin' ),
+							page,
+							this.pageCount
+						) }
+					</span>
+				) }
 				<div className="woocommerce-pagination__page-arrows-buttons">
 					<IconButton
 						className={ previousLinkClass }
@@ -247,6 +249,10 @@ Pagination.propTypes = {
 	 * Whether the perPage picker should be rendered.
 	 */
 	showPerPagePicker: PropTypes.bool,
+	/**
+	 * Whether the page arrows label should be rendered.
+	 */
+	showPageArrowsLabel: PropTypes.bool,
 };
 
 Pagination.defaultProps = {
@@ -254,6 +260,7 @@ Pagination.defaultProps = {
 	onPerPageChange: noop,
 	showPagePicker: true,
 	showPerPagePicker: true,
+	showPageArrowsLabel: true,
 };
 
 export default Pagination;
