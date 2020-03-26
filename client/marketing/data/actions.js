@@ -59,7 +59,7 @@ export function* activateInstalledPlugin( pluginSlug ) {
 	yield receiveActivatingPlugin( pluginSlug );
 
 	try {
-		const { response } = yield apiFetch( {
+		const response = yield apiFetch( {
 			path: API_NAMESPACE + '/overview/activate-plugin',
 			method: 'POST',
 			data: {
