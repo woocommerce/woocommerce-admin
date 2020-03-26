@@ -4,6 +4,8 @@
 import apiFetch from '@wordpress/api-fetch';
 import { registerStore } from '@wordpress/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { without } from 'lodash';
+
 
 /**
  * Internal dependencies
@@ -15,7 +17,7 @@ const { installedExtensions } = getSetting( 'marketing', {} );
 
 const DEFAULT_STATE = {
 	installedPlugins: installedExtensions,
-	activatingPlugin: ''
+	activatingPlugins: [],
 };
 
 registerStore( STORE_KEY, {
@@ -29,7 +31,12 @@ registerStore( STORE_KEY, {
 			case 'SET_ACTIVATING_PLUGIN':
 				return {
 					...state,
-					activatingPlugin: action.pluginSlug,
+					activatingPlugins: [ ...state.activatingPlugins, action.pluginSlug ],
+				};
+			case 'REMOVE_ACTIVATING_PLUGIN':
+				return {
+					...state,
+					activatingPlugins: without( state.activatingPlugins, action.pluginSlug ),
 				};
 		}
 
@@ -42,8 +49,8 @@ registerStore( STORE_KEY, {
 		getInstalledPlugins( state ) {
 			return state.installedPlugins;
 		},
-		getActivatingPlugin( state ) {
-			return state.activatingPlugin;
+		getActivatingPlugins( state ) {
+			return state.activatingPlugins;
 		},
 	},
 
