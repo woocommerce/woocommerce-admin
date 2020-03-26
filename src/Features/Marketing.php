@@ -66,7 +66,7 @@ class Marketing {
 				'path'     => '/marketing',
 				'icon'     => 'dashicons-megaphone',
 				'position' => 58, // After WooCommerce & Product menu items.
-			)
+			),
 		);
 
 		$marketing_pages = apply_filters( 'woocommerce_marketing_menu_items', $marketing_pages );
@@ -97,7 +97,7 @@ class Marketing {
 	 * @return array
 	 */
 	public function component_settings( $settings ) {
-		// Bail early if not on a wc-admin powered page
+		// Bail early if not on a wc-admin powered page.
 		if ( ! Loader::is_admin_page() ) {
 			return $settings;
 		}
@@ -117,7 +117,7 @@ class Marketing {
 		$plugins = get_transient( self::RECOMMENDED_PLUGINS_TRANSIENT );
 
 		if ( false === $plugins ) {
-			// TODO update URL
+			// TODO update placeholder URL.
 			$request = wp_remote_get( 'https://ephemeral-findingsimple-20200320.atomicsites.blog/wp-json/wccom/marketing-tab/1.0/recommendations.json' );
 			$plugins = [];
 
@@ -144,9 +144,9 @@ class Marketing {
 			$request_url = add_query_arg(
 				array(
 					'categories' => 1744,
-					'page' => 1,
-					'per_page' => 8,
-					'_embed' => 1
+					'page'       => 1,
+					'per_page'   => 8,
+					'_embed'     => 1,
 				),
 				'https://woocommerce.com/wp-json/wp/v2/posts'
 			);
