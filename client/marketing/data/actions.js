@@ -18,7 +18,7 @@ import { __ } from '@wordpress/i18n';
  *
  * @return {Object} The control action descriptor.
  */
-const apiFetch = ( options ) => {
+export const apiFetch = ( options ) => {
 	return {
 		type: 'API_FETCH',
 		options,
