@@ -17,7 +17,7 @@ import { Card } from '@woocommerce/components';
  */
 import './style.scss'
 import InstalledExtensionRow from './row';
-import { STORE_KEY } from '../../data-store/constants';
+import { STORE_KEY } from '../../data/constants';
 
 class InstalledExtensions extends Component {
 
