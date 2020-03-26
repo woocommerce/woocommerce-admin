@@ -117,7 +117,10 @@ export const getPages = () => {
 		pages.push( {
 			container: MarketingOverview,
 			path: '/marketing',
-			breadcrumbs: [ __( 'Marketing', 'woocommerce-admin' ) ],
+			breadcrumbs: [
+				...initialBreadcrumbs,
+				__( 'Marketing', 'woocommerce-admin' ),
+			],
 			wpOpenMenu: 'toplevel_page_wc-admin-path--marketing',
 		} );
 	}
