@@ -39,6 +39,13 @@ export function receiveActivatingPlugin( pluginSlug ) {
 	};
 }
 
+export function removeActivatingPlugin( pluginSlug ) {
+	return {
+		type: 'REMOVE_ACTIVATING_PLUGIN',
+		pluginSlug,
+	};
+}
+
 function handleFetchError( error, message ) {
 	const { createNotice } = dispatch( 'core/notices' );
 	createNotice( 'error', message );
@@ -66,10 +73,10 @@ export function* activateInstalledPlugin( pluginSlug ) {
 		);
 
 		yield receiveInstalledPlugins( response.plugins );
-		yield receiveActivatingPlugin( '' );
+		yield removeActivatingPlugin( pluginSlug );
 	} catch ( error ) {
 		yield handleFetchError( error, __( 'There was an error trying to activate the extension.', 'woocommerce-admin' ) );
-		yield receiveActivatingPlugin( '' );
+		yield removeActivatingPlugin( pluginSlug );
 	}
 
 	return true;
