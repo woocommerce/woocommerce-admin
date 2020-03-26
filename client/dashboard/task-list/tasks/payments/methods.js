@@ -44,39 +44,43 @@ export function getPaymentMethods( {
 			slug: 'cbd-other-hemp-derived-products',
 		} ) || false;
 
-	const tosLink = (
-		<Link
-			href={ 'https://wordpress.com/tos/' }
-			target="_blank"
-			type="external"
-		/>
-	);
+	const methods = [];
 
-	const tosPrompt = interpolateComponents( {
-		mixedString: __(
-			'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}.',
-			'woocommerce-admin'
-		),
-		components: {
-			link: tosLink,
-		},
-	} );
+	if ( window.wcAdminFeatures.wcpay ) {
+		const tosLink = (
+			<Link
+				href={ 'https://wordpress.com/tos/' }
+				target="_blank"
+				type="external"
+			/>
+		);
 
-	// @todo This should check actual connection information.
-	const wcPayIsConfigured = activePlugins.includes( 'woocommerce-payments' );
+		const tosPrompt = interpolateComponents( {
+			mixedString: __(
+				'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}.',
+				'woocommerce-admin'
+			),
+			components: {
+				link: tosLink,
+			},
+		} );
 
-	const wcPaySettingsLink = (
-		<Link
-			href={
-				'/wp-admin/admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments'
-			}
-		>
-			{ __( 'Settings', 'woocommerce-admin' ) }
-		</Link>
-	);
+		// @todo This should check actual connection information.
+		const wcPayIsConfigured = activePlugins.includes(
+			'woocommerce-payments'
+		);
 
-	const methods = [
-		{
+		const wcPaySettingsLink = (
+			<Link
+				href={
+					'/wp-admin/admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments'
+				}
+			>
+				{ __( 'Settings', 'woocommerce-admin' ) }
+			</Link>
+		);
+
+		methods.push( {
 			key: 'wcpay',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
@@ -97,10 +101,7 @@ export function getPaymentMethods( {
 					alt=""
 				/>
 			),
-			visible:
-				[ 'US' ].includes( countryCode ) &&
-				! hasCbdIndustry &&
-				window.wcAdminFeatures.wcpay,
+			visible: [ 'US' ].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConfigured,
@@ -109,7 +110,10 @@ export function getPaymentMethods( {
 				options.woocommerce_woocommerce_payments_settings.enabled ===
 					'yes',
 			optionName: 'woocommerce_woocommerce_payments_settings',
-		},
+		} );
+	}
+
+	methods.push(
 		{
 			key: 'stripe',
 			title: __(
@@ -318,8 +322,8 @@ export function getPaymentMethods( {
 				options.woocommerce_bacs_settings &&
 				options.woocommerce_bacs_settings.enabled === 'yes',
 			optionName: 'woocommerce_bacs_settings',
-		},
-	];
+		}
+	);
 
 	return filter( methods, ( method ) => method.visible );
 }
