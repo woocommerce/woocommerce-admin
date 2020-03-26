@@ -45,7 +45,7 @@ class InstalledExtensions {
 	public static function get_allowed_plugins() {
 		return [
 			'mailchimp-for-woocommerce',
-			'facebook-for-woocommerce'
+			'facebook-for-woocommerce',
 		];
 	}
 
@@ -109,6 +109,8 @@ class InstalledExtensions {
 
 
 	/**
+	 * Get an array of basic data for a given extension.
+	 *
 	 * @param string $slug Plugin slug.
 	 *
 	 * @return array|false
