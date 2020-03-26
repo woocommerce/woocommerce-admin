@@ -25,7 +25,7 @@ class PluginsHelper {
 	 *
 	 * E.g. 'woocommerce' returns 'woocommerce/woocommerce.php'
 	 *
-	 * @param string $slug
+	 * @param string $slug Plugin slug to get path for.
 	 *
 	 * @return string|false
 	 */
@@ -33,7 +33,7 @@ class PluginsHelper {
 		$plugins = get_plugins();
 
 		if ( strstr( $slug, '/' ) ) {
-			// The slug is already a plugin path
+			// The slug is already a plugin path.
 			return $slug;
 		}
 
