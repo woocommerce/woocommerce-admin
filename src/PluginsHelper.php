@@ -124,7 +124,7 @@ class PluginsHelper {
 	 */
 	public static function get_plugin_data( $plugin ) {
 		$plugin_path = self::get_plugin_path_from_slug( $plugin );
-		$plugins = get_plugins();
+		$plugins     = get_plugins();
 
 		return isset( $plugins[ $plugin_path ] ) ? $plugins[ $plugin_path ] : false;
 	}
