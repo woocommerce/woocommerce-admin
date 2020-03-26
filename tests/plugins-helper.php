@@ -112,28 +112,28 @@ class WC_Admin_Tests_Plugins_Helper extends WP_UnitTestCase {
 
 		$actual_data = PluginsHelper::get_plugin_data( 'woocommerce' );
 
-		// Account for different versions being pulled in for tests.
-		unset( $actual_data['Version'] );
-
-		$expected_data = array(
-			'WC requires at least' => '',
-			'WC tested up to'      => '',
-			'Woo'                  => '',
-			'Name'                 => 'WooCommerce',
-			'PluginURI'            => 'https://woocommerce.com/',
-			'Description'          => 'An eCommerce toolkit that helps you sell anything. Beautifully.',
-			'Author'               => 'Automattic',
-			'AuthorURI'            => 'https://woocommerce.com',
-			'TextDomain'           => 'woocommerce',
-			'DomainPath'           => '/i18n/languages/',
-			'Network'              => false,
-			'RequiresWP'           => '',
-			'RequiresPHP'          => '',
-			'Title'                => 'WooCommerce',
-			'AuthorName'           => 'Automattic',
+		$expected_keys = array(
+			'WC requires at least',
+			'WC tested up to',
+			'Woo',
+			'Name',
+			'PluginURI',
+			'Description',
+			'Author',
+			'Version',
+			'AuthorURI',
+			'TextDomain',
+			'DomainPath',
+			'Network',
+			'RequiresWP',
+			'RequiresPHP',
+			'Title',
+			'AuthorName',
 		);
 
-		$this->assertEquals( $expected_data, $actual_data, 'Plugin data does not match expected data.' );
+		foreach ( $expected_keys as $key ) {
+			$this->assertArrayHasKey( $key, $actual_data, 'Plugin data does not match expected data.' );
+		}
 
 		// Test not installed plugin response.
 		$actual_data = PluginsHelper::get_plugin_data( 'my-plugin' );
