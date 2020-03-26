@@ -46,7 +46,14 @@ export function removeActivatingPlugin( pluginSlug ) {
 	};
 }
 
-function handleFetchError( error, message ) {
+export function receiveRecommendedPlugins( plugins ) {
+	return {
+		type: 'SET_RECOMMENDED_PLUGINS',
+		plugins,
+	};
+}
+
+export function handleFetchError( error, message ) {
 	const { createNotice } = dispatch( 'core/notices' );
 	createNotice( 'error', message );
 

@@ -5,3 +5,7 @@ export function getInstalledPlugins( state ) {
 export function isActivatingPlugin( state, pluginSlug ) {
 	return state.activatingPlugins.includes( pluginSlug );
 }
+
+export function getRecommendedPlugins( state ) {
+	return state.recommendedPlugins;
+}

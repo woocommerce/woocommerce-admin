@@ -13,15 +13,21 @@ import { without } from 'lodash';
 import { STORE_KEY } from './constants';
 import * as actions from './actions';
 import * as selectors from './selectors';
+import * as resolvers from './resolvers';
 
 const { installedExtensions } = getSetting( 'marketing', {} );
 
 const DEFAULT_STATE = {
 	installedPlugins: installedExtensions,
 	activatingPlugins: [],
+	recommendedPlugins: [],
 };
 
 registerStore( STORE_KEY, {
+	actions,
+	selectors,
+	resolvers,
+
 	reducer( state = DEFAULT_STATE, action ) {
 		switch ( action.type ) {
 			case 'SET_INSTALLED_PLUGINS':
@@ -39,13 +45,15 @@ registerStore( STORE_KEY, {
 					...state,
 					activatingPlugins: without( state.activatingPlugins, action.pluginSlug ),
 				};
+			case 'SET_RECOMMENDED_PLUGINS':
+				return {
+					...state,
+					recommendedPlugins: action.plugins,
+				};
 		}
 
 		return state;
 	},
-
-	actions,
-	selectors,
 
 	controls: {
 		API_FETCH( { options } ) {
