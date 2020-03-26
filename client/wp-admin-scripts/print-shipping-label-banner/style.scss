@@ -1,6 +1,4 @@
 // This is needed so ExternalLinks appear correctly. Should be part of 'wp-components' style but for some reason it's not.
-@import '@wordpress/components/src/visually-hidden/style';
-
 #woocommerce-admin-print-label {
 	min-height: 100px;
 
@@ -142,4 +140,12 @@
 
 .notice.wcs-nux__notice {
 	display: none;
+}
+
+.wc-admin-shipping-banner__dismiss-modal {
+	.components-button {
+		span {
+			display: none;
+		}
+	}
 }
