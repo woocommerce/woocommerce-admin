@@ -55,8 +55,8 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 							'type'              => 'string',
 							'validate_callback' => 'rest_validate_request_arg',
 							'sanitize_callback' => 'sanitize_title_with_dashes',
-						)
-					)
+						),
+					),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
 			)
@@ -72,7 +72,7 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args' => array(
 						'per_page' => $this->get_collection_params()['per_page'],
-					)
+					),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -129,10 +129,12 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'The plugin could not be activated.', 'woocommerce-admin' ), 500 );
 		}
 
-		return rest_ensure_response( array(
-			'status'  => 'success',
-			'plugins' => InstalledExtensions::get_data(),
-		) );
+		return rest_ensure_response(
+			array(
+				'status'  => 'success',
+				'plugins' => InstalledExtensions::get_data(),
+			)
+		);
 	}
 
 	/**
