@@ -196,6 +196,7 @@ describe( 'Create shipping label button', () => {
 		window.jQuery = jest.fn();
 		window.jQuery.mockReturnValue( {
 			sortable: jest.fn(),
+			hide: jest.fn(),
 		} );
 
 		const createElementMock = jest.fn( ( tagName ) => {
@@ -257,7 +258,12 @@ describe( 'Create shipping label button', () => {
 		window.wcsGetAppStore = jest.fn();
 		const getState = jest.fn();
 		const dispatch = jest.fn();
-		window.wcsGetAppStore.mockReturnValueOnce( { getState, dispatch } );
+		const subscribe = jest.fn();
+		window.wcsGetAppStore.mockReturnValueOnce( {
+			getState,
+			dispatch,
+			subscribe,
+		} );
 		getState.mockReturnValueOnce( {
 			ui: {
 				selectedSiteId: 'SITE_ID',
