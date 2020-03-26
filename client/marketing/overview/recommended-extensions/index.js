@@ -2,12 +2,12 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Spinner } from '@wordpress/components';
 import classnames from 'classnames';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
+import PropTypes from 'prop-types';
 
 /**
  * WooCommerce dependencies
@@ -17,50 +17,13 @@ import { Card } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { WC_ADMIN_NAMESPACE } from '../../../wc-api/constants';
 import './style.scss'
 import RecommendedExtensionsItem from './item';
+import { STORE_KEY } from '../../data/constants';
 
 class RecommendedExtensions extends Component {
-	constructor( props ) {
-		super( props );
-
-		this.state = {
-			isLoading: true,
-			extensions: [],
-		};
-	}
-
-	componentDidMount() {
-		this.fetchExtensions();
-	}
-
-	async fetchExtensions() {
-		const { createNotice } = this.props;
-
-		try {
-			const response = await apiFetch( {
-				path: `${ WC_ADMIN_NAMESPACE }/marketing/overview/recommended?per_page=6`,
-				method: 'GET',
-			} );
-			if ( response ) {
-				this.setState( {
-					isLoading: false,
-					extensions: response,
-				} );
-				return;
-			}
-			throw new Error();
-		} catch ( err ) {
-			this.setState( { isLoading: false } );
-			createNotice( 'success',
-				__( 'There was an error loading recommended extensions.', 'woocommerce-admin' )
-			);
-		}
-	}
-
 	render() {
-		const { extensions, isLoading } = this.state;
+		const { isLoading, extensions } = this.props;
 
 		if ( extensions.length === 0 && ! isLoading ) {
 			return null;
@@ -95,7 +58,26 @@ class RecommendedExtensions extends Component {
 	}
 }
 
+RecommendedExtensions.propTypes = {
+	/**
+	 * Array of recommended extensions.
+	 */
+	extensions: PropTypes.arrayOf( PropTypes.object ).isRequired,
+	/**
+	 * Whether the card is loading.
+	 */
+	isLoading: PropTypes.bool.isRequired,
+};
+
 export default compose(
+	withSelect( ( select ) => {
+		const { getRecommendedPlugins, isResolving } = select( STORE_KEY );
+
+		return {
+			extensions: getRecommendedPlugins(),
+			isLoading: isResolving( 'getRecommendedPlugins' ),
+		};
+	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 
