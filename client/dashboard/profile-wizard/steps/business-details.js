@@ -343,10 +343,7 @@ class BusinessDetails extends Component {
 			},
 			{
 				slug: 'kliken-marketing-for-google',
-				title: __(
-					'Drive sales with Google Shopping',
-					'woocommerce-admin'
-				),
+				title: __( 'Drive sales with Google Ads', 'woocommerce-admin' ),
 				icon: 'onboarding/g-shopping.png',
 				description: __(
 					'Get in front of new customers on Google and secure $150 in ads credit with Kliken’s integration.',
@@ -685,7 +682,7 @@ class BusinessDetails extends Component {
 }
 
 export default compose(
-	withWCApiSelect( select => {
+	withWCApiSelect( ( select ) => {
 		const { getProfileItems, getProfileItemsError } = select( 'wc-api' );
 
 		return {
@@ -693,10 +690,12 @@ export default compose(
 			profileItems: getProfileItems(),
 		};
 	} ),
-	withSelect( select => {
-		const { getSettings, getSettingsError, isGetSettingsRequesting } = select(
-			SETTINGS_STORE_NAME
-		);
+	withSelect( ( select ) => {
+		const {
+			getSettings,
+			getSettingsError,
+			isGetSettingsRequesting,
+		} = select( SETTINGS_STORE_NAME );
 
 		const { general: settings = {} } = getSettings( 'general' );
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
