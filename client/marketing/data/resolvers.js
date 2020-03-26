@@ -26,7 +26,7 @@ export function* getRecommendedPlugins() {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( {}, __( 'There was an error loading recommended extensions.', 'woocommerce-admin' ) );
+		yield handleFetchError( error, __( 'There was an error loading recommended extensions.', 'woocommerce-admin' ) );
 	}
 }
 
@@ -43,6 +43,6 @@ export function* getBlogPosts() {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( {}, __( 'There was an error loading knowledge base posts.', 'woocommerce-admin' ) );
+		yield handleFetchError( error, __( 'There was an error loading knowledge base posts.', 'woocommerce-admin' ) );
 	}
 }
