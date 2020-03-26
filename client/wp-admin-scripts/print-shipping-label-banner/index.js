@@ -2,6 +2,10 @@
  * External dependencies
  */
 import { render } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
 import ShippingBanner from './shipping-banner';
 
 const metaBox = document.getElementById( 'wc-admin-shipping-banner-root' );
