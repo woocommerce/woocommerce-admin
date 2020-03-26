@@ -26,9 +26,9 @@ class InstalledExtensions extends Component {
 	}
 
 	render() {
-		const { extensions, activatingExtensions } = this.props;
+		const { plugins, activatingPlugins } = this.props;
 
-		if ( extensions.length === 0 ) {
+		if ( plugins.length === 0 ) {
 			return null
 		}
 
@@ -37,13 +37,13 @@ class InstalledExtensions extends Component {
 				title={ __( 'Installed marketing extensions', 'woocommerce-admin' ) }
 				className="woocommerce-marketing-installed-extensions-card"
 			>
-				{ extensions.map( ( extension ) => {
+				{ plugins.map( ( plugin ) => {
 					return (
 						<InstalledExtensionRow
-							key={ extension.slug }
-							{ ...extension }
-							activatePlugin={ () => this.activatePlugin( extension.slug ) }
-							isLoading={ activatingExtensions.includes( extension.slug ) }
+							key={ plugin.slug }
+							{ ...plugin }
+							activatePlugin={ () => this.activatePlugin( plugin.slug ) }
+							isLoading={ activatingPlugins.includes( plugin.slug ) }
 						/>
 					);
 				} ) }
@@ -57,8 +57,8 @@ export default compose(
 		const { getInstalledPlugins, getActivatingPlugins } = select( STORE_KEY );
 
 		return {
-			extensions: getInstalledPlugins(),
-			activatingExtensions: getActivatingPlugins(),
+			plugins: getInstalledPlugins(),
+			activatingPlugins: getActivatingPlugins(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
