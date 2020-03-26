@@ -21,6 +21,7 @@ const DEFAULT_STATE = {
 	installedPlugins: installedExtensions,
 	activatingPlugins: [],
 	recommendedPlugins: [],
+	blogPosts: [],
 };
 
 registerStore( STORE_KEY, {
@@ -49,6 +50,11 @@ registerStore( STORE_KEY, {
 				return {
 					...state,
 					recommendedPlugins: action.plugins,
+				};
+			case 'SET_BLOG_POSTS':
+				return {
+					...state,
+					blogPosts: action.posts,
 				};
 		}
 

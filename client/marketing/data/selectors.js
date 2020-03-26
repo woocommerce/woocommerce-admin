@@ -9,3 +9,8 @@ export function isActivatingPlugin( state, pluginSlug ) {
 export function getRecommendedPlugins( state ) {
 	return state.recommendedPlugins;
 }
+
+export function getBlogPosts( state ) {
+	return state.blogPosts;
+}
+

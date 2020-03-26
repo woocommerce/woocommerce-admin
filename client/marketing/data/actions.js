@@ -53,6 +53,13 @@ export function receiveRecommendedPlugins( plugins ) {
 	};
 }
 
+export function receiveBlogPosts( posts ) {
+	return {
+		type: 'SET_BLOG_POSTS',
+		posts,
+	};
+}
+
 export function handleFetchError( error, message ) {
 	const { createNotice } = dispatch( 'core/notices' );
 	createNotice( 'error', message );

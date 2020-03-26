@@ -6,7 +6,7 @@ import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -17,50 +17,20 @@ import { Card, Pagination } from '@woocommerce/components';
  * Internal dependencies
  */
 import './style.scss'
-import apiFetch from "@wordpress/api-fetch";
-import { WC_ADMIN_NAMESPACE } from "../../../wc-api/constants";
 import { recordEvent } from 'lib/tracks';
 import { Slider } from '../../components';
+import { STORE_KEY } from '../../data/constants';
 
 class KnowledgeBase extends Component {
 
 	constructor( props ) {
 		super( props );
 		this.state = {
-			posts: [],
 			page: 1,
 			animate: null,
 			isLoading: true,
 		};
 		this.onPaginationPageChange = this.onPaginationPageChange.bind( this );
-	}
-
-	componentDidMount() {
-		this.fetchPosts();
-	}
-
-	async fetchPosts() {
-		const { createNotice } = this.props;
-
-		try {
-			const response = await apiFetch( {
-				path: `${ WC_ADMIN_NAMESPACE }/marketing/overview/knowledge-base`,
-				method: 'GET',
-			} );
-			if ( response ) {
-				this.setState( {
-					isLoading: false,
-					posts: response,
-				} );
-				return;
-			}
-			throw new Error();
-		} catch ( err ) {
-			this.setState( { isLoading: false } );
-			createNotice( 'success',
-				__( 'There was an error loading knowledge base posts.', 'woocommerce-admin' )
-			);
-		}
 	}
 
 	onPaginationPageChange( newPage ) {
@@ -81,12 +51,12 @@ class KnowledgeBase extends Component {
 		} );
 	}
 
-
 	/**
 	 * Get the 2 posts we need for the current page
 	 */
 	getCurrentSlide() {
-		const { page, posts } = this.state;
+		const { posts } = this.props;
+		const { page } = this.state;
 		const currentPosts = posts.slice( ( page - 1 ) * 2, ( page - 1 ) * 2 + 2 );
 		const pageClass = classNames( 'woocommerce-marketing-knowledgebase-card__page', {
 			'page-with-single-post': currentPosts.length === 1,
@@ -121,7 +91,8 @@ class KnowledgeBase extends Component {
 	}
 
 	render() {
-		const { page, animate, posts, isLoading } = this.state;
+		const { posts, isLoading } = this.props;
+		const { page, animate } = this.state;
 
 		return (
 			<Card
@@ -153,6 +124,14 @@ class KnowledgeBase extends Component {
 }
 
 export default compose(
+	withSelect( ( select ) => {
+		const { getBlogPosts, isResolving } = select( STORE_KEY );
+
+		return {
+			posts: getBlogPosts(),
+			isLoading: isResolving( 'getBlogPosts' ),
+		};
+	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 
