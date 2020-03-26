@@ -61,7 +61,7 @@ class WC_Admin_Tests_Plugins_Helper extends WP_UnitTestCase {
 		// Get facebook plugin path.
 		$fb_path = PluginsHelper::get_plugin_path_from_slug( 'facebook-for-woocommerce' );
 
-		// Activate facebookn plugin.
+		// Activate facebook plugin.
 		activate_plugin( $fb_path );
 
 		// Get active slugs.
@@ -76,11 +76,11 @@ class WC_Admin_Tests_Plugins_Helper extends WP_UnitTestCase {
 	 */
 	public function test_is_plugin_installed() {
 
-		// WooCommerce is installed in the test envrionment.
+		// WooCommerce is installed in the test environment.
 		$installed = PluginsHelper::is_plugin_installed( 'woocommerce' );
 		$this->assertEquals( true, $installed, 'WooCommerce should be installed.' );
 
-		// Invalud plugin is not.
+		// Invalid plugin is not.
 		$installed = PluginsHelper::is_plugin_installed( 'invalid-plugin' );
 		$this->assertEquals( false, $installed, 'Invalid plugins should not be installed.' );
 	}
@@ -97,7 +97,7 @@ class WC_Admin_Tests_Plugins_Helper extends WP_UnitTestCase {
 		// Get facebook plugin path.
 		$fb_path = PluginsHelper::get_plugin_path_from_slug( 'facebook-for-woocommerce' );
 
-		// Activate facebookn plugin.
+		// Activate facebook plugin.
 		activate_plugin( $fb_path );
 
 		// Check if facebook is now active.
