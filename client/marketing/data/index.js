@@ -12,6 +12,7 @@ import { without } from 'lodash';
  */
 import { STORE_KEY } from './constants';
 import * as actions from './actions';
+import * as selectors from './selectors';
 
 const { installedExtensions } = getSetting( 'marketing', {} );
 
@@ -44,15 +45,7 @@ registerStore( STORE_KEY, {
 	},
 
 	actions,
-
-	selectors: {
-		getInstalledPlugins( state ) {
-			return state.installedPlugins;
-		},
-		isActivatingPlugin( state, pluginSlug ) {
-			return state.activatingPlugins.includes( pluginSlug );
-		}
-	},
+	selectors,
 
 	controls: {
 		API_FETCH( { options } ) {
