@@ -291,6 +291,87 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	}
 
 	/**
+	 * Retrieve stats intervals.
+	 *
+	 * @param array $query_args Query parameters.
+	 * @param array $selected_columns SQL column selections.
+	 * @param array $params SQL limit parameters.
+	 * @param int   $expected_interval_count Expected number of intervals.
+	 * @return object Intervals object.
+	 */
+	public function get_intervals( $query_args, $selected_columns, $params, $expected_interval_count ) {
+		global $wpdb;
+
+		// Determine how many intervals of data we have.
+		$db_intervals      = $this->get_db_intervals();
+		$db_interval_count = count( $db_intervals );
+
+		$table_name = self::get_db_table_name();
+		$where_time = $this->get_sql_clause( 'where_time' );
+
+		// @todo Remove these assignements when refactoring segmenter classes to use query objects.
+		$intervals_query = array(
+			'select_clause'     => $this->get_sql_clause( 'select' ),
+			'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
+			'where_time_clause' => $where_time,
+			'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
+			'limit'             => $this->get_sql_clause( 'limit' ),
+		);
+
+		$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
+		$this->interval_query->add_sql_clause( 'where_time', $where_time );
+
+		$this->update_intervals_sql_params( $query_args, $db_interval_count, $expected_interval_count, $table_name );
+		$this->interval_query->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
+		$this->interval_query->add_sql_clause( 'limit', $this->get_sql_clause( 'limit' ) );
+		$this->interval_query->add_sql_clause( 'select', ", MAX(${table_name}.date_created) AS datetime_anchor" );
+		if ( '' !== $selected_columns ) {
+			$this->interval_query->add_sql_clause( 'select', ', ' . $selected_columns );
+		}
+		$intervals = $wpdb->get_results(
+			$this->interval_query->get_query_statement(),
+			ARRAY_A
+		); // phpcs:ignore cache ok, DB call ok, unprepared SQL ok.
+
+		if ( null === $intervals ) {
+			return new \WP_Error( 'woocommerce_analytics_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'woocommerce-admin' ) );
+		}
+
+		if ( isset( $intervals[0] ) ) {
+			$unique_coupons                = $this->get_unique_coupon_count( $intervals_query['from_clause'], $intervals_query['where_time_clause'], $intervals_query['where_clause'], true );
+			$intervals[0]['coupons_count'] = $unique_coupons;
+		}
+
+		// Build an array of the requested columns to use for filling in missing intervals.
+		$valid_totals_fields = array_keys( $this->report_columns );
+		$totals_fields       = $valid_totals_fields;
+
+		if ( isset( $query_args['fields'] ) && is_array( $query_args['fields'] ) ) {
+			$totals_fields = array_intersect( $valid_totals_fields, $query_args['fields'] );
+		}
+
+		// The missing interval functions expect to work on $data object.
+		// TODO: refactor this away.
+		$data = (object) array(
+			'totals'    => (object) array_fill_keys( $totals_fields, 0 ),
+			'intervals' => $intervals,
+		);
+
+		if ( TimeInterval::intervals_missing( $expected_interval_count, $db_interval_count, $params['per_page'], $query_args['page'], $query_args['order'], $query_args['orderby'], count( $intervals ) ) ) {
+			$this->fill_in_missing_intervals( $db_intervals, $query_args['adj_after'], $query_args['adj_before'], $query_args['interval'], $data );
+			$this->sort_intervals( $data, $query_args['orderby'], $query_args['order'] );
+			$this->remove_extra_records( $data, $query_args['page'], $params['per_page'], $db_interval_count, $expected_interval_count, $query_args['orderby'], $query_args['order'] );
+		} else {
+			$this->update_interval_boundary_dates( $query_args['after'], $query_args['before'], $query_args['interval'], $data->intervals );
+		}
+		$segmenter = new Segmenter( $query_args, $this->report_columns );
+		$segmenter->add_intervals_segments( $data, $intervals_query, $table_name );
+		$this->create_interval_subtotals( $data->intervals );
+
+		return $data->intervals;
+	}
+
+	/**
 	 * Returns the report data based on parameters supplied by the user.
 	 *
 	 * @param array $query_args  Query parameters.
@@ -360,7 +441,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->add_time_period_sql_params( $query_args, $table_name );
 			$this->add_intervals_sql_params( $query_args, $table_name );
 			$this->add_order_by_sql_params( $query_args );
-			$where_time = $this->get_sql_clause( 'where_time' );
 
 			// Additional filtering for Orders report.
 			$this->orders_stats_sql_filter( $query_args );
@@ -370,41 +450,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				return $totals;
 			}
 
-			// @todo Remove these assignements when refactoring segmenter classes to use query objects.
-			$intervals_query = array(
-				'select_clause'     => $this->get_sql_clause( 'select' ),
-				'from_clause'       => $this->interval_query->get_sql_clause( 'join' ),
-				'where_time_clause' => $where_time,
-				'where_clause'      => $this->interval_query->get_sql_clause( 'where' ),
-				'limit'             => $this->get_sql_clause( 'limit' ),
-			);
-
-			$this->interval_query->add_sql_clause( 'select', $this->get_sql_clause( 'select' ) . ' AS time_interval' );
-			$this->interval_query->add_sql_clause( 'where_time', $where_time );
-
-			// Determine how many intervals of data we have.
-			$db_intervals      = $this->get_db_intervals();
-			$db_interval_count = count( $db_intervals );
-
-			$this->update_intervals_sql_params( $query_args, $db_interval_count, $expected_interval_count, $table_name );
-			$this->interval_query->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
-			$this->interval_query->add_sql_clause( 'limit', $this->get_sql_clause( 'limit' ) );
-			$this->interval_query->add_sql_clause( 'select', ", MAX(${table_name}.date_created) AS datetime_anchor" );
-			if ( '' !== $selections ) {
-				$this->interval_query->add_sql_clause( 'select', ', ' . $selections );
-			}
-			$intervals = $wpdb->get_results(
-				$this->interval_query->get_query_statement(),
-				ARRAY_A
-			); // phpcs:ignore cache ok, DB call ok, unprepared SQL ok.
-
-			if ( null === $intervals ) {
-				return new \WP_Error( 'woocommerce_analytics_revenue_result_failed', __( 'Sorry, fetching revenue data failed.', 'woocommerce-admin' ) );
-			}
-
-			if ( isset( $intervals[0] ) ) {
-				$unique_coupons                = $this->get_unique_coupon_count( $intervals_query['from_clause'], $intervals_query['where_time_clause'], $intervals_query['where_clause'], true );
-				$intervals[0]['coupons_count'] = $unique_coupons;
+			$intervals = $this->get_intervals( $query_args, $selections, $params, $expected_interval_count );
+			if ( is_wp_error( $intervals ) ) {
+				return $intervals;
 			}
 
 			$data = (object) array(
@@ -414,17 +462,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'pages'     => $total_pages,
 				'page_no'   => (int) $query_args['page'],
 			);
-
-			if ( TimeInterval::intervals_missing( $expected_interval_count, $db_interval_count, $params['per_page'], $query_args['page'], $query_args['order'], $query_args['orderby'], count( $intervals ) ) ) {
-				$this->fill_in_missing_intervals( $db_intervals, $query_args['adj_after'], $query_args['adj_before'], $query_args['interval'], $data );
-				$this->sort_intervals( $data, $query_args['orderby'], $query_args['order'] );
-				$this->remove_extra_records( $data, $query_args['page'], $params['per_page'], $db_interval_count, $expected_interval_count, $query_args['orderby'], $query_args['order'] );
-			} else {
-				$this->update_interval_boundary_dates( $query_args['after'], $query_args['before'], $query_args['interval'], $data->intervals );
-			}
-			$segmenter = new Segmenter( $query_args, $this->report_columns );
-			$segmenter->add_intervals_segments( $data, $intervals_query, $table_name );
-			$this->create_interval_subtotals( $data->intervals );
 
 			$this->set_cached_data( $cache_key, $data );
 		}
