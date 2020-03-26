@@ -74,7 +74,7 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\Themes',
 		);
 
-		if ( Loader::is_onboarding_enabled() || Loader::is_feature_enabled( 'shipping-label-banner' ) ) {
+		if ( Loader::is_onboarding_enabled() ) {
 			$controllers = array_merge(
 				$controllers,
 				array(
@@ -82,6 +82,14 @@ class Init {
 					'Automattic\WooCommerce\Admin\API\OnboardingPlugins',
 					'Automattic\WooCommerce\Admin\API\OnboardingTasks',
 					'Automattic\WooCommerce\Admin\API\OnboardingThemes',
+				)
+			);
+		} elseif ( Loader::is_feature_enabled( 'shipping-label-banner' ) ) {
+			// Shipping Banner needs to use /active /install and /activate endpoints.
+			$controllers = array_merge(
+				$controllers,
+				array(
+					\Automattic\WooCommerce\Admin\API\OnboardingPlugins::class,
 				)
 			);
 		}
