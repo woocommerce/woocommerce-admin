@@ -125,7 +125,7 @@ class Marketing {
 				$plugins = json_decode( $request['body'], true );
 			}
 
-			// Cache an empty result to avoid repeated failed requests
+			// Cache an empty result to avoid repeated failed requests.
 			set_transient( self::RECOMMENDED_PLUGINS_TRANSIENT, $plugins, DAY_IN_SECONDS );
 		}
 
