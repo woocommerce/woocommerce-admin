@@ -17,10 +17,14 @@ import { API_NAMESPACE } from './constants';
 export function* getRecommendedPlugins() {
 	try {
 		const response = yield apiFetch( {
-			path: `${API_NAMESPACE}/overview/recommended?per_page=6`
+			path: `${ API_NAMESPACE }/overview/recommended?per_page=6`
 		} );
 
-		yield receiveRecommendedPlugins( response );
+		if ( response ) {
+			yield receiveRecommendedPlugins( response );
+		} else {
+			throw new Error();
+		}
 	} catch ( error ) {
 		yield handleFetchError( {}, __( 'There was an error loading recommended extensions.', 'woocommerce-admin' ) );
 	}
