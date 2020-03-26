@@ -78,7 +78,7 @@ class Orders extends \WC_REST_Orders_Controller {
 	}
 
 	/**
-	 * Get formatted item data. 
+	 * Get formatted item data.
 	 *
 	 * @param  WC_Data $object WC_Data instance.
 	 * @return array
