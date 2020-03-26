@@ -53,7 +53,7 @@ registerStore( STORE_KEY, {
 				apiFetch( { ...options, parse: false } )
 					.then( ( fetchResponse ) => {
 						fetchResponse.json().then( ( response ) => {
-							resolve( { response } );
+							resolve( response );
 						} );
 					} )
 					.catch( ( error ) => {
