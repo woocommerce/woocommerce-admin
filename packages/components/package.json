@@ -21,7 +21,7 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@babel/runtime-corejs2": "7.8.7",
+		"@babel/runtime-corejs2": "7.9.2",
 		"@woocommerce/csv-export": "1.2.0",
 		"@woocommerce/currency": "2.0.0",
 		"@woocommerce/date": "2.0.0",
@@ -34,7 +34,7 @@
 		"@wordpress/html-entities": "2.6.0",
 		"@wordpress/i18n": "3.9.0",
 		"@wordpress/keycodes": "2.9.0",
-		"@wordpress/viewport": "2.13.0",
+		"@wordpress/viewport": "2.13.2",
 		"classnames": "2.2.6",
 		"core-js": "2.6.11",
 		"d3-axis": "^1.0.12",
@@ -51,10 +51,10 @@
 		"memoize-one": "5.1.1",
 		"moment": "2.24.0",
 		"prop-types": "15.7.2",
-		"qs": "6.9.1",
+		"qs": "6.9.2",
 		"react-dates": "21.8.0",
 		"react-router-dom": "5.1.2",
-		"react-transition-group": "2.9.0"
+		"react-transition-group": "4.3.0"
 	},
 	"publishConfig": {
 		"access": "public"

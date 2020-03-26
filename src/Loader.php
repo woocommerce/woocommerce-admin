@@ -329,6 +329,14 @@ class Loader {
 			true
 		);
 
+		wp_register_script(
+			'wc-store-data',
+			self::get_url( 'data/index.js' ),
+			array(),
+			self::get_file_version( 'data/index.js' ),
+			true
+		);
+
 		wp_set_script_translations( 'wc-date', 'woocommerce-admin' );
 
 		wp_register_script(
@@ -338,6 +346,7 @@ class Loader {
 				'moment',
 				'wp-api-fetch',
 				'wp-data',
+				'wp-data-controls',
 				'wp-element',
 				'wp-hooks',
 				'wp-html-entities',
@@ -348,6 +357,7 @@ class Loader {
 				'wc-date',
 				'wc-navigation',
 				'wc-number',
+				'wc-store-data',
 			),
 			self::get_file_version( 'components/index.js' ),
 			true
@@ -497,9 +507,6 @@ class Loader {
 			<div class="woocommerce-layout">
 				<div class="woocommerce-layout__header is-embed-loading">
 					<h1 class="woocommerce-layout__header-breadcrumbs">
-					<span>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-admin' ) ); ?>"><?php esc_html_e( 'WooCommerce', 'woocommerce-admin' ); ?></a>
-					</span>
 						<?php foreach ( $sections as $section ) : ?>
 							<?php self::output_breadcrumbs( $section ); ?>
 						<?php endforeach; ?>
@@ -690,6 +697,10 @@ class Loader {
 		$settings['siteUrl']           = site_url();
 		$settings['onboardingEnabled'] = self::is_onboarding_enabled();
 		$settings['dateFormat']        = get_option( 'date_format' );
+		// Plugins that depend on changing the translation work on the server but not the client -
+		// WooCommerce Branding is an example of this - so pass through the translation of
+		// 'WooCommerce' to wcSettings.
+		$settings['woocommerceTranslation'] = __( 'WooCommerce', 'woocommerce-admin' );
 
 		if ( ! empty( $preload_data_endpoints ) ) {
 			$settings['dataEndpoints'] = isset( $settings['dataEndpoints'] )

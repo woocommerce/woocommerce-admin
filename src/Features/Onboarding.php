@@ -309,6 +309,11 @@ class Onboarding {
 				$themes[ $slug ]  = $theme_data;
 			}
 
+			// Add the WooCommerce support tag for default themes that don't explicitly declare support.
+			if ( function_exists( 'wc_is_wp_default_theme_active' ) && wc_is_wp_default_theme_active() ) {
+				$themes[ $active_theme ]['has_woocommerce_support'] = true;
+			}
+
 			$themes = array( $active_theme => $themes[ $active_theme ] ) + $themes;
 
 			set_transient( self::THEMES_TRANSIENT, $themes, DAY_IN_SECONDS );
@@ -490,6 +495,7 @@ class Onboarding {
 		$options[] = 'woocommerce_task_list_welcome_modal_dismissed';
 		$options[] = 'woocommerce_task_list_prompt_shown';
 		$options[] = 'woocommerce_task_list_payments';
+		$options[] = 'woocommerce_task_list_tracked_completed_tasks';
 		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
 		$options[] = 'woocommerce_ppec_paypal_settings';
