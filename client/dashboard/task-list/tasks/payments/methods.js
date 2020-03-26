@@ -97,10 +97,12 @@ export function getPaymentMethods( {
 					alt=""
 				/>
 			),
-			visible: [ 'US' ].includes( countryCode ) && ! hasCbdIndustry,
+			visible:
+				[ 'US' ].includes( countryCode ) &&
+				! hasCbdIndustry &&
+				window.wcAdminFeatures.wcpay,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
-			// @todo This should check actual connection information.
 			isConfigured: wcPayIsConfigured,
 			isEnabled:
 				options.woocommerce_woocommerce_payments_settings &&
