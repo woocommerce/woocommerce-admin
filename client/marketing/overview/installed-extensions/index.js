@@ -5,6 +5,7 @@ import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
+import PropTypes from 'prop-types';
 
 /**
  * WooCommerce dependencies
@@ -51,6 +52,17 @@ class InstalledExtensions extends Component {
 		)
 	}
 }
+
+InstalledExtensions.propTypes = {
+	/**
+	 * Array of installed plugin objects.
+	 */
+	plugins: PropTypes.arrayOf( PropTypes.object ).isRequired,
+	/**
+	 * Array of plugin slugs that are currently activating.
+	 */
+	activatingPlugins: PropTypes.arrayOf( PropTypes.string ).isRequired,
+};
 
 export default compose(
 	withSelect( ( select ) => {
