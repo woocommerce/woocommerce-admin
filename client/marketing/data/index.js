@@ -49,9 +49,9 @@ registerStore( STORE_KEY, {
 		getInstalledPlugins( state ) {
 			return state.installedPlugins;
 		},
-		getActivatingPlugins( state ) {
-			return state.activatingPlugins;
-		},
+		isActivatingPlugin( state, pluginSlug ) {
+			return state.activatingPlugins.includes( pluginSlug );
+		}
 	},
 
 	controls: {
