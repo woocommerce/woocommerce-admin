@@ -65,7 +65,6 @@ export function* activateInstalledPlugin( pluginSlug ) {
 			data: {
 				plugin: pluginSlug,
 			},
-			cache: 'no-store',
 		} );
 
 		createNotice( 'success',
