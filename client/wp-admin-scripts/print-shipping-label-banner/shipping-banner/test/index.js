@@ -282,11 +282,7 @@ describe( 'Create shipping label button', () => {
 			'wc-connect-create-shipping-label'
 		);
 		expect( getState ).toHaveBeenCalledTimes( 1 );
-		expect( dispatch ).toHaveBeenCalledWith( {
-			type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
-			orderId: 1000,
-			siteId: 'SITE_ID',
-		} );
+		expect( subscribe ).toHaveBeenCalledTimes( 1 );
 		expect( getElementByIdMock ).toHaveBeenCalledWith(
 			'woocommerce-admin-print-label'
 		);

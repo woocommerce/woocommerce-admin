@@ -8,6 +8,7 @@ import { compose } from '@wordpress/compose';
 import { recordEvent } from 'lib/tracks';
 import interpolateComponents from 'interpolate-components';
 import PropTypes from 'prop-types';
+import { get, isArray } from 'lodash';
 
 /**
  * Internal dependencies
@@ -40,6 +41,7 @@ export class ShippingBanner extends Component {
 			wcsSetupError: false,
 			isShippingLabelButtonBusy: false,
 			installText: this.getInstallText(),
+			isWcsModalOpen: false,
 		};
 	}
 
@@ -300,40 +302,93 @@ export class ShippingBanner extends Component {
 
 			const wcsStoreUnsubscribe = wcsStore.subscribe( () => {
 				const latestState = wcsStore.getState();
-				const siteState =
-					latestState.extensions.woocommerce.woocommerceServices[
-						siteId
-					];
-				if ( siteState ) {
-					const orderState = siteState.shippingLabel[ orderId ];
-					if ( orderState ) {
-						if ( orderState.showPurchaseDialog ) {
-							if ( window.jQuery ) {
-								window
-									.jQuery( '#woocommerce-order-label' )
-									.show();
-							}
-							wcsStoreUnsubscribe();
+
+				const shippingLabelState = get(
+					latestState,
+					[
+						'extensions',
+						'woocommerce',
+						'woocommerceServices',
+						siteId,
+						'shippingLabel',
+						orderId,
+					],
+					null
+				);
+
+				const labelSettingsState = get(
+					latestState,
+					[
+						'extensions',
+						'woocommerce',
+						'woocommerceServices',
+						siteId,
+						'labelSettings',
+					],
+					null
+				);
+
+				const packageState = get(
+					latestState,
+					[
+						'extensions',
+						'woocommerce',
+						'woocommerceServices',
+						siteId,
+						'packages',
+					],
+					null
+				);
+
+				const locationsState = get( latestState, [
+					'extensions',
+					'woocommerce',
+					'sites',
+					siteId,
+					'data',
+					'locations',
+				] );
+
+				if (
+					shippingLabelState &&
+					labelSettingsState &&
+					labelSettingsState.meta &&
+					packageState &&
+					locationsState
+				) {
+					if (
+						shippingLabelState.loaded &&
+						labelSettingsState.meta.isLoaded &&
+						packageState.isLoaded &&
+						isArray( locationsState ) &&
+						! this.state.isWcsModalOpen
+					) {
+						if ( window.jQuery ) {
+							this.setState( { isWcsModalOpen: true } );
+							window
+								.jQuery( '.shipping-label__new-label-button' )
+								.click();
+						}
+						wcsStore.dispatch( {
+							type: 'NOTICE_CREATE',
+							notice: {
+								duration: 10000,
+								status: 'is-success',
+								text: __(
+									'Plugin installed and activated',
+									'woocommerce-admin'
+								),
+							},
+						} );
+					} else if ( shippingLabelState.showPurchaseDialog ) {
+						wcsStoreUnsubscribe();
+						if ( window.jQuery ) {
+							window.jQuery( '#woocommerce-order-label' ).show();
 						}
 					}
 				}
 			} );
-			wcsStore.dispatch( {
-				type: 'WOOCOMMERCE_SERVICES_SHIPPING_LABEL_OPEN_PRINTING_FLOW',
-				orderId,
-				siteId,
-			} );
-			wcsStore.dispatch( {
-				type: 'NOTICE_CREATE',
-				notice: {
-					duration: 10000,
-					status: 'is-success',
-					text: __(
-						'Plugin installed and activated',
-						'woocommerce-admin'
-					),
-				},
-			} );
+
 			document.getElementById(
 				'woocommerce-admin-print-label'
 			).style.display = 'none';
