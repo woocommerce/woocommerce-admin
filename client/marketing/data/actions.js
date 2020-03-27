@@ -67,7 +67,7 @@ export function* activateInstalledPlugin( pluginSlug ) {
 		} );
 
 		if ( response ) {
-			createNotice( 'success',
+			yield createNotice( 'success',
 				__( 'The extension has been successfully activated.', 'woocommerce-admin' )
 			);
 			// Deliberately load the new plugin data in a new request.
