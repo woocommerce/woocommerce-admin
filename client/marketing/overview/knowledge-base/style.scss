@@ -7,10 +7,6 @@
 	.woocommerce-pagination {
 		justify-content: flex-start;
 		flex-direction: row; // Required for mobile
-
-		&__page-arrows-label {
-			display: none;
-		}
 	}
 
 	&__page {

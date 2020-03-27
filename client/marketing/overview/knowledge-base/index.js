@@ -123,6 +123,7 @@ class KnowledgeBase extends Component {
 								onPageChange={ this.onPaginationPageChange }
 								showPagePicker={ false }
 								showPerPagePicker={ false }
+								showPageArrowsLabel={ false }
 							/>
 						</div>
 					) }
