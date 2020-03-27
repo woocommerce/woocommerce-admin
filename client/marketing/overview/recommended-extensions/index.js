@@ -36,8 +36,7 @@ class RecommendedExtensions extends Component {
 				className="woocommerce-marketing-recommended-extensions-card"
 			>
 				<Fragment>
-					{ isLoading && <Spinner /> }
-					{ isLoading || (
+					{ isLoading ? <Spinner /> : (
 						<div className={ classnames( {
 							'woocommerce-marketing-recommended-extensions-card__items': true,
 							'woocommerce-marketing-recommended-extensions-card__items--1-col': extensions.length === 1,
