@@ -382,13 +382,18 @@ export class ShippingBanner extends Component {
 											target="_blank"
 											type="external"
 											onClick={
-												this.woocommerceServiceLinkClicked
+												this
+													.woocommerceServiceLinkClicked
 											}
 										/>
 									),
 								},
 							} ) }
 						</p>
+						<SetupNotice
+							isSetupError={ this.isSetupError() }
+							errorReason={ this.setupErrorReason() }
+						/>
 					</div>
 					<Button
 						disabled={ isShippingLabelButtonBusy }
@@ -398,10 +403,7 @@ export class ShippingBanner extends Component {
 					>
 						{ __( 'Create shipping label', 'woocommerce-admin' ) }
 					</Button>
-					<SetupNotice
-						isSetupError={ this.isSetupError() }
-						errorReason={ this.setupErrorReason() }
-					/>
+
 					<button
 						onClick={ this.openDismissModal }
 						type="button"
