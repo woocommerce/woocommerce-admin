@@ -76,7 +76,7 @@ class KnowledgeBase extends Component {
 							key={ index }
 							onClick={ this.onPostClick( this, post ) }
 							target="_blank"
-							rel="noopener"
+							rel="noopener noreferrer"
 						>
 							{ post.image && (
 							<div className="woocommerce-marketing-knowledgebase-card__post-img">
