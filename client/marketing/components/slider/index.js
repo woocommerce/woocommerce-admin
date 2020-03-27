@@ -5,6 +5,7 @@ import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 
 /**
  * Internal dependencies
@@ -27,7 +28,10 @@ class Slider extends Component {
 	 */
 	componentDidMount() {
 		// Update the slider height on Resize
-		window.addEventListener( 'resize', this.updateSliderHeight );
+		window.addEventListener(
+			'resize',
+			debounce( this.updateSliderHeight, 50 )
+		);
 	}
 
 	componentWillUnmount() {
