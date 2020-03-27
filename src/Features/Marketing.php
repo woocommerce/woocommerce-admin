@@ -51,6 +51,11 @@ class Marketing {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_pages' ) );
+
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 30 );
 	}
