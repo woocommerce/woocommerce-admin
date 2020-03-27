@@ -129,10 +129,11 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'The plugin could not be activated.', 'woocommerce-admin' ), 500 );
 		}
 
+		// IMPORTANT - Don't return the active plugins data here.
+		// Instead we will get that data in a separate request to ensure they are loaded.
 		return rest_ensure_response(
 			array(
 				'status'  => 'success',
-				'plugins' => InstalledExtensions::get_data(),
 			)
 		);
 	}
