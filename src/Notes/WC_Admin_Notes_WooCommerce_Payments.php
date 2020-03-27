@@ -39,19 +39,20 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	 * Attach hooks.
 	 */
 	public function __construct() {
+
 		add_action( 'woocommerce_note_action_install-now', array( $this, 'install' ) );
+
+		add_action( 'wc-admin-woocommerce-payments_add_note', array( $this, 'add_note' ) );
 	}
 
 	/**
-	 * Add a note on WooCommerce Payments for US based sites older than a week without the plugin installed.
+	 * Maybe add a note on WooCommerce Payments for US based sites older than a week without the plugin installed.
 	 */
 	public static function possibly_add_note() {
 
 		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) || 'US' !== WC()->countries->get_base_country() ) {
 			return;
 		}
-
-		include_once ABSPATH . '/wp-admin/includes/plugin.php';
 
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
@@ -63,13 +64,35 @@ class WC_Admin_Notes_WooCommerce_Payments {
 			$note    = WC_Admin_Notes::get_note( $note_id );
 
 			// If the WooCommerce Payments plugin was installed after the note was created, make sure it's marked as actioned.
-			if ( 0 === validate_plugin( self::PLUGIN_FILE ) && WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
+			if ( self::validate_plugin() && WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
 				$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 				$note->save();
 			}
 
 			return;
 		}
+
+		$current_date = new \DateTime();
+		$publish_date = new \DateTime( '2020-04-14' );
+
+		if ( $current_date >= $publish_date ) {
+
+			self::add_note();
+
+		} else {
+
+			$hook_name = sprintf( '%s_add_note', self::NOTE_NAME );
+
+			if ( ! WC()->queue()->get_next( $hook_name ) ) {
+				WC()->queue()->schedule_single( $publish_date->getTimestamp(), $hook_name );
+			}
+		}
+	}
+
+	/**
+	 * Add a note about WooCommerce Payments.
+	 */
+	public static function add_note() {
 
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Try the new way to get paid', 'woocommerce-admin' ) );
@@ -80,21 +103,23 @@ class WC_Admin_Notes_WooCommerce_Payments {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'learn-more', __( 'Learn more', 'woocommerce-admin' ), 'https://woocommerce.com/payments/', WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED );
-
-		// If we're still in invitational beta period, don't show the install button.
-		$current_date = new \DateTime();
-		$publish_date = new \DateTime( '2020-04-07' );
-
-		if ( $current_date >= $publish_date ) {
-			$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED, true );
-		}
+		$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED, true );
 
 		// Create the note as "actioned" if the plugin is already installed.
-		if ( 0 === validate_plugin( self::PLUGIN_FILE ) ) {
+		if ( self::validate_plugin() ) {
 			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 		}
 
 		$note->save();
+	}
+
+
+	/**
+	 * Add a note on WooCommerce Payments.
+	 */
+	protected static function validate_plugin() {
+		include_once ABSPATH . '/wp-admin/includes/plugin.php';
+		return 0 === validate_plugin( self::PLUGIN_FILE );
 	}
 
 	/**
