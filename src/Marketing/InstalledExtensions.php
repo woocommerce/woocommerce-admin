@@ -67,7 +67,6 @@ class InstalledExtensions {
 		if ( 'activated' === $data['status'] && function_exists( 'mailchimp_is_configured' ) ) {
 			$data['docsUrl']     = 'https://mailchimp.com/help/connect-or-disconnect-mailchimp-for-woocommerce/';
 			$data['settingsUrl'] = admin_url( 'admin.php?page=mailchimp-woocommerce' );
-			$data['supportUrl'] = 'https://woocommerce.com/contact-us/';
 
 			if ( mailchimp_is_configured() ) {
 				$data['status'] = 'configured';
@@ -101,7 +100,6 @@ class InstalledExtensions {
 
 			$data['settingsUrl'] = facebook_for_woocommerce()->get_settings_url();
 			$data['docsUrl'] = facebook_for_woocommerce()->get_documentation_url();
-			$data['supportUrl'] = facebook_for_woocommerce()->get_support_url();
 		}
 
 		return $data;
@@ -128,6 +126,7 @@ class InstalledExtensions {
 			'status'      => $status,
 			'name'        => $plugin_data['Name'],
 			'description' => $plugin_data['Description'],
+			'supportUrl'  => 'https://woocommerce.com/my-account/create-a-ticket/',
 		];
 	}
 
