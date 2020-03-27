@@ -109,11 +109,11 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test if the banner is hidden when a dismiss banner option is checked for 24 hours.
+	 * Banner should not show if it was dismissed 2 hours ago.
 	 */
-	public function test_if_banner_hidden_when_dismiss_after_24h_option_enabled() {
-		$two_hours_from_now = time() + ( 2 * 60 * 60 );
-		update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_now );
+	public function test_if_banner_hidden_when_dismiss_was_clicked_2_hrs_ago() {
+		$two_hours_from_ago = ( time() - 2 * 60 * 60 ) * 1000;
+		update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_ago );
 
 		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
 
@@ -121,11 +121,11 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test if the banner is hidden when a dismiss banner option is checked for 24 hours.
+	 * Banner should show if it was dismissed 24 hours and 1 second ago.
 	 */
-	public function test_show_banner_if_dismiss_after_24h_option_enabled_has_expired() {
-		$two_hours_from_now = time() - ( 2 * 60 * 60 );
-		update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_now );
+	public function test_if_banner_hidden_when_dismiss_was_clicked_24_hrs_1s_ago() {
+		$twenty_four_hours_one_sec_ago = ( time() - 24 * 60 * 60 - 1 ) * 1000;
+		update_option( 'woocommerce_shipping_dismissed_timestamp', $twenty_four_hours_one_sec_ago );
 
 		$this->with_order(
 			function( $that ) {
