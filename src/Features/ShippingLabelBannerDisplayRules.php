@@ -137,9 +137,13 @@ class ShippingLabelBannerDisplayRules {
 	 */
 	private function banner_not_dismissed() {
 		$dismissed_timestamp = get_option( 'woocommerce_shipping_dismissed_timestamp' );
+		if ( ! is_numeric( $dismissed_timestamp ) ) {
+			return true;
+		}
+		$dismissed_timestamp_ms = intval( $dismissed_timestamp );
 
 		$dismissed_for_good = -1 === $dismissed_timestamp;
-		$dismissed_24h      = time() < $dismissed_timestamp;
+		$dismissed_24h      = time() < ( ( $dismissed_timestamp_ms / 1000 ) + ( 24 * 60 * 60 ) );
 
 		return ! $dismissed_for_good && ! $dismissed_24h;
 	}

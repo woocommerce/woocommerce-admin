@@ -112,7 +112,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when a dismiss banner option is checked for 24 hours.
 	 */
 	public function test_if_banner_hidden_when_dismiss_after_24h_option_enabled() {
-		$two_hours_from_now = time() + ( 2 * 60 * 60 );
+		$two_hours_from_now = time() + ( 2 * 60 * 60 * 1000 );
 		update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_now );
 
 		$shipping_label_banner_display_rules = new ShippingLabelBannerDisplayRules( '4.4', true, '1.22.5', false, false );
@@ -124,7 +124,7 @@ class WC_Tests_Shipping_Label_Banner_Display_Rules extends WC_Unit_Test_Case {
 	 * Test if the banner is hidden when a dismiss banner option is checked for 24 hours.
 	 */
 	public function test_show_banner_if_dismiss_after_24h_option_enabled_has_expired() {
-		$two_hours_from_now = time() - ( 2 * 60 * 60 );
+		$two_hours_from_now = time() - ( 2 * 60 * 60 * 1000 );
 		update_option( 'woocommerce_shipping_dismissed_timestamp', $two_hours_from_now );
 
 		$this->with_order(
