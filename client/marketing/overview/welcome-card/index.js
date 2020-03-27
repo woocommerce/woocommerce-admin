@@ -38,9 +38,7 @@ class WelcomeCard extends Component {
 	}
 
 	render() {
-		const { isHidden } = this.props;
-
-		if ( isHidden ) {
+		if ( this.props.isHidden ) {
 			return null;
 		}
 
