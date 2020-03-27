@@ -64,12 +64,14 @@ class WelcomeCard extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getOptions } = select( 'wc-api' );
-		const options = getOptions( [ 'woocommerce_marketing_overview_welcome_hidden' ] );
-		const isHidden = get( options, [ 'woocommerce_marketing_overview_welcome_hidden' ], 'no' ) === 'yes';
+		const { getOptions, isUpdateOptionsRequesting } = select( 'wc-api' );
+		const hideOptionName = 'woocommerce_marketing_overview_welcome_hidden';
+		const options = getOptions( [ hideOptionName ] );
+		const isHidden = get( options, [ hideOptionName ], 'no' ) === 'yes';
+		const isUpdateRequesting = Boolean( isUpdateOptionsRequesting( [ hideOptionName ] ) );
 
 		return {
-			isHidden,
+			isHidden: isHidden || isUpdateRequesting,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
