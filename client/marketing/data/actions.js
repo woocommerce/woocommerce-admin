@@ -66,16 +66,36 @@ export function* activateInstalledPlugin( pluginSlug ) {
 			},
 		} );
 
-		createNotice( 'success',
-			__( 'The extension has been successfully activated.', 'woocommerce-admin' )
-		);
-
-		yield receiveInstalledPlugins( response.plugins );
-		yield removeActivatingPlugin( pluginSlug );
+		if ( response ) {
+			createNotice( 'success',
+				__( 'The extension has been successfully activated.', 'woocommerce-admin' )
+			);
+			// Deliberately load the new plugin data in a new request.
+			yield loadInstalledPluginsAfterActivation( pluginSlug );
+		} else {
+			throw new Error();
+		}
 	} catch ( error ) {
 		yield handleFetchError( error, __( 'There was an error trying to activate the extension.', 'woocommerce-admin' ) );
 		yield removeActivatingPlugin( pluginSlug );
 	}
 
 	return true;
+}
+
+export function* loadInstalledPluginsAfterActivation( activatedPluginSlug ) {
+	try {
+		const response = yield apiFetch( {
+			path: `${ API_NAMESPACE }/overview/installed-plugins`
+		} );
+
+		if ( response ) {
+			yield receiveInstalledPlugins( response );
+			yield removeActivatingPlugin( activatedPluginSlug );
+		} else {
+			throw new Error();
+		}
+	} catch ( error ) {
+		yield handleFetchError( error, __( 'There was an error loading installed extensions.', 'woocommerce-admin' ) );
+	}
 }
