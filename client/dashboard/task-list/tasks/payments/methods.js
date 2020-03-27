@@ -25,6 +25,7 @@ import CodIcon from './images/cod';
 import Stripe from './stripe';
 import Square from './square';
 import WCPay from './wcpay';
+import WCPayIcon from './images/wcpay';
 import PayPal from './paypal';
 import Klarna from './klarna';
 import PayFast from './payfast';
@@ -114,12 +115,7 @@ export function getPaymentMethods( {
 					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
 				</Fragment>
 			),
-			before: (
-				<img
-					src={ wcAssetUrl + 'images/woocommerce_logo.png' }
-					alt=""
-				/>
-			),
+			before: <WCPayIcon />,
 			visible: [ 'US' ].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
