@@ -15,8 +15,10 @@ import * as actions from './actions';
 import * as selectors from './selectors';
 import * as resolvers from './resolvers';
 
+const { installedExtensions } = getSetting( 'marketing', {} );
+
 const DEFAULT_STATE = {
-	installedPlugins: [],
+	installedPlugins: installedExtensions,
 	activatingPlugins: [],
 	recommendedPlugins: [],
 	blogPosts: [],
@@ -61,7 +63,3 @@ registerStore( STORE_KEY, {
 	},
 
 } );
-
-// Set installedPlugins from preloaded setting.
-const { installedExtensions } = getSetting( 'marketing', {} );
-actions.receiveInstalledPlugins( installedExtensions );
