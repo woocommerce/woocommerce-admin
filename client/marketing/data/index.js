@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
+import { controls } from '@wordpress/data-controls';
 import { registerStore } from '@wordpress/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { without } from 'lodash';
@@ -28,6 +28,7 @@ registerStore( STORE_KEY, {
 	actions,
 	selectors,
 	resolvers,
+	controls,
 
 	reducer( state = DEFAULT_STATE, action ) {
 		switch ( action.type ) {
@@ -59,22 +60,6 @@ registerStore( STORE_KEY, {
 		}
 
 		return state;
-	},
-
-	controls: {
-		API_FETCH( { options } ) {
-			return new Promise( ( resolve, reject ) => {
-				apiFetch( { ...options, parse: false } )
-					.then( ( fetchResponse ) => {
-						fetchResponse.json().then( ( response ) => {
-							resolve( response );
-						} );
-					} )
-					.catch( ( error ) => {
-						reject( error );
-					} );
-			} );
-		},
 	},
 
 } );
