@@ -111,7 +111,7 @@ export function getPaymentMethods( {
 					) }
 					{ wcPayIsConfigured && wcPaySettingsLink }
 					{ ! wcPayIsConfigured && <p>{ tosPrompt }</p> }
-					{ ! profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
+					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
 				</Fragment>
 			),
 			before: (
