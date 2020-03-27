@@ -325,6 +325,18 @@
 		}
 	}
 
+	.woocommerce-task-payment__recommended-pill {
+		border: 1px solid $studio-gray-5;
+		border-radius: 28px;
+		font-size: 11px;
+		margin-left: 6px;
+		padding: 1px 9px;
+
+		span {
+			max-width: 70px;
+		}
+	}
+
 	.woocommerce-task-payment__before {
 		margin-right: $gap-larger;
 
@@ -366,6 +378,10 @@
 		}
 
 		.woocommerce-task-payment__recommended-ribbon {
+			display: none;
+		}
+
+		.woocommerce-task-payment__recommended-pill {
 			display: none;
 		}
 
