@@ -37,12 +37,10 @@ class RecommendedExtensions extends Component {
 			>
 				<Fragment>
 					{ isLoading ? <Spinner /> : (
-						<div className={ classnames( {
-							'woocommerce-marketing-recommended-extensions-card__items': true,
-							'woocommerce-marketing-recommended-extensions-card__items--1-col': extensions.length === 1,
-							'woocommerce-marketing-recommended-extensions-card__items--2-col': extensions.length === 2,
-							'woocommerce-marketing-recommended-extensions-card__items--4-col': extensions.length === 4,
-						} ) }>
+						<div className={ classnames(
+							'woocommerce-marketing-recommended-extensions-card__items',
+							`woocommerce-marketing-recommended-extensions-card__items--count-${extensions.length}`
+						) }>
 							{ isLoading || extensions.map( ( extension ) => (
 								<RecommendedExtensionsItem
 									key={ extension.product }
