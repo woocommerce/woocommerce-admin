@@ -51,6 +51,8 @@ class WC_Admin_Notes_WooCommerce_Payments {
 			return;
 		}
 
+		include_once ABSPATH . '/wp-admin/includes/plugin.php';
+
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
 		// We already have this note? Then exit, we're done.
@@ -62,19 +64,12 @@ class WC_Admin_Notes_WooCommerce_Payments {
 
 			// If the WooCommerce Payments plugin was installed after the note was created, make sure it's marked as actioned.
 			if ( 0 === validate_plugin( self::PLUGIN_FILE ) && WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
-				self::plugin_installed( $note );
+				$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 				$note->save();
 			}
 
 			return;
 		}
-
-		// Don't add the note if the plugin is already installed
-		if ( 0 === validate_plugin( self::PLUGIN_FILE ) ) {
-			return;
-		}
-
-		include_once ABSPATH . '/wp-admin/includes/plugin.php';
 
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Try the new way to get paid', 'woocommerce-admin' ) );
@@ -92,6 +87,11 @@ class WC_Admin_Notes_WooCommerce_Payments {
 
 		if ( $current_date >= $publish_date ) {
 			$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED, true );
+		}
+
+		// Create the note as "actioned" if the plugin is already installed.
+		if ( 0 === validate_plugin( self::PLUGIN_FILE ) ) {
+			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 		}
 
 		$note->save();
@@ -116,25 +116,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 			$activate_request = array( 'plugins' => self::PLUGIN_SLUG );
 			$installer->activate_plugins( $activate_request );
 
-			self::plugin_installed( $note );
+			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 		}
-	}
-
-	/**
-	 * Update note once WooCommerce Payments plugins is installed.
-	 *
-	 * @param WC_Admin_Note $note Note being acted upon.
-	 */
-	protected static function plugin_installed( $note ) {
-		$note->set_title( __( 'WooCommerce Payments — Installed', 'woocommerce-admin' ) );
-		$note->set_content( __( 'Thanks for installing WooCommerce Payments! You can now securely accept credit and debit cards on your site and manage transactions without leaving your WordPress dashboard.', 'woocommerce-admin' ) );
-		$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
-		$note->clear_actions();
-		$note->add_action(
-			'woocommerce-payments-settings',
-			__( 'Settings', 'woocommerce-admin' ),
-			admin_url( 'admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments' ),
-			WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED
-		);
 	}
 }
