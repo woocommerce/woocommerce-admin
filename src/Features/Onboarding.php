@@ -607,6 +607,7 @@ class Onboarding {
 				'woocommerce-square'                  => 'woocommerce-square/woocommerce-square.php',
 				'woocommerce-shipstation-integration' => 'woocommerce-shipstation-integration/woocommerce-shipstation.php',
 				'woocommerce-payfast-gateway'         => 'woocommerce-payfast-gateway/gateway-payfast.php',
+				'woocommerce-payments'                => 'woocommerce-payments/woocommerce-payments.php',
 			)
 		);
 	}
