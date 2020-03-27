@@ -23,7 +23,14 @@ class ProductIcon extends Component {
 }
 
 ProductIcon.propTypes = {
+	/**
+	 * Icon src.
+	 */
 	src: PropTypes.string.isRequired,
+	/**
+	 * Additional classNames.
+	 */
+	className: PropTypes.string,
 };
 
 export default ProductIcon;
