@@ -84,7 +84,7 @@ class KnowledgeBase extends Component {
 								<p className="woocommerce-marketing-knowledgebase-card__post-meta">
 									By { post.author_name }
 									<img
-										src={ post.author_gravatar.replace( 's=96', 's=16' ) }
+										src={ post.author_gravatar.replace( 's=96', 's=32' ) }
 										className="woocommerce-gravatar"
 										alt=""
 										width="16"
