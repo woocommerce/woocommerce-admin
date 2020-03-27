@@ -42,7 +42,7 @@
 			display: flex;
 			align-items: center;
 			flex-direction: row;
-			margin: $gap-small 0; 
+			margin: $gap-smaller 0;
 
 			span {
 				padding: 0 $gap;
@@ -50,9 +50,8 @@
 
 			svg {
 				fill: $studio-white;
-				width: 16px;
 				min-width: 16px;
-				height: 16px;
+				min-height: 16px;
 				padding: $gap-smallest;
 				background: $studio-gray-10;
 				border-radius: 9999px;
@@ -72,7 +71,7 @@
 			font-size: 14px;
 
 			margin: 0 $gap-small;
-			padding: $gap-smallest $gap-larger;
+			padding: $gap-smaller $gap-larger;
 			border-left: 1px solid $studio-gray-10;
 		}
 	}
