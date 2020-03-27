@@ -115,18 +115,4 @@ class PluginsHelper {
 		return isset( $plugins[ $plugin_path ] ) ? $plugins[ $plugin_path ] : false;
 	}
 
-	/**
-	 * Get plugin data.
-	 *
-	 * @param string $plugin Path to the plugin file relative to the plugins directory or the plugin directory name.
-	 *
-	 * @return array|false
-	 */
-	public static function get_plugin_data( $plugin ) {
-		$plugin_path = self::get_plugin_path_from_slug( $plugin );
-		$plugins     = get_plugins();
-
-		return isset( $plugins[ $plugin_path ] ) ? $plugins[ $plugin_path ] : false;
-	}
-
 }
