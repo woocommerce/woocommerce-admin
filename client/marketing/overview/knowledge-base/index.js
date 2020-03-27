@@ -76,9 +76,11 @@ class KnowledgeBase extends Component {
 							key={ index }
 							onClick={ this.onPostClick( this, post ) }
 						>
+							{ post.image && (
 							<div className="woocommerce-marketing-knowledgebase-card__post-img">
 								<img src={ post.image } alt="" />
 							</div>
+							) }
 							<div className="woocommerce-marketing-knowledgebase-card__post-text">
 								<h3>{ post.title }</h3>
 								<p className="woocommerce-marketing-knowledgebase-card__post-meta">
@@ -92,7 +94,6 @@ class KnowledgeBase extends Component {
 											height="16"
 										/>
 									) }
-
 								</p>
 							</div>
 						</a>
