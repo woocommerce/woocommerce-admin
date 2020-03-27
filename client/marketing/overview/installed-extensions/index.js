@@ -26,8 +26,13 @@ class InstalledExtensions extends Component {
 		activateInstalledPlugin( pluginSlug );
 	}
 
+	isActivatingPlugin( pluginSlug ) {
+		const { activatingPlugins } = this.props;
+		return activatingPlugins.includes( pluginSlug );
+	}
+
 	render() {
-		const { plugins, isActivatingPlugin } = this.props;
+		const { plugins } = this.props;
 
 		if ( plugins.length === 0 ) {
 			return null
@@ -44,7 +49,7 @@ class InstalledExtensions extends Component {
 							key={ plugin.slug }
 							{ ...plugin }
 							activatePlugin={ () => this.activatePlugin( plugin.slug ) }
-							isLoading={ isActivatingPlugin( plugin.slug ) }
+							isLoading={ this.isActivatingPlugin( plugin.slug ) }
 						/>
 					);
 				} ) }
@@ -59,18 +64,18 @@ InstalledExtensions.propTypes = {
 	 */
 	plugins: PropTypes.arrayOf( PropTypes.object ).isRequired,
 	/**
-	 * Function that accepts a plugin slug and returns true if it's currently activating.
+	 * Array of plugins that are currently activating.
 	 */
-	isActivatingPlugin: PropTypes.func.isRequired,
+	activatingPlugins: PropTypes.arrayOf( PropTypes.string ).isRequired,
 };
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getInstalledPlugins, isActivatingPlugin } = select( STORE_KEY );
+		const { getInstalledPlugins, getActivatingPlugins } = select( STORE_KEY );
 
 		return {
 			plugins: getInstalledPlugins(),
-			isActivatingPlugin
+			activatingPlugins: getActivatingPlugins(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
