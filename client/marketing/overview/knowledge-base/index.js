@@ -51,6 +51,10 @@ class KnowledgeBase extends Component {
 		} );
 	}
 
+	onPostClick( post ) {
+		recordEvent( 'marketing_knowledge_article', { title: post.title } );
+	}
+
 	/**
 	 * Get the 2 posts we need for the current page
 	 */
@@ -66,7 +70,12 @@ class KnowledgeBase extends Component {
 			<div className={ pageClass }>
 				{ currentPosts.map( ( post, index ) => {
 					return (
-						<a className="woocommerce-marketing-knowledgebase-card__post" href={ post.link } key={ index }>
+						<a
+							className="woocommerce-marketing-knowledgebase-card__post"
+							href={ post.link }
+							key={ index }
+							onClick={ this.onPostClick( this, post ) }
+						>
 							<div className="woocommerce-marketing-knowledgebase-card__post-img">
 								<img src={ post.image } alt="" />
 							</div>
