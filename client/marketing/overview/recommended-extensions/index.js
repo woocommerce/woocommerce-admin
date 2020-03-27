@@ -41,7 +41,7 @@ class RecommendedExtensions extends Component {
 							'woocommerce-marketing-recommended-extensions-card__items',
 							`woocommerce-marketing-recommended-extensions-card__items--count-${extensions.length}`
 						) }>
-							{ isLoading || extensions.map( ( extension ) => (
+							{ extensions.map( ( extension ) => (
 								<RecommendedExtensionsItem
 									key={ extension.product }
 									{ ...extension }
