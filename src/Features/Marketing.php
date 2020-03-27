@@ -131,7 +131,7 @@ class Marketing {
 			}
 
 			// Cache an empty result to avoid repeated failed requests.
-			set_transient( self::RECOMMENDED_PLUGINS_TRANSIENT, $plugins, DAY_IN_SECONDS );
+			set_transient( self::RECOMMENDED_PLUGINS_TRANSIENT, $plugins, 3 * DAY_IN_SECONDS );
 		}
 
 		return array_values( $plugins );
