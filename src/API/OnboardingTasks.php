@@ -34,6 +34,28 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	protected $rest_base = 'onboarding/tasks';
 
+
+	// public function __construct() {
+	// 	error_log( '*** declared ***' );
+	// 	add_action( 'trashed_post', array( __CLASS__, 'delete_homepage' ) );
+	// }
+	/**
+	 * Delete woocommerce_onboarding_homepage_post_id field when the homepage is deleted.
+	 * @param string $post_id The deleted post id.
+	 */
+	// public static function delete_homepage( $post_id ) {
+	// 	error_log( '-----> START deleting <-----' );
+	// 	$homepage_id = get_option( 'woocommerce_onboarding_homepage_post_id', false );
+		
+	// 	if ( 'page' !== get_post_type( $post_id ) || $homepage_id != $post_id ) {
+	// 		error_log( '===> not the home page ' );
+	// 		return;
+	// 	}
+	// 	error_log( '******* computing!! *******' );
+
+	// 	delete_option( 'woocommerce_onboarding_homepage_post_id' );
+	// }
+
 	/**
 	 * Register routes.
 	 */

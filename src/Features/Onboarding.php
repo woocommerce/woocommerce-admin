@@ -115,6 +115,9 @@ class Onboarding {
 		add_action( 'current_screen', array( $this, 'calypso_tests' ) );
 		add_action( 'current_screen', array( $this, 'redirect_wccom_install' ) );
 		add_action( 'current_screen', array( $this, 'redirect_old_onboarding' ) );
+
+		error_log( '*** declared ***' );
+		add_action( 'trashed_post', array( $this, 'delete_homepage' ) );
 	}
 
 	/**
@@ -150,6 +153,23 @@ class Onboarding {
 			delete_transient( '_wc_activation_redirect' );
 			wp_safe_redirect( wc_admin_url() );
 		}
+	}
+
+	/**
+	 * Delete woocommerce_onboarding_homepage_post_id field when the homepage is deleting.
+	 * @param string $post_id The deleted post id.
+	 */
+	public static function delete_homepage( $post_id ) {
+		error_log( '-----> START deleting <-----' );
+		$homepage_id = get_option( 'woocommerce_onboarding_homepage_post_id', false );
+		
+		if ( 'page' !== get_post_type( $post_id ) || $homepage_id != $post_id ) {
+			error_log( '===> not the home page ' );
+			return;
+		}
+		error_log( '******* computing!! *******' );
+
+		delete_option( 'woocommerce_onboarding_homepage_post_id' );
 	}
 
 	/**
