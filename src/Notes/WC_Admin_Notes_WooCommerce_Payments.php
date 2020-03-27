@@ -103,7 +103,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'learn-more', __( 'Learn more', 'woocommerce-admin' ), 'https://woocommerce.com/payments/', WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED );
-		$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED, true );
+		$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED, true );
 
 		// Create the note as "actioned" if the plugin is already installed.
 		if ( self::validate_plugin() ) {
@@ -140,8 +140,6 @@ class WC_Admin_Notes_WooCommerce_Payments {
 
 			$activate_request = array( 'plugins' => self::PLUGIN_SLUG );
 			$installer->activate_plugins( $activate_request );
-
-			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 		}
 	}
 }
