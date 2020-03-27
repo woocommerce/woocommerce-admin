@@ -36,7 +36,7 @@ class Slider extends Component {
 	}
 
 	updateSliderHeight() {
-		const slide = this.container.current.getElementsByClassName( 'woocommerce-marketing-slider__slide' )[ 0 ];
+		const slide = this.container.current.querySelector( '.woocommerce-marketing-slider__slide' );
 		this.setState( { height: slide.clientHeight } );
 	}
 
@@ -51,7 +51,7 @@ class Slider extends Component {
 	 * Fix slider height before a slide enters because slides are absolutely position
 	 */
 	onEnter() {
-		const newSlide = this.container.current.getElementsByClassName( 'slide-enter' )[ 0 ];
+		const newSlide = this.container.current.querySelector( '.slide-enter' );
 		this.setState( { height: newSlide.clientHeight } );
 	}
 
