@@ -148,7 +148,7 @@ class Marketing {
 		if ( false === $posts ) {
 			$request_url = add_query_arg(
 				array(
-					'categories' => 1744,
+					'categories' => 1744, // Marketing.
 					'page'       => 1,
 					'per_page'   => 8,
 					'_embed'     => 1,
