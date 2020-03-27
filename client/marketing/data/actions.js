@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { apiFetch } from '@wordpress/data-controls';
 import { dispatch } from '@wordpress/data';
 
 /**
@@ -8,22 +9,6 @@ import { dispatch } from '@wordpress/data';
  */
 import { API_NAMESPACE } from './constants';
 import { __ } from '@wordpress/i18n';
-
-
-/**
- * Dispatched a control action for triggering an api fetch call with no parsing.
- * Typically this would be used in scenarios where headers are needed.
- *
- * @param {Object} options The options for the API request.
- *
- * @return {Object} The control action descriptor.
- */
-export const apiFetch = ( options ) => {
-	return {
-		type: 'API_FETCH',
-		options,
-	};
-};
 
 export function receiveInstalledPlugins( plugins ) {
 	return {

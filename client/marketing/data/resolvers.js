@@ -2,12 +2,12 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { apiFetch } from '@wordpress/data-controls';
 
 /**
  * Internal dependencies
  */
 import {
-	apiFetch,
 	handleFetchError,
 	receiveRecommendedPlugins,
 	receiveBlogPosts,
