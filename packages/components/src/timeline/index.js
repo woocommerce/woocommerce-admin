@@ -125,7 +125,7 @@ Timeline.defaultProps = {
 	className: '',
 	items: [],
 	groupBy: 'day',
-	orderBy: 'asc',
+	orderBy: 'desc',
 };
 
 export default Timeline;
