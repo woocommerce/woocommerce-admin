@@ -113,8 +113,7 @@ class KnowledgeBase extends Component {
 				className="woocommerce-marketing-knowledgebase-card"
 			>
 				<Fragment>
-					{ isLoading && <Spinner /> }
-					{ isLoading || (
+					{ isLoading ? <Spinner/> : (
 						<div className="woocommerce-marketing-knowledgebase-card__posts">
 							<Slider animationKey={ page } animate={ animate }>
 								{ this.getCurrentSlide() }
