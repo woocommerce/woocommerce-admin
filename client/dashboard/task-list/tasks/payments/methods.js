@@ -57,7 +57,7 @@ export function getPaymentMethods( {
 
 		const tosPrompt = interpolateComponents( {
 			mixedString: __(
-				'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}.',
+				'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}',
 				'woocommerce-admin'
 			),
 			components: {
@@ -65,10 +65,23 @@ export function getPaymentMethods( {
 			},
 		} );
 
-		// @todo This should check actual connection information.
-		const wcPayIsConfigured = activePlugins.includes(
-			'woocommerce-payments'
+		const wcPayDocLink = (
+			<Link
+				href={ 'https://docs.woocommerce.com/document/payments/' }
+				target="_blank"
+				type="external"
+			/>
 		);
+
+		const wcPayDocPrompt = interpolateComponents( {
+			mixedString: __(
+				'Setting up a store for a client? {{link}}Start here{{/link}}',
+				'woocommerce-admin'
+			),
+			components: {
+				link: wcPayDocLink,
+			},
+		} );
 
 		const wcPaySettingsLink = (
 			<Link
@@ -78,6 +91,11 @@ export function getPaymentMethods( {
 			>
 				{ __( 'Settings', 'woocommerce-admin' ) }
 			</Link>
+		);
+
+		// @todo This should check actual connection information.
+		const wcPayIsConfigured = activePlugins.includes(
+			'woocommerce-payments'
 		);
 
 		methods.push( {
@@ -93,6 +111,7 @@ export function getPaymentMethods( {
 					) }
 					{ wcPayIsConfigured && wcPaySettingsLink }
 					{ ! wcPayIsConfigured && <p>{ tosPrompt }</p> }
+					{ ! profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
 				</Fragment>
 			),
 			before: (
