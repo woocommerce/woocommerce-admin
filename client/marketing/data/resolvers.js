@@ -10,9 +10,26 @@ import { apiFetch } from '@wordpress/data-controls';
 import {
 	handleFetchError,
 	receiveRecommendedPlugins,
+	receiveInstalledPlugins,
 	receiveBlogPosts,
 } from './actions';
 import { API_NAMESPACE } from './constants';
+
+export function* getInstalledPlugins() {
+	try {
+		const response = yield apiFetch( {
+			path: `${ API_NAMESPACE }/overview/installed-plugins`
+		} );
+
+		if ( response ) {
+			yield receiveInstalledPlugins( response );
+		} else {
+			throw new Error();
+		}
+	} catch ( error ) {
+		yield handleFetchError( error, __( 'There was an error loading installed extensions.', 'woocommerce-admin' ) );
+	}
+}
 
 export function* getRecommendedPlugins() {
 	try {
