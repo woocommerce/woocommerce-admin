@@ -28,6 +28,12 @@
 	}
 
 	.woocommerce-timeline-item {
+		.woocommerce-timeline-item__top-border {
+			min-height: 16px;
+			border-left: 1px solid $studio-gray-10;
+			margin: 0 $gap-small;
+		}
+
 		.woocommerce-timeline-item__title {
 			display: flex;
 			align-items: center;
