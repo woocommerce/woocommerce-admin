@@ -143,3 +143,11 @@
 .notice.wcs-nux__notice {
 	display: none;
 }
+
+.wc-admin-shipping-banner__dismiss-modal {
+	.components-button {
+		span {
+			display: none;
+		}
+	}
+}
