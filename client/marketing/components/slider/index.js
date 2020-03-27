@@ -18,7 +18,6 @@ class Slider extends Component {
 			height: null,
 		};
 		this.container = createRef();
-		this.onExited = this.onExited.bind( this );
 		this.onEnter = this.onEnter.bind( this );
 		this.updateSliderHeight = this.updateSliderHeight.bind( this );
 	}
@@ -38,13 +37,6 @@ class Slider extends Component {
 	updateSliderHeight() {
 		const slide = this.container.current.querySelector( '.woocommerce-marketing-slider__slide' );
 		this.setState( { height: slide.clientHeight } );
-	}
-
-	onExited() {
-		const { onExited } = this.props;
-		if ( onExited ) {
-			onExited( this.container.current );
-		}
 	}
 
 	/**
@@ -77,7 +69,6 @@ class Slider extends Component {
 						timeout={ 320 }
 						classNames="slide"
 						key={ animationKey }
-						onExited={ this.onExited }
 						onEnter={ this.onEnter }
 					>
 						<div className="woocommerce-marketing-slider__slide">{ children }</div>
@@ -97,10 +88,6 @@ Slider.propTypes = {
 	 * null, 'left', 'right', to designate which direction to slide on a change.
 	 */
 	animate: PropTypes.oneOf( [ null, 'left', 'right' ] ),
-	/**
-	 * A function to be executed after a transition is complete, passing the containing ref as the argument.
-	 */
-	onExited: PropTypes.func,
 };
 
 export default Slider;
