@@ -20,8 +20,8 @@ import {
 /**
  * Internal dependencies
  */
-import { getCurrencyFormatString } from 'lib/currency-format';
 import { recordEvent } from 'lib/tracks';
+import { CurrencyContext } from 'lib/currency-context';
 
 const { symbol, symbolPosition } = CURRENCY;
 
@@ -159,15 +159,17 @@ class ShippingRates extends Component {
 	}
 
 	getFormattedRate( value ) {
-		const currencyString = getCurrencyFormatString( value );
+		const Currency = this.context;
+		const currencyString = Currency.formatDecimalString( value );
 		if ( ! value.length || ! currencyString.length ) {
-			return getCurrencyFormatString( 0 );
+			return Currency.formatDecimalString( 0 );
 		}
 
-		return getCurrencyFormatString( value );
+		return Currency.formatDecimalString( value );
 	}
 
 	getInitialValues() {
+		const Currency = this.context;
 		const values = {};
 
 		this.props.shippingZones.forEach( ( zone ) => {
@@ -177,7 +179,7 @@ class ShippingRates extends Component {
 					? this.getFormattedRate(
 							shippingMethods[ 0 ].settings.cost.value
 					  )
-					: getCurrencyFormatString( 0 );
+					: Currency.formatDecimalString( 0 );
 			values[ `${ zone.id }_rate` ] = rate;
 
 			if ( shippingMethods.length && shippingMethods[ 0 ].enabled ) {
@@ -345,5 +347,7 @@ ShippingRates.propTypes = {
 ShippingRates.defaultProps = {
 	shippingZones: [],
 };
+
+ShippingRates.contextType = CurrencyContext;
 
 export default ShippingRates;
