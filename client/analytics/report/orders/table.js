@@ -9,7 +9,6 @@ import { map } from 'lodash';
  * WooCommerce dependencies
  */
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
-import { formatCurrency, renderCurrency } from 'lib/currency-format';
 import { formatValue } from 'lib/number-format';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { defaultTableDateFormat } from 'lib/date';
@@ -19,9 +18,10 @@ import { defaultTableDateFormat } from 'lib/date';
  */
 import ReportTable from 'analytics/components/report-table';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import { CurrencyContext } from 'lib/currency-context';
 import './style.scss';
 
-export default class OrdersReportTable extends Component {
+class OrdersReportTable extends Component {
 	constructor() {
 		super();
 
@@ -105,6 +105,7 @@ export default class OrdersReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
+		const Currency = this.context;
 
 		return map( tableData, ( row ) => {
 			const {
@@ -220,7 +221,7 @@ export default class OrdersReportTable extends Component {
 						.join( ', ' ),
 				},
 				{
-					display: renderCurrency( netTotal, currency ),
+					display: Currency.render( netTotal, currency ),
 					value: netTotal,
 				},
 			];
@@ -237,6 +238,7 @@ export default class OrdersReportTable extends Component {
 			coupons_count: couponsCount = 0,
 			net_revenue: netRevenue = 0,
 		} = totals;
+		const Currency = this.context;
 		return [
 			{
 				label: _n(
@@ -294,7 +296,7 @@ export default class OrdersReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: Currency.formatCurrency( netRevenue ),
 			},
 		];
 	}
@@ -339,3 +341,7 @@ export default class OrdersReportTable extends Component {
 		);
 	}
 }
+
+OrdersReportTable.contextType = CurrencyContext;
+
+export default OrdersReportTable;

@@ -9,11 +9,6 @@ import { map } from 'lodash';
  * WooCommerce dependencies
  */
 import { Link } from '@woocommerce/components';
-import {
-	formatCurrency,
-	getCurrencyFormatDecimal,
-	renderCurrency,
-} from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { getTaxCode } from './utils';
 import { formatValue } from 'lib/number-format';
@@ -22,8 +17,9 @@ import { formatValue } from 'lib/number-format';
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
+import { CurrencyContext } from 'lib/currency-context';
 
-export default class TaxesReportTable extends Component {
+class TaxesReportTable extends Component {
 	constructor() {
 		super();
 
@@ -74,6 +70,8 @@ export default class TaxesReportTable extends Component {
 	}
 
 	getRowsContent( taxes ) {
+		const Currency = this.context;
+
 		return map( taxes, ( tax ) => {
 			const { query } = this.props;
 			const {
@@ -111,16 +109,16 @@ export default class TaxesReportTable extends Component {
 					value: taxRate,
 				},
 				{
-					display: renderCurrency( totalTax ),
-					value: getCurrencyFormatDecimal( totalTax ),
+					display: Currency.render( totalTax ),
+					value: Currency.formatDecimal( totalTax ),
 				},
 				{
-					display: renderCurrency( orderTax ),
-					value: getCurrencyFormatDecimal( orderTax ),
+					display: Currency.render( orderTax ),
+					value: Currency.formatDecimal( orderTax ),
 				},
 				{
-					display: renderCurrency( shippingTax ),
-					value: getCurrencyFormatDecimal( shippingTax ),
+					display: Currency.render( shippingTax ),
+					value: Currency.formatDecimal( shippingTax ),
 				},
 				{
 					display: formatValue( 'number', ordersCount ),
@@ -138,6 +136,7 @@ export default class TaxesReportTable extends Component {
 			shipping_tax: shippingTax = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
+		const Currency = this.context;
 		return [
 			{
 				label: _n(
@@ -150,15 +149,15 @@ export default class TaxesReportTable extends Component {
 			},
 			{
 				label: __( 'total tax', 'woocommerce-admin' ),
-				value: formatCurrency( totalTax ),
+				value: Currency.formatCurrency( totalTax ),
 			},
 			{
 				label: __( 'order tax', 'woocommerce-admin' ),
-				value: formatCurrency( orderTax ),
+				value: Currency.formatCurrency( orderTax ),
 			},
 			{
 				label: __( 'shipping tax', 'woocommerce-admin' ),
-				value: formatCurrency( shippingTax ),
+				value: Currency.formatCurrency( shippingTax ),
 			},
 			{
 				label: _n(
@@ -197,3 +196,7 @@ export default class TaxesReportTable extends Component {
 		);
 	}
 }
+
+TaxesReportTable.contextType = CurrencyContext;
+
+export default TaxesReportTable;

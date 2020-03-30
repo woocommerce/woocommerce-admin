@@ -9,7 +9,6 @@ import { map, get } from 'lodash';
  * WooCommerce dependencies
  */
 import { Link } from '@woocommerce/components';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
@@ -19,16 +18,18 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
  */
 import ReportTable from 'analytics/components/report-table';
 import { isLowStock } from './utils';
+import { CurrencyContext } from 'lib/currency-context';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const stockStatuses = getSetting( 'stockStatuses', {} );
 
-export default class VariationsReportTable extends Component {
+class VariationsReportTable extends Component {
 	constructor() {
 		super();
 
 		this.getHeadersContent = this.getHeadersContent.bind( this );
 		this.getRowsContent = this.getRowsContent.bind( this );
+		this.getSummary = this.getSummary.bind( this );
 	}
 
 	getHeadersContent() {
@@ -86,9 +87,15 @@ export default class VariationsReportTable extends Component {
 	getRowsContent( data = [] ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
+		const Currency = this.context;
 
 		return map( data, ( row ) => {
-			const { items_sold: itemsSold, net_revenue: netRevenue, orders_count: ordersCount, product_id: productId } = row;
+			const {
+				items_sold: itemsSold,
+				net_revenue: netRevenue,
+				orders_count: ordersCount,
+				product_id: productId,
+			} = row;
 			const extendedInfo = row.extended_info || {};
 			const {
 				stock_status: stockStatus,
@@ -127,8 +134,8 @@ export default class VariationsReportTable extends Component {
 					value: itemsSold,
 				},
 				{
-					display: formatCurrency( netRevenue ),
-					value: getCurrencyFormatDecimal( netRevenue ),
+					display: Currency.formatCurrency( netRevenue ),
+					value: Currency.formatDecimal( netRevenue ),
 				},
 				{
 					display: (
@@ -175,6 +182,7 @@ export default class VariationsReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
+		const Currency = this.context;
 		return [
 			{
 				label: _n(
@@ -196,7 +204,7 @@ export default class VariationsReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: Currency.formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(
@@ -259,3 +267,7 @@ export default class VariationsReportTable extends Component {
 		);
 	}
 }
+
+VariationsReportTable.contextType = CurrencyContext;
+
+export default VariationsReportTable;

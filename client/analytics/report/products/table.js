@@ -10,11 +10,6 @@ import { map } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import {
-	formatCurrency,
-	getCurrencyFormatDecimal,
-	renderCurrency,
-} from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link, Tag } from '@woocommerce/components';
 import { formatValue } from 'lib/number-format';
@@ -27,6 +22,7 @@ import CategoryBreacrumbs from '../categories/breadcrumbs';
 import { isLowStock } from './utils';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
+import { CurrencyContext } from 'lib/currency-context';
 import './style.scss';
 
 const manageStock = getSetting( 'manageStock', 'no' );
@@ -38,6 +34,7 @@ class ProductsReportTable extends Component {
 
 		this.getHeadersContent = this.getHeadersContent.bind( this );
 		this.getRowsContent = this.getRowsContent.bind( this );
+		this.getSummary = this.getSummary.bind( this );
 	}
 
 	getHeadersContent() {
@@ -105,6 +102,7 @@ class ProductsReportTable extends Component {
 	getRowsContent( data = [] ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
+		const Currency = this.context;
 
 		return map( data, ( row ) => {
 			const {
@@ -189,8 +187,8 @@ class ProductsReportTable extends Component {
 					value: itemsSold,
 				},
 				{
-					display: renderCurrency( netRevenue ),
-					value: getCurrencyFormatDecimal( netRevenue ),
+					display: Currency.render( netRevenue ),
+					value: Currency.formatDecimal( netRevenue ),
 				},
 				{
 					display: (
@@ -270,6 +268,7 @@ class ProductsReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
+		const Currency = this.context;
 		return [
 			{
 				label: _n(
@@ -291,7 +290,7 @@ class ProductsReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: Currency.formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(
@@ -353,6 +352,8 @@ class ProductsReportTable extends Component {
 		);
 	}
 }
+
+ProductsReportTable.contextType = CurrencyContext;
 
 export default compose(
 	withSelect( ( select, props ) => {

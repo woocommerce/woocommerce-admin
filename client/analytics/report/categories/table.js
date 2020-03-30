@@ -9,11 +9,6 @@ import { map } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import {
-	formatCurrency,
-	getCurrencyFormatDecimal,
-	renderCurrency,
-} from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
 import { formatValue } from 'lib/number-format';
@@ -24,12 +19,14 @@ import { formatValue } from 'lib/number-format';
 import CategoryBreacrumbs from './breadcrumbs';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
+import { CurrencyContext } from 'lib/currency-context';
 
 class CategoriesReportTable extends Component {
 	constructor( props ) {
 		super( props );
 
 		this.getRowsContent = this.getRowsContent.bind( this );
+		this.getSummary = this.getSummary.bind( this );
 	}
 
 	getHeadersContent() {
@@ -71,6 +68,8 @@ class CategoriesReportTable extends Component {
 	}
 
 	getRowsContent( categoryStats ) {
+		const Currency = this.context;
+
 		return map( categoryStats, ( categoryStat ) => {
 			const {
 				category_id: categoryId,
@@ -99,8 +98,8 @@ class CategoriesReportTable extends Component {
 					value: itemsSold,
 				},
 				{
-					display: renderCurrency( netRevenue ),
-					value: getCurrencyFormatDecimal( netRevenue ),
+					display: Currency.render( netRevenue ),
+					value: Currency.formatDecimal( netRevenue ),
 				},
 				{
 					display: category && (
@@ -129,7 +128,12 @@ class CategoriesReportTable extends Component {
 	}
 
 	getSummary( totals, totalResults = 0 ) {
-		const { items_sold: itemsSold = 0, net_revenue: netRevenue = 0, orders_count: ordersCount = 0 } = totals;
+		const {
+			items_sold: itemsSold = 0,
+			net_revenue: netRevenue = 0,
+			orders_count: ordersCount = 0,
+		} = totals;
+		const Currency = this.context;
 		return [
 			{
 				label: _n(
@@ -151,7 +155,7 @@ class CategoriesReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: Currency.formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(
@@ -201,6 +205,8 @@ class CategoriesReportTable extends Component {
 		);
 	}
 }
+
+CategoriesReportTable.contextType = CurrencyContext;
 
 export default compose(
 	withSelect( ( select, props ) => {

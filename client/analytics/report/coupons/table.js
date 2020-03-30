@@ -10,7 +10,6 @@ import { map } from 'lodash';
  */
 import { Date, Link } from '@woocommerce/components';
 import { defaultTableDateFormat } from 'lib/date';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from 'lib/number-format';
 import { getSetting } from '@woocommerce/wc-admin-settings';
@@ -19,8 +18,9 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
+import { CurrencyContext } from 'lib/currency-context';
 
-export default class CouponsReportTable extends Component {
+class CouponsReportTable extends Component {
 	constructor() {
 		super();
 
@@ -71,9 +71,14 @@ export default class CouponsReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
+		const Currency = this.context;
 
 		return map( coupons, ( coupon ) => {
-			const { amount, coupon_id: couponId, orders_count: ordersCount } = coupon;
+			const {
+				amount,
+				coupon_id: couponId,
+				orders_count: ordersCount,
+			} = coupon;
 			const extendedInfo = coupon.extended_info || {};
 			const {
 				code,
@@ -116,8 +121,8 @@ export default class CouponsReportTable extends Component {
 					value: ordersCount,
 				},
 				{
-					display: formatCurrency( amount ),
-					value: getCurrencyFormatDecimal( amount ),
+					display: Currency.formatCurrency( amount ),
+					value: Currency.formatDecimal( amount ),
 				},
 				{
 					display: (
@@ -148,7 +153,12 @@ export default class CouponsReportTable extends Component {
 	}
 
 	getSummary( totals ) {
-		const { coupons_count: couponsCount = 0, orders_count: ordersCount = 0, amount = 0 } = totals;
+		const {
+			coupons_count: couponsCount = 0,
+			orders_count: ordersCount = 0,
+			amount = 0,
+		} = totals;
+		const Currency = this.context;
 		return [
 			{
 				label: _n(
@@ -170,7 +180,7 @@ export default class CouponsReportTable extends Component {
 			},
 			{
 				label: __( 'amount discounted', 'woocommerce-admin' ),
-				value: formatCurrency( amount ),
+				value: Currency.formatCurrency( amount ),
 			},
 		];
 	}
@@ -211,3 +221,7 @@ export default class CouponsReportTable extends Component {
 		);
 	}
 }
+
+CouponsReportTable.contextType = CurrencyContext;
+
+export default CouponsReportTable;
