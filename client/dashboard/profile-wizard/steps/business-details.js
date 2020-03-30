@@ -30,10 +30,10 @@ import {
 } from '@woocommerce/components';
 import withWCApiSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
-import { formatCurrency } from 'lib/currency-format';
 import Plugins from 'dashboard/task-list/tasks/steps/plugins';
 import { pluginNames } from 'wc-api/onboarding/constants';
 import { getCurrencyRegion } from 'dashboard/utils';
+import { CurrencyContext } from 'lib/currency-context';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
@@ -409,6 +409,8 @@ class BusinessDetails extends Component {
 
 	render() {
 		const { isInstallingExtensions, extensionInstallError } = this.state;
+		const Currency = this.context;
+		const formatCurrency = Currency.formatCurrency.bind( Currency );
 		const productCountOptions = [
 			{
 				key: '0',
@@ -683,6 +685,8 @@ class BusinessDetails extends Component {
 		);
 	}
 }
+
+BusinessDetails.contextType = CurrencyContext;
 
 export default compose(
 	withWCApiSelect( ( select ) => {
