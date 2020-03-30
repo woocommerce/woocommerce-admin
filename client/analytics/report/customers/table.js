@@ -114,7 +114,10 @@ class CustomersReportTable extends Component {
 
 	getRowsContent( customers ) {
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
-		const Currency = this.context;
+		const {
+			formatCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+		} = this.context;
 
 		return customers.map( ( customer ) => {
 			const {
@@ -192,12 +195,12 @@ class CustomersReportTable extends Component {
 					value: ordersCount,
 				},
 				{
-					display: Currency.formatCurrency( totalSpend ),
-					value: Currency.formatDecimal( totalSpend ),
+					display: formatCurrency( totalSpend ),
+					value: getCurrencyFormatDecimal( totalSpend ),
 				},
 				{
-					display: Currency.formatCurrency( avgOrderValue ),
-					value: Currency.formatDecimal( avgOrderValue ),
+					display: formatCurrency( avgOrderValue ),
+					value: getCurrencyFormatDecimal( avgOrderValue ),
 				},
 				{
 					display: countryDisplay,
@@ -226,7 +229,7 @@ class CustomersReportTable extends Component {
 			avg_total_spend: avgTotalSpend = 0,
 			avg_avg_order_value: avgAvgOrderValue = 0,
 		} = totals;
-		const Currency = this.context;
+		const { formatCurrency } = this.context;
 		return [
 			{
 				label: _n(
@@ -248,11 +251,11 @@ class CustomersReportTable extends Component {
 			},
 			{
 				label: __( 'average lifetime spend', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( avgTotalSpend ),
+				value: formatCurrency( avgTotalSpend ),
 			},
 			{
 				label: __( 'average order value', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( avgAvgOrderValue ),
+				value: formatCurrency( avgAvgOrderValue ),
 			},
 		];
 	}
