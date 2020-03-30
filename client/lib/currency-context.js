@@ -20,7 +20,7 @@ export const getCurrencyInstance = ( query ) => {
 		{ ...CURRENCY },
 		query
 	);
-	config.symbol = '&&'; // for now
+	// config.symbol = '&&'; // for now
 	return new Currency( config );
 };
 
