@@ -195,13 +195,13 @@ export class ReportChart extends Component {
 				}
 				tooltipValueFormat={ getTooltipValueFormat(
 					selectedChart.type,
-					Currency
+					Currency.formatCurrency
 				) }
 				chartType={ getChartTypeForQuery( query ) }
 				valueType={ selectedChart.type }
 				xFormat={ formats.xFormat }
 				x2Format={ formats.x2Format }
-				currency={ Currency }
+				currency={ Currency.getCurrency() }
 			/>
 		);
 	}
