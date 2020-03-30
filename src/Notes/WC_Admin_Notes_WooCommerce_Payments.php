@@ -64,7 +64,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 			$note    = WC_Admin_Notes::get_note( $note_id );
 
 			// If the WooCommerce Payments plugin was installed after the note was created, make sure it's marked as actioned.
-			if ( self::validate_plugin() && WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
+			if ( self::is_installed() && WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
 				$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 				$note->save();
 			}
@@ -106,7 +106,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 		$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED, true );
 
 		// Create the note as "actioned" if the plugin is already installed.
-		if ( self::validate_plugin() ) {
+		if ( self::is_installed() ) {
 			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 		}
 
@@ -115,9 +115,12 @@ class WC_Admin_Notes_WooCommerce_Payments {
 
 
 	/**
-	 * Add a note on WooCommerce Payments.
+	 * Check if the WooCommerce Payments plugin is active or installed.
 	 */
-	protected static function validate_plugin() {
+	protected static function is_installed() {
+		if ( defined( 'WC_Payments' ) ) {
+			return true;
+		}
 		include_once ABSPATH . '/wp-admin/includes/plugin.php';
 		return 0 === validate_plugin( self::PLUGIN_FILE );
 	}
