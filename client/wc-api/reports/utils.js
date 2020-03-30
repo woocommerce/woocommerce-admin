@@ -392,7 +392,6 @@ export function getReportChartData( options ) {
 export function getTooltipValueFormat( type, Currency ) {
 	switch ( type ) {
 		case 'currency':
-			Currency.formatCurrency = Currency.formatCurrency.bind( Currency );
 			return Currency.formatCurrency;
 		case 'percent':
 			return '.0%';
