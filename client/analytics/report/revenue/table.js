@@ -110,14 +110,6 @@ class RevenueReportTable extends Component {
 	getRowsContent( data = [] ) {
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
 		const Currency = this.context;
-		// Why does this need to be here?
-		Currency.formatDecimal = Currency.formatDecimal.bind( Currency );
-		Currency.render = Currency.render.bind( Currency );
-		const {
-			formatCurrency,
-			formatDecimal: getCurrencyFormatDecimal,
-			render: renderCurrency,
-		} = Currency;
 
 		return data.map( ( row ) => {
 			const {
@@ -159,32 +151,32 @@ class RevenueReportTable extends Component {
 					value: Number( ordersCount ),
 				},
 				{
-					display: renderCurrency( grossSales ),
-					value: getCurrencyFormatDecimal( grossSales ),
+					display: Currency.render( grossSales ),
+					value: Currency.formatDecimal( grossSales ),
 				},
 				{
-					display: formatCurrency( refunds ),
-					value: getCurrencyFormatDecimal( refunds ),
+					display: Currency.formatCurrency( refunds ),
+					value: Currency.formatDecimal( refunds ),
 				},
 				{
-					display: formatCurrency( coupons ),
-					value: getCurrencyFormatDecimal( coupons ),
+					display: Currency.formatCurrency( coupons ),
+					value: Currency.formatDecimal( coupons ),
 				},
 				{
-					display: renderCurrency( netRevenue ),
-					value: getCurrencyFormatDecimal( netRevenue ),
+					display: Currency.render( netRevenue ),
+					value: Currency.formatDecimal( netRevenue ),
 				},
 				{
-					display: renderCurrency( taxes ),
-					value: getCurrencyFormatDecimal( taxes ),
+					display: Currency.render( taxes ),
+					value: Currency.formatDecimal( taxes ),
 				},
 				{
-					display: renderCurrency( shipping ),
-					value: getCurrencyFormatDecimal( shipping ),
+					display: Currency.render( shipping ),
+					value: Currency.formatDecimal( shipping ),
 				},
 				{
-					display: renderCurrency( totalSales ),
-					value: getCurrencyFormatDecimal( totalSales ),
+					display: Currency.render( totalSales ),
+					value: Currency.formatDecimal( totalSales ),
 				},
 			];
 		} );
@@ -201,7 +193,7 @@ class RevenueReportTable extends Component {
 			shipping = 0,
 			net_revenue: netRevenue = 0,
 		} = totals;
-		const { formatCurrency } = this.context;
+		const Currency = this.context;
 		return [
 			{
 				label: _n( 'day', 'days', totalResults, 'woocommerce-admin' ),
@@ -218,31 +210,31 @@ class RevenueReportTable extends Component {
 			},
 			{
 				label: __( 'gross sales', 'woocommerce-admin' ),
-				value: formatCurrency( grossSales ),
+				value: Currency.formatCurrency( grossSales ),
 			},
 			{
 				label: __( 'returns', 'woocommerce-admin' ),
-				value: formatCurrency( refunds ),
+				value: Currency.formatCurrency( refunds ),
 			},
 			{
 				label: __( 'coupons', 'woocommerce-admin' ),
-				value: formatCurrency( coupons ),
+				value: Currency.formatCurrency( coupons ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: Currency.formatCurrency( netRevenue ),
 			},
 			{
 				label: __( 'taxes', 'woocommerce-admin' ),
-				value: formatCurrency( taxes ),
+				value: Currency.formatCurrency( taxes ),
 			},
 			{
 				label: __( 'shipping', 'woocommerce-admin' ),
-				value: formatCurrency( shipping ),
+				value: Currency.formatCurrency( shipping ),
 			},
 			{
 				label: __( 'total sales', 'woocommerce-admin' ),
-				value: formatCurrency( totalSales ),
+				value: Currency.formatCurrency( totalSales ),
 			},
 		];
 	}
