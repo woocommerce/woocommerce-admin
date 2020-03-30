@@ -12,10 +12,7 @@ import { keys, get, pickBy } from 'lodash';
  * WooCommerce dependencies
  */
 import { formatValue } from 'lib/number-format';
-import {
-	getSetting,
-	CURRENCY as currency,
-} from '@woocommerce/wc-admin-settings';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
@@ -95,11 +92,12 @@ class BusinessDetails extends Component {
 			selling_venues: sellingVenues,
 		} = values;
 		const businessExtensions = this.getBusinessExtensions( values );
+		const { getCurrency } = this.context;
 
 		recordEvent( 'storeprofiler_store_business_details_continue', {
 			product_number: productCount,
 			already_selling: sellingVenues,
-			currency: currency.code,
+			currency: getCurrency().code,
 			revenue,
 			used_platform: otherPlatform,
 			used_platform_name: otherPlatformName,
@@ -409,8 +407,7 @@ class BusinessDetails extends Component {
 
 	render() {
 		const { isInstallingExtensions, extensionInstallError } = this.state;
-		const Currency = this.context;
-		const formatCurrency = Currency.formatCurrency.bind( Currency );
+		const { formatCurrency } = this.context;
 		const productCountOptions = [
 			{
 				key: '0',
