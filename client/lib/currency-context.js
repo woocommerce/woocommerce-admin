@@ -14,16 +14,18 @@ import Currency from '@woocommerce/currency';
  */
 import { CURRENCY } from '@woocommerce/wc-admin-settings';
 
-export const getCurrencyInstance = ( query ) => {
-	const config = applyFilters(
+const appCurrency = new Currency( CURRENCY );
+
+export const getFilteredCurrencyInstance = ( query ) => {
+	const config = appCurrency.getCurrency();
+	const filteredConfig = applyFilters(
 		'woocommerce_admin_report_currency',
-		{ ...CURRENCY },
+		config,
 		query
 	);
-	// config.symbol = '&&'; // for now
-	return new Currency( config );
+	return new Currency( filteredConfig );
 };
 
 export const CurrencyContext = createContext(
-	new Currency( CURRENCY ) // default value
+	appCurrency // default value
 );

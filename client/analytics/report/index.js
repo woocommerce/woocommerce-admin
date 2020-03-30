@@ -31,7 +31,10 @@ import CustomersReport from './customers';
 import ReportError from 'analytics/components/report-error';
 import { searchItemsByString } from 'wc-api/items/utils';
 import withSelect from 'wc-api/with-select';
-import { CurrencyContext, getCurrencyInstance } from 'lib/currency-context';
+import {
+	CurrencyContext,
+	getFilteredCurrencyInstance,
+} from 'lib/currency-context';
 
 export const REPORTS_FILTER = 'woocommerce_admin_reports_list';
 const manageStock = getSetting( 'manageStock', 'no' );
@@ -145,7 +148,7 @@ class Report extends Component {
 		const Container = report.component;
 		return (
 			<CurrencyContext.Provider
-				value={ getCurrencyInstance( getQuery() ) }
+				value={ getFilteredCurrencyInstance( getQuery() ) }
 			>
 				<Container { ...this.props } />
 			</CurrencyContext.Provider>

@@ -35,6 +35,17 @@ export default class Currency {
 		this.precision = precisionNumber;
 	}
 
+	getCurrency() {
+		return {
+			code: this.code,
+			symbol: this.symbol,
+			symbolPosition: this.symbolPosition,
+			decimalSeparator: this.decimalSeparator,
+			thousandSeparator: this.thousandSeparator,
+			precision: this.precision,
+		};
+	}
+
 	stripTags( str ) {
 		const tmp = document.createElement( 'DIV' );
 		tmp.innerHTML = str;
