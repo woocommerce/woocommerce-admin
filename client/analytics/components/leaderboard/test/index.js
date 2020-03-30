@@ -16,7 +16,7 @@ import { Leaderboard } from '../';
 import mockData from '../data/top-selling-products-mock-data';
 import { CURRENCY } from '@woocommerce/wc-admin-settings';
 
-const currency = new Currency( CURRENCY );
+const { formatCurrency, formatDecimal } = Currency( CURRENCY );
 
 const rows = mockData.map( ( row ) => {
 	const {
@@ -39,8 +39,8 @@ const rows = mockData.map( ( row ) => {
 			value: ordersCount,
 		},
 		{
-			display: currency.formatCurrency( netRevenue ),
-			value: currency.formatDecimal( netRevenue ),
+			display: formatCurrency( netRevenue ),
+			value: formatDecimal( netRevenue ),
 		},
 	];
 } );
@@ -93,7 +93,7 @@ describe( 'Leaderboard', () => {
 		expect( firstRow[ 1 ].value ).toBe( mockData[ 0 ].items_sold );
 		expect( firstRow[ 2 ].value ).toBe( mockData[ 0 ].orders_count );
 		expect( firstRow[ 3 ].value ).toBe(
-			currency.formatDecimal( mockData[ 0 ].net_revenue )
+			formatDecimal( mockData[ 0 ].net_revenue )
 		);
 
 		expect(
@@ -107,7 +107,7 @@ describe( 'Leaderboard', () => {
 			numberFormat( mockData[ 0 ].orders_count )
 		);
 		expect( tableItems.at( 3 ).text() ).toBe(
-			currency.formatCurrency( mockData[ 0 ].net_revenue )
+			formatCurrency( mockData[ 0 ].net_revenue )
 		);
 	} );
 } );

@@ -168,7 +168,7 @@ export class ReportChart extends Component {
 		const emptyMessage = emptySearchResults
 			? __( 'No data for the current search', 'woocommerce-admin' )
 			: __( 'No data for the selected date range', 'woocommerce-admin' );
-		const Currency = this.context;
+		const { formatCurrency, getCurrency } = this.context;
 		return (
 			<Chart
 				allowedIntervals={ allowedIntervals }
@@ -195,13 +195,13 @@ export class ReportChart extends Component {
 				}
 				tooltipValueFormat={ getTooltipValueFormat(
 					selectedChart.type,
-					Currency.formatCurrency
+					formatCurrency
 				) }
 				chartType={ getChartTypeForQuery( query ) }
 				valueType={ selectedChart.type }
 				xFormat={ formats.xFormat }
 				x2Format={ formats.x2Format }
-				currency={ Currency.getCurrency() }
+				currency={ getCurrency() }
 			/>
 		);
 	}
