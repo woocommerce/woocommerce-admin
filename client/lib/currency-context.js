@@ -15,7 +15,11 @@ import Currency from '@woocommerce/currency';
 import { CURRENCY } from '@woocommerce/wc-admin-settings';
 
 export const getCurrencyInstance = ( query ) => {
-	const config = applyFilters( 'filter_name', { ...CURRENCY }, query );
+	const config = applyFilters(
+		'woocommerce_admin_report_currency',
+		{ ...CURRENCY },
+		query
+	);
 	config.symbol = '&&'; // for now
 	return new Currency( config );
 };
