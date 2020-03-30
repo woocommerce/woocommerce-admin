@@ -105,7 +105,7 @@ class OrdersReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
-		const Currency = this.context;
+		const { render: renderCurrency } = this.context;
 
 		return map( tableData, ( row ) => {
 			const {
@@ -221,7 +221,7 @@ class OrdersReportTable extends Component {
 						.join( ', ' ),
 				},
 				{
-					display: Currency.render( netTotal, currency ),
+					display: renderCurrency( netTotal, currency ),
 					value: netTotal,
 				},
 			];
@@ -238,7 +238,7 @@ class OrdersReportTable extends Component {
 			coupons_count: couponsCount = 0,
 			net_revenue: netRevenue = 0,
 		} = totals;
-		const Currency = this.context;
+		const { formatCurrency } = this.context;
 		return [
 			{
 				label: _n(
@@ -296,7 +296,7 @@ class OrdersReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( netRevenue ),
+				value: formatCurrency( netRevenue ),
 			},
 		];
 	}

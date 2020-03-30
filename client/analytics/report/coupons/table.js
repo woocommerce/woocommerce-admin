@@ -71,7 +71,10 @@ class CouponsReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
-		const Currency = this.context;
+		const {
+			formatCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+		} = this.context;
 
 		return map( coupons, ( coupon ) => {
 			const {
@@ -121,8 +124,8 @@ class CouponsReportTable extends Component {
 					value: ordersCount,
 				},
 				{
-					display: Currency.formatCurrency( amount ),
-					value: Currency.formatDecimal( amount ),
+					display: formatCurrency( amount ),
+					value: getCurrencyFormatDecimal( amount ),
 				},
 				{
 					display: (
@@ -158,7 +161,7 @@ class CouponsReportTable extends Component {
 			orders_count: ordersCount = 0,
 			amount = 0,
 		} = totals;
-		const Currency = this.context;
+		const { formatCurrency } = this.context;
 		return [
 			{
 				label: _n(
@@ -180,7 +183,7 @@ class CouponsReportTable extends Component {
 			},
 			{
 				label: __( 'amount discounted', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( amount ),
+				value: formatCurrency( amount ),
 			},
 		];
 	}

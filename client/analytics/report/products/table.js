@@ -102,7 +102,10 @@ class ProductsReportTable extends Component {
 	getRowsContent( data = [] ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const Currency = this.context;
+		const {
+			render: renderCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+		} = this.context;
 
 		return map( data, ( row ) => {
 			const {
@@ -187,8 +190,8 @@ class ProductsReportTable extends Component {
 					value: itemsSold,
 				},
 				{
-					display: Currency.render( netRevenue ),
-					value: Currency.formatDecimal( netRevenue ),
+					display: renderCurrency( netRevenue ),
+					value: getCurrencyFormatDecimal( netRevenue ),
 				},
 				{
 					display: (
@@ -268,7 +271,7 @@ class ProductsReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const Currency = this.context;
+		const { formatCurrency } = this.context;
 		return [
 			{
 				label: _n(
@@ -290,7 +293,7 @@ class ProductsReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( netRevenue ),
+				value: formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(

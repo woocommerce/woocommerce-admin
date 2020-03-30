@@ -87,7 +87,10 @@ class VariationsReportTable extends Component {
 	getRowsContent( data = [] ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const Currency = this.context;
+		const {
+			formatCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+		} = this.context;
 
 		return map( data, ( row ) => {
 			const {
@@ -134,8 +137,8 @@ class VariationsReportTable extends Component {
 					value: itemsSold,
 				},
 				{
-					display: Currency.formatCurrency( netRevenue ),
-					value: Currency.formatDecimal( netRevenue ),
+					display: formatCurrency( netRevenue ),
+					value: getCurrencyFormatDecimal( netRevenue ),
 				},
 				{
 					display: (
@@ -182,7 +185,7 @@ class VariationsReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const Currency = this.context;
+		const { formatCurrency } = this.context;
 		return [
 			{
 				label: _n(
@@ -204,7 +207,7 @@ class VariationsReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( netRevenue ),
+				value: formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(

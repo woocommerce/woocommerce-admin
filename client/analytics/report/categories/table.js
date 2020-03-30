@@ -68,7 +68,10 @@ class CategoriesReportTable extends Component {
 	}
 
 	getRowsContent( categoryStats ) {
-		const Currency = this.context;
+		const {
+			render: renderCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+		} = this.context;
 
 		return map( categoryStats, ( categoryStat ) => {
 			const {
@@ -98,8 +101,8 @@ class CategoriesReportTable extends Component {
 					value: itemsSold,
 				},
 				{
-					display: Currency.render( netRevenue ),
-					value: Currency.formatDecimal( netRevenue ),
+					display: renderCurrency( netRevenue ),
+					value: getCurrencyFormatDecimal( netRevenue ),
 				},
 				{
 					display: category && (
@@ -133,7 +136,7 @@ class CategoriesReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const Currency = this.context;
+		const { formatCurrency } = this.context;
 		return [
 			{
 				label: _n(
@@ -155,7 +158,7 @@ class CategoriesReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( netRevenue ),
+				value: formatCurrency( netRevenue ),
 			},
 			{
 				label: _n(

@@ -70,7 +70,10 @@ class TaxesReportTable extends Component {
 	}
 
 	getRowsContent( taxes ) {
-		const Currency = this.context;
+		const {
+			render: renderCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+		} = this.context;
 
 		return map( taxes, ( tax ) => {
 			const { query } = this.props;
@@ -109,16 +112,16 @@ class TaxesReportTable extends Component {
 					value: taxRate,
 				},
 				{
-					display: Currency.render( totalTax ),
-					value: Currency.formatDecimal( totalTax ),
+					display: renderCurrency( totalTax ),
+					value: getCurrencyFormatDecimal( totalTax ),
 				},
 				{
-					display: Currency.render( orderTax ),
-					value: Currency.formatDecimal( orderTax ),
+					display: renderCurrency( orderTax ),
+					value: getCurrencyFormatDecimal( orderTax ),
 				},
 				{
-					display: Currency.render( shippingTax ),
-					value: Currency.formatDecimal( shippingTax ),
+					display: renderCurrency( shippingTax ),
+					value: getCurrencyFormatDecimal( shippingTax ),
 				},
 				{
 					display: formatValue( 'number', ordersCount ),
@@ -136,7 +139,7 @@ class TaxesReportTable extends Component {
 			shipping_tax: shippingTax = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const Currency = this.context;
+		const { formatCurrency } = this.context;
 		return [
 			{
 				label: _n(
@@ -149,15 +152,15 @@ class TaxesReportTable extends Component {
 			},
 			{
 				label: __( 'total tax', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( totalTax ),
+				value: formatCurrency( totalTax ),
 			},
 			{
 				label: __( 'order tax', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( orderTax ),
+				value: formatCurrency( orderTax ),
 			},
 			{
 				label: __( 'shipping tax', 'woocommerce-admin' ),
-				value: Currency.formatCurrency( shippingTax ),
+				value: formatCurrency( shippingTax ),
 			},
 			{
 				label: _n(
