@@ -14,7 +14,7 @@ import Currency from '@woocommerce/currency';
  */
 import { CURRENCY } from '@woocommerce/wc-admin-settings';
 
-const appCurrency = new Currency( CURRENCY );
+const appCurrency = Currency( CURRENCY );
 
 export const getFilteredCurrencyInstance = ( query ) => {
 	const config = appCurrency.getCurrency();
@@ -23,6 +23,7 @@ export const getFilteredCurrencyInstance = ( query ) => {
 		config,
 		query
 	);
+	filteredConfig.symbol = 'ZZ';
 	return new Currency( filteredConfig );
 };
 
