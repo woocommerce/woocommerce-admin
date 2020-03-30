@@ -117,7 +117,7 @@ class RevenueReportTable extends Component {
 			formatCurrency,
 			formatDecimal: getCurrencyFormatDecimal,
 			render: renderCurrency,
-		} = this.context;
+		} = Currency;
 
 		return data.map( ( row ) => {
 			const {
