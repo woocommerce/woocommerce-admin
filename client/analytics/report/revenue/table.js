@@ -16,11 +16,6 @@ import {
 	getCurrentDates,
 } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
-import {
-	formatCurrency,
-	getCurrencyFormatDecimal,
-	renderCurrency,
-} from 'lib/currency-format';
 import { formatValue } from 'lib/number-format';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
@@ -32,6 +27,7 @@ import { QUERY_DEFAULTS } from 'wc-api/constants';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from 'wc-api/with-select';
 import { getReportTableQuery } from 'wc-api/reports/utils';
+import { CurrencyContext } from 'lib/currency-context';
 
 class RevenueReportTable extends Component {
 	constructor() {
@@ -113,6 +109,15 @@ class RevenueReportTable extends Component {
 
 	getRowsContent( data = [] ) {
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
+		const Currency = this.context;
+		// Why does this need to be here?
+		Currency.formatDecimal = Currency.formatDecimal.bind( Currency );
+		Currency.render = Currency.render.bind( Currency );
+		const {
+			formatCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+			render: renderCurrency,
+		} = this.context;
 
 		return data.map( ( row ) => {
 			const {
@@ -196,6 +201,7 @@ class RevenueReportTable extends Component {
 			shipping = 0,
 			net_revenue: netRevenue = 0,
 		} = totals;
+		const { formatCurrency } = this.context;
 		return [
 			{
 				label: _n( 'day', 'days', totalResults, 'woocommerce-admin' ),
@@ -260,6 +266,8 @@ class RevenueReportTable extends Component {
 		);
 	}
 }
+
+RevenueReportTable.contextType = CurrencyContext;
 
 export default compose(
 	withSelect( ( select, props ) => {

@@ -17,7 +17,6 @@ import {
 	getActiveFiltersFromQuery,
 	getUrlKey,
 } from '@woocommerce/navigation';
-import { formatCurrency } from 'lib/currency-format';
 
 /**
  * Internal dependencies
@@ -389,10 +388,12 @@ export function getReportChartData( options ) {
  * @param  {string} type Type of number, 'currency', 'number', 'percent', 'average'
  * @return {string|Function}  returns a number format based on the type or an overriding formatting function
  */
-export function getTooltipValueFormat( type ) {
+export function getTooltipValueFormat( type, Currency ) {
 	switch ( type ) {
 		case 'currency':
-			return formatCurrency;
+			// Why does this need to be here?
+			Currency.formatCurrency = Currency.formatCurrency.bind( Currency );
+			return Currency.formatCurrency;
 		case 'percent':
 			return '.0%';
 		case 'number':
