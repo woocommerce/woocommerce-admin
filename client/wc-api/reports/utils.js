@@ -391,7 +391,6 @@ export function getReportChartData( options ) {
 export function getTooltipValueFormat( type, Currency ) {
 	switch ( type ) {
 		case 'currency':
-			// Why does this need to be here?
 			Currency.formatCurrency = Currency.formatCurrency.bind( Currency );
 			return Currency.formatCurrency;
 		case 'percent':
