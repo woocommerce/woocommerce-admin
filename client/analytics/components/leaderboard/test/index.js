@@ -6,17 +6,25 @@ import { mount, shallow } from 'enzyme';
 /**
  * WooCommerce dependencies
  */
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { numberFormat } from 'lib/number-format';
+import Currency from '@woocommerce/currency';
 
 /**
  * Internal dependencies
  */
 import { Leaderboard } from '../';
 import mockData from '../data/top-selling-products-mock-data';
+import { CURRENCY } from '@woocommerce/wc-admin-settings';
+
+const currency = new Currency( CURRENCY );
 
 const rows = mockData.map( ( row ) => {
-	const { name, items_sold: itemsSold, net_revenue: netRevenue, orders_count: ordersCount } = row;
+	const {
+		name,
+		items_sold: itemsSold,
+		net_revenue: netRevenue,
+		orders_count: ordersCount,
+	} = row;
 	return [
 		{
 			display: '<a href="#">' + name + '</a>',
@@ -31,8 +39,8 @@ const rows = mockData.map( ( row ) => {
 			value: ordersCount,
 		},
 		{
-			display: formatCurrency( netRevenue ),
-			value: getCurrencyFormatDecimal( netRevenue ),
+			display: currency.formatCurrency( netRevenue ),
+			value: currency.formatDecimal( netRevenue ),
 		},
 	];
 } );
@@ -85,7 +93,7 @@ describe( 'Leaderboard', () => {
 		expect( firstRow[ 1 ].value ).toBe( mockData[ 0 ].items_sold );
 		expect( firstRow[ 2 ].value ).toBe( mockData[ 0 ].orders_count );
 		expect( firstRow[ 3 ].value ).toBe(
-			getCurrencyFormatDecimal( mockData[ 0 ].net_revenue )
+			currency.formatDecimal( mockData[ 0 ].net_revenue )
 		);
 
 		expect(
@@ -99,7 +107,7 @@ describe( 'Leaderboard', () => {
 			numberFormat( mockData[ 0 ].orders_count )
 		);
 		expect( tableItems.at( 3 ).text() ).toBe(
-			formatCurrency( mockData[ 0 ].net_revenue )
+			currency.formatCurrency( mockData[ 0 ].net_revenue )
 		);
 	} );
 } );
