@@ -1,3 +1,6 @@
+# 2.1.0 (unreleased)
+- Add getCurrency method to retrieve currency config.
+
 # 2.0.0
 
 ## Breaking changes
