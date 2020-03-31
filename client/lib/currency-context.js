@@ -23,7 +23,6 @@ export const getFilteredCurrencyInstance = ( query ) => {
 		config,
 		query
 	);
-	filteredConfig.symbol = 'ZZ';
 	return new Currency( filteredConfig );
 };
 
