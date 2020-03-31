@@ -11,7 +11,7 @@ import { keys, get, pickBy } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
@@ -245,7 +245,8 @@ class BusinessDetails extends Component {
 	}
 
 	numberFormat( value ) {
-		return formatValue( 'number', value );
+		const { getCurrency } = this.context;
+		return formatValue( getCurrency(), 'number', value );
 	}
 
 	getNumberRangeString( min, max = false, format = this.numberFormat ) {

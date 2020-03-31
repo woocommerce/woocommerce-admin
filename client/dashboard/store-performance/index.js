@@ -17,7 +17,7 @@ import {
 	getDateParamsFromQuery,
 } from 'lib/date';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { calculateDelta, formatValue } from 'lib/number-format';
+import { calculateDelta, formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
@@ -141,7 +141,8 @@ class StorePerformance extends Component {
 			compare === 'previous_period'
 				? __( 'Previous Period:', 'woocommerce-admin' )
 				: __( 'Previous Year:', 'woocommerce-admin' );
-		const Currency = this.context;
+		const { formatCurrency, getCurrency } = this.context;
+		const currency = getCurrency();
 		return (
 			<SummaryList>
 				{ () =>
@@ -177,14 +178,16 @@ class StorePerformance extends Component {
 							secondaryItem.value
 						);
 						const primaryValue = isCurrency
-							? Currency.formatCurrency( primaryItem.value )
+							? formatCurrency( primaryItem.value )
 							: formatValue(
+									currency,
 									primaryItem.format,
 									primaryItem.value
 							  );
 						const secondaryValue = isCurrency
-							? Currency.formatCurrency( secondaryItem.value )
+							? formatCurrency( secondaryItem.value )
 							: formatValue(
+									currency,
 									secondaryItem.format,
 									secondaryItem.value
 							  );

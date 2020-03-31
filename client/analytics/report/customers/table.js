@@ -9,7 +9,7 @@ import { Tooltip } from '@wordpress/components';
  * WooCommerce dependencies
  */
 import { Date, Link } from '@woocommerce/components';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { defaultTableDateFormat } from 'lib/date';
 
@@ -117,6 +117,7 @@ class CustomersReportTable extends Component {
 		const {
 			formatCurrency,
 			formatDecimal: getCurrencyFormatDecimal,
+			getCurrency,
 		} = this.context;
 
 		return customers.map( ( customer ) => {
@@ -191,7 +192,11 @@ class CustomersReportTable extends Component {
 					value: email,
 				},
 				{
-					display: formatValue( 'number', ordersCount ),
+					display: formatValue(
+						getCurrency(),
+						'number',
+						ordersCount
+					),
 					value: ordersCount,
 				},
 				{
@@ -229,7 +234,8 @@ class CustomersReportTable extends Component {
 			avg_total_spend: avgTotalSpend = 0,
 			avg_avg_order_value: avgAvgOrderValue = 0,
 		} = totals;
-		const { formatCurrency } = this.context;
+		const { formatCurrency, getCurrency } = this.context;
+		const currency = getCurrency();
 		return [
 			{
 				label: _n(
@@ -238,7 +244,7 @@ class CustomersReportTable extends Component {
 					customersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', customersCount ),
+				value: formatValue( currency, 'number', customersCount ),
 			},
 			{
 				label: _n(
@@ -247,7 +253,7 @@ class CustomersReportTable extends Component {
 					avgOrdersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', avgOrdersCount ),
+				value: formatValue( currency, 'number', avgOrdersCount ),
 			},
 			{
 				label: __( 'average lifetime spend', 'woocommerce-admin' ),

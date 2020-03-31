@@ -16,7 +16,7 @@ import {
 	SummaryListPlaceholder,
 	SummaryNumber,
 } from '@woocommerce/components';
-import { calculateDelta, formatValue } from 'lib/number-format';
+import { calculateDelta, formatValue } from '@woocommerce/number';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
@@ -33,9 +33,10 @@ import { CurrencyContext } from 'lib/currency-context';
  */
 export class ReportSummary extends Component {
 	formatVal( val, type ) {
+		const { formatCurrency, getCurrency } = this.context;
 		return type === 'currency'
-			? this.context.formatCurrency( val )
-			: formatValue( type, val );
+			? formatCurrency( val )
+			: formatValue( getCurrency(), type, val );
 	}
 
 	getValues( key, type ) {

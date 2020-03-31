@@ -10,7 +10,7 @@ import { decodeEntities } from '@wordpress/html-entities';
  */
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -126,7 +126,7 @@ export default class StockReportTable extends Component {
 				},
 				{
 					display: manageStock
-						? formatValue( 'number', stockQuantity )
+						? formatValue( {}, 'number', stockQuantity )
 						: __( 'N/A', 'woocommerce-admin' ),
 					value: stockQuantity,
 				},
@@ -150,23 +150,23 @@ export default class StockReportTable extends Component {
 					products,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', products ),
+				value: formatValue( {}, 'number', products ),
 			},
 			{
 				label: __( 'out of stock', outofstock, 'woocommerce-admin' ),
-				value: formatValue( 'number', outofstock ),
+				value: formatValue( {}, 'number', outofstock ),
 			},
 			{
 				label: __( 'low stock', lowstock, 'woocommerce-admin' ),
-				value: formatValue( 'number', lowstock ),
+				value: formatValue( '{}, number', lowstock ),
 			},
 			{
 				label: __( 'on backorder', onbackorder, 'woocommerce-admin' ),
-				value: formatValue( 'number', onbackorder ),
+				value: formatValue( {}, 'number', onbackorder ),
 			},
 			{
 				label: __( 'in stock', instock, 'woocommerce-admin' ),
-				value: formatValue( 'number', instock ),
+				value: formatValue( {}, 'number', instock ),
 			},
 		];
 	}

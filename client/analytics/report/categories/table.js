@@ -11,7 +11,7 @@ import { map } from 'lodash';
  */
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 
 /**
  * Internal dependencies
@@ -71,7 +71,9 @@ class CategoriesReportTable extends Component {
 		const {
 			render: renderCurrency,
 			formatDecimal: getCurrencyFormatDecimal,
+			getCurrency,
 		} = this.context;
+		const currency = getCurrency();
 
 		return map( categoryStats, ( categoryStat ) => {
 			const {
@@ -97,7 +99,7 @@ class CategoriesReportTable extends Component {
 					value: category && category.name,
 				},
 				{
-					display: formatValue( 'number', itemsSold ),
+					display: formatValue( currency, 'number', itemsSold ),
 					value: itemsSold,
 				},
 				{
@@ -117,13 +119,13 @@ class CategoriesReportTable extends Component {
 							) }
 							type="wc-admin"
 						>
-							{ formatValue( 'number', productsCount ) }
+							{ formatValue( currency, 'number', productsCount ) }
 						</Link>
 					),
 					value: productsCount,
 				},
 				{
-					display: formatValue( 'number', ordersCount ),
+					display: formatValue( currency, 'number', ordersCount ),
 					value: ordersCount,
 				},
 			];
@@ -136,7 +138,8 @@ class CategoriesReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const { formatCurrency } = this.context;
+		const { formatCurrency, getCurrency } = this.context;
+		const currency = getCurrency();
 		return [
 			{
 				label: _n(
@@ -145,7 +148,7 @@ class CategoriesReportTable extends Component {
 					totalResults,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', totalResults ),
+				value: formatValue( currency, 'number', totalResults ),
 			},
 			{
 				label: _n(
@@ -154,7 +157,7 @@ class CategoriesReportTable extends Component {
 					itemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', itemsSold ),
+				value: formatValue( currency, 'number', itemsSold ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
@@ -167,7 +170,7 @@ class CategoriesReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 		];
 	}

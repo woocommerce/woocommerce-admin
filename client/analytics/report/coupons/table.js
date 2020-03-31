@@ -11,7 +11,7 @@ import { map } from 'lodash';
 import { Date, Link } from '@woocommerce/components';
 import { defaultTableDateFormat } from 'lib/date';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -74,6 +74,7 @@ class CouponsReportTable extends Component {
 		const {
 			formatCurrency,
 			formatDecimal: getCurrencyFormatDecimal,
+			getCurrency,
 		} = this.context;
 
 		return map( coupons, ( coupon ) => {
@@ -110,7 +111,7 @@ class CouponsReportTable extends Component {
 			} );
 			const ordersLink = (
 				<Link href={ ordersUrl } type="wc-admin">
-					{ formatValue( 'number', ordersCount ) }
+					{ formatValue( getCurrency(), 'number', ordersCount ) }
 				</Link>
 			);
 
@@ -161,7 +162,8 @@ class CouponsReportTable extends Component {
 			orders_count: ordersCount = 0,
 			amount = 0,
 		} = totals;
-		const { formatCurrency } = this.context;
+		const { formatCurrency, getCurrency } = this.context;
+		const currency = getCurrency();
 		return [
 			{
 				label: _n(
@@ -170,7 +172,7 @@ class CouponsReportTable extends Component {
 					couponsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', couponsCount ),
+				value: formatValue( currency, 'number', couponsCount ),
 			},
 			{
 				label: _n(
@@ -179,7 +181,7 @@ class CouponsReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 			{
 				label: __( 'amount discounted', 'woocommerce-admin' ),

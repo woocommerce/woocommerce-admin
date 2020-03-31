@@ -11,7 +11,7 @@ import { map } from 'lodash';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { getTaxCode } from './utils';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 
 /**
  * Internal dependencies
@@ -73,6 +73,7 @@ class TaxesReportTable extends Component {
 		const {
 			render: renderCurrency,
 			formatDecimal: getCurrencyFormatDecimal,
+			getCurrency,
 		} = this.context;
 
 		return map( taxes, ( tax ) => {
@@ -124,7 +125,11 @@ class TaxesReportTable extends Component {
 					value: getCurrencyFormatDecimal( shippingTax ),
 				},
 				{
-					display: formatValue( 'number', ordersCount ),
+					display: formatValue(
+						getCurrency(),
+						'number',
+						ordersCount
+					),
 					value: ordersCount,
 				},
 			];
@@ -139,7 +144,8 @@ class TaxesReportTable extends Component {
 			shipping_tax: shippingTax = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const { formatCurrency } = this.context;
+		const { formatCurrency, getCurrency } = this.context;
+		const currency = getCurrency();
 		return [
 			{
 				label: _n(
@@ -148,7 +154,7 @@ class TaxesReportTable extends Component {
 					taxesCodes,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', taxesCodes ),
+				value: formatValue( currency, 'number', taxesCodes ),
 			},
 			{
 				label: __( 'total tax', 'woocommerce-admin' ),
@@ -169,7 +175,7 @@ class TaxesReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 		];
 	}

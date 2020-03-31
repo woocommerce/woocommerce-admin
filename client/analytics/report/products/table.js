@@ -12,7 +12,7 @@ import { map } from 'lodash';
  */
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link, Tag } from '@woocommerce/components';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -105,7 +105,9 @@ class ProductsReportTable extends Component {
 		const {
 			render: renderCurrency,
 			formatDecimal: getCurrencyFormatDecimal,
+			getCurrency,
 		} = this.context;
+		const currency = getCurrency();
 
 		return map( data, ( row ) => {
 			const {
@@ -186,7 +188,7 @@ class ProductsReportTable extends Component {
 					value: sku,
 				},
 				{
-					display: formatValue( 'number', itemsSold ),
+					display: formatValue( currency, 'number', itemsSold ),
 					value: itemsSold,
 				},
 				{
@@ -239,7 +241,11 @@ class ProductsReportTable extends Component {
 						.join( ', ' ),
 				},
 				{
-					display: formatValue( 'number', variations.length ),
+					display: formatValue(
+						currency,
+						'number',
+						variations.length
+					),
 					value: variations.length,
 				},
 				manageStock === 'yes'
@@ -255,7 +261,11 @@ class ProductsReportTable extends Component {
 				manageStock === 'yes'
 					? {
 							display: extendedInfoManageStock
-								? formatValue( 'number', stockQuantity )
+								? formatValue(
+										currency,
+										'number',
+										stockQuantity
+								  )
 								: __( 'N/A', 'woocommerce-admin' ),
 							value: stockQuantity,
 					  }
@@ -271,7 +281,8 @@ class ProductsReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const { formatCurrency } = this.context;
+		const { formatCurrency, getCurrency } = this.context;
+		const currency = getCurrency();
 		return [
 			{
 				label: _n(
@@ -280,7 +291,7 @@ class ProductsReportTable extends Component {
 					productsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', productsCount ),
+				value: formatValue( currency, 'number', productsCount ),
 			},
 			{
 				label: _n(
@@ -289,7 +300,7 @@ class ProductsReportTable extends Component {
 					itemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', itemsSold ),
+				value: formatValue( currency, 'number', itemsSold ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
@@ -302,7 +313,7 @@ class ProductsReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 		];
 	}

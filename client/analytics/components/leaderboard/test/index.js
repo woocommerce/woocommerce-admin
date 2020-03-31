@@ -6,7 +6,7 @@ import { mount, shallow } from 'enzyme';
 /**
  * WooCommerce dependencies
  */
-import { numberFormat } from 'lib/number-format';
+import { numberFormat } from '@woocommerce/number';
 import Currency from '@woocommerce/currency';
 
 /**
@@ -31,11 +31,11 @@ const rows = mockData.map( ( row ) => {
 			value: name,
 		},
 		{
-			display: numberFormat( itemsSold ),
+			display: numberFormat( CURRENCY, itemsSold ),
 			value: itemsSold,
 		},
 		{
-			display: numberFormat( ordersCount ),
+			display: numberFormat( CURRENCY, ordersCount ),
 			value: ordersCount,
 		},
 		{
@@ -101,10 +101,10 @@ describe( 'Leaderboard', () => {
 		).toBe( 5 );
 		expect( tableItems.at( 0 ).text() ).toBe( mockData[ 0 ].name );
 		expect( tableItems.at( 1 ).text() ).toBe(
-			numberFormat( mockData[ 0 ].items_sold )
+			numberFormat( CURRENCY, mockData[ 0 ].items_sold )
 		);
 		expect( tableItems.at( 2 ).text() ).toBe(
-			numberFormat( mockData[ 0 ].orders_count )
+			numberFormat( CURRENCY, mockData[ 0 ].orders_count )
 		);
 		expect( tableItems.at( 3 ).text() ).toBe(
 			formatCurrency( mockData[ 0 ].net_revenue )

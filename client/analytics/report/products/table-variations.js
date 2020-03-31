@@ -10,7 +10,7 @@ import { map, get } from 'lodash';
  */
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -90,6 +90,7 @@ class VariationsReportTable extends Component {
 		const {
 			formatCurrency,
 			formatDecimal: getCurrencyFormatDecimal,
+			getCurrency,
 		} = this.context;
 
 		return map( data, ( row ) => {
@@ -133,7 +134,7 @@ class VariationsReportTable extends Component {
 					value: sku,
 				},
 				{
-					display: formatValue( 'number', itemsSold ),
+					display: formatValue( getCurrency(), 'number', itemsSold ),
 					value: itemsSold,
 				},
 				{
@@ -185,7 +186,8 @@ class VariationsReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const { formatCurrency } = this.context;
+		const { formatCurrency, getCurrency } = this.context;
+		const currency = getCurrency();
 		return [
 			{
 				label: _n(
@@ -194,7 +196,7 @@ class VariationsReportTable extends Component {
 					variationsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', variationsCount ),
+				value: formatValue( currency, 'number', variationsCount ),
 			},
 			{
 				label: _n(
@@ -203,7 +205,7 @@ class VariationsReportTable extends Component {
 					itemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', itemsSold ),
+				value: formatValue( currency, 'number', itemsSold ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
@@ -216,7 +218,7 @@ class VariationsReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 		];
 	}
