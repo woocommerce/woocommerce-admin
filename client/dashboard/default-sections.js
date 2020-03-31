@@ -28,6 +28,9 @@ export default applyFilters( DEFAULT_SECTIONS_FILTER, [
 			'taxes/total_tax',
 			'taxes/shipping_tax',
 			'revenue/shipping',
+			'orders/avg_order_value',
+			'revenue/refunds',
+			'revenue/gross_sales',
 		],
 	},
 	{
