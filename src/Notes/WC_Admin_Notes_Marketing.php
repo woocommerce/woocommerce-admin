@@ -48,7 +48,7 @@ class WC_Admin_Notes_Marketing {
 		}
 
 		$note = new WC_Admin_Note();
-		$note->set_title( __( 'WooCommerce marketing hub', 'woocommerce-admin' ) );
+		$note->set_title( __( 'Connect with your audience', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce.', 'woocommerce-admin' ) );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
 		$note->set_icon( 'info' );
