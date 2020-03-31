@@ -983,11 +983,12 @@ class Loader {
 	 * @param int $post_id The deleted post id.
 	 */
 	public static function delete_homepage( $post_id ) {
-		$homepage_id = intval( get_option( 'woocommerce_onboarding_homepage_post_id', false ) );
-		if ( 'page' !== get_post_type( $post_id ) || $homepage_id !== $post_id ) {
+		if ( 'page' !== get_post_type( $post_id ) ) {
 			return;
 		}
-
-		delete_option( 'woocommerce_onboarding_homepage_post_id' );
+		$homepage_id = intval( get_option( 'woocommerce_onboarding_homepage_post_id', false ) );
+		if ( $homepage_id === $post_id ) {
+			delete_option( 'woocommerce_onboarding_homepage_post_id' );
+		}
 	}
 }
