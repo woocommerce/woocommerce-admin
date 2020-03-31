@@ -43,6 +43,7 @@ class OnboardingTasks {
 	 * Constructor
 	 */
 	public function __construct() {
+		// This hook needs to run when options are updated via REST.
 		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'track_completion' ), 10, 2 );
 		add_action( 'add_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
