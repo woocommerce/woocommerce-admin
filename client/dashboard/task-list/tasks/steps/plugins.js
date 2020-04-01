@@ -5,90 +5,101 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { difference, noop } from 'lodash';
+import { noop } from 'lodash';
 import PropTypes from 'prop-types';
-import { withDispatch } from '@wordpress/data';
+import { withSelect, withDispatch } from '@wordpress/data';
 
 /**
- * Internal dependencies
+ * WooCommerce dependencies
  */
-import withSelect from 'wc-api/with-select';
+import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 class Plugins extends Component {
 	constructor() {
 		super( ...arguments );
 
-		this.installAndActivatePlugins = this.installAndActivatePlugins.bind(
-			this
-		);
+		this.state = {
+			hasErrors: false,
+		};
+
+		this.installAndActivate = this.installAndActivate.bind( this );
 		this.skipInstaller = this.skipInstaller.bind( this );
+		this.handleErrors = this.handleErrors.bind( this );
+		this.handleSuccess = this.handleSuccess.bind( this );
 	}
 
 	componentDidMount() {
 		const { autoInstall } = this.props;
 
 		if ( autoInstall ) {
-			this.installAndActivatePlugins();
+			this.installAndActivate();
 		}
 	}
 
-	componentDidUpdate( prevProps ) {
-		const {
-			activatedPlugins,
-			activatePlugins,
-			onComplete,
-			createNotice,
-			errors,
-			installedPlugins,
-			isRequesting,
-			pluginSlugs,
-			onError,
-			hasErrors,
-		} = this.props;
-
-		const newErrors = difference( errors, prevProps.errors );
-		newErrors.map( ( error ) => createNotice( 'error', error ) );
-
-		if (
-			! isRequesting &&
-			installedPlugins.length === pluginSlugs.length &&
-			activatedPlugins.length !== pluginSlugs.length &&
-			prevProps.installedPlugins.length !== installedPlugins.length
-		) {
-			activatePlugins( pluginSlugs );
-		}
-
-		if (
-			pluginSlugs.length > 0 &&
-			activatedPlugins.length === pluginSlugs.length
-		) {
-			createNotice(
-				'success',
-				__(
-					'Plugins were successfully installed and activated.',
-					'woocommerce-admin'
-				)
-			);
-			onComplete();
-		}
-
-		if ( ! prevProps.hasErrors && hasErrors ) {
-			onError();
-		}
-	}
-
-	async installAndActivatePlugins( event ) {
+	async installAndActivate( event ) {
 		if ( event ) {
 			event.preventDefault();
 		}
 
+		const {
+			isRequesting,
+			installPlugin,
+			activatePlugins,
+			pluginSlugs,
+		} = this.props;
+
 		// Avoid double activating.
-		const { isRequesting, installPlugins, pluginSlugs } = this.props;
 		if ( isRequesting ) {
 			return false;
 		}
 
-		installPlugins( pluginSlugs );
+		const installs = await Promise.all(
+			pluginSlugs.map( async ( slug ) => {
+				return await installPlugin( slug );
+			} )
+		);
+
+		const installErrors = installs.filter(
+			( install ) => install.status !== 'success'
+		);
+
+		if ( installErrors.length ) {
+			this.handleErrors( installErrors );
+			return;
+		}
+
+		const activations = await activatePlugins( pluginSlugs );
+
+		if ( activations.status === 'success' ) {
+			this.handleSuccess( activations.activePlugins );
+			return;
+		}
+
+		this.handleErrors( activations );
+	}
+
+	handleErrors( errors ) {
+		const { onError, createNotice } = this.props;
+
+		errors.forEach( ( error ) => {
+			createNotice( 'error', error );
+		} );
+
+		this.setState( { hasErrors: true } );
+		onError( errors );
+	}
+
+	handleSuccess( activePlugins ) {
+		const { createNotice, onComplete } = this.props;
+
+		createNotice(
+			'success',
+			__(
+				'Plugins were successfully installed and activated.',
+				'woocommerce-admin'
+			)
+		);
+		onComplete( activePlugins );
 	}
 
 	skipInstaller() {
@@ -110,7 +121,7 @@ class Plugins extends Component {
 					<Button
 						isPrimary
 						isBusy={ isRequesting }
-						onClick={ this.installAndActivatePlugins }
+						onClick={ this.installAndActivate }
 					>
 						{ __( 'Retry', 'woocommerce-admin' ) }
 					</Button>
@@ -147,7 +158,7 @@ class Plugins extends Component {
 				<Button
 					isBusy={ isRequesting }
 					isPrimary
-					onClick={ this.installAndActivatePlugins }
+					onClick={ this.installAndActivate }
 				>
 					{ __( 'Install & enable', 'woocommerce-admin' ) }
 				</Button>
@@ -189,55 +200,33 @@ Plugins.defaultProps = {
 };
 
 export default compose(
-	withSelect( ( select, props ) => {
+	withSelect( ( select ) => {
 		const {
-			getPluginInstallations,
-			getPluginInstallationErrors,
-			getPluginActivations,
-			getPluginActivationErrors,
-			isPluginActivateRequesting,
-			isPluginInstallRequesting,
-		} = select( 'wc-api' );
-		const pluginSlugs =
-			props.pluginSlugs || Plugins.defaultProps.pluginSlugs;
+			getActivePlugins,
+			getInstalledPlugins,
+			isPluginsRequesting,
+		} = select( PLUGINS_STORE_NAME );
 
 		const isRequesting =
-			isPluginActivateRequesting() || isPluginInstallRequesting();
-
-		const activationErrors = getPluginActivationErrors( pluginSlugs );
-		const activatedPlugins = Object.keys(
-			getPluginActivations( pluginSlugs )
-		);
-		const installationErrors = getPluginInstallationErrors( pluginSlugs );
-		const installedPlugins = Object.keys(
-			getPluginInstallations( pluginSlugs )
-		);
-
-		const errors = [];
-		Object.keys( activationErrors ).map( ( plugin ) =>
-			errors.push( activationErrors[ plugin ].message )
-		);
-		Object.keys( installationErrors ).map( ( plugin ) =>
-			errors.push( installationErrors[ plugin ].message )
-		);
-		const hasErrors = Boolean( errors.length );
+			isPluginsRequesting( 'activatePlugins' ) ||
+			isPluginsRequesting( 'installPlugin' );
 
 		return {
-			activatedPlugins,
-			installedPlugins,
-			errors,
-			hasErrors,
 			isRequesting,
+			activePlugins: getActivePlugins(),
+			installedPlugins: getInstalledPlugins(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { activatePlugins, installPlugins } = dispatch( 'wc-api' );
+		const { activatePlugins, installPlugin } = dispatch(
+			PLUGINS_STORE_NAME
+		);
 
 		return {
 			activatePlugins,
 			createNotice,
-			installPlugins,
+			installPlugin,
 		};
 	} )
 )( Plugins );

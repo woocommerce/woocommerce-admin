@@ -60,6 +60,7 @@ global.wcSettings = {
 		woocommerce_actionable_order_statuses: [],
 		woocommerce_excluded_report_order_statuses: [],
 	},
+	dataEndpoints: {},
 };
 
 wordPressPackages.forEach( ( lib ) => {

@@ -17,6 +17,7 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
+import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -349,13 +350,13 @@ export default compose(
 	withSelect( ( select ) => {
 		const {
 			getProfileItems,
-			getActivePlugins,
 			getOptions,
 			getUpdateOptionsError,
 			isJetpackConnected,
 			isUpdateOptionsRequesting,
 		} = select( 'wc-api' );
 
+		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 		const options = getOptions( [
