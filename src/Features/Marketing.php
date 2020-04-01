@@ -122,7 +122,6 @@ class Marketing {
 		$plugins = get_transient( self::RECOMMENDED_PLUGINS_TRANSIENT );
 
 		if ( false === $plugins ) {
-			// TODO update placeholder URL.
 			$request = wp_remote_get( 'https://woocommerce.com/wp-json/wccom/marketing-tab/1.0/recommendations.json' );
 			$plugins = [];
 
