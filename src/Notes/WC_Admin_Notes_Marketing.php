@@ -27,13 +27,6 @@ class WC_Admin_Notes_Marketing {
 	const NOTE_NAME_INTRO = 'wc-admin-marketing-intro';
 
 	/**
-	 * Attach hooks.
-	 */
-	public function __construct() {
-		add_action( 'woocommerce_note_action_install-now', array( $this, 'install' ) );
-	}
-
-	/**
 	 * Maybe add a note introducing the marketing hub.
 	 */
 	public static function possibly_add_note_intro() {
