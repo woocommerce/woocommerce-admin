@@ -30,7 +30,6 @@ class Benefits extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
-			isActioned: false,
 			isInstalling: false,
 			isPending: false,
 		};
@@ -51,15 +50,15 @@ class Benefits extends Component {
 		this.skipPluginInstall = this.skipPluginInstall.bind( this );
 	}
 
-	componentDidUpdate( prevProps ) {
+	componentDidUpdate( prevProps, prevState ) {
 		const { goToNextStep, isRequesting } = this.props;
-		const { isActioned, isInstalling, isPending } = this.state;
+		const { isInstalling, isPending } = this.state;
 
-		if ( ! isRequesting && prevProps.isRequesting ) {
-			this.setState( { isPending: false } );
-		}
-
-		if ( isActioned && ! isInstalling && ! isPending && ! isRequesting ) {
+		if (
+			isPending &&
+			! isRequesting && ! isInstalling &&
+			( prevProps.isRequesting || prevState.isInstalling )
+		) {
 			goToNextStep();
 		}
 	}
@@ -71,7 +70,7 @@ class Benefits extends Component {
 			updateProfileItems,
 		} = this.props;
 
-		this.setState( { isActioned: true, isPending: true } );
+		this.setState( { isPending: true } );
 
 		const plugins = this.isJetpackActive ? 'skipped-wcs' : 'skipped';
 		await updateProfileItems( { plugins } );
@@ -96,7 +95,6 @@ class Benefits extends Component {
 		const { updateProfileItems, updateOptions } = this.props;
 
 		this.setState( {
-			isActioned: true,
 			isInstalling: true,
 			isPending: true,
 		} );
@@ -209,7 +207,8 @@ class Benefits extends Component {
 				<div className="woocommerce-profile-wizard__card-actions">
 					<Button
 						isPrimary
-						isBusy={ isInstalling || isPending }
+						isBusy={ isPending && isInstalling }
+						disabled={ isPending }
 						onClick={ this.startPluginInstall }
 						className="woocommerce-profile-wizard__continue"
 					>
@@ -217,7 +216,8 @@ class Benefits extends Component {
 					</Button>
 					<Button
 						isDefault
-						isBusy={ isPending }
+						isBusy={ isPending && ! isInstalling }
+						disabled={ isPending }
 						className="woocommerce-profile-wizard__skip"
 						onClick={ this.skipPluginInstall }
 					>
