@@ -262,19 +262,13 @@ export default compose(
 
 		const primaryQuery = {
 			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
-			before: appendTimestamp(
-				endPrimary,
-				endPrimary.isSame( moment(), 'day' ) ? 'now' : 'end'
-			),
+			before: appendTimestamp( endPrimary, 'end' ),
 			stats: statKeys,
 		};
 
 		const secondaryQuery = {
 			after: appendTimestamp( datesFromQuery.secondary.after, 'start' ),
-			before: appendTimestamp(
-				endSecondary,
-				endSecondary.isSame( moment(), 'day' ) ? 'now' : 'end'
-			),
+			before: appendTimestamp( endSecondary, 'end' ),
 			stats: statKeys,
 		};
 

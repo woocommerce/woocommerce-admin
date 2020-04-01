@@ -11,6 +11,8 @@ namespace Automattic\WooCommerce\Admin\API\Reports\PerformanceIndicators;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\API\Reports\CacheableTraits;
+
 /**
  * REST API Reports Performance indicators controller class.
  *
@@ -18,6 +20,17 @@ defined( 'ABSPATH' ) || exit;
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller {
+	/**
+	 * Cacheable Traits.
+	 */
+	use CacheableTraits;
+
+	/**
+	 * Cache identifier.
+	 *
+	 * @var string
+	 */
+	protected $cache_key = 'performance-indicators';
 
 	/**
 	 * Endpoint namespace.
@@ -215,8 +228,6 @@ class Controller extends \WC_REST_Reports_Controller {
 		$response->header( 'X-WP-Total', count( $data ) );
 		$response->header( 'X-WP-TotalPages', 1 );
 
-		$base = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) );
-
 		return $response;
 	}
 
@@ -302,59 +313,66 @@ class Controller extends \WC_REST_Reports_Controller {
 	 * @return array|WP_Error
 	 */
 	public function get_items( $request ) {
-		$indicator_data = $this->get_indicator_data();
-		if ( is_wp_error( $indicator_data ) ) {
-			return $indicator_data;
-		}
-
 		$query_args = $this->prepare_reports_query( $request );
 		if ( empty( $query_args['stats'] ) ) {
 			return new \WP_Error( 'woocommerce_analytics_performance_indicators_empty_query', __( 'A list of stats to query must be provided.', 'woocommerce-admin' ), 400 );
 		}
 
-		$stats = array();
-		foreach ( $query_args['stats'] as $stat ) {
-			$is_error = false;
+		$cache_key = $this->get_cache_key( $query_args );
+		$stats     = $this->get_cached_data( $cache_key );
 
-			$pieces = $this->get_stats_parts( $stat );
-			$report = $pieces[0];
-			$chart  = $pieces[1];
-
-			if ( ! in_array( $stat, $this->allowed_stats ) ) {
-				continue;
+		if ( false === $stats ) {
+			$indicator_data = $this->get_indicator_data();
+			if ( is_wp_error( $indicator_data ) ) {
+				return $indicator_data;
 			}
 
-			$response = $this->get_stats_data( $report, $query_args );
+			$stats = array();
+			foreach ( $query_args['stats'] as $stat ) {
+				$is_error = false;
 
-			if ( is_wp_error( $response ) ) {
-				return $response;
-			}
+				$pieces = $this->get_stats_parts( $stat );
+				$report = $pieces[0];
+				$chart  = $pieces[1];
 
-			$data   = $response->get_data();
-			$format = $this->formats[ $stat ];
-			$label  = $this->labels[ $stat ];
+				if ( ! in_array( $stat, $this->allowed_stats ) ) {
+					continue;
+				}
 
-			if ( 200 !== $response->get_status() || ! isset( $data['totals'][ $chart ] ) ) {
+				$response = $this->get_stats_data( $report, $query_args );
+
+				if ( is_wp_error( $response ) ) {
+					return $response;
+				}
+
+				$data   = $response->get_data();
+				$format = $this->formats[ $stat ];
+				$label  = $this->labels[ $stat ];
+
+				if ( 200 !== $response->get_status() || ! isset( $data['totals'][ $chart ] ) ) {
+					$stats[] = (object) array(
+						'stat'   => $stat,
+						'chart'  => $chart,
+						'label'  => $label,
+						'format' => $format,
+						'value'  => null,
+					);
+					continue;
+				}
+
 				$stats[] = (object) array(
 					'stat'   => $stat,
 					'chart'  => $chart,
 					'label'  => $label,
 					'format' => $format,
-					'value'  => null,
+					'value'  => $data['totals'][ $chart ],
 				);
-				continue;
 			}
 
-			$stats[] = (object) array(
-				'stat'   => $stat,
-				'chart'  => $chart,
-				'label'  => $label,
-				'format' => $format,
-				'value'  => $data['totals'][ $chart ],
-			);
-		}
+			usort( $stats, array( $this, 'sort' ) );
 
-		usort( $stats, array( $this, 'sort' ) );
+			$this->set_cached_data( $cache_key, $stats );
+		}
 
 		$objects = array();
 		foreach ( $stats as $stat ) {
@@ -365,8 +383,6 @@ class Controller extends \WC_REST_Reports_Controller {
 		$response = rest_ensure_response( $objects );
 		$response->header( 'X-WP-Total', count( $stats ) );
 		$response->header( 'X-WP-TotalPages', 1 );
-
-		$base = add_query_arg( $request->get_query_params(), rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) );
 
 		return $response;
 	}
