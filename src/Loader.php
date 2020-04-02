@@ -784,6 +784,15 @@ class Loader {
 	public static function add_settings( $settings ) {
 		$statuses   = self::get_order_statuses( wc_get_order_statuses() );
 		$settings[] = array(
+			'id'          => 'woocommerce_included_report_order_statuses',
+			'option_key'  => 'woocommerce_included_report_order_statuses',
+			'label'       => __( 'Included report order statuses', 'woocommerce-admin' ),
+			'description' => __( 'Statuses that should be included when calculating report totals.', 'woocommerce-admin' ),
+			'default'     => array( 'processing', 'on-hold', 'completed' ),
+			'type'        => 'multiselect',
+			'options'     => $statuses,
+		);
+		$settings[] = array(
 			'id'          => 'woocommerce_excluded_report_order_statuses',
 			'option_key'  => 'woocommerce_excluded_report_order_statuses',
 			'label'       => __( 'Excluded report order statuses', 'woocommerce-admin' ),

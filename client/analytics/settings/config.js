@@ -31,13 +31,43 @@ const filteredOrderStatuses = Object.keys( ORDER_STATUSES )
 			value: key,
 			label: ORDER_STATUSES[ key ],
 			description: sprintf(
-				__( 'Exclude the %s status from reports', 'woocommerce-admin' ),
+				__( 'Include the %s status in reports', 'woocommerce-admin' ),
 				ORDER_STATUSES[ key ]
 			),
 		};
 	} );
 
 export const config = applyFilters( SETTINGS_FILTER, {
+	woocommerce_included_report_order_statuses: {
+		label: __( 'Included Statuses:', 'woocommerce-admin' ),
+		inputType: 'checkboxGroup',
+		options: [
+			{
+				key: 'defaultStatuses',
+				options: filteredOrderStatuses.filter( status =>
+					DEFAULT_ORDER_STATUSES.includes( status.value )
+				),
+			},
+			{
+				key: 'customStatuses',
+				label: __( 'Custom Statuses', 'woocommerce-admin' ),
+				options: filteredOrderStatuses.filter(
+					status => ! DEFAULT_ORDER_STATUSES.includes( status.value )
+				),
+			},
+		],
+		helpText: interpolateComponents( {
+			mixedString: __(
+				'Orders with these statuses are included in your reports totals. ' +
+					'The {{strong}}Refunded{{/strong}} status is always included.',
+				'woocommerce-admin'
+			),
+			components: {
+				strong: <strong />,
+			},
+		} ),
+		defaultValue: [ 'processing', 'on-hold', 'completed' ],
+	},
 	woocommerce_excluded_report_order_statuses: {
 		label: __( 'Excluded Statuses:', 'woocommerce-admin' ),
 		inputType: 'checkboxGroup',
