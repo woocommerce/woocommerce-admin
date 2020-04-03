@@ -85,7 +85,7 @@ function wc_admin_update_0251_db_version() {
 function wc_admin_update_104_migration_excluded_order_status() {
 	$order_statuses = array_keys( Loader::get_order_statuses( wc_get_order_statuses() ) );
 	$black_list     = get_option( 'woocommerce_excluded_report_order_statuses', array( 'pending', 'cancelled', 'failed' ) );
-	$white_list     = array_values( array_diff( $order_statuses, $black_list ) );
+	$white_list     = array_values( array_diff( $order_statuses, $black_list, array( 'refunded' ) ) );
 
 	update_option( 'woocommerce_included_report_order_statuses', $white_list );
 	delete_option( 'woocommerce_excluded_report_order_statuses' );
