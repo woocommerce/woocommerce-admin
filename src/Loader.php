@@ -793,15 +793,6 @@ class Loader {
 			'options'     => $statuses,
 		);
 		$settings[] = array(
-			'id'          => 'woocommerce_excluded_report_order_statuses',
-			'option_key'  => 'woocommerce_excluded_report_order_statuses',
-			'label'       => __( 'Excluded report order statuses', 'woocommerce-admin' ),
-			'description' => __( 'Statuses that should not be included when calculating report totals.', 'woocommerce-admin' ),
-			'default'     => array( 'pending', 'cancelled', 'failed' ),
-			'type'        => 'multiselect',
-			'options'     => $statuses,
-		);
-		$settings[] = array(
 			'id'          => 'woocommerce_actionable_order_statuses',
 			'option_key'  => 'woocommerce_actionable_order_statuses',
 			'label'       => __( 'Actionable order statuses', 'woocommerce-admin' ),

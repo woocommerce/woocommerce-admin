@@ -68,36 +68,6 @@ export const config = applyFilters( SETTINGS_FILTER, {
 		} ),
 		defaultValue: [ 'processing', 'on-hold', 'completed' ],
 	},
-	woocommerce_excluded_report_order_statuses: {
-		label: __( 'Excluded Statuses:', 'woocommerce-admin' ),
-		inputType: 'checkboxGroup',
-		options: [
-			{
-				key: 'defaultStatuses',
-				options: filteredOrderStatuses.filter( status =>
-					DEFAULT_ORDER_STATUSES.includes( status.value )
-				),
-			},
-			{
-				key: 'customStatuses',
-				label: __( 'Custom Statuses', 'woocommerce-admin' ),
-				options: filteredOrderStatuses.filter(
-					status => ! DEFAULT_ORDER_STATUSES.includes( status.value )
-				),
-			},
-		],
-		helpText: interpolateComponents( {
-			mixedString: __(
-				'Orders with these statuses are excluded from the totals in your reports. ' +
-					'The {{strong}}Refunded{{/strong}} status can not be excluded.',
-				'woocommerce-admin'
-			),
-			components: {
-				strong: <strong />,
-			},
-		} ),
-		defaultValue: [ 'pending', 'cancelled', 'failed' ],
-	},
 	woocommerce_actionable_order_statuses: {
 		label: __( 'Actionable Statuses:', 'woocommerce-admin' ),
 		inputType: 'checkboxGroup',
