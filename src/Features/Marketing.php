@@ -114,26 +114,64 @@ class Marketing {
 	}
 
 	/**
-	 * Load recommended plugins from WooCommerce.com
+	 * Return recommended plugins
 	 *
 	 * @return array
 	 */
 	public function get_recommended_plugins() {
-		$plugins = get_transient( self::RECOMMENDED_PLUGINS_TRANSIENT );
 
-		if ( false === $plugins ) {
-			$request = wp_remote_get( 'https://woocommerce.com/wp-json/wccom/marketing-tab/1.0/recommendations.json' );
-			$plugins = [];
+		$recommended_plugins = [
+			[
+				'title'       => 'AutomateWoo',
+				'description' => 'Convert and retain customers with automated marketing that does the hard work for you.',
+				'url'         => 'https://woocommerce.com/products/automatewoo/?utm_source=marketinghub&utm_medium=product&utm_campaign=wcaddons',
+				'icon'        => plugins_url( 'images/marketing/recommended-icons/automatewoo.svg', WC_ADMIN_PLUGIN_FILE ),
+				'product'     => 'automatewoo',
+				'plugin'      => 'automatewoo/automatewoo.php',
+			],
+			[
+				'title'       => 'Mailchimp',
+				'description' => 'Send targeted campaigns, recover abandoned carts and more with Mailchimp.',
+				'url'         => 'https://woocommerce.com/products/mailchimp-for-woocommerce/?utm_source=marketinghub&utm_medium=product&utm_campaign=wcaddons',
+				'icon'        => plugins_url( 'images/marketing/recommended-icons/mailchimp-for-woocommerce.svg', WC_ADMIN_PLUGIN_FILE ),
+				'product'     => 'mailchimp-for-woocommerce',
+				'plugin'      => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
+			],
+			[
+				'title'       => 'Facebook for WooCommerce',
+				'description' => 'Grow your business by targeting the right people & driving sales with Facebook.',
+				'url'         => 'https://woocommerce.com/products/facebook/?utm_source=marketinghub&utm_medium=product&utm_campaign=wcaddons',
+				'icon'        => plugins_url( 'images/marketing/recommended-icons/facebook.svg', WC_ADMIN_PLUGIN_FILE ),
+				'product'     => 'facebook',
+				'plugin'      => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
+			],
+			[
+				'title'       => 'Google Ads for WooCommerce',
+				'description' => 'Get the most from your marketing dollars with the Google Ads extension, powered by Kliken.',
+				'url'         => 'https://woocommerce.com/products/google-ads/?utm_source=marketinghub&utm_medium=product&utm_campaign=wcaddons',
+				'icon'        => plugins_url( 'images/marketing/recommended-icons/google-ads.svg', WC_ADMIN_PLUGIN_FILE ),
+				'product'     => 'google-ads',
+				'plugin'      => 'kliken-marketing-for-google/kliken-marketing-for-google.php',
+			],
+			[
+				'title'       => 'HubSpot for WooCommerce',
+				'description' => 'Grow traffic, convert leads, close deals, and turn customers into promoters.',
+				'url'         => 'https://woocommerce.com/products/hubspot-for-woocommerce/?utm_source=marketinghub&utm_medium=product&utm_campaign=wcaddons',
+				'icon'        => plugins_url( 'images/marketing/recommended-icons/hubspot-integration.svg', WC_ADMIN_PLUGIN_FILE ),
+				'product'     => 'hubspot-for-woocommerce',
+				'plugin'      => 'hubwoo-integration/hubspot-woocommerce-integration.php',
+			],
+			[
+				'title'       => 'Amazon & eBay Integration',
+				'description' => 'List your entire WooCommerce product catalog on Amazon and eBay in minutes.',
+				'url'         => 'https://woocommerce.com/products/amazon-ebay-integration/?utm_source=marketinghub&utm_medium=product&utm_campaign=wcaddons',
+				'icon'        => plugins_url( 'images/marketing/recommended-icons/amazon-ebay-integration.svg', WC_ADMIN_PLUGIN_FILE ),
+				'product'     => 'amazon-ebay-integration',
+				'plugin'      => 'codistoconnect/connect.php',
+			],
+		];
 
-			if ( ! is_wp_error( $request ) && 200 === $request['response']['code'] ) {
-				$plugins = json_decode( $request['body'], true );
-			}
-
-			// Cache an empty result to avoid repeated failed requests.
-			set_transient( self::RECOMMENDED_PLUGINS_TRANSIENT, $plugins, 3 * DAY_IN_SECONDS );
-		}
-
-		return array_values( $plugins );
+		return array_values( $recommended_plugins );
 	}
 
 	/**
