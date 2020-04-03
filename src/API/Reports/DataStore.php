@@ -564,14 +564,14 @@ class DataStore extends SqlQuery {
 	}
 
 	/**
-	 * Get the excluded order statuses used when calculating reports.
+	 * Get the included order statuses used when calculating reports.
 	 *
 	 * @return array
 	 */
-	protected static function get_excluded_report_order_statuses() {
-		$excluded_statuses = \WC_Admin_Settings::get_option( 'woocommerce_excluded_report_order_statuses', array( 'pending', 'failed', 'cancelled' ) );
-		$excluded_statuses = array_merge( array( 'trash' ), $excluded_statuses );
-		return apply_filters( 'woocommerce_analytics_excluded_order_statuses', $excluded_statuses );
+	protected static function get_included_report_order_statuses() {
+		$included_statuses = \WC_Admin_Settings::get_option( 'woocommerce_included_report_order_statuses', array( 'processing', 'on-hold', 'completed' ) );
+		$included_statuses = array_merge( array( 'refunded' ), $included_statuses );
+		return apply_filters( 'woocommerce_analytics_included_order_statuses', $included_statuses );
 	}
 
 	/**
@@ -1076,22 +1076,22 @@ class DataStore extends SqlQuery {
 		global $wpdb;
 
 		$subqueries        = array();
+		$included_statuses = array();
 		$excluded_statuses = array();
 		if ( isset( $query_args['status_is'] ) && is_array( $query_args['status_is'] ) && count( $query_args['status_is'] ) > 0 ) {
-			$allowed_statuses = array_map( array( $this, 'normalize_order_status' ), $query_args['status_is'] );
-			if ( $allowed_statuses ) {
-				$subqueries[] = "{$wpdb->prefix}wc_order_stats.status IN ( '" . implode( "','", $allowed_statuses ) . "' )";
-			}
+			$included_statuses = array_map( array( $this, 'normalize_order_status' ), $query_args['status_is'] );
 		}
 
 		if ( isset( $query_args['status_is_not'] ) && is_array( $query_args['status_is_not'] ) && count( $query_args['status_is_not'] ) > 0 ) {
 			$excluded_statuses = array_map( array( $this, 'normalize_order_status' ), $query_args['status_is_not'] );
 		}
 
-		if ( ( ! isset( $query_args['status_is'] ) || empty( $query_args['status_is'] ) )
-			&& ( ! isset( $query_args['status_is_not'] ) || empty( $query_args['status_is_not'] ) )
-		) {
-			$excluded_statuses = array_map( array( $this, 'normalize_order_status' ), $this->get_excluded_report_order_statuses() );
+		if ( empty( $included_statuses ) && empty( $excluded_statuses ) ) {
+			$included_statuses = array_map( array( $this, 'normalize_order_status' ), $this->get_included_report_order_statuses() );
+		}
+
+		if ( $included_statuses ) {
+			$subqueries[] = "{$wpdb->prefix}wc_order_stats.status IN ( '" . implode( "','", $included_statuses ) . "' )";
 		}
 
 		if ( $excluded_statuses ) {

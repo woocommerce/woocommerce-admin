@@ -558,17 +558,17 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function get_oldest_orders( $customer_id ) {
 		global $wpdb;
 		$orders_table                = $wpdb->prefix . 'wc_order_stats';
-		$excluded_statuses           = array_map( array( __CLASS__, 'normalize_order_status' ), self::get_excluded_report_order_statuses() );
-		$excluded_statuses_condition = '';
-		if ( ! empty( $excluded_statuses ) ) {
-			$excluded_statuses_str       = implode( "','", $excluded_statuses );
-			$excluded_statuses_condition = "AND status NOT IN ('{$excluded_statuses_str}')";
+		$included_statuses           = array_map( array( __CLASS__, 'normalize_order_status' ), self::get_included_report_order_statuses() );
+		$included_statuses_condition = '';
+		if ( ! empty( $included_statuses ) ) {
+			$included_statuses_str       = implode( "','", $included_statuses );
+			$included_statuses_condition = "AND status IN ('{$included_statuses_str}')";
 		}
 
 		return $wpdb->get_results(
 			$wpdb->prepare(
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"SELECT order_id, date_created FROM {$orders_table} WHERE customer_id = %d {$excluded_statuses_condition} ORDER BY date_created, order_id ASC LIMIT 2",
+				"SELECT order_id, date_created FROM {$orders_table} WHERE customer_id = %d {$included_statuses_condition} ORDER BY date_created, order_id ASC LIMIT 2",
 				$customer_id
 			)
 		);

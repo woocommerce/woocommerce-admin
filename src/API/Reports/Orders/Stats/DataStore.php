@@ -594,11 +594,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$first_order       = $oldest_orders[0];
 		$second_order      = isset( $oldest_orders[1] ) ? $oldest_orders[1] : false;
-		$excluded_statuses = self::get_excluded_report_order_statuses();
+		$included_statuses = self::get_included_report_order_statuses();
 
 		// Order is older than previous first order.
 		if ( $order->get_date_created() < wc_string_to_datetime( $first_order->date_created ) &&
-			! in_array( $order->get_status(), $excluded_statuses, true )
+			in_array( $order->get_status(), $included_statuses, true )
 		) {
 			self::set_customer_first_order( $customer_id, $order->get_id() );
 			return false;
@@ -610,9 +610,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$date_change = $second_order &&
 			$order->get_date_created() > wc_string_to_datetime( $first_order->date_created ) &&
 			wc_string_to_datetime( $second_order->date_created ) < $order->get_date_created();
-		// Status has changed to an excluded status and next oldest order is now the first order.
+		// Status has changed to a non-included status and next oldest order is now the first order.
 		$status_change = $second_order &&
-			in_array( $order->get_status(), $excluded_statuses, true );
+			! in_array( $order->get_status(), $included_statuses, true );
 		if ( $is_first_order && ( $date_change || $status_change ) ) {
 			self::set_customer_first_order( $customer_id, $second_order->order_id );
 			return true;
