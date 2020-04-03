@@ -74,7 +74,7 @@ class Loader {
 		add_filter( 'woocommerce_settings_groups', array( __CLASS__, 'add_settings_group' ) );
 		add_filter( 'woocommerce_settings-wc_admin', array( __CLASS__, 'add_settings' ) );
 		add_filter( 'option_woocommerce_actionable_order_statuses', array( __CLASS__, 'filter_invalid_statuses' ) );
-		add_filter( 'option_woocommerce_excluded_report_order_statuses', array( __CLASS__, 'filter_invalid_statuses' ) );
+		add_filter( 'option_woocommerce_included_report_order_statuses', array( __CLASS__, 'filter_invalid_statuses' ) );
 		add_action( 'admin_head', array( __CLASS__, 'remove_notices' ) );
 		add_action( 'admin_notices', array( __CLASS__, 'inject_before_notices' ), -9999 );
 		add_action( 'admin_notices', array( __CLASS__, 'inject_after_notices' ), PHP_INT_MAX );
