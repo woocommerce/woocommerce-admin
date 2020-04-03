@@ -8,6 +8,7 @@
  */
 
 use \Automattic\WooCommerce\Admin\Install as Installer;
+use \Automattic\WooCommerce\Admin\Loader as Loader;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
 
 /**
@@ -75,4 +76,24 @@ function wc_admin_update_0251_remove_unsnooze_action() {
  */
 function wc_admin_update_0251_db_version() {
 	Installer::update_db_version( '0.25.1' );
+}
+
+/**
+ * Convert the "excluded" order status black list into an "included" white list.
+ * See: https://github.com/woocommerce/woocommerce-admin/issues/4050.
+ */
+function wc_admin_update_104_migration_excluded_order_status() {
+	$order_statuses = array_keys( Loader::get_order_statuses( wc_get_order_statuses() ) );
+	$black_list     = get_option( 'woocommerce_excluded_report_order_statuses', array( 'pending', 'cancelled', 'failed' ) );
+	$white_list     = array_values( array_diff( $order_statuses, $black_list ) );
+
+	update_option( 'woocommerce_included_report_order_statuses', $white_list );
+	delete_option( 'woocommerce_excluded_report_order_statuses' );
+}
+
+/**
+ * Update DB Version.
+ */
+function wc_admin_update_104_db_version() {
+	Installer::update_db_version( '1.0.4' );
 }
