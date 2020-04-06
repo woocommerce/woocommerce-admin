@@ -103,25 +103,19 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 	 * Installs and activates the specified plugin.
 	 *
 	 * @param string $plugin The plugin slug.
-	 *
-	 * @return boolean If the plugin was installed and activated.
 	 */
 	private function install_and_activate_plugin( $plugin ) {
 		$install_request = array( 'plugin' => $plugin );
 		$installer       = new \Automattic\WooCommerce\Admin\API\OnboardingPlugins();
 		$result          = $installer->install_plugin( $install_request );
 
+		// @todo Use the error statuses to decide whether or not to action the note.
 		if ( is_wp_error( $result ) ) {
-			return false;
+			return;
 		}
 
 		$activate_request = array( 'plugins' => $plugin );
-		$result           = $installer->activate_plugins( $activate_request );
 
-		if ( is_wp_error( $result ) ) {
-			return false;
-		}
-
-		return true;
+		$installer->activate_plugins( $activate_request );
 	}
 }
