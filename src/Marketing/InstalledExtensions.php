@@ -234,7 +234,7 @@ class InstalledExtensions {
 			$codisto_merchantid = get_option( 'codisto_merchantid' );
 
 			// Use same check as codisto admin tabs.
-			if ( is_numeric( $merchantid ) ) {
+			if ( is_numeric( $codisto_merchantid ) ) {
 				$data['status'] = 'configured';
 			}
 
