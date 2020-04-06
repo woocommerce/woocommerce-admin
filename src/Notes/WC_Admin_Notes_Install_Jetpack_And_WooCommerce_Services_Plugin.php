@@ -23,6 +23,10 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_note_action_install-jetpack-and-woocommerce-services-plugins', array( $this, 'install_jetpack_and_woocommerce_services_plugins' ) );
+
+		$notes_filters = new WC_Admin_Notes_Filters();
+		add_action( 'activate_jetpack/jetpack.php', array( $notes_filters, 'action_jetpack_woocommerce_services_activation_note' ) );
+		add_action( 'activate_woocommerce-services/woocommerce-services.php', array( $notes_filters, 'action_jetpack_woocommerce_services_activation_note' ) );
 	}
 
 	/**
