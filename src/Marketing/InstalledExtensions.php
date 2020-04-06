@@ -240,6 +240,7 @@ class InstalledExtensions {
 
 			$data['settingsUrl'] = admin_url( 'admin.php?page=codisto-settings' );
 			$data['docsUrl']     = 'https://docs.woocommerce.com/document/getting-started-with-woocommerce-amazon-ebay-integration/';
+			$data['supportUrl']  = 'https://get.codisto.help/hc/en-us/categories/204467528';
 		}
 
 		return $data;
