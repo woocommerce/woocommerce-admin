@@ -44,7 +44,12 @@ class Square extends Component {
 	}
 
 	async connect() {
-		const { createNotice, options, updateOptions } = this.props;
+		const {
+			createNotice,
+			hasCbdIndustry,
+			options,
+			updateOptions,
+		} = this.props;
 		this.setState( { isPending: true } );
 
 		updateOptions( {
@@ -60,9 +65,12 @@ class Square extends Component {
 		);
 
 		try {
-			// It's necessary to declare the new tab before the async call,
-			// otherwise, it won't be possible to open it.
-			const newWindow = window.open( '/', '_blank' );
+			let newWindow = null;
+			if ( hasCbdIndustry ) {
+				// It's necessary to declare the new tab before the async call,
+				// otherwise, it won't be possible to open it.
+				newWindow = window.open( '/', '_blank' );
+			}
 
 			const result = await apiFetch( {
 				path: WC_ADMIN_NAMESPACE + '/onboarding/plugins/connect-square',
@@ -72,16 +80,26 @@ class Square extends Component {
 			if ( ! result || ! result.connectUrl ) {
 				this.setState( { isPending: false } );
 				createNotice( 'error', errorMessage );
-				newWindow.close();
+				if ( hasCbdIndustry ) {
+					newWindow.close();
+				}
 				return;
 			}
 
 			this.setState( { isPending: true } );
-			newWindow.location.href = result.connectUrl;
-			window.location = getAdminLink( 'admin.php?page=wc-admin' );
+			this.redirect( result.connectUrl, newWindow );
 		} catch ( error ) {
 			this.setState( { isPending: false } );
 			createNotice( 'error', errorMessage );
+		}
+	}
+
+	redirect( connectUrl, newWindow ) {
+		if ( newWindow ) {
+			newWindow.location.href = connectUrl;
+			window.location = getAdminLink( 'admin.php?page=wc-admin' );
+		} else {
+			window.location = connectUrl;
 		}
 	}
 

@@ -218,6 +218,7 @@ class Payments extends Component {
 						query,
 						installStep: this.getInstallStep(),
 						markConfigured: this.markConfigured,
+						hasCbdIndustry: currentMethod.hasCbdIndustry,
 					} ) }
 				</Card>
 			);
