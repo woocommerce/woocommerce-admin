@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin;
 
 use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
 
 /**
  * Loader Class.
@@ -724,6 +725,9 @@ class Loader {
 		// WooCommerce Branding is an example of this - so pass through the translation of
 		// 'WooCommerce' to wcSettings.
 		$settings['woocommerceTranslation'] = __( 'WooCommerce', 'woocommerce-admin' );
+		// We may have synced orders with a now-unregistered status.
+		// E.g An extension that added statuses is now inactive or removed.
+		$settings['unregisteredOrderStatuses'] = self::get_unregistered_order_statuses();
 
 		if ( ! empty( $preload_data_endpoints ) ) {
 			$settings['dataEndpoints'] = isset( $settings['dataEndpoints'] )
@@ -761,6 +765,21 @@ class Loader {
 	}
 
 	/**
+	 * Get all order statuses present in analytics tables that aren't registered.
+	 *
+	 * @return array Unregistered order statuses.
+	 */
+	public static function get_unregistered_order_statuses() {
+		$registered_statuses   = wc_get_order_statuses();
+		$all_synced_statuses   = OrdersDataStore::get_all_statuses();
+		$unregistered_statuses = array_diff( $all_synced_statuses, array_keys( $registered_statuses ) );
+		$formatted_status_keys = self::get_order_statuses( array_fill_keys( $unregistered_statuses, '' ) );
+		$formatted_statuses    = array_keys( $formatted_status_keys );
+
+		return array_combine( $formatted_statuses, $formatted_statuses );
+	}
+
+	/**
 	 * Register the admin settings for use in the WC REST API
 	 *
 	 * @param array $groups Array of setting groups.
@@ -782,7 +801,10 @@ class Loader {
 	 * @return array
 	 */
 	public static function add_settings( $settings ) {
-		$statuses   = self::get_order_statuses( wc_get_order_statuses() );
+		$unregistered_statuses = self::get_unregistered_order_statuses();
+		$registered_statuses   = self::get_order_statuses( wc_get_order_statuses() );
+		$all_statuses          = array_merge( $unregistered_statuses, $registered_statuses );
+
 		$settings[] = array(
 			'id'          => 'woocommerce_excluded_report_order_statuses',
 			'option_key'  => 'woocommerce_excluded_report_order_statuses',
@@ -790,7 +812,7 @@ class Loader {
 			'description' => __( 'Statuses that should not be included when calculating report totals.', 'woocommerce-admin' ),
 			'default'     => array( 'pending', 'cancelled', 'failed' ),
 			'type'        => 'multiselect',
-			'options'     => $statuses,
+			'options'     => $all_statuses,
 		);
 		$settings[] = array(
 			'id'          => 'woocommerce_actionable_order_statuses',
@@ -799,7 +821,7 @@ class Loader {
 			'description' => __( 'Statuses that require extra action on behalf of the store admin.', 'woocommerce-admin' ),
 			'default'     => array( 'processing', 'on-hold' ),
 			'type'        => 'multiselect',
-			'options'     => $statuses,
+			'options'     => $all_statuses,
 		);
 		$settings[] = array(
 			'id'          => 'woocommerce_default_date_range',
