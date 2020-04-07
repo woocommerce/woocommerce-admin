@@ -187,7 +187,7 @@ Plugins.propTypes = {
 	 */
 	autoInstall: PropTypes.bool,
 	/**
-	 * An array of plugin slugs to install. Must be supported by the onboarding plugins API.
+	 * An array of plugin slugs to install.
 	 */
 	pluginSlugs: PropTypes.arrayOf( PropTypes.string ),
 };
@@ -195,6 +195,7 @@ Plugins.propTypes = {
 Plugins.defaultProps = {
 	autoInstall: false,
 	onError: () => {},
+	onSkip: () => {},
 	pluginSlugs: [ 'jetpack', 'woocommerce-services' ],
 };
 
