@@ -11,7 +11,7 @@ import { filter } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { Card, H } from '@woocommerce/components';
+import { Card, H, Plugins } from '@woocommerce/components';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 /**
@@ -19,7 +19,6 @@ import { PLUGINS_STORE_NAME } from '@woocommerce/data';
  */
 import Logo from './logo';
 import ManagementIcon from './images/management';
-import Plugins from 'dashboard/task-list/tasks/steps/plugins';
 import SalesTaxIcon from './images/sales_tax';
 import ShippingLabels from './images/shipping_labels';
 import SpeedIcon from './images/speed';

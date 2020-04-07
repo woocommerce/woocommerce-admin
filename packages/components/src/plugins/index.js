@@ -5,7 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { withSelect, withDispatch } from '@wordpress/data';
 
@@ -195,7 +194,7 @@ Plugins.propTypes = {
 
 Plugins.defaultProps = {
 	autoInstall: false,
-	onError: noop,
+	onError: () => {},
 	pluginSlugs: [ 'jetpack', 'woocommerce-services' ],
 };
 

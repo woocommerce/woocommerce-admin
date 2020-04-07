@@ -12,7 +12,7 @@ import { withDispatch, withSelect } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, Link, Stepper } from '@woocommerce/components';
+import { Card, Link, Stepper, Plugins } from '@woocommerce/components';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { SETTINGS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
@@ -22,7 +22,6 @@ import { SETTINGS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
  */
 import Connect from 'dashboard/components/connect';
 import { getCountryCode } from 'dashboard/utils';
-import Plugins from '../steps/plugins';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
 import { recordEvent } from 'lib/tracks';

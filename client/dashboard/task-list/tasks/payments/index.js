@@ -11,7 +11,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, H } from '@woocommerce/components';
+import { Card, H, Plugins } from '@woocommerce/components';
 import {
 	getHistory,
 	getNewPath,
@@ -25,7 +25,6 @@ import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from 'lib/tracks';
 import { getCountryCode } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
-import Plugins from '../steps/plugins';
 import { pluginNames } from 'wc-api/onboarding/constants';
 import { getPaymentMethods } from './methods';
 
