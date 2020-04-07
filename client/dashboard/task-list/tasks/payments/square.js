@@ -53,8 +53,8 @@ class Square extends Component {
 		this.setState( { isPending: true } );
 
 		updateOptions( {
-			woocommerce_stripe_settings: {
-				...options.woocommerce_stripe_settings,
+			woocommerce_square_credit_card_settings: {
+				...options.woocommerce_square_credit_card_settings,
 				enabled: 'yes',
 			},
 		} );
@@ -146,9 +146,13 @@ class Square extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOptions, isGetOptionsRequesting } = select( 'wc-api' );
-		const options = getOptions( [ 'woocommerce_stripe_settings' ] );
+		const options = getOptions( [
+			'woocommerce_square_credit_card_settings',
+		] );
 		const optionsIsRequesting = Boolean(
-			isGetOptionsRequesting( [ 'woocommerce_stripe_settings' ] )
+			isGetOptionsRequesting( [
+				'woocommerce_square_credit_card_settings',
+			] )
 		);
 
 		return {
