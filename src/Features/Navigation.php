@@ -157,17 +157,17 @@ class Navigation {
 
 		// Get post type if adding/editing a post.
 		$typenow = '';
-		if ( in_array( $pagenow, array( 'edit.php', 'post.php', 'post-new.php' ) ) ) {
-			if ( isset( $_GET['post'] ) ) {
-				$typenow = get_post_type( (int) $_GET['post'] );
-			} elseif ( isset( $_GET['post_type'] ) ) {
-				$typenow = $_GET['post_type'];
+		if ( in_array( $pagenow, array( 'edit.php', 'post.php', 'post-new.php' ), true ) ) {
+			if ( isset( $_GET['post'] ) ) { // phpcs:ignore CSRF ok.
+				$typenow = get_post_type( (int) $_GET['post'] ); // phpcs:ignore CSRF ok.
+			} elseif ( isset( $_GET['post_type'] ) ) { // phpcs:ignore CSRF ok.
+				$typenow = sanitize_text_field( wp_unslash( $_GET['post_type'] ) ); // phpcs:ignore CSRF ok.
 			}
 		}
 
 		// Add editing store post types to capabilities list.
 		$store_capabilities = $this->store_capabilities;
-		foreach( $this->post_types as $post_type ) {
+		foreach ( $this->post_types as $post_type ) {
 			$store_capabilities[] = 'edit_' . $post_type . 's';
 		}
 		$store_capabilities = apply_filters( 'woocommerce_navigation_store_capabilities', $store_capabilities );
@@ -232,7 +232,7 @@ class Navigation {
 			}
 		}
 
-		// todo: add filter to body class when managing store to add the folded class.
+		// @todo Add filter to body class when managing store to add the folded class.
 		return $menu;
 	}
 
@@ -258,11 +258,15 @@ class Navigation {
 		global $submenu, $parent_file, $typenow, $self;
 
 		$navigation = array();
-		foreach( $this->store_menu as $item ) {
+		foreach ( $this->store_menu as $item ) {
 			unset( $item[ self::CAPABILITY ], $item[ self::CSS_CLASSES ] );
 
 			$children = array();
 			if ( 'menu-dashboard' !== $item[ self::HANDLE ] ) {
+				if ( ! isset( $submenu[ $item[ self::CALLBACK ] ] ) ) {
+					continue;
+				}
+
 				foreach ( $submenu[ $item[ self::CALLBACK ] ] as $child ) {
 					unset( $child[ self::CAPABILITY ] );
 					$child[ self::CALLBACK ] = $this->get_callback_url( $child[ self::CALLBACK ] );
@@ -272,7 +276,7 @@ class Navigation {
 			}
 
 			unset( $item[ self::HANDLE ] );
-			$item['current'] = ( $parent_file && $item[ self::CALLBACK ] == $parent_file ) || ( empty( $typenow ) && $self == $item[ self::CALLBACK ] );
+			$item['current'] = ( $parent_file && $item[ self::CALLBACK ] === $parent_file ) || ( empty( $typenow ) && $self === $item[ self::CALLBACK ] );
 
 			if ( 'woocommerce' === $item[ self::CALLBACK ] ) {
 				$item[ self::CALLBACK ] = $this->get_callback_url( 'wc-admin' );
@@ -282,10 +286,10 @@ class Navigation {
 			$item['children'] = $children;
 			$navigation[]     = $item;
 		}
-?>
-<script>
-var wcNavigation = wcNavigation || JSON.parse( decodeURIComponent( '<?php echo rawurlencode( wp_json_encode( $navigation ) ); ?>' ) );
-</script>
-<?php
+		?>
+		<script>
+			var wcNavigation = wcNavigation || JSON.parse( decodeURIComponent( '<?php echo rawurlencode( wp_json_encode( $navigation ) ); ?>' ) );
+		</script>
+		<?php
 	}
 }
