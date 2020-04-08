@@ -36,9 +36,10 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			'is_snoozable' => (int) $note->get_is_snoozable(),
 		);
 
-		$note_to_be_inserted['content_data']  = wp_json_encode( $note->get_content_data() );
-		$note_to_be_inserted['date_created']  = gmdate( 'Y-m-d H:i:s', $date_created );
-		$note_to_be_inserted['date_reminder'] = null;
+		$note_to_be_inserted['content_data']      = wp_json_encode( $note->get_content_data() );
+		$note_to_be_inserted['date_created']      = gmdate( 'Y-m-d H:i:s', $date_created );
+		$note_to_be_inserted['date_reminder']     = null;
+		$note_to_be_inserted['date_action_after'] = null;
 
 		$wpdb->insert( $wpdb->prefix . 'wc_admin_notes', $note_to_be_inserted );
 		$note_id = $wpdb->insert_id;
@@ -71,7 +72,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		if ( 0 !== $note_id || '0' !== $note_id ) {
 			$note_row = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT name, type, locale, title, content, icon, content_data, status, source, date_created, date_reminder, is_snoozable FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d LIMIT 1",
+					"SELECT name, type, locale, title, content, icon, content_data, status, source, date_created, date_reminder, is_snoozable, date_action_after FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d LIMIT 1",
 					$note->get_id()
 				)
 			);
@@ -110,6 +111,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$note->set_date_created( $note_row->date_created );
 			$note->set_date_reminder( $note_row->date_reminder );
 			$note->set_is_snoozable( $note_row->is_snoozable );
+			$note->set_date_action_after( $note_row->date_action_after );
 			$this->read_actions( $note );
 			$note->read_meta_data();
 			$note->set_object_read( true );
@@ -146,21 +148,28 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 				$date_reminder_to_db     = gmdate( 'Y-m-d H:i:s', $date_reminder_timestamp );
 			}
 
+			$date_action_after       = $note->get_date_action_after();
+			$date_action_after_to_db = null;
+			if ( ! is_null( $date_action_after ) ) {
+				$date_action_after_to_db = gmdate( 'Y-m-d H:i:s', $date_action_after->getTimestamp() );
+			}
+
 			$wpdb->update(
 				$wpdb->prefix . 'wc_admin_notes',
 				array(
-					'name'          => $note->get_name(),
-					'type'          => $note->get_type(),
-					'locale'        => $note->get_locale(),
-					'title'         => $note->get_title(),
-					'content'       => $note->get_content(),
-					'icon'          => $note->get_icon(),
-					'content_data'  => wp_json_encode( $note->get_content_data() ),
-					'status'        => $note->get_status(),
-					'source'        => $note->get_source(),
-					'date_created'  => $date_created_to_db,
-					'date_reminder' => $date_reminder_to_db,
-					'is_snoozable'  => $note->get_is_snoozable(),
+					'name'              => $note->get_name(),
+					'type'              => $note->get_type(),
+					'locale'            => $note->get_locale(),
+					'title'             => $note->get_title(),
+					'content'           => $note->get_content(),
+					'icon'              => $note->get_icon(),
+					'content_data'      => wp_json_encode( $note->get_content_data() ),
+					'status'            => $note->get_status(),
+					'source'            => $note->get_source(),
+					'date_created'      => $date_created_to_db,
+					'date_reminder'     => $date_reminder_to_db,
+					'is_snoozable'      => $note->get_is_snoozable(),
+					'date_action_after' => $date_action_after_to_db,
 				),
 				array( 'note_id' => $note->get_id() )
 			);

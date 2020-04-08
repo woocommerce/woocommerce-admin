@@ -221,6 +221,11 @@ class Notes extends \WC_REST_CRUD_Controller {
 			$note_changed = true;
 		}
 
+		if ( ! is_null( $request->get_param( 'date_action_after' ) ) ) {
+			$note->set_date_action_after( $request->get_param( 'date_action_after' ) );
+			$note_changed = true;
+		}
+
 		if ( $note_changed ) {
 			$note->save();
 		}
@@ -271,15 +276,17 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @return WP_REST_Response $response Response data.
 	 */
 	public function prepare_item_for_response( $data, $request ) {
-		$context                   = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$data                      = $this->add_additional_fields_to_object( $data, $request );
-		$data['date_created_gmt']  = wc_rest_prepare_date_response( $data['date_created'] );
-		$data['date_created']      = wc_rest_prepare_date_response( $data['date_created'], false );
-		$data['date_reminder_gmt'] = wc_rest_prepare_date_response( $data['date_reminder'] );
-		$data['date_reminder']     = wc_rest_prepare_date_response( $data['date_reminder'], false );
-		$data['title']             = stripslashes( $data['title'] );
-		$data['content']           = stripslashes( $data['content'] );
-		$data['is_snoozable']      = (bool) $data['is_snoozable'];
+		$context                       = ! empty( $request['context'] ) ? $request['context'] : 'view';
+		$data                          = $this->add_additional_fields_to_object( $data, $request );
+		$data['date_created_gmt']      = wc_rest_prepare_date_response( $data['date_created'] );
+		$data['date_created']          = wc_rest_prepare_date_response( $data['date_created'], false );
+		$data['date_reminder_gmt']     = wc_rest_prepare_date_response( $data['date_reminder'] );
+		$data['date_reminder']         = wc_rest_prepare_date_response( $data['date_reminder'], false );
+		$data['title']                 = stripslashes( $data['title'] );
+		$data['content']               = stripslashes( $data['content'] );
+		$data['is_snoozable']          = (bool) $data['is_snoozable'];
+		$date['date_action_after']     = wc_rest_prepare_date_response( $data['date_action_after'], false );
+		$data['date_action_after_gmt'] = wc_rest_prepare_date_response( $data['date_action_after'] );
 		foreach ( (array) $data['actions'] as $key => $value ) {
 			$data['actions'][ $key ]->label  = stripslashes( $data['actions'][ $key ]->label );
 			$data['actions'][ $key ]->url    = $this->prepare_query_for_response( $data['actions'][ $key ]->query );
@@ -390,98 +397,110 @@ class Notes extends \WC_REST_CRUD_Controller {
 			'title'      => 'note',
 			'type'       => 'object',
 			'properties' => array(
-				'id'                => array(
+				'id'                    => array(
 					'description' => __( 'ID of the note record.', 'woocommerce-admin' ),
 					'type'        => 'integer',
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
-				'name'              => array(
+				'name'                  => array(
 					'description' => __( 'Name of the note.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'type'              => array(
+				'type'                  => array(
 					'description' => __( 'The type of the note (e.g. error, warning, etc.).', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'locale'            => array(
+				'locale'                => array(
 					'description' => __( 'Locale used for the note title and content.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'title'             => array(
+				'title'                 => array(
 					'description' => __( 'Title of the note.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'content'           => array(
+				'content'               => array(
 					'description' => __( 'Content of the note.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'icon'              => array(
+				'icon'                  => array(
 					'description' => __( 'Icon (gridicon) for the note.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'content_data'      => array(
+				'content_data'          => array(
 					'description' => __( 'Content data for the note. JSON string. Available for re-localization.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'status'            => array(
+				'status'                => array(
 					'description' => __( 'The status of the note (e.g. unactioned, actioned).', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'source'            => array(
+				'source'                => array(
 					'description' => __( 'Source of the note.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'date_created'      => array(
+				'date_created'          => array(
 					'description' => __( 'Date the note was created.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'date_created_gmt'  => array(
+				'date_created_gmt'      => array(
 					'description' => __( 'Date the note was created (GMT).', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'date_reminder'     => array(
+				'date_reminder'         => array(
 					'description' => __( 'Date after which the user should be reminded of the note, if any.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true, // @todo Allow date_reminder to be updated.
 				),
-				'date_reminder_gmt' => array(
+				'date_reminder_gmt'     => array(
 					'description' => __( 'Date after which the user should be reminded of the note, if any (GMT).', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'is_snoozable'      => array(
+				'is_snoozable'          => array(
 					'description' => __( 'Whether or not a user can request to be reminded about the note.', 'woocommerce-admin' ),
 					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'actions'           => array(
+				'actions'               => array(
 					'description' => __( 'An array of actions, if any, for the note.', 'woocommerce-admin' ),
 					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'date_action_after'     => array(
+					'description' => __( 'Date after which the note should be automatically actioned, if any.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true, // @todo Allow date_reminder to be updated.
+				),
+				'date_action_after_gmt' => array(
+					'description' => __( 'Date after which the note should be automatically actioned, if any (GMT).', 'woocommerce-admin' ),
+					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),

@@ -80,6 +80,8 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'date_reminder', $note );
 		$this->assertArrayHasKey( 'date_reminder_gmt', $note );
 		$this->assertArrayHasKey( 'actions', $note );
+		$this->assertArrayHasKey( 'date_action_after', $note );
+		$this->assertArrayHasKey( 'date_action_after_gmt', $note );
 
 		$this->assertEquals( 'PHPUNIT_TEST_NOTE_1_ACTION_1_SLUG', $note['actions'][0]->name );
 		$this->assertEquals( 'http://example.org/wp-admin/admin.php?s=PHPUNIT_TEST_NOTE_1_ACTION_1_URL', $note['actions'][0]->url );
@@ -314,5 +316,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'date_reminder_gmt', $properties );
 		$this->assertArrayHasKey( 'actions', $properties );
 		$this->assertArrayHasKey( 'is_snoozable', $properties );
+		$this->assertArrayHasKey( 'date_action_after', $properties );
+		$this->assertArrayHasKey( 'date_action_after_gmt', $properties );
 	}
 }

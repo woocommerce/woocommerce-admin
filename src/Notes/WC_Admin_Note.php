@@ -49,19 +49,20 @@ class WC_Admin_Note extends \WC_Data {
 	public function __construct( $data = '' ) {
 		// Set default data here to allow `content_data` to be an object.
 		$this->data = array(
-			'name'          => '-',
-			'type'          => self::E_WC_ADMIN_NOTE_INFORMATIONAL,
-			'locale'        => 'en_US',
-			'title'         => '-',
-			'content'       => '-',
-			'icon'          => 'info',
-			'content_data'  => new \stdClass(),
-			'status'        => self::E_WC_ADMIN_NOTE_UNACTIONED,
-			'source'        => 'woocommerce',
-			'date_created'  => '0000-00-00 00:00:00',
-			'date_reminder' => '',
-			'is_snoozable'  => false,
-			'actions'       => array(),
+			'name'              => '-',
+			'type'              => self::E_WC_ADMIN_NOTE_INFORMATIONAL,
+			'locale'            => 'en_US',
+			'title'             => '-',
+			'content'           => '-',
+			'icon'              => 'info',
+			'content_data'      => new \stdClass(),
+			'status'            => self::E_WC_ADMIN_NOTE_UNACTIONED,
+			'source'            => 'woocommerce',
+			'date_created'      => '0000-00-00 00:00:00',
+			'date_reminder'     => '',
+			'is_snoozable'      => false,
+			'date_action_after' => '',
+			'actions'           => array(),
 		);
 
 		parent::__construct( $data );
@@ -281,6 +282,16 @@ class WC_Admin_Note extends \WC_Data {
 		return $this->get_prop( 'actions', $context );
 	}
 
+	/**
+	 * Get the date the note should be automatically actioned.
+	 *
+	 * @param  string $context  What the value is for. Valid values are 'view' and 'edit'.
+	 * @return WC_DateTime|NULL object if the date is set or null if there is no date.
+	 */
+	public function get_date_action_after( $context = 'view' ) {
+		return $this->get_prop( 'date_action_after', $context );
+	}
+
 	/*
 	|--------------------------------------------------------------------------
 	| Setters
@@ -483,6 +494,15 @@ class WC_Admin_Note extends \WC_Data {
 	 */
 	public function set_is_snoozable( $is_snoozable ) {
 		return $this->set_prop( 'is_snoozable', $is_snoozable );
+	}
+
+	/**
+	 * Set date to automatically action the note.
+	 *
+	 * @param string|integer|null $date UTC timestamp, or ISO 8601 DateTime. If the DateTime string has no timezone or offset, WordPress site timezone will be assumed. Null if there is no date.
+	 */
+	public function set_date_action_after( $date ) {
+		$this->set_date_prop( 'date_action_after', $date );
 	}
 
 	/**

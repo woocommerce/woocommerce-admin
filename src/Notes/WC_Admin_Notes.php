@@ -20,10 +20,17 @@ class WC_Admin_Notes {
 	const UNSNOOZE_HOOK = 'wc_admin_unsnooze_admin_notes';
 
 	/**
+	 * Hook used for recurring "action" action.
+	 */
+	const ACTION_HOOK = 'wc_admin_action_admin_notes';
+
+	/**
 	 * Hook appropriate actions.
 	 */
 	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'schedule_unsnooze_notes' ) );
+		add_action( 'admin_init', array( __CLASS__, 'schedule_action_notes' ) );
+		add_action( self::ACTION_HOOK, array( __CLASS__, 'action_notes' ) );
 	}
 
 	/**
@@ -38,21 +45,22 @@ class WC_Admin_Notes {
 		$raw_notes  = $data_store->get_notes( $args );
 		$notes      = array();
 		foreach ( (array) $raw_notes as $raw_note ) {
-			$note                               = new WC_Admin_Note( $raw_note );
-			$note_id                            = $note->get_id();
-			$notes[ $note_id ]                  = $note->get_data();
-			$notes[ $note_id ]['name']          = $note->get_name( $context );
-			$notes[ $note_id ]['type']          = $note->get_type( $context );
-			$notes[ $note_id ]['locale']        = $note->get_locale( $context );
-			$notes[ $note_id ]['title']         = $note->get_title( $context );
-			$notes[ $note_id ]['content']       = $note->get_content( $context );
-			$notes[ $note_id ]['icon']          = $note->get_icon( $context );
-			$notes[ $note_id ]['content_data']  = $note->get_content_data( $context );
-			$notes[ $note_id ]['status']        = $note->get_status( $context );
-			$notes[ $note_id ]['source']        = $note->get_source( $context );
-			$notes[ $note_id ]['date_created']  = $note->get_date_created( $context );
-			$notes[ $note_id ]['date_reminder'] = $note->get_date_reminder( $context );
-			$notes[ $note_id ]['actions']       = $note->get_actions( $context );
+			$note                                   = new WC_Admin_Note( $raw_note );
+			$note_id                                = $note->get_id();
+			$notes[ $note_id ]                      = $note->get_data();
+			$notes[ $note_id ]['name']              = $note->get_name( $context );
+			$notes[ $note_id ]['type']              = $note->get_type( $context );
+			$notes[ $note_id ]['locale']            = $note->get_locale( $context );
+			$notes[ $note_id ]['title']             = $note->get_title( $context );
+			$notes[ $note_id ]['content']           = $note->get_content( $context );
+			$notes[ $note_id ]['icon']              = $note->get_icon( $context );
+			$notes[ $note_id ]['content_data']      = $note->get_content_data( $context );
+			$notes[ $note_id ]['status']            = $note->get_status( $context );
+			$notes[ $note_id ]['source']            = $note->get_source( $context );
+			$notes[ $note_id ]['date_created']      = $note->get_date_created( $context );
+			$notes[ $note_id ]['date_reminder']     = $note->get_date_reminder( $context );
+			$notes[ $note_id ]['actions']           = $note->get_actions( $context );
+			$notes[ $note_id ]['date_action_after'] = $note->get_date_action_after( $context );
 		}
 		return $notes;
 	}
@@ -138,5 +146,44 @@ class WC_Admin_Notes {
 	 */
 	public static function clear_queued_actions() {
 		wp_clear_scheduled_hook( self::UNSNOOZE_HOOK );
+	}
+
+	/**
+	 * Schedule action notes event.
+	 */
+	public static function schedule_action_notes() {
+		if ( ! wp_next_scheduled( self::ACTION_HOOK ) ) {
+			wp_schedule_event( time() + 5, 'hourly', self::ACTION_HOOK );
+		}
+	}
+
+	/**
+	 * Action notes if date_action_after has been passed.
+	 */
+	public static function action_notes() {
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$raw_notes  = $data_store->get_notes(
+			array(
+				'status' => array( WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED ),
+			)
+		);
+		$now        = new \DateTime();
+
+		foreach ( $raw_notes as $raw_note ) {
+			$note              = new WC_Admin_Note( $raw_note );
+			$date_action_after = $note->get_date_action_after( 'edit' );
+
+			if ( is_null( $date_action_after ) ) {
+				continue;
+			}
+
+			if ( $now <= $date_action_after ) {
+				continue;
+			}
+
+			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
+			$note->set_date_action_after( null );
+			$note->save();
+		}
 	}
 }

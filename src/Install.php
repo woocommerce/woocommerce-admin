@@ -254,6 +254,7 @@ class Install {
 			date_created datetime NOT NULL default '0000-00-00 00:00:00',
 			date_reminder datetime NULL default null,
 			is_snoozable boolean DEFAULT 0 NOT NULL,
+			date_action_after datetime NULL default null,
 			PRIMARY KEY (note_id)
 		) $collate;
 		CREATE TABLE {$wpdb->prefix}wc_admin_note_actions (
