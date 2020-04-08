@@ -102,4 +102,25 @@ describe( 'plugins reducer', () => {
 		expect( state.requesting[ 'getInstalledPlugins' ] ).toBe( false );
 		/* eslint-enable dot-notation */
 	} );
+
+	it( 'should handle UPDATE_JETPACK_CONNECTION', () => {
+		const state = reducer( defaultState, {
+			type: TYPES.UPDATE_JETPACK_CONNECTION,
+			jetpackConnection: true,
+		} );
+
+		expect( state.jetpackConnection ).toBe( true );
+	} );
+
+	it( 'should handle UPDATE_JETPACK_CONNECT_URL', () => {
+		const state = reducer( defaultState, {
+			type: TYPES.UPDATE_JETPACK_CONNECT_URL,
+			jetpackConnectUrl: 'http://connect.com',
+			redirectUrl: 'http://redirect.com',
+		} );
+
+		expect( state.jetpackConnectUrls[ 'http://redirect.com' ] ).toBe(
+			'http://connect.com'
+		);
+	} );
 } );
