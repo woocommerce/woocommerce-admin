@@ -13,7 +13,7 @@ import { withSelect, withDispatch } from '@wordpress/data';
  */
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
-class Plugins extends Component {
+export class Plugins extends Component {
 	constructor() {
 		super( ...arguments );
 

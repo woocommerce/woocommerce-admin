@@ -4,7 +4,6 @@
 import { shallow } from 'enzyme';
 import { recordEvent } from 'lib/tracks';
 import { ExternalLink, Button } from '@wordpress/components';
-
 /**
  * Internal dependencies
  */
