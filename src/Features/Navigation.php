@@ -20,6 +20,13 @@ class Navigation {
 	protected static $instance = null;
 
 	/**
+	 * Array index of menu title.
+	 *
+	 * @var int
+	 */
+	const TITLE = 0;
+
+	/**
 	 * Array index of menu capability.
 	 *
 	 * @var int
@@ -120,6 +127,15 @@ class Navigation {
 	protected $store_menu = array();
 
 	/**
+	 * Map of all menu items to categories.
+	 *
+	 * @var array
+	 */
+	protected $menu_item_map = array(
+		'mailchimp-woocommerce' => 'marketing',
+	);
+
+	/**
 	 * Get class instance.
 	 */
 	final public static function instance() {
@@ -134,9 +150,49 @@ class Navigation {
 	 */
 	public function __construct() {
 		if ( is_admin() && ! apply_filters( 'woocommerce_use_legacy_navigation', false ) ) {
-			add_filter( 'add_menu_classes', array( $this, 'update_navigation' ) );
+			add_filter( 'add_menu_classes', array( $this, 'get_menu_items' ) );
 			add_filter( 'add_menu_classes', array( $this, 'add_menu_settings' ), 20 );
 		}
+	}
+
+	/**
+	 * Get categories for menu items.
+	 */
+	public static function get_categories() {
+		$categories = array(
+			array(
+				'slug'  => 'dashboard',
+				'title' => __( 'Store', 'woocommerce-admin' ),
+				'icon'  => null,
+			),
+			array(
+				'slug'  => 'analytics',
+				'title' => __( 'Analytics', 'woocommerce-admin' ),
+				'icon'  => null,
+			),
+			array(
+				'slug'  => 'orders',
+				'title' => __( 'Orders', 'woocommerce-admin' ),
+				'icon'  => null,
+			),
+			array(
+				'slug'  => 'marketing',
+				'title' => __( 'Marketing', 'woocommerce-admin' ),
+				'icon'  => null,
+			),
+			array(
+				'slug'  => 'products',
+				'title' => __( 'Products', 'woocommerce-admin' ),
+				'icon'  => null,
+			),
+			array(
+				'slug'  => 'customers',
+				'title' => __( 'Customers', 'woocommerce-admin' ),
+				'icon'  => null,
+			),
+		);
+
+		return apply_filters( 'woocommerce_navigation_categories', $categories );
 	}
 
 	/**
@@ -245,39 +301,46 @@ class Navigation {
 	}
 
 	/**
-	 * Add the menu to the page output.
+	 * Get the menu items to use from the existing registered menu items.
+	 *
+	 * @param array $menu Top level dashboard menu items.
+	 * @return array
 	 */
-	public function add_menu_settings() {
+	public function get_menu_items( $menu ) {
+		foreach ( $menu as $index => $item ) {
+			// If in mapped list of pages, add to items.
+			if ( isset( $this->menu_item_map[ $item[ self::CALLBACK ] ] ) ) {
+				$category                        = $this->menu_item_map[ $item[2] ];
+				$this->store_menu[ $category ][] = array(
+					'slug'  => $item[ self::CALLBACK ],
+					'url'   => $this->get_callback_url( $item[ self::CALLBACK ] ),
+					'title' => $item[ self::TITLE ],
+				);
+
+				// Remove from original WP admin menu.
+				unset( $menu[ $index ] );
+			}
+
+			// @todo If is a WooCommerce related page by capability or top level item, add to 'Store' category by default.
+		}
+
+		return $menu;
+	}
+
+	/**
+	 * Add the menu to the page output.
+	 *
+	 * @param array $menu Top level dashboard menu items.
+	 * @return array
+	 */
+	public function add_menu_settings( $menu ) {
 		global $submenu, $parent_file, $typenow, $self;
 
-		$navigation = array();
-		foreach ( $this->store_menu as $item ) {
-			unset( $item[ self::CAPABILITY ], $item[ self::CSS_CLASSES ] );
-
-			$children = array();
-			if ( 'menu-dashboard' !== $item[ self::HANDLE ] ) {
-				if ( ! isset( $submenu[ $item[ self::CALLBACK ] ] ) ) {
-					continue;
-				}
-
-				foreach ( $submenu[ $item[ self::CALLBACK ] ] as $child ) {
-					unset( $child[ self::CAPABILITY ] );
-					$child[ self::CALLBACK ] = $this->get_callback_url( $child[ self::CALLBACK ] );
-					$child[0]                = wp_strip_all_tags( $child[0] );
-					$children[]              = $child;
-				}
-			}
-
-			unset( $item[ self::HANDLE ] );
-			$item['current'] = ( $parent_file && $item[ self::CALLBACK ] === $parent_file ) || ( empty( $typenow ) && $self === $item[ self::CALLBACK ] );
-
-			if ( 'woocommerce' === $item[ self::CALLBACK ] ) {
-				$item[ self::CALLBACK ] = $this->get_callback_url( 'wc-admin' );
-			} else {
-				$item[ self::CALLBACK ] = $this->get_callback_url( $item[ self::CALLBACK ] );
-			}
-			$item['children'] = $children;
-			$navigation[]     = $item;
+		$navigation = self::get_categories();
+		foreach ( $navigation as $index => $category ) {
+			$navigation[ $index ]['children'] = isset( $this->store_menu[ $category['slug'] ] )
+				? $this->store_menu[ $category['slug'] ]
+				: array();
 		}
 
 		$data_registry = \Automattic\WooCommerce\Blocks\Package::container()->get(
@@ -285,5 +348,7 @@ class Navigation {
 		);
 
 		$data_registry->add( 'wcNavigation', $navigation );
+
+		return $menu;
 	}
 }
