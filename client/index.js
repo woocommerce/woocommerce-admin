@@ -12,6 +12,10 @@ import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
 import 'wc-api/wp-data-store';
 import { withSettingsHydration } from '@woocommerce/data';
 
+// Modify webpack pubilcPath at runtime based on location of WordPress Plugin.
+// eslint-disable-next-line no-undef,camelcase
+__webpack_public_path__ = global.wcAdminAssets.path;
+
 const appRoot = document.getElementById( 'root' );
 const settingsGroup = 'wc_admin';
 

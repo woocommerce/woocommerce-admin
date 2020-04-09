@@ -391,6 +391,13 @@ class Loader {
 			self::get_file_version( 'app/index.js' ),
 			true
 		);
+		wp_localize_script(
+			WC_ADMIN_APP,
+			wcAdminAssets,
+			array(
+				'path' => self::get_url(''),
+			)
+		);
 
 		wp_set_script_translations( WC_ADMIN_APP, 'woocommerce-admin' );
 

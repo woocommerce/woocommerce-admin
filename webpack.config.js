@@ -100,7 +100,6 @@ const webpackConfig = {
 				: '[name]/index.js';
 		},
 		chunkFilename: 'chunks/[name].[chunkhash].min.js',
-		publicPath: '/wp-content/plugins/woocommerce-admin/dist/',
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
@@ -224,18 +223,18 @@ const webpackConfig = {
 			},
 		} ),
 		new WebpackRTLPlugin( {
-			filename: './dist/[name]/style-rtl.css',
+			filename: './[name]/style-rtl.css',
 			minify: {
 				safe: true,
 			},
 		} ),
 		new MiniCssExtractPlugin( {
-			filename: './dist/[name]/style.css',
+			filename: './[name]/style.css',
 		} ),
 		new CopyWebpackPlugin(
 			wcAdminPackages.map( ( packageName ) => ( {
 				from: `./packages/${ packageName }/build-style/*.css`,
-				to: `./dist/${ packageName }/`,
+				to: `./${ packageName }/`,
 				flatten: true,
 				transform: ( content ) => content,
 			} ) )
