@@ -93,10 +93,12 @@ const webpackConfig = {
 	output: {
 		filename: ( data ) => {
 			return wpAdminScripts.includes( data.chunk.name )
-				? './dist/wp-admin-scripts/[name].js'
-				: './dist/[name]/index.js';
+				? 'wp-admin-scripts/[name].js'
+				: '[name]/index.js';
 		},
-		path: __dirname,
+		chunkFilename: 'chunks/[name].[chunkhash].min.js',
+		publicPath: '/wp-content/plugins/woocommerce-admin/dist/',
+		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
 	},
