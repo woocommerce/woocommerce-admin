@@ -130,19 +130,12 @@ class Navigation {
 	}
 
 	/**
-	 * Hook into WooCommerce.
+	 * Constructor
 	 */
-	public function init() {
-		add_action( 'after_setup_theme', array( $this, 'maybe_enable_navigation' ) );
-	}
-
-	/**
-	 * Enable store navigation unless disabled.
-	 */
-	public function maybe_enable_navigation() {
+	public function __construct() {
 		if ( is_admin() && ! apply_filters( 'woocommerce_use_legacy_navigation', false ) ) {
 			add_filter( 'add_menu_classes', array( $this, 'update_navigation' ) );
-			add_action( 'admin_footer', array( $this, 'output_menu' ) );
+			add_filter( 'add_menu_classes', array( $this, 'add_menu_settings' ), 20 );
 		}
 	}
 
@@ -254,7 +247,7 @@ class Navigation {
 	/**
 	 * Add the menu to the page output.
 	 */
-	public function output_menu() {
+	public function add_menu_settings() {
 		global $submenu, $parent_file, $typenow, $self;
 
 		$navigation = array();
@@ -286,10 +279,11 @@ class Navigation {
 			$item['children'] = $children;
 			$navigation[]     = $item;
 		}
-		?>
-		<script>
-			var wcNavigation = wcNavigation || JSON.parse( decodeURIComponent( '<?php echo rawurlencode( wp_json_encode( $navigation ) ); ?>' ) );
-		</script>
-		<?php
+
+		$data_registry = \Automattic\WooCommerce\Blocks\Package::container()->get(
+			\Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry::class
+		);
+
+		$data_registry->add( 'wcNavigation', $navigation );
 	}
 }

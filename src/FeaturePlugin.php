@@ -173,7 +173,6 @@ class FeaturePlugin {
 		Events::instance()->init();
 		new API\Init();
 		ReportExporter::init();
-		Navigation::instance()->init();
 
 		// CRUD classes.
 		WC_Admin_Notes::init();
@@ -260,7 +259,7 @@ class FeaturePlugin {
 	 */
 	public function deactivate_self() {
 		deactivate_plugins( plugin_basename( WC_ADMIN_PLUGIN_FILE ) );
-		unset( $_GET['activate'] );
+		unset( $_GET['activate'] ); // phpcs:ignore CSRF ok.
 	}
 
 	/**
