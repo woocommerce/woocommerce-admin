@@ -36,6 +36,7 @@ class Tax extends Component {
 
 		this.initialState = {
 			isPending: false,
+			waitForSettingsBeforeInitialStepSet: true,
 			stepIndex: 0,
 			automatedTaxEnabled: true,
 			// Cache the value of pluginsToActivate so that we can show/hide tasks based on it, but not have them update mid task.
@@ -44,7 +45,7 @@ class Tax extends Component {
 
 		this.state = this.initialState;
 
-		this.completeStep = this.completeStep.bind( this );
+		this.goToNextStep = this.goToNextStep.bind( this );
 		this.configureTaxRates = this.configureTaxRates.bind( this );
 		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
 		this.setIsPending = this.setIsPending.bind( this );
@@ -56,6 +57,21 @@ class Tax extends Component {
 
 	reset() {
 		this.setState( this.initialState );
+
+		const isWaitingForSettings = this.isWaitingForSettings();
+		this.setState( {
+			waitForSettingsBeforeInitialStepSet: isWaitingForSettings,
+		} );
+
+		if ( isWaitingForSettings ) {
+			// We need to wait until we have received the initial settings
+			// to set the first step, since whether steps should be considered
+			// complete depends on the settings; otherwise, we may show a
+			// step when it isn't necessary.
+			return;
+		}
+
+		this.goToFirstStep();
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -65,24 +81,14 @@ class Tax extends Component {
 			pluginsToActivate,
 			taxSettings,
 		} = this.props;
-		const {
-			woocommerce_calc_taxes: calcTaxes,
-			woocommerce_store_address: storeAddress,
-			woocommerce_default_country: defaultCountry,
-			woocommerce_store_postcode: storePostCode,
-		} = generalSettings;
+		const { woocommerce_calc_taxes: calcTaxes } = generalSettings;
 		const { stepIndex } = this.state;
-		const currentStep = this.getSteps()[ stepIndex ];
-		const currentStepKey = currentStep && currentStep.key;
-		const isCompleteAddress = Boolean(
-			storeAddress && defaultCountry && storePostCode
-		);
 
 		// Show the success screen if all requirements are satisfied from the beginning.
 		if (
 			stepIndex !== null &&
 			! pluginsToActivate.length &&
-			isCompleteAddress &&
+			this.isStoreLocationComplete() &&
 			isJetpackConnected &&
 			this.isTaxJarSupported()
 		) {
@@ -92,8 +98,13 @@ class Tax extends Component {
 			return;
 		}
 
-		if ( currentStepKey === 'store_location' && isCompleteAddress ) {
-			this.completeStep();
+		if (
+			this.state.waitForSettingsBeforeInitialStepSet &&
+			! this.isWaitingForSettings()
+		) {
+			// We have the settings, so we can proceed with going to the
+			// first step.
+			this.goToFirstStep();
 		}
 
 		if (
@@ -109,10 +120,6 @@ class Tax extends Component {
 						: false,
 			} );
 			/* eslint-enable react/no-did-update-set-state */
-		}
-
-		if ( currentStepKey === 'connect' && isJetpackConnected ) {
-			this.completeStep();
 		}
 
 		const {
@@ -139,19 +146,35 @@ class Tax extends Component {
 		);
 	}
 
-	completeStep() {
+	goToFirstStep() {
+		this.setState( {
+			waitForSettingsBeforeInitialStepSet: false,
+		} );
+		this.goToNextStep( 0 );
+	}
+
+	goToNextStep( forcedNextStepIndex ) {
 		const { stepIndex } = this.state;
 		const steps = this.getSteps();
-		const nextStep = steps[ stepIndex + 1 ];
+		const nextStepIndex =
+			typeof forcedNextStepIndex !== 'undefined'
+				? forcedNextStepIndex
+				: stepIndex + 1;
+		const nextStep = steps[ nextStepIndex ];
 
 		if ( nextStep ) {
-			this.setState( { stepIndex: stepIndex + 1 } );
+			if ( nextStep.isComplete ) {
+				this.goToNextStep( nextStepIndex + 1 );
+				return;
+			}
+
+			this.setState( { stepIndex: nextStepIndex } );
 		} else {
 			getHistory().push( getNewPath( {}, '/', {} ) );
 		}
 	}
 
-	configureTaxRates() {
+	async configureTaxRates() {
 		const {
 			generalSettings,
 			updateAndPersistSettingsForGroup,
@@ -159,16 +182,16 @@ class Tax extends Component {
 
 		if ( generalSettings.woocommerce_calc_taxes !== 'yes' ) {
 			this.setState( { isPending: true } );
-			updateAndPersistSettingsForGroup( 'general', {
+			await updateAndPersistSettingsForGroup( 'general', {
 				general: {
 					woocommerce_calc_taxes: 'yes',
 				},
 			} );
-		} else {
-			window.location = getAdminLink(
-				'admin.php?page=wc-settings&tab=tax&section=standard&wc_onboarding_active_task=tax'
-			);
 		}
+
+		window.location = getAdminLink(
+			'admin.php?page=wc-settings&tab=tax&section=standard&wc_onboarding_active_task=tax'
+		);
 	}
 
 	updateAutomatedTax() {
@@ -226,6 +249,25 @@ class Tax extends Component {
 		this.setState( { isPending: value } );
 	}
 
+	isWaitingForSettings() {
+		return (
+			this.props.isGeneralSettingsRequesting ||
+			this.props.isTaxSettingsRequesting
+		);
+	}
+
+	isStoreLocationComplete() {
+		const {
+			generalSettings: {
+				woocommerce_store_address: storeAddress,
+				woocommerce_default_country: defaultCountry,
+				woocommerce_store_postcode: storePostCode,
+			},
+		} = this.props;
+
+		return Boolean( storeAddress && defaultCountry && storePostCode );
+	}
+
 	getSteps() {
 		const {
 			generalSettings,
@@ -252,13 +294,14 @@ class Tax extends Component {
 							recordEvent( 'tasklist_tax_set_location', {
 								country,
 							} );
-							this.completeStep();
+							this.goToNextStep();
 						} }
 						isSettingsRequesting={ isGeneralSettingsRequesting }
 						settings={ generalSettings }
 					/>
 				),
 				visible: true,
+				isComplete: this.isStoreLocationComplete(),
 			},
 			{
 				key: 'plugins',
@@ -276,7 +319,7 @@ class Tax extends Component {
 							recordEvent( 'tasklist_tax_install_extensions', {
 								install_extensions: true,
 							} );
-							this.completeStep();
+							this.goToNextStep();
 						} }
 						onSkip={ () => {
 							queueRecordEvent(
@@ -296,6 +339,7 @@ class Tax extends Component {
 					/>
 				),
 				visible: pluginsToActivate.length && this.isTaxJarSupported(),
+				isComplete: false,
 			},
 			{
 				key: 'connect',
@@ -328,6 +372,7 @@ class Tax extends Component {
 					/>
 				),
 				visible: ! isJetpackConnected && this.isTaxJarSupported(),
+				isComplete: isJetpackConnected,
 			},
 			{
 				key: 'manual_configuration',
@@ -372,6 +417,7 @@ class Tax extends Component {
 					</Fragment>
 				),
 				visible: ! this.isTaxJarSupported(),
+				isComplete: false,
 			},
 		];
 
