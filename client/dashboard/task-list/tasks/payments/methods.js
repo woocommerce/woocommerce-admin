@@ -33,6 +33,7 @@ import PayFast from './payfast';
 export function getPaymentMethods( {
 	activePlugins,
 	countryCode,
+	isJetpackConnected,
 	options,
 	profileItems,
 } ) {
@@ -121,7 +122,7 @@ export function getPaymentMethods( {
 			visible:
 				[ 'US' ].includes( countryCode ) &&
 				! hasCbdIndustry &&
-				profileItems.jetpack_connected,
+				isJetpackConnected,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConfigured,

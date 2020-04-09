@@ -113,13 +113,6 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 		$wccom_auth               = \WC_Helper_Options::get( 'auth' );
 		$items['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
 
-		$jetpack_connected = false;
-		if ( class_exists( '\Jetpack_Data' ) ) {
-			$user_token        = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
-			$jetpack_connected = isset( $user_token->external_user_id );
-		}
-		$items['jetpack_connected'] = $jetpack_connected;
-
 		$item = $this->prepare_item_for_response( $items, $request );
 		$data = $this->prepare_response_for_collection( $item );
 
@@ -373,13 +366,6 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 			'wccom_connected'     => array(
 				'type'              => 'boolean',
 				'description'       => __( 'Whether or not the store was connected to WooCommerce.com during the extension flow.', 'woocommerce-admin' ),
-				'context'           => array( 'view' ),
-				'readonly'          => true,
-				'validate_callback' => 'rest_validate_request_arg',
-			),
-			'jetpack_connected'   => array(
-				'type'              => 'boolean',
-				'description'       => __( 'Whether or not the site was connected to Jetpack.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
