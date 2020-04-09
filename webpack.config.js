@@ -100,7 +100,6 @@ const webpackConfig = {
 				: '[name]/index.js';
 		},
 		chunkFilename: 'chunks/[name].[chunkhash].min.js',
-		publicPath: '/wp-content/plugins/woocommerce-admin/dist/',
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
