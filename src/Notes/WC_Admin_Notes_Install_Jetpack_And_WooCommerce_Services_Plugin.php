@@ -49,7 +49,7 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 		$content = __( 'We noticed that there was a problem during the Jetpack and WooCommerce Services install. Please try again and enjoy all the advantages of having the plugins connected to your store! Sorry for the inconvenience. The "Jetpack" and "WooCommerce Services" plugins will be installed & activated for free.', 'woocommerce-admin' );
 
 		$note = new WC_Admin_Note();
-		$note->set_title( __( 'Uh oh...There was a problem during the Jetpack and WooCommerce Services install. Please try again.', 'woocommerce-admin' ) );
+		$note->set_title( __( 'Uh oh... There was a problem during the Jetpack and WooCommerce Services install. Please try again.', 'woocommerce-admin' ) );
 		$note->set_content( $content );
 		$note->set_content_data( (object) array() );
 		$note->set_type( WC_ADMIN_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
