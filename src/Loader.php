@@ -399,7 +399,7 @@ class Loader {
 			WC_ADMIN_APP,
 			wcAdminAssets,
 			array(
-				'path' => self::get_url(''),
+				'path' => self::get_url( '' ),
 			)
 		);
 
