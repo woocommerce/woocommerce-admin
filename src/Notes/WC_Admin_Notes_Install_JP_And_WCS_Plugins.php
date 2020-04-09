@@ -1,9 +1,10 @@
 <?php
 /**
- * WooCommerce Admin Add Install Jetpack Plugin Note Provider.
+ * WooCommerce Admin Add Install Jetpack and WooCommerce Services Plugin Note Provider.
  *
  * Adds a note to the merchant's inbox prompting them to install the Jetpack
- * Plugin after it fails to install during WooCommerce setup.
+ * and WooCommerce Services plugins after it fails to install during
+ * WooCommerce setup.
  *
  * @package WooCommerce Admin
  */
@@ -13,26 +14,26 @@ namespace Automattic\WooCommerce\Admin\Notes;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin
+ * WC_Admin_Notes_Install_JP_And_WCS_Plugins
  */
-class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
-	const NOTE_NAME = 'wc-admin-install-jetpack-plugin';
+class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
+	const NOTE_NAME = 'wc-admin-install-jp-and-wcs-plugins';
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'woocommerce_note_action_install-jetpack-and-woocommerce-services-plugins', array( $this, 'install_jetpack_and_woocommerce_services_plugins' ) );
-		add_action( 'activate_jetpack/jetpack.php', array( $this, 'action_jetpack_woocommerce_services_activation_note' ) );
-		add_action( 'activate_woocommerce-services/woocommerce-services.php', array( $this, 'action_jetpack_woocommerce_services_activation_note' ) );
+		add_action( 'woocommerce_note_action_install-jp-and-wcs-plugins', array( $this, 'install_jp_and_wcs_plugins' ) );
+		add_action( 'activate_jetpack/jetpack.php', array( $this, 'action_note' ) );
+		add_action( 'activate_woocommerce-services/woocommerce-services.php', array( $this, 'action_note' ) );
 	}
 
 	/**
-	 * Possibly add the Install Jetpack note.
+	 * Possibly add the Install Jetpack and WooCommerceServices plugins note.
 	 *
 	 * @param string $slug The slug of the plugin being installed.
 	 */
-	public static function possibly_add_install_jetpack_and_woocommerce_services_note( $slug ) {
+	public static function possibly_add_install_jp_and_wcs_note( $slug ) {
 		// Exit early if we're not installing the Jetpack or the WooCommerce Services plugins.
 		if ( 'jetpack' !== $slug && 'woocommerce-services' !== $slug ) {
 			return;
@@ -57,7 +58,7 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(
-			'install-jetpack-and-woocommerce-services-plugins',
+			'install-jp-and-wcs-plugins',
 			__( 'Install plugins', 'woocommerce-admin' ),
 			false,
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
@@ -68,9 +69,9 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 	}
 
 	/**
-	 * Action the Install Jetpack notes, if any exists.
+	 * Action the Install Jetpack and WooCommerce Services note, if any exists.
 	 */
-	public static function action_install_jetpack_and_woocommerce_services_note() {
+	public static function action_note() {
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
 
@@ -88,7 +89,7 @@ class WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin {
 	 *
 	 * @param WC_Admin_Note $note The note being actioned.
 	 */
-	public function install_jetpack_and_woocommerce_services_plugins( $note ) {
+	public function install_jp_and_wcs_plugins( $note ) {
 		if ( self::NOTE_NAME !== $note->get_name() ) {
 			return;
 		}

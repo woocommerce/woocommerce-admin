@@ -11,7 +11,7 @@ namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\PluginsHelper;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Install_JP_And_WCS_Plugins;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -179,7 +179,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * @param string $slug The slug of the plugin being installed.
 	 */
 	private function create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug ) {
-		WC_Admin_Notes_Install_Jetpack_And_WooCommerce_Services_Plugin::possibly_add_install_jetpack_and_woocommerce_services_note( $slug );
+		WC_Admin_Notes_Install_JP_And_WCS_Plugins::possibly_add_install_jp_and_wcs_note( $slug );
 	}
 
 	/**
