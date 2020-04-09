@@ -393,7 +393,7 @@ class Loader {
 		);
 		wp_localize_script(
 			WC_ADMIN_APP,
-			wcAdminAssets,
+			'wcAdminAssets',
 			array(
 				'path' => self::get_url( '' ),
 			)
