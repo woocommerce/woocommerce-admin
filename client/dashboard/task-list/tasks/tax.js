@@ -71,7 +71,7 @@ class Tax extends Component {
 			return;
 		}
 
-		this.goToFirstStep();
+		this.goToFirstStepOrSuccessScreen();
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -83,8 +83,8 @@ class Tax extends Component {
 			! this.isWaitingForSettings()
 		) {
 			// We have the settings, so we can proceed with going to the
-			// first step.
-			this.goToFirstStep();
+			// first step, or the success screen.
+			this.goToFirstStepOrSuccessScreen();
 		}
 
 		if (
@@ -126,10 +126,22 @@ class Tax extends Component {
 		);
 	}
 
-	goToFirstStep() {
+	goToFirstStepOrSuccessScreen() {
 		this.setState( {
 			waitForSettingsBeforeInitialStepSet: false,
 		} );
+
+		// Show the success screen if all requirements are satisfied.
+		if (
+			this.props.pluginsToActivate.length === 0 &&
+			this.isStoreLocationComplete() &&
+			this.props.isJetpackConnected &&
+			this.isTaxJarSupported()
+		) {
+			this.setState( { stepIndex: null } );
+			return;
+		}
+
 		this.goToNextStep( 0 );
 	}
 
@@ -147,13 +159,9 @@ class Tax extends Component {
 				this.goToNextStep( nextStepIndex + 1 );
 				return;
 			}
-
 			this.setState( { stepIndex: nextStepIndex } );
-		} else if ( this.isTaxJarSupported() ) {
-			// Show success screen
-			this.setState( { stepIndex: null } );
 		} else {
-			// TODO: what does this do?
+			// Return to the Dashboard
 			getHistory().push( getNewPath( {}, '/', {} ) );
 		}
 	}
@@ -401,6 +409,7 @@ class Tax extends Component {
 					</Fragment>
 				),
 				visible: ! this.isTaxJarSupported(),
+				// TODO: Should this step ever be considered complete?
 				isComplete: false,
 			},
 		];
