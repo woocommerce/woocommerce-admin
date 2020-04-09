@@ -75,28 +75,8 @@ class Tax extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const {
-			generalSettings,
-			isJetpackConnected,
-			pluginsToActivate,
-			taxSettings,
-		} = this.props;
+		const { generalSettings, taxSettings } = this.props;
 		const { woocommerce_calc_taxes: calcTaxes } = generalSettings;
-		const { stepIndex } = this.state;
-
-		// Show the success screen if all requirements are satisfied from the beginning.
-		if (
-			stepIndex !== null &&
-			! pluginsToActivate.length &&
-			this.isStoreLocationComplete() &&
-			isJetpackConnected &&
-			this.isTaxJarSupported()
-		) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( { stepIndex: null } );
-			/* eslint-enable react/no-did-update-set-state */
-			return;
-		}
 
 		if (
 			this.state.waitForSettingsBeforeInitialStepSet &&
@@ -169,7 +149,11 @@ class Tax extends Component {
 			}
 
 			this.setState( { stepIndex: nextStepIndex } );
+		} else if ( this.isTaxJarSupported() ) {
+			// Show success screen
+			this.setState( { stepIndex: null } );
 		} else {
+			// TODO: what does this do?
 			getHistory().push( getNewPath( {}, '/', {} ) );
 		}
 	}
@@ -339,7 +323,7 @@ class Tax extends Component {
 					/>
 				),
 				visible: pluginsToActivate.length && this.isTaxJarSupported(),
-				isComplete: false,
+				isComplete: ! pluginsToActivate.length,
 			},
 			{
 				key: 'connect',
