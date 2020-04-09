@@ -20,6 +20,7 @@
 	"scripts": {
 		"prebuild": "npm run -s install-if-deps-outdated && php ./bin/update-version.php",
 		"build": "npm run build:feature-config && npm run build:packages && cross-env NODE_ENV=production webpack",
+		"analyze": "cross-env NODE_ENV=production ANALYZE=true webpack",
 		"postbuild": "npm run -s i18n:pot && npm run -s i18n:build",
 		"build:feature-config": "php bin/generate-feature-config.php",
 		"build:packages": "node ./bin/packages/build.js",
@@ -217,7 +218,9 @@
 		"webpack-cli": "3.3.11",
 		"webpack-fix-style-only-entries": "0.4.0",
 		"webpack-rtl-plugin": "2.0.0",
-		"zenhub-api": "0.2.0"
+		"zenhub-api": "0.2.0",
+		"webpack-bundle-analyzer": "^3.6.1",
+		"moment-timezone-data-webpack-plugin": "^1.1.0"
 	},
 	"engines": {
 		"node": ">=8.0.0",

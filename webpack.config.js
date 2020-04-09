@@ -8,6 +8,9 @@ const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const { DefinePlugin } = require( 'webpack' );
 const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
+const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
+	.BundleAnalyzerPlugin;
+const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
 
 /**
  * WordPress dependencies
@@ -237,7 +240,11 @@ const webpackConfig = {
 				transform: ( content ) => content,
 			} ) )
 		),
-	],
+		new MomentTimezoneDataPlugin( {
+			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
+		} ),
+		process.env.ANALYZE && new BundleAnalyzerPlugin(),
+	].filter( Boolean ),
 };
 
 if ( webpackConfig.mode !== 'production' ) {
