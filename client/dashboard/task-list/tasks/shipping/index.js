@@ -357,9 +357,13 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
+		const { updateAndPersistSettingsForGroup } = dispatch(
+			SETTINGS_STORE_NAME
+		);
 
 		return {
 			createNotice,
+			updateAndPersistSettingsForGroup,
 		};
 	} )
 )( Shipping );
