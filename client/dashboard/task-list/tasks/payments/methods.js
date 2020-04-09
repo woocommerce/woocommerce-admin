@@ -118,7 +118,10 @@ export function getPaymentMethods( {
 				</Fragment>
 			),
 			before: <WCPayIcon />,
-			visible: [ 'US' ].includes( countryCode ) && ! hasCbdIndustry,
+			visible:
+				[ 'US' ].includes( countryCode ) &&
+				! hasCbdIndustry &&
+				profileItems.jetpack_connected,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConfigured,
