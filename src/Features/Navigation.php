@@ -120,6 +120,13 @@ class Navigation {
 	);
 
 	/**
+	 * Store top level categories.
+	 *
+	 * @var array
+	 */
+	protected $categories = array();
+
+	/**
 	 * Store related menu items.
 	 *
 	 * @var array
@@ -127,13 +134,72 @@ class Navigation {
 	protected $store_menu = array();
 
 	/**
-	 * Map of all menu items to categories.
+	 * Map of all top level menu items.
+	 *
+	 * @return array
+	 */
+	public function get_menu_item_map() {
+		$map = array(
+			'edit.php?post_type=product' => array(
+				'slug'  => 'product',
+				'order' => 10,
+			),
+			'wc-admin&path=/analytics/revenue' => array(
+				'slug'  => 'analytics',
+				'order' => 10,
+			),
+			'wc-admin&path=/marketing'   => array(
+				'slug'  => 'marketing',
+				'order' => 10,
+			),
+			'edit.php?post_type=product' => array(
+				'slug'  => 'products',
+				'order' => 10,
+			),
+			'plugins.php' => array(
+				'slug'  => 'plugins',
+				'order' => 10,
+			),
+			'mailchimp-woocommerce'      => array(
+				'category' => 'marketing',
+				'order'    => 20,
+			),
+		);
+
+		return apply_filters( 'woocommerce_navigation_menu_item_map', $map );
+	}
+
+	/**
+	 * Map of all submenu items.
 	 *
 	 * @var array
 	 */
-	protected $menu_item_map = array(
-		'mailchimp-woocommerce' => 'marketing',
-	);
+	public function get_submenu_item_map() {
+		$map = array(
+			'wc-admin' => array(
+				'slug'  => 'dashboard',
+				'order' => 10,
+			),
+			'edit.php?post_type=shop_order' => array(
+				'slug'  => 'orders',
+				'order' => 10,
+			),
+			'wc-admin&path=/customers' => array(
+				'slug'  => 'customers',
+				'order' => 10,
+			),
+			'wc-settings'              => array(
+				'slug'  => 'settings',
+				'order' => 10,
+			),
+			'plugins.php' => array(
+				'category'  => 'plugins',
+				'order' => 10,
+			),
+		);
+
+		return apply_filters( 'woocommerce_navigation_submenu_item_map', $map );
+	}
 
 	/**
 	 * Get class instance.
@@ -153,46 +219,6 @@ class Navigation {
 			add_filter( 'add_menu_classes', array( $this, 'get_menu_items' ) );
 			add_filter( 'add_menu_classes', array( $this, 'add_menu_settings' ), 20 );
 		}
-	}
-
-	/**
-	 * Get categories for menu items.
-	 */
-	public static function get_categories() {
-		$categories = array(
-			array(
-				'slug'  => 'dashboard',
-				'title' => __( 'Store', 'woocommerce-admin' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'analytics',
-				'title' => __( 'Analytics', 'woocommerce-admin' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'orders',
-				'title' => __( 'Orders', 'woocommerce-admin' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'marketing',
-				'title' => __( 'Marketing', 'woocommerce-admin' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'products',
-				'title' => __( 'Products', 'woocommerce-admin' ),
-				'icon'  => null,
-			),
-			array(
-				'slug'  => 'customers',
-				'title' => __( 'Customers', 'woocommerce-admin' ),
-				'icon'  => null,
-			),
-		);
-
-		return apply_filters( 'woocommerce_navigation_categories', $categories );
 	}
 
 	/**
@@ -307,24 +333,57 @@ class Navigation {
 	 * @return array
 	 */
 	public function get_menu_items( $menu ) {
-		foreach ( $menu as $index => $item ) {
-			// If in mapped list of pages, add to items.
-			if ( isset( $this->menu_item_map[ $item[ self::CALLBACK ] ] ) ) {
-				$category                        = $this->menu_item_map[ $item[2] ];
-				$this->store_menu[ $category ][] = array(
-					'slug'  => $item[ self::CALLBACK ],
-					'url'   => $this->get_callback_url( $item[ self::CALLBACK ] ),
-					'title' => $item[ self::TITLE ],
-				);
+		global $submenu;
 
-				// Remove from original WP admin menu.
+		foreach ( $menu as $index => $item ) {
+			$menu_item_map = $this->get_menu_item_map();
+			if ( isset( $menu_item_map[ $item[ self::CALLBACK ] ] ) ) {
+				$this->map_menu_item( $item, $menu_item_map );
 				unset( $menu[ $index ] );
 			}
-
-			// @todo If is a WooCommerce related page by capability or top level item, add to 'Store' category by default.
 		}
 
+		foreach ( $submenu as $parent_key => $parent_item ) {
+			foreach ( $parent_item as $item ) {
+				$submenu_item_map = $this->get_submenu_item_map();
+				if ( isset( $submenu_item_map[ $item[ self::CALLBACK ] ] ) ) {
+					$this->map_menu_item( $item, $submenu_item_map );
+					unset( $menu[ $index ] );
+				}
+			}
+		}
+
+		// @todo If is a WooCommerce related page by capability or top level item, add to 'Store' category by default.
+
 		return $menu;
+	}
+
+	/**
+	 * Map old menu item to new menu.
+	 *
+	 * @param array $item Menu item.
+	 * @param array $map  Map of old items to new.
+	 */
+	public function map_menu_item( $item, $map ) {
+		if (
+			isset( $map[ $item[ self::CALLBACK ] ]['slug'] ) &&
+			! isset( $map[ $item[ self::CALLBACK ] ]['category'] )
+		) {
+			// No category so set so assume this is a top-level category.
+			$category_slug      = $map[ $item[ self::CALLBACK ] ]['slug'];
+			$this->categories[] = array(
+				'slug'  => $category_slug,
+				'url'   => $this->get_callback_url( $item[ self::CALLBACK ] ),
+				'title' => $item[ self::TITLE ],
+			);
+		} else {
+			$category                        = $map[ $item[ self::CALLBACK ] ]['category'];
+			$this->store_menu[ $category ][] = array(
+				'slug'  => $item[ self::CALLBACK ],
+				'url'   => $this->get_callback_url( $item[ self::CALLBACK ] ),
+				'title' => $item[ self::TITLE ],
+			);
+		}
 	}
 
 	/**
@@ -336,9 +395,9 @@ class Navigation {
 	public function add_menu_settings( $menu ) {
 		global $submenu, $parent_file, $typenow, $self;
 
-		$navigation = self::get_categories();
-		foreach ( $navigation as $index => $category ) {
-			$navigation[ $index ]['children'] = isset( $this->store_menu[ $category['slug'] ] )
+		$categories = $this->categories;
+		foreach ( $categories as $index => $category ) {
+			$categories[ $index ]['children'] = isset( $this->store_menu[ $category['slug'] ] )
 				? $this->store_menu[ $category['slug'] ]
 				: array();
 		}
@@ -347,7 +406,7 @@ class Navigation {
 			\Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry::class
 		);
 
-		$data_registry->add( 'wcNavigation', $navigation );
+		$data_registry->add( 'wcNavigation', $categories );
 
 		return $menu;
 	}
