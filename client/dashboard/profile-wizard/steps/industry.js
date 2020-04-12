@@ -12,11 +12,13 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce Dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import { H, Card, TextControl } from '@woocommerce/components';
+import { getCurrencyRegion } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 
@@ -130,6 +132,22 @@ class Industry extends Component {
 	render() {
 		const { industries } = onboarding;
 		const { error, selected, textInputListContent } = this.state;
+		const { locationSettings } = this.props;
+		const region = getCurrencyRegion(
+			locationSettings.woocommerce_default_country
+		);
+
+		const filteredIndustries = Object.keys( industries ).filter(
+			( slug ) => {
+				if (
+					slug === 'cbd-other-hemp-derived-products' &&
+					region !== 'US'
+				) {
+					return false;
+				}
+				return true;
+			}
+		);
 
 		return (
 			<Fragment>
@@ -144,7 +162,7 @@ class Industry extends Component {
 				</p>
 				<Card>
 					<div className="woocommerce-profile-wizard__checkbox-group">
-						{ Object.keys( industries ).map( ( slug ) => {
+						{ filteredIndustries.map( ( slug ) => {
 							const selectedIndustry = find( selected, { slug } );
 
 							return (
@@ -209,10 +227,13 @@ class Industry extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const { getProfileItems, getProfileItemsError } = select( 'wc-api' );
+		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { general: locationSettings = {} } = getSettings( 'general' );
 
 		return {
 			isError: Boolean( getProfileItemsError() ),
 			profileItems: getProfileItems(),
+			locationSettings,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
