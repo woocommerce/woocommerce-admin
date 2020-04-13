@@ -103,7 +103,7 @@ class Theme extends Component {
 		const { createNotice } = this.props;
 
 		apiFetch( {
-			path: '/wc-admin/onboarding/themes/install?theme=' + slug,
+			path: '/wc-admin/themes/install?theme=' + slug,
 			method: 'POST',
 		} )
 			.then( () => {
@@ -119,7 +119,7 @@ class Theme extends Component {
 		const { createNotice, updateProfileItems } = this.props;
 
 		apiFetch( {
-			path: '/wc-admin/onboarding/themes/activate?theme=' + slug,
+			path: '/wc-admin/themes/activate?theme=' + slug,
 			method: 'POST',
 		} )
 			.then( ( response ) => {

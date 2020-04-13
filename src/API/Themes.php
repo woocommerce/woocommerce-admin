@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Overrides\ThemeUpgrader;
 use Automattic\WooCommerce\Admin\Overrides\ThemeUpgraderSkin;
+use Automattic\WooCommerce\Admin\Features\Onboarding;
 
 /**
  * Themes controller.
@@ -41,7 +42,7 @@ class Themes extends \WC_REST_Data_Controller {
 	public function register_routes() {
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base,
+			'/' . $this->rest_base . '/upload',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -50,6 +51,32 @@ class Themes extends \WC_REST_Data_Controller {
 					'args'                => $this->get_collection_params(),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/install',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'install_theme' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/activate',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'activate_theme' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
 			)
 		);
 	}
@@ -65,6 +92,19 @@ class Themes extends \WC_REST_Data_Controller {
 			return new \WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you are not allowed to install themes on this site.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
+		return true;
+	}
+
+	/**
+	 * Check if a given request has access to manage themes.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function update_item_permissions_check( $request ) {
+		if ( ! current_user_can( 'install_themes' ) ) {
+			return new \WP_Error( 'woocommerce_rest_cannot_update', __( 'Sorry, you cannot manage themes.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
+		}
 		return true;
 	}
 
@@ -148,6 +188,116 @@ class Themes extends \WC_REST_Data_Controller {
 		return apply_filters( 'woocommerce_rest_prepare_themes', $response, $item, $request );
 	}
 
+	/**
+	 * Installs the requested theme.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|array Theme installation status.
+	 */
+	public function install_theme( $request ) {
+		$allowed_themes = Onboarding::get_allowed_themes();
+		$theme          = sanitize_title_with_dashes( $request['theme'] );
+
+		if ( ! in_array( $theme, $allowed_themes, true ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_theme', __( 'Invalid theme.', 'woocommerce-admin' ), 404 );
+		}
+
+		$slug             = sanitize_key( $theme );
+		$installed_themes = wp_get_themes();
+
+		if ( in_array( $slug, array_keys( $installed_themes ), true ) ) {
+			return( array(
+				'slug'   => $slug,
+				'name'   => $installed_themes[ $slug ]->get( 'Name' ),
+				'status' => 'success',
+			) );
+		}
+
+		include_once ABSPATH . '/wp-admin/includes/admin.php';
+		include_once ABSPATH . '/wp-admin/includes/theme-install.php';
+		include_once ABSPATH . '/wp-admin/includes/theme.php';
+		include_once ABSPATH . '/wp-admin/includes/class-wp-upgrader.php';
+		include_once ABSPATH . '/wp-admin/includes/class-theme-upgrader.php';
+
+		$api = themes_api(
+			'theme_information',
+			array(
+				'slug'   => $slug,
+				'fields' => array(
+					'sections' => false,
+				),
+			)
+		);
+
+		if ( is_wp_error( $api ) ) {
+			return new \WP_Error(
+				'woocommerce_rest_theme_install',
+				sprintf(
+					/* translators: %s: theme slug (example: woocommerce-services) */
+					__( 'The requested theme `%s` could not be installed. Theme API call failed.', 'woocommerce-admin' ),
+					$slug
+				),
+				500
+			);
+		}
+
+		$upgrader = new \Theme_Upgrader( new \Automatic_Upgrader_Skin() );
+		$result   = $upgrader->install( $api->download_link );
+
+		if ( is_wp_error( $result ) || is_null( $result ) ) {
+			return new \WP_Error(
+				'woocommerce_rest_theme_install',
+				sprintf(
+					/* translators: %s: theme slug (example: woocommerce-services) */
+					__( 'The requested theme `%s` could not be installed.', 'woocommerce-admin' ),
+					$slug
+				),
+				500
+			);
+		}
+
+		return array(
+			'slug'   => $slug,
+			'name'   => $api->name,
+			'status' => 'success',
+		);
+	}
+
+	/**
+	 * Activate the requested theme.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|array Theme activation status.
+	 */
+	public function activate_theme( $request ) {
+		$allowed_themes = Onboarding::get_allowed_themes();
+		$theme          = sanitize_title_with_dashes( $request['theme'] );
+		if ( ! in_array( $theme, $allowed_themes, true ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_theme', __( 'Invalid theme.', 'woocommerce-admin' ), 404 );
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/theme.php';
+
+		$slug             = sanitize_key( $theme );
+		$installed_themes = wp_get_themes();
+
+		if ( ! in_array( $theme, array_keys( $installed_themes ), true ) ) {
+			/* translators: %s: theme slug (example: woocommerce-services) */
+			return new \WP_Error( 'woocommerce_rest_invalid_theme', sprintf( __( 'Invalid theme %s.', 'woocommerce-admin' ), $slug ), 404 );
+		}
+
+		$result = switch_theme( $theme );
+		if ( ! is_null( $result ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_theme', sprintf( __( 'The requested theme could not be activated.', 'woocommerce-admin' ), $slug ), 500 );
+		}
+
+		return( array(
+			'slug'   => $theme,
+			'name'   => $installed_themes[ $theme ]->get( 'Name' ),
+			'status' => 'success',
+		) );
+	}
+
 
 	/**
 	 * Get the schema, conforming to JSON Schema.
@@ -157,11 +307,11 @@ class Themes extends \WC_REST_Data_Controller {
 	public function get_item_schema() {
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'upload_theme',
+			'title'      => 'themes',
 			'type'       => 'object',
 			'properties' => array(
 				'status'  => array(
-					'description' => __( 'Theme installation status.', 'woocommerce-admin' ),
+					'description' => __( 'Theme status.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -172,9 +322,15 @@ class Themes extends \WC_REST_Data_Controller {
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'theme'   => array(
-					'description' => __( 'Uploaded theme.', 'woocommerce-admin' ),
-					'type'        => 'object',
+				'name' => array(
+					'description' => __( 'Theme name.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'slug' => array(
+					'description' => __( 'Theme slug.', 'woocommerce-admin' ),
+					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
