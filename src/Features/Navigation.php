@@ -108,7 +108,7 @@ class Navigation {
 	 *
 	 * @var array
 	 */
-	protected $store_menu = array();
+	protected static $menu_items = array();
 
 	/**
 	 * Screen IDs of registered pages.
@@ -174,36 +174,82 @@ class Navigation {
 	 * Add the core menu items to the new navigation
 	 */
 	public function add_core_menu_items() {
+		// Orders category.
 		self::add_menu_category(
 			__( 'Orders', 'woocommerce-admin' ),
 			'edit_shop_orders',
 			'orders',
 			'edit.php?post_type=shop_order'
 		);
+
+		// Products category.
 		self::add_menu_category(
 			__( 'Products', 'woocommerce-admin' ),
 			'edit_products',
 			'products',
 			'edit.php?post_type=product'
 		);
+
+		// Extensions category.
 		self::add_menu_category(
 			__( 'Extensions', 'woocommerce-admin' ),
 			'activate_plugins',
 			'extensions',
 			'plugins.php'
 		);
+		self::add_menu_item(
+			'extensions',
+			__( 'My extensions', 'woocommerce-admin' ),
+			'manage_woocommerce',
+			'my-extensions',
+			'plugins.php'
+		);
+		self::add_menu_item(
+			'extensions',
+			__( 'Marketplace', 'woocommerce-admin' ),
+			'manage_woocommerce',
+			'marketplace',
+			'wc-addons'
+		);
+
+		// Settings category.
 		self::add_menu_category(
 			__( 'Settings', 'woocommerce-admin' ),
 			'manage_woocommerce',
 			'settings',
 			'wc-settings'
 		);
+
+		// Tools category.
 		self::add_menu_category(
 			__( 'Tools', 'woocommerce-admin' ),
 			'manage_woocommerce',
 			'tools',
 			'wc-status'
 		);
+		self::add_menu_item(
+			'tools',
+			__( 'System status', 'woocommerce-admin' ),
+			'manage_woocommerce',
+			'system-status',
+			'wc-status'
+		);
+		self::add_menu_item(
+			'tools',
+			__( 'Import / Export', 'woocommerce-admin' ),
+			'import',
+			'import-export',
+			'import.php'
+		);
+		self::add_menu_item(
+			'tools',
+			__( 'Utilities', 'woocommerce-admin' ),
+			'manage_woocommerce',
+			'utilities',
+			'admin.php?page=wc-status&tab=tools'
+		);
+
+		// User profile.
 		self::add_menu_category(
 			wp_get_current_user()->user_login,
 			'read',
@@ -252,6 +298,32 @@ class Navigation {
 	}
 
 	/**
+	 * Adds a child menu item to the navigation.
+	 *
+	 * @param string $parent_slug Parent item slug.
+	 * @param string $title Menu title.
+	 * @param string $capability WordPress capability.
+	 * @param string $slug Menu slug.
+	 * @param string $url URL or menu callback.
+	 * @param string $icon Menu icon.
+	 * @param int    $order Menu order.
+	 */
+	public static function add_menu_item( $parent_slug, $title, $capability, $slug, $url = null, $icon = null, $order = null ) {
+		self::$menu_items[ $parent_slug ][] = array(
+			'title' => $title,
+			'slug'  => $slug,
+			'url'   => self::get_callback_url( $url ),
+			'icon'  => $icon,
+			'order' => $order,
+		);
+
+		// @todo Remove from the main menu if the callback matches an existing item.
+
+		// @todo Get parent key by looping over parents first.
+		// self::$screen_ids[] = get_plugin_page_hookname( $url, $parent_key );
+	}
+
+	/**
 	 * Add the menu to the page output.
 	 *
 	 * @param array $menu Top level dashboard menu items.
@@ -262,8 +334,8 @@ class Navigation {
 
 		$categories = self::$categories;
 		foreach ( $categories as $index => $category ) {
-			$categories[ $index ]['children'] = isset( $this->store_menu[ $category['slug'] ] )
-				? $this->store_menu[ $category['slug'] ]
+			$categories[ $index ]['children'] = isset( self::$menu_items[ $category['slug'] ] )
+				? self::$menu_items[ $category['slug'] ]
 				: array();
 		}
 
