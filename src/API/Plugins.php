@@ -618,7 +618,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	public function get_item_schema() {
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'onboarding_plugin',
+			'title'      => 'plugins',
 			'type'       => 'object',
 			'properties' => array(
 				'slug'   => array(
