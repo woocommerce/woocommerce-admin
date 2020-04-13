@@ -351,11 +351,12 @@ export default compose(
 			getProfileItems,
 			getOptions,
 			getUpdateOptionsError,
-			isJetpackConnected,
 			isUpdateOptionsRequesting,
 		} = select( 'wc-api' );
 
-		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
+		const { getActivePlugins, isJetpackConnected } = select(
+			PLUGINS_STORE_NAME
+		);
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 		const options = getOptions( [

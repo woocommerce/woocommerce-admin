@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API Onboarding Plugins Controller
+ * REST API Plugins Controller
  *
  * Handles requests to install and activate depedent plugins.
  *
@@ -15,12 +15,12 @@ use Automattic\WooCommerce\Admin\PluginsHelper;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Onboarding Plugins Controller.
+ * Plugins Controller.
  *
  * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
-class OnboardingPlugins extends \WC_REST_Data_Controller {
+class Plugins extends \WC_REST_Data_Controller {
 	/**
 	 * Endpoint namespace.
 	 *
@@ -33,7 +33,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 *
 	 * @var string
 	 */
-	protected $rest_base = 'onboarding/plugins';
+	protected $rest_base = 'plugins';
 
 	/**
 	 * Register routes.
@@ -190,7 +190,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * @return WP_Error|array Plugin Status
 	 */
 	public function install_plugin( $request ) {
-		$allowed_plugins = Onboarding::get_allowed_plugins();
+		$allowed_plugins = self::get_allowed_plugins();
 		$plugin          = sanitize_title_with_dashes( $request['plugin'] );
 		if ( ! in_array( $plugin, array_keys( $allowed_plugins ), true ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
@@ -279,15 +279,34 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Returns a list of active plugins.
+	 * Gets an array of plugins that can be installed & activated.
+	 *
+	 * @return array
+	 */
+	public static function get_allowed_plugins() {
+		return apply_filters( 'woocommerce_admin_plugins_whitelist', array() );
+	}
+
+	/**
+	 * Returns a list of active plugins in API format.
 	 *
 	 * @return array Active plugins
 	 */
 	public function active_plugins() {
-		$plugins = Onboarding::get_active_plugins();
+		$allowed = self::get_allowed_plugins();
+		$plugins = array_values( array_intersect( PluginsHelper::get_active_plugin_slugs(), $allowed ) );
 		return( array(
 			'plugins' => array_values( $plugins ),
 		) );
+	}
+	/**
+	 * Returns a list of active plugins.
+	 *
+	 * @return array Active plugins
+	 */
+	public static function get_active_plugins() {
+		$data = self::active_plugins();
+		return $data['plugins'];
 	}
 
 	/**
@@ -308,7 +327,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	 * @return WP_Error|array Plugin Status
 	 */
 	public function activate_plugins( $request ) {
-		$allowed_plugins = Onboarding::get_allowed_plugins();
+		$allowed_plugins = self::get_allowed_plugins();
 		$_plugins        = explode( ',', $request['plugins'] );
 		$plugins         = array_intersect( array_keys( $allowed_plugins ), $_plugins );
 
@@ -335,7 +354,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 
 		return( array(
 			'activatedPlugins' => array_values( $plugins ),
-			'active'           => Onboarding::get_active_plugins(),
+			'active'           => self::get_active_plugins(),
 			'status'           => 'success',
 		) );
 	}
