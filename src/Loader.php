@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin;
 
 use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\Features\Navigation;
 
 /**
  * Loader Class.
@@ -511,6 +512,10 @@ class Loader {
 	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
 	 */
 	public static function embed_page_header() {
+		if ( Navigation::instance()->is_woocommerce_page() ) {
+			self::embed_navigation_menu();
+		}
+
 		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
 			return;
 		}
@@ -518,8 +523,6 @@ class Loader {
 		if ( ! static::user_can_analytics() ) {
 			return;
 		}
-
-		self::embed_navigation_menu();
 
 		if ( ! self::is_embed_page() ) {
 			return;

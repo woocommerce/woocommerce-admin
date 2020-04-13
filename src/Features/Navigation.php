@@ -97,29 +97,6 @@ class Navigation {
 	);
 
 	/**
-	 * Store related plugin page handles.
-	 *
-	 * @var array
-	 */
-	protected $plugin_pages = array(
-		'wc-admin',
-		'wc-reports',
-		'wc-settings',
-		'wc-status',
-		'wc-addons',
-		'woocommerce',
-		'checkout_field_editor',
-		'csv_import_suite',
-		'lightspeed-import-page',
-		'sc-about',
-		'wc-smart-coupons',
-		'wc_checkout_add_ons',
-		'wc_customer_order_csv_export',
-		'wc_dynamic_pricing',
-		'wc_pre_orders',
-	);
-
-	/**
 	 * Store top level categories.
 	 *
 	 * @var array
@@ -132,6 +109,13 @@ class Navigation {
 	 * @var array
 	 */
 	protected $store_menu = array();
+
+	/**
+	 * Screen IDs of registered pages.
+	 *
+	 * @var array
+	 */
+	protected static $screen_ids = array();
 
 	/**
 	 * Map of all top level menu items.
@@ -167,6 +151,39 @@ class Navigation {
 		);
 
 		return apply_filters( 'woocommerce_navigation_menu_item_map', $map );
+	}
+
+	/**
+	 * Check if we're on a WooCommerce page
+	 *
+	 * @return bool
+	 */
+	public function is_woocommerce_page() {
+		global $pagenow, $plugin_page;
+
+		// Get post type if on a post screen.
+		$post_type = '';
+		if ( in_array( $pagenow, array( 'edit.php', 'post.php', 'post-new.php' ), true ) ) {
+			if ( isset( $_GET['post'] ) ) { // phpcs:ignore CSRF ok.
+				$post_type = get_post_type( (int) $_GET['post'] ); // phpcs:ignore CSRF ok.
+			} elseif ( isset( $_GET['post_type'] ) ) { // phpcs:ignore CSRF ok.
+				$post_type = sanitize_text_field( wp_unslash( $_GET['post_type'] ) ); // phpcs:ignore CSRF ok.
+			}
+		}
+		$post_types = apply_filters( 'woocommerce_navigation_post_types', $this->post_types );
+
+		// Get current screen ID.
+		$current_screen = get_current_screen();
+		$screen_ids     = apply_filters( 'woocommerce_navigation_screen_ids', self::$screen_ids );
+
+		if (
+			in_array( $post_type, $post_types, true ) ||
+			in_array( $current_screen->id, self::$screen_ids, true )
+		) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -340,6 +357,7 @@ class Navigation {
 			if ( isset( $menu_item_map[ $item[ self::CALLBACK ] ] ) ) {
 				$this->map_menu_item( $item, $menu_item_map );
 				unset( $menu[ $index ] );
+				self::$screen_ids[] = get_plugin_page_hookname( $item[ self::CALLBACK ], null );
 			}
 		}
 
@@ -349,10 +367,10 @@ class Navigation {
 				if ( isset( $submenu_item_map[ $item[ self::CALLBACK ] ] ) ) {
 					$this->map_menu_item( $item, $submenu_item_map );
 					unset( $menu[ $index ] );
+					self::$screen_ids[] = get_plugin_page_hookname( $item[ self::CALLBACK ], $parent_key );
 				}
 			}
 		}
-
 		// @todo If is a WooCommerce related page by capability or top level item, add to 'Store' category by default.
 
 		return $menu;
