@@ -36,7 +36,10 @@ export const withPluginsHydration = ( data ) => ( OriginalComponent ) => {
 				startResolution( 'isJetpackConnected', [] );
 				updateActivePlugins( dataRef.current.activePlugins );
 				updateInstalledPlugins( dataRef.current.installedPlugins );
-				updateIsJetpackConnected( dataRef.current.jetpackStatus.isActive );
+				updateIsJetpackConnected(
+					dataRef.current.jetpackStatus &&
+						dataRef.current.jetpackStatus.isActive
+				);
 				finishResolution( 'getActivePlugins', [] );
 				finishResolution( 'getInstalledPlugins', [] );
 				finishResolution( 'isJetpackConnected', [] );
