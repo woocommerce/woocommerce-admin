@@ -26,8 +26,7 @@ class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_note_action_install-jp-and-wcs-plugins', array( $this, 'install_jp_and_wcs_plugins' ) );
-		add_action( 'activate_jetpack/jetpack.php', array( $this, 'action_note_jp' ) );
-		add_action( 'activate_woocommerce-services/woocommerce-services.php', array( $this, 'action_note_wcs' ) );
+		add_action( 'activated_plugin', array( $this, 'action_note' ) );
 	}
 
 	/**
@@ -71,31 +70,15 @@ class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
 	}
 
 	/**
-	 * This gets triggered when the Jetpack plugin is activated.
-	 */
-	public static function action_note_jp() {
-		self::action_note( 'jp' );
-	}
-
-	/**
-	 * This gets triggered when the WooCommerce Services plugin is activated.
-	 */
-	public static function action_note_wcs() {
-		self::action_note( 'wcs' );
-	}
-
-	/**
 	 * Action the Install Jetpack and WooCommerce Services note, if any exists,
 	 * and as long as both the Jetpack and WooCommerce Services plugins have been
 	 * activated.
-	 *
-	 * @param string $activated_plugin The shortened name of the slug that was activated.
 	 */
-	private static function action_note( $activated_plugin ) {
+	public static function action_note() {
 		// Make sure that both plugins are active before actioning the note.
 		$active_plugin_slugs = PluginsHelper::get_active_plugin_slugs();
-		$jp_active           = 'jp' === $activated_plugin || in_array( 'jetpack', $active_plugin_slugs, true );
-		$wcs_active          = 'wcs' === $activated_plugin || in_array( 'woocommerce-services', $active_plugin_slugs, true );
+		$jp_active           = in_array( 'jetpack', $active_plugin_slugs, true );
+		$wcs_active          = in_array( 'woocommerce-services', $active_plugin_slugs, true );
 
 		if ( ! $jp_active || ! $wcs_active ) {
 			return;
