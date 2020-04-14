@@ -7,19 +7,19 @@ import { get } from 'lodash';
 import { Button } from '@wordpress/components';
 import Gridicon from 'gridicons';
 import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
 import { Card } from '@woocommerce/components';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 import { recordEvent } from 'lib/tracks';
-import withSelect from 'wc-api/with-select';
 import WelcomeImage from './images/welcome.svg';
 
 class WelcomeCard extends Component {
@@ -43,9 +43,7 @@ class WelcomeCard extends Component {
 		}
 
 		return (
-			<Card
-				className="woocommerce-marketing-overview-welcome-card"
-			>
+			<Card className="woocommerce-marketing-overview-welcome-card">
 				<Button
 					label={ __( 'Hide', 'woocommerce-admin' ) }
 					onClick={ this.hide }
@@ -54,26 +52,33 @@ class WelcomeCard extends Component {
 					<Gridicon icon="cross" />
 				</Button>
 				<img src={ WelcomeImage } alt="" />
-				<h3>{ __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce', 'woocommerce-admin' ) }</h3>
+				<h3>
+					{ __(
+						'Grow your customer base and increase your sales with marketing tools built for WooCommerce',
+						'woocommerce-admin'
+					) }
+				</h3>
 			</Card>
-		)
+		);
 	}
 }
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getOptions, isUpdateOptionsRequesting } = select( 'wc-api' );
+		const { getOptions, isUpdateOptionsRequesting } = select(
+			OPTIONS_STORE_NAME
+		);
 		const hideOptionName = 'woocommerce_marketing_overview_welcome_hidden';
 		const options = getOptions( [ hideOptionName ] );
 		const isHidden = get( options, [ hideOptionName ], 'no' ) === 'yes';
-		const isUpdateRequesting = Boolean( isUpdateOptionsRequesting( [ hideOptionName ] ) );
+		const isUpdateRequesting = isUpdateOptionsRequesting();
 
 		return {
 			isHidden: isHidden || isUpdateRequesting,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateOptions } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		return {
 			updateOptions,
 		};

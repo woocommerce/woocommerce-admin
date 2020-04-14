@@ -17,7 +17,7 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -53,34 +53,10 @@ class Payments extends Component {
 		this.skipTask = this.skipTask.bind( this );
 	}
 
-	componentDidUpdate( prevProps ) {
-		const { createNotice, errors, methods, requesting } = this.props;
-
-		methods.forEach( ( method ) => {
-			const { key, title } = method;
-			if (
-				prevProps.requesting[ key ] &&
-				! requesting[ key ] &&
-				errors[ key ]
-			) {
-				createNotice(
-					'error',
-					sprintf(
-						__(
-							'There was a problem updating settings for %s',
-							'woocommerce-admin'
-						),
-						title
-					)
-				);
-			}
-		} );
-	}
-
-	completeTask() {
+	async completeTask() {
 		const { createNotice, methods, updateOptions } = this.props;
 
-		updateOptions( {
+		const update = await updateOptions( {
 			woocommerce_task_list_payments: {
 				completed: 1,
 				timestamp: Math.floor( Date.now() / 1000 ),
@@ -93,15 +69,25 @@ class Payments extends Component {
 				.map( ( method ) => method.key ),
 		} );
 
-		createNotice(
-			'success',
-			__(
-				'💰 Ka-ching! Your store can now accept payments 💳',
-				'woocommerce-admin'
-			)
-		);
+		if ( update.status === 'failed' ) {
+			createNotice(
+				'error',
+				__(
+					'There was a problem updating settings',
+					'woocommerce-admin'
+				)
+			);
+		} else {
+			createNotice(
+				'success',
+				__(
+					'💰 Ka-ching! Your store can now accept payments 💳',
+					'woocommerce-admin'
+				)
+			);
 
-		getHistory().push( getNewPath( {}, '/', {} ) );
+			getHistory().push( getNewPath( {}, '/', {} ) );
+		}
 	}
 
 	skipTask() {
@@ -207,7 +193,7 @@ class Payments extends Component {
 
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { methods, query } = this.props;
+		const { methods, query, requesting } = this.props;
 		const { enabledMethods } = this.state;
 		const configuredMethods = methods.filter(
 			( method ) => method.isConfigured
@@ -337,7 +323,11 @@ class Payments extends Component {
 							) }
 						</Button>
 					) : (
-						<Button isPrimary onClick={ this.completeTask }>
+						<Button
+							isPrimary
+							isBusy={ requesting }
+							onClick={ this.completeTask }
+						>
 							{ __( 'Done', 'woocommerce-admin' ) }
 						</Button>
 					) }
@@ -349,12 +339,11 @@ class Payments extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getProfileItems,
-			getOptions,
-			getUpdateOptionsError,
-			isUpdateOptionsRequesting,
-		} = select( 'wc-api' );
+		const { getProfileItems } = select( 'wc-api' );
+
+		const { getOptions, isUpdateOptionsRequesting } = select(
+			OPTIONS_STORE_NAME
+		);
 
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
@@ -387,20 +376,10 @@ export default compose(
 			profileItems,
 		} );
 
-		const errors = {};
-		const requesting = {};
-		methods.forEach( ( method ) => {
-			errors[ method.key ] = Boolean(
-				getUpdateOptionsError( [ method.optionName ] )
-			);
-			requesting[ method.key ] = Boolean(
-				isUpdateOptionsRequesting( [ method.optionName ] )
-			);
-		} );
+		const requesting = isUpdateOptionsRequesting();
 
 		return {
 			countryCode,
-			errors,
 			profileItems,
 			activePlugins,
 			options,
@@ -410,7 +389,7 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		return {
 			createNotice,
 			updateOptions,

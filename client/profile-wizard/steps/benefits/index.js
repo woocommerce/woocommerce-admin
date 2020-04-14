@@ -12,7 +12,7 @@ import { filter } from 'lodash';
  * WooCommerce dependencies
  */
 import { Card, H, Plugins } from '@woocommerce/components';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -96,7 +96,7 @@ class Benefits extends Component {
 		}
 	}
 
-	async startPluginInstall() {
+	startPluginInstall() {
 		const { updateProfileItems, updateOptions } = this.props;
 
 		this.setState( {
@@ -104,7 +104,7 @@ class Benefits extends Component {
 			isPending: true,
 		} );
 
-		await updateOptions( {
+		updateOptions( {
 			woocommerce_setup_jetpack_opted_in: true,
 		} );
 
@@ -285,7 +285,8 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateProfileItems, updateOptions } = dispatch( 'wc-api' );
+		const { updateProfileItems } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {

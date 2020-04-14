@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { get } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import {
@@ -15,10 +15,14 @@ import {
 } from '@wordpress/components';
 
 /**
+ * WooCommerce dependencies
+ */
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+
+/**
  * Internal dependencies
  */
 import { Link } from '@woocommerce/components';
-import withSelect from 'wc-api/with-select';
 
 class UsageModal extends Component {
 	constructor( props ) {
@@ -144,19 +148,15 @@ export default compose(
 	withSelect( ( select ) => {
 		const {
 			getOptions,
-			getOptionsError,
+			getOptionsRequestingError,
 			isUpdateOptionsRequesting,
-		} = select( 'wc-api' );
+		} = select( OPTIONS_STORE_NAME );
 
 		const options = getOptions( [ 'woocommerce_allow_tracking' ] );
 		const allowTracking =
 			get( options, [ 'woocommerce_allow_tracking' ], false ) === 'yes';
-		const isRequesting = Boolean(
-			isUpdateOptionsRequesting( [ 'woocommerce_allow_tracking' ] )
-		);
-		const hasErrors = Boolean(
-			getOptionsError( [ 'woocommerce_allow_tracking' ] )
-		);
+		const isRequesting = Boolean( isUpdateOptionsRequesting() );
+		const hasErrors = Boolean( getOptionsRequestingError() );
 
 		return {
 			allowTracking,
@@ -166,7 +166,7 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 
 		return {
 			createNotice,

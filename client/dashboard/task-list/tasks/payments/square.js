@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Button } from '@wordpress/components';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
 /**
@@ -13,9 +13,9 @@ import { compose } from '@wordpress/compose';
  */
 import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
 import { Stepper } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 class Square extends Component {
 	constructor( props ) {
@@ -145,7 +145,9 @@ class Square extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getOptions, isGetOptionsRequesting } = select( 'wc-api' );
+		const { getOptions, isGetOptionsRequesting } = select(
+			OPTIONS_STORE_NAME
+		);
 		const options = getOptions( [
 			'woocommerce_square_credit_card_settings',
 		] );
@@ -162,7 +164,7 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		return {
 			createNotice,
 			updateOptions,
