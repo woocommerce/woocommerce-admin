@@ -13,7 +13,7 @@ import { applyFilters } from '@wordpress/hooks';
  * WooCommerce dependencies
  */
 import { H, Spinner } from '@woocommerce/components';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { SETTINGS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -325,12 +325,8 @@ class CustomizableDashboard extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getCurrentUserData,
-			isGetProfileItemsRequesting,
-			getOptions,
-			isGetOptionsRequesting,
-		} = select( 'wc-api' );
+		const { getCurrentUserData } = select( 'wc-api' );
+		const { getOptions } = select( OPTIONS_STORE_NAME );
 		const userData = getCurrentUserData();
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
@@ -355,14 +351,6 @@ export default compose(
 				[ 'woocommerce_task_list_complete' ],
 				false
 			);
-			withSelectData.requesting =
-				withSelectData.requesting || isGetProfileItemsRequesting();
-			withSelectData.requesting =
-				withSelectData.requesting ||
-				isGetOptionsRequesting( [
-					'woocommerce_task_list_payments',
-					'woocommerce_task_list_hidden',
-				] );
 		}
 
 		return withSelectData;

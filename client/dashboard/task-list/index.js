@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, cloneElement, Fragment } from '@wordpress/element';
-import { get, isEqual } from 'lodash';
+import { get, isEqual, identity } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
 import { Snackbar, Icon, Button, Modal } from '@wordpress/components';
@@ -14,7 +14,11 @@ import { withDispatch } from '@wordpress/data';
  */
 import { Card, List, MenuItem, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import {
+	PLUGINS_STORE_NAME,
+	OPTIONS_STORE_NAME,
+	withOptionsHydration,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -410,12 +414,13 @@ class TaskDashboard extends Component {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { getProfileItems, getOptions } = select(
-			'wc-api'
-		);
-		const { getActivePlugins, getInstalledPlugins, isJetpackConnected } = select(
-			PLUGINS_STORE_NAME
-		);
+		const { getProfileItems } = select( 'wc-api' );
+		const { getOptions } = select( OPTIONS_STORE_NAME );
+		const {
+			getActivePlugins,
+			getInstalledPlugins,
+			isJetpackConnected,
+		} = select( PLUGINS_STORE_NAME );
 		const profileItems = getProfileItems();
 
 		const options = getOptions( [
@@ -470,9 +475,14 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateOptions } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		return {
 			updateOptions,
 		};
-	} )
+	} ),
+	window.wcSettings.preloadOptions
+		? withOptionsHydration( {
+				...window.wcSettings.preloadOptions,
+		  } )
+		: identity
 )( TaskDashboard );

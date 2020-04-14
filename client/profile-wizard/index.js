@@ -15,6 +15,7 @@ import {
 	PLUGINS_STORE_NAME,
 	withSettingsHydration,
 	withPluginsHydration,
+	withOptionsHydration,
 } from '@woocommerce/data';
 
 /**
@@ -284,6 +285,11 @@ export default compose(
 		? withPluginsHydration( {
 				...window.wcSettings.plugins,
 				jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
+		  } )
+		: identity,
+	window.wcSettings.preloadOptions
+		? withOptionsHydration( {
+				...window.wcSettings.preloadOptions,
 		  } )
 		: identity
 )( ProfileWizard );
