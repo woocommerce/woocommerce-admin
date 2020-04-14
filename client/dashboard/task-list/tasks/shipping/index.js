@@ -32,14 +32,15 @@ class Shipping extends Component {
 
 		this.initialState = {
 			isPending: false,
-			step: 'store_location',
+			waitForSettingsBeforeInitialStepSet: true,
+			stepIndex: 0,
 			shippingZones: [],
 		};
 
 		// Cache active plugins to prevent removal mid-step.
 		this.activePlugins = props.activePlugins;
 		this.state = this.initialState;
-		this.completeStep = this.completeStep.bind( this );
+		this.goToNextStep = this.goToNextStep.bind( this );
 	}
 
 	componentDidMount() {
@@ -48,6 +49,21 @@ class Shipping extends Component {
 
 	reset() {
 		this.setState( this.initialState );
+
+		const isWaitingForSettings = this.isWaitingForSettings();
+		this.setState( {
+			waitForSettingsBeforeInitialStepSet: isWaitingForSettings,
+		} );
+
+		if ( isWaitingForSettings ) {
+			// We need to wait until we have received the initial settings
+			// to set the first step, since whether steps should be considered
+			// complete depends on the settings; otherwise, we may show a
+			// step when it isn't necessary.
+			return;
+		}
+
+		this.goToFirstStep();
 	}
 
 	async fetchShippingZones() {
@@ -111,41 +127,54 @@ class Shipping extends Component {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const { countryCode, settings } = this.props;
-		const {
-			woocommerce_store_address: storeAddress,
-			woocommerce_default_country: defaultCountry,
-			woocommerce_store_postcode: storePostcode,
-		} = settings;
-		const { step } = this.state;
+		const { countryCode } = this.props;
+		const { stepIndex } = this.state;
+		const steps = this.getSteps();
+		const step = steps[ stepIndex ];
 
 		if (
-			step === 'store_location' &&
-			storeAddress &&
-			defaultCountry &&
-			storePostcode
+			this.state.waitForSettingsBeforeInitialStepSet &&
+			! this.isWaitingForSettings()
 		) {
-			this.completeStep();
+			// We have the settings, so we can proceed with going to the
+			// first step, or the success screen.
+			this.goToFirstStep();
 		}
 
 		if (
-			step === 'rates' &&
+			step.key === 'rates' &&
 			( prevProps.countryCode !== countryCode ||
-				prevState.step !== 'rates' )
+				prevState.stepIndex !== stepIndex )
 		) {
 			this.fetchShippingZones();
 		}
 	}
 
-	completeStep() {
+	goToFirstStep() {
+		this.setState( {
+			waitForSettingsBeforeInitialStepSet: false,
+		} );
+
+		this.goToNextStep( 0 );
+	}
+
+	goToNextStep( forcedNextStepIndex ) {
 		const { createNotice } = this.props;
-		const { step } = this.state;
+		const { stepIndex } = this.state;
 		const steps = this.getSteps();
-		const currentStepIndex = steps.findIndex( ( s ) => s.key === step );
-		const nextStep = steps[ currentStepIndex + 1 ];
+		const nextStepIndex =
+			typeof forcedNextStepIndex !== 'undefined'
+				? forcedNextStepIndex
+				: stepIndex + 1;
+		const nextStep = steps[ nextStepIndex ];
 
 		if ( nextStep ) {
-			this.setState( { step: nextStep.key } );
+			if ( nextStep.isComplete ) {
+				this.goToNextStep( nextStepIndex + 1 );
+				return;
+			}
+
+			this.setState( { stepIndex: nextStepIndex } );
 		} else {
 			createNotice(
 				'success',
@@ -154,6 +183,7 @@ class Shipping extends Component {
 					'woocommerce-admin'
 				)
 			);
+			// Return to the Dashboard
 			getHistory().push( getNewPath( {}, '/', {} ) );
 		}
 	}
@@ -174,7 +204,24 @@ class Shipping extends Component {
 		return difference( plugins, this.activePlugins );
 	}
 
+	isWaitingForSettings() {
+		return this.props.isGeneralSettingsRequesting;
+	}
+
+	isStoreLocationComplete() {
+		const {
+			generalSettings: {
+				woocommerce_store_address: storeAddress,
+				woocommerce_default_country: defaultCountry,
+				woocommerce_store_postcode: storePostCode,
+			},
+		} = this.props;
+
+		return Boolean( storeAddress && defaultCountry && storePostCode );
+	}
+
 	getSteps() {
+		const { generalSettings, isGeneralSettingsRequesting } = this.props;
 		const pluginsToActivate = this.getPluginsToActivate();
 
 		const steps = [
@@ -187,6 +234,7 @@ class Shipping extends Component {
 				),
 				content: (
 					<StoreLocation
+						{ ...this.props }
 						onComplete={ ( values ) => {
 							const country = getCountryCode(
 								values.countryState
@@ -194,12 +242,14 @@ class Shipping extends Component {
 							recordEvent( 'tasklist_shipping_set_location', {
 								country,
 							} );
-							this.completeStep();
+							this.goToNextStep();
 						} }
-						{ ...this.props }
+						isSettingsRequesting={ isGeneralSettingsRequesting }
+						settings={ generalSettings }
 					/>
 				),
 				visible: true,
+				isComplete: this.isStoreLocationComplete(),
 			},
 			{
 				key: 'rates',
@@ -216,11 +266,12 @@ class Shipping extends Component {
 								: __( 'Complete task', 'woocommerce-admin' )
 						}
 						shippingZones={ this.state.shippingZones }
-						onComplete={ this.completeStep }
+						onComplete={ this.goToNextStep }
 						{ ...this.props }
 					/>
 				),
 				visible: true,
+				isComplete: false,
 			},
 			{
 				key: 'label_printing',
@@ -259,13 +310,14 @@ class Shipping extends Component {
 								install: true,
 								pluginsToActivate,
 							} );
-							this.completeStep();
+							this.goToNextStep();
 						} }
 						onSkip={ () => {
 							recordEvent( 'tasklist_shipping_label_printing', {
 								install: false,
 								pluginsToActivate,
 							} );
+							// Return to the Dashboard
 							getHistory().push( getNewPath( {}, '/', {} ) );
 						} }
 						pluginSlugs={ pluginsToActivate }
@@ -273,6 +325,7 @@ class Shipping extends Component {
 					/>
 				),
 				visible: pluginsToActivate.length,
+				isComplete: false,
 			},
 			{
 				key: 'connect',
@@ -286,7 +339,7 @@ class Shipping extends Component {
 						redirectUrl={ getAdminLink(
 							'admin.php?page=wc-admin'
 						) }
-						completeStep={ this.completeStep }
+						completeStep={ this.goToNextStep }
 						{ ...this.props }
 						onConnect={ () => {
 							recordEvent( 'tasklist_shipping_connect_store' );
@@ -301,16 +354,17 @@ class Shipping extends Component {
 	}
 
 	render() {
-		const { isPending, step } = this.state;
-		const { isSettingsRequesting } = this.props;
+		const { isPending, stepIndex } = this.state;
+		const { isGeneralSettingsRequesting } = this.props;
+		const step = this.getSteps()[ stepIndex ];
 
 		return (
 			<div className="woocommerce-task-shipping">
 				<Card className="is-narrow">
 					<Stepper
-						isPending={ isPending || isSettingsRequesting }
+						isPending={ isPending || isGeneralSettingsRequesting }
 						isVertical
-						currentStep={ step }
+						currentStep={ step.key }
 						steps={ this.getSteps() }
 					/>
 				</Card>
@@ -330,12 +384,14 @@ export default compose(
 			PLUGINS_STORE_NAME
 		);
 
-		const { general: settings = {} } = getSettings( 'general' );
-		const isSettingsError = Boolean( getSettingsError( 'general' ) );
-		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
+		const { general: generalSettings = {} } = getSettings( 'general' );
+		const isGeneralSettingsError = Boolean( getSettingsError( 'general' ) );
+		const isGeneralSettingsRequesting = isGetSettingsRequesting(
+			'general'
+		);
 
 		const countryCode = getCountryCode(
-			settings.woocommerce_default_country
+			generalSettings.woocommerce_default_country
 		);
 
 		const { countries = [] } = getSetting( 'dataEndpoints', {} );
@@ -348,9 +404,9 @@ export default compose(
 		return {
 			countryCode,
 			countryName,
-			isSettingsError,
-			isSettingsRequesting,
-			settings,
+			isGeneralSettingsError,
+			isGeneralSettingsRequesting,
+			generalSettings,
 			activePlugins,
 			isJetpackConnected: isJetpackConnected(),
 		};
