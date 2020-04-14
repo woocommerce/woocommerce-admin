@@ -315,7 +315,7 @@ class Navigation {
 
 		// @todo Remove from the main menu if the callback matches an existing item.
 
-		self::$screen_ids[] = get_plugin_page_hookname( $url, null );
+		self::add_screen_id( $url );
 	}
 
 	/**
@@ -340,8 +340,28 @@ class Navigation {
 
 		// @todo Remove from the main menu if the callback matches an existing item.
 
-		// @todo Get parent key by looping over parents first.
-		// self::$screen_ids[] = get_plugin_page_hookname( $url, $parent_key );
+		self::add_screen_id( $url );
+	}
+
+	/**
+	 * Adds a screen ID to the list and automatically finds the parent if none is given.
+	 *
+	 * @param string      $url URL or callback for page.
+	 * @param string|null $parent Parent slug.
+	 */
+	public static function add_screen_id( $url, $parent = null ) {
+		global $submenu;
+
+		if ( ! $parent && ! isset( $submenu[ $url ] ) ) {
+			foreach ( $submenu as $key => $menu ) {
+				foreach ( $menu as $item ) {
+					if ( $item[ self::CALLBACK ] === $url ) {
+						$parent = $key;
+					}
+				}
+			}
+		}
+		self::$screen_ids[] = get_plugin_page_hookname( $url, $parent );
 	}
 
 	/**
