@@ -165,7 +165,7 @@ class Industry extends Component {
 		);
 		const industryKeys = Object.keys( industries );
 
-		const filteredIndustries =
+		const filteredIndustryKeys =
 			region === 'US'
 				? industryKeys
 				: industryKeys.filter(
@@ -185,7 +185,7 @@ class Industry extends Component {
 				</p>
 				<Card>
 					<div className="woocommerce-profile-wizard__checkbox-group">
-						{ filteredIndustries.map( ( slug ) => {
+						{ filteredIndustryKeys.map( ( slug ) => {
 							const selectedIndustry = find( selected, { slug } );
 
 							return (
