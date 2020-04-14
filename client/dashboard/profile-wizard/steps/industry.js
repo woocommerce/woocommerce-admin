@@ -27,11 +27,38 @@ const onboarding = getSetting( 'onboarding', {} );
 class Industry extends Component {
 	constructor( props ) {
 		const profileItems = get( props, 'profileItems', {} );
+		let selected = profileItems.industry || [];
+
+		/**
+		 * @todo Remove block on `updateProfileItems` refactor to wp.data dataStores.
+		 *
+		 * The following block is a side effect of wc-api not being truly async
+		 * and is a temporary fix until a refactor to wp.data can take place.
+		 *
+		 * Calls to `updateProfileItems` in the previous screen happen async
+		 * and won't be updated in wc-api's state when this component is initialized.
+		 * As such, we need to make sure cbd is not initialized as selected when a
+		 * user has changed location to non0-US based.
+		 */
+		const { locationSettings } = props;
+		const region = getCurrencyRegion(
+			locationSettings.woocommerce_default_country
+		);
+
+		if ( region !== 'US' ) {
+			const cbdSlug = 'cbd-other-hemp-derived-products';
+			selected = selected.filter( ( industry ) => {
+				return cbdSlug !== industry && cbdSlug !== industry.slug;
+			} );
+		}
+		/**
+		 * End block to be removed after refactor.
+		 */
 
 		super();
 		this.state = {
 			error: null,
-			selected: profileItems.industry || [],
+			selected,
 			textInputListContent: {},
 		};
 		this.onContinue = this.onContinue.bind( this );
