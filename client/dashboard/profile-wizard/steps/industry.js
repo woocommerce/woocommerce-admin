@@ -38,7 +38,7 @@ class Industry extends Component {
 		 * Calls to `updateProfileItems` in the previous screen happen async
 		 * and won't be updated in wc-api's state when this component is initialized.
 		 * As such, we need to make sure cbd is not initialized as selected when a
-		 * user has changed location to non0-US based.
+		 * user has changed location to non-US based.
 		 */
 		const { locationSettings } = props;
 		const region = getCurrencyRegion(
@@ -163,18 +163,14 @@ class Industry extends Component {
 		const region = getCurrencyRegion(
 			locationSettings.woocommerce_default_country
 		);
+		const industryKeys = Object.keys( industries );
 
-		const filteredIndustries = Object.keys( industries ).filter(
-			( slug ) => {
-				if (
-					slug === 'cbd-other-hemp-derived-products' &&
-					region !== 'US'
-				) {
-					return false;
-				}
-				return true;
-			}
-		);
+		const filteredIndustries =
+			region === 'US'
+				? industryKeys
+				: industryKeys.filter(
+						( slug ) => slug !== 'cbd-other-hemp-derived-products'
+				  );
 
 		return (
 			<Fragment>
