@@ -119,13 +119,6 @@ class StoreDetails extends Component {
 		} );
 
 		const profileItemsToUpdate = { setup_client: values.isClient };
-		const cbdSlug = 'cbd-other-hemp-derived-products';
-		const hasCbdIndustry =
-			profileItems.industry &&
-			profileItems.industry.length &&
-			profileItems.industry.some( ( industry ) => {
-				return cbdSlug === industry || cbdSlug === industry.slug;
-			} );
 		const region = getCurrencyRegion( values.countryState );
 
 		/**
@@ -138,7 +131,8 @@ class StoreDetails extends Component {
 		 *
 		 * This comment may be removed when a refactor to wp.data datatores is complete.
 		 */
-		if ( region !== 'US' && hasCbdIndustry ) {
+		if ( region !== 'US' ) {
+			const cbdSlug = 'cbd-other-hemp-derived-products';
 			const trimmedIndustries = profileItems.industry.filter(
 				( industry ) => {
 					return cbdSlug !== industry && cbdSlug !== industry.slug;
