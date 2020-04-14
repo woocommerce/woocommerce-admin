@@ -166,7 +166,28 @@ class Navigation {
 	public function __construct() {
 		if ( is_admin() && ! apply_filters( 'woocommerce_use_legacy_navigation', false ) ) {
 			add_filter( 'add_menu_classes', array( $this, 'add_core_menu_items' ) );
-			add_filter( 'add_menu_classes', array( $this, 'add_menu_settings' ), 20 );
+			add_filter( 'wp_after_admin_bar_render', array( $this, 'add_admin_settings' ) );
+			add_filter( 'wp_after_admin_bar_render', array( $this, 'add_menu_settings' ), 20 );
+		}
+	}
+
+	/**
+	 * Add registered admin settings.
+	 */
+	public function add_admin_settings() {
+		$setting_pages = \WC_Admin_Settings::get_settings_pages();
+		$settings      = array();
+		foreach ( $setting_pages as $setting_page ) {
+			$settings = $setting_page->add_settings_page( $settings );
+		}
+		foreach ( $settings as $key => $setting ) {
+			self::add_menu_item(
+				'settings',
+				$setting,
+				'manage_woocommerce',
+				$key,
+				'admin.php?page=wc-status&tab=' . $key
+			);
 		}
 	}
 
@@ -325,11 +346,8 @@ class Navigation {
 
 	/**
 	 * Add the menu to the page output.
-	 *
-	 * @param array $menu Top level dashboard menu items.
-	 * @return array
 	 */
-	public function add_menu_settings( $menu ) {
+	public function add_menu_settings() {
 		global $submenu, $parent_file, $typenow, $self;
 
 		$categories = self::$categories;
@@ -344,7 +362,5 @@ class Navigation {
 		);
 
 		$data_registry->add( 'wcNavigation', $categories );
-
-		return $menu;
 	}
 }
