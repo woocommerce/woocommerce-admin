@@ -71,18 +71,18 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 1.1.0 TBD =
+= 1.1.0 2020-04-14 =
 - Tweak: Update form example to better format the form return data #3706
 - Dev: Align WooCommerce javascript code standards/linting/styles with WordPress core. #3674
 - Tweak: Added link to "go shopping" button #3712
 - Fix: Make analytics tables use the site's date format setting #3715
-- Fix: Alignment of select text #3723 🎉 edmundcwm
+- Fix: Alignment of select text #3723 🎉 @edmundcwm
 - Dev: Added Storybook for documenting internal components. #3679
 - Dev: Add PayFast payment gateway option for sites in South Africa #3738 
 - Dev: Onboarding: Update screen order and remove Jetpack connection in profiler #3739
 - Dev: Onboarding - business step: add more options in the competitors list and other fixes #3812
 - Dev: Onboarding: Redesign plugin benefits screen #3764
-- Fix: inconsistent wording downloads report #3844 🎉 jobthomas
+- Fix: inconsistent wording downloads report #3844 🎉 @jobthomas
 - Tweak: Onboarding: Use full width template for homepage in stores using Storefront #3846
 - Tweak: Remove 'add first product' note. #3876
 - Enhancement: Improve focus on task list #3796
@@ -95,7 +95,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enahncement: Create flat rate or free shipping methods from the onboarding task list #3927
 - Fix: Add WooCommerce support if store is using default theme #3908
 - Fix: Make WooCommerce breadcrumbs use WooCommerce Branding if it is installed #3798
-- Fix undefined variable slug on theme activation error #3942 🎉 nadim1992 
+- Fix undefined variable slug on theme activation error #3942 🎉 2nad@m1992 
 - Tweak: Style and icon updates for Activity Panel #3965
 - Fix: handle cases where coupon dates are in an unexpected format. #3984
 - Enhancement: "Personalize your store" reminder: new inbox notification #3895
@@ -113,6 +113,12 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Reduce the number of default widgets on the dashboard. #4035
 - Tweak: Onboarding: Remove plugins step from profiler #3974
 - Fix: wc-admin pages work in Internet Explorer 11. #4037
+- Dev: Handle orphaned order statuses in analytics settings. #4090
+- Tweak: Overwrite button overflow css from Wordpress 5.4 defaults #4108
+- Dev: Fix usage of WP_Error in non-global namespaces. #4115
+- Tweak: business details step: increase max-height on competitors listbox #4111
+- Fix: OBW: Allow CBD only for US stores #4117
+
 
 = 1.0.3 2020-03-19 =
 
