@@ -129,7 +129,7 @@ class Navigation {
 	 * Constructor
 	 */
 	public function __construct() {
-		if ( is_admin() && ! apply_filters( 'woocommerce_use_legacy_navigation', false ) ) {
+		if ( is_admin() && get_option( 'woocommerce_navigation_enabled', false ) ) {
 			add_action( 'admin_menu', array( $this, 'add_core_menu_items' ) );
 			add_action( 'admin_menu', array( $this, 'add_admin_settings' ) );
 			add_action( 'admin_menu', array( $this, 'add_menu_settings' ), 20 );
