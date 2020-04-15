@@ -20,20 +20,6 @@ class Navigation {
 	protected static $instance = null;
 
 	/**
-	 * Array index of menu title.
-	 *
-	 * @var int
-	 */
-	const TITLE = 0;
-
-	/**
-	 * Array index of menu capability.
-	 *
-	 * @var int
-	 */
-	const CAPABILITY = 1;
-
-	/**
 	 * Array index of menu callback.
 	 *
 	 * @var int
@@ -53,55 +39,6 @@ class Navigation {
 	 * @var int
 	 */
 	const CSS_CLASSES = 4;
-
-	/**
-	 * Array index of menu handle.
-	 *
-	 * @var int
-	 */
-	const HANDLE = 5;
-
-	/**
-	 * Store related capabilities.
-	 *
-	 * @var array
-	 */
-	protected $store_capabilities = array(
-		'manage_woocommerce',
-		'view_woocommerce_reports',
-	);
-
-	/**
-	 * Menu items that are permanently visible.
-	 *
-	 * @var array
-	 */
-	protected $permanent_items = array(
-		'menu-dashboard',
-		'toplevel_page_woocommerce',
-	);
-
-	/**
-	 * Store related post types.
-	 *
-	 * @var array
-	 */
-	protected $post_types = array(
-		'bookable_resource',
-		'event_ticket',
-		'product',
-		'shop_coupon',
-		'shop_order',
-		'shop_subscription',
-		'wc_booking',
-		'wc_membership_plan',
-		'wc_pickup_location',
-		'wc_product_tab',
-		'wc_user_membership',
-		'wc_voucher',
-		'wc_zapier_feed',
-		'wishlist',
-	);
 
 	/**
 	 * Store top level categories.
@@ -125,7 +62,7 @@ class Navigation {
 	protected static $screen_ids = array();
 
 	/**
-	 * Registered callbacks or URLs with hide in menu property as key value pairs.
+	 * Registered callbacks or URLs with migration boolean as key value pairs.
 	 *
 	 * @var array
 	 */
