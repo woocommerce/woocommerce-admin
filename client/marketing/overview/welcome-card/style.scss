@@ -60,7 +60,7 @@
 
 		@include breakpoint( '>600px' ) {
 			text-align: left;
-			margin-left: 20px;
+			margin: 0 0 0 20px;
 		}
 
 		@include breakpoint( '>960px' ) {
