@@ -11,7 +11,7 @@ import { withDispatch, withSelect } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { Card, Pagination } from '@woocommerce/components';
+import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -109,6 +109,40 @@ class KnowledgeBase extends Component {
 		const { posts, isLoading } = this.props;
 		const { page, animate } = this.state;
 
+		const renderEmpty = () => {
+			const title = __(
+				'There was an error loading knowledge base posts. Please check again later.',
+				'woocommerce-admin'
+			);
+
+			return (
+				<EmptyContent
+					title={ title }
+					illustrationWidth={ 250 }
+					actionLabel=""
+				/>
+			);
+		};
+
+		const renderPosts = () => {
+			return (
+				<div className="woocommerce-marketing-knowledgebase-card__posts">
+					<Slider animationKey={ page } animate={ animate }>
+						{ this.getCurrentSlide() }
+					</Slider>
+					<Pagination
+						page={ page }
+						perPage={ 2 }
+						total={ posts.length }
+						onPageChange={ this.onPaginationPageChange }
+						showPagePicker={ false }
+						showPerPagePicker={ false }
+						showPageArrowsLabel={ false }
+					/>
+				</div>
+			)
+		};
+
 		return (
 			<Card
 				title={ __( 'WooCommerce knowledge base', 'woocommerce-admin' ) }
@@ -116,22 +150,7 @@ class KnowledgeBase extends Component {
 				className="woocommerce-marketing-knowledgebase-card"
 			>
 				<Fragment>
-					{ isLoading ? <Spinner /> : (
-						<div className="woocommerce-marketing-knowledgebase-card__posts">
-							<Slider animationKey={ page } animate={ animate }>
-								{ this.getCurrentSlide() }
-							</Slider>
-							<Pagination
-								page={ page }
-								perPage={ 2 }
-								total={ posts.length }
-								onPageChange={ this.onPaginationPageChange }
-								showPagePicker={ false }
-								showPerPagePicker={ false }
-								showPageArrowsLabel={ false }
-							/>
-						</div>
-					) }
+					{ isLoading ? <Spinner /> : ( posts.length === 0 ? renderEmpty() : renderPosts() ) }
 				</Fragment>
 			</Card>
 		)
