@@ -5,7 +5,7 @@
 
 	&__item {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		padding: 18px 24px;
 
 		h4 {
@@ -28,6 +28,7 @@
 	&__item-text-and-actions {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
 		flex-grow: 2;
 		min-width: 0; // Flexbox truncated text fix
 
@@ -75,6 +76,7 @@
 	}
 
 	.woocommere-admin-marketing-product-icon {
+		align-self: flex-start;
 		margin-right: 14px;
 		margin-top: 2px; // Align top of image with text
 	}
