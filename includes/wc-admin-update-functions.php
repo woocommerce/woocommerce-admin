@@ -67,7 +67,8 @@ function wc_admin_update_0230_db_version() {
  * Remove the note unsnoozing scheduled action.
  */
 function wc_admin_update_0251_remove_unsnooze_action() {
-	as_unschedule_action( WC_Admin_Notes::UNSNOOZE_HOOK, null, WC_Admin_Notes::QUEUE_GROUP );
+	as_unschedule_action( WC_Admin_Notes::UNSNOOZE_HOOK, null, 'wc-admin-data' );
+	as_unschedule_action( WC_Admin_Notes::UNSNOOZE_HOOK, null, 'wc-admin-notes' );
 }
 
 /**
@@ -75,4 +76,11 @@ function wc_admin_update_0251_remove_unsnooze_action() {
  */
 function wc_admin_update_0251_db_version() {
 	Installer::update_db_version( '0.25.1' );
+}
+
+/**
+ * Remove Facebook Extension note.
+ */
+function wc_admin_update_110_remove_facebook_note() {
+	WC_Admin_Notes::delete_notes_with_name( 'wc-admin-facebook-extension' );
 }

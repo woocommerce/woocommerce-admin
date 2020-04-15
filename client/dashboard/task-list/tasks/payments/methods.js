@@ -33,6 +33,7 @@ import PayFast from './payfast';
 export function getPaymentMethods( {
 	activePlugins,
 	countryCode,
+	isJetpackConnected,
 	options,
 	profileItems,
 } ) {
@@ -68,7 +69,9 @@ export function getPaymentMethods( {
 
 		const wcPayDocLink = (
 			<Link
-				href={ 'https://docs.woocommerce.com/document/payments/testing/dev-mode/' }
+				href={
+					'https://docs.woocommerce.com/document/payments/testing/dev-mode/'
+				}
 				target="_blank"
 				type="external"
 			/>
@@ -116,7 +119,10 @@ export function getPaymentMethods( {
 				</Fragment>
 			),
 			before: <WCPayIcon />,
-			visible: [ 'US' ].includes( countryCode ) && ! hasCbdIndustry,
+			visible:
+				[ 'US' ].includes( countryCode ) &&
+				! hasCbdIndustry &&
+				isJetpackConnected,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConfigured,
@@ -269,6 +275,7 @@ export function getPaymentMethods( {
 				options.woocommerce_square_credit_card_settings.enabled ===
 					'yes',
 			optionName: 'woocommerce_square_credit_card_settings',
+			hasCbdIndustry,
 		},
 		{
 			key: 'payfast',

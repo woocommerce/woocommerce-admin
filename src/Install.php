@@ -40,6 +40,9 @@ class Install {
 			'wc_admin_update_0251_remove_unsnooze_action',
 			'wc_admin_update_0251_db_version',
 		),
+		'1.1.0' => array(
+			'wc_admin_update_110_remove_facebook_note',
+		),
 	);
 
 	/**
@@ -396,12 +399,23 @@ class Install {
 						array(
 							'per_page' => 1,
 							'hook'     => 'woocommerce_run_update_callback',
-							'search'   => json_encode( array( $update_callback ) ),
+							'search'   => wp_json_encode( array( $update_callback ) ),
 							'group'    => 'woocommerce-db-updates',
+							'status'   => 'pending',
 						)
 					);
 
-					if ( empty( $pending_jobs ) ) {
+					$complete_jobs = WC()->queue()->search(
+						array(
+							'per_page' => 1,
+							'hook'     => 'woocommerce_run_update_callback',
+							'search'   => wp_json_encode( array( $update_callback ) ),
+							'group'    => 'woocommerce-db-updates',
+							'status'   => 'complete',
+						)
+					);
+
+					if ( empty( $pending_jobs ) && empty( $complete_jobs ) ) {
 						WC()->queue()->schedule_single(
 							time() + $loop,
 							'woocommerce_run_update_callback',

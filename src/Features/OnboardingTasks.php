@@ -10,7 +10,6 @@ namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\API\Reports\Taxes\Stats\DataStore;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Onboarding;
 
 /**
  * Contains the logic for completing onboarding tasks.
@@ -45,7 +44,6 @@ class OnboardingTasks {
 	 */
 	public function __construct() {
 		// This hook needs to run when options are updated via REST.
-		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'add_completion_note' ), 10, 2 );
 		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'track_completion' ), 10, 2 );
 		add_action( 'add_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
@@ -66,7 +64,6 @@ class OnboardingTasks {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_import_notice_admin_script' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_menu_experience_script' ) );
 	}
 
 	/**
@@ -249,25 +246,6 @@ class OnboardingTasks {
 	}
 
 	/**
-	 * Add a script that does some fine tuning around the WooCommerce menu experience during onboarding
-	 * (hiding menu items while the task list is showing and the rest of the WooCommerce dashboard is
-	 * not shown).
-	 */
-	public function add_onboarding_menu_experience_script() {
-		if ( ! Loader::is_onboarding_enabled() ) {
-			return;
-		}
-
-		wp_enqueue_script(
-			'onboarding-menu-experience',
-			Loader::get_url( 'wp-admin-scripts/onboarding-menu-experience.js' ),
-			array( WC_ADMIN_APP ),
-			Loader::get_file_version( 'wp-admin-scripts/onboarding-menu-experience.js' ),
-			true
-		);
-	}
-
-	/**
 	 * Get an array of countries that support automated tax.
 	 *
 	 * @return array
@@ -280,18 +258,6 @@ class OnboardingTasks {
 		);
 
 		return $tax_supported_countries;
-	}
-
-	/**
-	 * Add the task list completion note after completing all tasks.
-	 *
-	 * @param mixed $old_value Old value.
-	 * @param mixed $new_value New value.
-	 */
-	public static function add_completion_note( $old_value, $new_value ) {
-		if ( $new_value ) {
-			WC_Admin_Notes_Onboarding::add_task_list_complete_note();
-		}
 	}
 
 	/**

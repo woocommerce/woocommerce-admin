@@ -218,6 +218,7 @@ class Payments extends Component {
 						query,
 						installStep: this.getInstallStep(),
 						markConfigured: this.markConfigured,
+						hasCbdIndustry: currentMethod.hasCbdIndustry,
 					} ) }
 				</Card>
 			);
@@ -282,9 +283,9 @@ class Payments extends Component {
 										</span>
 									) }
 								</H>
-								<p className="woocommerce-task-payment__content">
+								<div className="woocommerce-task-payment__content">
 									{ content }
-								</p>
+								</div>
 							</div>
 							<div className="woocommerce-task-payment__after">
 								{ container && ! isConfigured ? (
@@ -351,6 +352,7 @@ export default compose(
 			getActivePlugins,
 			getOptions,
 			getUpdateOptionsError,
+			isJetpackConnected,
 			isUpdateOptionsRequesting,
 		} = select( 'wc-api' );
 
@@ -377,6 +379,7 @@ export default compose(
 		const methods = getPaymentMethods( {
 			activePlugins,
 			countryCode,
+			isJetpackConnected: isJetpackConnected(),
 			options,
 			profileItems,
 		} );
