@@ -28,6 +28,22 @@ export default class Navigation extends Component {
 								className="woocommerce-navigation__menu-item"
 							>
 								<a href={ url }>{ title }</a>
+								{ item.children.length && (
+									<ul className="woocommerce-navigation__submenu">
+										{ item.children.map( ( subitem ) => {
+											return (
+												<li
+													key={ subitem.slug }
+													className="woocommerce-navigation__submenu-item"
+												>
+													<a href={ subitem.url }>
+														{ subitem.title }
+													</a>
+												</li>
+											);
+										} ) }
+									</ul>
+								) }
 							</li>
 						);
 					} ) }
