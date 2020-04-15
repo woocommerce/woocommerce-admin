@@ -5,7 +5,7 @@
 
 	&__item {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		padding: 18px 24px;
 
 		h4 {
@@ -76,6 +76,7 @@
 
 	.woocommere-admin-marketing-product-icon {
 		margin-right: 14px;
+		margin-top: 2px; // Align top of image with text
 	}
 
 	&__item-text {
