@@ -62,6 +62,13 @@ class Navigation {
 	protected static $screen_ids = array();
 
 	/**
+	 * Registered post types.
+	 *
+	 * @var array
+	 */
+	protected static $post_types = array();
+
+	/**
 	 * Registered callbacks or URLs with migration boolean as key value pairs.
 	 *
 	 * @var array
@@ -85,7 +92,7 @@ class Navigation {
 				$post_type = sanitize_text_field( wp_unslash( $_GET['post_type'] ) ); // phpcs:ignore CSRF ok.
 			}
 		}
-		$post_types = apply_filters( 'woocommerce_navigation_post_types', $this->post_types );
+		$post_types = apply_filters( 'woocommerce_navigation_post_types', self::$post_types );
 
 		// Get current screen ID.
 		$current_screen = get_current_screen();
@@ -120,7 +127,22 @@ class Navigation {
 			add_action( 'admin_menu', array( $this, 'add_admin_settings' ) );
 			add_action( 'admin_menu', array( $this, 'add_menu_settings' ), 20 );
 			add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ) );
+			add_filter( 'admin_body_class', array( $this, 'add_body_class' ) );
 		}
+	}
+
+	/**
+	 * Add navigation classes to body.
+	 *
+	 * @param string $classes Classes.
+	 * @return string
+	 */
+	public function add_body_class( $classes ) {
+		if ( self::is_woocommerce_page() ) {
+			$classes .= ' has-woocommerce-navigation';
+		}
+
+		return $classes;
 	}
 
 	/**

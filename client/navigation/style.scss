@@ -11,7 +11,9 @@
 	padding: $gap-smaller 0;
 }
 
-#adminmenuwrap,
-#adminmenuback {
-	display: none !important;
+.has-woocommerce-navigation {
+	#adminmenuwrap,
+	#adminmenuback {
+		display: none !important;
+	}
 }
