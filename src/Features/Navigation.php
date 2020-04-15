@@ -41,6 +41,13 @@ class Navigation {
 	const CALLBACK = 2;
 
 	/**
+	 * Array index of menu callback.
+	 *
+	 * @var int
+	 */
+	const SLUG = 3;
+
+	/**
 	 * Array index of menu CSS class string.
 	 *
 	 * @var int
@@ -118,6 +125,13 @@ class Navigation {
 	protected static $screen_ids = array();
 
 	/**
+	 * Registered callbacks or URLs with hide in menu property as key value pairs.
+	 *
+	 * @var array
+	 */
+	protected static $callbacks = array();
+
+	/**
 	 * Check if we're on a WooCommerce page
 	 *
 	 * @return bool
@@ -165,9 +179,10 @@ class Navigation {
 	 */
 	public function __construct() {
 		if ( is_admin() && ! apply_filters( 'woocommerce_use_legacy_navigation', false ) ) {
-			add_filter( 'add_menu_classes', array( $this, 'add_core_menu_items' ) );
-			add_filter( 'wp_after_admin_bar_render', array( $this, 'add_admin_settings' ) );
-			add_filter( 'wp_after_admin_bar_render', array( $this, 'add_menu_settings' ), 20 );
+			add_action( 'admin_menu', array( $this, 'add_core_menu_items' ) );
+			add_action( 'admin_menu', array( $this, 'add_admin_settings' ) );
+			add_action( 'admin_menu', array( $this, 'add_menu_settings' ), 20 );
+			add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ) );
 		}
 	}
 
@@ -216,14 +231,20 @@ class Navigation {
 			__( 'Extensions', 'woocommerce-admin' ),
 			'activate_plugins',
 			'extensions',
-			'plugins.php'
+			'plugins.php',
+			null,
+			null,
+			false
 		);
 		self::add_menu_item(
 			'extensions',
 			__( 'My extensions', 'woocommerce-admin' ),
 			'manage_woocommerce',
 			'my-extensions',
-			'plugins.php'
+			'plugins.php',
+			null,
+			null,
+			false
 		);
 		self::add_menu_item(
 			'extensions',
@@ -260,7 +281,10 @@ class Navigation {
 			__( 'Import / Export', 'woocommerce-admin' ),
 			'import',
 			'import-export',
-			'import.php'
+			'import.php',
+			null,
+			null,
+			false
 		);
 		self::add_menu_item(
 			'tools',
@@ -275,7 +299,10 @@ class Navigation {
 			wp_get_current_user()->user_login,
 			'read',
 			'profile',
-			'profile.php'
+			'profile.php',
+			null,
+			null,
+			false
 		);
 	}
 
@@ -303,19 +330,19 @@ class Navigation {
 	 * @param string $url URL or menu callback.
 	 * @param string $icon Menu icon.
 	 * @param int    $order Menu order.
+	 * @param bool   $migrate Migrate the menu option and hide the old one.
 	 */
-	public static function add_menu_category( $title, $capability, $slug, $url = null, $icon = null, $order = null ) {
+	public static function add_menu_category( $title, $capability, $slug, $url = null, $icon = null, $order = null, $migrate = true ) {
 		self::$categories[] = array(
-			'title' => $title,
-			'slug'  => $slug,
-			'url'   => self::get_callback_url( $url ),
-			'icon'  => $icon,
-			'order' => $order,
+			'title'   => $title,
+			'slug'    => $slug,
+			'url'     => self::get_callback_url( $url ),
+			'icon'    => $icon,
+			'order'   => $order,
+			'migrate' => $migrate,
 		);
 
-		// @todo Remove from the main menu if the callback matches an existing item.
-
-		self::add_screen_id( $url );
+		self::$callbacks[ $url ] = $migrate;
 	}
 
 	/**
@@ -328,19 +355,91 @@ class Navigation {
 	 * @param string $url URL or menu callback.
 	 * @param string $icon Menu icon.
 	 * @param int    $order Menu order.
+	 * @param bool   $migrate Migrate the menu option and hide the old one.
 	 */
-	public static function add_menu_item( $parent_slug, $title, $capability, $slug, $url = null, $icon = null, $order = null ) {
+	public static function add_menu_item( $parent_slug, $title, $capability, $slug, $url = null, $icon = null, $order = null, $migrate = true ) {
 		self::$menu_items[ $parent_slug ][] = array(
-			'title' => $title,
-			'slug'  => $slug,
-			'url'   => self::get_callback_url( $url ),
-			'icon'  => $icon,
-			'order' => $order,
+			'title'   => $title,
+			'slug'    => $slug,
+			'url'     => self::get_callback_url( $url ),
+			'icon'    => $icon,
+			'order'   => $order,
+			'migrate' => $migrate,
 		);
 
-		// @todo Remove from the main menu if the callback matches an existing item.
+		self::$callbacks[ $url ] = $migrate;
+	}
 
-		self::add_screen_id( $url );
+	/**
+	 * Get the parent menu item if one exists.
+	 *
+	 * @param string $url URL or callback.
+	 * @return string|null
+	 */
+	public static function get_parent_menu_item( $url ) {
+		global $submenu;
+
+		// This is already a parent item.
+		if ( isset( $submenu[ $url ] ) ) {
+			return null;
+		}
+
+		foreach ( $submenu as $key => $menu ) {
+			foreach ( $menu as $item ) {
+				if ( $item[ self::CALLBACK ] === $url ) {
+					return $key;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Hides all WP admin menus items and adds screen IDs to check for new items.
+	 *
+	 * @param array $menu Menu items.
+	 * @return array
+	 */
+	public static function migrate_menu_items( $menu ) {
+		global $submenu;
+
+		foreach ( $menu as $key => $menu_item ) {
+			if (
+				isset( self::$callbacks[ $menu_item[ self::CALLBACK ] ] ) &&
+				self::$callbacks[ $menu_item[ self::CALLBACK ] ]
+			) {
+				$menu[ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+			}
+		}
+
+		foreach ( $submenu as $parent_key => $parent ) {
+			foreach ( $parent as $key => $menu_item ) {
+				if (
+					isset( self::$callbacks[ $menu_item[ self::CALLBACK ] ] ) &&
+					self::$callbacks[ $menu_item[ self::CALLBACK ] ]
+				) {
+					// Disable phpcs since we need to override submenu classes.
+					// Note that `phpcs:ignore WordPress.Variables.GlobalVariables.OverrideProhibited` does not work to disable this check.
+					// phpcs:disable
+					if ( ! isset( $menu_item[ self::SLUG ] ) ) {
+						$submenu[ $parent_key ][ $key ][] = '';
+					}
+					if ( ! isset( $menu_item[ self::CSS_CLASSES ] ) ) {
+						$submenu[ $parent_key ][ $key ][] .= ' hide-if-js';
+					} else {
+						$submenu[ $parent_key ][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+					}
+					// phps:enable
+				}
+			}
+		}
+
+		foreach ( array_keys( self::$callbacks ) as $callback ) {
+			self::add_screen_id( $callback );
+		}
+
+		return $menu;
 	}
 
 	/**
@@ -352,14 +451,8 @@ class Navigation {
 	public static function add_screen_id( $url, $parent = null ) {
 		global $submenu;
 
-		if ( ! $parent && ! isset( $submenu[ $url ] ) ) {
-			foreach ( $submenu as $key => $menu ) {
-				foreach ( $menu as $item ) {
-					if ( $item[ self::CALLBACK ] === $url ) {
-						$parent = $key;
-					}
-				}
-			}
+		if ( ! $parent ) {
+			$parent = self::get_parent_menu_item( $url );
 		}
 		self::$screen_ids[] = get_plugin_page_hookname( $url, $parent );
 	}
