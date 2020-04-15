@@ -132,8 +132,8 @@ class Marketing {
 			set_transient(
 				self::RECOMMENDED_PLUGINS_TRANSIENT,
 				$plugins,
-				// Expire transient in 15 minutes if remote get failed
-				// Cache an empty result to avoid repeated failed requests
+				// Expire transient in 15 minutes if remote get failed.
+				// Cache an empty result to avoid repeated failed requests.
 				empty( $plugins ) ? 900 : 3 * DAY_IN_SECONDS
 			);
 		}
@@ -194,7 +194,7 @@ class Marketing {
 			set_transient(
 				self::KNOWLEDGE_BASE_TRANSIENT,
 				$posts,
-				// Expire transient in 15 minutes if remote get failed
+				// Expire transient in 15 minutes if remote get failed.
 				empty( $posts ) ? 900 : DAY_IN_SECONDS
 			);
 		}
