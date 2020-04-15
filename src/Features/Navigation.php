@@ -20,6 +20,13 @@ class Navigation {
 	protected static $instance = null;
 
 	/**
+	 * Array index of menu capability.
+	 *
+	 * @var int
+	 */
+	const CAPABILITY = 1;
+
+	/**
 	 * Array index of menu callback.
 	 *
 	 * @var int
@@ -293,12 +300,13 @@ class Navigation {
 	 */
 	public static function add_menu_category( $title, $capability, $slug, $url = null, $icon = null, $order = null, $migrate = true ) {
 		self::$categories[] = array(
-			'title'   => $title,
-			'slug'    => $slug,
-			'url'     => self::get_callback_url( $url ),
-			'icon'    => $icon,
-			'order'   => $order,
-			'migrate' => $migrate,
+			'title'      => $title,
+			'capability' => $capability,
+			'slug'       => $slug,
+			'url'        => self::get_callback_url( $url ),
+			'icon'       => $icon,
+			'order'      => $order,
+			'migrate'    => $migrate,
 		);
 
 		self::$callbacks[ $url ] = $migrate;
@@ -318,12 +326,13 @@ class Navigation {
 	 */
 	public static function add_menu_item( $parent_slug, $title, $capability, $slug, $url = null, $icon = null, $order = null, $migrate = true ) {
 		self::$menu_items[ $parent_slug ][] = array(
-			'title'   => $title,
-			'slug'    => $slug,
-			'url'     => self::get_callback_url( $url ),
-			'icon'    => $icon,
-			'order'   => $order,
-			'migrate' => $migrate,
+			'title'      => $title,
+			'capability' => $capability,
+			'slug'       => $slug,
+			'url'        => self::get_callback_url( $url ),
+			'icon'       => $icon,
+			'order'      => $order,
+			'migrate'    => $migrate,
 		);
 
 		self::$callbacks[ $url ] = $migrate;
@@ -424,9 +433,21 @@ class Navigation {
 
 		$categories = self::$categories;
 		foreach ( $categories as $index => $category ) {
-			$categories[ $index ]['children'] = isset( self::$menu_items[ $category['slug'] ] )
-				? self::$menu_items[ $category['slug'] ]
-				: array();
+			if ( $category[ 'capability' ] && ! current_user_can( $category[ 'capability' ] ) ) {
+				unset( $categories[ $index ] );
+				continue;
+			}
+
+			$categories[ $index ]['children'] = array();
+			if( isset( self::$menu_items[ $category['slug'] ] ) ) {
+				foreach ( self::$menu_items[ $category['slug'] ] as $item ) {
+					if ( $item[ 'capability' ] && ! current_user_can( $item[ 'capability' ] ) ) {
+						continue;
+					}
+
+					$categories[ $index ]['children'][] = $item;
+				}
+			}
 		}
 
 		$data_registry = \Automattic\WooCommerce\Blocks\Package::container()->get(
