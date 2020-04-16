@@ -63,16 +63,25 @@ class ProfileWizard extends Component {
 
 		if ( prevStep !== step ) {
 			window.document.documentElement.scrollTop = 0;
+
+			recordEvent( 'storeprofiler_step_view', {
+				step,
+			} );
 		}
 	}
 
 	componentDidMount() {
-		const { profileItems, updateProfileItems } = this.props;
+		const { profileItems, query, updateProfileItems } = this.props;
+		const { step } = query;
 
 		document.documentElement.classList.remove( 'wp-toolbar' );
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 		document.body.classList.add( 'woocommerce-admin-full-screen' );
+
+		recordEvent( 'storeprofiler_step_view', {
+			step,
+		} );
 
 		// Track plugins if already installed.
 		if (
