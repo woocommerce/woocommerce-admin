@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { partial, get } from 'lodash';
+import { partial } from 'lodash';
 import { IconButton, Icon, Dropdown, Button } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
@@ -13,7 +13,7 @@ import { applyFilters } from '@wordpress/hooks';
  * WooCommerce dependencies
  */
 import { H } from '@woocommerce/components';
-import { SETTINGS_STORE_NAME, withPluginsHydration } from '@woocommerce/data';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -23,8 +23,7 @@ import defaultSections from './default-sections';
 import Section from './section';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
-import TaskList from './task-list';
-import { isOnboardingEnabled } from 'dashboard/utils';
+
 import {
 	getCurrentDates,
 	getDateParamsFromQuery,
@@ -32,12 +31,6 @@ import {
 } from 'lib/date';
 import ReportFilters from 'analytics/components/report-filters';
 
-const HydratedTaskList = withPluginsHydration( {
-	...window.wcSettings.plugins,
-	jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
-} )(
-	TaskList
-);
 const DASHBOARD_FILTERS_FILTER = 'woocommerce_admin_dashboard_filters';
 const filters = applyFilters( DASHBOARD_FILTERS_FILTER, [] );
 
@@ -230,7 +223,7 @@ class CustomizableDashboard extends Component {
 		);
 	}
 
-	renderDashboardReports() {
+	render() {
 		const { query, path, defaultDateRange } = this.props;
 		const { sections } = this.state;
 		const { period, compare, before, after } = getDateParamsFromQuery(
@@ -301,27 +294,6 @@ class CustomizableDashboard extends Component {
 			</Fragment>
 		);
 	}
-
-	render() {
-		const { query, taskListHidden, taskListComplete } = this.props;
-
-		const isTaskListEnabled = isOnboardingEnabled() && ! taskListHidden;
-
-		const isDashboardShown =
-			! isTaskListEnabled || ( ! query.task && taskListComplete );
-
-		return (
-			<Fragment>
-				{ isTaskListEnabled && (
-					<HydratedTaskList
-						query={ query }
-						inline={ isDashboardShown }
-					/>
-				) }
-				{ isDashboardShown && this.renderDashboardReports() }
-			</Fragment>
-		);
-	}
 }
 
 export default compose(
@@ -329,7 +301,6 @@ export default compose(
 		const {
 			getCurrentUserData,
 			isGetProfileItemsRequesting,
-			getOptions,
 			isGetOptionsRequesting,
 		} = select( 'wc-api' );
 		const userData = getCurrentUserData();
@@ -340,31 +311,14 @@ export default compose(
 		const withSelectData = {
 			userPrefSections: userData.dashboard_sections,
 			defaultDateRange,
-			requesting: false,
-		};
-
-		if ( isOnboardingEnabled() ) {
-			const options = getOptions( [
-				'woocommerce_task_list_complete',
-				'woocommerce_task_list_hidden',
-			] );
-			withSelectData.taskListHidden =
-				get( options, [ 'woocommerce_task_list_hidden' ], 'no' ) ===
-				'yes';
-			withSelectData.taskListComplete = get(
-				options,
-				[ 'woocommerce_task_list_complete' ],
-				false
-			);
-			withSelectData.requesting =
-				withSelectData.requesting || isGetProfileItemsRequesting();
-			withSelectData.requesting =
-				withSelectData.requesting ||
+			requesting: (
+				isGetProfileItemsRequesting() ||
 				isGetOptionsRequesting( [
 					'woocommerce_task_list_payments',
 					'woocommerce_task_list_hidden',
-				] );
-		}
+				] )
+			),
+		};
 
 		return withSelectData;
 	} ),
