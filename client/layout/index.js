@@ -129,7 +129,10 @@ class _Layout extends Component {
 _Layout.propTypes = {
 	isEmbedded: PropTypes.bool,
 	page: PropTypes.shape( {
-		container: PropTypes.func,
+		container: PropTypes.oneOfType( [
+			PropTypes.func,
+			PropTypes.object, // Support React.lazy
+		] ),
 		path: PropTypes.string,
 		breadcrumbs: PropTypes.oneOfType( [
 			PropTypes.func,
