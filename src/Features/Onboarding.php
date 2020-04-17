@@ -597,7 +597,7 @@ class Onboarding {
 				'woocommerce-payments'                => 'woocommerce-payments/woocommerce-payments.php',
 			)
 		);
-		return array_merge( $plugins, array_keys( $onboarding_plugins ) );
+		return array_merge( $plugins, $onboarding_plugins );
 	}
 
 	/**

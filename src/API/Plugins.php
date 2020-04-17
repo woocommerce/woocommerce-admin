@@ -310,7 +310,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 */
 	public static function active_plugins() {
 		$allowed = self::get_allowed_plugins();
-		$plugins = array_values( array_intersect( PluginsHelper::get_active_plugin_slugs(), $allowed ) );
+		$plugins = array_values( array_intersect( PluginsHelper::get_active_plugin_slugs(), array_keys( $allowed ) ) );
 		return( array(
 			'plugins' => array_values( $plugins ),
 		) );
