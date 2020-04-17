@@ -30,32 +30,26 @@ class Shipping extends Component {
 	constructor( props ) {
 		super( props );
 
-		this.initialState = {
+		this.state = {
 			isPending: false,
-			waitForSettingsBeforeInitialStepSet: true,
-			stepIndex: 0,
+			stepIndex: null,
+			isFetchingShippingZones: false,
 			shippingZones: [],
 		};
 
 		// Cache active plugins to prevent removal mid-step.
+<<<<<<< HEAD
 		this.activePlugins = props.activePlugins;
 		this.state = this.initialState;
+=======
+		const { activePlugins = [] } = getSetting( 'onboarding', {} );
+		this.activePlugins = activePlugins;
+>>>>>>> 1db398d3... Move most state handling to mapSelectToProps in Shipping component.
 		this.goToNextStep = this.goToNextStep.bind( this );
 	}
 
 	componentDidMount() {
-		this.reset();
-	}
-
-	reset() {
-		this.setState( this.initialState );
-
-		const isWaitingForSettings = this.isWaitingForSettings();
-		this.setState( {
-			waitForSettingsBeforeInitialStepSet: isWaitingForSettings,
-		} );
-
-		if ( isWaitingForSettings ) {
+		if ( this.props.isWaitingForSettings ) {
 			// We need to wait until we have received the initial settings
 			// to set the first step, since whether steps should be considered
 			// complete depends on the settings; otherwise, we may show a
@@ -67,7 +61,12 @@ class Shipping extends Component {
 	}
 
 	async fetchShippingZones() {
-		this.setState( { isPending: true } );
+		// Don't fetch shipping zones multiple times concurrently.
+		if ( this.state.isFetchingShippingZones ) {
+			return;
+		}
+
+		this.setState( { isPending: true, isFetchingShippingZones: true } );
 		const { countryCode, countryName } = this.props;
 
 		// @todo The following fetches for shipping information should be moved into
@@ -123,38 +122,35 @@ class Shipping extends Component {
 
 		shippingZones.reverse();
 
-		this.setState( { isPending: false, shippingZones } );
+		this.setState( {
+			isPending: false,
+			isFetchingShippingZones: false,
+			shippingZones,
+		} );
 	}
 
-	componentDidUpdate( prevProps, prevState ) {
-		const { countryCode } = this.props;
-		const { stepIndex } = this.state;
-		const steps = this.getSteps();
-		const step = steps[ stepIndex ];
-
+	componentDidUpdate( prevProps ) {
+		// If the country code has changed, or we don't have the shipping zones yet
+		// fetch the shipping zones
 		if (
-			this.state.waitForSettingsBeforeInitialStepSet &&
-			! this.isWaitingForSettings()
+			this.props.isStoreLocationComplete &&
+			( prevProps.countryCode !== this.props.countryCode ||
+				this.state.shippingZones.length === 0 )
 		) {
-			// We have the settings, so we can proceed with going to the
-			// first step, or the success screen.
-			this.goToFirstStep();
+			this.fetchShippingZones();
 		}
 
 		if (
-			step.key === 'rates' &&
-			( prevProps.countryCode !== countryCode ||
-				prevState.stepIndex !== stepIndex )
+			this.state.stepIndex === null &&
+			! this.props.isWaitingForSettings
 		) {
-			this.fetchShippingZones();
+			// We are not currently on a step, and we now have the settings,
+			// so we can proceed with going to the first step, or the success screen.
+			this.goToFirstStep();
 		}
 	}
 
 	goToFirstStep() {
-		this.setState( {
-			waitForSettingsBeforeInitialStepSet: false,
-		} );
-
 		this.goToNextStep( 0 );
 	}
 
@@ -204,24 +200,12 @@ class Shipping extends Component {
 		return difference( plugins, this.activePlugins );
 	}
 
-	isWaitingForSettings() {
-		return this.props.isGeneralSettingsRequesting;
-	}
-
-	isStoreLocationComplete() {
-		const {
-			generalSettings: {
-				woocommerce_store_address: storeAddress,
-				woocommerce_default_country: defaultCountry,
-				woocommerce_store_postcode: storePostCode,
-			},
-		} = this.props;
-
-		return Boolean( storeAddress && defaultCountry && storePostCode );
-	}
-
 	getSteps() {
-		const { generalSettings, isGeneralSettingsRequesting } = this.props;
+		const {
+			generalSettings,
+			isGeneralSettingsRequesting,
+			isStoreLocationComplete,
+		} = this.props;
 		const pluginsToActivate = this.getPluginsToActivate();
 
 		const steps = [
@@ -249,7 +233,7 @@ class Shipping extends Component {
 					/>
 				),
 				visible: true,
-				isComplete: this.isStoreLocationComplete(),
+				isComplete: isStoreLocationComplete,
 			},
 			{
 				key: 'rates',
@@ -355,14 +339,20 @@ class Shipping extends Component {
 
 	render() {
 		const { isPending, stepIndex } = this.state;
-		const { isGeneralSettingsRequesting } = this.props;
+		const { isWaitingForSettings } = this.props;
+
+		// Don't render anything if we are not yet on a step
+		if ( stepIndex === null ) {
+			return null;
+		}
+
 		const step = this.getSteps()[ stepIndex ];
 
 		return (
 			<div className="woocommerce-task-shipping">
 				<Card className="is-narrow">
 					<Stepper
-						isPending={ isPending || isGeneralSettingsRequesting }
+						isPending={ isPending || isWaitingForSettings }
 						isVertical
 						currentStep={ step.key }
 						steps={ this.getSteps() }
@@ -394,6 +384,14 @@ export default compose(
 			generalSettings.woocommerce_default_country
 		);
 
+		const isWaitingForSettings = isGeneralSettingsRequesting;
+
+		const isStoreLocationComplete = Boolean(
+			generalSettings.woocommerce_store_address &&
+				generalSettings.woocommerce_default_country &&
+				generalSettings.woocommerce_store_postcode
+		);
+
 		const { countries = [] } = getSetting( 'dataEndpoints', {} );
 		const country = countryCode
 			? countries.find( ( c ) => c.code === countryCode )
@@ -409,6 +407,8 @@ export default compose(
 			generalSettings,
 			activePlugins,
 			isJetpackConnected: isJetpackConnected(),
+			isWaitingForSettings,
+			isStoreLocationComplete,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
