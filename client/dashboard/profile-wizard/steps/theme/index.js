@@ -92,7 +92,7 @@ class Theme extends Component {
 			location,
 		} );
 
-		if ( theme !== activeTheme && getPriceValue( price ) <= 0 ) {
+		if ( slug !== activeTheme && getPriceValue( price ) <= 0 ) {
 			this.installTheme( slug );
 		} else {
 			updateProfileItems( { theme: slug } );
@@ -169,7 +169,13 @@ class Theme extends Component {
 	}
 
 	renderTheme( theme ) {
-		const { demo_url: demoUrl, has_woocommerce_support: hasSupport, image, slug, title } = theme;
+		const {
+			demo_url: demoUrl,
+			has_woocommerce_support: hasSupport,
+			image,
+			slug,
+			title,
+		} = theme;
 		const { chosen } = this.state;
 		const { activeTheme = '' } = getSetting( 'onboarding', {} );
 
