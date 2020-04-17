@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
-import { useFilters } from '@woocommerce/components';
+import { Component, lazy, Suspense } from '@wordpress/element';
+import { useFilters, Spinner } from '@woocommerce/components';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { get, isFunction } from 'lodash';
@@ -22,7 +22,9 @@ import Header from 'header';
 import Notices from './notices';
 import { recordPageView } from 'lib/tracks';
 import TransientNotices from './transient-notices';
-import StoreAlerts from './store-alerts';
+const StoreAlerts = lazy( () =>
+	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
+);
 import { REPORTS_FILTER } from 'analytics/report';
 
 export class PrimaryLayout extends Component {
@@ -33,7 +35,11 @@ export class PrimaryLayout extends Component {
 				className="woocommerce-layout__primary"
 				id="woocommerce-layout__primary"
 			>
-				{ window.wcAdminFeatures[ 'store-alerts' ] && <StoreAlerts /> }
+				{ window.wcAdminFeatures[ 'store-alerts' ] && (
+					<Suspense fallback={ <Spinner /> }>
+						<StoreAlerts />
+					</Suspense>
+				) }
 				<Notices />
 				{ children }
 			</div>
