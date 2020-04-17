@@ -5,9 +5,11 @@ import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component, lazy, Suspense } from '@wordpress/element';
-import { IconButton, NavigableMenu, Dashicon } from '@wordpress/components';
+import { IconButton, NavigableMenu } from '@wordpress/components';
 import { partial, uniqueId, find } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import PagesIcon from 'gridicons/dist/pages';
+import CrossIcon from 'gridicons/dist/cross-small';
 
 /**
  * Internal dependencies
@@ -117,7 +119,7 @@ class ActivityPanel extends Component {
 			{
 				name: 'orders',
 				title: __( 'Orders', 'woocommerce-admin' ),
-				icon: <Dashicon icon="media-text" />,
+				icon: <PagesIcon />,
 				unread: hasUnreadOrders,
 			},
 			manageStock === 'yes'
@@ -276,7 +278,7 @@ class ActivityPanel extends Component {
 						onClick={ this.toggleMobile }
 						icon={
 							mobileOpen ? (
-								<Dashicon icon="no-alt" />
+								<CrossIcon />
 							) : (
 								<ActivityPanelToggleBubble
 									hasUnread={ hasUnread }
