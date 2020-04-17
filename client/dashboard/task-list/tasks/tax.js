@@ -331,8 +331,6 @@ class Tax extends Component {
 					</Fragment>
 				),
 				visible: ! isTaxJarSupported,
-				// TODO: Should this step ever be considered complete?
-				isComplete: false,
 			},
 		];
 
