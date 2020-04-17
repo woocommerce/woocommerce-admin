@@ -36,8 +36,7 @@ class Tax extends Component {
 
 		this.initialState = {
 			isPending: false,
-			waitForSettingsBeforeInitialStepSet: true,
-			stepIndex: 0,
+			stepIndex: null,
 			automatedTaxEnabled: true,
 			// Cache the value of pluginsToActivate so that we can show/hide tasks based on it, but not have them update mid task.
 			pluginsToActivate: props.pluginsToActivate,
@@ -52,18 +51,7 @@ class Tax extends Component {
 	}
 
 	componentDidMount() {
-		this.reset();
-	}
-
-	reset() {
-		this.setState( this.initialState );
-
-		const isWaitingForSettings = this.isWaitingForSettings();
-		this.setState( {
-			waitForSettingsBeforeInitialStepSet: isWaitingForSettings,
-		} );
-
-		if ( isWaitingForSettings ) {
+		if ( this.props.isWaitingForSettings ) {
 			// We need to wait until we have received the initial settings
 			// to set the first step, since whether steps should be considered
 			// complete depends on the settings; otherwise, we may show a
@@ -74,71 +62,26 @@ class Tax extends Component {
 		this.goToFirstStepOrSuccessScreen();
 	}
 
-	componentDidUpdate( prevProps ) {
-		const { generalSettings, taxSettings } = this.props;
-		const { woocommerce_calc_taxes: calcTaxes } = generalSettings;
-
+	componentDidUpdate() {
 		if (
-			this.state.waitForSettingsBeforeInitialStepSet &&
-			! this.isWaitingForSettings()
+			this.state.stepIndex === null &&
+			! this.props.isWaitingForSettings
 		) {
-			// We have the settings, so we can proceed with going to the
-			// first step, or the success screen.
+			// We are not currently on a step, and we now have the settings,
+			// so we can proceed with going to the first step, or the success screen.
 			this.goToFirstStepOrSuccessScreen();
 		}
-
-		if (
-			taxSettings.wc_connect_taxes_enabled &&
-			taxSettings.wc_connect_taxes_enabled !==
-				prevProps.taxSettings.wc_connect_taxes_enabled
-		) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( {
-				automatedTaxEnabled:
-					taxSettings.wc_connect_taxes_enabled === 'yes'
-						? true
-						: false,
-			} );
-			/* eslint-enable react/no-did-update-set-state */
-		}
-
-		const {
-			woocommerce_calc_taxes: prevCalcTaxes,
-		} = prevProps.generalSettings;
-		if ( prevCalcTaxes === 'no' && calcTaxes === 'yes' ) {
-			window.location = getAdminLink(
-				'admin.php?page=wc-settings&tab=tax&section=standard'
-			);
-		}
-	}
-
-	isTaxJarSupported() {
-		const { countryCode, tosAccepted } = this.props;
-		const {
-			automatedTaxSupportedCountries = [],
-			taxJarActivated,
-		} = getSetting( 'onboarding', {} );
-
-		return (
-			! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
-			tosAccepted &&
-			automatedTaxSupportedCountries.includes( countryCode )
-		);
 	}
 
 	goToFirstStepOrSuccessScreen() {
-		this.setState( {
-			waitForSettingsBeforeInitialStepSet: false,
-		} );
-
-		// Show the success screen if all requirements are satisfied.
+		// Don't go to the fist step if all requirements are already satisfied;
+		// instead, go to the success screen.
 		if (
 			this.props.pluginsToActivate.length === 0 &&
-			this.isStoreLocationComplete() &&
+			this.props.isStoreLocationComplete &&
 			this.props.isJetpackConnected &&
-			this.isTaxJarSupported()
+			this.props.isTaxJarSupported
 		) {
-			this.setState( { stepIndex: null } );
 			return;
 		}
 
@@ -186,28 +129,25 @@ class Tax extends Component {
 		);
 	}
 
-	updateAutomatedTax() {
-		const {
-			createNotice,
-			isGeneralSettingsError,
-			isTaxSettingsError,
-			updateAndPersistSettingsForGroup,
-		} = this.props;
-		const { automatedTaxEnabled } = this.state;
+	async updateAutomatedTax( automatedTaxEnabled ) {
+		const { createNotice, updateAndPersistSettingsForGroup } = this.props;
 
-		updateAndPersistSettingsForGroup( 'tax', {
+		await updateAndPersistSettingsForGroup( 'tax', {
 			tax: {
 				wc_connect_taxes_enabled: automatedTaxEnabled ? 'yes' : 'no',
 			},
 		} );
 
-		updateAndPersistSettingsForGroup( 'general', {
+		await updateAndPersistSettingsForGroup( 'general', {
 			general: {
 				woocommerce_calc_taxes: 'yes',
 			},
 		} );
 
-		if ( ! isTaxSettingsError && ! isGeneralSettingsError ) {
+		if (
+			! this.props.isTaxSettingsError &&
+			! this.props.isGeneralSettingsError
+		) {
 			// @todo This is a workaround to force the task to mark as complete.
 			// This should probably be updated to use wc-api so we can fetch tax rates.
 			setSetting( 'onboarding', {
@@ -222,6 +162,7 @@ class Tax extends Component {
 				)
 			);
 			if ( automatedTaxEnabled ) {
+				// Return to Dashboard
 				getHistory().push( getNewPath( {}, '/', {} ) );
 			} else {
 				this.configureTaxRates();
@@ -241,30 +182,13 @@ class Tax extends Component {
 		this.setState( { isPending: value } );
 	}
 
-	isWaitingForSettings() {
-		return (
-			this.props.isGeneralSettingsRequesting ||
-			this.props.isTaxSettingsRequesting
-		);
-	}
-
-	isStoreLocationComplete() {
-		const {
-			generalSettings: {
-				woocommerce_store_address: storeAddress,
-				woocommerce_default_country: defaultCountry,
-				woocommerce_store_postcode: storePostCode,
-			},
-		} = this.props;
-
-		return Boolean( storeAddress && defaultCountry && storePostCode );
-	}
-
 	getSteps() {
 		const {
 			generalSettings,
 			isGeneralSettingsRequesting,
 			isJetpackConnected,
+			isStoreLocationComplete,
+			isTaxJarSupported,
 		} = this.props;
 		const { isPending, pluginsToActivate } = this.state;
 
@@ -293,7 +217,7 @@ class Tax extends Component {
 					/>
 				),
 				visible: true,
-				isComplete: this.isStoreLocationComplete(),
+				isComplete: isStoreLocationComplete,
 			},
 			{
 				key: 'plugins',
@@ -330,7 +254,7 @@ class Tax extends Component {
 						) }
 					/>
 				),
-				visible: pluginsToActivate.length && this.isTaxJarSupported(),
+				visible: pluginsToActivate.length && isTaxJarSupported,
 				isComplete: ! pluginsToActivate.length,
 			},
 			{
@@ -363,7 +287,7 @@ class Tax extends Component {
 						) }
 					/>
 				),
-				visible: ! isJetpackConnected && this.isTaxJarSupported(),
+				visible: ! isJetpackConnected && isTaxJarSupported,
 				isComplete: isJetpackConnected,
 			},
 			{
@@ -408,7 +332,7 @@ class Tax extends Component {
 						</p>
 					</Fragment>
 				),
-				visible: ! this.isTaxJarSupported(),
+				visible: ! isTaxJarSupported,
 				// TODO: Should this step ever be considered complete?
 				isComplete: false,
 			},
@@ -420,10 +344,18 @@ class Tax extends Component {
 	render() {
 		const { isPending, stepIndex } = this.state;
 		const {
-			isGeneralSettingsRequesting,
 			isTaxSettingsRequesting,
+			isWaitingForSettings,
 			taxSettings,
 		} = this.props;
+
+		// Don't render anything if we are not yet on a step and are still
+		// waiting for settings, to avoid temporarily showing incorrect
+		// status
+		if ( stepIndex === null && isWaitingForSettings ) {
+			return null;
+		}
+
 		const step = this.getSteps()[ stepIndex ];
 
 		return (
@@ -431,11 +363,7 @@ class Tax extends Component {
 				<Card className="is-narrow">
 					{ step ? (
 						<Stepper
-							isPending={
-								isPending ||
-								isGeneralSettingsRequesting ||
-								isTaxSettingsRequesting
-							}
+							isPending={ isPending || isWaitingForSettings }
 							isVertical={ true }
 							currentStep={ step.key }
 							steps={ this.getSteps() }
@@ -477,10 +405,7 @@ class Tax extends Component {
 											setup_automatically: true,
 										}
 									);
-									this.setState(
-										{ automatedTaxEnabled: true },
-										this.updateAutomatedTax
-									);
+									this.updateAutomatedTax( true );
 								} }
 							>
 								{ __( 'Yes please', 'woocommerce-admin' ) }
@@ -493,10 +418,7 @@ class Tax extends Component {
 											setup_automatically: false,
 										}
 									);
-									this.setState(
-										{ automatedTaxEnabled: false },
-										this.updateAutomatedTax
-									);
+									this.updateAutomatedTax( false );
 								} }
 							>
 								{ __(
@@ -539,7 +461,7 @@ export default compose(
 			tosAccepted,
 		};
 	} ),
-	withSelect( ( select ) => {
+	withSelect( ( select, ownProps ) => {
 		const {
 			getSettings,
 			getSettingsError,
@@ -559,6 +481,28 @@ export default compose(
 		const isTaxSettingsError = Boolean( getSettingsError( 'tax' ) );
 		const isTaxSettingsRequesting = isGetSettingsRequesting( 'tax' );
 
+		const isWaitingForSettings =
+			isGeneralSettingsRequesting || isTaxSettingsRequesting;
+
+		const isStoreLocationComplete = Boolean(
+			generalSettings.woocommerce_store_address &&
+				generalSettings.woocommerce_default_country &&
+				generalSettings.woocommerce_store_postcode
+		);
+
+		const {
+			automatedTaxSupportedCountries = [],
+			taxJarActivated,
+		} = getSetting( 'onboarding', {} );
+
+		const isTaxJarSupported =
+			! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
+			ownProps.tosAccepted &&
+			automatedTaxSupportedCountries.includes( countryCode );
+
+		const automatedTaxEnabled =
+			taxSettings.wc_connect_taxes_enabled === 'yes';
+
 		return {
 			isGeneralSettingsError,
 			isGeneralSettingsRequesting,
@@ -567,6 +511,10 @@ export default compose(
 			taxSettings,
 			isTaxSettingsError,
 			isTaxSettingsRequesting,
+			isWaitingForSettings,
+			isStoreLocationComplete,
+			isTaxJarSupported,
+			automatedTaxEnabled,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
