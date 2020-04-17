@@ -46,6 +46,10 @@ class Benefits extends Component {
 			this.pluginsToInstall.push( 'woocommerce-services' );
 		}
 
+		recordEvent( 'storeprofiler_plugins_to_install', {
+			plugins: this.pluginsToInstall,
+		} );
+
 		this.startPluginInstall = this.startPluginInstall.bind( this );
 		this.skipPluginInstall = this.skipPluginInstall.bind( this );
 	}
@@ -56,7 +60,8 @@ class Benefits extends Component {
 
 		if (
 			isPending &&
-			! isRequesting && ! isInstalling &&
+			! isRequesting &&
+			! isInstalling &&
 			( prevProps.isRequesting || prevState.isInstalling )
 		) {
 			goToNextStep();
