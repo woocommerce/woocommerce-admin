@@ -290,19 +290,21 @@ class Loader {
 			return;
 		}
 
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
 		wp_register_script(
 			'wc-csv',
-			self::get_url( 'csv-export/index.js' ),
+			self::get_url( 'csv-export/index' . $suffix . '.js' ),
 			array( 'moment' ),
-			self::get_file_version( 'csv-export/index.js' ),
+			self::get_file_version( 'csv-export/index' . $suffix . '.js' ),
 			true
 		);
 
 		wp_register_script(
 			'wc-currency',
-			self::get_url( 'currency/index.js' ),
+			self::get_url( 'currency/index' . $suffix . '.js' ),
 			array( 'wc-number' ),
-			self::get_file_version( 'currency/index.js' ),
+			self::get_file_version( 'currency/index' . $suffix . '.js' ),
 			true
 		);
 
@@ -310,33 +312,33 @@ class Loader {
 
 		wp_register_script(
 			'wc-navigation',
-			self::get_url( 'navigation/index.js' ),
+			self::get_url( 'navigation/index' . $suffix . '.js' ),
 			array(),
-			self::get_file_version( 'navigation/index.js' ),
+			self::get_file_version( 'navigation/index' . $suffix . '.js' ),
 			true
 		);
 
 		wp_register_script(
 			'wc-number',
-			self::get_url( 'number/index.js' ),
+			self::get_url( 'number/index' . $suffix . '.js' ),
 			array(),
-			self::get_file_version( 'number/index.js' ),
+			self::get_file_version( 'number/index' . $suffix . '.js' ),
 			true
 		);
 
 		wp_register_script(
 			'wc-date',
-			self::get_url( 'date/index.js' ),
+			self::get_url( 'date/index' . $suffix . '.js' ),
 			array( 'moment', 'wp-date', 'wp-i18n' ),
-			self::get_file_version( 'date/index.js' ),
+			self::get_file_version( 'date/index' . $suffix . '.js' ),
 			true
 		);
 
 		wp_register_script(
 			'wc-store-data',
-			self::get_url( 'data/index.js' ),
+			self::get_url( 'data/index' . $suffix . '.js' ),
 			array(),
-			self::get_file_version( 'data/index.js' ),
+			self::get_file_version( 'data/index' . $suffix . '.js' ),
 			true
 		);
 
@@ -344,7 +346,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-components',
-			self::get_url( 'components/index.js' ),
+			self::get_url( 'components/index' . $suffix . '.js' ),
 			array(
 				'moment',
 				'wp-api-fetch',
@@ -362,7 +364,7 @@ class Loader {
 				'wc-number',
 				'wc-store-data',
 			),
-			self::get_file_version( 'components/index.js' ),
+			self::get_file_version( 'components/index' . $suffix . '.js' ),
 			true
 		);
 
@@ -386,9 +388,9 @@ class Loader {
 
 		wp_register_script(
 			WC_ADMIN_APP,
-			self::get_url( 'app/index.js' ),
+			self::get_url( 'app/index' . $suffix . '.js' ),
 			array( 'wc-components', 'wc-navigation', 'wp-date', 'wp-html-entities', 'wp-keycodes', 'wp-i18n', 'moment' ),
-			self::get_file_version( 'app/index.js' ),
+			self::get_file_version( 'app/index' . $suffix . '.js' ),
 			true
 		);
 		wp_localize_script(

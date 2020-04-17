@@ -11,6 +11,7 @@ const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 	.BundleAnalyzerPlugin;
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
+const TerserPlugin = require( 'terser-webpack-plugin' );
 
 /**
  * WordPress dependencies
@@ -86,6 +87,8 @@ wpAdminScripts.forEach( ( name ) => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
 } );
 
+const min = NODE_ENV === 'development' ? '' : '.min';
+
 const webpackConfig = {
 	mode: NODE_ENV,
 	entry: {
@@ -96,10 +99,10 @@ const webpackConfig = {
 	output: {
 		filename: ( data ) => {
 			return wpAdminScripts.includes( data.chunk.name )
-				? 'wp-admin-scripts/[name].js'
-				: '[name]/index.js';
+				? `wp-admin-scripts/[name]${min}.js`
+				: `[name]/index${min}.js`;
 		},
-		chunkFilename: 'chunks/[name].[chunkhash].min.js',
+		chunkFilename: `chunks/[name].[chunkhash]${min}.js`,
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
@@ -244,6 +247,12 @@ const webpackConfig = {
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
 	].filter( Boolean ),
+	optimization: {
+		minimize: NODE_ENV !== 'development',
+		minimizer: [
+			new TerserPlugin(),
+		],
+	},
 };
 
 if ( webpackConfig.mode !== 'production' ) {
