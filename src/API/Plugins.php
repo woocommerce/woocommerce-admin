@@ -308,7 +308,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 *
 	 * @return array Active plugins
 	 */
-	public function active_plugins() {
+	public static function active_plugins() {
 		$allowed = self::get_allowed_plugins();
 		$plugins = array_values( array_intersect( PluginsHelper::get_active_plugin_slugs(), $allowed ) );
 		return( array(
@@ -323,17 +323,6 @@ class Plugins extends \WC_REST_Data_Controller {
 	public static function get_active_plugins() {
 		$data = self::active_plugins();
 		return $data['plugins'];
-	}
-
-	/**
-	 * Returns a list of installed plugins.
-	 *
-	 * @return array Installed plugins
-	 */
-	public function installed_plugins() {
-		return( array(
-			'plugins' => PluginsHelper::get_installed_plugin_slugs(),
-		) );
 	}
 
 	/**
