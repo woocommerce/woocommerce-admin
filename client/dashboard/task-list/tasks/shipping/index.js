@@ -38,13 +38,7 @@ class Shipping extends Component {
 		};
 
 		// Cache active plugins to prevent removal mid-step.
-<<<<<<< HEAD
 		this.activePlugins = props.activePlugins;
-		this.state = this.initialState;
-=======
-		const { activePlugins = [] } = getSetting( 'onboarding', {} );
-		this.activePlugins = activePlugins;
->>>>>>> 1db398d3... Move most state handling to mapSelectToProps in Shipping component.
 		this.goToNextStep = this.goToNextStep.bind( this );
 	}
 
