@@ -34,15 +34,13 @@ class Tax extends Component {
 	constructor( props ) {
 		super( props );
 
-		this.initialState = {
+		this.state = {
 			isPending: false,
 			stepIndex: null,
 			automatedTaxEnabled: true,
 			// Cache the value of pluginsToActivate so that we can show/hide tasks based on it, but not have them update mid task.
 			pluginsToActivate: props.pluginsToActivate,
 		};
-
-		this.state = this.initialState;
 
 		this.goToNextStep = this.goToNextStep.bind( this );
 		this.configureTaxRates = this.configureTaxRates.bind( this );
