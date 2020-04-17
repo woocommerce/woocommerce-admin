@@ -249,7 +249,6 @@ class Shipping extends Component {
 					/>
 				),
 				visible: true,
-				isComplete: false,
 			},
 			{
 				key: 'label_printing',
@@ -303,7 +302,6 @@ class Shipping extends Component {
 					/>
 				),
 				visible: pluginsToActivate.length,
-				isComplete: false,
 			},
 			{
 				key: 'connect',
