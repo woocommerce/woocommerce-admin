@@ -28,7 +28,6 @@ export default class StoreLocation extends Component {
 		const {
 			onComplete,
 			createNotice,
-			isSettingsError,
 			updateAndPersistSettingsForGroup,
 		} = this.props;
 
@@ -42,7 +41,7 @@ export default class StoreLocation extends Component {
 			},
 		} );
 
-		if ( ! isSettingsError ) {
+		if ( ! this.props.isSettingsError ) {
 			onComplete( values );
 		} else {
 			createNotice(
