@@ -38,9 +38,11 @@ export function getPaymentMethods( {
 	options,
 	profileItems,
 } ) {
-	const stripeCountries = getSetting( 'onboarding', {
+	const settings = getSetting( 'onboarding', {
 		stripeSupportedCountries: [],
-	} ).stripeSupportedCountries;
+		wcPayIsConfigured: false,
+	} );
+	const { stripeSupportedCountries, wcPayIsConfigured } = settings;
 
 	const hasCbdIndustry =
 		some( profileItems.industry, {
@@ -99,11 +101,6 @@ export function getPaymentMethods( {
 			</Link>
 		);
 
-		// @todo This should check actual connection information.
-		const wcPayIsConfigured = activePlugins.includes(
-			'woocommerce-payments'
-		);
-
 		methods.push( {
 			key: 'wcpay',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
@@ -154,7 +151,7 @@ export function getPaymentMethods( {
 			),
 			before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
 			visible:
-				stripeCountries.includes( countryCode ) && ! hasCbdIndustry,
+				stripeSupportedCountries.includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-gateway-stripe' ],
 			container: <Stripe />,
 			isConfigured:

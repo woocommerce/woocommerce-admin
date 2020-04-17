@@ -108,6 +108,14 @@ class OnboardingTasks {
 		$settings['onboarding']['taxJarActivated']                = class_exists( 'WC_Taxjar' );
 		$settings['onboarding']['themeMods']                      = get_theme_mods();
 
+		if ( class_exists( 'WC_Payments' ) ) {
+			$api_client                                  = \WC_Payments::create_api_client();
+			$account                                     = new \WC_Payments_Account( $api_client );
+			$settings['onboarding']['wcPayIsConfigured'] = $account->is_stripe_connected();
+		} else {
+			$settings['onboarding']['wcPayIsConfigured'] = false;
+		}
+
 		return $settings;
 	}
 
