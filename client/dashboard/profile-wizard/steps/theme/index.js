@@ -83,7 +83,7 @@ class Theme extends Component {
 
 	onChoose( theme, location = '' ) {
 		const { updateProfileItems } = this.props;
-		const { price, slug } = theme;
+		const { is_installed: isInstalled, price, slug } = theme;
 		const { activeTheme = '' } = getSetting( 'onboarding', {} );
 
 		this.setState( { chosen: slug } );
@@ -93,7 +93,11 @@ class Theme extends Component {
 		} );
 
 		if ( slug !== activeTheme && getPriceValue( price ) <= 0 ) {
-			this.installTheme( slug );
+			if ( isInstalled ) {
+				this.activateTheme( slug );
+			} else {
+				this.installTheme( slug );
+			}
 		} else {
 			updateProfileItems( { theme: slug } );
 		}
@@ -106,7 +110,17 @@ class Theme extends Component {
 			path: '/wc-admin/onboarding/themes/install?theme=' + slug,
 			method: 'POST',
 		} )
-			.then( () => {
+			.then( ( response ) => {
+				createNotice(
+					'success',
+					sprintf(
+						__(
+							'%s was installed on your site.',
+							'woocommerce-admin'
+						),
+						response.name
+					)
+				);
 				this.activateTheme( slug );
 			} )
 			.catch( ( response ) => {
@@ -127,7 +141,7 @@ class Theme extends Component {
 					'success',
 					sprintf(
 						__(
-							'%s was installed and activated on your site.',
+							'%s was activated on your site.',
 							'woocommerce-admin'
 						),
 						response.name
