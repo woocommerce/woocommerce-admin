@@ -165,7 +165,7 @@ class Tax extends Component {
 		}
 	}
 
-	configureTaxRates() {
+	async configureTaxRates() {
 		const {
 			generalSettings,
 			updateAndPersistSettingsForGroup,
@@ -173,16 +173,16 @@ class Tax extends Component {
 
 		if ( generalSettings.woocommerce_calc_taxes !== 'yes' ) {
 			this.setState( { isPending: true } );
-			updateAndPersistSettingsForGroup( 'general', {
+			await updateAndPersistSettingsForGroup( 'general', {
 				general: {
 					woocommerce_calc_taxes: 'yes',
 				},
 			} );
-		} else {
-			window.location = getAdminLink(
-				'admin.php?page=wc-settings&tab=tax&section=standard&wc_onboarding_active_task=tax'
-			);
 		}
+
+		window.location = getAdminLink(
+			'admin.php?page=wc-settings&tab=tax&section=standard&wc_onboarding_active_task=tax'
+		);
 	}
 
 	updateAutomatedTax() {
