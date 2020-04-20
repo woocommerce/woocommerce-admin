@@ -111,8 +111,12 @@ class Shipping extends Component {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const { countryCode } = this.props;
+		const { countryCode, isCompleteAddress } = this.props;
 		const { step } = this.state;
+
+		if ( step === 'store_location' && isCompleteAddress ) {
+			this.completeStep();
+		}
 
 		if (
 			step === 'rates' &&
@@ -181,7 +185,6 @@ class Shipping extends Component {
 							recordEvent( 'tasklist_shipping_set_location', {
 								country,
 							} );
-							this.completeStep();
 						} }
 					/>
 				),
@@ -331,6 +334,15 @@ export default compose(
 		const countryName = country ? country.name : null;
 		const activePlugins = getActivePlugins();
 
+		const {
+			woocommerce_store_address: storeAddress,
+			woocommerce_default_country: defaultCountry,
+			woocommerce_store_postcode: storePostcode,
+		} = settings;
+		const isCompleteAddress = Boolean(
+			storeAddress && defaultCountry && storePostcode
+		);
+
 		return {
 			countryCode,
 			countryName,
@@ -339,6 +351,7 @@ export default compose(
 			settings,
 			activePlugins,
 			isJetpackConnected: isJetpackConnected(),
+			isCompleteAddress,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
