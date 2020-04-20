@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import apiFetch from '@wordpress/api-fetch';
@@ -20,24 +20,18 @@ import { WCS_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
-/**
- * Internal dependencies
- */
-import { getCountryCode } from 'dashboard/utils';
-
 class Stripe extends Component {
 	constructor( props ) {
 		super( props );
 
 		this.state = {
-			autoConnectFailed: false,
+			oAuthConnectFailed: false,
 			connectURL: null,
 			errorTitle: null,
 			errorMessage: null,
 			isPending: true,
 		};
 
-		this.autoCreateAccount = this.autoCreateAccount.bind( this );
 		this.updateSettings = this.updateSettings.bind( this );
 	}
 
@@ -54,12 +48,6 @@ class Stripe extends Component {
 				this.completeMethod();
 				return;
 			}
-
-			/* eslint-disable react/no-did-mount-set-state */
-			this.setState( {
-				autoConnectFailed: true,
-			} );
-			/* eslint-enable react/no-did-mount-set-state */
 		}
 
 		if ( ! this.requiresManualConfig() ) {
@@ -101,12 +89,12 @@ class Stripe extends Component {
 
 	requiresManualConfig() {
 		const { activePlugins, isJetpackConnected } = this.props;
-		const { autoConnectFailed } = this.state;
+		const { oAuthConnectFailed } = this.state;
 
 		return (
 			! isJetpackConnected ||
 			! activePlugins.includes( 'woocommerce-services' ) ||
-			autoConnectFailed
+			oAuthConnectFailed
 		);
 	}
 
@@ -142,7 +130,7 @@ class Stripe extends Component {
 			} );
 			if ( ! result || ! result.oauthUrl ) {
 				this.setState( {
-					autoConnectFailed: true,
+					oAuthConnectFailed: true,
 					isPending: false,
 				} );
 				return;
@@ -153,59 +141,9 @@ class Stripe extends Component {
 			} );
 		} catch ( error ) {
 			this.setState( {
-				autoConnectFailed: true,
+				oAuthConnectFailed: true,
 				isPending: false,
 			} );
-		}
-	}
-
-	async autoCreateAccount( values ) {
-		const { countryCode } = this.props;
-		const { connectURL } = this.state;
-		const { email } = values;
-
-		try {
-			this.setState( { isPending: true } );
-
-			const result = await apiFetch( {
-				path: WCS_NAMESPACE + '/connect/stripe/account',
-				method: 'POST',
-				data: {
-					email,
-					country: countryCode,
-				},
-			} );
-
-			if ( result ) {
-				this.completeMethod();
-				return;
-			}
-		} catch {
-			if ( ! connectURL ) {
-				const errorTitle = __( 'Stripe', 'woocommerce-admin' );
-				const errorMessage = interpolateComponents( {
-					mixedString: sprintf(
-						__(
-							'We tried to create a Stripe account automatically for {{strong}}%s{{/strong}}, but an error occured. Please try connecting manually to continue.',
-							'woocommerce-admin'
-						),
-						email
-					),
-					components: {
-						strong: <strong />,
-					},
-				} );
-
-				this.setState( {
-					autoConnectFailed: true,
-					errorTitle,
-					errorMessage,
-					isPending: false,
-				} );
-			} else {
-				// An account with that email may exist so send them to Stripe to connect via oAuth.
-				window.location = connectURL;
-			}
 		}
 	}
 
@@ -240,39 +178,12 @@ class Stripe extends Component {
 		);
 	}
 
-	renderAutoConnect() {
-		const { isPending } = this.state;
-
+	renderConnectButton() {
+		const { connectURL } = this.state;
 		return (
-			<Form
-				initialValues={ {
-					email: '',
-				} }
-				onSubmitCallback={ this.autoCreateAccount }
-				validate={ this.validateAutoConnect }
-			>
-				{ ( { getInputProps, handleSubmit } ) => {
-					return (
-						<div className="woocommerce-task-payments__woocommerce-services-options">
-							<TextControl
-								label={ __(
-									'Email address',
-									'woocommerce-admin'
-								) }
-								{ ...getInputProps( 'email' ) }
-							/>
-							<Button
-								isPrimary
-								isDefault
-								isBusy={ isPending }
-								onClick={ handleSubmit }
-							>
-								{ __( 'Connect', 'woocommerce-admin' ) }
-							</Button>
-						</div>
-					);
-				} }
-			</Form>
+			<Button isPrimary isDefault href={ connectURL }>
+				{ __( 'Connect', 'woocommerce-admin' ) }
+			</Button>
 		);
 	}
 
@@ -310,16 +221,6 @@ class Stripe extends Component {
 				'Please enter a valid secret key. Valid keys start with "sk_live" or "rk_live".',
 				'woocommerce-admin'
 			);
-		}
-
-		return errors;
-	}
-
-	validateAutoConnect( values ) {
-		const errors = {};
-
-		if ( ! values.email ) {
-			errors.email = __( 'Please enter your email', 'woocommerce-admin' );
 		}
 
 		return errors;
@@ -393,7 +294,7 @@ class Stripe extends Component {
 	}
 
 	getConnectStep() {
-		const { autoConnectFailed, connectURL, errorMessage } = this.state;
+		const { oAuthConnectFailed, connectURL, errorMessage } = this.state;
 		const connectStep = {
 			key: 'connect',
 			label: __( 'Connect your Stripe account', 'woocommerce-admin' ),
@@ -408,17 +309,17 @@ class Stripe extends Component {
 
 		if ( ! this.requiresManualConfig() ) {
 			// We may still be fetching the connect URL.
-			if ( ! autoConnectFailed && ! connectURL ) {
+			if ( ! oAuthConnectFailed && ! connectURL ) {
 				return connectStep;
 			}
 
 			return {
 				...connectStep,
 				description: __(
-					'A Stripe account is required to process payments. We’ll create an account for you if you don’t have one already.',
+					'A Stripe account is required to process payments.',
 					'woocommerce-admin'
 				),
-				content: this.renderAutoConnect(),
+				content: this.renderConnectButton(),
 			};
 		}
 
@@ -463,9 +364,6 @@ export default compose(
 			'woocommerce_stripe_settings',
 			'woocommerce_default_country',
 		] );
-		const countryCode = getCountryCode(
-			options.woocommerce_default_country
-		);
 		const stripeSettings = get(
 			options,
 			[ 'woocommerce_stripe_settings' ],
@@ -480,7 +378,6 @@ export default compose(
 
 		return {
 			activePlugins: getActivePlugins(),
-			countryCode,
 			hasOptionsError,
 			isJetpackConnected: isJetpackConnected(),
 			isOptionsRequesting,
