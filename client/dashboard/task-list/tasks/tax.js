@@ -185,28 +185,26 @@ class Tax extends Component {
 		);
 	}
 
-	updateAutomatedTax() {
-		const {
-			createNotice,
-			isGeneralSettingsError,
-			isTaxSettingsError,
-			updateAndPersistSettingsForGroup,
-		} = this.props;
+	async updateAutomatedTax() {
+		const { createNotice, updateAndPersistSettingsForGroup } = this.props;
 		const { automatedTaxEnabled } = this.state;
 
-		updateAndPersistSettingsForGroup( 'tax', {
+		await updateAndPersistSettingsForGroup( 'tax', {
 			tax: {
 				wc_connect_taxes_enabled: automatedTaxEnabled ? 'yes' : 'no',
 			},
 		} );
 
-		updateAndPersistSettingsForGroup( 'general', {
+		await updateAndPersistSettingsForGroup( 'general', {
 			general: {
 				woocommerce_calc_taxes: 'yes',
 			},
 		} );
 
-		if ( ! isTaxSettingsError && ! isGeneralSettingsError ) {
+		if (
+			! this.props.isTaxSettingsError &&
+			! this.props.isGeneralSettingsError
+		) {
 			// @todo This is a workaround to force the task to mark as complete.
 			// This should probably be updated to use wc-api so we can fetch tax rates.
 			setSetting( 'onboarding', {
