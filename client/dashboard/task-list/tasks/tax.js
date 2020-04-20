@@ -48,6 +48,9 @@ class Tax extends Component {
 		this.configureTaxRates = this.configureTaxRates.bind( this );
 		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
 		this.setIsPending = this.setIsPending.bind( this );
+		this.shouldShowSuccessScreen = this.shouldShowSuccessScreen.bind(
+			this
+		);
 	}
 
 	componentDidMount() {
@@ -58,42 +61,53 @@ class Tax extends Component {
 		this.setState( this.initialState );
 	}
 
-	componentDidUpdate( prevProps ) {
+	shouldShowSuccessScreen() {
+		const { stepIndex } = this.state;
 		const {
-			generalSettings,
 			isJetpackConnected,
 			pluginsToActivate,
-			taxSettings,
+			generalSettings,
 		} = this.props;
 		const {
-			woocommerce_calc_taxes: calcTaxes,
 			woocommerce_store_address: storeAddress,
 			woocommerce_default_country: defaultCountry,
 			woocommerce_store_postcode: storePostCode,
 		} = generalSettings;
-		const { stepIndex } = this.state;
-		const currentStep = this.getSteps()[ stepIndex ];
-		const currentStepKey = currentStep && currentStep.key;
 		const isCompleteAddress = Boolean(
 			storeAddress && defaultCountry && storePostCode
 		);
-
-		// Show the success screen if all requirements are satisfied from the beginning.
-		if (
+		return (
 			stepIndex !== null &&
-			! pluginsToActivate.length &&
 			isCompleteAddress &&
+			! pluginsToActivate.length &&
 			isJetpackConnected &&
 			this.isTaxJarSupported()
-		) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( { stepIndex: null } );
-			/* eslint-enable react/no-did-update-set-state */
-			return;
-		}
+		);
+	}
 
-		if ( currentStepKey === 'store_location' && isCompleteAddress ) {
-			this.completeStep();
+	componentDidUpdate( prevProps ) {
+		const {
+			generalSettings,
+			isJetpackConnected,
+			taxSettings,
+			isGeneralSettingsRequesting,
+		} = this.props;
+		const { woocommerce_calc_taxes: calcTaxes } = generalSettings;
+		const { stepIndex } = this.state;
+		const currentStep = this.getSteps()[ stepIndex ];
+		const currentStepKey = currentStep && currentStep.key;
+
+		// If general settings have stopped requesting, check if we should show success screen.
+		if (
+			prevProps.isGeneralSettingsRequesting &&
+			! isGeneralSettingsRequesting
+		) {
+			if ( this.shouldShowSuccessScreen() ) {
+				/* eslint-disable react/no-did-update-set-state */
+				this.setState( { stepIndex: null } );
+				/* eslint-enable react/no-did-update-set-state */
+				return;
+			}
 		}
 
 		if (
@@ -252,7 +266,11 @@ class Tax extends Component {
 							recordEvent( 'tasklist_tax_set_location', {
 								country,
 							} );
-							this.completeStep();
+							if ( this.shouldShowSuccessScreen() ) {
+								this.setState( { stepIndex: null } );
+							} else {
+								this.completeStep();
+							}
 						} }
 						isSettingsRequesting={ isGeneralSettingsRequesting }
 						settings={ generalSettings }
