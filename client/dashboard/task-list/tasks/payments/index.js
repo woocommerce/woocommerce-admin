@@ -83,6 +83,7 @@ class Payments extends Component {
 		updateOptions( {
 			woocommerce_task_list_payments: {
 				completed: 1,
+				timestamp: Date.now(),
 			},
 		} );
 
@@ -108,7 +109,8 @@ class Payments extends Component {
 
 		updateOptions( {
 			woocommerce_task_list_payments: {
-				completed: 1,
+				skipped: 1,
+				timestamp: Date.now(),
 			},
 		} );
 
