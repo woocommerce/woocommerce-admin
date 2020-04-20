@@ -454,6 +454,85 @@ class Loader {
 			wp_enqueue_style( 'wc-admin-ie' );
 		}
 
+		// Preload our assets.
+		self::output_header_preload_tags();
+	}
+
+	/**
+	 * Render a preload link tag for a dependency, optionally
+	 * checked against a provided whitelist.
+	 * 
+	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
+	 *
+	 * @param WP_Dependency $dependency The WP_Dependency being preloaded.
+	 * @param string $type Dependency type - 'script' or 'style'.
+	 * @param array $whitelist Optional. List of allowed dependency handles.
+	 */
+	public static function maybe_output_preload_link_tag( $dependency, $type, $whitelist = array() ) {
+		if ( ! empty( $whitelist ) && ! in_array( $dependency->handle, $whitelist, true ) ) {
+			return;
+		}
+
+		$source = $dependency->ver ? add_query_arg( 'ver', $dependency->ver, $dependency->src ) : $dependency->src;
+
+		echo '<link rel="preload" href="', esc_url( $source ), '" as="', esc_attr( $type ), '" />', "\n";
+	}
+
+	/**
+	 * Output a preload link tag for dependencies (and their sub dependencies)
+	 * with an optional whitelist.
+	 * 
+	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
+	 *
+	 * @param string $type Dependency type - 'script' or 'style'.
+	 * @param array $whitelist Optional. List of allowed dependency handles.
+	 */
+	public static function output_header_preload_tags_for_type( $type, $whitelist = array() ) {
+		if ( 'script' === $type ) {
+			$dependencies_of_type = wp_scripts();
+		} elseif ( 'style' === $type ) {
+			$dependencies_of_type = wp_styles();
+		} else {
+			return;
+		}
+
+		foreach ( $dependencies_of_type->queue as $dependency_handle ) {
+			$dependency = $dependencies_of_type->registered[ $dependency_handle ];
+
+			// Preload the subdependencies first.
+			foreach ( $dependency->deps as $sub_dependency_handle ) {
+				$sub_dependency = $dependencies_of_type->registered[ $sub_dependency_handle ];
+				self::maybe_output_preload_link_tag( $sub_dependency, $type, $whitelist );
+			}
+
+			self::maybe_output_preload_link_tag( $dependency, $type, $whitelist );
+		}
+	}
+
+	/**
+	 * Output preload link tags for all enqueued stylesheets and scripts.
+	 *
+	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
+	 */
+	public static function output_header_preload_tags() {
+		$wc_admin_scripts = array(
+			WC_ADMIN_APP,
+			'wc-components',
+		);
+
+		$wc_admin_styles = array(
+			WC_ADMIN_APP,
+			'wc-components',
+			'wc-components-ie',
+			'wc-admin-ie',
+			'wc-material-icons',
+		);
+
+		// Preload styles.
+		self::output_header_preload_tags_for_type( 'style', $wc_admin_styles );
+
+		// Preload scripts.
+		self::output_header_preload_tags_for_type( 'script', $wc_admin_scripts );
 	}
 
 	/**
