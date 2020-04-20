@@ -65,14 +65,13 @@ class ProfileWizard extends Component {
 			window.document.documentElement.scrollTop = 0;
 
 			recordEvent( 'storeprofiler_step_view', {
-				step,
+				step: this.getCurrentStep().key,
 			} );
 		}
 	}
 
 	componentDidMount() {
-		const { profileItems, query, updateProfileItems } = this.props;
-		const { step } = query;
+		const { profileItems, updateProfileItems } = this.props;
 
 		document.documentElement.classList.remove( 'wp-toolbar' );
 		document.body.classList.add( 'woocommerce-onboarding' );
@@ -80,7 +79,7 @@ class ProfileWizard extends Component {
 		document.body.classList.add( 'woocommerce-admin-full-screen' );
 
 		recordEvent( 'storeprofiler_step_view', {
-			step,
+			step: this.getCurrentStep().key,
 		} );
 
 		// Track plugins if already installed.
