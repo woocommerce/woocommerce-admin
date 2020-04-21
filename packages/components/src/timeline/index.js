@@ -9,7 +9,6 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import Card from '../card';
 import TimelineGroup from './timeline-group';
 
 export const groupByOptions = {
@@ -31,11 +30,11 @@ const Timeline = ( props ) => {
 	// Early return in case no data was passed to the component.
 	if ( ! items || items.length === 0 ) {
 		return (
-			<Card title={ 'Timeline' } className={ timelineClassName }>
-				<p className="timeline_no_events">
+			<div className={ timelineClassName }>
+				<p className={ 'timeline_no_events' }>
 					{ __( 'No data to display', 'woocommerce-admin' ) }
 				</p>
-			</Card>
+			</div>
 		);
 	}
 
@@ -77,9 +76,9 @@ const Timeline = ( props ) => {
 		.map( ( g ) => <TimelineGroup key={ g.id.toString() } group={ g } /> );
 
 	return (
-		<Card title={ 'Timeline' } className={ timelineClassName }>
+		<div className={ timelineClassName }>
 			<ul>{ timelineGroups }</ul>
-		</Card>
+		</div>
 	);
 };
 
