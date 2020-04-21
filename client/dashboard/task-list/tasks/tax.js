@@ -266,7 +266,8 @@ class Tax extends Component {
 							} );
 							if ( this.shouldShowSuccessScreen() ) {
 								this.setState( { stepIndex: null } );
-							} else {
+								// Only complete step if another update hasn't already shown succes screen.
+							} else if ( this.state.stepIndex !== null ) {
 								this.completeStep();
 							}
 						} }
