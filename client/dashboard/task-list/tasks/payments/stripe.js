@@ -28,7 +28,7 @@ class Stripe extends Component {
 			connectURL: null,
 			errorTitle: null,
 			errorMessage: null,
-			isPending: true,
+			isPending: false,
 		};
 
 		this.updateSettings = this.updateSettings.bind( this );
@@ -293,7 +293,12 @@ class Stripe extends Component {
 	}
 
 	getConnectStep() {
-		const { oAuthConnectFailed, connectURL, errorMessage } = this.state;
+		const {
+			connectURL,
+			errorMessage,
+			isPending,
+			oAuthConnectFailed,
+		} = this.state;
 		const connectStep = {
 			key: 'connect',
 			label: __( 'Connect your Stripe account', 'woocommerce-admin' ),
@@ -306,12 +311,11 @@ class Stripe extends Component {
 			};
 		}
 
-		if ( ! this.requiresManualConfig() ) {
-			// We may still be fetching the connect URL.
-			if ( ! oAuthConnectFailed && ! connectURL ) {
-				return connectStep;
-			}
+		if ( isPending ) {
+			return connectStep;
+		}
 
+		if ( ! oAuthConnectFailed && connectURL ) {
 			return {
 				...connectStep,
 				description: __(
@@ -358,10 +362,9 @@ export default compose(
 			isJetpackConnected,
 			isUpdateOptionsRequesting,
 		} = select( 'wc-api' );
-		const options = getOptions( [
-			'woocommerce_stripe_settings',
-			'woocommerce_default_country',
-		] );
+
+		const options = getOptions( [ 'woocommerce_stripe_settings' ] );
+
 		const stripeSettings = get(
 			options,
 			[ 'woocommerce_stripe_settings' ],
