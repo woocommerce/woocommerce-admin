@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\API\Reports\Cache;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Historical_Data;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Welcome_Message;
 
@@ -158,6 +159,7 @@ class Install {
 
 		self::create_tables();
 		self::create_events();
+		self::delete_obsolete_notes();
 		self::create_notes();
 		self::maybe_update_db_version();
 
@@ -453,11 +455,17 @@ class Install {
 	}
 
 	/**
+	 * Delete obsolete notes.
+	 */
+	protected static function delete_obsolete_notes() {
+		WC_Admin_Notes::delete_notes_with_name( 'wc-admin-welcome-note' );
+	}
+
+	/**
 	 * Create notes.
 	 */
 	protected static function create_notes() {
 		WC_Admin_Notes_Historical_Data::add_note();
-		WC_Admin_Notes_Welcome_Message::add_welcome_note();
 	}
 
 	/**
