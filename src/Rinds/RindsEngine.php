@@ -95,7 +95,8 @@ class RindsEngine {
 		$note->set_name( $spec->slug );
 		$note->set_source( $spec->source );
 
-		// Create actions.
+		// Clear then create actions.
+		$note->clear_actions();
 		foreach ( $spec->actions as $action ) {
 			$action_locale = self::get_action_locale( $action->locales, $locale->locale );
 

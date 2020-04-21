@@ -17,7 +17,6 @@ defined( 'ABSPATH' ) || exit;
 class RindsSpecsDataSourcePoller {
 	const DATA_SOURCES      = array(
 		'http://two.wordpress.test/rinds-specs.json',
-		'broken/url',
 	);
 	const SPECS_OPTION_NAME = 'wc_rinds_specs';
 
@@ -41,6 +40,9 @@ class RindsSpecsDataSourcePoller {
 		} else {
 			update_option( self::SPECS_OPTION_NAME, $specs );
 		}
+
+		// @todo This should probably be done in a seperate scheduled task.
+		RindsEngine::run();
 	}
 
 	/**
