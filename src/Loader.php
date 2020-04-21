@@ -465,12 +465,12 @@ class Loader {
 	/**
 	 * Render a preload link tag for a dependency, optionally
 	 * checked against a provided whitelist.
-	 * 
+	 *
 	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
 	 *
 	 * @param WP_Dependency $dependency The WP_Dependency being preloaded.
-	 * @param string $type Dependency type - 'script' or 'style'.
-	 * @param array $whitelist Optional. List of allowed dependency handles.
+	 * @param string        $type Dependency type - 'script' or 'style'.
+	 * @param array         $whitelist Optional. List of allowed dependency handles.
 	 */
 	public static function maybe_output_preload_link_tag( $dependency, $type, $whitelist = array() ) {
 		if ( ! empty( $whitelist ) && ! in_array( $dependency->handle, $whitelist, true ) ) {
@@ -485,11 +485,11 @@ class Loader {
 	/**
 	 * Output a preload link tag for dependencies (and their sub dependencies)
 	 * with an optional whitelist.
-	 * 
+	 *
 	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
 	 *
 	 * @param string $type Dependency type - 'script' or 'style'.
-	 * @param array $whitelist Optional. List of allowed dependency handles.
+	 * @param array  $whitelist Optional. List of allowed dependency handles.
 	 */
 	public static function output_header_preload_tags_for_type( $type, $whitelist = array() ) {
 		if ( 'script' === $type ) {
@@ -838,9 +838,9 @@ class Loader {
 		$settings['siteUrl']           = site_url();
 		$settings['onboardingEnabled'] = self::is_onboarding_enabled();
 		$settings['dateFormat']        = get_option( 'date_format' );
-		$settings['plugins'] = array(
+		$settings['plugins']           = array(
 			'installedPlugins' => PluginsHelper::get_installed_plugin_slugs(),
-			'activePlugins' => Plugins::get_active_plugins(),
+			'activePlugins'    => Plugins::get_active_plugins(),
 		);
 		// Plugins that depend on changing the translation work on the server but not the client -
 		// WooCommerce Branding is an example of this - so pass through the translation of
