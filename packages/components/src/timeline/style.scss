@@ -4,6 +4,10 @@
 		margin: 0;
 		padding-left: 0;
 		list-style-type: none;
+
+		li {
+			margin-bottom: 0;
+		}
 	}
 
 	.woocommerce-timeline-group {
@@ -40,8 +44,10 @@
 			flex-direction: row;
 			justify-content: space-between;
 
-			color: $studio-gray-80;
-			font-size: 16px;
+			p {
+				color: $studio-gray-80;
+				font-size: 16px;
+			}
 		}
 
 		.woocommerce-timeline-item__headline {
@@ -56,11 +62,13 @@
 
 			svg {
 				fill: $studio-white;
-				min-width: 16px;
-				min-height: 16px;
 				padding: $gap-smallest;
 				background: $studio-gray-10;
 				border-radius: 9999px;
+				box-sizing: content-box;
+				// We hard code the size to maintain consistent styling and spacing.
+				width: 16px;
+				height: 16px;
 			}
 		}
 

@@ -6,7 +6,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import GridIcon from 'gridicons';
 
-const GRIDICON_SIZE = 16;
+const GRIDICON_SIZE = 18;
 
 const TimelineItem = ( props ) => {
 	const { item, className } = props;
