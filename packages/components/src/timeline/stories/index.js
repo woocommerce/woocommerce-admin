@@ -36,10 +36,8 @@ export const Filled = () => (
 				headline: text( 'event 1, headline', '2 events in body' ),
 				icon: (
 					<GridIcon
-						icon={ text(
-							'event 1 gridicon',
-							text( 'event 1 gridicon', 'checkmark' )
-						) }
+						className={ 'is-success' }
+						icon={ text( 'event 1 gridicon', 'checkmark' ) }
 						size={ 16 }
 					/>
 				),
@@ -53,10 +51,8 @@ export const Filled = () => (
 				headline: text( 'event 2, headline', 'empty body' ),
 				icon: (
 					<GridIcon
-						icon={ text(
-							'event 2 gridicon',
-							text( 'event 2 gridicon', 'checkmark' )
-						) }
+						className={ 'is-warning' }
+						icon={ text( 'event 2 gridicon', 'refresh' ) }
 						size={ 16 }
 					/>
 				),
@@ -70,10 +66,8 @@ export const Filled = () => (
 				headline: text( 'event 3, headline', '1 event in body' ),
 				icon: (
 					<GridIcon
-						icon={ text(
-							'event 3 gridicon',
-							text( 'event 3 gridicion', 'checkmark' )
-						) }
+						className={ 'is-error' }
+						icon={ text( 'event 3 gridicon', 'cross' ) }
 						size={ 16 }
 					/>
 				),

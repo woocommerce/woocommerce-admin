@@ -69,6 +69,18 @@
 				// We hard code the size to maintain consistent styling and spacing.
 				width: 16px;
 				height: 16px;
+
+				&.is-success {
+					background: $valid-green;
+				}
+
+				&.is-warning {
+					background: $notice-yellow;
+				}
+
+				&.is-error {
+					background: $error-red;
+				}
 			}
 		}
 
