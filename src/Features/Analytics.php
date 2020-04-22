@@ -76,7 +76,7 @@ class Analytics {
 	 */
 	public function register_pages() {
 		$features = wc_admin_get_feature_config();
-		
+
 		$report_pages = array(
 			array(
 				'id'       => 'woocommerce-analytics',

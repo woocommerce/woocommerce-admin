@@ -244,7 +244,7 @@ class Loader {
 	public static function register_page_handler() {
 		$features = wc_admin_get_feature_config();
 		$id = $features['homepage'] ? 'woocommerce-home' : 'woocommerce-dashboard';
-		
+
 		wc_admin_register_page(
 			array(
 				'id'         => $id, // Expected to be overridden if dashboard is enabled.
