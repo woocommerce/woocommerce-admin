@@ -20,7 +20,7 @@ const TimelineItem = ( props ) => {
 					<span>{ item.headline }</span>
 				</p>
 				<span className={ 'woocommerce-timeline-item__timestamp' }>
-					{ itemTimeString }
+					{ item.hideTimestamp || false ? null : itemTimeString }
 				</span>
 			</div>
 			<div className={ 'woocommerce-timeline-item__body' }>
@@ -55,6 +55,10 @@ TimelineItem.propTypes = {
 		 * Body displayed for the list item.
 		 */
 		body: PropTypes.arrayOf( PropTypes.element ),
+		/**
+		 * Allows users to toggle the timestamp on or off.
+		 */
+		hideTimestamp: PropTypes.bool,
 	} ).isRequired,
 };
 

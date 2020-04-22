@@ -60,6 +60,7 @@ export const Filled = () => (
 						size={ 16 }
 					/>
 				),
+				hideTimestamp: true,
 			},
 			{
 				datetime: itemDate(

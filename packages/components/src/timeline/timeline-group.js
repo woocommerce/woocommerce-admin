@@ -66,6 +66,10 @@ TimelineGroup.propTypes = {
 				 * Body displayed for the list item.
 				 */
 				body: PropTypes.arrayOf( PropTypes.element ),
+				/**
+				 * Allows users to toggle the timestamp on or off.
+				 */
+				hideTimestamp: PropTypes.bool,
 			} )
 		).isRequired,
 	} ).isRequired,

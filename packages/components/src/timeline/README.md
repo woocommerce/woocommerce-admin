@@ -56,9 +56,13 @@ Name | Type | Default | Description
 
 A list of items with properties:
 
-- `datetime`: int - Unix timestamp
-- `icon`: Element - The element used to represent the icon for this item.
-  - Icon color can be customized with 3 classes: `is-success` (green), `is-warning` (yellow), and `is-error` (red)
+Name | Type | Default | Description
+--- | --- | --- | ---
+`datetime` | int | Required | Unix timestamp when this item happened
+`icon` | Element | Required | The element used to represent the icon for this item
+`headline` | String | Required | The title text of this item
+`body` | Array | `[]` | Elements that contain details pertaining to this item
+`hideTimestamp` | Bool | `false` | Allows the user to hide the timestamp associated with this item
+
+Icon color can be customized by adding 1 of 3 classes to the icon element: `is-success` (green), `is-warning` (yellow), and `is-error` (red)
   - If no class is provided the icon will be gray
-- `headline`: String - The title text of this item
-- `body`: Array - Elements that contain details pertaining to this item
