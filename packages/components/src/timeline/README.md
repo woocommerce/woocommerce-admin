@@ -17,8 +17,8 @@ const items = [
     icon: <GridIcon icon={ 'checkmark' } />,
     headline: 'A payment of $90.00 was successfully charged',
     body: [
-      'Fee: $2.91 ( 2.9% + $0.30 )',
-      'Net deposit: $87.09',
+      <p key={ '1' }>{ 'Fee: $2.91 ( 2.9% + $0.30 )' }</p>,
+      <p key={ '2' }>{ 'Net deposit: $87.09' }</p>,
     ],
   },
   {
@@ -29,7 +29,7 @@ const items = [
   },
   {
     datetime: new Date( 2019, 9, 27, 20, 9 ),
-    icon: <GridIcon icon={ 'checkmark' } />,
+    icon: <GridIcon icon={ 'checkmark' } className={ 'is-success' } />,
     headline: 'A payment of $90.00 was successfully authorized',
     body: [],
   },
@@ -57,6 +57,8 @@ Name | Type | Default | Description
 A list of items with properties:
 
 - `datetime`: int - Unix timestamp
-- `icon`: Element - The element used to represent the icon for this item
+- `icon`: Element - The element used to represent the icon for this item.
+  - Icon color can be customized with 3 classes: `is-success` (green), `is-warning` (yellow), and `is-error` (red)
+  - If no class is provided the icon will be gray
 - `headline`: String - The title text of this item
-- `body`: Array - Detail text associated with this item
+- `body`: Array - Elements that contain details pertaining to this item

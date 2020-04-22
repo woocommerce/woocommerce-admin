@@ -107,7 +107,7 @@ Timeline.propTypes = {
 			/**
 			 * Body displayed for the list item.
 			 */
-			body: PropTypes.arrayOf( PropTypes.string ),
+			body: PropTypes.arrayOf( PropTypes.element ),
 		} )
 	).isRequired,
 	/**

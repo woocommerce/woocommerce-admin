@@ -99,6 +99,11 @@
 			margin: 0 $gap-small;
 			padding: $gap-smaller $gap-larger;
 			border-left: 1px solid $studio-gray-10;
+
+			// Make sure child elements fit tightly together.
+			* {
+				margin: 0;
+			}
 		}
 	}
 }

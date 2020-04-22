@@ -7,12 +7,8 @@ import PropTypes from 'prop-types';
 
 const TimelineItem = ( props ) => {
 	const { item, className } = props;
-	const itemClassName = classnames( 'woocommerce-timeline-item', className );
 
-	const itemBody = item.body.map( ( line, bodyLineIndex ) => {
-		const bodyLineKey = item.datetime + '-' + bodyLineIndex;
-		return <span key={ bodyLineKey }>{ line }</span>;
-	} );
+	const itemClassName = classnames( 'woocommerce-timeline-item', className );
 	const itemTimeString = moment.unix( item.datetime ).format( 'h:mma' );
 
 	return (
@@ -27,7 +23,9 @@ const TimelineItem = ( props ) => {
 					{ itemTimeString }
 				</span>
 			</div>
-			<p className={ 'woocommerce-timeline-item__body' }>{ itemBody }</p>
+			<div className={ 'woocommerce-timeline-item__body' }>
+				{ item.body }
+			</div>
 		</li>
 	);
 };
@@ -56,7 +54,7 @@ TimelineItem.propTypes = {
 		/**
 		 * Body displayed for the list item.
 		 */
-		body: PropTypes.arrayOf( PropTypes.string ),
+		body: PropTypes.arrayOf( PropTypes.element ),
 	} ).isRequired,
 };
 

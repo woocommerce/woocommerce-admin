@@ -30,8 +30,12 @@ export const Filled = () => (
 					new Date( 2020, 0, 20, 1, 30 )
 				),
 				body: [
-					text( 'event 1, first event', 'foo happened' ),
-					text( 'event 1, second event', 'bar happened' ),
+					<p key={ '1' }>
+						{ text( 'event 1, first event', 'foo happened' ) }
+					</p>,
+					<p key={ '2' }>
+						{ text( 'event 1, second event', 'bar happened' ) }
+					</p>,
 				],
 				headline: text( 'event 1, headline', '2 events in body' ),
 				icon: (
@@ -62,7 +66,11 @@ export const Filled = () => (
 					'event 3 date',
 					new Date( 2020, 0, 22, 15, 13 )
 				),
-				body: [ text( 'event 3, second event', 'baz happened' ) ],
+				body: [
+					<p key={ '1' }>
+						{ text( 'event 3, second event', 'baz happened' ) }
+					</p>,
+				],
 				headline: text( 'event 3, headline', '1 event in body' ),
 				icon: (
 					<GridIcon
