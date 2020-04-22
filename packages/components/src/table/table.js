@@ -74,6 +74,10 @@ class Table extends Component {
 		window.addEventListener( 'resize', this.updateTableShadow );
 	}
 
+	componentDidUpdate() {
+		this.updateTableShadow();
+	}
+
 	componentWillUnmount() {
 		window.removeEventListener( 'resize', this.updateTableShadow );
 	}
@@ -101,13 +105,21 @@ class Table extends Component {
 
 	updateTableShadow() {
 		const table = this.container.current;
+
 		const scrolledToEnd =
 			table.scrollWidth - table.scrollLeft <= table.offsetWidth;
+		if ( scrolledToEnd && this.state.isScrollable ) {
+			this.setState( { isScrollable: false } );
+		} else if ( ! scrolledToEnd && ! this.state.isScrollable ) {
+			this.setState( { isScrollable: true } );
+		}
+
 		const scrolledToStart = table.scrollLeft <= 0;
-		this.setState( {
-			isScrollable: ! scrolledToEnd,
-			isScrollableBack: ! scrolledToStart,
-		} );
+		if ( scrolledToStart && this.state.isScrollableBack ) {
+			this.setState( { isScrollableBack: false } );
+		} else if ( ! scrolledToStart && ! this.state.isScrollableBack ) {
+			this.setState( { isScrollableBack: true } );
+		}
 	}
 
 	render() {
