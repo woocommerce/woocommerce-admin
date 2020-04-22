@@ -81,8 +81,8 @@ class AnalyticsDashboard {
 	public function register_page() {
 		wc_admin_register_page(
 			array(
-				'id'     => 'woocommerce-dashboard',
-				'title'  => __( 'Dashboard', 'woocommerce-admin' ),
+				'id'     => 'woocommerce-home',
+				'title'  => __( 'Home', 'woocommerce-admin' ),
 				'parent' => 'woocommerce',
 				'path'   => self::MENU_SLUG,
 			)

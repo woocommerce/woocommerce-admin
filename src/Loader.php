@@ -244,7 +244,7 @@ class Loader {
 	public static function register_page_handler() {
 		wc_admin_register_page(
 			array(
-				'id'         => 'woocommerce-dashboard', // Expected to be overridden if dashboard is enabled.
+				'id'         => 'woocommerce-home', // Expected to be overridden if dashboard is enabled.
 				'parent'     => 'woocommerce',
 				'title'      => null,
 				'path'       => self::APP_ENTRY_POINT,

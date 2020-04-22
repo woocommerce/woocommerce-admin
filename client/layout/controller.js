@@ -55,7 +55,7 @@ export const getPages = () => {
 		} );
 	}
 
-	if ( window.wcAdminFeatures[ 'analytics-dashboard' ] ) {
+	if ( window.wcAdminFeatures[ 'analytics-dashboard' ] && ! window.wcAdminFeatures.homepage ) {
 		pages.push( {
 			container: Dashboard,
 			path: '/',
@@ -67,7 +67,40 @@ export const getPages = () => {
 		} );
 	}
 
+	const Homepage = () => {
+		return (
+			<div>Hello World</div>
+		);
+	};
+
+	if ( window.wcAdminFeatures.homepage ) {
+		pages.push( {
+			container: Homepage,
+			path: '/',
+			breadcrumbs: [
+				...initialBreadcrumbs,
+				__( 'Home', 'woocommerce-admin' ),
+			],
+			wpOpenMenu: 'toplevel_page_woocommerce',
+		} );
+	}
+
 	if ( window.wcAdminFeatures.analytics ) {
+		if ( window.wcAdminFeatures.homepage ) {
+			pages.push( {
+				container: Dashboard,
+				path: '/analytics/overview',
+				breadcrumbs: [
+					...initialBreadcrumbs,
+					[
+						'/analytics/overview',
+						__( 'Analytics', 'woocommerce-admin' ),
+					],
+					__( 'Overview', 'woocommerce-admin' ),
+				],
+				wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
+			} );
+		}
 		pages.push( {
 			container: AnalyticsSettings,
 			path: '/analytics/settings',
@@ -79,7 +112,7 @@ export const getPages = () => {
 				],
 				__( 'Settings', 'woocommerce-admin' ),
 			],
-			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-revenue',
+			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
 		} );
 		pages.push( {
 			container: AnalyticsReport,
@@ -109,7 +142,7 @@ export const getPages = () => {
 					report.title,
 				];
 			},
-			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-revenue',
+			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
 		} );
 	}
 

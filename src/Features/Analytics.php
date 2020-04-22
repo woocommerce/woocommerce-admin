@@ -79,9 +79,15 @@ class Analytics {
 			array(
 				'id'       => 'woocommerce-analytics',
 				'title'    => __( 'Analytics', 'woocommerce-admin' ),
-				'path'     => '/analytics/revenue',
+				'path'     => '/analytics/overview',
 				'icon'     => 'dashicons-chart-bar',
 				'position' => 56, // After WooCommerce & Product menu items.
+			),
+			array(
+				'id'       => 'woocommerce-analytics-overview',
+				'title'    => __( 'Overview', 'woocommerce-admin' ),
+				'parent' => 'woocommerce-analytics',
+				'path'     => '/analytics/overview',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-revenue',
