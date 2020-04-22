@@ -7,7 +7,7 @@ import { compose } from '@wordpress/compose';
 import apiFetch from '@wordpress/api-fetch';
 import { withDispatch } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
-import { Button, Modal } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { get } from 'lodash';
 
 /**
@@ -27,8 +27,6 @@ class Stripe extends Component {
 		this.state = {
 			oAuthConnectFailed: false,
 			connectURL: null,
-			errorTitle: null,
-			errorMessage: null,
 			isPending: false,
 		};
 
@@ -147,37 +145,6 @@ class Stripe extends Component {
 		}
 	}
 
-	renderErrorModal() {
-		const { errorTitle, errorMessage } = this.state;
-		return (
-			<Modal
-				title={ errorTitle }
-				onRequestClose={ () =>
-					this.setState( { errorMessage: null, errorTitle: null } )
-				}
-				className="woocommerce-task-payments__stripe-error-modal"
-			>
-				<div className="woocommerce-task-payments__stripe-error-wrapper">
-					<div className="woocommerce-task-payments__stripe-error-message">
-						{ errorMessage }
-					</div>
-					<Button
-						isPrimary
-						isDefault
-						onClick={ () =>
-							this.setState( {
-								errorMessage: null,
-								errorTitle: null,
-							} )
-						}
-					>
-						{ __( 'OK', 'woocommerce-admin' ) }
-					</Button>
-				</div>
-			</Modal>
-		);
-	}
-
 	renderConnectButton() {
 		const { connectURL } = this.state;
 		return (
@@ -294,23 +261,12 @@ class Stripe extends Component {
 	}
 
 	getConnectStep() {
-		const {
-			connectURL,
-			errorMessage,
-			isPending,
-			oAuthConnectFailed,
-		} = this.state;
+		const { connectURL, isPending, oAuthConnectFailed } = this.state;
+
 		const connectStep = {
 			key: 'connect',
 			label: __( 'Connect your Stripe account', 'woocommerce-admin' ),
 		};
-
-		if ( errorMessage ) {
-			return {
-				...connectStep,
-				content: this.renderErrorModal(),
-			};
-		}
 
 		if ( isPending ) {
 			return connectStep;
