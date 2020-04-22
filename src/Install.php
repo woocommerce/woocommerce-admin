@@ -41,7 +41,7 @@ class Install {
 			'wc_admin_update_0251_remove_unsnooze_action',
 			'wc_admin_update_0251_db_version',
 		),
-		'1.1.0' => array(
+		'1.1.0'  => array(
 			'wc_admin_update_110_remove_facebook_note',
 		),
 	);
@@ -450,7 +450,7 @@ class Install {
 		if ( ! wp_next_scheduled( 'wc_admin_daily' ) ) {
 			wp_schedule_event( time(), 'daily', 'wc_admin_daily' );
 		}
-		// @todo This is potentially redundant when the core package exists.
+		// Note: this is potentially redundant when the core package exists.
 		wp_schedule_single_event( time() + 10, 'generate_category_lookup_table' );
 	}
 
@@ -479,7 +479,9 @@ class Install {
 		$tables = self::get_tables();
 
 		foreach ( $tables as $table ) {
-			$wpdb->query( "DROP TABLE IF EXISTS {$table}" ); // WPCS: unprepared SQL ok.
+			/* phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+			$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
+			/* phpcs:enable */
 		}
 	}
 }
