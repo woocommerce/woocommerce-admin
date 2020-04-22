@@ -21,6 +21,13 @@ class RindsEngine {
 	const SPECS_META_OPTION_NAME = 'wc_rinds_specs_meta';
 
 	/**
+	 * Initialize the engine.
+	 */
+	public static function init() {
+		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
+	}
+
+	/**
 	 * Go through the RINDS spec and run those specs that are able to be
 	 * triggered.
 	 */
