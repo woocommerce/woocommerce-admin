@@ -55,7 +55,10 @@ export const getPages = () => {
 		} );
 	}
 
-	if ( window.wcAdminFeatures[ 'analytics-dashboard' ] && ! window.wcAdminFeatures.homepage ) {
+	if (
+		window.wcAdminFeatures[ 'analytics-dashboard' ] &&
+		! window.wcAdminFeatures.homepage
+	) {
 		pages.push( {
 			container: Dashboard,
 			path: '/',
@@ -68,9 +71,7 @@ export const getPages = () => {
 	}
 
 	const Homepage = () => {
-		return (
-			<div>Hello World</div>
-		);
+		return <div>Hello World</div>;
 	};
 
 	if ( window.wcAdminFeatures.homepage ) {
@@ -101,6 +102,10 @@ export const getPages = () => {
 				wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
 			} );
 		}
+		const ReportWpOpenMenu = `toplevel_page_wc-admin-path--analytics-${
+			window.wcAdminFeatures.homepage ? 'overview' : 'revenue'
+		}`;
+
 		pages.push( {
 			container: AnalyticsSettings,
 			path: '/analytics/settings',
@@ -112,7 +117,7 @@ export const getPages = () => {
 				],
 				__( 'Settings', 'woocommerce-admin' ),
 			],
-			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
+			wpOpenMenu: ReportWpOpenMenu,
 		} );
 		pages.push( {
 			container: AnalyticsReport,
@@ -142,7 +147,7 @@ export const getPages = () => {
 					report.title,
 				];
 			},
-			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
+			wpOpenMenu: ReportWpOpenMenu,
 		} );
 	}
 
