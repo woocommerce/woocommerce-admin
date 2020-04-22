@@ -55,6 +55,7 @@ class Table extends Component {
 		this.state = {
 			tabIndex: null,
 			isScrollable: false,
+			isScrollableBack: false,
 		};
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
@@ -102,8 +103,10 @@ class Table extends Component {
 		const table = this.container.current;
 		const scrolledToEnd =
 			table.scrollWidth - table.scrollLeft <= table.offsetWidth;
+		const scrolledToStart = table.scrollLeft <= 0;
 		this.setState( {
 			isScrollable: ! scrolledToEnd,
+			isScrollableBack: ! scrolledToStart,
 		} );
 	}
 
@@ -118,9 +121,10 @@ class Table extends Component {
 			rowHeader,
 			rows,
 		} = this.props;
-		const { isScrollable, tabIndex } = this.state;
+		const { isScrollable, isScrollableBack, tabIndex } = this.state;
 		const classes = classnames( 'woocommerce-table__table', classNames, {
 			'is-scrollable': isScrollable,
+			'is-scrollable-back': isScrollableBack,
 		} );
 		const sortedBy =
 			query.orderby ||
