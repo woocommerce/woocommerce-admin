@@ -458,6 +458,7 @@ class Install {
 	 */
 	protected static function delete_obsolete_notes() {
 		WC_Admin_Notes::delete_notes_with_name( 'wc-admin-welcome-note' );
+		WC_Admin_Notes::delete_notes_with_name( 'wc-admin-store-notice-setting-moved' );
 	}
 
 	/**
