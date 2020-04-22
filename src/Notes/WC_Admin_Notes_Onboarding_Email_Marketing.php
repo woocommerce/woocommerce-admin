@@ -16,11 +16,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class WC_Admin_Notes_Onboarding_Email_Marketing {
 	/**
-	 * Note traits.
-	 */
-	use NoteTraits;
-
-	/**
 	 * Name of the note for use in the database.
 	 */
 	const NOTE_NAME = 'wc-admin-onboarding-email-marketing';
