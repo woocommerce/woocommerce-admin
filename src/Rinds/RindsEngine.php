@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin\Rinds;
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
+use \Automattic\WooCommerce\Admin\DateTimeProvider\CurrentDateTimeProvider;
 
 /**
  * RINDS engine.
@@ -135,7 +136,9 @@ class RindsEngine {
 		if ( 'plugins_activated' === $rule_type ) {
 			return new PluginsActivatedRuleProcessor();
 		} elseif ( 'send_at_time' === $rule_type ) {
-			return new SendAtTimeRuleProcessor();
+			return new SendAtTimeRuleProcessor(
+				new CurrentDateTimeProvider()
+			);
 		} elseif ( 'resend_after_dismissal' === $rule_type ) {
 			return new ResendAfterDismissalRuleProcessor();
 		}
