@@ -90,7 +90,8 @@ class Onboarding {
 		// Track the onboarding toggle event earlier so they are captured before redirecting.
 		add_action( 'add_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
 		add_action( 'update_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
-		add_action( 'update_option_' . self::PROFILE_DATA_OPTION, array( $this, 'send_profile_data' ), 10, 2 );
+		add_action( 'update_option_' . self::PROFILE_DATA_OPTION, array( $this, 'send_profile_data_on_update' ), 10, 2 );
+		add_action( 'woocommerce_helper_connected', array( $this, 'send_profile_data_on_connect' ) );
 
 		if ( ! Loader::is_onboarding_enabled() ) {
 			add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
@@ -143,13 +144,10 @@ class Onboarding {
 	}
 
 	/**
-	 * Send profile data to WooCommerce.com on profiler completion.
-	 *
-	 * @param array $old_value Previous value.
-	 * @param array $value Current value.
+	 * Send profile data to WooCommerce.com.
 	 */
-	public static function send_profile_data( $old_value, $value ) {
-		if ( ! isset( $value['completed'] ) || ! $value['completed'] || ! class_exists( '\WC_Helper_API' ) ) {
+	public static function send_profile_data() {
+		if ( ! class_exists( '\WC_Helper_API' ) ) {
 			return;
 		}
 
@@ -178,9 +176,35 @@ class Onboarding {
 				'body'          => wp_json_encode( $body ),
 				'headers'       => array(
 					'Content-Type' => 'application/json',
-				)
+				),
 			)
 		);
+	}
+
+	/**
+	 * Send profiler data on profiler change to completion.
+	 *
+	 * @param array $old_value Previous value.
+	 * @param array $value Current value.
+	 */
+	public static function send_profile_data_on_update( $old_value, $value ) {
+		if ( ! isset( $value['completed'] ) || ! $value['completed'] ) {
+			return;
+		}
+
+		self::send_profile_data();
+	}
+
+	/**
+	 * Send profiler data after a site is connected.
+	 */
+	public static function send_profile_data_on_connect() {
+		$profile = get_option( self::PROFILE_DATA_OPTION, array() );
+		if ( ! isset( $profile['completed'] ) || ! $profile['completed'] ) {
+			return;
+		}
+
+		self::send_profile_data();
 	}
 
 	/**
