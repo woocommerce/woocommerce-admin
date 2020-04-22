@@ -97,9 +97,9 @@ Timeline.propTypes = {
 			 */
 			datetime: PropTypes.number.isRequired,
 			/**
-			 * GridIcon for the Timeline item.
+			 * Icon for the Timeline item.
 			 */
-			gridicon: PropTypes.string.isRequired,
+			icon: PropTypes.element.isRequired,
 			/**
 			 * Headline displayed for the list item.
 			 */

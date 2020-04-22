@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { date, text } from '@storybook/addon-knobs';
+import GridIcon from 'gridicons';
 
 /**
  * Internal dependencies
@@ -33,9 +34,14 @@ export const Filled = () => (
 					text( 'event 1, second event', 'bar happened' ),
 				],
 				headline: text( 'event 1, headline', '2 events in body' ),
-				gridicon: text(
-					'event 1 gridicon',
-					text( 'event 1 gridicon', 'checkmark' )
+				icon: (
+					<GridIcon
+						icon={ text(
+							'event 1 gridicon',
+							text( 'event 1 gridicon', 'checkmark' )
+						) }
+						size={ 16 }
+					/>
 				),
 			},
 			{
@@ -45,9 +51,14 @@ export const Filled = () => (
 				),
 				body: [],
 				headline: text( 'event 2, headline', 'empty body' ),
-				gridicon: text(
-					'event 2 gridicon',
-					text( 'event 2 gridicon', 'checkmark' )
+				icon: (
+					<GridIcon
+						icon={ text(
+							'event 2 gridicon',
+							text( 'event 2 gridicon', 'checkmark' )
+						) }
+						size={ 16 }
+					/>
 				),
 			},
 			{
@@ -57,9 +68,14 @@ export const Filled = () => (
 				),
 				body: [ text( 'event 3, second event', 'baz happened' ) ],
 				headline: text( 'event 3, headline', '1 event in body' ),
-				gridicon: text(
-					'event 3 gridicon',
-					text( 'event 3 gridicion', 'checkmark' )
+				icon: (
+					<GridIcon
+						icon={ text(
+							'event 3 gridicon',
+							text( 'event 3 gridicion', 'checkmark' )
+						) }
+						size={ 16 }
+					/>
 				),
 			},
 		] }
