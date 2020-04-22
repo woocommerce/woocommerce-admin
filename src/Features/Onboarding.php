@@ -90,6 +90,7 @@ class Onboarding {
 		// Track the onboarding toggle event earlier so they are captured before redirecting.
 		add_action( 'add_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
 		add_action( 'update_option_' . self::OPT_IN_OPTION, array( $this, 'track_onboarding_toggle' ), 1, 2 );
+		add_action( 'update_option_' . self::PROFILE_DATA_OPTION, array( $this, 'send_profile_data' ), 10, 2 );
 
 		if ( ! Loader::is_onboarding_enabled() ) {
 			add_action( 'current_screen', array( $this, 'update_help_tab' ), 60 );
@@ -139,6 +140,47 @@ class Onboarding {
 		add_filter( 'woocommerce_admin_preload_settings', array( $this, 'preload_settings' ) );
 		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
 		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
+	}
+
+	/**
+	 * Send profile data to WooCommerce.com on profiler completion.
+	 *
+	 * @param array $old_value Previous value.
+	 * @param array $value Current value.
+	 */
+	public static function send_profile_data( $old_value, $value ) {
+		if ( ! isset( $value['completed'] ) || ! $value['completed'] || ! class_exists( '\WC_Helper_API' ) ) {
+			return;
+		}
+
+		$base_location = wc_get_base_location();
+		$defaults      = array(
+			'plugins'             => 'skipped',
+			'industry'            => array(),
+			'product_types'       => array(),
+			'product_count'       => '0',
+			'selling_venues'      => 'no',
+			'revenue'             => 'none',
+			'other_platform'      => 'none',
+			'business_extensions' => array(),
+			'theme'               => get_stylesheet(),
+			'setup_client'        => false,
+			'store_location'      => $base_location['country'],
+			'default_currency'    => get_woocommerce_currency(),
+		);
+		$profile       = get_option( self::PROFILE_DATA_OPTION, array() );
+		$body          = wp_parse_args( $profile, $defaults );
+
+		\WC_Helper_API::put(
+			'profile',
+			array(
+				'authenticated' => true,
+				'body'          => wp_json_encode( $body ),
+				'headers'       => array(
+					'Content-Type' => 'application/json',
+				)
+			)
+		);
 	}
 
 	/**
