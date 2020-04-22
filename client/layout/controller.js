@@ -22,6 +22,7 @@ import {
 import AnalyticsReport, { getReports } from 'analytics/report';
 import AnalyticsSettings from 'analytics/settings';
 import Dashboard from 'dashboard';
+import Homepage from 'homepage';
 import DevDocs from 'devdocs';
 import MarketingOverview from 'marketing/overview';
 
@@ -69,10 +70,6 @@ export const getPages = () => {
 			wpOpenMenu: 'toplevel_page_woocommerce',
 		} );
 	}
-
-	const Homepage = () => {
-		return <div>Hello World</div>;
-	};
 
 	if ( window.wcAdminFeatures.homepage ) {
 		pages.push( {
