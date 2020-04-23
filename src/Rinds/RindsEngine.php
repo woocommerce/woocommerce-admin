@@ -108,10 +108,12 @@ class RindsEngine {
 		foreach ( $spec->actions as $action ) {
 			$action_locale = self::get_action_locale( $action->locales, $locale->locale );
 
+			$url = $action->url_is_admin_query ? wc_admin_url( $action->url ) : $action->url;
+
 			$note->add_action(
 				$action->name,
 				$action_locale->label,
-				wc_admin_url( $action->query ),
+				$url,
 				$action->status,
 				$action->is_primary
 			);
