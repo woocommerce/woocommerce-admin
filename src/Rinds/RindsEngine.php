@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
 use \Automattic\WooCommerce\Admin\DateTimeProvider\CurrentDateTimeProvider;
+use \Automattic\WooCommerce\Admin\PluginsProvider\LivePluginsProvider;
 
 /**
  * RINDS engine.
@@ -134,7 +135,9 @@ class RindsEngine {
 	 */
 	private static function get_processor( $rule_type ) {
 		if ( 'plugins_activated' === $rule_type ) {
-			return new PluginsActivatedRuleProcessor();
+			return new PluginsActivatedRuleProcessor(
+				new LivePluginsProvider()
+			);
 		} elseif ( 'send_at_time' === $rule_type ) {
 			return new SendAtTimeRuleProcessor(
 				new CurrentDateTimeProvider()

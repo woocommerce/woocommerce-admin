@@ -14,6 +14,15 @@ defined( 'ABSPATH' ) || exit;
  */
 class PluginsActivatedRuleProcessor {
 	/**
+	 * Constructor.
+	 *
+	 * @param PluginsProviderInterface $plugins_provider The plugins provider.
+	 */
+	public function __construct( $plugins_provider ) {
+		$this->plugins_provider = $plugins_provider;
+	}
+
+	/**
 	 * Process the rule.
 	 *
 	 * @param object $spec The specification being processed.
@@ -22,7 +31,18 @@ class PluginsActivatedRuleProcessor {
 	 * @return bool Whether the rule passes or not.
 	 */
 	public function process( $spec, $rule ) {
-		// @todo implement me.
+		if ( 0 === count( $rule->plugins ) ) {
+			return false;
+		}
+
+		$active_plugin_slugs = $this->plugins_provider->get_active_plugin_slugs();
+
+		foreach ( $rule->plugins as $plugin_slug ) {
+			if ( ! in_array( $plugin_slug, $active_plugin_slugs, true ) ) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 }
