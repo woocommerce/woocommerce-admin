@@ -85,6 +85,21 @@ export const Filled = () => (
 					/>
 				),
 			},
+			{
+				datetime: itemDate(
+					'event 4 date',
+					new Date( 2020, 0, 17, 1, 45 )
+				),
+				headline: (
+					<p>{ text( 'event 4, headline', 'undefined body' ) }</p>
+				),
+				icon: (
+					<GridIcon
+						icon={ text( 'event 4 gridicon', 'cross' ) }
+						size={ 16 }
+					/>
+				),
+			},
 		] }
 	/>
 );

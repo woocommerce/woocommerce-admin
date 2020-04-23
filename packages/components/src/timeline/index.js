@@ -73,7 +73,9 @@ const Timeline = ( props ) => {
 	const timelineGroups = items
 		.reduce( itemsToGroups, [] )
 		.sort( sortMethod )
-		.map( ( g ) => <TimelineGroup key={ g.id.toString() } group={ g } /> );
+		.map( ( group ) => (
+			<TimelineGroup key={ group.id.toString() } group={ group } />
+		) );
 
 	return (
 		<div className={ timelineClassName }>

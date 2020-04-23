@@ -24,7 +24,7 @@ const TimelineItem = ( props ) => {
 				</span>
 			</div>
 			<div className={ 'woocommerce-timeline-item__body' }>
-				{ item.body }
+				{ item.body || [] }
 			</div>
 		</li>
 	);
