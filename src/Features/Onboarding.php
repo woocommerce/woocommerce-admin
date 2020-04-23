@@ -147,7 +147,7 @@ class Onboarding {
 	 * Send profile data to WooCommerce.com.
 	 */
 	public static function send_profile_data() {
-		if ( ! class_exists( '\WC_Helper_API' ) ) {
+		if ( ! class_exists( '\WC_Helper_API' ) && method_exists( '\WC_Helper_API', 'put' ) ) {
 			return;
 		}
 
