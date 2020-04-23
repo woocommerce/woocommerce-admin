@@ -43,6 +43,9 @@ class WC_Admin_Notes_Onboarding_Email_Marketing {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'yes-please', __( 'Yes please!', 'woocommerce-admin' ), 'https://woocommerce.us8.list-manage.com/subscribe/post?u=2c1434dc56f9506bf3c3ecd21&amp;id=13860df971&amp;SIGNUPPAGE=plugin' );
+		$note->set_layout( 'plain' );
+		$note->set_image( '' );
+
 		$note->save();
 	}
 }

@@ -54,6 +54,8 @@ class WC_Admin_Notes_Marketing {
 			admin_url( 'admin.php?page=wc-admin&path=/marketing' ),
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED
 		);
+		$note->set_layout( 'plain' );
+		$note->set_image( '' );
 
 		$note->save();
 	}

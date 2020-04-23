@@ -63,6 +63,8 @@ class WC_Admin_Notes_Onboarding_Profiler {
 			'actioned',
 			false
 		);
+		$note->set_layout( 'plain' );
+		$note->set_image( '' );
 
 		$note->save();
 	}

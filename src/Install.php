@@ -40,7 +40,7 @@ class Install {
 			'wc_admin_update_0251_remove_unsnooze_action',
 			'wc_admin_update_0251_db_version',
 		),
-		'1.1.0' => array(
+		'1.1.0'  => array(
 			'wc_admin_update_110_remove_facebook_note',
 		),
 	);
@@ -257,6 +257,8 @@ class Install {
 			date_created datetime NOT NULL default '0000-00-00 00:00:00',
 			date_reminder datetime NULL default null,
 			is_snoozable boolean DEFAULT 0 NOT NULL,
+			layout varchar(20) DEFAULT 'plain' NOT NULL,
+			image varchar(200) NULL default null,
 			PRIMARY KEY (note_id)
 		) $collate;
 		CREATE TABLE {$wpdb->prefix}wc_admin_note_actions (

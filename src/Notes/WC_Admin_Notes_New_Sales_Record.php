@@ -113,6 +113,9 @@ class WC_Admin_Notes_New_Sales_Record {
 			$note->set_name( self::NOTE_NAME );
 			$note->set_source( 'woocommerce-admin' );
 			$note->add_action( 'view-report', __( 'View report', 'woocommerce-admin' ), $report_url );
+			$note->set_layout( 'plain' );
+			$note->set_image( '' );
+
 			$note->save();
 		}
 	}

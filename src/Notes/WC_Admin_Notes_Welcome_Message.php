@@ -49,6 +49,8 @@ class WC_Admin_Notes_Welcome_Message {
 			__( 'Learn more', 'woocommerce-admin' ),
 			'https://woocommerce.wordpress.com/'
 		);
+		$note->set_layout( 'plain' );
+		$note->set_image( '' );
 
 		$note->save();
 	}

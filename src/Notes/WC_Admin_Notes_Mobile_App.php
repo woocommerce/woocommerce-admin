@@ -54,6 +54,9 @@ class WC_Admin_Notes_Mobile_App {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'learn-more', __( 'Learn more', 'woocommerce-admin' ), 'https://woocommerce.com/mobile/' );
+		$note->set_layout( 'plain' );
+		$note->set_image( '' );
+
 		$note->save();
 	}
 }
