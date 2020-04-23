@@ -65,11 +65,16 @@ Timeline.propTypes = {
 			/**
 			 * Headline displayed for the list item.
 			 */
-			headline: PropTypes.element.isRequired,
+			headline: PropTypes.oneOfType( [
+				PropTypes.element,
+				PropTypes.string,
+			] ).isRequired,
 			/**
 			 * Body displayed for the list item.
 			 */
-			body: PropTypes.arrayOf( PropTypes.element ),
+			body: PropTypes.arrayOf(
+				PropTypes.oneOfType( [ PropTypes.element, PropTypes.string ] )
+			),
 			/**
 			 * Allows users to toggle the timestamp on or off.
 			 */

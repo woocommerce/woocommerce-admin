@@ -32,14 +32,12 @@ export const Filled = () => (
 				),
 				body: [
 					<p key={ '1' }>
-						{ text( 'event 1, first event', 'foo happened' ) }
+						{ text( 'event 1, first event', 'p element in body' ) }
 					</p>,
-					<p key={ '2' }>
-						{ text( 'event 1, second event', 'bar happened' ) }
-					</p>,
+					text( 'event 1, second event', 'string in body' ),
 				],
 				headline: (
-					<p>{ text( 'event 1, headline', '2 events in body' ) }</p>
+					<p>{ text( 'event 1, headline', 'p tag in headline' ) }</p>
 				),
 				icon: (
 					<GridIcon
@@ -56,7 +54,11 @@ export const Filled = () => (
 					new Date( 2020, 0, 20, 23, 45 )
 				),
 				body: [],
-				headline: <p>{ text( 'event 2, headline', 'empty body' ) }</p>,
+				headline: (
+					<span>
+						{ text( 'event 2, headline', 'span in headline' ) }
+					</span>
+				),
 				icon: (
 					<GridIcon
 						className={ 'is-warning' }
@@ -71,13 +73,11 @@ export const Filled = () => (
 					new Date( 2020, 0, 22, 15, 13 )
 				),
 				body: [
-					<p key={ '1' }>
-						{ text( 'event 3, second event', 'baz happened' ) }
-					</p>,
+					<span key={ '1' }>
+						{ text( 'event 3, second event', 'span in body' ) }
+					</span>,
 				],
-				headline: (
-					<p>{ text( 'event 3, headline', '1 event in body' ) }</p>
-				),
+				headline: text( 'event 3, headline', 'string in headline' ),
 				icon: (
 					<GridIcon
 						className={ 'is-error' }
@@ -91,8 +91,9 @@ export const Filled = () => (
 					'event 4 date',
 					new Date( 2020, 0, 17, 1, 45 )
 				),
-				headline: (
-					<p>{ text( 'event 4, headline', 'undefined body' ) }</p>
+				headline: text(
+					'event 4, headline',
+					'undefined body and string headline'
 				),
 				icon: (
 					<GridIcon

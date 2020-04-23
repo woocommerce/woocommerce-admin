@@ -17,14 +17,18 @@ const TimelineItem = ( props ) => {
 			<div className={ 'woocommerce-timeline-item__title' }>
 				<div className={ 'woocommerce-timeline-item__headline' }>
 					{ item.icon }
-					{ item.headline }
+					<span>{ item.headline }</span>
 				</div>
 				<span className={ 'woocommerce-timeline-item__timestamp' }>
 					{ item.hideTimestamp || false ? null : itemTimeString }
 				</span>
 			</div>
 			<div className={ 'woocommerce-timeline-item__body' }>
-				{ item.body || [] }
+				{ ( item.body || [] ).map( ( bodyItem, index ) => (
+					<span key={ `timeline-item-body-${ index }` }>
+						{ bodyItem }
+					</span>
+				) ) }
 			</div>
 		</li>
 	);
@@ -50,11 +54,14 @@ TimelineItem.propTypes = {
 		/**
 		 * Headline displayed for the list item.
 		 */
-		headline: PropTypes.element.isRequired,
+		headline: PropTypes.oneOfType( [ PropTypes.element, PropTypes.string ] )
+			.isRequired,
 		/**
 		 * Body displayed for the list item.
 		 */
-		body: PropTypes.arrayOf( PropTypes.element ),
+		body: PropTypes.arrayOf(
+			PropTypes.oneOfType( [ PropTypes.element, PropTypes.string ] )
+		),
 		/**
 		 * Allows users to toggle the timestamp on or off.
 		 */

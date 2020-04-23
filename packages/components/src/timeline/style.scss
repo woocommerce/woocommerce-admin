@@ -57,8 +57,10 @@
 			margin: $gap-smaller 0;
 
 			* {
-				padding: 0 $gap;
 				margin: 0;
+			}
+			& > * {
+				padding: 0 $gap;
 			}
 
 			svg {
