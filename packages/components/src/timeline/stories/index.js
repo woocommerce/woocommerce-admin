@@ -7,7 +7,7 @@ import GridIcon from 'gridicons';
 /**
  * Internal dependencies
  */
-import Timeline from '../';
+import Timeline, { orderByOptions } from '../';
 
 export default {
 	title: 'WooCommerce Admin/components/Timeline',
@@ -23,6 +23,7 @@ const itemDate = ( label, value ) => {
 
 export const Filled = () => (
 	<Timeline
+		orderBy={ orderByOptions.DESC }
 		items={ [
 			{
 				datetime: itemDate(
@@ -47,6 +48,7 @@ export const Filled = () => (
 						size={ 16 }
 					/>
 				),
+				hideTimestamp: true,
 			},
 			{
 				datetime: itemDate(
@@ -62,7 +64,6 @@ export const Filled = () => (
 						size={ 16 }
 					/>
 				),
-				hideTimestamp: true,
 			},
 			{
 				datetime: itemDate(

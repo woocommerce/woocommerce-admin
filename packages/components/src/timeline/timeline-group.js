@@ -8,25 +8,29 @@ import classnames from 'classnames';
  * Internal dependencies
  */
 import TimelineItem from './timeline-item';
+import { sortByDateUsing } from './util';
 
 const TimelineGroup = ( props ) => {
-	const { group, className } = props;
+	const { group, className, orderBy } = props;
 	const groupClassName = classnames(
 		'woocommerce-timeline-group',
 		className
 	);
-
-	const timelineItems = group.items.map( ( item, itemIndex ) => {
+	const itemsToTimlineItem = ( item, itemIndex ) => {
 		const itemKey = group.title + '-' + itemIndex;
 		return <TimelineItem key={ itemKey } item={ item } />;
-	} );
+	};
 
 	return (
 		<li className={ groupClassName }>
 			<p className={ 'woocommerce-timeline-group__title' }>
 				{ group.title }
 			</p>
-			<ul>{ timelineItems }</ul>
+			<ul>
+				{ group.items
+					.sort( sortByDateUsing( orderBy ) )
+					.map( itemsToTimlineItem ) }
+			</ul>
 			<hr />
 		</li>
 	);
@@ -73,6 +77,10 @@ TimelineGroup.propTypes = {
 			} )
 		).isRequired,
 	} ).isRequired,
+	/**
+	 * Defines how items should be ordered.
+	 */
+	orderBy: PropTypes.oneOf( [ 'asc', 'desc' ] ),
 };
 
 TimelineGroup.defaultProps = {
@@ -81,6 +89,7 @@ TimelineGroup.defaultProps = {
 		title: '',
 		items: [],
 	},
+	orderBy: 'desc',
 };
 
 export default TimelineGroup;

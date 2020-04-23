@@ -2,7 +2,6 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 
@@ -10,21 +9,10 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import TimelineGroup from './timeline-group';
-
-export const groupByOptions = {
-	DAY: 'day',
-	WEEK: 'week',
-	MONTH: 'month',
-};
-
-export const orderByOptions = {
-	ASC: 'asc',
-	DESC: 'desc',
-};
+import { sortByDateUsing, groupItemsUsing } from './util';
 
 const Timeline = ( props ) => {
 	const { className, items, groupBy, orderBy } = props;
-
 	const timelineClassName = classnames( 'woocommerce-timeline', className );
 
 	// Early return in case no data was passed to the component.
@@ -38,48 +26,20 @@ const Timeline = ( props ) => {
 		);
 	}
 
-	// Reducer used for grouping items.
-	const itemsToGroups = ( groups, item ) => {
-		const timeToMoment = ( ts ) => moment.unix( ts );
-		const haveSameMoment = ( g, i ) =>
-			timeToMoment( g.id ).isSame( timeToMoment( i.datetime ), groupBy );
-
-		const groupIndex = groups.findIndex( ( g ) =>
-			haveSameMoment( g, item )
-		);
-		if ( groupIndex < 0 ) {
-			return [
-				...groups,
-				{
-					id: item.datetime,
-					title: timeToMoment( item.datetime ).format(
-						'MMMM D, YYYY'
-					),
-					items: [ item ],
-				},
-			];
-		}
-
-		groups[ groupIndex ].items.push( item );
-		return groups;
-	};
-
-	const sortAscending = ( groupA, groupB ) => groupA.id - groupB.id;
-	const sortDescending = ( groupA, groupB ) => groupB.id - groupA.id;
-	const sortMethod =
-		orderByOptions.ASC === orderBy ? sortAscending : sortDescending;
-
-	// Group items together, sort, and map to Timeline groups.
-	const timelineGroups = items
-		.reduce( itemsToGroups, [] )
-		.sort( sortMethod )
-		.map( ( group ) => (
-			<TimelineGroup key={ group.id.toString() } group={ group } />
-		) );
-
 	return (
 		<div className={ timelineClassName }>
-			<ul>{ timelineGroups }</ul>
+			<ul>
+				{ items
+					.reduce( groupItemsUsing( groupBy ), [] )
+					.sort( sortByDateUsing( orderBy ) )
+					.map( ( group ) => (
+						<TimelineGroup
+							key={ group.datetime.toString() }
+							group={ group }
+							orderBy={ orderBy }
+						/>
+					) ) }
+			</ul>
 		</div>
 	);
 };
@@ -133,4 +93,5 @@ Timeline.defaultProps = {
 	orderBy: 'desc',
 };
 
+export { orderByOptions, groupByOptions } from './util';
 export default Timeline;
