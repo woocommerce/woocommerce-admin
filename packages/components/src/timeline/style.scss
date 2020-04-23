@@ -56,8 +56,9 @@
 			flex-direction: row;
 			margin: $gap-smaller 0;
 
-			span {
+			* {
 				padding: 0 $gap;
+				margin: 0;
 			}
 
 			svg {

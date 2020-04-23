@@ -103,7 +103,7 @@ Timeline.propTypes = {
 			/**
 			 * Headline displayed for the list item.
 			 */
-			headline: PropTypes.string.isRequired,
+			headline: PropTypes.element.isRequired,
 			/**
 			 * Body displayed for the list item.
 			 */

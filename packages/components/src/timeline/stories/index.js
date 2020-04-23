@@ -37,7 +37,9 @@ export const Filled = () => (
 						{ text( 'event 1, second event', 'bar happened' ) }
 					</p>,
 				],
-				headline: text( 'event 1, headline', '2 events in body' ),
+				headline: (
+					<p>{ text( 'event 1, headline', '2 events in body' ) }</p>
+				),
 				icon: (
 					<GridIcon
 						className={ 'is-success' }
@@ -52,7 +54,7 @@ export const Filled = () => (
 					new Date( 2020, 0, 20, 23, 45 )
 				),
 				body: [],
-				headline: text( 'event 2, headline', 'empty body' ),
+				headline: <p>{ text( 'event 2, headline', 'empty body' ) }</p>,
 				icon: (
 					<GridIcon
 						className={ 'is-warning' }
@@ -72,7 +74,9 @@ export const Filled = () => (
 						{ text( 'event 3, second event', 'baz happened' ) }
 					</p>,
 				],
-				headline: text( 'event 3, headline', '1 event in body' ),
+				headline: (
+					<p>{ text( 'event 3, headline', '1 event in body' ) }</p>
+				),
 				icon: (
 					<GridIcon
 						className={ 'is-error' }

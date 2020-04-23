@@ -15,10 +15,10 @@ const TimelineItem = ( props ) => {
 		<li className={ itemClassName }>
 			<div className={ 'woocommerce-timeline-item__top-border' }></div>
 			<div className={ 'woocommerce-timeline-item__title' }>
-				<p className={ 'woocommerce-timeline-item__headline' }>
+				<div className={ 'woocommerce-timeline-item__headline' }>
 					{ item.icon }
-					<span>{ item.headline }</span>
-				</p>
+					{ item.headline }
+				</div>
 				<span className={ 'woocommerce-timeline-item__timestamp' }>
 					{ item.hideTimestamp || false ? null : itemTimeString }
 				</span>
@@ -50,7 +50,7 @@ TimelineItem.propTypes = {
 		/**
 		 * Headline displayed for the list item.
 		 */
-		headline: PropTypes.string.isRequired,
+		headline: PropTypes.element.isRequired,
 		/**
 		 * Body displayed for the list item.
 		 */
