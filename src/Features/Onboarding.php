@@ -285,8 +285,8 @@ class Onboarding {
 				usort(
 					$theme_data->products,
 					function ( $product_1, $product_2 ) {
-						if ( 'Storefront' === $product_1->slug ) {
-							return -1;
+						if ( in_array( 'Storefront', array( $product_1->slug, $product_2->slug ), true ) ) {
+							return 'Storefront' === $product_1->slug ? -1 : 1;
 						}
 						return $product_1->id < $product_2->id ? 1 : -1;
 					}
