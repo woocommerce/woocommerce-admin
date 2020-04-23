@@ -3,6 +3,7 @@
  */
 import { Component } from '@wordpress/element';
 import { useFilters } from '@woocommerce/components';
+import { compose } from '@wordpress/compose';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { get, isFunction } from 'lodash';
@@ -12,6 +13,7 @@ import { get, isFunction } from 'lodash';
  */
 import { getHistory } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { PLUGINS_STORE_NAME, withPluginsHydration } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -24,6 +26,7 @@ import { recordPageView } from 'lib/tracks';
 import TransientNotices from './transient-notices';
 import StoreAlerts from './store-alerts';
 import { REPORTS_FILTER } from 'analytics/report';
+import withSelect from 'wc-api/with-select';
 
 export class PrimaryLayout extends Component {
 	render() {
@@ -41,7 +44,7 @@ export class PrimaryLayout extends Component {
 	}
 }
 
-class Layout extends Component {
+class _Layout extends Component {
 	componentDidMount() {
 		this.recordPageViewTrack();
 		document.body.classList.remove( 'woocommerce-admin-is-loading' );
@@ -61,7 +64,13 @@ class Layout extends Component {
 	}
 
 	recordPageViewTrack() {
-		const { isEmbedded } = this.props;
+		const {
+			activePlugins,
+			installedPlugins,
+			isEmbedded,
+			isJetpackConnected,
+		} = this.props;
+
 		if ( isEmbedded ) {
 			const path = document.location.pathname + document.location.search;
 			recordPageView( path, { isEmbedded } );
@@ -83,7 +92,11 @@ class Layout extends Component {
 				: 'dashboard';
 		}
 
-		recordPageView( path );
+		recordPageView( path, {
+			jetpack_installed: installedPlugins.includes( 'jetpack' ),
+			jetpack_active: activePlugins.includes( 'jetpack' ),
+			jetpack_connected: isJetpackConnected,
+		} );
 	}
 
 	render() {
@@ -113,7 +126,7 @@ class Layout extends Component {
 	}
 }
 
-Layout.propTypes = {
+_Layout.propTypes = {
 	isEmbedded: PropTypes.bool,
 	page: PropTypes.shape( {
 		container: PropTypes.func,
@@ -131,6 +144,32 @@ Layout.propTypes = {
 	} ).isRequired,
 };
 
+const Layout = compose(
+	withSelect( ( select, { isEmbedded } ) => {
+		// Embedded pages don't send plugin info to Tracks.
+		if ( isEmbedded ) {
+			return;
+		}
+
+		const {
+			getActivePlugins,
+			getInstalledPlugins,
+			isJetpackConnected,
+		} = select( PLUGINS_STORE_NAME );
+
+		return {
+			activePlugins: getActivePlugins(),
+			isJetpackConnected: isJetpackConnected(),
+			installedPlugins: getInstalledPlugins(),
+		};
+	} )
+)( _Layout );
+
+const HydratedLayout = withPluginsHydration( {
+	...window.wcSettings.plugins,
+	jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
+} )( Layout );
+
 class _PageLayout extends Component {
 	render() {
 		return (
@@ -143,7 +182,10 @@ class _PageLayout extends Component {
 								path={ page.path }
 								exact
 								render={ ( props ) => (
-									<Layout page={ page } { ...props } />
+									<HydratedLayout
+										page={ page }
+										{ ...props }
+									/>
 								) }
 							/>
 						);
@@ -161,7 +203,7 @@ export const PageLayout = useFilters( [ PAGES_FILTER, REPORTS_FILTER ] )(
 export class EmbedLayout extends Component {
 	render() {
 		return (
-			<Layout
+			<HydratedLayout
 				page={ {
 					breadcrumbs: getSetting( 'embedBreadcrumbs', [] ),
 				} }
