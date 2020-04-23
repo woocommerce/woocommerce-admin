@@ -5,6 +5,8 @@
  * @package WooCommerce\Tests\Rinds
  */
 
+use Automattic\WooCommerce\Admin\DateTimeProvider\DateTimeProviderInterface;
+
 /**
  * Mock DateTime Provider.
  */

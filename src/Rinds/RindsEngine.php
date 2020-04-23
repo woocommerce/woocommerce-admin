@@ -10,8 +10,6 @@ namespace Automattic\WooCommerce\Admin\Rinds;
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
-use \Automattic\WooCommerce\Admin\DateTimeProvider\CurrentDateTimeProvider;
-use \Automattic\WooCommerce\Admin\PluginsProvider\LivePluginsProvider;
 
 /**
  * RINDS engine.
@@ -76,8 +74,9 @@ class RindsEngine {
 		// a simple combined AND operation - if any of the rule processors
 		// return false this spec exits.
 		foreach ( $spec->rules as $rule ) {
-			$processor        = self::get_processor( $rule->type );
-			$processor_result = $processor->process( $spec, $rule );
+			$get_rule_processor = new GetRuleProcessor();
+			$processor          = $get_rule_processor->get_processor( $rule->type );
+			$processor_result   = $processor->process( $spec, $rule );
 
 			if ( ! $processor_result ) {
 				return;
@@ -122,31 +121,6 @@ class RindsEngine {
 
 		// Update spec's metadata.
 		$meta['sent_at'] = new \DateTime();
-	}
-
-	/**
-	 * Get the processor for the specified rule type.
-	 *
-	 * @param string $rule_type The rule type.
-	 *
-	 * @return object The matching processor for the specified rule type.
-	 *
-	 * @throws Exception If there is no matching processor for the rule type.
-	 */
-	private static function get_processor( $rule_type ) {
-		if ( 'plugins_activated' === $rule_type ) {
-			return new PluginsActivatedRuleProcessor(
-				new LivePluginsProvider()
-			);
-		} elseif ( 'send_at_time' === $rule_type ) {
-			return new SendAtTimeRuleProcessor(
-				new CurrentDateTimeProvider()
-			);
-		} elseif ( 'resend_after_dismissal' === $rule_type ) {
-			return new ResendAfterDismissalRuleProcessor();
-		}
-
-		throw new Exception( __( 'Rule type could not be found', 'woocommerce-admin' ) );
 	}
 
 	/**
