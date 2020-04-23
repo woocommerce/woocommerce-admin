@@ -78,7 +78,9 @@ class Layout extends Component {
 
 		// When pathname is `/` we are on the dashboard
 		if ( path.length === 0 ) {
-			path = 'dashboard';
+			path = window.wcAdminFeatures.homepage
+				? 'home_screen'
+				: 'dashboard';
 		}
 
 		recordPageView( path );
