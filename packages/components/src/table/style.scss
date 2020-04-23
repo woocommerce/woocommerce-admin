@@ -93,8 +93,8 @@
 		background: linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
 	}
 
-	&.is-scrollable::after,
-	&.is-scrollable-back::before {
+	&.is-scrollable-right::after,
+	&.is-scrollable-left::before {
 		opacity: 1;
 	}
 

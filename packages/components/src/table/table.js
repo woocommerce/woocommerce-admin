@@ -54,8 +54,8 @@ class Table extends Component {
 		super( props );
 		this.state = {
 			tabIndex: null,
-			isScrollable: false,
-			isScrollableBack: false,
+			isScrollableRight: false,
+			isScrollableLeft: false,
 		};
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
@@ -105,20 +105,21 @@ class Table extends Component {
 
 	updateTableShadow() {
 		const table = this.container.current;
+		const { isScrollableRight, isScrollableLeft } = this.state;
 
 		const scrolledToEnd =
 			table.scrollWidth - table.scrollLeft <= table.offsetWidth;
-		if ( scrolledToEnd && this.state.isScrollable ) {
-			this.setState( { isScrollable: false } );
-		} else if ( ! scrolledToEnd && ! this.state.isScrollable ) {
-			this.setState( { isScrollable: true } );
+		if ( scrolledToEnd && isScrollableRight ) {
+			this.setState( { isScrollableRight: false } );
+		} else if ( ! scrolledToEnd && ! this.state.isScrollableRight ) {
+			this.setState( { isScrollableRight: true } );
 		}
 
 		const scrolledToStart = table.scrollLeft <= 0;
-		if ( scrolledToStart && this.state.isScrollableBack ) {
-			this.setState( { isScrollableBack: false } );
-		} else if ( ! scrolledToStart && ! this.state.isScrollableBack ) {
-			this.setState( { isScrollableBack: true } );
+		if ( scrolledToStart && isScrollableLeft ) {
+			this.setState( { isScrollableLeft: false } );
+		} else if ( ! scrolledToStart && ! isScrollableLeft ) {
+			this.setState( { isScrollableLeft: true } );
 		}
 	}
 
@@ -133,10 +134,10 @@ class Table extends Component {
 			rowHeader,
 			rows,
 		} = this.props;
-		const { isScrollable, isScrollableBack, tabIndex } = this.state;
+		const { isScrollableRight, isScrollableLeft, tabIndex } = this.state;
 		const classes = classnames( 'woocommerce-table__table', classNames, {
-			'is-scrollable': isScrollable,
-			'is-scrollable-back': isScrollableBack,
+			'is-scrollable-right': isScrollableRight,
+			'is-scrollable-left': isScrollableLeft,
 		} );
 		const sortedBy =
 			query.orderby ||
