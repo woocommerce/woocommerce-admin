@@ -457,9 +457,13 @@ class Install {
 	 * Delete obsolete notes.
 	 */
 	protected static function delete_obsolete_notes() {
-		WC_Admin_Notes::delete_notes_with_name( 'wc-admin-welcome-note' );
-		WC_Admin_Notes::delete_notes_with_name( 'wc-admin-store-notice-setting-moved' );
-		WC_Admin_Notes::delete_notes_with_name( 'wc-admin-store-notice-giving-feedback' );
+		$obsolete_notes_names = array(
+			'wc-admin-welcome-note',
+			'wc-admin-store-notice-setting-moved',
+			'wc-admin-store-notice-giving-feedback',
+		);
+
+		WC_Admin_Notes::delete_notes_with_name( $obsolete_notes_names );
 	}
 
 	/**
