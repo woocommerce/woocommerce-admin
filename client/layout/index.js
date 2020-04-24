@@ -145,6 +145,10 @@ _Layout.propTypes = {
 };
 
 const Layout = compose(
+	withPluginsHydration( {
+		...window.wcSettings.plugins,
+		jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
+	} ),
 	withSelect( ( select, { isEmbedded } ) => {
 		// Embedded pages don't send plugin info to Tracks.
 		if ( isEmbedded ) {
@@ -165,11 +169,6 @@ const Layout = compose(
 	} )
 )( _Layout );
 
-const HydratedLayout = withPluginsHydration( {
-	...window.wcSettings.plugins,
-	jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
-} )( Layout );
-
 class _PageLayout extends Component {
 	render() {
 		return (
@@ -182,7 +181,7 @@ class _PageLayout extends Component {
 								path={ page.path }
 								exact
 								render={ ( props ) => (
-									<HydratedLayout
+									<Layout
 										page={ page }
 										{ ...props }
 									/>
@@ -203,7 +202,7 @@ export const PageLayout = useFilters( [ PAGES_FILTER, REPORTS_FILTER ] )(
 export class EmbedLayout extends Component {
 	render() {
 		return (
-			<HydratedLayout
+			<Layout
 				page={ {
 					breadcrumbs: getSetting( 'embedBreadcrumbs', [] ),
 				} }
