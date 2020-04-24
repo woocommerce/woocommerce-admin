@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin\Rinds;
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
+use \Automattic\WooCommerce\Admin\PluginsProvider\LivePluginsProvider;
 
 /**
  * RINDS engine.
@@ -25,6 +26,7 @@ class RindsEngine {
 	 */
 	public static function init() {
 		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
+		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
 	}
 
 	/**
@@ -60,29 +62,25 @@ class RindsEngine {
 	}
 
 	/**
+	 * The deactivated_plugin hook happens before the option is updated
+	 * (https://github.com/WordPress/WordPress/blob/master/wp-admin/includes/plugin.php#L826)
+	 * so this captures the deactivated plugin path and pushes it into the
+	 * LivePluginsProvider.
+	 *
+	 * @param string $plugin Path to the plugin file relative to the plugins directory.
+	 */
+	public static function run_on_deactivated_plugin( $plugin ) {
+		LivePluginsProvider::set_deactivated_plugin( $plugin );
+		self::run();
+	}
+
+	/**
 	 * Run the spec, updating the spec's metadata.
 	 *
 	 * @param object $spec The spec to run.
 	 * @param object $meta The metadata for the spec.
 	 */
 	private static function run_spec( $spec, &$meta ) {
-		if ( 0 === count( $spec->rules ) ) {
-			return;
-		}
-
-		// Find and run the processors for the rules. At the moment this is
-		// a simple combined AND operation - if any of the rule processors
-		// return false this spec exits.
-		foreach ( $spec->rules as $rule ) {
-			$get_rule_processor = new GetRuleProcessor();
-			$processor          = $get_rule_processor->get_processor( $rule->type );
-			$processor_result   = $processor->process( $spec, $rule );
-
-			if ( ! $processor_result ) {
-				return;
-			}
-		}
-
 		// Get the matching locale or fall back to en-US.
 		$locale = self::get_locale( $spec->locales );
 
@@ -95,9 +93,20 @@ class RindsEngine {
 		} else {
 			$note = new WC_Admin_Note( $existing_note_ids[0] );
 		}
+
+		// If the rules evaluate to false, still create the note but set the
+		// status to 'actioned' to hide the note. Otherwise use the status
+		// from the spec.
+		$get_rule_processor = new GetRuleProcessor();
+		$rule_evaluator     = new RuleEvaluator( $get_rule_processor );
+		$evaluate_result    = $rule_evaluator->evaluate( $spec, $spec->rules );
+		$status             = $evaluate_result ? $spec->status : 'actioned';
+
+		// Set up the note.
 		$note->set_title( $locale->title );
 		$note->set_content( $locale->content );
 		$note->set_content_data( (object) array() );
+		$note->set_status( $status );
 		$note->set_type( $spec->type );
 		$note->set_icon( $spec->icon );
 		$note->set_name( $spec->slug );
@@ -133,7 +142,7 @@ class RindsEngine {
 	 *
 	 * @returns object The locale that was found.
 	 *
-	 * @throws Exception If no matching locale or en_US locale was found.
+	 * @throws \Exception If no matching locale or en_US locale was found.
 	 */
 	private static function get_locale( $locales ) {
 		$wp_locale           = get_locale();
@@ -176,7 +185,7 @@ class RindsEngine {
 	 *
 	 * @return object The matching locale, or the en_US fallback locale.
 	 *
-	 * @throws Exception If no matching locale or en_US locale was found.
+	 * @throws \Exception If no matching locale or en_US locale was found.
 	 */
 	private static function get_action_locale( $action_locales, $note_locale ) {
 		$matching_locales_using_note_locale = array_values(
@@ -206,6 +215,6 @@ class RindsEngine {
 			return $en_us_locales[0];
 		}
 
-		throw new Exception( __( 'Matching locale or fallback en_US locale not found. Make sure there is at least a en_US locale provided.', 'woocommerce-admin' ) );
+		throw new \Exception( __( 'Matching locale or fallback en_US locale not found. Make sure there is at least a en_US locale provided.', 'woocommerce-admin' ) );
 	}
 }

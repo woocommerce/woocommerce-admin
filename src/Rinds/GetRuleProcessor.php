@@ -34,6 +34,12 @@ class GetRuleProcessor {
 			);
 		} elseif ( 'resend_after_dismissal' === $rule_type ) {
 			return new ResendAfterDismissalRuleProcessor();
+		} elseif ( 'not' === $rule_type ) {
+			return new NotRuleProcessor(
+				new RuleEvaluator(
+					new GetRuleProcessor()
+				)
+			);
 		}
 
 		return new FailRuleProcessor();
