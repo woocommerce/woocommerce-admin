@@ -11,6 +11,8 @@ namespace Automattic\WooCommerce\Admin;
 use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
+use WC_Marketplace_Suggestions;
+
 
 /**
  * Loader Class.
@@ -744,6 +746,9 @@ class Loader {
 		if ( self::is_embed_page() ) {
 			$settings['embedBreadcrumbs'] = self::get_embed_breadcrumbs();
 		}
+
+		$settings['allowMarketplaceSuggestions'] = WC_Marketplace_Suggestions::allow_suggestions();
+
 		return $settings;
 	}
 
