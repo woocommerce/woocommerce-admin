@@ -1,19 +1,21 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
+import { cloneElement, Component, Fragment } from '@wordpress/element';
+import { Button } from '@wordpress/components';
 import PropTypes from 'prop-types';
-import Gridicon from 'gridicons';
 import VisibilitySensor from 'react-visibility-sensor';
+import moment from 'moment';
 
 /**
  * Internal dependencies
  */
-import { ActivityCard } from '../../activity-card';
 import NoteAction from './action';
 import sanitizeHTML from 'lib/sanitize-html';
 import classnames from 'classnames';
 import { recordEvent } from 'lib/tracks';
+import './style.scss';
+import { H, Section } from '@woocommerce/components';
 
 class InboxNoteCard extends Component {
 	constructor( props ) {
@@ -32,7 +34,6 @@ class InboxNoteCard extends Component {
 				note_name: note.name,
 				note_title: note.title,
 				note_type: note.type,
-				note_icon: note.icon,
 			} );
 
 			this.hasBeenSeen = true;
@@ -47,31 +48,68 @@ class InboxNoteCard extends Component {
 				return [];
 			}
 			return note.actions.map( ( action ) => (
-				<NoteAction key={ note.id } noteId={ note.id } action={ action } />
+				<NoteAction
+					key={ note.id }
+					noteId={ note.id }
+					action={ action }
+				/>
 			) );
 		};
 
+		const unread =
+			! lastRead ||
+			! note.date_created_gmt ||
+			new Date( note.date_created_gmt + 'Z' ).getTime() > lastRead;
+		const actions = getButtonsFromActions( note );
+		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
+		const date = note.date_created;
+		const hasImage = note.layout !== 'plain';
+		const cardClassName = classnames(
+			'woocommerce-inbox-message',
+			note.layout,
+			{
+				'message-is-unread': unread,
+			}
+		);
+
 		return (
 			<VisibilitySensor onChange={ this.onVisible }>
-				<ActivityCard
-					className={ classnames( 'woocommerce-inbox-activity-card', {
-						actioned: note.status !== 'unactioned',
-					} ) }
-					title={ note.title }
-					date={ note.date_created }
-					icon={ <Gridicon icon={ note.icon } size={ 48 } /> }
-					unread={
-						! lastRead ||
-						! note.date_created_gmt ||
-						new Date( note.date_created_gmt + 'Z' ).getTime() >
-							lastRead
-					}
-					actions={ getButtonsFromActions( note ) }
-				>
-					<span
-						dangerouslySetInnerHTML={ sanitizeHTML( note.content ) }
-					/>
-				</ActivityCard>
+				<section className={ cardClassName }>
+					{ hasImage && (
+						<div className="woocommerce-inbox-message__image">
+							<img src={ note.image } alt="" />
+						</div>
+					) }
+					<div className="woocommerce-inbox-message__wrapper">
+						<div className="woocommerce-inbox-message__content">
+							{ date && (
+								<span className="woocommerce-inbox-message__date">
+									{ moment.utc( date ).fromNow() }
+								</span>
+							) }
+							<H className="woocommerce-inbox-message__title">
+								{ note.title }
+							</H>
+							<Section className="woocommerce-inbox-message__text">
+								<span
+									dangerouslySetInnerHTML={ sanitizeHTML(
+										note.content
+									) }
+								/>
+							</Section>
+						</div>
+						<div className="woocommerce-inbox-message__actions">
+							{ actions && (
+								<Fragment>
+									{ actionsList.map( ( item, i ) =>
+										cloneElement( item, { key: i } )
+									) }
+								</Fragment>
+							) }
+							<Button isTertiary>Dismiss</Button>
+						</div>
+					</div>
+				</section>
 			</VisibilitySensor>
 		);
 	}
@@ -82,7 +120,6 @@ InboxNoteCard.propTypes = {
 		id: PropTypes.number,
 		status: PropTypes.string,
 		title: PropTypes.string,
-		icon: PropTypes.string,
 		content: PropTypes.string,
 		date_created: PropTypes.string,
 		date_created_gmt: PropTypes.string,
@@ -94,6 +131,8 @@ InboxNoteCard.propTypes = {
 				primary: PropTypes.bool.isRequired,
 			} )
 		),
+		layout: PropTypes.string,
+		image: PropTypes.string,
 	} ),
 	lastRead: PropTypes.number,
 };
