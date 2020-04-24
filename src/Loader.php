@@ -358,6 +358,7 @@ class Loader {
 				'wp-html-entities',
 				'wp-i18n',
 				'wp-keycodes',
+				'wp-plugins',
 				'wc-csv',
 				'wc-currency',
 				'wc-date',
