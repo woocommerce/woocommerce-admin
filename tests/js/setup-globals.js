@@ -15,7 +15,7 @@ global.wp = {
 
 global.wc = {};
 
-const wordPressPackages = [ 'element', 'date', 'data' ];
+const wordPressPackages = [ 'element', 'date', 'data', 'plugins' ];
 
 const wooCommercePackages = [
 	'components',
