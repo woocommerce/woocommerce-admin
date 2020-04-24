@@ -1,9 +1,9 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
-import { useFilters } from '@woocommerce/components';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
+import { Component } from '@wordpress/element';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { get, isFunction } from 'lodash';
@@ -11,6 +11,7 @@ import { get, isFunction } from 'lodash';
 /**
  * WooCommerce dependencies
  */
+import { useFilters } from '@woocommerce/components';
 import { getHistory } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { PLUGINS_STORE_NAME, withPluginsHydration } from '@woocommerce/data';
@@ -26,7 +27,6 @@ import { recordPageView } from 'lib/tracks';
 import TransientNotices from './transient-notices';
 import StoreAlerts from './store-alerts';
 import { REPORTS_FILTER } from 'analytics/report';
-import withSelect from 'wc-api/with-select';
 
 export class PrimaryLayout extends Component {
 	render() {
