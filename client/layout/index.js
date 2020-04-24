@@ -146,8 +146,10 @@ _Layout.propTypes = {
 
 const Layout = compose(
 	withPluginsHydration( {
-		...window.wcSettings.plugins,
-		jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
+		...( window.wcSettings.plugins || {} ),
+		jetpackStatus:
+			window.wcSettings.dataEndpoints &&
+			window.wcSettings.dataEndpoints.jetpackStatus || false,
 	} ),
 	withSelect( ( select, { isEmbedded } ) => {
 		// Embedded pages don't send plugin info to Tracks.
