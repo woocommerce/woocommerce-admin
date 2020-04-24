@@ -44,6 +44,8 @@ class GetRuleProcessor {
 					new GetRuleProcessor()
 				)
 			);
+		} elseif ( 'fail' === $rule_type ) {
+			return new FailRuleProcessor();
 		}
 
 		return new FailRuleProcessor();
