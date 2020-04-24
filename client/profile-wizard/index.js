@@ -11,8 +11,11 @@ import { withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { updateQueryString } from '@woocommerce/navigation';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
-import { withSettingsHydration, withPluginsHydration } from '@woocommerce/data';
+import {
+	PLUGINS_STORE_NAME,
+	withSettingsHydration,
+	withPluginsHydration,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
