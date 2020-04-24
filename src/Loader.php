@@ -10,7 +10,6 @@ namespace Automattic\WooCommerce\Admin;
 
 use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\Features\Navigation;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
 
 /**
@@ -343,14 +342,6 @@ class Loader {
 		wp_set_script_translations( 'wc-date', 'woocommerce-admin' );
 
 		wp_register_script(
-			'navigation',
-			self::get_url( 'navigation/index.js' ),
-			array(),
-			self::get_file_version( 'navigation/index.js' ),
-			true
-		);
-
-		wp_register_script(
 			'wc-components',
 			self::get_url( 'components/index.js' ),
 			array(
@@ -511,7 +502,12 @@ class Loader {
 	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
 	 */
 	public static function embed_page_header() {
-		if ( Navigation::instance()->is_woocommerce_page() ) {
+
+		$features = wc_admin_get_feature_config();
+		if (
+			$features['navigation'] &&
+			\Automattic\WooCommerce\Admin\Features\Navigation::instance()->is_woocommerce_page()
+		) {
 			self::embed_navigation_menu();
 		}
 

@@ -18,7 +18,10 @@ const navigationRoot = document.getElementById( 'woocommerce-embedded-navigation
 const settingsGroup = 'wc_admin';
 
 if ( navigationRoot ) {
-	render( <Navigation />, navigationRoot );
+	const HydratedNavigation = withSettingsHydration( settingsGroup, window.wcSettings )(
+		Navigation
+	);
+	render( <HydratedNavigation />, navigationRoot );
 
 	// Collapse the WP Menu.
 	const adminMenu = document.getElementById( 'adminmenumain' );
