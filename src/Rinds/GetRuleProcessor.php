@@ -38,6 +38,12 @@ class GetRuleProcessor {
 					new GetRuleProcessor()
 				)
 			);
+		} elseif ( 'or' === $rule_type ) {
+			return new OrRuleProcessor(
+				new RuleEvaluator(
+					new GetRuleProcessor()
+				)
+			);
 		}
 
 		return new FailRuleProcessor();
