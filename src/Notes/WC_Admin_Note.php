@@ -532,10 +532,6 @@ class WC_Admin_Note extends \WC_Data {
 	 * @param string $layout Note layout.
 	 */
 	public function set_layout( $layout ) {
-		if ( empty( $layout ) ) {
-			$this->error( 'admin_note_invalid_data', __( 'The admin note layout prop cannot be empty.', 'woocommerce-admin' ) );
-		}
-
 		$this->set_prop( 'layout', $layout );
 	}
 
