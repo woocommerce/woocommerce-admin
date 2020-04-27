@@ -12,6 +12,7 @@ const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 	.BundleAnalyzerPlugin;
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
+const UnminifyWebpackPlugin = require( './unminify' );
 
 /**
  * WordPress dependencies
@@ -99,10 +100,10 @@ const webpackConfig = {
 	output: {
 		filename: ( data ) => {
 			return wpAdminScripts.includes( data.chunk.name )
-				? `wp-admin-scripts/[name]${min}.js`
-				: `[name]/index${min}.js`;
+				? `wp-admin-scripts/[name].min.js`
+				: `[name]/index.min.js`;
 		},
-		chunkFilename: `chunks/[name].[chunkhash]${min}.js`,
+		chunkFilename: `chunks/[name].[chunkhash].min.js`,
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
@@ -246,6 +247,10 @@ const webpackConfig = {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
+		new UnminifyWebpackPlugin( {
+			test: /\.js($|\?)/i,
+			mainEntry: 'app/index.min.js',
+		} ),
 	].filter( Boolean ),
 	optimization: {
 		minimize: NODE_ENV !== 'development',
