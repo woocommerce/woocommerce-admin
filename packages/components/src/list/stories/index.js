@@ -17,17 +17,14 @@ export const Default = () => {
 	const listItems = [
 		{
 			title: 'WooCommerce.com',
-			description: 'List item description text',
 			href: 'https://woocommerce.com',
 		},
 		{
 			title: 'WordPress.org',
-			description: 'List item description text',
 			href: 'https://wordpress.org',
 		},
 		{
 			title: 'A list item with no action',
-			description: 'List item description text',
 		},
 		{
 			title: 'Click me!',
@@ -47,14 +44,12 @@ export const BeforeAndAfter = () => {
 			before: <Gridicon icon="cart" />,
 			after: <Gridicon icon="chevron-right" />,
 			title: 'WooCommerce.com',
-			description: 'List item description text',
 			href: 'https://woocommerce.com',
 		},
 		{
 			before: <Gridicon icon="my-sites" />,
 			after: <Gridicon icon="chevron-right" />,
 			title: 'WordPress.org',
-			description: 'List item description text',
 			href: 'https://wordpress.org',
 		},
 		{
