@@ -37,10 +37,12 @@ class UnminifyWebpackPlugin {
 	}
 
 	apply( compiler ) {
+		// Hook after asset optimization if we're using a devtool (source map).
+		// @todo: Update to afterFinishAssets for Webpack 5.x?
+		const compilationHook = compiler.options.devtool ? 'afterOptimizeAssets' : 'additionalAssets';
+
 		compiler.hooks.compilation.tap( 'UnminifyWebpackPlugin', ( compilation ) => {
-			// Hook into afterOptimizeAssets so we're running after source map generation.
-			// @todo: Update to afterFinishAssets for Webpack 5.x?
-			compilation.hooks.afterOptimizeAssets.tap( 'UnminifyWebpackPlugin', () => {
+			compilation.hooks[ compilationHook ].tap( 'UnminifyWebpackPlugin', () => {
 				const files = [
 					...compilation.additionalChunkAssets
 				];
