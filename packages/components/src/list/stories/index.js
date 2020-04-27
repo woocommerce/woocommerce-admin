@@ -81,7 +81,6 @@ export const BeforeAndAfter = () => {
 		{
 			before: <Gridicon icon="link-break" />,
 			title: 'A list item with no action',
-			description: 'List item description text',
 		},
 		{
 			before: <Gridicon icon="notice" />,
