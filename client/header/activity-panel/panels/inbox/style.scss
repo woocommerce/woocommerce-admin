@@ -65,7 +65,42 @@
 	button {
 		cursor: pointer;
 	}
+	.components-dropdown {
+		display: inline;
+
+		.components-popover__content {
+			min-width: 195px;
+			margin-top: 7px;
+			ul {
+				padding: 0 20px;
+			}
+			li {
+				margin: 12px 0;
+				cursor: pointer;
+			}
+			li:first-child {
+				padding-top: 5px;
+			}
+			li:last-child {
+				padding-bottom: 5px;
+			}
+		}
+	}
+
 }
+.woocommerce-inbox-dismiss-confirmation_modal {
+	text-align: left;
+}
+.woocommerce-inbox-dismiss-confirmation_wrapper {
+	p {
+		font-size: 16px;
+		color: #50575e;
+	}
+	.woocommerce-inbox-dismiss-confirmation_buttons {
+		text-align: right;
+	}
+}
+
 
 .woocommerce-inbox-message {
 	-ms-box-orient: horizontal;
