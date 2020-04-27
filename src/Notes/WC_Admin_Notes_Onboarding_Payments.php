@@ -29,12 +29,11 @@ class WC_Admin_Notes_Onboarding_Payments {
 		}
 
 		// Make sure payments task was skipped at least 3 days ago.
-		$three_days = 3 * DAY_IN_SECONDS;
-		( ( time() - $wc_admin_installed ) >= $seconds );
-		$payments_task = get_option( 'woocommerce_task_list_payments', array() );
+		$three_days_in_seconds = 3 * DAY_IN_SECONDS;
+		$payments_task         = get_option( 'woocommerce_task_list_payments', array() );
 		if (
 			! isset( $payments_task['skipped'] ) ||
-			( time() - $payments_task['timestamp'] ) < $three_days
+			( time() - $payments_task['timestamp'] ) < $three_days_in_seconds
 		) {
 			return;
 		}
