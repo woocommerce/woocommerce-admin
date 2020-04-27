@@ -110,6 +110,8 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_One {
 		$note->set_icon( 'info' );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'wapi-example-plugin-one' );
+		$note->set_layout('plain');
+		$note->set_image('');
 		// This example has two actions. A note can have 0 or 1 as well.
 		$note->add_action(
 			'settings',
@@ -206,6 +208,8 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_Two {
 		// Don't include the gridicons- part of the name.
 		$note->set_icon( 'info' );
 		$note->set_name( self::NOTE_NAME );
+		$note->set_layout('plain');
+		$note->set_image('');
 		$note->set_source( 'wapi-example-plugin-two' );
 		// This example has no actions. A note can have 1 or 2 as well.
 		$note->save();
