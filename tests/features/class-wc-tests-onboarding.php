@@ -8,7 +8,7 @@
 use \Automattic\WooCommerce\Admin\Features\Onboarding;
 
 /**
- * Class WC_Tests_Shipping_Label_Banner_Display_Rules
+ * Class WC_Tests_Onboarding
  */
 class WC_Tests_Onboarding extends WC_Unit_Test_Case {
 
