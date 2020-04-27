@@ -26,7 +26,14 @@ const MyPlugin = () => {
 		</HomepageContent>
 	);
 };
-registerPlugin( 'my-plugin', { render: MyPlugin } );
+registerPlugin(
+	'my-plugin-homepage',
+	{ render: MyPlugin },
+	'wc-admin-homepage'
+);
+// Register an unrelated plugin which should not be rendered.
+// Depends on https://github.com/psealock/gutenberg/tree/update/plugins-area-scoping
+registerPlugin( 'my-plugin-unrelated', { render: MyPlugin }, 'something-else' );
 
 // Homepage.js
 const Homepage = () => {
@@ -37,7 +44,7 @@ const Homepage = () => {
 					<span>I am INTERNAL content body</span>
 				</HomepageContent>
 				<HomepageContent.Slot />
-				<PluginArea />
+				<PluginArea scope="wc-admin-homepage" />
 			</SlotFillProvider>
 		</div>
 	);
