@@ -27,7 +27,16 @@ class InboxNoteAction extends Component {
 	}
 
 	handleActionClick( event ) {
-		const { action, noteId, triggerNoteAction } = this.props;
+		const {
+			action,
+			actionCallback,
+			dismissType,
+			noteId,
+			// noteName,
+			triggerNoteAction,
+			removeAllNotes,
+			removeNote,
+		} = this.props;
 		const href = event.target.href || '';
 		let inAction = true;
 
@@ -37,9 +46,19 @@ class InboxNoteAction extends Component {
 			window.open( href, '_blank' );
 		}
 
-		this.setState( { inAction }, () =>
-			triggerNoteAction( noteId, action.id )
-		);
+		if ( dismissType ) {
+			if ( dismissType.includes( 'all' ) ) {
+				removeAllNotes();
+			}
+			if ( dismissType.includes( 'this' ) ) {
+				removeNote( noteId );
+			}
+			actionCallback();
+		} else {
+			this.setState( { inAction }, () =>
+				triggerNoteAction( noteId, action.id )
+			);
+		}
 	}
 
 	render() {
@@ -71,10 +90,14 @@ InboxNoteAction.propTypes = {
 
 export default compose(
 	withDispatch( ( dispatch ) => {
-		const { triggerNoteAction } = dispatch( 'wc-api' );
+		const { triggerNoteAction, removeAllNotes, removeNote } = dispatch(
+			'wc-api'
+		);
 
 		return {
 			triggerNoteAction,
+			removeNote,
+			removeAllNotes,
 		};
 	} )
 )( InboxNoteAction );

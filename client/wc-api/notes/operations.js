@@ -28,6 +28,14 @@ function update( resourceNames, data, fetch = apiFetch ) {
 	];
 }
 
+function remove( resourceNames, data, fetch = apiFetch ) {
+	return [ ...removeNote( resourceNames, data, fetch ) ];
+}
+
+function removeAll( resourceNames, fetch = apiFetch ) {
+	return [ ...removeAllNotes( resourceNames, fetch ) ];
+}
+
 function readNoteQueries( resourceNames, fetch ) {
 	const filteredNames = resourceNames.filter( ( name ) =>
 		isResourcePrefix( name, 'note-query' )
@@ -44,7 +52,10 @@ function readNoteQueries( resourceNames, fetch ) {
 			} );
 
 			const notes = await response.json();
-			const totalCount = parseInt( response.headers.get( 'x-wp-total' ), 10 );
+			const totalCount = parseInt(
+				response.headers.get( 'x-wp-total' ),
+				10
+			);
 			const ids = notes.map( ( note ) => note.id );
 			const noteResources = notes.reduce( ( resources, note ) => {
 				resources[ getResourceName( 'note', note.id ) ] = {
@@ -106,6 +117,44 @@ function updateNote( resourceNames, data, fetch ) {
 	return [];
 }
 
+function removeNote( resourceNames, data, fetch ) {
+	const resourceName = 'note';
+	if ( resourceNames.includes( resourceName ) ) {
+		const { noteId, ...noteFields } = data[ resourceName ];
+		const url = `${ NAMESPACE }/admin/notes/delete/${ noteId }`;
+		return [
+			fetch( { path: url, method: 'DELETE', data: noteFields } )
+				.then( ( response ) => {
+					return {
+						[ resourceName + ':' + noteId ]: { data: response },
+					};
+				} )
+				.catch( ( error ) => {
+					return { [ resourceName + ':' + noteId ]: { error } };
+				} ),
+		];
+	}
+	return [];
+}
+
+function removeAllNotes( resourceNames, fetch ) {
+	const resourceName = 'note';
+	if ( resourceNames.includes( resourceName ) ) {
+		const url = `${ NAMESPACE }/admin/notes/delete/all`;
+		return [
+			fetch( { path: url, method: 'DELETE' } )
+				.then( ( response ) => {
+					// return { [ resourceName + ':' + noteId ]: { data: note } };
+					return response;
+				} )
+				.catch( ( error ) => {
+					return error;
+				} ),
+		];
+	}
+	return [];
+}
+
 function triggerAction( resourceNames, data, fetch ) {
 	const resourceName = 'note-action';
 	if ( resourceNames.includes( resourceName ) ) {
@@ -127,5 +176,7 @@ function triggerAction( resourceNames, data, fetch ) {
 export default {
 	read,
 	update,
+	remove,
+	removeAll,
 	triggerAction,
 };
