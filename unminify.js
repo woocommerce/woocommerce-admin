@@ -8,6 +8,7 @@
  * 2. Remove check for development mode - we always want unminified files.
  * 3. Remove BannerPlugin support - we don't use it.
  * 4. Remove the 'min' suffix from the chunk loaded in the new `mainEntry` option.
+ * 5. Hook into compilation later so we're running after Source Map generation.
  */
 const path = require( 'path' );
 const ModuleFilenameHelpers = require( 'webpack/lib/ModuleFilenameHelpers' );
@@ -37,7 +38,9 @@ class UnminifyWebpackPlugin {
 
 	apply( compiler ) {
 		compiler.hooks.compilation.tap( 'UnminifyWebpackPlugin', ( compilation ) => {
-			compilation.hooks.additionalAssets.tap( 'UnminifyWebpackPlugin', () => {
+			// Hook into afterOptimizeAssets so we're running after source map generation.
+			// @todo: Update to afterFinishAssets for Webpack 5.x?
+			compilation.hooks.afterOptimizeAssets.tap( 'UnminifyWebpackPlugin', () => {
 				const files = [
 					...compilation.additionalChunkAssets
 				];
@@ -45,7 +48,7 @@ class UnminifyWebpackPlugin {
 				compilation.chunks.forEach( chunk => files.push( ...chunk.files ) );
 
 				const finalFiles = files.filter( ModuleFilenameHelpers.matchObject.bind( null, this.options ) );
-	
+
 				finalFiles.forEach( ( minified ) => {
 					const asset = compilation.assets[ minified ];
 					let source = asset.source();
