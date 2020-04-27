@@ -88,8 +88,6 @@ wpAdminScripts.forEach( ( name ) => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
 } );
 
-const min = NODE_ENV === 'development' ? '' : '.min';
-
 const webpackConfig = {
 	mode: NODE_ENV,
 	entry: {
