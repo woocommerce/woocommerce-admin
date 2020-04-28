@@ -409,7 +409,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$where_clauses .= " AND status IN ($escaped_status_types)";
 		}
 
-		$where_clauses .= 'AND is_deleted = 0';
+		$where_clauses .= ' AND is_deleted = 0';
 
 		/**
 		 * Filter the notes WHERE clause before retrieving the data.
