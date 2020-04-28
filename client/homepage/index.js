@@ -9,13 +9,14 @@ import { compose } from '@wordpress/compose';
 import ProfileWizard from '../profile-wizard';
 import withSelect from 'wc-api/with-select';
 import { isOnboardingEnabled } from 'dashboard/utils';
+import Layout from './layout';
 
 const Homepage = ( { profileItems, query } ) => {
 	if ( isOnboardingEnabled() && ! profileItems.completed ) {
 		return <ProfileWizard query={ query } />;
 	}
 
-	return <div>Hello World</div>;
+	return <Layout />;
 };
 
 export default compose(
