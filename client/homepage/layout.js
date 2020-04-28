@@ -23,6 +23,9 @@ class Layout extends Component {
 	}
 
 	getInboxHeight() {
+		if ( window.innerWidth <= 782 ) {
+			return 'auto';
+		}
 		const scroll = window.scrollY;
 		const base = 90;
 		return `calc(100vh ${ base - scroll < 0 ? '+' : '-' } ${ Math.abs(

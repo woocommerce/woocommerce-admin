@@ -6,6 +6,16 @@
 
 	&.hasInbox .woocommerce-homepage-column {
 		width: calc(50% - 12px);
+
+		@include breakpoint( '<782px' ) {
+			width: 100%;
+		}
+	}
+
+	@include breakpoint( '<782px' ) {
+		margin-left: -16px;
+		margin-right: -16px;
+		flex-direction: column-reverse;
 	}
 }
 .woocommerce-homepage-column {
