@@ -8,7 +8,6 @@
 	width: calc( 50% - 12px );
 
 	&.is-inbox {
-        max-height: calc(100vh - 90px);
         overflow-y: scroll;
 		margin-top: -45px;
 		padding-top: 45px;
