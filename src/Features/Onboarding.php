@@ -272,7 +272,7 @@ class Onboarding {
 	/**
 	 * Sort themes returned from WooCommerce.com
 	 *
-	 * @param  array Array of themes from WooCommerce.com
+	 * @param  array $themes Array of themes from WooCommerce.com.
 	 * @return array
 	 */
 	public static function sort_woocommerce_themes( $themes ) {
@@ -300,9 +300,9 @@ class Onboarding {
 			$themes     = array();
 
 			if ( ! is_wp_error( $theme_data ) ) {
-				$theme_data = json_decode( $theme_data['body'] );
+				$theme_data           = json_decode( $theme_data['body'] );
 				$theme_data->products = self::sort_woocommerce_themes( $theme_data->products );
-				
+
 				foreach ( $theme_data->products as $theme ) {
 					$slug                                       = sanitize_title_with_dashes( $theme->slug );
 					$themes[ $slug ]                            = (array) $theme;
