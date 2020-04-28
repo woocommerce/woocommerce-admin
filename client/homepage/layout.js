@@ -2,6 +2,8 @@
  * External dependencies
  */
 import { Component } from '@wordpress/element';
+import { Button } from '@wordpress/components';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -14,6 +16,7 @@ class Layout extends Component {
 
 		this.state = {
 			inboxHeight: this.getInboxHeight(),
+			showInbox: true,
 		};
 
 		this.handleScroll = this.handleScroll.bind( this );
@@ -44,24 +47,39 @@ class Layout extends Component {
 	}
 
 	render() {
-		const { inboxHeight } = this.state;
+		const { inboxHeight, showInbox } = this.state;
 		const inboxStyles = {
 			maxHeight: inboxHeight,
 		};
 		return (
-			<div className="woocommerce-homepage">
-				<div
-					className="woocommerce-homepage-column is-inbox"
-					style={ inboxStyles }
-				>
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-				</div>
+			<div
+				className={ classnames( 'woocommerce-homepage', {
+					hasInbox: showInbox,
+				} ) }
+			>
+				{ showInbox && (
+					<div
+						className="woocommerce-homepage-column is-inbox"
+						style={ inboxStyles }
+					>
+						<div className="temp-content">
+							<Button
+								isPrimary
+								onClick={ () => {
+									this.setState( { showInbox: false } );
+								} }
+							>
+								Dismiss All
+							</Button>
+						</div>
+						<div className="temp-content" />
+						<div className="temp-content" />
+						<div className="temp-content" />
+						<div className="temp-content" />
+						<div className="temp-content" />
+						<div className="temp-content" />
+					</div>
+				) }
 				<div className="woocommerce-homepage-column">
 					<div className="temp-content" />
 					<div className="temp-content" />
