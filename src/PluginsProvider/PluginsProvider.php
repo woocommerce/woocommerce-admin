@@ -13,11 +13,11 @@ use Automattic\WooCommerce\Admin\PluginsProvider\PluginsProviderInterface;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
- * Live Plugins Provider.
+ * Plugins Provider.
  *
  * Uses the live PluginsHelper.
  */
-class LivePluginsProvider implements PluginsProviderInterface {
+class PluginsProvider implements PluginsProviderInterface {
 	/**
 	 * The deactivated plugin slug.
 	 *
@@ -48,5 +48,29 @@ class LivePluginsProvider implements PluginsProviderInterface {
 	 */
 	public static function set_deactivated_plugin( $plugin_path ) {
 		self::$deactivated_plugin_slug = explode( '/', $plugin_path )[0];
+	}
+
+	/**
+	 * Get plugin data.
+	 *
+	 * @param string $plugin Path to the plugin file relative to the plugins directory or the plugin directory name.
+	 *
+	 * @return array|false
+	 */
+	public function get_plugin_data( $plugin ) {
+		return PluginsHelper::get_plugin_data( $plugin );
+	}
+
+	/**
+	 * Get the path to the plugin file relative to the plugins directory from the plugin slug.
+	 *
+	 * E.g. 'woocommerce' returns 'woocommerce/woocommerce.php'
+	 *
+	 * @param string $slug Plugin slug to get path for.
+	 *
+	 * @return string|false
+	 */
+	public function get_plugin_path_from_slug( $slug ) {
+		return PluginsHelper::get_plugin_path_from_slug( $slug );
 	}
 }
