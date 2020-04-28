@@ -15,7 +15,7 @@ class Layout extends Component {
 		super( props );
 
 		this.state = {
-			//inboxHeight: this.getInboxHeight(),
+			inboxHeight: this.getInboxHeight(),
 			showInbox: true,
 		};
 
@@ -34,25 +34,25 @@ class Layout extends Component {
 	}
 
 	componentDidMount() {
-		//window.addEventListener( 'scroll', this.handleScroll );
+		window.addEventListener( 'scroll', this.handleScroll );
 	}
 
 	componentWillUnmount() {
-		//window.removeEventListener( 'scroll', this.handleScroll );
+		window.removeEventListener( 'scroll', this.handleScroll );
 	}
 
 	handleScroll( e ) {
 		if ( e.target === window.document ) {
 			this.setState( {
-				//inboxHeight: this.getInboxHeight(),
+				inboxHeight: this.getInboxHeight(),
 			} );
 		}
 	}
 
 	render() {
-		const { showInbox } = this.state;
+		const { inboxHeight, showInbox } = this.state;
 		const inboxStyles = {
-			//maxHeight: inboxHeight,
+			maxHeight: inboxHeight,
 		};
 		return (
 			<div
