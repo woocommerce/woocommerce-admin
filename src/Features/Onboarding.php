@@ -280,10 +280,10 @@ class Onboarding {
 			$themes,
 			function ( $product_1, $product_2 ) {
 				if ( ! property_exists( $product_1, 'id' ) || ! property_exists( $product_1, 'slug' ) ) {
-					return 0;
+					return 1;
 				}
 				if ( ! property_exists( $product_2, 'id' ) || ! property_exists( $product_2, 'slug' ) ) {
-					return 0;
+					return 1;
 				}
 				if ( in_array( 'Storefront', array( $product_1->slug, $product_2->slug ), true ) ) {
 					return 'Storefront' === $product_1->slug ? -1 : 1;
