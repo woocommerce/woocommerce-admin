@@ -191,23 +191,30 @@ class Loader {
 	/**
 	 * Gets the URL to an asset file.
 	 *
-	 * @param  string $file name.
+	 * @param  string $file File name (without extension).
+	 * @param  string $ext File extension.
 	 * @return string URL to asset.
 	 */
-	public static function get_url( $file ) {
-		return plugins_url( self::get_path( $file ) . $file, WC_ADMIN_PLUGIN_FILE );
+	public static function get_url( $file, $ext ) {
+		$suffix = '';
+
+		// Potentially enqueue minified JavaScript.
+		if ( 'js' === $ext ) {
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		}
+
+		return plugins_url( self::get_path( $ext ) . $file . $suffix . '.' . $ext, WC_ADMIN_PLUGIN_FILE );
 	}
 
 	/**
 	 * Gets the file modified time as a cache buster if we're in dev mode, or the plugin version otherwise.
 	 *
-	 * @param string $file Local path to the file.
+	 * @param string $ext File extension.
 	 * @return string The cache buster value to use for the given file.
 	 */
-	public static function get_file_version( $file ) {
+	public static function get_file_version( $ext ) {
 		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
-			$file = trim( $file, '/' );
-			return filemtime( WC_ADMIN_ABSPATH . self::get_path( $file ) );
+			return filemtime( WC_ADMIN_ABSPATH . self::get_path( $ext ) );
 		}
 		return WC_ADMIN_VERSION_NUMBER;
 	}
@@ -215,11 +222,11 @@ class Loader {
 	/**
 	 * Gets the path for the asset depending on file type.
 	 *
-	 * @param  string $file name.
+	 * @param  string $ext File extension.
 	 * @return string Folder path of asset.
 	 */
-	private static function get_path( $file ) {
-		return '.css' === substr( $file, -4 ) ? WC_ADMIN_DIST_CSS_FOLDER : WC_ADMIN_DIST_JS_FOLDER;
+	private static function get_path( $ext ) {
+		return ( 'css' === $ext ) ? WC_ADMIN_DIST_CSS_FOLDER : WC_ADMIN_DIST_JS_FOLDER;
 	}
 
 	/**
@@ -294,21 +301,22 @@ class Loader {
 			return;
 		}
 
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$js_file_version  = self::get_file_version( 'js' );
+		$css_file_version = self::get_file_version( 'css' );
 
 		wp_register_script(
 			'wc-csv',
-			self::get_url( 'csv-export/index' . $suffix . '.js' ),
+			self::get_url( 'csv-export/index', 'js' ),
 			array( 'moment' ),
-			self::get_file_version( 'csv-export/index' . $suffix . '.js' ),
+			$js_file_version,
 			true
 		);
 
 		wp_register_script(
 			'wc-currency',
-			self::get_url( 'currency/index' . $suffix . '.js' ),
+			self::get_url( 'currency/index', 'js' ),
 			array( 'wc-number' ),
-			self::get_file_version( 'currency/index' . $suffix . '.js' ),
+			$js_file_version,
 			true
 		);
 
@@ -316,33 +324,33 @@ class Loader {
 
 		wp_register_script(
 			'wc-navigation',
-			self::get_url( 'navigation/index' . $suffix . '.js' ),
+			self::get_url( 'navigation/index', 'js' ),
 			array(),
-			self::get_file_version( 'navigation/index' . $suffix . '.js' ),
+			$js_file_version,
 			true
 		);
 
 		wp_register_script(
 			'wc-number',
-			self::get_url( 'number/index' . $suffix . '.js' ),
+			self::get_url( 'number/index', 'js' ),
 			array(),
-			self::get_file_version( 'number/index' . $suffix . '.js' ),
+			$js_file_version,
 			true
 		);
 
 		wp_register_script(
 			'wc-date',
-			self::get_url( 'date/index' . $suffix . '.js' ),
+			self::get_url( 'date/index', 'js' ),
 			array( 'moment', 'wp-date', 'wp-i18n' ),
-			self::get_file_version( 'date/index' . $suffix . '.js' ),
+			$js_file_version,
 			true
 		);
 
 		wp_register_script(
 			'wc-store-data',
-			self::get_url( 'data/index' . $suffix . '.js' ),
+			self::get_url( 'data/index', 'js' ),
 			array(),
-			self::get_file_version( 'data/index' . $suffix . '.js' ),
+			$js_file_version,
 			true
 		);
 
@@ -350,7 +358,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-components',
-			self::get_url( 'components/index' . $suffix . '.js' ),
+			self::get_url( 'components/index', 'js' ),
 			array(
 				'moment',
 				'wp-api-fetch',
@@ -368,7 +376,7 @@ class Loader {
 				'wc-number',
 				'wc-store-data',
 			),
-			self::get_file_version( 'components/index' . $suffix . '.js' ),
+			$js_file_version,
 			true
 		);
 
@@ -376,32 +384,32 @@ class Loader {
 
 		wp_register_style(
 			'wc-components',
-			self::get_url( 'components/style.css' ),
+			self::get_url( 'components/style', 'css' ),
 			array(),
-			self::get_file_version( 'components/style.css' )
+			$css_file_version
 		);
 		wp_style_add_data( 'wc-components', 'rtl', 'replace' );
 
 		wp_register_style(
 			'wc-components-ie',
-			self::get_url( 'components/ie.css' ),
+			self::get_url( 'components/ie', 'css' ),
 			array(),
-			self::get_file_version( 'components/ie.css' )
+			$css_file_version
 		);
 		wp_style_add_data( 'wc-components-ie', 'rtl', 'replace' );
 
 		wp_register_script(
 			WC_ADMIN_APP,
-			self::get_url( 'app/index' . $suffix . '.js' ),
+			self::get_url( 'app/index', 'js' ),
 			array( 'wc-components', 'wc-navigation', 'wp-date', 'wp-html-entities', 'wp-keycodes', 'wp-i18n', 'moment' ),
-			self::get_file_version( 'app/index' . $suffix . '.js' ),
+			$js_file_version,
 			true
 		);
 		wp_localize_script(
 			WC_ADMIN_APP,
 			'wcAdminAssets',
 			array(
-				'path' => self::get_url( '' ),
+				'path' => plugins_url( self::get_path( 'js' ), WC_ADMIN_PLUGIN_FILE ),
 			)
 		);
 
@@ -409,17 +417,17 @@ class Loader {
 
 		wp_register_style(
 			WC_ADMIN_APP,
-			self::get_url( 'app/style.css' ),
+			self::get_url( 'app/style', 'css' ),
 			array( 'wc-components' ),
-			self::get_file_version( 'app/style.css' )
+			$css_file_version
 		);
 		wp_style_add_data( WC_ADMIN_APP, 'rtl', 'replace' );
 
 		wp_register_style(
 			'wc-admin-ie',
-			self::get_url( 'ie/style.css' ),
+			self::get_url( 'ie/style', 'css' ),
 			array( WC_ADMIN_APP ),
-			self::get_file_version( 'ie/style.css' )
+			$css_file_version
 		);
 		wp_style_add_data( 'wc-admin-ie', 'rtl', 'replace' );
 
@@ -427,7 +435,7 @@ class Loader {
 			'wc-material-icons',
 			'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined',
 			array(),
-			self::get_file_version( 'https://fonts.googleapis.com/icon?family=Material+Icons' )
+			$css_file_version
 		);
 	}
 
