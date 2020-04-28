@@ -13,22 +13,28 @@ use \Automattic\WooCommerce\Admin\Features\Onboarding;
 class WC_Tests_Onboarding extends WC_Unit_Test_Case {
 
 	/**
-	 * Tests that the themes returned from woocommerce.com are sorted properly.
-	 * - The first result should be the active theme.
-	 * - The second result should always be Storefront.
+	 * Verifies that given an array of theme objects, the object containing Storefront will be sorted to the first position.
 	 */
-	public function test_get_themes_storefront_first() {
-		// TODO: Perhaps we should mock the call to the remote in get_themes to speed things up.
-		$themes = \Automattic\WooCommerce\Admin\Features\Onboarding::get_themes();
-
-		// The default/installed theme should be first.
-		$first_theme  = $themes[0];
-		$active_theme = get_option( 'stylesheet' );
-		$this->assertEquals( $active_theme, $first_theme['slug'] );
-
-		// Storefront should be sorted to the second position in the array.
-		$second_theme = $themes[1];
-		$this->assertEquals( 'storefront', $second_theme['slug'] );
+	public function test_sort_woocommerce_themes() {
+		$theme1 = (object) [
+			'id' => 1,
+			'slug' => 'ribs'
+		];
+		$theme2 = (object) [
+			'id' => 2,
+			'slug' => 'chicken'
+		];
+		$theme3 = (object) [
+			'id' => 3,
+			'slug' => 'Storefront'
+		];
+		$theme4 = (object) [
+			'id' => 4,
+			'slug' => 'poutine'
+		];
+		$some_themes = array( $theme1, $theme2, $theme3, $theme4 );
+		$sorted_themes = \Automattic\WooCommerce\Admin\Features\Onboarding::sort_woocommerce_themes( $some_themes );
+		$this->assertEquals( 'Storefront', $sorted_themes[0]->slug );
 	}
 
 }

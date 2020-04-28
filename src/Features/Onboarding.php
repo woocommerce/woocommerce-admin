@@ -270,6 +270,25 @@ class Onboarding {
 	}
 
 	/**
+	 * Sort themes returned from WooCommerce.com
+	 *
+	 * @param  array Array of themes from WooCommerce.com
+	 * @return array
+	 */
+	public static function sort_woocommerce_themes( $themes ) {
+		usort(
+			$themes,
+			function ( $product_1, $product_2 ) {
+				if ( in_array( 'Storefront', array( $product_1->slug, $product_2->slug ), true ) ) {
+					return 'Storefront' === $product_1->slug ? -1 : 1;
+				}
+				return $product_1->id < $product_2->id ? 1 : -1;
+			}
+		);
+		return $themes;
+	}
+
+	/**
 	 * Get a list of themes for the onboarding wizard.
 	 *
 	 * @return array
@@ -282,16 +301,8 @@ class Onboarding {
 
 			if ( ! is_wp_error( $theme_data ) ) {
 				$theme_data = json_decode( $theme_data['body'] );
-				usort(
-					$theme_data->products,
-					function ( $product_1, $product_2 ) {
-						if ( in_array( 'Storefront', array( $product_1->slug, $product_2->slug ), true ) ) {
-							return 'Storefront' === $product_1->slug ? -1 : 1;
-						}
-						return $product_1->id < $product_2->id ? 1 : -1;
-					}
-				);
-
+				$theme_data->products = self::sort_woocommerce_themes( $theme_data->products );
+				
 				foreach ( $theme_data->products as $theme ) {
 					$slug                                       = sanitize_title_with_dashes( $theme->slug );
 					$themes[ $slug ]                            = (array) $theme;
