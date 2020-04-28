@@ -18,8 +18,7 @@ use \Automattic\WooCommerce\Admin\PluginsProvider\PluginsProvider;
  * specs that are able to be triggered.
  */
 class RindsEngine {
-	const SPECS_OPTION_NAME      = 'wc_rinds_specs';
-	const SPECS_META_OPTION_NAME = 'wc_rinds_specs_meta';
+	const SPECS_OPTION_NAME = 'wc_rinds_specs';
 
 	/**
 	 * Initialize the engine.
@@ -41,24 +40,9 @@ class RindsEngine {
 			return;
 		}
 
-		$specs_meta = get_option( self::SPECS_META_OPTION_NAME );
-
-		if ( false === $specs_meta ) {
-			$specs_meta = array();
-			add_option( self::SPECS_META_OPTION_NAME, $specs_meta );
-		}
-
 		foreach ( $specs as $spec ) {
-			$meta = array_key_exists( $spec->slug, $specs_meta )
-				? $specs_meta[ $spec->slug ]
-				: array( 'sent_at' => null );
-
-			self::run_spec( $spec, $meta );
-
-			$specs_meta[ $spec->slug ] = $meta;
+			self::run_spec( $spec );
 		}
-
-		update_option( self::SPECS_META_OPTION_NAME, $specs_meta );
 	}
 
 	/**
@@ -75,12 +59,11 @@ class RindsEngine {
 	}
 
 	/**
-	 * Run the spec, updating the spec's metadata.
+	 * Run the spec.
 	 *
 	 * @param object $spec The spec to run.
-	 * @param object $meta The metadata for the spec.
 	 */
-	private static function run_spec( $spec, &$meta ) {
+	private static function run_spec( $spec ) {
 		// Get the matching locale or fall back to en-US.
 		$locale = self::get_locale( $spec->locales );
 
@@ -129,9 +112,6 @@ class RindsEngine {
 		}
 
 		$note->save();
-
-		// Update spec's metadata.
-		$meta['sent_at'] = new \DateTime();
 	}
 
 	/**
