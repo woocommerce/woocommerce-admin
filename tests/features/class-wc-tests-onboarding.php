@@ -32,6 +32,10 @@ class WC_Tests_Onboarding extends WC_Unit_Test_Case {
 			'id'   => 4,
 			'slug' => 'poutine',
 		);
+		$theme4        = (object) array(
+			'noid'   => 5,
+			'noslug' => 'timbits',
+		);
 		$some_themes   = array( $theme1, $theme2, $theme3, $theme4 );
 		$sorted_themes = \Automattic\WooCommerce\Admin\Features\Onboarding::sort_woocommerce_themes( $some_themes );
 		$this->assertEquals( 'Storefront', $sorted_themes[0]->slug );
