@@ -7,6 +7,7 @@ import Gridicon from 'gridicons';
  * Internal dependencies
  */
 import List from '../';
+import './style.scss';
 
 export default {
 	title: 'WooCommerce Admin/components/List',
@@ -28,6 +29,7 @@ export const Default = () => {
 		},
 		{
 			title: 'Click me!',
+			content: 'An alert will be triggered.',
 			onClick: () => {
 				// eslint-disable-next-line no-alert
 				window.alert( 'List item clicked' );
@@ -60,6 +62,7 @@ export const BeforeAndAfter = () => {
 		{
 			before: <Gridicon icon="notice" />,
 			title: 'Click me!',
+			content: 'An alert will be triggered.',
 			onClick: () => {
 				// eslint-disable-next-line no-alert
 				window.alert( 'List item clicked' );
@@ -68,4 +71,36 @@ export const BeforeAndAfter = () => {
 	];
 
 	return <List items={ listItems } />;
+};
+
+export const CustomStyle = () => {
+	const listItems = [
+		{
+			before: <Gridicon icon="cart" />,
+			after: <Gridicon icon="chevron-right" />,
+			title: 'WooCommerce.com',
+			href: 'https://woocommerce.com',
+		},
+		{
+			before: <Gridicon icon="my-sites" />,
+			after: <Gridicon icon="chevron-right" />,
+			title: 'WordPress.org',
+			href: 'https://wordpress.org',
+		},
+		{
+			before: <Gridicon icon="link-break" />,
+			title: 'A list item with no action',
+		},
+		{
+			before: <Gridicon icon="notice" />,
+			title: 'Click me!',
+			content: 'An alert will be triggered.',
+			onClick: () => {
+				// eslint-disable-next-line no-alert
+				window.alert( 'List item clicked' );
+			},
+		},
+	];
+
+	return <List items={ listItems } className="storybook-custom-list" />;
 };
