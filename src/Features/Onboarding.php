@@ -307,7 +307,8 @@ class Onboarding {
 
 			if ( ! is_wp_error( $theme_data ) ) {
 				$theme_data    = json_decode( $theme_data['body'] );
-				$sorted_themes = self::sort_woocommerce_themes( $theme_data->products );
+				$woo_themes    = property_exists( $theme_data, 'products' ) ? $theme_data->products : array();
+				$sorted_themes = self::sort_woocommerce_themes( $woo_themes );
 
 				foreach ( $sorted_themes as $theme ) {
 					$slug                                       = sanitize_title_with_dashes( $theme->slug );
