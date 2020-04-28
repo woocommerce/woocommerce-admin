@@ -21,7 +21,6 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 	public function test_spec_does_not_pass_with_no_plugins_to_verify() {
 		$mock_plugins_provider = new MockPluginsProvider( array() );
 		$processor             = new PluginsActivatedRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugins_activated",
@@ -30,7 +29,7 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( false, $result );
 	}
@@ -44,7 +43,6 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 	public function test_spec_does_not_pass_with_no_active_plugins() {
 		$mock_plugins_provider = new MockPluginsProvider( array() );
 		$processor             = new PluginsActivatedRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugins_activated",
@@ -54,7 +52,7 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( false, $result );
 	}
@@ -72,7 +70,6 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 			)
 		);
 		$processor             = new PluginsActivatedRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugins_activated",
@@ -82,7 +79,7 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( false, $result );
 	}
@@ -101,7 +98,6 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 			)
 		);
 		$processor             = new PluginsActivatedRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugins_activated",
@@ -112,7 +108,7 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( false, $result );
 	}
@@ -131,7 +127,6 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 			)
 		);
 		$processor             = new PluginsActivatedRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugins_activated",
@@ -142,7 +137,7 @@ class WC_Tests_Rinds_PluginsActivatedRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( true, $result );
 	}

@@ -32,7 +32,7 @@ class WC_Tests_Rinds_NotRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( new stdClass(), $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( true, $result );
 	}
@@ -61,7 +61,7 @@ class WC_Tests_Rinds_NotRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( new stdClass(), $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( false, $result );
 	}
@@ -90,7 +90,7 @@ class WC_Tests_Rinds_NotRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( new stdClass(), $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( true, $result );
 	}

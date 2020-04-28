@@ -27,19 +27,18 @@ class OrRuleProcessor {
 	/**
 	 * Performs an OR operation on the rule's left and right operands.
 	 *
-	 * @param object $spec The specification being processed.
 	 * @param object $rule The specific rule being processed by this rule processor.
 	 *
 	 * @return bool The result of the operation.
 	 */
-	public function process( $spec, $rule ) {
-		$evaluated_left_operand = $this->rule_evaluator->evaluate( $spec, $rule->left_operand );
+	public function process( $rule ) {
+		$evaluated_left_operand = $this->rule_evaluator->evaluate( $rule->left_operand );
 
 		if ( $evaluated_left_operand ) {
 			return true;
 		}
 
-		$evaluated_right_operand = $this->rule_evaluator->evaluate( $spec, $rule->right_operand );
+		$evaluated_right_operand = $this->rule_evaluator->evaluate( $rule->right_operand );
 
 		return $evaluated_right_operand;
 	}

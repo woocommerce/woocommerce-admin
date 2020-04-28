@@ -19,7 +19,6 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 	public function test_spec_does_not_pass_if_plugin_not_activated() {
 		$mock_plugins_provider = new MockPluginsProvider( array(), array() );
 		$processor             = new PluginVersionRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugin_version",
@@ -29,7 +28,7 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( false, $result );
 	}
@@ -47,7 +46,6 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 			array()
 		);
 		$processor             = new PluginVersionRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugin_version",
@@ -57,7 +55,7 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( false, $result );
 	}
@@ -80,7 +78,6 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 			)
 		);
 		$processor             = new PluginVersionRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugin_version",
@@ -90,7 +87,7 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( false, $result );
 	}
@@ -113,7 +110,6 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 			)
 		);
 		$processor             = new PluginVersionRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugin_version",
@@ -123,7 +119,7 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( true, $result );
 	}
@@ -143,10 +139,9 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 				'jetpack/jetpack.php' => array(
 					'Version' => '1.2.4',
 				),
-			),
+			)
 		);
 		$processor             = new PluginVersionRuleProcessor( $mock_plugins_provider );
-		$spec                  = new stdClass();
 		$rule                  = json_decode(
 			'{
 				"type": "plugin_version",
@@ -156,7 +151,7 @@ class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 			}'
 		);
 
-		$result = $processor->process( $spec, $rule );
+		$result = $processor->process( $rule );
 
 		$this->assertEquals( true, $result );
 	}

@@ -27,12 +27,11 @@ class PluginVersionRuleProcessor {
 	/**
 	 * Process the rule.
 	 *
-	 * @param object $spec The specification being processed.
 	 * @param object $rule The specific rule being processed by this rule processor.
 	 *
 	 * @return bool Whether the rule passes or not.
 	 */
-	public function process( $spec, $rule ) {
+	public function process( $rule ) {
 		$active_plugin_slugs = $this->plugins_provider->get_active_plugin_slugs();
 
 		if ( ! in_array( $rule->plugin, $active_plugin_slugs, true ) ) {

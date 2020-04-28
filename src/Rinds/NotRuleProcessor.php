@@ -25,13 +25,12 @@ class NotRuleProcessor {
 	/**
 	 * Evaluates the rules in the operand and negates the result.
 	 *
-	 * @param object $spec The specification being processed.
 	 * @param object $rule The specific rule being processed by this rule processor.
 	 *
 	 * @return bool The result of the operation.
 	 */
-	public function process( $spec, $rule ) {
-		$evaluated_operand = $this->rule_evaluator->evaluate( $spec, $rule->operand );
+	public function process( $rule ) {
+		$evaluated_operand = $this->rule_evaluator->evaluate( $rule->operand );
 
 		return ! $evaluated_operand;
 	}

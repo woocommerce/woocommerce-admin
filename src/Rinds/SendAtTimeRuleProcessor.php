@@ -25,12 +25,11 @@ class SendAtTimeRuleProcessor {
 	/**
 	 * Process the rule.
 	 *
-	 * @param object $spec The specification being processed.
 	 * @param object $rule The specific rule being processed by this rule processor.
 	 *
 	 * @return bool Whether the rule passes or not.
 	 */
-	public function process( $spec, $rule ) {
+	public function process( $rule ) {
 		return $this->date_time_provider->get_now() >= new \DateTime( $rule->send_at );
 	}
 }

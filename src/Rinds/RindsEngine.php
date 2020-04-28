@@ -99,7 +99,7 @@ class RindsEngine {
 		// from the spec.
 		$get_rule_processor = new GetRuleProcessor();
 		$rule_evaluator     = new RuleEvaluator( $get_rule_processor );
-		$evaluate_result    = $rule_evaluator->evaluate( $spec, $spec->rules );
+		$evaluate_result    = $rule_evaluator->evaluate( $spec->rules );
 		$status             = $evaluate_result ? $spec->status : 'actioned';
 
 		// Set up the note.

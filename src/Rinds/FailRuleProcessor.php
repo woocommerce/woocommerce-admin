@@ -16,12 +16,11 @@ class FailRuleProcessor {
 	/**
 	 * Fails the rule.
 	 *
-	 * @param object $spec The specification being processed.
 	 * @param object $rule The specific rule being processed by this rule processor.
 	 *
 	 * @return bool Always false.
 	 */
-	public function process( $spec, $rule ) {
+	public function process( $rule ) {
 		return false;
 	}
 }
