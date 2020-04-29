@@ -463,6 +463,18 @@ class Install {
 			'wc-admin-store-notice-giving-feedback',
 		);
 
+		$additional_obsolete_notes_names = apply_filters(
+			'woocommerce_admin_obsolete_notes_names',
+			array()
+		);
+
+		if ( is_array( $additional_obsolete_notes_names ) ) {
+			$obsolete_notes_names = array_merge(
+				$obsolete_notes_names,
+				$additional_obsolete_notes_names
+			);
+		}
+
 		WC_Admin_Notes::delete_notes_with_name( $obsolete_notes_names );
 	}
 
