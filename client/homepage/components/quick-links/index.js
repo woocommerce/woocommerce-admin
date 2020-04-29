@@ -2,12 +2,13 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { Card, CardBody, CardHeader } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 
 /**
  * WooCommerce dependencies
  */
-import { Card, List } from '@woocommerce/components';
+import { List } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -32,8 +33,13 @@ class QuickLinks extends Component {
 
 		return (
 			<Fragment>
-				<Card title={ __( 'Store management', 'woocommerce-admin' ) }>
-					<List items={ listItems } />
+				<Card>
+					<CardHeader>
+						{ __( 'Store management', 'woocommerce-admin' ) }
+					</CardHeader>
+					<CardBody>
+						<List items={ listItems } />
+					</CardBody>
 				</Card>
 			</Fragment>
 		);
