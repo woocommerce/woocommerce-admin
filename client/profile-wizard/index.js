@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component, createElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { pick } from 'lodash';
+import { identity, pick } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -242,20 +242,6 @@ const hydrateSettings =
 	window.wcSettings.preloadSettings &&
 	window.wcSettings.preloadSettings.general;
 
-const HydradedProfileWizard = compose(
-	hydrateSettings
-		? withSettingsHydration( 'general', {
-				general: window.wcSettings.preloadSettings.general,
-		  } )
-		: () => ( {} ),
-	window.wcSettings.plugins
-		? withPluginsHydration( {
-				...window.wcSettings.plugins,
-				jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
-		  } )
-		: () => ( {} )
-)( ProfileWizard );
-
 export default compose(
 	withSelect( ( select ) => {
 		const { getNotes, getProfileItems, getProfileItemsError } = select(
@@ -288,5 +274,16 @@ export default compose(
 			updateNote,
 			updateProfileItems,
 		};
-	} )
-)( HydradedProfileWizard );
+	} ),
+	hydrateSettings
+		? withSettingsHydration( 'general', {
+				general: window.wcSettings.preloadSettings.general,
+		  } )
+		: identity,
+	window.wcSettings.plugins
+		? withPluginsHydration( {
+				...window.wcSettings.plugins,
+				jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
+		  } )
+		: identity
+)( ProfileWizard );
