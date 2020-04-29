@@ -39,12 +39,15 @@ class Layout extends Component {
 
 	componentWillUnmount() {
 		window.removeEventListener( 'scroll', this.handleScroll );
+		window.cancelAnimationFrame( this.handle );
 	}
 
 	handleScroll( e ) {
 		if ( e.target === window.document ) {
-			this.setState( {
-				inboxHeight: this.getInboxHeight(),
+			this.handle = window.requestAnimationFrame( () => {
+				this.setState( {
+					inboxHeight: this.getInboxHeight(),
+				} );
 			} );
 		}
 	}
