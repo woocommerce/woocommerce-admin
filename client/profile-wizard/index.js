@@ -238,24 +238,25 @@ class ProfileWizard extends Component {
 	}
 }
 
-const hydrateSettings = ( window.wcSettings.preloadSettings && window.wcSettings.preloadSettings.general );
+const hydrateSettings =
+	window.wcSettings.preloadSettings &&
+	window.wcSettings.preloadSettings.general;
+
+const HydradedProfileWizard = compose(
+	hydrateSettings
+		? withSettingsHydration( 'general', {
+				general: window.wcSettings.preloadSettings.general,
+		  } )
+		: () => ( {} ),
+	window.wcSettings.plugins
+		? withPluginsHydration( {
+				...window.wcSettings.plugins,
+				jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
+		  } )
+		: () => ( {} )
+)( ProfileWizard );
 
 export default compose(
-	(
-		hydrateSettings
-		? withSettingsHydration( 'general', {
-			general: window.wcSettings.preloadSettings.general,
-		} )
-		: () => ( {} )
-	),
-	( 
-		window.wcSettings.plugins
-		? withPluginsHydration( {
-			...window.wcSettings.plugins,
-			jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
-		} )
-		: () => ( {} )
-	),
 	withSelect( ( select ) => {
 		const { getNotes, getProfileItems, getProfileItemsError } = select(
 			'wc-api'
@@ -288,4 +289,4 @@ export default compose(
 			updateProfileItems,
 		};
 	} )
-)( ProfileWizard );
+)( HydradedProfileWizard );
