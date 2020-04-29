@@ -107,14 +107,7 @@ class OnboardingTasks {
 		$settings['onboarding']['stylesheet']                     = get_option( 'stylesheet' );
 		$settings['onboarding']['taxJarActivated']                = class_exists( 'WC_Taxjar' );
 		$settings['onboarding']['themeMods']                      = get_theme_mods();
-
-		if ( class_exists( 'WC_Payments' ) ) {
-			$api_client                                  = \WC_Payments::create_api_client();
-			$account                                     = new \WC_Payments_Account( $api_client );
-			$settings['onboarding']['wcPayIsConfigured'] = $account->is_stripe_connected();
-		} else {
-			$settings['onboarding']['wcPayIsConfigured'] = false;
-		}
+		$settings['onboarding']['wcPayIsConfigured']              = apply_filters( 'woocommerce_payments_is_configured', false );
 
 		return $settings;
 	}
