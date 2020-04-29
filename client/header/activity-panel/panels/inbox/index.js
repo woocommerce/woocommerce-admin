@@ -137,6 +137,8 @@ export default compose(
 				'actions',
 				'date_created',
 				'date_created_gmt',
+				'layout',
+				'image',
 			],
 		};
 
