@@ -32,7 +32,6 @@ class InboxNoteAction extends Component {
 			actionCallback,
 			dismissType,
 			noteId,
-			// noteName,
 			triggerNoteAction,
 			removeAllNotes,
 			removeNote,
@@ -90,14 +89,14 @@ InboxNoteAction.propTypes = {
 
 export default compose(
 	withDispatch( ( dispatch ) => {
-		const { triggerNoteAction, removeAllNotes, removeNote } = dispatch(
+		const { removeAllNotes, removeNote, triggerNoteAction } = dispatch(
 			'wc-api'
 		);
 
 		return {
-			triggerNoteAction,
-			removeNote,
 			removeAllNotes,
+			removeNote,
+			triggerNoteAction,
 		};
 	} )
 )( InboxNoteAction );

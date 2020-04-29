@@ -144,8 +144,9 @@ function removeAllNotes( resourceNames, fetch ) {
 		return [
 			fetch( { path: url, method: 'DELETE' } )
 				.then( ( response ) => {
-					// return { [ resourceName + ':' + noteId ]: { data: note } };
-					return response;
+					return {
+						[ resourceName ]: { data: response },
+					};
 				} )
 				.catch( ( error ) => {
 					return error;
