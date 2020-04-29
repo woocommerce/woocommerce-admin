@@ -132,7 +132,6 @@ export default compose(
 				'title',
 				'content',
 				'type',
-				'icon',
 				'status',
 				'actions',
 				'date_created',
