@@ -23,8 +23,17 @@
 
 	&.is-inbox {
 		overflow-y: scroll;
+		/* Hid the scrollbar in Firefox, Safari, IE 11 */
+		scrollbar-width: none;
+		overflow: -moz-scrollbars-none;
+		-ms-overflow-style: none;
 		margin-top: -45px;
 		padding-top: 45px;
+
+		/* Hid the scrollbar in Chrome */
+		&::-webkit-scrollbar {
+			width: 0 !important;
+		}
 	}
 }
 .temp-content {
