@@ -110,7 +110,11 @@ class Header extends Component {
 		} );
 
 		return (
-			<div className={ className } ref={ this.headerRef }>
+			<div
+				id="woocommerce-layout__header"
+				className={ className }
+				ref={ this.headerRef }
+			>
 				<h1 className="woocommerce-layout__header-breadcrumbs">
 					{ _sections.map( ( section, i ) => {
 						const sectionPiece = Array.isArray( section ) ? (

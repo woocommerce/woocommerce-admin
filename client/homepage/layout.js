@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import classnames from 'classnames';
 
@@ -18,6 +18,7 @@ class Layout extends Component {
 			inboxHeight: this.getInboxHeight(),
 			showInbox: true,
 		};
+		this.inbox = createRef();
 
 		this.handleScroll = this.handleScroll.bind( this );
 	}
@@ -35,9 +36,14 @@ class Layout extends Component {
 
 	componentDidMount() {
 		window.addEventListener( 'scroll', this.handleScroll );
+		this.inbox.current.addEventListener( 'scroll', this.handleInboxScroll );
 	}
 
 	componentWillUnmount() {
+		this.inbox.current.removeEventListener(
+			'scroll',
+			this.handleInboxScroll
+		);
 		window.removeEventListener( 'scroll', this.handleScroll );
 		window.cancelAnimationFrame( this.handle );
 	}
@@ -51,6 +57,26 @@ class Layout extends Component {
 			} );
 		}
 	}
+
+	handleInboxScroll( event ) {
+		const limit = 20;
+		const header = window.document.getElementById(
+			'woocommerce-layout__header'
+		);
+		const threshold = header.offsetTop;
+		const isInboxScrolled = event.target.scrollTop > limit;
+		if ( isInboxScrolled ) {
+			if ( header ) {
+				header.classList.add( 'is-scrolled' );
+			}
+		} else if (
+			! isInboxScrolled &&
+			window.pageYOffset < threshold - limit
+		) {
+			header.classList.remove( 'is-scrolled' );
+		}
+	}
+	s;
 
 	render() {
 		const { inboxHeight, showInbox } = this.state;
@@ -67,6 +93,7 @@ class Layout extends Component {
 					<div
 						className="woocommerce-homepage-column is-inbox"
 						style={ inboxStyles }
+						ref={ this.inbox }
 					>
 						<div className="temp-content">
 							<Button
