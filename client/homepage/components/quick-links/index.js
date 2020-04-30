@@ -80,7 +80,7 @@ class QuickLinks extends Component {
 	}
 
 	getIcon( iconName ) {
-		let icon = <span />; // what should default be?
+		let icon;
 		const iconNameWithoutPrefix = iconName.substring(
 			iconName.indexOf( '-' ) + 1
 		);
@@ -96,12 +96,38 @@ class QuickLinks extends Component {
 		return icon;
 	}
 
+	getLinkTypeAndHref( item ) {
+		let linkType;
+		let href;
+
+		switch ( item.type ) {
+			case 'wp-admin':
+				linkType = 'wp-admin';
+				href = item.path;
+				break;
+			case 'wc-settings':
+				linkType = 'wp-admin';
+				href = `/admin.php?page=wc-settings&tab=${ item.tab }`;
+				break;
+			default:
+				linkType = 'external';
+				href = item.href;
+				break;
+		}
+
+		return {
+			linkType,
+			href,
+		};
+	}
+
 	getListItems() {
 		return this.getItems().map( ( item ) => {
 			return {
 				title: item.title,
 				before: this.getIcon( item.iconName ),
 				after: this.getIcon( 'arrow-right-alt2' ),
+				...this.getLinkTypeAndHref( item ),
 			};
 		} );
 	}
