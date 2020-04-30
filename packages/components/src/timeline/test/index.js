@@ -10,6 +10,7 @@ import renderer from 'react-test-renderer';
  */
 import Timeline from '..';
 import mockData from '../__mocks__/timeline-mock-data';
+import { sortByDateUsing } from '../util.js';
 
 describe( 'Timeline', () => {
 	test( 'Renders empty correctly', () => {
@@ -100,7 +101,39 @@ describe( 'Timeline', () => {
 	} );
 
 	describe( 'Timeline utilities', () => {
-		test.todo( 'Sorts correctly' );
+		test( 'Sorts correctly', () => {
+			const data = [
+				{ id: 0, datetime: new Date( 2020, 0, 22 ) },
+				{ id: 1, datetime: new Date( 2020, 0, 21 ) },
+				{ id: 2, datetime: new Date( 2020, 0, 23 ) },
+			];
+			const expectedAsc = [
+				{ id: 1, datetime: new Date( 2020, 0, 21 ) },
+				{ id: 0, datetime: new Date( 2020, 0, 22 ) },
+				{ id: 2, datetime: new Date( 2020, 0, 23 ) },
+			];
+			const expectedDesc = [
+				{ id: 2, datetime: new Date( 2020, 0, 23 ) },
+				{ id: 0, datetime: new Date( 2020, 0, 22 ) },
+				{ id: 1, datetime: new Date( 2020, 0, 21 ) },
+			];
+
+			expect( data.sort( sortByDateUsing( 'asc' ) ) ).toStrictEqual(
+				expectedAsc
+			);
+			expect( data.sort( sortByDateUsing( 'desc' ) ) ).toStrictEqual(
+				expectedDesc
+			);
+		} );
+
+		test( "Empty item list doesn't break sort", () => {
+			expect( [].sort( sortByDateUsing( 'asc' ) ) ).toStrictEqual( [] );
+		} );
+
+		test( "Single item doesn't change on sort", () => {
+			const items = [ { datetime: new Date( 2020, 0, 1 ) } ];
+			expect( items.sort( sortByDateUsing( 'asc' ) ) ).toBe( items );
+		} );
 
 		test.todo( 'Groups correctly' );
 	} );
