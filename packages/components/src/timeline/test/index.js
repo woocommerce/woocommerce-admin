@@ -10,7 +10,7 @@ import renderer from 'react-test-renderer';
  */
 import Timeline from '..';
 import mockData from '../__mocks__/timeline-mock-data';
-import { sortByDateUsing } from '../util.js';
+import { groupItemsUsing, sortByDateUsing } from '../util.js';
 
 describe( 'Timeline', () => {
 	test( 'Renders empty correctly', () => {
@@ -102,20 +102,24 @@ describe( 'Timeline', () => {
 
 	describe( 'Timeline utilities', () => {
 		test( 'Sorts correctly', () => {
+			const jan21 = new Date( 2020, 0, 21 ).getTime() / 1000;
+			const jan22 = new Date( 2020, 0, 22 ).getTime() / 1000;
+			const jan23 = new Date( 2020, 0, 23 ).getTime() / 1000;
+
 			const data = [
-				{ id: 0, datetime: new Date( 2020, 0, 22 ) },
-				{ id: 1, datetime: new Date( 2020, 0, 21 ) },
-				{ id: 2, datetime: new Date( 2020, 0, 23 ) },
+				{ id: 0, datetime: jan22 },
+				{ id: 1, datetime: jan21 },
+				{ id: 2, datetime: jan23 },
 			];
 			const expectedAsc = [
-				{ id: 1, datetime: new Date( 2020, 0, 21 ) },
-				{ id: 0, datetime: new Date( 2020, 0, 22 ) },
-				{ id: 2, datetime: new Date( 2020, 0, 23 ) },
+				{ id: 1, datetime: jan21 },
+				{ id: 0, datetime: jan22 },
+				{ id: 2, datetime: jan23 },
 			];
 			const expectedDesc = [
-				{ id: 2, datetime: new Date( 2020, 0, 23 ) },
-				{ id: 0, datetime: new Date( 2020, 0, 22 ) },
-				{ id: 1, datetime: new Date( 2020, 0, 21 ) },
+				{ id: 2, datetime: jan23 },
+				{ id: 0, datetime: jan22 },
+				{ id: 1, datetime: jan21 },
 			];
 
 			expect( data.sort( sortByDateUsing( 'asc' ) ) ).toStrictEqual(
@@ -131,10 +135,60 @@ describe( 'Timeline', () => {
 		} );
 
 		test( "Single item doesn't change on sort", () => {
-			const items = [ { datetime: new Date( 2020, 0, 1 ) } ];
+			const items = [
+				{ datetime: new Date( 2020, 0, 1 ).getTime() / 1000 },
+			];
 			expect( items.sort( sortByDateUsing( 'asc' ) ) ).toBe( items );
 		} );
 
-		test.todo( 'Groups correctly' );
+		test( 'Groups correctly', () => {
+			const jan22 = new Date( 2020, 0, 22 ).getTime() / 1000;
+			const jan23 = new Date( 2020, 0, 23 ).getTime() / 1000;
+			const items = [
+				{ id: 0, datetime: jan22 },
+				{ id: 1, datetime: jan23 },
+				{ id: 2, datetime: jan22 },
+			];
+			const expected = [
+				{
+					datetime: jan22,
+					title: 'January 22, 2020',
+					items: [
+						{ id: 0, datetime: jan22 },
+						{ id: 2, datetime: jan22 },
+					],
+				},
+				{
+					datetime: jan23,
+					title: 'January 23, 2020',
+					items: [ { id: 1, datetime: jan23 } ],
+				},
+			];
+
+			expect(
+				items.reduce( groupItemsUsing( 'days' ), [] )
+			).toStrictEqual( expected );
+		} );
+
+		test( "Empty item list doesn't break grouping", () => {
+			expect( [].reduce( groupItemsUsing( 'days' ), [] ) ).toStrictEqual(
+				[]
+			);
+		} );
+
+		test( 'Single item grouped correctly', () => {
+			const jan22 = new Date( 2020, 0, 22 ).getTime() / 1000;
+			const items = [ { id: 0, datetime: jan22 } ];
+			const expected = [
+				{
+					datetime: jan22,
+					title: 'January 22, 2020',
+					items: [ { id: 0, datetime: jan22 } ],
+				},
+			];
+			expect(
+				items.reduce( groupItemsUsing( 'days' ), [] )
+			).toStrictEqual( expected );
+		} );
 	} );
 } );
