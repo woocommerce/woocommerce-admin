@@ -5,16 +5,17 @@ import { Component, Suspense, lazy } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 
 /**
+ * WooCommerce dependencies
+ */
+import { Spinner } from '@woocommerce/components';
+
+/**
  * Internal dependencies
  */
 import './style.scss';
 import withSelect from 'wc-api/with-select';
 import { isOnboardingEnabled } from 'dashboard/utils';
-import { Spinner } from '@woocommerce/components';
-
-const CustomizableDashboard = lazy( () =>
-	import( /* webpackChunkName: "customizable-dashboard" */ './customizable' )
-);
+import CustomizableDashboard from './customizable';
 
 const ProfileWizard = lazy( () =>
 	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
@@ -38,9 +39,7 @@ class Dashboard extends Component {
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {
 			return (
-				<Suspense fallback={ <Spinner /> }>
-					<CustomizableDashboard query={ query } path={ path } />
-				</Suspense>
+				<CustomizableDashboard query={ query } path={ path } />
 			);
 		}
 
