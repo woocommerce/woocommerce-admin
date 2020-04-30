@@ -2,8 +2,9 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Card, CardBody, CardHeader } from '@wordpress/components';
+import { Card, CardBody, CardHeader, Icon } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
+import Gridicon from 'gridicons';
 
 /**
  * WooCommerce dependencies
@@ -19,17 +20,94 @@ import './style.scss';
  * QuickLinks component to display a list of store management links.
  */
 class QuickLinks extends Component {
-	render() {
-		const listItems = [
+	getItems() {
+		return [
 			{
-				title: 'WooCommerce.com',
-				href: 'https://woocommerce.com',
+				title: __( 'Market my store', 'woocommerce-admin' ),
+				type: 'wc-admin',
+				path: 'marketing',
+				iconName: 'megaphone',
 			},
 			{
-				title: 'WordPress.org',
-				href: 'https://wordpress.org',
+				title: __( 'Add products', 'woocommerce-admin' ),
+				type: 'wp-admin',
+				path: '/post-new.php?post_type=product',
+				iconName: 'gridicons-product',
+			},
+			{
+				title: __( 'Personalize my store', 'woocommerce-admin' ),
+				type: 'wp-admin',
+				path: 'todo', // open editor with shop page open
+				iconName: 'admin-customizer',
+			},
+			{
+				title: __( 'Shipping settings', 'woocommerce-admin' ),
+				type: 'wc-settings',
+				tab: 'shipping',
+				iconName: 'gridicons-shipping',
+			},
+			{
+				title: __( 'Tax settings', 'woocommerce-admin' ),
+				type: 'wc-settings',
+				tab: 'tax',
+				iconName: 'gridicons-institution',
+			},
+			{
+				title: __( 'Payment settings', 'woocommerce-admin' ),
+				type: 'wc-settings',
+				tab: 'checkout',
+				iconName: 'gridicons-credit-card',
+			},
+			{
+				title: __( 'Edit store details', 'woocommerce-admin' ),
+				type: 'wc-settings',
+				tab: 'general',
+				iconName: 'store',
+			},
+			{
+				title: __( 'Get support', 'woocommerce-admin' ),
+				type: 'external',
+				href: 'todo', // support portal: wpcom vs self-hosted
+				iconName: 'sos',
+			},
+			{
+				title: __( 'View my store', 'woocommerce-admin' ),
+				type: 'external',
+				href: 'todo', // frontend
+				iconName: 'external',
 			},
 		];
+	}
+
+	getIcon( iconName ) {
+		let icon = <span />; // what should default be?
+		const iconNameWithoutPrefix = iconName.substring(
+			iconName.indexOf( '-' ) + 1
+		);
+
+		if ( iconName.startsWith( 'gridicons-' ) ) {
+			icon = <Gridicon icon={ iconNameWithoutPrefix } />;
+		} else if ( iconName.startsWith( 'dashicons-' ) ) {
+			icon = <Icon icon={ iconNameWithoutPrefix } />;
+		} else {
+			icon = <Icon icon={ iconName } />;
+		}
+
+		return icon;
+	}
+
+	getListItems() {
+		return this.getItems().map( ( item ) => {
+			return {
+				title: item.title,
+				before: this.getIcon( item.iconName ),
+				after: this.getIcon( 'arrow-right-alt2' ),
+			};
+		} );
+	}
+
+	render() {
+		const listItems = this.getListItems();
 
 		return (
 			<Fragment>
