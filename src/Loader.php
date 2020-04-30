@@ -678,6 +678,9 @@ class Loader {
 
 		if ( self::is_admin_page() && $is_loading ) {
 			$classes[] = 'woocommerce-admin-is-loading';
+			// Include the full screen class now to prevent the dashboard
+			// from being shown while the <ProfileWizard /> chunk loads.
+			$classes[] = 'woocommerce-admin-full-screen';
 		}
 
 		$features = self::get_features();
