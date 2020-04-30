@@ -101,6 +101,10 @@ class QuickLinks extends Component {
 		let href;
 
 		switch ( item.type ) {
+			case 'wc-admin':
+				linkType = 'wc-admin';
+				href = `/admin.php?page=wc-admin&path=%2F${ item.path }`;
+				break;
 			case 'wp-admin':
 				linkType = 'wp-admin';
 				href = item.path;
