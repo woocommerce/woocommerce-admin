@@ -24,32 +24,33 @@ class GetRuleProcessor {
 	 * @return object The matching processor for the specified rule type, or a FailRuleProcessor if no matching processor is found.
 	 */
 	public static function get_processor( $rule_type ) {
-		if ( 'plugins_activated' === $rule_type ) {
-			return new PluginsActivatedRuleProcessor(
-				new PluginsProvider()
-			);
-		} elseif ( 'send_at_time' === $rule_type ) {
-			return new SendAtTimeRuleProcessor(
-				new CurrentDateTimeProvider()
-			);
-		} elseif ( 'not' === $rule_type ) {
-			return new NotRuleProcessor(
-				new RuleEvaluator(
-					new GetRuleProcessor()
-				)
-			);
-		} elseif ( 'or' === $rule_type ) {
-			return new OrRuleProcessor(
-				new RuleEvaluator(
-					new GetRuleProcessor()
-				)
-			);
-		} elseif ( 'fail' === $rule_type ) {
-			return new FailRuleProcessor();
-		} elseif ( 'plugin_version' === $rule_type ) {
-			return new PluginVersionRuleProcessor(
-				new PluginsProvider()
-			);
+		switch ( $rule_type ) {
+			case 'plugins_activated':
+				return new PluginsActivatedRuleProcessor(
+					new PluginsProvider()
+				);
+			case 'send_at_time':
+				return new SendAtTimeRuleProcessor(
+					new CurrentDateTimeProvider()
+				);
+			case 'not':
+				return new NotRuleProcessor(
+					new RuleEvaluator(
+						new GetRuleProcessor()
+					)
+				);
+			case 'or':
+				return new OrRuleProcessor(
+					new RuleEvaluator(
+						new GetRuleProcessor()
+					)
+				);
+			case 'fail':
+				return new FailRuleProcessor();
+			case 'plugin_version':
+				return new PluginVersionRuleProcessor(
+					new PluginsProvider()
+				);
 		}
 
 		return new FailRuleProcessor();
