@@ -3,7 +3,7 @@
  */
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
-import { Component, lazy, Suspense } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { get, isFunction } from 'lodash';
@@ -11,7 +11,7 @@ import { get, isFunction } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { useFilters, Spinner } from '@woocommerce/components';
+import { useFilters } from '@woocommerce/components';
 import { getHistory } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { PLUGINS_STORE_NAME, withPluginsHydration } from '@woocommerce/data';
@@ -24,10 +24,8 @@ import { Controller, getPages, PAGES_FILTER } from './controller';
 import Header from 'header';
 import Notices from './notices';
 import { recordPageView } from 'lib/tracks';
+import StoreAlerts from './store-alerts';
 import TransientNotices from './transient-notices';
-const StoreAlerts = lazy( () =>
-	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
-);
 import { REPORTS_FILTER } from 'analytics/report';
 
 export class PrimaryLayout extends Component {
@@ -39,9 +37,7 @@ export class PrimaryLayout extends Component {
 				id="woocommerce-layout__primary"
 			>
 				{ window.wcAdminFeatures[ 'store-alerts' ] && (
-					<Suspense fallback={ <Spinner /> }>
-						<StoreAlerts />
-					</Suspense>
+					<StoreAlerts />
 				) }
 				<Notices />
 				{ children }
