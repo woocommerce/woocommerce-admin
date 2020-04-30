@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Card, CardBody, CardHeader, Icon } from '@wordpress/components';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
 
 /**
@@ -136,16 +136,14 @@ class QuickLinks extends Component {
 		const listItems = this.getListItems();
 
 		return (
-			<Fragment>
-				<Card>
-					<CardHeader>
-						{ __( 'Store management', 'woocommerce-admin' ) }
-					</CardHeader>
-					<CardBody>
-						<List items={ listItems } />
-					</CardBody>
-				</Card>
-			</Fragment>
+			<Card>
+				<CardHeader>
+					{ __( 'Store management', 'woocommerce-admin' ) }
+				</CardHeader>
+				<CardBody>
+					<List items={ listItems } />
+				</CardBody>
+			</Card>
 		);
 	}
 }
