@@ -2,8 +2,9 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { TabPanel } from '@wordpress/components';
-import { applyFilters } from '@wordpress/hooks';
+import { compose } from '@wordpress/compose';
+import { xor } from 'lodash';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -16,25 +17,31 @@ import {
 } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
+/**
+ * Internal dependencies
+ */
+import withSelect from 'wc-api/with-select';
+import { DEFAULT_STATS, DEFAULT_HIDDEN_STATS } from './defaults';
+
 const { performanceIndicators } = getSetting( 'dataEndpoints', {
 	performanceIndicators: [],
 } );
-const trimmedIndicators = performanceIndicators.filter( ( indicator ) => {
-	const stats = applyFilters( 'woocommerce_homepage_default_stats', [
-		'revenue/total_sales',
-		'revenue/net_revenue',
-		'orders/orders_count',
-		'products/items_sold',
-	] );
-	return stats.includes( indicator.stat );
+const stats = performanceIndicators.filter( ( indicator ) => {
+	return DEFAULT_STATS.includes( indicator.stat );
 } );
 
-const StatsOverview = () => {
-	const defaultHiddenStats = [ 'revenue/net_revenue', 'products/items_sold' ];
-	const userHiddenStats = []; // todo: get this from currentUserData
-	const hiddenStats = userHiddenStats.length
+const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
+	const userHiddenStats = userPrefs.hiddenStats;
+	const hiddenStats = userHiddenStats
 		? userHiddenStats
-		: defaultHiddenStats;
+		: DEFAULT_HIDDEN_STATS;
+
+	const toggleStat = ( stat ) => {
+		const nextHiddenStats = xor( hiddenStats, [ stat ] );
+		updateCurrentUserData( {
+			homepage_stats: { hiddenStats: nextHiddenStats },
+		} );
+	};
 
 	return (
 		<Card
@@ -52,9 +59,9 @@ const StatsOverview = () => {
 							<MenuTitle>
 								{ __( 'Display stats:', 'woocommerce-admin' ) }
 							</MenuTitle>
-							{ trimmedIndicators.map( ( indicator, i ) => {
+							{ stats.map( ( stat ) => {
 								const checked = ! hiddenStats.includes(
-									indicator.stat
+									stat.stat
 								);
 
 								return (
@@ -62,10 +69,12 @@ const StatsOverview = () => {
 										checked={ checked }
 										isCheckbox
 										isClickable
-										key={ i }
-										onInvoke={ () => {} }
+										key={ stat.stat }
+										onInvoke={ () =>
+											toggleStat( stat.stat )
+										}
 									>
-										{ indicator.label }
+										{ stat.label }
 									</MenuItem>
 								);
 							} ) }
@@ -74,26 +83,24 @@ const StatsOverview = () => {
 				/>
 			}
 		>
-			<TabPanel
-				tabs={ [
-					{
-						title: __( 'Today', 'woocommerce-admin' ),
-						name: 'today',
-					},
-					{
-						title: __( 'Week to date', 'woocommerce-admin' ),
-						name: 'week',
-					},
-					{
-						title: __( 'Month to date', 'woocommerce-admin' ),
-						name: 'month',
-					},
-				] }
-			>
-				{ ( tab ) => <p>{ tab.name }</p> }
-			</TabPanel>
+			Content Here
 		</Card>
 	);
 };
 
-export default StatsOverview;
+export default compose(
+	withSelect( ( select ) => {
+		const { getCurrentUserData } = select( 'wc-api' );
+
+		return {
+			userPrefs: getCurrentUserData().homepage_stats || {},
+		};
+    } ),
+    withDispatch( ( dispatch ) => {
+		const { updateCurrentUserData } = dispatch( 'wc-api' );
+
+		return {
+			updateCurrentUserData,
+		};
+	} )
+)( StatsOverview );
