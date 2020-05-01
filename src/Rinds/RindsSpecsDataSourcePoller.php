@@ -60,6 +60,10 @@ class RindsSpecsDataSourcePoller {
 			return;
 		}
 
+		if ( ! is_array( $json ) ) {
+			return;
+		}
+
 		foreach ( $json as $spec ) {
 			$slug           = $spec->slug;
 			$specs[ $slug ] = $spec;
