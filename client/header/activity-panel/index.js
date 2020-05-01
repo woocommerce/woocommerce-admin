@@ -33,7 +33,7 @@ const StockPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-stock" */ './panels/stock' )
 );
 const ReviewsPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/reviews' )
+	import( /* webpackChunkName: "activity-panels-reviews" */ './panels/reviews' )
 );
 
 import { recordEvent } from 'lib/tracks';
