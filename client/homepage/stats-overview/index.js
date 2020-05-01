@@ -4,10 +4,11 @@
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { Fragment } from '@wordpress/element';
+import { TabPanel } from '@wordpress/components';
 import { xor } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
-import { recordEvent } from 'lib/tracks';
+import classnames from 'classnames';
 
 /**
  * WooCommerce dependencies
@@ -23,8 +24,11 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
+import './style.scss';
 import withSelect from 'wc-api/with-select';
 import { DEFAULT_STATS, DEFAULT_HIDDEN_STATS } from './defaults';
+import StatsList from './stats-list';
+import { recordEvent } from 'lib/tracks';
 
 const { performanceIndicators } = getSetting( 'dataEndpoints', {
 	performanceIndicators: [],
@@ -50,9 +54,18 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 		} );
 	};
 
+	const activeStats = stats.filter(
+		( item ) => ! hiddenStats.includes( item.stat )
+	);
+
+	const listClasses = classnames(
+		'woocommerce-summary',
+		`has-${ activeStats.length }-items`
+	);
+
 	return (
 		<Card
-			className="woocommerce-analytics__card"
+			className="woocommerce-analytics__card woocommerce-stats-overview"
 			title={ __( 'Stats overview', 'woocommerce-admin' ) }
 			menu={
 				<EllipsisMenu
@@ -89,7 +102,47 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 				/>
 			}
 		>
-			Content Here
+			<TabPanel
+				className="woocommerce-stats-overview__tabs"
+				tabs={ [
+					{
+						title: __( 'Today', 'woocommerce-admin' ),
+						name: 'today',
+					},
+					{
+						title: __( 'Week to date', 'woocommerce-admin' ),
+						name: 'week',
+					},
+					{
+						title: __( 'Month to date', 'woocommerce-admin' ),
+						name: 'month',
+					},
+				] }
+			>
+				{ ( tab ) => (
+					<ul className={ listClasses }>
+						<StatsList
+							query={ {
+								period: tab.name,
+								compare: 'previous_period',
+							} }
+							stats={ activeStats }
+						/>
+					</ul>
+				) }
+			</TabPanel>
+			<div>
+				<a
+					onClick={ () => {
+						recordEvent( 'statsoverview_indicators_click', {
+							key: 'overview',
+						} );
+					} }
+					href="www.example.com"
+				>
+					{ __( 'View detailed stats' ) }
+				</a>
+			</div>
 		</Card>
 	);
 };

@@ -1,0 +1,33 @@
+.woocommerce-stats-overview {
+	.woocommerce-card__body {
+		padding: 0;
+	}
+	.woocommerce-summary {
+		margin: 0;
+	}
+}
+
+.woocommerce-stats-overview__tabs {
+	.components-tab-panel__tabs {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.components-button {
+		display: block;
+		padding: $gap;
+		width: 25%;
+
+		&.is-active {
+			border-bottom: 4px solid #00f;
+		}
+
+		&:first-child {
+			text-align: left;
+		}
+
+		&:last-child {
+			text-align: right;
+		}
+	}
+}
