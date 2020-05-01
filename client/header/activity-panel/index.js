@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
-import { Component, lazy, Suspense } from '@wordpress/element';
+import { Component, Fragment, lazy, Suspense } from '@wordpress/element';
 import { IconButton, NavigableMenu } from '@wordpress/components';
 import { partial, uniqueId, find } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
@@ -15,6 +15,9 @@ import CrossIcon from 'gridicons/dist/cross-small';
  * Internal dependencies
  */
 import './style.scss';
+import './activity-card/style.scss';
+import ActivityCardPlaceholder from './activity-card/placeholder';
+import ActivityHeader from './activity-header';
 import ActivityPanelToggleBubble from './toggle-bubble';
 import { H, Section, Spinner } from '@woocommerce/components';
 import {
@@ -115,12 +118,28 @@ class ActivityPanel extends Component {
 				title: __( 'Inbox', 'woocommerce-admin' ),
 				icon: <i className="material-icons-outlined">inbox</i>,
 				unread: hasUnreadNotes,
+				placeholder: (
+					<ActivityCardPlaceholder
+						className="woocommerce-inbox-activity-card"
+						hasAction
+						hasDate
+						lines={ 2 }
+					/>
+				),
 			},
 			{
 				name: 'orders',
 				title: __( 'Orders', 'woocommerce-admin' ),
 				icon: <PagesIcon />,
 				unread: hasUnreadOrders,
+				placeholder: (
+					<ActivityCardPlaceholder
+						className="woocommerce-order-activity-card"
+						hasAction
+						hasDate
+						lines={ 2 }
+					/>
+				),
 			},
 			manageStock === 'yes'
 				? {
@@ -130,6 +149,13 @@ class ActivityPanel extends Component {
 							<i className="material-icons-outlined">widgets</i>
 						),
 						unread: hasUnreadStock,
+						placeholder: (
+							<ActivityCardPlaceholder
+								className="woocommerce-stock-activity-card"
+								hasAction
+								lines={ 1 }
+							/>
+						),
 				  }
 				: null,
 			reviewsEnabled === 'yes'
@@ -142,9 +168,30 @@ class ActivityPanel extends Component {
 							</i>
 						),
 						unread: hasUnapprovedReviews,
+						placeholder: (
+							<ActivityCardPlaceholder
+								className="woocommerce-review-activity-card"
+								hasAction
+								hasDate
+								lines={ 2 }
+							/>
+						),
 				  }
 				: null,
 		].filter( Boolean );
+	}
+
+	getPanelFallback( tab ) {
+		const { title, placeholder } = tab;
+
+		return (
+			<Fragment>
+				<ActivityHeader title={ title } />
+				<Section>
+					{ placeholder || <Spinner /> }
+				</Section>
+			</Fragment>
+		);
 	}
 
 	getPanelContent( tab ) {
@@ -200,7 +247,7 @@ class ActivityPanel extends Component {
 					key={ 'activity-panel-' + currentTab }
 					id={ 'activity-panel-' + currentTab }
 				>
-					<Suspense fallback={ <Spinner /> }>
+					<Suspense fallback={ this.getPanelFallback( tab ) }>
 						{ this.getPanelContent( currentTab ) }
 					</Suspense>
 				</div>
