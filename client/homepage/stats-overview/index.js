@@ -2,9 +2,12 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { xor } from 'lodash';
 import { withDispatch } from '@wordpress/data';
+import PropTypes from 'prop-types';
+import { recordEvent } from 'lib/tracks';
 
 /**
  * WooCommerce dependencies
@@ -30,7 +33,7 @@ const stats = performanceIndicators.filter( ( indicator ) => {
 	return DEFAULT_STATS.includes( indicator.stat );
 } );
 
-const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
+export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 	const userHiddenStats = userPrefs.hiddenStats;
 	const hiddenStats = userHiddenStats
 		? userHiddenStats
@@ -40,6 +43,10 @@ const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 		const nextHiddenStats = xor( hiddenStats, [ stat ] );
 		updateCurrentUserData( {
 			homepage_stats: { hiddenStats: nextHiddenStats },
+		} );
+		recordEvent( 'statsoverview_indicators_toggle', {
+			indicator_name: stat,
+			status: nextHiddenStats.includes( stat ) ? 'off' : 'on',
 		} );
 	};
 
@@ -55,7 +62,7 @@ const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 						'woocommerce-admin'
 					) }
 					renderContent={ () => (
-						<>
+						<Fragment>
 							<MenuTitle>
 								{ __( 'Display stats:', 'woocommerce-admin' ) }
 							</MenuTitle>
@@ -78,7 +85,7 @@ const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 									</MenuItem>
 								);
 							} ) }
-						</>
+						</Fragment>
 					) }
 				/>
 			}
@@ -88,6 +95,17 @@ const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 	);
 };
 
+StatsOverview.propTypes = {
+	/**
+	 * Homepage user preferences.
+	 */
+	userPrefs: PropTypes.object.isRequired,
+	/**
+	 * A method to update user meta.
+	 */
+	updateCurrentUserData: PropTypes.func.isRequired,
+};
+
 export default compose(
 	withSelect( ( select ) => {
 		const { getCurrentUserData } = select( 'wc-api' );
@@ -95,8 +113,8 @@ export default compose(
 		return {
 			userPrefs: getCurrentUserData().homepage_stats || {},
 		};
-    } ),
-    withDispatch( ( dispatch ) => {
+	} ),
+	withDispatch( ( dispatch ) => {
 		const { updateCurrentUserData } = dispatch( 'wc-api' );
 
 		return {
