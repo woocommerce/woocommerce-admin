@@ -1,3 +1,6 @@
+// Set up some local color variables to make the CSS more clear
+$outer-border: $core-grey-light-700;
+
 .woocommerce-stats-overview {
 	.woocommerce-card__body {
 		padding: 0;
@@ -5,6 +8,10 @@
 	.woocommerce-summary {
 		margin: 0;
 	}
+}
+
+.woocommerce-stats-overview__footer {
+	border-top: 1px solid $outer-border;
 }
 
 .woocommerce-stats-overview__more-btn {
@@ -16,6 +23,7 @@
 	.components-tab-panel__tabs {
 		display: flex;
 		justify-content: space-between;
+		border-bottom: 1px solid $outer-border;
 	}
 
 	.components-button {
@@ -23,10 +31,6 @@
 		padding: $gap;
 		width: 25%;
 		margin-bottom: 4px;
-
-		@include breakpoint( '<782px' ) {
-			width: 33.33%;
-		}
 
 		&:focus {
 			outline: none;
@@ -46,5 +50,22 @@
 		&:last-child {
 			text-align: right;
 		}
+	}
+}
+
+.woocommerce-stats-overview__stats {
+	margin: 0;
+
+	// Perhaps these should be moved to the component itself?
+	.woocommerce-summary__item-container:nth-last-of-type(1) .woocommerce-summary__item {
+		border-bottom: none;
+	}
+
+	&.is-even .woocommerce-summary__item-container:nth-last-of-type(2) .woocommerce-summary__item {
+		border-bottom: none;
+	}
+
+	.woocommerce-summary__item-container:nth-of-type(even) .woocommerce-summary__item {
+		border-right: none;
 	}
 }
