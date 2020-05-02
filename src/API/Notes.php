@@ -257,7 +257,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * Delete a single note.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
+	 * @return WP_REST_Request|WP_Error
 	 */
 	public function delete_item( $request ) {
 		$note = WC_Admin_Notes::get_note( $request->get_param( 'id' ) );
@@ -272,17 +272,41 @@ class Notes extends \WC_REST_CRUD_Controller {
 
 		$note->set_is_deleted( 1 );
 		$note->save();
-		return true;
+
+		$data = $this->prepare_note_data_for_response( $note, $request );
+
+		return rest_ensure_response( $data );
 	}
 
 	/**
 	 * Delete all notes.
 	 *
-	 * @return WP_Error|bool
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
 	 */
-	public function delete_all_items() {
-		WC_Admin_Notes::delete_all_notes();
-		return true;
+	public function delete_all_items( $request ) {
+		$notes = WC_Admin_Notes::delete_all_notes();
+		$data  = array();
+		foreach ( (array) $notes as $note_obj ) {
+			$data[] = $this->prepare_note_data_for_response( $note_obj, $request );
+		}
+
+		$response = rest_ensure_response( $data );
+		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( array( 'info', 'warning' ), array() ) );
+		return $response;
+	}
+
+	/**
+	 * Prepare a note data.
+	 *
+	 * @param array           $note Note data.
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response $response Response data.
+	 */
+	public function prepare_note_data_for_response( $note, $request ) {
+		$note = $note->get_data();
+		$note = $this->prepare_item_for_response( $note, $request );
+		return $this->prepare_response_for_collection( $note );
 	}
 
 	/**
@@ -338,6 +362,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$data['title']             = stripslashes( $data['title'] );
 		$data['content']           = stripslashes( $data['content'] );
 		$data['is_snoozable']      = (bool) $data['is_snoozable'];
+		$data['is_deleted']        = (bool) $data['is_deleted'];
 		foreach ( (array) $data['actions'] as $key => $value ) {
 			$data['actions'][ $key ]->label  = stripslashes( $data['actions'][ $key ]->label );
 			$data['actions'][ $key ]->url    = $this->prepare_query_for_response( $data['actions'][ $key ]->query );
