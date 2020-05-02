@@ -126,9 +126,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			return $note;
 		}
 
-		$data = $note->get_data();
-		$data = $this->prepare_item_for_response( $data, $request );
-		$data = $this->prepare_response_for_collection( $data );
+		$data = $this->prepare_note_data_for_response( $note, $request );
 
 		return rest_ensure_response( $data );
 	}
