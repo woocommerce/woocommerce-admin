@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { xor } from 'lodash';
 import { withDispatch } from '@wordpress/data';
@@ -62,13 +61,13 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 						'woocommerce-admin'
 					) }
 					renderContent={ () => (
-						<Fragment>
+						<>
 							<MenuTitle>
 								{ __( 'Display stats:', 'woocommerce-admin' ) }
 							</MenuTitle>
-							{ stats.map( ( stat ) => {
+							{ stats.map( ( item ) => {
 								const checked = ! hiddenStats.includes(
-									stat.stat
+									item.stat
 								);
 
 								return (
@@ -76,16 +75,16 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 										checked={ checked }
 										isCheckbox
 										isClickable
-										key={ stat.stat }
+										key={ item.stat }
 										onInvoke={ () =>
-											toggleStat( stat.stat )
+											toggleStat( item.stat )
 										}
 									>
-										{ stat.label }
+										{ item.label }
 									</MenuItem>
 								);
 							} ) }
-						</Fragment>
+						</>
 					) }
 				/>
 			}
