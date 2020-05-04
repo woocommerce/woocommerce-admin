@@ -104,6 +104,16 @@ class WC_Admin_Notes {
 	}
 
 	/**
+	 * Soft delete of a note.
+	 *
+	 * @param WC_Admin_Note $note The note that will be deleted.
+	 */
+	public static function delete_note( $note ) {
+		$note->set_is_deleted( 1 );
+		$note->save();
+	}
+
+	/**
 	 * Soft delete of all the admin notes. Returns the deleted items.
 	 *
 	 * @return array Array of arrays.

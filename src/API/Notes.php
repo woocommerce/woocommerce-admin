@@ -268,11 +268,8 @@ class Notes extends \WC_REST_CRUD_Controller {
 			);
 		}
 
-		$note->set_is_deleted( 1 );
-		$note->save();
-
+		WC_Admin_Notes::delete_note( $note );
 		$data = $this->prepare_note_data_for_response( $note, $request );
-
 		return rest_ensure_response( $data );
 	}
 
