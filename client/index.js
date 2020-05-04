@@ -1,3 +1,6 @@
+// Turn on react-dates classes/styles, see https://github.com/airbnb/react-dates#initialize
+import 'react-dates/initialize';
+
 /**
  * External dependencies
  */
