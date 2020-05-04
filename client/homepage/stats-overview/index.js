@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { Fragment } from '@wordpress/element';
-import { TabPanel } from '@wordpress/components';
+import { TabPanel, Button } from '@wordpress/components';
 import { xor } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
@@ -131,18 +131,18 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 					</ul>
 				) }
 			</TabPanel>
-			<div>
-				<a
-					onClick={ () => {
-						recordEvent( 'statsoverview_indicators_click', {
-							key: 'overview',
-						} );
-					} }
-					href="www.example.com"
-				>
-					{ __( 'View detailed stats' ) }
-				</a>
-			</div>
+			<Button
+				className="woocommerce-stats-overview__more-btn"
+				isLink
+				onClick={ () => {
+					recordEvent( 'statsoverview_indicators_click', {
+						key: 'overview',
+					} );
+				} }
+				href="www.example.com"
+			>
+				{ __( 'View detailed stats' ) }
+			</Button>
 		</Card>
 	);
 };
