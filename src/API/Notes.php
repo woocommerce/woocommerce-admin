@@ -138,13 +138,14 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @return array
 	 */
 	protected function prepare_objects_query( $request ) {
-		$args             = array();
-		$args['order']    = $request['order'];
-		$args['orderby']  = $request['orderby'];
-		$args['per_page'] = $request['per_page'];
-		$args['page']     = $request['page'];
-		$args['type']     = isset( $request['type'] ) ? $request['type'] : array();
-		$args['status']   = isset( $request['status'] ) ? $request['status'] : array();
+		$args               = array();
+		$args['order']      = $request['order'];
+		$args['orderby']    = $request['orderby'];
+		$args['per_page']   = $request['per_page'];
+		$args['page']       = $request['page'];
+		$args['type']       = isset( $request['type'] ) ? $request['type'] : array();
+		$args['status']     = isset( $request['status'] ) ? $request['status'] : array();
+		$args['is_deleted'] = 0;
 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date_created';
@@ -218,6 +219,11 @@ class Notes extends \WC_REST_CRUD_Controller {
 
 		if ( ! is_null( $request->get_param( 'date_reminder' ) ) ) {
 			$note->set_date_reminder( $request->get_param( 'date_reminder' ) );
+			$note_changed = true;
+		}
+
+		if ( ! is_null( $request->get_param( 'is_deleted' ) ) ) {
+			$note->set_is_deleted( $request->get_param( 'is_deleted' ) );
 			$note_changed = true;
 		}
 
