@@ -28,6 +28,18 @@ function update( resourceNames, data, fetch = apiFetch ) {
 	];
 }
 
+function remove( resourceNames, data, fetch = apiFetch ) {
+	return [ ...removeNote( resourceNames, data, fetch ) ];
+}
+
+function removeAll( resourceNames, fetch = apiFetch ) {
+	return [ ...removeAllNotes( resourceNames, fetch ) ];
+}
+
+function undoRemoveAll( resourceNames, data, fetch = apiFetch ) {
+	return [ ...undoRemoveAllNotes( resourceNames, data, fetch ) ];
+}
+
 function readNoteQueries( resourceNames, fetch ) {
 	const filteredNames = resourceNames.filter( ( name ) =>
 		isResourcePrefix( name, 'note-query' )
@@ -106,6 +118,70 @@ function updateNote( resourceNames, data, fetch ) {
 	return [];
 }
 
+function removeNote( resourceNames, data, fetch ) {
+	const resourceName = 'note';
+	if ( resourceNames.includes( resourceName ) ) {
+		const { noteId } = data[ resourceName ];
+		const url = `${ NAMESPACE }/admin/notes/delete/${ noteId }`;
+		return [
+			fetch( { path: url, method: 'DELETE' } )
+				.then( ( response ) => {
+					return {
+						[ resourceName + ':' + noteId ]: { data: response },
+					};
+				} )
+				.catch( ( error ) => {
+					return { [ resourceName + ':' + noteId ]: { error } };
+				} ),
+		];
+	}
+	return [];
+}
+
+function removeAllNotes( resourceNames, fetch ) {
+	const resourceName = 'note';
+	if ( resourceNames.includes( resourceName ) ) {
+		const url = `${ NAMESPACE }/admin/notes/delete/all`;
+		return [
+			fetch( { path: url, method: 'DELETE' } )
+				.then( ( response ) => {
+					const notes = response.reduce( ( result, note ) => {
+						const resourceKey = [ resourceName + ':' + note.id ];
+						result[ resourceKey ] = { data: note };
+						return result;
+					}, {} );
+					return notes;
+				} )
+				.catch( ( error ) => {
+					return { error };
+				} ),
+		];
+	}
+	return [];
+}
+
+function undoRemoveAllNotes( resourceNames, data, fetch ) {
+	const resourceName = 'note';
+	if ( resourceNames.includes( resourceName ) ) {
+		const url = `${ NAMESPACE }/admin/notes/undoremove`;
+		return [
+			fetch( { path: url, method: 'PUT', data } )
+				.then( ( response ) => {
+					const notes = response.reduce( ( result, note ) => {
+						const resourceKey = [ resourceName + ':' + note.id ];
+						result[ resourceKey ] = { data: note };
+						return result;
+					}, {} );
+					return notes;
+				} )
+				.catch( ( error ) => {
+					return error;
+				} ),
+		];
+	}
+	return [];
+}
+
 function triggerAction( resourceNames, data, fetch ) {
 	const resourceName = 'note-action';
 	if ( resourceNames.includes( resourceName ) ) {
@@ -128,4 +204,5 @@ export default {
 	read,
 	update,
 	triggerAction,
+	undoRemoveAll,
 };

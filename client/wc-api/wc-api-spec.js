@@ -68,6 +68,9 @@ function createWcApiSpec() {
 					...items.operations.updateLocally( resourceNames, data ),
 				];
 			},
+			undoRemoveAll( resourceNames, data ) {
+				return [ ...notes.operations.undoRemoveAll( resourceNames, data ) ];
+			},
 		},
 	};
 }
