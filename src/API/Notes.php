@@ -77,6 +77,32 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/delete/(?P<id>[\d-]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_item' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/delete/all',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_all_items' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -225,6 +251,38 @@ class Notes extends \WC_REST_CRUD_Controller {
 			$note->save();
 		}
 		return $this->get_item( $request );
+	}
+
+	/**
+	 * Delete a single note.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function delete_item( $request ) {
+		$note = WC_Admin_Notes::get_note( $request->get_param( 'id' ) );
+
+		if ( ! $note ) {
+			return new \WP_Error(
+				'woocommerce_note_invalid_id',
+				__( 'Sorry, there is no note with that ID.', 'woocommerce-admin' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		$note->set_is_deleted( 1 );
+		$note->save();
+		return true;
+	}
+
+	/**
+	 * Delete all notes.
+	 *
+	 * @return WP_Error|bool
+	 */
+	public function delete_all_items() {
+		WC_Admin_Notes::delete_all_notes();
+		return true;
 	}
 
 	/**
@@ -482,6 +540,24 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'actions'           => array(
 					'description' => __( 'An array of actions, if any, for the note.', 'woocommerce-admin' ),
 					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'layout'            => array(
+					'description' => __( 'The layout of the note (e.g. banner, thumbnail, plain).', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'image'             => array(
+					'description' => __( 'The image of the note, if any.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'is_deleted'        => array(
+					'description' => __( 'Registers whether the note is deleted or not', 'woocommerce-admin' ),
+					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
