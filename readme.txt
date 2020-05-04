@@ -71,6 +71,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.1.1 2020-05-05 =
+- Tweak: Remove Stripe deferred account activation, and revert to oAuth connection flow. #4164
+- Fix: date range component render bug. #4286
+
 = 1.1.0 2020-04-14 =
 - Tweak: Update form example to better format the form return data #3706
 - Dev: Align WooCommerce javascript code standards/linting/styles with WordPress core. #3674
