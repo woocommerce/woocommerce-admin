@@ -46,7 +46,6 @@ class WC_Admin_Notes {
 			$notes[ $note_id ]['locale']        = $note->get_locale( $context );
 			$notes[ $note_id ]['title']         = $note->get_title( $context );
 			$notes[ $note_id ]['content']       = $note->get_content( $context );
-			$notes[ $note_id ]['icon']          = $note->get_icon( $context );
 			$notes[ $note_id ]['content_data']  = $note->get_content_data( $context );
 			$notes[ $note_id ]['status']        = $note->get_status( $context );
 			$notes[ $note_id ]['source']        = $note->get_source( $context );

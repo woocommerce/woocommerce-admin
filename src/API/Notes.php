@@ -426,12 +426,6 @@ class Notes extends \WC_REST_CRUD_Controller {
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'icon'              => array(
-					'description' => __( 'Icon (gridicon) for the note.', 'woocommerce-admin' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
 				'content_data'      => array(
 					'description' => __( 'Content data for the note. JSON string. Available for re-localization.', 'woocommerce-admin' ),
 					'type'        => 'string',

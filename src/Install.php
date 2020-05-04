@@ -40,7 +40,7 @@ class Install {
 			'wc_admin_update_0251_remove_unsnooze_action',
 			'wc_admin_update_0251_db_version',
 		),
-		'1.1.0' => array(
+		'1.1.0'  => array(
 			'wc_admin_update_110_remove_facebook_note',
 		),
 	);
@@ -250,7 +250,6 @@ class Install {
 			locale varchar(20) NOT NULL,
 			title longtext NOT NULL,
 			content longtext NOT NULL,
-			icon varchar(200) NOT NULL,
 			content_data longtext NULL default null,
 			status varchar(200) NOT NULL,
 			source varchar(200) NOT NULL,
