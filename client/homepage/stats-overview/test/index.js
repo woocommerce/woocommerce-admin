@@ -35,7 +35,7 @@ describe( 'StatsOverview tracking', () => {
 	} );
 } );
 
-describe( 'StatsOverview stat selection', () => {
+describe( 'StatsOverview toggle and persist stat preference', () => {
 	it( 'should update preferences', () => {
 		const updateCurrentUserData = jest.fn();
 
