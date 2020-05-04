@@ -99,6 +99,10 @@ describe( 'List', () => {
 				linkType: 'external',
 				listItemTag: 'woocommerce.com-site',
 			},
+			{
+				title: 'WordPress.org',
+				href: 'https://wordpress.org',
+			},
 		];
 
 		const { container } = render( <List items={ listItems } /> );
@@ -109,5 +113,6 @@ describe( 'List', () => {
 		expect( renderedItems[ 2 ].dataset.listItemTag ).toBe(
 			'woocommerce.com-site'
 		);
+		expect( renderedItems[ 3 ].dataset.listItemTag ).toBeUndefined();
 	} );
 } );
