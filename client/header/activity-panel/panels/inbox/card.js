@@ -39,8 +39,115 @@ class InboxNoteCard extends Component {
 		}
 	}
 
+	openDismissModal( type ) {
+		this.setState( {
+			isDismissModalOpen: true,
+			dismissType: type,
+		} );
+	}
+
+	closeDismissModal() {
+		this.setState( {
+			isDismissModalOpen: false,
+		} );
+	}
+
+	renderDismissButton() {
+		return (
+			<Dropdown
+				position="bottom right"
+				renderToggle={ ( { onToggle } ) => (
+					<Button isTertiary onClick={ onToggle }>
+						{ __( 'Dismiss', 'woocommerce-admin' ) }
+					</Button>
+				) }
+				focusOnMount={ false }
+				popoverProps={ { noArrow: true } }
+				renderContent={ () => (
+					<ul>
+						<li>
+							<Button
+								onClick={ () =>
+									this.openDismissModal( 'this' )
+								}
+							>
+								{ __(
+									'Dismiss this message',
+									'woocommerce-admin'
+								) }
+							</Button>
+						</li>
+						<li>
+							<Button
+								onClick={ () => this.openDismissModal( 'all' ) }
+							>
+								{ __(
+									'Dismiss all message',
+									'woocommerce-admin'
+								) }
+							</Button>
+						</li>
+					</ul>
+				) }
+			/>
+		);
+	}
+
+	renderDismissConfirmationModal() {
+		const { note } = this.props;
+		const { dismissType } = this.state;
+		const getDismissButtonFromActions = () => {
+			if ( ! note.actions ) {
+				return [];
+			}
+			return (
+				<NoteAction
+					key={ note.id }
+					noteId={ note.id }
+					label={ __( "Yes, I'm sure", 'woocommerce-admin' ) }
+					actionCallback={ this.closeDismissModal }
+					dismiss={ true }
+					dismissType={ dismissType }
+				/>
+			);
+		};
+		return (
+			<Modal
+				title={
+					<Fragment>
+						{ __( 'Are you sure?', 'woocommerce-admin' ) }
+					</Fragment>
+				}
+				onRequestClose={ () => this.closeDismissModal() }
+				className="woocommerce-inbox-dismiss-confirmation_modal"
+			>
+				<div className="woocommerce-inbox-dismiss-confirmation_wrapper">
+					<p>
+						{ __(
+							'Dismissed messages cannot be viewed again',
+							'woocommerce-admin'
+						) }
+					</p>
+					<div className="woocommerce-inbox-dismiss-confirmation_buttons">
+						<Button
+							isDefault
+							onClick={ () => this.closeDismissModal() }
+						>
+							{ __( 'Cancel', 'woocommerce-admin' ) }
+						</Button>
+						{ getDismissButtonFromActions() }
+					</div>
+				</div>
+			</Modal>
+		);
+	}
+
 	render() {
 		const { lastRead, note } = this.props;
+
+		if ( note.is_deleted ) {
+			return null;
+		}
 
 		const getButtonsFromActions = () => {
 			if ( ! note.actions ) {
@@ -94,6 +201,9 @@ InboxNoteCard.propTypes = {
 				primary: PropTypes.bool.isRequired,
 			} )
 		),
+		layout: PropTypes.string,
+		image: PropTypes.string,
+		is_deleted: PropTypes.bool,
 	} ),
 	lastRead: PropTypes.number,
 };

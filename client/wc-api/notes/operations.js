@@ -120,10 +120,10 @@ function updateNote( resourceNames, data, fetch ) {
 function removeNote( resourceNames, data, fetch ) {
 	const resourceName = 'note';
 	if ( resourceNames.includes( resourceName ) ) {
-		const { noteId, ...noteFields } = data[ resourceName ];
+		const { noteId } = data[ resourceName ];
 		const url = `${ NAMESPACE }/admin/notes/delete/${ noteId }`;
 		return [
-			fetch( { path: url, method: 'DELETE', data: noteFields } )
+			fetch( { path: url, method: 'DELETE' } )
 				.then( ( response ) => {
 					return {
 						[ resourceName + ':' + noteId ]: { data: response },
@@ -144,9 +144,12 @@ function removeAllNotes( resourceNames, fetch ) {
 		return [
 			fetch( { path: url, method: 'DELETE' } )
 				.then( ( response ) => {
-					return {
-						[ resourceName ]: { data: response },
-					};
+					const notes = response.reduce( ( result, note ) => {
+						const resourceKey = [ resourceName + ':' + note.id ];
+						result[ resourceKey ] = { data: note };
+						return result;
+					}, {} );
+					return notes;
 				} )
 				.catch( ( error ) => {
 					return error;

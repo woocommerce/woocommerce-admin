@@ -79,6 +79,10 @@ class InboxNoteAction extends Component {
 
 InboxNoteAction.propTypes = {
 	noteId: PropTypes.number,
+	label: PropTypes.string,
+	dismiss: PropTypes.bool,
+	dismissType: PropTypes.string,
+	actionCallback: PropTypes.func,
 	action: PropTypes.shape( {
 		id: PropTypes.number.isRequired,
 		url: PropTypes.string,
