@@ -3,6 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
+import { Fragment } from '@wordpress/element';
 import { xor } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
@@ -61,7 +62,7 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 						'woocommerce-admin'
 					) }
 					renderContent={ () => (
-						<>
+						<Fragment>
 							<MenuTitle>
 								{ __( 'Display stats:', 'woocommerce-admin' ) }
 							</MenuTitle>
@@ -84,7 +85,7 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 									</MenuItem>
 								);
 							} ) }
-						</>
+						</Fragment>
 					) }
 				/>
 			}
