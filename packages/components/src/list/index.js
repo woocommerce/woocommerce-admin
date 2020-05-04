@@ -44,6 +44,7 @@ class List extends Component {
 						className: itemClasses,
 						content,
 						href,
+						listItemTag,
 						onClick,
 						target,
 						title,
@@ -69,6 +70,7 @@ class List extends Component {
 						target: href ? target : null,
 						type: this.getItemLinkType( item ),
 						href,
+						'data-list-item-tag': listItemTag,
 					};
 
 					return (
