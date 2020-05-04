@@ -12,9 +12,13 @@ import './style.scss';
 
 function logItemClick( event ) {
 	const a = event.currentTarget;
-	const logMessage = a.href
-		? `[${ a.textContent }](${ a.href }) ${ a.dataset.linkType } item clicked`
-		: `[${ a.textContent }] item clicked`;
+	const itemDescription = a.href
+		? `[${ a.textContent }](${ a.href }) ${ a.dataset.linkType }`
+		: `[${ a.textContent }]`;
+	const itemTag = a.dataset.listItemTag
+		? `'${ a.dataset.listItemTag }'`
+		: 'not set';
+	const logMessage = `[${ itemDescription } item clicked (tag: ${ itemTag })`;
 
 	// eslint-disable-next-line no-console
 	console.log( logMessage );
@@ -94,7 +98,7 @@ export const BeforeAndAfter = () => {
 	return <List items={ listItems } />;
 };
 
-export const CustomStyle = () => {
+export const CustomStyleAndTags = () => {
 	const listItems = [
 		{
 			before: <Gridicon icon="cart" />,
@@ -102,6 +106,7 @@ export const CustomStyle = () => {
 			title: 'WooCommerce.com',
 			href: 'https://woocommerce.com',
 			onClick: logItemClick,
+			listItemTag: 'woocommerce.com-link',
 		},
 		{
 			before: <Gridicon icon="my-sites" />,
@@ -109,6 +114,7 @@ export const CustomStyle = () => {
 			title: 'WordPress.org',
 			href: 'https://wordpress.org',
 			onClick: logItemClick,
+			listItemTag: 'wordpress.org-link',
 		},
 		{
 			before: <Gridicon icon="link-break" />,
@@ -123,6 +129,7 @@ export const CustomStyle = () => {
 				window.alert( 'List item clicked' );
 				return logItemClick( event );
 			},
+			listItemTag: 'click-me',
 		},
 	];
 
