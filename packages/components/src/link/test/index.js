@@ -15,6 +15,7 @@ describe( 'Link', () => {
 				WooCommerce.com
 			</Link>
 		);
+
 		expect( container.firstChild ).toMatchInlineSnapshot( `
 			<a
 			  data-link-type="external"
@@ -31,6 +32,7 @@ describe( 'Link', () => {
 				New Post
 			</Link>
 		);
+
 		expect( container.firstChild ).toMatchInlineSnapshot( `
 			<a
 			  data-link-type="wp-admin"
@@ -50,6 +52,7 @@ describe( 'Link', () => {
 				Analytics: Orders
 			</Link>
 		);
+
 		expect( container.firstChild ).toMatchInlineSnapshot( `
 			<a
 			  data-link-type="wc-admin"
@@ -66,6 +69,7 @@ describe( 'Link', () => {
 				Analytics: Orders
 			</Link>
 		);
+
 		expect( container.firstChild ).toMatchInlineSnapshot( `
 			<a
 			  data-link-type="wc-admin"
@@ -87,6 +91,7 @@ describe( 'Link', () => {
 				WooCommerce.com
 			</Link>
 		);
+
 		expect( container.firstChild ).toMatchInlineSnapshot( `
 			<a
 			  class="foo"
@@ -101,6 +106,7 @@ describe( 'Link', () => {
 
 	it( 'should support `onClick`', () => {
 		const clickHandler = jest.fn();
+
 		const { container } = render(
 			<Link
 				href="https://woocommerce.com"
@@ -110,7 +116,9 @@ describe( 'Link', () => {
 				WooCommerce.com
 			</Link>
 		);
+
 		fireEvent.click( container.firstChild );
+
 		expect( clickHandler ).toHaveBeenCalled();
 	} );
 } );
