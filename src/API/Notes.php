@@ -103,6 +103,19 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/undoremove',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'undoremove_items' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -234,26 +247,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			);
 		}
 
-		// @todo Status is the only field that can be updated at the moment. We should also implement the "date reminder" setting.
-		$note_changed = false;
-		if ( ! is_null( $request->get_param( 'status' ) ) ) {
-			$note->set_status( $request->get_param( 'status' ) );
-			$note_changed = true;
-		}
-
-		if ( ! is_null( $request->get_param( 'date_reminder' ) ) ) {
-			$note->set_date_reminder( $request->get_param( 'date_reminder' ) );
-			$note_changed = true;
-		}
-
-		if ( ! is_null( $request->get_param( 'is_deleted' ) ) ) {
-			$note->set_is_deleted( $request->get_param( 'is_deleted' ) );
-			$note_changed = true;
-		}
-
-		if ( $note_changed ) {
-			$note->save();
-		}
+		WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
 		return $this->get_item( $request );
 	}
 
@@ -298,16 +292,60 @@ class Notes extends \WC_REST_CRUD_Controller {
 	}
 
 	/**
+	 * Undo delete all notes.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function undoremove_items( $request ) {
+		$data      = array();
+		$notes_ids = $request->get_param( 'notesIds' );
+		foreach ( (array) $notes_ids as $note_id ) {
+			$note = WC_Admin_Notes::get_note( $note_id );
+			if ( $note ) {
+				WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
+				$data[] = $this->prepare_note_data_for_response( $note, $request );
+			}
+		}
+
+		$response = rest_ensure_response( $data );
+		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( array( 'info', 'warning' ), array() ) );
+		return $response;
+	}
+
+	/**
 	 * Prepare a note data.
 	 *
-	 * @param array           $note Note data.
-	 * @param WP_REST_Request $request Request object.
+	 * @param WC_Admin_Note   $note     Note data.
+	 * @param WP_REST_Request $request  Request object.
 	 * @return WP_REST_Response $response Response data.
 	 */
 	public function prepare_note_data_for_response( $note, $request ) {
 		$note = $note->get_data();
 		$note = $this->prepare_item_for_response( $note, $request );
 		return $this->prepare_response_for_collection( $note );
+	}
+
+	/**
+	 * Prepare an array with the in the requested updates.
+	 *
+	 * @param WP_REST_Request $request  Request object.
+	 * @return array A list of the requested updates values.
+	 */
+	public function get_requested_updates( $request ) {
+		$requested_updates = array();
+		if ( ! is_null( $request->get_param( 'status' ) ) ) {
+			$requested_updates['status'] = $request->get_param( 'status' );
+		}
+
+		if ( ! is_null( $request->get_param( 'date_reminder' ) ) ) {
+			$requested_updates['date_reminder'] = $request->get_param( 'date_reminder' );
+		}
+
+		if ( ! is_null( $request->get_param( 'is_deleted' ) ) ) {
+			$requested_updates['is_deleted'] = $request->get_param( 'is_deleted' );
+		}
+		return $requested_updates;
 	}
 
 	/**

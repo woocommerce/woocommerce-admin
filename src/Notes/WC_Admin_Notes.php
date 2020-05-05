@@ -103,6 +103,34 @@ class WC_Admin_Notes {
 	}
 
 	/**
+	 * Update a note.
+	 *
+	 * @param WC_Admin_Note $note The note that will be deleted.
+	 * @param array         $requested_updates a list of requested updates.
+	 */
+	public static function update_note( $note, $requested_updates ) {
+		$note_changed = false;
+		if ( isset( $requested_updates['status'] ) ) {
+			$note->set_status( $requested_updates['status'] );
+			$note_changed = true;
+		}
+
+		if ( isset( $requested_updates['date_reminder'] ) ) {
+			$note->set_date_reminder( $requested_updates['date_reminder'] );
+			$note_changed = true;
+		}
+
+		if ( isset( $requested_updates['is_deleted'] ) ) {
+			$note->set_is_deleted( $requested_updates['is_deleted'] );
+			$note_changed = true;
+		}
+
+		if ( $note_changed ) {
+			$note->save();
+		}
+	}
+
+	/**
 	 * Soft delete of a note.
 	 *
 	 * @param WC_Admin_Note $note The note that will be deleted.
