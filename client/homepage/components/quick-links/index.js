@@ -20,6 +20,25 @@ import './style.scss';
  * QuickLinks component to display a list of store management links.
  */
 class QuickLinks extends Component {
+	constructor( props ) {
+		super( props );
+
+		this.onItemClick = this.onItemClick.bind( this );
+	}
+
+	onItemClick( event ) {
+		if ( typeof this.props.onItemClick !== 'function' ) {
+			return;
+		}
+
+		const a = event.currentTarget;
+
+		if ( ! this.props.onItemClick( a.dataset.listItemTag ) ) {
+			event.preventDefault();
+			return false;
+		}
+	}
+
 	getItems() {
 		return [
 			{
@@ -27,54 +46,63 @@ class QuickLinks extends Component {
 				type: 'wc-admin',
 				path: 'marketing',
 				iconName: 'megaphone',
+				listItemTag: 'marketing',
 			},
 			{
 				title: __( 'Add products', 'woocommerce-admin' ),
 				type: 'wp-admin',
 				path: '/post-new.php?post_type=product',
 				iconName: 'gridicons-product',
+				listItemTag: 'add-products',
 			},
 			{
 				title: __( 'Personalize my store', 'woocommerce-admin' ),
 				type: 'wp-admin',
 				path: 'todo', // open editor with shop page open
 				iconName: 'admin-customizer',
+				listItemTag: 'personalize-store',
 			},
 			{
 				title: __( 'Shipping settings', 'woocommerce-admin' ),
 				type: 'wc-settings',
 				tab: 'shipping',
 				iconName: 'gridicons-shipping',
+				listItemTag: 'shipping-settings',
 			},
 			{
 				title: __( 'Tax settings', 'woocommerce-admin' ),
 				type: 'wc-settings',
 				tab: 'tax',
 				iconName: 'gridicons-institution',
+				listItemTag: 'tax-settings',
 			},
 			{
 				title: __( 'Payment settings', 'woocommerce-admin' ),
 				type: 'wc-settings',
 				tab: 'checkout',
 				iconName: 'gridicons-credit-card',
+				listItemTag: 'payment-settings',
 			},
 			{
 				title: __( 'Edit store details', 'woocommerce-admin' ),
 				type: 'wc-settings',
 				tab: 'general',
 				iconName: 'store',
+				listItemTag: 'edit-store-details',
 			},
 			{
 				title: __( 'Get support', 'woocommerce-admin' ),
 				type: 'external',
 				href: 'todo', // support portal: wpcom vs self-hosted
 				iconName: 'sos',
+				listItemTag: 'support',
 			},
 			{
 				title: __( 'View my store', 'woocommerce-admin' ),
 				type: 'external',
 				href: 'todo', // frontend
 				iconName: 'external',
+				listItemTag: 'view-store',
 			},
 		];
 	}
@@ -132,6 +160,8 @@ class QuickLinks extends Component {
 				before: this.getIcon( item.iconName ),
 				after: this.getIcon( 'arrow-right-alt2' ),
 				...this.getLinkTypeAndHref( item ),
+				listItemTag: item.listItemTag,
+				onClick: this.onItemClick,
 			};
 		} );
 	}
