@@ -44,7 +44,6 @@ class InboxNoteAction extends Component {
 		}
 
 		if ( dismissType ) {
-			// updateNote( noteId, { deleted: true } );
 			actionCallback();
 		} else {
 			this.setState( { inAction }, () =>
@@ -87,11 +86,10 @@ InboxNoteAction.propTypes = {
 
 export default compose(
 	withDispatch( ( dispatch ) => {
-		const { triggerNoteAction, updateNote } = dispatch( 'wc-api' );
+		const { triggerNoteAction } = dispatch( 'wc-api' );
 
 		return {
 			triggerNoteAction,
-			updateNote,
 		};
 	} )
 )( InboxNoteAction );
