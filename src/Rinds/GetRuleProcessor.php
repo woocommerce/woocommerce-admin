@@ -47,6 +47,8 @@ class GetRuleProcessor {
 				);
 			case 'fail':
 				return new FailRuleProcessor();
+			case 'pass':
+				return new PassRuleProcessor();
 			case 'plugin_version':
 				return new PluginVersionRuleProcessor(
 					new PluginsProvider()
