@@ -112,7 +112,6 @@ class InboxNoteCard extends Component {
 				<NoteAction
 					key={ note.id }
 					noteId={ note.id }
-					noteName={ note.name }
 					label={ __( "Yes, I'm sure", 'woocommerce-admin' ) }
 					actionCallback={ this.closeDismissModal }
 					dismiss={ true }
@@ -154,6 +153,10 @@ class InboxNoteCard extends Component {
 	render() {
 		const { lastRead, note } = this.props;
 		const { isDismissModalOpen } = this.state;
+
+		if ( note.is_deleted ) {
+			return null;
+		}
 
 		const getButtonsFromActions = () => {
 			if ( ! note.actions ) {
@@ -247,6 +250,7 @@ InboxNoteCard.propTypes = {
 		),
 		layout: PropTypes.string,
 		image: PropTypes.string,
+		is_deleted: PropTypes.bool,
 	} ),
 	lastRead: PropTypes.number,
 };

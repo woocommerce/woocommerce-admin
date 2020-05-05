@@ -35,6 +35,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			'is_snoozable' => (int) $note->get_is_snoozable(),
 			'layout'       => $note->get_layout(),
 			'image'        => $note->get_image(),
+			'is_deleted'   => (int) $note->get_is_deleted(),
 		);
 
 		$note_to_be_inserted['content_data']  = wp_json_encode( $note->get_content_data() );
@@ -72,7 +73,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		if ( 0 !== $note_id || '0' !== $note_id ) {
 			$note_row = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT name, type, locale, title, content, content_data, status, source, date_created, date_reminder, is_snoozable, layout, image FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d LIMIT 1",
+					"SELECT name, type, locale, title, content, content_data, status, source, date_created, date_reminder, is_snoozable, layout, image FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d  AND is_deleted = 0 LIMIT 1",
 					$note->get_id()
 				)
 			);
@@ -164,6 +165,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 					'is_snoozable'  => $note->get_is_snoozable(),
 					'layout'        => $note->get_layout(),
 					'image'         => $note->get_image(),
+					'is_deleted'    => $note->get_is_deleted(),
 				),
 				array( 'note_id' => $note->get_id() )
 			);
@@ -361,13 +363,8 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 				'status' => $status,
 			)
 		);
-
-		if ( ! empty( $where_clauses ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses}" );
-		}
-
-		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes" );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses}" );
 	}
 
 	/**
@@ -411,6 +408,8 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$where_clauses .= " AND status IN ($escaped_status_types)";
 		}
 
+		$where_clauses .= ' AND is_deleted = 0';
+
 		/**
 		 * Filter the notes WHERE clause before retrieving the data.
 		 *
@@ -432,7 +431,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		global $wpdb;
 		return $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT note_id FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s ORDER BY note_id ASC",
+				"SELECT note_id FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s AND is_deleted = 0 ORDER BY note_id ASC",
 				$name
 			)
 		);

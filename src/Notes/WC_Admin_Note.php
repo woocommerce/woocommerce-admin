@@ -63,6 +63,7 @@ class WC_Admin_Note extends \WC_Data {
 			'actions'       => array(),
 			'layout'        => 'plain',
 			'image'         => '',
+			'is_deleted'    => false,
 		);
 
 		parent::__construct( $data );
@@ -304,6 +305,16 @@ class WC_Admin_Note extends \WC_Data {
 		return $this->get_prop( 'image', $context );
 	}
 
+	/**
+	 * Get deleted status.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array
+	 */
+	public function get_is_deleted( $context = 'view' ) {
+		return $this->get_prop( 'is_deleted', $context );
+	}
+
 	/*
 	|--------------------------------------------------------------------------
 	| Setters
@@ -518,6 +529,15 @@ class WC_Admin_Note extends \WC_Data {
 	 */
 	public function set_image( $image ) {
 		$this->set_prop( 'image', $image );
+	}
+
+	/**
+	 * Set note deleted status. NULL is not allowed
+	 *
+	 * @param bool $is_deleted Note deleted status.
+	 */
+	public function set_is_deleted( $is_deleted ) {
+		$this->set_prop( 'is_deleted', $is_deleted );
 	}
 
 	/**

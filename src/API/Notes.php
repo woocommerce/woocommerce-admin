@@ -77,6 +77,32 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/delete/(?P<id>[\d-]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_item' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/delete/all',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_all_items' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -100,9 +126,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			return $note;
 		}
 
-		$data = $note->get_data();
-		$data = $this->prepare_item_for_response( $data, $request );
-		$data = $this->prepare_response_for_collection( $data );
+		$data = $this->prepare_note_data_for_response( $note, $request );
 
 		return rest_ensure_response( $data );
 	}
@@ -228,6 +252,59 @@ class Notes extends \WC_REST_CRUD_Controller {
 	}
 
 	/**
+	 * Delete a single note.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function delete_item( $request ) {
+		$note = WC_Admin_Notes::get_note( $request->get_param( 'id' ) );
+
+		if ( ! $note ) {
+			return new \WP_Error(
+				'woocommerce_note_invalid_id',
+				__( 'Sorry, there is no note with that ID.', 'woocommerce-admin' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		WC_Admin_Notes::delete_note( $note );
+		$data = $this->prepare_note_data_for_response( $note, $request );
+		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Delete all notes.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function delete_all_items( $request ) {
+		$notes = WC_Admin_Notes::delete_all_notes();
+		$data  = array();
+		foreach ( (array) $notes as $note_obj ) {
+			$data[] = $this->prepare_note_data_for_response( $note_obj, $request );
+		}
+
+		$response = rest_ensure_response( $data );
+		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( array( 'info', 'warning' ), array() ) );
+		return $response;
+	}
+
+	/**
+	 * Prepare a note data.
+	 *
+	 * @param array           $note Note data.
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response $response Response data.
+	 */
+	public function prepare_note_data_for_response( $note, $request ) {
+		$note = $note->get_data();
+		$note = $this->prepare_item_for_response( $note, $request );
+		return $this->prepare_response_for_collection( $note );
+	}
+
+	/**
 	 * Makes sure the current user has access to WRITE the settings APIs.
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
@@ -280,6 +357,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$data['title']             = stripslashes( $data['title'] );
 		$data['content']           = stripslashes( $data['content'] );
 		$data['is_snoozable']      = (bool) $data['is_snoozable'];
+		$data['is_deleted']        = (bool) $data['is_deleted'];
 		foreach ( (array) $data['actions'] as $key => $value ) {
 			$data['actions'][ $key ]->label  = stripslashes( $data['actions'][ $key ]->label );
 			$data['actions'][ $key ]->url    = $this->prepare_query_for_response( $data['actions'][ $key ]->query );
@@ -488,6 +566,12 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'image'             => array(
 					'description' => __( 'The image of the note, if any.', 'woocommerce-admin' ),
 					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'is_deleted'        => array(
+					'description' => __( 'Registers whether the note is deleted or not', 'woocommerce-admin' ),
+					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),

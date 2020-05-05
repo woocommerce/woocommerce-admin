@@ -54,6 +54,7 @@ class WC_Admin_Notes {
 			$notes[ $note_id ]['actions']       = $note->get_actions( $context );
 			$notes[ $note_id ]['layout']        = $note->get_layout( $context );
 			$notes[ $note_id ]['image']         = $note->get_image( $context );
+			$notes[ $note_id ]['is_deleted']    = $note->get_is_deleted( $context );
 		}
 		return $notes;
 	}
@@ -99,6 +100,44 @@ class WC_Admin_Notes {
 			$note = new WC_Admin_Note( $note_id );
 			$note->delete();
 		}
+	}
+
+	/**
+	 * Soft delete of a note.
+	 *
+	 * @param WC_Admin_Note $note The note that will be deleted.
+	 */
+	public static function delete_note( $note ) {
+		$note->set_is_deleted( 1 );
+		$note->save();
+	}
+
+	/**
+	 * Soft delete of all the admin notes. Returns the deleted items.
+	 *
+	 * @return array Array of arrays.
+	 */
+	public static function delete_all_notes() {
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$raw_notes  = $data_store->get_notes(
+			array(
+				'order'    => 'desc',
+				'orderby'  => 'date_created',
+				'per_page' => 25,
+				'page'     => 1,
+				'type'     => array( 'info', 'warning' ),
+				'status'   => array( 'unactioned' ),
+			)
+		);
+
+		$notes = array();
+		foreach ( (array) $raw_notes as $raw_note ) {
+			$note = new WC_Admin_Note( $raw_note );
+			$note->set_is_deleted( 1 );
+			$note->save();
+			array_push( $notes, $note );
+		}
+		return $notes;
 	}
 
 	/**
