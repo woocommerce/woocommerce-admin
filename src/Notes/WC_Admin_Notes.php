@@ -121,12 +121,13 @@ class WC_Admin_Notes {
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$raw_notes  = $data_store->get_notes(
 			array(
-				'order'    => 'desc',
-				'orderby'  => 'date_created',
-				'per_page' => 25,
-				'page'     => 1,
-				'type'     => array( 'info', 'warning' ),
-				'status'   => array( 'unactioned' ),
+				'order'      => 'desc',
+				'orderby'    => 'date_created',
+				'per_page'   => 25,
+				'page'       => 1,
+				'type'       => array( 'info', 'warning' ),
+				'status'     => array( 'unactioned' ),
+				'is_deleted' => 0,
 			)
 		);
 

@@ -27,7 +27,19 @@ const removeNote = ( operations ) => async ( noteId ) => {
 	if ( response && response.data ) {
 		createNotice(
 			'success',
-			__( 'Message dismissed.', 'woocommerce-admin' )
+			__( 'Message dismissed.', 'woocommerce-admin' ), 
+			{
+				actions: [
+					{
+						label: __( 'Undo', 'woocommerce-admin' ),
+						onClick: () => {
+							operations.update( [ resourceKey ], {
+								[ resourceKey ]: { noteId, is_deleted: 0 },
+							} );
+						}
+					},
+				],
+			}
 		);
 	}
 	if ( response && response.error ) {

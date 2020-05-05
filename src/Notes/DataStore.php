@@ -73,7 +73,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		if ( 0 !== $note_id || '0' !== $note_id ) {
 			$note_row = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT name, type, locale, title, content, content_data, status, source, date_created, date_reminder, is_snoozable, layout, image FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d  AND is_deleted = 0 LIMIT 1",
+					"SELECT name, type, locale, title, content, content_data, status, source, date_created, date_reminder, is_snoozable, layout, image FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d LIMIT 1",
 					$note->get_id()
 				)
 			);
@@ -408,7 +408,9 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$where_clauses .= " AND status IN ($escaped_status_types)";
 		}
 
-		$where_clauses .= ' AND is_deleted = 0';
+		if ( isset( $args['is_deleted'] ) ) {
+			$where_clauses .= $args['is_deleted'] ? ' AND is_deleted = 1' : ' AND is_deleted = 0';
+		}
 
 		/**
 		 * Filter the notes WHERE clause before retrieving the data.
