@@ -170,7 +170,7 @@ class QuickLinks extends Component {
 		const listItems = this.getListItems();
 
 		return (
-			<Card>
+			<Card className="woocommerce-quick-links">
 				<CardHeader>
 					{ __( 'Store management', 'woocommerce-admin' ) }
 				</CardHeader>

@@ -1,1 +1,18 @@
-// QuickLinks styles will go in here
+.woocommerce-quick-links {
+	.components-card__body.is-size-medium {
+		padding: 0;
+
+		.woocommerce-list {
+			margin: 0;
+			padding: 0;
+
+			.woocommerce-list__item {
+				svg.dashicon,
+				svg.gridicon {
+					width: 20px;
+					height: 20px;
+				}
+			}
+		}
+	}
+}
