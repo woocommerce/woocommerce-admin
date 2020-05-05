@@ -6,6 +6,10 @@ import { StatsOverview } from '../index';
 import { recordEvent } from 'lib/tracks';
 
 jest.mock( 'lib/tracks' );
+// Mock the stats list so that it can be tested separately.
+jest.mock( '../stats-list', () =>
+	jest.fn().mockImplementation( () => <div>mocked stats list</div> )
+);
 
 describe( 'StatsOverview tracking', () => {
 	it( 'should record an event when a stat is toggled', () => {
@@ -64,5 +68,24 @@ describe( 'StatsOverview toggle and persist stat preference', () => {
 				],
 			},
 		} );
+	} );
+} );
+
+describe( 'StatsOverview rendering correct elements', () => {
+	it( 'should include a link to all the overview page', () => {
+		render(
+			<StatsOverview
+				userPrefs={ {
+					hiddenStats: null,
+				} }
+				updateCurrentUserData={ () => {} }
+			/>
+		);
+
+		const viewDetailedStatsLink = screen.getByText( 'View detailed stats' );
+		expect( viewDetailedStatsLink ).toBeDefined();
+		expect( viewDetailedStatsLink.href ).toBe(
+			'http://localhost/admin.php?page=wc-admin&path=%2Fanalytics%2Foverview'
+		);
 	} );
 } );
