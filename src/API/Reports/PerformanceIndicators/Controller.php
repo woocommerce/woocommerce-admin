@@ -116,16 +116,9 @@ class Controller extends \WC_REST_Reports_Controller {
 	}
 
 	/**
-	 * Get information such as allowed stats, stat labels, and endpoint data from stats reports.
-	 *
-	 * @return WP_Error|True
+	 * Get analytics report data and endpoints.
 	 */
-	private function get_indicator_data() {
-		// Data already retrieved.
-		if ( ! empty( $this->endpoints ) && ! empty( $this->labels ) && ! empty( $this->allowed_stats ) ) {
-			return true;
-		}
-
+	public function get_analytics_report_data() {
 		$request  = new \WP_REST_Request( 'GET', '/wc-analytics/reports' );
 		$response = rest_do_request( $request );
 
@@ -137,8 +130,7 @@ class Controller extends \WC_REST_Reports_Controller {
 			return new \WP_Error( 'woocommerce_analytics_performance_indicators_result_failed', __( 'Sorry, fetching performance indicators failed.', 'woocommerce-admin' ) );
 		}
 
-		$endpoints     = $response->get_data();
-		$allowed_stats = array();
+		$endpoints = $response->get_data();
 
 		foreach ( $endpoints as $endpoint ) {
 			if ( '/stats' === substr( $endpoint['slug'], -6 ) ) {
@@ -162,9 +154,9 @@ class Controller extends \WC_REST_Reports_Controller {
 						continue;
 					}
 
-					$stat            = $prefix . '/' . $property_key;
-					$allowed_stats[] = $stat;
-					$stat_label      = empty( $schema_info['title'] ) ? $schema_info['description'] : $schema_info['title'];
+					$stat                  = $prefix . '/' . $property_key;
+					$this->allowed_stats[] = $stat;
+					$stat_label            = empty( $schema_info['title'] ) ? $schema_info['description'] : $schema_info['title'];
 
 					$this->labels[ $stat ]  = trim( preg_replace( '/\W+/', ' ', $stat_label ) );
 					$this->formats[ $stat ] = isset( $schema_info['format'] ) ? $schema_info['format'] : 'number';
@@ -174,8 +166,21 @@ class Controller extends \WC_REST_Reports_Controller {
 				$this->urls[ $prefix ]      = $endpoint['_links']['report'][0]['href'];
 			}
 		}
+	}
 
-		$this->allowed_stats = $allowed_stats;
+	/**
+	 * Get information such as allowed stats, stat labels, and endpoint data from stats reports.
+	 *
+	 * @return WP_Error|True
+	 */
+	private function get_indicator_data() {
+		// Data already retrieved.
+		if ( ! empty( $this->endpoints ) && ! empty( $this->labels ) && ! empty( $this->allowed_stats ) ) {
+			return true;
+		}
+
+		$this->get_analytics_report_data();
+
 		return true;
 	}
 
@@ -254,8 +259,8 @@ class Controller extends \WC_REST_Reports_Controller {
 			)
 		);
 
-		$a = array_search( $a->stat, $stat_order );
-		$b = array_search( $b->stat, $stat_order );
+		$a = array_search( $a->stat, $stat_order, true );
+		$b = array_search( $b->stat, $stat_order, true );
 
 		if ( false === $a && false === $b ) {
 			return 0;
@@ -320,7 +325,7 @@ class Controller extends \WC_REST_Reports_Controller {
 			$report = $pieces[0];
 			$chart  = $pieces[1];
 
-			if ( ! in_array( $stat, $this->allowed_stats ) ) {
+			if ( ! in_array( $stat, $this->allowed_stats, true ) ) {
 				continue;
 			}
 
