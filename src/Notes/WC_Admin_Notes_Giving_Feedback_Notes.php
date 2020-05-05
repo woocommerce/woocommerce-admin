@@ -53,7 +53,6 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 		$note->set_content( __( 'If you like WooCommerce Admin please leave us a 5 star rating. A huge thanks in advance!', 'woocommerce-admin' ) );
 		$note->set_content_data( (object) array() );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
-		$note->set_icon( 'info' );
 		$note->set_name( $name );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(

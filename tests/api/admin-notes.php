@@ -69,7 +69,6 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 'PHPUNIT_TEST_NOTE_1_TITLE', $note['title'] );
 
 		$this->assertEquals( 'PHPUNIT_TEST_NOTE_1_CONTENT', $note['content'] );
-		$this->assertEquals( 'info', $note['icon'] );
 		$this->assertArrayHasKey( 'content_data', $note );
 		$this->assertEquals( 1.23, $note['content_data']->amount );
 		$this->assertEquals( WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED, $note['status'] );
@@ -296,7 +295,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertEquals( 18, count( $properties ) );
+		$this->assertEquals( 17, count( $properties ) );
 
 		$this->assertArrayHasKey( 'id', $properties );
 		$this->assertArrayHasKey( 'name', $properties );
@@ -305,7 +304,6 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'title', $properties );
 
 		$this->assertArrayHasKey( 'content', $properties );
-		$this->assertArrayHasKey( 'icon', $properties );
 		$this->assertArrayHasKey( 'content_data', $properties );
 		$this->assertArrayHasKey( 'status', $properties );
 		$this->assertArrayHasKey( 'source', $properties );
