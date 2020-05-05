@@ -169,6 +169,39 @@ class Controller extends \WC_REST_Reports_Controller {
 	}
 
 	/**
+	 * Get active Jetpack modules and endpoints.
+	 */
+	public function get_jetpack_modules_data() {
+		if ( ! class_exists( '\Jetpack_Core_Json_Api_Endpoints' ) ) {
+			return;
+		}
+
+		$request  = new \WP_REST_Request( 'GET', '/jetpack/v4/module/all' );
+		$response = rest_do_request( $request );
+		$modules  = array( 'stats' );
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		if ( 200 !== $response->get_status() || empty( $modules ) ) {
+			return;
+		}
+
+		$data = $response->get_data();
+
+		foreach ( $modules as $module ) {
+			if ( ! $data[ $module ] || ! $data[ $module ]['activated'] ) {
+				return;
+			}
+
+			$this->allowed_stats[]                      = 'jetpack/' . $module;
+			$this->labels[ 'jetpack/module' . $module ] = $data[ $module ]['name'];
+			$this->endpoint[ $module ]                  = '/jetpack/v4/module/' . $module . '/data';
+		}
+	}
+
+	/**
 	 * Get information such as allowed stats, stat labels, and endpoint data from stats reports.
 	 *
 	 * @return WP_Error|True
@@ -180,6 +213,7 @@ class Controller extends \WC_REST_Reports_Controller {
 		}
 
 		$this->get_analytics_report_data();
+		$this->get_jetpack_modules_data();
 
 		return true;
 	}
