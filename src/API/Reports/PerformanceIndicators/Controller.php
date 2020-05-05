@@ -195,9 +195,9 @@ class Controller extends \WC_REST_Reports_Controller {
 				return;
 			}
 
-			$this->allowed_stats[]                      = 'jetpack/' . $module;
-			$this->labels[ 'jetpack/module' . $module ] = $data[ $module ]['name'];
-			$this->endpoint[ $module ]                  = '/jetpack/v4/module/' . $module . '/data';
+			$this->allowed_stats[]                         = 'jetpack/' . $module . '/all';
+			$this->labels[ 'jetpack/' . $module . '/all' ] = $data[ $module ]['name'];
+			$this->endpoints[ 'jetpack/' . $module ]       = '/jetpack/v4/module/' . $module . '/data';
 		}
 	}
 
@@ -449,14 +449,14 @@ class Controller extends \WC_REST_Reports_Controller {
 		$pieces   = $this->get_stats_parts( $object->stat );
 		$endpoint = $pieces[0];
 		$stat     = $pieces[1];
-		$url      = $this->urls[ $endpoint ];
+		$url      = isset( $this->urls[ $endpoint ] ) ? $this->urls[ $endpoint ] : '';
 
 		$links = array(
 			'api'    => array(
 				'href' => rest_url( $this->endpoints[ $endpoint ] ),
 			),
 			'report' => array(
-				'href' => ! empty( $url ) ? $url : '',
+				'href' => $url,
 			),
 		);
 
