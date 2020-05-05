@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { Fragment } from '@wordpress/element';
-import { TabPanel, Button } from '@wordpress/components';
+import { TabPanel } from '@wordpress/components';
 import { xor } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
@@ -18,8 +18,10 @@ import {
 	EllipsisMenu,
 	MenuItem,
 	MenuTitle,
+	Link,
 } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -131,18 +133,18 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 					</ul>
 				) }
 			</TabPanel>
-			<Button
+			<Link
 				className="woocommerce-stats-overview__more-btn"
-				isLink
+				href={ getNewPath( {}, '/analytics/overview' ) }
+				type="wc-admin"
 				onClick={ () => {
 					recordEvent( 'statsoverview_indicators_click', {
-						key: 'overview',
+						key: 'view_detailed_stats',
 					} );
 				} }
-				href="www.example.com"
 			>
 				{ __( 'View detailed stats' ) }
-			</Button>
+			</Link>
 		</Card>
 	);
 };
