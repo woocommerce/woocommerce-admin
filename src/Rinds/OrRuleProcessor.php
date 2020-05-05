@@ -32,14 +32,14 @@ class OrRuleProcessor {
 	 * @return bool The result of the operation.
 	 */
 	public function process( $rule ) {
-		$evaluated_left_operand = $this->rule_evaluator->evaluate( $rule->left_operand );
+		foreach ( $rule->operands as $operand ) {
+			$evaluated_operand = $this->rule_evaluator->evaluate( $operand );
 
-		if ( $evaluated_left_operand ) {
-			return true;
+			if ( $evaluated_operand ) {
+				return true;
+			}
 		}
 
-		$evaluated_right_operand = $this->rule_evaluator->evaluate( $rule->right_operand );
-
-		return $evaluated_right_operand;
+		return false;
 	}
 }

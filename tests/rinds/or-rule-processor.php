@@ -27,17 +27,19 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 		$rule               = json_decode(
 			'{
 				"type": "or",
-				"left_operand": [
-					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 11:00:00"
-					}
-				],
-				"right_operand": [
-					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 11:00:00"
-					}
+				"operands": [
+					[
+						{
+							"type": "send_at_time",
+							"send_at": "2020-04-24 11:00:00"
+						}
+					],
+					[
+						{
+							"type": "send_at_time",
+							"send_at": "2020-04-24 11:00:00"
+						}
+					]
 				]
 			}'
 		);
@@ -62,17 +64,19 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 		$rule               = json_decode(
 			'{
 				"type": "or",
-				"left_operand": [
-					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 09:00:00"
-					}
-				],
-				"right_operand": [
-					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 11:00:00"
-					}
+				"operands": [
+					[
+						{
+							"type": "send_at_time",
+							"send_at": "2020-04-24 09:00:00"
+						}
+					],
+					[
+						{
+							"type": "send_at_time",
+							"send_at": "2020-04-24 11:00:00"
+						}
+					]
 				]
 			}'
 		);
@@ -97,17 +101,19 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 		$rule               = json_decode(
 			'{
 				"type": "or",
-				"left_operand": [
-					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 11:00:00"
-					}
-				],
-				"right_operand": [
-					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 09:00:00"
-					}
+				"operands": [
+					[
+						{
+							"type": "send_at_time",
+							"send_at": "2020-04-24 11:00:00"
+						}
+					],
+					[
+						{
+							"type": "send_at_time",
+							"send_at": "2020-04-24 09:00:00"
+						}
+					]
 				]
 			}'
 		);
@@ -132,17 +138,19 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 		$rule               = json_decode(
 			'{
 				"type": "or",
-				"left_operand": [
-					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 09:00:00"
-					}
-				],
-				"right_operand": [
-					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 09:00:00"
-					}
+				"operands": [
+					[
+						{
+							"type": "send_at_time",
+							"send_at": "2020-04-24 09:00:00"
+						}
+					],
+					[
+						{
+							"type": "send_at_time",
+							"send_at": "2020-04-24 09:00:00"
+						}
+					]
 				]
 			}'
 		);
