@@ -178,7 +178,12 @@ class Controller extends \WC_REST_Reports_Controller {
 
 		$request  = new \WP_REST_Request( 'GET', '/jetpack/v4/module/all' );
 		$response = rest_do_request( $request );
-		$modules  = array( 'stats' );
+		$modules  = array(
+			'stats' => array(
+				'permission' => 'view_stats',
+				'format'     => 'number',
+			),
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -190,15 +195,19 @@ class Controller extends \WC_REST_Reports_Controller {
 
 		$data = $response->get_data();
 
-		foreach ( $modules as $module ) {
-			if ( ! $data[ $module ] || ! $data[ $module ]['activated'] ) {
+		foreach ( $modules as $module_key => $module ) {
+			if ( ! $data[ $module_key ] || ! $data[ $module_key ]['activated'] ) {
 				return;
 			}
 
-			$this->allowed_stats[]                          = 'jetpack/' . $module . '/all';
-			$this->labels[ 'jetpack/' . $module . '/all' ]  = $data[ $module ]['name'];
-			$this->endpoints[ 'jetpack/' . $module ]        = '/jetpack/v4/module/' . $module . '/data';
-			$this->formats[ 'jetpack/' . $module . '/all' ] = 'number';
+			if ( $module['permission'] && ! current_user_can( $module['permission'] ) ) {
+				return;
+			}
+
+			$this->allowed_stats[]                              = 'jetpack/' . $module_key . '/all';
+			$this->labels[ 'jetpack/' . $module_key . '/all' ]  = $data[ $module_key ]['name'];
+			$this->endpoints[ 'jetpack/' . $module_key ]        = '/jetpack/v4/module/' . $module_key . '/data';
+			$this->formats[ 'jetpack/' . $module_key . '/all' ] = $module['format'];
 		}
 	}
 
