@@ -162,13 +162,14 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @return array
 	 */
 	protected function prepare_objects_query( $request ) {
-		$args             = array();
-		$args['order']    = $request['order'];
-		$args['orderby']  = $request['orderby'];
-		$args['per_page'] = $request['per_page'];
-		$args['page']     = $request['page'];
-		$args['type']     = isset( $request['type'] ) ? $request['type'] : array();
-		$args['status']   = isset( $request['status'] ) ? $request['status'] : array();
+		$args               = array();
+		$args['order']      = $request['order'];
+		$args['orderby']    = $request['orderby'];
+		$args['per_page']   = $request['per_page'];
+		$args['page']       = $request['page'];
+		$args['type']       = isset( $request['type'] ) ? $request['type'] : array();
+		$args['status']     = isset( $request['status'] ) ? $request['status'] : array();
+		$args['is_deleted'] = 0;
 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date_created';
@@ -233,21 +234,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			);
 		}
 
-		// @todo Status is the only field that can be updated at the moment. We should also implement the "date reminder" setting.
-		$note_changed = false;
-		if ( ! is_null( $request->get_param( 'status' ) ) ) {
-			$note->set_status( $request->get_param( 'status' ) );
-			$note_changed = true;
-		}
-
-		if ( ! is_null( $request->get_param( 'date_reminder' ) ) ) {
-			$note->set_date_reminder( $request->get_param( 'date_reminder' ) );
-			$note_changed = true;
-		}
-
-		if ( $note_changed ) {
-			$note->save();
-		}
+		WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
 		return $this->get_item( $request );
 	}
 
@@ -292,16 +279,38 @@ class Notes extends \WC_REST_CRUD_Controller {
 	}
 
 	/**
-	 * Prepare a note data.
+	 * Prepare note data.
 	 *
-	 * @param array           $note Note data.
-	 * @param WP_REST_Request $request Request object.
+	 * @param WC_Admin_Note   $note     Note data.
+	 * @param WP_REST_Request $request  Request object.
 	 * @return WP_REST_Response $response Response data.
 	 */
 	public function prepare_note_data_for_response( $note, $request ) {
 		$note = $note->get_data();
 		$note = $this->prepare_item_for_response( $note, $request );
 		return $this->prepare_response_for_collection( $note );
+	}
+
+	/**
+	 * Prepare an array with the the requested updates.
+	 *
+	 * @param WP_REST_Request $request  Request object.
+	 * @return array A list of the requested updates values.
+	 */
+	public function get_requested_updates( $request ) {
+		$requested_updates = array();
+		if ( ! is_null( $request->get_param( 'status' ) ) ) {
+			$requested_updates['status'] = $request->get_param( 'status' );
+		}
+
+		if ( ! is_null( $request->get_param( 'date_reminder' ) ) ) {
+			$requested_updates['date_reminder'] = $request->get_param( 'date_reminder' );
+		}
+
+		if ( ! is_null( $request->get_param( 'is_deleted' ) ) ) {
+			$requested_updates['is_deleted'] = $request->get_param( 'is_deleted' );
+		}
+		return $requested_updates;
 	}
 
 	/**

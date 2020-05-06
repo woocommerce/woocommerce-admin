@@ -104,6 +104,34 @@ class WC_Admin_Notes {
 	}
 
 	/**
+	 * Update a note.
+	 *
+	 * @param WC_Admin_Note $note The note that will be deleted.
+	 * @param array         $requested_updates a list of requested updates.
+	 */
+	public static function update_note( $note, $requested_updates ) {
+		$note_changed = false;
+		if ( isset( $requested_updates['status'] ) ) {
+			$note->set_status( $requested_updates['status'] );
+			$note_changed = true;
+		}
+
+		if ( isset( $requested_updates['date_reminder'] ) ) {
+			$note->set_date_reminder( $requested_updates['date_reminder'] );
+			$note_changed = true;
+		}
+
+		if ( isset( $requested_updates['is_deleted'] ) ) {
+			$note->set_is_deleted( $requested_updates['is_deleted'] );
+			$note_changed = true;
+		}
+
+		if ( $note_changed ) {
+			$note->save();
+		}
+	}
+
+	/**
 	 * Soft delete of a note.
 	 *
 	 * @param WC_Admin_Note $note The note that will be deleted.
@@ -116,18 +144,19 @@ class WC_Admin_Notes {
 	/**
 	 * Soft delete of all the admin notes. Returns the deleted items.
 	 *
-	 * @return array Array of arrays.
+	 * @return array Array of notes.
 	 */
 	public static function delete_all_notes() {
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$raw_notes  = $data_store->get_notes(
 			array(
-				'order'    => 'desc',
-				'orderby'  => 'date_created',
-				'per_page' => 25,
-				'page'     => 1,
-				'type'     => array( 'info', 'warning' ),
-				'status'   => array( 'unactioned' ),
+				'order'      => 'desc',
+				'orderby'    => 'date_created',
+				'per_page'   => 25,
+				'page'       => 1,
+				'type'       => array( 'info', 'warning' ),
+				'status'     => array( 'unactioned' ),
+				'is_deleted' => 0,
 			)
 		);
 
