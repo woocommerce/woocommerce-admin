@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { cloneElement, Component, Fragment } from '@wordpress/element';
 import { Button, Dropdown, Modal } from '@wordpress/components';
 import PropTypes from 'prop-types';
+import Gridicon from 'gridicons';
 import VisibilitySensor from 'react-visibility-sensor';
 import moment from 'moment';
 
@@ -41,6 +42,7 @@ class InboxNoteCard extends Component {
 				note_name: note.name,
 				note_title: note.title,
 				note_type: note.type,
+				note_icon: note.icon,
 			} );
 
 			this.hasBeenSeen = true;
@@ -112,7 +114,6 @@ class InboxNoteCard extends Component {
 				<NoteAction
 					key={ note.id }
 					noteId={ note.id }
-					noteName={ note.name }
 					label={ __( "Yes, I'm sure", 'woocommerce-admin' ) }
 					actionCallback={ this.closeDismissModal }
 					dismiss={ true }
@@ -234,6 +235,7 @@ InboxNoteCard.propTypes = {
 		id: PropTypes.number,
 		status: PropTypes.string,
 		title: PropTypes.string,
+		icon: PropTypes.string,
 		content: PropTypes.string,
 		date_created: PropTypes.string,
 		date_created_gmt: PropTypes.string,
