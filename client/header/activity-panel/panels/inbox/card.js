@@ -90,7 +90,7 @@ class InboxNoteCard extends Component {
 								onClick={ () => this.openDismissModal( 'all' ) }
 							>
 								{ __(
-									'Dismiss all message',
+									'Dismiss all messages',
 									'woocommerce-admin'
 								) }
 							</Button>
