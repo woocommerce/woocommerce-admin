@@ -9,6 +9,8 @@
 
 namespace Automattic\WooCommerce\Admin\API\Reports\PerformanceIndicators;
 
+use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -530,10 +532,10 @@ class Controller extends \WC_REST_Reports_Controller {
 			// Loop over provided data and filter by the queried date.
 			// Note that this is currently limited to 30 days via the Jetpack API
 			// but the WordPress.com endpoint allows up to 90 days.
-			$total = 0;
+			$total  = 0;
+			$before = gmdate( 'Y-m-d', strtotime( isset( $query_args['before'] ) ? $query_args['before'] : TimeInterval::default_before() ) );
+			$after  = gmdate( 'Y-m-d', strtotime( isset( $query_args['after'] ) ? $query_args['after'] : TimeInterval::default_after() ) );
 			foreach ( $data['general']->visits->data as $datum ) {
-				$before = \DateTime::createFromFormat( 'Y-m-d H:i:s', $query_args['before'] )->format( 'Y-m-d' );
-				$after  = \DateTime::createFromFormat( 'Y-m-d H:i:s', $query_args['after'] )->format( 'Y-m-d' );
 				if ( $datum[0] >= $after && $datum[0] <= $before ) {
 					$total += $datum[ $index ];
 				}
