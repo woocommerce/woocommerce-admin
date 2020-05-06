@@ -5,7 +5,7 @@
  * @package WooCommerce Admin/Classes
  */
 
-namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
+namespace Automattic\WooCommerce\Admin\Rinds;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,28 +16,31 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
  */
 class EvaluateAndGetStatus {
 	/**
+	 * Constructor.
+	 *
+	 * @param object $rule_evaluator Evaluates rules into true/false.
+	 */
+	public function __construct( $rule_evaluator ) {
+		$this->rule_evaluator = $rule_evaluator;
+	}
+
+	/**
 	 * Evaluates the spec and returns a status.
 	 *
 	 * @param array  $spec           The spec to evaluate.
 	 * @param string $current_status The note's current status.
-	 * @param object $rule_evaluator Evaluates rules into true/false.
 	 *
 	 * @return string The evaluated status.
 	 */
-	public static function evaluate( $spec, $current_status, $rule_evaluator ) {
-		// No rules should leave the note alone.
-		if ( ! isset( $spec->rules ) ) {
-			return $current_status;
-		}
+	public function evaluate( $spec, $current_status ) {
+		$evaluate_result = $this->rule_evaluator->evaluate( $spec->rules );
 
-		$evaluated_result = $rule_evaluator->evaluate( $spec->rules );
-
-		// Pending notes should be the spec status if the spec passes,
+		// Preunactioned notes should be the spec status if the spec passes,
 		// left alone otherwise.
-		if ( WC_Admin_Note::E_WC_ADMIN_NOTE_PENDING === $current_status ) {
-			return $evaluated_result
+		if ( WC_Admin_Note::E_WC_ADMIN_NOTE_PREUNACTIONED === $current_status ) {
+			return $evaluate_result
 				? $spec->status
-				: WC_Admin_Note::E_WC_ADMIN_NOTE_PENDING;
+				: WC_Admin_Note::E_WC_ADMIN_NOTE_PREUNACTIONED;
 		}
 
 		// When allow_redisplay isn't set, just leave the note alone.
@@ -46,7 +49,7 @@ class EvaluateAndGetStatus {
 		}
 
 		// allow_redisplay is set, unaction the note if eval to true.
-		return $evaluated_result
+		return $evaluate_result
 			? WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED
 			: $current_status;
 	}
