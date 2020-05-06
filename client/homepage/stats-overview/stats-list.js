@@ -24,7 +24,7 @@ import {
 	getIndictorValues,
 } from 'dashboard/store-performance/utils';
 
-const StatsList = ( {
+export const StatsList = ( {
 	stats,
 	primaryData,
 	secondaryData,

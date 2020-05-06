@@ -2,7 +2,12 @@
  * External dependencies
  */
 import { render, fireEvent, screen } from '@testing-library/react';
+
+/**
+ * Internal dependencies
+ */
 import { StatsOverview } from '../index';
+import StatsList from '../stats-list';
 import { recordEvent } from 'lib/tracks';
 
 jest.mock( 'lib/tracks' );
@@ -86,6 +91,55 @@ describe( 'StatsOverview rendering correct elements', () => {
 		expect( viewDetailedStatsLink ).toBeDefined();
 		expect( viewDetailedStatsLink.href ).toBe(
 			'http://localhost/admin.php?page=wc-admin&path=%2Fanalytics%2Foverview'
+		);
+	} );
+} );
+
+describe( 'StatsOverview period selection', () => {
+	it( 'should have Today selected by default', () => {
+		render(
+			<StatsOverview
+				userPrefs={ {
+					hiddenStats: null,
+				} }
+				updateCurrentUserData={ () => {} }
+			/>
+		);
+
+		const todayBtn = screen.getByText( 'Today' );
+		expect( todayBtn.classList ).toContain( 'is-active' );
+	} );
+
+	it( 'should select a new period', () => {
+		render(
+			<StatsOverview
+				userPrefs={ {
+					hiddenStats: null,
+				} }
+				updateCurrentUserData={ () => {} }
+			/>
+		);
+
+		fireEvent.click( screen.getByText( 'Month to date' ) );
+
+		// Check props handed down to StatsList have the right period
+		expect( StatsList ).toHaveBeenLastCalledWith(
+			{
+				query: { compare: 'previous_period', period: 'month' },
+				stats: [
+					{
+						chart: 'total_sales',
+						label: 'Total Sales',
+						stat: 'revenue/total_sales',
+					},
+					{
+						chart: 'orders_count',
+						label: 'Orders',
+						stat: 'orders/orders_count',
+					},
+				],
+			},
+			{}
 		);
 	} );
 } );

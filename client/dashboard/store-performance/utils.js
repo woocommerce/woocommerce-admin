@@ -30,7 +30,7 @@ export const getIndictorValues = ( {
 	);
 
 	if ( ! primaryItem || ! secondaryItem ) {
-		return null;
+		return {};
 	}
 
 	const href =
