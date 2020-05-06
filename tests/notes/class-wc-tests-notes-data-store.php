@@ -29,6 +29,7 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 			'PHPUNIT_TEST_ACTION_LABEL',
 			'?s=PHPUNIT_TEST_ACTION_URL'
 		);
+		$note->set_is_deleted( false );
 		$note->save();
 
 		// Load in a new instance of the note.
@@ -44,6 +45,7 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 		$this->assertEquals( $note->get_source(), $read_note->get_source() );
 		$this->assertEquals( $note->get_is_snoozable(), '0' !== $read_note->get_is_snoozable() );
 		$this->assertEquals( $note->get_actions(), $read_note->get_actions() );
+		$this->assertEquals( $note->get_is_deleted(), $read_note->get_is_deleted() );
 	}
 
 	/**

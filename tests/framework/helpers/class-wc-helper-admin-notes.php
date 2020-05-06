@@ -76,5 +76,27 @@ class WC_Helper_Admin_Notes {
 		// This note has no actions.
 		$note_3->save();
 
+		$note_4 = new WC_Admin_Note();
+		$note_4->set_title( 'PHPUNIT_TEST_NOTE_4_TITLE' );
+		$note_4->set_content( 'PHPUNIT_TEST_NOTE_4_CONTENT' );
+		$note_4->set_content_data( (object) array( 'amount' => 1.23 ) );
+		$note_4->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
+		$note_4->set_name( 'PHPUNIT_TEST_NOTE_NAME' );
+		$note_4->set_source( 'PHPUNIT_TEST' );
+		$note_4->set_is_snoozable( false );
+		$note_4->set_layout( 'plain' );
+		$note_4->set_image( '' );
+		$note_4->add_action(
+			'PHPUNIT_TEST_NOTE_4_ACTION_1_SLUG',
+			'PHPUNIT_TEST_NOTE_4_ACTION_1_LABEL',
+			'?s=PHPUNIT_TEST_NOTE_4_ACTION_1_URL'
+		);
+		$note_4->add_action(
+			'PHPUNIT_TEST_NOTE_4_ACTION_2_SLUG',
+			'PHPUNIT_TEST_NOTE_4_ACTION_2_LABEL',
+			'?s=PHPUNIT_TEST_NOTE_4_ACTION_2_URL'
+		);
+		$note_4->save();
+
 	}
 }
