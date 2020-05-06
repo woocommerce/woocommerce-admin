@@ -69,7 +69,7 @@ class InstalledExtensions {
 			'facebook-for-woocommerce',
 			'kliken-marketing-for-google',
 			'hubwoo-integration',
-			'codistoconnect',
+			'woocommerce-amazon-ebay-integration',
 		];
 	}
 
@@ -220,7 +220,7 @@ class InstalledExtensions {
 	 * @return array|bool
 	 */
 	protected static function get_amazon_ebay_extension_data() {
-		$slug = 'codistoconnect';
+		$slug = 'woocommerce-amazon-ebay-integration';
 
 		if ( ! PluginsHelper::is_plugin_installed( $slug ) ) {
 			return false;
