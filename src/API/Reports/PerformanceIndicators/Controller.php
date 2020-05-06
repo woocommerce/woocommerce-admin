@@ -195,9 +195,10 @@ class Controller extends \WC_REST_Reports_Controller {
 				return;
 			}
 
-			$this->allowed_stats[]                         = 'jetpack/' . $module . '/all';
-			$this->labels[ 'jetpack/' . $module . '/all' ] = $data[ $module ]['name'];
-			$this->endpoints[ 'jetpack/' . $module ]       = '/jetpack/v4/module/' . $module . '/data';
+			$this->allowed_stats[]                          = 'jetpack/' . $module . '/all';
+			$this->labels[ 'jetpack/' . $module . '/all' ]  = $data[ $module ]['name'];
+			$this->endpoints[ 'jetpack/' . $module ]        = '/jetpack/v4/module/' . $module . '/data';
+			$this->formats[ 'jetpack/' . $module . '/all' ] = 'number';
 		}
 	}
 
