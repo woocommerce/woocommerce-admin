@@ -69,6 +69,13 @@ class Controller extends \WC_REST_Reports_Controller {
 	protected $stats_data = array();
 
 	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		add_filter( 'woocommerce_rest_performance_indicators_data_value', array( $this, 'format_data_value' ), 10, 4 );
+	}
+
+	/**
 	 * Register the routes for reports.
 	 */
 	public function register_routes() {
@@ -178,36 +185,47 @@ class Controller extends \WC_REST_Reports_Controller {
 
 		$request  = new \WP_REST_Request( 'GET', '/jetpack/v4/module/all' );
 		$response = rest_do_request( $request );
-		$modules  = array(
-			'stats' => array(
-				'permission' => 'view_stats',
-				'format'     => 'number',
-			),
+		$items    = apply_filters(
+			'woocommerce_rest_performance_indicators_jetpack_items',
+			array(
+				'stats/visitors' => array(
+					'label'      => __( 'Visitors', 'woocommerce-admin' ),
+					'permission' => 'view_stats',
+					'format'     => 'number',
+					'module'     => 'stats',
+				),
+				'stats/views'    => array(
+					'label'      => __( 'Views', 'woocommerce-admin' ),
+					'permission' => 'view_stats',
+					'format'     => 'number',
+					'module'     => 'stats',
+				),
+			)
 		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
 
-		if ( 200 !== $response->get_status() || empty( $modules ) ) {
+		if ( 200 !== $response->get_status() || empty( $items ) ) {
 			return;
 		}
 
 		$data = $response->get_data();
 
-		foreach ( $modules as $module_key => $module ) {
-			if ( ! $data[ $module_key ] || ! $data[ $module_key ]['activated'] ) {
+		foreach ( $items as $item_key => $item ) {
+			if ( ! $data[ $item['module'] ] || ! $data[ $item['module'] ]['activated'] ) {
 				return;
 			}
 
-			if ( $module['permission'] && ! current_user_can( $module['permission'] ) ) {
+			if ( $item['permission'] && ! current_user_can( $item['permission'] ) ) {
 				return;
 			}
 
-			$this->allowed_stats[]                              = 'jetpack/' . $module_key . '/all';
-			$this->labels[ 'jetpack/' . $module_key . '/all' ]  = $data[ $module_key ]['name'];
-			$this->endpoints[ 'jetpack/' . $module_key ]        = '/jetpack/v4/module/' . $module_key . '/data';
-			$this->formats[ 'jetpack/' . $module_key . '/all' ] = $module['format'];
+			$this->allowed_stats[]                           = 'jetpack/' . $item_key;
+			$this->labels[ 'jetpack/' . $item_key ]          = $item['label'];
+			$this->endpoints[ 'jetpack/' . $item['module'] ] = '/jetpack/v4/module/' . $item['module'] . '/data';
+			$this->formats[ 'jetpack/' . $item_key ]         = $item['format'];
 		}
 	}
 
@@ -383,7 +401,7 @@ class Controller extends \WC_REST_Reports_Controller {
 			$format = $this->formats[ $stat ];
 			$label  = $this->labels[ $stat ];
 
-			if ( 200 !== $response->get_status() || ! isset( $data['totals'][ $chart ] ) ) {
+			if ( 200 !== $response->get_status() ) {
 				$stats[] = (object) array(
 					'stat'   => $stat,
 					'chart'  => $chart,
@@ -399,7 +417,7 @@ class Controller extends \WC_REST_Reports_Controller {
 				'chart'  => $chart,
 				'label'  => $label,
 				'format' => $format,
-				'value'  => $data['totals'][ $chart ],
+				'value'  => apply_filters( 'woocommerce_rest_performance_indicators_data_value', $data, $stat, $report, $chart ),
 			);
 		}
 
@@ -487,6 +505,27 @@ class Controller extends \WC_REST_Reports_Controller {
 			$endpoint,
 			$stat,
 		);
+	}
+
+	/**
+	 * Format the data returned from the API for given stats.
+	 *
+	 * @param array  $data Data from external endpoint.
+	 * @param string $stat Name of the stat.
+	 * @param string $report Name of the report.
+	 * @param string $chart Name of the chart.
+	 * @return mixed
+	 */
+	public function format_data_value( $data, $stat, $report, $chart ) {
+		if ( 'jetpack/stats' === $report ) {
+			return $data['general']->stats->{ $chart };
+		}
+
+		if ( isset( $data['totals'] ) && isset( $data['totals'][ $chart ] ) ) {
+			return $data['totals'][ $chart ];
+		}
+
+		return null;
 	}
 
 	/**
