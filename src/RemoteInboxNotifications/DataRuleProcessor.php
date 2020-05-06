@@ -30,18 +30,19 @@ class DataRuleProcessor {
 
 		$operand = $data->{$rule->index};
 
-		if ( '=' === $rule->operation ) {
-			return $operand === $rule->value;
-		} elseif ( '<' === $rule->operation ) {
-			return $operand < $rule->value;
-		} elseif ( '<=' === $rule->operation ) {
-			return $operand <= $rule->value;
-		} elseif ( '>' === $rule->operation ) {
-			return $operand > $rule->value;
-		} elseif ( '>=' === $rule->operation ) {
-			return $operand >= $rule->value;
-		} elseif ( '!=' === $rule->operation ) {
-			return $operand !== $rule->value;
+		switch ( $rule->operation ) {
+			case '=':
+				return $operand === $rule->value;
+			case '<':
+				return $operand < $rule->value;
+			case '<=':
+				return $operand <= $rule->value;
+			case '>':
+				return $operand > $rule->value;
+			case '>=':
+				return $operand >= $rule->value;
+			case '!=':
+				return $operand !== $rule->value;
 		}
 
 		return false;
