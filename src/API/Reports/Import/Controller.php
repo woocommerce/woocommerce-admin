@@ -259,24 +259,21 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function delete_imported_items( $request ) {
-		$delete = ReportsSync::delete_report_data();
+		$result = array(
+			'status'  => 'success',
+			'message' => ReportsSync::delete_report_data(),
+		);
 
-		if ( is_wp_error( $delete ) ) {
-			$result = array(
-				'status'  => 'error',
-				'message' => $delete->get_error_message(),
-			);
-		} else {
-			$result = array(
-				'status'  => 'success',
-				'message' => $delete,
-			);
+		if ( is_wp_error( $result['message'] ) ) {
+			$result['status']  = 'error';
+			$result['message'] = $result['message']->get_error_message();
 		}
 
-		$response = $this->prepare_item_for_response( $result, $request );
-		$data     = $this->prepare_response_for_collection( $response );
-
-		return rest_ensure_response( $data );
+		return rest_ensure_response(
+			$this->prepare_response_for_collection(
+				$this->prepare_item_for_response( $result, $request )
+			)
+		);
 	}
 
 	/**
