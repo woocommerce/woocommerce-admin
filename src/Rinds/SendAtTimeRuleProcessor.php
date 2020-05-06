@@ -30,6 +30,8 @@ class SendAtTimeRuleProcessor {
 	 * @return bool Whether the rule passes or not.
 	 */
 	public function process( $rule ) {
+		$d = $this->date_time_provider->get_now() >= new \DateTime( $rule->send_at );
+
 		return $this->date_time_provider->get_now() >= new \DateTime( $rule->send_at );
 	}
 }

@@ -11,9 +11,9 @@ namespace Automattic\WooCommerce\Admin\Rinds;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Rule processor that fails.
+ * Rule processor that passes.
  */
-class FailRuleProcessor {
+class PassRuleProcessor {
 	/**
 	 * Passes the rule.
 	 *

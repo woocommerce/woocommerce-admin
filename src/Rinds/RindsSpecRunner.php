@@ -27,22 +27,21 @@ class RindsSpecRunner {
 		$existing_note_ids = $data_store->get_notes_with_name( $spec->slug );
 		if ( 0 === count( $existing_note_ids ) ) {
 			$note = new WC_Admin_Note();
+			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_PREUNACTIONED );
 		} else {
 			$note = new WC_Admin_Note( $existing_note_ids[0] );
 		}
 
-		$get_rule_processor = new GetRuleProcessor();
-		$rule_evaluator     = new RuleEvaluator( $get_rule_processor );
-		$evaluate_result    = $rule_evaluator->evaluate( $spec->rules );
-		$status             = $evaluate_result ? $spec->status : 'actioned';
-
-		// If the note is already actioned don't unaction it unless the
-		// allow_redisplay flag is set.
-		if ( $note->get_status() === 'actioned' && 'unactioned' === $status ) {
-			if ( ! isset( $spec->allow_redisplay ) || ! $spec->allow_redisplay ) {
-				return;
-			}
-		}
+		// Evaluate the spec and get the new note status.
+		$evaluate_and_get_status = new EvaluateAndGetStatus(
+			new RuleEvaluator(
+				new GetRuleProcessor()
+			)
+		);
+		$status                  = $evaluate_and_get_status->evaluate(
+			$spec,
+			$note->get_status()
+		);
 
 		// Get the matching locale or fall back to en-US.
 		$locale = self::get_locale( $spec->locales );
