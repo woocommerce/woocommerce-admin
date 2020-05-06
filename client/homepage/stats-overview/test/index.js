@@ -27,11 +27,13 @@ describe( 'StatsOverview tracking', () => {
 			/>
 		);
 
-		const ellipsisBtn = screen.getByTitle(
-			'Choose which values to display'
-		);
+		const ellipsisBtn = screen.getByRole( 'button', {
+			name: 'Choose which values to display',
+		} );
 		fireEvent.click( ellipsisBtn );
-		const totalSalesBtn = screen.getByText( 'Total Sales' );
+		const totalSalesBtn = screen.getByRole( 'menuitemcheckbox', {
+			name: 'Total Sales',
+		} );
 		fireEvent.click( totalSalesBtn );
 
 		expect( recordEvent ).toHaveBeenCalledWith(
@@ -57,11 +59,13 @@ describe( 'StatsOverview toggle and persist stat preference', () => {
 			/>
 		);
 
-		const ellipsisBtn = screen.getByTitle(
-			'Choose which values to display'
-		);
+		const ellipsisBtn = screen.getByRole( 'button', {
+			name: 'Choose which values to display',
+		} );
 		fireEvent.click( ellipsisBtn );
-		const totalSalesBtn = screen.getByText( 'Total Sales' );
+		const totalSalesBtn = screen.getByRole( 'menuitemcheckbox', {
+			name: 'Total Sales',
+		} );
 		fireEvent.click( totalSalesBtn );
 
 		expect( updateCurrentUserData ).toHaveBeenCalledWith( {
@@ -106,7 +110,7 @@ describe( 'StatsOverview period selection', () => {
 			/>
 		);
 
-		const todayBtn = screen.getByText( 'Today' );
+		const todayBtn = screen.getByRole( 'tab', { name: 'Today' } );
 		expect( todayBtn.classList ).toContain( 'is-active' );
 	} );
 
@@ -120,7 +124,7 @@ describe( 'StatsOverview period selection', () => {
 			/>
 		);
 
-		fireEvent.click( screen.getByText( 'Month to date' ) );
+		fireEvent.click( screen.getByRole( 'tab', { name: 'Month to date' } ) );
 
 		// Check props handed down to StatsList have the right period
 		expect( StatsList ).toHaveBeenLastCalledWith(
