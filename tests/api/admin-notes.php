@@ -162,7 +162,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$notes    = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 3, count( $notes ) );
+		$this->assertEquals( 4, count( $notes ) );
 	}
 
 	/**
@@ -251,7 +251,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$notes    = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 3, count( $notes ) );
+		$this->assertEquals( 4, count( $notes ) );
 		$this->assertEquals( $notes[0]['title'], 'PHPUNIT_TEST_NOTE_1_TITLE' );
 		$this->assertEquals( $notes[0]['is_snoozable'], false );
 		$this->assertEquals( $notes[1]['title'], 'PHPUNIT_TEST_NOTE_2_TITLE' );
@@ -267,10 +267,11 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$response = $this->server->dispatch( $request );
 		$notes    = $response->get_data();
 
-		$this->assertEquals( 3, count( $notes ) );
+		$this->assertEquals( 4, count( $notes ) );
 		$this->assertEquals( $notes[0]['status'], WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED );
-		$this->assertEquals( $notes[1]['status'], WC_Admin_Note::E_WC_ADMIN_NOTE_SNOOZED );
-		$this->assertEquals( $notes[2]['status'], WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
+		$this->assertEquals( $notes[1]['status'], WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED );
+		$this->assertEquals( $notes[2]['status'], WC_Admin_Note::E_WC_ADMIN_NOTE_SNOOZED );
+		$this->assertEquals( $notes[3]['status'], WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 	}
 
 	/**
@@ -318,5 +319,99 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'layout', $properties );
 		$this->assertArrayHasKey( 'image', $properties );
 		$this->assertArrayHasKey( 'is_deleted', $properties );
+	}
+
+	/**
+	 * Test deleting a single note.
+	 */
+	public function test_delete_single_note() {
+		wp_set_current_user( $this->user );
+
+		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint . '/3' ) );
+		$note     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( false, $note['is_deleted'] );
+
+		$response = $this->server->dispatch( new WP_REST_Request( 'DELETE', $this->endpoint . '/delete/3' ) );
+		$note     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( true, $note['is_deleted'] );
+	}
+
+	/**
+	 * Test undiong a single note delete.
+	 */
+	public function test_undo_single_notes_delete() {
+		wp_set_current_user( $this->user );
+
+		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint . '/3' ) );
+		$note     = $response->get_data();
+
+		if ( $response->get_status() === 200 ) {
+			$response = $this->server->dispatch( new WP_REST_Request( 'DELETE', $this->endpoint . '/delete/3' ) );
+			$note     = $response->get_data();
+			$this->assertEquals( true, $note['is_deleted'] );
+		} else {
+			$this->assertEquals( 404, $response->get_status() );
+		}
+
+		$request = new WP_REST_Request( 'PUT', $this->endpoint . '/3' );
+		$request->set_body_params(
+			array(
+				'is_deleted' => '0',
+			)
+		);
+
+		$response = $this->server->dispatch( $request );
+		$note     = $response->get_data();
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( false, $note['is_deleted'] );
+	}
+
+	/**
+	 * Test deleting all the notes.
+	 */
+	public function test_delete_all_notes() {
+		wp_set_current_user( $this->user );
+
+		// It deletes only unactioned notes.
+		$response = $this->server->dispatch( new WP_REST_Request( 'DELETE', $this->endpoint . '/delete/all' ) );
+		$notes    = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 2, count( $notes ) );
+	}
+
+	/**
+	 * Test undiong all the notes delete.
+	 */
+	public function test_undo_all_notes_delete() {
+		wp_set_current_user( $this->user );
+
+		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint ) );
+
+		if ( $response->get_status() === 200 ) {
+			$response = $this->server->dispatch( new WP_REST_Request( 'DELETE', $this->endpoint . '/delete/all' ) );
+			$notes    = $response->get_data();
+			$this->assertEquals( 2, count( $notes ) );
+		} else {
+			$this->assertEquals( 404, $response->get_status() );
+		}
+
+		$request = new WP_REST_Request( 'PUT', $this->endpoint . '/undoremove' );
+		$request->set_body_params(
+			array(
+				'notesIds'   => array( '1', '4' ),
+				'is_deleted' => '1',
+			)
+		);
+
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 2, count( $notes ) );
 	}
 }
