@@ -364,8 +364,13 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 				'status' => $status,
 			)
 		);
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses}" );
+
+		if ( ! empty( $where_clauses ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses}" );
+		}
+
+		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes" );
 	}
 
 	/**
@@ -397,6 +402,10 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			}
 		}
 
+		$escaped_is_deleted = '';
+		if ( isset( $args['is_deleted'] ) ) {
+			$escaped_is_deleted = esc_sql( $args['is_deleted'] );
+		}
 		$escaped_where_types  = implode( ',', $where_type_array );
 		$escaped_status_types = implode( ',', $where_status_array );
 		$where_clauses        = '';
@@ -409,8 +418,8 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$where_clauses .= " AND status IN ($escaped_status_types)";
 		}
 
-		if ( isset( $args['is_deleted'] ) ) {
-			$where_clauses .= $args['is_deleted'] ? ' AND is_deleted = 1' : ' AND is_deleted = 0';
+		if ( ! empty( $escaped_is_deleted ) ) {
+			$where_clauses .= $escaped_is_deleted ? ' AND is_deleted = 1' : ' AND is_deleted = 0';
 		}
 
 		/**
