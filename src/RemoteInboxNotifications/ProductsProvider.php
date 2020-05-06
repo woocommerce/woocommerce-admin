@@ -18,7 +18,7 @@ class ProductsProvider {
 	 *
 	 * @return boolean If there are any products.
 	 */
-	public static function are_there_products() {
+	public function are_there_products() {
 		global $wpdb;
 
 		$count = $wpdb->get_var(
