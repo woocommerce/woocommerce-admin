@@ -72,15 +72,6 @@ class RemoteInboxNotificationsEngine {
 	}
 
 	/**
-	 * Update the data option.
-	 *
-	 * @param object $data The data option value.
-	 */
-	private static function update_data( $data ) {
-		update_option( self::DATA_OPTION_NAME, $data );
-	}
-
-	/**
 	 * The deactivated_plugin hook happens before the option is updated
 	 * (https://github.com/WordPress/WordPress/blob/master/wp-admin/includes/plugin.php#L826)
 	 * so this captures the deactivated plugin path and pushes it into the
@@ -109,7 +100,7 @@ class RemoteInboxNotificationsEngine {
 
 		$data                         = self::get_data();
 		$data->there_are_now_products = ProductsProvider::are_there_products();
-		self::update_data( $data );
+		update_option( self::DATA_OPTION_NAME, $data );
 
 		self::run();
 	}
@@ -133,7 +124,7 @@ class RemoteInboxNotificationsEngine {
 
 		$data                         = self::get_data();
 		$data->there_are_now_products = ProductsProvider::are_there_products();
-		self::update_data( $data );
+		update_option( self::DATA_OPTION_NAME, $data );
 
 		self::run();
 	}
