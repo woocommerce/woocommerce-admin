@@ -33,6 +33,10 @@ class GetRuleProcessor {
 				return new PublishAfterTimeRuleProcessor(
 					new CurrentDateTimeProvider()
 				);
+			case 'publish_before_time':
+				return new PublishBeforeTimeRuleProcessor(
+					new CurrentDateTimeProvider()
+				);
 			case 'not':
 				return new NotRuleProcessor(
 					new RuleEvaluator(

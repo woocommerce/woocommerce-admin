@@ -1,6 +1,6 @@
 <?php
 /**
- * Send at time rule processor tests.
+ * Publish after time rule processor tests.
  *
  * @package WooCommerce\Tests\Rinds
  */
@@ -13,6 +13,20 @@ use Automattic\WooCommerce\Admin\DateTimeProvider\DateTimeProviderInterface;
  */
 class WC_Tests_Rinds_PublishAfterTimeRuleProcessor extends WC_Unit_Test_Case {
 	/**
+	 * Get the publish_after rule.
+	 *
+	 * @return object The rule.
+	 */
+	private function get_rule() {
+		return json_decode(
+			'{
+				"type": "publish_after_time",
+				"publish_after": "2020-04-22 12:00:00"
+			}'
+		);
+	}
+
+	/**
 	 * Tests that the processor passes a publish_after_time rule with a
 	 * publish_after time in the past.
 	 *
@@ -23,14 +37,8 @@ class WC_Tests_Rinds_PublishAfterTimeRuleProcessor extends WC_Unit_Test_Case {
 			new \DateTime( '2020-04-22 14:00:00' )
 		);
 		$processor               = new PublishAfterTimeRuleProcessor( $mock_date_time_provider );
-		$rule                    = json_decode(
-			'{
-				"type": "publish_after_time",
-				"publish_after": "2020-04-22 12:00:00"
-			}'
-		);
 
-		$result = $processor->process( $rule );
+		$result = $processor->process( $this->get_rule() );
 
 		$this->assertEquals( true, $result );
 	}
@@ -46,14 +54,8 @@ class WC_Tests_Rinds_PublishAfterTimeRuleProcessor extends WC_Unit_Test_Case {
 			new \DateTime( '2020-04-22 12:00:00' )
 		);
 		$processor               = new PublishAfterTimeRuleProcessor( $mock_date_time_provider );
-		$rule                    = json_decode(
-			'{
-				"type": "publish_after_time",
-				"publish_after": "2020-04-22 12:00:00"
-			}'
-		);
 
-		$result = $processor->process( $rule );
+		$result = $processor->process( $this->get_rule() );
 
 		$this->assertEquals( true, $result );
 	}
@@ -69,14 +71,8 @@ class WC_Tests_Rinds_PublishAfterTimeRuleProcessor extends WC_Unit_Test_Case {
 			new \DateTime( '2020-04-22 09:00:00' )
 		);
 		$processor               = new PublishAfterTimeRuleProcessor( $mock_date_time_provider );
-		$rule                    = json_decode(
-			'{
-				"type": "publish_after_time",
-				"publish_after": "2020-04-22 12:00:00"
-			}'
-		);
 
-		$result = $processor->process( $rule );
+		$result = $processor->process( $this->get_rule() );
 
 		$this->assertEquals( false, $result );
 	}

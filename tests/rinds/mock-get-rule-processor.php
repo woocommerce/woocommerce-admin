@@ -5,14 +5,13 @@
  * @package WooCommerce\Tests\Rinds
  */
 
-use Automattic\WooCommerce\Admin\Rinds\GetRuleProcessorInterface;
 use Automattic\WooCommerce\Admin\Rinds\PublishAfterTimeRuleProcessor;
 use Automattic\WooCommerce\Admin\Rinds\FailRuleProcessor;
 
 /**
  * MockGetRuleProcessor.
  */
-class MockGetRuleProcessor implements GetRuleProcessorInterface {
+class MockGetRuleProcessor {
 	/**
 	 * Get the processor for the specified rule type.
 	 *
