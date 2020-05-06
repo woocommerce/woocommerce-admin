@@ -72,7 +72,7 @@ class Controller extends \WC_REST_Reports_Controller {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_filter( 'woocommerce_rest_performance_indicators_data_value', array( $this, 'format_data_value' ), 10, 4 );
+		add_filter( 'woocommerce_rest_performance_indicators_data_value', array( $this, 'format_data_value' ), 10, 5 );
 	}
 
 	/**
@@ -222,10 +222,12 @@ class Controller extends \WC_REST_Reports_Controller {
 				return;
 			}
 
-			$this->allowed_stats[]                           = 'jetpack/' . $item_key;
-			$this->labels[ 'jetpack/' . $item_key ]          = $item['label'];
-			$this->endpoints[ 'jetpack/' . $item['module'] ] = '/jetpack/v4/module/' . $item['module'] . '/data';
-			$this->formats[ 'jetpack/' . $item_key ]         = $item['format'];
+			$stat                         = 'jetpack/' . $item_key;
+			$endpoint                     = 'jetpack/' . $item['module'];
+			$this->allowed_stats[]        = $stat;
+			$this->labels[ $stat ]        = $item['label'];
+			$this->endpoints[ $endpoint ] = '/jetpack/v4/module/' . $item['module'] . '/data';
+			$this->formats[ $stat ]       = $item['format'];
 		}
 	}
 
@@ -417,7 +419,7 @@ class Controller extends \WC_REST_Reports_Controller {
 				'chart'  => $chart,
 				'label'  => $label,
 				'format' => $format,
-				'value'  => apply_filters( 'woocommerce_rest_performance_indicators_data_value', $data, $stat, $report, $chart ),
+				'value'  => apply_filters( 'woocommerce_rest_performance_indicators_data_value', $data, $stat, $report, $chart, $query_args ),
 			);
 		}
 
@@ -514,11 +516,29 @@ class Controller extends \WC_REST_Reports_Controller {
 	 * @param string $stat Name of the stat.
 	 * @param string $report Name of the report.
 	 * @param string $chart Name of the chart.
+	 * @param array  $query_args Query args.
 	 * @return mixed
 	 */
-	public function format_data_value( $data, $stat, $report, $chart ) {
+	public function format_data_value( $data, $stat, $report, $chart, $query_args ) {
 		if ( 'jetpack/stats' === $report ) {
-			return $data['general']->stats->{ $chart };
+			// Get the index of the field to tally.
+			$index = array_search( $chart, $data['general']->visits->fields, true );
+			if ( ! $index ) {
+				return null;
+			}
+
+			// Loop over provided data and filter by the queried date.
+			// Note that this is currently limited to 30 days via the Jetpack API
+			// but the WordPress.com endpoint allows up to 90 days.
+			$total = 0;
+			foreach ( $data['general']->visits->data as $datum ) {
+				$before = \DateTime::createFromFormat( 'Y-m-d H:i:s', $query_args['before'] )->format( 'Y-m-d' );
+				$after  = \DateTime::createFromFormat( 'Y-m-d H:i:s', $query_args['after'] )->format( 'Y-m-d' );
+				if ( $datum[0] >= $after && $datum[0] <= $before ) {
+					$total += $datum[ $index ];
+				}
+			}
+			return $total;
 		}
 
 		if ( isset( $data['totals'] ) && isset( $data['totals'][ $chart ] ) ) {
