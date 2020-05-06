@@ -147,7 +147,8 @@ class WC_Admin_Notes {
 	 */
 	public static function delete_all_notes() {
 		$data_store = \WC_Data_Store::load( 'admin-note' );
-		$raw_notes  = $data_store->get_notes(
+		// Here we filter for the same params we are using to show the note list in client side.
+		$raw_notes = $data_store->get_notes(
 			array(
 				'order'      => 'desc',
 				'orderby'    => 'date_created',
