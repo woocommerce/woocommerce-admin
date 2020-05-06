@@ -30,14 +30,14 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 				"operands": [
 					[
 						{
-							"type": "send_at_time",
-							"send_at": "2020-04-24 11:00:00"
+							"type": "publish_after_time",
+							"publish_after": "2020-04-24 11:00:00"
 						}
 					],
 					[
 						{
-							"type": "send_at_time",
-							"send_at": "2020-04-24 11:00:00"
+							"type": "c",
+							"publish_after": "2020-04-24 11:00:00"
 						}
 					]
 				]
@@ -50,11 +50,11 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Left operand evaluating to true and ORed together evaluates to true.
+	 * First operand evaluating to true and ORed together evaluates to true.
 	 *
 	 * @group fast
 	 */
-	public function test_spec_passes_for_left_operand_true() {
+	public function test_spec_passes_for_first_operand_true() {
 		$get_rule_processor = new MockGetRuleProcessor();
 		$processor          = new OrRuleProcessor(
 			new RuleEvaluator(
@@ -67,14 +67,14 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 				"operands": [
 					[
 						{
-							"type": "send_at_time",
-							"send_at": "2020-04-24 09:00:00"
+							"type": "publish_after_time",
+							"publish_after": "2020-04-24 09:00:00"
 						}
 					],
 					[
 						{
-							"type": "send_at_time",
-							"send_at": "2020-04-24 11:00:00"
+							"type": "publish_after_time",
+							"publish_after": "2020-04-24 11:00:00"
 						}
 					]
 				]
@@ -87,11 +87,11 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Right operand evaluating to true and ORed together evaluates to true.
+	 * Second operand evaluating to true and ORed together evaluates to true.
 	 *
 	 * @group fast
 	 */
-	public function test_spec_passes_for_right_operand_true() {
+	public function test_spec_passes_for_second_operand_true() {
 		$get_rule_processor = new MockGetRuleProcessor();
 		$processor          = new OrRuleProcessor(
 			new RuleEvaluator(
@@ -104,14 +104,14 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 				"operands": [
 					[
 						{
-							"type": "send_at_time",
-							"send_at": "2020-04-24 11:00:00"
+							"type": "publish_after_time",
+							"publish_after": "2020-04-24 11:00:00"
 						}
 					],
 					[
 						{
-							"type": "send_at_time",
-							"send_at": "2020-04-24 09:00:00"
+							"type": "publish_after_time",
+							"publish_after": "2020-04-24 09:00:00"
 						}
 					]
 				]
@@ -141,14 +141,14 @@ class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
 				"operands": [
 					[
 						{
-							"type": "send_at_time",
-							"send_at": "2020-04-24 09:00:00"
+							"type": "publish_after_time",
+							"publish_after": "2020-04-24 09:00:00"
 						}
 					],
 					[
 						{
-							"type": "send_at_time",
-							"send_at": "2020-04-24 09:00:00"
+							"type": "publish_after_time",
+							"publish_after": "2020-04-24 09:00:00"
 						}
 					]
 				]

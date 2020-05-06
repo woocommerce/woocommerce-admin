@@ -1,6 +1,6 @@
 <?php
 /**
- * Rule processor for sending at a specified data/time.
+ * Rule processor for sending after a specified date/time.
  *
  * @package WooCommerce Admin/Classes;
  */
@@ -10,9 +10,9 @@ namespace Automattic\WooCommerce\Admin\Rinds;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Rule processor for sending at a specified date/time.
+ * Rule processor for sending after a specified date/time.
  */
-class SendAtTimeRuleProcessor {
+class PublishAfterTimeRuleProcessor {
 	/**
 	 * Constructor.
 	 *
@@ -30,8 +30,6 @@ class SendAtTimeRuleProcessor {
 	 * @return bool Whether the rule passes or not.
 	 */
 	public function process( $rule ) {
-		$d = $this->date_time_provider->get_now() >= new \DateTime( $rule->send_at );
-
-		return $this->date_time_provider->get_now() >= new \DateTime( $rule->send_at );
+		return $this->date_time_provider->get_now() >= new \DateTime( $rule->publish_after );
 	}
 }

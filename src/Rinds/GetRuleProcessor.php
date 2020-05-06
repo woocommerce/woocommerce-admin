@@ -29,8 +29,8 @@ class GetRuleProcessor {
 				return new PluginsActivatedRuleProcessor(
 					new PluginsProvider()
 				);
-			case 'send_at_time':
-				return new SendAtTimeRuleProcessor(
+			case 'publish_after_time':
+				return new PublishAfterTimeRuleProcessor(
 					new CurrentDateTimeProvider()
 				);
 			case 'not':

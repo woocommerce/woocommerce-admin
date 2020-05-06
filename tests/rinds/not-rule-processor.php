@@ -54,8 +54,8 @@ class WC_Tests_Rinds_NotRuleProcessor extends WC_Unit_Test_Case {
 				"type": "not",
 				"operand": [
 					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 09:00:00"
+						"type": "publish_after_time",
+						"publish_after": "2020-04-24 09:00:00"
 					}
 				]
 			}'
@@ -83,8 +83,8 @@ class WC_Tests_Rinds_NotRuleProcessor extends WC_Unit_Test_Case {
 				"type": "not",
 				"operand": [
 					{
-						"type": "send_at_time",
-						"send_at": "2020-04-24 11:00:00"
+						"type": "publish_after_time",
+						"publish_after": "2020-04-24 11:00:00"
 					}
 				]
 			}'

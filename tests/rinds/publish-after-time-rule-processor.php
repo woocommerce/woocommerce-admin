@@ -5,16 +5,16 @@
  * @package WooCommerce\Tests\Rinds
  */
 
-use Automattic\WooCommerce\Admin\Rinds\SendAtTimeRuleProcessor;
+use Automattic\WooCommerce\Admin\Rinds\PublishAfterTimeRuleProcessor;
 use Automattic\WooCommerce\Admin\DateTimeProvider\DateTimeProviderInterface;
 
 /**
- * class WC_Tests_Rinds_SendAtTimeRuleProcessor
+ * class WC_Tests_Rinds_PublishAfterTimeRuleProcessor
  */
-class WC_Tests_Rinds_SendAtTimeRuleProcessor extends WC_Unit_Test_Case {
+class WC_Tests_Rinds_PublishAfterTimeRuleProcessor extends WC_Unit_Test_Case {
 	/**
-	 * Tests that the processor passes a send_at_time rule with a send_at
-	 * time in the past.
+	 * Tests that the processor passes a publish_after_time rule with a
+	 * publish_after time in the past.
 	 *
 	 * @group fast
 	 */
@@ -22,11 +22,11 @@ class WC_Tests_Rinds_SendAtTimeRuleProcessor extends WC_Unit_Test_Case {
 		$mock_date_time_provider = new MockDateTimeProvider(
 			new \DateTime( '2020-04-22 14:00:00' )
 		);
-		$processor               = new SendAtTimeRuleProcessor( $mock_date_time_provider );
+		$processor               = new PublishAfterTimeRuleProcessor( $mock_date_time_provider );
 		$rule                    = json_decode(
 			'{
-				"type": "send_at_time",
-				"send_at": "2020-04-22 12:00:00"
+				"type": "publish_after_time",
+				"publish_after": "2020-04-22 12:00:00"
 			}'
 		);
 
@@ -36,8 +36,8 @@ class WC_Tests_Rinds_SendAtTimeRuleProcessor extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Tests that the processor passes a send_at_time rule with a send_at
-	 * time right now.
+	 * Tests that the processor passes a publish_after_time rule with a
+	 * publish_after time right now.
 	 *
 	 * @group fast
 	 */
@@ -45,11 +45,11 @@ class WC_Tests_Rinds_SendAtTimeRuleProcessor extends WC_Unit_Test_Case {
 		$mock_date_time_provider = new MockDateTimeProvider(
 			new \DateTime( '2020-04-22 12:00:00' )
 		);
-		$processor               = new SendAtTimeRuleProcessor( $mock_date_time_provider );
+		$processor               = new PublishAfterTimeRuleProcessor( $mock_date_time_provider );
 		$rule                    = json_decode(
 			'{
-				"type": "send_at_time",
-				"send_at": "2020-04-22 12:00:00"
+				"type": "publish_after_time",
+				"publish_after": "2020-04-22 12:00:00"
 			}'
 		);
 
@@ -59,8 +59,8 @@ class WC_Tests_Rinds_SendAtTimeRuleProcessor extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Tests that the processor does not pass a send_at_time rule with a
-	 * send_at time in the future.
+	 * Tests that the processor does not pass a publish_after_time rule with a
+	 * publish_after time in the future.
 	 *
 	 * @group fast
 	 */
@@ -68,11 +68,11 @@ class WC_Tests_Rinds_SendAtTimeRuleProcessor extends WC_Unit_Test_Case {
 		$mock_date_time_provider = new MockDateTimeProvider(
 			new \DateTime( '2020-04-22 09:00:00' )
 		);
-		$processor               = new SendAtTimeRuleProcessor( $mock_date_time_provider );
+		$processor               = new PublishAfterTimeRuleProcessor( $mock_date_time_provider );
 		$rule                    = json_decode(
 			'{
-				"type": "send_at_time",
-				"send_at": "2020-04-22 12:00:00"
+				"type": "publish_after_time",
+				"publish_after": "2020-04-22 12:00:00"
 			}'
 		);
 
