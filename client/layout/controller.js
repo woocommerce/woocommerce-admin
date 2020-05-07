@@ -245,7 +245,10 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	if ( isWCAdmin ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
-		const path = query.path || 'homepage';
+		const defaultPath = window.wcAdminFeatures.homepage
+			? 'homepage'
+			: 'dashboard';
+		const path = query.path || defaultPath;
 		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
 
 		const isExcludedScreen = excludedScreens.includes( screen );
