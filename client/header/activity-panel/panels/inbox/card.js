@@ -2,7 +2,12 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { cloneElement, Component, Fragment } from '@wordpress/element';
+import {
+	cloneElement,
+	Component,
+	createRef,
+	Fragment,
+} from '@wordpress/element';
 import { Button, Dropdown, Modal } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import VisibilitySensor from 'react-visibility-sensor';
@@ -29,18 +34,46 @@ class InboxNoteCard extends Component {
 		};
 		this.openDismissModal = this.openDismissModal.bind( this );
 		this.closeDismissModal = this.closeDismissModal.bind( this );
+		this.bodyNotificationRef = createRef();
+	}
+
+	componentDidMount() {
+		this.bodyNotificationRef.current.addEventListener( 'click', ( event ) =>
+			this.handleBodyClick( event, this.props )
+		);
+	}
+
+	componentWillUnmount() {
+		this.bodyNotificationRef.current.removeEventListener(
+			'click',
+			( event ) => this.handleBodyClick( event, this.props )
+		);
+	}
+
+	handleBodyClick( event, props ) {
+		const innerLink = event.target.href;
+		if ( innerLink ) {
+			const { note, screen } = props;
+
+			recordEvent( 'wcadmin_inbox_note_view', {
+				note_name: note.name,
+				note_content_inner_link: innerLink,
+				screen,
+			} );
+		}
 	}
 
 	// Trigger a view Tracks event when the note is seen.
 	onVisible( isVisible ) {
 		if ( isVisible && ! this.hasBeenSeen ) {
-			const { note } = this.props;
+			const { note, screen } = this.props;
 
 			recordEvent( 'inbox_note_view', {
 				note_content: note.content,
 				note_name: note.name,
 				note_title: note.title,
 				note_type: note.type,
+				screen,
 			} );
 
 			this.hasBeenSeen = true;
@@ -54,7 +87,20 @@ class InboxNoteCard extends Component {
 		} );
 	}
 
-	closeDismissModal() {
+	closeDismissModal( acepted ) {
+		const { dismissType } = this.state;
+		const { note, screen } = this.props;
+		const noteNameDismissAll = dismissType === 'all' ? true : false;
+		const noteNameDismissAllConfirmation = acepted ? true : false;
+
+		recordEvent( 'wcadmin_inbox_note_view', {
+			note_name: note.name,
+			note_name_dismiss: note.name,
+			note_name_dismiss_all: noteNameDismissAll,
+			note_name_dismiss_all_confirmation: noteNameDismissAllConfirmation,
+			screen,
+		} );
+
 		this.setState( {
 			isDismissModalOpen: false,
 		} );
@@ -210,6 +256,7 @@ class InboxNoteCard extends Component {
 									dangerouslySetInnerHTML={ sanitizeHTML(
 										note.content
 									) }
+									ref={ this.bodyNotificationRef }
 								/>
 							</Section>
 						</div>
@@ -233,6 +280,7 @@ class InboxNoteCard extends Component {
 }
 
 InboxNoteCard.propTypes = {
+	screen: PropTypes.string,
 	note: PropTypes.shape( {
 		id: PropTypes.number,
 		status: PropTypes.string,
