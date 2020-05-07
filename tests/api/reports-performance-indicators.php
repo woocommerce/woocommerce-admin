@@ -28,6 +28,12 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 				'role' => 'administrator',
 			)
 		);
+
+		// Mock the Jetpack endpoints and permissions.
+		$wp_user = get_userdata( $this->user_id );
+		$wp_user->add_cap( 'view_stats' );
+		$this->getMockBuilder( 'Jetpack_Core_Json_Api_Endpoints' )->getMock();
+		add_filter( 'rest_post_dispatch', array( $this, 'mock_rest_responses' ), 10, 3 );
 	}
 
 	/**
@@ -90,8 +96,8 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
-				'before' => date( 'Y-m-d 23:59:59', $time ),
-				'after'  => date( 'Y-m-d H:00:00', $time - ( 7 * DAY_IN_SECONDS ) ),
+				'before' => gmdate( 'Y-m-d 23:59:59', $time ),
+				'after'  => gmdate( 'Y-m-d H:00:00', $time - ( 7 * DAY_IN_SECONDS ) ),
 				'stats'  => 'orders/orders_count,downloads/download_count,test/bogus_stat',
 			)
 		);
@@ -126,8 +132,8 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
-				'before' => date( 'Y-m-d 23:59:59', $time ),
-				'after'  => date( 'Y-m-d H:00:00', $time - ( 7 * DAY_IN_SECONDS ) ),
+				'before' => gmdate( 'Y-m-d 23:59:59', $time ),
+				'after'  => gmdate( 'Y-m-d H:00:00', $time - ( 7 * DAY_IN_SECONDS ) ),
 			)
 		);
 		$response = $this->server->dispatch( $request );
@@ -179,5 +185,29 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 		$this->assertArrayHasKey( 'stat', $properties );
 		$this->assertArrayHasKey( 'chart', $properties );
 		$this->assertArrayHasKey( 'label', $properties );
+	}
+
+	/**
+	 * Mock the Jetpack REST API responses since we're not really connected.
+	 *
+	 * @param WP_Rest_Response $response Response from the server.
+	 * @param WP_Rest_Server   $rest_server WP Rest Server.
+	 * @param WP_REST_Request  $request Request made to the server.
+	 *
+	 * @return WP_Rest_Response
+	 */
+	public function mock_rest_responses( $response, $rest_server, $request ) {
+		if ( 'GET' === $request->get_method() && '/jetpack/v4/module/all' === $request->get_route() ) {
+			$response->set_status( 200 );
+			$response->set_data(
+				array(
+					'stats' => array(
+						'activated' => 1,
+					),
+				)
+			);
+		}
+
+		return $response;
 	}
 }
