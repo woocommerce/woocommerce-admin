@@ -50,7 +50,6 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 	 * Test getting indicators.
 	 */
 	public function test_get_indicators() {
-		global $wpdb;
 		wp_set_current_user( $this->user );
 		WC_Helper_Reports::reset_stats_dbs();
 
@@ -130,7 +129,6 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 	 * Test getting indicators with an empty request.
 	 */
 	public function test_get_indicators_empty_request() {
-		global $wpdb;
 		wp_set_current_user( $this->user );
 		WC_Helper_Reports::reset_stats_dbs();
 
@@ -194,6 +192,53 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 	}
 
 	/**
+	 * Test the ability to aggregate Jetpack stats based on before and after dates.
+	 */
+	public function test_jetpack_stats_query_args() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'before' => '2020-01-05 23:59:59',
+				'after'  => '2020-01-01 00:00:00',
+				'stats'  => 'jetpack/stats/views',
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$reports  = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $reports ) );
+
+		$this->assertEquals( 'jetpack/stats/views', $reports[0]['stat'] );
+		$this->assertEquals( 'Views', $reports[0]['label'] );
+		$this->assertEquals( 18, $reports[0]['value'] );
+		$this->assertEquals( 'views', $reports[0]['chart'] );
+		$this->assertEquals( get_rest_url( null, '/jetpack/v4/module/stats/data' ), $response->data[0]['_links']['api'][0]['href'] );
+
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'before' => '2020-01-02 23:59:59',
+				'after'  => '2020-01-01 00:00:00',
+				'stats'  => 'jetpack/stats/views',
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$reports  = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $reports ) );
+
+		$this->assertEquals( 'jetpack/stats/views', $reports[0]['stat'] );
+		$this->assertEquals( 'Views', $reports[0]['label'] );
+		$this->assertEquals( 4, $reports[0]['value'] );
+		$this->assertEquals( 'views', $reports[0]['chart'] );
+		$this->assertEquals( get_rest_url( null, '/jetpack/v4/module/stats/data' ), $response->data[0]['_links']['api'][0]['href'] );
+	}
+
+	/**
 	 * Mock the Jetpack REST API responses since we're not really connected.
 	 *
 	 * @param WP_Rest_Response $response Response from the server.
@@ -215,36 +260,43 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 		}
 
 		if ( 'GET' === $request->get_method() && '/jetpack/v4/module/stats/data' === $request->get_route() ) {
+			$general                 = new \stdClass();
+			$general->visits         = new \stdClass();
+			$general->visits->fields = array(
+				'date',
+				'views',
+				'visits',
+			);
+			$general->visits->data   = array(
+				array(
+					'2020-01-01',
+					1,
+					0,
+				),
+				array(
+					'2020-01-02',
+					3,
+					0,
+				),
+				array(
+					'2020-01-03',
+					1,
+					0,
+				),
+				array(
+					'2020-01-04',
+					8,
+					0,
+				),
+				array(
+					'2020-01-05',
+					5,
+					0,
+				),
+			);
 			$response->set_status( 200 );
 			$response->set_data(
-				array(
-					'general' => (object) array(
-						'visits' => (object) array(
-							'fields' => array(
-								'date',
-								'views',
-								'visits',
-							),
-							'data'   => array(
-								array(
-									'2020-01-01',
-									1,
-									0,
-								),
-								array(
-									'2020-01-02',
-									1,
-									0,
-								),
-								array(
-									'2020-01-03',
-									1,
-									0,
-								),
-							),
-						),
-					),
-				)
+				array( 'general' => $general )
 			);
 		}
 
