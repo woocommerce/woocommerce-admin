@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import { fireEvent, getAllByRole, render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 /**
  * Internal dependencies
@@ -22,9 +23,9 @@ describe( 'List', () => {
 			},
 		];
 
-		const { container } = render( <List items={ listItems } /> );
+		render( <List items={ listItems } /> );
 
-		expect( getAllByRole( container, 'menuitem' ) ).toHaveLength( 2 );
+		expect( screen.getAllByRole( 'menuitem' ) ).toHaveLength( 2 );
 	} );
 
 	it( 'should support `onClick` for items', () => {
@@ -40,9 +41,11 @@ describe( 'List', () => {
 			},
 		];
 
-		const { container } = render( <List items={ listItems } /> );
+		render( <List items={ listItems } /> );
 
-		fireEvent.click( getAllByRole( container, 'menuitem' )[ 1 ] );
+		userEvent.click(
+			screen.getByRole( 'menuitem', { name: 'Click me!' } )
+		);
 
 		expect( clickHandler ).toHaveBeenCalled();
 	} );
@@ -70,13 +73,24 @@ describe( 'List', () => {
 			},
 		];
 
-		const { container } = render( <List items={ listItems } /> );
-		const renderedItems = getAllByRole( container, 'menuitem' );
+		render( <List items={ listItems } /> );
 
-		expect( renderedItems[ 0 ].dataset.linkType ).toBe( 'wp-admin' );
-		expect( renderedItems[ 1 ].dataset.linkType ).toBe( 'wc-admin' );
-		expect( renderedItems[ 2 ].dataset.linkType ).toBe( 'external' );
-		expect( renderedItems[ 3 ].dataset.linkType ).toBe( 'external' );
+		expect(
+			screen.getByRole( 'menuitem', { name: 'Add products' } ).dataset
+				.linkType
+		).toBe( 'wp-admin' );
+		expect(
+			screen.getByRole( 'menuitem', { name: 'Market my store' } ).dataset
+				.linkType
+		).toBe( 'wc-admin' );
+		expect(
+			screen.getByRole( 'menuitem', { name: 'WooCommerce.com' } ).dataset
+				.linkType
+		).toBe( 'external' );
+		expect(
+			screen.getByRole( 'menuitem', { name: 'WordPress.org' } ).dataset
+				.linkType
+		).toBe( 'external' );
 	} );
 
 	it( 'should set `data-list-item-tag` on items', () => {
@@ -105,14 +119,23 @@ describe( 'List', () => {
 			},
 		];
 
-		const { container } = render( <List items={ listItems } /> );
-		const renderedItems = getAllByRole( container, 'menuitem' );
+		render( <List items={ listItems } /> );
 
-		expect( renderedItems[ 0 ].dataset.listItemTag ).toBe( 'add-product' );
-		expect( renderedItems[ 1 ].dataset.listItemTag ).toBe( 'marketing' );
-		expect( renderedItems[ 2 ].dataset.listItemTag ).toBe(
-			'woocommerce.com-site'
-		);
-		expect( renderedItems[ 3 ].dataset.listItemTag ).toBeUndefined();
+		expect(
+			screen.getByRole( 'menuitem', { name: 'Add products' } ).dataset
+				.listItemTag
+		).toBe( 'add-product' );
+		expect(
+			screen.getByRole( 'menuitem', { name: 'Market my store' } ).dataset
+				.listItemTag
+		).toBe( 'marketing' );
+		expect(
+			screen.getByRole( 'menuitem', { name: 'WooCommerce.com' } ).dataset
+				.listItemTag
+		).toBe( 'woocommerce.com-site' );
+		expect(
+			screen.getByRole( 'menuitem', { name: 'WordPress.org' } ).dataset
+				.listItemTag
+		).toBeUndefined();
 	} );
 } );
