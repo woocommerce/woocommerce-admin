@@ -30,7 +30,7 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 		);
 
 		// Mock the Jetpack endpoints and permissions.
-		$wp_user = get_userdata( $this->user_id );
+		$wp_user = get_userdata( $this->user );
 		$wp_user->add_cap( 'view_stats' );
 		$this->getMockBuilder( 'Jetpack_Core_Json_Api_Endpoints' )->getMock();
 		add_filter( 'rest_post_dispatch', array( $this, 'mock_rest_responses' ), 10, 3 );
@@ -98,14 +98,14 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 			array(
 				'before' => gmdate( 'Y-m-d 23:59:59', $time ),
 				'after'  => gmdate( 'Y-m-d H:00:00', $time - ( 7 * DAY_IN_SECONDS ) ),
-				'stats'  => 'orders/orders_count,downloads/download_count,test/bogus_stat',
+				'stats'  => 'orders/orders_count,downloads/download_count,test/bogus_stat,jetpack/stats/views',
 			)
 		);
 		$response = $this->server->dispatch( $request );
 		$reports  = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 2, count( $reports ) );
+		$this->assertEquals( 3, count( $reports ) );
 
 		$this->assertEquals( 'orders/orders_count', $reports[0]['stat'] );
 		$this->assertEquals( 'Orders', $reports[0]['label'] );
@@ -118,6 +118,12 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 		$this->assertEquals( 2, $reports[1]['value'] );
 		$this->assertEquals( 'download_count', $reports[1]['chart'] );
 		$this->assertEquals( '/analytics/downloads', $response->data[1]['_links']['report'][0]['href'] );
+
+		$this->assertEquals( 'jetpack/stats/views', $reports[2]['stat'] );
+		$this->assertEquals( 'Views', $reports[2]['label'] );
+		$this->assertEquals( 0, $reports[2]['value'] );
+		$this->assertEquals( 'views', $reports[2]['chart'] );
+		$this->assertEquals( get_rest_url( null, '/jetpack/v4/module/stats/data' ), $response->data[2]['_links']['api'][0]['href'] );
 	}
 
 	/**
@@ -203,6 +209,40 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 				array(
 					'stats' => array(
 						'activated' => 1,
+					),
+				)
+			);
+		}
+
+		if ( 'GET' === $request->get_method() && '/jetpack/v4/module/stats/data' === $request->get_route() ) {
+			$response->set_status( 200 );
+			$response->set_data(
+				array(
+					'general' => (object) array(
+						'visits' => (object) array(
+							'fields' => array(
+								'date',
+								'views',
+								'visits',
+							),
+							'data'   => array(
+								array(
+									'2020-01-01',
+									1,
+									0,
+								),
+								array(
+									'2020-01-02',
+									1,
+									0,
+								),
+								array(
+									'2020-01-03',
+									1,
+									0,
+								),
+							),
+						),
 					),
 				)
 			);
