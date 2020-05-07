@@ -50,6 +50,22 @@ class InboxPanel extends Component {
 		return unreadNotes.length;
 	}
 
+	getScreenName() {
+		let screenName = '';
+		const URLparams = Object.fromEntries(
+			new URLSearchParams( window.location.search )
+		);
+
+		if ( URLparams.page ) {
+			screenName = URLparams.path
+				? URLparams.path.replace( /\//g, '_' ).substring( 1 )
+				: URLparams.page;
+		} else if ( URLparams.post_type ) {
+			screenName = URLparams.post_type;
+		}
+		return screenName;
+	}
+
 	renderEmptyCard() {
 		return (
 			<ActivityCard
@@ -69,16 +85,17 @@ class InboxPanel extends Component {
 	renderNotes() {
 		const { lastRead, notes } = this.props;
 
-		const validNotes = filter( notes, ( note )=> {
-				const { is_deleted: isDeleted } = note;
-				const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
-				return noteActive;
-			} );
+		const validNotes = filter( notes, ( note ) => {
+			const { is_deleted: isDeleted } = note;
+			const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
+			return noteActive;
+		} );
 
 		if ( validNotes.length === 0 ) {
 			return this.renderEmptyCard();
 		}
 
+		const screen = this.getScreenName();
 		const notesArray = Object.keys( notes ).map( ( key ) => notes[ key ] );
 
 		return notesArray.map( ( note ) => (
@@ -86,6 +103,7 @@ class InboxPanel extends Component {
 				key={ note.id }
 				note={ note }
 				lastRead={ lastRead }
+				screen={ screen }
 			/>
 		) );
 	}
