@@ -1,13 +1,17 @@
 /**
+ * External dependencies
+ */
+import { mapValues, pick } from 'lodash';
+
+/**
+ * WordPress dependencies
+ */
+import { useSelect } from '@wordpress/data';
+
+/**
  * Internal dependencies
  */
 import { STORE_NAME } from './constants';
-
-/**
- * External dependencies
- */
-import { useSelect } from '@wordpress/data';
-import { mapValues, pick } from 'lodash';
 
 export const useUserPreferences = ( preferenceKeys = [] ) => {
 	const { isRequesting, userPreferences } = useSelect( ( select ) => {
