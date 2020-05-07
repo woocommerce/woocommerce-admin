@@ -161,7 +161,7 @@ class BusinessDetails extends Component {
 					)
 				) {
 					errors.other_platform = __(
-						'This field is required',
+						'Required',
 						'woocommerce-admin'
 					);
 				}
@@ -174,7 +174,7 @@ class BusinessDetails extends Component {
 					)
 				) {
 					errors.other_platform_name = __(
-						'This field is required',
+						'Required',
 						'woocommerce-admin'
 					);
 				}
@@ -188,19 +188,13 @@ class BusinessDetails extends Component {
 						'other-woocommerce',
 					].includes( values.selling_venues )
 				) {
-					errors.revenue = __(
-						'This field is required',
-						'woocommerce-admin'
-					);
+					errors.revenue = __( 'Required', 'woocommerce-admin' );
 				}
 			} else if (
 				! this.extensions.includes( name ) &&
 				! values[ name ].length
 			) {
-				errors[ name ] = __(
-					'This field is required',
-					'woocommerce-admin'
-				);
+				errors[ name ] = __( 'Required', 'woocommerce-admin' );
 			}
 		} );
 
