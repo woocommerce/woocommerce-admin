@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { mapValues, pick } from 'lodash';
+import { mapValues } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -13,7 +13,12 @@ import { useSelect } from '@wordpress/data';
  */
 import { STORE_NAME } from './constants';
 
-export const useUserPreferences = ( preferenceKeys = [] ) => {
+/**
+ * Custom react hook for retrieving thecurrent user's WooCommerce preferences.
+ * 
+ * This is a wrapper around @wordpress/core-data's getCurrentUser().
+ */
+export const useUserPreferences = () => {
 	const { isRequesting, userPreferences } = useSelect(
 		( select ) => {
 			const {
@@ -22,13 +27,11 @@ export const useUserPreferences = ( preferenceKeys = [] ) => {
 				hasFinishedResolution,
 			} = select( STORE_NAME );
 
+			// Retrieve the current user from the @wordpress/core-data store.
 			const user = getCurrentUser();
-			let wooMeta = user.woocommerce_meta || {};
+			const wooMeta = user.woocommerce_meta || {};
 
-			if ( preferenceKeys.length ) {
-				wooMeta = pick( wooMeta, preferenceKeys );
-			}
-
+			// JSON decode the WooCommerce meta values.
 			const userData = mapValues( wooMeta, ( data ) => {
 				if ( ! data || data.length === 0 ) {
 					return '';
@@ -42,8 +45,7 @@ export const useUserPreferences = ( preferenceKeys = [] ) => {
 					! hasFinishedResolution( 'getCurrentUser' ),
 				userPreferences: userData,
 			};
-		},
-		[ preferenceKeys ]
+		}
 	);
 
 	return {
