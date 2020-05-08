@@ -91,6 +91,7 @@ class WCPay extends Component {
 		}
 	}
 
+	// TODO Call this when install completes to see if Jetpack steps need to be there.
 	async isJetpackRequired() {
 		const { createNotice } = this.props;
 		this.setState( { isPending: true } );
@@ -127,6 +128,7 @@ class WCPay extends Component {
 			<Stepper
 				isVertical
 				isPending={ ! installStep.isComplete || isPending }
+				// TODO Use component state to read and write current step.
 				currentStep={ installStep.isComplete ? 'connect' : 'install' }
 				steps={ [
 					installStep,
