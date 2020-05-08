@@ -12,46 +12,6 @@ use Automattic\WooCommerce\Admin\Rinds\EvaluateAndGetStatus;
  */
 class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	/**
-	 * Return a mock passing rule evaluator.
-	 *
-	 * @return object Mock passing rule evaluator.
-	 */
-	private function get_passing_rule_evaluator() {
-		return new class() {
-			/**
-			 * Evaluate to true.
-			 *
-			 * @param array $rules The rules to evaluate.
-			 *
-			 * @return bool The evaluated result.
-			 */
-			public function evaluate( $rules ) {
-				return true;
-			}
-		};
-	}
-
-	/**
-	 * Return a mock failing rule evaluator.
-	 *
-	 * @return object Mock failing rule evaluator.
-	 */
-	private function get_failing_rule_evaluator() {
-		return new class() {
-			/**
-			 * Evaluate to false.
-			 *
-			 * @param array $rules The rules to evaluate.
-			 *
-			 * @return bool The evaluated result.
-			 */
-			public function evaluate( $rules ) {
-				return false;
-			}
-		};
-	}
-
-	/**
 	 * Build up a spec given the supplied parameters.
 	 *
 	 * @param bool $allow_redisplay Allow note redisplay after it has been actioned.
@@ -77,7 +37,7 @@ class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	public function test_preunactioned_note_eval_to_true() {
 		$spec                    = $this->get_spec( false );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			$this->get_passing_rule_evaluator()
+			new PassingRuleEvaluator()
 		);
 
 		$result = $evaluate_and_get_status->evaluate( $spec, 'unactioned' );
@@ -94,7 +54,7 @@ class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	public function test_preunactioned_note_eval_to_false() {
 		$spec                    = $this->get_spec( false );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			$this->get_failing_rule_evaluator()
+			new FailingRuleEvaluator()
 		);
 
 		$result = $evaluate_and_get_status->evaluate( $spec, 'preunactioned' );
@@ -111,7 +71,7 @@ class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	public function test_snoozed_note_eval_to_true_without_allow_redisplay() {
 		$spec                    = $this->get_spec( false );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			$this->get_passing_rule_evaluator()
+			new PassingRuleEvaluator()
 		);
 
 		$result = $evaluate_and_get_status->evaluate( $spec, 'snoozed' );
@@ -128,7 +88,7 @@ class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	public function test_snoozed_note_eval_to_false_without_allow_redisplay() {
 		$spec                    = $this->get_spec( false );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			$this->get_failing_rule_evaluator()
+			new FailingRuleEvaluator()
 		);
 
 		$result = $evaluate_and_get_status->evaluate( $spec, 'snoozed' );
@@ -145,7 +105,7 @@ class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	public function test_actioned_note_eval_to_true_with_allow_redisplay_set() {
 		$spec                    = $this->get_spec( true );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			$this->get_passing_rule_evaluator()
+			new PassingRuleEvaluator()
 		);
 
 		$result = $evaluate_and_get_status->evaluate( $spec, 'actioned' );
@@ -162,7 +122,7 @@ class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	public function test_actioned_note_eval_to_false_with_allow_redisplay_set() {
 		$spec                    = $this->get_spec( true );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			$this->get_failing_rule_evaluator()
+			new FailingRuleEvaluator()
 		);
 
 		$result = $evaluate_and_get_status->evaluate( $spec, 'actioned' );
@@ -179,7 +139,7 @@ class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	public function test_preunactioned_note_eval_to_true_with_allow_redirect_set() {
 		$spec                    = $this->get_spec( true );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			$this->get_passing_rule_evaluator()
+			new PassingRuleEvaluator()
 		);
 
 		$result = $evaluate_and_get_status->evaluate( $spec, 'preunactioned' );
@@ -196,7 +156,7 @@ class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	public function test_preunactioned_note_eval_to_false_with_allow_redirect_set() {
 		$spec                    = $this->get_spec( true );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			$this->get_failing_rule_evaluator()
+			new FailingRuleEvaluator()
 		);
 
 		$result = $evaluate_and_get_status->evaluate( $spec, 'preunactioned' );
