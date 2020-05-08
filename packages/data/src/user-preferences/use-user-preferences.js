@@ -19,16 +19,19 @@ import { STORE_NAME } from './constants';
  * This is a wrapper around @wordpress/core-data's getCurrentUser() and saveUser().
  */
 export const useUserPreferences = () => {
-	// Use getCurrentUser() to get WooCommerce meta values.
-	const { isRequesting, userPreferences } = useSelect(
+	// Get our dispatch methods now - this can't happen inside the callback below.
+	const { receiveCurrentUser, saveUser } = useDispatch( STORE_NAME );
+
+	const { isRequesting, userPreferences, updateUserPreferences } = useSelect(
 		( select ) => {
 			const {
 				getCurrentUser,
+				getLastEntitySaveError,
 				hasStartedResolution,
 				hasFinishedResolution,
 			} = select( STORE_NAME );
 
-			// Retrieve the current user from the @wordpress/core-data store.
+			// Use getCurrentUser() to get WooCommerce meta values.
 			const user = getCurrentUser();
 			const wooMeta = user.woocommerce_meta || {};
 
@@ -40,56 +43,66 @@ export const useUserPreferences = () => {
 				return JSON.parse( data );
 			} );
 
+			// Create wrapper for updating user's `woocommerce_meta`.
+			const updateUserPrefs = async ( { id, ...userPrefs } ) => {
+				// Whitelist our meta fields.
+				const userDataFields = [
+					'categories_report_columns',
+					'coupons_report_columns',
+					'customers_report_columns',
+					'orders_report_columns',
+					'products_report_columns',
+					'revenue_report_columns',
+					'taxes_report_columns',
+					'variations_report_columns',
+					'dashboard_sections',
+					'dashboard_chart_type',
+					'dashboard_chart_interval',
+					'dashboard_leaderboard_rows',
+					'activity_panel_inbox_last_read',
+					'homepage_stats',
+				];
+
+				// Prep valid fields for update.
+				const metaData = mapValues(
+					pick( userPrefs, userDataFields ),
+					JSON.stringify
+				);
+
+				// Use saveUser() to update WooCommerce meta values.
+				const updatedUser = await saveUser( { id, woocommerce_meta: metaData } );
+
+				if ( undefined === updatedUser ) {
+					// Return the encountered error to the caller.
+					const error = getLastEntitySaveError( 'root', 'user', id );
+
+					return {
+						error,
+						updatedUser,
+					}
+				}
+
+				// Propagate the updated User object to the store.
+				receiveCurrentUser( updatedUser );
+
+				return {
+					updatedUser
+				};
+			};
+
 			return {
 				isRequesting:
 					hasStartedResolution( 'getCurrentUser' ) &&
 					! hasFinishedResolution( 'getCurrentUser' ),
 				userPreferences: userData,
+				updateUserPreferences: updateUserPrefs,
 			};
 		}
 	);
 
-	// Use saveUser() to update WooCommerce meta values.
-	const { receiveCurrentUser, saveUser } = useDispatch( STORE_NAME );
-
-	const updateUserPrefs = async ( { id, ...userData } ) => {
-		// Whitelist our meta fields.
-		const userDataFields = [
-			'categories_report_columns',
-			'coupons_report_columns',
-			'customers_report_columns',
-			'orders_report_columns',
-			'products_report_columns',
-			'revenue_report_columns',
-			'taxes_report_columns',
-			'variations_report_columns',
-			'dashboard_sections',
-			'dashboard_chart_type',
-			'dashboard_chart_interval',
-			'dashboard_leaderboard_rows',
-			'activity_panel_inbox_last_read',
-			'homepage_stats',
-		];
-
-		// Prep valid fields for update.
-		const metaData = mapValues(
-			pick( userData, userDataFields ),
-			JSON.stringify
-		);
-
-		// Update the `woocommerce_meta` user field.
-		const updatedUser = await saveUser( { id, woocommerce_meta: metaData } );
-
-		// @todo - handle error updating here.
-		// console.log( { updatedUser } );
-
-		// Propogate the updated User object to the store.
-		receiveCurrentUser( updatedUser );
-	};
-
 	return {
 		isRequesting,
 		...userPreferences,
-		updateUserPrefs,
+		updateUserPreferences,
 	};
 };
