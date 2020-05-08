@@ -191,7 +191,7 @@ class FeaturePlugin {
 		new WC_Admin_Notes_WooCommerce_Payments();
 		new WC_Admin_Notes_Install_JP_And_WCS_Plugins();
 		new WC_Admin_Notes_Draw_Attention();
-		
+
 		// Initialize RindsEngine.
 		RindsEngine::init();
 	}
