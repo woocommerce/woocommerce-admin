@@ -7,7 +7,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Button } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { includes } from 'lodash';
+import { includes, filter } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -120,9 +120,80 @@ class WCPay extends Component {
 		}
 	}
 
-	render() {
+	getSteps() {
 		const { installStep, isJetpackActive, isJetpackConnected } = this.props;
 		const { isPending, isJetpackRequired } = this.state;
+
+		const steps = [
+			installStep,
+			{
+				key: 'plugins',
+				label: __( 'Install Jetpack', 'woocommerce-admin' ),
+				description: __(
+					'WooCommerce Payments uses the Jetpack connection to accept and manage payments',
+					'woocommerce-admin'
+				),
+				content: (
+					<Plugins
+						pluginSlugs={ [ 'jetpack' ] }
+						onComplete={ () => {
+							recordEvent( 'tasklist_wcpay_install_jetpack', {
+								install_jetpack: true,
+							} );
+							this.completeStep();
+						} }
+					/>
+				),
+				hidden: isJetpackActive || ! isJetpackRequired,
+			},
+			{
+				key: 'connect-jetpack',
+				label: __( 'Connect your store', 'woocommerce-admin' ),
+				description: __(
+					'Connect your store to WordPress.com to enable WooCommerce Payments',
+					'woocommerce-admin'
+				),
+				content: (
+					<Connect
+						{ ...this.props }
+						setIsPending={ this.setIsPending }
+						onConnect={ () => {
+							recordEvent( 'tasklist_wcpay_connect_jetpack', {
+								connect: true,
+							} );
+						} }
+					/>
+				),
+				hidden: isJetpackConnected || ! isJetpackRequired,
+			},
+			{
+				key: 'connect',
+				label: __( 'Verify business details', 'woocommerce-admin' ),
+				description: __(
+					'Verify your business details with our payment partner, Stripe.',
+					'woocommerce-admin'
+				),
+				content: (
+					<Fragment>
+						<Button
+							isPrimary
+							isDefault
+							isBusy={ isPending }
+							onClick={ this.connect }
+						>
+							{ __( 'Verify details', 'woocommerce-admin' ) }
+						</Button>
+					</Fragment>
+				),
+			},
+		];
+
+		return filter( steps, ( step ) => ! step.hidden );
+	}
+
+	render() {
+		const { installStep } = this.props;
+		const { isPending } = this.state;
 
 		return (
 			<Stepper
@@ -130,81 +201,7 @@ class WCPay extends Component {
 				isPending={ ! installStep.isComplete || isPending }
 				// TODO Use component state to read and write current step.
 				currentStep={ installStep.isComplete ? 'connect' : 'install' }
-				steps={ [
-					installStep,
-					{
-						key: 'plugins',
-						label: __( 'Install Jetpack', 'woocommerce-admin' ),
-						description: __(
-							'WooCommerce Payments uses the Jetpack connection to accept and manage payments',
-							'woocommerce-admin'
-						),
-						content: (
-							<Plugins
-								pluginSlugs={ [ 'jetpack' ] }
-								onComplete={ () => {
-									recordEvent(
-										'tasklist_wcpay_install_jetpack',
-										{
-											install_jetpack: true,
-										}
-									);
-									this.completeStep();
-								} }
-							/>
-						),
-						visible: ! isJetpackActive && isJetpackRequired,
-					},
-					{
-						key: 'connect-jetpack',
-						label: __( 'Connect your store', 'woocommerce-admin' ),
-						description: __(
-							'Connect your store to WordPress.com to enable WooCommerce Payments',
-							'woocommerce-admin'
-						),
-						content: (
-							<Connect
-								{ ...this.props }
-								setIsPending={ this.setIsPending }
-								onConnect={ () => {
-									recordEvent(
-										'tasklist_wcpay_connect_jetpack',
-										{
-											connect: true,
-										}
-									);
-								} }
-							/>
-						),
-						visible: ! isJetpackConnected && isJetpackRequired,
-					},
-					{
-						key: 'connect',
-						label: __(
-							'Verify business details',
-							'woocommerce-admin'
-						),
-						description: __(
-							'Verify your business details with our payment partner, Stripe.',
-							'woocommerce-admin'
-						),
-						content: (
-							<Fragment>
-								<Button
-									isPrimary
-									isDefault
-									isBusy={ isPending }
-									onClick={ this.connect }
-								>
-									{ __(
-										'Verify details',
-										'woocommerce-admin'
-									) }
-								</Button>
-							</Fragment>
-						),
-					},
-				] }
+				steps={ this.getSteps() }
 			/>
 		);
 	}
