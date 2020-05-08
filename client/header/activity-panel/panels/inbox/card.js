@@ -148,23 +148,21 @@ class InboxNoteCard extends Component {
 		);
 	}
 
-	renderDismissConfirmationModal() {
+	getDismissButton() {
 		const { note } = this.props;
 		const { dismissType } = this.state;
-		const getDismissButtonFromActions = () => {
-			if ( ! note.actions ) {
-				return [];
-			}
-			return (
-				<NoteAction
-					key={ note.id }
-					noteId={ dismissType === 'all' ? null : note.id }
-					label={ __( "Yes, I'm sure", 'woocommerce-admin' ) }
-					actionCallback={ this.closeDismissModal }
-					dismiss={ true }
-				/>
-			);
-		};
+		return (
+			<NoteAction
+				key={ note.id }
+				noteId={ dismissType === 'all' ? null : note.id }
+				label={ __( "Yes, I'm sure", 'woocommerce-admin' ) }
+				actionCallback={ this.closeDismissModal }
+				dismiss={ true }
+			/>
+		);
+	}
+
+	renderDismissConfirmationModal() {
 		return (
 			<Modal
 				title={
@@ -189,7 +187,7 @@ class InboxNoteCard extends Component {
 						>
 							{ __( 'Cancel', 'woocommerce-admin' ) }
 						</Button>
-						{ getDismissButtonFromActions() }
+						{ this.getDismissButton() }
 					</div>
 				</div>
 			</Modal>
