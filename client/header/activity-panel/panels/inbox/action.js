@@ -30,7 +30,6 @@ class InboxNoteAction extends Component {
 		const {
 			action,
 			actionCallback,
-			dismissType,
 			noteId,
 			triggerNoteAction,
 			removeAllNotes,
@@ -45,12 +44,11 @@ class InboxNoteAction extends Component {
 			window.open( href, '_blank' );
 		}
 
-		if ( dismissType ) {
-			if ( dismissType.includes( 'all' ) ) {
-				removeAllNotes();
-			}
-			if ( dismissType.includes( 'this' ) ) {
+		if ( ! action ) {
+			if ( noteId ) {
 				removeNote( noteId );
+			} else {
+				removeAllNotes();
 			}
 			actionCallback();
 		} else {
@@ -81,7 +79,6 @@ InboxNoteAction.propTypes = {
 	noteId: PropTypes.number,
 	label: PropTypes.string,
 	dismiss: PropTypes.bool,
-	dismissType: PropTypes.string,
 	actionCallback: PropTypes.func,
 	action: PropTypes.shape( {
 		id: PropTypes.number.isRequired,
