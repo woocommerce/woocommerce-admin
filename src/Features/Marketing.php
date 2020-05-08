@@ -58,6 +58,98 @@ class Marketing {
 
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 30 );
+		add_action( 'woocommerce_register_post_type_shop_coupon', array( $this, 'move_coupons' ) );
+		add_action( 'admin_head', array( $this, 'fix_coupon_menu_highlight' ), 99 );
+		add_filter( 'custom_menu_order', array( $this, 'reorder_coupon_menu' ) );
+		add_action( 'admin_menu', array( $this, 'maybe_add_coupon_menu_redirect' ) );
+	}
+
+	/**
+	 * Maybe add menu item back in original spot to help people transition
+	 */
+	public function maybe_add_coupon_menu_redirect() {
+
+		$get = isset( $_GET['legacy_coupon_menu'] ) ? sanitize_title( $_GET['legacy_coupon_menu'] ) : null;
+
+		if ( 'hide' === $get ) {
+    		update_option( 'wc_hide_coupon_menu_rediect', 1 );
+		}
+
+		$hide =  ! empty( $get ) ? $get : get_option( 'wc_hide_coupon_menu_rediect' );
+
+		if ( ! get_option( 'wc_hide_coupon_menu_rediect' ) ) {
+		    add_submenu_page(
+		    	'woocommerce',
+		    	'Coupons',
+		    	'Coupons',
+		    	'manage_options',
+		    	'coupons-moved',
+		    	array( $this, 'coupon_menu_moved' ),
+			);
+		}
+	}
+
+	/**
+	 * Call back for transition menu item
+	 */
+	public function coupon_menu_moved() {
+		?>
+		<div class="wrap woocommerce">
+			<h1 class="wp-heading-inline">Coupon management has moved!</h1>
+			<hr class="wp-header-end" />
+			<p>Coupons can now be managed from:<p>
+			<p><a href="<?php echo admin_url( 'edit.php?post_type=shop_coupon&legacy_coupon_menu=hide' ); ?>">Marketing > Coupons</a></p>
+			<p>Clicking the above link will redirect you to the new page and hide this menu item.</p>
+		</div>
+		<?php
+	}
+
+
+	/**
+	 * Modify registered post type shop_coupon
+	 *
+	 * @param array $args Array of post type parameters.
+	 */
+	public function move_coupons( $args ) {
+		$args['show_in_menu'] = current_user_can( 'manage_woocommerce' ) ? 'wc-admin&path=/marketing/overview' : true;
+		return $args;
+	}
+
+	/**
+	 * Undo WC modifications to $parent_file for 'shop_coupon'
+	 */
+	public function fix_coupon_menu_highlight() {
+		global $parent_file, $post_type;
+
+		if ( 'shop_coupon' === $post_type ) {
+			$parent_file = 'wc-admin&path=/marketing/overview';  // WPCS: override ok.
+		}
+	}
+
+	/**
+	 * Redorder marketing submenu items so Overview is at the top
+	 *
+	 * @param array $menu_order
+	 */
+	public function reorder_coupon_menu( $menu_order ) {
+
+	    global $submenu;
+
+		$marketing = 'wc-admin&path=/marketing/overview';
+		$settings  = $submenu[$marketing];
+
+		foreach ( $settings as $key => $details ) {
+			if ( $details[0] == 'Overview' ) {
+				$index = $key;
+			}
+		}
+
+		$temp = array( $index => $settings[$index] );
+		unset( $settings[$index] );
+		$settings = $temp + $settings;
+		$submenu[$marketing] = $settings;
+
+	    return $menu_order;
 	}
 
 	/**
@@ -68,9 +160,15 @@ class Marketing {
 			array(
 				'id'       => 'woocommerce-marketing',
 				'title'    => __( 'Marketing', 'woocommerce-admin' ),
-				'path'     => '/marketing',
+				'path'     => '/marketing/overview',
 				'icon'     => 'dashicons-megaphone',
 				'position' => 58, // After WooCommerce & Product menu items.
+			),
+			array(
+				'id'       => 'woocommerce-marketing-overview',
+				'title'    => __( 'Overview', 'woocommerce-admin' ),
+				'parent' => 'woocommerce-marketing',
+				'path'     => '/marketing/overview',
 			),
 		);
 
