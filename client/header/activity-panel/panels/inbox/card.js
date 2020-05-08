@@ -55,8 +55,9 @@ class InboxNoteCard extends Component {
 		if ( innerLink ) {
 			const { note, screen } = props;
 
-			recordEvent( 'wcadmin_inbox_note_view', {
+			recordEvent( 'wcadmin_inbox_action_click', {
 				note_name: note.name,
+				note_title: note.title,
 				note_content_inner_link: innerLink,
 				screen,
 			} );
@@ -93,9 +94,9 @@ class InboxNoteCard extends Component {
 		const noteNameDismissAll = dismissType === 'all' ? true : false;
 		const noteNameDismissAllConfirmation = acepted ? true : false;
 
-		recordEvent( 'wcadmin_inbox_note_view', {
+		recordEvent( 'inbox_action_dismiss', {
 			note_name: note.name,
-			note_name_dismiss: note.name,
+			note_title: note.title,
 			note_name_dismiss_all: noteNameDismissAll,
 			note_name_dismiss_all_confirmation: noteNameDismissAllConfirmation,
 			screen,
