@@ -7,14 +7,22 @@ import apiFetch from '@wordpress/api-fetch';
 import { Button } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
+import { includes } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
 import { getQuery } from '@woocommerce/navigation';
+import { Stepper, Plugins } from '@woocommerce/components';
+import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+
+/**
+ * Internal dependencies
+ */
+import Connect from 'dashboard/components/connect';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
-import { Stepper } from '@woocommerce/components';
+import { recordEvent } from 'lib/tracks';
 
 class WCPay extends Component {
 	constructor( props ) {
@@ -83,7 +91,7 @@ class WCPay extends Component {
 	}
 
 	render() {
-		const { installStep } = this.props;
+		const { installStep, isJetpackActive, isJetpackConnected } = this.props;
 		const { isPending } = this.state;
 
 		return (
@@ -93,6 +101,52 @@ class WCPay extends Component {
 				currentStep={ installStep.isComplete ? 'connect' : 'install' }
 				steps={ [
 					installStep,
+					{
+						key: 'plugins',
+						label: __( 'Install Jetpack', 'woocommerce-admin' ),
+						description: __(
+							'WooCommerce Payments uses the Jetpack connection to accept and manage payments',
+							'woocommerce-admin'
+						),
+						content: (
+							<Plugins
+								pluginSlugs={ [ 'jetpack' ] }
+								onComplete={ () => {
+									recordEvent(
+										'tasklist_wcpay_install_jetpack',
+										{
+											install_jetpack: true,
+										}
+									);
+									this.completeStep();
+								} }
+							/>
+						),
+						visible: ! isJetpackActive,
+					},
+					{
+						key: 'connect-jetpack',
+						label: __( 'Connect your store', 'woocommerce-admin' ),
+						description: __(
+							'Connect your store to WordPress.com to enable WooCommerce Payments',
+							'woocommerce-admin'
+						),
+						content: (
+							<Connect
+								{ ...this.props }
+								setIsPending={ this.setIsPending }
+								onConnect={ () => {
+									recordEvent(
+										'tasklist_wcpay_connect_jetpack',
+										{
+											connect: true,
+										}
+									);
+								} }
+							/>
+						),
+						visible: ! isJetpackConnected,
+					},
 					{
 						key: 'connect',
 						label: __(
@@ -137,9 +191,16 @@ export default compose(
 			] )
 		);
 
+		const { getActivePlugins, isJetpackConnected } = select(
+			PLUGINS_STORE_NAME
+		);
+		const isJetpackActive = includes( getActivePlugins(), 'jetpack' );
+
 		return {
 			options,
 			optionsIsRequesting,
+			isJetpackActive,
+			isJetpackConnected: isJetpackConnected(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
