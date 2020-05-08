@@ -37,9 +37,11 @@ class InboxPanel extends Component {
 		);
 
 		if ( URLparams.page ) {
+			const currentPage =
+				URLparams.page === 'wc-admin' ? 'home_screen' : URLparams.page;
 			screenName = URLparams.path
 				? URLparams.path.replace( /\//g, '_' ).substring( 1 )
-				: URLparams.page;
+				: currentPage;
 		} else if ( URLparams.post_type ) {
 			screenName = URLparams.post_type;
 		}
