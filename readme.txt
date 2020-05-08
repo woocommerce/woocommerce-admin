@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.3.0
 Tested up to: 5.3.2
 Requires PHP: 5.6.20
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/license.txt
 
@@ -70,6 +70,36 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 3. Analytics
 
 == Changelog ==
+
+= 1.2.0 2020-05--8 =
+- Fix: Cast Shipping Total to float #4042 🎉barryhughes
+- Tweak: Dynamic Currency with Context API #4027
+- Fix: Remove Duplicate array entry #4049 🎉 tivnet
+- Fix: Proper display of elements in wc-admin pages when in a RTL environment. #4051
+- Enhancement: Marketing Inbox Note #4030
+- Tweak: Enable the default homepage template to be filtered #4072 🎉 stevegrunwell
+- Tweak: Create admin note if Jetpack or WooCommerce Services plugin doesn't get installed due to an error during OBW #3888
+- Fix: Update UX when knowledge base articles fail to retrieve #4133
+- Tweak: Decouple Plugins DataStore from onboarding feature #4048
+- Tweak: Move API out of Onboarding #4093
+- Dev: Add Profiler Step View Tracks #4141
+- Fix: Updated messaging after last step in OBW. #4148
+- Performance: trim down inbox note API request. #3977
+- Tweak: Update Email Marketing note. #4167
+- Fix: Reset profiler when visiting old OBW URL #4166.
+- Tweak: Adjust "demo products" verbiage to "Sample Products" #4184 🎉 jobthomas
+- Dev: Add React Testing Library #4221
+- Enhancement: New Link Component #4219
+- Performance: Use Route based code splitting to reduce bundle size #4094
+- Tweak: Use PAGE_ROOT constant to reduce redundant strings #4238 🎉 codemascot
+- Enhancement: Add onboarding payments note #4157 
+- Tweak: Don't reschedule imports on failed imports #4263
+- Tweak: Remove obsolete inbox messages #4182
+- Fix: Dashboard flash before OBW chunk loads #4259
+- Fix: Make query selector for admin alerts more specific #4289 🎉pauloiankoski 
+- Fix: Guard against null themes in OBW #4244
+- Fix: Update wcadmin db version after db callback #4323
+- Fix: Only migrate options on version change #4324
 
 = 1.1.1 2020-04-28 =
 - Fix: Storefront should show at top of theme options in onboarding wizard. #4187
