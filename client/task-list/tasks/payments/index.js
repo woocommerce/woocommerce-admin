@@ -44,13 +44,6 @@ class Payments extends Component {
 			enabledMethods,
 		};
 
-		this.recommendedMethod = 'stripe';
-		methods.forEach( ( method ) => {
-			if ( method.key === 'wcpay' && method.visible ) {
-				this.recommendedMethod = 'wcpay';
-			}
-		} );
-
 		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
 		this.skipTask = this.skipTask.bind( this );
@@ -229,6 +222,13 @@ class Payments extends Component {
 			);
 		}
 
+		let recommendedMethod = 'stripe';
+		methods.forEach( ( method ) => {
+			if ( method.key === 'wcpay' && method.visible ) {
+				recommendedMethod = 'wcpay';
+			}
+		} );
+
 		return (
 			<div className="woocommerce-task-payments">
 				{ methods.map( ( method ) => {
@@ -254,12 +254,9 @@ class Payments extends Component {
 						'woocommerce-task-payment-' + key
 					);
 
-					const isRecommended =
-						key === this.recommendedMethod && ! isConfigured;
-					const showRecommendedRibbon =
-						isRecommended && this.recommendedMethod !== 'wcpay';
-					const showRecommendedPill =
-						isRecommended && this.recommendedMethod === 'wcpay';
+					const isRecommended = key === recommendedMethod && ! isConfigured;
+					const showRecommendedRibbon = isRecommended && key !== 'wcpay';
+					const showRecommendedPill = isRecommended && key === 'wcpay';
 
 					return (
 						<Card key={ key } className={ classes }>
@@ -296,10 +293,10 @@ class Payments extends Component {
 								{ container && ! isConfigured ? (
 									<Button
 										isPrimary={
-											key === this.recommendedMethod
+											key === recommendedMethod
 										}
 										isDefault={
-											key !== this.recommendedMethod
+											key !== recommendedMethod
 										}
 										onClick={ () => {
 											recordEvent(
