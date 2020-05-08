@@ -30,6 +30,7 @@ class WCPay extends Component {
 
 		this.state = {
 			isPending: false,
+			isJetpackRequired: false,
 		};
 
 		this.connect = this.connect.bind( this );
@@ -90,9 +91,37 @@ class WCPay extends Component {
 		}
 	}
 
+	async isJetpackRequired() {
+		const { createNotice } = this.props;
+		this.setState( { isPending: true } );
+
+		const errorMessage = __(
+			'There was an error connecting to WooCommerce Payments. Please try again or skip to connect later in store settings.',
+			'woocommerce-admin'
+		);
+
+		try {
+			const result = await apiFetch( {
+				path: WC_ADMIN_NAMESPACE + '/plugins/wcpay-deps',
+			} );
+
+			this.setState( { isPending: false } );
+
+			if ( ! result || ! result.jetpack ) {
+				createNotice( 'error', errorMessage );
+				return;
+			}
+
+			this.setState( { isJetpackRequired: result.jetpack === 'yes' } );
+		} catch ( error ) {
+			this.setState( { isPending: false } );
+			createNotice( 'error', errorMessage );
+		}
+	}
+
 	render() {
 		const { installStep, isJetpackActive, isJetpackConnected } = this.props;
-		const { isPending } = this.state;
+		const { isPending, isJetpackRequired } = this.state;
 
 		return (
 			<Stepper
@@ -122,7 +151,7 @@ class WCPay extends Component {
 								} }
 							/>
 						),
-						visible: ! isJetpackActive,
+						visible: ! isJetpackActive && isJetpackRequired,
 					},
 					{
 						key: 'connect-jetpack',
@@ -145,7 +174,7 @@ class WCPay extends Component {
 								} }
 							/>
 						),
-						visible: ! isJetpackConnected,
+						visible: ! isJetpackConnected && isJetpackRequired,
 					},
 					{
 						key: 'connect',

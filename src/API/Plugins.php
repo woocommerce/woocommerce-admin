@@ -146,6 +146,19 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/wcpay-deps',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'wcpay_deps' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_connect_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/connect-wcpay',
 			array(
 				array(
@@ -602,6 +615,20 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		return( array(
 			'connectUrl' => $connect_url,
+		) );
+	}
+
+	/**
+	 * Returns plugin dependencies for WCPay.
+	 *
+	 * @return WP_Error|array Dependency flags.
+	 */
+	public function wcpay_deps() {
+		if ( ! defined( 'WCPAY_VERSION_NUMBER' ) ) {
+			return new \WP_Error( 'woocommerce_rest_helper_connect', __( 'There was an error communicating with the WooCommerce Payments plugin.', 'woocommerce-admin' ), 500 );
+		}
+		return( array(
+			'jetpack' => defined( 'WCPAY_MIN_JETPACK_VERSION' ) ? 'yes' : 'no'
 		) );
 	}
 
