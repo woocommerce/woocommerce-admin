@@ -8,3 +8,6 @@ export { withPluginsHydration } from './plugins/with-plugins-hydration';
 
 export { ONBOARDING_STORE_NAME } from './onboarding';
 export { withOnboardingHydration } from './onboarding/with-onboarding-hydration';
+
+export { withCurrentUserHydration } from './user-preferences/with-current-user-hydration';
+export { useUserPreferences } from './user-preferences/use-user-preferences';
