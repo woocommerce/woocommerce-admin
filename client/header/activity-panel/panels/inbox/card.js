@@ -106,9 +106,6 @@ class InboxNoteCard extends Component {
 	getDismissButton () {
 		const { note } = this.props;
 		const { dismissType } = this.state;
-		if ( ! note.actions ) {
-			return [];
-		}
 		return (
 			<NoteAction
 				key={ note.id }
