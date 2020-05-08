@@ -135,11 +135,10 @@ class InboxNoteCard extends Component {
 		return (
 			<NoteAction
 				key={ note.id }
-				noteId={ note.id }
+				noteId={ dismissType === 'all' ? null : note.id }
 				label={ __( "Yes, I'm sure", 'woocommerce-admin' ) }
 				actionCallback={ this.closeDismissModal }
 				dismiss={ true }
-				dismissType={ dismissType }
 			/>
 		);
 	}
