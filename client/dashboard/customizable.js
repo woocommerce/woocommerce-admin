@@ -2,11 +2,10 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Component, Fragment, Suspense, lazy } from '@wordpress/element';
+import { Fragment, Suspense, lazy, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { partial, get } from 'lodash';
+import { partial, get, identity } from 'lodash';
 import { Dropdown, Button, Icon } from '@wordpress/components';
-import { withDispatch } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 import { Icon as WPIcon, plusCircleFilled } from '@wordpress/icons';
 
@@ -14,7 +13,11 @@ import { Icon as WPIcon, plusCircleFilled } from '@wordpress/icons';
  * WooCommerce dependencies
  */
 import { H, Spinner } from '@woocommerce/components';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import {
+	SETTINGS_STORE_NAME,
+	useUserPreferences,
+	withCurrentUserHydration,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -38,55 +41,70 @@ const TaskList = lazy( () =>
 
 const DASHBOARD_FILTERS_FILTER = 'woocommerce_admin_dashboard_filters';
 const filters = applyFilters( DASHBOARD_FILTERS_FILTER, [] );
+const hydrateUser = window.wcSettings.currentUserData;
 
-class CustomizableDashboard extends Component {
-	constructor( props ) {
-		super( props );
-
-		this.state = {
-			sections: this.mergeSectionsWithDefaults( props.userPrefSections ),
-		};
-
-		this.onMove = this.onMove.bind( this );
-		this.updateSection = this.updateSection.bind( this );
+const mergeSectionsWithDefaults = ( prefSections ) => {
+	if ( ! prefSections || prefSections.length === 0 ) {
+		return defaultSections;
 	}
+	const defaultKeys = defaultSections.map( ( section ) => section.key );
+	const prefKeys = prefSections.map( ( section ) => section.key );
+	const keys = new Set( [ ...prefKeys, ...defaultKeys ] );
+	const sections = [];
 
-	mergeSectionsWithDefaults( prefSections ) {
-		if ( ! prefSections || prefSections.length === 0 ) {
-			return defaultSections;
+	keys.forEach( ( key ) => {
+		const defaultSection = defaultSections.find(
+			( section ) => section.key === key
+		);
+		if ( ! defaultSection ) {
+			return;
 		}
-		const defaultKeys = defaultSections.map( ( section ) => section.key );
-		const prefKeys = prefSections.map( ( section ) => section.key );
-		const keys = new Set( [ ...prefKeys, ...defaultKeys ] );
-		const sections = [];
+		const prefSection = prefSections.find(
+			( section ) => section.key === key
+		);
 
-		keys.forEach( ( key ) => {
-			const defaultSection = defaultSections.find(
-				( section ) => section.key === key
-			);
-			if ( ! defaultSection ) {
-				return;
-			}
-			const prefSection = prefSections.find(
-				( section ) => section.key === key
-			);
-
-			sections.push( {
-				...defaultSection,
-				...prefSection,
-			} );
+		sections.push( {
+			...defaultSection,
+			...prefSection,
 		} );
+	} );
 
-		return sections;
+	return sections;
+}
+
+const CustomizableDashboard = ( {
+	defaultDateRange,
+	path,
+	query,
+	taskListComplete,
+	taskListHidden,
+} ) => {
+	const { isRequesting, updateUserPreferences, ...userPrefs } = useUserPreferences();
+	const [ dashSections, setSections ] = useState(
+		isRequesting
+			? false
+			: mergeSectionsWithDefaults( userPrefs.dashboard_sections )
+	);
+
+	// Update sections when the request is finished (and they weren't hydrated).
+	if ( ! isRequesting && dashSections === false ) {
+		setSections( mergeSectionsWithDefaults( userPrefs.dashboard_sections ) );
 	}
 
-	updateSections( newSections ) {
-		this.setState( { sections: newSections } );
-		this.props.updateCurrentUserData( { dashboard_sections: newSections } );
+	const sections = dashSections || defaultSections;
+
+	const isTaskListEnabled = isOnboardingEnabled() && ! taskListHidden;
+
+	const isDashboardShown =
+		! isTaskListEnabled || ( ! query.task && taskListComplete );
+
+	const updateSections = ( newSections ) => {
+		setSections( newSections );
+		updateUserPreferences( { dashboard_sections: newSections } );
 	}
 
-	updateSection( updatedKey, newSettings ) {
-		const newSections = this.state.sections.map( ( section ) => {
+	const updateSection = ( updatedKey, newSettings ) => {
+		const newSections = sections.map( ( section ) => {
 			if ( section.key === updatedKey ) {
 				return {
 					...section,
@@ -95,32 +113,31 @@ class CustomizableDashboard extends Component {
 			}
 			return section;
 		} );
-		this.updateSections( newSections );
+		updateSections( newSections );
 	}
 
-	onChangeHiddenBlocks( updatedKey ) {
+	const onChangeHiddenBlocks = ( updatedKey ) => {
 		return ( updatedHiddenBlocks ) => {
-			this.updateSection( updatedKey, {
+			updateSection( updatedKey, {
 				hiddenBlocks: updatedHiddenBlocks,
 			} );
 		};
 	}
 
-	onSectionTitleUpdate( updatedKey ) {
+	const onSectionTitleUpdate = ( updatedKey ) => {
 		return ( updatedTitle ) => {
 			recordEvent( 'dash_section_rename', { key: updatedKey } );
-			this.updateSection( updatedKey, { title: updatedTitle } );
+			updateSection( updatedKey, { title: updatedTitle } );
 		};
 	}
 
-	toggleVisibility( key, onToggle ) {
+	const toggleVisibility = ( key, onToggle ) => {
 		return () => {
 			if ( onToggle ) {
 				// Close the dropdown before setting state so an action is not performed on an unmounted component.
 				onToggle();
 			}
 			// When toggling visibility, place section at the end of the array.
-			const sections = [ ...this.state.sections ];
 			const index = sections.findIndex( ( s ) => key === s.key );
 			const toggledSection = sections.splice( index, 1 ).shift();
 			toggledSection.isVisible = ! toggledSection.isVisible;
@@ -134,12 +151,11 @@ class CustomizableDashboard extends Component {
 				} );
 			}
 
-			this.updateSections( sections );
+			updateSections( sections );
 		};
 	}
 
-	onMove( index, change ) {
-		const sections = [ ...this.state.sections ];
+	const onMove = ( index, change ) => {
 		const movedSection = sections.splice( index, 1 ).shift();
 		const newIndex = index + change;
 
@@ -153,7 +169,7 @@ class CustomizableDashboard extends Component {
 		) {
 			// Yes, lets insert.
 			sections.splice( newIndex, 0, movedSection );
-			this.updateSections( sections );
+			updateSections( sections );
 
 			const eventProps = {
 				key: movedSection.key,
@@ -162,12 +178,11 @@ class CustomizableDashboard extends Component {
 			recordEvent( 'dash_section_order_change', eventProps );
 		} else {
 			// No, lets try the next one.
-			this.onMove( index, change + change );
+			onMove( index, change + change );
 		}
 	}
 
-	renderAddMore() {
-		const { sections } = this.state;
+	const renderAddMore = () => {
 		const hiddenSections = sections.filter(
 			( section ) => section.isVisible === false
 		);
@@ -199,7 +214,7 @@ class CustomizableDashboard extends Component {
 								return (
 									<Button
 										key={ section.key }
-										onClick={ this.toggleVisibility(
+										onClick={ toggleVisibility(
 											section.key,
 											onToggle
 										) }
@@ -229,9 +244,7 @@ class CustomizableDashboard extends Component {
 		);
 	}
 
-	renderDashboardReports() {
-		const { query, path, defaultDateRange } = this.props;
-		const { sections } = this.state;
+	const renderDashboardReports = () => {
 		const { period, compare, before, after } = getDateParamsFromQuery(
 			query,
 			defaultDateRange
@@ -269,17 +282,17 @@ class CustomizableDashboard extends Component {
 								component={ section.component }
 								hiddenBlocks={ section.hiddenBlocks }
 								key={ section.key }
-								onChangeHiddenBlocks={ this.onChangeHiddenBlocks(
+								onChangeHiddenBlocks={ onChangeHiddenBlocks(
 									section.key
 								) }
-								onTitleUpdate={ this.onSectionTitleUpdate(
+								onTitleUpdate={ onSectionTitleUpdate(
 									section.key
 								) }
 								path={ path }
 								query={ query }
 								title={ section.title }
-								onMove={ partial( this.onMove, index ) }
-								onRemove={ this.toggleVisibility(
+								onMove={ partial( onMove, index ) }
+								onRemove={ toggleVisibility(
 									section.key
 								) }
 								isFirst={
@@ -296,46 +309,35 @@ class CustomizableDashboard extends Component {
 					}
 					return null;
 				} ) }
-				{ this.renderAddMore() }
+				{ renderAddMore() }
 			</Fragment>
 		);
 	}
 
-	render() {
-		const { query, taskListHidden, taskListComplete } = this.props;
-
-		const isTaskListEnabled =
-			isOnboardingEnabled() &&
-			! taskListHidden &&
-			! window.wcAdminFeatures.homepage;
-
-		const isDashboardShown =
-			! isTaskListEnabled || ( ! query.task && taskListComplete );
-
-		return (
-			<Fragment>
-				{ isTaskListEnabled && (
-					<Suspense fallback={ <Spinner /> }>
-						<TaskList query={ query } />
-					</Suspense>
-				) }
-				{ isDashboardShown && this.renderDashboardReports() }
-			</Fragment>
-		);
-	}
+	return (
+		<Fragment>
+			{ isTaskListEnabled && (
+				<Suspense fallback={ <Spinner /> }>
+					<TaskList
+						query={ query }
+						inline={ isDashboardShown }
+					/>
+				</Suspense>
+			) }
+			{ isDashboardShown && renderDashboardReports() }
+		</Fragment>
+	);
 }
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getCurrentUserData, getOptions } = select( 'wc-api' );
+		const { getOptions } = select( 'wc-api' );
 
-		const userData = getCurrentUserData();
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
 		const withSelectData = {
-			userPrefSections: userData.dashboard_sections,
 			defaultDateRange,
 		};
 
@@ -354,11 +356,7 @@ export default compose(
 
 		return withSelectData;
 	} ),
-	withDispatch( ( dispatch ) => {
-		const { updateCurrentUserData } = dispatch( 'wc-api' );
-
-		return {
-			updateCurrentUserData,
-		};
-	} )
+	hydrateUser
+		? withCurrentUserHydration( hydrateUser )
+		: identity
 )( CustomizableDashboard );
