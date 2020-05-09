@@ -197,19 +197,20 @@ class InboxNoteCard extends Component {
 	render() {
 		const { lastRead, note } = this.props;
 		const { isDismissModalOpen } = this.state;
+		const { actions: noteActions, content, date_created: dateCreated, date_created_gmt: dateCreatedGmt, id: noteId, image, layout, title } = note;
 
 		if ( note.is_deleted ) {
 			return null;
 		}
 
 		const getButtonsFromActions = () => {
-			if ( ! note.actions ) {
+			if ( ! noteActions ) {
 				return [];
 			}
-			return note.actions.map( ( action ) => (
+			return noteActions.map( ( action ) => (
 				<NoteAction
-					key={ note.id }
-					noteId={ note.id }
+					key={ noteId }
+					noteId={ noteId }
 					action={ action }
 				/>
 			) );
@@ -217,15 +218,15 @@ class InboxNoteCard extends Component {
 
 		const unread =
 			! lastRead ||
-			! note.date_created_gmt ||
-			new Date( note.date_created_gmt + 'Z' ).getTime() > lastRead;
+			! dateCreatedGmt ||
+			new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
 		const actions = getButtonsFromActions( note );
 		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
-		const date = note.date_created;
-		const hasImage = note.layout !== 'plain';
+		const date = dateCreated;
+		const hasImage = layout !== 'plain';
 		const cardClassName = classnames(
 			'woocommerce-inbox-message',
-			note.layout,
+			layout,
 			{
 				'message-is-unread': unread,
 			}
@@ -236,7 +237,7 @@ class InboxNoteCard extends Component {
 				<section className={ cardClassName }>
 					{ hasImage && (
 						<div className="woocommerce-inbox-message__image">
-							<img src={ note.image } alt="" />
+							<img src={ image } alt="" />
 						</div>
 					) }
 					<div className="woocommerce-inbox-message__wrapper">
@@ -247,12 +248,12 @@ class InboxNoteCard extends Component {
 								</span>
 							) }
 							<H className="woocommerce-inbox-message__title">
-								{ note.title }
+								{ title }
 							</H>
 							<Section className="woocommerce-inbox-message__text">
 								<span
 									dangerouslySetInnerHTML={ sanitizeHTML(
-										note.content
+										content
 									) }
 									ref={ this.bodyNotificationRef }
 								/>
