@@ -7,6 +7,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Button } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
+import { addQueryArgs } from '@wordpress/url';
 import { includes, filter } from 'lodash';
 
 /**
@@ -31,7 +32,7 @@ class WCPay extends Component {
 		this.state = {
 			step: 'install',
 			isPending: ! props.installStep.isComplete,
-			isJetpackRequired: false,
+			isJetpackRequired: getQuery().from === 'jetpack',
 		};
 
 		this.connect = this.connect.bind( this );
@@ -113,7 +114,10 @@ class WCPay extends Component {
 	async isJetpackMissing() {
 		const { createNotice } = this.props;
 
-		if ( this.isJetpackActive && this.isJetpackConnected ) {
+		if (
+			this.state.isJetpackRequired ||
+			( this.isJetpackActive && this.isJetpackConnected )
+		) {
 			this.setState( { step: 'connect-wcpay' } );
 			return;
 		}
@@ -192,11 +196,13 @@ class WCPay extends Component {
 					<Connect
 						{ ...this.props }
 						setIsPending={ this.setIsPending }
+						redirectUrl={ addQueryArgs( window.location.href, {
+							from: 'jetpack',
+						} ) }
 						onConnect={ () => {
 							recordEvent( 'tasklist_wcpay_connect_jetpack', {
 								connect: true,
 							} );
-							this.setState( { step: 'connect-wcpay' } );
 						} }
 					/>
 				),
