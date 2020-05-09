@@ -44,7 +44,9 @@ export const useUserPreferences = () => {
 			} );
 
 			// Create wrapper for updating user's `woocommerce_meta`.
-			const updateUserPrefs = async ( { id, ...userPrefs } ) => {
+			const updateUserPrefs = async ( userPrefs ) => {
+				// @todo Handle unresolved getCurrentUser() here.
+
 				// Whitelist our meta fields.
 				const userDataFields = [
 					'categories_report_columns',
@@ -70,11 +72,11 @@ export const useUserPreferences = () => {
 				);
 
 				// Use saveUser() to update WooCommerce meta values.
-				const updatedUser = await saveUser( { id, woocommerce_meta: metaData } );
+				const updatedUser = await saveUser( { id: user.id, woocommerce_meta: metaData } );
 
 				if ( undefined === updatedUser ) {
 					// Return the encountered error to the caller.
-					const error = getLastEntitySaveError( 'root', 'user', id );
+					const error = getLastEntitySaveError( 'root', 'user', user.id );
 
 					return {
 						error,
