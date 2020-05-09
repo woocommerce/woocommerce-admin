@@ -29,11 +29,16 @@ class WCPay extends Component {
 		super( props );
 
 		this.state = {
-			isPending: false,
+			step: 'install',
+			isPending: ! props.installStep.isComplete,
 			isJetpackRequired: false,
 		};
 
 		this.connect = this.connect.bind( this );
+
+		// Cache Jetpack connection state to prevent removal of steps.
+		this.isJetpackActive = props.isJetpackActive;
+		this.isJetpackConnected = props.isJetpackConnected;
 	}
 
 	componentDidMount() {
@@ -51,6 +56,19 @@ class WCPay extends Component {
 				);
 				markConfigured( 'wcpay' );
 			}
+		}
+
+		if ( this.props.installStep.isComplete ) {
+			this.isJetpackMissing();
+		}
+	}
+
+	componentDidUpdate( prevProps ) {
+		if (
+			! prevProps.installStep.isComplete &&
+			this.props.installStep.isComplete
+		) {
+			this.isJetpackMissing();
 		}
 	}
 
@@ -91,9 +109,15 @@ class WCPay extends Component {
 		}
 	}
 
-	// TODO Call this when install completes to see if Jetpack steps need to be there.
-	async isJetpackRequired() {
+	// Check for WCPay dependency on Jetpack.
+	async isJetpackMissing() {
 		const { createNotice } = this.props;
+
+		if ( this.isJetpackActive && this.isJetpackConnected ) {
+			this.setState( { step: 'connect-wcpay' } );
+			return;
+		}
+
 		this.setState( { isPending: true } );
 
 		const errorMessage = __(
@@ -102,35 +126,40 @@ class WCPay extends Component {
 		);
 
 		try {
-			const result = await apiFetch( {
-				path: WC_ADMIN_NAMESPACE + '/plugins/wcpay-deps',
-			} );
-
-			this.setState( { isPending: false } );
-
-			if ( ! result || ! result.jetpack ) {
-				createNotice( 'error', errorMessage );
-				return;
+			const path = WC_ADMIN_NAMESPACE + '/plugins/wcpay-deps';
+			const result = await apiFetch( { path } );
+			if ( ! result ) {
+				throw new Error();
 			}
 
-			this.setState( { isJetpackRequired: result.jetpack === 'yes' } );
+			const isJetpackRequired = result.jetpack === 'yes';
+
+			let step = 'connect-wcpay';
+			if ( isJetpackRequired ) {
+				step = this.isJetpackActive
+					? 'connect-jetpack'
+					: 'install-jetpack';
+			}
+
+			this.setState( { isJetpackRequired, step } );
 		} catch ( error ) {
-			this.setState( { isPending: false } );
 			createNotice( 'error', errorMessage );
+		} finally {
+			this.setState( { isPending: false } );
 		}
 	}
 
 	getSteps() {
-		const { installStep, isJetpackActive, isJetpackConnected } = this.props;
+		const { installStep } = this.props;
 		const { isPending, isJetpackRequired } = this.state;
 
 		const steps = [
-			installStep,
+			{ ...installStep, visible: true },
 			{
-				key: 'plugins',
+				key: 'install-jetpack',
 				label: __( 'Install Jetpack', 'woocommerce-admin' ),
 				description: __(
-					'WooCommerce Payments uses the Jetpack connection to accept and manage payments',
+					'WooCommerce Payments uses the Jetpack connection to accept and manage payments.',
 					'woocommerce-admin'
 				),
 				content: (
@@ -140,17 +169,23 @@ class WCPay extends Component {
 							recordEvent( 'tasklist_wcpay_install_jetpack', {
 								install_jetpack: true,
 							} );
-							this.completeStep();
+
+							// Despite being a safe assumption as currently implemented, the step logic
+							// does not assume that Jetpack isn't connected just because it wasn't active.
+							const step = this.isJetpackConnected
+								? 'connect-wcpay'
+								: 'connect-jetpack';
+							this.setState( { step } );
 						} }
 					/>
 				),
-				hidden: isJetpackActive || ! isJetpackRequired,
+				visible: ! this.isJetpackActive && isJetpackRequired,
 			},
 			{
 				key: 'connect-jetpack',
 				label: __( 'Connect your store', 'woocommerce-admin' ),
 				description: __(
-					'Connect your store to WordPress.com to enable WooCommerce Payments',
+					'Connect your store to WordPress.com to enable WooCommerce Payments.',
 					'woocommerce-admin'
 				),
 				content: (
@@ -161,13 +196,14 @@ class WCPay extends Component {
 							recordEvent( 'tasklist_wcpay_connect_jetpack', {
 								connect: true,
 							} );
+							this.setState( { step: 'connect-wcpay' } );
 						} }
 					/>
 				),
-				hidden: isJetpackConnected || ! isJetpackRequired,
+				visible: ! this.isJetpackConnected && isJetpackRequired,
 			},
 			{
-				key: 'connect',
+				key: 'connect-wcpay',
 				label: __( 'Verify business details', 'woocommerce-admin' ),
 				description: __(
 					'Verify your business details with our payment partner, Stripe.',
@@ -185,22 +221,21 @@ class WCPay extends Component {
 						</Button>
 					</Fragment>
 				),
+				visible: true,
 			},
 		];
 
-		return filter( steps, ( step ) => ! step.hidden );
+		return filter( steps, 'visible' );
 	}
 
 	render() {
-		const { installStep } = this.props;
-		const { isPending } = this.state;
+		const { isPending, step } = this.state;
 
 		return (
 			<Stepper
 				isVertical
-				isPending={ ! installStep.isComplete || isPending }
-				// TODO Use component state to read and write current step.
-				currentStep={ installStep.isComplete ? 'connect' : 'install' }
+				isPending={ isPending }
+				currentStep={ step }
 				steps={ this.getSteps() }
 			/>
 		);
@@ -222,12 +257,11 @@ export default compose(
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
-		const isJetpackActive = includes( getActivePlugins(), 'jetpack' );
 
 		return {
 			options,
 			optionsIsRequesting,
-			isJetpackActive,
+			isJetpackActive: includes( getActivePlugins(), 'jetpack' ),
 			isJetpackConnected: isJetpackConnected(),
 		};
 	} ),
