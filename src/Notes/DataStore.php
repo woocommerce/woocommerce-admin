@@ -441,7 +441,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		global $wpdb;
 		return $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT note_id FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s AND is_deleted = 0 ORDER BY note_id ASC",
+				"SELECT note_id FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s ORDER BY note_id ASC",
 				$name
 			)
 		);
