@@ -48,8 +48,6 @@ class WC_Admin_Notes_Deactivate_Plugin {
 			'unactioned',
 			true
 		);
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		$note->save();
 	}

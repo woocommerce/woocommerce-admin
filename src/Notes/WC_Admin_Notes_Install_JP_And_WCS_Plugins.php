@@ -64,8 +64,6 @@ class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		$note->save();
 	}

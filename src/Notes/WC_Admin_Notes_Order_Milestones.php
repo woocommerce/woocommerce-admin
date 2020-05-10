@@ -317,8 +317,6 @@ class WC_Admin_Notes_Order_Milestones {
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
 		$note->set_name( self::ORDERS_MILESTONE_NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		$note->save();
 	}
