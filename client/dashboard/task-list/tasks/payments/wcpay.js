@@ -31,17 +31,15 @@ class WCPay extends Component {
 		const { createNotice, markConfigured } = this.props;
 		const query = getQuery();
 		// Handle redirect back from WCPay on-boarding
-		if ( query[ 'wcpay-connect' ] ) {
-			if ( query[ 'wcpay-connect' ] === '1' ) {
-				createNotice(
-					'success',
-					__(
-						'WooCommerce Payments connected successfully.',
-						'woocommerce-admin'
-					)
-				);
-				markConfigured( 'wcpay' );
-			}
+		if ( query[ 'wcpay-connection-success' ] ) {
+			createNotice(
+				'success',
+				__(
+					'WooCommerce Payments connected successfully.',
+					'woocommerce-admin'
+				)
+			);
+			markConfigured( 'wcpay' );
 		}
 	}
 
