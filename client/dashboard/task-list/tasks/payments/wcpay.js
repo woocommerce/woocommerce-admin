@@ -30,9 +30,9 @@ class WCPay extends Component {
 		super( props );
 
 		this.state = {
-			step: 'install',
+			step: props.returnedFromJetpackFlow ? 'connect-wcpay' : 'install',
 			isPending: ! props.installStep.isComplete,
-			isJetpackRequired: getQuery().from === 'jetpack',
+			isJetpackRequired: props.returnedFromJetpackFlow,
 		};
 
 		this.connect = this.connect.bind( this );
@@ -112,12 +112,10 @@ class WCPay extends Component {
 
 	// Check for WCPay dependency on Jetpack.
 	async isJetpackMissing() {
-		const { createNotice } = this.props;
+		const { createNotice, returnedFromJetpackFlow } = this.props;
 
-		if (
-			this.state.isJetpackRequired ||
-			( this.isJetpackActive && this.isJetpackConnected )
-		) {
+		// Assumes that if Jetpack is not active then it is not connected.
+		if ( returnedFromJetpackFlow || this.isJetpackConnected ) {
 			this.setState( { step: 'connect-wcpay' } );
 			return;
 		}
@@ -154,11 +152,15 @@ class WCPay extends Component {
 	}
 
 	getSteps() {
-		const { installStep } = this.props;
+		const { installStep, returnedFromJetpackFlow } = this.props;
 		const { isPending, isJetpackRequired } = this.state;
 
 		const steps = [
-			{ ...installStep, visible: true },
+			{
+				...installStep,
+				visible: true,
+				content: returnedFromJetpackFlow ? null : installStep.content,
+			},
 			{
 				key: 'install-jetpack',
 				label: __( 'Install Jetpack', 'woocommerce-admin' ),
@@ -174,12 +176,8 @@ class WCPay extends Component {
 								install_jetpack: true,
 							} );
 
-							// Despite being a safe assumption as currently implemented, the step logic
-							// does not assume that Jetpack isn't connected just because it wasn't active.
-							const step = this.isJetpackConnected
-								? 'connect-wcpay'
-								: 'connect-jetpack';
-							this.setState( { step } );
+							// Assumes that if Jetpack is not active then it is not connected.
+							this.setState( { step: 'connect-jetpack' } );
 						} }
 					/>
 				),
@@ -197,12 +195,16 @@ class WCPay extends Component {
 						{ ...this.props }
 						setIsPending={ this.setIsPending }
 						redirectUrl={ addQueryArgs( window.location.href, {
-							from: 'jetpack',
+							jetpackActivated: this.isJetpackActive
+								? undefined
+								: true,
+							jetpackConnected: true,
 						} ) }
 						onConnect={ () => {
 							recordEvent( 'tasklist_wcpay_connect_jetpack', {
 								connect: true,
 							} );
+							this.setState( { isPending: true } );
 						} }
 					/>
 				),
@@ -260,6 +262,7 @@ export default compose(
 			] )
 		);
 
+		const query = getQuery();
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
@@ -267,8 +270,14 @@ export default compose(
 		return {
 			options,
 			optionsIsRequesting,
-			isJetpackActive: includes( getActivePlugins(), 'jetpack' ),
-			isJetpackConnected: isJetpackConnected(),
+
+			// Maintain state from before redirect
+			isJetpackActive:
+				! query.jetpackActivated &&
+				includes( getActivePlugins(), 'jetpack' ),
+			isJetpackConnected:
+				! query.jetpackConnected && isJetpackConnected(),
+			returnedFromJetpackFlow: query.jetpackConnected,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
