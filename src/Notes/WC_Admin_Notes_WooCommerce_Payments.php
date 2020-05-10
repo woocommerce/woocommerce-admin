@@ -104,8 +104,6 @@ class WC_Admin_Notes_WooCommerce_Payments {
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'learn-more', __( 'Learn more', 'woocommerce-admin' ), 'https://woocommerce.com/payments/', WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED );
 		$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED, true );
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		// Create the note as "actioned" if the plugin is already installed.
 		if ( self::is_installed() ) {

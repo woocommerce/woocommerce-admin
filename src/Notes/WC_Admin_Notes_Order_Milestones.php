@@ -318,8 +318,6 @@ class WC_Admin_Notes_Order_Milestones {
 		$note->set_icon( 'trophy' );
 		$note->set_name( self::ORDERS_MILESTONE_NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		$note->save();
 	}

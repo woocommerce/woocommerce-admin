@@ -78,8 +78,6 @@ class WC_Admin_Notes_Historical_Data {
 			'actioned',
 			true
 		);
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		$note->save();
 	}

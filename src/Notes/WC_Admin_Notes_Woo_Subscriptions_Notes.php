@@ -194,8 +194,6 @@ class WC_Admin_Notes_Woo_Subscriptions_Notes {
 			'?page=wc-addons&section=helper',
 			WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED
 		);
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		$note->save();
 	}
@@ -349,8 +347,6 @@ class WC_Admin_Notes_Woo_Subscriptions_Notes {
 		);
 		$note->set_content( $note_content );
 		$note->set_content_data( $note_content_data );
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		$note->save();
 	}
@@ -414,8 +410,6 @@ class WC_Admin_Notes_Woo_Subscriptions_Notes {
 			__( 'Renew Subscription', 'woocommerce-admin' ),
 			$product_page
 		);
-		$note->set_layout( 'plain' );
-		$note->set_image( '' );
 
 		$note->save();
 	}
