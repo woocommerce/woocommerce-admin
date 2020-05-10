@@ -25,23 +25,27 @@ class WC_Admin_Notes_Draw_Attention {
 		// Trigger this when the onboarding options are updated.
 		add_filter(
 			'update_option_' . self::OPTION_NAME,
-			array( $this, 'possibly_add_draw_attention_note' )
+			array( $this, 'possibly_add_draw_attention_note' ),
+			10,
+			3
 		);
 	}
 
 	/**
 	 * Possibly add a draw attention note.
+	 *
+	 * @param object $old_value The old option value.
+	 * @param object $value     The new option value.
+	 * @param string $option    The name of the option.
 	 */
-	public static function possibly_add_draw_attention_note() {
-		$onboarding_profile = get_option( self::OPTION_NAME );
-
+	public static function possibly_add_draw_attention_note( $old_value, $value, $option ) {
 		// Skip adding if this store is being set up for a client.
-		if ( ! isset( $onboarding_profile['setup_client'] ) || $onboarding_profile['setup_client'] ) {
+		if ( ! isset( $value['setup_client'] ) || $value['setup_client'] ) {
 			return;
 		}
 
 		// Skip adding if the merchant has no products.
-		if ( ! isset( $onboarding_profile['product_count'] ) || '0' === $onboarding_profile['product_count'] ) {
+		if ( ! isset( $value['product_count'] ) || '0' === $value['product_count'] ) {
 			return;
 		}
 
