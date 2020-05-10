@@ -6,6 +6,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import { withDispatch } from '@wordpress/data';
+import { has, some } from 'lodash';
 
 /**
  * Internal dependencies
@@ -49,7 +50,16 @@ class InboxPanel extends Component {
 	renderNotes() {
 		const { lastRead, notes } = this.props;
 
-		if ( Object.keys( notes ).length === 0 ) {
+		const hasNotes = Object.keys( notes ).length === 0
+			? false 
+			: some( notes, ( note ) => {
+				if ( ! has( note, 'is_deleted' ) ) {
+					return true;
+				}
+				return ! note.is_deleted;
+			} );
+
+		if ( ! hasNotes ) {
 			return this.renderEmptyCard();
 		}
 
