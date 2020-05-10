@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Button } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
@@ -102,19 +102,14 @@ class WCPay extends Component {
 							'woocommerce-admin'
 						),
 						content: (
-							<Fragment>
-								<Button
-									isPrimary
-									isDefault
-									isBusy={ isPending }
-									onClick={ this.connect }
-								>
-									{ __(
-										'Verify details',
-										'woocommerce-admin'
-									) }
-								</Button>
-							</Fragment>
+							<Button
+								isPrimary
+								isDefault
+								isBusy={ isPending }
+								onClick={ this.connect }
+							>
+								{ __( 'Verify details', 'woocommerce-admin' ) }
+							</Button>
 						),
 					},
 				] }
