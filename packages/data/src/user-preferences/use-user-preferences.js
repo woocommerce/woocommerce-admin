@@ -87,6 +87,12 @@ export const useUserPreferences = () => {
 				// Propagate the updated User object to the store.
 				receiveCurrentUser( updatedUser );
 
+				// @todo: Do we need to start/finish resolution here?
+				// E.g.:
+				// startResolution( 'getCurrentUser', [] );
+				// receiveCurrentUser( userRef.current );
+				// finishResolution( 'getCurrentUser', [] );
+
 				return {
 					updatedUser
 				};
