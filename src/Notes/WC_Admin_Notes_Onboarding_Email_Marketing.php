@@ -35,7 +35,7 @@ class WC_Admin_Notes_Onboarding_Email_Marketing {
 		$note->set_title( __( 'Tips, product updates, and inspiration', 'woocommerce-admin' ) );
 		$note->set_content( $content );
 		$note->set_content_data( (object) array() );
-		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
+		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_MARKETING );
 		$note->set_icon( 'mail' );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
