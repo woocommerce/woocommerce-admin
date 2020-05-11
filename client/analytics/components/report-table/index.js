@@ -3,11 +3,11 @@
  */
 import { CheckboxControl, Button } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-import { Component, createRef, Fragment } from '@wordpress/element';
+import { Fragment, useRef, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { focus } from '@wordpress/dom';
 import { withDispatch } from '@wordpress/data';
-import { get, isEqual, noop, partial, uniq } from 'lodash';
+import { get, noop, partial, uniq, identity } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -28,7 +28,7 @@ import {
 	generateCSVDataFromTable,
 	generateCSVFileName,
 } from '@woocommerce/csv-export';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { SETTINGS_STORE_NAME, useUserPreferences, withCurrentUserHydration } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -42,59 +42,34 @@ import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';
+const hydrateUser = window.wcSettings.currentUserData;
 
 /**
  * Component that extends `TableCard` to facilitate its usage in reports.
  */
-class ReportTable extends Component {
-	constructor( props ) {
-		super( props );
+const ReportTable = ( props ) => {
+	const { query, columnPrefsKey, compareBy } = props;
+	const initialSelectedRows = query.filter
+		? getIdsFromQuery( query[ compareBy ] )
+		: [];
+	const [ selectedRows, setSelectedRows ] = useState( initialSelectedRows );
+	const scrollPointRef = useRef( null );
 
-		const { query, compareBy } = this.props;
-		const selectedRows = query.filter
-			? getIdsFromQuery( query[ compareBy ] )
-			: [];
-		this.state = { selectedRows };
+	const { updateUserPreferences, ...userData } = useUserPreferences();
 
-		this.onColumnsChange = this.onColumnsChange.bind( this );
-		this.onPageChange = this.onPageChange.bind( this );
-		this.onSort = this.onSort.bind( this );
-		this.scrollPointRef = createRef();
-		this.trackTableSearch = this.trackTableSearch.bind( this );
-		this.onClickDownload = this.onClickDownload.bind( this );
-		this.onCompare = this.onCompare.bind( this );
-		this.onSearchChange = this.onSearchChange.bind( this );
-		this.selectRow = this.selectRow.bind( this );
-		this.selectAllRows = this.selectAllRows.bind( this );
+	let userPrefColumns = [];
+	if ( columnPrefsKey ) {
+		userPrefColumns =
+			userData && userData[ columnPrefsKey ]
+				? userData[ columnPrefsKey ]
+				: userPrefColumns;
 	}
 
-	componentDidUpdate( { query: prevQuery } ) {
-		const { compareBy, query } = this.props;
-
-		if ( query.filter || prevQuery.filter ) {
-			const prevIds = prevQuery.filter
-				? getIdsFromQuery( prevQuery[ compareBy ] )
-				: [];
-			const currentIds = query.filter
-				? getIdsFromQuery( query[ compareBy ] )
-				: [];
-			if ( ! isEqual( prevIds.sort(), currentIds.sort() ) ) {
-				/* eslint-disable react/no-did-update-set-state */
-				this.setState( {
-					selectedRows: currentIds,
-				} );
-				/* eslint-enable react/no-did-update-set-state */
-			}
-		}
-	}
-
-	onColumnsChange( shownColumns, toggledColumn ) {
+	const onColumnsChange = ( shownColumns, toggledColumn ) => {
 		const {
-			columnPrefsKey,
 			endpoint,
 			getHeadersContent,
-			updateCurrentUserData,
-		} = this.props;
+		} = props;
 		const columns = getHeadersContent().map( ( header ) => header.key );
 		const hiddenColumns = columns.filter(
 			( column ) => ! shownColumns.includes( column )
@@ -104,7 +79,7 @@ class ReportTable extends Component {
 			const userDataFields = {
 				[ columnPrefsKey ]: hiddenColumns,
 			};
-			updateCurrentUserData( userDataFields );
+			updateUserPreferences( userDataFields );
 		}
 
 		if ( toggledColumn ) {
@@ -118,10 +93,10 @@ class ReportTable extends Component {
 		}
 	}
 
-	onPageChange( newPage, source ) {
-		const { endpoint } = this.props;
-		this.scrollPointRef.current.scrollIntoView();
-		const tableElement = this.scrollPointRef.current.nextSibling.querySelector(
+	const onPageChange = ( newPage, source ) => {
+		const { endpoint } = props;
+		scrollPointRef.current.scrollIntoView();
+		const tableElement = scrollPointRef.current.nextSibling.querySelector(
 			'.woocommerce-table__table'
 		);
 		const focusableElements = focus.focusable.find( tableElement );
@@ -145,17 +120,17 @@ class ReportTable extends Component {
 		}
 	}
 
-	trackTableSearch() {
-		const { endpoint } = this.props;
+	const trackTableSearch = () => {
+		const { endpoint } = props;
 
 		// @todo: decide if this should only fire for new tokens (not any/all changes).
 		recordEvent( 'analytics_table_filter', { report: endpoint } );
 	}
 
-	onSort( key, direction ) {
+	const onSort = ( key, direction ) => {
 		onQueryChange( 'sort' )( key, direction );
 
-		const { endpoint } = this.props;
+		const { endpoint } = props;
 		const eventProps = {
 			report: endpoint,
 			column: key,
@@ -165,7 +140,7 @@ class ReportTable extends Component {
 		recordEvent( 'analytics_table_sort', eventProps );
 	}
 
-	filterShownHeaders( headers, hiddenKeys ) {
+	const filterShownHeaders = ( headers, hiddenKeys ) => {
 		// If no user preferences, set visibilty based on column default.
 		if ( ! hiddenKeys ) {
 			return headers.map( ( header ) => ( {
@@ -181,17 +156,16 @@ class ReportTable extends Component {
 		} ) );
 	}
 
-	onClickDownload() {
+	const onClickDownload = () => {
 		const {
 			endpoint,
 			getHeadersContent,
 			getRowsContent,
 			initiateReportExport,
-			query,
 			searchBy,
 			tableData,
 			title,
-		} = this.props;
+		} = props;
 		const params = Object.assign( {}, query );
 		const { items, query: reportQuery } = tableData;
 		const { data, totalResults } = items;
@@ -223,9 +197,8 @@ class ReportTable extends Component {
 		} );
 	}
 
-	onCompare() {
-		const { compareBy, compareParam } = this.props;
-		const { selectedRows } = this.state;
+	const onCompare = () => {
+		const { compareParam } = props;
 		if ( compareBy ) {
 			onQueryChange( 'compare' )(
 				compareBy,
@@ -235,8 +208,8 @@ class ReportTable extends Component {
 		}
 	}
 
-	onSearchChange( values ) {
-		const { baseSearchQuery, compareParam, searchBy } = this.props;
+	const onSearchChange = ( values ) => {
+		const { baseSearchQuery, compareParam, searchBy } = props;
 		// A comma is used as a separator between search terms, so we want to escape
 		// any comma they contain.
 		const labels = values.map( ( v ) => v.label.replace( ',', '%2C' ) );
@@ -254,43 +227,34 @@ class ReportTable extends Component {
 			} );
 		}
 
-		this.trackTableSearch();
+		trackTableSearch();
 	}
 
-	selectAllRows( checked ) {
-		const { ids } = this.props;
-		this.setState( {
-			selectedRows: checked ? ids : [],
-		} );
+	const selectAllRows = ( checked ) => {
+		const { ids } = props;
+		setSelectedRows( checked ? ids : [] );
 	}
 
-	selectRow( i, checked ) {
-		const { ids } = this.props;
+	const selectRow = ( i, checked ) => {
+		const { ids } = props;
 		if ( checked ) {
-			this.setState( ( { selectedRows } ) => ( {
-				selectedRows: uniq( [ ids[ i ], ...selectedRows ] ),
-			} ) );
+			setSelectedRows( uniq( [ ids[ i ], ...selectedRows ] ) );
 		} else {
-			this.setState( ( { selectedRows } ) => {
-				const index = selectedRows.indexOf( ids[ i ] );
-				return {
-					selectedRows: [
-						...selectedRows.slice( 0, index ),
-						...selectedRows.slice( index + 1 ),
-					],
-				};
-			} );
+			const index = selectedRows.indexOf( ids[ i ] );
+			setSelectedRows( [
+				...selectedRows.slice( 0, index ),
+				...selectedRows.slice( index + 1 ),
+			] );
 		}
 	}
 
-	getCheckbox( i ) {
-		const { ids = [] } = this.props;
-		const { selectedRows } = this.state;
+	const getCheckbox = ( i ) => {
+		const { ids = [] } = props;
 		const isChecked = selectedRows.indexOf( ids[ i ] ) !== -1;
 		return {
 			display: (
 				<CheckboxControl
-					onChange={ partial( this.selectRow, i ) }
+					onChange={ partial( selectRow, i ) }
 					checked={ isChecked }
 				/>
 			),
@@ -298,9 +262,8 @@ class ReportTable extends Component {
 		};
 	}
 
-	getAllCheckbox() {
-		const { ids = [] } = this.props;
-		const { selectedRows } = this.state;
+	const getAllCheckbox = () => {
+		const { ids = [] } = props;
 		const hasData = ids.length > 0;
 		const isAllChecked = hasData && ids.length === selectedRows.length;
 		return {
@@ -308,7 +271,7 @@ class ReportTable extends Component {
 			key: 'compare',
 			label: (
 				<CheckboxControl
-					onChange={ this.selectAllRows }
+					onChange={ selectAllRows }
 					aria-label={ __( 'Select All' ) }
 					checked={ isAllChecked }
 					disabled={ ! hasData }
@@ -318,173 +281,166 @@ class ReportTable extends Component {
 		};
 	}
 
-	render() {
-		const { selectedRows } = this.state;
-		const {
-			getHeadersContent,
-			getRowsContent,
-			getSummary,
-			isRequesting,
-			primaryData,
-			tableData,
-			endpoint,
-			// These props are not used in the render function, but are destructured
-			// so they are not included in the `tableProps` variable.
-			// eslint-disable-next-line no-unused-vars
-			itemIdField,
-			// eslint-disable-next-line no-unused-vars
-			tableQuery,
-			userPrefColumns,
-			compareBy,
-			searchBy,
-			labels = {},
-			...tableProps
-		} = this.props;
+	const {
+		getHeadersContent,
+		getRowsContent,
+		getSummary,
+		isRequesting,
+		primaryData,
+		tableData,
+		endpoint,
+		// These props are not used in the render function, but are destructured
+		// so they are not included in the `tableProps` variable.
+		// eslint-disable-next-line no-unused-vars
+		itemIdField,
+		// eslint-disable-next-line no-unused-vars
+		tableQuery,
+		// eslint-disable-next-line no-unused-vars
+		compareBy: notUsedCompareBy,
+		searchBy,
+		labels = {},
+		...tableProps
+	} = props;
 
-		const { items, query } = tableData;
+	const { items, query: tableDataQuery } = tableData;
 
-		const isError = tableData.isError || primaryData.isError;
+	const isError = tableData.isError || primaryData.isError;
 
-		if ( isError ) {
-			return <ReportError isError />;
-		}
-
-		const isLoading =
-			isRequesting || tableData.isRequesting || primaryData.isRequesting;
-		const totals = get( primaryData, [ 'data', 'totals' ], {} );
-		const totalResults = items.totalResults;
-		const downloadable = totalResults > 0;
-		// Search words are in the query string, not the table query.
-		const searchWords = getSearchWords( this.props.query );
-		const searchedLabels = searchWords.map( ( v ) => ( {
-			key: v,
-			label: v,
-		} ) );
-
-		/**
-		 * Filter report table.
-		 *
-		 * Enables manipulation of data used to create a report table.
-		 *
-		 * @param {Object} reportTableData - data used to create the table.
-		 * @param {string} reportTableData.endpoint - table api endpoint.
-		 * @param {Array} reportTableData.headers - table headers data.
-		 * @param {Array} reportTableData.rows - table rows data.
-		 * @param {Object} reportTableData.totals - total aggregates for request.
-		 * @param {Array} reportTableData.summary - summary numbers data.
-		 * @param {Object} reportTableData.items - response from api requerst.
-		 */
-		const filteredTableProps = applyFilters( TABLE_FILTER, {
-			endpoint,
-			headers: getHeadersContent(),
-			rows: getRowsContent( items.data ),
-			totals,
-			summary: getSummary ? getSummary( totals, totalResults ) : null,
-			items,
-		} );
-		let { headers, rows } = filteredTableProps;
-		const { summary } = filteredTableProps;
-
-		// Add in selection for comparisons.
-		if ( compareBy ) {
-			rows = rows.map( ( row, i ) => {
-				return [ this.getCheckbox( i ), ...row ];
-			} );
-			headers = [ this.getAllCheckbox(), ...headers ];
-		}
-
-		// Hide any headers based on user prefs, if loaded.
-		const filteredHeaders = this.filterShownHeaders(
-			headers,
-			userPrefColumns
-		);
-		const className = classnames( 'woocommerce-report-table', {
-			'has-compare': !! compareBy,
-			'has-search': !! searchBy,
-		} );
-
-		return (
-			<Fragment>
-				<div
-					className="woocommerce-report-table__scroll-point"
-					ref={ this.scrollPointRef }
-					aria-hidden
-				/>
-				<TableCard
-					className={ className }
-					actions={ [
-						compareBy && (
-							<CompareButton
-								key="compare"
-								className="woocommerce-table__compare"
-								count={ selectedRows.length }
-								helpText={
-									labels.helpText ||
-									__(
-										'Check at least two items below to compare',
-										'woocommerce-admin'
-									)
-								}
-								onClick={ this.onCompare }
-								disabled={ ! downloadable }
-							>
-								{ labels.compareButton ||
-									__( 'Compare', 'woocommerce-admin' ) }
-							</CompareButton>
-						),
-						searchBy && (
-							<Search
-								allowFreeTextSearch={ true }
-								inlineTags
-								key="search"
-								onChange={ this.onSearchChange }
-								placeholder={
-									labels.placeholder ||
-									__(
-										'Search by item name',
-										'woocommerce-admin'
-									)
-								}
-								selected={ searchedLabels }
-								showClearButton={ true }
-								type={ searchBy }
-								disabled={ ! downloadable }
-							/>
-						),
-						downloadable && (
-							<Button
-								key="download"
-								className="woocommerce-table__download-button"
-								disabled={ isLoading }
-								onClick={ this.onClickDownload }
-							>
-								<DownloadIcon />
-								<span className="woocommerce-table__download-button__label">
-									{ labels.downloadButton ||
-										__( 'Download', 'woocommerce-admin' ) }
-								</span>
-							</Button>
-						),
-					] }
-					headers={ filteredHeaders }
-					isLoading={ isLoading }
-					onQueryChange={ onQueryChange }
-					onColumnsChange={ this.onColumnsChange }
-					onSort={ this.onSort }
-					onPageChange={ this.onPageChange }
-					rows={ rows }
-					rowsPerPage={
-						parseInt( query.per_page, 10 ) ||
-						QUERY_DEFAULTS.pageSize
-					}
-					summary={ summary }
-					totalRows={ totalResults }
-					{ ...tableProps }
-				/>
-			</Fragment>
-		);
+	if ( isError ) {
+		return <ReportError isError />;
 	}
-}
+
+	const isLoading =
+		isRequesting || tableData.isRequesting || primaryData.isRequesting;
+	const totals = get( primaryData, [ 'data', 'totals' ], {} );
+	const totalResults = items.totalResults;
+	const downloadable = totalResults > 0;
+	// Search words are in the query string, not the table query.
+	const searchWords = getSearchWords( query );
+	const searchedLabels = searchWords.map( ( v ) => ( {
+		key: v,
+		label: v,
+	} ) );
+
+	/**
+	 * Filter report table.
+	 *
+	 * Enables manipulation of data used to create a report table.
+	 *
+	 * @param {Object} reportTableData - data used to create the table.
+	 * @param {string} reportTableData.endpoint - table api endpoint.
+	 * @param {Array} reportTableData.headers - table headers data.
+	 * @param {Array} reportTableData.rows - table rows data.
+	 * @param {Object} reportTableData.totals - total aggregates for request.
+	 * @param {Array} reportTableData.summary - summary numbers data.
+	 * @param {Object} reportTableData.items - response from api requerst.
+	 */
+	const filteredTableProps = applyFilters( TABLE_FILTER, {
+		endpoint,
+		headers: getHeadersContent(),
+		rows: getRowsContent( items.data ),
+		totals,
+		summary: getSummary ? getSummary( totals, totalResults ) : null,
+		items,
+	} );
+	let { headers, rows } = filteredTableProps;
+	const { summary } = filteredTableProps;
+
+	// Add in selection for comparisons.
+	if ( compareBy ) {
+		rows = rows.map( ( row, i ) => {
+			return [ getCheckbox( i ), ...row ];
+		} );
+		headers = [ getAllCheckbox(), ...headers ];
+	}
+
+	// Hide any headers based on user prefs, if loaded.
+	const filteredHeaders = filterShownHeaders( headers, userPrefColumns );
+	const className = classnames( 'woocommerce-report-table', {
+		'has-compare': !! compareBy,
+		'has-search': !! searchBy,
+	} );
+
+	return (
+		<Fragment>
+			<div
+				className="woocommerce-report-table__scroll-point"
+				ref={ scrollPointRef }
+				aria-hidden
+			/>
+			<TableCard
+				className={ className }
+				actions={ [
+					compareBy && (
+						<CompareButton
+							key="compare"
+							className="woocommerce-table__compare"
+							count={ selectedRows.length }
+							helpText={
+								labels.helpText ||
+								__(
+									'Check at least two items below to compare',
+									'woocommerce-admin'
+								)
+							}
+							onClick={ onCompare }
+							disabled={ ! downloadable }
+						>
+							{ labels.compareButton ||
+								__( 'Compare', 'woocommerce-admin' ) }
+						</CompareButton>
+					),
+					searchBy && (
+						<Search
+							allowFreeTextSearch={ true }
+							inlineTags
+							key="search"
+							onChange={ onSearchChange }
+							placeholder={
+								labels.placeholder ||
+								__(
+									'Search by item name',
+									'woocommerce-admin'
+								)
+							}
+							selected={ searchedLabels }
+							showClearButton={ true }
+							type={ searchBy }
+							disabled={ ! downloadable }
+						/>
+					),
+					downloadable && (
+						<Button
+							key="download"
+							className="woocommerce-table__download-button"
+							disabled={ isLoading }
+							onClick={ onClickDownload }
+						>
+							<DownloadIcon />
+							<span className="woocommerce-table__download-button__label">
+								{ labels.downloadButton ||
+									__( 'Download', 'woocommerce-admin' ) }
+							</span>
+						</Button>
+					),
+				] }
+				headers={ filteredHeaders }
+				isLoading={ isLoading }
+				onQueryChange={ onQueryChange }
+				onColumnsChange={ onColumnsChange }
+				onSort={ onSort }
+				onPageChange={ onPageChange }
+				rows={ rows }
+				rowsPerPage={
+					parseInt( tableDataQuery.per_page, 10 ) || QUERY_DEFAULTS.pageSize
+				}
+				summary={ summary }
+				totalRows={ totalResults }
+				{ ...tableProps }
+			/>
+		</Fragment>
+	);
+};
 
 ReportTable.propTypes = {
 	/**
@@ -600,31 +556,17 @@ export default compose(
 			query,
 			tableData,
 			tableQuery,
-			columnPrefsKey,
 			filters,
 			advancedFilters,
 			summaryFields,
 		} = props;
-
-		let userPrefColumns = [];
-		if ( columnPrefsKey ) {
-			const { getCurrentUserData } = select( 'wc-api' );
-			const userData = getCurrentUserData();
-
-			userPrefColumns =
-				userData && userData[ columnPrefsKey ]
-					? userData[ columnPrefsKey ]
-					: userPrefColumns;
-		}
 
 		if (
 			isRequesting ||
 			( query.search &&
 				! ( query[ endpoint ] && query[ endpoint ].length ) )
 		) {
-			return {
-				userPrefColumns,
-			};
+			return {};
 		}
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
@@ -675,17 +617,18 @@ export default compose(
 				: [],
 			tableData: extendedTableData,
 			query: { ...tableQuery, ...query },
-			userPrefColumns,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { initiateReportExport, updateCurrentUserData } = dispatch(
+		const { initiateReportExport } = dispatch(
 			'wc-api'
 		);
 
 		return {
 			initiateReportExport,
-			updateCurrentUserData,
 		};
-	} )
+	} ),
+	hydrateUser
+		? withCurrentUserHydration( hydrateUser )
+		: identity
 )( ReportTable );
