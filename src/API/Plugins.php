@@ -628,7 +628,7 @@ class Plugins extends \WC_REST_Data_Controller {
 			return new \WP_Error( 'woocommerce_rest_helper_connect', __( 'There was an error communicating with the WooCommerce Payments plugin.', 'woocommerce-admin' ), 500 );
 		}
 		return( array(
-			'jetpack' => defined( 'WCPAY_MIN_JETPACK_VERSION' ) ? 'yes' : 'no'
+			'jetpack' => defined( 'WCPAY_BUILTIN_JETPACK_CONNECTION' ) ? 'no' : 'yes',
 		) );
 	}
 
