@@ -356,9 +356,7 @@ export default compose(
 			isUpdateOptionsRequesting,
 		} = select( 'wc-api' );
 
-		const { getActivePlugins, isJetpackConnected } = select(
-			PLUGINS_STORE_NAME
-		);
+		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 		const options = getOptions( [
@@ -382,7 +380,6 @@ export default compose(
 		const methods = getPaymentMethods( {
 			activePlugins,
 			countryCode,
-			isJetpackConnected: isJetpackConnected(),
 			options,
 			profileItems,
 		} );
