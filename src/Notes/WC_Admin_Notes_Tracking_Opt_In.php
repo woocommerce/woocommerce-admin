@@ -35,7 +35,7 @@ class WC_Admin_Notes_Tracking_Opt_In {
 	/**
 	 * Possibly add Usage Tracking Opt In extension note.
 	 */
-	public static function possibly_add_tracking_opt_in_note() {
+	public static function add_note() {
 		// Only show this note to stores that are opted out.
 		if ( 'yes' === get_option( 'woocommerce_allow_tracking', 'no' ) ) {
 			return;
@@ -43,11 +43,6 @@ class WC_Admin_Notes_Tracking_Opt_In {
 
 		// We want to show the note after one week.
 		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) ) {
-			return;
-		}
-
-		// We already have this note? Then exit, we're done.
-		if ( self::note_exists() ) {
 			return;
 		}
 

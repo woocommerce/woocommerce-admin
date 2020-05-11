@@ -28,7 +28,7 @@ class WC_Admin_Notes_Personalize_Store {
 	/**
 	 * Possibly add the note.
 	 */
-	public static function possibly_add_personalize_store_note() {
+	public static function add_note() {
 		// Only show the note to stores with homepage.
 		$homepage_id = get_option( 'woocommerce_onboarding_homepage_post_id', false );
 		if ( ! $homepage_id ) {
@@ -42,11 +42,6 @@ class WC_Admin_Notes_Personalize_Store {
 		$five_days_in_seconds = 5 * DAY_IN_SECONDS;
 
 		if ( ! self::wc_admin_active_for( $five_days_in_seconds ) && ! $is_task_list_complete ) {
-			return;
-		}
-
-		// We already have this note? Then exit, we're done.
-		if ( self::note_exists() ) {
 			return;
 		}
 

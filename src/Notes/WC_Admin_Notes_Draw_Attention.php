@@ -9,6 +9,8 @@
 
 namespace Automattic\WooCommerce\Admin\Notes;
 
+use \Automattic\WooCommerce\Admin\Features\Onboarding;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -23,8 +25,7 @@ class WC_Admin_Notes_Draw_Attention {
 	/**
 	 * Name of the note for use in the database.
 	 */
-	const NOTE_NAME   = 'wc-admin-draw-attention';
-	const OPTION_NAME = 'woocommerce_onboarding_profile';
+	const NOTE_NAME = 'wc-admin-draw-attention';
 
 	/**
 	 * Constructor.
@@ -32,21 +33,21 @@ class WC_Admin_Notes_Draw_Attention {
 	public function __construct() {
 		// Trigger this when the onboarding options are updated.
 		add_filter(
-			'update_option_' . self::OPTION_NAME,
-			array( $this, 'possibly_add_draw_attention_note' ),
+			'update_option_' . Onboarding::PROFILE_DATA_OPTION,
+			array( $this, 'check_onboarding_profile' ),
 			10,
 			3
 		);
 	}
 
 	/**
-	 * Possibly add a draw attention note.
+	 * Check to see if profiler options match before possibly adding note.
 	 *
 	 * @param object $old_value The old option value.
 	 * @param object $value     The new option value.
 	 * @param string $option    The name of the option.
 	 */
-	public static function possibly_add_draw_attention_note( $old_value, $value, $option ) {
+	public static function check_onboarding_profile( $old_value, $value, $option ) {
 		// Skip adding if this store is being set up for a client.
 		if ( ! isset( $value['setup_client'] ) || $value['setup_client'] ) {
 			return;
@@ -57,14 +58,14 @@ class WC_Admin_Notes_Draw_Attention {
 			return;
 		}
 
-		// Exit early if there is already a note.
-		if ( self::note_exists() ) {
-			return;
-		}
+		self::possibly_add_note();
+	}
 
-		// Create the note.
+	/**
+	 * Add the note.
+	 */
+	public static function add_note() {
 		$note = new WC_Admin_Note();
-
 		$note->set_title( __( 'How to draw attention to your online store', 'woocommerce-admin' ) );
 		$note->set_content( __( 'To get you started, here are seven ways to boost your sales and avoid getting drowned out by similar, mass-produced products competing for the same buyers.', 'woocommerce-admin' ) );
 		$note->set_content_data( (object) array() );

@@ -26,21 +26,9 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 	const NOTE_NAME = 'wc-admin-store-notice-giving-feedback-2';
 
 	/**
-	 * Add notes for admin giving feedback.
-	 */
-	public static function add_notes_for_admin_giving_feedback() {
-		self::possibly_add_admin_giving_feedback_note();
-	}
-
-	/**
 	 * Possibly add a notice setting moved note.
 	 */
-	protected static function possibly_add_admin_giving_feedback_note() {
-		// We already have this note? Then exit, we're done.
-		if ( self::note_exists() ) {
-			return;
-		}
-
+	protected static function add_note() {
 		// We need to show Admin Giving feeback notification after 8 days of install.
 		$eight_days_in_seconds = 8 * DAY_IN_SECONDS;
 		if ( ! self::wc_admin_active_for( $eight_days_in_seconds ) ) {

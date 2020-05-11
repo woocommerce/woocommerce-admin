@@ -28,17 +28,10 @@ class WC_Admin_Notes_Mobile_App {
 	/**
 	 * Possibly add mobile app note.
 	 */
-	public static function possibly_add_mobile_app_note() {
+	public static function add_note() {
 		// We want to show the mobile app note after day 2.
 		$two_days_in_seconds = 2 * DAY_IN_SECONDS;
 		if ( ! self::wc_admin_active_for( $two_days_in_seconds ) ) {
-			return;
-		}
-
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-
-		// We already have this note? Then exit, we're done.
-		if ( self::note_exists() ) {
 			return;
 		}
 

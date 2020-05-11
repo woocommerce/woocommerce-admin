@@ -28,12 +28,7 @@ class WC_Admin_Notes_Onboarding_Email_Marketing {
 	/**
 	 * Possibly add email marketing note.
 	 */
-	public static function possibly_add_onboarding_email_marketing_note() {
-		// We already have this note? Then exit, we're done.
-		if ( self::note_exists() ) {
-			return;
-		}
-
+	public static function add_note() {
 		$content = __( 'We\'re here for you - get tips, product updates and inspiration straight to your email box', 'woocommerce-admin' );
 
 		$note = new WC_Admin_Note();

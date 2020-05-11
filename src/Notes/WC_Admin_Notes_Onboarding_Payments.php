@@ -30,7 +30,7 @@ class WC_Admin_Notes_Onboarding_Payments {
 	/**
 	 * Creates a note to remind store owners to set up payments.
 	 */
-	public static function possibly_add_onboarding_payments_note() {
+	public static function add_note() {
 		// This note should only be added if the task list is still shown.
 		if ( ! Onboarding::should_show_tasks() ) {
 			return;
@@ -56,11 +56,6 @@ class WC_Admin_Notes_Onboarding_Payments {
 			}
 		);
 		if ( ! empty( $enabled_gateways ) ) {
-			return;
-		}
-
-		// Don't add this note if previously added.
-		if ( self::note_exists() ) {
 			return;
 		}
 

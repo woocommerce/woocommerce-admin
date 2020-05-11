@@ -56,7 +56,7 @@ class WC_Admin_Notes_New_Sales_Record {
 	/**
 	 * Possibly add a sales record note.
 	 */
-	public static function possibly_add_sales_record_note() {
+	public static function possibly_add_note() {
 		/**
 		 * Filter to allow for disabling sales record milestones.
 		 *

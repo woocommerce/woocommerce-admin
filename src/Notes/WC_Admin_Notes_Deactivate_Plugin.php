@@ -36,10 +36,6 @@ class WC_Admin_Notes_Deactivate_Plugin {
 	 * Creates the note to deactivate the older version.
 	 */
 	public static function add_note() {
-		if ( self::note_exists() ) {
-			return;
-		}
-
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Deactivate old WooCommerce Admin version', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', 'woocommerce-admin' ) );

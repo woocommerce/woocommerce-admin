@@ -56,15 +56,13 @@ class WC_Admin_Notes_Historical_Data {
 			return;
 		}
 
-		// First, see if orders exist and if we've already created this kind of note so we don't do it again.
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
-		$orders     = wc_get_orders(
+		// Only add this note if we don't have any orders.
+		$orders = wc_get_orders(
 			array(
 				'limit' => 1,
 			)
 		);
-		if ( ! empty( $note_ids ) || count( $orders ) < 1 ) {
+		if ( count( $orders ) < 1 ) {
 			return;
 		}
 

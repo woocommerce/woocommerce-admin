@@ -31,19 +31,15 @@ class WC_Admin_Notes_Onboarding_Profiler {
 	 * Attach hooks.
 	 */
 	public function __construct() {
-		add_action( 'admin_init', array( $this, 'add_reminder' ) );
+		add_action( 'admin_init', array( $this, 'possibly_add_note' ) );
 		add_action( 'update_option_' . Onboarding::PROFILE_DATA_OPTION, array( $this, 'update_status_on_complete' ), 10, 2 );
 	}
 
 	/**
 	 * Creates a note to remind store owners to complete the profiler.
 	 */
-	public static function add_reminder() {
+	public static function add_note() {
 		if ( ! Onboarding::should_show_profiler() ) {
-			return;
-		}
-
-		if ( self::note_exists() ) {
 			return;
 		}
 

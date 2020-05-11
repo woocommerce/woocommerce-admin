@@ -42,4 +42,15 @@ trait NoteTraits {
 		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
 		return ! empty( $note_ids );
 	}
+
+	/**
+	 * Add the note if it passes predefined conditions.
+	 */
+	public static function possibly_add_note() {
+		if ( self::note_exists() ) {
+			return;
+		}
+
+		self::add_note();
+	}
 }

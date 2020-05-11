@@ -27,13 +27,9 @@ class WC_Admin_Notes_Marketing {
 	const NOTE_NAME = 'wc-admin-marketing-intro';
 
 	/**
-	 * Maybe add a note introducing the marketing hub.
+	 * Add the note.
 	 */
-	public static function possibly_add_note_intro() {
-		if ( self::note_exists() ) {
-			return;
-		}
-
+	public static function add_note() {
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Connect with your audience', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce.', 'woocommerce-admin' ) );

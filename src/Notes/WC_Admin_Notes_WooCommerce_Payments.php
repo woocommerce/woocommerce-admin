@@ -39,9 +39,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	 * Attach hooks.
 	 */
 	public function __construct() {
-
 		add_action( 'woocommerce_note_action_install-now', array( $this, 'install' ) );
-
 		add_action( 'wc-admin-woocommerce-payments_add_note', array( $this, 'add_note' ) );
 	}
 
@@ -49,7 +47,6 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	 * Maybe add a note on WooCommerce Payments for US based sites older than a week without the plugin installed.
 	 */
 	public static function possibly_add_note() {
-
 		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) || 'US' !== WC()->countries->get_base_country() ) {
 			return;
 		}
@@ -93,7 +90,6 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	 * Add a note about WooCommerce Payments.
 	 */
 	public static function add_note() {
-
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Try the new way to get paid', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments.', 'woocommerce-admin' ) );
@@ -131,7 +127,6 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	 * @param WC_Admin_Note $note Note being acted upon.
 	 */
 	public function install( $note ) {
-
 		if ( self::NOTE_NAME === $note->get_name() ) {
 			$install_request = array( 'plugin' => self::PLUGIN_SLUG );
 			$installer       = new \Automattic\WooCommerce\Admin\API\Plugins();
