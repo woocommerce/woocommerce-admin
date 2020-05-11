@@ -19,6 +19,14 @@ use \Automattic\WooCommerce\Admin\PluginsHelper;
  * WC_Admin_Notes_Install_JP_And_WCS_Plugins
  */
 class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
 	const NOTE_NAME = 'wc-admin-install-jp-and-wcs-plugins';
 
 	/**
@@ -43,8 +51,7 @@ class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
 		// Exit early if there is already a note to install Jetpack.
-		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( ! empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 

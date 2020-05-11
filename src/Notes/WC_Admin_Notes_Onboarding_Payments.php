@@ -17,6 +17,14 @@ use \Automattic\WooCommerce\Admin\Features\Onboarding;
  * WC_Admin_Notes_Onboarding_Payments.
  */
 class WC_Admin_Notes_Onboarding_Payments {
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
 	const NOTE_NAME = 'wc-admin-onboarding-payments-reminder';
 
 	/**
@@ -52,9 +60,7 @@ class WC_Admin_Notes_Onboarding_Payments {
 		}
 
 		// Don't add this note if previously added.
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( ! empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 

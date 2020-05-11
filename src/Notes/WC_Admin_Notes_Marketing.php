@@ -24,19 +24,13 @@ class WC_Admin_Notes_Marketing {
 	/**
 	 * Name of the note for use in the database.
 	 */
-	const NOTE_NAME_INTRO = 'wc-admin-marketing-intro';
+	const NOTE_NAME = 'wc-admin-marketing-intro';
 
 	/**
 	 * Maybe add a note introducing the marketing hub.
 	 */
 	public static function possibly_add_note_intro() {
-
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-
-		// See if we've already created this kind of note so we don't do it again.
-		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME_INTRO );
-
-		if ( ! empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 
@@ -45,7 +39,7 @@ class WC_Admin_Notes_Marketing {
 		$note->set_content( __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce.', 'woocommerce-admin' ) );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
 		$note->set_icon( 'speaker' );
-		$note->set_name( self::NOTE_NAME_INTRO );
+		$note->set_name( self::NOTE_NAME );
 		$note->set_content_data( (object) array() );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(

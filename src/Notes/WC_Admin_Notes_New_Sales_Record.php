@@ -15,8 +15,24 @@ defined( 'ABSPATH' ) || exit;
  * WC_Admin_Notes_New_Sales_Record
  */
 class WC_Admin_Notes_New_Sales_Record {
-	const NOTE_NAME                = 'wc-admin-new-sales-record';
-	const RECORD_DATE_OPTION_KEY   = 'woocommerce_sales_record_date'; // ISO 8601 (YYYY-MM-DD) date.
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
+	const NOTE_NAME = 'wc-admin-new-sales-record';
+
+	/**
+	 * Option name for the sales record date in ISO 8601 (YYYY-MM-DD) date.
+	 */
+	const RECORD_DATE_OPTION_KEY = 'woocommerce_sales_record_date';
+
+	/**
+	 * Option name for the sales record amount.
+	 */
 	const RECORD_AMOUNT_OPTION_KEY = 'woocommerce_sales_record_amount';
 
 	/**

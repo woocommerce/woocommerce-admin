@@ -15,6 +15,14 @@ defined( 'ABSPATH' ) || exit;
  * WC_Admin_Notes_Deactivate_Plugin.
  */
 class WC_Admin_Notes_Deactivate_Plugin {
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
 	const NOTE_NAME = 'wc-admin-deactivate-plugin';
 
 	/**
@@ -28,9 +36,7 @@ class WC_Admin_Notes_Deactivate_Plugin {
 	 * Creates the note to deactivate the older version.
 	 */
 	public static function add_note() {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( ! empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 

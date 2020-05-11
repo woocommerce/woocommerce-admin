@@ -21,6 +21,11 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 	use NoteTraits;
 
 	/**
+	 * Name of the note for use in the database.
+	 */
+	const NOTE_NAME = 'wc-admin-store-notice-giving-feedback-2';
+
+	/**
 	 * Add notes for admin giving feedback.
 	 */
 	public static function add_notes_for_admin_giving_feedback() {
@@ -31,12 +36,8 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 	 * Possibly add a notice setting moved note.
 	 */
 	protected static function possibly_add_admin_giving_feedback_note() {
-		$name       = 'wc-admin-store-notice-giving-feedback-2';
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-
 		// We already have this note? Then exit, we're done.
-		$note_ids = $data_store->get_notes_with_name( $name );
-		if ( ! empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 
@@ -53,7 +54,7 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 		$note->set_content_data( (object) array() );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
 		$note->set_icon( 'info' );
-		$note->set_name( $name );
+		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(
 			'share-feedback',

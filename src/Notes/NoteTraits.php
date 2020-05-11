@@ -33,4 +33,13 @@ trait NoteTraits {
 
 		return ( ( time() - $wc_admin_installed ) >= $seconds );
 	}
+
+	/**
+	 * Check if the note has been previously added.
+	 */
+	public static function note_exists() {
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+		return ! empty( $note_ids );
+	}
 }

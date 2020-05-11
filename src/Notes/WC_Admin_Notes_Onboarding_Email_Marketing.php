@@ -16,6 +16,11 @@ defined( 'ABSPATH' ) || exit;
  */
 class WC_Admin_Notes_Onboarding_Email_Marketing {
 	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
 	 * Name of the note for use in the database.
 	 */
 	const NOTE_NAME = 'wc-admin-onboarding-email-marketing';
@@ -24,11 +29,8 @@ class WC_Admin_Notes_Onboarding_Email_Marketing {
 	 * Possibly add email marketing note.
 	 */
 	public static function possibly_add_onboarding_email_marketing_note() {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-
 		// We already have this note? Then exit, we're done.
-		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( ! empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 

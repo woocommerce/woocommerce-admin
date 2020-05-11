@@ -17,6 +17,14 @@ use \Automattic\WooCommerce\Admin\Install;
  * WC_Admin_Notes_Historical_Data.
  */
 class WC_Admin_Notes_Historical_Data {
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
 	const NOTE_NAME = 'wc-admin-historical-data';
 
 	/**
@@ -30,9 +38,7 @@ class WC_Admin_Notes_Historical_Data {
 	 * Update status of note to actioned on data import trigger.
 	 */
 	public static function update_status_to_actioned() {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 

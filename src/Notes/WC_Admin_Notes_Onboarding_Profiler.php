@@ -17,6 +17,14 @@ use \Automattic\WooCommerce\Admin\Features\Onboarding;
  * WC_Admin_Notes_Onboarding_Profiler.
  */
 class WC_Admin_Notes_Onboarding_Profiler {
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
 	const NOTE_NAME = 'wc-admin-onboarding-profiler-reminder';
 
 	/**
@@ -35,9 +43,7 @@ class WC_Admin_Notes_Onboarding_Profiler {
 			return;
 		}
 
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( ! empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 

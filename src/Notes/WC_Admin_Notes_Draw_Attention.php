@@ -15,6 +15,14 @@ defined( 'ABSPATH' ) || exit;
  * WC_Admin_Notes_Draw_Attention
  */
 class WC_Admin_Notes_Draw_Attention {
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
 	const NOTE_NAME   = 'wc-admin-draw-attention';
 	const OPTION_NAME = 'woocommerce_onboarding_profile';
 
@@ -50,9 +58,7 @@ class WC_Admin_Notes_Draw_Attention {
 		}
 
 		// Exit early if there is already a note.
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
-		if ( ! empty( $note_ids ) ) {
+		if ( self::note_exists() ) {
 			return;
 		}
 

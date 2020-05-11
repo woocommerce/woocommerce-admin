@@ -56,7 +56,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
-		// We already have this note? Then exit, we're done.
+		// We already have this note? Then mark the note as actioned.
 		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
 		if ( ! empty( $note_ids ) ) {
 
