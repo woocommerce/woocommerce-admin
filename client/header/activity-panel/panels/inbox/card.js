@@ -107,12 +107,21 @@ class InboxNoteCard extends Component {
 		} );
 	}
 
+	handleBlur( event, onToggle ) {
+		const targetIsRenderedContent = event.relatedTarget ? event.relatedTarget.className.includes( 'woocommerce-admin-dismiss-notification' ) : false;
+		if ( targetIsRenderedContent ) {
+			event.preventDefault();
+		} else {
+			onToggle();
+		}
+	}
+
 	renderDismissButton() {
 		return (
 			<Dropdown
 				position="bottom right"
 				renderToggle={ ( { onToggle } ) => (
-					<Button isTertiary onClick={ onToggle }>
+					<Button isTertiary onClick={ onToggle } onBlur={ ( event )=> this.handleBlur( event, onToggle ) } >
 						{ __( 'Dismiss', 'woocommerce-admin' ) }
 					</Button>
 				) }
@@ -122,6 +131,7 @@ class InboxNoteCard extends Component {
 					<ul>
 						<li>
 							<Button
+								className='woocommerce-admin-dismiss-notification'
 								onClick={ () =>
 									this.openDismissModal( 'this' )
 								}
@@ -134,6 +144,7 @@ class InboxNoteCard extends Component {
 						</li>
 						<li>
 							<Button
+								className='woocommerce-admin-dismiss-notification'
 								onClick={ () => this.openDismissModal( 'all' ) }
 							>
 								{ __(
