@@ -44,6 +44,10 @@ class GetRuleProcessor {
 				return new OrderCountRuleProcessor();
 			case 'wcadmin_active_for':
 				return new WCAdminActiveForRuleProcessor();
+			case 'product_count':
+				return new ProductCountRuleProcessor(
+					new ProductsProvider()
+				);
 		}
 
 		return new FailRuleProcessor();
