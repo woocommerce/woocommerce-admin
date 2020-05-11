@@ -460,6 +460,7 @@ class Install {
 		$obsolete_notes_names = array(
 			'wc-admin-welcome-note',
 			'wc-admin-store-notice-setting-moved',
+			'wc-admin-store-notice-giving-feedback',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(

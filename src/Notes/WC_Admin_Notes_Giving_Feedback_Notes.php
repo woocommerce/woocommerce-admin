@@ -31,7 +31,7 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 	 * Possibly add a notice setting moved note.
 	 */
 	protected static function possibly_add_admin_giving_feedback_note() {
-		$name       = 'wc-admin-store-notice-giving-feedback';
+		$name       = 'wc-admin-store-notice-giving-feedback-2';
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
 		// We already have this note? Then exit, we're done.
