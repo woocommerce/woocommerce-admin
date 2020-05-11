@@ -44,11 +44,32 @@ import './style.scss';
 const TABLE_FILTER = 'woocommerce_admin_report_table';
 const hydrateUser = window.wcSettings.currentUserData;
 
-/**
- * Component that extends `TableCard` to facilitate its usage in reports.
- */
 const ReportTable = ( props ) => {
-	const { query, columnPrefsKey, compareBy } = props;
+	const {
+		getHeadersContent,
+		getRowsContent,
+		getSummary,
+		isRequesting,
+		primaryData,
+		tableData,
+		endpoint,
+		// These props are not used in the render function, but are destructured
+		// so they are not included in the `tableProps` variable.
+		// eslint-disable-next-line no-unused-vars
+		itemIdField,
+		// eslint-disable-next-line no-unused-vars
+		tableQuery,
+		compareBy,
+		searchBy,
+		labels = {},
+		...tableProps
+	} = props;
+
+	// Pull these props out separately because they need to be included in tableProps.
+	const { query, columnPrefsKey } = props;
+
+	const { items, query: reportQuery } = tableData;
+
 	const initialSelectedRows = query.filter
 		? getIdsFromQuery( query[ compareBy ] )
 		: [];
@@ -56,6 +77,13 @@ const ReportTable = ( props ) => {
 	const scrollPointRef = useRef( null );
 
 	const { updateUserPreferences, ...userData } = useUserPreferences();
+
+	// Bail early if we've encountered an error.
+	const isError = tableData.isError || primaryData.isError;
+
+	if ( isError ) {
+		return <ReportError isError />;
+	}
 
 	let userPrefColumns = [];
 	if ( columnPrefsKey ) {
@@ -66,10 +94,6 @@ const ReportTable = ( props ) => {
 	}
 
 	const onColumnsChange = ( shownColumns, toggledColumn ) => {
-		const {
-			endpoint,
-			getHeadersContent,
-		} = props;
 		const columns = getHeadersContent().map( ( header ) => header.key );
 		const hiddenColumns = columns.filter(
 			( column ) => ! shownColumns.includes( column )
@@ -94,7 +118,6 @@ const ReportTable = ( props ) => {
 	}
 
 	const onPageChange = ( newPage, source ) => {
-		const { endpoint } = props;
 		scrollPointRef.current.scrollIntoView();
 		const tableElement = scrollPointRef.current.nextSibling.querySelector(
 			'.woocommerce-table__table'
@@ -121,8 +144,6 @@ const ReportTable = ( props ) => {
 	}
 
 	const trackTableSearch = () => {
-		const { endpoint } = props;
-
 		// @todo: decide if this should only fire for new tokens (not any/all changes).
 		recordEvent( 'analytics_table_filter', { report: endpoint } );
 	}
@@ -130,7 +151,6 @@ const ReportTable = ( props ) => {
 	const onSort = ( key, direction ) => {
 		onQueryChange( 'sort' )( key, direction );
 
-		const { endpoint } = props;
 		const eventProps = {
 			report: endpoint,
 			column: key,
@@ -158,16 +178,10 @@ const ReportTable = ( props ) => {
 
 	const onClickDownload = () => {
 		const {
-			endpoint,
-			getHeadersContent,
-			getRowsContent,
 			initiateReportExport,
-			searchBy,
-			tableData,
 			title,
 		} = props;
 		const params = Object.assign( {}, query );
-		const { items, query: reportQuery } = tableData;
 		const { data, totalResults } = items;
 		let downloadType = 'browser';
 
@@ -209,17 +223,17 @@ const ReportTable = ( props ) => {
 	}
 
 	const onSearchChange = ( values ) => {
-		const { baseSearchQuery, compareParam, searchBy } = props;
+		const { baseSearchQuery, compareParam } = props;
 		// A comma is used as a separator between search terms, so we want to escape
 		// any comma they contain.
-		const labels = values.map( ( v ) => v.label.replace( ',', '%2C' ) );
-		if ( labels.length ) {
+		const searchTerms = values.map( ( v ) => v.label.replace( ',', '%2C' ) );
+		if ( searchTerms.length ) {
 			updateQueryString( {
 				filter: undefined,
 				[ compareParam ]: undefined,
 				[ searchBy ]: undefined,
 				...baseSearchQuery,
-				search: uniq( labels ).join( ',' ),
+				search: uniq( searchTerms ).join( ',' ),
 			} );
 		} else {
 			updateQueryString( {
@@ -279,35 +293,6 @@ const ReportTable = ( props ) => {
 			),
 			required: true,
 		};
-	}
-
-	const {
-		getHeadersContent,
-		getRowsContent,
-		getSummary,
-		isRequesting,
-		primaryData,
-		tableData,
-		endpoint,
-		// These props are not used in the render function, but are destructured
-		// so they are not included in the `tableProps` variable.
-		// eslint-disable-next-line no-unused-vars
-		itemIdField,
-		// eslint-disable-next-line no-unused-vars
-		tableQuery,
-		// eslint-disable-next-line no-unused-vars
-		compareBy: notUsedCompareBy,
-		searchBy,
-		labels = {},
-		...tableProps
-	} = props;
-
-	const { items, query: tableDataQuery } = tableData;
-
-	const isError = tableData.isError || primaryData.isError;
-
-	if ( isError ) {
-		return <ReportError isError />;
 	}
 
 	const isLoading =
@@ -432,7 +417,7 @@ const ReportTable = ( props ) => {
 				onPageChange={ onPageChange }
 				rows={ rows }
 				rowsPerPage={
-					parseInt( tableDataQuery.per_page, 10 ) || QUERY_DEFAULTS.pageSize
+					parseInt( reportQuery.per_page, 10 ) || QUERY_DEFAULTS.pageSize
 				}
 				summary={ summary }
 				totalRows={ totalResults }
