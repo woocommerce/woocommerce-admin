@@ -60,7 +60,6 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 			__( 'Review', 'woocommerce-admin' ),
 			'https://wordpress.org/support/plugin/woocommerce-admin/reviews/?rate=5#new-post'
 		);
-
 		$note->save();
 	}
 }
