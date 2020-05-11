@@ -19,7 +19,7 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Onboarding_Payments;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Personalize_Store;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Payments;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Marketing;
-use \Automattic\WooCommerce\Admin\Rinds\RindsSpecsDataSourcePoller;
+use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 
 /**
  * WC_Admin_Events Class.
