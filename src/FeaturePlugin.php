@@ -18,7 +18,7 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Tracking_Opt_In;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Payments;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Install_JP_And_WCS_Plugins;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Draw_Attention;
-use \Automattic\WooCommerce\Admin\Rinds\RindsEngine;
+use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 
 /**
  * Feature plugin main class.
@@ -192,8 +192,8 @@ class FeaturePlugin {
 		new WC_Admin_Notes_Install_JP_And_WCS_Plugins();
 		new WC_Admin_Notes_Draw_Attention();
 
-		// Initialize RindsEngine.
-		RindsEngine::init();
+		// Initialize RemoteInboxNotificationsEngine.
+		RemoteInboxNotificationsEngine::init();
 	}
 
 	/**

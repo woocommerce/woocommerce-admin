@@ -2,15 +2,15 @@
 /**
  * Plugin version rule processor tests.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
-use Automattic\WooCommerce\Admin\Rinds\PluginVersionRuleProcessor;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\PluginVersionRuleProcessor;
 
 /**
- * class WC_Tests_Rinds_PluginVersionRuleProcessor
+ * class WC_Tests_RemoteInboxNotifications_PluginVersionRuleProcessor
  */
-class WC_Tests_Rinds_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
+class WC_Tests_RemoteInboxNotifications_PluginVersionRuleProcessor extends WC_Unit_Test_Case {
 	/**
 	 * Test that the processor does not pass if the plugin is not activated.
 	 *

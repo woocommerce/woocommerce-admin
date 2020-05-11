@@ -2,16 +2,16 @@
 /**
  * Publish after time rule processor tests.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
-use Automattic\WooCommerce\Admin\Rinds\PublishAfterTimeRuleProcessor;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\PublishAfterTimeRuleProcessor;
 use Automattic\WooCommerce\Admin\DateTimeProvider\DateTimeProviderInterface;
 
 /**
- * class WC_Tests_Rinds_PublishAfterTimeRuleProcessor
+ * class WC_Tests_RemoteInboxNotifications_PublishAfterTimeRuleProcessor
  */
-class WC_Tests_Rinds_PublishAfterTimeRuleProcessor extends WC_Unit_Test_Case {
+class WC_Tests_RemoteInboxNotifications_PublishAfterTimeRuleProcessor extends WC_Unit_Test_Case {
 	/**
 	 * Get the publish_after rule.
 	 *

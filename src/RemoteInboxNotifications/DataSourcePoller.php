@@ -1,22 +1,22 @@
 <?php
 /**
- * Handles polling and storage of RINDS specs
+ * Handles polling and storage of specs
  *
  * @package WooCommerce Admin/Classes
  */
 
-namespace Automattic\WooCommerce\Admin\Rinds;
+namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Loader;
 
 /**
- * RINDS specs data source poller class.
- * This handles polling RINDS specs from JSON endpoints, and
+ * Specs data source poller class.
+ * This handles polling specs from JSON endpoints, and
  * stores the specs in to the database as an option.
  */
-class RindsSpecsDataSourcePoller {
+class DataSourcePoller {
 	const DATA_SOURCES = array(
 		'http://two.wordpress.test/rinds-specs.json',
 	);
@@ -26,7 +26,7 @@ class RindsSpecsDataSourcePoller {
 	 * specs that no longer exist in the data sources.
 	 */
 	public static function poll_data_sources() {
-		if ( ! Loader::is_feature_enabled( 'rule-based-inbox-notes' ) ) {
+		if ( ! Loader::is_feature_enabled( 'remote-inbox-notifications' ) ) {
 			return;
 		}
 
@@ -38,10 +38,10 @@ class RindsSpecsDataSourcePoller {
 		}
 
 		// Persist the specs as an option.
-		update_option( RindsEngine::SPECS_OPTION_NAME, $specs );
+		update_option( RemoteInboxNotificationsEngine::SPECS_OPTION_NAME, $specs );
 
-		// Run the RINDS engine.
-		RindsEngine::run();
+		// Run the engine.
+		RemoteInboxNotificationsEngine::run();
 	}
 
 	/**

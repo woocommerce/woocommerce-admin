@@ -2,16 +2,16 @@
 /**
  * Not rule processor tests.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
-use Automattic\WooCommerce\Admin\Rinds\NotRuleProcessor;
-use Automattic\WooCommerce\Admin\Rinds\RuleEvaluator;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\NotRuleProcessor;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\RuleEvaluator;
 
 /**
- * class WC_Tests_Rinds_NotRuleProcessor
+ * class WC_Tests_RemoteInboxNotifications_NotRuleProcessor
  */
-class WC_Tests_Rinds_NotRuleProcessor extends WC_Unit_Test_Case {
+class WC_Tests_RemoteInboxNotifications_NotRuleProcessor extends WC_Unit_Test_Case {
 	/**
 	 * An empty operand evaluates to false, so negating that should
 	 * evaluate to true.

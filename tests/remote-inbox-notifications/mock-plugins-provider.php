@@ -2,7 +2,7 @@
 /**
  * Mock plugins Provider.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
 use Automattic\WooCommerce\Admin\PluginsProvider\PluginsProviderInterface;

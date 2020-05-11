@@ -1,11 +1,11 @@
 <?php
 /**
- * Handles running RINDS specs
+ * Handles running specs
  *
  * @package WooCommerce Admin/Classes
  */
 
-namespace Automattic\WooCommerce\Admin\Rinds;
+namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,12 +13,12 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
 use \Automattic\WooCommerce\Admin\PluginsProvider\PluginsProvider;
 
 /**
- * RINDS engine.
- * This goes through the RINDS specs and runs (creates admin notes) for those
+ * RemoteInboxNotifications engine.
+ * This goes through the specs and runs (creates admin notes) for those
  * specs that are able to be triggered.
  */
-class RindsEngine {
-	const SPECS_OPTION_NAME = 'wc_rinds_specs';
+class RemoteInboxNotificationsEngine {
+	const SPECS_OPTION_NAME = 'wc_remote_inbox_notifications_specs';
 
 	/**
 	 * Initialize the engine.
@@ -29,8 +29,7 @@ class RindsEngine {
 	}
 
 	/**
-	 * Go through the RINDS spec and run those specs that are able to be
-	 * triggered.
+	 * Go through the specs and run them.
 	 */
 	public static function run() {
 		$specs = get_option( self::SPECS_OPTION_NAME );
@@ -41,7 +40,7 @@ class RindsEngine {
 		}
 
 		foreach ( $specs as $spec ) {
-			RindsSpecRunner::run_spec( $spec );
+			SpecRunner::run_spec( $spec );
 		}
 	}
 

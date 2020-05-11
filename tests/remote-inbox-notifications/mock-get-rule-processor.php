@@ -2,11 +2,11 @@
 /**
  * MockGetRuleProcessor.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
-use Automattic\WooCommerce\Admin\Rinds\PublishAfterTimeRuleProcessor;
-use Automattic\WooCommerce\Admin\Rinds\FailRuleProcessor;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\PublishAfterTimeRuleProcessor;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\FailRuleProcessor;
 
 /**
  * MockGetRuleProcessor.

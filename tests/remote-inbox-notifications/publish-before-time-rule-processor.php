@@ -2,16 +2,16 @@
 /**
  * Publish before time rule processor tests.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
-use Automattic\WooCommerce\Admin\Rinds\PublishBeforeTimeRuleProcessor;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\PublishBeforeTimeRuleProcessor;
 use Automattic\WooCommerce\Admin\DateTimeProvider\DateTimeProviderInterface;
 
 /**
- * class WC_Tests_Rinds_PublishBeforeTimeRuleProcessor
+ * class WC_Tests_RemoteInboxNotifications_PublishBeforeTimeRuleProcessor
  */
-class WC_Tests_Rinds_PublishBeforeTimeRuleProcessor extends WC_Unit_Test_Case {
+class WC_Tests_RemoteInboxNotifications_PublishBeforeTimeRuleProcessor extends WC_Unit_Test_Case {
 	/**
 	 * Get the publish_before rule.
 	 *

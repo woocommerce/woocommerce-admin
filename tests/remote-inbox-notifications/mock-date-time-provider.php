@@ -2,7 +2,7 @@
 /**
  * Mock DateTime Provider.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
 use Automattic\WooCommerce\Admin\DateTimeProvider\DateTimeProviderInterface;

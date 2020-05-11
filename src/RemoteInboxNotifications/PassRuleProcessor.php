@@ -6,7 +6,7 @@
  * @package WooCommerce Admin/Classes;
  */
 
-namespace Automattic\WooCommerce\Admin\Rinds;
+namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 

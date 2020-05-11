@@ -2,16 +2,16 @@
 /**
  * Or rule processor tests.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
-use Automattic\WooCommerce\Admin\Rinds\OrRuleProcessor;
-use Automattic\WooCommerce\Admin\Rinds\RuleEvaluator;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\OrRuleProcessor;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\RuleEvaluator;
 
 /**
- * class WC_Tests_Rinds_OrRuleProcessor
+ * class WC_Tests_RemoteInboxNotifications_OrRuleProcessor
  */
-class WC_Tests_Rinds_OrRuleProcessor extends WC_Unit_Test_Case {
+class WC_Tests_RemoteInboxNotifications_OrRuleProcessor extends WC_Unit_Test_Case {
 	/**
 	 * Both operands evaluating to false and ORed together evaluates to false.
 	 *

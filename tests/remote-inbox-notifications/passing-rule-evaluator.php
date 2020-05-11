@@ -2,7 +2,7 @@
 /**
  * PassingRuleEvaluator
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
 /**

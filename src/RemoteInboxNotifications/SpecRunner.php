@@ -1,20 +1,20 @@
 <?php
 /**
- * Runs a single RINDS spec.
+ * Runs a single spec.
  *
  * @package WooCommerce Admin/Classes
  */
 
-namespace Automattic\WooCommerce\Admin\Rinds;
+namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
 
 /**
- * Runs a single RINDS spec.
+ * Runs a single spec.
  */
-class RindsSpecRunner {
+class SpecRunner {
 	/**
 	 * Run the spec.
 	 *

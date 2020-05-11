@@ -2,15 +2,15 @@
 /**
  * Evaluate and get status tests.
  *
- * @package WooCommerce\Tests\Rinds
+ * @package WooCommerce\Tests\RemoteInboxNotifications
  */
 
-use Automattic\WooCommerce\Admin\Rinds\EvaluateAndGetStatus;
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\EvaluateAndGetStatus;
 
 /**
- * class WC_Tests_Rinds_EvaluateAndGetStatus
+ * class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus
  */
-class WC_Tests_Rinds_EvaluateAndGetStatus extends WC_Unit_Test_Case {
+class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Test_Case {
 	/**
 	 * Build up a spec given the supplied parameters.
 	 *
