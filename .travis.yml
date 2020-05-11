@@ -2,9 +2,11 @@ sudo: required
 
 language: php
 
-dist: trusty
+dist: xenial
 
 services:
+  - xvfb
+  - mysql
   - docker
 
 matrix:
