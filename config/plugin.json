@@ -8,6 +8,7 @@
 		"marketing": true,
 		"navigation": false,
 		"onboarding": true,
+		"rule-based-inbox-notes": false,
 		"shipping-label-banner": true,
 		"store-alerts": true,
 		"wcpay": true,
