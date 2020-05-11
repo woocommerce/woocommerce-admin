@@ -38,16 +38,21 @@ class InboxNoteCard extends Component {
 	}
 
 	componentDidMount() {
-		this.bodyNotificationRef.current.addEventListener( 'click', ( event ) =>
-			this.handleBodyClick( event, this.props )
-		);
+		if ( this.bodyNotificationRef.current ) {
+			this.bodyNotificationRef.current.addEventListener(
+				'click',
+				( event ) => this.handleBodyClick( event, this.props )
+			);
+		}
 	}
 
 	componentWillUnmount() {
-		this.bodyNotificationRef.current.removeEventListener(
-			'click',
-			( event ) => this.handleBodyClick( event, this.props )
-		);
+		if ( this.bodyNotificationRef.current ) {
+			this.bodyNotificationRef.current.removeEventListener(
+				'click',
+				( event ) => this.handleBodyClick( event, this.props )
+			);
+		}
 	}
 
 	handleBodyClick( event, props ) {
