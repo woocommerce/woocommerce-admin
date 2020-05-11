@@ -50,7 +50,6 @@ class WC_Admin_Notes_Settings_Notes {
 			__( 'Open Customizer', 'woocommerce-admin' ),
 			'customize.php'
 		);
-
 		$note->save();
 	}
 }

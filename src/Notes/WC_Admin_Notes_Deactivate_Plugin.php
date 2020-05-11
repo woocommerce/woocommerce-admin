@@ -49,7 +49,6 @@ class WC_Admin_Notes_Deactivate_Plugin {
 			'unactioned',
 			true
 		);
-
 		$note->save();
 	}
 
