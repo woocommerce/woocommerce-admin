@@ -86,11 +86,12 @@ class InboxNoteCard extends Component {
 		}
 	}
 
-	openDismissModal( type ) {
+	openDismissModal( type, onToggle ) {
 		this.setState( {
 			isDismissModalOpen: true,
 			dismissType: type,
 		} );
+		onToggle();
 	}
 
 	closeDismissModal( acepted ) {
@@ -113,7 +114,11 @@ class InboxNoteCard extends Component {
 	}
 
 	handleBlur( event, onToggle ) {
-		const targetIsRenderedContent = event.relatedTarget ? event.relatedTarget.className.includes( 'woocommerce-admin-dismiss-notification' ) : false;
+		const targetIsRenderedContent = event.relatedTarget
+			? event.relatedTarget.className.includes(
+					'woocommerce-admin-dismiss-notification'
+			  )
+			: false;
 		if ( targetIsRenderedContent ) {
 			event.preventDefault();
 		} else {
@@ -126,19 +131,25 @@ class InboxNoteCard extends Component {
 			<Dropdown
 				position="bottom right"
 				renderToggle={ ( { onToggle } ) => (
-					<Button isTertiary onClick={ onToggle } onBlur={ ( event )=> this.handleBlur( event, onToggle ) } >
+					<Button
+						isTertiary
+						onClick={ onToggle }
+						onBlur={ ( event ) =>
+							this.handleBlur( event, onToggle )
+						}
+					>
 						{ __( 'Dismiss', 'woocommerce-admin' ) }
 					</Button>
 				) }
 				focusOnMount={ false }
 				popoverProps={ { noArrow: true } }
-				renderContent={ () => (
+				renderContent={ ( { onToggle } ) => (
 					<ul>
 						<li>
 							<Button
-								className='woocommerce-admin-dismiss-notification'
+								className="woocommerce-admin-dismiss-notification"
 								onClick={ () =>
-									this.openDismissModal( 'this' )
+									this.openDismissModal( 'this', onToggle )
 								}
 							>
 								{ __(
@@ -149,8 +160,10 @@ class InboxNoteCard extends Component {
 						</li>
 						<li>
 							<Button
-								className='woocommerce-admin-dismiss-notification'
-								onClick={ () => this.openDismissModal( 'all' ) }
+								className="woocommerce-admin-dismiss-notification"
+								onClick={ () =>
+									this.openDismissModal( 'all', onToggle )
+								}
 							>
 								{ __(
 									'Dismiss all messages',
@@ -213,7 +226,16 @@ class InboxNoteCard extends Component {
 	render() {
 		const { lastRead, note } = this.props;
 		const { isDismissModalOpen } = this.state;
-		const { actions: noteActions, content, date_created: dateCreated, date_created_gmt: dateCreatedGmt, id: noteId, image, layout, title } = note;
+		const {
+			actions: noteActions,
+			content,
+			date_created: dateCreated,
+			date_created_gmt: dateCreatedGmt,
+			id: noteId,
+			image,
+			layout,
+			title,
+		} = note;
 
 		if ( note.is_deleted ) {
 			return null;
@@ -240,13 +262,9 @@ class InboxNoteCard extends Component {
 		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
 		const date = dateCreated;
 		const hasImage = layout !== 'plain';
-		const cardClassName = classnames(
-			'woocommerce-inbox-message',
-			layout,
-			{
-				'message-is-unread': unread,
-			}
-		);
+		const cardClassName = classnames( 'woocommerce-inbox-message', layout, {
+			'message-is-unread': unread,
+		} );
 
 		return (
 			<VisibilitySensor onChange={ this.onVisible }>
