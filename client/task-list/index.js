@@ -6,13 +6,13 @@ import { Component, cloneElement, Fragment } from '@wordpress/element';
 import { get, isEqual } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
-import { Snackbar, Icon, Button, Modal } from '@wordpress/components';
+import { Snackbar, Button, Modal } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { Card, List, MenuItem, EllipsisMenu } from '@woocommerce/components';
+import { Card, List, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
@@ -222,18 +222,9 @@ class TaskDashboard extends Component {
 				label={ __( 'Task List Options', 'woocommerce-admin' ) }
 				renderContent={ () => (
 					<div className="woocommerce-task-card__section-controls">
-						<MenuItem
-							isClickable
-							onInvoke={ () =>
-								this.hideTaskCard( 'remove_card' )
-							}
-						>
-							<Icon
-								icon={ 'trash' }
-								label={ __( 'Remove block' ) }
-							/>
-							{ __( 'Remove this card', 'woocommerce-admin' ) }
-						</MenuItem>
+						<Button onClick={ () => this.hideTaskCard( 'remove_card' ) }>
+							{ __( 'Hide this', 'woocommerce-admin' ) }
+						</Button>
 					</div>
 				) }
 			/>
@@ -352,13 +343,12 @@ class TaskDashboard extends Component {
 				task.completed ? 'is-complete' : null,
 				task.className
 			);
-			task.before = task.completed ? (
-				<i className="material-icons-outlined">check_circle</i>
-			) : (
-				<i className="material-icons-outlined">{ task.icon }</i>
+			task.before = (
+				<i className="material-icons-outlined">{ task.completed ? 'check_circle' : 'radio_button_unchecked' }</i>
 			);
-			task.after = (
-				<i className="material-icons-outlined">chevron_right</i>
+			task.after = ( task.time
+				? <span className="woocommerce-task-estimated-time">{ task.time }</span>
+				: <i className="material-icons-outlined">chevron_right</i>
 			);
 
 			if ( ! task.onClick ) {
@@ -380,11 +370,7 @@ class TaskDashboard extends Component {
 							<Card
 								className="woocommerce-task-card"
 								title={ __(
-									'Set up your store and start selling',
-									'woocommerce-admin'
-								) }
-								description={ __(
-									'Below you’ll find a list of the most important steps to get your store up and running.',
+									'Store setup',
 									'woocommerce-admin'
 								) }
 								menu={ inline && this.renderMenu() }
