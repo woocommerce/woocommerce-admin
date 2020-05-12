@@ -28,9 +28,9 @@ class WC_Admin_Notes_Onboarding_Payments {
 	const NOTE_NAME = 'wc-admin-onboarding-payments-reminder';
 
 	/**
-	 * Creates a note to remind store owners to set up payments.
+	 * Get the note.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		// This note should only be added if the task list is still shown.
 		if ( ! Onboarding::should_show_tasks() ) {
 			return;
@@ -74,7 +74,6 @@ class WC_Admin_Notes_Onboarding_Payments {
 			'actioned',
 			true
 		);
-
-		$note->save();
+		return $note;
 	}
 }

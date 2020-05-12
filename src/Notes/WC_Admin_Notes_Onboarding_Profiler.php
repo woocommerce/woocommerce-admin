@@ -36,9 +36,9 @@ class WC_Admin_Notes_Onboarding_Profiler {
 	}
 
 	/**
-	 * Creates a note to remind store owners to complete the profiler.
+	 * Get the note.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		if ( ! Onboarding::should_show_profiler() ) {
 			return;
 		}
@@ -65,8 +65,7 @@ class WC_Admin_Notes_Onboarding_Profiler {
 			'actioned',
 			false
 		);
-
-		$note->save();
+		return $note;
 	}
 
 	/**

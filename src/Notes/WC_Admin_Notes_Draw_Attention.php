@@ -62,9 +62,9 @@ class WC_Admin_Notes_Draw_Attention {
 	}
 
 	/**
-	 * Add the note.
+	 * Get the note.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'How to draw attention to your online store', 'woocommerce-admin' ) );
 		$note->set_content( __( 'To get you started, here are seven ways to boost your sales and avoid getting drowned out by similar, mass-produced products competing for the same buyers.', 'woocommerce-admin' ) );
@@ -80,7 +80,6 @@ class WC_Admin_Notes_Draw_Attention {
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);
-
-		$note->save();
+		return $note;
 	}
 }

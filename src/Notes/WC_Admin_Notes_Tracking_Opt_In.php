@@ -2,7 +2,7 @@
 /**
  * WooCommerce Admin Usage Tracking Opt In Note Provider.
  *
- * Adds a note to the merchant's inbox showing the benefits of the Facebook extension.
+ * Adds a Usage Tracking Opt In extension note.
  *
  * @package WooCommerce Admin
  */
@@ -33,9 +33,9 @@ class WC_Admin_Notes_Tracking_Opt_In {
 	}
 
 	/**
-	 * Possibly add Usage Tracking Opt In extension note.
+	 * Get the note.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		// Only show this note to stores that are opted out.
 		if ( 'yes' === get_option( 'woocommerce_allow_tracking', 'no' ) ) {
 			return;
@@ -69,8 +69,7 @@ class WC_Admin_Notes_Tracking_Opt_In {
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'tracking-dismiss', __( 'Dismiss', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED, false );
 		$note->add_action( 'tracking-opt-in', __( 'Activate usage tracking', 'woocommerce-admin' ), false, WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED, true );
-
-		$note->save();
+		return $note;
 	}
 
 	/**

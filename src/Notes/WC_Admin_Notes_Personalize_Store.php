@@ -26,9 +26,9 @@ class WC_Admin_Notes_Personalize_Store {
 	const NOTE_NAME = 'wc-admin-personalize-store';
 
 	/**
-	 * Possibly add the note.
+	 * Get the note.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		// Only show the note to stores with homepage.
 		$homepage_id = get_option( 'woocommerce_onboarding_homepage_post_id', false );
 		if ( ! $homepage_id ) {
@@ -56,7 +56,6 @@ class WC_Admin_Notes_Personalize_Store {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'personalize-homepage', __( 'Personalize homepage', 'woocommerce-admin' ), admin_url( 'post.php?post=' . $homepage_id . '&action=edit' ), WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED, true );
-
-		$note->save();
+		return $note;
 	}
 }

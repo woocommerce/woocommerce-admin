@@ -26,9 +26,9 @@ class WC_Admin_Notes_Onboarding_Email_Marketing {
 	const NOTE_NAME = 'wc-admin-onboarding-email-marketing';
 
 	/**
-	 * Possibly add email marketing note.
+	 * Get the note.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		$content = __( 'We\'re here for you - get tips, product updates and inspiration straight to your email box', 'woocommerce-admin' );
 
 		$note = new WC_Admin_Note();
@@ -40,6 +40,6 @@ class WC_Admin_Notes_Onboarding_Email_Marketing {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'yes-please', __( 'Yes please!', 'woocommerce-admin' ), 'https://woocommerce.us8.list-manage.com/subscribe/post?u=2c1434dc56f9506bf3c3ecd21&amp;id=13860df971&amp;SIGNUPPAGE=plugin' );
-		$note->save();
+		return $note;
 	}
 }

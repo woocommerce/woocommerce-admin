@@ -26,9 +26,9 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 	const NOTE_NAME = 'wc-admin-store-notice-giving-feedback-2';
 
 	/**
-	 * Possibly add a notice setting moved note.
+	 * Get the note.
 	 */
-	protected static function add_note() {
+	protected static function get_note() {
 		// We need to show Admin Giving feeback notification after 8 days of install.
 		$eight_days_in_seconds = 8 * DAY_IN_SECONDS;
 		if ( ! self::wc_admin_active_for( $eight_days_in_seconds ) ) {
@@ -49,6 +49,6 @@ class WC_Admin_Notes_Giving_Feedback_Notes {
 			__( 'Share feedback', 'woocommerce-admin' ),
 			'https://automattic.survey.fm/new-onboarding-survey'
 		);
-		$note->save();
+		return $note;
 	}
 }

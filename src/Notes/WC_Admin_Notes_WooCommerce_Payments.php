@@ -89,7 +89,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	/**
 	 * Add a note about WooCommerce Payments.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Try the new way to get paid', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments.', 'woocommerce-admin' ) );
@@ -105,8 +105,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 		if ( self::is_installed() ) {
 			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
 		}
-
-		$note->save();
+		return $note;
 	}
 
 

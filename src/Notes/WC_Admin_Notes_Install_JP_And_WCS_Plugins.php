@@ -38,9 +38,9 @@ class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
 	}
 
 	/**
-	 * Add the note.
+	 * Get the note.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		$content = __( 'We noticed that there was a problem during the Jetpack and WooCommerce Services install. Please try again and enjoy all the advantages of having the plugins connected to your store! Sorry for the inconvenience. The "Jetpack" and "WooCommerce Services" plugins will be installed & activated for free.', 'woocommerce-admin' );
 
 		$note = new WC_Admin_Note();
@@ -58,8 +58,7 @@ class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);
-
-		$note->save();
+		return $note;
 	}
 
 	/**

@@ -27,9 +27,9 @@ class WC_Admin_Notes_Marketing {
 	const NOTE_NAME = 'wc-admin-marketing-intro';
 
 	/**
-	 * Add the note.
+	 * Get the note.
 	 */
-	public static function add_note() {
+	public static function get_note() {
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Connect with your audience', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce.', 'woocommerce-admin' ) );
@@ -44,7 +44,6 @@ class WC_Admin_Notes_Marketing {
 			admin_url( 'admin.php?page=wc-admin&path=/marketing' ),
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED
 		);
-
-		$note->save();
+		return $note;
 	}
 }

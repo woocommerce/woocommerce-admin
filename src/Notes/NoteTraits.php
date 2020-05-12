@@ -51,6 +51,19 @@ trait NoteTraits {
 			return;
 		}
 
-		self::add_note();
+		$note = self::get_note();
+
+		if ( ! $note instanceof WC_Admin_Note ) {
+			return;
+		}
+
+		if (
+			'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) &&
+			WC_Admin_Note::E_WC_ADMIN_NOTE_MARKETING === $note->get_type()
+		) {
+			return;
+		}
+
+		$note->save();
 	}
 }
