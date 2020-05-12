@@ -120,7 +120,7 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 
 		$this->assertEquals( 'jetpack/stats/views', $reports[2]['stat'] );
 		$this->assertEquals( 'Views', $reports[2]['label'] );
-		$this->assertEquals( 0, $reports[2]['value'] );
+		$this->assertEquals( 10, $reports[2]['value'] );
 		$this->assertEquals( 'views', $reports[2]['chart'] );
 		$this->assertEquals( get_rest_url( null, '/jetpack/v4/module/stats/data' ), $response->data[2]['_links']['api'][0]['href'] );
 	}
@@ -239,6 +239,31 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 	}
 
 	/**
+	 * Test the ability to aggregate Jetpack stats based on default arguments.
+	 */
+	public function test_jetpack_stats_default_query_args() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'stats' => 'jetpack/stats/views',
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$reports  = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $reports ) );
+
+		$this->assertEquals( 'jetpack/stats/views', $reports[0]['stat'] );
+		$this->assertEquals( 'Views', $reports[0]['label'] );
+		$this->assertEquals( 10, $reports[0]['value'] );
+		$this->assertEquals( 'views', $reports[0]['chart'] );
+		$this->assertEquals( get_rest_url( null, '/jetpack/v4/module/stats/data' ), $response->data[0]['_links']['api'][0]['href'] );
+	}
+
+	/**
 	 * Mock the Jetpack REST API responses since we're not really connected.
 	 *
 	 * @param WP_Rest_Response $response Response from the server.
@@ -291,6 +316,11 @@ class WC_Tests_API_Reports_Performance_Indicators extends WC_REST_Unit_Test_Case
 				array(
 					'2020-01-05',
 					5,
+					0,
+				),
+				array(
+					gmdate( 'Y-m-d' ),
+					10,
 					0,
 				),
 			);
