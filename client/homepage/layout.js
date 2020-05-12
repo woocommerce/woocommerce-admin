@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import classnames from 'classnames';
 
@@ -15,45 +15,39 @@ class Layout extends Component {
 		super( props );
 
 		this.state = {
-			//inboxHeight: this.getInboxHeight(),
 			showInbox: true,
+			isContentSticky: false,
 		};
 
-		this.handleScroll = this.handleScroll.bind( this );
-	}
-
-	getInboxHeight() {
-		if ( window.innerWidth <= 782 ) {
-			return 'auto';
-		}
-		const scroll = window.scrollY;
-		const base = 90;
-		return `calc(100vh ${ base - scroll < 0 ? '+' : '-' } ${ Math.abs(
-			base - scroll
-		) }px)`;
+		this.maybeStickContent = this.maybeStickContent.bind( this );
+		this.content = createRef();
 	}
 
 	componentDidMount() {
-		//window.addEventListener( 'scroll', this.handleScroll );
+		this.maybeStickContent();
+		window.addEventListener( 'resize', this.maybeStickContent );
 	}
 
 	componentWillUnmount() {
-		//window.removeEventListener( 'scroll', this.handleScroll );
+		window.removeEventListener( 'resize', this.maybeStickContent );
 	}
 
-	handleScroll( e ) {
-		if ( e.target === window.document ) {
+	maybeStickContent() {
+		const { isContentSticky, showInbox } = this.state;
+		const content = this.content.current;
+		const { bottom } = content.getBoundingClientRect();
+		const shouldBeSticky = showInbox && bottom < window.innerHeight;
+
+		// Only rerender if needed.
+		if ( isContentSticky !== shouldBeSticky ) {
 			this.setState( {
-				//inboxHeight: this.getInboxHeight(),
+				isContentSticky: shouldBeSticky,
 			} );
 		}
 	}
 
 	render() {
-		const { showInbox } = this.state;
-		const inboxStyles = {
-			//maxHeight: inboxHeight,
-		};
+		const { showInbox, isContentSticky } = this.state;
 		return (
 			<div
 				className={ classnames( 'woocommerce-homepage', {
@@ -61,10 +55,7 @@ class Layout extends Component {
 				} ) }
 			>
 				{ showInbox && (
-					<div
-						className="woocommerce-homepage-column is-inbox"
-						style={ inboxStyles }
-					>
+					<div className="woocommerce-homepage-column is-inbox">
 						<div className="temp-content">
 							<Button
 								isPrimary
@@ -83,8 +74,13 @@ class Layout extends Component {
 						<div className="temp-content" />
 					</div>
 				) }
-				<div className="woocommerce-homepage-column">
-					<div className="temp-content" />
+				<div
+					className="woocommerce-homepage-column"
+					ref={ this.content }
+					style={ {
+						position: isContentSticky ? 'sticky' : 'static',
+					} }
+				>
 					<div className="temp-content" />
 					<div className="temp-content" />
 				</div>

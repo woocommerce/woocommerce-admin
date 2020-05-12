@@ -11,6 +11,7 @@
 
 	&.hasInbox .woocommerce-homepage-column {
 		width: calc(50% - 12px);
+		margin: 0;
 
 		@include breakpoint('<782px') {
 			width: 100%;
@@ -26,14 +27,10 @@
 	}
 }
 .woocommerce-homepage-column {
-	width: 100%;
-	position: sticky;
+	width: 50%;
 	top: 130px;
+	margin: 0 auto;
 	align-self: flex-start;
-
-	&.is-inbox {
-		position: static;
-	}
 }
 .temp-content {
 	width: 100%;
