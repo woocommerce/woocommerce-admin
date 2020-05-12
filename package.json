@@ -159,7 +159,7 @@
 		"@storybook/react": "5.3.18",
 		"@testing-library/react": "^10.0.3",
 		"@testing-library/user-event": "^10.1.0",
-		"@woocommerce/e2e-environment": "0.1.3",
+		"@woocommerce/e2e-environment": "0.1.4",
 		"@wordpress/babel-plugin-import-jsx-pragma": "1.1.3",
 		"@wordpress/babel-plugin-makepot": "2.1.3",
 		"@wordpress/babel-preset-default": "3.0.2",
