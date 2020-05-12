@@ -38,7 +38,9 @@ class WC_Admin_Notes_Historical_Data {
 	 * Update status of note to actioned on data import trigger.
 	 */
 	public static function update_status_to_actioned() {
-		if ( self::note_exists() ) {
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+		if ( empty( $note_ids ) ) {
 			return;
 		}
 
