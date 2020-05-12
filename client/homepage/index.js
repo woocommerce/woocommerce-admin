@@ -16,7 +16,7 @@ const Homepage = ( { profileItems, query } ) => {
 		return <ProfileWizard query={ query } />;
 	}
 
-	return <Layout />;
+	return <Layout query={ query } />;
 };
 
 export default compose(
