@@ -2,13 +2,13 @@
 
 .woocommerce-inbox-message {
 	position: relative;
-	border: 1px solid $light-gray-secondary;
 	color: $gray-text;
 	background: $core-grey-light-200;
 	border-radius: 2px;
 	@include font-size( 13 );
 
 	&.message-is-unread {
+		border: 1px solid $light-gray-secondary;
 		background: $studio-white;
 	}
 }
@@ -106,13 +106,11 @@
 
 
 .woocommerce-inbox-message {
+	margin: 20px;
 	-ms-box-orient: horizontal;
 	display: -webkit-box;
 	display: -moz-box;
 	display: -ms-flexbox;
-	display: -moz-flex;
-	display: -webkit-flex;
-	display: flex;
 	&.banner {
 		-webkit-flex-direction: column;
 		flex-direction: column;
@@ -122,6 +120,9 @@
 		}
 	}
 	&.thumbnail {
+		display: -moz-flex;
+		display: -webkit-flex;
+		display: flex;
 		-webkit-flex-direction: row-reverse;
 		flex-direction: row-reverse;
 		img {

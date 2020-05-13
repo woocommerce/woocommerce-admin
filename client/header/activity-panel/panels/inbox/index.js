@@ -6,7 +6,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import { withDispatch } from '@wordpress/data';
-import { has, some } from 'lodash';
+import { filter, has, some } from 'lodash';
 
 /**
  * Internal dependencies
@@ -47,6 +47,21 @@ class InboxPanel extends Component {
 			screenName = URLparams.post_type;
 		}
 		return screenName;
+	}
+
+	getUnreadNotesCount() {
+		const { lastRead, notes } = this.props;
+
+		const unreadNotes = filter( notes, ( note )=> {
+			const { is_deleted: isDeleted, date_created_gmt: dateCreatedGmt } = note;
+			const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
+			if ( noteActive ) {
+				return ! lastRead ||
+					! dateCreatedGmt ||
+					new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
+			}
+		} );
+		return unreadNotes.length;
 	}
 
 	renderEmptyCard() {
@@ -122,7 +137,11 @@ class InboxPanel extends Component {
 
 		return (
 			<Fragment>
-				<ActivityHeader title={ __( 'Inbox', 'woocommerce-admin' ) } />
+				<ActivityHeader
+					title={ __( 'Inbox', 'woocommerce-admin' ) }
+					subtitle={ __( 'Insights and growth tips for your business', 'woocommerce-admin' ) }
+					unreadMessages={ this.getUnreadNotesCount() }
+				/>
 				<Section>
 					{ isRequesting ? (
 						<ActivityCardPlaceholder
