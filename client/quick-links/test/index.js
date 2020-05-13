@@ -22,7 +22,7 @@ describe( 'QuickLinks', () => {
 
 		expect( marketingItem ).toHaveAttribute(
 			'href',
-			'/wp-admin/admin.php?page=wc-admin&path=%2Fmarketing'
+			'admin.php?page=wc-admin&path=%2Fmarketing'
 		);
 	} );
 
@@ -35,7 +35,7 @@ describe( 'QuickLinks', () => {
 
 		expect( addProductsItem ).toHaveAttribute(
 			'href',
-			'/wp-admin/post-new.php?post_type=product'
+			'post-new.php?post_type=product'
 		);
 	} );
 
@@ -48,7 +48,7 @@ describe( 'QuickLinks', () => {
 
 		expect( shippingSettingsItem ).toHaveAttribute(
 			'href',
-			'/wp-admin/admin.php?page=wc-settings&tab=shipping'
+			'admin.php?page=wc-settings&tab=shipping'
 		);
 	} );
 

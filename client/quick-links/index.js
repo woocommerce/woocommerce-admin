@@ -145,15 +145,15 @@ class QuickLinks extends Component {
 		switch ( item.type ) {
 			case 'wc-admin':
 				linkType = 'wc-admin';
-				href = `/wp-admin/admin.php?page=wc-admin&path=%2F${ item.path }`;
+				href = `admin.php?page=wc-admin&path=%2F${ item.path }`;
 				break;
 			case 'wp-admin':
 				linkType = 'wp-admin';
-				href = `/wp-admin/${ item.path }`;
+				href = item.path;
 				break;
 			case 'wc-settings':
 				linkType = 'wp-admin';
-				href = `/wp-admin/admin.php?page=wc-settings&tab=${ item.tab }`;
+				href = `admin.php?page=wc-settings&tab=${ item.tab }`;
 				break;
 			default:
 				linkType = 'external';
