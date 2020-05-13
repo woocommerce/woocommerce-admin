@@ -46,7 +46,8 @@ export function getCurrencyRegion( countryState ) {
  */
 export function getProductIdsForCart(
 	profileItems,
-	includeInstalledItems = false
+	includeInstalledItems = false,
+	installedPlugins
 ) {
 	const onboarding = getSetting( 'onboarding', {} );
 
@@ -57,7 +58,6 @@ export function getProductIdsForCart(
 	}
 
 	const productIds = [];
-	const plugins = getSetting( 'plugins', {} );
 	const productTypes = profileItems.product_types || [];
 
 	productTypes.forEach( ( productType ) => {
@@ -65,7 +65,7 @@ export function getProductIdsForCart(
 			onboarding.productTypes[ productType ] &&
 			onboarding.productTypes[ productType ].product &&
 			( includeInstalledItems ||
-				! plugins.installedPlugins.includes(
+				! installedPlugins.includes(
 					onboarding.productTypes[ productType ].slug
 				) )
 		) {
