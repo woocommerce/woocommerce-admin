@@ -42,6 +42,7 @@ export function getCurrencyRegion( countryState ) {
  *
  * @param {Object} profileItems Onboarding profile.
  * @param {boolean} includeInstalledItems Include installed items in returned product IDs.
+ * @param {Array} installedPlugins Installed plugins.
  * @return {Array} Product Ids.
  */
 export function getProductIdsForCart(

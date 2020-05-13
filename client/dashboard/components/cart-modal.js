@@ -173,12 +173,12 @@ export default compose(
 		const { getProfileItems } = select( 'wc-api' );
 		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
 		const profileItems = getProfileItems();
+		const installedPlugins = getInstalledPlugins();
 		const productIds = getProductIdsForCart(
 			profileItems,
 			false,
 			installedPlugins
 		);
-		const installedPlugins = getInstalledPlugins();
 
 		return { profileItems, productIds };
 	} )
