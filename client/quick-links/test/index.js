@@ -14,7 +14,7 @@ expect.extend( { toHaveAttribute } );
 
 describe( 'QuickLinks', () => {
 	it( 'should build href correctly for a `wc-admin` item', () => {
-		render( <QuickLinks /> );
+		render( <QuickLinks getSetting={ () => {} } /> );
 
 		const marketingItem = screen.getByRole( 'menuitem', {
 			name: 'Market my store',
@@ -27,7 +27,7 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should build href correctly for a `wp-admin` item', () => {
-		render( <QuickLinks /> );
+		render( <QuickLinks getSetting={ () => {} } /> );
 
 		const addProductsItem = screen.getByRole( 'menuitem', {
 			name: 'Add products',
@@ -40,7 +40,7 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should build href correctly for a `wc-settings` item', () => {
-		render( <QuickLinks /> );
+		render( <QuickLinks getSetting={ () => {} } /> );
 
 		const shippingSettingsItem = screen.getByRole( 'menuitem', {
 			name: 'Shipping settings',
@@ -55,7 +55,9 @@ describe( 'QuickLinks', () => {
 	it( 'should call `recordEvent` when a `wc-admin` item is clicked', () => {
 		const recordEvent = jest.fn();
 
-		render( <QuickLinks recordEvent={ recordEvent } /> );
+		render(
+			<QuickLinks getSetting={ () => {} } recordEvent={ recordEvent } />
+		);
 
 		userEvent.click(
 			screen.getByRole( 'menuitem', { name: 'Market my store' } )
@@ -70,10 +72,12 @@ describe( 'QuickLinks', () => {
 		);
 	} );
 
-	it( 'should call `recordEvent` when a `wp-admin` item is clicked', () => {
+	it( 'shoulgd call `recordEvent` when a `wp-admin` item is clicked', () => {
 		const recordEvent = jest.fn();
 
-		render( <QuickLinks recordEvent={ recordEvent } /> );
+		render(
+			<QuickLinks getSetting={ () => {} } recordEvent={ recordEvent } />
+		);
 
 		userEvent.click(
 			screen.getByRole( 'menuitem', { name: 'Add products' } )
@@ -91,7 +95,9 @@ describe( 'QuickLinks', () => {
 	it( 'should call `recordEvent` when a `wc-settings` item is clicked', () => {
 		const recordEvent = jest.fn();
 
-		render( <QuickLinks recordEvent={ recordEvent } /> );
+		render(
+			<QuickLinks getSetting={ () => {} } recordEvent={ recordEvent } />
+		);
 
 		userEvent.click(
 			screen.getByRole( 'menuitem', { name: 'Shipping settings' } )
@@ -111,7 +117,9 @@ describe( 'QuickLinks', () => {
 	it( 'should call `recordEvent` when an `external` item is clicked', () => {
 		const recordEvent = jest.fn();
 
-		render( <QuickLinks recordEvent={ recordEvent } /> );
+		render(
+			<QuickLinks getSetting={ () => {} } recordEvent={ recordEvent } />
+		);
 
 		userEvent.click(
 			screen.getByRole( 'menuitem', { name: 'Get support' } )
@@ -124,5 +132,19 @@ describe( 'QuickLinks', () => {
 			homeQuickLinksClickEventName,
 			propsWithSupportTaskName
 		);
+	} );
+
+	it( 'should call `getSetting` to determine the frontend url', () => {
+		const getSetting = jest.fn( () => 'https://example.com' );
+
+		render(
+			<QuickLinks getSetting={ getSetting } recordEvent={ () => {} } />
+		);
+
+		userEvent.click(
+			screen.getByRole( 'menuitem', { name: 'View my store' } )
+		);
+
+		expect( getSetting ).toHaveBeenCalledWith( 'siteUrl' );
 	} );
 } );

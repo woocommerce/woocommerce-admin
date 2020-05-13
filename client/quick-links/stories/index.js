@@ -14,6 +14,10 @@ function logItemClick( listItemTag ) {
 	return false;
 }
 
+function getSetting() {
+	return 'https://example.com';
+}
+
 export default {
 	title: 'WooCommerce Admin/homepage/QuickLinks',
 	component: QuickLinks,
@@ -21,5 +25,7 @@ export default {
 };
 
 export const Default = () => {
-	return <QuickLinks onItemClick={ logItemClick } />;
+	return (
+		<QuickLinks getSetting={ getSetting } onItemClick={ logItemClick } />
+	);
 };

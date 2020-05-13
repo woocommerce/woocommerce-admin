@@ -9,6 +9,7 @@ import Gridicon from 'gridicons';
 /**
  * WooCommerce dependencies
  */
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List } from '@woocommerce/components';
 
 /**
@@ -22,6 +23,7 @@ import './style.scss';
  */
 class QuickLinks extends Component {
 	static defaultProps = {
+		getSetting,
 		recordEvent,
 	};
 
@@ -114,7 +116,7 @@ class QuickLinks extends Component {
 			{
 				title: __( 'View my store', 'woocommerce-admin' ),
 				type: 'external',
-				href: 'todo', // frontend
+				href: this.props.getSetting( 'siteUrl' ),
 				iconName: 'external',
 				listItemTag: 'view-store',
 			},
