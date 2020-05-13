@@ -1,7 +1,14 @@
 /**
  * External dependencies
  */
-import { Suspense, lazy, useState, useRef, useEffect } from '@wordpress/element';
+import {
+	Fragment,
+	Suspense,
+	lazy,
+	useState,
+	useRef,
+	useEffect,
+} from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import classnames from 'classnames';
@@ -48,8 +55,56 @@ const Layout = ( props ) => {
 		};
 	}, [] );
 
-	const { query, requesting, taskListHidden } = props;
-	const isTaskListEnabled = isOnboardingEnabled() && ! requesting && ! taskListHidden;
+	const { query, requestingTaskList, taskListHidden } = props;
+	const isTaskListEnabled = isOnboardingEnabled() && ! requestingTaskList && ! taskListHidden;
+	const isDashboardShown = ! isTaskListEnabled || ! query.task;
+
+	const renderColumns = () => {
+		return (
+			<Fragment>
+				{ showInbox && (
+					<div className="woocommerce-homepage-column is-inbox">
+						<div className="temp-content">
+							<Button
+								isPrimary
+								onClick={ () => {
+									setShowInbox( false );
+								} }
+							>
+								Dismiss All
+							</Button>
+						</div>
+						<div className="temp-content" />
+						<div className="temp-content" />
+						<div className="temp-content" />
+						<div className="temp-content" />
+						<div className="temp-content" />
+						<div className="temp-content" />
+					</div>
+				) }
+				<div
+					className="woocommerce-homepage-column"
+					ref={ content }
+					style={ {
+						position: isContentSticky ? 'sticky' : 'static',
+					} }
+				>
+					{ isTaskListEnabled && renderTaskList() }
+					<StatsOverview />
+					<QuickLinks />
+				</div>
+			</Fragment>
+		);
+	};
+
+	const renderTaskList = () => (
+		<Suspense fallback={ <Spinner /> }>
+			<TaskList
+				query={ query }
+				inline
+			/>
+		</Suspense>
+	);
 
 	return (
 		<div
@@ -57,45 +112,10 @@ const Layout = ( props ) => {
 				hasInbox: showInbox,
 			} ) }
 		>
-			{ showInbox && (
-				<div className="woocommerce-homepage-column is-inbox">
-					<div className="temp-content">
-						<Button
-							isPrimary
-							onClick={ () => {
-								setShowInbox( false );
-							} }
-						>
-							Dismiss All
-						</Button>
-					</div>
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-					<div className="temp-content" />
-				</div>
-			) }
-			<div
-				className="woocommerce-homepage-column"
-				ref={ content }
-				style={ {
-					position: isContentSticky ? 'sticky' : 'static',
-				} }
-			>
-				{ isTaskListEnabled && (
-					<Suspense fallback={ <Spinner /> }>
-						<TaskList
-							query={ query }
-							inline
-						/>
-					</Suspense>
-				) }
-				<StatsOverview />
-
-				<QuickLinks />
-			</div>
+			{ isDashboardShown
+				? renderColumns()
+				: isTaskListEnabled && renderTaskList()
+			}
 		</div>
 	);
 };
@@ -115,7 +135,7 @@ export default compose(
 			] );
 			
 			return {
-				requesting: isGetOptionsRequesting( [
+				requestingTaskList: isGetOptionsRequesting( [
 					'woocommerce_task_list_hidden',
 				] ),
 				taskListHidden: get( options, [ 'woocommerce_task_list_hidden' ] ) === 'yes',
@@ -123,7 +143,7 @@ export default compose(
 		}
 
 		return {
-			requesting: false,
+			requestingTaskList: false,
 		};
 	} )
 )( Layout );
