@@ -72,7 +72,7 @@ describe( 'QuickLinks', () => {
 		);
 	} );
 
-	it( 'shoulgd call `recordEvent` when a `wp-admin` item is clicked', () => {
+	it( 'should call `recordEvent` when a `wp-admin` item is clicked', () => {
 		const recordEvent = jest.fn();
 
 		render(
