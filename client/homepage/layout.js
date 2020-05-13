@@ -17,7 +17,7 @@ import { get } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { Spinner } from '@woocommerce/components';
+// import { Spinner } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -27,6 +27,7 @@ import StatsOverview from './stats-overview';
 import './style.scss';
 import { isOnboardingEnabled } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
+import TaskListPlaceholder from '../task-list/placeholder';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -56,7 +57,7 @@ const Layout = ( props ) => {
 	}, [] );
 
 	const { query, requestingTaskList, taskListHidden } = props;
-	const isTaskListEnabled = isOnboardingEnabled() && ! requestingTaskList && ! taskListHidden;
+	const isTaskListEnabled = isOnboardingEnabled() && ! taskListHidden;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
 
 	const renderColumns = () => {
@@ -97,14 +98,20 @@ const Layout = ( props ) => {
 		);
 	};
 
-	const renderTaskList = () => (
-		<Suspense fallback={ <Spinner /> }>
-			<TaskList
-				query={ query }
-				inline
-			/>
-		</Suspense>
-	);
+	const renderTaskList = () => {
+		if ( requestingTaskList ) {
+			return <TaskListPlaceholder />;
+		}
+
+		return (
+			<Suspense fallback={ <TaskListPlaceholder /> }>
+				<TaskList
+					query={ query }
+					inline
+				/>
+			</Suspense>
+		);
+	};
 
 	return (
 		<div
