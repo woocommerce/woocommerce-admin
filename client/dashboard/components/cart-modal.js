@@ -5,7 +5,6 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Button, Modal } from '@wordpress/components';
-import { addQueryArgs } from '@wordpress/url';
 import { find } from 'lodash';
 import { decodeEntities } from '@wordpress/html-entities';
 
