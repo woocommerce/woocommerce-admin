@@ -7,6 +7,23 @@ import { recordEvent } from 'lib/tracks';
 
 jest.mock( 'lib/tracks' );
 
+import Main from '../main';
+
+describe( 'lazy loading', () => {
+	it( 'should work', async () => {
+		render( <Main /> );
+		setTimeout( async () => {
+			const lazyElement = await screen.findByText( /i am lazy/i );
+
+			expect( lazyElement ).toMatchInlineSnapshot( `
+				<div>
+					I am lazy!
+				</div>
+			` );
+		}, 0 );
+	} );
+} );
+
 describe( 'StatsOverview tracking', () => {
 	it( 'should record an event when a stat is toggled', () => {
 		render(
