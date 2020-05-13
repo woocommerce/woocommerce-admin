@@ -6,14 +6,12 @@ import { Component } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { Button } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
 
 /**
  * WooCommerce dependencies
  */
 import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
 import { Stepper } from '@woocommerce/components';
 
 class WCPay extends Component {
@@ -44,15 +42,8 @@ class WCPay extends Component {
 	}
 
 	async connect() {
-		const { createNotice, options, updateOptions } = this.props;
+		const { createNotice } = this.props;
 		this.setState( { isPending: true } );
-
-		updateOptions( {
-			woocommerce_woocommerce_payments_settings: {
-				...options.woocommerce_woocommerce_payments_settings,
-				enabled: 'yes',
-			},
-		} );
 
 		const errorMessage = __(
 			'There was an error connecting to WooCommerce Payments. Please try again or skip to connect later in store settings.',
@@ -118,29 +109,9 @@ class WCPay extends Component {
 	}
 }
 
-export default compose(
-	withSelect( ( select ) => {
-		const { getOptions, isGetOptionsRequesting } = select( 'wc-api' );
-		const options = getOptions( [
-			'woocommerce_woocommerce_payments_settings',
-		] );
-		const optionsIsRequesting = Boolean(
-			isGetOptionsRequesting( [
-				'woocommerce_woocommerce_payments_settings',
-			] )
-		);
-
-		return {
-			options,
-			optionsIsRequesting,
-		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( 'wc-api' );
-		return {
-			createNotice,
-			updateOptions,
-		};
-	} )
-)( WCPay );
+export default withDispatch( ( dispatch ) => {
+	const { createNotice } = dispatch( 'core/notices' );
+	return {
+		createNotice,
+	};
+} )( WCPay );
