@@ -8,6 +8,7 @@ import classnames from 'classnames';
 /**
  * Internal dependencies
  */
+import QuickLinks from '../quick-links';
 import StatsOverview from './stats-overview';
 import './style.scss';
 
@@ -67,6 +68,7 @@ const Layout = () => {
 					position: isContentSticky ? 'sticky' : 'static',
 				} }
 			>
+				<QuickLinks />
 				<StatsOverview />
 			</div>
 		</div>
