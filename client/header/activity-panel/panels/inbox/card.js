@@ -5,7 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { cloneElement, Component, Fragment } from '@wordpress/element';
 import { Button, Dropdown, Modal } from '@wordpress/components';
 import PropTypes from 'prop-types';
-import Gridicon from 'gridicons';
 import VisibilitySensor from 'react-visibility-sensor';
 import moment from 'moment';
 
