@@ -18,10 +18,10 @@ class ProductCountRuleProcessor {
 	/**
 	 * Constructor.
 	 *
-	 * @param object $products_provider The products provider.
+	 * @param object $product_query The product query.
 	 */
-	public function __construct( $products_provider ) {
-		$this->products_provider = $products_provider;
+	public function __construct( $product_query ) {
+		$this->product_query = $product_query;
 	}
 
 	/**
@@ -33,7 +33,8 @@ class ProductCountRuleProcessor {
 	 * @return bool The result of the operation.
 	 */
 	public function process( $rule, $data ) {
-		$count = $this->products_provider->get_product_count();
+		$products = $this->product_query->get_products();
+		$count    = count( $products );
 
 		return ComparisonOperation::compare(
 			$count,
