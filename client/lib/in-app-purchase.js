@@ -13,7 +13,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  *
  * @param {string} url
  * @param {Object} queryArgs
- * @return {string}
+ * @return {string} url with in-app-purchase query parameters
  */
 export const getInAppPurchaseUrl = ( url, queryArgs = {} ) => {
 	const { pathname, search } = window.location;
