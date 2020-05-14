@@ -72,7 +72,7 @@ function getItems( props ) {
 		{
 			title: __( 'Get support', 'woocommerce-admin' ),
 			type: 'external',
-			href: 'todo', // support portal: wpcom vs self-hosted
+			href: 'https://woocommerce.com/my-account/create-a-ticket/',
 			iconName: 'sos',
 			listItemTag: 'support',
 		},
