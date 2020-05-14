@@ -41,4 +41,24 @@ describe( 'Homepage Layout', () => {
 		const taskList = await screen.findByText( '[TaskList]' )
 		expect( taskList ).toBeDefined();
 	} );
+
+	it( 'should render TaskList alone when on task', async () => {
+		const { container } = render(
+			<Layout
+				requestingTaskList={ false }
+				taskListHidden={ false }
+				query={ {
+					task: 'products',
+				} }
+			/>
+		);
+
+		// Expect that we're NOT rendering the "full" home screen (with columns).
+		const columns = container.querySelector( '.woocommerce-homepage-column' );
+		expect( columns ).toBeNull();
+
+		// Expect that the <TaskList /> is there though.
+		const taskList = await screen.findByText( '[TaskList]' )
+		expect( taskList ).toBeDefined();
+	} );
 } );
