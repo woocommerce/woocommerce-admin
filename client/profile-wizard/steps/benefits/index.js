@@ -12,6 +12,7 @@ import { filter } from 'lodash';
  * WooCommerce dependencies
  */
 import { Card, H, Plugins } from '@woocommerce/components';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 /**
@@ -65,10 +66,11 @@ class Benefits extends Component {
 		} = this.props;
 		const { isInstalling, isPending } = this.state;
 
-		// Installation is complete, begin Jetpack connection.
+		// Installation and requests are complete, begin Jetpack connection.
 		if (
 			! isInstalling &&
-			prevState.isInstalling &&
+			! isRequesting &&
+			( prevState.isInstalling || prevState.isRequesting ) &&
 			activePlugins.includes( 'jetpack' )
 		) {
 			if ( ! isJetpackConnected ) {
@@ -273,6 +275,9 @@ class Benefits extends Component {
 							onError={ () =>
 								this.setState( { isPending: false } )
 							}
+							redirectUrl={ getAdminLink(
+								'admin.php?page=wc-admin&reset_profiler=0'
+							) }
 						/>
 					) }
 				</div>
