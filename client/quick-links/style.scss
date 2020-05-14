@@ -1,18 +1,7 @@
 .woocommerce-page .woocommerce-quick-links {
-	// Ideally, we'd get these from `@wordpress/base-styles`.
-	// However, currently we are on an old version of `@wordpress/base-styles`,
-	// and updating that causes compatibility issues with the version of
-	// `@wordpress/components` that we are using, and updating that introduces
-	// breaking changes that we would need to address elsewhere in the
-	// `woocommerce-admin` codebase.
-	$chevron-color: #1e1e1e;
-	$background-color-hover: #f8f9f9;
-	$item-border-color: #e7e8e9;
-	$foreground-color: theme(button);
-	// We'd ideally do something like `darken($foreground-color, 20%),
-	// but since the postcss-themes plugin is run after the sass to css
-	// transform, sass doesn't know what to do with `darken(theme(button), 20%)`
-	$foreground-color-hover: theme(buttonDarken);
+	$background-color: $white;
+
+	background-color: $background-color;
 
 	.components-card__body.is-size-large {
 		padding: 0;
@@ -22,8 +11,22 @@
 			padding: 0;
 
 			.woocommerce-list__item {
+				// Ideally, we'd get these from `@wordpress/base-styles`.
+				// However, currently we are on an old version of `@wordpress/base-styles`,
+				// and updating that causes compatibility issues with the version of
+				// `@wordpress/components` that we are using, and updating that introduces
+				// breaking changes that we would need to address elsewhere in the
+				// `woocommerce-admin` codebase.
+				$chevron-color: #1e1e1e; // $dark-gray-primary
+				$background-color-hover: #f8f9f9; // $light-gray-100
+				$border-color: #e7e8e9; // $light-gray-tertiary
+				$foreground-color: theme(button); // $theme-color
+				$foreground-color-hover: color($foreground-color shade(20%));
+
+				background-color: $background-color;
+
 				&:not(:first-child) {
-					border-top: 1px solid $item-border-color;
+					border-top: 1px solid $border-color;
 				}
 
 				&:hover {
