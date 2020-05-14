@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\PluginsProvider\PluginsProvider;
 
 /**
- * RemoteInboxNotifications engine.
+ * Remote Inbox Notifications engine.
  * This goes through the specs and runs (creates admin notes) for those
  * specs that are able to be triggered.
  */
