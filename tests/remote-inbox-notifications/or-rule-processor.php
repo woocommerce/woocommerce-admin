@@ -36,7 +36,7 @@ class WC_Tests_RemoteInboxNotifications_OrRuleProcessor extends WC_Unit_Test_Cas
 					],
 					[
 						{
-							"type": "c",
+							"type": "publish_after_time",
 							"publish_after": "2020-04-24 11:00:00"
 						}
 					]
