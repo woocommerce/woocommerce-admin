@@ -37,7 +37,7 @@ function getItems( props ) {
 		{
 			title: __( 'Personalize my store', 'woocommerce-admin' ),
 			type: 'wp-admin',
-			path: 'todo', // open editor with shop page open
+			path: 'customize.php',
 			iconName: 'admin-customizer',
 			listItemTag: 'personalize-store',
 		},
