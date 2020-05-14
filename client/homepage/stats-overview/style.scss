@@ -24,6 +24,10 @@
 		width: 25%;
 		margin-bottom: 4px;
 
+		@include breakpoint( '<782px' ) {
+			width: 33.33%;
+		}
+
 		&:focus {
 			outline: none;
 			box-shadow: none;
