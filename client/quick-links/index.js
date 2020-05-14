@@ -171,9 +171,9 @@ const QuickLinks = ( props ) => {
 	const listItems = getListItems( props );
 
 	return (
-		<Card className="woocommerce-quick-links">
+		<Card size="large" className="woocommerce-quick-links">
 			<CardHeader>
-				{ __( 'Store management', 'woocommerce-admin' ) }
+				<h2>{ __( 'Store management', 'woocommerce-admin' ) }</h2>
 			</CardHeader>
 			<CardBody>
 				<List items={ listItems } />

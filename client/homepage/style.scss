@@ -13,17 +13,36 @@
 		width: calc(50% - 12px);
 		margin: 0;
 
-		@include breakpoint('<782px') {
+		@include breakpoint( '<782px' ) {
 			width: 100%;
 			position: inherit;
 			top: auto;
 		}
 	}
 
-	@include breakpoint('<782px') {
+	@include breakpoint( '<782px' ) {
 		margin-left: -16px;
 		margin-right: -16px;
 		flex-direction: column-reverse;
+	}
+
+	.components-card {
+		.components-card__header.is-size-large {
+			display: grid;
+			//align-items: center;
+			min-height: 63px;
+			padding: 13px 16px;
+
+			// IE doesn't support `align-items` on grid container
+			& > * {
+				align-self: center;
+			}
+
+			h2 {
+				margin: 0;
+				padding: 3px 0;
+			}
+		}
 	}
 }
 .woocommerce-homepage-column {
