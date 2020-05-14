@@ -4,14 +4,14 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import Gridicon from 'gridicons';
 import { withDispatch } from '@wordpress/data';
 import { filter, has } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
+import { ActivityCard } from '../../activity-card';
+import InboxNotePlaceholder from './placeholder';
 import ActivityHeader from '../../activity-header';
 import InboxNoteCard from './card';
 import { EmptyContent, Section } from '@woocommerce/components';
@@ -69,7 +69,7 @@ class InboxPanel extends Component {
 			<ActivityCard
 				className="woocommerce-empty-activity-card"
 				title={ __( 'Your inbox is empty', 'woocommerce-admin' ) }
-				icon={ <Gridicon icon="checkmark" size={ 48 } /> }
+				icon={ false }
 			>
 				{ __(
 					'As things begin to happen in your store your inbox will start to fill up. ' +
@@ -80,18 +80,21 @@ class InboxPanel extends Component {
 		);
 	}
 
-	renderNotes() {
-		const { lastRead, notes } = this.props;
+	hasValidNotes() {
+		const { notes } = this.props;
 
-		const hasNotes = Object.keys( notes ).length === 0
-			? false 
-			: filter( notes, ( note )=> {
+		const validNotes = filter( notes, ( note )=> {
 				const { is_deleted: isDeleted } = note;
 				const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
 				return noteActive;
 			} );
+		return validNotes.length > 0;
+	}
 
-		if ( ! hasNotes.length ) {
+	renderNotes( hasNotes ) {
+		const { lastRead, notes } = this.props;
+
+		if ( ! hasNotes ) {
 			return this.renderEmptyCard();
 		}
 
@@ -134,23 +137,22 @@ class InboxPanel extends Component {
 			);
 		}
 
+		const hasNotes = this.hasValidNotes();
+
 		return (
 			<Fragment>
-				<ActivityHeader
-					title={ __( 'Inbox', 'woocommerce-admin' ) }
-					subtitle={ __( 'Insights and growth tips for your business', 'woocommerce-admin' ) }
-					unreadMessages={ this.getUnreadNotesCount() }
-				/>
+				{ ( hasNotes || isRequesting ) && (
+					<ActivityHeader
+						title={ __( 'Inbox', 'woocommerce-admin' ) }
+						subtitle={ __( 'Insights and growth tips for your business', 'woocommerce-admin' ) }
+						unreadMessages={ this.getUnreadNotesCount() }
+					/>
+				) }
 				<Section>
 					{ isRequesting ? (
-						<ActivityCardPlaceholder
-							className="woocommerce-inbox-activity-card"
-							hasAction
-							hasDate
-							lines={ 2 }
-						/>
+						<InboxNotePlaceholder className={ 'banner' } />
 					) : (
-						this.renderNotes()
+						this.renderNotes( hasNotes )
 					) }
 				</Section>
 			</Fragment>
