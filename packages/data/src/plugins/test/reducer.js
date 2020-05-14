@@ -35,6 +35,31 @@ describe( 'plugins reducer', () => {
 		expect( state.active[ 0 ] ).toBe( 'jetpack' );
 	} );
 
+	it( 'should handle UPDATE_ACTIVE_PLUGINS with added plugins', () => {
+		const state = reducer(
+			{
+				active: [ 'jetpack' ],
+				installed: [ 'jetpack' ],
+				requesting: {},
+				errors: {},
+			},
+			{
+				type: TYPES.UPDATE_ACTIVE_PLUGINS,
+				installed: null,
+				added: [ 'woocommerce-services' ],
+			}
+		);
+
+		/* eslint-disable dot-notation */
+
+		expect( state.requesting[ 'getActivePlugins' ] ).toBe( false );
+		expect( state.errors[ 'getActivePlugins' ] ).toBe( false );
+		/* eslint-enable dot-notation */
+
+		expect( state.active ).toHaveLength( 2 );
+		expect( state.active[ 1 ] ).toBe( 'woocommerce-services' );
+	} );
+
 	it( 'should handle UPDATE_INSTALLED_PLUGINS', () => {
 		const state = reducer( defaultState, {
 			type: TYPES.UPDATE_INSTALLED_PLUGINS,
