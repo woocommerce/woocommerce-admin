@@ -28,5 +28,7 @@
 		"<rootDir>/.*/build/",
 		"<rootDir>/.*/build-module/"
 	],
+	"timers": "real",
+	"testEnvironment": "jest-environment-jsdom-sixteen",
 	"verbose": true
 }
