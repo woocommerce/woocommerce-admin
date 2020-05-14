@@ -50,15 +50,13 @@ class InboxPanel extends Component {
 	renderNotes() {
 		const { lastRead, notes } = this.props;
 
-		const hasNotes = Object.keys( notes ).length === 0
-			? false 
-			: filter( notes, ( note )=> {
+		const validNotes = filter( notes, ( note )=> {
 				const { is_deleted: isDeleted } = note;
 				const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
 				return noteActive;
 			} );
 
-		if ( ! hasNotes.length ) {
+		if ( validNotes.length === 0 ) {
 			return this.renderEmptyCard();
 		}
 
