@@ -9,7 +9,10 @@
 	$background-color-hover: #f8f9f9;
 	$item-border-color: #e7e8e9;
 	$foreground-color: theme(button);
-	$foreground-color-hover: darken(#c9356e, 20%);
+	// We'd ideally do something like `darken($foreground-color, 20%),
+	// but since the postcss-themes plugin is run after the sass to css
+	// transform, sass doesn't know what to do with `darken(theme(button), 20%)`
+	$foreground-color-hover: theme(buttonDarken);
 
 	.components-card__body.is-size-large {
 		padding: 0;
