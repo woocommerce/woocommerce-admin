@@ -18,6 +18,11 @@
 			text-transform: uppercase;
 
 			margin: 0 0 $gap 0;
+
+			// Overrides the default `display: block` for p elements in the title.
+			// This is done to prevent soft line breaks from appearing in shorter
+			// titles.
+			display: inline-block;
 		}
 
 		hr {
