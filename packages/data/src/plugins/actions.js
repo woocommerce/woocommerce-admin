@@ -12,10 +12,11 @@ import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
 import { pluginNames } from './constants';
 
-export function updateActivePlugins( active ) {
+export function updateActivePlugins( active, added ) {
 	return {
 		type: TYPES.UPDATE_ACTIVE_PLUGINS,
 		active,
+		added,
 	};
 }
 
@@ -123,7 +124,7 @@ export function* activatePlugins( plugins ) {
 		} );
 
 		if ( results && results.status === 'success' ) {
-			yield updateActivePlugins( results.activatedPlugins );
+			yield updateActivePlugins( null, results.activatedPlugins );
 			return results;
 		}
 

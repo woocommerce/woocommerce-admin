@@ -34,7 +34,7 @@ const plugins = (
 		case TYPES.UPDATE_ACTIVE_PLUGINS:
 			state = {
 				...state,
-				active,
+				active: added ? concat( state.active, added ) : active,
 				requesting: {
 					...state.requesting,
 					getActivePlugins: false,
