@@ -29,7 +29,7 @@ $outer-border: $core-grey-light-700;
 	.components-button {
 		display: block;
 		padding: $gap;
-		width: 25%;
+		width: 33.33%;
 		margin-bottom: 4px;
 
 		&:focus {
@@ -45,10 +45,12 @@ $outer-border: $core-grey-light-700;
 
 		&:first-child {
 			text-align: left;
+			padding-right: 0;
 		}
 
 		&:last-child {
 			text-align: right;
+			padding-left: 0;
 		}
 	}
 }
