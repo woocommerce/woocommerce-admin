@@ -270,6 +270,9 @@ class Benefits extends Component {
 									'storeprofiler_jetpack_connect_redirect'
 								);
 							} }
+							onError={ () =>
+								this.setState( { isPending: false } )
+							}
 						/>
 					) }
 				</div>

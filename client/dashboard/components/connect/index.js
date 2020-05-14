@@ -30,13 +30,24 @@ class Connect extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const { autoConnect, createNotice, error, isRequesting, jetpackConnectUrl, setIsPending } = this.props;
+		const {
+			autoConnect,
+			createNotice,
+			error,
+			isRequesting,
+			jetpackConnectUrl,
+			onError,
+			setIsPending,
+		} = this.props;
 
 		if ( prevProps.isRequesting && ! isRequesting ) {
 			setIsPending( false );
 		}
 
 		if ( error && error !== prevProps.error ) {
+			if ( onError ) {
+				onError();
+			}
 			createNotice( 'error', error );
 		}
 
@@ -55,7 +66,13 @@ class Connect extends Component {
 	}
 
 	render() {
-		const { autoConnect, hasErrors, isRequesting, onSkip, skipText } = this.props;
+		const {
+			autoConnect,
+			hasErrors,
+			isRequesting,
+			onSkip,
+			skipText,
+		} = this.props;
 
 		if ( autoConnect ) {
 			return null;
@@ -114,6 +131,14 @@ Connect.propTypes = {
 	 * Generated Jetpack connection URL.
 	 */
 	jetpackConnectUrl: PropTypes.string,
+	/**
+	 * Called before the redirect to Jetpack.
+	 */
+	onConnect: PropTypes.func,
+	/**
+	 * Called when the plugin has an error retrieving the jetpackConnectUrl.
+	 */
+	onError: PropTypes.func,
 	/**
 	 * Called when the plugin connection is skipped.
 	 */
