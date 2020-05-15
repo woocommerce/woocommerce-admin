@@ -109,6 +109,7 @@ export const Layout = ( props ) => {
 				<TaskList
 					query={ query }
 					inline
+					promptShown
 				/>
 			</Suspense>
 		);

@@ -379,7 +379,7 @@ class TaskDashboard extends Component {
 							</Card>
 							{ inline && this.renderPrompt() }
 							{ isWelcomeModalOpen && this.renderWelcomeModal() }
-							{ this.renderSkipActions() }
+							{ ! inline && this.renderSkipActions() }
 						</Fragment>
 					) }
 				</div>
