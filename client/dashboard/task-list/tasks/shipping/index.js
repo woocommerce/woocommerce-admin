@@ -145,23 +145,26 @@ class Shipping extends Component {
 	}
 
 	getPluginsToActivate() {
-		const { countryCode, isJetpackConnected } = this.props;
+		const { countryCode } = this.props;
 
 		const plugins = [];
 		if ( [ 'GB', 'CA', 'AU' ].includes( countryCode ) ) {
 			plugins.push( 'woocommerce-shipstation-integration' );
 		} else if ( countryCode === 'US' ) {
 			plugins.push( 'woocommerce-services' );
-
-			if ( ! isJetpackConnected ) {
-				plugins.push( 'jetpack' );
-			}
+			plugins.push( 'jetpack' );
 		}
 		return difference( plugins, this.activePlugins );
 	}
 
 	getSteps() {
+		const { activePlugins, countryCode, isJetpackConnected } = this.props;
 		const pluginsToActivate = this.getPluginsToActivate();
+		// This requirement may change dynamically, so don't use cached plugins array.
+		const requiresJetpackConnection =
+			! isJetpackConnected &&
+			countryCode === 'US' &&
+			activePlugins.includes( 'jetpack' );
 
 		const steps = [
 			{
@@ -197,7 +200,8 @@ class Shipping extends Component {
 				content: (
 					<ShippingRates
 						buttonText={
-							pluginsToActivate.length
+							pluginsToActivate.length ||
+							requiresJetpackConnection
 								? __( 'Proceed', 'woocommerce-admin' )
 								: __( 'Complete task', 'woocommerce-admin' )
 						}
@@ -279,7 +283,9 @@ class Shipping extends Component {
 						} }
 					/>
 				),
-				visible: pluginsToActivate.includes( 'jetpack' ),
+				visible:
+					! pluginsToActivate.includes( 'jetpack' ) &&
+					requiresJetpackConnection,
 			},
 		];
 
