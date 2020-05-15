@@ -21,15 +21,38 @@ class Connect extends Component {
 		props.setIsPending( true );
 	}
 
+	componentDidMount() {
+		const { autoConnect, jetpackConnectUrl } = this.props;
+
+		if ( autoConnect && jetpackConnectUrl ) {
+			this.connectJetpack();
+		}
+	}
+
 	componentDidUpdate( prevProps ) {
-		const { createNotice, error, isRequesting, setIsPending } = this.props;
+		const {
+			autoConnect,
+			createNotice,
+			error,
+			onError,
+			isRequesting,
+			jetpackConnectUrl,
+			setIsPending,
+		} = this.props;
 
 		if ( prevProps.isRequesting && ! isRequesting ) {
 			setIsPending( false );
 		}
 
 		if ( error && error !== prevProps.error ) {
+			if ( onError ) {
+				onError();
+			}
 			createNotice( 'error', error );
+		}
+
+		if ( autoConnect && jetpackConnectUrl ) {
+			this.connectJetpack();
 		}
 	}
 
@@ -42,16 +65,33 @@ class Connect extends Component {
 	}
 
 	render() {
-		const { hasErrors, isRequesting, onSkip, skipText } = this.props;
+		const {
+			autoConnect,
+			hasErrors,
+			isRequesting,
+			onSkip,
+			skipText,
+		} = this.props;
+
+		if ( autoConnect ) {
+			return null;
+		}
 
 		return (
 			<Fragment>
 				{ hasErrors ? (
-					<Button isPrimary onClick={ () => window.location.reload() }>
+					<Button
+						isPrimary
+						onClick={ () => window.location.reload() }
+					>
 						{ __( 'Retry', 'woocommerce-admin' ) }
 					</Button>
 				) : (
-					<Button disabled={ isRequesting } isPrimary onClick={ this.connectJetpack }>
+					<Button
+						disabled={ isRequesting }
+						isPrimary
+						onClick={ this.connectJetpack }
+					>
 						{ __( 'Connect', 'woocommerce-admin' ) }
 					</Button>
 				) }
@@ -87,6 +127,14 @@ Connect.propTypes = {
 	 */
 	jetpackConnectUrl: PropTypes.string,
 	/**
+	 * Called before the redirect to Jetpack.
+	 */
+	onConnect: PropTypes.func,
+	/**
+	 * Called when the plugin has an error retrieving the jetpackConnectUrl.
+	 */
+	onError: PropTypes.func,
+	/**
 	 * Called when the plugin connection is skipped.
 	 */
 	onSkip: PropTypes.func,
@@ -105,6 +153,7 @@ Connect.propTypes = {
 };
 
 Connect.defaultProps = {
+	autoConnect: false,
 	setIsPending: () => {},
 };
 

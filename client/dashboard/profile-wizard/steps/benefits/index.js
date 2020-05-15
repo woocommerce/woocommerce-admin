@@ -17,7 +17,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import Connect from 'dashboard/components/connect';
+import Connect from 'dashboard/task-list/tasks/steps/connect';
 import Logo from './logo';
 import ManagementIcon from './images/management';
 import SalesTaxIcon from './images/sales_tax';
