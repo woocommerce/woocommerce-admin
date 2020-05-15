@@ -62,6 +62,11 @@ export function getAllTasks( {
 			key: 'store_details',
 			title: __( 'Store details', 'woocommerce-admin' ),
 			container: <div />,
+			onClick: () => {
+				window.location = getAdminLink(
+					'admin.php?page=wc-admin&reset_profiler=1'
+				);
+			},
 			completed: profileItems.completed,
 			visible: true,
 			time: __( '4 minutes', 'woocommerce-admin' ),
