@@ -261,7 +261,7 @@ class InboxNoteCard extends Component {
 		const actions = getButtonsFromActions( note );
 		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
 		const date = dateCreated;
-		const hasImage = layout !== 'plain';
+		const hasImage = layout !== 'plain' && layout !== '';
 		const cardClassName = classnames( 'woocommerce-inbox-message', layout, {
 			'message-is-unread': unread,
 		} );
