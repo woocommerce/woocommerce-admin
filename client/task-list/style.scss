@@ -546,6 +546,11 @@
 
 .woocommerce-task-dashboard__container {
 	.woocommerce-task-card.is-loading {
+		.woocommerce-card__body {
+			border-top: 1px solid $studio-gray-5;
+			padding: 0;
+		}
+
 		.is-placeholder {
 			@include placeholder();
 			display: inline-block;
@@ -556,13 +561,6 @@
 			.is-placeholder {
 				width: 70%;
 				height: 28px;
-			}
-		}
-
-		.woocommerce-card__description {
-			.is-placeholder {
-				width: 90%;
-				height: 24px;
 			}
 		}
 
@@ -582,19 +580,12 @@
 					width: 60%;
 				}
 			}
-
-			.woocommerce-list__item-content {
-				.is-placeholder {
-					height: 20px;
-					width: 80%;
-				}
-			}
 		}
 
 		.woocommerce-list__item-after {
 			.is-placeholder {
-				height: 24px;
-				width: 24px;
+				height: 18px;
+				width: 60px;
 			}
 		}
 	}
