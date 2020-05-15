@@ -106,7 +106,7 @@ class WC_Admin_Notes {
 	/**
 	 * Update a note.
 	 *
-	 * @param WC_Admin_Note $note The note that will be deleted.
+	 * @param WC_Admin_Note $note The note that will be updated.
 	 * @param array         $requested_updates a list of requested updates.
 	 */
 	public static function update_note( $note, $requested_updates ) {
