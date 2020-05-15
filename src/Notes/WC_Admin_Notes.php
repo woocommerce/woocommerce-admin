@@ -163,8 +163,7 @@ class WC_Admin_Notes {
 		$notes = array();
 		foreach ( (array) $raw_notes as $raw_note ) {
 			$note = new WC_Admin_Note( $raw_note );
-			$note->set_is_deleted( 1 );
-			$note->save();
+			$this->delete_note( $note );
 			array_push( $notes, $note );
 		}
 		return $notes;
