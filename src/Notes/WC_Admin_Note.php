@@ -519,7 +519,10 @@ class WC_Admin_Note extends \WC_Data {
 	 * @param string $layout Note layout.
 	 */
 	public function set_layout( $layout ) {
-		$this->set_prop( 'layout', $layout );
+		$valid_layouts = array( 'banner', 'plain', 'thumbnail' );
+		if ( in_array( $layout, $valid_layouts ) ) {
+			$this->set_prop( 'layout', $layout );
+		}
 	}
 
 	/**
