@@ -258,7 +258,10 @@ class Benefits extends Component {
 								this.setState( { isInstalling: false } )
 							}
 							onError={ () =>
-								this.setState( { isPending: false } )
+								this.setState( {
+									isInstalling: true,
+									isPending: false,
+								} )
 							}
 							pluginSlugs={ this.pluginsToInstall }
 						/>
