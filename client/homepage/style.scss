@@ -18,6 +18,10 @@
 			position: inherit;
 			top: auto;
 		}
+
+		& > * {
+			margin-bottom: 24px;
+		}
 	}
 
 	@include breakpoint( '<782px' ) {
@@ -54,7 +58,6 @@
 .temp-content {
 	width: 100%;
 	height: 300px;
-	margin-bottom: 24px;
 	background-color: #9acd32;
 }
 
