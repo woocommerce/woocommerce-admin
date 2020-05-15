@@ -20,7 +20,9 @@ const verifyAndPublish = async () => {
 	await page.waitForSelector( '.updated.notice' );
 
 	// Verify
-	await expect( page ).toMatchElement( '.updated.notice', { text: 'Product published.' } );
+	await expect( page ).toMatchElement( '.updated.notice', {
+		text: 'Product published.',
+	} );
 };
 
 /**
@@ -29,9 +31,9 @@ const verifyAndPublish = async () => {
 const completeOnboardingWizard = async () => {
 	// Wait for "Yes please" button to appear and click on it
 	await page.waitForSelector( 'button[name=save_step]' );
-	await expect( page ).toMatchElement(
-		'button[name=save_step]', { text: 'Yes please' }
-	);
+	await expect( page ).toMatchElement( 'button[name=save_step]', {
+		text: 'Yes please',
+	} );
 	await Promise.all( [
 		// Click on "Yes please" button to move to the next step
 		page.click( 'button[name=save_step]', { text: 'Yes please' } ),
@@ -43,19 +45,34 @@ const completeOnboardingWizard = async () => {
 	// Store Details section
 
 	// Fill store's address - first line
-	await expect( page ).toFill( '#inspector-text-control-0', config.get( 'addresses.admin.store.addressfirstline' ) );
+	await expect( page ).toFill(
+		'#inspector-text-control-0',
+		config.get( 'addresses.admin.store.addressfirstline' )
+	);
 
 	// Fill store's address - second line
-	await expect( page ).toFill( '#inspector-text-control-1', config.get( 'addresses.admin.store.addresssecondline' ) );
+	await expect( page ).toFill(
+		'#inspector-text-control-1',
+		config.get( 'addresses.admin.store.addresssecondline' )
+	);
 
 	// Fill country and state where the store is located
-	await expect( page ).toFill( '.woocommerce-select-control__control-input', config.get( 'addresses.admin.store.countryandstate' ) );
+	await expect( page ).toFill(
+		'.woocommerce-select-control__control-input',
+		config.get( 'addresses.admin.store.countryandstate' )
+	);
 
 	// Fill the city where the store is located
-	await expect( page ).toFill( '#inspector-text-control-2', config.get( 'addresses.admin.store.city' ) );
+	await expect( page ).toFill(
+		'#inspector-text-control-2',
+		config.get( 'addresses.admin.store.city' )
+	);
 
 	// Fill postcode of the store
-	await expect( page ).toFill( '#inspector-text-control-3', config.get( 'addresses.admin.store.postcode' ) );
+	await expect( page ).toFill(
+		'#inspector-text-control-3',
+		config.get( 'addresses.admin.store.postcode' )
+	);
 
 	// Verify that checkbox next to "I'm setting up a store for a client" is not selected
 	await verifyCheckboxIsUnset( '.components-checkbox-control__input' );
@@ -68,9 +85,9 @@ const completeOnboardingWizard = async () => {
 
 	// Wait for usage tracking pop-up window to appear
 	await page.waitForSelector( '.components-modal__header-heading' );
-	await expect( page ).toMatchElement(
-		'.components-modal__header-heading', { text: 'Build a Better WooCommerce' }
-	);
+	await expect( page ).toMatchElement( '.components-modal__header-heading', {
+		text: 'Build a better WooCommerce',
+	} );
 
 	// Query for "Continue" buttons
 	const continueButtons = await page.$$( 'button.is-primary' );
@@ -78,7 +95,7 @@ const completeOnboardingWizard = async () => {
 
 	await Promise.all( [
 		// Click on "Continue" button of the usage pop-up window to move to the next step
-		continueButtons[1].click(),
+		continueButtons[ 1 ].click(),
 
 		// Wait for "In which industry does the store operate?" section to load
 		page.waitForNavigation( { waitUntil: 'networkidle0' } ),
@@ -87,16 +104,21 @@ const completeOnboardingWizard = async () => {
 	// Industry section
 
 	// Query for the industries checkboxes
-	const industryCheckboxes = await page.$$( '.components-checkbox-control__input' );
+	const industryCheckboxes = await page.$$(
+		'.components-checkbox-control__input'
+	);
 	expect( industryCheckboxes ).toHaveLength( 8 );
 
 	// Select all industries including "Other"
 	for ( let i = 0; i < 8; i++ ) {
-		await industryCheckboxes[i].click();
+		await industryCheckboxes[ i ].click();
 	}
 
 	// Fill "Other" industry
-	await expect( page ).toFill( '.components-text-control__input', config.get( 'onboardingwizard.industry' ) );
+	await expect( page ).toFill(
+		'.components-text-control__input',
+		config.get( 'onboardingwizard.industry' )
+	);
 
 	// Wait for "Continue" button to become active
 	await page.waitForSelector( 'button.is-primary:not(:disabled)' );
@@ -112,16 +134,20 @@ const completeOnboardingWizard = async () => {
 	// Product types section
 
 	// Query for the product types checkboxes
-	const productTypesCheckboxes = await page.$$( '.components-checkbox-control__input' );
+	const productTypesCheckboxes = await page.$$(
+		'.components-checkbox-control__input'
+	);
 	expect( productTypesCheckboxes ).toHaveLength( 6 );
 
 	// Select Physical and Downloadable products
 	for ( let i = 0; i < 2; i++ ) {
-		await productTypesCheckboxes[i].click();
+		await productTypesCheckboxes[ i ].click();
 	}
 
 	// Wait for "Continue" button to become active
-	await page.waitForSelector( 'button.woocommerce-profile-wizard__continue:not(:disabled)' );
+	await page.waitForSelector(
+		'button.woocommerce-profile-wizard__continue:not(:disabled)'
+	);
 
 	await Promise.all( [
 		// Click on "Continue" button to move to the next step
@@ -138,14 +164,18 @@ const completeOnboardingWizard = async () => {
 	expect( selectControls ).toHaveLength( 2 );
 
 	// Fill the number of products you plan to sell
-	await selectControls[0].click();
+	await selectControls[ 0 ].click();
 	await page.waitForSelector( '.woocommerce-select-control__listbox' );
-	await expect( page ).toClick( '.woocommerce-select-control__option', { text: config.get( 'onboardingwizard.numberofproducts' ) } );
+	await expect( page ).toClick( '.woocommerce-select-control__option', {
+		text: config.get( 'onboardingwizard.numberofproducts' ),
+	} );
 
 	// Fill currently selling elsewhere
-	await selectControls[1].click();
+	await selectControls[ 1 ].click();
 	await page.waitForSelector( '.woocommerce-select-control__listbox' );
-	await expect( page ).toClick( '.woocommerce-select-control__option', { text: config.get( 'onboardingwizard.sellingelsewhere' ) } );
+	await expect( page ).toClick( '.woocommerce-select-control__option', {
+		text: config.get( 'onboardingwizard.sellingelsewhere' ),
+	} );
 
 	// Query for the plugin upload toggles
 	const pluginToggles = await page.$$( '.components-form-toggle__input' );
@@ -153,7 +183,7 @@ const completeOnboardingWizard = async () => {
 
 	// Disable Market on Facebook, Mailchimp and Google Shopping download
 	for ( let i = 0; i < 3; i++ ) {
-		await pluginToggles[i].click();
+		await pluginToggles[ i ].click();
 	}
 
 	// Wait for "Continue" button to become active
@@ -194,9 +224,9 @@ const completeOnboardingWizard = async () => {
 
 	// Wait for "Woo-hoo almost there" window to appear
 	await page.waitForSelector( '.components-modal__header-heading' );
-	await expect( page ).toMatchElement(
-		'.components-modal__header-heading', { text: 'Woo hoo - you\'re almost there!' }
-	);
+	await expect( page ).toMatchElement( '.components-modal__header-heading', {
+		text: "Woo hoo - you're almost there!",
+	} );
 
 	// Wait for "Continue" button to become active
 	await page.waitForSelector( 'button.is-primary:not(:disabled)' );
@@ -210,38 +240,61 @@ const completeOnboardingWizard = async () => {
 const completeOldSetupWizard = async () => {
 	// Fill out store setup section details
 	// Select country where the store is located
-	await expect( page ).toSelect( 'select[name="store_country"]', config.get( 'addresses.admin.store.country' ) );
+	await expect( page ).toSelect(
+		'select[name="store_country"]',
+		config.get( 'addresses.admin.store.country' )
+	);
 	// Fill store's address - first line
-	await expect( page ).toFill( '#store_address', config.get( 'addresses.admin.store.addressfirstline' ) );
+	await expect( page ).toFill(
+		'#store_address',
+		config.get( 'addresses.admin.store.addressfirstline' )
+	);
 
 	// Fill store's address - second line
-	await expect( page ).toFill( '#store_address_2', config.get( 'addresses.admin.store.addresssecondline' ) );
+	await expect( page ).toFill(
+		'#store_address_2',
+		config.get( 'addresses.admin.store.addresssecondline' )
+	);
 
 	// Fill the city where the store is located
-	await expect( page ).toFill( '#store_city', config.get( 'addresses.admin.store.city' ) );
+	await expect( page ).toFill(
+		'#store_city',
+		config.get( 'addresses.admin.store.city' )
+	);
 
 	// Select the state where the store is located
-	await expect( page ).toSelect( 'select[name="store_state"]', config.get( 'addresses.admin.store.state') );
+	await expect( page ).toSelect(
+		'select[name="store_state"]',
+		config.get( 'addresses.admin.store.state' )
+	);
 
 	// Fill postcode of the store
-	await expect( page ).toFill( '#store_postcode', config.get( 'addresses.admin.store.postcode' ) );
+	await expect( page ).toFill(
+		'#store_postcode',
+		config.get( 'addresses.admin.store.postcode' )
+	);
 
 	// Select currency and type of products to sell details
-	await expect( page ).toSelect( 'select[name="currency_code"]', '\n' +
-		'\t\t\t\t\t\tUnited States (US) dollar ($ USD)\t\t\t\t\t' );
-	await expect( page ).toSelect( 'select[name="product_type"]', 'I plan to sell both physical and digital products' );
+	await expect( page ).toSelect(
+		'select[name="currency_code"]',
+		'\n' + '\t\t\t\t\t\tUnited States (US) dollar ($ USD)\t\t\t\t\t'
+	);
+	await expect( page ).toSelect(
+		'select[name="product_type"]',
+		'I plan to sell both physical and digital products'
+	);
 
 	// Verify that checkbox next to "I will also be selling products or services in person." is not selected
 	await verifyCheckboxIsUnset( '#woocommerce_sell_in_person' );
 
 	// Click on "Let's go!" button to move to the next step
-	await page.$eval( 'button[name=save_step]', elem => elem.click() );
+	await page.$eval( 'button[name=save_step]', ( elem ) => elem.click() );
 
 	// Wait for usage tracking pop-up window to appear
 	await page.waitForSelector( '#wc-backbone-modal-dialog' );
-	await expect( page ).toMatchElement(
-		'.wc-backbone-modal-header', { text: 'Help improve WooCommerce with usage tracking' }
-	);
+	await expect( page ).toMatchElement( '.wc-backbone-modal-header', {
+		text: 'Help improve WooCommerce with usage tracking',
+	} );
 
 	await page.waitForSelector( '#wc_tracker_checkbox_dialog' );
 
@@ -250,7 +303,7 @@ const completeOldSetupWizard = async () => {
 
 	await Promise.all( [
 		// Click on "Continue" button to move to the next step
-		page.$eval( '#wc_tracker_submit', elem => elem.click() ),
+		page.$eval( '#wc_tracker_submit', ( elem ) => elem.click() ),
 
 		// Wait for the Payment section to load
 		page.waitForNavigation( { waitUntil: 'networkidle0' } ),
@@ -270,32 +323,50 @@ const completeOldSetupWizard = async () => {
 
 	// Fill out shipping section details
 	// Turn off WooCommerce Shipping option
-	await page.$eval( '#wc_recommended_woocommerce_services', elem => elem.click() );
+	await page.$eval( '#wc_recommended_woocommerce_services', ( elem ) =>
+		elem.click()
+	);
 
-	await page.waitForSelector( 'select[name="shipping_zones[domestic][method]"]' );
+	await page.waitForSelector(
+		'select[name="shipping_zones[domestic][method]"]'
+	);
 	await page.waitForSelector( 'select[name="shipping_zones[intl][method]"]' );
 
 	// Select Flat Rate shipping method for domestic shipping zone
 	await page.evaluate( () => {
-		document.querySelector( 'select[name="shipping_zones[domestic][method]"] > option:nth-child(1)' ).selected = true;
-		let element = document.querySelector( 'select[name="shipping_zones[domestic][method]"]' );
+		document.querySelector(
+			'select[name="shipping_zones[domestic][method]"] > option:nth-child(1)'
+		).selected = true;
+		let element = document.querySelector(
+			'select[name="shipping_zones[domestic][method]"]'
+		);
 		let event = new Event( 'change', { bubbles: true } );
 		event.simulated = true;
 		element.dispatchEvent( event );
 	} );
 
-	await page.$eval( 'input[name="shipping_zones[domestic][flat_rate][cost]"]', e => e.setAttribute( 'value', '10.00' ) );
+	await page.$eval(
+		'input[name="shipping_zones[domestic][flat_rate][cost]"]',
+		( e ) => e.setAttribute( 'value', '10.00' )
+	);
 
 	// Select Flat Rate shipping method for the rest of the world shipping zone
 	await page.evaluate( () => {
-		document.querySelector( 'select[name="shipping_zones[intl][method]"] > option:nth-child(1)' ).selected = true;
-		let element = document.querySelector( 'select[name="shipping_zones[intl][method]"]' );
+		document.querySelector(
+			'select[name="shipping_zones[intl][method]"] > option:nth-child(1)'
+		).selected = true;
+		let element = document.querySelector(
+			'select[name="shipping_zones[intl][method]"]'
+		);
 		let event = new Event( 'change', { bubbles: true } );
 		event.simulated = true;
 		element.dispatchEvent( event );
 	} );
 
-	await page.$eval( 'input[name="shipping_zones[intl][flat_rate][cost]"]', e => e.setAttribute( 'value', '20.00' ) );
+	await page.$eval(
+		'input[name="shipping_zones[intl][flat_rate][cost]"]',
+		( e ) => e.setAttribute( 'value', '20.00' )
+	);
 
 	// Select product weight and product dimensions options
 	await expect( page ).toSelect( 'select[name="weight_unit"]', 'Pounds' );
@@ -311,20 +382,30 @@ const completeOldSetupWizard = async () => {
 
 	// Fill out recommended section details
 	// Turn off Storefront Theme option
-	await page.waitForSelector( '#wc_recommended_storefront_theme', { visible: true } );
-	await page.$eval( '#wc_recommended_storefront_theme', elem => elem.click() );
+	await page.waitForSelector( '#wc_recommended_storefront_theme', {
+		visible: true,
+	} );
+	await page.$eval( '#wc_recommended_storefront_theme', ( elem ) =>
+		elem.click()
+	);
 
 	// Turn off Automated Taxes option
-	await page.waitForSelector( '#wc_recommended_automated_taxes', { visible: true } );
-	await page.$eval( '#wc_recommended_automated_taxes', elem => elem.click() );
+	await page.waitForSelector( '#wc_recommended_automated_taxes', {
+		visible: true,
+	} );
+	await page.$eval( '#wc_recommended_automated_taxes', ( elem ) =>
+		elem.click()
+	);
 
 	// Turn off Mailchimp option
-	await page.waitForSelector( '#wc_recommended_mailchimp', { visible: true } );
-	await page.$eval( '#wc_recommended_mailchimp', elem => elem.click() );
+	await page.waitForSelector( '#wc_recommended_mailchimp', {
+		visible: true,
+	} );
+	await page.$eval( '#wc_recommended_mailchimp', ( elem ) => elem.click() );
 
 	// Turn off Facebook option
 	await page.waitForSelector( '#wc_recommended_facebook', { visible: true } );
-	await page.$eval( '#wc_recommended_facebook', elem => elem.click() );
+	await page.$eval( '#wc_recommended_facebook', ( elem ) => elem.click() );
 
 	await Promise.all( [
 		// Click on "Continue" button to move to the next step
@@ -341,7 +422,7 @@ const completeOldSetupWizard = async () => {
 	// Finish Setup Wizard - Ready! section
 	// Visit Dashboard
 	await StoreOwnerFlow.openDashboard();
-} ;
+};
 
 /**
  * Create simple product.
@@ -361,9 +442,11 @@ const createSimpleProduct = async () => {
 	await verifyAndPublish();
 
 	const simplePostId = await page.$( '#post_ID' );
-	let simplePostIdValue = ( await ( await simplePostId.getProperty( 'value' ) ).jsonValue() );
+	let simplePostIdValue = await (
+		await simplePostId.getProperty( 'value' )
+	 ).jsonValue();
 	return simplePostIdValue;
-} ;
+};
 
 /**
  * Create variable product.
@@ -376,12 +459,18 @@ const createVariableProduct = async () => {
 	await expect( page.title() ).resolves.toMatch( 'Add new product' );
 
 	// Set product data
-	await expect( page ).toFill( '#title', 'Variable Product with Three Variations' );
+	await expect( page ).toFill(
+		'#title',
+		'Variable Product with Three Variations'
+	);
 	await expect( page ).toSelect( '#product-type', 'Variable product' );
 
 	// Create attributes for variations
 	await clickTab( 'Attributes' );
-	await expect( page ).toSelect( 'select[name="attribute_taxonomy"]', 'Custom product attribute' );
+	await expect( page ).toSelect(
+		'select[name="attribute_taxonomy"]',
+		'Custom product attribute'
+	);
 
 	for ( let i = 0; i < 3; i++ ) {
 		await expect( page ).toClick( 'button.add_attribute', { text: 'Add' } );
@@ -389,9 +478,17 @@ const createVariableProduct = async () => {
 		await uiUnblocked();
 
 		await page.focus( `input[name="attribute_names[${ i }]"]` );
-		await expect( page ).toFill( `input[name="attribute_names[${ i }]"]`, 'attr #' + ( i + 1 ) );
-		await expect( page ).toFill( `textarea[name="attribute_values[${ i }]"]`, 'val1 | val2' );
-		await expect( page ).toClick( `input[name="attribute_variation[${ i }]"]` );
+		await expect( page ).toFill(
+			`input[name="attribute_names[${ i }]"]`,
+			'attr #' + ( i + 1 )
+		);
+		await expect( page ).toFill(
+			`textarea[name="attribute_values[${ i }]"]`,
+			'val1 | val2'
+		);
+		await expect( page ).toClick(
+			`input[name="attribute_variation[${ i }]"]`
+		);
 	}
 
 	await expect( page ).toClick( 'button', { text: 'Save attributes' } );
@@ -405,16 +502,20 @@ const createVariableProduct = async () => {
 	await clickTab( 'Variations' );
 	await page.waitForSelector( 'select.variation_actions:not([disabled])' );
 	await page.focus( 'select.variation_actions' );
-	await expect( page ).toSelect( 'select.variation_actions', 'Create variations from all attributes' );
+	await expect( page ).toSelect(
+		'select.variation_actions',
+		'Create variations from all attributes'
+	);
 
 	const firstDialog = await expect( page ).toDisplayDialog( async () => {
 		// Using this technique since toClick() isn't working.
 		// See: https://github.com/GoogleChrome/puppeteer/issues/1805#issuecomment-464802876
-		page.$eval( 'a.do_variation_action', elem => elem.click() );
-
+		page.$eval( 'a.do_variation_action', ( elem ) => elem.click() );
 	} );
 
-	expect( firstDialog.message() ).toMatch( 'Are you sure you want to link all variations?' );
+	expect( firstDialog.message() ).toMatch(
+		'Are you sure you want to link all variations?'
+	);
 
 	const secondDialog = await expect( page ).toDisplayDialog( async () => {
 		await firstDialog.accept();
@@ -431,68 +532,135 @@ const createVariableProduct = async () => {
 
 	// Verify that variations were created
 	await Promise.all( [
-		expect( page ).toMatchElement( 'select[name="attribute_attr-1[0]"]', { text: 'val1' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-2[0]"]', { text: 'val1' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-3[0]"]', { text: 'val1' } ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-1[0]"]', {
+			text: 'val1',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-2[0]"]', {
+			text: 'val1',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-3[0]"]', {
+			text: 'val1',
+		} ),
 
-		expect( page ).toMatchElement( 'select[name="attribute_attr-1[1]"]', { text: 'val1' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-2[1]"]', { text: 'val1' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-3[1]"]', { text: 'val2' } ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-1[1]"]', {
+			text: 'val1',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-2[1]"]', {
+			text: 'val1',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-3[1]"]', {
+			text: 'val2',
+		} ),
 
-		expect( page ).toMatchElement( 'select[name="attribute_attr-1[2]"]', { text: 'val1' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-2[2]"]', { text: 'val2' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-3[2]"]', { text: 'val1' } ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-1[2]"]', {
+			text: 'val1',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-2[2]"]', {
+			text: 'val2',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-3[2]"]', {
+			text: 'val1',
+		} ),
 
-		expect( page ).toMatchElement( 'select[name="attribute_attr-1[3]"]', { text: 'val1' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-2[3]"]', { text: 'val2' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-3[3]"]', { text: 'val2' } ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-1[3]"]', {
+			text: 'val1',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-2[3]"]', {
+			text: 'val2',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-3[3]"]', {
+			text: 'val2',
+		} ),
 
-		expect( page ).toMatchElement( 'select[name="attribute_attr-1[4]"]', { text: 'val2' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-2[4]"]', { text: 'val1' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-3[4]"]', { text: 'val1' } ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-1[4]"]', {
+			text: 'val2',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-2[4]"]', {
+			text: 'val1',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-3[4]"]', {
+			text: 'val1',
+		} ),
 
-		expect( page ).toMatchElement( 'select[name="attribute_attr-1[5]"]', { text: 'val2' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-2[5]"]', { text: 'val1' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-3[5]"]', { text: 'val2' } ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-1[5]"]', {
+			text: 'val2',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-2[5]"]', {
+			text: 'val1',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-3[5]"]', {
+			text: 'val2',
+		} ),
 
-		expect( page ).toMatchElement( 'select[name="attribute_attr-1[6]"]', { text: 'val2' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-2[6]"]', { text: 'val2' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-3[6]"]', { text: 'val1' } ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-1[6]"]', {
+			text: 'val2',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-2[6]"]', {
+			text: 'val2',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-3[6]"]', {
+			text: 'val1',
+		} ),
 
-		expect( page ).toMatchElement( 'select[name="attribute_attr-1[7]"]', { text: 'val2' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-2[7]"]', { text: 'val2' } ),
-		expect( page ).toMatchElement( 'select[name="attribute_attr-3[7]"]', { text: 'val2' } ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-1[7]"]', {
+			text: 'val2',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-2[7]"]', {
+			text: 'val2',
+		} ),
+		expect( page ).toMatchElement( 'select[name="attribute_attr-3[7]"]', {
+			text: 'val2',
+		} ),
 	] );
 
-	await expect( page ).toClick( '.woocommerce_variation:nth-of-type(2) .handlediv' );
+	await expect( page ).toClick(
+		'.woocommerce_variation:nth-of-type(2) .handlediv'
+	);
 	await page.waitFor( 2000 );
 	await page.focus( 'input[name="variable_is_virtual[0]"]' );
 	await expect( page ).toClick( 'input[name="variable_is_virtual[0]"]' );
-	await expect( page ).toFill( 'input[name="variable_regular_price[0]"]', '9.99' );
+	await expect( page ).toFill(
+		'input[name="variable_regular_price[0]"]',
+		'9.99'
+	);
 
-	await expect( page ).toClick( '.woocommerce_variation:nth-of-type(3) .handlediv' );
+	await expect( page ).toClick(
+		'.woocommerce_variation:nth-of-type(3) .handlediv'
+	);
 	await page.waitFor( 2000 );
 	await page.focus( 'input[name="variable_is_virtual[1]"]' );
 	await expect( page ).toClick( 'input[name="variable_is_virtual[1]"]' );
-	await expect( page ).toFill( 'input[name="variable_regular_price[1]"]', '11.99' );
+	await expect( page ).toFill(
+		'input[name="variable_regular_price[1]"]',
+		'11.99'
+	);
 
-	await expect( page ).toClick( '.woocommerce_variation:nth-of-type(4) .handlediv' );
+	await expect( page ).toClick(
+		'.woocommerce_variation:nth-of-type(4) .handlediv'
+	);
 	await page.waitFor( 2000 );
 	await page.focus( 'input[name="variable_manage_stock[2]"]' );
 	await expect( page ).toClick( 'input[name="variable_manage_stock[2]"]' );
-	await expect( page ).toFill( 'input[name="variable_regular_price[2]"]', '20' );
+	await expect( page ).toFill(
+		'input[name="variable_regular_price[2]"]',
+		'20'
+	);
 	await expect( page ).toFill( 'input[name="variable_weight[2]"]', '200' );
 	await expect( page ).toFill( 'input[name="variable_length[2]"]', '10' );
 	await expect( page ).toFill( 'input[name="variable_width[2]"]', '20' );
 	await expect( page ).toFill( 'input[name="variable_height[2]"]', '15' );
 
 	await page.focus( 'button.save-variation-changes' );
-	await expect( page ).toClick( 'button.save-variation-changes', { text: 'Save changes' } );
+	await expect( page ).toClick( 'button.save-variation-changes', {
+		text: 'Save changes',
+	} );
 
 	await verifyAndPublish();
 
 	const variablePostId = await page.$( '#post_ID' );
-	let variablePostIdValue = ( await ( await variablePostId.getProperty( 'value' ) ).jsonValue() );
+	let variablePostIdValue = await (
+		await variablePostId.getProperty( 'value' )
+	 ).jsonValue();
 	return variablePostIdValue;
 };
 
