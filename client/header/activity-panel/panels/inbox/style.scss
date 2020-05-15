@@ -7,8 +7,11 @@
 	border-radius: 2px;
 	@include font-size( 13 );
 
-	&.message-is-unread {
+	&:not(.is-placeholder) {
 		border: 1px solid $light-gray-secondary;
+	}
+
+	&.message-is-unread {
 		background: $studio-white;
 	}
 
@@ -180,7 +183,8 @@
 .woocommerce-inbox-message__wrapper > div {
 	padding: 16px 24px;
 	.is-placeholder & {
-		padding: 10px 0;
+		padding: 10px 24px;
+		display: flow-root;
 	}
 }
 
