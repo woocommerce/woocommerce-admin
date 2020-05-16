@@ -68,8 +68,9 @@ const Layout = () => {
 					position: isContentSticky ? 'sticky' : 'static',
 				} }
 			>
-				<QuickLinks />
 				<StatsOverview />
+
+				<QuickLinks />
 			</div>
 		</div>
 	);
