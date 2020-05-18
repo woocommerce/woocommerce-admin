@@ -176,7 +176,10 @@ const QuickLinks = ( props ) => {
 				<H>{ __( 'Store management', 'woocommerce-admin' ) }</H>
 			</CardHeader>
 			<CardBody>
-				<List items={ listItems } />
+				<List
+					items={ listItems }
+					className="woocommerce-quick-links__list"
+				/>
 			</CardBody>
 		</Card>
 	);
