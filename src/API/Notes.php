@@ -250,7 +250,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$data      = array();
 		$notes_ids = $request->get_param( 'notesIds' );
 		foreach ( (array) $notes_ids as $note_id ) {
-			$note = WC_Admin_Notes::get_note( $note_id );
+			$note = WC_Admin_Notes::get_note( (int) $note_id );
 			if ( $note ) {
 				WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
 				$data[] = $this->prepare_note_data_for_response( $note, $request );
