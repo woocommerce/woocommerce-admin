@@ -23,11 +23,15 @@ const removeNote = ( operations ) => async ( noteId ) => {
 	const result = await operations.remove( [ resourceKey ], {
 		[ resourceKey ]: { noteId },
 	} );
-	const response = result[ 0 ][ resourceName ];
+
+	const response = result[ 0 ]
+		? result[ 0 ][ resourceName ]
+		: { data: false, error: true };
+
 	if ( response && response.data ) {
 		createNotice(
 			'success',
-			__( 'Message dismissed.', 'woocommerce-admin' ), 
+			__( 'Message dismissed.', 'woocommerce-admin' ),
 			{
 				actions: [
 					{
@@ -36,7 +40,7 @@ const removeNote = ( operations ) => async ( noteId ) => {
 							operations.update( [ resourceKey ], {
 								[ resourceKey ]: { noteId, is_deleted: 0 },
 							} );
-						}
+						},
 					},
 				],
 			}
@@ -54,7 +58,9 @@ const removeAllNotes = ( operations ) => async () => {
 	const { createNotice } = dispatch( 'core/notices' );
 	const resourceKey = 'note';
 	const result = await operations.removeAll( [ resourceKey ] );
-	const response = result[ 0 ];
+
+	const response = result ? result[ 0 ] : { error: true };
+
 	if ( ! response.error ) {
 		createNotice(
 			'success',
@@ -66,12 +72,13 @@ const removeAllNotes = ( operations ) => async () => {
 						onClick: () => {
 							const notesIds = [];
 							for ( const note in response ) {
-								notesIds.push( response[note].data.id );
+								notesIds.push( response[ note ].data.id );
 							}
 							operations.undoRemoveAll( [ resourceKey ], {
-								notesIds, is_deleted: 0,
+								notesIds,
+								is_deleted: 0,
 							} );
-						}
+						},
 					},
 				],
 			}
