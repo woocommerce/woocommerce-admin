@@ -80,6 +80,8 @@ class UsageModal extends Component {
 			window.wcTracks.enable( () => {
 				this.setState( { isLoadingScripts: false } );
 			} );
+		} else if ( ! allowTracking ) {
+			window.wcTracks.isEnabled = false;
 		}
 
 		const trackingValue = allowTracking ? 'yes' : 'no';
