@@ -86,7 +86,7 @@ function getItems( props ) {
 	];
 }
 
-function onItemClick( props, event ) {
+function handleOnItemClick( props, event ) {
 	const a = event.currentTarget;
 	const listItemTag = a.dataset.listItemTag;
 
@@ -162,7 +162,7 @@ function getListItems( props ) {
 			after: getIcon( 'arrow-right-alt2' ),
 			...getLinkTypeAndHref( item ),
 			listItemTag: item.listItemTag,
-			onClick: partial( onItemClick, props ),
+			onClick: partial( handleOnItemClick, props ),
 		};
 	} );
 }
