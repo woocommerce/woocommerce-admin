@@ -12,19 +12,19 @@ import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
 import { pluginNames } from './constants';
 
-export function updateActivePlugins( active, added ) {
+export function updateActivePlugins( active, replace = false ) {
 	return {
 		type: TYPES.UPDATE_ACTIVE_PLUGINS,
 		active,
-		added,
+		replace,
 	};
 }
 
-export function updateInstalledPlugins( installed, added ) {
+export function updateInstalledPlugins( installed, replace = false ) {
 	return {
 		type: TYPES.UPDATE_INSTALLED_PLUGINS,
 		installed,
-		added,
+		replace,
 	};
 }
 
@@ -124,7 +124,7 @@ export function* activatePlugins( plugins ) {
 		} );
 
 		if ( results && results.status === 'success' ) {
-			yield updateActivePlugins( null, results.activatedPlugins );
+			yield updateActivePlugins( results.activatedPlugins );
 			return results;
 		}
 
