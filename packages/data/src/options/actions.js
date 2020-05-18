@@ -12,7 +12,7 @@ import { WC_ADMIN_NAMESPACE } from '../constants';
 
 export function receiveOptions( options ) {
 	return {
-		type: TYPES.RECIEVE_OPTIONS,
+		type: TYPES.RECEIVE_OPTIONS,
 		options,
 	};
 }
