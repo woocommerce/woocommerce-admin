@@ -40,9 +40,9 @@ export function getPaymentMethods( {
 } ) {
 	const settings = getSetting( 'onboarding', {
 		stripeSupportedCountries: [],
-		wcPayIsConfigured: false,
+		wcPayIsConnected: false,
 	} );
-	const { stripeSupportedCountries, wcPayIsConfigured } = settings;
+	const { stripeSupportedCountries, wcPayIsConnected } = settings;
 
 	const hasCbdIndustry =
 		some( profileItems.industry, {
@@ -112,8 +112,8 @@ export function getPaymentMethods( {
 							'on U.S. issued cards. ',
 						'woocommerce-admin'
 					) }
-					{ wcPayIsConfigured && wcPaySettingsLink }
-					{ ! wcPayIsConfigured && <p>{ tosPrompt }</p> }
+					{ wcPayIsConnected && wcPaySettingsLink }
+					{ ! wcPayIsConnected && <p>{ tosPrompt }</p> }
 					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
 				</Fragment>
 			),
@@ -124,7 +124,7 @@ export function getPaymentMethods( {
 				isJetpackConnected,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
-			isConfigured: wcPayIsConfigured,
+			isConfigured: wcPayIsConnected,
 			isEnabled:
 				options.woocommerce_woocommerce_payments_settings &&
 				options.woocommerce_woocommerce_payments_settings.enabled ===
