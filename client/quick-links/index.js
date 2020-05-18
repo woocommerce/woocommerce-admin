@@ -10,7 +10,7 @@ import { partial } from 'lodash';
  * WooCommerce dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { List } from '@woocommerce/components';
+import { H, List } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -173,7 +173,7 @@ const QuickLinks = ( props ) => {
 	return (
 		<Card size="large" className="woocommerce-quick-links">
 			<CardHeader>
-				<h2>{ __( 'Store management', 'woocommerce-admin' ) }</h2>
+				<H>{ __( 'Store management', 'woocommerce-admin' ) }</H>
 			</CardHeader>
 			<CardBody>
 				<List items={ listItems } />
