@@ -71,6 +71,12 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.1.3 2020-05-18 =
+- Tweak: Onboarding: Add Jetpack flow back to onboarding profiler. #4382
+
+= 1.1.2 N/A =
+- Version bumped on Composer/Packagist but not released to WordPress.org.
+
 = 1.1.1 2020-05-05 =
 - Fix: OBW Industry selection bug for non-US stores. #4120
 - Tweak: Remove Stripe deferred account activation, and revert to oAuth connection flow. #4164
