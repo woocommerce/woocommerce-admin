@@ -33,9 +33,10 @@
 	.components-card {
 		.components-card__header.is-size-large {
 			display: grid;
-			//align-items: center;
+			// to maintain consistent height with or without an ellipsis menu
 			min-height: 63px;
-			padding: 13px 16px;
+			// to match alignment of `Card` from `@woocommerce/components`
+			padding: $gap-small $gap;
 
 			// IE doesn't support `align-items` on grid container
 			& > * {
@@ -43,8 +44,8 @@
 			}
 
 			h2 {
+				// to match height of `Card` from `@woocommerce/components`
 				margin: 0;
-				padding: 3px 0;
 			}
 		}
 	}
