@@ -73,6 +73,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 = 1.1.3 2020-05-18 =
 - Tweak: Onboarding: Add Jetpack flow back to onboarding profiler. #4382
+- Fix: Respect tracking opt-in before new page load. #4368
 
 = 1.1.2 N/A =
 - Version bumped on Composer/Packagist but not released to WordPress.org.
