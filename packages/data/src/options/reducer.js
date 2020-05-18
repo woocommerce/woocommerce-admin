@@ -8,7 +8,7 @@ const optionsReducer = (
 	{ type, options, isRequesting, error, isUpdating }
 ) => {
 	switch ( type ) {
-		case TYPES.RECIEVE_OPTIONS:
+		case TYPES.RECEIVE_OPTIONS:
 			state = {
 				...state,
 				...options,
