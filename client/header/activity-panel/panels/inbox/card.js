@@ -126,7 +126,7 @@ class InboxNoteCard extends Component {
 		);
 	}
 
-	getDismissButton () {
+	getDismissConfirmationButton() {
 		const { note } = this.props;
 		const { dismissType } = this.state;
 		return (
@@ -139,7 +139,7 @@ class InboxNoteCard extends Component {
 				dismissType={ dismissType }
 			/>
 		);
-	};
+	}
 
 	renderDismissConfirmationModal() {
 		return (
@@ -166,7 +166,7 @@ class InboxNoteCard extends Component {
 						>
 							{ __( 'Cancel', 'woocommerce-admin' ) }
 						</Button>
-						{ this.getDismissButton() }
+						{ this.getDismissConfirmationButton() }
 					</div>
 				</div>
 			</Modal>
