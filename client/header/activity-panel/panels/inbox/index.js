@@ -6,7 +6,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import { withDispatch } from '@wordpress/data';
-import { filter, has } from 'lodash';
+import { filter } from 'lodash';
 
 /**
  * Internal dependencies
@@ -34,13 +34,17 @@ class InboxPanel extends Component {
 	getUnreadNotesCount() {
 		const { lastRead, notes } = this.props;
 
-		const unreadNotes = filter( notes, ( note )=> {
-			const { is_deleted: isDeleted, date_created_gmt: dateCreatedGmt } = note;
-			const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
-			if ( noteActive ) {
-				return ! lastRead ||
+		const unreadNotes = filter( notes, ( note ) => {
+			const {
+				is_deleted: isDeleted,
+				date_created_gmt: dateCreatedGmt,
+			} = note;
+			if ( ! isDeleted ) {
+				return (
+					! lastRead ||
 					! dateCreatedGmt ||
-					new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
+					new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead
+				);
 			}
 		} );
 		return unreadNotes.length;
@@ -110,7 +114,10 @@ class InboxPanel extends Component {
 			<Fragment>
 				<ActivityHeader
 					title={ __( 'Inbox', 'woocommerce-admin' ) }
-					subtitle={ __( 'Insights and growth tips for your business', 'woocommerce-admin' ) }
+					subtitle={ __(
+						'Insights and growth tips for your business',
+						'woocommerce-admin'
+					) }
 					unreadMessages={ this.getUnreadNotesCount() }
 				/>
 				<Section>
@@ -159,6 +166,7 @@ export default compose(
 				'date_created_gmt',
 				'layout',
 				'image',
+				'is_deleted',
 			],
 		};
 
