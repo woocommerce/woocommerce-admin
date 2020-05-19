@@ -249,23 +249,8 @@ class InboxNoteCard extends Component {
 		);
 	}
 
-	render() {
-		const { lastRead, note } = this.props;
-		const { isDismissModalOpen } = this.state;
-		const {
-			actions: noteActions,
-			content,
-			date_created: dateCreated,
-			date_created_gmt: dateCreatedGmt,
-			id: noteId,
-			image,
-			layout,
-			title,
-		} = note;
-
-		if ( note.is_deleted ) {
-			return null;
-		}
+	renderActions( note ) {
+		const { actions: noteActions, id: noteId } = note;
 
 		const getButtonsFromActions = () => {
 			if ( ! noteActions ) {
@@ -280,12 +265,41 @@ class InboxNoteCard extends Component {
 			) );
 		};
 
+		const actions = getButtonsFromActions( note );
+		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
+
+		return (
+			actions && (
+				<Fragment>
+					{ actionsList.map( ( item, i ) =>
+						cloneElement( item, { key: i } )
+					) }
+				</Fragment>
+			)
+		);
+	}
+
+	render() {
+		const { lastRead, note } = this.props;
+		const { isDismissModalOpen } = this.state;
+		const {
+			content,
+			date_created: dateCreated,
+			date_created_gmt: dateCreatedGmt,
+			image,
+			is_deleted: isDeleted,
+			layout,
+			title,
+		} = note;
+
+		if ( isDeleted ) {
+			return null;
+		}
+
 		const unread =
 			! lastRead ||
 			! dateCreatedGmt ||
 			new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
-		const actions = getButtonsFromActions( note );
-		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
 		const date = dateCreated;
 		const hasImage = layout !== 'plain' && layout !== '';
 		const cardClassName = classnames( 'woocommerce-inbox-message', layout, {
@@ -320,13 +334,7 @@ class InboxNoteCard extends Component {
 							</Section>
 						</div>
 						<div className="woocommerce-inbox-message__actions">
-							{ actions && (
-								<Fragment>
-									{ actionsList.map( ( item, i ) =>
-										cloneElement( item, { key: i } )
-									) }
-								</Fragment>
-							) }
+							{ this.renderActions( note ) }
 							{ this.renderDismissButton() }
 						</div>
 					</div>
