@@ -17,7 +17,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 export const getInAppPurchaseUrl = ( url, queryArgs = {} ) => {
 	const { pathname, search } = window.location;
-	const { connectNonce } = getSetting( 'marketing', {} );
+	const connectNonce = getSetting( 'connectNonce', '' );
 	queryArgs = {
 		'wccom-site': getSetting( 'siteUrl' ),
 		// If the site is installed in a directory the directory must be included in the back param path.
