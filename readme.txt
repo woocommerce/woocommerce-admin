@@ -71,7 +71,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 1.2.0 2020-05--8 =
+= 1.2.2 2020-05-18=
+- Fix: Respect tracking opt-in before new page load. #4368
+
+= 1.2.0 2020-05-8 =
 - Enhancement: Add onboarding payments note #4157 
 - Enhancement: Marketing Inbox Note #4030
 - Performance: Use Route based code splitting to reduce bundle size #4094
