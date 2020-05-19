@@ -147,6 +147,10 @@ class Onboarding {
 	 * Send profile data to WooCommerce.com.
 	 */
 	public static function send_profile_data() {
+		if ( 'yes' !== get_option( 'woocommerce_allow_tracking', 'no' ) ) {
+			return;
+		}
+
 		if ( ! class_exists( '\WC_Helper_API' ) && method_exists( '\WC_Helper_API', 'put' ) ) {
 			return;
 		}
