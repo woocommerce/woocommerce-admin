@@ -158,13 +158,10 @@ class Shipping extends Component {
 	}
 
 	getSteps() {
-		const { activePlugins, countryCode, isJetpackConnected } = this.props;
+		const { countryCode, isJetpackConnected } = this.props;
 		const pluginsToActivate = this.getPluginsToActivate();
-		// This requirement may change dynamically, so don't use cached plugins array.
 		const requiresJetpackConnection =
-			! isJetpackConnected &&
-			countryCode === 'US' &&
-			activePlugins.includes( 'jetpack' );
+			! isJetpackConnected && countryCode === 'US';
 
 		const steps = [
 			{
@@ -283,9 +280,7 @@ class Shipping extends Component {
 						} }
 					/>
 				),
-				visible:
-					! pluginsToActivate.includes( 'jetpack' ) &&
-					requiresJetpackConnection,
+				visible: requiresJetpackConnection,
 			},
 		];
 
