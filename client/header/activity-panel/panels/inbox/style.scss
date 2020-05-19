@@ -20,7 +20,7 @@
 		font-style: normal;
 		line-height: 24px;
 		font-weight: normal;
-		margin: 8px 0;
+		margin: $gap-smaller 0;
 
 		.message-is-unread & {
 			font-weight: bold;
