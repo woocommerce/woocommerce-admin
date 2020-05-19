@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
-import { filter, has } from 'lodash';
+import { filter } from 'lodash';
 
 /**
  * Internal dependencies
@@ -71,8 +71,7 @@ class InboxPanel extends Component {
 
 		const validNotes = filter( notes, ( note ) => {
 			const { is_deleted: isDeleted } = note;
-			const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
-			return noteActive;
+			return ! isDeleted;
 		} );
 		return validNotes.length > 0;
 	}
