@@ -87,11 +87,10 @@ class InboxPanel extends Component {
 	hasValidNotes() {
 		const { notes } = this.props;
 
-		const validNotes = filter( notes, ( note )=> {
-				const { is_deleted: isDeleted } = note;
-				const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
-				return noteActive;
-			} );
+		const validNotes = filter( notes, ( note ) => {
+			const { is_deleted: isDeleted } = note;
+			return ! isDeleted;
+		} );
 		return validNotes.length > 0;
 	}
 
@@ -148,7 +147,10 @@ class InboxPanel extends Component {
 				{ ( hasNotes || isRequesting ) && (
 					<ActivityHeader
 						title={ __( 'Inbox', 'woocommerce-admin' ) }
-						subtitle={ __( 'Insights and growth tips for your business', 'woocommerce-admin' ) }
+						subtitle={ __(
+							'Insights and growth tips for your business',
+							'woocommerce-admin'
+						) }
 						unreadMessages={ this.getUnreadNotesCount() }
 					/>
 				) }
