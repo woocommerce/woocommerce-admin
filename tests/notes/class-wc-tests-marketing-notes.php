@@ -56,9 +56,13 @@ class WC_Tests_Marketing_Notes extends WC_Unit_Test_Case {
 	 * Tests to see if marketing notes are prevented when marketing is opted out.
 	 */
 	public function test_prevent_add_marketing_note() {
+		// Update settings so that note should be added.
+		update_option( 'woocommerce_default_country', 'US:GA' );
+		update_option( 'woocommerce_admin_install_timestamp', time() - WEEK_IN_SECONDS );
+		// Set user preferences to disallow marketing suggestions.
 		update_option( 'woocommerce_show_marketplace_suggestions', 'no' );
 
-		WC_Admin_Notes_Onboarding_Email_Marketing::possibly_add_note();
+		WC_Admin_Notes_WooCommerce_Payments::possibly_add_note();
 
 		// Load all marketing notes and check that the note was not added.
 		$data_store = \WC_Data_Store::load( 'admin-note' );
