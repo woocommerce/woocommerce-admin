@@ -54,7 +54,6 @@ class WC_Admin_Note extends \WC_Data {
 			'locale'        => 'en_US',
 			'title'         => '-',
 			'content'       => '-',
-			'icon'          => 'info',
 			'content_data'  => new \stdClass(),
 			'status'        => self::E_WC_ADMIN_NOTE_UNACTIONED,
 			'source'        => 'woocommerce',
@@ -213,16 +212,6 @@ class WC_Admin_Note extends \WC_Data {
 	 */
 	public function get_content( $context = 'view' ) {
 		return $this->get_prop( 'content', $context );
-	}
-
-	/**
-	 * Get note icon (Gridicon).
-	 *
-	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
-	 * @return string
-	 */
-	public function get_icon( $context = 'view' ) {
-		return $this->get_prop( 'icon', $context );
 	}
 
 	/**
@@ -419,19 +408,6 @@ class WC_Admin_Note extends \WC_Data {
 		}
 
 		$this->set_prop( 'content', $content );
-	}
-
-	/**
-	 * Set note icon (Gridicon).
-	 *
-	 * @param string $icon Note icon.
-	 */
-	public function set_icon( $icon ) {
-		if ( empty( $icon ) ) {
-			$this->error( 'admin_note_invalid_data', __( 'The admin note icon prop cannot be empty.', 'woocommerce-admin' ) );
-		}
-
-		$this->set_prop( 'icon', $icon );
 	}
 
 	/**

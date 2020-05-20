@@ -30,7 +30,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			'locale'       => $note->get_locale(),
 			'title'        => $note->get_title(),
 			'content'      => $note->get_content(),
-			'icon'         => $note->get_icon(),
 			'status'       => $note->get_status(),
 			'source'       => $note->get_source(),
 			'is_snoozable' => (int) $note->get_is_snoozable(),
@@ -73,7 +72,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		if ( 0 !== $note_id || '0' !== $note_id ) {
 			$note_row = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT name, type, locale, title, content, icon, content_data, status, source, date_created, date_reminder, is_snoozable, layout, image FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d LIMIT 1",
+					"SELECT name, type, locale, title, content, content_data, status, source, date_created, date_reminder, is_snoozable, layout, image FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d LIMIT 1",
 					$note->get_id()
 				)
 			);
@@ -96,7 +95,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$note->set_locale( $note_row->locale );
 			$note->set_title( $note_row->title );
 			$note->set_content( $note_row->content );
-			$note->set_icon( $note_row->icon );
 
 			// The default for 'content_value' used to be an array, so there might be rows with invalid data!
 			$content_data = json_decode( $note_row->content_data );
@@ -158,7 +156,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 					'locale'        => $note->get_locale(),
 					'title'         => $note->get_title(),
 					'content'       => $note->get_content(),
-					'icon'          => $note->get_icon(),
 					'content_data'  => wp_json_encode( $note->get_content_data() ),
 					'status'        => $note->get_status(),
 					'source'        => $note->get_source(),

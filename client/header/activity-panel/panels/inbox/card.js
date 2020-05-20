@@ -41,7 +41,6 @@ class InboxNoteCard extends Component {
 				note_name: note.name,
 				note_title: note.title,
 				note_type: note.type,
-				note_icon: note.icon,
 			} );
 
 			this.hasBeenSeen = true;
@@ -262,7 +261,6 @@ InboxNoteCard.propTypes = {
 		id: PropTypes.number,
 		status: PropTypes.string,
 		title: PropTypes.string,
-		icon: PropTypes.string,
 		content: PropTypes.string,
 		date_created: PropTypes.string,
 		date_created_gmt: PropTypes.string,
