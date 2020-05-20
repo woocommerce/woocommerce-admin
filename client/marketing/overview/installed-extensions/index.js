@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
@@ -19,43 +18,40 @@ import './style.scss'
 import InstalledExtensionRow from './row';
 import { STORE_KEY } from '../../data/constants';
 
-class InstalledExtensions extends Component {
+const InstalledExtensions = ( props ) => {
+	const { plugins } = props;
 
-	activatePlugin( pluginSlug ) {
-		const { activateInstalledPlugin } = this.props;
+	const activatePlugin = ( pluginSlug ) => {
+		const { activateInstalledPlugin } = props;
 		activateInstalledPlugin( pluginSlug );
 	}
 
-	isActivatingPlugin( pluginSlug ) {
-		const { activatingPlugins } = this.props;
+	const isActivatingPlugin = ( pluginSlug ) => {
+		const { activatingPlugins } = props;
 		return activatingPlugins.includes( pluginSlug );
 	}
 
-	render() {
-		const { plugins } = this.props;
-
-		if ( plugins.length === 0 ) {
-			return null
-		}
-
-		return (
-			<Card
-				title={ __( 'Installed marketing extensions', 'woocommerce-admin' ) }
-				className="woocommerce-marketing-installed-extensions-card"
-			>
-				{ plugins.map( ( plugin ) => {
-					return (
-						<InstalledExtensionRow
-							key={ plugin.slug }
-							{ ...plugin }
-							activatePlugin={ () => this.activatePlugin( plugin.slug ) }
-							isLoading={ this.isActivatingPlugin( plugin.slug ) }
-						/>
-					);
-				} ) }
-			</Card>
-		)
+	if ( plugins.length === 0 ) {
+		return null
 	}
+
+	return (
+		<Card
+			title={ __( 'Installed marketing extensions', 'woocommerce-admin' ) }
+			className="woocommerce-marketing-installed-extensions-card"
+		>
+			{ plugins.map( ( plugin ) => {
+				return (
+					<InstalledExtensionRow
+						key={ plugin.slug }
+						{ ...plugin }
+						activatePlugin={ () => activatePlugin( plugin.slug ) }
+						isLoading={ isActivatingPlugin( plugin.slug ) }
+					/>
+				);
+			} ) }
+		</Card>
+	);
 }
 
 InstalledExtensions.propTypes = {
