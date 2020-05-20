@@ -114,12 +114,16 @@ class InboxNoteCard extends Component {
 	}
 
 	handleBlur( event, onToggle ) {
-		const targetIsRenderedContent = event.relatedTarget
-			? event.relatedTarget.className.includes(
-					'woocommerce-admin-dismiss-notification'
+		const dropdownClasses = [
+			'woocommerce-admin-dismiss-notification',
+			'components-popover__content',
+		];
+		const isClickOutsideDropdown = event.relatedTarget
+			? dropdownClasses.some( ( className ) =>
+					event.relatedTarget.className.includes( className )
 			  )
 			: false;
-		if ( targetIsRenderedContent ) {
+		if ( isClickOutsideDropdown ) {
 			event.preventDefault();
 		} else {
 			onToggle();
