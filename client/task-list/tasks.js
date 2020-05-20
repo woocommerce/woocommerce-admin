@@ -79,7 +79,7 @@ export function getAllTasks( {
 				remainingProductIds.length ? toggleCartModal() : null,
 			visible: productIds.length,
 			completed: ! remainingProductIds.length,
-			time: __( '5 minutes', 'woocommerce-admin' ),
+			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 		{
 			key: 'connect',
@@ -91,7 +91,7 @@ export function getAllTasks( {
 			visible:
 				profileItems.items_purchased && ! profileItems.wccom_connected,
 			completed: profileItems.wccom_connected,
-			time: __( '2 minutes', 'woocommerce-admin' ),
+			time: __( '1 minute', 'woocommerce-admin' ),
 		},
 		{
 			key: 'products',
