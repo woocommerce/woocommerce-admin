@@ -543,9 +543,15 @@ class WC_Admin_Note extends \WC_Data {
 	 * @param string $layout Note layout.
 	 */
 	public function set_layout( $layout ) {
+		// If we don't receive a layout we will set it by default as "plain".
+		if ( empty( $layout ) ) {
+			$layout = 'plain';
+		}
 		$valid_layouts = array( 'banner', 'plain', 'thumbnail' );
-		if ( in_array( $layout, $valid_layouts ) ) {
+		if ( in_array( $layout, $valid_layouts, true ) ) {
 			$this->set_prop( 'layout', $layout );
+		} else {
+			$this->error( 'admin_note_invalid_data', __( 'The admin note date prop cannot be empty.', 'woocommerce-admin' ) );
 		}
 	}
 
