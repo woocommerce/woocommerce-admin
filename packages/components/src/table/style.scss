@@ -76,7 +76,7 @@
 		content: '';
 		position: absolute;
 		top: 0;
-		width: 41px;
+		width: 60px;
 		height: 100%;
 		opacity: 0;
 		pointer-events: none;
@@ -85,12 +85,12 @@
 
 	&::after {
 		right: 0;
-		background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+		background: linear-gradient(90deg, rgba($white, 0), $white);
 	}
 
 	&::before {
 		left: 0;
-		background: linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+		background: linear-gradient(90deg, $white, rgba($white, 0));
 	}
 
 	&.is-scrollable-right::after,
