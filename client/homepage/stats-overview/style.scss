@@ -58,7 +58,11 @@ $outer-border: $core-grey-light-700;
 .woocommerce-stats-overview__stats {
 	margin: 0;
 
-	// Perhaps these should be moved to the component itself?
+	.woocommerce-summary__item-container {
+		width: 50%;
+		display: inline-block;
+	}
+
 	.woocommerce-summary__item-container:nth-last-of-type(1) .woocommerce-summary__item {
 		border-bottom: none;
 	}
