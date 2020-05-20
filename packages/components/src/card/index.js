@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { Card as BaseCard, CardBody, CardHeader } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -9,7 +10,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import EllipsisMenu from '../ellipsis-menu';
-import { H, Section } from '../section';
+import { H } from '../section';
 import { validateComponent } from '../lib/proptype-validator';
 
 /**
@@ -35,19 +36,17 @@ class Card extends Component {
 			}
 		);
 		return (
-			<div className={ className }>
+			<BaseCard size="large" className={ className }>
 				{ title && (
-					<div className="woocommerce-card__header">
-						<div className="woocommerce-card__title-wrapper">
-							<H className="woocommerce-card__title woocommerce-card__header-item">
-								{ title }
+					<CardHeader className="woocommerce-card__header">
+						<H className="woocommerce-card__header-item">
+							{ title }
+						</H>
+						{ description && (
+							<H className="woocommerce-card__description woocommerce-card__header-item">
+								{ description }
 							</H>
-							{ description && (
-								<H className="woocommerce-card__description woocommerce-card__header-item">
-									{ description }
-								</H>
-							) }
-						</div>
+						) }
 						{ action && (
 							<div className="woocommerce-card__action woocommerce-card__header-item">
 								{ action }
@@ -58,12 +57,12 @@ class Card extends Component {
 								{ menu }
 							</div>
 						) }
-					</div>
+					</CardHeader>
 				) }
-				<Section className="woocommerce-card__body">
+				<CardBody className="woocommerce-card__body">
 					{ children }
-				</Section>
-			</div>
+				</CardBody>
+			</BaseCard>
 		);
 	}
 }

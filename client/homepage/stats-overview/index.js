@@ -67,7 +67,7 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 
 	return (
 		<Card
-			className="woocommerce-analytics__card woocommerce-stats-overview"
+			className="woocommerce-stats-overview"
 			title={ __( 'Stats overview', 'woocommerce-admin' ) }
 			menu={
 				<EllipsisMenu
