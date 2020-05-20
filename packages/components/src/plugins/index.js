@@ -42,7 +42,7 @@ export class Plugins extends Component {
 
 		const {
 			isRequesting,
-			installPlugin,
+			installPlugins,
 			activatePlugins,
 			pluginSlugs,
 		} = this.props;
@@ -52,18 +52,10 @@ export class Plugins extends Component {
 			return false;
 		}
 
-		const installs = await Promise.all(
-			pluginSlugs.map( async ( slug ) => {
-				return await installPlugin( slug );
-			} )
-		);
+		const installs = await installPlugins( pluginSlugs );
 
-		const installErrors = installs.filter(
-			( install ) => install.status !== 'success'
-		);
-
-		if ( installErrors.length ) {
-			this.handleErrors( installErrors );
+		if ( installs.errors && Object.keys( installs.errors ).length ) {
+			this.handleErrors( installs.errors );
 			return;
 		}
 
@@ -80,8 +72,8 @@ export class Plugins extends Component {
 	handleErrors( errors ) {
 		const { onError, createNotice } = this.props;
 
-		errors.forEach( ( error ) => {
-			createNotice( 'error', error );
+		Object.keys( errors ).forEach( ( error ) => {
+			createNotice( 'error', errors[ error ] );
 		} );
 
 		this.setState( { hasErrors: true } );
@@ -209,7 +201,7 @@ export default compose(
 
 		const isRequesting =
 			isPluginsRequesting( 'activatePlugins' ) ||
-			isPluginsRequesting( 'installPlugin' );
+			isPluginsRequesting( 'installPlugins' );
 
 		return {
 			isRequesting,
@@ -219,14 +211,14 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { activatePlugins, installPlugin } = dispatch(
+		const { activatePlugins, installPlugins } = dispatch(
 			PLUGINS_STORE_NAME
 		);
 
 		return {
 			activatePlugins,
 			createNotice,
-			installPlugin,
+			installPlugins,
 		};
 	} )
 )( Plugins );
