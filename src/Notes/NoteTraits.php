@@ -44,23 +44,38 @@ trait NoteTraits {
 	}
 
 	/**
-	 * Add the note if it passes predefined conditions.
+	 * Checks if a note can and should be added.
+	 *
+	 * @return bool
 	 */
-	public static function possibly_add_note() {
-		if ( self::note_exists() ) {
-			return;
-		}
-
+	public static function can_be_added() {
 		$note = self::get_note();
 
 		if ( ! $note instanceof WC_Admin_Note ) {
 			return;
 		}
 
+		if ( self::note_exists() ) {
+			return false;
+		}
+
 		if (
 			'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) &&
 			WC_Admin_Note::E_WC_ADMIN_NOTE_MARKETING === $note->get_type()
 		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Add the note if it passes predefined conditions.
+	 */
+	public static function possibly_add_note() {
+		$note = self::get_note();
+
+		if ( ! self::can_be_added() ) {
 			return;
 		}
 

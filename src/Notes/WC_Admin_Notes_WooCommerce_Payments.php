@@ -74,7 +74,12 @@ class WC_Admin_Notes_WooCommerce_Payments {
 
 		if ( $current_date >= $publish_date ) {
 
-			self::add_note();
+			$note = self::get_note();
+			if ( self::can_be_added() ) {
+				$note->save();
+			}
+
+			return;
 
 		} else {
 
