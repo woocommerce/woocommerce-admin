@@ -66,4 +66,11 @@ trait NoteTraits {
 
 		$note->save();
 	}
+
+	/**
+	 * Alias this method for backwards compatibility.
+	 */
+	public static function add_note() {
+		self::possibly_add_note();
+	}
 }
