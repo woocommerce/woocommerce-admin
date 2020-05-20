@@ -357,6 +357,7 @@ class TaskDashboard extends Component {
 
 			return task;
 		} );
+		const numCompleteTasks = listTasks.filter( task => task.completed ).length;
 
 		return (
 			<Fragment>
@@ -367,6 +368,11 @@ class TaskDashboard extends Component {
 						} )
 					) : (
 						<Fragment>
+							<progress
+								className="woocommerce-task-card__progress-bar"
+								max={ listTasks.length }
+								value={ numCompleteTasks }
+							/>
 							<Card
 								className="woocommerce-task-card"
 								title={ __(
