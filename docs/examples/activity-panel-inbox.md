@@ -108,6 +108,8 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_One {
 		// See https://automattic.github.io/gridicons/ for icon names.
 		// Don't include the gridicons- part of the name.
 		$note->set_icon( 'info' );
+		$note->set_layout('plain');
+		$note->set_image('');
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'wapi-example-plugin-one' );
 		$note->set_layout('plain');
@@ -207,6 +209,8 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_Two {
 		// See https://automattic.github.io/gridicons/ for icon names.
 		// Don't include the gridicons- part of the name.
 		$note->set_icon( 'info' );
+		$note->set_layout('plain');
+		$note->set_image('');
 		$note->set_name( self::NOTE_NAME );
 		$note->set_layout('plain');
 		$note->set_image('');
