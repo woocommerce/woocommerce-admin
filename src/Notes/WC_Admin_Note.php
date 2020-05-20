@@ -62,6 +62,8 @@ class WC_Admin_Note extends \WC_Data {
 			'date_reminder' => '',
 			'is_snoozable'  => false,
 			'actions'       => array(),
+			'layout'        => 'plain',
+			'image'         => '',
 		);
 
 		parent::__construct( $data );
@@ -293,6 +295,26 @@ class WC_Admin_Note extends \WC_Data {
 		return $this->get_prop( 'actions', $context );
 	}
 
+	/**
+	 * Get note layout (the old notes won't have one).
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array
+	 */
+	public function get_layout( $context = 'view' ) {
+		return $this->get_prop( 'layout', $context );
+	}
+
+	/**
+	 * Get note image (if any).
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array
+	 */
+	public function get_image( $context = 'view' ) {
+		return $this->get_prop( 'image', $context );
+	}
+
 	/*
 	|--------------------------------------------------------------------------
 	| Setters
@@ -502,6 +524,24 @@ class WC_Admin_Note extends \WC_Data {
 	 */
 	public function clear_actions() {
 		$this->set_prop( 'actions', array() );
+	}
+
+	/**
+	 * Set note layout.
+	 *
+	 * @param string $layout Note layout.
+	 */
+	public function set_layout( $layout ) {
+		$this->set_prop( 'layout', $layout );
+	}
+
+	/**
+	 * Set note image.
+	 *
+	 * @param string $image Note image.
+	 */
+	public function set_image( $image ) {
+		$this->set_prop( 'image', $image );
 	}
 
 	/**

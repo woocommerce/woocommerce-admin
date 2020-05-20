@@ -485,6 +485,18 @@ class Notes extends \WC_REST_CRUD_Controller {
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
+				'layout'            => array(
+					'description' => __( 'The layout of the note (e.g. banner, thumbnail, plain).', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'image'             => array(
+					'description' => __( 'The image of the note, if any.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
 			),
 		);
 		return $this->add_additional_fields_schema( $schema );

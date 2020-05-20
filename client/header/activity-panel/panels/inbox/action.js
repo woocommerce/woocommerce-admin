@@ -27,7 +27,13 @@ class InboxNoteAction extends Component {
 	}
 
 	handleActionClick( event ) {
-		const { action, noteId, triggerNoteAction } = this.props;
+		const {
+			action,
+			actionCallback,
+			dismissType,
+			noteId,
+			triggerNoteAction,
+		} = this.props;
 		const href = event.target.href || '';
 		let inAction = true;
 
@@ -37,23 +43,27 @@ class InboxNoteAction extends Component {
 			window.open( href, '_blank' );
 		}
 
-		this.setState( { inAction }, () =>
-			triggerNoteAction( noteId, action.id )
-		);
+		if ( dismissType ) {
+			actionCallback();
+		} else {
+			this.setState( { inAction }, () =>
+				triggerNoteAction( noteId, action.id )
+			);
+		}
 	}
 
 	render() {
-		const { action } = this.props;
+		const { action, dismiss, label } = this.props;
 		return (
 			<Button
 				isDefault
-				isPrimary={ action.primary }
+				isPrimary={ dismiss || action.primary }
 				isBusy={ this.state.inAction }
 				disabled={ this.state.inAction }
-				href={ action.url || undefined }
+				href={ action ? action.url : undefined }
 				onClick={ this.handleActionClick }
 			>
-				{ action.label }
+				{ dismiss ? label : action.label }
 			</Button>
 		);
 	}
@@ -61,6 +71,11 @@ class InboxNoteAction extends Component {
 
 InboxNoteAction.propTypes = {
 	noteId: PropTypes.number,
+	noteName: PropTypes.string,
+	label: PropTypes.string,
+	dismiss: PropTypes.bool,
+	dismissType: PropTypes.string,
+	actionCallback: PropTypes.func,
 	action: PropTypes.shape( {
 		id: PropTypes.number.isRequired,
 		url: PropTypes.string,
