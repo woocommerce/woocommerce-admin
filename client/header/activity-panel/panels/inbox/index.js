@@ -5,7 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
-import { filter } from 'lodash';
 
 /**
  * Internal dependencies
@@ -17,6 +16,7 @@ import InboxNoteCard from './card';
 import { EmptyContent, Section } from '@woocommerce/components';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
+import { getUnreadNotesCount, hasValidNotes } from './utils';
 
 class InboxPanel extends Component {
 	constructor( props ) {
@@ -49,25 +49,6 @@ class InboxPanel extends Component {
 		return screenName;
 	}
 
-	getUnreadNotesCount() {
-		const { lastRead, notes } = this.props;
-
-		const unreadNotes = filter( notes, ( note ) => {
-			const {
-				is_deleted: isDeleted,
-				date_created_gmt: dateCreatedGmt,
-			} = note;
-			if ( ! isDeleted ) {
-				return (
-					! lastRead ||
-					! dateCreatedGmt ||
-					new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead
-				);
-			}
-		} );
-		return unreadNotes.length;
-	}
-
 	renderEmptyCard() {
 		return (
 			<ActivityCard
@@ -82,16 +63,6 @@ class InboxPanel extends Component {
 				) }
 			</ActivityCard>
 		);
-	}
-
-	hasValidNotes() {
-		const { notes } = this.props;
-
-		const validNotes = filter( notes, ( note ) => {
-			const { is_deleted: isDeleted } = note;
-			return ! isDeleted;
-		} );
-		return validNotes.length > 0;
 	}
 
 	renderNotes( hasNotes ) {
@@ -115,7 +86,7 @@ class InboxPanel extends Component {
 	}
 
 	render() {
-		const { isError, isRequesting } = this.props;
+		const { isError, isRequesting, lastRead, notes } = this.props;
 
 		if ( isError ) {
 			const title = __(
@@ -140,7 +111,7 @@ class InboxPanel extends Component {
 			);
 		}
 
-		const hasNotes = this.hasValidNotes();
+		const hasNotes = hasValidNotes( notes );
 
 		return (
 			<Fragment>
@@ -151,7 +122,10 @@ class InboxPanel extends Component {
 							'Insights and growth tips for your business',
 							'woocommerce-admin'
 						) }
-						unreadMessages={ this.getUnreadNotesCount() }
+						unreadMessages={ getUnreadNotesCount(
+							notes,
+							lastRead
+						) }
 					/>
 				) }
 				<Section>
