@@ -139,24 +139,14 @@ function buildScssFile( styleFile ) {
 				.join( ' ' ) + fs.readFileSync( styleFile, 'utf8' ),
 	} );
 
-	const postCSSSync = ( callback ) => {
-		postcss( require( './post-css-config' ) )
-			.process( builtSass.css, {
-				from: 'src/app.css',
-				to: 'dest/app.css',
-			} )
-			.then( ( result ) => callback( null, result ) );
-	};
-
 	const postCSSRTLSync = ( ltrCSS, callback ) => {
 		postcss( [ require( 'rtlcss' )() ] )
 			.process( ltrCSS, { from: 'src/app.css', to: 'dest/app.css' } )
 			.then( ( result ) => callback( null, result ) );
 	};
 
-	const result = deasync( postCSSSync )();
-	fs.writeFileSync( outputFile, result.css );
-	const resultRTL = deasync( postCSSRTLSync )( result );
+	fs.writeFileSync( outputFile, builtSass.css );
+	const resultRTL = deasync( postCSSRTLSync )( builtSass.css );
 	fs.writeFileSync( outputFileRTL, resultRTL.css );
 }
 
