@@ -186,6 +186,10 @@ class InboxNoteCard extends Component {
 			title,
 		} = note;
 
+		if ( note.is_deleted ) {
+			return null;
+		}
+
 		const getButtonsFromActions = () => {
 			if ( ! noteActions ) {
 				return [];
@@ -274,6 +278,7 @@ InboxNoteCard.propTypes = {
 		),
 		layout: PropTypes.string,
 		image: PropTypes.string,
+		is_deleted: PropTypes.bool,
 	} ),
 	lastRead: PropTypes.number,
 };

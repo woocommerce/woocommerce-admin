@@ -81,6 +81,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'actions', $note );
 		$this->assertArrayHasKey( 'layout', $note );
 		$this->assertArrayHasKey( 'image', $note );
+		$this->assertArrayHasKey( 'is_deleted', $note );
 
 		$this->assertEquals( 'PHPUNIT_TEST_NOTE_1_ACTION_1_SLUG', $note['actions'][0]->name );
 		$this->assertEquals( 'http://example.org/wp-admin/admin.php?s=PHPUNIT_TEST_NOTE_1_ACTION_1_URL', $note['actions'][0]->url );
@@ -295,7 +296,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertEquals( 17, count( $properties ) );
+		$this->assertEquals( 18, count( $properties ) );
 
 		$this->assertArrayHasKey( 'id', $properties );
 		$this->assertArrayHasKey( 'name', $properties );
@@ -316,5 +317,6 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'is_snoozable', $properties );
 		$this->assertArrayHasKey( 'layout', $properties );
 		$this->assertArrayHasKey( 'image', $properties );
+		$this->assertArrayHasKey( 'is_deleted', $properties );
 	}
 }
