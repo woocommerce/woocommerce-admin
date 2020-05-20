@@ -61,7 +61,7 @@ class InboxNoteCard extends Component {
 		} );
 	}
 
-	handleBlur( event, onToggle ) {
+	handleBlur( event, onClose ) {
 		const dropdownClasses = [
 			'woocommerce-admin-dismiss-notification',
 			'components-popover__content',
@@ -74,7 +74,7 @@ class InboxNoteCard extends Component {
 		if ( isClickOutsideDropdown ) {
 			event.preventDefault();
 		} else {
-			onToggle();
+			onClose();
 		}
 	}
 
@@ -82,12 +82,12 @@ class InboxNoteCard extends Component {
 		return (
 			<Dropdown
 				position="bottom right"
-				renderToggle={ ( { onToggle } ) => (
+				renderToggle={ ( { onClose, onToggle } ) => (
 					<Button
 						isTertiary
 						onClick={ onToggle }
 						onBlur={ ( event ) =>
-							this.handleBlur( event, onToggle )
+							this.handleBlur( event, onClose )
 						}
 					>
 						{ __( 'Dismiss', 'woocommerce-admin' ) }
