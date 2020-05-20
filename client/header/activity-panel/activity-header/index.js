@@ -15,7 +15,10 @@ class ActivityHeader extends Component {
 	render() {
 		const { className, menu, subtitle, title, unreadMessages } = this.props;
 		const cardClassName = classnames(
-			subtitle ? 'woocommerce-layout__inbox-panel-header' : 'woocommerce-layout__activity-panel-header',
+			{
+				'woocommerce-layout__inbox-panel-header': subtitle,
+				'woocommerce-layout__activity-panel-header': ! subtitle,
+			},
 			className
 		);
 		const countUnread = unreadMessages ? unreadMessages : 0;
@@ -24,11 +27,7 @@ class ActivityHeader extends Component {
 			<div className={ cardClassName }>
 				<H className="woocommerce-layout__activity-panel-header-title">
 					{ title }
-					{ countUnread > 0 && (
-						<span>
-							{ unreadMessages }
-						</span>
-					) }
+					{ countUnread > 0 && <span>{ unreadMessages }</span> }
 				</H>
 				{ subtitle && (
 					<div className="woocommerce-layout__activity-panel-header-subtitle">
