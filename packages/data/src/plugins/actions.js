@@ -59,37 +59,6 @@ export function updateJetpackConnectUrl( redirectUrl, jetpackConnectUrl ) {
 	};
 }
 
-function getPluginErrorMessage( action, plugin ) {
-	const pluginName = pluginNames[ plugin ] || plugin;
-	switch ( action ) {
-		case 'install':
-			return sprintf(
-				__(
-					'There was an error installing %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-		case 'connect':
-			return sprintf(
-				__(
-					'There was an error connecting to %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-		case 'activate':
-		default:
-			return sprintf(
-				__(
-					'There was an error activating %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-	}
-}
-
 export function* installPlugins( plugins ) {
 	yield setIsRequesting( 'installPlugins', true );
 
@@ -142,7 +111,14 @@ export function* activatePlugins( plugins ) {
 	} catch ( error ) {
 		yield setError( 'activatePlugins', error );
 		return plugins.map( ( plugin ) => {
-			return getPluginErrorMessage( 'activate', plugin );
+			const pluginName = pluginNames[ plugin ] || plugin;
+			return sprintf(
+				__(
+					'There was an error activating %s. Please try again.',
+					'woocommerce-admin'
+				),
+				pluginName
+			);
 		} );
 	}
 }
