@@ -46,7 +46,7 @@ class Plugins extends \WC_REST_Data_Controller {
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'install_plugin' ),
+					'callback'            => array( $this, 'install_plugins' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
@@ -201,96 +201,95 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|array Plugin Status
 	 */
-	public function install_plugin( $request ) {
-		$allowed_plugins = self::get_allowed_plugins();
-		$plugin          = sanitize_title_with_dashes( $request['plugin'] );
-		if ( ! in_array( $plugin, array_keys( $allowed_plugins ), true ) ) {
-			return new \WP_Error( 'woocommerce_rest_invalid_plugin', __( 'Invalid plugin.', 'woocommerce-admin' ), 404 );
+	public function install_plugins( $request ) {
+		$allowed_plugins  = self::get_allowed_plugins();
+		$_plugins         = explode( ',', $request['plugins'] );
+		$plugins          = array_intersect( array_keys( $allowed_plugins ), $_plugins );
+		$existing_plugins = get_plugins();
+
+		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Invalid plugins.', 'woocommerce-admin' ), 404 );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-
-		$path              = $allowed_plugins[ $plugin ];
-		$slug              = sanitize_key( $plugin );
-		$installed_plugins = get_plugins();
-
-		if ( in_array( $path, array_keys( $installed_plugins ), true ) ) {
-			return( array(
-				'slug'   => $slug,
-				'name'   => $installed_plugins[ $path ]['Name'],
-				'status' => 'success',
-			) );
-		}
-
 		include_once ABSPATH . '/wp-admin/includes/admin.php';
 		include_once ABSPATH . '/wp-admin/includes/plugin-install.php';
 		include_once ABSPATH . '/wp-admin/includes/plugin.php';
 		include_once ABSPATH . '/wp-admin/includes/class-wp-upgrader.php';
 		include_once ABSPATH . '/wp-admin/includes/class-plugin-upgrader.php';
 
-		$api = plugins_api(
-			'plugin_information',
-			array(
-				'slug'   => $slug,
-				'fields' => array(
-					'sections' => false,
-				),
-			)
-		);
+		$installed_plugins = array();
+		$results           = array();
+		$errors            = array();
 
-		if ( is_wp_error( $api ) ) {
-			$properties = array(
-				/* translators: %s: plugin slug (example: woocommerce-services) */
-				'error_message' => __( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
-				'api'           => $api,
-				'slug'          => $slug,
+		foreach ( $plugins as $plugin ) {
+			$path = $allowed_plugins[ $plugin ];
+			$slug = sanitize_key( $plugin );
+
+			if ( in_array( $path, array_keys( $existing_plugins ), true ) ) {
+				$installed_plugins[] = $plugin;
+				continue;
+			}
+
+			$api = plugins_api(
+				'plugin_information',
+				array(
+					'slug'   => $slug,
+					'fields' => array(
+						'sections' => false,
+					),
+				)
 			);
-			wc_admin_record_tracks_event( 'install_plugin_error', $properties );
 
-			$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
+			if ( is_wp_error( $api ) ) {
+				$properties = array(
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					'error_message' => __( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
+					'api'           => $api,
+					'slug'          => $slug,
+				);
+				wc_admin_record_tracks_event( 'install_plugin_error', $properties );
 
-			return new \WP_Error(
-				'woocommerce_rest_plugin_install',
-				sprintf(
+				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
+
+				$errors[ $plugin ] = sprintf(
 					/* translators: %s: plugin slug (example: woocommerce-services) */
 					__( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
 					$slug
-				),
-				500
-			);
-		}
+				);
+				continue;
+			}
 
-		$upgrader = new \Plugin_Upgrader( new \Automatic_Upgrader_Skin() );
-		$result   = $upgrader->install( $api->download_link );
+			$upgrader           = new \Plugin_Upgrader( new \Automatic_Upgrader_Skin() );
+			$result             = $upgrader->install( $api->download_link );
+			$results[ $plugin ] = $result;
 
-		if ( is_wp_error( $result ) || is_null( $result ) ) {
-			$properties = array(
-				/* translators: %s: plugin slug (example: woocommerce-services) */
-				'error_message' => __( 'The requested plugin `%s` could not be installed.', 'woocommerce-admin' ),
-				'slug'          => $slug,
-				'api'           => $api,
-				'upgrader'      => $upgrader,
-				'result'        => $result,
-			);
-			wc_admin_record_tracks_event( 'install_plugin_error', $properties );
+			if ( is_wp_error( $result ) || is_null( $result ) ) {
+				$properties = array(
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					'error_message' => __( 'The requested plugin `%s` could not be installed.', 'woocommerce-admin' ),
+					'slug'          => $slug,
+					'api'           => $api,
+					'upgrader'      => $upgrader,
+					'result'        => $result,
+				);
+				wc_admin_record_tracks_event( 'install_plugin_error', $properties );
 
-			$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
+				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
 
-			return new \WP_Error(
-				'woocommerce_rest_plugin_install',
-				sprintf(
+				$errors[ $plugin ] = sprintf(
 					/* translators: %s: plugin slug (example: woocommerce-services) */
 					__( 'The requested plugin `%s` could not be installed.', 'woocommerce-admin' ),
 					$slug
-				),
-				500
-			);
+				);
+			}
 		}
 
 		return array(
-			'slug'   => $slug,
-			'name'   => $api->name,
-			'status' => 'success',
+			'installed_plugins' => $plugins,
+			'results'           => $results,
+			'errors'            => $errors,
+			'status'            => count( $errors ) ? 'error' : 'success',
 		);
 	}
 
