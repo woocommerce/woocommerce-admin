@@ -7,7 +7,7 @@
 
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Onboarding_Email_Marketing;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Payments;
 
 /**
  * Class WC_Tests_Marketing_Notes
