@@ -90,25 +90,35 @@ function getPluginErrorMessage( action, plugin ) {
 	}
 }
 
-export function* installPlugin( plugin ) {
-	yield setIsRequesting( 'installPlugin', true );
+export function* installPlugins( plugins ) {
+	yield setIsRequesting( 'installPlugins', true );
 
 	try {
 		const results = yield apiFetch( {
 			path: `${ WC_ADMIN_NAMESPACE }/plugins/install`,
 			method: 'POST',
-			data: { plugin },
+			data: { plugins: plugins.join( ',' ) },
 		} );
 
-		if ( results && results.status === 'success' ) {
-			yield updateInstalledPlugins( null, results.slug );
-			return results;
+		if ( ! results ) {
+			throw new Error();
 		}
 
-		throw new Error();
+		if ( results.installed_plugins ) {
+			yield updateInstalledPlugins( results.installed_plugins );
+		}
+
+		if ( Object.keys( results.errors ) ) {
+			yield setError( 'installPlugins', results.errors );
+		}
+
+		return results;
 	} catch ( error ) {
-		const errorMsg = getPluginErrorMessage( 'install', plugin );
-		yield setError( 'installPlugin', errorMsg );
+		const errorMsg = __(
+			'Something went wrong while trying to install your plugins.',
+			'woocommerce-admin'
+		);
+		yield setError( 'installPlugins', errorMsg );
 		return errorMsg;
 	}
 }
