@@ -70,6 +70,7 @@
 
 	.components-button.is-button.is-default:not(.is-primary) {
 		color: $gray-text;
+		fill: currentColor;
 		border-color: $button-border;
 		background: $button;
 		box-shadow: none;
