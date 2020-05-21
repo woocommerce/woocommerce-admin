@@ -73,11 +73,11 @@ export function* installPlugins( plugins ) {
 			throw new Error();
 		}
 
-		if ( results.installed_plugins ) {
-			yield updateInstalledPlugins( results.installed_plugins );
+		if ( results.success && results.data.installed ) {
+			yield updateInstalledPlugins( results.data.installed );
 		}
 
-		if ( Object.keys( results.errors ) ) {
+		if ( Object.keys( results.errors.errors ).length ) {
 			yield setError( 'installPlugins', results.errors );
 		}
 
@@ -102,8 +102,8 @@ export function* activatePlugins( plugins ) {
 			data: { plugins: plugins.join( ',' ) },
 		} );
 
-		if ( results && results.status === 'success' ) {
-			yield updateActivePlugins( results.activatedPlugins );
+		if ( results.success && results.data.activated ) {
+			yield updateActivePlugins( results.data.activated );
 			return results;
 		}
 

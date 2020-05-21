@@ -12,6 +12,7 @@ import { withSelect, withDispatch } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { pluginNames } from 'wc-api/onboarding/constants';
 
 export class Plugins extends Component {
 	constructor() {
@@ -54,26 +55,31 @@ export class Plugins extends Component {
 
 		const installs = await installPlugins( pluginSlugs );
 
-		if ( installs.errors && Object.keys( installs.errors ).length ) {
-			this.handleErrors( installs.errors );
+		if ( installs.errors && Object.keys( installs.errors.errors ).length ) {
+			this.handleErrors( installs.errors.errors );
 			return;
 		}
 
 		const activations = await activatePlugins( pluginSlugs );
 
-		if ( activations.status === 'success' ) {
+		if ( activations.success ) {
 			this.handleSuccess( activations.activePlugins );
 			return;
 		}
 
-		this.handleErrors( activations );
+		this.handleErrors( activations.errors.errors );
 	}
 
 	handleErrors( errors ) {
 		const { onError, createNotice } = this.props;
 
-		Object.keys( errors ).forEach( ( error ) => {
-			createNotice( 'error', errors[ error ] );
+		Object.keys( errors ).forEach( ( plugin ) => {
+			createNotice(
+				'error',
+				pluginNames[ plugin ]
+					? errors[ plugin ][0].replace( `\`${plugin}\``, pluginNames[ plugin ] )
+					: errors[ plugin ][0]
+			);
 		} );
 
 		this.setState( { hasErrors: true } );

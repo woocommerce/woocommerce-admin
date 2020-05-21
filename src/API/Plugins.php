@@ -208,7 +208,7 @@ class Plugins extends \WC_REST_Data_Controller {
 		$existing_plugins = get_plugins();
 
 		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
-			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Invalid plugins.', 'woocommerce-admin' ), 404 );
+			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -220,7 +220,7 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		$installed_plugins = array();
 		$results           = array();
-		$errors            = array();
+		$errors            = new \WP_Error();
 
 		foreach ( $plugins as $plugin ) {
 			$path = $allowed_plugins[ $plugin ];
@@ -252,11 +252,15 @@ class Plugins extends \WC_REST_Data_Controller {
 
 				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
 
-				$errors[ $plugin ] = sprintf(
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					__( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
-					$slug
+				$errors->add(
+					$plugin,
+					sprintf(
+						/* translators: %s: plugin slug (example: woocommerce-services) */
+						__( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
+						$slug
+					)
 				);
+
 				continue;
 			}
 
@@ -277,19 +281,24 @@ class Plugins extends \WC_REST_Data_Controller {
 
 				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
 
-				$errors[ $plugin ] = sprintf(
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					__( 'The requested plugin `%s` could not be installed.', 'woocommerce-admin' ),
-					$slug
+				$errors->add(
+					$plugin,
+					sprintf(
+						/* translators: %s: plugin slug (example: woocommerce-services) */
+						__( 'The requested plugin `%s` could not be installed.  Upgrader install failed.', 'woocommerce-admin' ),
+						$slug
+					)
 				);
 			}
 		}
 
 		return array(
-			'installed_plugins' => $plugins,
-			'results'           => $results,
-			'errors'            => $errors,
-			'status'            => count( $errors ) ? 'error' : 'success',
+			'data'    => array(
+				'installed' => $plugins,
+				'results'   => $results,
+			),
+			'errors'  => $errors,
+			'success' => count( $errors->errors ) === 0,
 		);
 	}
 
@@ -342,12 +351,14 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return WP_Error|array Plugin Status
 	 */
 	public function activate_plugins( $request ) {
-		$allowed_plugins = self::get_allowed_plugins();
-		$_plugins        = explode( ',', $request['plugins'] );
-		$plugins         = array_intersect( array_keys( $allowed_plugins ), $_plugins );
+		$allowed_plugins   = self::get_allowed_plugins();
+		$_plugins          = explode( ',', $request['plugins'] );
+		$plugins           = array_intersect( array_keys( $allowed_plugins ), $_plugins );
+		$errors            = new \WP_Error();
+		$activated_plugins = array();
 
 		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
-			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Invalid plugins.', 'woocommerce-admin' ), 404 );
+			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -357,22 +368,36 @@ class Plugins extends \WC_REST_Data_Controller {
 			$path = $allowed_plugins[ $slug ];
 
 			if ( ! PluginsHelper::is_plugin_installed( $path ) ) {
-				/* translators: %s: plugin slug (example: woocommerce-services) */
-				return new \WP_Error( 'woocommerce_rest_invalid_plugin', sprintf( __( 'Invalid plugin %s.', 'woocommerce-admin' ), $slug ), 404 );
+				$errors->add(
+					$plugin,
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					sprintf( __( 'The requested plugin `%s`. is not yet installed', 'woocommerce-admin' ), $slug )
+				);
+				continue;
 			}
 
 			$result = activate_plugin( $path );
 			if ( ! is_null( $result ) ) {
 				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
 
-				return new \WP_Error( 'woocommerce_rest_invalid_plugin', sprintf( __( 'The requested plugins could not be activated.', 'woocommerce-admin' ), $slug ), 500 );
+				$errors->add(
+					$plugin,
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					sprintf( __( 'The requested plugin `%s` could not be activated.', 'woocommerce-admin' ), $slug )
+				);
+				continue;
 			}
+
+			$activated_plugins[] = $plugin;
 		}
 
 		return( array(
-			'activatedPlugins' => array_values( $plugins ),
-			'active'           => self::get_active_plugins(),
-			'status'           => 'success',
+			'data'    => array(
+				'activated' => $activated_plugins,
+				'active'    => self::get_active_plugins(),
+			),
+			'errors'  => $errors,
+			'success' => count( $errors->errors ) === 0,
 		) );
 	}
 
