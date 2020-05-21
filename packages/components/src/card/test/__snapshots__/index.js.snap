@@ -2,23 +2,19 @@
 
 exports[`Card it renders correctly 1`] = `
 <div
-  className="woocommerce-card"
+  className="components-card is-size-large woocommerce-card css-l3gor6-CardUI e1q7k77g0"
 >
   <div
-    className="woocommerce-card__header"
+    className="components-card__header is-size-large woocommerce-card__header css-6qsnk-HeaderUI e1q7k77g1"
   >
-    <div
-      className="woocommerce-card__title-wrapper"
+    <h2
+      className="woocommerce-card__header-item"
     >
-      <h2
-        className="woocommerce-card__title woocommerce-card__header-item"
-      >
-        A Card Example
-      </h2>
-    </div>
+      A Card Example
+    </h2>
   </div>
   <div
-    className="woocommerce-card__body"
+    className="components-card__body is-size-large woocommerce-card__body css-1yyn1r2-BodyUI e1q7k77g3"
   />
 </div>
 `;
