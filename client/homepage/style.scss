@@ -29,26 +29,6 @@
 		margin-right: -16px;
 		flex-direction: column-reverse;
 	}
-
-	.components-card {
-		.components-card__header.is-size-large {
-			display: grid;
-			// to maintain consistent height with or without an ellipsis menu
-			min-height: 63px;
-			// to match alignment of `Card` from `@woocommerce/components`
-			padding: $gap-small $gap;
-
-			// IE doesn't support `align-items` on grid container
-			& > * {
-				align-self: center;
-			}
-
-			h2 {
-				// to match height of `Card` from `@woocommerce/components`
-				margin: 0;
-			}
-		}
-	}
 }
 .woocommerce-homepage-column {
 	width: 50%;
