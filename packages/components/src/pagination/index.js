@@ -7,7 +7,7 @@ import { Button, SelectControl } from '@wordpress/components';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { noop, uniqueId } from 'lodash';
-import { Icon, arrowLeft, arrowRight } from '@wordpress/icons';
+import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
 
 const PER_PAGE_OPTIONS = [ 25, 50, 75, 100 ];
 
@@ -121,7 +121,7 @@ class Pagination extends Component {
 						onClick={ this.previousPage }
 						label={ __( 'Previous Page', 'woocommerce-admin' ) }
 					>
-						<Icon icon={ arrowLeft } />
+						<Icon icon={ chevronLeft } />
 					</Button>
 					<Button
 						className={ nextLinkClass }
@@ -129,7 +129,7 @@ class Pagination extends Component {
 						onClick={ this.nextPage }
 						label={ __( 'Next Page', 'woocommerce-admin' ) }
 					>
-						<Icon icon={ arrowRight } />
+						<Icon icon={ chevronRight } />
 					</Button>
 				</div>
 			</div>
