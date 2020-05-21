@@ -204,7 +204,6 @@ class Plugins extends \WC_REST_Data_Controller {
 	public function install_plugins( $request ) {
 		$allowed_plugins  = self::get_allowed_plugins();
 		$plugins          = explode( ',', $request['plugins'] );
-		$existing_plugins = get_plugins();
 
 		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
@@ -217,6 +216,7 @@ class Plugins extends \WC_REST_Data_Controller {
 		include_once ABSPATH . '/wp-admin/includes/class-wp-upgrader.php';
 		include_once ABSPATH . '/wp-admin/includes/class-plugin-upgrader.php';
 
+		$existing_plugins  = get_plugins();
 		$installed_plugins = array();
 		$results           = array();
 		$errors            = new \WP_Error();
