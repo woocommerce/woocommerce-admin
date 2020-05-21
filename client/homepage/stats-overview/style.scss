@@ -27,12 +27,12 @@ $action-color: #3858e9;
 		justify-content: space-between;
 		border-bottom: 1px solid $outer-border;
 
-		.components-button {
-			height: auto;
-			display: block;
-			padding: $gap;
-			width: 33.33%;
-			margin-bottom: 4px;
+	.components-button {
+		height: auto;
+		display: block;
+		padding: $gap;
+		width: 33.33%;
+		margin-bottom: 4px;
 
 			&:focus {
 				outline: none;
@@ -76,6 +76,18 @@ $action-color: #3858e9;
 
 	.woocommerce-summary__item-container:nth-of-type(even) .woocommerce-summary__item {
 		border-right: none;
+	}
+
+	.woocommerce-summary__item {
+		background-color: $studio-white;
+
+		&:hover {
+			background-color: $light-gray-100;
+		}
+
+		&:active {
+			background-color: $light-gray-200;
+		}
 	}
 }
 
