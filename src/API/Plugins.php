@@ -297,7 +297,10 @@ class Plugins extends \WC_REST_Data_Controller {
 						$slug
 					)
 				);
+				continue;
 			}
+
+			$installed_plugins[] = $plugin;
 		}
 
 		return array(
