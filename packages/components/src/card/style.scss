@@ -1,4 +1,6 @@
 .woocommerce-card {
+	margin-bottom: $gap-large;
+
 	@include breakpoint( '<782px' ) {
 		margin-bottom: $gap-small;
 		width: auto;
