@@ -54,14 +54,6 @@
 		.woocommerce-list__item.is-complete {
 			background: $studio-gray-0;
 
-			.woocommerce-list__item-before i {
-				color: $studio-gray-20;
-			}
-
-			.woocommerce-list__item-title {
-				color: $studio-gray-50;
-			}
-
 			.woocommerce-list__item-content {
 				display: none;
 			}
@@ -71,20 +63,7 @@
 			width: 36px;
 			height: 36px;
 			font-size: 36px;
-			color: $studio-woocommerce-purple-60;
 		}
-
-		.woocommerce-list__item-after i {
-			color: $studio-gray-60;
-		}
-	}
-
-	.woocommerce-list__item-title {
-		color: $studio-gray-80;
-	}
-
-	.woocommerce-list__item-content {
-		color: $studio-gray-50;
 	}
 
 	#wpbody-content {
