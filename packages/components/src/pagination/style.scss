@@ -29,14 +29,14 @@
 	background: $button;
 
 	.components-button:not(:disabled):not([aria-disabled='true']) {
-		color: $wp-admin-sidebar;
+		fill: $wp-admin-sidebar;
 		height: 30px;
 		width: 32px;
 		justify-content: center;
 	}
 
-	.components-icon-button:not(:disabled):not([aria-disabled='true']):hover {
-		color: $core-grey-dark-300;
+	.components-button:not(:disabled):not([aria-disabled='true']):hover {
+		fill: $core-grey-dark-300;
 	}
 
 	button:first-child {
