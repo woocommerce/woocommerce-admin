@@ -5,6 +5,10 @@
 		color: $studio-gray-50;
 	}
 
+	.woocommerce-task-card {
+		margin-top: -18px;
+	}
+
 	.woocommerce-task-card .woocommerce-card__body {
 		border-top: 1px solid $studio-gray-5;
 		padding: 0;
@@ -596,8 +600,11 @@
 	-moz-appearance: none;
 	appearance: none;
 	border: 0;
-	height: 8px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	height: 4px;
 	width: 100%;
+	vertical-align: top;
 
 	// Firefox
 	& {
@@ -606,14 +613,25 @@
 
 	&::-moz-progress-bar {
 		background-color: #0085ba;
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
 	}
 
 	// Chrome
 	&::-webkit-progress-bar {
 		background-color: #c4c4c4;
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
 	}
 
 	&::-webkit-progress-value {
 		background-color: #0085ba;
+		border-top-left-radius: 3px;
+	}
+}
+
+.woocommerce-task-dashboard__container .woocommerce-task-card__progress-bar.completed {
+	&::-webkit-progress-value {
+		border-top-right-radius: 3px;
 	}
 }
