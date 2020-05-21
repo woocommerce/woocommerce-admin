@@ -302,7 +302,10 @@ class CustomizableDashboard extends Component {
 	render() {
 		const { query, taskListHidden, taskListComplete } = this.props;
 
-		const isTaskListEnabled = isOnboardingEnabled() && ! taskListHidden;
+		const isTaskListEnabled =
+			isOnboardingEnabled() &&
+			! taskListHidden &&
+			! window.wcAdminFeatures.homepage;
 
 		const isDashboardShown =
 			! isTaskListEnabled || ( ! query.task && taskListComplete );
