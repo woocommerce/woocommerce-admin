@@ -9,7 +9,7 @@ import interpolateComponents from 'interpolate-components';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import moment from 'moment';
-import { Icon, arrowLeft, arrowRight } from '@wordpress/icons';
+import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
 
 /**
  * WooCommerce dependencies
@@ -224,7 +224,7 @@ class StoreAlerts extends Component {
 									'woocommerce-admin'
 								) }
 							>
-								<Icon icon={ arrowLeft } />
+								<Icon icon={ chevronLeft } />
 							</Button>
 							<span
 								className="woocommerce-store-alerts__pagination-label"
@@ -259,7 +259,7 @@ class StoreAlerts extends Component {
 									'woocommerce-admin'
 								) }
 							>
-								<Icon icon={ arrowRight } />
+								<Icon icon={ chevronRight } />
 							</Button>
 						</div>
 					)
