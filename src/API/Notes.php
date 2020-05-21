@@ -103,6 +103,19 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/undoremove',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'undoremove_items' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -311,6 +324,28 @@ class Notes extends \WC_REST_CRUD_Controller {
 			$requested_updates['is_deleted'] = $request->get_param( 'is_deleted' );
 		}
 		return $requested_updates;
+	}
+
+	/**
+	 * Undo delete all notes.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function undoremove_items( $request ) {
+		$data      = array();
+		$notes_ids = $request->get_param( 'notesIds' );
+		foreach ( (array) $notes_ids as $note_id ) {
+			$note = WC_Admin_Notes::get_note( (int) $note_id );
+			if ( $note ) {
+				WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
+				$data[] = $this->prepare_note_data_for_response( $note, $request );
+			}
+		}
+
+		$response = rest_ensure_response( $data );
+		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( array( 'info', 'warning' ), array() ) );
+		return $response;
 	}
 
 	/**
