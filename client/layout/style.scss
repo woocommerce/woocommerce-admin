@@ -240,3 +240,14 @@ body.woocommerce-page .components-button.is-button.is-primary.is-busy:not(:disab
 		}
 	}
 }
+
+.woocommerce-admin__card {
+
+	.components-card__header.is-size-large {
+		padding: 0 $gap;
+	}
+
+	.components-card__body.is-size-large {
+		padding: 0;
+	}
+}

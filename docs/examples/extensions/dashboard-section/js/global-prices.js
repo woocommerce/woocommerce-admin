@@ -30,7 +30,7 @@ const GlobalPrices = () => {
 		data.length;
 	return (
 		<Card
-			className="woocommerce-dashboard__chart-block woocommerce-analytics__card"
+			className="woocommerce-dashboard__chart-block woocommerce-admin__card"
 			title="Global Apple Prices"
 		>
 			<Chart

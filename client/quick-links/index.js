@@ -165,7 +165,7 @@ const QuickLinks = ( props ) => {
 
 	return (
 		<Card
-			className="woocommerce-quick-links"
+			className="woocommerce-admin__card woocommerce-quick-links"
 			title={ __(
 				'Store management',
 				'woocommerce-admin'

@@ -88,7 +88,7 @@ export class CompareFilter extends Component {
 		return (
 			<Card
 				title={ labels.title }
-				className="woocommerce-filters__compare woocommerce-analytics__card"
+				className="woocommerce-filters__compare woocommerce-admin__card"
 			>
 				<div className="woocommerce-filters__compare-body">
 					<Search

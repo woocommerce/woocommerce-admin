@@ -72,7 +72,7 @@ export default withState( {
 
 		<H>Table only</H>
 		<Section component={ false }>
-			<Card className="woocommerce-analytics__card">
+			<Card className="woocommerce-admin__card">
 				<Table
 					caption="Revenue Last Week"
 					rows={ rows }
@@ -88,7 +88,7 @@ export default withState( {
 
 		<H>Placeholder</H>
 		<Section component={ false }>
-			<Card className="woocommerce-analytics__card">
+			<Card className="woocommerce-admin__card">
 				<TablePlaceholder
 					caption="Revenue Last Week"
 					headers={ headers }

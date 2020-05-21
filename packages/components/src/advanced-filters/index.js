@@ -242,7 +242,7 @@ class AdvancedFilters extends Component {
 		const isEnglish = this.isEnglish();
 		return (
 			<Card
-				className="woocommerce-filters-advanced woocommerce-analytics__card"
+				className="woocommerce-filters-advanced woocommerce-admin__card"
 				title={ this.getTitle() }
 			>
 				<ul

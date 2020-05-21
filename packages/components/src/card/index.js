@@ -39,14 +39,16 @@ class Card extends Component {
 			<BaseCard size="large" className={ className }>
 				{ title && (
 					<CardHeader className="woocommerce-card__header">
-						<H className="woocommerce-card__header-item">
-							{ title }
-						</H>
-						{ description && (
-							<H className="woocommerce-card__description woocommerce-card__header-item">
-								{ description }
+						<div className="woocommerce-card__header-item">
+							<H className="woocommerce-card__title">
+								{ title }
 							</H>
-						) }
+							{ description && (
+								<H className="woocommerce-card__description">
+									{ description }
+								</H>
+							) }
+						</div>
 						{ action && (
 							<div className="woocommerce-card__action woocommerce-card__header-item">
 								{ action }

@@ -62,7 +62,7 @@ export default class extends Component {
 					const cardClasses = classnames(
 						'woocommerce-devdocs__card',
 						`woocommerce-devdocs__card--${ filePath }`,
-						'woocommerce-analytics__card'
+						'woocommerce-admin__card'
 					);
 					return (
 						<Fragment key={ componentName }>

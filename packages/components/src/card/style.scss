@@ -10,6 +10,15 @@
 		background-color: $studio-gray-0;
 	}
 
+	&.has-action .components-card__header.is-size-large,
+	&.has-menu .components-card__header.is-size-large {
+		align-items: center;
+
+		@include breakpoint( '<960px' ) {
+			padding: ($gap - 3) $gap;
+		}
+	}
+
 	&.has-action .components-card__header.is-size-large {
 		grid-template-columns: auto 1fr;
 	}
@@ -26,11 +35,7 @@
 	.components-card__header.is-size-large {
 		// to maintain consistent height with or without an ellipsis menu
 		min-height: 63px;
-		padding: 0 $gap;
 		display: grid;
-		align-items: center;
-		border-top-left-radius: 3px;
-		border-top-left-radius: 4px;
 	
 		// IE doesn't support `align-items` on grid container
 		& > * {
@@ -41,13 +46,9 @@
 			margin: 0;
 		}
 
-		@include breakpoint( '<960px' ) {
-			padding: ($gap - 3) $gap;
+		.woocommerce-card__description {
+			margin-top: 4px;
 		}
-	}
-
-	.components-card__body.is-size-large {
-		padding: 0;
 	}
 }
 

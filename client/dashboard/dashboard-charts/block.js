@@ -57,7 +57,7 @@ class ChartBlock extends Component {
 				onClick={ this.handleChartClick }
 			>
 				<Card
-					className="woocommerce-dashboard__chart-block woocommerce-analytics__card"
+					className="woocommerce-dashboard__chart-block woocommerce-admin__card"
 					title={ selectedChart.label }
 				>
 					<a
