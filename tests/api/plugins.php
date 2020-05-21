@@ -49,7 +49,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 		$request = new WP_REST_Request( 'POST', $this->endpoint . '/install' );
 		$request->set_query_params(
 			array(
-				'plugin' => 'facebook-for-woocommerce',
+				'plugins' => 'facebook-for-woocommerce',
 			)
 		);
 		$response = $this->server->dispatch( $request );
@@ -71,7 +71,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 		$request = new WP_REST_Request( 'POST', $this->endpoint . '/install' );
 		$request->set_query_params(
 			array(
-				'plugin' => 'invalid-plugin-name',
+				'plugins' => 'invalid-plugin-name',
 			)
 		);
 		$response = $this->server->dispatch( $request );
