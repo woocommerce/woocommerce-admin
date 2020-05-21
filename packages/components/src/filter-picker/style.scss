@@ -56,7 +56,7 @@
 		align-items: center;
 		display: flex;
 		width: 100%;
-		padding: 1em;
+		padding: 1em 1em 1em 3em;
 		background-color: $core-grey-light-100;
 		text-align: left;
 
@@ -74,11 +74,9 @@
 			background-color: $core-grey-light-100;
 		}
 
-		.dashicon {
+		svg {
 			position: absolute;
 			left: 1em;
-			top: 50%;
-			transform: translate(0, -50%);
 		}
 	}
 }

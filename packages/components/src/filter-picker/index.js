@@ -264,7 +264,6 @@ class FilterPicker extends Component {
 											<Button
 												className="woocommerce-filters-filter__button"
 												onClick={ this.goBack }
-												icon="arrow-left-alt2"
 											>
 												<Icon icon={ arrowLeft } />
 												{ parentFilter.label }
