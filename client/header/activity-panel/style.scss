@@ -96,6 +96,7 @@
 
 		&.is-active {
 			color: $core-grey-dark-700;
+			fill: $core-grey-dark-700;
 			box-shadow: none;
 
 			&::before {
