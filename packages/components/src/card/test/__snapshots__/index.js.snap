@@ -7,11 +7,15 @@ exports[`Card it renders correctly 1`] = `
   <div
     className="components-card__header is-size-large woocommerce-card__header css-6qsnk-HeaderUI e1q7k77g1"
   >
-    <h2
+    <div
       className="woocommerce-card__header-item"
     >
-      A Card Example
-    </h2>
+      <h2
+        className="woocommerce-card__title"
+      >
+        A Card Example
+      </h2>
+    </div>
   </div>
   <div
     className="components-card__body is-size-large woocommerce-card__body css-1yyn1r2-BodyUI e1q7k77g3"
