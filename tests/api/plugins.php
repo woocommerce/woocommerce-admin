@@ -57,7 +57,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 		$plugins  = get_plugins();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 'facebook-for-woocommerce', $data['slug'] );
+		$this->assertEquals( array( 'facebook-for-woocommerce' ), $data['installed_plugins'] );
 		$this->assertEquals( 'success', $data['status'] );
 		$this->assertArrayHasKey( 'facebook-for-woocommerce/facebook-for-woocommerce.php', $plugins );
 	}
@@ -77,7 +77,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
-		$this->assertEquals( 'woocommerce_rest_invalid_plugin', $data['code'] );
+		$this->assertEquals( 'woocommerce_rest_invalid_plugins', $data['code'] );
 	}
 
 	/**
@@ -117,6 +117,6 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
-		$this->assertEquals( 'woocommerce_rest_invalid_plugins', $data['code'] );
+		$this->assertEquals( 'ss', $data['code'] );
 	}
 }
