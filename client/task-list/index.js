@@ -6,7 +6,7 @@ import { Component, cloneElement, Fragment } from '@wordpress/element';
 import { get, isEqual } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
-import { Snackbar, Button, Modal } from '@wordpress/components';
+import { Button, Modal } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -187,35 +187,6 @@ class TaskDashboard extends Component {
 		return currentTask;
 	}
 
-	renderPrompt() {
-		if ( this.props.promptShown ) {
-			return null;
-		}
-
-		return (
-			<Snackbar className="woocommerce-task-card__prompt">
-				<div className="woocommerce-task-card__prompt-pointer" />
-				<div className="woocommerce-task-card__prompt-content">
-					<span>
-						{ __( 'Is this card useful?', 'woocommerce-admin' ) }
-					</span>
-					<div className="woocommerce-task-card__prompt-actions">
-						<Button
-							isLink
-							onClick={ () => this.hideTaskCard( 'hide_card' ) }
-						>
-							{ __( 'No, hide it', 'woocommerce-admin' ) }
-						</Button>
-
-						<Button isLink onClick={ () => this.keepTaskCard() }>
-							{ __( 'Yes, keep it', 'woocommerce-admin' ) }
-						</Button>
-					</div>
-				</div>
-			</Snackbar>
-		);
-	}
-
 	renderMenu() {
 		return (
 			<EllipsisMenu
@@ -320,22 +291,8 @@ class TaskDashboard extends Component {
 		} );
 	};
 
-	renderSkipActions() {
-		return (
-			<div className="skip-actions">
-				<Button
-					isLink
-					className="is-secondary"
-					onClick={ this.onSkipStoreSetup }
-				>
-					{ __( 'Skip store setup', 'woocommerce-admin' ) }
-				</Button>
-			</div>
-		);
-	}
-
 	render() {
-		const { inline, query } = this.props;
+		const { query } = this.props;
 		const { isCartModalOpen, isWelcomeModalOpen } = this.state;
 		const currentTask = this.getCurrentTask();
 		const listTasks = this.getTasks().map( ( task ) => {
@@ -385,13 +342,11 @@ class TaskDashboard extends Component {
 									'Store setup',
 									'woocommerce-admin'
 								) }
-								menu={ inline && this.renderMenu() }
+								menu={ this.renderMenu() }
 							>
 								<List items={ listTasks } />
 							</Card>
-							{ inline && this.renderPrompt() }
 							{ isWelcomeModalOpen && this.renderWelcomeModal() }
-							{ ! inline && this.renderSkipActions() }
 						</Fragment>
 					) }
 				</div>
@@ -417,16 +372,10 @@ export default compose(
 		const profileItems = getProfileItems();
 
 		const options = getOptions( [
-			'woocommerce_task_list_prompt_shown',
 			'woocommerce_task_list_welcome_modal_dismissed',
 			'woocommerce_task_list_hidden',
 			'woocommerce_task_list_tracked_completed_tasks',
 		] );
-		const promptShown = get(
-			options,
-			[ 'woocommerce_task_list_prompt_shown' ],
-			false
-		);
 		const modalDismissed = get(
 			options,
 			[ 'woocommerce_task_list_welcome_modal_dismissed' ],
@@ -457,7 +406,6 @@ export default compose(
 		return {
 			modalDismissed,
 			profileItems,
-			promptShown,
 			taskListPayments,
 			isJetpackConnected: isJetpackConnected(),
 			incompleteTasks,

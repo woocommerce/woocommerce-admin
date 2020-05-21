@@ -106,11 +106,7 @@ export const Layout = ( props ) => {
 
 		return (
 			<Suspense fallback={ <Spinner /> }>
-				<TaskList
-					query={ query }
-					inline
-					promptShown
-				/>
+				<TaskList query={ query } />
 			</Suspense>
 		);
 	};

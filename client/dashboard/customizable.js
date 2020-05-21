@@ -311,7 +311,7 @@ class CustomizableDashboard extends Component {
 			<Fragment>
 				{ isTaskListEnabled && (
 					<Suspense fallback={ <Spinner /> }>
-						<TaskList query={ query } inline={ isDashboardShown } />
+						<TaskList query={ query } />
 					</Suspense>
 				) }
 				{ isDashboardShown && this.renderDashboardReports() }
