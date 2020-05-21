@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Card, CardBody, CardHeader } from '@wordpress/components';
 import {
 	Icon,
 	megaphone,
@@ -22,13 +21,12 @@ import { partial } from 'lodash';
  * WooCommerce dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { H, List } from '@woocommerce/components';
+import { Card, List } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import { recordEvent } from 'lib/tracks';
-import './style.scss';
 
 function getItems( props ) {
 	return [
@@ -166,16 +164,17 @@ const QuickLinks = ( props ) => {
 	const listItems = getListItems( props );
 
 	return (
-		<Card size="large" className="woocommerce-quick-links">
-			<CardHeader>
-				<H>{ __( 'Store management', 'woocommerce-admin' ) }</H>
-			</CardHeader>
-			<CardBody>
-				<List
-					items={ listItems }
-					className="woocommerce-quick-links__list"
-				/>
-			</CardBody>
+		<Card
+			className="woocommerce-quick-links"
+			title={ __(
+				'Store management',
+				'woocommerce-admin'
+			) }
+		>
+			<List
+				items={ listItems }
+				className="woocommerce-quick-links__list"
+			/>
 		</Card>
 	);
 };
