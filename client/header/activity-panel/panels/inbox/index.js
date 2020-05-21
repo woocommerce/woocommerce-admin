@@ -6,7 +6,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import Gridicon from 'gridicons';
 import { withDispatch } from '@wordpress/data';
-import { filter } from 'lodash';
+import { filter, has } from 'lodash';
 
 /**
  * Internal dependencies
@@ -69,7 +69,13 @@ class InboxPanel extends Component {
 	renderNotes() {
 		const { lastRead, notes } = this.props;
 
-		if ( Object.keys( notes ).length === 0 ) {
+		const validNotes = filter( notes, ( note )=> {
+				const { is_deleted: isDeleted } = note;
+				const noteActive = has( note, 'is_deleted' ) ? ! isDeleted : true;
+				return noteActive;
+			} );
+
+		if ( validNotes.length === 0 ) {
 			return this.renderEmptyCard();
 		}
 

@@ -35,6 +35,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			'is_snoozable' => (int) $note->get_is_snoozable(),
 			'layout'       => $note->get_layout(),
 			'image'        => $note->get_image(),
+			'is_deleted'   => (int) $note->get_is_deleted(),
 		);
 
 		$note_to_be_inserted['content_data']  = wp_json_encode( $note->get_content_data() );
@@ -164,6 +165,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 					'is_snoozable'  => $note->get_is_snoozable(),
 					'layout'        => $note->get_layout(),
 					'image'         => $note->get_image(),
+					'is_deleted'    => $note->get_is_deleted(),
 				),
 				array( 'note_id' => $note->get_id() )
 			);
@@ -399,6 +401,10 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			}
 		}
 
+		$escaped_is_deleted = '';
+		if ( isset( $args['is_deleted'] ) ) {
+			$escaped_is_deleted = esc_sql( $args['is_deleted'] );
+		}
 		$escaped_where_types  = implode( ',', $where_type_array );
 		$escaped_status_types = implode( ',', $where_status_array );
 		$where_clauses        = '';
@@ -410,6 +416,8 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		if ( ! empty( $escaped_status_types ) ) {
 			$where_clauses .= " AND status IN ($escaped_status_types)";
 		}
+
+		$where_clauses .= $escaped_is_deleted ? ' AND is_deleted = 1' : ' AND is_deleted = 0';
 
 		/**
 		 * Filter the notes WHERE clause before retrieving the data.

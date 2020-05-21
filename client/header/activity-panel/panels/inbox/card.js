@@ -61,16 +61,20 @@ class InboxNoteCard extends Component {
 		} );
 	}
 
-	handleBlur( event, onToggle ) {
-		const targetIsRenderedContent = event.relatedTarget
-			? event.relatedTarget.className.includes(
-					'woocommerce-admin-dismiss-notification'
+	handleBlur( event, onClose ) {
+		const dropdownClasses = [
+			'woocommerce-admin-dismiss-notification',
+			'components-popover__content',
+		];
+		const isClickOutsideDropdown = event.relatedTarget
+			? dropdownClasses.some( ( className ) =>
+					event.relatedTarget.className.includes( className )
 			  )
 			: false;
-		if ( targetIsRenderedContent ) {
+		if ( isClickOutsideDropdown ) {
 			event.preventDefault();
 		} else {
-			onToggle();
+			onClose();
 		}
 	}
 
@@ -78,12 +82,12 @@ class InboxNoteCard extends Component {
 		return (
 			<Dropdown
 				position="bottom right"
-				renderToggle={ ( { onToggle } ) => (
+				renderToggle={ ( { onClose, onToggle } ) => (
 					<Button
 						isTertiary
 						onClick={ onToggle }
 						onBlur={ ( event ) =>
-							this.handleBlur( event, onToggle )
+							this.handleBlur( event, onClose )
 						}
 					>
 						{ __( 'Dismiss', 'woocommerce-admin' ) }
@@ -186,6 +190,10 @@ class InboxNoteCard extends Component {
 			title,
 		} = note;
 
+		if ( note.is_deleted ) {
+			return null;
+		}
+
 		const getButtonsFromActions = () => {
 			if ( ! noteActions ) {
 				return [];
@@ -274,6 +282,7 @@ InboxNoteCard.propTypes = {
 		),
 		layout: PropTypes.string,
 		image: PropTypes.string,
+		is_deleted: PropTypes.bool,
 	} ),
 	lastRead: PropTypes.number,
 };

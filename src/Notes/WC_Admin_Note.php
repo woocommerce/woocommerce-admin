@@ -63,6 +63,7 @@ class WC_Admin_Note extends \WC_Data {
 			'actions'       => array(),
 			'layout'        => 'plain',
 			'image'         => '',
+			'is_deleted'    => false,
 		);
 
 		parent::__construct( $data );
@@ -304,6 +305,16 @@ class WC_Admin_Note extends \WC_Data {
 		return $this->get_prop( 'image', $context );
 	}
 
+	/**
+	 * Get deleted status.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array
+	 */
+	public function get_is_deleted( $context = 'view' ) {
+		return $this->get_prop( 'is_deleted', $context );
+	}
+
 	/*
 	|--------------------------------------------------------------------------
 	| Setters
@@ -508,7 +519,16 @@ class WC_Admin_Note extends \WC_Data {
 	 * @param string $layout Note layout.
 	 */
 	public function set_layout( $layout ) {
-		$this->set_prop( 'layout', $layout );
+		// If we don't receive a layout we will set it by default as "plain".
+		if ( empty( $layout ) ) {
+			$layout = 'plain';
+		}
+		$valid_layouts = array( 'banner', 'plain', 'thumbnail' );
+		if ( in_array( $layout, $valid_layouts, true ) ) {
+			$this->set_prop( 'layout', $layout );
+		} else {
+			$this->error( 'admin_note_invalid_data', __( 'The admin note layout has a wrong prop value.', 'woocommerce-admin' ) );
+		}
 	}
 
 	/**
@@ -518,6 +538,15 @@ class WC_Admin_Note extends \WC_Data {
 	 */
 	public function set_image( $image ) {
 		$this->set_prop( 'image', $image );
+	}
+
+	/**
+	 * Set note deleted status. NULL is not allowed
+	 *
+	 * @param bool $is_deleted Note deleted status.
+	 */
+	public function set_is_deleted( $is_deleted ) {
+		$this->set_prop( 'is_deleted', $is_deleted );
 	}
 
 	/**
