@@ -12,6 +12,28 @@ import { withViewportMatch } from '@wordpress/viewport';
  */
 import { getHasItemsClass } from './utils';
 
+export const SummaryNumberPlaceholder = ( { className } ) => (
+	<li
+		data-testid="summary-placeholder"
+		className={ classnames(
+			'woocommerce-summary__item-container is-placeholder',
+			className
+		) }
+	>
+		<span className="woocommerce-summary__item">
+			<span className="woocommerce-summary__item-label" />
+			<span className="woocommerce-summary__item-data">
+				<span className="woocommerce-summary__item-value" />
+				<div className="woocommerce-summary__item-delta">
+					<span className="woocommerce-summary__item-delta-value" />
+				</div>
+			</span>
+			<span className="woocommerce-summary__item-prev-label" />
+			<span className="woocommerce-summary__item-prev-value" />
+		</span>
+	</li>
+);
+
 /**
  * `SummaryListPlaceholder` behaves like `SummaryList` but displays placeholder summary items instead of data.
  * This can be used while loading data.
@@ -29,30 +51,11 @@ class SummaryListPlaceholder extends Component {
 			'is-placeholder': true,
 		} );
 
-		const rows = range( numberOfItems ).map( ( i ) => {
-			return (
-				<li
-					className="woocommerce-summary__item-container is-placeholder"
-					key={ i }
-				>
-					<span className="woocommerce-summary__item">
-						<span className="woocommerce-summary__item-label" />
-						<span className="woocommerce-summary__item-data">
-							<span className="woocommerce-summary__item-value" />
-							<div className="woocommerce-summary__item-delta">
-								<span className="woocommerce-summary__item-delta-value" />
-							</div>
-						</span>
-						<span className="woocommerce-summary__item-prev-label" />
-						<span className="woocommerce-summary__item-prev-value" />
-					</span>
-				</li>
-			);
-		} );
-
 		return (
 			<ul className={ classes } aria-hidden="true">
-				{ rows }
+				{ range( numberOfItems ).map( ( i ) => {
+					return <SummaryNumberPlaceholder key={ i } />;
+				} ) }
 			</ul>
 		);
 	}
