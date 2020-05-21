@@ -6,13 +6,23 @@ import { Component, cloneElement, Fragment } from '@wordpress/element';
 import { get, isEqual } from 'lodash';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
-import { Button, Modal } from '@wordpress/components';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	Modal,
+} from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
+import {
+	Icon,
+	check,
+} from '@wordpress/icons';
 
 /**
  * WooCommerce dependencies
  */
-import { Card, List, EllipsisMenu } from '@woocommerce/components';
+import { H, List, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
@@ -189,16 +199,18 @@ class TaskDashboard extends Component {
 
 	renderMenu() {
 		return (
-			<EllipsisMenu
-				label={ __( 'Task List Options', 'woocommerce-admin' ) }
-				renderContent={ () => (
-					<div className="woocommerce-task-card__section-controls">
-						<Button onClick={ () => this.hideTaskCard( 'remove_card' ) }>
-							{ __( 'Hide this', 'woocommerce-admin' ) }
-						</Button>
-					</div>
-				) }
-			/>
+			<div className="woocommerce-card__menu woocommerce-card__header-item">
+				<EllipsisMenu
+					label={ __( 'Task List Options', 'woocommerce-admin' ) }
+					renderContent={ () => (
+						<div className="woocommerce-task-card__section-controls">
+							<Button onClick={ () => this.hideTaskCard( 'remove_card' ) }>
+								{ __( 'Hide this', 'woocommerce-admin' ) }
+							</Button>
+						</div>
+					) }
+				/>
+			</div>
 		);
 	}
 
@@ -301,7 +313,7 @@ class TaskDashboard extends Component {
 				task.className
 			);
 			task.before = (
-				<i className="material-icons-outlined">{ task.completed ? 'check_circle' : 'radio_button_unchecked' }</i>
+				<Icon icon={ task.completed ? check : check } />
 			);
 			task.after = ( task.time
 				? <span className="woocommerce-task-estimated-time">{ task.time }</span>
@@ -331,20 +343,19 @@ class TaskDashboard extends Component {
 						} )
 					) : (
 						<Fragment>
-							<progress
-								className={ progressBarClass }
-								max={ listTasks.length }
-								value={ numCompleteTasks }
-							/>
-							<Card
-								className="woocommerce-task-card"
-								title={ __(
-									'Store setup',
-									'woocommerce-admin'
-								) }
-								menu={ this.renderMenu() }
-							>
-								<List items={ listTasks } />
+							<Card size="large" className="woocommerce-task-card">
+								<progress
+									className={ progressBarClass }
+									max={ listTasks.length }
+									value={ numCompleteTasks }
+								/>
+								<CardHeader>
+									<H>{ __( 'Store setup', 'woocommerce-admin' ) }</H>
+									{ this.renderMenu() }
+								</CardHeader>
+								<CardBody>
+									<List items={ listTasks } />
+								</CardBody>
 							</Card>
 							{ isWelcomeModalOpen && this.renderWelcomeModal() }
 						</Fragment>
