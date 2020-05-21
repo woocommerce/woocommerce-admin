@@ -31,10 +31,11 @@
 		text-align: center;
 	}
 
-	button.woocommerce-table__download-button.is-link {
+	button.woocommerce-table__download-button {
 		padding: 6px $gap-small;
 		color: $studio-black;
 		text-decoration: none;
+		align-items: center;
 
 		svg {
 			margin-right: $gap-smaller;
