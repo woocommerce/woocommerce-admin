@@ -52,18 +52,18 @@ class InboxPanel extends Component {
 
 	getScreenName() {
 		let screenName = '';
-		const URLparams = Object.fromEntries(
+		const urlParams = Object.fromEntries(
 			new URLSearchParams( window.location.search )
 		);
 
-		if ( URLparams.page ) {
+		if ( urlParams.page ) {
 			const currentPage =
-				URLparams.page === 'wc-admin' ? 'home_screen' : URLparams.page;
-			screenName = URLparams.path
-				? URLparams.path.replace( /\//g, '_' ).substring( 1 )
+				urlParams.page === 'wc-admin' ? 'home_screen' : urlParams.page;
+			screenName = urlParams.path
+				? urlParams.path.replace( /\//g, '_' ).substring( 1 )
 				: currentPage;
-		} else if ( URLparams.post_type ) {
-			screenName = URLparams.post_type;
+		} else if ( urlParams.post_type ) {
+			screenName = urlParams.post_type;
 		}
 		return screenName;
 	}
