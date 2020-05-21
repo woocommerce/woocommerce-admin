@@ -203,8 +203,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 */
 	public function install_plugins( $request ) {
 		$allowed_plugins  = self::get_allowed_plugins();
-		$_plugins         = explode( ',', $request['plugins'] );
-		$plugins          = array_intersect( array_keys( $allowed_plugins ), $_plugins );
+		$plugins          = explode( ',', $request['plugins'] );
 		$existing_plugins = get_plugins();
 
 		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
@@ -225,6 +224,15 @@ class Plugins extends \WC_REST_Data_Controller {
 		foreach ( $plugins as $plugin ) {
 			$path = $allowed_plugins[ $plugin ];
 			$slug = sanitize_key( $plugin );
+
+			if ( ! in_array( $plugin, $allowed_plugins, true ) ) {
+				$errors->add(
+					$plugin,
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					sprintf( __( 'The requested plugin `%s`. is not in the list of allowed plugins.', 'woocommerce-admin' ), $slug )
+				);
+				continue;
+			}
 
 			if ( in_array( $path, array_keys( $existing_plugins ), true ) ) {
 				$installed_plugins[] = $plugin;
@@ -352,8 +360,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 */
 	public function activate_plugins( $request ) {
 		$allowed_plugins   = self::get_allowed_plugins();
-		$_plugins          = explode( ',', $request['plugins'] );
-		$plugins           = array_intersect( array_keys( $allowed_plugins ), $_plugins );
+		$plugins           = explode( ',', $request['plugins'] );
 		$errors            = new \WP_Error();
 		$activated_plugins = array();
 
@@ -367,11 +374,20 @@ class Plugins extends \WC_REST_Data_Controller {
 			$slug = $plugin;
 			$path = $allowed_plugins[ $slug ];
 
+			if ( ! in_array( $plugin, $allowed_plugins, true ) ) {
+				$errors->add(
+					$plugin,
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					sprintf( __( 'The requested plugin `%s`. is not in the list of allowed plugins.', 'woocommerce-admin' ), $slug )
+				);
+				continue;
+			}
+
 			if ( ! PluginsHelper::is_plugin_installed( $path ) ) {
 				$errors->add(
 					$plugin,
 					/* translators: %s: plugin slug (example: woocommerce-services) */
-					sprintf( __( 'The requested plugin `%s`. is not yet installed', 'woocommerce-admin' ), $slug )
+					sprintf( __( 'The requested plugin `%s`. is not yet installed.', 'woocommerce-admin' ), $slug )
 				);
 				continue;
 			}
