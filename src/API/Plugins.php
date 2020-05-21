@@ -206,7 +206,7 @@ class Plugins extends \WC_REST_Data_Controller {
 		$plugins          = explode( ',', $request['plugins'] );
 		$existing_plugins = get_plugins();
 
-		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
+		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
 
@@ -222,10 +222,10 @@ class Plugins extends \WC_REST_Data_Controller {
 		$errors            = new \WP_Error();
 
 		foreach ( $plugins as $plugin ) {
-			$path = $allowed_plugins[ $plugin ];
 			$slug = sanitize_key( $plugin );
+			$path = isset( $allowed_plugins[ $slug ] ) ? $allowed_plugins[ $slug ] : false;
 
-			if ( ! in_array( $plugin, $allowed_plugins, true ) ) {
+			if ( ! $path ) {
 				$errors->add(
 					$plugin,
 					/* translators: %s: plugin slug (example: woocommerce-services) */
@@ -302,7 +302,7 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		return array(
 			'data'    => array(
-				'installed' => $plugins,
+				'installed' => $installed_plugins,
 				'results'   => $results,
 			),
 			'errors'  => $errors,
@@ -364,7 +364,7 @@ class Plugins extends \WC_REST_Data_Controller {
 		$errors            = new \WP_Error();
 		$activated_plugins = array();
 
-		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
+		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
 
@@ -372,9 +372,9 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		foreach ( $plugins as $plugin ) {
 			$slug = $plugin;
-			$path = $allowed_plugins[ $slug ];
+			$path = isset( $allowed_plugins[ $slug ] ) ? $allowed_plugins[ $slug ] : false;
 
-			if ( ! in_array( $plugin, $allowed_plugins, true ) ) {
+			if ( ! $path ) {
 				$errors->add(
 					$plugin,
 					/* translators: %s: plugin slug (example: woocommerce-services) */
