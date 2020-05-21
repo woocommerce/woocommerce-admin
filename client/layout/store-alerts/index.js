@@ -216,7 +216,6 @@ class StoreAlerts extends Component {
 					numberOfAlerts > 1 && (
 						<div className="woocommerce-store-alerts__pagination">
 							<Button
-								icon="arrow-left-alt2"
 								onClick={ this.previousAlert }
 								disabled={ currentIndex === 0 }
 								label={ __(
@@ -251,7 +250,6 @@ class StoreAlerts extends Component {
 								} ) }
 							</span>
 							<Button
-								icon="arrow-right-alt2"
 								onClick={ this.nextAlert }
 								disabled={ numberOfAlerts - 1 === currentIndex }
 								label={ __(

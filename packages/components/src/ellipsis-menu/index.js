@@ -16,7 +16,7 @@ class EllipsisMenu extends Component {
 		if ( ! renderContent ) {
 			return null;
 		}
-		//adf
+
 		const renderEllipsis = ( { onToggle, isOpen } ) => {
 			const toggleClassname = classnames(
 				'woocommerce-ellipsis-menu__toggle',

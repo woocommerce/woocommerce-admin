@@ -103,13 +103,13 @@
 .woocommerce-chart__type-button {
 	background: transparent !important;
 	&.components-button {
-		fill: $core-grey-light-700;
+		color: $core-grey-light-700;
 		display: inline-flex;
 		&.woocommerce-chart__type-button-selected {
-			fill: $core-grey-dark-500;
+			color: $core-grey-dark-500;
 		}
 		&:hover {
-			fill: $core-grey-dark-900;
+			color: $core-grey-dark-800;
 			box-shadow: none !important;
 		}
 	}

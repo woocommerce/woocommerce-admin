@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { find, partial, last, get, includes } from 'lodash';
 import PropTypes from 'prop-types';
-import { Icon, arrowLeft } from '@wordpress/icons';
+import { Icon, chevronLeft } from '@wordpress/icons';
 
 /**
  * WooCommerce dependencies
@@ -265,7 +265,7 @@ class FilterPicker extends Component {
 												className="woocommerce-filters-filter__button"
 												onClick={ this.goBack }
 											>
-												<Icon icon={ arrowLeft } />
+												<Icon icon={ chevronLeft } />
 												{ parentFilter.label }
 											</Button>
 										</li>
