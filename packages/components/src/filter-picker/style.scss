@@ -53,14 +53,16 @@
 
 	.woocommerce-filters-filter__button {
 		position: relative;
-		display: block;
+		align-items: center;
+		display: flex;
 		width: 100%;
-		padding: 1em 1em 1em 3em;
+		padding: 1em;
 		background-color: $core-grey-light-100;
 		text-align: left;
 
 		&.components-button {
 			color: $core-grey-dark-500;
+			fill: $core-grey-dark-500;
 		}
 
 		&:hover {
