@@ -169,7 +169,8 @@
 }
 
 .woocommerce-filters-advanced__add-button {
-	color: inherit;
+	align-items: center;
+	color: $core-grey-dark-500;
 	padding: $gap-smaller;
 
 	svg {

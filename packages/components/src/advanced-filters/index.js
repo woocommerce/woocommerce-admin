@@ -339,17 +339,17 @@ class AdvancedFilters extends Component {
 							className="woocommerce-filters-advanced__add-filter-dropdown"
 							position="bottom center"
 							renderToggle={ ( { isOpen, onToggle } ) => (
-								<IconButton
+								<Button
 									className="woocommerce-filters-advanced__add-button"
-									icon={ <Gridicon icon="add-outline" /> }
 									onClick={ onToggle }
 									aria-expanded={ isOpen }
 								>
+									<Gridicon icon="add-outline" />
 									{ __(
 										'Add a Filter',
 										'woocommerce-admin'
 									) }
-								</IconButton>
+								</Button>
 							) }
 							renderContent={ ( { onClose } ) => (
 								<ul className="woocommerce-filters-advanced__add-dropdown">

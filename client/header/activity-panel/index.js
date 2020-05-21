@@ -285,7 +285,6 @@ class ActivityPanel extends Component {
 								: viewLabel
 						}
 						aria-expanded={ mobileOpen }
-						tooltip={ false }
 						className="woocommerce-layout__activity-panel-mobile-toggle"
 					>
 						{ mobileOpen ? (
