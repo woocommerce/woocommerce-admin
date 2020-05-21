@@ -81,13 +81,19 @@ export function* installPlugins( plugins ) {
 			yield setError( 'installPlugins', results.errors );
 		}
 
+		yield setIsRequesting( 'installPlugins', false );
+
 		return results;
 	} catch ( error ) {
 		const errorMsg = __(
 			'Something went wrong while trying to install your plugins.',
 			'woocommerce-admin'
 		);
+
 		yield setError( 'installPlugins', errorMsg );
+
+		yield setIsRequesting( 'installPlugins', false );
+
 		return errorMsg;
 	}
 }
