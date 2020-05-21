@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component, lazy, Suspense } from '@wordpress/element';
-import { IconButton, NavigableMenu } from '@wordpress/components';
+import { IconButton, Button, NavigableMenu } from '@wordpress/components';
 import { partial, uniqueId, find } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import PagesIcon from 'gridicons/dist/pages';
@@ -227,7 +227,7 @@ class ActivityPanel extends Component {
 		}
 
 		return (
-			<IconButton
+			<Button
 				role="tab"
 				className={ className }
 				tabIndex={ tabIndex }
@@ -236,15 +236,15 @@ class ActivityPanel extends Component {
 				key={ 'activity-panel-tab-' + tab.name }
 				id={ 'activity-panel-tab-' + tab.name }
 				onClick={ partial( this.togglePanel, tab.name ) }
-				icon={ tab.icon }
 			>
+				{ tab.icon }
 				{ tab.title }{ ' ' }
 				{ tab.unread && (
 					<span className="screen-reader-text">
 						{ __( 'unread activity', 'woocommerce-admin' ) }
 					</span>
 				) }
-			</IconButton>
+			</Button>
 		);
 	}
 
