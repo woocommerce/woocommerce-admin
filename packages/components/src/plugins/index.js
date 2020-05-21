@@ -62,8 +62,8 @@ export class Plugins extends Component {
 
 		const activations = await activatePlugins( pluginSlugs );
 
-		if ( activations.success ) {
-			this.handleSuccess( activations.activePlugins );
+		if ( activations.success && activations.data.activated ) {
+			this.handleSuccess( activations.data.activated );
 			return;
 		}
 
@@ -77,8 +77,11 @@ export class Plugins extends Component {
 			createNotice(
 				'error',
 				pluginNames[ plugin ]
-					? errors[ plugin ][0].replace( `\`${plugin}\``, pluginNames[ plugin ] )
-					: errors[ plugin ][0]
+					? errors[ plugin ][ 0 ].replace(
+							`\`${ plugin }\``,
+							pluginNames[ plugin ]
+					  )
+					: errors[ plugin ][ 0 ]
 			);
 		} );
 
