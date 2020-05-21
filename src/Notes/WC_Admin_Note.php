@@ -527,7 +527,7 @@ class WC_Admin_Note extends \WC_Data {
 		if ( in_array( $layout, $valid_layouts, true ) ) {
 			$this->set_prop( 'layout', $layout );
 		} else {
-			$this->error( 'admin_note_invalid_data', __( 'The admin note date prop cannot be empty.', 'woocommerce-admin' ) );
+			$this->error( 'admin_note_invalid_data', __( 'The admin note layout has a wrong prop value.', 'woocommerce-admin' ) );
 		}
 	}
 
