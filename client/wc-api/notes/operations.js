@@ -36,6 +36,10 @@ function removeAll( resourceNames, fetch = apiFetch ) {
 	return [ ...removeAllNotes( resourceNames, fetch ) ];
 }
 
+function undoRemoveAll( resourceNames, data, fetch = apiFetch ) {
+	return [ ...undoRemoveAllNotes( resourceNames, data, fetch ) ];
+}
+
 function readNoteQueries( resourceNames, fetch ) {
 	const filteredNames = resourceNames.filter( ( name ) =>
 		isResourcePrefix( name, 'note-query' )
@@ -152,6 +156,28 @@ function removeAllNotes( resourceNames, fetch ) {
 					return notes;
 				} )
 				.catch( ( error ) => {
+					return { error };
+				} ),
+		];
+	}
+	return [];
+}
+
+function undoRemoveAllNotes( resourceNames, data, fetch ) {
+	const resourceName = 'note';
+	if ( resourceNames.includes( resourceName ) ) {
+		const url = `${ NAMESPACE }/admin/notes/undoremove`;
+		return [
+			fetch( { path: url, method: 'PUT', data } )
+				.then( ( response ) => {
+					const notes = response.reduce( ( result, note ) => {
+						const resourceKey = [ resourceName + ':' + note.id ];
+						result[ resourceKey ] = { data: note };
+						return result;
+					}, {} );
+					return notes;
+				} )
+				.catch( ( error ) => {
 					return error;
 				} ),
 		];
@@ -183,4 +209,5 @@ export default {
 	remove,
 	removeAll,
 	triggerAction,
+	undoRemoveAll,
 };
