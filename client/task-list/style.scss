@@ -1,5 +1,3 @@
-
-
 .woocommerce-task-dashboard__body {
 	.woocommerce-card__description {
 		color: $studio-gray-50;
@@ -22,8 +20,11 @@
 				background-color: theme(button); // $theme-color
 			}
 
-			.woocommerce-list__item:not(.is-complete) .woocommerce-task__icon {
-				border: 1px solid $core-grey-light-500;
+			.woocommerce-list__item:not(.is-complete) {
+				.woocommerce-task__icon {
+					border: 1px solid $core-grey-light-500;
+					background: $white;
+				}
 			}
 
 			.woocommerce-list__item-before .woocommerce-task__icon {
@@ -68,11 +69,33 @@
 	.woocommerce-list {
 		margin: 0;
 
+		.woocommerce-list__item {
+			&:not(:first-child) {
+				border-top: 1px solid $light-gray-500;
+			}
+
+			&:hover {
+				background: $light-gray-100;
+
+				.woocommerce-list__item-title {
+					color: color(theme(button) shade(25%));
+				}
+			}
+		}
+
+		.woocommerce-list__item-title {
+			color: theme(button); // $theme-color
+		}
+
+		.woocommerce-task-estimated-time {
+			color: $dark-gray-500;
+		}
+
 		.woocommerce-list__item.is-complete {
-			background: $studio-gray-0;
+			background: $light-gray-100;
 
 			.woocommerce-list__item-title {
-				color: $studio-gray-50;
+				color: $dark-gray-500;
 			}
 
 			.woocommerce-list__item-content {
@@ -286,7 +309,7 @@
 
 	.components-button.is-primary {
 		min-width: 328px;
-		@include breakpoint( '<782px' ) {
+		@include breakpoint('<782px') {
 			min-width: auto;
 		}
 	}
@@ -379,7 +402,7 @@
 		}
 	}
 
-	@include breakpoint( '<600px' ) {
+	@include breakpoint('<600px') {
 		.woocommerce-card__body {
 			flex-direction: column;
 		}
@@ -445,8 +468,11 @@
 	}
 }
 
-.woocommerce-task-dashboard__container .woocommerce-task-payments .woocommerce-task-payments__actions {
-	text-align: center;
+.woocommerce-task-dashboard__container {
+	.woocommerce-task-payments
+	.woocommerce-task-payments__actions {
+		text-align: center;
+	}
 
 	button.components-button.is-primary {
 		margin: 0;
@@ -606,24 +632,24 @@
 
 	// Firefox
 	& {
-		background-color: #c4c4c4;
+		background-color: $light-gray-300;
 	}
 
 	&::-moz-progress-bar {
-		background-color: #0085ba;
+		background-color: $dark-gray-500;
 		border-top-left-radius: 2px;
 		border-top-right-radius: 2px;
 	}
 
 	// Chrome
 	&::-webkit-progress-bar {
-		background-color: #c4c4c4;
+		background-color: $light-gray-300;
 		border-top-left-radius: 2px;
 		border-top-right-radius: 2px;
 	}
 
 	&::-webkit-progress-value {
-		background-color: #0085ba;
+		background-color: $dark-gray-500;
 		border-top-left-radius: 2px;
 	}
 }
