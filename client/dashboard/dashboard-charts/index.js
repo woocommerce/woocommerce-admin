@@ -30,6 +30,93 @@ import { uniqCharts } from './config';
 import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
+const renderChartToggles = ( { hiddenBlocks, onToggleHiddenBlock } ) => {
+	return uniqCharts.map( ( chart ) => {
+		const key = chart.endpoint + '_' + chart.key;
+		const checked = ! hiddenBlocks.includes( key );
+		return (
+			<MenuItem
+				checked={ checked }
+				isCheckbox
+				isClickable
+				key={ chart.endpoint + '_' + chart.key }
+				onInvoke={ () => {
+					onToggleHiddenBlock( key )();
+					recordEvent(
+						'dash_charts_chart_toggle',
+						{
+							status: checked ? 'off' : 'on',
+							key,
+						}
+					);
+				} }
+			>
+				{ chart.label }
+			</MenuItem>
+		);
+	} );
+};
+
+const renderIntervalSelector = ( { chartInterval, setInterval, query } ) => {
+	const allowedIntervals = getAllowedIntervalsForQuery( query );
+	if ( ! allowedIntervals || allowedIntervals.length < 1 ) {
+		return null;
+	}
+
+	const intervalLabels = {
+		hour: __( 'By hour', 'woocommerce-admin' ),
+		day: __( 'By day', 'woocommerce-admin' ),
+		week: __( 'By week', 'woocommerce-admin' ),
+		month: __( 'By month', 'woocommerce-admin' ),
+		quarter: __( 'By quarter', 'woocommerce-admin' ),
+		year: __( 'By year', 'woocommerce-admin' ),
+	};
+
+	return (
+		<SelectControl
+			className="woocommerce-chart__interval-select"
+			value={ chartInterval }
+			options={ allowedIntervals.map( ( allowedInterval ) => ( {
+				value: allowedInterval,
+				label: intervalLabels[ allowedInterval ],
+			} ) ) }
+			onChange={ setInterval }
+		/>
+	);
+};
+
+const renderChartBlocks = ( { hiddenBlocks, path, query } ) => {
+	// Reduce the API response to only the necessary stat fields
+	// by supplying all charts common to each endpoint.
+	const chartsByEndpoint = uniqCharts.reduce( ( byEndpoint, chart ) => {
+		if ( typeof byEndpoint[ chart.endpoint ] === 'undefined' ) {
+			byEndpoint[ chart.endpoint ] = [];
+		}
+		byEndpoint[ chart.endpoint ].push( chart );
+
+		return byEndpoint;
+	}, {} );
+
+	return (
+		<div className="woocommerce-dashboard__columns">
+			{ uniqCharts.map( ( chart ) => {
+				return hiddenBlocks.includes(
+					chart.endpoint + '_' + chart.key
+				) ? null : (
+					<ChartBlock
+						charts={ chartsByEndpoint[ chart.endpoint ] }
+						endpoint={ chart.endpoint }
+						key={ chart.endpoint + '_' + chart.key }
+						path={ path }
+						query={ query }
+						selectedChart={ chart }
+					/>
+				);
+			} ) }
+		</div>
+	);
+};
+
 const DashboardCharts = ( props ) => {
 	const {
 		controls: Controls,
@@ -61,7 +148,7 @@ const DashboardCharts = ( props ) => {
 		};
 	};
 
-	const renderMenu = () =>(
+	const renderMenu = () => (
 		<EllipsisMenu
 			label={ __(
 				'Choose which charts to display',
@@ -72,30 +159,7 @@ const DashboardCharts = ( props ) => {
 					<MenuTitle>
 						{ __( 'Charts', 'woocommerce-admin' ) }
 					</MenuTitle>
-					{ uniqCharts.map( ( chart ) => {
-						const key = chart.endpoint + '_' + chart.key;
-						const checked = ! hiddenBlocks.includes( key );
-						return (
-							<MenuItem
-								checked={ checked }
-								isCheckbox
-								isClickable
-								key={ chart.endpoint + '_' + chart.key }
-								onInvoke={ () => {
-									onToggleHiddenBlock( key )();
-									recordEvent(
-										'dash_charts_chart_toggle',
-										{
-											status: checked ? 'off' : 'on',
-											key,
-										}
-									);
-								} }
-							>
-								{ chart.label }
-							</MenuItem>
-						);
-					} ) }
+					{ renderChartToggles( { hiddenBlocks, onToggleHiddenBlock } ) }
 					{ window.wcAdminFeatures[
 						'analytics-dashboard/customizable'
 					] && (
@@ -124,123 +188,59 @@ const DashboardCharts = ( props ) => {
 		recordEvent( 'dash_charts_interval', { interval } );
 	};
 
-	const renderIntervalSelector = () => {
-		const allowedIntervals = getAllowedIntervalsForQuery(
-			props.query
-		);
-		if ( ! allowedIntervals || allowedIntervals.length < 1 ) {
-			return null;
-		}
-
-		const intervalLabels = {
-			hour: __( 'By hour', 'woocommerce-admin' ),
-			day: __( 'By day', 'woocommerce-admin' ),
-			week: __( 'By week', 'woocommerce-admin' ),
-			month: __( 'By month', 'woocommerce-admin' ),
-			quarter: __( 'By quarter', 'woocommerce-admin' ),
-			year: __( 'By year', 'woocommerce-admin' ),
-		};
-
-		return (
-			<SelectControl
-				className="woocommerce-chart__interval-select"
-				value={ chartInterval }
-				options={ allowedIntervals.map( ( allowedInterval ) => ( {
-					value: allowedInterval,
-					label: intervalLabels[ allowedInterval ],
-				} ) ) }
-				onChange={ setInterval }
-			/>
-		);
-	}
-
-	const renderChartBlocks = () => {
-		// Reduce the API response to only the necessary stat fields
-		// by supplying all charts common to each endpoint.
-		const chartsByEndpoint = uniqCharts.reduce( ( byEndpoint, chart ) => {
-			if ( typeof byEndpoint[ chart.endpoint ] === 'undefined' ) {
-				byEndpoint[ chart.endpoint ] = [];
-			}
-			byEndpoint[ chart.endpoint ].push( chart );
-
-			return byEndpoint;
-		}, {} );
-
-		return (
-			<div className="woocommerce-dashboard__columns">
-				{ uniqCharts.map( ( chart ) => {
-					return hiddenBlocks.includes(
-						chart.endpoint + '_' + chart.key
-					) ? null : (
-						<ChartBlock
-							charts={ chartsByEndpoint[ chart.endpoint ] }
-							endpoint={ chart.endpoint }
-							key={ chart.endpoint + '_' + chart.key }
-							path={ path }
-							query={ query }
-							selectedChart={ chart }
-						/>
-					);
-				} ) }
-			</div>
-		);
-	}
-
 	return (
-		<Fragment>
-			<div className="woocommerce-dashboard__dashboard-charts">
-				<SectionHeader
-					title={ title || __( 'Charts', 'woocommerce-admin' ) }
-					menu={ renderMenu() }
-					className={ 'has-interval-select' }
+		<div className="woocommerce-dashboard__dashboard-charts">
+			<SectionHeader
+				title={ title || __( 'Charts', 'woocommerce-admin' ) }
+				menu={ renderMenu() }
+				className={ 'has-interval-select' }
+			>
+				{ renderIntervalSelector( { chartInterval, setInterval, query } ) }
+				<NavigableMenu
+					className="woocommerce-chart__types"
+					orientation="horizontal"
+					role="menubar"
 				>
-					{ renderIntervalSelector() }
-					<NavigableMenu
-						className="woocommerce-chart__types"
-						orientation="horizontal"
-						role="menubar"
+					<Button
+						className={ classNames(
+							'woocommerce-chart__type-button',
+							{
+								'woocommerce-chart__type-button-selected':
+									! query.chartType ||
+									query.chartType === 'line',
+							}
+						) }
+						title={ __(
+							'Line chart',
+							'woocommerce-admin'
+						) }
+						aria-checked={ query.chartType === 'line' }
+						role="menuitemradio"
+						tabIndex={ query.chartType === 'line' ? 0 : -1 }
+						onClick={ handleTypeToggle( 'line' ) }
 					>
-						<Button
-							className={ classNames(
-								'woocommerce-chart__type-button',
-								{
-									'woocommerce-chart__type-button-selected':
-										! query.chartType ||
-										query.chartType === 'line',
-								}
-							) }
-							title={ __(
-								'Line chart',
-								'woocommerce-admin'
-							) }
-							aria-checked={ query.chartType === 'line' }
-							role="menuitemradio"
-							tabIndex={ query.chartType === 'line' ? 0 : -1 }
-							onClick={ handleTypeToggle( 'line' ) }
-						>
-							<Gridicon icon="line-graph" />
-						</Button>
-						<Button
-							className={ classNames(
-								'woocommerce-chart__type-button',
-								{
-									'woocommerce-chart__type-button-selected':
-										query.chartType === 'bar',
-								}
-							) }
-							title={ __( 'Bar chart', 'woocommerce-admin' ) }
-							aria-checked={ query.chartType === 'bar' }
-							role="menuitemradio"
-							tabIndex={ query.chartType === 'bar' ? 0 : -1 }
-							onClick={ handleTypeToggle( 'bar' ) }
-						>
-							<Gridicon icon="stats-alt" />
-						</Button>
-					</NavigableMenu>
-				</SectionHeader>
-				{ renderChartBlocks( query ) }
-			</div>
-		</Fragment>
+						<Gridicon icon="line-graph" />
+					</Button>
+					<Button
+						className={ classNames(
+							'woocommerce-chart__type-button',
+							{
+								'woocommerce-chart__type-button-selected':
+									query.chartType === 'bar',
+							}
+						) }
+						title={ __( 'Bar chart', 'woocommerce-admin' ) }
+						aria-checked={ query.chartType === 'bar' }
+						role="menuitemradio"
+						tabIndex={ query.chartType === 'bar' ? 0 : -1 }
+						onClick={ handleTypeToggle( 'bar' ) }
+					>
+						<Gridicon icon="stats-alt" />
+					</Button>
+				</NavigableMenu>
+			</SectionHeader>
+			{ renderChartBlocks( { hiddenBlocks, path, query } ) }
+		</div>
 	);
 };
 
