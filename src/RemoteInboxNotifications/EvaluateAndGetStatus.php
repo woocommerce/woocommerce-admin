@@ -35,12 +35,12 @@ class EvaluateAndGetStatus {
 	public function evaluate( $spec, $current_status ) {
 		$evaluate_result = $this->rule_evaluator->evaluate( $spec->rules );
 
-		// Preunactioned notes should be the spec status if the spec passes,
+		// Pending notes should be the spec status if the spec passes,
 		// left alone otherwise.
-		if ( WC_Admin_Note::E_WC_ADMIN_NOTE_PREUNACTIONED === $current_status ) {
+		if ( WC_Admin_Note::E_WC_ADMIN_NOTE_PENDING === $current_status ) {
 			return $evaluate_result
 				? $spec->status
-				: WC_Admin_Note::E_WC_ADMIN_NOTE_PREUNACTIONED;
+				: WC_Admin_Note::E_WC_ADMIN_NOTE_PENDING;
 		}
 
 		// When allow_redisplay isn't set, just leave the note alone.
