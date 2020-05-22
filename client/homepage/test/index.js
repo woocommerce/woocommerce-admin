@@ -11,7 +11,7 @@ jest.mock( 'homepage/stats-overview', () => jest.fn().mockReturnValue( null ) );
 jest.mock( 'task-list', () => jest.fn().mockReturnValue( '[TaskList]' ) );
 
 describe( 'Homepage Layout', () => {
-	it( 'should show TaskList placeholder when loading', () => {
+	it( 'should not show TaskList placeholder when loading', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList
@@ -20,8 +20,8 @@ describe( 'Homepage Layout', () => {
 			/>
 		);
 
-		const placeholder = container.querySelector( '.woocommerce-task-card.is-loading' );
-		expect( placeholder ).not.toBeNull();
+		const placeholder = container.querySelector( '.woocommerce-task-card' );
+		expect( placeholder ).toBeNull();
 	} );
 
 	it( 'should show TaskList inline', async () => {
@@ -60,5 +60,33 @@ describe( 'Homepage Layout', () => {
 		// Expect that the <TaskList /> is there though.
 		const taskList = await screen.findByText( '[TaskList]' )
 		expect( taskList ).toBeDefined();
+	} );
+
+	it( 'should not show TaskList when user has hidden', () => {
+		render(
+			<Layout
+				requestingTaskList={ false }
+				taskListComplete={ false }
+				taskListHidden
+				query={ {} }
+			/>
+		);
+
+		const taskList = screen.queryByText( '[TaskList]' )
+		expect( taskList ).toBeNull();
+	} );
+
+	it( 'should not show TaskList when it is complete', () => {
+		render(
+			<Layout
+				requestingTaskList={ false }
+				taskListComplete
+				taskListHidden={ false }
+				query={ {} }
+			/>
+		);
+
+		const taskList = screen.queryByText( '[TaskList]' )
+		expect( taskList ).toBeNull();
 	} );
 } );

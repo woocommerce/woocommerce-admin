@@ -101,11 +101,11 @@ export const Layout = ( props ) => {
 
 	const renderTaskList = () => {
 		if ( requestingTaskList ) {
-			return <TaskListPlaceholder />;
+			return;
 		}
 
 		return (
-			<Suspense fallback={ <Spinner /> }>
+			<Suspense fallback={ <TaskListPlaceholder /> }>
 				<TaskList query={ query } />
 			</Suspense>
 		);
