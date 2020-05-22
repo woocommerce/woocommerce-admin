@@ -64,18 +64,6 @@
 		}
 	}
 
-	// .components-button {
-	// 	fill: currentColor;
-
-	// 	&:not(:disabled) {
-	// 		&:hover,
-	// 		&:active,
-	// 		&:focus {
-	// 			fill: currentColor;
-	// 		}
-	// 	}
-	// }
-
 	.components-button.is-default:not(.is-primary) {
 		color: $gray-text;
 		fill: currentColor;
