@@ -9,8 +9,6 @@ namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Loader;
-
 /**
  * Specs data source poller class.
  * This handles polling specs from JSON endpoints, and
@@ -26,10 +24,6 @@ class DataSourcePoller {
 	 * specs that no longer exist in the data sources.
 	 */
 	public static function poll_data_sources() {
-		if ( ! Loader::is_feature_enabled( 'remote-inbox-notifications' ) ) {
-			return;
-		}
-
 		$specs = array();
 
 		// Note that this merges the specs from the data sources based on the slug - last one wins.
