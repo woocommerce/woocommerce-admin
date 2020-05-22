@@ -57,8 +57,8 @@ export const Layout = ( props ) => {
 		};
 	}, [] );
 
-	const { query, requestingTaskList, taskListHidden } = props;
-	const isTaskListEnabled = taskListHidden === false;
+	const { query, requestingTaskList, taskListComplete, taskListHidden } = props;
+	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
 
 	const renderColumns = () => {
@@ -131,6 +131,10 @@ Layout.propTypes = {
 	 */
 	requestingTaskList: PropTypes.bool.isRequired,
 	/**
+	 * If the task list has been completed.
+	 */
+	taskListComplete: PropTypes.bool,
+	/**
 	 * If the task list is hidden.
 	 */
 	taskListHidden: PropTypes.bool,
@@ -149,13 +153,16 @@ export default compose(
 
 		if ( isOnboardingEnabled() ) {
 			const options = getOptions( [
+				'woocommerce_task_list_complete',
 				'woocommerce_task_list_hidden',
 			] );
 			
 			return {
 				requestingTaskList: isGetOptionsRequesting( [
+					'woocommerce_task_list_complete',
 					'woocommerce_task_list_hidden',
 				] ),
+				taskListComplete: Boolean( get( options, [ 'woocommerce_task_list_complete' ] ) ),
 				taskListHidden: get( options, [ 'woocommerce_task_list_hidden' ] ) === 'yes',
 			};
 		}
