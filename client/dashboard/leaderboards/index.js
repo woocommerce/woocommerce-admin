@@ -27,6 +27,53 @@ import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
+const renderLeaderboardToggles = ( { allLeaderboards, hiddenBlocks, onToggleHiddenBlock } ) => {
+	return allLeaderboards.map( ( leaderboard ) => {
+		const checked = ! hiddenBlocks.includes(
+			leaderboard.id
+		);
+		return (
+			<MenuItem
+				checked={ checked }
+				isCheckbox
+				isClickable
+				key={ leaderboard.id }
+				onInvoke={ () => {
+					onToggleHiddenBlock( leaderboard.id )();
+					recordEvent(
+						'dash_leaderboards_toggle',
+						{
+							status: checked ? 'off' : 'on',
+							key: leaderboard.id,
+						}
+					);
+				} }
+			>
+				{ leaderboard.label }
+			</MenuItem>
+		);
+	} );
+};
+
+const renderLeaderboards = ( { allLeaderboards, hiddenBlocks, query, rowsPerTable } ) => {
+	return allLeaderboards.map( ( leaderboard ) => {
+		if ( hiddenBlocks.includes( leaderboard.id ) ) {
+			return undefined;
+		}
+
+		return (
+			<Leaderboard
+				headers={ leaderboard.headers }
+				id={ leaderboard.id }
+				key={ leaderboard.id }
+				query={ query }
+				title={ leaderboard.label }
+				totalRows={ rowsPerTable }
+			/>
+		);
+	} );
+};
+
 const Leaderboards = ( props ) => {
 	const {
 		allLeaderboards,
@@ -65,31 +112,7 @@ const Leaderboards = ( props ) => {
 					<MenuTitle>
 						{ __( 'Leaderboards', 'woocommerce-admin' ) }
 					</MenuTitle>
-					{ allLeaderboards.map( ( leaderboard ) => {
-						const checked = ! hiddenBlocks.includes(
-							leaderboard.id
-						);
-						return (
-							<MenuItem
-								checked={ checked }
-								isCheckbox
-								isClickable
-								key={ leaderboard.id }
-								onInvoke={ () => {
-									onToggleHiddenBlock( leaderboard.id )();
-									recordEvent(
-										'dash_leaderboards_toggle',
-										{
-											status: checked ? 'off' : 'on',
-											key: leaderboard.id,
-										}
-									);
-								} }
-							>
-								{ leaderboard.label }
-							</MenuItem>
-						);
-					} ) }
+					{ renderLeaderboardToggles( { allLeaderboards, hiddenBlocks, onToggleHiddenBlock } ) }
 					<SelectControl
 						className="woocommerce-dashboard__dashboard-leaderboards__select"
 						label={ __(
@@ -125,25 +148,6 @@ const Leaderboards = ( props ) => {
 		/>
 	);
 
-	const renderLeaderboards = () => {
-		return allLeaderboards.map( ( leaderboard ) => {
-			if ( hiddenBlocks.includes( leaderboard.id ) ) {
-				return undefined;
-			}
-
-			return (
-				<Leaderboard
-					headers={ leaderboard.headers }
-					id={ leaderboard.id }
-					key={ leaderboard.id }
-					query={ query }
-					title={ leaderboard.label }
-					totalRows={ rowsPerTable }
-				/>
-			);
-		} );
-	}
-
 	return (
 		<Fragment>
 			<div className="woocommerce-dashboard__dashboard-leaderboards">
@@ -154,7 +158,7 @@ const Leaderboards = ( props ) => {
 					menu={ renderMenu() }
 				/>
 				<div className="woocommerce-dashboard__columns">
-					{ renderLeaderboards() }
+					{ renderLeaderboards( { allLeaderboards, hiddenBlocks, query, rowsPerTable } ) }
 				</div>
 			</div>
 		</Fragment>
