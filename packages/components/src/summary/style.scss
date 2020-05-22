@@ -290,6 +290,13 @@ $inner-border: $core-grey-light-500;
 	line-height: 1.4em;
 	text-decoration: none;
 
+	&.components-button {
+		height: auto;
+		padding: $spacing;
+		align-items: flex-start;
+	}
+
+
 	&:hover {
 		background-color: $core-grey-light-200;
 	}
