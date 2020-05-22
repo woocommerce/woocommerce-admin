@@ -10,6 +10,7 @@
 			.components-card__header.is-size-large {
 				min-height: unset;
 				padding-top: 0;
+				display: grid;
 				grid-template-columns: auto 24px;
 			}
 
