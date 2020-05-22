@@ -135,7 +135,7 @@ const DashboardCharts = ( props ) => {
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const [ chartType, setChartType ] = useState( userPrefs.dashboard_chart_type || 'line' );
 	const [ chartInterval, setChartInterval ] = useState( userPrefs.dashboard_chart_interval || 'day' );
-	const query = { ...props.query, chartType, chartInterval };
+	const query = { ...props.query, chartType, interval: chartInterval };
 
 	const handleTypeToggle = ( type ) => {
 		return () => {
