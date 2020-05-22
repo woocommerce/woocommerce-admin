@@ -16,11 +16,6 @@ import { get } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
- * WooCommerce dependencies
- */
-import { Spinner } from '@woocommerce/components';
-
-/**
  * Internal dependencies
  */
 import QuickLinks from '../quick-links';
