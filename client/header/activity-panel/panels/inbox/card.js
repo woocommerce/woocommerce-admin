@@ -94,17 +94,17 @@ class InboxNoteCard extends Component {
 		onToggle();
 	}
 
-	closeDismissModal( acepted ) {
+	closeDismissModal( noteNameDismissConfirmation ) {
 		const { dismissType } = this.state;
 		const { note, screen } = this.props;
 		const noteNameDismissAll = dismissType === 'all' ? true : false;
-		const noteNameDismissAllConfirmation = acepted ? true : false;
 
 		recordEvent( 'inbox_action_dismiss', {
 			note_name: note.name,
 			note_title: note.title,
 			note_name_dismiss_all: noteNameDismissAll,
-			note_name_dismiss_all_confirmation: noteNameDismissAllConfirmation,
+			note_name_dismiss_confirmation:
+				noteNameDismissConfirmation || false,
 			screen,
 		} );
 

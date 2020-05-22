@@ -50,7 +50,7 @@ class InboxNoteAction extends Component {
 			} else {
 				removeAllNotes();
 			}
-			actionCallback();
+			actionCallback( true );
 		} else {
 			this.setState( { inAction }, () =>
 				triggerNoteAction( noteId, action.id )
