@@ -65,6 +65,7 @@
 		width: 40px;
 		height: 38px;
 		align-self: center;
+		color: $core-grey-dark-500;
 
 		@include breakpoint( '<400px' ) {
 			position: absolute;
