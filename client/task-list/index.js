@@ -17,6 +17,7 @@ import { withDispatch } from '@wordpress/data';
 import {
 	Icon,
 	check,
+	chevronRight,
 } from '@wordpress/icons';
 
 /**
@@ -313,11 +314,13 @@ class TaskDashboard extends Component {
 				task.className
 			);
 			task.before = (
-				<Icon icon={ task.completed ? check : check } />
+				<div className="woocommerce-task__icon">
+					{ task.completed && <Icon icon={ check } /> }
+				</div>
 			);
 			task.after = ( task.time
 				? <span className="woocommerce-task-estimated-time">{ task.time }</span>
-				: <i className="material-icons-outlined">chevron_right</i>
+				: <Icon icon={ chevronRight } />
 			);
 
 			if ( ! task.onClick ) {
