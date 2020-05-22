@@ -288,22 +288,6 @@ class TaskDashboard extends Component {
 		);
 	}
 
-	onSkipStoreSetup = () => {
-		const completedTaskKeys = this.getTasks()
-			.filter( ( x ) => x.completed )
-			.map( ( x ) => x.key );
-
-		recordEvent( 'tasklist_skip', {
-			completed_tasks_count: completedTaskKeys.length,
-			completed_tasks: completedTaskKeys,
-			reason: 'skip',
-		} );
-
-		this.props.updateOptions( {
-			woocommerce_task_list_hidden: 'yes',
-		} );
-	};
-
 	render() {
 		const { query } = this.props;
 		const { isCartModalOpen, isWelcomeModalOpen } = this.state;
