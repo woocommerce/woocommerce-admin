@@ -1,0 +1,6 @@
+const TYPES = {
+	SET_PROFILE_ITEMS: 'SET_PROFILE_ITEMS',
+	SET_ERROR: 'SET_ERROR',
+};
+
+export default TYPES;
