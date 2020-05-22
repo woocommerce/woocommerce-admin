@@ -29,7 +29,6 @@ exports[`Tag <Tag label="foo" popoverContents={ <p>This is a popover</p> } /> sh
   <button
     className="components-button woocommerce-tag__text"
     id="woocommerce-tag__label-2"
-    isToggled={false}
     onClick={[Function]}
     type="button"
   >
