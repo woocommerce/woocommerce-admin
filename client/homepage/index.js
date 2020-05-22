@@ -8,6 +8,7 @@ import { Suspense, lazy } from '@wordpress/element';
  * WooCommerce dependencies
  */
 import { Spinner } from '@woocommerce/components';
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -38,7 +39,7 @@ export default compose(
 			return;
 		}
 
-		const { getProfileItems } = select( 'wc-api' );
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const profileItems = getProfileItems();
 
 		return { profileItems };

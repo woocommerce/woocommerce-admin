@@ -17,7 +17,7 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { pluginNames, PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -25,7 +25,6 @@ import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from 'lib/tracks';
 import { getCountryCode } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
-import { pluginNames } from 'wc-api/onboarding/constants';
 import { getPaymentMethods } from './methods';
 
 class Payments extends Component {

@@ -15,6 +15,7 @@ import { withDispatch } from '@wordpress/data';
  */
 import { Card, H } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -48,17 +49,17 @@ class Theme extends Component {
 	componentDidUpdate( prevProps ) {
 		const {
 			isError,
-			isGetProfileItemsRequesting,
+			isUpdatingProfileItems,
 			createNotice,
 		} = this.props;
 		const { chosen } = this.state;
 		const isRequestSuccessful =
-			! isGetProfileItemsRequesting &&
-			prevProps.isGetProfileItemsRequesting &&
+			! isUpdatingProfileItems &&
+			prevProps.isUpdatingProfileItems &&
 			! isError &&
 			chosen;
 		const isRequestError =
-			! isGetProfileItemsRequesting && prevProps.isRequesting && isError;
+			! isUpdatingProfileItems && prevProps.isRequesting && isError;
 
 		if ( isRequestSuccessful ) {
 			/* eslint-disable react/no-did-update-set-state */
@@ -425,18 +426,18 @@ export default compose(
 	withSelect( ( select ) => {
 		const {
 			getProfileItems,
-			getProfileItemsError,
-			isGetProfileItemsRequesting,
-		} = select( 'wc-api' );
+			getOnboardingError,
+			isResolving,
+		} = select( ONBOARDING_STORE_NAME );
 
 		return {
-			isError: Boolean( getProfileItemsError() ),
-			isGetProfileItemsRequesting: isGetProfileItemsRequesting(),
+			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
+			isUpdatingProfileItems: isResolving( 'updateProfileItems' ),
 			profileItems: getProfileItems(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateProfileItems } = dispatch( 'wc-api' );
+		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {

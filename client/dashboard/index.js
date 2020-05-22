@@ -3,14 +3,19 @@
  */
 import { Component, Suspense, lazy } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
+
+/**
+ * WooCommerce dependencies
+ */
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { Spinner } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import withSelect from 'wc-api/with-select';
 import { isOnboardingEnabled } from 'dashboard/utils';
-import { Spinner } from '@woocommerce/components';
 
 const CustomizableDashboard = lazy( () =>
 	import( /* webpackChunkName: "customizable-dashboard" */ './customizable' )
@@ -54,7 +59,7 @@ export default compose(
 			return;
 		}
 
-		const { getProfileItems } = select( 'wc-api' );
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const profileItems = getProfileItems();
 
 		return { profileItems };
