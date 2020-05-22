@@ -29,12 +29,12 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	}
 
 	/**
-	 * Tests that for a preunactioned note evaling to true, status is changed
+	 * Tests that for a pending note evaling to true, status is changed
 	 * to the spec status.
 	 *
 	 * @group fast
 	 */
-	public function test_preunactioned_note_eval_to_true() {
+	public function test_pending_note_eval_to_true() {
 		$spec                    = $this->get_spec( false );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
 			new PassingRuleEvaluator()
@@ -46,20 +46,20 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	}
 
 	/**
-	 * Tests that for a preunactioned note evaluating to false, status is
-	 * left at preunactioned.
+	 * Tests that for a pending note evaluating to false, status is
+	 * left at pending.
 	 *
 	 * @group fast
 	 */
-	public function test_preunactioned_note_eval_to_false() {
+	public function test_pending_note_eval_to_false() {
 		$spec                    = $this->get_spec( false );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
 			new FailingRuleEvaluator()
 		);
 
-		$result = $evaluate_and_get_status->evaluate( $spec, 'preunactioned' );
+		$result = $evaluate_and_get_status->evaluate( $spec, 'pending' );
 
-		$this->assertEquals( 'preunactioned', $result );
+		$this->assertEquals( 'pending', $result );
 	}
 
 	/**
@@ -131,36 +131,36 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	}
 
 	/**
-	 * Tests that for a preunactioned note eval to true with allow_redirect
+	 * Tests that for a pending note eval to true with allow_redirect
 	 * set, status is changed to unactioned.
 	 *
 	 * @group fast
 	 */
-	public function test_preunactioned_note_eval_to_true_with_allow_redirect_set() {
+	public function test_pending_note_eval_to_true_with_allow_redirect_set() {
 		$spec                    = $this->get_spec( true );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
 			new PassingRuleEvaluator()
 		);
 
-		$result = $evaluate_and_get_status->evaluate( $spec, 'preunactioned' );
+		$result = $evaluate_and_get_status->evaluate( $spec, 'pending' );
 
 		$this->assertEquals( 'unactioned', $result );
 	}
 
 	/**
-	 * Tests that for a preunactioned note eval to false with allow_redirect
-	 * set, status is left as preunactioned.
+	 * Tests that for a pending note eval to false with allow_redirect
+	 * set, status is left as pending.
 	 *
 	 * @group fast
 	 */
-	public function test_preunactioned_note_eval_to_false_with_allow_redirect_set() {
+	public function test_pending_note_eval_to_false_with_allow_redirect_set() {
 		$spec                    = $this->get_spec( true );
 		$evaluate_and_get_status = new EvaluateAndGetStatus(
 			new FailingRuleEvaluator()
 		);
 
-		$result = $evaluate_and_get_status->evaluate( $spec, 'preunactioned' );
+		$result = $evaluate_and_get_status->evaluate( $spec, 'pending' );
 
-		$this->assertEquals( 'preunactioned', $result );
+		$this->assertEquals( 'pending', $result );
 	}
 }

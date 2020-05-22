@@ -27,7 +27,7 @@ class SpecRunner {
 		$existing_note_ids = $data_store->get_notes_with_name( $spec->slug );
 		if ( 0 === count( $existing_note_ids ) ) {
 			$note = new WC_Admin_Note();
-			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_PREUNACTIONED );
+			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_PENDING );
 		} else {
 			$note = new WC_Admin_Note( $existing_note_ids[0] );
 		}
