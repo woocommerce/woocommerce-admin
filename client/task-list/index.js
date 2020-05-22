@@ -102,13 +102,19 @@ class TaskDashboard extends Component {
 	}
 
 	getTasks() {
-		const { profileItems, query, taskListPayments } = this.props;
+		const {
+			profileItems,
+			query,
+			taskListPayments,
+			installedPlugins,
+		} = this.props;
 
 		return getAllTasks( {
 			profileItems,
 			options: taskListPayments,
 			query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
+			installedPlugins,
 		} ).filter( ( task ) => task.visible );
 	}
 
