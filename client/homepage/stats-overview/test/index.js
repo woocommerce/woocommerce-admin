@@ -108,8 +108,6 @@ describe( 'StatsOverview toggle and persist stat preference', () => {
 				},
 			} );
 		} );
-
-		// expect();
 	} );
 } );
 

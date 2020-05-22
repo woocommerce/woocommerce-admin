@@ -37,10 +37,6 @@
 		color: $studio-pink;
 	}
 
-	a.components-button.is-bu {
-		color: $studio-white;
-	}
-
 	a:hover,
 	a:active,
 	a:focus,
@@ -68,17 +64,17 @@
 		}
 	}
 
-	.components-button {
-		fill: currentColor;
+	// .components-button {
+	// 	fill: currentColor;
 
-		&:not(:disabled) {
-			&:hover,
-			&:active,
-			&:focus {
-				fill: currentColor;
-			}
-		}
-	}
+	// 	&:not(:disabled) {
+	// 		&:hover,
+	// 		&:active,
+	// 		&:focus {
+	// 			fill: currentColor;
+	// 		}
+	// 	}
+	// }
 
 	.components-button.is-default:not(.is-primary) {
 		color: $gray-text;
