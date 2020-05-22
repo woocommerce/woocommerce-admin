@@ -155,12 +155,7 @@
 
 .woocommerce-inbox-message {
 	margin: 20px;
-	-ms-box-orient: horizontal;
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
 	&.banner {
-		-webkit-flex-direction: column;
 		flex-direction: column;
 		img {
 			width: 100%;
@@ -168,10 +163,7 @@
 		}
 	}
 	&.thumbnail {
-		display: -moz-flex;
-		display: -webkit-flex;
 		display: flex;
-		-webkit-flex-direction: row-reverse;
 		flex-direction: row-reverse;
 		img {
 			width: 128px;
