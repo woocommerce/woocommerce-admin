@@ -14,11 +14,7 @@ import {
 	Modal,
 } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
-import {
-	Icon,
-	check,
-	chevronRight,
-} from '@wordpress/icons';
+import { Icon, check, chevronRight } from '@wordpress/icons';
 
 /**
  * WooCommerce dependencies
@@ -205,7 +201,11 @@ class TaskDashboard extends Component {
 					label={ __( 'Task List Options', 'woocommerce-admin' ) }
 					renderContent={ () => (
 						<div className="woocommerce-task-card__section-controls">
-							<Button onClick={ () => this.hideTaskCard( 'remove_card' ) }>
+							<Button
+								onClick={ () =>
+									this.hideTaskCard( 'remove_card' )
+								}
+							>
 								{ __( 'Hide this', 'woocommerce-admin' ) }
 							</Button>
 						</div>
@@ -302,9 +302,14 @@ class TaskDashboard extends Component {
 					{ task.completed && <Icon icon={ check } /> }
 				</div>
 			);
-			task.after = ( task.time
-				? <span className="woocommerce-task-estimated-time">{ task.time }</span>
-				: <Icon icon={ chevronRight } />
+			task.after = task.time ? (
+				! task.completed && (
+					<span className="woocommerce-task-estimated-time">
+						{ task.time }
+					</span>
+				)
+			) : (
+				<Icon icon={ chevronRight } />
 			);
 
 			if ( ! task.onClick ) {
@@ -313,11 +318,12 @@ class TaskDashboard extends Component {
 
 			return task;
 		} );
-		const numCompleteTasks = listTasks.filter( task => task.completed ).length;
+		const numCompleteTasks = listTasks.filter( ( task ) => task.completed )
+			.length;
 		const progressBarClass = classNames(
 			'woocommerce-task-card__progress-bar',
 			{
-				'completed': listTasks.length === numCompleteTasks,
+				completed: listTasks.length === numCompleteTasks,
 			}
 		);
 
@@ -330,14 +336,22 @@ class TaskDashboard extends Component {
 						} )
 					) : (
 						<Fragment>
-							<Card size="large" className="woocommerce-task-card">
+							<Card
+								size="large"
+								className="woocommerce-task-card"
+							>
 								<progress
 									className={ progressBarClass }
 									max={ listTasks.length }
 									value={ numCompleteTasks }
 								/>
 								<CardHeader>
-									<H>{ __( 'Store setup', 'woocommerce-admin' ) }</H>
+									<H>
+										{ __(
+											'Store setup',
+											'woocommerce-admin'
+										) }
+									</H>
 									{ this.renderMenu() }
 								</CardHeader>
 								<CardBody>
