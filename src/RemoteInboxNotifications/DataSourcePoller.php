@@ -28,7 +28,8 @@ class DataSourcePoller {
 
 		// Note that this merges the specs from the data sources based on the slug - last one wins.
 		foreach ( self::DATA_SOURCES as $url ) {
-			self::read_data_source( $url, $specs );
+			$specs_from_data_source = self::read_data_source( $url, $specs );
+			self::merge_specs( $specs_from_data_source, $specs );
 		}
 
 		// Persist the specs as an option.
@@ -39,32 +40,41 @@ class DataSourcePoller {
 	}
 
 	/**
-	 * Read a single data source and insert the read specs into $specs, using
-	 * the spec slug as the key. So if the same or multiple data source has
-	 * a spec with the same slug, the last spec wins.
+	 * Read a single data source and return the read specs
 	 *
-	 * @param string $url   The URL to read the specs from.
-	 * @param array  $specs The specs to read in to.
+	 * @param string $url The URL to read the specs from.
+	 *
+	 * @return array The specs that have been read from the data source.
 	 */
-	private static function read_data_source( $url, &$specs ) {
+	private static function read_data_source( $url ) {
 		$response = wp_remote_get( $url );
 
 		if ( is_wp_error( $response ) ) {
-			return;
+			return [];
 		}
 
-		$body = $response['body'];
-		$json = json_decode( $body );
+		$body  = $response['body'];
+		$specs = json_decode( $body );
 
-		if ( null === $json ) {
-			return;
+		if ( null === $specs ) {
+			return [];
 		}
 
-		if ( ! is_array( $json ) ) {
-			return;
+		if ( ! is_array( $specs ) ) {
+			return [];
 		}
 
-		foreach ( $json as $spec ) {
+		return $specs;
+	}
+
+	/**
+	 * Merge the specs.
+	 *
+	 * @param Array $specs_to_merge_in The specs to merge in to $specs.
+	 * @param Array $specs             The master list of specs.
+	 */
+	private static function merge_specs( $specs_to_merge_in, &$specs ) {
+		foreach ( $specs_to_merge_in as $spec ) {
 			$slug           = $spec->slug;
 			$specs[ $slug ] = $spec;
 		}
