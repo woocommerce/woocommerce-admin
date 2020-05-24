@@ -34,9 +34,6 @@ class DataSourcePoller {
 
 		// Persist the specs as an option.
 		update_option( RemoteInboxNotificationsEngine::SPECS_OPTION_NAME, $specs );
-
-		// Run the engine.
-		RemoteInboxNotificationsEngine::run();
 	}
 
 	/**

@@ -33,14 +33,14 @@ class SpecRunner {
 		}
 
 		// Evaluate the spec and get the new note status.
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
-			new RuleEvaluator(
-				new GetRuleProcessor()
-			)
+		$rule_evaluator = new RuleEvaluator(
+			new GetRuleProcessor()
 		);
-		$status                  = $evaluate_and_get_status->evaluate(
+
+		$status = EvaluateAndGetStatus::evaluate(
 			$spec,
-			$note->get_status()
+			$note->get_status(),
+			$rule_evaluator
 		);
 
 		// Get the matching locale or fall back to en-US.

@@ -35,12 +35,13 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	 * @group fast
 	 */
 	public function test_pending_note_eval_to_true() {
-		$spec                    = $this->get_spec( false );
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
+		$spec = $this->get_spec( false );
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'unactioned',
 			new PassingRuleEvaluator()
 		);
-
-		$result = $evaluate_and_get_status->evaluate( $spec, 'unactioned' );
 
 		$this->assertEquals( 'unactioned', $result );
 	}
@@ -52,12 +53,13 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	 * @group fast
 	 */
 	public function test_pending_note_eval_to_false() {
-		$spec                    = $this->get_spec( false );
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
+		$spec = $this->get_spec( false );
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'pending',
 			new FailingRuleEvaluator()
 		);
-
-		$result = $evaluate_and_get_status->evaluate( $spec, 'pending' );
 
 		$this->assertEquals( 'pending', $result );
 	}
@@ -69,12 +71,13 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	 * @group fast
 	 */
 	public function test_snoozed_note_eval_to_true_without_allow_redisplay() {
-		$spec                    = $this->get_spec( false );
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
+		$spec = $this->get_spec( false );
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'snoozed',
 			new PassingRuleEvaluator()
 		);
-
-		$result = $evaluate_and_get_status->evaluate( $spec, 'snoozed' );
 
 		$this->assertEquals( 'snoozed', $result );
 	}
@@ -86,12 +89,13 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	 * @group fast
 	 */
 	public function test_snoozed_note_eval_to_false_without_allow_redisplay() {
-		$spec                    = $this->get_spec( false );
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
+		$spec = $this->get_spec( false );
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'snoozed',
 			new FailingRuleEvaluator()
 		);
-
-		$result = $evaluate_and_get_status->evaluate( $spec, 'snoozed' );
 
 		$this->assertEquals( 'snoozed', $result );
 	}
@@ -103,12 +107,13 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	 * @group fast
 	 */
 	public function test_actioned_note_eval_to_true_with_allow_redisplay_set() {
-		$spec                    = $this->get_spec( true );
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
+		$spec = $this->get_spec( true );
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'actioned',
 			new PassingRuleEvaluator()
 		);
-
-		$result = $evaluate_and_get_status->evaluate( $spec, 'actioned' );
 
 		$this->assertEquals( 'unactioned', $result );
 	}
@@ -120,12 +125,13 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	 * @group fast
 	 */
 	public function test_actioned_note_eval_to_false_with_allow_redisplay_set() {
-		$spec                    = $this->get_spec( true );
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
+		$spec = $this->get_spec( true );
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'actioned',
 			new FailingRuleEvaluator()
 		);
-
-		$result = $evaluate_and_get_status->evaluate( $spec, 'actioned' );
 
 		$this->assertEquals( 'actioned', $result );
 	}
@@ -137,12 +143,13 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	 * @group fast
 	 */
 	public function test_pending_note_eval_to_true_with_allow_redirect_set() {
-		$spec                    = $this->get_spec( true );
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
+		$spec = $this->get_spec( true );
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'pending',
 			new PassingRuleEvaluator()
 		);
-
-		$result = $evaluate_and_get_status->evaluate( $spec, 'pending' );
 
 		$this->assertEquals( 'unactioned', $result );
 	}
@@ -154,12 +161,13 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	 * @group fast
 	 */
 	public function test_pending_note_eval_to_false_with_allow_redirect_set() {
-		$spec                    = $this->get_spec( true );
-		$evaluate_and_get_status = new EvaluateAndGetStatus(
+		$spec = $this->get_spec( true );
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'pending',
 			new FailingRuleEvaluator()
 		);
-
-		$result = $evaluate_and_get_status->evaluate( $spec, 'pending' );
 
 		$this->assertEquals( 'pending', $result );
 	}
