@@ -20,13 +20,13 @@ class DataSourcePoller {
 	);
 
 	/**
-	 * Polls the data sources for specs, persists those specs, and delete any
-	 * specs that no longer exist in the data sources.
+	 * Reads the data sources for specs and persists those specs.
 	 */
-	public static function poll_data_sources() {
+	public static function read_specs_from_data_sources() {
 		$specs = array();
 
-		// Note that this merges the specs from the data sources based on the slug - last one wins.
+		// Note that this merges the specs from the data sources based on the
+		// slug - last one wins.
 		foreach ( self::DATA_SOURCES as $url ) {
 			$specs_from_data_source = self::read_data_source( $url, $specs );
 			self::merge_specs( $specs_from_data_source, $specs );
