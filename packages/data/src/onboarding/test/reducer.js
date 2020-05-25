@@ -17,12 +17,34 @@ describe( 'plugins reducer', () => {
 	} );
 
 	it( 'should handle SET_PROFILE_ITEMS', () => {
-		const state = reducer( defaultState, {
-			type: TYPES.SET_PROFILE_ITEMS,
-			profileItems: { propertyName: 'value' },
-		} );
+		const state = reducer(
+			{
+				profileItems: { previousItem: 'value' },
+			},
+			{
+				type: TYPES.SET_PROFILE_ITEMS,
+				profileItems: { propertyName: 'value' },
+			}
+		);
 
-		expect( state.errors ).not.toHaveProperty( 'getProfileItems' );
+		expect( state.profileItems ).toHaveProperty( 'previousItem' );
+		expect( state.profileItems ).toHaveProperty( 'propertyName' );
+		expect( state.profileItems.propertyName ).toBe( 'value' );
+	} );
+
+	it( 'should handle SET_PROFILE_ITEMS with replace', () => {
+		const state = reducer(
+			{
+				profileItems: { previousItem: 'value' },
+			},
+			{
+				type: TYPES.SET_PROFILE_ITEMS,
+				profileItems: { propertyName: 'value' },
+				replace: true,
+			}
+		);
+
+		expect( state.profileItems ).not.toHaveProperty( 'previousItem' );
 		expect( state.profileItems ).toHaveProperty( 'propertyName' );
 		expect( state.profileItems.propertyName ).toBe( 'value' );
 	} );

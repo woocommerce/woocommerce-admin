@@ -16,7 +16,7 @@ const onboarding = (
 				...state,
 				profileItems: replace
 					? profileItems
-					: { ...state.profileItems, profileItems },
+					: { ...state.profileItems, ...profileItems },
 			};
 			break;
 		case TYPES.SET_ERROR:
