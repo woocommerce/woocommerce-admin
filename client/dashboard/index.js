@@ -4,11 +4,16 @@
 import { Component, Suspense, lazy } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
+import { identity } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { getSetting } from '@woocommerce/wc-admin-settings';
+import {
+	ONBOARDING_STORE_NAME,
+	withOnboardingHydration,
+} from '@woocommerce/data';
 import { Spinner } from '@woocommerce/components';
 
 /**
@@ -54,6 +59,9 @@ class Dashboard extends Component {
 }
 
 export default compose(
+	getSetting( 'onboarding', {} ).profile
+		? withOnboardingHydration( getSetting( 'onboarding', {} ).profile )
+		: identity,
 	withSelect( ( select ) => {
 		if ( ! isOnboardingEnabled() ) {
 			return;
