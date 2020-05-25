@@ -68,6 +68,7 @@ class InboxPanel extends Component {
 				return (
 					<InboxNotePlaceholder
 						className={ 'banner message-is-unread' }
+						key={ note.id }
 					/>
 				);
 			}
