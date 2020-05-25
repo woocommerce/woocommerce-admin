@@ -302,15 +302,16 @@ class TaskDashboard extends Component {
 					{ task.completed && <Icon icon={ check } /> }
 				</div>
 			);
-			task.after = task.time ? (
-				! task.completed && (
+
+			if ( ! task.completed ) {
+				task.after = task.time ? (
 					<span className="woocommerce-task-estimated-time">
 						{ task.time }
 					</span>
-				)
-			) : (
-				<Icon icon={ chevronRight } />
-			);
+				) : (
+					<Icon icon={ chevronRight } />
+				);
+			}
 
 			if ( ! task.onClick ) {
 				task.onClick = () => updateQueryString( { task: task.key } );
