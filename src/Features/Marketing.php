@@ -51,6 +51,7 @@ class Marketing {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_pages' ) );
+		add_filter( 'woocommerce_admin_plugins_whitelist', array( $this, 'filter_plugins_whitelist' ) );
 
 		if ( ! is_admin() ) {
 			return;
@@ -200,6 +201,25 @@ class Marketing {
 		}
 
 		return $posts;
+	}
+
+	/**
+	 * Filter the WP Admin whitelisted plugins value.
+	 *
+	 * @param array $plugins
+	 *
+	 * @return array
+	 */
+	public function filter_plugins_whitelist( $plugins ) {
+		return array_merge( $plugins, array(
+				'automatewoo'                         => 'automatewoo/automatewoo.php',
+				'facebook-for-woocommerce'            => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
+				'hubwoo-integration'                  => 'TBD',
+				'kliken-marketing-for-google'         => 'kliken-marketing-for-google/kliken-marketing-for-google.php',
+				'mailchimp-for-woocommerce'           => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
+				'woocommerce-amazon-ebay-integration' => 'woocommerce-amazon-ebay-integration/woocommerce-amazon-ebay-integration.php',
+			)
+		);
 	}
 
 }
