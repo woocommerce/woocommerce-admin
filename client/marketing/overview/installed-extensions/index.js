@@ -3,13 +3,14 @@
  */
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withSelect, useSelect, useDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
 
 /**
  * WooCommerce dependencies
  */
 import { Card } from '@woocommerce/components';
+import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -21,14 +22,17 @@ import { STORE_KEY } from '../../data/constants';
 const InstalledExtensions = ( props ) => {
 	const { plugins } = props;
 
-	const activatePlugin = ( pluginSlug ) => {
-		const { activateInstalledPlugin } = props;
-		activateInstalledPlugin( pluginSlug );
-	}
+	const isActivatingPlugins = useSelect( ( select ) => {
+		return select( PLUGINS_STORE_NAME ).isPluginsRequesting( 'activatePlugins' );
+	} );
+	const { activatePlugins } = useDispatch( PLUGINS_STORE_NAME );
+	const { createNotice } = useDispatch( 'core/notices' );
 
-	const isActivatingPlugin = ( pluginSlug ) => {
-		const { activatingPlugins } = props;
-		return activatingPlugins.includes( pluginSlug );
+	const activatePlugin = async ( pluginSlug ) => {
+		const activate = await activatePlugins( [ pluginSlug ] );
+		if ( activate.status !== 'success' ) {
+			createNotice( 'error', __( 'There was an error trying to activate the extension.', 'woocommerce-admin' ) );
+		}
 	}
 
 	if ( plugins.length === 0 ) {
@@ -46,7 +50,7 @@ const InstalledExtensions = ( props ) => {
 						key={ plugin.slug }
 						{ ...plugin }
 						activatePlugin={ () => activatePlugin( plugin.slug ) }
-						isLoading={ isActivatingPlugin( plugin.slug ) }
+						isLoading={ isActivatingPlugins }
 					/>
 				);
 			} ) }
@@ -59,26 +63,14 @@ InstalledExtensions.propTypes = {
 	 * Array of installed plugin objects.
 	 */
 	plugins: PropTypes.arrayOf( PropTypes.object ).isRequired,
-	/**
-	 * Array of plugins that are currently activating.
-	 */
-	activatingPlugins: PropTypes.arrayOf( PropTypes.string ).isRequired,
 };
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getInstalledPlugins, getActivatingPlugins } = select( STORE_KEY );
+		const { getInstalledPlugins } = select( STORE_KEY );
 
 		return {
 			plugins: getInstalledPlugins(),
-			activatingPlugins: getActivatingPlugins(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { activateInstalledPlugin } = dispatch( STORE_KEY );
-
-		return {
-			activateInstalledPlugin,
 		};
 	} )
 )( InstalledExtensions );
