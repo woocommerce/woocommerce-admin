@@ -96,7 +96,7 @@ export const Layout = ( props ) => {
 
 	const renderTaskList = () => {
 		if ( requestingTaskList ) {
-			return;
+			return <TaskListPlaceholder />;
 		}
 
 		return (
@@ -157,7 +157,7 @@ export default compose(
 					'woocommerce_task_list_complete',
 					'woocommerce_task_list_hidden',
 				] ),
-				taskListComplete: Boolean( get( options, [ 'woocommerce_task_list_complete' ] ) ),
+				taskListComplete: get( options, [ 'woocommerce_task_list_complete' ] ),
 				taskListHidden: get( options, [ 'woocommerce_task_list_hidden' ] ) === 'yes',
 			};
 		}

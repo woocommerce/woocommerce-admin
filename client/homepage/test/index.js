@@ -11,7 +11,7 @@ jest.mock( 'homepage/stats-overview', () => jest.fn().mockReturnValue( null ) );
 jest.mock( 'task-list', () => jest.fn().mockReturnValue( '[TaskList]' ) );
 
 describe( 'Homepage Layout', () => {
-	it( 'should not show TaskList placeholder when loading', () => {
+	it( 'should show TaskList placeholder when loading', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList
@@ -20,8 +20,8 @@ describe( 'Homepage Layout', () => {
 			/>
 		);
 
-		const placeholder = container.querySelector( '.woocommerce-task-card' );
-		expect( placeholder ).toBeNull();
+		const placeholder = container.querySelector( '.woocommerce-task-card.is-loading' );
+		expect( placeholder ).not.toBeNull();
 	} );
 
 	it( 'should show TaskList inline', async () => {
