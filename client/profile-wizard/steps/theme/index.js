@@ -47,11 +47,7 @@ class Theme extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const {
-			isError,
-			isUpdatingProfileItems,
-			createNotice,
-		} = this.props;
+		const { isError, isUpdatingProfileItems, createNotice } = this.props;
 		const { chosen } = this.state;
 		const isRequestSuccessful =
 			! isUpdatingProfileItems &&
@@ -427,12 +423,14 @@ export default compose(
 		const {
 			getProfileItems,
 			getOnboardingError,
-			isResolving,
+			isOnboardingRequesting,
 		} = select( ONBOARDING_STORE_NAME );
 
 		return {
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
-			isUpdatingProfileItems: isResolving( 'updateProfileItems' ),
+			isUpdatingProfileItems: isOnboardingRequesting(
+				'updateProfileItems'
+			),
 			profileItems: getProfileItems(),
 		};
 	} ),

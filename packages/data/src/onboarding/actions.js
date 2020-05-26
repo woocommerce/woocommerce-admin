@@ -18,6 +18,14 @@ export function setError( selector, error ) {
 	};
 }
 
+export function setIsRequesting( selector, isRequesting ) {
+	return {
+		type: TYPES.SET_IS_REQUESTING,
+		selector,
+		isRequesting,
+	};
+}
+
 export function setProfileItems( profileItems, replace = false ) {
 	return {
 		type: TYPES.SET_PROFILE_ITEMS,
@@ -27,6 +35,8 @@ export function setProfileItems( profileItems, replace = false ) {
 }
 
 export function* updateProfileItems( items ) {
+	yield setIsRequesting( 'updateProfileItems', true );
+
 	try {
 		const results = yield apiFetch( {
 			path: `${ WC_ADMIN_NAMESPACE }/onboarding/profile`,
@@ -36,11 +46,13 @@ export function* updateProfileItems( items ) {
 
 		if ( results && results.status === 'success' ) {
 			yield setProfileItems( items );
+			yield setIsRequesting( 'updateProfileItems', false );
 			return results;
 		}
 
 		throw new Error();
 	} catch ( error ) {
 		yield setError( 'updateProfileItems', error );
+		yield setIsRequesting( 'updateProfileItems', false );
 	}
 }

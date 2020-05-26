@@ -7,8 +7,9 @@ const onboarding = (
 	state = {
 		profileItems: {},
 		errors: {},
+		requesting: {},
 	},
-	{ type, profileItems, replace, error, selector }
+	{ type, profileItems, replace, error, isRequesting, selector }
 ) => {
 	switch ( type ) {
 		case TYPES.SET_PROFILE_ITEMS:
@@ -25,6 +26,15 @@ const onboarding = (
 				errors: {
 					...state.errors,
 					[ selector ]: error,
+				},
+			};
+			break;
+		case TYPES.SET_IS_REQUESTING:
+			state = {
+				...state,
+				requesting: {
+					...state.requesting,
+					[ selector ]: isRequesting,
 				},
 			};
 			break;

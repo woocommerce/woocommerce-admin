@@ -5,3 +5,7 @@ export const getProfileItems = ( state ) => {
 export const getOnboardingError = ( state, selector ) => {
 	return state.errors[ selector ] || false;
 };
+
+export const isOnboardingRequesting = ( state, selector ) => {
+	return state.requesting[ selector ] || false;
+};
