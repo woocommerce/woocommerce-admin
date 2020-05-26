@@ -17,7 +17,11 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import { pluginNames, PLUGINS_STORE_NAME } from '@woocommerce/data';
+import {
+	ONBOARDING_STORE_NAME,
+	pluginNames,
+	PLUGINS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -348,8 +352,8 @@ class Payments extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const {
-			getProfileItems,
 			getOptions,
 			getUpdateOptionsError,
 			isUpdateOptionsRequesting,
