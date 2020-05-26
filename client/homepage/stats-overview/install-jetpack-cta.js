@@ -87,7 +87,7 @@ function InstallJetpackCta( props ) {
 		);
 	}
 
-	if ( isDismissed || isJetpackInstalled || isJetpackActivated ) {
+	if ( isDismissed || ( isJetpackInstalled && isJetpackActivated ) ) {
 		return null;
 	}
 
@@ -106,7 +106,9 @@ function InstallJetpackCta( props ) {
 			</p>
 			<footer>
 				<Button isPrimary onClick={ install } isBusy={ isInstalling }>
-					{ __( 'Get Jetpack', 'woocommerce-admin' ) }
+					{ ! isJetpackInstalled
+						? __( 'Get Jetpack', 'woocommerce-admin' )
+						: __( 'Activate Jetpack', 'woocommerce-admin' ) }
 				</Button>
 				<Button onClick={ dismiss } isBusy={ isInstalling }>
 					{ __( 'No thanks', 'woocommerce-admin' ) }
