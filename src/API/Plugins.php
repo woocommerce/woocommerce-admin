@@ -202,8 +202,8 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return WP_Error|array Plugin Status
 	 */
 	public function install_plugins( $request ) {
-		$allowed_plugins  = self::get_allowed_plugins();
-		$plugins          = explode( ',', $request['plugins'] );
+		$allowed_plugins = self::get_allowed_plugins();
+		$plugins         = explode( ',', $request['plugins'] );
 
 		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );

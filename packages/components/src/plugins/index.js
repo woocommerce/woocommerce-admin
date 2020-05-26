@@ -76,6 +76,7 @@ export class Plugins extends Component {
 		Object.keys( errors ).forEach( ( plugin ) => {
 			createNotice(
 				'error',
+				// Replace the slug with a plugin name if a constant exists.
 				pluginNames[ plugin ]
 					? errors[ plugin ][ 0 ].replace(
 							`\`${ plugin }\``,
@@ -108,12 +109,12 @@ export class Plugins extends Component {
 
 	render() {
 		const {
-			hasErrors,
 			isRequesting,
 			skipText,
 			autoInstall,
 			pluginSlugs,
 		} = this.props;
+		const { hasErrors } = this.state;
 
 		if ( hasErrors ) {
 			return (
