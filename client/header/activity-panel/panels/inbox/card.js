@@ -31,11 +31,11 @@ class InboxNoteCard extends Component {
 		this.state = {
 			isDismissModalOpen: false,
 			dismissType: null,
-			screen: this.getScreenName(),
 		};
 		this.openDismissModal = this.openDismissModal.bind( this );
 		this.closeDismissModal = this.closeDismissModal.bind( this );
 		this.bodyNotificationRef = createRef();
+		this.screen = this.getScreenName();
 	}
 
 	componentDidMount() {
@@ -60,13 +60,12 @@ class InboxNoteCard extends Component {
 		const innerLink = event.target.href;
 		if ( innerLink ) {
 			const { note } = props;
-			const { screen } = this.state;
 
 			recordEvent( 'wcadmin_inbox_action_click', {
 				note_name: note.name,
 				note_title: note.title,
 				note_content_inner_link: innerLink,
-				screen,
+				screen: this.screen,
 			} );
 		}
 	}
@@ -96,14 +95,13 @@ class InboxNoteCard extends Component {
 	onVisible( isVisible ) {
 		if ( isVisible && ! this.hasBeenSeen ) {
 			const { note } = this.props;
-			const { screen } = this.state;
 
 			recordEvent( 'inbox_note_view', {
 				note_content: note.content,
 				note_name: note.name,
 				note_title: note.title,
 				note_type: note.type,
-				screen,
+				screen: this.screen,
 			} );
 
 			this.hasBeenSeen = true;
@@ -119,7 +117,7 @@ class InboxNoteCard extends Component {
 	}
 
 	closeDismissModal( noteNameDismissConfirmation ) {
-		const { dismissType, screen } = this.state;
+		const { dismissType } = this.state;
 		const { note } = this.props;
 		const noteNameDismissAll = dismissType === 'all' ? true : false;
 
@@ -129,7 +127,7 @@ class InboxNoteCard extends Component {
 			note_name_dismiss_all: noteNameDismissAll,
 			note_name_dismiss_confirmation:
 				noteNameDismissConfirmation || false,
-			screen,
+			screen: this.screen,
 		} );
 
 		this.setState( {
