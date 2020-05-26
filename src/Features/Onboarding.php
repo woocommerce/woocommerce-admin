@@ -151,10 +151,20 @@ class Onboarding {
 			return;
 		}
 
-		if ( ! class_exists( '\WC_Helper_API' ) && method_exists( '\WC_Helper_API', 'put' ) ) {
+		if ( ! class_exists( '\WC_Helper_API' ) || ! method_exists( '\WC_Helper_API', 'put' ) ) {
 			return;
 		}
 
+		if ( ! class_exists( '\WC_Helper_Options' ) ) {
+			return;
+		}
+
+		$auth = \WC_Helper_Options::get( 'auth' );
+		if ( empty( $auth['access_token'] ) || empty( $auth['access_token_secret'] ) ) {
+			return false;
+		}
+
+		$profile       = get_option( self::PROFILE_DATA_OPTION, array() );
 		$base_location = wc_get_base_location();
 		$defaults      = array(
 			'plugins'             => 'skipped',
@@ -170,8 +180,16 @@ class Onboarding {
 			'store_location'      => $base_location['country'],
 			'default_currency'    => get_woocommerce_currency(),
 		);
-		$profile       = get_option( self::PROFILE_DATA_OPTION, array() );
-		$body          = wp_parse_args( $profile, $defaults );
+
+		// Prepare industries as an array of slugs if they are in array format.
+		if ( isset( $profile['industry'] ) && is_array( $profile['industry'] ) ) {
+			$industry_slugs = array();
+			foreach ( $profile['industry'] as $industry ) {
+				$industry_slugs[] = is_array( $industry ) ? $industry['slug'] : $industry;
+			}
+			$profile['industry'] = $industry_slugs;
+		}
+		$body = wp_parse_args( $profile, $defaults );
 
 		\WC_Helper_API::put(
 			'profile',
