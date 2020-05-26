@@ -31,7 +31,6 @@ class InboxNoteCard extends Component {
 		this.state = {
 			isDismissModalOpen: false,
 			dismissType: null,
-			screen: this.getScreenName(),
 		};
 		this.openDismissModal = this.openDismissModal.bind( this );
 		this.closeDismissModal = this.closeDismissModal.bind( this );
@@ -59,8 +58,7 @@ class InboxNoteCard extends Component {
 	handleBodyClick( event, props ) {
 		const innerLink = event.target.href;
 		if ( innerLink ) {
-			const { note } = props;
-			const { screen } = this.state;
+			const { note, screen } = props;
 
 			recordEvent( 'wcadmin_inbox_action_click', {
 				note_name: note.name,
@@ -71,29 +69,10 @@ class InboxNoteCard extends Component {
 		}
 	}
 
-	getScreenName() {
-		let screenName = '';
-		const urlParams = Object.fromEntries(
-			new URLSearchParams( window.location.search )
-		);
-
-		if ( urlParams.page ) {
-			const currentPage =
-				urlParams.page === 'wc-admin' ? 'home_screen' : urlParams.page;
-			screenName = urlParams.path
-				? urlParams.path.replace( /\//g, '_' ).substring( 1 )
-				: currentPage;
-		} else if ( urlParams.post_type ) {
-			screenName = urlParams.post_type;
-		}
-		return screenName;
-	}
-
 	// Trigger a view Tracks event when the note is seen.
 	onVisible( isVisible ) {
 		if ( isVisible && ! this.hasBeenSeen ) {
-			const { note } = this.props;
-			const { screen } = this.state;
+			const { note, screen } = this.props;
 
 			recordEvent( 'inbox_note_view', {
 				note_content: note.content,
@@ -116,8 +95,8 @@ class InboxNoteCard extends Component {
 	}
 
 	closeDismissModal( noteNameDismissConfirmation ) {
-		const { dismissType, screen } = this.state;
-		const { note } = this.props;
+		const { dismissType } = this.state;
+		const { note, screen } = this.props;
 		const noteNameDismissAll = dismissType === 'all' ? true : false;
 
 		recordEvent( 'inbox_action_dismiss', {
@@ -346,6 +325,7 @@ class InboxNoteCard extends Component {
 }
 
 InboxNoteCard.propTypes = {
+	screen: PropTypes.string,
 	note: PropTypes.shape( {
 		id: PropTypes.number,
 		status: PropTypes.string,
