@@ -7,6 +7,7 @@ import TYPES from '../action-types';
 const defaultState = {
 	profileItems: {},
 	errors: {},
+	requesting: {},
 };
 
 describe( 'plugins reducer', () => {
@@ -58,6 +59,18 @@ describe( 'plugins reducer', () => {
 
 		/* eslint-disable dot-notation */
 		expect( state.errors[ 'getProfileItems' ].code ).toBe( 'error' );
+		/* eslint-enable dot-notation */
+	} );
+
+	it( 'should handle SET_IS_REQUESTING', () => {
+		const state = reducer( defaultState, {
+			type: TYPES.SET_IS_REQUESTING,
+			selector: 'updateProfileItems',
+			isRequesting: true,
+		} );
+
+		/* eslint-disable dot-notation */
+		expect( state.requesting[ 'updateProfileItems' ] ).toBeTruthy();
 		/* eslint-enable dot-notation */
 	} );
 } );
