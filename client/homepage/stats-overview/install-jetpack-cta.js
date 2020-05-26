@@ -31,7 +31,7 @@ function InstallJetpackCta( props ) {
 	const [ isInstalling, setIsInstalling ] = useState( false );
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDismissed, setIsDismissed ] = useState(
-		getCurrentUserData().homepage_stats.installJetpackDismissed
+		( getCurrentUserData().homepage_stats || {} ).installJetpackDismissed
 	);
 	const plugins = getSetting( 'plugins', {
 		installedPlugins: [],
@@ -50,11 +50,12 @@ function InstallJetpackCta( props ) {
 			return;
 		}
 
-		updateCurrentUserData( {
-			homepage_stats: {
-				installJetpackDismissed: true,
-			},
-		} );
+		const homepageStats = getCurrentUserData().homepage_stats || {};
+
+		homepageStats.installJetpackDismissed = true;
+
+		updateCurrentUserData( { homepage_stats: homepageStats } );
+
 		setIsDismissed( true );
 		recordEvent( 'statsoverview_dismiss_install_jetpack' );
 	}

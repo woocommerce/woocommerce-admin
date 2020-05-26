@@ -47,8 +47,9 @@ export const StatsOverview = ( { userPrefs, updateCurrentUserData } ) => {
 
 	const toggleStat = ( stat ) => {
 		const nextHiddenStats = xor( hiddenStats, [ stat ] );
+		userPrefs.hiddenStats = nextHiddenStats;
 		updateCurrentUserData( {
-			homepage_stats: { hiddenStats: nextHiddenStats },
+			homepage_stats: userPrefs,
 		} );
 		recordEvent( 'statsoverview_indicators_toggle', {
 			indicator_name: stat,
