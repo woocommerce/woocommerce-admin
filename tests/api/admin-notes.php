@@ -341,6 +341,16 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
+	 * Test deleting a single note without permission. It should fail.
+	 */
+	public function test_delete_single_note_without_permission() {
+		$response = $this->server->dispatch( new WP_REST_Request( 'DELETE', $this->endpoint . '/delete/3' ) );
+		$note     = $response->get_data();
+
+		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	/**
 	 * Test undiong a single note delete.
 	 */
 	public function test_undo_single_notes_delete() {
@@ -382,6 +392,16 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 2, count( $notes ) );
+	}
+
+	/**
+	 * Test deleting all the notes without permission. It should fail.
+	 */
+	public function test_delete_all_notes_without_permission() {
+		$response = $this->server->dispatch( new WP_REST_Request( 'DELETE', $this->endpoint . '/delete/all' ) );
+		$notes    = $response->get_data();
+
+		$this->assertEquals( 401, $response->get_status() );
 	}
 
 	/**

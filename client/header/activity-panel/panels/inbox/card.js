@@ -2,7 +2,12 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { cloneElement, Component, Fragment } from '@wordpress/element';
+import {
+	cloneElement,
+	Component,
+	createRef,
+	Fragment,
+} from '@wordpress/element';
 import { Button, Dropdown, Modal } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import VisibilitySensor from 'react-visibility-sensor';
@@ -29,6 +34,61 @@ class InboxNoteCard extends Component {
 		};
 		this.openDismissModal = this.openDismissModal.bind( this );
 		this.closeDismissModal = this.closeDismissModal.bind( this );
+		this.bodyNotificationRef = createRef();
+		this.screen = this.getScreenName();
+	}
+
+	componentDidMount() {
+		if ( this.bodyNotificationRef.current ) {
+			this.bodyNotificationRef.current.addEventListener(
+				'click',
+				( event ) => this.handleBodyClick( event, this.props )
+			);
+		}
+	}
+
+	componentWillUnmount() {
+		if ( this.bodyNotificationRef.current ) {
+			this.bodyNotificationRef.current.removeEventListener(
+				'click',
+				( event ) => this.handleBodyClick( event, this.props )
+			);
+		}
+	}
+
+	handleBodyClick( event, props ) {
+		const innerLink = event.target.href;
+		if ( innerLink ) {
+			const { note } = props;
+
+			recordEvent( 'wcadmin_inbox_action_click', {
+				note_name: note.name,
+				note_title: note.title,
+				note_content_inner_link: innerLink,
+				screen: this.screen,
+			} );
+		}
+	}
+
+	getScreenName() {
+		let screenName = '';
+		const urlParams = new URLSearchParams( window.location.search );
+
+		if ( urlParams.has( 'page' ) ) {
+			const currentPage =
+				urlParams.get( 'page' ) === 'wc-admin'
+					? 'home_screen'
+					: urlParams.get( 'page' );
+			screenName = urlParams.has( 'path' )
+				? urlParams
+						.get( 'path' )
+						.replace( /\//g, '_' )
+						.substring( 1 )
+				: currentPage;
+		} else if ( urlParams.has( 'post_type' ) ) {
+			screenName = urlParams.get( 'post_type' );
+		}
+		return screenName;
 	}
 
 	// Trigger a view Tracks event when the note is seen.
@@ -41,6 +101,7 @@ class InboxNoteCard extends Component {
 				note_name: note.name,
 				note_title: note.title,
 				note_type: note.type,
+				screen: this.screen,
 			} );
 
 			this.hasBeenSeen = true;
@@ -55,7 +116,20 @@ class InboxNoteCard extends Component {
 		onToggle();
 	}
 
-	closeDismissModal() {
+	closeDismissModal( noteNameDismissConfirmation ) {
+		const { dismissType } = this.state;
+		const { note } = this.props;
+		const noteNameDismissAll = dismissType === 'all' ? true : false;
+
+		recordEvent( 'inbox_action_dismiss', {
+			note_name: note.name,
+			note_title: note.title,
+			note_name_dismiss_all: noteNameDismissAll,
+			note_name_dismiss_confirmation:
+				noteNameDismissConfirmation || false,
+			screen: this.screen,
+		} );
+
 		this.setState( {
 			isDismissModalOpen: false,
 		} );
@@ -241,6 +315,7 @@ class InboxNoteCard extends Component {
 									dangerouslySetInnerHTML={ sanitizeHTML(
 										content
 									) }
+									ref={ this.bodyNotificationRef }
 								/>
 							</Section>
 						</div>
