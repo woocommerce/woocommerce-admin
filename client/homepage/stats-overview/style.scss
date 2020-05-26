@@ -112,8 +112,11 @@ article.woocommerce-stats-overview__install-jetpack-promo {
 			background: transparent;
 			border: 1px solid $action-color;
 
-			&:hover {
-				color: $action-color;
+			&:hover,
+			&:focus {
+				color: $core-grey-dark-500;
+				background-color: #fafafa;
+				border-color: #999;
 			}
 
 			&.is-busy:not(:disabled) {
