@@ -12,11 +12,11 @@ use Automattic\WooCommerce\Admin\RemoteInboxNotifications\WCAdminActiveForRulePr
  */
 class WC_Tests_RemoteInboxNotifications_WCAdminActiveForRuleProcessor extends WC_Unit_Test_Case {
 	/**
-	 * Less than 8 days evaluates to false
+	 * Less than 8 days evaluates to true
 	 *
 	 * @group fast
 	 */
-	public function test_less_than_8_days_evaluates_to_false() {
+	public function test_less_than_8_days_evaluates_to_true() {
 		$processor = new WCAdminActiveForRuleProcessor(
 			new MockWCAdminActiveForProvider()
 		);
@@ -30,15 +30,15 @@ class WC_Tests_RemoteInboxNotifications_WCAdminActiveForRuleProcessor extends WC
 
 		$result = $processor->process( $rule, new stdClass() );
 
-		$this->assertEquals( false, $result );
+		$this->assertEquals( true, $result );
 	}
 
 	/**
-	 * Greater than 8 days evaluates to true
+	 * Greater than 8 days evaluates to false
 	 *
 	 * @group fast
 	 */
-	public function test_greater_than_8_days_evaluates_to_true() {
+	public function test_greater_than_8_days_evaluates_to_false() {
 		$processor = new WCAdminActiveForRuleProcessor(
 			new MockWCAdminActiveForProvider()
 		);
@@ -52,6 +52,6 @@ class WC_Tests_RemoteInboxNotifications_WCAdminActiveForRuleProcessor extends WC
 
 		$result = $processor->process( $rule, new stdClass() );
 
-		$this->assertEquals( true, $result );
+		$this->assertEquals( false, $result );
 	}
 }
