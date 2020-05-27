@@ -23,6 +23,7 @@ function read( resourceNames, fetch = apiFetch ) {
 
 function update( resourceNames, data, fetch = apiFetch ) {
 	return [
+		...undoRemoveNotesRequesting( resourceNames, data ),
 		...updateNote( resourceNames, data, fetch ),
 		...triggerAction( resourceNames, data, fetch ),
 	];
@@ -37,7 +38,10 @@ function removeAll( resourceNames, fetch = apiFetch ) {
 }
 
 function undoRemoveAll( resourceNames, data, fetch = apiFetch ) {
-	return [ ...undoRemoveAllNotes( resourceNames, data, fetch ) ];
+	return [
+		...undoRemoveNotesRequesting( resourceNames, data ),
+		...undoRemoveAllNotes( resourceNames, data, fetch ),
+	];
 }
 
 function readNoteQueries( resourceNames, fetch ) {
@@ -111,7 +115,13 @@ function updateNote( resourceNames, data, fetch ) {
 		return [
 			fetch( { path: url, method: 'PUT', data: noteFields } )
 				.then( ( note ) => {
-					return { [ resourceName + ':' + noteId ]: { data: note } };
+					const response = {
+						[ resourceName + ':' + noteId ]: { data: note },
+					};
+					if ( ! data.note.is_deleted ) {
+						response[ 'note-undo-dismiss' ] = { requesting: false };
+					}
+					return response;
 				} )
 				.catch( ( error ) => {
 					return { [ resourceName + ':' + noteId ]: { error } };
@@ -175,6 +185,7 @@ function undoRemoveAllNotes( resourceNames, data, fetch ) {
 						result[ resourceKey ] = { data: note };
 						return result;
 					}, {} );
+					notes[ 'note-undo-dismiss' ] = { requesting: false };
 					return notes;
 				} )
 				.catch( ( error ) => {
@@ -198,6 +209,17 @@ function triggerAction( resourceNames, data, fetch ) {
 				.catch( ( error ) => {
 					return { [ 'note:' + noteId ]: { error } };
 				} ),
+		];
+	}
+	return [];
+}
+
+function undoRemoveNotesRequesting( resourceNames, data ) {
+	const resourceName = 'note';
+	const note = data.note ? data.note.noteId : 'undo-dismiss-all';
+	if ( resourceNames.includes( resourceName ) && note ) {
+		return [
+			{ [ resourceName + '-undo-dismiss' ]: { requesting: true, note } },
 		];
 	}
 	return [];
