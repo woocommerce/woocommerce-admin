@@ -37,6 +37,9 @@ export function* getOption( name ) {
 
 	const url = WC_ADMIN_NAMESPACE + '/options?options=' + names;
 	fetches[ names ] = true;
-	const result =  yield apiFetch( { path: url } );
+	const result = yield apiFetch( { path: url } );
 	yield receiveOptions( result );
+
+	// Delete the fetch after to allow wp data to handle cache invalidation.
+	delete fetches[ names ];
 }
