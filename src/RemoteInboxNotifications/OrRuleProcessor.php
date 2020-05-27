@@ -30,7 +30,7 @@ class OrRuleProcessor implements RuleProcessorInterface {
 	 * Performs an OR operation on the rule's left and right operands.
 	 *
 	 * @param object $rule The specific rule being processed by this rule processor.
-	 * @param object $data RINDS data.
+	 * @param object $data Persistent data.
 	 *
 	 * @return bool The result of the operation.
 	 */

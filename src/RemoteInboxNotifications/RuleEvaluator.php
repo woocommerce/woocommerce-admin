@@ -31,7 +31,7 @@ class RuleEvaluator {
 	 * rule evaluates to false.
 	 *
 	 * @param array  $rules The rules being processed.
-	 * @param object $data  RINDS data.
+	 * @param object $data  Persistent data.
 	 *
 	 * @return bool The result of the operation.
 	 */

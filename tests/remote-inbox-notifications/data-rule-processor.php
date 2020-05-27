@@ -21,7 +21,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor = new DataRuleProcessor();
 		$rule      = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "=",
 				"value": true
@@ -43,7 +43,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor              = new DataRuleProcessor();
 		$rule                   = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "=",
 				"value": true
@@ -66,7 +66,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor                = new DataRuleProcessor();
 		$rule                     = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "@@@",
 				"value": true
@@ -89,7 +89,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor                = new DataRuleProcessor();
 		$rule                     = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "=",
 				"value": true
@@ -112,7 +112,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor                = new DataRuleProcessor();
 		$rule                     = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "=",
 				"value": true
@@ -135,7 +135,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor                = new DataRuleProcessor();
 		$rule                     = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "=",
 				"value": "yes there are"
@@ -158,7 +158,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor                = new DataRuleProcessor();
 		$rule                     = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "=",
 				"value": "yes there are"
@@ -181,7 +181,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor                = new DataRuleProcessor();
 		$rule                     = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "=",
 				"value": 123
@@ -204,7 +204,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor                = new DataRuleProcessor();
 		$rule                     = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "there_are_products",
 				"operation": "=",
 				"value": 123
@@ -227,7 +227,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": "<",
 				"value": 100
@@ -250,7 +250,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": "<",
 				"value": 100
@@ -273,7 +273,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": ">",
 				"value": 100
@@ -296,7 +296,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": ">",
 				"value": 100
@@ -319,7 +319,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": ">=",
 				"value": 100
@@ -342,7 +342,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": ">=",
 				"value": 100
@@ -365,7 +365,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": "<=",
 				"value": 100
@@ -388,7 +388,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": "<=",
 				"value": 100
@@ -411,7 +411,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": "!=",
 				"value": 100
@@ -434,7 +434,7 @@ class WC_Tests_RemoteInboxNotifications_DataRuleProcessor extends WC_Unit_Test_C
 		$processor           = new DataRuleProcessor();
 		$rule                = json_decode(
 			'{
-				"type": "rinds_data",
+				"type": "data",
 				"index": "product_count",
 				"operation": "!=",
 				"value": 100
