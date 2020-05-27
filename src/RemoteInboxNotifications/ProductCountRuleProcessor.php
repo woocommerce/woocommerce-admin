@@ -34,7 +34,7 @@ class ProductCountRuleProcessor {
 	 */
 	public function process( $rule, $data ) {
 		$products = $this->product_query->get_products();
-		$count    = count( $products );
+		$count    = $products->total;
 
 		return ComparisonOperation::compare(
 			$count,
