@@ -3,11 +3,16 @@
  */
 import { compose } from '@wordpress/compose';
 import { Suspense, lazy } from '@wordpress/element';
+import { identity } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
 import { Spinner } from '@woocommerce/components';
+import {
+	withOptionsHydration,
+	OPTIONS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -19,7 +24,9 @@ const ProfileWizard = lazy( () =>
 	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
 );
 
-const Homepage = ( { profileItems, query } ) => {
+const Homepage = ( { profileItems, query, blogname, blogdescription } ) => {
+	console.log(blogname);
+	console.log(blogdescription);
 	if ( isOnboardingEnabled() && ! profileItems.completed ) {
 		return (
 			<Suspense fallback={ <Spinner /> }>
@@ -32,6 +39,11 @@ const Homepage = ( { profileItems, query } ) => {
 };
 
 export default compose(
+	window.wcSettings.preloadOptions
+		? withOptionsHydration( {
+				...window.wcSettings.preloadOptions,
+		  } )
+		: identity,
 	withSelect( ( select ) => {
 		if ( ! isOnboardingEnabled() ) {
 			return;
@@ -40,6 +52,10 @@ export default compose(
 		const { getProfileItems } = select( 'wc-api' );
 		const profileItems = getProfileItems();
 
-		return { profileItems };
+		const { getOption } = select( OPTIONS_STORE_NAME );
+		const blogname = getOption( 'blogname' );
+		const blogdescription = getOption( 'blogdescription' );
+
+		return { profileItems, blogname, blogdescription };
 	} )
 )( Homepage );
