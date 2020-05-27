@@ -265,11 +265,10 @@ class InboxNoteCard extends Component {
 			) );
 		};
 
-		const actions = getButtonsFromActions( note );
-		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
+		const actionsList = getButtonsFromActions( note );
 
 		return (
-			actions && (
+			actionsList && (
 				<Fragment>
 					{ actionsList.map( ( item, i ) =>
 						cloneElement( item, { key: i } )
