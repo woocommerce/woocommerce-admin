@@ -37,11 +37,11 @@ class WCAdminActiveForRuleProcessor implements RuleProcessorInterface {
 	 */
 	public function process( $rule, $stored_state ) {
 		$active_for_seconds = $this->wcadmin_active_for_provider->get_wcadmin_active_for_in_seconds();
-		$rule_seconds       = $rule->days * 24 * 60 * 60;
+		$rule_seconds       = $rule->days * DAY_IN_SECONDS;
 
 		return ComparisonOperation::compare(
-			$rule_seconds,
 			$active_for_seconds,
+			$rule_seconds,
 			$rule->operation
 		);
 	}

@@ -15,7 +15,6 @@ class MockWCAdminActiveForProvider {
 	 * @return number Number of seconds.
 	 */
 	public function get_wcadmin_active_for_in_seconds() {
-		// Return 8 days in seconds.
-		return 8 * 24 * 60 * 60;
+		return 8 * DAY_IN_SECONDS;
 	}
 }
