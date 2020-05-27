@@ -2,12 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	cloneElement,
-	Component,
-	createRef,
-	Fragment,
-} from '@wordpress/element';
+import { Component, createRef, Fragment } from '@wordpress/element';
 import { Button, Dropdown, Modal } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import VisibilitySensor from 'react-visibility-sensor';
@@ -256,12 +251,8 @@ class InboxNoteCard extends Component {
 			if ( ! noteActions ) {
 				return [];
 			}
-			return noteActions.map( ( action ) => (
-				<NoteAction
-					key={ noteId }
-					noteId={ noteId }
-					action={ action }
-				/>
+			return noteActions.map( ( action, index ) => (
+				<NoteAction key={ index } noteId={ noteId } action={ action } />
 			) );
 		};
 
@@ -269,11 +260,7 @@ class InboxNoteCard extends Component {
 
 		return (
 			actionsList && (
-				<Fragment>
-					{ actionsList.map( ( item, i ) =>
-						cloneElement( item, { key: i } )
-					) }
-				</Fragment>
+				<Fragment>{ actionsList.map( ( action ) => action ) }</Fragment>
 			)
 		);
 	}
