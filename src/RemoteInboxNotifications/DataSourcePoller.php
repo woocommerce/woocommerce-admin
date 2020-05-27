@@ -46,7 +46,7 @@ class DataSourcePoller {
 	private static function read_data_source( $url ) {
 		$response = wp_remote_get( $url );
 
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
 			return [];
 		}
 
