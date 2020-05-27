@@ -26,14 +26,16 @@ export const withOptionsHydration = ( data ) => ( OriginalComponent ) => {
 			} = registry.dispatch( STORE_NAME );
 			const names = Object.keys( dataRef.current );
 
-			if (
-				! isResolving( 'getOptionsWithRequest', names ) &&
-				! hasFinishedResolution( 'getOptionsWithRequest', names )
-			) {
-				startResolution( 'getOptionsWithRequest', names );
-				receiveOptions( dataRef.current );
-				finishResolution( 'getOptionsWithRequest', names );
-			}
+			names.forEach( ( name ) => {
+				if (
+					! isResolving( 'getOption', [ name ] ) &&
+					! hasFinishedResolution( 'getOption', [ name ] )
+				) {
+					startResolution( 'getOption', [ name ] );
+					receiveOptions( { [ name ]: dataRef.current[ name ] } );
+					finishResolution( 'getOption', [ name ] );
+				}
+			} );
 		}, [] );
 
 		return <OriginalComponent { ...props } />;

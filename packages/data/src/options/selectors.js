@@ -27,6 +27,10 @@ export const getOptions = ( state, names ) => {
 	}, {} );
 };
 
+export const getOption = ( state, name ) => {
+	return state[ name ];
+};
+
 /**
  * Get options from state tree or make a request if unresolved.
  *
