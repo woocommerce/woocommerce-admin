@@ -30,7 +30,7 @@ class PublishAfterTimeRuleProcessor implements RuleProcessorInterface {
 	 * Process the rule.
 	 *
 	 * @param object $rule The specific rule being processed by this rule processor.
-	 * @param object $data RINDS data.
+	 * @param object $data Persistent data.
 	 *
 	 * @return bool Whether the rule passes or not.
 	 */

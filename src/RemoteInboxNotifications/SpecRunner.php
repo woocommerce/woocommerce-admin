@@ -19,7 +19,7 @@ class SpecRunner {
 	 * Run the spec.
 	 *
 	 * @param object $spec The spec to run.
-	 * @param object $data RINDS data.
+	 * @param object $data Persistent data.
 	 */
 	public static function run_spec( $spec, $data ) {
 		$data_store = \WC_Data_Store::load( 'admin-note' );
