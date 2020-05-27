@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Rule processor for sending when the provided plugins are activated.
  */
-class PluginsActivatedRuleProcessor {
+class PluginsActivatedRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Constructor.
 	 *
@@ -56,7 +56,7 @@ class PluginsActivatedRuleProcessor {
 		if ( ! isset( $rule->plugins ) || ! is_array( $rule->plugins ) ) {
 			return false;
 		}
-		
+
 		return true;
 	}
 }

@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Rule processor that negates the rules in the rule's operand.
  */
-class NotRuleProcessor {
+class NotRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Constructor.
 	 *

@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Rule processor for sending after a specified date/time.
  */
-class PublishAfterTimeRuleProcessor {
+class PublishAfterTimeRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Constructor.
 	 *

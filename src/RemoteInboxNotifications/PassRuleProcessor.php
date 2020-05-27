@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Rule processor that passes.
  */
-class PassRuleProcessor {
+class PassRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Passes the rule.
 	 *
@@ -24,7 +24,7 @@ class PassRuleProcessor {
 	public function process( $rule ) {
 		return true;
 	}
-	
+
 	/**
 	 * Validates the rule.
 	 *

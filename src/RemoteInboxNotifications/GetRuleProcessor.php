@@ -21,7 +21,7 @@ class GetRuleProcessor {
 	 *
 	 * @param string $rule_type The rule type.
 	 *
-	 * @return object The matching processor for the specified rule type, or a FailRuleProcessor if no matching processor is found.
+	 * @return RuleProcessorInterface The matching processor for the specified rule type, or a FailRuleProcessor if no matching processor is found.
 	 */
 	public static function get_processor( $rule_type ) {
 		switch ( $rule_type ) {

@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  * Rule processor that performs an OR operation on the rule's left and right
  * operands.
  */
-class OrRuleProcessor {
+class OrRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Constructor.
 	 *

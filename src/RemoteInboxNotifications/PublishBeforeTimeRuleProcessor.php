@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Rule processor for sending before a specified date/time.
  */
-class PublishBeforeTimeRuleProcessor {
+class PublishBeforeTimeRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Constructor.
 	 *
@@ -44,7 +44,7 @@ class PublishBeforeTimeRuleProcessor {
 		if ( ! isset( $rule->publish_before ) ) {
 			return false;
 		}
-		
+
 		return true;
 	}
 }

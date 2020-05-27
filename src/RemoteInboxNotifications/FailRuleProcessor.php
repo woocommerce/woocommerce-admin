@@ -12,11 +12,11 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Rule processor that fails.
  */
-class FailRuleProcessor {
+class FailRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Fails the rule.
 	 *
-	 * @param object $rule The specific rule being processed by this rule processor.
+	 * @param object $rule The rule to process.
 	 *
 	 * @return bool Always false.
 	 */

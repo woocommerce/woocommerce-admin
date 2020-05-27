@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  * Rule processor for sending when the provided plugin is activated and
  * matches the specified version.
  */
-class PluginVersionRuleProcessor {
+class PluginVersionRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Constructor.
 	 *
