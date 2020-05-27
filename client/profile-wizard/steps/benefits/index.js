@@ -303,14 +303,16 @@ export default compose(
 		const {
 			getOnboardingError,
 			getProfileItems,
-			isResolving,
+			isOnboardingRequesting,
 		} = select( ONBOARDING_STORE_NAME );
 
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
 
-		const isProfileItemsError = Boolean( getOnboardingError( 'updateProfileItems' ) );
+		const isProfileItemsError = Boolean(
+			getOnboardingError( 'updateProfileItems' )
+		);
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 
@@ -319,7 +321,7 @@ export default compose(
 			isProfileItemsError,
 			profileItems,
 			isJetpackConnected: isJetpackConnected(),
-			isRequesting: isResolving( 'updateProfileItems' ),
+			isRequesting: isOnboardingRequesting( 'updateProfileItems' ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
