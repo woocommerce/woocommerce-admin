@@ -41,6 +41,7 @@ export function* getOption( name ) {
 
 		const url = WC_ADMIN_NAMESPACE + '/options?options=' + names;
 		fetches[ names ] = yield apiFetch( { path: url } );
+		yield receiveOptions( fetches[ names ] );
 		return fetches[ names ];
 	}, 1 );
 }
