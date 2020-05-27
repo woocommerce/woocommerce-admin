@@ -1,8 +1,8 @@
 /**
  * External Dependencies
  */
-
 import { apiFetch } from '@wordpress/data-controls';
+import { getOptionsToRequest } from './controls';
 
 /**
  * Internal dependencies
@@ -24,24 +24,19 @@ export function* getOptionsWithRequest( names ) {
 	}
 }
 
-const optionsToRequest = [];
 const fetches = {};
 
 export function* getOption( name ) {
 	yield setIsRequesting( true );
-	optionsToRequest.push( name );
+	const names = yield getOptionsToRequest( name );
 
-	setTimeout( function* () {
-		const names = optionsToRequest.join(',');
-		const fetchPromise = fetches[ names ];
-		if ( fetchPromise ) {
-			const results = yield fetchPromise;
-			return results;
-		}
+	const fetchInProgress = fetches[ names ];
+	if ( fetchInProgress ) {
+		return;
+	}
 
-		const url = WC_ADMIN_NAMESPACE + '/options?options=' + names;
-		fetches[ names ] = yield apiFetch( { path: url } );
-		yield receiveOptions( fetches[ names ] );
-		return fetches[ names ];
-	}, 1 );
+	const url = WC_ADMIN_NAMESPACE + '/options?options=' + names;
+	fetches[ names ] = true;
+	const result =  yield apiFetch( { path: url } );
+	yield receiveOptions( result );
 }
