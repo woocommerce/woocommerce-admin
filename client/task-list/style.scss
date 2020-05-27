@@ -60,6 +60,7 @@
 		justify-content: center;
 		font-size: 14px;
 		font-weight: 500;
+		display: inline-block;
 
 		&:not(.is-primary) {
 			color: theme(button); // $theme-color
