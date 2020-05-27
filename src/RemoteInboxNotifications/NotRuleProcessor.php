@@ -34,4 +34,19 @@ class NotRuleProcessor {
 
 		return ! $evaluated_operand;
 	}
+
+	/**
+	 * Validates the rule.
+	 *
+	 * @param object $rule The rule to validate.
+	 *
+	 * @return bool Pass/fail.
+	 */
+	public function validate( $rule ) {
+		if ( ! isset( $rule->operand ) ) {
+			return false;
+		}
+
+		return true;
+	}
 }

@@ -25,6 +25,11 @@ class EvaluateAndGetStatus {
 	 * @return string The evaluated status.
 	 */
 	public static function evaluate( $spec, $current_status, $rule_evaluator ) {
+		// No rules should leave the note alone.
+		if ( ! isset( $spec->rules ) ) {
+			return $current_status;
+		}
+
 		$evaluated_result = $rule_evaluator->evaluate( $spec->rules );
 
 		// Pending notes should be the spec status if the spec passes,

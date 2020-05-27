@@ -44,4 +44,19 @@ class PluginsActivatedRuleProcessor {
 
 		return true;
 	}
+
+	/**
+	 * Validates the rule.
+	 *
+	 * @param object $rule The rule to validate.
+	 *
+	 * @return bool Pass/fail.
+	 */
+	public function validate( $rule ) {
+		if ( ! isset( $rule->plugins ) || ! is_array( $rule->plugins ) ) {
+			return false;
+		}
+		
+		return true;
+	}
 }

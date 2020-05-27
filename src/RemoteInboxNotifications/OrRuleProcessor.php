@@ -42,4 +42,19 @@ class OrRuleProcessor {
 
 		return false;
 	}
+
+	/**
+	 * Validates the rule.
+	 *
+	 * @param object $rule The rule to validate.
+	 *
+	 * @return bool Pass/fail.
+	 */
+	public function validate( $rule ) {
+		if ( ! isset( $rule->operands ) || ! is_array( $rule->operands ) ) {
+			return false;
+		}
+
+		return true;
+	}
 }

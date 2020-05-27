@@ -46,6 +46,10 @@ class SpecRunner {
 		// Get the matching locale or fall back to en-US.
 		$locale = self::get_locale( $spec->locales );
 
+		if ( null === $locale ) {
+			return;
+		}
+
 		// Set up the note.
 		$note->set_title( $locale->title );
 		$note->set_content( $locale->content );
@@ -54,25 +58,49 @@ class SpecRunner {
 		$note->set_type( $spec->type );
 		$note->set_icon( $spec->icon );
 		$note->set_name( $spec->slug );
-		$note->set_source( $spec->source );
+		if ( isset( $spec->source ) ) {
+			$note->set_source( $spec->source );
+		}
 
 		// Clear then create actions.
 		$note->clear_actions();
-		foreach ( $spec->actions as $action ) {
-			$action_locale = self::get_action_locale( $action->locales, $locale->locale );
+		$actions = isset( $spec->actions ) ? $spec->actions : array();
+		foreach ( $actions as $action ) {
+			$action_locale = self::get_action_locale( $action->locales );
 
-			$url = $action->url_is_admin_query ? wc_admin_url( $action->url ) : $action->url;
+			$url = self::get_url( $action );
 
 			$note->add_action(
 				$action->name,
-				$action_locale->label,
+				( null === $action_locale || ! isset( $action_locale->label ) )
+					? ''
+					: $action_locale->label,
 				$url,
 				$action->status,
-				$action->is_primary
+				isset( $action->is_primary ) ? $action->is_primary : false
 			);
 		}
 
 		$note->save();
+	}
+
+	/**
+	 * Get the URL for an action.
+	 *
+	 * @param object $action The action.
+	 *
+	 * @return string The URL for the action.
+	 */
+	private static function get_url( $action ) {
+		if ( ! isset( $action->url ) ) {
+			return '';
+		}
+
+		if ( isset( $action->url_is_admin_query ) && $action->url_is_admin_query ) {
+			return wc_admin_url( $action->url );
+		}
+
+		return $action->url;
 	}
 
 	/**
@@ -81,11 +109,9 @@ class SpecRunner {
 	 *
 	 * @param Array $locales The locales to search through.
 	 *
-	 * @returns object The locale that was found.
-	 *
-	 * @throws \Exception If no matching locale or en_US locale was found.
+	 * @returns object The locale that was found, or null if no matching locale was found.
 	 */
-	private static function get_locale( $locales ) {
+	public static function get_locale( $locales ) {
 		$wp_locale           = get_locale();
 		$matching_wp_locales = array_values(
 			array_filter(
@@ -114,32 +140,30 @@ class SpecRunner {
 			return $en_us_locales[0];
 		}
 
-		throw new Exception( __( 'Matching locale or fallback en_US locale not found. Make sure there is at least a en_US locale provided.', 'woocommerce-admin' ) );
+		return null;
 	}
 
 	/**
 	 * Get the action locale that matches the note locale, or fall back to the
 	 * en_US locale.
 	 *
-	 * @param Array  $action_locales The locales from the spec's action.
-	 * @param string $note_locale The locale used by the note.
+	 * @param Array $action_locales The locales from the spec's action.
 	 *
-	 * @return object The matching locale, or the en_US fallback locale.
-	 *
-	 * @throws \Exception If no matching locale or en_US locale was found.
+	 * @return object The matching locale, or the en_US fallback locale, or null if neither was found.
 	 */
-	private static function get_action_locale( $action_locales, $note_locale ) {
-		$matching_locales_using_note_locale = array_values(
+	public static function get_action_locale( $action_locales ) {
+		$wp_locale           = get_locale();
+		$matching_wp_locales = array_values(
 			array_filter(
 				$action_locales,
-				function ( $l ) use ( $note_locale ) {
-					return $note_locale === $l->locale;
+				function ( $l ) use ( $wp_locale ) {
+					return $wp_locale === $l->locale;
 				}
 			)
 		);
 
-		if ( 0 !== count( $matching_locales_using_note_locale ) ) {
-			return $matching_locales_using_note_locale[0];
+		if ( 0 !== count( $matching_wp_locales ) ) {
+			return $matching_wp_locales[0];
 		}
 
 		// Fall back to en_US locale.
@@ -156,6 +180,6 @@ class SpecRunner {
 			return $en_us_locales[0];
 		}
 
-		throw new \Exception( __( 'Matching locale or fallback en_US locale not found. Make sure there is at least a en_US locale provided.', 'woocommerce-admin' ) );
+		return null;
 	}
 }

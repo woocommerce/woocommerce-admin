@@ -72,8 +72,100 @@ class DataSourcePoller {
 	 */
 	private static function merge_specs( $specs_to_merge_in, &$specs ) {
 		foreach ( $specs_to_merge_in as $spec ) {
+			if ( ! self::validate_spec( $spec ) ) {
+				continue;
+			}
+
 			$slug           = $spec->slug;
 			$specs[ $slug ] = $spec;
 		}
+	}
+
+	/**
+	 * Validate the spec.
+	 *
+	 * @param object $spec The spec to validate.
+	 *
+	 * @return bool The result of the validation.
+	 */
+	private static function validate_spec( $spec ) {
+		if ( ! isset( $spec->slug ) ) {
+			return false;
+		}
+
+		if ( ! isset( $spec->status ) ) {
+			return false;
+		}
+
+		if ( ! isset( $spec->locales ) || ! is_array( $spec->locales ) ) {
+			return false;
+		}
+
+		if ( null === SpecRunner::get_locale( $spec->locales ) ) {
+			return false;
+		}
+
+		if ( ! isset( $spec->type ) ) {
+			return false;
+		}
+
+		if ( ! isset( $spec->icon ) ) {
+			return false;
+		}
+
+		if ( ! isset( $spec->slug ) ) {
+			return false;
+		}
+
+		if ( isset( $spec->actions ) && is_array( $spec->actions ) ) {
+			foreach ( $spec->actions as $action ) {
+				if ( ! self::validate_action( $action ) ) {
+					return false;
+				}
+			}
+		}
+
+		if ( isset( $spec->rules ) && is_array( $spec->rules ) ) {
+			foreach ( $spec->rules as $rule ) {
+				if ( ! isset( $rule->type ) ) {
+					return false;
+				}
+
+				$processor = GetRuleProcessor::get_processor( $rule->type );
+
+				if ( ! $processor->validate( $rule ) ) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validate the action.
+	 *
+	 * @param object $action The action to validate.
+	 *
+	 * @return bool The result of the validation.
+	 */
+	private static function validate_action( $action ) {
+		if ( ! isset( $action->locales ) || ! is_array( $action->locales ) ) {
+			return false;
+		}
+
+		if ( null === SpecRunner::get_action_locale( $action->locales ) ) {
+			return false;
+		}
+
+		if ( ! isset( $action->name ) ) {
+			return false;
+		}
+
+		if ( ! isset( $action->status ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }

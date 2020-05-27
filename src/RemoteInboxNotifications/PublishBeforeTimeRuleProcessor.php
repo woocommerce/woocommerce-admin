@@ -32,4 +32,19 @@ class PublishBeforeTimeRuleProcessor {
 	public function process( $rule ) {
 		return $this->date_time_provider->get_now() <= new \DateTime( $rule->publish_before );
 	}
+
+	/**
+	 * Validates the rule.
+	 *
+	 * @param object $rule The rule to validate.
+	 *
+	 * @return bool Pass/fail.
+	 */
+	public function validate( $rule ) {
+		if ( ! isset( $rule->publish_before ) ) {
+			return false;
+		}
+		
+		return true;
+	}
 }

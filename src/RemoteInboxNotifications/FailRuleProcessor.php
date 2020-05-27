@@ -23,4 +23,15 @@ class FailRuleProcessor {
 	public function process( $rule ) {
 		return false;
 	}
+
+	/**
+	 * Validates the rule.
+	 *
+	 * @param object $rule The rule to validate.
+	 *
+	 * @return bool Pass/fail.
+	 */
+	public function validate( $rule ) {
+		return true;
+	}
 }

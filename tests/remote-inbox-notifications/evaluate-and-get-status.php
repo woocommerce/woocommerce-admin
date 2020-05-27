@@ -29,6 +29,20 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 	}
 
 	/**
+	 * Get a spec with no rules property.
+	 *
+	 * @return object The spec object.
+	 */
+	private function get_no_rules_spec() {
+		return json_decode(
+			'{
+				"status": "unactioned",
+				"allow_redisplay": false
+			}'
+		);
+	}
+
+	/**
 	 * Tests that for a pending note evaling to true, status is changed
 	 * to the spec status.
 	 *
@@ -170,5 +184,22 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 		);
 
 		$this->assertEquals( 'pending', $result );
+	}
+
+	/**
+	 * Tests that for a spec with no rules the current status is returned.
+	 *
+	 * @group fast
+	 */
+	public function test_spec_with_no_rules_returns_current_status() {
+		$spec = $this->get_no_rules_spec();
+
+		$result = EvaluateAndGetStatus::evaluate(
+			$spec,
+			'unactioned',
+			new FailingRuleEvaluator()
+		);
+
+		$this->assertEquals( 'unactioned', $result );
 	}
 }

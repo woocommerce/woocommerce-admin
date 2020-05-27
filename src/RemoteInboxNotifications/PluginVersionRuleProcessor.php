@@ -48,4 +48,27 @@ class PluginVersionRuleProcessor {
 
 		return version_compare( $plugin_version, $rule->version, $rule->operator );
 	}
+
+	/**
+	 * Validates the rule.
+	 *
+	 * @param object $rule The rule to validate.
+	 *
+	 * @return bool Pass/fail.
+	 */
+	public function validate( $rule ) {
+		if ( ! isset( $rule->plugin ) ) {
+			return false;
+		}
+
+		if ( ! isset( $rule->version ) ) {
+			return false;
+		}
+
+		if ( ! isset( $rule->operator ) ) {
+			return false;
+		}
+
+		return true;
+	}
 }
