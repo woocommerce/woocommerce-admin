@@ -20,8 +20,10 @@ class RuleEvaluator {
 	 *
 	 * @param GetRuleProcessor $get_rule_processor The GetRuleProcessor to use.
 	 */
-	public function __construct( $get_rule_processor ) {
-		$this->get_rule_processor = $get_rule_processor;
+	public function __construct( $get_rule_processor = null ) {
+		$this->get_rule_processor = null === $get_rule_processor
+			? new GetRuleProcessor()
+			: $get_rule_processor;
 	}
 
 	/**

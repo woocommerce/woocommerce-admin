@@ -9,6 +9,8 @@ namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\PluginsProvider\PluginsProvider;
+
 /**
  * Rule processor for sending when the provided plugins are activated.
  */
@@ -18,8 +20,10 @@ class PluginsActivatedRuleProcessor implements RuleProcessorInterface {
 	 *
 	 * @param PluginsProviderInterface $plugins_provider The plugins provider.
 	 */
-	public function __construct( $plugins_provider ) {
-		$this->plugins_provider = $plugins_provider;
+	public function __construct( $plugins_provider = null ) {
+		$this->plugins_provider = null === $plugins_provider
+			? new PluginsProvider()
+			: $plugins_provider;
 	}
 
 	/**

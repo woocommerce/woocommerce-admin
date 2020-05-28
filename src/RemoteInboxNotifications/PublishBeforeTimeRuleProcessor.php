@@ -9,6 +9,8 @@ namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\DateTimeProvider\CurrentDateTimeProvider;
+
 /**
  * Rule processor for sending before a specified date/time.
  */
@@ -18,8 +20,10 @@ class PublishBeforeTimeRuleProcessor implements RuleProcessorInterface {
 	 *
 	 * @param DateTimeProviderInterface $date_time_provider The DateTime provider.
 	 */
-	public function __construct( $date_time_provider ) {
-		$this->date_time_provider = $date_time_provider;
+	public function __construct( $date_time_provider = null ) {
+		$this->date_time_provider = null === $date_time_provider
+			? new CurrentDateTimeProvider()
+			: $date_time_provider;
 	}
 
 	/**

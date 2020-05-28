@@ -9,9 +9,6 @@ namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\DateTimeProvider\CurrentDateTimeProvider;
-use \Automattic\WooCommerce\Admin\PluginsProvider\PluginsProvider;
-
 /**
  * Class encapsulating getting the processor for a given rule type.
  */
@@ -26,37 +23,21 @@ class GetRuleProcessor {
 	public static function get_processor( $rule_type ) {
 		switch ( $rule_type ) {
 			case 'plugins_activated':
-				return new PluginsActivatedRuleProcessor(
-					new PluginsProvider()
-				);
+				return new PluginsActivatedRuleProcessor();
 			case 'publish_after_time':
-				return new PublishAfterTimeRuleProcessor(
-					new CurrentDateTimeProvider()
-				);
+				return new PublishAfterTimeRuleProcessor();
 			case 'publish_before_time':
-				return new PublishBeforeTimeRuleProcessor(
-					new CurrentDateTimeProvider()
-				);
+				return new PublishBeforeTimeRuleProcessor();
 			case 'not':
-				return new NotRuleProcessor(
-					new RuleEvaluator(
-						new GetRuleProcessor()
-					)
-				);
+				return new NotRuleProcessor();
 			case 'or':
-				return new OrRuleProcessor(
-					new RuleEvaluator(
-						new GetRuleProcessor()
-					)
-				);
+				return new OrRuleProcessor();
 			case 'fail':
 				return new FailRuleProcessor();
 			case 'pass':
 				return new PassRuleProcessor();
 			case 'plugin_version':
-				return new PluginVersionRuleProcessor(
-					new PluginsProvider()
-				);
+				return new PluginVersionRuleProcessor();
 		}
 
 		return new FailRuleProcessor();
