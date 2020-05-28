@@ -28,10 +28,14 @@ class DataSetupForProducts {
 	 * Set initial $data values.
 	 *
 	 * @param $data object The $data object.
+	 *
+	 * @return object The $data object.
 	 */
-	public static function init_data( &$data ) {
+	public static function init_data( $data ) {
 		$data->there_were_no_products = ! self::are_there_products();
 		$data->there_are_now_products = ! $data->there_were_no_products;
+
+		return $data;
 	}
 
 	/**
