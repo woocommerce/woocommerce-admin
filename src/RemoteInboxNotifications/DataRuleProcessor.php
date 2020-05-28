@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  * Rule processor that performs a comparison operation against a value in the
  * $data object.
  */
-class DataRuleProcessor {
+class DataRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Performs a comparison operation against a value in the $data object.
 	 *
@@ -35,5 +35,28 @@ class DataRuleProcessor {
 			$rule->value,
 			$rule->operation
 		);
+	}
+
+	/**
+	 * Validates the rule.
+	 *
+	 * @param object $rule The rule to validate.
+	 *
+	 * @return bool Pass/fail.
+	 */
+	public function validate( $rule ) {
+		if ( ! isset( $rule->index ) ) {
+			return false;
+		}
+
+		if ( ! isset( $rule->value ) ) {
+			return false;
+		}
+
+		if ( ! isset( $rule->operation ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }
