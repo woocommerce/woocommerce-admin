@@ -246,22 +246,19 @@ class InboxNoteCard extends Component {
 
 	renderActions( note ) {
 		const { actions: noteActions, id: noteId } = note;
-
-		const getButtonsFromActions = () => {
-			if ( ! noteActions ) {
-				return [];
-			}
-			return noteActions.map( ( action, index ) => (
-				<NoteAction key={ index } noteId={ noteId } action={ action } />
-			) );
-		};
-
-		const actionsList = getButtonsFromActions( note );
-
+		if ( ! noteActions ) {
+			return [];
+		}
 		return (
-			actionsList && (
-				<Fragment>{ actionsList.map( ( action ) => action ) }</Fragment>
-			)
+			<Fragment>
+				{ noteActions.map( ( action, index ) => (
+					<NoteAction
+						key={ index }
+						noteId={ noteId }
+						action={ action }
+					/>
+				) ) }
+			</Fragment>
 		);
 	}
 
