@@ -1,21 +1,17 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
 class InboxNotePlaceholder extends Component {
 	render() {
 		const { className } = this.props;
-		const cardClassName = classnames(
-			'woocommerce-inbox-message',
-			'is-placeholder',
-			className
-		);
-
 		return (
-			<div className={ cardClassName } aria-hidden>
+			<div
+				className={ `woocommerce-inbox-message is-placeholder ${ className }` }
+				aria-hidden
+			>
 				<div className="woocommerce-inbox-message__image">
 					<div className="banner-block" />
 				</div>
