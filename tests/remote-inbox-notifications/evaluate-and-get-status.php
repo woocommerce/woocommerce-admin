@@ -205,6 +205,7 @@ class WC_Tests_RemoteInboxNotifications_EvaluateAndGetStatus extends WC_Unit_Tes
 		$result = EvaluateAndGetStatus::evaluate(
 			$spec,
 			'unactioned',
+			new stdClass(),
 			new FailingRuleEvaluator()
 		);
 

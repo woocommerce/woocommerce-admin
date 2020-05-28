@@ -17,10 +17,11 @@ interface RuleProcessorInterface {
 	 * Processes a rule, returning the boolean result of the processing.
 	 *
 	 * @param object $rule The rule to process.
+	 * @param object $data Data.
 	 *
 	 * @return bool The result of the processing.
 	 */
-	public function process( $rule );
+	public function process( $rule, $data );
 
 	/**
 	 * Validates the rule.
