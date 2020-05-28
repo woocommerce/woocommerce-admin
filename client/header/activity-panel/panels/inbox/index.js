@@ -88,9 +88,7 @@ class InboxPanel extends Component {
 		if ( isRequesting || isDismissAllUndoRequesting ) {
 			return (
 				<Section>
-					<InboxNotePlaceholder
-						className={ 'banner message-is-unread' }
-					/>
+					<InboxNotePlaceholder className="banner message-is-unread" />
 				</Section>
 			);
 		}
