@@ -247,7 +247,7 @@ class InboxNoteCard extends Component {
 	renderActions( note ) {
 		const { actions: noteActions, id: noteId } = note;
 		if ( ! noteActions ) {
-			return [];
+			return;
 		}
 		return (
 			<Fragment>
