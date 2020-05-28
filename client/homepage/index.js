@@ -9,10 +9,7 @@ import { identity } from 'lodash';
  * WooCommerce dependencies
  */
 import { Spinner } from '@woocommerce/components';
-import {
-	withOptionsHydration,
-	OPTIONS_STORE_NAME,
-} from '@woocommerce/data';
+import { withOptionsHydration, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -25,8 +22,8 @@ const ProfileWizard = lazy( () =>
 );
 
 const Homepage = ( { profileItems, query, blogname, blogdescription } ) => {
-	console.log(blogname);
-	console.log(blogdescription);
+	console.log( blogname );
+	console.log( blogdescription );
 	if ( isOnboardingEnabled() && ! profileItems.completed ) {
 		return (
 			<Suspense fallback={ <Spinner /> }>
@@ -52,9 +49,18 @@ export default compose(
 		const { getProfileItems } = select( 'wc-api' );
 		const profileItems = getProfileItems();
 
-		const { getOption } = select( OPTIONS_STORE_NAME );
+		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 		const blogname = getOption( 'blogname' );
 		const blogdescription = getOption( 'blogdescription' );
+
+		console.log(
+			'isResolving blogname',
+			isResolving( 'getOption', [ 'blogname' ] )
+		);
+		console.log(
+			'isResolving blogdescription',
+			isResolving( 'getOption', [ 'blogdescription' ] )
+		);
 
 		return { profileItems, blogname, blogdescription };
 	} )
