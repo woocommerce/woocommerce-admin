@@ -84,16 +84,6 @@ class InboxPanel extends Component {
 		} );
 	}
 
-	renderNotePlaceholder( isRequesting, isDismissAllUndoRequesting ) {
-		if ( isRequesting || isDismissAllUndoRequesting ) {
-			return (
-				<Section>
-					<InboxNotePlaceholder className="banner message-is-unread" />
-				</Section>
-			);
-		}
-	}
-
 	render() {
 		const {
 			isError,
@@ -144,9 +134,10 @@ class InboxPanel extends Component {
 						) }
 					/>
 				) }
-				{ this.renderNotePlaceholder(
-					isRequesting,
-					isDismissAllUndoRequesting
+				{ ( isRequesting || isDismissAllUndoRequesting ) && (
+					<Section>
+						<InboxNotePlaceholder className="banner message-is-unread" />
+					</Section>
 				) }
 				<Section>
 					{ ! isRequesting &&
