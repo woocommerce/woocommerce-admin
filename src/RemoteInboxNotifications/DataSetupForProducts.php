@@ -44,8 +44,16 @@ class DataSetupForProducts {
 	 * @return bool
 	 */
 	private static function are_there_products() {
-		$product_query = new \WC_Product_Query( array( 'limit' => -1 ) );
-		$product_count = count( $product_query->get_products() );
+		$product_query = new \WC_Product_Query(
+			array(
+				'limit'    => 1,
+				'paginate' => true,
+				'return'   => array( 'id' ),
+				'status'   => array( 'published' ),
+			)
+		);
+		$products      = $product_query->get_products();
+		$product_count = $products->total;
 
 		return $product_count > 0;
 	}
@@ -82,8 +90,7 @@ class DataSetupForProducts {
 	public static function run_on_transition_post_status( $new_status, $old_status, $post ) {
 		if (
 			'product' !== $post->post_type ||
-			'publish' !== $new_status ||
-			'publish' === $old_status
+			'publish' !== $new_status
 		) {
 			return;
 		}
