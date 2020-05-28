@@ -4,21 +4,31 @@
 import TYPES from './action-types';
 
 const optionsReducer = (
-	state = { isRequesting: false, isUpdating: false },
-	{ type, options, isRequesting, error, isUpdating }
+	state = { isRequesting: {}, isUpdating: false },
+	{ type, options, error, isUpdating, optionName }
 ) => {
 	switch ( type ) {
 		case TYPES.RECEIVE_OPTIONS:
+			const resolvedOptions = {};
+			Object.keys( options ).forEach( name => {
+				resolvedOptions[ name ] = false;
+			} );
 			state = {
 				...state,
 				...options,
-				isRequesting: false,
+				isRequesting: {
+					...state.isRequesting,
+					...resolvedOptions
+				},
 			};
 			break;
 		case TYPES.SET_IS_REQUESTING:
 			state = {
 				...state,
-				isRequesting,
+				isRequesting: {
+					...state.isRequesting,
+					[ optionName ]: true,
+				},
 			};
 			break;
 		case TYPES.SET_IS_UPDATING:

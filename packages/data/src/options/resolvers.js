@@ -27,17 +27,18 @@ export function* getOptionsWithRequest( names ) {
 const fetches = {};
 
 export function* getOption( name ) {
-	yield setIsRequesting( true );
+	yield setIsRequesting( name );
 	const names = yield getOptionsToRequest( name );
 
 	const fetchInProgress = fetches[ names ];
 	if ( fetchInProgress ) {
-		return yield fetches[ names ];
+		return;
 	}
 
 	const url = WC_ADMIN_NAMESPACE + '/options?options=' + names;
-	fetches[ names ] = yield apiFetch( { path: url } );
-	yield receiveOptions( fetches[ names ] );
+	fetches[ names ] = true;
+	const result = yield apiFetch( { path: url } );
+	yield receiveOptions( result );
 
 	// Delete the fetch after to allow wp data to handle cache invalidation.
 	delete fetches[ names ];

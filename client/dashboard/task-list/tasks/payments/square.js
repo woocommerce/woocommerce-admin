@@ -145,16 +145,14 @@ class Square extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getOptions, isGetOptionsRequesting } = select(
+		const { getOptions, isRequesting } = select(
 			OPTIONS_STORE_NAME
 		);
 		const options = getOptions( [
 			'woocommerce_square_credit_card_settings',
 		] );
 		const optionsIsRequesting = Boolean(
-			isGetOptionsRequesting( [
-				'woocommerce_square_credit_card_settings',
-			] )
+			isRequesting( 'woocommerce_square_credit_card_settings' )
 		);
 
 		return {

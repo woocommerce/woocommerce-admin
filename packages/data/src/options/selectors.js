@@ -48,9 +48,10 @@ export const getOptionsWithRequest = ( state, names ) => {
  * Determine if options are being requested.
  *
  * @param {Object} state - Reducer state
+ * @param {string} optionName - Option name
  */
-export const isGetOptionsRequesting = ( state ) => {
-	return state.isRequesting || false;
+export const isRequesting = ( state, optionName ) => {
+	return state.isRequesting[ optionName ] || false;
 };
 
 /**

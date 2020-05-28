@@ -17,10 +17,10 @@ export function receiveOptions( options ) {
 	};
 }
 
-export function setIsRequesting( isRequesting ) {
+export function setIsRequesting( optionName ) {
 	return {
 		type: TYPES.SET_IS_REQUESTING,
-		isRequesting,
+		optionName
 	};
 }
 
