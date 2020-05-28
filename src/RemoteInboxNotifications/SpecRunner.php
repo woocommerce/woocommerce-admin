@@ -37,11 +37,17 @@ class SpecRunner {
 			new GetRuleProcessor()
 		);
 
-		$status = EvaluateAndGetStatus::evaluate(
+		$previous_status = $note->get_status();
+		$status          = EvaluateAndGetStatus::evaluate(
 			$spec,
-			$note->get_status(),
+			$previous_status,
 			$rule_evaluator
 		);
+
+		// If the status is changing, update the created date to now.
+		if ( $previous_status !== $status ) {
+			$note->set_date_created( time() );
+		}
 
 		// Get the matching locale or fall back to en-US.
 		$locale = self::get_locale( $spec->locales );
