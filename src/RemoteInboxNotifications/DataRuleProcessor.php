@@ -28,8 +28,6 @@ class DataRuleProcessor implements RuleProcessorInterface {
 			return false;
 		}
 
-		$operand = $data->{$rule->index};
-
 		return ComparisonOperation::compare(
 			$data->{$rule->index},
 			$rule->value,
