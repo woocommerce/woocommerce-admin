@@ -48,9 +48,14 @@ class InboxPanel extends Component {
 	}
 
 	renderNotes( hasNotes ) {
-		const { isUndoRequesting, lastRead, notes } = this.props;
+		const {
+			isDismissUndoRequesting,
+			isDismissAllUndoRequesting,
+			lastRead,
+			notes,
+		} = this.props;
 
-		if ( isUndoRequesting === 'undo-dismiss-all' ) {
+		if ( isDismissAllUndoRequesting ) {
 			return;
 		}
 
@@ -61,10 +66,7 @@ class InboxPanel extends Component {
 		const notesArray = Object.keys( notes ).map( ( key ) => notes[ key ] );
 
 		return notesArray.map( ( note ) => {
-			const showPlaceholder = isUndoRequesting
-				? isUndoRequesting === note.id
-				: false;
-			if ( showPlaceholder ) {
+			if ( isDismissUndoRequesting === note.id ) {
 				return (
 					<InboxNotePlaceholder
 						className={ 'banner message-is-unread' }
@@ -82,8 +84,8 @@ class InboxPanel extends Component {
 		} );
 	}
 
-	renderNotePlaceholder( isRequesting, isUndoRequesting ) {
-		if ( isRequesting || isUndoRequesting === 'undo-dismiss-all' ) {
+	renderNotePlaceholder( isRequesting, isDismissAllUndoRequesting ) {
+		if ( isRequesting || isDismissAllUndoRequesting ) {
 			return (
 				<Section>
 					<InboxNotePlaceholder
@@ -99,6 +101,7 @@ class InboxPanel extends Component {
 			isError,
 			isRequesting,
 			isUndoRequesting,
+			isDismissAllUndoRequesting,
 			lastRead,
 			notes,
 		} = this.props;
@@ -143,11 +146,14 @@ class InboxPanel extends Component {
 						) }
 					/>
 				) }
-				{ this.renderNotePlaceholder( isRequesting, isUndoRequesting ) }
+				{ this.renderNotePlaceholder(
+					isRequesting,
+					isDismissAllUndoRequesting
+				) }
 				<Section>
 					{ ! isRequesting &&
-						isUndoRequesting !== 'undo-dismiss-all' &&
-						this.renderNotes( hasNotes, isUndoRequesting ) }
+						! isDismissAllUndoRequesting &&
+						this.renderNotes( hasNotes ) }
 				</Section>
 			</Fragment>
 		);
@@ -161,7 +167,7 @@ export default compose(
 			getNotes,
 			getNotesError,
 			isGetNotesRequesting,
-			isUndoDismissRequesting,
+			getUndoDismissRequesting,
 		} = select( 'wc-api' );
 		const userData = getCurrentUserData();
 		const inboxQuery = {
@@ -190,13 +196,19 @@ export default compose(
 		const notes = getNotes( inboxQuery );
 		const isError = Boolean( getNotesError( inboxQuery ) );
 		const isRequesting = isGetNotesRequesting( inboxQuery );
-		const isUndoRequesting = isUndoDismissRequesting();
+		const {
+			isUndoRequesting,
+			isDismissUndoRequesting,
+			isDismissAllUndoRequesting,
+		} = getUndoDismissRequesting();
 
 		return {
 			notes,
 			isError,
 			isRequesting,
 			isUndoRequesting,
+			isDismissUndoRequesting,
+			isDismissAllUndoRequesting,
 			lastRead: userData.activity_panel_inbox_last_read,
 		};
 	} ),

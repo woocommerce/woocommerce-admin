@@ -118,8 +118,11 @@ function updateNote( resourceNames, data, fetch ) {
 					const response = {
 						[ resourceName + ':' + noteId ]: { data: note },
 					};
-					if ( ! data.note.is_deleted ) {
-						response[ 'note-undo-dismiss' ] = { requesting: false };
+					if ( ! isNaN( data.note.is_deleted ) ) {
+						response[ 'note-undo-dismiss' ] = {
+							isUndoRequesting: false,
+							isDismissUndoRequesting: false,
+						};
 					}
 					return response;
 				} )
@@ -185,7 +188,10 @@ function undoRemoveAllNotes( resourceNames, data, fetch ) {
 						result[ resourceKey ] = { data: note };
 						return result;
 					}, {} );
-					notes[ 'note-undo-dismiss' ] = { requesting: false };
+					notes[ 'note-undo-dismiss' ] = {
+						isUndoRequesting: false,
+						isDismissAllUndoRequesting: false,
+					};
 					return notes;
 				} )
 				.catch( ( error ) => {
@@ -216,11 +222,24 @@ function triggerAction( resourceNames, data, fetch ) {
 
 function undoRemoveNotesRequesting( resourceNames, data ) {
 	const resourceName = 'note';
-	const note = data.note ? data.note.noteId : 'undo-dismiss-all';
-	if ( resourceNames.includes( resourceName ) && note ) {
-		return [
-			{ [ resourceName + '-undo-dismiss' ]: { requesting: true, note } },
-		];
+	if ( resourceNames.includes( resourceName ) ) {
+		const isUndoRequesting = data.note
+			? ! isNaN( data.note.is_deleted )
+			: ! isNaN( data.is_deleted );
+		if ( isUndoRequesting ) {
+			const isDismissUndoRequesting = data.note
+				? data.note.noteId
+				: false;
+			return [
+				{
+					[ resourceName + '-undo-dismiss' ]: {
+						isUndoRequesting: true,
+						isDismissUndoRequesting,
+						isDismissAllUndoRequesting: ! isDismissUndoRequesting,
+					},
+				},
+			];
+		}
 	}
 	return [];
 }
