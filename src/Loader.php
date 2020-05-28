@@ -197,7 +197,7 @@ class Loader {
 	 * @return array
 	 */
 	public function preload_options( $options ) {
-		$options[] = 'woocommerce_homepage_enabled';
+		$options[] = 'woocommerce_homescreen_enabled';
 
 		return $options;
 	}
@@ -209,7 +209,7 @@ class Loader {
 	 * @return bool
 	 */
 	public static function is_homepage_enabled( $features ) {
-		$option = get_option( 'woocommerce_homepage_enabled', 'no' );
+		$option = get_option( 'woocommerce_homescreen_enabled', 'no' );
 		return $features['homepage'] && 'yes' === $option;
 	}
 

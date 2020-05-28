@@ -209,10 +209,10 @@ export const PageLayout = compose(
 	useFilters( [ PAGES_FILTER, REPORTS_FILTER ] ),
 	withWCApiSelect( ( select ) => {
 		const { getOptions } = select( 'wc-api' );
-		const options = getOptions( [ 'woocommerce_homepage_enabled' ] );
+		const options = getOptions( [ 'woocommerce_homescreen_enabled' ] );
 		const homepageEnabled =
 			window.wcAdminFeatures.homepage &&
-			get( options, [ 'woocommerce_homepage_enabled' ], false ) === 'yes';
+			get( options, [ 'woocommerce_homescreen_enabled' ], false ) === 'yes';
 		return { homepageEnabled };
 	} )
 )( _PageLayout );

@@ -248,7 +248,7 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	if ( isWCAdmin ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
-		const { woocommerce_homepage_enabled: homepageOption } = getSetting(
+		const { woocommerce_homescreen_enabled: homepageOption } = getSetting(
 			'preloadOptions',
 			{}
 		);
