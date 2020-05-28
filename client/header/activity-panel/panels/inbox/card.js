@@ -2,12 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	cloneElement,
-	Component,
-	createRef,
-	Fragment,
-} from '@wordpress/element';
+import { Component, createRef, Fragment } from '@wordpress/element';
 import { Button, Dropdown, Modal } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import VisibilitySensor from 'react-visibility-sensor';
@@ -249,43 +244,45 @@ class InboxNoteCard extends Component {
 		);
 	}
 
+	renderActions( note ) {
+		const { actions: noteActions, id: noteId } = note;
+		if ( ! noteActions ) {
+			return;
+		}
+		return (
+			<Fragment>
+				{ noteActions.map( ( action, index ) => (
+					<NoteAction
+						key={ index }
+						noteId={ noteId }
+						action={ action }
+					/>
+				) ) }
+			</Fragment>
+		);
+	}
+
 	render() {
 		const { lastRead, note } = this.props;
 		const { isDismissModalOpen } = this.state;
 		const {
-			actions: noteActions,
 			content,
 			date_created: dateCreated,
 			date_created_gmt: dateCreatedGmt,
-			id: noteId,
 			image,
+			is_deleted: isDeleted,
 			layout,
 			title,
 		} = note;
 
-		if ( note.is_deleted ) {
+		if ( isDeleted ) {
 			return null;
 		}
-
-		const getButtonsFromActions = () => {
-			if ( ! noteActions ) {
-				return [];
-			}
-			return noteActions.map( ( action ) => (
-				<NoteAction
-					key={ noteId }
-					noteId={ noteId }
-					action={ action }
-				/>
-			) );
-		};
 
 		const unread =
 			! lastRead ||
 			! dateCreatedGmt ||
 			new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
-		const actions = getButtonsFromActions( note );
-		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
 		const date = dateCreated;
 		const hasImage = layout !== 'plain' && layout !== '';
 		const cardClassName = classnames( 'woocommerce-inbox-message', layout, {
@@ -320,13 +317,7 @@ class InboxNoteCard extends Component {
 							</Section>
 						</div>
 						<div className="woocommerce-inbox-message__actions">
-							{ actions && (
-								<Fragment>
-									{ actionsList.map( ( item, i ) =>
-										cloneElement( item, { key: i } )
-									) }
-								</Fragment>
-							) }
+							{ this.renderActions( note ) }
 							{ this.renderDismissButton() }
 						</div>
 					</div>
