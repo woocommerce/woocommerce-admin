@@ -69,7 +69,7 @@ class InboxPanel extends Component {
 			if ( isDismissUndoRequesting === note.id ) {
 				return (
 					<InboxNotePlaceholder
-						className={ 'banner message-is-unread' }
+						className="banner message-is-unread"
 						key={ note.id }
 					/>
 				);
