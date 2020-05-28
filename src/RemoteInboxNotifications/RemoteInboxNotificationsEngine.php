@@ -62,7 +62,7 @@ class RemoteInboxNotificationsEngine {
 		if ( false === $data ) {
 			$data = new \stdClass();
 
-			DataSetupForProducts::init_data( $data );
+			$data = DataSetupForProducts::init_data( $data );
 
 			add_option( self::DATA_OPTION_NAME, $data );
 		}
