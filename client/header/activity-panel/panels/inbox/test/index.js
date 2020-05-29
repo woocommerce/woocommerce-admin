@@ -1,13 +1,17 @@
 /**
  * External dependencies
  */
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 /**
  * Internal dependencies
  */
 import InboxNoteCard from '../card';
 import { getUnreadNotesCount, hasValidNotes } from '../utils';
+
+jest.mock( '../action', () =>
+	jest.fn().mockImplementation( () => <button>mocked button</button> )
+);
 
 describe( 'InboxNoteCard', () => {
 	const note = {
@@ -38,23 +42,20 @@ describe( 'InboxNoteCard', () => {
 
 	test( 'should render a notification type banner', () => {
 		note.layout = 'banner';
-		const card = shallow(
+		const { container } = render(
 			<InboxNoteCard
 				key={ note.id }
 				note={ note }
 				lastRead={ lastRead }
-			/>,
-			{
-				disableLifecycleMethods: true,
-			}
+			/>
 		);
-		const noteBanner = card.find( '.banner' );
-		expect( noteBanner ).toHaveLength( 1 );
+		const listNoteWithBanner = container.querySelector( '.banner' );
+		expect( listNoteWithBanner ).not.toBeNull();
 	} );
 
 	test( 'should render a notification type thumbnail', () => {
 		note.layout = 'thumbnail';
-		const card = shallow(
+		const { container } = render(
 			<InboxNoteCard
 				key={ note.id }
 				note={ note }
@@ -64,84 +65,54 @@ describe( 'InboxNoteCard', () => {
 				disableLifecycleMethods: true,
 			}
 		);
-		const noteThumbnail = card.find( '.thumbnail' );
-		expect( noteThumbnail ).toHaveLength( 1 );
+		const listNoteWithThumbnail = container.querySelector( '.thumbnail' );
+		expect( listNoteWithThumbnail ).not.toBeNull();
 	} );
 
-	test( 'should render one action and the Dismiss button', () => {
-		const card = shallow(
-			<InboxNoteCard
-				key={ note.id }
-				note={ note }
-				lastRead={ lastRead }
-			/>,
-			{
-				disableLifecycleMethods: true,
-			}
-		);
-		const actionButtons = card.find(
-			'.woocommerce-inbox-message__actions'
-		);
-		const buttonList = actionButtons.children();
-		const dismissButton = card.find( 'Dropdown' ).dive();
-
-		expect( buttonList ).toHaveLength( 2 );
-		expect(
-			actionButtons.text().includes( 'InboxNoteAction' )
-		).toBeTruthy();
-		expect( dismissButton.find( 'ForwardRef(Button)' ).text() ).toEqual(
-			'Dismiss'
-		);
-	} );
-
-	test( 'should render only a Dismiss button', () => {
+	test( 'should render a read notification', () => {
 		note.actions = [];
-		const card = shallow(
+		const { container } = render(
 			<InboxNoteCard
 				key={ note.id }
 				note={ note }
 				lastRead={ lastRead }
-			/>,
-			{
-				disableLifecycleMethods: true,
-			}
+			/>
 		);
-		const dismissButton = card.find( 'Dropdown' ).dive();
-		expect( dismissButton.find( 'ForwardRef(Button)' ).text() ).toEqual(
-			'Dismiss'
+		const unreadNote = container.querySelector( '.message-is-unread' );
+		const readNote = container.querySelector(
+			'.woocommerce-inbox-message'
 		);
+		expect( unreadNote ).toBeNull();
+		expect( readNote ).not.toBeNull();
 	} );
 
 	test( 'should render an unread notification', () => {
 		const olderLastRead = 1584015595000;
 		note.actions = [];
-		const card = shallow(
+		const { container } = render(
 			<InboxNoteCard
 				key={ note.id }
 				note={ note }
 				lastRead={ olderLastRead }
-			/>,
-			{
-				disableLifecycleMethods: true,
-			}
+			/>
 		);
-		const unreadNote = card.find( '.message-is-unread' );
-		expect( unreadNote ).toHaveLength( 1 );
+		const unreadNote = container.querySelector( '.message-is-unread' );
+		expect( unreadNote ).not.toBeNull();
 	} );
 
 	test( 'should not render any notification', () => {
 		note.is_deleted = true;
-		const card = shallow(
+		const { container } = render(
 			<InboxNoteCard
 				key={ note.id }
 				note={ note }
 				lastRead={ lastRead }
-			/>,
-			{
-				disableLifecycleMethods: true,
-			}
+			/>
 		);
-		expect( card.children() ).toHaveLength( 0 );
+		const unreadNote = container.querySelector(
+			'.woocommerce-inbox-message'
+		);
+		expect( unreadNote ).toBeNull();
 	} );
 } );
 
