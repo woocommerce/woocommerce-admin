@@ -29,16 +29,16 @@ class OrRuleProcessor implements RuleProcessorInterface {
 	/**
 	 * Performs an OR operation on the rule's left and right operands.
 	 *
-	 * @param object $rule The specific rule being processed by this rule processor.
-	 * @param object $data Persistent data.
+	 * @param object $rule         The specific rule being processed by this rule processor.
+	 * @param object $stored_state Stored state.
 	 *
 	 * @return bool The result of the operation.
 	 */
-	public function process( $rule, $data ) {
+	public function process( $rule, $stored_state ) {
 		foreach ( $rule->operands as $operand ) {
 			$evaluated_operand = $this->rule_evaluator->evaluate(
 				$operand,
-				$data
+				$stored_state
 			);
 
 			if ( $evaluated_operand ) {

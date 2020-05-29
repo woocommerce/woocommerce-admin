@@ -17,8 +17,8 @@ use \Automattic\WooCommerce\Admin\PluginsProvider\PluginsProvider;
  * specs that are able to be triggered.
  */
 class RemoteInboxNotificationsEngine {
-	const SPECS_OPTION_NAME = 'wc_remote_inbox_notifications_specs';
-	const DATA_OPTION_NAME  = 'wc_remote_inbox_notifications_data';
+	const SPECS_OPTION_NAME        = 'wc_remote_inbox_notifications_specs';
+	const STORED_STATE_OPTION_NAME = 'wc_remote_inbox_notifications_stored_state';
 
 	/**
 	 * Initialize the engine.
@@ -26,10 +26,10 @@ class RemoteInboxNotificationsEngine {
 	public static function init() {
 		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
 		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
-		DataSetupForProducts::init();
+		StoredStateSetupForProducts::init();
 
-		// Pre-fetch data so it has the correct initial values.
-		self::get_data();
+		// Pre-fetch stored state so it has the correct initial values.
+		self::get_stored_state();
 	}
 
 	/**
@@ -43,31 +43,31 @@ class RemoteInboxNotificationsEngine {
 			return;
 		}
 
-		$data = self::get_data();
+		$stored_state = self::get_stored_state();
 
 		foreach ( $specs as $spec ) {
-			SpecRunner::run_spec( $spec, $data );
+			SpecRunner::run_spec( $spec, $stored_state );
 		}
 	}
 
 	/**
-	 * Gets the data option, and does the initial set up if it doesn't already
-	 * exist.
+	 * Gets the stored state option, and does the initial set up if it doesn't
+	 * already exist.
 	 *
-	 * @return object The data option.
+	 * @return object The stored state option.
 	 */
-	public static function get_data() {
-		$data = get_option( self::DATA_OPTION_NAME );
+	public static function get_stored_state() {
+		$stored_state = get_option( self::STORED_STATE_OPTION_NAME );
 
-		if ( false === $data ) {
-			$data = new \stdClass();
+		if ( false === $stored_state ) {
+			$stored_state = new \stdClass();
 
-			$data = DataSetupForProducts::init_data( $data );
+			$stored_state = StoredStateSetupForProducts::init_stored_state( $stored_state );
 
-			add_option( self::DATA_OPTION_NAME, $data );
+			add_option( self::STORED_STATE_OPTION_NAME, $stored_state );
 		}
 
-		return $data;
+		return $stored_state;
 	}
 
 	/**
@@ -81,5 +81,14 @@ class RemoteInboxNotificationsEngine {
 	public static function run_on_deactivated_plugin( $plugin ) {
 		PluginsProvider::set_deactivated_plugin( $plugin );
 		self::run();
+	}
+
+	/**
+	 * Update the stored state option.
+	 *
+	 * @param object $stored_state The stored state.
+	 */
+	public static function update_stored_state( $stored_state ) {
+		update_option( self::STORED_STATE_OPTION_NAME, $stored_state );
 	}
 }
