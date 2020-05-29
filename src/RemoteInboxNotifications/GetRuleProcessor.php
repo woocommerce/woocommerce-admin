@@ -45,14 +45,7 @@ class GetRuleProcessor {
 			case 'wcadmin_active_for':
 				return new WCAdminActiveForRuleProcessor();
 			case 'product_count':
-				return new ProductCountRuleProcessor(
-					new \WC_Product_Query(
-						array(
-							'limit'    => 1,
-							'paginate' => 1,
-						)
-					)
-				);
+				return new ProductCountRuleProcessor();
 		}
 
 		return new FailRuleProcessor();
