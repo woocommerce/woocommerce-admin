@@ -6,18 +6,18 @@ import { compose } from '@wordpress/compose';
 import { Button } from '@wordpress/components';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { withDispatch, withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { H, Plugins } from '@woocommerce/components';
+import { H } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { PLUGINS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
 import Connect from 'dashboard/components/connect';
 import { recordEvent } from 'lib/tracks';
 
@@ -25,17 +25,25 @@ function InstallJetpackCta( {
 	isJetpackInstalled,
 	isJetpackActivated,
 	isJetpackConnected,
+	installAndActivatePlugins,
+	isInstalling,
 } ) {
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
-	const [ isInstalling, setIsInstalling ] = useState( false );
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDismissed, setIsDismissed ] = useState(
 		( userPrefs.homepage_stats || {} ).installJetpackDismissed
 	);
 
-	function install() {
-		setIsInstalling( true );
+	async function install() {
 		recordEvent( 'statsoverview_install_jetpack' );
+
+		const pluginInstall = await installAndActivatePlugins( [ 'jetpack' ] );
+		if ( Object.keys( pluginInstall.errors.errors ).length ) {
+			// @todo Error handling.
+			return;
+		}
+
+		setIsConnecting( ! isJetpackConnected );
 	}
 
 	function dismiss() {
@@ -51,22 +59,6 @@ function InstallJetpackCta( {
 
 		setIsDismissed( true );
 		recordEvent( 'statsoverview_dismiss_install_jetpack' );
-	}
-
-	function getPluginInstaller() {
-		return (
-			<Plugins
-				autoInstall
-				onComplete={ () => {
-					setIsInstalling( false );
-					setIsConnecting( ! isJetpackConnected );
-				} }
-				onError={ () => {
-					setIsInstalling( false );
-				} }
-				pluginSlugs={ [ 'jetpack' ] }
-			/>
-		);
 	}
 
 	function getConnector() {
@@ -124,7 +116,6 @@ function InstallJetpackCta( {
 				</Button>
 			</footer>
 
-			{ isInstalling && getPluginInstaller() }
 			{ isConnecting && getConnector() }
 		</article>
 	);
@@ -141,14 +132,23 @@ export default compose(
 	withSelect( ( select ) => {
 		const {
 			isJetpackConnected,
+			isPluginsRequesting,
 			getInstalledPlugins,
 			getActivePlugins,
 		} = select( PLUGINS_STORE_NAME );
 
 		return {
+			isInstalling: isPluginsRequesting( 'installPlugins' ) || isPluginsRequesting( 'activatePlugins' ),
 			isJetpackInstalled: getInstalledPlugins().includes( 'jetpack' ),
 			isJetpackActivated: getActivePlugins().includes( 'jetpack' ),
 			isJetpackConnected: isJetpackConnected(),
+		};
+	} ),
+	withDispatch( ( dispatch ) => {
+		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
+
+		return {
+			installAndActivatePlugins,
 		};
 	} )
 )( InstallJetpackCta );
