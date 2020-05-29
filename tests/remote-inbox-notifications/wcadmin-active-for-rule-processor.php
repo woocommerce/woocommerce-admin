@@ -12,11 +12,11 @@ use Automattic\WooCommerce\Admin\RemoteInboxNotifications\WCAdminActiveForRulePr
  */
 class WC_Tests_RemoteInboxNotifications_WCAdminActiveForRuleProcessor extends WC_Unit_Test_Case {
 	/**
-	 * Less than 8 days evaluates to true
+	 * Greater than 7 days evaluates to true
 	 *
 	 * @group fast
 	 */
-	public function test_less_than_8_days_evaluates_to_true() {
+	public function test_greater_than_7_days_evaluates_to_true() {
 		$processor = new WCAdminActiveForRuleProcessor(
 			new MockWCAdminActiveForProvider()
 		);
@@ -34,11 +34,11 @@ class WC_Tests_RemoteInboxNotifications_WCAdminActiveForRuleProcessor extends WC
 	}
 
 	/**
-	 * Greater than 8 days evaluates to false
+	 * Greater than 12 days evaluates to false
 	 *
 	 * @group fast
 	 */
-	public function test_greater_than_8_days_evaluates_to_false() {
+	public function test_greater_than_12_days_evaluates_to_false() {
 		$processor = new WCAdminActiveForRuleProcessor(
 			new MockWCAdminActiveForProvider()
 		);
