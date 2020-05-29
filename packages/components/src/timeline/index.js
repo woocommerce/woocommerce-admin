@@ -34,7 +34,7 @@ const Timeline = ( props ) => {
 					.sort( sortByDateUsing( orderBy ) )
 					.map( ( group ) => (
 						<TimelineGroup
-							key={ group.datetime.toString() }
+							key={ group.date.getTime().toString() }
 							group={ group }
 							orderBy={ orderBy }
 						/>
@@ -55,9 +55,9 @@ Timeline.propTypes = {
 	items: PropTypes.arrayOf(
 		PropTypes.shape( {
 			/**
-			 * Timestamp (in seconds) for the timeline item.
+			 * Date for the timeline item.
 			 */
-			datetime: PropTypes.number.isRequired,
+			date: PropTypes.instanceOf( Date ).isRequired,
 			/**
 			 * Icon for the Timeline item.
 			 */

@@ -5,7 +5,7 @@ import GridIcon from 'gridicons';
 
 export default [
 	{
-		datetime: new Date( 2020, 0, 20, 1, 30 ).getTime() / 1000,
+		date: new Date( 2020, 0, 20, 1, 30 ),
 		body: [ <p key={ '1' }>{ 'p element in body' }</p>, 'string in body' ],
 		headline: <p>{ 'p tag in headline' }</p>,
 		icon: (
@@ -18,7 +18,7 @@ export default [
 		hideTimestamp: true,
 	},
 	{
-		datetime: new Date( 2020, 0, 20, 23, 45 ).getTime() / 1000,
+		date: new Date( 2020, 0, 20, 23, 45 ),
 		body: [],
 		headline: <span>{ 'span in headline' }</span>,
 		icon: (
@@ -30,7 +30,7 @@ export default [
 		),
 	},
 	{
-		datetime: new Date( 2020, 0, 22, 15, 13 ).getTime() / 1000,
+		date: new Date( 2020, 0, 22, 15, 13 ),
 		body: [ <span key={ '1' }>{ 'span in body' }</span> ],
 		headline: 'string in headline',
 		icon: (
@@ -38,7 +38,7 @@ export default [
 		),
 	},
 	{
-		datetime: new Date( 2020, 0, 17, 1, 45 ).getTime() / 1000,
+		date: new Date( 2020, 0, 17, 1, 45 ),
 		headline: 'undefined body and string headline',
 		icon: <GridIcon icon={ 'cross' } size={ 16 } />,
 	},

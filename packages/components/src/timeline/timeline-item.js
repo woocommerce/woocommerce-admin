@@ -9,7 +9,7 @@ const TimelineItem = ( props ) => {
 	const { item, className } = props;
 
 	const itemClassName = classnames( 'woocommerce-timeline-item', className );
-	const itemTimeString = moment.unix( item.datetime ).format( 'h:mma' );
+	const itemTimeString = moment( item.date ).format( 'h:mma' );
 
 	return (
 		<li className={ itemClassName }>
@@ -44,9 +44,9 @@ TimelineItem.propTypes = {
 	 */
 	item: PropTypes.shape( {
 		/**
-		 * Timestamp (in seconds) for the timeline item.
+		 * Date for the timeline item.
 		 */
-		datetime: PropTypes.number.isRequired,
+		date: PropTypes.instanceOf( Date ).isRequired,
 		/**
 		 * Icon for the Timeline item.
 		 */

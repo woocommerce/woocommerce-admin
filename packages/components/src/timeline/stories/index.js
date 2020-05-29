@@ -18,7 +18,7 @@ export const Empty = () => <Timeline />;
 
 const itemDate = ( label, value ) => {
 	const d = date( label, value );
-	return parseInt( d, 10 ) / 1000;
+	return new Date( d );
 };
 
 export const Filled = () => (
@@ -26,7 +26,7 @@ export const Filled = () => (
 		orderBy={ orderByOptions.DESC }
 		items={ [
 			{
-				datetime: itemDate(
+				date: itemDate(
 					'event 1 date',
 					new Date( 2020, 0, 20, 1, 30 )
 				),
@@ -49,7 +49,7 @@ export const Filled = () => (
 				hideTimestamp: true,
 			},
 			{
-				datetime: itemDate(
+				date: itemDate(
 					'event 2 date',
 					new Date( 2020, 0, 20, 23, 45 )
 				),
@@ -68,7 +68,7 @@ export const Filled = () => (
 				),
 			},
 			{
-				datetime: itemDate(
+				date: itemDate(
 					'event 3 date',
 					new Date( 2020, 0, 22, 15, 13 )
 				),
@@ -87,7 +87,7 @@ export const Filled = () => (
 				),
 			},
 			{
-				datetime: itemDate(
+				date: itemDate(
 					'event 4 date',
 					new Date( 2020, 0, 17, 1, 45 )
 				),

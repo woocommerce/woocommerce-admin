@@ -14,8 +14,10 @@ const groupByOptions = {
 	MONTH: 'month',
 };
 
-const sortAscending = ( groupA, groupB ) => groupA.datetime - groupB.datetime;
-const sortDescending = ( groupA, groupB ) => groupB.datetime - groupA.datetime;
+const sortAscending = ( groupA, groupB ) =>
+	groupA.date.getTime() - groupB.date.getTime();
+const sortDescending = ( groupA, groupB ) =>
+	groupB.date.getTime() - groupA.date.getTime();
 
 const sortByDateUsing = ( orderBy ) => {
 	switch ( orderBy ) {
@@ -29,12 +31,8 @@ const sortByDateUsing = ( orderBy ) => {
 
 const groupItemsUsing = ( groupBy ) => ( groups, newItem ) => {
 	// Helper functions defined to make the logic a bit more readable.
-	const timeToMoment = ( ts ) => moment.unix( ts );
 	const hasSameMoment = ( group, item ) => {
-		return timeToMoment( group.datetime ).isSame(
-			timeToMoment( item.datetime ),
-			groupBy
-		);
+		return moment( group.date ).isSame( moment( item.date ), groupBy );
 	};
 	const groupIndexExists = ( index ) => index >= 0;
 	const groupForItem = groups.findIndex( ( group ) =>
@@ -46,10 +44,8 @@ const groupItemsUsing = ( groupBy ) => ( groups, newItem ) => {
 		return [
 			...groups,
 			{
-				datetime: newItem.datetime,
-				title: timeToMoment( newItem.datetime ).format(
-					'MMMM D, YYYY'
-				),
+				date: newItem.date,
+				title: moment( newItem.date ).format( 'MMMM D, YYYY' ),
 				items: [ newItem ],
 			},
 		];

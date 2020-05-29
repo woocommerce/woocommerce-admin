@@ -102,24 +102,24 @@ describe( 'Timeline', () => {
 
 	describe( 'Timeline utilities', () => {
 		test( 'Sorts correctly', () => {
-			const jan21 = new Date( 2020, 0, 21 ).getTime() / 1000;
-			const jan22 = new Date( 2020, 0, 22 ).getTime() / 1000;
-			const jan23 = new Date( 2020, 0, 23 ).getTime() / 1000;
+			const jan21 = new Date( 2020, 0, 21 );
+			const jan22 = new Date( 2020, 0, 22 );
+			const jan23 = new Date( 2020, 0, 23 );
 
 			const data = [
-				{ id: 0, datetime: jan22 },
-				{ id: 1, datetime: jan21 },
-				{ id: 2, datetime: jan23 },
+				{ id: 0, date: jan22 },
+				{ id: 1, date: jan21 },
+				{ id: 2, date: jan23 },
 			];
 			const expectedAsc = [
-				{ id: 1, datetime: jan21 },
-				{ id: 0, datetime: jan22 },
-				{ id: 2, datetime: jan23 },
+				{ id: 1, date: jan21 },
+				{ id: 0, date: jan22 },
+				{ id: 2, date: jan23 },
 			];
 			const expectedDesc = [
-				{ id: 2, datetime: jan23 },
-				{ id: 0, datetime: jan22 },
-				{ id: 1, datetime: jan21 },
+				{ id: 2, date: jan23 },
+				{ id: 0, date: jan22 },
+				{ id: 1, date: jan21 },
 			];
 
 			expect( data.sort( sortByDateUsing( 'asc' ) ) ).toStrictEqual(
@@ -135,33 +135,31 @@ describe( 'Timeline', () => {
 		} );
 
 		test( "Single item doesn't change on sort", () => {
-			const items = [
-				{ datetime: new Date( 2020, 0, 1 ).getTime() / 1000 },
-			];
+			const items = [ { date: new Date( 2020, 0, 1 ) } ];
 			expect( items.sort( sortByDateUsing( 'asc' ) ) ).toBe( items );
 		} );
 
 		test( 'Groups correctly', () => {
-			const jan22 = new Date( 2020, 0, 22 ).getTime() / 1000;
-			const jan23 = new Date( 2020, 0, 23 ).getTime() / 1000;
+			const jan22 = new Date( 2020, 0, 22 );
+			const jan23 = new Date( 2020, 0, 23 );
 			const items = [
-				{ id: 0, datetime: jan22 },
-				{ id: 1, datetime: jan23 },
-				{ id: 2, datetime: jan22 },
+				{ id: 0, date: jan22 },
+				{ id: 1, date: jan23 },
+				{ id: 2, date: jan22 },
 			];
 			const expected = [
 				{
-					datetime: jan22,
+					date: jan22,
 					title: 'January 22, 2020',
 					items: [
-						{ id: 0, datetime: jan22 },
-						{ id: 2, datetime: jan22 },
+						{ id: 0, date: jan22 },
+						{ id: 2, date: jan22 },
 					],
 				},
 				{
-					datetime: jan23,
+					date: jan23,
 					title: 'January 23, 2020',
-					items: [ { id: 1, datetime: jan23 } ],
+					items: [ { id: 1, date: jan23 } ],
 				},
 			];
 
@@ -177,13 +175,13 @@ describe( 'Timeline', () => {
 		} );
 
 		test( 'Single item grouped correctly', () => {
-			const jan22 = new Date( 2020, 0, 22 ).getTime() / 1000;
-			const items = [ { id: 0, datetime: jan22 } ];
+			const jan22 = new Date( 2020, 0, 22 );
+			const items = [ { id: 0, date: jan22 } ];
 			const expected = [
 				{
-					datetime: jan22,
+					date: jan22,
 					title: 'January 22, 2020',
-					items: [ { id: 0, datetime: jan22 } ],
+					items: [ { id: 0, date: jan22 } ],
 				},
 			];
 			expect(
