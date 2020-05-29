@@ -41,9 +41,7 @@ class GetRuleProcessor {
 			case 'stored_state':
 				return new StoredStateRuleProcessor();
 			case 'order_count':
-				return new OrderCountRuleProcessor(
-					new OrdersProvider()
-				);
+				return new OrderCountRuleProcessor();
 		}
 
 		return new FailRuleProcessor();
