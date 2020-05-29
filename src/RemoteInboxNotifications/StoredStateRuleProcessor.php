@@ -1,7 +1,7 @@
 <?php
 /**
  * Rule processor that performs a comparison operation against a value in the
- * $data object.
+ * stored state object.
  *
  * @package WooCommerce Admin/Classes
  */
@@ -12,24 +12,24 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Rule processor that performs a comparison operation against a value in the
- * $data object.
+ * stored state object.
  */
-class DataRuleProcessor implements RuleProcessorInterface {
+class StoredStateRuleProcessor implements RuleProcessorInterface {
 	/**
-	 * Performs a comparison operation against a value in the $data object.
+	 * Performs a comparison operation against a value in the stored state object.
 	 *
-	 * @param object $rule The rule being processed by this rule processor.
-	 * @param object $data Data.
+	 * @param object $rule         The rule being processed by this rule processor.
+	 * @param object $stored_state Stored state.
 	 *
 	 * @return bool The result of the operation.
 	 */
-	public function process( $rule, $data ) {
-		if ( ! isset( $data->{$rule->index} ) ) {
+	public function process( $rule, $stored_state ) {
+		if ( ! isset( $stored_state->{$rule->index} ) ) {
 			return false;
 		}
 
 		return ComparisonOperation::compare(
-			$data->{$rule->index},
+			$stored_state->{$rule->index},
 			$rule->value,
 			$rule->operation
 		);

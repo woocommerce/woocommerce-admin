@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles $data setup for products.
+ * Handles stored state setup for products.
  *
  * @package WooCommerce Admin/Classes
  */
@@ -13,9 +13,9 @@ use \Automattic\WooCommerce\Admin\PluginsProvider\PluginsProvider;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
 
 /**
- * Handles $data setup for products.
+ * Handles stored state setup for products.
  */
-class DataSetupForProducts {
+class StoredStateSetupForProducts {
 	/**
 	 * Initialize the class
 	 */
@@ -25,17 +25,17 @@ class DataSetupForProducts {
 	}
 
 	/**
-	 * Set initial $data values.
+	 * Set initial stored state values.
 	 *
-	 * @param $data object The $data object.
+	 * @param object $stored_state The stored state.
 	 *
-	 * @return object The $data object.
+	 * @return object The stored state.
 	 */
-	public static function init_data( $data ) {
-		$data->there_were_no_products = ! self::are_there_products();
-		$data->there_are_now_products = ! $data->there_were_no_products;
+	public static function init_stored_state( $stored_state ) {
+		$stored_state->there_were_no_products = ! self::are_there_products();
+		$stored_state->there_are_now_products = ! $stored_state->there_were_no_products;
 
-		return $data;
+		return $stored_state;
 	}
 
 	/**
@@ -72,9 +72,9 @@ class DataSetupForProducts {
 		}
 		// phpcs:enable
 
-		$data                         = RemoteInboxNotificationsEngine::get_data();
-		$data->there_are_now_products = self::are_there_products();
-		update_option( RemoteInboxNotificationsEngine::DATA_OPTION_NAME, $data );
+		$stored_state                         = RemoteInboxNotificationsEngine::get_stored_state();
+		$stored_state->there_are_now_products = self::are_there_products();
+		RemoteInboxNotificationsEngine::update_stored_state( $stored_state );
 
 		RemoteInboxNotificationsEngine::run();
 	}
@@ -95,9 +95,9 @@ class DataSetupForProducts {
 			return;
 		}
 
-		$data                         = RemoteInboxNotificationsEngine::get_data();
-		$data->there_are_now_products = self::are_there_products();
-		update_option( RemoteInboxNotificationsEngine::DATA_OPTION_NAME, $data );
+		$stored_state                         = RemoteInboxNotificationsEngine::get_stored_state();
+		$stored_state->there_are_now_products = self::are_there_products();
+		RemoteInboxNotificationsEngine::update_stored_state( $stored_state );
 
 		RemoteInboxNotificationsEngine::run();
 	}
