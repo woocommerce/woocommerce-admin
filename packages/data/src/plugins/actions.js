@@ -1,14 +1,14 @@
 /**
  * External Dependencies
  */
-
-import { apiFetch } from '@wordpress/data-controls';
+import { apiFetch, dispatch } from '@wordpress/data-controls';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal Dependencies
  */
 import TYPES from './action-types';
+import { STORE_NAME } from './constants';
 import { WC_ADMIN_NAMESPACE } from '../constants';
 
 export function updateActivePlugins( active, replace = false ) {
@@ -128,4 +128,16 @@ export function* activatePlugins( plugins ) {
 			}
 		};
 	}
+}
+
+export function* installAndActivatePlugins( plugins ) {
+	const installations = yield dispatch( STORE_NAME, 'installPlugins', plugins );
+
+	if ( ! installations.success ) {
+		return installations;
+	}
+
+	const activations = yield dispatch( STORE_NAME, 'activatePlugins', plugins );
+
+	return activations;
 }
