@@ -42,6 +42,8 @@ class GetRuleProcessor {
 				return new StoredStateRuleProcessor();
 			case 'order_count':
 				return new OrderCountRuleProcessor();
+			case 'wcadmin_active_for':
+				return new WCAdminActiveForRuleProcessor();
 		}
 
 		return new FailRuleProcessor();
