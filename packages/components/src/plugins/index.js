@@ -41,9 +41,8 @@ export class Plugins extends Component {
 		}
 
 		const {
+			installAndActivatePlugins,
 			isRequesting,
-			installPlugins,
-			activatePlugins,
 			pluginSlugs,
 		} = this.props;
 
@@ -52,23 +51,14 @@ export class Plugins extends Component {
 			return false;
 		}
 
-		const installs = await installPlugins( pluginSlugs );
+		const plugins = await installAndActivatePlugins( pluginSlugs );
 
-		if ( installs.errors && Object.keys( installs.errors.errors ).length ) {
-			this.handleErrors( installs.errors );
+		if ( plugins.errors && Object.keys( plugins.errors.errors ).length ) {
+			this.handleErrors( plugins.errors );
 			return;
 		}
 
-		const activations = await activatePlugins( pluginSlugs );
-
-		if ( activations.success && activations.data.activated ) {
-			this.handleSuccess( activations.data.activated );
-			return;
-		}
-
-		if ( activations.errors ) {
-			this.handleErrors( activations.errors );
-		}
+		this.handleSuccess( plugins.data.activated );
 	}
 
 	handleErrors( errors ) {
@@ -222,14 +212,13 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { activatePlugins, installPlugins } = dispatch(
+		const { installAndActivatePlugins } = dispatch(
 			PLUGINS_STORE_NAME
 		);
 
 		return {
-			activatePlugins,
 			createNotice,
-			installPlugins,
+			installAndActivatePlugins,
 		};
 	} )
 )( Plugins );
