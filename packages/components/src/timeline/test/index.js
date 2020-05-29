@@ -150,7 +150,6 @@ describe( 'Timeline', () => {
 			const expected = [
 				{
 					date: jan22,
-					title: 'January 22, 2020',
 					items: [
 						{ id: 0, date: jan22 },
 						{ id: 2, date: jan22 },
@@ -158,7 +157,6 @@ describe( 'Timeline', () => {
 				},
 				{
 					date: jan23,
-					title: 'January 23, 2020',
 					items: [ { id: 1, date: jan23 } ],
 				},
 			];
@@ -180,7 +178,6 @@ describe( 'Timeline', () => {
 			const expected = [
 				{
 					date: jan22,
-					title: 'January 22, 2020',
 					items: [ { id: 0, date: jan22 } ],
 				},
 			];

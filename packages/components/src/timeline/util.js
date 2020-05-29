@@ -45,7 +45,6 @@ const groupItemsUsing = ( groupBy ) => ( groups, newItem ) => {
 			...groups,
 			{
 				date: newItem.date,
-				title: moment( newItem.date ).format( 'MMMM D, YYYY' ),
 				items: [ newItem ],
 			},
 		];

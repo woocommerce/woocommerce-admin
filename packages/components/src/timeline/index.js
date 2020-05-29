@@ -4,6 +4,7 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
+import { format } from '@wordpress/date';
 
 /**
  * Internal dependencies
@@ -12,7 +13,14 @@ import TimelineGroup from './timeline-group';
 import { sortByDateUsing, groupItemsUsing } from './util';
 
 const Timeline = ( props ) => {
-	const { className, items, groupBy, orderBy } = props;
+	const {
+		className,
+		items,
+		groupBy,
+		orderBy,
+		dateFormat,
+		clockFormat,
+	} = props;
 	const timelineClassName = classnames( 'woocommerce-timeline', className );
 
 	// Early return in case no data was passed to the component.
@@ -26,17 +34,26 @@ const Timeline = ( props ) => {
 		);
 	}
 
+	const addGroupTitles = ( group ) => {
+		return {
+			...group,
+			title: format( dateFormat, group.date ),
+		};
+	};
+
 	return (
 		<div className={ timelineClassName }>
 			<ul>
 				{ items
 					.reduce( groupItemsUsing( groupBy ), [] )
+					.map( addGroupTitles )
 					.sort( sortByDateUsing( orderBy ) )
 					.map( ( group ) => (
 						<TimelineGroup
 							key={ group.date.getTime().toString() }
 							group={ group }
 							orderBy={ orderBy }
+							clockFormat={ clockFormat }
 						/>
 					) ) }
 			</ul>
@@ -89,6 +106,14 @@ Timeline.propTypes = {
 	 * Defines how groups should be ordered.
 	 */
 	orderBy: PropTypes.oneOf( [ 'asc', 'desc' ] ),
+	/**
+	 * The PHP date format string used to format dates, see php.net/date.
+	 */
+	dateFormat: PropTypes.string,
+	/**
+	 * The PHP clock format string used to format times, see php.net/date.
+	 */
+	clockFormat: PropTypes.string,
 };
 
 Timeline.defaultProps = {
@@ -96,6 +121,8 @@ Timeline.defaultProps = {
 	items: [],
 	groupBy: 'day',
 	orderBy: 'desc',
+	dateFormat: 'F j, Y',
+	clockFormat: 'g:ia',
 };
 
 export { orderByOptions, groupByOptions } from './util';

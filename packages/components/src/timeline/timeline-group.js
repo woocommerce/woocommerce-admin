@@ -11,14 +11,20 @@ import TimelineItem from './timeline-item';
 import { sortByDateUsing } from './util';
 
 const TimelineGroup = ( props ) => {
-	const { group, className, orderBy } = props;
+	const { group, className, orderBy, clockFormat } = props;
 	const groupClassName = classnames(
 		'woocommerce-timeline-group',
 		className
 	);
 	const itemsToTimlineItem = ( item, itemIndex ) => {
 		const itemKey = group.title + '-' + itemIndex;
-		return <TimelineItem key={ itemKey } item={ item } />;
+		return (
+			<TimelineItem
+				key={ itemKey }
+				item={ item }
+				clockFormat={ clockFormat }
+			/>
+		);
 	};
 
 	return (
@@ -89,6 +95,10 @@ TimelineGroup.propTypes = {
 	 * Defines how items should be ordered.
 	 */
 	orderBy: PropTypes.oneOf( [ 'asc', 'desc' ] ),
+	/**
+	 * The PHP clock format string used to format times, see php.net/date.
+	 */
+	clockFormat: PropTypes.string,
 };
 
 TimelineGroup.defaultProps = {

@@ -2,14 +2,14 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import moment from 'moment';
+import { format } from '@wordpress/date';
 import PropTypes from 'prop-types';
 
 const TimelineItem = ( props ) => {
-	const { item, className } = props;
+	const { item, className, clockFormat } = props;
 
 	const itemClassName = classnames( 'woocommerce-timeline-item', className );
-	const itemTimeString = moment( item.date ).format( 'h:mma' );
+	const itemTimeString = format( clockFormat, item.date );
 
 	return (
 		<li className={ itemClassName }>
@@ -66,6 +66,10 @@ TimelineItem.propTypes = {
 		 * Allows users to toggle the timestamp on or off.
 		 */
 		hideTimestamp: PropTypes.bool,
+		/**
+		 * The PHP clock format string used to format times, see php.net/date.
+		 */
+		clockFormat: PropTypes.string,
 	} ).isRequired,
 };
 
