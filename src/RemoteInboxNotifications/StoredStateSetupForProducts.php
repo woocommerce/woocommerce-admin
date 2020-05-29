@@ -49,7 +49,7 @@ class StoredStateSetupForProducts {
 				'limit'    => 1,
 				'paginate' => true,
 				'return'   => array( 'id' ),
-				'status'   => array( 'published' ),
+				'status'   => array( 'publish' ),
 			)
 		);
 		$products      = $product_query->get_products();
