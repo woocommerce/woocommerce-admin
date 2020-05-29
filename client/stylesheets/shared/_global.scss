@@ -64,12 +64,9 @@
 		}
 	}
 
-	.components-button.is-default:not(.is-primary) {
+	.components-button:not(.is-primary):not(.woocommerce-chart__type-button) {
 		color: $gray-text;
 		fill: currentColor;
-		border-color: $button-border;
-		background: $button;
-		box-shadow: none;
 
 		&:not(:disabled) {
 			&:hover,
@@ -82,10 +79,8 @@
 		}
 	}
 
-	.components-button.is-default:disabled:not(.is-primary) {
+	.components-button:disabled:not(.is-primary) {
 		color: $button-disabled;
-		border-color: $button-disabled-border;
-		background: $button;
 		&:hover,
 		&:active,
 		&:focus {
@@ -163,7 +158,7 @@ body.woocommerce-page {
 	.components-snackbar .components-button.is-tertiary {
 		color: $studio-white;
 
-		&:not(:disabled):not([aria-disabled='true']):not(.is-default):hover {
+		&:not(:disabled):not([aria-disabled='true']):hover {
 			color: $studio-white;
 		}
 	}

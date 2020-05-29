@@ -14,7 +14,7 @@ module.exports = {
 					primary: '#7f54b3',
 					secondary: '#c9356e',
 					toggle: '#674399',
-					button: '#c9356e',
+					button: '#32373c',
 					outlines: '#c9356e',
 				},
 			},
