@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
  * WooCommerce dependencies
  */
 import { H, Plugins } from '@woocommerce/components';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 /**
@@ -24,6 +24,8 @@ import { recordEvent } from 'lib/tracks';
 
 function InstallJetpackCta( props ) {
 	const {
+		isJetpackInstalled,
+		isJetpackActivated,
 		isJetpackConnected,
 		getCurrentUserData,
 		updateCurrentUserData,
@@ -33,12 +35,6 @@ function InstallJetpackCta( props ) {
 	const [ isDismissed, setIsDismissed ] = useState(
 		( getCurrentUserData().homepage_stats || {} ).installJetpackDismissed
 	);
-	const plugins = getSetting( 'plugins', {
-		installedPlugins: [],
-		activePlugins: [],
-	} );
-	const isJetpackInstalled = plugins.installedPlugins.includes( 'jetpack' );
-	const isJetpackActivated = plugins.activePlugins.includes( 'jetpack' );
 
 	function install() {
 		setIsInstalling( true );
@@ -139,10 +135,16 @@ InstallJetpackCta.propTypes = {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { isJetpackConnected } = select( PLUGINS_STORE_NAME );
+		const {
+			isJetpackConnected,
+			getInstalledPlugins,
+			getActivePlugins,
+		} = select( PLUGINS_STORE_NAME );
 		const { getCurrentUserData } = select( 'wc-api' );
 
 		return {
+			isJetpackInstalled: getInstalledPlugins().includes( 'jetpack' ),
+			isJetpackActivated: getActivePlugins().includes( 'jetpack' ),
 			isJetpackConnected: isJetpackConnected(),
 			getCurrentUserData,
 		};
