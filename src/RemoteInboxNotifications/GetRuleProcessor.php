@@ -40,6 +40,8 @@ class GetRuleProcessor {
 				return new PluginVersionRuleProcessor();
 			case 'stored_state':
 				return new StoredStateRuleProcessor();
+			case 'order_count':
+				return new OrderCountRuleProcessor();
 			case 'wcadmin_active_for':
 				return new WCAdminActiveForRuleProcessor();
 		}
