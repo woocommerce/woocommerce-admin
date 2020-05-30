@@ -30,15 +30,8 @@ class WC_Admin_Notes_Choose_Niche {
 	 */
 	public static function get_note() {
 		$onboarding_profile = get_option( 'woocommerce_onboarding_profile', array() );
-		if (
-			! isset( $onboarding_profile['setup_client'] ) ||
-			! isset( $onboarding_profile['product_count'] ) ||
-			! isset( $onboarding_profile['revenue'] )
-		) {
-			return;
-		}
 
-		// Make sure the client is not setup.
+		// Make sure that the person who filled out the OBW was not setting up the store for their customer/client.
 		if ( $onboarding_profile['setup_client'] ) {
 			return;
 		}
