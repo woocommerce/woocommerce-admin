@@ -67,7 +67,7 @@ class WC_Admin_Notes_Migrate_From_Shopify {
 		$note->set_content_data( (object) array() );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(
-			'choose-niche',
+			'migrate-from-shopify',
 			__( 'Learn more', 'woocommerce-admin' ),
 			'https://woocommerce.com/posts/migrate-from-shopify-to-woocommerce/?utm_source=inbox',
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
