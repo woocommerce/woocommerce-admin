@@ -36,15 +36,13 @@ class WC_Admin_Notes_Start_Dropshipping_Business {
 		}
 
 		$onboarding_profile = get_option( 'woocommerce_onboarding_profile', array() );
-		if (
-			! isset( $onboarding_profile['setup_client'] ) ||
-			! isset( $onboarding_profile['product_count'] ) ||
-			! isset( $onboarding_profile['revenue'] )
-		) {
+
+		// Confirm that $onboarding_profile is set.
+		if ( empty( $onboarding_profile ) ) {
 			return;
 		}
 
-		// Make sure the client is not setup.
+		// Make sure that the person who filled out the OBW was not setting up the store for their customer/client.
 		if ( $onboarding_profile['setup_client'] ) {
 			return;
 		}
@@ -67,7 +65,7 @@ class WC_Admin_Notes_Start_Dropshipping_Business {
 		$note->set_content_data( (object) array() );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(
-			'choose-niche',
+			'dropshipping-business',
 			__( 'Learn more', 'woocommerce-admin' ),
 			'https://woocommerce.com/posts/is-dropshipping-worth-it-pros-cons/?utm_source=inbox',
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
