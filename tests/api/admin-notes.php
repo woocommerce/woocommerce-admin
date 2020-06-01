@@ -351,7 +351,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
-	 * Test undiong a single note delete.
+	 * Test undoing a single note delete.
 	 */
 	public function test_undo_single_notes_delete() {
 		wp_set_current_user( $this->user );
