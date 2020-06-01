@@ -60,10 +60,7 @@ describe( 'InboxNoteCard', () => {
 				key={ note.id }
 				note={ note }
 				lastRead={ lastRead }
-			/>,
-			{
-				disableLifecycleMethods: true,
-			}
+			/>
 		);
 		const listNoteWithThumbnail = container.querySelector( '.thumbnail' );
 		expect( listNoteWithThumbnail ).not.toBeNull();
