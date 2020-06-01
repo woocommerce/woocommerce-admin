@@ -13,6 +13,8 @@ import Navigation from './navigation';
 import 'wc-api/wp-data-store';
 import { withSettingsHydration } from '@woocommerce/data';
 
+import CouponsOverview from './marketing/coupons';
+
 // Modify webpack pubilcPath at runtime based on location of WordPress Plugin.
 // eslint-disable-next-line no-undef,camelcase
 __webpack_public_path__ = global.wcAdminAssets.path;
@@ -57,5 +59,21 @@ if ( appRoot ) {
 			<NoticeArea />
 		</div>,
 		wpBody.insertBefore( noticeContainer, wrap )
+	);
+}
+
+const postForm = document.getElementById( 'posts-filter' );
+const postFormType = postForm.querySelector('.post_type_page');
+
+if ( postForm && postFormType.value == 'shop_coupon' ) {
+
+	console.log('Coupons');
+
+	const couponRoot = document.createElement( 'div' );
+	couponRoot.setAttribute( 'id', 'coupon-root' );
+
+	render(
+		<CouponsOverview />,
+		postForm.parentNode.appendChild( couponRoot )
 	);
 }
