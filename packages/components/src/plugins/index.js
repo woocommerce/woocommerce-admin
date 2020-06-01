@@ -11,8 +11,7 @@ import { withSelect, withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
-import { pluginNames } from 'wc-api/onboarding/constants';
+import { pluginNames, PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 export class Plugins extends Component {
 	constructor() {
@@ -56,7 +55,7 @@ export class Plugins extends Component {
 		const installs = await installPlugins( pluginSlugs );
 
 		if ( installs.errors && Object.keys( installs.errors.errors ).length ) {
-			this.handleErrors( installs.errors.errors );
+			this.handleErrors( installs.errors );
 			return;
 		}
 
@@ -67,24 +66,31 @@ export class Plugins extends Component {
 			return;
 		}
 
-		this.handleErrors( activations.errors.errors );
+		if ( activations.errors ) {
+			this.handleErrors( activations.errors );
+		}
 	}
 
 	handleErrors( errors ) {
 		const { onError, createNotice } = this.props;
+		const { errors: pluginErrors } = errors;
 
-		Object.keys( errors ).forEach( ( plugin ) => {
-			createNotice(
-				'error',
-				// Replace the slug with a plugin name if a constant exists.
-				pluginNames[ plugin ]
-					? errors[ plugin ][ 0 ].replace(
-							`\`${ plugin }\``,
-							pluginNames[ plugin ]
-					  )
-					: errors[ plugin ][ 0 ]
-			);
-		} );
+		if ( pluginErrors ) {
+			Object.keys( pluginErrors ).forEach( ( plugin ) => {
+				createNotice(
+					'error',
+					// Replace the slug with a plugin name if a constant exists.
+					pluginNames[ plugin ]
+						? pluginErrors[ plugin ][ 0 ].replace(
+								`\`${ plugin }\``,
+								pluginNames[ plugin ]
+						  )
+						: pluginErrors[ plugin ][ 0 ]
+				);
+			} );
+		} else if ( errors.message ) {
+			createNotice( 'error', errors.message );
+		}
 
 		this.setState( { hasErrors: true } );
 		onError( errors );
@@ -108,12 +114,7 @@ export class Plugins extends Component {
 	}
 
 	render() {
-		const {
-			isRequesting,
-			skipText,
-			autoInstall,
-			pluginSlugs,
-		} = this.props;
+		const { isRequesting, skipText, autoInstall, pluginSlugs } = this.props;
 		const { hasErrors } = this.state;
 
 		if ( hasErrors ) {
