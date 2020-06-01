@@ -24,6 +24,7 @@ import './style.scss';
 import { isOnboardingEnabled } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
 import TaskListPlaceholder from '../task-list/placeholder';
+import InboxPanel  from '../header/activity-panel/panels/inbox/index';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -61,22 +62,7 @@ export const Layout = ( props ) => {
 			<Fragment>
 				{ showInbox && (
 					<div className="woocommerce-homepage-column is-inbox">
-						<div className="temp-content">
-							<Button
-								isPrimary
-								onClick={ () => {
-									setShowInbox( false );
-								} }
-							>
-								Dismiss All
-							</Button>
-						</div>
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
+						<InboxPanel />
 					</div>
 				) }
 				<div
@@ -157,7 +143,7 @@ export default compose(
 					'woocommerce_task_list_complete',
 					'woocommerce_task_list_hidden',
 				] ),
-				taskListComplete: get( options, [ 'woocommerce_task_list_complete' ] ),
+				taskListComplete: get( options, [ 'woocommerce_task_list_complete' ] ) === "1",
 				taskListHidden: get( options, [ 'woocommerce_task_list_hidden' ] ) === 'yes',
 			};
 		}
