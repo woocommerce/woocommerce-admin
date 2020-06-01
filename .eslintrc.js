@@ -1,12 +1,18 @@
 module.exports = {
-	extends: [ 'plugin:@wordpress/eslint-plugin/recommended', 'prettier' ],
+	extends: [
+		'plugin:@wordpress/eslint-plugin/recommended',
+		'prettier',
+		'plugin:testing-library/recommended',
+		'plugin:testing-library/react',
+		'plugin:jest-dom/recommended',
+	],
 	env: {
 		'jest/globals': true,
 	},
 	globals: {
 		wcSettings: true,
 	},
-	plugins: [ 'jest' ],
+	plugins: [ 'jest', 'jest-dom', 'testing-library' ],
 	rules: {
 		'@wordpress/dependency-group': 'off',
 		'valid-jsdoc': 'off',

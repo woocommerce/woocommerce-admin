@@ -24,6 +24,7 @@ class WC_Admin_Notes {
 	 */
 	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'schedule_unsnooze_notes' ) );
+		add_action( 'update_option_woocommerce_show_marketplace_suggestions', array( __CLASS__, 'possibly_delete_marketing_notes' ), 10, 2 );
 	}
 
 	/**
@@ -91,14 +92,23 @@ class WC_Admin_Notes {
 	/**
 	 * Deletes admin notes with a given name.
 	 *
-	 * @param string $name Name to search for.
+	 * @param string|array $names Name(s) to search for.
 	 */
-	public static function delete_notes_with_name( $name ) {
+	public static function delete_notes_with_name( $names ) {
+		if ( is_string( $names ) ) {
+			$names = array( $names );
+		} elseif ( ! is_array( $names ) ) {
+			return;
+		}
+
 		$data_store = \WC_Data_Store::load( 'admin-note' );
-		$note_ids   = $data_store->get_notes_with_name( $name );
-		foreach ( (array) $note_ids as $note_id ) {
-			$note = new WC_Admin_Note( $note_id );
-			$note->delete();
+
+		foreach ( $names as $name ) {
+			$note_ids = $data_store->get_notes_with_name( $name );
+			foreach ( (array) $note_ids as $note_id ) {
+				$note = new WC_Admin_Note( $note_id );
+				$note->delete();
+			}
 		}
 	}
 
@@ -207,5 +217,29 @@ class WC_Admin_Notes {
 	 */
 	public static function clear_queued_actions() {
 		wp_clear_scheduled_hook( self::UNSNOOZE_HOOK );
+	}
+
+	/**
+	 * Delete marketing notes if marketing has been opted out.
+	 *
+	 * @param string $old_value Old value.
+	 * @param string $value New value.
+	 */
+	public static function possibly_delete_marketing_notes( $old_value, $value ) {
+		if ( 'no' !== $value ) {
+			return;
+		}
+
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$notes      = $data_store->get_notes(
+			array(
+				'type' => array( WC_Admin_Note::E_WC_ADMIN_NOTE_MARKETING ),
+			)
+		);
+
+		foreach ( $notes as $note ) {
+			$note = new WC_Admin_Note( $note->note_id );
+			$note->delete();
+		}
 	}
 }

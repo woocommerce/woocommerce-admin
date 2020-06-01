@@ -3,27 +3,27 @@
  */
 
 import { apiFetch } from '@wordpress/data-controls';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal Dependencies
  */
 import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
-import { pluginNames } from './constants';
 
-export function updateActivePlugins( active ) {
+export function updateActivePlugins( active, replace = false ) {
 	return {
 		type: TYPES.UPDATE_ACTIVE_PLUGINS,
 		active,
+		replace,
 	};
 }
 
-export function updateInstalledPlugins( installed, added ) {
+export function updateInstalledPlugins( installed, replace = false ) {
 	return {
 		type: TYPES.UPDATE_INSTALLED_PLUGINS,
 		installed,
-		added,
+		replace,
 	};
 }
 
@@ -58,57 +58,43 @@ export function updateJetpackConnectUrl( redirectUrl, jetpackConnectUrl ) {
 	};
 }
 
-function getPluginErrorMessage( action, plugin ) {
-	const pluginName = pluginNames[ plugin ] || plugin;
-	switch ( action ) {
-		case 'install':
-			return sprintf(
-				__(
-					'There was an error installing %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-		case 'connect':
-			return sprintf(
-				__(
-					'There was an error connecting to %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-		case 'activate':
-		default:
-			return sprintf(
-				__(
-					'There was an error activating %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-	}
-}
-
-export function* installPlugin( plugin ) {
-	yield setIsRequesting( 'installPlugin', true );
+export function* installPlugins( plugins ) {
+	yield setIsRequesting( 'installPlugins', true );
 
 	try {
 		const results = yield apiFetch( {
 			path: `${ WC_ADMIN_NAMESPACE }/plugins/install`,
 			method: 'POST',
-			data: { plugin },
+			data: { plugins: plugins.join( ',' ) },
 		} );
 
-		if ( results && results.status === 'success' ) {
-			yield updateInstalledPlugins( null, results.slug );
-			return results;
+		if ( ! results ) {
+			throw new Error();
 		}
 
-		throw new Error();
+		if ( results.success && results.data.installed ) {
+			yield updateInstalledPlugins( results.data.installed );
+		}
+
+		if ( Object.keys( results.errors.errors ).length ) {
+			yield setError( 'installPlugins', results.errors );
+		}
+
+		yield setIsRequesting( 'installPlugins', false );
+
+		return results;
 	} catch ( error ) {
-		const errorMsg = getPluginErrorMessage( 'install', plugin );
-		yield setError( 'installPlugin', errorMsg );
-		return errorMsg;
+		yield setError( 'installPlugins', error );
+		yield setIsRequesting( 'installPlugins', false );
+
+		return {
+			errors: {
+				message: __(
+					'Something went wrong while trying to install your plugins.',
+					'woocommerce-admin'
+				),
+			},
+		};
 	}
 }
 
@@ -122,16 +108,24 @@ export function* activatePlugins( plugins ) {
 			data: { plugins: plugins.join( ',' ) },
 		} );
 
-		if ( results && results.status === 'success' ) {
-			yield updateActivePlugins( results.activatedPlugins );
+		if ( results.success && results.data.activated ) {
+			yield updateActivePlugins( results.data.activated );
+			yield setIsRequesting( 'activatePlugins', false );
 			return results;
 		}
 
 		throw new Error();
 	} catch ( error ) {
 		yield setError( 'activatePlugins', error );
-		return plugins.map( ( plugin ) => {
-			return getPluginErrorMessage( 'activate', plugin );
-		} );
+		yield setIsRequesting( 'activatePlugins', false );
+
+		return {
+			errors: {
+				message: __(
+					'Something went wrong while trying to activate your plugins.',
+					'woocommerce-admin'
+				),
+			}
+		};
 	}
 }

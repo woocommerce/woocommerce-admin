@@ -42,15 +42,15 @@ export function getCurrencyRegion( countryState ) {
  *
  * @param {Object} profileItems Onboarding profile.
  * @param {boolean} includeInstalledItems Include installed items in returned product IDs.
+ * @param {Array} installedPlugins Installed plugins.
  * @return {Array} Product Ids.
  */
 export function getProductIdsForCart(
 	profileItems,
-	includeInstalledItems = false
+	includeInstalledItems = false,
+	installedPlugins
 ) {
-	const productIds = [];
 	const onboarding = getSetting( 'onboarding', {} );
-	const productTypes = profileItems.product_types || [];
 
 	// The population of onboarding.productTypes only happens if the task list should be shown
 	// so bail early if it isn't present.
@@ -58,12 +58,15 @@ export function getProductIdsForCart(
 		return productIds;
 	}
 
+	const productIds = [];
+	const productTypes = profileItems.product_types || [];
+
 	productTypes.forEach( ( productType ) => {
 		if (
 			onboarding.productTypes[ productType ] &&
 			onboarding.productTypes[ productType ].product &&
 			( includeInstalledItems ||
-				! onboarding.installedPlugins.includes(
+				! installedPlugins.includes(
 					onboarding.productTypes[ productType ].slug
 				) )
 		) {

@@ -11,7 +11,7 @@ import { withSelect, withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { pluginNames, PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 export class Plugins extends Component {
 	constructor() {
@@ -42,7 +42,7 @@ export class Plugins extends Component {
 
 		const {
 			isRequesting,
-			installPlugin,
+			installPlugins,
 			activatePlugins,
 			pluginSlugs,
 		} = this.props;
@@ -52,37 +52,45 @@ export class Plugins extends Component {
 			return false;
 		}
 
-		const installs = await Promise.all(
-			pluginSlugs.map( async ( slug ) => {
-				return await installPlugin( slug );
-			} )
-		);
+		const installs = await installPlugins( pluginSlugs );
 
-		const installErrors = installs.filter(
-			( install ) => install.status !== 'success'
-		);
-
-		if ( installErrors.length ) {
-			this.handleErrors( installErrors );
+		if ( installs.errors && Object.keys( installs.errors.errors ).length ) {
+			this.handleErrors( installs.errors );
 			return;
 		}
 
 		const activations = await activatePlugins( pluginSlugs );
 
-		if ( activations.status === 'success' ) {
-			this.handleSuccess( activations.activePlugins );
+		if ( activations.success && activations.data.activated ) {
+			this.handleSuccess( activations.data.activated );
 			return;
 		}
 
-		this.handleErrors( activations );
+		if ( activations.errors ) {
+			this.handleErrors( activations.errors );
+		}
 	}
 
 	handleErrors( errors ) {
 		const { onError, createNotice } = this.props;
+		const { errors: pluginErrors } = errors;
 
-		errors.forEach( ( error ) => {
-			createNotice( 'error', error );
-		} );
+		if ( pluginErrors ) {
+			Object.keys( pluginErrors ).forEach( ( plugin ) => {
+				createNotice(
+					'error',
+					// Replace the slug with a plugin name if a constant exists.
+					pluginNames[ plugin ]
+						? pluginErrors[ plugin ][ 0 ].replace(
+								`\`${ plugin }\``,
+								pluginNames[ plugin ]
+						  )
+						: pluginErrors[ plugin ][ 0 ]
+				);
+			} );
+		} else if ( errors.message ) {
+			createNotice( 'error', errors.message );
+		}
 
 		this.setState( { hasErrors: true } );
 		onError( errors );
@@ -106,13 +114,8 @@ export class Plugins extends Component {
 	}
 
 	render() {
-		const {
-			hasErrors,
-			isRequesting,
-			skipText,
-			autoInstall,
-			pluginSlugs,
-		} = this.props;
+		const { isRequesting, skipText, autoInstall, pluginSlugs } = this.props;
+		const { hasErrors } = this.state;
 
 		if ( hasErrors ) {
 			return (
@@ -209,7 +212,7 @@ export default compose(
 
 		const isRequesting =
 			isPluginsRequesting( 'activatePlugins' ) ||
-			isPluginsRequesting( 'installPlugin' );
+			isPluginsRequesting( 'installPlugins' );
 
 		return {
 			isRequesting,
@@ -219,14 +222,14 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { activatePlugins, installPlugin } = dispatch(
+		const { activatePlugins, installPlugins } = dispatch(
 			PLUGINS_STORE_NAME
 		);
 
 		return {
 			activatePlugins,
 			createNotice,
-			installPlugin,
+			installPlugins,
 		};
 	} )
 )( Plugins );

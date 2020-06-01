@@ -12,6 +12,7 @@ import { withDispatch } from '@wordpress/data';
  */
 import { updateQueryString } from '@woocommerce/navigation';
 import {
+	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	withSettingsHydration,
 	withPluginsHydration,
@@ -76,6 +77,7 @@ class ProfileWizard extends Component {
 	componentDidMount() {
 		const { profileItems, updateProfileItems } = this.props;
 
+		document.body.classList.remove( 'woocommerce-admin-is-loading' );
 		document.documentElement.classList.remove( 'wp-toolbar' );
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
@@ -244,9 +246,8 @@ const hydrateSettings =
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getNotes, getProfileItems, getProfileItemsError } = select(
-			'wc-api'
-		);
+		const { getNotes } = select( 'wc-api' );
+		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 
 		const notesQuery = {
@@ -259,14 +260,15 @@ export default compose(
 		const activePlugins = getActivePlugins();
 
 		return {
-			isError: Boolean( getProfileItemsError() ),
+			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
 			notes,
 			profileItems: getProfileItems(),
 			activePlugins,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateNote, updateProfileItems } = dispatch( 'wc-api' );
+		const { updateNote } = dispatch( 'wc-api' );
+		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
