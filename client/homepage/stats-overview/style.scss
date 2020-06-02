@@ -40,7 +40,7 @@ $action-color: #3858e9;
 			}
 
 			&.is-active {
-				border-bottom: 4px solid $action-color;
+				border-bottom: 4px solid $action-color !important;
 				// Avoid the text "jumping" when border-bottom applied.
 				margin-bottom: 0;
 			}
