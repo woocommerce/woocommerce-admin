@@ -313,13 +313,11 @@ $border: $light-gray-tertiary;
 	.woocommerce-summary__item-label {
 		display: block;
 		margin-bottom: $gap;
-		@include font-size( 11 );
 		color: $theme-color;
 	}
 
 	.woocommerce-summary__item-value {
 		margin-bottom: $gap-smallest;
-		@include font-size( 18 );
 		font-weight: 500;
 		color: $dark-gray-primary;
 	}
@@ -375,7 +373,6 @@ $border: $light-gray-tertiary;
 
 		.woocommerce-summary__item-value,
 		.woocommerce-summary__item-delta {
-			@include font-size( 13 );
 			margin-bottom: 0;
 		}
 	}
