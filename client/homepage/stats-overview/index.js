@@ -2,10 +2,9 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { compose } from '@wordpress/compose';
 import { Fragment } from '@wordpress/element';
 import { TabPanel } from '@wordpress/components';
-import { get, identity, xor } from 'lodash';
+import { get, xor } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -17,10 +16,7 @@ import {
 	MenuTitle,
 	Link,
 } from '@woocommerce/components';
-import {
-	useUserPreferences,
-	withCurrentUserHydration,
-} from '@woocommerce/data';
+import { useUserPreferences } from '@woocommerce/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { getNewPath } from '@woocommerce/navigation';
 
@@ -39,7 +35,6 @@ const { performanceIndicators } = getSetting( 'dataEndpoints', {
 const stats = performanceIndicators.filter( ( indicator ) => {
 	return DEFAULT_STATS.includes( indicator.stat );
 } );
-const hydrateUser = window.wcSettings.currentUserData;
 
 export const StatsOverview = () => {
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
@@ -152,8 +147,4 @@ export const StatsOverview = () => {
 	);
 };
 
-export default compose(
-	hydrateUser
-		? withCurrentUserHydration( hydrateUser )
-		: identity
-)( StatsOverview );
+export default StatsOverview;

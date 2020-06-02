@@ -7,7 +7,7 @@ import { Fragment, useRef, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { focus } from '@wordpress/dom';
 import { withDispatch } from '@wordpress/data';
-import { get, noop, partial, uniq, identity } from 'lodash';
+import { get, noop, partial, uniq } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -28,7 +28,7 @@ import {
 	generateCSVDataFromTable,
 	generateCSVFileName,
 } from '@woocommerce/csv-export';
-import { SETTINGS_STORE_NAME, useUserPreferences, withCurrentUserHydration } from '@woocommerce/data';
+import { SETTINGS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -42,7 +42,6 @@ import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';
-const hydrateUser = window.wcSettings.currentUserData;
 
 const ReportTable = ( props ) => {
 	const {
@@ -612,8 +611,5 @@ export default compose(
 		return {
 			initiateReportExport,
 		};
-	} ),
-	hydrateUser
-		? withCurrentUserHydration( hydrateUser )
-		: identity
+	} )
 )( ReportTable );
