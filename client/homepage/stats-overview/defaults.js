@@ -18,6 +18,4 @@ export const DEFAULT_STATS = applyFilters(
 export const DEFAULT_HIDDEN_STATS = [
 	'revenue/net_revenue',
 	'products/items_sold',
-	'jetpack/stats/visitors',
-	'jetpack/stats/views',
 ];

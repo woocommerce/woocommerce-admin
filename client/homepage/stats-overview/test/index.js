@@ -102,8 +102,6 @@ describe( 'StatsOverview toggle and persist stat preference', () => {
 				hiddenStats: [
 					'revenue/net_revenue',
 					'products/items_sold',
-					'jetpack/stats/visitors',
-					'jetpack/stats/views',
 					'revenue/total_sales',
 				],
 			},
