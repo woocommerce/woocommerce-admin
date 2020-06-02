@@ -393,6 +393,15 @@ class WC_Admin_Note extends \WC_Data {
 	}
 
 	/**
+	 * Set note icon (Deprecated).
+	 *
+	 * @param string $icon Note icon.
+	 */
+	public function set_icon( $icon ) {
+		wc_deprecated_function( 'set_icon', '4.3' );
+	}
+
+	/**
 	 * Set note content.
 	 *
 	 * @param string $content Note content.
