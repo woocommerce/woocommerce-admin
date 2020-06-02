@@ -30,7 +30,7 @@ import withSelect from 'wc-api/with-select';
 import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import { CurrencyContext } from 'lib/currency-context';
-import { getIndicatorData, getIndictorValues } from './utils';
+import { getIndicatorData, getIndicatorValues } from './utils';
 
 const { performanceIndicators: indicators } = getSetting( 'dataEndpoints', {
 	performanceIndicators: [],
@@ -146,7 +146,7 @@ class StorePerformance extends Component {
 							secondaryValue,
 							delta,
 							reportUrl,
-						} = getIndictorValues( {
+						} = getIndicatorValues( {
 							indicator,
 							primaryData,
 							secondaryData,
