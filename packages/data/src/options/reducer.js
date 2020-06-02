@@ -9,17 +9,9 @@ const optionsReducer = (
 ) => {
 	switch ( type ) {
 		case TYPES.RECEIVE_OPTIONS:
-			const resolvedOptions = {};
-			Object.keys( options ).forEach( name => {
-				resolvedOptions[ name ] = false;
-			} );
 			state = {
 				...state,
 				...options,
-				isRequesting: {
-					...state.isRequesting,
-					...resolvedOptions
-				},
 			};
 			break;
 		case TYPES.SET_IS_REQUESTING:

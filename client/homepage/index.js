@@ -49,17 +49,17 @@ export default compose(
 		const { getProfileItems } = select( 'wc-api' );
 		const profileItems = getProfileItems();
 
-		const { getOption, isRequesting } = select( OPTIONS_STORE_NAME );
+		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 		const blogname = getOption( 'blogname' );
 		const blogdescription = getOption( 'blogdescription' );
 
 		console.log(
-			'isRequesting blogname',
-			isRequesting( 'blogname' )
+			'isResolving blogname',
+			isResolving( 'getOption', [ 'blogname' ] )
 		);
 		console.log(
-			'isRequesting blogdescription',
-			isRequesting( 'blogdescription' )
+			'isResolving blogdescription',
+			isResolving( 'getOption', [ 'blogdescription' ] )
 		);
 
 		return { profileItems, blogname, blogdescription };

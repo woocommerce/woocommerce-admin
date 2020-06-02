@@ -2,7 +2,7 @@
  * External Dependencies
  */
 import { apiFetch } from '@wordpress/data-controls';
-import { getOptionsToRequest } from './controls';
+import { batchFetch } from './controls';
 
 /**
  * Internal dependencies
@@ -24,22 +24,7 @@ export function* getOptionsWithRequest( names ) {
 	}
 }
 
-const fetches = {};
-
 export function* getOption( name ) {
-	yield setIsRequesting( name );
-	const names = yield getOptionsToRequest( name );
-
-	const fetchInProgress = fetches[ names ];
-	if ( fetchInProgress ) {
-		return;
-	}
-
-	const url = WC_ADMIN_NAMESPACE + '/options?options=' + names;
-	fetches[ names ] = true;
-	const result = yield apiFetch( { path: url } );
-	yield receiveOptions( result );
-
-	// Delete the fetch after to allow wp data to handle cache invalidation.
-	delete fetches[ names ];
+	const result = yield batchFetch( name );
+	yield receiveOptions( { [ name ]: result } );
 }
