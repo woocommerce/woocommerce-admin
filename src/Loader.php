@@ -123,12 +123,27 @@ class Loader {
 	}
 
 	/**
-	 * Gets an array of enabled WooCommerce Admin features/sections.
+	 * Gets a build configured array of enabled WooCommerce Admin features/sections.
 	 *
-	 * @return bool Enabled Woocommerce Admin features/sections.
+	 * @return array Enabled Woocommerce Admin features/sections.
 	 */
 	public static function get_features() {
 		return apply_filters( 'woocommerce_admin_features', array() );
+	}
+
+	/**
+	 * Gets a runtime array of enabled WooCommerce Admin features/sections.
+	 *
+	 * @return array Woocommerce Admin features/sections.
+	 */
+	protected static function get_enabled_features() {
+		$features_mask    = apply_filters( 'woocommerce_admin_features_to_enable_disable', array() );
+		$add_features     = array_filter( $features_mask );
+		$remove_features  = array_keys( array_diff_key( $features_mask, $add_features ) );
+
+		$enabled_features = self::get_features();
+		$enabled_features = array_diff( $enabled_features, $remove_features );
+		return array_merge( $enabled_features, array_keys( $add_features ) );
 	}
 
 	/**
@@ -164,14 +179,21 @@ class Loader {
 	 * @return bool Returns true if the feature is enabled.
 	 */
 	public static function is_feature_enabled( $feature ) {
-		$features = self::get_features();
+		if ( 'homepage' === $feature ) {
+			$option = 'yes' === get_option( 'woocommerce_homescreen_enabled', 'no' );
+			if ( ! $option ) {
+				return false;
+			}
+		}
+
+		$features = self::get_enabled_features();
 		return in_array( $feature, $features, true );
 	}
 
 	/**
 	 * Returns if the onboarding feature of WooCommerce Admin should be enabled.
 	 *
-	 * While we preform an a/b test of onboarding, the feature will be enabled within the plugin build, but only if the user recieved the test/opted in.
+	 * While we preform an a/b test of onboarding, the feature will be enabled within the plugin build, but only if the user received the test/opted in.
 	 *
 	 * @return bool Returns true if the onboarding is enabled.
 	 */
@@ -200,17 +222,6 @@ class Loader {
 		$options[] = 'woocommerce_homescreen_enabled';
 
 		return $options;
-	}
-
-	/**
-	 * Determine if homescreen is enabled.
-	 *
-	 * @param array $features Array of features returned from wc_admin_get_feature_config.
-	 * @return bool
-	 */
-	public static function is_homepage_enabled( $features ) {
-		$option = get_option( 'woocommerce_homescreen_enabled', 'no' );
-		return $features['homepage'] && 'yes' === $option;
 	}
 
 	/**
@@ -258,7 +269,7 @@ class Loader {
 	 * Class loader for enabled WooCommerce Admin features/sections.
 	 */
 	public static function load_features() {
-		$features = self::get_features();
+		$features = self::get_enabled_features();
 		foreach ( $features as $feature ) {
 			$feature = str_replace( '-', '', ucwords( strtolower( $feature ), '-' ) );
 			$feature = 'Automattic\\WooCommerce\\Admin\\Features\\' . $feature;
@@ -275,8 +286,7 @@ class Loader {
 	 * @todo The entry point for the embed needs moved to this class as well.
 	 */
 	public static function register_page_handler() {
-		$features = wc_admin_get_feature_config();
-		$id       = self::is_homepage_enabled( $features ) ? 'woocommerce-home' : 'woocommerce-dashboard';
+		$id = self::is_feature_enabled( 'homepage' ) ? 'woocommerce-home' : 'woocommerce-dashboard';
 
 		wc_admin_register_page(
 			array(
@@ -711,7 +721,7 @@ class Loader {
 			$classes[] = 'woocommerce-admin-is-loading';
 		}
 
-		$features = self::get_features();
+		$features = self::get_enabled_features();
 		foreach ( $features as $feature_key ) {
 			$classes[] = sanitize_html_class( 'woocommerce-feature-enabled-' . $feature_key );
 		}
