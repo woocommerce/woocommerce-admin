@@ -62,6 +62,30 @@ class Marketing {
 		add_action( 'admin_head', array( $this, 'fix_coupon_menu_highlight' ), 99 );
 		add_filter( 'custom_menu_order', array( $this, 'reorder_coupon_menu' ) );
 		add_action( 'admin_menu', array( $this, 'maybe_add_coupon_menu_redirect' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_coupon_script' ) );
+	}
+
+	/**
+	 * Maybe add our wc-admin coupon scripts to the page if viewing coupon pages
+	 */
+	public function maybe_add_coupon_script( $hook ) {
+
+		$rtl = is_rtl() ? '-rtl' : '';
+
+		wp_enqueue_style(
+			'wc-admin-coupons',
+			Loader::get_url( "coupons/style{$rtl}", 'css' ),
+			array(),
+			Loader::get_file_version( 'css' )
+		);
+
+		wp_enqueue_script(
+			'wc-admin-coupons',
+			Loader::get_url( 'wp-admin-scripts/coupons', 'js' ),
+			array( 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wp-api-fetch', WC_ADMIN_APP ),
+			Loader::get_file_version( 'js' ),
+			true
+		);
 	}
 
 	/**
