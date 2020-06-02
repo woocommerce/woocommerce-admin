@@ -48,7 +48,7 @@ class StoredStateSetupForProducts {
 			array(
 				'limit'    => 1,
 				'paginate' => true,
-				'return'   => array( 'id' ),
+				'return'   => 'ids',
 				'status'   => array( 'publish' ),
 			)
 		);
