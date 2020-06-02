@@ -105,9 +105,6 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_One {
 			'activated_formatted' => $activated_time_formatted,
 		) );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
-		// See https://automattic.github.io/gridicons/ for icon names.
-		// Don't include the gridicons- part of the name.
-		$note->set_icon( 'info' );
 		$note->set_layout('plain');
 		$note->set_image('');
 		$note->set_name( self::NOTE_NAME );
@@ -206,9 +203,6 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_Two {
 		) );
 
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
-		// See https://automattic.github.io/gridicons/ for icon names.
-		// Don't include the gridicons- part of the name.
-		$note->set_icon( 'info' );
 		$note->set_layout('plain');
 		$note->set_image('');
 		$note->set_name( self::NOTE_NAME );
