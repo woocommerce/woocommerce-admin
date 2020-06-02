@@ -20,14 +20,15 @@ export function receiveOptions( options ) {
 export function setIsRequesting( optionName ) {
 	return {
 		type: TYPES.SET_IS_REQUESTING,
-		optionName
+		optionName,
 	};
 }
 
-export function setRequestingError( error ) {
+export function setRequestingError( error, options ) {
 	return {
 		type: TYPES.SET_REQUESTING_ERROR,
 		error,
+		options,
 	};
 }
 

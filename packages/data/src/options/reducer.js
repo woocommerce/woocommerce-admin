@@ -3,6 +3,13 @@
  */
 import TYPES from './action-types';
 
+const getIsRequestingObject = ( options, value ) => {
+	return Object.keys( options ).reduce( ( result, name ) => {
+		result[ name ] = value;
+		return result;
+	}, {} );
+};
+
 const optionsReducer = (
 	state = { isRequesting: {}, isUpdating: false },
 	{ type, options, error, isUpdating, optionName }
@@ -33,7 +40,10 @@ const optionsReducer = (
 			state = {
 				...state,
 				requestingError: error,
-				isRequesting: false,
+				isRequesting: {
+					...state.isRequesting,
+					...getIsRequestingObject( options, false ),
+				},
 			};
 			break;
 		case TYPES.SET_UPDATING_ERROR:

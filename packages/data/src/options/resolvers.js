@@ -19,12 +19,16 @@ export function* getOptionsWithRequest( names ) {
 		yield receiveOptions( results );
 		return results;
 	} catch ( error ) {
-		yield setRequestingError( error );
+		yield setRequestingError( error, names );
 		return error;
 	}
 }
 
 export function* getOption( name ) {
-	const result = yield batchFetch( name );
-	yield receiveOptions( { [ name ]: result } );
+	try {
+		const result = yield batchFetch( name );
+		yield receiveOptions( { [ name ]: result } );
+	} catch ( error ) {
+		yield setRequestingError( error, [ name ] );
+	}
 }
