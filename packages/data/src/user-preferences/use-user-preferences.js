@@ -71,6 +71,13 @@ export const useUserPreferences = () => {
 					JSON.stringify
 				);
 
+				if ( Object.keys( metaData ).length === 0 ) {
+					return {
+						error: new Error( 'No valid woocommerce_meta keys were provided for update.' ),
+						updatedUser: undefined,
+					}
+				}
+
 				// Use saveUser() to update WooCommerce meta values.
 				const updatedUser = await saveUser( { id: user.id, woocommerce_meta: metaData } );
 
