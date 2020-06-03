@@ -127,14 +127,16 @@ class WCPay extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getOptions, isRequesting } = select(
+		const { getOptions, isGetOptionsRequesting } = select(
 			OPTIONS_STORE_NAME
 		);
 		const options = getOptions( [
 			'woocommerce_woocommerce_payments_settings',
 		] );
 		const optionsIsRequesting = Boolean(
-			isRequesting( 'woocommerce_woocommerce_payments_settings' )
+			isGetOptionsRequesting( [
+				'woocommerce_woocommerce_payments_settings',
+			] )
 		);
 
 		return {
