@@ -9,7 +9,6 @@ import {
 	useRef,
 	useEffect,
 } from '@wordpress/element';
-import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import classnames from 'classnames';
 import { get } from 'lodash';
@@ -24,6 +23,7 @@ import './style.scss';
 import { isOnboardingEnabled } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
 import TaskListPlaceholder from '../task-list/placeholder';
+import InboxPanel from '../header/activity-panel/panels/inbox';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -60,24 +60,7 @@ export const Layout = ( props ) => {
 		return (
 			<Fragment>
 				{ showInbox && (
-					<div className="woocommerce-homepage-column is-inbox">
-						<div className="temp-content">
-							<Button
-								isPrimary
-								onClick={ () => {
-									setShowInbox( false );
-								} }
-							>
-								Dismiss All
-							</Button>
-						</div>
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-					</div>
+					<InboxPanel context="homepage" />
 				) }
 				<div
 					className="woocommerce-homepage-column"
