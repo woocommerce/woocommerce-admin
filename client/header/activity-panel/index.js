@@ -154,7 +154,7 @@ class ActivityPanel extends Component {
 	getPanelContent( tab ) {
 		switch ( tab ) {
 			case 'inbox':
-				return <InboxPanel />;
+				return <InboxPanel context="header" />;
 			case 'orders':
 				const { hasUnreadOrders } = this.props;
 				return <OrdersPanel hasActionableOrders={ hasUnreadOrders } />;

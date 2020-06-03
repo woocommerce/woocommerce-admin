@@ -9,7 +9,6 @@ import {
 	useRef,
 	useEffect,
 } from '@wordpress/element';
-import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import classnames from 'classnames';
 import { get } from 'lodash';
@@ -61,9 +60,7 @@ export const Layout = ( props ) => {
 		return (
 			<Fragment>
 				{ showInbox && (
-					<div className="woocommerce-homepage-column is-inbox">
-						<InboxPanel />
-					</div>
+					<InboxPanel context="homepage" />
 				) }
 				<div
 					className="woocommerce-homepage-column"

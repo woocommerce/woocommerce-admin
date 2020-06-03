@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
+import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
@@ -17,6 +18,7 @@ import { EmptyContent, Section } from '@woocommerce/components';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from 'wc-api/with-select';
 import { getUnreadNotesCount, hasValidNotes } from './utils';
+import classnames from 'classnames';
 
 class InboxPanel extends Component {
 	constructor( props ) {
@@ -86,6 +88,7 @@ class InboxPanel extends Component {
 
 	render() {
 		const {
+			context,
 			isError,
 			isRequesting,
 			isUndoRequesting,
@@ -119,35 +122,51 @@ class InboxPanel extends Component {
 
 		const hasNotes = hasValidNotes( notes );
 
+		const panelClassName = classnames( {
+			'woocommerce-homepage-column is-inbox': context === 'homepage',
+		} );
+
+		const isActivityHeaderVisible = hasNotes || isRequesting || isUndoRequesting;
+
 		return (
 			<Fragment>
-				{ ( hasNotes || isRequesting || isUndoRequesting ) && (
-					<ActivityHeader
-						title={ __( 'Inbox', 'woocommerce-admin' ) }
-						subtitle={ __(
-							'Insights and growth tips for your business',
-							'woocommerce-admin'
+				{ ( context !== 'homepage' || isActivityHeaderVisible ) && (
+					<div className={ panelClassName }>
+						{ isActivityHeaderVisible && (
+							<ActivityHeader
+								title={ __( 'Inbox', 'woocommerce-admin' ) }
+								subtitle={ __(
+									'Insights and growth tips for your business',
+									'woocommerce-admin'
+								) }
+								unreadMessages={ getUnreadNotesCount(
+									notes,
+									lastRead
+								) }
+							/>
 						) }
-						unreadMessages={ getUnreadNotesCount(
-							notes,
-							lastRead
-						) }
-					/>
+						<div className="woocommerce-homepage-notes-wrapper">
+							{ ( isRequesting || isDismissAllUndoRequesting ) && (
+								<Section>
+									<InboxNotePlaceholder className="banner message-is-unread" />
+								</Section>
+							) }
+							<Section>
+								{ ! isRequesting &&
+									! isDismissAllUndoRequesting &&
+									this.renderNotes( hasNotes ) }
+							</Section>
+						</div>
+					</div>
 				) }
-				{ ( isRequesting || isDismissAllUndoRequesting ) && (
-					<Section>
-						<InboxNotePlaceholder className="banner message-is-unread" />
-					</Section>
-				) }
-				<Section>
-					{ ! isRequesting &&
-						! isDismissAllUndoRequesting &&
-						this.renderNotes( hasNotes ) }
-				</Section>
 			</Fragment>
 		);
 	}
 }
+
+InboxPanel.propTypes = {
+	context: PropTypes.oneOf( [ 'homepage', 'header' ] ).isRequired,
+};
 
 export default compose(
 	withSelect( ( select ) => {
