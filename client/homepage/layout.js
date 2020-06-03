@@ -52,15 +52,31 @@ export const Layout = ( props ) => {
 		};
 	}, [] );
 
-	const { query, requestingTaskList, taskListComplete, taskListHidden } = props;
+	const {
+		isUndoRequesting,
+		query,
+		requestingTaskList,
+		taskListComplete,
+		taskListHidden,
+	} = props;
 	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
+
+	const isInboxPanelEmpty = ( isEmpty ) => {
+		setShowInbox( ! isEmpty );
+	};
+
+	if ( isUndoRequesting && ! showInbox ) {
+		setShowInbox( true );
+	}
 
 	const renderColumns = () => {
 		return (
 			<Fragment>
 				{ showInbox && (
-					<InboxPanel context="homepage" />
+					<div className="woocommerce-homepage-column is-inbox">
+						<InboxPanel isPanelEmpty={ isInboxPanelEmpty } />
+					</div>
 				) }
 				<div
 					className="woocommerce-homepage-column"
@@ -97,8 +113,7 @@ export const Layout = ( props ) => {
 		>
 			{ isDashboardShown
 				? renderColumns()
-				: isTaskListEnabled && renderTaskList()
-			}
+				: isTaskListEnabled && renderTaskList() }
 		</div>
 	);
 };
@@ -126,6 +141,7 @@ export default compose(
 	withSelect( ( select ) => {
 		const {
 			getOptions,
+			getUndoDismissRequesting,
 			isGetOptionsRequesting,
 		} = select( 'wc-api' );
 
@@ -134,14 +150,19 @@ export default compose(
 				'woocommerce_task_list_complete',
 				'woocommerce_task_list_hidden',
 			] );
-			
+			const { isUndoRequesting } = getUndoDismissRequesting();
 			return {
+				isUndoRequesting,
 				requestingTaskList: isGetOptionsRequesting( [
 					'woocommerce_task_list_complete',
 					'woocommerce_task_list_hidden',
 				] ),
-				taskListComplete: get( options, [ 'woocommerce_task_list_complete' ] ),
-				taskListHidden: get( options, [ 'woocommerce_task_list_hidden' ] ) === 'yes',
+				taskListComplete: get( options, [
+					'woocommerce_task_list_complete',
+				] ),
+				taskListHidden:
+					get( options, [ 'woocommerce_task_list_hidden' ] ) ===
+					'yes',
 			};
 		}
 
