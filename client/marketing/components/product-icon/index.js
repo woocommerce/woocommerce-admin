@@ -3,23 +3,24 @@
  */
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { Component } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 
-class ProductIcon extends Component {
-	render() {
-		return (
-			<img
-				src={ this.props.src }
-				className={ classnames( this.props.className, 'woocommere-admin-marketing-product-icon' ) }
-				alt=""
-			/>
-		);
-	}
+const ProductIcon = ( {
+	src,
+	className,
+} ) => {
+
+	return (
+		<img
+			src={ src }
+			className={ classnames( className, 'woocommere-admin-marketing-product-icon' ) }
+			alt=""
+		/>
+	);
 }
 
 ProductIcon.propTypes = {
