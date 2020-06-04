@@ -24,6 +24,9 @@ import { STORE_KEY } from '../../data/constants';
 const RecommendedExtensions = ( {
 	extensions,
 	isLoading,
+	title,
+	description,
+	category,
 } ) => {
 
 	if ( extensions.length === 0 && ! isLoading ) {
@@ -32,8 +35,8 @@ const RecommendedExtensions = ( {
 
 	return (
 		<Card
-			title={ __( 'Recommended extensions', 'woocommerce-admin' ) }
-			description={ __( 'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.', 'woocommerce-admin' ) }
+			title={ title }
+			description={ description }
 			className="woocommerce-marketing-recommended-extensions-card"
 		>
 			<Fragment>
@@ -64,14 +67,31 @@ RecommendedExtensions.propTypes = {
 	 * Whether the card is loading.
 	 */
 	isLoading: PropTypes.bool.isRequired,
+	/**
+	 * Cart title.
+	 */
+	title: PropTypes.string,
+	/**
+	 * Card description.
+	 */
+	description: PropTypes.string,
+	/**
+	 * Category of extensions to display.
+	 */
+	description: PropTypes.string,
+};
+
+RecommendedExtensions.defaultProps = {
+	title: __( 'Recommended extensions', 'woocommerce-admin' ),
+	description: __( 'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.', 'woocommerce-admin' ),
 };
 
 export default compose(
-	withSelect( ( select ) => {
+	withSelect( ( select, props ) => {
 		const { getRecommendedPlugins, isResolving } = select( STORE_KEY );
 
 		return {
-			extensions: getRecommendedPlugins(),
+			extensions: getRecommendedPlugins( props.category ),
 			isLoading: isResolving( 'getRecommendedPlugins' ),
 		};
 	} ),
