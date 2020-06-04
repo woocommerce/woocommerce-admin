@@ -14,8 +14,27 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { STORE_NAME } from './constants';
 
 /**
+ * Retrieve and decode the user's WooCommerce meta values.
+ *
+ * @param {Object} user WP User object.
+ * @return {Object} User's WooCommerce preferences.
+ */
+const getWooCommerceMeta = ( user ) => {
+	const wooMeta = user.woocommerce_meta || {};
+
+	const userData = mapValues( wooMeta, ( data ) => {
+		if ( ! data || data.length === 0 ) {
+			return '';
+		}
+		return JSON.parse( data );
+	} );
+
+	return userData;
+};
+
+/**
  * Custom react hook for retrieving thecurrent user's WooCommerce preferences.
- * 
+ *
  * This is a wrapper around @wordpress/core-data's getCurrentUser() and saveUser().
  */
 export const useUserPreferences = () => {
@@ -33,15 +52,7 @@ export const useUserPreferences = () => {
 
 			// Use getCurrentUser() to get WooCommerce meta values.
 			const user = getCurrentUser();
-			const wooMeta = user.woocommerce_meta || {};
-
-			// JSON decode the WooCommerce meta values.
-			const userData = mapValues( wooMeta, ( data ) => {
-				if ( ! data || data.length === 0 ) {
-					return '';
-				}
-				return JSON.parse( data );
-			} );
+			const userData = getWooCommerceMeta( user );
 
 			// Create wrapper for updating user's `woocommerce_meta`.
 			const updateUserPrefs = async ( userPrefs ) => {
@@ -73,26 +84,41 @@ export const useUserPreferences = () => {
 
 				if ( Object.keys( metaData ).length === 0 ) {
 					return {
-						error: new Error( 'No valid woocommerce_meta keys were provided for update.' ),
+						error: new Error(
+							'No valid woocommerce_meta keys were provided for update.'
+						),
 						updatedUser: undefined,
-					}
+					};
 				}
 
 				// Use saveUser() to update WooCommerce meta values.
-				const updatedUser = await saveUser( { id: user.id, woocommerce_meta: metaData } );
+				const updatedUser = await saveUser( {
+					id: user.id,
+					woocommerce_meta: metaData,
+				} );
 
 				if ( undefined === updatedUser ) {
 					// Return the encountered error to the caller.
-					const error = getLastEntitySaveError( 'root', 'user', user.id );
+					const error = getLastEntitySaveError(
+						'root',
+						'user',
+						user.id
+					);
 
 					return {
 						error,
 						updatedUser,
-					}
+					};
 				}
 
 				// Propagate the updated User object to the store.
 				receiveCurrentUser( updatedUser );
+
+				// Decode the WooCommerce meta after save.
+				const updatedUserResponse = {
+					...updatedUser,
+					woocommerce_meta: getWooCommerceMeta( updatedUser ),
+				};
 
 				// @todo: Do we need to start/finish resolution here?
 				// E.g.:
@@ -101,7 +127,7 @@ export const useUserPreferences = () => {
 				// finishResolution( 'getCurrentUser', [] );
 
 				return {
-					updatedUser
+					updatedUser: updatedUserResponse,
 				};
 			};
 
