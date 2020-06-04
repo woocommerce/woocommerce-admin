@@ -50,13 +50,24 @@ export const getPages = ( homepageEnabled ) => {
 	const pages = [];
 	const initialBreadcrumbs = [ [ '', wcSettings.woocommerceTranslation ] ];
 
+	const getUrlParams = ( locationSearch ) =>
+		locationSearch
+			.substr( 1 )
+			.split( '&' )
+			.reduce( ( params, query ) => {
+				const chunks = query.split( '=' );
+				const key = chunks[ 0 ];
+				let value = decodeURIComponent( chunks[ 1 ] );
+				value = isNaN( Number( value ) ) ? value : Number( value );
+				return ( params[ key ] = value ), params;
+			}, {} );
+
 	if ( window.wcAdminFeatures.devdocs ) {
 		pages.push( {
 			container: DevDocs,
 			path: '/devdocs',
 			breadcrumbs: ( { location } ) => {
-				const searchParams = new URLSearchParams( location.search );
-				const component = searchParams.get( 'component' );
+				const { component } = getUrlParams( location.search );
 
 				if ( component ) {
 					return [
