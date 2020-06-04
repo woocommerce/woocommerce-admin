@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Spinner } from '@wordpress/components';
 import classnames from 'classnames';
@@ -21,38 +21,38 @@ import './style.scss'
 import RecommendedExtensionsItem from './item';
 import { STORE_KEY } from '../../data/constants';
 
-class RecommendedExtensions extends Component {
-	render() {
-		const { isLoading, extensions } = this.props;
+const RecommendedExtensions = ( {
+	extensions,
+	isLoading,
+} ) => {
 
-		if ( extensions.length === 0 && ! isLoading ) {
-			return null;
-		}
-
-		return (
-			<Card
-				title={ __( 'Recommended extensions', 'woocommerce-admin' ) }
-				description={ __( 'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.', 'woocommerce-admin' ) }
-				className="woocommerce-marketing-recommended-extensions-card"
-			>
-				<Fragment>
-					{ isLoading ? <Spinner /> : (
-						<div className={ classnames(
-							'woocommerce-marketing-recommended-extensions-card__items',
-							`woocommerce-marketing-recommended-extensions-card__items--count-${extensions.length}`
-						) }>
-							{ extensions.map( ( extension ) => (
-								<RecommendedExtensionsItem
-									key={ extension.product }
-									{ ...extension }
-								/>
-							) ) }
-						</div>
-					) }
-				</Fragment>
-			</Card>
-		)
+	if ( extensions.length === 0 && ! isLoading ) {
+		return null;
 	}
+
+	return (
+		<Card
+			title={ __( 'Recommended extensions', 'woocommerce-admin' ) }
+			description={ __( 'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.', 'woocommerce-admin' ) }
+			className="woocommerce-marketing-recommended-extensions-card"
+		>
+			<Fragment>
+				{ isLoading ? <Spinner /> : (
+					<div className={ classnames(
+						'woocommerce-marketing-recommended-extensions-card__items',
+						`woocommerce-marketing-recommended-extensions-card__items--count-${extensions.length}`
+					) }>
+						{ extensions.map( ( extension ) => (
+							<RecommendedExtensionsItem
+								key={ extension.product }
+								{ ...extension }
+							/>
+						) ) }
+					</div>
+				) }
+			</Fragment>
+		</Card>
+	)
 }
 
 RecommendedExtensions.propTypes = {
@@ -83,4 +83,3 @@ export default compose(
 		};
 	} )
 )( RecommendedExtensions );
-
