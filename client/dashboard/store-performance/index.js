@@ -146,6 +146,7 @@ class StorePerformance extends Component {
 							secondaryValue,
 							delta,
 							reportUrl,
+							reportUrlType,
 						} = getIndicatorValues( {
 							indicator,
 							primaryData,
@@ -159,6 +160,7 @@ class StorePerformance extends Component {
 							<SummaryNumber
 								key={ i }
 								href={ reportUrl }
+								hrefType={ reportUrlType }
 								label={ indicator.label }
 								value={ primaryValue }
 								prevLabel={ prevLabel }
