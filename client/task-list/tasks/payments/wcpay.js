@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import { Button } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
 /**
@@ -38,6 +37,17 @@ class WCPay extends Component {
 				)
 			);
 			markConfigured( 'wcpay' );
+		} else if ( this.props.installStep.isComplete ) {
+			this.connect();
+		}
+	}
+
+	componentDidUpdate( prevProps ) {
+		if (
+			! prevProps.installStep.isComplete &&
+			this.props.installStep.isComplete
+		) {
+			this.connect();
 		}
 	}
 
@@ -75,35 +85,17 @@ class WCPay extends Component {
 		const { installStep } = this.props;
 		const { isPending } = this.state;
 
+		// When being redirected from the WCPay onboarding flow, don't render the Stepper so there isn't an extra "Plugins successfully activated" notice.
+		if ( getQuery()[ 'wcpay-connection-success' ] ) {
+			return null;
+		}
+
 		return (
 			<Stepper
 				isVertical
 				isPending={ ! installStep.isComplete || isPending }
-				currentStep={ installStep.isComplete ? 'connect' : 'install' }
-				steps={ [
-					installStep,
-					{
-						key: 'connect',
-						label: __(
-							'Verify business details',
-							'woocommerce-admin'
-						),
-						description: __(
-							'Verify your business details with our payment partner, Stripe.',
-							'woocommerce-admin'
-						),
-						content: (
-							<Button
-								isPrimary
-								isDefault
-								isBusy={ isPending }
-								onClick={ this.connect }
-							>
-								{ __( 'Verify details', 'woocommerce-admin' ) }
-							</Button>
-						),
-					},
-				] }
+				currentStep="install"
+				steps={ [ installStep ] }
 			/>
 		);
 	}
