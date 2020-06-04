@@ -118,8 +118,15 @@ export function getPaymentMethods( {
 			),
 			before: <WCPayIcon />,
 			visible:
-				[ 'US' ].includes( countryCode ) &&
-				! hasCbdIndustry,
+				[
+					'US',
+					'AS',
+					'PR',
+					'VI',
+					'GU',
+					'MP',
+					'UM', // U.S. and its territories (which WooCommerce classifies as countries)
+				].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConnected,
@@ -149,7 +156,8 @@ export function getPaymentMethods( {
 			),
 			before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
 			visible:
-				stripeSupportedCountries.includes( countryCode ) && ! hasCbdIndustry,
+				stripeSupportedCountries.includes( countryCode ) &&
+				! hasCbdIndustry,
 			plugins: [ 'woocommerce-gateway-stripe' ],
 			container: <Stripe />,
 			isConfigured:
