@@ -91,6 +91,8 @@ RecommendedExtensions.defaultProps = {
 	description: __( 'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.', 'woocommerce-admin' ),
 };
 
+export { RecommendedExtensions }
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const { getRecommendedPlugins, isResolving } = select( STORE_KEY );
