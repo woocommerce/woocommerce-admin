@@ -77,9 +77,7 @@ function InstallJetpackCta( props ) {
 			<Connect
 				autoConnect
 				onError={ () => setIsConnecting( false ) }
-				redirectUrl={ getAdminLink(
-					'admin.php?page=wc-admin&reset-profiler=0'
-				) }
+				redirectUrl={ getAdminLink( 'admin.php?page=wc-admin' ) }
 			/>
 		);
 	}
