@@ -26,7 +26,7 @@ export function* getOptionsWithRequest( names ) {
 export function* getOption( name ) {
 	try {
 		const result = yield batchFetch( name );
-		yield receiveOptions( { [ name ]: result } );
+		yield receiveOptions( result );
 	} catch ( error ) {
 		yield setRequestingError( error, name );
 	}

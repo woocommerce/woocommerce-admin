@@ -27,6 +27,12 @@ export const getOptions = ( state, names ) => {
 	}, {} );
 };
 
+/**
+ * Get option from state tree.
+ *
+ * @param {Object} state - Reducer state
+ * @param {Array} name - Option name
+ */
 export const getOption = ( state, name ) => {
 	return state[ name ];
 };
@@ -42,16 +48,6 @@ export const getOptionsWithRequest = ( state, names ) => {
 		result[ name ] = state[ name ];
 		return result;
 	}, {} );
-};
-
-/**
- * Determine if options are being requested.
- *
- * @param {Object} state - Reducer state
- * @param {string} optionName - Option name
- */
-export const isRequesting = ( state, optionName ) => {
-	return state.isRequesting[ optionName ] || false;
 };
 
 /**

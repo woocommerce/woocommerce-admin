@@ -35,9 +35,7 @@ export const controls = {
 
 				const url = WC_ADMIN_NAMESPACE + '/options?options=' + names;
 				fetches[ names ] = apiFetch( { path: url } );
-				fetches[names].then( ( result ) => {
-					resolve( result[ optionName ] );
-				} )
+				fetches[names].then( ( result ) => resolve( result ) )
 
 				// Clear option names after all resolved;
 				setTimeout( () => {
