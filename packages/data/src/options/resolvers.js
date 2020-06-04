@@ -8,10 +8,9 @@ import { batchFetch } from './controls';
  * Internal dependencies
  */
 import { WC_ADMIN_NAMESPACE } from '../constants';
-import { receiveOptions, setIsRequesting, setRequestingError } from './actions';
+import { receiveOptions, setRequestingError } from './actions';
 
 export function* getOptionsWithRequest( names ) {
-	yield setIsRequesting( true );
 	const url = WC_ADMIN_NAMESPACE + '/options?options=' + names.join( ',' );
 
 	try {
@@ -29,6 +28,6 @@ export function* getOption( name ) {
 		const result = yield batchFetch( name );
 		yield receiveOptions( { [ name ]: result } );
 	} catch ( error ) {
-		yield setRequestingError( error, [ name ] );
+		yield setRequestingError( error, name );
 	}
 }

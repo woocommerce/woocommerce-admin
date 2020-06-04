@@ -17,18 +17,11 @@ export function receiveOptions( options ) {
 	};
 }
 
-export function setIsRequesting( optionName ) {
-	return {
-		type: TYPES.SET_IS_REQUESTING,
-		optionName,
-	};
-}
-
-export function setRequestingError( error, options ) {
+export function setRequestingError( error, name ) {
 	return {
 		type: TYPES.SET_REQUESTING_ERROR,
 		error,
-		options,
+		name,
 	};
 }
 

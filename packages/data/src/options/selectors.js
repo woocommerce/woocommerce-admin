@@ -58,9 +58,10 @@ export const isRequesting = ( state, optionName ) => {
  * Determine if an options request resulted in an error.
  *
  * @param {Object} state - Reducer state
+ * @param {string} name - Option name
  */
-export const getOptionsRequestingError = ( state ) => {
-	return state.requestingError || false;
+export const getOptionsRequestingError = ( state, name ) => {
+	return state.requestingErrors[ name ] || false;
 };
 
 /**
