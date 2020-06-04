@@ -21,6 +21,7 @@ import { Spinner } from '@woocommerce/components';
  * Internal dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { getUrlParams } from 'utils';
 
 const AnalyticsReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report" */ 'analytics/report' )
@@ -49,18 +50,6 @@ export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 export const getPages = ( homepageEnabled ) => {
 	const pages = [];
 	const initialBreadcrumbs = [ [ '', wcSettings.woocommerceTranslation ] ];
-
-	const getUrlParams = ( locationSearch ) =>
-		locationSearch
-			.substr( 1 )
-			.split( '&' )
-			.reduce( ( params, query ) => {
-				const chunks = query.split( '=' );
-				const key = chunks[ 0 ];
-				let value = decodeURIComponent( chunks[ 1 ] );
-				value = isNaN( Number( value ) ) ? value : Number( value );
-				return ( params[ key ] = value ), params;
-			}, {} );
 
 	if ( window.wcAdminFeatures.devdocs ) {
 		pages.push( {
