@@ -84,8 +84,27 @@ function InstallJetpackCta( props ) {
 		);
 	}
 
-	if ( isDismissed || ( isJetpackInstalled && isJetpackActivated ) ) {
+	const doNotShow =
+		isDismissed ||
+		( isJetpackInstalled && isJetpackActivated && isJetpackConnected );
+	if ( doNotShow ) {
 		return null;
+	}
+
+	function getInstallJetpackText() {
+		if ( ! isJetpackInstalled ) {
+			return __( 'Get Jetpack', 'woocommerce-admin' );
+		}
+
+		if ( ! isJetpackActivated ) {
+			return __( 'Activate Jetpack', 'woocommerce-admin' );
+		}
+
+		if ( ! isJetpackConnected ) {
+			return __( 'Connect Jetpack', 'woocommerce-admin' );
+		}
+
+		return '';
 	}
 
 	return (
@@ -103,9 +122,7 @@ function InstallJetpackCta( props ) {
 			</p>
 			<footer>
 				<Button isPrimary onClick={ install } isBusy={ isInstalling }>
-					{ ! isJetpackInstalled
-						? __( 'Get Jetpack', 'woocommerce-admin' )
-						: __( 'Activate Jetpack', 'woocommerce-admin' ) }
+					{ getInstallJetpackText() }
 				</Button>
 				<Button onClick={ dismiss } isBusy={ isInstalling }>
 					{ __( 'No thanks', 'woocommerce-admin' ) }
