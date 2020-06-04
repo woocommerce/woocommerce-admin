@@ -131,9 +131,13 @@ class InboxNoteCard extends Component {
 			'woocommerce-admin-dismiss-notification',
 			'components-popover__content',
 		];
-		const isClickOutsideDropdown = event.relatedTarget
+		// This line is for IE compatibility.
+		const relatedTarget = event.relatedTarget
+			? event.relatedTarget
+			: document.activeElement;
+		const isClickOutsideDropdown = relatedTarget
 			? dropdownClasses.some( ( className ) =>
-					event.relatedTarget.className.includes( className )
+					relatedTarget.className.includes( className )
 			  )
 			: false;
 		if ( isClickOutsideDropdown ) {
