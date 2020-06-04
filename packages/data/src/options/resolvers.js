@@ -23,6 +23,11 @@ export function* getOptionsWithRequest( names ) {
 	}
 }
 
+/**
+ * Request an option value.
+ * 
+ * @param {string} name - Option name
+ */
 export function* getOption( name ) {
 	try {
 		const result = yield batchFetch( name );
