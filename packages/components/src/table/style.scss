@@ -31,10 +31,11 @@
 		text-align: center;
 	}
 
-	button.woocommerce-table__download-button.is-link {
+	button.woocommerce-table__download-button {
 		padding: 6px $gap-small;
 		color: $studio-black;
 		text-decoration: none;
+		align-items: center;
 
 		svg {
 			margin-right: $gap-smaller;
@@ -70,20 +71,31 @@
 .woocommerce-table__table {
 	overflow-x: auto;
 
-	&::after {
+	&::after,
+	&::before {
 		content: '';
 		position: absolute;
-		right: 0;
 		top: 0;
-		width: 41px;
+		width: 60px;
 		height: 100%;
-		background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
 		opacity: 0;
 		pointer-events: none;
 		transition: opacity 0.3s;
+		z-index: 1;
 	}
 
-	&.is-scrollable::after {
+	&::after {
+		right: 0;
+		background: linear-gradient(90deg, rgba($white, 0), $white);
+	}
+
+	&::before {
+		left: 0;
+		background: linear-gradient(90deg, $white, rgba($white, 0));
+	}
+
+	&.is-scrollable-right::after,
+	&.is-scrollable-left::before {
 		opacity: 1;
 	}
 
@@ -209,6 +221,7 @@ th.woocommerce-table__item {
 		border: none;
 		background: transparent !important;
 		box-shadow: none !important;
+		align-items: center;
 
 		// @todo Add interactive styles
 		&:hover {
@@ -223,7 +236,7 @@ th.woocommerce-table__item {
 	&.is-sortable {
 		padding: 0;
 
-		.gridicon {
+		svg {
 			visibility: hidden;
 			margin-left: $gap-smallest;
 		}
@@ -231,7 +244,7 @@ th.woocommerce-table__item {
 		&.is-sorted .components-button,
 		.components-button:hover,
 		.components-button:focus {
-			.gridicon {
+			svg {
 				visibility: visible;
 			}
 		}

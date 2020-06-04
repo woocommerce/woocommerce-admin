@@ -4,11 +4,11 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Component, createRef, Fragment } from '@wordpress/element';
 import classnames from 'classnames';
-import { IconButton } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { find, get, noop } from 'lodash';
-import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 import { withInstanceId } from '@wordpress/compose';
+import { Icon, chevronUp, chevronDown } from '@wordpress/icons';
 
 const ASC = 'asc';
 const DESC = 'desc';
@@ -54,7 +54,8 @@ class Table extends Component {
 		super( props );
 		this.state = {
 			tabIndex: null,
-			isScrollable: false,
+			isScrollableRight: false,
+			isScrollableLeft: false,
 		};
 		this.container = createRef();
 		this.sortBy = this.sortBy.bind( this );
@@ -71,6 +72,10 @@ class Table extends Component {
 		/* eslint-enable react/no-did-mount-set-state */
 		this.updateTableShadow();
 		window.addEventListener( 'resize', this.updateTableShadow );
+	}
+
+	componentDidUpdate() {
+		this.updateTableShadow();
 	}
 
 	componentWillUnmount() {
@@ -100,11 +105,22 @@ class Table extends Component {
 
 	updateTableShadow() {
 		const table = this.container.current;
+		const { isScrollableRight, isScrollableLeft } = this.state;
+
 		const scrolledToEnd =
 			table.scrollWidth - table.scrollLeft <= table.offsetWidth;
-		this.setState( {
-			isScrollable: ! scrolledToEnd,
-		} );
+		if ( scrolledToEnd && isScrollableRight ) {
+			this.setState( { isScrollableRight: false } );
+		} else if ( ! scrolledToEnd && ! this.state.isScrollableRight ) {
+			this.setState( { isScrollableRight: true } );
+		}
+
+		const scrolledToStart = table.scrollLeft <= 0;
+		if ( scrolledToStart && isScrollableLeft ) {
+			this.setState( { isScrollableLeft: false } );
+		} else if ( ! scrolledToStart && ! isScrollableLeft ) {
+			this.setState( { isScrollableLeft: true } );
+		}
 	}
 
 	render() {
@@ -118,9 +134,10 @@ class Table extends Component {
 			rowHeader,
 			rows,
 		} = this.props;
-		const { isScrollable, tabIndex } = this.state;
+		const { isScrollableRight, isScrollableLeft, tabIndex } = this.state;
 		const classes = classnames( 'woocommerce-table__table', classNames, {
-			'is-scrollable': isScrollable,
+			'is-scrollable-right': isScrollableRight,
+			'is-scrollable-left': isScrollableLeft,
 		} );
 		const sortedBy =
 			query.orderby ||
@@ -233,21 +250,7 @@ class Table extends Component {
 									>
 										{ isSortable ? (
 											<Fragment>
-												<IconButton
-													icon={
-														sortedBy === key &&
-														sortDir === ASC ? (
-															<Gridicon
-																size={ 18 }
-																icon="chevron-up"
-															/>
-														) : (
-															<Gridicon
-																size={ 18 }
-																icon="chevron-down"
-															/>
-														)
-													}
+												<Button
 													aria-describedby={ labelId }
 													onClick={
 														hasData
@@ -256,8 +259,18 @@ class Table extends Component {
 													}
 													isDefault
 												>
+													{ sortedBy === key &&
+													sortDir === ASC ? (
+														<Icon
+															icon={ chevronUp }
+														/>
+													) : (
+														<Icon
+															icon={ chevronDown }
+														/>
+													) }
 													{ textLabel }
-												</IconButton>
+												</Button>
 												<span
 													className="screen-reader-text"
 													id={ labelId }

@@ -5,9 +5,10 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment, Suspense, lazy } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { partial, get } from 'lodash';
-import { IconButton, Icon, Dropdown, Button } from '@wordpress/components';
+import { Dropdown, Button, Icon } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
+import { Icon as WPIcon, plusCircleFilled } from '@wordpress/icons';
 
 /**
  * WooCommerce dependencies
@@ -180,12 +181,13 @@ class CustomizableDashboard extends Component {
 				position="top center"
 				className="woocommerce-dashboard-section__add-more"
 				renderToggle={ ( { onToggle, isOpen } ) => (
-					<IconButton
+					<Button
 						onClick={ onToggle }
-						icon="plus-alt"
 						title={ __( 'Add more sections', 'woocommerce-admin' ) }
 						aria-expanded={ isOpen }
-					/>
+					>
+						<WPIcon icon={ plusCircleFilled } />
+					</Button>
 				) }
 				renderContent={ ( { onToggle } ) => (
 					<Fragment>
@@ -325,12 +327,8 @@ class CustomizableDashboard extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getCurrentUserData,
-			isGetProfileItemsRequesting,
-			getOptions,
-			isGetOptionsRequesting,
-		} = select( 'wc-api' );
+		const { getCurrentUserData, getOptions } = select( 'wc-api' );
+
 		const userData = getCurrentUserData();
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
@@ -339,7 +337,6 @@ export default compose(
 		const withSelectData = {
 			userPrefSections: userData.dashboard_sections,
 			defaultDateRange,
-			requesting: false,
 		};
 
 		if ( isOnboardingEnabled() ) {
@@ -355,14 +352,6 @@ export default compose(
 				[ 'woocommerce_task_list_complete' ],
 				false
 			);
-			withSelectData.requesting =
-				withSelectData.requesting || isGetProfileItemsRequesting();
-			withSelectData.requesting =
-				withSelectData.requesting ||
-				isGetOptionsRequesting( [
-					'woocommerce_task_list_payments',
-					'woocommerce_task_list_hidden',
-				] );
 		}
 
 		return withSelectData;
