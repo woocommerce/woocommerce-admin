@@ -33,17 +33,22 @@ const RecommendedExtensions = ( {
 		return null;
 	}
 
+	const categoryClass = ( category ) ? `woocommerce-marketing-recommended-extensions-card__category-${category}` : '';
+
 	return (
 		<Card
 			title={ title }
 			description={ description }
-			className="woocommerce-marketing-recommended-extensions-card"
+			className={ classnames(
+				'woocommerce-marketing-recommended-extensions-card',
+				categoryClass,
+			) }
 		>
 			<Fragment>
 				{ isLoading ? <Spinner /> : (
 					<div className={ classnames(
 						'woocommerce-marketing-recommended-extensions-card__items',
-						`woocommerce-marketing-recommended-extensions-card__items--count-${extensions.length}`
+						`woocommerce-marketing-recommended-extensions-card__items--count-${extensions.length}`,
 					) }>
 						{ extensions.map( ( extension ) => (
 							<RecommendedExtensionsItem
@@ -78,7 +83,7 @@ RecommendedExtensions.propTypes = {
 	/**
 	 * Category of extensions to display.
 	 */
-	description: PropTypes.string,
+	category: PropTypes.string,
 };
 
 RecommendedExtensions.defaultProps = {
