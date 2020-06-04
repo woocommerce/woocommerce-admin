@@ -65,30 +65,23 @@ class InboxNoteCard extends Component {
 		}
 	}
 
-	getUrlParams() {
-		return window.location.search
-			.substr( 1 )
-			.split( '&' )
-			.reduce( ( params, query ) => {
-				const chunks = query.split( '=' );
-				const key = chunks[ 0 ];
-				let value = decodeURIComponent( chunks[ 1 ] );
-				value = isNaN( Number( value ) ) ? value : Number( value );
-				return ( params[ key ] = value ), params;
-			}, {} );
-	}
-
 	getScreenName() {
 		let screenName = '';
-		const urlParams = this.getUrlParams();
-		if ( urlParams.page ) {
+		const urlParams = new URLSearchParams( window.location.search );
+
+		if ( urlParams.has( 'page' ) ) {
 			const currentPage =
-				urlParams.page === 'wc-admin' ? 'home_screen' : urlParams.page;
-			screenName = urlParams.path
-				? urlParams.path.replace( /\//g, '_' ).substring( 1 )
+				urlParams.get( 'page' ) === 'wc-admin'
+					? 'home_screen'
+					: urlParams.get( 'page' );
+			screenName = urlParams.has( 'path' )
+				? urlParams
+						.get( 'path' )
+						.replace( /\//g, '_' )
+						.substring( 1 )
 				: currentPage;
-		} else if ( urlParams.post_type ) {
-			screenName = urlParams.post_type;
+		} else if ( urlParams.has( 'post_type' ) ) {
+			screenName = urlParams.get( 'post_type' );
 		}
 		return screenName;
 	}
