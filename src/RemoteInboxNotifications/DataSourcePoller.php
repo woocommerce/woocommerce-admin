@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class DataSourcePoller {
 	const DATA_SOURCES = array(
-		'http://two.wordpress.test/rinds-specs.json',
+		'https://woocommerce.com/wp-json/wccom//inbox-notifications/1.0/notifications.json',
 	);
 
 	/**
