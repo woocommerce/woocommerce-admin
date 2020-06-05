@@ -120,12 +120,6 @@ export const useUserPreferences = () => {
 					woocommerce_meta: getWooCommerceMeta( updatedUser ),
 				};
 
-				// @todo: Do we need to start/finish resolution here?
-				// E.g.:
-				// startResolution( 'getCurrentUser', [] );
-				// receiveCurrentUser( userRef.current );
-				// finishResolution( 'getCurrentUser', [] );
-
 				return {
 					updatedUser: updatedUserResponse,
 				};
