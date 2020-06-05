@@ -109,10 +109,6 @@ class DataSourcePoller {
 			return false;
 		}
 
-		if ( ! isset( $spec->icon ) ) {
-			return false;
-		}
-
 		if ( ! isset( $spec->slug ) ) {
 			return false;
 		}

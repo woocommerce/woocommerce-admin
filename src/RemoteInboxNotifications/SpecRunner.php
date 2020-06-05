@@ -62,7 +62,6 @@ class SpecRunner {
 		$note->set_content_data( (object) array() );
 		$note->set_status( $status );
 		$note->set_type( $spec->type );
-		$note->set_icon( $spec->icon );
 		$note->set_name( $spec->slug );
 		if ( isset( $spec->source ) ) {
 			$note->set_source( $spec->source );
