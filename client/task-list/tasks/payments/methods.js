@@ -118,15 +118,7 @@ export function getPaymentMethods( {
 			),
 			before: <WCPayIcon />,
 			visible:
-				[
-					'US',
-					'AS',
-					'PR',
-					'VI',
-					'GU',
-					'MP',
-					'UM', // U.S. and its territories (which WooCommerce classifies as countries)
-				].includes( countryCode ) && ! hasCbdIndustry,
+				[ 'US', 'PR', ].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConnected,
