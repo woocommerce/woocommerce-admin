@@ -15,6 +15,9 @@ use Automattic\WooCommerce\Admin\Loader;
  * Contains backend logic for the Marketing feature.
  */
 class Marketing {
+
+	use CouponsMovedTrait;
+
 	/**
 	 * Name of recommended plugins transient.
 	 *
@@ -68,8 +71,7 @@ class Marketing {
 	/**
 	 * Maybe add our wc-admin coupon scripts to the page if viewing coupon pages
 	 */
-	public function maybe_add_coupon_script( $hook ) {
-
+	public function maybe_add_coupon_script() {
 		$rtl = is_rtl() ? '-rtl' : '';
 
 		wp_enqueue_style(
@@ -92,40 +94,34 @@ class Marketing {
 	 * Maybe add menu item back in original spot to help people transition
 	 */
 	public function maybe_add_coupon_menu_redirect() {
-
-		$get = isset( $_GET['legacy_coupon_menu'] ) ? sanitize_title( $_GET['legacy_coupon_menu'] ) : null;
-
-		if ( 'hide' === $get ) {
-    		update_option( 'wc_hide_coupon_menu_rediect', 1 );
+		if ( ! $this->should_display_legacy_menu() ) {
+			return;
 		}
 
-		$hide =  ! empty( $get ) ? $get : get_option( 'wc_hide_coupon_menu_rediect' );
-
-		if ( ! get_option( 'wc_hide_coupon_menu_rediect' ) ) {
-		    add_submenu_page(
-		    	'woocommerce',
-		    	'Coupons',
-		    	'Coupons',
-		    	'manage_options',
-		    	'coupons-moved',
-		    	array( $this, 'coupon_menu_moved' ),
-			);
-		}
+		add_submenu_page(
+			'woocommerce',
+			__( 'Coupons', '' ),
+			__( 'Coupons', '' ),
+			'manage_options',
+			'coupons-moved',
+			[ $this, 'coupon_menu_moved' ]
+		);
 	}
 
 	/**
 	 * Call back for transition menu item
 	 */
 	public function coupon_menu_moved() {
-		?>
-		<div class="wrap woocommerce">
-			<h1 class="wp-heading-inline">Coupon management has moved!</h1>
-			<hr class="wp-header-end" />
-			<p>Coupons can now be managed from:<p>
-			<p><a href="<?php echo admin_url( 'edit.php?post_type=shop_coupon&legacy_coupon_menu=hide' ); ?>">Marketing > Coupons</a></p>
-			<p>Clicking the above link will redirect you to the new page and hide this menu item.</p>
-		</div>
-		<?php
+		$new_url = add_query_arg(
+			[
+				'post_type'          => 'shop_coupon',
+				'legacy_coupon_menu' => true,
+			],
+			admin_url( 'edit.php' )
+		);
+
+		wp_safe_redirect( $new_url, 301 );
+		exit();
 	}
 
 
@@ -135,7 +131,7 @@ class Marketing {
 	 * @param array $args Array of post type parameters.
 	 */
 	public function move_coupons( $args ) {
-		$args['show_in_menu'] = current_user_can( 'manage_woocommerce' ) ? 'wc-admin&path=/marketing/overview' : true;
+		$args['show_in_menu'] = current_user_can( 'manage_woocommerce' ) ? $this->get_coupon_management_url() : true;
 		return $args;
 	}
 
@@ -146,7 +142,7 @@ class Marketing {
 		global $parent_file, $post_type;
 
 		if ( 'shop_coupon' === $post_type ) {
-			$parent_file = 'wc-admin&path=/marketing/overview';  // WPCS: override ok.
+			$parent_file = $this->get_coupon_management_url(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
 		}
 	}
 
@@ -154,47 +150,54 @@ class Marketing {
 	 * Redorder marketing submenu items so Overview is at the top
 	 *
 	 * @param array $menu_order
+	 *
+	 * @return array The filtered menu order.
 	 */
 	public function reorder_coupon_menu( $menu_order ) {
+		/** @global $submenu */
+		global $submenu;
 
-	    global $submenu;
+		$marketing = $this->get_coupon_management_url();
+		$settings  = $submenu[ $marketing ];
 
-		$marketing = 'wc-admin&path=/marketing/overview';
-		$settings  = $submenu[$marketing];
-
+		$found_index = false;
 		foreach ( $settings as $key => $details ) {
-			if ( $details[0] == 'Overview' ) {
-				$index = $key;
+			if ( $details[0] === 'Overview' ) {
+				$index       = $key;
+				$found_index = true;
+				break;
 			}
 		}
 
-		$temp = array( $index => $settings[$index] );
-		unset( $settings[$index] );
-		$settings = $temp + $settings;
-		$submenu[$marketing] = $settings;
+		if ( $found_index ) {
+			$temp = [ $index => $settings[ $index ] ];
+			unset( $settings[ $index ] );
+			$settings              = $temp + $settings;
+			$submenu[ $marketing ] = $settings; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+		}
 
-	    return $menu_order;
+		return $menu_order;
 	}
 
 	/**
 	 * Registers report pages.
 	 */
 	public function register_pages() {
-		$marketing_pages = array(
-			array(
+		$marketing_pages = [
+			[
 				'id'       => 'woocommerce-marketing',
 				'title'    => __( 'Marketing', 'woocommerce-admin' ),
 				'path'     => '/marketing/overview',
 				'icon'     => 'dashicons-megaphone',
 				'position' => 58, // After WooCommerce & Product menu items.
-			),
-			array(
-				'id'       => 'woocommerce-marketing-overview',
-				'title'    => __( 'Overview', 'woocommerce-admin' ),
+			],
+			[
+				'id'     => 'woocommerce-marketing-overview',
+				'title'  => __( 'Overview', 'woocommerce-admin' ),
 				'parent' => 'woocommerce-marketing',
-				'path'     => '/marketing/overview',
-			),
-		);
+				'path'   => '/marketing/overview',
+			],
+		];
 
 		$marketing_pages = apply_filters( 'woocommerce_marketing_menu_items', $marketing_pages );
 
