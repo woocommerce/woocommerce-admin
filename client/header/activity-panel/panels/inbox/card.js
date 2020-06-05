@@ -150,6 +150,7 @@ class InboxNoteCard extends Component {
 	renderDismissButton() {
 		return (
 			<Dropdown
+				contentClassName="woocommerce-admin-dismiss-dropdown"
 				position="bottom right"
 				renderToggle={ ( { onClose, onToggle } ) => (
 					<Button
