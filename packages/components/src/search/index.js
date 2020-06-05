@@ -63,6 +63,8 @@ export class Search extends Component {
 				return usernames;
 			case 'variations':
 				return variations;
+			case 'custom':
+				return this.props.autocompleter;
 			default:
 				return {};
 		}
@@ -200,7 +202,12 @@ Search.propTypes = {
 		'taxes',
 		'usernames',
 		'variations',
+		'custom',
 	] ).isRequired,
+	/**
+	 * The custom autocompleter to be used in searching when type is 'custom'
+	 */
+	autocompleter: PropTypes.object,
 	/**
 	 * A placeholder for the search input.
 	 */
@@ -243,6 +250,7 @@ Search.defaultProps = {
 	showClearButton: false,
 	staticResults: false,
 	disabled: false,
+	autocompleter: {},
 };
 
 export default Search;
