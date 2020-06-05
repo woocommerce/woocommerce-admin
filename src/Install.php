@@ -40,7 +40,7 @@ class Install {
 			'wc_admin_update_0251_remove_unsnooze_action',
 			'wc_admin_update_0251_db_version',
 		),
-		'1.1.0' => array(
+		'1.1.0'  => array(
 			'wc_admin_update_110_remove_facebook_note',
 			'wc_admin_update_110_db_version',
 		),
@@ -85,6 +85,12 @@ class Install {
 			// Continue if no option value was previously set.
 			if ( false === $old_option_value ) {
 				continue;
+			}
+
+			if ( '1' === $old_option_value ) {
+				$old_option_value = 'yes';
+			} elseif ( '0' === $old_option_value ) {
+				$old_option_value = 'no';
 			}
 
 			update_option( $new_option, $old_option_value );
