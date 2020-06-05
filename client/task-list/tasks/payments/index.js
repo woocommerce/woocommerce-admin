@@ -3,7 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { cloneElement, Component } from '@wordpress/element';
+import { cloneElement, Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Button, FormToggle } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
@@ -42,10 +42,14 @@ class Payments extends Component {
 		);
 		this.state = {
 			enabledMethods,
+			configuringMethods: {},
 		};
 
 		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
+		this.markConfigurationFinished = this.markConfigurationFinished.bind(
+			this
+		);
 		this.skipTask = this.skipTask.bind( this );
 	}
 
@@ -135,6 +139,7 @@ class Payments extends Component {
 	markConfigured( method ) {
 		const { enabledMethods } = this.state;
 
+		this.markConfigurationFinished( method );
 		this.setState( {
 			enabledMethods: {
 				...enabledMethods,
@@ -149,6 +154,14 @@ class Payments extends Component {
 		} );
 	}
 
+	markConfigurationFinished( method ) {
+		this.setState( {
+			configuringMethods: {
+				[ method ]: false,
+			},
+		} );
+	}
+
 	getCurrentMethod() {
 		const { methods, query } = this.props;
 
@@ -159,9 +172,7 @@ class Payments extends Component {
 		return methods.find( ( method ) => method.key === query.method );
 	}
 
-	getInstallStep() {
-		const currentMethod = this.getCurrentMethod();
-
+	getInstallStep( currentMethod ) {
 		if ( ! currentMethod.plugins || ! currentMethod.plugins.length ) {
 			return;
 		}
@@ -187,6 +198,9 @@ class Payments extends Component {
 							plugins: currentMethod.plugins,
 						} );
 					} }
+					onError={ () =>
+						this.markConfigurationFinished( currentMethod )
+					}
 					autoInstall
 					pluginSlugs={ currentMethod.plugins }
 				/>
@@ -216,28 +230,46 @@ class Payments extends Component {
 		} );
 	}
 
+	getSetupElement( method ) {
+		return cloneElement( method.container, {
+			query: this.props.query,
+			installStep: this.getInstallStep( method ),
+			markConfigured: this.markConfigured,
+			markConfigurationFinished: this.markConfigurationFinished.bind(
+				this,
+				method.key
+			),
+			hasCbdIndustry: method.hasCbdIndustry,
+			key: 'setup-' + method.key,
+		} );
+	}
+
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { methods, query } = this.props;
-		const { enabledMethods, recommendedMethod } = this.state;
+		const { methods } = this.props;
+		const { enabledMethods, recommendedMethod, configuringMethods } = this.state;
 		const configuredMethods = methods.filter(
 			( method ) => method.isConfigured
 		).length;
 
-		if ( currentMethod ) {
-			return (
-				<Card className="woocommerce-task-payment-method is-narrow">
-					{ cloneElement( currentMethod.container, {
-						query,
-						installStep: this.getInstallStep(),
-						markConfigured: this.markConfigured,
-						hasCbdIndustry: currentMethod.hasCbdIndustry,
-					} ) }
-				</Card>
-			);
-		}
+		const setupElements = methods.map( ( method ) => {
+			const { key } = method;
+			if ( currentMethod && currentMethod.key === key ) {
+				return (
+					<Card
+						className="woocommerce-task-payment-method is-narrow"
+						key={ 'setup-' + key }
+					>
+						{ this.getSetupElement( method ) }
+					</Card>
+				);
+			} else if ( configuringMethods[ key ] ) {
+				return this.getSetupElement( method );
+			}
+			return null;
+		} );
 
-		return (
+		const methodsList = (
 			<div className="woocommerce-task-payments">
 				{ methods.map( ( method ) => {
 					const {
@@ -248,6 +280,7 @@ class Payments extends Component {
 						key,
 						title,
 						visible,
+						hasInlineSetup,
 					} = method;
 
 					if ( ! visible ) {
@@ -305,6 +338,7 @@ class Payments extends Component {
 									<Button
 										isPrimary={ key === recommendedMethod }
 										isDefault={ key !== recommendedMethod }
+										isBusy={ configuringMethods[ key ] }
 										onClick={ () => {
 											recordEvent(
 												'tasklist_payment_setup',
@@ -315,9 +349,17 @@ class Payments extends Component {
 													selected: key,
 												}
 											);
-											updateQueryString( {
-												method: key,
-											} );
+											if ( hasInlineSetup ) {
+												this.setState( {
+													configuringMethods: {
+														[ key ]: true,
+													},
+												} );
+											} else {
+												updateQueryString( {
+													method: key,
+												} );
+											}
 										} }
 									>
 										{ __( 'Set up', 'woocommerce-admin' ) }
@@ -350,6 +392,13 @@ class Payments extends Component {
 					) }
 				</div>
 			</div>
+		);
+
+		return (
+			<Fragment>
+				{ setupElements }
+				{ methodsList }
+			</Fragment>
 		);
 	}
 }

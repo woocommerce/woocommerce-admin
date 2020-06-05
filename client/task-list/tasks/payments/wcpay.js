@@ -9,9 +9,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
-import { Stepper } from '@woocommerce/components';
 
 class WCPay extends Component {
 	constructor( props ) {
@@ -25,8 +23,7 @@ class WCPay extends Component {
 	}
 
 	componentDidMount() {
-		const { createNotice, markConfigured } = this.props;
-		const query = getQuery();
+		const { createNotice, markConfigured, query, installStep } = this.props;
 		// Handle redirect back from WCPay on-boarding
 		if ( query[ 'wcpay-connection-success' ] ) {
 			createNotice(
@@ -37,7 +34,7 @@ class WCPay extends Component {
 				)
 			);
 			markConfigured( 'wcpay' );
-		} else if ( this.props.installStep.isComplete ) {
+		} else if ( installStep.isComplete ) {
 			this.connect();
 		}
 	}
@@ -52,11 +49,10 @@ class WCPay extends Component {
 	}
 
 	async connect() {
-		const { createNotice } = this.props;
-		this.setState( { isPending: true } );
+		const { createNotice, markConfigurationFinished } = this.props;
 
 		const errorMessage = __(
-			'There was an error connecting to WooCommerce Payments. Please try again or skip to connect later in store settings.',
+			'There was an error connecting to WooCommerce Payments. Please try again or connect later in store settings.',
 			'woocommerce-admin'
 		);
 
@@ -68,36 +64,27 @@ class WCPay extends Component {
 			} );
 
 			if ( ! result || ! result.connectUrl ) {
-				this.setState( { isPending: false } );
+				markConfigurationFinished();
 				createNotice( 'error', errorMessage );
 				return;
 			}
 
-			this.setState( { isPending: true } );
 			window.location = result.connectUrl;
 		} catch ( error ) {
-			this.setState( { isPending: false } );
+			markConfigurationFinished();
 			createNotice( 'error', errorMessage );
 		}
 	}
 
 	render() {
-		const { installStep } = this.props;
-		const { isPending } = this.state;
+		const { installStep, query } = this.props;
 
-		// When being redirected from the WCPay onboarding flow, don't render the Stepper so there isn't an extra "Plugins successfully activated" notice.
-		if ( getQuery()[ 'wcpay-connection-success' ] ) {
+		// When being redirected from the WCPay onboarding flow, don't render the Install step so there isn't an extra "Plugins successfully activated" notice.
+		if ( query[ 'wcpay-connection-success' ] ) {
 			return null;
 		}
 
-		return (
-			<Stepper
-				isVertical
-				isPending={ ! installStep.isComplete || isPending }
-				currentStep="install"
-				steps={ [ installStep ] }
-			/>
-		);
+		return installStep.content;
 	}
 }
 

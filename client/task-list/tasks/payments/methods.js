@@ -117,8 +117,7 @@ export function getPaymentMethods( {
 				</Fragment>
 			),
 			before: <WCPayIcon />,
-			visible:
-				[ 'US', 'PR', ].includes( countryCode ) && ! hasCbdIndustry,
+			visible: [ 'US', 'PR' ].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConnected,
@@ -127,6 +126,7 @@ export function getPaymentMethods( {
 				options.woocommerce_woocommerce_payments_settings.enabled ===
 					'yes',
 			optionName: 'woocommerce_woocommerce_payments_settings',
+			hasInlineSetup: true,
 		} );
 	}
 
