@@ -1,12 +1,12 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
 import { withDispatch, withSelect } from '@wordpress/data';
+import { useRef, useState } from '@wordpress/element';
 
 /**
  * WooCommerce dependencies
@@ -21,145 +21,133 @@ import { recordEvent } from 'lib/tracks';
 import { Slider } from '../../components';
 import { STORE_KEY } from '../../data/constants';
 
-class KnowledgeBase extends Component {
+const KnowledgeBase = ( {
+	posts,
+	isLoading,
+} ) => {
 
-	constructor( props ) {
-		super( props );
-		this.state = {
-			page: 1,
-			animate: null,
-			isLoading: true,
-		};
-		this.onPaginationPageChange = this.onPaginationPageChange.bind( this );
-	}
+	const [ page, updatePage ] = useState(1);
+	const [ animate, updateAnimate ] = useState(null);
+	isLoading = useState(true);
 
-	onPaginationPageChange( newPage ) {
-		const { page } = this.state;
-		let animate;
-
+	const onPaginationPageChange = ( newPage ) => {
+		let newAnimate;
 		if ( newPage > page ) {
-			animate = 'left';
+			newAnimate = 'left';
 			recordEvent( 'marketing_knowledge_carousel', { direction: 'forward', page: newPage } );
 		} else {
-			animate = 'right';
+			newAnimate = 'right';
 			recordEvent( 'marketing_knowledge_carousel', { direction: 'back', page: newPage } );
 		}
-
-		this.setState( {
-			page: newPage,
-			animate,
-		} );
+		updatePage(newPage);
+		updateAnimate(animate);
 	}
 
-	onPostClick( post ) {
+	const onPostClick = ( post ) => {
 		recordEvent( 'marketing_knowledge_article', { title: post.title } );
 	}
 
 	/**
 	 * Get the 2 posts we need for the current page
 	 */
-	getCurrentSlide() {
-		const { posts } = this.props;
-		const { page } = this.state;
+	const getCurrentSlide = () => {
+
 		const currentPosts = posts.slice( ( page - 1 ) * 2, ( page - 1 ) * 2 + 2 );
 		const pageClass = classNames( 'woocommerce-marketing-knowledgebase-card__page', {
 			'page-with-single-post': currentPosts.length === 1,
 		} );
 
+		const displayPosts = currentPosts.map( ( post, index ) => {
+			return (
+				<a
+					className="woocommerce-marketing-knowledgebase-card__post"
+					href={ post.link }
+					key={ index }
+					onClick={ onPostClick( post ) }
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					{ post.image && (
+					<div className="woocommerce-marketing-knowledgebase-card__post-img">
+						<img src={ post.image } alt="" />
+					</div>
+					) }
+					<div className="woocommerce-marketing-knowledgebase-card__post-text">
+						<h3>{ post.title }</h3>
+						<p className="woocommerce-marketing-knowledgebase-card__post-meta">
+							By { post.author_name }
+							{ post.author_avatar && (
+								<img
+									src={ post.author_avatar.replace( 's=96', 's=32' ) }
+									className="woocommerce-gravatar"
+									alt=""
+									width="16"
+									height="16"
+								/>
+							) }
+						</p>
+					</div>
+				</a>
+			)
+		} );
+
 		return (
 			<div className={ pageClass }>
-				{ currentPosts.map( ( post, index ) => {
-					return (
-						<a
-							className="woocommerce-marketing-knowledgebase-card__post"
-							href={ post.link }
-							key={ index }
-							onClick={ this.onPostClick.bind( this, post ) }
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{ post.image && (
-							<div className="woocommerce-marketing-knowledgebase-card__post-img">
-								<img src={ post.image } alt="" />
-							</div>
-							) }
-							<div className="woocommerce-marketing-knowledgebase-card__post-text">
-								<h3>{ post.title }</h3>
-								<p className="woocommerce-marketing-knowledgebase-card__post-meta">
-									By { post.author_name }
-									{ post.author_avatar && (
-										<img
-											src={ post.author_avatar.replace( 's=96', 's=32' ) }
-											className="woocommerce-gravatar"
-											alt=""
-											width="16"
-											height="16"
-										/>
-									) }
-								</p>
-							</div>
-						</a>
-					)
-				} ) }
+				{ displayPosts }
 			</div>
 		);
 	}
 
-	render() {
-		const { posts, isLoading } = this.props;
-		const { page, animate } = this.state;
-
-		const renderEmpty = () => {
-			const title = __(
-				'There was an error loading knowledge base posts. Please check again later.',
-				'woocommerce-admin'
-			);
-
-			return (
-				<EmptyContent
-					title={ title }
-					illustrationWidth={ 250 }
-					actionLabel=""
-				/>
-			);
-		};
-
-		const renderPosts = () => {
-			return (
-				<div className="woocommerce-marketing-knowledgebase-card__posts">
-					<Slider animationKey={ page } animate={ animate }>
-						{ this.getCurrentSlide() }
-					</Slider>
-					<Pagination
-						page={ page }
-						perPage={ 2 }
-						total={ posts.length }
-						onPageChange={ this.onPaginationPageChange }
-						showPagePicker={ false }
-						showPerPagePicker={ false }
-						showPageArrowsLabel={ false }
-					/>
-				</div>
-			)
-		};
-
-		const renderCardBody = () => {
-			if ( isLoading ) {
-				return <Spinner />;
-			}
-			return posts.length === 0 ? renderEmpty() : renderPosts();
-		};
+	const renderEmpty = () => {
+		const title = __(
+			'There was an error loading knowledge base posts. Please check again later.',
+			'woocommerce-admin'
+		);
 
 		return (
-			<Card
-				title={ __( 'WooCommerce knowledge base', 'woocommerce-admin' ) }
-				description={ __( 'Learn the ins and outs of successful marketing from the experts at WooCommerce.', 'woocommerce-admin' ) }
-				className="woocommerce-marketing-knowledgebase-card"
-			>
-				{ renderCardBody() }
-			</Card>
+			<EmptyContent
+				title={ title }
+				illustrationWidth={ 250 }
+				actionLabel=""
+			/>
+		);
+	};
+
+	const renderPosts = () => {
+		return (
+			<div className="woocommerce-marketing-knowledgebase-card__posts">
+				<Slider animationKey={ page } animate={ animate }>
+					{ getCurrentSlide() }
+				</Slider>
+				<Pagination
+					page={ page }
+					perPage={ 2 }
+					total={ posts.length }
+					onPageChange={ onPaginationPageChange }
+					showPagePicker={ false }
+					showPerPagePicker={ false }
+					showPageArrowsLabel={ false }
+				/>
+			</div>
 		)
-	}
+	};
+
+	const renderCardBody = () => {
+		if ( isLoading ) {
+			return <Spinner />;
+		}
+		return posts.length === 0 ? renderEmpty() : renderPosts();
+	};
+
+	return (
+		<Card
+			title={ __( 'WooCommerce knowledge base', 'woocommerce-admin' ) }
+			description={ __( 'Learn the ins and outs of successful marketing from the experts at WooCommerce.', 'woocommerce-admin' ) }
+			className="woocommerce-marketing-knowledgebase-card"
+		>
+			{ renderCardBody() }
+		</Card>
+	)
 }
 
 export default compose(
