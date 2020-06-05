@@ -46,7 +46,7 @@ class WC_Admin_Tests_Page_Controller extends WP_UnitTestCase {
 		$this->assertEquals(
 			2,
 			count( $breadcrumbs ),
-			'Orders page should have 2 breacrumbs items.'
+			'Orders page should have 2 breadcrumbs items.'
 		);
 
 		$this->assertEquals(
@@ -110,7 +110,7 @@ class WC_Admin_Tests_Page_Controller extends WP_UnitTestCase {
 		$this->assertEquals(
 			3,
 			count( $breadcrumbs ),
-			'Coupons page should have 3 breacrumbs items.'
+			'Coupons page should have 3 breadcrumbs items.'
 		);
 
 		$this->assertEquals(
