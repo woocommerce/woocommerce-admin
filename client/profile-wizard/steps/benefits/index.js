@@ -13,7 +13,11 @@ import { filter } from 'lodash';
  */
 import { Card, H, Plugins } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import {
+	pluginNames,
+	ONBOARDING_STORE_NAME,
+	PLUGINS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -26,7 +30,6 @@ import ShippingLabels from './images/shipping_labels';
 import SpeedIcon from './images/speed';
 import withSelect from 'wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
-import { pluginNames } from 'wc-api/onboarding/constants';
 
 class Benefits extends Component {
 	constructor( props ) {
@@ -34,7 +37,6 @@ class Benefits extends Component {
 		this.state = {
 			isConnecting: false,
 			isInstalling: false,
-			isActioned: false,
 		};
 
 		this.isJetpackActive = props.activePlugins.includes( 'jetpack' );
@@ -59,11 +61,9 @@ class Benefits extends Component {
 
 	componentDidUpdate( prevProps, prevState ) {
 		const { goToNextStep } = this.props;
-		const { isActioned } = this.state;
 
 		// No longer pending or updating profile items, go to next step.
 		if (
-			isActioned &&
 			! this.isPending() &&
 			( prevProps.isRequesting ||
 				prevState.isConnecting ||
@@ -74,21 +74,21 @@ class Benefits extends Component {
 	}
 
 	isPending() {
-		const { isActioned, isConnecting, isInstalling } = this.state;
+		const { isConnecting, isInstalling } = this.state;
 		const { isRequesting } = this.props;
-		return isActioned && ( isConnecting || isInstalling || isRequesting );
+		return isConnecting || isInstalling || isRequesting;
 	}
 
 	async skipPluginInstall() {
 		const {
 			createNotice,
+			goToNextStep,
 			isProfileItemsError,
 			updateProfileItems,
 		} = this.props;
 
 		const plugins = this.isJetpackActive ? 'skipped-wcs' : 'skipped';
 		await updateProfileItems( { plugins } );
-		this.setState( { isActioned: true } );
 
 		if ( isProfileItemsError ) {
 			createNotice(
@@ -104,12 +104,14 @@ class Benefits extends Component {
 				plugins,
 			} );
 		}
+
+		goToNextStep();
 	}
 
 	async startPluginInstall() {
 		const { updateProfileItems, updateOptions } = this.props;
 
-		this.setState( { isActioned: true, isInstalling: true } );
+		this.setState( { isInstalling: true } );
 
 		await updateOptions( {
 			woocommerce_setup_jetpack_opted_in: true,
@@ -301,16 +303,18 @@ class Benefits extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const {
-			getProfileItemsError,
+			getOnboardingError,
 			getProfileItems,
-			isGetProfileItemsRequesting,
-		} = select( 'wc-api' );
+			isOnboardingRequesting,
+		} = select( ONBOARDING_STORE_NAME );
 
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
 
-		const isProfileItemsError = Boolean( getProfileItemsError() );
+		const isProfileItemsError = Boolean(
+			getOnboardingError( 'updateProfileItems' )
+		);
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 
@@ -319,11 +323,12 @@ export default compose(
 			isProfileItemsError,
 			profileItems,
 			isJetpackConnected: isJetpackConnected(),
-			isRequesting: isGetProfileItemsRequesting(),
+			isRequesting: isOnboardingRequesting( 'updateProfileItems' ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateProfileItems, updateOptions } = dispatch( 'wc-api' );
+		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
+		const { updateOptions } = dispatch( 'wc-api' );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {

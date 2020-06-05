@@ -17,7 +17,11 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import {
+	ONBOARDING_STORE_NAME,
+	pluginNames,
+	PLUGINS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -25,7 +29,6 @@ import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from 'lib/tracks';
 import { getCountryCode } from 'dashboard/utils';
 import withSelect from 'wc-api/with-select';
-import { pluginNames } from 'wc-api/onboarding/constants';
 import { getPaymentMethods } from './methods';
 
 class Payments extends Component {
@@ -41,23 +44,25 @@ class Payments extends Component {
 			enabledMethods,
 		};
 
-		this.recommendedMethod = 'stripe';
-		methods.forEach( ( method ) => {
-			if ( method.key === 'wcpay' && method.visible ) {
-				this.recommendedMethod = 'wcpay';
-			}
-		} );
-
 		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
 		this.skipTask = this.skipTask.bind( this );
 	}
 
 	componentDidUpdate( prevProps ) {
+		if ( prevProps === this.props ) {
+			return;
+		}
 		const { createNotice, errors, methods, requesting } = this.props;
 
+		let recommendedMethod = 'stripe';
 		methods.forEach( ( method ) => {
-			const { key, title } = method;
+			const { key, title, visible } = method;
+
+			if ( key === 'wcpay' && visible ) {
+				recommendedMethod = 'wcpay';
+			}
+
 			if (
 				prevProps.requesting[ key ] &&
 				! requesting[ key ] &&
@@ -75,6 +80,12 @@ class Payments extends Component {
 				);
 			}
 		} );
+
+		if ( this.state.recommendedMethod !== recommendedMethod ) {
+			this.setState( {
+				recommendedMethod,
+			} );
+		}
 	}
 
 	completeTask() {
@@ -208,7 +219,7 @@ class Payments extends Component {
 	render() {
 		const currentMethod = this.getCurrentMethod();
 		const { methods, query } = this.props;
-		const { enabledMethods } = this.state;
+		const { enabledMethods, recommendedMethod } = this.state;
 		const configuredMethods = methods.filter(
 			( method ) => method.isConfigured
 		).length;
@@ -252,11 +263,11 @@ class Payments extends Component {
 					);
 
 					const isRecommended =
-						key === this.recommendedMethod && ! isConfigured;
+						key === recommendedMethod && ! isConfigured;
 					const showRecommendedRibbon =
-						isRecommended && this.recommendedMethod !== 'wcpay';
+						isRecommended && key !== 'wcpay';
 					const showRecommendedPill =
-						isRecommended && this.recommendedMethod === 'wcpay';
+						isRecommended && key === 'wcpay';
 
 					return (
 						<Card key={ key } className={ classes }>
@@ -292,12 +303,8 @@ class Payments extends Component {
 							<div className="woocommerce-task-payment__after">
 								{ container && ! isConfigured ? (
 									<Button
-										isPrimary={
-											key === this.recommendedMethod
-										}
-										isDefault={
-											key !== this.recommendedMethod
-										}
+										isPrimary={ key === recommendedMethod }
+										isDefault={ key !== recommendedMethod }
 										onClick={ () => {
 											recordEvent(
 												'tasklist_payment_setup',
@@ -349,8 +356,8 @@ class Payments extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const {
-			getProfileItems,
 			getOptions,
 			getUpdateOptionsError,
 			isUpdateOptionsRequesting,
