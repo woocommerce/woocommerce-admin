@@ -28,7 +28,6 @@ const KnowledgeBase = ( {
 
 	const [ page, updatePage ] = useState(1);
 	const [ animate, updateAnimate ] = useState(null);
-	isLoading = useState(true);
 
 	const onPaginationPageChange = ( newPage ) => {
 		let newAnimate;
@@ -40,7 +39,7 @@ const KnowledgeBase = ( {
 			recordEvent( 'marketing_knowledge_carousel', { direction: 'back', page: newPage } );
 		}
 		updatePage(newPage);
-		updateAnimate(animate);
+		updateAnimate(newAnimate);
 	}
 
 	const onPostClick = ( post ) => {
