@@ -36,6 +36,7 @@
 
 		@include breakpoint( '>960px' ) {
 			flex-wrap: nowrap;
+			width: 50%;
 
 			&:not(:last-child) {
 				margin-bottom: 0;
