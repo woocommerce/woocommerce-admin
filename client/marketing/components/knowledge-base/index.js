@@ -27,10 +27,6 @@ const KnowledgeBase = ( {
 	category,
 } ) => {
 
-	if ( posts.length === 0 && ! isLoading ) {
-		return null;
-	}
-
 	const [ page, updatePage ] = useState(1);
 	const [ animate, updateAnimate ] = useState(null);
 
