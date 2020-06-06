@@ -37,12 +37,18 @@ class Payments extends Component {
 		const { methods } = props;
 
 		const enabledMethods = {};
-		methods.forEach(
-			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
-		);
+		let recommendedMethod = 'stripe';
+		methods.forEach( ( { isEnabled, key, visible } ) => {
+			enabledMethods[ key ] = isEnabled;
+			if ( key === 'wcpay' && visible ) {
+				recommendedMethod = 'wcpay';
+			}
+		} );
+
 		this.state = {
 			enabledMethods,
 			configuringMethods: {},
+			recommendedMethod,
 		};
 
 		this.completeTask = this.completeTask.bind( this );
@@ -59,14 +65,7 @@ class Payments extends Component {
 		}
 		const { createNotice, errors, methods, requesting } = this.props;
 
-		let recommendedMethod = 'stripe';
-		methods.forEach( ( method ) => {
-			const { key, title, visible } = method;
-
-			if ( key === 'wcpay' && visible ) {
-				recommendedMethod = 'wcpay';
-			}
-
+		methods.forEach( ( { key, title } ) => {
 			if (
 				prevProps.requesting[ key ] &&
 				! requesting[ key ] &&
@@ -84,12 +83,6 @@ class Payments extends Component {
 				);
 			}
 		} );
-
-		if ( this.state.recommendedMethod !== recommendedMethod ) {
-			this.setState( {
-				recommendedMethod,
-			} );
-		}
 	}
 
 	completeTask() {
@@ -247,7 +240,11 @@ class Payments extends Component {
 	render() {
 		const currentMethod = this.getCurrentMethod();
 		const { methods } = this.props;
-		const { enabledMethods, recommendedMethod, configuringMethods } = this.state;
+		const {
+			enabledMethods,
+			recommendedMethod,
+			configuringMethods,
+		} = this.state;
 		const configuredMethods = methods.filter(
 			( method ) => method.isConfigured
 		).length;
