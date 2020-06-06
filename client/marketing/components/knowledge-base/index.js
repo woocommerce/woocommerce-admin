@@ -194,7 +194,7 @@ export default compose(
 
 		return {
 			posts: getBlogPosts( props.category ),
-			isLoading: isResolving( 'getBlogPosts' ),
+			isLoading: isResolving( 'getBlogPosts', [ props.category ] ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

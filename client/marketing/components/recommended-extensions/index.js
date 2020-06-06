@@ -99,7 +99,7 @@ export default compose(
 
 		return {
 			extensions: getRecommendedPlugins( props.category ),
-			isLoading: isResolving( 'getRecommendedPlugins' ),
+			isLoading: isResolving( 'getRecommendedPlugins', [ props.category ] ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
