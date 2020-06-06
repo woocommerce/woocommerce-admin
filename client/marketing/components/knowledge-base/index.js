@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { recordEvent } from 'lib/tracks';
+import PropTypes from 'prop-types';
 
 /**
  * WooCommerce dependencies
@@ -24,6 +25,8 @@ import { STORE_KEY } from '../../data/constants';
 const KnowledgeBase = ( {
 	posts,
 	isLoading,
+	title,
+	description,
 	category,
 } ) => {
 
@@ -99,14 +102,14 @@ const KnowledgeBase = ( {
 	}
 
 	const renderEmpty = () => {
-		const title = __(
+		const emptyTitle = __(
 			'There was an error loading knowledge base posts. Please check again later.',
 			'woocommerce-admin'
 		);
 
 		return (
 			<EmptyContent
-				title={ title }
+				title={ emptyTitle }
 				illustrationWidth={ 250 }
 				actionLabel=""
 			/>
@@ -143,8 +146,8 @@ const KnowledgeBase = ( {
 
 	return (
 		<Card
-			title={ __( 'WooCommerce knowledge base', 'woocommerce-admin' ) }
-			description={ __( 'Learn the ins and outs of successful marketing from the experts at WooCommerce.', 'woocommerce-admin' ) }
+			title={ title }
+			description={ description }
 			className={ classNames(
 				'woocommerce-marketing-knowledgebase-card',
 				categoryClass,
@@ -154,6 +157,34 @@ const KnowledgeBase = ( {
 		</Card>
 	)
 }
+
+KnowledgeBase.propTypes = {
+	/**
+	 * Array of posts.
+	 */
+	posts: PropTypes.arrayOf( PropTypes.object ).isRequired,
+	/**
+	 * Whether the card is loading.
+	 */
+	isLoading: PropTypes.bool.isRequired,
+	/**
+	 * Cart title.
+	 */
+	title: PropTypes.string,
+	/**
+	 * Card description.
+	 */
+	description: PropTypes.string,
+	/**
+	 * Category of extensions to display.
+	 */
+	category: PropTypes.string,
+};
+
+KnowledgeBase.defaultProps = {
+	title: __( 'WooCommerce knowledge base', 'woocommerce-admin' ),
+	description: __( 'Learn the ins and outs of successful marketing from the experts at WooCommerce.', 'woocommerce-admin' ),
+};
 
 export { KnowledgeBase }
 
