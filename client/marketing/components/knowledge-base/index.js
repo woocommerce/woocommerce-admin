@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { useRef, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 
 /**
  * WooCommerce dependencies
@@ -24,7 +24,12 @@ import { STORE_KEY } from '../../data/constants';
 const KnowledgeBase = ( {
 	posts,
 	isLoading,
+	category,
 } ) => {
+
+	if ( posts.length === 0 && ! isLoading ) {
+		return null;
+	}
 
 	const [ page, updatePage ] = useState(1);
 	const [ animate, updateAnimate ] = useState(null);
@@ -138,11 +143,16 @@ const KnowledgeBase = ( {
 		return posts.length === 0 ? renderEmpty() : renderPosts();
 	};
 
+	const categoryClass = ( category ) ? `woocommerce-marketing-knowledgebase-card__category-${category}` : '';
+
 	return (
 		<Card
 			title={ __( 'WooCommerce knowledge base', 'woocommerce-admin' ) }
 			description={ __( 'Learn the ins and outs of successful marketing from the experts at WooCommerce.', 'woocommerce-admin' ) }
-			className="woocommerce-marketing-knowledgebase-card"
+			className={ classNames(
+				'woocommerce-marketing-knowledgebase-card',
+				categoryClass,
+			) }
 		>
 			{ renderCardBody() }
 		</Card>
@@ -150,11 +160,11 @@ const KnowledgeBase = ( {
 }
 
 export default compose(
-	withSelect( ( select ) => {
+	withSelect( ( select, props ) => {
 		const { getBlogPosts, isResolving } = select( STORE_KEY );
 
 		return {
-			posts: getBlogPosts(),
+			posts: getBlogPosts( props.category ),
 			isLoading: isResolving( 'getBlogPosts' ),
 		};
 	} ),
