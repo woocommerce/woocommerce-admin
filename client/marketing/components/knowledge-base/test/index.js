@@ -18,32 +18,32 @@ import Slider from '../../slider';
 
 jest.mock( 'lib/tracks' );
 
+const mockPosts = [
+	{
+		'title': 'WooCommerce Blog Post 1',
+		'date': '2020-05-28T15:00:00',
+		'link': 'https://woocommerce.com/posts/woo-blog-post-1/',
+		'author_name': 'John Doe',
+		'author_avatar': 'https://avatar.domain/avatar1.png',
+	},
+	{
+		'title': 'WooCommerce Blog Post 2',
+		'date': '2020-04-29T12:00:00',
+		'link': 'https://woocommerce.com/posts/woo-blog-post-2/',
+		'author_name': 'Jane Doe',
+		'author_avatar': 'https://avatar.domain/avatar2.png',
+	},
+	{
+		'title': 'WooCommerce Blog Post 3',
+		'date': '2020-03-29T12:00:00',
+		'link': 'https://woocommerce.com/posts/woo-blog-post-3/',
+		'author_name': 'Jim Doe',
+		'author_avatar': 'https://avatar.domain/avatar3.png',
+	},
+];
+
 describe( 'Posts and not loading', () => {
 	let knowledgeBaseWrapper;
-
-	const mockPosts = [
-		{
-			'title': 'WooCommerce Blog Post 1',
-			'date': '2020-05-28T15:00:00',
-			'link': 'https://woocommerce.com/posts/woo-blog-post-1/',
-			'author_name': 'John Doe',
-			'author_avatar': 'https://avatar.domain/avatar1.png',
-		},
-		{
-			'title': 'WooCommerce Blog Post 2',
-			'date': '2020-04-29T12:00:00',
-			'link': 'https://woocommerce.com/posts/woo-blog-post-2/',
-			'author_name': 'Jane Doe',
-			'author_avatar': 'https://avatar.domain/avatar2.png',
-		},
-		{
-			'title': 'WooCommerce Blog Post 3',
-			'date': '2020-03-29T12:00:00',
-			'link': 'https://woocommerce.com/posts/woo-blog-post-3/',
-			'author_name': 'Jim Doe',
-			'author_avatar': 'https://avatar.domain/avatar3.png',
-		},
-	];
 
 	beforeEach( () => {
 		knowledgeBaseWrapper = shallow(
