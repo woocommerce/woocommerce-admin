@@ -60,6 +60,8 @@ class Install {
 		'woocommerce_admin_last_orders_milestone'  => 'wc_admin_last_orders_milestone',
 		'woocommerce_admin-wc-helper-last-refresh' => 'wc-admin-wc-helper-last-refresh',
 		'woocommerce_admin_report_export_status'   => 'wc_admin_report_export_status',
+		'woocommerce_task_list_complete'           => 'woocommerce_task_list_complete',
+		'woocommerce_task_list_hidden'             => 'woocommerce_task_list_hidden',
 	);
 
 	/**
@@ -94,7 +96,9 @@ class Install {
 			}
 
 			update_option( $new_option, $old_option_value );
-			delete_option( $old_option );
+			if ( $new_option !== $old_option ) {
+				delete_option( $old_option );
+			}
 		}
 	}
 
