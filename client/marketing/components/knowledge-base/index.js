@@ -63,7 +63,7 @@ const KnowledgeBase = ( {
 					className="woocommerce-marketing-knowledgebase-card__post"
 					href={ post.link }
 					key={ index }
-					onClick={ onPostClick( post ) }
+					onClick={ () => { onPostClick( post ) } }
 					target="_blank"
 					rel="noopener noreferrer"
 				>
