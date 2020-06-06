@@ -7,6 +7,7 @@ import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
+import { recordEvent } from 'lib/tracks';
 
 /**
  * WooCommerce dependencies
@@ -17,7 +18,6 @@ import { Card, Pagination, EmptyContent } from '@woocommerce/components';
  * Internal dependencies
  */
 import './style.scss'
-import { recordEvent } from 'lib/tracks';
 import { Slider } from '../../components';
 import { STORE_KEY } from '../../data/constants';
 
@@ -158,6 +158,8 @@ const KnowledgeBase = ( {
 		</Card>
 	)
 }
+
+export { KnowledgeBase }
 
 export default compose(
 	withSelect( ( select, props ) => {
