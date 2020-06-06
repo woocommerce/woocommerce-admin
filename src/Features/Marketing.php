@@ -158,6 +158,7 @@ class Marketing {
 				),
 				'https://woocommerce.com/wp-json/wp/v2/posts'
 			);
+
 			$request = wp_remote_get( $request_url );
 			$posts   = [];
 

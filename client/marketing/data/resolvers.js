@@ -16,7 +16,7 @@ import { API_NAMESPACE } from './constants';
 
 export function* getRecommendedPlugins( category ) {
 	try {
-		const categoryParam = ( category ) ? `&category=${ category }` : '';
+		const categoryParam = yield ( category ) ? `&category=${ category }` : '';
 		const response = yield apiFetch( {
 			path: `${ API_NAMESPACE }/recommended?per_page=6${ categoryParam }`
 		} );
@@ -33,7 +33,7 @@ export function* getRecommendedPlugins( category ) {
 
 export function* getBlogPosts( category ) {
 	try {
-		const categoryParam = ( category ) ? `?category=${ category }` : '';
+		const categoryParam = yield ( category ) ? `?category=${ category }` : '';
 		const response = yield apiFetch( {
 			path: `${ API_NAMESPACE }/knowledge-base${ categoryParam }`,
 			method: 'GET',

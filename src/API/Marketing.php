@@ -48,8 +48,13 @@ class Marketing extends \WC_REST_Data_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_recommended_plugins' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-					'args' => array(
+					'args'                => array(
 						'per_page' => $this->get_collection_params()['per_page'],
+						'category' => array(
+							'type'              => 'string',
+							'validate_callback' => 'rest_validate_request_arg',
+							'sanitize_callback' => 'sanitize_title_with_dashes',
+						),
 					),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
@@ -64,6 +69,14 @@ class Marketing extends \WC_REST_Data_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_knowledge_base_posts' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'args'                => array(
+						'category' => array(
+							'type'              => 'integer',
+							'minimum'           => 1,
+							'validate_callback' => 'rest_validate_request_arg',
+							'sanitize_callback' => 'absint',
+						),
+					),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -78,9 +91,10 @@ class Marketing extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_recommended_plugins( $request ) {
-		$all_plugins = MarketingFeature::get_instance()->get_recommended_plugins();
+		$category      = $request->get_param( 'category' );
+		$all_plugins   = MarketingFeature::get_instance()->get_recommended_plugins();
 		$valid_plugins = [];
-		$per_page = $request->get_param( 'per_page' );
+		$per_page      = $request->get_param( 'per_page' );
 
 		foreach ( $all_plugins as $plugin ) {
 			if ( ! PluginsHelper::is_plugin_installed( $plugin['plugin'] ) ) {
@@ -99,6 +113,7 @@ class Marketing extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_knowledge_base_posts( $request ) {
+		$category = $request->get_param( 'category' );
 		return rest_ensure_response( MarketingFeature::get_instance()->get_knowledge_base_posts() );
 	}
 }

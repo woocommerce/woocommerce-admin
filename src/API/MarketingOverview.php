@@ -104,7 +104,7 @@ class MarketingOverview extends \WC_REST_Data_Controller {
 		// Instead we will get that data in a separate request to ensure they are loaded.
 		return rest_ensure_response(
 			array(
-				'status'  => 'success',
+				'status' => 'success',
 			)
 		);
 	}
