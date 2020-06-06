@@ -13,27 +13,27 @@ import RecommendedExtensionsItem from '../item.js';
 
 jest.mock( 'lib/tracks' );
 
+const mockExtensions = [
+	{
+		'title': 'AutomateWoo',
+		'description': 'Does things.',
+		'url': 'https://woocommerce.com/products/automatewoo/',
+		'icon': 'icons/automatewoo.svg',
+		'product': 'automatewoo',
+		'plugin': 'automatewoo/automatewoo.php',
+	},
+	{
+		'title': 'Mailchimp for WooCommerce',
+		'description': 'Does things.',
+		'url': 'https://woocommerce.com/products/mailchimp-for-woocommerce/',
+		'icon': 'icons/mailchimp.svg',
+		'product': 'mailchimp-for-woocommerce',
+		'plugin': 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
+	},
+];
+
 describe( 'Recommendations and not loading', () => {
 	let recommendedExtensionsWrapper;
-
-	const mockExtensions = [
-		{
-			'title': 'AutomateWoo',
-			'description': 'Does things.',
-			'url': 'https://woocommerce.com/products/automatewoo/',
-			'icon': 'icons/automatewoo.svg',
-			'product': 'automatewoo',
-			'plugin': 'automatewoo/automatewoo.php',
-		},
-		{
-			'title': 'Mailchimp for WooCommerce',
-			'description': 'Does things.',
-			'url': 'https://woocommerce.com/products/mailchimp-for-woocommerce/',
-			'icon': 'icons/mailchimp.svg',
-			'product': 'mailchimp-for-woocommerce',
-			'plugin': 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
-		},
-	];
 
 	beforeEach( () => {
 		recommendedExtensionsWrapper = shallow(
@@ -63,25 +63,6 @@ describe( 'Recommendations and not loading', () => {
 
 describe( 'Recommendations and loading', () => {
 	let recommendedExtensionsWrapper;
-
-	const mockExtensions = [
-		{
-			'title': 'AutomateWoo',
-			'description': 'Does things.',
-			'url': 'https://woocommerce.com/products/automatewoo/',
-			'icon': 'icons/automatewoo.svg',
-			'product': 'automatewoo',
-			'plugin': 'automatewoo/automatewoo.php',
-		},
-		{
-			'title': 'Mailchimp for WooCommerce',
-			'description': 'Does things.',
-			'url': 'https://woocommerce.com/products/mailchimp-for-woocommerce/',
-			'icon': 'icons/mailchimp.svg',
-			'product': 'mailchimp-for-woocommerce',
-			'plugin': 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
-		},
-	];
 
 	beforeEach( () => {
 		recommendedExtensionsWrapper = shallow(
