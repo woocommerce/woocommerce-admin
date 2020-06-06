@@ -90,12 +90,10 @@ describe( 'Recommendations and loading', () => {
 describe( 'No Recommendations and not loading', () => {
 	let recommendedExtensionsWrapper;
 
-	const mockExtensions = [];
-
 	beforeEach( () => {
 		recommendedExtensionsWrapper = shallow(
 			<RecommendedExtensions
-				extensions={ mockExtensions }
+				extensions={ [ ] }
 				isLoading={ false }
 				title={ '' }
 				description={ '' }
