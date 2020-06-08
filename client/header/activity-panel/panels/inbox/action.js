@@ -56,10 +56,28 @@ class InboxNoteAction extends Component {
 				triggerNoteAction( noteId, action.id )
 			);
 		}
+
+		if ( action.actioned_label !== '' ) {
+			this.setState( {
+				useActionedLabel: true,
+			} );
+		}
 	}
 
-	render() {
+	getButtonLabel = () => {
 		const { action, dismiss, label } = this.props;
+		const { useActionedLabel } = this.state;
+		
+		if ( useActionedLabel ) {
+			return action.actioned_label;
+		}
+
+		return dismiss ? label : action.label;
+	};
+
+	render() {
+		const { action, dismiss } = this.props;
+
 		return (
 			<Button
 				isDefault
@@ -69,7 +87,7 @@ class InboxNoteAction extends Component {
 				href={ action ? action.url : undefined }
 				onClick={ this.handleActionClick }
 			>
-				{ dismiss ? label : action.label }
+				{ this.getButtonLabel() }
 			</Button>
 		);
 	}

@@ -1,0 +1,59 @@
+<?php
+/**
+ * WooCommerce Admin: Do you need some inspiration?
+ *
+ * Adds a note to ask the client if they need some inspiration.
+ *
+ * @package WooCommerce Admin
+ */
+
+namespace Automattic\WooCommerce\Admin\Notes;
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * WC_Admin_Notes_Insight.
+ */
+class WC_Admin_Notes_Insight {
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
+	const NOTE_NAME = 'wc-admin-insight';
+
+	/**
+	 * Get the note.
+	 */
+	public static function get_note() {
+		// We want to show the note after eight days.
+		if ( ! self::wc_admin_active_for( 8 * DAY_IN_SECONDS ) ) {
+			return;
+		}
+
+		$note = new WC_Admin_Note();
+		$note->set_title( __( 'Insight', 'woocommerce-admin' ) );
+		$note->set_content( __( 'A WooCommerce powered store needs on average 31 days to get the first sale. You\'re on the right track! Do you find this type of insight useful?', 'woocommerce-admin' ) );
+		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
+		$note->set_name( self::NOTE_NAME );
+		$note->set_content_data( (object) array() );
+		$note->set_source( 'woocommerce-admin' );
+
+		// Note that there is no corresponding function called in response to
+		// this. Apart from setting the note to actioned a tracks event is
+		// sent in NoteActions.
+		$note->add_action(
+			'affirm-insight',
+			__( 'Yes', 'woocommerce-admin' ),
+			false,
+			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
+			false,
+			'Thanks for your feedback'
+		);
+
+		return $note;
+	}
+}
