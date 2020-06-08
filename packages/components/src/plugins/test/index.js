@@ -52,7 +52,6 @@ describe( 'Installing and activating', () => {
 			activated: [ 'jetpack' ],
 		},
 	} );
-	const createNotice = jest.fn();
 	const onComplete = jest.fn();
 
 	beforeEach( () => {
