@@ -57,7 +57,7 @@ class WC_Admin_Notes_Need_Some_Inspiration {
 		$note->add_action(
 			'need-some-inspiration',
 			__( 'See success stories', 'woocommerce-admin' ),
-			'https://woocommerce.com/success-stories/?utm_source=inboxx',
+			'https://woocommerce.com/success-stories/?utm_source=inbox',
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);
