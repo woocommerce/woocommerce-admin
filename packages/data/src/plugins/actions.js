@@ -122,15 +122,17 @@ export function* installAndActivatePlugins( plugins ) {
 }
 
 export function formatErrors( response ) {
-	if ( response.errors && response.errors.errors ) {
+	if ( response.errors ) {
 		// Replace the slug with a plugin name if a constant exists.
-		response.errors.errors = Object.keys( response.errors.errors ).map( plugin => {
-			return pluginNames[ plugin ]
-				? response.errors.errors[ plugin ][ 0 ].replace(
-					`\`${ plugin }\``,
-							pluginNames[ plugin ]
+		Object.keys( response.errors ).forEach( plugin => {
+			response.errors[ plugin ] = response.errors[ plugin ].map( pluginError => {
+				return pluginNames[ plugin ]
+					? pluginError.replace(
+						`\`${ plugin }\``,
+						pluginNames[ plugin ]
 					)
-					: response.errors.errors[ plugin ][ 0 ];
+					: pluginError;
+			} );
 		} );
 	}
 
