@@ -27,30 +27,7 @@ $promo-actions-border: $core-grey-light-500;
 		border-bottom: 1px solid $outer-border;
 
 		.components-button {
-			height: auto;
-			display: block;
-			padding: $gap;
 			width: 33.33%;
-			border-radius: 0;
-
-			&:focus {
-				outline: none;
-				box-shadow: none;
-			}
-
-			&.is-active {
-				box-shadow: inset 0 -4px 0 $theme-color;
-			}
-
-			&:first-child {
-				text-align: left;
-				padding-right: 0;
-			}
-
-			&:last-child {
-				text-align: right;
-				padding-left: 0;
-			}
 		}
 	}
 }
