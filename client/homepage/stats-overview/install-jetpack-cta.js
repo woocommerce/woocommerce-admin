@@ -20,6 +20,7 @@ import { PLUGINS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
  */
 import Connect from 'dashboard/components/connect';
 import { recordEvent } from 'lib/tracks';
+import { createNoticesFromResponse } from 'lib/notices';
 
 function InstallJetpackCta( {
 	isJetpackInstalled,
@@ -37,13 +38,13 @@ function InstallJetpackCta( {
 	async function install() {
 		recordEvent( 'statsoverview_install_jetpack' );
 
-		const pluginInstall = await installAndActivatePlugins( [ 'jetpack' ] );
-		if ( Object.keys( pluginInstall.errors.errors ).length ) {
-			// @todo Error handling.
-			return;
-		}
-
-		setIsConnecting( ! isJetpackConnected );
+		installAndActivatePlugins( [ 'jetpack' ] )
+			.then( () => {
+				setIsConnecting( ! isJetpackConnected );
+			} )
+			.catch( ( error ) => {
+				createNoticesFromResponse( error );
+			} );
 	}
 
 	function dismiss() {
@@ -146,6 +147,7 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
+		const { updateCurrentUserData } = dispatch( 'wc-api' );
 
 		return {
 			installAndActivatePlugins,

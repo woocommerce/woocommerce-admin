@@ -13,7 +13,12 @@ import { keys, get, pickBy } from 'lodash';
  */
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { ONBOARDING_STORE_NAME, PLUGINS_STORE_NAME, pluginNames, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import {
+	ONBOARDING_STORE_NAME,
+	PLUGINS_STORE_NAME,
+	pluginNames,
+	SETTINGS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -28,6 +33,7 @@ import {
 import { recordEvent } from 'lib/tracks';
 import { getCurrencyRegion } from 'dashboard/utils';
 import { CurrencyContext } from 'lib/currency-context';
+import { createNoticesFromResponse } from 'lib/notices';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
@@ -74,9 +80,7 @@ class BusinessDetails extends Component {
 		const {
 			createNotice,
 			goToNextStep,
-			hasInstallActivateError,
 			installAndActivatePlugins,
-			isError,
 			updateProfileItems,
 		} = this.props;
 		const {
@@ -119,23 +123,31 @@ class BusinessDetails extends Component {
 			}
 		} );
 
-		await Promise.all( [
-			updateProfileItems( updates ),
+		Promise.all( [
 			installAndActivatePlugins( businessExtensions ),
-		] );
-
-		// @todo These don't work since they are updated at the end of the current stack.
-		if ( ! isError && ! hasInstallActivateError ) {
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating your business details.',
-					'woocommerce-admin'
-				)
-			);
-		}
+			updateProfileItems( updates ),
+		] )
+			.then( ( pluginResponse ) => {
+				createNoticesFromResponse( pluginResponse );
+				goToNextStep();
+			} )
+			.catch( ( pluginErrors, profileErrors ) => {
+				this.setState( {
+					hasInstallActivateError: Boolean( pluginErrors ),
+				} );
+				if ( pluginErrors ) {
+					createNoticesFromResponse( pluginErrors );
+				}
+				if ( profileErrors ) {
+					createNotice(
+						'error',
+						__(
+							'There was a problem updating your business details.',
+							'woocommerce-admin'
+						)
+					);
+				}
+			} );
 	}
 
 	validate( values ) {
@@ -374,7 +386,11 @@ class BusinessDetails extends Component {
 	}
 
 	render() {
-		const { goToNextStep, isInstallingActivating, hasInstallActivateError } = this.props;
+		const {
+			goToNextStep,
+			isInstallingActivating,
+			hasInstallActivateError,
+		} = this.props;
 		const { formatCurrency } = this.context;
 		const productCountOptions = [
 			{
@@ -635,19 +651,27 @@ class BusinessDetails extends Component {
 											onClick={ handleSubmit }
 											disabled={ ! isValidForm }
 											isBusy={ isInstallingActivating }
-											>
+										>
 											{ ! hasInstallActivateError
-													? __( 'Continue', 'woocommerce-admin')
-													: __( 'Retry', 'woocommerce-admin') }
+												? __(
+														'Continue',
+														'woocommerce-admin'
+												  )
+												: __(
+														'Retry',
+														'woocommerce-admin'
+												  ) }
 										</Button>
 										{ hasInstallActivateError && (
-											<Button onClick={ () => goToNextStep() }>
+											<Button
+												onClick={ () => goToNextStep() }
+											>
 												{ __(
 													'Continue without installing',
 													'woocommerce-admin'
 												) }
 											</Button>
-											) }
+										) }
 									</div>
 								</Fragment>
 							</Card>
@@ -671,18 +695,25 @@ export default compose(
 			getSettingsError,
 			isGetSettingsRequesting,
 		} = select( SETTINGS_STORE_NAME );
-		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
-		const { getPluginsError, isPluginsRequesting } = select( PLUGINS_STORE_NAME );
+		const { getProfileItems, getOnboardingError } = select(
+			ONBOARDING_STORE_NAME
+		);
+		const { getPluginsError, isPluginsRequesting } = select(
+			PLUGINS_STORE_NAME
+		);
 		const { general: settings = {} } = getSettings( 'general' );
 
 		return {
-			hasInstallActivateError: getPluginsError( 'installPlugins' ) || getPluginsError( 'activatePlugins' ),
+			hasInstallActivateError:
+				getPluginsError( 'installPlugins' ) ||
+				getPluginsError( 'activatePlugins' ),
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
 			profileItems: getProfileItems(),
 			isSettingsError: Boolean( getSettingsError( 'general' ) ),
 			isSettingsRequesting: isGetSettingsRequesting( 'general' ),
 			settings,
-			isInstallingActivating: isPluginsRequesting( 'installPlugins' ) ||
+			isInstallingActivating:
+				isPluginsRequesting( 'installPlugins' ) ||
 				isPluginsRequesting( 'activatePlugins' ) ||
 				isPluginsRequesting( 'getJetpackConnectUrl' ),
 		};
