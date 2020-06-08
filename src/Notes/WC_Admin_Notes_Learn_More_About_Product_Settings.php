@@ -11,6 +11,8 @@ namespace Automattic\WooCommerce\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\Features\Onboarding;
+
 /**
  * WC_Admin_Notes_Learn_More_About_Product_Settings.
  */
@@ -26,13 +28,46 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	const NOTE_NAME = 'wc-admin-learn-more-about-product-settings';
 
 	const PRODUCTS_ADDED_DATE_OPTION_NAME = 'wc_admin_note_learn_more_about_product_settings_products_added_date';
+	const IS_NEW_MERCHANT_OPTION_NAME     = 'wc_admin_note_learn_more_about_product_settings_is_new_merchant';
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'product_page_product_importer', array( $this, 'run_on_product_importer' ) );
-		add_action( 'transition_post_status', array( $this, 'run_on_transition_post_status' ), 10, 3 );
+		add_filter(
+			'update_option_' . Onboarding::PROFILE_DATA_OPTION,
+			array( $this, 'onboarding_profile_updated' ),
+			10,
+			3
+		);
+
+		// Bail out for non-new merchants.
+		if ( ! get_option( self::IS_NEW_MERCHANT_OPTION_NAME ) ) {
+			return;
+		}
+
+		// Only subscribe to the actions if there are no products. If there are
+		// products already then this isn't a new install so record the date so
+		// this note never gets added.
+		if ( self::are_there_products() ) {
+			self::possibly_record_products_added_date();
+		} else {
+			add_action( 'product_page_product_importer', array( $this, 'run_on_product_importer' ) );
+			add_action( 'transition_post_status', array( $this, 'run_on_transition_post_status' ), 10, 3 );
+		}
+	}
+
+
+	/**
+	 * Record that the onboarding profile has been updated, indicating that the
+	 * merchant is new.
+	 *
+	 * @param object $old_value The old option value.
+	 * @param object $value     The new option value.
+	 * @param string $option    The name of the option.
+	 */
+	public function onboarding_profile_updated( $old_value, $value, $option ) {
+		update_option( self::IS_NEW_MERCHANT_OPTION_NAME, true );
 	}
 
 	/**
@@ -91,16 +126,27 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 * @return bool If there are any products.
 	 */
 	private static function are_there_products() {
-		$query    = new \WC_Product_Query(
-			array(
-				'limit'    => 1,
-				'paginate' => true,
-				'return'   => 'ids',
-				'status'   => array( 'publish' ),
-			)
+		// $query    = new \WC_Product_Query(
+		// 	array(
+		// 		'limit'    => 1,
+		// 		'paginate' => true,
+		// 		'return'   => 'ids',
+		// 		'status'   => array( 'publish' ),
+		// 	)
+		// );
+		// $products = $query->get_products();
+		// $count    = $products->total;
+
+		global $wpdb;
+
+		$count = $wpdb->get_var(
+			"
+				SELECT COUNT(*)
+				FROM {$wpdb->posts}
+				WHERE post_type = 'product'
+				AND post_status = 'publish'
+			"
 		);
-		$products = $query->get_products();
-		$count    = $products->total;
 
 		return $count > 0;
 	}
@@ -109,6 +155,11 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 * Get the note.
 	 */
 	public static function get_note() {
+		// Bail out for non-new merchants.
+		if ( ! get_option( self::IS_NEW_MERCHANT_OPTION_NAME ) ) {
+			return;
+		}
+
 		$onboarding_profile = get_option( 'woocommerce_onboarding_profile', array() );
 
 		// Confirm that $onboarding_profile is set.
