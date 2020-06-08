@@ -187,11 +187,9 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 
 		return {
-			createNotice,
 			installAndActivatePlugins,
 		};
 	} )
