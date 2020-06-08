@@ -1,7 +1,6 @@
 // Set up some local color variables to make the CSS more clear
 $outer-border: $core-grey-light-700;
 $promo-actions-border: $core-grey-light-500;
-$action-color: #3858e9;
 
 .woocommerce-stats-overview {
 	.woocommerce-card__body {
@@ -32,7 +31,7 @@ $action-color: #3858e9;
 			display: block;
 			padding: $gap;
 			width: 33.33%;
-			margin-bottom: 4px;
+			border-radius: 0;
 
 			&:focus {
 				outline: none;
@@ -40,9 +39,7 @@ $action-color: #3858e9;
 			}
 
 			&.is-active {
-				border-bottom: 4px solid $action-color !important;
-				// Avoid the text "jumping" when border-bottom applied.
-				margin-bottom: 0;
+				box-shadow: inset 0 -4px 0 $theme-color;
 			}
 
 			&:first-child {
@@ -108,22 +105,22 @@ article.woocommerce-stats-overview__install-jetpack-promo {
 			padding: 8px 16px;
 			margin: 16px 4px;
 			height: inherit;
-			color: $action-color;
+			color: $theme-color;
 			cursor: pointer;
 			line-height: 2;
 			border-radius: 3px;
 
 			&.is-busy {
-				background-image: linear-gradient(-45deg, lighten($action-color, 40%) 28%, #fff 0, #fff 72%, lighten($action-color, 40%) 0);
+				background-image: linear-gradient(-45deg, lighten($theme-color, 40%) 28%, #fff 0, #fff 72%, lighten($theme-color, 40%) 0);
 				cursor: progress;
-				color: lighten($action-color, 20%);
+				color: lighten($theme-color, 20%);
 			}
 		}
 
 		.woocommerce-layout & button.components-button.is-button.is-primary {
 			margin-left: 24px;
 			background: transparent;
-			border: 1px solid $action-color;
+			border: 1px solid $theme-color;
 
 			&:hover,
 			&:focus {
@@ -133,8 +130,8 @@ article.woocommerce-stats-overview__install-jetpack-promo {
 			}
 
 			&.is-busy:not(:disabled) {
-				background-image: linear-gradient(-45deg, $action-color 28%, darken($action-color, 20%) 0, darken($action-color, 20%) 72%, $action-color 0) !important;
-				color: $action-color;
+				background-image: linear-gradient(-45deg, $theme-color 28%, darken($theme-color, 20%) 0, darken($theme-color, 20%) 72%, $theme-color 0) !important;
+				color: $theme-color;
 			}
 		}
 	}
