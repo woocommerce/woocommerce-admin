@@ -250,7 +250,6 @@ Search.defaultProps = {
 	showClearButton: false,
 	staticResults: false,
 	disabled: false,
-	autocompleter: {},
 };
 
 export default Search;
