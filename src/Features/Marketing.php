@@ -66,7 +66,7 @@ class Marketing {
 	/**
 	 * Maybe add our wc-admin coupon scripts if viewing coupon pages
 	 */
-	public function maybe_add_marketing_coupon_script( $hook ) {
+	public function maybe_add_marketing_coupon_script() {
 
 		$rtl = is_rtl() ? '-rtl' : '';
 
