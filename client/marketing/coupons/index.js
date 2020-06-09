@@ -16,8 +16,8 @@ const CouponsOverview = () => {
 
 	return (
 		<div className="woocommerce-marketing-coupons">
-			{ allowMarketplaceSuggestions && <RecommendedExtensions /> }
-			<KnowledgeBase category="coupons" />
+			{ allowMarketplaceSuggestions && <RecommendedExtensions title="Recommended coupon extensions" description="Take your coupon marketing to the next level with our recommended coupon extensions." /> }
+			<KnowledgeBase category="coupons" description="Learn the ins and outs of successful coupon marketing from the experts at WooCommerce." />
 		</div>
 	);
 };
