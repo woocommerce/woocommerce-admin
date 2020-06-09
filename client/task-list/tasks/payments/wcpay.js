@@ -49,7 +49,7 @@ class WCPay extends Component {
 	}
 
 	async connect() {
-		const { createNotice, markConfigurationFinished } = this.props;
+		const { createNotice, markNotConfiguring } = this.props;
 
 		const errorMessage = __(
 			'There was an error connecting to WooCommerce Payments. Please try again or connect later in store settings.',
@@ -64,14 +64,14 @@ class WCPay extends Component {
 			} );
 
 			if ( ! result || ! result.connectUrl ) {
-				markConfigurationFinished();
+				markNotConfiguring();
 				createNotice( 'error', errorMessage );
 				return;
 			}
 
 			window.location = result.connectUrl;
 		} catch ( error ) {
-			markConfigurationFinished();
+			markNotConfiguring();
 			createNotice( 'error', errorMessage );
 		}
 	}

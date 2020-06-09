@@ -53,9 +53,7 @@ class Payments extends Component {
 
 		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
-		this.markConfigurationFinished = this.markConfigurationFinished.bind(
-			this
-		);
+		this.markNotConfiguring = this.markNotConfiguring.bind( this );
 		this.skipTask = this.skipTask.bind( this );
 	}
 
@@ -132,7 +130,7 @@ class Payments extends Component {
 	markConfigured( method ) {
 		const { enabledMethods } = this.state;
 
-		this.markConfigurationFinished( method );
+		this.markNotConfiguring( method );
 		this.setState( {
 			enabledMethods: {
 				...enabledMethods,
@@ -147,7 +145,7 @@ class Payments extends Component {
 		} );
 	}
 
-	markConfigurationFinished( method ) {
+	markNotConfiguring( method ) {
 		this.setState( {
 			configuringMethods: {
 				[ method ]: false,
@@ -191,9 +189,7 @@ class Payments extends Component {
 							plugins: currentMethod.plugins,
 						} );
 					} }
-					onError={ () =>
-						this.markConfigurationFinished( currentMethod )
-					}
+					onError={ () => this.markNotConfiguring( currentMethod ) }
 					autoInstall
 					pluginSlugs={ currentMethod.plugins }
 				/>
@@ -228,7 +224,7 @@ class Payments extends Component {
 			query: this.props.query,
 			installStep: this.getInstallStep( method ),
 			markConfigured: this.markConfigured,
-			markConfigurationFinished: this.markConfigurationFinished.bind(
+			markNotConfiguring: this.markNotConfiguring.bind(
 				this,
 				method.key
 			),
