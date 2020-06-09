@@ -132,21 +132,6 @@ class Loader {
 	}
 
 	/**
-	 * Gets a runtime array of enabled WooCommerce Admin features/sections.
-	 *
-	 * @return array Woocommerce Admin features/sections.
-	 */
-	protected static function get_enabled_features() {
-		$features_mask    = apply_filters( 'woocommerce_admin_features_to_enable_disable', array() );
-		$add_features     = array_filter( $features_mask );
-		$remove_features  = array_keys( array_diff_key( $features_mask, $add_features ) );
-
-		$enabled_features = self::get_features();
-		$enabled_features = array_diff( $enabled_features, $remove_features );
-		return array_merge( $enabled_features, array_keys( $add_features ) );
-	}
-
-	/**
 	 * Gets WordPress capability required to use analytics features.
 	 *
 	 * @return string
@@ -186,7 +171,7 @@ class Loader {
 			}
 		}
 
-		$features = self::get_enabled_features();
+		$features = self::get_features();
 		return in_array( $feature, $features, true );
 	}
 
@@ -269,7 +254,7 @@ class Loader {
 	 * Class loader for enabled WooCommerce Admin features/sections.
 	 */
 	public static function load_features() {
-		$features = self::get_enabled_features();
+		$features = self::get_features();
 		foreach ( $features as $feature ) {
 			$feature = str_replace( '-', '', ucwords( strtolower( $feature ), '-' ) );
 			$feature = 'Automattic\\WooCommerce\\Admin\\Features\\' . $feature;
@@ -492,7 +477,7 @@ class Loader {
 		}
 
 		wp_add_inline_script( WC_ADMIN_APP,
-			'window.wcAdminFeatures = ' . json_encode( self::get_enabled_features() )
+			'window.paul = ' . json_encode( self::get_features() )
 		, 'before' );
 
 		wp_enqueue_script( WC_ADMIN_APP );
@@ -725,7 +710,7 @@ class Loader {
 			$classes[] = 'woocommerce-admin-is-loading';
 		}
 
-		$features = self::get_enabled_features();
+		$features = self::get_features();
 		foreach ( $features as $feature_key ) {
 			$classes[] = sanitize_html_class( 'woocommerce-feature-enabled-' . $feature_key );
 		}
