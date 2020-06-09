@@ -230,7 +230,6 @@ class Payments extends Component {
 				method.key
 			),
 			hasCbdIndustry: method.hasCbdIndustry,
-			key: 'setup-' + method.key,
 		} );
 	}
 
@@ -258,7 +257,12 @@ class Payments extends Component {
 					</Card>
 				);
 			} else if ( configuringMethods[ key ] ) {
-				return this.getSetupElement( method );
+				// Payment methods that have "inline setup" must not show any UI, the setupElement must just trigger the setup.
+				return (
+					<div style={ { display: 'none' } } key={ 'setup-' + key }>
+						{ this.getSetupElement( method ) }
+					</div>
+				);
 			}
 			return null;
 		} );
