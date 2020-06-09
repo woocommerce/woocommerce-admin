@@ -11,6 +11,7 @@ namespace Automattic\WooCommerce\Admin\Notes;
 
 use Automattic\WooCommerce\Admin\Features\CouponsMovedTrait;
 use stdClass;
+use WC_Data_Store;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,6 +31,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 */
 	public function init() {
 		add_action( 'woocommerce_note_action_dismiss-coupon-page-moved', [ $this, 'notice_dismissed' ] );
+		add_action( 'admin_init', [ $this, 'possibly_add_note' ] );
 	}
 
 	/**
@@ -38,6 +40,10 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 * @return bool
 	 */
 	public static function can_be_added() {
+		if ( self::has_unactioned_note() ) {
+			return false;
+		}
+
 		return isset( $_GET[ self::$query_key ] ) && (bool) $_GET[ self::$query_key ]; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
@@ -49,7 +55,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	public static function get_note() {
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Coupon management has moved!', 'woocommerce-admin' ) );
-		$note->set_content( __( 'Coupons can now be managed from Marketing > Coupons. Dismiss this notice to permanently hide the old menu item.', 'woocommerce-admin' ) );
+		$note->set_content( __( 'Coupons can now be managed from Marketing > Coupons. Dismiss this notice to permanently hide the old WooCommerce > Coupons menu item.', 'woocommerce-admin' ) );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_UPDATE );
 		$note->set_icon( 'icon' );
 		$note->set_name( self::NOTE_NAME );
@@ -71,5 +77,23 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 */
 	public function notice_dismissed() {
 		$this->display_legacy_menu( false );
+	}
+
+	/**
+	 * Find notes that have not been actioned.
+	 *
+	 * @return bool
+	 */
+	protected static function has_unactioned_note() {
+		/** @var DataStore $data_store */
+		$data_store = WC_Data_Store::load( 'admin-note' );
+		$notes      = $data_store->get_notes(
+			[
+				'name'   => [ self::NOTE_NAME ],
+				'status' => [ 'unactioned' ],
+			]
+		);
+
+		return ! empty( $notes );
 	}
 }
