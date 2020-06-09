@@ -22,6 +22,7 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Payments;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Marketing;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Subscriptions;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Migrate_From_Shopify;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Launch_Checklist;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Admin\Loader;
@@ -81,6 +82,7 @@ class Events {
 		WC_Admin_Notes_Giving_Feedback_Notes::possibly_add_note();
 		WC_Admin_Notes_WooCommerce_Subscriptions::possibly_add_note();
 		WC_Admin_Notes_Migrate_From_Shopify::possibly_add_note();
+		WC_Admin_Notes_Launch_Checklist::possibly_add_note();
 
 		if ( Loader::is_feature_enabled( 'remote-inbox-notifications' ) ) {
 			DataSourcePoller::read_specs_from_data_sources();
