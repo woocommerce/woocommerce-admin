@@ -34,6 +34,10 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 * Constructor.
 	 */
 	public function __construct() {
+		if ( false !== get_option( self::PRODUCTS_ADDED_DATE_OPTION_NAME, false ) ) {
+			return;
+		}
+
 		add_filter(
 			'update_option_' . Onboarding::PROFILE_DATA_OPTION,
 			array( $this, 'onboarding_profile_updated' ),
@@ -46,6 +50,19 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 			return;
 		}
 
+		add_action( 'admin_init', array( $this, 'on_admin_init' ) );
+	}
+
+	/**
+	 * Subscribe to the product import and create actions if there are no
+	 * products currently. If there are products record the date so this note
+	 * never gets added.
+	 *
+	 * This is done in `admin_init` rather than in the constructor (on `init`)
+	 * because if WC_Admin_Query is used in init parts of WC aren't loaded yet
+	 * and the generated query is invalid.
+	 */
+	public function on_admin_init() {
 		// Only subscribe to the actions if there are no products. If there are
 		// products already then this isn't a new install so record the date so
 		// this note never gets added.
@@ -56,7 +73,6 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 			add_action( 'transition_post_status', array( $this, 'run_on_transition_post_status' ), 10, 3 );
 		}
 	}
-
 
 	/**
 	 * Record that the onboarding profile has been updated, indicating that the
@@ -126,27 +142,27 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 * @return bool If there are any products.
 	 */
 	private static function are_there_products() {
-		// $query    = new \WC_Product_Query(
-		// 	array(
-		// 		'limit'    => 1,
-		// 		'paginate' => true,
-		// 		'return'   => 'ids',
-		// 		'status'   => array( 'publish' ),
-		// 	)
-		// );
-		// $products = $query->get_products();
-		// $count    = $products->total;
-
-		global $wpdb;
-
-		$count = $wpdb->get_var(
-			"
-				SELECT COUNT(*)
-				FROM {$wpdb->posts}
-				WHERE post_type = 'product'
-				AND post_status = 'publish'
-			"
+		$query    = new \WC_Product_Query(
+			array(
+				'limit'    => 1,
+				'paginate' => true,
+				'return'   => 'ids',
+				'status'   => array( 'publish' ),
+			)
 		);
+		$products = $query->get_products();
+		$count    = $products->total;
+
+		// global $wpdb;
+
+		// $count = $wpdb->get_var(
+		// 	"
+		// 		SELECT COUNT(*)
+		// 		FROM {$wpdb->posts}
+		// 		WHERE post_type = 'product'
+		// 		AND post_status = 'publish'
+		// 	"
+		// );
 
 		return $count > 0;
 	}
