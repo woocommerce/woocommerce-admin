@@ -476,9 +476,12 @@ class Loader {
 			return;
 		}
 
-		wp_add_inline_script( WC_ADMIN_APP,
-			'window.paul = ' . json_encode( self::get_features() )
-		, 'before' );
+		$features        = self::get_features();
+		$features_object = array();
+		foreach ( $features as $key ) {
+			$features_object[ $key ] = true;
+		}
+		wp_add_inline_script( WC_ADMIN_APP, 'window.wcAdminFeatures = ' . wp_json_encode( $features_object ), 'before' );
 
 		wp_enqueue_script( WC_ADMIN_APP );
 		wp_enqueue_style( WC_ADMIN_APP );
