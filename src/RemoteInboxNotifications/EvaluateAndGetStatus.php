@@ -20,17 +20,18 @@ class EvaluateAndGetStatus {
 	 *
 	 * @param array  $spec           The spec to evaluate.
 	 * @param string $current_status The note's current status.
+	 * @param object $data           RINDS data.
 	 * @param object $rule_evaluator Evaluates rules into true/false.
 	 *
 	 * @return string The evaluated status.
 	 */
-	public static function evaluate( $spec, $current_status, $rule_evaluator ) {
+	public static function evaluate( $spec, $current_status, $data, $rule_evaluator ) {
 		// No rules should leave the note alone.
 		if ( ! isset( $spec->rules ) ) {
 			return $current_status;
 		}
 
-		$evaluated_result = $rule_evaluator->evaluate( $spec->rules );
+		$evaluated_result = $rule_evaluator->evaluate( $spec->rules, $data );
 
 		// Pending notes should be the spec status if the spec passes,
 		// left alone otherwise.

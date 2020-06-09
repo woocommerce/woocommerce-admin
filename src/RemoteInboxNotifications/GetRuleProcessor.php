@@ -38,6 +38,8 @@ class GetRuleProcessor {
 				return new PassRuleProcessor();
 			case 'plugin_version':
 				return new PluginVersionRuleProcessor();
+			case 'data':
+				return new DataRuleProcessor();
 		}
 
 		return new FailRuleProcessor();
