@@ -9,7 +9,6 @@
 
 namespace Automattic\WooCommerce\Admin\API;
 
-use Automattic\WooCommerce\Admin\Features\Marketing;
 use Automattic\WooCommerce\Admin\Marketing\InstalledExtensions;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
