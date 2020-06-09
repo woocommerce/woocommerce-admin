@@ -126,7 +126,7 @@ export function getPaymentMethods( {
 				options.woocommerce_woocommerce_payments_settings.enabled ===
 					'yes',
 			optionName: 'woocommerce_woocommerce_payments_settings',
-			hasInlineSetup: true,
+			hasAutoSetup: true,
 		} );
 	}
 

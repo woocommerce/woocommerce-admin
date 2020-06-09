@@ -47,7 +47,7 @@ class Payments extends Component {
 
 		this.state = {
 			enabledMethods,
-			// List of methods that are currently being installed/configured, and have the "hasInlineSetup" capability.
+			// List of methods that are currently being installed/configured, and have the "hasAutoSetup" capability.
 			configuringMethods: {},
 			recommendedMethod,
 		};
@@ -257,7 +257,7 @@ class Payments extends Component {
 					</Card>
 				);
 			} else if ( configuringMethods[ key ] ) {
-				// Payment methods that have "inline setup" must not show any UI, the setupElement must just trigger the setup.
+				// Payment methods that have "auto setup" must not show any UI, the setupElement must just trigger the setup.
 				return (
 					<div style={ { display: 'none' } } key={ 'setup-' + key }>
 						{ this.getSetupElement( method ) }
@@ -278,7 +278,7 @@ class Payments extends Component {
 						key,
 						title,
 						visible,
-						hasInlineSetup,
+						hasAutoSetup,
 					} = method;
 
 					if ( ! visible ) {
@@ -348,7 +348,7 @@ class Payments extends Component {
 													selected: key,
 												}
 											);
-											if ( hasInlineSetup ) {
+											if ( hasAutoSetup ) {
 												this.setState( {
 													configuringMethods: {
 														[ key ]: true,
