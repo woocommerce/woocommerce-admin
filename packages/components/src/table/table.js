@@ -112,6 +112,7 @@ class Table extends Component {
 			ariaHidden,
 			caption,
 			classNames,
+			emptyText,
 			headers,
 			instanceId,
 			query,
@@ -310,10 +311,12 @@ class Table extends Component {
 									className="woocommerce-table__empty-item"
 									colSpan={ headers.length }
 								>
-									{ __(
-										'No data to display',
-										'woocommerce-admin'
-									) }
+									{ emptyText === null
+										? __(
+												'No data to display',
+												'woocommerce-admin'
+										  )
+										: emptyText }
 								</td>
 							</tr>
 						) }
@@ -338,6 +341,10 @@ Table.propTypes = {
 	 * Additional CSS classes.
 	 */
 	className: PropTypes.string,
+	/**
+	 * Placeholder message to display when there are no rows to render.
+	 */
+	emptyText: PropTypes.string,
 	/**
 	 * An array of column headers, as objects.
 	 */
@@ -419,6 +426,7 @@ Table.propTypes = {
 
 Table.defaultProps = {
 	ariaHidden: false,
+	emptyText: null,
 	headers: [],
 	onSort: noop,
 	query: {},

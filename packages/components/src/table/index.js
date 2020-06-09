@@ -135,6 +135,7 @@ class TableCard extends Component {
 		const {
 			actions,
 			className,
+			emptyText,
 			isLoading,
 			onQueryChange,
 			onSort,
@@ -150,7 +151,11 @@ class TableCard extends Component {
 		const allHeaders = this.props.headers;
 		const headers = this.getVisibleHeaders();
 		const rows = this.getVisibleRows();
-		const classes = classnames( 'woocommerce-table', 'woocommerce-analytics__card', className );
+		const classes = classnames(
+			'woocommerce-table',
+			'woocommerce-analytics__card',
+			className
+		);
 
 		return (
 			<Card
@@ -224,6 +229,7 @@ class TableCard extends Component {
 						caption={ title }
 						query={ query }
 						onSort={ onSort || onQueryChange( 'sort' ) }
+						emptyText={ emptyText }
 					/>
 				) }
 

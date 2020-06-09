@@ -56,6 +56,7 @@ Name | Type | Default | Description
 --- | --- | --- | ---
 `compareBy` | String | `null` | The string to use as a query parameter when comparing row items
 `compareParam` | String | `'filter'` | Url query parameter compare function operates on
+`emptyText` | String | `null` | Placeholder message to display when there are no rows to render
 `headers` | Array | `null` | An array of column headers (see `Table` props)
 `labels` | Object | `null` | Custom labels for table header actions
 `ids` | Array | `null` | A list of IDs, matching to the row list so that ids[ 0 ] contains the object ID for the object displayed in row[ 0 ]
