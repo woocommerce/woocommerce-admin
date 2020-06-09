@@ -47,6 +47,7 @@ class Payments extends Component {
 
 		this.state = {
 			enabledMethods,
+			// List of methods that are currently being installed/configured, and have the "hasInlineSetup" capability.
 			configuringMethods: {},
 			recommendedMethod,
 		};
