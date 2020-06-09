@@ -679,6 +679,7 @@ class Onboarding {
 			'CH',
 			'GB',
 			'US',
+			'PR',
 		);
 	}
 
