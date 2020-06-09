@@ -64,6 +64,14 @@ export class Search extends Component {
 			case 'variations':
 				return variations;
 			case 'custom':
+				if (
+					! this.props.autocompleter ||
+					typeof this.props.autocompleter !== 'object'
+				) {
+					throw new Error(
+						"Invalid autocompleter provided to Search component, it requires a completer object when using 'custom' type."
+					);
+				}
 				return this.props.autocompleter;
 			default:
 				return {};
