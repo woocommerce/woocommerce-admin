@@ -266,7 +266,7 @@ class Payments extends Component {
 			return null;
 		} );
 
-		const methodsList = (
+		const methodsList = currentMethod ? null : (
 			<div className="woocommerce-task-payments">
 				{ methods.map( ( method ) => {
 					const {
