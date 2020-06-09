@@ -332,6 +332,7 @@ class Payments extends Component {
 										isPrimary={ key === recommendedMethod }
 										isDefault={ key !== recommendedMethod }
 										isBusy={ configuringMethods[ key ] }
+										disabled={ configuringMethods[ key ] }
 										onClick={ () => {
 											recordEvent(
 												'tasklist_payment_setup',
