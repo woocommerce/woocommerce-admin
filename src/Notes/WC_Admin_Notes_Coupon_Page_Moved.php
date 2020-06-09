@@ -38,7 +38,6 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 * @return bool
 	 */
 	public static function can_be_added() {
-		return true; // temporary measure to always show the note.
 		return isset( $_GET[ self::$query_key ] ) && (bool) $_GET[ self::$query_key ]; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
@@ -59,7 +58,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 		$note->add_action(
 			'dismiss-coupon-page-moved',
 			__( 'Dismiss', 'woocommerce-admin' ),
-			admin_url( 'admin.php?page=wc-admin&path=/marketing' ),
+			self::get_management_url( 'coupons' ),
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);

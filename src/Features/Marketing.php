@@ -100,8 +100,8 @@ class Marketing {
 
 		add_submenu_page(
 			'woocommerce',
-			__( 'Coupons', '' ),
-			__( 'Coupons', '' ),
+			__( 'Coupons', 'woocommerce-admin' ),
+			__( 'Coupons', 'woocommerce-admin' ),
 			'manage_options',
 			'coupons-moved',
 			[ $this, 'coupon_menu_moved' ]
@@ -112,15 +112,7 @@ class Marketing {
 	 * Call back for transition menu item
 	 */
 	public function coupon_menu_moved() {
-		$new_url = add_query_arg(
-			[
-				'post_type'          => 'shop_coupon',
-				'legacy_coupon_menu' => true,
-			],
-			admin_url( 'edit.php' )
-		);
-
-		wp_safe_redirect( $new_url, 301 );
+		wp_safe_redirect( $this->get_legacy_coupon_url(), 301 );
 		exit();
 	}
 
@@ -129,9 +121,11 @@ class Marketing {
 	 * Modify registered post type shop_coupon
 	 *
 	 * @param array $args Array of post type parameters.
+	 *
+	 * @return array the filtered parameters.
 	 */
 	public function move_coupons( $args ) {
-		$args['show_in_menu'] = current_user_can( 'manage_woocommerce' ) ? $this->get_coupon_management_url() : true;
+		$args['show_in_menu'] = current_user_can( 'manage_woocommerce' ) ? $this->get_management_url( 'marketing' ) : true;
 		return $args;
 	}
 
@@ -142,27 +136,26 @@ class Marketing {
 		global $parent_file, $post_type;
 
 		if ( 'shop_coupon' === $post_type ) {
-			$parent_file = $this->get_coupon_management_url(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+			$parent_file = $this->get_management_url( 'marketing' ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
 		}
 	}
 
 	/**
-	 * Redorder marketing submenu items so Overview is at the top
+	 * Reorder marketing submenu items so Overview is at the top
 	 *
-	 * @param array $menu_order
+	 * @param array $menu_order The existing menu order.
 	 *
 	 * @return array The filtered menu order.
 	 */
 	public function reorder_coupon_menu( $menu_order ) {
-		/** @global $submenu */
 		global $submenu;
 
-		$marketing = $this->get_coupon_management_url();
+		$marketing = $this->get_management_url( 'marketing' );
 		$settings  = $submenu[ $marketing ];
 
 		$found_index = false;
 		foreach ( $settings as $key => $details ) {
-			if ( $details[0] === 'Overview' ) {
+			if ( 'Overview' === $details[0] ) {
 				$index       = $key;
 				$found_index = true;
 				break;
@@ -187,7 +180,7 @@ class Marketing {
 			[
 				'id'       => 'woocommerce-marketing',
 				'title'    => __( 'Marketing', 'woocommerce-admin' ),
-				'path'     => '/marketing/overview',
+				'path'     => $this->get_marketing_path(),
 				'icon'     => 'dashicons-megaphone',
 				'position' => 58, // After WooCommerce & Product menu items.
 			],
@@ -195,7 +188,7 @@ class Marketing {
 				'id'     => 'woocommerce-marketing-overview',
 				'title'  => __( 'Overview', 'woocommerce-admin' ),
 				'parent' => 'woocommerce-marketing',
-				'path'   => '/marketing/overview',
+				'path'   => $this->get_marketing_path(),
 			],
 		];
 
@@ -283,6 +276,7 @@ class Marketing {
 				),
 				'https://woocommerce.com/wp-json/wp/v2/posts'
 			);
+
 			$request = wp_remote_get( $request_url );
 			$posts   = [];
 
