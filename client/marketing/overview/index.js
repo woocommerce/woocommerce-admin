@@ -8,7 +8,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 import './style.scss';
 import InstalledExtensions from './installed-extensions';
-import RecommendedExtensions from './recommended-extensions';
+import RecommendedExtensions from '../components/recommended-extensions';
 import KnowledgeBase from './knowledge-base';
 import WelcomeCard from './welcome-card';
 import '../data';
