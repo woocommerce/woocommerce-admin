@@ -491,6 +491,10 @@ class Loader {
 			return;
 		}
 
+		wp_add_inline_script( WC_ADMIN_APP,
+			'window.wcAdminFeatures = ' . json_encode( self::get_enabled_features() )
+		, 'before' );
+
 		wp_enqueue_script( WC_ADMIN_APP );
 		wp_enqueue_style( WC_ADMIN_APP );
 		wp_enqueue_style( 'wc-material-icons' );
