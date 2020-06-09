@@ -34,6 +34,19 @@ class WC_Admin_Notes_First_Product {
 			return;
 		}
 
+		$onboarding_profile = get_option( 'woocommerce_onboarding_profile', array() );
+
+		// Confirm that $onboarding_profile is set.
+		if ( empty( $onboarding_profile ) ) {
+			return;
+		}
+
+		// Make sure that the person who filled out the OBW was not setting up
+		// the store for their customer/client.
+		if ( $onboarding_profile['setup_client'] ) {
+			return;
+		}
+
 		// Don't show if there are products.
 		$query    = new \WC_Product_Query(
 			array(
