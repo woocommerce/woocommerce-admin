@@ -60,6 +60,30 @@ class Marketing {
 
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 30 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_marketing_coupon_script' ) );
+	}
+
+	/**
+	 * Maybe add our wc-admin coupon scripts if viewing coupon pages
+	 */
+	public function maybe_add_marketing_coupon_script( $hook ) {
+
+		$rtl = is_rtl() ? '-rtl' : '';
+
+		wp_enqueue_style(
+			'wc-admin-marketing-coupons',
+			Loader::get_url( "marketing-coupons/style{$rtl}", 'css' ),
+			array(),
+			Loader::get_file_version( 'css' )
+		);
+
+		wp_enqueue_script(
+			'wc-admin-marketing-coupons',
+			Loader::get_url( 'wp-admin-scripts/marketing-coupons', 'js' ),
+			array( 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wp-api-fetch', WC_ADMIN_APP ),
+			Loader::get_file_version( 'js' ),
+			true
+		);
 	}
 
 	/**
