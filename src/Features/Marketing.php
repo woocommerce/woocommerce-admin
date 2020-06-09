@@ -143,7 +143,7 @@ class Marketing {
 	/**
 	 * Load knowledge base posts from WooCommerce.com
 	 *
-	 * @param string $category.
+	 * @param string $category Category of posts to retrieve.
 	 * @return array
 	 */
 	public function get_knowledge_base_posts( $category ) {
