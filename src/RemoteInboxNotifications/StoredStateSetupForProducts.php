@@ -44,16 +44,16 @@ class StoredStateSetupForProducts {
 	 * @return bool
 	 */
 	private static function are_there_products() {
-		global $wpdb;
-
-		$count = $wpdb->get_var(
-			"
-				SELECT COUNT(*)
-				FROM {$wpdb->posts}
-				WHERE post_type = 'product'
-				AND post_status = 'publish'
-			"
+		$query    = new \WC_Product_Query(
+			array(
+				'limit'    => 1,
+				'paginate' => true,
+				'return'   => 'ids',
+				'status'   => array( 'publish' ),
+			)
 		);
+		$products = $query->get_products();
+		$count    = $products->total;
 
 		return $count > 0;
 	}

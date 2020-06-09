@@ -28,6 +28,16 @@ class RemoteInboxNotificationsEngine {
 		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
 		StoredStateSetupForProducts::init();
 
+		// Continue init via admin_init.
+		add_action( 'admin_init', array( __CLASS__, 'on_admin_init' ) );
+	}
+
+	/**
+	 * Init is continued via admin_init so that WC is loaded when the product
+	 * query is used, otherwise the query generates a "0 = 1" in the WHERE
+	 * condition and thus doesn't return any results.
+	 */
+	public static function on_admin_init() {
 		// Pre-fetch stored state so it has the correct initial values.
 		self::get_stored_state();
 	}
