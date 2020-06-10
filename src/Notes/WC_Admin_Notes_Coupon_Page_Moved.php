@@ -58,7 +58,6 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 		$note->set_title( __( 'Coupon management has moved!', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Coupons can now be managed from Marketing > Coupons. Dismiss this notice to permanently hide the WooCommerce > Coupons menu item.', 'woocommerce-admin' ) );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_UPDATE );
-		$note->set_icon( 'icon' );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_content_data( new stdClass() );
 		$note->set_source( 'woocommerce-admin' );
