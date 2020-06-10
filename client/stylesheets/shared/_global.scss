@@ -72,8 +72,7 @@
 			&:hover,
 			&:active,
 			&:focus {
-				color: $gray-text;
-				background: $button-hover;
+				color: $gray-text-hover;
 				border-color: $button-hover-border;
 			}
 		}
