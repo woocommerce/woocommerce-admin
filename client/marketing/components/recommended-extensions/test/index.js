@@ -18,24 +18,26 @@ import RecommendedExtensionsItem from '../item.js';
 
 jest.mock( 'lib/tracks' );
 
-const mockExtensions = [
-	{
-		'title': 'AutomateWoo',
-		'description': 'Does things.',
-		'url': 'https://woocommerce.com/products/automatewoo/',
-		'icon': 'icons/automatewoo.svg',
-		'product': 'automatewoo',
-		'plugin': 'automatewoo/automatewoo.php',
-	},
-	{
-		'title': 'Mailchimp for WooCommerce',
-		'description': 'Does things.',
-		'url': 'https://woocommerce.com/products/mailchimp-for-woocommerce/',
-		'icon': 'icons/mailchimp.svg',
-		'product': 'mailchimp-for-woocommerce',
-		'plugin': 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
-	},
-];
+const mockExtensions = {
+	'marketing': [
+		{
+			'title': 'AutomateWoo',
+			'description': 'Does things.',
+			'url': 'https://woocommerce.com/products/automatewoo/',
+			'icon': 'icons/automatewoo.svg',
+			'product': 'automatewoo',
+			'plugin': 'automatewoo/automatewoo.php',
+		},
+		{
+			'title': 'Mailchimp for WooCommerce',
+			'description': 'Does things.',
+			'url': 'https://woocommerce.com/products/mailchimp-for-woocommerce/',
+			'icon': 'icons/mailchimp.svg',
+			'product': 'mailchimp-for-woocommerce',
+			'plugin': 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
+		},
+	],
+};
 
 describe( 'Recommendations and not loading', () => {
 	let recommendedExtensionsWrapper;
@@ -45,7 +47,7 @@ describe( 'Recommendations and not loading', () => {
 			<RecommendedExtensions
 				extensions={ mockExtensions }
 				isLoading={ false }
-				category={ '' }
+				category={ 'marketing' }
 			/>
 		);
 	} );
@@ -78,7 +80,7 @@ describe( 'Recommendations and loading', () => {
 			<RecommendedExtensions
 				extensions={ mockExtensions }
 				isLoading={ true }
-				category={ '' }
+				category={ 'marketing' }
 			/>
 		);
 	} );
@@ -100,9 +102,9 @@ describe( 'No Recommendations and not loading', () => {
 	beforeEach( () => {
 		recommendedExtensionsWrapper = shallow(
 			<RecommendedExtensions
-				extensions={ [ ] }
+				extensions={ { 'marketing': [] } }
 				isLoading={ false }
-				category={ '' }
+				category={ 'marketing' }
 			/>
 		);
 	} );
@@ -154,7 +156,7 @@ describe( 'Custom title and description ', () => {
 				isLoading={ false }
 				title={ 'Custom Title' }
 				description={ 'Custom Description' }
-				category={ '' }
+				category={ 'marketing' }
 			/>
 		);
 	} );
