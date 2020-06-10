@@ -415,21 +415,22 @@ class Loader {
 
 		wp_set_script_translations( WC_ADMIN_APP, 'woocommerce-admin' );
 
+		// The "app" RTL files are in a different format than the components.
+		$rtl = is_rtl() ? '.rtl' : '';
+
 		wp_register_style(
 			WC_ADMIN_APP,
-			self::get_url( 'app/style', 'css' ),
+			self::get_url( "app/style{$rtl}", 'css' ),
 			array( 'wc-components' ),
 			$css_file_version
 		);
-		wp_style_add_data( WC_ADMIN_APP, 'rtl', 'replace' );
 
 		wp_register_style(
 			'wc-admin-ie',
-			self::get_url( 'ie/style', 'css' ),
+			self::get_url( "ie/style{$rtl}", 'css' ),
 			array( WC_ADMIN_APP ),
 			$css_file_version
 		);
-		wp_style_add_data( 'wc-admin-ie', 'rtl', 'replace' );
 
 		wp_register_style(
 			'wc-material-icons',
