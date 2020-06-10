@@ -20,8 +20,8 @@ const MarketingOverview = () => {
 		<div className="woocommerce-marketing-overview">
 			<WelcomeCard />
 			<InstalledExtensions />
-			{ allowMarketplaceSuggestions && <RecommendedExtensions /> }
-			<KnowledgeBase />
+			{ allowMarketplaceSuggestions && <RecommendedExtensions category="marketing" /> }
+			<KnowledgeBase category="marketing" />
 		</div>
 	);
 };
