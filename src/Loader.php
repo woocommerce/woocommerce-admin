@@ -91,8 +91,6 @@ class Loader {
 		* Gutenberg has also disabled emojis. More on that here -> https://github.com/WordPress/gutenberg/pull/6151
 		*/
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
-
-		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 	}
 
 	/**
@@ -192,18 +190,6 @@ class Loader {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Preload options to prime state of the application.
-	 *
-	 * @param array $options Array of options to preload.
-	 * @return array
-	 */
-	public function preload_options( $options ) {
-		$options[] = 'woocommerce_homescreen_enabled';
-
-		return $options;
 	}
 
 	/**
@@ -474,11 +460,11 @@ class Loader {
 		}
 
 		$features        = self::get_features();
-		$features_object = array();
+		$enabled_features = array();
 		foreach ( $features as $key ) {
-			$features_object[ $key ] = true;
+			$enabled_features[ $key ] = self::is_feature_enabled( $key );
 		}
-		wp_add_inline_script( WC_ADMIN_APP, 'window.wcAdminFeatures = ' . wp_json_encode( $features_object ), 'before' );
+		wp_add_inline_script( WC_ADMIN_APP, 'window.wcAdminFeatures = ' . wp_json_encode( $enabled_features ), 'before' );
 
 		wp_enqueue_script( WC_ADMIN_APP );
 		wp_enqueue_style( WC_ADMIN_APP );
