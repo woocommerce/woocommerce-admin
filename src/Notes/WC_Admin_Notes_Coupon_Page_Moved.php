@@ -32,7 +32,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	public function init() {
 		add_action( 'woocommerce_note_action_dismiss-coupon-page-moved', [ $this, 'notice_dismissed' ] );
 		add_action( 'admin_init', [ $this, 'possibly_add_note' ] );
-		add_action( 'init', [ $this, 'redirect_to_coupons' ] );
+		add_action( 'admin_init', [ $this, 'redirect_to_coupons' ] );
 	}
 
 	/**
