@@ -59,8 +59,8 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 * never gets added.
 	 *
 	 * This is done in `admin_init` rather than in the constructor (on `init`)
-	 * because if WC_Admin_Query is used in init parts of WC aren't loaded yet
-	 * and the generated query is invalid.
+	 * because if WC_Admin_Query is used in `init` parts of WC aren't loaded
+	 * yet and the generated query is invalid.
 	 */
 	public function on_admin_init() {
 		// Only subscribe to the actions if there are no products. If there are
@@ -72,6 +72,26 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 			add_action( 'product_page_product_importer', array( $this, 'run_on_product_importer' ) );
 			add_action( 'transition_post_status', array( $this, 'run_on_transition_post_status' ), 10, 3 );
 		}
+	}
+
+	/**
+	 * Returns whether there are any products.
+	 *
+	 * @return bool If there are any products.
+	 */
+	private static function are_there_products() {
+		$query    = new \WC_Product_Query(
+			array(
+				'limit'    => 1,
+				'paginate' => true,
+				'return'   => 'ids',
+				'status'   => array( 'publish' ),
+			)
+		);
+		$products = $query->get_products();
+		$count    = $products->total;
+
+		return $count > 0;
 	}
 
 	/**
@@ -131,40 +151,7 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 			return;
 		}
 
-		if ( self::are_there_products() ) {
-			update_option( self::PRODUCTS_ADDED_DATE_OPTION_NAME, time() );
-		}
-	}
-
-	/**
-	 * Returns whether there are any products.
-	 *
-	 * @return bool If there are any products.
-	 */
-	private static function are_there_products() {
-		$query    = new \WC_Product_Query(
-			array(
-				'limit'    => 1,
-				'paginate' => true,
-				'return'   => 'ids',
-				'status'   => array( 'publish' ),
-			)
-		);
-		$products = $query->get_products();
-		$count    = $products->total;
-
-		// global $wpdb;
-
-		// $count = $wpdb->get_var(
-		// 	"
-		// 		SELECT COUNT(*)
-		// 		FROM {$wpdb->posts}
-		// 		WHERE post_type = 'product'
-		// 		AND post_status = 'publish'
-		// 	"
-		// );
-
-		return $count > 0;
+		update_option( self::PRODUCTS_ADDED_DATE_OPTION_NAME, time() );
 	}
 
 	/**
@@ -185,7 +172,10 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 
 		// Make sure that the person who filled out the OBW was not setting up
 		// the store for their customer/client.
-		if ( $onboarding_profile['setup_client'] ) {
+		if (
+			isset( $onboarding_profile['setup_client'] )
+			&& $onboarding_profile['setup_client']
+		) {
 			return;
 		}
 
