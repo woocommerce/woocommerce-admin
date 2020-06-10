@@ -123,31 +123,38 @@ class BusinessDetails extends Component {
 			}
 		} );
 
-		Promise.all( [
-			installAndActivatePlugins( businessExtensions ),
-			updateProfileItems( updates ),
-		] )
-			.then( ( pluginResponse ) => {
-				createNoticesFromResponse( pluginResponse );
-				goToNextStep();
-			} )
-			.catch( ( pluginErrors, profileErrors ) => {
-				this.setState( {
-					hasInstallActivateError: Boolean( pluginErrors ),
-				} );
-				if ( pluginErrors ) {
-					createNoticesFromResponse( pluginErrors );
-				}
-				if ( profileErrors ) {
-					createNotice(
-						'error',
-						__(
-							'There was a problem updating your business details.',
-							'woocommerce-admin'
-						)
-					);
-				}
-			} );
+		const promises = [
+			updateProfileItems( updates ).catch( () => {
+				createNotice(
+					'error',
+					__(
+						'There was a problem updating your business details.',
+						'woocommerce-admin'
+					)
+				);
+				throw new Error();
+			} ),
+		];
+
+		if ( businessExtensions.length ) {
+			promises.push(
+				installAndActivatePlugins( businessExtensions )
+					.then( ( response ) => {
+						createNoticesFromResponse( response );
+					} )
+					.catch( ( error ) => {
+						this.setState( {
+							hasInstallActivateError: true,
+						} );
+						createNoticesFromResponse( error );
+						throw new Error();
+					} )
+			);
+		}
+
+		Promise.all( promises ).then( () => {
+			goToNextStep();
+		} );
 	}
 
 	validate( values ) {
