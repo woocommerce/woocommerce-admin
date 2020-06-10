@@ -65,19 +65,19 @@ class PayFast extends Component {
 			},
 		} );
 
-		if ( update.status === 'failed' ) {
+		if ( update.success ) {
+			markConfigured( 'payfast' );
+			createNotice(
+				'success',
+				__( 'PayFast connected successfully', 'woocommerce-admin' )
+			);
+		} else {
 			createNotice(
 				'error',
 				__(
 					'There was a problem saving your payment setings',
 					'woocommerce-admin'
 				)
-			);
-		} else {
-			markConfigured( 'payfast' );
-			createNotice(
-				'success',
-				__( 'PayFast connected successfully', 'woocommerce-admin' )
 			);
 		}
 	};

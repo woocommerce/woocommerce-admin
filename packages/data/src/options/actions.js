@@ -51,9 +51,9 @@ export function* updateOptions( data ) {
 		} );
 
 		yield setIsUpdating( false );
-		return { status: 'success', ...results };
+		return { success: true, ...results };
 	} catch ( error ) {
 		yield setUpdatingError( error );
-		return { status: 'failed', ...error };
+		return { success: false, ...error };
 	}
 }

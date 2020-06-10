@@ -48,20 +48,20 @@ class PayFast extends Component {
 			woocommerce_bacs_accounts: [ values ],
 		} );
 
-		if ( update.status === 'failed' ) {
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your payment setings',
-					'woocommerce-admin'
-				)
-			);
-		} else {
+		if ( update.success ) {
 			markConfigured( 'bacs' );
 			createNotice(
 				'success',
 				__(
 					'Direct bank transfer details added successfully',
+					'woocommerce-admin'
+				)
+			);
+		} else {
+			createNotice(
+				'error',
+				__(
+					'There was a problem saving your payment setings',
 					'woocommerce-admin'
 				)
 			);

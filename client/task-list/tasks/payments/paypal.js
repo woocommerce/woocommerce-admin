@@ -132,7 +132,13 @@ class PayPal extends Component {
 			},
 		} );
 
-		if ( update.status === 'failed' ) {
+		if ( update.success ) {
+			createNotice(
+				'success',
+				__( 'PayPal connected successfully.', 'woocommerce-admin' )
+			);
+			markConfigured( 'paypal' );
+		} else {
 			createNotice(
 				'error',
 				__(
@@ -140,12 +146,6 @@ class PayPal extends Component {
 					'woocommerce-admin'
 				)
 			);
-		} else {
-			createNotice(
-				'success',
-				__( 'PayPal connected successfully.', 'woocommerce-admin' )
-			);
-			markConfigured( 'paypal' );
 		}
 	}
 

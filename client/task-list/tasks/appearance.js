@@ -213,15 +213,15 @@ class Appearance extends Component {
 			[ `theme_mods_${ stylesheet }` ]: updatedThemeMods,
 		} );
 
-		if ( update.status === 'failed' ) {
-			createNotice( 'error', update.message );
-		} else {
+		if ( update.success ) {
 			this.setState( { isUpdatingLogo: false } );
 			createNotice(
 				'success',
 				__( 'Store logo updated sucessfully.', 'woocommerce-admin' )
 			);
 			this.completeStep();
+		} else {
+			createNotice( 'error', update.message );
 		}
 	}
 
@@ -245,9 +245,7 @@ class Appearance extends Component {
 			woocommerce_demo_store_notice: storeNoticeText,
 		} );
 
-		if ( update.status === 'failed' ) {
-			createNotice( 'error', update.message );
-		} else {
+		if ( update.success ) {
 			this.setState( { isUpdatingNotice: false } );
 			createNotice(
 				'success',
@@ -257,6 +255,8 @@ class Appearance extends Component {
 				)
 			);
 			this.completeStep();
+		} else {
+			createNotice( 'error', update.message );
 		}
 	}
 

@@ -145,7 +145,9 @@ class Stripe extends Component {
 			},
 		} );
 
-		if ( update.status === 'failed' ) {
+		if ( update.success ) {
+			this.completeMethod();
+		} else {
 			createNotice(
 				'error',
 				__(
@@ -153,8 +155,6 @@ class Stripe extends Component {
 					'woocommerce-admin'
 				)
 			);
-		} else {
-			this.completeMethod();
 		}
 	}
 

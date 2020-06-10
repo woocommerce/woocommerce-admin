@@ -88,15 +88,7 @@ class Payments extends Component {
 				.map( ( method ) => method.key ),
 		} );
 
-		if ( update.status === 'failed' ) {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating settings',
-					'woocommerce-admin'
-				)
-			);
-		} else {
+		if ( update.success ) {
 			createNotice(
 				'success',
 				__(
@@ -106,6 +98,14 @@ class Payments extends Component {
 			);
 
 			getHistory().push( getNewPath( {}, '/', {} ) );
+		} else {
+			createNotice(
+				'error',
+				__(
+					'There was a problem updating settings',
+					'woocommerce-admin'
+				)
+			);
 		}
 	}
 
