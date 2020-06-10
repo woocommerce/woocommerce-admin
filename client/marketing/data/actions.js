@@ -31,10 +31,11 @@ export function removeActivatingPlugin( pluginSlug ) {
 	};
 }
 
-export function receiveRecommendedPlugins( plugins ) {
+export function receiveRecommendedPlugins( plugins, category ) {
 	return {
 		type: 'SET_RECOMMENDED_PLUGINS',
-		plugins,
+		// Pass down the category of the received plugins.
+		data: { plugins, category },
 	};
 }
 
@@ -67,8 +68,12 @@ export function* activateInstalledPlugin( pluginSlug ) {
 		} );
 
 		if ( response ) {
-			yield createNotice( 'success',
-				__( 'The extension has been successfully activated.', 'woocommerce-admin' )
+			yield createNotice(
+				'success',
+				__(
+					'The extension has been successfully activated.',
+					'woocommerce-admin'
+				)
 			);
 			// Deliberately load the new plugin data in a new request.
 			yield loadInstalledPluginsAfterActivation( pluginSlug );
@@ -76,7 +81,13 @@ export function* activateInstalledPlugin( pluginSlug ) {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( error, __( 'There was an error trying to activate the extension.', 'woocommerce-admin' ) );
+		yield handleFetchError(
+			error,
+			__(
+				'There was an error trying to activate the extension.',
+				'woocommerce-admin'
+			)
+		);
 		yield removeActivatingPlugin( pluginSlug );
 	}
 
@@ -86,7 +97,7 @@ export function* activateInstalledPlugin( pluginSlug ) {
 export function* loadInstalledPluginsAfterActivation( activatedPluginSlug ) {
 	try {
 		const response = yield apiFetch( {
-			path: `${ API_NAMESPACE }/overview/installed-plugins`
+			path: `${ API_NAMESPACE }/overview/installed-plugins`,
 		} );
 
 		if ( response ) {
@@ -96,6 +107,12 @@ export function* loadInstalledPluginsAfterActivation( activatedPluginSlug ) {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( error, __( 'There was an error loading installed extensions.', 'woocommerce-admin' ) );
+		yield handleFetchError(
+			error,
+			__(
+				'There was an error loading installed extensions.',
+				'woocommerce-admin'
+			)
+		);
 	}
 }

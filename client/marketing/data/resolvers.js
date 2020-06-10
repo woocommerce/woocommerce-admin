@@ -16,24 +16,31 @@ import { API_NAMESPACE } from './constants';
 
 export function* getRecommendedPlugins( category ) {
 	try {
-		const categoryParam = yield ( category ) ? `&category=${ category }` : '';
+		const categoryParam = yield category ? `&category=${ category }` : '';
 		const response = yield apiFetch( {
-			path: `${ API_NAMESPACE }/recommended?per_page=6${ categoryParam }`
+			path: `${ API_NAMESPACE }/recommended?per_page=6${ categoryParam }`,
 		} );
 
 		if ( response ) {
-			yield receiveRecommendedPlugins( response );
+			// Pass down the category.
+			yield receiveRecommendedPlugins( response, category );
 		} else {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( error, __( 'There was an error loading recommended extensions.', 'woocommerce-admin' ) );
+		yield handleFetchError(
+			error,
+			__(
+				'There was an error loading recommended extensions.',
+				'woocommerce-admin'
+			)
+		);
 	}
 }
 
 export function* getBlogPosts( category ) {
 	try {
-		const categoryParam = yield ( category ) ? `?category=${ category }` : '';
+		const categoryParam = yield category ? `?category=${ category }` : '';
 		const response = yield apiFetch( {
 			path: `${ API_NAMESPACE }/knowledge-base${ categoryParam }`,
 			method: 'GET',
@@ -45,6 +52,12 @@ export function* getBlogPosts( category ) {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( error, __( 'There was an error loading knowledge base posts.', 'woocommerce-admin' ) );
+		yield handleFetchError(
+			error,
+			__(
+				'There was an error loading knowledge base posts.',
+				'woocommerce-admin'
+			)
+		);
 	}
 }
