@@ -39,10 +39,10 @@ export function receiveRecommendedPlugins( plugins, category ) {
 	};
 }
 
-export function receiveBlogPosts( posts ) {
+export function receiveBlogPosts( posts, category ) {
 	return {
 		type: 'SET_BLOG_POSTS',
-		posts,
+		data: { posts, category },
 	};
 }
 

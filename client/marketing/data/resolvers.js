@@ -47,7 +47,7 @@ export function* getBlogPosts( category ) {
 		} );
 
 		if ( response ) {
-			yield receiveBlogPosts( response );
+			yield receiveBlogPosts( response, category );
 		} else {
 			throw new Error();
 		}

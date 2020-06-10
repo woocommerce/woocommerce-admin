@@ -15,6 +15,10 @@ export function getRecommendedPlugins( state ) {
 	return state.recommendedPlugins;
 }
 
+export function getRecommendedPostsByCategory( state, category ) {
+	return state.blogPosts[ category ] || [];
+}
+
 export function getBlogPosts( state ) {
 	return state.blogPosts;
 }
