@@ -29,7 +29,11 @@ const RecommendedExtensions = ( {
 	category,
 } ) => {
 
-	if ( extensions.length === 0 && ! isLoading ) {
+	if ( ( Object.keys( extensions ).length === 0 && extensions.constructor === Object ) ) {
+		return null;
+	}
+
+	if ( extensions[category].length === 0 && ! isLoading ) {
 		return null;
 	}
 
@@ -48,9 +52,9 @@ const RecommendedExtensions = ( {
 				{ isLoading ? <Spinner /> : (
 					<div className={ classnames(
 						'woocommerce-marketing-recommended-extensions-card__items',
-						`woocommerce-marketing-recommended-extensions-card__items--count-${extensions.length}`,
+						`woocommerce-marketing-recommended-extensions-card__items--count-${extensions[category].length}`,
 					) }>
-						{ extensions.map( ( extension ) => (
+						{ extensions[category].map( ( extension ) => (
 							<RecommendedExtensionsItem
 								key={ extension.product }
 								{ ...extension }
