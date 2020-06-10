@@ -15,6 +15,9 @@ use Automattic\WooCommerce\Admin\Loader;
  * Contains backend logic for the Marketing feature.
  */
 class Marketing {
+
+	use CouponsMovedTrait;
+
 	/**
 	 * Name of recommended plugins transient.
 	 *
@@ -61,6 +64,93 @@ class Marketing {
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 30 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_marketing_coupon_script' ) );
+		add_action( 'woocommerce_register_post_type_shop_coupon', array( $this, 'move_coupons' ) );
+		add_action( 'admin_head', array( $this, 'fix_coupon_menu_highlight' ), 99 );
+		add_filter( 'custom_menu_order', array( $this, 'reorder_coupon_menu' ) );
+		add_action( 'admin_menu', array( $this, 'maybe_add_coupon_menu_redirect' ) );
+	}
+
+	/**
+	 * Maybe add menu item back in original spot to help people transition
+	 */
+	public function maybe_add_coupon_menu_redirect() {
+
+		if ( ! $this->should_display_legacy_menu() ) {
+			return;
+		}
+
+		add_submenu_page(
+			'woocommerce',
+			__( 'Coupons', 'woocommerce-admin' ),
+			__( 'Coupons', 'woocommerce-admin' ),
+			'manage_options',
+			'coupons-moved',
+			[ $this, 'coupon_menu_moved' ]
+		);
+	}
+
+	/**
+	 * Call back for transition menu item
+	 */
+	public function coupon_menu_moved() {
+		wp_safe_redirect( $this->get_legacy_coupon_url(), 301 );
+		exit();
+	}
+
+	/**
+	 * Modify registered post type shop_coupon
+	 *
+	 * @param array $args Array of post type parameters.
+	 *
+	 * @return array the filtered parameters.
+	 */
+	public function move_coupons( $args ) {
+		$args['show_in_menu'] = current_user_can( 'manage_woocommerce' ) ? $this->get_management_url( 'marketing' ) : true;
+		return $args;
+	}
+
+	/**
+	 * Undo WC modifications to $parent_file for 'shop_coupon'
+	 */
+	public function fix_coupon_menu_highlight() {
+		global $parent_file, $post_type;
+
+		if ( 'shop_coupon' === $post_type ) {
+			$parent_file = $this->get_management_url( 'marketing' ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+		}
+	}
+
+	/**
+	 * Reorder marketing submenu items so Overview is at the top
+	 *
+	 * @param array $menu_order The existing menu order.
+	 *
+	 * @return array The filtered menu order.
+	 */
+	public function reorder_coupon_menu( $menu_order ) {
+		global $submenu;
+
+		$marketing = $this->get_management_url( 'marketing' );
+		$settings  = $submenu[ $marketing ];
+
+		$found_index = false;
+
+		foreach ( $settings as $key => $details ) {
+			if ( 'Overview' === $details[0] ) {
+				$index       = $key;
+				$found_index = true;
+				break;
+			}
+		}
+
+		if ( $found_index ) {
+			$temp = [ $index => $settings[ $index ] ];
+			unset( $settings[ $index ] );
+			$settings              = $temp + $settings;
+			$submenu[ $marketing ] = $settings; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+		}
+
+	    return $menu_order;
 	}
 
 	/**
@@ -107,21 +197,21 @@ class Marketing {
 	 * Registers report pages.
 	 */
 	public function register_pages() {
-		$marketing_pages = array(
-			array(
+		$marketing_pages = [
+			[
 				'id'       => 'woocommerce-marketing',
 				'title'    => __( 'Marketing', 'woocommerce-admin' ),
-				'path'     => '/marketing/overview',
+				'path'     => $this->get_marketing_path(),
 				'icon'     => 'dashicons-megaphone',
 				'position' => 58, // After WooCommerce & Product menu items.
-			),
-			array(
-				'id'    => 'woocommerce-marketing-overview',
-				'title' => __( 'Overview', 'woocommerce-admin' ),
+			],
+			[
+				'id'     => 'woocommerce-marketing-overview',
+				'title'  => __( 'Overview', 'woocommerce-admin' ),
 				'parent' => 'woocommerce-marketing',
-				'path'  => '/marketing',
-			),
-		);
+				'path'   => $this->get_marketing_path(),
+			],
+		];
 
 		$marketing_pages = apply_filters( 'woocommerce_marketing_menu_items', $marketing_pages );
 
