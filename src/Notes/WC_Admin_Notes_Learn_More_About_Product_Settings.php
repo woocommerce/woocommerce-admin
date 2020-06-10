@@ -66,7 +66,7 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 		// Only subscribe to the actions if there are no products. If there are
 		// products already then this isn't a new install so record the date so
 		// this note never gets added.
-		if ( self::are_there_products() ) {
+		if ( self::has_products() ) {
 			self::possibly_record_products_added_date();
 		} else {
 			add_action( 'product_page_product_importer', array( $this, 'run_on_product_importer' ) );
@@ -79,7 +79,7 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 *
 	 * @return bool If there are any products.
 	 */
-	private static function are_there_products() {
+	private static function has_products() {
 		$query    = new \WC_Product_Query(
 			array(
 				'limit'    => 1,
