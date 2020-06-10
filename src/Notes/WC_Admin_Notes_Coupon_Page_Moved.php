@@ -32,6 +32,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	public function init() {
 		add_action( 'woocommerce_note_action_dismiss-coupon-page-moved', [ $this, 'notice_dismissed' ] );
 		add_action( 'admin_init', [ $this, 'possibly_add_note' ] );
+		add_action( 'init', [ $this, 'redirect_to_coupons' ] );
 	}
 
 	/**
@@ -64,7 +65,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 		$note->add_action(
 			'dismiss-coupon-page-moved',
 			__( 'Dismiss', 'woocommerce-admin' ),
-			self::get_management_url( 'coupons' ),
+			wc_admin_url( '&action=hide-coupon-menu' ),
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);
@@ -95,5 +96,25 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 		);
 
 		return ! empty( $notes );
+	}
+
+	/**
+	 * Safe redirect to the coupon page to force page refresh.
+	 */
+	public function redirect_to_coupons() {
+		/* phpcs:disable WordPress.Security.NonceVerification */
+		if (
+			! isset( $_GET['page'] ) ||
+			'wc-admin' !== $_GET['page'] ||
+			! isset( $_GET['action'] ) ||
+			'hide-coupon-menu' !== $_GET['action'] ||
+			! defined( 'WC_ADMIN_PLUGIN_FILE' )
+		) {
+			return;
+		}
+		/* phpcs:enable */
+
+		wp_safe_redirect( self::get_management_url( 'coupons' ) );
+		exit;
 	}
 }
