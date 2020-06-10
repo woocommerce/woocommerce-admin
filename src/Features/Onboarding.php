@@ -646,6 +646,7 @@ class Onboarding {
 			'AT',
 			'BE',
 			'BG',
+			// 'BR', // Preview, requires invite.
 			'CA',
 			'CY',
 			'CZ',
@@ -656,6 +657,7 @@ class Onboarding {
 			'DE',
 			'GR',
 			'HK',
+			'IN', // Preview.
 			'IE',
 			'IT',
 			'JP',
