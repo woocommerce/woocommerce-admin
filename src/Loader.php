@@ -164,11 +164,8 @@ class Loader {
 	 * @return bool Returns true if the feature is enabled.
 	 */
 	public static function is_feature_enabled( $feature ) {
-		if ( 'homepage' === $feature ) {
-			$option = 'yes' === get_option( 'woocommerce_homescreen_enabled', 'no' );
-			if ( ! $option ) {
-				return false;
-			}
+		if ( 'homepage' === $feature && 'yes' !== get_option( 'woocommerce_homescreen_enabled', 'no' ) ) {
+			return false;
 		}
 
 		$features = self::get_features();
@@ -635,10 +632,8 @@ class Loader {
 	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
 	 */
 	public static function embed_page_header() {
-
-		$features = wc_admin_get_feature_config();
 		if (
-			$features['navigation'] &&
+			self::is_feature_enabled( 'navigation' ) &&
 			\Automattic\WooCommerce\Admin\Features\Navigation::instance()->is_woocommerce_page()
 		) {
 			self::embed_navigation_menu();
