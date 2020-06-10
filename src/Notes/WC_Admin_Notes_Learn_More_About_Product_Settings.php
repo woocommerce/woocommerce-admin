@@ -27,71 +27,18 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 */
 	const NOTE_NAME = 'wc-admin-learn-more-about-product-settings';
 
-	const PRODUCTS_ADDED_DATE_OPTION_NAME = 'wc_admin_note_learn_more_about_product_settings_products_added_date';
-	const IS_NEW_MERCHANT_OPTION_NAME     = 'wc_admin_note_learn_more_about_product_settings_is_new_merchant';
+	const IS_NEW_MERCHANT_OPTION_NAME = 'wc_admin_note_learn_more_about_product_settings_is_new_merchant';
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		if ( false !== get_option( self::PRODUCTS_ADDED_DATE_OPTION_NAME, false ) ) {
-			return;
-		}
-
 		add_filter(
 			'update_option_' . Onboarding::PROFILE_DATA_OPTION,
 			array( $this, 'onboarding_profile_updated' ),
 			10,
 			3
 		);
-
-		// Bail out for non-new merchants.
-		if ( ! get_option( self::IS_NEW_MERCHANT_OPTION_NAME ) ) {
-			return;
-		}
-
-		add_action( 'admin_init', array( $this, 'on_admin_init' ) );
-	}
-
-	/**
-	 * Subscribe to the product import and create actions if there are no
-	 * products currently. If there are products record the date so this note
-	 * never gets added.
-	 *
-	 * This is done in `admin_init` rather than in the constructor (on `init`)
-	 * because if WC_Admin_Query is used in `init` parts of WC aren't loaded
-	 * yet and the generated query is invalid.
-	 */
-	public function on_admin_init() {
-		// Only subscribe to the actions if there are no products. If there are
-		// products already then this isn't a new install so record the date so
-		// this note never gets added.
-		if ( self::has_products() ) {
-			self::possibly_record_products_added_date();
-		} else {
-			add_action( 'product_page_product_importer', array( $this, 'run_on_product_importer' ) );
-			add_action( 'transition_post_status', array( $this, 'run_on_transition_post_status' ), 10, 3 );
-		}
-	}
-
-	/**
-	 * Returns whether there are any products.
-	 *
-	 * @return bool If there are any products.
-	 */
-	private static function has_products() {
-		$query    = new \WC_Product_Query(
-			array(
-				'limit'    => 1,
-				'paginate' => true,
-				'return'   => 'ids',
-				'status'   => array( 'publish' ),
-			)
-		);
-		$products = $query->get_products();
-		$count    = $products->total;
-
-		return $count > 0;
 	}
 
 	/**
@@ -104,54 +51,6 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 */
 	public function onboarding_profile_updated( $old_value, $value, $option ) {
 		update_option( self::IS_NEW_MERCHANT_OPTION_NAME, true );
-	}
-
-	/**
-	 * Runs on product importer steps.
-	 */
-	public function run_on_product_importer() {
-		// We're only interested in when the importer completes.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_REQUEST['step'] ) ) {
-			return;
-		}
-		if ( 'done' !== $_REQUEST['step'] ) {
-			return;
-		}
-		// phpcs:enable
-
-		self::possibly_record_products_added_date();
-	}
-
-	/**
-	 * Runs when a post status transitions, but we're only interested if it is
-	 * a product being published.
-	 *
-	 * @param string $new_status The new status.
-	 * @param string $old_status The old status.
-	 * @param Post   $post       The post.
-	 */
-	public static function run_on_transition_post_status( $new_status, $old_status, $post ) {
-		if (
-			'product' !== $post->post_type ||
-			'publish' !== $new_status
-		) {
-			return;
-		}
-
-		self::possibly_record_products_added_date();
-	}
-
-	/**
-	 * Possibly record the products added date, if it isn't already set
-	 * (i.e. don't overwrite it).
-	 */
-	private static function possibly_record_products_added_date() {
-		if ( false !== get_option( self::PRODUCTS_ADDED_DATE_OPTION_NAME ) ) {
-			return;
-		}
-
-		update_option( self::PRODUCTS_ADDED_DATE_OPTION_NAME, time() );
 	}
 
 	/**
@@ -180,11 +79,20 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 		}
 
 		// Make sure that products were added at least one day ago.
-		$products_added_date = get_option( self::PRODUCTS_ADDED_DATE_OPTION_NAME );
-		if ( ! $products_added_date ) {
+		$query    = new \WC_Product_Query(
+			array(
+				'limit'   => 1,
+				'status'  => 'publish',
+				'orderby' => 'date',
+				'order'   => 'ASC',
+			)
+		);
+		$products = $query->get_products();
+		if ( 0 === count( $products ) ) {
 			return;
 		}
-		if ( ( time() - $products_added_date ) < DAY_IN_SECONDS ) {
+		$oldest_product_timestamp = $products[0]->get_date_created()->getTimestamp();
+		if ( ( time() - $oldest_product_timestamp ) < DAY_IN_SECONDS ) {
 			return;
 		}
 
