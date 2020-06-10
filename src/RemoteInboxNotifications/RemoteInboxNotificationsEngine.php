@@ -48,8 +48,12 @@ class RemoteInboxNotificationsEngine {
 	public static function run() {
 		$specs = get_option( self::SPECS_OPTION_NAME );
 
-		if ( false === $specs ) {
+		if ( false === $specs || 0 === count( $specs ) ) {
 			// We are running too early, need to poll data sources first.
+			if ( DataSourcePoller::read_specs_from_data_sources() ) {
+				self::run();
+			}
+
 			return;
 		}
 
@@ -72,7 +76,9 @@ class RemoteInboxNotificationsEngine {
 		if ( false === $stored_state ) {
 			$stored_state = new \stdClass();
 
-			$stored_state = StoredStateSetupForProducts::init_stored_state( $stored_state );
+			$stored_state = StoredStateSetupForProducts::init_stored_state(
+				$stored_state
+			);
 
 			add_option( self::STORED_STATE_OPTION_NAME, $stored_state );
 		}

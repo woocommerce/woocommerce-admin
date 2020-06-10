@@ -73,7 +73,7 @@ class StoredStateSetupForProducts {
 		// phpcs:enable
 
 		$stored_state                         = RemoteInboxNotificationsEngine::get_stored_state();
-		$stored_state->there_are_now_products = self::are_there_products();
+		$stored_state->there_are_now_products = true;
 		RemoteInboxNotificationsEngine::update_stored_state( $stored_state );
 
 		RemoteInboxNotificationsEngine::run();
@@ -96,7 +96,7 @@ class StoredStateSetupForProducts {
 		}
 
 		$stored_state                         = RemoteInboxNotificationsEngine::get_stored_state();
-		$stored_state->there_are_now_products = self::are_there_products();
+		$stored_state->there_are_now_products = true;
 		RemoteInboxNotificationsEngine::update_stored_state( $stored_state );
 
 		RemoteInboxNotificationsEngine::run();
