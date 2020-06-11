@@ -45,6 +45,15 @@ class Coupons {
 			return;
 		}
 
+		/**
+		 * Filter to override this feature.
+		 *
+		 * @param bool $disabled False.
+		 */
+		if ( apply_filters( 'woocommerce_admin_coupons', false ) ) {
+			return;
+		}
+
 		// Only support coupon modifications if coupons are enabled.
 		if ( ! wc_coupons_enabled() ) {
 			return;
