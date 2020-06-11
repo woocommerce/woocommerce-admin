@@ -26,7 +26,7 @@ trait CouponsMovedTrait {
 	 *
 	 * @var string
 	 */
-	protected static $option_key = 'wc_show_legacy_coupon_menu';
+	protected static $option_key = 'wc_admin_show_legacy_coupon_menu';
 
 	/**
 	 * Get the URL for the legacy coupon management.
