@@ -64,6 +64,11 @@ class Marketing {
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 30 );
 
+		// Only support coupon modifications if coupons are enabled.
+		if ( ! wc_coupons_enabled() ) {
+			return;
+		}
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_marketing_coupon_script' ) );
 		add_action( 'woocommerce_register_post_type_shop_coupon', array( $this, 'move_coupons' ) );
 //		add_action( 'admin_head', array( $this, 'fix_coupon_menu_highlight' ), 99 );
