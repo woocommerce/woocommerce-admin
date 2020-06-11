@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Choose_Niche;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Giving_Feedback_Notes;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Mobile_App;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_New_Sales_Record;
@@ -87,6 +88,7 @@ class Events {
 		WC_Admin_Notes_Migrate_From_Shopify::possibly_add_note();
 		WC_Admin_Notes_Online_Clothing_Store::possibly_add_note();
 		WC_Admin_Notes_First_Product::possibly_add_note();
+		WC_Admin_Notes_Choose_Niche::possibly_add_note();
 
 		if ( Loader::is_feature_enabled( 'remote-inbox-notifications' ) ) {
 			DataSourcePoller::read_specs_from_data_sources();
