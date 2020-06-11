@@ -216,6 +216,8 @@ class Benefits extends Component {
 		const pluginsRemaining = this.pluginsToInstall.filter(
 			( plugin ) => ! activePlugins.includes( plugin )
 		);
+		const isInstallAction =
+			isInstallingActivating || ! pluginsRemaining.length;
 
 		return (
 			<Card className="woocommerce-profile-wizard__benefits-card">
@@ -232,8 +234,8 @@ class Benefits extends Component {
 				<div className="woocommerce-profile-wizard__card-actions">
 					<Button
 						isPrimary
-						isBusy={ isRequesting && isInstallingActivating }
-						disabled={ isRequesting || isInstallingActivating }
+						isBusy={ isInstallAction }
+						disabled={ isRequesting || isInstallAction }
 						onClick={ this.startPluginInstall }
 						className="woocommerce-profile-wizard__continue"
 					>
@@ -241,8 +243,8 @@ class Benefits extends Component {
 					</Button>
 					<Button
 						isDefault
-						isBusy={ isRequesting && ! isInstallingActivating }
-						disabled={ isRequesting || isInstallingActivating }
+						isBusy={ isRequesting && ! isInstallAction }
+						disabled={ isRequesting || isInstallAction }
 						className="woocommerce-profile-wizard__skip"
 						onClick={ this.skipPluginInstall }
 					>
