@@ -43,6 +43,7 @@ class Payments extends Component {
 		);
 		this.state = {
 			enabledMethods,
+			recommendedMethod: this.getRecommendedMethod(),
 		};
 
 		this.completeTask = this.completeTask.bind( this );
@@ -50,26 +51,22 @@ class Payments extends Component {
 		this.skipTask = this.skipTask.bind( this );
 	}
 
-	componentDidUpdate( prevProps ) {
-		if ( prevProps === this.props ) {
-			return;
-		}
-		const { methods } = this.props;
+	componentDidUpdate() {
+		const { recommendedMethod } = this.state;
 
-		let recommendedMethod = 'stripe';
-		methods.forEach( ( method ) => {
-			const { key, visible } = method;
-
-			if ( key === 'wcpay' && visible ) {
-				recommendedMethod = 'wcpay';
-			}
-		} );
-
-		if ( this.state.recommendedMethod !== recommendedMethod ) {
+		const method = this.getRecommendedMethod();
+		if ( recommendedMethod !== method ) {
 			this.setState( {
-				recommendedMethod,
+				recommendedMethod: method,
 			} );
 		}
+	}
+
+	getRecommendedMethod() {
+		const { methods } = this.props;
+		return (
+			methods.find( ( m ) => m.key === 'wcpay' && m.visible ) || 'stripe'
+		);
 	}
 
 	async completeTask() {
