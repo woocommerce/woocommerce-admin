@@ -154,7 +154,7 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.2.2' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.2.3' );
 	}
 
 	/**
@@ -199,7 +199,7 @@ class FeaturePlugin {
 	 * Set up our admin hooks and plugin loader.
 	 */
 	protected function hooks() {
-		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ) );
+		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ), 0 );
 		add_action( 'admin_menu', array( $this, 'register_devdocs_page' ) );
 
 		new Loader();

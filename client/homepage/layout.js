@@ -9,11 +9,14 @@ import {
 	useRef,
 	useEffect,
 } from '@wordpress/element';
-import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import classnames from 'classnames';
-import { get } from 'lodash';
 import PropTypes from 'prop-types';
+
+/**
+ * WooCommerce dependencies
+ */
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -22,8 +25,9 @@ import QuickLinks from '../quick-links';
 import StatsOverview from './stats-overview';
 import './style.scss';
 import { isOnboardingEnabled } from 'dashboard/utils';
-import withSelect from 'wc-api/with-select';
 import TaskListPlaceholder from '../task-list/placeholder';
+import InboxPanel from '../header/activity-panel/panels/inbox';
+import withWCApiSelect from 'wc-api/with-select';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -52,31 +56,30 @@ export const Layout = ( props ) => {
 		};
 	}, [] );
 
-	const { query, requestingTaskList, taskListComplete, taskListHidden } = props;
+	const {
+		isUndoRequesting,
+		query,
+		requestingTaskList,
+		taskListComplete,
+		taskListHidden,
+	} = props;
 	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
+
+	const isInboxPanelEmpty = ( isEmpty ) => {
+		setShowInbox( ! isEmpty );
+	};
+
+	if ( isUndoRequesting && ! showInbox ) {
+		setShowInbox( true );
+	}
 
 	const renderColumns = () => {
 		return (
 			<Fragment>
 				{ showInbox && (
 					<div className="woocommerce-homepage-column is-inbox">
-						<div className="temp-content">
-							<Button
-								isPrimary
-								onClick={ () => {
-									setShowInbox( false );
-								} }
-							>
-								Dismiss All
-							</Button>
-						</div>
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
-						<div className="temp-content" />
+						<InboxPanel isPanelEmpty={ isInboxPanelEmpty } />
 					</div>
 				) }
 				<div
@@ -88,7 +91,7 @@ export const Layout = ( props ) => {
 				>
 					{ isTaskListEnabled && renderTaskList() }
 					<StatsOverview />
-					<QuickLinks />
+					{ ! isTaskListEnabled && <QuickLinks /> }
 				</div>
 			</Fragment>
 		);
@@ -114,8 +117,7 @@ export const Layout = ( props ) => {
 		>
 			{ isDashboardShown
 				? renderColumns()
-				: isTaskListEnabled && renderTaskList()
-			}
+				: isTaskListEnabled && renderTaskList() }
 		</div>
 	);
 };
@@ -140,25 +142,27 @@ Layout.propTypes = {
 };
 
 export default compose(
-	withSelect( ( select ) => {
+	withWCApiSelect( ( select ) => {
 		const {
-			getOptions,
-			isGetOptionsRequesting,
+			getUndoDismissRequesting,
 		} = select( 'wc-api' );
+		const { isUndoRequesting } = getUndoDismissRequesting();
+		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
 		if ( isOnboardingEnabled() ) {
-			const options = getOptions( [
-				'woocommerce_task_list_complete',
-				'woocommerce_task_list_hidden',
-			] );
-			
 			return {
-				requestingTaskList: isGetOptionsRequesting( [
-					'woocommerce_task_list_complete',
-					'woocommerce_task_list_hidden',
-				] ),
-				taskListComplete: get( options, [ 'woocommerce_task_list_complete' ] ),
-				taskListHidden: get( options, [ 'woocommerce_task_list_hidden' ] ) === 'yes',
+				isUndoRequesting,
+				taskListComplete:
+					getOption( 'woocommerce_task_list_complete' ) === 'yes',
+				taskListHidden:
+					getOption( 'woocommerce_task_list_hidden' ) === 'yes',
+				requestingTaskList:
+					isResolving( 'getOption', [
+						'woocommerce_task_list_complete',
+					] ) ||
+					isResolving( 'getOption', [
+						'woocommerce_task_list_hidden',
+					] ),
 			};
 		}
 
