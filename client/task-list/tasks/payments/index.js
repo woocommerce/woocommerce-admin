@@ -373,7 +373,18 @@ class Payments extends Component {
 }
 
 export default compose(
-	withSelect( ( select ) => {
+	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
+		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
+		return {
+			createNotice,
+			installAndActivatePlugins,
+			updateOptions,
+		};
+	} ),
+	withSelect( ( select, props ) => {
+		const { createNotice, installAndActivatePlugins } = props;
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const { getOption, isOptionsUpdating } = select( OPTIONS_STORE_NAME );
 		const { getActivePlugins, isJetpackConnected } = select(
@@ -409,6 +420,8 @@ export default compose(
 		const methods = getPaymentMethods( {
 			activePlugins,
 			countryCode,
+			createNotice,
+			installAndActivatePlugins,
 			isJetpackConnected: isJetpackConnected(),
 			options,
 			profileItems,
@@ -423,14 +436,6 @@ export default compose(
 			options,
 			methods,
 			requesting,
-		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
-		return {
-			createNotice,
-			updateOptions,
 		};
 	} )
 )( Payments );
