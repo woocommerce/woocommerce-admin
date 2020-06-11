@@ -139,7 +139,9 @@ export default compose(
 		} = select( PLUGINS_STORE_NAME );
 
 		return {
-			isInstalling: isPluginsRequesting( 'installPlugins' ) || isPluginsRequesting( 'activatePlugins' ),
+			isInstalling:
+				isPluginsRequesting( 'installPlugins' ) ||
+				isPluginsRequesting( 'activatePlugins' ),
 			isJetpackInstalled: getInstalledPlugins().includes( 'jetpack' ),
 			isJetpackActivated: getActivePlugins().includes( 'jetpack' ),
 			isJetpackConnected: isJetpackConnected(),
@@ -147,7 +149,6 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
-		const { updateCurrentUserData } = dispatch( 'wc-api' );
 
 		return {
 			installAndActivatePlugins,
