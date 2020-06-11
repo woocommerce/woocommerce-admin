@@ -44,7 +44,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 * @return bool
 	 */
 	public static function can_be_added() {
-		if ( ! wc_coupons_enabled() || self::has_unactioned_note() ) {
+		if ( ! wc_coupons_enabled() || self::note_exists() ) {
 			return false;
 		}
 
@@ -59,15 +59,15 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	public static function get_note() {
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Coupon management has moved!', 'woocommerce-admin' ) );
-		$note->set_content( __( 'Coupons can now be managed from Marketing > Coupons. Dismiss this notice to permanently hide the WooCommerce > Coupons menu item.', 'woocommerce-admin' ) );
+		$note->set_content( __( 'Coupons can now be managed from Marketing > Coupons. Click the button below to remove the legacy WooCommerce > Coupons menu item.', 'woocommerce-admin' ) );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_UPDATE );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_content_data( new stdClass() );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(
-			'dismiss-coupon-page-moved',
-			__( 'Dismiss', 'woocommerce-admin' ),
-			wc_admin_url( '&action=hide-coupon-menu' ),
+			'remove-legacy-coupon-menu',
+			__( 'Remove legacy coupon menu', 'woocommerce-admin' ),
+			wc_admin_url( '&action=remove-coupon-menu' ),
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);
@@ -102,7 +102,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 			! isset( $_GET['page'] ) ||
 			'wc-admin' !== $_GET['page'] ||
 			! isset( $_GET['action'] ) ||
-			'hide-coupon-menu' !== $_GET['action'] ||
+			'remove-coupon-menu' !== $_GET['action'] ||
 			! defined( 'WC_ADMIN_PLUGIN_FILE' )
 		) {
 			return;
