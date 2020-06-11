@@ -34,7 +34,6 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 			return;
 		}
 
-		add_action( 'woocommerce_note_action_dismiss-coupon-page-moved', [ $this, 'notice_dismissed' ] );
 		add_action( 'admin_init', [ $this, 'possibly_add_note' ] );
 		add_action( 'admin_init', [ $this, 'redirect_to_coupons' ] );
 	}
@@ -77,13 +76,6 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	}
 
 	/**
-	 * Mark the notice as dismissed.
-	 */
-	public function notice_dismissed() {
-		$this->display_legacy_menu( false );
-	}
-
-	/**
 	 * Find notes that have not been actioned.
 	 *
 	 * @return bool
@@ -116,7 +108,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 			return;
 		}
 		/* phpcs:enable */
-
+		$this->display_legacy_menu( false );
 		wp_safe_redirect( self::get_management_url( 'coupons' ) );
 		exit;
 	}
