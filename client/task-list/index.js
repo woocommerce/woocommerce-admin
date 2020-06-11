@@ -288,7 +288,7 @@ class TaskDashboard extends Component {
 					</div>
 					<Button
 						isPrimary
-						isDefault
+						isSecondary
 						onClick={ () => this.closeWelcomeModal() }
 					>
 						{ __( 'Continue', 'woocommerce-admin' ) }

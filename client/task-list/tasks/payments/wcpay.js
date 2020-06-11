@@ -95,7 +95,7 @@ class WCPay extends Component {
 						content: (
 							<Button
 								isPrimary
-								isDefault
+								isSecondary
 								isBusy={ isPending }
 								onClick={ this.connect }
 							>

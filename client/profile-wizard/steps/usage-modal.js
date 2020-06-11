@@ -147,7 +147,7 @@ class UsageModal extends Component {
 					</div>
 					<Button
 						isPrimary
-						isDefault
+						isSecondary
 						isBusy={ isRequesting }
 						onClick={ () => this.updateTracking() }
 					>
