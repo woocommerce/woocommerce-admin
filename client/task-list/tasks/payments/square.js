@@ -128,7 +128,6 @@ class Square extends Component {
 							<Fragment>
 								<Button
 									isPrimary
-									isSecondary
 									isBusy={ isPending }
 									onClick={ this.connect }
 								>
