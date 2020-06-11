@@ -212,8 +212,6 @@ class Payments extends Component {
 		const { methods } = this.props;
 		const { key, onClick } = method;
 
-		this.setState( { busyMethod: key } );
-
 		recordEvent( 'tasklist_payment_setup', {
 			options: methods.map( ( option ) => option.key ),
 			selected: key,
