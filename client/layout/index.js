@@ -15,7 +15,6 @@ import { useFilters, Spinner } from '@woocommerce/components';
 import { getHistory } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
-	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 	withOptionsHydration,
@@ -97,7 +96,9 @@ class _Layout extends Component {
 
 		// When pathname is `/` we are on the dashboard
 		if ( path.length === 0 ) {
-			path = window.wcAdminFeatures.homepage ? 'home_screen' : 'dashboard';
+			path = window.wcAdminFeatures.homepage
+				? 'home_screen'
+				: 'dashboard';
 		}
 
 		recordPageView( path, {
@@ -213,7 +214,7 @@ export const PageLayout = compose(
 		? withOptionsHydration( {
 				...window.wcSettings.preloadOptions,
 		  } )
-		: identity,
+		: identity
 )( _PageLayout );
 
 export class EmbedLayout extends Component {
