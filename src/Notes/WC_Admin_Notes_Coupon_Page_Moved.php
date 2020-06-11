@@ -44,7 +44,17 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 * @return bool
 	 */
 	public static function can_be_added() {
-		if ( ! wc_coupons_enabled() || self::note_exists() ) {
+		if ( ! wc_coupons_enabled() ) {
+			return false;
+		}
+
+		// Don't add the notice if it's been hidden by the user before.
+		if ( self::has_dismissed_note() ) {
+			return false;
+		}
+
+		// If we already have a notice, don't add a new one.
+		if ( self::has_unactioned_note() ) {
 			return false;
 		}
 
@@ -81,16 +91,40 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 * @return bool
 	 */
 	protected static function has_unactioned_note() {
-		/** @var DataStore $data_store */ // phpcs:disable Generic.Commenting.DocComment
-		$data_store = WC_Data_Store::load( 'admin-note' );
-		$notes      = $data_store->get_notes(
+		$notes = self::get_data_store()->get_notes(
 			[
-				'name'   => [ self::NOTE_NAME ],
-				'status' => [ 'unactioned' ],
+				'name'       => [ self::NOTE_NAME ],
+				'status'     => [ 'unactioned' ],
+				'is_deleted' => false,
 			]
 		);
 
 		return ! empty( $notes );
+	}
+
+	/**
+	 * Whether any notes have been dismissed by the user previously.
+	 *
+	 * @return bool
+	 */
+	protected static function has_dismissed_note() {
+		$notes = self::get_data_store()->get_notes(
+			[
+				'name'       => [ self::NOTE_NAME ],
+				'is_deleted' => true,
+			]
+		);
+
+		return ! empty( $notes );
+	}
+
+	/**
+	 * Get the data store object.
+	 *
+	 * @return DataStore The data store object.
+	 */
+	protected static function get_data_store() {
+		return WC_Data_Store::load( 'admin-note' );
 	}
 
 	/**
