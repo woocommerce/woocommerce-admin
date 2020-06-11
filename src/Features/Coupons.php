@@ -9,8 +9,8 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Coupon_Page_Moved;
 use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Coupon_Page_Moved;
 
 /**
  * Contains backend logic for the Coupons feature.
@@ -40,7 +40,6 @@ class Coupons {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
-
 		if ( ! is_admin() ) {
 			return;
 		}
@@ -48,9 +47,9 @@ class Coupons {
 		/**
 		 * Filter to override this feature.
 		 *
-		 * @param bool $disabled False.
+		 * @param bool $disabled Whether the normal coupons are overridden. Defaults to true.
 		 */
-		if ( apply_filters( 'woocommerce_admin_coupons', false ) ) {
+		if ( ! apply_filters( 'woocommerce_admin_coupons', true ) ) {
 			return;
 		}
 
