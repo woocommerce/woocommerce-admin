@@ -42,6 +42,7 @@ class Payments extends Component {
 			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
 		);
 		this.state = {
+			busyMethod: null,
 			enabledMethods,
 			recommendedMethod: this.getRecommendedMethod(),
 		};
@@ -207,9 +208,38 @@ class Payments extends Component {
 		} );
 	}
 
+	async handleClick( method ) {
+		const { methods } = this.props;
+		const { key, onClick } = method;
+
+		this.setState( { busyMethod: key } );
+
+		recordEvent( 'tasklist_payment_setup', {
+			options: methods.map( ( option ) => option.key ),
+			selected: key,
+		} );
+
+		if ( onClick ) {
+			this.setState( { busyMethod: key } );
+			await new Promise( onClick )
+				.then( () => {
+					this.setState( { busyMethod: null } );
+				} )
+				.catch( () => {
+					this.setState( { busyMethod: null } );
+				} );
+
+			return;
+		}
+
+		updateQueryString( {
+			method: key,
+		} );
+	}
+
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { enabledMethods, recommendedMethod } = this.state;
+		const { busyMethod, enabledMethods, recommendedMethod } = this.state;
 		const { methods, query, requesting } = this.props;
 		const configuredMethods = methods.filter(
 			( method ) => method.isConfigured
@@ -298,20 +328,11 @@ class Payments extends Component {
 										isSecondary={
 											key !== recommendedMethod
 										}
-										onClick={ () => {
-											recordEvent(
-												'tasklist_payment_setup',
-												{
-													options: methods.map(
-														( option ) => option.key
-													),
-													selected: key,
-												}
-											);
-											updateQueryString( {
-												method: key,
-											} );
-										} }
+										isBusy={ busyMethod === key }
+										disabled={ busyMethod }
+										onClick={ () =>
+											this.handleClick( method )
+										}
 									>
 										{ __( 'Set up', 'woocommerce-admin' ) }
 									</Button>

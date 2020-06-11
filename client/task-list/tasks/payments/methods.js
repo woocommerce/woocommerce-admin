@@ -117,11 +117,10 @@ export function getPaymentMethods( {
 				</Fragment>
 			),
 			before: <WCPayIcon />,
-			after: <div>
-				{ __( 'Set up wc pay', 'woocommerce-admin' ) }
-			</div>,
-			visible:
-				[ 'US', 'PR' ].includes( countryCode ) && ! hasCbdIndustry,
+			onClick: ( resolve ) => {
+				resolve();
+			},
+			visible: [ 'US', 'PR' ].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConnected,
@@ -151,7 +150,8 @@ export function getPaymentMethods( {
 			),
 			before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
 			visible:
-				stripeSupportedCountries.includes( countryCode ) && ! hasCbdIndustry,
+				stripeSupportedCountries.includes( countryCode ) &&
+				! hasCbdIndustry,
 			plugins: [ 'woocommerce-gateway-stripe' ],
 			container: <Stripe />,
 			isConfigured:
