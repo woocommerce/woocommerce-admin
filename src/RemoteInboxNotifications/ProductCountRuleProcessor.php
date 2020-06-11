@@ -26,7 +26,7 @@ class ProductCountRuleProcessor implements RuleProcessorInterface {
 				array(
 					'limit'    => 1,
 					'paginate' => true,
-					'return'   => array( 'id' ),
+					'return'   => 'ids',
 					'status'   => array( 'publish' ),
 				)
 			)
