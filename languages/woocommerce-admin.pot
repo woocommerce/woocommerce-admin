@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the WooCommerce Admin package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Admin 1.2.3\n"
+"Project-Id-Version: WooCommerce Admin 1.2.4\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/woocommerce-admin\n"
-"POT-Creation-Date: 2020-05-22 18:44:46+00:00\n"
+"POT-Creation-Date: 2020-06-11 19:20:21+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2536,7 +2536,7 @@ msgstr ""
 msgid "Shipping Label"
 msgstr ""
 
-#: src/Loader.php:766
+#: src/Loader.php:767
 #. translators: %1$s: updated title, %2$s: blog info name
 msgid "%1$s &lsaquo; %2$s"
 msgstr ""
@@ -2545,27 +2545,27 @@ msgstr ""
 msgid "WooCommerce Admin"
 msgstr ""
 
-#: src/Loader.php:932
+#: src/Loader.php:933
 msgid "Settings for WooCommerce admin reporting."
 msgstr ""
 
-#: src/Loader.php:951
+#: src/Loader.php:952
 msgid "Excluded report order statuses"
 msgstr ""
 
-#: src/Loader.php:952
+#: src/Loader.php:953
 msgid "Statuses that should not be included when calculating report totals."
 msgstr ""
 
-#: src/Loader.php:960
+#: src/Loader.php:961
 msgid "Actionable order statuses"
 msgstr ""
 
-#: src/Loader.php:961
+#: src/Loader.php:962
 msgid "Statuses that require extra action on behalf of the store admin."
 msgstr ""
 
-#: src/Loader.php:969 src/Loader.php:970
+#: src/Loader.php:970 src/Loader.php:971
 msgid "Default Date Range"
 msgstr ""
 
