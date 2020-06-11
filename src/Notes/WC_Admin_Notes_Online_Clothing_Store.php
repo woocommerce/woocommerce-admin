@@ -27,6 +27,23 @@ class WC_Admin_Notes_Online_Clothing_Store {
 	const NOTE_NAME = 'wc-admin-online-clothing-store';
 
 	/**
+	 * Returns whether the industries includes fashion-apparel-accessories.
+	 *
+	 * @param array $industries The industries to search.
+	 *
+	 * @return bool Whether the industries includes fashion-apparel-accessories.
+	 */
+	private static function is_in_fashion_industry( $industries ) {
+		foreach ( $industries as $industry ) {
+			if ( 'fashion-apparel-accessories' === $industry['slug'] ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the note.
 	 */
 	public static function get_note() {
@@ -53,14 +70,7 @@ class WC_Admin_Notes_Online_Clothing_Store {
 		if ( ! isset( $onboarding_profile['industry'] ) ) {
 			return;
 		}
-
-		$industry_includes_fashion = array_filter(
-			$onboarding_profile['industry'],
-			function( $industry ) {
-				return 'fashion-apparel-accessories' === $industry['slug'];
-			}
-		);
-		if ( ! $industry_includes_fashion ) {
+		if ( ! self::is_in_fashion_industry( $onboarding_profile['industry'] ) ) {
 			return;
 		}
 
