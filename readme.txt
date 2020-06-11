@@ -112,12 +112,19 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Dynamic Currency with Context API #4027
 - Dev: Remove Duplicate array entry #4049 🎉 @tivnet
 
-= 1.1.1 2020-04-28 =
+= 1.1.3 2020-05-18 =
+- Tweak: Onboarding: Add Jetpack flow back to onboarding profiler. #4382
+- Fix: Respect tracking opt-in before new page load. #4368
+
+= 1.1.2 N/A =
+- Version bumped on Composer/Packagist but not released to WordPress.org.
+
+= 1.1.1 2020-05-05 =
 - Fix: Storefront should show at top of theme options in onboarding wizard. #4187
 - Tweak: Remove Stripe auto-connect from payment task. #4164
 - Tweak: Hide suggested extensions in Marketing Tab if opted out of "Marketplace Suggestions"
 
-= 1.1.0 2020-04-20 =
+= 1.1.0 2020-04-23 =
 - Tweak: Added link to "go shopping" button #3712
 - Fix: Make analytics tables use the site's date format setting #3715
 - Fix: Alignment of select text #3723 🎉 @edmundcwm
@@ -162,8 +169,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: business details step: increase max-height on competitors listbox #4111
 - Fix: OBW: Allow CBD only for US stores #4117
 
-
-= 1.0.3 2020-03-19 =
+= 1.0.3 2020-03-22 =
 
 - Fix: Stop calling protected has_satisfied_dependencies() on outdated plugin. #3938
 - Fix: Rename image assets in OBW business details step. #3931
@@ -176,7 +182,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: create database tables on an earlier hook to avoid conflicts with core WooCommerce. #3896 
 - Fix - Made the admin note loading more resilient to prevent failures when loading notes with invalid content_data. #3926
 
-= 1.0.1 2020-03-12 =
+= 1.0.1 2020-03-16 =
 
 - Fix: Add Report Extension Example: Add default props to ReportFilters
 - Fix: Product report sorting by SKU when some products don't have SKUs
@@ -188,7 +194,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Fix failing tests after WC core merge.
 - Dev: Bump WooCommerce tested up to tag
 
-= 1.0.0 2020-03-5 =
+= 1.0.0 2020-03-06 =
 
 - Fix: Customers Report: fix missing report param in search #3778
 - Fix: OBW Connect: Fix requesting state #3786
