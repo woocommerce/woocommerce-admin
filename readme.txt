@@ -71,14 +71,18 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 1.2.3 2020-05-22=
+= 1.2.4 2020-06-11 =
+- Tweak: reduce asset filename length and remove tilde characters. #4535
+- Fix: RTL stylesheet loading for split code chunks. #4542
+
+= 1.2.3 2020-05-22 =
 - Tweak: Updates to WooCommerce Payments in Setup Checklist #4293
 
-= 1.2.2 2020-05-18=
+= 1.2.2 2020-05-18 =
 - Fix: Respect tracking opt-in before new page load. #4368
 - Enhancement: Add Jetpack connection to plugin benefits step #4374
 
-= 1.2.0 2020-05-8 =
+= 1.2.0 2020-05-08 =
 - Enhancement: Add onboarding payments note #4157 
 - Enhancement: Marketing Inbox Note #4030
 - Performance: Use Route based code splitting to reduce bundle size #4094
