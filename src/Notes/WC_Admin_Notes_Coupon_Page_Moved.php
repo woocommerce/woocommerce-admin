@@ -30,6 +30,10 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 * Initialize our hooks.
 	 */
 	public function init() {
+		if ( ! wc_coupons_enabled() ) {
+			return;
+		}
+
 		add_action( 'woocommerce_note_action_dismiss-coupon-page-moved', [ $this, 'notice_dismissed' ] );
 		add_action( 'admin_init', [ $this, 'possibly_add_note' ] );
 		add_action( 'admin_init', [ $this, 'redirect_to_coupons' ] );
@@ -41,7 +45,7 @@ class WC_Admin_Notes_Coupon_Page_Moved {
 	 * @return bool
 	 */
 	public static function can_be_added() {
-		if ( self::has_unactioned_note() ) {
+		if ( ! wc_coupons_enabled() || self::has_unactioned_note() ) {
 			return false;
 		}
 
