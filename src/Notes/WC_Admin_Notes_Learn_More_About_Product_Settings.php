@@ -27,41 +27,10 @@ class WC_Admin_Notes_Learn_More_About_Product_Settings {
 	 */
 	const NOTE_NAME = 'wc-admin-learn-more-about-product-settings';
 
-	const IS_NEW_MERCHANT_OPTION_NAME = 'wc_admin_note_learn_more_about_product_settings_is_new_merchant';
-
-	/**
-	 * Constructor.
-	 */
-	public function __construct() {
-		add_filter(
-			'update_option_' . Onboarding::PROFILE_DATA_OPTION,
-			array( $this, 'onboarding_profile_updated' ),
-			10,
-			3
-		);
-	}
-
-	/**
-	 * Record that the onboarding profile has been updated, indicating that the
-	 * merchant is new.
-	 *
-	 * @param object $old_value The old option value.
-	 * @param object $value     The new option value.
-	 * @param string $option    The name of the option.
-	 */
-	public function onboarding_profile_updated( $old_value, $value, $option ) {
-		update_option( self::IS_NEW_MERCHANT_OPTION_NAME, true );
-	}
-
 	/**
 	 * Get the note.
 	 */
 	public static function get_note() {
-		// Bail out for non-new merchants.
-		if ( ! get_option( self::IS_NEW_MERCHANT_OPTION_NAME ) ) {
-			return;
-		}
-
 		$onboarding_profile = get_option( 'woocommerce_onboarding_profile', array() );
 
 		// Confirm that $onboarding_profile is set.
