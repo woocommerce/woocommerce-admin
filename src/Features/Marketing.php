@@ -65,7 +65,15 @@ class Marketing {
 	 * Registers report pages.
 	 */
 	public function register_pages() {
-		add_menu_page( __( 'Marketing', 'woocommerce' ), __( 'Marketing', 'woocommerce' ), 'manage_woocommerce', 'woocommerce-marketing', null, 'dashicons-megaphone', 58 );
+		add_menu_page(
+			__( 'Marketing', 'woocommerce-admin' ),
+			__( 'Marketing', 'woocommerce-admin' ),
+			'manage_woocommerce',
+			'woocommerce-marketing',
+			null,
+			'dashicons-megaphone',
+			58
+		);
 
 		$marketing_pages = array(
 			array(
@@ -104,10 +112,10 @@ class Marketing {
 			}
 		}
 
-		// Remove PHP powered top level page
+		// Remove PHP powered top level page.
 		unset( $submenu[ $marketing_submenu_key ][0] );
 
-		// Move overview menu item to top
+		// Move overview menu item to top.
 		if ( null !== $overview_key ) {
 			$menu = $submenu[ $marketing_submenu_key ][ $overview_key ];
 			unset( $submenu[ $marketing_submenu_key ][ $overview_key ] );
