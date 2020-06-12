@@ -18,26 +18,24 @@ import RecommendedExtensionsItem from '../item.js';
 
 jest.mock( 'lib/tracks' );
 
-const mockExtensions = {
-	'marketing': [
-		{
-			'title': 'AutomateWoo',
-			'description': 'Does things.',
-			'url': 'https://woocommerce.com/products/automatewoo/',
-			'icon': 'icons/automatewoo.svg',
-			'product': 'automatewoo',
-			'plugin': 'automatewoo/automatewoo.php',
-		},
-		{
-			'title': 'Mailchimp for WooCommerce',
-			'description': 'Does things.',
-			'url': 'https://woocommerce.com/products/mailchimp-for-woocommerce/',
-			'icon': 'icons/mailchimp.svg',
-			'product': 'mailchimp-for-woocommerce',
-			'plugin': 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
-		},
-	],
-};
+const mockExtensions = [
+	{
+		'title': 'AutomateWoo',
+		'description': 'Does things.',
+		'url': 'https://woocommerce.com/products/automatewoo/',
+		'icon': 'icons/automatewoo.svg',
+		'product': 'automatewoo',
+		'plugin': 'automatewoo/automatewoo.php',
+	},
+	{
+		'title': 'Mailchimp for WooCommerce',
+		'description': 'Does things.',
+		'url': 'https://woocommerce.com/products/mailchimp-for-woocommerce/',
+		'icon': 'icons/mailchimp.svg',
+		'product': 'mailchimp-for-woocommerce',
+		'plugin': 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
+	},
+];
 
 describe( 'Recommendations and not loading', () => {
 	let recommendedExtensionsWrapper;
@@ -102,7 +100,7 @@ describe( 'No Recommendations and not loading', () => {
 	beforeEach( () => {
 		recommendedExtensionsWrapper = shallow(
 			<RecommendedExtensions
-				extensions={ { 'marketing': [] } }
+				extensions={ [] }
 				isLoading={ false }
 				category={ 'marketing' }
 			/>
