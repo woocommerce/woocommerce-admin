@@ -171,7 +171,7 @@ export const getPages = () => {
 				...initialBreadcrumbs,
 				__( 'Marketing', 'woocommerce-admin' ),
 			],
-			wpOpenMenu: 'toplevel_page_wc-admin-path--marketing',
+			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
 		} );
 	}
 
