@@ -414,6 +414,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			}
 		}
 
+		$escaped_where_types  = implode( ',', $where_type_array );
 		$escaped_where_status = implode( ',', $where_status_array );
 		$escaped_where_names  = implode( ',', $where_name_array );
 		$where_clauses        = '';
