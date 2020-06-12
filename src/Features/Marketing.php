@@ -79,7 +79,7 @@ class Marketing {
 			array(
 				'id'    => 'woocommerce-marketing-overview',
 				'title' => __( 'Overview', 'woocommerce-admin' ),
-				'path'  => '/marketing',
+				'path'  => '/marketing/overview',
 			),
 		);
 
@@ -107,7 +107,7 @@ class Marketing {
 		$overview_key          = null;
 
 		foreach ( $submenu[ $marketing_submenu_key ] as $submenu_key => $submenu_item ) {
-			if ( 'wc-admin&path=/marketing' === $submenu_item[2] ) {
+			if ( 'wc-admin&path=/marketing/overview' === $submenu_item[2] ) {
 				$overview_key = $submenu_key;
 			}
 		}

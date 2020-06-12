@@ -166,10 +166,14 @@ export const getPages = () => {
 	if ( window.wcAdminFeatures.marketing ) {
 		pages.push( {
 			container: MarketingOverview,
-			path: '/marketing',
+			path: '/marketing/overview',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				__( 'Marketing', 'woocommerce-admin' ),
+				[
+					'/marketing/overview',
+					__( 'Marketing', 'woocommerce-admin' ),
+				],
+				__( 'Overview', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
 		} );
