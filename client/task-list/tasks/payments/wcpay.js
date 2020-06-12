@@ -11,16 +11,6 @@ import { withDispatch } from '@wordpress/data';
 import { getQuery } from '@woocommerce/navigation';
 
 class WCPay extends Component {
-	constructor( props ) {
-		super( props );
-
-		this.state = {
-			isPending: false,
-		};
-
-		this.connect = this.connect.bind( this );
-	}
-
 	componentDidMount() {
 		const { createNotice, markConfigured } = this.props;
 		const query = getQuery();

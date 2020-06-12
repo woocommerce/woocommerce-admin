@@ -65,9 +65,9 @@ class Payments extends Component {
 
 	getRecommendedMethod() {
 		const { methods } = this.props;
-		return (
-			methods.find( ( m ) => m.key === 'wcpay' && m.visible ) || 'stripe'
-		);
+		return methods.find( ( m ) => m.key === 'wcpay' && m.visible )
+			? 'wcpay'
+			: 'stripe';
 	}
 
 	async completeTask() {
