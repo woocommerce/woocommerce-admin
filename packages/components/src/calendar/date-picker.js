@@ -79,7 +79,7 @@ class DatePicker extends Component {
 		return (
 			<Dropdown
 				position="bottom center"
-				focusOnMount={ false }
+				focusOnMount="container"
 				renderToggle={ ( { isOpen, onToggle } ) => (
 					<DateInput
 						disabled={ disabled }
