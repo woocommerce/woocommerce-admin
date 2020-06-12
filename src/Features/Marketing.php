@@ -98,13 +98,14 @@ class Marketing {
 	 */
 	public function modify_menu_structure() {
 		global $submenu;
-		// User does not have capabilites to see the submenu.
-		if ( ! current_user_can( 'manage_woocommerce' ) || empty( $submenu['woocommerce'] ) ) {
-			return;
-		}
 
 		$marketing_submenu_key = 'woocommerce-marketing';
 		$overview_key          = null;
+
+		// User does not have capabilites to see the submenu.
+		if ( ! current_user_can( 'manage_woocommerce' ) || empty( $submenu[ $marketing_submenu_key ] ) ) {
+			return;
+		}
 
 		foreach ( $submenu[ $marketing_submenu_key ] as $submenu_key => $submenu_item ) {
 			if ( 'wc-admin&path=/marketing/overview' === $submenu_item[2] ) {
