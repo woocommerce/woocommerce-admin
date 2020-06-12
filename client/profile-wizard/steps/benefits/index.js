@@ -17,7 +17,7 @@ import {
 	pluginNames,
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
-	OPTIONS_STORE_NAME
+	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
 
 /**
@@ -242,7 +242,7 @@ class Benefits extends Component {
 						{ __( 'Yes please!', 'woocommerce-admin' ) }
 					</Button>
 					<Button
-						isDefault
+						isSecondary
 						isBusy={ isRequesting && ! isInstallAction }
 						disabled={ isRequesting || isInstallAction }
 						className="woocommerce-profile-wizard__skip"
