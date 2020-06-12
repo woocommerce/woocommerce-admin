@@ -50,6 +50,7 @@ class Marketing {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
+		add_action( 'admin_menu', array( $this, 'add_parent_menu_item' ), 9 );
 		add_action( 'admin_menu', array( $this, 'register_pages' ) );
 		add_action( 'admin_head', array( $this, 'modify_menu_structure' ) );
 
@@ -62,9 +63,11 @@ class Marketing {
 	}
 
 	/**
-	 * Registers report pages.
+	 * Add main marketing menu item.
+	 *
+	 * Uses priority of 9 so other items can easily be added at the default priority (10).
 	 */
-	public function register_pages() {
+	public function add_parent_menu_item() {
 		add_menu_page(
 			__( 'Marketing', 'woocommerce-admin' ),
 			__( 'Marketing', 'woocommerce-admin' ),
@@ -74,7 +77,12 @@ class Marketing {
 			'dashicons-megaphone',
 			58
 		);
+	}
 
+	/**
+	 * Registers report pages.
+	 */
+	public function register_pages() {
 		$marketing_pages = array(
 			array(
 				'id'    => 'woocommerce-marketing-overview',
