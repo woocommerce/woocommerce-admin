@@ -30,8 +30,8 @@ class WC_Admin_Notes_Real_Time_Order_Alerts {
 	 */
 	public static function get_note() {
 		// Only add this note if the store is 3 months old.
-		$nintey_days_in_seconds = 90 * DAY_IN_SECONDS;
-		if ( ! self::wc_admin_active_for( $nintey_days_in_seconds ) ) {
+		$ninety_days_in_seconds = 90 * DAY_IN_SECONDS;
+		if ( ! self::wc_admin_active_for( $ninety_days_in_seconds ) ) {
 			return;
 		}
 
@@ -45,7 +45,7 @@ class WC_Admin_Notes_Real_Time_Order_Alerts {
 			}
 		}
 
-		$content = __( 'Get notifications about store activity, including new orders and product reviews directly on your mobile devices with the Woo app', 'woocommerce-admin' );
+		$content = __( 'Get notifications about store activity, including new orders and product reviews directly on your mobile devices with the Woo app.', 'woocommerce-admin' );
 
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Get real-time order alerts anywhere', 'woocommerce-admin' ) );
