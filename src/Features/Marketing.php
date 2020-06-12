@@ -69,10 +69,9 @@ class Marketing {
 
 		$marketing_pages = array(
 			array(
-				'id'     => 'woocommerce-marketing-overview',
-				'title'  => __( 'Overview', 'woocommerce-admin' ),
-				'path'   => '/marketing',
-				'parent' => 'woocommerce-marketing'
+				'id'    => 'woocommerce-marketing-overview',
+				'title' => __( 'Overview', 'woocommerce-admin' ),
+				'path'  => '/marketing',
 			),
 		);
 
@@ -80,6 +79,7 @@ class Marketing {
 
 		foreach ( $marketing_pages as $marketing_page ) {
 			if ( ! is_null( $marketing_page ) ) {
+				$marketing_page['parent'] = 'woocommerce-marketing';
 				wc_admin_register_page( $marketing_page );
 			}
 		}
