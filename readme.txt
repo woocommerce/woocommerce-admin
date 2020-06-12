@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.3.0
 Tested up to: 5.4.1
 Requires PHP: 5.6.20
-Stable tag: 1.2.3
+Stable tag: 1.3.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/license.txt
 
@@ -70,6 +70,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 3. Analytics
 
 == Changelog ==
+
+= 1.3.0-dev =
 
 = 1.2.3 2020-05-22=
 - Tweak: Updates to WooCommerce Payments in Setup Checklist #4293
