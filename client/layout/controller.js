@@ -166,11 +166,11 @@ export const getPages = () => {
 	if ( window.wcAdminFeatures.marketing ) {
 		pages.push( {
 			container: MarketingOverview,
-			path: '/marketing/overview',
+			path: '/marketing',
 			breadcrumbs: [
 				...initialBreadcrumbs,
 				[
-					'/marketing/overview',
+					'/marketing',
 					__( 'Marketing', 'woocommerce-admin' ),
 				],
 				__( 'Overview', 'woocommerce-admin' ),
