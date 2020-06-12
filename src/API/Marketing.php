@@ -90,7 +90,7 @@ class Marketing extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_recommended_plugins( $request ) {
-		// Default to marketing category (if no category set on the kb component).
+		// Default to marketing category (if no category set).
 		$category      = ( ! empty( $request->get_param( 'category' ) ) ) ? $request->get_param( 'category' ) : 'marketing';
 		$all_plugins   = MarketingFeature::get_instance()->get_recommended_plugins();
 		$valid_plugins = [];
