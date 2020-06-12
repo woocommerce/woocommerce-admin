@@ -5,15 +5,14 @@ import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { Button } from '@wordpress/components';
 import { useState } from 'react';
-import { withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
 
 /**
  * WooCommerce dependencies
  */
 import { H, Plugins } from '@woocommerce/components';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { PLUGINS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -22,23 +21,17 @@ import withSelect from 'wc-api/with-select';
 import Connect from 'dashboard/components/connect';
 import { recordEvent } from 'lib/tracks';
 
-function InstallJetpackCta( props ) {
-	const {
-		isJetpackConnected,
-		getCurrentUserData,
-		updateCurrentUserData,
-	} = props;
+function InstallJetpackCta( {
+	isJetpackInstalled,
+	isJetpackActivated,
+	isJetpackConnected,
+} ) {
+	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const [ isInstalling, setIsInstalling ] = useState( false );
 	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDismissed, setIsDismissed ] = useState(
-		( getCurrentUserData().homepage_stats || {} ).installJetpackDismissed
+		( userPrefs.homepage_stats || {} ).installJetpackDismissed
 	);
-	const plugins = getSetting( 'plugins', {
-		installedPlugins: [],
-		activePlugins: [],
-	} );
-	const isJetpackInstalled = plugins.installedPlugins.includes( 'jetpack' );
-	const isJetpackActivated = plugins.activePlugins.includes( 'jetpack' );
 
 	function install() {
 		setIsInstalling( true );
@@ -50,11 +43,11 @@ function InstallJetpackCta( props ) {
 			return;
 		}
 
-		const homepageStats = getCurrentUserData().homepage_stats || {};
+		const homepageStats = userPrefs.homepage_stats || {};
 
 		homepageStats.installJetpackDismissed = true;
 
-		updateCurrentUserData( { homepage_stats: homepageStats } );
+		updateUserPreferences( { homepage_stats: homepageStats } );
 
 		setIsDismissed( true );
 		recordEvent( 'statsoverview_dismiss_install_jetpack' );
@@ -81,15 +74,32 @@ function InstallJetpackCta( props ) {
 			<Connect
 				autoConnect
 				onError={ () => setIsConnecting( false ) }
-				redirectUrl={ getAdminLink(
-					'admin.php?page=wc-admin&reset-profiler=0'
-				) }
+				redirectUrl={ getAdminLink( 'admin.php?page=wc-admin' ) }
 			/>
 		);
 	}
 
-	if ( isDismissed || ( isJetpackInstalled && isJetpackActivated ) ) {
+	const doNotShow =
+		isDismissed ||
+		( isJetpackInstalled && isJetpackActivated && isJetpackConnected );
+	if ( doNotShow ) {
 		return null;
+	}
+
+	function getInstallJetpackText() {
+		if ( ! isJetpackInstalled ) {
+			return __( 'Get Jetpack', 'woocommerce-admin' );
+		}
+
+		if ( ! isJetpackActivated ) {
+			return __( 'Activate Jetpack', 'woocommerce-admin' );
+		}
+
+		if ( ! isJetpackConnected ) {
+			return __( 'Connect Jetpack', 'woocommerce-admin' );
+		}
+
+		return '';
 	}
 
 	return (
@@ -107,9 +117,7 @@ function InstallJetpackCta( props ) {
 			</p>
 			<footer>
 				<Button isPrimary onClick={ install } isBusy={ isInstalling }>
-					{ ! isJetpackInstalled
-						? __( 'Get Jetpack', 'woocommerce-admin' )
-						: __( 'Activate Jetpack', 'woocommerce-admin' ) }
+					{ getInstallJetpackText() }
 				</Button>
 				<Button onClick={ dismiss } isBusy={ isInstalling }>
 					{ __( 'No thanks', 'woocommerce-admin' ) }
@@ -127,31 +135,20 @@ InstallJetpackCta.propTypes = {
 	 * Is the Jetpack plugin connected.
 	 */
 	isJetpackConnected: PropTypes.bool.isRequired,
-	/**
-	 * A method to get user meta.
-	 */
-	getCurrentUserData: PropTypes.func.isRequired,
-	/**
-	 * A method to update user meta.
-	 */
-	updateCurrentUserData: PropTypes.func.isRequired,
 };
 
 export default compose(
 	withSelect( ( select ) => {
-		const { isJetpackConnected } = select( PLUGINS_STORE_NAME );
-		const { getCurrentUserData } = select( 'wc-api' );
+		const {
+			isJetpackConnected,
+			getInstalledPlugins,
+			getActivePlugins,
+		} = select( PLUGINS_STORE_NAME );
 
 		return {
+			isJetpackInstalled: getInstalledPlugins().includes( 'jetpack' ),
+			isJetpackActivated: getActivePlugins().includes( 'jetpack' ),
 			isJetpackConnected: isJetpackConnected(),
-			getCurrentUserData,
-		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { updateCurrentUserData } = dispatch( 'wc-api' );
-
-		return {
-			updateCurrentUserData,
 		};
 	} )
 )( InstallJetpackCta );
