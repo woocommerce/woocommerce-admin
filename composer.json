@@ -25,7 +25,7 @@
 			"phpunit"
 		],
 		"phpcs": [
-			"phpcs -s -p"
+			"phpcs -s -p -n"
 		],
 		"phpcbf": [
 			"phpcbf -p"
