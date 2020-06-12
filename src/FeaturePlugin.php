@@ -191,9 +191,7 @@ class FeaturePlugin {
 		new WC_Admin_Notes_Draw_Attention();
 
 		// Initialize RemoteInboxNotificationsEngine.
-		if ( Loader::is_feature_enabled( 'remote-inbox-notifications' ) ) {
-			RemoteInboxNotificationsEngine::init();
-		}
+		RemoteInboxNotificationsEngine::init();
 	}
 
 	/**

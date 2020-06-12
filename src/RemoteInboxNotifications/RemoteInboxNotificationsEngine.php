@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\PluginsProvider\PluginsProvider;
+use \Automattic\WooCommerce\Admin\Loader;
 
 /**
  * Remote Inbox Notifications engine.
@@ -24,10 +25,6 @@ class RemoteInboxNotificationsEngine {
 	 * Initialize the engine.
 	 */
 	public static function init() {
-		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
-		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
-		StoredStateSetupForProducts::init();
-
 		// Continue init via admin_init.
 		add_action( 'admin_init', array( __CLASS__, 'on_admin_init' ) );
 	}
@@ -38,6 +35,14 @@ class RemoteInboxNotificationsEngine {
 	 * condition and thus doesn't return any results.
 	 */
 	public static function on_admin_init() {
+		if ( ! Loader::is_feature_enabled( 'remote-inbox-notifications' ) ) {
+			return;
+		}
+
+		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
+		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
+		StoredStateSetupForProducts::init();
+
 		// Pre-fetch stored state so it has the correct initial values.
 		self::get_stored_state();
 	}
