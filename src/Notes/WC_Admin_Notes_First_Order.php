@@ -29,25 +29,39 @@ class WC_Admin_Notes_First_Order {
 	 * Attach hooks.
 	 */
 	public function __construct() {
-		add_action( 'woocommerce_checkout_create_order', array( __CLASS__, 'possibly_add_note' ) );
+		add_action( 'wp_insert_post', array( __CLASS__, 'add_on_first_order' ), 10, 2 );
+	}
+
+	/**
+	 * Check to see if this is the first order being created.
+	 *
+	 * @param integer $post_id Post ID.
+	 * @param WP_Post $post Post object.
+	 */
+	public static function add_on_first_order( $post_id, $post ) {
+		if ( 'shop_order' !== $post->post_type ) {
+			return;
+		}
+
+		// Only add this note if no previous orders exist.
+		$query  = new \WC_Order_Query(
+			array(
+				'limit' => 2,
+			)
+		);
+		$orders = $query->get_orders();
+
+		if ( count( $orders ) !== 1 ) {
+			return;
+		}
+
+		self::possibly_add_note();
 	}
 
 	/**
 	 * Get the note.
 	 */
 	public static function get_note() {
-		// Only add this note if no previous orders exist.
-		$query  = new \WC_Order_Query(
-			array(
-				'limit' => 1,
-			)
-		);
-		$orders = $query->get_orders();
-
-		if ( count( $orders ) > 0 ) {
-			return;
-		}
-
 		$content = __( "Congratulations on getting your first order! Now it's a great time to learn how to manage your orders.", 'woocommerce-admin' );
 
 		$note = new WC_Admin_Note();
