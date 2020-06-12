@@ -33,10 +33,6 @@ const KnowledgeBase = ( {
 	const [ page, updatePage ] = useState(1);
 	const [ animate, updateAnimate ] = useState(null);
 
-	if ( ( Object.keys( posts ).length === 0 && posts.constructor === Object ) ) {
-		return null;
-	}
-
 	const onPaginationPageChange = ( newPage ) => {
 		let newAnimate;
 		if ( newPage > page ) {
@@ -59,7 +55,7 @@ const KnowledgeBase = ( {
 	 */
 	const getCurrentSlide = () => {
 
-		const currentPosts = posts[category].slice( ( page - 1 ) * 2, ( page - 1 ) * 2 + 2 );
+		const currentPosts = posts.slice( ( page - 1 ) * 2, ( page - 1 ) * 2 + 2 );
 		const pageClass = classNames( 'woocommerce-marketing-knowledgebase-card__page', {
 			'page-with-single-post': currentPosts.length === 1,
 		} );
@@ -129,7 +125,7 @@ const KnowledgeBase = ( {
 				<Pagination
 					page={ page }
 					perPage={ 2 }
-					total={ posts[category].length }
+					total={ posts.length }
 					onPageChange={ onPaginationPageChange }
 					showPagePicker={ false }
 					showPerPagePicker={ false }
@@ -143,7 +139,7 @@ const KnowledgeBase = ( {
 		if ( isLoading ) {
 			return <Spinner />;
 		}
-		return posts[category].length === 0 ? renderEmpty() : renderPosts();
+		return posts.length === 0 ? renderEmpty() : renderPosts();
 	};
 
 	const categoryClass = ( category ) ? `woocommerce-marketing-knowledgebase-card__category-${category}` : '';
