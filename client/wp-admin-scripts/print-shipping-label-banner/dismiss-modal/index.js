@@ -8,6 +8,11 @@ import { withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
 /**
+ * WooCommerce dependencies
+ */
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+
+/**
  * Internal dependencies
  */
 import '../style.scss';
@@ -61,7 +66,7 @@ export class DismissModal extends Component {
 					) }
 				</p>
 				<div className="wc-admin-shipping-banner__dismiss-modal-actions">
-					<Button isDefault onClick={ this.remindMeLaterClicked }>
+					<Button isSecondary onClick={ this.remindMeLaterClicked }>
 						{ __( 'Remind me later', 'woocommerce-admin' ) }
 					</Button>
 					<Button isPrimary onClick={ this.closeForeverClicked }>
@@ -75,7 +80,7 @@ export class DismissModal extends Component {
 
 export default compose(
 	withDispatch( ( dispatch ) => {
-		const { updateOptions } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		return { updateOptions };
 	} )
 )( DismissModal );

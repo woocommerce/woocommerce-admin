@@ -17,6 +17,7 @@ import classnames from 'classnames';
 import { recordEvent } from 'lib/tracks';
 import './style.scss';
 import { H, Section } from '@woocommerce/components';
+import { getUrlParams } from 'utils';
 
 class InboxNoteCard extends Component {
 	constructor( props ) {
@@ -67,21 +68,16 @@ class InboxNoteCard extends Component {
 
 	getScreenName() {
 		let screenName = '';
-		const urlParams = new URLSearchParams( window.location.search );
-
-		if ( urlParams.has( 'page' ) ) {
-			const currentPage =
-				urlParams.get( 'page' ) === 'wc-admin'
-					? 'home_screen'
-					: urlParams.get( 'page' );
-			screenName = urlParams.has( 'path' )
-				? urlParams
-						.get( 'path' )
-						.replace( /\//g, '_' )
-						.substring( 1 )
+		const { page, path, post_type: postType } = getUrlParams(
+			window.location.search
+		);
+		if ( page ) {
+			const currentPage = page === 'wc-admin' ? 'home_screen' : page;
+			screenName = path
+				? path.replace( /\//g, '_' ).substring( 1 )
 				: currentPage;
-		} else if ( urlParams.has( 'post_type' ) ) {
-			screenName = urlParams.get( 'post_type' );
+		} else if ( postType ) {
+			screenName = postType;
 		}
 		return screenName;
 	}
@@ -135,9 +131,13 @@ class InboxNoteCard extends Component {
 			'woocommerce-admin-dismiss-notification',
 			'components-popover__content',
 		];
-		const isClickOutsideDropdown = event.relatedTarget
+		// This line is for IE compatibility.
+		const relatedTarget = event.relatedTarget
+			? event.relatedTarget
+			: document.activeElement;
+		const isClickOutsideDropdown = relatedTarget
 			? dropdownClasses.some( ( className ) =>
-					event.relatedTarget.className.includes( className )
+					relatedTarget.className.includes( className )
 			  )
 			: false;
 		if ( isClickOutsideDropdown ) {
@@ -150,6 +150,7 @@ class InboxNoteCard extends Component {
 	renderDismissButton() {
 		return (
 			<Dropdown
+				contentClassName="woocommerce-admin-dismiss-dropdown"
 				position="bottom right"
 				renderToggle={ ( { onClose, onToggle } ) => (
 					<Button
@@ -232,7 +233,7 @@ class InboxNoteCard extends Component {
 					</p>
 					<div className="woocommerce-inbox-dismiss-confirmation_buttons">
 						<Button
-							isDefault
+							isSecondary
 							onClick={ () => this.closeDismissModal() }
 						>
 							{ __( 'Cancel', 'woocommerce-admin' ) }
