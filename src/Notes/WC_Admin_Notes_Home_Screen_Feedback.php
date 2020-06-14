@@ -2,7 +2,7 @@
 /**
  * WooCommerce Admin: Help us improve the WooCommerce Home screen
  *
- * Adds a note to ask the client if they need help adding their first product.
+ * Adds a note to ask the client to provide feedback about the home screen.
  *
  * @package WooCommerce Admin
  */
