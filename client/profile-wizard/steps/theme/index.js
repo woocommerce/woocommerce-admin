@@ -191,10 +191,7 @@ class Theme extends Component {
 		const { activeTheme = '' } = getSetting( 'onboarding', {} );
 
 		return (
-			<Card
-				className="woocommerce-profile-wizard__theme"
-				key={ theme.slug }
-			>
+			<Card className="woocommerce-profile-wizard__theme" key={ slug }>
 				{ image && (
 					<div
 						className="woocommerce-profile-wizard__theme-image"
