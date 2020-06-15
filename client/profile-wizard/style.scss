@@ -5,8 +5,21 @@
 		color: $studio-pink-50;
 	}
 
-	.woocommerce-profile-wizard__continue {
-		line-height: 32px;
+	.components-button.is-primary {
+		background-color: $studio-pink-50 !important;
+
+
+		&.is-busy:not(:disabled) {
+			/* stylelint-disable function-parentheses-space-inside, function-comma-space-after */
+			background-image: linear-gradient(
+				-45deg,
+				$studio-pink-50 28%,
+				color($studio-pink-50 shade(30%)) 28%,
+				color($studio-pink-50 shade(30%)) 72%,
+				$studio-pink-50 72%
+			) !important; // Gutenberg & PostCSS Add the gradient late in output, based on the 'primary' color, which in our case is purple. Our busy state should be pink.
+			/* stylelint-enable */
+		}
 	}
 
 	.woocommerce-card {
@@ -322,10 +335,10 @@
 	.woocommerce-select-control__control {
 		margin: $gap 0;
 		padding-right: $gap + 24px;
+		box-shadow: $shadow-popover;
 
 		&.is-active {
-			box-shadow: 0 0 0 1px $studio-woocommerce-purple-60;
-			border-color: $studio-woocommerce-purple-60;
+			border-color: $blue-medium-focus;
 		}
 
 		.components-base-control__label {
