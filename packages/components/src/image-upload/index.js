@@ -71,6 +71,7 @@ class ImageUpload extends Component {
 							<img src={ image.url } alt="" />
 						</div>
 						<Button
+							isSecondary
 							className="woocommerce-image-upload__remove-image"
 							onClick={ this.removeImage }
 						>
