@@ -136,22 +136,8 @@
 			display: inline-block;
 		}
 
-		.components-form-toggle__track {
-			width: 36px;
-			max-width: 36px;
-			height: 18px;
-			max-height: 18px;
-		}
-
 		.components-base-control__field {
 			margin-bottom: 0;
-		}
-
-		&.is-checked {
-			.components-form-toggle__track {
-				background-color: $studio-woocommerce-purple-60;
-				border-color: $studio-woocommerce-purple-60;
-			}
 		}
 	}
 }

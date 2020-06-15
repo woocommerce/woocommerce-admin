@@ -5,23 +5,6 @@
 		color: $studio-pink-50;
 	}
 
-	.components-button.is-primary {
-		background-color: $studio-pink-50 !important;
-
-
-		&.is-busy:not(:disabled) {
-			/* stylelint-disable function-parentheses-space-inside, function-comma-space-after */
-			background-image: linear-gradient(
-				-45deg,
-				$studio-pink-50 28%,
-				color($studio-pink-50 shade(30%)) 28%,
-				color($studio-pink-50 shade(30%)) 72%,
-				$studio-pink-50 72%
-			) !important; // Gutenberg & PostCSS Add the gradient late in output, based on the 'primary' color, which in our case is purple. Our busy state should be pink.
-			/* stylelint-enable */
-		}
-	}
-
 	.woocommerce-card {
 		margin-top: $gap;
 
@@ -231,10 +214,6 @@
 	.woocommerce-profile-wizard__tracking {
 		.woocommerce-profile-wizard__tracking-checkbox {
 			margin-top: $gap;
-			.components-checkbox-control__input[type='checkbox']:checked {
-				background-color: $studio-woocommerce-purple-60;
-				border-color: $studio-woocommerce-purple-60;
-			}
 		}
 
 		.components-form-toggle {
@@ -276,12 +255,6 @@
 
 			.components-base-control__field {
 				margin: 0;
-			}
-
-			.components-checkbox-control__input {
-				position: absolute;
-				top: 0;
-				left: 3px;
 			}
 
 			label.components-checkbox-control__label {
