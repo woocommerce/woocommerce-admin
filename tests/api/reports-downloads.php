@@ -380,6 +380,27 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
+	 * Test deleted product in report result set.
+	 */
+	public function test_get_report_with_deleted_product() {
+		$test_info = $this->filter_setup();
+
+		// Delete the first test product.
+		\WC_Helper_Product::delete_product( $test_info['product_1'] );
+
+		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint ) );
+		$reports  = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 2, count( $reports ) );
+
+		// Verify the first product's download info is blank.
+		$this->assertEquals( '', $reports[0]['file_name'] );
+		$this->assertEquals( '', $reports[0]['file_path'] );
+		$this->assertEquals( 'test.png', $reports[1]['file_name'] );
+	}
+
+	/**
 	 * Test getting reports without valid permissions.
 	 */
 	public function test_get_reports_without_permission() {
