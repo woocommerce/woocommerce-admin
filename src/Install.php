@@ -256,7 +256,7 @@ class Install {
 			query longtext NOT NULL,
 			status varchar(255) NOT NULL,
 			is_primary boolean DEFAULT 0 NOT NULL,
-			actioned_label varchar(255) NOT NULL,
+			actioned_text varchar(255) NOT NULL,
 			PRIMARY KEY (action_id),
 			KEY note_id (note_id)
 		) $collate;

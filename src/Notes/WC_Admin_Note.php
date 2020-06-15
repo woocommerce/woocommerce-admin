@@ -570,7 +570,7 @@ class WC_Admin_Note extends \WC_Data {
 	 * @param string  $url            Action URL, if navigation needed. Optional.
 	 * @param string  $status         Status to transition parent Note to upon click. Defaults to 'actioned'.
 	 * @param boolean $primary        Whether or not this is the primary action. Defaults to false.
-	 * @param string  $actioned_label The label to display after the note has been actioned but before it is dismissed in the UI.
+	 * @param string  $actioned_text The label to display after the note has been actioned but before it is dismissed in the UI.
 	 */
 	public function add_action(
 		$name,
@@ -578,14 +578,14 @@ class WC_Admin_Note extends \WC_Data {
 		$url = '',
 		$status = self::E_WC_ADMIN_NOTE_ACTIONED,
 		$primary = false,
-		$actioned_label = ''
+		$actioned_text = ''
 	) {
-		$name           = wc_clean( $name );
-		$label          = wc_clean( $label );
-		$query          = esc_url_raw( $url );
-		$status         = wc_clean( $status );
-		$primary        = (bool) $primary;
-		$actioned_label = wc_clean( $actioned_label );
+		$name          = wc_clean( $name );
+		$label         = wc_clean( $label );
+		$query         = esc_url_raw( $url );
+		$status        = wc_clean( $status );
+		$primary       = (bool) $primary;
+		$actioned_text = wc_clean( $actioned_text );
 
 		if ( empty( $name ) ) {
 			$this->error( 'admin_note_invalid_data', __( 'The admin note action name prop cannot be empty.', 'woocommerce-admin' ) );
@@ -596,12 +596,12 @@ class WC_Admin_Note extends \WC_Data {
 		}
 
 		$action = array(
-			'name'           => $name,
-			'label'          => $label,
-			'query'          => $query,
-			'status'         => $status,
-			'primary'        => $primary,
-			'actioned_label' => $actioned_label,
+			'name'          => $name,
+			'label'         => $label,
+			'query'         => $query,
+			'status'        => $status,
+			'primary'       => $primary,
+			'actioned_text' => $actioned_text,
 		);
 
 		$note_actions   = $this->get_prop( 'actions', 'edit' );
