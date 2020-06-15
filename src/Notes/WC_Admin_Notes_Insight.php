@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce Admin: Do you need some inspiration?
+ * WooCommerce Admin: Insight
  *
- * Adds a note to ask the client if they need some inspiration.
+ * Adds a note to give some inspiration.
  *
  * @package WooCommerce Admin
  */
