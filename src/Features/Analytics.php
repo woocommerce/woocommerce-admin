@@ -15,6 +15,11 @@ use Automattic\WooCommerce\Admin\Loader;
  */
 class Analytics {
 	/**
+	 * Clear cache tool identifier.
+	 */
+	const CACHE_TOOL_ID = 'clear_woocommerce_analytics_cache';
+
+	/**
 	 * Class instance.
 	 *
 	 * @var Analytics instance
@@ -38,6 +43,7 @@ class Analytics {
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
 		add_filter( 'woocommerce_admin_get_user_data_fields', array( $this, 'add_user_data_fields' ) );
 		add_action( 'admin_menu', array( $this, 'register_pages' ) );
+		add_filter( 'woocommerce_debug_tools', array( $this, 'register_cache_clear_tool' ) );
 	}
 
 	/**
@@ -71,6 +77,35 @@ class Analytics {
 				'variations_report_columns',
 			)
 		);
+	}
+
+	/**
+	 * Register the cache clearing tool on the WooCommerce > Status > Tools page.
+	 *
+	 * @param array $debug_tools Available debug tool registrations.
+	 * @return array Filtered debug tool registrations.
+	 */
+	public function register_cache_clear_tool( $debug_tools ) {
+		$settings_url = add_query_arg(
+			array(
+				'page' => 'wc-admin',
+				'path' => '/analytics/settings',
+			),
+			get_admin_url( null, 'admin.php' )
+		);
+
+		$debug_tools[ self::CACHE_TOOL_ID ] = array(
+			'name'   => __( 'Clear analytics cache', 'woocommerce-admin' ),
+			'button' => __( 'Clear', 'woocommerce-admin' ),
+			'desc'   => sprintf(
+				/* translators: 1: opening link tag, 2: closing tag */
+				'This tool will reset the cached values used in WooCommerce Analytics. If numbers still look off, try %1$sReimporting Historical Data%2$s.',
+				'<a href="' . esc_url( $settings_url ) . '">',
+				'</a>'
+			),
+		);
+
+		return $debug_tools;
 	}
 
 	/**
