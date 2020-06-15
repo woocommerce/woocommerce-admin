@@ -86,7 +86,7 @@ class Marketing {
 				'id'         => 'woocommerce-marketing',
 				'title'      => 'Marketing',
 				'capability' => 'manage_woocommerce',
-				'path'       => '/marketing',
+				'path'       => 'wc-admin&path=/marketing',
 			]
 		);
 	}
