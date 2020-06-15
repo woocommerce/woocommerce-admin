@@ -45,15 +45,6 @@ class Coupons {
 			return;
 		}
 
-		/**
-		 * Filter to override this feature.
-		 *
-		 * @param bool $disabled Whether the normal coupons are overridden. Defaults to true.
-		 */
-		if ( ! apply_filters( 'woocommerce_admin_coupons', true ) ) {
-			return;
-		}
-
 		// Only support coupon modifications if coupons are enabled.
 		if ( ! wc_coupons_enabled() ) {
 			return;
