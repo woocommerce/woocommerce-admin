@@ -50,7 +50,9 @@ class Marketing {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
+		add_action( 'admin_menu', array( $this, 'add_parent_menu_item' ), 9 );
 		add_action( 'admin_menu', array( $this, 'register_pages' ) );
+		add_action( 'admin_head', array( $this, 'modify_menu_structure' ) );
 
 		if ( ! is_admin() ) {
 			return;
@@ -61,16 +63,31 @@ class Marketing {
 	}
 
 	/**
+	 * Add main marketing menu item.
+	 *
+	 * Uses priority of 9 so other items can easily be added at the default priority (10).
+	 */
+	public function add_parent_menu_item() {
+		add_menu_page(
+			__( 'Marketing', 'woocommerce-admin' ),
+			__( 'Marketing', 'woocommerce-admin' ),
+			'manage_woocommerce',
+			'woocommerce-marketing',
+			null,
+			'dashicons-megaphone',
+			58
+		);
+	}
+
+	/**
 	 * Registers report pages.
 	 */
 	public function register_pages() {
 		$marketing_pages = array(
 			array(
-				'id'       => 'woocommerce-marketing',
-				'title'    => __( 'Marketing', 'woocommerce-admin' ),
-				'path'     => '/marketing',
-				'icon'     => 'dashicons-megaphone',
-				'position' => 58, // After WooCommerce & Product menu items.
+				'id'    => 'woocommerce-marketing-overview',
+				'title' => __( 'Overview', 'woocommerce-admin' ),
+				'path'  => '/marketing',
 			),
 		);
 
@@ -78,8 +95,40 @@ class Marketing {
 
 		foreach ( $marketing_pages as $marketing_page ) {
 			if ( ! is_null( $marketing_page ) ) {
+				$marketing_page['parent'] = 'woocommerce-marketing';
 				wc_admin_register_page( $marketing_page );
 			}
+		}
+	}
+
+	/**
+	 * Modify the Marketing menu structure
+	 */
+	public function modify_menu_structure() {
+		global $submenu;
+
+		$marketing_submenu_key = 'woocommerce-marketing';
+		$overview_key          = null;
+
+		// User does not have capabilites to see the submenu.
+		if ( ! current_user_can( 'manage_woocommerce' ) || empty( $submenu[ $marketing_submenu_key ] ) ) {
+			return;
+		}
+
+		foreach ( $submenu[ $marketing_submenu_key ] as $submenu_key => $submenu_item ) {
+			if ( 'wc-admin&path=/marketing' === $submenu_item[2] ) {
+				$overview_key = $submenu_key;
+			}
+		}
+
+		// Remove PHP powered top level page.
+		unset( $submenu[ $marketing_submenu_key ][0] );
+
+		// Move overview menu item to top.
+		if ( null !== $overview_key ) {
+			$menu = $submenu[ $marketing_submenu_key ][ $overview_key ];
+			unset( $submenu[ $marketing_submenu_key ][ $overview_key ] );
+			array_unshift( $submenu[ $marketing_submenu_key ], $menu );
 		}
 	}
 
@@ -143,21 +192,39 @@ class Marketing {
 	/**
 	 * Load knowledge base posts from WooCommerce.com
 	 *
+	 * @param string $category Category of posts to retrieve.
 	 * @return array
 	 */
-	public function get_knowledge_base_posts() {
-		$posts = get_transient( self::KNOWLEDGE_BASE_TRANSIENT );
+	public function get_knowledge_base_posts( $category ) {
+
+		$kb_transient = self::KNOWLEDGE_BASE_TRANSIENT;
+
+		$categories = array(
+			'marketing' => 1744,
+			'coupons'   => 25202,
+		);
+
+		// Default to marketing category (if no category set on the kb component).
+		if ( ! empty( $category ) && array_key_exists( $category, $categories ) ) {
+			$category_id  = $categories[ $category ];
+			$kb_transient = $kb_transient . '_' . strtolower( $category );
+		} else {
+			$category_id = $categories['marketing'];
+		}
+
+		$posts = get_transient( $kb_transient );
 
 		if ( false === $posts ) {
 			$request_url = add_query_arg(
 				array(
-					'categories' => 1744, // Marketing.
+					'categories' => $category_id,
 					'page'       => 1,
 					'per_page'   => 8,
 					'_embed'     => 1,
 				),
 				'https://woocommerce.com/wp-json/wp/v2/posts'
 			);
+
 			$request = wp_remote_get( $request_url );
 			$posts   = [];
 
@@ -191,7 +258,7 @@ class Marketing {
 			}
 
 			set_transient(
-				self::KNOWLEDGE_BASE_TRANSIENT,
+				$kb_transient,
 				$posts,
 				// Expire transient in 15 minutes if remote get failed.
 				empty( $posts ) ? 900 : DAY_IN_SECONDS

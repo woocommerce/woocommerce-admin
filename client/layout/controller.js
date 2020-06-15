@@ -20,7 +20,6 @@ import { Spinner } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { getUrlParams } from 'utils';
 
 const AnalyticsReport = lazy( () =>
@@ -35,8 +34,8 @@ const Dashboard = lazy( () =>
 const DevDocs = lazy( () =>
 	import( /* webpackChunkName: "devdocs" */ 'devdocs' )
 );
-const Homepage = lazy( () =>
-	import( /* webpackChunkName: "homepage" */ 'homepage' )
+const Homescreen = lazy( () =>
+	import( /* webpackChunkName: "homescreen" */ 'homescreen' )
 );
 const MarketingOverview = lazy( () =>
 	import( /* webpackChunkName: "marketing-overview" */ 'marketing/overview' )
@@ -47,7 +46,7 @@ const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
 
 export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 
-export const getPages = ( homepageEnabled ) => {
+export const getPages = () => {
 	const pages = [];
 	const initialBreadcrumbs = [ [ '', wcSettings.woocommerceTranslation ] ];
 
@@ -74,7 +73,7 @@ export const getPages = ( homepageEnabled ) => {
 
 	if (
 		window.wcAdminFeatures[ 'analytics-dashboard' ] &&
-		! homepageEnabled
+		! window.wcAdminFeatures.homescreen
 	) {
 		pages.push( {
 			container: Dashboard,
@@ -87,9 +86,9 @@ export const getPages = ( homepageEnabled ) => {
 		} );
 	}
 
-	if ( homepageEnabled ) {
+	if ( window.wcAdminFeatures.homescreen ) {
 		pages.push( {
-			container: Homepage,
+			container: Homescreen,
 			path: '/',
 			breadcrumbs: [
 				...initialBreadcrumbs,
@@ -100,7 +99,7 @@ export const getPages = ( homepageEnabled ) => {
 	}
 
 	if ( window.wcAdminFeatures.analytics ) {
-		if ( homepageEnabled ) {
+		if ( window.wcAdminFeatures.homescreen ) {
 			pages.push( {
 				container: Dashboard,
 				path: '/analytics/overview',
@@ -116,7 +115,7 @@ export const getPages = ( homepageEnabled ) => {
 			} );
 		}
 		const ReportWpOpenMenu = `toplevel_page_wc-admin-path--analytics-${
-			homepageEnabled ? 'overview' : 'revenue'
+			window.wcAdminFeatures.homescreen ? 'overview' : 'revenue'
 		}`;
 
 		pages.push( {
@@ -170,9 +169,13 @@ export const getPages = ( homepageEnabled ) => {
 			path: '/marketing',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				__( 'Marketing', 'woocommerce-admin' ),
+				[
+					'/marketing',
+					__( 'Marketing', 'woocommerce-admin' ),
+				],
+				__( 'Overview', 'woocommerce-admin' ),
 			],
-			wpOpenMenu: 'toplevel_page_wc-admin-path--marketing',
+			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
 		} );
 	}
 
@@ -218,7 +221,7 @@ export class Controller extends Component {
 	}
 
 	render() {
-		const { page, match, location, homepageEnabled } = this.props;
+		const { page, match, location } = this.props;
 		const { url, params } = match;
 		const query = this.getQuery( location.search );
 
@@ -231,7 +234,6 @@ export class Controller extends Component {
 					path={ url }
 					pathMatch={ page.path }
 					query={ query }
-					homepageEnabled={ homepageEnabled }
 				/>
 			</Suspense>
 		);
@@ -252,13 +254,9 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	if ( isWCAdmin ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
-		const { woocommerce_homescreen_enabled: homepageOption } = getSetting(
-			'preloadOptions',
-			{}
-		);
 		const defaultPath =
-			window.wcAdminFeatures.homepage && homepageOption === 'yes'
-				? 'homepage'
+			window.wcAdminFeatures.homescreen
+				? 'homescreen'
 				: 'dashboard';
 		const path = query.path || defaultPath;
 		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
@@ -288,7 +286,7 @@ window.wpNavMenuUrlUpdate = function( query ) {
 		'stock',
 		'settings',
 		'customers',
-		'homepage',
+		'homescreen',
 	] );
 	const nextQuery = getPersistedQuery( query );
 
@@ -332,10 +330,12 @@ window.wpNavMenuClassChange = function( page, url ) {
 
 	if ( page.wpOpenMenu ) {
 		const currentMenu = document.querySelector( '#' + page.wpOpenMenu );
-		currentMenu.classList.remove( 'wp-not-current-submenu' );
-		currentMenu.classList.add( 'wp-has-current-submenu' );
-		currentMenu.classList.add( 'wp-menu-open' );
-		currentMenu.classList.add( 'current' );
+		if ( currentMenu ) {
+			currentMenu.classList.remove( 'wp-not-current-submenu' );
+			currentMenu.classList.add( 'wp-has-current-submenu' );
+			currentMenu.classList.add( 'wp-menu-open' );
+			currentMenu.classList.add( 'current' );
+		}
 	}
 
 	const wpWrap = document.querySelector( '#wpwrap' );

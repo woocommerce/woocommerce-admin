@@ -1,0 +1,106 @@
+// Set up some local color variables to make the CSS more clear
+$outer-border: $core-grey-light-700;
+$promo-actions-border: $core-grey-light-500;
+
+.woocommerce-stats-overview {
+	.woocommerce-card__body {
+		padding: 0;
+	}
+	.woocommerce-summary {
+		margin: 0;
+	}
+}
+
+.woocommerce-stats-overview__footer {
+	border-top: 1px solid $outer-border;
+}
+
+.woocommerce-stats-overview__more-btn {
+	display: inline-block;
+	padding: $gap;
+}
+
+.woocommerce-stats-overview__tabs {
+	.components-tab-panel__tabs {
+		display: flex;
+		justify-content: space-between;
+		border-bottom: 1px solid $outer-border;
+
+		.components-button {
+			width: 33.33%;
+		}
+	}
+}
+
+.woocommerce-stats-overview__stats {
+	margin: 0;
+
+	.woocommerce-summary__item-container {
+		width: 50%;
+		display: inline-block;
+	}
+
+	.woocommerce-summary__item-container:nth-last-of-type(1) .woocommerce-summary__item {
+		border-bottom: none;
+	}
+
+	&.is-even .woocommerce-summary__item-container:nth-last-of-type(2) .woocommerce-summary__item {
+		border-bottom: none;
+	}
+
+	.woocommerce-summary__item-container:nth-of-type(even) .woocommerce-summary__item {
+		border-right: none;
+	}
+
+	.woocommerce-summary__item {
+		background-color: $studio-white;
+
+		&:hover {
+			background-color: $light-gray-100;
+		}
+
+		&:active {
+			background-color: $light-gray-200;
+		}
+	}
+}
+
+article.woocommerce-stats-overview__install-jetpack-promo {
+	h3 {
+		margin: 16px 24px 8px;
+	}
+	p {
+		margin: 0 24px 16px;
+	}
+	footer {
+		border-top: 1px solid $promo-actions-border;
+
+		.components-button {
+			margin: 16px 4px;
+
+			&.is-busy {
+				background-image: linear-gradient(-45deg, color($theme-color tint(40%)) 28%, #fff 0, #fff 72%, color($theme-color tint(40%)) 0);
+				cursor: progress;
+				color: color($theme-color tint(20%));
+			}
+		}
+
+		.woocommerce-layout & button.components-button.is-button.is-primary {
+			margin-left: 24px;
+			background: transparent;
+			border: 1px solid $theme-color;
+
+			&:hover,
+			&:focus {
+				color: $core-grey-dark-500;
+				background-color: #fafafa;
+				border-color: #999;
+			}
+
+			&.is-busy:not(:disabled) {
+				background-image: linear-gradient(-45deg, $theme-color 28%, color($theme-color shade(20%)) 0, color($theme-color shade(20%)) 72%, $theme-color 0) !important;
+				color: $theme-color;
+			}
+		}
+	}
+}
