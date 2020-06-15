@@ -9,6 +9,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\API\Reports\Cache;
 
 /**
  * Contains backend logic for the Analytics feature.
@@ -95,14 +96,15 @@ class Analytics {
 		);
 
 		$debug_tools[ self::CACHE_TOOL_ID ] = array(
-			'name'   => __( 'Clear analytics cache', 'woocommerce-admin' ),
-			'button' => __( 'Clear', 'woocommerce-admin' ),
-			'desc'   => sprintf(
+			'name'     => __( 'Clear analytics cache', 'woocommerce-admin' ),
+			'button'   => __( 'Clear', 'woocommerce-admin' ),
+			'desc'     => sprintf(
 				/* translators: 1: opening link tag, 2: closing tag */
 				'This tool will reset the cached values used in WooCommerce Analytics. If numbers still look off, try %1$sReimporting Historical Data%2$s.',
 				'<a href="' . esc_url( $settings_url ) . '">',
 				'</a>'
 			),
+			'callback' => array( $this, 'run_clear_cache_tool' ),
 		);
 
 		return $debug_tools;
@@ -197,5 +199,12 @@ class Analytics {
 				wc_admin_register_page( $report_page );
 			}
 		}
+	}
+
+	/**
+	 * "Clear" analytics cache by invalidating it.
+	 */
+	public function run_clear_cache_tool() {
+		Cache::invalidate();
 	}
 }
