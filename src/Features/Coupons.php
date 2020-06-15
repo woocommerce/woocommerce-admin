@@ -45,6 +45,11 @@ class Coupons {
 			return;
 		}
 
+		// If the main marketing feature is disabled, don't modify coupon behavior.
+		if ( ! Loader::is_feature_enabled( 'marketing' ) ) {
+			return;
+		}
+
 		// Only support coupon modifications if coupons are enabled.
 		if ( ! wc_coupons_enabled() ) {
 			return;

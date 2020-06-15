@@ -54,12 +54,12 @@ class Marketing {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'add_parent_menu_item' ), 6 );
-		add_action( 'admin_menu', array( $this, 'register_pages' ), 5 );
-
 		if ( ! is_admin() ) {
 			return;
 		}
+
+		add_action( 'admin_menu', array( $this, 'register_pages' ), 5 );
+		add_action( 'admin_menu', array( $this, 'add_parent_menu_item' ), 6 );
 
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 30 );
