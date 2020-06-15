@@ -30,6 +30,7 @@ const CouponsOverview = () => {
 					description={ __(
 						'Take your coupon marketing to the next level with our recommended coupon extensions.'
 					) }
+					category="coupons"
 				/>
 			) }
 			<KnowledgeBase
