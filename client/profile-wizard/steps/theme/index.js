@@ -397,7 +397,7 @@ class Theme extends Component {
 				{ demo && (
 					<ThemePreview
 						theme={ demo }
-						onChoose={ this.onChoose }
+						onChoose={ () => this.onChoose( demo, 'card' ) }
 						onClose={ this.onClosePreview }
 						isBusy={ chosen === demo.slug }
 					/>
