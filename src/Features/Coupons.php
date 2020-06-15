@@ -63,7 +63,6 @@ class Coupons {
 		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_marketing_coupon_script' ) );
 		add_action( 'woocommerce_register_post_type_shop_coupon', array( $this, 'move_coupons' ) );
 		add_action( 'admin_head', array( $this, 'fix_coupon_menu_highlight' ), 99 );
-		add_filter( 'custom_menu_order', array( $this, 'reorder_coupon_menu' ) );
 		add_action( 'admin_menu', array( $this, 'maybe_add_coupon_menu_redirect' ) );
 	}
 
@@ -102,7 +101,7 @@ class Coupons {
 	 * @return array the filtered parameters.
 	 */
 	public function move_coupons( $args ) {
-		$args['show_in_menu'] = current_user_can( 'manage_woocommerce' ) ? $this->get_management_url( 'marketing' ) : true;
+		$args['show_in_menu'] = current_user_can( 'manage_woocommerce' ) ? 'woocommerce-marketing' : true;
 		return $args;
 	}
 
@@ -115,39 +114,6 @@ class Coupons {
 		if ( 'shop_coupon' === $post_type ) {
 			$parent_file = $this->get_management_url( 'marketing' ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
 		}
-	}
-
-	/**
-	 * Reorder marketing submenu items so Overview is at the top
-	 *
-	 * @param array $menu_order The existing menu order.
-	 *
-	 * @return array The filtered menu order.
-	 */
-	public function reorder_coupon_menu( $menu_order ) {
-		global $submenu;
-
-		$marketing = $this->get_management_url( 'marketing' );
-		$settings  = $submenu[ $marketing ];
-
-		$found_index = false;
-
-		foreach ( $settings as $key => $details ) {
-			if ( 'Overview' === $details[0] ) {
-				$index       = $key;
-				$found_index = true;
-				break;
-			}
-		}
-
-		if ( $found_index ) {
-			$temp = [ $index => $settings[ $index ] ];
-			unset( $settings[ $index ] );
-			$settings              = $temp + $settings;
-			$submenu[ $marketing ] = $settings; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
-		}
-
-		return $menu_order;
 	}
 
 	/**

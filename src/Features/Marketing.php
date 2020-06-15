@@ -88,17 +88,9 @@ class Marketing {
 	public function register_pages() {
 		$marketing_pages = [
 			[
-				'id'       => 'woocommerce-marketing',
-				'title'    => __( 'Marketing', 'woocommerce-admin' ),
-				'path'     => $this->get_marketing_path(),
-				'icon'     => 'dashicons-megaphone',
-				'position' => 58, // After WooCommerce & Product menu items.
-			],
-			[
 				'id'     => 'woocommerce-marketing-overview',
 				'title'  => __( 'Overview', 'woocommerce-admin' ),
-				'parent' => 'woocommerce-marketing',
-				'path'   => $this->get_marketing_path(),
+				'path'   => '/marketing',
 			],
 		];
 

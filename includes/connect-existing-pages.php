@@ -155,7 +155,7 @@ wc_admin_connect_page(
 wc_admin_connect_page(
 	array(
 		'id'        => 'woocommerce-coupons',
-		'parent'    => 'woocommerce-marketing',
+		'parent'    => 'woocommerce-marketing-overview',
 		'screen_id' => 'edit-shop_coupon',
 		'title'     => __( 'Coupons', 'woocommerce-admin' ),
 		'path'      => add_query_arg( 'post_type', 'shop_coupon', $posttype_list_base ),

@@ -83,7 +83,7 @@ trait CouponsMovedTrait {
 	 * @return string
 	 */
 	protected static function get_marketing_path() {
-		return '/marketing/overview';
+		return '/marketing';
 	}
 
 	/**
