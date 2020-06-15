@@ -21,7 +21,6 @@ class InboxNoteAction extends Component {
 		super( props );
 		this.state = {
 			inAction: false,
-			useActionedText: false,
 		};
 
 		this.handleActionClick = this.handleActionClick.bind( this );
@@ -51,33 +50,17 @@ class InboxNoteAction extends Component {
 			} else {
 				removeAllNotes();
 			}
-			actionCallback( true );
 		} else {
 			this.setState( { inAction }, () =>
 				triggerNoteAction( noteId, action.id )
 			);
 		}
 
-		if ( action.actioned_text !== '' ) {
-			this.setState( {
-				useActionedText: true,
-			} );
-		}
+		actionCallback( true );
 	}
 
-	getButtonLabel = () => {
-		const { action, dismiss, label } = this.props;
-		const { useActionedText } = this.state;
-		
-		if ( useActionedText ) {
-			return action.actioned_text;
-		}
-
-		return dismiss ? label : action.label;
-	};
-
 	render() {
-		const { action, dismiss } = this.props;
+		const { action, dismiss, label } = this.props;
 
 		return (
 			<Button
@@ -88,7 +71,7 @@ class InboxNoteAction extends Component {
 				href={ action ? action.url : undefined }
 				onClick={ this.handleActionClick }
 			>
-				{ this.getButtonLabel() }
+				{ dismiss ? label : action.label }
 			</Button>
 		);
 	}
