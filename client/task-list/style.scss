@@ -48,59 +48,6 @@
 		margin-right: auto;
 	}
 
-	// .woocommerce-task-dashboard__container .components-button:not(.components-icon-button),
-	// .components-modal__frame .components-button.is-button {
-	// 	height: 40px;
-	// 	min-width: 106px;
-	// 	margin: 0;
-	// 	justify-content: center;
-	// 	font-size: 14px;
-	// 	font-weight: 500;
-	// 	display: inline-block;
-
-	// 	&:not(.is-primary) {
-	// 		color: $theme-color; // $theme-color
-	// 	}
-	// }
-
-	// .woocommerce-list {
-	// 	margin: 0;
-
-	// 	.woocommerce-list__item {
-	// 		&:not(:first-child) {
-	// 			border-top: 1px solid $light-gray-500;
-	// 		}
-
-	// 		&:hover {
-	// 			background: $light-gray-100;
-
-	// 			.woocommerce-list__item-title {
-	// 				color: color($theme-color shade(25%));
-	// 			}
-	// 		}
-	// 	}
-
-	// 	.woocommerce-list__item-title {
-	// 		color: $theme-color; // $theme-color
-	// 	}
-
-	// 	.woocommerce-task-estimated-time {
-	// 		color: $dark-gray-500;
-	// 	}
-
-	// 	.woocommerce-list__item.is-complete {
-	// 		background: $light-gray-100;
-
-	// 		.woocommerce-list__item-title {
-	// 			color: $dark-gray-500;
-	// 		}
-
-	// 		.woocommerce-list__item-content {
-	// 			display: none;
-	// 		}
-	// 	}
-	// }
-
 	#wpbody-content {
 		position: relative;
 	}
