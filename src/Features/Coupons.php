@@ -11,6 +11,7 @@ namespace Automattic\WooCommerce\Admin\Features;
 
 use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Coupon_Page_Moved;
+use Automattic\WooCommerce\Admin\PageController;
 
 /**
  * Contains backend logic for the Coupons feature.
@@ -70,7 +71,6 @@ class Coupons {
 	 * Maybe add menu item back in original spot to help people transition
 	 */
 	public function maybe_add_coupon_menu_redirect() {
-
 		if ( ! $this->should_display_legacy_menu() ) {
 			return;
 		}
@@ -120,6 +120,10 @@ class Coupons {
 	 * Maybe add our wc-admin coupon scripts if viewing coupon pages
 	 */
 	public function maybe_add_marketing_coupon_script() {
+		$curent_screen = PageController::get_instance()->get_current_page();
+		if ( ! isset( $curent_screen['id'] ) || 'woocommerce-coupons' !== $curent_screen['id'] ) {
+			return;
+		}
 
 		$rtl = is_rtl() ? '-rtl' : '';
 
