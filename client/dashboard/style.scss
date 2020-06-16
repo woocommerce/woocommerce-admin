@@ -40,6 +40,10 @@
 	.components-popover__content {
 		padding: 0 $gap $gap-smaller;
 	}
+
+	> button svg {
+		fill: $core-grey-dark-500;
+	}
 }
 
 .woocommerce-dashboard-section__add-more-choices {
@@ -53,6 +57,10 @@
 	align-items: center;
 	padding: $gap;
 	margin: $gap-smaller;
+
+	&.components-button {
+		height: auto;
+	}
 
 	.dashicons-arrow-right-alt {
 		transform: rotate(-45deg);
@@ -75,5 +83,19 @@
 
 	.woocommerce-ellipsis-menu__item {
 		padding-bottom: 10px;
+	}
+}
+
+.woocommerce-task-dashboard__body {
+	.woocommerce-task-dashboard__container {
+		.woocommerce-task-card {
+			.components-card__header.is-size-large {
+				padding-bottom: 12px;
+
+				.woocommerce-card__menu {
+					margin-top: 8px;
+				}
+			}
+		}
 	}
 }

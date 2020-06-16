@@ -44,6 +44,9 @@ class Install {
 			'wc_admin_update_110_remove_facebook_note',
 			'wc_admin_update_110_db_version',
 		),
+		'1.3.0'  => array(
+			'wc_admin_update_130_remove_dismiss_action_from_tracking_opt_in_note',
+		),
 	);
 
 	/**
@@ -60,6 +63,8 @@ class Install {
 		'woocommerce_admin_last_orders_milestone'  => 'wc_admin_last_orders_milestone',
 		'woocommerce_admin-wc-helper-last-refresh' => 'wc-admin-wc-helper-last-refresh',
 		'woocommerce_admin_report_export_status'   => 'wc_admin_report_export_status',
+		'woocommerce_task_list_complete'           => 'woocommerce_task_list_complete',
+		'woocommerce_task_list_hidden'             => 'woocommerce_task_list_hidden',
 	);
 
 	/**
@@ -87,8 +92,16 @@ class Install {
 				continue;
 			}
 
+			if ( '1' === $old_option_value ) {
+				$old_option_value = 'yes';
+			} elseif ( '0' === $old_option_value ) {
+				$old_option_value = 'no';
+			}
+
 			update_option( $new_option, $old_option_value );
-			delete_option( $old_option );
+			if ( $new_option !== $old_option ) {
+				delete_option( $old_option );
+			}
 		}
 	}
 
@@ -237,13 +250,15 @@ class Install {
 			locale varchar(20) NOT NULL,
 			title longtext NOT NULL,
 			content longtext NOT NULL,
-			icon varchar(200) NOT NULL,
 			content_data longtext NULL default null,
 			status varchar(200) NOT NULL,
 			source varchar(200) NOT NULL,
 			date_created datetime NOT NULL default '0000-00-00 00:00:00',
 			date_reminder datetime NULL default null,
 			is_snoozable boolean DEFAULT 0 NOT NULL,
+			layout varchar(20) DEFAULT '' NOT NULL,
+			image varchar(200) NULL DEFAULT NULL,
+			is_deleted boolean DEFAULT 0 NOT NULL,
 			PRIMARY KEY (note_id)
 		) $collate;
 		CREATE TABLE {$wpdb->prefix}wc_admin_note_actions (
@@ -468,7 +483,7 @@ class Install {
 	 * Create notes.
 	 */
 	protected static function create_notes() {
-		WC_Admin_Notes_Historical_Data::add_note();
+		WC_Admin_Notes_Historical_Data::possibly_add_note();
 	}
 
 	/**

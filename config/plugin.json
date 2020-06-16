@@ -4,13 +4,15 @@
 		"analytics": true,
 		"analytics-dashboard": true,
 		"analytics-dashboard/customizable": true,
+		"coupons": true,
 		"devdocs": false,
 		"marketing": true,
 		"navigation": false,
 		"onboarding": true,
+		"remote-inbox-notifications": false,
 		"shipping-label-banner": true,
 		"store-alerts": true,
 		"wcpay": true,
-		"homepage": false
+		"homescreen": true
 	}
 }

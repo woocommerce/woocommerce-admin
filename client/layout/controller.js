@@ -20,6 +20,8 @@ import { Spinner } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
+import { getUrlParams } from 'utils';
+
 const AnalyticsReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report" */ 'analytics/report' )
 );
@@ -32,8 +34,8 @@ const Dashboard = lazy( () =>
 const DevDocs = lazy( () =>
 	import( /* webpackChunkName: "devdocs" */ 'devdocs' )
 );
-const Homepage = lazy( () =>
-	import( /* webpackChunkName: "homepage" */ 'homepage' )
+const Homescreen = lazy( () =>
+	import( /* webpackChunkName: "homescreen" */ 'homescreen' )
 );
 const MarketingOverview = lazy( () =>
 	import( /* webpackChunkName: "marketing-overview" */ 'marketing/overview' )
@@ -53,8 +55,7 @@ export const getPages = () => {
 			container: DevDocs,
 			path: '/devdocs',
 			breadcrumbs: ( { location } ) => {
-				const searchParams = new URLSearchParams( location.search );
-				const component = searchParams.get( 'component' );
+				const { component } = getUrlParams( location.search );
 
 				if ( component ) {
 					return [
@@ -72,7 +73,7 @@ export const getPages = () => {
 
 	if (
 		window.wcAdminFeatures[ 'analytics-dashboard' ] &&
-		! window.wcAdminFeatures.homepage
+		! window.wcAdminFeatures.homescreen
 	) {
 		pages.push( {
 			container: Dashboard,
@@ -85,9 +86,9 @@ export const getPages = () => {
 		} );
 	}
 
-	if ( window.wcAdminFeatures.homepage ) {
+	if ( window.wcAdminFeatures.homescreen ) {
 		pages.push( {
-			container: Homepage,
+			container: Homescreen,
 			path: '/',
 			breadcrumbs: [
 				...initialBreadcrumbs,
@@ -98,7 +99,7 @@ export const getPages = () => {
 	}
 
 	if ( window.wcAdminFeatures.analytics ) {
-		if ( window.wcAdminFeatures.homepage ) {
+		if ( window.wcAdminFeatures.homescreen ) {
 			pages.push( {
 				container: Dashboard,
 				path: '/analytics/overview',
@@ -114,7 +115,7 @@ export const getPages = () => {
 			} );
 		}
 		const ReportWpOpenMenu = `toplevel_page_wc-admin-path--analytics-${
-			window.wcAdminFeatures.homepage ? 'overview' : 'revenue'
+			window.wcAdminFeatures.homescreen ? 'overview' : 'revenue'
 		}`;
 
 		pages.push( {
@@ -168,9 +169,13 @@ export const getPages = () => {
 			path: '/marketing',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				__( 'Marketing', 'woocommerce-admin' ),
+				[
+					'/marketing',
+					__( 'Marketing', 'woocommerce-admin' ),
+				],
+				__( 'Overview', 'woocommerce-admin' ),
 			],
-			wpOpenMenu: 'toplevel_page_wc-admin-path--marketing',
+			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
 		} );
 	}
 
@@ -186,10 +191,14 @@ export class Controller extends Component {
 		const prevQuery = this.getQuery( prevProps.location.search );
 		const prevBaseQuery = omit(
 			this.getQuery( prevProps.location.search ),
+			'chartType',
+			'filter',
 			'paged'
 		);
 		const baseQuery = omit(
 			this.getQuery( this.props.location.search ),
+			'chartType',
+			'filter',
 			'paged'
 		);
 
@@ -245,9 +254,10 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	if ( isWCAdmin ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
-		const defaultPath = window.wcAdminFeatures.homepage
-			? 'homepage'
-			: 'dashboard';
+		const defaultPath =
+			window.wcAdminFeatures.homescreen
+				? 'homescreen'
+				: 'dashboard';
 		const path = query.path || defaultPath;
 		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
 
@@ -276,7 +286,7 @@ window.wpNavMenuUrlUpdate = function( query ) {
 		'stock',
 		'settings',
 		'customers',
-		'homepage',
+		'homescreen',
 	] );
 	const nextQuery = getPersistedQuery( query );
 
@@ -320,10 +330,12 @@ window.wpNavMenuClassChange = function( page, url ) {
 
 	if ( page.wpOpenMenu ) {
 		const currentMenu = document.querySelector( '#' + page.wpOpenMenu );
-		currentMenu.classList.remove( 'wp-not-current-submenu' );
-		currentMenu.classList.add( 'wp-has-current-submenu' );
-		currentMenu.classList.add( 'wp-menu-open' );
-		currentMenu.classList.add( 'current' );
+		if ( currentMenu ) {
+			currentMenu.classList.remove( 'wp-not-current-submenu' );
+			currentMenu.classList.add( 'wp-has-current-submenu' );
+			currentMenu.classList.add( 'wp-menu-open' );
+			currentMenu.classList.add( 'current' );
+		}
 	}
 
 	const wpWrap = document.querySelector( '#wpwrap' );

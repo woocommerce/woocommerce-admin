@@ -11,6 +11,7 @@ import { withSelect, withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
+import { createNoticesFromResponse } from 'lib/notices';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 export class Plugins extends Component {
@@ -41,9 +42,8 @@ export class Plugins extends Component {
 		}
 
 		const {
+			installAndActivatePlugins,
 			isRequesting,
-			installPlugin,
-			activatePlugins,
 			pluginSlugs,
 		} = this.props;
 
@@ -52,52 +52,26 @@ export class Plugins extends Component {
 			return false;
 		}
 
-		const installs = await Promise.all(
-			pluginSlugs.map( async ( slug ) => {
-				return await installPlugin( slug );
+		installAndActivatePlugins( pluginSlugs )
+			.then( ( response ) => {
+				createNoticesFromResponse( response );
+				this.handleSuccess( response.data.activated );
 			} )
-		);
-
-		const installErrors = installs.filter(
-			( install ) => install.status !== 'success'
-		);
-
-		if ( installErrors.length ) {
-			this.handleErrors( installErrors );
-			return;
-		}
-
-		const activations = await activatePlugins( pluginSlugs );
-
-		if ( activations.status === 'success' ) {
-			this.handleSuccess( activations.activePlugins );
-			return;
-		}
-
-		this.handleErrors( activations );
+			.catch( ( error ) => {
+				createNoticesFromResponse( error );
+				this.handleErrors( error.errors );
+			} );
 	}
 
 	handleErrors( errors ) {
-		const { onError, createNotice } = this.props;
-
-		errors.forEach( ( error ) => {
-			createNotice( 'error', error );
-		} );
+		const { onError } = this.props;
 
 		this.setState( { hasErrors: true } );
 		onError( errors );
 	}
 
 	handleSuccess( activePlugins ) {
-		const { createNotice, onComplete } = this.props;
-
-		createNotice(
-			'success',
-			__(
-				'Plugins were successfully installed and activated.',
-				'woocommerce-admin'
-			)
-		);
+		const { onComplete } = this.props;
 		onComplete( activePlugins );
 	}
 
@@ -106,13 +80,8 @@ export class Plugins extends Component {
 	}
 
 	render() {
-		const {
-			hasErrors,
-			isRequesting,
-			skipText,
-			autoInstall,
-			pluginSlugs,
-		} = this.props;
+		const { isRequesting, skipText, autoInstall, pluginSlugs } = this.props;
+		const { hasErrors } = this.state;
 
 		if ( hasErrors ) {
 			return (
@@ -209,7 +178,7 @@ export default compose(
 
 		const isRequesting =
 			isPluginsRequesting( 'activatePlugins' ) ||
-			isPluginsRequesting( 'installPlugin' );
+			isPluginsRequesting( 'installPlugins' );
 
 		return {
 			isRequesting,
@@ -218,15 +187,10 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
-		const { activatePlugins, installPlugin } = dispatch(
-			PLUGINS_STORE_NAME
-		);
+		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 
 		return {
-			activatePlugins,
-			createNotice,
-			installPlugin,
+			installAndActivatePlugins,
 		};
 	} )
 )( Plugins );

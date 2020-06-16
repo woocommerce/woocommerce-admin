@@ -1,4 +1,4 @@
-# 4.1.0 (Unreleased)
+# 5.0.0 (Unreleased)
 - Added `<ImageUpload />` component.
 - Style form components for WordPress 5.3.
 - Fix CompareFilter options format (key prop vs. id).
@@ -6,6 +6,14 @@
 - Add state classes to `<TextControlWithAffixes />` component.
 - Fix `<AnimationSlider />` example code.
 - Add `<Plugins />` component for installation of plugins.
+- Removed use of `IconButton` in favor of `Button` component.
+- Add custom autocompleter support to `<Search />` component.
+- Fix `<SelectControl />` component to allow clicking anywhere on options in list to select.
+- Add support for `<List />` component item tags and link types.
+- Add `<List />` and `<Link />` components to Storybook.
+
+## Breaking Changes
+- Removed `SplitButton` because its not being used.
 
 # 4.0.0
 

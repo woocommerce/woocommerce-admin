@@ -1,29 +1,38 @@
 /**
  * WooCommerce dependencies
  */
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { SETTINGS_STORE_NAME, USER_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { QUERY_DEFAULTS } from 'wc-api/constants';
 
 export function getUnreadNotes( select ) {
 	const {
-		getCurrentUserData,
 		getNotes,
 		getNotesError,
 		isGetNotesRequesting,
 	} = select( 'wc-api' );
-	const userData = getCurrentUserData();
-	if ( ! userData ) {
+
+	const { getCurrentUser } = select( USER_STORE_NAME );
+	const userData = getCurrentUser();
+	const lastRead = parseInt(
+		userData &&
+		userData.woocommerce_meta &&
+		userData.woocommerce_meta.activity_panel_inbox_last_read,
+		10
+	);
+
+	if ( ! lastRead ) {
 		return null;
 	}
 	const notesQuery = {
 		page: 1,
 		per_page: 1,
-		type: 'info,warning',
+		type: QUERY_DEFAULTS.noteTypes,
 		orderby: 'date',
 		order: 'desc',
 	};
@@ -41,8 +50,7 @@ export function getUnreadNotes( select ) {
 
 	return (
 		latestNote[ 0 ] &&
-		new Date( latestNote[ 0 ].date_created_gmt + 'Z' ).getTime() >
-			userData.activity_panel_inbox_last_read
+		new Date( latestNote[ 0 ].date_created_gmt + 'Z' ).getTime() > lastRead
 	);
 }
 

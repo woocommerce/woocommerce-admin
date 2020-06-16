@@ -23,11 +23,12 @@
 }
 
 .woocommerce-filters-filter__content-list-item {
+	border: 1px solid transparent;
 	border-bottom: 1px solid $core-grey-light-700;
 	margin: 0;
 
 	&:last-child {
-		border-bottom: none;
+		border-bottom: 1px solid transparent;
 	}
 
 	&.is-selected {
@@ -53,7 +54,8 @@
 
 	.woocommerce-filters-filter__button {
 		position: relative;
-		display: block;
+		align-items: center;
+		display: flex;
 		width: 100%;
 		padding: 1em 1em 1em 3em;
 		background-color: $core-grey-light-100;
@@ -72,11 +74,9 @@
 			background-color: $core-grey-light-100;
 		}
 
-		.dashicon {
+		svg {
 			position: absolute;
 			left: 1em;
-			top: 50%;
-			transform: translate(0, -50%);
 		}
 	}
 }

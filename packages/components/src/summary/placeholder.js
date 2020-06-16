@@ -12,22 +12,21 @@ import { withViewportMatch } from '@wordpress/viewport';
  */
 import { getHasItemsClass } from './utils';
 
-export const SummaryNumberPlaceholder = () => (
+export const SummaryNumberPlaceholder = ( { className } ) => (
 	<li
 		data-testid="summary-placeholder"
-		className="woocommerce-summary__item-container is-placeholder"
+		className={ classnames(
+			'woocommerce-summary__item-container is-placeholder',
+			className
+		) }
 	>
-		<span className="woocommerce-summary__item">
-			<span className="woocommerce-summary__item-label" />
-			<span className="woocommerce-summary__item-data">
-				<span className="woocommerce-summary__item-value" />
-				<div className="woocommerce-summary__item-delta">
-					<span className="woocommerce-summary__item-delta-value" />
-				</div>
-			</span>
-			<span className="woocommerce-summary__item-prev-label" />
-			<span className="woocommerce-summary__item-prev-value" />
-		</span>
+		<div className="woocommerce-summary__item">
+			<div className="woocommerce-summary__item-label" />
+			<div className="woocommerce-summary__item-data">
+				<div className="woocommerce-summary__item-value" />
+				<div className="woocommerce-summary__item-delta" />
+			</div>
+		</div>
 	</li>
 );
 

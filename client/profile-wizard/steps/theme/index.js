@@ -15,6 +15,7 @@ import { withDispatch } from '@wordpress/data';
  */
 import { Card, H } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -46,19 +47,15 @@ class Theme extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const {
-			isError,
-			isGetProfileItemsRequesting,
-			createNotice,
-		} = this.props;
+		const { isError, isUpdatingProfileItems, createNotice } = this.props;
 		const { chosen } = this.state;
 		const isRequestSuccessful =
-			! isGetProfileItemsRequesting &&
-			prevProps.isGetProfileItemsRequesting &&
+			! isUpdatingProfileItems &&
+			prevProps.isUpdatingProfileItems &&
 			! isError &&
 			chosen;
 		const isRequestError =
-			! isGetProfileItemsRequesting && prevProps.isRequesting && isError;
+			! isUpdatingProfileItems && prevProps.isRequesting && isError;
 
 		if ( isRequestSuccessful ) {
 			/* eslint-disable react/no-did-update-set-state */
@@ -194,10 +191,7 @@ class Theme extends Component {
 		const { activeTheme = '' } = getSetting( 'onboarding', {} );
 
 		return (
-			<Card
-				className="woocommerce-profile-wizard__theme"
-				key={ theme.slug }
-			>
+			<Card className="woocommerce-profile-wizard__theme" key={ slug }>
 				{ image && (
 					<div
 						className="woocommerce-profile-wizard__theme-image"
@@ -244,7 +238,7 @@ class Theme extends Component {
 							</Button>
 						) : (
 							<Button
-								isDefault
+								isSecondary
 								onClick={ () => this.onChoose( theme, 'card' ) }
 								isBusy={ chosen === slug }
 							>
@@ -400,7 +394,7 @@ class Theme extends Component {
 				{ demo && (
 					<ThemePreview
 						theme={ demo }
-						onChoose={ this.onChoose }
+						onChoose={ () => this.onChoose( demo, 'card' ) }
 						onClose={ this.onClosePreview }
 						isBusy={ chosen === demo.slug }
 					/>
@@ -425,18 +419,20 @@ export default compose(
 	withSelect( ( select ) => {
 		const {
 			getProfileItems,
-			getProfileItemsError,
-			isGetProfileItemsRequesting,
-		} = select( 'wc-api' );
+			getOnboardingError,
+			isOnboardingRequesting,
+		} = select( ONBOARDING_STORE_NAME );
 
 		return {
-			isError: Boolean( getProfileItemsError() ),
-			isGetProfileItemsRequesting: isGetProfileItemsRequesting(),
+			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
+			isUpdatingProfileItems: isOnboardingRequesting(
+				'updateProfileItems'
+			),
 			profileItems: getProfileItems(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateProfileItems } = dispatch( 'wc-api' );
+		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {

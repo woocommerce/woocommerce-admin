@@ -1,29 +1,28 @@
 /**
  * External Dependencies
  */
-
-import { apiFetch } from '@wordpress/data-controls';
-import { __, sprintf } from '@wordpress/i18n';
+import { apiFetch, dispatch } from '@wordpress/data-controls';
 
 /**
  * Internal Dependencies
  */
+import { pluginNames, STORE_NAME } from './constants';
 import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
-import { pluginNames } from './constants';
 
-export function updateActivePlugins( active ) {
+export function updateActivePlugins( active, replace = false ) {
 	return {
 		type: TYPES.UPDATE_ACTIVE_PLUGINS,
 		active,
+		replace,
 	};
 }
 
-export function updateInstalledPlugins( installed, added ) {
+export function updateInstalledPlugins( installed, replace = false ) {
 	return {
 		type: TYPES.UPDATE_INSTALLED_PLUGINS,
 		installed,
-		added,
+		replace,
 	};
 }
 
@@ -58,57 +57,30 @@ export function updateJetpackConnectUrl( redirectUrl, jetpackConnectUrl ) {
 	};
 }
 
-function getPluginErrorMessage( action, plugin ) {
-	const pluginName = pluginNames[ plugin ] || plugin;
-	switch ( action ) {
-		case 'install':
-			return sprintf(
-				__(
-					'There was an error installing %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-		case 'connect':
-			return sprintf(
-				__(
-					'There was an error connecting to %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-		case 'activate':
-		default:
-			return sprintf(
-				__(
-					'There was an error activating %s. Please try again.',
-					'woocommerce-admin'
-				),
-				pluginName
-			);
-	}
-}
-
-export function* installPlugin( plugin ) {
-	yield setIsRequesting( 'installPlugin', true );
+export function* installPlugins( plugins ) {
+	yield setIsRequesting( 'installPlugins', true );
 
 	try {
 		const results = yield apiFetch( {
 			path: `${ WC_ADMIN_NAMESPACE }/plugins/install`,
 			method: 'POST',
-			data: { plugin },
+			data: { plugins: plugins.join( ',' ) },
 		} );
 
-		if ( results && results.status === 'success' ) {
-			yield updateInstalledPlugins( null, results.slug );
-			return results;
+		if ( results.data.installed.length ) {
+			yield updateInstalledPlugins( results.data.installed );
 		}
 
-		throw new Error();
+		if ( Object.keys( results.errors.errors ).length ) {
+			throw results.errors;
+		}
+
+		yield setIsRequesting( 'installPlugins', false );
+
+		return results;
 	} catch ( error ) {
-		const errorMsg = getPluginErrorMessage( 'install', plugin );
-		yield setError( 'installPlugin', errorMsg );
-		return errorMsg;
+		yield setError( 'installPlugins', error );
+		throw formatErrors( error );
 	}
 }
 
@@ -122,16 +94,47 @@ export function* activatePlugins( plugins ) {
 			data: { plugins: plugins.join( ',' ) },
 		} );
 
-		if ( results && results.status === 'success' ) {
-			yield updateActivePlugins( results.activatedPlugins );
-			return results;
+		if ( results.data.activated.length ) {
+			yield updateActivePlugins( results.data.activated );
 		}
 
-		throw new Error();
+		if ( Object.keys( results.errors.errors ).length ) {
+			throw results.errors;
+		}
+
+		yield setIsRequesting( 'activatePlugins', false );
+
+		return results;
 	} catch ( error ) {
 		yield setError( 'activatePlugins', error );
-		return plugins.map( ( plugin ) => {
-			return getPluginErrorMessage( 'activate', plugin );
+		throw formatErrors( error );
+	}
+}
+
+export function* installAndActivatePlugins( plugins ) {
+	try {
+		yield dispatch( STORE_NAME, 'installPlugins', plugins );
+		const activations = yield dispatch( STORE_NAME, 'activatePlugins', plugins );
+		return activations;
+	} catch ( error ) {
+		throw error;
+	}
+}
+
+export function formatErrors( response ) {
+	if ( response.errors ) {
+		// Replace the slug with a plugin name if a constant exists.
+		Object.keys( response.errors ).forEach( plugin => {
+			response.errors[ plugin ] = response.errors[ plugin ].map( pluginError => {
+				return pluginNames[ plugin ]
+					? pluginError.replace(
+						`\`${ plugin }\``,
+						pluginNames[ plugin ]
+					)
+					: pluginError;
+			} );
 		} );
 	}
+
+	return response;
 }

@@ -4,8 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
-import { get } from 'lodash';
+import { withDispatch, withSelect } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
 import {
 	Button,
@@ -15,16 +14,21 @@ import {
 } from '@wordpress/components';
 
 /**
+ * WooCommerce dependencies
+ */
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+
+/**
  * Internal dependencies
  */
 import { Link } from '@woocommerce/components';
-import withSelect from 'wc-api/with-select';
 
 class UsageModal extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
 			allowTracking: props.allowTracking,
+			isLoadingScripts: false,
 		};
 
 		this.onTrackingChange = this.onTrackingChange.bind( this );
@@ -36,7 +40,7 @@ class UsageModal extends Component {
 		} );
 	}
 
-	async componentDidUpdate( prevProps ) {
+	async componentDidUpdate( prevProps, prevState ) {
 		const {
 			hasErrors,
 			isRequesting,
@@ -44,8 +48,12 @@ class UsageModal extends Component {
 			onContinue,
 			createNotice,
 		} = this.props;
+		const { isLoadingScripts } = this.state;
 		const isRequestSuccessful =
-			! isRequesting && prevProps.isRequesting && ! hasErrors;
+			! isRequesting &&
+			! isLoadingScripts &&
+			( prevProps.isRequesting || prevState.isLoadingScripts ) &&
+			! hasErrors;
 		const isRequestError =
 			! isRequesting && prevProps.isRequesting && hasErrors;
 
@@ -67,10 +75,21 @@ class UsageModal extends Component {
 	}
 
 	updateTracking() {
+		const { allowTracking } = this.state;
 		const { updateOptions } = this.props;
-		const allowTracking = this.state.allowTracking ? 'yes' : 'no';
+
+		if ( allowTracking && typeof window.wcTracks.enable === 'function' ) {
+			this.setState( { isLoadingScripts: true } );
+			window.wcTracks.enable( () => {
+				this.setState( { isLoadingScripts: false } );
+			} );
+		} else if ( ! allowTracking ) {
+			window.wcTracks.isEnabled = false;
+		}
+
+		const trackingValue = allowTracking ? 'yes' : 'no';
 		updateOptions( {
-			woocommerce_allow_tracking: allowTracking,
+			woocommerce_allow_tracking: trackingValue,
 		} );
 	}
 
@@ -128,7 +147,6 @@ class UsageModal extends Component {
 					</div>
 					<Button
 						isPrimary
-						isDefault
 						isBusy={ isRequesting }
 						onClick={ () => this.updateTracking() }
 					>
@@ -143,20 +161,15 @@ class UsageModal extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const {
-			getOptions,
-			getOptionsError,
-			isUpdateOptionsRequesting,
-		} = select( 'wc-api' );
+			getOption,
+			getOptionsUpdatingError,
+			isOptionsUpdating,
+		} = select( OPTIONS_STORE_NAME );
 
-		const options = getOptions( [ 'woocommerce_allow_tracking' ] );
 		const allowTracking =
-			get( options, [ 'woocommerce_allow_tracking' ], false ) === 'yes';
-		const isRequesting = Boolean(
-			isUpdateOptionsRequesting( [ 'woocommerce_allow_tracking' ] )
-		);
-		const hasErrors = Boolean(
-			getOptionsError( [ 'woocommerce_allow_tracking' ] )
-		);
+			getOption( 'woocommerce_allow_tracking' ) === 'yes';
+		const isRequesting = Boolean( isOptionsUpdating() );
+		const hasErrors = Boolean( getOptionsUpdatingError() );
 
 		return {
 			allowTracking,
@@ -166,7 +179,7 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( 'wc-api' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 
 		return {
 			createNotice,

@@ -26,6 +26,7 @@ $core-grey-dark-900: #191e23;
 $core-form-grey: #7e8993; // WP 5.3 form input border
 
 $gray-text: $core-grey-dark-500;
+$gray-text-hover: $core-grey-dark-800;
 
 // Gutenberg
 $button-hover: #fafafa;
@@ -50,3 +51,9 @@ $button-border: darken($button, 20%);
 
 // Blues
 $core-blue-dark-900: #0071a1;
+
+// Inbox Messages
+$light-gray-secondary: #ccc;
+$light-gray-tertiary: #e7e8e9;
+$dark-gray-primary: #1e1e1e;
+$medium-gray-text: #757575;

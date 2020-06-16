@@ -121,9 +121,9 @@ class Loader {
 	}
 
 	/**
-	 * Gets an array of enabled WooCommerce Admin features/sections.
+	 * Gets a build configured array of enabled WooCommerce Admin features/sections.
 	 *
-	 * @return bool Enabled Woocommerce Admin features/sections.
+	 * @return array Enabled Woocommerce Admin features/sections.
 	 */
 	public static function get_features() {
 		return apply_filters( 'woocommerce_admin_features', array() );
@@ -162,6 +162,10 @@ class Loader {
 	 * @return bool Returns true if the feature is enabled.
 	 */
 	public static function is_feature_enabled( $feature ) {
+		if ( 'homescreen' === $feature && 'yes' !== get_option( 'woocommerce_homescreen_enabled', 'no' ) ) {
+			return false;
+		}
+
 		$features = self::get_features();
 		return in_array( $feature, $features, true );
 	}
@@ -169,7 +173,7 @@ class Loader {
 	/**
 	 * Returns if the onboarding feature of WooCommerce Admin should be enabled.
 	 *
-	 * While we preform an a/b test of onboarding, the feature will be enabled within the plugin build, but only if the user recieved the test/opted in.
+	 * While we preform an a/b test of onboarding, the feature will be enabled within the plugin build, but only if the user received the test/opted in.
 	 *
 	 * @return bool Returns true if the onboarding is enabled.
 	 */
@@ -250,8 +254,7 @@ class Loader {
 	 * @todo The entry point for the embed needs moved to this class as well.
 	 */
 	public static function register_page_handler() {
-		$features = wc_admin_get_feature_config();
-		$id = $features['homepage'] ? 'woocommerce-home' : 'woocommerce-dashboard';
+		$id = self::is_feature_enabled( 'homescreen' ) ? 'woocommerce-home' : 'woocommerce-dashboard';
 
 		wc_admin_register_page(
 			array(
@@ -401,7 +404,11 @@ class Loader {
 		wp_register_script(
 			WC_ADMIN_APP,
 			self::get_url( 'app/index', 'js' ),
-			array( 'wc-components', 'wc-navigation', 'wp-date', 'wp-html-entities', 'wp-keycodes', 'wp-i18n', 'moment' ),
+			array(
+				'wp-core-data',
+				'wc-components',
+				'wp-date',
+			),
 			$js_file_version,
 			true
 		);
@@ -415,21 +422,22 @@ class Loader {
 
 		wp_set_script_translations( WC_ADMIN_APP, 'woocommerce-admin' );
 
+		// The "app" RTL files are in a different format than the components.
+		$rtl = is_rtl() ? '.rtl' : '';
+
 		wp_register_style(
 			WC_ADMIN_APP,
-			self::get_url( 'app/style', 'css' ),
+			self::get_url( "app/style{$rtl}", 'css' ),
 			array( 'wc-components' ),
 			$css_file_version
 		);
-		wp_style_add_data( WC_ADMIN_APP, 'rtl', 'replace' );
 
 		wp_register_style(
 			'wc-admin-ie',
-			self::get_url( 'ie/style', 'css' ),
+			self::get_url( "ie/style{$rtl}", 'css' ),
 			array( WC_ADMIN_APP ),
 			$css_file_version
 		);
-		wp_style_add_data( 'wc-admin-ie', 'rtl', 'replace' );
 
 		wp_register_style(
 			'wc-material-icons',
@@ -450,6 +458,13 @@ class Loader {
 		if ( ! static::user_can_analytics() ) {
 			return;
 		}
+
+		$features        = self::get_features();
+		$enabled_features = array();
+		foreach ( $features as $key ) {
+			$enabled_features[ $key ] = self::is_feature_enabled( $key );
+		}
+		wp_add_inline_script( WC_ADMIN_APP, 'window.wcAdminFeatures = ' . wp_json_encode( $enabled_features ), 'before' );
 
 		wp_enqueue_script( WC_ADMIN_APP );
 		wp_enqueue_style( WC_ADMIN_APP );
@@ -603,10 +618,8 @@ class Loader {
 	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
 	 */
 	public static function embed_page_header() {
-
-		$features = wc_admin_get_feature_config();
 		if (
-			$features['navigation'] &&
+			self::is_feature_enabled( 'navigation' ) &&
 			\Automattic\WooCommerce\Admin\Features\Navigation::instance()->is_woocommerce_page()
 		) {
 			self::embed_navigation_menu();
@@ -838,10 +851,10 @@ class Loader {
 			}
 		}
 
-		$current_user_data = array();
-		foreach ( self::get_user_data_fields() as $user_field ) {
-			$current_user_data[ $user_field ] = json_decode( get_user_meta( get_current_user_id(), 'woocommerce_admin_' . $user_field, true ) );
-		}
+		$user_controller   = new \WP_REST_Users_Controller();
+		$user_response     = $user_controller->get_current_item( new \WP_REST_Request() );
+		$current_user_data = is_wp_error( $user_response ) ? (object) array() : $user_response->get_data();
+
 		$settings['currentUserData']      = $current_user_data;
 		$settings['reviewsEnabled']       = get_option( 'woocommerce_enable_reviews' );
 		$settings['manageStock']          = get_option( 'woocommerce_manage_stock' );
@@ -885,6 +898,7 @@ class Loader {
 		}
 
 		$settings['allowMarketplaceSuggestions'] = WC_Marketplace_Suggestions::allow_suggestions();
+		$settings['connectNonce']                = wp_create_nonce( 'connect' );
 
 		return $settings;
 	}
