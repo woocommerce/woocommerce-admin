@@ -68,7 +68,7 @@ class InboxNoteAction extends Component {
 		const { action, dismiss, label } = this.props;
 		const isPrimary = dismiss || action.primary;
 
-    return (
+		return (
 			<Button
 				isPrimary={ isPrimary }
 				isSecondary={ ! isPrimary }
