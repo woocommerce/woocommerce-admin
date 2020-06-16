@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce Admin: Insight
+ * WooCommerce Admin: Insight - First sale
  *
- * Adds a note to give some inspiration.
+ * Adds a note to give insight about the first sale.
  *
  * @package WooCommerce Admin
  */
@@ -12,9 +12,9 @@ namespace Automattic\WooCommerce\Admin\Notes;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WC_Admin_Notes_Insight.
+ * WC_Admin_Notes_Insight_First_Sale.
  */
-class WC_Admin_Notes_Insight {
+class WC_Admin_Notes_Insight_First_Sale {
 	/**
 	 * Note traits.
 	 */
@@ -23,7 +23,7 @@ class WC_Admin_Notes_Insight {
 	/**
 	 * Name of the note for use in the database.
 	 */
-	const NOTE_NAME = 'wc-admin-insight';
+	const NOTE_NAME = 'wc-admin-insight-first-sale';
 
 	/**
 	 * Get the note.
@@ -46,7 +46,7 @@ class WC_Admin_Notes_Insight {
 		// this. Apart from setting the note to actioned a tracks event is
 		// sent in NoteActions.
 		$note->add_action(
-			'affirm-insight',
+			'affirm-insight-first-sale',
 			__( 'Yes', 'woocommerce-admin' ),
 			false,
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
