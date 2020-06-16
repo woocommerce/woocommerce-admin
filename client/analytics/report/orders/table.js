@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, _n, _x, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { map } from 'lodash';
 
@@ -90,15 +90,14 @@ class OrdersReportTable extends Component {
 		];
 	}
 
-	getCustomerType( customerType ) {
-		switch ( customerType ) {
-			case 'new':
-				return _x( 'New', 'customer type', 'woocommerce-admin' );
-			case 'returning':
-				return _x( 'Returning', 'customer type', 'woocommerce-admin' );
-			default:
-				return _x( 'N/A', 'customer type', 'woocommerce-admin' );
+	getCustomerName( customer ) {
+		const { first_name: firstName, last_name: lastName } = customer || {};
+
+		if ( ! firstName && ! lastName ) {
+			return '';
 		}
+
+		return [ firstName, lastName ].join( ' ' );
 	}
 
 	getRowsContent( tableData ) {
@@ -110,7 +109,6 @@ class OrdersReportTable extends Component {
 		return map( tableData, ( row ) => {
 			const {
 				currency,
-				customer_type: customerType,
 				date_created: dateCreated,
 				net_total: netTotal,
 				num_items_sold: numItemsSold,
@@ -120,7 +118,7 @@ class OrdersReportTable extends Component {
 				status,
 			} = row;
 			const extendedInfo = row.extended_info || {};
-			const { coupons, products } = extendedInfo;
+			const { coupons, customer, products } = extendedInfo;
 
 			const formattedProducts = products
 				.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
@@ -178,8 +176,8 @@ class OrdersReportTable extends Component {
 					value: status,
 				},
 				{
-					display: this.getCustomerType( customerType ),
-					value: customerType,
+					display: this.getCustomerName( customer ),
+					value: this.getCustomerName( customer ),
 				},
 				{
 					display: this.renderList(
