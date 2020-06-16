@@ -10,18 +10,9 @@ import { Button } from '@wordpress/components';
 
 import { Plugins } from '../index.js';
 
-// This function will cause Jest to wait until all Promises have completed
-// See: https://stackoverflow.com/questions/37408834/testing-with-reacts-jest-and-enzyme-when-simulated-clicks-call-a-function-that
-function tick() {
-	return new Promise( ( resolve ) => {
-		setTimeout( resolve, 0 );
-	} );
-}
-
 describe( 'Rendering', () => {
 	it( 'should render nothing when autoInstalling', async () => {
-		const installPlugins = jest.fn().mockResolvedValue( { success: true } );
-		const activatePlugins = jest.fn().mockResolvedValue( {
+		const installAndActivatePlugins = jest.fn().mockResolvedValue( {
 			success: true,
 			data: {
 				activated: [ 'jetpack' ],
@@ -35,13 +26,10 @@ describe( 'Rendering', () => {
 				autoInstall
 				pluginSlugs={ [ 'jetpack' ] }
 				onComplete={ onComplete }
-				installPlugins={ installPlugins }
-				activatePlugins={ activatePlugins }
+				installAndActivatePlugins={ installAndActivatePlugins }
 				createNotice={ createNotice }
 			/>
 		);
-
-		await tick();
 
 		const buttons = pluginsWrapper.find( Button );
 		expect( buttons.length ).toBe( 0 );
@@ -52,8 +40,6 @@ describe( 'Rendering', () => {
 			<Plugins pluginSlugs={ [] } onComplete={ () => {} } />
 		);
 
-		await tick();
-
 		const continueButton = pluginsWrapper.find( Button );
 		expect( continueButton.length ).toBe( 1 );
 		expect( continueButton.text() ).toBe( 'Continue' );
@@ -63,8 +49,6 @@ describe( 'Rendering', () => {
 		const pluginsWrapper = shallow(
 			<Plugins pluginSlugs={ [ 'jetpack' ] } onComplete={ () => {} } />
 		);
-
-		await tick();
 
 		const buttons = pluginsWrapper.find( Button );
 		expect( buttons.length ).toBe( 2 );
@@ -84,9 +68,6 @@ describe( 'Installing and activating', () => {
 	const onComplete = jest.fn();
 
 	beforeEach( () => {
-		installPlugins.mockClear();
-		activatePlugins.mockClear();
-
 		pluginsWrapper = shallow(
 			<Plugins
 				pluginSlugs={ [ 'jetpack' ] }
@@ -127,9 +108,6 @@ describe( 'Installing and activating errors', () => {
 	const onError = jest.fn();
 
 	beforeEach( () => {
-		installPlugins.mockClear();
-		activatePlugins.mockClear();
-
 		pluginsWrapper = shallow(
 			<Plugins
 				pluginSlugs={ [ 'jetpack' ] }
@@ -150,8 +128,6 @@ describe( 'Installing and activating errors', () => {
 	it( 'should call the onError callback', async () => {
 		const installButton = pluginsWrapper.find( Button ).at( 0 );
 		installButton.simulate( 'click' );
-
-		await tick();
 
 		expect( onError ).toHaveBeenCalledWith( errors );
 	} );
