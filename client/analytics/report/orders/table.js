@@ -235,8 +235,7 @@ class OrdersReportTable extends Component {
 	getSummary( totals ) {
 		const {
 			orders_count: ordersCount = 0,
-			num_new_customers: numNewCustomers = 0,
-			num_returning_customers: numReturningCustomers = 0,
+			total_customers: totalCustomers = 0,
 			products = 0,
 			num_items_sold: numItemsSold = 0,
 			coupons_count: couponsCount = 0,
@@ -256,21 +255,12 @@ class OrdersReportTable extends Component {
 			},
 			{
 				label: _n(
-					'new customer',
-					'new customers',
-					numNewCustomers,
+					' customer',
+					' customers',
+					totalCustomers,
 					'woocommerce-admin'
 				),
-				value: formatValue( currency, 'number', numNewCustomers ),
-			},
-			{
-				label: _n(
-					'returning customer',
-					'returning customers',
-					numReturningCustomers,
-					'woocommerce-admin'
-				),
-				value: formatValue( currency, 'number', numReturningCustomers ),
+				value: formatValue( currency, 'number', totalCustomers ),
 			},
 			{
 				label: _n(
@@ -336,8 +326,7 @@ class OrdersReportTable extends Component {
 				getSummary={ this.getSummary }
 				summaryFields={ [
 					'orders_count',
-					'num_new_customers',
-					'num_returning_customers',
+					'total_customers',
 					'products',
 					'num_items_sold',
 					'coupons_count',
