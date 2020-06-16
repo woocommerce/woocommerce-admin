@@ -53,7 +53,7 @@ class Segmenter extends ReportsSegmenter {
 			'orders_count'        => "COUNT($unique_orders_table.order_id) AS orders_count",
 			'avg_items_per_order' => "AVG($unique_orders_table.num_items_sold) AS avg_items_per_order",
 			'avg_order_value'     => "SUM($unique_orders_table.net_total) / COUNT($unique_orders_table.order_id) AS avg_order_value",
-			'total_customers'     => "COUNT( DISTINCT( $unique_orders_table.customer_id) ) AS total_customers",
+			'total_customers'     => "COUNT( DISTINCT( $unique_orders_table.customer_id ) ) AS total_customers",
 		);
 
 		return $columns_mapping;
@@ -143,7 +143,8 @@ class Segmenter extends ReportsSegmenter {
 				        $segmenting_groupby AS $segmenting_dimension_name,
 				        MAX( num_items_sold ) AS num_items_sold,
 				        MAX( net_total ) as net_total,
-				        MAX( returning_customer ) AS returning_customer
+				        MAX( returning_customer ) AS returning_customer,
+						MAX( $table_name.customer_id ) as customer_id
 				    FROM
 				        $table_name
 				        $segmenting_from
@@ -227,7 +228,8 @@ class Segmenter extends ReportsSegmenter {
 				        $segmenting_groupby AS $segmenting_dimension_name,
 				        MAX( num_items_sold ) AS num_items_sold,
 				        MAX( net_total ) as net_total,
-				        MAX( returning_customer ) AS returning_customer
+				        MAX( returning_customer ) AS returning_customer,
+						MAX( $table_name.customer_id ) as customer_id
 				    FROM
 				        $table_name
 				        $segmenting_from
