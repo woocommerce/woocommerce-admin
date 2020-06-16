@@ -4,6 +4,7 @@
 		"analytics": true,
 		"analytics-dashboard": true,
 		"analytics-dashboard/customizable": true,
+		"coupons": true,
 		"devdocs": true,
 		"marketing": true,
 		"navigation": true,
@@ -12,6 +13,6 @@
 		"shipping-label-banner": true,
 		"store-alerts": true,
 		"wcpay": true,
-		"homepage": true
+		"homescreen": true
 	}
 }

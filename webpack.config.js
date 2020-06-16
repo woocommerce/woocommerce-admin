@@ -1,11 +1,10 @@
 /**
  * External dependencies
  */
-const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const MiniCssExtractPlugin = require( '@automattic/mini-css-extract-plugin-with-rtl' );
 const { get } = require( 'lodash' );
 const path = require( 'path' );
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
-const { DefinePlugin } = require( 'webpack' );
 const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
@@ -20,21 +19,6 @@ const UnminifyWebpackPlugin = require( './unminify' );
 const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-webpack-plugin' );
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
-
-// generate-feature-config.php defaults to 'plugin', so lets match that here.
-let WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'plugin';
-if ( [ 'development', 'plugin', 'core' ].indexOf( WC_ADMIN_PHASE ) === -1 ) {
-	WC_ADMIN_PHASE = 'plugin';
-}
-const WC_ADMIN_CONFIG = require( path.join(
-	__dirname,
-	'config',
-	WC_ADMIN_PHASE + '.json'
-) );
-const WC_ADMIN_ADDITIONAL_FEATURES =
-	( process.env.WC_ADMIN_ADDITIONAL_FEATURES &&
-		JSON.parse( process.env.WC_ADMIN_ADDITIONAL_FEATURES ) ) ||
-	{};
 
 const externals = {
 	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
@@ -78,6 +62,7 @@ wcAdminPackages.forEach( ( name ) => {
 } );
 
 const wpAdminScripts = [
+	'marketing-coupons',
 	'onboarding-homepage-notice',
 	'onboarding-product-notice',
 	'onboarding-product-import-notice',
@@ -87,6 +72,8 @@ const wpAdminScripts = [
 wpAdminScripts.forEach( ( name ) => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
 } );
+
+const postcssPlugins = require( '@wordpress/postcss-plugins-preset' );
 
 const webpackConfig = {
 	mode: NODE_ENV,
@@ -101,7 +88,7 @@ const webpackConfig = {
 				? `wp-admin-scripts/[name].min.js`
 				: `[name]/index.min.js`;
 		},
-		chunkFilename: `chunks/[name].[chunkhash].min.js`,
+		chunkFilename: `chunks/[id].[chunkhash].min.js`,
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
@@ -155,12 +142,10 @@ const webpackConfig = {
 					MiniCssExtractPlugin.loader,
 					'css-loader',
 					{
-						// postcss loader so we can use autoprefixer and theme Gutenberg components
 						loader: 'postcss-loader',
 						options: {
-							config: {
-								path: 'postcss.config.js',
-							},
+							ident: 'postcss',
+							plugins: postcssPlugins,
 						},
 					},
 					{
@@ -172,12 +157,6 @@ const webpackConfig = {
 								],
 							},
 							prependData:
-								'@import "node_modules/@wordpress/base-styles/_colors.scss"; ' +
-								'@import "node_modules/@wordpress/base-styles/_variables.scss"; ' +
-								'@import "node_modules/@wordpress/base-styles/_mixins.scss"; ' +
-								'@import "node_modules/@wordpress/base-styles/_breakpoints.scss"; ' +
-								'@import "node_modules/@wordpress/base-styles/_animations.scss"; ' +
-								'@import "node_modules/@wordpress/base-styles/_z-index.scss"; ' +
 								'@import "_colors"; ' +
 								'@import "_variables"; ' +
 								'@import "_breakpoints"; ' +
@@ -206,13 +185,6 @@ const webpackConfig = {
 	},
 	plugins: [
 		new FixStyleOnlyEntriesPlugin(),
-		// Inject the current feature flags.
-		new DefinePlugin( {
-			'window.wcAdminFeatures': {
-				...WC_ADMIN_CONFIG.features,
-				...WC_ADMIN_ADDITIONAL_FEATURES,
-			},
-		} ),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {
 				const entryName = get( data, [ 'chunk', 'name' ] );
@@ -225,13 +197,14 @@ const webpackConfig = {
 			},
 		} ),
 		new WebpackRTLPlugin( {
-			filename: './[name]/style-rtl.css',
 			minify: {
 				safe: true,
 			},
 		} ),
 		new MiniCssExtractPlugin( {
 			filename: './[name]/style.css',
+			chunkFilename: './chunks/[id].style.css',
+			rtlEnabled: true,
 		} ),
 		new CopyWebpackPlugin(
 			wcAdminPackages.map( ( packageName ) => ( {
@@ -252,9 +225,7 @@ const webpackConfig = {
 	].filter( Boolean ),
 	optimization: {
 		minimize: NODE_ENV !== 'development',
-		minimizer: [
-			new TerserPlugin(),
-		],
+		minimizer: [ new TerserPlugin() ],
 	},
 };
 

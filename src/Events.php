@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Choose_Niche;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Giving_Feedback_Notes;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Mobile_App;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_New_Sales_Record;
@@ -20,12 +21,19 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Personalize_Store;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_EU_VAT_Number;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Payments;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Marketing;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Start_Dropshipping_Business;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Subscriptions;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Migrate_From_Shopify;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Real_Time_Order_Alerts;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Admin\Loader;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Insight_First_Sale;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Home_Screen_Feedback;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Need_Some_Inspiration;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Learn_More_About_Product_Settings;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Online_Clothing_Store;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_First_Product;
 
 /**
  * WC_Admin_Events Class.
@@ -80,9 +88,17 @@ class Events {
 		WC_Admin_Notes_EU_VAT_Number::possibly_add_note();
 		WC_Admin_Notes_Marketing::possibly_add_note();
 		WC_Admin_Notes_Giving_Feedback_Notes::possibly_add_note();
+		WC_Admin_Notes_Start_Dropshipping_Business::possibly_add_note();
 		WC_Admin_Notes_WooCommerce_Subscriptions::possibly_add_note();
 		WC_Admin_Notes_Migrate_From_Shopify::possibly_add_note();
 		WC_Admin_Notes_Insight_First_Sale::possibly_add_note();
+		WC_Admin_Notes_Home_Screen_Feedback::possibly_add_note();
+		WC_Admin_Notes_Need_Some_Inspiration::possibly_add_note();
+		WC_Admin_Notes_Learn_More_About_Product_Settings::possibly_add_note();
+		WC_Admin_Notes_Online_Clothing_Store::possibly_add_note();
+		WC_Admin_Notes_First_Product::possibly_add_note();
+		WC_Admin_Notes_Choose_Niche::possibly_add_note();
+		WC_Admin_Notes_Real_Time_Order_Alerts::possibly_add_note();
 
 		if ( Loader::is_feature_enabled( 'remote-inbox-notifications' ) ) {
 			DataSourcePoller::read_specs_from_data_sources();
