@@ -51,7 +51,15 @@ class WC_Admin_Notes_Insight_First_Sale {
 			false,
 			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			false,
-			'Thanks for your feedback'
+			__( 'Thanks for your feedback', 'woocommerce-admin' )
+		);
+		$note->add_action(
+			'deny-insight-first-sale',
+			__( 'No', 'woocommerce-admin' ),
+			false,
+			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
+			false,
+			__( 'Thanks for your feedback', 'woocommerce-admin' )
 		);
 
 		return $note;

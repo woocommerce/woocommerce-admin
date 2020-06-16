@@ -264,9 +264,7 @@ class InboxNoteCard extends Component {
 							key={ index }
 							noteId={ noteId }
 							action={ action }
-							actionCallback={ () =>
-								this.onActionClicked( action )
-							}
+							onClick={ () => this.onActionClicked( action ) }
 						/>
 					) ) }
 			</Fragment>

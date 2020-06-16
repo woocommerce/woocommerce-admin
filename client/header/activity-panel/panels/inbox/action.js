@@ -34,6 +34,7 @@ class InboxNoteAction extends Component {
 			triggerNoteAction,
 			removeAllNotes,
 			removeNote,
+			onClick,
 		} = this.props;
 		const href = event.target.href || '';
 		let inAction = true;
@@ -50,13 +51,17 @@ class InboxNoteAction extends Component {
 			} else {
 				removeAllNotes();
 			}
-		} else {
-			this.setState( { inAction }, () =>
-				triggerNoteAction( noteId, action.id )
-			);
-		}
 
-		actionCallback( true );
+			actionCallback( true );
+		} else {
+			this.setState( { inAction }, () => {
+				triggerNoteAction( noteId, action.id );
+
+				if ( !! onClick ) {
+					onClick();
+				}
+			} );
+		}
 	}
 
 	render() {
@@ -88,6 +93,7 @@ InboxNoteAction.propTypes = {
 		label: PropTypes.string.isRequired,
 		primary: PropTypes.bool.isRequired,
 	} ),
+	onClick: PropTypes.func,
 };
 
 export default compose(
