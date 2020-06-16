@@ -3,6 +3,7 @@
 .woocommerce-transient-notices {
 	position: fixed;
 	bottom: $gap-small;
+	left: 176px;
 	z-index: 99999;
 
 	@media (max-width: 960px) {
@@ -13,8 +14,12 @@
 		left: $gap;
 	}
 
-	.components-snackbar {
-		margin-left: auto;
-		margin-right: auto;
+	.woocommerce-profile-wizard__body & {
+		left: unset;
+
+		.components-snackbar {
+			margin-left: auto;
+			margin-right: auto;
+		}
 	}
 }
