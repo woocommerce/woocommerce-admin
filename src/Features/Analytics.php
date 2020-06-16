@@ -206,5 +206,7 @@ class Analytics {
 	 */
 	public function run_clear_cache_tool() {
 		Cache::invalidate();
+
+		return __( 'Analytics cache cleared.', 'woocommerce-admin' );
 	}
 }
