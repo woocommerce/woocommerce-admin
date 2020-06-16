@@ -48,6 +48,7 @@ class EllipsisMenu extends Component {
 			<div className="woocommerce-ellipsis-menu">
 				<Dropdown
 					contentClassName="woocommerce-ellipsis-menu__popover"
+					focusOnMount="container"
 					position="bottom left"
 					renderToggle={ renderEllipsis }
 					renderContent={ renderMenu }
