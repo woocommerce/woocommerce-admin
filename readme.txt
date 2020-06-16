@@ -95,7 +95,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: The WCPay method not appearing as recommended sometimes #4345
 - Fix: Removed URLSearchParams method #4501
 - Fix: REST API collections schema. #4484
-- Fix: null issue in wpNavMenuClassChange #4513 🎉 gradosevic 
+- Fix: null issue in wpNavMenuClassChange #4513 🎉 @gradosevic 
 - Fix: RTL stylesheet loading for split code chunks. #4542
 - Fix: Don't show store location step in tax and shipping tasks if the address has already been provided #4507
 - Fix: Check for enabled methods before payment task completion #4530
