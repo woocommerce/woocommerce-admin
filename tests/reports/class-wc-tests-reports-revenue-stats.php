@@ -99,9 +99,9 @@ class WC_Admin_Tests_Reports_Revenue_Stats extends WC_Unit_Test_Case {
 					),
 				),
 			),
-			'total'   => 1,
-			'pages'   => 1,
-			'page_no' => 1,
+			'total'     => 1,
+			'pages'     => 1,
+			'page_no'   => 1,
 		);
 
 		// Test retrieving the stats from the data store.
@@ -145,11 +145,11 @@ class WC_Admin_Tests_Reports_Revenue_Stats extends WC_Unit_Test_Case {
 					),
 				),
 			),
-			'total'   => 1,
-			'pages'   => 1,
-			'page_no' => 1,
+			'total'     => 1,
+			'pages'     => 1,
+			'page_no'   => 1,
 		);
-		$query = new RevenueQuery( $args );
+		$query          = new RevenueQuery( $args );
 		$this->assertEquals( $expected_stats, json_decode( wp_json_encode( $query->get_data() ), true ) );
 	}
 }
