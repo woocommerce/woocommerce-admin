@@ -4,7 +4,6 @@
 
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { get } from 'lodash';
 
 /**
  * WooCommerce dependencies
@@ -25,7 +24,7 @@ import Payments from './tasks/payments';
 
 export function getAllTasks( {
 	profileItems,
-	options,
+	taskListPayments,
 	query,
 	toggleCartModal,
 	installedPlugins,
@@ -55,15 +54,11 @@ export function getAllTasks( {
 		installedPlugins
 	);
 
-	const paymentsCompleted = get(
-		options,
-		[ 'woocommerce_task_list_payments', 'completed' ],
-		false
+	const paymentsCompleted = Boolean(
+		taskListPayments && taskListPayments.completed
 	);
-	const paymentsSkipped = get(
-		options,
-		[ 'woocommerce_task_list_payments', 'skipped' ],
-		false
+	const paymentsSkipped = Boolean(
+		taskListPayments && taskListPayments.skipped
 	);
 
 	const tasks = [
@@ -87,7 +82,7 @@ export function getAllTasks( {
 			onClick: () =>
 				remainingProductIds.length ? toggleCartModal() : null,
 			visible: productIds.length,
-			completed: ! remainingProductIds.length,
+			completed: productIds.length && ! remainingProductIds.length,
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 		{

@@ -38,6 +38,16 @@ class GetRuleProcessor {
 				return new PassRuleProcessor();
 			case 'plugin_version':
 				return new PluginVersionRuleProcessor();
+			case 'stored_state':
+				return new StoredStateRuleProcessor();
+			case 'order_count':
+				return new OrderCountRuleProcessor();
+			case 'wcadmin_active_for':
+				return new WCAdminActiveForRuleProcessor();
+			case 'product_count':
+				return new ProductCountRuleProcessor();
+			case 'onboarding_profile':
+				return new OnboardingProfileRuleProcessor();
 		}
 
 		return new FailRuleProcessor();

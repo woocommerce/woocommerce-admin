@@ -19,8 +19,9 @@ import {
 } from '@woocommerce/navigation';
 import {
 	ONBOARDING_STORE_NAME,
-	pluginNames,
+	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
+	pluginNames,
 } from '@woocommerce/data';
 
 /**
@@ -41,7 +42,9 @@ class Payments extends Component {
 			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
 		);
 		this.state = {
+			busyMethod: null,
 			enabledMethods,
+			recommendedMethod: this.getRecommendedMethod(),
 		};
 
 		this.completeTask = this.completeTask.bind( this );
@@ -49,49 +52,28 @@ class Payments extends Component {
 		this.skipTask = this.skipTask.bind( this );
 	}
 
-	componentDidUpdate( prevProps ) {
-		if ( prevProps === this.props ) {
-			return;
-		}
-		const { createNotice, errors, methods, requesting } = this.props;
+	componentDidUpdate() {
+		const { recommendedMethod } = this.state;
 
-		let recommendedMethod = 'stripe';
-		methods.forEach( ( method ) => {
-			const { key, title, visible } = method;
-
-			if ( key === 'wcpay' && visible ) {
-				recommendedMethod = 'wcpay';
-			}
-
-			if (
-				prevProps.requesting[ key ] &&
-				! requesting[ key ] &&
-				errors[ key ]
-			) {
-				createNotice(
-					'error',
-					sprintf(
-						__(
-							'There was a problem updating settings for %s',
-							'woocommerce-admin'
-						),
-						title
-					)
-				);
-			}
-		} );
-
-		if ( this.state.recommendedMethod !== recommendedMethod ) {
+		const method = this.getRecommendedMethod();
+		if ( recommendedMethod !== method ) {
 			this.setState( {
-				recommendedMethod,
+				recommendedMethod: method,
 			} );
 		}
 	}
 
-	completeTask() {
+	getRecommendedMethod() {
+		const { methods } = this.props;
+		return methods.find( ( m ) => m.key === 'wcpay' && m.visible )
+			? 'wcpay'
+			: 'stripe';
+	}
+
+	async completeTask() {
 		const { createNotice, methods, updateOptions } = this.props;
 
-		updateOptions( {
+		const update = await updateOptions( {
 			woocommerce_task_list_payments: {
 				completed: 1,
 				timestamp: Math.floor( Date.now() / 1000 ),
@@ -104,15 +86,25 @@ class Payments extends Component {
 				.map( ( method ) => method.key ),
 		} );
 
-		createNotice(
-			'success',
-			__(
-				'💰 Ka-ching! Your store can now accept payments 💳',
-				'woocommerce-admin'
-			)
-		);
+		if ( update.success ) {
+			createNotice(
+				'success',
+				__(
+					'💰 Ka-ching! Your store can now accept payments 💳',
+					'woocommerce-admin'
+				)
+			);
 
-		getHistory().push( getNewPath( {}, '/', {} ) );
+			getHistory().push( getNewPath( {}, '/', {} ) );
+		} else {
+			createNotice(
+				'error',
+				__(
+					'There was a problem updating settings',
+					'woocommerce-admin'
+				)
+			);
+		}
 	}
 
 	skipTask() {
@@ -216,12 +208,39 @@ class Payments extends Component {
 		} );
 	}
 
+	async handleClick( method ) {
+		const { methods } = this.props;
+		const { key, onClick } = method;
+
+		recordEvent( 'tasklist_payment_setup', {
+			options: methods.map( ( option ) => option.key ),
+			selected: key,
+		} );
+
+		if ( onClick ) {
+			this.setState( { busyMethod: key } );
+			await new Promise( onClick )
+				.then( () => {
+					this.setState( { busyMethod: null } );
+				} )
+				.catch( () => {
+					this.setState( { busyMethod: null } );
+				} );
+
+			return;
+		}
+
+		updateQueryString( {
+			method: key,
+		} );
+	}
+
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { methods, query } = this.props;
-		const { enabledMethods, recommendedMethod } = this.state;
-		const configuredMethods = methods.filter(
-			( method ) => method.isConfigured
+		const { busyMethod, enabledMethods, recommendedMethod } = this.state;
+		const { methods, query, requesting } = this.props;
+		const hasEnabledMethods = Object.keys( enabledMethods ).filter(
+			( method ) => enabledMethods[ method ]
 		).length;
 
 		if ( currentMethod ) {
@@ -304,21 +323,14 @@ class Payments extends Component {
 								{ container && ! isConfigured ? (
 									<Button
 										isPrimary={ key === recommendedMethod }
-										isDefault={ key !== recommendedMethod }
-										onClick={ () => {
-											recordEvent(
-												'tasklist_payment_setup',
-												{
-													options: methods.map(
-														( option ) => option.key
-													),
-													selected: key,
-												}
-											);
-											updateQueryString( {
-												method: key,
-											} );
-										} }
+										isSecondary={
+											key !== recommendedMethod
+										}
+										isBusy={ busyMethod === key }
+										disabled={ busyMethod }
+										onClick={ () =>
+											this.handleClick( method )
+										}
 									>
 										{ __( 'Set up', 'woocommerce-admin' ) }
 									</Button>
@@ -336,7 +348,7 @@ class Payments extends Component {
 					);
 				} ) }
 				<div className="woocommerce-task-payments__actions">
-					{ configuredMethods.length === 0 ? (
+					{ ! hasEnabledMethods ? (
 						<Button isLink onClick={ this.skipTask }>
 							{ __(
 								'My store doesn’t take payments',
@@ -344,7 +356,11 @@ class Payments extends Component {
 							) }
 						</Button>
 					) : (
-						<Button isPrimary onClick={ this.completeTask }>
+						<Button
+							isPrimary
+							isBusy={ requesting }
+							onClick={ this.completeTask }
+						>
 							{ __( 'Done', 'woocommerce-admin' ) }
 						</Button>
 					) }
@@ -355,20 +371,28 @@ class Payments extends Component {
 }
 
 export default compose(
-	withSelect( ( select ) => {
+	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
+		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
+		return {
+			createNotice,
+			installAndActivatePlugins,
+			updateOptions,
+		};
+	} ),
+	withSelect( ( select, props ) => {
+		const { createNotice, installAndActivatePlugins } = props;
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
-		const {
-			getOptions,
-			getUpdateOptionsError,
-			isUpdateOptionsRequesting,
-		} = select( 'wc-api' );
-
+		const { getOption, isOptionsUpdating } = select( OPTIONS_STORE_NAME );
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
+
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
-		const options = getOptions( [
+
+		const optionNames = [
 			'woocommerce_default_country',
 			'woocommerce_woocommerce_payments_settings',
 			'woocommerce_stripe_settings',
@@ -381,7 +405,12 @@ export default compose(
 			'woocommerce_cod_settings',
 			'woocommerce_bacs_settings',
 			'woocommerce_bacs_accounts',
-		] );
+		];
+
+		const options = optionNames.reduce( ( result, name ) => {
+			result[ name ] = getOption( name );
+			return result;
+		}, {} );
 		const countryCode = getCountryCode(
 			options.woocommerce_default_country
 		);
@@ -389,38 +418,22 @@ export default compose(
 		const methods = getPaymentMethods( {
 			activePlugins,
 			countryCode,
+			createNotice,
+			installAndActivatePlugins,
 			isJetpackConnected: isJetpackConnected(),
 			options,
 			profileItems,
 		} );
 
-		const errors = {};
-		const requesting = {};
-		methods.forEach( ( method ) => {
-			errors[ method.key ] = Boolean(
-				getUpdateOptionsError( [ method.optionName ] )
-			);
-			requesting[ method.key ] = Boolean(
-				isUpdateOptionsRequesting( [ method.optionName ] )
-			);
-		} );
+		const requesting = isOptionsUpdating();
 
 		return {
 			countryCode,
-			errors,
 			profileItems,
 			activePlugins,
 			options,
 			methods,
 			requesting,
-		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( 'wc-api' );
-		return {
-			createNotice,
-			updateOptions,
 		};
 	} )
 )( Payments );
