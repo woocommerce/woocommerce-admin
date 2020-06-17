@@ -70,7 +70,7 @@ const renderNotes = ( {
 			/>
 		);
 	} );
-}
+};
 
 const InboxPanel = ( props ) => {
 	const {
@@ -87,7 +87,7 @@ const InboxPanel = ( props ) => {
 
 	useEffect( () => {
 		const mountTime = Date.now();
-	
+
 		return () => {
 			const userDataFields = {
 				activity_panel_inbox_last_read: mountTime,
@@ -106,8 +106,6 @@ const InboxPanel = ( props ) => {
 			// @todo Add tracking for how often an error is displayed, and the reload action is clicked.
 			window.location.reload();
 		};
-
-		
 
 		return (
 			<Fragment>
@@ -139,10 +137,7 @@ const InboxPanel = ( props ) => {
 						'Insights and growth tips for your business',
 						'woocommerce-admin'
 					) }
-					unreadMessages={ getUnreadNotesCount(
-						notes,
-						lastRead
-					) }
+					unreadMessages={ getUnreadNotesCount( notes, lastRead ) }
 				/>
 			) }
 			<div className="woocommerce-homepage-notes-wrapper">
@@ -165,7 +160,7 @@ const InboxPanel = ( props ) => {
 			</div>
 		</Fragment>
 	);
-}
+};
 
 export default compose(
 	withSelect( ( select ) => {
@@ -181,7 +176,6 @@ export default compose(
 			type: QUERY_DEFAULTS.noteTypes,
 			orderby: 'date',
 			order: 'desc',
-			status: 'unactioned',
 			_fields: [
 				'id',
 				'name',

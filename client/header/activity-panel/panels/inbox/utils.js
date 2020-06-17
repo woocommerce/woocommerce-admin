@@ -15,13 +15,14 @@ export function getUnreadNotesCount( notes, lastRead ) {
 		const {
 			is_deleted: isDeleted,
 			date_created_gmt: dateCreatedGmt,
+			status,
 		} = note;
 		if ( ! isDeleted ) {
-			return (
+			const unread =
 				! lastRead ||
 				! dateCreatedGmt ||
-				new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead
-			);
+				new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
+			return unread && status === 'unactioned';
 		}
 	} );
 	return unreadNotes.length;
