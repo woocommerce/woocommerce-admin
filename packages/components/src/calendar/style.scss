@@ -24,17 +24,31 @@
 	}
 
 	.CalendarDay__selected_span {
-		background: $studio-woocommerce-purple;
+		background: $blue-medium-focus;
 		border: 1px solid $core-grey-light-700;
 	}
 
+	.CalendarDay__hovered_span,
+	.CalendarDay__hovered_span:hover,
+	.CalendarDay__selected_span:hover {
+		background: lighten($blue-medium-focus, 10%);
+		border: 1px solid $core-grey-light-700;
+		color: $studio-white;
+	}
+
 	.CalendarDay__selected {
-		background: $studio-woocommerce-purple-70;
+		background: darken($blue-medium-focus, 10%);
+		border: 1px solid $core-grey-light-700;
+	}
+
+	.CalendarDay__selected:active,
+	.CalendarDay__selected:hover {
+		background: darken($blue-medium-focus, 20%);
 		border: 1px solid $core-grey-light-700;
 	}
 
 	.CalendarDay__hovered_span {
-		background: $studio-woocommerce-purple;
+		background: $blue-medium-focus;
 		border: 1px solid $core-grey-light-500;
 		color: $studio-white;
 	}

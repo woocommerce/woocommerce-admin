@@ -40,7 +40,7 @@
 		margin-bottom: 0;
 	}
 
-	button {
+	button:not(.components-tab-panel__tabs-item) {
 		margin-bottom: $gap-small;
 		align-self: flex-start;
 	}
