@@ -166,7 +166,7 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 		$object->set_permission_id( $download->get_id() );
 		$object->set_user_id( 2 );
 		$object->set_user_ip_address( '5.4.3.2.1' );
-		$object->set_timestamp( date( 'Y-m-d H:00:00', $time - ( 2 * DAY_IN_SECONDS ) ) );
+		$object->set_timestamp( gmdate( 'Y-m-d H:00:00', $time - ( 2 * DAY_IN_SECONDS ) ) );
 		$id = $object->save();
 
 		WC_Helper_Queue::run_all_pending();
@@ -196,8 +196,8 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
-				'before' => date( 'Y-m-d H:00:00', $test_info['time'] + DAY_IN_SECONDS ),
-				'after'  => date( 'Y-m-d H:00:00', $test_info['time'] - DAY_IN_SECONDS ),
+				'before' => gmdate( 'Y-m-d H:00:00', $test_info['time'] + DAY_IN_SECONDS ),
+				'after'  => gmdate( 'Y-m-d H:00:00', $test_info['time'] - DAY_IN_SECONDS ),
 			)
 		);
 		$response        = $this->server->dispatch( $request );
