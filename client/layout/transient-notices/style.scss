@@ -3,14 +3,15 @@
 .woocommerce-transient-notices {
 	position: fixed;
 	bottom: $gap-small;
-	left: 176px;
+	left: 0;
 	z-index: 99999;
 
-	@media (max-width: 960px) {
-		left: 50px;
+	.components-snackbar-list__notice-container {
+		margin-left: $gap-small;
+		margin-right: $gap-small;
 	}
 
-	@media (max-width: 782px) {
-		left: $gap;
+	.components-snackbar {
+		margin: 0 auto;
 	}
 }
