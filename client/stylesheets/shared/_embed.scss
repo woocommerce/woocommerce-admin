@@ -6,12 +6,16 @@
 		overflow-x: initial !important;
 	}
 
+	#wpbody-content {
+		padding-top: 0;
+	}
+
 	#wpbody-content .notice {
 		margin-top: 15px;
 	}
 
 	.wrap {
-		padding: 20px 20px 0;
+		padding: $header-height 20px 0;
 
 		@include breakpoint( '<782px' ) {
 			p.search-box {
@@ -72,7 +76,6 @@
 
 	.woocommerce-layout__primary {
 		margin: 0;
-		padding-top: $header-height + 20;
 
 		@include breakpoint( '<782px' ) {
 			padding-top: 10px;
