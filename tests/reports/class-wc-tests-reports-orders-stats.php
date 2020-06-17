@@ -4861,7 +4861,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 					'net_revenue'         => $net_revenue,
 					'avg_items_per_order' => 0 === $orders_count ? 0 : $num_items_sold / $orders_count,
 					'avg_order_value'     => 0 === $orders_count ? 0 : $net_revenue / $orders_count,
-					'total_customers'     => $returning_customers,
+					'total_customers'     => $total_customers,
 					'segments'            => array(),
 				),
 			);

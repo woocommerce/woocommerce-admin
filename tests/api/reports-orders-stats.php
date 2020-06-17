@@ -94,7 +94,7 @@ class WC_Tests_API_Reports_Orders_Stats extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'intervals', $properties );
 
 		$totals = $properties['totals']['properties'];
-		$this->assertEquals( 11, count( $totals ) );
+		$this->assertEquals( 10, count( $totals ) );
 		$this->assertArrayHasKey( 'net_revenue', $totals );
 		$this->assertArrayHasKey( 'avg_order_value', $totals );
 		$this->assertArrayHasKey( 'orders_count', $totals );
