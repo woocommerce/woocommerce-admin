@@ -27,7 +27,7 @@ class InboxNoteCard extends Component {
 		this.state = {
 			isDismissModalOpen: false,
 			dismissType: null,
-			clickedActionText: '',
+			clickedActionText: null,
 		};
 		this.openDismissModal = this.openDismissModal.bind( this );
 		this.closeDismissModal = this.closeDismissModal.bind( this );
@@ -151,7 +151,7 @@ class InboxNoteCard extends Component {
 	renderDismissButton() {
 		const { clickedActionText } = this.state;
 
-		if ( clickedActionText !== '' ) {
+		if ( ! clickedActionText ) {
 			return null;
 		}
 
@@ -256,27 +256,33 @@ class InboxNoteCard extends Component {
 		const { actions: noteActions, id: noteId } = note;
 		const { clickedActionText } = this.state;
 
+		if ( !! clickedActionText ) {
+			return clickedActionText;
+		}
+
 		if ( ! noteActions ) {
 			return;
 		}
 
 		return (
 			<Fragment>
-				{ clickedActionText !== '' && clickedActionText }
-				{ clickedActionText === '' &&
-					noteActions.map( ( action, index ) => (
-						<NoteAction
-							key={ index }
-							noteId={ noteId }
-							action={ action }
-							onClick={ () => this.onActionClicked( action ) }
-						/>
-					) ) }
+				{ noteActions.map( ( action, index ) => (
+					<NoteAction
+						key={ index }
+						noteId={ noteId }
+						action={ action }
+						onClick={ () => this.onActionClicked( action ) }
+					/>
+				) ) }
 			</Fragment>
 		);
 	}
 
 	onActionClicked = ( action ) => {
+		if ( ! action.actioned_text ) {
+			return;
+		}
+
 		this.setState( {
 			clickedActionText: action.actioned_text,
 		} );
