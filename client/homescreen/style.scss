@@ -70,3 +70,23 @@
 	height: 225px;
 	background-color: #6495ed;
 }
+
+
+.is-inbox {
+	.woocommerce-inbox-message {
+		margin: 0 0 $gap-large;
+	}
+
+	.woocommerce-layout__inbox-panel-header {
+		padding-left: $gap-large;
+		padding-right: $gap-large;
+		padding-top: 0;
+
+		h2.woocommerce-layout__activity-panel-header-title {
+			margin: 0 0 $gap-small / 2;
+			font-size: 20px;
+			line-height: 28px;
+			font-weight: 400;
+		}
+	}
+}

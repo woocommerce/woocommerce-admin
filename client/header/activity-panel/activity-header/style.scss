@@ -29,10 +29,13 @@
 }
 
 .woocommerce-layout__inbox-panel-header {
-	padding: 15px 43px 10px;
-	h3 {
-		margin: 5px 0;
-		font-weight: 500;
+	padding: $gap * 2 42px $gap;
+
+	h3.woocommerce-layout__activity-panel-header-title {
+		margin: 0 0 $gap-small / 2;
+		font-size: 20px;
+		line-height: 28px;
+		font-weight: 400;
 	}
 	span {
 		margin-left: 7px;
