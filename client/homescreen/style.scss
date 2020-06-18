@@ -65,9 +65,12 @@
 		}
 	}
 
-	.components-card__body.is-size-large,
-	.components-card__footer.is-size-large {
+	.components-card__body.is-size-large {
 		padding: 0;
+	}
+
+	.components-card__footer.is-size-large {
+		padding: 0 $gap-smaller;
 	}
 }
 

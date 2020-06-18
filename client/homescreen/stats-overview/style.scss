@@ -64,17 +64,6 @@ $promo-actions-border-bottom: $light-gray-tertiary;
 	}
 }
 
-
-.woocommerce-homescreen-card.woocommerce-stats-overview {
-	.woocommerce-summary__item {
-		padding: $gap-large;
-	}
-
-	.components-card__footer.is-size-large {
-		padding-left: $gap-smaller;
-	}
-}
-
 article.woocommerce-stats-overview__install-jetpack-promo {
 	.woocommerce-stats-overview__install-jetpack-promo__content {
 		padding: $gap $gap-large;
