@@ -117,7 +117,7 @@ function InstallJetpackCta( {
 				<Button isSecondary onClick={ install } isBusy={ isInstalling }>
 					{ getInstallJetpackText() }
 				</Button>
-				<Button onClick={ dismiss } isBusy={ isInstalling }>
+				<Button isTertiary onClick={ dismiss } isBusy={ isInstalling }>
 					{ __( 'No thanks', 'woocommerce-admin' ) }
 				</Button>
 			</footer>
