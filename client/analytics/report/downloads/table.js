@@ -85,16 +85,31 @@ class CouponsReportTable extends Component {
 				product_id: productId,
 				username,
 			} = download;
-			const { name: productName } = _embedded.product[ 0 ];
 
-			const productLink = getNewPath(
-				persistedQuery,
-				'/analytics/products',
-				{
-					filter: 'single_product',
-					products: productId,
-				}
-			);
+			const { code: errorCode, name: productName } = _embedded.product[ 0 ];
+			let productDisplay, productValue;
+
+			// Handle deleted products.
+			if ( errorCode === 'woocommerce_rest_product_invalid_id' ) {
+				productDisplay = __( '(Deleted)', 'woocommerce-admin' );
+				productValue = __( '(Deleted)', 'woocommerce-admin' );
+			} else {
+				const productURL = getNewPath(
+					persistedQuery,
+					'/analytics/products',
+					{
+						filter: 'single_product',
+						products: productId,
+					}
+				);
+
+				productDisplay = (
+					<Link href={ productURL } type="wc-admin">
+						{ productName }
+					</Link>
+				);
+				productValue = productName;
+			}
 
 			return [
 				{
@@ -104,12 +119,8 @@ class CouponsReportTable extends Component {
 					value: date,
 				},
 				{
-					display: (
-						<Link href={ productLink } type="wc-admin">
-							{ productName }
-						</Link>
-					),
-					value: productName,
+					display: productDisplay,
+					value: productValue,
 				},
 				{
 					display: (
@@ -151,7 +162,7 @@ class CouponsReportTable extends Component {
 		const after = moment( dates.primary.after );
 		const before = moment( dates.primary.before );
 		const days = before.diff( after, 'days' ) + 1;
-		const currency = this.context.getCurrency();
+		const currency = this.context.getCurrencyConfig();
 
 		return [
 			{
