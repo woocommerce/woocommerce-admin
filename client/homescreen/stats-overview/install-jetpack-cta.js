@@ -97,17 +97,22 @@ function InstallJetpackCta( {
 
 	return (
 		<article className="woocommerce-stats-overview__install-jetpack-promo">
-			<H>
-				{ __( 'Get traffic stats with Jetpack', 'woocommerce-admin' ) }
-			</H>
-			<p>
-				{ __(
-					'Keep an eye on your views and visitors metrics with ' +
-						'Jetpack. Requires Jetpack plugin and a WordPress.com ' +
-						'account.',
-					'woocommerce-admin'
-				) }
-			</p>
+			<div className="woocommerce-stats-overview__install-jetpack-promo__content">
+				<H>
+					{ __(
+						'Get traffic stats with Jetpack',
+						'woocommerce-admin'
+					) }
+				</H>
+				<p>
+					{ __(
+						'Keep an eye on your views and visitors metrics with ' +
+							'Jetpack. Requires Jetpack plugin and a WordPress.com ' +
+							'account.',
+						'woocommerce-admin'
+					) }
+				</p>
+			</div>
 			<footer>
 				<Button isSecondary onClick={ install } isBusy={ isInstalling }>
 					{ getInstallJetpackText() }
