@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { ENTER } from '@wordpress/keycodes';
 import PropTypes from 'prop-types';
+import { __experimentalText as Text } from '@wordpress/components';
 
 /**
  * WooCommerce dependencies
@@ -83,7 +84,7 @@ class List extends Component {
 								) }
 								<div className="woocommerce-list__item-text">
 									<span className="woocommerce-list__item-title">
-										{ title }
+										<Text variant="button">{ title }</Text>
 									</span>
 									{ content && (
 										<span className="woocommerce-list__item-content">
