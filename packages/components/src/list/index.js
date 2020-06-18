@@ -84,7 +84,7 @@ class List extends Component {
 								) }
 								<div className="woocommerce-list__item-text">
 									<span className="woocommerce-list__item-title">
-										<Text variant="button">{ title }</Text>
+										<Text as="div" variant="button">{ title }</Text>
 									</span>
 									{ content && (
 										<span className="woocommerce-list__item-content">
