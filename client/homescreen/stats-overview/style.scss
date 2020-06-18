@@ -74,15 +74,8 @@ article.woocommerce-stats-overview__install-jetpack-promo {
 		margin: 0 $gap-large $gap;
 	}
 	footer {
+		padding: $gap $gap-large;
 		border-top: 1px solid $promo-actions-border-top;
 		border-bottom: 1px solid $promo-actions-border-bottom;
-
-		.components-button {
-			margin: $gap $gap-smallest;
-		}
-
-		.woocommerce-layout & button.components-button.is-secondary {
-			margin-left: $gap-large;
-		}
 	}
 }
