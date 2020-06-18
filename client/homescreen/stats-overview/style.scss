@@ -94,6 +94,7 @@ article.woocommerce-stats-overview__install-jetpack-promo {
 		font-weight: normal;
 		@include font-size( 14 );
 		line-height: 20px;
+		margin: $gap-smaller 0;
 	}
 	footer {
 		padding: $gap $gap-large;
