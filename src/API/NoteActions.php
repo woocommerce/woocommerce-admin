@@ -27,7 +27,7 @@ class NoteActions extends Notes {
 	public function register_routes() {
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<note_id>[\d-]+)/action/(?P<action_id>[\d-]+)',
+			'/' . $this->rest_base . '/(?P<note_id>[\d-]+)/action/(?P<action_id>[\d-]+)/screen/(?P<screen>[a-z_-]+)',
 			array(
 				'args'   => array(
 					'note_id'   => array(
@@ -37,6 +37,10 @@ class NoteActions extends Notes {
 					'action_id' => array(
 						'description' => __( 'Unique ID for the Note Action.', 'woocommerce-admin' ),
 						'type'        => 'integer',
+					),
+					'screen'    => array(
+						'description' => __( 'The name of the screen where the action was triggered.', 'woocommerce-admin' ),
+						'type'        => 'string',
 					),
 				),
 				array(
@@ -115,6 +119,8 @@ class NoteActions extends Notes {
 			$tracks_event = 'wcadmin_inbox_action_click';
 		}
 
+		$screen_name = $request->get_param( 'screen' );
+
 		wc_admin_record_tracks_event(
 			$tracks_event,
 			array(
@@ -124,6 +130,7 @@ class NoteActions extends Notes {
 				'note_content' => $note->get_content(),
 				'action_name'  => $triggered_action->name,
 				'action_label' => $triggered_action->label,
+				'screen'       => $screen_name,
 			)
 		);
 

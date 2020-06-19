@@ -205,8 +205,8 @@ function undoRemoveAllNotes( resourceNames, data, fetch ) {
 function triggerAction( resourceNames, data, fetch ) {
 	const resourceName = 'note-action';
 	if ( resourceNames.includes( resourceName ) ) {
-		const { noteId, actionId } = data[ resourceName ];
-		const url = `${ NAMESPACE }/admin/notes/${ noteId }/action/${ actionId }`;
+		const { noteId, actionId, screen } = data[ resourceName ];
+		const url = `${ NAMESPACE }/admin/notes/${ noteId }/action/${ actionId }/screen/${ screen }`;
 		return [
 			fetch( { path: url, method: 'POST' } )
 				.then( ( note ) => {

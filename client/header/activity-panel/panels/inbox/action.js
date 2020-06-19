@@ -12,10 +12,6 @@ import PropTypes from 'prop-types';
  */
 import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
 
-/**
- * Internal dependencies
- */
-
 class InboxNoteAction extends Component {
 	constructor( props ) {
 		super( props );
@@ -34,6 +30,7 @@ class InboxNoteAction extends Component {
 			triggerNoteAction,
 			removeAllNotes,
 			removeNote,
+			screen,
 			onClick,
 		} = this.props;
 		const href = event.target.href || '';
@@ -55,7 +52,7 @@ class InboxNoteAction extends Component {
 			actionCallback( true );
 		} else {
 			this.setState( { inAction }, () => {
-				triggerNoteAction( noteId, action.id );
+				triggerNoteAction( noteId, action.id, screen );
 
 				if ( !! onClick ) {
 					onClick();
@@ -95,6 +92,7 @@ InboxNoteAction.propTypes = {
 		primary: PropTypes.bool.isRequired,
 	} ),
 	onClick: PropTypes.func,
+	screen: PropTypes.string,
 };
 
 export default compose(

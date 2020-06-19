@@ -25,6 +25,7 @@ import { QUERY_DEFAULTS } from 'wc-api/constants';
 import sanitizeHTML from 'lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
 import { recordEvent } from 'lib/tracks';
+import { getScreenName } from 'utils';
 
 import './style.scss';
 
@@ -66,6 +67,7 @@ class StoreAlerts extends Component {
 
 	renderActions( alert ) {
 		const { triggerNoteAction, updateNote } = this.props;
+		const screenName = getScreenName();
 		const actions = alert.actions.map( ( action ) => {
 			return (
 				<Button
@@ -73,7 +75,7 @@ class StoreAlerts extends Component {
 					isPrimary={ action.primary }
 					isSecondary={ ! action.primary }
 					href={ action.url || undefined }
-					onClick={ () => triggerNoteAction( alert.id, action.id ) }
+					onClick={ () => triggerNoteAction( alert.id, action.id, screenName ) }
 				>
 					{ action.label }
 				</Button>
