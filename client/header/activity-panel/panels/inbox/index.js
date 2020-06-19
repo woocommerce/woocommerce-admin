@@ -128,6 +128,8 @@ const InboxPanel = ( props ) => {
 		isPanelEmpty( ! hasNotes && ! isActivityHeaderVisible );
 	}
 
+	// @todo After having a pagination implemented we should call the method "getNotes" with a different query since
+	// the current one is only getting 25 notes and the count of unread notes only will refer to this 25 and not all the existing ones.
 	return (
 		<Fragment>
 			{ isActivityHeaderVisible && (

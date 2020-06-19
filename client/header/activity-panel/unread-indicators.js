@@ -28,6 +28,9 @@ export function getUnreadNotes( select ) {
 	if ( ! lastRead ) {
 		return null;
 	}
+
+	// @todo This method would be more performant if we ask only for 1 item per page with status "unactioned".
+	// This change should be applied after having pagination implemented.
 	const notesQuery = {
 		page: 1,
 		per_page: QUERY_DEFAULTS.pageSize,

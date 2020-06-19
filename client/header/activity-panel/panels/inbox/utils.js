@@ -4,7 +4,7 @@
 import { filter } from 'lodash';
 
 /**
- * Get the count of the unread notes.
+ * Get the count of the unread notes from the received list.
  *
  * @param {Array} notes - List of notes, contains read and unread notes.
  * @param {number} lastRead - The timestamp that the user read a note.
