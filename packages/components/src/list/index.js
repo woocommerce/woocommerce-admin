@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { ENTER } from '@wordpress/keycodes';
 import PropTypes from 'prop-types';
-import { __experimentalText as Text } from '@wordpress/components';
 
 /**
  * WooCommerce dependencies
@@ -84,7 +83,7 @@ class List extends Component {
 								) }
 								<div className="woocommerce-list__item-text">
 									<span className="woocommerce-list__item-title">
-										<Text as="div" variant="button">{ title }</Text>
+										{ title }
 									</span>
 									{ content && (
 										<span className="woocommerce-list__item-content">
@@ -150,7 +149,10 @@ List.propTypes = {
 			/**
 			 * Title displayed for the list item.
 			 */
-			title: PropTypes.string.isRequired,
+			title: PropTypes.oneOfType( [
+				PropTypes.string,
+				PropTypes.node,
+			] ),
 		} )
 	).isRequired,
 };
