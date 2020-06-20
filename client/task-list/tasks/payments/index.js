@@ -22,6 +22,7 @@ import {
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	pluginNames,
+	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 
 /**
@@ -388,6 +389,8 @@ export default compose(
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
+		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { general: generalSettings = {} } = getSettings( 'general' );
 
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
@@ -412,7 +415,7 @@ export default compose(
 			return result;
 		}, {} );
 		const countryCode = getCountryCode(
-			options.woocommerce_default_country
+			generalSettings.woocommerce_default_country || options.woocommerce_default_country
 		);
 
 		const methods = getPaymentMethods( {
