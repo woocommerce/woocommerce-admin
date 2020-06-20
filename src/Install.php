@@ -499,6 +499,11 @@ class Install {
 			new WC_Admin_Notes_Deactivate_Plugin(),
 		);
 
+		/**
+		 * Filter allowing additional note factories to be updated.
+		 *
+		 * @param array $factories The additional factories.
+		 */
 		$additional_note_factories_to_update = apply_filters(
 			'woocommerce_admin_update_note_factories',
 			array()
