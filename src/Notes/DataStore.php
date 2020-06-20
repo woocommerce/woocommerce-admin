@@ -73,7 +73,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		if ( 0 !== $note_id || '0' !== $note_id ) {
 			$note_row = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT name, type, locale, title, content, content_data, status, source, date_created, date_reminder, is_snoozable, layout, image FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d LIMIT 1",
+					"SELECT name, type, locale, title, content, content_data, status, source, date_created, date_reminder, is_snoozable, layout, image, is_deleted FROM {$wpdb->prefix}wc_admin_notes WHERE note_id = %d LIMIT 1",
 					$note->get_id()
 				)
 			);
@@ -113,6 +113,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$note->set_is_snoozable( $note_row->is_snoozable );
 			$note->set_layout( $note_row->layout );
 			$note->set_image( $note_row->image );
+			$note->set_is_deleted( $note_row->is_deleted );
 			$this->read_actions( $note );
 			$note->read_meta_data();
 			$note->set_object_read( true );
