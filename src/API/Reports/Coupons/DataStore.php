@@ -69,7 +69,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	public static function init() {
 		add_action( 'woocommerce_analytics_delete_order_stats', array( __CLASS__, 'sync_on_order_delete' ), 5 );
-		add_action( 'delete_post', array( __CLASS__, 'delete_coupon' ) );
 	}
 
 	/**
@@ -442,27 +441,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * @param int $order_id  Order ID.
 		 */
 		do_action( 'woocommerce_analytics_delete_coupon', 0, $order_id );
-
-		ReportsCache::invalidate();
-	}
-
-	/**
-	 * Deletes the coupon lookup information when a coupon is deleted.
-	 * This keeps data consistent if it gets resynced at any point.
-	 *
-	 * @param int $post_id Post ID.
-	 */
-	public static function delete_coupon( $post_id ) {
-		global $wpdb;
-
-		if ( 'shop_coupon' !== get_post_type( $post_id ) ) {
-			return;
-		}
-
-		$wpdb->delete(
-			self::get_db_table_name(),
-			array( 'coupon_id' => $post_id )
-		);
 
 		ReportsCache::invalidate();
 	}
