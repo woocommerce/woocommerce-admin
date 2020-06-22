@@ -27,6 +27,7 @@ import { createNoticesFromResponse } from 'lib/notices';
 
 function InstallJetpackCta( {
 	getJetpackConnectUrl,
+	getPluginsError,
 	isJetpackInstalled,
 	isJetpackActivated,
 	isJetpackConnected,
@@ -56,7 +57,14 @@ function InstallJetpackCta( {
 
 		getJetpackConnectUrl( {
 			redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
-		} ).then( ( url ) => ( window.location = url ) );
+		} ).then( ( url ) => {
+			const error = getPluginsError( 'getJetpackConnectUrl' );
+			if ( error ) {
+				createNoticesFromResponse( error );
+				return;
+			}
+			window.location = url;
+		} );
 	}
 
 	function dismiss() {
@@ -139,14 +147,16 @@ export default compose(
 		const {
 			isJetpackConnected,
 			isPluginsRequesting,
-			getInstalledPlugins,
 			getActivePlugins,
+			getInstalledPlugins,
+			getPluginsError,
 		} = select( PLUGINS_STORE_NAME );
 
 		return {
 			getJetpackConnectUrl: __experimentalResolveSelect(
 				PLUGINS_STORE_NAME
 			).getJetpackConnectUrl,
+			getPluginsError,
 			isConnecting: isPluginsRequesting( 'getJetpackConnectUrl' ),
 			isInstalling:
 				isPluginsRequesting( 'installPlugins' ) ||

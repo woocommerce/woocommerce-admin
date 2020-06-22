@@ -88,13 +88,11 @@ class Benefits extends Component {
 		goToNextStep();
 	}
 
-	async startPluginInstall() {
+	startPluginInstall() {
 		const {
 			createNotice,
-			getJetpackConnectUrl,
 			goToNextStep,
 			installAndActivatePlugins,
-			isJetpackConnected,
 			updateProfileItems,
 			updateOptions,
 		} = this.props;
@@ -105,42 +103,56 @@ class Benefits extends Component {
 			plugins,
 		} );
 
-		await Promise.all( [
+		Promise.all( [
 			installAndActivatePlugins( this.pluginsToInstall ),
 			updateProfileItems( { plugins } ),
 			updateOptions( {
 				woocommerce_setup_jetpack_opted_in: true,
 			} ),
-		] ).catch( ( pluginError, profileError ) => {
-			if ( pluginError ) {
-				createNoticesFromResponse( pluginError );
-			}
-			if ( profileError ) {
-				createNotice(
-					'error',
-					__(
-						'There was a problem updating your preferences.',
-						'woocommerce-admin'
-					)
-				);
-			}
-		} );
+		] )
+			.then( () => this.connectJetpack() )
+			.catch( ( pluginError, profileError ) => {
+				if ( pluginError ) {
+					createNoticesFromResponse( pluginError );
+				}
+				if ( profileError ) {
+					createNotice(
+						'error',
+						__(
+							'There was a problem updating your preferences.',
+							'woocommerce-admin'
+						)
+					);
+				}
+				goToNextStep();
+			} );
+	}
 
-		if ( ! isJetpackConnected ) {
-			recordEvent( 'storeprofiler_jetpack_connect_redirect' );
-
-			getJetpackConnectUrl( {
-				redirect_url: getAdminLink(
-					'admin.php?page=wc-admin&reset_profiler=0'
-				),
-			} )
-				.then( ( url ) => ( window.location = url ) )
-				.catch( goToNextStep );
-
+	connectJetpack() {
+		const {
+			getJetpackConnectUrl,
+			getPluginsError,
+			goToNextStep,
+			isJetpackConnected,
+		} = this.props;
+		if ( isJetpackConnected ) {
+			goToNextStep();
 			return;
 		}
 
-		goToNextStep();
+		getJetpackConnectUrl( {
+			redirect_url: getAdminLink(
+				'admin.php?page=wc-admin&reset_profiler=0'
+			),
+		} ).then( ( url ) => {
+			const error = getPluginsError( 'getJetpackConnectUrl' );
+			if ( error ) {
+				createNoticesFromResponse( error );
+				goToNextStep();
+				return;
+			}
+			window.location = url;
+		} );
 	}
 
 	renderBenefit( benefit ) {
@@ -295,6 +307,7 @@ export default compose(
 
 		const {
 			getActivePlugins,
+			getPluginsError,
 			isJetpackConnected,
 			isPluginsRequesting,
 		} = select( PLUGINS_STORE_NAME );
@@ -304,6 +317,7 @@ export default compose(
 			getJetpackConnectUrl: __experimentalResolveSelect(
 				PLUGINS_STORE_NAME
 			).getJetpackConnectUrl,
+			getPluginsError,
 			isProfileItemsError: Boolean(
 				getOnboardingError( 'updateProfileItems' )
 			),
