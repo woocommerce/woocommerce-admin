@@ -120,9 +120,6 @@ export const useUserPreferences = () => {
 					};
 				}
 
-				// Propagate the updated User object to the store.
-				receiveCurrentUser( updatedUser );
-
 				// Decode the WooCommerce meta after save.
 				const updatedUserResponse = {
 					...updatedUser,
