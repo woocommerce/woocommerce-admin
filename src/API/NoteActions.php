@@ -27,7 +27,7 @@ class NoteActions extends Notes {
 	public function register_routes() {
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<note_id>[\d-]+)/action/(?P<action_id>[\d-]+)/screen/(?P<screen>[a-z_-]+)',
+			'/' . $this->rest_base . '/(?P<note_id>[\d-]+)/action/(?P<action_id>[\d-]+)',
 			array(
 				'args'   => array(
 					'note_id'   => array(
@@ -119,7 +119,21 @@ class NoteActions extends Notes {
 			$tracks_event = 'wcadmin_inbox_action_click';
 		}
 
-		$screen_name = $request->get_param( 'screen' );
+		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+			parse_str( wp_parse_url( wp_unslash( $_SERVER['HTTP_REFERER'] ), PHP_URL_QUERY ), $queries );
+		}
+		if ( isset( $queries ) ) {
+			$page      = isset( $queries['page'] ) ? $queries['page'] : null;
+			$path      = isset( $queries['path'] ) ? $queries['path'] : null;
+			$post_type = isset( $queries['post_type'] ) ? $queries['post_type'] : null;
+		}
+
+		if ( isset( $page ) ) {
+			$current_page = 'wc-admin' === $page ? 'home_screen' : $page;
+			$screen_name  = isset( $path ) ? substr( str_replace( '/', '_', $path ), 1 ) : $current_page;
+		} elseif ( isset( $post_type ) ) {
+			$screen_name = $post_type;
+		}
 
 		wc_admin_record_tracks_event(
 			$tracks_event,
