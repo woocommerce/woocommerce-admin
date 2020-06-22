@@ -30,7 +30,7 @@ class SearchFilter extends Component {
 				.getLabels( filter.value, query )
 				.then( ( selected ) => {
 					const selectedWithKeys = selected.map( ( s ) => ( {
-						key: s.key || s.id,
+						key: s.id,
 						...s,
 					} ) );
 
