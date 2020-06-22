@@ -5,7 +5,11 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { withDispatch, withSelect } from '@wordpress/data';
+import {
+	withDispatch,
+	withSelect,
+	__experimentalResolveSelect,
+} from '@wordpress/data';
 import { filter } from 'lodash';
 
 /**
@@ -23,7 +27,6 @@ import {
 /**
  * Internal dependencies
  */
-import Connect from 'dashboard/components/connect';
 import { createNoticesFromResponse } from 'lib/notices';
 import Logo from './logo';
 import ManagementIcon from './images/management';
@@ -88,6 +91,7 @@ class Benefits extends Component {
 	async startPluginInstall() {
 		const {
 			createNotice,
+			getJetpackConnectUrl,
 			goToNextStep,
 			installAndActivatePlugins,
 			isJetpackConnected,
@@ -122,9 +126,21 @@ class Benefits extends Component {
 			}
 		} );
 
-		if ( isJetpackConnected ) {
-			goToNextStep();
+		if ( ! isJetpackConnected ) {
+			recordEvent( 'storeprofiler_jetpack_connect_redirect' );
+
+			getJetpackConnectUrl( {
+				redirect_url: getAdminLink(
+					'admin.php?page=wc-admin&reset_profiler=0'
+				),
+			} )
+				.then( ( url ) => ( window.location = url ) )
+				.catch( goToNextStep );
+
+			return;
 		}
+
+		goToNextStep();
 	}
 
 	renderBenefit( benefit ) {
@@ -204,8 +220,6 @@ class Benefits extends Component {
 	render() {
 		const {
 			activePlugins,
-			goToNextStep,
-			isJetpackConnected,
 			isInstallingActivating,
 			isRequesting,
 		} = this.props;
@@ -249,24 +263,6 @@ class Benefits extends Component {
 					>
 						{ __( 'No thanks', 'woocommerce-admin' ) }
 					</Button>
-
-					{ /* Make sure we're finished requesting since this will auto redirect us. */ }
-					{ ! isJetpackConnected &&
-						! isRequesting &&
-						! pluginsRemaining.length && (
-							<Connect
-								autoConnect
-								onConnect={ () => {
-									recordEvent(
-										'storeprofiler_jetpack_connect_redirect'
-									);
-								} }
-								onError={ () => goToNextStep() }
-								redirectUrl={ getAdminLink(
-									'admin.php?page=wc-admin&reset_profiler=0'
-								) }
-							/>
-						) }
 				</div>
 
 				<p className="woocommerce-profile-wizard__benefits-install-notice">
@@ -305,6 +301,9 @@ export default compose(
 
 		return {
 			activePlugins: getActivePlugins(),
+			getJetpackConnectUrl: __experimentalResolveSelect(
+				PLUGINS_STORE_NAME
+			).getJetpackConnectUrl,
 			isProfileItemsError: Boolean(
 				getOnboardingError( 'updateProfileItems' )
 			),
