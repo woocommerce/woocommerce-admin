@@ -326,9 +326,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$coupon_data = $coupon_item->get_meta( 'coupon_data', true );
 
 		// Normal checkout orders should have this data.
-		// See: https://github.com/woocommerce/woocommerce/blob/3dc7df7af9f7ca0c0aa34ede74493e856f276abe/includes/abstracts/abstract-wc-order.php#L1206
-		if ( isset( $coupon_data['coupon_id'] ) ) {
-			return $coupon_data['coupon_id'];
+		// See: https://github.com/woocommerce/woocommerce/blob/3dc7df7af9f7ca0c0aa34ede74493e856f276abe/includes/abstracts/abstract-wc-order.php#L1206.
+		if ( isset( $coupon_data['id'] ) ) {
+			return $coupon_data['id'];
 		}
 
 		// Try to get the coupon ID using the code.
