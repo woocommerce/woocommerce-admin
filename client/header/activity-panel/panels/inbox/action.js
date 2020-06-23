@@ -30,7 +30,6 @@ class InboxNoteAction extends Component {
 			triggerNoteAction,
 			removeAllNotes,
 			removeNote,
-			screen,
 			onClick,
 		} = this.props;
 		const href = event.target.href || '';
@@ -52,7 +51,7 @@ class InboxNoteAction extends Component {
 			actionCallback( true );
 		} else {
 			this.setState( { inAction }, () => {
-				triggerNoteAction( noteId, action.id, screen );
+				triggerNoteAction( noteId, action.id );
 
 				if ( !! onClick ) {
 					onClick();
@@ -92,7 +91,6 @@ InboxNoteAction.propTypes = {
 		primary: PropTypes.bool.isRequired,
 	} ),
 	onClick: PropTypes.func,
-	screen: PropTypes.string,
 };
 
 export default compose(

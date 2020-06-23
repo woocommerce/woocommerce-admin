@@ -38,10 +38,6 @@ class NoteActions extends Notes {
 						'description' => __( 'Unique ID for the Note Action.', 'woocommerce-admin' ),
 						'type'        => 'integer',
 					),
-					'screen'    => array(
-						'description' => __( 'The name of the screen where the action was triggered.', 'woocommerce-admin' ),
-						'type'        => 'string',
-					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -119,8 +115,10 @@ class NoteActions extends Notes {
 			$tracks_event = 'wcadmin_inbox_action_click';
 		}
 
+		$screen_name = '';
+
 		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			parse_str( wp_parse_url( wp_unslash( $_SERVER['HTTP_REFERER'] ), PHP_URL_QUERY ), $queries );
+			parse_str( wp_parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_QUERY ), $queries ); // phpcs:ignore sanitization ok.
 		}
 		if ( isset( $queries ) ) {
 			$page      = isset( $queries['page'] ) ? $queries['page'] : null;

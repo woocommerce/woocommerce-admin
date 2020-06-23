@@ -62,7 +62,6 @@ class InboxNoteCard extends Component {
 				note_name: note.name,
 				note_title: note.title,
 				note_content_inner_link: innerLink,
-				screen: this.screen,
 			} );
 		}
 	}
@@ -257,7 +256,6 @@ class InboxNoteCard extends Component {
 						noteId={ noteId }
 						action={ action }
 						onClick={ () => this.onActionClicked( action ) }
-						screen={ this.screen }
 					/>
 				) ) }
 			</Fragment>

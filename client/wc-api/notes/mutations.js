@@ -91,10 +91,10 @@ const removeAllNotes = ( operations ) => async () => {
 	}
 };
 
-const triggerNoteAction = ( operations ) => ( noteId, actionId, screen ) => {
+const triggerNoteAction = ( operations ) => ( noteId, actionId ) => {
 	const resourceKey = 'note-action';
 	operations.update( [ resourceKey ], {
-		[ resourceKey ]: { noteId, actionId, screen },
+		[ resourceKey ]: { noteId, actionId },
 	} );
 };
 
