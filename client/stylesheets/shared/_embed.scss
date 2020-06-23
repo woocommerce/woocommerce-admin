@@ -3,7 +3,7 @@
 .woocommerce-embed-page {
 	#wpbody .woocommerce-layout,
 	.woocommerce-layout__notice-list-hide + .wrap {
-		padding-top: $header-height + 50;
+		padding-top: $header-height + 10;
 	}
 
 	#wpcontent,
@@ -20,7 +20,7 @@
 	}
 
 	.wrap {
-		padding: 20px 20px 0;
+		padding: 0 20px;
 
 		@include breakpoint( '<782px' ) {
 			p.search-box {
