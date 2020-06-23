@@ -4,12 +4,13 @@
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
+import { __experimentalText as Text } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { EllipsisMenu, H } from '@woocommerce/components';
+import { EllipsisMenu } from '@woocommerce/components';
 
 class ActivityHeader extends Component {
 	render() {
@@ -25,14 +26,16 @@ class ActivityHeader extends Component {
 
 		return (
 			<div className={ cardClassName }>
-				<H className="woocommerce-layout__activity-panel-header-title">
+				<Text variant="title.small">
 					{ title }
-					{ countUnread > 0 && <span>{ unreadMessages }</span> }
-				</H>
+					{ countUnread > 0 && (
+						<span className="woocommerce-layout__inbox-badge">
+							{ unreadMessages }
+						</span>
+					) }
+				</Text>
 				{ subtitle && (
-					<div className="woocommerce-layout__activity-panel-header-subtitle">
-						{ subtitle }
-					</div>
+					<Text variant="subtitle.small">{ subtitle }</Text>
 				) }
 				{ menu && (
 					<div className="woocommerce-layout__activity-panel-header-menu">
