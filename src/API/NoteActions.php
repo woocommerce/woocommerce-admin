@@ -107,6 +107,11 @@ class NoteActions extends Notes {
 			$note->set_status( $triggered_action->status );
 		}
 
+		// Update note state depending on its type.
+		if ( 'survey' === $note->get_type() ) {
+			$note->set_is_deleted( 1 );
+		}
+
 		$note->save();
 
 		if ( in_array( $note->get_type(), array( 'error', 'update' ) ) ) {

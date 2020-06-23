@@ -164,7 +164,7 @@ class WC_Admin_Notes {
 				'orderby'    => 'date_created',
 				'per_page'   => 25,
 				'page'       => 1,
-				'type'       => array( 'info', 'marketing', 'warning' ),
+				'type'       => array( 'info', 'marketing', 'warning', 'survey' ),
 				'is_deleted' => 0,
 			)
 		);
