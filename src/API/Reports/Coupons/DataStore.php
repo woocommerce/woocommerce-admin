@@ -164,38 +164,50 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$coupon_id = $coupon_datum['coupon_id'];
 				$coupon    = new \WC_Coupon( $coupon_id );
 
-				$gmt_timzone = new \DateTimeZone( 'UTC' );
-
-				$date_expires = $coupon->get_date_expires();
-				if ( is_a( $date_expires, 'DateTime' ) ) {
-					$date_expires     = $date_expires->format( TimeInterval::$iso_datetime_format );
-					$date_expires_gmt = new \DateTime( $date_expires );
-					$date_expires_gmt->setTimezone( $gmt_timzone );
-					$date_expires_gmt = $date_expires_gmt->format( TimeInterval::$iso_datetime_format );
+				if ( 0 === $coupon->get_id() ) {
+					// Deleted or otherwise invalid coupon.
+					$extended_info = array(
+						'code'             => __( '(Deleted)', 'woocommerce-admin' ),
+						'date_created'     => '',
+						'date_created_gmt' => '',
+						'date_expires'     => '',
+						'date_expires_gmt' => '',
+						'discount_type'    => __( 'N/A', 'woocommerce-admin' ),
+					);
 				} else {
-					$date_expires     = '';
-					$date_expires_gmt = '';
-				}
+					$gmt_timzone = new \DateTimeZone( 'UTC' );
 
-				$date_created = $coupon->get_date_created();
-				if ( is_a( $date_created, 'DateTime' ) ) {
-					$date_created     = $date_created->format( TimeInterval::$iso_datetime_format );
-					$date_created_gmt = new \DateTime( $date_created );
-					$date_created_gmt->setTimezone( $gmt_timzone );
-					$date_created_gmt = $date_created_gmt->format( TimeInterval::$iso_datetime_format );
-				} else {
-					$date_created     = '';
-					$date_created_gmt = '';
-				}
+					$date_expires = $coupon->get_date_expires();
+					if ( is_a( $date_expires, 'DateTime' ) ) {
+						$date_expires     = $date_expires->format( TimeInterval::$iso_datetime_format );
+						$date_expires_gmt = new \DateTime( $date_expires );
+						$date_expires_gmt->setTimezone( $gmt_timzone );
+						$date_expires_gmt = $date_expires_gmt->format( TimeInterval::$iso_datetime_format );
+					} else {
+						$date_expires     = '';
+						$date_expires_gmt = '';
+					}
 
-				$extended_info = array(
-					'code'             => $coupon->get_code(),
-					'date_created'     => $date_created,
-					'date_created_gmt' => $date_created_gmt,
-					'date_expires'     => $date_expires,
-					'date_expires_gmt' => $date_expires_gmt,
-					'discount_type'    => $coupon->get_discount_type(),
-				);
+					$date_created = $coupon->get_date_created();
+					if ( is_a( $date_created, 'DateTime' ) ) {
+						$date_created     = $date_created->format( TimeInterval::$iso_datetime_format );
+						$date_created_gmt = new \DateTime( $date_created );
+						$date_created_gmt->setTimezone( $gmt_timzone );
+						$date_created_gmt = $date_created_gmt->format( TimeInterval::$iso_datetime_format );
+					} else {
+						$date_created     = '';
+						$date_created_gmt = '';
+					}
+
+					$extended_info = array(
+						'code'             => $coupon->get_code(),
+						'date_created'     => $date_created,
+						'date_created_gmt' => $date_created_gmt,
+						'date_expires'     => $date_expires,
+						'date_expires_gmt' => $date_expires_gmt,
+						'discount_type'    => $coupon->get_discount_type(),
+					);
+				}
 			}
 			$coupon_data[ $idx ]['extended_info'] = $extended_info;
 		}
