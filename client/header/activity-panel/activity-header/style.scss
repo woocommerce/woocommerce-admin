@@ -47,4 +47,17 @@
 			vertical-align: top;
 		}
 	}
+
+	span {
+		margin: 6px 0 0 7px;
+		background: #40464d;
+		border-radius: 0.8em;
+		color: $core-grey-light-200;
+		display: inline-block;
+		text-align: center;
+		width: 1.6em;
+		font-size: 14px;
+		vertical-align: top;
+		line-height: normal;
+	}
 }
