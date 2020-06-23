@@ -32,6 +32,7 @@ import {
  * Internal dependencies
  */
 import './style.scss';
+import '../homescreen/style.scss';
 import CartModal from 'dashboard/components/cart-modal';
 import { getAllTasks } from './tasks';
 import { recordEvent } from 'lib/tracks';
@@ -314,7 +315,12 @@ class TaskDashboard extends Component {
 			);
 
 			task.title = (
-				<Text as="div" variant={ task.completed ? 'body.small' : 'button' }>{ task.title }</Text>
+				<Text
+					as="div"
+					variant={ task.completed ? 'body.small' : 'button' }
+				>
+					{ task.title }
+				</Text>
 			);
 
 			if ( ! task.completed ) {
