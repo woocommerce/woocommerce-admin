@@ -8,7 +8,7 @@ if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
 			'analytics' => true,
 			'analytics-dashboard' => true,
 			'analytics-dashboard/customizable' => true,
-			'coupons' => true,
+			'coupons' => false,
 			'devdocs' => false,
 			'marketing' => true,
 			'navigation' => false,
