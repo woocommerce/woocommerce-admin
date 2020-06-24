@@ -115,6 +115,32 @@ class NoteActions extends Notes {
 			$tracks_event = 'wcadmin_inbox_action_click';
 		}
 
+		wc_admin_record_tracks_event(
+			$tracks_event,
+			array(
+				'note_name'    => $note->get_name(),
+				'note_type'    => $note->get_type(),
+				'note_title'   => $note->get_title(),
+				'note_content' => $note->get_content(),
+				'action_name'  => $triggered_action->name,
+				'action_label' => $triggered_action->label,
+				'screen'       => $this->get_screen_name(),
+			)
+		);
+
+		$data = $note->get_data();
+		$data = $this->prepare_item_for_response( $data, $request );
+		$data = $this->prepare_response_for_collection( $data );
+
+		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Get screen name.
+	 *
+	 * @return string The screen name.
+	 */
+	public function get_screen_name() {
 		$screen_name = '';
 
 		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
@@ -132,24 +158,6 @@ class NoteActions extends Notes {
 		} elseif ( isset( $post_type ) ) {
 			$screen_name = $post_type;
 		}
-
-		wc_admin_record_tracks_event(
-			$tracks_event,
-			array(
-				'note_name'    => $note->get_name(),
-				'note_type'    => $note->get_type(),
-				'note_title'   => $note->get_title(),
-				'note_content' => $note->get_content(),
-				'action_name'  => $triggered_action->name,
-				'action_label' => $triggered_action->label,
-				'screen'       => $screen_name,
-			)
-		);
-
-		$data = $note->get_data();
-		$data = $this->prepare_item_for_response( $data, $request );
-		$data = $this->prepare_response_for_collection( $data );
-
-		return rest_ensure_response( $data );
+		return $screen_name;
 	}
 }
