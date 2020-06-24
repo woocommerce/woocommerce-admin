@@ -86,6 +86,7 @@ class BusinessDetails extends Component {
 			updateProfileItems,
 		} = this.props;
 		const {
+			install_extensions: installExtensions,
 			other_platform: otherPlatform,
 			other_platform_name: otherPlatformName,
 			product_count: productCount,
@@ -105,6 +106,8 @@ class BusinessDetails extends Component {
 			install_facebook: values[ 'facebook-for-woocommerce' ],
 			install_mailchimp: values[ 'mailchimp-for-woocommerce' ],
 			install_google_ads: values[ 'kliken-marketing-for-google' ],
+			install_extensions: installExtensions,
+			simple_install: this.simpleInstall,
 		} );
 
 		const _updates = {
@@ -204,6 +207,7 @@ class BusinessDetails extends Component {
 					);
 				}
 			} else if (
+				! this.simpleInstall &&
 				! this.extensions.includes( name ) &&
 				! values[ name ].length
 			) {
@@ -218,6 +222,10 @@ class BusinessDetails extends Component {
 	}
 
 	getBusinessExtensions( values ) {
+		if ( this.simpleInstall ) {
+			return values.install_extensions ? this.extensions : [];
+		}
+
 		return keys( pickBy( values ) ).filter( ( name ) =>
 			this.extensions.includes( name )
 		);
