@@ -288,7 +288,7 @@ class WC_Tests_Reports_Coupons extends WC_Unit_Test_Case {
 			$coupon_2_response['orders_count'],
 			$coupon_2_response['amount'],
 			$coupon_2_response['extended_info']['date_created'],
-			$coupon_2_response['extended_info']['date_expires'] ? : 'N/A',
+			$coupon_2_response['extended_info']['date_expires'] ? $coupon_2_response['extended_info']['date_expires'] : 'N/A',
 			$coupon_2_response['extended_info']['discount_type'],
 		);
 
@@ -298,7 +298,7 @@ class WC_Tests_Reports_Coupons extends WC_Unit_Test_Case {
 			$coupon_1_response['orders_count'],
 			$coupon_1_response['amount'],
 			$coupon_1_response['extended_info']['date_created'],
-			$coupon_1_response['extended_info']['date_expires'] ? : 'N/A',
+			$coupon_1_response['extended_info']['date_expires'] ? $coupon_1_response['extended_info']['date_expires'] : 'N/A',
 			$coupon_1_response['extended_info']['discount_type'],
 		);
 
