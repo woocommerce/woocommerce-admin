@@ -26,17 +26,21 @@ class ActivityHeader extends Component {
 
 		return (
 			<div className={ cardClassName }>
-				<Text variant="title.small">
-					{ title }
-					{ countUnread > 0 && (
-						<span className="woocommerce-layout__inbox-badge">
-							{ unreadMessages }
-						</span>
+				<div className="woocommerce-layout__inbox-title">
+					<Text variant="title.small">
+						{ title }
+						{ countUnread > 0 && (
+							<span className="woocommerce-layout__inbox-badge">
+								{ unreadMessages }
+							</span>
+						) }
+					</Text>
+				</div>
+				<div className="woocommerce-layout__inbox-subtitle">
+					{ subtitle && (
+						<Text variant="body.small">{ subtitle }</Text>
 					) }
-				</Text>
-				{ subtitle && (
-					<Text variant="subtitle.small">{ subtitle }</Text>
-				) }
+				</div>
 				{ menu && (
 					<div className="woocommerce-layout__activity-panel-header-menu">
 						{ menu }
