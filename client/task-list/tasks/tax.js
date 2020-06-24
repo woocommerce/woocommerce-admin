@@ -44,13 +44,11 @@ class Tax extends Component {
 			stepIndex: hasCompleteAddress ? 1 : 0,
 			// Cache the value of pluginsToActivate so that we can
 			// show/hide tasks based on it, but not have them update mid task.
-			pluginsToActivate,
+			cachedPluginsToActivate: pluginsToActivate,
 		};
-
 		this.state = this.initialState;
 
 		this.completeStep = this.completeStep.bind( this );
-		this.setIsPending = this.setIsPending.bind( this );
 	}
 
 	componentDidMount() {
@@ -182,13 +180,9 @@ class Tax extends Component {
 		);
 	}
 
-	setIsPending( value ) {
-		this.setState( { isPending: value } );
-	}
-
 	getSteps() {
-		const { generalSettings, isJetpackConnected } = this.props;
-		const { isPending, pluginsToActivate } = this.state;
+		const { generalSettings, isJetpackConnected, isPending } = this.props;
+		const { cachedPluginsToActivate } = this.state;
 
 		const steps = [
 			{
@@ -249,7 +243,8 @@ class Tax extends Component {
 						) }
 					/>
 				),
-				visible: pluginsToActivate.length && this.isTaxJarSupported(),
+				visible:
+					cachedPluginsToActivate.length && this.isTaxJarSupported(),
 			},
 			{
 				key: 'connect',
@@ -261,7 +256,6 @@ class Tax extends Component {
 				content: (
 					<Connect
 						{ ...this.props }
-						setIsPending={ this.setIsPending }
 						onConnect={ () => {
 							recordEvent( 'tasklist_tax_connect_store', {
 								connect: true,
@@ -291,6 +285,7 @@ class Tax extends Component {
 				content: (
 					<Fragment>
 						<Button
+							disabled={ isPending }
 							isPrimary
 							isBusy={ isPending }
 							onClick={ () => {
@@ -331,8 +326,8 @@ class Tax extends Component {
 	}
 
 	render() {
-		const { isPending, stepIndex } = this.state;
-		const { isTaxSettingsRequesting, taxSettings } = this.props;
+		const { stepIndex } = this.state;
+		const { isPending, isResolving } = this.props;
 		const step = this.getSteps()[ stepIndex ];
 
 		return (
@@ -363,11 +358,9 @@ class Tax extends Component {
 								} ) }
 							</p>
 							<Button
+								disabled={ isPending }
 								isPrimary
-								isBusy={
-									Object.keys( taxSettings ).length &&
-									isTaxSettingsRequesting
-								}
+								isBusy={ isPending }
 								onClick={ () => {
 									recordEvent(
 										'tasklist_tax_setup_automated_proceed',
@@ -381,6 +374,8 @@ class Tax extends Component {
 								{ __( 'Yes please', 'woocommerce-admin' ) }
 							</Button>
 							<Button
+								disabled={ isPending }
+								isBusy={ isPending }
 								onClick={ () => {
 									recordEvent(
 										'tasklist_tax_setup_automated_proceed',
@@ -399,7 +394,7 @@ class Tax extends Component {
 						</div>
 					) : (
 						<Stepper
-							isPending={ isPending || isTaxSettingsRequesting }
+							isPending={ isPending || isResolving }
 							isVertical={ true }
 							currentStep={ step.key }
 							steps={ this.getSteps() }
@@ -413,13 +408,15 @@ class Tax extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getSettings, isGetSettingsRequesting } = select(
+		const { getSettings, isUpdateSettingsRequesting } = select(
 			SETTINGS_STORE_NAME
 		);
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const { getActivePlugins, isJetpackConnected } = select(
-			PLUGINS_STORE_NAME
-		);
+		const {
+			getActivePlugins,
+			isJetpackConnected,
+			isPluginsRequesting,
+		} = select( PLUGINS_STORE_NAME );
 
 		const { general: generalSettings = {} } = getSettings( 'general' );
 		const countryCode = getCountryCode(
@@ -435,8 +432,6 @@ export default compose(
 		);
 
 		const { tax: taxSettings = {} } = getSettings( 'tax' );
-		const isTaxSettingsRequesting = isGetSettingsRequesting( 'tax' );
-
 		const activePlugins = getActivePlugins();
 		const pluginsToActivate = difference(
 			[ 'jetpack', 'woocommerce-services' ],
@@ -447,12 +442,18 @@ export default compose(
 			connectOptions.tos_accepted ||
 			getOption( 'woocommerce_setup_jetpack_opted_in' );
 
+		const isPending =
+			isUpdateSettingsRequesting( 'tax' ) ||
+			isUpdateSettingsRequesting( 'general' );
+		const isResolving = isPluginsRequesting( 'getJetpackConnectUrl' );
+
 		return {
 			countryCode,
 			generalSettings,
 			hasCompleteAddress,
 			isJetpackConnected: isJetpackConnected(),
-			isTaxSettingsRequesting,
+			isPending,
+			isResolving,
 			pluginsToActivate,
 			taxSettings,
 			tosAccepted,
