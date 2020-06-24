@@ -40,16 +40,14 @@ class Tax extends Component {
 		this.initialState = {
 			isPending: false,
 			stepIndex: 0,
-			automatedTaxEnabled: true,
-			// Cache the value of pluginsToActivate so that we can show/hide tasks based on it, but not have them update mid task.
+			// Cache the value of pluginsToActivate so that we can
+			// show/hide tasks based on it, but not have them update mid task.
 			pluginsToActivate: props.pluginsToActivate,
 		};
 
 		this.state = this.initialState;
 
 		this.completeStep = this.completeStep.bind( this );
-		this.configureTaxRates = this.configureTaxRates.bind( this );
-		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
 		this.setIsPending = this.setIsPending.bind( this );
 	}
 
@@ -83,25 +81,6 @@ class Tax extends Component {
 		);
 	}
 
-	componentDidUpdate( prevProps ) {
-		const { taxSettings } = this.props;
-
-		if (
-			taxSettings.wc_connect_taxes_enabled &&
-			taxSettings.wc_connect_taxes_enabled !==
-				prevProps.taxSettings.wc_connect_taxes_enabled
-		) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( {
-				automatedTaxEnabled:
-					taxSettings.wc_connect_taxes_enabled === 'yes'
-						? true
-						: false,
-			} );
-			/* eslint-enable react/no-did-update-set-state */
-		}
-	}
-
 	isTaxJarSupported() {
 		const { countryCode, tosAccepted } = this.props;
 		const {
@@ -128,7 +107,7 @@ class Tax extends Component {
 		}
 	}
 
-	async configureTaxRates() {
+	async manuallyConfigureTaxRates() {
 		const {
 			generalSettings,
 			updateAndPersistSettingsForGroup,
@@ -144,65 +123,66 @@ class Tax extends Component {
 			} );
 		}
 
-		window.location = getAdminLink(
-			'admin.php?page=wc-settings&tab=tax&section=standard&wc_onboarding_active_task=tax'
-		);
+		this.redirectToTaxSettings();
 	}
 
-	async updateAutomatedTax() {
+	updateAutomatedTax( isEnabling ) {
 		const {
 			createNotice,
 			updateAndPersistSettingsForGroup,
 			generalSettings,
 			taxSettings,
 		} = this.props;
-		const { automatedTaxEnabled } = this.state;
 
-		await updateAndPersistSettingsForGroup( 'tax', {
-			tax: {
-				...taxSettings,
-				wc_connect_taxes_enabled: automatedTaxEnabled ? 'yes' : 'no',
-			},
-		} );
-
-		await updateAndPersistSettingsForGroup( 'general', {
-			general: {
-				...generalSettings,
-				woocommerce_calc_taxes: 'yes',
-			},
-		} );
-
-		if (
-			! this.props.isTaxSettingsError &&
-			! this.props.isGeneralSettingsError
-		) {
-			// @todo This is a workaround to force the task to mark as complete.
-			// This should probably be updated to use wc-api so we can fetch tax rates.
-			setSetting( 'onboarding', {
-				...getSetting( 'onboarding', {} ),
-				isTaxComplete: true,
+		Promise.all( [
+			updateAndPersistSettingsForGroup( 'tax', {
+				tax: {
+					...taxSettings,
+					wc_connect_taxes_enabled: isEnabling ? 'yes' : 'no',
+				},
+			} ),
+			updateAndPersistSettingsForGroup( 'general', {
+				general: {
+					...generalSettings,
+					woocommerce_calc_taxes: 'yes',
+				},
+			} ),
+		] )
+			.then( () => {
+				// @todo This is a workaround to force the task to mark as complete.
+				// This should probably be updated to use wc-api so we can fetch tax rates.
+				setSetting( 'onboarding', {
+					...getSetting( 'onboarding', {} ),
+					isTaxComplete: true,
+				} );
+				if ( isEnabling ) {
+					createNotice(
+						'success',
+						__(
+							"You're awesome! One less item on your to-do list ✅",
+							'woocommerce-admin'
+						)
+					);
+					getHistory().push( getNewPath( {}, '/', {} ) );
+				} else {
+					this.redirectToTaxSettings();
+				}
+			} )
+			.catch( () => {
+				createNotice(
+					'error',
+					__(
+						'There was a problem updating your tax settings.',
+						'woocommerce-admin'
+					)
+				);
 			} );
-			createNotice(
-				'success',
-				__(
-					"You're awesome! One less item on your to-do list ✅",
-					'woocommerce-admin'
-				)
-			);
-			if ( automatedTaxEnabled ) {
-				getHistory().push( getNewPath( {}, '/', {} ) );
-			} else {
-				this.configureTaxRates();
-			}
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating your tax settings.',
-					'woocommerce-admin'
-				)
-			);
-		}
+	}
+
+	redirectToTaxSettings() {
+		window.location = getAdminLink(
+			'admin.php?page=wc-settings&tab=tax&section=standard&wc_onboarding_active_task=tax'
+		);
 	}
 
 	setIsPending( value ) {
@@ -264,9 +244,7 @@ class Tax extends Component {
 									install_extensions: false,
 								}
 							);
-							window.location.href = getAdminLink(
-								'admin.php?page=wc-settings&tab=tax&section=standard'
-							);
+							this.redirectToTaxSettings();
 						} }
 						skipText={ __(
 							'Set up tax rates manually',
@@ -296,9 +274,7 @@ class Tax extends Component {
 							queueRecordEvent( 'tasklist_tax_connect_store', {
 								connect: false,
 							} );
-							window.location.href = getAdminLink(
-								'admin.php?page=wc-settings&tab=tax&section=standard'
-							);
+							this.redirectToTaxSettings();
 						} }
 						skipText={ __(
 							'Set up tax rates manually',
@@ -322,7 +298,7 @@ class Tax extends Component {
 							isBusy={ isPending }
 							onClick={ () => {
 								recordEvent( 'tasklist_tax_config_rates' );
-								this.configureTaxRates();
+								this.manuallyConfigureTaxRates();
 							} }
 						>
 							{ __( 'Configure', 'woocommerce-admin' ) }
@@ -402,10 +378,7 @@ class Tax extends Component {
 											setup_automatically: true,
 										}
 									);
-									this.setState(
-										{ automatedTaxEnabled: true },
-										this.updateAutomatedTax
-									);
+									this.updateAutomatedTax( true );
 								} }
 							>
 								{ __( 'Yes please', 'woocommerce-admin' ) }
@@ -418,10 +391,7 @@ class Tax extends Component {
 											setup_automatically: false,
 										}
 									);
-									this.setState(
-										{ automatedTaxEnabled: false },
-										this.updateAutomatedTax
-									);
+									this.updateAutomatedTax( false );
 								} }
 							>
 								{ __(
