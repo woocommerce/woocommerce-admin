@@ -101,6 +101,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Check for enabled methods before payment task completion #4530
 - Fix: Solved a problem with the method onChoose in the last onboarding step. #4583
 - Fix: Only mark purchase task as complete when products exist #4574
+- Fix: Remove unnecessary rest_api_init action that caused incompatibility issues with other plugins. #4691
 - Tweak: make revenue report total sales column optional #4397
 - Tweak: Adjustments to WooCommerce Payments setup task #4373
 - Tweak: Handling of plugin installs in OBW #4411
