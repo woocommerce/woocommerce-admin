@@ -32,7 +32,6 @@ import {
  * Internal dependencies
  */
 import './style.scss';
-import '../homescreen/style.scss';
 import CartModal from 'dashboard/components/cart-modal';
 import { getAllTasks } from './tasks';
 import { recordEvent } from 'lib/tracks';
@@ -359,7 +358,7 @@ class TaskDashboard extends Component {
 						<Fragment>
 							<Card
 								size="large"
-								className="woocommerce-task-card woocommerce-homescreen-card"
+								className="woocommerce-task-card woocommerce-dashboard-card"
 							>
 								<progress
 									className={ progressBarClass }
