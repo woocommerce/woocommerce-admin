@@ -150,6 +150,7 @@ class NoteActions extends Notes {
 			$page      = isset( $queries['page'] ) ? $queries['page'] : null;
 			$path      = isset( $queries['path'] ) ? $queries['path'] : null;
 			$post_type = isset( $queries['post_type'] ) ? $queries['post_type'] : null;
+			$post      = isset( $queries['post'] ) ? get_post_type( $queries['post'] ) : null;
 		}
 
 		if ( isset( $page ) ) {
@@ -157,6 +158,8 @@ class NoteActions extends Notes {
 			$screen_name  = isset( $path ) ? substr( str_replace( '/', '_', $path ), 1 ) : $current_page;
 		} elseif ( isset( $post_type ) ) {
 			$screen_name = $post_type;
+		} elseif ( isset( $post ) ) {
+			$screen_name = $post;
 		}
 		return $screen_name;
 	}
