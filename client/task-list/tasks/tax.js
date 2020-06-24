@@ -51,9 +51,6 @@ class Tax extends Component {
 		this.configureTaxRates = this.configureTaxRates.bind( this );
 		this.updateAutomatedTax = this.updateAutomatedTax.bind( this );
 		this.setIsPending = this.setIsPending.bind( this );
-		this.shouldShowSuccessScreen = this.shouldShowSuccessScreen.bind(
-			this
-		);
 	}
 
 	componentDidMount() {
@@ -65,7 +62,6 @@ class Tax extends Component {
 	}
 
 	shouldShowSuccessScreen() {
-		const { stepIndex } = this.state;
 		const {
 			isJetpackConnected,
 			pluginsToActivate,
@@ -80,7 +76,6 @@ class Tax extends Component {
 			storeAddress && defaultCountry && storePostCode
 		);
 		return (
-			stepIndex !== null &&
 			isCompleteAddress &&
 			! pluginsToActivate.length &&
 			isJetpackConnected &&
@@ -89,23 +84,7 @@ class Tax extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const { generalSettings, isJetpackConnected, taxSettings } = this.props;
-		const {
-			woocommerce_calc_taxes: calcTaxes,
-			woocommerce_store_address: storeAddress,
-			woocommerce_default_country: defaultCountry,
-			woocommerce_store_postcode: storePostCode,
-		} = generalSettings;
-		const { stepIndex } = this.state;
-		const currentStep = this.getSteps()[ stepIndex ];
-		const currentStepKey = currentStep && currentStep.key;
-
-		if ( stepIndex !== null && this.shouldShowSuccessScreen() ) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( { stepIndex: null } );
-			/* eslint-enable react/no-did-update-set-state */
-			return;
-		}
+		const { taxSettings } = this.props;
 
 		if (
 			taxSettings.wc_connect_taxes_enabled &&
@@ -120,27 +99,6 @@ class Tax extends Component {
 						: false,
 			} );
 			/* eslint-enable react/no-did-update-set-state */
-		}
-
-		if ( currentStepKey === 'connect' && isJetpackConnected ) {
-			this.completeStep();
-		}
-
-		const isCompleteAddress = Boolean(
-			storeAddress && defaultCountry && storePostCode
-		);
-
-		if ( currentStepKey === 'store_location' && isCompleteAddress ) {
-			this.completeStep();
-		}
-
-		const {
-			woocommerce_calc_taxes: prevCalcTaxes,
-		} = prevProps.generalSettings;
-		if ( prevCalcTaxes === 'no' && calcTaxes === 'yes' ) {
-			window.location = getAdminLink(
-				'admin.php?page=wc-settings&tab=tax&section=standard'
-			);
 		}
 	}
 
@@ -273,12 +231,7 @@ class Tax extends Component {
 							recordEvent( 'tasklist_tax_set_location', {
 								country,
 							} );
-							if ( this.shouldShowSuccessScreen() ) {
-								this.setState( { stepIndex: null } );
-								// Only complete step if another update hasn't already shown succes screen.
-							} else if ( this.state.stepIndex !== null ) {
-								this.completeStep();
-							}
+							this.completeStep();
 						} }
 						isSettingsRequesting={ false }
 						settings={ generalSettings }
@@ -412,14 +365,7 @@ class Tax extends Component {
 		return (
 			<div className="woocommerce-task-tax">
 				<Card className="is-narrow">
-					{ step ? (
-						<Stepper
-							isPending={ isPending || isTaxSettingsRequesting }
-							isVertical={ true }
-							currentStep={ step.key }
-							steps={ this.getSteps() }
-						/>
-					) : (
+					{ this.shouldShowSuccessScreen() ? (
 						<div className="woocommerce-task-tax__success">
 							<span
 								className="woocommerce-task-tax__success-icon"
@@ -484,6 +430,13 @@ class Tax extends Component {
 								) }
 							</Button>
 						</div>
+					) : (
+						<Stepper
+							isPending={ isPending || isTaxSettingsRequesting }
+							isVertical={ true }
+							currentStep={ step.key }
+							steps={ this.getSteps() }
+						/>
 					) }
 				</Card>
 			</div>
