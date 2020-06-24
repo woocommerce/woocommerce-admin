@@ -37,13 +37,14 @@ import { recordEvent, queueRecordEvent } from 'lib/tracks';
 class Tax extends Component {
 	constructor( props ) {
 		super( props );
+		const { hasCompleteAddress, pluginsToActivate } = props;
 
 		this.initialState = {
 			isPending: false,
-			stepIndex: 0,
+			stepIndex: hasCompleteAddress ? 1 : 0,
 			// Cache the value of pluginsToActivate so that we can
 			// show/hide tasks based on it, but not have them update mid task.
-			pluginsToActivate: props.pluginsToActivate,
+			pluginsToActivate,
 		};
 
 		this.state = this.initialState;
@@ -63,19 +64,12 @@ class Tax extends Component {
 	shouldShowSuccessScreen() {
 		const {
 			isJetpackConnected,
+			hasCompleteAddress,
 			pluginsToActivate,
-			generalSettings,
 		} = this.props;
-		const {
-			woocommerce_store_address: storeAddress,
-			woocommerce_default_country: defaultCountry,
-			woocommerce_store_postcode: storePostCode,
-		} = generalSettings;
-		const isCompleteAddress = Boolean(
-			storeAddress && defaultCountry && storePostCode
-		);
+
 		return (
-			isCompleteAddress &&
+			hasCompleteAddress &&
 			! pluginsToActivate.length &&
 			isJetpackConnected &&
 			this.isTaxJarSupported()
@@ -431,6 +425,14 @@ export default compose(
 		const countryCode = getCountryCode(
 			generalSettings.woocommerce_default_country
 		);
+		const {
+			woocommerce_store_address: storeAddress,
+			woocommerce_default_country: defaultCountry,
+			woocommerce_store_postcode: storePostCode,
+		} = generalSettings;
+		const hasCompleteAddress = Boolean(
+			storeAddress && defaultCountry && storePostCode
+		);
 
 		const { tax: taxSettings = {} } = getSettings( 'tax' );
 		const isTaxSettingsRequesting = isGetSettingsRequesting( 'tax' );
@@ -446,12 +448,13 @@ export default compose(
 			getOption( 'woocommerce_setup_jetpack_opted_in' );
 
 		return {
-			generalSettings,
 			countryCode,
-			taxSettings,
-			isTaxSettingsRequesting,
+			generalSettings,
+			hasCompleteAddress,
 			isJetpackConnected: isJetpackConnected(),
+			isTaxSettingsRequesting,
 			pluginsToActivate,
+			taxSettings,
 			tosAccepted,
 		};
 	} ),
