@@ -4,7 +4,7 @@
 import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Button, FormToggle } from '@wordpress/components';
+import { Button, CheckboxControl, FormToggle } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, get, pickBy } from 'lodash';
 
@@ -62,6 +62,7 @@ class BusinessDetails extends Component {
 			'kliken-marketing-for-google': businessExtensions
 				? businessExtensions.includes( 'kliken-marketing-for-google' )
 				: true,
+			install_extensions: true,
 		};
 
 		this.extensions = [
@@ -70,6 +71,7 @@ class BusinessDetails extends Component {
 			'kliken-marketing-for-google',
 		];
 
+		this.simpleInstall = true;
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
 		this.getNumberRangeString = this.getNumberRangeString.bind( this );
@@ -392,6 +394,26 @@ class BusinessDetails extends Component {
 		);
 	}
 
+	renderBusinessExtensionsSimple( values, getInputProps ) {
+		return (
+			<div className="woocommerce-profile-wizard__business-extensions-simple">
+				<label htmlFor="woocommerce-profile-wizard__business-extensions-checkbox">
+					<CheckboxControl
+						id="woocommerce-profile-wizard__business-extensions-checkbox"
+						{ ...getInputProps( 'install_extensions' ) }
+					/>
+					{ __(
+						'Install recommended free business features',
+						'woocommerce-admin'
+					) }
+					<span className="woocommerce-profile-wizard__help-text">
+						{ __( 'Requires an account', 'woocommerce-admin' ) }
+					</span>
+				</label>
+			</div>
+		);
+	}
+
 	render() {
 		const {
 			goToNextStep,
@@ -555,7 +577,8 @@ class BusinessDetails extends Component {
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
 					// Show extensions when the currently selling elsewhere checkbox has been answered.
-					const showExtensions = values.selling_venues !== '';
+					const shouldShowExtensions =
+						values.selling_venues !== '' && ! this.simpleInstall;
 					return (
 						<Fragment>
 							<H className="woocommerce-profile-wizard__header-title">
@@ -645,11 +668,16 @@ class BusinessDetails extends Component {
 										</Fragment>
 									) }
 
-									{ showExtensions &&
+									{ shouldShowExtensions &&
 										this.renderBusinessExtensions(
 											values,
 											getInputProps
 										) }
+
+									{ this.renderBusinessExtensionsSimple(
+										values,
+										getInputProps
+									) }
 
 									<div className="woocommerce-profile-wizard__card-actions">
 										<Button
@@ -682,7 +710,7 @@ class BusinessDetails extends Component {
 								</Fragment>
 							</Card>
 
-							{ showExtensions &&
+							{ shouldShowExtensions &&
 								this.renderBusinessExtensionHelpText( values ) }
 						</Fragment>
 					);
