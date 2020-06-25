@@ -53,7 +53,6 @@ class BusinessDetails extends Component {
 		);
 
 		this.state = {
-			hasInstallActivateError: false,
 			isPopoverVisible: false,
 		};
 
@@ -158,9 +157,6 @@ class BusinessDetails extends Component {
 						createNoticesFromResponse( response );
 					} )
 					.catch( ( error ) => {
-						this.setState( {
-							hasInstallActivateError: true,
-						} );
 						createNoticesFromResponse( error );
 						throw new Error();
 					} )
