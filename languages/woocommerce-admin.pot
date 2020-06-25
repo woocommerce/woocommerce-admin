@@ -2,9 +2,10 @@
 # This file is distributed under the same license as the WooCommerce Admin package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Admin 1.3.0-rc.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-admin\n"
-"POT-Creation-Date: 2020-06-22 23:51:01+00:00\n"
+"Project-Id-Version: WooCommerce Admin 1.3.0-rc.2\n"
+"Report-Msgid-Bugs-To: "
+"https://wordpress.org/support/plugin/woocommerce-admin\n"
+"POT-Creation-Date: 2020-06-25 01:13:04+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -4793,7 +4794,7 @@ msgid "Activate"
 msgstr ""
 
 #: client/marketing/overview/installed-extensions/row.js:116
-#: client/task-list/index.js:365
+#: client/task-list/index.js:370
 msgid "Finish setup"
 msgstr ""
 
@@ -5062,11 +5063,11 @@ msgstr ""
 #: client/profile-wizard/steps/business-details.js:662
 #: client/profile-wizard/steps/industry.js:242
 #: client/profile-wizard/steps/product-types.js:178
-#: client/profile-wizard/steps/store-details.js:223
+#: client/profile-wizard/steps/store-details.js:225
 #: client/profile-wizard/steps/usage-modal.js:153
 #: client/task-list/index.js:294
 #: client/task-list/tasks/payments/klarna.js:75
-#: client/task-list/tasks/steps/location.js:98
+#: client/task-list/tasks/steps/location.js:100
 #: packages/components/build-module/plugins/index.js:158
 msgid "Continue"
 msgstr ""
@@ -5105,19 +5106,19 @@ msgstr ""
 msgid "There was a problem updating your product types."
 msgstr ""
 
-#: client/profile-wizard/steps/store-details.js:154
+#: client/profile-wizard/steps/store-details.js:156
 msgid "There was a problem saving your store details."
 msgstr ""
 
-#: client/profile-wizard/steps/store-details.js:168
+#: client/profile-wizard/steps/store-details.js:170
 msgid "Where is your store based?"
 msgstr ""
 
-#: client/profile-wizard/steps/store-details.js:171
+#: client/profile-wizard/steps/store-details.js:173
 msgid "This will help us configure your store and get you started quickly"
 msgstr ""
 
-#: client/profile-wizard/steps/store-details.js:210
+#: client/profile-wizard/steps/store-details.js:212
 msgid "I'm setting up a store for a client"
 msgstr ""
 
@@ -5804,12 +5805,12 @@ msgid "📦 Shipping is done! Don't worry, you can always change it later."
 msgstr ""
 
 #: client/task-list/tasks/shipping/index.js:182
-#: client/task-list/tasks/tax.js:268
+#: client/task-list/tasks/tax.js:261
 msgid "Set store location"
 msgstr ""
 
 #: client/task-list/tasks/shipping/index.js:183
-#: client/task-list/tasks/tax.js:269
+#: client/task-list/tasks/tax.js:262
 msgid "The address from which your business operates"
 msgstr ""
 
@@ -5839,7 +5840,7 @@ msgid ""
 msgstr ""
 
 #: client/task-list/tasks/shipping/index.js:279
-#: client/task-list/tasks/tax.js:335
+#: client/task-list/tasks/tax.js:328
 msgid "Connect your store"
 msgstr ""
 
@@ -5872,71 +5873,71 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: client/task-list/tasks/steps/location.js:50
+#: client/task-list/tasks/steps/location.js:52
 msgid "There was a problem saving your store location."
 msgstr ""
 
-#: client/task-list/tasks/tax.js:232
+#: client/task-list/tasks/tax.js:229
 msgid "You're awesome! One less item on your to-do list ✅"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:245
+#: client/task-list/tasks/tax.js:242
 msgid "There was a problem updating your tax settings."
 msgstr ""
 
-#: client/task-list/tasks/tax.js:298
+#: client/task-list/tasks/tax.js:291
 msgid "Install Jetpack and WooCommerce Services"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:302
+#: client/task-list/tasks/tax.js:295
 msgid ""
 "Jetpack and WooCommerce Services allow you to automate sales tax "
 "calculations"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:336
+#: client/task-list/tasks/tax.js:329
 msgid ""
 "Connect your store to WordPress.com to enable automated sales tax "
 "calculations"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:357
+#: client/task-list/tasks/tax.js:350
 msgid "Set up tax rates manually"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:367
+#: client/task-list/tasks/tax.js:360
 msgid "Configure tax rates"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:368
+#: client/task-list/tasks/tax.js:361
 msgid "Head over to the tax rate settings screen to configure your tax rates"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:382
+#: client/task-list/tasks/tax.js:375
 msgid "Configure"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:388
+#: client/task-list/tasks/tax.js:381
 msgid ""
 "By clicking \"Configure\" you're enabling tax rates and calculations. More "
 "info {{link}}here{{/link}}."
 msgstr ""
 
-#: client/task-list/tasks/tax.js:447
+#: client/task-list/tasks/tax.js:432
 msgid "Good news!"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:451
+#: client/task-list/tasks/tax.js:436
 msgid ""
 "{{strong}}Jetpack{{/strong}} and {{strong}}WooCommerce Services{{/strong}} "
 "can automate your sales tax calculations for you."
 msgstr ""
 
-#: client/task-list/tasks/tax.js:480
+#: client/task-list/tasks/tax.js:465
 msgid "Yes please"
 msgstr ""
 
-#: client/task-list/tasks/tax.js:496
+#: client/task-list/tasks/tax.js:481
 msgid "No thanks, I'll configure taxes manually"
 msgstr ""
 

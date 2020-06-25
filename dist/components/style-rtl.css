@@ -2421,13 +2421,13 @@ The CSSTransition element creates a containing div without a class
       .woocommerce-summary__item-container.is-dropdown-button {
         border-left: none; } }
   .woocommerce-summary__item-container.is-placeholder .woocommerce-summary__item {
-    height: 101px; }
+    height: 117px; }
   .woocommerce-summary__item-container.is-placeholder .woocommerce-summary__item-label {
     animation: loading-fade 1.6s ease-in-out infinite;
     background-color: #e2e4e7;
     color: transparent;
     display: inline-block;
-    height: 16px;
+    height: 20px;
     margin-top: 2.2px;
     max-width: 110px;
     width: 70%; }
@@ -2443,7 +2443,9 @@ The CSSTransition element creates a containing div without a class
     background-color: #e2e4e7;
     color: transparent;
     display: inline-block;
-    height: 16px; }
+    height: 28px;
+    width: 60px;
+    max-width: 60px; }
     .woocommerce-summary__item-container.is-placeholder .woocommerce-summary__item-value::after {
       content: '\00a0'; }
     @media screen and (prefers-reduced-motion: reduce) {
@@ -2453,16 +2455,13 @@ The CSSTransition element creates a containing div without a class
     animation: loading-fade 1.6s ease-in-out infinite;
     background-color: #e2e4e7;
     color: transparent;
-    width: 40px; }
+    width: 60px;
+    border-radius: 2px; }
     .woocommerce-summary__item-container.is-placeholder .woocommerce-summary__item-delta::after {
       content: '\00a0'; }
     @media screen and (prefers-reduced-motion: reduce) {
       .woocommerce-summary__item-container.is-placeholder .woocommerce-summary__item-delta {
         animation: none; } }
-  .woocommerce-summary__item-container.is-placeholder .woocommerce-summary__item-value {
-    margin-top: 2.2px;
-    width: 60px;
-    max-width: 60px; }
 
 .woocommerce-summary__item {
   display: flex;
