@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
-import { withRouter } from 'react-router';
 import { Component, lazy, Suspense } from '@wordpress/element';
 import { Button, NavigableMenu } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
@@ -19,6 +18,7 @@ import CrossIcon from 'gridicons/dist/cross-small';
 import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
 import { H, Section, Spinner } from '@woocommerce/components';
+import { getHistory } from '@woocommerce/navigation';
 import {
 	getUnreadNotes,
 	getUnreadOrders,
@@ -114,11 +114,12 @@ class ActivityPanel extends Component {
 			hasUnreadOrders,
 			hasUnapprovedReviews,
 			hasUnreadStock,
-			location,
+			isEmbedded,
 		} = this.props;
 
 		// Don't show the inbox on the Home screen.
-		const showInbox = ! window.wcAdminFeatures.homescreen || location.pathname !== '/';
+		const { location } = getHistory();
+		const showInbox = isEmbedded || ! window.wcAdminFeatures.homescreen || location.pathname !== '/';
 
 		return [
 			showInbox
@@ -338,6 +339,5 @@ export default compose(
 			hasUnapprovedReviews,
 		};
 	} ),
-	withRouter,
 	clickOutside
 )( ActivityPanel );
