@@ -527,9 +527,13 @@ class Install {
 			}
 
 			foreach ( (array) $note_ids as $note_id ) {
+				// Use the existing note ID so that saving the new note will
+				// overwrite the note in the database.
 				$new_note->set_id( $note_id );
 
-				// Copy some state-based values from the database.
+				// Copy some state-based values from the database so that the
+				// date created, soft-delete status, etc, don't get
+				// overwritten by the newly created note.
 				$note_in_db = new WC_Admin_Note( $note_id );
 				$new_note->set_status( $note_in_db->get_status() );
 				$new_note->set_date_created( $note_in_db->get_date_created() );
