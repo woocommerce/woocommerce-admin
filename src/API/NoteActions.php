@@ -11,6 +11,7 @@ namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
 
 /**
@@ -108,7 +109,7 @@ class NoteActions extends Notes {
 		}
 
 		// Update note state depending on its type.
-		if ( 'survey' === $note->get_type() ) {
+		if ( WC_Admin_Note::E_WC_ADMIN_NOTE_SURVEY === $note->get_type() ) {
 			$note->set_is_deleted( 1 );
 		}
 
