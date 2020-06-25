@@ -64,7 +64,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function assign_report_columns() {
 		$table_name = self::get_db_table_name();
 		// Avoid ambigious columns in SQL query.
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'order_id'         => "{$table_name}.order_id",
 			'parent_id'        => "{$table_name}.parent_id",
 			'date_created'     => "{$table_name}.date_created",
@@ -75,7 +75,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'total_sales'      => "{$table_name}.total_sales",
 			'num_items_sold'   => "{$table_name}.num_items_sold",
 			'customer_type'    => "(CASE WHEN {$table_name}.returning_customer = 1 THEN 'returning' WHEN {$table_name}.returning_customer = 0 THEN 'new' ELSE '' END) as customer_type",
-		);
+		), $table_name, $this);
 	}
 
 	/**

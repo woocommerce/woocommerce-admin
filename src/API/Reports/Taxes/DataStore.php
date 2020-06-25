@@ -64,7 +64,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function assign_report_columns() {
 		$table_name           = self::get_db_table_name();
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'tax_rate_id'  => "{$table_name}.tax_rate_id",
 			'name'         => 'tax_rate_name as name',
 			'tax_rate'     => 'tax_rate',
@@ -75,7 +75,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'order_tax'    => 'SUM(order_tax) as order_tax',
 			'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',
 			'orders_count' => "COUNT( DISTINCT ( CASE WHEN total_tax >= 0 THEN {$table_name}.order_id END ) ) as orders_count",
-		);
+		), $table_name, $this);
 	}
 
 	/**

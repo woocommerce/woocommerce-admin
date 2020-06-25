@@ -62,7 +62,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$table_name           = self::get_db_table_name();
 		$orders_count         = 'SUM( CASE WHEN parent_id = 0 THEN 1 ELSE 0 END )';
 		$total_spend          = 'SUM( total_sales )';
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'id'               => "{$table_name}.customer_id as id",
 			'user_id'          => 'user_id',
 			'username'         => 'username',
@@ -78,7 +78,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'orders_count'     => "{$orders_count} as orders_count",
 			'total_spend'      => "{$total_spend} as total_spend",
 			'avg_order_value'  => "CASE WHEN {$orders_count} = 0 THEN NULL ELSE {$total_spend} / {$orders_count} END AS avg_order_value",
-		);
+		), $table_name, $this);
 	}
 
 	/**

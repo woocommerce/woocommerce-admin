@@ -85,7 +85,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			" + {$refunds}" .
 			' ) as gross_sales';
 
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'orders_count'            => "SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) as orders_count",
 			'num_items_sold'          => "SUM({$table_name}.num_items_sold) as num_items_sold",
 			'gross_sales'             => $gross_sales,
@@ -101,7 +101,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			// Count returning customers as ( total_customers - new_customers ) to get an accurate number and count customers in with both new and old statuses as new.
 			'num_returning_customers' => "( COUNT( DISTINCT( {$table_name}.customer_id ) ) -  COUNT( DISTINCT( CASE WHEN {$table_name}.returning_customer = 0 THEN {$table_name}.customer_id END ) ) ) AS num_returning_customers",
 			'num_new_customers'       => "COUNT( DISTINCT( CASE WHEN {$table_name}.returning_customer = 0 THEN {$table_name}.customer_id END ) ) AS num_new_customers",
-		);
+		), $table_name, $this);
 	}
 
 	/**

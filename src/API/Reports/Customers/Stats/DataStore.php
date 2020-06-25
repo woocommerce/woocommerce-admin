@@ -46,12 +46,12 @@ class DataStore extends CustomersDataStore implements DataStoreInterface {
 	 * Assign report columns once full table name has been assigned.
 	 */
 	protected function assign_report_columns() {
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'customers_count'     => 'COUNT( * ) as customers_count',
 			'avg_orders_count'    => 'AVG( orders_count ) as avg_orders_count',
 			'avg_total_spend'     => 'AVG( total_spend ) as avg_total_spend',
 			'avg_avg_order_value' => 'AVG( avg_order_value ) as avg_avg_order_value',
-		);
+		), self::get_db_table_name(), $this);
 	}
 
 	/**

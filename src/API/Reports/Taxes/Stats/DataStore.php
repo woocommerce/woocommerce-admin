@@ -58,13 +58,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function assign_report_columns() {
 		$table_name           = self::get_db_table_name();
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'tax_codes'    => 'COUNT(DISTINCT tax_rate_id) as tax_codes',
 			'total_tax'    => 'SUM(total_tax) AS total_tax',
 			'order_tax'    => 'SUM(order_tax) as order_tax',
 			'shipping_tax' => 'SUM(shipping_tax) as shipping_tax',
 			'orders_count' => "COUNT( DISTINCT ( CASE WHEN parent_id = 0 THEN {$table_name}.order_id END ) ) as orders_count",
-		);
+		), $table_name, $this);
 	}
 
 	/**
@@ -104,12 +104,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function get_taxes( $args ) {
 		global $wpdb;
 		$query = "
-			SELECT 
-				tax_rate_id, 
-				tax_rate_country, 
-				tax_rate_state, 
-				tax_rate_name, 
-				tax_rate_priority 
+			SELECT
+				tax_rate_id,
+				tax_rate_country,
+				tax_rate_state,
+				tax_rate_name,
+				tax_rate_priority
 			FROM {$wpdb->prefix}woocommerce_tax_rates
 		";
 		if ( ! empty( $args['include'] ) ) {

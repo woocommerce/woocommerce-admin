@@ -57,11 +57,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function assign_report_columns() {
 		$table_name           = self::get_db_table_name();
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'coupon_id'    => 'coupon_id',
 			'amount'       => 'SUM(discount_amount) as amount',
 			'orders_count' => "COUNT(DISTINCT {$table_name}.order_id) as orders_count",
-		);
+		), $table_name, $this);
 	}
 
 	/**

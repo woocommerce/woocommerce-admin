@@ -61,7 +61,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Assign report columns once full table name has been assigned.
 	 */
 	protected function assign_report_columns() {
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'id'          => 'download_log_id as id',
 			'date'        => 'timestamp as date_gmt',
 			'download_id' => 'product_permissions.download_id',
@@ -69,7 +69,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'order_id'    => 'product_permissions.order_id',
 			'user_id'     => 'product_permissions.user_id',
 			'ip_address'  => 'user_ip_address as ip_address',
-		);
+		), self::get_db_table_name(), $this);
 	}
 
 	/**

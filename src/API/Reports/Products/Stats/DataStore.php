@@ -47,13 +47,13 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 	 */
 	protected function assign_report_columns() {
 		$table_name           = self::get_db_table_name();
-		$this->report_columns = array(
+		$this->report_columns =  apply_filters('wc_analytics_' . $this->context . '_report_columns', array(
 			'items_sold'       => 'SUM(product_qty) as items_sold',
 			'net_revenue'      => 'SUM(product_net_revenue) AS net_revenue',
 			'orders_count'     => "COUNT( DISTINCT ( CASE WHEN product_gross_revenue >= 0 THEN {$table_name}.order_id END ) ) as orders_count",
 			'products_count'   => 'COUNT(DISTINCT product_id) as products_count',
 			'variations_count' => 'COUNT(DISTINCT variation_id) as variations_count',
-		);
+		), $table_name, $this);
 	}
 
 	/**
