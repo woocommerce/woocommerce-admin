@@ -75,7 +75,7 @@ class Tax extends Component {
 	}
 
 	isTaxJarSupported() {
-		const { countryCode, tosAccepted } = this.props;
+		const { countryCode } = this.props;
 		const {
 			automatedTaxSupportedCountries = [],
 			taxJarActivated,
@@ -83,7 +83,6 @@ class Tax extends Component {
 
 		return (
 			! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
-			tosAccepted &&
 			automatedTaxSupportedCountries.includes( countryCode )
 		);
 	}
@@ -181,7 +180,13 @@ class Tax extends Component {
 	}
 
 	getSteps() {
-		const { generalSettings, isJetpackConnected, isPending } = this.props;
+		const {
+			generalSettings,
+			isJetpackConnected,
+			isPending,
+			tosAccepted,
+			updateOptions,
+		} = this.props;
 		const { cachedPluginsToActivate } = this.state;
 
 		const steps = [
@@ -221,30 +226,60 @@ class Tax extends Component {
 					'woocommerce-admin'
 				),
 				content: (
-					<Plugins
-						onComplete={ () => {
-							recordEvent( 'tasklist_tax_install_extensions', {
-								install_extensions: true,
-							} );
-							this.completeStep();
-						} }
-						onSkip={ () => {
-							queueRecordEvent(
-								'tasklist_tax_install_extensions',
-								{
-									install_extensions: false,
-								}
-							);
-							this.redirectToTaxSettings();
-						} }
-						skipText={ __(
-							'Set up tax rates manually',
-							'woocommerce-admin'
+					<Fragment>
+						<Plugins
+							onComplete={ () => {
+								recordEvent(
+									'tasklist_tax_install_extensions',
+									{
+										install_extensions: true,
+									}
+								);
+								updateOptions( {
+									woocommerce_setup_jetpack_opted_in: true,
+								} );
+								this.completeStep();
+							} }
+							onSkip={ () => {
+								queueRecordEvent(
+									'tasklist_tax_install_extensions',
+									{
+										install_extensions: false,
+									}
+								);
+								this.redirectToTaxSettings();
+							} }
+							skipText={ __(
+								'Set up tax rates manually',
+								'woocommerce-admin'
+							) }
+						/>
+						{ ! tosAccepted && (
+							<p>
+								{ interpolateComponents( {
+									mixedString: __(
+										'By installing Jetpack and WooCommerce Services you agree to the {{link}}Terms of Service{{/link}}.',
+										'woocommerce-admin'
+									),
+									components: {
+										link: (
+											<Link
+												href={
+													'https://wordpress.com/tos/'
+												}
+												target="_blank"
+												type="external"
+											/>
+										),
+									},
+								} ) }
+							</p>
 						) }
-					/>
+					</Fragment>
 				),
 				visible:
-					cachedPluginsToActivate.length && this.isTaxJarSupported(),
+					( cachedPluginsToActivate.length || ! tosAccepted ) &&
+					this.isTaxJarSupported(),
 			},
 			{
 				key: 'connect',
@@ -461,6 +496,7 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { updateAndPersistSettingsForGroup } = dispatch(
 			SETTINGS_STORE_NAME
 		);
@@ -468,6 +504,7 @@ export default compose(
 		return {
 			createNotice,
 			updateAndPersistSettingsForGroup,
+			updateOptions,
 		};
 	} )
 )( Tax );
