@@ -321,7 +321,7 @@ class BusinessDetails extends Component {
 
 		if ( isInstallingActivating ) {
 			return (
-				<p>
+				<p className="woocommerce-business-extensions__help-text">
 					{ sprintf(
 						_n(
 							'Installing the following plugin: %s',
@@ -336,7 +336,7 @@ class BusinessDetails extends Component {
 		}
 
 		return (
-			<p>
+			<p className="woocommerce-business-extensions__help-text">
 				{ sprintf(
 					_n(
 						'The following plugin will be installed for free: %s',
@@ -430,7 +430,7 @@ class BusinessDetails extends Component {
 							'Install recommended free business features',
 							'woocommerce-admin'
 						) }
-						<span className="woocommerce-business-extensions__help-text">
+						<span className="woocommerce-business-extensions__label-subtext">
 							{ __( 'Requires an account', 'woocommerce-admin' ) }
 						</span>
 					</span>
