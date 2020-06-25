@@ -4,7 +4,12 @@
 import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Button, CheckboxControl, FormToggle } from '@wordpress/components';
+import {
+	Button,
+	CheckboxControl,
+	FormToggle,
+	Popover,
+} from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, get, pickBy } from 'lodash';
 
@@ -46,6 +51,11 @@ class BusinessDetails extends Component {
 			'business_extensions',
 			false
 		);
+
+		this.state = {
+			hasInstallActivateError: false,
+			isPopoverVisible: false,
+		};
 
 		this.initialValues = {
 			other_platform: profileItems.other_platform || '',
@@ -403,11 +413,13 @@ class BusinessDetails extends Component {
 	}
 
 	renderBusinessExtensionsSimple( values, getInputProps ) {
+		const { isPopoverVisible } = this.state;
+
 		return (
-			<div className="woocommerce-profile-wizard__business-extensions-simple">
-				<label htmlFor="woocommerce-profile-wizard__business-extensions-checkbox">
+			<div className="woocommerce-business-extensions">
+				<label htmlFor="woocommerce-business-extensions__checkbox">
 					<CheckboxControl
-						id="woocommerce-profile-wizard__business-extensions-checkbox"
+						id="woocommerce-business-extensions__checkbox"
 						{ ...getInputProps( 'install_extensions' ) }
 					/>
 					{ __(
@@ -417,6 +429,107 @@ class BusinessDetails extends Component {
 					<span className="woocommerce-profile-wizard__help-text">
 						{ __( 'Requires an account', 'woocommerce-admin' ) }
 					</span>
+
+					<Button
+						isTertiary
+						onMouseEnter={ () =>
+							this.setState( { isPopoverVisible: true } )
+						}
+						onMouseLeave={ () =>
+							this.setState( { isPopoverVisible: false } )
+						}
+						onFocus={ () =>
+							this.setState( { isPopoverVisible: true } )
+						}
+						onBlur={ () =>
+							this.setState( { isPopoverVisible: false } )
+						}
+					>
+						<i className="material-icons-outlined">info</i>
+						{ isPopoverVisible && (
+							<Popover focusOnMount={ false }>
+								<Fragment>
+									<div className="woocommerce-business-extensions__benefits">
+										<div className="woocommerce-business-extensions__benefit">
+											<i className="material-icons-outlined">
+												check
+											</i>
+											{ __(
+												'Manage your store on the go with the WooCommerce mobile app',
+												'woocommerce-admin'
+											) }
+										</div>
+										<div className="woocommerce-business-extensions__benefit">
+											<i className="material-icons-outlined">
+												check
+											</i>
+											{ __(
+												'Accept credit cards with WooCommerce Payments',
+												'woocommerce-admin'
+											) }
+										</div>
+										<div className="woocommerce-business-extensions__benefit">
+											<i className="material-icons-outlined">
+												check
+											</i>
+											{ __(
+												'Speed & security enhancements',
+												'woocommerce-admin'
+											) }
+										</div>
+										<div className="woocommerce-business-extensions__benefit">
+											<i className="material-icons-outlined">
+												check
+											</i>
+											{ __(
+												'Automatic sales taxes',
+												'woocommerce-admin'
+											) }
+										</div>
+										<div className="woocommerce-business-extensions__benefit">
+											<i className="material-icons-outlined">
+												check
+											</i>
+											{ __(
+												'Market on Facebook',
+												'woocommerce-admin'
+											) }
+										</div>
+										<div className="woocommerce-business-extensions__benefit">
+											<i className="material-icons-outlined">
+												check
+											</i>
+											{ __(
+												'Contact customers with Mailchimp',
+												'woocommerce-admin'
+											) }
+										</div>
+										<div className="woocommerce-business-extensions__benefit">
+											<i className="material-icons-outlined">
+												check
+											</i>
+											{ __(
+												'Drive sales with Google Ads',
+												'woocommerce-admin'
+											) }
+										</div>
+										<div className="woocommerce-business-extensions__benefit">
+											<i className="material-icons-outlined">
+												check
+											</i>
+											{ __(
+												'Print shipping labels at home',
+												'woocommerce-admin'
+											) }
+										</div>
+									</div>
+									{ this.renderBusinessExtensionHelpText(
+										values
+									) }
+								</Fragment>
+							</Popover>
+						) }
+					</Button>
 				</label>
 			</div>
 		);
