@@ -80,7 +80,7 @@ class BusinessDetails extends Component {
 			'kliken-marketing-for-google',
 		];
 
-		this.simpleInstall = true;
+		this.bundleInstall = false;
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
 		this.getNumberRangeString = this.getNumberRangeString.bind( this );
@@ -112,11 +112,21 @@ class BusinessDetails extends Component {
 			revenue,
 			used_platform: otherPlatform,
 			used_platform_name: otherPlatformName,
-			install_facebook: values[ 'facebook-for-woocommerce' ],
-			install_mailchimp: values[ 'mailchimp-for-woocommerce' ],
-			install_google_ads: values[ 'kliken-marketing-for-google' ],
+			install_woocommerce_services: businessExtensions.includes(
+				'facebook-for-woocommerce'
+			),
+			install_jetpack: businessExtensions.includes( 'jetpack' ),
+			install_facebook: businessExtensions.includes(
+				'facebook-for-woocommerce'
+			),
+			install_mailchimp: businessExtensions.includes(
+				'mailchimp-for-woocommerce'
+			),
+			install_google_ads: businessExtensions.includes(
+				'kliken-marketing-for-google'
+			),
 			install_extensions: installExtensions,
-			simple_install: this.simpleInstall,
+			bundle_install: this.bundleInstall,
 		} );
 
 		const _updates = {
@@ -213,7 +223,7 @@ class BusinessDetails extends Component {
 					);
 				}
 			} else if (
-				! this.simpleInstall &&
+				! this.bundleInstall &&
 				! this.extensions.includes( name ) &&
 				! values[ name ].length
 			) {
@@ -228,7 +238,7 @@ class BusinessDetails extends Component {
 	}
 
 	getBusinessExtensions( values ) {
-		if ( this.simpleInstall ) {
+		if ( this.bundleInstall ) {
 			return values.install_extensions
 				? [
 						'jetpack',
@@ -415,7 +425,7 @@ class BusinessDetails extends Component {
 		);
 	}
 
-	renderBusinessExtensionsSimple( values, getInputProps ) {
+	renderBusinessExtensionsBundle( values, getInputProps ) {
 		const { isPopoverVisible } = this.state;
 
 		return (
@@ -710,7 +720,7 @@ class BusinessDetails extends Component {
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
 					// Show extensions when the currently selling elsewhere checkbox has been answered.
 					const shouldShowExtensions =
-						values.selling_venues !== '' && ! this.simpleInstall;
+						values.selling_venues !== '' && ! this.bundleInstall;
 					return (
 						<Fragment>
 							<H className="woocommerce-profile-wizard__header-title">
@@ -806,10 +816,11 @@ class BusinessDetails extends Component {
 											getInputProps
 										) }
 
-									{ this.renderBusinessExtensionsSimple(
-										values,
-										getInputProps
-									) }
+									{ this.bundleInstall &&
+										this.renderBusinessExtensionsBundle(
+											values,
+											getInputProps
+										) }
 
 									<div className="woocommerce-profile-wizard__card-actions">
 										<Button
