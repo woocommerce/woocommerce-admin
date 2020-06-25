@@ -164,7 +164,12 @@ class WC_Admin_Notes {
 				'orderby'    => 'date_created',
 				'per_page'   => 25,
 				'page'       => 1,
-				'type'       => array( 'info', 'marketing', 'warning', 'survey' ),
+				'type'       => array(
+					WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL,
+					WC_Admin_Note::E_WC_ADMIN_NOTE_MARKETING,
+					WC_Admin_Note::E_WC_ADMIN_NOTE_WARNING,
+					WC_Admin_Note::E_WC_ADMIN_NOTE_SURVEY,
+				),
 				'is_deleted' => 0,
 			)
 		);
