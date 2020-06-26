@@ -338,12 +338,10 @@ class Onboarding {
 		$product_types = self::append_product_data(
 			array(
 				'physical'      => array(
-					'label'       => __( 'Physical products', 'woocommerce-admin' ),
-					'description' => __( 'Products you ship to customers.', 'woocommerce-admin' ),
+					'label' => __( 'Physical products', 'woocommerce-admin' ),
 				),
 				'downloads'     => array(
-					'label'       => __( 'Downloads', 'woocommerce-admin' ),
-					'description' => __( 'Virtual products that customers download.', 'woocommerce-admin' ),
+					'label' => __( 'Downloads', 'woocommerce-admin' ),
 				),
 				'subscriptions' => array(
 					'label'   => __( 'Subscriptions', 'woocommerce-admin' ),
