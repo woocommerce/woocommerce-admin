@@ -94,8 +94,6 @@ class Tax extends Component {
 
 		if ( nextStep ) {
 			this.setState( { stepIndex: stepIndex + 1 } );
-		} else {
-			getHistory().push( getNewPath( {}, '/', {} ) );
 		}
 	}
 
