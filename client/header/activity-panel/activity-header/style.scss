@@ -30,6 +30,8 @@
 
 .woocommerce-layout__inbox-title {
 	color: $dark-gray-primary;
+	display: flex;
+	align-items: center;
 }
 
 .woocommerce-layout__inbox-subtitle {
@@ -40,9 +42,9 @@
 	margin-left: $gap-small / 2;
 	background-color: $medium-gray-text;
 	border-radius: 13px;
+	padding: 0 $gap-small / 2;
 	color: $white;
 	display: inline-block;
 	text-align: center;
-	width: 27px;
 	vertical-align: top;
 }
