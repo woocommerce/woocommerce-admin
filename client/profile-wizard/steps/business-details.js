@@ -10,6 +10,7 @@ import {
 	FormToggle,
 	Popover,
 } from '@wordpress/components';
+import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, get, pickBy } from 'lodash';
 
@@ -452,10 +453,15 @@ class BusinessDetails extends Component {
 						{ ...getInputProps( 'install_extensions' ) }
 					/>
 					<span className="woocommerce-business-extensions__label-text">
-						{ __(
-							'Install recommended free business features',
-							'woocommerce-admin'
-						) }
+						{ interpolateComponents( {
+							mixedString: __(
+								'Install recommended {{strong}}free{{/strong}} business features',
+								'woocommerce-admin'
+							),
+							components: {
+								strong: <strong />,
+							},
+						} ) }
 						<span className="woocommerce-business-extensions__label-subtext">
 							{ __( 'Requires an account', 'woocommerce-admin' ) }
 						</span>
