@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Button, CheckboxControl } from '@wordpress/components';
+import { Button, CheckboxControl, Tooltip } from '@wordpress/components';
 import { includes, filter, get } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -13,13 +13,14 @@ import { withDispatch, withSelect } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { H, Card, Link } from '@woocommerce/components';
+import { H, Card, Link, Pill } from '@woocommerce/components';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import { recordEvent } from 'lib/tracks';
+import './product-types.scss';
 
 function getLabel( description, yearlyPrice ) {
 	if ( ! yearlyPrice ) {
@@ -32,7 +33,14 @@ function getLabel( description, yearlyPrice ) {
 		monthlyPrice
 	);
 
-	return description + ' - ' + priceDescription;
+	return (
+		<Fragment>
+			{ description }
+			<Tooltip text={ __( 'This product type requires a paid extension. We\'ll add this to a cart so that you can purchase and install it later.', 'woocommerce-admin' ) }>
+				<Pill>{ priceDescription }</Pill>
+			</Tooltip>
+		</Fragment>
+	);
 }
 
 class ProductTypes extends Component {
@@ -122,7 +130,7 @@ class ProductTypes extends Component {
 		const { error, selected } = this.state;
 
 		return (
-			<Fragment>
+			<div className="woocommerce-profile-wizard__product-types">
 				<H className="woocommerce-profile-wizard__header-title">
 					{ __(
 						'What type of products will be listed?',
@@ -197,7 +205,7 @@ class ProductTypes extends Component {
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</Card>
-			</Fragment>
+			</div>
 		);
 	}
 }
