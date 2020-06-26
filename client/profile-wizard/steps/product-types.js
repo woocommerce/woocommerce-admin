@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Button, CheckboxControl } from '@wordpress/components';
@@ -20,6 +20,20 @@ import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
  * Internal dependencies
  */
 import { recordEvent } from 'lib/tracks';
+
+function getLabel( description, yearlyPrice ) {
+	if ( ! yearlyPrice ) {
+		return description;
+	}
+
+	const monthlyPrice = ( yearlyPrice / 12.0 ).toFixed( 2 );
+	const priceDescription = sprintf(
+		'$%f per month, billed annually',
+		monthlyPrice
+	);
+
+	return description + ' - ' + priceDescription;
+}
 
 class ProductTypes extends Component {
 	constructor( props ) {
@@ -106,6 +120,7 @@ class ProductTypes extends Component {
 	render() {
 		const { productTypes = {} } = getSetting( 'onboarding', {} );
 		const { error, selected } = this.state;
+
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
@@ -119,6 +134,10 @@ class ProductTypes extends Component {
 				<Card>
 					<div className="woocommerce-profile-wizard__checkbox-group">
 						{ Object.keys( productTypes ).map( ( slug ) => {
+							const label = getLabel(
+								productTypes[ slug ].label,
+								productTypes[ slug ].yearly_price
+							);
 							const helpText =
 								productTypes[ slug ].description &&
 								interpolateComponents( {
@@ -155,7 +174,7 @@ class ProductTypes extends Component {
 							return (
 								<CheckboxControl
 									key={ slug }
-									label={ productTypes[ slug ].label }
+									label={ label }
 									help={ helpText }
 									onChange={ () => this.onChange( slug ) }
 									checked={ selected.includes( slug ) }
