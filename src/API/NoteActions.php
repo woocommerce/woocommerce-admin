@@ -108,11 +108,6 @@ class NoteActions extends Notes {
 			$note->set_status( $triggered_action->status );
 		}
 
-		// Update note state depending on its type.
-		if ( WC_Admin_Note::E_WC_ADMIN_NOTE_SURVEY === $note->get_type() ) {
-			$note->set_is_deleted( 1 );
-		}
-
 		$note->save();
 
 		if ( in_array( $note->get_type(), array( 'error', 'update' ) ) ) {
