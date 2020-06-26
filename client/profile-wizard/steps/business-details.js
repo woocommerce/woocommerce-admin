@@ -181,58 +181,55 @@ class BusinessDetails extends Component {
 	validate( values ) {
 		const errors = {};
 
-		Object.keys( values ).forEach( ( name ) => {
-			if ( name === 'other_platform' ) {
-				if (
-					! values.other_platform.length &&
-					[ 'other', 'brick-mortar-other' ].includes(
-						values.selling_venues
-					)
-				) {
-					errors.other_platform = __(
-						'This field is required',
-						'woocommerce-admin'
-					);
-				}
-			} else if ( name === 'other_platform_name' ) {
-				if (
-					! values.other_platform_name &&
-					values.other_platform === 'other' &&
-					[ 'other', 'brick-mortar-other' ].includes(
-						values.selling_venues
-					)
-				) {
-					errors.other_platform_name = __(
-						'This field is required',
-						'woocommerce-admin'
-					);
-				}
-			} else if ( name === 'revenue' ) {
-				if (
-					! values.revenue.length &&
-					[
-						'other',
-						'brick-mortar',
-						'brick-mortar-other',
-						'other-woocommerce',
-					].includes( values.selling_venues )
-				) {
-					errors.revenue = __(
-						'This field is required',
-						'woocommerce-admin'
-					);
-				}
-			} else if (
-				! this.bundleInstall &&
-				! this.extensions.includes( name ) &&
-				! values[ name ].length
-			) {
-				errors[ name ] = __(
-					'This field is required',
-					'woocommerce-admin'
-				);
-			}
-		} );
+		if ( ! values.product_count.length ) {
+			errors.product_count = __(
+				'This field is required',
+				'woocommerce-admin'
+			);
+		}
+
+		if ( ! values.selling_venues.length ) {
+			errors.selling_venues = __(
+				'This field is required',
+				'woocommerce-admin'
+			);
+		}
+
+		if (
+			! values.other_platform.length &&
+			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+		) {
+			errors.other_platform = __(
+				'This field is required',
+				'woocommerce-admin'
+			);
+		}
+
+		if (
+			! values.other_platform_name &&
+			values.other_platform === 'other' &&
+			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+		) {
+			errors.other_platform_name = __(
+				'This field is required',
+				'woocommerce-admin'
+			);
+		}
+
+		if (
+			! values.revenue.length &&
+			[
+				'other',
+				'brick-mortar',
+				'brick-mortar-other',
+				'other-woocommerce',
+			].includes( values.selling_venues )
+		) {
+			errors.revenue = __(
+				'This field is required',
+				'woocommerce-admin'
+			);
+		}
 
 		return errors;
 	}
