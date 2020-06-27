@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import './style.scss'
+import './style.scss';
 import { ProductIcon } from '../../components/';
 import { recordEvent } from 'lib/tracks';
 import { getInAppPurchaseUrl } from 'lib/in-app-purchase';
@@ -21,7 +21,7 @@ const RecommendedExtensionsItem = ( {
 
 	const onProductClick = () => {
 		recordEvent( 'marketing_recommended_extension', { name: title } );
-	}
+	};
 
 	const classNameBase = 'woocommerce-marketing-recommended-extensions-item';
 	const connectURL = getInAppPurchaseUrl( url );
@@ -32,7 +32,8 @@ const RecommendedExtensionsItem = ( {
 	}
 
 	return (
-		<a href={ connectURL }
+		<a
+			href={ connectURL }
 			className={ classNameBase }
 			onClick={ onProductClick }
 		>
@@ -43,8 +44,8 @@ const RecommendedExtensionsItem = ( {
 				<p>{ description }</p>
 			</div>
 		</a>
-	)
-}
+	);
+};
 
 RecommendedExtensionsItem.propTypes = {
 	title: PropTypes.string.isRequired,

@@ -279,7 +279,7 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 }
 
 // Update's wc-admin links in wp-admin menu
-window.wpNavMenuUrlUpdate = function( query ) {
+window.wpNavMenuUrlUpdate = function ( query ) {
 	const excludedScreens = applyFilters( TIME_EXCLUDED_SCREENS_FILTER, [
 		'devdocs',
 		'stock',
@@ -295,9 +295,9 @@ window.wpNavMenuUrlUpdate = function( query ) {
 };
 
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
-window.wpNavMenuClassChange = function( page, url ) {
+window.wpNavMenuClassChange = function ( page, url ) {
 	Array.from( document.getElementsByClassName( 'current' ) ).forEach(
-		function( item ) {
+		function ( item ) {
 			item.classList.remove( 'current' );
 		}
 	);
@@ -305,7 +305,7 @@ window.wpNavMenuClassChange = function( page, url ) {
 	const submenu = Array.from(
 		document.querySelectorAll( '.wp-has-current-submenu' )
 	);
-	submenu.forEach( function( element ) {
+	submenu.forEach( function ( element ) {
 		element.classList.remove( 'wp-has-current-submenu' );
 		element.classList.remove( 'wp-menu-open' );
 		element.classList.remove( 'selected' );
@@ -323,7 +323,7 @@ window.wpNavMenuClassChange = function( page, url ) {
 			: `li > a[href*="${ pageUrl }"]`;
 	const currentItems = document.querySelectorAll( currentItemsSelector );
 
-	Array.from( currentItems ).forEach( function( item ) {
+	Array.from( currentItems ).forEach( function ( item ) {
 		item.parentElement.classList.add( 'current' );
 	} );
 
