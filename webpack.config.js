@@ -105,8 +105,13 @@ const webpackConfig = {
 			},
 			{
 				test: /\.jsx?$/,
-				loader: 'babel-loader',
 				exclude: /node_modules/,
+				use: {
+					loader: 'babel-loader?cacheDirectory',
+					options: {
+						presets: [ '@wordpress/babel-preset-default' ],
+					},
+				},
 			},
 			{
 				test: /\.js?$/,
