@@ -9,7 +9,6 @@ module.exports = {
 	},
 	plugins: [ '@wordpress' ],
 	rules: {
-		'@wordpress/dependency-group': 'off',
 		'jsdoc/valid-types': 'warn',
 		'jsdoc/check-tag-names': 'warn',
 		radix: 'error',
