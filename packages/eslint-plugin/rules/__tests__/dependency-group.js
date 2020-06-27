@@ -8,14 +8,14 @@ import { RuleTester } from 'eslint';
  */
 import rule from '../dependency-group';
 
-const ruleTester = new RuleTester({
+const ruleTester = new RuleTester( {
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 6,
 	},
-});
+} );
 
-ruleTester.run('dependency-group', rule, {
+ruleTester.run( 'dependency-group', rule, {
 	valid: [
 		{
 			code: `
@@ -70,4 +70,4 @@ import { SearchListControl } from '@woocommerce/components';`,
 			],
 		},
 	],
-});
+} );
