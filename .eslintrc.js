@@ -14,5 +14,10 @@ module.exports = {
 		'@woocommerce/dependency-group': 'warn',
 		'jsdoc/valid-types': 'warn',
 		'jsdoc/check-tag-names': 'warn',
+		'@wordpress/i18n-translator-comments': 'warn',
+		'@wordpress/valid-sprintf': 'warn',
+		'react-hooks/rules-of-hooks': 'warn',
+		'@wordpress/i18n-no-collapsible-whitespace': 'warn',
+		'@wordpress/i18n-text-domain': 'warn',
 	},
 };
