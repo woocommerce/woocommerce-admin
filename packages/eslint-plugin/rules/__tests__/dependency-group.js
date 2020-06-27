@@ -57,6 +57,14 @@ import { SearchListControl } from '@woocommerce/components';`,
 				},
 				{
 					message:
+						'Expected "External dependencies" to be defined before Internal',
+				},
+				{
+					message:
+						'Expected "External dependencies" to be defined before Internal',
+				},
+				{
+					message:
 						'Expected preceding "External dependencies" comment block',
 				},
 				{

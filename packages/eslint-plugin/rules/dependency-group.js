@@ -81,7 +81,10 @@ module.exports = {
 		 * @return {boolean} Whether node occurs before reference.
 		 */
 		function isBefore( node, reference ) {
-			return node.start < reference.start;
+			if ( ! node.range || ! reference.range ) {
+				return false;
+			}
+			return node.range[ 0 ] < reference.range[ 0 ];
 		}
 
 		/**
