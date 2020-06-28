@@ -175,9 +175,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function include_extended_info( &$products_data, $query_args ) {
 		// Ensure full variation titles are queried.
-		add_filter( 'woocommerce_product_variation_title_include_attributes', function() {
-			return true;
-		} );
+		add_filter(
+			'woocommerce_product_variation_title_include_attributes',
+			function() {
+				return true;
+			}
+		);
 
 		foreach ( $products_data as $key => $product_data ) {
 			$extended_info = new \ArrayObject();

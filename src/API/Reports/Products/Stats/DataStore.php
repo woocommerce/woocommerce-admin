@@ -131,9 +131,12 @@ class DataStore extends ProductsDataStore implements DataStoreInterface {
 
 		if ( false === $data ) {
 			// Ensure full variation titles are queried.
-			add_filter( 'woocommerce_product_variation_title_include_attributes', function() {
-				return true;
-			} );
+			add_filter(
+				'woocommerce_product_variation_title_include_attributes',
+				function() {
+					return true;
+				}
+			);
 
 			$this->initialize_queries();
 
