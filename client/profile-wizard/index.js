@@ -203,12 +203,16 @@ class ProfileWizard extends Component {
 
 	completeProfiler() {
 		const {
+			getJetpackConnectUrl,
+			getPluginsError,
 			isJetpackConnected,
 			notes,
 			updateNote,
 			updateProfileItems,
 		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
+		const shouldConnectJetpack =
+			this.activePlugins.includes( 'jetpack' ) && ! isJetpackConnected;
 
 		const profilerNote = notes.find(
 			( note ) => note.name === 'wc-admin-onboarding-profiler-reminder'
@@ -217,26 +221,30 @@ class ProfileWizard extends Component {
 			updateNote( profilerNote.id, { status: 'actioned' } );
 		}
 
-		updateProfileItems( { completed: true } ).then( () => {
-			if (
-				this.activePlugins.includes( 'jetpack' ) &&
-				! isJetpackConnected
-			) {
-				this.connectJetpack();
+		const promises = [
+			updateProfileItems( { completed: true } ).then( () => {
+				if ( shouldConnectJetpack ) {
+					document.body.classList.add(
+						'woocommerce-admin-is-loading'
+					);
+				}
+			} ),
+		];
+
+		if ( shouldConnectJetpack ) {
+			promises.push(
+				getJetpackConnectUrl( {
+					redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
+				} )
+			);
+		}
+
+		Promise.all( promises ).then( ( responses ) => {
+			if ( ! shouldConnectJetpack ) {
+				return;
 			}
-		} );
-	}
 
-	connectJetpack() {
-		const { getJetpackConnectUrl, getPluginsError } = this.props;
-
-		document.body.classList.add( 'woocommerce-admin-is-loading' );
-
-		getJetpackConnectUrl( {
-			redirect_url: getAdminLink(
-				'admin.php?page=wc-admin&reset_profiler=0'
-			),
-		} ).then( ( url ) => {
+			const jetpackConnectUrl = responses[ 1 ];
 			const error = getPluginsError( 'getJetpackConnectUrl' );
 			if ( error ) {
 				createNoticesFromResponse( error );
@@ -245,7 +253,10 @@ class ProfileWizard extends Component {
 				);
 				return;
 			}
-			window.location = url;
+
+			if ( jetpackConnectUrl ) {
+				window.location = jetpackConnectUrl;
+			}
 		} );
 	}
 
@@ -280,9 +291,11 @@ export default compose(
 		const { getProfileItems, getOnboardingError } = select(
 			ONBOARDING_STORE_NAME
 		);
-		const { getActivePlugins, getPluginsError } = select(
-			PLUGINS_STORE_NAME
-		);
+		const {
+			getActivePlugins,
+			getPluginsError,
+			isJetpackConnected,
+		} = select( PLUGINS_STORE_NAME );
 
 		const notesQuery = {
 			page: 1,
@@ -302,6 +315,7 @@ export default compose(
 			).getJetpackConnectUrl,
 			getPluginsError,
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
+			isJetpackConnected: isJetpackConnected(),
 			notes,
 			profileItems: getProfileItems(),
 			activePlugins,
