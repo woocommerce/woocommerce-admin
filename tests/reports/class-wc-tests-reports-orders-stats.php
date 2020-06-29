@@ -770,9 +770,9 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$order_1_time = time();
 		// One more order needs to fit into the same hour, but also be one second later than this one, so in case it's very end of the hour, shift order 1 one second towards past.
 		if ( 59 === $order_1_time % MINUTE_IN_SECONDS ) {
-			$order_1_time--;
+			$order_1_time = $order_1_time - 2;
 		}
-		$order_2_time = $order_1_time;
+		$order_2_time = $order_1_time + 1;
 
 		$this_['hour']  = array( 1, 2 );
 		$this_['day']   = array( 1, 2 );
@@ -852,6 +852,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$orders = array();
 		// 2 different order statuses, plus new vs returning customer
 		$qty_per_product = 4; // Hardcoded in WC_Helper_Order::create_order.
+		$iterations      = 1;
 
 		foreach ( array( $product_1, $product_2, $product_3 ) as $product ) {
 			foreach ( array( null, $coupon_1, $coupon_2 ) as $coupon ) {
@@ -865,7 +866,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 						) { // As there are no tests for different timeframes, ignore these for now: $order_3_time, $order_4_time, $order_5_time, $order_6_time, $order_7_time
 							// One order with only 1 product.
 							$order = WC_Helper_Order::create_order( $customer->get_id(), $product );
-							$order->set_date_created( $order_time );
+							$order->set_date_created( $order_time + $iterations++ ); // offset each order by 1 second.
 							$order->set_status( $order_status );
 
 							if ( $coupon ) {
@@ -891,7 +892,7 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 							);
 							$item->save();
 							$order_2->add_item( $item );
-							$order_2->set_date_created( $order_time );
+							$order_2->set_date_created( $order_time + $iterations++ ); // offset each order by 1 second.
 							$order_2->set_status( $order_status );
 
 							if ( $coupon ) {
