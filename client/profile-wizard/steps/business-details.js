@@ -471,26 +471,22 @@ class BusinessDetails extends Component {
 				<div className="woocommerce-business-extensions__popover-wrapper">
 					<Button
 						isTertiary
-						onMouseEnter={ () =>
-							this.setState( { isPopoverVisible: true } )
-						}
-						onMouseLeave={ () =>
-							this.setState( { isPopoverVisible: false } )
-						}
-						onFocus={ () =>
-							this.setState( { isPopoverVisible: true } )
-						}
-						onBlur={ () =>
-							this.setState( { isPopoverVisible: false } )
-						}
+						onClick={ () => {
+							recordEvent(
+								'storeprofiler_store_business_details_popover'
+							);
+							this.setState( { isPopoverVisible: true } );
+						} }
 					>
 						<i className="material-icons-outlined">info</i>
 					</Button>
 					{ isPopoverVisible && (
 						<Popover
 							className="woocommerce-business-extensions__popover"
-							focusOnMount={ false }
 							position="top center"
+							onClose={ () =>
+								this.setState( { isPopoverVisible: false } )
+							}
 						>
 							<div className="woocommerce-business-extensions__benefits">
 								<div className="woocommerce-business-extensions__benefit">
