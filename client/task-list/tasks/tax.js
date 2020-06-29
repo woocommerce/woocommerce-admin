@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
+import { Button, __experimentalText as Text } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
@@ -253,7 +253,10 @@ class Tax extends Component {
 							) }
 						/>
 						{ ! tosAccepted && (
-							<p>
+							<Text
+								variant="caption"
+								className="woocommerce-task__caption"
+							>
 								{ interpolateComponents( {
 									mixedString: __(
 										'By installing Jetpack and WooCommerce Services you agree to the {{link}}Terms of Service{{/link}}.',
@@ -271,7 +274,7 @@ class Tax extends Component {
 										),
 									},
 								} ) }
-							</p>
+							</Text>
 						) }
 					</Fragment>
 				),
