@@ -5,24 +5,26 @@ import { __ } from '@wordpress/i18n';
 import { Component, createElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, __experimentalResolveSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
  */
-import { updateQueryString } from '@woocommerce/navigation';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 } from '@woocommerce/data';
+import { updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import Benefits from './steps/benefits';
 import BusinessDetails from './steps/business-details';
+import { createNoticesFromResponse } from 'lib/notices';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
@@ -36,10 +38,6 @@ import './style.scss';
 class ProfileWizard extends Component {
 	constructor( props ) {
 		super( props );
-		this.state = {
-			cartRedirectUrl: null,
-		};
-
 		this.activePlugins = props.activePlugins;
 		this.goToNextStep = this.goToNextStep.bind( this );
 	}
@@ -103,13 +101,6 @@ class ProfileWizard extends Component {
 	}
 
 	componentWillUnmount() {
-		const { cartRedirectUrl } = this.state;
-
-		if ( cartRedirectUrl ) {
-			document.body.classList.add( 'woocommerce-admin-is-loading' );
-			window.location = cartRedirectUrl;
-		}
-
 		document.documentElement.classList.add( 'wp-toolbar' );
 		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
@@ -211,8 +202,12 @@ class ProfileWizard extends Component {
 	}
 
 	completeProfiler() {
-		const { notes, updateNote, updateProfileItems } = this.props;
-		updateProfileItems( { completed: true } );
+		const {
+			isJetpackConnected,
+			notes,
+			updateNote,
+			updateProfileItems,
+		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
 
 		const profilerNote = notes.find(
@@ -221,6 +216,37 @@ class ProfileWizard extends Component {
 		if ( profilerNote ) {
 			updateNote( profilerNote.id, { status: 'actioned' } );
 		}
+
+		updateProfileItems( { completed: true } ).then( () => {
+			if (
+				this.activePlugins.includes( 'jetpack' ) &&
+				! isJetpackConnected
+			) {
+				this.connectJetpack();
+			}
+		} );
+	}
+
+	connectJetpack() {
+		const { getJetpackConnectUrl, getPluginsError } = this.props;
+
+		document.body.classList.add( 'woocommerce-admin-is-loading' );
+
+		getJetpackConnectUrl( {
+			redirect_url: getAdminLink(
+				'admin.php?page=wc-admin&reset_profiler=0'
+			),
+		} ).then( ( url ) => {
+			const error = getPluginsError( 'getJetpackConnectUrl' );
+			if ( error ) {
+				createNoticesFromResponse( error );
+				document.body.classList.remove(
+					'woocommerce-admin-is-loading'
+				);
+				return;
+			}
+			window.location = url;
+		} );
 	}
 
 	render() {
@@ -254,7 +280,9 @@ export default compose(
 		const { getProfileItems, getOnboardingError } = select(
 			ONBOARDING_STORE_NAME
 		);
-		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
+		const { getActivePlugins, getPluginsError } = select(
+			PLUGINS_STORE_NAME
+		);
 
 		const notesQuery = {
 			page: 1,
@@ -269,6 +297,10 @@ export default compose(
 
 		return {
 			dismissedTasks,
+			getJetpackConnectUrl: __experimentalResolveSelect(
+				PLUGINS_STORE_NAME
+			).getJetpackConnectUrl,
+			getPluginsError,
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
 			notes,
 			profileItems: getProfileItems(),
