@@ -28,6 +28,7 @@
 	"dependencies": {
 		"@wordpress/eslint-plugin": "^7.1.0",
 		"eslint-plugin-react-hooks": "^4.0.4",
+		"eslint-plugin-testing-library": "^3.3.1",
 		"requireindex":"^1.2.0"
 	},
 	"peerDependencies": {

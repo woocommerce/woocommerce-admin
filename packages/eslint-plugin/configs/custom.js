@@ -1,13 +1,19 @@
 module.exports = {
 	plugins: [ '@wordpress', '@woocommerce' ],
 	rules: {
-		'@wordpress/dependency-group': 'off',
 		'@woocommerce/dependency-group': 'error',
 	},
 	overrides: [
 		{
-			files: [ '**/tests/**/*.js' ],
-			extends: [ 'plugin:@wordpress/eslint-plugin/test-unit' ],
+			files: [
+				'**/@(test|__tests__)/**/*.js',
+				'**/?(*.)test.js',
+				'**/tests/**/*.js',
+			],
+			extends: [
+				'plugin:@wordpress/eslint-plugin/test-unit',
+				require.resolve( './react-testing-library' ),
+			],
 		},
 	],
 };
