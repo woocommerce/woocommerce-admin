@@ -37,7 +37,7 @@ import {
 	TextControl,
 } from '@woocommerce/components';
 import { recordEvent } from 'lib/tracks';
-import { getCurrencyRegion } from 'dashboard/utils';
+import { getCountryCode, getCurrencyRegion } from 'dashboard/utils';
 import { CurrencyContext } from 'lib/currency-context';
 import { createNoticesFromResponse } from 'lib/notices';
 
@@ -46,7 +46,11 @@ const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 class BusinessDetails extends Component {
 	constructor( props ) {
 		super();
+		const settings = get( props, 'settings', {} );
 		const profileItems = get( props, 'profileItems', {} );
+		const industrySlugs = get( profileItems, 'industry', [] ).map(
+			( industry ) => industry.slug
+		);
 		const businessExtensions = get(
 			profileItems,
 			'business_extensions',
@@ -81,7 +85,10 @@ class BusinessDetails extends Component {
 			'kliken-marketing-for-google',
 		];
 
-		this.bundleInstall = false;
+		this.bundleInstall =
+			getCountryCode( settings.woocommerce_default_country ) === 'US' &&
+			( industrySlugs.includes( 'fashion-apparel-accessories' ) ||
+				industrySlugs.includes( 'health-beauty' ) );
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
 		this.getNumberRangeString = this.getNumberRangeString.bind( this );
