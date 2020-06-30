@@ -3,11 +3,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Button } from '@wordpress/components';
+import { Button, CheckboxControl } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
+import { isEmail } from '@wordpress/url';
 
 /**
  * WooCommerce dependencies
@@ -25,9 +26,10 @@ class PayPal extends Component {
 			autoConnectFailed: false,
 			connectURL: '',
 			isPending: false,
+			createAccount: true,
 		};
 
-		this.updateSettings = this.updateSettings.bind( this );
+		this.renderConnectActions = this.renderConnectActions.bind( this );
 	}
 
 	componentDidMount() {
@@ -71,6 +73,23 @@ class PayPal extends Component {
 		}
 	}
 
+	getSteps() {
+		const { installStep } = this.props;
+		const { accountEmail, createAccount} = this.state;
+
+		const steps = [
+			installStep,
+			this.getConnectStep(),
+		];
+
+		if ( createAccount && isEmail( accountEmail ) ) {
+			steps.push( {
+				key: 'install-wcs',
+				
+			} );
+		}
+	}
+
 	async fetchOAuthConnectURL() {
 		const { activePlugins } = this.props;
 
@@ -106,12 +125,63 @@ class PayPal extends Component {
 		}
 	}
 
-	renderConnectButton() {
-		const { connectURL } = this.state;
+	renderConnectActions() {
+		const { accountEmail, connectURL, createAccount } = this.state;
+
 		return (
-			<Button isPrimary href={ connectURL }>
-				{ __( 'Connect', 'woocommerce-admin' ) }
-			</Button>
+			<Fragment>
+				<div className="woocommerce-task-payments__paypal-options">
+					<CheckboxControl
+						checked={ createAccount }
+						label={ __(
+							'Create a PayPal account for me',
+							'woocommerce-admin'
+						) }
+						onChange={ () =>
+							this.setState( {
+								createAccount: ! createAccount,
+							} )
+						}
+					/>
+
+					{ createAccount && (
+						<TextControl
+							label={ __( 'Email address', 'woocommerce-admin' ) }
+							onChange={ ( value ) =>
+								this.setState( {
+									accountEmail: value,
+								} )
+							}
+							type="email"
+							value={ accountEmail }
+						/>
+					) }
+				</div>
+				{ createAccount && isEmail( accountEmail )
+					? (
+						<Button isPrimary onClick={ () => console.log( 'stuff' ) }>
+							{ __( 'Connect', 'woocommerce-admin' ) }
+						</Button>
+					)
+					: (
+						<Button isPrimary href={ connectURL }>
+							{ __( 'Connect', 'woocommerce-admin' ) }
+						</Button>
+					)
+				}
+				<p>
+					{ createAccount
+						? __(
+							'Jetpack and WooCommerce Services plugins will be installed.',
+							'woocommerce-admin'
+						)
+						: __(
+							'You will be redirected to the Paypal website to create the connection.',
+							'woocommerce-admin'
+						)
+					}
+				</p>
+			</Fragment>
 		);
 	}
 
@@ -251,10 +321,11 @@ class PayPal extends Component {
 			return {
 				...connectStep,
 				description: __(
-					'A Paypal account is required to process payments. You will be redirected to the Paypal website to create the connection.',
+					// 'A Paypal account is required to process payments. You will be redirected to the Paypal website to create the connection.',
+					'A Paypal account is required to process payments.',
 					'woocommerce-admin'
 				),
-				content: this.renderConnectButton(),
+				content: this.renderConnectActions(),
 			};
 		}
 
@@ -271,13 +342,15 @@ class PayPal extends Component {
 	render() {
 		const { installStep } = this.props;
 		const { isPending } = this.state;
+		// const currentStep = this.steps.find( step => step.complete === false );
 
+		const connectStep = this.getConnectStep();
 		return (
 			<Stepper
 				isVertical
 				isPending={ ! installStep.isComplete || isPending }
-				currentStep={ installStep.isComplete ? 'connect' : 'install' }
-				steps={ [ installStep, this.getConnectStep() ] }
+				currentStep={ ! connectStep.isComplete ? 'connect' : 'install' }
+				steps={ [ connectStep, installStep ] }
 			/>
 		);
 	}
