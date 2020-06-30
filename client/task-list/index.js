@@ -120,6 +120,8 @@ class TaskDashboard extends Component {
 			],
 		} );
 
+		recordEvent( 'tasklist_dismiss_task', { task_name: key } );
+
 		updateOptions( {
 			woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
 		} );
