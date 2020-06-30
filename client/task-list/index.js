@@ -109,10 +109,31 @@ class TaskDashboard extends Component {
 	}
 
 	dismissTask( key ) {
-		const { dismissedTasks, updateOptions } = this.props;
+		const { createNotice, dismissedTasks, updateOptions } = this.props;
+
+		createNotice( 'success', __( 'Task dismissed' ), {
+			actions: [
+				{
+					label: __( 'Undo', 'woocommerce-admin' ),
+					onClick: () => this.undoDismissTask( key ),
+				},
+			],
+		} );
 
 		updateOptions( {
 			woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
+		} );
+	}
+
+	undoDismissTask( key ) {
+		const { dismissedTasks, updateOptions } = this.props;
+
+		const updatedDismissedTasks = dismissedTasks.filter(
+			( task ) => task !== key
+		);
+
+		updateOptions( {
+			woocommerce_task_list_dismissed_tasks: updatedDismissedTasks,
 		} );
 	}
 
@@ -327,10 +348,11 @@ class TaskDashboard extends Component {
 					variant={ task.completed ? 'body.small' : 'button' }
 				>
 					{ task.title }
-					{ task.time && ! task.completed &&
+					{ task.time && ! task.completed && (
 						<span className="woocommerce-task__estimated-time">
 							{ task.time }
-						</span> }
+						</span>
+					) }
 				</Text>
 			);
 
@@ -429,7 +451,8 @@ export default compose(
 		const trackedCompletedTasks =
 			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
 		const payments = getOption( 'woocommerce_task_list_payments' );
-		const dismissedTasks = getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
+		const dismissedTasks =
+			getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
 
 		const activePlugins = getActivePlugins();
 		const installedPlugins = getInstalledPlugins();
@@ -464,11 +487,13 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
+			createNotice,
 			updateOptions,
 			installAndActivatePlugins,
 			createNotice,
