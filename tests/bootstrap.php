@@ -42,7 +42,7 @@ class WC_Admin_Unit_Tests_Bootstrap {
 		$this->tests_dir    = dirname( __FILE__ );
 		$this->plugin_dir   = dirname( $this->tests_dir );
 		$this->wc_core_dir  = dirname( $this->plugin_dir ) . '/woocommerce';
-		$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ? getenv( 'WP_TESTS_DIR' ) : '/tmp/wordpress-tests-lib';
+		$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ? getenv( 'WP_TESTS_DIR' ) : rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
 
 		$wc_tests_framework_base_dir = $this->wc_core_dir . '/tests';
 		if ( ! is_dir( $wc_tests_framework_base_dir . '/framework' ) ) {
