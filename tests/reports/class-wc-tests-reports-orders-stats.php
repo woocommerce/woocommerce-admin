@@ -767,11 +767,12 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$customer_1 = WC_Helper_Customer::create_customer( 'cust_1', 'pwd_1', 'user_1@mail.com' );
 		$customer_2 = WC_Helper_Customer::create_customer( 'cust_2', 'pwd_2', 'user_2@mail.com' );
 
-		$order_1_time = time();
-		// One more order needs to fit into the same hour, but also be one second later than this one, so in case it's very end of the hour, shift order 1 one second towards past.
-		if ( 59 === $order_1_time % MINUTE_IN_SECONDS ) {
-			$order_1_time = $order_1_time - 2;
-		}
+		$order_1_datetime = new DateTime();
+		$order_1_hour     = (int) $order_1_datetime->format( 'H' );
+		$order_1_datetime->setTime( $order_1_hour, 10, 0 ); // Set a time near the top of the hour.
+		$order_1_time = $order_1_datetime->format( 'U' );
+
+		// One more order needs to fit into the same hour, but also be one second later than this one.
 		$order_2_time = $order_1_time + 1;
 
 		$this_['hour']  = array( 1, 2 );
@@ -779,9 +780,6 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		$this_['week']  = array( 1, 2 );
 		$this_['month'] = array( 1, 2 );
 		$this_['year']  = array( 1, 2 );
-
-		$order_1_datetime = new DateTime();
-		$order_1_datetime = $order_1_datetime->setTimestamp( $order_1_time );
 
 		$order[1]['year']  = (int) $order_1_datetime->format( 'Y' );
 		$order[1]['month'] = (int) $order_1_datetime->format( 'm' );
