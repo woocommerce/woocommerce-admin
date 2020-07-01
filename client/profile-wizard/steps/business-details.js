@@ -157,13 +157,6 @@ class BusinessDetails extends Component {
 
 		const promises = [
 			updateProfileItems( updates ).catch( () => {
-				createNotice(
-					'error',
-					__(
-						'There was a problem updating your business details.',
-						'woocommerce-admin'
-					)
-				);
 				throw new Error();
 			} ),
 		];
@@ -181,9 +174,19 @@ class BusinessDetails extends Component {
 			);
 		}
 
-		Promise.all( promises ).then( () => {
-			goToNextStep();
-		} );
+		Promise.all( promises )
+			.then( () => {
+				goToNextStep();
+			} )
+			.catch( () => {
+				createNotice(
+					'error',
+					__(
+						'There was a problem updating your business details.',
+						'woocommerce-admin'
+					)
+				);
+			} );
 	}
 
 	validate( values ) {
