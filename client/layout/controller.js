@@ -40,6 +40,9 @@ const Homescreen = lazy( () =>
 const MarketingOverview = lazy( () =>
 	import( /* webpackChunkName: "marketing-overview" */ 'marketing/overview' )
 );
+const ProfileWizard = lazy( () =>
+	import( /* webpackChunkName: "profile-wizard" */ 'profile-wizard' )
+);
 import getReports from 'analytics/report/get-reports';
 
 const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
@@ -176,6 +179,20 @@ export const getPages = () => {
 				__( 'Overview', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
+		} );
+	}
+
+	if ( window.wcAdminFeatures.profiler ) {
+		pages.push( {
+			container: ProfileWizard,
+			path: '/profiler',
+			breadcrumbs: [
+				...initialBreadcrumbs,
+				[
+					'/profiler',
+					__( 'Profiler', 'woocommerce-admin' ),
+				],
+			],
 		} );
 	}
 

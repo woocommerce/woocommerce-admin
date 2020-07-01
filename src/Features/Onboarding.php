@@ -242,7 +242,7 @@ class Onboarding {
 	}
 
 	/**
-	 * Returns true if the profiler should be displayed (not completed).
+	 * Returns true if the profiler should be displayed (not completed and not skipped).
 	 *
 	 * @return bool
 	 */
@@ -934,10 +934,7 @@ class Onboarding {
 			$screen->remove_help_tab( 'woocommerce_onboard_tab' );
 
 			$task_list_hidden = get_option( 'woocommerce_task_list_hidden', 'no' );
-			$onboarding_data  = get_option( self::PROFILE_DATA_OPTION, array() );
-			$is_completed     = isset( $onboarding_data['completed'] ) && true === $onboarding_data['completed'];
-			$is_skipped       = isset( $onboarding_data['skipped'] ) && true === $onboarding_data['skipped'];
-			$is_enabled       = ! $is_completed && ! $is_skipped;
+			$is_enabled       = self::should_show_profiler();
 
 			$help_tab['content'] = '<h2>' . __( 'WooCommerce Onboarding', 'woocommerce-admin' ) . '</h2>';
 

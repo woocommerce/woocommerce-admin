@@ -9,7 +9,7 @@ import { identity } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	withOnboardingHydration,
@@ -26,22 +26,19 @@ const CustomizableDashboard = lazy( () =>
 	import( /* webpackChunkName: "customizable-dashboard" */ './customizable' )
 );
 
-const ProfileWizard = lazy( () =>
-	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
-);
-
 class Dashboard extends Component {
 	render() {
 		const { path, profileItems, query } = this.props;
+		const { completed: profileCompleted, skipped: profileSkipped, step: profilerStep } = profileItems;
 		if (
 			isOnboardingEnabled() &&
-			! profileItems.completed &&
+			! profileCompleted &&
+			! profileSkipped &&
 			! window.wcAdminFeatures.homescreen
 		) {
-			return (
-				<Suspense fallback={ <Spinner /> }>
-					<ProfileWizard query={ query } />
-				</Suspense>
+			const lastStep = profilerStep ? `&step=${ profilerStep }` : '';
+			window.location = getAdminLink(
+				`admin.php?page=wc-admin&path=/profiler${ lastStep }`
 			);
 		}
 
