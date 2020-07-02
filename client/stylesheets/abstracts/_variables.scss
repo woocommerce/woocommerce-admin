@@ -6,6 +6,8 @@
 @import 'node_modules/@wordpress/base-styles/animations';
 @import 'node_modules/@wordpress/base-styles/z-index';
 
+@include wordpress-admin-schemes;
+
 $fallback-gutter: 24px;
 $fallback-gutter-large: 40px;
 $gutter: var(--main-gap);
@@ -62,9 +64,9 @@ $wp-admin-background: #f1f1f1;
 $wp-admin-sidebar: #24292d;
 
 // Muriel
-$muriel-box-shadow-1dp: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-	0 1px 3px 0 rgba(0, 0, 0, 0.12);
-$muriel-box-shadow-6dp: 0 3px 5px rgba(0, 0, 0, 0.2), 0 1px 18px rgba(0, 0, 0, 0.12),
-	0 6px 10px rgba(0, 0, 0, 0.14);
-$muriel-box-shadow-8dp: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
-	0 3px 14px 2px rgba(0, 0, 0, 0.12);
+$muriel-box-shadow-1dp: 0 2px 1px -1px rgba(0, 0, 0, 0.2),
+	0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+$muriel-box-shadow-6dp: 0 3px 5px rgba(0, 0, 0, 0.2),
+	0 1px 18px rgba(0, 0, 0, 0.12), 0 6px 10px rgba(0, 0, 0, 0.14);
+$muriel-box-shadow-8dp: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+	0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);

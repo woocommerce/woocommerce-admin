@@ -1,5 +1,3 @@
-
-
 .woocommerce-segmented-selection {
 	width: 100%;
 	color: $core-grey-dark-500;
@@ -62,7 +60,7 @@
 			content: '';
 			width: 8px;
 			height: 8px;
-			background-color: $theme-color;
+			background-color: var(--wp-admin-theme-color);
 			position: absolute;
 			top: 50%;
 			transform: translate(-20px, -50%);

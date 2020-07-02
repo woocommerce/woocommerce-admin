@@ -1,5 +1,3 @@
-
-
 // Set up some local color variables to make the CSS more clear
 $border: $light-gray-tertiary;
 
@@ -7,11 +5,13 @@ $border: $light-gray-tertiary;
 @mixin make-cols( $i ) {
 	grid-template-columns: repeat($i, 1fr);
 
-	.woocommerce-summary__item-container:nth-of-type(#{$i}n) .woocommerce-summary__item {
+	.woocommerce-summary__item-container:nth-of-type(#{$i}n)
+	.woocommerce-summary__item {
 		border-right-color: $border;
 	}
 
-	.woocommerce-summary__item-container:nth-of-type(#{$i}n+1):nth-last-of-type(-n+#{$i}) {
+	.woocommerce-summary__item-container:nth-of-type(#{$i}n
++ 1):nth-last-of-type(-n + #{$i}) {
 		.woocommerce-summary__item,
 		& ~ .woocommerce-summary__item-container .woocommerce-summary__item {
 			border-bottom-color: $border;
@@ -159,7 +159,8 @@ $border: $light-gray-tertiary;
 
 		&.has-9-items,
 		&.has-10-items {
-			.woocommerce-summary__item-container:nth-of-type(5n) .woocommerce-summary__item {
+			.woocommerce-summary__item-container:nth-of-type(5n)
+			.woocommerce-summary__item {
 				border-right-color: $border;
 			}
 		}
@@ -263,7 +264,7 @@ $border: $light-gray-tertiary;
 	border-right: 1px solid $border;
 	line-height: 1.4em;
 	text-decoration: none;
-	color: $theme-color;
+	color: var(--wp-admin-theme-color);
 
 	&.components-button {
 		height: auto;
@@ -271,10 +272,9 @@ $border: $light-gray-tertiary;
 		align-items: normal;
 	}
 
-
 	&:hover {
 		background-color: $light-gray-100;
-		color: color($theme-color shade(20%));
+		color: color(var(--wp-admin-theme-color-darker-20));
 	}
 
 	&:active {
@@ -283,14 +283,16 @@ $border: $light-gray-tertiary;
 
 	&:focus {
 		// !important to override button styles
-		box-shadow: inset -1px -1px 0 $core-grey-dark-300, inset 1px 1px 0 $core-grey-dark-300 !important;
+		box-shadow: inset -1px -1px 0 $core-grey-dark-300,
+			inset 1px 1px 0 $core-grey-dark-300 !important;
 	}
 
 	&.is-selected {
-
 		&:focus {
 			// !important to override button styles
-			box-shadow: inset -1px 1px 0 $core-grey-dark-300, inset 1px 0 0 $core-grey-dark-300, inset 0 -4px 0 $theme-color !important;
+			box-shadow: inset -1px 1px 0 $core-grey-dark-300,
+				inset 1px 0 0 $core-grey-dark-300,
+				inset 0 -4px 0 var(--wp-admin-theme-color) !important;
 		}
 	}
 
@@ -312,7 +314,7 @@ $border: $light-gray-tertiary;
 	.woocommerce-summary__item-label {
 		display: block;
 		margin-bottom: $gap;
-		color: $theme-color;
+		color: var(--wp-admin-theme-color);
 	}
 
 	.woocommerce-summary__item-value {
@@ -331,7 +333,7 @@ $border: $light-gray-tertiary;
 
 	&.is-selected {
 		background: $studio-white;
-		box-shadow: inset 0 -4px 0 $theme-color;
+		box-shadow: inset 0 -4px 0 var(--wp-admin-theme-color);
 
 		.woocommerce-summary__item-value {
 			font-weight: 600;
