@@ -88,7 +88,10 @@ class ProfileWizard extends Component {
 			step: this.getCurrentStep().key,
 		} );
 
-		updateProfileItems( { skipped: false, step: this.getCurrentStep().key } );
+		updateProfileItems( {
+			skipped: false,
+			step: this.getCurrentStep().key,
+		} );
 
 		// Track plugins if already installed.
 		if (
@@ -228,11 +231,12 @@ class ProfileWizard extends Component {
 
 	async skipProfiler() {
 		const { updateProfileItems } = this.props;
-		await updateProfileItems( { skipped: true, step: this.getCurrentStep().key } );
-		recordEvent( 'wcadmin_storeprofiler_store_details_skip' );
-		window.location = getAdminLink(
-			'admin.php?page=wc-admin'
-		);
+		await updateProfileItems( {
+			skipped: true,
+			step: this.getCurrentStep().key,
+		} );
+		recordEvent( 'storeprofiler_store_details_skip' );
+		window.location = getAdminLink( 'admin.php?page=wc-admin' );
 	}
 
 	render() {
