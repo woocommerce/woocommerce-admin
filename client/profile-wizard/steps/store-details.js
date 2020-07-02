@@ -3,18 +3,27 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Button, CheckboxControl } from '@wordpress/components';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CheckboxControl,
+	FlexItem,
+	Icon,
+	Tooltip,
+} from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { recordEvent } from 'lib/tracks';
 
 /**
  * WooCommerce dependencies
  */
-import { H, Card, Form } from '@woocommerce/components';
+import { H, Form } from '@woocommerce/components';
 import { getCurrencyData } from '@woocommerce/currency';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -26,10 +35,11 @@ import {
 } from 'dashboard/components/settings/general/store-address';
 import UsageModal from './usage-modal';
 import { CurrencyContext } from 'lib/currency-context';
+import { recordEvent } from 'lib/tracks';
 
 class StoreDetails extends Component {
 	constructor( props ) {
-		super( ...arguments );
+		super( props );
 		const { profileItems, settings } = props;
 
 		this.state = {
@@ -167,67 +177,110 @@ class StoreDetails extends Component {
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
-					{ __( 'Where is your store based?', 'woocommerce-admin' ) }
+					{ __( 'Welcome to WooCommerce', 'woocommerce-admin' ) }
 				</H>
 				<H className="woocommerce-profile-wizard__header-subtitle">
 					{ __(
-						'This will help us configure your store and get you started quickly',
+						"Tell us about your store and we'll get you set up in no time",
 						'woocommerce-admin'
 					) }
+
+					<Tooltip
+						text={ __(
+							'Your store address will help us configure currency\n options and shipping rules automatically.\n This information will not be publicly visible and can\n easily be changed later.',
+							'woocommerce-admin'
+						) }
+					>
+						<span className="woocommerce-profile-wizard__tooltip-icon">
+							<Icon icon="info-outline" size={ 16 } />
+						</span>
+					</Tooltip>
 				</H>
 
-				<Card>
-					<Form
-						initialValues={ this.initialValues }
-						onSubmitCallback={ this.onSubmit }
-						validate={ validateStoreAddress }
-					>
-						{ ( {
-							getInputProps,
-							handleSubmit,
-							values,
-							isValidForm,
-							setValue,
-						} ) => (
-							<Fragment>
-								{ showUsageModal && (
-									<UsageModal
-										onContinue={ () =>
-											this.onContinue( values )
-										}
-										onClose={ () =>
-											this.setState( {
-												showUsageModal: false,
-											} )
-										}
-									/>
-								) }
+				<Form
+					initialValues={ this.initialValues }
+					onSubmitCallback={ this.onSubmit }
+					validate={ validateStoreAddress }
+				>
+					{ ( {
+						getInputProps,
+						handleSubmit,
+						values,
+						isValidForm,
+						setValue,
+					} ) => (
+						<Card>
+							{ showUsageModal && (
+								<UsageModal
+									onContinue={ () =>
+										this.onContinue( values )
+									}
+									onClose={ () =>
+										this.setState( {
+											showUsageModal: false,
+										} )
+									}
+								/>
+							) }
+							<CardBody>
 								<StoreAddress
 									getInputProps={ getInputProps }
 									setValue={ setValue }
 								/>
+							</CardBody>
 
-								<div className="woocommerce-profile-wizard__client">
-									<CheckboxControl
-										label={ __(
-											"I'm setting up a store for a client",
-											'woocommerce-admin'
-										) }
-										{ ...getInputProps( 'isClient' ) }
-									/>
-								</div>
+							<CardFooter>
+								<FlexItem align="center">
+									<div className="woocommerce-profile-wizard__client">
+										<CheckboxControl
+											label={ __(
+												"I'm setting up a store for a client",
+												'woocommerce-admin'
+											) }
+											{ ...getInputProps( 'isClient' ) }
+										/>
+									</div>
+								</FlexItem>
+							</CardFooter>
 
-								<Button
-									isPrimary
-									onClick={ handleSubmit }
-									disabled={ ! isValidForm }
-								>
-									{ __( 'Continue', 'woocommerce-admin' ) }
-								</Button>
-							</Fragment>
-						) }
-					</Form>
-				</Card>
+							<CardFooter justify="center">
+								<FlexItem>
+									<div className="woocommerce-profile-wizard__submit">
+										<Button
+											isPrimary
+											onClick={ handleSubmit }
+											disabled={ ! isValidForm }
+										>
+											{ __(
+												'Continue',
+												'woocommerce-admin'
+											) }
+										</Button>
+									</div>
+								</FlexItem>
+							</CardFooter>
+						</Card>
+					) }
+				</Form>
+				<div className="woocommerce-profile-wizard__footer">
+					<a
+						className="woocommerce-profile-wizard__footer-link"
+						href={ adminUrl }
+					>
+						{ __( 'Skip setup wizard', 'woocommerce-admin' ) }
+
+						<Tooltip
+							text={ __(
+								'Manual setup is only recommended for\n experienced WooCommerce users or developers.',
+								'woocommerce-admin'
+							) }
+						>
+							<span className="woocommerce-profile-wizard__tooltip-icon">
+								<Icon icon="info-outline" size={ 16 } />
+							</span>
+						</Tooltip>
+					</a>
+				</div>
 			</Fragment>
 		);
 	}
