@@ -148,11 +148,11 @@ export class ActivityPanel extends Component {
 		return [
 			! isPerformingSetupTask && showInbox
 				? {
-					name: 'inbox',
-					title: __( 'Inbox', 'woocommerce-admin' ),
-					icon: <i className="material-icons-outlined">inbox</i>,
-					unread: hasUnreadNotes,
-				}
+						name: 'inbox',
+						title: __( 'Inbox', 'woocommerce-admin' ),
+						icon: <i className="material-icons-outlined">inbox</i>,
+						unread: hasUnreadNotes,
+				  }
 				: null,
 			! isPerformingSetupTask && {
 				name: 'orders',
@@ -372,6 +372,7 @@ export default compose(
 		const hasUnreadOrders = getUnreadOrders( select );
 		const hasUnreadStock = getUnreadStock();
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
+<<<<<<< HEAD
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
 		let requestingTaskListOptions, taskListComplete, taskListHidden;
@@ -387,6 +388,8 @@ export default compose(
 					'woocommerce_task_list_hidden',
 				] );
 		}
+=======
+>>>>>>> 1088ee5f... linter errors
 
 		return {
 			hasUnreadNotes,
