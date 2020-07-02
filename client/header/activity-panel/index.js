@@ -25,6 +25,11 @@ import {
 	getUnapprovedReviews,
 	getUnreadStock,
 } from './unread-indicators';
+
+const HelpPanel = lazy( () =>
+	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
+);
+
 const InboxPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/inbox' )
 );
@@ -158,6 +163,15 @@ class ActivityPanel extends Component {
 						unread: hasUnapprovedReviews,
 				  }
 				: null,
+			{
+				name: 'help',
+				title: __( 'Help', 'woocommerce-admin' ),
+				icon: (
+					<i className="material-icons-outlined">
+						support
+					</i>
+				),
+			},
 		].filter( Boolean );
 	}
 
@@ -177,6 +191,8 @@ class ActivityPanel extends Component {
 						hasUnapprovedReviews={ hasUnapprovedReviews }
 					/>
 				);
+			case 'help':
+				return <HelpPanel />;
 			default:
 				return null;
 		}
