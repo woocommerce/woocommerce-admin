@@ -29,7 +29,7 @@ function getLabel( description, yearlyPrice ) {
 
 	const monthlyPrice = ( yearlyPrice / 12.0 ).toFixed( 2 );
 	const priceDescription = sprintf(
-		'$%f per month, billed annually',
+		__( '$%f per month, billed annually', 'woocommerce-admin' ),
 		monthlyPrice
 	);
 
