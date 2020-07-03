@@ -10,10 +10,8 @@ namespace Automattic\WooCommerce\Admin;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\API\Reports\Cache;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Historical_Data;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Deactivate_Plugin;
 
 /**
  * Install Class.
@@ -161,7 +159,6 @@ class Install {
 		self::create_events();
 		self::delete_obsolete_notes();
 		self::create_notes();
-		self::update_notes();
 		self::maybe_update_db_version();
 
 		delete_transient( 'wc_admin_installing' );
@@ -488,61 +485,6 @@ class Install {
 	 */
 	protected static function create_notes() {
 		WC_Admin_Notes_Historical_Data::possibly_add_note();
-	}
-
-	/**
-	 * Update selected notes, if they need changing from when they were
-	 * originally created.
-	 */
-	protected static function update_notes() {
-		$note_factories_to_update = array(
-			new WC_Admin_Notes_Deactivate_Plugin(),
-		);
-
-		/**
-		 * Filter allowing additional note factories to be updated.
-		 *
-		 * @param array $factories The additional factories.
-		 */
-		$additional_note_factories_to_update = apply_filters(
-			'woocommerce_admin_update_note_factories',
-			array()
-		);
-
-		if ( is_array( $additional_note_factories_to_update ) ) {
-			$note_factories_to_update = array_merge(
-				$note_factories_to_update,
-				$additional_note_factories_to_update
-			);
-		}
-
-		$data_store = \WC_Data_Store::load( 'admin-note' );
-
-		foreach ( $note_factories_to_update as $note_factory ) {
-			$note_ids = $data_store->get_notes_with_name( $note_factory::NOTE_NAME );
-			$new_note = $note_factory->get_note();
-
-			if ( ! $new_note instanceof WC_Admin_Note ) {
-				continue;
-			}
-
-			foreach ( (array) $note_ids as $note_id ) {
-				// Use the existing note ID so that saving the new note will
-				// overwrite the note in the database.
-				$new_note->set_id( $note_id );
-
-				// Copy some state-based values from the database so that the
-				// date created, soft-delete status, etc, don't get
-				// overwritten by the newly created note.
-				$note_in_db = new WC_Admin_Note( $note_id );
-				$new_note->set_status( $note_in_db->get_status() );
-				$new_note->set_date_created( $note_in_db->get_date_created() );
-				$new_note->set_date_reminder( $note_in_db->get_date_reminder() );
-				$new_note->set_is_deleted( $note_in_db->get_is_deleted() );
-
-				$new_note->save();
-			}
-		}
 	}
 
 	/**
