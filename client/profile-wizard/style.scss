@@ -1,5 +1,3 @@
-
-
 .woocommerce-profile-wizard__body {
 	.woocommerce-profile-wizard__container a {
 		color: $studio-pink-50;
@@ -312,7 +310,7 @@
 		box-shadow: $shadow-popover;
 
 		&.is-active {
-			border-color: $blue-medium-focus;
+			border-color: var(--wp-admin-theme-color);
 		}
 
 		.components-base-control__label {
@@ -493,7 +491,7 @@
 			display: inline-flex;
 
 			i {
-				color: $blue-medium-focus;
+				color: var(--wp-admin-theme-color);
 				margin-right: $gap;
 			}
 		}
