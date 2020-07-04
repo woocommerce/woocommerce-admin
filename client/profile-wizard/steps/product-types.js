@@ -35,7 +35,9 @@ function getLabel( description, yearlyPrice ) {
 
 	return (
 		<Fragment>
-			{ description }
+			<span className="woocommerce-product-wizard__product-types__label">
+				{ description }
+			</span>
 			<Tooltip text={ __( 'This product type requires a paid extension. We\'ll add this to a cart so that you can purchase and install it later.', 'woocommerce-admin' ) }>
 				<Pill>{ priceDescription }</Pill>
 			</Tooltip>

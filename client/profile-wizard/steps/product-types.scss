@@ -1,5 +1,10 @@
 .woocommerce-profile-wizard__product-types {
-	.woocommerce-pill {
-		margin-left: 12px;
+	.components-base-control__field {
+		display: flex;
+	}
+
+	.woocommerce-product-wizard__product-types__label {
+		display: inline-block;
+		margin-right: 12px;
 	}
 }
