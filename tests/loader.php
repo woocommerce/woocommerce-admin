@@ -16,15 +16,15 @@ class WC_Admin_Tests_Loader extends WP_UnitTestCase {
 	/**
 	 * Setup
 	 */
-	public static function setUpBeforeClass() {
-		add_filter( 'woocommerce_admin_features', array( 'WC_Admin_Tests_Loader', 'turn_on_unminified_js_feature' ), 10, 1 );
+	public function setUp() {
+		add_filter( 'woocommerce_admin_features', array( $this, 'turn_on_unminified_js_feature' ), 20, 1 );
 	}
 
 	/**
 	 * Tear Down
 	 */
-	public static function tearDownAfterClass() {
-		remove_filter( 'woocommerce_admin_features', array( 'WC_Admin_Tests_Loader', 'turn_on_unminified_js_feature' ) );
+	public function tearDown() {
+		remove_filter( 'woocommerce_admin_features', array( $this, 'turn_on_unminified_js_feature' ), 20 );
 	}
 
 	/**
