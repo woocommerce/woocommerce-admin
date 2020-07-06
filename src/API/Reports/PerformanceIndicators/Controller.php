@@ -43,7 +43,7 @@ class Controller extends \WC_REST_Reports_Controller {
 	protected $endpoints = array();
 
 	/**
-	 * Contains a list active Jetpack module slugs.
+	 * Contains a list of active Jetpack module slugs.
 	 *
 	 * @var array
 	 */
@@ -192,7 +192,8 @@ class Controller extends \WC_REST_Reports_Controller {
 	public function get_active_jetpack_modules() {
 		if ( is_null( $this->active_jetpack_modules ) ) {
 			if ( class_exists( '\Jetpack' ) && method_exists( '\Jetpack', 'get_active_modules' ) ) {
-				$this->active_jetpack_modules = \Jetpack::get_active_modules();
+				$active_modules               = \Jetpack::get_active_modules();
+				$this->active_jetpack_modules = is_array( $active_modules ) ? $active_modules : array();
 			} else {
 				$this->active_jetpack_modules = array();
 			}
