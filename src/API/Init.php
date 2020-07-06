@@ -88,9 +88,10 @@ class Init {
 			);
 		}
 
-		// The performance indicators controller must be registered last, after other /stats endpoints have been registered.
-		$controllers[] = 'Automattic\WooCommerce\Admin\API\Reports\PerformanceIndicators\Controller';
-
+		if ( strpos( strtolower( wp_get_referer() ), strtolower( admin_url() ) ) === 0 ) {
+			// The performance indicators controller must be registered last, after other /stats endpoints have been registered.
+			$controllers[] = 'Automattic\WooCommerce\Admin\API\Reports\PerformanceIndicators\Controller';
+		}
 		$controllers = apply_filters( 'woocommerce_admin_rest_controllers', $controllers );
 
 		foreach ( $controllers as $controller ) {
