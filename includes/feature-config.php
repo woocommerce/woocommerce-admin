@@ -16,6 +16,7 @@ if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
 			'remote-inbox-notifications' => false,
 			'shipping-label-banner' => true,
 			'store-alerts' => true,
+			'unminified-js' => true,
 			'wcpay' => true,
 			'homescreen' => true,
 		);

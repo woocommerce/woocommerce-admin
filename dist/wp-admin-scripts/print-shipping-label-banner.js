@@ -2065,7 +2065,7 @@ var close = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElemen
 
 /***/ }),
 
-/***/ 22:
+/***/ 23:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4532,7 +4532,7 @@ var dismiss_modal_DismissModal = /*#__PURE__*/function (_Component) {
   };
 }))(dismiss_modal_DismissModal));
 // EXTERNAL MODULE: ./client/settings/index.js
-var settings = __webpack_require__(22);
+var settings = __webpack_require__(23);
 
 // EXTERNAL MODULE: ./client/wc-api/with-select.js
 var with_select = __webpack_require__(101);
