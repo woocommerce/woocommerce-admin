@@ -117,12 +117,11 @@ require_once dirname( __FILE__ ) . '/framework/helpers/class-wc-helper-queue.php
 /**
  * Use the `development` features for testing.
  */
-function wc_admin_add_development_features() {
+function wc_admin_add_development_features( $flags ) {
 	$config = json_decode( file_get_contents( dirname( dirname( __FILE__ ) ) . '/config/development.json' ) ); // @codingStandardsIgnoreLine.
-	$flags  = array();
 	foreach ( $config->features as $feature => $bool ) {
 		$flags[ $feature ] = $bool;
 	}
 	return $flags;
 }
-tests_add_filter( 'wc_admin_get_feature_config', 'wc_admin_add_development_features' );
+tests_add_filter( 'woocommerce_admin_get_feature_config', 'wc_admin_add_development_features' );
