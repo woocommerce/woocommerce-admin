@@ -65,6 +65,11 @@ class WC_Admin_Unit_Tests_Bootstrap {
 		// load the WP testing environment.
 		require_once $this->wp_tests_dir . '/includes/bootstrap.php';
 
+		// Set referer so that the requests run in the same context as in WordPress Admin.
+		// phpcs:disable WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+		$_SERVER['HTTP_REFERER'] = admin_url();
+		// phpcs:enable WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+
 		// load WC testing framework.
 		$this->includes();
 	}
