@@ -191,7 +191,7 @@ class Controller extends \WC_REST_Reports_Controller {
 	 */
 	public function get_active_jetpack_modules() {
 		if ( is_null( $this->active_jetpack_modules ) ) {
-			if ( class_exists( '\Jetpack' ) ) {
+			if ( class_exists( '\Jetpack' ) && method_exists( '\Jetpack', 'get_active_modules' ) ) {
 				$this->active_jetpack_modules = \Jetpack::get_active_modules();
 			} else {
 				$this->active_jetpack_modules = array();
