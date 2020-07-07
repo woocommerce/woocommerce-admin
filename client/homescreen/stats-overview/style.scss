@@ -39,15 +39,19 @@ $promo-actions-border-bottom: $light-gray-tertiary;
 		display: inline-block;
 	}
 
-	.woocommerce-summary__item-container:nth-last-of-type(1) .woocommerce-summary__item {
+	.woocommerce-summary__item-container:nth-last-of-type(1)
+	.woocommerce-summary__item {
 		border-bottom: none;
 	}
 
-	&.is-even .woocommerce-summary__item-container:nth-last-of-type(2) .woocommerce-summary__item {
+	&.is-even
+	.woocommerce-summary__item-container:nth-last-of-type(2)
+	.woocommerce-summary__item {
 		border-bottom: none;
 	}
 
-	.woocommerce-summary__item-container:nth-of-type(even) .woocommerce-summary__item {
+	.woocommerce-summary__item-container:nth-of-type(even)
+	.woocommerce-summary__item {
 		border-right: none;
 	}
 
@@ -55,11 +59,11 @@ $promo-actions-border-bottom: $light-gray-tertiary;
 		background-color: $studio-white;
 
 		&:hover {
-			background-color: $light-gray-100;
+			background-color: $gray-100;
 		}
 
 		&:active {
-			background-color: $light-gray-200;
+			background-color: $gray-100;
 		}
 	}
 }
