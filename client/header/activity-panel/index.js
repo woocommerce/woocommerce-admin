@@ -17,7 +17,7 @@ import CrossIcon from 'gridicons/dist/cross-small';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { H, Section, Spinner } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-import { getHistory, getQuery } from '@woocommerce/navigation';
+import { getHistory } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -126,12 +126,18 @@ class ActivityPanel extends Component {
 			hasUnapprovedReviews,
 			hasUnreadStock,
 			isEmbedded,
-			isPerformingSetupTask,
+			requestingTaskListOptions,
+			taskListComplete,
+			taskListHidden,
+			query,
 		} = this.props;
 
 		// Don't show the inbox on the Home screen.
 		const { location } = getHistory();
 		const showInbox = isEmbedded || ! window.wcAdminFeatures.homescreen || location.pathname !== '/';
+		const isPerformingSetupTask = query.task && ( requestingTaskListOptions === true || (
+			taskListHidden === false && taskListComplete === false
+		) );
 
 		return [
 			! isPerformingSetupTask && showInbox
@@ -354,7 +360,6 @@ export default compose(
 		const hasUnreadOrders = getUnreadOrders( select );
 		const hasUnreadStock = getUnreadStock();
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
-		const query = getQuery();
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
 		let requestingTaskListOptions, taskListComplete, taskListHidden;
@@ -371,16 +376,14 @@ export default compose(
 				] );
 		}
 
-		const isPerformingSetupTask = query.task && ( requestingTaskListOptions === true || (
-			taskListHidden === false && taskListComplete === false
-		) );
-
 		return {
 			hasUnreadNotes,
 			hasUnreadOrders,
 			hasUnreadStock,
 			hasUnapprovedReviews,
-			isPerformingSetupTask,
+			requestingTaskListOptions,
+			taskListComplete,
+			taskListHidden,
 		};
 	} ),
 	clickOutside
