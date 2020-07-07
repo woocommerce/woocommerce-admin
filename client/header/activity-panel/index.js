@@ -8,23 +8,29 @@ import { Component, lazy, Suspense } from '@wordpress/element';
 import { Button, NavigableMenu } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { partial, uniqueId, find } from 'lodash';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import PagesIcon from 'gridicons/dist/pages';
 import CrossIcon from 'gridicons/dist/cross-small';
+
+/**
+ * WooCommerce dependencies
+ */
+import { getSetting } from '@woocommerce/wc-admin-settings';
+import { H, Section, Spinner } from '@woocommerce/components';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { getHistory, getQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
-import { H, Section, Spinner } from '@woocommerce/components';
-import { getHistory } from '@woocommerce/navigation';
 import {
 	getUnreadNotes,
 	getUnreadOrders,
 	getUnapprovedReviews,
 	getUnreadStock,
 } from './unread-indicators';
+import { isOnboardingEnabled } from 'dashboard/utils';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -120,6 +126,7 @@ class ActivityPanel extends Component {
 			hasUnapprovedReviews,
 			hasUnreadStock,
 			isEmbedded,
+			isPerformingSetupTask,
 		} = this.props;
 
 		// Don't show the inbox on the Home screen.
@@ -127,7 +134,7 @@ class ActivityPanel extends Component {
 		const showInbox = isEmbedded || ! window.wcAdminFeatures.homescreen || location.pathname !== '/';
 
 		return [
-			showInbox
+			! isPerformingSetupTask && showInbox
 				? {
 					name: 'inbox',
 					title: __( 'Inbox', 'woocommerce-admin' ),
@@ -135,13 +142,13 @@ class ActivityPanel extends Component {
 					unread: hasUnreadNotes,
 				}
 				: null,
-			{
+			! isPerformingSetupTask && {
 				name: 'orders',
 				title: __( 'Orders', 'woocommerce-admin' ),
 				icon: <PagesIcon />,
 				unread: hasUnreadOrders,
 			},
-			manageStock === 'yes'
+			! isPerformingSetupTask && manageStock === 'yes'
 				? {
 						name: 'stock',
 						title: __( 'Stock', 'woocommerce-admin' ),
@@ -151,7 +158,7 @@ class ActivityPanel extends Component {
 						unread: hasUnreadStock,
 				  }
 				: null,
-			reviewsEnabled === 'yes'
+			! isPerformingSetupTask && reviewsEnabled === 'yes'
 				? {
 						name: 'reviews',
 						title: __( 'Reviews', 'woocommerce-admin' ),
@@ -163,7 +170,7 @@ class ActivityPanel extends Component {
 						unread: hasUnapprovedReviews,
 				  }
 				: null,
-			{
+			isPerformingSetupTask && {
 				name: 'help',
 				title: __( 'Help', 'woocommerce-admin' ),
 				icon: (
@@ -347,12 +354,33 @@ export default compose(
 		const hasUnreadOrders = getUnreadOrders( select );
 		const hasUnreadStock = getUnreadStock();
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
-	
+		const query = getQuery();
+		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+
+		let requestingTaskListOptions, taskListComplete, taskListHidden;
+
+		if ( isOnboardingEnabled() ) {
+			taskListComplete = getOption( 'woocommerce_task_list_complete' ) === 'yes';
+			taskListHidden = getOption( 'woocommerce_task_list_hidden' ) === 'yes';
+			requestingTaskListOptions =
+				isResolving( 'getOption', [
+					'woocommerce_task_list_complete',
+				] ) ||
+				isResolving( 'getOption', [
+					'woocommerce_task_list_hidden',
+				] );
+		}
+
+		const isPerformingSetupTask = query.task && ( requestingTaskListOptions === true || (
+			taskListHidden === false && taskListComplete === false
+		) );
+
 		return {
 			hasUnreadNotes,
 			hasUnreadOrders,
 			hasUnreadStock,
 			hasUnapprovedReviews,
+			isPerformingSetupTask,
 		};
 	} ),
 	clickOutside
