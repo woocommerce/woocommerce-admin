@@ -292,6 +292,7 @@ const CustomizableDashboard = ( {
 										visibleSectionKeys.length - 1
 									]
 								}
+								filters={ filters }
 							/>
 						);
 					}
