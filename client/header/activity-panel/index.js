@@ -205,7 +205,9 @@ class ActivityPanel extends Component {
 					/>
 				);
 			case 'help':
-				return <HelpPanel />;
+				const { query } = this.props;
+				const { task } = query;
+				return <HelpPanel taskName={ task } />;
 			default:
 				return null;
 		}

@@ -218,7 +218,6 @@ const HelpPanel = ( props ) => {
 HelpPanel.defaultProps = {
 	getSetting,
 	recordEvent,
-	taskName: 'shipping',
 };
 
 export default HelpPanel;
