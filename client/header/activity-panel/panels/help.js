@@ -3,6 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { __experimentalText as Text } from '@wordpress/components';
+import { Fragment } from '@wordpress/element';
 import { Icon, chevronRight, page } from '@wordpress/icons';
 // import { partial } from 'lodash';
 
@@ -15,6 +16,7 @@ import { List, Section } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
+import ActivityHeader from '../activity-header';
 import { recordEvent } from 'lib/tracks';
 // import './style.scss';
 
@@ -201,12 +203,15 @@ const HelpPanel = ( props ) => {
 	const listItems = getListItems( props );
 
 	return (
-		<Section>
-			<List
-				items={ listItems }
-				className="woocommerce-quick-links__list"
-			/>
-		</Section>
+		<Fragment>
+			<ActivityHeader title={ __( 'Documentation', 'woocommerce-admin' ) } />
+			<Section>
+				<List
+					items={ listItems }
+					className="woocommerce-quick-links__list"
+				/>
+			</Section>
+		</Fragment>
 	);
 };
 
