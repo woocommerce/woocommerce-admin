@@ -11,6 +11,7 @@
 
 	.woocommerce-task-dashboard__container {
 		width: 100%;
+		margin-bottom: $gap-large;
 	}
 
 	&.hasInbox .woocommerce-homescreen-column {
@@ -21,10 +22,6 @@
 			width: 100%;
 			position: inherit;
 			top: auto;
-		}
-
-		& > * {
-			margin-bottom: 24px;
 		}
 	}
 
@@ -39,6 +36,10 @@
 	top: 130px;
 	margin: 0 auto;
 	align-self: flex-start;
+
+	> div {
+		margin-bottom: $gap-large;
+	}
 }
 .temp-content {
 	width: 100%;
@@ -60,7 +61,7 @@
 		grid-template-columns: auto 24px;
 
 		// IE doesn't support `align-items` on grid container
-		
+
 		& > * {
 			align-self: center;
 		}
@@ -74,4 +75,3 @@
 		padding: 0 $gap-smaller;
 	}
 }
-

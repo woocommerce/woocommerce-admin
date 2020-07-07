@@ -17,7 +17,7 @@ import classnames from 'classnames';
 import { recordEvent } from 'lib/tracks';
 import './style.scss';
 import { H, Section } from '@woocommerce/components';
-import { getUrlParams } from 'utils';
+import { getScreenName } from 'utils';
 
 class InboxNoteCard extends Component {
 	constructor( props ) {
@@ -32,7 +32,7 @@ class InboxNoteCard extends Component {
 		this.openDismissModal = this.openDismissModal.bind( this );
 		this.closeDismissModal = this.closeDismissModal.bind( this );
 		this.bodyNotificationRef = createRef();
-		this.screen = this.getScreenName();
+		this.screen = getScreenName();
 	}
 
 	componentDidMount() {
@@ -62,25 +62,8 @@ class InboxNoteCard extends Component {
 				note_name: note.name,
 				note_title: note.title,
 				note_content_inner_link: innerLink,
-				screen: this.screen,
 			} );
 		}
-	}
-
-	getScreenName() {
-		let screenName = '';
-		const { page, path, post_type: postType } = getUrlParams(
-			window.location.search
-		);
-		if ( page ) {
-			const currentPage = page === 'wc-admin' ? 'home_screen' : page;
-			screenName = path
-				? path.replace( /\//g, '_' ).substring( 1 )
-				: currentPage;
-		} else if ( postType ) {
-			screenName = postType;
-		}
-		return screenName;
 	}
 
 	// Trigger a view Tracks event when the note is seen.
@@ -216,6 +199,7 @@ class InboxNoteCard extends Component {
 				label={ __( "Yes, I'm sure", 'woocommerce-admin' ) }
 				actionCallback={ this.closeDismissModal }
 				dismiss={ true }
+				screen={ this.screen }
 			/>
 		);
 	}
@@ -298,6 +282,7 @@ class InboxNoteCard extends Component {
 			image,
 			is_deleted: isDeleted,
 			layout,
+			status,
 			title,
 		} = note;
 
@@ -312,7 +297,7 @@ class InboxNoteCard extends Component {
 		const date = dateCreated;
 		const hasImage = layout !== 'plain' && layout !== '';
 		const cardClassName = classnames( 'woocommerce-inbox-message', layout, {
-			'message-is-unread': unread,
+			'message-is-unread': unread && status === 'unactioned',
 		} );
 
 		return (

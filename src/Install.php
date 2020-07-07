@@ -46,6 +46,7 @@ class Install {
 		),
 		'1.3.0'  => array(
 			'wc_admin_update_130_remove_dismiss_action_from_tracking_opt_in_note',
+			'wc_admin_update_130_db_version',
 		),
 		'1.4.0'  => array(
 			'wc_admin_update_140_change_deactivate_plugin_note_type',
@@ -239,7 +240,7 @@ class Install {
 		) $collate;
 		CREATE TABLE {$wpdb->prefix}wc_order_coupon_lookup (
 			order_id BIGINT UNSIGNED NOT NULL,
-			coupon_id BIGINT UNSIGNED NOT NULL,
+			coupon_id BIGINT NOT NULL,
 			date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			discount_amount double DEFAULT 0 NOT NULL,
 			PRIMARY KEY (order_id, coupon_id),
@@ -262,6 +263,7 @@ class Install {
 			layout varchar(20) DEFAULT '' NOT NULL,
 			image varchar(200) NULL DEFAULT NULL,
 			is_deleted boolean DEFAULT 0 NOT NULL,
+			icon varchar(200) NOT NULL default 'info',
 			PRIMARY KEY (note_id)
 		) $collate;
 		CREATE TABLE {$wpdb->prefix}wc_admin_note_actions (

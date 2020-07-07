@@ -103,6 +103,13 @@ function wc_admin_update_130_remove_dismiss_action_from_tracking_opt_in_note() {
 }
 
 /**
+ * Update DB Version.
+ */
+function wc_admin_update_130_db_version() {
+	Installer::update_db_version( '1.3.0' );
+}
+
+/**
  * Change the deactivate plugin note type to 'info'.
  */
 function wc_admin_update_140_change_deactivate_plugin_note_type() {
