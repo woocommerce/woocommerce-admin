@@ -273,12 +273,12 @@ $border: $light-gray-tertiary;
 	}
 
 	&:hover {
-		background-color: $light-gray-100;
+		background-color: $gray-100;
 		color: color(var(--wp-admin-theme-color-darker-20));
 	}
 
 	&:active {
-		background-color: $light-gray-200;
+		background-color: $gray-100;
 	}
 
 	&:focus {
@@ -327,7 +327,7 @@ $border: $light-gray-tertiary;
 		padding: 5px;
 		border-radius: 3px;
 		height: min-content;
-		background-color: $light-gray-500;
+		background-color: $gray-400;
 		color: $dark-gray-primary;
 	}
 
