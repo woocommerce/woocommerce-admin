@@ -8,7 +8,7 @@ if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
 			'analytics' => true,
 			'analytics-dashboard' => true,
 			'analytics-dashboard/customizable' => true,
-			'coupons' => true,
+			'coupons' => false,
 			'devdocs' => false,
 			'marketing' => true,
 			'navigation' => false,
@@ -16,6 +16,7 @@ if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
 			'remote-inbox-notifications' => false,
 			'shipping-label-banner' => true,
 			'store-alerts' => true,
+			'unminified-js' => false,
 			'wcpay' => true,
 			'homescreen' => true,
 		);
