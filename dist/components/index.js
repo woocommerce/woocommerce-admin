@@ -537,13 +537,13 @@ if (typeof Object.create === 'function') {
 (function() { module.exports = this["wp"]["apiFetch"]; }());
 
 /***/ }),
-/* 22 */,
-/* 23 */
+/* 22 */
 /***/ (function(module, exports) {
 
 (function() { module.exports = this["wc"]["navigation"]; }());
 
 /***/ }),
+/* 23 */,
 /* 24 */
 /***/ (function(module, exports) {
 
@@ -92813,7 +92813,7 @@ var classnames = __webpack_require__(8);
 var classnames_default = /*#__PURE__*/__webpack_require__.n(classnames);
 
 // EXTERNAL MODULE: external {"this":["wc","navigation"]}
-var external_this_wc_navigation_ = __webpack_require__(23);
+var external_this_wc_navigation_ = __webpack_require__(22);
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/components/build-module/navigable-container/menu.js + 1 modules
 var navigable_container_menu = __webpack_require__(418);
