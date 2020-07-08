@@ -3,6 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { __experimentalText as Text } from '@wordpress/components';
+import { withSelect } from '@wordpress/data';
 import { Fragment } from '@wordpress/element';
 import { Icon, chevronRight, page } from '@wordpress/icons';
 // import { partial } from 'lodash';
@@ -12,12 +13,19 @@ import { Icon, chevronRight, page } from '@wordpress/icons';
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List, Section } from '@woocommerce/components';
+import {
+	ONBOARDING_STORE_NAME,
+	SETTINGS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import ActivityHeader from '../activity-header';
+import { getCountryCode } from 'dashboard/utils';
 import { recordEvent } from 'lib/tracks';
+import { getPaymentMethods } from 'task-list/tasks/payments/methods';
+import { compose } from 'redux';
 // import './style.scss';
 
 function getAppearanceItems() {
@@ -37,44 +45,58 @@ function getAppearanceItems() {
 	];
 }
 
-function getPaymentsItems() {
+function getPaymentsItems( { countryCode, profileItems } ) {
+	const paymentMethods = getPaymentMethods( {
+		activePlugins: [],
+		countryCode,
+		options: {},
+		profileItems,
+	} );
+
+	const methodIsVisible = ( methodKey ) => Boolean( paymentMethods.find( method => method.key === methodKey ) );
+
+	const showWCPay = methodIsVisible( 'wcpay' );
+	const showStripe = methodIsVisible( 'stripe' );
+	const showKlarnaCheckout = methodIsVisible( 'klarna_checkout' );
+	const showKlarnaPayments = methodIsVisible( 'klarna_payments' );
+	const showPayPal = methodIsVisible( 'paypal' );
+	const showSquare = methodIsVisible( 'square' );
+	const showPayFast = methodIsVisible( 'payfast' );
+
 	return [
 		{
 			title: __( 'Which Payment Option is Right for Me?', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/premium-payment-gateway-extensions/?utm_source=help_panel',
 		},
-		// TODO: if WC Pay is an option.
-		{
+		showWCPay && {
 			title: __( 'WooCommerce Payments Start Up Guide', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/payments//?utm_source=help_panel',
 		},
-		// TODO: if WC Pay is an option.
-		{
+		showWCPay && {
 			title: __( 'WooCommerce Payments FAQs', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/documentation/woocommerce-payments/woocommerce-payments-faqs/?utm_source=help_panel',
 		},
-		// TODO: if Stripe is an option.
-		{
+		showStripe && {
 			title: __( 'Stripe Setup and Configuration', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/stripe/?utm_source=help_panel',
 		},
-		// TODO: if PayPal is an option.
-		{
+		showPayPal && {
 			title: __( 'PayPal Checkout Setup and Configuration', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/paypal-express-checkout/?utm_source=help_panel',
 		},
-		// TODO: if Square is an option.
-		{
+		showSquare && {
 			title: __( 'Square - Get started', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/woocommerce-square/?utm_source=help_panel',
 		},
-		// TODO: if Klarna is an option.
-		{
+		showKlarnaCheckout && {
+			title: __( 'Klarna - Introduction', 'woocommerce-admin' ),
+			link: 'https://docs.woocommerce.com/document/klarna-checkout/?utm_source=help_panel',
+		},
+		showKlarnaPayments && {
 			title: __( 'Klarna - Introduction', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/klarna-payments/?utm_source=help_panel',
 		},
-		// TODO: if Payfast is an option.
-		{
+		showPayFast && {
 			title: __( 'PayFast Setup and Configuration', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/payfast-payment-gateway/?utm_source=help_panel',
 		},
@@ -86,7 +108,7 @@ function getPaymentsItems() {
 			title: __( 'Cash on Delivery', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/cash-on-delivery/?utm_source=help_panel',
 		},
-	];
+	].filter( Boolean );
 }
 
 function getProductsItems() {
@@ -150,7 +172,9 @@ function getTaxItems() {
 	];
 }
 
-function getItems( taskName ) {
+function getItems( props ) {
+	const { taskName } = props;
+
 	switch ( taskName ) {
 		case 'products':
 			return getProductsItems();
@@ -161,7 +185,7 @@ function getItems( taskName ) {
 		case 'tax':
 			return getTaxItems();
 		case 'payments':
-			return getPaymentsItems();
+			return getPaymentsItems( props );
 		default:
 			return [];
 	}
@@ -186,9 +210,7 @@ function getItems( taskName ) {
 // }
 
 function getListItems( props ) {
-	const { taskName } = props;
-
-	return getItems( taskName ).map( ( item ) => ( {
+	return getItems( props ).map( ( item ) => ( {
 		title: <Text as="div" variant="button">{ item.title }</Text>,
 		before: <Icon icon={ page } />,
 		after: <Icon icon={ chevronRight } />,
@@ -220,4 +242,21 @@ HelpPanel.defaultProps = {
 	recordEvent,
 };
 
-export default HelpPanel;
+export default compose(
+	withSelect( ( select ) => {
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
+		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { general: generalSettings = {} } = getSettings( 'general' );
+
+		const profileItems = getProfileItems();
+
+		const countryCode = getCountryCode(
+			generalSettings.woocommerce_default_country
+		);
+
+		return {
+			countryCode,
+			profileItems,
+		};
+	} )
+)( HelpPanel );
