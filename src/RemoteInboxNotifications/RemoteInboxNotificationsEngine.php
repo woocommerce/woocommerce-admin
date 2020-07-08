@@ -48,7 +48,7 @@ class RemoteInboxNotificationsEngine {
 	public static function update_profile_option( $old_value, $new_value ) {
 		// Return early if we're not completing the profiler.
 		if (
-			( isset( $old_value['complete'] ) && $old_value['completed'] ) ||
+			( isset( $old_value['completed'] ) && $old_value['completed'] ) ||
 			! isset( $new_value['completed'] ) ||
 			! $new_value['completed']
 		) {
