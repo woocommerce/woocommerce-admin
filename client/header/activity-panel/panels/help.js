@@ -45,8 +45,9 @@ function getAppearanceItems() {
 	];
 }
 
-function getPaymentsItems( { countryCode, profileItems } ) {
-	const paymentMethods = getPaymentMethods( {
+function getPaymentsItems( props ) {
+	const { countryCode, profileItems } = props;
+	const paymentMethods = props.getPaymentMethods( {
 		activePlugins: [],
 		countryCode,
 		options: {},
@@ -161,11 +162,12 @@ function getShippingItems( { activePlugins, countryCode } ) {
 	].filter( Boolean );
 }
 
-function getTaxItems( { countryCode } ) {
+function getTaxItems( props ) {
+	const { countryCode } = props;
 	const {
 		automatedTaxSupportedCountries = [],
 		taxJarActivated,
-	} = getSetting( 'onboarding', {} );
+	} = props.getSetting( 'onboarding', {} );
 
 	const showWCS = (
 		! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
@@ -232,7 +234,7 @@ function getListItems( props ) {
 	} ) );
 }
 
-const HelpPanel = ( props ) => {
+export const HelpPanel = ( props ) => {
 	const { taskName } = props;
 	useEffect( () => {
 		props.recordEvent( 'help_panel_open', {
@@ -256,6 +258,8 @@ const HelpPanel = ( props ) => {
 };
 
 HelpPanel.defaultProps = {
+	getPaymentMethods,
+	getSetting,
 	recordEvent,
 };
 
