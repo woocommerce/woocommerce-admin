@@ -6,12 +6,11 @@ import { __experimentalText as Text } from '@wordpress/components';
 import { withSelect } from '@wordpress/data';
 import { Fragment, useEffect } from '@wordpress/element';
 import { Icon, chevronRight, page } from '@wordpress/icons';
-// import { partial } from 'lodash';
+import { partial } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List, Section } from '@woocommerce/components';
 import {
 	ONBOARDING_STORE_NAME,
@@ -194,23 +193,14 @@ function getItems( props ) {
 	}
 }
 
-// function handleOnItemClick( props, event ) {
-// 	const a = event.currentTarget;
+function handleOnItemClick( props, event ) {
+	const { taskName } = props;
 
-// 	props.recordEvent( 'help_panel_click', {
-// 		task_name: 'GET TASK NAME HERE',
-// 		link: a.href,
-// 	} );
-
-// 	if ( typeof props.onItemClick !== 'function' ) {
-// 		return;
-// 	}
-
-// 	if ( ! props.onItemClick( listItemTag ) ) {
-// 		event.preventDefault();
-// 		return false;
-// 	}
-// }
+	props.recordEvent( 'help_panel_click', {
+		task_name: taskName,
+		link: event.currentTarget.href,
+	} );
+}
 
 function getListItems( props ) {
 	const itemsByType = getItems( props );
@@ -219,6 +209,8 @@ function getListItems( props ) {
 		link: 'https://docs.woocommerce.com/?utm_source=help_panel',
 	} );
 
+	const onClick = partial( handleOnItemClick, props );
+
 	return itemsByType.map( ( item ) => ( {
 		title: <Text as="div" variant="button">{ item.title }</Text>,
 		before: <Icon icon={ page } />,
@@ -226,14 +218,14 @@ function getListItems( props ) {
 		linkType: 'external',
 		target: '_blank',
 		href: item.link,
-		// onClick: partial( handleOnItemClick, props ),
+		onClick,
 	} ) );
 }
 
 const HelpPanel = ( props ) => {
 	const { taskName } = props;
 	useEffect( () => {
-		recordEvent( 'help_panel_open', {
+		props.recordEvent( 'help_panel_open', {
 			task_name: taskName,
 		} );
 	}, [ taskName ] );
@@ -254,7 +246,6 @@ const HelpPanel = ( props ) => {
 };
 
 HelpPanel.defaultProps = {
-	getSetting,
 	recordEvent,
 };
 
