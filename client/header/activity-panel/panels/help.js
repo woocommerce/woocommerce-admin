@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { __experimentalText as Text } from '@wordpress/components';
 import { withSelect } from '@wordpress/data';
-import { Fragment } from '@wordpress/element';
+import { Fragment, useEffect } from '@wordpress/element';
 import { Icon, chevronRight, page } from '@wordpress/icons';
 // import { partial } from 'lodash';
 
@@ -231,6 +231,13 @@ function getListItems( props ) {
 }
 
 const HelpPanel = ( props ) => {
+	const { taskName } = props;
+	useEffect( () => {
+		recordEvent( 'help_panel_open', {
+			task_name: taskName,
+		} );
+	}, [ taskName ] );
+
 	const listItems = getListItems( props );
 
 	return (
