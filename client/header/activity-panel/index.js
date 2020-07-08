@@ -135,9 +135,15 @@ class ActivityPanel extends Component {
 		// Don't show the inbox on the Home screen.
 		const { location } = getHistory();
 		const showInbox = isEmbedded || ! window.wcAdminFeatures.homescreen || location.pathname !== '/';
-		const isPerformingSetupTask = query.task && ( requestingTaskListOptions === true || (
-			taskListHidden === false && taskListComplete === false
-		) );
+		const isPerformingSetupTask =
+			query.task &&
+			! query.path &&
+			( requestingTaskListOptions === true ||
+				(
+					taskListHidden === false &&
+					taskListComplete === false
+				)
+			);
 
 		return [
 			! isPerformingSetupTask && showInbox
