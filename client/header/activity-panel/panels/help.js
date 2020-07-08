@@ -213,7 +213,13 @@ function getItems( props ) {
 // }
 
 function getListItems( props ) {
-	return getItems( props ).map( ( item ) => ( {
+	const itemsByType = getItems( props );
+	itemsByType.push( {
+		title: __( 'WooCommerce Docs', 'woocommerce-admin' ),
+		link: 'https://docs.woocommerce.com/?utm_source=help_panel',
+	} );
+
+	return itemsByType.map( ( item ) => ( {
 		title: <Text as="div" variant="button">{ item.title }</Text>,
 		before: <Icon icon={ page } />,
 		after: <Icon icon={ chevronRight } />,
