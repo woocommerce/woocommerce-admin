@@ -11,6 +11,7 @@ import { partial } from 'lodash';
 /**
  * WooCommerce dependencies
  */
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List, Section } from '@woocommerce/components';
 import {
 	ONBOARDING_STORE_NAME,
@@ -26,7 +27,6 @@ import { getCountryCode } from 'dashboard/utils';
 import { recordEvent } from 'lib/tracks';
 import { getPaymentMethods } from 'task-list/tasks/payments/methods';
 import { compose } from 'redux';
-// import './style.scss';
 
 function getAppearanceItems() {
 	return [
@@ -132,11 +132,11 @@ function getProductsItems() {
 	];
 }
 
-function shouldShowWCS( { activePlugins, countryCode } ) {
-	return ( countryCode === 'US' && activePlugins.includes( 'woocommerce-services' ) );
-}
-
-function getShippingItems( props ) {
+function getShippingItems( { activePlugins, countryCode } ) {
+	const showWCS = (
+		countryCode === 'US' &&
+		! activePlugins.includes( 'woocommerce-services' )
+	);
 	return [
 		{
 			title: __( 'Setting up Shipping Zones', 'woocommerce-admin' ),
@@ -150,7 +150,7 @@ function getShippingItems( props ) {
 			title: __( 'Product Shipping Classes', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/product-shipping-classes/?utm_source=help_panel',
 		},
-		shouldShowWCS( props ) && {
+		showWCS && {
 			title: __( 'WooCommerce Shipping setup and configuration', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/woocommerce-services/#section-3/?utm_source=help_panel',
 		},
@@ -161,13 +161,23 @@ function getShippingItems( props ) {
 	].filter( Boolean );
 }
 
-function getTaxItems( props ) {
+function getTaxItems( { countryCode } ) {
+	const {
+		automatedTaxSupportedCountries = [],
+		taxJarActivated,
+	} = getSetting( 'onboarding', {} );
+
+	const showWCS = (
+		! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
+		automatedTaxSupportedCountries.includes( countryCode )
+	);
+
 	return [
 		{
 			title: __( 'Setting up Taxes in WooCommerce', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/setting-up-taxes-in-woocommerce/?utm_source=help_panel',
 		},
-		shouldShowWCS( props ) && {
+		showWCS && {
 			title: __( 'Automated Tax calculation using WooCommerce Services', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/woocommerce-services/?utm_source=help_panel#section-10',
 		},
