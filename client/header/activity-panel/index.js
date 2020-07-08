@@ -55,7 +55,7 @@ import withSelect from 'wc-api/with-select';
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
 
-class ActivityPanel extends Component {
+export class ActivityPanel extends Component {
 	constructor() {
 		super( ...arguments );
 		this.togglePanel = this.togglePanel.bind( this );
@@ -133,7 +133,7 @@ class ActivityPanel extends Component {
 		} = this.props;
 
 		// Don't show the inbox on the Home screen.
-		const { location } = getHistory();
+		const { location } = this.props.getHistory();
 		const showInbox = isEmbedded || ! window.wcAdminFeatures.homescreen || location.pathname !== '/';
 		const isPerformingSetupTask =
 			query.task &&
@@ -361,6 +361,10 @@ class ActivityPanel extends Component {
 		);
 	}
 }
+
+ActivityPanel.defaultProps = {
+	getHistory,
+};
 
 export default compose(
 	withSelect( ( select ) => {
