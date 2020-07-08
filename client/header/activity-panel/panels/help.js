@@ -15,6 +15,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List, Section } from '@woocommerce/components';
 import {
 	ONBOARDING_STORE_NAME,
+	PLUGINS_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 
@@ -132,7 +133,11 @@ function getProductsItems() {
 	];
 }
 
-function getShippingItems() {
+function shouldShowWCS( { activePlugins, countryCode } ) {
+	return ( countryCode === 'US' && activePlugins.includes( 'woocommerce-services' ) );
+}
+
+function getShippingItems( props ) {
 	return [
 		{
 			title: __( 'Setting up Shipping Zones', 'woocommerce-admin' ),
@@ -146,8 +151,7 @@ function getShippingItems() {
 			title: __( 'Product Shipping Classes', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/product-shipping-classes/?utm_source=help_panel',
 		},
-		// TODO: (if WCS is active)
-		{
+		shouldShowWCS( props ) && {
 			title: __( 'WooCommerce Shipping setup and configuration', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/woocommerce-services/#section-3/?utm_source=help_panel',
 		},
@@ -155,21 +159,20 @@ function getShippingItems() {
 			title: __( 'Learn more about configuring your shipping settings', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/documentation/plugins/woocommerce/getting-started/shipping/?utm_source=help_panel',
 		},
-	];
+	].filter( Boolean );
 }
 
-function getTaxItems() {
+function getTaxItems( props ) {
 	return [
 		{
 			title: __( 'Setting up Taxes in WooCommerce', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/setting-up-taxes-in-woocommerce/?utm_source=help_panel',
 		},
-		// TODO: (if WCS is active)
-		{
+		shouldShowWCS( props ) && {
 			title: __( 'Automated Tax calculation using WooCommerce Services', 'woocommerce-admin' ),
 			link: 'https://docs.woocommerce.com/document/woocommerce-services/?utm_source=help_panel#section-10',
 		},
-	];
+	].filter( Boolean );
 }
 
 function getItems( props ) {
@@ -181,9 +184,9 @@ function getItems( props ) {
 		case 'appearance':
 			return getAppearanceItems();
 		case 'shipping':
-			return getShippingItems();
+			return getShippingItems( props );
 		case 'tax':
-			return getTaxItems();
+			return getTaxItems( props );
 		case 'payments':
 			return getPaymentsItems( props );
 		default:
@@ -246,8 +249,9 @@ export default compose(
 	withSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const { general: generalSettings = {} } = getSettings( 'general' );
-
+		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 
 		const countryCode = getCountryCode(
@@ -255,6 +259,7 @@ export default compose(
 		);
 
 		return {
+			activePlugins,
 			countryCode,
 			profileItems,
 		};
