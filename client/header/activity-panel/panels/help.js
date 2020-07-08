@@ -208,6 +208,11 @@ function getItems( props ) {
 function handleOnItemClick( props, event ) {
 	const { taskName } = props;
 
+	// event isn't initially set when triggering link with the keyboard.
+	if ( ! event ) {
+		return;
+	}
+
 	props.recordEvent( 'help_panel_click', {
 		task_name: taskName,
 		link: event.currentTarget.href,
