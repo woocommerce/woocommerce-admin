@@ -120,9 +120,9 @@ class _Layout extends Component {
 
 	render() {
 		const { isEmbedded, ...restProps } = this.props;
-		const { breadcrumbs } = this.props.page;
-		const { search } = this.props.location;
-		const query = this.getQuery( search );
+		const { location, page } = this.props;
+		const { breadcrumbs } = page;
+		const query = this.getQuery( location && location.search );
 
 		return (
 			<div className="woocommerce-layout">
