@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.3.0
 Tested up to: 5.4.1
 Requires PHP: 5.6.20
-Stable tag: 1.3.0-beta.1
+Stable tag: 1.3.0
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -71,7 +71,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 1.3.0-beta.1 2020-06-15 =
+= 1.3.0 2020-07-08 =
 - Enhancement: Add Jetpack stats to performance indicatorts / homepage #4291
 - Enhancement: New "Store Management" quick links card on WooCommerce home screen. #4350
 - Enhancement: Inbox notifications layout updates #4218
