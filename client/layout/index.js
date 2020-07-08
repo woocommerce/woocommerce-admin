@@ -29,6 +29,9 @@ import Header from 'header';
 import Notices from './notices';
 import { recordPageView } from 'lib/tracks';
 import TransientNotices from './transient-notices';
+const StoreWarnings = lazy( () =>
+	import( /* webpackChunkName: "store-notices" */ './store-notices' )
+);
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
 );
@@ -44,6 +47,7 @@ export class PrimaryLayout extends Component {
 			>
 				{ window.wcAdminFeatures[ 'store-alerts' ] && (
 					<Suspense fallback={ <Spinner /> }>
+						<StoreWarnings queryString={ document.location.search } />
 						<StoreAlerts />
 					</Suspense>
 				) }

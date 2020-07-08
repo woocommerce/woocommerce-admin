@@ -1,0 +1,13 @@
+
+div.woocommerce-store-warnings {
+	margin: -44px -40px $gap-largest;
+	padding: 0 $gap;
+
+	@media (max-width: 960px) {
+		margin: -23px -23px $gap-largest;
+	}
+
+	@media (max-width: 782px) {
+		margin: -3px -16px $gap-largest;
+	}
+}
