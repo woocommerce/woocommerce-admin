@@ -23,15 +23,34 @@ import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 import { installActivateAndConnectWcpay } from './tasks/payments/methods';
+import { recordEvent } from 'lib/tracks';
+
+export function recordTaskViewEvent(
+	taskName,
+	isJetpackConnected,
+	activePlugins,
+	installedPlugins
+) {
+	recordEvent( 'task_view', {
+		task_name: taskName,
+		wcs_installed: installedPlugins.includes( 'woocommerce-services' ),
+		wcs_active: activePlugins.includes( 'woocommerce-services' ),
+		jetpack_installed: installedPlugins.includes( 'jetpack' ),
+		jetpack_active: activePlugins.includes( 'jetpack' ),
+		jetpack_connected: isJetpackConnected,
+	} );
+}
 
 export function getAllTasks( {
 	profileItems,
 	taskListPayments,
 	query,
 	toggleCartModal,
+	activePlugins,
 	installedPlugins,
 	installAndActivatePlugins,
 	createNotice,
+	isJetpackConnected,
 } ) {
 	const {
 		hasPhysicalProducts,
@@ -119,6 +138,15 @@ export function getAllTasks( {
 			completed: paymentsCompleted || paymentsSkipped,
 			onClick: async () => {
 				await new Promise( ( resolve, reject ) => {
+					// This task doesn't have a view, so the recordEvent call
+					// in TaskDashboard.recordTaskView() is never called. So
+					// record it here.
+					recordTaskViewEvent(
+						'wcpay',
+						isJetpackConnected,
+						activePlugins,
+						installedPlugins
+					);
 					return installActivateAndConnectWcpay(
 						resolve,
 						reject,
