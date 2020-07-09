@@ -17,7 +17,11 @@ import {
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 } from '@woocommerce/data';
-import { getHistory, getNewPath, updateQueryString } from '@woocommerce/navigation';
+import {
+	getHistory,
+	getNewPath,
+	updateQueryString,
+} from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -254,7 +258,7 @@ class ProfileWizard extends Component {
 						createNoticesFromResponse( error );
 						return;
 					}
-					redirectUrl = jetpackConnectUrl
+					redirectUrl = jetpackConnectUrl;
 				} )
 			);
 		}
@@ -275,7 +279,8 @@ class ProfileWizard extends Component {
 			step: this.getCurrentStep().key,
 		} );
 		recordEvent( 'storeprofiler_store_details_skip' );
-		window.location = getAdminLink( 'admin.php?page=wc-admin' );
+		const href = getAdminLink( 'admin.php?page=wc-admin' );
+		getHistory().push( href );
 	}
 
 	render() {
