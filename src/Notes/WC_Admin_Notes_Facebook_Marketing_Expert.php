@@ -36,18 +36,18 @@ class WC_Admin_Notes_Facebook_Marketing_Expert {
 	 */
 	public static function possibly_add_note() {
 
-		// Only show the note to stores with Facebook for WooCommerce installed.
+		// Check if the note can and should be added.
+		if ( ! self::can_be_added() ) {
+			return;
+		}
+
+		// Only add the note to stores with Facebook for WooCommerce installed.
 		if ( ! self::is_facebook_for_woocommerce_installed() ) {
 			return;
 		}
 
-		// Only show the note to stores with at least 30 orders in the last month.
-		if ( ! self::orders_last_month() >= 2 ) {
-			return;
-		}
-
-		// Final check if the note can and should be added.
-		if ( ! self::can_be_added() ) {
+		// Only add the note to stores with at least 30 orders in the last month.
+		if ( ! self::orders_last_month() >= 30 ) {
 			return;
 		}
 
