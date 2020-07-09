@@ -29,6 +29,7 @@ class PayPal extends Component {
 		};
 
 		this.updateSettings = this.updateSettings.bind( this );
+		this.validate = this.validate.bind( this );
 	}
 
 	componentDidMount() {
@@ -152,20 +153,12 @@ class PayPal extends Component {
 	}
 
 	getInitialConfigValues() {
-		const initialConfig = {
+		return {
 			api_username: '',
 			api_password: '',
+			create_account: this.isWooCommerceServicesConnected(),
+			account_email: '',
 		};
-
-		if ( this.isWooCommerceServicesConnected() ) {
-			return {
-				...initialConfig,
-				create_account: true,
-				account_email: '',
-			};
-		}
-
-		return initialConfig;
 	}
 
 	validate( values ) {
@@ -185,6 +178,7 @@ class PayPal extends Component {
 		}
 
 		if (
+			this.isWooCommerceServicesConnected() &&
 			values.create_account &&
 			values.account_email.length &&
 			! isEmail( values.account_email )
@@ -259,35 +253,34 @@ class PayPal extends Component {
 		);
 	}
 
-	renderOAuthConnect() {
-		const { connectURL } = this.state;
-		return (
-			<Button isPrimary href={ connectURL }>
-				{ __( 'Connect', 'woocommerce-admin' ) }
-			</Button>
-		);
-	}
-
-	renderAutoCreateAccount() {
+	renderAutomaticConfig() {
 		const { isOptionsUpdating } = this.props;
+		const { autoConnectFailed, connectURL, isPending } = this.state;
+
+		const canAutoCreate = this.isWooCommerceServicesConnected();
+		const initialValues = this.getInitialConfigValues();
+
+		// TODO: break this up into multiple functions?
 		return (
 			<Form
-				initialValues={ this.getInitialConfigValues() }
+				initialValues={ initialValues }
 				onSubmitCallback={ this.updateSettings }
 				validate={ this.validate }
 			>
 				{ ( { getInputProps, handleSubmit, values } ) => {
 					return (
 						<Fragment>
-							<CheckboxControl
-								label={ __(
-									'Create a PayPal account for me',
-									'woocommerce-admin'
-								) }
-								{ ...getInputProps( 'create_account' ) }
-							/>
+							{ canAutoCreate && (
+								<CheckboxControl
+									label={ __(
+										'Create a PayPal account for me',
+										'woocommerce-admin'
+									) }
+									{ ...getInputProps( 'create_account' ) }
+								/>
+							) }
 
-							{ values.create_account && (
+							{ canAutoCreate && values.create_account && (
 								<TextControl
 									label={ __(
 										'Email address',
@@ -298,13 +291,93 @@ class PayPal extends Component {
 								/>
 							) }
 
-							<Button
-								onClick={ handleSubmit }
-								isPrimary
-								isBusy={ isOptionsUpdating }
-							>
-								{ __( 'Proceed', 'woocommerce-admin' ) }
-							</Button>
+							{ ! isPending &&
+								( autoConnectFailed || ! connectURL ) &&
+								! values.create_account && (
+									<Fragment>
+										<TextControl
+											label={ __(
+												'API Username',
+												'woocommerce-admin'
+											) }
+											required
+											{ ...getInputProps(
+												'api_username'
+											) }
+										/>
+										<TextControl
+											label={ __(
+												'API Password',
+												'woocommerce-admin'
+											) }
+											required
+											{ ...getInputProps(
+												'api_password'
+											) }
+										/>
+
+										<Button
+											onClick={ handleSubmit }
+											isPrimary
+											isBusy={ isOptionsUpdating }
+										>
+											{ __(
+												'Proceed',
+												'woocommerce-admin'
+											) }
+										</Button>
+
+										<p>
+											{ interpolateComponents( {
+												mixedString: __(
+													'Your API details can be obtained from your {{link}}PayPal account{{/link}}',
+													'woocommerce-admin'
+												),
+												components: {
+													link: (
+														<Link
+															href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-8"
+															target="_blank"
+															type="external"
+														/>
+													),
+												},
+											} ) }
+										</p>
+									</Fragment>
+								) }
+
+							{ canAutoCreate && values.create_account && (
+								<Button
+									onClick={ handleSubmit }
+									isPrimary
+									isBusy={ isOptionsUpdating }
+								>
+									{ __(
+										'Create account',
+										'woocommerce-admin'
+									) }
+								</Button>
+							) }
+
+							{ ! autoConnectFailed &&
+								connectURL &&
+								! values.create_account && (
+									<Fragment>
+										<Button isPrimary href={ connectURL }>
+											{ __(
+												'Connect',
+												'woocommerce-admin'
+											) }
+										</Button>
+										<p>
+											{ __(
+												'You will be redirected to the Paypal website to create the connection.',
+												'woocommerce-admin'
+											) }
+										</p>
+									</Fragment>
+								) }
 						</Fragment>
 					);
 				} }
@@ -313,46 +386,14 @@ class PayPal extends Component {
 	}
 
 	getConnectStep() {
-		const { autoConnectFailed, connectURL, isPending } = this.state;
-
-		const connectStep = {
+		return {
 			key: 'connect',
 			label: __( 'Connect your PayPal account', 'woocommerce-admin' ),
-		};
-
-		if ( isPending ) {
-			return connectStep;
-		}
-
-		if ( ! autoConnectFailed && connectURL ) {
-			if ( this.isWooCommerceServicesConnected() ) {
-				return {
-					...connectStep,
-					description: __(
-						'A Paypal account is required to process payments.',
-						'woocommerce-admin'
-					),
-					content: this.renderAutoCreateAccount(),
-				};
-			}
-
-			return {
-				...connectStep,
-				description: __(
-					'A Paypal account is required to process payments. You will be redirected to the Paypal website to create the connection.',
-					'woocommerce-admin'
-				),
-				content: this.renderOAuthConnect(),
-			};
-		}
-
-		return {
-			...connectStep,
 			description: __(
-				'Connect your store to your PayPal account. Don’t have a PayPal account? Create one.',
+				'A Paypal account is required to process payments. Connect your store to your PayPal account.',
 				'woocommerce-admin'
 			),
-			content: this.renderManualConfig(),
+			content: this.renderAutomaticConfig(),
 		};
 	}
 
