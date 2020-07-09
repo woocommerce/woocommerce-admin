@@ -12,7 +12,7 @@ import { get, isFunction, identity } from 'lodash';
  * WooCommerce dependencies
  */
 import { useFilters, Spinner } from '@woocommerce/components';
-import { getHistory } from '@woocommerce/navigation';
+import { getHistory, getQuery } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	PLUGINS_STORE_NAME,
@@ -47,7 +47,7 @@ export class PrimaryLayout extends Component {
 			>
 				{ window.wcAdminFeatures[ 'store-alerts' ] && (
 					<Suspense fallback={ <Spinner /> }>
-						<StoreWarnings queryString={ document.location.search } />
+						<StoreWarnings queryString={ getQuery() } />
 						<StoreAlerts />
 					</Suspense>
 				) }

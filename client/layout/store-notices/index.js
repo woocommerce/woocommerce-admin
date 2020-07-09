@@ -16,13 +16,13 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
  */
 import './style.scss';
 import withSelect from 'wc-api/with-select';
-import { getUrlParams } from 'utils';
 
 class StoreWarnings extends Component {
 	isVisibleMissingPaimentWarning() {
 		const { taskListPayments, queryString } = this.props;
-		const urlParams = getUrlParams( queryString );
-		const isPaymentPage = urlParams.task ? urlParams.task === 'payments' : false;
+		const isPaymentPage = queryString.task
+			? queryString.task === 'payments'
+			: false;
 		return ! taskListPayments.completed && isPaymentPage;
 	}
 
@@ -36,19 +36,21 @@ class StoreWarnings extends Component {
 					status="warning"
 					isDismissible={ false }
 				>
-					<p>Customers cannot place orders at your store until you setup and enable a payment method.</p>
+					<p>
+						Customers cannot place orders at your store until you
+						setup and enable a payment method.
+					</p>
 				</Notice>
 			)
-			
 		);
 	}
 }
 
 StoreWarnings.propTypes = {
 	/**
-	 * The current url query string.
+	 * The url query string.
 	 */
-	queryString: PropTypes.string,
+	queryString: PropTypes.object,
 };
 
 export default compose(
@@ -58,5 +60,5 @@ export default compose(
 		return {
 			taskListPayments,
 		};
-	} ),
+	} )
 )( StoreWarnings );
