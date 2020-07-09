@@ -1,5 +1,3 @@
-
-
 .woocommerce-table {
 	.woocommerce-card__body {
 		padding: 0;
@@ -24,8 +22,8 @@
 		color: $core-grey-dark-500;
 		display: flex;
 		// Default to 5 rows for browsers not supporting custom properties (IE11)
-		height: calc(#{$header-row-height} + (#{$row-height}) * 5);
-		height: calc(#{$header-row-height} + (#{$row-height}) * var(--number-of-rows));
+		height: calc(#{$header-row-height} + ( #{$row-height} ) * 5);
+		height: calc(#{$header-row-height} + ( #{$row-height} ) * var(--number-of-rows));
 		justify-content: center;
 		padding: $gap;
 		text-align: center;
@@ -195,12 +193,12 @@ th.woocommerce-table__item {
 .woocommerce-table__header {
 	padding: $gap-smaller $gap-large;
 	background-color: #f8f9fa;
-	border-bottom: 1px solid $core-grey-light-700;
+	border-bottom: 1px solid $gray-400;
 	font-weight: bold;
 	white-space: nowrap;
 
 	& + .woocommerce-table__header {
-		border-left: 1px solid $core-grey-light-700;
+		border-left: 1px solid $gray-400;
 	}
 
 	&.is-left-aligned.is-sortable {

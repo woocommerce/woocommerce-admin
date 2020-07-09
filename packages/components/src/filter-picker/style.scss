@@ -1,5 +1,3 @@
-
-
 .woocommerce-filters-filter__content {
 	&.is-mobile {
 		.components-popover__header-title {
@@ -11,7 +9,7 @@
 		}
 
 		.woocommerce-filters-filter__content-list-item:last-child {
-			border-bottom: 1px solid $core-grey-light-700;
+			border-bottom: 1px solid $gray-400;
 		}
 	}
 }
@@ -24,7 +22,7 @@
 
 .woocommerce-filters-filter__content-list-item {
 	border: 1px solid transparent;
-	border-bottom: 1px solid $core-grey-light-700;
+	border-bottom: 1px solid $gray-400;
 	margin: 0;
 
 	&:last-child {

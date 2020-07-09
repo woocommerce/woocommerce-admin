@@ -1,5 +1,3 @@
-
-
 .woocommerce-filters-advanced {
 	margin: $gap-large 0;
 
@@ -23,10 +21,9 @@
 
 	@include breakpoint( '<782px' ) {
 		margin: $gap 0;
-		border: 1px solid $core-grey-light-700;
+		border: 1px solid $gray-400;
 	}
-
-	@include breakpoint( '<400px' ) {
+	gray-400 @include breakpoint( '<400px' ) {
 		margin: $gap-small 0;
 	}
 }
@@ -47,7 +44,7 @@
 	display: grid;
 	grid-template-columns: 1fr 40px;
 	background-color: $core-grey-light-100;
-	border-bottom: 1px solid $core-grey-light-700;
+	border-bottom: 1px solid $gray-400;
 
 	&:hover {
 		background-color: $core-grey-light-200;
@@ -92,7 +89,7 @@
 	color: $studio-woocommerce-purple;
 	display: block;
 	background-color: $core-grey-light-100;
-	border-bottom: 1px solid $core-grey-light-700;
+	border-bottom: 1px solid $gray-400;
 
 	&:hover {
 		background-color: $core-grey-light-200;

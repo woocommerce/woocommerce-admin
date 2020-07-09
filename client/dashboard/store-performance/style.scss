@@ -1,5 +1,3 @@
-
-
 .woocommerce-dashboard__store-performance {
 	margin-bottom: $gap-large;
 
@@ -19,7 +17,7 @@
 			&:not(.is-placeholder) {
 				.woocommerce-summary__item-container:first-child {
 					.woocommerce-summary__item {
-						border-top: 1px solid $core-grey-light-700;
+						border-top: 1px solid $gray-400;
 					}
 				}
 			}
