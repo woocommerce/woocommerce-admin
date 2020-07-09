@@ -268,18 +268,17 @@ class StoreDetails extends Component {
 						href={ adminUrl }
 					>
 						{ __( 'Skip setup wizard', 'woocommerce-admin' ) }
-
-						<Tooltip
-							text={ __(
-								'Manual setup is only recommended for\n experienced WooCommerce users or developers.',
-								'woocommerce-admin'
-							) }
-						>
-							<span className="woocommerce-profile-wizard__tooltip-icon">
-								<Icon icon="info-outline" size={ 16 } />
-							</span>
-						</Tooltip>
 					</a>
+					<Tooltip
+						text={ __(
+							'Manual setup is only recommended for\n experienced WooCommerce users or developers.',
+							'woocommerce-admin'
+						) }
+					>
+						<span className="woocommerce-profile-wizard__tooltip-icon">
+							<Icon icon="info-outline" size={ 16 } />
+						</span>
+					</Tooltip>
 				</div>
 			</Fragment>
 		);
