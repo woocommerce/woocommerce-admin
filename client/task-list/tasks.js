@@ -10,6 +10,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { updateQueryString } from '@woocommerce/navigation';
+import { Fragment } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -21,6 +22,7 @@ import Products from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
+import { installActivateAndConnectWcpay } from './tasks/payments/methods';
 
 export function getAllTasks( {
 	profileItems,
@@ -28,6 +30,8 @@ export function getAllTasks( {
 	query,
 	toggleCartModal,
 	installedPlugins,
+	installAndActivatePlugins,
+	createNotice,
 } ) {
 	const {
 		hasPhysicalProducts,
@@ -60,6 +64,9 @@ export function getAllTasks( {
 	const paymentsSkipped = Boolean(
 		taskListPayments && taskListPayments.skipped
 	);
+
+	const woocommercePaymentsInstalled =
+		installedPlugins.indexOf( 'woocommerce-payments' ) !== -1;
 
 	const tasks = [
 		{
@@ -106,6 +113,25 @@ export function getAllTasks( {
 			time: __( '1 minute per product', 'woocommerce-admin' ),
 		},
 		{
+			key: 'woocommerce-payments',
+			title: __( 'Set up WooCommerce Payments', 'woocommerce-admin' ),
+			container: <Fragment />,
+			completed: paymentsCompleted || paymentsSkipped,
+			onClick: async () => {
+				await new Promise( ( resolve, reject ) => {
+					return installActivateAndConnectWcpay(
+						resolve,
+						reject,
+						createNotice,
+						installAndActivatePlugins
+					);
+				} );
+			},
+			visible:
+				window.wcAdminFeatures.wcpay && woocommercePaymentsInstalled,
+			time: __( '2 minutes', 'woocommerce-admin' ),
+		},
+		{
 			key: 'appearance',
 			title: __( 'Personalize my store', 'woocommerce-admin' ),
 			container: <Appearance />,
@@ -146,7 +172,7 @@ export function getAllTasks( {
 				}
 				updateQueryString( { task: 'payments' } );
 			},
-			visible: true,
+			visible: ! woocommercePaymentsInstalled,
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 	];
