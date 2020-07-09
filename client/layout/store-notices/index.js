@@ -56,7 +56,8 @@ StoreWarnings.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const taskListPayments = getOption( 'woocommerce_task_list_payments' );
+		const taskListPayments =
+			getOption( 'woocommerce_task_list_payments' ) || {};
 		return {
 			taskListPayments,
 		};
