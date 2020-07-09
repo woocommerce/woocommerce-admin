@@ -1,5 +1,3 @@
-
-
 .woocommerce-layout__activity-panel-header {
 	height: 50px;
 	background: $core-grey-light-500;
@@ -24,7 +22,7 @@
 	.woocommerce-ellipsis-menu__toggle.components-button:not(:disabled):not([aria-disabled='true']):hover {
 		box-shadow: none;
 		border-radius: 10px;
-		background: $core-grey-light-700;
+		background: $gray-400;
 	}
 }
 

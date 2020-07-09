@@ -7,19 +7,19 @@
 	width: 100%;
 	grid-template-columns: 1fr 1fr;
 	display: grid;
-	border-top: 1px solid $core-grey-light-700;
-	border-bottom: 1px solid $core-grey-light-700;
-	background-color: $core-grey-light-700;
+	border-top: 1px solid $gray-400;
+	border-bottom: 1px solid $gray-400;
+	background-color: $gray-400;
 }
 
 .woocommerce-segmented-selection__item {
 	&:nth-child(2n) {
-		border-left: 1px solid $core-grey-light-700;
-		border-top: 1px solid $core-grey-light-700;
+		border-left: 1px solid $gray-400;
+		border-top: 1px solid $gray-400;
 	}
 
 	&:nth-child(2n + 1) {
-		border-top: 1px solid $core-grey-light-700;
+		border-top: 1px solid $gray-400;
 	}
 
 	&:nth-child(-n + 2) {

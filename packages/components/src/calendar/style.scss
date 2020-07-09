@@ -1,7 +1,7 @@
 .woocommerce-calendar {
 	width: 100%;
 	background-color: $core-grey-light-100;
-	border-top: 1px solid $core-grey-light-700;
+	border-top: 1px solid $gray-400;
 	height: 396px;
 
 	&.is-mobile {
@@ -23,7 +23,7 @@
 
 	.CalendarDay__selected_span {
 		background: var(--wp-admin-theme-color);
-		border: 1px solid $core-grey-light-700;
+		border: 1px solid $gray-400;
 
 		&:hover {
 			background: var(--wp-admin-theme-color-darker-10);
@@ -33,7 +33,7 @@
 
 	.CalendarDay__selected {
 		background: var(--wp-admin-theme-color-darker-20);
-		border: 1px solid $core-grey-light-700;
+		border: 1px solid $gray-400;
 
 		&:hover {
 			background: var(--wp-admin-theme-color-darker-10);

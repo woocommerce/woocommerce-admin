@@ -1,5 +1,3 @@
-
-
 .woocommerce-legend {
 	&.has-total {
 		padding-bottom: 50px;
@@ -7,7 +5,7 @@
 	}
 
 	&.woocommerce-legend__direction-column {
-		border-right: 1px solid $core-grey-light-700;
+		border-right: 1px solid $gray-400;
 		min-width: 320px;
 
 		.woocommerce-chart__footer & {
@@ -28,7 +26,7 @@
 		overflow: auto;
 
 		.woocommerce-chart__footer & {
-			border-top: 1px solid $core-grey-light-700;
+			border-top: 1px solid $gray-400;
 			height: 100%;
 			max-height: none;
 			min-height: none;
@@ -190,7 +188,7 @@
 .woocommerce-legend__total {
 	align-items: center;
 	background: $studio-white;
-	border-top: 1px solid $core-grey-light-700;
+	border-top: 1px solid $gray-400;
 	bottom: 0;
 	color: $core-grey-dark-500;
 	display: flex;
