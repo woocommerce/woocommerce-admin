@@ -15,6 +15,7 @@ import {
 	withOnboardingHydration,
 } from '@woocommerce/data';
 import { Spinner } from '@woocommerce/components';
+import { getHistory } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -29,7 +30,11 @@ const CustomizableDashboard = lazy( () =>
 class Dashboard extends Component {
 	render() {
 		const { path, profileItems, query } = this.props;
-		const { completed: profileCompleted, skipped: profileSkipped, step: profilerStep } = profileItems;
+		const {
+			completed: profileCompleted,
+			skipped: profileSkipped,
+			step: profilerStep,
+		} = profileItems;
 		if (
 			isOnboardingEnabled() &&
 			! profileCompleted &&
@@ -37,9 +42,10 @@ class Dashboard extends Component {
 			! window.wcAdminFeatures.homescreen
 		) {
 			const lastStep = profilerStep ? `&step=${ profilerStep }` : '';
-			window.location = getAdminLink(
+			const href = getAdminLink(
 				`admin.php?page=wc-admin&path=/profiler${ lastStep }`
 			);
+			getHistory().push( href );
 		}
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {

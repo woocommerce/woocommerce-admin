@@ -12,6 +12,7 @@ import {
 	ONBOARDING_STORE_NAME,
 	withOnboardingHydration,
 } from '@woocommerce/data';
+import { getHistory } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -22,12 +23,17 @@ import { isOnboardingEnabled } from 'dashboard/utils';
 import Layout from './layout';
 
 const Homescreen = ( { profileItems, query } ) => {
-	const { completed: profilerCompleted, skipped: profilerSkipped, step: profilerStep } = profileItems;
+	const {
+		completed: profilerCompleted,
+		skipped: profilerSkipped,
+		step: profilerStep,
+	} = profileItems;
 	if ( isOnboardingEnabled() && ! profilerCompleted && ! profilerSkipped ) {
 		const lastStep = profilerStep ? `&step=${ profilerStep }` : '';
-		window.location = getAdminLink(
+		const href = getAdminLink(
 			`admin.php?page=wc-admin&path=/profiler${ lastStep }`
 		);
+		getHistory().push( href );
 	}
 
 	return <Layout query={ query } />;
