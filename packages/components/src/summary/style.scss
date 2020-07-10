@@ -1,5 +1,5 @@
 // Set up some local color variables to make the CSS more clear
-$border: $light-gray-tertiary;
+$border: $gray-100;
 
 // A local mixin to generate the grid template and border logic
 @mixin make-cols( $i ) {
