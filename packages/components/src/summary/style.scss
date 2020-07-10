@@ -320,7 +320,7 @@ $border: $light-gray-tertiary;
 	.woocommerce-summary__item-value {
 		margin-bottom: $gap-smallest;
 		font-weight: 500;
-		color: $dark-gray-primary;
+		color: $gray-900;
 	}
 
 	.woocommerce-summary__item-delta {
@@ -328,7 +328,7 @@ $border: $light-gray-tertiary;
 		border-radius: 3px;
 		height: min-content;
 		background-color: $gray-400;
-		color: $dark-gray-primary;
+		color: $gray-900;
 	}
 
 	&.is-selected {
