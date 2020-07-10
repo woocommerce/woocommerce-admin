@@ -6,7 +6,7 @@
 	}
 
 	.woocommerce-summary {
-		background-color: $core-grey-light-100;
+		background-color: $gray-100;
 		margin: 0;
 
 		@include breakpoint( '<782px' ) {

@@ -43,7 +43,7 @@
 	margin: 0;
 	display: grid;
 	grid-template-columns: 1fr 40px;
-	background-color: $core-grey-light-100;
+	background-color: $gray-100;
 	border-bottom: 1px solid $gray-400;
 
 	&:hover {
@@ -88,7 +88,7 @@
 	margin: 0;
 	color: $studio-woocommerce-purple;
 	display: block;
-	background-color: $core-grey-light-100;
+	background-color: $gray-100;
 	border-bottom: 1px solid $gray-400;
 
 	&:hover {
