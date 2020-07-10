@@ -93,7 +93,7 @@
 		color: $core-grey-dark-500;
 
 		@include hover-state {
-			background: $core-grey-light-100;
+			background: $gray-100;
 		}
 
 		&:last-child {

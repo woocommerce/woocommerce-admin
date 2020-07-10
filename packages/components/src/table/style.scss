@@ -18,7 +18,7 @@
 	$header-row-height: #{$gap-smaller * 2} + #{$row-text-height} + 1px;
 	&.is-empty {
 		align-items: center;
-		background: $core-grey-light-100;
+		background: $gray-100;
 		color: $core-grey-dark-500;
 		display: flex;
 		// Default to 5 rows for browsers not supporting custom properties (IE11)
@@ -161,7 +161,7 @@
 	}
 
 	&.is-sorted {
-		background-color: $core-grey-light-100;
+		background-color: $gray-100;
 	}
 
 	&.is-checkbox-column {
