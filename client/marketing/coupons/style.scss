@@ -27,4 +27,17 @@
 		font-weight: normal;
 		margin-top: 4px;
 	}
+
+	.woocommerce-admin-marketing-product-icon {
+		border: 1px solid #3858E9; //$theme-color #3858E9 $core-blue-dark-900;
+	}
+
+	.woocommerce-marketing-recommended-extensions-item {
+
+		&:hover {
+			h4 {
+				color: #3858E9; //$theme-color #3858E9 $core-blue-dark-900;
+			}
+		}
+	}
 }
