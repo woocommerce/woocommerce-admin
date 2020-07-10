@@ -73,7 +73,7 @@
 }
 
 .woocommerce-dashboard-section-controls {
-	border-top: $border-width solid $core-grey-light-500;
+	border-top: $border-width solid $gray-100;
 	padding-top: $gap-smaller;
 
 	.dashicon {
@@ -99,7 +99,6 @@
 		}
 	}
 }
-
 
 .woocommerce-dashboard-card {
 	.components-card__header.is-size-large,
