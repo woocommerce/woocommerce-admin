@@ -127,7 +127,7 @@
 
 			&:first-child {
 				line {
-					stroke: $core-grey-dark-500;
+					stroke: $gray-700;
 				}
 			}
 		}
@@ -143,7 +143,7 @@
 		text-anchor: start;
 		&.tick {
 			&text {
-				fill: $core-grey-dark-500;
+				fill: $gray-700;
 			}
 		}
 	}
