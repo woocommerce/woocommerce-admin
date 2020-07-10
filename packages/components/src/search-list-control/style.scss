@@ -90,7 +90,7 @@
 		background: $studio-white;
 		// !important to keep the border around on hover
 		border-bottom: 1px solid $gray-100 !important;
-		color: $core-grey-dark-500;
+		color: $gray-700;
 
 		@include hover-state {
 			background: $gray-100;

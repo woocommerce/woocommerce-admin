@@ -1,5 +1,4 @@
 .woocommerce-marketing-knowledgebase-card {
-
 	.woocommerce-marketing-slider {
 		margin: 0 0 14px;
 	}
@@ -80,7 +79,7 @@
 		&-text {
 			margin: 10px 0 0;
 
-			@include breakpoint('>960px') {
+			@include breakpoint( '>960px' ) {
 				margin: 0;
 			}
 		}
@@ -107,7 +106,7 @@
 			align-items: center;
 			font-size: 12px;
 			line-height: 17px;
-			color: $core-grey-dark-500;
+			color: $gray-700;
 			margin: 0;
 			padding: 0;
 			height: 17px;

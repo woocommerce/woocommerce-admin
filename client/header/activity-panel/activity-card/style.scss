@@ -305,7 +305,7 @@
 	width: 60px;
 
 	&.is-placeholder::before {
-		background-color: $core-grey-dark-500;
+		background-color: $gray-700;
 		border-radius: 50%;
 		content: '';
 		position: absolute;
@@ -328,7 +328,7 @@
 
 	.woocommerce-stock-activity-card__stock-quantity {
 		background: $gray-100;
-		color: $core-grey-dark-500;
+		color: $gray-700;
 		padding: 3px $gap-smaller;
 		border-radius: 3px;
 	}
@@ -365,7 +365,7 @@
 	}
 
 	.woocommerce-activity-card__subtitle {
-		color: $core-grey-dark-500;
+		color: $gray-700;
 		@include font-size( 12 );
 	}
 }
