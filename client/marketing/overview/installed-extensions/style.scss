@@ -22,7 +22,7 @@
 	}
 
 	&__item:not(:last-child) {
-		border-bottom: 1px solid $core-grey-light-500;
+		border-bottom: 1px solid $gray-100;
 	}
 
 	&__item-text-and-actions {

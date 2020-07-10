@@ -11,7 +11,7 @@
 	background: $gray-400;
 	margin-right: $gap-smallest * 2;
 	border-radius: 50%;
-	border: 3px solid $core-grey-light-500;
+	border: 3px solid $gray-100;
 
 	&.is-processing {
 		background: $valid-green;

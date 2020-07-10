@@ -22,7 +22,7 @@
 // Adds animation to placeholder section
 @mixin placeholder( $lighten-percentage: 30% ) {
 	animation: loading-fade 1.6s ease-in-out infinite;
-	background-color: $core-grey-light-500;
+	background-color: $gray-100;
 	color: transparent;
 
 	&::after {
