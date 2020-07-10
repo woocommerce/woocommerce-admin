@@ -10,6 +10,9 @@
 
 @include wordpress-admin-schemes;
 
+// TODO - remove this after the conflict with main is dealt with
+$core-grey-dark-800: $gray-900;
+
 $fallback-gutter: 24px;
 $fallback-gutter-large: 40px;
 $gutter: var(--main-gap);
