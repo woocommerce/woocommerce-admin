@@ -131,12 +131,12 @@
 
 		&:hover,
 		&.components-button:not(:disabled):not([aria-disabled='true']):hover {
-			background-color: $core-grey-light-200;
+			background-color: $gray-200;
 			box-shadow: none;
 
 			&.has-unread::after,
 			&.woocommerce-layout__activity-panel-tab-wordpress-notices::after {
-				border-color: $core-grey-light-200;
+				border-color: $gray-200;
 			}
 		}
 
@@ -199,7 +199,7 @@
 
 .woocommerce-layout__activity-panel-wrapper {
 	height: calc(100vh - #{$header-height + $header-height + $adminbar-height-mobile});
-	background: $core-grey-light-200;
+	background: $gray-200;
 	width: 510px;
 	@include breakpoint( '<782px' ) {
 		width: 100%;

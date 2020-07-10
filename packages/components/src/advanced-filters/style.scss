@@ -47,7 +47,7 @@
 	border-bottom: 1px solid $gray-400;
 
 	&:hover {
-		background-color: $core-grey-light-200;
+		background-color: $gray-200;
 	}
 
 	.woocommerce-filters-advanced__line-item {
@@ -92,7 +92,7 @@
 	border-bottom: 1px solid $gray-400;
 
 	&:hover {
-		background-color: $core-grey-light-200;
+		background-color: $gray-200;
 	}
 
 	div div {
@@ -209,7 +209,7 @@
 		padding: $gap-smaller;
 
 		&:hover {
-			background-color: $core-grey-light-200;
+			background-color: $gray-200;
 		}
 
 		&:not(:disabled):not([aria-disabled='true']):focus {
