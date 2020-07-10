@@ -5,7 +5,7 @@
 
 	.woocommerce-list__item {
 		&:not(:first-child) {
-			border-top: 1px solid $core-grey-light-600;
+			border-top: 1px solid $gray-200;
 		}
 
 		.woocommerce-list__item-before {
