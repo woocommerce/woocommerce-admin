@@ -178,7 +178,7 @@
 .woocommerce-table__empty-item {
 	text-align: center;
 	@include font-size( 18 );
-	color: $core-grey-dark-300;
+	color: $gray-700;
 	font-weight: bold;
 
 	@include breakpoint( '<782px' ) {

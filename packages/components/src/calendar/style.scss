@@ -120,7 +120,7 @@
 		left: 10px;
 
 		path {
-			fill: $core-grey-dark-300;
+			fill: $gray-700;
 		}
 	}
 
@@ -134,7 +134,7 @@
 
 	&.is-empty {
 		.dashicons-calendar path {
-			fill: $core-grey-dark-300;
+			fill: $gray-700;
 		}
 	}
 
@@ -162,7 +162,7 @@
 		@include font-size( 13 );
 
 		&::placeholder {
-			color: $core-grey-dark-300;
+			color: $gray-700;
 		}
 	}
 }
@@ -220,7 +220,7 @@
 	font-weight: 100;
 	text-transform: uppercase;
 	text-align: center;
-	color: $core-grey-dark-300;
+	color: $gray-700;
 	width: 100%;
 	margin: 0;
 	padding: 1em;
