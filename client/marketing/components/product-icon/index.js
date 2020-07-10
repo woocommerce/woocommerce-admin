@@ -15,7 +15,7 @@ class ProductIcon extends Component {
 		return (
 			<img
 				src={ this.props.src }
-				className={ classnames( this.props.className, 'woocommere-admin-marketing-product-icon' ) }
+				className={ classnames( this.props.className, 'woocommerce-admin-marketing-product-icon' ) }
 				alt=""
 			/>
 		);
