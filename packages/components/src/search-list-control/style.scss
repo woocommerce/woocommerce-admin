@@ -148,7 +148,7 @@
 
 		.woocommerce-search-list__item-prefix {
 			display: none;
-			color: $core-grey-dark-300;
+			color: $gray-700;
 		}
 
 		&.is-searching,
@@ -181,7 +181,7 @@
 			border-radius: 12px;
 			font-size: 0.8em;
 			line-height: 1.4;
-			color: $core-grey-dark-300;
+			color: $gray-700;
 			background: $studio-white;
 			white-space: nowrap;
 		}

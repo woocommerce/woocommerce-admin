@@ -142,8 +142,7 @@
 
 		&:focus,
 		&.components-button:not(:disabled):not([aria-disabled='true']):focus {
-			box-shadow: inset -1px -1px 0 $core-grey-dark-300,
-				inset 1px 1px 0 $core-grey-dark-300;
+			box-shadow: inset -1px -1px 0 $gray-700, inset 1px 1px 0 $gray-700;
 		}
 	}
 }
