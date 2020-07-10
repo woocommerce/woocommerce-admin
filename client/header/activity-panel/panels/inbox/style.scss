@@ -76,7 +76,7 @@
 	}
 
 	.woocommerce-inbox-message__date {
-		color: $medium-gray-text;
+		color: $gray-700;
 		@include font-size( 12 );
 		margin-bottom: $gap;
 		font-style: normal;
@@ -92,7 +92,7 @@
 }
 
 .woocommerce-inbox-message__text {
-	color: $medium-gray-text;
+	color: $gray-700;
 	font-style: normal;
 	font-weight: normal;
 	@include font-size( 14 );
@@ -115,7 +115,7 @@
 
 .woocommerce-inbox-message__actions {
 	padding-top: $gap;
-	border-top: 1px solid $light-gray-tertiary;
+	border-top: 1px solid $gray-100;
 
 	// Ensures any immediate child with a sibling has space between the items
 	& > * + * {
@@ -156,7 +156,7 @@
 .woocommerce-inbox-dismiss-confirmation_wrapper {
 	p {
 		font-size: 16px;
-		color: $medium-gray-text;
+		color: $gray-700;
 	}
 	.woocommerce-inbox-dismiss-confirmation_buttons {
 		text-align: right;
