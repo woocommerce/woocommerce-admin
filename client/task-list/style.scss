@@ -564,7 +564,7 @@
 
 	// Firefox
 	& {
-		background-color: $light-gray-300;
+		background-color: $gray-100;
 	}
 
 	&::-moz-progress-bar {
@@ -575,7 +575,7 @@
 
 	// Chrome
 	&::-webkit-progress-bar {
-		background-color: $light-gray-300;
+		background-color: $gray-100;
 		border-top-left-radius: 2px;
 		border-top-right-radius: 2px;
 	}

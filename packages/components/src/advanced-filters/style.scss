@@ -23,7 +23,7 @@
 		margin: $gap 0;
 		border: 1px solid $gray-400;
 	}
-	gray-400 @include breakpoint( '<400px' ) {
+	@include breakpoint( '<400px' ) {
 		margin: $gap-small 0;
 	}
 }
@@ -213,7 +213,7 @@
 		}
 
 		&:not(:disabled):not([aria-disabled='true']):focus {
-			background-color: $core-grey-light-300;
+			background-color: $gray-100;
 			box-shadow: none;
 		}
 	}

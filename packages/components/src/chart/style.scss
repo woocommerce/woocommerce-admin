@@ -4,7 +4,7 @@
 	background: $studio-white;
 	border: 1px solid $gray-400;
 	border-top: 0;
-	gray-400 @include breakpoint( '<782px' ) {
+	@include breakpoint( '<782px' ) {
 		margin-left: -16px;
 		margin-right: -16px;
 		margin-bottom: $gap-small;

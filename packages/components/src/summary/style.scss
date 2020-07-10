@@ -34,7 +34,7 @@ $border: $gray-100;
 	border-width: 1px 0 0 1px;
 	border-style: solid;
 	border-color: $border;
-	background-color: $core-grey-light-300;
+	background-color: $gray-100;
 	box-shadow: inset -1px -1px 0 $border;
 
 	@include breakpoint( '<782px' ) {
