@@ -19,11 +19,11 @@ import withSelect from 'wc-api/with-select';
 
 class StoreWarnings extends Component {
 	isVisibleMissingPaimentWarning() {
-		const { taskListPayments, queryString } = this.props;
+		const { paymentMethods, queryString } = this.props;
 		const isPaymentPage = queryString.task
 			? queryString.task === 'payments'
 			: false;
-		return ! taskListPayments.completed && isPaymentPage;
+		return ! Object.keys( paymentMethods ).length && isPaymentPage;
 	}
 
 	render() {
@@ -56,10 +56,44 @@ StoreWarnings.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const taskListPayments =
-			getOption( 'woocommerce_task_list_payments' ) || {};
+
+		const optionNames = [
+			'woocommerce_stripe_alipay_settings',
+			'woocommerce_cheque_settings',
+			'woocommerce_paypal_settings',
+			'woocommerce_stripe_sepa_settings',
+			'woocommerce_stripe_bancontact_settings',
+			'woocommerce_stripe_sofort_settings',
+			'woocommerce_stripe_giropay_settings',
+			'woocommerce_stripe_eps_settings',
+			'woocommerce_stripe_ideal_settings',
+			'woocommerce_stripe_p24_settings',
+			'woocommerce_stripe_multibanco_settings',
+			'woocommerce_stripe_settings',
+			'woocommerce_ppec_paypal_settings',
+			'woocommerce_payfast_settings',
+			'woocommerce_square_credit_card_settings',
+			'woocommerce_kco_settings',
+			'woocommerce_cod_settings',
+			'woocommerce_bacs_settings',
+			'woocommerce_woocommerce_payments_settings',
+			'woocommerce_klarna_payments_settings',
+		];
+
+		const options = optionNames.reduce( ( result, name ) => {
+			result[ name ] = getOption( name );
+			return result;
+		}, {} );
+
+		const paymentMethods = {};
+		for ( const prop in options ) {
+			if ( options[ prop ] && options[ prop ].enabled === 'yes' ) {
+				paymentMethods[ prop ] = options[ prop ];
+			}
+		}
+
 		return {
-			taskListPayments,
+			paymentMethods,
 		};
 	} )
 )( StoreWarnings );
