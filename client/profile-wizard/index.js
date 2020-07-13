@@ -229,15 +229,30 @@ class ProfileWizard extends Component {
 		}
 	}
 
-	async skipProfiler() {
-		const { updateProfileItems } = this.props;
-		await updateProfileItems( {
+	skipProfiler() {
+		const { createNotice, updateProfileItems } = this.props;
+		updateProfileItems( {
 			skipped: true,
 			step: this.getCurrentStep().key,
-		} );
-		recordEvent( 'storeprofiler_store_details_skip' );
-		const href = getAdminLink( 'admin.php?page=wc-admin' );
-		getHistory().push( href );
+		} )
+			.then( ( response ) => {
+				if ( response.status === 'success' ) {
+					recordEvent( 'storeprofiler_store_details_skip' );
+					const href = getAdminLink( 'admin.php?page=wc-admin' );
+					getHistory().push( href );
+				} else {
+					throw new Error();
+				}
+			} )
+			.catch( () => {
+				createNotice(
+					'error',
+					__(
+						'There was a problem skipping your setup wizard.',
+						'woocommerce-admin'
+					)
+				);
+			} );
 	}
 
 	render() {
