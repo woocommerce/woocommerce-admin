@@ -180,7 +180,6 @@ class PayPal extends Component {
 		if (
 			this.isWooCommerceServicesConnected() &&
 			values.create_account &&
-			values.account_email.length &&
 			! isEmail( values.account_email )
 		) {
 			errors.account_email = __(
