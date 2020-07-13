@@ -126,13 +126,23 @@ class PayPal extends Component {
 			markConfigured,
 		} = this.props;
 
+		const optionValues = {
+			...options.woocommerce_ppec_paypal_settings,
+			enabled: 'yes',
+		};
+
+		if ( values.create_account ) {
+			// Tell WCS to proxy payment requests.
+			// See: https://github.com/Automattic/woocommerce-services/blob/29dfe0ba6fd3075afe08f917a6ff33c321502d9c/classes/class-wc-connect-paypal-ec.php#L53.
+			optionValues.reroute_requests = 'yes';
+			optionValues.email = values.account_email;
+		} else {
+			optionValues.api_username = values.api_username;
+			optionValues.api_password = values.api_password;
+		}
+
 		const update = await updateOptions( {
-			woocommerce_ppec_paypal_settings: {
-				...options.woocommerce_ppec_paypal_settings,
-				api_username: values.api_username,
-				api_password: values.api_password,
-				enabled: 'yes',
-			},
+			woocommerce_ppec_paypal_settings: optionValues,
 		} );
 
 		if ( update.success ) {
