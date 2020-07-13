@@ -85,6 +85,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Migrate user store to wp.data #4505
 - Dev: Add options data store to wp.data #4144
 - Dev: Runtime feature config override #4523
+- Dev: Check that the possibly_add_note function exists before calling it #4680
+- Dev: Remove unnecessary rest API init action. #4691
+- Dev: Don't include sourcemaps or unminified JS for "core" builds. #4642
 - Fix: misaligned 'required' text on selects #4307
 - Fix: exception when opening dashboard after selecting extensions to purchase #4357
 - Fix: REST API collections schema #4377
@@ -102,6 +105,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Solved a problem with the method onChoose in the last onboarding step. #4583
 - Fix: Only mark purchase task as complete when products exist #4574
 - Fix: Remove unnecessary rest_api_init action that caused incompatibility issues with other plugins. #4691
+- Fix: Fix WCPay sometimes not appearing on the task list #4647
 - Tweak: make revenue report total sales column optional #4397
 - Tweak: Adjustments to WooCommerce Payments setup task #4373
 - Tweak: Handling of plugin installs in OBW #4411
@@ -112,6 +116,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Use single dash for country/state dropdown options #4553
 - Tweak: Use label tag for toggleable shipping zones #4554
 - Tweak: Tweak - Make it easier to add submenu items to the Marketing menu #4561
+- Tweak: Remove duplicate/redundant inbox note after first order received. #4659
+- Tweak: Fix the embed page CSS so the top content sits better #4622
+
 
 = 1.2.4 2020-06-11 =
 - Tweak: reduce asset filename length and remove tilde characters. #4535
