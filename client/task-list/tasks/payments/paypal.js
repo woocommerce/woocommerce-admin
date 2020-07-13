@@ -191,67 +191,6 @@ class PayPal extends Component {
 		return errors;
 	}
 
-	renderManualConfig() {
-		const { isOptionsUpdating } = this.props;
-		const link = (
-			<Link
-				href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-8"
-				target="_blank"
-				type="external"
-			/>
-		);
-		const help = interpolateComponents( {
-			mixedString: __(
-				'Your API details can be obtained from your {{link}}PayPal account{{/link}}',
-				'woocommerce-admin'
-			),
-			components: {
-				link,
-			},
-		} );
-
-		return (
-			<Form
-				initialValues={ this.getInitialConfigValues() }
-				onSubmitCallback={ this.updateSettings }
-				validate={ this.validate }
-			>
-				{ ( { getInputProps, handleSubmit } ) => {
-					return (
-						<Fragment>
-							<TextControl
-								label={ __(
-									'API Username',
-									'woocommerce-admin'
-								) }
-								required
-								{ ...getInputProps( 'api_username' ) }
-							/>
-							<TextControl
-								label={ __(
-									'API Password',
-									'woocommerce-admin'
-								) }
-								required
-								{ ...getInputProps( 'api_password' ) }
-							/>
-
-							<Button
-								onClick={ handleSubmit }
-								isPrimary
-								isBusy={ isOptionsUpdating }
-							>
-								{ __( 'Proceed', 'woocommerce-admin' ) }
-							</Button>
-
-							<p>{ help }</p>
-						</Fragment>
-					);
-				} }
-			</Form>
-		);
-	}
-
 	renderAutomaticConfig() {
 		const { isOptionsUpdating } = this.props;
 		const { autoConnectFailed, connectURL, isPending } = this.state;
