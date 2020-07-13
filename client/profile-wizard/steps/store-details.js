@@ -221,6 +221,7 @@ class StoreDetails extends Component {
 									isPrimary
 									onClick={ handleSubmit }
 									disabled={ ! isValidForm }
+									className="woocommerce-profile-wizard__continue"
 								>
 									{ __( 'Continue', 'woocommerce-admin' ) }
 								</Button>

@@ -238,6 +238,7 @@ class Industry extends Component {
 						isPrimary
 						onClick={ this.onContinue }
 						disabled={ ! selected.length }
+						className="woocommerce-profile-wizard__continue"
 					>
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
@@ -249,7 +250,9 @@ class Industry extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getOnboardingError } = select(
+			ONBOARDING_STORE_NAME
+		);
 		const { getSettings } = select( SETTINGS_STORE_NAME );
 		const { general: locationSettings = {} } = getSettings( 'general' );
 

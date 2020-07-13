@@ -1,8 +1,11 @@
-
-
 .woocommerce-profile-wizard__body {
 	.woocommerce-profile-wizard__container a {
 		color: $studio-pink-50;
+	}
+
+	.woocommerce-profile-wizard__continue {
+		display: block;
+		margin: 0 auto;
 	}
 
 	.woocommerce-card {
