@@ -18,7 +18,7 @@ import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
-class PayPal extends Component {
+export class PayPal extends Component {
 	constructor( props ) {
 		super( props );
 
@@ -68,7 +68,6 @@ class PayPal extends Component {
 			activePlugins.includes(
 				'woocommerce-gateway-paypal-express-checkout'
 			)
-			// TODO: check for active WCS here?
 		) {
 			this.fetchOAuthConnectURL();
 		}
@@ -208,7 +207,6 @@ class PayPal extends Component {
 		const canAutoCreate = this.isWooCommerceServicesConnected();
 		const initialValues = this.getInitialConfigValues();
 
-		// TODO: break this up into multiple functions?
 		return (
 			<Form
 				initialValues={ initialValues }
