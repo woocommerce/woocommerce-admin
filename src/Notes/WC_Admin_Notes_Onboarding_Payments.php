@@ -11,8 +11,6 @@ namespace Automattic\WooCommerce\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\Features\Onboarding;
-
 /**
  * WC_Admin_Notes_Onboarding_Payments.
  */
@@ -31,11 +29,6 @@ class WC_Admin_Notes_Onboarding_Payments {
 	 * Get the note.
 	 */
 	public static function get_note() {
-		// This note should only be added if the task list is still shown.
-		if ( ! Onboarding::should_show_tasks() ) {
-			return;
-		}
-
 		// We want to show the note after five days.
 		if ( ! self::wc_admin_active_for( 5 * DAY_IN_SECONDS ) ) {
 			return;
