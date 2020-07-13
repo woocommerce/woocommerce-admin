@@ -172,26 +172,20 @@ export const getPages = () => {
 			path: '/marketing',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				[
-					'/marketing',
-					__( 'Marketing', 'woocommerce-admin' ),
-				],
+				[ '/marketing', __( 'Marketing', 'woocommerce-admin' ) ],
 				__( 'Overview', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
 		} );
 	}
 
-	if ( window.wcAdminFeatures.profiler ) {
+	if ( window.wcAdminFeatures.onboarding ) {
 		pages.push( {
 			container: ProfileWizard,
 			path: '/profiler',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				[
-					'/profiler',
-					__( 'Profiler', 'woocommerce-admin' ),
-				],
+				[ '/profiler', __( 'Profiler', 'woocommerce-admin' ) ],
 			],
 		} );
 	}
@@ -260,10 +254,9 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	if ( isWCAdmin ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
-		const defaultPath =
-			window.wcAdminFeatures.homescreen
-				? 'homescreen'
-				: 'dashboard';
+		const defaultPath = window.wcAdminFeatures.homescreen
+			? 'homescreen'
+			: 'dashboard';
 		const path = query.path || defaultPath;
 		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
 
