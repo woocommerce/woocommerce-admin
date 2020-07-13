@@ -164,13 +164,13 @@ class PayPal extends Component {
 	validate( values ) {
 		const errors = {};
 
-		if ( ! values.api_username ) {
+		if ( ! values.create_account && ! values.api_username ) {
 			errors.api_username = __(
 				'Please enter your API username',
 				'woocommerce-admin'
 			);
 		}
-		if ( ! values.api_password ) {
+		if ( ! values.create_account && ! values.api_password ) {
 			errors.api_password = __(
 				'Please enter your API password',
 				'woocommerce-admin'
