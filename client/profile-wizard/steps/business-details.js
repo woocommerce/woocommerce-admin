@@ -482,7 +482,8 @@ class BusinessDetails extends Component {
 					<Button
 						isTertiary
 						label={ __(
-							'Learn more about recommended free business features'
+							'Learn more about recommended free business features',
+							'woocommerce-admin'
 						) }
 						onClick={ () => {
 							recordEvent(
