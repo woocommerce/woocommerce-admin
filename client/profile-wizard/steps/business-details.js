@@ -481,6 +481,9 @@ class BusinessDetails extends Component {
 				<div className="woocommerce-business-extensions__popover-wrapper">
 					<Button
 						isTertiary
+						label={ __(
+							'Learn more about recommended free business features'
+						) }
 						onClick={ () => {
 							recordEvent(
 								'storeprofiler_store_business_details_popover'
@@ -488,11 +491,17 @@ class BusinessDetails extends Component {
 							this.setState( { isPopoverVisible: true } );
 						} }
 					>
-						<i className="material-icons-outlined">info</i>
+						<i
+							className="material-icons-outlined"
+							aria-hidden="true"
+						>
+							info
+						</i>
 					</Button>
 					{ isPopoverVisible && (
 						<Popover
 							className="woocommerce-business-extensions__popover"
+							focusOnMount="container"
 							position="top center"
 							onClose={ () =>
 								this.setState( { isPopoverVisible: false } )
@@ -500,7 +509,10 @@ class BusinessDetails extends Component {
 						>
 							<div className="woocommerce-business-extensions__benefits">
 								<div className="woocommerce-business-extensions__benefit">
-									<i className="material-icons-outlined">
+									<i
+										className="material-icons-outlined"
+										aria-hidden="true"
+									>
 										check
 									</i>
 									{ __(
@@ -509,7 +521,10 @@ class BusinessDetails extends Component {
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i className="material-icons-outlined">
+									<i
+										className="material-icons-outlined"
+										aria-hidden="true"
+									>
 										check
 									</i>
 									{ __(
@@ -518,7 +533,10 @@ class BusinessDetails extends Component {
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i className="material-icons-outlined">
+									<i
+										className="material-icons-outlined"
+										aria-hidden="true"
+									>
 										check
 									</i>
 									{ __(
@@ -527,7 +545,10 @@ class BusinessDetails extends Component {
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i className="material-icons-outlined">
+									<i
+										className="material-icons-outlined"
+										aria-hidden="true"
+									>
 										check
 									</i>
 									{ __(
@@ -536,7 +557,10 @@ class BusinessDetails extends Component {
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i className="material-icons-outlined">
+									<i
+										className="material-icons-outlined"
+										aria-hidden="true"
+									>
 										check
 									</i>
 									{ __(
@@ -545,7 +569,10 @@ class BusinessDetails extends Component {
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i className="material-icons-outlined">
+									<i
+										className="material-icons-outlined"
+										aria-hidden="true"
+									>
 										check
 									</i>
 									{ __(
@@ -554,7 +581,10 @@ class BusinessDetails extends Component {
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i className="material-icons-outlined">
+									<i
+										className="material-icons-outlined"
+										aria-hidden="true"
+									>
 										check
 									</i>
 									{ __(
@@ -563,7 +593,10 @@ class BusinessDetails extends Component {
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i className="material-icons-outlined">
+									<i
+										className="material-icons-outlined"
+										aria-hidden="true"
+									>
 										check
 									</i>
 									{ __(
