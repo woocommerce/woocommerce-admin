@@ -86,6 +86,13 @@ export function getAllTasks( {
 
 	const woocommercePaymentsInstalled =
 		installedPlugins.indexOf( 'woocommerce-payments' ) !== -1;
+	const {
+		completed: profilerCompleted,
+		items_purchased: itemsPurchased,
+		product_types: productTypes,
+		skipped: profilerSkipped,
+		wccom_connected: wccomConnected,
+	} = profileItems;
 
 	const tasks = [
 		{
@@ -97,7 +104,7 @@ export function getAllTasks( {
 					'admin.php?page=wc-admin&reset_profiler=1'
 				);
 			},
-			completed: profileItems.completed,
+			completed: profilerCompleted && ! profilerSkipped,
 			visible: true,
 			time: __( '4 minutes', 'woocommerce-admin' ),
 		},
@@ -120,8 +127,8 @@ export function getAllTasks( {
 			),
 			container: <Connect query={ query } />,
 			visible:
-				profileItems.items_purchased && ! profileItems.wccom_connected,
-			completed: profileItems.wccom_connected,
+				itemsPurchased && ! wccomConnected,
+			completed: wccomConnected,
 			time: __( '1 minute', 'woocommerce-admin' ),
 		},
 		{
@@ -174,8 +181,8 @@ export function getAllTasks( {
 			container: <Shipping />,
 			completed: shippingZonesCount > 0,
 			visible:
-				( profileItems.product_types &&
-					profileItems.product_types.includes( 'physical' ) ) ||
+				( productTypes &&
+					productTypes.includes( 'physical' ) ) ||
 				hasPhysicalProducts,
 			time: __( '1 minute', 'woocommerce-admin' ),
 		},
