@@ -16,6 +16,8 @@ const RecommendedExtensionsItem = ( {
 	description,
 	icon,
 	url,
+	product,
+	category,
 } ) => {
 
 	const onProductClick = () => {
@@ -25,12 +27,17 @@ const RecommendedExtensionsItem = ( {
 	const classNameBase = 'woocommerce-marketing-recommended-extensions-item';
 	const connectURL = getInAppPurchaseUrl( url );
 
+	// Temporary fix to account for different styles between marketing & coupons
+	if ( 'coupons' === category && 'automatewoo' === product ) {
+		product = `automatewoo-alt`;
+	}
+
 	return (
 		<a href={ connectURL }
 			className={ classNameBase }
 			onClick={ onProductClick }
 		>
-			<ProductIcon src={ icon } />
+			<ProductIcon product={ product } />
 
 			<div className={ `${ classNameBase }__text` }>
 				<h4>{ title }</h4>
@@ -45,6 +52,8 @@ RecommendedExtensionsItem.propTypes = {
 	description: PropTypes.string.isRequired,
 	icon: PropTypes.string.isRequired,
 	url: PropTypes.string.isRequired,
+	product: PropTypes.string.isRequired,
+	category: PropTypes.string.isRequired,
 };
 
 export default RecommendedExtensionsItem;
