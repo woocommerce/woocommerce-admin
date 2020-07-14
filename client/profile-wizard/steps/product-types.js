@@ -38,7 +38,12 @@ function getLabel( description, yearlyPrice ) {
 			<span className="woocommerce-product-wizard__product-types__label">
 				{ description }
 			</span>
-			<Tooltip text={ __( 'This product type requires a paid extension. We\'ll add this to a cart so that you can purchase and install it later.', 'woocommerce-admin' ) }>
+			<Tooltip
+				text={ __(
+					"This product type requires a paid extension. We'll add this to a cart so that you can purchase and install it later.",
+					'woocommerce-admin'
+				) }
+			>
 				<Pill>{ priceDescription }</Pill>
 			</Tooltip>
 		</Fragment>
@@ -148,6 +153,7 @@ class ProductTypes extends Component {
 								productTypes[ slug ].label,
 								productTypes[ slug ].yearly_price
 							);
+							const moreUrl = productTypes[ slug ].more_url;
 							const helpText =
 								productTypes[ slug ].description &&
 								interpolateComponents( {
@@ -157,24 +163,20 @@ class ProductTypes extends Component {
 											? ' {{moreLink/}}'
 											: '' ),
 									components: {
-										moreLink: productTypes[ slug ]
-											.more_url ? (
-												<Link
-													href={
-														productTypes[ slug ]
-															.more_url
-													}
-													target="_blank"
-													type="external"
-													onClick={ () =>
-														this.onLearnMore( slug )
-													}
-												>
-													{ __(
-														'Learn more',
-														'woocommerce-admin'
-													) }
-												</Link>
+										moreLink: moreUrl ? (
+											<Link
+												href={ moreUrl }
+												target="_blank"
+												type="external"
+												onClick={ () =>
+													this.onLearnMore( slug )
+												}
+											>
+												{ __(
+													'Learn more',
+													'woocommerce-admin'
+												) }
+											</Link>
 										) : (
 											''
 										),
@@ -199,13 +201,15 @@ class ProductTypes extends Component {
 						) }
 					</div>
 
-					<Button
-						isPrimary
-						onClick={ this.onContinue }
-						disabled={ ! selected.length }
-					>
-						{ __( 'Continue', 'woocommerce-admin' ) }
-					</Button>
+					<div className="woocommerce-profile-wizard__card-actions">
+						<Button
+							isPrimary
+							onClick={ this.onContinue }
+							disabled={ ! selected.length }
+						>
+							{ __( 'Continue', 'woocommerce-admin' ) }
+						</Button>
+					</div>
 				</Card>
 			</div>
 		);
@@ -214,7 +218,9 @@ class ProductTypes extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getOnboardingError } = select(
+			ONBOARDING_STORE_NAME
+		);
 
 		return {
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
