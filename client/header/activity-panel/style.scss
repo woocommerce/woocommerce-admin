@@ -131,7 +131,7 @@
 
 		&:hover,
 		&.components-button:not(:disabled):not([aria-disabled='true']):hover {
-			background-color: $gray-200;
+			background-color: $gray-100;
 			box-shadow: none;
 
 			&.has-unread::after,
@@ -198,7 +198,7 @@
 
 .woocommerce-layout__activity-panel-wrapper {
 	height: calc(100vh - #{$header-height + $header-height + $adminbar-height-mobile});
-	background: $gray-200;
+	background: $gray-100;
 	width: 510px;
 	@include breakpoint( '<782px' ) {
 		width: 100%;

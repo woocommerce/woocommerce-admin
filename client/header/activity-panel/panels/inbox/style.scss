@@ -1,7 +1,8 @@
 .woocommerce-inbox-message {
 	position: relative;
 	color: $gray-text;
-	background: $gray-200;
+	// background: $gray-100;
+	background: $light-gray-placeholder;
 	border-radius: 2px;
 	@include font-size( 13 );
 	margin: 0 0 $gap-large;
@@ -115,7 +116,7 @@
 
 .woocommerce-inbox-message__actions {
 	padding-top: $gap;
-	border-top: 1px solid $gray-100;
+	border-top: 1px solid $gray-200;
 
 	// Ensures any immediate child with a sibling has space between the items
 	& > * + * {
