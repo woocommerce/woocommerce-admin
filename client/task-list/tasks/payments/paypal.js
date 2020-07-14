@@ -218,24 +218,25 @@ export class PayPal extends Component {
 					return (
 						<Fragment>
 							{ canAutoCreate && (
-								<CheckboxControl
-									label={ __(
-										'Create a PayPal account for me',
-										'woocommerce-admin'
+								<div className="woocommerce-task-payments__paypal-auto-create-account">
+									<CheckboxControl
+										label={ __(
+											'Create a PayPal account for me',
+											'woocommerce-admin'
+										) }
+										{ ...getInputProps( 'create_account' ) }
+									/>
+									{ values.create_account && (
+										<TextControl
+											label={ __(
+												'Email address',
+												'woocommerce-admin'
+											) }
+											type="email"
+											{ ...getInputProps( 'account_email' ) }
+										/>
 									) }
-									{ ...getInputProps( 'create_account' ) }
-								/>
-							) }
-
-							{ canAutoCreate && values.create_account && (
-								<TextControl
-									label={ __(
-										'Email address',
-										'woocommerce-admin'
-									) }
-									type="email"
-									{ ...getInputProps( 'account_email' ) }
-								/>
+								</div>
 							) }
 
 							{ ! isPending &&
