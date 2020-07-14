@@ -282,7 +282,7 @@ class ProfileWizard extends Component {
 				if ( response.status === 'success' ) {
 					recordEvent( 'storeprofiler_store_details_skip' );
 					const href = getAdminLink( 'admin.php?page=wc-admin' );
-					getHistory().push( href );
+					getHistory().push( getNewPath( {}, '/', {} ) );
 				}
 			} )
 			.catch( () => {
