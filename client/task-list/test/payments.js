@@ -39,6 +39,7 @@ describe( 'TaskList > Payments', () => {
 					] }
 					installStep={ mockInstallStep }
 					isJetpackConnected
+					wcsTosAccepted
 				/>
 			);
 
@@ -50,6 +51,34 @@ describe( 'TaskList > Payments', () => {
 			// The email input should disappear when "create account" is unchecked.
 			user.click( screen.getByLabelText( 'Create a PayPal account for me', { selector: 'input' } ) );
 			expect( screen.queryByLabelText( 'Email address', { selector: 'input' } ) ).toBeNull();
+
+			// Since the oauth response was mocked, we should have a "connect" button.
+			const oauthButton = await screen.findByText( 'Connect', { selector: 'a' } );
+			expect( oauthButton ).toBeDefined();
+			expect( oauthButton.href ).toEqual( mockConnectUrl );
+		} );
+
+		it( 'requires WCS to have TOS accepted to show "create account"', async () => {
+			const mockConnectUrl = 'https://connect.woocommerce.test/paypal';
+			apiFetch.mockResolvedValue( {
+				connectUrl: mockConnectUrl,
+			} );
+
+			render(
+				<PayPal
+					activePlugins={ [
+						'jetpack',
+						'woocommerce-gateway-paypal-express-checkout',
+						'woocommerce-services',
+					] }
+					installStep={ mockInstallStep }
+					isJetpackConnected
+					wcsTosAccepted={ false }
+				/>
+			);
+
+			// Verify "create account" isn't shown.
+			expect( screen.queryByLabelText( 'Create a PayPal account for me', { selector: 'input' } ) ).toBeNull();
 
 			// Since the oauth response was mocked, we should have a "connect" button.
 			const oauthButton = await screen.findByText( 'Connect', { selector: 'a' } );
@@ -81,6 +110,7 @@ describe( 'TaskList > Payments', () => {
 					] }
 					installStep={ mockInstallStep }
 					isJetpackConnected
+					wcsTosAccepted
 					options={ mockOptions }
 					createNotice={ mockCreateNotice }
 					markConfigured={ mockMarkConfigured }
@@ -134,6 +164,7 @@ describe( 'TaskList > Payments', () => {
 					] }
 					installStep={ mockInstallStep }
 					isJetpackConnected
+					wcsTosAccepted
 				/>
 			);
 

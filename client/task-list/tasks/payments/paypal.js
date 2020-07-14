@@ -74,10 +74,11 @@ export class PayPal extends Component {
 	}
 
 	isWooCommerceServicesConnected() {
-		const { activePlugins, isJetpackConnected } = this.props;
+		const { activePlugins, isJetpackConnected, wcsTosAccepted } = this.props;
 
 		return (
 			isJetpackConnected &&
+			wcsTosAccepted &&
 			activePlugins.includes( 'woocommerce-services' )
 		);
 	}
@@ -241,7 +242,7 @@ export class PayPal extends Component {
 
 							{ ! isPending &&
 								( autoConnectFailed || ! connectURL ) &&
-								! values.create_account && (
+								( ! canAutoCreate || ! values.create_account ) && (
 									<Fragment>
 										<TextControl
 											label={ __(
@@ -310,7 +311,7 @@ export class PayPal extends Component {
 
 							{ ! autoConnectFailed &&
 								connectURL &&
-								! values.create_account && (
+								( ! canAutoCreate || ! values.create_account ) && (
 									<Fragment>
 										<Button isPrimary href={ connectURL }>
 											{ __(
@@ -370,14 +371,16 @@ export default compose(
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
-		const options = getOption( 'woocommerce_ppec_paypal_settings' );
+		const paypalOptions = getOption( 'woocommerce_ppec_paypal_settings' );
+		const wcsOptions = getOption( 'wc_connect_options' );
 		const activePlugins = getActivePlugins();
 
 		return {
 			activePlugins,
 			isJetpackConnected: isJetpackConnected(),
 			isOptionsUpdating: isOptionsUpdating(),
-			options,
+			options: paypalOptions,
+			wcsTosAccepted: wcsOptions && wcsOptions.tos_accepted,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
