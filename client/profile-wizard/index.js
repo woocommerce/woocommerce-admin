@@ -291,7 +291,7 @@ class ProfileWizard extends Component {
 				createNotice(
 					'error',
 					__(
-						'There was a problem skipping your setup wizard.',
+						'There was a problem skipping the setup wizard.',
 						'woocommerce-admin'
 					)
 				);
