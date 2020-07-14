@@ -5,6 +5,9 @@ $transparent: rgba(255, 255, 255, 0);
 
 $gray-text: $gray-700;
 $gray-text-hover: $gray-900;
+// Woocommerce needs one lighter shade of gray to work alongside the new set of grays exposed by @wordpress/base-styles.
+// Removing this would require significant refactoring.
+$gray-50: #f8f9f9;
 
 // Gutenberg
 $button-hover: #fafafa;
