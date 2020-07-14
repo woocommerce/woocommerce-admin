@@ -17,7 +17,7 @@ import {
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 } from '@woocommerce/data';
-import { updateQueryString } from '@woocommerce/navigation';
+import { getHistory, getNewPath, updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -238,32 +238,28 @@ class ProfileWizard extends Component {
 			} ),
 		];
 
+		let redirectUrl = null;
 		if ( shouldConnectJetpack ) {
 			promises.push(
 				getJetpackConnectUrl( {
 					redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
+				} ).then( ( jetpackConnectUrl ) => {
+					const error = getPluginsError( 'getJetpackConnectUrl' );
+					if ( error ) {
+						createNoticesFromResponse( error );
+						return;
+					}
+					redirectUrl = jetpackConnectUrl
 				} )
 			);
 		}
 
-		Promise.all( promises ).then( ( responses ) => {
-			if ( ! shouldConnectJetpack ) {
+		Promise.all( promises ).then( () => {
+			if ( redirectUrl ) {
+				window.location = redirectUrl;
 				return;
 			}
-
-			const jetpackConnectUrl = responses[ 1 ];
-			const error = getPluginsError( 'getJetpackConnectUrl' );
-			if ( error ) {
-				createNoticesFromResponse( error );
-				document.body.classList.remove(
-					'woocommerce-admin-is-loading'
-				);
-				return;
-			}
-
-			if ( jetpackConnectUrl ) {
-				window.location = jetpackConnectUrl;
-			}
+			getHistory().push( getNewPath( {}, '/', {} ) );
 		} );
 	}
 
