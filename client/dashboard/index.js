@@ -45,7 +45,7 @@ class Dashboard extends Component {
 			const href = getAdminLink(
 				`admin.php?page=wc-admin&path=/profiler${ lastStep }`
 			);
-			getHistory().push( href );
+			getHistory().push( getNewPath( {}, '/profiler', {} ) );
 		}
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {
