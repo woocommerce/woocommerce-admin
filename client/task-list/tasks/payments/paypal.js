@@ -102,6 +102,7 @@ export class PayPal extends Component {
 			if ( ! result || ! result.connectUrl ) {
 				this.setState( {
 					autoConnectFailed: true,
+					isPending: false,
 				} );
 				return;
 			}
