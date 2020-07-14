@@ -119,7 +119,7 @@ class InstalledExtensionRow extends Component {
 	}
 
 	render() {
-		const { name, description, status, icon, slug } = this.props;
+		const { name, description, status, slug } = this.props;
 		let actions = null;
 
 		switch ( status ) {

@@ -14,7 +14,6 @@ import { getInAppPurchaseUrl } from 'lib/in-app-purchase';
 const RecommendedExtensionsItem = ( {
 	title,
 	description,
-	icon,
 	url,
 	product,
 	category,
@@ -28,7 +27,7 @@ const RecommendedExtensionsItem = ( {
 	const connectURL = getInAppPurchaseUrl( url );
 
 	// Temporary fix to account for different styles between marketing & coupons
-	if ( 'coupons' === category && 'automatewoo' === product ) {
+	if ( category === 'coupons' && product === 'automatewoo' ) {
 		product = `automatewoo-alt`;
 	}
 
@@ -50,7 +49,6 @@ const RecommendedExtensionsItem = ( {
 RecommendedExtensionsItem.propTypes = {
 	title: PropTypes.string.isRequired,
 	description: PropTypes.string.isRequired,
-	icon: PropTypes.string.isRequired,
 	url: PropTypes.string.isRequired,
 	product: PropTypes.string.isRequired,
 	category: PropTypes.string.isRequired,

@@ -16,8 +16,8 @@ import * as icons from './icons';
 class ProductIcon extends Component {
 	render() {
 
-		let product = camelCase( this.props.product );
-		let iconComponent = icons[ 'blank' ];
+		const product = camelCase( this.props.product );
+		let iconComponent = icons.blank;
 
 		if ( product in icons ) {
 			iconComponent = icons[ product ];
