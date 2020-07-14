@@ -167,7 +167,9 @@ class TaskDashboard extends Component {
 			installAndActivatePlugins,
 			createNotice,
 			isJetpackConnected,
-		} ).filter( ( task ) => task.visible && ! dismissedTasks.includes( task.key ) );
+		} ).filter(
+			( task ) => task.visible && ! dismissedTasks.includes( task.key )
+		);
 	}
 
 	recordTaskView() {
@@ -492,13 +494,11 @@ export default compose(
 		const { createNotice } = dispatch( 'core/notices' );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
-		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
 			createNotice,
 			updateOptions,
 			installAndActivatePlugins,
-			createNotice,
 		};
 	} )
 )( TaskDashboard );
