@@ -12,16 +12,16 @@ import { withDispatch, __experimentalResolveSelect } from '@wordpress/data';
  */
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
+	getHistory,
+	getNewPath,
+	updateQueryString,
+} from '@woocommerce/navigation';
+import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 } from '@woocommerce/data';
-import {
-	getHistory,
-	getNewPath,
-	updateQueryString,
-} from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -281,7 +281,6 @@ class ProfileWizard extends Component {
 			.then( ( response ) => {
 				if ( response.status === 'success' ) {
 					recordEvent( 'storeprofiler_store_details_skip' );
-					const href = getAdminLink( 'admin.php?page=wc-admin' );
 					getHistory().push( getNewPath( {}, '/', {} ) );
 				}
 			} )
