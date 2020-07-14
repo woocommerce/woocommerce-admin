@@ -259,7 +259,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				<h2 style="text-align:center">' . __( 'Shop by Category', 'woocommerce-admin' ) . '</h2>
 				<!-- /wp:heading -->
 				<!-- wp:shortcode -->
-				[product_categories limit="3" columns="3" orderby="menu_order"]
+				[product_categories number="0" parent="0"]
 				<!-- /wp:shortcode -->
 				<!-- wp:heading {"align":"center"} -->
 				<h2 style="text-align:center">' . __( 'New In', 'woocommerce-admin' ) . '</h2>
