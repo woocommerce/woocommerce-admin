@@ -6,6 +6,7 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { Notice } from '@wordpress/components';
+import { withSelect } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -16,7 +17,6 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
  * Internal dependencies
  */
 import './style.scss';
-import withSelect from 'wc-api/with-select';
 
 class StoreWarnings extends Component {
 	isVisibleMissingPaimentWarning() {
