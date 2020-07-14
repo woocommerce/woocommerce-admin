@@ -259,7 +259,7 @@ $border: $gray-100;
 	flex-direction: column;
 	height: 100%;
 	padding: $gap-large;
-	background-color: $gray-50;
+	background-color: $gray-100;
 	border-bottom: 1px solid $border;
 	border-right: 1px solid $border;
 	line-height: 1.4em;
@@ -273,7 +273,7 @@ $border: $gray-100;
 	}
 
 	&:hover {
-		background-color: $gray-50;
+		background-color: $gray-100;
 		color: color(var(--wp-admin-theme-color-darker-20));
 	}
 
@@ -325,7 +325,7 @@ $border: $gray-100;
 		padding: 5px;
 		border-radius: 3px;
 		height: min-content;
-		background-color: $gray-200;
+		background-color: $gray-400;
 		color: $gray-900;
 	}
 

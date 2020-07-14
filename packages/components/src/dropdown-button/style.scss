@@ -1,7 +1,7 @@
 .woocommerce-page .woocommerce-dropdown-button {
 	background-color: $studio-white;
 	position: relative;
-	border: 1px solid $gray-200;
+	border: 1px solid $gray-100;
 	color: $gray-700;
 	border-radius: 4px;
 	padding: 0 40px 0 0;
@@ -29,7 +29,7 @@
 	&:hover,
 	&:active,
 	&.is-open {
-		background-color: $gray-50;
+		background-color: $gray-100;
 	}
 
 	&.is-multi-line .woocommerce-dropdown-button__labels {

@@ -36,7 +36,7 @@
 			.woocommerce-legend__item > button {
 				cursor: default;
 				&:hover {
-					background: $gray-50;
+					background: $gray-100;
 				}
 				.woocommerce-legend__item-container {
 					cursor: default;
@@ -47,16 +47,16 @@
 			}
 
 			&:hover {
-				background: $gray-50;
+				background: $gray-100;
 				.woocommerce-legend__item > button {
-					background: $gray-50;
+					background: $gray-100;
 				}
 			}
 		}
 	}
 
 	&:hover {
-		background: $gray-50;
+		background: $gray-100;
 	}
 
 	.screen-reader-text:focus {
