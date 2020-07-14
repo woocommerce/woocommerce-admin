@@ -240,8 +240,6 @@ class ProfileWizard extends Component {
 					recordEvent( 'storeprofiler_store_details_skip' );
 					const href = getAdminLink( 'admin.php?page=wc-admin' );
 					getHistory().push( href );
-				} else {
-					throw new Error();
 				}
 			} )
 			.catch( () => {
