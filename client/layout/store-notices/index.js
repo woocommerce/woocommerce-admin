@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
@@ -37,8 +38,10 @@ class StoreWarnings extends Component {
 					isDismissible={ false }
 				>
 					<p>
-						Customers cannot place orders at your store until you
-						setup and enable a payment method.
+						{ __(
+							'Customers cannot place orders at your store until you setup and enable a payment method.',
+							'woocommerce-admin'
+						) }
 					</p>
 				</Notice>
 			)
