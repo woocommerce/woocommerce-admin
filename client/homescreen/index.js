@@ -7,12 +7,12 @@ import { identity } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	withOnboardingHydration,
 } from '@woocommerce/data';
-import { getHistory } from '@woocommerce/navigation';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -29,11 +29,8 @@ const Homescreen = ( { profileItems, query } ) => {
 		step: profilerStep,
 	} = profileItems;
 	if ( isOnboardingEnabled() && ! profilerCompleted && ! profilerSkipped ) {
-		const lastStep = profilerStep ? `&step=${ profilerStep }` : '';
-		const href = getAdminLink(
-			`admin.php?page=wc-admin&path=/profiler${ lastStep }`
-		);
-		getHistory().push( href );
+		const lastStep = profilerStep ? { step: profilerStep } : {};
+		getHistory().push( getNewPath( {}, `/profiler`, lastStep ) );
 	}
 
 	return <Layout query={ query } />;

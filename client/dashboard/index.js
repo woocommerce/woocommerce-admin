@@ -9,13 +9,13 @@ import { identity } from 'lodash';
 /**
  * WooCommerce dependencies
  */
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	withOnboardingHydration,
 } from '@woocommerce/data';
 import { Spinner } from '@woocommerce/components';
-import { getHistory } from '@woocommerce/navigation';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -41,11 +41,8 @@ class Dashboard extends Component {
 			! profileSkipped &&
 			! window.wcAdminFeatures.homescreen
 		) {
-			const lastStep = profilerStep ? `&step=${ profilerStep }` : '';
-			const href = getAdminLink(
-				`admin.php?page=wc-admin&path=/profiler${ lastStep }`
-			);
-			getHistory().push( getNewPath( {}, '/profiler', {} ) );
+			const lastStep = profilerStep ? { step: profilerStep } : {};
+			getHistory().push( getNewPath( {}, `/profiler`, lastStep ) );
 		}
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {

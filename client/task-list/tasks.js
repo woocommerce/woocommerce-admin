@@ -9,7 +9,11 @@ import { applyFilters } from '@wordpress/hooks';
  * WooCommerce dependencies
  */
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { updateQueryString } from '@woocommerce/navigation';
+import {
+	getHistory,
+	getNewPath,
+	updateQueryString,
+} from '@woocommerce/navigation';
 import { Fragment } from '@wordpress/element';
 
 /**
@@ -101,10 +105,8 @@ export function getAllTasks( {
 			title: __( 'Store details', 'woocommerce-admin' ),
 			container: null,
 			onClick: () => {
-				const lastStep = profilerStep ? `&step=${ profilerStep }` : '';
-				window.location = getAdminLink(
-					`admin.php?page=wc-admin&path=/profiler${ lastStep }`
-				);
+				const lastStep = profilerStep ? { step: profilerStep } : {};
+				getHistory().push( getNewPath( {}, `/profiler`, lastStep ) );
 			},
 			completed: profilerCompleted && ! profilerSkipped,
 			visible: true,
@@ -128,8 +130,7 @@ export function getAllTasks( {
 				'woocommerce-admin'
 			),
 			container: <Connect query={ query } />,
-			visible:
-				itemsPurchased && ! wccomConnected,
+			visible: itemsPurchased && ! wccomConnected,
 			completed: wccomConnected,
 			time: __( '1 minute', 'woocommerce-admin' ),
 		},
@@ -183,8 +184,7 @@ export function getAllTasks( {
 			container: <Shipping />,
 			completed: shippingZonesCount > 0,
 			visible:
-				( productTypes &&
-					productTypes.includes( 'physical' ) ) ||
+				( productTypes && productTypes.includes( 'physical' ) ) ||
 				hasPhysicalProducts,
 			time: __( '1 minute', 'woocommerce-admin' ),
 		},
