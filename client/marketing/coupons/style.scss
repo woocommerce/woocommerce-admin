@@ -28,15 +28,29 @@
 		margin-top: 4px;
 	}
 
-	.woocommerce-admin-marketing-product-icon {
-		border: 1px solid #3858E9; //$theme-color #3858E9 $core-blue-dark-900;
-	}
-
 	.woocommerce-marketing-recommended-extensions-item {
+
+		.woocommerce-admin-marketing-product-icon {
+			transition: stroke 0.2s ease;
+			transition: fill 0.2s ease;
+			transition: background 0.2s ease;
+			overflow: hidden;
+			box-shadow: inset 0px 0px 0px 1px #3858E9;
+		}
 
 		&:hover {
 			h4 {
-				color: #3858E9; //$theme-color #3858E9 $core-blue-dark-900;
+				color: #3858E9;
+			}
+			svg {
+				background: #3858E9;
+
+				.stroke {
+					stroke: #fff;
+				}
+				.fill {
+					fill: #fff;
+				}
 			}
 		}
 	}
