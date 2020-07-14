@@ -27,7 +27,8 @@ const ProfileWizard = lazy( () =>
 import Layout from './layout';
 
 const Homescreen = ( { profileItems, query } ) => {
-	if ( isOnboardingEnabled() && ! profileItems.completed ) {
+	const { completed: profilerCompleted, skipped: profilerSkipped } = profileItems;
+	if ( isOnboardingEnabled() && ! profilerCompleted && ! profilerSkipped ) {
 		return (
 			<Suspense fallback={ <Spinner /> }>
 				<ProfileWizard query={ query } />

@@ -223,6 +223,12 @@ class ProfileWizard extends Component {
 		}
 	}
 
+	skipProfiler() {
+		const { updateProfileItems } = this.props;
+		updateProfileItems( { skipped: true } );
+		recordEvent( 'wcadmin_storeprofiler_store_details_skip' );
+	}
+
 	render() {
 		const { query } = this.props;
 		const step = this.getCurrentStep();
