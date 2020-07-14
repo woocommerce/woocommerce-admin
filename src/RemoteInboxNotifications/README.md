@@ -104,7 +104,7 @@ These are the actions that can be interacted with on the note. This might be a l
 			"label": "Schedule free session"
 		}
 	],
-	"url": "https:\/\/wordpress.com\/me\/concierge",
+	"url": "https://wordpress.com/me/concierge",
 	"url_is_admin_query": false,
 	"is_primary": false,
 	"status": "actioned"
@@ -207,7 +207,7 @@ This performs an OR operation on the operands, passing if any of the operands ev
 }
 ```
 
-alternatively:
+Alternatively:
 
 ```
 {
@@ -331,7 +331,7 @@ This allows access to the onboarding profile that was built up in the onboarding
 `index`, `operation`, and `value` are all required.
 
 ### Is eCommerce
-This passes when the store is on the eCommerce plan.
+This passes when the store is on a WordPress.com site with the eCommerce plan.
 
 ```
 {
