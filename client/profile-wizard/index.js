@@ -91,10 +91,7 @@ class ProfileWizard extends Component {
 			step: this.getCurrentStep().key,
 		} );
 
-		updateProfileItems( {
-			skipped: false,
-			step: this.getCurrentStep().key,
-		} );
+		updateProfileItems( { skipped: false } );
 
 		// Track plugins if already installed.
 		if (
@@ -234,10 +231,7 @@ class ProfileWizard extends Component {
 
 	skipProfiler() {
 		const { createNotice, updateProfileItems } = this.props;
-		updateProfileItems( {
-			skipped: true,
-			step: this.getCurrentStep().key,
-		} )
+		updateProfileItems( { skipped: true } )
 			.then( ( response ) => {
 				if ( response.status === 'success' ) {
 					recordEvent( 'storeprofiler_store_details_skip' );

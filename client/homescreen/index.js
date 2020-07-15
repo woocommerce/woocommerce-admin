@@ -26,11 +26,9 @@ const Homescreen = ( { profileItems, query } ) => {
 	const {
 		completed: profilerCompleted,
 		skipped: profilerSkipped,
-		step: profilerStep,
 	} = profileItems;
 	if ( isOnboardingEnabled() && ! profilerCompleted && ! profilerSkipped ) {
-		const lastStep = profilerStep ? { step: profilerStep } : {};
-		getHistory().push( getNewPath( {}, `/profiler`, lastStep ) );
+		getHistory().push( getNewPath( {}, `/profiler`, {} ) );
 	}
 
 	return <Layout query={ query } />;
