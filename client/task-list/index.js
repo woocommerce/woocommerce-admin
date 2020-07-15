@@ -228,26 +228,10 @@ class TaskDashboard extends Component {
 	}
 
 	getCurrentTask() {
-		const {
-			query,
-			profileItems,
-			payments,
-			activePlugins,
-			installedPlugins,
-			createNotice,
-			isJetpackConnected,
-		} = this.props;
-		const allTasks = getAllTasks( {
-			profileItems,
-			options: payments,
-			query,
-			activePlugins,
-			installedPlugins,
-			createNotice,
-			isJetpackConnected,
-		} );
+		const { allTasks, query } = this.props;
+
 		const { task } = query;
-		
+
 		const currentTask = allTasks.find( ( s ) => s.key === task );
 
 		if ( ! currentTask ) {
@@ -480,7 +464,7 @@ export default compose(
 		const activePlugins = getActivePlugins();
 		const installedPlugins = getInstalledPlugins();
 		const { createNotice } = props;
-		const tasks = getAllTasks( {
+		const allTasks = getAllTasks( {
 			profileItems,
 			options: payments,
 			query: props.query,
@@ -489,14 +473,15 @@ export default compose(
 			createNotice,
 			isJetpackConnected: isJetpackConnected(),
 		} );
-		const completedTaskKeys = tasks
+		const completedTaskKeys = allTasks
 			.filter( ( task ) => task.completed )
 			.map( ( task ) => task.key );
-		const incompleteTasks = tasks.filter(
+		const incompleteTasks = allTasks.filter(
 			( task ) => task.visible && ! task.completed
 		);
 
 		return {
+			allTasks,
 			dismissedTasks,
 			modalDismissed,
 			profileItems,
