@@ -18,7 +18,7 @@ export { default as hubspotForWoocommerce } from './library/hubspot';
 export { default as mailchimpForWoocommerce } from './library/mailchimp';
 // Coupons
 export { default as woocommerceFreeGiftCoupons } from './library/gift';
-export { default as woocommerceGroupCoupons } from './library/people';
-export { default as woocommerceSmartCoupons } from './library/bulb';
-export { default as woocommerceStoreCredit } from './library/dollar';
-export { default as woocommerceUrlCoupons } from './library/link';
+export { people as woocommerceGroupCoupons } from '@wordpress/icons';
+export { default as woocommerceSmartCoupons } from './library/tip';
+export { currencyDollar as woocommerceStoreCredit } from '@wordpress/icons';
+export { link as woocommerceUrlCoupons } from '@wordpress/icons';
