@@ -98,7 +98,7 @@
 
 		&:hover {
 			h3 {
-				color: $theme-color;
+				color: var(--wp-admin-theme-color);
 			}
 		}
 
