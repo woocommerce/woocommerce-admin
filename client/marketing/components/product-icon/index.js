@@ -24,10 +24,11 @@ class ProductIcon extends Component {
 		}
 
 		return (
-			<Icon
-				icon={ iconComponent }
-				className={ classnames( this.props.className, 'woocommerce-admin-marketing-product-icon' ) }
-			/>
+			<div className={ classnames( this.props.className, 'woocommerce-admin-marketing-product-icon' ) }>
+				<Icon
+					icon={ iconComponent }
+				/>
+			</div>
 		);
 	}
 }
