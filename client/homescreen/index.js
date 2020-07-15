@@ -2,14 +2,12 @@
  * External dependencies
  */
 import { compose } from '@wordpress/compose';
-import { Suspense, lazy } from '@wordpress/element';
 import { identity } from 'lodash';
 
 /**
  * WooCommerce dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
-import { Spinner } from '@woocommerce/components';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	withOnboardingHydration,
@@ -21,18 +19,14 @@ import {
 import withSelect from 'wc-api/with-select';
 import { isOnboardingEnabled } from 'dashboard/utils';
 
-const ProfileWizard = lazy( () =>
-	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
-);
 import Layout from './layout';
 
 const Homescreen = ( { profileItems, query } ) => {
-	const { completed: profilerCompleted, skipped: profilerSkipped } = profileItems;
+	const { completed: profilerCompleted, skipped: profilerSkipped, step: profilerStep } = profileItems;
 	if ( isOnboardingEnabled() && ! profilerCompleted && ! profilerSkipped ) {
-		return (
-			<Suspense fallback={ <Spinner /> }>
-				<ProfileWizard query={ query } />
-			</Suspense>
+		const lastStep = profilerStep ? `&step=${ profilerStep }` : '';
+		window.location = getAdminLink(
+			`admin.php?page=wc-admin&path=/profiler${ lastStep }`
 		);
 	}
 

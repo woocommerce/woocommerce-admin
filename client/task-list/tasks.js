@@ -91,6 +91,7 @@ export function getAllTasks( {
 		items_purchased: itemsPurchased,
 		product_types: productTypes,
 		skipped: profilerSkipped,
+		step: profilerStep,
 		wccom_connected: wccomConnected,
 	} = profileItems;
 
@@ -100,8 +101,9 @@ export function getAllTasks( {
 			title: __( 'Store details', 'woocommerce-admin' ),
 			container: null,
 			onClick: () => {
+				const lastStep = profilerStep ? `&step=${ profilerStep }` : '';
 				window.location = getAdminLink(
-					'admin.php?page=wc-admin&reset_profiler=1'
+					`admin.php?page=wc-admin&path=/profiler${ lastStep }`
 				);
 			},
 			completed: profilerCompleted && ! profilerSkipped,

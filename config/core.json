@@ -13,6 +13,7 @@
 		"store-alerts": true,
 		"unminified-js": false,
 		"wcpay": true,
-		"homescreen": true
+		"homescreen": true,
+		"profiler": true
 	}
 }

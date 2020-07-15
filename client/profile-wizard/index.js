@@ -85,6 +85,8 @@ class ProfileWizard extends Component {
 			step: this.getCurrentStep().key,
 		} );
 
+		updateProfileItems( { skipped: false, step: this.getCurrentStep().key } );
+
 		// Track plugins if already installed.
 		if (
 			activePlugins.includes( 'woocommerce-services' ) &&
@@ -263,10 +265,13 @@ class ProfileWizard extends Component {
 		} );
 	}
 
-	skipProfiler() {
+	async skipProfiler() {
 		const { updateProfileItems } = this.props;
-		updateProfileItems( { skipped: true } );
+		await updateProfileItems( { skipped: true, step: this.getCurrentStep().key } );
 		recordEvent( 'wcadmin_storeprofiler_store_details_skip' );
+		window.location = getAdminLink(
+			'admin.php?page=wc-admin'
+		);
 	}
 
 	render() {
