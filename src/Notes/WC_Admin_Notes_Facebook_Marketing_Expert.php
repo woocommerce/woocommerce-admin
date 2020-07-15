@@ -47,7 +47,7 @@ class WC_Admin_Notes_Facebook_Marketing_Expert {
 		}
 
 		// Only add the note to stores with at least 30 orders in the last month.
-		if ( ! self::orders_last_month() >= 30 ) {
+		if ( self::orders_last_month() < 30 ) {
 			return;
 		}
 
