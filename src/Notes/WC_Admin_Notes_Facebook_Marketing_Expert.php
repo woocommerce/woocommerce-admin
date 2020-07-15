@@ -100,6 +100,7 @@ class WC_Admin_Notes_Facebook_Marketing_Expert {
 
 		$args = array(
 			'date_created' => '>' . $date->modify( '-1 month' )->format( 'Y-m-d' ),
+			'return'       => 'ids',
 		);
 
 		return count( wc_get_orders( $args ) );
