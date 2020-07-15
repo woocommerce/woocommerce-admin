@@ -7,11 +7,11 @@
 		"coupons": true,
 		"devdocs": false,
 		"marketing": true,
-		"navigation": false,
 		"onboarding": true,
 		"remote-inbox-notifications": false,
 		"shipping-label-banner": true,
 		"store-alerts": true,
+		"unminified-js": true,
 		"wcpay": true,
 		"homescreen": true
 	}

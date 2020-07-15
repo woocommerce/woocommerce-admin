@@ -10,6 +10,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { updateQueryString } from '@woocommerce/navigation';
+import { Fragment } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -21,13 +22,35 @@ import Products from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
+import { installActivateAndConnectWcpay } from './tasks/payments/methods';
+import { recordEvent } from 'lib/tracks';
+
+export function recordTaskViewEvent(
+	taskName,
+	isJetpackConnected,
+	activePlugins,
+	installedPlugins
+) {
+	recordEvent( 'task_view', {
+		task_name: taskName,
+		wcs_installed: installedPlugins.includes( 'woocommerce-services' ),
+		wcs_active: activePlugins.includes( 'woocommerce-services' ),
+		jetpack_installed: installedPlugins.includes( 'jetpack' ),
+		jetpack_active: activePlugins.includes( 'jetpack' ),
+		jetpack_connected: isJetpackConnected,
+	} );
+}
 
 export function getAllTasks( {
 	profileItems,
 	taskListPayments,
 	query,
 	toggleCartModal,
+	activePlugins,
 	installedPlugins,
+	installAndActivatePlugins,
+	createNotice,
+	isJetpackConnected,
 } ) {
 	const {
 		hasPhysicalProducts,
@@ -61,6 +84,9 @@ export function getAllTasks( {
 		taskListPayments && taskListPayments.skipped
 	);
 
+	const woocommercePaymentsInstalled =
+		installedPlugins.indexOf( 'woocommerce-payments' ) !== -1;
+
 	const tasks = [
 		{
 			key: 'store_details',
@@ -84,6 +110,7 @@ export function getAllTasks( {
 			visible: productIds.length,
 			completed: productIds.length && ! remainingProductIds.length,
 			time: __( '2 minutes', 'woocommerce-admin' ),
+			isDismissable: true,
 		},
 		{
 			key: 'connect',
@@ -104,6 +131,34 @@ export function getAllTasks( {
 			completed: hasProducts,
 			visible: true,
 			time: __( '1 minute per product', 'woocommerce-admin' ),
+		},
+		{
+			key: 'woocommerce-payments',
+			title: __( 'Set up WooCommerce Payments', 'woocommerce-admin' ),
+			container: <Fragment />,
+			completed: paymentsCompleted || paymentsSkipped,
+			onClick: async () => {
+				await new Promise( ( resolve, reject ) => {
+					// This task doesn't have a view, so the recordEvent call
+					// in TaskDashboard.recordTaskView() is never called. So
+					// record it here.
+					recordTaskViewEvent(
+						'wcpay',
+						isJetpackConnected,
+						activePlugins,
+						installedPlugins
+					);
+					return installActivateAndConnectWcpay(
+						resolve,
+						reject,
+						createNotice,
+						installAndActivatePlugins
+					);
+				} );
+			},
+			visible:
+				window.wcAdminFeatures.wcpay && woocommercePaymentsInstalled,
+			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 		{
 			key: 'appearance',
@@ -146,7 +201,7 @@ export function getAllTasks( {
 				}
 				updateQueryString( { task: 'payments' } );
 			},
-			visible: true,
+			visible: ! woocommercePaymentsInstalled,
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 	];

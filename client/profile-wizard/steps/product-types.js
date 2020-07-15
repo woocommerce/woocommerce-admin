@@ -55,9 +55,13 @@ class ProductTypes extends Component {
 		super();
 		const profileItems = get( props, 'profileItems', {} );
 
+		const { productTypes = {} } = getSetting( 'onboarding', {} );
+		const defaultProductTypes = Object.keys( productTypes )
+			.filter( key => !! productTypes[ key ].default );
+
 		this.state = {
 			error: null,
-			selected: profileItems.product_types || [],
+			selected: profileItems.product_types || defaultProductTypes,
 		};
 
 		this.onContinue = this.onContinue.bind( this );

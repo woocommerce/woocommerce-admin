@@ -13,6 +13,7 @@
 - Add support for `<List />` component item tags and link types.
 - Add `<List />` and `<Link />` components to Storybook.
 - Add `<Pill />` component.
+- Add `key` prop to `<List />` component items.
 
 ## Breaking Changes
 - Removed `SplitButton` because its not being used.

@@ -33,7 +33,7 @@ import {
  */
 import './style.scss';
 import CartModal from 'dashboard/components/cart-modal';
-import { getAllTasks } from './tasks';
+import { getAllTasks, recordTaskViewEvent } from './tasks';
 import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
 
@@ -108,6 +108,37 @@ class TaskDashboard extends Component {
 		}
 	}
 
+	dismissTask( key ) {
+		const { createNotice, dismissedTasks, updateOptions } = this.props;
+
+		createNotice( 'success', __( 'Task dismissed' ), {
+			actions: [
+				{
+					label: __( 'Undo', 'woocommerce-admin' ),
+					onClick: () => this.undoDismissTask( key ),
+				},
+			],
+		} );
+
+		recordEvent( 'tasklist_dismiss_task', { task_name: key } );
+
+		updateOptions( {
+			woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
+		} );
+	}
+
+	undoDismissTask( key ) {
+		const { dismissedTasks, updateOptions } = this.props;
+
+		const updatedDismissedTasks = dismissedTasks.filter(
+			( task ) => task !== key
+		);
+
+		updateOptions( {
+			woocommerce_task_list_dismissed_tasks: updatedDismissedTasks,
+		} );
+	}
+
 	componentWillUnmount() {
 		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-task-dashboard__body' );
@@ -115,10 +146,15 @@ class TaskDashboard extends Component {
 
 	getTasks() {
 		const {
+			dismissedTasks,
 			profileItems,
 			query,
 			taskListPayments,
+			activePlugins,
 			installedPlugins,
+			installAndActivatePlugins,
+			createNotice,
+			isJetpackConnected,
 		} = this.props;
 
 		return getAllTasks( {
@@ -126,38 +162,35 @@ class TaskDashboard extends Component {
 			taskListPayments,
 			query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
+			activePlugins,
 			installedPlugins,
-		} ).filter( ( task ) => task.visible );
+			installAndActivatePlugins,
+			createNotice,
+			isJetpackConnected,
+		} ).filter(
+			( task ) => task.visible && ! dismissedTasks.includes( task.key )
+		);
 	}
 
-	getPluginsInformation() {
+	recordTaskView() {
 		const {
 			isJetpackConnected,
 			activePlugins,
 			installedPlugins,
+			query,
 		} = this.props;
-		return {
-			wcs_installed: installedPlugins.includes( 'woocommerce-services' ),
-			wcs_active: activePlugins.includes( 'woocommerce-services' ),
-			jetpack_installed: installedPlugins.includes( 'jetpack' ),
-			jetpack_active: activePlugins.includes( 'jetpack' ),
-			jetpack_connected: isJetpackConnected,
-		};
-	}
+		const { task: taskName } = query;
 
-	recordTaskView() {
-		const { task } = this.props.query;
-		// eslint-disable-next-line @wordpress/no-unused-vars-before-return
-		const pluginsInformation = this.getPluginsInformation();
-
-		if ( ! task ) {
+		if ( ! taskName ) {
 			return;
 		}
 
-		recordEvent( 'task_view', {
-			task_name: task,
-			...pluginsInformation,
-		} );
+		recordTaskViewEvent(
+			taskName,
+			isJetpackConnected,
+			activePlugins,
+			installedPlugins
+		);
 	}
 
 	recordTaskListView() {
@@ -195,8 +228,27 @@ class TaskDashboard extends Component {
 	}
 
 	getCurrentTask() {
-		const { task } = this.props.query;
-		const currentTask = this.getTasks().find( ( s ) => s.key === task );
+		const {
+			query,
+			profileItems,
+			payments,
+			activePlugins,
+			installedPlugins,
+			createNotice,
+			isJetpackConnected,
+		} = this.props;
+		const allTasks = getAllTasks( {
+			profileItems,
+			options: payments,
+			query,
+			activePlugins,
+			installedPlugins,
+			createNotice,
+			isJetpackConnected,
+		} );
+		const { task } = query;
+		
+		const currentTask = allTasks.find( ( s ) => s.key === task );
 
 		if ( ! currentTask ) {
 			return null;
@@ -319,14 +371,25 @@ class TaskDashboard extends Component {
 					variant={ task.completed ? 'body.small' : 'button' }
 				>
 					{ task.title }
+					{ task.time && ! task.completed && (
+						<span className="woocommerce-task__estimated-time">
+							{ task.time }
+						</span>
+					) }
 				</Text>
 			);
 
 			if ( ! task.completed ) {
-				task.after = task.time ? (
-					<span className="woocommerce-task-estimated-time">
-						{ task.time }
-					</span>
+				task.after = task.isDismissable ? (
+					<Button
+						isTertiary
+						onClick={ ( event ) => {
+							event.stopPropagation();
+							this.dismissTask( task.key );
+						} }
+					>
+						{ __( 'Dismiss', 'woocommerce-admin' ) }
+					</Button>
 				) : (
 					<Icon icon={ chevronRight } />
 				);
@@ -411,13 +474,20 @@ export default compose(
 		const trackedCompletedTasks =
 			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
 		const payments = getOption( 'woocommerce_task_list_payments' );
+		const dismissedTasks =
+			getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
 
+		const activePlugins = getActivePlugins();
 		const installedPlugins = getInstalledPlugins();
+		const { createNotice } = props;
 		const tasks = getAllTasks( {
 			profileItems,
 			options: payments,
 			query: props.query,
+			activePlugins,
 			installedPlugins,
+			createNotice,
+			isJetpackConnected: isJetpackConnected(),
 		} );
 		const completedTaskKeys = tasks
 			.filter( ( task ) => task.completed )
@@ -425,9 +495,9 @@ export default compose(
 		const incompleteTasks = tasks.filter(
 			( task ) => task.visible && ! task.completed
 		);
-		const activePlugins = getActivePlugins();
 
 		return {
+			dismissedTasks,
 			modalDismissed,
 			profileItems,
 			taskListPayments,
@@ -437,12 +507,18 @@ export default compose(
 			completedTaskKeys,
 			activePlugins,
 			installedPlugins,
+			payments,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
+		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
+
 		return {
+			createNotice,
 			updateOptions,
+			installAndActivatePlugins,
 		};
 	} )
 )( TaskDashboard );
