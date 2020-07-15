@@ -270,11 +270,9 @@ class ProfileWizard extends Component {
 	skipProfiler() {
 		const { createNotice, updateProfileItems } = this.props;
 		updateProfileItems( { skipped: true } )
-			.then( ( response ) => {
-				if ( response.status === 'success' ) {
-					recordEvent( 'storeprofiler_store_details_skip' );
-					getHistory().push( getNewPath( {}, '/', {} ) );
-				}
+			.then( () => {
+				recordEvent( 'storeprofiler_store_details_skip' );
+				getHistory().push( getNewPath( {}, '/', {} ) );
 			} )
 			.catch( () => {
 				createNotice(
