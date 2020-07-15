@@ -33,7 +33,6 @@ class Dashboard extends Component {
 		const {
 			completed: profileCompleted,
 			skipped: profileSkipped,
-			step: profilerStep,
 		} = profileItems;
 		if (
 			isOnboardingEnabled() &&
@@ -41,8 +40,7 @@ class Dashboard extends Component {
 			! profileSkipped &&
 			! window.wcAdminFeatures.homescreen
 		) {
-			const lastStep = profilerStep ? { step: profilerStep } : {};
-			getHistory().push( getNewPath( {}, `/profiler`, lastStep ) );
+			getHistory().push( getNewPath( {}, `/profiler`, {} ) );
 		}
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {
