@@ -35,9 +35,9 @@ class ProductIcon extends Component {
 
 ProductIcon.propTypes = {
 	/**
-	 * Icon src.
+	 * Product to retrieve icon for.
 	 */
-	src: PropTypes.string.isRequired,
+	product: PropTypes.string.isRequired,
 	/**
 	 * Additional classNames.
 	 */
