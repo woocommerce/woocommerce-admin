@@ -23,10 +23,8 @@ import { isOnboardingEnabled } from 'dashboard/utils';
 import Layout from './layout';
 
 const Homescreen = ( { profileItems, query } ) => {
-	const {
-		completed: profilerCompleted,
-		skipped: profilerSkipped,
-	} = profileItems;
+	const { completed: profilerCompleted, skipped: profilerSkipped } =
+		profileItems || {};
 	if ( isOnboardingEnabled() && ! profilerCompleted && ! profilerSkipped ) {
 		getHistory().push( getNewPath( {}, `/profiler`, {} ) );
 	}

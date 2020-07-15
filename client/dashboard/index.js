@@ -30,10 +30,8 @@ const CustomizableDashboard = lazy( () =>
 class Dashboard extends Component {
 	render() {
 		const { path, profileItems, query } = this.props;
-		const {
-			completed: profileCompleted,
-			skipped: profileSkipped,
-		} = profileItems;
+		const { completed: profileCompleted, skipped: profileSkipped } =
+			profileItems || {};
 		if (
 			isOnboardingEnabled() &&
 			! profileCompleted &&
