@@ -11,6 +11,8 @@ namespace Automattic\WooCommerce\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\PluginsHelper;
+
 /**
  * WC_Admin_Notes_Facebook_Marketing_Expert
  */
@@ -85,8 +87,7 @@ class WC_Admin_Notes_Facebook_Marketing_Expert {
 		if ( class_exists( 'WC_Facebookcommerce_Integration' ) ) {
 			return true;
 		}
-		include_once ABSPATH . '/wp-admin/includes/plugin.php';
-		return 0 === validate_plugin( self::PLUGIN_FILE );
+		return PluginsHelper::is_plugin_installed( self::PLUGIN_FILE );
 	}
 
 	/**
