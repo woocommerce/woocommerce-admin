@@ -48,7 +48,7 @@ class AnalyticsDashboard {
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 
 		if ( Loader::is_feature_enabled( 'homescreen' ) ) {
-			add_filter( 'woocommerce_admin_plugins_whitelist', array( $this, 'get_homescreen_allowed_plugins' ), 10, 2 );
+			add_filter( 'woocommerce_admin_plugins_whitelist', array( $this, 'get_homescreen_allowed_plugins' ) );
 		}
 	}
 
