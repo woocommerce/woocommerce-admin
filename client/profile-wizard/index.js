@@ -89,8 +89,6 @@ class ProfileWizard extends Component {
 			step: this.getCurrentStep().key,
 		} );
 
-		updateProfileItems( { skipped: false } );
-
 		// Track plugins if already installed.
 		if (
 			activePlugins.includes( 'woocommerce-services' ) &&

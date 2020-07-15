@@ -94,7 +94,6 @@ export function getAllTasks( {
 		completed: profilerCompleted,
 		items_purchased: itemsPurchased,
 		product_types: productTypes,
-		skipped: profilerSkipped,
 		wccom_connected: wccomConnected,
 	} = profileItems;
 
@@ -106,7 +105,7 @@ export function getAllTasks( {
 			onClick: () => {
 				getHistory().push( getNewPath( {}, `/profiler`, {} ) );
 			},
-			completed: profilerCompleted && ! profilerSkipped,
+			completed: profilerCompleted,
 			visible: true,
 			time: __( '4 minutes', 'woocommerce-admin' ),
 		},
