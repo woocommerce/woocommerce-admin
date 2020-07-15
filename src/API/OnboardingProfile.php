@@ -126,6 +126,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function update_items( $request ) {
+		die("boom!");
 		$params          = $request->get_json_params();
 		$query_args      = $this->prepare_objects_query( $params );
 		$onboarding_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
