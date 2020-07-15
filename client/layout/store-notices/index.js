@@ -28,10 +28,10 @@ class StoreWarnings extends Component {
 	}
 
 	render() {
-		const showMissingPaimentMethod = this.isVisibleMissingPaimentWarning();
+		const showMissingPaymentMethod = this.isVisibleMissingPaimentWarning();
 
 		return (
-			showMissingPaimentMethod && (
+			showMissingPaymentMethod && (
 				<Notice
 					className="woocommerce-store-warnings"
 					status="warning"
