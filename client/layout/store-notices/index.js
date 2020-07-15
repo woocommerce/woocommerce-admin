@@ -19,16 +19,8 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import './style.scss';
 
 class StoreWarnings extends Component {
-	isVisibleMissingPaimentWarning() {
-		const { paymentMethods, queryString } = this.props;
-		const isPaymentPage = queryString.task
-			? queryString.task === 'payments'
-			: false;
-		return ! Object.keys( paymentMethods ).length && isPaymentPage;
-	}
-
 	render() {
-		const showMissingPaymentMethod = this.isVisibleMissingPaimentWarning();
+		const { showMissingPaymentMethod } = this.props;
 
 		return (
 			showMissingPaymentMethod && (
@@ -57,7 +49,8 @@ StoreWarnings.propTypes = {
 };
 
 export default compose(
-	withSelect( ( select ) => {
+	withSelect( ( select, props ) => {
+		const { queryString } = props;
 		const { getOption } = select( OPTIONS_STORE_NAME );
 
 		const optionNames = [
@@ -95,8 +88,15 @@ export default compose(
 			}
 		}
 
+		const isPaymentPage = queryString.task
+			? queryString.task === 'payments'
+			: false;
+		const showMissingPaymentMethod =
+			! Object.keys( paymentMethods ).length && isPaymentPage;
+
 		return {
 			paymentMethods,
+			showMissingPaymentMethod,
 		};
 	} )
 )( StoreWarnings );
