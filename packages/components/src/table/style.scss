@@ -104,7 +104,7 @@
 
 	tr:hover,
 	tr:focus-within {
-		background-color: $gray-100;
+		background-color: $gray-200;
 		td,
 		th {
 			background: transparent;
@@ -161,7 +161,7 @@
 	}
 
 	&.is-sorted {
-		background-color: $gray-50;
+		background-color: $gray-100;
 	}
 
 	&.is-checkbox-column {

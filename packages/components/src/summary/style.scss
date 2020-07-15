@@ -1,5 +1,5 @@
 // Set up some local color variables to make the CSS more clear
-$border: $gray-100;
+$border: $gray-200;
 
 // A local mixin to generate the grid template and border logic
 @mixin make-cols( $i ) {
@@ -259,12 +259,12 @@ $border: $gray-100;
 	flex-direction: column;
 	height: 100%;
 	padding: $gap-large;
-	background-color: $gray-50;
+	background-color: $gray-100;
 	border-bottom: 1px solid $border;
 	border-right: 1px solid $border;
 	line-height: 1.4em;
 	text-decoration: none;
-	color: var(--wp-admin-theme-color);
+	color: $gray-900;
 
 	&.components-button {
 		height: auto;
@@ -273,8 +273,12 @@ $border: $gray-100;
 	}
 
 	&:hover {
-		background-color: $gray-50;
-		color: color(var(--wp-admin-theme-color-darker-20));
+		background-color: $gray-100;
+		color: var(--wp-admin-theme-color);
+
+		.woocommerce-summary__item-label {
+			color: var(--wp-admin-theme-color);
+		}
 	}
 
 	&:active {
@@ -312,7 +316,7 @@ $border: $gray-100;
 	.woocommerce-summary__item-label {
 		display: block;
 		margin-bottom: $gap;
-		color: var(--wp-admin-theme-color);
+		color: $gray-700;
 	}
 
 	.woocommerce-summary__item-value {
@@ -325,7 +329,7 @@ $border: $gray-100;
 		padding: 5px;
 		border-radius: 3px;
 		height: min-content;
-		background-color: $gray-200;
+		background-color: $gray-100;
 		color: $gray-900;
 	}
 

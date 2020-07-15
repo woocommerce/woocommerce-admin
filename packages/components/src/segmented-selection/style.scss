@@ -28,18 +28,18 @@
 }
 
 .woocommerce-segmented-selection__label {
-	background-color: $gray-50;
+	background-color: $gray-100;
 	padding: $gap-small $gap-small $gap-small $gap-larger;
 	position: relative;
 	display: block;
 	height: 100%;
 
 	&:active {
-		background-color: $gray-100;
+		background-color: $gray-200;
 	}
 
 	&:hover {
-		background-color: $gray-100;
+		background-color: $gray-200;
 	}
 }
 
@@ -49,7 +49,7 @@
 	left: -9999px;
 
 	&:active + label .woocommerce-segmented-selection__label {
-		background-color: $gray-100;
+		background-color: $gray-200;
 	}
 
 	&:checked + label .woocommerce-segmented-selection__label {
