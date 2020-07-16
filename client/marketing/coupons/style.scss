@@ -38,13 +38,12 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			transition: background 0.2s ease;
 
 			svg {
 				width: 24px;
 				height: 24px;
-				transition: stroke 0.2s ease;
 				transition: fill 0.2s ease;
-				transition: background 0.2s ease;
 				fill: $theme-color;
 			}
 		}
