@@ -760,10 +760,16 @@ class Onboarding {
 	public function is_loading( $is_loading ) {
 		$show_profiler = self::should_show_profiler();
 		$is_dashboard  = ! isset( $_GET['path'] ); // phpcs:ignore csrf ok.
+		$is_profiler   = isset( $_GET['path'] ) && '/profiler' === $_GET['path']; // phpcs:ignore csrf ok.
+
+		if ( $is_profiler ) {
+			return true;
+		}
 
 		if ( ! $show_profiler || ! $is_dashboard ) {
 			return $is_loading;
 		}
+
 		return true;
 	}
 
