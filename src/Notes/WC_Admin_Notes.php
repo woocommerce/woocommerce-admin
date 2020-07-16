@@ -113,7 +113,7 @@ class WC_Admin_Notes {
 		foreach ( $names as $name ) {
 			$note_ids = $data_store->get_notes_with_name( $name );
 			foreach ( (array) $note_ids as $note_id ) {
-				$note = WC_Admin_Notes::get_note( $note_id );
+				$note = self::get_note( $note_id );
 				if ( $note ) {
 					$note->delete();
 				}
@@ -185,7 +185,7 @@ class WC_Admin_Notes {
 
 		$notes = array();
 		foreach ( (array) $raw_notes as $raw_note ) {
-			$note = WC_Admin_Notes::get_note( $raw_note->note_id );
+			$note = self::get_note( $raw_note->note_id );
 			if ( $note ) {
 				self::delete_note( $note );
 				array_push( $notes, $note );
@@ -207,7 +207,7 @@ class WC_Admin_Notes {
 		$now        = new \DateTime();
 
 		foreach ( $raw_notes as $raw_note ) {
-			$note = WC_Admin_Notes::get_note( $raw_note->note_id );
+			$note = self::get_note( $raw_note->note_id );
 			if ( false === $note ) {
 				continue;
 			}
@@ -257,12 +257,11 @@ class WC_Admin_Notes {
 		);
 
 		foreach ( $notes as $note ) {
-			$note = WC_Admin_Notes::get_note( $note->note_id );
+			$note = self::get_note( $note->note_id );
 			if ( $note ) {
 				$note->delete();
 			}
 		}
-		
 	}
 
 	/**
@@ -278,7 +277,7 @@ class WC_Admin_Notes {
 		);
 
 		foreach ( $notes as $note ) {
-			$note = WC_Admin_Notes::get_note( $note->note_id );
+			$note = self::get_note( $note->note_id );
 			if ( $note ) {
 				$note->set_is_deleted( 1 );
 				$note->save();
