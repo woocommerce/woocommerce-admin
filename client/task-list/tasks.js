@@ -170,18 +170,38 @@ export function getAllTasks( {
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 		{
-			key: 'appearance',
-			title: __( 'Personalize my store', 'woocommerce-admin' ),
-			container: <Appearance />,
+			key: 'payments',
+			title: __( 'Set up payments', 'woocommerce-admin' ),
+			container: <Payments />,
+			completed: paymentsCompleted || paymentsSkipped,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
-					task_name: 'appearance',
+					task_name: 'payments',
 				} );
-				updateQueryString( { task: 'appearance' } );
+				if ( paymentsCompleted || paymentsSkipped ) {
+					window.location = getAdminLink(
+						'admin.php?page=wc-settings&tab=checkout'
+					);
+					return;
+				}
+				updateQueryString( { task: 'payments' } );
 			},
-			completed: isAppearanceComplete,
-			visible: true,
+			visible: ! woocommercePaymentsInstalled,
 			time: __( '2 minutes', 'woocommerce-admin' ),
+		},
+		{
+			key: 'tax',
+			title: __( 'Set up tax', 'woocommerce-admin' ),
+			container: <Tax />,
+			onClick: () => {
+				recordEvent( 'tasklist_click', {
+					task_name: 'tax',
+				} );
+				updateQueryString( { task: 'tax' } );
+			},
+			completed: isTaxComplete,
+			visible: true,
+			time: __( '1 minute', 'woocommerce-admin' ),
 		},
 		{
 			key: 'shipping',
@@ -200,37 +220,17 @@ export function getAllTasks( {
 			time: __( '1 minute', 'woocommerce-admin' ),
 		},
 		{
-			key: 'tax',
-			title: __( 'Set up tax', 'woocommerce-admin' ),
-			container: <Tax />,
+			key: 'appearance',
+			title: __( 'Personalize my store', 'woocommerce-admin' ),
+			container: <Appearance />,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
-					task_name: 'tax',
+					task_name: 'appearance',
 				} );
-				updateQueryString( { task: 'tax' } );
+				updateQueryString( { task: 'appearance' } );
 			},
-			completed: isTaxComplete,
+			completed: isAppearanceComplete,
 			visible: true,
-			time: __( '1 minute', 'woocommerce-admin' ),
-		},
-		{
-			key: 'payments',
-			title: __( 'Set up payments', 'woocommerce-admin' ),
-			container: <Payments />,
-			completed: paymentsCompleted || paymentsSkipped,
-			onClick: () => {
-				recordEvent( 'tasklist_click', {
-					task_name: 'payments',
-				} );
-				if ( paymentsCompleted || paymentsSkipped ) {
-					window.location = getAdminLink(
-						'admin.php?page=wc-settings&tab=checkout'
-					);
-					return;
-				}
-				updateQueryString( { task: 'payments' } );
-			},
-			visible: ! woocommercePaymentsInstalled,
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 	];
