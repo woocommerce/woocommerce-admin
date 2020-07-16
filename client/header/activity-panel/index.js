@@ -2,14 +2,14 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component, lazy, Suspense } from '@wordpress/element';
-import { Button, NavigableMenu } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { partial, uniqueId, find } from 'lodash';
+import { uniqueId, find } from 'lodash';
 import PagesIcon from 'gridicons/dist/pages';
 import CrossIcon from 'gridicons/dist/cross-small';
+import classnames from 'classnames';
 
 /**
  * WooCommerce dependencies
@@ -49,19 +49,14 @@ const ReviewsPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/reviews' )
 );
 
-import { recordEvent } from 'lib/tracks';
 import withSelect from 'wc-api/with-select';
+import { Tabs } from './tabs';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
-
 export class ActivityPanel extends Component {
-	constructor() {
-		super( ...arguments );
-		this.togglePanel = this.togglePanel.bind( this );
-		this.clearPanel = this.clearPanel.bind( this );
-		this.toggleMobile = this.toggleMobile.bind( this );
-		this.renderTab = this.renderTab.bind( this );
+	constructor( props ) {
+		super( props );
 		this.state = {
 			isPanelOpen: false,
 			mobileOpen: false,
@@ -70,29 +65,25 @@ export class ActivityPanel extends Component {
 		};
 	}
 
-	togglePanel( tabName ) {
-		const { isPanelOpen, currentTab } = this.state;
-
-		// If a panel is being opened, or if an existing panel is already open and a different one is being opened, record a track.
-		if ( ! isPanelOpen || tabName !== currentTab ) {
-			recordEvent( 'activity_panel_open', { tab: tabName } );
-		}
-
+	togglePanel( { name: tabName }, isTabOpen ) {
 		this.setState( ( state ) => {
-			if ( tabName === state.currentTab || state.currentTab === '' ) {
-				return {
-					isPanelOpen: ! state.isPanelOpen,
-					currentTab: tabName,
-					mobileOpen: ! state.isPanelOpen,
-				};
-			}
-			return { currentTab: tabName, isPanelSwitching: true };
+			const isPanelSwitching =
+				tabName !== state.currentTab && state.currentTab !== '';
+
+			return {
+				isPanelOpen: isTabOpen,
+				mobileOpen: isTabOpen,
+				currentTab: tabName,
+				isPanelSwitching,
+			};
 		} );
 	}
 
 	clearPanel() {
-		this.setState( ( { isPanelOpen } ) =>
-			isPanelOpen ? { isPanelSwitching: false } : { currentTab: '' }
+		this.setState( ( { isPanelOpen, ...otherState } ) =>
+			isPanelOpen
+				? { isPanelSwitching: false, ...otherState }
+				: { currentTab: '', isPanelOpen, ...otherState }
 		);
 	}
 
@@ -114,7 +105,8 @@ export class ActivityPanel extends Component {
 			) || event.target.closest( '.components-snackbar__action' );
 
 		if ( isPanelOpen && ! isClickOnModalOrSnackbar ) {
-			this.togglePanel( currentTab );
+			// TODO probably have to handle click outside in the tab?
+			this.togglePanel( { name: currentTab }, false );
 		}
 	}
 
@@ -134,25 +126,24 @@ export class ActivityPanel extends Component {
 
 		// Don't show the inbox on the Home screen.
 		const { location } = this.props.getHistory();
-		const showInbox = isEmbedded || ! window.wcAdminFeatures.homescreen || location.pathname !== '/';
+		const showInbox =
+			isEmbedded ||
+			! window.wcAdminFeatures.homescreen ||
+			location.pathname !== '/';
 		const isPerformingSetupTask =
 			query.task &&
 			! query.path &&
 			( requestingTaskListOptions === true ||
-				(
-					taskListHidden === false &&
-					taskListComplete === false
-				)
-			);
+				( taskListHidden === false && taskListComplete === false ) );
 
 		return [
 			! isPerformingSetupTask && showInbox
 				? {
-					name: 'inbox',
-					title: __( 'Inbox', 'woocommerce-admin' ),
-					icon: <i className="material-icons-outlined">inbox</i>,
-					unread: hasUnreadNotes,
-				}
+						name: 'inbox',
+						title: __( 'Inbox', 'woocommerce-admin' ),
+						icon: <i className="material-icons-outlined">inbox</i>,
+						unread: hasUnreadNotes,
+				  }
 				: null,
 			! isPerformingSetupTask && {
 				name: 'orders',
@@ -185,11 +176,7 @@ export class ActivityPanel extends Component {
 			isPerformingSetupTask && {
 				name: 'help',
 				title: __( 'Help', 'woocommerce-admin' ),
-				icon: (
-					<i className="material-icons-outlined">
-						support
-					</i>
-				),
+				icon: <i className="material-icons-outlined">support</i>,
 			},
 		].filter( Boolean );
 	}
@@ -237,14 +224,18 @@ export class ActivityPanel extends Component {
 			}
 		);
 
+		const clearPanel = () => {
+			this.clearPanel();
+		};
+
 		return (
 			<div
 				className={ classNames }
 				tabIndex={ 0 }
 				role="tabpanel"
 				aria-label={ tab.title }
-				onTransitionEnd={ this.clearPanel }
-				onAnimationEnd={ this.clearPanel }
+				onTransitionEnd={ clearPanel }
+				onAnimationEnd={ clearPanel }
 			>
 				<div
 					className="woocommerce-layout__activity-panel-content"
@@ -256,46 +247,6 @@ export class ActivityPanel extends Component {
 					</Suspense>
 				</div>
 			</div>
-		);
-	}
-
-	renderTab( tab, i ) {
-		const { currentTab, isPanelOpen } = this.state;
-		const className = classnames(
-			'woocommerce-layout__activity-panel-tab',
-			{
-				'is-active': isPanelOpen && tab.name === currentTab,
-				'has-unread': tab.unread,
-			}
-		);
-
-		const selected = tab.name === currentTab;
-		let tabIndex = -1;
-
-		// Only make this item tabbable if it is the currently selected item, or the panel is closed and the item is the first item.
-		if ( selected || ( ! isPanelOpen && i === 0 ) ) {
-			tabIndex = null;
-		}
-
-		return (
-			<Button
-				role="tab"
-				className={ className }
-				tabIndex={ tabIndex }
-				aria-selected={ selected }
-				aria-controls={ 'activity-panel-' + tab.name }
-				key={ 'activity-panel-tab-' + tab.name }
-				id={ 'activity-panel-tab-' + tab.name }
-				onClick={ partial( this.togglePanel, tab.name ) }
-			>
-				{ tab.icon }
-				{ tab.title }{ ' ' }
-				{ tab.unread && (
-					<span className="screen-reader-text">
-						{ __( 'unread activity', 'woocommerce-admin' ) }
-					</span>
-				) }
-			</Button>
 		);
 	}
 
@@ -326,7 +277,9 @@ export class ActivityPanel extends Component {
 					aria-labelledby={ headerId }
 				>
 					<Button
-						onClick={ this.toggleMobile }
+						onClick={ () => {
+							this.toggleMobile();
+						} }
 						label={
 							mobileOpen
 								? __(
@@ -347,13 +300,15 @@ export class ActivityPanel extends Component {
 						) }
 					</Button>
 					<div className={ panelClasses }>
-						<NavigableMenu
-							role="tablist"
-							orientation="horizontal"
-							className="woocommerce-layout__activity-panel-tabs"
-						>
-							{ tabs && tabs.map( this.renderTab ) }
-						</NavigableMenu>
+						{
+							<Tabs
+								isPanelOpen={ this.state.isPanelOpen }
+								tabs={ tabs }
+								onTabClick={ ( tab, tabOpen ) => {
+									this.togglePanel( tab, tabOpen );
+								} }
+							/>
+						}
 						{ this.renderPanel() }
 					</div>
 				</Section>
@@ -377,15 +332,15 @@ export default compose(
 		let requestingTaskListOptions, taskListComplete, taskListHidden;
 
 		if ( isOnboardingEnabled() ) {
-			taskListComplete = getOption( 'woocommerce_task_list_complete' ) === 'yes';
-			taskListHidden = getOption( 'woocommerce_task_list_hidden' ) === 'yes';
+			taskListComplete =
+				getOption( 'woocommerce_task_list_complete' ) === 'yes';
+			taskListHidden =
+				getOption( 'woocommerce_task_list_hidden' ) === 'yes';
 			requestingTaskListOptions =
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
 				] ) ||
-				isResolving( 'getOption', [
-					'woocommerce_task_list_hidden',
-				] );
+				isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] );
 		}
 
 		return {
