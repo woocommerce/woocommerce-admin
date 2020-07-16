@@ -85,7 +85,13 @@ class WC_Admin_Note extends \WC_Data {
 
 		$this->data_store = \WC_Data_Store::load( 'admin-note' );
 		if ( $this->get_id() > 0 ) {
-			$this->data_store->read( $this );
+			try {
+				$this->data_store->read( $this );
+			} catch ( \Exception $e ) {
+				wc_caught_exception( $e, __CLASS__ . '::' . __FUNCTION__, array( $this->get_id() ) );
+				$this->set_id( 0 );
+				$this->set_object_read( true );
+			}
 		}
 	}
 
