@@ -69,13 +69,13 @@ class WC_Admin_Notes {
 	 */
 	public static function get_note( $note_id ) {
 		if ( false !== $note_id ) {
-			try {
-				return new WC_Admin_Note( $note_id );
-			} catch ( \Exception $e ) {
-				wc_caught_exception( $e, __CLASS__ . '::' . __FUNCTION__, array( $note_id ) );
-				return false;
+			$note = new WC_Admin_Note( $note_id );
+
+			if ( $note_id == $note->get_id() ) {
+				return $note;
 			}
 		}
+
 		return false;
 	}
 
