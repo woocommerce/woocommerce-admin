@@ -934,16 +934,12 @@ class Onboarding {
 			$screen->remove_help_tab( 'woocommerce_onboard_tab' );
 
 			$task_list_hidden = get_option( 'woocommerce_task_list_hidden', 'no' );
-			$is_enabled       = self::should_show_profiler();
 
 			$help_tab['content'] = '<h2>' . __( 'WooCommerce Onboarding', 'woocommerce-admin' ) . '</h2>';
 
 			$help_tab['content'] .= '<h3>' . __( 'Profile Setup Wizard', 'woocommerce-admin' ) . '</h3>';
-			$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the setup wizard again, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
-			( $is_enabled
-				? '<p><a href="' . wc_admin_url( '&reset_profiler=0' ) . '" class="button button-primary">' . __( 'Disable', 'woocommerce-admin' ) . '</a></p>'
-				: '<p><a href="' . wc_admin_url( '&reset_profiler=1' ) . '" class="button button-primary">' . __( 'Enable', 'woocommerce-admin' ) . '</a></p>'
-			);
+			$help_tab['content'] .= '<p>' . __( 'If you need to access the setup wizard again, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
+				'<p><a href="' . wc_admin_url( '&path=/profiler' ) . '" class="button button-primary">' . __( 'Setup wizard', 'woocommerce-admin' ) . '</a></p>';
 
 			$help_tab['content'] .= '<h3>' . __( 'Task List', 'woocommerce-admin' ) . '</h3>';
 			$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the task list, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
