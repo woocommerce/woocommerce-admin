@@ -122,7 +122,7 @@ class WC_Admin_Notes_Test_Checkout {
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
-		$note->add_action( 'test-checkout', __( 'Test checkout', 'woocommerce-admin' ), site_url() );
+		$note->add_action( 'test-checkout', __( 'Test checkout', 'woocommerce-admin' ), wc_get_page_permalink( 'shop' ) );
 		return $note;
 	}
 }
