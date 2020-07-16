@@ -232,13 +232,13 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 		add_filter( 'woocommerce_admin-note_data_store', $filter_datastore );
 
 		// Attempt to retrieve the test note.
-		$note = new WC_Admin_Note( $note_id );
+		$note = WC_Admin_Notes::get_note( $note_id );
 
 		remove_filter( 'woocommerce_admin-note_data_store', $filter_datastore );
 
 		ini_set( 'error_log', $log_file );
 
-		$this->assertEquals( 0, $note->get_id() );
+		$this->assertFalse( $note );
 		$this->assertEquals( 1, did_action( 'woocommerce_caught_exception' ) );
 	}
 }
