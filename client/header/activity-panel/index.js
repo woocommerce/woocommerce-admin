@@ -82,7 +82,7 @@ export class ActivityPanel extends Component {
 	clearPanel() {
 		this.setState( ( { isPanelOpen, ...otherState } ) =>
 			isPanelOpen
-				? { isPanelSwitching: false, ...otherState }
+				? { isPanelSwitching: false, isPanelOpen, ...otherState }
 				: { currentTab: '', isPanelOpen, ...otherState }
 		);
 	}
@@ -224,6 +224,8 @@ export class ActivityPanel extends Component {
 			}
 		);
 
+		console.log( isPanelSwitching );
+
 		const clearPanel = () => {
 			this.clearPanel();
 		};
@@ -252,7 +254,7 @@ export class ActivityPanel extends Component {
 
 	render() {
 		const tabs = this.getTabs();
-		const { mobileOpen } = this.state;
+		const { mobileOpen, currentTab } = this.state;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
 			'is-mobile-open': this.state.mobileOpen,
@@ -302,8 +304,8 @@ export class ActivityPanel extends Component {
 					<div className={ panelClasses }>
 						{
 							<Tabs
-								isPanelOpen={ this.state.isPanelOpen }
 								tabs={ tabs }
+								selectedTab={ currentTab }
 								onTabClick={ ( tab, tabOpen ) => {
 									this.togglePanel( tab, tabOpen );
 								} }

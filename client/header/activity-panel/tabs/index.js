@@ -4,10 +4,10 @@ import { useState } from '@wordpress/element';
 import { Tab } from '../tab';
 import { recordEvent } from 'lib/tracks';
 
-export const Tabs = ( { tabs, onTabClick } ) => {
+export const Tabs = ( { tabs, onTabClick, selectedTab: selectedTabName } ) => {
 	const [ tabState, setTabState ] = useState( {
 		tabOpen: false,
-		currentTab: '',
+		currentTab: selectedTabName,
 	} );
 
 	return (
