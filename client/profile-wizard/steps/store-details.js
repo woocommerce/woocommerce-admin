@@ -23,7 +23,6 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { H, Form } from '@woocommerce/components';
 import { getCurrencyData } from '@woocommerce/currency';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
-import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -173,6 +172,7 @@ class StoreDetails extends Component {
 
 	render() {
 		const { showUsageModal } = this.state;
+		const { skipProfiler } = this.props;
 
 		return (
 			<Fragment>
@@ -263,12 +263,15 @@ class StoreDetails extends Component {
 					) }
 				</Form>
 				<div className="woocommerce-profile-wizard__footer">
-					<a
+					<Button
+						isLink
 						className="woocommerce-profile-wizard__footer-link"
-						href={ adminUrl }
+						onClick={ () => {
+							skipProfiler();
+						} }
 					>
 						{ __( 'Skip setup wizard', 'woocommerce-admin' ) }
-					</a>
+					</Button>
 					<Tooltip
 						text={ __(
 							'Manual setup is only recommended for\n experienced WooCommerce users or developers.',
