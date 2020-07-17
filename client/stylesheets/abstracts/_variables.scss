@@ -1,3 +1,5 @@
+@import 'node_modules/@automattic/color-studio/dist/color-variables.scss';
+
 // Import Gutenberg variables
 @import 'node_modules/@wordpress/base-styles/colors';
 @import 'node_modules/@wordpress/base-styles/variables';
@@ -33,24 +35,6 @@ $spacing: 16px;
 // Gutenberg variable overrides.
 $white: $studio-white;
 $black: $studio-black;
-$gray-100: $core-grey-light-100;
-$gray-100: $core-grey-light-200;
-$light-gray-300: $core-grey-light-300;
-$light-gray-400: $core-grey-light-400;
-$gray-400: $core-grey-light-500;
-$light-gray-600: $core-grey-light-600;
-$gray-400: $core-grey-light-700;
-$light-gray-800: $core-grey-light-800;
-$light-gray-900: $core-grey-light-900;
-$dark-gray-100: $core-grey-dark-100;
-$dark-gray-200: $core-grey-dark-200;
-$gray-700: $core-grey-dark-300; // This & below have 4.5+ contrast against white
-$dark-gray-400: $core-grey-dark-400;
-$gray-700: $core-grey-dark-500;
-$dark-gray-600: $core-grey-dark-600;
-$dark-gray-700: $core-grey-dark-700;
-$dark-gray-800: $core-grey-dark-800;
-$gray-900: $core-grey-dark-900;
 $alert-red: $error-red;
 $alert-yellow: $notice-yellow;
 $alert-green: $valid-green;

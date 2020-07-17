@@ -110,7 +110,7 @@
 
 		.woocommerce-card ~ p {
 			font-size: 12px;
-			color: $core-grey-dark-150;
+			color: $gray-600;
 		}
 
 		.woocommerce-profile-wizard__footer {
@@ -494,14 +494,14 @@
 	margin-left: -$gap;
 	margin-right: -$gap;
 	padding: $gap-large $gap;
-	border-top: 1px solid $light-gray-tertiary;
-	border-bottom: 1px solid $light-gray-tertiary;
+	border-top: 1px solid $gray-100;
+	border-bottom: 1px solid $gray-100;
 	display: flex;
 	align-items: center;
 
 	label {
 		display: flex;
-		color: $dark-gray-primary;
+		color: $gray-900;
 		align-items: center;
 	}
 
@@ -511,7 +511,7 @@
 
 	.woocommerce-business-extensions__label-subtext {
 		display: block;
-		color: $core-grey-dark-150;
+		color: $gray-600;
 		font-size: 14px;
 	}
 

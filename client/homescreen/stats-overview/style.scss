@@ -1,7 +1,7 @@
 // Set up some local color variables to make the CSS more clear
-$outer-border: $core-grey-light-700;
-$promo-actions-border-top: $core-grey-light-500;
-$promo-actions-border-bottom: $light-gray-tertiary;
+$outer-border: $gray-200;
+$promo-actions-border-top: $gray-100;
+$promo-actions-border-bottom: $gray-100;
 
 .woocommerce-stats-overview {
 	.woocommerce-card__body {
@@ -74,7 +74,7 @@ article.woocommerce-stats-overview__install-jetpack-promo {
 	}
 
 	h2 {
-		color: $dark-gray-primary;
+		color: $gray-900;
 		@include font-size( 16 );
 		font-style: normal;
 		line-height: 1.5;
@@ -82,7 +82,7 @@ article.woocommerce-stats-overview__install-jetpack-promo {
 		margin: $gap-smaller 0;
 	}
 	p {
-		color: $medium-gray-text;
+		color: $gray-700;
 		font-style: normal;
 		font-weight: normal;
 		@include font-size( 14 );
