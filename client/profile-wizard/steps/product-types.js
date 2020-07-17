@@ -26,9 +26,14 @@ class ProductTypes extends Component {
 		super();
 		const profileItems = get( props, 'profileItems', {} );
 
+		const { productTypes = {} } = getSetting( 'onboarding', {} );
+		const defaultProductTypes = Object.keys( productTypes ).filter(
+			( key ) => !! productTypes[ key ].default
+		);
+
 		this.state = {
 			error: null,
-			selected: profileItems.product_types || [],
+			selected: profileItems.product_types || defaultProductTypes,
 		};
 
 		this.onContinue = this.onContinue.bind( this );
@@ -106,6 +111,7 @@ class ProductTypes extends Component {
 	render() {
 		const { productTypes = {} } = getSetting( 'onboarding', {} );
 		const { error, selected } = this.state;
+
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
@@ -130,22 +136,22 @@ class ProductTypes extends Component {
 									components: {
 										moreLink: productTypes[ slug ]
 											.more_url ? (
-												<Link
-													href={
-														productTypes[ slug ]
-															.more_url
-													}
-													target="_blank"
-													type="external"
-													onClick={ () =>
-														this.onLearnMore( slug )
-													}
-												>
-													{ __(
-														'Learn more',
-														'woocommerce-admin'
-													) }
-												</Link>
+											<Link
+												href={
+													productTypes[ slug ]
+														.more_url
+												}
+												target="_blank"
+												type="external"
+												onClick={ () =>
+													this.onLearnMore( slug )
+												}
+											>
+												{ __(
+													'Learn more',
+													'woocommerce-admin'
+												) }
+											</Link>
 										) : (
 											''
 										),
@@ -170,13 +176,15 @@ class ProductTypes extends Component {
 						) }
 					</div>
 
-					<Button
-						isPrimary
-						onClick={ this.onContinue }
-						disabled={ ! selected.length }
-					>
-						{ __( 'Continue', 'woocommerce-admin' ) }
-					</Button>
+					<div className="woocommerce-profile-wizard__card-actions">
+						<Button
+							isPrimary
+							onClick={ this.onContinue }
+							disabled={ ! selected.length }
+						>
+							{ __( 'Continue', 'woocommerce-admin' ) }
+						</Button>
+					</div>
 				</Card>
 			</Fragment>
 		);
@@ -185,7 +193,9 @@ class ProductTypes extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getOnboardingError } = select(
+			ONBOARDING_STORE_NAME
+		);
 
 		return {
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),

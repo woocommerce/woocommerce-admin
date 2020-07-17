@@ -71,6 +71,7 @@ class Loader {
 		add_filter( 'woocommerce_shared_settings', array( __CLASS__, 'add_component_settings' ) );
 		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_page_handler' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'register_profiler_page' ) );
 		add_filter( 'admin_title', array( __CLASS__, 'update_admin_title' ) );
 		add_action( 'rest_api_init', array( __CLASS__, 'register_user_data' ) );
 		add_action( 'in_admin_header', array( __CLASS__, 'embed_page_header' ) );
@@ -193,6 +194,22 @@ class Loader {
 	}
 
 	/**
+	 * Determines if a minified JS file should be served.
+	 *
+	 * @param  boolean $script_debug Only serve unminified files if script debug is on.
+	 * @return boolean If js asset should use minified version.
+	 */
+	public static function should_use_minified_js_file( $script_debug ) {
+		// un-minified files are only shipped in non-core versions of wc-admin, return true if unminified files are not available.
+		if ( ! self::is_feature_enabled( 'unminified-js' ) ) {
+			return true;
+		}
+
+		// Otherwise we will serve un-minified files if SCRIPT_DEBUG is on, or if anything truthy is passed in-lieu of SCRIPT_DEBUG.
+		return ! $script_debug;
+	}
+
+	/**
 	 * Gets the URL to an asset file.
 	 *
 	 * @param  string $file File name (without extension).
@@ -204,7 +221,8 @@ class Loader {
 
 		// Potentially enqueue minified JavaScript.
 		if ( 'js' === $ext ) {
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
+			$suffix = self::should_use_minified_js_file( $script_debug ) ? '.min' : '';
 		}
 
 		return plugins_url( self::get_path( $ext ) . $file . $suffix . '.' . $ext, WC_ADMIN_PLUGIN_FILE );
@@ -269,6 +287,20 @@ class Loader {
 		// Connect existing WooCommerce pages.
 		require_once WC_ADMIN_ABSPATH . 'includes/connect-existing-pages.php';
 	}
+
+	/**
+	 * Registers the profiler page.
+	 */
+	public static function register_profiler_page() {
+		wc_admin_register_page(
+			array(
+				'title'  => 'Profiler',
+				'parent' => 'woocommerce',
+				'path'   => '/profiler',
+			)
+		);
+	}
+
 
 	/**
 	 * Remove the menu item for the app entry point page.
@@ -459,7 +491,7 @@ class Loader {
 			return;
 		}
 
-		$features        = self::get_features();
+		$features         = self::get_features();
 		$enabled_features = array();
 		foreach ( $features as $key ) {
 			$enabled_features[ $key ] = self::is_feature_enabled( $key );
@@ -618,13 +650,6 @@ class Loader {
 	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
 	 */
 	public static function embed_page_header() {
-		if (
-			self::is_feature_enabled( 'navigation' ) &&
-			\Automattic\WooCommerce\Admin\Features\Navigation::instance()->is_woocommerce_page()
-		) {
-			self::embed_navigation_menu();
-		}
-
 		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
 			return;
 		}
@@ -651,16 +676,6 @@ class Loader {
 				</div>
 			</div>
 		</div>
-		<?php
-	}
-
-	/**
-	 * Set up a div for the navigation menu.
-	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
-	 */
-	protected static function embed_navigation_menu() {
-		?>
-		<div id="woocommerce-embedded-navigation"></div>
 		<?php
 	}
 

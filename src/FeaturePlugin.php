@@ -20,6 +20,7 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Draw_Attention;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Coupon_Page_Moved;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Home_Screen_Feedback;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Set_Up_Additional_Payment_Types;
 
 /**
  * Feature plugin main class.
@@ -155,7 +156,7 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.3.0-beta.1' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.4.0-dev' );
 	}
 
 	/**
@@ -173,7 +174,7 @@ class FeaturePlugin {
 		ReportsSync::init();
 		Install::init();
 		Events::instance()->init();
-		new API\Init();
+		API\Init::instance();
 		ReportExporter::init();
 
 		// CRUD classes.
@@ -192,6 +193,7 @@ class FeaturePlugin {
 		new WC_Admin_Notes_Install_JP_And_WCS_Plugins();
 		new WC_Admin_Notes_Draw_Attention();
 		new WC_Admin_Notes_Home_Screen_Feedback();
+		new WC_Admin_Notes_Set_Up_Additional_Payment_Types();
 
 		// Initialize RemoteInboxNotificationsEngine.
 		RemoteInboxNotificationsEngine::init();
@@ -204,7 +206,7 @@ class FeaturePlugin {
 		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ), 0 );
 		add_action( 'admin_menu', array( $this, 'register_devdocs_page' ) );
 
-		new Loader();
+		Loader::get_instance();
 	}
 
 	/**

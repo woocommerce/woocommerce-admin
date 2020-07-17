@@ -40,6 +40,9 @@ const Homescreen = lazy( () =>
 const MarketingOverview = lazy( () =>
 	import( /* webpackChunkName: "marketing-overview" */ 'marketing/overview' )
 );
+const ProfileWizard = lazy( () =>
+	import( /* webpackChunkName: "profile-wizard" */ 'profile-wizard' )
+);
 import getReports from 'analytics/report/get-reports';
 
 const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
@@ -169,13 +172,21 @@ export const getPages = () => {
 			path: '/marketing',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				[
-					'/marketing',
-					__( 'Marketing', 'woocommerce-admin' ),
-				],
+				[ '/marketing', __( 'Marketing', 'woocommerce-admin' ) ],
 				__( 'Overview', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
+		} );
+	}
+
+	if ( window.wcAdminFeatures.onboarding ) {
+		pages.push( {
+			container: ProfileWizard,
+			path: '/profiler',
+			breadcrumbs: [
+				...initialBreadcrumbs,
+				[ '/profiler', __( 'Profiler', 'woocommerce-admin' ) ],
+			],
 		} );
 	}
 
@@ -188,21 +199,20 @@ export class Controller extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		const prevQuery = this.getQuery( prevProps.location.search );
 		const prevBaseQuery = omit(
-			this.getQuery( prevProps.location.search ),
+			prevProps.query,
 			'chartType',
 			'filter',
 			'paged'
 		);
 		const baseQuery = omit(
-			this.getQuery( this.props.location.search ),
+			this.props.query,
 			'chartType',
 			'filter',
 			'paged'
 		);
 
-		if ( prevQuery.paged > 1 && ! isEqual( prevBaseQuery, baseQuery ) ) {
+		if ( prevProps.query.paged > 1 && ! isEqual( prevBaseQuery, baseQuery ) ) {
 			getHistory().replace( getNewPath( { paged: 1 } ) );
 		}
 
@@ -211,19 +221,9 @@ export class Controller extends Component {
 		}
 	}
 
-	getQuery( searchString ) {
-		if ( ! searchString ) {
-			return {};
-		}
-
-		const search = searchString.substring( 1 );
-		return parse( search );
-	}
-
 	render() {
-		const { page, match, location } = this.props;
+		const { page, match, query } = this.props;
 		const { url, params } = match;
-		const query = this.getQuery( location.search );
 
 		window.wpNavMenuUrlUpdate( query );
 		window.wpNavMenuClassChange( page, url );
@@ -254,10 +254,9 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	if ( isWCAdmin ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
-		const defaultPath =
-			window.wcAdminFeatures.homescreen
-				? 'homescreen'
-				: 'dashboard';
+		const defaultPath = window.wcAdminFeatures.homescreen
+			? 'homescreen'
+			: 'dashboard';
 		const path = query.path || defaultPath;
 		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
 
