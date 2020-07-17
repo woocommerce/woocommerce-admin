@@ -60,7 +60,7 @@
 
 	&:hover {
 		h4 {
-			color: $theme-color;
+			color: var(--wp-admin-theme-color);
 		}
 		p {
 			color: $gray-900;
