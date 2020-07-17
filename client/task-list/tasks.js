@@ -9,14 +9,17 @@ import { applyFilters } from '@wordpress/hooks';
  * WooCommerce dependencies
  */
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { updateQueryString } from '@woocommerce/navigation';
+import {
+	getHistory,
+	getNewPath,
+	updateQueryString,
+} from '@woocommerce/navigation';
 import { Fragment } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import Appearance from './tasks/appearance';
-import Connect from './tasks/connect';
 import { getProductIdsForCart } from 'dashboard/utils';
 import Products from './tasks/products';
 import Shipping from './tasks/shipping';
@@ -86,6 +89,10 @@ export function getAllTasks( {
 
 	const woocommercePaymentsInstalled =
 		installedPlugins.indexOf( 'woocommerce-payments' ) !== -1;
+	const {
+		completed: profilerCompleted,
+		product_types: productTypes,
+	} = profileItems;
 
 	const tasks = [
 		{
@@ -93,11 +100,12 @@ export function getAllTasks( {
 			title: __( 'Store details', 'woocommerce-admin' ),
 			container: null,
 			onClick: () => {
-				window.location = getAdminLink(
-					'admin.php?page=wc-admin&reset_profiler=1'
-				);
+				recordEvent( 'tasklist_click', {
+					task_name: 'store_details',
+				} );
+				getHistory().push( getNewPath( {}, `/profiler`, {} ) );
 			},
-			completed: profileItems.completed,
+			completed: profilerCompleted,
 			visible: true,
 			time: __( '4 minutes', 'woocommerce-admin' ),
 		},
@@ -105,29 +113,27 @@ export function getAllTasks( {
 			key: 'purchase',
 			title: __( 'Purchase & install extensions', 'woocommerce-admin' ),
 			container: null,
-			onClick: () =>
-				remainingProductIds.length ? toggleCartModal() : null,
+			onClick: () => {
+				recordEvent( 'tasklist_click', {
+					task_name: 'purchase',
+				} );
+				return remainingProductIds.length ? toggleCartModal() : null;
+			},
 			visible: productIds.length,
 			completed: productIds.length && ! remainingProductIds.length,
 			time: __( '2 minutes', 'woocommerce-admin' ),
 			isDismissable: true,
 		},
 		{
-			key: 'connect',
-			title: __(
-				'Connect your store to WooCommerce.com',
-				'woocommerce-admin'
-			),
-			container: <Connect query={ query } />,
-			visible:
-				profileItems.items_purchased && ! profileItems.wccom_connected,
-			completed: profileItems.wccom_connected,
-			time: __( '1 minute', 'woocommerce-admin' ),
-		},
-		{
 			key: 'products',
 			title: __( 'Add my products', 'woocommerce-admin' ),
 			container: <Products />,
+			onClick: () => {
+				recordEvent( 'tasklist_click', {
+					task_name: 'products',
+				} );
+				updateQueryString( { task: 'products' } );
+			},
 			completed: hasProducts,
 			visible: true,
 			time: __( '1 minute per product', 'woocommerce-admin' ),
@@ -148,6 +154,9 @@ export function getAllTasks( {
 						activePlugins,
 						installedPlugins
 					);
+					recordEvent( 'tasklist_click', {
+						task_name: 'woocommerce-payments',
+					} );
 					return installActivateAndConnectWcpay(
 						resolve,
 						reject,
@@ -161,38 +170,14 @@ export function getAllTasks( {
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 		{
-			key: 'appearance',
-			title: __( 'Personalize my store', 'woocommerce-admin' ),
-			container: <Appearance />,
-			completed: isAppearanceComplete,
-			visible: true,
-			time: __( '2 minutes', 'woocommerce-admin' ),
-		},
-		{
-			key: 'shipping',
-			title: __( 'Set up shipping', 'woocommerce-admin' ),
-			container: <Shipping />,
-			completed: shippingZonesCount > 0,
-			visible:
-				( profileItems.product_types &&
-					profileItems.product_types.includes( 'physical' ) ) ||
-				hasPhysicalProducts,
-			time: __( '1 minute', 'woocommerce-admin' ),
-		},
-		{
-			key: 'tax',
-			title: __( 'Set up tax', 'woocommerce-admin' ),
-			container: <Tax />,
-			completed: isTaxComplete,
-			visible: true,
-			time: __( '1 minute', 'woocommerce-admin' ),
-		},
-		{
 			key: 'payments',
 			title: __( 'Set up payments', 'woocommerce-admin' ),
 			container: <Payments />,
 			completed: paymentsCompleted || paymentsSkipped,
 			onClick: () => {
+				recordEvent( 'tasklist_click', {
+					task_name: 'payments',
+				} );
 				if ( paymentsCompleted || paymentsSkipped ) {
 					window.location = getAdminLink(
 						'admin.php?page=wc-settings&tab=checkout'
@@ -202,6 +187,50 @@ export function getAllTasks( {
 				updateQueryString( { task: 'payments' } );
 			},
 			visible: ! woocommercePaymentsInstalled,
+			time: __( '2 minutes', 'woocommerce-admin' ),
+		},
+		{
+			key: 'tax',
+			title: __( 'Set up tax', 'woocommerce-admin' ),
+			container: <Tax />,
+			onClick: () => {
+				recordEvent( 'tasklist_click', {
+					task_name: 'tax',
+				} );
+				updateQueryString( { task: 'tax' } );
+			},
+			completed: isTaxComplete,
+			visible: true,
+			time: __( '1 minute', 'woocommerce-admin' ),
+		},
+		{
+			key: 'shipping',
+			title: __( 'Set up shipping', 'woocommerce-admin' ),
+			container: <Shipping />,
+			onClick: () => {
+				recordEvent( 'tasklist_click', {
+					task_name: 'shipping',
+				} );
+				updateQueryString( { task: 'shipping' } );
+			},
+			completed: shippingZonesCount > 0,
+			visible:
+				( productTypes && productTypes.includes( 'physical' ) ) ||
+				hasPhysicalProducts,
+			time: __( '1 minute', 'woocommerce-admin' ),
+		},
+		{
+			key: 'appearance',
+			title: __( 'Personalize my store', 'woocommerce-admin' ),
+			container: <Appearance />,
+			onClick: () => {
+				recordEvent( 'tasklist_click', {
+					task_name: 'appearance',
+				} );
+				updateQueryString( { task: 'appearance' } );
+			},
+			completed: isAppearanceComplete,
+			visible: true,
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 	];
