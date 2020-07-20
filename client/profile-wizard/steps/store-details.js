@@ -174,6 +174,16 @@ class StoreDetails extends Component {
 		const { showUsageModal } = this.state;
 		const { skipProfiler } = this.props;
 
+		const skipSetupText = __(
+			'Manual setup is only recommended for\n experienced WooCommerce users or developers.',
+			'woocommerce-admin'
+		);
+
+		const configureCurrencyText = __(
+			'Your store address will help us configure currency\n options and shipping rules automatically.\n This information will not be publicly visible and can\n easily be changed later.',
+			'woocommerce-admin'
+		);
+
 		return (
 			<Fragment>
 				<H className="woocommerce-profile-wizard__header-title">
@@ -185,13 +195,11 @@ class StoreDetails extends Component {
 						'woocommerce-admin'
 					) }
 
-					<Tooltip
-						text={ __(
-							'Your store address will help us configure currency\n options and shipping rules automatically.\n This information will not be publicly visible and can\n easily be changed later.',
-							'woocommerce-admin'
-						) }
-					>
-						<span className="woocommerce-profile-wizard__tooltip-icon">
+					<Tooltip text={ configureCurrencyText }>
+						<span
+							aria-label={ configureCurrencyText }
+							className="woocommerce-profile-wizard__tooltip-icon"
+						>
 							<Icon icon="info-outline" size={ 16 } />
 						</span>
 					</Tooltip>
@@ -272,13 +280,11 @@ class StoreDetails extends Component {
 					>
 						{ __( 'Skip setup wizard', 'woocommerce-admin' ) }
 					</Button>
-					<Tooltip
-						text={ __(
-							'Manual setup is only recommended for\n experienced WooCommerce users or developers.',
-							'woocommerce-admin'
-						) }
-					>
-						<span className="woocommerce-profile-wizard__tooltip-icon">
+					<Tooltip text={ skipSetupText }>
+						<span
+							aria-label={ skipSetupText }
+							className="woocommerce-profile-wizard__tooltip-icon"
+						>
 							<Icon icon="info-outline" size={ 16 } />
 						</span>
 					</Tooltip>
