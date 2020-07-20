@@ -25,72 +25,21 @@ class WC_Admin_Notes_Test_Checkout {
 	 */
 	const NOTE_NAME = 'wc-admin-test-checkout';
 
-	const PRODUCT_ADDED_OPTION_NAME = 'wc_admin_note_test_checkout_product_added';
+	const TASK_LIST_PAYMENTS      = 'woocommerce_task_list_payments';
+	const TASK_LIST_TRACKED_TASKS = 'woocommerce_task_list_tracked_completed_tasks';
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'product_page_product_importer', array( $this, 'run_on_product_importer_done' ) );
-		add_action( 'transition_post_status', array( $this, 'run_on_transition_post_status_done' ), 10, 3 );
-	}
-
-	/**
-	 * Runs on product importer steps.
-	 */
-	public function run_on_product_importer_done() {
-		// We're only interested in when the importer completes.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_REQUEST['step'] ) ) {
-			return;
-		}
-		if ( 'done' !== $_REQUEST['step'] ) {
-			return;
-		}
-		// phpcs:enable
-
-		$this->update_product_added_and_possibly_add_note();
-	}
-
-	/**
-	 * Runs when a post status transitions, but we're only interested if it is
-	 * a product being published.
-	 *
-	 * @param string $new_status The new status.
-	 * @param string $old_status The old status.
-	 * @param Post   $post       The post.
-	 */
-	public function run_on_transition_post_status_done( $new_status, $old_status, $post ) {
-		if (
-			'product' !== $post->post_type ||
-			'publish' !== $new_status
-		) {
-			return;
-		}
-
-		$this->update_product_added_and_possibly_add_note();
-	}
-
-	/**
-	 * Updates "wc_admin_note_test_checkout_product_added" in the DB and calls "possibly_add_note" method.
-	 */
-	public function update_product_added_and_possibly_add_note() {
-		update_option( self::PRODUCT_ADDED_OPTION_NAME, true );
-		self::possibly_add_note();
+		add_action( 'update_option_' . self::TASK_LIST_PAYMENTS, array( $this, 'possibly_add_note' ) );
+		add_action( 'update_option_' . self::TASK_LIST_TRACKED_TASKS, array( $this, 'possibly_add_note' ) );
 	}
 
 	/**
 	 * Get the note.
 	 */
 	public static function get_note() {
-		// Make sure a product was published or imported.
-		$product_added = get_option(
-			self::PRODUCT_ADDED_OPTION_NAME
-		);
-		if ( ! $product_added ) {
-			return;
-		}
-
 		$onboarding_profile = get_option( 'woocommerce_onboarding_profile', array() );
 
 		// Confirm that $onboarding_profile is set.
@@ -107,9 +56,30 @@ class WC_Admin_Notes_Test_Checkout {
 			return;
 		}
 
-		// Make sure payments task is completed.
-		$payments_task = get_option( 'woocommerce_task_list_payments', array() );
+		// Make sure payments task was completed.
+		$payments_task = get_option( self::TASK_LIST_PAYMENTS, array() );
 		if ( ! isset( $payments_task['completed'] ) ) {
+			return;
+		}
+
+		// Make sure that products were added within the previous 1/2 hour.
+		$query = new \WC_Product_Query(
+			array(
+				'limit'   => 1,
+				'status'  => 'publish',
+				'orderby' => 'date',
+				'order'   => 'ASC',
+			)
+		);
+
+		$products = $query->get_products();
+		if ( 0 === count( $products ) ) {
+			return;
+		}
+
+		$oldest_product_timestamp = $products[0]->get_date_created()->getTimestamp();
+		$half_hour_in_seconds     = 0.5 * HOUR_IN_SECONDS;
+		if ( ( time() - $oldest_product_timestamp ) > $half_hour_in_seconds ) {
 			return;
 		}
 
