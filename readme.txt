@@ -71,6 +71,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.3.1 2020-07-20 =
+- Fix: PHP Fatal errors when columns are missing from the Notes table. #4831
+
 = 1.3.0 2020-07-08 =
 - Enhancement: Add Jetpack stats to performance indicatorts / homepage #4291
 - Enhancement: New "Store Management" quick links card on WooCommerce home screen. #4350
