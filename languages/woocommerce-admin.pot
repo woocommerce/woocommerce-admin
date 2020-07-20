@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the WooCommerce Admin package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Admin 1.3.0-rc.2\n"
+"Project-Id-Version: WooCommerce Admin 1.3.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/woocommerce-admin\n"
-"POT-Creation-Date: 2020-06-25 01:13:04+00:00\n"
+"POT-Creation-Date: 2020-07-20 22:25:34+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -110,7 +110,7 @@ msgstr ""
 #: client/analytics/report/taxes/config.js:43
 #: client/analytics/report/taxes/table.js:62
 #: client/dashboard/dashboard-charts/config.js:41
-#: client/header/activity-panel/index.js:125
+#: client/header/activity-panel/index.js:135
 #: client/header/activity-panel/panels/orders.js:273
 msgid "Orders"
 msgstr ""
@@ -344,7 +344,7 @@ msgstr ""
 #: src/API/Reports/Downloads/Stats/Controller.php:249
 #: src/API/Reports/Orders/Controller.php:277
 #: src/API/Reports/Orders/Stats/Controller.php:350
-#: src/API/Reports/PerformanceIndicators/Controller.php:653
+#: src/API/Reports/PerformanceIndicators/Controller.php:677
 #: src/API/Reports/Products/Controller.php:279
 #: src/API/Reports/Products/Stats/Controller.php:332
 #: src/API/Reports/Revenue/Stats/Controller.php:378
@@ -361,7 +361,7 @@ msgstr ""
 #: src/API/Reports/Downloads/Stats/Controller.php:255
 #: src/API/Reports/Orders/Controller.php:283
 #: src/API/Reports/Orders/Stats/Controller.php:356
-#: src/API/Reports/PerformanceIndicators/Controller.php:659
+#: src/API/Reports/PerformanceIndicators/Controller.php:683
 #: src/API/Reports/Products/Controller.php:285
 #: src/API/Reports/Products/Stats/Controller.php:338
 #: src/API/Reports/Revenue/Stats/Controller.php:384
@@ -751,105 +751,105 @@ msgstr ""
 msgid "Limit result set to orders matching part of an order number."
 msgstr ""
 
-#: src/API/Plugins.php:214 src/API/Plugins.php:379
+#: src/API/Plugins.php:227 src/API/Plugins.php:392
 msgid "Plugins must be a non-empty array."
 msgstr ""
 
-#: src/API/Plugins.php:237
+#: src/API/Plugins.php:250
 #. translators: %s: plugin slug (example: woocommerce-services)
 msgid "The requested plugin `%s` is not in the list of allowed plugins."
 msgstr ""
 
-#: src/API/Plugins.php:260 src/API/Plugins.php:272
+#: src/API/Plugins.php:273 src/API/Plugins.php:285
 #. translators: %s: plugin slug (example: woocommerce-services)
 msgid "The requested plugin `%s` could not be installed. Plugin API call failed."
 msgstr ""
 
-#: src/API/Plugins.php:287
+#: src/API/Plugins.php:300
 #. translators: %s: plugin slug (example: woocommerce-services)
 msgid "The requested plugin `%s` could not be installed."
 msgstr ""
 
-#: src/API/Plugins.php:301
+#: src/API/Plugins.php:314
 #. translators: %s: plugin slug (example: woocommerce-services)
 msgid "The requested plugin `%s` could not be installed.  Upgrader install failed."
 msgstr ""
 
-#: src/API/Plugins.php:319
+#: src/API/Plugins.php:332
 msgid "Plugins were successfully installed."
 msgstr ""
 
-#: src/API/Plugins.php:320
+#: src/API/Plugins.php:333
 msgid "There was a problem installing some of the requested plugins."
 msgstr ""
 
-#: src/API/Plugins.php:392
+#: src/API/Plugins.php:405
 #. translators: %s: plugin slug (example: woocommerce-services)
 msgid "The requested plugin `%s`. is not in the list of allowed plugins."
 msgstr ""
 
-#: src/API/Plugins.php:401
+#: src/API/Plugins.php:414
 #. translators: %s: plugin slug (example: woocommerce-services)
 msgid "The requested plugin `%s`. is not yet installed."
 msgstr ""
 
-#: src/API/Plugins.php:413
+#: src/API/Plugins.php:426
 #. translators: %s: plugin slug (example: woocommerce-services)
 msgid "The requested plugin `%s` could not be activated."
 msgstr ""
 
-#: src/API/Plugins.php:429
+#: src/API/Plugins.php:442
 msgid "Plugins were successfully activated."
 msgstr ""
 
-#: src/API/Plugins.php:430
+#: src/API/Plugins.php:443
 msgid "There was a problem activating some of the requested plugins."
 msgstr ""
 
-#: src/API/Plugins.php:442
+#: src/API/Plugins.php:455
 msgid "Jetpack is not installed or active."
 msgstr ""
 
-#: src/API/Plugins.php:453
+#: src/API/Plugins.php:466
 #: packages/data/build-module/plugins/constants.js:12
 msgid "Jetpack"
 msgstr ""
 
-#: src/API/Plugins.php:466 src/API/Plugins.php:529
+#: src/API/Plugins.php:479 src/API/Plugins.php:542
 msgid "There was an error loading the WooCommerce.com Helper API."
 msgstr ""
 
-#: src/API/Plugins.php:483 src/API/Plugins.php:488 src/API/Plugins.php:545
-#: src/API/Plugins.php:550 src/API/Plugins.php:566
+#: src/API/Plugins.php:496 src/API/Plugins.php:501 src/API/Plugins.php:558
+#: src/API/Plugins.php:563 src/API/Plugins.php:579
 #: client/task-list/tasks/connect.js:57
 msgid "There was an error connecting to WooCommerce.com. Please try again."
 msgstr ""
 
-#: src/API/Plugins.php:586
+#: src/API/Plugins.php:599
 msgid "There was an error connecting to PayPal."
 msgstr ""
 
-#: src/API/Plugins.php:617
+#: src/API/Plugins.php:630
 msgid "There was an error connecting to Square."
 msgstr ""
 
-#: src/API/Plugins.php:669
+#: src/API/Plugins.php:682
 msgid "There was an error communicating with the WooCommerce Payments plugin."
 msgstr ""
 
-#: src/API/Plugins.php:697
+#: src/API/Plugins.php:710
 msgid "Plugin slug."
 msgstr ""
 
-#: src/API/Plugins.php:703
+#: src/API/Plugins.php:716
 msgid "Plugin name."
 msgstr ""
 
-#: src/API/Plugins.php:709
+#: src/API/Plugins.php:722
 msgid "Plugin status."
 msgstr ""
 
-#: src/API/Plugins.php:729
+#: src/API/Plugins.php:742
 msgid "Action that should be completed to connect Jetpack."
 msgstr ""
 
@@ -1917,50 +1917,50 @@ msgstr ""
 msgid "Number of distinct products sold."
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:139
+#: src/API/Reports/PerformanceIndicators/Controller.php:146
 msgid "Sorry, fetching performance indicators failed."
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:194
+#: src/API/Reports/PerformanceIndicators/Controller.php:228
 msgid "Visitors"
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:200
+#: src/API/Reports/PerformanceIndicators/Controller.php:234
 msgid "Views"
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:385
+#: src/API/Reports/PerformanceIndicators/Controller.php:409
 msgid "A list of stats to query must be provided."
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:574
+#: src/API/Reports/PerformanceIndicators/Controller.php:598
 #: src/API/Reports/Stock/Controller.php:373
 msgid "Unique identifier for the resource."
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:581
+#: src/API/Reports/PerformanceIndicators/Controller.php:605
 msgid "The specific chart this stat referrers to."
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:587
+#: src/API/Reports/PerformanceIndicators/Controller.php:611
 msgid "Human readable label for the stat."
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:593
+#: src/API/Reports/PerformanceIndicators/Controller.php:617
 msgid "Format of the stat."
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:600
+#: src/API/Reports/PerformanceIndicators/Controller.php:624
 msgid ""
 "Value of the stat. Returns null if the stat does not exist or cannot be "
 "loaded."
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:631
+#: src/API/Reports/PerformanceIndicators/Controller.php:655
 msgid "There was an issue loading the report endpoints"
 msgstr ""
 
-#: src/API/Reports/PerformanceIndicators/Controller.php:641
+#: src/API/Reports/PerformanceIndicators/Controller.php:665
 #. translators: Allowed values is a list of stat endpoints.
 msgid "Limit response to specific report stats. Allowed values: %s."
 msgstr ""
@@ -2062,7 +2062,7 @@ msgstr ""
 #: client/analytics/report/products/table-variations.js:79
 #: client/analytics/report/products/table.js:94
 #: client/analytics/report/stock/table.js:202
-#: client/header/activity-panel/index.js:132
+#: client/header/activity-panel/index.js:142
 #: client/header/activity-panel/panels/stock/index.js:83
 msgid "Stock"
 msgstr ""
@@ -2588,7 +2588,7 @@ msgstr ""
 msgid "Shipping Label"
 msgstr ""
 
-#: src/Loader.php:779
+#: src/Loader.php:796
 #. translators: %1$s: updated title, %2$s: blog info name
 msgid "%1$s &lsaquo; %2$s"
 msgstr ""
@@ -2597,97 +2597,97 @@ msgstr ""
 msgid "WooCommerce Admin"
 msgstr ""
 
-#: src/Loader.php:946
+#: src/Loader.php:963
 msgid "Settings for WooCommerce admin reporting."
 msgstr ""
 
-#: src/Loader.php:965
+#: src/Loader.php:982
 msgid "Excluded report order statuses"
 msgstr ""
 
-#: src/Loader.php:966
+#: src/Loader.php:983
 msgid "Statuses that should not be included when calculating report totals."
 msgstr ""
 
-#: src/Loader.php:974
+#: src/Loader.php:991
 msgid "Actionable order statuses"
 msgstr ""
 
-#: src/Loader.php:975
+#: src/Loader.php:992
 msgid "Statuses that require extra action on behalf of the store admin."
 msgstr ""
 
-#: src/Loader.php:983 src/Loader.php:984
+#: src/Loader.php:1000 src/Loader.php:1001
 msgid "Default Date Range"
 msgstr ""
 
 #: src/Notes/DataStore.php:127
-msgid "Invalid data store for admin note."
+msgid "Invalid admin note"
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:341
+#: src/Notes/WC_Admin_Note.php:342
 msgid "The admin note name prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:354
+#: src/Notes/WC_Admin_Note.php:355
 msgid "The admin note type prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:362
+#: src/Notes/WC_Admin_Note.php:363
 #. translators: %s: admin note type.
 msgid "The admin note type prop (%s) is not one of the supported types."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:378
+#: src/Notes/WC_Admin_Note.php:379
 msgid "The admin note locale prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:391
+#: src/Notes/WC_Admin_Note.php:392
 msgid "The admin note title prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:431
+#: src/Notes/WC_Admin_Note.php:432
 msgid "The admin note content prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:448
+#: src/Notes/WC_Admin_Note.php:449
 msgid "The admin note content_data prop must be an instance of stdClass."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:461
+#: src/Notes/WC_Admin_Note.php:462
 msgid "The admin note status prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:469
+#: src/Notes/WC_Admin_Note.php:470
 #. translators: %s: admin note status property.
 msgid "The admin note status prop (%s) is not one of the supported statuses."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:485
+#: src/Notes/WC_Admin_Note.php:486
 msgid "The admin note source prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:498
+#: src/Notes/WC_Admin_Note.php:499
 msgid "The admin note date prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:543
+#: src/Notes/WC_Admin_Note.php:544
 msgid "The admin note layout has a wrong prop value."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:582
+#: src/Notes/WC_Admin_Note.php:583
 msgid "The admin note action name prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Note.php:586
+#: src/Notes/WC_Admin_Note.php:587
 msgid "The admin note action label prop cannot be empty."
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Choose_Niche.php:54
+#: src/Notes/WC_Admin_Notes_Choose_Niche.php:57
 msgid "How to choose a niche for your online store"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Choose_Niche.php:55
+#: src/Notes/WC_Admin_Notes_Choose_Niche.php:58
 msgid ""
 "Your niche defines the products and services you develop. It directs your "
 "marketing. It focuses your attention on specific problems facing your "
@@ -2695,17 +2695,17 @@ msgid ""
 "five guiding principles to define your niche."
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Choose_Niche.php:63
+#: src/Notes/WC_Admin_Notes_Choose_Niche.php:65
 #: src/Notes/WC_Admin_Notes_Draw_Attention.php:77
 #: src/Notes/WC_Admin_Notes_EU_VAT_Number.php:53
 #: src/Notes/WC_Admin_Notes_Migrate_From_Shopify.php:70
 #: src/Notes/WC_Admin_Notes_Mobile_App.php:47
 #: src/Notes/WC_Admin_Notes_Onboarding_Payments.php:71
-#: src/Notes/WC_Admin_Notes_Online_Clothing_Store.php:86
+#: src/Notes/WC_Admin_Notes_Online_Clothing_Store.php:89
 #: src/Notes/WC_Admin_Notes_Order_Milestones.php:241
 #: src/Notes/WC_Admin_Notes_Real_Time_Order_Alerts.php:57
-#: src/Notes/WC_Admin_Notes_Start_Dropshipping_Business.php:69
-#: src/Notes/WC_Admin_Notes_WooCommerce_Payments.php:105
+#: src/Notes/WC_Admin_Notes_Start_Dropshipping_Business.php:75
+#: src/Notes/WC_Admin_Notes_WooCommerce_Payments.php:108
 #: client/header/activity-panel/panels/orders.js:73
 #: client/header/activity-panel/panels/reviews.js:206
 #: client/profile-wizard/steps/product-types.js:144
@@ -2763,17 +2763,17 @@ msgstr ""
 msgid "Collect and validate EU VAT numbers at checkout"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_First_Product.php:66
+#: src/Notes/WC_Admin_Notes_First_Product.php:69
 msgid "Do you need help with adding your first product?"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_First_Product.php:67
+#: src/Notes/WC_Admin_Notes_First_Product.php:70
 msgid ""
 "This video tutorial will help you go through the process of adding your "
 "first product in WooCommerce."
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_First_Product.php:74
+#: src/Notes/WC_Admin_Notes_First_Product.php:77
 #: src/Notes/WC_Admin_Notes_Learn_More_About_Product_Settings.php:77
 msgid "Watch tutorial"
 msgstr ""
@@ -2795,17 +2795,17 @@ msgstr ""
 msgid "Share feedback"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Historical_Data.php:72
+#: src/Notes/WC_Admin_Notes_Historical_Data.php:76
 msgid "WooCommerce Admin: Historical Analytics Data"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Historical_Data.php:73
+#: src/Notes/WC_Admin_Notes_Historical_Data.php:77
 msgid ""
 "To view your historical analytics data, you must process your existing "
 "orders and customers."
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Historical_Data.php:81
+#: src/Notes/WC_Admin_Notes_Historical_Data.php:85
 msgid "Get Started"
 msgstr ""
 
@@ -2885,17 +2885,17 @@ msgstr ""
 msgid "Install Woo mobile app"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Need_Some_Inspiration.php:51
+#: src/Notes/WC_Admin_Notes_Need_Some_Inspiration.php:54
 msgid "Do you need some inspiration?"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Need_Some_Inspiration.php:52
+#: src/Notes/WC_Admin_Notes_Need_Some_Inspiration.php:55
 msgid ""
 "Check some of our favorite customer stories from entrepreneurs, agencies, "
 "and developers in our global community."
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Need_Some_Inspiration.php:59
+#: src/Notes/WC_Admin_Notes_Need_Some_Inspiration.php:62
 msgid "See success stories"
 msgstr ""
 
@@ -2958,11 +2958,11 @@ msgstr ""
 msgid "Skip Setup"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Online_Clothing_Store.php:78
+#: src/Notes/WC_Admin_Notes_Online_Clothing_Store.php:81
 msgid "Start your online clothing store"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Online_Clothing_Store.php:79
+#: src/Notes/WC_Admin_Notes_Online_Clothing_Store.php:82
 msgid ""
 "Starting a fashion website is exciting but it may seem overwhelming as "
 "well. In this article, we'll walk you through the setup process, teach you "
@@ -3031,11 +3031,11 @@ msgstr ""
 msgid "Get real-time order alerts anywhere"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Start_Dropshipping_Business.php:60
+#: src/Notes/WC_Admin_Notes_Start_Dropshipping_Business.php:67
 msgid "Are you considering starting a dropshipping business?"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_Start_Dropshipping_Business.php:61
+#: src/Notes/WC_Admin_Notes_Start_Dropshipping_Business.php:68
 msgid ""
 "The ability to add inventory without having to deal with production, "
 "stocking, or fulfilling orders may seem like a dream. But is dropshipping "
@@ -3062,17 +3062,17 @@ msgstr ""
 msgid "Activate usage tracking"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_WooCommerce_Payments.php:99
+#: src/Notes/WC_Admin_Notes_WooCommerce_Payments.php:102
 msgid "Try the new way to get paid"
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_WooCommerce_Payments.php:100
+#: src/Notes/WC_Admin_Notes_WooCommerce_Payments.php:103
 msgid ""
 "Securely accept credit and debit cards on your site. Manage transactions "
 "without leaving your WordPress dashboard. Only with WooCommerce Payments."
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_WooCommerce_Payments.php:106
+#: src/Notes/WC_Admin_Notes_WooCommerce_Payments.php:109
 msgid "Install now"
 msgstr ""
 
@@ -3089,7 +3089,7 @@ msgid ""
 "expiration periods."
 msgstr ""
 
-#: src/Notes/WC_Admin_Notes_WooCommerce_Subscriptions.php:54
+#: src/Notes/WC_Admin_Notes_WooCommerce_Subscriptions.php:53
 msgid "Learn More"
 msgstr ""
 
@@ -4427,62 +4427,62 @@ msgstr ""
 msgid "Display Stats:"
 msgstr ""
 
-#: client/header/activity-panel/index.js:119
+#: client/header/activity-panel/index.js:128
 #: client/header/activity-panel/panels/inbox/index.js:137
 msgid "Inbox"
 msgstr ""
 
-#: client/header/activity-panel/index.js:142
+#: client/header/activity-panel/index.js:152
 #: client/header/activity-panel/panels/reviews.js:272
 msgid "Reviews"
 msgstr ""
 
-#: client/header/activity-panel/index.js:248
+#: client/header/activity-panel/index.js:258
 msgid "unread activity"
 msgstr ""
 
-#: client/header/activity-panel/index.js:265
+#: client/header/activity-panel/index.js:275
 msgid "View Activity Panel, you have unread activity"
 msgstr ""
 
-#: client/header/activity-panel/index.js:269
+#: client/header/activity-panel/index.js:279
 msgid "View Activity Panel"
 msgstr ""
 
-#: client/header/activity-panel/index.js:274
+#: client/header/activity-panel/index.js:284
 msgid "Store Activity"
 msgstr ""
 
-#: client/header/activity-panel/index.js:285
+#: client/header/activity-panel/index.js:295
 msgid "Close Activity Panel"
 msgstr ""
 
-#: client/header/activity-panel/panels/inbox/card.js:163
+#: client/header/activity-panel/panels/inbox/card.js:146
 msgid "Dismiss"
 msgstr ""
 
-#: client/header/activity-panel/panels/inbox/card.js:177
+#: client/header/activity-panel/panels/inbox/card.js:160
 msgid "Dismiss this message"
 msgstr ""
 
-#: client/header/activity-panel/panels/inbox/card.js:190
+#: client/header/activity-panel/panels/inbox/card.js:173
 msgid "Dismiss all messages"
 msgstr ""
 
-#: client/header/activity-panel/panels/inbox/card.js:209
+#: client/header/activity-panel/panels/inbox/card.js:192
 msgid "Yes, I'm sure"
 msgstr ""
 
-#: client/header/activity-panel/panels/inbox/card.js:221
+#: client/header/activity-panel/panels/inbox/card.js:205
 #: client/wp-admin-scripts/print-shipping-label-banner/dismiss-modal/index.js:58
 msgid "Are you sure?"
 msgstr ""
 
-#: client/header/activity-panel/panels/inbox/card.js:229
+#: client/header/activity-panel/panels/inbox/card.js:213
 msgid "Dismissed messages cannot be viewed again"
 msgstr ""
 
-#: client/header/activity-panel/panels/inbox/card.js:239
+#: client/header/activity-panel/panels/inbox/card.js:223
 #: client/header/activity-panel/panels/stock/card.js:93
 msgid "Cancel"
 msgstr ""
