@@ -13,7 +13,6 @@ import interpolateComponents from 'interpolate-components';
  * WooCommerce dependencies
  */
 import { Card, H, Link } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	pluginNames,
 	ONBOARDING_STORE_NAME,
