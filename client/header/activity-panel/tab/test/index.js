@@ -1,8 +1,22 @@
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import PagesIcon from 'gridicons/dist/pages';
 
 import { Tab } from '../index';
+
+const renderTab = () =>
+	render(
+		<Tab
+			icon={ null }
+			title={ 'Hello World' }
+			name={ 'overview' }
+			unread={ false }
+			selected
+			isPanelOpen
+			index={ 0 }
+			onTabClick={ () => {} }
+		/>
+	);
 
 describe( 'ActivityPanel Tab', () => {
 	it( 'displays a title and unread status based on props', () => {
@@ -131,11 +145,103 @@ describe( 'ActivityPanel Tab', () => {
 		expect( tab ).toHaveAttribute( 'tabindex', '-1' );
 	} );
 
-	// it( 'calls the onTabClick handler if a tab is clicked', () => {} );
+	it( 'calls the onTabClick handler if a tab is clicked', () => {
+		const onTabClickSpy = jest.fn();
 
-	// it( 'has an is-active class if isPanelOpen is true', () => {} );
+		const { getByRole } = render(
+			<Tab
+				icon={ <PagesIcon /> }
+				title={ 'Hello World' }
+				name={ 'overview' }
+				unread={ false }
+				selected={ false }
+				isPanelOpen={ true }
+				index={ 1 }
+				onTabClick={ onTabClickSpy }
+			/>
+		);
 
-	// it( 'has an is-unread class if unread is true', () => {} );
+		fireEvent.click( getByRole( 'tab' ) );
 
-	// it( 'controls aria-is-selected based on selected prop', () => {} );
+		expect( onTabClickSpy ).toHaveBeenCalledTimes( 1 );
+	} );
+
+	it( 'derives aria-controls and id from the name prop', () => {
+		const nameProp = 'some-name';
+		const { getByRole } = render(
+			<Tab
+				icon={ <PagesIcon /> }
+				title={ 'Hello World' }
+				name={ nameProp }
+				unread={ false }
+				selected={ false }
+				isPanelOpen={ true }
+				index={ 1 }
+				onTabClick={ () => {} }
+			/>
+		);
+		const tab = getByRole( 'tab' );
+
+		expect( tab ).toHaveAttribute(
+			'aria-controls',
+			`activity-panel-${ nameProp }`
+		);
+
+		expect( tab ).toHaveAttribute(
+			'id',
+			`activity-panel-tab-${ nameProp }`
+		);
+	} );
+
+	it( 'has an is-active class if isPanelOpen is true', () => {
+		const { getByRole, rerender } = renderTab();
+		expect( getByRole( 'tab' ) ).toHaveClass( 'is-active' );
+
+		rerender(
+			<Tab
+				icon={ <PagesIcon /> }
+				title={ 'Hello World' }
+				name={ 'overview' }
+				unread={ false }
+				selected={ false }
+				isPanelOpen={ false }
+				index={ 1 }
+				onTabClick={ () => {} }
+			/>
+		);
+
+		expect( getByRole( 'tab' ) ).not.toHaveClass( 'is-active' );
+	} );
+
+	it( 'has an has-unread class if unread is true', () => {
+		const { getByRole, rerender } = render(
+			<Tab
+				icon={ <PagesIcon /> }
+				title={ 'Hello World' }
+				name={ 'overview' }
+				unread={ true }
+				selected={ false }
+				isPanelOpen={ false }
+				index={ 1 }
+				onTabClick={ () => {} }
+			/>
+		);
+
+		expect( getByRole( 'tab' ) ).toHaveClass( 'has-unread' );
+
+		rerender(
+			<Tab
+				icon={ <PagesIcon /> }
+				title={ 'Hello World' }
+				name={ 'overview' }
+				unread={ false }
+				selected={ false }
+				isPanelOpen={ false }
+				index={ 1 }
+				onTabClick={ () => {} }
+			/>
+		);
+
+		expect( getByRole( 'tab' ) ).not.toHaveClass( 'has-unread' );
+	} );
 } );
