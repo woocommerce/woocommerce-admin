@@ -2,7 +2,7 @@ import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import PagesIcon from 'gridicons/dist/pages';
 
-import { Tab } from '../index';
+import { Tab } from '../';
 
 const renderTab = () =>
 	render(
