@@ -134,16 +134,15 @@ export class ActivityPanel extends Component {
 
 		// Don't show the inbox on the Home screen.
 		const { location } = this.props.getHistory();
-		const showInbox = isEmbedded || ! window.wcAdminFeatures.homescreen || location.pathname !== '/';
+		const showInbox =
+			isEmbedded ||
+			! window.wcAdminFeatures.homescreen ||
+			location.pathname !== '/';
 		const isPerformingSetupTask =
 			query.task &&
 			! query.path &&
 			( requestingTaskListOptions === true ||
-				(
-					taskListHidden === false &&
-					taskListComplete === false
-				)
-			);
+				( taskListHidden === false && taskListComplete === false ) );
 
 		return [
 			! isPerformingSetupTask && showInbox
@@ -185,11 +184,7 @@ export class ActivityPanel extends Component {
 			isPerformingSetupTask && {
 				name: 'help',
 				title: __( 'Help', 'woocommerce-admin' ),
-				icon: (
-					<i className="material-icons-outlined">
-						support
-					</i>
-				),
+				icon: <i className="material-icons-outlined">support</i>,
 			},
 		].filter( Boolean );
 	}
@@ -372,24 +367,21 @@ export default compose(
 		const hasUnreadOrders = getUnreadOrders( select );
 		const hasUnreadStock = getUnreadStock();
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
-<<<<<<< HEAD
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
 		let requestingTaskListOptions, taskListComplete, taskListHidden;
 
 		if ( isOnboardingEnabled() ) {
-			taskListComplete = getOption( 'woocommerce_task_list_complete' ) === 'yes';
-			taskListHidden = getOption( 'woocommerce_task_list_hidden' ) === 'yes';
+			taskListComplete =
+				getOption( 'woocommerce_task_list_complete' ) === 'yes';
+			taskListHidden =
+				getOption( 'woocommerce_task_list_hidden' ) === 'yes';
 			requestingTaskListOptions =
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
 				] ) ||
-				isResolving( 'getOption', [
-					'woocommerce_task_list_hidden',
-				] );
+				isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] );
 		}
-=======
->>>>>>> 1088ee5f... linter errors
 
 		return {
 			hasUnreadNotes,

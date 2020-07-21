@@ -18,7 +18,6 @@ const RecommendedExtensionsItem = ( {
 	product,
 	category,
 } ) => {
-
 	const onProductClick = () => {
 		recordEvent( 'marketing_recommended_extension', { name: title } );
 	};

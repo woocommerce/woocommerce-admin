@@ -212,7 +212,10 @@ export class Controller extends Component {
 			'paged'
 		);
 
-		if ( prevProps.query.paged > 1 && ! isEqual( prevBaseQuery, baseQuery ) ) {
+		if (
+			prevProps.query.paged > 1 &&
+			! isEqual( prevBaseQuery, baseQuery )
+		) {
 			getHistory().replace( getNewPath( { paged: 1 } ) );
 		}
 
