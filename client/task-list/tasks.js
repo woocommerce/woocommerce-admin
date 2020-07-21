@@ -2,7 +2,7 @@
  * External dependencies
  */
 
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
 /**
@@ -20,7 +20,7 @@ import { Fragment } from '@wordpress/element';
  * Internal dependencies
  */
 import Appearance from './tasks/appearance';
-import { getProductIdsForCart } from 'dashboard/utils';
+import { getGroupedOnboardingProducts } from 'dashboard/utils';
 import Products from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
@@ -69,16 +69,12 @@ export function getAllTasks( {
 		shippingZonesCount: 0,
 	} );
 
-	const productIds = getProductIdsForCart(
+	const groupedProducts = getGroupedOnboardingProducts(
 		profileItems,
-		true,
 		installedPlugins
 	);
-	const remainingProductIds = getProductIdsForCart(
-		profileItems,
-		false,
-		installedPlugins
-	);
+
+	const { products, remainingProducts, uniqueItemsList } = groupedProducts;
 
 	const paymentsCompleted = Boolean(
 		taskListPayments && taskListPayments.completed
@@ -93,6 +89,11 @@ export function getAllTasks( {
 		completed: profilerCompleted,
 		product_types: productTypes,
 	} = profileItems;
+
+	const purchaseAndInstallText =
+		uniqueItemsList.length === 1
+			? `Purchase & install ${ uniqueItemsList[ 0 ].name } ${ uniqueItemsList[ 0 ].type }`
+			: 'Purchase & install extensions';
 
 	const tasks = [
 		{
@@ -111,16 +112,19 @@ export function getAllTasks( {
 		},
 		{
 			key: 'purchase',
-			title: __( 'Purchase & install extensions', 'woocommerce-admin' ),
+			title: sprintf(
+				__( '%s', 'woocommerce-admin' ),
+				purchaseAndInstallText
+			),
 			container: null,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
 					task_name: 'purchase',
 				} );
-				return remainingProductIds.length ? toggleCartModal() : null;
+				return remainingProducts.length ? toggleCartModal() : null;
 			},
-			visible: productIds.length,
-			completed: productIds.length && ! remainingProductIds.length,
+			visible: products.length,
+			completed: products.length && ! remainingProducts.length,
 			time: __( '2 minutes', 'woocommerce-admin' ),
 			isDismissable: true,
 		},
