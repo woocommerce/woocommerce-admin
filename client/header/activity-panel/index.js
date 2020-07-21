@@ -68,7 +68,10 @@ export class ActivityPanel extends Component {
 	togglePanel( { name: tabName }, isTabOpen ) {
 		this.setState( ( state ) => {
 			const isPanelSwitching =
-				tabName !== state.currentTab && state.currentTab !== '';
+				tabName !== state.currentTab &&
+				state.currentTab !== '' &&
+				isTabOpen &&
+				state.isPanelOpen;
 
 			return {
 				isPanelOpen: isTabOpen,
@@ -80,11 +83,9 @@ export class ActivityPanel extends Component {
 	}
 
 	clearPanel() {
-		this.setState( ( { isPanelOpen, ...otherState } ) =>
-			isPanelOpen
-				? { isPanelSwitching: false, isPanelOpen, ...otherState }
-				: { currentTab: '', isPanelOpen, ...otherState }
-		);
+		this.setState( ( state ) => {
+			return { ...state, isPanelSwitching: false };
+		} );
 	}
 
 	// On smaller screen, the panel buttons are hidden behind a toggle.
@@ -223,8 +224,6 @@ export class ActivityPanel extends Component {
 				'is-switching': isPanelSwitching,
 			}
 		);
-
-		console.log( isPanelSwitching );
 
 		const clearPanel = () => {
 			this.clearPanel();
