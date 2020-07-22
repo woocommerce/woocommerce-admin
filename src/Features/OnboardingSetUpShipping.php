@@ -42,7 +42,9 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
-		// Return if there are existing shipping methods.
+		if ( ! self::are_there_existing_shipping_zones() ) {
+			return;
+		}
 
 		self::turn_on_printing_shipping_labels();
 		self::set_up_free_local_shipping();
@@ -52,7 +54,20 @@ class OnboardingSetUpShipping {
 	}
 
 	/**
+	 * Are there existing shipping zones?
+	 *
+	 * @return bool
+	 */
+	private static function are_there_existing_shipping_zones() {
+		$zone_count = count( \WC_Shipping_Zones::get_zones() );
+
+		return $zone_count > 0;
+	}
+
+	/**
 	 * Is 'physical' selected as a product type?
+	 *
+	 * @return bool
 	 */
 	private static function is_physical_selected_as_product_type() {
 		$onboarding_data = get_option( Onboarding::PROFILE_DATA_OPTION );
