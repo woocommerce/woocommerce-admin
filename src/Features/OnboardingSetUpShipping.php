@@ -7,6 +7,8 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
+use \Automattic\WooCommerce\Admin\PluginsHelper;
+
 /**
  * This contains logic for setting up shipping when the profiler completes.
  */
@@ -32,7 +34,10 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
-		// Return if WCS isn't installed and active.
+		if ( ! PluginsHelper::is_plugin_active( 'woocommerce-services' ) ) {
+			return;
+		}
+
 		// Return unless Physical is selected as a product type.
 		// Return if there are existing shipping methods.
 
