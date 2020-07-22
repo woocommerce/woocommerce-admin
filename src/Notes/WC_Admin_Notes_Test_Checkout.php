@@ -83,7 +83,7 @@ class WC_Admin_Notes_Test_Checkout {
 			return;
 		}
 
-		$content = __( 'Make sure that your checkout is working properly before your launch your store. Go through your checkout process in its entirety: from adding a product to your cart, choosing a shipping location, and making a payment.', 'woocommerce-admin' );
+		$content = __( 'Make sure that your checkout is working properly before you launch your store. Go through your checkout process in its entirety: from adding a product to your cart, choosing a shipping location, and making a payment.', 'woocommerce-admin' );
 
 		$note = new WC_Admin_Note();
 		$note->set_title( __( 'Don\'t forget to test your checkout', 'woocommerce-admin' ) );
