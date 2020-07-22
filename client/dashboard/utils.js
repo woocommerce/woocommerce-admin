@@ -105,7 +105,7 @@ export function getGroupedOnboardingProducts( profileItems, installedPlugins ) {
  * Gets a product list for items based on the product types and theme selected in the onboarding profiler.
  *
  * @param {Object} profileItems Onboarding profile.
- * @param {boolean} includeInstalledItems Include installed items in returned product IDs.
+ * @param {boolean} includeInstalledItems Include installed items in returned product list.
  * @param {Array} installedPlugins Installed plugins.
  * @return {Array} Products.
  */
