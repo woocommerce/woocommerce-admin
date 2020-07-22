@@ -38,7 +38,10 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
-		// Return unless Physical is selected as a product type.
+		if ( ! self::is_physical_selected_as_product_type() ) {
+			return;
+		}
+
 		// Return if there are existing shipping methods.
 
 		self::turn_on_printing_shipping_labels();
@@ -46,6 +49,23 @@ class OnboardingSetUpShipping {
 		self::disable_international_shipping();
 		self::add_review_shipping_settings_note();
 		self::track_shipping_automatically_set_up_event();
+	}
+
+	/**
+	 * Is 'physical' selected as a product type?
+	 */
+	private static function is_physical_selected_as_product_type() {
+		$onboarding_data = get_option( Onboarding::PROFILE_DATA_OPTION );
+
+		if ( ! isset( $onboarding_data['product_types'] ) ) {
+			return false;
+		}
+
+		if ( ! in_array( 'physical', $onboarding_data['product_types'], true ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
