@@ -78,7 +78,7 @@ class WC_Admin_Notes_Test_Checkout {
 		}
 
 		$oldest_product_timestamp = $products[0]->get_date_created()->getTimestamp();
-		$half_hour_in_seconds     = 0.5 * HOUR_IN_SECONDS;
+		$half_hour_in_seconds     = 30 * MINUTE_IN_SECONDS;
 		if ( ( time() - $oldest_product_timestamp ) > $half_hour_in_seconds ) {
 			return;
 		}
