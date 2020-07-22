@@ -28,13 +28,34 @@ class OnboardingSetUpShipping {
 	 * Set up shipping.
 	 */
 	public static function on_onboarding_profile_completed() {
-		// Only do this if there are no existing shipping methods.
+		if ( ! self::is_jetpack_installed_and_connected() ) {
+			return;
+		}
+
+		// Return if WCS isn't installed and active.
+		// Return unless Physical is selected as a product type.
+		// Return if there are existing shipping methods.
 
 		self::turn_on_printing_shipping_labels();
 		self::set_up_free_local_shipping();
 		self::disable_international_shipping();
-		self::trigger_review_shipping_settings_note();
+		self::add_review_shipping_settings_note();
 		self::track_shipping_automatically_set_up_event();
+	}
+
+	/**
+	 * Is Jetpack installed and connected?
+	 *
+	 * @return bool
+	 */
+	private static function is_jetpack_installed_and_connected() {
+		if ( ! class_exists( '\Jetpack_Data' ) ) {
+			return false;
+		}
+
+		$user_token = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
+
+		return isset( $user_token->external_user_id );
 	}
 
 	/**
@@ -53,9 +74,9 @@ class OnboardingSetUpShipping {
 	private static function disable_international_shipping() {}
 
 	/**
-	 * Trigger the "Review your shipping settings" admin note.
+	 * Add the "Review your shipping settings" admin note.
 	 */
-	private static function trigger_review_shipping_settings_note() {}
+	private static function add_review_shipping_settings_note() {}
 
 	/**
 	 * Track the shipping_automatically_set_up event.
