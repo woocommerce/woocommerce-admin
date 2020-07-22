@@ -46,7 +46,6 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
-		self::turn_on_printing_shipping_labels();
 		self::set_up_free_local_shipping();
 		self::disable_international_shipping();
 		self::add_review_shipping_settings_note();
@@ -97,11 +96,6 @@ class OnboardingSetUpShipping {
 
 		return isset( $user_token->external_user_id );
 	}
-
-	/**
-	 * Turn on printing of shipping labels.
-	 */
-	private static function turn_on_printing_shipping_labels() {}
 
 	/**
 	 * Set up free local shipping.
