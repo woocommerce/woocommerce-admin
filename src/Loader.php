@@ -295,7 +295,7 @@ class Loader {
 		wc_admin_register_page(
 			array(
 				'title'  => 'Profiler',
-				'parent' => 'woocommerce',
+				'parent' => '',
 				'path'   => '/profiler',
 			)
 		);
