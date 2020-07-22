@@ -91,10 +91,6 @@ export function getGroupedOnboardingProducts( profileItems, installedPlugins ) {
 	productList.uniqueItemsList = uniqueItemsList.map( ( product ) => {
 		let cleanedProduct;
 		if ( product.label ) {
-			const splittedLabel = product.label.split( ' — ' );
-			if ( Array.isArray( splittedLabel ) ) {
-				product.label = splittedLabel[ 0 ];
-			}
 			cleanedProduct = { type: 'extension', name: product.label };
 		} else {
 			cleanedProduct = { type: 'theme', name: product.title };
