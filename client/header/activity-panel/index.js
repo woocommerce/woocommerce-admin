@@ -14,7 +14,7 @@ import classnames from 'classnames';
 /**
  * WooCommerce dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
+import { getSetting, getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section, Spinner } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { getHistory } from '@woocommerce/navigation';
@@ -51,6 +51,7 @@ const ReviewsPanel = lazy( () =>
 
 import withSelect from 'wc-api/with-select';
 import { Tabs } from './tabs';
+import { SetupProgress } from './setup-progress';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
@@ -82,6 +83,14 @@ export class ActivityPanel extends Component {
 		} );
 	}
 
+	closePanel() {
+		this.setState( ( state ) => ( {
+			...state,
+			isPanelOpen: false,
+			currentTab: '',
+		} ) );
+	}
+
 	clearPanel() {
 		this.setState( ( state ) => {
 			return { ...state, isPanelSwitching: false };
@@ -99,15 +108,14 @@ export class ActivityPanel extends Component {
 	}
 
 	handleClickOutside( event ) {
-		const { isPanelOpen, currentTab } = this.state;
+		const { isPanelOpen } = this.state;
 		const isClickOnModalOrSnackbar =
 			event.target.closest(
 				'.woocommerce-inbox-dismiss-confirmation_modal'
 			) || event.target.closest( '.components-snackbar__action' );
 
 		if ( isPanelOpen && ! isClickOnModalOrSnackbar ) {
-			// TODO probably have to handle click outside in the tab?
-			this.togglePanel( { name: currentTab }, false );
+			this.closePanel();
 		}
 	}
 
@@ -136,6 +144,27 @@ export class ActivityPanel extends Component {
 			! query.path &&
 			( requestingTaskListOptions === true ||
 				( taskListHidden === false && taskListComplete === false ) );
+
+		if ( ! taskListComplete && showInbox ) {
+			return [
+				{
+					name: 'inbox',
+					title: __( 'Inbox', 'woocommerce-admin' ),
+					icon: <i className="material-icons-outlined">inbox</i>,
+					unread: hasUnreadNotes,
+				},
+				{
+					name: 'setup',
+					title: __( 'Store Setup', 'woocommerce-admin' ),
+					icon: <SetupProgress />,
+				},
+				isPerformingSetupTask && {
+					name: 'help',
+					title: __( 'Help', 'woocommerce-admin' ),
+					icon: <i className="material-icons-outlined">support</i>,
+				},
+			].filter( Boolean );
+		}
 
 		return [
 			! isPerformingSetupTask && showInbox
@@ -183,24 +212,23 @@ export class ActivityPanel extends Component {
 	}
 
 	getPanelContent( tab ) {
+		const { hasUnreadOrders, query, hasUnapprovedReviews } = this.props;
+		const { task } = query;
+
 		switch ( tab ) {
 			case 'inbox':
 				return <InboxPanel />;
 			case 'orders':
-				const { hasUnreadOrders } = this.props;
 				return <OrdersPanel hasActionableOrders={ hasUnreadOrders } />;
 			case 'stock':
 				return <StockPanel />;
 			case 'reviews':
-				const { hasUnapprovedReviews } = this.props;
 				return (
 					<ReviewsPanel
 						hasUnapprovedReviews={ hasUnapprovedReviews }
 					/>
 				);
 			case 'help':
-				const { query } = this.props;
-				const { task } = query;
 				return <HelpPanel taskName={ task } />;
 			default:
 				return null;
@@ -209,12 +237,21 @@ export class ActivityPanel extends Component {
 
 	renderPanel() {
 		const { isPanelOpen, currentTab, isPanelSwitching } = this.state;
-
 		const tab = find( this.getTabs(), { name: currentTab } );
+
 		if ( ! tab ) {
 			return (
 				<div className="woocommerce-layout__activity-panel-wrapper" />
 			);
+		}
+
+		const clearPanel = () => {
+			this.clearPanel();
+		};
+
+		if ( currentTab === 'setup' ) {
+			window.location = getAdminLink( 'admin.php?page=wc-admin' );
+			return null;
 		}
 
 		const classNames = classnames(
@@ -224,10 +261,6 @@ export class ActivityPanel extends Component {
 				'is-switching': isPanelSwitching,
 			}
 		);
-
-		const clearPanel = () => {
-			this.clearPanel();
-		};
 
 		return (
 			<div
@@ -253,7 +286,7 @@ export class ActivityPanel extends Component {
 
 	render() {
 		const tabs = this.getTabs();
-		const { mobileOpen, currentTab } = this.state;
+		const { mobileOpen, currentTab, isPanelOpen } = this.state;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
 			'is-mobile-open': this.state.mobileOpen,
@@ -304,6 +337,7 @@ export class ActivityPanel extends Component {
 						{
 							<Tabs
 								tabs={ tabs }
+								tabOpen={ isPanelOpen }
 								selectedTab={ currentTab }
 								onTabClick={ ( tab, tabOpen ) => {
 									this.togglePanel( tab, tabOpen );
