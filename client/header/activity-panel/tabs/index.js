@@ -1,14 +1,27 @@
 import { NavigableMenu } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
 import { Tab } from '../tab';
 import { recordEvent } from 'lib/tracks';
 
-export const Tabs = ( { tabs, onTabClick, selectedTab: selectedTabName } ) => {
+export const Tabs = ( {
+	tabs,
+	onTabClick,
+	selectedTab: selectedTabName,
+	tabOpen = false,
+} ) => {
 	const [ tabState, setTabState ] = useState( {
-		tabOpen: false,
+		tabOpen,
 		currentTab: selectedTabName,
 	} );
+
+	// Keep state synced with props
+	useEffect( () => {
+		setTabState( {
+			tabOpen,
+			currentTab: selectedTabName,
+		} );
+	}, [ tabOpen, selectedTabName ] );
 
 	return (
 		<NavigableMenu
@@ -25,7 +38,7 @@ export const Tabs = ( { tabs, onTabClick, selectedTab: selectedTabName } ) => {
 						selected={ tabState.currentTab === tab.name }
 						{ ...tab }
 						onTabClick={ () => {
-							const tabOpen =
+							const isTabOpen =
 								tabState.currentTab === tab.name ||
 								tabState.currentTab === ''
 									? ! tabState.tabOpen
@@ -33,7 +46,7 @@ export const Tabs = ( { tabs, onTabClick, selectedTab: selectedTabName } ) => {
 
 							// If a panel is being opened, or if an existing panel is already open and a different one is being opened, record a track.
 							if (
-								! tabOpen ||
+								! isTabOpen ||
 								tabState.currentTab !== tab.name
 							) {
 								recordEvent( 'activity_panel_open', {
@@ -41,8 +54,11 @@ export const Tabs = ( { tabs, onTabClick, selectedTab: selectedTabName } ) => {
 								} );
 							}
 
-							setTabState( { tabOpen, currentTab: tab.name } );
-							onTabClick( tab, tabOpen );
+							setTabState( {
+								tabOpen: isTabOpen,
+								currentTab: tab.name,
+							} );
+							onTabClick( tab, isTabOpen );
 						} }
 					/>
 				) ) }
