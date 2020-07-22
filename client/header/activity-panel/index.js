@@ -334,16 +334,14 @@ export class ActivityPanel extends Component {
 						) }
 					</Button>
 					<div className={ panelClasses }>
-						{
-							<Tabs
-								tabs={ tabs }
-								tabOpen={ isPanelOpen }
-								selectedTab={ currentTab }
-								onTabClick={ ( tab, tabOpen ) => {
-									this.togglePanel( tab, tabOpen );
-								} }
-							/>
-						}
+						<Tabs
+							tabs={ tabs }
+							tabOpen={ isPanelOpen }
+							selectedTab={ currentTab }
+							onTabClick={ ( tab, tabOpen ) => {
+								this.togglePanel( tab, tabOpen );
+							} }
+						/>
 						{ this.renderPanel() }
 					</div>
 				</Section>
