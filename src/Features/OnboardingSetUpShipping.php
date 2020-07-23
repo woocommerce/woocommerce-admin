@@ -49,7 +49,7 @@ class OnboardingSetUpShipping {
 
 		self::set_up_free_local_shipping();
 		WC_Admin_Notes_Review_Shipping_Settings::possibly_add_note();
-		self::track_shipping_automatically_set_up_event();
+		wc_admin_record_tracks_event( 'shipping_automatically_set_up' );
 	}
 
 	/**
@@ -128,9 +128,4 @@ class OnboardingSetUpShipping {
 		$zone->save();
 		$zone->add_shipping_method( 'free_shipping' );
 	}
-
-	/**
-	 * Track the shipping_automatically_set_up event.
-	 */
-	private static function track_shipping_automatically_set_up_event() {}
 }
