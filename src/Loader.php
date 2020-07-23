@@ -556,12 +556,19 @@ class Loader {
 		}
 
 		foreach ( $dependencies_of_type->queue as $dependency_handle ) {
-			$dependency = $dependencies_of_type->registered[ $dependency_handle ];
+			$dependency = $dependencies_of_type->query( $dependency_handle, 'registered' );
+
+			if ( false === $dependency ) {
+				continue;
+			}
 
 			// Preload the subdependencies first.
 			foreach ( $dependency->deps as $sub_dependency_handle ) {
-				$sub_dependency = $dependencies_of_type->registered[ $sub_dependency_handle ];
-				self::maybe_output_preload_link_tag( $sub_dependency, $type, $whitelist );
+				$sub_dependency = $dependencies_of_type->query( $sub_dependency_handle, 'registered' );
+
+				if ( $sub_dependency ) {
+					self::maybe_output_preload_link_tag( $sub_dependency, $type, $whitelist );
+				}
 			}
 
 			self::maybe_output_preload_link_tag( $dependency, $type, $whitelist );
