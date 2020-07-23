@@ -8,6 +8,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\PluginsHelper;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Review_Shipping_Settings;
 
 /**
  * This contains logic for setting up shipping when the profiler completes.
@@ -47,7 +48,7 @@ class OnboardingSetUpShipping {
 		}
 
 		self::set_up_free_local_shipping();
-		self::add_review_shipping_settings_note();
+		WC_Admin_Notes_Review_Shipping_Settings::possibly_add_note();
 		self::track_shipping_automatically_set_up_event();
 	}
 
@@ -127,11 +128,6 @@ class OnboardingSetUpShipping {
 		$zone->save();
 		$zone->add_shipping_method( 'free_shipping' );
 	}
-
-	/**
-	 * Add the "Review your shipping settings" admin note.
-	 */
-	private static function add_review_shipping_settings_note() {}
 
 	/**
 	 * Track the shipping_automatically_set_up event.
