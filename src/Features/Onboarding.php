@@ -144,6 +144,12 @@ class Onboarding {
 			return;
 		}
 
+		/**
+		 * Action hook fired when the onboarding profile (or onboarding wizard,
+		 * or profiler) is completed.
+		 *
+		 * @since 1.5.0
+		 */
 		do_action( 'woocommerce_onboarding_profile_completed' );
 	}
 
