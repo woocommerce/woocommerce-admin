@@ -519,16 +519,16 @@ class Loader {
 
 	/**
 	 * Render a preload link tag for a dependency, optionally
-	 * checked against a provided whitelist.
+	 * checked against a provided allowlist.
 	 *
 	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
 	 *
 	 * @param WP_Dependency $dependency The WP_Dependency being preloaded.
 	 * @param string        $type Dependency type - 'script' or 'style'.
-	 * @param array         $whitelist Optional. List of allowed dependency handles.
+	 * @param array         $allowlist Optional. List of allowed dependency handles.
 	 */
-	public static function maybe_output_preload_link_tag( $dependency, $type, $whitelist = array() ) {
-		if ( ! empty( $whitelist ) && ! in_array( $dependency->handle, $whitelist, true ) ) {
+	public static function maybe_output_preload_link_tag( $dependency, $type, $allowlist = array() ) {
+		if ( ! empty( $allowlist ) && ! in_array( $dependency->handle, $allowlist, true ) ) {
 			return;
 		}
 
@@ -539,14 +539,14 @@ class Loader {
 
 	/**
 	 * Output a preload link tag for dependencies (and their sub dependencies)
-	 * with an optional whitelist.
+	 * with an optional allowlist.
 	 *
 	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
 	 *
 	 * @param string $type Dependency type - 'script' or 'style'.
-	 * @param array  $whitelist Optional. List of allowed dependency handles.
+	 * @param array  $allowlist Optional. List of allowed dependency handles.
 	 */
-	public static function output_header_preload_tags_for_type( $type, $whitelist = array() ) {
+	public static function output_header_preload_tags_for_type( $type, $allowlist = array() ) {
 		if ( 'script' === $type ) {
 			$dependencies_of_type = wp_scripts();
 		} elseif ( 'style' === $type ) {
@@ -567,11 +567,11 @@ class Loader {
 				$sub_dependency = $dependencies_of_type->query( $sub_dependency_handle, 'registered' );
 
 				if ( $sub_dependency ) {
-					self::maybe_output_preload_link_tag( $sub_dependency, $type, $whitelist );
+					self::maybe_output_preload_link_tag( $sub_dependency, $type, $allowlist );
 				}
 			}
 
-			self::maybe_output_preload_link_tag( $dependency, $type, $whitelist );
+			self::maybe_output_preload_link_tag( $dependency, $type, $allowlist );
 		}
 	}
 
