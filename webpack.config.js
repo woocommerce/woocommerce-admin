@@ -24,7 +24,6 @@ const WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'development';
 const externals = {
 	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
 	'@wordpress/blocks': { this: [ 'wp', 'blocks' ] },
-	'@wordpress/data': { this: [ 'wp', 'data' ] },
 	'@wordpress/editor': { this: [ 'wp', 'editor' ] },
 	'@wordpress/element': { this: [ 'wp', 'element' ] },
 	'@wordpress/hooks': { this: [ 'wp', 'hooks' ] },
@@ -220,10 +219,11 @@ const webpackConfig = {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
-		WC_ADMIN_PHASE !== 'core' && new UnminifyWebpackPlugin( {
-			test: /\.js($|\?)/i,
-			mainEntry: 'app/index.min.js',
-		} ),
+		WC_ADMIN_PHASE !== 'core' &&
+			new UnminifyWebpackPlugin( {
+				test: /\.js($|\?)/i,
+				mainEntry: 'app/index.min.js',
+			} ),
 	].filter( Boolean ),
 	optimization: {
 		minimize: NODE_ENV !== 'development',
@@ -231,10 +231,7 @@ const webpackConfig = {
 	},
 };
 
-if (
-	webpackConfig.mode !== 'production' &&
-	WC_ADMIN_PHASE !== 'core'
-) {
+if ( webpackConfig.mode !== 'production' && WC_ADMIN_PHASE !== 'core' ) {
 	webpackConfig.devtool = process.env.SOURCEMAP || 'source-map';
 }
 
