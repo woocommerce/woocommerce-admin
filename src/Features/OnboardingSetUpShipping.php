@@ -100,7 +100,34 @@ class OnboardingSetUpShipping {
 	/**
 	 * Set up free local shipping.
 	 */
-	private static function set_up_free_local_shipping() {}
+	private static function set_up_free_local_shipping() {
+		$default_country = apply_filters(
+			'woocommerce_get_base_location',
+			get_option( 'woocommerce_default_country' )
+		);
+
+		if ( ! $default_country ) {
+			return;
+		}
+
+		$country_code = explode( ':', $default_country )[0];
+		$zone         = new \WC_Shipping_Zone();
+
+		$zone->add_location( $country_code, 'country' );
+
+		$countries = apply_filters(
+			'woocommerce_countries',
+			include WC()->plugin_path() . '/i18n/countries.php'
+		);
+		$zone_name = isset( $countries[ $country_code ] )
+			? $countries[ $country_code ]
+			: null;
+
+		$zone->set_zone_name( $zone_name );
+
+		$zone->save();
+		$zone->add_shipping_method( 'free_shipping' );
+	}
 
 	/**
 	 * Disable international shipping.
