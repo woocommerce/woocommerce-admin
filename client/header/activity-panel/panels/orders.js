@@ -34,8 +34,13 @@ import { QUERY_DEFAULTS } from 'wc-api/constants';
 import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
 import withSelect from 'wc-api/with-select';
 import { CurrencyContext } from 'lib/currency-context';
+import { recordEvent } from 'lib/tracks';
 
 class OrdersPanel extends Component {
+	recordOrderEvent( eventName ) {
+		recordEvent( `activity_panel_${ eventName }`, {} );
+	}
+
 	renderEmptyCard() {
 		const { hasNonActionableOrders } = this.props;
 		if ( hasNonActionableOrders ) {
@@ -146,6 +151,9 @@ class OrdersPanel extends Component {
 									href={ getAdminLink(
 										'post.php?action=edit&post=' + orderId
 									) }
+									onClick={ () =>
+										this.recordOrderEvent( 'order_number' )
+									}
 									type="wp-admin"
 								/>
 							),
@@ -156,7 +164,13 @@ class OrdersPanel extends Component {
 								/>
 							) : null,
 							customerLink: customerUrl ? (
-								<Link href={ customerUrl } type="wc-admin" />
+								<Link
+									href={ customerUrl }
+									onClick={ () =>
+										this.recordOrderEvent( 'customer_name' )
+									}
+									type="wc-admin"
+								/>
 							) : (
 								<span />
 							),
@@ -204,6 +218,11 @@ class OrdersPanel extends Component {
 							href={ getAdminLink(
 								'post.php?action=edit&post=' + order.order_id
 							) }
+							onClick={ () =>
+								this.recordOrderEvent(
+									'orders_begin_fulfillment'
+								)
+							}
 						>
 							{ __( 'Begin fulfillment' ) }
 						</Button>
@@ -219,7 +238,10 @@ class OrdersPanel extends Component {
 		return (
 			<Fragment>
 				{ cards }
-				<ActivityOutboundLink href={ 'edit.php?post_type=shop_order' }>
+				<ActivityOutboundLink
+					href={ 'edit.php?post_type=shop_order' }
+					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
+				>
 					{ __( 'Manage all orders', 'woocommerce-admin' ) }
 				</ActivityOutboundLink>
 			</Fragment>
