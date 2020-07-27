@@ -9,6 +9,11 @@ export function __experimentalResolveSelect( reducerKey ) {
 	return getResolveSelectors( select( reducerKey ) );
 }
 
+/**
+ * Returns a promise that resolves once a selector has finished resolving.
+ * This is directly pulled from https://github.com/WordPress/gutenberg/blob/909c9274b2440de5f6049ffddfcc8e0e6158df2d/packages/data/src/registry.js#L91-L130
+ * and will be removed in favor of the @wordpress/data function.
+ */
 const getResolveSelectors = memize(
 	( selectors ) => {
 		return mapValues(
