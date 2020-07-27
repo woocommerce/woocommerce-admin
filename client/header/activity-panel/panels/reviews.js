@@ -167,7 +167,7 @@ class ReviewsPanel extends Component {
 		let buttonTarget = '';
 		let buttonText = '';
 		let content = '';
-		let eventName = '';
+		let eventName = 'learn_more';
 
 		if ( lastApprovedReviewTime ) {
 			const now = new Date();
@@ -231,7 +231,6 @@ class ReviewsPanel extends Component {
 					</p>
 				</Fragment>
 			);
-			eventName = 'learn_more';
 		}
 
 		return (
