@@ -64,14 +64,10 @@ class Stripe extends Component {
 	}
 
 	requiresManualConfig() {
-		const { activePlugins, isJetpackConnected } = this.props;
+		const { isJetpackConnected } = this.props;
 		const { oAuthConnectFailed } = this.state;
 
-		return (
-			! isJetpackConnected ||
-			! activePlugins.includes( 'woocommerce-services' ) ||
-			oAuthConnectFailed
-		);
+		return ! isJetpackConnected || oAuthConnectFailed;
 	}
 
 	completeMethod() {
