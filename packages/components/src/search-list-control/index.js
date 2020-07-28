@@ -109,7 +109,7 @@ export class SearchListControl extends Component {
 		const re = new RegExp( escapeRegExp( search ), 'i' );
 		this.props.debouncedSpeak( messages.updated );
 		const filteredList = list
-			.map( ( item ) => ( re.test( item.name ) ? item : false ) )
+			.map( ( item ) => ( re.test( item.name ) ? item : false)  )
 			.filter( Boolean );
 		return isHierarchical
 			? buildTermsTree( filteredList, list )
