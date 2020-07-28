@@ -15,9 +15,18 @@ export const WelcomeModal = () => {
 	return (
 		<Guide
 			pages={ [
-				{ content: <AScene /> },
-				{ content: <AnotherScene /> },
-				{ content: <OneMoreScene /> },
+				{
+					image: <AScene />,
+					content: <>Hello world</>,
+				},
+				{
+					image: <AScene />,
+					content: <>Hello World</>,
+				},
+				{
+					image: <AScene />,
+					content: <>Hello world</>,
+				},
 			] }
 		/>
 	);
