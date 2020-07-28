@@ -34,6 +34,7 @@ import './style.scss';
 import CartModal from 'dashboard/components/cart-modal';
 import { getAllTasks, recordTaskViewEvent } from './tasks';
 import { recordEvent } from 'lib/tracks';
+import { WelcomeModal } from './welcome-modal';
 
 class TaskDashboard extends Component {
 	constructor( props ) {
@@ -363,6 +364,7 @@ class TaskDashboard extends Component {
 						</Fragment>
 					) }
 				</div>
+				<WelcomeModal />
 				{ isCartModalOpen && (
 					<CartModal
 						onClose={ () => this.toggleCartModal() }
