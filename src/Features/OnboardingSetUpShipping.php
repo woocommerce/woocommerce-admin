@@ -31,19 +31,11 @@ class OnboardingSetUpShipping {
 	 * Set up shipping.
 	 */
 	public static function on_onboarding_profile_completed() {
-		if ( ! self::is_jetpack_installed_and_connected() ) {
-			return;
-		}
-
-		if ( ! PluginsHelper::is_plugin_active( 'woocommerce-services' ) ) {
-			return;
-		}
-
 		if ( ! self::is_physical_selected_as_product_type() ) {
 			return;
 		}
 
-		if ( ! self::are_there_existing_shipping_zones() ) {
+		if ( self::are_there_existing_shipping_zones() ) {
 			return;
 		}
 
@@ -80,21 +72,6 @@ class OnboardingSetUpShipping {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Is Jetpack installed and connected?
-	 *
-	 * @return bool
-	 */
-	private static function is_jetpack_installed_and_connected() {
-		if ( ! class_exists( '\Jetpack_Data' ) ) {
-			return false;
-		}
-
-		$user_token = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
-
-		return isset( $user_token->external_user_id );
 	}
 
 	/**
