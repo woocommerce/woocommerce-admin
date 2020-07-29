@@ -76,59 +76,66 @@
 	}
 
 	.woocommerce-task-dashboard__welcome-modal {
-		width: 400px;
-
-		.components-modal__header-heading-container {
-			justify-content: center;
-		}
-
-		.components-modal__header-heading {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			font-size: 20px;
-		}
-
-		.woocommerce-task-dashboard__welcome-modal-icon {
-			font-size: 56px;
-			margin-bottom: $gap;
-		}
+		max-width: 517px;
+		height: 460px;
 
 		.components-modal__header {
-			height: auto;
-			margin-bottom: $gap;
-			position: static;
+			height: 0;
+
+			.components-button {
+				color: $white;
+			}
 		}
 
-		.components-modal__content {
-			padding: $gap * 2;
-			text-align: center;
+		.components-guide__container {
+			margin-top: 0;
+
+			.woocommerce-task-dashboard__welcome-modal__page-content {
+				padding: 0 24px;
+
+				.woocommerce-task-dashboard__welcome-modal__page-content__header {
+					font-size: 24px;
+					line-height: 32px;
+					margin: 0 0 24px 0;
+				}
+
+				.woocommerce-task-dashboard__welcome-modal__page-content__body {
+					font-size: 16px;
+					line-height: 24px;
+					margin: 0 0 24px 0;
+				}
+			}
 		}
 
-		.woocommerce-task-dashboard__welcome-modal-message p {
-			font-size: 16px;
-			color: $studio-gray-60;
-		}
+		.components-guide__footer {
+			padding: 0;
+			margin: 0 24px 24px 24px;
+			justify-content: flex-end;
+			width: initial;
 
-		.components-modal__header .components-icon-button {
-			position: absolute;
-			left: auto;
-			right: 0;
-			top: 0;
-			padding: $gap;
-
-			&:hover {
-				box-shadow: none;
+			.components-guide__finish-button,
+			.components-guide__forward-button,
+			.components-guide__back-button {
+				position: initial;
+				padding: 10px 16px;
+				font-weight: 500;
+				font-size: 14px;
+				line-height: 18px;
 			}
 
-			svg {
-				width: 30px;
-				height: 30px;
+			.components-guide__forward-button,
+			.components-guide__back-button {
+				color: var(--wp-admin-theme-color);
 			}
 
-			svg path {
-				fill: $studio-gray-60;
+			.components-guide__forward-button,
+			.components-guide__finish-button {
+				margin-left: 10px;
+			}
+
+			.components-guide__forward-button {
+				box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color);
+				outline: 1px solid transparent;
 			}
 		}
 	}

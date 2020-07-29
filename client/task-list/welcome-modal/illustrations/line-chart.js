@@ -1,9 +1,9 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React from '@wordpress/element';
 
-export const AScene = () => {
+export const LineChartIllustration = () => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
