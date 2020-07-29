@@ -35,7 +35,7 @@ this["wc"] = this["wc"] || {}; this["wc"]["app"] =
 /******/
 /******/ 	// object to store loaded CSS chunks
 /******/ 	var installedCssChunks = {
-/******/ 		19: 0
+/******/ 		20: 0
 /******/ 	}
 /******/ 	var isCssRtlEnabled = function() {
 /******/ 		return document.dir === 'rtl';
@@ -45,14 +45,14 @@ this["wc"] = this["wc"] || {}; this["wc"]["app"] =
 /******/ 	// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 	// Promise = chunk loading, 0 = chunk loaded
 /******/ 	var installedChunks = {
-/******/ 		19: 0
+/******/ 		20: 0
 /******/ 	};
 /******/
 /******/
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "chunks/" + chunkId + "." + {"0":"8e26c0dc69c2fbc3b477","1":"e1c8e02fb4cc487e41ea","2":"9367ee984c36b762467c","3":"871edd9752bd1e966af3","4":"6536213eda1b3b7be25c","5":"30560009f3613b60a98f","6":"565075ec01231f27c77d","7":"f128ffef3f1542d90b88","8":"7d9e16563a68292b6b52","9":"656fdc0ca7358fd2c4df","10":"741b0732ffd836fa3293","11":"a6c81353d61d43ca90c5","12":"c99fdc48e6426047a8a3","13":"f2d5d7a32099f6780413","14":"acb3b03c93a24744f0d1","15":"69724bccd94e280d4498","16":"66c64721855f7a9339c5","17":"35aa3f3f84dbcf9b57a2","18":"0243544077f891d2fb5e","23":"950cf0c14b859edf05cf","24":"671580068836b8a3cd9f","25":"2330991cd7ed80b2e048","28":"b3799df6276b98c5f240","29":"a4bae7e120611b086b52","31":"f754cd83be484c1223db","33":"d957c7a8df6afc345752","41":"71e3bc0e2e38ee5dcce1","42":"11cc196c5f0cb3a17439","43":"a2826a74c4640df7ec04","44":"565d9df28ca73ade3400","45":"4cdb70db78bd66b55380","46":"d63b531e1cf44069dac6","47":"d85dab31d57568e01d7a","48":"eb11cd8899cc6d720e4b","49":"1b4feeefdb2eaeb76b5c"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "chunks/" + chunkId + "." + {"0":"807d6e1809f4991fa907","1":"e1c8e02fb4cc487e41ea","2":"9367ee984c36b762467c","3":"f7c0fca32cdac1ba4add","4":"27a2fa3f1ef8662ba455","5":"88800d5332efd00d661a","6":"fe82c7bafbd1c82cece8","7":"2ae760efec968acd9eca","8":"1fde2df723551e19bad1","9":"28b11ea4a01212cca6c7","10":"6e5e757ab15373ddf47c","11":"b3e2eb89a0181fa5e2f2","12":"81a5de16019a0cc85173","13":"2a0a9c9a9543a94e0408","14":"49811bcba1b9d3f84157","15":"413a29db1c4e7f2eefdb","16":"1a3c8e4420d552b12da0","17":"b72560c96ee6b8cc0379","18":"641586025741e6eaf968","19":"eb511aac4da1306199c8","24":"1638e9bc628250a9f64e","25":"22002b888fd496ab0bcb","26":"3e3f9f7255f3350affb3","29":"d82487c6523d08e53b6d","30":"9bbf7b5f14fd288036ac","32":"8359029241f4148734e6","34":"44ef8509679f54ad2c98","42":"48572b505167be20c1dd","43":"2f9cc9ecefe7511d3048","44":"e536ad012d121468cce4","45":"5e06cffaff8645bfd280","46":"5999667eb5ce84f5f4f9","47":"29a2aff1aafb89a2d76b","48":"eb11cd8899cc6d720e4b","49":"94f13463bcd370f6f957"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -86,7 +86,7 @@ this["wc"] = this["wc"] || {}; this["wc"]["app"] =
 /******/
 /******/
 /******/ 		// mini-css-extract-plugin CSS loading
-/******/ 		var cssChunks = {"0":1,"4":1,"6":1,"7":1,"8":1,"13":1,"18":1,"24":1,"25":1,"28":1,"29":1,"31":1,"33":1,"41":1,"42":1,"43":1,"44":1};
+/******/ 		var cssChunks = {"0":1,"5":1,"7":1,"8":1,"9":1,"14":1,"19":1,"25":1,"26":1,"29":1,"30":1,"32":1,"34":1,"42":1,"43":1,"44":1,"45":1};
 /******/ 		if(installedCssChunks[chunkId]) promises.push(installedCssChunks[chunkId]);
 /******/ 		else if(installedCssChunks[chunkId] !== 0 && cssChunks[chunkId]) {
 /******/ 			promises.push(installedCssChunks[chunkId] = new Promise(function(resolve, reject) {
@@ -2746,7 +2746,7 @@ var regenerator = __webpack_require__(76);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(68);
+var asyncToGenerator = __webpack_require__(67);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
 var esm_extends = __webpack_require__(12);
@@ -3867,7 +3867,7 @@ module.exports = hoistNonReactStatics;
 /* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_hooks__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(22);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23);
 /* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(197);
 /**
  * External dependencies
@@ -3886,31 +3886,31 @@ var manageStock = Object(_settings__WEBPACK_IMPORTED_MODULE_3__[/* getSetting */
  */
 
 var RevenueReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-revenue */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(15)]).then(__webpack_require__.bind(null, 738));
+  return Promise.all(/* import() | analytics-report-revenue */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(16)]).then(__webpack_require__.bind(null, 738));
 });
 var ProductsReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-products */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(14)]).then(__webpack_require__.bind(null, 739));
+  return Promise.all(/* import() | analytics-report-products */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(5), __webpack_require__.e(15)]).then(__webpack_require__.bind(null, 739));
 });
 var OrdersReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-orders */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(13)]).then(__webpack_require__.bind(null, 742));
+  return Promise.all(/* import() | analytics-report-orders */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(14)]).then(__webpack_require__.bind(null, 740));
 });
 var CategoriesReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-categories */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, 737));
+  return Promise.all(/* import() | analytics-report-categories */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(5), __webpack_require__.e(10)]).then(__webpack_require__.bind(null, 736));
 });
 var CouponsReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-coupons */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(10)]).then(__webpack_require__.bind(null, 741));
+  return Promise.all(/* import() | analytics-report-coupons */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(11)]).then(__webpack_require__.bind(null, 741));
 });
 var TaxesReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-taxes */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(17)]).then(__webpack_require__.bind(null, 740));
+  return Promise.all(/* import() | analytics-report-taxes */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(18)]).then(__webpack_require__.bind(null, 742));
 });
 var DownloadsReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-downloads */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(12)]).then(__webpack_require__.bind(null, 743));
+  return Promise.all(/* import() | analytics-report-downloads */[__webpack_require__.e(2), __webpack_require__.e(0), __webpack_require__.e(13)]).then(__webpack_require__.bind(null, 743));
 });
 var StockReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-stock */[__webpack_require__.e(0), __webpack_require__.e(16)]).then(__webpack_require__.bind(null, 735));
+  return Promise.all(/* import() | analytics-report-stock */[__webpack_require__.e(0), __webpack_require__.e(17)]).then(__webpack_require__.bind(null, 735));
 });
 var CustomersReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-customers */[__webpack_require__.e(0), __webpack_require__.e(11)]).then(__webpack_require__.bind(null, 736));
+  return Promise.all(/* import() | analytics-report-customers */[__webpack_require__.e(0), __webpack_require__.e(12)]).then(__webpack_require__.bind(null, 737));
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (function () {
@@ -3987,7 +3987,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var _woocommerce_components__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(53);
 /* harmony import */ var _woocommerce_components__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_components__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _woocommerce_navigation__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(23);
+/* harmony import */ var _woocommerce_navigation__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(22);
 /* harmony import */ var _woocommerce_navigation__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_navigation__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(439);
 /* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_style_scss__WEBPACK_IMPORTED_MODULE_12__);
@@ -5069,10 +5069,10 @@ var external_lodash_ = __webpack_require__(2);
 var external_this_wc_components_ = __webpack_require__(53);
 
 // EXTERNAL MODULE: external {"this":["wc","navigation"]}
-var external_this_wc_navigation_ = __webpack_require__(23);
+var external_this_wc_navigation_ = __webpack_require__(22);
 
 // EXTERNAL MODULE: ./client/settings/index.js
-var settings = __webpack_require__(22);
+var settings = __webpack_require__(23);
 
 // EXTERNAL MODULE: external {"this":["wc","data"]}
 var external_this_wc_data_ = __webpack_require__(43);
@@ -5130,19 +5130,19 @@ var AnalyticsReport = Object(external_this_wp_element_["lazy"])(function () {
   return Promise.resolve(/* import() */).then(__webpack_require__.bind(null, 197));
 });
 var AnalyticsSettings = Object(external_this_wp_element_["lazy"])(function () {
-  return __webpack_require__.e(/* import() | analytics-settings */ 18).then(__webpack_require__.bind(null, 930));
+  return __webpack_require__.e(/* import() | analytics-settings */ 19).then(__webpack_require__.bind(null, 922));
 });
 var Dashboard = Object(external_this_wp_element_["lazy"])(function () {
-  return __webpack_require__.e(/* import() | dashboard */ 24).then(__webpack_require__.bind(null, 911));
+  return __webpack_require__.e(/* import() | dashboard */ 25).then(__webpack_require__.bind(null, 911));
 });
 var DevDocs = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | devdocs */[__webpack_require__.e(1), __webpack_require__.e(46), __webpack_require__.e(28)]).then(__webpack_require__.bind(null, 934));
+  return Promise.all(/* import() | devdocs */[__webpack_require__.e(1), __webpack_require__.e(47), __webpack_require__.e(29)]).then(__webpack_require__.bind(null, 924));
 });
 var Homescreen = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | homescreen */[__webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(5), __webpack_require__.e(47), __webpack_require__.e(29)]).then(__webpack_require__.bind(null, 931));
+  return Promise.all(/* import() | homescreen */[__webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(4), __webpack_require__.e(6), __webpack_require__.e(30)]).then(__webpack_require__.bind(null, 921));
 });
 var MarketingOverview = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | marketing-overview */[__webpack_require__.e(1), __webpack_require__.e(48), __webpack_require__.e(33)]).then(__webpack_require__.bind(null, 932));
+  return Promise.all(/* import() | marketing-overview */[__webpack_require__.e(1), __webpack_require__.e(48), __webpack_require__.e(34)]).then(__webpack_require__.bind(null, 923));
 });
 
 var TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
@@ -5158,7 +5158,7 @@ var controller_getPages = function getPages() {
       breadcrumbs: function breadcrumbs(_ref) {
         var location = _ref.location;
 
-        var _getUrlParams = Object(utils["a" /* getUrlParams */])(location.search),
+        var _getUrlParams = Object(utils["b" /* getUrlParams */])(location.search),
             component = _getUrlParams.component;
 
         if (component) {
@@ -5401,7 +5401,7 @@ var dist = __webpack_require__(406);
 var dist_default = /*#__PURE__*/__webpack_require__.n(dist);
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/components/build-module/button/index.js
-var build_module_button = __webpack_require__(67);
+var build_module_button = __webpack_require__(68);
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/components/build-module/navigable-container/menu.js + 1 modules
 var menu = __webpack_require__(418);
@@ -5457,7 +5457,7 @@ toggle_bubble_ActivityPanelToggleBubble.propTypes = {
 };
 /* harmony default export */ var toggle_bubble = (toggle_bubble_ActivityPanelToggleBubble);
 // EXTERNAL MODULE: ./client/analytics/settings/config.js + 1 modules
-var config = __webpack_require__(270);
+var config = __webpack_require__(271);
 
 // EXTERNAL MODULE: ./client/wc-api/constants.js
 var constants = __webpack_require__(33);
@@ -5610,6 +5610,7 @@ function activity_panel_isNativeReflectConstruct() { if (typeof Reflect === "und
 
 
 
+
 /**
  * Internal dependencies
  */
@@ -5618,17 +5619,18 @@ function activity_panel_isNativeReflectConstruct() { if (typeof Reflect === "und
 
 
 
+
 var InboxPanel = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | activity-panels-inbox */[__webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(45), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, 792));
+  return Promise.all(/* import() | activity-panels-inbox */[__webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(4), __webpack_require__.e(46), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, 792));
 });
 var OrdersPanel = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | activity-panels-orders */[__webpack_require__.e(1), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, 935));
+  return Promise.all(/* import() | activity-panels-orders */[__webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(8)]).then(__webpack_require__.bind(null, 927));
 });
 var StockPanel = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | activity-panels-stock */[__webpack_require__.e(1), __webpack_require__.e(8)]).then(__webpack_require__.bind(null, 937));
+  return Promise.all(/* import() | activity-panels-stock */[__webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, 928));
 });
 var ReviewsPanel = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | activity-panels-inbox */[__webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(45), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, 925));
+  return Promise.all(/* import() | activity-panels-inbox */[__webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(4), __webpack_require__.e(46), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, 916));
 });
 
 
@@ -5732,15 +5734,21 @@ var activity_panel_ActivityPanel = /*#__PURE__*/function (_Component) {
           hasUnreadNotes = _this$props.hasUnreadNotes,
           hasUnreadOrders = _this$props.hasUnreadOrders,
           hasUnapprovedReviews = _this$props.hasUnapprovedReviews,
-          hasUnreadStock = _this$props.hasUnreadStock;
-      return [{
+          hasUnreadStock = _this$props.hasUnreadStock,
+          isEmbedded = _this$props.isEmbedded; // Don't show the inbox on the Home screen.
+
+      var _getHistory = Object(external_this_wc_navigation_["getHistory"])(),
+          location = _getHistory.location;
+
+      var showInbox = isEmbedded || !window.wcAdminFeatures.homescreen || location.pathname !== '/';
+      return [showInbox ? {
         name: 'inbox',
         title: Object(external_this_wp_i18n_["__"])('Inbox', 'woocommerce-admin'),
         icon: Object(external_this_wp_element_["createElement"])("i", {
           className: "material-icons-outlined"
         }, "inbox"),
         unread: hasUnreadNotes
-      }, {
+      } : null, {
         name: 'orders',
         title: Object(external_this_wp_i18n_["__"])('Orders', 'woocommerce-admin'),
         icon: Object(external_this_wp_element_["createElement"])(pages_default.a, null),
@@ -5893,7 +5901,7 @@ var activity_panel_ActivityPanel = /*#__PURE__*/function (_Component) {
   return ActivityPanel;
 }(external_this_wp_element_["Component"]);
 
-/* harmony default export */ var activity_panel = (Object(with_select["a" /* default */])(function (select) {
+/* harmony default export */ var activity_panel = (Object(compose["a" /* default */])(Object(with_select["a" /* default */])(function (select) {
   var hasUnreadNotes = getUnreadNotes(select);
   var hasUnreadOrders = getUnreadOrders(select);
   var hasUnreadStock = getUnreadStock();
@@ -5904,7 +5912,7 @@ var activity_panel_ActivityPanel = /*#__PURE__*/function (_Component) {
     hasUnreadStock: hasUnreadStock,
     hasUnapprovedReviews: hasUnapprovedReviews
   };
-})(dist_default()(activity_panel_ActivityPanel)));
+}), dist_default.a)(activity_panel_ActivityPanel));
 // CONCATENATED MODULE: ./client/header/index.js
 
 
@@ -6050,7 +6058,9 @@ var header_Header = /*#__PURE__*/function (_Component) {
         return Object(external_this_wp_element_["createElement"])("span", {
           key: i
         }, Object(external_this_wp_htmlEntities_["decodeEntities"])(sectionPiece));
-      })), window.wcAdminFeatures['activity-panels'] && Object(external_this_wp_element_["createElement"])(activity_panel, null));
+      })), window.wcAdminFeatures['activity-panels'] && Object(external_this_wp_element_["createElement"])(activity_panel, {
+        isEmbedded: isEmbedded
+      }));
     }
   }]);
 
@@ -6112,7 +6122,7 @@ var regenerator = __webpack_require__(76);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(68);
+var asyncToGenerator = __webpack_require__(67);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js + 3 modules
 var slicedToArray = __webpack_require__(19);
@@ -6406,7 +6416,7 @@ function layout_isNativeReflectConstruct() { if (typeof Reflect === "undefined" 
 
 
 var StoreAlerts = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | store-alerts */[__webpack_require__.e(3), __webpack_require__.e(42)]).then(__webpack_require__.bind(null, 936));
+  return Promise.all(/* import() | store-alerts */[__webpack_require__.e(4), __webpack_require__.e(43)]).then(__webpack_require__.bind(null, 926));
 });
 
 var layout_PrimaryLayout = /*#__PURE__*/function (_Component) {
@@ -6640,7 +6650,7 @@ var layout_EmbedLayout = /*#__PURE__*/function (_Component4) {
 /* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_hooks__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _woocommerce_currency__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
 /* harmony import */ var _woocommerce_currency__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_currency__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _woocommerce_wc_admin_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(22);
+/* harmony import */ var _woocommerce_wc_admin_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23);
 /**
  * External dependencies
  */
@@ -6864,6 +6874,13 @@ module.exports = _nonIterableSpread;
 /***/ }),
 
 /***/ 22:
+/***/ (function(module, exports) {
+
+(function() { module.exports = this["wc"]["navigation"]; }());
+
+/***/ }),
+
+/***/ 23:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6973,13 +6990,6 @@ function setSetting(name, value) {
 function getAdminLink(path) {
   return (ADMIN_URL || '') + path;
 }
-
-/***/ }),
-
-/***/ 23:
-/***/ (function(module, exports) {
-
-(function() { module.exports = this["wc"]["navigation"]; }());
 
 /***/ }),
 
@@ -9817,7 +9827,7 @@ module.exports = _getPrototypeOf;
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _woocommerce_components__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(53);
 /* harmony import */ var _woocommerce_components__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_components__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _woocommerce_wc_admin_settings__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(22);
+/* harmony import */ var _woocommerce_wc_admin_settings__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(23);
 
 
 
@@ -9920,7 +9930,14 @@ ReportError.defaultProps = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getUrlParams; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return getUrlParams; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getScreenName; });
+/**
+ * Get the URL params.
+ *
+ * @param {string} locationSearch - Querystring part of a URL, including the question mark (?).
+ * @return {Object} - URL params.
+ */
 function getUrlParams(locationSearch) {
   if (locationSearch) {
     return locationSearch.substr(1).split('&').reduce(function (params, query) {
@@ -9934,6 +9951,29 @@ function getUrlParams(locationSearch) {
 
   return {};
 }
+/**
+ * Get the current screen name.
+ *
+ * @return {string} - Screen name.
+ */
+
+function getScreenName() {
+  var screenName = '';
+
+  var _getUrlParams = getUrlParams(window.location.search),
+      page = _getUrlParams.page,
+      path = _getUrlParams.path,
+      postType = _getUrlParams.post_type;
+
+  if (page) {
+    var currentPage = page === 'wc-admin' ? 'home_screen' : page;
+    screenName = path ? path.replace(/\//g, '_').substring(1) : currentPage;
+  } else if (postType) {
+    screenName = postType;
+  }
+
+  return screenName;
+}
 
 /***/ }),
 
@@ -9944,7 +9984,7 @@ function getUrlParams(locationSearch) {
 
 /***/ }),
 
-/***/ 270:
+/***/ 271:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9969,7 +10009,7 @@ var lib = __webpack_require__(36);
 var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
 
 // EXTERNAL MODULE: ./client/settings/index.js
-var settings = __webpack_require__(22);
+var settings = __webpack_require__(23);
 
 // EXTERNAL MODULE: ./node_modules/qs/lib/index.js
 var qs_lib = __webpack_require__(66);
@@ -11248,7 +11288,7 @@ var _extends=Object.assign||function(a){for(var c,b=1;b<arguments.length;b++)for
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _wordpress_warning__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(410);
-/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(67);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(68);
 
 
 /**
@@ -13916,6 +13956,49 @@ module.exports = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _asyncToGenerator; });
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+/***/ }),
+
+/***/ 68:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* unused harmony export Button */
 /* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
 /* harmony import */ var _babel_runtime_helpers_esm_objectWithoutProperties__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
@@ -14063,49 +14146,6 @@ function Button(props, ref) {
 }
 /* harmony default export */ __webpack_exports__["a"] = (Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["forwardRef"])(Button));
 //# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 68:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _asyncToGenerator; });
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
 
 /***/ }),
 
@@ -19288,7 +19328,7 @@ var detect_outside_PopoverDetectOutside = /*#__PURE__*/function (_Component) {
 /* harmony default export */ var detect_outside = (Object(with_focus_outside["a" /* default */])(detect_outside_PopoverDetectOutside));
 //# sourceMappingURL=detect-outside.js.map
 // EXTERNAL MODULE: ./node_modules/@wordpress/components/build-module/button/index.js
-var build_module_button = __webpack_require__(67);
+var build_module_button = __webpack_require__(68);
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/components/build-module/scroll-lock/index.js
 

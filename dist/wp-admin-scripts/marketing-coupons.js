@@ -1033,7 +1033,7 @@ var extends_default = /*#__PURE__*/__webpack_require__.n(helpers_extends);
 var external_this_wp_element_ = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/components/build-module/button/index.js
-var build_module_button = __webpack_require__(67);
+var build_module_button = __webpack_require__(68);
 
 // EXTERNAL MODULE: ./node_modules/classnames/index.js
 var classnames = __webpack_require__(8);
@@ -1489,7 +1489,7 @@ module.exports = _nonIterableSpread;
 
 /***/ }),
 
-/***/ 22:
+/***/ 23:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1632,7 +1632,7 @@ module.exports = _getPrototypeOf;
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(27);
 /* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _woocommerce_wc_admin_settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(22);
+/* harmony import */ var _woocommerce_wc_admin_settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(23);
 
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -1930,7 +1930,7 @@ KnowledgeBase.defaultProps = {
 
 /***/ }),
 
-/***/ 271:
+/***/ 270:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2949,7 +2949,7 @@ var external_this_wp_dataControls_ = __webpack_require__(29);
 var external_this_wp_data_ = __webpack_require__(18);
 
 // EXTERNAL MODULE: ./client/settings/index.js
-var settings = __webpack_require__(22);
+var settings = __webpack_require__(23);
 
 // EXTERNAL MODULE: external "lodash"
 var external_lodash_ = __webpack_require__(2);
@@ -5337,7 +5337,7 @@ module.exports.isShallowEqualArrays = isShallowEqualArrays;
 
 /***/ }),
 
-/***/ 67:
+/***/ 68:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5535,13 +5535,13 @@ var external_this_wp_element_ = __webpack_require__(0);
 var external_this_wp_i18n_ = __webpack_require__(3);
 
 // EXTERNAL MODULE: ./client/settings/index.js
-var settings = __webpack_require__(22);
+var settings = __webpack_require__(23);
 
 // EXTERNAL MODULE: ./client/marketing/coupons/style.scss
 var style = __webpack_require__(708);
 
 // EXTERNAL MODULE: ./client/marketing/components/recommended-extensions/index.js + 1 modules
-var recommended_extensions = __webpack_require__(271);
+var recommended_extensions = __webpack_require__(270);
 
 // EXTERNAL MODULE: ./client/marketing/components/knowledge-base/index.js
 var knowledge_base = __webpack_require__(269);
@@ -7314,7 +7314,7 @@ var detect_outside_PopoverDetectOutside = /*#__PURE__*/function (_Component) {
 /* harmony default export */ var detect_outside = (Object(with_focus_outside["a" /* default */])(detect_outside_PopoverDetectOutside));
 //# sourceMappingURL=detect-outside.js.map
 // EXTERNAL MODULE: ./node_modules/@wordpress/components/build-module/button/index.js
-var build_module_button = __webpack_require__(67);
+var build_module_button = __webpack_require__(68);
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/components/build-module/scroll-lock/index.js
 
