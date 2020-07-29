@@ -60,7 +60,7 @@ const pages = [
 	},
 ];
 
-export const WelcomeModal = () => {
+export const WelcomeModal = ( { onClose } ) => {
 	const [ guideIsOpen, setGuideIsOpen ] = useState( true );
 
 	return (
@@ -69,6 +69,7 @@ export const WelcomeModal = () => {
 				<Guide
 					onFinish={ () => {
 						setGuideIsOpen( false );
+						onClose();
 					} }
 					className={ 'woocommerce-task-dashboard__welcome-modal' }
 					finishButtonText={ __( "Let's go" ) }
