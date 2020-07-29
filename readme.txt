@@ -71,6 +71,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.3.2 2020-07-29 =
+- Fix: bug preventing saving user preferences on WP 5.3. #4869
+
 = 1.3.1 2020-07-20 =
 - Fix: PHP Fatal errors when columns are missing from the Notes table. #4831
 
