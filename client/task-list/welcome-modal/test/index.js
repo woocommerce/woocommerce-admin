@@ -8,6 +8,9 @@ import '@testing-library/jest-dom';
  * Internal dependencies
  */
 import { WelcomeModal } from '../index';
+import { recordEvent } from 'lib/tracks';
+
+jest.mock( 'lib/tracks', () => ( { recordEvent: jest.fn() } ) );
 
 describe( 'WelcomeModal', () => {
 	it( 'should call onClose when it is closed', () => {
@@ -30,5 +33,21 @@ describe( 'WelcomeModal', () => {
 		fireEvent.click( queryAllByRole( 'button' )[ 0 ] );
 
 		expect( container ).toBeEmptyDOMElement();
+	} );
+
+	it( 'should track open and close', () => {
+		const { queryAllByRole } = render(
+			<WelcomeModal onClose={ () => {} } />
+		);
+
+		expect( recordEvent ).toHaveBeenLastCalledWith(
+			'task_list_welcome_modal_open'
+		);
+
+		fireEvent.click( queryAllByRole( 'button' )[ 0 ] );
+
+		expect( recordEvent ).toHaveBeenLastCalledWith(
+			'task_list_welcome_modal_close'
+		);
 	} );
 } );

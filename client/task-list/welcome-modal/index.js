@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useState } from '@wordpress/element';
+import React, { useState, useEffect } from '@wordpress/element';
 import { Guide } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -12,6 +12,7 @@ import { LineChartIllustration } from './illustrations/line-chart';
 import { InboxIllustration } from './illustrations/inbox';
 import { PieChartIllustration } from './illustrations/pie-chart';
 import { PageContent } from './page-content';
+import { recordEvent } from 'lib/tracks';
 
 const pages = [
 	{
@@ -63,6 +64,10 @@ const pages = [
 export const WelcomeModal = ( { onClose } ) => {
 	const [ guideIsOpen, setGuideIsOpen ] = useState( true );
 
+	useEffect( () => {
+		recordEvent( 'task_list_welcome_modal_open' );
+	}, [] );
+
 	return (
 		<>
 			{ guideIsOpen && (
@@ -70,6 +75,7 @@ export const WelcomeModal = ( { onClose } ) => {
 					onFinish={ () => {
 						setGuideIsOpen( false );
 						onClose();
+						recordEvent( 'task_list_welcome_modal_close' );
 					} }
 					className={ 'woocommerce-task-dashboard__welcome-modal' }
 					finishButtonText={ __( "Let's go" ) }
