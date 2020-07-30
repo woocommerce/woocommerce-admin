@@ -90,10 +90,20 @@ export function getAllTasks( {
 		product_types: productTypes,
 	} = profileItems;
 
-	const purchaseAndInstallText =
-		uniqueItemsList.length === 1
-			? `Purchase & install ${ uniqueItemsList[ 0 ].name } ${ uniqueItemsList[ 0 ].type }`
-			: 'Purchase & install extensions';
+	let purchaseAndInstallText = __( 'Purchase & install extensions' );
+
+	if ( uniqueItemsList.length === 1 ) {
+		const { name: itemName, type: itemType } = uniqueItemsList[ 0 ];
+		const type =
+			itemType === 'theme'
+				? __( 'theme', 'woocommerce-admin' )
+				: __( 'extension', 'woocommerce-admin' );
+		purchaseAndInstallText = sprintf(
+			__( 'Purchase & install %s %s', 'woocommerce-admin' ),
+			itemName,
+			type
+		);
+	}
 
 	const tasks = [
 		{
@@ -112,10 +122,7 @@ export function getAllTasks( {
 		},
 		{
 			key: 'purchase',
-			title: sprintf(
-				__( '%s', 'woocommerce-admin' ),
-				purchaseAndInstallText
-			),
+			title: purchaseAndInstallText,
 			container: null,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
