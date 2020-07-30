@@ -59,8 +59,9 @@ const CurrencyFactory = ( currencySetting ) => {
 	 */
 	function formatCurrency( number ) {
 		deprecated( 'Currency().formatCurrency', {
-			version: '1.3.0',
+			version: '4.3.0',
 			alternative: 'Currency().formatAmount',
+			plugin: 'WooCommerce',
 			hint: '`formatAmount` accepts the same arguments as formatCurrency',
 		} );
 		return formatAmount( number );
