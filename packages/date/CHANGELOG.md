@@ -1,3 +1,7 @@
+# 2.1.0
+
+-   Update to @wordpress/eslint coding standards.
+
 # 2.0.0
 
 ## Breaking changes

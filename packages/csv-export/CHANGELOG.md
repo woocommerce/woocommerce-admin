@@ -1,3 +1,7 @@
+# 1.3.0
+
+-   Update to @wordpress/eslint coding standards.
+
 # 1.2.0
 
 -   Properly escape values with double quotes.
