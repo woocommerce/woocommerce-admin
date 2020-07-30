@@ -34,7 +34,6 @@ import './style.scss';
 import CartModal from 'dashboard/components/cart-modal';
 import { getAllTasks, recordTaskViewEvent } from './tasks';
 import { recordEvent } from 'lib/tracks';
-import { WelcomeModal } from './welcome-modal';
 
 class TaskDashboard extends Component {
 	constructor( props ) {
@@ -270,7 +269,7 @@ class TaskDashboard extends Component {
 	}
 
 	render() {
-		const { query, modalDismissed, updateOptions } = this.props;
+		const { query } = this.props;
 		const { isCartModalOpen } = this.state;
 		const currentTask = this.getCurrentTask();
 		const listTasks = this.getVisibleTasks().map( ( task ) => {
@@ -362,15 +361,6 @@ class TaskDashboard extends Component {
 						</Fragment>
 					) }
 				</div>
-				{ ! modalDismissed && (
-					<WelcomeModal
-						onClose={ () => {
-							updateOptions( {
-								woocommerce_task_list_welcome_modal_dismissed: true,
-							} );
-						} }
-					/>
-				) }
 				{ isCartModalOpen && (
 					<CartModal
 						onClose={ () => this.toggleCartModal() }
@@ -398,9 +388,7 @@ export default compose(
 		const taskListPayments = getOption( 'woocommerce_task_list_payments' );
 		const trackedCompletedTasks =
 			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
-		const modalDismissed =
-			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ||
-			false;
+
 		const payments = getOption( 'woocommerce_task_list_payments' );
 		const dismissedTasks =
 			getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
@@ -415,7 +403,6 @@ export default compose(
 			installedPlugins,
 			isTaskListComplete,
 			payments,
-			modalDismissed,
 			profileItems,
 			taskListPayments,
 			trackedCompletedTasks,

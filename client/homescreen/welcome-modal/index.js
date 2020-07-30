@@ -8,11 +8,11 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { recordEvent } from 'lib/tracks';
 import { LineChartIllustration } from './illustrations/line-chart';
 import { InboxIllustration } from './illustrations/inbox';
 import { PieChartIllustration } from './illustrations/pie-chart';
 import { PageContent } from './page-content';
-import { recordEvent } from 'lib/tracks';
 
 const pages = [
 	{
@@ -77,7 +77,7 @@ export const WelcomeModal = ( { onClose } ) => {
 						onClose();
 						recordEvent( 'task_list_welcome_modal_close' );
 					} }
-					className={ 'woocommerce-task-dashboard__welcome-modal' }
+					className={ 'woocommerce__welcome-modal' }
 					finishButtonText={ __( "Let's go" ) }
 					pages={ pages }
 				/>
