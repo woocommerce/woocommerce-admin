@@ -52,6 +52,7 @@ const ReviewsPanel = lazy( () =>
 import withSelect from 'wc-api/with-select';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
+import { withDispatch } from '@wordpress/data';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
@@ -236,6 +237,7 @@ export class ActivityPanel extends Component {
 	}
 
 	renderPanel() {
+		const { updateOptions } = this.props;
 		const { isPanelOpen, currentTab, isPanelSwitching } = this.state;
 		const tab = find( this.getTabs(), { name: currentTab } );
 
@@ -250,7 +252,10 @@ export class ActivityPanel extends Component {
 		};
 
 		if ( currentTab === 'setup' ) {
-			window.location = getAdminLink( 'admin.php?page=wc-admin' );
+			// Ensure that if the user is trying to get to the task list they can see it even if
+			// it was dismissed.
+			updateOptions( { woocommerce_task_list_hidden: 'no' } );
+			getHistory().push( getAdminLink( 'admin.php?page=wc-admin' ) );
 			return null;
 		}
 
@@ -386,5 +391,8 @@ export default compose(
 			taskListHidden,
 		};
 	} ),
+	withDispatch( ( dispatch ) => ( {
+		updateOptions: dispatch( OPTIONS_STORE_NAME ).updateOptions,
+	} ) ),
 	clickOutside
 )( ActivityPanel );
