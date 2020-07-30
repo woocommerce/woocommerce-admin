@@ -38,7 +38,7 @@ import { recordEvent } from 'lib/tracks';
 
 class OrdersPanel extends Component {
 	recordOrderEvent( eventName ) {
-		recordEvent( `activity_panel_${ eventName }`, {} );
+		recordEvent( `activity_panel_orders_${ eventName }`, {} );
 	}
 
 	renderEmptyCard() {
