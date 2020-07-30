@@ -27,6 +27,8 @@ export const Tab = ( {
 		tabIndex = null;
 	}
 
+	const tabKey = `activity-panel-tab-${ name }`;
+
 	return (
 		<Button
 			role="tab"
@@ -34,8 +36,8 @@ export const Tab = ( {
 			tabIndex={ tabIndex }
 			aria-selected={ selected }
 			aria-controls={ `activity-panel-${ name }` }
-			key={ `activity-panel-tab-${ name }` }
-			id={ `activity-panel-tab-${ name }` }
+			key={ tabKey }
+			id={ tabKey }
 			onClick={ () => {
 				onTabClick( name );
 			} }

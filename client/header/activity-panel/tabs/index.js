@@ -10,7 +10,7 @@ export const Tabs = ( {
 	selectedTab: selectedTabName,
 	tabOpen = false,
 } ) => {
-	const [ tabState, setTabState ] = useState( {
+	const [ { tabOpen: tabIsOpenState, currentTab }, setTabState ] = useState( {
 		tabOpen,
 		currentTab: selectedTabName,
 	} );
@@ -34,21 +34,17 @@ export const Tabs = ( {
 					<Tab
 						key={ i }
 						index={ i }
-						isPanelOpen={ tabState.tabOpen }
-						selected={ tabState.currentTab === tab.name }
+						isPanelOpen={ tabIsOpenState }
+						selected={ currentTab === tab.name }
 						{ ...tab }
 						onTabClick={ () => {
 							const isTabOpen =
-								tabState.currentTab === tab.name ||
-								tabState.currentTab === ''
-									? ! tabState.tabOpen
+								currentTab === tab.name || currentTab === ''
+									? ! tabIsOpenState
 									: true;
 
 							// If a panel is being opened, or if an existing panel is already open and a different one is being opened, record a track.
-							if (
-								! isTabOpen ||
-								tabState.currentTab !== tab.name
-							) {
+							if ( ! isTabOpen || currentTab !== tab.name ) {
 								recordEvent( 'activity_panel_open', {
 									tab: tab.name,
 								} );
