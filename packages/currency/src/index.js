@@ -3,6 +3,7 @@
  */
 import { sprintf } from '@wordpress/i18n';
 import { numberFormat } from '@woocommerce/number';
+import deprecated from '@wordpress/deprecated';
 
 const CurrencyFactory = ( currencySetting ) => {
 	let currency;
@@ -49,6 +50,23 @@ const CurrencyFactory = ( currencySetting ) => {
 	}
 
 	/**
+	 * Formats money value.
+	 *
+	 * @deprecated
+	 *
+	 * @param   {number|string} number number to format
+	 * @return {?string} A formatted string.
+	 */
+	function formatCurrency( number ) {
+		deprecated( 'Currency().formatCurrency', {
+			version: '1.3.0',
+			alternative: 'Currency().formatAmount',
+			hint: '`formatAmount` accepts the same arguments as formatCurrency',
+		} );
+		return formatAmount( number );
+	}
+
+	/**
 	 * Get the default price format from a currency.
 	 *
 	 * @param {Object} config Currency configuration.
@@ -79,6 +97,7 @@ const CurrencyFactory = ( currencySetting ) => {
 		},
 		setCurrency,
 		formatAmount,
+		formatCurrency,
 		getPriceFormat,
 
 		/**
