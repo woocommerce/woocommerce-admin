@@ -20,7 +20,7 @@ import { Fragment } from '@wordpress/element';
  * Internal dependencies
  */
 import Appearance from './tasks/appearance';
-import { getGroupedOnboardingProducts } from 'dashboard/utils';
+import { getCategorizedOnboardingProducts } from 'dashboard/utils';
 import Products from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
@@ -69,7 +69,7 @@ export function getAllTasks( {
 		shippingZonesCount: 0,
 	} );
 
-	const groupedProducts = getGroupedOnboardingProducts(
+	const groupedProducts = getCategorizedOnboardingProducts(
 		profileItems,
 		installedPlugins
 	);

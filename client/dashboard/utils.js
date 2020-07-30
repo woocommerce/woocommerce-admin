@@ -62,13 +62,16 @@ export function getProductIdsForCart(
 }
 
 /**
- * Gets the grouped product names and types for items based on the product types and theme selected in the onboarding profiler.
+ * Gets the labeled/categorized product names and types for items based on the product types and theme selected in the onboarding profiler.
  *
  * @param {Object} profileItems Onboarding profile.
  * @param {Array} installedPlugins Installed plugins.
- * @return {Array} Objects with grouped product names and types.
+ * @return {Array} Objects with labeled/categorized product names and types.
  */
-export function getGroupedOnboardingProducts( profileItems, installedPlugins ) {
+export function getCategorizedOnboardingProducts(
+	profileItems,
+	installedPlugins
+) {
 	const productList = {};
 	productList.products = getProductList(
 		profileItems,
