@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, createElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
-import { withDispatch, __experimentalResolveSelect } from '@wordpress/data';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * WooCommerce dependencies
@@ -17,6 +17,7 @@ import {
 	updateQueryString,
 } from '@woocommerce/navigation';
 import {
+	__experimentalResolveSelect,
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
@@ -288,6 +289,7 @@ class ProfileWizard extends Component {
 	render() {
 		const { query } = this.props;
 		const step = this.getCurrentStep();
+		const stepKey = step.key;
 
 		const container = createElement( step.container, {
 			query,
@@ -300,13 +302,12 @@ class ProfileWizard extends Component {
 		const steps = this.getSteps().map( ( _step ) =>
 			pick( _step, [ 'key', 'label', 'isComplete' ] )
 		);
+		const classNames = `woocommerce-profile-wizard__container ${ stepKey }`;
 
 		return (
 			<Fragment>
-				<ProfileWizardHeader currentStep={ step.key } steps={ steps } />
-				<div className="woocommerce-profile-wizard__container">
-					{ container }
-				</div>
+				<ProfileWizardHeader currentStep={ stepKey } steps={ steps } />
+				<div className={ classNames }>{ container }</div>
 			</Fragment>
 		);
 	}

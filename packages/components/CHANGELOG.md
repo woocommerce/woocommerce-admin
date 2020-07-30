@@ -12,7 +12,9 @@
 - Fix `<SelectControl />` component to allow clicking anywhere on options in list to select.
 - Add support for `<List />` component item tags and link types.
 - Add `<List />` and `<Link />` components to Storybook.
+- Add `<Pill />` component.
 - Add `key` prop to `<List />` component items.
+- Remove unused `ref` from `<DateRangeFilterPicker />`.
 
 ## Breaking Changes
 - Removed `SplitButton` because its not being used.

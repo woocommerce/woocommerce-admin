@@ -21,6 +21,7 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Coupon_Page_Moved;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Home_Screen_Feedback;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Set_Up_Additional_Payment_Types;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Test_Checkout;
 
 /**
  * Feature plugin main class.
@@ -156,7 +157,7 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.4.0-dev' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.5.0-dev' );
 	}
 
 	/**
@@ -194,6 +195,7 @@ class FeaturePlugin {
 		new WC_Admin_Notes_Draw_Attention();
 		new WC_Admin_Notes_Home_Screen_Feedback();
 		new WC_Admin_Notes_Set_Up_Additional_Payment_Types();
+		new WC_Admin_Notes_Test_Checkout();
 
 		// Initialize RemoteInboxNotificationsEngine.
 		RemoteInboxNotificationsEngine::init();
@@ -259,7 +261,9 @@ class FeaturePlugin {
 	 * @return bool
 	 */
 	protected function check_build() {
-		return file_exists( plugin_dir_path( __DIR__ ) . '/dist/app/index.js' );
+		$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
+		$suffix       = Loader::should_use_minified_js_file( $script_debug ) ? '.min' : '';
+		return file_exists( plugin_dir_path( __DIR__ ) . "/dist/app/index{$suffix}.js" );
 	}
 
 	/**
