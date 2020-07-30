@@ -99,6 +99,7 @@
 		"@wordpress/data": "4.16.1",
 		"@wordpress/data-controls": "1.10.1",
 		"@wordpress/date": "3.9.0",
+		"@wordpress/deprecated": "^2.9.0",
 		"@wordpress/dom": "2.9.0",
 		"@wordpress/element": "2.13.1",
 		"@wordpress/hooks": "2.8.0",
