@@ -273,7 +273,6 @@ class TaskDashboard extends Component {
 		const { query, modalDismissed, updateOptions } = this.props;
 		const { isCartModalOpen } = this.state;
 		const currentTask = this.getCurrentTask();
-		console.log( modalDismissed );
 		const listTasks = this.getVisibleTasks().map( ( task ) => {
 			task.className = classNames(
 				task.completed ? 'is-complete' : null,
