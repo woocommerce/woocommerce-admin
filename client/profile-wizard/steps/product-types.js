@@ -45,8 +45,13 @@ function getLabel( description, yearlyPrice ) {
 				{ description }
 			</span>
 			<Tooltip text={ toolTipText } position="bottom center">
-				<span aria-label={ toolTipText }>
-					<Pill>{ priceDescription }</Pill>
+				<span>
+					<Pill>
+						<span className="screen-reader-text">
+							{ toolTipText }
+						</span>
+						{ priceDescription }
+					</Pill>
 				</span>
 			</Tooltip>
 		</Fragment>
