@@ -73,6 +73,9 @@ class OrdersPanel extends Component {
 					<Button
 						href="https://docs.woocommerce.com/document/managing-orders/"
 						isSecondary
+						onClick={ () =>
+							this.recordOrderEvent( 'learn_more' )
+						}
 						target="_blank"
 					>
 						{ __( 'Learn more', 'woocommerce-admin' ) }
