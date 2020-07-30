@@ -17,7 +17,7 @@ import classnames from 'classnames';
 import { getSetting, getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section, Spinner } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-import { getHistory } from '@woocommerce/navigation';
+import { getHistory, getNewPath, getPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -252,10 +252,22 @@ export class ActivityPanel extends Component {
 		};
 
 		if ( currentTab === 'setup' ) {
-			// Ensure that if the user is trying to get to the task list they can see it even if
-			// it was dismissed.
-			updateOptions( { woocommerce_task_list_hidden: 'no' } );
-			getHistory().push( getAdminLink( 'admin.php?page=wc-admin' ) );
+			const currentLocation = window.location.href;
+			const homescreenLocation = getAdminLink(
+				'admin.php?page=wc-admin'
+			);
+
+			// Don't navigate if we're already on the homescreen, this will cause an infinite loop
+			if ( currentLocation !== homescreenLocation ) {
+				// Ensure that if the user is trying to get to the task list they can see it even if
+				// it was dismissed.
+				updateOptions( { woocommerce_task_list_hidden: 'no' } ).then(
+					() => {
+						getHistory().push( getNewPath( {}, '/', {} ) );
+					}
+				);
+			}
+
 			return null;
 		}
 
