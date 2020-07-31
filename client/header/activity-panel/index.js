@@ -129,8 +129,10 @@ export class ActivityPanel extends Component {
 			hasUnreadStock,
 			isEmbedded,
 			requestingTaskListOptions,
+			taskListEnabledResolving,
 			taskListComplete,
 			taskListHidden,
+			taskListEnabled,
 			query,
 		} = this.props;
 
@@ -146,7 +148,12 @@ export class ActivityPanel extends Component {
 			( requestingTaskListOptions === true ||
 				( taskListHidden === false && taskListComplete === false ) );
 
-		if ( ! taskListComplete && showInbox ) {
+		// To prevent a flicker between 2 different tab groups, while this option resolves just display no tabs.
+		if ( taskListEnabledResolving ) {
+			return [];
+		}
+
+		if ( ! taskListComplete && taskListEnabled && showInbox ) {
 			return [
 				{
 					name: 'inbox',
@@ -261,11 +268,11 @@ export class ActivityPanel extends Component {
 			if ( currentLocation !== homescreenLocation ) {
 				// Ensure that if the user is trying to get to the task list they can see it even if
 				// it was dismissed.
-				updateOptions( { woocommerce_task_list_hidden: 'no' } ).then(
-					() => {
-						getHistory().push( getNewPath( {}, '/', {} ) );
-					}
-				);
+				updateOptions( {
+					woocommerce_task_list_hidden: 'no',
+				} ).then( () => {
+					getHistory().push( getNewPath( {}, '/', {} ) );
+				} );
 			}
 
 			return null;
@@ -379,6 +386,19 @@ export default compose(
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
+		const homeScreenEnabled =
+			window.wcAdminFeatures.homescreen &&
+			getOption( 'woocommerce_homescreen_enabled' ) === 'yes';
+
+		const taskListEnabledResolving = isResolving( 'getOption', [
+			'woocommerce_homescreen_enabled',
+		] );
+
+		// This indicates the task list is in progress, but not if it has been hidden or not
+		const taskListEnabled = isOnboardingEnabled();
+
+		console.log( homeScreenEnabled, isOnboardingEnabled() );
+
 		let requestingTaskListOptions, taskListComplete, taskListHidden;
 
 		if ( isOnboardingEnabled() ) {
@@ -399,8 +419,10 @@ export default compose(
 			hasUnreadStock,
 			hasUnapprovedReviews,
 			requestingTaskListOptions,
+			taskListEnabledResolving,
 			taskListComplete,
 			taskListHidden,
+			taskListEnabled,
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
