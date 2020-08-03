@@ -145,6 +145,8 @@ class Payments extends Component {
 
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 		this.setState( { enabledMethods } );
+		const hasEnabledMethod =
+			Object.values( enabledMethods ).filter( Boolean ).length > 0;
 
 		recordEvent( 'tasklist_payment_toggle', {
 			enabled: ! method.isEnabled,
@@ -158,12 +160,10 @@ class Payments extends Component {
 			},
 		} );
 
-		if ( ! method.isEnabled ) {
-			setSetting( 'onboarding', {
-				...getSetting( 'onboarding', {} ),
-				hasPaymentGateway: true,
-			} );
-		}
+		setSetting( 'onboarding', {
+			...getSetting( 'onboarding', {} ),
+			hasPaymentGateway: hasEnabledMethod,
+		} );
 	}
 
 	async handleClick( method ) {
