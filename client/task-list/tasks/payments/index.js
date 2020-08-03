@@ -17,6 +17,7 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
+import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
@@ -79,11 +80,16 @@ class Payments extends Component {
 			},
 		} );
 
-		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
+		setSetting( 'onboarding', {
+			...getSetting( 'onboarding', {} ),
+			hasPaymentGateway: true,
+		} );
 
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: method,
 		} );
+
+		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
 	}
 
 	getCurrentMethod() {
@@ -151,6 +157,13 @@ class Payments extends Component {
 				enabled: method.isEnabled ? 'no' : 'yes',
 			},
 		} );
+
+		if ( ! method.isEnabled ) {
+			setSetting( 'onboarding', {
+				...getSetting( 'onboarding', {} ),
+				hasPaymentGateway: true,
+			} );
+		}
 	}
 
 	async handleClick( method ) {
@@ -308,7 +321,7 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { createNotice, installAndActivatePlugins } = props;
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
-		const { getOption, isOptionsUpdating } = select( OPTIONS_STORE_NAME );
+		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
@@ -351,15 +364,12 @@ export default compose(
 			profileItems,
 		} );
 
-		const requesting = isOptionsUpdating();
-
 		return {
 			countryCode,
 			profileItems,
 			activePlugins,
 			options,
 			methods,
-			requesting,
 		};
 	} )
 )( Payments );
