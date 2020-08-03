@@ -178,12 +178,6 @@ export function getAllTasks( {
 				recordEvent( 'tasklist_click', {
 					task_name: 'payments',
 				} );
-				if ( paymentsCompleted || paymentsSkipped ) {
-					window.location = getAdminLink(
-						'admin.php?page=wc-settings&tab=checkout'
-					);
-					return;
-				}
 				updateQueryString( { task: 'payments' } );
 			},
 			visible: ! woocommercePaymentsInstalled,
