@@ -94,15 +94,11 @@ export function getAllTasks( {
 
 	if ( uniqueItemsList.length === 1 ) {
 		const { name: itemName, type: itemType } = uniqueItemsList[ 0 ];
-		const type =
+		const purchaseAndInstallFormat =
 			itemType === 'theme'
-				? __( 'theme', 'woocommerce-admin' )
-				: __( 'extension', 'woocommerce-admin' );
-		purchaseAndInstallText = sprintf(
-			__( 'Purchase & install %s %s', 'woocommerce-admin' ),
-			itemName,
-			type
-		);
+				? __( 'Purchase & install %s theme', 'woocommerce-admin' )
+				: __( 'Purchase & install %s extension', 'woocommerce-admin' );
+		purchaseAndInstallText = sprintf( purchaseAndInstallFormat, itemName );
 	}
 
 	const tasks = [
