@@ -8,7 +8,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * WooCommerce dependencies
  */
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
 	getNewPath,
