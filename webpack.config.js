@@ -102,20 +102,14 @@ const webpackConfig = {
 				parser: {
 					amd: false,
 				},
-			},
+			},		
 			{
-				test: /\.js$/,
-				exclude: /node_modules/,
+				test: /\.js?$/,
+        exclude: /node_modules/,
 				use: {
-					loader: 'babel-loader',
+					loader: 'babel-loader?cacheDirectory',
 					options: {
-						presets: [
-							[
-								'@babel/preset-env',
-								{ loose: true, modules: 'commonjs' },
-							],
-						],
-						plugins: [ 'transform-es2015-template-literals' ],
+            presets: [ '@wordpress/babel-preset-default' ],
 					},
 				},
 			},

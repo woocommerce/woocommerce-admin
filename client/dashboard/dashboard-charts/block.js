@@ -44,6 +44,7 @@ class ChartBlock extends Component {
 			path,
 			query,
 			selectedChart,
+			filters,
 		} = this.props;
 
 		if ( ! selectedChart ) {
@@ -66,11 +67,13 @@ class ChartBlock extends Component {
 							this.getChartPath( selectedChart )
 						) }
 					>
-						{ /* translators: %s is the chart type */
-						sprintf(
-							__( '%s Report', 'woocommerce-admin' ),
-							selectedChart.label
-						) }
+						{
+							/* translators: %s is the chart type */
+							sprintf(
+								__( '%s Report', 'woocommerce-admin' ),
+								selectedChart.label
+							)
+						}
 					</a>
 					<ReportChart
 						charts={ charts }
@@ -81,6 +84,7 @@ class ChartBlock extends Component {
 						path={ path }
 						selectedChart={ selectedChart }
 						showHeaderControls={ false }
+						filters={ filters }
 					/>
 				</Card>
 			</div>

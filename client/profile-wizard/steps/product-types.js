@@ -1,10 +1,10 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Button, CheckboxControl } from '@wordpress/components';
+import { Button, CheckboxControl, Tooltip } from '@wordpress/components';
 import { includes, filter, get } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -13,13 +13,50 @@ import { withDispatch, withSelect } from '@wordpress/data';
  * WooCommerce dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { H, Card, Link } from '@woocommerce/components';
+import { H, Card, Link, Pill } from '@woocommerce/components';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import { recordEvent } from 'lib/tracks';
+import './product-types.scss';
+
+function getLabel( description, yearlyPrice ) {
+	if ( ! yearlyPrice ) {
+		return description;
+	}
+
+	const monthlyPrice = ( yearlyPrice / 12.0 ).toFixed( 2 );
+	const priceDescription = sprintf(
+		__( '$%f per month, billed annually', 'woocommerce-admin' ),
+		monthlyPrice
+	);
+	/* eslint-disable @wordpress/i18n-no-collapsible-whitespace */
+	const toolTipText = __(
+		"This product type requires a paid extension.\nWe'll add this to a cart so that\nyou can purchase and install it later.",
+		'woocommerce-admin'
+	);
+	/* eslint-enable @wordpress/i18n-no-collapsible-whitespace */
+
+	return (
+		<Fragment>
+			<span className="woocommerce-product-wizard__product-types__label">
+				{ description }
+			</span>
+			<Tooltip text={ toolTipText } position="bottom center">
+				<span>
+					<Pill>
+						<span className="screen-reader-text">
+							{ toolTipText }
+						</span>
+						{ priceDescription }
+					</Pill>
+				</span>
+			</Tooltip>
+		</Fragment>
+	);
+}
 
 class ProductTypes extends Component {
 	constructor( props ) {
@@ -27,8 +64,9 @@ class ProductTypes extends Component {
 		const profileItems = get( props, 'profileItems', {} );
 
 		const { productTypes = {} } = getSetting( 'onboarding', {} );
-		const defaultProductTypes = Object.keys( productTypes )
-			.filter( key => !! productTypes[ key ].default );
+		const defaultProductTypes = Object.keys( productTypes ).filter(
+			( key ) => !! productTypes[ key ].default
+		);
 
 		this.state = {
 			error: null,
@@ -112,18 +150,25 @@ class ProductTypes extends Component {
 		const { error, selected } = this.state;
 
 		return (
-			<Fragment>
+			<div className="woocommerce-profile-wizard__product-types">
 				<H className="woocommerce-profile-wizard__header-title">
 					{ __(
 						'What type of products will be listed?',
 						'woocommerce-admin'
 					) }
 				</H>
-				<p>{ __( 'Choose any that apply' ) }</p>
+				<H className="woocommerce-profile-wizard__header-subtitle">
+					{ __( 'Choose any that apply' ) }
+				</H>
 
 				<Card>
 					<div className="woocommerce-profile-wizard__checkbox-group">
 						{ Object.keys( productTypes ).map( ( slug ) => {
+							const label = getLabel(
+								productTypes[ slug ].label,
+								productTypes[ slug ].yearly_price
+							);
+							const moreUrl = productTypes[ slug ].more_url;
 							const helpText =
 								productTypes[ slug ].description &&
 								interpolateComponents( {
@@ -133,24 +178,20 @@ class ProductTypes extends Component {
 											? ' {{moreLink/}}'
 											: '' ),
 									components: {
-										moreLink: productTypes[ slug ]
-											.more_url ? (
-												<Link
-													href={
-														productTypes[ slug ]
-															.more_url
-													}
-													target="_blank"
-													type="external"
-													onClick={ () =>
-														this.onLearnMore( slug )
-													}
-												>
-													{ __(
-														'Learn more',
-														'woocommerce-admin'
-													) }
-												</Link>
+										moreLink: moreUrl ? (
+											<Link
+												href={ moreUrl }
+												target="_blank"
+												type="external"
+												onClick={ () =>
+													this.onLearnMore( slug )
+												}
+											>
+												{ __(
+													'Learn more',
+													'woocommerce-admin'
+												) }
+											</Link>
 										) : (
 											''
 										),
@@ -160,7 +201,7 @@ class ProductTypes extends Component {
 							return (
 								<CheckboxControl
 									key={ slug }
-									label={ productTypes[ slug ].label }
+									label={ label }
 									help={ helpText }
 									onChange={ () => this.onChange( slug ) }
 									checked={ selected.includes( slug ) }
@@ -175,22 +216,26 @@ class ProductTypes extends Component {
 						) }
 					</div>
 
-					<Button
-						isPrimary
-						onClick={ this.onContinue }
-						disabled={ ! selected.length }
-					>
-						{ __( 'Continue', 'woocommerce-admin' ) }
-					</Button>
+					<div className="woocommerce-profile-wizard__card-actions">
+						<Button
+							isPrimary
+							onClick={ this.onContinue }
+							disabled={ ! selected.length }
+						>
+							{ __( 'Continue', 'woocommerce-admin' ) }
+						</Button>
+					</div>
 				</Card>
-			</Fragment>
+			</div>
 		);
 	}
 }
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getOnboardingError } = select(
+			ONBOARDING_STORE_NAME
+		);
 
 		return {
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),

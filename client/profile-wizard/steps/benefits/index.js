@@ -5,18 +5,14 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import {
-	withDispatch,
-	withSelect,
-	__experimentalResolveSelect,
-} from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { filter } from 'lodash';
+import interpolateComponents from 'interpolate-components';
 
 /**
  * WooCommerce dependencies
  */
-import { Card, H } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { Card, H, Link } from '@woocommerce/components';
 import {
 	pluginNames,
 	ONBOARDING_STORE_NAME,
@@ -110,7 +106,7 @@ class Benefits extends Component {
 				woocommerce_setup_jetpack_opted_in: true,
 			} ),
 		] )
-			.then( () => this.connectJetpack() )
+			.then( goToNextStep )
 			.catch( ( pluginError, profileError ) => {
 				if ( pluginError ) {
 					createNoticesFromResponse( pluginError );
@@ -126,33 +122,6 @@ class Benefits extends Component {
 				}
 				goToNextStep();
 			} );
-	}
-
-	connectJetpack() {
-		const {
-			getJetpackConnectUrl,
-			getPluginsError,
-			goToNextStep,
-			isJetpackConnected,
-		} = this.props;
-		if ( isJetpackConnected ) {
-			goToNextStep();
-			return;
-		}
-
-		getJetpackConnectUrl( {
-			redirect_url: getAdminLink(
-				'admin.php?page=wc-admin&reset_profiler=0'
-			),
-		} ).then( ( url ) => {
-			const error = getPluginsError( 'getJetpackConnectUrl' );
-			if ( error ) {
-				createNoticesFromResponse( error );
-				goToNextStep();
-				return;
-			}
-			window.location = url;
-		} );
 	}
 
 	renderBenefit( benefit ) {
@@ -244,6 +213,13 @@ class Benefits extends Component {
 		);
 		const isInstallAction =
 			isInstallingActivating || ! pluginsRemaining.length;
+		const isAcceptingTos = ! this.isWcsActive;
+		const pluralizedPlugins = _n(
+			'plugin',
+			'plugins',
+			this.pluginsToInstall.length,
+			'woocommerce-admin'
+		);
 
 		return (
 			<Card className="woocommerce-profile-wizard__benefits-card">
@@ -278,19 +254,34 @@ class Benefits extends Component {
 				</div>
 
 				<p className="woocommerce-profile-wizard__benefits-install-notice">
-					{ sprintf(
-						__(
-							'%s %s will be installed & activated for free.',
-							'woocommerce-admin'
-						),
-						pluginNamesString,
-						_n(
-							'plugin',
-							'plugins',
-							this.pluginsToInstall.length,
-							'woocommerce-admin'
-						)
-					) }
+					{ isAcceptingTos
+						? interpolateComponents( {
+								mixedString: sprintf(
+									__(
+										'%s %s will be installed & activated for free, and you agree to our {{link}}Terms of Service{{/link}}.',
+										'woocommerce-admin'
+									),
+									pluginNamesString,
+									pluralizedPlugins
+								),
+								components: {
+									link: (
+										<Link
+											href="https://wordpress.com/tos/"
+											target="_blank"
+											type="external"
+										/>
+									),
+								},
+						  } )
+						: sprintf(
+								__(
+									'%s %s will be installed & activated for free.',
+									'woocommerce-admin'
+								),
+								pluginNamesString,
+								pluralizedPlugins
+						  ) }
 				</p>
 			</Card>
 		);
@@ -305,24 +296,16 @@ export default compose(
 			isOnboardingRequesting,
 		} = select( ONBOARDING_STORE_NAME );
 
-		const {
-			getActivePlugins,
-			getPluginsError,
-			isJetpackConnected,
-			isPluginsRequesting,
-		} = select( PLUGINS_STORE_NAME );
+		const { getActivePlugins, isPluginsRequesting } = select(
+			PLUGINS_STORE_NAME
+		);
 
 		return {
 			activePlugins: getActivePlugins(),
-			getJetpackConnectUrl: __experimentalResolveSelect(
-				PLUGINS_STORE_NAME
-			).getJetpackConnectUrl,
-			getPluginsError,
 			isProfileItemsError: Boolean(
 				getOnboardingError( 'updateProfileItems' )
 			),
 			profileItems: getProfileItems(),
-			isJetpackConnected: isJetpackConnected(),
 			isRequesting: isOnboardingRequesting( 'updateProfileItems' ),
 			isInstallingActivating:
 				isPluginsRequesting( 'installPlugins' ) ||

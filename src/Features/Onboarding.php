@@ -242,7 +242,7 @@ class Onboarding {
 	}
 
 	/**
-	 * Returns true if the profiler should be displayed (not completed).
+	 * Returns true if the profiler should be displayed (not completed and not skipped).
 	 *
 	 * @return bool
 	 */
@@ -250,10 +250,11 @@ class Onboarding {
 		$onboarding_data = get_option( self::PROFILE_DATA_OPTION, array() );
 
 		$is_completed = isset( $onboarding_data['completed'] ) && true === $onboarding_data['completed'];
+		$is_skipped   = isset( $onboarding_data['skipped'] ) && true === $onboarding_data['skipped'];
 
 		// @todo When merging to WooCommerce Core, we should set the `completed` flag to true during the upgrade progress.
 		// https://github.com/woocommerce/woocommerce-admin/pull/2300#discussion_r287237498.
-		return ! $is_completed;
+		return ! $is_completed && ! $is_skipped;
 	}
 
 	/**
@@ -338,13 +339,11 @@ class Onboarding {
 		$product_types = self::append_product_data(
 			array(
 				'physical'        => array(
-					'label'       => __( 'Physical products', 'woocommerce-admin' ),
-					'description' => __( 'Products you ship to customers.', 'woocommerce-admin' ),
-					'default'     => true,
+					'label'   => __( 'Physical products', 'woocommerce-admin' ),
+					'default' => true,
 				),
 				'downloads'       => array(
-					'label'       => __( 'Downloads', 'woocommerce-admin' ),
-					'description' => __( 'Virtual products that customers download.', 'woocommerce-admin' ),
+					'label' => __( 'Downloads', 'woocommerce-admin' ),
 				),
 				'subscriptions'   => array(
 					'label'   => __( 'Subscriptions', 'woocommerce-admin' ),
@@ -457,7 +456,7 @@ class Onboarding {
 	 */
 	public static function get_theme_data( $theme ) {
 		return array(
-			'slug'                    => sanitize_title( $theme->stylesheet ),
+			'slug'                    => sanitize_text_field( $theme->stylesheet ),
 			'title'                   => $theme->get( 'Name' ),
 			'price'                   => '0.00',
 			'is_installed'            => true,
@@ -544,11 +543,13 @@ class Onboarding {
 		// Loop over product types and append data.
 		foreach ( $product_types as $key => $product_type ) {
 			if ( isset( $product_type['product'] ) && isset( $products[ $product_type['product'] ] ) ) {
-				/* translators: Amount of product per year (e.g. Bookings - $240.00 per year) */
-				$product_types[ $key ]['label']      .= sprintf( __( ' — %s per year', 'woocommerce-admin' ), html_entity_decode( $products[ $product_type['product'] ]->price ) );
-				$product_types[ $key ]['description'] = $products[ $product_type['product'] ]->excerpt;
-				$product_types[ $key ]['more_url']    = $products[ $product_type['product'] ]->link;
-				$product_types[ $key ]['slug']        = strtolower( preg_replace( '~[^\pL\d]+~u', '-', $products[ $product_type['product'] ]->slug ) );
+				$price        = html_entity_decode( $products[ $product_type['product'] ]->price );
+				$yearly_price = (float) str_replace( '$', '', $price );
+
+				$product_types[ $key ]['yearly_price'] = $yearly_price;
+				$product_types[ $key ]['description']  = $products[ $product_type['product'] ]->excerpt;
+				$product_types[ $key ]['more_url']     = $products[ $product_type['product'] ]->link;
+				$product_types[ $key ]['slug']         = strtolower( preg_replace( '~[^\pL\d]+~u', '-', $products[ $product_type['product'] ]->slug ) );
 			} elseif ( isset( $product_type['product'] ) ) {
 				/* translators: site currency symbol (used to show that the product costs money) */
 				$product_types[ $key ]['label'] .= sprintf( __( ' — %s', 'woocommerce-admin' ), html_entity_decode( get_woocommerce_currency_symbol() ) );
@@ -582,13 +583,9 @@ class Onboarding {
 			'profile'    => $profile,
 		);
 
-		// Only fetch if the onboarding wizard is incomplete.
-		if ( self::should_show_profiler() ) {
-			$settings['onboarding']['activeTheme'] = get_option( 'stylesheet' );
-		}
-
 		// Only fetch if the onboarding wizard OR the task list is incomplete.
 		if ( self::should_show_profiler() || self::should_show_tasks() ) {
+			$settings['onboarding']['activeTheme']              = get_option( 'stylesheet' );
 			$settings['onboarding']['stripeSupportedCountries'] = self::get_stripe_supported_countries();
 			$settings['onboarding']['euCountries']              = WC()->countries->get_european_union_countries();
 			$current_user                                       = wp_get_current_user();
@@ -620,6 +617,7 @@ class Onboarding {
 		$options[] = 'woocommerce_task_list_prompt_shown';
 		$options[] = 'woocommerce_task_list_payments';
 		$options[] = 'woocommerce_task_list_tracked_completed_tasks';
+		$options[] = 'woocommerce_task_list_dismissed_tasks';
 		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
 		$options[] = 'woocommerce_ppec_paypal_settings';
@@ -758,10 +756,16 @@ class Onboarding {
 	public function is_loading( $is_loading ) {
 		$show_profiler = self::should_show_profiler();
 		$is_dashboard  = ! isset( $_GET['path'] ); // phpcs:ignore csrf ok.
+		$is_profiler   = isset( $_GET['path'] ) && '/profiler' === $_GET['path']; // phpcs:ignore csrf ok.
+
+		if ( $is_profiler ) {
+			return true;
+		}
 
 		if ( ! $show_profiler || ! $is_dashboard ) {
 			return $is_loading;
 		}
+
 		return true;
 	}
 
@@ -932,18 +936,12 @@ class Onboarding {
 			$screen->remove_help_tab( 'woocommerce_onboard_tab' );
 
 			$task_list_hidden = get_option( 'woocommerce_task_list_hidden', 'no' );
-			$onboarding_data  = get_option( self::PROFILE_DATA_OPTION, array() );
-			$is_completed     = isset( $onboarding_data['completed'] ) && true === $onboarding_data['completed'];
-			$is_enabled       = ! $is_completed;
 
 			$help_tab['content'] = '<h2>' . __( 'WooCommerce Onboarding', 'woocommerce-admin' ) . '</h2>';
 
 			$help_tab['content'] .= '<h3>' . __( 'Profile Setup Wizard', 'woocommerce-admin' ) . '</h3>';
-			$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the setup wizard again, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
-			( $is_enabled
-				? '<p><a href="' . wc_admin_url( '&reset_profiler=0' ) . '" class="button button-primary">' . __( 'Disable', 'woocommerce-admin' ) . '</a></p>'
-				: '<p><a href="' . wc_admin_url( '&reset_profiler=1' ) . '" class="button button-primary">' . __( 'Enable', 'woocommerce-admin' ) . '</a></p>'
-			);
+			$help_tab['content'] .= '<p>' . __( 'If you need to access the setup wizard again, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
+				'<p><a href="' . wc_admin_url( '&path=/profiler' ) . '" class="button button-primary">' . __( 'Setup wizard', 'woocommerce-admin' ) . '</a></p>';
 
 			$help_tab['content'] .= '<h3>' . __( 'Task List', 'woocommerce-admin' ) . '</h3>';
 			$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the task list, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
@@ -1066,6 +1064,7 @@ class Onboarding {
 			wp_json_encode(
 				array(
 					'completed' => $new_value,
+					'skipped'   => $new_value,
 				)
 			)
 		);

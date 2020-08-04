@@ -180,9 +180,9 @@ class Industry extends Component {
 						'woocommerce-admin'
 					) }
 				</H>
-				<p className="woocommerce-profile-wizard__intro-paragraph">
+				<H className="woocommerce-profile-wizard__header-subtitle">
 					{ __( 'Choose any that apply' ) }
-				</p>
+				</H>
 				<Card>
 					<div className="woocommerce-profile-wizard__checkbox-group">
 						{ filteredIndustryKeys.map( ( slug ) => {
@@ -234,13 +234,15 @@ class Industry extends Component {
 						) }
 					</div>
 
-					<Button
-						isPrimary
-						onClick={ this.onContinue }
-						disabled={ ! selected.length }
-					>
-						{ __( 'Continue', 'woocommerce-admin' ) }
-					</Button>
+					<div className="woocommerce-profile-wizard__card-actions">
+						<Button
+							isPrimary
+							onClick={ this.onContinue }
+							disabled={ ! selected.length }
+						>
+							{ __( 'Continue', 'woocommerce-admin' ) }
+						</Button>
+					</div>
 				</Card>
 			</Fragment>
 		);
@@ -249,7 +251,9 @@ class Industry extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getOnboardingError } = select(
+			ONBOARDING_STORE_NAME
+		);
 		const { getSettings } = select( SETTINGS_STORE_NAME );
 		const { general: locationSettings = {} } = getSettings( 'general' );
 
