@@ -29,7 +29,7 @@ class DataSourcePoller {
 		// slug - last one wins.
 		foreach ( self::DATA_SOURCES as $url ) {
 			$specs_from_data_source = self::read_data_source( $url, $specs );
-			self::merge_specs( $specs_from_data_source, $specs );
+			self::merge_specs( $specs_from_data_source, $specs, $url );
 		}
 
 		// Persist the specs as an option.
@@ -49,6 +49,11 @@ class DataSourcePoller {
 		$response = wp_remote_get( $url );
 
 		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
+			// phpcs:ignore
+			error_log( 'Error getting remote inbox notification data feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $response, true ) );
+
 			return [];
 		}
 
@@ -56,10 +61,16 @@ class DataSourcePoller {
 		$specs = json_decode( $body );
 
 		if ( null === $specs ) {
+			// phpcs:ignore
+			error_log( 'Empty response in remote inbox notification data feed from ' . $url );
+
 			return [];
 		}
 
 		if ( ! is_array( $specs ) ) {
+			// phpcs:ignore
+			error_log( 'Remote inbox notification data feed is not an array from ' . $url );
+
 			return [];
 		}
 
@@ -69,12 +80,13 @@ class DataSourcePoller {
 	/**
 	 * Merge the specs.
 	 *
-	 * @param Array $specs_to_merge_in The specs to merge in to $specs.
-	 * @param Array $specs             The list of specs being merged into.
+	 * @param Array  $specs_to_merge_in The specs to merge in to $specs.
+	 * @param Array  $specs             The list of specs being merged into.
+	 * @param string $url               The url of the feed being merged in (for error reporting).
 	 */
-	private static function merge_specs( $specs_to_merge_in, &$specs ) {
+	private static function merge_specs( $specs_to_merge_in, &$specs, $url ) {
 		foreach ( $specs_to_merge_in as $spec ) {
-			if ( ! self::validate_spec( $spec ) ) {
+			if ( ! self::validate_spec( $spec, $url ) ) {
 				continue;
 			}
 
@@ -87,37 +99,64 @@ class DataSourcePoller {
 	 * Validate the spec.
 	 *
 	 * @param object $spec The spec to validate.
+	 * @param string $url  The url of the feed that provided the spec.
 	 *
 	 * @return bool The result of the validation.
 	 */
-	private static function validate_spec( $spec ) {
+	private static function validate_spec( $spec, $url ) {
 		if ( ! isset( $spec->slug ) ) {
+			// phpcs:ignore
+			error_log( 'Spec is invalid because the slug is missing in feed from  ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $spec, true ) );
+
 			return false;
 		}
 
 		if ( ! isset( $spec->status ) ) {
+			// phpcs:ignore
+			error_log( 'Spec is invalid because the status is missing in feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $spec, true ) );
+
 			return false;
 		}
 
 		if ( ! isset( $spec->locales ) || ! is_array( $spec->locales ) ) {
+			// phpcs:ignore
+			error_log( 'Spec is invalid because the status is missing or empty in feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $spec, true ) );
+
 			return false;
 		}
 
 		if ( null === SpecRunner::get_locale( $spec->locales ) ) {
+			// phpcs:ignore
+			error_log( 'Spec is invalid because the locale could not be retrieved in feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $spec, true ) );
+
 			return false;
 		}
 
 		if ( ! isset( $spec->type ) ) {
-			return false;
-		}
+			// phpcs:ignore
+			error_log( 'Spec is invalid because the type is missing in feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $spec, true ) );
 
-		if ( ! isset( $spec->slug ) ) {
 			return false;
 		}
 
 		if ( isset( $spec->actions ) && is_array( $spec->actions ) ) {
 			foreach ( $spec->actions as $action ) {
-				if ( ! self::validate_action( $action ) ) {
+				if ( ! self::validate_action( $action, $url ) ) {
+					// phpcs:ignore
+					error_log( 'Spec is invalid because an action is invalid in feed from ' . $url );
+					// phpcs:ignore
+					error_log( print_r( $spec, true ) );
+
 					return false;
 				}
 			}
@@ -126,12 +165,26 @@ class DataSourcePoller {
 		if ( isset( $spec->rules ) && is_array( $spec->rules ) ) {
 			foreach ( $spec->rules as $rule ) {
 				if ( ! isset( $rule->type ) ) {
+					// phpcs:ignore
+					error_log( 'Spec is invalid because a rule type is empty in feed from ' . $url );
+					// phpcs:ignore
+					error_log( print_r( $rule, true ) );
+					// phpcs:ignore
+					error_log( print_r( $spec, true ) );
+
 					return false;
 				}
 
 				$processor = GetRuleProcessor::get_processor( $rule->type );
 
 				if ( ! $processor->validate( $rule ) ) {
+					// phpcs:ignore
+					error_log( 'Spec is invalid because a rule is invalid in feed from ' . $url );
+					// phpcs:ignore
+					error_log( print_r( $rule, true ) );
+					// phpcs:ignore
+					error_log( print_r( $spec, true ) );
+
 					return false;
 				}
 			}
@@ -144,23 +197,44 @@ class DataSourcePoller {
 	 * Validate the action.
 	 *
 	 * @param object $action The action to validate.
+	 * @param string $url    The url of the feed containing the action (for error reporting).
 	 *
 	 * @return bool The result of the validation.
 	 */
-	private static function validate_action( $action ) {
+	private static function validate_action( $action, $url ) {
 		if ( ! isset( $action->locales ) || ! is_array( $action->locales ) ) {
+			// phpcs:ignore
+			error_log( 'Action is invalid because it has empty or missing locales in feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $action, true ) );
+
 			return false;
 		}
 
 		if ( null === SpecRunner::get_action_locale( $action->locales ) ) {
+			// phpcs:ignore
+			error_log( 'Action is invalid because the locale could not be retrieved in feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $action, true ) );
+
 			return false;
 		}
 
 		if ( ! isset( $action->name ) ) {
+			// phpcs:ignore
+			error_log( 'Action is invalid because the name is missing in feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $action, true ) );
+
 			return false;
 		}
 
 		if ( ! isset( $action->status ) ) {
+			// phpcs:ignore
+			error_log( 'Action is invalid because the status is missing in feed from ' . $url );
+			// phpcs:ignore
+			error_log( print_r( $action, true ) );
+
 			return false;
 		}
 
