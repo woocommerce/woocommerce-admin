@@ -102,14 +102,14 @@ const webpackConfig = {
 				parser: {
 					amd: false,
 				},
-			},		
+			},
 			{
 				test: /\.js?$/,
-        exclude: /node_modules/,
+				exclude: /node_modules/,
 				use: {
-					loader: 'babel-loader?cacheDirectory',
+					loader: 'babel-loader',
 					options: {
-            presets: [ '@wordpress/babel-preset-default' ],
+						presets: [ '@wordpress/babel-preset-default' ],
 					},
 				},
 			},
