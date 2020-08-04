@@ -10,6 +10,7 @@ import { uniqueId, find } from 'lodash';
 import PagesIcon from 'gridicons/dist/pages';
 import CrossIcon from 'gridicons/dist/cross-small';
 import classnames from 'classnames';
+import { Icon, lifesaver } from '@wordpress/icons';
 
 /**
  * WooCommerce dependencies
@@ -214,7 +215,7 @@ export class ActivityPanel extends Component {
 			isPerformingSetupTask && {
 				name: 'help',
 				title: __( 'Help', 'woocommerce-admin' ),
-				icon: <i className="material-icons-outlined">support</i>,
+				icon: <Icon icon={ lifesaver } />,
 			},
 		].filter( Boolean );
 	}

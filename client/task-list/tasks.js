@@ -2,13 +2,13 @@
  * External dependencies
  */
 
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
 /**
  * WooCommerce dependencies
  */
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
 	getNewPath,
@@ -20,7 +20,7 @@ import { Fragment } from '@wordpress/element';
  * Internal dependencies
  */
 import Appearance from './tasks/appearance';
-import { getProductIdsForCart } from 'dashboard/utils';
+import { getCategorizedOnboardingProducts } from 'dashboard/utils';
 import Products from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
@@ -45,6 +45,7 @@ export function recordTaskViewEvent(
 }
 
 export function getAllTasks( {
+	countryCode,
 	profileItems,
 	taskListPayments,
 	query,
@@ -69,16 +70,12 @@ export function getAllTasks( {
 		shippingZonesCount: 0,
 	} );
 
-	const productIds = getProductIdsForCart(
+	const groupedProducts = getCategorizedOnboardingProducts(
 		profileItems,
-		true,
 		installedPlugins
 	);
-	const remainingProductIds = getProductIdsForCart(
-		profileItems,
-		false,
-		installedPlugins
-	);
+
+	const { products, remainingProducts, uniqueItemsList } = groupedProducts;
 
 	const paymentsCompleted = Boolean(
 		taskListPayments && taskListPayments.completed
@@ -93,6 +90,17 @@ export function getAllTasks( {
 		completed: profilerCompleted,
 		product_types: productTypes,
 	} = profileItems;
+
+	let purchaseAndInstallText = __( 'Purchase & install extensions' );
+
+	if ( uniqueItemsList.length === 1 ) {
+		const { name: itemName, type: itemType } = uniqueItemsList[ 0 ];
+		const purchaseAndInstallFormat =
+			itemType === 'theme'
+				? __( 'Purchase & install %s theme', 'woocommerce-admin' )
+				: __( 'Purchase & install %s extension', 'woocommerce-admin' );
+		purchaseAndInstallText = sprintf( purchaseAndInstallFormat, itemName );
+	}
 
 	const tasks = [
 		{
@@ -111,16 +119,16 @@ export function getAllTasks( {
 		},
 		{
 			key: 'purchase',
-			title: __( 'Purchase & install extensions', 'woocommerce-admin' ),
+			title: purchaseAndInstallText,
 			container: null,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
 					task_name: 'purchase',
 				} );
-				return remainingProductIds.length ? toggleCartModal() : null;
+				return remainingProducts.length ? toggleCartModal() : null;
 			},
-			visible: productIds.length,
-			completed: productIds.length && ! remainingProductIds.length,
+			visible: products.length,
+			completed: products.length && ! remainingProducts.length,
 			time: __( '2 minutes', 'woocommerce-admin' ),
 			isDismissable: true,
 		},
@@ -166,7 +174,9 @@ export function getAllTasks( {
 				} );
 			},
 			visible:
-				window.wcAdminFeatures.wcpay && woocommercePaymentsInstalled,
+				window.wcAdminFeatures.wcpay &&
+				woocommercePaymentsInstalled &&
+				countryCode === 'US',
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 		{
@@ -178,12 +188,6 @@ export function getAllTasks( {
 				recordEvent( 'tasklist_click', {
 					task_name: 'payments',
 				} );
-				if ( paymentsCompleted || paymentsSkipped ) {
-					window.location = getAdminLink(
-						'admin.php?page=wc-settings&tab=checkout'
-					);
-					return;
-				}
 				updateQueryString( { task: 'payments' } );
 			},
 			visible: ! woocommercePaymentsInstalled,

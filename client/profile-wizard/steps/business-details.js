@@ -356,28 +356,26 @@ class BusinessDetails extends Component {
 				</p>
 			);
 		}
-
+		const accountRequiredText = this.bundleInstall
+			? __(
+					'User accounts are required to use these features.',
+					'woocommerce-admin'
+			  )
+			: '';
 		return (
 			<Fragment>
 				<p>
 					{ sprintf(
 						_n(
-							'The following plugin will be installed for free: %s',
-							'The following plugins will be installed for free: %s',
+							'The following plugin will be installed for free: %s. %s',
+							'The following plugins will be installed for free: %s. %s',
 							extensions.length,
 							'woocommerce-admin'
 						),
-						extensionsList
+						extensionsList,
+						accountRequiredText
 					) }
 				</p>
-				{ this.bundleInstall && (
-					<p>
-						{ __(
-							'An account is required to use these features.',
-							'woocommerce-admin'
-						) }
-					</p>
-				) }
 			</Fragment>
 		);
 	}
@@ -783,12 +781,12 @@ class BusinessDetails extends Component {
 									'woocommerce-admin'
 								) }
 							</H>
-							<p>
+							<H className="woocommerce-profile-wizard__header-subtitle">
 								{ __(
 									"We'd love to know if you are just getting started or you already have a business in place.",
 									'woocommerce-admin'
 								) }
-							</p>
+							</H>
 							<Card>
 								<Fragment>
 									<SelectControl
