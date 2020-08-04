@@ -271,7 +271,17 @@ export class ActivityPanel extends Component {
 				updateOptions( {
 					woocommerce_task_list_hidden: 'no',
 				} ).then( () => {
-					getHistory().push( getNewPath( {}, '/', {} ) );
+					const isAdmin = /admin.php\?page=wc-admin/.test(
+						window.location.href
+					);
+
+					if ( isAdmin ) {
+						getHistory().push( getNewPath( {}, '/', {} ) );
+					} else {
+						window.location.href = getAdminLink(
+							'admin.php?page=wc-admin'
+						);
+					}
 				} );
 			}
 
@@ -396,8 +406,6 @@ export default compose(
 
 		// This indicates the task list is in progress, but not if it has been hidden or not
 		const taskListEnabled = isOnboardingEnabled();
-
-		console.log( homeScreenEnabled, isOnboardingEnabled() );
 
 		let requestingTaskListOptions, taskListComplete, taskListHidden;
 
