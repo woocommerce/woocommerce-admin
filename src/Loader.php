@@ -495,7 +495,7 @@ class Loader {
 
 	/**
 	 * Find and combine translation chunk files.
-	 * 
+	 *
 	 * Only targets files that aren't represented by a registered script (e.g. not passed to wp_register_script()).
 	 *
 	 * @param string $lang_dir Path to language files.
@@ -504,16 +504,18 @@ class Loader {
 	 * @return array Combined translation chunk data.
 	 */
 	public static function get_translation_chunk_data( $lang_dir, $domain, $locale ) {
+		global $wp_filesystem;
+
 		// Grab all JSON files in the current language pack.
-		$json_i18n_filenames = glob( $lang_dir . $domain . '-' . $locale . '-*.json' );
+		$json_i18n_filenames       = glob( $lang_dir . $domain . '-' . $locale . '-*.json' );
 		$combined_translation_data = array();
 
 		foreach ( $json_i18n_filenames as $json_filename ) {
-			if ( ! is_readable( $json_filename ) ) {
+			if ( ! $wp_filesystem->is_readable( $json_filename ) ) {
 				continue;
 			}
 
-			$file_contents = \file_get_contents( $json_filename );
+			$file_contents = $wp_filesystem->get_contents( $json_filename );
 			$chunk_data    = \json_decode( $file_contents, true );
 
 			if ( empty( $chunk_data ) ) {
@@ -548,13 +550,13 @@ class Loader {
 
 		// Remove inaccurate reference comment.
 		unset( $combined_translation_data['comment'] );
-		
+
 		return $combined_translation_data;
 	}
 
 	/**
 	 * Load translation strings from language packs for dynamic imports.
-	 * 
+	 *
 	 * This function combines JSON translation data auto-extracted by GlotPress
 	 * from Webpack-generated JS chunks into a single file that can be used in
 	 * subsequent requests. This is necessary since the JS chunks are not known
@@ -576,12 +578,17 @@ class Loader {
 		$cache_filename = self::get_combined_translation_filename( $domain, $locale );
 		$lang_dir       = WP_LANG_DIR . '/plugins/';
 
+		// Allow us to easily interact with the filesystem.
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		\WP_Filesystem();
+		global $wp_filesystem;
+
 		// First attempt to get a previously generated combined translation file.
 		if (
-			is_file( $lang_dir . $cache_filename ) &&
-			is_readable( $lang_dir . $cache_filename )
+			$wp_filesystem->is_file( $lang_dir . $cache_filename ) &&
+			$wp_filesystem->is_readable( $lang_dir . $cache_filename )
 		) {
-			return file_get_contents( $lang_dir . $cache_filename );
+			return $wp_filesystem->get_contents( $lang_dir . $cache_filename );
 		}
 
 		// Get all translation chunk data combined into a single object.
@@ -591,10 +598,10 @@ class Loader {
 			return $original_translations;
 		}
 
-		$chunk_translations_json = json_encode( $translations_from_chunks );
+		$chunk_translations_json = wp_json_encode( $translations_from_chunks );
 
 		// Cache combined translations strings to a file.
-		file_put_contents( $lang_dir . $cache_filename, $chunk_translations_json );
+		$wp_filesystem->put_contents( $lang_dir . $cache_filename, $chunk_translations_json );
 
 		return $chunk_translations_json;
 	}
