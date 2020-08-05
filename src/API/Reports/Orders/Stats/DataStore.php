@@ -469,7 +469,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * @param array $data Data written to order stats lookup table.
 		 * @param WC_Order $order  Order object.
 		 */
-		$data = apply_filters( 'woocommerce_analytics_update_order_stats_data',
+		$data = apply_filters(
+			'woocommerce_analytics_update_order_stats_data',
 			array(
 				'order_id'           => $order->get_id(),
 				'parent_id'          => $order->get_parent_id(),
