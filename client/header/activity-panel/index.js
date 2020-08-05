@@ -6,6 +6,7 @@ import clickOutside from 'react-click-outside';
 import { Component, lazy, Suspense } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
+import { withSelect, withDispatch } from '@wordpress/data';
 import { uniqueId, find } from 'lodash';
 import PagesIcon from 'gridicons/dist/pages';
 import CrossIcon from 'gridicons/dist/cross-small';
@@ -18,7 +19,7 @@ import { Icon, lifesaver } from '@wordpress/icons';
 import { getSetting, getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section, Spinner } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-import { getHistory, getNewPath, getPath } from '@woocommerce/navigation';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -31,7 +32,7 @@ import {
 	getUnapprovedReviews,
 	getUnreadStock,
 } from './unread-indicators';
-import { isOnboardingEnabled } from 'dashboard/utils';
+import { isOnboardingEnabled, isWCAdmin } from 'dashboard/utils';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -50,10 +51,8 @@ const ReviewsPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/reviews' )
 );
 
-import withSelect from 'wc-api/with-select';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
-import { withDispatch } from '@wordpress/data';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
@@ -86,17 +85,16 @@ export class ActivityPanel extends Component {
 	}
 
 	closePanel() {
-		this.setState( ( state ) => ( {
-			...state,
+		this.setState( () => ( {
 			isPanelOpen: false,
 			currentTab: '',
 		} ) );
 	}
 
 	clearPanel() {
-		this.setState( ( state ) => {
-			return { ...state, isPanelSwitching: false };
-		} );
+		this.setState( () => ( {
+			isPanelSwitching: false,
+		} ) );
 	}
 
 	// On smaller screen, the panel buttons are hidden behind a toggle.
@@ -272,11 +270,7 @@ export class ActivityPanel extends Component {
 				updateOptions( {
 					woocommerce_task_list_hidden: 'no',
 				} ).then( () => {
-					const isAdmin = /admin.php\?page=wc-admin/.test(
-						window.location.href
-					);
-
-					if ( isAdmin ) {
+					if ( isWCAdmin( window.location.href ) ) {
 						getHistory().push( getNewPath( {}, '/', {} ) );
 					} else {
 						window.location.href = getAdminLink(
@@ -396,10 +390,6 @@ export default compose(
 		const hasUnreadStock = getUnreadStock();
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
-
-		const homeScreenEnabled =
-			window.wcAdminFeatures.homescreen &&
-			getOption( 'woocommerce_homescreen_enabled' ) === 'yes';
 
 		const taskListEnabledResolving = isResolving( 'getOption', [
 			'woocommerce_homescreen_enabled',
