@@ -463,7 +463,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return -1;
 		}
 
-		$data   = array(
+		/**
+		 * Filters order stats data.
+		 *
+		 * @param array $data Data written to order stats lookup table.
+		 * @param WC_Order $order  Order object.
+		 */
+		$data = apply_filters( 'woocommerce_analytics_update_order_stats_data', array(
 			'order_id'           => $order->get_id(),
 			'parent_id'          => $order->get_parent_id(),
 			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
@@ -476,7 +482,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'status'             => self::normalize_order_status( $order->get_status() ),
 			'customer_id'        => $order->get_report_customer_id(),
 			'returning_customer' => $order->is_returning_customer(),
-		);
+		), $order );
+
 		$format = array(
 			'%d',
 			'%d',
