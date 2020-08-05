@@ -140,6 +140,10 @@ class Onboarding {
 	 * @param array $value Current value.
 	 */
 	public function trigger_profile_completed_action( $old_value, $value ) {
+		if ( isset( $old_value['completed'] ) && $old_value['completed'] ) {
+			return;
+		}
+
 		if ( ! isset( $value['completed'] ) || ! $value['completed'] ) {
 			return;
 		}
