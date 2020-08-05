@@ -6,7 +6,7 @@ import clickOutside from 'react-click-outside';
 import { Component, lazy, Suspense } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withDispatch } from '@wordpress/data';
 import { uniqueId, find } from 'lodash';
 import PagesIcon from 'gridicons/dist/pages';
 import CrossIcon from 'gridicons/dist/cross-small';
@@ -33,6 +33,7 @@ import {
 	getUnreadStock,
 } from './unread-indicators';
 import { isOnboardingEnabled, isWCAdmin } from 'dashboard/utils';
+import withSelect from 'wc-api/with-select';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
