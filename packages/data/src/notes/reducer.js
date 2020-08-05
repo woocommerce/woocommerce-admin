@@ -5,16 +5,32 @@ import TYPES from './action-types';
 
 const notesReducer = (
 	state = {
-		notes: [],
+		noteQueries: {},
+		notes: {},
 		errors: {},
 	},
-	{ type, notes, noteId, noteFields, error, selector }
+	{ type, notes, noteId, noteIds, noteFields, error, query, selector }
 ) => {
 	switch ( type ) {
 		case TYPES.SET_NOTES:
 			state = {
 				...state,
-				notes,
+				notes: {
+					...state.notes,
+					...notes.reduce( ( acc, item ) => {
+						acc[ item.id ] = item;
+						return acc;
+					}, {} ),
+				},
+			};
+			break;
+		case TYPES.SET_NOTES_QUERY:
+			state = {
+				...state,
+				noteQueries: {
+					...state.noteQueries,
+					[ JSON.stringify( query ) ]: noteIds,
+				},
 			};
 			break;
 		case TYPES.SET_ERROR:

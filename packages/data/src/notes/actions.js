@@ -69,6 +69,14 @@ export function setNotes( notes ) {
 	};
 }
 
+export function setNotesQuery( query, noteIds ) {
+	return {
+		type: TYPES.SET_NOTES_QUERY,
+		query,
+		noteIds,
+	};
+}
+
 export function setError( selector, error ) {
 	return {
 		type: TYPES.SET_ERROR,
