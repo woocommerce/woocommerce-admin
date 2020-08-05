@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Fragment, useEffect } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { EmptyContent, Section } from '@woocommerce/components';
-import { useUserPreferences } from '@woocommerce/data';
+import { NOTES_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -34,12 +34,12 @@ const renderEmptyCard = () => (
 
 const renderNotes = ( {
 	hasNotes,
-	isDismissUndoRequesting,
-	isDismissAllUndoRequesting,
+	isBatchUpdating,
 	lastRead,
 	notes,
+	updatingNoteId,
 } ) => {
-	if ( isDismissAllUndoRequesting ) {
+	if ( isBatchUpdating ) {
 		return;
 	}
 
@@ -50,7 +50,7 @@ const renderNotes = ( {
 	const notesArray = Object.keys( notes ).map( ( key ) => notes[ key ] );
 
 	return notesArray.map( ( note ) => {
-		if ( isDismissUndoRequesting === note.id ) {
+		if ( updatingNoteId === note.id ) {
 			return (
 				<InboxNotePlaceholder
 					className="banner message-is-unread"
@@ -72,11 +72,10 @@ const InboxPanel = ( props ) => {
 	const {
 		isError,
 		isPanelEmpty,
-		isRequesting,
-		isUndoRequesting,
-		isDismissAllUndoRequesting,
-		isDismissUndoRequesting,
+		isResolving,
+		isBatchUpdating,
 		notes,
+		updatingNoteId,
 	} = props;
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const lastRead = userPrefs.activity_panel_inbox_last_read;
@@ -117,8 +116,7 @@ const InboxPanel = ( props ) => {
 
 	const hasNotes = hasValidNotes( notes );
 
-	const isActivityHeaderVisible =
-		hasNotes || isRequesting || isUndoRequesting;
+	const isActivityHeaderVisible = hasNotes || isResolving || updatingNoteId;
 
 	if ( isPanelEmpty ) {
 		isPanelEmpty( ! hasNotes && ! isActivityHeaderVisible );
@@ -139,20 +137,20 @@ const InboxPanel = ( props ) => {
 				/>
 			) }
 			<div className="woocommerce-homepage-notes-wrapper">
-				{ ( isRequesting || isDismissAllUndoRequesting ) && (
+				{ ( isResolving || isBatchUpdating ) && (
 					<Section>
 						<InboxNotePlaceholder className="banner message-is-unread" />
 					</Section>
 				) }
 				<Section>
-					{ ! isRequesting &&
-						! isDismissAllUndoRequesting &&
+					{ ! isResolving &&
+						! isBatchUpdating &&
 						renderNotes( {
 							hasNotes,
-							isDismissUndoRequesting,
-							isDismissAllUndoRequesting,
+							isBatchUpdating,
 							lastRead,
 							notes,
+							updatingNoteId,
 						} ) }
 				</Section>
 			</div>
@@ -165,9 +163,9 @@ export default compose(
 		const {
 			getNotes,
 			getNotesError,
-			isGetNotesRequesting,
-			getUndoDismissRequesting,
-		} = select( 'wc-api' );
+			isResolving,
+			isNotesRequesting,
+		} = select( NOTES_STORE_NAME );
 		const inboxQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
@@ -191,22 +189,12 @@ export default compose(
 			],
 		};
 
-		const notes = getNotes( inboxQuery );
-		const isError = Boolean( getNotesError( inboxQuery ) );
-		const isRequesting = isGetNotesRequesting( inboxQuery );
-		const {
-			isUndoRequesting,
-			isDismissUndoRequesting,
-			isDismissAllUndoRequesting,
-		} = getUndoDismissRequesting();
-
 		return {
-			notes,
-			isError,
-			isRequesting,
-			isUndoRequesting,
-			isDismissUndoRequesting,
-			isDismissAllUndoRequesting,
+			notes: getNotes( inboxQuery ),
+			isError: Boolean( getNotesError( 'getNotes', [ inboxQuery ] ) ),
+			isResolving: isResolving( 'getNotes', [ inboxQuery ] ),
+			updatingNoteId: isNotesRequesting( 'updateNote' ),
+			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 		};
 	} )
 )( InboxPanel );
