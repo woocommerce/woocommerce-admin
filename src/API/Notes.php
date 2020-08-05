@@ -103,11 +103,11 @@ class Notes extends \WC_REST_CRUD_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/undoremove',
+			'/' . $this->rest_base . '/update',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'undoremove_items' ),
+					'callback'            => array( $this, 'batch_update_items' ),
 					'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
@@ -324,12 +324,12 @@ class Notes extends \WC_REST_CRUD_Controller {
 	}
 
 	/**
-	 * Undo delete all notes.
+	 * Batch update a set of notes.
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Request|WP_Error
 	 */
-	public function undoremove_items( $request ) {
+	public function batch_update_items( $request ) {
 		$data      = array();
 		$notes_ids = $request->get_param( 'notesIds' );
 		foreach ( (array) $notes_ids as $note_id ) {
