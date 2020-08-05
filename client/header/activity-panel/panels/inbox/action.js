@@ -12,10 +12,6 @@ import PropTypes from 'prop-types';
  */
 import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
 
-/**
- * Internal dependencies
- */
-
 class InboxNoteAction extends Component {
 	constructor( props ) {
 		super( props );
@@ -34,6 +30,7 @@ class InboxNoteAction extends Component {
 			triggerNoteAction,
 			removeAllNotes,
 			removeNote,
+			onClick,
 		} = this.props;
 		const href = event.target.href || '';
 		let inAction = true;
@@ -50,24 +47,32 @@ class InboxNoteAction extends Component {
 			} else {
 				removeAllNotes();
 			}
+
 			actionCallback( true );
 		} else {
-			this.setState( { inAction }, () =>
-				triggerNoteAction( noteId, action.id )
-			);
+			this.setState( { inAction }, () => {
+				triggerNoteAction( noteId, action.id );
+
+				if ( !! onClick ) {
+					onClick();
+				}
+			} );
 		}
 	}
 
 	render() {
 		const { action, dismiss, label } = this.props;
-		const isPrimary = dismiss || action.primary;
+
 		return (
 			<Button
-				isPrimary={ isPrimary }
-				isSecondary={ ! isPrimary }
+				isSecondary
 				isBusy={ this.state.inAction }
 				disabled={ this.state.inAction }
-				href={ action ? action.url : undefined }
+				href={
+					action && action.url && action.url.length
+						? action.url
+						: undefined
+				}
 				onClick={ this.handleActionClick }
 			>
 				{ dismiss ? label : action.label }
@@ -87,6 +92,7 @@ InboxNoteAction.propTypes = {
 		label: PropTypes.string.isRequired,
 		primary: PropTypes.bool.isRequired,
 	} ),
+	onClick: PropTypes.func,
 };
 
 export default compose(

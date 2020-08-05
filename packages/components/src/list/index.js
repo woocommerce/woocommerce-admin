@@ -5,9 +5,10 @@ import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { ENTER } from '@wordpress/keycodes';
 import PropTypes from 'prop-types';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 /**
- * WooCommerce dependencies
+ * Internal dependencies
  */
 import Link from '../link';
 
@@ -36,14 +37,19 @@ class List extends Component {
 		const listClassName = classnames( 'woocommerce-list', className );
 
 		return (
-			<ul className={ listClassName } role="menu">
-				{ items.map( ( item, i ) => {
+			<TransitionGroup
+				component="ul"
+				className={ listClassName }
+				role="menu"
+			>
+				{ items.map( ( item, index ) => {
 					const {
 						after,
 						before,
 						className: itemClasses,
 						content,
 						href,
+						key,
 						listItemTag,
 						onClick,
 						target,
@@ -74,33 +80,39 @@ class List extends Component {
 					};
 
 					return (
-						<li className={ itemClassName } key={ i }>
-							<InnerTag { ...innerTagProps }>
-								{ before && (
-									<div className="woocommerce-list__item-before">
-										{ before }
-									</div>
-								) }
-								<div className="woocommerce-list__item-text">
-									<span className="woocommerce-list__item-title">
-										{ title }
-									</span>
-									{ content && (
-										<span className="woocommerce-list__item-content">
-											{ content }
-										</span>
+						<CSSTransition
+							key={ key || index }
+							timeout={ 500 }
+							classNames="woocommerce-list__item"
+						>
+							<li className={ itemClassName }>
+								<InnerTag { ...innerTagProps }>
+									{ before && (
+										<div className="woocommerce-list__item-before">
+											{ before }
+										</div>
 									) }
-								</div>
-								{ after && (
-									<div className="woocommerce-list__item-after">
-										{ after }
+									<div className="woocommerce-list__item-text">
+										<span className="woocommerce-list__item-title">
+											{ title }
+										</span>
+										{ content && (
+											<span className="woocommerce-list__item-content">
+												{ content }
+											</span>
+										) }
 									</div>
-								) }
-							</InnerTag>
-						</li>
+									{ after && (
+										<div className="woocommerce-list__item-after">
+											{ after }
+										</div>
+									) }
+								</InnerTag>
+							</li>
+						</CSSTransition>
 					);
 				} ) }
-			</ul>
+			</TransitionGroup>
 		);
 	}
 }
@@ -149,7 +161,7 @@ List.propTypes = {
 			/**
 			 * Title displayed for the list item.
 			 */
-			title: PropTypes.string.isRequired,
+			title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ),
 		} )
 	).isRequired,
 };

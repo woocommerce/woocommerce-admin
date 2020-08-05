@@ -1,4 +1,3 @@
-
 .woocommerce-store-alerts {
 	position: relative;
 	margin: 0 0 $gap-largest 0;
@@ -51,7 +50,7 @@
 		}
 
 		&.is-button {
-			color: $core-grey-dark-500;
+			color: $gray-700;
 		}
 	}
 
@@ -69,7 +68,7 @@
 
 .woocommerce-embed-page {
 	.woocommerce-store-alerts {
-		margin: 20px;
+		margin: 40px 20px 20px;
 		@include breakpoint( '<782px' ) {
 			margin-top: $gap-large;
 		}

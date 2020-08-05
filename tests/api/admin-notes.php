@@ -95,8 +95,13 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 	public function test_get_invalid_note() {
 		wp_set_current_user( $this->user );
 
+		// Suppress deliberately caused errors.
+		$log_file = ini_set( 'error_log', '/dev/null' );
+
 		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint . '/999' ) );
 		$note     = $response->get_data();
+
+		ini_set( 'error_log', $log_file );
 
 		$this->assertEquals( 404, $response->get_status() );
 	}
@@ -384,7 +389,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$notes    = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 2, count( $notes ) );
+		$this->assertEquals( 4, count( $notes ) );
 	}
 
 	/**
@@ -405,7 +410,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 
 		$response = $this->server->dispatch( new WP_REST_Request( 'DELETE', $this->endpoint . '/delete/all' ) );
 		$notes    = $response->get_data();
-		$this->assertEquals( 2, count( $notes ) );
+		$this->assertEquals( 4, count( $notes ) );
 
 		$request = new WP_REST_Request( 'PUT', $this->endpoint . '/undoremove' );
 		$request->set_body_params(

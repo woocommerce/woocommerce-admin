@@ -55,9 +55,11 @@ export class ReportChart extends Component {
 
 	getItemChartData() {
 		const { primaryData, selectedChart } = this.props;
-		const chartData = primaryData.data.intervals.map( function( interval ) {
+		const chartData = primaryData.data.intervals.map( function (
+			interval
+		) {
 			const intervalData = {};
-			interval.subtotals.segments.forEach( function( segment ) {
+			interval.subtotals.segments.forEach( function ( segment ) {
 				if ( segment.segment_label ) {
 					const label = intervalData[ segment.segment_label ]
 						? segment.segment_label +
@@ -93,7 +95,7 @@ export class ReportChart extends Component {
 			defaultDateRange
 		);
 
-		const chartData = primaryData.data.intervals.map( function(
+		const chartData = primaryData.data.intervals.map( function (
 			interval,
 			index
 		) {
@@ -168,7 +170,7 @@ export class ReportChart extends Component {
 		const emptyMessage = emptySearchResults
 			? __( 'No data for the current search', 'woocommerce-admin' )
 			: __( 'No data for the selected date range', 'woocommerce-admin' );
-		const { formatCurrency, getCurrency } = this.context;
+		const { formatAmount, getCurrencyConfig } = this.context;
 		return (
 			<Chart
 				allowedIntervals={ allowedIntervals }
@@ -195,13 +197,13 @@ export class ReportChart extends Component {
 				}
 				tooltipValueFormat={ getTooltipValueFormat(
 					selectedChart.type,
-					formatCurrency
+					formatAmount
 				) }
 				chartType={ getChartTypeForQuery( query ) }
 				valueType={ selectedChart.type }
 				xFormat={ formats.xFormat }
 				x2Format={ formats.x2Format }
-				currency={ getCurrency() }
+				currency={ getCurrencyConfig() }
 			/>
 		);
 	}
@@ -383,7 +385,7 @@ export default compose(
 			};
 		}
 
-		const fields = charts && charts.map( chart => chart.key ); 
+		const fields = charts && charts.map( ( chart ) => chart.key );
 
 		const primaryData = getReportChartData( {
 			endpoint,

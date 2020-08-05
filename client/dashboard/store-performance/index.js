@@ -134,8 +134,8 @@ class StorePerformance extends Component {
 			compare === 'previous_period'
 				? __( 'Previous Period:', 'woocommerce-admin' )
 				: __( 'Previous Year:', 'woocommerce-admin' );
-		const { formatCurrency, getCurrency } = this.context;
-		const currency = getCurrency();
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return (
 			<SummaryList>
 				{ () =>
@@ -151,7 +151,7 @@ class StorePerformance extends Component {
 							primaryData,
 							secondaryData,
 							currency,
-							formatCurrency,
+							formatAmount,
 							persistedQuery,
 						} );
 
@@ -202,7 +202,7 @@ StorePerformance.contextType = CurrencyContext;
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { hiddenBlocks, query } = props;
+		const { hiddenBlocks, query, filters } = props;
 		const userIndicators = indicators.filter(
 			( indicator ) => ! hiddenBlocks.includes( indicator.stat )
 		);
@@ -219,7 +219,12 @@ export default compose(
 		if ( userIndicators.length === 0 ) {
 			return data;
 		}
-		const indicatorData = getIndicatorData( select, userIndicators, query );
+		const indicatorData = getIndicatorData(
+			select,
+			userIndicators,
+			query,
+			filters
+		);
 
 		return {
 			...data,

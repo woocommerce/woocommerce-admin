@@ -86,7 +86,10 @@ class CouponsReportTable extends Component {
 				username,
 			} = download;
 
-			const { code: errorCode, name: productName } = _embedded.product[ 0 ];
+			const {
+				code: errorCode,
+				name: productName,
+			} = _embedded.product[ 0 ];
 			let productDisplay, productValue;
 
 			// Handle deleted products.
@@ -162,7 +165,7 @@ class CouponsReportTable extends Component {
 		const after = moment( dates.primary.after );
 		const before = moment( dates.primary.before );
 		const days = before.diff( after, 'days' ) + 1;
-		const currency = this.context.getCurrency();
+		const currency = this.context.getCurrencyConfig();
 
 		return [
 			{

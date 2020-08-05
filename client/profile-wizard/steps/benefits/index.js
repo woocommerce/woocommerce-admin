@@ -7,12 +7,12 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { filter } from 'lodash';
+import interpolateComponents from 'interpolate-components';
 
 /**
  * WooCommerce dependencies
  */
-import { Card, H } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { Card, H, Link } from '@woocommerce/components';
 import {
 	pluginNames,
 	ONBOARDING_STORE_NAME,
@@ -23,7 +23,6 @@ import {
 /**
  * Internal dependencies
  */
-import Connect from 'dashboard/components/connect';
 import { createNoticesFromResponse } from 'lib/notices';
 import Logo from './logo';
 import ManagementIcon from './images/management';
@@ -85,12 +84,11 @@ class Benefits extends Component {
 		goToNextStep();
 	}
 
-	async startPluginInstall() {
+	startPluginInstall() {
 		const {
 			createNotice,
 			goToNextStep,
 			installAndActivatePlugins,
-			isJetpackConnected,
 			updateProfileItems,
 			updateOptions,
 		} = this.props;
@@ -101,30 +99,29 @@ class Benefits extends Component {
 			plugins,
 		} );
 
-		await Promise.all( [
+		Promise.all( [
 			installAndActivatePlugins( this.pluginsToInstall ),
 			updateProfileItems( { plugins } ),
 			updateOptions( {
 				woocommerce_setup_jetpack_opted_in: true,
 			} ),
-		] ).catch( ( pluginError, profileError ) => {
-			if ( pluginError ) {
-				createNoticesFromResponse( pluginError );
-			}
-			if ( profileError ) {
-				createNotice(
-					'error',
-					__(
-						'There was a problem updating your preferences.',
-						'woocommerce-admin'
-					)
-				);
-			}
-		} );
-
-		if ( isJetpackConnected ) {
-			goToNextStep();
-		}
+		] )
+			.then( goToNextStep )
+			.catch( ( pluginError, profileError ) => {
+				if ( pluginError ) {
+					createNoticesFromResponse( pluginError );
+				}
+				if ( profileError ) {
+					createNotice(
+						'error',
+						__(
+							'There was a problem updating your preferences.',
+							'woocommerce-admin'
+						)
+					);
+				}
+				goToNextStep();
+			} );
 	}
 
 	renderBenefit( benefit ) {
@@ -204,8 +201,6 @@ class Benefits extends Component {
 	render() {
 		const {
 			activePlugins,
-			goToNextStep,
-			isJetpackConnected,
 			isInstallingActivating,
 			isRequesting,
 		} = this.props;
@@ -218,6 +213,13 @@ class Benefits extends Component {
 		);
 		const isInstallAction =
 			isInstallingActivating || ! pluginsRemaining.length;
+		const isAcceptingTos = ! this.isWcsActive;
+		const pluralizedPlugins = _n(
+			'plugin',
+			'plugins',
+			this.pluginsToInstall.length,
+			'woocommerce-admin'
+		);
 
 		return (
 			<Card className="woocommerce-profile-wizard__benefits-card">
@@ -249,40 +251,37 @@ class Benefits extends Component {
 					>
 						{ __( 'No thanks', 'woocommerce-admin' ) }
 					</Button>
-
-					{ /* Make sure we're finished requesting since this will auto redirect us. */ }
-					{ ! isJetpackConnected &&
-						! isRequesting &&
-						! pluginsRemaining.length && (
-							<Connect
-								autoConnect
-								onConnect={ () => {
-									recordEvent(
-										'storeprofiler_jetpack_connect_redirect'
-									);
-								} }
-								onError={ () => goToNextStep() }
-								redirectUrl={ getAdminLink(
-									'admin.php?page=wc-admin&reset_profiler=0'
-								) }
-							/>
-						) }
 				</div>
 
 				<p className="woocommerce-profile-wizard__benefits-install-notice">
-					{ sprintf(
-						__(
-							'%s %s will be installed & activated for free.',
-							'woocommerce-admin'
-						),
-						pluginNamesString,
-						_n(
-							'plugin',
-							'plugins',
-							this.pluginsToInstall.length,
-							'woocommerce-admin'
-						)
-					) }
+					{ isAcceptingTos
+						? interpolateComponents( {
+								mixedString: sprintf(
+									__(
+										'%s %s will be installed & activated for free, and you agree to our {{link}}Terms of Service{{/link}}.',
+										'woocommerce-admin'
+									),
+									pluginNamesString,
+									pluralizedPlugins
+								),
+								components: {
+									link: (
+										<Link
+											href="https://wordpress.com/tos/"
+											target="_blank"
+											type="external"
+										/>
+									),
+								},
+						  } )
+						: sprintf(
+								__(
+									'%s %s will be installed & activated for free.',
+									'woocommerce-admin'
+								),
+								pluginNamesString,
+								pluralizedPlugins
+						  ) }
 				</p>
 			</Card>
 		);
@@ -297,11 +296,9 @@ export default compose(
 			isOnboardingRequesting,
 		} = select( ONBOARDING_STORE_NAME );
 
-		const {
-			getActivePlugins,
-			isJetpackConnected,
-			isPluginsRequesting,
-		} = select( PLUGINS_STORE_NAME );
+		const { getActivePlugins, isPluginsRequesting } = select(
+			PLUGINS_STORE_NAME
+		);
 
 		return {
 			activePlugins: getActivePlugins(),
@@ -309,7 +306,6 @@ export default compose(
 				getOnboardingError( 'updateProfileItems' )
 			),
 			profileItems: getProfileItems(),
-			isJetpackConnected: isJetpackConnected(),
 			isRequesting: isOnboardingRequesting( 'updateProfileItems' ),
 			isInstallingActivating:
 				isPluginsRequesting( 'installPlugins' ) ||

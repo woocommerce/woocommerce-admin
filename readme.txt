@@ -2,11 +2,11 @@
 Contributors: automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.3.0
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Requires PHP: 5.6.20
-Stable tag: 1.3.0-beta.1
+Stable tag: 1.4.0
 License: GPLv3
-License URI: https://github.com/woocommerce/woocommerce-admin/blob/master/license.txt
+License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
 == Description ==
 
@@ -71,7 +71,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 1.3.0-beta.1 2020-06-15 =
+= 1.3.2 2020-07-29 =
+- Fix: bug preventing saving user preferences on WP 5.3. #4869
+
+= 1.3.1 2020-07-20 =
+- Fix: PHP Fatal errors when columns are missing from the Notes table. #4831
+
+= 1.3.0 2020-07-08 =
 - Enhancement: Add Jetpack stats to performance indicatorts / homepage #4291
 - Enhancement: New "Store Management" quick links card on WooCommerce home screen. #4350
 - Enhancement: Inbox notifications layout updates #4218
@@ -85,6 +91,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Migrate user store to wp.data #4505
 - Dev: Add options data store to wp.data #4144
 - Dev: Runtime feature config override #4523
+- Dev: Check that the possibly_add_note function exists before calling it #4680
+- Dev: Remove unnecessary rest API init action. #4691
+- Dev: Don't include sourcemaps or unminified JS for "core" builds. #4642
 - Fix: misaligned 'required' text on selects #4307
 - Fix: exception when opening dashboard after selecting extensions to purchase #4357
 - Fix: REST API collections schema #4377
@@ -101,6 +110,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Check for enabled methods before payment task completion #4530
 - Fix: Solved a problem with the method onChoose in the last onboarding step. #4583
 - Fix: Only mark purchase task as complete when products exist #4574
+- Fix: Remove unnecessary rest_api_init action that caused incompatibility issues with other plugins. #4691
+- Fix: Fix WCPay sometimes not appearing on the task list #4647
 - Tweak: make revenue report total sales column optional #4397
 - Tweak: Adjustments to WooCommerce Payments setup task #4373
 - Tweak: Handling of plugin installs in OBW #4411
@@ -111,6 +122,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Use single dash for country/state dropdown options #4553
 - Tweak: Use label tag for toggleable shipping zones #4554
 - Tweak: Tweak - Make it easier to add submenu items to the Marketing menu #4561
+- Tweak: Remove duplicate/redundant inbox note after first order received. #4659
+- Tweak: Fix the embed page CSS so the top content sits better #4622
+
 
 = 1.2.4 2020-06-11 =
 - Tweak: reduce asset filename length and remove tilde characters. #4535
@@ -412,7 +426,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Retrieve week last year data by calendar date instead of week alignment. #3271 (Analytics, Packages)
 - Bug: Check if extended_info is set for order report items #3315 (REST API)
 - Tweak: remove global settings dependency from Navigation package. #3294 (Components, Packages)
-- Fix: Fix checkout of master branch in CI environment. #3296 (Build)
+- Fix: Fix checkout of main branch in CI environment. #3296 (Build)
 - Fix: decouple Date package from global wcSettings object. #3278 (Components, Packages)
 - Fix: Make the order count between customer and table total consistent. #3290 (Analytics)
 - Fix: decouple Currency and Number packages from global wcSettings object. #3277 (Components, Packages)
@@ -484,7 +498,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add GitHub pages deploy step to Travis config. #2940 (Build, Documentation)
 - Dev: Fix plugin installation when working from a push instead of a pull request. #2950 (Build)
 - Dev: Fix pull request branch detection on CI (try #2) #2944 (Build)
-- Dev: Only build pushes to master branch. #2941 (Build)
+- Dev: Only build pushes to main branch. #2941 (Build)
 - Performance: reduce JS bundle size. #2933 (Build)
 - Dev: Fix pull request branch detection on CI #2942 (Build)
 - Dev: refresh component documentation #2872 (Build, Components, Documentation, Packages)

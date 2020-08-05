@@ -205,6 +205,13 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
 			),
+			'skipped'             => array(
+				'type'              => 'boolean',
+				'description'       => __( 'Whether or not the profile was skipped.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+			),
 			'plugins'             => array(
 				'type'              => 'string',
 				'description'       => __( 'How the Jetpack/WooCommerce Services step was handled.', 'woocommerce-admin' ),
@@ -330,6 +337,9 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'validate_callback' => 'rest_validate_request_arg',
 				'items'             => array(
 					'enum' => array(
+						'jetpack',
+						'woocommerce-services',
+						'woocommerce-payments',
 						'mailchimp-for-woocommerce',
 						'facebook-for-woocommerce',
 						'kliken-marketing-for-google',

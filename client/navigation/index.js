@@ -15,15 +15,14 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import './style.scss';
 
 class Navigation extends Component {
-
 	renderMenuItem( item, depth = 0 ) {
 		const { slug, title, url } = item;
 
 		return (
 			<li
 				key={ slug }
-				className={ `woocommerce-navigation__menu-item woocommerce-navigation__menu-item-depth-${depth}` }
-		>
+				className={ `woocommerce-navigation__menu-item woocommerce-navigation__menu-item-depth-${ depth }` }
+			>
 				<a href={ url }>{ title }</a>
 				{ item.children && item.children.length && (
 					<ul className="woocommerce-navigation__submenu">
@@ -33,12 +32,12 @@ class Navigation extends Component {
 					</ul>
 				) }
 			</li>
-		)
+		);
 	}
 
 	render() {
 		const { items } = this.props;
-		
+
 		return (
 			<div className="woocommerce-navigation">
 				<ul className="woocommerce-navigation__menu">
@@ -52,8 +51,9 @@ class Navigation extends Component {
 }
 
 export default withSelect( ( select ) => {
-	const items = select(
-		SETTINGS_STORE_NAME
-	).getSetting( 'wc_admin', 'wcNavigation' );
+	const items = select( SETTINGS_STORE_NAME ).getSetting(
+		'wc_admin',
+		'wcNavigation'
+	);
 	return { items };
 } )( Navigation );
