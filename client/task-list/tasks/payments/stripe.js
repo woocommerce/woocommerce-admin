@@ -31,6 +31,7 @@ class Stripe extends Component {
 	}
 
 	componentDidMount() {
+		const { oAuthConnectFailed } = this.state;
 		const { stripeSettings } = this.props;
 		const query = getQuery();
 
@@ -45,7 +46,7 @@ class Stripe extends Component {
 			}
 		}
 
-		if ( ! this.requiresManualConfig() ) {
+		if ( ! oAuthConnectFailed ) {
 			this.fetchOAuthConnectURL();
 		}
 	}
@@ -61,13 +62,6 @@ class Stripe extends Component {
 		) {
 			this.fetchOAuthConnectURL();
 		}
-	}
-
-	requiresManualConfig() {
-		const { isJetpackConnected } = this.props;
-		const { oAuthConnectFailed } = this.state;
-
-		return ! isJetpackConnected || oAuthConnectFailed;
 	}
 
 	completeMethod() {
@@ -317,13 +311,10 @@ class Stripe extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption, isOptionsUpdating } = select( OPTIONS_STORE_NAME );
-		const { getActivePlugins, isJetpackConnected } = select(
-			PLUGINS_STORE_NAME
-		);
+		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 
 		return {
 			activePlugins: getActivePlugins(),
-			isJetpackConnected: isJetpackConnected(),
 			isOptionsUpdating: isOptionsUpdating(),
 			stripeSettings: getOption( 'woocommerce_stripe_settings' ) || [],
 		};
