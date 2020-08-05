@@ -92,11 +92,9 @@ class OnboardingSetUpShipping {
 
 		$zone->add_location( $country_code, 'country' );
 
-		$countries = apply_filters(
-			'woocommerce_countries',
-			include WC()->plugin_path() . '/i18n/countries.php'
-		);
-		$zone_name = isset( $countries[ $country_code ] )
+		$countries_service = new \WC_Countries();
+		$countries         = $countries_service->get_countries();
+		$zone_name         = isset( $countries[ $country_code ] )
 			? $countries[ $country_code ]
 			: null;
 
