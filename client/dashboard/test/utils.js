@@ -8,6 +8,8 @@ describe( 'isWCAdmin', () => {
 		[
 			'https://example.com/wp-admin/admin.php?page=wc-admin',
 			'https://example.com/wp-admin/admin.php?page=wc-admin&foo=bar',
+			'/admin.php?page=wc-admin',
+			'/admin.php?page=wc-admin&foo=bar',
 		].forEach( ( url ) => {
 			expect( isWCAdmin( url ) ).toBe( true );
 		} );
@@ -17,6 +19,8 @@ describe( 'isWCAdmin', () => {
 		[
 			'https://example.com/wp-admin/edit.php?page=wc-admin',
 			'https://example.com/wp-admin/admin.php?page=other',
+			'/edit.php?page=wc-admin',
+			'/admin.php?page=other',
 		].forEach( ( url ) => {
 			expect( isWCAdmin( url ) ).toBe( false );
 		} );

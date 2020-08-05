@@ -244,7 +244,7 @@ export class ActivityPanel extends Component {
 	}
 
 	renderPanel() {
-		const { updateOptions } = this.props;
+		const { updateOptions, taskListHidden } = this.props;
 		const { isPanelOpen, currentTab, isPanelSwitching } = this.state;
 		const tab = find( this.getTabs(), { name: currentTab } );
 
@@ -268,17 +268,13 @@ export class ActivityPanel extends Component {
 			if ( currentLocation !== homescreenLocation ) {
 				// Ensure that if the user is trying to get to the task list they can see it even if
 				// it was dismissed.
-				updateOptions( {
-					woocommerce_task_list_hidden: 'no',
-				} ).then( () => {
-					if ( isWCAdmin( window.location.href ) ) {
-						getHistory().push( getNewPath( {}, '/', {} ) );
-					} else {
-						window.location.href = getAdminLink(
-							'admin.php?page=wc-admin'
-						);
-					}
-				} );
+				if ( taskListHidden === 'no' ) {
+					this.redirectToHomeScreen();
+				} else {
+					updateOptions( {
+						woocommerce_task_list_hidden: 'no',
+					} ).then( this.redirectToHomeScreen );
+				}
 			}
 
 			return null;
@@ -312,6 +308,14 @@ export class ActivityPanel extends Component {
 				</div>
 			</div>
 		);
+	}
+
+	redirectToHomeScreen() {
+		if ( isWCAdmin( window.location.href ) ) {
+			getHistory().push( getNewPath( {}, '/', {} ) );
+		} else {
+			window.location.href = getAdminLink( 'admin.php?page=wc-admin' );
+		}
 	}
 
 	render() {
