@@ -13,6 +13,7 @@ import { LineChartIllustration } from './illustrations/line-chart';
 import { InboxIllustration } from './illustrations/inbox';
 import { PieChartIllustration } from './illustrations/pie-chart';
 import { PageContent } from './page-content';
+import './style.scss';
 
 const pages = [
 	{
@@ -78,7 +79,7 @@ export const WelcomeModal = ( { onClose } ) => {
 						recordEvent( 'task_list_welcome_modal_close' );
 					} }
 					className={ 'woocommerce__welcome-modal' }
-					finishButtonText={ __( "Let's go" ) }
+					finishButtonText={ __( "Let's go", 'woocommerce-admin' ) }
 					pages={ pages }
 				/>
 			) }
