@@ -35,7 +35,7 @@
 		line-height: 19px;
 	}
 
-	.components-button.is-button {
+	.components-button.is-primary {
 		margin: 10px 61px 10px auto;
 		padding: 0 30px;
 		font-size: 14px;
@@ -44,10 +44,6 @@
 		text-decoration: none;
 		text-shadow: none;
 		overflow: visible;
-		&:hover {
-			background-color: #ff3997;
-			border-color: #ff3997;
-		}
 	}
 
 	.notice-dismiss {
@@ -110,7 +106,7 @@
 	.wc-admin-shipping-banner__dismiss-modal-actions {
 		text-align: right;
 
-		.components-button.is-button {
+		.components-button.is-primary {
 			height: 30px;
 			padding-left: 15px;
 			padding-right: 15px;
@@ -136,7 +132,7 @@
 			flex-wrap: wrap;
 			justify-content: center;
 		}
-		.components-button.is-button {
+		.components-button.is-primary {
 			margin: 10px 0 0 0;
 		}
 		p {
