@@ -3,8 +3,6 @@
  * REST API Onboarding Tasks Controller
  *
  * Handles requests to complete various onboarding tasks.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -15,8 +13,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Onboarding Tasks Controller.
- *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
 class OnboardingTasks extends \WC_REST_Data_Controller {

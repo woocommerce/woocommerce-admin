@@ -3,8 +3,6 @@
  * REST API Options Controller
  *
  * Handles requests to get and update options in the wp_options table.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -13,8 +11,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Options Controller.
- *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
 class Options extends \WC_REST_Data_Controller {

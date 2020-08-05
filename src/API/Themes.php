@@ -3,8 +3,6 @@
  * REST API Themes Controller
  *
  * Handles requests to /themes
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -16,8 +14,6 @@ use Automattic\WooCommerce\Admin\Overrides\ThemeUpgraderSkin;
 
 /**
  * Themes controller.
- *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
 class Themes extends \WC_REST_Data_Controller {

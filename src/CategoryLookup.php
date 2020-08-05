@@ -1,8 +1,6 @@
 <?php
 /**
  * Keeps the product category lookup table in sync with live data.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin;

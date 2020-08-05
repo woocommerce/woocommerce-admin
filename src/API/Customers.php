@@ -3,8 +3,6 @@
  * REST API Customers Controller
  *
  * Handles requests to /customers/*
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -13,8 +11,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Customers controller.
- *
- * @package WooCommerce Admin/API
  * @extends \Automattic\WooCommerce\Admin\API\Reports\Customers\Controller
  */
 class Customers extends \Automattic\WooCommerce\Admin\API\Reports\Customers\Controller {

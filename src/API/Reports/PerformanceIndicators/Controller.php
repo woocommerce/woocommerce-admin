@@ -3,8 +3,6 @@
  * REST API Performance indicators controller
  *
  * Handles requests to the /reports/store-performance endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\PerformanceIndicators;
@@ -15,8 +13,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * REST API Reports Performance indicators controller class.
- *
- * @package WooCommerce/API
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller {

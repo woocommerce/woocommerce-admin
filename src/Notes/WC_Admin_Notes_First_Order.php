@@ -3,8 +3,6 @@
  * WooCommerce Admin First Order Note.
  *
  * Adds a note on first order creation.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;

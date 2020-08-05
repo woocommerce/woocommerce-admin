@@ -3,8 +3,6 @@
  * WooCommerce Admin (Dashboard) Order Milestones Note Provider.
  *
  * Adds a note to the merchant's inbox when certain order milestones are reached.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;

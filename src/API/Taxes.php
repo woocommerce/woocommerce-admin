@@ -3,8 +3,6 @@
  * REST API Taxes Controller
  *
  * Handles requests to /taxes/*
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -13,8 +11,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Taxes controller.
- *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Taxes_Controller
  */
 class Taxes extends \WC_REST_Taxes_Controller {

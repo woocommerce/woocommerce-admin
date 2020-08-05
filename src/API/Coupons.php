@@ -3,8 +3,6 @@
  * REST API Coupons Controller
  *
  * Handles requests to /coupons/*
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -13,8 +11,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Coupons controller.
- *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Coupons_Controller
  */
 class Coupons extends \WC_REST_Coupons_Controller {

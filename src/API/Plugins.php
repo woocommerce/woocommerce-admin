@@ -3,8 +3,6 @@
  * REST API Plugins Controller
  *
  * Handles requests to install and activate depedent plugins.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -17,8 +15,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Plugins Controller.
- *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
 class Plugins extends \WC_REST_Data_Controller {
