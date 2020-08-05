@@ -20,18 +20,6 @@ class WC_Admin_Notes_Review_Shipping_Settings {
 	const NOTE_NAME = 'wc-admin-review-shipping-settings';
 
 	/**
-	 * Possibly add note.
-	 */
-	public static function possibly_add_note() {
-		if ( ! self::can_be_added() ) {
-			return;
-		}
-
-		$note = self::get_note();
-		$note->save();
-	}
-
-	/**
 	 * Get the note.
 	 *
 	 * @return WC_Admin_Note
