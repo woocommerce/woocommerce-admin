@@ -31,11 +31,11 @@ class OnboardingSetUpShipping {
 	 * Set up shipping.
 	 */
 	public static function on_onboarding_profile_completed() {
-		if ( ! self::is_physical_selected_as_product_type() ) {
+		if ( ! self::has_physical_products() ) {
 			return;
 		}
 
-		if ( self::are_there_existing_shipping_zones() ) {
+		if ( self::has_existing_shipping_zones() ) {
 			return;
 		}
 
@@ -49,7 +49,7 @@ class OnboardingSetUpShipping {
 	 *
 	 * @return bool
 	 */
-	private static function are_there_existing_shipping_zones() {
+	private static function has_existing_shipping_zones() {
 		$zone_count = count( \WC_Shipping_Zones::get_zones() );
 
 		return $zone_count > 0;
@@ -60,7 +60,7 @@ class OnboardingSetUpShipping {
 	 *
 	 * @return bool
 	 */
-	private static function is_physical_selected_as_product_type() {
+	private static function has_physical_products() {
 		$onboarding_data = get_option( Onboarding::PROFILE_DATA_OPTION );
 
 		if ( ! isset( $onboarding_data['product_types'] ) ) {
