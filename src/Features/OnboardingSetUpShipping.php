@@ -77,7 +77,7 @@ class OnboardingSetUpShipping {
 	/**
 	 * Set up free local shipping.
 	 */
-	private static function set_up_free_local_shipping() {
+	public static function set_up_free_local_shipping() {
 		$default_country = apply_filters(
 			'woocommerce_get_base_location',
 			get_option( 'woocommerce_default_country' )
