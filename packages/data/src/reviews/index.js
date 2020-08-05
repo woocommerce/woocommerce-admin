@@ -26,4 +26,4 @@ if ( ! storeSelectors ) {
 	} );
 }
 
-export const PLUGINS_STORE_NAME = STORE_NAME;
+export const REVIEWS_STORE_NAME = STORE_NAME;
