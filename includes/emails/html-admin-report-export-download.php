@@ -2,7 +2,7 @@
 /**
  * Admin report export download
  *
- * @package WooCommerce/Admin/Templates/Emails/HTML
+ * @package WooCommerce\Admin\Templates\Emails\HTML
  */
 
 defined( 'ABSPATH' ) || exit;

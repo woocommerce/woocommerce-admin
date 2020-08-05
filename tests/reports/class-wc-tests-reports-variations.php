@@ -2,7 +2,7 @@
 /**
  * Reports order stats tests.
  *
- * @package WooCommerce\Tests\Orders
+ * @package WooCommerce\Admin\Tests\Orders
  * @todo Finish up unit testing to verify bug-free order reports.
  */
 
@@ -12,7 +12,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\Variations\Query as VariationsQuer
 /**
  * Reports order stats tests class.
  *
- * @package WooCommerce\Tests\Orders
+ * @package WooCommerce\Admin\Tests\Orders
  * @todo Finish up unit testing to verify bug-free order reports.
  */
 class WC_Tests_Reports_Variations extends WC_Unit_Test_Case {

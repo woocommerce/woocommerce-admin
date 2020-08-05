@@ -2,7 +2,7 @@
 /**
  * Reports order stats tests.
  *
- * @package WooCommerce\Tests\Orders
+ * @package WooCommerce\Admin\Tests\Orders
  */
 
 use \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\DataStore as OrdersStatsDataStore;

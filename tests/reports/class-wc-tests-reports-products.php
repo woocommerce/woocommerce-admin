@@ -2,7 +2,7 @@
 /**
  * Reports product stats tests.
  *
- * @package WooCommerce\Tests\Orders
+ * @package WooCommerce\Admin\Tests\Orders
  * @todo Finish up unit testing to verify bug-free product reports.
  */
 
@@ -12,7 +12,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\Products\Query as ProductsQuery;
 /**
  * Reports product stats tests class
  *
- * @package WooCommerce\Tests\Orders
+ * @package WooCommerce\Admin\Tests\Orders
  * @todo Finish up unit testing to verify bug-free product reports.
  */
 class WC_Tests_Reports_Products extends WC_Unit_Test_Case {

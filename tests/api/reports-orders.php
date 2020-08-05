@@ -2,7 +2,7 @@
 /**
  * Reports Orders REST API Test
  *
- * @package WooCommerce\Tests\API
+ * @package WooCommerce\Admin\Tests\API
  * @since 3.5.0
  */
 
@@ -11,7 +11,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDa
 /**
  * Reports Orders REST API Test Class
  *
- * @package WooCommerce\Tests\API
+ * @package WooCommerce\Admin\Tests\API
  * @since 3.5.0
  */
 class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {

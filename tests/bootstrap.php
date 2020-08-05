@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file
  *
- * @package WC_Admin
+ * @package WooCommerce\Admin
  */
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
