@@ -5,11 +5,22 @@ import TYPES from './action-types';
 
 const notesReducer = (
 	state = {
+		errors: {},
 		noteQueries: {},
 		notes: {},
-		errors: {},
+		requesting: {},
 	},
-	{ type, notes, noteId, noteIds, noteFields, error, query, selector }
+	{
+		error,
+		isRequesting,
+		noteFields,
+		noteId,
+		noteIds,
+		notes,
+		query,
+		selector,
+		type,
+	}
 ) => {
 	switch ( type ) {
 		case TYPES.SET_NOTES:
@@ -48,6 +59,15 @@ const notesReducer = (
 				notes: {
 					...state.notes,
 					[ noteId ]: noteFields,
+				},
+			};
+			break;
+		case TYPES.SET_IS_REQUESTING:
+			state = {
+				...state,
+				requesting: {
+					...state.requesting,
+					[ selector ]: isRequesting,
 				},
 			};
 			break;
