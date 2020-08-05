@@ -570,7 +570,14 @@ class Loader {
 	 * @return string JSON encoded translations object.
 	 */
 	public static function load_script_translations( $original_translations, $file, $handle, $domain ) {
-		if ( 'woocommerce-admin' !== $domain || WC_ADMIN_APP !== $handle ) {
+		// Make sure the main app script is being loaded.
+		if ( WC_ADMIN_APP !== $handle ) {
+			return $original_translations;
+		}
+
+		// Make sure we're handing the correct domain (could be woocommerce or woocommerce-admin).
+		$plugin_domain = explode( '/', plugin_basename( __FILE__ ) )[0];
+		if ( $plugin_domain !== $domain ) {
 			return $original_translations;
 		}
 
