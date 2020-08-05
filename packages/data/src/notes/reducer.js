@@ -45,12 +45,10 @@ const notesReducer = (
 		case TYPES.SET_NOTE:
 			state = {
 				...state,
-				notes: notes.map( ( note ) => {
-					if ( note.id === noteId ) {
-						return noteFields;
-					}
-					return note;
-				} ),
+				notes: {
+					...state.notes,
+					[ noteId ]: noteFields,
+				},
 			};
 			break;
 	}

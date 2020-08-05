@@ -24,6 +24,7 @@ export function* removeNote( noteId ) {
 		const url = `${ NAMESPACE }/admin/notes/delete/${ noteId }`;
 		const response = yield apiFetch( { path: url, method: 'DELETE' } );
 		yield setNote( noteId, response );
+		return response;
 	} catch ( error ) {
 		yield setError( 'removeNote', error );
 	}
@@ -34,20 +35,37 @@ export function* removeAllNotes() {
 		const url = `${ NAMESPACE }/admin/notes/delete/all`;
 		const notes = yield apiFetch( { path: url, method: 'DELETE' } );
 		yield setNotes( notes );
+		return notes;
 	} catch ( error ) {
 		setError( 'removeAllNotes', error );
 	}
 }
 
-export function* updateNote( noteId, noteFields ) {
-	const url = `${ NAMESPACE }/admin/notes/${ noteId }`;
+export function* batchUpdateNotes( noteIds, noteFields ) {
 	try {
+		const url = `${ NAMESPACE }/admin/notes/update`;
+		const notes = yield apiFetch( {
+			path: url,
+			method: 'PUT',
+			data: {
+				noteIds,
+				...noteFields,
+			},
+		} );
+		yield setNotes( notes );
+	} catch ( error ) {
+		setError( 'updateNote', error );
+	}
+}
+
+export function* updateNote( noteId, noteFields ) {
+	try {
+		const url = `${ NAMESPACE }/admin/notes/${ noteId }`;
 		const note = yield apiFetch( {
 			path: url,
 			method: 'PUT',
 			data: noteFields,
 		} );
-		// @todo Handle note dismissal undo.
 		yield setNote( noteId, note );
 	} catch ( error ) {
 		setError( 'updateNote', error );
