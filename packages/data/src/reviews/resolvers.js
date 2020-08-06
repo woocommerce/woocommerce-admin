@@ -22,7 +22,7 @@ export function* getReviews( query ) {
 		const totalCount = parseInt( response.headers.get( 'x-wp-total' ), 10 );
 		yield updateReviews( query, response.data, totalCount );
 	} catch ( error ) {
-		yield setError( 'getReviews', error );
+		yield setError( query, error );
 	}
 }
 

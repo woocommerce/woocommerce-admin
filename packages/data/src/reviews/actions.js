@@ -20,10 +20,10 @@ export function setIsRequesting( selector, isRequesting ) {
 	};
 }
 
-export function setError( selector, error ) {
+export function setError( query, error ) {
 	return {
 		type: TYPES.SET_ERROR,
-		selector,
+		query,
 		error,
 	};
 }

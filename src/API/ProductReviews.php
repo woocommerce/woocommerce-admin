@@ -54,4 +54,8 @@ class ProductReviews extends \WC_REST_Product_Reviews_Controller {
 		}
 		return $links;
 	}
+
+	// public function get_items( $request ) {
+	// 	return new WP_Error('paul');
+	// }
 }

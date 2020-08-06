@@ -11,3 +11,8 @@ export const getReviewsTotalCount = ( state, query ) => {
 		( state.reviews[ marker ] && state.reviews[ marker ].totalCount ) || 0
 	);
 };
+
+export const getReviewsError = ( state, query ) => {
+	const marker = JSON.stringify( query );
+	return state.errors[ marker ];
+};
