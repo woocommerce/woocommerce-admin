@@ -25,3 +25,7 @@ export function* getReviews( query ) {
 		yield setError( 'getReviews', error );
 	}
 }
+
+export function* getReviewsTotalCount( query ) {
+	yield getReviews( query );
+}

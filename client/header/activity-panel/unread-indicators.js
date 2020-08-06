@@ -115,7 +115,9 @@ export function getUnapprovedReviews( select ) {
 			per_page: 1,
 			status: 'hold',
 		};
-		const totalActionableReviews = getReviews( actionableReviewsQuery );
+		const totalActionableReviews = getReviewsTotalCount(
+			actionableReviewsQuery
+		);
 
 		console.log( totalActionableReviews );
 		// const isActionableReviewsError = Boolean(

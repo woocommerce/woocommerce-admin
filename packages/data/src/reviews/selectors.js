@@ -7,5 +7,7 @@ export const getReviews = ( state, query ) => {
 
 export const getReviewsTotalCount = ( state, query ) => {
 	const marker = JSON.stringify( query );
-	return ( state[ marker ] && state[ marker ].totalCount ) || 0;
+	return (
+		( state.reviews[ marker ] && state.reviews[ marker ].totalCount ) || 0
+	);
 };
