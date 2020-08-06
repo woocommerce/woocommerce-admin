@@ -13,6 +13,7 @@ const notesReducer = (
 	{
 		error,
 		isRequesting,
+		isUpdating,
 		noteFields,
 		noteId,
 		noteIds,
@@ -59,6 +60,18 @@ const notesReducer = (
 				notes: {
 					...state.notes,
 					[ noteId ]: noteFields,
+				},
+			};
+			break;
+		case TYPES.SET_NOTE_IS_UPDATING:
+			state = {
+				...state,
+				notes: {
+					...state.notes,
+					[ noteId ]: {
+						...state.notes[ noteId ],
+						isUpdating,
+					},
 				},
 			};
 			break;

@@ -32,13 +32,7 @@ const renderEmptyCard = () => (
 	</ActivityCard>
 );
 
-const renderNotes = ( {
-	hasNotes,
-	isBatchUpdating,
-	lastRead,
-	notes,
-	updatingNoteId,
-} ) => {
+const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
 	if ( isBatchUpdating ) {
 		return;
 	}
@@ -50,7 +44,7 @@ const renderNotes = ( {
 	const notesArray = Object.keys( notes ).map( ( key ) => notes[ key ] );
 
 	return notesArray.map( ( note ) => {
-		if ( updatingNoteId === note.id ) {
+		if ( note.isUpdating ) {
 			return (
 				<InboxNotePlaceholder
 					className="banner message-is-unread"
@@ -75,7 +69,7 @@ const InboxPanel = ( props ) => {
 		isResolving,
 		isBatchUpdating,
 		notes,
-		updatingNoteId,
+		isUpdatingNote,
 	} = props;
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const lastRead = userPrefs.activity_panel_inbox_last_read;
@@ -116,7 +110,7 @@ const InboxPanel = ( props ) => {
 
 	const hasNotes = hasValidNotes( notes );
 
-	const isActivityHeaderVisible = hasNotes || isResolving || updatingNoteId;
+	const isActivityHeaderVisible = hasNotes || isResolving || isUpdatingNote;
 
 	if ( isPanelEmpty ) {
 		isPanelEmpty( ! hasNotes && ! isActivityHeaderVisible );
@@ -150,7 +144,6 @@ const InboxPanel = ( props ) => {
 							isBatchUpdating,
 							lastRead,
 							notes,
-							updatingNoteId,
 						} ) }
 				</Section>
 			</div>
@@ -193,7 +186,7 @@ export default compose(
 			notes: getNotes( inboxQuery ),
 			isError: Boolean( getNotesError( 'getNotes', [ inboxQuery ] ) ),
 			isResolving: isResolving( 'getNotes', [ inboxQuery ] ),
-			updatingNoteId: isNotesRequesting( 'updateNote' ),
+			isUpdatingNote: isNotesRequesting( 'updateNote' ),
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 		};
 	} )

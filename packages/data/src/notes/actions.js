@@ -24,7 +24,8 @@ export function* triggerNoteAction( noteId, actionId ) {
 }
 
 export function* removeNote( noteId ) {
-	yield setIsRequesting( 'removeNote', noteId );
+	yield setIsRequesting( 'removeNote', true );
+	yield setNoteIsUpdating( noteId, true );
 
 	try {
 		const url = `${ NAMESPACE }/admin/notes/delete/${ noteId }`;
@@ -35,6 +36,7 @@ export function* removeNote( noteId ) {
 	} catch ( error ) {
 		yield setError( 'removeNote', error );
 		yield setIsRequesting( 'removeNote', false );
+		yield setNoteIsUpdating( noteId, false );
 	}
 }
 
@@ -96,6 +98,14 @@ export function setNote( noteId, noteFields ) {
 		type: TYPES.SET_NOTE,
 		noteId,
 		noteFields,
+	};
+}
+
+export function setNoteIsUpdating( noteId, isUpdating ) {
+	return {
+		type: TYPES.SET_NOTE_IS_UPDATING,
+		noteId,
+		isUpdating,
 	};
 }
 
