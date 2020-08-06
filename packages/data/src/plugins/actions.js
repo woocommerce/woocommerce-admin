@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { apiFetch, dispatch } from '@wordpress/data-controls';
+import { apiFetch, dispatch, select } from '@wordpress/data-controls';
 
 /**
  * Internal dependencies
@@ -9,6 +9,7 @@ import { apiFetch, dispatch } from '@wordpress/data-controls';
 import { pluginNames, STORE_NAME } from './constants';
 import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
+import { getAdminLink } from 'settings';
 
 export function updateActivePlugins( active, replace = false ) {
 	return {
@@ -122,6 +123,43 @@ export function* installAndActivatePlugins( plugins ) {
 		return activations;
 	} catch ( error ) {
 		throw error;
+	}
+}
+
+export function* installJetpackAndConnect() {
+	try {
+		yield dispatch( STORE_NAME, 'installPlugins', [ 'jetpack' ] );
+		yield dispatch( STORE_NAME, 'activatePlugins', [ 'jetpack' ] );
+
+		const url = yield select( STORE_NAME, 'getJetpackConnectUrl', {
+			redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
+		} );
+
+		// getJetpackConnectUrl doesn't throw errors, it sets error state if
+		// something went wrong.
+		const error = yield select(
+			STORE_NAME,
+			'getPluginsError',
+			'getJetpackConnectUrl'
+		);
+
+		if ( error ) {
+			yield dispatch(
+				'core/notices',
+				'createNotice',
+				'error',
+				error.message
+			);
+		} else {
+			window.location = url;
+		}
+	} catch ( error ) {
+		yield dispatch(
+			'core/notices',
+			'createNotice',
+			'error',
+			error.message
+		);
 	}
 }
 
