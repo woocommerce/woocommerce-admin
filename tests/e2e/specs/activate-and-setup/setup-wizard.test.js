@@ -6,16 +6,19 @@
  * Internal dependencies
  */
 import { StoreOwnerFlow } from '../../utils/flows';
-import { completeOldSetupWizard, completeOnboardingWizard } from '../../utils/components';
+import { completeOnboardingWizard } from '../../utils/components';
 import {
 	permalinkSettingsPageSaveChanges,
 	setCheckbox,
 	settingsPageSaveChanges,
 	verifyCheckboxIsSet,
-	verifyCheckboxIsUnset, verifyValueOfInputField
+	verifyValueOfInputField
 } from '../../utils';
 
-const config = require( 'config' );
+const config  = require( 'config' );
+const baseUrl = config.get( 'url' );
+
+const WC_ADMIN_HOME = baseUrl + 'wp-admin/admin.php?page=wc-admin';
 
 describe( 'Store owner can login and make sure WooCommerce is activated', () => {
 
@@ -54,26 +57,33 @@ describe( 'Store owner can go through store Setup Wizard', () => {
 
 describe( 'Store owner can go through setup Task List', () => {
 	it( 'can setup shipping', async () => {
+		// Navigte to WC Admin home.
+		await Promise.all( [
+			page.goto( WC_ADMIN_HOME ),
+			page.waitForNavigation( { waitUntil: 'networkidle0' } )
+		] );
+
 		// Query for all tasks on the list
 		const taskListItems = await page.$$( '.woocommerce-list__item-title' );
-		expect( taskListItems ).toHaveLength( 5 );
+		expect( taskListItems ).toHaveLength( 6 );
 
 		await Promise.all( [
 			// Click on "Set up shipping" task to move to the next step
-			taskListItems[2].click(),
+			taskListItems[4].click(),
 
 			// Wait for shipping setup section to load
 			page.waitForNavigation( { waitUntil: 'networkidle0' } ),
 		] );
 
-		// Query for store location fields
+		// Query for store location fields, which are only shown if the
+		// store location is not already set.
 		const storeLocationFields = await page.$$( '.components-text-control__input' );
-		expect( storeLocationFields ).toHaveLength( 4 );
-
-		// Wait for "Continue" button to become active
-		await page.waitForSelector( 'button.is-primary:not(:disabled)' );
-		// Click on "Continue" button to move to the shipping cost section
-		await page.click( 'button.is-primary' );
+		if ( storeLocationFields.length === 4 ) {
+			// Wait for "Continue" button to become active
+			await page.waitForSelector( 'button.is-primary:not(:disabled)' );
+			// Click on "Continue" button to move to the shipping cost section
+			await page.click( 'button.is-primary' );
+		}
 
 		// Wait for "Proceed" button to become active
 		await page.waitForSelector( 'button.is-primary:not(:disabled)' );
