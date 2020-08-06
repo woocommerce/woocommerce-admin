@@ -9,7 +9,7 @@ const reducer = (
 		requesting: {},
 		errors: {},
 	},
-	{ type, query, reviews, totalCount, isRequesting, error }
+	{ type, query, reviews, totalCount, error }
 ) => {
 	const marker = JSON.stringify( query );
 
@@ -32,15 +32,6 @@ const reducer = (
 				},
 			};
 			break;
-		// case TYPES.SET_IS_REQUESTING:
-		// 	state = {
-		// 		...state,
-		// 		requesting: {
-		// 			...state.requesting,
-		// 			[ selector ]: isRequesting,
-		// 		},
-		// 	};
-		// 	break;
 		case TYPES.SET_ERROR:
 			state = {
 				...state,
