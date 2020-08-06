@@ -6,8 +6,8 @@ import TYPES from './action-types';
 const reducer = (
 	state = {
 		reviews: {},
-		requesting: {},
 		errors: {},
+		data: {},
 	},
 	{ type, query, reviews, totalCount, error }
 ) => {

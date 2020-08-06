@@ -5,158 +5,57 @@ import reducer from '../reducer';
 import TYPES from '../action-types';
 
 const defaultState = {
-	active: [],
-	installed: [],
-	requesting: {},
+	reviews: {},
 	errors: {},
-	jetpackConnectUrls: {},
+	data: {},
 };
 
-describe( 'plugins reducer', () => {
+describe( 'reviews reducer', () => {
 	it( 'should return a default state', () => {
 		const state = reducer( undefined, {} );
 		expect( state ).toEqual( defaultState );
 		expect( state ).not.toBe( defaultState );
 	} );
 
-	it( 'should handle UPDATE_ACTIVE_PLUGINS with replace', () => {
-		const state = reducer(
-			{
-				active: [ 'plugins', 'to', 'overwrite' ],
-			},
-			{
-				type: TYPES.UPDATE_ACTIVE_PLUGINS,
-				active: [ 'jetpack' ],
-				replace: true,
-			}
-		);
-
-		/* eslint-disable dot-notation */
-
-		expect( state.requesting[ 'getActivePlugins' ] ).toBe( false );
-		expect( state.errors[ 'getActivePlugins' ] ).toBe( false );
-		/* eslint-enable dot-notation */
-
-		expect( state.active ).toHaveLength( 1 );
-		expect( state.active[ 0 ] ).toBe( 'jetpack' );
-	} );
-
-	it( 'should handle UPDATE_ACTIVE_PLUGINS with active plugins', () => {
-		const state = reducer(
-			{
-				active: [ 'jetpack' ],
-				installed: [ 'jetpack' ],
-				requesting: {},
-				errors: {},
-			},
-			{
-				type: TYPES.UPDATE_ACTIVE_PLUGINS,
-				installed: null,
-				active: [ 'woocommerce-services' ],
-			}
-		);
-
-		/* eslint-disable dot-notation */
-
-		expect( state.requesting[ 'getActivePlugins' ] ).toBe( false );
-		expect( state.errors[ 'getActivePlugins' ] ).toBe( false );
-		/* eslint-enable dot-notation */
-
-		expect( state.active ).toHaveLength( 2 );
-		expect( state.active[ 1 ] ).toBe( 'woocommerce-services' );
-	} );
-
-	it( 'should handle UPDATE_INSTALLED_PLUGINS with replace', () => {
-		const state = reducer(
-			{
-				active: [ 'plugins', 'to', 'overwrite' ],
-			},
-			{
-				type: TYPES.UPDATE_INSTALLED_PLUGINS,
-				installed: [ 'jetpack' ],
-				replace: true,
-			}
-		);
-
-		/* eslint-disable dot-notation */
-
-		expect( state.requesting[ 'getInstalledPlugins' ] ).toBe( false );
-		expect( state.errors[ 'getInstalledPlugins' ] ).toBe( false );
-		/* eslint-enable dot-notation */
-
-		expect( state.installed ).toHaveLength( 1 );
-		expect( state.installed[ 0 ] ).toBe( 'jetpack' );
-	} );
-
-	it( 'should handle UPDATE_INSTALLED_PLUGINS with installed plugins', () => {
-		const state = reducer(
-			{
-				active: [ 'jetpack' ],
-				installed: [ 'jetpack' ],
-				requesting: {},
-				errors: {},
-			},
-			{
-				type: TYPES.UPDATE_INSTALLED_PLUGINS,
-				installed: [ 'woocommerce-services' ],
-			}
-		);
-
-		/* eslint-disable dot-notation */
-
-		expect( state.requesting[ 'getInstalledPlugins' ] ).toBe( false );
-		expect( state.errors[ 'getInstalledPlugins' ] ).toBe( false );
-		/* eslint-enable dot-notation */
-
-		expect( state.installed ).toHaveLength( 2 );
-		expect( state.installed[ 1 ] ).toBe( 'woocommerce-services' );
-	} );
-
-	it( 'should handle SET_IS_REQUESTING', () => {
+	it( 'should handle UPDATE_REVIEWS', () => {
+		const reviews = [
+			{ id: 1, review: 'Yum!' },
+			{ id: 2, review: 'Dynamite!' },
+		];
+		const totalCount = 45;
+		const query = { status: 'flavortown' };
 		const state = reducer( defaultState, {
-			type: TYPES.SET_IS_REQUESTING,
-			selector: 'getInstalledPlugins',
-			isRequesting: true,
+			type: TYPES.UPDATE_REVIEWS,
+			reviews,
+			query,
+			totalCount,
 		} );
 
-		/* eslint-disable dot-notation */
+		const stringifiedQuery = JSON.stringify( query );
 
-		expect( state.requesting[ 'getInstalledPlugins' ] ).toBeTruthy();
-		/* eslint-enable dot-notation */
+		expect( state.reviews[ stringifiedQuery ].data ).toHaveLength( 2 );
+		expect(
+			state.reviews[ stringifiedQuery ].data.includes( 1 )
+		).toBeTruthy();
+		expect(
+			state.reviews[ stringifiedQuery ].data.includes( 2 )
+		).toBeTruthy();
+
+		expect( state.reviews[ stringifiedQuery ].totalCount ).toBe( 45 );
+		expect( state.data[ '1' ] ).toBe( reviews[ 0 ] );
+		expect( state.data[ '2' ] ).toBe( reviews[ 1 ] );
 	} );
 
 	it( 'should handle SET_ERROR', () => {
+		const query = { status: 'flavortown' };
+		const error = 'Baaam!';
 		const state = reducer( defaultState, {
 			type: TYPES.SET_ERROR,
-			selector: 'getInstalledPlugins',
-			error: { code: 'error' },
+			query,
+			error,
 		} );
 
-		/* eslint-disable dot-notation */
-
-		expect( state.errors[ 'getInstalledPlugins' ].code ).toBe( 'error' );
-		expect( state.requesting[ 'getInstalledPlugins' ] ).toBe( false );
-		/* eslint-enable dot-notation */
-	} );
-
-	it( 'should handle UPDATE_JETPACK_CONNECTION', () => {
-		const state = reducer( defaultState, {
-			type: TYPES.UPDATE_JETPACK_CONNECTION,
-			jetpackConnection: true,
-		} );
-
-		expect( state.jetpackConnection ).toBe( true );
-	} );
-
-	it( 'should handle UPDATE_JETPACK_CONNECT_URL', () => {
-		const state = reducer( defaultState, {
-			type: TYPES.UPDATE_JETPACK_CONNECT_URL,
-			jetpackConnectUrl: 'http://connect.com',
-			redirectUrl: 'http://redirect.com',
-		} );
-
-		expect( state.jetpackConnectUrls[ 'http://redirect.com' ] ).toBe(
-			'http://connect.com'
-		);
+		const stringifiedQuery = JSON.stringify( query );
+		expect( state.errors[ stringifiedQuery ] ).toBe( error );
 	} );
 } );
