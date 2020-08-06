@@ -96,14 +96,20 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 			'title'      => 'report_export',
 			'type'       => 'object',
 			'properties' => array(
-				'status'  => array(
-					'description' => __( 'Regeneration status.', 'woocommerce-admin' ),
+				'status'    => array(
+					'description' => __( 'Export status.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'message' => array(
-					'description' => __( 'Regenerate data message.', 'woocommerce-admin' ),
+				'message'   => array(
+					'description' => __( 'Export status message.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'export_id' => array(
+					'description' => __( 'Export ID.', 'woocommerce-admin' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -168,8 +174,9 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 		} else {
 			$response = rest_ensure_response(
 				array(
-					'status'  => 'success',
-					'message' => __( 'Your report file is being generated.', 'woocommerce-admin' ),
+					'status'    => 'success',
+					'message'   => __( 'Your report file is being generated.', 'woocommerce-admin' ),
+					'export_id' => $export_id,
 				)
 			);
 
