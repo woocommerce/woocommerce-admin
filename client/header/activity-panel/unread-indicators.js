@@ -1,7 +1,11 @@
 /**
  * WooCommerce dependencies
  */
-import { SETTINGS_STORE_NAME, USER_STORE_NAME } from '@woocommerce/data';
+import {
+	SETTINGS_STORE_NAME,
+	USER_STORE_NAME,
+	REVIEWS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -98,9 +102,10 @@ export function getUnreadOrders( select ) {
 export function getUnapprovedReviews( select ) {
 	const {
 		getReviewsTotalCount,
-		getReviewsError,
-		isGetReviewsRequesting,
-	} = select( 'wc-api' );
+		// getReviewsError,
+		// isGetReviewsRequesting,
+		getReviews,
+	} = select( REVIEWS_STORE_NAME );
 	const reviewsEnabled = getSetting( 'reviewsEnabled' );
 	if ( reviewsEnabled === 'yes' ) {
 		const actionableReviewsQuery = {
@@ -110,19 +115,19 @@ export function getUnapprovedReviews( select ) {
 			per_page: 1,
 			status: 'hold',
 		};
-		const totalActionableReviews = getReviewsTotalCount(
-			actionableReviewsQuery
-		);
-		const isActionableReviewsError = Boolean(
-			getReviewsError( actionableReviewsQuery )
-		);
-		const isActionableReviewsRequesting = isGetReviewsRequesting(
-			actionableReviewsQuery
-		);
+		const totalActionableReviews = getReviews( actionableReviewsQuery );
 
-		if ( ! isActionableReviewsError && ! isActionableReviewsRequesting ) {
-			return totalActionableReviews > 0;
-		}
+		console.log( totalActionableReviews );
+		// const isActionableReviewsError = Boolean(
+		// 	getReviewsError( actionableReviewsQuery )
+		// );
+		// const isActionableReviewsRequesting = isGetReviewsRequesting(
+		// 	actionableReviewsQuery
+		// );
+
+		// if ( ! isActionableReviewsError && ! isActionableReviewsRequesting ) {
+		// 	return totalActionableReviews > 0;
+		// }
 	}
 
 	return false;

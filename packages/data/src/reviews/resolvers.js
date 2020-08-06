@@ -1,33 +1,30 @@
 /**
  * External dependencies
  */
-import { apiFetch } from '@wordpress/data-controls';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
-import { WC_ADMIN_NAMESPACE } from '../constants';
+import { NAMESPACE } from '../constants';
 import { setIsRequesting, setError, updateReviews } from './actions';
+import { fetchWithHeaders } from './controls';
 
 export function* getReviews( query ) {
 	yield setIsRequesting( 'getReviews', true );
 	try {
-		const url = addQueryArgs(
-			`${ WC_ADMIN_NAMESPACE }/products/reviews`,
-			query
-		);
-		const response = yield apiFetch( {
-			parse: false,
+		const url = addQueryArgs( `${ NAMESPACE }/products/reviews`, query );
+		const response = yield fetchWithHeaders( {
 			path: url,
 			method: 'GET',
 		} );
 
-		const reviews = yield response.json();
 		const totalCount = parseInt( response.headers.get( 'x-wp-total' ), 10 );
+		console.log( response );
 
-		yield updateReviews( query, reviews, totalCount );
+		yield updateReviews( query, response.data, totalCount );
 	} catch ( error ) {
+		console.log( error );
 		yield setError( 'getReviews', error );
 	}
 }
