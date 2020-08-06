@@ -2,19 +2,24 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Card, CardBody, CardHeader } from '@wordpress/components';
+import {
+	Card,
+	CardBody,
+	CardHeader,
+	__experimentalText as Text,
+} from '@wordpress/components';
 import {
 	Icon,
 	megaphone,
 	box,
 	brush,
+	home,
 	shipping,
 	percent,
 	payment,
 	pencil,
 	lifesaver,
 	external,
-	chevronRight,
 } from '@wordpress/icons';
 import { partial } from 'lodash';
 
@@ -22,7 +27,7 @@ import { partial } from 'lodash';
  * WooCommerce dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { H, List } from '@woocommerce/components';
+import { List } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -86,13 +91,15 @@ function getItems( props ) {
 			type: 'external',
 			href: 'https://woocommerce.com/my-account/create-a-ticket/',
 			icon: lifesaver,
+			after: <Icon icon={ external } />,
 			listItemTag: 'support',
 		},
 		{
 			title: __( 'View my store', 'woocommerce-admin' ),
 			type: 'external',
 			href: props.getSetting( 'siteUrl' ),
-			icon: external,
+			icon: home,
+			after: <Icon icon={ external } />,
 			listItemTag: 'view-store',
 		},
 	];
@@ -152,9 +159,13 @@ function getLinkTypeAndHref( item ) {
 function getListItems( props ) {
 	return getItems( props ).map( ( item ) => {
 		return {
-			title: item.title,
+			title: (
+				<Text as="div" variant="button">
+					{ item.title }
+				</Text>
+			),
 			before: <Icon icon={ item.icon } />,
-			after: <Icon icon={ chevronRight } />,
+			after: item.after,
 			...getLinkTypeAndHref( item ),
 			listItemTag: item.listItemTag,
 			onClick: partial( handleOnItemClick, props ),
@@ -167,8 +178,10 @@ const QuickLinks = ( props ) => {
 
 	return (
 		<Card size="large" className="woocommerce-quick-links">
-			<CardHeader>
-				<H>{ __( 'Store management', 'woocommerce-admin' ) }</H>
+			<CardHeader size="medium">
+				<Text variant="title.small">
+					{ __( 'Store management', 'woocommerce-admin' ) }
+				</Text>
 			</CardHeader>
 			<CardBody>
 				<List

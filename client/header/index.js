@@ -22,8 +22,8 @@ import ActivityPanel from './activity-panel';
 import { recordEvent } from 'lib/tracks';
 
 class Header extends Component {
-	constructor() {
-		super();
+	constructor( props ) {
+		super( props );
 		this.state = {
 			isScrolled: false,
 		};
@@ -99,7 +99,7 @@ class Header extends Component {
 	}
 
 	render() {
-		const { sections, isEmbedded } = this.props;
+		const { sections, isEmbedded, query } = this.props;
 		const { isScrolled } = this.state;
 		const _sections = Array.isArray( sections ) ? sections : [ sections ];
 
@@ -136,7 +136,7 @@ class Header extends Component {
 					} ) }
 				</h1>
 				{ window.wcAdminFeatures[ 'activity-panels' ] && (
-					<ActivityPanel />
+					<ActivityPanel isEmbedded={ isEmbedded } query={ query } />
 				) }
 			</div>
 		);

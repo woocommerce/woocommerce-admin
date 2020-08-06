@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Fragment, Suspense, lazy, useState } from '@wordpress/element';
+import { Fragment, Suspense, lazy } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { partial } from 'lodash';
 import { Dropdown, Button, Icon } from '@wordpress/components';
@@ -18,6 +18,7 @@ import {
 	OPTIONS_STORE_NAME,
 	useUserPreferences,
 } from '@woocommerce/data';
+import { getQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -34,6 +35,10 @@ import {
 	isoDateFormat,
 } from 'lib/date';
 import ReportFilters from 'analytics/components/report-filters';
+import {
+	CurrencyContext,
+	getFilteredCurrencyInstance,
+} from 'lib/currency-context';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -69,38 +74,29 @@ const mergeSectionsWithDefaults = ( prefSections ) => {
 	} );
 
 	return sections;
-}
+};
 
 const CustomizableDashboard = ( {
 	defaultDateRange,
+	homepageEnabled,
 	path,
 	query,
 	taskListComplete,
 	taskListHidden,
 } ) => {
-	const { isRequesting, updateUserPreferences, ...userPrefs } = useUserPreferences();
-	const [ dashSections, setSections ] = useState(
-		isRequesting
-			? false
-			: mergeSectionsWithDefaults( userPrefs.dashboard_sections )
-	);
+	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 
-	// Update sections when the request is finished (and they weren't hydrated).
-	if ( ! isRequesting && dashSections === false ) {
-		setSections( mergeSectionsWithDefaults( userPrefs.dashboard_sections ) );
-	}
+	const sections = mergeSectionsWithDefaults( userPrefs.dashboard_sections );
 
-	const sections = dashSections || defaultSections;
-
-	const isTaskListEnabled = isOnboardingEnabled() && ! taskListHidden;
+	const isTaskListEnabled =
+		! homepageEnabled && isOnboardingEnabled() && ! taskListHidden;
 
 	const isDashboardShown =
 		! isTaskListEnabled || ( ! query.task && taskListComplete );
 
 	const updateSections = ( newSections ) => {
-		setSections( newSections );
 		updateUserPreferences( { dashboard_sections: newSections } );
-	}
+	};
 
 	const updateSection = ( updatedKey, newSettings ) => {
 		const newSections = sections.map( ( section ) => {
@@ -113,7 +109,7 @@ const CustomizableDashboard = ( {
 			return section;
 		} );
 		updateSections( newSections );
-	}
+	};
 
 	const onChangeHiddenBlocks = ( updatedKey ) => {
 		return ( updatedHiddenBlocks ) => {
@@ -121,14 +117,14 @@ const CustomizableDashboard = ( {
 				hiddenBlocks: updatedHiddenBlocks,
 			} );
 		};
-	}
+	};
 
 	const onSectionTitleUpdate = ( updatedKey ) => {
 		return ( updatedTitle ) => {
 			recordEvent( 'dash_section_rename', { key: updatedKey } );
 			updateSection( updatedKey, { title: updatedTitle } );
 		};
-	}
+	};
 
 	const toggleVisibility = ( key, onToggle ) => {
 		return () => {
@@ -152,7 +148,7 @@ const CustomizableDashboard = ( {
 
 			updateSections( sections );
 		};
-	}
+	};
 
 	const onMove = ( index, change ) => {
 		const movedSection = sections.splice( index, 1 ).shift();
@@ -179,7 +175,7 @@ const CustomizableDashboard = ( {
 			// No, lets try the next one.
 			onMove( index, change + change );
 		}
-	}
+	};
 
 	const renderAddMore = () => {
 		const hiddenSections = sections.filter(
@@ -241,7 +237,7 @@ const CustomizableDashboard = ( {
 				) }
 			/>
 		);
-	}
+	};
 
 	const renderDashboardReports = () => {
 		const { period, compare, before, after } = getDateParamsFromQuery(
@@ -291,9 +287,7 @@ const CustomizableDashboard = ( {
 								query={ query }
 								title={ section.title }
 								onMove={ partial( onMove, index ) }
-								onRemove={ toggleVisibility(
-									section.key
-								) }
+								onRemove={ toggleVisibility( section.key ) }
 								isFirst={
 									section.key === visibleSectionKeys[ 0 ]
 								}
@@ -303,6 +297,7 @@ const CustomizableDashboard = ( {
 										visibleSectionKeys.length - 1
 									]
 								}
+								filters={ filters }
 							/>
 						);
 					}
@@ -311,22 +306,21 @@ const CustomizableDashboard = ( {
 				{ renderAddMore() }
 			</Fragment>
 		);
-	}
+	};
 
 	return (
-		<Fragment>
+		<CurrencyContext.Provider
+			value={ getFilteredCurrencyInstance( getQuery() ) }
+		>
 			{ isTaskListEnabled && (
 				<Suspense fallback={ <Spinner /> }>
-					<TaskList
-						query={ query }
-						inline={ isDashboardShown }
-					/>
+					<TaskList query={ query } inline={ isDashboardShown } />
 				</Suspense>
 			) }
 			{ isDashboardShown && renderDashboardReports() }
-		</Fragment>
+		</CurrencyContext.Provider>
 	);
-}
+};
 
 export default compose(
 	withSelect( ( select ) => {

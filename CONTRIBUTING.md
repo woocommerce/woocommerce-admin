@@ -59,18 +59,26 @@ After you've made your updates, you're ready to commit:
 1. SSH into the Vagrant box:
     1. `cd` down to the Vagrant root (where `www` lives) 
     2. `vagrant ssh`
-2. `cd /srv/www/<name of wp install>/woocommerce-admin`
+2. `cd /srv/www/<name of wp install>/public_html/wp-content/plugins/woocommerce-admin`
 3. `bin/install-wp-tests.sh wc-admin-tests root root`
 
 ### Running tests
 
 1. SSH into the Vagrant box (`vagrant ssh`)
-2. `cd /srv/www/<name of wp install>/woocommerce-admin`
-3. `./vendor/bin/phpunit` to actually run the test suite
+2. `cd /srv/www/<name of wp install>/public_html/wp-content/plugins/woocommerce-admin`
+3. `composer test` to actually run the test suite
+
+#### Filtering tests
+
+You can restrict the test cases run using `phpunit`'s filter command line argument.
+
+For example, to just run Order Report Stats tests:
+
+`composer test -- --filter="WC_Tests_Reports_Orders_Stats"`
 
 ## Helper Scripts
 
-There are a number of helper scripts exposed via our `package.json` (below list is not exhaustive, you can view the [`package.json` file directly to see all](https://github.com/woocommerce/woocommerce-admin/blob/master/package.json)):
+There are a number of helper scripts exposed via our `package.json` (below list is not exhaustive, you can view the [`package.json` file directly to see all](https://github.com/woocommerce/woocommerce-admin/blob/main/package.json)):
 
  - `npm run lint` : Run eslint over the javascript files
  - `npm run i18n` : A multi-step process, used to create a pot file from both the JS and PHP gettext calls. First it runs `i18n:js`, which creates a temporary `.pot` file from the JS files. Next it runs `i18n:php`, which converts that `.pot` file to a PHP file. Lastly, it runs `i18n:pot`, which creates the final `.pot` file from all the PHP files in the plugin (including the generated one with the JS strings).

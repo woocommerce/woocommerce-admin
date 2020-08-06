@@ -71,6 +71,7 @@ class Loader {
 		add_filter( 'woocommerce_shared_settings', array( __CLASS__, 'add_component_settings' ) );
 		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_page_handler' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'register_profiler_page' ) );
 		add_filter( 'admin_title', array( __CLASS__, 'update_admin_title' ) );
 		add_action( 'rest_api_init', array( __CLASS__, 'register_user_data' ) );
 		add_action( 'in_admin_header', array( __CLASS__, 'embed_page_header' ) );
@@ -193,6 +194,22 @@ class Loader {
 	}
 
 	/**
+	 * Determines if a minified JS file should be served.
+	 *
+	 * @param  boolean $script_debug Only serve unminified files if script debug is on.
+	 * @return boolean If js asset should use minified version.
+	 */
+	public static function should_use_minified_js_file( $script_debug ) {
+		// un-minified files are only shipped in non-core versions of wc-admin, return true if unminified files are not available.
+		if ( ! self::is_feature_enabled( 'unminified-js' ) ) {
+			return true;
+		}
+
+		// Otherwise we will serve un-minified files if SCRIPT_DEBUG is on, or if anything truthy is passed in-lieu of SCRIPT_DEBUG.
+		return ! $script_debug;
+	}
+
+	/**
 	 * Gets the URL to an asset file.
 	 *
 	 * @param  string $file File name (without extension).
@@ -204,7 +221,8 @@ class Loader {
 
 		// Potentially enqueue minified JavaScript.
 		if ( 'js' === $ext ) {
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
+			$suffix       = self::should_use_minified_js_file( $script_debug ) ? '.min' : '';
 		}
 
 		return plugins_url( self::get_path( $ext ) . $file . $suffix . '.' . $ext, WC_ADMIN_PLUGIN_FILE );
@@ -269,6 +287,20 @@ class Loader {
 		// Connect existing WooCommerce pages.
 		require_once WC_ADMIN_ABSPATH . 'includes/connect-existing-pages.php';
 	}
+
+	/**
+	 * Registers the profiler page.
+	 */
+	public static function register_profiler_page() {
+		wc_admin_register_page(
+			array(
+				'title'  => 'Profiler',
+				'parent' => '',
+				'path'   => '/profiler',
+			)
+		);
+	}
+
 
 	/**
 	 * Remove the menu item for the app entry point page.
@@ -448,6 +480,140 @@ class Loader {
 	}
 
 	/**
+	 * Generate a filename to cache translations from JS chunks.
+	 *
+	 * @param string $domain Text domain.
+	 * @param string $locale Locale being retrieved.
+	 * @return string Filename.
+	 */
+	public static function get_combined_translation_filename( $domain, $locale ) {
+		$version  = self::get_file_version( 'js' );
+		$filename = implode( '-', array( $domain, $locale, WC_ADMIN_APP, $version ) ) . '.json';
+
+		return $filename;
+	}
+
+	/**
+	 * Find and combine translation chunk files.
+	 *
+	 * Only targets files that aren't represented by a registered script (e.g. not passed to wp_register_script()).
+	 *
+	 * @param string $lang_dir Path to language files.
+	 * @param string $domain Text domain.
+	 * @param string $locale Locale being retrieved.
+	 * @return array Combined translation chunk data.
+	 */
+	public static function get_translation_chunk_data( $lang_dir, $domain, $locale ) {
+		global $wp_filesystem;
+
+		// Grab all JSON files in the current language pack.
+		$json_i18n_filenames       = glob( $lang_dir . $domain . '-' . $locale . '-*.json' );
+		$combined_translation_data = array();
+
+		foreach ( $json_i18n_filenames as $json_filename ) {
+			if ( ! $wp_filesystem->is_readable( $json_filename ) ) {
+				continue;
+			}
+
+			$file_contents = $wp_filesystem->get_contents( $json_filename );
+			$chunk_data    = \json_decode( $file_contents, true );
+
+			if ( empty( $chunk_data ) ) {
+				continue;
+			}
+
+			if ( ! isset( $chunk_data['comment']['reference'] ) ) {
+				continue;
+			}
+
+			$reference_file = $chunk_data['comment']['reference'];
+
+			// Only combine "app" files (not scripts registered with WP).
+			if (
+				false === strpos( $reference_file, 'dist/chunks/' ) &&
+				false === strpos( $reference_file, 'dist/app/index.js' )
+			) {
+				continue;
+			}
+
+			if ( empty( $combined_translation_data ) ) {
+				// Use the first translation file as the base structure.
+				$combined_translation_data = $chunk_data;
+			} else {
+				// Combine all messages from all chunk files.
+				$combined_translation_data['locale_data']['messages'] = array_merge(
+					$combined_translation_data['locale_data']['messages'],
+					$chunk_data['locale_data']['messages']
+				);
+			}
+		}
+
+		// Remove inaccurate reference comment.
+		unset( $combined_translation_data['comment'] );
+
+		return $combined_translation_data;
+	}
+
+	/**
+	 * Load translation strings from language packs for dynamic imports.
+	 *
+	 * This function combines JSON translation data auto-extracted by GlotPress
+	 * from Webpack-generated JS chunks into a single file that can be used in
+	 * subsequent requests. This is necessary since the JS chunks are not known
+	 * to WordPress via wp_register_script() and wp_set_script_translations().
+	 *
+	 * @param string $original_translations JSON encoded translations object.
+	 * @param string $file File location for the script being translated.
+	 * @param string $handle Script handle.
+	 * @param string $domain Text domain.
+	 *
+	 * @return string JSON encoded translations object.
+	 */
+	public static function load_script_translations( $original_translations, $file, $handle, $domain ) {
+		// Make sure the main app script is being loaded.
+		if ( WC_ADMIN_APP !== $handle ) {
+			return $original_translations;
+		}
+
+		// Make sure we're handing the correct domain (could be woocommerce or woocommerce-admin).
+		$plugin_domain = explode( '/', plugin_basename( __FILE__ ) )[0];
+		if ( $plugin_domain !== $domain ) {
+			return $original_translations;
+		}
+
+		$locale         = determine_locale();
+		$cache_filename = self::get_combined_translation_filename( $domain, $locale );
+		$lang_dir       = WP_LANG_DIR . '/plugins/';
+
+		// Allow us to easily interact with the filesystem.
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		\WP_Filesystem();
+		global $wp_filesystem;
+
+		// First attempt to get a previously generated combined translation file.
+		if (
+			$wp_filesystem->is_file( $lang_dir . $cache_filename ) &&
+			$wp_filesystem->is_readable( $lang_dir . $cache_filename )
+		) {
+			return $wp_filesystem->get_contents( $lang_dir . $cache_filename );
+		}
+
+		// Get all translation chunk data combined into a single object.
+		$translations_from_chunks = self::get_translation_chunk_data( $lang_dir, $domain, $locale );
+
+		if ( empty( $translations_from_chunks ) ) {
+			return $original_translations;
+		}
+
+		$chunk_translations_json = wp_json_encode( $translations_from_chunks );
+
+		// Cache combined translations strings to a file.
+		$wp_filesystem->put_contents( $lang_dir . $cache_filename, $chunk_translations_json );
+
+		return $chunk_translations_json;
+	}
+
+	/**
 	 * Loads the required scripts on the correct pages.
 	 */
 	public static function load_scripts() {
@@ -459,7 +625,10 @@ class Loader {
 			return;
 		}
 
-		$features        = self::get_features();
+		// Grab translation strings from Webpack-generated chunks.
+		add_filter( 'pre_load_script_translations', array( __CLASS__, 'load_script_translations' ), 10, 4 );
+
+		$features         = self::get_features();
 		$enabled_features = array();
 		foreach ( $features as $key ) {
 			$enabled_features[ $key ] = self::is_feature_enabled( $key );
@@ -487,16 +656,16 @@ class Loader {
 
 	/**
 	 * Render a preload link tag for a dependency, optionally
-	 * checked against a provided whitelist.
+	 * checked against a provided allowlist.
 	 *
 	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
 	 *
 	 * @param WP_Dependency $dependency The WP_Dependency being preloaded.
 	 * @param string        $type Dependency type - 'script' or 'style'.
-	 * @param array         $whitelist Optional. List of allowed dependency handles.
+	 * @param array         $allowlist Optional. List of allowed dependency handles.
 	 */
-	public static function maybe_output_preload_link_tag( $dependency, $type, $whitelist = array() ) {
-		if ( ! empty( $whitelist ) && ! in_array( $dependency->handle, $whitelist, true ) ) {
+	public static function maybe_output_preload_link_tag( $dependency, $type, $allowlist = array() ) {
+		if ( ! empty( $allowlist ) && ! in_array( $dependency->handle, $allowlist, true ) ) {
 			return;
 		}
 
@@ -507,14 +676,14 @@ class Loader {
 
 	/**
 	 * Output a preload link tag for dependencies (and their sub dependencies)
-	 * with an optional whitelist.
+	 * with an optional allowlist.
 	 *
 	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
 	 *
 	 * @param string $type Dependency type - 'script' or 'style'.
-	 * @param array  $whitelist Optional. List of allowed dependency handles.
+	 * @param array  $allowlist Optional. List of allowed dependency handles.
 	 */
-	public static function output_header_preload_tags_for_type( $type, $whitelist = array() ) {
+	public static function output_header_preload_tags_for_type( $type, $allowlist = array() ) {
 		if ( 'script' === $type ) {
 			$dependencies_of_type = wp_scripts();
 		} elseif ( 'style' === $type ) {
@@ -524,15 +693,22 @@ class Loader {
 		}
 
 		foreach ( $dependencies_of_type->queue as $dependency_handle ) {
-			$dependency = $dependencies_of_type->registered[ $dependency_handle ];
+			$dependency = $dependencies_of_type->query( $dependency_handle, 'registered' );
+
+			if ( false === $dependency ) {
+				continue;
+			}
 
 			// Preload the subdependencies first.
 			foreach ( $dependency->deps as $sub_dependency_handle ) {
-				$sub_dependency = $dependencies_of_type->registered[ $sub_dependency_handle ];
-				self::maybe_output_preload_link_tag( $sub_dependency, $type, $whitelist );
+				$sub_dependency = $dependencies_of_type->query( $sub_dependency_handle, 'registered' );
+
+				if ( $sub_dependency ) {
+					self::maybe_output_preload_link_tag( $sub_dependency, $type, $allowlist );
+				}
 			}
 
-			self::maybe_output_preload_link_tag( $dependency, $type, $whitelist );
+			self::maybe_output_preload_link_tag( $dependency, $type, $allowlist );
 		}
 	}
 
@@ -618,13 +794,6 @@ class Loader {
 	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
 	 */
 	public static function embed_page_header() {
-		if (
-			self::is_feature_enabled( 'navigation' ) &&
-			\Automattic\WooCommerce\Admin\Features\Navigation::instance()->is_woocommerce_page()
-		) {
-			self::embed_navigation_menu();
-		}
-
 		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
 			return;
 		}
@@ -651,16 +820,6 @@ class Loader {
 				</div>
 			</div>
 		</div>
-		<?php
-	}
-
-	/**
-	 * Set up a div for the navigation menu.
-	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
-	 */
-	protected static function embed_navigation_menu() {
-		?>
-		<div id="woocommerce-embedded-navigation"></div>
 		<?php
 	}
 

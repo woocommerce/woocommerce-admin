@@ -11,26 +11,31 @@ import { withDispatch, withSelect } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
+import {
+	__experimentalResolveSelect,
+	PLUGINS_STORE_NAME,
+	useUserPreferences,
+} from '@woocommerce/data';
 import { H } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
-import { PLUGINS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
-import Connect from 'dashboard/components/connect';
 import { recordEvent } from 'lib/tracks';
 import { createNoticesFromResponse } from 'lib/notices';
 
 function InstallJetpackCta( {
+	getJetpackConnectUrl,
+	getPluginsError,
 	isJetpackInstalled,
 	isJetpackActivated,
 	isJetpackConnected,
 	installAndActivatePlugins,
+	isConnecting,
 	isInstalling,
 } ) {
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
-	const [ isConnecting, setIsConnecting ] = useState( false );
 	const [ isDismissed, setIsDismissed ] = useState(
 		( userPrefs.homepage_stats || {} ).installJetpackDismissed
 	);
@@ -39,12 +44,27 @@ function InstallJetpackCta( {
 		recordEvent( 'statsoverview_install_jetpack' );
 
 		installAndActivatePlugins( [ 'jetpack' ] )
-			.then( () => {
-				setIsConnecting( ! isJetpackConnected );
-			} )
+			.then( connect )
 			.catch( ( error ) => {
 				createNoticesFromResponse( error );
 			} );
+	}
+
+	function connect() {
+		if ( isJetpackConnected ) {
+			return;
+		}
+
+		getJetpackConnectUrl( {
+			redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
+		} ).then( ( url ) => {
+			const error = getPluginsError( 'getJetpackConnectUrl' );
+			if ( error ) {
+				createNoticesFromResponse( error );
+				return;
+			}
+			window.location = url;
+		} );
 	}
 
 	function dismiss() {
@@ -60,16 +80,6 @@ function InstallJetpackCta( {
 
 		setIsDismissed( true );
 		recordEvent( 'statsoverview_dismiss_install_jetpack' );
-	}
-
-	function getConnector() {
-		return (
-			<Connect
-				autoConnect
-				onError={ () => setIsConnecting( false ) }
-				redirectUrl={ getAdminLink( 'admin.php?page=wc-admin' ) }
-			/>
-		);
 	}
 
 	const doNotShow =
@@ -97,27 +107,30 @@ function InstallJetpackCta( {
 
 	return (
 		<article className="woocommerce-stats-overview__install-jetpack-promo">
-			<H>
-				{ __( 'Get traffic stats with Jetpack', 'woocommerce-admin' ) }
-			</H>
-			<p>
-				{ __(
-					'Keep an eye on your views and visitors metrics with ' +
-						'Jetpack. Requires Jetpack plugin and a WordPress.com ' +
-						'account.',
-					'woocommerce-admin'
-				) }
-			</p>
+			<div className="woocommerce-stats-overview__install-jetpack-promo__content">
+				<H>
+					{ __(
+						'Get traffic stats with Jetpack',
+						'woocommerce-admin'
+					) }
+				</H>
+				<p>
+					{ __(
+						'Keep an eye on your views and visitors metrics with ' +
+							'Jetpack. Requires Jetpack plugin and a WordPress.com ' +
+							'account.',
+						'woocommerce-admin'
+					) }
+				</p>
+			</div>
 			<footer>
 				<Button isSecondary onClick={ install } isBusy={ isInstalling }>
 					{ getInstallJetpackText() }
 				</Button>
-				<Button onClick={ dismiss } isBusy={ isInstalling }>
+				<Button isTertiary onClick={ dismiss } isBusy={ isInstalling }>
 					{ __( 'No thanks', 'woocommerce-admin' ) }
 				</Button>
 			</footer>
-
-			{ isConnecting && getConnector() }
 		</article>
 	);
 }
@@ -134,11 +147,17 @@ export default compose(
 		const {
 			isJetpackConnected,
 			isPluginsRequesting,
-			getInstalledPlugins,
 			getActivePlugins,
+			getInstalledPlugins,
+			getPluginsError,
 		} = select( PLUGINS_STORE_NAME );
 
 		return {
+			getJetpackConnectUrl: __experimentalResolveSelect(
+				PLUGINS_STORE_NAME
+			).getJetpackConnectUrl,
+			getPluginsError,
+			isConnecting: isPluginsRequesting( 'getJetpackConnectUrl' ),
 			isInstalling:
 				isPluginsRequesting( 'installPlugins' ) ||
 				isPluginsRequesting( 'activatePlugins' ),
