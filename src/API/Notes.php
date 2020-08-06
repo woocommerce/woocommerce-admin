@@ -332,7 +332,17 @@ class Notes extends \WC_REST_CRUD_Controller {
 	public function batch_update_items( $request ) {
 		$data      = array();
 		$notes_ids = $request->get_param( 'notesIds' );
-		foreach ( (array) $notes_ids as $note_id ) {
+		$params    = $request->get_json_params();
+
+		if ( ! isset( $params['noteIds'] ) || ! is_array( $params['noteIds'] ) ) {
+			return new \WP_Error(
+				'woocommerce_note_invalid_ids',
+				__( 'Please provide an array of IDs through the noteIds param.', 'woocommerce-admin' ),
+				array( 'status' => 402 )
+			);
+		}
+
+		foreach ( (array) $params['noteIds'] as $note_id ) {
 			$note = WC_Admin_Notes::get_note( (int) $note_id );
 			if ( $note ) {
 				WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
