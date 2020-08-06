@@ -64,6 +64,6 @@ export function* startExport( type, args ) {
 	} catch ( error ) {
 		yield setError( 'startExport', { type, args }, error.message );
 		yield setIsRequesting( 'startExport', { type, args }, false );
-		throw new Error();
+		throw error;
 	}
 }
