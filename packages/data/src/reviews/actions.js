@@ -3,10 +3,12 @@
  */
 import TYPES from './action-types';
 
-export function updateReviews( reviews ) {
+export function updateReviews( query, reviews, totalCount ) {
 	return {
 		type: TYPES.UPDATE_REVIEWS,
 		reviews,
+		query,
+		totalCount,
 	};
 }
 

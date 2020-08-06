@@ -1,6 +1,7 @@
 export const getReviews = ( state, query ) => {
 	const marker = JSON.stringify( query );
-	const ids = ( state[ marker ] && state[ marker ].reviews.data ) || [];
+	const ids =
+		( state.reviews[ marker ] && state.reviews[ marker ].data ) || [];
 	return ids.map( ( id ) => state.data[ id ] );
 };
 

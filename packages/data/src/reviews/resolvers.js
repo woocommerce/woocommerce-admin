@@ -20,11 +20,8 @@ export function* getReviews( query ) {
 		} );
 
 		const totalCount = parseInt( response.headers.get( 'x-wp-total' ), 10 );
-		console.log( response );
-
 		yield updateReviews( query, response.data, totalCount );
 	} catch ( error ) {
-		console.log( error );
 		yield setError( 'getReviews', error );
 	}
 }
