@@ -1,18 +1,22 @@
 export const getReviews = ( state, query ) => {
-	const marker = JSON.stringify( query );
+	const stringifiedQuery = JSON.stringify( query );
 	const ids =
-		( state.reviews[ marker ] && state.reviews[ marker ].data ) || [];
+		( state.reviews[ stringifiedQuery ] &&
+			state.reviews[ stringifiedQuery ].data ) ||
+		[];
 	return ids.map( ( id ) => state.data[ id ] );
 };
 
 export const getReviewsTotalCount = ( state, query ) => {
-	const marker = JSON.stringify( query );
+	const stringifiedQuery = JSON.stringify( query );
 	return (
-		( state.reviews[ marker ] && state.reviews[ marker ].totalCount ) || 0
+		( state.reviews[ stringifiedQuery ] &&
+			state.reviews[ stringifiedQuery ].totalCount ) ||
+		0
 	);
 };
 
 export const getReviewsError = ( state, query ) => {
-	const marker = JSON.stringify( query );
-	return state.errors[ marker ];
+	const stringifiedQuery = JSON.stringify( query );
+	return state.errors[ stringifiedQuery ];
 };

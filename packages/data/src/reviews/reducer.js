@@ -11,8 +11,6 @@ const reducer = (
 	},
 	{ type, query, reviews, totalCount, error }
 ) => {
-	const marker = JSON.stringify( query );
-
 	switch ( type ) {
 		case TYPES.UPDATE_REVIEWS:
 			const ids = [];
@@ -24,7 +22,8 @@ const reducer = (
 			state = {
 				...state,
 				reviews: {
-					[ marker ]: { data: ids, totalCount },
+					...state.reviews,
+					[ JSON.stringify( query ) ]: { data: ids, totalCount },
 				},
 				data: {
 					...state.data,
@@ -37,7 +36,7 @@ const reducer = (
 				...state,
 				errors: {
 					...state.errors,
-					[ marker ]: error,
+					[ JSON.stringify( query ) ]: error,
 				},
 			};
 			break;
