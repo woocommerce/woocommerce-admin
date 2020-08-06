@@ -43,7 +43,7 @@ class EWay extends Component {
 	};
 
 	updateSettings = async ( values ) => {
-        const { updateOptions, createNotice, markConfigured } = this.props;
+		const { updateOptions, createNotice, markConfigured } = this.props;
 
 		const update = await updateOptions( {
 			woocommerce_eway_settings: {

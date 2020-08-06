@@ -82,7 +82,7 @@ function getPaymentsItems( props ) {
 	const showPayPal = methodIsVisible( 'paypal' );
 	const showSquare = methodIsVisible( 'square' );
 	const showPayFast = methodIsVisible( 'payfast' );
-	const showeWAY = methodIsVisible( 'eway' );
+	const showEway = methodIsVisible( 'eway' );
 
 	return [
 		{
@@ -139,7 +139,7 @@ function getPaymentsItems( props ) {
 			link:
 				'https://docs.woocommerce.com/document/payfast-payment-gateway/?utm_source=help_panel',
 		},
-		showeWAY && {
+		showEway && {
 			title: __( 'eWAY Setup and Configuration', 'woocommerce-admin' ),
 			link:
 				'https://docs.woocommerce.com/document/eway/?utm_source=help_panel',
