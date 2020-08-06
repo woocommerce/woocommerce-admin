@@ -20,6 +20,7 @@ export function* triggerNoteAction( noteId, actionId ) {
 	} catch ( error ) {
 		yield setError( 'triggerNoteAction', error );
 		yield setIsRequesting( 'triggerNoteAction', false );
+		throw new Error();
 	}
 }
 
@@ -37,6 +38,7 @@ export function* removeNote( noteId ) {
 		yield setError( 'removeNote', error );
 		yield setIsRequesting( 'removeNote', false );
 		yield setNoteIsUpdating( noteId, false );
+		throw new Error();
 	}
 }
 
@@ -50,8 +52,9 @@ export function* removeAllNotes() {
 		yield setIsRequesting( 'removeAllNotes', false );
 		return notes;
 	} catch ( error ) {
-		setError( 'removeAllNotes', error );
+		yield setError( 'removeAllNotes', error );
 		yield setIsRequesting( 'removeAllNotes', false );
+		throw new Error();
 	}
 }
 
@@ -71,8 +74,9 @@ export function* batchUpdateNotes( noteIds, noteFields ) {
 		yield setNotes( notes );
 		yield setIsRequesting( 'batchUpdateNotes', false );
 	} catch ( error ) {
-		setError( 'updateNote', error );
+		yield setError( 'updateNote', error );
 		yield setIsRequesting( 'batchUpdateNotes', false );
+		throw new Error();
 	}
 }
 
@@ -89,7 +93,9 @@ export function* updateNote( noteId, noteFields ) {
 		yield setNote( noteId, note );
 		yield setIsRequesting( 'updateNote', false );
 	} catch ( error ) {
-		setError( 'updateNote', error );
+		yield setError( 'updateNote', error );
+		yield setIsRequesting( 'updateNote', false );
+		throw new Error();
 	}
 }
 
