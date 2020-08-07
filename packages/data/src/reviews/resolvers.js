@@ -7,11 +7,10 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { NAMESPACE } from '../constants';
-import { setIsRequesting, setError, updateReviews } from './actions';
+import { setError, updateReviews } from './actions';
 import { fetchWithHeaders } from './controls';
 
 export function* getReviews( query ) {
-	yield setIsRequesting( 'getReviews', true );
 	try {
 		const url = addQueryArgs( `${ NAMESPACE }/products/reviews`, query );
 		const response = yield fetchWithHeaders( {
