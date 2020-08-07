@@ -7,7 +7,7 @@ module.exports = /** @type {import('eslint').Rule.RuleModule} */ ( {
 		docs: {
 			description: 'Enforce dependencies docblocks formatting',
 			url:
-				'https://github.com/WooCommerce/gutenberg/blob/master/packages/eslint-plugin/docs/rules/dependency-group.md',
+				'https://github.com/woocommerce/woocommerce-admin/blob/main/packages/eslint-plugin/docs/rules/dependency-group.md',
 		},
 		schema: [],
 		fixable: 'code',
