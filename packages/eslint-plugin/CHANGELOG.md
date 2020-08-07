@@ -1,4 +1,4 @@
-# 1.0.0-beta.1
+# 1.0.0-beta.1 (unreleased)
 
 -   Fix eslint-plugin dependency rule to allow WooCommerce block.
 
