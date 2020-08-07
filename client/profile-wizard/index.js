@@ -17,7 +17,6 @@ import {
 	updateQueryString,
 } from '@woocommerce/navigation';
 import {
-	__experimentalResolveSelect,
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
@@ -221,6 +220,7 @@ class ProfileWizard extends Component {
 			notes,
 			updateNote,
 			updateProfileItems,
+			connectToJetPack,
 		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
 		const shouldConnectJetpack =
@@ -243,28 +243,12 @@ class ProfileWizard extends Component {
 			} ),
 		];
 
-		let redirectUrl = null;
-		if ( shouldConnectJetpack ) {
-			promises.push(
-				getJetpackConnectUrl( {
-					redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
-				} ).then( ( jetpackConnectUrl ) => {
-					const error = getPluginsError( 'getJetpackConnectUrl' );
-					if ( error ) {
-						createNoticesFromResponse( error );
-						return;
-					}
-					redirectUrl = jetpackConnectUrl;
-				} )
-			);
-		}
-
 		Promise.all( promises ).then( () => {
-			if ( redirectUrl ) {
-				window.location = redirectUrl;
-				return;
+			if ( shouldConnectJetpack ) {
+				connectToJetPack(
+					getHistory().push( getNewPath( {}, '/', {} ) )
+				);
 			}
-			getHistory().push( getNewPath( {}, '/', {} ) );
 		} );
 	}
 
@@ -339,9 +323,6 @@ export default compose(
 
 		return {
 			dismissedTasks,
-			getJetpackConnectUrl: __experimentalResolveSelect(
-				PLUGINS_STORE_NAME
-			).getJetpackConnectUrl,
 			getPluginsError,
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
 			isJetpackConnected: isJetpackConnected(),
@@ -352,11 +333,13 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { updateNote } = dispatch( 'wc-api' );
+		const { connectToJetPack } = dispatch( PLUGINS_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
+			connectToJetPack,
 			createNotice,
 			updateNote,
 			updateOptions,

@@ -126,6 +126,10 @@ export function* installAndActivatePlugins( plugins ) {
 	}
 }
 
+const createErrorNotice = ( errorMessage ) => {
+	return dispatch( 'core/notices', 'createNotice', errorMessage );
+};
+
 export function* installJetpackAndConnect() {
 	try {
 		yield dispatch( STORE_NAME, 'installPlugins', [ 'jetpack' ] );
@@ -144,22 +148,37 @@ export function* installJetpackAndConnect() {
 		);
 
 		if ( error ) {
-			yield dispatch(
-				'core/notices',
-				'createNotice',
-				'error',
-				error.message
-			);
+			yield createErrorNotice( error );
 		} else {
 			window.location = url;
 		}
 	} catch ( error ) {
-		yield dispatch(
-			'core/notices',
-			'createNotice',
-			'error',
-			error.message
+		yield createErrorNotice( error.message );
+	}
+}
+
+export function* connectToJetpack( failureRedirect ) {
+	try {
+		const url = yield select( STORE_NAME, 'getJetpackConnectUrl', {
+			redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
+		} );
+
+		// getJetpackConnectUrl doesn't throw errors, it sets error state if
+		// something went wrong.
+		const error = yield select(
+			STORE_NAME,
+			'getPluginsError',
+			'getJetpackConnectUrl'
 		);
+
+		if ( error ) {
+			yield createErrorNotice( error );
+			window.location = failureRedirect;
+		} else {
+			window.location = url;
+		}
+	} catch ( error ) {
+		yield createErrorNotice( error.message );
 	}
 }
 
