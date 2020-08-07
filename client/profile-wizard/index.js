@@ -10,7 +10,6 @@ import { withDispatch } from '@wordpress/data';
 /**
  * WooCommerce dependencies
  */
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
 	getNewPath,
@@ -28,7 +27,6 @@ import {
  */
 import Benefits from './steps/benefits';
 import BusinessDetails from './steps/business-details';
-import { createNoticesFromResponse } from 'lib/notices';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
@@ -214,8 +212,6 @@ class ProfileWizard extends Component {
 	completeProfiler() {
 		const {
 			activePlugins,
-			getJetpackConnectUrl,
-			getPluginsError,
 			isJetpackConnected,
 			notes,
 			updateNote,
