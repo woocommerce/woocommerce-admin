@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Onboarding Themes Controller.
+ *
  * @extends WC_REST_Data_Controller
  */
 class OnboardingThemes extends \WC_REST_Data_Controller {

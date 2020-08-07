@@ -16,6 +16,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\Products\DataStore as ProductsData
 
 /**
  * Leaderboards controller.
+ *
  * @extends WC_REST_Data_Controller
  */
 class Leaderboards extends \WC_REST_Data_Controller {

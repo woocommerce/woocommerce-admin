@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * REST API Reports downloads files controller class.
+ *
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller {

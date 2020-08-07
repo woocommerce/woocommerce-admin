@@ -15,6 +15,7 @@ use \Automattic\WooCommerce\Admin\ReportExporter;
 
 /**
  * Reports Export controller.
+ *
  * @extends \Automattic\WooCommerce\Admin\API\Reports\Controller
  */
 class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {

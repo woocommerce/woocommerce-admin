@@ -13,6 +13,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\ParameterException;
 
 /**
  * REST API Reports orders stats controller class.
+ *
  * @extends \Automattic\WooCommerce\Admin\API\Reports\Controller
  */
 class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {

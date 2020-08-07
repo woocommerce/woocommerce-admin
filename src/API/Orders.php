@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Orders controller.
+ *
  * @extends WC_REST_Orders_Controller
  */
 class Orders extends \WC_REST_Orders_Controller {

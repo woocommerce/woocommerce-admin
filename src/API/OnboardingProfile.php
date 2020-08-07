@@ -13,6 +13,7 @@ use Automattic\WooCommerce\Admin\Features\Onboarding;
 
 /**
  * Onboarding Profile controller.
+ *
  * @extends WC_REST_Data_Controller
  */
 class OnboardingProfile extends \WC_REST_Data_Controller {

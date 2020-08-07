@@ -15,6 +15,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
 
 /**
  * REST API Reports customers controller class.
+ *
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller implements ExportableInterface {

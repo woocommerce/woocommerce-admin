@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Data Download IP controller.
+ *
  * @extends WC_REST_Data_Controller
  */
 class DataDownloadIPs extends \WC_REST_Data_Controller {

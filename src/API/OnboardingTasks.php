@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Onboarding Tasks Controller.
+ *
  * @extends WC_REST_Data_Controller
  */
 class OnboardingTasks extends \WC_REST_Data_Controller {

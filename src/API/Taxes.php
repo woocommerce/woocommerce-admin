@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Taxes controller.
+ *
  * @extends WC_REST_Taxes_Controller
  */
 class Taxes extends \WC_REST_Taxes_Controller {

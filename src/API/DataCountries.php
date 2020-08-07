@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * REST API Data countries controller class.
+ *
  * @extends WC_REST_Data_Countries_Controller
  */
 class DataCountries extends \WC_REST_Data_Countries_Controller {

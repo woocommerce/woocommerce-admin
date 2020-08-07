@@ -14,6 +14,7 @@ use Automattic\WooCommerce\Admin\Overrides\ThemeUpgraderSkin;
 
 /**
  * Themes controller.
+ *
  * @extends WC_REST_Data_Controller
  */
 class Themes extends \WC_REST_Data_Controller {

@@ -15,6 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Plugins Controller.
+ *
  * @extends WC_REST_Data_Controller
  */
 class Plugins extends \WC_REST_Data_Controller {

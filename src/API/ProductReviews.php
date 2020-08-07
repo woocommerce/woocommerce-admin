@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Product reviews controller.
+ *
  * @extends WC_REST_Product_Reviews_Controller
  */
 class ProductReviews extends \WC_REST_Product_Reviews_Controller {

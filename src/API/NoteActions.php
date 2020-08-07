@@ -14,6 +14,7 @@ use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
 
 /**
  * REST API Admin Note Action controller class.
+ *
  * @extends WC_REST_CRUD_Controller
  */
 class NoteActions extends Notes {
