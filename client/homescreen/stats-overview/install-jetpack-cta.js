@@ -3,7 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-// import PropTypes from 'prop-types';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
@@ -77,7 +76,7 @@ export const JetpackCTA = ( {
 	);
 };
 
-export function InstallJetpackCTA() {
+export const InstallJetpackCTA = () => {
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const { jetpackInstallState, isBusy } = useSelect( ( select ) => {
 		const { getPluginInstallState, isPluginsRequesting } = select(
@@ -111,4 +110,4 @@ export function InstallJetpackCTA() {
 			} }
 		/>
 	);
-}
+};
