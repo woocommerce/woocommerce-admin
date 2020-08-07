@@ -126,7 +126,7 @@ export function* installAndActivatePlugins( plugins ) {
 	}
 }
 
-const createErrorNotice = ( errorMessage ) => {
+export const createErrorNotice = ( errorMessage ) => {
 	return dispatch( 'core/notices', 'createNotice', errorMessage );
 };
 
