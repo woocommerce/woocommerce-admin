@@ -55,7 +55,7 @@ module.exports = /** @type {import('eslint').Rule.RuleModule} */ ( {
 		function getPackageLocality( source ) {
 			if ( source.startsWith( '.' ) ) {
 				return 'Internal';
-			} else if ( source.startsWith( '@WooCommerce/' ) ) {
+			} else if ( source.startsWith( '@woocommerce/' ) ) {
 				return 'WooCommerce';
 			}
 

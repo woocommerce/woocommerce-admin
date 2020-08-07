@@ -26,9 +26,9 @@ import { get } from 'lodash';
 import classnames from 'classnames';
 
 /**
- * WordPress dependencies
+ * WooCommerce dependencies
  */
-import { Component } from '@wordpress/element';
+import { withPluginsHydration } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -44,9 +44,9 @@ const { get } = require( 'lodash' );
 const classnames = require( 'classnames' );
 
 /**
- * WordPress dependencies
+ * WooCommerce dependencies
  */
-const { Component } = require( '@wordpress/element' );
+import { withPluginsHydration } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -60,9 +60,9 @@ const edit = require( './edit' );`,
 import { get } from 'lodash';
 import classnames from 'classnames';
 /*
- * wordpress dependencies.
+ * woocommerce dependencies.
  */
-import { Component } from '@wordpress/element';
+import { withPluginsHydration } from '@woocommerce/data';
 import edit from './edit';`,
 			errors: [
 				{
@@ -71,7 +71,7 @@ import edit from './edit';`,
 				},
 				{
 					message:
-						'Expected preceding "WordPress dependencies" comment block',
+						'Expected preceding "WooCommerce dependencies" comment block',
 				},
 				{
 					message:
@@ -85,9 +85,9 @@ import edit from './edit';`,
 import { get } from 'lodash';
 import classnames from 'classnames';
 /**
- * WordPress dependencies
+ * WooCommerce dependencies
  */
-import { Component } from '@wordpress/element';
+import { withPluginsHydration } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
@@ -98,9 +98,9 @@ import edit from './edit';`,
 const { get } = require( 'lodash' );
 const classnames = require( 'classnames' );
 /*
- * wordpress dependencies.
+ * woocommerce dependencies.
  */
-const { Component } = require( '@wordpress/element' );
+const { withPluginsHydration } = require( '@woocommerce/element' );
 const edit = require( './edit' );`,
 			errors: [
 				{
@@ -109,7 +109,7 @@ const edit = require( './edit' );`,
 				},
 				{
 					message:
-						'Expected preceding "WordPress dependencies" comment block',
+						'Expected preceding "WooCommerce dependencies" comment block',
 				},
 				{
 					message:
@@ -123,9 +123,9 @@ const edit = require( './edit' );`,
 const { get } = require( 'lodash' );
 const classnames = require( 'classnames' );
 /**
- * WordPress dependencies
+ * WooCommerce dependencies
  */
-const { Component } = require( '@wordpress/element' );
+const { withPluginsHydration } = require( '@woocommerce/element' );
 /**
  * Internal dependencies
  */
