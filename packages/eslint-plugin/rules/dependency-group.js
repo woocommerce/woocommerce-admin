@@ -36,6 +36,9 @@ module.exports = {
 			if ( source.startsWith( '.' ) ) {
 				return 'Internal';
 			}
+			if ( '@woocommerce' ) {
+				return 'WooCommerce';
+			}
 			return 'External';
 		}
 
@@ -62,6 +65,10 @@ module.exports = {
 
 			if ( locality === 'External' ) {
 				locality = '(External|Node)';
+			}
+
+			if ( locality === 'WooCommerce' ) {
+				locality = '(WooCommerce|Node)';
 			}
 
 			const pattern = new RegExp(
@@ -145,10 +152,21 @@ module.exports = {
 		function checkLocalityOrder( child, locality, previousLocality ) {
 			switch ( locality ) {
 				case 'External':
-					if ( previousLocality === 'Internal' ) {
+					if (
+						previousLocality === 'Internal' ||
+						previousLocality === 'WooCommerce'
+					) {
 						context.report( {
 							node: child,
 							message: `Expected "External dependencies" to be defined before ${ previousLocality }`,
+						} );
+					}
+					break;
+				case 'WooCommerce':
+					if ( previousLocality === 'Internal' ) {
+						context.report( {
+							node: child,
+							message: `Expected "WooCommerce dependencies" to be defined before ${ previousLocality }`,
 						} );
 					}
 					break;

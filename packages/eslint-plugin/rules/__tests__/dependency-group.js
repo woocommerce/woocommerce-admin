@@ -25,6 +25,9 @@ ruleTester.run( 'dependency-group', rule, {
 import { get } from 'lodash';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
+/**
+ * WooCommerce dependencies
+ */
 import { SearchListControl } from '@woocommerce/components';
 import { withProductVariations } from '@woocommerce/block-hocs';
 /**
@@ -49,31 +52,43 @@ import { withProductVariations } from '@woocommerce/block-hocs';
 import edit from './edit';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import { SearchListControl } from '@woocommerce/components';`,
+import { SearchListControl } from '@woocommerce/components';
+/**
+ * WooCommerce dependencies
+ */
+import PropTypes from 'prop-types';`,
 			errors: [
+				{
+					message:
+						'Expected preceding "WooCommerce dependencies" comment block',
+				},
 				{
 					message:
 						'Expected preceding "Internal dependencies" comment block',
 				},
 				{
 					message:
-						'Expected "External dependencies" to be defined before Internal',
+						'Expected "WooCommerce dependencies" to be defined before Internal',
 				},
 				{
 					message:
-						'Expected "External dependencies" to be defined before Internal',
+						'Expected preceding "WooCommerce dependencies" comment block',
 				},
 				{
 					message:
-						'Expected preceding "External dependencies" comment block',
+						'Expected "WooCommerce dependencies" to be defined before Internal',
 				},
 				{
 					message:
-						'Expected preceding "External dependencies" comment block',
+						'Expected preceding "WooCommerce dependencies" comment block',
 				},
 				{
 					message:
-						'Expected preceding "External dependencies" comment block',
+						'Expected preceding "WooCommerce dependencies" comment block',
+				},
+				{
+					message:
+						'Expected preceding "WooCommerce dependencies" comment block',
 				},
 			],
 		},
