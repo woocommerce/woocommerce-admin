@@ -298,7 +298,7 @@ class WC_Tests_API_Reports_Customers extends WC_REST_Unit_Test_Case {
 		$request->set_query_params(
 			array(
 				'search'           => 'Alice',
-				'last_order_after' => date( 'Y-m-d' ) . 'T00:00:00Z',
+				'last_order_after' => gmdate( 'Y-m-d' ) . 'T00:00:00Z',
 			)
 		);
 		$response = $this->server->dispatch( $request );

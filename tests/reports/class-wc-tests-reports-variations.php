@@ -8,7 +8,7 @@
 
 use \Automattic\WooCommerce\Admin\API\Reports\Variations\DataStore as VariationsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Variations\Query as VariationsQuery;
- 
+
 /**
  * Reports order stats tests class.
  *
@@ -45,8 +45,8 @@ class WC_Tests_Reports_Variations extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending();
 
 		$data_store = new VariationsDataStore();
-		$start_time = date( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
-		$end_time   = date( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() + HOUR_IN_SECONDS );
+		$start_time = gmdate( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
+		$end_time   = gmdate( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() + HOUR_IN_SECONDS );
 		$args       = array(
 			'after'  => $start_time,
 			'before' => $end_time,
@@ -114,8 +114,8 @@ class WC_Tests_Reports_Variations extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending();
 
 		$data_store = new VariationsDataStore();
-		$start_time = date( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
-		$end_time   = date( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() + HOUR_IN_SECONDS );
+		$start_time = gmdate( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
+		$end_time   = gmdate( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() + HOUR_IN_SECONDS );
 		$args       = array(
 			'after'         => $start_time,
 			'before'        => $end_time,
