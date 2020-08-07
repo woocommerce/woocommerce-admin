@@ -24,73 +24,112 @@ ruleTester.run( 'dependency-group', rule, {
  */
 import { get } from 'lodash';
 import classnames from 'classnames';
-import { Component } from '@wordpress/element';
+
 /**
- * WooCommerce dependencies
+ * WordPress dependencies
  */
-import { SearchListControl } from '@woocommerce/components';
-import { withProductVariations } from '@woocommerce/block-hocs';
+import { Component } from '@wordpress/element';
+
 /**
  * Internal dependencies
  */
-import edit from './edit';
-import './style.scss';`,
+import edit from './edit';`,
 		},
-	],
-	invalid: [
 		{
 			code: `
 /**
  * External dependencies
  */
-import { get } from 'lodash';
-import './style.scss';
-import { withProductVariations } from '@woocommerce/block-hocs';
+const { get } = require( 'lodash' );
+const classnames = require( 'classnames' );
+
+/**
+ * WordPress dependencies
+ */
+const { Component } = require( '@wordpress/element' );
+
 /**
  * Internal dependencies
  */
-import edit from './edit';
+const edit = require( './edit' );`,
+		},
+	],
+	invalid: [
+		{
+			code: `
+import { get } from 'lodash';
 import classnames from 'classnames';
-import { Component } from '@wordpress/element';
-import { SearchListControl } from '@woocommerce/components';
-/**
- * WooCommerce dependencies
+/*
+ * wordpress dependencies.
  */
-import PropTypes from 'prop-types';`,
+import { Component } from '@wordpress/element';
+import edit from './edit';`,
 			errors: [
 				{
 					message:
-						'Expected preceding "WooCommerce dependencies" comment block',
+						'Expected preceding "External dependencies" comment block',
+				},
+				{
+					message:
+						'Expected preceding "WordPress dependencies" comment block',
 				},
 				{
 					message:
 						'Expected preceding "Internal dependencies" comment block',
 				},
+			],
+			output: `
+/**
+ * External dependencies
+ */
+import { get } from 'lodash';
+import classnames from 'classnames';
+/**
+ * WordPress dependencies
+ */
+import { Component } from '@wordpress/element';
+/**
+ * Internal dependencies
+ */
+import edit from './edit';`,
+		},
+		{
+			code: `
+const { get } = require( 'lodash' );
+const classnames = require( 'classnames' );
+/*
+ * wordpress dependencies.
+ */
+const { Component } = require( '@wordpress/element' );
+const edit = require( './edit' );`,
+			errors: [
 				{
 					message:
-						'Expected "WooCommerce dependencies" to be defined before Internal',
+						'Expected preceding "External dependencies" comment block',
 				},
 				{
 					message:
-						'Expected preceding "WooCommerce dependencies" comment block',
+						'Expected preceding "WordPress dependencies" comment block',
 				},
 				{
 					message:
-						'Expected "WooCommerce dependencies" to be defined before Internal',
-				},
-				{
-					message:
-						'Expected preceding "WooCommerce dependencies" comment block',
-				},
-				{
-					message:
-						'Expected preceding "WooCommerce dependencies" comment block',
-				},
-				{
-					message:
-						'Expected preceding "WooCommerce dependencies" comment block',
+						'Expected preceding "Internal dependencies" comment block',
 				},
 			],
+			output: `
+/**
+ * External dependencies
+ */
+const { get } = require( 'lodash' );
+const classnames = require( 'classnames' );
+/**
+ * WordPress dependencies
+ */
+const { Component } = require( '@wordpress/element' );
+/**
+ * Internal dependencies
+ */
+const edit = require( './edit' );`,
 		},
 	],
 } );
