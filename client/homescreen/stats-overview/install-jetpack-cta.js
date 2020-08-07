@@ -16,7 +16,7 @@ import { H } from '@woocommerce/components';
  */
 import { recordEvent } from 'lib/tracks';
 
-export const getJetpackInstallText = ( jetpackInstallState ) => {
+const getJetpackInstallText = ( jetpackInstallState ) => {
 	return (
 		{
 			unavailable: __( 'Get Jetpack', 'woocommerce-admin' ),
@@ -57,6 +57,7 @@ export const JetpackCTA = ( {
 						recordEvent( 'statsoverview_install_jetpack' );
 						onClickInstall();
 					} }
+					disabled={ isBusy }
 					isBusy={ isBusy }
 				>
 					{ getJetpackInstallText( jetpackInstallState ) }
@@ -67,6 +68,7 @@ export const JetpackCTA = ( {
 						recordEvent( 'statsoverview_dismiss_install_jetpack' );
 						onClickDismiss();
 					} }
+					disabled={ isBusy }
 					isBusy={ isBusy }
 				>
 					{ __( 'No thanks', 'woocommerce-admin' ) }
