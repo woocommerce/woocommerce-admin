@@ -216,7 +216,7 @@ class ProfileWizard extends Component {
 			notes,
 			updateNote,
 			updateProfileItems,
-			connectToJetPack,
+			connectToJetpack,
 		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
 		const shouldConnectJetpack =
@@ -241,7 +241,7 @@ class ProfileWizard extends Component {
 
 		Promise.all( promises ).then( () => {
 			if ( shouldConnectJetpack ) {
-				connectToJetPack(
+				connectToJetpack(
 					getHistory().push( getNewPath( {}, '/', {} ) )
 				);
 			}
@@ -329,13 +329,14 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { updateNote } = dispatch( 'wc-api' );
-		const { connectToJetPack } = dispatch( PLUGINS_STORE_NAME );
+
+		const { connectToJetpack } = dispatch( PLUGINS_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
-			connectToJetPack,
+			connectToJetpack,
 			createNotice,
 			updateNote,
 			updateOptions,
