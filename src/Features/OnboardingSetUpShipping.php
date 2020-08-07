@@ -96,7 +96,7 @@ class OnboardingSetUpShipping {
 		$countries         = $countries_service->get_countries();
 		$zone_name         = isset( $countries[ $country_code ] )
 			? $countries[ $country_code ]
-			: null;
+			: $country_code;
 
 		$zone->set_zone_name( $zone_name );
 
