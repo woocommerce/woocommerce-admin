@@ -390,7 +390,8 @@ export default compose(
 
 		const isTaskListComplete =
 			getOption( 'woocommerce_task_list_complete' ) || false;
-		const taskListPayments = getOption( 'woocommerce_task_list_payments' );
+		const taskListPayments =
+			getOption( 'woocommerce_task_list_payments' ) || {};
 		const trackedCompletedTasks =
 			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
 
