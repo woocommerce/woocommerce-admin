@@ -15,13 +15,11 @@ export const fetchWithHeaders = ( options ) => {
 const controls = {
 	...dataControls,
 	FETCH_WITH_HEADERS( { options } ) {
-		let headers;
 		return apiFetch( { ...options, parse: false } )
 			.then( ( response ) => {
-				headers = response.headers;
-				return response.json();
+				return Promise.all( [ response.headers, response.json() ] );
 			} )
-			.then( ( data ) => ( { headers, data } ) );
+			.then( ( [ headers, data ] ) => ( { headers, data } ) );
 	},
 };
 
