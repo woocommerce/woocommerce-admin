@@ -24,7 +24,7 @@ const exportReducer = (
 ) => {
 	switch ( type ) {
 		case TYPES.SET_IS_REQUESTING:
-			state = {
+			return {
 				...state,
 				requesting: {
 					...state.requesting,
@@ -34,9 +34,8 @@ const exportReducer = (
 					},
 				},
 			};
-			break;
 		case TYPES.SET_EXPORT_ID:
-			state = {
+			return {
 				...state,
 				exportMeta: {
 					...state.exportMeta,
@@ -56,9 +55,8 @@ const exportReducer = (
 					},
 				},
 			};
-			break;
 		case TYPES.SET_ERROR:
-			state = {
+			return {
 				...state,
 				errors: {
 					...state.errors,
@@ -68,10 +66,9 @@ const exportReducer = (
 					},
 				},
 			};
-			break;
+		default:
+			return state;
 	}
-
-	return state;
 };
 
 export default exportReducer;
