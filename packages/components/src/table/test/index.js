@@ -1,22 +1,21 @@
-/* eslint-disable jest/no-mocks-import */
 /**
  * External dependencies
  */
-import fetch from 'node-fetch';
-import { mount, shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import { toHaveClass } from '@testing-library/jest-dom/matchers';
 
 /**
  * Internal dependencies
  */
 import TableCard from '../index';
-import mockHeaders from '../__mocks__/table-mock-headers';
-import mockData from '../__mocks__/table-mock-data';
+import mockHeaders from './data/table-mock-headers';
+import mockData from './data/table-mock-data';
 
-window.fetch = fetch;
+expect.extend( { toHaveClass } );
 
 describe( 'TableCard', () => {
-	test( 'should render placeholder table while loading', () => {
-		const tableCard = shallow(
+	it( 'should render placeholder table while loading', () => {
+		render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -27,11 +26,13 @@ describe( 'TableCard', () => {
 			/>
 		);
 
-		expect( tableCard.find( 'TablePlaceholder' ).length ).toBe( 1 );
+		expect( screen.getByRole( 'group', { hidden: true } ) ).toHaveClass(
+			'is-loading'
+		);
 	} );
 
-	test( 'should not render placeholder table when not loading', () => {
-		const tableCard = mount(
+	it( 'should not render placeholder table when not loading', () => {
+		render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -42,7 +43,6 @@ describe( 'TableCard', () => {
 			/>
 		);
 
-		expect( tableCard.find( 'Table' ).length ).toBe( 1 );
-		expect( tableCard.find( 'TablePlaceholder' ).length ).toBe( 0 );
+		expect( screen.getByRole( 'group' ) ).not.toHaveClass( 'is-loading' );
 	} );
 } );
