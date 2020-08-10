@@ -329,6 +329,17 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Request|WP_Error
 	 */
+	public function undoremove_items( $request ) {
+		wc_deprecated_function( 'undoremove_items', '4.4', '\Automattic\WooCommerce\Admin\API\Notes()->undoremove_items' );
+		return self::batch_update_items( $request );
+	}
+
+	/**
+	 * Batch update a set of notes.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
 	public function batch_update_items( $request ) {
 		$data      = array();
 		$notes_ids = $request->get_param( 'notesIds' );

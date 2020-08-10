@@ -13,7 +13,7 @@ import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { NOTES_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -33,7 +33,7 @@ const TaskList = lazy( () =>
 );
 
 export const Layout = ( {
-	isUndoRequesting,
+	isBatchUpdating,
 	query,
 	requestingTaskList,
 	taskListComplete,
@@ -70,7 +70,7 @@ export const Layout = ( {
 		setShowInbox( ! isEmpty );
 	};
 
-	if ( isUndoRequesting && ! showInbox ) {
+	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
 	}
 
@@ -160,8 +160,7 @@ Layout.propTypes = {
 
 export default compose(
 	withWCApiSelect( ( select ) => {
-		const { getUndoDismissRequesting } = select( 'wc-api' );
-		const { isUndoRequesting } = getUndoDismissRequesting();
+		const { isNotesRequesting } = select( NOTES_STORE_NAME );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
 		const welcomeModalDismissed =
@@ -177,7 +176,7 @@ export default compose(
 
 		if ( isOnboardingEnabled() ) {
 			return {
-				isUndoRequesting,
+				isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 				shouldShowWelcomeModal,
 				taskListComplete:
 					getOption( 'woocommerce_task_list_complete' ) === 'yes',

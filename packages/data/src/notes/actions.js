@@ -82,6 +82,7 @@ export function* batchUpdateNotes( noteIds, noteFields ) {
 
 export function* updateNote( noteId, noteFields ) {
 	yield setIsRequesting( 'updateNote', true );
+	yield setNoteIsUpdating( noteId, true );
 
 	try {
 		const url = `${ NAMESPACE }/admin/notes/${ noteId }`;
@@ -92,9 +93,11 @@ export function* updateNote( noteId, noteFields ) {
 		} );
 		yield setNote( noteId, note );
 		yield setIsRequesting( 'updateNote', false );
+		yield setNoteIsUpdating( noteId, false );
 	} catch ( error ) {
 		yield setError( 'updateNote', error );
 		yield setIsRequesting( 'updateNote', false );
+		yield setNoteIsUpdating( noteId, false );
 		throw new Error();
 	}
 }
