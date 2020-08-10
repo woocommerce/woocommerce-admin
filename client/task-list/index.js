@@ -406,6 +406,12 @@ export default compose(
 		const activePlugins = getActivePlugins();
 		const installedPlugins = getInstalledPlugins();
 
+		const wcPaySettings =
+			getOption( 'woocommerce_woocommerce_payments_settings' ) || false;
+
+		taskListPayments.wcPayCompleted =
+			wcPaySettings && wcPaySettings.enabled === 'yes';
+
 		return {
 			activePlugins,
 			countryCode,

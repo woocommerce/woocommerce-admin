@@ -84,6 +84,10 @@ export function getAllTasks( {
 		taskListPayments && taskListPayments.skipped
 	);
 
+	const wcPaymentCompleted = Boolean(
+		taskListPayments && taskListPayments.wcPayCompleted
+	);
+
 	const woocommercePaymentsInstalled =
 		installedPlugins.indexOf( 'woocommerce-payments' ) !== -1;
 	const {
@@ -150,7 +154,7 @@ export function getAllTasks( {
 			key: 'woocommerce-payments',
 			title: __( 'Set up WooCommerce Payments', 'woocommerce-admin' ),
 			container: <Fragment />,
-			completed: paymentsCompleted || paymentsSkipped,
+			completed: wcPaymentCompleted || paymentsSkipped,
 			onClick: async () => {
 				await new Promise( ( resolve, reject ) => {
 					// This task doesn't have a view, so the recordEvent call
