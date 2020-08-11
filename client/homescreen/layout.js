@@ -67,6 +67,9 @@ export const Layout = ( {
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
 
 	const isInboxPanelEmpty = ( isEmpty ) => {
+		if ( isBatchUpdating ) {
+			return;
+		}
 		setShowInbox( ! isEmpty );
 	};
 
