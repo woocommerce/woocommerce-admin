@@ -45,7 +45,7 @@ class WC_Admin_Notes_Review_Shipping_Settings {
 		$note->add_action(
 			'edit-shipping-settings',
 			__( 'Edit shipping settings', 'woocommerce-admin' ),
-			'/wp-admin/admin.php?page=wc-settings&tab=shipping',
+			admin_url( 'admin.php?page=wc-settings&tab=shipping' ),
 			'unactioned',
 			true
 		);
