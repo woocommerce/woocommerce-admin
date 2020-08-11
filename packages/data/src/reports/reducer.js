@@ -5,8 +5,9 @@ import TYPES from './action-types';
 
 const onboarding = (
 	state = {
-		errors: {},
+		itemErrors: {},
 		items: {},
+		statErrors: {},
 		stats: {},
 	},
 	{ type, items, stats, error, resourceName }
@@ -24,11 +25,20 @@ const onboarding = (
 				stats: { ...state.stats, [ resourceName ]: stats },
 			};
 			break;
-		case TYPES.SET_ERROR:
+		case TYPES.SET_ITEM_ERROR:
 			state = {
 				...state,
-				errors: {
-					...state.errors,
+				itemErrors: {
+					...state.itemErrors,
+					[ resourceName ]: error,
+				},
+			};
+			break;
+		case TYPES.SET_STAT_ERROR:
+			state = {
+				...state,
+				statErrors: {
+					...state.statErrors,
 					[ resourceName ]: error,
 				},
 			};

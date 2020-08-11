@@ -3,20 +3,22 @@
  */
 import { getResourceName } from '../utils';
 
-export const getReportsError = ( state, selector, endpoint, query ) => {
-	const resourceName = getResourceName(
-		`${ selector }-${ endpoint }`,
-		query
-	);
-	return state.errors[ resourceName ] || false;
+export const getReportItemsError = ( state, endpoint, query ) => {
+	const resourceName = getResourceName( endpoint, query );
+	return state.itemErrors[ resourceName ] || false;
 };
 
-export const getReportItems = ( state, selector, query ) => {
-	const resourceName = getResourceName( selector, query );
+export const getReportItems = ( state, endpoint, query ) => {
+	const resourceName = getResourceName( endpoint, query );
 	return state.items[ resourceName ] || {};
 };
 
-export const getReportStats = ( state, selector, query ) => {
-	const resourceName = getResourceName( selector, query );
+export const getReportStats = ( state, endpoint, query ) => {
+	const resourceName = getResourceName( endpoint, query );
 	return state.stats[ resourceName ] || {};
+};
+
+export const getReportStatsError = ( state, endpoint, query ) => {
+	const resourceName = getResourceName( endpoint, query );
+	return state.statErrors[ resourceName ] || false;
 };
