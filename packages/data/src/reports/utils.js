@@ -3,10 +3,6 @@
  */
 import { find, forEach, isNull, get, includes } from 'lodash';
 import moment from 'moment';
-
-/**
- * WooCommerce dependencies
- */
 import {
 	appendTimestamp,
 	getCurrentDates,
@@ -21,9 +17,8 @@ import {
 /**
  * Internal dependencies
  */
-import { MAX_PER_PAGE, QUERY_DEFAULTS } from 'wc-api/constants';
 import * as reportsUtils from './utils';
-import { STORE_NAME } from './constants';
+import { MAX_PER_PAGE, QUERY_DEFAULTS, STORE_NAME } from './constants';
 
 /**
  * Add filters and advanced filters values to a query object.
