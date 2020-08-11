@@ -9,7 +9,10 @@ jest.mock( '@wordpress/data-controls', () => ( {
 } ) );
 
 import { dispatch } from '@wordpress/data-controls';
-import { installJetpackAndConnect, connectToJetpack } from '../actions';
+import {
+	installJetpackAndConnect,
+	connectToJetpackWithFailureRedirect,
+} from '../actions';
 import { STORE_NAME } from '../constants';
 
 // Tests run faster in node env, and we just need access to the window global for this test
@@ -92,7 +95,9 @@ describe( 'installJetPackAndConnect', () => {
 
 describe( 'connectToJetpack', () => {
 	it( 'redirects to the failure url if there is an error', () => {
-		const connect = connectToJetpack( 'https://example.com/failure' );
+		const connect = connectToJetpackWithFailureRedirect(
+			'https://example.com/failure'
+		);
 
 		connect.next();
 		connect.next();
@@ -103,7 +108,9 @@ describe( 'connectToJetpack', () => {
 	} );
 
 	it( 'redirects to the jetpack url if there is no error', () => {
-		const connect = connectToJetpack( 'https://example.com/failure' );
+		const connect = connectToJetpackWithFailureRedirect(
+			'https://example.com/failure'
+		);
 
 		connect.next();
 		connect.next( 'https://example.com/success' );
@@ -114,7 +121,7 @@ describe( 'connectToJetpack', () => {
 	} );
 
 	it( 'creates an error notice if an exception is thrown into the generator', () => {
-		const connect = connectToJetpack();
+		const connect = connectToJetpackWithFailureRedirect();
 
 		// Run to first yield
 		connect.next();

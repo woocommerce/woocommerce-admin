@@ -15,6 +15,7 @@ import { H } from '@woocommerce/components';
  * Internal dependencies
  */
 import { recordEvent } from 'lib/tracks';
+import { createErrorNotice } from '../../../packages/data/src/plugins/actions';
 
 const getJetpackInstallText = ( jetpackInstallState ) => {
 	return (
@@ -98,11 +99,15 @@ export const InstallJetpackCTA = () => {
 
 	const { installJetpackAndConnect } = useDispatch( PLUGINS_STORE_NAME );
 
+	const onClickInstall = () => {
+		installJetpackAndConnect( createErrorNotice );
+	};
+
 	return (
 		<JetpackCTA
 			jetpackInstallState={ jetpackInstallState }
 			isBusy={ isBusy }
-			onClickInstall={ installJetpackAndConnect }
+			onClickInstall={ onClickInstall }
 			onClickDismiss={ () => {
 				const homepageStats = userPrefs.homepage_stats || {};
 				homepageStats.installJetpackDismissed = true;

@@ -229,23 +229,21 @@ class ProfileWizard extends Component {
 			updateNote( profilerNote.id, { status: 'actioned' } );
 		}
 
-		const promises = [
-			updateProfileItems( { completed: true } ).then( () => {
+		updateProfileItems( { completed: true } )
+			.then( () => {
 				if ( shouldConnectJetpack ) {
 					document.body.classList.add(
 						'woocommerce-admin-is-loading'
 					);
 				}
-			} ),
-		];
-
-		Promise.all( promises ).then( () => {
-			if ( shouldConnectJetpack ) {
-				connectToJetpack(
-					getHistory().push( getNewPath( {}, '/', {} ) )
-				);
-			}
-		} );
+			} )
+			.then( () => {
+				if ( shouldConnectJetpack ) {
+					connectToJetpack(
+						getHistory().push( getNewPath( {}, '/', {} ) )
+					);
+				}
+			} );
 	}
 
 	skipProfiler() {
