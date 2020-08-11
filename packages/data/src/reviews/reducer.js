@@ -19,7 +19,7 @@ const reducer = (
 				result[ review.id ] = review;
 				return result;
 			}, {} );
-			state = {
+			return {
 				...state,
 				reviews: {
 					...state.reviews,
@@ -30,18 +30,17 @@ const reducer = (
 					...nextReviews,
 				},
 			};
-			break;
 		case TYPES.SET_ERROR:
-			state = {
+			return {
 				...state,
 				errors: {
 					...state.errors,
 					[ JSON.stringify( query ) ]: error,
 				},
 			};
-			break;
+		default:
+			return state;
 	}
-	return state;
 };
 
 export default reducer;
