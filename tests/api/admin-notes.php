@@ -415,7 +415,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$request = new WP_REST_Request( 'PUT', $this->endpoint . '/update' );
 		$request->set_body_params(
 			array(
-				'notesIds'   => array( '1', '4' ),
+				'noteIds'    => array( '1', '4' ),
 				'is_deleted' => '1',
 			)
 		);
