@@ -7,9 +7,13 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { fetchWithHeaders } from '../controls';
-import { getResourceName } from '../utils';
 import { NAMESPACE } from '../constants';
-import { setError, setReportItems, setReportStats } from './actions';
+import {
+	setItemError,
+	setStatError,
+	setReportItems,
+	setReportStats,
+} from './actions';
 
 export function* getReportItems( endpoint, query ) {
 	const fetchArgs = {
@@ -35,11 +39,7 @@ export function* getReportItems( endpoint, query ) {
 			totalPages,
 		} );
 	} catch ( error ) {
-		const resourceName = getResourceName(
-			`getReportItems-${ endpoint }`,
-			query
-		);
-		yield setError( resourceName, error );
+		yield setItemError( endpoint, query, error );
 	}
 }
 
@@ -70,10 +70,6 @@ export function* getReportStats( endpoint, query ) {
 			totalPages,
 		} );
 	} catch ( error ) {
-		const resourceName = getResourceName(
-			`getReportStats-${ endpoint }`,
-			query
-		);
-		yield setError( resourceName, error );
+		yield setStatError( endpoint, query, error );
 	}
 }

@@ -4,14 +4,11 @@
 import { getResourceName } from '../utils';
 import TYPES from './action-types';
 
-export function setError( selector, endpoint, query, error ) {
-	const resourceName = getResourceName(
-		`${ selector }-${ endpoint }`,
-		query
-	);
+export function setItemError( endpoint, query, error ) {
+	const resourceName = getResourceName( endpoint, query );
 
 	return {
-		type: TYPES.SET_ERROR,
+		type: TYPES.SET_ITEM_ERROR,
 		resourceName,
 		error,
 	};
@@ -34,5 +31,15 @@ export function setReportStats( endpoint, query, stats ) {
 		type: TYPES.SET_REPORT_STATS,
 		resourceName,
 		stats,
+	};
+}
+
+export function setStatError( endpoint, query, error ) {
+	const resourceName = getResourceName( endpoint, query );
+
+	return {
+		type: TYPES.SET_STAT_ERROR,
+		resourceName,
+		error,
 	};
 }
