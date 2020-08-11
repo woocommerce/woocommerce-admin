@@ -3,7 +3,7 @@
  */
 import TYPES from './action-types';
 
-const onboarding = (
+const reports = (
 	state = {
 		itemErrors: {},
 		items: {},
@@ -47,4 +47,4 @@ const onboarding = (
 	return state;
 };
 
-export default onboarding;
+export default reports;
