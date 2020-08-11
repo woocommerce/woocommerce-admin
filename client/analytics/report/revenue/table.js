@@ -9,7 +9,7 @@ import { get } from 'lodash';
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { getReportTableQuery, SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -22,7 +22,6 @@ import {
 import { QUERY_DEFAULTS } from '../../../wc-api/constants';
 import ReportTable from '../../components/report-table';
 import withSelect from '../../../wc-api/with-select';
-import { getReportTableQuery } from '../../../wc-api/reports/utils';
 import { CurrencyContext } from '../../../lib/currency-context';
 
 class RevenueReportTable extends Component {

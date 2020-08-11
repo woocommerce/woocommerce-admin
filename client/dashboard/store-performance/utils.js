@@ -4,15 +4,10 @@
 import moment from 'moment';
 import { find } from 'lodash';
 import { getCurrentDates, appendTimestamp } from '@woocommerce/date';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { getFilterQuery, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { getNewPath } from '@woocommerce/navigation';
 import { calculateDelta, formatValue } from '@woocommerce/number';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
-
-/**
- * Internal dependencies
- */
-import { getFilterQuery } from '../../wc-api/reports/utils';
 
 function getReportUrl( href, persistedQuery, primaryItem ) {
 	if ( ! href ) {
