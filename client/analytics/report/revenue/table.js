@@ -9,7 +9,11 @@ import { get } from 'lodash';
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { getReportTableQuery, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import {
+	getReportTableQuery,
+	REPORTS_STORE_NAME,
+	SETTINGS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -283,11 +287,9 @@ export default compose(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
 		const datesFromQuery = getCurrentDates( query, defaultDateRange );
-		const {
-			getReportStats,
-			getReportStatsError,
-			isReportStatsRequesting,
-		} = select( 'wc-api' );
+		const { getReportStats, getReportStatsError, isResolving } = select(
+			REPORTS_STORE_NAME
+		);
 
 		// @todo Support hour here when viewing a single day
 		const tableQuery = {
@@ -311,10 +313,10 @@ export default compose(
 		const isError = Boolean(
 			getReportStatsError( 'revenue', filteredTableQuery )
 		);
-		const isRequesting = isReportStatsRequesting(
+		const isRequesting = isResolving( 'getReportStats', [
 			'revenue',
-			filteredTableQuery
-		);
+			filteredTableQuery,
+		] );
 
 		return {
 			tableData: {

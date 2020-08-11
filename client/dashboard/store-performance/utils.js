@@ -4,7 +4,11 @@
 import moment from 'moment';
 import { find } from 'lodash';
 import { getCurrentDates, appendTimestamp } from '@woocommerce/date';
-import { getFilterQuery, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import {
+	getFilterQuery,
+	SETTINGS_STORE_NAME,
+	REPORTS_STORE_NAME,
+} from '@woocommerce/data';
 import { getNewPath } from '@woocommerce/navigation';
 import { calculateDelta, formatValue } from '@woocommerce/number';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
@@ -70,11 +74,9 @@ export const getIndicatorValues = ( {
 };
 
 export const getIndicatorData = ( select, indicators, query, filters ) => {
-	const {
-		getReportItems,
-		getReportItemsError,
-		isReportItemsRequesting,
-	} = select( 'wc-api' );
+	const { getReportItems, getReportItemsError, isResolving } = select(
+		REPORTS_STORE_NAME
+	);
 	const { woocommerce_default_date_range: defaultDateRange } = select(
 		SETTINGS_STORE_NAME
 	).getSetting( 'wc_admin', 'wcAdminSettings' );
@@ -111,10 +113,10 @@ export const getIndicatorData = ( select, indicators, query, filters ) => {
 	);
 	const primaryError =
 		getReportItemsError( 'performance-indicators', primaryQuery ) || null;
-	const primaryRequesting = isReportItemsRequesting(
+	const primaryRequesting = isResolving( 'getReportItems', [
 		'performance-indicators',
-		primaryQuery
-	);
+		primaryQuery,
+	] );
 
 	const secondaryData = getReportItems(
 		'performance-indicators',
@@ -122,10 +124,10 @@ export const getIndicatorData = ( select, indicators, query, filters ) => {
 	);
 	const secondaryError =
 		getReportItemsError( 'performance-indicators', secondaryQuery ) || null;
-	const secondaryRequesting = isReportItemsRequesting(
+	const secondaryRequesting = isResolving( 'getReportItems', [
 		'performance-indicators',
-		secondaryQuery
-	);
+		secondaryQuery,
+	] );
 
 	return {
 		primaryData,
