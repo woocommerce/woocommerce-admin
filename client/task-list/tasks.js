@@ -103,7 +103,7 @@ export function getAllTasks( {
 				recordEvent( 'tasklist_click', {
 					task_name: 'store_details',
 				} );
-				getHistory().push( getNewPath( {}, `/profiler`, {} ) );
+				getHistory().push( getNewPath( {}, '/store-details', {} ) );
 			},
 			completed: profilerCompleted,
 			visible: true,
