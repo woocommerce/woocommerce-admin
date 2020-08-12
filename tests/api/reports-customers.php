@@ -439,7 +439,7 @@ class WC_Tests_API_Reports_Customers extends WC_REST_Unit_Test_Case {
 		wp_set_current_user( $this->user );
 
 		// Creating a customer should show up regardless of orders.
-		$customer = WC_Helper_Customer::create_customer( 'customer', 'password', 'customer@example.com' );
+		$customer = WC_Helper_Customer::create_customer( 'deleteme', 'password', 'deleteme@example.com' );
 
 		WC_Helper_Queue::run_all_pending();
 
@@ -465,7 +465,8 @@ class WC_Tests_API_Reports_Customers extends WC_REST_Unit_Test_Case {
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
-				'per_page' => 1,
+				'per_page'  => 1,
+				'customers' => array( $customer->get_id() ),
 			)
 		);
 		$response  = $this->server->dispatch( $request );
