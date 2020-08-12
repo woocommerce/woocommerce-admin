@@ -2,15 +2,15 @@
  * External dependencies
  */
 import { shallow } from 'enzyme';
-import { recordEvent } from './client/lib/tracks';
 import { ExternalLink, Button } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-
-jest.mock( '../../wcs-api.js' );
+import { recordEvent } from './client/lib/tracks';
 import { acceptWcsTos, getWcsAssets } from '../../wcs-api.js';
 import { setupErrorTypes } from '../../setup-notice';
+
+jest.mock( '../../wcs-api.js' );
 
 acceptWcsTos.mockReturnValue( Promise.resolve() );
 const wcsAssetsMock = {};

@@ -12,7 +12,7 @@ import {
  */
 import { DEFAULT_ACTIONABLE_STATUSES } from './client/analytics/settings/config';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import { getUnreadNotesCount } from './panels/inbox/utils';
 
 export function getUnreadNotes( select ) {

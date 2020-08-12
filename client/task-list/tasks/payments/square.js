@@ -9,7 +9,7 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
 import { getQuery } from '@woocommerce/navigation';
-import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
+import { WC_ADMIN_NAMESPACE } from './client/wc-api/constants';
 import { Stepper } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';

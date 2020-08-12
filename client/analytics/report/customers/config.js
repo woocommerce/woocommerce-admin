@@ -15,7 +15,7 @@ import {
 	getCustomerLabels,
 	getRequestByIdString,
 } from './client/lib/async-requests';
-import { NAMESPACE } from 'wc-api/constants';
+import { NAMESPACE } from './client/wc-api/constants';
 
 const CUSTOMERS_REPORT_FILTERS_FILTER =
 	'woocommerce_admin_customers_report_filters';

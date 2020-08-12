@@ -11,7 +11,7 @@ import { getIdsFromQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { getTaxCode } from './client/analytics/report/taxes/utils';
-import { NAMESPACE } from 'wc-api/constants';
+import { NAMESPACE } from './client/wc-api/constants';
 
 /**
  * Get a function that accepts ids as they are found in url parameter and

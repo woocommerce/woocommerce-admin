@@ -1,7 +1,6 @@
 /**
- * External dependencies
+ * Internal dependencies
  */
-
 import { appendTimestamp, getCurrentDates } from './client/lib/date';
 
 /**

@@ -20,10 +20,10 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import ReportTable from './client/analytics/components/report-table';
 import withSelect from './client/wc-api/with-select';
-import { getReportTableQuery } from 'wc-api/reports/utils';
+import { getReportTableQuery } from './client/wc-api/reports/utils';
 import { CurrencyContext } from './client/lib/currency-context';
 
 class RevenueReportTable extends Component {

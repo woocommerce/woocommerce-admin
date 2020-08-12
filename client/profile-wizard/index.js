@@ -30,7 +30,7 @@ import { createNoticesFromResponse } from './client/lib/notices';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import { recordEvent } from './client/lib/tracks';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';

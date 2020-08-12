@@ -15,7 +15,7 @@ import InboxNotePlaceholder from './placeholder';
 import ActivityHeader from '../../activity-header';
 import InboxNoteCard from './card';
 import { EmptyContent, Section } from '@woocommerce/components';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import withSelect from './client/wc-api/with-select';
 import { getUnreadNotesCount, hasValidNotes } from './utils';
 

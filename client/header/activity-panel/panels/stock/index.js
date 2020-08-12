@@ -15,7 +15,7 @@ import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
 import ActivityHeader from '../../activity-header';
 import Gridicon from 'gridicons';
 import ProductStockCard from './card';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import withSelect from './client/wc-api/with-select';
 
 class StockPanel extends Component {

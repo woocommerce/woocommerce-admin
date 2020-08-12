@@ -11,7 +11,7 @@ import { SectionHeader } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { DEFAULT_REQUIREMENT } from 'wc-api/constants';
+import { DEFAULT_REQUIREMENT } from './client/wc-api/constants';
 import { formatParams, getStatus } from './utils';
 import HistoricalDataActions from './actions';
 import HistoricalDataPeriodSelector from './period-selector';

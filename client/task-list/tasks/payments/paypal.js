@@ -12,7 +12,7 @@ import { isEmail } from '@wordpress/url';
 
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getQuery } from '@woocommerce/navigation';
-import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
+import { WC_ADMIN_NAMESPACE } from './client/wc-api/constants';
 import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 export class PayPal extends Component {

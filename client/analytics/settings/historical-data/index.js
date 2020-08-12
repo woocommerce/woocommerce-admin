@@ -15,7 +15,7 @@ import { withSpokenMessages } from '@wordpress/components';
  */
 import { formatParams } from './utils';
 import HistoricalDataLayout from './layout';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import { recordEvent } from './client/lib/tracks';
 import withSelect from './client/wc-api/with-select';
 

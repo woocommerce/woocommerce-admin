@@ -3,12 +3,6 @@
  */
 import { find, forEach, isNull, get, includes } from 'lodash';
 import moment from 'moment';
-
-import {
-	appendTimestamp,
-	getCurrentDates,
-	getIntervalForQuery,
-} from './client/lib/date';
 import {
 	flattenFilters,
 	getActiveFiltersFromQuery,
@@ -18,7 +12,12 @@ import {
 /**
  * Internal dependencies
  */
-import { MAX_PER_PAGE, QUERY_DEFAULTS } from 'wc-api/constants';
+import {
+	appendTimestamp,
+	getCurrentDates,
+	getIntervalForQuery,
+} from './client/lib/date';
+import { MAX_PER_PAGE, QUERY_DEFAULTS } from './client/wc-api/constants';
 import * as reportsUtils from './utils';
 
 /**

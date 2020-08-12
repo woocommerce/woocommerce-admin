@@ -7,8 +7,11 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal dependencies
  */
-import { getResourceIdentifier, getResourcePrefix } from 'wc-api/utils';
-import { NAMESPACE } from 'wc-api/constants';
+import {
+	getResourceIdentifier,
+	getResourcePrefix,
+} from './client/wc-api/utils';
+import { NAMESPACE } from './client/wc-api/constants';
 
 const statEndpoints = [
 	'coupons',

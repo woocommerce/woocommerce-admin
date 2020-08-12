@@ -19,7 +19,7 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { getSummaryNumbers } from 'wc-api/reports/utils';
+import { getSummaryNumbers } from './client/wc-api/reports/utils';
 import ReportError from './client/analytics/components/report-error';
 import withSelect from './client/wc-api/with-select';
 import { recordEvent } from './client/lib/tracks';

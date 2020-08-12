@@ -26,7 +26,7 @@ import { REVIEWS_STORE_NAME } from '@woocommerce/data';
  */
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import sanitizeHTML from './client/lib/sanitize-html';
 import withSelect from './client/wc-api/with-select';
 import { recordEvent } from './client/lib/tracks';

@@ -14,7 +14,7 @@ import { getQuery, getSearchWords } from '@woocommerce/navigation';
  */
 import './style.scss';
 import ReportError from './client/analytics/components/report-error';
-import { searchItemsByString } from 'wc-api/items/utils';
+import { searchItemsByString } from './client/wc-api/items/utils';
 import withSelect from './client/wc-api/with-select';
 import {
 	CurrencyContext,
