@@ -85,6 +85,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function init() {
 		add_action( 'edit_user_profile_update', array( __CLASS__, 'update_registered_customer' ) );
 		add_action( 'updated_user_meta', array( __CLASS__, 'update_registered_customer_via_last_active' ), 10, 3 );
+		add_action( 'delete_user', array( __CLASS__, 'delete_customer_by_user_id' ) );
 	}
 
 	/**
@@ -675,16 +676,36 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	public static function delete_customer( $customer_id ) {
 		global $wpdb;
+
 		$customer_id = (int) $customer_id;
+		$num_deleted = $wpdb->delete( self::get_db_table_name(), array( 'customer_id' => $customer_id ) );
 
-		$wpdb->delete( self::get_db_table_name(), array( 'customer_id' => $customer_id ) );
+		if ( $num_deleted ) {
+			/**
+			 * Fires when a customer is deleted.
+			 *
+			 * @param int $order_id Order ID.
+			 */
+			do_action( 'woocommerce_analytics_delete_customer', $customer_id );
 
-		/**
-		 * Fires when a customer is deleted.
-		 *
-		 * @param int $order_id Order ID.
-		 */
-		do_action( 'woocommerce_analytics_delete_customer', $customer_id );
+			ReportsCache::invalidate();
+		}
+	}
+
+	/**
+	 * Delete a customer lookup row by WordPress User ID.
+	 *
+	 * @param int $user_id WordPress User ID.
+	 */
+	public static function delete_customer_by_user_id( $user_id ) {
+		global $wpdb;
+
+		$user_id     = (int) $user_id;
+		$num_deleted = $wpdb->delete( self::get_db_table_name(), array( 'user_id' => $user_id ) );
+
+		if ( $num_deleted ) {
+			ReportsCache::invalidate();
+		}
 	}
 
 	/**
