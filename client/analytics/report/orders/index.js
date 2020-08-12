@@ -8,11 +8,11 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import { advancedFilters, charts, filters } from './config';
-import getSelectedChart from 'client/lib/get-selected-chart';
+import getSelectedChart from '../../../lib/get-selected-chart';
 import OrdersReportTable from './table';
-import ReportChart from 'client/analytics/components/report-chart';
-import ReportSummary from 'client/analytics/components/report-summary';
-import ReportFilters from 'client/analytics/components/report-filters';
+import ReportChart from '../../components/report-chart';
+import ReportSummary from '../../components/report-summary';
+import ReportFilters from '../../components/report-filters';
 
 export default class OrdersReport extends Component {
 	render() {

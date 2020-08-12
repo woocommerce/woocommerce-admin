@@ -6,7 +6,7 @@ import { ExternalLink, Button } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../../../lib/tracks';
 import { acceptWcsTos, getWcsAssets } from '../../wcs-api.js';
 import { setupErrorTypes } from '../../setup-notice';
 

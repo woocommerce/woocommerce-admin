@@ -9,7 +9,7 @@ import { useUserPreferences } from '@woocommerce/data';
  */
 import { StatsOverview } from '../index';
 import StatsList from '../stats-list';
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 
 jest.mock( 'lib/tracks' );
 // Mock the stats list so that it can be tested separately.

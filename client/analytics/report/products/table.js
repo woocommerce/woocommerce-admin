@@ -17,9 +17,9 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
  */
 import CategoryBreacrumbs from '../categories/breadcrumbs';
 import { isLowStock } from './utils';
-import ReportTable from 'client/analytics/components/report-table';
-import withSelect from 'client/wc-api/with-select';
-import { CurrencyContext } from 'client/lib/currency-context';
+import ReportTable from '../../components/report-table';
+import withSelect from '../../../wc-api/with-select';
+import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
 
 const manageStock = getSetting( 'manageStock', 'no' );

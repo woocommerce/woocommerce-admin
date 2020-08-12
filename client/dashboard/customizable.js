@@ -23,19 +23,19 @@ import { getQuery } from '@woocommerce/navigation';
 import './style.scss';
 import defaultSections from './default-sections';
 import Section from './section';
-import withSelect from 'client/wc-api/with-select';
-import { recordEvent } from 'client/lib/tracks';
-import { isOnboardingEnabled } from 'client/dashboard/utils';
+import withSelect from '../wc-api/with-select';
+import { recordEvent } from '../lib/tracks';
+import { isOnboardingEnabled } from 'utils';
 import {
 	getCurrentDates,
 	getDateParamsFromQuery,
 	isoDateFormat,
-} from 'client/lib/date';
-import ReportFilters from 'client/analytics/components/report-filters';
+} from '../lib/date';
+import ReportFilters from '../analytics/components/report-filters';
 import {
 	CurrencyContext,
 	getFilteredCurrencyInstance,
-} from 'client/lib/currency-context';
+} from '../lib/currency-context';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )

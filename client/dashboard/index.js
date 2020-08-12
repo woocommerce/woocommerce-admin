@@ -18,7 +18,7 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import './style.scss';
-import { isOnboardingEnabled } from 'client/dashboard/utils';
+import { isOnboardingEnabled } from 'utils';
 
 const CustomizableDashboard = lazy( () =>
 	import( /* webpackChunkName: "customizable-dashboard" */ './customizable' )

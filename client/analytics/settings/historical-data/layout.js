@@ -11,14 +11,14 @@ import { SectionHeader } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { DEFAULT_REQUIREMENT } from 'client/wc-api/constants';
+import { DEFAULT_REQUIREMENT } from '../../../wc-api/constants';
 import { formatParams, getStatus } from './utils';
 import HistoricalDataActions from './actions';
 import HistoricalDataPeriodSelector from './period-selector';
 import HistoricalDataProgress from './progress';
 import HistoricalDataStatus from './status';
 import HistoricalDataSkipCheckbox from './skip-checkbox';
-import withSelect from 'client/wc-api/with-select';
+import withSelect from '../../../wc-api/with-select';
 import './style.scss';
 
 class HistoricalDataLayout extends Component {

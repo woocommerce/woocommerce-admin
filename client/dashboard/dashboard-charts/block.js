@@ -16,7 +16,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import ReportChart from 'client/analytics/components/report-chart';
+import ReportChart from '../../analytics/components/report-chart';
 import './block.scss';
 
 class ChartBlock extends Component {

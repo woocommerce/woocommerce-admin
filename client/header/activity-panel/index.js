@@ -29,8 +29,8 @@ import {
 	getUnapprovedReviews,
 	getUnreadStock,
 } from './unread-indicators';
-import { isOnboardingEnabled, isWCAdmin } from 'client/dashboard/utils';
-import withSelect from 'client/wc-api/with-select';
+import { isOnboardingEnabled, isWCAdmin } from '../../dashboard/utils';
+import withSelect from '../../wc-api/with-select';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
 

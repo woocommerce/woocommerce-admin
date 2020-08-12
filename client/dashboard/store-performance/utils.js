@@ -12,7 +12,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import { getFilterQuery } from 'client/wc-api/reports/utils';
+import { getFilterQuery } from '../../wc-api/reports/utils';
 
 function getReportUrl( href, persistedQuery, primaryItem ) {
 	if ( ! href ) {

@@ -23,10 +23,10 @@ import QuickLinks from '../quick-links';
 import StatsOverview from './stats-overview';
 import './style.scss';
 import '../dashboard/style.scss';
-import { isOnboardingEnabled } from 'client/dashboard/utils';
+import { isOnboardingEnabled } from '../dashboard/utils';
 import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../header/activity-panel/panels/inbox';
-import withWCApiSelect from 'client/wc-api/with-select';
+import withWCApiSelect from '../wc-api/with-select';
 import { WelcomeModal } from './welcome-modal';
 
 const TaskList = lazy( () =>

@@ -13,9 +13,9 @@ import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { defaultTableDateFormat } from 'client/lib/date';
-import ReportTable from 'client/analytics/components/report-table';
-import { CurrencyContext } from 'client/lib/currency-context';
+import { defaultTableDateFormat } from '../../../lib/date';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
 
 class OrdersReportTable extends Component {

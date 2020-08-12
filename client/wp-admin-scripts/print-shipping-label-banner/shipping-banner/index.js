@@ -16,9 +16,9 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import '../style.scss';
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 import DismissModal from '../dismiss-modal';
-import withSelect from 'client/wc-api/with-select';
+import withSelect from '../../../wc-api/with-select';
 import SetupNotice, { setupErrorTypes } from '../setup-notice';
 import { getWcsAssets, acceptWcsTos } from '../wcs-api';
 

@@ -12,7 +12,7 @@ import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { createNoticesFromResponse } from 'client/lib/notices';
+import { createNoticesFromResponse } from 'lib/notices';
 
 export class Plugins extends Component {
 	constructor() {

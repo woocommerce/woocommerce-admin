@@ -17,11 +17,11 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import withSelect from 'client/wc-api/with-select';
-import { QUERY_DEFAULTS } from 'client/wc-api/constants';
-import sanitizeHTML from 'client/lib/sanitize-html';
+import withSelect from '../../wc-api/with-select';
+import { QUERY_DEFAULTS } from '../../wc-api/constants';
+import sanitizeHTML from '../../lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../lib/tracks';
 
 import './style.scss';
 

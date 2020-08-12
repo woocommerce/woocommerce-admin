@@ -16,10 +16,10 @@ import { ONBOARDING_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { getProductIdsForCart } from 'client/dashboard/utils';
-import sanitizeHTML from 'client/lib/sanitize-html';
-import { recordEvent } from 'client/lib/tracks';
-import { getInAppPurchaseUrl } from 'client/lib/in-app-purchase';
+import { getProductIdsForCart } from '../utils';
+import sanitizeHTML from '../../lib/sanitize-html';
+import { recordEvent } from '../../lib/tracks';
+import { getInAppPurchaseUrl } from '../../lib/in-app-purchase';
 
 class CartModal extends Component {
 	constructor( props ) {

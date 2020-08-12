@@ -20,11 +20,11 @@ import {
 /**
  * Internal dependencies
  */
-import { getDateParamsFromQuery } from 'client/lib/date';
-import withSelect from 'client/wc-api/with-select';
+import { getDateParamsFromQuery } from '../../lib/date';
+import withSelect from '../../wc-api/with-select';
 import './style.scss';
-import { recordEvent } from 'client/lib/tracks';
-import { CurrencyContext } from 'client/lib/currency-context';
+import { recordEvent } from '../../lib/tracks';
+import { CurrencyContext } from '../../lib/currency-context';
 import { getIndicatorData, getIndicatorValues } from './utils';
 
 const { performanceIndicators: indicators } = getSetting( 'dataEndpoints', {

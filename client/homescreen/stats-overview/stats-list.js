@@ -14,13 +14,13 @@ import { getPersistedQuery } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import withSelect from 'client/wc-api/with-select';
-import { recordEvent } from 'client/lib/tracks';
-import { CurrencyContext } from 'client/lib/currency-context';
+import withSelect from '../../wc-api/with-select';
+import { recordEvent } from '../../lib/tracks';
+import { CurrencyContext } from '../../lib/currency-context';
 import {
 	getIndicatorData,
 	getIndicatorValues,
-} from 'client/dashboard/store-performance/utils';
+} from '../../dashboard/store-performance/utils';
 
 export const StatsList = ( {
 	stats,

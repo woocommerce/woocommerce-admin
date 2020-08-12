@@ -15,7 +15,7 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { isOnboardingEnabled } from 'client/dashboard/utils';
+import { isOnboardingEnabled } from '../dashboard/utils';
 
 import Layout from './layout';
 

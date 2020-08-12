@@ -14,10 +14,10 @@ import { H, Section } from '@woocommerce/components';
  * Internal dependencies
  */
 import NoteAction from './action';
-import sanitizeHTML from 'client/lib/sanitize-html';
-import { recordEvent } from 'client/lib/tracks';
+import sanitizeHTML from '../../../../lib/sanitize-html';
+import { recordEvent } from '../../../../lib/tracks';
 import './style.scss';
-import { getScreenName } from 'client/utils';
+import { getScreenName } from '../../../../utils';
 
 class InboxNoteCard extends Component {
 	constructor( props ) {

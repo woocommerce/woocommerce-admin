@@ -19,8 +19,8 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'client/lib/tracks';
-import { createNoticesFromResponse } from 'client/lib/notices';
+import { recordEvent } from '../../lib/tracks';
+import { createNoticesFromResponse } from '../../lib/notices';
 
 function InstallJetpackCta( {
 	getJetpackConnectUrl,

@@ -8,7 +8,7 @@ import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../../../lib/tracks';
 import { KnowledgeBase } from '../index.js';
 import Slider from '../../slider';
 

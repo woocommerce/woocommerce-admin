@@ -9,7 +9,7 @@ import { DatePicker } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { dateValidationMessages } from 'client/lib/date';
+import { dateValidationMessages } from '../../../lib/date';
 
 function HistoricalDataPeriodSelector( {
 	dateFormat,

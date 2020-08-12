@@ -7,7 +7,7 @@ import { Button } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../../../lib/tracks';
 import { WelcomeCard } from '../index.js';
 
 jest.mock( 'lib/tracks' );

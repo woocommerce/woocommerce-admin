@@ -10,7 +10,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../lib/tracks';
 
 const subTasks = [
 	{

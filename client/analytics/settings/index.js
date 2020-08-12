@@ -17,7 +17,7 @@ import './index.scss';
 import { config } from './config';
 import Setting from './setting';
 import HistoricalData from './historical-data';
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../lib/tracks';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 

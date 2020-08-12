@@ -16,7 +16,7 @@ import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { WC_ADMIN_NAMESPACE } from 'client/wc-api/constants';
+import { WC_ADMIN_NAMESPACE } from '../../../wc-api/constants';
 
 export class PayPal extends Component {
 	constructor( props ) {

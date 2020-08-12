@@ -16,7 +16,7 @@ import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { WCS_NAMESPACE } from 'client/wc-api/constants';
+import { WCS_NAMESPACE } from '../../../wc-api/constants';
 
 class Stripe extends Component {
 	constructor( props ) {

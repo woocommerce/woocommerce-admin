@@ -14,8 +14,8 @@ import { EmptyContent, Section } from '@woocommerce/components';
 import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
 import ActivityHeader from '../../activity-header';
 import ProductStockCard from './card';
-import { QUERY_DEFAULTS } from 'client/wc-api/constants';
-import withSelect from 'client/wc-api/with-select';
+import { QUERY_DEFAULTS } from '../../../../wc-api/constants';
+import withSelect from '../../../../wc-api/with-select';
 
 class StockPanel extends Component {
 	renderEmptyCard() {

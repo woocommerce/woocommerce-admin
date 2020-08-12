@@ -27,11 +27,11 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
-import { QUERY_DEFAULTS } from 'client/wc-api/constants';
-import { DEFAULT_ACTIONABLE_STATUSES } from 'client/analytics/settings/config';
-import withSelect from 'client/wc-api/with-select';
-import { CurrencyContext } from 'client/lib/currency-context';
-import { recordEvent } from 'client/lib/tracks';
+import { QUERY_DEFAULTS } from '../../../wc-api/constants';
+import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
+import withSelect from '../../../wc-api/with-select';
+import { CurrencyContext } from '../../../lib/currency-context';
+import { recordEvent } from '../../../lib/tracks';
 
 class OrdersPanel extends Component {
 	recordOrderEvent( eventName ) {

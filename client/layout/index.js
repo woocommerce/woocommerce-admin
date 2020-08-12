@@ -23,11 +23,11 @@ import {
  */
 import './style.scss';
 import { Controller, getPages, PAGES_FILTER } from './controller';
-import Header from 'client/header';
+import Header from '../header';
 import Notices from './notices';
-import { recordPageView } from 'client/lib/tracks';
+import { recordPageView } from '../lib/tracks';
 import TransientNotices from './transient-notices';
-import { REPORTS_FILTER } from 'client/analytics/report';
+import { REPORTS_FILTER } from '../analytics/report';
 
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )

@@ -16,8 +16,8 @@ import {
 	appendTimestamp,
 	getCurrentDates,
 	getIntervalForQuery,
-} from 'client/lib/date';
-import { MAX_PER_PAGE, QUERY_DEFAULTS } from 'client/wc-api/constants';
+} from '../../lib/date';
+import { MAX_PER_PAGE, QUERY_DEFAULTS } from '../constants';
 import * as reportsUtils from './utils';
 
 /**

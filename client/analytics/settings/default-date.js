@@ -12,7 +12,7 @@ import {
 	getCurrentDates,
 	getDateParamsFromQuery,
 	isoDateFormat,
-} from 'client/lib/date';
+} from '../../lib/date';
 
 const DefaultDate = ( { value, onChange } ) => {
 	const { wcAdminSettings } = useSettings( 'wc_admin', [

@@ -18,12 +18,12 @@ import {
 	appendTimestamp,
 	defaultTableDateFormat,
 	getCurrentDates,
-} from 'client/lib/date';
-import { QUERY_DEFAULTS } from 'client/wc-api/constants';
-import ReportTable from 'client/analytics/components/report-table';
-import withSelect from 'client/wc-api/with-select';
-import { getReportTableQuery } from 'client/wc-api/reports/utils';
-import { CurrencyContext } from 'client/lib/currency-context';
+} from '../../../lib/date';
+import { QUERY_DEFAULTS } from '../../../wc-api/constants';
+import ReportTable from '../../components/report-table';
+import withSelect from '../../../wc-api/with-select';
+import { getReportTableQuery } from '../../../wc-api/reports/utils';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class RevenueReportTable extends Component {
 	constructor() {

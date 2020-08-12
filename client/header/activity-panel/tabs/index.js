@@ -8,7 +8,7 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { Tab } from '../tab';
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 
 export const Tabs = ( {
 	tabs,

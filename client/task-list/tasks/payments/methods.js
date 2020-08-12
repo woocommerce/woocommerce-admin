@@ -16,7 +16,7 @@ import { Link } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { WC_ADMIN_NAMESPACE } from 'client/wc-api/constants';
+import { WC_ADMIN_NAMESPACE } from '../../../wc-api/constants';
 
 /**
  * Internal dependencies
@@ -24,7 +24,7 @@ import { WC_ADMIN_NAMESPACE } from 'client/wc-api/constants';
 import Bacs from './bacs';
 import BacsIcon from './images/bacs';
 import CodIcon from './images/cod';
-import { createNoticesFromResponse } from 'client/lib/notices';
+import { createNoticesFromResponse } from '../../../lib/notices';
 import Stripe from './stripe';
 import Square from './square';
 import WCPay from './wcpay';

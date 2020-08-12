@@ -16,17 +16,41 @@ async function getFiles( dir ) {
 	return files.reduce( ( a, f ) => a.concat( f ), [] );
 }
 
-// getFiles( 'client' )
-// 	.then( ( files ) => console.log( files ) )
-// 	.catch( ( e ) => console.error( e ) );
+getFiles( 'client' )
+	.then( ( files ) => {
+		files.forEach( ( file ) => makeRelativePath( file ) );
+	} )
+	.catch( ( e ) => console.error( e ) );
 
-const filePath =
-	'/Users/psealock/vagrant-local/www/tangaroa/public_html/wp-content/plugins/wc-admin/client/analytics/report/revenue/index.js';
+const makeRelativePath = ( file ) => {
+	const root =
+		'/Users/psealock/vagrant-local/www/tangaroa/public_html/wp-content/plugins/wc-admin/';
 
-const importPath = './client/analytics/components/report-filters';
-const fullImportPath =
-	'/Users/psealock/vagrant-local/www/tangaroa/public_html/wp-content/plugins/wc-admin/client/analytics/components/report-filters';
+	fs.readFile( file, 'utf8', function ( err, data ) {
+		if ( err ) {
+			return console.log( err );
+		}
+		const rx = /'(.*?)'/;
+		const lines = data.split( /\r?\n/ );
 
-const answer = path.relative( filePath, fullImportPath );
+		let result = data;
 
-console.log( answer );
+		lines.forEach( ( line ) => {
+			if ( line.includes( "from 'client/" ) ) {
+				const importPath = rx.exec( line )[ 1 ];
+				const fullImportPath = root + importPath;
+				const relativePath = path.relative( file, fullImportPath );
+				const improvedRelativePath = relativePath.substring( 3 );
+				const newLine = line.replace(
+					rx,
+					"'" + improvedRelativePath + "'"
+				);
+				result = result.replace( line, newLine );
+			}
+		} );
+
+		fs.writeFile( file, result, 'utf8', function ( err ) {
+			if ( err ) return console.log( err );
+		} );
+	} );
+};

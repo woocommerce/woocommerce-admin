@@ -15,7 +15,7 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
  * Internal dependencies
  */
 import './style.scss';
-import { recordEvent } from 'client/lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 import WelcomeImage from './images/welcome.svg';
 
 const WelcomeCard = ( { isHidden, updateOptions } ) => {

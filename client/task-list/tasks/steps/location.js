@@ -13,7 +13,7 @@ import { Form } from '@woocommerce/components';
 import {
 	StoreAddress,
 	validateStoreAddress,
-} from 'client/dashboard/components/settings/general/store-address';
+} from '../../../dashboard/components/settings/general/store-address';
 
 export default class StoreLocation extends Component {
 	constructor() {
