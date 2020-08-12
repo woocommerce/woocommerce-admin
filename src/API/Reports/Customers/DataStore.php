@@ -85,7 +85,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function init() {
 		add_action( 'edit_user_profile_update', array( __CLASS__, 'update_registered_customer' ) );
 		add_action( 'updated_user_meta', array( __CLASS__, 'update_registered_customer_via_last_active' ), 10, 3 );
-		add_action( 'delete_user', array( __CLASS__, 'delete_customer_by_user_id' ) );
 	}
 
 	/**
