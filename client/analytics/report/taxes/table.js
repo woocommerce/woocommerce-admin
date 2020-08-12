@@ -13,8 +13,8 @@ import { formatValue } from '@woocommerce/number';
  * Internal dependencies
  */
 import { getTaxCode } from './utils';
-import ReportTable from './client/analytics/components/report-table';
-import { CurrencyContext } from './client/lib/currency-context';
+import ReportTable from 'client/analytics/components/report-table';
+import { CurrencyContext } from 'client/lib/currency-context';
 
 class TaxesReportTable extends Component {
 	constructor() {

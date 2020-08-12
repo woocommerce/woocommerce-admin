@@ -29,15 +29,15 @@ import { SETTINGS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
  * Internal dependencies
  */
 import DownloadIcon from './download-icon';
-import ReportError from './client/analytics/components/report-error';
+import ReportError from 'client/analytics/components/report-error';
 import {
 	getReportChartData,
 	getReportTableData,
-} from './client/wc-api/reports/utils';
-import { QUERY_DEFAULTS } from './client/wc-api/constants';
-import withSelect from './client/wc-api/with-select';
+} from 'client/wc-api/reports/utils';
+import { QUERY_DEFAULTS } from 'client/wc-api/constants';
+import withSelect from 'client/wc-api/with-select';
 import { extendTableData } from './utils';
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 import './style.scss';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';

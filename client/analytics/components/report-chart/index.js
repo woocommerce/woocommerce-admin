@@ -20,14 +20,14 @@ import {
 	getIntervalForQuery,
 	getChartTypeForQuery,
 	getPreviousDate,
-} from './client/lib/date';
-import { CurrencyContext } from './client/lib/currency-context';
+} from 'client/lib/date';
+import { CurrencyContext } from 'client/lib/currency-context';
 import {
 	getReportChartData,
 	getTooltipValueFormat,
-} from './client/wc-api/reports/utils';
-import ReportError from './client/analytics/components/report-error';
-import withSelect from './client/wc-api/with-select';
+} from 'client/wc-api/reports/utils';
+import ReportError from 'client/analytics/components/report-error';
+import withSelect from 'client/wc-api/with-select';
 import { getChartMode, getSelectedFilter } from './utils';
 
 /**

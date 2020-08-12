@@ -17,13 +17,13 @@ import { Fragment } from '@wordpress/element';
  * Internal dependencies
  */
 import Appearance from './tasks/appearance';
-import { getCategorizedOnboardingProducts } from './client/dashboard/utils';
+import { getCategorizedOnboardingProducts } from 'client/dashboard/utils';
 import Products from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 import { installActivateAndConnectWcpay } from './tasks/payments/methods';
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 
 export function recordTaskViewEvent(
 	taskName,

@@ -13,13 +13,13 @@ import { getQuery, getSearchWords } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import './style.scss';
-import ReportError from './client/analytics/components/report-error';
-import { searchItemsByString } from './client/wc-api/items/utils';
-import withSelect from './client/wc-api/with-select';
+import ReportError from 'client/analytics/components/report-error';
+import { searchItemsByString } from 'client/wc-api/items/utils';
+import withSelect from 'client/wc-api/with-select';
 import {
 	CurrencyContext,
 	getFilteredCurrencyInstance,
-} from './client/lib/currency-context';
+} from 'client/lib/currency-context';
 import getReports from './get-reports';
 
 export const REPORTS_FILTER = 'woocommerce_admin_reports_list';

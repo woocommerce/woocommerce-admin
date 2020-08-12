@@ -23,8 +23,8 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import ActivityHeader from '../activity-header';
-import { getCountryCode } from './client/dashboard/utils';
-import { recordEvent } from './client/lib/tracks';
+import { getCountryCode } from 'client/dashboard/utils';
+import { recordEvent } from 'client/lib/tracks';
 
 export const SETUP_TASK_HELP_ITEMS_FILTER =
 	'woocommerce_admin_setup_task_help_items';

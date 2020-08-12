@@ -11,7 +11,7 @@ import { Link } from '@woocommerce/components';
  * Internal dependencies
  */
 import { Button, ProductIcon } from '../../components';
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 
 class InstalledExtensionRow extends Component {
 	constructor( props ) {

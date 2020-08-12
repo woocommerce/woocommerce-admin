@@ -10,7 +10,7 @@ import { applyFilters } from '@wordpress/hooks';
 import {
 	getProductLabels,
 	getVariationLabels,
-} from './client/lib/async-requests';
+} from 'client/lib/async-requests';
 
 const PRODUCTS_REPORT_CHARTS_FILTER =
 	'woocommerce_admin_products_report_charts';

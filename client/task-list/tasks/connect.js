@@ -14,8 +14,8 @@ import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { WC_ADMIN_NAMESPACE } from './client/wc-api/constants';
-import withSelect from './client/wc-api/with-select';
+import { WC_ADMIN_NAMESPACE } from 'client/wc-api/constants';
+import withSelect from 'client/wc-api/with-select';
 
 class Connect extends Component {
 	componentDidMount() {

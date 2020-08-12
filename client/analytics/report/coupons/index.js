@@ -10,10 +10,10 @@ import { __ } from '@wordpress/i18n';
  */
 import { advancedFilters, charts, filters } from './config';
 import CouponsReportTable from './table';
-import getSelectedChart from './client/lib/get-selected-chart';
-import ReportChart from './client/analytics/components/report-chart';
-import ReportSummary from './client/analytics/components/report-summary';
-import ReportFilters from './client/analytics/components/report-filters';
+import getSelectedChart from 'client/lib/get-selected-chart';
+import ReportChart from 'client/analytics/components/report-chart';
+import ReportSummary from 'client/analytics/components/report-summary';
+import ReportFilters from 'client/analytics/components/report-filters';
 
 export default class CouponsReport extends Component {
 	getChartMeta() {

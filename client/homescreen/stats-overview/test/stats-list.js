@@ -7,7 +7,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
  * Internal dependencies
  */
 import { StatsList } from '../stats-list';
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 
 jest.mock( 'lib/tracks' );
 

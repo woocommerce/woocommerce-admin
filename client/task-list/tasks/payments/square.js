@@ -15,7 +15,7 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { WC_ADMIN_NAMESPACE } from './client/wc-api/constants';
+import { WC_ADMIN_NAMESPACE } from 'client/wc-api/constants';
 
 class Square extends Component {
 	constructor( props ) {

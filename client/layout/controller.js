@@ -16,9 +16,9 @@ import { Spinner } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { getUrlParams } from './client/utils';
-import getReports from './client/analytics/report/get-reports';
-import { isWCAdmin } from './client/dashboard/utils';
+import { getUrlParams } from 'client/utils';
+import getReports from 'client/analytics/report/get-reports';
+import { isWCAdmin } from 'client/dashboard/utils';
 
 const AnalyticsReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report" */ 'analytics/report' )

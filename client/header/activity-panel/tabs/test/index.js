@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
  * Internal dependencies
  */
 import { Tabs } from '../';
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 
 jest.mock( 'lib/tracks', () => ( { recordEvent: jest.fn() } ) );
 const generateTabs = () => {

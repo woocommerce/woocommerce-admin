@@ -13,8 +13,8 @@ import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import { recordEvent } from './client/lib/tracks';
-import { CurrencyContext } from './client/lib/currency-context';
+import { recordEvent } from 'client/lib/tracks';
+import { CurrencyContext } from 'client/lib/currency-context';
 
 class ShippingRates extends Component {
 	constructor() {

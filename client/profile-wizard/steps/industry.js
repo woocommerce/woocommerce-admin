@@ -14,9 +14,9 @@ import { H, Card, TextControl } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { getCurrencyRegion } from './client/dashboard/utils';
-import withSelect from './client/wc-api/with-select';
-import { recordEvent } from './client/lib/tracks';
+import { getCurrencyRegion } from 'client/dashboard/utils';
+import withSelect from 'client/wc-api/with-select';
+import { recordEvent } from 'client/lib/tracks';
 
 const onboarding = getSetting( 'onboarding', {} );
 

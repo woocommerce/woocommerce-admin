@@ -32,10 +32,10 @@ import {
 /**
  * Internal dependencies
  */
-import { recordEvent } from './client/lib/tracks';
-import { getCountryCode, getCurrencyRegion } from './client/dashboard/utils';
-import { CurrencyContext } from './client/lib/currency-context';
-import { createNoticesFromResponse } from './client/lib/notices';
+import { recordEvent } from 'client/lib/tracks';
+import { getCountryCode, getCurrencyRegion } from 'client/dashboard/utils';
+import { CurrencyContext } from 'client/lib/currency-context';
+import { createNoticesFromResponse } from 'client/lib/notices';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 

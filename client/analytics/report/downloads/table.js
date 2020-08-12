@@ -16,9 +16,9 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { getCurrentDates, defaultTableDateFormat } from './client/lib/date';
-import ReportTable from './client/analytics/components/report-table';
-import { CurrencyContext } from './client/lib/currency-context';
+import { getCurrentDates, defaultTableDateFormat } from 'client/lib/date';
+import ReportTable from 'client/analytics/components/report-table';
+import { CurrencyContext } from 'client/lib/currency-context';
 
 class CouponsReportTable extends Component {
 	constructor() {

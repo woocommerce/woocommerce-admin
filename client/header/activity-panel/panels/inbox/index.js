@@ -14,8 +14,8 @@ import { ActivityCard } from '../../activity-card';
 import InboxNotePlaceholder from './placeholder';
 import ActivityHeader from '../../activity-header';
 import InboxNoteCard from './card';
-import { QUERY_DEFAULTS } from './client/wc-api/constants';
-import withSelect from './client/wc-api/with-select';
+import { QUERY_DEFAULTS } from 'client/wc-api/constants';
+import withSelect from 'client/wc-api/with-select';
 import { getUnreadNotesCount, hasValidNotes } from './utils';
 
 const renderEmptyCard = () => (

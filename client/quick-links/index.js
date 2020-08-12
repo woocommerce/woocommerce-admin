@@ -29,7 +29,7 @@ import { List } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 import './style.scss';
 
 function getItems( props ) {

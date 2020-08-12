@@ -17,12 +17,12 @@ import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import withSelect from './client/wc-api/with-select';
+import withSelect from 'client/wc-api/with-select';
 import './style.scss';
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
-import { getPriceValue } from './client/dashboard/utils';
+import { getPriceValue } from 'client/dashboard/utils';
 
 class Theme extends Component {
 	constructor() {

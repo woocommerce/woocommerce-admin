@@ -12,7 +12,7 @@ import {
 	getCouponLabels,
 	getProductLabels,
 	getTaxRateLabels,
-} from './client/lib/async-requests';
+} from 'client/lib/async-requests';
 
 const ORDERS_REPORT_CHARTS_FILTER = 'woocommerce_admin_orders_report_charts';
 const ORDERS_REPORT_FILTERS_FILTER = 'woocommerce_admin_orders_report_filters';

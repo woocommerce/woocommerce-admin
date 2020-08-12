@@ -16,7 +16,7 @@ import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 import './style.scss';
 import { Slider } from '../../components';
 import { STORE_KEY } from '../../data/constants';
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 
 const KnowledgeBase = ( {
 	posts,

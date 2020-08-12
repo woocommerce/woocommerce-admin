@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
  */
 import { charts, filters, advancedFilters } from './config';
 import DownloadsReportTable from './table';
-import getSelectedChart from './client/lib/get-selected-chart';
-import ReportChart from './client/analytics/components/report-chart';
-import ReportSummary from './client/analytics/components/report-summary';
-import ReportFilters from './client/analytics/components/report-filters';
+import getSelectedChart from 'client/lib/get-selected-chart';
+import ReportChart from 'client/analytics/components/report-chart';
+import ReportSummary from 'client/analytics/components/report-summary';
+import ReportFilters from 'client/analytics/components/report-filters';
 
 export default class DownloadsReport extends Component {
 	render() {

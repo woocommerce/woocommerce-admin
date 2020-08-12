@@ -19,10 +19,10 @@ import { useUserPreferences } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { getAllowedIntervalsForQuery } from './client/lib/date';
+import { getAllowedIntervalsForQuery } from 'client/lib/date';
 import ChartBlock from './block';
 import { uniqCharts } from './config';
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 import './style.scss';
 
 const renderChartToggles = ( { hiddenBlocks, onToggleHiddenBlock } ) => {

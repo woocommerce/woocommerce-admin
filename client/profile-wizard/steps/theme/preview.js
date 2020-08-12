@@ -12,7 +12,7 @@ import { WebPreview } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { recordEvent } from './client/lib/tracks';
+import { recordEvent } from 'client/lib/tracks';
 
 const devices = [
 	{
