@@ -10,7 +10,7 @@ import {
 /**
  * Internal dependencies
  */
-import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
+import { DEFAULT_ACTIONABLE_STATUSES } from './client/analytics/settings/config';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import { getUnreadNotesCount } from './panels/inbox/utils';

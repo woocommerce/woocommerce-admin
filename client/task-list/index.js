@@ -29,9 +29,9 @@ import {
  * Internal dependencies
  */
 import './style.scss';
-import CartModal from 'dashboard/components/cart-modal';
+import CartModal from './client/dashboard/components/cart-modal';
 import { getAllTasks, recordTaskViewEvent } from './tasks';
-import { getCountryCode } from 'dashboard/utils';
+import { getCountryCode } from './client/dashboard/utils';
 import { recordEvent } from './client/lib/tracks';
 
 class TaskDashboard extends Component {

@@ -34,7 +34,7 @@ import {
 	TextControl,
 } from '@woocommerce/components';
 import { recordEvent } from './client/lib/tracks';
-import { getCountryCode, getCurrencyRegion } from 'dashboard/utils';
+import { getCountryCode, getCurrencyRegion } from './client/dashboard/utils';
 import { CurrencyContext } from './client/lib/currency-context';
 import { createNoticesFromResponse } from './client/lib/notices';
 

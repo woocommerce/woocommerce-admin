@@ -17,7 +17,7 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from './client/analytics/components/report-table';
 import { CurrencyContext } from './client/lib/currency-context';
 
 class CouponsReportTable extends Component {

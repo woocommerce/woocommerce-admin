@@ -10,7 +10,7 @@ import { getIdsFromQuery } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { getTaxCode } from 'analytics/report/taxes/utils';
+import { getTaxCode } from './client/analytics/report/taxes/utils';
 import { NAMESPACE } from 'wc-api/constants';
 
 /**

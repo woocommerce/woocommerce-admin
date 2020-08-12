@@ -10,10 +10,10 @@ import { __ } from '@wordpress/i18n';
  */
 import { advancedFilters, charts, filters } from './config';
 import getSelectedChart from './client/lib/get-selected-chart';
-import ReportChart from 'analytics/components/report-chart';
-import ReportSummary from 'analytics/components/report-summary';
+import ReportChart from './client/analytics/components/report-chart';
+import ReportSummary from './client/analytics/components/report-summary';
 import TaxesReportTable from './table';
-import ReportFilters from 'analytics/components/report-filters';
+import ReportFilters from './client/analytics/components/report-filters';
 
 export default class TaxesReport extends Component {
 	getChartMeta() {

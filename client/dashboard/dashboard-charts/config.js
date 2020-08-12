@@ -8,12 +8,12 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 
-import { charts as ordersCharts } from 'analytics/report/orders/config';
-import { charts as productsCharts } from 'analytics/report/products/config';
-import { charts as revenueCharts } from 'analytics/report/revenue/config';
-import { charts as couponsCharts } from 'analytics/report/coupons/config';
-import { charts as taxesCharts } from 'analytics/report/taxes/config';
-import { charts as downloadsCharts } from 'analytics/report/downloads/config';
+import { charts as ordersCharts } from './client/analytics/report/orders/config';
+import { charts as productsCharts } from './client/analytics/report/products/config';
+import { charts as revenueCharts } from './client/analytics/report/revenue/config';
+import { charts as couponsCharts } from './client/analytics/report/coupons/config';
+import { charts as taxesCharts } from './client/analytics/report/taxes/config';
+import { charts as downloadsCharts } from './client/analytics/report/downloads/config';
 
 const DASHBOARD_CHARTS_FILTER = 'woocommerce_admin_dashboard_charts_filter';
 

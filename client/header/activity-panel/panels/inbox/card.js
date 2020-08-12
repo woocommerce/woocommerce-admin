@@ -17,7 +17,7 @@ import classnames from 'classnames';
 import { recordEvent } from './client/lib/tracks';
 import './style.scss';
 import { H, Section } from '@woocommerce/components';
-import { getScreenName } from 'utils';
+import { getScreenName } from './client/utils';
 
 class InboxNoteCard extends Component {
 	constructor( props ) {

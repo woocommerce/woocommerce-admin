@@ -24,11 +24,11 @@ import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { getCountryCode, getCurrencyRegion } from 'dashboard/utils';
+import { getCountryCode, getCurrencyRegion } from './client/dashboard/utils';
 import {
 	StoreAddress,
 	validateStoreAddress,
-} from 'dashboard/components/settings/general/store-address';
+} from './client/dashboard/components/settings/general/store-address';
 import UsageModal from './usage-modal';
 import { CurrencyContext } from './client/lib/currency-context';
 import { recordEvent } from './client/lib/tracks';

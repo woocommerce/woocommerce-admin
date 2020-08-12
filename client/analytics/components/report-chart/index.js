@@ -27,7 +27,7 @@ import {
 	getReportChartData,
 	getTooltipValueFormat,
 } from 'wc-api/reports/utils';
-import ReportError from 'analytics/components/report-error';
+import ReportError from './client/analytics/components/report-error';
 import withSelect from './client/wc-api/with-select';
 import { getChartMode, getSelectedFilter } from './utils';
 

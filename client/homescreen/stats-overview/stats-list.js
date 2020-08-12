@@ -20,7 +20,7 @@ import { CurrencyContext } from './client/lib/currency-context';
 import {
 	getIndicatorData,
 	getIndicatorValues,
-} from 'dashboard/store-performance/utils';
+} from './client/dashboard/store-performance/utils';
 
 export const StatsList = ( {
 	stats,

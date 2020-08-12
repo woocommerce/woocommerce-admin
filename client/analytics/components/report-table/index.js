@@ -30,7 +30,7 @@ import { SETTINGS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import ReportError from 'analytics/components/report-error';
+import ReportError from './client/analytics/components/report-error';
 import { getReportChartData, getReportTableData } from 'wc-api/reports/utils';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from './client/wc-api/with-select';

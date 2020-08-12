@@ -17,8 +17,8 @@ import { SETTINGS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import Connect from 'dashboard/components/connect';
-import { getCountryCode } from 'dashboard/utils';
+import Connect from './client/dashboard/components/connect';
+import { getCountryCode } from './client/dashboard/utils';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
 import { recordEvent } from './client/lib/tracks';

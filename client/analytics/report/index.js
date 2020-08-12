@@ -13,7 +13,7 @@ import { getQuery, getSearchWords } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import './style.scss';
-import ReportError from 'analytics/components/report-error';
+import ReportError from './client/analytics/components/report-error';
 import { searchItemsByString } from 'wc-api/items/utils';
 import withSelect from './client/wc-api/with-select';
 import {

@@ -21,7 +21,7 @@ import {
  * Internal dependencies
  */
 import ActivityHeader from '../activity-header';
-import { getCountryCode } from 'dashboard/utils';
+import { getCountryCode } from './client/dashboard/utils';
 import { recordEvent } from './client/lib/tracks';
 import { getPaymentMethods } from 'task-list/tasks/payments/methods';
 import { compose } from 'redux';

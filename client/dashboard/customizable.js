@@ -25,13 +25,13 @@ import defaultSections from './default-sections';
 import Section from './section';
 import withSelect from './client/wc-api/with-select';
 import { recordEvent } from './client/lib/tracks';
-import { isOnboardingEnabled } from 'dashboard/utils';
+import { isOnboardingEnabled } from './client/dashboard/utils';
 import {
 	getCurrentDates,
 	getDateParamsFromQuery,
 	isoDateFormat,
 } from './client/lib/date';
-import ReportFilters from 'analytics/components/report-filters';
+import ReportFilters from './client/analytics/components/report-filters';
 import {
 	CurrencyContext,
 	getFilteredCurrencyInstance,

@@ -17,7 +17,7 @@ import { Spinner } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { getUrlParams } from 'utils';
+import { getUrlParams } from './client/utils';
 
 const AnalyticsReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report" */ 'analytics/report' )
@@ -40,8 +40,8 @@ const MarketingOverview = lazy( () =>
 const ProfileWizard = lazy( () =>
 	import( /* webpackChunkName: "profile-wizard" */ 'profile-wizard' )
 );
-import getReports from 'analytics/report/get-reports';
-import { isWCAdmin } from 'dashboard/utils';
+import getReports from './client/analytics/report/get-reports';
+import { isWCAdmin } from './client/dashboard/utils';
 
 const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
 

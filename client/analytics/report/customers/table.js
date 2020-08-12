@@ -15,7 +15,7 @@ const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from './client/analytics/components/report-table';
 import { CurrencyContext } from './client/lib/currency-context';
 
 class CustomersReportTable extends Component {

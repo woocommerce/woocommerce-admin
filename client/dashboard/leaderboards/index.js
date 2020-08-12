@@ -19,7 +19,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import Leaderboard from 'analytics/components/leaderboard';
+import Leaderboard from './client/analytics/components/leaderboard';
 import withSelect from './client/wc-api/with-select';
 import { recordEvent } from './client/lib/tracks';
 import './style.scss';

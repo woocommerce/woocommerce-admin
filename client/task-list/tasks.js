@@ -17,7 +17,7 @@ import { Fragment } from '@wordpress/element';
  * Internal dependencies
  */
 import Appearance from './tasks/appearance';
-import { getCategorizedOnboardingProducts } from 'dashboard/utils';
+import { getCategorizedOnboardingProducts } from './client/dashboard/utils';
 import Products from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';

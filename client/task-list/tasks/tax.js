@@ -25,9 +25,9 @@ import {
 /**
  * Internal dependencies
  */
-import Connect from 'dashboard/components/connect';
+import Connect from './client/dashboard/components/connect';
 import { createNoticesFromResponse } from './client/lib/notices';
-import { getCountryCode } from 'dashboard/utils';
+import { getCountryCode } from './client/dashboard/utils';
 import StoreLocation from './steps/location';
 import { recordEvent, queueRecordEvent } from './client/lib/tracks';
 

@@ -2,14 +2,13 @@
  * External dependencies
  */
 import { shallow, mount } from 'enzyme';
-import { recordEvent } from './client/lib/tracks';
 import { Spinner } from '@wordpress/components';
-
 import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
+import { recordEvent } from './client/lib/tracks';
 import { KnowledgeBase } from '../index.js';
 import Slider from '../../slider';
 

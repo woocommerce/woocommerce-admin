@@ -14,7 +14,7 @@ import { formatValue } from '@woocommerce/number';
  * Internal dependencies
  */
 import CategoryBreacrumbs from './breadcrumbs';
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from './client/analytics/components/report-table';
 import withSelect from './client/wc-api/with-select';
 import { CurrencyContext } from './client/lib/currency-context';
 

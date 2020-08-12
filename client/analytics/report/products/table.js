@@ -17,7 +17,7 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
  */
 import CategoryBreacrumbs from '../categories/breadcrumbs';
 import { isLowStock } from './utils';
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from './client/analytics/components/report-table';
 import withSelect from './client/wc-api/with-select';
 import { CurrencyContext } from './client/lib/currency-context';
 import './style.scss';

@@ -13,7 +13,7 @@ import { defaultTableDateFormat } from './client/lib/date';
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from './client/analytics/components/report-table';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { CurrencyContext } from './client/lib/currency-context';
 import './style.scss';

@@ -29,7 +29,7 @@ import {
 	getUnapprovedReviews,
 	getUnreadStock,
 } from './unread-indicators';
-import { isOnboardingEnabled, isWCAdmin } from 'dashboard/utils';
+import { isOnboardingEnabled, isWCAdmin } from './client/dashboard/utils';
 import withSelect from './client/wc-api/with-select';
 
 const HelpPanel = lazy( () =>

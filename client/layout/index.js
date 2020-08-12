@@ -23,14 +23,15 @@ import {
  */
 import './style.scss';
 import { Controller, getPages, PAGES_FILTER } from './controller';
-import Header from 'header';
+import Header from './client/header';
 import Notices from './notices';
 import { recordPageView } from './client/lib/tracks';
 import TransientNotices from './transient-notices';
+import { REPORTS_FILTER } from './client/analytics/report';
+
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
 );
-import { REPORTS_FILTER } from 'analytics/report';
 
 export class PrimaryLayout extends Component {
 	render() {

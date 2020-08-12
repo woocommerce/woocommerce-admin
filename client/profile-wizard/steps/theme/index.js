@@ -22,7 +22,7 @@ import './style.scss';
 import { recordEvent } from './client/lib/tracks';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
-import { getPriceValue } from 'dashboard/utils';
+import { getPriceValue } from './client/dashboard/utils';
 
 class Theme extends Component {
 	constructor() {
