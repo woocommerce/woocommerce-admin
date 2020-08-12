@@ -10,9 +10,6 @@ import { ESCAPE } from '@wordpress/keycodes';
 import { get } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 
-/**
- * WooCommerce dependencies
- */
 import { Link, ProductImage } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 

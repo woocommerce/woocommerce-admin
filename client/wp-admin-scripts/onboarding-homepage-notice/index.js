@@ -5,9 +5,6 @@ import { dispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import domReady from '@wordpress/dom-ready';
 
-/**
- * WooCommerce dependencies
- */
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**

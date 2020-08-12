@@ -5,9 +5,6 @@ import { __ } from '@wordpress/i18n';
 import moment from 'moment';
 import { SelectControl } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import { DatePicker } from '@woocommerce/components';
 import { dateValidationMessages } from 'lib/date';
 

@@ -8,9 +8,6 @@ import { Button } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
-/**
- * WooCommerce dependencies
- */
 import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import { Stepper } from '@woocommerce/components';

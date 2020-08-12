@@ -5,9 +5,6 @@ import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { map } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { getTaxCode } from './utils';

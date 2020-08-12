@@ -7,9 +7,6 @@ import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { SelectControl } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EllipsisMenu,
 	MenuItem,
@@ -23,7 +20,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import Leaderboard from 'analytics/components/leaderboard';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import './style.scss';
 

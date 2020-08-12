@@ -10,9 +10,6 @@ import { useState } from '@wordpress/element';
 import { recordEvent } from 'lib/tracks';
 import PropTypes from 'prop-types';
 
-/**
- * WooCommerce dependencies
- */
 import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 
 /**

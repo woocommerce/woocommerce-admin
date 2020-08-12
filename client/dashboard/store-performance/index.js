@@ -5,9 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 
-/**
- * WooCommerce dependencies
- */
 import { getDateParamsFromQuery } from 'lib/date';
 import { getPersistedQuery } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
@@ -25,7 +22,7 @@ import {
 	SummaryListPlaceholder,
 	SummaryNumber,
 } from '@woocommerce/components';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import { CurrencyContext } from 'lib/currency-context';

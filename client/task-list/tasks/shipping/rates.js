@@ -7,9 +7,6 @@ import { Component, Fragment } from '@wordpress/element';
 import { Button, FormToggle } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
-/**
- * WooCommerce dependencies
- */
 import { Flag, Form, TextControlWithAffixes } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 

@@ -23,9 +23,6 @@ import {
 } from '@wordpress/icons';
 import { partial } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List } from '@woocommerce/components';
 

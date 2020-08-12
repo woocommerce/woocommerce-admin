@@ -5,9 +5,6 @@ import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { __, sprintf } from '@wordpress/i18n';
 
-/**
- * WooCommerce dependencies
- */
 import { Card } from '@woocommerce/components';
 import {
 	getHistory,

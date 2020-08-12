@@ -3,9 +3,6 @@
  */
 import { addQueryArgs } from '@wordpress/url';
 
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**

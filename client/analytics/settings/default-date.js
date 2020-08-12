@@ -12,9 +12,6 @@ import {
 	isoDateFormat,
 } from 'lib/date';
 
-/**
- * WooCommerce dependencies
- */
 import { DateRangeFilterPicker } from '@woocommerce/components';
 import { useSettings } from '@woocommerce/data';
 

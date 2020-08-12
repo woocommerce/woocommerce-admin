@@ -8,9 +8,6 @@ import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 import { Button, NavigableMenu, SelectControl } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EllipsisMenu,
 	MenuItem,

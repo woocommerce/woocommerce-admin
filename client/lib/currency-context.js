@@ -4,9 +4,6 @@
 import { createContext } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 
-/**
- * WooCommerce dependencies
- */
 import CurrencyFactory from '@woocommerce/currency';
 
 /**

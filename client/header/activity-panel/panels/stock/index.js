@@ -6,9 +6,6 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 
-/**
- * WooCommerce dependencies
- */
 import { EmptyContent, Section } from '@woocommerce/components';
 
 /**
@@ -19,7 +16,7 @@ import ActivityHeader from '../../activity-header';
 import Gridicon from 'gridicons';
 import ProductStockCard from './card';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 
 class StockPanel extends Component {
 	renderEmptyCard() {

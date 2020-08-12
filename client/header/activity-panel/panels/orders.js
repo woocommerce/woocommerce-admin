@@ -10,9 +10,6 @@ import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
 import { keyBy, map, merge } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EmptyContent,
 	Flag,
@@ -32,7 +29,7 @@ import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { CurrencyContext } from 'lib/currency-context';
 import { recordEvent } from 'lib/tracks';
 

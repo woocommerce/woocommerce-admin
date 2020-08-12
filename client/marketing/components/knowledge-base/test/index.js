@@ -5,9 +5,6 @@ import { shallow, mount } from 'enzyme';
 import { recordEvent } from 'lib/tracks';
 import { Spinner } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 
 /**

@@ -6,9 +6,6 @@ import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { find } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { useFilters } from '@woocommerce/components';
 import { getQuery, getSearchWords } from '@woocommerce/navigation';
 
@@ -18,7 +15,7 @@ import { getQuery, getSearchWords } from '@woocommerce/navigation';
 import './style.scss';
 import ReportError from 'analytics/components/report-error';
 import { searchItemsByString } from 'wc-api/items/utils';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import {
 	CurrencyContext,
 	getFilteredCurrencyInstance,

@@ -13,9 +13,6 @@ import {
 	Modal,
 } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**

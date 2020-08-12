@@ -7,9 +7,6 @@ import { format as formatDate } from '@wordpress/date';
 import { compose } from '@wordpress/compose';
 import { get } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	appendTimestamp,
 	defaultTableDateFormat,
@@ -25,7 +22,7 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
  */
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import ReportTable from 'analytics/components/report-table';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { getReportTableQuery } from 'wc-api/reports/utils';
 import { CurrencyContext } from 'lib/currency-context';
 

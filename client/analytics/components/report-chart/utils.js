@@ -3,9 +3,6 @@
  */
 import { find, get } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { flattenFilters } from '@woocommerce/navigation';
 
 export const DEFAULT_FILTER = 'all';

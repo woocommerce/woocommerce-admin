@@ -16,7 +16,7 @@ import ReportChart from 'analytics/components/report-chart';
 import ReportError from 'analytics/components/report-error';
 import ReportSummary from 'analytics/components/report-summary';
 import VariationsReportTable from './table-variations';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import ReportFilters from 'analytics/components/report-filters';
 
 class ProductsReport extends Component {

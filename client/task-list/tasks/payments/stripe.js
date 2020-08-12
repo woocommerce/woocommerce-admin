@@ -9,9 +9,6 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
 import { Button } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { getQuery } from '@woocommerce/navigation';

@@ -5,9 +5,6 @@ import { __, _n } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { Tooltip } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';

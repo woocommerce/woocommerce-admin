@@ -9,9 +9,6 @@ import PropTypes from 'prop-types';
 import { get, isFunction, identity } from 'lodash';
 import { parse } from 'qs';
 
-/**
- * WooCommerce dependencies
- */
 import { useFilters, Spinner } from '@woocommerce/components';
 import { getHistory } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';

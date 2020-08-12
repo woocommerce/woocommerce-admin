@@ -7,9 +7,6 @@ import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
 import { withDispatch } from '@wordpress/data';
 
-/**
- * WooCommerce dependencies
- */
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
@@ -37,7 +34,7 @@ import { QUERY_DEFAULTS } from 'wc-api/constants';
 import { recordEvent } from 'lib/tracks';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import './style.scss';
 
 class ProfileWizard extends Component {

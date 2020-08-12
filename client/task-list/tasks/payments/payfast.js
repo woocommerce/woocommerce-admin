@@ -8,9 +8,6 @@ import interpolateComponents from 'interpolate-components';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 
-/**
- * WooCommerce dependencies
- */
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 

@@ -7,9 +7,6 @@ import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
 import moment from 'moment';
 
-/**
- * WooCommerce dependencies
- */
 import { getCurrentDates, defaultTableDateFormat } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';

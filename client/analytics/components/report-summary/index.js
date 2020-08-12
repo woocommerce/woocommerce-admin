@@ -6,9 +6,6 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 
-/**
- * WooCommerce dependencies
- */
 import { getDateParamsFromQuery } from 'lib/date';
 import { getNewPath } from '@woocommerce/navigation';
 import {
@@ -24,7 +21,7 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
  */
 import { getSummaryNumbers } from 'wc-api/reports/utils';
 import ReportError from 'analytics/components/report-error';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { CurrencyContext } from 'lib/currency-context';
 

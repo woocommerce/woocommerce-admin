@@ -16,9 +16,6 @@ import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { withDispatch } from '@wordpress/data';
 
-/**
- * WooCommerce dependencies
- */
 import { Card, H, Spinner } from '@woocommerce/components';
 
 class ThemeUploader extends Component {

@@ -3,9 +3,6 @@
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
-/**
- * WooCommerce dependencies
- */
 import { withOptionsHydration } from '@woocommerce/data';
 
 /**

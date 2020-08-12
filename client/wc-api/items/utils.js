@@ -2,9 +2,6 @@
  * External dependencies
  */
 
-/**
- * WooCommerce dependencies
- */
 import { appendTimestamp, getCurrentDates } from 'lib/date';
 
 /**

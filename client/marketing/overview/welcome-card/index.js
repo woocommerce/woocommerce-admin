@@ -8,9 +8,6 @@ import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 
-/**
- * WooCommerce dependencies
- */
 import { Card } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 

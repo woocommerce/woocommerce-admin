@@ -10,9 +10,6 @@ import Gridicon from 'gridicons';
 import { Button, TabPanel, Tooltip } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 
-/**
- * WooCommerce dependencies
- */
 import { Card, H } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
@@ -20,7 +17,7 @@ import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import './style.scss';
 import { recordEvent } from 'lib/tracks';
 import ThemeUploader from './uploader';

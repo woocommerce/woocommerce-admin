@@ -5,9 +5,6 @@ import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 import { identity } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { getIdsFromQuery } from '@woocommerce/navigation';
 
 /**

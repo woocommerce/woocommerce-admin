@@ -12,9 +12,6 @@ import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
-/**
- * WooCommerce dependencies
- */
 import { CompareButton, Search, TableCard } from '@woocommerce/components';
 import DownloadIcon from './download-icon';
 import {
@@ -36,7 +33,7 @@ import { SETTINGS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 import ReportError from 'analytics/components/report-error';
 import { getReportChartData, getReportTableData } from 'wc-api/reports/utils';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { extendTableData } from './utils';
 import { recordEvent } from 'lib/tracks';
 import './style.scss';

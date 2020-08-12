@@ -6,9 +6,6 @@ import { applyFilters } from '@wordpress/hooks';
 import moment from 'moment';
 import { Spinner } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import { useFilters } from '@woocommerce/components';
 
 const HISTORICAL_DATA_STATUS_FILTER = 'woocommerce_admin_import_status';

@@ -8,9 +8,6 @@ import { Fragment } from '@wordpress/element';
 import { filter, some } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	getSetting,
 	getAdminLink,

@@ -8,9 +8,6 @@ import { format as formatDate } from '@wordpress/date';
 import { get, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	getAllowedIntervalsForQuery,
 	getCurrentDates,
@@ -31,7 +28,7 @@ import {
 	getTooltipValueFormat,
 } from 'wc-api/reports/utils';
 import ReportError from 'analytics/components/report-error';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { getChartMode, getSelectedFilter } from './utils';
 
 /**

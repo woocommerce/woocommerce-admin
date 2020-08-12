@@ -3,9 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**

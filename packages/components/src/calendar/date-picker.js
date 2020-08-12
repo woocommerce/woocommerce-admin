@@ -10,9 +10,6 @@ import { partial } from 'lodash';
 import { TAB } from '@wordpress/keycodes';
 import moment from 'moment';
 
-/**
- * WooCommerce dependencies
- */
 import { dateValidationMessages, toMoment } from '@woocommerce/date';
 
 /**

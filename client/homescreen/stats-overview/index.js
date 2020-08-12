@@ -13,9 +13,6 @@ import {
 } from '@wordpress/components';
 import { get, xor } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EllipsisMenu,
 	MenuItem,

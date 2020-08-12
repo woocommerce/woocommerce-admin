@@ -4,9 +4,6 @@
 import { Component } from '@wordpress/element';
 import { filter } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { updateQueryString } from '@woocommerce/navigation';
 
 /**

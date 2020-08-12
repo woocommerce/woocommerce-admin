@@ -13,9 +13,6 @@ import CrossIcon from 'gridicons/dist/cross-small';
 import classnames from 'classnames';
 import { Icon, lifesaver } from '@wordpress/icons';
 
-/**
- * WooCommerce dependencies
- */
 import { getSetting, getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section, Spinner } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
@@ -33,7 +30,7 @@ import {
 	getUnreadStock,
 } from './unread-indicators';
 import { isOnboardingEnabled, isWCAdmin } from 'dashboard/utils';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )

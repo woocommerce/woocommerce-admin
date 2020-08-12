@@ -19,7 +19,7 @@ import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
  */
 import { H, Card, TextControl } from '@woocommerce/components';
 import { getCurrencyRegion } from 'dashboard/utils';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 
 const onboarding = getSetting( 'onboarding', {} );

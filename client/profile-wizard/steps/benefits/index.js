@@ -9,9 +9,6 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 
-/**
- * WooCommerce dependencies
- */
 import { Card, H, Link } from '@woocommerce/components';
 import {
 	pluginNames,

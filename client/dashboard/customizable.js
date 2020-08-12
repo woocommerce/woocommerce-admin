@@ -9,9 +9,6 @@ import { Dropdown, Button, Icon } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 import { Icon as WPIcon, plusCircleFilled } from '@wordpress/icons';
 
-/**
- * WooCommerce dependencies
- */
 import { H, Spinner } from '@woocommerce/components';
 import {
 	SETTINGS_STORE_NAME,
@@ -26,7 +23,7 @@ import { getQuery } from '@woocommerce/navigation';
 import './style.scss';
 import defaultSections from './default-sections';
 import Section from './section';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { recordEvent } from 'lib/tracks';
 import { isOnboardingEnabled } from 'dashboard/utils';
 import {

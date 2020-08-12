@@ -8,9 +8,6 @@ import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { withSelect, withDispatch } from '@wordpress/data';
 
-/**
- * WooCommerce dependencies
- */
 import { createNoticesFromResponse } from 'lib/notices';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 

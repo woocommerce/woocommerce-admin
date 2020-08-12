@@ -6,9 +6,6 @@ import PropTypes from 'prop-types';
 import { omitBy, isUndefined, snakeCase } from 'lodash';
 import { withSelect } from '@wordpress/data';
 
-/**
- * WooCommerce dependencies
- */
 import { ReportFilters as Filters } from '@woocommerce/components';
 import { LOCALE } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';

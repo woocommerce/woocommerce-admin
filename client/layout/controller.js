@@ -7,9 +7,6 @@ import { find, isEqual, last, omit } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	getNewPath,
 	getPersistedQuery,

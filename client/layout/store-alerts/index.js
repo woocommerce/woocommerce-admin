@@ -11,16 +11,13 @@ import { withDispatch } from '@wordpress/data';
 import moment from 'moment';
 import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
 
-/**
- * WooCommerce dependencies
- */
 import { Card } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import sanitizeHTML from 'lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';

@@ -6,9 +6,6 @@ import { Component, Fragment } from '@wordpress/element';
 import { isNil } from 'lodash';
 import { SECOND } from '@fresh-data/framework';
 
-/**
- * WooCommerce dependencies
- */
 import { SectionHeader } from '@woocommerce/components';
 
 /**
@@ -21,7 +18,7 @@ import HistoricalDataPeriodSelector from './period-selector';
 import HistoricalDataProgress from './progress';
 import HistoricalDataStatus from './status';
 import HistoricalDataSkipCheckbox from './skip-checkbox';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import './style.scss';
 
 class HistoricalDataLayout extends Component {

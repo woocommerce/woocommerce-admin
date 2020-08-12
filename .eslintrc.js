@@ -15,7 +15,7 @@ module.exports = {
 		'jsdoc/require-property-name': 'warn',
 		'jsdoc/check-property-names': 'warn',
 		'jsdoc/require-property-type': 'warn',
-		'@woocommerce/dependency-group': 'warn',
+		// '@woocommerce/dependency-group': 'warn',
 		'jsdoc/valid-types': 'warn',
 		'jsdoc/check-tag-names': 'warn',
 	},

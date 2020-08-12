@@ -9,9 +9,6 @@ import { applyFilters } from '@wordpress/hooks';
 import { Icon, chevronRight, page } from '@wordpress/icons';
 import { partial } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List, Section } from '@woocommerce/components';
 import {

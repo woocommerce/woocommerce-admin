@@ -4,9 +4,6 @@
 import { find, forEach, isNull, get, includes } from 'lodash';
 import moment from 'moment';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	appendTimestamp,
 	getCurrentDates,

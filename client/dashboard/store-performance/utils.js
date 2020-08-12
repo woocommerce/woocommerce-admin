@@ -4,9 +4,6 @@
 import moment from 'moment';
 import { find } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { getCurrentDates, appendTimestamp } from '@woocommerce/date';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { getNewPath } from '@woocommerce/navigation';

@@ -6,9 +6,6 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { map } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
@@ -18,7 +15,7 @@ import { formatValue } from '@woocommerce/number';
  */
 import CategoryBreacrumbs from './breadcrumbs';
 import ReportTable from 'analytics/components/report-table';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { CurrencyContext } from 'lib/currency-context';
 
 class CategoriesReportTable extends Component {

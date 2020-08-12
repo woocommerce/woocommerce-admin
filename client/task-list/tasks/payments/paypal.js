@@ -10,9 +10,6 @@ import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { isEmail } from '@wordpress/url';
 
-/**
- * WooCommerce dependencies
- */
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getQuery } from '@woocommerce/navigation';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';

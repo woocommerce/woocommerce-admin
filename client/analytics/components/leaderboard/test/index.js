@@ -3,9 +3,6 @@
  */
 import { mount, shallow } from 'enzyme';
 
-/**
- * WooCommerce dependencies
- */
 import { numberFormat } from '@woocommerce/number';
 import CurrencyFactory from '@woocommerce/currency';
 

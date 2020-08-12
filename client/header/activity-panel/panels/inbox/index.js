@@ -5,9 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { Fragment, useEffect } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 
-/**
- * WooCommerce dependencies
- */
 import { useUserPreferences } from '@woocommerce/data';
 
 /**
@@ -19,7 +16,7 @@ import ActivityHeader from '../../activity-header';
 import InboxNoteCard from './card';
 import { EmptyContent, Section } from '@woocommerce/components';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
+import withSelect from './client/wc-api/with-select';
 import { getUnreadNotesCount, hasValidNotes } from './utils';
 
 const renderEmptyCard = () => (
