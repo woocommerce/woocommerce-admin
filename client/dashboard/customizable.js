@@ -25,7 +25,7 @@ import defaultSections from './default-sections';
 import Section from './section';
 import withSelect from '../wc-api/with-select';
 import { recordEvent } from '../lib/tracks';
-import { isOnboardingEnabled } from 'utils';
+import { isOnboardingEnabled } from './utils';
 import {
 	getCurrentDates,
 	getDateParamsFromQuery,
