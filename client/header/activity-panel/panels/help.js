@@ -16,7 +16,6 @@ import {
 	PLUGINS_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
-import { getPaymentMethods } from 'task-list/tasks/payments/methods';
 import { compose } from 'redux';
 
 /**
@@ -25,6 +24,7 @@ import { compose } from 'redux';
 import ActivityHeader from '../activity-header';
 import { getCountryCode } from '../../../dashboard/utils';
 import { recordEvent } from '../../../lib/tracks';
+import { getPaymentMethods } from '../../../task-list/tasks/payments/methods';
 
 export const SETUP_TASK_HELP_ITEMS_FILTER =
 	'woocommerce_admin_setup_task_help_items';
