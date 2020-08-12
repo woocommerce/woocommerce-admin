@@ -7,14 +7,14 @@
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
  * Domain Path: /languages
- * Version: 1.5.0-dev
+ * Version: 1.6.0-dev
  * Requires at least: 5.3
  * Requires PHP: 5.6.20
  *
  * WC requires at least: 3.6.0
  * WC tested up to: 4.3.0
  *
- * @package WC_Admin
+ * @package WooCommerce\Admin
  */
 
 defined( 'ABSPATH' ) || exit;
