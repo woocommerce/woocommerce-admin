@@ -7,7 +7,12 @@ import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
 import { get, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
+import { Chart } from '@woocommerce/components';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 
+/**
+ * Internal dependencies
+ */
 import {
 	getAllowedIntervalsForQuery,
 	getCurrentDates,
@@ -16,13 +21,7 @@ import {
 	getChartTypeForQuery,
 	getPreviousDate,
 } from './client/lib/date';
-import { Chart } from '@woocommerce/components';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { CurrencyContext } from './client/lib/currency-context';
-
-/**
- * Internal dependencies
- */
 import {
 	getReportChartData,
 	getTooltipValueFormat,

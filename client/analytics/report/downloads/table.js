@@ -7,7 +7,6 @@ import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
 import moment from 'moment';
 
-import { getCurrentDates, defaultTableDateFormat } from './client/lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
@@ -17,6 +16,7 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
+import { getCurrentDates, defaultTableDateFormat } from './client/lib/date';
 import ReportTable from './client/analytics/components/report-table';
 import { CurrencyContext } from './client/lib/currency-context';
 

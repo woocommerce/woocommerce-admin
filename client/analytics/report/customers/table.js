@@ -8,13 +8,13 @@ import { Tooltip } from '@wordpress/components';
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { defaultTableDateFormat } from './client/lib/date';
 
 const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 
 /**
  * Internal dependencies
  */
+import { defaultTableDateFormat } from './client/lib/date';
 import ReportTable from './client/analytics/components/report-table';
 import { CurrencyContext } from './client/lib/currency-context';
 

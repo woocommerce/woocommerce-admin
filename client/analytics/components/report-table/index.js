@@ -11,9 +11,7 @@ import { get, noop, partial, uniq } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-
 import { CompareButton, Search, TableCard } from '@woocommerce/components';
-import DownloadIcon from './download-icon';
 import {
 	getIdsFromQuery,
 	getSearchWords,
@@ -30,6 +28,7 @@ import { SETTINGS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
+import DownloadIcon from './download-icon';
 import ReportError from './client/analytics/components/report-error';
 import {
 	getReportChartData,

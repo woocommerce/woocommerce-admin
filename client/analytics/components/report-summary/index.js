@@ -6,7 +6,6 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 
-import { getDateParamsFromQuery } from './client/lib/date';
 import { getNewPath } from '@woocommerce/navigation';
 import {
 	SummaryList,
@@ -19,6 +18,7 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
+import { getDateParamsFromQuery } from './client/lib/date';
 import { getSummaryNumbers } from './client/wc-api/reports/utils';
 import ReportError from './client/analytics/components/report-error';
 import withSelect from './client/wc-api/with-select';
