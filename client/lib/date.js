@@ -1,11 +1,6 @@
 /**
  * External dependencies
  */
-
-/**
- * Internal dependencies
- */
-
 import {
 	isoDateFormat,
 	presetValues,

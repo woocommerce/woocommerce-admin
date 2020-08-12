@@ -7,9 +7,7 @@ import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
-import { recordEvent } from './client/lib/tracks';
 import PropTypes from 'prop-types';
-
 import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 
 /**
@@ -18,6 +16,7 @@ import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 import './style.scss';
 import { Slider } from '../../components';
 import { STORE_KEY } from '../../data/constants';
+import { recordEvent } from './client/lib/tracks';
 
 const KnowledgeBase = ( {
 	posts,

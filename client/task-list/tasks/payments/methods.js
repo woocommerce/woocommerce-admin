@@ -1,19 +1,21 @@
 /**
  * External dependencies
  */
-
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Fragment } from '@wordpress/element';
 import { filter, some } from 'lodash';
 import interpolateComponents from 'interpolate-components';
-
 import {
 	getSetting,
 	getAdminLink,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
 import { Link } from '@woocommerce/components';
+
+/**
+ * Internal dependencies
+ */
 import { WC_ADMIN_NAMESPACE } from './client/wc-api/constants';
 
 /**

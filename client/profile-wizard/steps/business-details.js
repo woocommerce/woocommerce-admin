@@ -13,7 +13,13 @@ import {
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, get, pickBy } from 'lodash';
-
+import {
+	H,
+	Card,
+	SelectControl,
+	Form,
+	TextControl,
+} from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
@@ -26,13 +32,6 @@ import {
 /**
  * Internal dependencies
  */
-import {
-	H,
-	Card,
-	SelectControl,
-	Form,
-	TextControl,
-} from '@woocommerce/components';
 import { recordEvent } from './client/lib/tracks';
 import { getCountryCode, getCurrencyRegion } from './client/dashboard/utils';
 import { CurrencyContext } from './client/lib/currency-context';

@@ -1,8 +1,7 @@
 /**
- * WooCommerce dependencies
+ * External dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
-
 import { withOptionsHydration } from '@woocommerce/data';
 
 /**

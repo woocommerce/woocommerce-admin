@@ -1,8 +1,7 @@
 /**
- * External depenencies
+ * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**

@@ -12,13 +12,8 @@ import {
 	FormToggle,
 	Modal,
 } from '@wordpress/components';
-
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-
-/**
- * Internal dependencies
- */
 import { Link } from '@woocommerce/components';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 class UsageModal extends Component {
 	constructor( props ) {
