@@ -31,6 +31,8 @@ import {
 } from './unread-indicators';
 import { isOnboardingEnabled, isWCAdmin } from './client/dashboard/utils';
 import withSelect from './client/wc-api/with-select';
+import { Tabs } from './tabs';
+import { SetupProgress } from './setup-progress';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -48,9 +50,6 @@ const StockPanel = lazy( () =>
 const ReviewsPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/reviews' )
 );
-
-import { Tabs } from './tabs';
-import { SetupProgress } from './setup-progress';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );

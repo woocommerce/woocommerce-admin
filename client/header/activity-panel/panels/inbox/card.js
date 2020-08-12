@@ -7,16 +7,16 @@ import { Button, Dropdown, Modal } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import VisibilitySensor from 'react-visibility-sensor';
 import moment from 'moment';
+import classnames from 'classnames';
+import { H, Section } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import NoteAction from './action';
 import sanitizeHTML from './client/lib/sanitize-html';
-import classnames from 'classnames';
 import { recordEvent } from './client/lib/tracks';
 import './style.scss';
-import { H, Section } from '@woocommerce/components';
 import { getScreenName } from './client/utils';
 
 class InboxNoteCard extends Component {

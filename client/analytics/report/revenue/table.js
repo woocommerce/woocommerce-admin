@@ -6,12 +6,6 @@ import { Component } from '@wordpress/element';
 import { format as formatDate } from '@wordpress/date';
 import { compose } from '@wordpress/compose';
 import { get } from 'lodash';
-
-import {
-	appendTimestamp,
-	defaultTableDateFormat,
-	getCurrentDates,
-} from './client/lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
@@ -20,6 +14,11 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
+import {
+	appendTimestamp,
+	defaultTableDateFormat,
+	getCurrentDates,
+} from './client/lib/date';
 import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import ReportTable from './client/analytics/components/report-table';
 import withSelect from './client/wc-api/with-select';

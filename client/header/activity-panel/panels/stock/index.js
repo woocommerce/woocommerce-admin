@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
-
+import Gridicon from 'gridicons';
 import { EmptyContent, Section } from '@woocommerce/components';
 
 /**
@@ -13,7 +13,6 @@ import { EmptyContent, Section } from '@woocommerce/components';
  */
 import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
 import ActivityHeader from '../../activity-header';
-import Gridicon from 'gridicons';
 import ProductStockCard from './card';
 import { QUERY_DEFAULTS } from './client/wc-api/constants';
 import withSelect from './client/wc-api/with-select';

@@ -15,11 +15,11 @@ import {
 	SectionHeader,
 } from '@woocommerce/components';
 import { useUserPreferences } from '@woocommerce/data';
-import { getAllowedIntervalsForQuery } from './client/lib/date';
 
 /**
  * Internal dependencies
  */
+import { getAllowedIntervalsForQuery } from './client/lib/date';
 import ChartBlock from './block';
 import { uniqCharts } from './config';
 import { recordEvent } from './client/lib/tracks';

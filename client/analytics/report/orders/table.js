@@ -8,13 +8,13 @@ import { map } from 'lodash';
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { defaultTableDateFormat } from './client/lib/date';
+import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
+import { defaultTableDateFormat } from './client/lib/date';
 import ReportTable from './client/analytics/components/report-table';
-import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { CurrencyContext } from './client/lib/currency-context';
 import './style.scss';
 

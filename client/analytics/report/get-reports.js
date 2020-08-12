@@ -5,7 +5,11 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { lazy } from '@wordpress/element';
 
+/**
+ * Internal dependencies
+ */
 import { getSetting } from '../../settings';
+
 const manageStock = getSetting( 'manageStock', 'no' );
 
 /**

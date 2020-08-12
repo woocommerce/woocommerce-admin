@@ -4,15 +4,9 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-
-import { getDateParamsFromQuery } from './client/lib/date';
 import { getPersistedQuery } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
-
-/**
- * Internal dependencies
- */
 import {
 	EllipsisMenu,
 	MenuItem,
@@ -22,6 +16,11 @@ import {
 	SummaryListPlaceholder,
 	SummaryNumber,
 } from '@woocommerce/components';
+
+/**
+ * Internal dependencies
+ */
+import { getDateParamsFromQuery } from './client/lib/date';
 import withSelect from './client/wc-api/with-select';
 import './style.scss';
 import { recordEvent } from './client/lib/tracks';
