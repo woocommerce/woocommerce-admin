@@ -32,7 +32,7 @@ import './style.scss';
 import CartModal from 'dashboard/components/cart-modal';
 import { getAllTasks, recordTaskViewEvent } from './tasks';
 import { getCountryCode } from 'dashboard/utils';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 class TaskDashboard extends Component {
 	constructor( props ) {

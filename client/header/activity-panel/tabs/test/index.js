@@ -4,7 +4,7 @@ import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { Tabs } from '../';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 const generateTabs = () => {
 	return [ '0', '1', '2', '3' ].map( ( name ) => ( {

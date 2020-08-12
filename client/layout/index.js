@@ -25,7 +25,7 @@ import './style.scss';
 import { Controller, getPages, PAGES_FILTER } from './controller';
 import Header from 'header';
 import Notices from './notices';
-import { recordPageView } from 'lib/tracks';
+import { recordPageView } from './client/lib/tracks';
 import TransientNotices from './transient-notices';
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )

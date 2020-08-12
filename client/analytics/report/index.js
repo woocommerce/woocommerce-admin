@@ -19,7 +19,7 @@ import withSelect from './client/wc-api/with-select';
 import {
 	CurrencyContext,
 	getFilteredCurrencyInstance,
-} from 'lib/currency-context';
+} from './client/lib/currency-context';
 import getReports from './get-reports';
 
 export const REPORTS_FILTER = 'woocommerce_admin_reports_list';

@@ -30,8 +30,8 @@ import ActivityOutboundLink from '../activity-outbound-link';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
 import withSelect from './client/wc-api/with-select';
-import { CurrencyContext } from 'lib/currency-context';
-import { recordEvent } from 'lib/tracks';
+import { CurrencyContext } from './client/lib/currency-context';
+import { recordEvent } from './client/lib/tracks';
 
 class OrdersPanel extends Component {
 	recordOrderEvent( eventName ) {

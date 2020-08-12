@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { shallow, mount } from 'enzyme';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import { Spinner } from '@wordpress/components';
 
 import { Card, Pagination, EmptyContent } from '@woocommerce/components';

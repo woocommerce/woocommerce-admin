@@ -30,8 +30,8 @@ import {
 	validateStoreAddress,
 } from 'dashboard/components/settings/general/store-address';
 import UsageModal from './usage-modal';
-import { CurrencyContext } from 'lib/currency-context';
-import { recordEvent } from 'lib/tracks';
+import { CurrencyContext } from './client/lib/currency-context';
+import { recordEvent } from './client/lib/tracks';
 
 class StoreDetails extends Component {
 	constructor( props ) {

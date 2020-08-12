@@ -8,7 +8,7 @@ import { render, fireEvent, screen, waitFor } from '@testing-library/react';
  */
 import { StatsOverview } from '../index';
 import StatsList from '../stats-list';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 jest.mock( 'lib/tracks' );
 // Mock the stats list so that it can be tested separately.

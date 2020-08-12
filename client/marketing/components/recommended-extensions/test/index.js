@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { shallow } from 'enzyme';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import { Spinner } from '@wordpress/components';
 
 import { Card } from '@woocommerce/components';

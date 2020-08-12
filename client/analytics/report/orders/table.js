@@ -8,14 +8,14 @@ import { map } from 'lodash';
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { defaultTableDateFormat } from 'lib/date';
+import { defaultTableDateFormat } from './client/lib/date';
 
 /**
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { CurrencyContext } from 'lib/currency-context';
+import { CurrencyContext } from './client/lib/currency-context';
 import './style.scss';
 
 class OrdersReportTable extends Component {

@@ -11,7 +11,10 @@ const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 /**
  * Internal dependencies
  */
-import { getCustomerLabels, getRequestByIdString } from 'lib/async-requests';
+import {
+	getCustomerLabels,
+	getRequestByIdString,
+} from './client/lib/async-requests';
 import { NAMESPACE } from 'wc-api/constants';
 
 const CUSTOMERS_REPORT_FILTERS_FILTER =

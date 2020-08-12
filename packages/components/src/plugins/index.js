@@ -8,7 +8,7 @@ import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { withSelect, withDispatch } from '@wordpress/data';
 
-import { createNoticesFromResponse } from 'lib/notices';
+import { createNoticesFromResponse } from './client/lib/notices';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 export class Plugins extends Component {

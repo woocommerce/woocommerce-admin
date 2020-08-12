@@ -12,9 +12,9 @@ import moment from 'moment';
  * Internal dependencies
  */
 import NoteAction from './action';
-import sanitizeHTML from 'lib/sanitize-html';
+import sanitizeHTML from './client/lib/sanitize-html';
 import classnames from 'classnames';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import './style.scss';
 import { H, Section } from '@woocommerce/components';
 import { getScreenName } from 'utils';

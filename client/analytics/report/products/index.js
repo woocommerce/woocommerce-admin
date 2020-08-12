@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import { advancedFilters, charts, filters } from './config';
-import getSelectedChart from 'lib/get-selected-chart';
+import getSelectedChart from './client/lib/get-selected-chart';
 import ProductsReportTable from './table';
 import ReportChart from 'analytics/components/report-chart';
 import ReportError from 'analytics/components/report-error';

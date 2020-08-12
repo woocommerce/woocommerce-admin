@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { Button, ExternalLink } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import interpolateComponents from 'interpolate-components';
 import PropTypes from 'prop-types';
 import { get, isArray } from 'lodash';

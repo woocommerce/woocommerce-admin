@@ -15,7 +15,7 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
  */
 import { getLeaderboard } from 'wc-api/items/utils';
 import ReportError from 'analytics/components/report-error';
-import sanitizeHTML from 'lib/sanitize-html';
+import sanitizeHTML from './client/lib/sanitize-html';
 import withSelect from './client/wc-api/with-select';
 import { getFilterQuery } from 'wc-api/reports/utils';
 import './style.scss';

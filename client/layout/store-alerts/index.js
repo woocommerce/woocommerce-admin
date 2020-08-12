@@ -19,9 +19,9 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 import withSelect from './client/wc-api/with-select';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
-import sanitizeHTML from 'lib/sanitize-html';
+import sanitizeHTML from './client/lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 import './style.scss';
 

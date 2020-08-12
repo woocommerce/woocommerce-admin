@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 
-import { getDateParamsFromQuery } from 'lib/date';
+import { getDateParamsFromQuery } from './client/lib/date';
 import { getPersistedQuery } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
@@ -24,8 +24,8 @@ import {
 } from '@woocommerce/components';
 import withSelect from './client/wc-api/with-select';
 import './style.scss';
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import { recordEvent } from './client/lib/tracks';
+import { CurrencyContext } from './client/lib/currency-context';
 import { getIndicatorData, getIndicatorValues } from './utils';
 
 const { performanceIndicators: indicators } = getSetting( 'dataEndpoints', {

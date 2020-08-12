@@ -10,7 +10,7 @@ import {
 	getCurrentDates,
 	getDateParamsFromQuery,
 	isoDateFormat,
-} from 'lib/date';
+} from './client/lib/date';
 
 import { DateRangeFilterPicker } from '@woocommerce/components';
 import { useSettings } from '@woocommerce/data';

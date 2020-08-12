@@ -6,7 +6,7 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 
-import { getDateParamsFromQuery } from 'lib/date';
+import { getDateParamsFromQuery } from './client/lib/date';
 import { getNewPath } from '@woocommerce/navigation';
 import {
 	SummaryList,
@@ -22,8 +22,8 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { getSummaryNumbers } from 'wc-api/reports/utils';
 import ReportError from 'analytics/components/report-error';
 import withSelect from './client/wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import { recordEvent } from './client/lib/tracks';
+import { CurrencyContext } from './client/lib/currency-context';
 
 /**
  * Component to render summary numbers in reports.

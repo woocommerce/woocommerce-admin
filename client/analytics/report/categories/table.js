@@ -16,7 +16,7 @@ import { formatValue } from '@woocommerce/number';
 import CategoryBreacrumbs from './breadcrumbs';
 import ReportTable from 'analytics/components/report-table';
 import withSelect from './client/wc-api/with-select';
-import { CurrencyContext } from 'lib/currency-context';
+import { CurrencyContext } from './client/lib/currency-context';
 
 class CategoriesReportTable extends Component {
 	constructor( props ) {

@@ -17,7 +17,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import { ActivityCard } from '../../activity-card';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 class ProductStockCard extends Component {
 	constructor( props ) {

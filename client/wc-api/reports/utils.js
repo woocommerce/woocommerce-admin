@@ -8,7 +8,7 @@ import {
 	appendTimestamp,
 	getCurrentDates,
 	getIntervalForQuery,
-} from 'lib/date';
+} from './client/lib/date';
 import {
 	flattenFilters,
 	getActiveFiltersFromQuery,

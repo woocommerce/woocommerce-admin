@@ -8,7 +8,7 @@ import { Tooltip } from '@wordpress/components';
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { defaultTableDateFormat } from 'lib/date';
+import { defaultTableDateFormat } from './client/lib/date';
 
 const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 
@@ -16,7 +16,7 @@ const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
  * Internal dependencies
  */
 import ReportTable from 'analytics/components/report-table';
-import { CurrencyContext } from 'lib/currency-context';
+import { CurrencyContext } from './client/lib/currency-context';
 
 class CustomersReportTable extends Component {
 	constructor() {

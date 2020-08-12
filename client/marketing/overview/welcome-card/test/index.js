@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { shallow } from 'enzyme';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import { Button } from '@wordpress/components';
 
 /**

@@ -21,7 +21,7 @@ import Connect from 'dashboard/components/connect';
 import { getCountryCode } from 'dashboard/utils';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 class Shipping extends Component {
 	constructor( props ) {

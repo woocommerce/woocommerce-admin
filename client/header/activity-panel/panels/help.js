@@ -22,7 +22,7 @@ import {
  */
 import ActivityHeader from '../activity-header';
 import { getCountryCode } from 'dashboard/utils';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import { getPaymentMethods } from 'task-list/tasks/payments/methods';
 import { compose } from 'redux';
 

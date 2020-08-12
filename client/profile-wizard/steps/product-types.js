@@ -16,7 +16,7 @@ import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import './product-types.scss';
 
 function getLabel( description, yearlyPrice ) {

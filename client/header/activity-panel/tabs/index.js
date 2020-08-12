@@ -2,7 +2,7 @@ import { NavigableMenu } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 
 import { Tab } from '../tab';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 export const Tabs = ( {
 	tabs,

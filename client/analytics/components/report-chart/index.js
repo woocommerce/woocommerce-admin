@@ -15,10 +15,10 @@ import {
 	getIntervalForQuery,
 	getChartTypeForQuery,
 	getPreviousDate,
-} from 'lib/date';
+} from './client/lib/date';
 import { Chart } from '@woocommerce/components';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
-import { CurrencyContext } from 'lib/currency-context';
+import { CurrencyContext } from './client/lib/currency-context';
 
 /**
  * Internal dependencies

@@ -7,7 +7,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { getRequestByIdString } from 'lib/async-requests';
+import { getRequestByIdString } from './client/lib/async-requests';
 import { getTaxCode } from './utils';
 import { NAMESPACE } from 'wc-api/constants';
 

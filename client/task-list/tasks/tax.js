@@ -26,10 +26,10 @@ import {
  * Internal dependencies
  */
 import Connect from 'dashboard/components/connect';
-import { createNoticesFromResponse } from 'lib/notices';
+import { createNoticesFromResponse } from './client/lib/notices';
 import { getCountryCode } from 'dashboard/utils';
 import StoreLocation from './steps/location';
-import { recordEvent, queueRecordEvent } from 'lib/tracks';
+import { recordEvent, queueRecordEvent } from './client/lib/tracks';
 
 class Tax extends Component {
 	constructor( props ) {

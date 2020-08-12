@@ -22,7 +22,7 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { queueRecordEvent, recordEvent } from 'lib/tracks';
+import { queueRecordEvent, recordEvent } from './client/lib/tracks';
 import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 
 class Appearance extends Component {

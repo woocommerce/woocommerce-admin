@@ -7,7 +7,7 @@ import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import PropTypes from 'prop-types';
 
 import { Card, Pagination, EmptyContent } from '@woocommerce/components';

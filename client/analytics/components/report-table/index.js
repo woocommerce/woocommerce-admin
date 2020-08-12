@@ -35,7 +35,7 @@ import { getReportChartData, getReportTableData } from 'wc-api/reports/utils';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
 import withSelect from './client/wc-api/with-select';
 import { extendTableData } from './utils';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import './style.scss';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';

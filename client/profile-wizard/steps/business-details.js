@@ -33,10 +33,10 @@ import {
 	Form,
 	TextControl,
 } from '@woocommerce/components';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import { getCountryCode, getCurrencyRegion } from 'dashboard/utils';
-import { CurrencyContext } from 'lib/currency-context';
-import { createNoticesFromResponse } from 'lib/notices';
+import { CurrencyContext } from './client/lib/currency-context';
+import { createNoticesFromResponse } from './client/lib/notices';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 

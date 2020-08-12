@@ -21,7 +21,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  */
 import Leaderboard from 'analytics/components/leaderboard';
 import withSelect from './client/wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import './style.scss';
 
 const renderLeaderboardToggles = ( {

@@ -27,9 +27,9 @@ import { REVIEWS_STORE_NAME } from '@woocommerce/data';
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
-import sanitizeHTML from 'lib/sanitize-html';
+import sanitizeHTML from './client/lib/sanitize-html';
 import withSelect from './client/wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 class ReviewsPanel extends Component {
 	constructor() {

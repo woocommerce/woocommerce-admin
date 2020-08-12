@@ -24,18 +24,18 @@ import './style.scss';
 import defaultSections from './default-sections';
 import Section from './section';
 import withSelect from './client/wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import { isOnboardingEnabled } from 'dashboard/utils';
 import {
 	getCurrentDates,
 	getDateParamsFromQuery,
 	isoDateFormat,
-} from 'lib/date';
+} from './client/lib/date';
 import ReportFilters from 'analytics/components/report-filters';
 import {
 	CurrencyContext,
 	getFilteredCurrencyInstance,
-} from 'lib/currency-context';
+} from './client/lib/currency-context';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )

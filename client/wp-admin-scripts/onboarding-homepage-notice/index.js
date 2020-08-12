@@ -10,7 +10,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import { queueRecordEvent } from 'lib/tracks';
+import { queueRecordEvent } from './client/lib/tracks';
 
 /**
  * Returns a promise and resolves when the post begins to publish.

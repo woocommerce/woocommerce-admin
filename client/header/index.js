@@ -16,7 +16,7 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
  */
 import './style.scss';
 import ActivityPanel from './activity-panel';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 
 class Header extends Component {
 	constructor( props ) {

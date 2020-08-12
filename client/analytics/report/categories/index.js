@@ -10,7 +10,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { advancedFilters, charts, filters } from './config';
 import CategoriesReportTable from './table';
-import getSelectedChart from 'lib/get-selected-chart';
+import getSelectedChart from './client/lib/get-selected-chart';
 import ReportChart from 'analytics/components/report-chart';
 import ReportSummary from 'analytics/components/report-summary';
 import ProductsReportTable from '../products/table';

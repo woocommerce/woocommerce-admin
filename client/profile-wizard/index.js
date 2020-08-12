@@ -26,12 +26,12 @@ import {
  */
 import Benefits from './steps/benefits';
 import BusinessDetails from './steps/business-details';
-import { createNoticesFromResponse } from 'lib/notices';
+import { createNoticesFromResponse } from './client/lib/notices';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
 import { QUERY_DEFAULTS } from 'wc-api/constants';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
 import withSelect from './client/wc-api/with-select';

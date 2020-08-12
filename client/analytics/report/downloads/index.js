@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
  */
 import { charts, filters, advancedFilters } from './config';
 import DownloadsReportTable from './table';
-import getSelectedChart from 'lib/get-selected-chart';
+import getSelectedChart from './client/lib/get-selected-chart';
 import ReportChart from 'analytics/components/report-chart';
 import ReportSummary from 'analytics/components/report-summary';
 import ReportFilters from 'analytics/components/report-filters';

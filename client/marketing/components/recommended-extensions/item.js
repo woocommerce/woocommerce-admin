@@ -8,8 +8,8 @@ import PropTypes from 'prop-types';
  */
 import './style.scss';
 import { ProductIcon } from '../../components/';
-import { recordEvent } from 'lib/tracks';
-import { getInAppPurchaseUrl } from 'lib/in-app-purchase';
+import { recordEvent } from './client/lib/tracks';
+import { getInAppPurchaseUrl } from './client/lib/in-app-purchase';
 
 const RecommendedExtensionsItem = ( {
 	title,

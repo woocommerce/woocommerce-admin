@@ -15,8 +15,8 @@ import { getPersistedQuery } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import withSelect from './client/wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import { recordEvent } from './client/lib/tracks';
+import { CurrencyContext } from './client/lib/currency-context';
 import {
 	getIndicatorData,
 	getIndicatorValues,

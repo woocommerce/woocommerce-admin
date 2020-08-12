@@ -26,7 +26,7 @@ import {
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import { getCountryCode } from 'dashboard/utils';
 import withSelect from './client/wc-api/with-select';
 import { getPaymentMethods } from './methods';

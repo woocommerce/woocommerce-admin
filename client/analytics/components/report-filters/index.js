@@ -13,13 +13,13 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from './client/lib/tracks';
 import {
 	getCurrentDates,
 	getDateParamsFromQuery,
 	isoDateFormat,
-} from 'lib/date';
-import { CurrencyContext } from 'lib/currency-context';
+} from './client/lib/date';
+import { CurrencyContext } from './client/lib/currency-context';
 
 class ReportFilters extends Component {
 	constructor() {
