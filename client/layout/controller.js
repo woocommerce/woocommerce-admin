@@ -186,7 +186,10 @@ export const getPages = () => {
 			path: '/store-details',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				[ '/store-details', __( 'Store details', 'woocommerce-admin' ) ],
+				[
+					'/store-details',
+					__( 'Store details', 'woocommerce-admin' ),
+				],
 			],
 		} );
 	}
