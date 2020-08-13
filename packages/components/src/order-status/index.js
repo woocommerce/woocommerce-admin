@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
 /**
  * Use `OrderStatus` to display a badge with human-friendly text describing the current order status.
  *
- * @param root0
- * @param root0.order
- * @param root0.className
- * @param root0.orderStatusMap
+ * @param {Object} root0
+ * @param {Object} root0.order
+ * @param {string} root0.className
+ * @param {Object} root0.orderStatusMap
  * @return {Object} -
  */
 const OrderStatus = ( { order, className, orderStatusMap } ) => {
