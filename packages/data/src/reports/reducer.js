@@ -14,37 +14,34 @@ const reports = (
 ) => {
 	switch ( type ) {
 		case TYPES.SET_REPORT_ITEMS:
-			state = {
+			return {
 				...state,
 				items: { ...state.items, [ resourceName ]: items },
 			};
-			break;
 		case TYPES.SET_REPORT_STATS:
-			state = {
+			return {
 				...state,
 				stats: { ...state.stats, [ resourceName ]: stats },
 			};
-			break;
 		case TYPES.SET_ITEM_ERROR:
-			state = {
+			return {
 				...state,
 				itemErrors: {
 					...state.itemErrors,
 					[ resourceName ]: error,
 				},
 			};
-			break;
 		case TYPES.SET_STAT_ERROR:
-			state = {
+			return {
 				...state,
 				statErrors: {
 					...state.statErrors,
 					[ resourceName ]: error,
 				},
 			};
-			break;
+		default:
+			return state;
 	}
-	return state;
 };
 
 export default reports;

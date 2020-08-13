@@ -9,8 +9,8 @@ import { addQueryArgs } from '@wordpress/url';
 import { fetchWithHeaders } from '../controls';
 import { NAMESPACE } from '../constants';
 import {
-	setItemError,
-	setStatError,
+	setReportItemsError,
+	setReportStatsError,
 	setReportItems,
 	setReportStats,
 } from './actions';
@@ -39,7 +39,7 @@ export function* getReportItems( endpoint, query ) {
 			totalPages,
 		} );
 	} catch ( error ) {
-		yield setItemError( endpoint, query, error );
+		yield setReportItemsError( endpoint, query, error );
 	}
 }
 
@@ -70,6 +70,6 @@ export function* getReportStats( endpoint, query ) {
 			totalPages,
 		} );
 	} catch ( error ) {
-		yield setStatError( endpoint, query, error );
+		yield setReportStatsError( endpoint, query, error );
 	}
 }
