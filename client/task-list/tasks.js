@@ -4,7 +4,6 @@
 
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
 	getNewPath,
@@ -41,33 +40,34 @@ export function recordTaskViewEvent(
 }
 
 export function getAllTasks( {
+	activePlugins,
 	countryCode,
+	createNotice,
+	installAndActivatePlugins,
+	installedPlugins,
+	isAppearanceComplete,
+	isJetpackConnected,
+	onboardingStatus,
 	profileItems,
 	query,
 	toggleCartModal,
-	activePlugins,
-	installedPlugins,
-	installAndActivatePlugins,
-	createNotice,
-	isJetpackConnected,
 } ) {
 	const {
 		hasPaymentGateway,
 		hasPhysicalProducts,
 		hasProducts,
-		isAppearanceComplete,
 		isTaxComplete,
 		shippingZonesCount,
 		wcPayIsConnected,
-	} = getSetting( 'onboarding', {
+	} = {
 		hasPaymentGateway: false,
 		hasPhysicalProducts: false,
 		hasProducts: false,
-		isAppearanceComplete: false,
 		isTaxComplete: false,
 		shippingZonesCount: 0,
 		wcPayIsConnected: false,
-	} );
+		...onboardingStatus,
+	};
 
 	const groupedProducts = getCategorizedOnboardingProducts(
 		profileItems,

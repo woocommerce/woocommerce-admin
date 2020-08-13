@@ -137,26 +137,30 @@ class TaskDashboard extends Component {
 
 	getAllTasks() {
 		const {
+			activePlugins,
 			countryCode,
+			createNotice,
+			installAndActivatePlugins,
+			installedPlugins,
+			isAppearanceComplete,
+			isJetpackConnected,
+			onboardingStatus,
 			profileItems,
 			query,
-			activePlugins,
-			installedPlugins,
-			installAndActivatePlugins,
-			createNotice,
-			isJetpackConnected,
 		} = this.props;
 
 		return getAllTasks( {
+			activePlugins,
 			countryCode,
+			createNotice,
+			installAndActivatePlugins,
+			installedPlugins,
+			isAppearanceComplete,
+			isJetpackConnected,
+			onboardingStatus,
 			profileItems,
 			query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
-			activePlugins,
-			installedPlugins,
-			installAndActivatePlugins,
-			createNotice,
-			isJetpackConnected,
 		} );
 	}
 
@@ -372,7 +376,9 @@ class TaskDashboard extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getTasksStatus } = select(
+			ONBOARDING_STORE_NAME
+		);
 		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getSettings } = select( SETTINGS_STORE_NAME );
 		const {
@@ -396,14 +402,19 @@ export default compose(
 
 		const activePlugins = getActivePlugins();
 		const installedPlugins = getInstalledPlugins();
+		const onboardingStatus = getTasksStatus();
 
 		return {
 			activePlugins,
 			countryCode,
 			dismissedTasks,
+			isAppearanceComplete: getOption(
+				'woocommerce_task_list_appearance_complete'
+			),
 			isJetpackConnected: isJetpackConnected(),
 			installedPlugins,
 			isTaskListComplete,
+			onboardingStatus,
 			profileItems,
 			trackedCompletedTasks,
 		};
