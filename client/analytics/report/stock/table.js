@@ -160,7 +160,7 @@ class StockReportTable extends Component {
 			},
 			{
 				label: __( 'low stock', 'woocommerce-admin' ),
-				value: formatValue( 'currency, number', lowstock ),
+				value: formatValue( currency, 'number', lowstock ),
 			},
 			{
 				label: __( 'on backorder', 'woocommerce-admin' ),
