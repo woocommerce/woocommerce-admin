@@ -7,13 +7,9 @@ import apiFetch from '@wordpress/api-fetch';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import moment from 'moment';
+import { NOTES_STORE_NAME } from '@woocommerce/data';
 import { withDispatch } from '@wordpress/data';
 import { withSpokenMessages } from '@wordpress/components';
-
-/**
- * WooCommerce dependencies
- */
-import { NOTES_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
