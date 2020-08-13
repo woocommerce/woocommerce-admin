@@ -6,6 +6,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { isNil } from 'lodash';
 import { SECOND } from '@fresh-data/framework';
 import { SectionHeader } from '@woocommerce/components';
+import { IMPORT_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -119,11 +120,9 @@ class HistoricalDataLayout extends Component {
 }
 
 export default withSelect( ( select, props ) => {
-	const {
-		getImportStatus,
-		isGetImportStatusRequesting,
-		getImportTotals,
-	} = select( 'wc-api' );
+	const { isResolving, getImportStatus, getImportTotals } = select(
+		IMPORT_STORE_NAME
+	);
 	const {
 		activeImport,
 		dateFormat,
@@ -135,16 +134,18 @@ export default withSelect( ( select, props ) => {
 		skipChecked,
 	} = props;
 
+	const endpointImportStatus = 'import-status';
+	const endpointImportTotals = 'import-totals';
+
 	const inProgress =
 		( typeof lastImportStartTimestamp !== 'undefined' &&
 			typeof lastImportStopTimestamp === 'undefined' ) ||
 		lastImportStartTimestamp > lastImportStopTimestamp;
 
 	const params = formatParams( dateFormat, period, skipChecked );
-	// Use timestamp to invalidate previous totals when the import finished/stopped
 	const { customers, orders } = getImportTotals(
-		params,
-		lastImportStopTimestamp
+		endpointImportTotals,
+		params
 	);
 	const requirement = inProgress
 		? {
@@ -153,19 +154,19 @@ export default withSelect( ( select, props ) => {
 		  }
 		: DEFAULT_REQUIREMENT;
 
-	// Use timestamp to invalidate previous status when a new import starts
 	const {
 		customers: customersStatus,
 		imported_from: importDate,
 		is_importing: isImporting,
 		orders: ordersStatus,
-	} = getImportStatus( lastImportStartTimestamp, requirement );
+	} = getImportStatus( endpointImportStatus, requirement );
 	const { imported: customersProgress, total: customersTotal } =
 		customersStatus || {};
 	const { imported: ordersProgress, total: ordersTotal } = ordersStatus || {};
-	const isStatusLoading = isGetImportStatusRequesting(
-		lastImportStartTimestamp
-	);
+	const isStatusLoading = isResolving( 'getImportStatus', [
+		endpointImportStatus,
+		requirement,
+	] );
 
 	const hasImportStarted = Boolean(
 		! lastImportStartTimestamp &&
