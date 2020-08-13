@@ -40,8 +40,6 @@ const reducer = (
 				},
 			};
 			break;
-		default:
-			return state;
 	}
 	return state;
 };

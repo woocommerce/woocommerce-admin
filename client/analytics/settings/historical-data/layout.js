@@ -24,11 +24,13 @@ import './style.scss';
 class HistoricalDataLayout extends Component {
 	render() {
 		const {
+			createNotice,
 			customersProgress,
 			customersTotal,
 			dateFormat,
 			importDate,
 			inProgress,
+			isError,
 			onPeriodChange,
 			onDateChange,
 			onSkipChange,
@@ -45,6 +47,7 @@ class HistoricalDataLayout extends Component {
 			customersProgress,
 			customersTotal,
 			inProgress,
+			isError,
 			ordersProgress,
 			ordersTotal,
 		} );
@@ -107,6 +110,7 @@ class HistoricalDataLayout extends Component {
 					</div>
 				</div>
 				<HistoricalDataActions
+					createNotice={ createNotice }
 					importDate={ importDate }
 					onDeletePreviousData={ onDeletePreviousData }
 					onReimportData={ onReimportData }
@@ -120,9 +124,12 @@ class HistoricalDataLayout extends Component {
 }
 
 export default withSelect( ( select, props ) => {
-	const { isResolving, getImportStatus, getImportTotals } = select(
-		IMPORT_STORE_NAME
-	);
+	const {
+		getImportError,
+		getImportStatus,
+		getImportTotals,
+		isResolving,
+	} = select( IMPORT_STORE_NAME );
 	const {
 		activeImport,
 		dateFormat,
@@ -168,6 +175,13 @@ export default withSelect( ( select, props ) => {
 		requirement,
 	] );
 
+	const isError = ! isStatusLoading
+		? Boolean(
+				getImportError( endpointImportStatus, requirement ) ||
+					getImportError( endpointImportTotals, params )
+		  )
+		: false;
+
 	const hasImportStarted = Boolean(
 		! lastImportStartTimestamp &&
 			! isStatusLoading &&
@@ -192,6 +206,7 @@ export default withSelect( ( select, props ) => {
 		return {
 			customersTotal: customers,
 			importDate,
+			isError,
 			ordersTotal: orders,
 		};
 	}
@@ -201,6 +216,7 @@ export default withSelect( ( select, props ) => {
 		customersTotal: isNil( customersTotal ) ? customers : customersTotal,
 		importDate,
 		inProgress,
+		isError,
 		ordersProgress,
 		ordersTotal: isNil( ordersTotal ) ? orders : ordersTotal,
 	};

@@ -15,5 +15,5 @@ export const getImportTotals = ( state, endpoint, query ) => {
 
 export const getImportError = ( state, endpoint, query ) => {
 	const resourceName = getResourceName( endpoint, query );
-	return state.errors[ resourceName ] || {};
+	return state.errors[ resourceName ] || false;
 };

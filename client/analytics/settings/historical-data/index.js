@@ -180,10 +180,12 @@ class HistoricalData extends Component {
 			period,
 			skipChecked,
 		} = this.state;
+		const { createNotice } = this.props;
 
 		return (
 			<HistoricalDataLayout
 				activeImport={ activeImport }
+				createNotice={ createNotice }
 				dateFormat={ this.dateFormat }
 				onImportFinished={ this.onImportFinished }
 				onImportStarted={ this.onImportStarted }

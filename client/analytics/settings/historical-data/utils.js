@@ -28,6 +28,7 @@ export const formatParams = ( dateFormat, period, skipChecked ) => {
 export const getStatus = ( {
 	customersProgress,
 	customersTotal,
+	isError,
 	inProgress,
 	ordersProgress,
 	ordersTotal,
@@ -57,6 +58,9 @@ export const getStatus = ( {
 			return 'finished';
 		}
 		return 'ready';
+	}
+	if ( isError ) {
+		return 'error';
 	}
 	return 'nothing';
 };

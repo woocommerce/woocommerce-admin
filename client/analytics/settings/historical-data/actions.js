@@ -6,6 +6,7 @@ import { Button } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
 
 function HistoricalDataActions( {
+	createNotice,
 	importDate,
 	onDeletePreviousData,
 	onReimportData,
@@ -77,6 +78,16 @@ function HistoricalDataActions( {
 						{ __( 'Start', 'woocommerce-admin' ) }
 					</Button>
 				</Fragment>
+			);
+		}
+
+		if ( status === 'error' ) {
+			createNotice(
+				'error',
+				__(
+					'Something went wrong with the importation process.',
+					'woocommerce-admin'
+				)
 			);
 		}
 
