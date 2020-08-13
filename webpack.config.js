@@ -151,7 +151,6 @@ const webpackConfig = {
 	},
 	resolve: {
 		extensions: [ '.json', '.js', '.jsx' ],
-		modules: [ 'node_modules' ],
 		alias: {
 			'gutenberg-components': path.resolve(
 				__dirname,
