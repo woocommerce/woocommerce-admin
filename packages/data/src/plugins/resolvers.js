@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { apiFetch, select } from '@wordpress/data-controls';
+import { apiFetch } from '@wordpress/data-controls';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -16,8 +16,6 @@ import {
 	updateIsJetpackConnected,
 	updateJetpackConnectUrl,
 } from './actions';
-import { STORE_NAME } from './constants';
-import { getAdminLink } from 'settings';
 
 export function* getActivePlugins() {
 	yield setIsRequesting( 'getActivePlugins', true );
