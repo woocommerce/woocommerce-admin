@@ -10,28 +10,28 @@ import { apiFetch } from '@wordpress/data-controls';
 import { NAMESPACE } from '../constants';
 import { setImportError, setImportStatus, setImportTotals } from './actions';
 
-export function* getImportStatus( endpoint, query ) {
+export function* getImportStatus( query ) {
 	try {
 		const url = addQueryArgs(
 			`${ NAMESPACE }/reports/import/status`,
 			query
 		);
 		const response = yield apiFetch( { path: url } );
-		yield setImportStatus( endpoint, query, response );
+		yield setImportStatus( query, response );
 	} catch ( error ) {
-		yield setImportError( endpoint, query, error );
+		yield setImportError( query, error );
 	}
 }
 
-export function* getImportTotals( endpoint, query ) {
+export function* getImportTotals( query ) {
 	try {
 		const url = addQueryArgs(
 			`${ NAMESPACE }/reports/import/totals`,
 			query
 		);
 		const response = yield apiFetch( { path: url } );
-		yield setImportTotals( endpoint, query, response );
+		yield setImportTotals( query, response );
 	} catch ( error ) {
-		yield setImportError( endpoint, query, error );
+		yield setImportError( query, error );
 	}
 }

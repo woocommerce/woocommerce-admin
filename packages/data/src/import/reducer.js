@@ -9,7 +9,7 @@ const reducer = (
 		importTotals: {},
 		errors: {},
 	},
-	{ type, importStatus, importTotals, error, resourceName }
+	{ type, query, importStatus, importTotals, error }
 ) => {
 	switch ( type ) {
 		case TYPES.SET_IMPORT_STATUS:
@@ -17,7 +17,7 @@ const reducer = (
 				...state,
 				importStatus: {
 					...state.importStatus,
-					[ resourceName ]: importStatus,
+					[ JSON.stringify( query ) ]: importStatus,
 				},
 			};
 			break;
@@ -26,7 +26,7 @@ const reducer = (
 				...state,
 				importTotals: {
 					...state.importTotals,
-					[ resourceName ]: importTotals,
+					[ JSON.stringify( query ) ]: importTotals,
 				},
 			};
 			break;
@@ -35,7 +35,7 @@ const reducer = (
 				...state,
 				errors: {
 					...state.errors,
-					[ resourceName ]: error,
+					[ JSON.stringify( query ) ]: error,
 				},
 			};
 			break;

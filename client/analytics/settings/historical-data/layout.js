@@ -141,19 +141,13 @@ export default withSelect( ( select, props ) => {
 		skipChecked,
 	} = props;
 
-	const endpointImportStatus = 'import-status';
-	const endpointImportTotals = 'import-totals';
-
 	const inProgress =
 		( typeof lastImportStartTimestamp !== 'undefined' &&
 			typeof lastImportStopTimestamp === 'undefined' ) ||
 		lastImportStartTimestamp > lastImportStopTimestamp;
 
 	const params = formatParams( dateFormat, period, skipChecked );
-	const { customers, orders } = getImportTotals(
-		endpointImportTotals,
-		params
-	);
+	const { customers, orders } = getImportTotals( params );
 	const requirement = inProgress
 		? {
 				freshness: 3 * SECOND,
@@ -166,20 +160,14 @@ export default withSelect( ( select, props ) => {
 		imported_from: importDate,
 		is_importing: isImporting,
 		orders: ordersStatus,
-	} = getImportStatus( endpointImportStatus, requirement );
+	} = getImportStatus( requirement );
 	const { imported: customersProgress, total: customersTotal } =
 		customersStatus || {};
 	const { imported: ordersProgress, total: ordersTotal } = ordersStatus || {};
-	const isStatusLoading = isResolving( 'getImportStatus', [
-		endpointImportStatus,
-		requirement,
-	] );
+	const isStatusLoading = isResolving( 'getImportStatus', [ requirement ] );
 
 	const isError = ! isStatusLoading
-		? Boolean(
-				getImportError( endpointImportStatus, requirement ) ||
-					getImportError( endpointImportTotals, params )
-		  )
+		? Boolean( getImportError( requirement ) || getImportError( params ) )
 		: false;
 
 	const hasImportStarted = Boolean(
