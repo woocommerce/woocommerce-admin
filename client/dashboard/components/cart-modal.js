@@ -8,7 +8,6 @@ import { Button, Modal } from '@wordpress/components';
 import { find } from 'lodash';
 import { decodeEntities } from '@wordpress/html-entities';
 import { withSelect } from '@wordpress/data';
-
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List } from '@woocommerce/components';
 import { ONBOARDING_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';

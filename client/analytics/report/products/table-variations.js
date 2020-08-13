@@ -4,7 +4,6 @@
 import { __, _n, _x } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { map, get } from 'lodash';
-
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';

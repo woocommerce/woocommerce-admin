@@ -5,7 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { isNil } from 'lodash';
 import { SECOND } from '@fresh-data/framework';
-
 import { SectionHeader } from '@woocommerce/components';
 
 /**

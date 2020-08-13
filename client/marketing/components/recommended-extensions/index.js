@@ -8,7 +8,6 @@ import { Spinner } from '@wordpress/components';
 import classnames from 'classnames';
 import { withDispatch, withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
-
 import { Card } from '@woocommerce/components';
 
 /**

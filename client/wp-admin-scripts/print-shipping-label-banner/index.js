@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { render } from '@wordpress/element';
-
 import { withPluginsHydration } from '@woocommerce/data';
 
 /**

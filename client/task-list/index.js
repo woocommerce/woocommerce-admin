@@ -15,7 +15,6 @@ import {
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check, chevronRight } from '@wordpress/icons';
 import { xor } from 'lodash';
-
 import { List, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import {

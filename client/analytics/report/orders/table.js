@@ -4,7 +4,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { map } from 'lodash';
-
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';

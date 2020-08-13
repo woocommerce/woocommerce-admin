@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { mount, shallow } from 'enzyme';
-
 import { numberFormat } from '@woocommerce/number';
 import CurrencyFactory from '@woocommerce/currency';
 import { CURRENCY } from '@woocommerce/wc-admin-settings';

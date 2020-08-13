@@ -3,7 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-
 import { Card, List } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 

@@ -4,7 +4,6 @@
 
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,

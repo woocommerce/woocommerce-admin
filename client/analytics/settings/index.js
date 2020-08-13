@@ -6,7 +6,6 @@ import { Button } from '@wordpress/components';
 import { Fragment, useEffect, useRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
-
 import { SectionHeader, useFilters, ScrollTo } from '@woocommerce/components';
 import { useSettings } from '@woocommerce/data';
 

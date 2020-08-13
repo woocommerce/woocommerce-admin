@@ -7,7 +7,6 @@ import { compose } from '@wordpress/compose';
 import apiFetch from '@wordpress/api-fetch';
 import { withDispatch } from '@wordpress/data';
 import { omit } from 'lodash';
-
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 

@@ -6,7 +6,6 @@ import { Button } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import interpolateComponents from 'interpolate-components';
-
 import { WebPreview } from '@woocommerce/components';
 
 /**

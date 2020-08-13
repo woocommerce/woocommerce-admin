@@ -8,7 +8,6 @@ import { Fragment, useEffect } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { Icon, chevronRight, page } from '@wordpress/icons';
 import { partial } from 'lodash';
-
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List, Section } from '@woocommerce/components';
 import {

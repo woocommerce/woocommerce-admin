@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { find, get } from 'lodash';
-
 import { flattenFilters } from '@woocommerce/navigation';
 
 export const DEFAULT_FILTER = 'all';

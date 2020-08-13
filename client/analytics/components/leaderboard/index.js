@@ -5,7 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
-
 import { Card, EmptyTable, TableCard } from '@woocommerce/components';
 import { getPersistedQuery } from '@woocommerce/navigation';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';

@@ -8,7 +8,6 @@ import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
-
 import { Card, H, Link, Stepper, Plugins } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {

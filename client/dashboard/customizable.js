@@ -8,7 +8,6 @@ import { partial } from 'lodash';
 import { Dropdown, Button, Icon } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 import { Icon as WPIcon, plusCircleFilled } from '@wordpress/icons';
-
 import { H, Spinner } from '@woocommerce/components';
 import {
 	SETTINGS_STORE_NAME,

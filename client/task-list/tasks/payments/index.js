@@ -7,7 +7,6 @@ import { cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Button, FormToggle } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
-
 import { Card, H, Plugins } from '@woocommerce/components';
 import {
 	getHistory,

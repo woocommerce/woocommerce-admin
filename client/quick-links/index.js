@@ -22,7 +22,6 @@ import {
 	external,
 } from '@wordpress/icons';
 import { partial } from 'lodash';
-
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List } from '@woocommerce/components';
 

@@ -6,7 +6,6 @@ import { Component, createElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
 import { withDispatch } from '@wordpress/data';
-
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,

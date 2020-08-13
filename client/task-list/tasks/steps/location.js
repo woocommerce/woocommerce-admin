@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
-
 import { Form } from '@woocommerce/components';
 
 /**

@@ -10,7 +10,6 @@ import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import moment from 'moment';
 import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
-
 import { Card } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 

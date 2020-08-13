@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { addQueryArgs } from '@wordpress/url';
-
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**

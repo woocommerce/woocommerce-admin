@@ -6,7 +6,6 @@ import { Component } from '@wordpress/element';
 import { Button, Modal } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**

@@ -9,7 +9,6 @@ import { decodeEntities } from '@wordpress/html-entities';
 import Gridicon from 'gridicons';
 import { Button, TabPanel, Tooltip } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
-
 import { Card, H } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';

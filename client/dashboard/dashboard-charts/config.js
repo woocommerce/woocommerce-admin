@@ -7,7 +7,6 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-
 import { charts as ordersCharts } from '../../analytics/report/orders/config';
 import { charts as productsCharts } from '../../analytics/report/products/config';
 import { charts as revenueCharts } from '../../analytics/report/revenue/config';

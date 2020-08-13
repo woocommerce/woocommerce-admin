@@ -16,7 +16,6 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { isOnboardingEnabled } from '../dashboard/utils';
-
 import Layout from './layout';
 
 const Homescreen = ( { profileItems, query } ) => {

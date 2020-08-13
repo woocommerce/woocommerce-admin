@@ -6,7 +6,6 @@ import { Component } from '@wordpress/element';
 import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
 import moment from 'moment';
-
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';

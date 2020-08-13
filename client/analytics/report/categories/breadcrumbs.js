@@ -4,7 +4,6 @@
 import { Component } from '@wordpress/element';
 import { first, last } from 'lodash';
 import { Spinner } from '@wordpress/components';
-
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 

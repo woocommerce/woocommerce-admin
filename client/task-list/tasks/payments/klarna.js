@@ -5,7 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
-
 import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
 import { Link, Stepper } from '@woocommerce/components';
 

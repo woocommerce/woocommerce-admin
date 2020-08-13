@@ -6,7 +6,6 @@ import { Component, Fragment } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
-
 import { Form, H, TextControl } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 

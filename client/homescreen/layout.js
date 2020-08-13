@@ -13,7 +13,6 @@ import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**

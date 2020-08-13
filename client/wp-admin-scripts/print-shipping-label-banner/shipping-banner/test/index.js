@@ -15,7 +15,6 @@ jest.mock( '../../wcs-api.js' );
 acceptWcsTos.mockReturnValue( Promise.resolve() );
 const wcsAssetsMock = {};
 getWcsAssets.mockReturnValue( Promise.resolve( wcsAssetsMock ) );
-
 import { ShippingBanner } from '../index.js';
 
 jest.mock( 'lib/tracks' );

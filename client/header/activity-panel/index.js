@@ -12,7 +12,6 @@ import PagesIcon from 'gridicons/dist/pages';
 import CrossIcon from 'gridicons/dist/cross-small';
 import classnames from 'classnames';
 import { Icon, lifesaver } from '@wordpress/icons';
-
 import { getSetting, getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section, Spinner } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
