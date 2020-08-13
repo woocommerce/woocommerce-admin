@@ -16,10 +16,10 @@ import Menu from './menu';
  * A container element for a list of SummaryNumbers. This component handles detecting & switching to
  * the mobile format on smaller screens.
  *
- * @param {Object} root0
- * @param {Node} root0.children
- * @param {string} root0.isDropdownBreakpoint
- * @param {string} root0.label
+ * @param {Object} props
+ * @param {Node} props.children
+ * @param {string} props.isDropdownBreakpoint
+ * @param {string} props.label
  * @return {Object} -
  */
 const SummaryList = ( { children, isDropdownBreakpoint, label } ) => {

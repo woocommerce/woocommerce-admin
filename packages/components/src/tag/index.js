@@ -13,16 +13,16 @@ import { withState, withInstanceId } from '@wordpress/compose';
  * This component can be used to show an item styled as a "tag", optionally with an `X` + "remove"
  * or with a popover that is shown on click.
  *
- * @param {Object} root0
- * @param {number|string} root0.id
- * @param {string}root0.instanceId
- * @param {boolean} root0.isVisible
- * @param {string} root0.label
- * @param {Object} root0.popoverContents
- * @param {Function} root0.remove
- * @param {string} root0.screenReaderLabel
- * @param {Function} root0.setState
- * @param {string} root0.className
+ * @param {Object} props
+ * @param {number|string} props.id
+ * @param {string}props.instanceId
+ * @param {boolean} props.isVisible
+ * @param {string} props.label
+ * @param {Object} props.popoverContents
+ * @param {Function} props.remove
+ * @param {string} props.screenReaderLabel
+ * @param {Function} props.setState
+ * @param {string} props.className
  * @return {Object} -
  */
 const Tag = ( {

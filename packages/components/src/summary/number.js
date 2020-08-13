@@ -19,20 +19,20 @@ import Link from '../link';
 /**
  * A component to show a value, label, and an optional change percentage. Can also act as a link to a specific report focus.
  *
- * @param {Object} root0
- * @param {number} root0.delta
- * @param {string} root0.href
- * @param {string} root0.hrefType
- * @param {boolean} root0.isOpen
- * @param {string} root0.label
- * @param {Function} root0.onToggle
- * @param {string} root0.prevLabel
- * @param {number|string} root0.prevValue
- * @param {boolean} root0.reverseTrend
- * @param {boolean} root0.selected
- * @param {number|string} root0.value
- * @param {Function} root0.onLinkClickCallback
- * @param {boolean} root0.isHomescreen
+ * @param {Object} props
+ * @param {number} props.delta
+ * @param {string} props.href
+ * @param {string} props.hrefType
+ * @param {boolean} props.isOpen
+ * @param {string} props.label
+ * @param {Function} props.onToggle
+ * @param {string} props.prevLabel
+ * @param {number|string} props.prevValue
+ * @param {boolean} props.reverseTrend
+ * @param {boolean} props.selected
+ * @param {number|string} props.value
+ * @param {Function} props.onLinkClickCallback
+ * @param {boolean} props.isHomescreen
  * @return {Object} -
  */
 const SummaryNumber = ( {

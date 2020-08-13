@@ -11,8 +11,8 @@ import Rating from './index';
 /**
  * Display a set of stars representing the review's rating.
  *
- * @param {Object} root0
- * @param {Object} root0.review
+ * @param {Object} props
+ * @param {Object} props.review
  * @return {Object} -
  */
 const ReviewRating = ( { review, ...props } ) => {

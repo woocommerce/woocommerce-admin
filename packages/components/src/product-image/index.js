@@ -15,12 +15,12 @@ import { placeholderWhiteBackground as placeholder } from './placeholder';
  * If no image can be found, a placeholder matching the front-end image
  * placeholder will be displayed.
  *
- * @param {Object} root0
- * @param {Object} root0.product
- * @param {string} root0.alt
- * @param {number} root0.width
- * @param {number} root0.height
- * @param {string} root0.className
+ * @param {Object} props
+ * @param {Object} props.product
+ * @param {string} props.alt
+ * @param {number} props.width
+ * @param {number} props.height
+ * @param {string} props.className
  * @return {Object} -
  */
 const ProductImage = ( {
