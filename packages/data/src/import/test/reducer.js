@@ -18,44 +18,45 @@ describe( 'import reducer', () => {
 	} );
 
 	it( 'should handle SET_IMPORT_STATUS', () => {
+		const query = { freshness: 1800000, timeout: 60000 };
 		const state = reducer( defaultState, {
 			type: TYPES.SET_IMPORT_STATUS,
-			resourceName: 'test-import-status',
+			query,
 			importStatus: { is_importing: false },
 		} );
-
-		expect( state.importStatus ).toHaveProperty( 'test-import-status' );
-		expect(
-			state.importStatus[ 'test-import-status' ].is_importing
-		).toEqual( false );
+		const stringifiedQuery = JSON.stringify( query );
+		expect( state.importStatus ).toHaveProperty( stringifiedQuery );
+		expect( state.importStatus[ stringifiedQuery ].is_importing ).toEqual(
+			false
+		);
 	} );
 
 	it( 'should handle SET_IMPORT_TOTALS', () => {
+		const query = { days: 90, skip_existing: true };
 		const state = reducer( defaultState, {
 			type: TYPES.SET_IMPORT_TOTALS,
-			resourceName: 'test-import-totals',
+			query,
 			importTotals: {
 				customers: 1,
 				orders: 6,
 			},
 		} );
+		const stringifiedQuery = JSON.stringify( query );
 
-		expect( state.importTotals ).toHaveProperty( 'test-import-totals' );
-		expect( state.importTotals[ 'test-import-totals' ].customers ).toEqual(
-			1
-		);
-		expect( state.importTotals[ 'test-import-totals' ].orders ).toEqual(
-			6
-		);
+		expect( state.importTotals ).toHaveProperty( stringifiedQuery );
+		expect( state.importTotals[ stringifiedQuery ].customers ).toEqual( 1 );
+		expect( state.importTotals[ stringifiedQuery ].orders ).toEqual( 6 );
 	} );
 
 	it( 'should handle SET_IMPORT_ERROR', () => {
+		const query = 'test-import-error';
 		const state = reducer( defaultState, {
 			type: TYPES.SET_IMPORT_ERROR,
-			resourceName: 'test-import-error',
+			query,
 			error: { code: 'error' },
 		} );
+		const stringifiedQuery = JSON.stringify( query );
 
-		expect( state.errors[ 'test-import-error' ].code ).toBe( 'error' );
+		expect( state.errors[ stringifiedQuery ].code ).toBe( 'error' );
 	} );
 } );
