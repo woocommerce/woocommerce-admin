@@ -3,8 +3,6 @@
  * REST API Options Controller
  *
  * Handles requests to get and update options in the wp_options table.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -14,7 +12,6 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Options Controller.
  *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
 class Options extends \WC_REST_Data_Controller {
@@ -136,7 +133,6 @@ class Options extends \WC_REST_Data_Controller {
 			'woocommerce_setup_jetpack_opted_in' => current_user_can( 'manage_woocommerce' ),
 			'woocommerce_stripe_settings'        => current_user_can( 'manage_woocommerce' ),
 			'woocommerce_ppec_paypal_settings'   => current_user_can( 'manage_woocommerce' ),
-			'woocommerce_task_list_payments'     => current_user_can( 'manage_woocommerce' ),
 			'woocommerce_demo_store'             => current_user_can( 'manage_woocommerce' ),
 			'woocommerce_demo_store_notice'      => current_user_can( 'manage_woocommerce' ),
 		);

@@ -15,3 +15,5 @@ export { useUserPreferences } from './user-preferences/use-user-preferences';
 
 export { OPTIONS_STORE_NAME } from './options';
 export { withOptionsHydration } from './options/with-options-hydration';
+
+export { REVIEWS_STORE_NAME } from './reviews';

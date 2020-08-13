@@ -6,10 +6,6 @@ import { Component, createElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import {
 	getHistory,
 	getNewPath,
@@ -30,11 +26,11 @@ import BusinessDetails from './steps/business-details';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import { recordEvent } from 'lib/tracks';
+import { QUERY_DEFAULTS } from '../wc-api/constants';
+import { recordEvent } from '../lib/tracks';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
-import withSelect from 'wc-api/with-select';
+import withSelect from '../wc-api/with-select';
 import './style.scss';
 
 class ProfileWizard extends Component {
@@ -214,13 +210,18 @@ class ProfileWizard extends Component {
 			activePlugins,
 			isJetpackConnected,
 			notes,
+			profileItems,
 			updateNote,
 			updateProfileItems,
 			connectToJetpack,
 		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
+
+		const { plugins } = profileItems;
 		const shouldConnectJetpack =
-			activePlugins.includes( 'jetpack' ) && ! isJetpackConnected;
+			( plugins === 'installed' || plugins === 'installed-wcs' ) &&
+			activePlugins.includes( 'jetpack' ) &&
+			! isJetpackConnected;
 
 		const profilerNote = notes.find(
 			( note ) => note.name === 'wc-admin-onboarding-profiler-reminder'

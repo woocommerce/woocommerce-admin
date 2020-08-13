@@ -1,8 +1,6 @@
 <?php
 /**
  * WooCommerce Admin: Feature plugin main class.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin;
@@ -153,7 +151,7 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.5.0-dev' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.6.0-dev' );
 	}
 
 	/**

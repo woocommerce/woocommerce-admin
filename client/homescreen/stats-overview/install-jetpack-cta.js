@@ -4,18 +4,13 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { PLUGINS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 import { H } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
-import { createErrorNotice } from '../../../packages/data/src/plugins/actions';
+import { recordEvent } from '../../lib/tracks';
 
 const getJetpackInstallText = ( jetpackInstallState ) => {
 	return (
