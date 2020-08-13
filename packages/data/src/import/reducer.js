@@ -8,7 +8,6 @@ const reducer = (
 		importStatus: {},
 		importTotals: {},
 		errors: {},
-		data: {},
 	},
 	{ type, importStatus, importTotals, error, resourceName }
 ) => {
