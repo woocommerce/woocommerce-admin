@@ -142,7 +142,6 @@ class TaskDashboard extends Component {
 			createNotice,
 			installAndActivatePlugins,
 			installedPlugins,
-			isAppearanceComplete,
 			isJetpackConnected,
 			onboardingStatus,
 			profileItems,
@@ -155,7 +154,6 @@ class TaskDashboard extends Component {
 			createNotice,
 			installAndActivatePlugins,
 			installedPlugins,
-			isAppearanceComplete,
 			isJetpackConnected,
 			onboardingStatus,
 			profileItems,
@@ -408,9 +406,6 @@ export default compose(
 			activePlugins,
 			countryCode,
 			dismissedTasks,
-			isAppearanceComplete: getOption(
-				'woocommerce_task_list_appearance_complete'
-			),
 			isJetpackConnected: isJetpackConnected(),
 			installedPlugins,
 			isTaskListComplete,

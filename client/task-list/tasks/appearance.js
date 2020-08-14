@@ -223,7 +223,6 @@ class Appearance extends Component {
 
 	async updateNotice() {
 		const {
-			clearOptionCache,
 			clearTaskStatusCache,
 			createNotice,
 			updateOptions,
@@ -241,7 +240,6 @@ class Appearance extends Component {
 			woocommerce_demo_store_notice: storeNoticeText,
 		} );
 
-		clearOptionCache( 'woocommerce_task_list_appearance_complete' );
 		clearTaskStatusCache();
 
 		if ( update.success ) {
@@ -431,16 +429,12 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { invalidateResolution, updateOptions } = dispatch(
-			OPTIONS_STORE_NAME
-		);
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { invalidateResolutionForStoreSelector } = dispatch(
 			ONBOARDING_STORE_NAME
 		);
 
 		return {
-			clearOptionCache: ( optionName ) =>
-				invalidateResolution( 'getOption', [ optionName ] ),
 			clearTaskStatusCache: () =>
 				invalidateResolutionForStoreSelector( 'getTasksStatus' ),
 			createNotice,
