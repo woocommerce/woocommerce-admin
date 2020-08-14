@@ -325,8 +325,10 @@ export default compose(
 		);
 		const { getSettings } = select( SETTINGS_STORE_NAME );
 		const { general: generalSettings = {} } = getSettings( 'general' );
+		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
 
 		const activePlugins = getActivePlugins();
+		const onboardingStatus = getTasksStatus();
 		const profileItems = getProfileItems();
 
 		const optionNames = [
@@ -358,6 +360,7 @@ export default compose(
 			createNotice,
 			installAndActivatePlugins,
 			isJetpackConnected: isJetpackConnected(),
+			onboardingStatus,
 			options,
 			profileItems,
 		} );
