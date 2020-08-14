@@ -7,29 +7,27 @@ import { cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Button, FormToggle } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { Card, H, Plugins } from '@woocommerce/components';
 import {
 	getHistory,
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
+import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	pluginNames,
+	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
-import { getCountryCode } from 'dashboard/utils';
-import withSelect from 'wc-api/with-select';
+import { recordEvent } from '../../../lib/tracks';
+import { getCountryCode } from '../../../dashboard/utils';
+import withSelect from '../../../wc-api/with-select';
 import { getPaymentMethods } from './methods';
 
 class Payments extends Component {
@@ -47,9 +45,7 @@ class Payments extends Component {
 			recommendedMethod: this.getRecommendedMethod(),
 		};
 
-		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
-		this.skipTask = this.skipTask.bind( this );
 	}
 
 	componentDidUpdate() {
@@ -70,60 +66,6 @@ class Payments extends Component {
 			: 'stripe';
 	}
 
-	async completeTask() {
-		const { createNotice, methods, updateOptions } = this.props;
-
-		const update = await updateOptions( {
-			woocommerce_task_list_payments: {
-				completed: 1,
-				timestamp: Math.floor( Date.now() / 1000 ),
-			},
-		} );
-
-		recordEvent( 'tasklist_payment_done', {
-			configured: methods
-				.filter( ( method ) => method.isConfigured )
-				.map( ( method ) => method.key ),
-		} );
-
-		if ( update.success ) {
-			createNotice(
-				'success',
-				__(
-					'💰 Ka-ching! Your store can now accept payments 💳',
-					'woocommerce-admin'
-				)
-			);
-
-			getHistory().push( getNewPath( {}, '/', {} ) );
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating settings',
-					'woocommerce-admin'
-				)
-			);
-		}
-	}
-
-	skipTask() {
-		const { methods, updateOptions } = this.props;
-
-		updateOptions( {
-			woocommerce_task_list_payments: {
-				skipped: 1,
-				timestamp: Math.floor( Date.now() / 1000 ),
-			},
-		} );
-
-		recordEvent( 'tasklist_payment_skip_task', {
-			options: methods.map( ( method ) => method.key ),
-		} );
-
-		getHistory().push( getNewPath( {}, '/', {} ) );
-	}
-
 	markConfigured( method ) {
 		const { enabledMethods } = this.state;
 
@@ -134,11 +76,16 @@ class Payments extends Component {
 			},
 		} );
 
-		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
+		setSetting( 'onboarding', {
+			...getSetting( 'onboarding', {} ),
+			hasPaymentGateway: true,
+		} );
 
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: method,
 		} );
+
+		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
 	}
 
 	getCurrentMethod() {
@@ -194,6 +141,8 @@ class Payments extends Component {
 
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 		this.setState( { enabledMethods } );
+		const hasEnabledMethod =
+			Object.values( enabledMethods ).filter( Boolean ).length > 0;
 
 		recordEvent( 'tasklist_payment_toggle', {
 			enabled: ! method.isEnabled,
@@ -205,6 +154,11 @@ class Payments extends Component {
 				...options[ method.optionName ],
 				enabled: method.isEnabled ? 'no' : 'yes',
 			},
+		} );
+
+		setSetting( 'onboarding', {
+			...getSetting( 'onboarding', {} ),
+			hasPaymentGateway: hasEnabledMethod,
 		} );
 	}
 
@@ -238,10 +192,7 @@ class Payments extends Component {
 	render() {
 		const currentMethod = this.getCurrentMethod();
 		const { busyMethod, enabledMethods, recommendedMethod } = this.state;
-		const { methods, query, requesting } = this.props;
-		const hasEnabledMethods = Object.keys( enabledMethods ).filter(
-			( method ) => enabledMethods[ method ]
-		).length;
+		const { methods, query } = this.props;
 
 		if ( currentMethod ) {
 			return (
@@ -347,24 +298,6 @@ class Payments extends Component {
 						</Card>
 					);
 				} ) }
-				<div className="woocommerce-task-payments__actions">
-					{ ! hasEnabledMethods ? (
-						<Button isLink onClick={ this.skipTask }>
-							{ __(
-								'My store doesn’t take payments',
-								'woocommerce-admin'
-							) }
-						</Button>
-					) : (
-						<Button
-							isPrimary
-							isBusy={ requesting }
-							onClick={ this.completeTask }
-						>
-							{ __( 'Done', 'woocommerce-admin' ) }
-						</Button>
-					) }
-				</div>
 			</div>
 		);
 	}
@@ -384,16 +317,17 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { createNotice, installAndActivatePlugins } = props;
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
-		const { getOption, isOptionsUpdating } = select( OPTIONS_STORE_NAME );
+		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
+		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { general: generalSettings = {} } = getSettings( 'general' );
 
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 
 		const optionNames = [
-			'woocommerce_default_country',
 			'woocommerce_woocommerce_payments_settings',
 			'woocommerce_stripe_settings',
 			'woocommerce_ppec_paypal_settings',
@@ -405,6 +339,7 @@ export default compose(
 			'woocommerce_cod_settings',
 			'woocommerce_bacs_settings',
 			'woocommerce_bacs_accounts',
+			'woocommerce_eway_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {
@@ -412,7 +347,7 @@ export default compose(
 			return result;
 		}, {} );
 		const countryCode = getCountryCode(
-			options.woocommerce_default_country
+			generalSettings.woocommerce_default_country
 		);
 
 		const methods = getPaymentMethods( {
@@ -425,15 +360,12 @@ export default compose(
 			profileItems,
 		} );
 
-		const requesting = isOptionsUpdating();
-
 		return {
 			countryCode,
 			profileItems,
 			activePlugins,
 			options,
 			methods,
-			requesting,
 		};
 	} )
 )( Payments );

@@ -2,7 +2,7 @@
 /**
  * Admin notes tests
  *
- * @package WooCommerce\Tests\Notes
+ * @package WooCommerce\Admin\Tests\Notes
  */
 
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
@@ -201,5 +201,44 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 			3,
 			count( $data_store->get_notes_with_name( $note_name_to_keep ) )
 		);
+	}
+
+	/**
+	 * Test that fatal errors aren't thrown when the Notes datastore read() throws an exception.
+	 */
+	public function test_read_throws_exception() {
+		// Create a test note.
+		$note = new WC_Admin_Note();
+		$note->set_name( 'PHPUNIT_TEST_NOTE_NAME' );
+		$note->set_title( 'PHPUNIT_TEST_NOTE_TITLE' );
+		$note->set_content( 'PHPUNIT_TEST_NOTE_CONTENT' );
+		$note->save();
+
+		$note_id = $note->get_id();
+
+		// Sub in a mock datastore that throws an error on read().
+		$mock_datastore = $this->createMock( \Automattic\WooCommerce\Admin\Notes\DataStore::class );
+		$mock_datastore
+			->method( 'read' )
+			->will( $this->throwException( new \Exception() ) );
+
+		// Suppress deliberately caused errors.
+		$log_file = ini_set( 'error_log', '/dev/null' );
+
+		$filter_datastore = function() use ( $mock_datastore ) {
+			return $mock_datastore;
+		};
+
+		add_filter( 'woocommerce_admin-note_data_store', $filter_datastore );
+
+		// Attempt to retrieve the test note.
+		$note = WC_Admin_Notes::get_note( $note_id );
+
+		remove_filter( 'woocommerce_admin-note_data_store', $filter_datastore );
+
+		ini_set( 'error_log', $log_file );
+
+		$this->assertFalse( $note );
+		$this->assertEquals( 1, did_action( 'woocommerce_caught_exception' ) );
 	}
 }

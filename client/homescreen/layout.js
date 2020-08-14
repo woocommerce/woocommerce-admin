@@ -10,13 +10,10 @@ import {
 	useEffect,
 } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { NOTES_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -24,16 +21,26 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import QuickLinks from '../quick-links';
 import StatsOverview from './stats-overview';
 import './style.scss';
-import { isOnboardingEnabled } from 'dashboard/utils';
+import '../dashboard/style.scss';
+import { isOnboardingEnabled } from '../dashboard/utils';
 import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../header/activity-panel/panels/inbox';
-import withWCApiSelect from 'wc-api/with-select';
+import withWCApiSelect from '../wc-api/with-select';
+import { WelcomeModal } from './welcome-modal';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
 );
 
-export const Layout = ( props ) => {
+export const Layout = ( {
+	isBatchUpdating,
+	query,
+	requestingTaskList,
+	taskListComplete,
+	taskListHidden,
+	shouldShowWelcomeModal,
+	updateOptions,
+} ) => {
 	const [ showInbox, setShowInbox ] = useState( true );
 	const [ isContentSticky, setIsContentSticky ] = useState( false );
 	const content = useRef( null );
@@ -56,21 +63,17 @@ export const Layout = ( props ) => {
 		};
 	}, [] );
 
-	const {
-		isUndoRequesting,
-		query,
-		requestingTaskList,
-		taskListComplete,
-		taskListHidden,
-	} = props;
 	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
 
 	const isInboxPanelEmpty = ( isEmpty ) => {
+		if ( isBatchUpdating ) {
+			return;
+		}
 		setShowInbox( ! isEmpty );
 	};
 
-	if ( isUndoRequesting && ! showInbox ) {
+	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
 	}
 
@@ -118,6 +121,15 @@ export const Layout = ( props ) => {
 			{ isDashboardShown
 				? renderColumns()
 				: isTaskListEnabled && renderTaskList() }
+			{ shouldShowWelcomeModal && (
+				<WelcomeModal
+					onClose={ () => {
+						updateOptions( {
+							woocommerce_task_list_welcome_modal_dismissed: true,
+						} );
+					} }
+				/>
+			) }
 		</div>
 	);
 };
@@ -139,19 +151,36 @@ Layout.propTypes = {
 	 * Page query, used to determine the current task if any.
 	 */
 	query: PropTypes.object.isRequired,
+	/**
+	 * If the welcome modal should display
+	 */
+	shouldShowWelcomeModal: PropTypes.bool,
+	/**
+	 * Dispatch an action to update an option
+	 */
+	updateOptions: PropTypes.func.isRequired,
 };
 
 export default compose(
 	withWCApiSelect( ( select ) => {
-		const {
-			getUndoDismissRequesting,
-		} = select( 'wc-api' );
-		const { isUndoRequesting } = getUndoDismissRequesting();
+		const { isNotesRequesting } = select( NOTES_STORE_NAME );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+
+		const welcomeModalDismissed =
+			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
+			'1';
+
+		const welcomeModalDismissedIsResolving = isResolving( 'getOption', [
+			'woocommerce_task_list_welcome_modal_dismissed',
+		] );
+
+		const shouldShowWelcomeModal =
+			! welcomeModalDismissedIsResolving && ! welcomeModalDismissed;
 
 		if ( isOnboardingEnabled() ) {
 			return {
-				isUndoRequesting,
+				isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
+				shouldShowWelcomeModal,
 				taskListComplete:
 					getOption( 'woocommerce_task_list_complete' ) === 'yes',
 				taskListHidden:
@@ -167,7 +196,11 @@ export default compose(
 		}
 
 		return {
+			shouldShowWelcomeModal,
 			requestingTaskList: false,
 		};
-	} )
+	} ),
+	withDispatch( ( dispatch ) => ( {
+		updateOptions: dispatch( OPTIONS_STORE_NAME ).updateOptions,
+	} ) )
 )( Layout );

@@ -1,11 +1,7 @@
 /**
- * WooCommerce dependencies
+ * External dependencies
  */
 import { getSetting } from '@woocommerce/wc-admin-settings';
-
-/**
- * WooCommerce dependencies
- */
 import { withOptionsHydration } from '@woocommerce/data';
 
 /**
@@ -19,13 +15,18 @@ import WelcomeCard from './welcome-card';
 import '../data';
 
 const MarketingOverview = () => {
-	const allowMarketplaceSuggestions = getSetting( 'allowMarketplaceSuggestions', false );
+	const allowMarketplaceSuggestions = getSetting(
+		'allowMarketplaceSuggestions',
+		false
+	);
 
 	return (
 		<div className="woocommerce-marketing-overview">
 			<WelcomeCard />
 			<InstalledExtensions />
-			{ allowMarketplaceSuggestions && <RecommendedExtensions category="marketing" /> }
+			{ allowMarketplaceSuggestions && (
+				<RecommendedExtensions category="marketing" />
+			) }
 			<KnowledgeBase category="marketing" />
 		</div>
 	);

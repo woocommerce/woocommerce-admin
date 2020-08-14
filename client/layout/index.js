@@ -7,10 +7,7 @@ import { Component, lazy, Suspense } from '@wordpress/element';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { get, isFunction, identity } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
+import { parse } from 'qs';
 import { useFilters, Spinner } from '@woocommerce/components';
 import { getHistory } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
@@ -25,14 +22,15 @@ import {
  */
 import './style.scss';
 import { Controller, getPages, PAGES_FILTER } from './controller';
-import Header from 'header';
+import Header from '../header';
 import Notices from './notices';
-import { recordPageView } from 'lib/tracks';
+import { recordPageView } from '../lib/tracks';
 import TransientNotices from './transient-notices';
+import { REPORTS_FILTER } from '../analytics/report';
+
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
 );
-import { REPORTS_FILTER } from 'analytics/report';
 
 export class PrimaryLayout extends Component {
 	render() {
@@ -108,9 +106,20 @@ class _Layout extends Component {
 		} );
 	}
 
+	getQuery( searchString ) {
+		if ( ! searchString ) {
+			return {};
+		}
+
+		const search = searchString.substring( 1 );
+		return parse( search );
+	}
+
 	render() {
 		const { isEmbedded, ...restProps } = this.props;
-		const { breadcrumbs } = this.props.page;
+		const { location, page } = this.props;
+		const { breadcrumbs } = page;
+		const query = this.getQuery( location && location.search );
 
 		return (
 			<div className="woocommerce-layout">
@@ -121,12 +130,13 @@ class _Layout extends Component {
 							: breadcrumbs
 					}
 					isEmbedded={ isEmbedded }
+					query={ query }
 				/>
 				<TransientNotices />
 				{ ! isEmbedded && (
 					<PrimaryLayout>
 						<div className="woocommerce-layout__main">
-							<Controller { ...restProps } />
+							<Controller { ...restProps } query={ query } />
 						</div>
 					</PrimaryLayout>
 				) }

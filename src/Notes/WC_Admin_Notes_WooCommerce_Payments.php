@@ -3,8 +3,6 @@
  * WooCommerce Admin WooCommerce Payments Note Provider.
  *
  * Adds a note to the merchant's inbox showing the benefits of the WooCommerce Payments.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
@@ -59,6 +57,9 @@ class WC_Admin_Notes_WooCommerce_Payments {
 
 			$note_id = array_pop( $note_ids );
 			$note    = WC_Admin_Notes::get_note( $note_id );
+			if ( false === $note ) {
+				return;
+			}
 
 			// If the WooCommerce Payments plugin was installed after the note was created, make sure it's marked as actioned.
 			if ( self::is_installed() && WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
@@ -130,10 +131,10 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	 * @param WC_Admin_Note $note Note being acted upon.
 	 */
 	public function install( $note ) {
-		if ( self::NOTE_NAME === $note->get_name() ) {
-			$install_request = array( 'plugin' => self::PLUGIN_SLUG );
+		if ( self::NOTE_NAME === $note->get_name() && current_user_can( 'install_plugins' ) ) {
+			$install_request = array( 'plugins' => self::PLUGIN_SLUG );
 			$installer       = new \Automattic\WooCommerce\Admin\API\Plugins();
-			$result          = $installer->install_plugin( $install_request );
+			$result          = $installer->install_plugins( $install_request );
 
 			if ( is_wp_error( $result ) ) {
 				return;

@@ -3,8 +3,6 @@
  * REST API Performance indicators controller
  *
  * Handles requests to the /reports/store-performance endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\PerformanceIndicators;
@@ -16,7 +14,6 @@ defined( 'ABSPATH' ) || exit;
 /**
  * REST API Reports Performance indicators controller class.
  *
- * @package WooCommerce/API
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller {
@@ -41,6 +38,13 @@ class Controller extends \WC_REST_Reports_Controller {
 	 * @var array
 	 */
 	protected $endpoints = array();
+
+	/**
+	 * Contains a list of active Jetpack module slugs.
+	 *
+	 * @var array
+	 */
+	protected $active_jetpack_modules = null;
 
 	/**
 	 * Contains a list of allowed stats.
@@ -178,16 +182,43 @@ class Controller extends \WC_REST_Reports_Controller {
 	}
 
 	/**
+	 * Get active Jetpack modules.
+	 *
+	 * @return array List of active Jetpack module slugs.
+	 */
+	public function get_active_jetpack_modules() {
+		if ( is_null( $this->active_jetpack_modules ) ) {
+			if ( class_exists( '\Jetpack' ) && method_exists( '\Jetpack', 'get_active_modules' ) ) {
+				$active_modules               = \Jetpack::get_active_modules();
+				$this->active_jetpack_modules = is_array( $active_modules ) ? $active_modules : array();
+			} else {
+				$this->active_jetpack_modules = array();
+			}
+		}
+
+		return $this->active_jetpack_modules;
+	}
+
+	/**
+	 * Set active Jetpack modules.
+	 *
+	 * @param array $modules List of active Jetpack module slugs.
+	 */
+	public function set_active_jetpack_modules( $modules ) {
+		$this->active_jetpack_modules = $modules;
+	}
+
+	/**
 	 * Get active Jetpack modules and endpoints.
 	 */
 	public function get_jetpack_modules_data() {
-		if ( ! class_exists( '\Jetpack_Core_Json_Api_Endpoints' ) ) {
+		$active_modules = $this->get_active_jetpack_modules();
+
+		if ( empty( $active_modules ) ) {
 			return;
 		}
 
-		$request  = new \WP_REST_Request( 'GET', '/jetpack/v4/module/all' );
-		$response = rest_do_request( $request );
-		$items    = apply_filters(
+		$items = apply_filters(
 			'woocommerce_rest_performance_indicators_jetpack_items',
 			array(
 				'stats/visitors' => array(
@@ -205,18 +236,8 @@ class Controller extends \WC_REST_Reports_Controller {
 			)
 		);
 
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-
-		if ( 200 !== $response->get_status() || empty( $items ) ) {
-			return;
-		}
-
-		$data = $response->get_data();
-
 		foreach ( $items as $item_key => $item ) {
-			if ( ! $data[ $item['module'] ] || ! $data[ $item['module'] ]['activated'] ) {
+			if ( ! in_array( $item['module'], $active_modules, true ) ) {
 				return;
 			}
 

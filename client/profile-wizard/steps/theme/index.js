@@ -9,10 +9,6 @@ import { decodeEntities } from '@wordpress/html-entities';
 import Gridicon from 'gridicons';
 import { Button, TabPanel, Tooltip } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { Card, H } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
@@ -20,12 +16,12 @@ import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
+import withSelect from '../../../wc-api/with-select';
 import './style.scss';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
-import { getPriceValue } from 'dashboard/utils';
+import { getPriceValue } from '../../../dashboard/utils';
 
 class Theme extends Component {
 	constructor() {
@@ -400,7 +396,7 @@ class Theme extends Component {
 					/>
 				) }
 				{ activeThemeSupportsWooCommerce && (
-					<p>
+					<p className="woocommerce-profile-wizard__themes-skip-this-step">
 						<Button
 							isLink
 							className="woocommerce-profile-wizard__skip"

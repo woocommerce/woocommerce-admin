@@ -7,10 +7,6 @@ import Gridicon from 'gridicons';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { Card } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
@@ -18,29 +14,23 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
  * Internal dependencies
  */
 import './style.scss';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 import WelcomeImage from './images/welcome.svg';
 
-const WelcomeCard = ( {
-	isHidden,
-	updateOptions,
-} ) => {
-
+const WelcomeCard = ( { isHidden, updateOptions } ) => {
 	const hide = () => {
 		updateOptions( {
 			woocommerce_marketing_overview_welcome_hidden: 'yes',
 		} );
 		recordEvent( 'marketing_intro_close', {} );
-	}
+	};
 
 	if ( isHidden ) {
 		return null;
 	}
 
 	return (
-		<Card
-			className="woocommerce-marketing-overview-welcome-card"
-		>
+		<Card className="woocommerce-marketing-overview-welcome-card">
 			<Button
 				label={ __( 'Hide', 'woocommerce-admin' ) }
 				onClick={ hide }
@@ -49,10 +39,15 @@ const WelcomeCard = ( {
 				<Gridicon icon="cross" />
 			</Button>
 			<img src={ WelcomeImage } alt="" />
-			<h3>{ __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce', 'woocommerce-admin' ) }</h3>
+			<h3>
+				{ __(
+					'Grow your customer base and increase your sales with marketing tools built for WooCommerce',
+					'woocommerce-admin'
+				) }
+			</h3>
 		</Card>
-	)
-}
+	);
+};
 
 WelcomeCard.propTypes = {
 	/**
@@ -66,7 +61,7 @@ WelcomeCard.propTypes = {
 };
 
 // named export
-export { WelcomeCard }
+export { WelcomeCard };
 
 // default export
 export default compose(

@@ -6,18 +6,14 @@ import apiFetch from '@wordpress/api-fetch';
 import { Component, Fragment } from '@wordpress/element';
 import { Button, FormToggle } from '@wordpress/components';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { Flag, Form, TextControlWithAffixes } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import { recordEvent } from '../../../lib/tracks';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class ShippingRates extends Component {
 	constructor() {
@@ -131,7 +127,7 @@ class ShippingRates extends Component {
 	}
 
 	renderInputPrefix() {
-		const { symbolPosition, symbol } = this.context.getCurrency();
+		const { symbolPosition, symbol } = this.context.getCurrencyConfig();
 		if ( symbolPosition.indexOf( 'right' ) === 0 ) {
 			return null;
 		}
@@ -143,7 +139,7 @@ class ShippingRates extends Component {
 	}
 
 	renderInputSuffix( rate ) {
-		const { symbolPosition, symbol } = this.context.getCurrency();
+		const { symbolPosition, symbol } = this.context.getCurrencyConfig();
 		if ( symbolPosition.indexOf( 'right' ) === 0 ) {
 			return (
 				<span className="woocommerce-shipping-rate__control-suffix">

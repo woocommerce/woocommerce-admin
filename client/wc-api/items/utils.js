@@ -1,11 +1,7 @@
 /**
- * External dependencies
+ * Internal dependencies
  */
-
-/**
- * WooCommerce dependencies
- */
-import { appendTimestamp, getCurrentDates } from 'lib/date';
+import { appendTimestamp, getCurrentDates } from '../../lib/date';
 
 /**
  * Returns leaderboard data to render a leaderboard table.
@@ -26,6 +22,7 @@ export function getLeaderboard( options ) {
 		persisted_query: persistedQuery,
 		query,
 		select,
+		filterQuery,
 	} = options;
 	const { getItems, getItemsError, isGetItemsRequesting } = select(
 		'wc-api'
@@ -38,6 +35,7 @@ export function getLeaderboard( options ) {
 
 	const datesFromQuery = getCurrentDates( query, options.defaultDateRange );
 	const leaderboardQuery = {
+		...filterQuery,
 		after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
 		before: appendTimestamp( datesFromQuery.primary.before, 'end' ),
 		per_page: perPage,

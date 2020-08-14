@@ -4,18 +4,9 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-
-/**
- * WooCommerce dependencies
- */
-import { getDateParamsFromQuery } from 'lib/date';
 import { getPersistedQuery } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
-
-/**
- * Internal dependencies
- */
 import {
 	EllipsisMenu,
 	MenuItem,
@@ -25,10 +16,15 @@ import {
 	SummaryListPlaceholder,
 	SummaryNumber,
 } from '@woocommerce/components';
-import withSelect from 'wc-api/with-select';
+
+/**
+ * Internal dependencies
+ */
+import { getDateParamsFromQuery } from '../../lib/date';
+import withSelect from '../../wc-api/with-select';
 import './style.scss';
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import { recordEvent } from '../../lib/tracks';
+import { CurrencyContext } from '../../lib/currency-context';
 import { getIndicatorData, getIndicatorValues } from './utils';
 
 const { performanceIndicators: indicators } = getSetting( 'dataEndpoints', {
@@ -134,8 +130,8 @@ class StorePerformance extends Component {
 			compare === 'previous_period'
 				? __( 'Previous Period:', 'woocommerce-admin' )
 				: __( 'Previous Year:', 'woocommerce-admin' );
-		const { formatCurrency, getCurrency } = this.context;
-		const currency = getCurrency();
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return (
 			<SummaryList>
 				{ () =>
@@ -151,7 +147,7 @@ class StorePerformance extends Component {
 							primaryData,
 							secondaryData,
 							currency,
-							formatCurrency,
+							formatAmount,
 							persistedQuery,
 						} );
 
@@ -202,7 +198,7 @@ StorePerformance.contextType = CurrencyContext;
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { hiddenBlocks, query } = props;
+		const { hiddenBlocks, query, filters } = props;
 		const userIndicators = indicators.filter(
 			( indicator ) => ! hiddenBlocks.includes( indicator.stat )
 		);
@@ -219,7 +215,12 @@ export default compose(
 		if ( userIndicators.length === 0 ) {
 			return data;
 		}
-		const indicatorData = getIndicatorData( select, userIndicators, query );
+		const indicatorData = getIndicatorData(
+			select,
+			userIndicators,
+			query,
+			filters
+		);
 
 		return {
 			...data,

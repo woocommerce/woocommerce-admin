@@ -1,23 +1,22 @@
 /**
  * External dependencies
  */
-
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Fragment } from '@wordpress/element';
 import { filter, some } from 'lodash';
 import interpolateComponents from 'interpolate-components';
-
-/**
- * WooCommerce dependencies
- */
 import {
 	getSetting,
 	getAdminLink,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
 import { Link } from '@woocommerce/components';
-import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
+
+/**
+ * Internal dependencies
+ */
+import { WC_ADMIN_NAMESPACE } from '../../../wc-api/constants';
 
 /**
  * Internal dependencies
@@ -25,7 +24,7 @@ import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
 import Bacs from './bacs';
 import BacsIcon from './images/bacs';
 import CodIcon from './images/cod';
-import { createNoticesFromResponse } from 'lib/notices';
+import { createNoticesFromResponse } from '../../../lib/notices';
 import Stripe from './stripe';
 import Square from './square';
 import WCPay from './wcpay';
@@ -33,6 +32,40 @@ import WCPayIcon from './images/wcpay';
 import PayPal from './paypal';
 import Klarna from './klarna';
 import PayFast from './payfast';
+import EWay from './eway';
+
+export function installActivateAndConnectWcpay(
+	resolve,
+	reject,
+	createNotice,
+	installAndActivatePlugins
+) {
+	const errorMessage = __(
+		'There was an error connecting to WooCommerce Payments. Please try again or connect later in store settings.',
+		'woocommerce-admin'
+	);
+
+	const connect = () => {
+		apiFetch( {
+			path: WC_ADMIN_NAMESPACE + '/plugins/connect-wcpay',
+			method: 'POST',
+		} )
+			.then( ( response ) => {
+				window.location = response.connectUrl;
+			} )
+			.catch( () => {
+				createNotice( 'error', errorMessage );
+				reject();
+			} );
+	};
+
+	installAndActivatePlugins( [ 'woocommerce-payments' ] )
+		.then( () => connect() )
+		.catch( ( error ) => {
+			createNoticesFromResponse( error );
+			reject();
+		} );
+}
 
 export function getPaymentMethods( {
 	activePlugins,
@@ -123,31 +156,12 @@ export function getPaymentMethods( {
 			),
 			before: <WCPayIcon />,
 			onClick: ( resolve, reject ) => {
-				const errorMessage = __(
-					'There was an error connecting to WooCommerce Payments. Please try again or connect later in store settings.',
-					'woocommerce-admin'
+				return installActivateAndConnectWcpay(
+					resolve,
+					reject,
+					createNotice,
+					installAndActivatePlugins
 				);
-
-				const connect = () => {
-					apiFetch( {
-						path: WC_ADMIN_NAMESPACE + '/plugins/connect-wcpay',
-						method: 'POST',
-					} )
-						.then( ( response ) => {
-							window.location = response.connectUrl;
-						} )
-						.catch( () => {
-							createNotice( 'error', errorMessage );
-							reject();
-						} );
-				};
-
-				installAndActivatePlugins( [ 'woocommerce-payments' ] )
-					.then( () => connect() )
-					.catch( ( error ) => {
-						createNoticesFromResponse( error );
-						reject();
-					} );
 			},
 			visible: [ 'US', 'PR' ].includes( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
@@ -209,8 +223,11 @@ export function getPaymentMethods( {
 			container: <PayPal />,
 			isConfigured:
 				options.woocommerce_ppec_paypal_settings &&
-				options.woocommerce_ppec_paypal_settings.api_username &&
-				options.woocommerce_ppec_paypal_settings.api_password,
+				( ( options.woocommerce_ppec_paypal_settings.reroute_requests &&
+					options.woocommerce_ppec_paypal_settings.email ) ||
+					( options.woocommerce_ppec_paypal_settings.api_username &&
+						options.woocommerce_ppec_paypal_settings
+							.api_password ) ),
 			isEnabled:
 				options.woocommerce_ppec_paypal_settings &&
 				options.woocommerce_ppec_paypal_settings.enabled === 'yes',
@@ -340,6 +357,35 @@ export function getPaymentMethods( {
 				options.woocommerce_payfast_settings &&
 				options.woocommerce_payfast_settings.enabled === 'yes',
 			optionName: 'woocommerce_payfast_settings',
+		},
+		{
+			key: 'eway',
+			title: __( 'eWAY', 'woocommerce-admin' ),
+			content: (
+				<Fragment>
+					{ __(
+						'The eWAY extension for WooCommerce allows you to take credit card payments directly on your store without redirecting your customers to a third party site to make payment.',
+						'woocommerce-admin'
+					) }
+				</Fragment>
+			),
+			before: (
+				<img
+					src={ wcAssetUrl + 'images/eway-logo.jpg' }
+					alt="eWAY logo"
+				/>
+			),
+			visible: [ 'AU', 'NZ' ].includes( countryCode ) && ! hasCbdIndustry,
+			plugins: [ 'woocommerce-gateway-eway' ],
+			container: <EWay />,
+			isConfigured:
+				options.woocommerce_eway_settings &&
+				options.woocommerce_eway_settings.customer_api &&
+				options.woocommerce_eway_settings.customer_password,
+			isEnabled:
+				options.woocommerce_eway_settings &&
+				options.woocommerce_eway_settings.enabled === 'yes',
+			optionName: 'woocommerce_eway_settings',
 		},
 		{
 			key: 'cod',

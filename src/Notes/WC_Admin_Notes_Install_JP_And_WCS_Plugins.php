@@ -5,8 +5,6 @@
  * Adds a note to the merchant's inbox prompting them to install the Jetpack
  * and WooCommerce Services plugins after it fails to install during
  * WooCommerce setup.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
@@ -80,10 +78,12 @@ class WC_Admin_Notes_Install_JP_And_WCS_Plugins {
 		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
 
 		foreach ( $note_ids as $note_id ) {
-			$note = new WC_Admin_Note( $note_id );
+			$note = WC_Admin_Notes::get_note( $note_id );
 
-			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
-			$note->save();
+			if ( $note ) {
+				$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
+				$note->save();
+			}
 		}
 	}
 

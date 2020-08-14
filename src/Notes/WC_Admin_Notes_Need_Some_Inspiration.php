@@ -3,8 +3,6 @@
  * WooCommerce Admin: Do you need some inspiration?
  *
  * Adds a note to ask the client if they need some inspiration.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
@@ -34,6 +32,11 @@ class WC_Admin_Notes_Need_Some_Inspiration {
 			return;
 		}
 
+		// We don't want to show the note after 30 days.
+		if ( self::wc_admin_active_for( 30 * DAY_IN_SECONDS ) ) {
+			return;
+		}
+
 		$onboarding_profile = get_option( 'woocommerce_onboarding_profile', array() );
 
 		// Confirm that $onboarding_profile is set.
@@ -43,7 +46,10 @@ class WC_Admin_Notes_Need_Some_Inspiration {
 
 		// Make sure that the person who filled out the OBW was not setting up
 		// the store for their customer/client.
-		if ( $onboarding_profile['setup_client'] ) {
+		if (
+			! isset( $onboarding_profile['setup_client'] ) ||
+			$onboarding_profile['setup_client']
+		) {
 			return;
 		}
 

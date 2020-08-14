@@ -3,8 +3,6 @@
  * REST API Plugins Controller
  *
  * Handles requests to install and activate depedent plugins.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -18,7 +16,6 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Plugins Controller.
  *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
 class Plugins extends \WC_REST_Data_Controller {
@@ -201,7 +198,20 @@ class Plugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Installs the requested plugin.
+	 * Install the requested plugin.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|array Plugin Status
+	 */
+	public function install_plugin( $request ) {
+		wc_deprecated_function( 'install_plugin', '4.3', '\Automattic\WooCommerce\Admin\API\Plugins()->install_plugins' );
+		// This method expects a `plugin` argument to be sent, install plugins requires plugins.
+		$request['plugins'] = $request['plugin'];
+		return self::install_plugins( $request );
+	}
+
+	/**
+	 * Installs the requested plugins.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|array Plugin Status

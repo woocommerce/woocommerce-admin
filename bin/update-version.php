@@ -2,7 +2,7 @@
 /**
  * Updates PHP versions to match those in package.json before start or build.
  *
- * @package WooCommerce Admin
+ * @package WooCommerce\Admin
  */
 
 $package_json = file_get_contents( 'package.json' );
@@ -25,6 +25,9 @@ function replace_version( $filename, $package_json ) {
 		if ( stripos( $line, 'Stable tag: ' ) !== false ) {
 			$line = "Stable tag: {$package_json->version}\n";
 		}
+		if ( stripos( $line, '"name": "woocommerce/woocommerce-admin",' ) !== false ) {
+			$line .= "\t\"version\": \"{$package_json->version}\",\n";
+		}
 		$lines[] = $line;
 	}
 	file_put_contents( $filename, $lines );
@@ -34,3 +37,4 @@ replace_version( 'woocommerce-admin.php', $package );
 replace_version( 'src/FeaturePlugin.php', $package );
 replace_version( 'src/Package.php', $package );
 replace_version( 'readme.txt', $package );
+replace_version( 'composer.json', $package );

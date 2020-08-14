@@ -14,11 +14,12 @@ const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
 
 /**
- * WordPress dependencies
+ * External dependencies
  */
 const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-webpack-plugin' );
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'development';
 
 const externals = {
 	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
@@ -92,6 +93,7 @@ const webpackConfig = {
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
+		jsonpFunction: '__wcAdmin_webpackJsonp',
 	},
 	externals,
 	module: {
@@ -102,34 +104,14 @@ const webpackConfig = {
 				},
 			},
 			{
-				test: /\.jsx?$/,
-				loader: 'babel-loader',
-				exclude: /node_modules/,
-			},
-			{
 				test: /\.js?$/,
+				exclude: /node_modules/,
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: [
-							[
-								'@babel/preset-env',
-								{ loose: true, modules: 'commonjs' },
-							],
-						],
-						plugins: [ 'transform-es2015-template-literals' ],
+						presets: [ '@wordpress/babel-preset-default' ],
 					},
 				},
-				include: new RegExp(
-					'/node_modules/(' +
-						'|acorn-jsx' +
-						'|d3-array' +
-						'|debug' +
-						'|marked' +
-						'|regexpu-core' +
-						'|unicode-match-property-ecmascript' +
-						'|unicode-match-property-value-ecmascript)/'
-				),
 			},
 			{ test: /\.md$/, use: 'raw-loader' },
 			{
@@ -169,14 +151,11 @@ const webpackConfig = {
 	},
 	resolve: {
 		extensions: [ '.json', '.js', '.jsx' ],
-		modules: [ path.join( __dirname, 'client' ), 'node_modules' ],
 		alias: {
 			'gutenberg-components': path.resolve(
 				__dirname,
 				'node_modules/@wordpress/components/src'
 			),
-			// @todo - remove once https://github.com/WordPress/gutenberg/pull/16196 is released.
-			'react-spring': 'react-spring/web.cjs',
 			'@woocommerce/wc-admin-settings': path.resolve(
 				__dirname,
 				'client/settings/index.js'
@@ -218,10 +197,11 @@ const webpackConfig = {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
-		new UnminifyWebpackPlugin( {
-			test: /\.js($|\?)/i,
-			mainEntry: 'app/index.min.js',
-		} ),
+		WC_ADMIN_PHASE !== 'core' &&
+			new UnminifyWebpackPlugin( {
+				test: /\.js($|\?)/i,
+				mainEntry: 'app/index.min.js',
+			} ),
 	].filter( Boolean ),
 	optimization: {
 		minimize: NODE_ENV !== 'development',
@@ -229,7 +209,7 @@ const webpackConfig = {
 	},
 };
 
-if ( webpackConfig.mode !== 'production' ) {
+if ( webpackConfig.mode !== 'production' && WC_ADMIN_PHASE !== 'core' ) {
 	webpackConfig.devtool = process.env.SOURCEMAP || 'source-map';
 }
 

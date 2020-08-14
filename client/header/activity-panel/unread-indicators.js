@@ -1,57 +1,62 @@
 /**
- * WooCommerce dependencies
+ * External dependencies
  */
-import { SETTINGS_STORE_NAME, USER_STORE_NAME } from '@woocommerce/data';
+import {
+	NOTES_STORE_NAME,
+	REVIEWS_STORE_NAME,
+	SETTINGS_STORE_NAME,
+	USER_STORE_NAME,
+} from '@woocommerce/data';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
-import { getSetting } from '@woocommerce/wc-admin-settings';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { DEFAULT_ACTIONABLE_STATUSES } from '../../analytics/settings/config';
+import { QUERY_DEFAULTS } from '../../wc-api/constants';
+import { getUnreadNotesCount } from './panels/inbox/utils';
 
 export function getUnreadNotes( select ) {
-	const {
-		getNotes,
-		getNotesError,
-		isGetNotesRequesting,
-	} = select( 'wc-api' );
+	const { getNotes, getNotesError, isResolving } = select( NOTES_STORE_NAME );
 
 	const { getCurrentUser } = select( USER_STORE_NAME );
 	const userData = getCurrentUser();
 	const lastRead = parseInt(
 		userData &&
-		userData.woocommerce_meta &&
-		userData.woocommerce_meta.activity_panel_inbox_last_read,
+			userData.woocommerce_meta &&
+			userData.woocommerce_meta.activity_panel_inbox_last_read,
 		10
 	);
 
 	if ( ! lastRead ) {
 		return null;
 	}
+
+	// @todo This method would be more performant if we ask only for 1 item per page with status "unactioned".
+	// This change should be applied after having pagination implemented.
 	const notesQuery = {
 		page: 1,
-		per_page: 1,
+		per_page: QUERY_DEFAULTS.pageSize,
+		status: 'unactioned',
 		type: QUERY_DEFAULTS.noteTypes,
 		orderby: 'date',
 		order: 'desc',
 	};
 
-	// Disable eslint rule requiring `latestNote` to be defined below because the next two statements
+	// Disable eslint rule requiring `latestNotes` to be defined below because the next two statements
 	// depend on `getNotes` to have been called.
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
-	const latestNote = getNotes( notesQuery );
-	const isError = Boolean( getNotesError( notesQuery ) );
-	const isRequesting = isGetNotesRequesting( notesQuery );
+	const latestNotes = getNotes( notesQuery );
+	const isError = Boolean( getNotesError( 'getNotes', [ notesQuery ] ) );
+	const isRequesting = isResolving( 'getNotes', [ notesQuery ] );
 
 	if ( isError || isRequesting ) {
 		return null;
 	}
 
-	return (
-		latestNote[ 0 ] &&
-		new Date( latestNote[ 0 ].date_created_gmt + 'Z' ).getTime() > lastRead
-	);
+	const unreadNotesCount = getUnreadNotesCount( latestNotes, lastRead );
+
+	return unreadNotesCount > 0;
 }
 
 export function getUnreadOrders( select ) {
@@ -94,11 +99,9 @@ export function getUnreadOrders( select ) {
 }
 
 export function getUnapprovedReviews( select ) {
-	const {
-		getReviewsTotalCount,
-		getReviewsError,
-		isGetReviewsRequesting,
-	} = select( 'wc-api' );
+	const { getReviewsTotalCount, getReviewsError, isResolving } = select(
+		REVIEWS_STORE_NAME
+	);
 	const reviewsEnabled = getSetting( 'reviewsEnabled' );
 	if ( reviewsEnabled === 'yes' ) {
 		const actionableReviewsQuery = {
@@ -111,11 +114,14 @@ export function getUnapprovedReviews( select ) {
 		const totalActionableReviews = getReviewsTotalCount(
 			actionableReviewsQuery
 		);
+
 		const isActionableReviewsError = Boolean(
 			getReviewsError( actionableReviewsQuery )
 		);
-		const isActionableReviewsRequesting = isGetReviewsRequesting(
-			actionableReviewsQuery
+
+		const isActionableReviewsRequesting = isResolving(
+			'getReviewsTotalCount',
+			[ actionableReviewsQuery ]
 		);
 
 		if ( ! isActionableReviewsError && ! isActionableReviewsRequesting ) {

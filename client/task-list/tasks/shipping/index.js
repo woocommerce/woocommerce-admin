@@ -8,10 +8,6 @@ import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { Card, Link, Stepper, Plugins } from '@woocommerce/components';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
@@ -20,11 +16,11 @@ import { SETTINGS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import Connect from 'dashboard/components/connect';
-import { getCountryCode } from 'dashboard/utils';
+import Connect from '../../../dashboard/components/connect';
+import { getCountryCode } from '../../../dashboard/utils';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 
 class Shipping extends Component {
 	constructor( props ) {
@@ -302,13 +298,13 @@ class Shipping extends Component {
 
 	render() {
 		const { isPending, step } = this.state;
-		const { isSettingsRequesting } = this.props;
+		const { isUpdateSettingsRequesting } = this.props;
 
 		return (
 			<div className="woocommerce-task-shipping">
 				<Card className="is-narrow">
 					<Stepper
-						isPending={ isPending || isSettingsRequesting }
+						isPending={ isPending || isUpdateSettingsRequesting }
 						isVertical
 						currentStep={ step }
 						steps={ this.getSteps() }
@@ -321,19 +317,14 @@ class Shipping extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getSettings,
-			getSettingsError,
-			isGetSettingsRequesting,
-		} = select( SETTINGS_STORE_NAME );
+		const { getSettings, isUpdateSettingsRequesting } = select(
+			SETTINGS_STORE_NAME
+		);
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
 
 		const { general: settings = {} } = getSettings( 'general' );
-		const isSettingsError = Boolean( getSettingsError( 'general' ) );
-		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
-
 		const countryCode = getCountryCode(
 			settings.woocommerce_default_country
 		);
@@ -348,8 +339,7 @@ export default compose(
 		return {
 			countryCode,
 			countryName,
-			isSettingsError,
-			isSettingsRequesting,
+			isUpdateSettingsRequesting: isUpdateSettingsRequesting( 'general' ),
 			settings,
 			activePlugins,
 			isJetpackConnected: isJetpackConnected(),

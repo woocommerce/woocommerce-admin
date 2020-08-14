@@ -4,11 +4,12 @@
  *
  * Functions for updating data, used by the background updater.
  *
- * @package WooCommerce/Admin
+ * @package WooCommerce\Admin
  */
 
 use \Automattic\WooCommerce\Admin\Install as Installer;
 use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Deactivate_Plugin;
 
 /**
  * Update order stats `status` index length.
@@ -99,4 +100,27 @@ function wc_admin_update_130_remove_dismiss_action_from_tracking_opt_in_note() {
 	global $wpdb;
 
 	$wpdb->query( "DELETE actions FROM {$wpdb->prefix}wc_admin_note_actions actions INNER JOIN {$wpdb->prefix}wc_admin_notes notes USING (note_id) WHERE actions.name = 'tracking-dismiss' AND notes.name = 'wc-admin-usage-tracking-opt-in'" );
+}
+
+/**
+ * Update DB Version.
+ */
+function wc_admin_update_130_db_version() {
+	Installer::update_db_version( '1.3.0' );
+}
+
+/**
+ * Change the deactivate plugin note type to 'info'.
+ */
+function wc_admin_update_140_change_deactivate_plugin_note_type() {
+	global $wpdb;
+
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}wc_admin_notes SET type = 'info' WHERE name = %s", WC_Admin_Notes_Deactivate_Plugin::NOTE_NAME ) );
+}
+
+/**
+ * Update DB Version.
+ */
+function wc_admin_update_140_db_version() {
+	Installer::update_db_version( '1.4.0' );
 }

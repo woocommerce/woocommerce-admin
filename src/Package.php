@@ -1,8 +1,6 @@
 <?php
 /**
  * Returns information about the package and handles init.
- *
- * @package Automattic/WooCommerce/WCAdmin
  */
 
 /**
@@ -26,7 +24,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.3.0-beta.1';
+	const VERSION = '1.6.0-dev';
 
 	/**
 	 * Package active.
@@ -53,7 +51,9 @@ class Package {
 			self::$active_version = WC_ADMIN_VERSION_NUMBER;
 			$update_version       = new WC_Admin_Notes_Deactivate_Plugin();
 			if ( version_compare( WC_ADMIN_VERSION_NUMBER, self::VERSION, '<' ) ) {
-				$update_version::possibly_add_note();
+				if ( method_exists( $update_version, 'possibly_add_note' ) ) {
+					$update_version::possibly_add_note();
+				}
 			} else {
 				$update_version::delete_note();
 			}

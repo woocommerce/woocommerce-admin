@@ -1,20 +1,14 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
-
-/**
- * Internal dependencies
- */
+import { NOTES_STORE_NAME } from '@woocommerce/data';
 
 class InboxNoteAction extends Component {
 	constructor( props ) {
@@ -30,10 +24,14 @@ class InboxNoteAction extends Component {
 		const {
 			action,
 			actionCallback,
+			batchUpdateNotes,
+			createNotice,
 			noteId,
 			triggerNoteAction,
 			removeAllNotes,
 			removeNote,
+			onClick,
+			updateNote,
 		} = this.props;
 		const href = event.target.href || '';
 		let inAction = true;
@@ -46,28 +44,104 @@ class InboxNoteAction extends Component {
 
 		if ( ! action ) {
 			if ( noteId ) {
-				removeNote( noteId );
+				removeNote( noteId )
+					.then( () => {
+						createNotice(
+							'success',
+							__( 'Message dismissed.', 'woocommerce-admin' ),
+							{
+								actions: [
+									{
+										label: __(
+											'Undo',
+											'woocommerce-admin'
+										),
+										onClick: () => {
+											updateNote( noteId, {
+												is_deleted: 0,
+											} );
+										},
+									},
+								],
+							}
+						);
+					} )
+					.catch( () => {
+						createNotice(
+							'error',
+							__(
+								'Message could not be dismissed.',
+								'woocommerce-admin'
+							)
+						);
+					} );
 			} else {
-				removeAllNotes();
+				removeAllNotes()
+					.then( ( notes ) => {
+						createNotice(
+							'success',
+							__(
+								'All messages dismissed.',
+								'woocommerce-admin'
+							),
+							{
+								actions: [
+									{
+										label: __(
+											'Undo',
+											'woocommerce-admin'
+										),
+										onClick: () => {
+											batchUpdateNotes(
+												notes.map(
+													( note ) => note.id
+												),
+												{
+													is_deleted: 0,
+												}
+											);
+										},
+									},
+								],
+							}
+						);
+					} )
+					.catch( () => {
+						createNotice(
+							'error',
+							__(
+								'Message could not be dismissed.',
+								'woocommerce-admin'
+							)
+						);
+					} );
 			}
+
 			actionCallback( true );
 		} else {
-			this.setState( { inAction }, () =>
-				triggerNoteAction( noteId, action.id )
-			);
+			this.setState( { inAction }, () => {
+				triggerNoteAction( noteId, action.id );
+
+				if ( !! onClick ) {
+					onClick();
+				}
+			} );
 		}
 	}
 
 	render() {
 		const { action, dismiss, label } = this.props;
-		const isPrimary = dismiss || action.primary;
+
 		return (
 			<Button
-				isPrimary={ isPrimary }
-				isSecondary={ ! isPrimary }
+				isSecondary
 				isBusy={ this.state.inAction }
 				disabled={ this.state.inAction }
-				href={ action ? action.url : undefined }
+				href={
+					action && action.url && action.url.length
+						? action.url
+						: undefined
+				}
 				onClick={ this.handleActionClick }
 			>
 				{ dismiss ? label : action.label }
@@ -87,18 +161,27 @@ InboxNoteAction.propTypes = {
 		label: PropTypes.string.isRequired,
 		primary: PropTypes.bool.isRequired,
 	} ),
+	onClick: PropTypes.func,
 };
 
 export default compose(
 	withDispatch( ( dispatch ) => {
-		const { removeAllNotes, removeNote, triggerNoteAction } = dispatch(
-			'wc-api'
-		);
+		const { createNotice } = dispatch( 'core/notices' );
+		const {
+			batchUpdateNotes,
+			removeAllNotes,
+			removeNote,
+			updateNote,
+			triggerNoteAction,
+		} = dispatch( NOTES_STORE_NAME );
 
 		return {
+			batchUpdateNotes,
+			createNotice,
 			removeAllNotes,
 			removeNote,
 			triggerNoteAction,
+			updateNote,
 		};
 	} )
 )( InboxNoteAction );

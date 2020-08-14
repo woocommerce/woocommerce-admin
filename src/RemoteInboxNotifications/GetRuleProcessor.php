@@ -1,8 +1,6 @@
 <?php
 /**
  * Gets the processor for the specified rule type.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
@@ -48,6 +46,8 @@ class GetRuleProcessor {
 				return new ProductCountRuleProcessor();
 			case 'onboarding_profile':
 				return new OnboardingProfileRuleProcessor();
+			case 'is_ecommerce':
+				return new IsEcommerceRuleProcessor();
 		}
 
 		return new FailRuleProcessor();

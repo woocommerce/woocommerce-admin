@@ -4,17 +4,13 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import { Button, ProductIcon } from '../../components';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 
 class InstalledExtensionRow extends Component {
 	constructor( props ) {
@@ -119,7 +115,7 @@ class InstalledExtensionRow extends Component {
 	}
 
 	render() {
-		const { name, description, status, icon } = this.props;
+		const { name, description, status, slug } = this.props;
 		let actions = null;
 
 		switch ( status ) {
@@ -136,7 +132,7 @@ class InstalledExtensionRow extends Component {
 
 		return (
 			<div className="woocommerce-marketing-installed-extensions-card__item">
-				<ProductIcon src={ icon } />
+				<ProductIcon product={ slug } />
 				<div className="woocommerce-marketing-installed-extensions-card__item-text-and-actions">
 					<div className="woocommerce-marketing-installed-extensions-card__item-text">
 						<h4>{ name }</h4>

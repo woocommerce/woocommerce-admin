@@ -4,10 +4,6 @@
 import { __, _n, _x } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { map, get } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
@@ -16,9 +12,9 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from '../../components/report-table';
 import { isLowStock } from './utils';
-import { CurrencyContext } from 'lib/currency-context';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const stockStatuses = getSetting( 'stockStatuses', {} );
@@ -88,9 +84,9 @@ class VariationsReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		const {
-			formatCurrency,
+			formatAmount,
 			formatDecimal: getCurrencyFormatDecimal,
-			getCurrency,
+			getCurrencyConfig,
 		} = this.context;
 
 		return map( data, ( row ) => {
@@ -134,11 +130,15 @@ class VariationsReportTable extends Component {
 					value: sku,
 				},
 				{
-					display: formatValue( getCurrency(), 'number', itemsSold ),
+					display: formatValue(
+						getCurrencyConfig(),
+						'number',
+						itemsSold
+					),
 					value: itemsSold,
 				},
 				{
-					display: formatCurrency( netRevenue ),
+					display: formatAmount( netRevenue ),
 					value: getCurrencyFormatDecimal( netRevenue ),
 				},
 				{
@@ -186,8 +186,8 @@ class VariationsReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const { formatCurrency, getCurrency } = this.context;
-		const currency = getCurrency();
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -209,7 +209,7 @@ class VariationsReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: formatAmount( netRevenue ),
 			},
 			{
 				label: _n(

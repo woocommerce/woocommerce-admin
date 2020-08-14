@@ -1,8 +1,6 @@
 <?php
 /**
  * REST API bootstrap.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -15,6 +13,24 @@ use \Automattic\WooCommerce\Admin\Loader;
  * Init class.
  */
 class Init {
+	/**
+	 * The single instance of the class.
+	 *
+	 * @var object
+	 */
+	protected static $instance = null;
+
+	/**
+	 * Get class instance.
+	 *
+	 * @return object Instance.
+	 */
+	final public static function instance() {
+		if ( null === static::$instance ) {
+			static::$instance = new static();
+		}
+		return static::$instance;
+	}
 
 	/**
 	 * Boostrap REST API.
@@ -132,7 +148,7 @@ class Init {
 
 	/**
 	 * Add the currency symbol (in addition to currency code) to each Order
-	 * object in REST API responses. For use in formatCurrency().
+	 * object in REST API responses. For use in formatAmount().
 	 *
 	 * @param {WP_REST_Response} $response REST response object.
 	 * @returns {WP_REST_Response}

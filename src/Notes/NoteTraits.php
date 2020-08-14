@@ -3,8 +3,6 @@
  * WC Admin Note Traits
  *
  * WC Admin Note Traits class that houses shared functionality across notes.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
@@ -87,5 +85,23 @@ trait NoteTraits {
 	 */
 	public static function add_note() {
 		self::possibly_add_note();
+	}
+
+	/**
+	 * Possibly delete the note, if it exists in the database. Note that this
+	 * is a hard delete, for where it doesn't make sense to soft delete or
+	 * action the note.
+	 */
+	public static function possibly_delete_note() {
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+
+		foreach ( $note_ids as $note_id ) {
+			$note = WC_Admin_Notes::get_note( $note_id );
+
+			if ( $note ) {
+				$data_store->delete( $note );
+			}
+		}
 	}
 }

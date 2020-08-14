@@ -8,26 +8,21 @@ import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 import { Button, NavigableMenu, SelectControl } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EllipsisMenu,
 	MenuItem,
 	MenuTitle,
 	SectionHeader,
 } from '@woocommerce/components';
-import {
-	useUserPreferences,
-} from '@woocommerce/data';
-import { getAllowedIntervalsForQuery } from 'lib/date';
+import { useUserPreferences } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
+import { getAllowedIntervalsForQuery } from '../../lib/date';
 import ChartBlock from './block';
 import { uniqCharts } from './config';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from '../../lib/tracks';
 import './style.scss';
 
 const renderChartToggles = ( { hiddenBlocks, onToggleHiddenBlock } ) => {
@@ -42,13 +37,10 @@ const renderChartToggles = ( { hiddenBlocks, onToggleHiddenBlock } ) => {
 				key={ chart.endpoint + '_' + chart.key }
 				onInvoke={ () => {
 					onToggleHiddenBlock( key )();
-					recordEvent(
-						'dash_charts_chart_toggle',
-						{
-							status: checked ? 'off' : 'on',
-							key,
-						}
-					);
+					recordEvent( 'dash_charts_chart_toggle', {
+						status: checked ? 'off' : 'on',
+						key,
+					} );
 				} }
 			>
 				{ chart.label }
@@ -85,7 +77,7 @@ const renderIntervalSelector = ( { chartInterval, setInterval, query } ) => {
 	);
 };
 
-const renderChartBlocks = ( { hiddenBlocks, path, query } ) => {
+const renderChartBlocks = ( { hiddenBlocks, path, query, filters } ) => {
 	// Reduce the API response to only the necessary stat fields
 	// by supplying all charts common to each endpoint.
 	const chartsByEndpoint = uniqCharts.reduce( ( byEndpoint, chart ) => {
@@ -110,6 +102,7 @@ const renderChartBlocks = ( { hiddenBlocks, path, query } ) => {
 						path={ path }
 						query={ query }
 						selectedChart={ chart }
+						filters={ filters }
 					/>
 				);
 			} ) }
@@ -131,10 +124,15 @@ const DashboardCharts = ( props ) => {
 		path,
 		title,
 		titleInput,
+		filters,
 	} = props;
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
-	const [ chartType, setChartType ] = useState( userPrefs.dashboard_chart_type || 'line' );
-	const [ chartInterval, setChartInterval ] = useState( userPrefs.dashboard_chart_interval || 'day' );
+	const [ chartType, setChartType ] = useState(
+		userPrefs.dashboard_chart_type || 'line'
+	);
+	const [ chartInterval, setChartInterval ] = useState(
+		userPrefs.dashboard_chart_interval || 'day'
+	);
 	const query = { ...props.query, chartType, interval: chartInterval };
 
 	const handleTypeToggle = ( type ) => {
@@ -159,7 +157,10 @@ const DashboardCharts = ( props ) => {
 					<MenuTitle>
 						{ __( 'Charts', 'woocommerce-admin' ) }
 					</MenuTitle>
-					{ renderChartToggles( { hiddenBlocks, onToggleHiddenBlock } ) }
+					{ renderChartToggles( {
+						hiddenBlocks,
+						onToggleHiddenBlock,
+					} ) }
 					{ window.wcAdminFeatures[
 						'analytics-dashboard/customizable'
 					] && (
@@ -195,7 +196,11 @@ const DashboardCharts = ( props ) => {
 				menu={ renderMenu() }
 				className={ 'has-interval-select' }
 			>
-				{ renderIntervalSelector( { chartInterval, setInterval, query } ) }
+				{ renderIntervalSelector( {
+					chartInterval,
+					setInterval,
+					query,
+				} ) }
 				<NavigableMenu
 					className="woocommerce-chart__types"
 					orientation="horizontal"
@@ -210,10 +215,7 @@ const DashboardCharts = ( props ) => {
 									query.chartType === 'line',
 							}
 						) }
-						title={ __(
-							'Line chart',
-							'woocommerce-admin'
-						) }
+						title={ __( 'Line chart', 'woocommerce-admin' ) }
 						aria-checked={ query.chartType === 'line' }
 						role="menuitemradio"
 						tabIndex={ query.chartType === 'line' ? 0 : -1 }
@@ -239,7 +241,7 @@ const DashboardCharts = ( props ) => {
 					</Button>
 				</NavigableMenu>
 			</SectionHeader>
-			{ renderChartBlocks( { hiddenBlocks, path, query } ) }
+			{ renderChartBlocks( { hiddenBlocks, path, query, filters } ) }
 		</div>
 	);
 };

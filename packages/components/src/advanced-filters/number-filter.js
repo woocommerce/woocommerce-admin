@@ -8,10 +8,7 @@ import interpolateComponents from 'interpolate-components';
 import classnames from 'classnames';
 import { sprintf, __, _x } from '@wordpress/i18n';
 
-/**
- * WooCommerce dependencies
- */
-import Currency from '@woocommerce/currency';
+import CurrencyFactory from '@woocommerce/currency';
 
 /**
  * Internal dependencies
@@ -42,9 +39,9 @@ class NumberFilter extends Component {
 		const inputType = get( config, [ 'input', 'type' ], 'number' );
 
 		if ( inputType === 'currency' ) {
-			const { formatCurrency } = Currency( currency );
-			rangeStart = formatCurrency( rangeStart );
-			rangeEnd = formatCurrency( rangeEnd );
+			const { formatAmount } = CurrencyFactory( currency );
+			rangeStart = formatAmount( rangeStart );
+			rangeEnd = formatAmount( rangeEnd );
 		}
 
 		let filterStr = rangeStart;

@@ -6,11 +6,6 @@ import { Component } from '@wordpress/element';
 import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
 import moment from 'moment';
-
-/**
- * WooCommerce dependencies
- */
-import { getCurrentDates, defaultTableDateFormat } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
@@ -20,8 +15,9 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
-import { CurrencyContext } from 'lib/currency-context';
+import { getCurrentDates, defaultTableDateFormat } from '../../../lib/date';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class CouponsReportTable extends Component {
 	constructor() {
@@ -86,7 +82,10 @@ class CouponsReportTable extends Component {
 				username,
 			} = download;
 
-			const { code: errorCode, name: productName } = _embedded.product[ 0 ];
+			const {
+				code: errorCode,
+				name: productName,
+			} = _embedded.product[ 0 ];
 			let productDisplay, productValue;
 
 			// Handle deleted products.
@@ -162,7 +161,7 @@ class CouponsReportTable extends Component {
 		const after = moment( dates.primary.after );
 		const before = moment( dates.primary.before );
 		const days = before.diff( after, 'days' ) + 1;
-		const currency = this.context.getCurrency();
+		const currency = this.context.getCurrencyConfig();
 
 		return [
 			{

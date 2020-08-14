@@ -10,9 +10,6 @@ import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
 import { keyBy, map, merge } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EmptyContent,
 	Flag,
@@ -22,7 +19,7 @@ import {
 } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { SETTINGS_STORE_NAME, REPORTS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -30,12 +27,17 @@ import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
-import withSelect from 'wc-api/with-select';
-import { CurrencyContext } from 'lib/currency-context';
+import { QUERY_DEFAULTS } from '../../../wc-api/constants';
+import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
+import withSelect from '../../../wc-api/with-select';
+import { CurrencyContext } from '../../../lib/currency-context';
+import { recordEvent } from '../../../lib/tracks';
 
 class OrdersPanel extends Component {
+	recordOrderEvent( eventName ) {
+		recordEvent( `activity_panel_orders_${ eventName }`, {} );
+	}
+
 	renderEmptyCard() {
 		const { hasNonActionableOrders } = this.props;
 		if ( hasNonActionableOrders ) {
@@ -68,6 +70,7 @@ class OrdersPanel extends Component {
 					<Button
 						href="https://docs.woocommerce.com/document/managing-orders/"
 						isSecondary
+						onClick={ () => this.recordOrderEvent( 'learn_more' ) }
 						target="_blank"
 					>
 						{ __( 'Learn more', 'woocommerce-admin' ) }
@@ -146,6 +149,9 @@ class OrdersPanel extends Component {
 									href={ getAdminLink(
 										'post.php?action=edit&post=' + orderId
 									) }
+									onClick={ () =>
+										this.recordOrderEvent( 'order_number' )
+									}
 									type="wp-admin"
 								/>
 							),
@@ -156,7 +162,13 @@ class OrdersPanel extends Component {
 								/>
 							) : null,
 							customerLink: customerUrl ? (
-								<Link href={ customerUrl } type="wc-admin" />
+								<Link
+									href={ customerUrl }
+									onClick={ () =>
+										this.recordOrderEvent( 'customer_name' )
+									}
+									type="wc-admin"
+								/>
 							) : (
 								<span />
 							),
@@ -195,7 +207,7 @@ class OrdersPanel extends Component {
 									productsCount
 								) }
 							</span>
-							<span>{ Currency.formatCurrency( total ) }</span>
+							<span>{ Currency.formatAmount( total ) }</span>
 						</div>
 					}
 					actions={
@@ -204,6 +216,11 @@ class OrdersPanel extends Component {
 							href={ getAdminLink(
 								'post.php?action=edit&post=' + order.order_id
 							) }
+							onClick={ () =>
+								this.recordOrderEvent(
+									'orders_begin_fulfillment'
+								)
+							}
 						>
 							{ __( 'Begin fulfillment' ) }
 						</Button>
@@ -219,7 +236,10 @@ class OrdersPanel extends Component {
 		return (
 			<Fragment>
 				{ cards }
-				<ActivityOutboundLink href={ 'edit.php?post_type=shop_order' }>
+				<ActivityOutboundLink
+					href={ 'edit.php?post_type=shop_order' }
+					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
+				>
 					{ __( 'Manage all orders', 'woocommerce-admin' ) }
 				</ActivityOutboundLink>
 			</Fragment>
@@ -317,8 +337,8 @@ export default compose(
 			isGetItemsRequesting,
 			getReportItems,
 			getReportItemsError,
-			isReportItemsRequesting,
-		} = select( 'wc-api' );
+			isResolving,
+		} = select( REPORTS_STORE_NAME );
 		const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
 		const {
 			woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
@@ -379,10 +399,10 @@ export default compose(
 			const isError = Boolean(
 				getReportItemsError( 'orders', ordersQuery )
 			);
-			const isRequesting = isReportItemsRequesting(
+			const isRequesting = isResolving( 'getReportItems', [
 				'orders',
-				ordersQuery
-			);
+				ordersQuery,
+			] );
 			let orders = [];
 
 			if ( reportOrders && reportOrders.length ) {

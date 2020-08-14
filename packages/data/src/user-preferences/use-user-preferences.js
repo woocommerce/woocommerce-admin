@@ -2,10 +2,6 @@
  * External dependencies
  */
 import { mapValues, pick } from 'lodash';
-
-/**
- * WordPress dependencies
- */
 import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
@@ -39,16 +35,48 @@ const getWooCommerceMeta = ( user ) => {
  */
 export const useUserPreferences = () => {
 	// Get our dispatch methods now - this can't happen inside the callback below.
-	const { receiveCurrentUser, saveUser } = useDispatch( STORE_NAME );
+	const dispatch = useDispatch( STORE_NAME );
+	const { addEntities, receiveCurrentUser, saveEntityRecord } = dispatch;
+	let { saveUser } = dispatch;
 
 	const { isRequesting, userPreferences, updateUserPreferences } = useSelect(
 		( select ) => {
 			const {
 				getCurrentUser,
+				getEntity,
+				getEntityRecord,
 				getLastEntitySaveError,
 				hasStartedResolution,
 				hasFinishedResolution,
 			} = select( STORE_NAME );
+
+			// WP 5.3.x doesn't have the User entity defined.
+			if ( typeof saveUser !== 'function' ) {
+				// Polyfill saveUser() - wrapper of saveEntityRecord.
+				saveUser = async ( userToSave ) => {
+					const entityDefined = Boolean(
+						getEntity( 'root', 'user' )
+					);
+
+					if ( ! entityDefined ) {
+						// Add the User entity so saveEntityRecord works.
+						await addEntities( [
+							{
+								name: 'user',
+								kind: 'root',
+								baseURL: '/wp/v2/users',
+								plural: 'users',
+							},
+						] );
+					}
+
+					// Fire off the save action.
+					await saveEntityRecord( 'root', 'user', userToSave );
+
+					// Respond with the updated user.
+					return getEntityRecord( 'root', 'user', userToSave.id );
+				};
+			}
 
 			// Use getCurrentUser() to get WooCommerce meta values.
 			const user = getCurrentUser();
@@ -91,6 +119,15 @@ export const useUserPreferences = () => {
 					};
 				}
 
+				// Optimistically propagate new woocommerce_meta to the store for instant update.
+				receiveCurrentUser( {
+					...user,
+					woocommerce_meta: {
+						...user.woocommerce_meta,
+						...metaData,
+					},
+				} );
+
 				// Use saveUser() to update WooCommerce meta values.
 				const updatedUser = await saveUser( {
 					id: user.id,
@@ -110,9 +147,6 @@ export const useUserPreferences = () => {
 						updatedUser,
 					};
 				}
-
-				// Propagate the updated User object to the store.
-				receiveCurrentUser( updatedUser );
 
 				// Decode the WooCommerce meta after save.
 				const updatedUserResponse = {

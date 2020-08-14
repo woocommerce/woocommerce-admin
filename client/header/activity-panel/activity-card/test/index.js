@@ -5,12 +5,12 @@ import { Button } from '@wordpress/components';
 import Gridicon from 'gridicons';
 import { shallow } from 'enzyme';
 import moment from 'moment';
+import { Gravatar } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import { ActivityCard } from '../';
-import { Gravatar } from '@woocommerce/components';
 
 describe( 'ActivityCard', () => {
 	test( 'should have correct title', () => {
@@ -66,9 +66,7 @@ describe( 'ActivityCard', () => {
 
 	test( 'should render a timestamp on a card', () => {
 		// We're generating this via moment to ensure it's always "3 days ago".
-		const threeDaysAgo = moment()
-			.subtract( 3, 'days' )
-			.format();
+		const threeDaysAgo = moment().subtract( 3, 'days' ).format();
 		const card = shallow(
 			<ActivityCard title="Inbox message" date={ threeDaysAgo }>
 				This card has some content

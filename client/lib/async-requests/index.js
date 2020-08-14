@@ -4,17 +4,13 @@
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 import { identity } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { getIdsFromQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
-import { getTaxCode } from 'analytics/report/taxes/utils';
-import { NAMESPACE } from 'wc-api/constants';
+import { getTaxCode } from '../../analytics/report/taxes/utils';
+import { NAMESPACE } from '../../wc-api/constants';
 
 /**
  * Get a function that accepts ids as they are found in url parameter and
@@ -25,7 +21,7 @@ import { NAMESPACE } from 'wc-api/constants';
  * @return {Function} - a function of ids returning a promise
  */
 export function getRequestByIdString( path, handleData = identity ) {
-	return function( queryString = '', query ) {
+	return function ( queryString = '', query ) {
 		const pathString = typeof path === 'function' ? path( query ) : path;
 		const idList = getIdsFromQuery( queryString );
 		if ( idList.length < 1 ) {
@@ -75,7 +71,7 @@ export const getProductLabels = getRequestByIdString(
 
 export const getTaxRateLabels = getRequestByIdString(
 	NAMESPACE + '/taxes',
-	taxRate => ( {
+	( taxRate ) => ( {
 		key: taxRate.id,
 		label: getTaxCode( taxRate ),
 	} )

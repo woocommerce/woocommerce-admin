@@ -6,10 +6,6 @@ import { Component, createRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { getNewPath } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
@@ -19,11 +15,11 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
  */
 import './style.scss';
 import ActivityPanel from './activity-panel';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from '../lib/tracks';
 
 class Header extends Component {
-	constructor() {
-		super();
+	constructor( props ) {
+		super( props );
 		this.state = {
 			isScrolled: false,
 		};
@@ -99,7 +95,7 @@ class Header extends Component {
 	}
 
 	render() {
-		const { sections, isEmbedded } = this.props;
+		const { sections, isEmbedded, query } = this.props;
 		const { isScrolled } = this.state;
 		const _sections = Array.isArray( sections ) ? sections : [ sections ];
 
@@ -136,7 +132,7 @@ class Header extends Component {
 					} ) }
 				</h1>
 				{ window.wcAdminFeatures[ 'activity-panels' ] && (
-					<ActivityPanel />
+					<ActivityPanel isEmbedded={ isEmbedded } query={ query } />
 				) }
 			</div>
 		);

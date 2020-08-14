@@ -4,8 +4,6 @@
  *
  * Adds a note to ask the client if they are considering starting an online
  * clothing store.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
@@ -61,7 +59,10 @@ class WC_Admin_Notes_Online_Clothing_Store {
 
 		// Make sure that the person who filled out the OBW was not setting up
 		// the store for their customer/client.
-		if ( $onboarding_profile['setup_client'] ) {
+		if (
+			! isset( $onboarding_profile['setup_client'] ) ||
+			$onboarding_profile['setup_client']
+		) {
 			return;
 		}
 

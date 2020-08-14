@@ -5,44 +5,36 @@ import { Component, Suspense, lazy } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 import { identity } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	withOnboardingHydration,
 } from '@woocommerce/data';
 import { Spinner } from '@woocommerce/components';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { isOnboardingEnabled } from 'dashboard/utils';
+import { isOnboardingEnabled } from './utils';
 
 const CustomizableDashboard = lazy( () =>
 	import( /* webpackChunkName: "customizable-dashboard" */ './customizable' )
 );
 
-const ProfileWizard = lazy( () =>
-	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
-);
-
 class Dashboard extends Component {
 	render() {
 		const { path, profileItems, query } = this.props;
+		const { completed: profileCompleted, skipped: profileSkipped } =
+			profileItems || {};
 		if (
 			isOnboardingEnabled() &&
-			! profileItems.completed &&
+			! profileCompleted &&
+			! profileSkipped &&
 			! window.wcAdminFeatures.homescreen
 		) {
-			return (
-				<Suspense fallback={ <Spinner /> }>
-					<ProfileWizard query={ query } />
-				</Suspense>
-			);
+			getHistory().push( getNewPath( {}, `/profiler`, {} ) );
 		}
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {

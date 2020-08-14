@@ -10,9 +10,6 @@ import interpolateComponents from 'interpolate-components';
 import { get, isNull } from 'lodash';
 import PropTypes from 'prop-types';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EmptyContent,
 	Gravatar,
@@ -22,22 +19,27 @@ import {
 	Section,
 } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { REVIEWS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import sanitizeHTML from 'lib/sanitize-html';
-import withSelect from 'wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
+import { QUERY_DEFAULTS } from '../../../wc-api/constants';
+import sanitizeHTML from '../../../lib/sanitize-html';
+import withSelect from '../../../wc-api/with-select';
+import { recordEvent } from '../../../lib/tracks';
 
 class ReviewsPanel extends Component {
 	constructor() {
 		super();
 
 		this.mountTime = new Date().getTime();
+	}
+
+	recordReviewEvent( eventName ) {
+		recordEvent( `activity_panel_reviews_${ eventName }`, {} );
 	}
 
 	renderReview( review, props ) {
@@ -64,11 +66,16 @@ class ReviewsPanel extends Component {
 			),
 			components: {
 				productLink: (
-					<Link href={ product.permalink } type="external" />
+					<Link
+						href={ product.permalink }
+						onClick={ () => this.recordReviewEvent( 'product' ) }
+						type="external"
+					/>
 				),
 				authorLink: (
 					<Link
 						href={ 'mailto:' + review.reviewer_email }
+						onClick={ () => this.recordReviewEvent( 'customer' ) }
 						type="external"
 					/>
 				),
@@ -158,6 +165,7 @@ class ReviewsPanel extends Component {
 		let buttonTarget = '';
 		let buttonText = '';
 		let content = '';
+		let eventName = 'learn_more';
 
 		if ( lastApprovedReviewTime ) {
 			const now = new Date();
@@ -198,6 +206,7 @@ class ReviewsPanel extends Component {
 						) }
 					</p>
 				);
+				eventName = 'view_reviews';
 			}
 		} else {
 			buttonUrl =
@@ -232,6 +241,7 @@ class ReviewsPanel extends Component {
 						href={ buttonUrl }
 						target={ buttonTarget }
 						isSecondary
+						onClick={ () => this.recordReviewEvent( eventName ) }
 					>
 						{ buttonText }
 					</Button>
@@ -312,8 +322,8 @@ ReviewsPanel.defaultProps = {
 
 export default withSelect( ( select, props ) => {
 	const { hasUnapprovedReviews } = props;
-	const { getReviews, getReviewsError, isGetReviewsRequesting } = select(
-		'wc-api'
+	const { getReviews, getReviewsError, isResolving } = select(
+		REVIEWS_STORE_NAME
 	);
 	let reviews = [];
 	let isError = false;
@@ -328,7 +338,7 @@ export default withSelect( ( select, props ) => {
 		};
 		reviews = getReviews( reviewsQuery );
 		isError = Boolean( getReviewsError( reviewsQuery ) );
-		isRequesting = isGetReviewsRequesting( reviewsQuery );
+		isRequesting = isResolving( 'getReviews', [ reviewsQuery ] );
 	} else {
 		const approvedReviewsQuery = {
 			page: 1,
@@ -348,7 +358,7 @@ export default withSelect( ( select, props ) => {
 		}
 
 		isError = Boolean( getReviewsError( approvedReviewsQuery ) );
-		isRequesting = isGetReviewsRequesting( approvedReviewsQuery );
+		isRequesting = isResolving( 'getReviews', [ approvedReviewsQuery ] );
 	}
 
 	return {
