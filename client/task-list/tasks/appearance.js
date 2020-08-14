@@ -65,13 +65,6 @@ class Appearance extends Component {
 		const { isPending, logo } = this.state;
 		const { demoStoreNotice } = this.props;
 
-		const { hasHomepage, hasProducts } = this.props.tasksStatus;
-
-		this.stepVisibility = {
-			homepage: ! hasHomepage,
-			import: ! hasProducts,
-		};
-
 		if ( logo && ! logo.url && ! isPending ) {
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( { isPending: true } );
