@@ -23,15 +23,29 @@ export const withOnboardingHydration = ( data ) => ( OriginalComponent ) => {
 				startResolution,
 				finishResolution,
 				setProfileItems,
+				setTasksStatus,
 			} = registry.dispatch( STORE_NAME );
 
+			const { profileItems, tasksStatus } = onboardingRef.current;
+
 			if (
+				profileItems &&
 				! isResolving( 'getProfileItems', [] ) &&
 				! hasFinishedResolution( 'getProfileItems', [] )
 			) {
 				startResolution( 'getProfileItems', [] );
-				setProfileItems( onboardingRef.current, true );
+				setProfileItems( profileItems, true );
 				finishResolution( 'getProfileItems', [] );
+			}
+
+			if (
+				tasksStatus &&
+				! isResolving( 'getTasksStatus', [] ) &&
+				! hasFinishedResolution( 'getTasksStatus', [] )
+			) {
+				startResolution( 'getTasksStatus', [] );
+				setTasksStatus( tasksStatus, true );
+				finishResolution( 'getTasksStatus', [] );
 			}
 		}, [] );
 
