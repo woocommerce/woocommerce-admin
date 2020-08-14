@@ -7,7 +7,7 @@ import {
 	appendTimestamp,
 	getCurrentDates,
 	getIntervalForQuery,
-} from 'lib/date';
+} from '@woocommerce/date';
 import {
 	flattenFilters,
 	getActiveFiltersFromQuery,
