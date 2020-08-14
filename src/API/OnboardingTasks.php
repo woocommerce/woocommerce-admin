@@ -552,43 +552,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_Error|array
 	 */
 	public function get_status() {
-		$status              = array();
-		$wc_pay_is_connected = false;
-		if ( class_exists( '\WC_Payments' ) ) {
-			$wc_payments_gateway = \WC_Payments::get_gateway();
-			$wc_pay_is_connected = method_exists( $wc_payments_gateway, 'is_connected' )
-				? $wc_payments_gateway->is_connected()
-				: false;
-		}
-
-		$gateways          = WC()->payment_gateways->get_available_payment_gateways();
-		$enabled_gateways  = array_filter(
-			$gateways,
-			function( $gateway ) {
-				return 'yes' === $gateway->enabled;
-			}
-		);
-		$physical_products = count(
-			wc_get_products(
-				array(
-					'virtual' => false,
-					'limit'   => 1,
-				)
-			)
-		);
-
-		// @todo We may want to consider caching some of these and use to check against
-		// task completion along with cache busting for active tasks.
-		$status['automatedTaxSupportedCountries'] = OnboardingTasksFeature::get_automated_tax_supported_countries();
-		$status['hasHomepage']                    = OnboardingTasksFeature::check_task_completion( 'homepage' ) || 'classic' === get_option( 'classic-editor-replace' );
-		$status['hasPaymentGateway']              = ! empty( $enabled_gateways );
-		$status['hasPhysicalProducts']            = $physical_products > 0;
-		$status['hasProducts']                    = OnboardingTasksFeature::check_task_completion( 'products' );
-		$status['isTaxComplete']                  = OnboardingTasksFeature::check_task_completion( 'tax' );
-		$status['shippingZonesCount']             = count( \WC_Shipping_Zones::get_zones() );
-		$status['taxJarActivated']                = class_exists( 'WC_Taxjar' );
-		$status['themeMods']                      = get_theme_mods();
-		$status['wcPayIsConnected']               = $wc_pay_is_connected;
+		$status = OnboardingTasksFeature::get_settings();
 
 		return rest_ensure_response( $status );
 	}
