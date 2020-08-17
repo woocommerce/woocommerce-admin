@@ -42,6 +42,9 @@ const MY_ACCOUNT_DOWNLOADS = baseUrl + 'my-account/downloads';
 const MY_ACCOUNT_ADDRESSES = baseUrl + 'my-account/edit-address';
 const MY_ACCOUNT_ACCOUNT_DETAILS = baseUrl + 'my-account/edit-account';
 
+const WP_ADMIN_START_PROFILE_WIZARD =
+	baseUrl + 'wp-admin/admin.php?page=wc-admin&path=/profiler';
+
 const getProductColumnExpression = ( productTitle ) =>
 	'td[@class="product-name" and ' +
 	`a[contains(text(), "${ productTitle }")]` +
@@ -390,6 +393,12 @@ const StoreOwnerFlow = {
 		await page.goto( WP_ADMIN_SETUP_WIZARD, {
 			waitUntil: 'networkidle0',
 		} );
+	},
+
+	startProfileWizard: async () => {
+		await page.goto( WP_ADMIN_START_PROFILE_WIZARD, {
+			waitUntil: 'networkidle0',
+		} )
 	},
 };
 
