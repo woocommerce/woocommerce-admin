@@ -4,7 +4,6 @@ module.exports = {
 		// temporary conversion to warnings until the below are all handled.
 		'@wordpress/i18n-translator-comments': 'warn',
 		'@wordpress/valid-sprintf': 'warn',
-		'@wordpress/i18n-text-domain': 'warn',
 		'jsdoc/check-param-names': 'warn',
 		'jsdoc/require-param': 'warn',
 		'jsdoc/require-property': 'warn',

@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, withFilters } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { Fragment, useEffect, useRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
@@ -17,8 +17,6 @@ import { config } from './config';
 import Setting from './setting';
 import HistoricalData from './historical-data';
 import { recordEvent } from '../../lib/tracks';
-
-const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
 const Settings = ( { createNotice, query } ) => {
 	const {
@@ -176,4 +174,4 @@ export default compose(
 			createNotice,
 		};
 	} )
-)( withFilters( SETTINGS_FILTER )( Settings ) );
+)( Settings );

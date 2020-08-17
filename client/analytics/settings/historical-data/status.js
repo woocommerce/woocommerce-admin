@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import moment from 'moment';
-import { Spinner, withFilters } from '@wordpress/components';
+import { Spinner } from '@wordpress/components';
 
 const HISTORICAL_DATA_STATUS_FILTER = 'woocommerce_admin_import_status';
 
@@ -50,6 +50,4 @@ function HistoricalDataStatus( { importDate, status } ) {
 	);
 }
 
-export default withFilters( HISTORICAL_DATA_STATUS_FILTER )(
-	HistoricalDataStatus
-);
+export default HistoricalDataStatus;
