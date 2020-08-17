@@ -13,7 +13,6 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { get, xor } from 'lodash';
-
 import {
 	EllipsisMenu,
 	MenuItem,

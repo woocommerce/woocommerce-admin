@@ -11,6 +11,7 @@ import { H } from '@woocommerce/components';
  * Internal dependencies
  */
 import { recordEvent } from '../../lib/tracks';
+import { createErrorNotice } from '../../../packages/data/src/plugins/actions';
 
 const getJetpackInstallText = ( jetpackInstallState ) => {
 	return (
