@@ -188,7 +188,9 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 			)
 		);
 
-		return $response;
+		$data = $this->prepare_response_for_collection( $response );
+
+		return rest_ensure_response( $data );
 	}
 
 	/**
