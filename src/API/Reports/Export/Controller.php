@@ -160,41 +160,35 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 		$report_args = empty( $request['report_args'] ) ? array() : $request['report_args'];
 		$send_email  = isset( $request['email'] ) ? $request['email'] : false;
 		$export_id   = str_replace( '.', '', microtime( true ) );
-
-		$total_rows = ReportExporter::queue_report_export( $export_id, $report_type, $report_args, $send_email );
+		$total_rows  = ReportExporter::queue_report_export( $export_id, $report_type, $report_args, $send_email );
 
 		if ( 0 === $total_rows ) {
-			$response = rest_ensure_response(
+			return rest_ensure_response(
 				array(
-					'status'  => 'error',
 					'message' => __( 'There is no data to export for the given request.', 'woocommerce-admin' ),
 				)
 			);
-
-		} else {
-			$response = rest_ensure_response(
-				array(
-					'status'    => 'success',
-					'message'   => __( 'Your report file is being generated.', 'woocommerce-admin' ),
-					'export_id' => $export_id,
-				)
-			);
-
-			// Include a link to the export status endpoint.
-			$response->add_links(
-				array(
-					'status' => array(
-						'href' => rest_url( sprintf( '%s/reports/%s/export/%s/status', $this->namespace, $report_type, $export_id ) ),
-					),
-				)
-			);
-
-			ReportExporter::update_export_percentage_complete( $report_type, $export_id, 0 );
 		}
 
-		$data = $this->prepare_response_for_collection( $response );
+		ReportExporter::update_export_percentage_complete( $report_type, $export_id, 0 );
 
-		return rest_ensure_response( $data );
+		$response = rest_ensure_response(
+			array(
+				'message'   => __( 'Your report file is being generated.', 'woocommerce-admin' ),
+				'export_id' => $export_id,
+			)
+		);
+
+		// Include a link to the export status endpoint.
+		$response->add_links(
+			array(
+				'status' => array(
+					'href' => rest_url( sprintf( '%s/reports/%s/export/%s/status', $this->namespace, $report_type, $export_id ) ),
+				),
+			)
+		);
+
+		return $response;
 	}
 
 	/**

@@ -1,11 +1,12 @@
 /**
  * External dependencies
  */
-import { apiFetch } from '@wordpress/data-controls';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import { fetchWithHeaders } from '../controls';
 import TYPES from './action-types';
 import { NAMESPACE } from '../constants';
 
@@ -40,7 +41,7 @@ export function* startExport( type, args ) {
 	yield setIsRequesting( 'startExport', { type, args }, true );
 
 	try {
-		const result = yield apiFetch( {
+		const response = yield fetchWithHeaders( {
 			path: `${ NAMESPACE }/reports/${ type }/export`,
 			method: 'POST',
 			data: {
@@ -49,18 +50,17 @@ export function* startExport( type, args ) {
 			},
 		} );
 
-		if ( result && result.status === 'success' ) {
-			yield setExportId( type, args, result.export_id );
-			yield setIsRequesting( 'startExport', { type, args }, false );
+		yield setIsRequesting( 'startExport', { type, args }, false );
 
-			return result;
+		const { export_id: exportId, message } = response.data;
+
+		if ( exportId ) {
+			yield setExportId( type, args, exportId );
+		} else {
+			throw new Error( message );
 		}
 
-		if ( result && result.status === 'error' ) {
-			throw new Error( result.message );
-		}
-
-		throw new Error();
+		return response.data;
 	} catch ( error ) {
 		yield setError( 'startExport', { type, args }, error.message );
 		yield setIsRequesting( 'startExport', { type, args }, false );

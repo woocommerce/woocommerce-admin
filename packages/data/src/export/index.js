@@ -3,7 +3,6 @@
  */
 
 import { select, registerStore } from '@wordpress/data';
-import { controls } from '@wordpress/data-controls';
 
 /**
  * Internal dependencies
@@ -11,6 +10,7 @@ import { controls } from '@wordpress/data-controls';
 import { STORE_NAME } from './constants';
 import * as selectors from './selectors';
 import * as actions from './actions';
+import controls from '../controls';
 import reducer from './reducer';
 
 const storeSelectors = select( STORE_NAME );
