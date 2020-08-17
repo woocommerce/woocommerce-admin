@@ -20,7 +20,14 @@ function register_page( $report_pages ) {
 add_filter( 'woocommerce_analytics_report_menu_items', 'register_page' );
 ```
 
-Next, hook into the reports filter, `woocommerce_admin_reports_list`, to add a report component.
+Each menu item is defined by an array containing `id`, `title`, `parent`, and `path`.
+
+-   `report` (string): The report's id.
+-   `title` (string): The title shown in the sidebar.
+-   `parent` (string): The item's parent in the navigational heirarchy.
+-   `path` (string): The report's relative path.
+
+Next, hook into the JavaScript reports filter, `woocommerce_admin_reports_list`, to add a report component.
 
 ```js
 addFilter(
@@ -51,5 +58,3 @@ The component will get the following props:
 -   `path` (string): The exact path for this view.
 -   `pathMatch` (string): The route matched for this view, should always be `/analytics/:report`.
 -   `params` (object): This will contain the `report` from the path, which should match `report` in the page object.
-
-**Note:** Adding your page to `woocommerce_admin_reports_list` does not add the item to the admin menu, you'll need to do that in PHP with the `woocommerce_admin_report_menu_items` filter.
