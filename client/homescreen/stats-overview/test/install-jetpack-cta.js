@@ -8,7 +8,7 @@ import '@testing-library/jest-dom';
  * Internal dependencies
  */
 import { JetpackCTA } from '../install-jetpack-cta';
-import { recordEvent } from 'lib/tracks';
+import { recordEvent } from '../../../lib/tracks';
 
 jest.mock( 'lib/tracks', () => ( {
 	recordEvent: jest.fn(),
