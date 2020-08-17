@@ -27,9 +27,7 @@ function createWcApiSpec() {
 				];
 			},
 			update( resourceNames, data ) {
-				return [
-					...items.operations.update( resourceNames, data ),
-				];
+				return [ ...items.operations.update( resourceNames, data ) ];
 			},
 			updateLocally( resourceNames, data ) {
 				return [
