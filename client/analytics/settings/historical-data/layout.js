@@ -150,7 +150,7 @@ export default withSelect( ( select, props ) => {
 	const params = formatParams( dateFormat, period, skipChecked );
 	const { customers, orders } = getImportTotals( {
 		...params,
-		lastImportStartTimestamp,
+		timestamp: lastImportStartTimestamp,
 	} );
 	const requirement = inProgress
 		? {
@@ -164,20 +164,27 @@ export default withSelect( ( select, props ) => {
 		imported_from: importDate,
 		is_importing: isImporting,
 		orders: ordersStatus,
-	} = getImportStatus( { ...requirement, lastImportStartTimestamp } );
+	} = getImportStatus( {
+		...requirement,
+		timestamp: lastImportStartTimestamp,
+	} );
 	const { imported: customersProgress, total: customersTotal } =
 		customersStatus || {};
 	const { imported: ordersProgress, total: ordersTotal } = ordersStatus || {};
 	const isStatusLoading = isResolving( 'getImportStatus', [
-		{ ...requirement, lastImportStartTimestamp },
+		{ ...requirement, timestamp: lastImportStartTimestamp },
 	] );
 
 	const isError = ! isStatusLoading
 		? Boolean(
 				getImportError( {
 					...requirement,
-					lastImportStartTimestamp,
-				} ) || getImportError( { ...params, lastImportStartTimestamp } )
+					timestamp: lastImportStartTimestamp,
+				} ) ||
+					getImportError( {
+						...params,
+						timestamp: lastImportStartTimestamp,
+					} )
 		  )
 		: false;
 
@@ -200,7 +207,10 @@ export default withSelect( ( select, props ) => {
 
 	const activateInterval = ( activeImport || isImporting ) && inProgress;
 	if ( activateInterval ) {
-		setIsRequesting( { ...requirement, lastImportStartTimestamp } );
+		setIsRequesting( {
+			...requirement,
+			timestamp: lastImportStartTimestamp,
+		} );
 	}
 
 	if ( hasImportFinished ) {
