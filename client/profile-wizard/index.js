@@ -328,11 +328,21 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { connectToJetpack } = dispatch( PLUGINS_STORE_NAME );
+		const {
+			connectToJetpackWithFailureRedirect,
+			createErrorNotice,
+		} = dispatch( PLUGINS_STORE_NAME );
 		const { updateNote } = dispatch( NOTES_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
+
+		const connectToJetpack = ( failureRedirect ) => {
+			connectToJetpackWithFailureRedirect(
+				failureRedirect,
+				createErrorNotice
+			);
+		};
 
 		return {
 			connectToJetpack,
