@@ -198,6 +198,7 @@ class ProfileWizard extends Component {
 		this.cachedActivePlugins = activePlugins;
 
 		const nextStep = this.getSteps()[ currentStepIndex + 1 ];
+
 		if ( typeof nextStep === 'undefined' ) {
 			this.completeProfiler();
 			return;
@@ -244,6 +245,8 @@ class ProfileWizard extends Component {
 					connectToJetpack(
 						getHistory().push( getNewPath( {}, '/', {} ) )
 					);
+				} else {
+					getHistory().push( getNewPath( {}, '/', {} ) );
 				}
 			} );
 	}
