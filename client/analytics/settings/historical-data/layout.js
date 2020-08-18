@@ -7,18 +7,18 @@ import { isNil } from 'lodash';
 import { SECOND } from '@fresh-data/framework';
 import { SectionHeader } from '@woocommerce/components';
 import { IMPORT_STORE_NAME } from '@woocommerce/data';
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { DEFAULT_REQUIREMENT } from '../../../wc-api/constants';
 import { formatParams, getStatus } from './utils';
 import HistoricalDataActions from './actions';
 import HistoricalDataPeriodSelector from './period-selector';
 import HistoricalDataProgress from './progress';
 import HistoricalDataStatus from './status';
 import HistoricalDataSkipCheckbox from './skip-checkbox';
-import withSelect from '../../../wc-api/with-select';
+import { DEFAULT_REQUIREMENT } from '../constants';
 import './style.scss';
 
 class HistoricalDataLayout extends Component {
