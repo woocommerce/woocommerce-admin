@@ -81,6 +81,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Task list - add a shortcut back to store setup. #4853
 - Dev: Update the colors of the illustrations in the welcome modal. #4945
 - Enhancement: Add eWAY to Payment Setup for AU/NZ Stores. #4947
+- Tweak: Remove the Composite products option from the onboarding wizard #4703
 
 = 1.4.0 2020-07-22 =
 - Fix: Update returning customer total to include customers whose first order was within the report date range #4430
@@ -101,7 +102,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Move the WooCommerce > Coupons dashboard menu item to Marketing > Coupons. #4786
 - Tweak: Add education and travel to the onboarding industry types #4694
 - Tweak: Refactor Jetpack connection flows #4655
-- Tweak: Remove the Composite products option from the onboarding wizard #4703
 - Tweak: Refactor tax task to use promise chain #4683
 - Tweak: Add bundle install UI to Business Details step #4695
 - Tweak: Include Product Bundles and Product Add-ons as OBW product options #4705
