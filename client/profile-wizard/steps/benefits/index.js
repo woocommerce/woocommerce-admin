@@ -104,7 +104,6 @@ class Benefits extends Component {
 		] )
 			.then( goToNextStep )
 			.catch( ( pluginError, profileError ) => {
-				console.log( 'There was an error' );
 				if ( pluginError ) {
 					createNoticesFromResponse( pluginError );
 				}
