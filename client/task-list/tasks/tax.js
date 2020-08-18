@@ -10,11 +10,7 @@ import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Card, H, Link, Stepper, Plugins } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
-import {
-	getAdminLink,
-	getSetting,
-	setSetting,
-} from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
