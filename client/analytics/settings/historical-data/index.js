@@ -7,7 +7,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import moment from 'moment';
-import { NOTES_STORE_NAME } from '@woocommerce/data';
+import { IMPORT_STORE_NAME, NOTES_STORE_NAME } from '@woocommerce/data';
 import { withDispatch } from '@wordpress/data';
 import { withSpokenMessages } from '@wordpress/components';
 import { recordEvent } from '@woocommerce/tracks';
@@ -25,6 +25,8 @@ class HistoricalData extends Component {
 		super( ...arguments );
 
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
+		this.isImportRequesting = false;
+		this.intervalId = -1;
 
 		this.state = {
 			// Whether there is an active import (which might have been stopped)
@@ -49,6 +51,22 @@ class HistoricalData extends Component {
 		this.onDateChange = this.onDateChange.bind( this );
 		this.onPeriodChange = this.onPeriodChange.bind( this );
 		this.onSkipChange = this.onSkipChange.bind( this );
+		this.setIsRequesting = this.setIsRequesting.bind( this );
+	}
+
+	setIsRequesting( query ) {
+		const { timeout } = query;
+		if ( ! this.isImportRequesting ) {
+			this.isImportRequesting = true;
+			this.intervalId = setInterval( () => {
+				this.clearImportStatus( query );
+			}, timeout );
+		}
+	}
+
+	clearImportStatus( query ) {
+		const { invalidateResolution } = this.props;
+		invalidateResolution( 'getImportStatus', [ query ] );
 	}
 
 	makeQuery( path, errorMessage ) {
@@ -79,6 +97,8 @@ class HistoricalData extends Component {
 	onImportFinished() {
 		const { debouncedSpeak } = this.props;
 		debouncedSpeak( 'Import complete' );
+		clearInterval( this.intervalId );
+		this.isImportRequesting = false;
 		this.setState( {
 			lastImportStopTimestamp: Date.now(),
 		} );
@@ -134,6 +154,8 @@ class HistoricalData extends Component {
 	}
 
 	onStopImport() {
+		clearInterval( this.intervalId );
+		this.isImportRequesting = false;
 		this.setState( {
 			lastImportStopTimestamp: Date.now(),
 		} );
@@ -200,6 +222,7 @@ class HistoricalData extends Component {
 				onStopImport={ this.onStopImport }
 				period={ period }
 				skipChecked={ skipChecked }
+				setIsRequesting={ this.setIsRequesting }
 			/>
 		);
 	}
@@ -221,8 +244,9 @@ export default compose( [
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { updateNote } = dispatch( NOTES_STORE_NAME );
+		const { invalidateResolution } = dispatch( IMPORT_STORE_NAME );
 
-		return { updateNote };
+		return { invalidateResolution, updateNote };
 	} ),
 	withSpokenMessages,
 ] )( HistoricalData );

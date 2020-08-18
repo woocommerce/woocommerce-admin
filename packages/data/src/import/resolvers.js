@@ -3,6 +3,7 @@
  */
 import { addQueryArgs } from '@wordpress/url';
 import { apiFetch } from '@wordpress/data-controls';
+import { omit } from 'lodash';
 
 /**
  * Internal dependencies
@@ -14,7 +15,7 @@ export function* getImportStatus( query ) {
 	try {
 		const url = addQueryArgs(
 			`${ NAMESPACE }/reports/import/status`,
-			query
+			omit( query, [ 'timestamp' ] )
 		);
 		const response = yield apiFetch( { path: url } );
 		yield setImportStatus( query, response );
@@ -27,7 +28,7 @@ export function* getImportTotals( query ) {
 	try {
 		const url = addQueryArgs(
 			`${ NAMESPACE }/reports/import/totals`,
-			query
+			omit( query, [ 'timestamp' ] )
 		);
 		const response = yield apiFetch( { path: url } );
 		yield setImportTotals( query, response );

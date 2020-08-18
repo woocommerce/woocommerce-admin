@@ -138,6 +138,7 @@ export default withSelect( ( select, props ) => {
 		onImportStarted,
 		onImportFinished,
 		period,
+		setIsRequesting,
 		skipChecked,
 	} = props;
 
@@ -147,7 +148,10 @@ export default withSelect( ( select, props ) => {
 		lastImportStartTimestamp > lastImportStopTimestamp;
 
 	const params = formatParams( dateFormat, period, skipChecked );
-	const { customers, orders } = getImportTotals( params );
+	const { customers, orders } = getImportTotals( {
+		...params,
+		lastImportStartTimestamp,
+	} );
 	const requirement = inProgress
 		? {
 				freshness: 3 * SECOND,
@@ -160,14 +164,21 @@ export default withSelect( ( select, props ) => {
 		imported_from: importDate,
 		is_importing: isImporting,
 		orders: ordersStatus,
-	} = getImportStatus( requirement );
+	} = getImportStatus( { ...requirement, lastImportStartTimestamp } );
 	const { imported: customersProgress, total: customersTotal } =
 		customersStatus || {};
 	const { imported: ordersProgress, total: ordersTotal } = ordersStatus || {};
-	const isStatusLoading = isResolving( 'getImportStatus', [ requirement ] );
+	const isStatusLoading = isResolving( 'getImportStatus', [
+		{ ...requirement, lastImportStartTimestamp },
+	] );
 
 	const isError = ! isStatusLoading
-		? Boolean( getImportError( requirement ) || getImportError( params ) )
+		? Boolean(
+				getImportError( {
+					...requirement,
+					lastImportStartTimestamp,
+				} ) || getImportError( { ...params, lastImportStartTimestamp } )
+		  )
 		: false;
 
 	const hasImportStarted = Boolean(
@@ -186,6 +197,12 @@ export default withSelect( ( select, props ) => {
 			( ( customersProgress === customersTotal && customersTotal > 0 ) ||
 				( ordersProgress === ordersTotal && ordersTotal > 0 ) )
 	);
+
+	const activateInterval = ( activeImport || isImporting ) && inProgress;
+	if ( activateInterval ) {
+		setIsRequesting( { ...requirement, lastImportStartTimestamp } );
+	}
+
 	if ( hasImportFinished ) {
 		onImportFinished();
 	}
