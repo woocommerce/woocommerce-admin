@@ -134,6 +134,11 @@ class OnboardingTasks {
 			return $settings;
 		}
 
+		// If onboarding isn't enabled this will throw warnings.
+		if ( ! isset( $settings['onboarding'] ) ) {
+			$settings['onboarding'] = array();
+		}
+
 		$settings['onboarding'] = array_merge(
 			$settings['onboarding'],
 			array(
