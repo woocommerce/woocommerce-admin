@@ -112,7 +112,8 @@ export default {
 		const query = search
 			? {
 					search,
-					per_page: 10,
+					per_page: 30,
+					_fields: [ 'id', 'sku', 'description', 'attributes' ],
 			  }
 			: {};
 		const product = getQuery().products;
