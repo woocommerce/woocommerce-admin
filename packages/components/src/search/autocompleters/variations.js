@@ -150,7 +150,6 @@ export default {
 					height={ 18 }
 					alt=""
 				/>
-				,
 				<span
 					key="name"
 					className="woocommerce-search__result-name"
@@ -162,7 +161,6 @@ export default {
 					</strong>
 					{ match.suggestionAfterMatch }
 				</span>
-				,
 			</Fragment>
 		);
 	},
