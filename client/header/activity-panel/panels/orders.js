@@ -5,6 +5,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
@@ -23,6 +24,7 @@ import {
 	SETTINGS_STORE_NAME,
 	REPORTS_STORE_NAME,
 	ITEMS_STORE_NAME,
+	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -32,9 +34,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
-import { QUERY_DEFAULTS } from '../../../wc-api/constants';
 import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
-import withSelect from '../../../wc-api/with-select';
 import { CurrencyContext } from '../../../lib/currency-context';
 
 class OrdersPanel extends Component {
