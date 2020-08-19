@@ -30,7 +30,6 @@ class HistoricalDataLayout extends Component {
 			dateFormat,
 			importDate,
 			inProgress,
-			isError,
 			onPeriodChange,
 			onDateChange,
 			onSkipChange,
@@ -42,15 +41,8 @@ class HistoricalDataLayout extends Component {
 			ordersTotal,
 			period,
 			skipChecked,
+			status,
 		} = this.props;
-		const status = getStatus( {
-			customersProgress,
-			customersTotal,
-			inProgress,
-			isError,
-			ordersProgress,
-			ordersTotal,
-		} );
 
 		return (
 			<Fragment>
@@ -205,7 +197,29 @@ export default withSelect( ( select, props ) => {
 				( ordersProgress === ordersTotal && ordersTotal > 0 ) )
 	);
 
+	let response = {
+		customersTotal: customers,
+		isError,
+		ordersTotal: orders,
+	};
+
+	if ( activeImport ) {
+		response = {
+			customersProgress,
+			customersTotal: isNil( customersTotal )
+				? customers
+				: customersTotal,
+			inProgress,
+			isError,
+			ordersProgress,
+			ordersTotal: isNil( ordersTotal ) ? orders : ordersTotal,
+		};
+	}
+
+	const status = getStatus( response );
+
 	const activateInterval = ( activeImport || isImporting ) && inProgress;
+
 	if ( activateInterval ) {
 		startStatusCheckInterval();
 	}
@@ -214,22 +228,5 @@ export default withSelect( ( select, props ) => {
 		onImportFinished();
 	}
 
-	if ( ! activeImport ) {
-		return {
-			customersTotal: customers,
-			importDate,
-			isError,
-			ordersTotal: orders,
-		};
-	}
-
-	return {
-		customersProgress,
-		customersTotal: isNil( customersTotal ) ? customers : customersTotal,
-		importDate,
-		inProgress,
-		isError,
-		ordersProgress,
-		ordersTotal: isNil( ordersTotal ) ? orders : ordersTotal,
-	};
+	return { ...response, importDate, status };
 } )( HistoricalDataLayout );
