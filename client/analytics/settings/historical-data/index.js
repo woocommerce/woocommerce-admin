@@ -76,17 +76,19 @@ class HistoricalData extends Component {
 	}
 
 	clearCache( resolver, query ) {
+		const { lastImportStartTimestamp } = this.state;
 		const { invalidateResolution } = this.props;
-		invalidateResolution( resolver, [ query ] );
+		invalidateResolution( resolver, [
+			{ ...query, timestamp: lastImportStartTimestamp },
+		] );
 	}
 
 	getImportStatusRequirement() {
-		const { lastImportStartTimestamp } = this.state;
 		const requirement = {
 			freshness: 3 * SECOND,
 			timeout: 3 * SECOND,
 		};
-		return { ...requirement, timestamp: lastImportStartTimestamp };
+		return requirement;
 	}
 
 	makeQuery( path, errorMessage ) {
@@ -157,14 +159,11 @@ class HistoricalData extends Component {
 	}
 
 	onReimportData() {
-		const { lastImportStartTimestamp, period, skipChecked } = this.state;
+		const { period, skipChecked } = this.state;
 		const params = formatParams( this.dateFormat, period, skipChecked );
 
 		// We need to clear the cache of the selectors `getImportTotals` and `getImportStatus`
-		this.clearCache( 'getImportTotals', {
-			...params,
-			timestamp: lastImportStartTimestamp,
-		} );
+		this.clearCache( 'getImportTotals', params );
 		this.clearCache( 'getImportStatus', this.getImportStatusRequirement() );
 		this.setState( {
 			activeImport: false,
