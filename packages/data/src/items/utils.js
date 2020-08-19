@@ -2,7 +2,11 @@
  * External dependencies
  */
 import { appendTimestamp, getCurrentDates } from '@woocommerce/date';
-import { ITEMS_STORE_NAME } from '@woocommerce/data';
+
+/**
+ * Internal dependencies
+ */
+import { STORE_NAME } from './constants';
 
 /**
  * Returns leaderboard data to render a leaderboard table.
@@ -25,7 +29,7 @@ export function getLeaderboard( options ) {
 		select,
 		filterQuery,
 	} = options;
-	const { getItems, getItemsError, isResolving } = select( ITEMS_STORE_NAME );
+	const { getItems, getItemsError, isResolving } = select( STORE_NAME );
 	const response = {
 		isRequesting: false,
 		isError: false,
@@ -65,7 +69,7 @@ export function getLeaderboard( options ) {
  * @return {Object}   Object containing API request information and the matching items.
  */
 export function searchItemsByString( select, endpoint, search ) {
-	const { getItems, getItemsError, isResolving } = select( ITEMS_STORE_NAME );
+	const { getItems, getItemsError, isResolving } = select( STORE_NAME );
 
 	const items = {};
 	let isRequesting = false;
