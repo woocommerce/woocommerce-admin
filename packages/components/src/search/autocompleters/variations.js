@@ -96,12 +96,7 @@ import ProductImage from '../../product-image';
  * @return {string} - variation name
  */
 function getVariationName( variation ) {
-	return variation.attributes.reduce(
-		( desc, attribute, index, arr ) =>
-			desc +
-			`${ attribute.option }${ arr.length === index + 1 ? '' : ', ' }`,
-		''
-	);
+	return variation.attributes.map( ( { option } ) => option ).join( ', ' );
 }
 
 /**
