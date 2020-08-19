@@ -125,8 +125,9 @@ class ProductTypes extends Component {
 									label={
 										<ProductTypeLabel
 											description={
-												productTypes[ slug ].label
+												productTypes[ slug ].description
 											}
+											label={ productTypes[ slug ].label }
 											annualPrice={
 												productTypes[ slug ]
 													.yearly_price
@@ -146,23 +147,25 @@ class ProductTypes extends Component {
 								/>
 							);
 						} ) }
+						<div className="woocommerce-profile-wizard__product-types-pricing-toggle woocommerce-profile-wizard__checkbox">
+							{ __(
+								'Display monthly prices',
+								'woocommerce-admin'
+							) }
+							<FormToggle
+								checked={ isMonthlyPricing }
+								onChange={ () =>
+									this.setState( {
+										isMonthlyPricing: ! isMonthlyPricing,
+									} )
+								}
+							/>
+						</div>
 						{ error && (
 							<span className="woocommerce-profile-wizard__error">
 								{ error }
 							</span>
 						) }
-					</div>
-
-					<div className="">
-						{ __( 'Display monthly prices', 'woocommerce-admin' ) }
-						<FormToggle
-							checked={ isMonthlyPricing }
-							onChange={ () =>
-								this.setState( {
-									isMonthlyPricing: ! isMonthlyPricing,
-								} )
-							}
-						/>
 					</div>
 
 					<div className="woocommerce-profile-wizard__card-actions">
