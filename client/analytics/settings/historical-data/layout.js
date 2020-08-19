@@ -138,7 +138,7 @@ export default withSelect( ( select, props ) => {
 		onImportStarted,
 		onImportFinished,
 		period,
-		setIsRequesting,
+		startStatusCheckInterval,
 		skipChecked,
 	} = props;
 
@@ -207,10 +207,7 @@ export default withSelect( ( select, props ) => {
 
 	const activateInterval = ( activeImport || isImporting ) && inProgress;
 	if ( activateInterval ) {
-		setIsRequesting( {
-			...requirement,
-			timestamp: lastImportStartTimestamp,
-		} );
+		startStatusCheckInterval();
 	}
 
 	if ( hasImportFinished ) {

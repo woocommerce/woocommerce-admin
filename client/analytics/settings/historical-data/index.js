@@ -11,6 +11,7 @@ import { IMPORT_STORE_NAME, NOTES_STORE_NAME } from '@woocommerce/data';
 import { withDispatch } from '@wordpress/data';
 import { withSpokenMessages } from '@wordpress/components';
 import { recordEvent } from '@woocommerce/tracks';
+import { SECOND } from '@fresh-data/framework';
 
 /**
  * Internal dependencies
@@ -25,8 +26,8 @@ class HistoricalData extends Component {
 		super( ...arguments );
 
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
-		this.isImportRequesting = false;
 		this.intervalId = -1;
+		this.fetching = false;
 
 		this.state = {
 			// Whether there is an active import (which might have been stopped)
@@ -51,29 +52,50 @@ class HistoricalData extends Component {
 		this.onDateChange = this.onDateChange.bind( this );
 		this.onPeriodChange = this.onPeriodChange.bind( this );
 		this.onSkipChange = this.onSkipChange.bind( this );
-		this.setIsRequesting = this.setIsRequesting.bind( this );
+		this.startStatusCheckInterval = this.startStatusCheckInterval.bind(
+			this
+		);
+		this.cancelStatusCheckInterval = this.cancelStatusCheckInterval.bind(
+			this
+		);
 	}
 
-	setIsRequesting( query ) {
+	startStatusCheckInterval() {
+		const query = this.getImportStatusRequirement();
 		const { timeout } = query;
-		if ( ! this.isImportRequesting ) {
-			this.isImportRequesting = true;
+		if ( this.intervalId < 0 ) {
 			this.intervalId = setInterval( () => {
-				this.clearImportStatus( query );
+				this.clearCache( 'getImportStatus', query );
 			}, timeout );
 		}
 	}
 
-	clearImportStatus( query ) {
+	cancelStatusCheckInterval() {
+		clearInterval( this.intervalId );
+		this.intervalId = -1;
+	}
+
+	clearCache( resolver, query ) {
 		const { invalidateResolution } = this.props;
-		invalidateResolution( 'getImportStatus', [ query ] );
+		invalidateResolution( resolver, [ query ] );
+	}
+
+	getImportStatusRequirement() {
+		const { lastImportStartTimestamp } = this.state;
+		const requirement = {
+			freshness: 3 * SECOND,
+			timeout: 3 * SECOND,
+		};
+		return { ...requirement, timestamp: lastImportStartTimestamp };
 	}
 
 	makeQuery( path, errorMessage ) {
 		const { createNotice } = this.props;
+		this.fetching = true;
 		apiFetch( { path, method: 'POST' } )
 			.then( ( response ) => {
 				if ( response.status === 'success' ) {
+					this.fetching = false;
 					createNotice( 'success', response.message );
 				} else {
 					createNotice( 'error', errorMessage );
@@ -95,13 +117,14 @@ class HistoricalData extends Component {
 	}
 
 	onImportFinished() {
-		const { debouncedSpeak } = this.props;
-		debouncedSpeak( 'Import complete' );
-		clearInterval( this.intervalId );
-		this.isImportRequesting = false;
-		this.setState( {
-			lastImportStopTimestamp: Date.now(),
-		} );
+		if ( ! this.fetching ) {
+			const { debouncedSpeak } = this.props;
+			debouncedSpeak( 'Import complete' );
+			this.cancelStatusCheckInterval();
+			this.setState( {
+				lastImportStopTimestamp: Date.now(),
+			} );
+		}
 	}
 
 	onImportStarted() {
@@ -134,6 +157,15 @@ class HistoricalData extends Component {
 	}
 
 	onReimportData() {
+		const { lastImportStartTimestamp, period, skipChecked } = this.state;
+		const params = formatParams( this.dateFormat, period, skipChecked );
+
+		// We need to clear the cache of the selectors `getImportTotals` and `getImportStatus`
+		this.clearCache( 'getImportTotals', {
+			...params,
+			timestamp: lastImportStartTimestamp,
+		} );
+		this.clearCache( 'getImportStatus', this.getImportStatusRequirement() );
 		this.setState( {
 			activeImport: false,
 		} );
@@ -149,13 +181,13 @@ class HistoricalData extends Component {
 			'There was a problem rebuilding your report data.',
 			'woocommerce-admin'
 		);
-		this.makeQuery( path, errorMessage );
+		const startingImport = true;
+		this.makeQuery( path, errorMessage, startingImport );
 		this.onImportStarted();
 	}
 
 	onStopImport() {
-		clearInterval( this.intervalId );
-		this.isImportRequesting = false;
+		this.cancelStatusCheckInterval();
 		this.setState( {
 			lastImportStopTimestamp: Date.now(),
 		} );
@@ -222,7 +254,8 @@ class HistoricalData extends Component {
 				onStopImport={ this.onStopImport }
 				period={ period }
 				skipChecked={ skipChecked }
-				setIsRequesting={ this.setIsRequesting }
+				startStatusCheckInterval={ this.startStatusCheckInterval }
+				cancelStatusCheckInterval={ this.cancelStatusCheckInterval }
 			/>
 		);
 	}
