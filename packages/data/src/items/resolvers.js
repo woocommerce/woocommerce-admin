@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { addQueryArgs } from '@wordpress/url';
-import apiFetch from '@wordpress/api-fetch';
+import { apiFetch } from '@wordpress/data-controls';
 
 /**
  * Internal dependencies
@@ -23,10 +23,15 @@ export function* getItems( itemType, query ) {
 			method: 'GET',
 		} );
 
-		const totalCount = isUnboundedRequest
-			? response.data.length
-			: parseInt( response.headers.get( 'x-wp-total' ), 10 );
-		yield updateItems( itemType, query, response.data, totalCount );
+		if ( isUnboundedRequest ) {
+			yield updateItems( itemType, query, response, response.length );
+		} else {
+			const totalCount = parseInt(
+				response.headers.get( 'x-wp-total' ),
+				10
+			);
+			yield updateItems( itemType, query, response.data, totalCount );
+		}
 	} catch ( error ) {
 		yield setError( query, error );
 	}
