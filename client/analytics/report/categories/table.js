@@ -4,6 +4,7 @@
 import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
@@ -15,7 +16,6 @@ import { ITEMS_STORE_NAME } from '@woocommerce/data';
  */
 import CategoryBreacrumbs from './breadcrumbs';
 import ReportTable from '../../components/report-table';
-import withSelect from '../../../wc-api/with-select';
 import { CurrencyContext } from '../../../lib/currency-context';
 
 class CategoriesReportTable extends Component {
