@@ -19,7 +19,11 @@ import {
 } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { SETTINGS_STORE_NAME, REPORTS_STORE_NAME } from '@woocommerce/data';
+import {
+	SETTINGS_STORE_NAME,
+	REPORTS_STORE_NAME,
+	ITEMS_STORE_NAME,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -330,12 +334,9 @@ OrdersPanel.contextType = CurrencyContext;
 export default compose(
 	withSelect( ( select, props ) => {
 		const { hasActionableOrders } = props;
-		const {
-			getItems,
-			getItemsError,
-			getItemsTotalCount,
-			isGetItemsRequesting,
-		} = select( 'wc-api' );
+		const { getItems, getItemsError, getItemsTotalCount } = select(
+			ITEMS_STORE_NAME
+		);
 		const { getReportItems, getReportItemsError, isResolving } = select(
 			REPORTS_STORE_NAME
 		);
@@ -363,10 +364,10 @@ export default compose(
 			const actionableOrders = Array.from(
 				getItems( 'orders', actionableOrdersQuery ).values()
 			);
-			const isRequestingActionable = isGetItemsRequesting(
+			const isRequestingActionable = isResolving( 'getItems', [
 				'orders',
-				actionableOrdersQuery
-			);
+				actionableOrdersQuery,
+			] );
 
 			if ( isRequestingActionable ) {
 				return {
@@ -434,7 +435,10 @@ export default compose(
 			allOrdersQuery
 		);
 		const isError = Boolean( getItemsError( 'orders', allOrdersQuery ) );
-		const isRequesting = isGetItemsRequesting( 'orders', allOrdersQuery );
+		const isRequesting = isResolving( 'getItems', [
+			'orders',
+			allOrdersQuery,
+		] );
 
 		return {
 			hasNonActionableOrders: totalNonActionableOrders > 0,

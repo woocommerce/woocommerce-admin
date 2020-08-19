@@ -6,7 +6,7 @@ import { getResourceName } from '../utils';
 
 const reducer = (
 	state = {
-		reviews: {},
+		items: {},
 		errors: {},
 		data: {},
 	},
