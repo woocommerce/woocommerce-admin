@@ -178,6 +178,12 @@ class ProductTypes extends Component {
 						</Button>
 					</div>
 				</Card>
+				<div className="woocommerce-profile-wizard__card-help-text">
+					{ __(
+						'Billing is annual. All purchases are covered by our 30 day money back guarantee and include access to support and updates. Extensions will be added to a cart for you to purchase later.',
+						'woocommerce-admin'
+					) }
+				</div>
 			</div>
 		);
 	}
