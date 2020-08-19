@@ -4,7 +4,12 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Button, CheckboxControl, Tooltip } from '@wordpress/components';
+import {
+	Button,
+	CheckboxControl,
+	FormToggle,
+	Tooltip,
+} from '@wordpress/components';
 import { includes, filter, get } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -18,16 +23,18 @@ import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '../../lib/tracks';
 import './product-types.scss';
 
-function getLabel( description, yearlyPrice ) {
+function getLabel( description, yearlyPrice, isMonthlyPricing ) {
 	if ( ! yearlyPrice ) {
 		return description;
 	}
 
-	const monthlyPrice = ( yearlyPrice / 12.0 ).toFixed( 2 );
-	const priceDescription = sprintf(
-		__( '$%f per month, billed annually', 'woocommerce-admin' ),
-		monthlyPrice
-	);
+	const priceDescription = isMonthlyPricing
+		? sprintf(
+				__( '$%f per month', 'woocommerce-admin' ),
+				( yearlyPrice / 12.0 ).toFixed( 2 )
+		  )
+		: sprintf( __( '$%f per year', 'woocommerce-admin' ), yearlyPrice );
+
 	/* eslint-disable @wordpress/i18n-no-collapsible-whitespace */
 	const toolTipText = __(
 		"This product type requires a paid extension.\nWe'll add this to a cart so that\nyou can purchase and install it later.",
@@ -66,6 +73,7 @@ class ProductTypes extends Component {
 
 		this.state = {
 			error: null,
+			isMonthlyPricing: true,
 			selected: profileItems.product_types || defaultProductTypes,
 		};
 
@@ -143,7 +151,7 @@ class ProductTypes extends Component {
 
 	render() {
 		const { productTypes = {} } = getSetting( 'onboarding', {} );
-		const { error, selected } = this.state;
+		const { error, isMonthlyPricing, selected } = this.state;
 
 		return (
 			<div className="woocommerce-profile-wizard__product-types">
@@ -162,7 +170,8 @@ class ProductTypes extends Component {
 						{ Object.keys( productTypes ).map( ( slug ) => {
 							const label = getLabel(
 								productTypes[ slug ].label,
-								productTypes[ slug ].yearly_price
+								productTypes[ slug ].yearly_price,
+								isMonthlyPricing
 							);
 							const moreUrl = productTypes[ slug ].more_url;
 							const helpText =
@@ -210,6 +219,18 @@ class ProductTypes extends Component {
 								{ error }
 							</span>
 						) }
+					</div>
+
+					<div className="">
+						{ __( 'Display monthly prices', 'woocommerce-admin' ) }
+						<FormToggle
+							checked={ isMonthlyPricing }
+							onChange={ () =>
+								this.setState( {
+									isMonthlyPricing: ! isMonthlyPricing,
+								} )
+							}
+						/>
 					</div>
 
 					<div className="woocommerce-profile-wizard__card-actions">
