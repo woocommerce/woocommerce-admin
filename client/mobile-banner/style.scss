@@ -17,10 +17,15 @@ $banner-height: 56px;
 	display: flex;
 	height: $banner-height;
 	align-items: center;
-	padding: 0 $element-spacing;
+	padding: 0 $element-spacing 0 10px;
 
 	@include breakpoint( '>782px' ) {
 		display: none;
+	}
+
+	.dashicon {
+		fill: $white;
+		margin-right: 10px;
 	}
 
 	.components-button.is-secondary {
