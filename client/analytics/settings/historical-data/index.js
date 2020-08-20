@@ -225,11 +225,22 @@ class HistoricalData extends Component {
 		} );
 	}
 
+	isImportationInProgress() {
+		const {
+			lastImportStartTimestamp,
+			lastImportStopTimestamp,
+		} = this.state;
+		return (
+			( typeof lastImportStartTimestamp !== 'undefined' &&
+				typeof lastImportStopTimestamp === 'undefined' ) ||
+			lastImportStartTimestamp > lastImportStopTimestamp
+		);
+	}
+
 	render() {
 		const {
 			activeImport,
 			lastImportStartTimestamp,
-			lastImportStopTimestamp,
 			period,
 			skipChecked,
 		} = this.state;
@@ -240,10 +251,10 @@ class HistoricalData extends Component {
 				activeImport={ activeImport }
 				createNotice={ createNotice }
 				dateFormat={ this.dateFormat }
+				inProgress={ this.isImportationInProgress() }
 				onImportFinished={ this.onImportFinished }
 				onImportStarted={ this.onImportStarted }
 				lastImportStartTimestamp={ lastImportStartTimestamp }
-				lastImportStopTimestamp={ lastImportStopTimestamp }
 				onPeriodChange={ this.onPeriodChange }
 				onDateChange={ this.onDateChange }
 				onSkipChange={ this.onSkipChange }

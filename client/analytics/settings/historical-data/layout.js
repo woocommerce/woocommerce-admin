@@ -125,19 +125,14 @@ export default withSelect( ( select, props ) => {
 	const {
 		activeImport,
 		dateFormat,
+		inProgress,
 		lastImportStartTimestamp,
-		lastImportStopTimestamp,
 		onImportStarted,
 		onImportFinished,
 		period,
 		startStatusCheckInterval,
 		skipChecked,
 	} = props;
-
-	const inProgress =
-		( typeof lastImportStartTimestamp !== 'undefined' &&
-			typeof lastImportStopTimestamp === 'undefined' ) ||
-		lastImportStartTimestamp > lastImportStopTimestamp;
 
 	const params = formatParams( dateFormat, period, skipChecked );
 	const { customers, orders } = getImportTotals( {
