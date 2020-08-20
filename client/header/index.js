@@ -16,6 +16,7 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import './style.scss';
 import ActivityPanel from './activity-panel';
 import { recordEvent } from '../lib/tracks';
+import { MobileAppBanner } from '../mobile-banner';
 
 class Header extends Component {
 	constructor( props ) {
@@ -107,33 +108,41 @@ class Header extends Component {
 
 		return (
 			<div className={ className } ref={ this.headerRef }>
-				<h1 className="woocommerce-layout__header-breadcrumbs">
-					{ _sections.map( ( section, i ) => {
-						const sectionPiece = Array.isArray( section ) ? (
-							<Link
-								href={
-									isEmbedded
-										? getAdminLink( section[ 0 ] )
-										: getNewPath( {}, section[ 0 ], {} )
-								}
-								type={ isEmbedded ? 'wp-admin' : 'wc-admin' }
-								onClick={ this.trackLinkClick }
-							>
-								{ section[ 1 ] }
-							</Link>
-						) : (
-							section
-						);
-						return (
-							<span key={ i }>
-								{ decodeEntities( sectionPiece ) }
-							</span>
-						);
-					} ) }
-				</h1>
-				{ window.wcAdminFeatures[ 'activity-panels' ] && (
-					<ActivityPanel isEmbedded={ isEmbedded } query={ query } />
-				) }
+				<MobileAppBanner />
+				<div className="woocommerce-layout__header-breadcrumbs-wrapper">
+					<h1 className="woocommerce-layout__header-breadcrumbs">
+						{ _sections.map( ( section, i ) => {
+							const sectionPiece = Array.isArray( section ) ? (
+								<Link
+									href={
+										isEmbedded
+											? getAdminLink( section[ 0 ] )
+											: getNewPath( {}, section[ 0 ], {} )
+									}
+									type={
+										isEmbedded ? 'wp-admin' : 'wc-admin'
+									}
+									onClick={ this.trackLinkClick }
+								>
+									{ section[ 1 ] }
+								</Link>
+							) : (
+								section
+							);
+							return (
+								<span key={ i }>
+									{ decodeEntities( sectionPiece ) }
+								</span>
+							);
+						} ) }
+					</h1>
+					{ window.wcAdminFeatures[ 'activity-panels' ] && (
+						<ActivityPanel
+							isEmbedded={ isEmbedded }
+							query={ query }
+						/>
+					) }
+				</div>
 			</div>
 		);
 	}

@@ -3,10 +3,10 @@
 
 // TODO: Remove this when the next update of @wordpress/base-styles is
 // released (see https://github.com/woocommerce/woocommerce-admin/pull/4707/files#r451921109)
-$gray-700: #757575;		// Meets 4.6:1 text contrast against white.
+$gray-700: #757575; // Meets 4.6:1 text contrast against white.
 $gray-100: #f0f0f0;
 
-$transparent: rgba(255, 255, 255, 0);
+$transparent: rgba( 255, 255, 255, 0 );
 
 $gray-text: $gray-700;
 $gray-text-hover: $gray-900;
@@ -30,7 +30,10 @@ $box-shadow-blue: #5b9dd9;
 $core-orange: #ca4a1f;
 
 $button: #f0f2f4;
-$button-border: darken($button, 20%);
+$button-border: darken( $button, 20% );
 
 // Blues
 $core-blue-dark-900: #0071a1;
+
+// WooCommerce brand colors
+$woocommerce-brand-purple: #3c2861;
