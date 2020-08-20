@@ -41,8 +41,8 @@ describe( 'items reducer', () => {
 		expect( state.items[ resourceName ].data.includes( 2 ) ).toBeTruthy();
 
 		expect( state.items[ resourceName ].totalCount ).toBe( 45 );
-		expect( state.data[ resourceName ][ '1' ] ).toBe( items[ 0 ] );
-		expect( state.data[ resourceName ][ '2' ] ).toBe( items[ 1 ] );
+		expect( state.data[ itemType ][ '1' ] ).toBe( items[ 0 ] );
+		expect( state.data[ itemType ][ '2' ] ).toBe( items[ 1 ] );
 	} );
 
 	it( 'should handle SET_ERROR', () => {

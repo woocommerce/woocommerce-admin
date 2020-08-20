@@ -1,14 +1,12 @@
 /**
  * External dependencies
  */
-import { addQueryArgs } from '@wordpress/url';
 import { apiFetch } from '@wordpress/data-controls';
 
 /**
  * Internal dependencies
  */
 import TYPES from './action-types';
-import { getResourceName } from '../utils';
 import { NAMESPACE } from '../constants';
 
 export function updateItems( itemType, query, items, totalCount ) {
@@ -55,9 +53,11 @@ export function* updateProductStock( product, quantity ) {
 			method: 'PUT',
 			data: updatedProduct,
 		} );
+		return { success: true, ...results };
 	} catch ( error ) {
 		// Update failed, return product back to original state.
 		yield updateItems( 'products', id, [ product ], 1 );
 		yield setError( id, error );
+		return { success: false, ...error };
 	}
 }
