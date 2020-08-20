@@ -59,7 +59,10 @@ export const MobileAppBanner = () => {
 					</p>
 				</div>
 
-				<Button href="https://google.com" isSecondary>
+				<Button
+					href="http://play.google.com/store/apps/details?id=com.woocommerce.android"
+					isSecondary
+				>
 					{ __( 'Install', 'woocommerce-admin' ) }
 				</Button>
 			</div>
