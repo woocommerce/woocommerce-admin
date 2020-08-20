@@ -9,6 +9,7 @@ import { compose } from '@wordpress/compose';
 import { ESCAPE } from '@wordpress/keycodes';
 import { get } from 'lodash';
 import { withDispatch } from '@wordpress/data';
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
 import { Link, ProductImage } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
@@ -226,7 +227,7 @@ class ProductStockCard extends Component {
 
 export default compose(
 	withDispatch( ( dispatch ) => {
-		const { updateProductStock } = dispatch( 'wc-api' );
+		const { updateProductStock } = dispatch( ITEMS_STORE_NAME );
 
 		return {
 			updateProductStock,

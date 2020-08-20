@@ -29,8 +29,8 @@ const reducer = (
 				},
 				data: {
 					...state.data,
-					[ resourceName ]: {
-						...state.data[ resourceName ],
+					[ itemType ]: {
+						...state.data[ itemType ],
 						...nextItems,
 					},
 				},

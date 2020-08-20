@@ -9,7 +9,7 @@ export const getItems = ( state, itemType, query ) => {
 		( state.items[ resourceName ] && state.items[ resourceName ].data ) ||
 		[];
 	return ids.reduce( ( map, id ) => {
-		map.set( id, state.data[ resourceName ][ id ] );
+		map.set( id, state.data[ itemType ][ id ] );
 		return map;
 	}, new Map() );
 };
