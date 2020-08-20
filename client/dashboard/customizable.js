@@ -15,6 +15,12 @@ import {
 	useUserPreferences,
 } from '@woocommerce/data';
 import { getQuery } from '@woocommerce/navigation';
+import {
+	getCurrentDates,
+	getDateParamsFromQuery,
+	isoDateFormat,
+} from '@woocommerce/date';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -23,13 +29,7 @@ import './style.scss';
 import defaultSections from './default-sections';
 import Section from './section';
 import withSelect from '../wc-api/with-select';
-import { recordEvent } from '../lib/tracks';
 import { isOnboardingEnabled } from './utils';
-import {
-	getCurrentDates,
-	getDateParamsFromQuery,
-	isoDateFormat,
-} from '../lib/date';
 import ReportFilters from '../analytics/components/report-filters';
 import {
 	CurrencyContext,

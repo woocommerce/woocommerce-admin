@@ -25,9 +25,9 @@ import getReports from './get-reports';
  * because it no longer exists under the path `/analytics/:report`. Use `props.path`/
  * instead to determine if the Customers Report is being rendered.
  *
- * @param params.params
- * @param {Object} params -url parameters
- * @param params.path
+ * @param {Object} args
+ * @param {Object} args.params - url parameters
+ * @param {string} args.path
  * @return {string} - report parameter
  */
 const getReportParam = ( { params, path } ) => {

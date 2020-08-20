@@ -15,14 +15,14 @@ import {
 	SectionHeader,
 } from '@woocommerce/components';
 import { useUserPreferences } from '@woocommerce/data';
+import { getAllowedIntervalsForQuery } from '@woocommerce/date';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { getAllowedIntervalsForQuery } from '../../lib/date';
 import ChartBlock from './block';
 import { uniqCharts } from './config';
-import { recordEvent } from '../../lib/tracks';
 import './style.scss';
 
 const renderChartToggles = ( { hiddenBlocks, onToggleHiddenBlock } ) => {

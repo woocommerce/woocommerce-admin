@@ -7,21 +7,20 @@ import { Button, Dashicon, SelectControl } from '@wordpress/components';
 import classnames from 'classnames';
 import interpolateComponents from 'interpolate-components';
 import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import moment from 'moment';
 import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
 import { Card } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { NOTES_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import withSelect from '../../wc-api/with-select';
 import { QUERY_DEFAULTS } from '../../wc-api/constants';
 import sanitizeHTML from '../../lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
-import { recordEvent } from '../../lib/tracks';
 
 import './style.scss';
 
@@ -288,7 +287,7 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { triggerNoteAction, updateNote } = dispatch( 'wc-api' );
+		const { triggerNoteAction, updateNote } = dispatch( NOTES_STORE_NAME );
 
 		return {
 			triggerNoteAction,

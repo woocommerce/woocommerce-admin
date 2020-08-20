@@ -3,24 +3,48 @@
  */
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import { useUserPreferences } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import { StatsOverview } from '../index';
 import StatsList from '../stats-list';
-import { recordEvent } from '../../../lib/tracks';
 
-jest.mock( 'lib/tracks' );
+jest.mock( '@woocommerce/tracks' );
 // Mock the stats list so that it can be tested separately.
 jest.mock( '../stats-list', () =>
 	jest.fn().mockImplementation( () => <div>mocked stats list</div> )
 );
 // Mock the Install Jetpack CTA
 jest.mock( '../install-jetpack-cta', () => {
-	return jest
-		.fn()
-		.mockImplementation( () => <div>mocked install jetpack cta</div> );
+	return {
+		InstallJetpackCTA: jest
+			.fn()
+			.mockImplementation( () => <div>mocked install jetpack cta</div> ),
+	};
+} );
+
+jest.mock( '@woocommerce/data', () => {
+	// Require the original module to not be mocked...
+	const originalModule = jest.requireActual( '@woocommerce/data' );
+
+	return {
+		__esModule: true, // Use it when dealing with esModules
+		...originalModule,
+		useUserPreferences: jest.fn(),
+	};
+} );
+
+jest.mock( '@wordpress/data', () => {
+	// Require the original module to not be mocked...
+	const originalModule = jest.requireActual( '@wordpress/data' );
+
+	return {
+		__esModule: true, // Use it when dealing with esModules
+		...originalModule,
+		useSelect: jest.fn().mockReturnValue( {} ),
+	};
 } );
 
 jest.mock( '@woocommerce/data' );

@@ -20,6 +20,7 @@ import {
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME, REPORTS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -31,7 +32,6 @@ import { QUERY_DEFAULTS } from '../../../wc-api/constants';
 import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
 import withSelect from '../../../wc-api/with-select';
 import { CurrencyContext } from '../../../lib/currency-context';
-import { recordEvent } from '../../../lib/tracks';
 
 class OrdersPanel extends Component {
 	recordOrderEvent( eventName ) {
@@ -332,13 +332,13 @@ export default compose(
 		const { hasActionableOrders } = props;
 		const {
 			getItems,
-			getItemsTotalCount,
 			getItemsError,
+			getItemsTotalCount,
 			isGetItemsRequesting,
-			getReportItems,
-			getReportItemsError,
-			isResolving,
-		} = select( REPORTS_STORE_NAME );
+		} = select( 'wc-api' );
+		const { getReportItems, getReportItemsError, isResolving } = select(
+			REPORTS_STORE_NAME
+		);
 		const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
 		const {
 			woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,

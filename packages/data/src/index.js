@@ -30,4 +30,6 @@ export {
 	getTooltipValueFormat,
 } from './reports/utils';
 
-export { __experimentalResolveSelect } from './registry';
+export { MAX_PER_PAGE, QUERY_DEFAULTS } from './constants';
+
+export { EXPORT_STORE_NAME } from './export';
