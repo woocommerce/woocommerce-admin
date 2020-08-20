@@ -3,6 +3,7 @@
  */
 import React, { useEffect } from '@wordpress/element';
 import { Button } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -43,19 +44,23 @@ export const MobileAppBanner = () => {
 		return (
 			<div className="woocommerce-mobile-app-banner">
 				<AppIcon />
-
-				{ /* TODO - translations */ }
 				<div className="woocommerce-mobile-app-banner__description">
 					<p className="woocommerce-mobile-app-banner__description__text">
-						Run your store from anywhere
+						{ __(
+							'Run your store from anywhere',
+							'woocommerce-admin'
+						) }
 					</p>
 					<p className="woocommerce-mobile-app-banner__description__text">
-						Download the WooCommerce app
+						{ __(
+							'Download the WooCommerce app',
+							'woocommerce-admin'
+						) }
 					</p>
 				</div>
 
 				<Button href="https://google.com" isSecondary>
-					Install
+					{ __( 'Install', 'woocommerce-admin' ) }
 				</Button>
 			</div>
 		);
