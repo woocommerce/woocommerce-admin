@@ -13,7 +13,7 @@ const reducer = (
 	{ type, itemType, query, items, totalCount, error }
 ) => {
 	switch ( type ) {
-		case TYPES.UPDATE_ITEMS:
+		case TYPES.SET_ITEMS:
 			const ids = [];
 			const nextItems = items.reduce( ( result, item ) => {
 				ids.push( item.id );

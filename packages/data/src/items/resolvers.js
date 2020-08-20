@@ -8,7 +8,7 @@ import { apiFetch } from '@wordpress/data-controls';
  * Internal dependencies
  */
 import { NAMESPACE } from '../constants';
-import { setError, updateItems } from './actions';
+import { setError, setItems } from './actions';
 import { fetchWithHeaders } from '../controls';
 
 export function* getItems( itemType, query ) {
@@ -24,13 +24,13 @@ export function* getItems( itemType, query ) {
 		} );
 
 		if ( isUnboundedRequest ) {
-			yield updateItems( itemType, query, response, response.length );
+			yield setItems( itemType, query, response, response.length );
 		} else {
 			const totalCount = parseInt(
 				response.headers.get( 'x-wp-total' ),
 				10
 			);
-			yield updateItems( itemType, query, response.data, totalCount );
+			yield setItems( itemType, query, response.data, totalCount );
 		}
 	} catch ( error ) {
 		yield setError( query, error );

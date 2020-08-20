@@ -18,7 +18,7 @@ describe( 'items reducer', () => {
 		expect( state ).not.toBe( defaultState );
 	} );
 
-	it( 'should handle UPDATE_ITEMS', () => {
+	it( 'should handle SET_ITEMS', () => {
 		const items = [
 			{ id: 1, title: 'Yum!' },
 			{ id: 2, title: 'Dynamite!' },
@@ -27,7 +27,7 @@ describe( 'items reducer', () => {
 		const query = { status: 'flavortown' };
 		const itemType = 'BBQ';
 		const state = reducer( defaultState, {
-			type: TYPES.UPDATE_ITEMS,
+			type: TYPES.SET_ITEMS,
 			items,
 			itemType,
 			query,

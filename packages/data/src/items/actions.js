@@ -9,9 +9,9 @@ import { apiFetch } from '@wordpress/data-controls';
 import TYPES from './action-types';
 import { NAMESPACE } from '../constants';
 
-export function updateItems( itemType, query, items, totalCount ) {
+export function setItems( itemType, query, items, totalCount ) {
 	return {
-		type: TYPES.UPDATE_ITEMS,
+		type: TYPES.SET_ITEMS,
 		items,
 		itemType,
 		query,
@@ -33,7 +33,7 @@ export function* updateProductStock( product, quantity ) {
 	const { id, parent_id: parentId, type } = updatedProduct;
 
 	// Optimistically update product stock.
-	yield updateItems( 'products', id, [ updatedProduct ], 1 );
+	yield setItems( 'products', id, [ updatedProduct ], 1 );
 
 	let url = NAMESPACE;
 
@@ -56,7 +56,7 @@ export function* updateProductStock( product, quantity ) {
 		return { success: true, ...results };
 	} catch ( error ) {
 		// Update failed, return product back to original state.
-		yield updateItems( 'products', id, [ product ], 1 );
+		yield setItems( 'products', id, [ product ], 1 );
 		yield setError( id, error );
 		return { success: false, ...error };
 	}
