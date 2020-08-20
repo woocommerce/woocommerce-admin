@@ -7,6 +7,7 @@
 		"coupons": true,
 		"devdocs": false,
 		"marketing": true,
+		"onboarding": true,
 		"remote-inbox-notifications": false,
 	  	"shipping-label-banner": true,
 		"store-alerts": true,
