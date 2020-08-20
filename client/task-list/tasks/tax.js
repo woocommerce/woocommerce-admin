@@ -241,6 +241,7 @@ class Tax extends Component {
 								'Set up tax rates manually',
 								'woocommerce-admin'
 							) }
+							onResponse={ createNoticesFromResponse }
 						/>
 						{ ! tosAccepted && (
 							<Text

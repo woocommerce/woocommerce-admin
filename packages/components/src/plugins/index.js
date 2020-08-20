@@ -9,11 +9,6 @@ import PropTypes from 'prop-types';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
-/**
- * Internal dependencies
- */
-import { createNoticesFromResponse } from '../../../../client/lib/notices';
-
 export class Plugins extends Component {
 	constructor() {
 		super( ...arguments );
@@ -45,6 +40,7 @@ export class Plugins extends Component {
 			installAndActivatePlugins,
 			isRequesting,
 			pluginSlugs,
+			onResponse,
 		} = this.props;
 
 		// Avoid double activating.
@@ -54,11 +50,11 @@ export class Plugins extends Component {
 
 		installAndActivatePlugins( pluginSlugs )
 			.then( ( response ) => {
-				createNoticesFromResponse( response );
+				onResponse( response );
 				this.handleSuccess( response.data.activated );
 			} )
 			.catch( ( error ) => {
-				createNoticesFromResponse( error );
+				onResponse( error );
 				this.handleErrors( error.errors );
 			} );
 	}
@@ -140,9 +136,17 @@ export class Plugins extends Component {
 
 Plugins.propTypes = {
 	/**
-	 * Called when the plugin installer is completed.
+	 * Called when the plugin installer is successfully completed.
 	 */
 	onComplete: PropTypes.func.isRequired,
+	/**
+	 * Called when the plugin installer completes with an error.
+	 */
+	onError: PropTypes.func,
+	/**
+	 * Called when the plugin installer response returns.
+	 */
+	onResponse: PropTypes.func,
 	/**
 	 * Called when the plugin installer is skipped.
 	 */
@@ -164,6 +168,7 @@ Plugins.propTypes = {
 Plugins.defaultProps = {
 	autoInstall: false,
 	onError: () => {},
+	onResponse: () => {},
 	onSkip: () => {},
 	pluginSlugs: [ 'jetpack', 'woocommerce-services' ],
 };

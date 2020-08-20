@@ -18,7 +18,6 @@ describe( 'Rendering', () => {
 				activated: [ 'jetpack' ],
 			},
 		} );
-		const createNotice = jest.fn();
 		const onComplete = jest.fn();
 
 		const pluginsWrapper = shallow(
@@ -27,7 +26,6 @@ describe( 'Rendering', () => {
 				pluginSlugs={ [ 'jetpack' ] }
 				onComplete={ onComplete }
 				installAndActivatePlugins={ installAndActivatePlugins }
-				createNotice={ createNotice }
 			/>
 		);
 
@@ -59,19 +57,22 @@ describe( 'Rendering', () => {
 
 describe( 'Installing and activating', () => {
 	let pluginsWrapper;
-	const installAndActivatePlugins = jest.fn().mockResolvedValue( {
+	const response = {
 		success: true,
 		data: {
 			activated: [ 'jetpack' ],
 		},
-	} );
+	};
+	const installAndActivatePlugins = jest.fn().mockResolvedValue( response );
 	const onComplete = jest.fn();
+	const onResponse = jest.fn();
 
 	beforeEach( () => {
 		pluginsWrapper = shallow(
 			<Plugins
 				pluginSlugs={ [ 'jetpack' ] }
 				onComplete={ onComplete }
+				onResponse={ onResponse }
 				installAndActivatePlugins={ installAndActivatePlugins }
 			/>
 		);
@@ -91,6 +92,13 @@ describe( 'Installing and activating', () => {
 		installButton.simulate( 'click' );
 
 		await expect( onComplete ).toHaveBeenCalledWith( [ 'jetpack' ] );
+	} );
+
+	it( 'should call the onResponse callback', async () => {
+		const installButton = pluginsWrapper.find( Button ).at( 0 );
+		installButton.simulate( 'click' );
+
+		await expect( onResponse ).toHaveBeenCalledWith( response );
 	} );
 } );
 
