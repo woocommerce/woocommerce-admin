@@ -12,6 +12,9 @@ npm install @woocommerce/tracks --save
 
 ## Usage
 
+The store must opt-in to allow tracking via the `woocommerce_allow_tracking` setting. 
+If the store is not opted-in no events be recorded when using the following functions.
+
 ### recordEvent( eventName, eventProperties )
 
 Record a user event to Tracks.
@@ -49,3 +52,13 @@ Record a page view to Tracks.
 | --- | --- | --- |
 | path | <code>String</code> | Path the page/path to record a page view for |
 | extraProperties | <code>Object</code> | Extra event properties to include in the event |
+
+# Debugging
+
+When debugging is activated info for each recorded Tracks event is logged to the browser console.
+
+To activate, open up your browser console and add this:
+
+```js
+localStorage.setItem( 'debug', 'wc-admin:*' );
+```
