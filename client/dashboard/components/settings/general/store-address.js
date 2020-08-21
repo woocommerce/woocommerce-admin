@@ -185,7 +185,6 @@ export function StoreAddress( props ) {
 	return (
 		<div className="woocommerce-store-address-fields">
 			<TextControl
-				id="woocommerce-store-address__address-line-1"
 				label={ __( 'Address line 1', 'woocommerce-admin' ) }
 				required
 				autoComplete="address-line1"
@@ -193,7 +192,6 @@ export function StoreAddress( props ) {
 			/>
 
 			<TextControl
-				id="woocommerce-store-address__address-line-2"
 				label={ __( 'Address line 2 (optional)', 'woocommerce-admin' ) }
 				required
 				autoComplete="address-line2"
@@ -214,7 +212,6 @@ export function StoreAddress( props ) {
 			</SelectControl>
 
 			<TextControl
-				id="woocommerce-store-address__city"
 				label={ __( 'City', 'woocommerce-admin' ) }
 				required
 				{ ...getInputProps( 'city' ) }
@@ -222,7 +219,6 @@ export function StoreAddress( props ) {
 			/>
 
 			<TextControl
-				id="woocommerce-store-address__post-code"
 				label={ __( 'Post code', 'woocommerce-admin' ) }
 				required
 				autoComplete="postal-code"

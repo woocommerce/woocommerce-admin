@@ -4,11 +4,6 @@
 import { pressKeyWithModifier } from '@wordpress/e2e-test-utils';
 
 /**
- * Internal dependencies
- */
-const flows = require( './flows' );
-
-/**
  * Perform a "select all" and then fill a input.
  *
  * @param {string} selector
@@ -159,8 +154,7 @@ const verifyValueOfInputField = async( selector, value ) => {
 	await expect( fieldValue ).toBe( value );
 };
 
-module.exports = {
-	...flows,
+export {
 	clearAndFillInput,
 	clickTab,
 	settingsPageSaveChanges,
