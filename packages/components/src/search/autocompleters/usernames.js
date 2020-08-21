@@ -95,13 +95,14 @@ export default {
 	name: 'usernames',
 	className: 'woocommerce-search__usernames-result',
 	options( search ) {
-		const query = search
-			? {
-					search,
-					searchby: 'username',
-					per_page: 10,
-			  }
-			: {};
+		const query = {
+			per_page: 10,
+			_fields: [ 'id', 'username' ],
+		};
+		if ( search ) {
+			query.search = search;
+			query.searchby = 'username';
+		}
 		return apiFetch( {
 			path: addQueryArgs( '/wc-analytics/customers', query ),
 		} );

@@ -114,12 +114,13 @@ export default {
 	name: 'products',
 	className: 'woocommerce-search__product-result',
 	options( search ) {
-		const query = search
-			? {
-					search,
-					per_page: 10,
-			  }
-			: {};
+		const query = {
+			per_page: 10,
+			_fields: [ 'id', 'attributes', 'sku' ],
+		};
+		if ( search ) {
+			query.search = search;
+		}
 		const product = getQuery().products;
 		if ( ! product || product.includes( ',' ) ) {
 			// eslint-disable-next-line no-console

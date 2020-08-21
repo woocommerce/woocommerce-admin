@@ -97,13 +97,14 @@ export default {
 	name: 'customers',
 	className: 'woocommerce-search__customers-result',
 	options( name ) {
-		const query = name
-			? {
-					search: name,
-					searchby: 'name',
-					per_page: 10,
-			  }
-			: {};
+		const query = {
+			per_page: 10,
+			_fields: [ 'id', 'name' ],
+		};
+		if ( name ) {
+			query.search = name;
+			query.searchby = 'name';
+		}
 		return apiFetch( {
 			path: addQueryArgs( '/wc-analytics/customers', query ),
 		} );

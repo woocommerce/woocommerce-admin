@@ -97,12 +97,13 @@ export default {
 	name: 'taxes',
 	className: 'woocommerce-search__tax-result',
 	options( search ) {
-		const query = search
-			? {
-					code: search,
-					per_page: 10,
-			  }
-			: {};
+		const query = {
+			per_page: 10,
+			_fields: [ 'id', 'country', 'name', 'priority', 'state' ],
+		};
+		if ( search ) {
+			query.code = search;
+		}
 		return apiFetch( {
 			path: addQueryArgs( '/wc-analytics/taxes', query ),
 		} );

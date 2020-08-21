@@ -97,12 +97,13 @@ export default {
 	name: 'coupons',
 	className: 'woocommerce-search__coupon-result',
 	options( search ) {
-		const query = search
-			? {
-					search,
-					per_page: 10,
-			  }
-			: {};
+		const query = {
+			per_page: 10,
+			_fields: [ 'code', 'id' ],
+		};
+		if ( search ) {
+			query.search = search;
+		}
 		return apiFetch( {
 			path: addQueryArgs( '/wc-analytics/coupons', query ),
 		} );

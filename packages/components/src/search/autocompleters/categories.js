@@ -97,13 +97,14 @@ export default {
 	name: 'categories',
 	className: 'woocommerce-search__product-result',
 	options( search ) {
-		const query = search
-			? {
-					search,
-					per_page: 10,
-					orderby: 'count',
-			  }
-			: {};
+		const query = {
+			per_page: 10,
+			orderby: 'count',
+			_fields: [ 'id', 'name' ],
+		};
+		if ( search ) {
+			query.search = search;
+		}
 		return apiFetch( {
 			path: addQueryArgs( '/wc-analytics/products/categories', query ),
 		} );

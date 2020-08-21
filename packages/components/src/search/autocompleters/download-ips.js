@@ -94,12 +94,13 @@ import { computeSuggestionMatch } from './utils';
 export default {
 	name: 'download-ips',
 	className: 'woocommerce-search__download-ip-result',
-	options( match ) {
-		const query = match
-			? {
-					match,
-			  }
-			: {};
+	options( search ) {
+		const query = {
+			_fields: [ 'user_ip_address' ],
+		};
+		if ( search ) {
+			query.match = search;
+		}
 		return apiFetch( {
 			path: addQueryArgs( '/wc-analytics/data/download-ips', query ),
 		} );

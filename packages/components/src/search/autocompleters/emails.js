@@ -95,13 +95,14 @@ export default {
 	name: 'emails',
 	className: 'woocommerce-search__emails-result',
 	options( search ) {
-		const query = search
-			? {
-					search,
-					searchby: 'email',
-					per_page: 10,
-			  }
-			: {};
+		const query = {
+			per_page: 10,
+			_fields: [ 'id', 'email' ],
+		};
+		if ( search ) {
+			query.search = search;
+			query.searchby = 'email';
+		}
 		return apiFetch( {
 			path: addQueryArgs( '/wc-analytics/customers', query ),
 		} );

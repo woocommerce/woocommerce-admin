@@ -95,12 +95,13 @@ export default {
 	name: 'orders',
 	className: 'woocommerce-search__order-result',
 	options( search ) {
-		const query = search
-			? {
-					number: search,
-					per_page: 10,
-			  }
-			: {};
+		const query = {
+			per_page: 10,
+			_fields: [ 'id', 'number' ],
+		};
+		if ( search ) {
+			query.number = search;
+		}
 		return apiFetch( {
 			path: addQueryArgs( '/wc-analytics/orders', query ),
 		} );
