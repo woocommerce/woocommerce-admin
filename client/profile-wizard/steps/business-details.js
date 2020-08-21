@@ -360,20 +360,18 @@ class BusinessDetails extends Component {
 			  )
 			: '';
 		return (
-			<Fragment>
-				<Text variant="caption" as="p">
-					{ sprintf(
-						_n(
-							'The following plugin will be installed for free: %s. %s',
-							'The following plugins will be installed for free: %s. %s',
-							extensions.length,
-							'woocommerce-admin'
-						),
-						extensionsList,
-						accountRequiredText
-					) }
-				</Text>
-			</Fragment>
+			<Text variant="caption" as="p">
+				{ sprintf(
+					_n(
+						'The following plugin will be installed for free: %s. %s',
+						'The following plugins will be installed for free: %s. %s',
+						extensions.length,
+						'woocommerce-admin'
+					),
+					extensionsList,
+					accountRequiredText
+				) }
+			</Text>
 		);
 	}
 
