@@ -19,6 +19,30 @@ async function clickContinue() {
 	await page.waitForNavigation( { waitUntil: 'networkidle0' } );
 }
 
+async function setCheckboxToChecked( checkbox ) {
+	const checkedProperty = await checkbox.getProperty( 'checked' );
+	const checked = await checkedProperty.jsonValue();
+
+	// Skip if the checkbox is already checked.
+	if ( checked ) {
+		return;
+	}
+
+	await checkbox.click();
+}
+
+async function setCheckboxToUnchecked( checkbox ) {
+	const checkedProperty = await checkbox.getProperty( 'checked' );
+	const checked = await checkedProperty.jsonValue();
+
+	// Skip if the checkbox is already unchecked.
+	if ( ! checked ) {
+		return;
+	}
+
+	await checkbox.click();
+}
+
 export const completeOnboardingWizard = async () => {
 	// Store Details section
 
@@ -99,16 +123,7 @@ export const completeOnboardingWizard = async () => {
 
 	// Select all industries including "Other"
 	for ( let i = 0; i < 10; i++ ) {
-		const checkbox        = industryCheckboxes[ i ];
-		const checkedProperty = await checkbox.getProperty( 'checked' );
-		const checked         = await checkedProperty.jsonValue();
-
-		// Skip if the checkbox is already checked.
-		if ( checked ) {
-			continue;
-		}
-
-		await checkbox.click();
+		await setCheckboxToChecked( industryCheckboxes[ i ] );
 	}
 
 	// Fill "Other" industry
@@ -130,16 +145,7 @@ export const completeOnboardingWizard = async () => {
 
 	// Select Physical and Downloadable products
 	for ( let i = 0; i < 2; i++ ) {
-		const checkbox        = productTypesCheckboxes[ i ];
-		const checkedProperty = await checkbox.getProperty( 'checked' );
-		const checked         = await checkedProperty.jsonValue();
-
-		// Skip if the checkbox is already checked.
-		if ( checked ) {
-			continue;
-		}
-
-		await checkbox.click();
+		await setCheckboxToChecked( productTypesCheckboxes[ i ] );
 	}
 
 	await clickContinue();
@@ -166,14 +172,9 @@ export const completeOnboardingWizard = async () => {
 	} );
 
 	// Site is in US so the "Install recommended free business features"
-	// checkbox is present, uncheck it
+	// checkbox is present, uncheck it.
 	const installFeaturesCheckbox = await page.$( '#woocommerce-business-extensions__checkbox' );
-	const installFeaturesCheckedProperty = await installFeaturesCheckbox.getProperty( 'checked' );
-	const installFeaturesChecked = await installFeaturesCheckedProperty.jsonValue();
-
-	if ( installFeaturesChecked ) {
-		await installFeaturesCheckbox.click();
-	}
+	await setCheckboxToUnchecked( installFeaturesCheckbox );
 
 	await clickContinue();
 
