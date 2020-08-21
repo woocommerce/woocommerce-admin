@@ -171,8 +171,16 @@ export class ShippingBanner extends Component {
 
 		this.setState( { wcsAssetsLoading: true } );
 
-		const js = assets.wc_connect_admin_script;
-		const styles = assets.wc_connect_admin_style;
+		const jsPath = assets.wc_connect_admin_script;
+		const stylePath = assets.wc_connect_admin_style;
+
+		if ( undefined === window.wcsPluginData ) {
+			const assetPath = jsPath.substring(
+				0,
+				jsPath.lastIndexOf( '/' ) + 1
+			);
+			window.wcsPluginData = { assetPath };
+		}
 
 		const { orderId } = this.state;
 		const { itemsCount } = this.props;
@@ -181,7 +189,7 @@ export class ShippingBanner extends Component {
 			'woocommerce-order-label',
 			__( 'Shipping Label', 'woocommerce-admin' ),
 			{
-				orderId,
+				order: { id: orderId },
 				context: 'shipping_label',
 				items: itemsCount,
 			}
@@ -195,7 +203,7 @@ export class ShippingBanner extends Component {
 			'woocommerce-order-shipment-tracking',
 			__( 'Shipment Tracking', 'woocommerce-admin' ),
 			{
-				orderId,
+				order: { id: orderId },
 				context: 'shipment_tracking',
 				items: itemsCount,
 			}
@@ -216,7 +224,7 @@ export class ShippingBanner extends Component {
 		Promise.all( [
 			new Promise( ( resolve, reject ) => {
 				const script = document.createElement( 'script' );
-				script.src = js;
+				script.src = jsPath;
 				script.async = true;
 				script.onload = resolve;
 				script.onerror = reject;
@@ -227,7 +235,7 @@ export class ShippingBanner extends Component {
 				const link = document.createElement( 'link' );
 				link.rel = 'stylesheet';
 				link.type = 'text/css';
-				link.href = styles;
+				link.href = stylePath;
 				link.media = 'all';
 				link.onload = resolve;
 				link.onerror = reject;
