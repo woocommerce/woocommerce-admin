@@ -67,17 +67,9 @@
 		background: $studio-white;
 	}
 
-	.woocommerce-profile-wizard__header-title,
 	.woocommerce-profile-wizard__header-subtitle {
 		font-weight: 400;
 		text-align: center;
-	}
-
-	.woocommerce-profile-wizard__header-title {
-		font-size: 24px;
-		line-height: 32px;
-		margin-bottom: $gap-smaller;
-		color: $gray-900;
 	}
 
 	.woocommerce-profile-wizard__header-subtitle {
@@ -398,11 +390,6 @@
 
 	.woocommerce-card__body {
 		padding: $gap-large * 2;
-	}
-
-	.woocommerce-profile-wizard__header-title {
-		margin-top: $gap-large;
-		margin-bottom: $gap-large;
 	}
 
 	.woocommerce-profile-wizard__card-actions {
