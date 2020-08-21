@@ -40,7 +40,7 @@ export const MobileAppBanner = () => {
 
 	const [ isDismissed, setDismissed ] = useState( false );
 
-	// On iOS we use the Smart App Banner meta tag so only display this on Android.
+	// On iOS the "Smart App Banner" meta tag is used so only display this on Android.
 	if ( platform() === ANDROID_PLATFORM && ! isDismissed ) {
 		return (
 			<div className="woocommerce-mobile-app-banner">

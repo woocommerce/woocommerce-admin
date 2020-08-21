@@ -27,7 +27,6 @@ import Notices from './notices';
 import { recordPageView } from '../lib/tracks';
 import TransientNotices from './transient-notices';
 import { REPORTS_FILTER } from '../analytics/report';
-import { MobileAppBanner } from '../mobile-banner';
 
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
