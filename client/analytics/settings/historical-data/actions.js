@@ -4,6 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
+import { IMPORT_STORE_NAME } from '@woocommerce/data';
+import { withDispatch } from '@wordpress/data';
 
 function HistoricalDataActions( {
 	createNotice,
@@ -13,7 +15,20 @@ function HistoricalDataActions( {
 	onStartImport,
 	onStopImport,
 	status,
+	updateImportStarted,
 } ) {
+	const startImport = () => {
+		updateImportStarted( true );
+		onStartImport();
+	};
+	const deletePreviousData = () => {
+		updateImportStarted( false );
+		onDeletePreviousData();
+	};
+	const reimportData = () => {
+		updateImportStarted( false );
+		onReimportData();
+	};
 	const getActions = () => {
 		const importDisabled = status !== 'ready';
 
@@ -53,12 +68,12 @@ function HistoricalDataActions( {
 					<Fragment>
 						<Button
 							isPrimary
-							onClick={ onStartImport }
+							onClick={ startImport }
 							disabled={ importDisabled }
 						>
 							{ __( 'Start', 'woocommerce-admin' ) }
 						</Button>
-						<Button isSecondary onClick={ onDeletePreviousData }>
+						<Button isSecondary onClick={ deletePreviousData }>
 							{ __(
 								'Delete Previously Imported Data',
 								'woocommerce-admin'
@@ -72,7 +87,7 @@ function HistoricalDataActions( {
 				<Fragment>
 					<Button
 						isPrimary
-						onClick={ onStartImport }
+						onClick={ startImport }
 						disabled={ importDisabled }
 					>
 						{ __( 'Start', 'woocommerce-admin' ) }
@@ -94,10 +109,10 @@ function HistoricalDataActions( {
 		// Has imported all possible data
 		return (
 			<Fragment>
-				<Button isSecondary onClick={ onReimportData }>
+				<Button isSecondary onClick={ reimportData }>
 					{ __( 'Re-import Data', 'woocommerce-admin' ) }
 				</Button>
-				<Button isSecondary onClick={ onDeletePreviousData }>
+				<Button isSecondary onClick={ deletePreviousData }>
 					{ __(
 						'Delete Previously Imported Data',
 						'woocommerce-admin'
@@ -114,4 +129,7 @@ function HistoricalDataActions( {
 	);
 }
 
-export default HistoricalDataActions;
+export default withDispatch( ( dispatch ) => {
+	const { updateImportStarted } = dispatch( IMPORT_STORE_NAME );
+	return { updateImportStarted };
+} )( HistoricalDataActions );

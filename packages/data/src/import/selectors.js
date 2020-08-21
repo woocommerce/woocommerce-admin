@@ -1,5 +1,11 @@
 export const getImportStarted = ( state ) => {
-	return state.activeImport || false;
+	const { activeImport, lastImportStartTimestamp } = state;
+	return { activeImport, lastImportStartTimestamp } || false;
+};
+
+export const getFormSettings = ( state ) => {
+	const { period, skipPrevious } = state;
+	return { period, skipPrevious } || {};
 };
 
 export const getImportStatus = ( state, query ) => {
@@ -8,8 +14,14 @@ export const getImportStatus = ( state, query ) => {
 };
 
 export const getImportTotals = ( state, query ) => {
+	const { importTotals, lastImportStartTimestamp } = state;
 	const stringifiedQuery = JSON.stringify( query );
-	return state.importTotals[ stringifiedQuery ] || {};
+	return (
+		{
+			...importTotals[ stringifiedQuery ],
+			lastImportStartTimestamp,
+		} || {}
+	);
 };
 
 export const getImportError = ( state, query ) => {

@@ -1,22 +1,73 @@
 /**
+ * External dependencies
+ */
+import { __ } from '@wordpress/i18n';
+import moment from 'moment';
+
+/**
  * Internal dependencies
  */
 import TYPES from './action-types';
 
 const reducer = (
 	state = {
+		activeImport: false,
 		importStatus: {},
 		importTotals: {},
 		errors: {},
-		activeImport: false,
+		lastImportStartTimestamp: 0,
+		period: {
+			date: moment().format( __( 'MM/DD/YYYY', 'woocommerce-admin' ) ),
+			label: 'all',
+		},
+		skipPrevious: true,
 	},
-	{ type, query, importStatus, importTotals, activeImport, error }
+	{
+		type,
+		query,
+		importStatus,
+		importTotals,
+		activeImport,
+		date,
+		error,
+		skipPrevious,
+	}
 ) => {
 	switch ( type ) {
-		case TYPES.SET_IMPORT_STARTED:
+		case TYPES.UPDATE_IMPORT_STARTED:
 			state = {
 				...state,
 				activeImport,
+				lastImportStartTimestamp: activeImport
+					? Date.now()
+					: state.lastImportStartTimestamp,
+			};
+			break;
+		case TYPES.UPDATE_IMPORT_PERIOD:
+			state = {
+				...state,
+				period: {
+					...state.period,
+					label: date,
+				},
+				activeImport: false,
+			};
+			break;
+		case TYPES.UPDATE_IMPORT_DATE:
+			state = {
+				...state,
+				period: {
+					date,
+					label: 'custom',
+				},
+				activeImport: false,
+			};
+			break;
+		case TYPES.UPDATE_SKIP_IMPORTED:
+			state = {
+				...state,
+				skipPrevious,
+				activeImport: false,
 			};
 			break;
 		case TYPES.SET_IMPORT_STATUS:

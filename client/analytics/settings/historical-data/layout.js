@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { isNil } from 'lodash';
-import { SECOND } from '@fresh-data/framework';
 import { SectionHeader } from '@woocommerce/components';
 import { IMPORT_STORE_NAME } from '@woocommerce/data';
 import { withSelect } from '@wordpress/data';
@@ -18,7 +17,6 @@ import HistoricalDataPeriodSelector from './period-selector';
 import HistoricalDataProgress from './progress';
 import HistoricalDataStatus from './status';
 import HistoricalDataSkipCheckbox from './skip-checkbox';
-import { DEFAULT_REQUIREMENT } from '../constants';
 import './style.scss';
 
 class HistoricalDataLayout extends Component {
@@ -30,9 +28,6 @@ class HistoricalDataLayout extends Component {
 			dateFormat,
 			importDate,
 			inProgress,
-			onPeriodChange,
-			onDateChange,
-			onSkipChange,
 			onDeletePreviousData,
 			onReimportData,
 			onStartImport,
@@ -67,14 +62,11 @@ class HistoricalDataLayout extends Component {
 									<HistoricalDataPeriodSelector
 										dateFormat={ dateFormat }
 										disabled={ inProgress }
-										onPeriodChange={ onPeriodChange }
-										onDateChange={ onDateChange }
 										value={ period }
 									/>
 									<HistoricalDataSkipCheckbox
 										disabled={ inProgress }
 										checked={ skipChecked }
-										onChange={ onSkipChange }
 									/>
 									<HistoricalDataProgress
 										label={ __(
@@ -126,7 +118,6 @@ export default withSelect( ( select, props ) => {
 		activeImport,
 		dateFormat,
 		inProgress,
-		lastImportStartTimestamp,
 		onImportStarted,
 		onImportFinished,
 		period,
@@ -135,43 +126,27 @@ export default withSelect( ( select, props ) => {
 	} = props;
 
 	const params = formatParams( dateFormat, period, skipChecked );
-	const { customers, orders } = getImportTotals( {
-		...params,
-		timestamp: lastImportStartTimestamp,
-	} );
-	const requirement = inProgress
-		? {
-				freshness: 3 * SECOND,
-				timeout: 3 * SECOND,
-		  }
-		: DEFAULT_REQUIREMENT;
+	const { customers, orders, lastImportStartTimestamp } = getImportTotals(
+		params
+	);
 
 	const {
 		customers: customersStatus,
 		imported_from: importDate,
 		is_importing: isImporting,
 		orders: ordersStatus,
-	} = getImportStatus( {
-		...requirement,
-		timestamp: lastImportStartTimestamp,
-	} );
+	} = getImportStatus( lastImportStartTimestamp );
 	const { imported: customersProgress, total: customersTotal } =
 		customersStatus || {};
 	const { imported: ordersProgress, total: ordersTotal } = ordersStatus || {};
 	const isStatusLoading = isResolving( 'getImportStatus', [
-		{ ...requirement, timestamp: lastImportStartTimestamp },
+		lastImportStartTimestamp,
 	] );
 
 	const isError = ! isStatusLoading
 		? Boolean(
-				getImportError( {
-					...requirement,
-					timestamp: lastImportStartTimestamp,
-				} ) ||
-					getImportError( {
-						...params,
-						timestamp: lastImportStartTimestamp,
-					} )
+				getImportError( lastImportStartTimestamp ) ||
+					getImportError( lastImportStartTimestamp )
 		  )
 		: false;
 
@@ -213,9 +188,7 @@ export default withSelect( ( select, props ) => {
 
 	const status = getStatus( response );
 
-	const activateInterval = ( activeImport || isImporting ) && inProgress;
-
-	if ( activateInterval ) {
+	if ( status === 'initializing' ) {
 		startStatusCheckInterval();
 	}
 
