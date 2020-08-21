@@ -86,12 +86,12 @@ export class ShippingBanner extends Component {
 
 	async installAndActivatePlugins( pluginSlug ) {
 		// Avoid double activating.
-		const { installPlugin, activatePlugins, isRequesting } = this.props;
+		const { installPlugins, activatePlugins, isRequesting } = this.props;
 		if ( isRequesting ) {
 			return false;
 		}
-		const install = await installPlugin( pluginSlug );
-		if ( install.status !== 'success' ) {
+		const install = await installPlugins( [ pluginSlug ] );
+		if ( install.success !== true ) {
 			this.setState( {
 				setupErrorReason: setupErrorTypes.INSTALL,
 				wcsSetupError: true,
@@ -100,7 +100,7 @@ export class ShippingBanner extends Component {
 		}
 
 		const activation = await activatePlugins( [ pluginSlug ] );
-		if ( activation.status !== 'success' ) {
+		if ( activation.success !== true ) {
 			this.setState( {
 				setupErrorReason: setupErrorTypes.ACTIVATE,
 				wcsSetupError: true,
@@ -456,7 +456,7 @@ ShippingBanner.propTypes = {
 	isJetpackConnected: PropTypes.bool.isRequired,
 	activePlugins: PropTypes.array.isRequired,
 	activatePlugins: PropTypes.func.isRequired,
-	installPlugin: PropTypes.func.isRequired,
+	installPlugins: PropTypes.func.isRequired,
 	isRequesting: PropTypes.bool.isRequired,
 };
 
@@ -470,7 +470,7 @@ export default compose(
 
 		const isRequesting =
 			isPluginsRequesting( 'activatePlugins' ) ||
-			isPluginsRequesting( 'installPlugin' );
+			isPluginsRequesting( 'installPlugins' );
 
 		return {
 			isRequesting,
@@ -479,13 +479,13 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { activatePlugins, installPlugin } = dispatch(
+		const { activatePlugins, installPlugins } = dispatch(
 			PLUGINS_STORE_NAME
 		);
 
 		return {
 			activatePlugins,
-			installPlugin,
+			installPlugins,
 		};
 	} )
 )( ShippingBanner );
