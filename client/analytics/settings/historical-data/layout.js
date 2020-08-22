@@ -149,8 +149,9 @@ export default withSelect( ( select, props ) => {
 	const hasImportFinished = Boolean(
 		inProgress &&
 			isImporting === false &&
-			( ( customersProgress === customersTotal && customersTotal > 0 ) ||
-				( ordersProgress === ordersTotal && ordersTotal > 0 ) )
+			( customersTotal > 0 || ordersTotal > 0 ) &&
+			customersProgress === customersTotal &&
+			ordersProgress === ordersTotal
 	);
 
 	let response = {
