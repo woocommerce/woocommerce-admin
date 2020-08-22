@@ -19,7 +19,7 @@ const getScreenReaderText = ( filter, config ) => {
 };
 
 const AttributeFilter = ( props ) => {
-	const { className, config, filter, onFilterChange } = props;
+	const { className, config, filter, isEnglish, onFilterChange } = props;
 	const { key: filterKey, rule, value } = filter;
 	const { labels, rules } = config;
 
@@ -83,7 +83,14 @@ const AttributeFilter = ( props ) => {
 			tabIndex="0"
 		>
 			<legend className="screen-reader-text">{ labels.add || '' }</legend>
-			<div className="woocommerce-filters-advanced__fieldset">
+			<div
+				className={ classnames(
+					'woocommerce-filters-advanced__fieldset',
+					{
+						'is-english': isEnglish,
+					}
+				) }
+			>
 				{ interpolateComponents( {
 					mixedString: labels.title,
 					components: {
@@ -108,12 +115,13 @@ const AttributeFilter = ( props ) => {
 							<div
 								className={ classnames(
 									className,
-									'woocommerce-filters-advanced__input' // -range?
+									'woocommerce-filters-advanced__attribute-fieldset'
 								) }
 							>
 								{ attributes ? (
 									<Fragment>
 										<SelectControl
+											className="woocommerce-filters-advanced__input woocommerce-search"
 											label="Attribute name"
 											isSearchable
 											showAllOnFocus
@@ -129,6 +137,7 @@ const AttributeFilter = ( props ) => {
 											} }
 										/>
 										<SelectControl
+											className="woocommerce-filters-advanced__input woocommerce-search"
 											label="Attribute value"
 											isSearchable
 											showAllOnFocus
