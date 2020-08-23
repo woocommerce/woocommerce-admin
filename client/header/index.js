@@ -17,12 +17,13 @@ import './style.scss';
 import ActivityPanel from './activity-panel';
 
 const trackLinkClick = ( event ) => {
-	const href = event.target.closest( 'a' ).getAttribute( 'href' );
+	const target = event.target.closest( 'a' );
+	const href = target.getAttribute( 'href' );
 
 	if ( href ) {
 		recordEvent( 'navbar_breadcrumb_click', {
 			href,
-			text: event.target.innerText,
+			text: target.innerText,
 		} );
 	}
 };
@@ -31,6 +32,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const headerElement = useRef( null );
 	const rafHandle = useRef( null );
 	const threshold = useRef( null );
+	const siteTitle = getSetting( 'siteTitle', '' );
 	const _sections = Array.isArray( sections ) ? sections : [ sections ];
 	const [ isScrolled, setIsScrolled ] = useState( false );
 
@@ -70,12 +72,13 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 
 			const decodedTitle = decodeEntities(
 				sprintf(
+					/* translators: 1: document title. 2: page title */
 					__(
 						'%1$s &lsaquo; %2$s &#8212; WooCommerce',
 						'woocommerce-admin'
 					),
 					documentTitle,
-					getSetting( 'siteTitle', '' )
+					siteTitle
 				)
 			);
 
@@ -83,7 +86,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 				document.title = decodedTitle;
 			}
 		}
-	}, [ isEmbedded, _sections ] );
+	}, [ isEmbedded, _sections, siteTitle ] );
 
 	return (
 		<div className={ className } ref={ headerElement }>

@@ -1,7 +1,20 @@
+jest.mock( '@woocommerce/wc-admin-settings', () => ( {
+	...jest.requireActual( '@woocommerce/wc-admin-settings' ),
+	getSetting() {
+		return 'Fake Site Title';
+	},
+} ) );
+
+jest.mock( '@woocommerce/tracks', () => ( {
+	...jest.requireActual( '@woocommerce/tracks' ),
+	recordEvent: jest.fn(),
+} ) );
+
 /**
  * External dependencies
  */
 import { render, fireEvent } from '@testing-library/react';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -47,5 +60,29 @@ describe( 'Header', () => {
 		expect( topLevelElement.classList ).not.toContain( 'is-scrolled' );
 		fireEvent.scroll( window, { target: { scrollY: 200 } } );
 		expect( topLevelElement.classList ).toContain( 'is-scrolled' );
+	} );
+
+	it( 'correctly updates the document title to reflect the navigation state', () => {
+		render(
+			<Header sections={ encodedBreadcrumb } isEmbedded={ false } />
+		);
+
+		expect( document.title ).toBe(
+			'Accounts & Privacy ‹ Settings ‹ Fake Site Title — WooCommerce'
+		);
+	} );
+
+	it( 'tracks link clicks with recordEvent', () => {
+		const { queryByRole } = render(
+			<Header sections={ encodedBreadcrumb } isEmbedded={ false } />
+		);
+
+		const firstLink = queryByRole( 'link' );
+		fireEvent.click( firstLink );
+
+		expect( recordEvent ).toBeCalledWith( 'navbar_breadcrumb_click', {
+			href: firstLink.getAttribute( 'href' ),
+			text: firstLink.innerText,
+		} );
 	} );
 } );
