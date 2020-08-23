@@ -10,12 +10,14 @@ import {
 	setCheckboxToChecked,
 } from './utils';
 
-export async function completeProductTypesSection() {
+export async function completeProductTypesSection(
+	expectedProductTypeCount = 8
+) {
 	// Query for the product types checkboxes
 	const productTypesCheckboxes = await page.$$(
 		'.components-checkbox-control__input'
 	);
-	expect( productTypesCheckboxes ).toHaveLength( 8 );
+	expect( productTypesCheckboxes ).toHaveLength( expectedProductTypeCount );
 
 	// Select Physical and Downloadable products
 	for ( let i = 0; i < 2; i++ ) {

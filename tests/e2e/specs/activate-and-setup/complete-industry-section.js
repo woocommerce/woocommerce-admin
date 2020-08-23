@@ -11,15 +11,17 @@ import {
 } from './utils';
 const config = require( 'config' );
 
-export async function completeIndustrySection() {
+export async function completeIndustrySection(
+	expectedIndustryCount = 10
+) {
 	// Query for the industries checkboxes
 	const industryCheckboxes = await page.$$(
 		'.components-checkbox-control__input'
 	);
-	expect( industryCheckboxes ).toHaveLength( 10 );
+	expect( industryCheckboxes ).toHaveLength( expectedIndustryCount );
 
 	// Select all industries including "Other"
-	for ( let i = 0; i < 10; i++ ) {
+	for ( let i = 0; i < expectedIndustryCount; i++ ) {
 		await setCheckboxToChecked( industryCheckboxes[ i ] );
 	}
 
