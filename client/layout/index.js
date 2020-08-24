@@ -8,7 +8,7 @@ import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { get, isFunction, identity } from 'lodash';
 import { parse } from 'qs';
-import { useFilters, Spinner } from '@woocommerce/components';
+import { Spinner } from '@woocommerce/components';
 import { getHistory } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
@@ -16,17 +16,16 @@ import {
 	withPluginsHydration,
 	withOptionsHydration,
 } from '@woocommerce/data';
+import { recordPageView } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { Controller, getPages, PAGES_FILTER } from './controller';
-import Header from '../header';
+import { Controller, getPages } from './controller';
+import { Header } from '../header';
 import Notices from './notices';
-import { recordPageView } from '../lib/tracks';
 import TransientNotices from './transient-notices';
-import { REPORTS_FILTER } from '../analytics/report';
 
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
@@ -218,8 +217,6 @@ class _PageLayout extends Component {
 }
 
 export const PageLayout = compose(
-	// Use the useFilters HoC so PageLayout is re-rendered when filters are used to add new pages or reports
-	useFilters( [ PAGES_FILTER, REPORTS_FILTER ] ),
 	window.wcSettings.preloadOptions
 		? withOptionsHydration( {
 				...window.wcSettings.preloadOptions,
