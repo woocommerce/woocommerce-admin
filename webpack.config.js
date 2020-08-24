@@ -207,6 +207,10 @@ const webpackConfig = {
 	optimization: {
 		minimize: NODE_ENV !== 'development',
 		minimizer: [ new TerserPlugin() ],
+		splitChunks: {
+			chunks: 'all',
+		},
+		runtimeChunk: true,
 	},
 };
 
