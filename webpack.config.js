@@ -22,6 +22,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'development';
 
 const externals = {
+	'@wordpress/compose': { this: [ 'wp', 'compose' ] },
 	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
 	'@wordpress/blocks': { this: [ 'wp', 'blocks' ] },
 	'@wordpress/data': { this: [ 'wp', 'data' ] },
@@ -76,6 +77,18 @@ wpAdminScripts.forEach( ( name ) => {
 } );
 
 const postcssPlugins = require( '@wordpress/postcss-plugins-preset' );
+
+const optimizationOptions =
+	NODE_ENV === 'development'
+		? {}
+		: {
+				minimize: true,
+				minimizer: [ new TerserPlugin() ],
+				splitChunks: {
+					chunks: 'all',
+				},
+				runtimeChunk: true,
+		  };
 
 const webpackConfig = {
 	mode: NODE_ENV,
@@ -204,14 +217,7 @@ const webpackConfig = {
 				mainEntry: 'app/index.min.js',
 			} ),
 	].filter( Boolean ),
-	optimization: {
-		minimize: NODE_ENV !== 'development',
-		minimizer: [ new TerserPlugin() ],
-		splitChunks: {
-			chunks: 'all',
-		},
-		runtimeChunk: true,
-	},
+	optimization: optimizationOptions,
 };
 
 if ( webpackConfig.mode !== 'production' && WC_ADMIN_PHASE !== 'core' ) {

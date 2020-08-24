@@ -339,7 +339,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-csv',
-			self::get_url( 'csv-export/index', 'js' ),
+			self::get_url( 'runtime~csv-export/index', 'js' ),
 			array( 'moment' ),
 			$js_file_version,
 			true
@@ -347,7 +347,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-currency',
-			self::get_url( 'currency/index', 'js' ),
+			self::get_url( 'runtime~currency/index', 'js' ),
 			array( 'wc-number' ),
 			$js_file_version,
 			true
@@ -357,7 +357,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-navigation',
-			self::get_url( 'navigation/index', 'js' ),
+			self::get_url( 'runtime~navigation/index', 'js' ),
 			array(),
 			$js_file_version,
 			true
@@ -365,7 +365,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-number',
-			self::get_url( 'number/index', 'js' ),
+			self::get_url( 'runtime~number/index', 'js' ),
 			array(),
 			$js_file_version,
 			true
@@ -373,7 +373,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-tracks',
-			self::get_url( 'tracks/index', 'js' ),
+			self::get_url( 'runtime~tracks/index', 'js' ),
 			array(),
 			$js_file_version,
 			true
@@ -381,7 +381,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-date',
-			self::get_url( 'date/index', 'js' ),
+			self::get_url( 'runtime~date/index', 'js' ),
 			array( 'moment', 'wp-date', 'wp-i18n' ),
 			$js_file_version,
 			true
@@ -389,7 +389,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-store-data',
-			self::get_url( 'data/index', 'js' ),
+			self::get_url( 'runtime~data/index', 'js' ),
 			array(),
 			$js_file_version,
 			true
@@ -399,7 +399,7 @@ class Loader {
 
 		wp_register_script(
 			'wc-components',
-			self::get_url( 'components/index', 'js' ),
+			self::get_url( 'runtime~components/index', 'js' ),
 			array(
 				'moment',
 				'wp-api-fetch',
@@ -441,7 +441,7 @@ class Loader {
 
 		wp_register_script(
 			WC_ADMIN_APP,
-			self::get_url( 'app/index', 'js' ),
+			self::get_url( 'runtime~app/index', 'js' ),
 			array(
 				'wp-core-data',
 				'wc-components',
@@ -538,7 +538,7 @@ class Loader {
 			// Only combine "app" files (not scripts registered with WP).
 			if (
 				false === strpos( $reference_file, 'dist/chunks/' ) &&
-				false === strpos( $reference_file, 'dist/app/index.js' )
+				false === strpos( $reference_file, 'dist/runtime~app/index.js' )
 			) {
 				continue;
 			}
