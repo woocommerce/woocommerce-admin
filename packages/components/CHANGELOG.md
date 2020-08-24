@@ -1,3 +1,8 @@
+# 5.1.0 (unreleased)
+
+-   Fixed default value for `<Table />` component `onQueryChange` prop.Fixed default value for `<Table />` component `onQueryChange` prop.
+-   Deprecate our bespoke component `useFilters` in favor of using the WordPress variety `withFilters`.
+
 # 5.0.0
 
 -   Added `<Timeline />` component.

@@ -5,11 +5,6 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
-import { getDateParamsFromQuery } from 'lib/date';
 import { getNewPath } from '@woocommerce/navigation';
 import {
 	SummaryList,
@@ -17,16 +12,16 @@ import {
 	SummaryNumber,
 } from '@woocommerce/components';
 import { calculateDelta, formatValue } from '@woocommerce/number';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { getSummaryNumbers, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { getDateParamsFromQuery } from '@woocommerce/date';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { getSummaryNumbers } from 'wc-api/reports/utils';
-import ReportError from 'analytics/components/report-error';
-import withSelect from 'wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import ReportError from '../report-error';
+import withSelect from '../../../wc-api/with-select';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 /**
  * Component to render summary numbers in reports.

@@ -8,15 +8,10 @@ import { compose } from '@wordpress/compose';
 import { focus } from '@wordpress/dom';
 import { withDispatch } from '@wordpress/data';
 import { get, noop, partial, uniq } from 'lodash';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { CompareButton, Search, TableCard } from '@woocommerce/components';
-import DownloadIcon from './download-icon';
 import {
 	getIdsFromQuery,
 	getSearchWords,
@@ -28,17 +23,23 @@ import {
 	generateCSVDataFromTable,
 	generateCSVFileName,
 } from '@woocommerce/csv-export';
-import { SETTINGS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
+import {
+	getReportChartData,
+	getReportTableData,
+	EXPORT_STORE_NAME,
+	SETTINGS_STORE_NAME,
+	useUserPreferences,
+} from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import ReportError from 'analytics/components/report-error';
-import { getReportChartData, getReportTableData } from 'wc-api/reports/utils';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
+import DownloadIcon from './download-icon';
+import ReportError from '../report-error';
+import { QUERY_DEFAULTS } from '../../../wc-api/constants';
+import withSelect from '../../../wc-api/with-select';
 import { extendTableData } from './utils';
-import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';
@@ -91,30 +92,6 @@ const ReportTable = ( props ) => {
 				? userData[ columnPrefsKey ]
 				: userPrefColumns;
 	}
-
-	const onColumnsChange = ( shownColumns, toggledColumn ) => {
-		const columns = getHeadersContent().map( ( header ) => header.key );
-		const hiddenColumns = columns.filter(
-			( column ) => ! shownColumns.includes( column )
-		);
-
-		if ( columnPrefsKey ) {
-			const userDataFields = {
-				[ columnPrefsKey ]: hiddenColumns,
-			};
-			updateUserPreferences( userDataFields );
-		}
-
-		if ( toggledColumn ) {
-			const eventProps = {
-				report: endpoint,
-				column: toggledColumn,
-				status: shownColumns.includes( toggledColumn ) ? 'on' : 'off',
-			};
-
-			recordEvent( 'analytics_table_header_toggle', eventProps );
-		}
-	};
 
 	const onPageChange = ( newPage, source ) => {
 		scrollPointRef.current.scrollIntoView();
@@ -176,7 +153,7 @@ const ReportTable = ( props ) => {
 	};
 
 	const onClickDownload = () => {
-		const { initiateReportExport, title } = props;
+		const { createNotice, startExport, title } = props;
 		const params = Object.assign( {}, query );
 		const { data, totalResults } = items;
 		let downloadType = 'browser';
@@ -197,7 +174,34 @@ const ReportTable = ( props ) => {
 			);
 		} else {
 			downloadType = 'email';
-			initiateReportExport( endpoint, title, reportQuery );
+			startExport( endpoint, reportQuery )
+				.then( () =>
+					createNotice(
+						'success',
+						sprintf(
+							/* translators: %s = type of report */
+							__(
+								'Your %s Report will be emailed to you.',
+								'woocommerce-admin'
+							),
+							title
+						)
+					)
+				)
+				.catch( ( error ) =>
+					createNotice(
+						'error',
+						error.message ||
+							sprintf(
+								/* translators: %s = type of report */
+								__(
+									'There was a problem exporting your %s Report. Please try again.',
+									'woocommerce-admin'
+								),
+								title
+							)
+					)
+				);
 		}
 
 		recordEvent( 'analytics_table_download', {
@@ -328,6 +332,29 @@ const ReportTable = ( props ) => {
 	} );
 	let { headers, rows } = filteredTableProps;
 	const { summary } = filteredTableProps;
+
+	const onColumnsChange = ( shownColumns, toggledColumn ) => {
+		const columns = headers.map( ( header ) => header.key );
+		const hiddenColumns = columns.filter(
+			( column ) => ! shownColumns.includes( column )
+		);
+		if ( columnPrefsKey ) {
+			const userDataFields = {
+				[ columnPrefsKey ]: hiddenColumns,
+			};
+			updateUserPreferences( userDataFields );
+		}
+
+		if ( toggledColumn ) {
+			const eventProps = {
+				report: endpoint,
+				column: toggledColumn,
+				status: shownColumns.includes( toggledColumn ) ? 'on' : 'off',
+			};
+
+			recordEvent( 'analytics_table_header_toggle', eventProps );
+		}
+	};
 
 	// Add in selection for comparisons.
 	if ( compareBy ) {
@@ -601,10 +628,12 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { initiateReportExport } = dispatch( 'wc-api' );
+		const { startExport } = dispatch( EXPORT_STORE_NAME );
+		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
-			initiateReportExport,
+			createNotice,
+			startExport,
 		};
 	} )
 )( ReportTable );

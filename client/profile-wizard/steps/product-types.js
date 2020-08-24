@@ -8,18 +8,14 @@ import { Button, CheckboxControl, Tooltip } from '@wordpress/components';
 import { includes, filter, get } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { H, Card, Link, Pill } from '@woocommerce/components';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
 import './product-types.scss';
 
 function getLabel( description, yearlyPrice ) {

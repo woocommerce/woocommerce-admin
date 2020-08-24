@@ -2,7 +2,7 @@
 /**
  * Admin notes REST API Test
  *
- * @package WooCommerce\Tests\API
+ * @package WooCommerce\Admin\Tests\API
  */
 
 use Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
@@ -412,10 +412,10 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$notes    = $response->get_data();
 		$this->assertEquals( 4, count( $notes ) );
 
-		$request = new WP_REST_Request( 'PUT', $this->endpoint . '/undoremove' );
+		$request = new WP_REST_Request( 'PUT', $this->endpoint . '/update' );
 		$request->set_body_params(
 			array(
-				'notesIds'   => array( '1', '4' ),
+				'noteIds'    => array( '1', '4' ),
 				'is_deleted' => '1',
 			)
 		);

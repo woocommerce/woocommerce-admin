@@ -6,22 +6,18 @@ import { Component } from '@wordpress/element';
 import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
 import moment from 'moment';
-
-/**
- * WooCommerce dependencies
- */
-import { getCurrentDates, defaultTableDateFormat } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { getCurrentDates, defaultTableDateFormat } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
-import { CurrencyContext } from 'lib/currency-context';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class CouponsReportTable extends Component {
 	constructor() {

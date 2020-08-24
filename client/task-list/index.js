@@ -15,10 +15,6 @@ import {
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check, chevronRight } from '@wordpress/icons';
 import { xor } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { List, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import {
@@ -27,15 +23,15 @@ import {
 	ONBOARDING_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import CartModal from 'dashboard/components/cart-modal';
+import CartModal from '../dashboard/components/cart-modal';
 import { getAllTasks, recordTaskViewEvent } from './tasks';
-import { getCountryCode } from 'dashboard/utils';
-import { recordEvent } from 'lib/tracks';
+import { getCountryCode } from '../dashboard/utils';
 
 class TaskDashboard extends Component {
 	constructor( props ) {
@@ -144,7 +140,6 @@ class TaskDashboard extends Component {
 			countryCode,
 			profileItems,
 			query,
-			taskListPayments,
 			activePlugins,
 			installedPlugins,
 			installAndActivatePlugins,
@@ -155,7 +150,6 @@ class TaskDashboard extends Component {
 		return getAllTasks( {
 			countryCode,
 			profileItems,
-			taskListPayments,
 			query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
 			activePlugins,
@@ -390,11 +384,8 @@ export default compose(
 
 		const isTaskListComplete =
 			getOption( 'woocommerce_task_list_complete' ) || false;
-		const taskListPayments = getOption( 'woocommerce_task_list_payments' );
 		const trackedCompletedTasks =
 			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
-
-		const payments = getOption( 'woocommerce_task_list_payments' );
 		const dismissedTasks =
 			getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
 
@@ -413,9 +404,7 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 			installedPlugins,
 			isTaskListComplete,
-			payments,
 			profileItems,
-			taskListPayments,
 			trackedCompletedTasks,
 		};
 	} ),

@@ -9,7 +9,14 @@ module.exports = function( api ) {
               ...e2eBabelConfig.presets,
               '@wordpress/babel-preset-default',
         ],
-        env: {
+        plugins: [
+			/**
+			 * This allows arrow functions as class methods so that binding
+			 * methods to `this` in the constructor isn't required.
+			 */
+			'@babel/plugin-proposal-class-properties',
+		],
+		env: {
 			production: {
 				plugins: [
 					[

@@ -2,13 +2,9 @@
  * External dependencies
  */
 import { shallow } from 'enzyme';
-import { recordEvent } from 'lib/tracks';
 import { Spinner } from '@wordpress/components';
-
-/**
- * WooCommerce dependencies
- */
 import { Card } from '@woocommerce/components';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -16,7 +12,7 @@ import { Card } from '@woocommerce/components';
 import { RecommendedExtensions } from '../index.js';
 import RecommendedExtensionsItem from '../item.js';
 
-jest.mock( 'lib/tracks' );
+jest.mock( '@woocommerce/tracks' );
 
 const mockExtensions = [
 	{

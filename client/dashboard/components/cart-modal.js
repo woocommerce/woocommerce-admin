@@ -8,21 +8,17 @@ import { Button, Modal } from '@wordpress/components';
 import { find } from 'lodash';
 import { decodeEntities } from '@wordpress/html-entities';
 import { withSelect } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List } from '@woocommerce/components';
 import { ONBOARDING_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { getProductIdsForCart } from 'dashboard/utils';
-import sanitizeHTML from 'lib/sanitize-html';
-import { recordEvent } from 'lib/tracks';
-import { getInAppPurchaseUrl } from 'lib/in-app-purchase';
+import { getProductIdsForCart } from '../utils';
+import sanitizeHTML from '../../lib/sanitize-html';
+import { getInAppPurchaseUrl } from '../../lib/in-app-purchase';
 
 class CartModal extends Component {
 	constructor( props ) {

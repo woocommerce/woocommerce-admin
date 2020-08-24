@@ -4,10 +4,6 @@
 import { __, _n, _x } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
-
-/**
- * WooCommerce dependencies
- */
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
@@ -16,9 +12,9 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from '../../components/report-table';
 import { isLowStock } from './utils';
-import { CurrencyContext } from 'lib/currency-context';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 const stockStatuses = getSetting( 'stockStatuses', {} );
 
@@ -159,19 +155,19 @@ class StockReportTable extends Component {
 				value: formatValue( currency, 'number', products ),
 			},
 			{
-				label: __( 'out of stock', outofstock, 'woocommerce-admin' ),
+				label: __( 'out of stock', 'woocommerce-admin' ),
 				value: formatValue( currency, 'number', outofstock ),
 			},
 			{
-				label: __( 'low stock', lowstock, 'woocommerce-admin' ),
-				value: formatValue( 'currency, number', lowstock ),
+				label: __( 'low stock', 'woocommerce-admin' ),
+				value: formatValue( currency, 'number', lowstock ),
 			},
 			{
-				label: __( 'on backorder', onbackorder, 'woocommerce-admin' ),
+				label: __( 'on backorder', 'woocommerce-admin' ),
 				value: formatValue( currency, 'number', onbackorder ),
 			},
 			{
-				label: __( 'in stock', instock, 'woocommerce-admin' ),
+				label: __( 'in stock', 'woocommerce-admin' ),
 				value: formatValue( currency, 'number', instock ),
 			},
 		];

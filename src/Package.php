@@ -1,8 +1,6 @@
 <?php
 /**
  * Returns information about the package and handles init.
- *
- * @package Automattic/WooCommerce/WCAdmin
  */
 
 /**
@@ -26,7 +24,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.5.0-dev';
+	const VERSION = '1.6.0-dev';
 
 	/**
 	 * Package active.

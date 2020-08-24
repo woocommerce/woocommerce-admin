@@ -8,9 +8,6 @@ import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 import { Button, NavigableMenu, SelectControl } from '@wordpress/components';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EllipsisMenu,
 	MenuItem,
@@ -18,14 +15,14 @@ import {
 	SectionHeader,
 } from '@woocommerce/components';
 import { useUserPreferences } from '@woocommerce/data';
-import { getAllowedIntervalsForQuery } from 'lib/date';
+import { getAllowedIntervalsForQuery } from '@woocommerce/date';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import ChartBlock from './block';
 import { uniqCharts } from './config';
-import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
 const renderChartToggles = ( { hiddenBlocks, onToggleHiddenBlock } ) => {

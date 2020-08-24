@@ -6,38 +6,32 @@ import { Component, createElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
 import {
-	__experimentalResolveSelect,
+	NOTES_STORE_NAME,
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import Benefits from './steps/benefits';
 import BusinessDetails from './steps/business-details';
-import { createNoticesFromResponse } from 'lib/notices';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import { recordEvent } from 'lib/tracks';
+import { QUERY_DEFAULTS } from '../wc-api/constants';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
-import withSelect from 'wc-api/with-select';
+import withSelect from '../wc-api/with-select';
 import './style.scss';
 
 class ProfileWizard extends Component {
@@ -204,6 +198,7 @@ class ProfileWizard extends Component {
 		this.cachedActivePlugins = activePlugins;
 
 		const nextStep = this.getSteps()[ currentStepIndex + 1 ];
+
 		if ( typeof nextStep === 'undefined' ) {
 			this.completeProfiler();
 			return;
@@ -215,16 +210,20 @@ class ProfileWizard extends Component {
 	completeProfiler() {
 		const {
 			activePlugins,
-			getJetpackConnectUrl,
-			getPluginsError,
 			isJetpackConnected,
 			notes,
+			profileItems,
 			updateNote,
 			updateProfileItems,
+			connectToJetpack,
 		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
+
+		const { plugins } = profileItems;
 		const shouldConnectJetpack =
-			activePlugins.includes( 'jetpack' ) && ! isJetpackConnected;
+			( plugins === 'installed' || plugins === 'installed-wcs' ) &&
+			activePlugins.includes( 'jetpack' ) &&
+			! isJetpackConnected;
 
 		const profilerNote = notes.find(
 			( note ) => note.name === 'wc-admin-onboarding-profiler-reminder'
@@ -233,39 +232,23 @@ class ProfileWizard extends Component {
 			updateNote( profilerNote.id, { status: 'actioned' } );
 		}
 
-		const promises = [
-			updateProfileItems( { completed: true } ).then( () => {
+		updateProfileItems( { completed: true } )
+			.then( () => {
 				if ( shouldConnectJetpack ) {
 					document.body.classList.add(
 						'woocommerce-admin-is-loading'
 					);
 				}
-			} ),
-		];
-
-		let redirectUrl = null;
-		if ( shouldConnectJetpack ) {
-			promises.push(
-				getJetpackConnectUrl( {
-					redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
-				} ).then( ( jetpackConnectUrl ) => {
-					const error = getPluginsError( 'getJetpackConnectUrl' );
-					if ( error ) {
-						createNoticesFromResponse( error );
-						return;
-					}
-					redirectUrl = jetpackConnectUrl;
-				} )
-			);
-		}
-
-		Promise.all( promises ).then( () => {
-			if ( redirectUrl ) {
-				window.location = redirectUrl;
-				return;
-			}
-			getHistory().push( getNewPath( {}, '/', {} ) );
-		} );
+			} )
+			.then( () => {
+				if ( shouldConnectJetpack ) {
+					connectToJetpack(
+						getHistory().push( getNewPath( {}, '/', {} ) )
+					);
+				} else {
+					getHistory().push( getNewPath( {}, '/', {} ) );
+				}
+			} );
 	}
 
 	skipProfiler() {
@@ -315,7 +298,7 @@ class ProfileWizard extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getNotes } = select( 'wc-api' );
+		const { getNotes } = select( NOTES_STORE_NAME );
 		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getProfileItems, getOnboardingError } = select(
 			ONBOARDING_STORE_NAME
@@ -339,9 +322,6 @@ export default compose(
 
 		return {
 			dismissedTasks,
-			getJetpackConnectUrl: __experimentalResolveSelect(
-				PLUGINS_STORE_NAME
-			).getJetpackConnectUrl,
 			getPluginsError,
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
 			isJetpackConnected: isJetpackConnected(),
@@ -351,12 +331,24 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateNote } = dispatch( 'wc-api' );
+		const {
+			connectToJetpackWithFailureRedirect,
+			createErrorNotice,
+		} = dispatch( PLUGINS_STORE_NAME );
+		const { updateNote } = dispatch( NOTES_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
+		const connectToJetpack = ( failureRedirect ) => {
+			connectToJetpackWithFailureRedirect(
+				failureRedirect,
+				createErrorNotice
+			);
+		};
+
 		return {
+			connectToJetpack,
 			createNotice,
 			updateNote,
 			updateOptions,

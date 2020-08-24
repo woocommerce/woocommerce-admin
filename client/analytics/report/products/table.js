@@ -5,24 +5,21 @@ import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
+import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link, Tag } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import CategoryBreacrumbs from '../categories/breadcrumbs';
 import { isLowStock } from './utils';
-import ReportTable from 'analytics/components/report-table';
-import withSelect from 'wc-api/with-select';
-import { CurrencyContext } from 'lib/currency-context';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
 
 const manageStock = getSetting( 'manageStock', 'no' );
@@ -385,8 +382,8 @@ export default compose(
 			return {};
 		}
 
-		const { getItems, getItemsError, isGetItemsRequesting } = select(
-			'wc-api'
+		const { getItems, getItemsError, isResolving } = select(
+			ITEMS_STORE_NAME
 		);
 		const tableQuery = {
 			per_page: -1,
@@ -394,7 +391,10 @@ export default compose(
 
 		const categories = getItems( 'categories', tableQuery );
 		const isError = Boolean( getItemsError( 'categories', tableQuery ) );
-		const isLoading = isGetItemsRequesting( 'categories', tableQuery );
+		const isLoading = isResolving( 'getItems', [
+			'categories',
+			tableQuery,
+		] );
 
 		return { categories, isError, isRequesting: isLoading };
 	} )

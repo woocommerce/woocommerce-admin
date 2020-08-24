@@ -4,22 +4,18 @@
 import { __, _n } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { Tooltip } from '@wordpress/components';
-
-/**
- * WooCommerce dependencies
- */
 import { Date, Link } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { defaultTableDateFormat } from 'lib/date';
-
-const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
+import { defaultTableDateFormat } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
-import { CurrencyContext } from 'lib/currency-context';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
+
+const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 
 class CustomersReportTable extends Component {
 	constructor() {

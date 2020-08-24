@@ -4,10 +4,6 @@
 
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
@@ -15,18 +11,18 @@ import {
 	updateQueryString,
 } from '@woocommerce/navigation';
 import { Fragment } from '@wordpress/element';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import Appearance from './tasks/appearance';
-import { getCategorizedOnboardingProducts } from 'dashboard/utils';
+import { getCategorizedOnboardingProducts } from '../dashboard/utils';
 import Products from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 import { installActivateAndConnectWcpay } from './tasks/payments/methods';
-import { recordEvent } from 'lib/tracks';
 
 export function recordTaskViewEvent(
 	taskName,
@@ -47,7 +43,6 @@ export function recordTaskViewEvent(
 export function getAllTasks( {
 	countryCode,
 	profileItems,
-	taskListPayments,
 	query,
 	toggleCartModal,
 	activePlugins,
@@ -57,32 +52,28 @@ export function getAllTasks( {
 	isJetpackConnected,
 } ) {
 	const {
+		hasPaymentGateway,
 		hasPhysicalProducts,
 		hasProducts,
 		isAppearanceComplete,
 		isTaxComplete,
 		shippingZonesCount,
+		wcPayIsConnected,
 	} = getSetting( 'onboarding', {
+		hasPaymentGateway: false,
 		hasPhysicalProducts: false,
 		hasProducts: false,
 		isAppearanceComplete: false,
 		isTaxComplete: false,
 		shippingZonesCount: 0,
+		wcPayIsConnected: false,
 	} );
 
 	const groupedProducts = getCategorizedOnboardingProducts(
 		profileItems,
 		installedPlugins
 	);
-
 	const { products, remainingProducts, uniqueItemsList } = groupedProducts;
-
-	const paymentsCompleted = Boolean(
-		taskListPayments && taskListPayments.completed
-	);
-	const paymentsSkipped = Boolean(
-		taskListPayments && taskListPayments.skipped
-	);
 
 	const woocommercePaymentsInstalled =
 		installedPlugins.indexOf( 'woocommerce-payments' ) !== -1;
@@ -150,7 +141,7 @@ export function getAllTasks( {
 			key: 'woocommerce-payments',
 			title: __( 'Set up WooCommerce Payments', 'woocommerce-admin' ),
 			container: <Fragment />,
-			completed: paymentsCompleted || paymentsSkipped,
+			completed: wcPayIsConnected,
 			onClick: async () => {
 				await new Promise( ( resolve, reject ) => {
 					// This task doesn't have a view, so the recordEvent call
@@ -183,7 +174,7 @@ export function getAllTasks( {
 			key: 'payments',
 			title: __( 'Set up payments', 'woocommerce-admin' ),
 			container: <Payments />,
-			completed: paymentsCompleted || paymentsSkipped,
+			completed: hasPaymentGateway,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
 					task_name: 'payments',
@@ -241,7 +232,13 @@ export function getAllTasks( {
 
 	return applyFilters(
 		'woocommerce_admin_onboarding_task_list',
-		tasks,
+		tasks.sort( ( a, b ) => {
+			if ( a.completed === b.completed ) {
+				return 0;
+			}
+
+			return a.completed ? 1 : -1;
+		} ),
 		query
 	);
 }

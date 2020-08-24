@@ -1,20 +1,24 @@
 /**
- * WooCommerce dependencies
+ * External dependencies
  */
-import { SETTINGS_STORE_NAME, USER_STORE_NAME } from '@woocommerce/data';
+import {
+	NOTES_STORE_NAME,
+	REVIEWS_STORE_NAME,
+	SETTINGS_STORE_NAME,
+	USER_STORE_NAME,
+	ITEMS_STORE_NAME,
+	QUERY_DEFAULTS,
+} from '@woocommerce/data';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import { DEFAULT_ACTIONABLE_STATUSES } from 'analytics/settings/config';
-import { getSetting } from '@woocommerce/wc-admin-settings';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
+import { DEFAULT_ACTIONABLE_STATUSES } from '../../analytics/settings/config';
 import { getUnreadNotesCount } from './panels/inbox/utils';
 
 export function getUnreadNotes( select ) {
-	const { getNotes, getNotesError, isGetNotesRequesting } = select(
-		'wc-api'
-	);
+	const { getNotes, getNotesError, isResolving } = select( NOTES_STORE_NAME );
 
 	const { getCurrentUser } = select( USER_STORE_NAME );
 	const userData = getCurrentUser();
@@ -44,8 +48,8 @@ export function getUnreadNotes( select ) {
 	// depend on `getNotes` to have been called.
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const latestNotes = getNotes( notesQuery );
-	const isError = Boolean( getNotesError( notesQuery ) );
-	const isRequesting = isGetNotesRequesting( notesQuery );
+	const isError = Boolean( getNotesError( 'getNotes', [ notesQuery ] ) );
+	const isRequesting = isResolving( 'getNotes', [ notesQuery ] );
 
 	if ( isError || isRequesting ) {
 		return null;
@@ -57,12 +61,9 @@ export function getUnreadNotes( select ) {
 }
 
 export function getUnreadOrders( select ) {
-	const {
-		getItems,
-		getItemsTotalCount,
-		getItemsError,
-		isGetItemsRequesting,
-	} = select( 'wc-api' );
+	const { getItems, getItemsTotalCount, getItemsError, isResolving } = select(
+		ITEMS_STORE_NAME
+	);
 	const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
 	const {
 		woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
@@ -86,7 +87,7 @@ export function getUnreadOrders( select ) {
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const totalOrders = getItemsTotalCount( 'orders', ordersQuery );
 	const isError = Boolean( getItemsError( 'orders', ordersQuery ) );
-	const isRequesting = isGetItemsRequesting( 'orders', ordersQuery );
+	const isRequesting = isResolving( 'getItems', [ 'orders', ordersQuery ] );
 
 	if ( isError || isRequesting ) {
 		return null;
@@ -96,11 +97,9 @@ export function getUnreadOrders( select ) {
 }
 
 export function getUnapprovedReviews( select ) {
-	const {
-		getReviewsTotalCount,
-		getReviewsError,
-		isGetReviewsRequesting,
-	} = select( 'wc-api' );
+	const { getReviewsTotalCount, getReviewsError, isResolving } = select(
+		REVIEWS_STORE_NAME
+	);
 	const reviewsEnabled = getSetting( 'reviewsEnabled' );
 	if ( reviewsEnabled === 'yes' ) {
 		const actionableReviewsQuery = {
@@ -113,11 +112,14 @@ export function getUnapprovedReviews( select ) {
 		const totalActionableReviews = getReviewsTotalCount(
 			actionableReviewsQuery
 		);
+
 		const isActionableReviewsError = Boolean(
 			getReviewsError( actionableReviewsQuery )
 		);
-		const isActionableReviewsRequesting = isGetReviewsRequesting(
-			actionableReviewsQuery
+
+		const isActionableReviewsRequesting = isResolving(
+			'getReviewsTotalCount',
+			[ actionableReviewsQuery ]
 		);
 
 		if ( ! isActionableReviewsError && ! isActionableReviewsRequesting ) {

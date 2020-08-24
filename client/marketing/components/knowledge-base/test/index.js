@@ -2,13 +2,9 @@
  * External dependencies
  */
 import { shallow, mount } from 'enzyme';
-import { recordEvent } from 'lib/tracks';
 import { Spinner } from '@wordpress/components';
-
-/**
- * WooCommerce dependencies
- */
 import { Card, Pagination, EmptyContent } from '@woocommerce/components';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -16,7 +12,7 @@ import { Card, Pagination, EmptyContent } from '@woocommerce/components';
 import { KnowledgeBase } from '../index.js';
 import Slider from '../../slider';
 
-jest.mock( 'lib/tracks' );
+jest.mock( '@woocommerce/tracks' );
 
 const mockPosts = [
 	{

@@ -2,6 +2,10 @@
  * External dependencies
  */
 import { render, screen } from '@testing-library/react';
+
+/**
+ * Internal dependencies
+ */
 import { Layout } from '../layout';
 
 // Rendering <StatsOverview /> breaks tests.
@@ -23,7 +27,12 @@ jest.mock( 'quick-links', () => jest.fn().mockReturnValue( '[QuickLinks]' ) );
 describe( 'Homescreen Layout', () => {
 	it( 'should show TaskList placeholder when loading', () => {
 		const { container } = render(
-			<Layout requestingTaskList taskListHidden={ false } query={ {} } />
+			<Layout
+				requestingTaskList
+				taskListHidden={ false }
+				query={ {} }
+				updateOptions={ () => {} }
+			/>
 		);
 
 		const placeholder = container.querySelector(
@@ -38,6 +47,7 @@ describe( 'Homescreen Layout', () => {
 				requestingTaskList={ false }
 				taskListHidden={ false }
 				query={ {} }
+				updateOptions={ () => {} }
 			/>
 		);
 
@@ -60,6 +70,7 @@ describe( 'Homescreen Layout', () => {
 				query={ {
 					task: 'products',
 				} }
+				updateOptions={ () => {} }
 			/>
 		);
 
@@ -81,6 +92,7 @@ describe( 'Homescreen Layout', () => {
 				taskListComplete={ false }
 				taskListHidden
 				query={ {} }
+				updateOptions={ () => {} }
 			/>
 		);
 
@@ -95,6 +107,7 @@ describe( 'Homescreen Layout', () => {
 				taskListComplete
 				taskListHidden={ false }
 				query={ {} }
+				updateOptions={ () => {} }
 			/>
 		);
 
@@ -109,6 +122,7 @@ describe( 'Homescreen Layout', () => {
 				taskListComplete={ false }
 				taskListHidden
 				query={ {} }
+				updateOptions={ () => {} }
 			/>
 		);
 
@@ -123,6 +137,7 @@ describe( 'Homescreen Layout', () => {
 				taskListComplete
 				taskListHidden={ false }
 				query={ {} }
+				updateOptions={ () => {} }
 			/>
 		);
 

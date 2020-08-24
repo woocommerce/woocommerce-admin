@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import 'core-js/fn/object/assign';
-import 'core-js/fn/array/from';
+import 'core-js/features/object/assign';
+import 'core-js/features/array/from';
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component, createRef } from '@wordpress/element';
@@ -12,9 +12,6 @@ import { partial } from 'lodash';
 import PropTypes from 'prop-types';
 import { withViewportMatch } from '@wordpress/viewport';
 
-/**
- * WooCommerce dependencies
- */
 import { validateDateInputForRange } from '@woocommerce/date';
 
 /**

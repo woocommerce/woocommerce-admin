@@ -6,10 +6,12 @@ import { applyFilters } from '@wordpress/hooks';
 import { lazy } from '@wordpress/element';
 
 /**
- * WooCommerce dependencies
+ * Internal dependencies
  */
 import { getSetting } from '../../settings';
+
 const manageStock = getSetting( 'manageStock', 'no' );
+const REPORTS_FILTER = 'woocommerce_admin_reports_list';
 
 /**
  * Internal dependencies
@@ -43,8 +45,6 @@ const StockReport = lazy( () =>
 const CustomersReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report-customers" */ './customers' )
 );
-
-import { REPORTS_FILTER } from './index';
 
 export default () => {
 	const reports = [

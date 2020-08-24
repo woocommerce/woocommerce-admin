@@ -2,15 +2,15 @@
  * External dependencies
  */
 import { shallow } from 'enzyme';
-import { recordEvent } from 'lib/tracks';
 import { Button } from '@wordpress/components';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import { WelcomeCard } from '../index.js';
 
-jest.mock( 'lib/tracks' );
+jest.mock( '@woocommerce/tracks' );
 jest.mock( '@woocommerce/wc-admin-settings' );
 
 describe( 'WelcomeCard hide button', () => {

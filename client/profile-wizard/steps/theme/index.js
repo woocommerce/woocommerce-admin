@@ -9,23 +9,19 @@ import { decodeEntities } from '@wordpress/html-entities';
 import Gridicon from 'gridicons';
 import { Button, TabPanel, Tooltip } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { Card, H } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
+import withSelect from '../../../wc-api/with-select';
 import './style.scss';
-import { recordEvent } from 'lib/tracks';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
-import { getPriceValue } from 'dashboard/utils';
+import { getPriceValue } from '../../../dashboard/utils';
 
 class Theme extends Component {
 	constructor() {

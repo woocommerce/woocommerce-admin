@@ -2,23 +2,23 @@
  * External dependencies
  */
 import { shallow } from 'enzyme';
-import { recordEvent } from 'lib/tracks';
 import { ExternalLink, Button } from '@wordpress/components';
+import { recordEvent } from '@woocommerce/tracks';
+
 /**
  * Internal dependencies
  */
-
-jest.mock( '../../wcs-api.js' );
 import { acceptWcsTos, getWcsAssets } from '../../wcs-api.js';
 import { setupErrorTypes } from '../../setup-notice';
+
+jest.mock( '../../wcs-api.js' );
 
 acceptWcsTos.mockReturnValue( Promise.resolve() );
 const wcsAssetsMock = {};
 getWcsAssets.mockReturnValue( Promise.resolve( wcsAssetsMock ) );
-
 import { ShippingBanner } from '../index.js';
 
-jest.mock( 'lib/tracks' );
+jest.mock( '@woocommerce/tracks' );
 jest.mock( '@woocommerce/wc-admin-settings' );
 
 describe( 'Tracking impression in shippingBanner', () => {
