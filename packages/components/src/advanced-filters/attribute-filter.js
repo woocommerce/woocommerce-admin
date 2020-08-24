@@ -13,9 +13,50 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal dependencies
  */
 import SelectControl from '../select-control';
+import { textContent } from './utils';
 
-const getScreenReaderText = ( filter, config ) => {
-	return '';
+const getScreenReaderText = ( {
+	attributes,
+	attributeTerms,
+	config,
+	filter,
+	selectedAttribute,
+	selectedAttributeTerm,
+} ) => {
+	if (
+		attributes.length === 0 ||
+		attributeTerms.length === 0 ||
+		selectedAttribute === '' ||
+		selectedAttributeTerm === ''
+	) {
+		return '';
+	}
+
+	const rule = Array.isArray( config.rules )
+		? config.rules.find(
+				( configRule ) => configRule.value === filter.rule
+		  ) || {}
+		: {};
+
+	const { label: attributeName } = attributes.find(
+		( attr ) => attr.key === selectedAttribute
+	);
+	const { label: attributeTerm } = attributeTerms.find(
+		( term ) => term.key === selectedAttributeTerm
+	);
+
+	const filterStr = `${ attributeName } = ${ attributeTerm }`;
+
+	return textContent(
+		interpolateComponents( {
+			mixedString: config.labels.title,
+			components: {
+				filter: <Fragment>{ filterStr }</Fragment>,
+				rule: <Fragment>{ rule.label }</Fragment>,
+				title: <Fragment />,
+			},
+		} )
+	);
 };
 
 const AttributeFilter = ( props ) => {
@@ -74,7 +115,14 @@ const AttributeFilter = ( props ) => {
 		Array.isArray( value ) ? value[ 1 ] || '' : ''
 	);
 
-	const screenReaderText = getScreenReaderText( filter, config );
+	const screenReaderText = getScreenReaderText( {
+		attributes,
+		attributeTerms,
+		config,
+		filter,
+		selectedAttribute,
+		selectedAttributeTerm,
+	} );
 
 	/*eslint-disable jsx-a11y/no-noninteractive-tabindex*/
 	return (
