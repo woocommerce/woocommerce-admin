@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from '@wordpress/element';
 import { Button, Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -11,7 +12,6 @@ import { __ } from '@wordpress/i18n';
 import { platform, ANDROID_PLATFORM } from '../lib/platform';
 import { AppIcon } from './app-icon';
 import './style.scss';
-import { recordEvent } from '../lib/tracks';
 
 const SHOW_APP_BANNER_MODIFIER_CLASS = 'woocommerce-layout__show-app-banner';
 const TRACKING_EVENT_NAME = 'wcadmin_mobile_banner_click';

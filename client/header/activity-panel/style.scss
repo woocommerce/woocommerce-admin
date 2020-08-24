@@ -163,6 +163,7 @@
 	height: $header-height;
 	position: absolute;
 	right: 0;
+	bottom: 0;
 	@include breakpoint( '>782px' ) {
 		display: none;
 	}
