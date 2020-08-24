@@ -118,24 +118,29 @@ const AttributeFilter = ( props ) => {
 									'woocommerce-filters-advanced__attribute-fieldset'
 								) }
 							>
-								{ attributes ? (
-									<Fragment>
-										<SelectControl
-											className="woocommerce-filters-advanced__input woocommerce-search"
-											label="Attribute name"
-											isSearchable
-											showAllOnFocus
-											options={ attributes }
-											selected={ selectedAttribute }
-											onChange={ ( attr ) => {
-												setSelectedAttribute( attr );
-												onFilterChange(
-													filterKey,
-													'value',
-													[ attr ]
-												);
-											} }
-										/>
+								{ attributes.length > 0 ? (
+									<SelectControl
+										className="woocommerce-filters-advanced__input woocommerce-search"
+										label="Attribute name"
+										isSearchable
+										showAllOnFocus
+										options={ attributes }
+										selected={ selectedAttribute }
+										onChange={ ( attr ) => {
+											setSelectedAttribute( attr );
+											onFilterChange(
+												filterKey,
+												'value',
+												[ attr ]
+											);
+										} }
+									/>
+								) : (
+									<Spinner />
+								) }
+								{ attributes.length > 0 &&
+									selectedAttribute !== '' &&
+									( attributeTerms.length ? (
 										<SelectControl
 											className="woocommerce-filters-advanced__input woocommerce-search"
 											label="Attribute value"
@@ -154,10 +159,9 @@ const AttributeFilter = ( props ) => {
 												);
 											} }
 										/>
-									</Fragment>
-								) : (
-									<Spinner />
-								) }
+									) : (
+										<Spinner />
+									) ) }
 							</div>
 						),
 					},
