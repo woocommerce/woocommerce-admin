@@ -21,7 +21,9 @@ export async function completeStoreDetailsSection( storeDetails = {} ) {
 		storeDetails.addressLine2 || config.get( 'addresses.admin.store.addresssecondline' )
 	);
 		
-	// Type 'cali' in the country/region select, then select US:CA.
+	// Type the requested country/region substring or 'cali' in the
+	// country/region select, then select the requested country/region
+	// substring or 'US:CA'.
 	await expect( page )
 		.toFill(
 			'#woocommerce-select-control-0__control-input',
@@ -32,7 +34,8 @@ export async function completeStoreDetailsSection( storeDetails = {} ) {
 			`#woocommerce-select-control__option-0-${ storeDetails.countryRegionSelector || 'US\\:CA' }`
 		);
 
-	// Make sure the country/region gets selected correctly.
+	// Make sure the country/region gets selected correctly, using either the
+	// requested country/region or US - California.
 	await expect( page )
 	.toMatchElement(
 		'#woocommerce-select-control-0__control-input',
