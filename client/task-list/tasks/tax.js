@@ -216,7 +216,8 @@ class Tax extends Component {
 				content: (
 					<Fragment>
 						<Plugins
-							onComplete={ () => {
+							onComplete={ ( plugins, response ) => {
+								createNoticesFromResponse( response );
 								recordEvent(
 									'tasklist_tax_install_extensions',
 									{
@@ -228,6 +229,9 @@ class Tax extends Component {
 								} );
 								this.completeStep();
 							} }
+							onError={ ( errors, response ) =>
+								createNoticesFromResponse( response )
+							}
 							onSkip={ () => {
 								queueRecordEvent(
 									'tasklist_tax_install_extensions',
@@ -241,7 +245,6 @@ class Tax extends Component {
 								'Set up tax rates manually',
 								'woocommerce-admin'
 							) }
-							onResponse={ createNoticesFromResponse }
 						/>
 						{ ! tosAccepted && (
 							<Text

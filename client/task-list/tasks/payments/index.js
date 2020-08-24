@@ -119,14 +119,17 @@ class Payments extends Component {
 			),
 			content: (
 				<Plugins
-					onComplete={ () => {
+					onComplete={ ( plugins, response ) => {
+						createNoticesFromResponse( response );
 						recordEvent( 'tasklist_payment_install_method', {
 							plugins: currentMethod.plugins,
 						} );
 					} }
+					onError={ ( errors, response ) =>
+						createNoticesFromResponse( response )
+					}
 					autoInstall
 					pluginSlugs={ currentMethod.plugins }
-					onResponse={ createNoticesFromResponse }
 				/>
 			),
 			isComplete: ! pluginsToInstall.length,

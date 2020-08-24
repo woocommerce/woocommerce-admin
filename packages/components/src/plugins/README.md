@@ -17,7 +17,6 @@ Use `Plugins` to install and activate a list of plugins.
 | ------------- | -------- | ---------------------------------------- | ------------------------------------------------------------------------- |
 | `onComplete`  | Function |                                          | Called when the plugin installer is completed                             |
 | `onError`     | Function |                                          | Called when the plugin installer completes with an error                  |
-| `onResponse`  | Function |                                          | Called when the plugin installer response returns                         |
 | `onSkip`      | Function | `noop`                                   | Called when the plugin installer is skipped                               |
 | `skipText`    | String   |                                          | Text used for the skip installer button                                   |
 | `autoInstall` | Boolean  | false                                    | If installation should happen automatically, or require user confirmation |

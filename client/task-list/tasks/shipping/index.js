@@ -251,13 +251,17 @@ class Shipping extends Component {
 					  ),
 				content: (
 					<Plugins
-						onComplete={ () => {
+						onComplete={ ( plugins, response ) => {
+							createNoticesFromResponse( response );
 							recordEvent( 'tasklist_shipping_label_printing', {
 								install: true,
 								plugins_to_activate: pluginsToActivate,
 							} );
 							this.completeStep();
 						} }
+						onError={ ( errors, response ) =>
+							createNoticesFromResponse( response )
+						}
 						onSkip={ () => {
 							recordEvent( 'tasklist_shipping_label_printing', {
 								install: false,
@@ -266,7 +270,6 @@ class Shipping extends Component {
 							getHistory().push( getNewPath( {}, '/', {} ) );
 						} }
 						pluginSlugs={ pluginsToActivate }
-						onResponse={ createNoticesFromResponse }
 						{ ...this.props }
 					/>
 				),

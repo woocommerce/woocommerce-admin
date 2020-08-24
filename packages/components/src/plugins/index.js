@@ -40,7 +40,6 @@ export class Plugins extends Component {
 			installAndActivatePlugins,
 			isRequesting,
 			pluginSlugs,
-			onResponse,
 		} = this.props;
 
 		// Avoid double activating.
@@ -50,25 +49,23 @@ export class Plugins extends Component {
 
 		installAndActivatePlugins( pluginSlugs )
 			.then( ( response ) => {
-				onResponse( response );
-				this.handleSuccess( response.data.activated );
+				this.handleSuccess( response.data.activated, response );
 			} )
-			.catch( ( error ) => {
-				onResponse( error );
-				this.handleErrors( error.errors );
+			.catch( ( response ) => {
+				this.handleErrors( response.errors, response );
 			} );
 	}
 
-	handleErrors( errors ) {
+	handleErrors( errors, response ) {
 		const { onError } = this.props;
 
 		this.setState( { hasErrors: true } );
-		onError( errors );
+		onError( errors, response );
 	}
 
-	handleSuccess( activePlugins ) {
+	handleSuccess( activePlugins, response ) {
 		const { onComplete } = this.props;
-		onComplete( activePlugins );
+		onComplete( activePlugins, response );
 	}
 
 	skipInstaller() {
@@ -144,10 +141,6 @@ Plugins.propTypes = {
 	 */
 	onError: PropTypes.func,
 	/**
-	 * Called when the plugin installer response returns.
-	 */
-	onResponse: PropTypes.func,
-	/**
 	 * Called when the plugin installer is skipped.
 	 */
 	onSkip: PropTypes.func,
@@ -168,7 +161,6 @@ Plugins.propTypes = {
 Plugins.defaultProps = {
 	autoInstall: false,
 	onError: () => {},
-	onResponse: () => {},
 	onSkip: () => {},
 	pluginSlugs: [ 'jetpack', 'woocommerce-services' ],
 };

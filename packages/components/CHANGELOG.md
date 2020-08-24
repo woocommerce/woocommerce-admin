@@ -5,6 +5,7 @@
 -   Fix screen reader text in `<AdvancedFilters />`.
 -   Add `<AttributeFilter />` component to `<AdvancedFilters />`.
 -   Fix internal dependencies for `<Plugins />`.
+-   Add full response to `<Plugins />` callbacks `onError` and `onComplete`.
 
 # 5.0.0
 
