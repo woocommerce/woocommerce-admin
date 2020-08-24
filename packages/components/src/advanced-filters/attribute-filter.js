@@ -8,6 +8,7 @@ import interpolateComponents from 'interpolate-components';
 import classnames from 'classnames';
 import { Fragment, useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -169,7 +170,10 @@ const AttributeFilter = ( props ) => {
 								{ attributes.length > 0 ? (
 									<SelectControl
 										className="woocommerce-filters-advanced__input woocommerce-search"
-										label="Attribute name"
+										label={ __(
+											'Attribute name',
+											'woocommerce-admin'
+										) }
 										isSearchable
 										showAllOnFocus
 										options={ attributes }
@@ -194,30 +198,43 @@ const AttributeFilter = ( props ) => {
 								{ attributes.length > 0 &&
 									selectedAttribute !== '' &&
 									( attributeTerms.length ? (
-										<SelectControl
-											className="woocommerce-filters-advanced__input woocommerce-search"
-											label="Attribute value"
-											isSearchable
-											showAllOnFocus
-											options={ attributeTerms }
-											selected={ selectedAttributeTerm }
-											onChange={ ( term ) => {
-												// Clearing the input using delete/backspace causes an empty array to be passed here.
-												if (
-													typeof term !== 'string'
-												) {
-													term = '';
+										<Fragment>
+											<span className="woocommerce-filters-advanced__attribute-field-separator">
+												=
+											</span>
+											<SelectControl
+												className="woocommerce-filters-advanced__input woocommerce-search"
+												label={ __(
+													'Attribute value',
+													'woocommerce-admin'
+												) }
+												isSearchable
+												showAllOnFocus
+												options={ attributeTerms }
+												selected={
+													selectedAttributeTerm
 												}
-												setSelectedAttributeTerm(
-													term
-												);
-												onFilterChange(
-													filterKey,
-													'value',
-													[ selectedAttribute, term ]
-												);
-											} }
-										/>
+												onChange={ ( term ) => {
+													// Clearing the input using delete/backspace causes an empty array to be passed here.
+													if (
+														typeof term !== 'string'
+													) {
+														term = '';
+													}
+													setSelectedAttributeTerm(
+														term
+													);
+													onFilterChange(
+														filterKey,
+														'value',
+														[
+															selectedAttribute,
+															term,
+														]
+													);
+												} }
+											/>
+										</Fragment>
 									) : (
 										<Spinner />
 									) ) }
