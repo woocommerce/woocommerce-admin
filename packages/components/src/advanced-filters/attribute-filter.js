@@ -127,7 +127,12 @@ const AttributeFilter = ( props ) => {
 										options={ attributes }
 										selected={ selectedAttribute }
 										onChange={ ( attr ) => {
+											// Clearing the input using delete/backspace causes an empty array to be passed here.
+											if ( typeof attr !== 'string' ) {
+												attr = '';
+											}
 											setSelectedAttribute( attr );
+											setSelectedAttributeTerm( '' );
 											onFilterChange(
 												filterKey,
 												'value',
@@ -149,6 +154,12 @@ const AttributeFilter = ( props ) => {
 											options={ attributeTerms }
 											selected={ selectedAttributeTerm }
 											onChange={ ( term ) => {
+												// Clearing the input using delete/backspace causes an empty array to be passed here.
+												if (
+													typeof term !== 'string'
+												) {
+													term = '';
+												}
 												setSelectedAttributeTerm(
 													term
 												);
