@@ -32,7 +32,7 @@ class Dashboard extends Component {
 			! profileSkipped &&
 			! window.wcAdminFeatures.homescreen
 		) {
-			getHistory().push( getNewPath( {}, '/store-details', {} ) );
+			getHistory().push( getNewPath( {}, '/setup-wizard', {} ) );
 		}
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {

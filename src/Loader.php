@@ -270,9 +270,9 @@ class Loader {
 	public static function register_store_details_page() {
 		wc_admin_register_page(
 			array(
-				'title'  => __( 'Store details', 'woocommerce-admin' ),
+				'title'  => __( 'Setup Wizard', 'woocommerce-admin' ),
 				'parent' => '',
-				'path'   => '/store-details',
+				'path'   => '/setup-wizard',
 			)
 		);
 	}
