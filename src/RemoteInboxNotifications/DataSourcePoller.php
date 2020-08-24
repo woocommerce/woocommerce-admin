@@ -15,7 +15,28 @@ defined( 'ABSPATH' ) || exit;
 class DataSourcePoller {
 	const DATA_SOURCES = array(
 		'https://woocommerce.com/wp-json/wccom/inbox-notifications/1.0/notifications.json',
+		'https://gist.githubusercontent.com/becdetat/d754c46d555af869535817309c818105/raw/b843e4483f2de4706e91957b76caf02c79224c5f/failing-feed.json',
 	);
+
+	/**
+	 * The logger instance.
+	 *
+	 * @var WC_Logger|null
+	 */
+	protected static $logger = null;
+
+	/**
+	 * Get the logger instance.
+	 *
+	 * @return WC_Logger
+	 */
+	private static function get_logger() {
+		if ( is_null( self::$logger ) ) {
+			self::$logger = wc_get_logger();
+		}
+
+		return self::$logger;
+	}
 
 	/**
 	 * Reads the data sources for specs and persists those specs.
@@ -46,13 +67,17 @@ class DataSourcePoller {
 	 * @return array The specs that have been read from the data source.
 	 */
 	private static function read_data_source( $url ) {
-		$response = wp_remote_get( $url );
+		$logger_context = array( 'source' => $url );
+		$logger         = self::get_logger();
+		$response       = wp_remote_get( $url );
 
 		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
+			$logger->error(
+				'Error getting remote inbox notification data feed from ' . $url,
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Error getting remote inbox notification data feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $response, true ) );
+			$logger->error( print_r( $response, true ), $logger_context );
 
 			return [];
 		}
@@ -61,15 +86,19 @@ class DataSourcePoller {
 		$specs = json_decode( $body );
 
 		if ( null === $specs ) {
-			// phpcs:ignore
-			error_log( 'Empty response in remote inbox notification data feed from ' . $url );
+			$logger->error(
+				'Empty response in remote inbox notification data feed from ' . $url,
+				$logger_context
+			);
 
 			return [];
 		}
 
 		if ( ! is_array( $specs ) ) {
-			// phpcs:ignore
-			error_log( 'Remote inbox notification data feed is not an array from ' . $url );
+			$logger->error(
+				'Remote inbox notification data feed is not an array from ' . $url,
+				$logger_context
+			);
 
 			return [];
 		}
@@ -104,47 +133,60 @@ class DataSourcePoller {
 	 * @return bool The result of the validation.
 	 */
 	private static function validate_spec( $spec, $url ) {
+		$logger         = self::get_logger();
+		$logger_context = array( 'source' => $url );
+
 		if ( ! isset( $spec->slug ) ) {
+			$logger->error(
+				'Spec is invalid because the slug is missing in feed ',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Spec is invalid because the slug is missing in feed from  ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $spec, true ) );
+			$logger->error( print_r( $spec, true ), $logger_context );
 
 			return false;
 		}
 
 		if ( ! isset( $spec->status ) ) {
+			$logger->error(
+				'Spec is invalid because the status is missing in feed',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Spec is invalid because the status is missing in feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $spec, true ) );
+			$logger->error( print_r( $spec, true ), $logger_context );
 
 			return false;
 		}
 
 		if ( ! isset( $spec->locales ) || ! is_array( $spec->locales ) ) {
+			$logger->error(
+				'Spec is invalid because the status is missing or empty in feed',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Spec is invalid because the status is missing or empty in feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $spec, true ) );
+			$logger->error( print_r( $spec, true ), $logger_context );
 
 			return false;
 		}
 
 		if ( null === SpecRunner::get_locale( $spec->locales ) ) {
+			$logger->error(
+				'Spec is invalid because the locale could not be retrieved in feed',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Spec is invalid because the locale could not be retrieved in feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $spec, true ) );
+			$logger->error( print_r( $spec, true ), $logger_context );
 
 			return false;
 		}
 
 		if ( ! isset( $spec->type ) ) {
+			$logger->error(
+				'Spec is invalid because the type is missing in feed',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Spec is invalid because the type is missing in feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $spec, true ) );
+			$logger->error( print_r( $spec, true ), $logger_context );
 
 			return false;
 		}
@@ -152,10 +194,12 @@ class DataSourcePoller {
 		if ( isset( $spec->actions ) && is_array( $spec->actions ) ) {
 			foreach ( $spec->actions as $action ) {
 				if ( ! self::validate_action( $action, $url ) ) {
+					$logger->error(
+						'Spec is invalid because an action is invalid in feed',
+						$logger_context
+					);
 					// phpcs:ignore
-					error_log( 'Spec is invalid because an action is invalid in feed from ' . $url );
-					// phpcs:ignore
-					error_log( print_r( $spec, true ) );
+					$logger->error( print_r( $spec, true ), $logger_context );
 
 					return false;
 				}
@@ -165,12 +209,14 @@ class DataSourcePoller {
 		if ( isset( $spec->rules ) && is_array( $spec->rules ) ) {
 			foreach ( $spec->rules as $rule ) {
 				if ( ! isset( $rule->type ) ) {
+					$logger->error(
+						'Spec is invalid because a rule type is empty in feed',
+						$logger_context
+					);
 					// phpcs:ignore
-					error_log( 'Spec is invalid because a rule type is empty in feed from ' . $url );
+					$logger->error( print_r( $rule, true ), $logger_context );
 					// phpcs:ignore
-					error_log( print_r( $rule, true ) );
-					// phpcs:ignore
-					error_log( print_r( $spec, true ) );
+					$logger->error( print_r( $spec, true ), $logger_context );
 
 					return false;
 				}
@@ -178,12 +224,14 @@ class DataSourcePoller {
 				$processor = GetRuleProcessor::get_processor( $rule->type );
 
 				if ( ! $processor->validate( $rule ) ) {
+					$logger->error(
+						'Spec is invalid because a rule is invalid in feed',
+						$logger_context
+					);
 					// phpcs:ignore
-					error_log( 'Spec is invalid because a rule is invalid in feed from ' . $url );
+					$logger->error( print_r( $rule, true ), $logger_context );
 					// phpcs:ignore
-					error_log( print_r( $rule, true ) );
-					// phpcs:ignore
-					error_log( print_r( $spec, true ) );
+					$logger->error( print_r( $spec, true ), $logger_context );
 
 					return false;
 				}
@@ -202,38 +250,49 @@ class DataSourcePoller {
 	 * @return bool The result of the validation.
 	 */
 	private static function validate_action( $action, $url ) {
+		$logger         = self::get_logger();
+		$logger_context = array( 'source' => $url );
+
 		if ( ! isset( $action->locales ) || ! is_array( $action->locales ) ) {
+			$logger->error(
+				'Action is invalid because it has empty or missing locales in feed',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Action is invalid because it has empty or missing locales in feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $action, true ) );
+			$logger->error( print_r( $action, true ), $logger_context );
 
 			return false;
 		}
 
 		if ( null === SpecRunner::get_action_locale( $action->locales ) ) {
+			$logger->error(
+				'Action is invalid because the locale could not be retrieved in feed',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Action is invalid because the locale could not be retrieved in feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $action, true ) );
+			$logger->error( print_r( $action, true ), $logger_context );
 
 			return false;
 		}
 
 		if ( ! isset( $action->name ) ) {
+			$logger->error(
+				'Action is invalid because the name is missing in feed',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Action is invalid because the name is missing in feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $action, true ) );
+			$logger->error( print_r( $action, true ), $logger_context );
 
 			return false;
 		}
 
 		if ( ! isset( $action->status ) ) {
+			$logger->error(
+				'Action is invalid because the status is missing in feed',
+				$logger_context
+			);
 			// phpcs:ignore
-			error_log( 'Action is invalid because the status is missing in feed from ' . $url );
-			// phpcs:ignore
-			error_log( print_r( $action, true ) );
+			$logger->error( print_r( $action, true ), $logger_context );
 
 			return false;
 		}
