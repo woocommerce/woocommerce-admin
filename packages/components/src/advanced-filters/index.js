@@ -76,19 +76,14 @@ class AdvancedFilters extends Component {
 		onAdvancedFilterAction( 'match', { match } );
 	}
 
-	onFilterChange( key, property, value ) {
-		const activeFilters = this.state.activeFilters.map(
-			( activeFilter ) => {
-				if ( key === activeFilter.key ) {
-					return Object.assign( {}, activeFilter, {
-						[ property ]: value,
-					} );
-				}
-				return activeFilter;
-			}
-		);
+	onFilterChange( index, property, value ) {
+		const newActiveFilters = [ ...this.state.activeFilters ];
+		newActiveFilters[ index ] = {
+			...newActiveFilters[ index ],
+			[ property ]: value,
+		};
 
-		this.setState( { activeFilters } );
+		this.setState( { activeFilters: newActiveFilters } );
 	}
 
 	removeFilter( index ) {
@@ -245,6 +240,7 @@ class AdvancedFilters extends Component {
 						.sort( this.orderFilters )
 						.map( ( filter, idx ) => {
 							const { key } = filter;
+							// TODO: try using an ID in the key for multiples to avoid rerendering on filter removal.
 							return (
 								<AdvancedFilterItem
 									key={ key + idx }
@@ -252,7 +248,10 @@ class AdvancedFilters extends Component {
 									currency={ currency }
 									filter={ filter }
 									isEnglish={ isEnglish }
-									onFilterChange={ this.onFilterChange }
+									onFilterChange={ partial(
+										this.onFilterChange,
+										idx
+									) }
 									query={ query }
 									removeFilter={ () =>
 										this.removeFilter( idx )

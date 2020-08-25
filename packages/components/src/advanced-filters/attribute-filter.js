@@ -164,11 +164,7 @@ const AttributeFilter = ( props ) => {
 								) }
 								options={ rules }
 								value={ rule }
-								onChange={ partial(
-									onFilterChange,
-									filterKey,
-									'rule'
-								) }
+								onChange={ partial( onFilterChange, 'rule' ) }
 								aria-label={ labels.rule }
 							/>
 						),
@@ -197,11 +193,7 @@ const AttributeFilter = ( props ) => {
 											}
 											setSelectedAttribute( attr );
 											setSelectedAttributeTerm( '' );
-											onFilterChange(
-												filterKey,
-												'value',
-												[ attr ]
-											);
+											onFilterChange( 'value', [ attr ] );
 										} }
 									/>
 								) : (
@@ -236,14 +228,10 @@ const AttributeFilter = ( props ) => {
 													setSelectedAttributeTerm(
 														term
 													);
-													onFilterChange(
-														filterKey,
-														'value',
-														[
-															selectedAttribute,
-															term,
-														]
-													);
+													onFilterChange( 'value', [
+														selectedAttribute,
+														term,
+													] );
 												} }
 											/>
 										</Fragment>

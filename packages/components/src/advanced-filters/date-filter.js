@@ -94,16 +94,16 @@ class DateFilter extends Component {
 	}
 
 	onSingleDateChange( { date, text, error } ) {
-		const { filter, onFilterChange } = this.props;
+		const { onFilterChange } = this.props;
 		this.setState( { before: date, beforeText: text, beforeError: error } );
 
 		if ( date ) {
-			onFilterChange( filter.key, 'value', date.format( isoDateFormat ) );
+			onFilterChange( 'value', date.format( isoDateFormat ) );
 		}
 	}
 
 	onRangeDateChange( input, { date, text, error } ) {
-		const { filter, onFilterChange } = this.props;
+		const { onFilterChange } = this.props;
 
 		this.setState( {
 			[ input ]: date,
@@ -127,10 +127,7 @@ class DateFilter extends Component {
 			}
 
 			if ( nextAfter && nextBefore ) {
-				onFilterChange( filter.key, 'value', [
-					nextAfter,
-					nextBefore,
-				] );
+				onFilterChange( 'value', [ nextAfter, nextBefore ] );
 			}
 		}
 	}
@@ -220,7 +217,7 @@ class DateFilter extends Component {
 						) }
 						options={ rules }
 						value={ rule }
-						onChange={ partial( onFilterChange, key, 'rule' ) }
+						onChange={ partial( onFilterChange, 'rule' ) }
 						aria-label={ labels.rule }
 					/>
 				),
