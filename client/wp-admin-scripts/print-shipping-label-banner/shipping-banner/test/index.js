@@ -228,15 +228,6 @@ describe( 'Create shipping label button', () => {
 		expect( scriptMock.src ).toEqual( '/path/to/wcs.js' );
 		expect( appendChildMock ).toHaveBeenCalledWith( scriptMock );
 
-		expect( getElementsByTagNameMock ).toHaveBeenCalledWith( 'head' );
-		expect( getElementsByTagNameMock ).toHaveReturnedWith( [ headMock ] );
-		expect( createElementMock ).toHaveBeenCalledWith( 'link' );
-		expect( createElementMock ).toHaveNthReturnedWith( 2, linkMock );
-		expect( linkMock.rel ).toEqual( 'stylesheet' );
-		expect( linkMock.type ).toEqual( 'text/css' );
-		expect( linkMock.href ).toEqual( '/path/to/wcs.css' );
-		expect( linkMock.media ).toEqual( 'all' );
-
 		document.createElement = createElement;
 		document.getElementById = getElementById;
 		document.body.appendChild = appendChild;
