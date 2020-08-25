@@ -24,7 +24,6 @@ const AdvancedFilterItem = ( props ) => {
 		onFilterChange,
 		query,
 		removeFilter,
-		updateFilter,
 	} = props;
 	const { key } = filterValue;
 	let filterConfig = config.filters[ key ];
@@ -67,7 +66,6 @@ const AdvancedFilterItem = ( props ) => {
 				onFilterChange={ onFilterChange }
 				isEnglish={ isEnglish }
 				query={ query }
-				updateFilter={ updateFilter }
 			/>
 			<Button
 				className={ classnames(
