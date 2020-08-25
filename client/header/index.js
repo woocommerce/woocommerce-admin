@@ -2,13 +2,14 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useRef, useState, useMemo } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
-import { getNewPath } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { useUserPreferences } from '@woocommerce/data';
+import { getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -34,8 +35,14 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const rafHandle = useRef( null );
 	const threshold = useRef( null );
 	const siteTitle = getSetting( 'siteTitle', '' );
-	const _sections = Array.isArray( sections ) ? sections : [ sections ];
+	const _sections = useMemo(
+		() => ( Array.isArray( sections ) ? sections : [ sections ] ),
+		[ sections ]
+	);
 	const [ isScrolled, setIsScrolled ] = useState( false );
+	const { updateUserPreferences, ...userData } = useUserPreferences();
+
+	const isModalDismissed = userData.android_app_banner_dismissed === 'yes';
 
 	const className = classnames( 'woocommerce-layout__header', {
 		'is-scrolled': isScrolled,
@@ -89,9 +96,20 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 		}
 	}, [ isEmbedded, _sections, siteTitle ] );
 
+	const dismissHandler = () => {
+		updateUserPreferences( {
+			android_app_banner_dismissed: 'yes',
+		} );
+	};
+
 	return (
 		<div className={ className } ref={ headerElement }>
-			<MobileAppBanner />
+			{ ! isModalDismissed && (
+				<MobileAppBanner
+					onDismiss={ dismissHandler }
+					onInstall={ dismissHandler }
+				/>
+			) }
 			<h1 className="woocommerce-layout__header-breadcrumbs">
 				{ _sections.map( ( section, i ) => {
 					const sectionPiece = Array.isArray( section ) ? (

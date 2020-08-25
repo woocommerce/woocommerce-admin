@@ -12,11 +12,11 @@ import { recordEvent } from '@woocommerce/tracks';
 import { platform, ANDROID_PLATFORM } from '../lib/platform';
 import { AppIcon } from './app-icon';
 import './style.scss';
+import { PLAY_STORE_LINK, TRACKING_EVENT_NAME } from './constants';
 
 const SHOW_APP_BANNER_MODIFIER_CLASS = 'woocommerce-layout__show-app-banner';
-const TRACKING_EVENT_NAME = 'wcadmin_mobile_banner_click';
 
-export const MobileAppBanner = () => {
+export const MobileAppBanner = ( { onInstall, onDismiss } ) => {
 	useEffect( () => {
 		const layout = document.getElementsByClassName(
 			'woocommerce-layout'
@@ -46,7 +46,9 @@ export const MobileAppBanner = () => {
 			<div className="woocommerce-mobile-app-banner">
 				<Icon
 					icon="no-alt"
+					data-testid="dismiss-btn"
 					onClick={ () => {
+						onDismiss();
 						setDismissed( true );
 						recordEvent( TRACKING_EVENT_NAME, {
 							button: 'dismiss',
@@ -70,9 +72,11 @@ export const MobileAppBanner = () => {
 				</div>
 
 				<Button
-					href="http://play.google.com/store/apps/details?id=com.woocommerce.android"
+					href={ PLAY_STORE_LINK }
 					isSecondary
 					onClick={ () => {
+						onInstall();
+						setDismissed( true );
 						recordEvent( TRACKING_EVENT_NAME, {
 							button: 'install',
 						} );
