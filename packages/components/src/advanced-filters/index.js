@@ -146,7 +146,17 @@ class AdvancedFilters extends Component {
 	getAvailableFilterKeys() {
 		const { config } = this.props;
 		const activeFilterKeys = this.state.activeFilters.map( ( f ) => f.key );
-		return difference( Object.keys( config.filters ), activeFilterKeys );
+		const multipleValueFilterKeys = Object.keys( config.filters ).filter(
+			( f ) => config.filters[ f ].allowMultiple || false
+		);
+		const inactiveFilterKeys = difference(
+			Object.keys( config.filters ),
+			activeFilterKeys,
+			multipleValueFilterKeys
+		);
+
+		// Ensure filters that allow multiples are alway present.
+		return [ ...inactiveFilterKeys, ...multipleValueFilterKeys ];
 	}
 
 	addFilter( key, onClose ) {
