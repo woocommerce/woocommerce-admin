@@ -4,6 +4,7 @@
 	align-items: center;
 	position: fixed;
 	right: 0;
+	top: 32px;
 	height: $header-height;
 
 	@include breakpoint( '<782px' ) {
