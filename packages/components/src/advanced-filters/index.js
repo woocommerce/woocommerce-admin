@@ -8,7 +8,6 @@ import { partial, findIndex, difference, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
-import classnames from 'classnames';
 
 import {
 	getActiveFiltersFromQuery,
@@ -23,11 +22,7 @@ import {
  */
 import Card from '../card';
 import Link from '../link';
-import SelectFilter from './select-filter';
-import SearchFilter from './search-filter';
-import NumberFilter from './number-filter';
-import DateFilter from './date-filter';
-import AttributeFilter from './attribute-filter';
+import AdvancedFilterItem from './item';
 
 const matches = [
 	{ value: 'all', label: __( 'All', 'woocommerce-admin' ) },
@@ -258,110 +253,18 @@ class AdvancedFilters extends Component {
 						.sort( this.orderFilters )
 						.map( ( filter ) => {
 							const { key } = filter;
-							const { input, labels } = config.filters[ key ];
 							return (
-								<li
-									className="woocommerce-filters-advanced__list-item"
+								<AdvancedFilterItem
 									key={ key }
-								>
-									{ input.component === 'SelectControl' && (
-										<SelectFilter
-											className="woocommerce-filters-advanced__fieldset-item"
-											filter={ filter }
-											config={ config.filters[ key ] }
-											onFilterChange={
-												this.onFilterChange
-											}
-											isEnglish={ isEnglish }
-										/>
-									) }
-									{ input.component === 'Search' && (
-										<SearchFilter
-											className="woocommerce-filters-advanced__fieldset-item"
-											filter={ filter }
-											config={ config.filters[ key ] }
-											onFilterChange={
-												this.onFilterChange
-											}
-											isEnglish={ isEnglish }
-											query={ query }
-										/>
-									) }
-									{ input.component === 'Number' && (
-										<NumberFilter
-											className="woocommerce-filters-advanced__fieldset-item"
-											filter={ filter }
-											config={ config.filters[ key ] }
-											onFilterChange={
-												this.onFilterChange
-											}
-											isEnglish={ isEnglish }
-											query={ query }
-											currency={ currency }
-										/>
-									) }
-									{ input.component === 'Currency' && (
-										<NumberFilter
-											className="woocommerce-filters-advanced__fieldset-item"
-											filter={ filter }
-											config={ {
-												...config.filters[ key ],
-												...{
-													input: {
-														type: 'currency',
-														component: 'Currency',
-													},
-												},
-											} }
-											onFilterChange={
-												this.onFilterChange
-											}
-											isEnglish={ isEnglish }
-											query={ query }
-											currency={ currency }
-										/>
-									) }
-									{ input.component === 'Date' && (
-										<DateFilter
-											className="woocommerce-filters-advanced__fieldset-item"
-											filter={ filter }
-											config={ config.filters[ key ] }
-											onFilterChange={
-												this.onFilterChange
-											}
-											isEnglish={ isEnglish }
-											query={ query }
-											updateFilter={ this.updateFilter }
-										/>
-									) }
-									{ input.component ===
-										'ProductAttribute' && (
-										<AttributeFilter
-											className="woocommerce-filters-advanced__fieldset-item"
-											filter={ filter }
-											config={ config.filters[ key ] }
-											onFilterChange={
-												this.onFilterChange
-											}
-											isEnglish={ isEnglish }
-											query={ query }
-											updateFilter={ this.updateFilter }
-										/>
-									) }
-									<Button
-										className={ classnames(
-											'woocommerce-filters-advanced__line-item',
-											'woocommerce-filters-advanced__remove'
-										) }
-										label={ labels.remove }
-										onClick={ partial(
-											this.removeFilter,
-											key
-										) }
-									>
-										<Gridicon icon="cross-small" />
-									</Button>
-								</li>
+									config={ config }
+									currency={ currency }
+									filter={ filter }
+									isEnglish={ isEnglish }
+									onFilterChange={ this.onFilterChange }
+									query={ query }
+									removeFilter={ this.removeFilter }
+									updateFilter={ this.updateFilter }
+								/>
 							);
 						} ) }
 				</ul>
