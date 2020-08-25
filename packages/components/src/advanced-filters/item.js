@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { Button } from '@wordpress/components';
-import { partial } from 'lodash';
 import Gridicon from 'gridicons';
 import classnames from 'classnames';
 
@@ -73,7 +72,7 @@ const AdvancedFilterItem = ( props ) => {
 					'woocommerce-filters-advanced__remove'
 				) }
 				label={ labels.remove }
-				onClick={ partial( removeFilter, key ) }
+				onClick={ removeFilter }
 			>
 				<Gridicon icon="cross-small" />
 			</Button>

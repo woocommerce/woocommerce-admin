@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component, createRef } from '@wordpress/element';
 import { SelectControl, Button, Dropdown } from '@wordpress/components';
-import { partial, findIndex, difference, isEqual } from 'lodash';
+import { partial, difference, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
@@ -91,13 +91,9 @@ class AdvancedFilters extends Component {
 		this.setState( { activeFilters } );
 	}
 
-	removeFilter( key ) {
+	removeFilter( index ) {
 		const { onAdvancedFilterAction } = this.props;
 		const activeFilters = [ ...this.state.activeFilters ];
-		const index = findIndex(
-			activeFilters,
-			( filter ) => filter.key === key
-		);
 		onAdvancedFilterAction( 'remove', activeFilters[ index ] );
 		activeFilters.splice( index, 1 );
 		this.setState( { activeFilters } );
@@ -247,18 +243,20 @@ class AdvancedFilters extends Component {
 				>
 					{ activeFilters
 						.sort( this.orderFilters )
-						.map( ( filter ) => {
+						.map( ( filter, idx ) => {
 							const { key } = filter;
 							return (
 								<AdvancedFilterItem
-									key={ key }
+									key={ key + idx }
 									config={ config }
 									currency={ currency }
 									filter={ filter }
 									isEnglish={ isEnglish }
 									onFilterChange={ this.onFilterChange }
 									query={ query }
-									removeFilter={ this.removeFilter }
+									removeFilter={ () =>
+										this.removeFilter( idx )
+									}
 								/>
 							);
 						} ) }
