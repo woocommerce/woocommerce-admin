@@ -97,7 +97,7 @@ export function getAllTasks( {
 	const tasks = [
 		{
 			key: 'store_details',
-			title: __( 'Store details', 'woocommerce-admin' ),
+			title: __( 'Setup wizard', 'woocommerce-admin' ),
 			container: null,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
