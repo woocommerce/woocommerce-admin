@@ -3,16 +3,12 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, Popover, Tooltip } from '@wordpress/components';
-import { Fragment, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import interpolateComponents from 'interpolate-components';
 import { Link, Pill } from '@woocommerce/components';
+import { recordEvent } from '@woocommerce/tracks';
 
-/**
- * Internal dependencies
- */
-import { recordEvent } from '../../../lib/tracks';
-
-export default function ProductTypeLabel( {
+export default function ProductType( {
 	annualPrice,
 	description,
 	isMonthlyPricing,
@@ -33,10 +29,8 @@ export default function ProductTypeLabel( {
 	/* eslint-enable @wordpress/i18n-no-collapsible-whitespace */
 
 	return (
-		<Fragment>
-			<span className="woocommerce-product-wizard__product-types-label">
-				{ label }
-			</span>
+		<div className="woocommerce-product-type">
+			<span className="woocommerce-product-type__label">{ label }</span>
 			<Button
 				isTertiary
 				label={ __(
@@ -100,6 +94,6 @@ export default function ProductTypeLabel( {
 						  ) }
 				</Pill>
 			</Tooltip>
-		</Fragment>
+		</div>
 	);
 }

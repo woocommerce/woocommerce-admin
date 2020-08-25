@@ -15,7 +15,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import ProductTypeLabel from './label';
+import ProductType from './product-type';
 import './style.scss';
 
 class ProductTypes extends Component {
@@ -123,7 +123,7 @@ class ProductTypes extends Component {
 								<CheckboxControl
 									key={ slug }
 									label={
-										<ProductTypeLabel
+										<ProductType
 											description={
 												productTypes[ slug ].description
 											}
