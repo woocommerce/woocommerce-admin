@@ -3,6 +3,11 @@
 		display: flex;
 	}
 
+	.woocommerce-product-type {
+		align-items: center;
+		display: flex;
+	}
+
 	.woocommerce-product-type__label {
 		display: inline-block;
 		margin-right: 12px;
@@ -46,6 +51,11 @@
 		justify-content: flex-end;
 		color: $gray-600;
 		font-size: 14px;
+
+		label {
+			display: inline-flex;
+			align-items: center;
+		}
 
 		.components-form-toggle {
 			display: inline-flex;

@@ -148,18 +148,21 @@ class ProductTypes extends Component {
 							);
 						} ) }
 						<div className="woocommerce-profile-wizard__product-types-pricing-toggle woocommerce-profile-wizard__checkbox">
-							{ __(
-								'Display monthly prices',
-								'woocommerce-admin'
-							) }
-							<FormToggle
-								checked={ isMonthlyPricing }
-								onChange={ () =>
-									this.setState( {
-										isMonthlyPricing: ! isMonthlyPricing,
-									} )
-								}
-							/>
+							<label htmlFor="woocommerce-product-types__pricing-toggle">
+								{ __(
+									'Display monthly prices',
+									'woocommerce-admin'
+								) }
+								<FormToggle
+									id="woocommerce-product-types__pricing-toggle"
+									checked={ isMonthlyPricing }
+									onChange={ () =>
+										this.setState( {
+											isMonthlyPricing: ! isMonthlyPricing,
+										} )
+									}
+								/>
+							</label>
 						</div>
 						{ error && (
 							<span className="woocommerce-profile-wizard__error">
