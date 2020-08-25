@@ -25,8 +25,8 @@ import { H, Section } from '../section';
  * @return {Object} -
  */
 class ReportFilters extends Component {
-	constructor( props ) {
-		super( props );
+	constructor() {
+		super();
 		this.renderCard = this.renderCard.bind( this );
 		this.onRangeSelect = this.onRangeSelect.bind( this );
 	}
