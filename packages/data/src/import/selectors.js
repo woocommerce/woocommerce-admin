@@ -1,3 +1,7 @@
+export const getImportStarted = ( state ) => {
+	return state.activeImport || false;
+};
+
 export const getImportStatus = ( state, query ) => {
 	const stringifiedQuery = JSON.stringify( query );
 	return state.importStatus[ stringifiedQuery ] || {};

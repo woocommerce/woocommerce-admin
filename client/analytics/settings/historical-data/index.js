@@ -8,7 +8,7 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import moment from 'moment';
 import { IMPORT_STORE_NAME, NOTES_STORE_NAME } from '@woocommerce/data';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { withSpokenMessages } from '@wordpress/components';
 import { recordEvent } from '@woocommerce/tracks';
 import { SECOND } from '@fresh-data/framework';
@@ -19,7 +19,6 @@ import { SECOND } from '@fresh-data/framework';
 import { formatParams } from './utils';
 import HistoricalDataLayout from './layout';
 import { QUERY_DEFAULTS } from '../../../wc-api/constants';
-import withSelect from '../../../wc-api/with-select';
 
 class HistoricalData extends Component {
 	constructor() {
@@ -238,13 +237,8 @@ class HistoricalData extends Component {
 	}
 
 	render() {
-		const {
-			activeImport,
-			lastImportStartTimestamp,
-			period,
-			skipChecked,
-		} = this.state;
-		const { createNotice } = this.props;
+		const { lastImportStartTimestamp, period, skipChecked } = this.state;
+		const { activeImport, createNotice } = this.props;
 
 		return (
 			<HistoricalDataLayout
@@ -274,6 +268,7 @@ class HistoricalData extends Component {
 export default compose( [
 	withSelect( ( select ) => {
 		const { getNotes } = select( NOTES_STORE_NAME );
+		const { getImportStarted } = select( IMPORT_STORE_NAME );
 
 		const notesQuery = {
 			page: 1,
@@ -282,8 +277,9 @@ export default compose( [
 			status: 'unactioned',
 		};
 		const notes = getNotes( notesQuery );
+		const activeImport = getImportStarted();
 
-		return { notes };
+		return { activeImport, notes };
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { updateNote } = dispatch( NOTES_STORE_NAME );

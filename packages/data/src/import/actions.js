@@ -3,6 +3,14 @@
  */
 import TYPES from './action-types';
 
+export function updateImportStarted( query, activeImport ) {
+	return {
+		type: TYPES.SET_IMPORT_STARTED,
+		activeImport,
+		query,
+	};
+}
+
 export function setImportStatus( query, importStatus ) {
 	return {
 		type: TYPES.SET_IMPORT_STATUS,
