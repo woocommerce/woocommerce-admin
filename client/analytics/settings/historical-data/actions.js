@@ -203,16 +203,13 @@ export default compose( [
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const {
-			updateImportation,
-			setImportFinished,
-			setImportStarted,
-		} = dispatch( IMPORT_STORE_NAME );
+		const { updateImportation, setImportStarted } = dispatch(
+			IMPORT_STORE_NAME
+		);
 		const { createNotice } = dispatch( 'core/notices' );
 		return {
 			createNotice,
 			updateImportation,
-			setImportFinished,
 			setImportStarted,
 		};
 	} ),

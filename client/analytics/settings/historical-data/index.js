@@ -166,15 +166,12 @@ export default compose( [
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { updateNote } = dispatch( NOTES_STORE_NAME );
-		const {
-			invalidateResolution,
-			setImportFinished,
-			setImportStarted,
-		} = dispatch( IMPORT_STORE_NAME );
+		const { invalidateResolution, setImportStarted } = dispatch(
+			IMPORT_STORE_NAME
+		);
 
 		return {
 			invalidateResolution,
-			setImportFinished,
 			setImportStarted,
 			updateNote,
 		};
