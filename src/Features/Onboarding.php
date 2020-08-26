@@ -1053,8 +1053,17 @@ class Onboarding {
 			return;
 		}
 
-		$new_value = 1 === absint( $_GET['reset_task_list'] ) ? 'no' : 'yes'; // phpcs:ignore CSRF ok.
+		$previous_value = 1 === absint( $_GET['reset_task_list'] ) ? 'yes' : 'no'; // phpcs:ignore CSRF ok.
+		$new_value      = 'no' === $previous_value ? 'yes' : 'no'; // phpcs:ignore CSRF ok.
+
 		update_option( 'woocommerce_task_list_hidden', $new_value );
+		wc_admin_record_tracks_event(
+			'wcadmin_tasklist_toggled',
+			array(
+				'previous'  => $previous_value,
+				'new_value' => $new_value,
+			)
+		);
 		wp_safe_redirect( wc_admin_url() );
 		exit;
 	}
