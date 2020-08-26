@@ -8,7 +8,7 @@ import userEvent from '@testing-library/user-event';
 /**
  * Internal dependencies
  */
-import ProductTypes from '../';
+import { ProductTypes } from '../';
 
 describe( 'ProductTypes', () => {
 	beforeEach( () => {

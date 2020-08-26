@@ -18,7 +18,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import ProductType from './product-type';
 import './style.scss';
 
-class ProductTypes extends Component {
+export class ProductTypes extends Component {
 	constructor( props ) {
 		super();
 		const profileItems = get( props, 'profileItems', {} );
