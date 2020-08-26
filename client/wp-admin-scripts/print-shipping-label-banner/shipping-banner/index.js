@@ -231,15 +231,19 @@ export class ShippingBanner extends Component {
 				document.body.appendChild( script );
 			} ),
 			new Promise( ( resolve, reject ) => {
-				const head = document.getElementsByTagName( 'head' )[ 0 ];
-				const link = document.createElement( 'link' );
-				link.rel = 'stylesheet';
-				link.type = 'text/css';
-				link.href = stylePath;
-				link.media = 'all';
-				link.onload = resolve;
-				link.onerror = reject;
-				head.appendChild( link );
+				if ( stylePath !== '' ) {
+					const head = document.getElementsByTagName( 'head' )[ 0 ];
+					const link = document.createElement( 'link' );
+					link.rel = 'stylesheet';
+					link.type = 'text/css';
+					link.href = stylePath;
+					link.media = 'all';
+					link.onload = resolve;
+					link.onerror = reject;
+					head.appendChild( link );
+				} else {
+					resolve();
+				}
 			} ),
 		] ).then( () => {
 			this.setState( {
