@@ -39,12 +39,15 @@ const getScreenReaderText = ( {
 		  ) || {}
 		: {};
 
-	const { label: attributeName } = attributes.find(
-		( attr ) => attr.key === selectedAttribute
-	);
-	const { label: attributeTerm } = attributeTerms.find(
-		( term ) => term.key === selectedAttributeTerm
-	);
+	const { label: attributeName } =
+		attributes.find( ( attr ) => attr.key === selectedAttribute ) || {};
+	const { label: attributeTerm } =
+		attributeTerms.find( ( term ) => term.key === selectedAttributeTerm ) ||
+		{};
+
+	if ( ! attributeName || ! attributeTerm ) {
+		return '';
+	}
 
 	const filterStr = interpolateComponents( {
 		/* eslint-disable-next-line max-len */
@@ -74,7 +77,7 @@ const getScreenReaderText = ( {
 
 const AttributeFilter = ( props ) => {
 	const { className, config, filter, isEnglish, onFilterChange } = props;
-	const { key: filterKey, rule, value } = filter;
+	const { rule, value } = filter;
 	const { labels, rules } = config;
 
 	const [ attributes, setAttributes ] = useState( [] );
