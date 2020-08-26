@@ -201,8 +201,6 @@ export default compose(
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
-		console.log( dispatch.toString() );
-
 		return {
 			createNotice,
 			updateProfileItems,
