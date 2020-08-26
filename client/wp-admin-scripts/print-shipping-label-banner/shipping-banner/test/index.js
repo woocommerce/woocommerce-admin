@@ -243,16 +243,18 @@ describe( 'Create shipping label button', () => {
 		document.getElementsByTagName = getElementsByTagName;
 	} );
 
-	it( 'should open WCS modal', () => {
-		window.wcsGetAppStore = jest.fn();
+	it( 'should open WCS modal', async () => {
+		window.wcsGetAppStoreAsync = jest.fn();
 		const getState = jest.fn();
 		const dispatch = jest.fn();
 		const subscribe = jest.fn();
-		window.wcsGetAppStore.mockReturnValueOnce( {
-			getState,
-			dispatch,
-			subscribe,
-		} );
+		window.wcsGetAppStoreAsync.mockReturnValueOnce(
+			Promise.resolve( {
+				getState,
+				dispatch,
+				subscribe,
+			} )
+		);
 		getState.mockReturnValueOnce( {
 			ui: {
 				selectedSiteId: 'SITE_ID',
@@ -266,8 +268,8 @@ describe( 'Create shipping label button', () => {
 		const getElementById = document.getElementById;
 		document.getElementById = getElementByIdMock;
 
-		shippingBannerWrapper.instance().openWcsModal();
-		expect( window.wcsGetAppStore ).toHaveBeenCalledWith(
+		await shippingBannerWrapper.instance().openWcsModal();
+		expect( window.wcsGetAppStoreAsync ).toHaveBeenCalledWith(
 			'wc-connect-create-shipping-label'
 		);
 		expect( getState ).toHaveBeenCalledTimes( 1 );
