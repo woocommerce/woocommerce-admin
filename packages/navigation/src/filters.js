@@ -152,7 +152,7 @@ export function getQueryFromActiveFilters( activeFilters, query, config ) {
 		if ( filter.value ) {
 			const urlKey = getUrlKey( filter.key, filter.rule );
 
-			if ( config[ filter.key ].allowMultiple ) {
+			if ( config[ filter.key ] && config[ filter.key ].allowMultiple ) {
 				if ( ! data.hasOwnProperty( urlKey ) ) {
 					data[ urlKey ] = [];
 				}
