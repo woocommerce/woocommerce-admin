@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { setSetting } from '@woocommerce/wc-admin-settings';
 import userEvent from '@testing-library/user-event';
 
@@ -50,12 +50,14 @@ describe( 'ProductTypes', () => {
 		expect( container ).toMatchSnapshot();
 	} );
 
-	test( 'should show validation error on continue', async () => {
+	test( 'should validate on continue', async () => {
+		const mockCreateNotice = jest.fn();
 		const mockGoToNextStep = jest.fn();
 		const mockUpdateProfileItems = jest.fn().mockResolvedValue();
 
 		render(
 			<ProductTypes
+				createNotice={ mockCreateNotice }
 				goToNextStep={ mockGoToNextStep }
 				updateProfileItems={ mockUpdateProfileItems }
 			/>
@@ -68,12 +70,19 @@ describe( 'ProductTypes', () => {
 			selector: 'label',
 		} );
 
+		// Validation should fail since no product types are selected.
 		userEvent.click( continueButton );
-		expect( mockGoToNextStep ).not.toHaveBeenCalled();
+		await waitFor( () => {
+			expect( mockGoToNextStep ).not.toHaveBeenCalled();
+			expect( mockUpdateProfileItems ).not.toHaveBeenCalled();
+		} );
 
 		// Click on a product type to pass validation.
 		userEvent.click( productType );
 		userEvent.click( continueButton );
-		expect( mockGoToNextStep ).toHaveBeenCalled();
+		await waitFor( () => {
+			expect( mockUpdateProfileItems ).toHaveBeenCalled();
+			expect( mockGoToNextStep ).toHaveBeenCalled();
+		} );
 	} );
 } );

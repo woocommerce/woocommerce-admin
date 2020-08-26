@@ -38,7 +38,7 @@ class ProductTypes extends Component {
 		this.onChange = this.onChange.bind( this );
 	}
 
-	async validateField() {
+	validateField() {
 		const error = this.state.selected.length
 			? null
 			: __(
@@ -46,37 +46,31 @@ class ProductTypes extends Component {
 					'woocommerce-admin'
 			  );
 		this.setState( { error } );
+		return ! error;
 	}
 
-	async onContinue() {
-		await this.validateField();
-		if ( this.state.error ) {
+	onContinue() {
+		if ( ! this.validateField() ) {
 			return;
 		}
 
-		const {
-			createNotice,
-			goToNextStep,
-			isError,
-			updateProfileItems,
-		} = this.props;
+		const { createNotice, goToNextStep, updateProfileItems } = this.props;
 
 		recordEvent( 'storeprofiler_store_product_type_continue', {
 			product_type: this.state.selected,
 		} );
-		await updateProfileItems( { product_types: this.state.selected } );
 
-		if ( ! isError ) {
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating your product types.',
-					'woocommerce-admin'
+		updateProfileItems( { product_types: this.state.selected } )
+			.then( () => goToNextStep() )
+			.catch( () =>
+				createNotice(
+					'error',
+					__(
+						'There was a problem updating your product types.',
+						'woocommerce-admin'
+					)
 				)
 			);
-		}
 	}
 
 	onChange( slug ) {
@@ -206,6 +200,8 @@ export default compose(
 	withDispatch( ( dispatch ) => {
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
+
+		console.log( dispatch.toString() );
 
 		return {
 			createNotice,
