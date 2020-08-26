@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import moment from 'moment';
+
+/**
  * Internal dependencies
  */
 import reducer from '../reducer';
@@ -11,7 +16,7 @@ const defaultState = {
 	errors: {},
 	lastImportStartTimestamp: 0,
 	period: {
-		date: '08/22/2020',
+		date: moment().format( 'MM/DD/YYYY' ),
 		label: 'all',
 	},
 	skipPrevious: true,
