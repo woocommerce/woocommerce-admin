@@ -35,13 +35,27 @@ const matches = [
 class AdvancedFilters extends Component {
 	constructor( { query, config } ) {
 		super( ...arguments );
+		this.instanceCounts = {};
+
+		const filtersFromQuery = getActiveFiltersFromQuery(
+			query,
+			config.filters
+		);
+		// @todo: This causes rerenders when instance numbers don't match (from adding/remove before updating query string).
+		const activeFilters = filtersFromQuery.map( ( filter ) => {
+			if ( config.filters[ filter.key ].allowMultiple ) {
+				filter.instance = this.getInstanceNumber( filter.key );
+			}
+
+			return filter;
+		} );
+
 		this.state = {
 			match: query.match || 'all',
-			activeFilters: getActiveFiltersFromQuery( query, config.filters ),
+			activeFilters,
 		};
 
 		this.filterListRef = createRef();
-		this.instanceCounts = {};
 
 		this.onMatchChange = this.onMatchChange.bind( this );
 		this.onFilterChange = this.onFilterChange.bind( this );
@@ -65,8 +79,8 @@ class AdvancedFilters extends Component {
 
 			// Update all multiple instance counts.
 			this.instanceCounts = {};
-			// @todo: This causes rerenders when instance numbers don't match.
-			const newActiveFilters = filtersFromQuery.map( ( filter ) => {
+			// @todo: This causes rerenders when instance numbers don't match (from adding/remove before updating query string).
+			const activeFilters = filtersFromQuery.map( ( filter ) => {
 				if ( config.filters[ filter.key ].allowMultiple ) {
 					filter.instance = this.getInstanceNumber( filter.key );
 				}
@@ -75,9 +89,7 @@ class AdvancedFilters extends Component {
 			} );
 
 			/* eslint-disable react/no-did-update-set-state */
-			this.setState( {
-				activeFilters: newActiveFilters,
-			} );
+			this.setState( { activeFilters } );
 			/* eslint-enable react/no-did-update-set-state */
 		}
 	}
