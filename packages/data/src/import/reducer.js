@@ -34,7 +34,7 @@ const reducer = (
 	}
 ) => {
 	switch ( type ) {
-		case TYPES.UPDATE_IMPORT_STARTED:
+		case TYPES.SET_IMPORT_STARTED:
 			state = {
 				...state,
 				activeImport,
@@ -43,7 +43,7 @@ const reducer = (
 					: state.lastImportStartTimestamp,
 			};
 			break;
-		case TYPES.UPDATE_IMPORT_PERIOD:
+		case TYPES.SET_IMPORT_PERIOD:
 			state = {
 				...state,
 				period: {
@@ -53,7 +53,7 @@ const reducer = (
 				activeImport: false,
 			};
 			break;
-		case TYPES.UPDATE_IMPORT_DATE:
+		case TYPES.SET_IMPORT_DATE:
 			state = {
 				...state,
 				period: {
@@ -63,7 +63,7 @@ const reducer = (
 				activeImport: false,
 			};
 			break;
-		case TYPES.UPDATE_SKIP_IMPORTED:
+		case TYPES.SET_SKIP_IMPORTED:
 			state = {
 				...state,
 				skipPrevious,
@@ -76,6 +76,10 @@ const reducer = (
 				importStatus: {
 					...state.importStatus,
 					[ JSON.stringify( query ) ]: importStatus,
+				},
+				errors: {
+					...state.errors,
+					[ JSON.stringify( query ) ]: false,
 				},
 			};
 			break;

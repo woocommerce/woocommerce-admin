@@ -1,31 +1,36 @@
 /**
+ * External dependencies
+ */
+import { apiFetch } from '@wordpress/data-controls';
+
+/**
  * Internal dependencies
  */
 import TYPES from './action-types';
 
-export function updateImportStarted( activeImport ) {
+export function setImportStarted( activeImport ) {
 	return {
-		type: TYPES.UPDATE_IMPORT_STARTED,
+		type: TYPES.SET_IMPORT_STARTED,
 		activeImport,
 	};
 }
 
-export function updateImportPeriod( date, dateModified ) {
+export function setImportPeriod( date, dateModified ) {
 	if ( ! dateModified ) {
 		return {
-			type: TYPES.UPDATE_IMPORT_PERIOD,
+			type: TYPES.SET_IMPORT_PERIOD,
 			date,
 		};
 	}
 	return {
-		type: TYPES.UPDATE_IMPORT_DATE,
+		type: TYPES.SET_IMPORT_DATE,
 		date,
 	};
 }
 
-export function updateSkipPrevious( skipPrevious ) {
+export function setSkipPrevious( skipPrevious ) {
 	return {
-		type: TYPES.UPDATE_SKIP_IMPORTED,
+		type: TYPES.SET_SKIP_IMPORTED,
 		skipPrevious,
 	};
 }
@@ -52,4 +57,15 @@ export function setImportError( query, error ) {
 		error,
 		query,
 	};
+}
+
+export function* updateImportation( path, importStarted = false ) {
+	yield setImportStarted( importStarted );
+	try {
+		const response = yield apiFetch( { path, method: 'POST' } );
+		return response;
+	} catch ( error ) {
+		yield setImportError( path, error );
+		throw error;
+	}
 }

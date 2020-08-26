@@ -1,6 +1,6 @@
 export const getImportStarted = ( state ) => {
 	const { activeImport, lastImportStartTimestamp } = state;
-	return { activeImport, lastImportStartTimestamp } || false;
+	return { activeImport, lastImportStartTimestamp } || {};
 };
 
 export const getFormSettings = ( state ) => {

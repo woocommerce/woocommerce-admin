@@ -12,18 +12,18 @@ import { withDispatch } from '@wordpress/data';
 function HistoricalDataPeriodSelector( {
 	dateFormat,
 	disabled,
-	updateImportPeriod,
+	setImportPeriod,
 	value,
 } ) {
 	const onSelectChange = ( val ) => {
-		updateImportPeriod( val );
+		setImportPeriod( val );
 	};
 	const onDatePickerChange = ( val ) => {
 		const dateModified = true;
 		if ( val.date && val.date.isValid ) {
-			updateImportPeriod( val.date.format( dateFormat ), dateModified );
+			setImportPeriod( val.date.format( dateFormat ), dateModified );
 		} else {
-			updateImportPeriod( val.text, dateModified );
+			setImportPeriod( val.text, dateModified );
 		}
 	};
 
@@ -89,6 +89,6 @@ function HistoricalDataPeriodSelector( {
 }
 
 export default withDispatch( ( dispatch ) => {
-	const { updateImportPeriod } = dispatch( IMPORT_STORE_NAME );
-	return { updateImportPeriod };
+	const { setImportPeriod } = dispatch( IMPORT_STORE_NAME );
+	return { setImportPeriod };
 } )( HistoricalDataPeriodSelector );

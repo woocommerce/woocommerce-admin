@@ -28,7 +28,7 @@ export function* getImportTotals( query ) {
 	try {
 		const url = addQueryArgs(
 			`${ NAMESPACE }/reports/import/totals`,
-			omit( query, [ 'timestamp' ] )
+			query
 		);
 		const response = yield apiFetch( { path: url } );
 		yield setImportTotals( query, response );

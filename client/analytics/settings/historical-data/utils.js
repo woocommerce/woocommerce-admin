@@ -33,6 +33,9 @@ export const getStatus = ( {
 	ordersProgress,
 	ordersTotal,
 } ) => {
+	if ( isError ) {
+		return 'error';
+	}
 	if ( inProgress ) {
 		if (
 			isNil( customersProgress ) ||
@@ -58,9 +61,6 @@ export const getStatus = ( {
 			return 'finished';
 		}
 		return 'ready';
-	}
-	if ( isError ) {
-		return 'error';
 	}
 	return 'nothing';
 };

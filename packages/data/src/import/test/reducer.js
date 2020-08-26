@@ -5,9 +5,16 @@ import reducer from '../reducer';
 import TYPES from '../action-types';
 
 const defaultState = {
+	activeImport: false,
 	importStatus: {},
 	importTotals: {},
 	errors: {},
+	lastImportStartTimestamp: 0,
+	period: {
+		date: '08/22/2020',
+		label: 'all',
+	},
+	skipPrevious: true,
 };
 
 describe( 'import reducer', () => {
@@ -18,7 +25,7 @@ describe( 'import reducer', () => {
 	} );
 
 	it( 'should handle SET_IMPORT_STATUS', () => {
-		const query = { freshness: 1800000, timeout: 60000 };
+		const query = Date.now();
 		const state = reducer( defaultState, {
 			type: TYPES.SET_IMPORT_STATUS,
 			query,
@@ -46,6 +53,51 @@ describe( 'import reducer', () => {
 		expect( state.importTotals ).toHaveProperty( stringifiedQuery );
 		expect( state.importTotals[ stringifiedQuery ].customers ).toEqual( 1 );
 		expect( state.importTotals[ stringifiedQuery ].orders ).toEqual( 6 );
+	} );
+
+	it( 'should handle SET_IMPORT_STARTED', () => {
+		const activeImport = true;
+		const state = reducer( defaultState, {
+			type: TYPES.SET_IMPORT_STARTED,
+			activeImport,
+		} );
+
+		expect( state.activeImport ).toBeTruthy();
+		expect( state.lastImportStartTimestamp > 0 ).toBeTruthy();
+	} );
+
+	it( 'should handle SET_IMPORT_DATE', () => {
+		const date = '08/04/2020';
+		const state = reducer( defaultState, {
+			type: TYPES.SET_IMPORT_DATE,
+			date,
+		} );
+
+		expect( state.period.date ).toEqual( date );
+		expect( state.period.label ).toEqual( 'custom' );
+		expect( state.activeImport ).toEqual( false );
+	} );
+
+	it( 'should handle SET_IMPORT_PERIOD', () => {
+		defaultState.activeImport = true;
+		const date = '08/04/2020';
+		const state = reducer( defaultState, {
+			type: TYPES.SET_IMPORT_PERIOD,
+			date,
+		} );
+		expect( state.period.label ).toEqual( date );
+		expect( state.activeImport ).toEqual( false );
+	} );
+
+	it( 'should handle SET_SKIP_IMPORTED', () => {
+		const skipPrevious = false;
+		defaultState.activeImport = true;
+		const state = reducer( defaultState, {
+			type: TYPES.SET_SKIP_IMPORTED,
+			skipPrevious,
+		} );
+		expect( state.skipPrevious ).toEqual( false );
+		expect( state.activeImport ).toEqual( false );
 	} );
 
 	it( 'should handle SET_IMPORT_ERROR', () => {

@@ -2,32 +2,91 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { addQueryArgs } from '@wordpress/url';
 import { Button } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
 import { IMPORT_STORE_NAME } from '@woocommerce/data';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
+import { recordEvent } from '@woocommerce/tracks';
+
+/**
+ * Internal dependencies
+ */
+import { formatParams } from './utils';
 
 function HistoricalDataActions( {
 	createNotice,
+	dateFormat,
 	importDate,
-	onDeletePreviousData,
-	onReimportData,
-	onStartImport,
-	onStopImport,
+	clearStatusAndTotalsCache,
+	selectedPeriod,
+	stopImport,
+	skipChecked,
 	status,
-	updateImportStarted,
+	setImportStarted,
+	updateImportation,
 } ) {
-	const startImport = () => {
-		updateImportStarted( true );
-		onStartImport();
+	const onStartImport = () => {
+		const path = addQueryArgs(
+			'/wc-analytics/reports/import',
+			formatParams( dateFormat, selectedPeriod, skipChecked )
+		);
+		const errorMessage = __(
+			'There was a problem rebuilding your report data.',
+			'woocommerce-admin'
+		);
+
+		const importStarted = true;
+		makeQuery( path, errorMessage, importStarted );
 	};
+
+	const onStopImport = () => {
+		stopImport();
+		const path = '/wc-analytics/reports/import/cancel';
+		const errorMessage = __(
+			'There was a problem stopping your current import.',
+			'woocommerce-admin'
+		);
+		makeQuery( path, errorMessage );
+	};
+
+	const makeQuery = ( path, errorMessage, importStarted = false ) => {
+		updateImportation( path, importStarted )
+			.then( ( response ) => {
+				if ( response.status === 'success' ) {
+					createNotice( 'success', response.message );
+				} else {
+					createNotice( 'error', errorMessage );
+					setImportStarted( false );
+					stopImport();
+				}
+			} )
+			.catch( ( error ) => {
+				if ( error && error.message ) {
+					createNotice( 'error', error.message );
+					setImportStarted( false );
+					stopImport();
+				}
+			} );
+	};
+
 	const deletePreviousData = () => {
-		updateImportStarted( false );
-		onDeletePreviousData();
+		const path = '/wc-analytics/reports/import/delete';
+		const errorMessage = __(
+			'There was a problem deleting your previous data.',
+			'woocommerce-admin'
+		);
+		makeQuery( path, errorMessage );
+
+		recordEvent( 'analytics_import_delete_previous' );
+
+		setImportStarted( false );
 	};
 	const reimportData = () => {
-		updateImportStarted( false );
-		onReimportData();
+		setImportStarted( false );
+		// We need to clear the cache of the selectors `getImportTotals` and `getImportStatus`
+		clearStatusAndTotalsCache();
 	};
 	const getActions = () => {
 		const importDisabled = status !== 'ready';
@@ -68,7 +127,7 @@ function HistoricalDataActions( {
 					<Fragment>
 						<Button
 							isPrimary
-							onClick={ startImport }
+							onClick={ onStartImport }
 							disabled={ importDisabled }
 						>
 							{ __( 'Start', 'woocommerce-admin' ) }
@@ -87,7 +146,7 @@ function HistoricalDataActions( {
 				<Fragment>
 					<Button
 						isPrimary
-						onClick={ startImport }
+						onClick={ onStartImport }
 						disabled={ importDisabled }
 					>
 						{ __( 'Start', 'woocommerce-admin' ) }
@@ -129,7 +188,32 @@ function HistoricalDataActions( {
 	);
 }
 
-export default withDispatch( ( dispatch ) => {
-	const { updateImportStarted } = dispatch( IMPORT_STORE_NAME );
-	return { updateImportStarted };
-} )( HistoricalDataActions );
+export default compose( [
+	withSelect( ( select ) => {
+		const { getFormSettings } = select( IMPORT_STORE_NAME );
+
+		const {
+			period: selectedPeriod,
+			skipPrevious: skipChecked,
+		} = getFormSettings();
+
+		return {
+			selectedPeriod,
+			skipChecked,
+		};
+	} ),
+	withDispatch( ( dispatch ) => {
+		const {
+			updateImportation,
+			setImportFinished,
+			setImportStarted,
+		} = dispatch( IMPORT_STORE_NAME );
+		const { createNotice } = dispatch( 'core/notices' );
+		return {
+			createNotice,
+			updateImportation,
+			setImportFinished,
+			setImportStarted,
+		};
+	} ),
+] )( HistoricalDataActions );

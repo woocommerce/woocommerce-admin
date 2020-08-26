@@ -1,9 +1,13 @@
 /**
  * External dependencies
  */
-import { MINUTE } from '@fresh-data/framework';
+import { SECOND } from '@fresh-data/framework';
 
-export const DEFAULT_REQUIREMENT = {
-	timeout: 1 * MINUTE,
-	freshness: 30 * MINUTE,
+export const QUERY_DEFAULTS = {
+	pageSize: 25,
+	period: 'month',
+	compare: 'previous_year',
+	noteTypes: 'info,warning,marketing,survey',
 };
+
+export const TIMEOUT = 3 * SECOND;

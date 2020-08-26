@@ -22,19 +22,17 @@ import './style.scss';
 class HistoricalDataLayout extends Component {
 	render() {
 		const {
-			createNotice,
 			customersProgress,
 			customersTotal,
 			dateFormat,
 			importDate,
 			inProgress,
-			onDeletePreviousData,
-			onReimportData,
-			onStartImport,
-			onStopImport,
+			lastImportStartTimestamp,
+			clearStatusAndTotalsCache,
 			ordersProgress,
 			ordersTotal,
 			period,
+			stopImport,
 			skipChecked,
 			status,
 		} = this.props;
@@ -94,12 +92,11 @@ class HistoricalDataLayout extends Component {
 					</div>
 				</div>
 				<HistoricalDataActions
-					createNotice={ createNotice }
+					clearStatusAndTotalsCache={ clearStatusAndTotalsCache }
+					dateFormat={ dateFormat }
 					importDate={ importDate }
-					onDeletePreviousData={ onDeletePreviousData }
-					onReimportData={ onReimportData }
-					onStartImport={ onStartImport }
-					onStopImport={ onStopImport }
+					lastImportStartTimestamp={ lastImportStartTimestamp }
+					stopImport={ stopImport }
 					status={ status }
 				/>
 			</Fragment>
@@ -108,12 +105,9 @@ class HistoricalDataLayout extends Component {
 }
 
 export default withSelect( ( select, props ) => {
-	const {
-		getImportError,
-		getImportStatus,
-		getImportTotals,
-		isResolving,
-	} = select( IMPORT_STORE_NAME );
+	const { getImportError, getImportStatus, getImportTotals } = select(
+		IMPORT_STORE_NAME
+	);
 	const {
 		activeImport,
 		dateFormat,
@@ -139,29 +133,21 @@ export default withSelect( ( select, props ) => {
 	const { imported: customersProgress, total: customersTotal } =
 		customersStatus || {};
 	const { imported: ordersProgress, total: ordersTotal } = ordersStatus || {};
-	const isStatusLoading = isResolving( 'getImportStatus', [
-		lastImportStartTimestamp,
-	] );
 
-	const isError = ! isStatusLoading
-		? Boolean(
-				getImportError( lastImportStartTimestamp ) ||
-					getImportError( lastImportStartTimestamp )
-		  )
-		: false;
+	const isError = Boolean(
+		getImportError( lastImportStartTimestamp ) ||
+			getImportError( lastImportStartTimestamp )
+	);
 
 	const hasImportStarted = Boolean(
-		! lastImportStartTimestamp &&
-			! isStatusLoading &&
-			! inProgress &&
-			isImporting === true
+		! lastImportStartTimestamp && ! inProgress && isImporting === true
 	);
 	if ( hasImportStarted ) {
 		onImportStarted();
 	}
+
 	const hasImportFinished = Boolean(
-		! isStatusLoading &&
-			inProgress &&
+		inProgress &&
 			isImporting === false &&
 			( ( customersProgress === customersTotal && customersTotal > 0 ) ||
 				( ordersProgress === ordersTotal && ordersTotal > 0 ) )
