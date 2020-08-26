@@ -51,7 +51,7 @@ export const MobileAppBanner = ( { onInstall, onDismiss } ) => {
 						onDismiss();
 						setDismissed( true );
 						recordEvent( TRACKING_EVENT_NAME, {
-							button: 'dismiss',
+							action: 'dismiss',
 						} );
 					} }
 				/>
@@ -78,7 +78,7 @@ export const MobileAppBanner = ( { onInstall, onDismiss } ) => {
 						onInstall();
 						setDismissed( true );
 						recordEvent( TRACKING_EVENT_NAME, {
-							button: 'install',
+							action: 'install',
 						} );
 					} }
 				>

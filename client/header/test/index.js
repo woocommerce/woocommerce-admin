@@ -15,7 +15,7 @@ jest.mock( '@woocommerce/data', () => ( {
 	useUserPreferences: () => ( {
 		updateUserPreferences: () => {},
 		// mock to disable the mobile app banner while testing this component
-		android_app_banner_dismissed: true,
+		android_app_banner_dismissed: 'yes',
 	} ),
 } ) );
 

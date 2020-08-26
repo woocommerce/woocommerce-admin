@@ -57,7 +57,7 @@ describe( 'MobileAppBanner', () => {
 
 		fireEvent.click( queryByRole( 'link' ) );
 		expect( recordEvent ).toHaveBeenCalledWith( TRACKING_EVENT_NAME, {
-			button: 'install',
+			action: 'install',
 		} );
 	} );
 
@@ -70,7 +70,7 @@ describe( 'MobileAppBanner', () => {
 		expect( container ).toBeEmptyDOMElement();
 
 		expect( recordEvent ).toHaveBeenCalledWith( TRACKING_EVENT_NAME, {
-			button: 'dismiss',
+			action: 'dismiss',
 		} );
 	} );
 

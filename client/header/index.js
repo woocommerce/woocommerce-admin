@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { useEffect, useRef, useState, useMemo } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
 import { Link } from '@woocommerce/components';
@@ -35,10 +35,6 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const rafHandle = useRef( null );
 	const threshold = useRef( null );
 	const siteTitle = getSetting( 'siteTitle', '' );
-	const _sections = useMemo(
-		() => ( Array.isArray( sections ) ? sections : [ sections ] ),
-		[ sections ]
-	);
 	const [ isScrolled, setIsScrolled ] = useState( false );
 	const { updateUserPreferences, ...userData } = useUserPreferences();
 
@@ -71,7 +67,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 
 	useEffect( () => {
 		if ( ! isEmbedded ) {
-			const documentTitle = _sections
+			const documentTitle = sections
 				.map( ( section ) => {
 					return Array.isArray( section ) ? section[ 1 ] : section;
 				} )
@@ -94,7 +90,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 				document.title = decodedTitle;
 			}
 		}
-	}, [ isEmbedded, _sections, siteTitle ] );
+	}, [ isEmbedded, sections, siteTitle ] );
 
 	const dismissHandler = () => {
 		updateUserPreferences( {
@@ -111,7 +107,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 				/>
 			) }
 			<h1 className="woocommerce-layout__header-breadcrumbs">
-				{ _sections.map( ( section, i ) => {
+				{ sections.map( ( section, i ) => {
 					const sectionPiece = Array.isArray( section ) ? (
 						<Link
 							href={
