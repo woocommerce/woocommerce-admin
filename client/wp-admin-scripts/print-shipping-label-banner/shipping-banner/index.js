@@ -172,6 +172,7 @@ export class ShippingBanner extends Component {
 		this.setState( { wcsAssetsLoading: true } );
 
 		const jsPath = assets.wc_connect_admin_script;
+		const stylePath = assets.wc_connect_admin_style;
 
 		if ( undefined === window.wcsPluginData ) {
 			const assetPath = jsPath.substring(
@@ -220,14 +221,27 @@ export class ShippingBanner extends Component {
 			window.jQuery( '#woocommerce-order-label' ).hide();
 		}
 
-		new Promise( ( resolve, reject ) => {
-			const script = document.createElement( 'script' );
-			script.src = jsPath;
-			script.async = true;
-			script.onload = resolve;
-			script.onerror = reject;
-			document.body.appendChild( script );
-		} ).then( () => {
+		Promise.all( [
+			new Promise( ( resolve, reject ) => {
+				const script = document.createElement( 'script' );
+				script.src = jsPath;
+				script.async = true;
+				script.onload = resolve;
+				script.onerror = reject;
+				document.body.appendChild( script );
+			} ),
+			new Promise( ( resolve, reject ) => {
+				const head = document.getElementsByTagName( 'head' )[ 0 ];
+				const link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = stylePath;
+				link.media = 'all';
+				link.onload = resolve;
+				link.onerror = reject;
+				head.appendChild( link );
+			} ),
+		] ).then( () => {
 			this.setState( {
 				wcsAssetsLoaded: true,
 				wcsAssetsLoading: false,
