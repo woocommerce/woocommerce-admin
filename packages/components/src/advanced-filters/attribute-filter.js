@@ -46,14 +46,26 @@ const getScreenReaderText = ( {
 		( term ) => term.key === selectedAttributeTerm
 	);
 
-	const filterStr = `${ attributeName } = ${ attributeTerm }`;
+	const filterStr = interpolateComponents( {
+		/* eslint-disable-next-line max-len */
+		/* translators: Sentence fragment describing a product attribute match. Example: "Color Is Not Blue" - attribute = Color, equals = Is Not, value = Blue */
+		mixedString: __(
+			'{{attribute /}} {{equals /}} {{value /}}',
+			'woocommerce-admin'
+		),
+		components: {
+			attribute: <Fragment>{ attributeName }</Fragment>,
+			equals: <Fragment>{ rule.label }</Fragment>,
+			value: <Fragment>{ attributeTerm }</Fragment>,
+		},
+	} );
 
 	return textContent(
 		interpolateComponents( {
 			mixedString: config.labels.title,
 			components: {
 				filter: <Fragment>{ filterStr }</Fragment>,
-				rule: <Fragment>{ rule.label }</Fragment>,
+				rule: <Fragment />,
 				title: <Fragment />,
 			},
 		} )
