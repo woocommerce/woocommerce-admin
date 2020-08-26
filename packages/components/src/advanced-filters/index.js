@@ -41,6 +41,7 @@ class AdvancedFilters extends Component {
 		};
 
 		this.filterListRef = createRef();
+		this.instanceCounts = {};
 
 		this.onMatchChange = this.onMatchChange.bind( this );
 		this.onFilterChange = this.onFilterChange.bind( this );
@@ -57,15 +58,36 @@ class AdvancedFilters extends Component {
 		const { query: prevQuery } = prevProps;
 
 		if ( ! isEqual( prevQuery, query ) ) {
+			const filtersFromQuery = getActiveFiltersFromQuery(
+				query,
+				config.filters
+			);
+
+			// Update all multiple instance counts.
+			this.instanceCounts = {};
+			// @todo: This causes rerenders when instance numbers don't match.
+			const newActiveFilters = filtersFromQuery.map( ( filter ) => {
+				if ( config.filters[ filter.key ].allowMultiple ) {
+					filter.instance = this.getInstanceNumber( filter.key );
+				}
+
+				return filter;
+			} );
+
 			/* eslint-disable react/no-did-update-set-state */
 			this.setState( {
-				activeFilters: getActiveFiltersFromQuery(
-					query,
-					config.filters
-				),
+				activeFilters: newActiveFilters,
 			} );
 			/* eslint-enable react/no-did-update-set-state */
 		}
+	}
+
+	getInstanceNumber( key ) {
+		if ( ! this.instanceCounts.hasOwnProperty( key ) ) {
+			this.instanceCounts[ key ] = 1;
+		}
+
+		return this.instanceCounts[ key ]++;
 	}
 
 	onMatchChange( match ) {
@@ -155,6 +177,9 @@ class AdvancedFilters extends Component {
 		if ( filterConfig.input && filterConfig.input.component === 'Search' ) {
 			newFilter.value = '';
 		}
+		if ( filterConfig.allowMultiple ) {
+			newFilter.instance = this.getInstanceNumber( key );
+		}
 		this.setState( ( state ) => {
 			return {
 				activeFilters: [ ...state.activeFilters, newFilter ],
@@ -239,11 +264,10 @@ class AdvancedFilters extends Component {
 					{ activeFilters
 						.sort( this.orderFilters )
 						.map( ( filter, idx ) => {
-							const { key } = filter;
-							// TODO: try using an ID in the key for multiples to avoid rerendering on filter removal.
+							const { instance, key } = filter;
 							return (
 								<AdvancedFilterItem
-									key={ key + idx }
+									key={ key + ( instance || '' ) }
 									config={ config }
 									currency={ currency }
 									filter={ filter }
