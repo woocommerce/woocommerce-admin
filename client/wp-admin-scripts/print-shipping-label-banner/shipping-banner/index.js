@@ -150,11 +150,15 @@ export class ShippingBanner extends Component {
 
 		return `
 <div id="${ nodeId }" class="postbox">
-	<button type="button" class="handlediv" aria-expanded="true">
-		<span class="screen-reader-text">${ togglePanelText } ${ title }</span>
-		<span class="toggle-indicator" aria-hidden="true"></span>
-	</button>
-	<h2 class="hndle"><span>${ title }</span></h2>
+	<div class="postbox-header">
+		<h2 class="hndle"><span>${ title }</span></h2>
+		<div class="handle-actions">
+			<button type="button" class="handlediv" aria-expanded="true">
+				<span class="screen-reader-text">${ togglePanelText } ${ title }</span>
+				<span class="toggle-indicator" aria-hidden="true"></span>
+			</button>
+		</div>
+	</div>
 	<div class="inside">
 		<div class="wcc-root woocommerce wc-connect-create-shipping-label" data-args="${ argsJsonString }">
 		</div>
