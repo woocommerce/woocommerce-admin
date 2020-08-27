@@ -129,6 +129,6 @@ describe( 'Installing and activating errors', () => {
 		const installButton = pluginsWrapper.find( Button ).at( 0 );
 		installButton.simulate( 'click' );
 
-		expect( onError ).toHaveBeenCalledWith( response.errors, response ); //sdfs
+		expect( onError ).toHaveBeenCalledWith( response.errors, response );
 	} );
 } );
