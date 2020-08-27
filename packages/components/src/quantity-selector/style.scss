@@ -1,3 +1,16 @@
+// Totally hacked in these colours to get this going.
+// Will need to review this and adjust so is appropriate for wc-admin
+// and other contexts.
+$input-border-dark: $studio-gray-40;
+$input-text-dark: $studio-gray-80;
+$input-disabled-dark: $studio-gray-40;
+// Also used $studio-gray in place of various $core-gray-*-*.
+$core-grey-light-200: $studio-gray-20;
+$core-grey-light-600: $studio-gray-60;
+$core-grey-dark-100: $studio-gray-10;
+$core-grey-dark-700: $studio-gray-70;
+$core-grey-dark-900: $studio-gray-90;
+
 @mixin reset-button {
 	border: 0;
 	padding: 0;
