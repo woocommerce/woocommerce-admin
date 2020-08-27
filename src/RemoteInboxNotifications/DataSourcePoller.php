@@ -72,7 +72,7 @@ class DataSourcePoller {
 
 		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
 			$logger->error(
-				'Error getting remote inbox notification data feed from ' . $url,
+				'Error getting remote inbox notification data feed',
 				$logger_context
 			);
 			// phpcs:ignore
@@ -86,7 +86,7 @@ class DataSourcePoller {
 
 		if ( null === $specs ) {
 			$logger->error(
-				'Empty response in remote inbox notification data feed from ' . $url,
+				'Empty response in remote inbox notification data feed',
 				$logger_context
 			);
 
@@ -95,7 +95,7 @@ class DataSourcePoller {
 
 		if ( ! is_array( $specs ) ) {
 			$logger->error(
-				'Remote inbox notification data feed is not an array from ' . $url,
+				'Remote inbox notification data feed is not an array',
 				$logger_context
 			);
 
@@ -137,7 +137,7 @@ class DataSourcePoller {
 
 		if ( ! isset( $spec->slug ) ) {
 			$logger->error(
-				'Spec is invalid because the slug is missing in feed ',
+				'Spec is invalid because the slug is missing in feed',
 				$logger_context
 			);
 			// phpcs:ignore
