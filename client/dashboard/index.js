@@ -17,7 +17,6 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import './style.scss';
-import { isOnboardingEnabled } from './utils';
 
 const CustomizableDashboard = lazy( () =>
 	import( /* webpackChunkName: "customizable-dashboard" */ './customizable' )
@@ -29,7 +28,6 @@ class Dashboard extends Component {
 		const { completed: profileCompleted, skipped: profileSkipped } =
 			profileItems || {};
 		if (
-			isOnboardingEnabled() &&
 			! profileCompleted &&
 			! profileSkipped &&
 			! window.wcAdminFeatures.homescreen
@@ -49,15 +47,16 @@ class Dashboard extends Component {
 	}
 }
 
+const onboardingData = getSetting( 'onboarding', {} );
+
 export default compose(
-	getSetting( 'onboarding', {} ).profile
-		? withOnboardingHydration( getSetting( 'onboarding', {} ).profile )
+	onboardingData.profile || onboardingData.tasksStatus
+		? withOnboardingHydration( {
+				profileItems: onboardingData.profile,
+				tasksStatus: onboardingData.tasksStatus,
+		  } )
 		: identity,
 	withSelect( ( select ) => {
-		if ( ! isOnboardingEnabled() ) {
-			return;
-		}
-
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const profileItems = getProfileItems();
 

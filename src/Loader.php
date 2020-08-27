@@ -76,6 +76,7 @@ class Loader {
 		add_filter( 'woocommerce_settings_groups', array( __CLASS__, 'add_settings_group' ) );
 		add_filter( 'woocommerce_settings-wc_admin', array( __CLASS__, 'add_settings' ) );
 		add_action( 'admin_head', array( __CLASS__, 'remove_notices' ) );
+		add_action( 'admin_head', array( __CLASS__, 'smart_app_banner' ) );
 		add_action( 'admin_notices', array( __CLASS__, 'inject_before_notices' ), -9999 );
 		add_action( 'admin_notices', array( __CLASS__, 'inject_after_notices' ), PHP_INT_MAX );
 
@@ -167,28 +168,6 @@ class Loader {
 
 		$features = self::get_features();
 		return in_array( $feature, $features, true );
-	}
-
-	/**
-	 * Returns if the onboarding feature of WooCommerce Admin should be enabled.
-	 *
-	 * While we preform an a/b test of onboarding, the feature will be enabled within the plugin build, but only if the user received the test/opted in.
-	 *
-	 * @return bool Returns true if the onboarding is enabled.
-	 */
-	public static function is_onboarding_enabled() {
-		if ( ! self::is_feature_enabled( 'onboarding' ) ) {
-			return false;
-		}
-
-		$onboarding_opt_in        = 'yes' === get_option( Onboarding::OPT_IN_OPTION, 'no' );
-		$legacy_onboarding_opt_in = 'yes' === get_option( 'wc_onboarding_opt_in', 'no' );
-
-		if ( $onboarding_opt_in || $legacy_onboarding_opt_in ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -869,6 +848,18 @@ class Loader {
 		return " $admin_body_class ";
 	}
 
+	/**
+	 * Adds an iOS "Smart App Banner" for display on iOS Safari.
+	 * See https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/PromotingAppswithAppBanners/PromotingAppswithAppBanners.html
+	 */
+	public static function smart_app_banner() {
+		if ( self::is_admin_page() ) {
+			echo "
+				<meta name='apple-itunes-app' content='app-id=1389130815'>
+			";
+		}
+	}
+
 
 	/**
 	 * Removes notices that should not be displayed on WC Admin pages.
@@ -1028,12 +1019,11 @@ class Loader {
 		$settings['notifyLowStockAmount'] = get_option( 'woocommerce_notify_low_stock_amount' );
 		// @todo On merge, once plugin images are added to core WooCommerce, `wcAdminAssetUrl` can be retired,
 		// and `wcAssetUrl` can be used in its place throughout the codebase.
-		$settings['wcAdminAssetUrl']   = plugins_url( 'images/', dirname( __DIR__ ) . '/woocommerce-admin.php' );
-		$settings['wcVersion']         = WC_VERSION;
-		$settings['siteUrl']           = site_url();
-		$settings['onboardingEnabled'] = self::is_onboarding_enabled();
-		$settings['dateFormat']        = get_option( 'date_format' );
-		$settings['plugins']           = array(
+		$settings['wcAdminAssetUrl'] = plugins_url( 'images/', dirname( __DIR__ ) . '/woocommerce-admin.php' );
+		$settings['wcVersion']       = WC_VERSION;
+		$settings['siteUrl']         = site_url();
+		$settings['dateFormat']      = get_option( 'date_format' );
+		$settings['plugins']         = array(
 			'installedPlugins' => PluginsHelper::get_installed_plugin_slugs(),
 			'activePlugins'    => Plugins::get_active_plugins(),
 		);

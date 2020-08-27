@@ -14,28 +14,28 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { isOnboardingEnabled } from '../dashboard/utils';
 import Layout from './layout';
 
 const Homescreen = ( { profileItems, query } ) => {
 	const { completed: profilerCompleted, skipped: profilerSkipped } =
 		profileItems || {};
-	if ( isOnboardingEnabled() && ! profilerCompleted && ! profilerSkipped ) {
+	if ( ! profilerCompleted && ! profilerSkipped ) {
 		getHistory().push( getNewPath( {}, `/profiler`, {} ) );
 	}
 
 	return <Layout query={ query } />;
 };
 
+const onboardingData = getSetting( 'onboarding', {} );
+
 export default compose(
-	getSetting( 'onboarding', {} ).profile
-		? withOnboardingHydration( getSetting( 'onboarding', {} ).profile )
+	onboardingData.profile || onboardingData.tasksStatus
+		? withOnboardingHydration( {
+				profileItems: onboardingData.profile,
+				tasksStatus: onboardingData.tasksStatus,
+		  } )
 		: identity,
 	withSelect( ( select ) => {
-		if ( ! isOnboardingEnabled() ) {
-			return;
-		}
-
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const profileItems = getProfileItems();
 
