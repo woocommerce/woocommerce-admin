@@ -17,7 +17,11 @@ $banner-height: 56px;
 	display: flex;
 	height: $banner-height;
 	align-items: center;
-	padding: 0 $element-spacing 0 10px;
+	padding: 0 6px 0 4px;
+
+	@include breakpoint( '>400px' ) {
+		padding: 0 $element-spacing 0 10px;
+	}
 
 	@include breakpoint( '>782px' ) {
 		display: none;
@@ -43,7 +47,11 @@ $banner-height: 56px;
 
 	.woocommerce-mobile-app-banner__description {
 		color: $white;
-		margin-left: $element-spacing;
+		margin-left: 8px;
+
+		@include breakpoint( '>400px' ) {
+			margin-left: $element-spacing;
+		}
 
 		.woocommerce-mobile-app-banner__description__text {
 			&:first-child {
@@ -51,7 +59,12 @@ $banner-height: 56px;
 			}
 
 			margin: 0;
-			font-size: 13px;
+			font-size: 10px;
+
+			@include breakpoint( '>400px' ) {
+				margin-left: 13px;
+				font-size: 13px;
+			}
 		}
 	}
 }
