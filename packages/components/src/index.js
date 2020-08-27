@@ -34,6 +34,7 @@ export { default as Pill } from './pill';
 export { default as Plugins } from './plugins';
 export { default as ProductImage } from './product-image';
 export { default as ProductRating } from './rating/product';
+export { default as QuantitySelector } from './quantity-selector';
 export { default as Rating } from './rating';
 export { default as ReportFilters } from './filters';
 export { default as ReviewRating } from './rating/review';
