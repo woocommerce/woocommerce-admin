@@ -22,7 +22,7 @@ class HistoricalData extends Component {
 		this.dateFormat = __( 'MM/DD/YYYY', 'woocommerce-admin' );
 		this.intervalId = -1;
 		this.lastImportStopTimestamp = 0;
-		this.cacheCleaned = false;
+		this.cacheNeedsClearning = true;
 
 		this.onImportFinished = this.onImportFinished.bind( this );
 		this.onImportStarted = this.onImportStarted.bind( this );
@@ -40,7 +40,7 @@ class HistoricalData extends Component {
 
 	startStatusCheckInterval() {
 		if ( this.intervalId < 0 ) {
-			this.cacheCleaned = false;
+			this.cacheNeedsClearning = true;
 			this.intervalId = setInterval( () => {
 				this.clearCache( 'getImportStatus' );
 			}, TIMEOUT );
@@ -57,7 +57,7 @@ class HistoricalData extends Component {
 		const preparedQuery =
 			resolver === 'getImportStatus' ? lastImportStartTimestamp : query;
 		invalidateResolution( resolver, [ preparedQuery ] ).then( () => {
-			this.cacheCleaned = true;
+			this.cacheNeedsClearning = false;
 		} );
 	}
 
@@ -68,7 +68,7 @@ class HistoricalData extends Component {
 
 	onImportFinished() {
 		const { debouncedSpeak } = this.props;
-		if ( this.cacheCleaned ) {
+		if ( ! this.cacheNeedsClearning ) {
 			debouncedSpeak( 'Import complete' );
 			this.stopImport();
 		}
@@ -120,6 +120,7 @@ class HistoricalData extends Component {
 		return (
 			<HistoricalDataLayout
 				activeImport={ activeImport }
+				cacheNeedsClearning={ this.cacheNeedsClearning }
 				createNotice={ createNotice }
 				dateFormat={ this.dateFormat }
 				inProgress={ this.isImportationInProgress() }
