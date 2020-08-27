@@ -15,7 +15,6 @@ defined( 'ABSPATH' ) || exit;
 class DataSourcePoller {
 	const DATA_SOURCES = array(
 		'https://woocommerce.com/wp-json/wccom/inbox-notifications/1.0/notifications.json',
-		'https://gist.githubusercontent.com/becdetat/d754c46d555af869535817309c818105/raw/b843e4483f2de4706e91957b76caf02c79224c5f/failing-feed.json',
 	);
 
 	/**
