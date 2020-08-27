@@ -4,16 +4,20 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { IMPORT_STORE_NAME, NOTES_STORE_NAME } from '@woocommerce/data';
+import {
+	IMPORT_STORE_NAME,
+	NOTES_STORE_NAME,
+	QUERY_DEFAULTS,
+} from '@woocommerce/data';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { withSpokenMessages } from '@wordpress/components';
+import { SECOND } from '@fresh-data/framework';
 
 /**
  * Internal dependencies
  */
 import { formatParams } from './utils';
 import HistoricalDataLayout from './layout';
-import { QUERY_DEFAULTS, TIMEOUT } from '../constants';
 
 class HistoricalData extends Component {
 	constructor() {
@@ -43,7 +47,7 @@ class HistoricalData extends Component {
 			this.cacheNeedsClearning = true;
 			this.intervalId = setInterval( () => {
 				this.clearCache( 'getImportStatus' );
-			}, TIMEOUT );
+			}, 3 * SECOND );
 		}
 	}
 
