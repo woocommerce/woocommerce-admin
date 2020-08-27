@@ -16,10 +16,11 @@ import { recordEvent } from '@woocommerce/tracks';
 import { formatParams } from './utils';
 
 function HistoricalDataActions( {
+	clearStatusAndTotalsCache,
 	createNotice,
 	dateFormat,
 	importDate,
-	clearStatusAndTotalsCache,
+	onImportStarted,
 	selectedPeriod,
 	stopImport,
 	skipChecked,
@@ -39,6 +40,7 @@ function HistoricalDataActions( {
 
 		const importStarted = true;
 		makeQuery( path, errorMessage, importStarted );
+		onImportStarted();
 	};
 
 	const onStopImport = () => {
@@ -209,8 +211,8 @@ export default compose( [
 		const { createNotice } = dispatch( 'core/notices' );
 		return {
 			createNotice,
-			updateImportation,
 			setImportStarted,
+			updateImportation,
 		};
 	} ),
 ] )( HistoricalDataActions );

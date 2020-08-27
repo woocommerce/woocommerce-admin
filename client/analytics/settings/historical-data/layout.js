@@ -31,6 +31,7 @@ class HistoricalDataLayout extends Component {
 			clearStatusAndTotalsCache,
 			ordersProgress,
 			ordersTotal,
+			onImportStarted,
 			period,
 			stopImport,
 			skipChecked,
@@ -96,6 +97,7 @@ class HistoricalDataLayout extends Component {
 					dateFormat={ dateFormat }
 					importDate={ importDate }
 					lastImportStartTimestamp={ lastImportStartTimestamp }
+					onImportStarted={ onImportStarted }
 					stopImport={ stopImport }
 					status={ status }
 				/>
