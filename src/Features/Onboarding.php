@@ -1053,15 +1053,13 @@ class Onboarding {
 			return;
 		}
 
-		$previous_value = 1 === absint( $_GET['reset_task_list'] ) ? 'yes' : 'no'; // phpcs:ignore CSRF ok.
-		$new_value      = 'no' === $previous_value ? 'yes' : 'no'; // phpcs:ignore CSRF ok.
+		$task_list_hidden = 1 === absint( $_GET['reset_task_list'] ) ? 'no' : 'yes'; // phpcs:ignore CSRF ok.
+		update_option( 'woocommerce_task_list_hidden', $task_list_hidden );
 
-		update_option( 'woocommerce_task_list_hidden', $new_value );
 		wc_admin_record_tracks_event(
-			'wcadmin_tasklist_toggled',
+			'tasklist_toggled',
 			array(
-				'previous'  => $previous_value,
-				'new_value' => $new_value,
+				'status' => 'yes' === $task_list_hidden ? 'disabled' : 'enabled',
 			)
 		);
 		wp_safe_redirect( wc_admin_url() );
