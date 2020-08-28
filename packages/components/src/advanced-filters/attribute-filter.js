@@ -25,7 +25,9 @@ const getScreenReaderText = ( {
 	selectedAttributeTerm,
 } ) => {
 	if (
+		! attributes ||
 		attributes.length === 0 ||
+		! attributeTerms ||
 		attributeTerms.length === 0 ||
 		selectedAttribute === '' ||
 		selectedAttributeTerm === ''
