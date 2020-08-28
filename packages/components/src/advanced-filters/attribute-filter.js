@@ -107,14 +107,14 @@ const AttributeFilter = ( props ) => {
 		}
 	}, [ value ] );
 
-	const [ attributeTerms, setAttributeTerms ] = useState( [] );
+	const [ attributeTerms, setAttributeTerms ] = useState( false );
 
 	// Fetch all product attributes on mount.
 	useEffect( () => {
 		if ( ! selectedAttribute ) {
 			return;
 		}
-		setAttributeTerms( [] );
+		setAttributeTerms( false );
 		apiFetch( {
 			path: `/wc/v3/products/attributes/${ selectedAttribute }/terms`,
 		} )
@@ -204,7 +204,7 @@ const AttributeFilter = ( props ) => {
 								) }
 								{ attributes.length > 0 &&
 									selectedAttribute !== '' &&
-									( attributeTerms.length ? (
+									( attributeTerms !== false ? (
 										<Fragment>
 											<span className="woocommerce-filters-advanced__attribute-field-separator">
 												=
