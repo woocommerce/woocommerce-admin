@@ -11,19 +11,19 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { includes, filter, get } from 'lodash';
-import { withDispatch, withSelect } from '@wordpress/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { Card } from '@woocommerce/components';
+import { recordEvent } from '@woocommerce/tracks';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import ProductTypeLabel from './label';
-import { recordEvent } from '../../../lib/tracks';
 import './style.scss';
 
-class ProductTypes extends Component {
+export class ProductTypes extends Component {
 	constructor( props ) {
 		super();
 		const profileItems = get( props, 'profileItems', {} );
@@ -43,7 +43,7 @@ class ProductTypes extends Component {
 		this.onChange = this.onChange.bind( this );
 	}
 
-	async validateField() {
+	validateField() {
 		const error = this.state.selected.length
 			? null
 			: __(
@@ -51,37 +51,31 @@ class ProductTypes extends Component {
 					'woocommerce-admin'
 			  );
 		this.setState( { error } );
+		return ! error;
 	}
 
-	async onContinue() {
-		await this.validateField();
-		if ( this.state.error ) {
+	onContinue() {
+		if ( ! this.validateField() ) {
 			return;
 		}
 
-		const {
-			createNotice,
-			goToNextStep,
-			isError,
-			updateProfileItems,
-		} = this.props;
+		const { createNotice, goToNextStep, updateProfileItems } = this.props;
 
 		recordEvent( 'storeprofiler_store_product_type_continue', {
 			product_type: this.state.selected,
 		} );
-		await updateProfileItems( { product_types: this.state.selected } );
 
-		if ( ! isError ) {
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating your product types.',
-					'woocommerce-admin'
+		updateProfileItems( { product_types: this.state.selected } )
+			.then( () => goToNextStep() )
+			.catch( () =>
+				createNotice(
+					'error',
+					__(
+						'There was a problem updating your product types.',
+						'woocommerce-admin'
+					)
 				)
 			);
-		}
 	}
 
 	onChange( slug ) {
@@ -155,36 +149,38 @@ class ProductTypes extends Component {
 							);
 						} ) }
 						<div className="woocommerce-profile-wizard__product-types-pricing-toggle woocommerce-profile-wizard__checkbox">
-							<Text variant="body">
-								{ __(
-									'Display monthly prices',
-									'woocommerce-admin'
-								) }
-							</Text>
-							<FormToggle
-								checked={ isMonthlyPricing }
-								onChange={ () =>
-									this.setState( {
-										isMonthlyPricing: ! isMonthlyPricing,
-									} )
-								}
-							/>
+							<label htmlFor="woocommerce-product-types__pricing-toggle">
+								<Text variant="body">
+									{ __(
+										'Display monthly prices',
+										'woocommerce-admin'
+									) }
+								</Text>
+								<FormToggle
+									id="woocommerce-product-types__pricing-toggle"
+									checked={ isMonthlyPricing }
+									onChange={ () =>
+										this.setState( {
+											isMonthlyPricing: ! isMonthlyPricing,
+										} )
+									}
+								/>
+							</label>
 						</div>
 						{ error && (
 							<span className="woocommerce-profile-wizard__error">
 								{ error }
 							</span>
 						) }
-					</div>
-
-					<div className="woocommerce-profile-wizard__card-actions">
-						<Button
-							isPrimary
-							onClick={ this.onContinue }
-							disabled={ ! selected.length }
-						>
-							{ __( 'Continue', 'woocommerce-admin' ) }
-						</Button>
+						<div className="woocommerce-profile-wizard__card-actions">
+							<Button
+								isPrimary
+								onClick={ this.onContinue }
+								disabled={ ! selected.length }
+							>
+								{ __( 'Continue', 'woocommerce-admin' ) }
+							</Button>
+						</div>
 					</div>
 				</Card>
 				<div className="woocommerce-profile-wizard__card-help-text">

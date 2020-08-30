@@ -12,6 +12,7 @@ import { Card, Link, Stepper, Plugins } from '@woocommerce/components';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { SETTINGS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -20,7 +21,7 @@ import Connect from '../../../dashboard/components/connect';
 import { getCountryCode } from '../../../dashboard/utils';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
-import { recordEvent } from '../../../lib/tracks';
+import { createNoticesFromResponse } from '../../../lib/notices';
 
 class Shipping extends Component {
 	constructor( props ) {
@@ -250,17 +251,21 @@ class Shipping extends Component {
 					  ),
 				content: (
 					<Plugins
-						onComplete={ () => {
+						onComplete={ ( plugins, response ) => {
+							createNoticesFromResponse( response );
 							recordEvent( 'tasklist_shipping_label_printing', {
 								install: true,
-								pluginsToActivate,
+								plugins_to_activate: pluginsToActivate,
 							} );
 							this.completeStep();
 						} }
+						onError={ ( errors, response ) =>
+							createNoticesFromResponse( response )
+						}
 						onSkip={ () => {
 							recordEvent( 'tasklist_shipping_label_printing', {
 								install: false,
-								pluginsToActivate,
+								plugins_to_activate: pluginsToActivate,
 							} );
 							getHistory().push( getNewPath( {}, '/', {} ) );
 						} }

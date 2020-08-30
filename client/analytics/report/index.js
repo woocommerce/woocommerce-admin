@@ -3,25 +3,22 @@
  */
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import { find } from 'lodash';
-import { useFilters } from '@woocommerce/components';
 import { getQuery, getSearchWords } from '@woocommerce/navigation';
+import { searchItemsByString } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 import ReportError from '../components/report-error';
-import { searchItemsByString } from '../../wc-api/items/utils';
-import withSelect from '../../wc-api/with-select';
 import {
 	CurrencyContext,
 	getFilteredCurrencyInstance,
 } from '../../lib/currency-context';
 import getReports from './get-reports';
-
-export const REPORTS_FILTER = 'woocommerce_admin_reports_list';
 
 /**
  * The Customers Report will not have the `report` param supplied by the router/
@@ -88,7 +85,6 @@ Report.propTypes = {
 };
 
 export default compose(
-	useFilters( REPORTS_FILTER ),
 	withSelect( ( select, props ) => {
 		const query = getQuery();
 		const { search } = query;

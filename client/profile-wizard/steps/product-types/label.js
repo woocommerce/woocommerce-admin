@@ -6,11 +6,7 @@ import { Button, Popover, Tooltip } from '@wordpress/components';
 import { Fragment, useState } from '@wordpress/element';
 import interpolateComponents from 'interpolate-components';
 import { Link, Pill } from '@woocommerce/components';
-
-/**
- * Internal dependencies
- */
-import { recordEvent } from '../../../lib/tracks';
+import { recordEvent } from '@woocommerce/tracks';
 
 export default function ProductTypeLabel( {
 	annualPrice,

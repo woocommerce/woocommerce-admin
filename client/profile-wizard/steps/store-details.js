@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import {
 	Button,
 	Card,
@@ -20,6 +19,7 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { Form } from '@woocommerce/components';
 import { getCurrencyData } from '@woocommerce/currency';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -31,7 +31,6 @@ import {
 } from '../../dashboard/components/settings/general/store-address';
 import UsageModal from './usage-modal';
 import { CurrencyContext } from '../../lib/currency-context';
-import { recordEvent } from '../../lib/tracks';
 
 class StoreDetails extends Component {
 	constructor( props ) {
@@ -60,13 +59,6 @@ class StoreDetails extends Component {
 
 		this.onContinue = this.onContinue.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
-	}
-
-	componentWillUnmount() {
-		apiFetch( {
-			path: '/wc-admin/onboarding/tasks/create_store_pages',
-			method: 'POST',
-		} );
 	}
 
 	deriveCurrencySettings( countryState ) {

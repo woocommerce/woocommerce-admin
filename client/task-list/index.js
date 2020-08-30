@@ -23,6 +23,7 @@ import {
 	ONBOARDING_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -31,7 +32,6 @@ import './style.scss';
 import CartModal from '../dashboard/components/cart-modal';
 import { getAllTasks, recordTaskViewEvent } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
-import { recordEvent } from '../lib/tracks';
 
 class TaskDashboard extends Component {
 	constructor( props ) {
@@ -137,26 +137,28 @@ class TaskDashboard extends Component {
 
 	getAllTasks() {
 		const {
+			activePlugins,
 			countryCode,
+			createNotice,
+			installAndActivatePlugins,
+			installedPlugins,
+			isJetpackConnected,
+			onboardingStatus,
 			profileItems,
 			query,
-			activePlugins,
-			installedPlugins,
-			installAndActivatePlugins,
-			createNotice,
-			isJetpackConnected,
 		} = this.props;
 
 		return getAllTasks( {
+			activePlugins,
 			countryCode,
+			createNotice,
+			installAndActivatePlugins,
+			installedPlugins,
+			isJetpackConnected,
+			onboardingStatus,
 			profileItems,
 			query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
-			activePlugins,
-			installedPlugins,
-			installAndActivatePlugins,
-			createNotice,
-			isJetpackConnected,
 		} );
 	}
 
@@ -203,19 +205,11 @@ class TaskDashboard extends Component {
 		} );
 	}
 
-	keepTaskCard() {
-		recordEvent( 'tasklist_completed', {
-			action: 'keep_card',
-		} );
-
-		this.props.updateOptions( {
-			woocommerce_task_list_prompt_shown: true,
-		} );
-	}
-
 	hideTaskCard( action ) {
 		recordEvent( 'tasklist_completed', {
 			action,
+			completed_task_count: this.getCompletedTaskKeys().length,
+			incomplete_task_count: this.getIncompleteTasks().length,
 		} );
 		this.props.updateOptions( {
 			woocommerce_task_list_hidden: 'yes',
@@ -372,7 +366,9 @@ class TaskDashboard extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getTasksStatus } = select(
+			ONBOARDING_STORE_NAME
+		);
 		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getSettings } = select( SETTINGS_STORE_NAME );
 		const {
@@ -396,6 +392,7 @@ export default compose(
 
 		const activePlugins = getActivePlugins();
 		const installedPlugins = getInstalledPlugins();
+		const onboardingStatus = getTasksStatus();
 
 		return {
 			activePlugins,
@@ -404,6 +401,7 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 			installedPlugins,
 			isTaskListComplete,
+			onboardingStatus,
 			profileItems,
 			trackedCompletedTasks,
 		};

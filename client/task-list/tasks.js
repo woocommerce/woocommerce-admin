@@ -4,13 +4,13 @@
 
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
 import { Fragment } from '@wordpress/element';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -22,7 +22,6 @@ import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 import { installActivateAndConnectWcpay } from './tasks/payments/methods';
-import { recordEvent } from '../lib/tracks';
 
 export function recordTaskViewEvent(
 	taskName,
@@ -41,15 +40,16 @@ export function recordTaskViewEvent(
 }
 
 export function getAllTasks( {
+	activePlugins,
 	countryCode,
+	createNotice,
+	installAndActivatePlugins,
+	installedPlugins,
+	isJetpackConnected,
+	onboardingStatus,
 	profileItems,
 	query,
 	toggleCartModal,
-	activePlugins,
-	installedPlugins,
-	installAndActivatePlugins,
-	createNotice,
-	isJetpackConnected,
 } ) {
 	const {
 		hasPaymentGateway,
@@ -59,7 +59,7 @@ export function getAllTasks( {
 		isTaxComplete,
 		shippingZonesCount,
 		wcPayIsConnected,
-	} = getSetting( 'onboarding', {
+	} = {
 		hasPaymentGateway: false,
 		hasPhysicalProducts: false,
 		hasProducts: false,
@@ -67,7 +67,8 @@ export function getAllTasks( {
 		isTaxComplete: false,
 		shippingZonesCount: 0,
 		wcPayIsConnected: false,
-	} );
+		...onboardingStatus,
+	};
 
 	const groupedProducts = getCategorizedOnboardingProducts(
 		profileItems,
@@ -96,13 +97,13 @@ export function getAllTasks( {
 	const tasks = [
 		{
 			key: 'store_details',
-			title: __( 'Store details', 'woocommerce-admin' ),
+			title: __( 'Setup wizard', 'woocommerce-admin' ),
 			container: null,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
 					task_name: 'store_details',
 				} );
-				getHistory().push( getNewPath( {}, `/profiler`, {} ) );
+				getHistory().push( getNewPath( {}, '/setup-wizard', {} ) );
 			},
 			completed: profilerCompleted,
 			visible: true,
@@ -232,7 +233,13 @@ export function getAllTasks( {
 
 	return applyFilters(
 		'woocommerce_admin_onboarding_task_list',
-		tasks,
+		tasks.sort( ( a, b ) => {
+			if ( a.completed === b.completed ) {
+				return 0;
+			}
+
+			return a.completed ? 1 : -1;
+		} ),
 		query
 	);
 }

@@ -29,11 +29,11 @@ import {
 	pluginNames,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { recordEvent } from '../../lib/tracks';
 import { getCountryCode, getCurrencyRegion } from '../../dashboard/utils';
 import { CurrencyContext } from '../../lib/currency-context';
 import { createNoticesFromResponse } from '../../lib/notices';
@@ -85,7 +85,8 @@ class BusinessDetails extends Component {
 		this.bundleInstall =
 			getCountryCode( settings.woocommerce_default_country ) === 'US' &&
 			( industrySlugs.includes( 'fashion-apparel-accessories' ) ||
-				industrySlugs.includes( 'health-beauty' ) );
+				industrySlugs.includes( 'health-beauty' ) ) &&
+			! industrySlugs.includes( 'cbd-other-hemp-derived-products' );
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
 		this.getNumberRangeString = this.getNumberRangeString.bind( this );

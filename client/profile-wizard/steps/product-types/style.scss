@@ -1,5 +1,3 @@
-
-
 .woocommerce-profile-wizard__body {
 	.woocommerce-profile-wizard__product-types {
 		.components-base-control__field {
@@ -50,13 +48,19 @@
 			justify-content: flex-end;
 			color: $gray-600;
 
+			label {
+				display: inline-flex;
+				align-items: center;
+			}
+
 			.components-form-toggle {
 				display: inline-flex;
 				margin-left: $gap;
 			}
 		}
 
-		.woocommerce-profile-wizard__card-actions .components-button.is-primary {
+		.woocommerce-profile-wizard__card-actions
+			.components-button.is-primary {
 			margin-top: $gap;
 		}
 	}

@@ -13,7 +13,6 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
@@ -21,11 +20,12 @@ import {
 	pluginNames,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { recordEvent } from '../../../lib/tracks';
+import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import withSelect from '../../../wc-api/with-select';
 import { getPaymentMethods } from './methods';
@@ -67,6 +67,7 @@ class Payments extends Component {
 	}
 
 	markConfigured( method ) {
+		const { clearTaskStatusCache } = this.props;
 		const { enabledMethods } = this.state;
 
 		this.setState( {
@@ -76,10 +77,7 @@ class Payments extends Component {
 			},
 		} );
 
-		setSetting( 'onboarding', {
-			...getSetting( 'onboarding', {} ),
-			hasPaymentGateway: true,
-		} );
+		clearTaskStatusCache();
 
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: method,
@@ -121,11 +119,15 @@ class Payments extends Component {
 			),
 			content: (
 				<Plugins
-					onComplete={ () => {
+					onComplete={ ( plugins, response ) => {
+						createNoticesFromResponse( response );
 						recordEvent( 'tasklist_payment_install_method', {
 							plugins: currentMethod.plugins,
 						} );
 					} }
+					onError={ ( errors, response ) =>
+						createNoticesFromResponse( response )
+					}
 					autoInstall
 					pluginSlugs={ currentMethod.plugins }
 				/>
@@ -134,32 +136,32 @@ class Payments extends Component {
 		};
 	}
 
-	toggleMethod( key ) {
-		const { methods, options, updateOptions } = this.props;
+	async toggleMethod( key ) {
+		const {
+			clearTaskStatusCache,
+			methods,
+			options,
+			updateOptions,
+		} = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
 
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 		this.setState( { enabledMethods } );
-		const hasEnabledMethod =
-			Object.values( enabledMethods ).filter( Boolean ).length > 0;
 
 		recordEvent( 'tasklist_payment_toggle', {
 			enabled: ! method.isEnabled,
 			payment_method: key,
 		} );
 
-		updateOptions( {
+		await updateOptions( {
 			[ method.optionName ]: {
 				...options[ method.optionName ],
 				enabled: method.isEnabled ? 'no' : 'yes',
 			},
 		} );
 
-		setSetting( 'onboarding', {
-			...getSetting( 'onboarding', {} ),
-			hasPaymentGateway: hasEnabledMethod,
-		} );
+		clearTaskStatusCache();
 	}
 
 	async handleClick( method ) {
@@ -308,7 +310,12 @@ export default compose(
 		const { createNotice } = dispatch( 'core/notices' );
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
+		const { invalidateResolutionForStoreSelector } = dispatch(
+			ONBOARDING_STORE_NAME
+		);
 		return {
+			clearTaskStatusCache: () =>
+				invalidateResolutionForStoreSelector( 'getTasksStatus' ),
 			createNotice,
 			installAndActivatePlugins,
 			updateOptions,
@@ -323,8 +330,10 @@ export default compose(
 		);
 		const { getSettings } = select( SETTINGS_STORE_NAME );
 		const { general: generalSettings = {} } = getSettings( 'general' );
+		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
 
 		const activePlugins = getActivePlugins();
+		const onboardingStatus = getTasksStatus();
 		const profileItems = getProfileItems();
 
 		const optionNames = [
@@ -356,6 +365,7 @@ export default compose(
 			createNotice,
 			installAndActivatePlugins,
 			isJetpackConnected: isJetpackConnected(),
+			onboardingStatus,
 			options,
 			profileItems,
 		} );
