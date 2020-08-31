@@ -22,7 +22,4 @@ const HydratedShippingBanner = withPluginsHydration( {
 	...window.wcSettings.plugins,
 	jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
 } )( ShippingBanner );
-render(
-	<HydratedShippingBanner itemsCount={ args.shippable_items_count } />,
-	metaBox
-);
+render( <HydratedShippingBanner itemsCount={ args.items } />, metaBox );
