@@ -12,7 +12,6 @@ import {
 	flattenFilters,
 	getActiveFiltersFromQuery,
 	getQueryFromActiveFilters,
-	getUrlKey,
 } from '@woocommerce/navigation';
 
 /**

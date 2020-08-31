@@ -202,7 +202,7 @@ class DateFilter extends Component {
 			isEnglish,
 			onFilterChange,
 		} = this.props;
-		const { key, rule } = filter;
+		const { rule } = filter;
 		const { labels, rules } = config;
 		const screenReaderText = this.getScreenReaderText( filter, config );
 		const children = interpolateComponents( {

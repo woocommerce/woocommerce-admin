@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { compact, find, get, omit } from 'lodash';
+import { find, get, omit } from 'lodash';
 
 /**
  * Collapse an array of filter values with subFilters into a 1-dimensional array.
