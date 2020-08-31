@@ -112,7 +112,7 @@ export class ProductTypes extends Component {
 							'woocommerce-admin'
 						) }
 					</Text>
-					<Text vairant="body">
+					<Text variant="body">
 						{ __( 'Choose any that apply' ) }
 					</Text>
 				</div>
