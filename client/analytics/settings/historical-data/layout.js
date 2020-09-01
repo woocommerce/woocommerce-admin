@@ -138,8 +138,7 @@ export default withSelect( ( select, props ) => {
 	const { imported: ordersProgress, total: ordersTotal } = ordersStatus || {};
 
 	const isError = Boolean(
-		getImportError( lastImportStartTimestamp ) ||
-			getImportError( lastImportStartTimestamp )
+		getImportError( lastImportStartTimestamp ) || getImportError( params )
 	);
 
 	const hasImportStarted = Boolean(
