@@ -8,7 +8,7 @@
 import { clickContinue, setCheckboxToChecked, getText } from './utils';
 const config = require( 'config' );
 
-export async function completeIndustrySection( expectedIndustryCount = 10 ) {
+export async function completeIndustrySection( expectedIndustryCount = 9 ) {
 	// Query for the industries checkboxes
 	const industryCheckboxes = await page.$$(
 		'.components-checkbox-control__input'
