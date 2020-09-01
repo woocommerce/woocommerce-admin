@@ -75,6 +75,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: New notification: Don't forget to test your checkout. #4805
 - Dev: Enable tax calculation before redirecting to standard tax rates page. #4878
 - Fix: Use clipRule and fillRule props. #4889, part of #4864
+- Fix: Admin order page shipping label prompt compatibility with WCS 1.24. #5025
+- Fix: Padding on finish, forward, and back buttons on the welcome modal. #5043
+- Fix: Show usage modal when skipping the OBW. #5061
 - Dev: Added event recording to Orders, Stock, and Reviews panels. #4861
 - Dev: Added personalization to purchase extension task. #4849
 - Dev: Display modal with more info about the new homescreen. #4890
@@ -82,6 +85,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Update the colors of the illustrations in the welcome modal. #4945
 - Enhancement: Add eWAY to Payment Setup for AU/NZ Stores. #4947
 - Tweak: Remove the Composite products option from the onboarding wizard #4703
+- Tweak: Do not show bundled extensions in OBW when a CBD industry has been selected. #5040
 
 = 1.4.0 2020-07-22 =
 - Fix: Update returning customer total to include customers whose first order was within the report date range #4430
