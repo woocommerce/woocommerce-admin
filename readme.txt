@@ -86,6 +86,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add eWAY to Payment Setup for AU/NZ Stores. #4947
 - Tweak: Remove the Composite products option from the onboarding wizard #4703
 - Tweak: Do not show bundled extensions in OBW when a CBD industry has been selected. #5040
+- Tweak: Remove industry option for travel. #5065
 
 = 1.4.0 2020-07-22 =
 - Fix: Update returning customer total to include customers whose first order was within the report date range #4430
