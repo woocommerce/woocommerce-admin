@@ -170,10 +170,37 @@ class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 12, count( $response_orders ) );
 
-		// Filter by the "size" attribute, with value "small".
+		// To filter by later.
 		$size_attr_id = wc_attribute_taxonomy_id_by_name( 'pa_size' );
 		$small_term   = get_term_by( 'slug', 'small', 'pa_size' );
 
+		// Test bad values to filter parameter.
+		$bad_args = array(
+			'not an array!',                            // Not an array.
+			array( 1, 2, 3 ),                           // Not a tuple.
+			array( 'a', 1 ),                            // Non-numeric attribute ID.
+			array( 1, 'a' ),                            // Non-numeric term ID.
+			array( PHP_INT_MIN, $small_term->term_id ), // Invaid attribute ID.
+			array( $size_attr_id, PHP_INT_MAX ),        // Invaid term ID.
+		);
+
+		foreach ( $bad_args as $bad_arg ) {
+			$request = new WP_REST_Request( 'GET', $this->endpoint );
+			$request->set_query_params(
+				array(
+					'per_page'     => 15,
+					'attribute_is' => $bad_arg,
+				)
+			);
+			$response        = $this->server->dispatch( $request );
+			$response_orders = $response->get_data();
+
+			$this->assertEquals( 200, $response->get_status() );
+			// We expect all results since the attribute param is malformed.
+			$this->assertEquals( 12, count( $response_orders ) );
+		}
+
+		// Filter by the "size" attribute, with value "small".
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
