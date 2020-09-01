@@ -770,7 +770,7 @@ class Onboarding {
 	public function is_loading( $is_loading ) {
 		$show_profiler = self::should_show_profiler();
 		$is_dashboard  = ! isset( $_GET['path'] ); // phpcs:ignore csrf ok.
-		$is_profiler   = isset( $_GET['path'] ) && '/profiler' === $_GET['path']; // phpcs:ignore csrf ok.
+		$is_profiler   = isset( $_GET['path'] ) && '/setup-wizard' === $_GET['path']; // phpcs:ignore csrf ok.
 
 		if ( $is_profiler ) {
 			return true;
@@ -915,7 +915,7 @@ class Onboarding {
 
 		$help_tab['content'] .= '<h3>' . __( 'Profile Setup Wizard', 'woocommerce-admin' ) . '</h3>';
 		$help_tab['content'] .= '<p>' . __( 'If you need to access the setup wizard again, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
-			'<p><a href="' . wc_admin_url( '&path=/profiler' ) . '" class="button button-primary">' . __( 'Setup wizard', 'woocommerce-admin' ) . '</a></p>';
+			'<p><a href="' . wc_admin_url( '&path=/setup-wizard' ) . '" class="button button-primary">' . __( 'Setup wizard', 'woocommerce-admin' ) . '</a></p>';
 
 		$help_tab['content'] .= '<h3>' . __( 'Task List', 'woocommerce-admin' ) . '</h3>';
 		$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the task list, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
@@ -1053,8 +1053,15 @@ class Onboarding {
 			return;
 		}
 
-		$new_value = 1 === absint( $_GET['reset_task_list'] ) ? 'no' : 'yes'; // phpcs:ignore CSRF ok.
-		update_option( 'woocommerce_task_list_hidden', $new_value );
+		$task_list_hidden = 1 === absint( $_GET['reset_task_list'] ) ? 'no' : 'yes'; // phpcs:ignore CSRF ok.
+		update_option( 'woocommerce_task_list_hidden', $task_list_hidden );
+
+		wc_admin_record_tracks_event(
+			'tasklist_toggled',
+			array(
+				'status' => 'yes' === $task_list_hidden ? 'disabled' : 'enabled',
+			)
+		);
 		wp_safe_redirect( wc_admin_url() );
 		exit;
 	}
