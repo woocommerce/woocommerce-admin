@@ -27,7 +27,7 @@ const WP_ADMIN_WC_SETTINGS =
 const WP_ADMIN_PERMALINK_SETTINGS = baseUrl + 'wp-admin/options-permalink.php';
 
 const WP_ADMIN_START_PROFILE_WIZARD =
-	baseUrl + 'wp-admin/admin.php?page=wc-admin&path=/profiler';
+	baseUrl + 'wp-admin/admin.php?page=wc-admin&path=/setup-wizard';
 
 const StoreOwnerFlow = {
 	login: async () => {
@@ -123,7 +123,7 @@ const StoreOwnerFlow = {
 	startProfileWizard: async () => {
 		await page.goto( WP_ADMIN_START_PROFILE_WIZARD, {
 			waitUntil: 'networkidle0',
-		} )
+		} );
 	},
 };
 

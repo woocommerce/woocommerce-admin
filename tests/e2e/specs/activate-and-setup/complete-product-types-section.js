@@ -5,13 +5,10 @@
 /**
  * Internal dependencies
  */
-import {
-	clickContinue,
-	setCheckboxToChecked,
-} from './utils';
+import { clickContinue, setCheckboxToChecked } from './utils';
 
 export async function completeProductTypesSection(
-	expectedProductTypeCount = 8
+	expectedProductTypeCount = 7
 ) {
 	// Query for the product types checkboxes
 	const productTypesCheckboxes = await page.$$(

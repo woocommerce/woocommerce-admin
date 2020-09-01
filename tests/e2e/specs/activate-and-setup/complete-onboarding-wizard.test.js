@@ -23,7 +23,10 @@ describe( 'Store owner can complete onboarding wizard', () => {
 	it( 'can complete the industry section', completeIndustrySection );
 	it( 'can complete the product types section', completeProductTypesSection );
 	it( 'can complete the business section', completeBusinessSection );
-	it( 'can complete the theme selection section', completeThemeSelectionSection );
+	it(
+		'can complete the theme selection section',
+		completeThemeSelectionSection
+	);
 	it( 'can complete the benefits section', completeBenefitsSection );
 } );
 
@@ -45,7 +48,9 @@ describe( 'Non-US store does not get the install recommended features checkbox',
 	} );
 	it( 'can complete the product types section', completeProductTypesSection );
 	it( 'does not have the install recommended features checkbox', async () => {
-		const installFeaturesCheckbox = await page.$( '#woocommerce-business-extensions__checkbox' );
+		const installFeaturesCheckbox = await page.$(
+			'#woocommerce-business-extensions__checkbox'
+		);
 
 		expect( installFeaturesCheckbox ).toBe( null );
 	} );

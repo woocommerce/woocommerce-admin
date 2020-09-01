@@ -5,24 +5,28 @@
 /**
  * Internal dependencies
  */
-import {
-	clickContinue,
-	setCheckboxToChecked,
-} from './utils';
+import { clickContinue, setCheckboxToChecked, getText } from './utils';
 const config = require( 'config' );
 
-export async function completeIndustrySection(
-	expectedIndustryCount = 10
-) {
+export async function completeIndustrySection( expectedIndustryCount = 10 ) {
 	// Query for the industries checkboxes
 	const industryCheckboxes = await page.$$(
 		'.components-checkbox-control__input'
 	);
+
+	const industryLabels = await page.$$(
+		'.components-checkbox-control__label'
+	);
+
 	expect( industryCheckboxes ).toHaveLength( expectedIndustryCount );
 
-	// Select all industries including "Other"
+	// Select all industries except for CBD to fulfill conditions required by business section tests.
 	for ( let i = 0; i < expectedIndustryCount; i++ ) {
-		await setCheckboxToChecked( industryCheckboxes[ i ] );
+		const labelText = await getText( industryLabels[ i ] );
+
+		if ( ! labelText.includes( 'CBD' ) ) {
+			await setCheckboxToChecked( industryCheckboxes[ i ] );
+		}
 	}
 
 	// Fill "Other" industry
