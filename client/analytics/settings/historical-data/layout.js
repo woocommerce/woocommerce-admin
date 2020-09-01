@@ -112,7 +112,7 @@ export default withSelect( ( select, props ) => {
 	);
 	const {
 		activeImport,
-		cacheNeedsClearning,
+		cacheNeedsClearing,
 		dateFormat,
 		inProgress,
 		onImportStarted,
@@ -151,7 +151,7 @@ export default withSelect( ( select, props ) => {
 
 	const hasImportFinished = Boolean(
 		inProgress &&
-			! cacheNeedsClearning &&
+			! cacheNeedsClearing &&
 			isImporting === false &&
 			( customersTotal > 0 || ordersTotal > 0 ) &&
 			customersProgress === customersTotal &&
@@ -166,7 +166,7 @@ export default withSelect( ( select, props ) => {
 
 	if ( activeImport ) {
 		response = {
-			cacheNeedsClearning,
+			cacheNeedsClearing,
 			customersProgress,
 			customersTotal: isNil( customersTotal )
 				? customers

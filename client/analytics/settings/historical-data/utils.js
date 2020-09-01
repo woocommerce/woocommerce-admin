@@ -26,7 +26,7 @@ export const formatParams = ( dateFormat, period, skipChecked ) => {
 };
 
 export const getStatus = ( {
-	cacheNeedsClearning,
+	cacheNeedsClearing,
 	customersProgress,
 	customersTotal,
 	isError,
@@ -43,7 +43,7 @@ export const getStatus = ( {
 			isNil( ordersProgress ) ||
 			isNil( customersTotal ) ||
 			isNil( ordersTotal ) ||
-			cacheNeedsClearning
+			cacheNeedsClearing
 		) {
 			return 'initializing';
 		}

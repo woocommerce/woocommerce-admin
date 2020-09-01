@@ -60,7 +60,7 @@ describe( 'getStatus', () => {
 	it( 'returns `initializing` when the process is "inProgress" and the cache is not clear', () => {
 		expect(
 			getStatus( {
-				cacheNeedsClearning: true,
+				cacheNeedsClearing: true,
 				customersProgress: 1,
 				customersTotal: 1,
 				inProgress: true,
