@@ -217,7 +217,7 @@ class ProfileWizard extends Component {
 			updateNote,
 			updateProfileItems,
 			connectToJetpack,
-			clearSettingsCache,
+			clearTaskCache,
 		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
 
@@ -235,14 +235,14 @@ class ProfileWizard extends Component {
 		}
 
 		updateProfileItems( { completed: true } ).then( () => {
+			clearTaskCache();
+
 			if ( shouldConnectJetpack ) {
 				document.body.classList.add( 'woocommerce-admin-is-loading' );
 
 				connectToJetpack(
 					getHistory().push( getNewPath( {}, '/', {} ) )
 				);
-
-				clearSettingsCache();
 			} else {
 				getHistory().push( getNewPath( {}, '/', {} ) );
 			}
@@ -341,8 +341,7 @@ export default compose(
 		} = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
-		const clearSettingsCache = () => {
-			console.log( 'invalidate occurs' );
+		const clearTaskCache = () => {
 			invalidateResolutionForStoreSelector( 'getTasksStatus' );
 		};
 
@@ -359,7 +358,7 @@ export default compose(
 			updateNote,
 			updateOptions,
 			updateProfileItems,
-			clearSettingsCache,
+			clearTaskCache,
 		};
 	} ),
 	window.wcSettings.plugins
