@@ -176,12 +176,12 @@ class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
 
 		// Test bad values to filter parameter.
 		$bad_args = array(
-			'not an array!',                            // Not an array.
-			array( 1, 2, 3 ),                           // Not a tuple.
-			array( 'a', 1 ),                            // Non-numeric attribute ID.
-			array( 1, 'a' ),                            // Non-numeric term ID.
-			array( PHP_INT_MIN, $small_term->term_id ), // Invaid attribute ID.
-			array( $size_attr_id, PHP_INT_MAX ),        // Invaid term ID.
+			'not an array!',                   // Not an array.
+			array( 1, 2, 3 ),                  // Not a tuple.
+			array( 'a', 1 ),                   // Non-numeric attribute ID.
+			array( 1, 'a' ),                   // Non-numeric term ID.
+			array( -1, $small_term->term_id ), // Invaid attribute ID.
+			array( $size_attr_id, -1 ),        // Invaid term ID.
 		);
 
 		foreach ( $bad_args as $bad_arg ) {

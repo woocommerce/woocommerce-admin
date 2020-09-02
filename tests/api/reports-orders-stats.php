@@ -140,7 +140,7 @@ class WC_Tests_API_Reports_Orders_Stats extends WC_REST_Unit_Test_Case {
 		$variable_product   = WC_Helper_Product::create_variation_product( new WC_Product_Variable() );
 		$product_variations = $variable_product->get_children();
 		$order_variation_1  = wc_get_product( $product_variations[1] ); // Variation: size = large.
-		$order_variation_2  = wc_get_product( $product_variations[4] ); // Variation: size = huge, colour = blue, number = 2.
+		$order_variation_2  = wc_get_product( $product_variations[3] ); // Variation: size = huge, colour = red, number = 2.
 
 		// Create orders for variations.
 		$variation_order_1 = WC_Helper_Order::create_order( $this->user, $order_variation_1 );
