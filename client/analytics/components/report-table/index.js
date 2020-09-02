@@ -485,6 +485,10 @@ ReportTable.propTypes = {
 		load: PropTypes.string,
 	} ),
 	/**
+	 * Name of store on which extendItemsMethodNames can be found.
+	 */
+	extendedItemsStoreName: PropTypes.string,
+	/**
 	 * A function that returns the headers object to build the table.
 	 */
 	getHeadersContent: PropTypes.func.isRequired,
