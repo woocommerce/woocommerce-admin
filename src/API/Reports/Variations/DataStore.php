@@ -138,6 +138,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		if ( count( $query_args['variations'] ) > 0 ) {
 			$allowed_variations_str = self::get_filtered_ids( $query_args, 'variations' );
 			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id IN ({$allowed_variations_str})" );
+		} elseif ( ! $included_products ) {
+			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id != 0" );
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
