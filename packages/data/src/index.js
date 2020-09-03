@@ -40,6 +40,9 @@ export {
 	NAMESPACE,
 	WC_ADMIN_NAMESPACE,
 	WCS_NAMESPACE,
+	SECOND,
+	MINUTE,
+	HOUR,
 } from './constants';
 
 export { EXPORT_STORE_NAME } from './export';
