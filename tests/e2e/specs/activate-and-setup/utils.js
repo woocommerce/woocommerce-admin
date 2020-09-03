@@ -2,9 +2,11 @@
  * @format
  */
 
+import { waitForSelector } from '../../utils/lib';
+
 export async function clickContinue() {
 	// Wait for "Continue" button to become active
-	await page.waitForSelector( 'button.is-primary:not(:disabled)' );
+	await waitForSelector( page, 'button.is-primary:not(:disabled)' );
 
 	// Click on "Continue" button to move to the next step
 	await page.click( 'button.is-primary' );

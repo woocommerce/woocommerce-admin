@@ -6,24 +6,24 @@
  * Internal dependencies
  */
 import { setCheckboxToUnchecked, clickContinue } from './utils';
+import { waitForSelector, waitForElementCount } from '../../utils/lib';
 const config = require( 'config' );
 
 export async function completeBusinessSection() {
 	// Query for the <SelectControl>s
-	await page.waitForSelector( '.woocommerce-select-control' );
+	await waitForElementCount( page, '.woocommerce-select-control', 2 );
 	const selectControls = await page.$$( '.woocommerce-select-control' );
-	expect( selectControls ).toHaveLength( 2 );
 
 	// Fill the number of products you plan to sell
 	await selectControls[ 0 ].click();
-	await page.waitForSelector( '.woocommerce-select-control__listbox' );
+	await waitForSelector( page, '.woocommerce-select-control__listbox' );
 	await expect( page ).toClick( '.woocommerce-select-control__option', {
 		text: config.get( 'onboardingwizard.numberofproducts' ),
 	} );
 
 	// Fill currently selling elsewhere
 	await selectControls[ 1 ].click();
-	await page.waitForSelector( '.woocommerce-select-control__listbox' );
+	await waitForSelector( page, '.woocommerce-select-control__listbox' );
 	await expect( page ).toClick( '.woocommerce-select-control__option', {
 		text: config.get( 'onboardingwizard.sellingelsewhere' ),
 	} );

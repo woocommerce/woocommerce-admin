@@ -13,6 +13,7 @@ import {
 	verifyCheckboxIsSet,
 	verifyValueOfInputField,
 } from '../../utils/actions';
+import { waitForSelector, waitForElementCount } from '../../utils/lib';
 
 const config = require( 'config' );
 const baseUrl = config.get( 'url' );
@@ -34,52 +35,11 @@ describe( 'Store owner can login and make sure WooCommerce is activated', () => 
 			return;
 		}
 		await page.click( `tr[data-slug="${ slug }"] .activate a` );
-		await page.waitForSelector( `tr[data-slug="${ slug }"] .deactivate a` );
-	} );
-} );
 
-describe( 'Store owner can go through setup Task List', () => {
-	it( 'can setup shipping', async () => {
-		// Navigte to WC Admin home.
-		await Promise.all( [
-			page.goto( WC_ADMIN_HOME ),
-			page.waitForNavigation( { waitUntil: 'networkidle0' } ),
-		] );
-
-		// Wait for list to show
-		await page.waitForSelector( '.woocommerce-list' );
-
-		// Query for all tasks on the list
-		const taskListItems = await page.$$( '.woocommerce-list__item-title' );
-		expect( taskListItems ).toHaveLength( 6 );
-
-		await Promise.all( [
-			// Click on "Set up shipping" task to move to the next step
-			taskListItems[ 4 ].click(),
-
-			// Wait for shipping setup section to load
-			page.waitForNavigation( { waitUntil: 'networkidle0' } ),
-		] );
-
-		// Query for store location fields, which are only shown if the
-		// store location is not already set.
-		const storeLocationFields = await page.$$(
-			'.components-text-control__input'
+		await waitForSelector(
+			page,
+			`tr[data-slug="${ slug }"] .deactivate a`
 		);
-		if ( storeLocationFields.length === 4 ) {
-			// Wait for "Continue" button to become active
-			await page.waitForSelector( 'button.is-primary:not(:disabled)' );
-			// Click on "Continue" button to move to the shipping cost section
-			await page.click( 'button.is-primary' );
-		}
-
-		// Wait for "Proceed" button to become active
-		await page.waitForSelector( 'button.is-primary:not(:disabled)' );
-		await page.waitFor( 3000 );
-
-		// Click on "Proceed" button to save shipping settings
-		await page.click( 'button.is-primary' );
-		await page.waitFor( 3000 );
 	} );
 } );
 

@@ -6,10 +6,17 @@
  * Internal dependencies
  */
 import { clickContinue, setCheckboxToChecked, getText } from './utils';
+import { waitForElementCount } from '../../utils/lib';
 const config = require( 'config' );
 
 export async function completeIndustrySection( expectedIndustryCount = 9 ) {
 	// Query for the industries checkboxes
+	await waitForElementCount(
+		page,
+		'.components-checkbox-control__input',
+		expectedIndustryCount
+	);
+
 	const industryCheckboxes = await page.$$(
 		'.components-checkbox-control__input'
 	);
@@ -17,8 +24,6 @@ export async function completeIndustrySection( expectedIndustryCount = 9 ) {
 	const industryLabels = await page.$$(
 		'.components-checkbox-control__label'
 	);
-
-	expect( industryCheckboxes ).toHaveLength( expectedIndustryCount );
 
 	// Select all industries except for CBD to fulfill conditions required by business section tests.
 	for ( let i = 0; i < expectedIndustryCount; i++ ) {
