@@ -15,10 +15,6 @@ import {
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check, chevronRight } from '@wordpress/icons';
 import { xor } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { List, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import {
@@ -34,7 +30,8 @@ import {
 import './style.scss';
 import CartModal from 'dashboard/components/cart-modal';
 import { getAllTasks, recordTaskViewEvent } from './tasks';
-import { getCountryCode } from 'dashboard/utils';
+import { getCountryCode } from '../dashboard/utils';
+import sanitizeHTML from '../lib/sanitize-html';
 import { recordEvent } from 'lib/tracks';
 
 class TaskDashboard extends Component {
@@ -293,10 +290,18 @@ class TaskDashboard extends Component {
 					variant={ task.completed ? 'body.small' : 'button' }
 				>
 					{ task.title }
+					{ task.additionalInfo && (
+						<div
+							className="woocommerce-task__additional-info"
+							dangerouslySetInnerHTML={ sanitizeHTML(
+								task.additionalInfo
+							) }
+						></div>
+					) }
 					{ task.time && ! task.completed && (
-						<span className="woocommerce-task__estimated-time">
+						<div className="woocommerce-task__estimated-time">
 							{ task.time }
-						</span>
+						</div>
 					) }
 				</Text>
 			);
@@ -318,7 +323,14 @@ class TaskDashboard extends Component {
 			}
 
 			if ( ! task.onClick ) {
-				task.onClick = () => updateQueryString( { task: task.key } );
+				task.onClick = ( e ) => {
+					if ( e.target.nodeName === 'A' ) {
+						// This is a nested link, so don't activate this task.
+						return false;
+					}
+
+					updateQueryString( { task: task.key } );
+				};
 			}
 
 			return task;
