@@ -5,14 +5,12 @@
 /**
  * Internal dependencies
  */
-import {
-	setCheckboxToUnchecked,
-	clickContinue,
-} from './utils';
+import { setCheckboxToUnchecked, clickContinue } from './utils';
 const config = require( 'config' );
 
 export async function completeBusinessSection() {
 	// Query for the <SelectControl>s
+	await page.waitForSelector( '.woocommerce-select-control' );
 	const selectControls = await page.$$( '.woocommerce-select-control' );
 	expect( selectControls ).toHaveLength( 2 );
 
@@ -32,7 +30,9 @@ export async function completeBusinessSection() {
 
 	// Site is in US so the "Install recommended free business features"
 	// checkbox is present, uncheck it.
-	const installFeaturesCheckbox = await page.$( '#woocommerce-business-extensions__checkbox' );
+	const installFeaturesCheckbox = await page.$(
+		'#woocommerce-business-extensions__checkbox'
+	);
 	await setCheckboxToUnchecked( installFeaturesCheckbox );
 
 	await clickContinue();
