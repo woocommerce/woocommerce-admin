@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, createElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import {
 	getHistory,
 	getNewPath,
@@ -17,6 +17,7 @@ import {
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
+	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -28,10 +29,8 @@ import BusinessDetails from './steps/business-details';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
-import { QUERY_DEFAULTS } from '../wc-api/constants';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
-import withSelect from '../wc-api/with-select';
 import './style.scss';
 
 class ProfileWizard extends Component {
@@ -216,6 +215,7 @@ class ProfileWizard extends Component {
 			updateNote,
 			updateProfileItems,
 			connectToJetpack,
+			clearTaskCache,
 		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
 
@@ -232,23 +232,19 @@ class ProfileWizard extends Component {
 			updateNote( profilerNote.id, { status: 'actioned' } );
 		}
 
-		updateProfileItems( { completed: true } )
-			.then( () => {
-				if ( shouldConnectJetpack ) {
-					document.body.classList.add(
-						'woocommerce-admin-is-loading'
-					);
-				}
-			} )
-			.then( () => {
-				if ( shouldConnectJetpack ) {
-					connectToJetpack(
-						getHistory().push( getNewPath( {}, '/', {} ) )
-					);
-				} else {
-					getHistory().push( getNewPath( {}, '/', {} ) );
-				}
-			} );
+		updateProfileItems( { completed: true } ).then( () => {
+			clearTaskCache();
+
+			if ( shouldConnectJetpack ) {
+				document.body.classList.add( 'woocommerce-admin-is-loading' );
+
+				connectToJetpack(
+					getHistory().push( getNewPath( {}, '/', {} ) )
+				);
+			} else {
+				getHistory().push( getNewPath( {}, '/', {} ) );
+			}
+		} );
 	}
 
 	skipProfiler() {
@@ -337,8 +333,15 @@ export default compose(
 		} = dispatch( PLUGINS_STORE_NAME );
 		const { updateNote } = dispatch( NOTES_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
-		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
+		const {
+			updateProfileItems,
+			invalidateResolutionForStoreSelector,
+		} = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
+
+		const clearTaskCache = () => {
+			invalidateResolutionForStoreSelector( 'getTasksStatus' );
+		};
 
 		const connectToJetpack = ( failureRedirect ) => {
 			connectToJetpackWithFailureRedirect(
@@ -353,6 +356,7 @@ export default compose(
 			updateNote,
 			updateOptions,
 			updateProfileItems,
+			clearTaskCache,
 		};
 	} ),
 	window.wcSettings.plugins

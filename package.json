@@ -98,7 +98,6 @@
 		]
 	},
 	"dependencies": {
-		"@fresh-data/framework": "0.6.1",
 		"@woocommerce/e2e-environment": "^0.1.5",
 		"@wordpress/api-fetch": "2.2.8",
 		"@wordpress/base-styles": "2.0.0",
@@ -119,7 +118,7 @@
 		"classnames": "2.2.6",
 		"core-js": "3.6.5",
 		"debug": "4.1.1",
-		"dompurify": "2.0.12",
+		"dompurify": "2.0.14",
 		"gridicons": "3.3.1",
 		"interpolate-components": "1.1.1",
 		"marked": "0.8.2",
