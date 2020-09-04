@@ -130,6 +130,35 @@ class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
+	 * Test that a refunded order has the parent_id's order id returned as order_number.
+	 */
+	public function test_refunded_order_parent_order_number() {
+		wp_set_current_user( $this->user );
+
+		// Create an order.
+		$order = WC_Helper_Order::create_order( $this->user );
+
+		// Create a refund order.
+		$refund = wc_create_refund(
+			array(
+				'order_id' => $order->get_id(),
+			)
+		);
+		WC_Helper_Queue::run_all_pending();
+		$response       = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint ) );
+		$reports        = $response->get_data();
+		$refunded_order = $reports[0];
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		// Verify the refunded order has the proper parent_id.
+		$this->assertEquals( $order->get_id(), $refunded_order['parent_id'] );
+
+		// Verify that the order_number attribute for the refunded order is the parent order_id.
+		$this->assertEquals( $order->get_id(), $refunded_order['order_number'] );
+	}
+
+	/**
 	 * Test filtering by product attribute(s).
 	 */
 	public function test_product_attributes_filter() {

@@ -81,7 +81,8 @@ class Controller extends ReportsController implements ExportableInterface {
 		$data = array();
 
 		foreach ( $report_data->data as $orders_data ) {
-			$orders_data['order_number'] = $this->get_order_number( $orders_data['order_id'] );
+			$order_number                = $orders_data['parent_id'] ? $orders_data['parent_id'] : $orders_data['order_id'];
+			$orders_data['order_number'] = $this->get_order_number( $order_number );
 			$item                        = $this->prepare_item_for_response( $orders_data, $request );
 			$data[]                      = $this->prepare_response_for_collection( $item );
 		}
