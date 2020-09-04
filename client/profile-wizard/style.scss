@@ -137,6 +137,14 @@
 		width: 100%;
 	}
 
+	.woocommerce-profile-wizard__footnote {
+		p {
+			color: $gray-700;
+			text-align: left;
+			margin-bottom: 12px;
+		}
+	}
+
 	.woocommerce-layout .woocommerce-layout__main {
 		padding-right: 0;
 	}
