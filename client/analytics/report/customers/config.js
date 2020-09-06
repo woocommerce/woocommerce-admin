@@ -5,14 +5,17 @@ import { __, _x } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { applyFilters } from '@wordpress/hooks';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { NAMESPACE } from '@woocommerce/data';
 
 const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 
 /**
  * Internal dependencies
  */
-import { getCustomerLabels, getRequestByIdString } from 'lib/async-requests';
-import { NAMESPACE } from 'wc-api/constants';
+import {
+	getCustomerLabels,
+	getRequestByIdString,
+} from '../../../lib/async-requests';
 
 const CUSTOMERS_REPORT_FILTERS_FILTER =
 	'woocommerce_admin_customers_report_filters';
@@ -22,7 +25,7 @@ const CUSTOMERS_REPORT_ADVANCED_FILTERS_FILTER =
 export const filters = applyFilters( CUSTOMERS_REPORT_FILTERS_FILTER, [
 	{
 		label: __( 'Show', 'woocommerce-admin' ),
-		staticParams: [],
+		staticParams: [ 'paged', 'per_page' ],
 		param: 'filter',
 		showFilters: () => true,
 		filters: [
@@ -126,19 +129,25 @@ export const advancedFilters = applyFilters(
 			},
 			country: {
 				labels: {
-					add: __( 'Country', 'woocommerce-admin' ),
+					add: __( 'Country / Region', 'woocommerce-admin' ),
 					placeholder: __( 'Search', 'woocommerce-admin' ),
-					remove: __( 'Remove country filter', 'woocommerce-admin' ),
+					remove: __(
+						'Remove country / region filter',
+						'woocommerce-admin'
+					),
 					rule: __(
-						'Select a country filter match',
+						'Select a country / region filter match',
 						'woocommerce-admin'
 					),
 					/* translators: A sentence describing a Product filter. See screen shot for context: https://cloudup.com/cCsm3GeXJbE */
 					title: __(
-						'{{title}}Country{{/title}} {{rule /}} {{filter /}}',
+						'{{title}}Country / Region{{/title}} {{rule /}} {{filter /}}',
 						'woocommerce-admin'
 					),
-					filter: __( 'Select country', 'woocommerce-admin' ),
+					filter: __(
+						'Select country / region',
+						'woocommerce-admin'
+					),
 				},
 				rules: [
 					{

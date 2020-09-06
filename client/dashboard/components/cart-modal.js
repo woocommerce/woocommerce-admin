@@ -5,24 +5,20 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { Button, Modal } from '@wordpress/components';
-import { addQueryArgs } from '@wordpress/url';
 import { find } from 'lodash';
 import { decodeEntities } from '@wordpress/html-entities';
-
-/**
- * WooCommerce dependencies
- */
+import { withSelect } from '@wordpress/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { getNewPath } from '@woocommerce/navigation';
 import { List } from '@woocommerce/components';
+import { ONBOARDING_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
-import { getProductIdsForCart } from 'dashboard/utils';
-import sanitizeHTML from 'lib/sanitize-html';
-import { recordEvent } from 'lib/tracks';
+import { getProductIdsForCart } from '../utils';
+import sanitizeHTML from '../../lib/sanitize-html';
+import { getInAppPurchaseUrl } from '../../lib/in-app-purchase';
 
 class CartModal extends Component {
 	constructor( props ) {
@@ -37,24 +33,16 @@ class CartModal extends Component {
 		const { productIds, onClickPurchaseNow } = this.props;
 		this.setState( { purchaseNowButtonBusy: true } );
 		if ( ! productIds.length ) {
-
 			return;
 		}
 
 		recordEvent( 'tasklist_modal_proceed_checkout', {
 			product_ids: productIds,
-			purchase_install: false,
+			purchase_install: true,
 		} );
 
-		const { connectNonce } = getSetting( 'onboarding', {} );
-		const backPath = getNewPath( {}, '/', {} );
-
-		const url = addQueryArgs( 'https://woocommerce.com/cart', {
-			'wccom-site': getSetting( 'siteUrl' ),
-			'wccom-woo-version': getSetting( 'wcVersion' ),
+		const url = getInAppPurchaseUrl( 'https://woocommerce.com/cart', {
 			'wccom-replace-with': productIds.join( ',' ),
-			'wccom-connect-nonce': connectNonce,
-			'wccom-back': backPath,
 		} );
 
 		if ( onClickPurchaseNow ) {
@@ -164,7 +152,6 @@ class CartModal extends Component {
 
 					<Button
 						isPrimary
-						isDefault
 						isBusy={ purchaseNowButtonBusy }
 						onClick={ () => this.onClickPurchaseNow() }
 					>
@@ -178,9 +165,15 @@ class CartModal extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems } = select( 'wc-api' );
+		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const profileItems = getProfileItems();
-		const productIds = getProductIdsForCart( profileItems );
+		const installedPlugins = getInstalledPlugins();
+		const productIds = getProductIdsForCart(
+			profileItems,
+			false,
+			installedPlugins
+		);
 
 		return { profileItems, productIds };
 	} )

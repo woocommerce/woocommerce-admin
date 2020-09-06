@@ -13,8 +13,6 @@
  *         );
  * $report = new \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\Query( $args );
  * $mydata = $report->get_data();
- *
- * @package  WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Orders\Stats;
@@ -43,8 +41,7 @@ class Query extends ReportsQuery {
 				'num_items_sold',
 				'coupons',
 				'coupons_count',
-				'num_returning_customers',
-				'num_new_customers',
+				'total_customers',
 			),
 		);
 	}

@@ -3,8 +3,6 @@
  * REST API Reports orders stats controller
  *
  * Handles requests to the /reports/orders/stats endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Orders\Stats;
@@ -16,7 +14,6 @@ use \Automattic\WooCommerce\Admin\API\Reports\ParameterException;
 /**
  * REST API Reports orders stats controller class.
  *
- * @package WooCommerce/API
  * @extends \Automattic\WooCommerce\Admin\API\Reports\Controller
  */
 class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
@@ -42,15 +39,15 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 	 * @return array
 	 */
 	protected function prepare_reports_query( $request ) {
-		$args             = array();
-		$args['before']   = $request['before'];
-		$args['after']    = $request['after'];
-		$args['interval'] = $request['interval'];
-		$args['page']     = $request['page'];
-		$args['per_page'] = $request['per_page'];
-		$args['orderby']  = $request['orderby'];
-		$args['order']    = $request['order'];
-
+		$args                      = array();
+		$args['before']            = $request['before'];
+		$args['after']             = $request['after'];
+		$args['interval']          = $request['interval'];
+		$args['page']              = $request['page'];
+		$args['per_page']          = $request['per_page'];
+		$args['orderby']           = $request['orderby'];
+		$args['order']             = $request['order'];
+		$args['fields']            = $request['fields'];
 		$args['match']             = $request['match'];
 		$args['status_is']         = (array) $request['status_is'];
 		$args['status_is_not']     = (array) $request['status_is_not'];
@@ -62,6 +59,8 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 		$args['tax_rate_excludes'] = (array) $request['tax_rate_excludes'];
 		$args['customer']          = $request['customer'];
 		$args['refunds']           = $request['refunds'];
+		$args['attribute_is']      = (array) $request['attribute_is'];
+		$args['attribute_is_not']  = (array) $request['attribute_is_not'];
 		$args['categories']        = (array) $request['categories'];
 		$args['segmentby']         = $request['segmentby'];
 
@@ -153,14 +152,14 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 	 */
 	public function get_item_schema() {
 		$data_values = array(
-			'net_revenue'             => array(
+			'net_revenue'         => array(
 				'description' => __( 'Net Sales.', 'woocommerce-admin' ),
 				'type'        => 'number',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 				'format'      => 'currency',
 			),
-			'orders_count'            => array(
+			'orders_count'        => array(
 				'title'       => __( 'Orders', 'woocommerce-admin' ),
 				'description' => __( 'Number of orders', 'woocommerce-admin' ),
 				'type'        => 'integer',
@@ -168,7 +167,7 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 				'readonly'    => true,
 				'indicator'   => true,
 			),
-			'avg_order_value'         => array(
+			'avg_order_value'     => array(
 				'description' => __( 'Average order value.', 'woocommerce-admin' ),
 				'type'        => 'number',
 				'context'     => array( 'view', 'edit' ),
@@ -176,43 +175,37 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 				'indicator'   => true,
 				'format'      => 'currency',
 			),
-			'avg_items_per_order'     => array(
+			'avg_items_per_order' => array(
 				'description' => __( 'Average items per order', 'woocommerce-admin' ),
 				'type'        => 'number',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
-			'num_items_sold'          => array(
+			'num_items_sold'      => array(
 				'description' => __( 'Number of items sold', 'woocommerce-admin' ),
 				'type'        => 'integer',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
-			'coupons'                 => array(
+			'coupons'             => array(
 				'description' => __( 'Amount discounted by coupons.', 'woocommerce-admin' ),
 				'type'        => 'number',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
-			'coupons_count'           => array(
+			'coupons_count'       => array(
 				'description' => __( 'Unique coupons count.', 'woocommerce-admin' ),
 				'type'        => 'number',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
-			'num_returning_customers' => array(
-				'description' => __( 'Number of orders done by returning customers', 'woocommerce-admin' ),
+			'total_customers'     => array(
+				'description' => __( 'Total distinct customers.', 'woocommerce-admin' ),
 				'type'        => 'integer',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
-			'num_new_customers'       => array(
-				'description' => __( 'Number of orders done by new customers', 'woocommerce-admin' ),
-				'type'        => 'integer',
-				'context'     => array( 'view', 'edit' ),
-				'readonly'    => true,
-			),
-			'products'                => array(
+			'products'            => array(
 				'description' => __( 'Number of distinct products sold.', 'woocommerce-admin' ),
 				'type'        => 'number',
 				'context'     => array( 'view', 'edit' ),
@@ -501,6 +494,24 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
+		$params['attribute_is']      = array(
+			'description'       => __( 'Limit result set to orders that include products with the specified attributes.', 'woocommerce-admin' ),
+			'type'              => 'array',
+			'items'             => array(
+				'type' => 'array',
+			),
+			'default'           => array(),
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['attribute_is_not']  = array(
+			'description'       => __( 'Limit result set to orders that don\'t include products with the specified attributes.', 'woocommerce-admin' ),
+			'type'              => 'array',
+			'items'             => array(
+				'type' => 'array',
+			),
+			'default'           => array(),
+			'validate_callback' => 'rest_validate_request_arg',
+		);
 		$params['segmentby']         = array(
 			'description'       => __( 'Segment the response by additional constraint.', 'woocommerce-admin' ),
 			'type'              => 'string',
@@ -512,6 +523,15 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 				'customer_type', // new vs returning.
 			),
 			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['fields']            = array(
+			'description'       => __( 'Limit stats fields to the specified items.', 'woocommerce-admin' ),
+			'type'              => 'array',
+			'sanitize_callback' => 'wp_parse_slug_list',
+			'validate_callback' => 'rest_validate_request_arg',
+			'items'             => array(
+				'type' => 'string',
+			),
 		);
 
 		return $params;

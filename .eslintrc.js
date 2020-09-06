@@ -1,16 +1,12 @@
 module.exports = {
-	extends: [ 'plugin:@wordpress/eslint-plugin/recommended', 'prettier' ],
-	env: {
-		'jest/globals': true,
-	},
-	globals: {
-		wcSettings: true,
-	},
-	plugins: [ 'jest' ],
+	extends: [ 'plugin:@woocommerce/eslint-plugin/recommended' ],
 	rules: {
-		'@wordpress/dependency-group': 'off',
-		'valid-jsdoc': 'off',
-		radix: 'error',
-		yoda: [ 'error', 'never' ],
+		// temporary conversion to warnings until the below are all handled.
+		'@wordpress/i18n-translator-comments': 'warn',
+		'@wordpress/valid-sprintf': 'warn',
+		'jsdoc/check-tag-names': [
+			'error',
+			{ definedTags: [ 'jest-environment' ] },
+		],
 	},
 };

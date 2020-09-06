@@ -1,8 +1,6 @@
 <?php
 /**
  * Order syncing related functions and actions.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\Schedulers;
@@ -166,11 +164,6 @@ class OrdersScheduler extends ImportScheduler {
 		);
 
 		ReportsCache::invalidate();
-
-		// Check if any syncs returned false or -1 and reschedule their import if so.
-		if ( count( array_intersect( $results, array( -1, false ) ) ) ) {
-			self::schedule_action( 'import', array( $order_id ) );
-		}
 	}
 
 	/**

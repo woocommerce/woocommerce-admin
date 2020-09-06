@@ -3,8 +3,6 @@
  * REST API Admin Notes controller
  *
  * Handles requests to the admin notes endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -17,7 +15,6 @@ use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
 /**
  * REST API Admin Notes controller class.
  *
- * @package WooCommerce/API
  * @extends WC_REST_CRUD_Controller
  */
 class Notes extends \WC_REST_CRUD_Controller {
@@ -77,6 +74,45 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/delete/(?P<id>[\d-]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_item' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/delete/all',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_all_items' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/update',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'batch_update_items' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -100,9 +136,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			return $note;
 		}
 
-		$data = $note->get_data();
-		$data = $this->prepare_item_for_response( $data, $request );
-		$data = $this->prepare_response_for_collection( $data );
+		$data = $this->prepare_note_data_for_response( $note, $request );
 
 		return rest_ensure_response( $data );
 	}
@@ -138,13 +172,14 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @return array
 	 */
 	protected function prepare_objects_query( $request ) {
-		$args             = array();
-		$args['order']    = $request['order'];
-		$args['orderby']  = $request['orderby'];
-		$args['per_page'] = $request['per_page'];
-		$args['page']     = $request['page'];
-		$args['type']     = isset( $request['type'] ) ? $request['type'] : array();
-		$args['status']   = isset( $request['status'] ) ? $request['status'] : array();
+		$args               = array();
+		$args['order']      = $request['order'];
+		$args['orderby']    = $request['orderby'];
+		$args['per_page']   = $request['per_page'];
+		$args['page']       = $request['page'];
+		$args['type']       = isset( $request['type'] ) ? $request['type'] : array();
+		$args['status']     = isset( $request['status'] ) ? $request['status'] : array();
+		$args['is_deleted'] = 0;
 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date_created';
@@ -209,22 +244,125 @@ class Notes extends \WC_REST_CRUD_Controller {
 			);
 		}
 
-		// @todo Status is the only field that can be updated at the moment. We should also implement the "date reminder" setting.
-		$note_changed = false;
+		WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
+		return $this->get_item( $request );
+	}
+
+	/**
+	 * Delete a single note.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function delete_item( $request ) {
+		$note = WC_Admin_Notes::get_note( $request->get_param( 'id' ) );
+
+		if ( ! $note ) {
+			return new \WP_Error(
+				'woocommerce_note_invalid_id',
+				__( 'Sorry, there is no note with that ID.', 'woocommerce-admin' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		WC_Admin_Notes::delete_note( $note );
+		$data = $this->prepare_note_data_for_response( $note, $request );
+		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Delete all notes.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function delete_all_items( $request ) {
+		$notes = WC_Admin_Notes::delete_all_notes();
+		$data  = array();
+		foreach ( (array) $notes as $note_obj ) {
+			$data[] = $this->prepare_note_data_for_response( $note_obj, $request );
+		}
+
+		$response = rest_ensure_response( $data );
+		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( array( 'info', 'warning' ), array() ) );
+		return $response;
+	}
+
+	/**
+	 * Prepare note data.
+	 *
+	 * @param WC_Admin_Note   $note     Note data.
+	 * @param WP_REST_Request $request  Request object.
+	 * @return WP_REST_Response $response Response data.
+	 */
+	public function prepare_note_data_for_response( $note, $request ) {
+		$note = $note->get_data();
+		$note = $this->prepare_item_for_response( $note, $request );
+		return $this->prepare_response_for_collection( $note );
+	}
+
+	/**
+	 * Prepare an array with the the requested updates.
+	 *
+	 * @param WP_REST_Request $request  Request object.
+	 * @return array A list of the requested updates values.
+	 */
+	public function get_requested_updates( $request ) {
+		$requested_updates = array();
 		if ( ! is_null( $request->get_param( 'status' ) ) ) {
-			$note->set_status( $request->get_param( 'status' ) );
-			$note_changed = true;
+			$requested_updates['status'] = $request->get_param( 'status' );
 		}
 
 		if ( ! is_null( $request->get_param( 'date_reminder' ) ) ) {
-			$note->set_date_reminder( $request->get_param( 'date_reminder' ) );
-			$note_changed = true;
+			$requested_updates['date_reminder'] = $request->get_param( 'date_reminder' );
 		}
 
-		if ( $note_changed ) {
-			$note->save();
+		if ( ! is_null( $request->get_param( 'is_deleted' ) ) ) {
+			$requested_updates['is_deleted'] = $request->get_param( 'is_deleted' );
 		}
-		return $this->get_item( $request );
+		return $requested_updates;
+	}
+
+	/**
+	 * Batch update a set of notes.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function undoremove_items( $request ) {
+		wc_deprecated_function( 'undoremove_items', '4.4', '\Automattic\WooCommerce\Admin\API\Notes()->undoremove_items' );
+		return self::batch_update_items( $request );
+	}
+
+	/**
+	 * Batch update a set of notes.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function batch_update_items( $request ) {
+		$data     = array();
+		$note_ids = $request->get_param( 'noteIds' );
+
+		if ( ! isset( $note_ids ) || ! is_array( $note_ids ) ) {
+			return new \WP_Error(
+				'woocommerce_note_invalid_ids',
+				__( 'Please provide an array of IDs through the noteIds param.', 'woocommerce-admin' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		foreach ( (array) $note_ids as $note_id ) {
+			$note = WC_Admin_Notes::get_note( (int) $note_id );
+			if ( $note ) {
+				WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
+				$data[] = $this->prepare_note_data_for_response( $note, $request );
+			}
+		}
+
+		$response = rest_ensure_response( $data );
+		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( array( 'info', 'warning' ), array() ) );
+		return $response;
 	}
 
 	/**
@@ -280,6 +418,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$data['title']             = stripslashes( $data['title'] );
 		$data['content']           = stripslashes( $data['content'] );
 		$data['is_snoozable']      = (bool) $data['is_snoozable'];
+		$data['is_deleted']        = (bool) $data['is_deleted'];
 		foreach ( (array) $data['actions'] as $key => $value ) {
 			$data['actions'][ $key ]->label  = stripslashes( $data['actions'][ $key ]->label );
 			$data['actions'][ $key ]->url    = $this->prepare_query_for_response( $data['actions'][ $key ]->query );
@@ -426,12 +565,6 @@ class Notes extends \WC_REST_CRUD_Controller {
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'icon'              => array(
-					'description' => __( 'Icon (gridicon) for the note.', 'woocommerce-admin' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
-				),
 				'content_data'      => array(
 					'description' => __( 'Content data for the note. JSON string. Available for re-localization.', 'woocommerce-admin' ),
 					'type'        => 'string',
@@ -482,6 +615,24 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'actions'           => array(
 					'description' => __( 'An array of actions, if any, for the note.', 'woocommerce-admin' ),
 					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'layout'            => array(
+					'description' => __( 'The layout of the note (e.g. banner, thumbnail, plain).', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'image'             => array(
+					'description' => __( 'The image of the note, if any.', 'woocommerce-admin' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
+				'is_deleted'        => array(
+					'description' => __( 'Registers whether the note is deleted or not', 'woocommerce-admin' ),
+					'type'        => 'boolean',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),

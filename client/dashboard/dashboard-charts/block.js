@@ -4,10 +4,6 @@
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { __, sprintf } from '@wordpress/i18n';
-
-/**
- * WooCommerce dependencies
- */
 import { Card } from '@woocommerce/components';
 import {
 	getHistory,
@@ -19,18 +15,14 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import ReportChart from 'analytics/components/report-chart';
+import ReportChart from '../../analytics/components/report-chart';
 import './block.scss';
 
 class ChartBlock extends Component {
 	handleChartClick = () => {
-		const { charts } = this.props;
+		const { selectedChart } = this.props;
 
-		if ( ! charts || ! charts.length ) {
-			return null;
-		}
-
-		getHistory().push( this.getChartPath( charts[ 0 ] ) );
+		getHistory().push( this.getChartPath( selectedChart ) );
 	};
 
 	getChartPath( chart ) {
@@ -42,9 +34,16 @@ class ChartBlock extends Component {
 	}
 
 	render() {
-		const { charts, endpoint, path, query } = this.props;
+		const {
+			charts,
+			endpoint,
+			path,
+			query,
+			selectedChart,
+			filters,
+		} = this.props;
 
-		if ( ! charts || ! charts.length ) {
+		if ( ! selectedChart ) {
 			return null;
 		}
 
@@ -56,28 +55,32 @@ class ChartBlock extends Component {
 			>
 				<Card
 					className="woocommerce-dashboard__chart-block woocommerce-analytics__card"
-					title={ charts[ 0 ].label }
+					title={ selectedChart.label }
 				>
 					<a
 						className="screen-reader-text"
 						href={ getAdminLink(
-							this.getChartPath( charts[ 0 ] )
+							this.getChartPath( selectedChart )
 						) }
 					>
-						{ /* translators: %s is the chart type */
-						sprintf(
-							__( '%s Report', 'woocommerce-admin' ),
-							charts[ 0 ].label
-						) }
+						{
+							/* translators: %s is the chart type */
+							sprintf(
+								__( '%s Report', 'woocommerce-admin' ),
+								selectedChart.label
+							)
+						}
 					</a>
 					<ReportChart
+						charts={ charts }
 						endpoint={ endpoint }
 						query={ query }
 						interactiveLegend={ false }
 						legendPosition="bottom"
 						path={ path }
-						selectedChart={ charts[ 0 ] }
+						selectedChart={ selectedChart }
 						showHeaderControls={ false }
+						filters={ filters }
 					/>
 				</Card>
 			</div>
@@ -90,6 +93,7 @@ ChartBlock.propTypes = {
 	endpoint: PropTypes.string.isRequired,
 	path: PropTypes.string.isRequired,
 	query: PropTypes.object.isRequired,
+	selectedChart: PropTypes.object.isRequired,
 };
 
 export default ChartBlock;

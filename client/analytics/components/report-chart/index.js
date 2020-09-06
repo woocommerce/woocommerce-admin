@@ -5,12 +5,15 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { format as formatDate } from '@wordpress/date';
+import { withSelect } from '@wordpress/data';
 import { get, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
+import { Chart } from '@woocommerce/components';
+import {
+	getReportChartData,
+	getTooltipValueFormat,
+	SETTINGS_STORE_NAME,
+} from '@woocommerce/data';
 import {
 	getAllowedIntervalsForQuery,
 	getCurrentDates,
@@ -18,19 +21,13 @@ import {
 	getIntervalForQuery,
 	getChartTypeForQuery,
 	getPreviousDate,
-} from 'lib/date';
-import { Chart } from '@woocommerce/components';
-import { CURRENCY } from '@woocommerce/wc-admin-settings';
+} from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import {
-	getReportChartData,
-	getTooltipValueFormat,
-} from 'wc-api/reports/utils';
-import ReportError from 'analytics/components/report-error';
-import withSelect from 'wc-api/with-select';
+import { CurrencyContext } from '../../../lib/currency-context';
+import ReportError from '../report-error';
 import { getChartMode, getSelectedFilter } from './utils';
 
 /**
@@ -54,9 +51,11 @@ export class ReportChart extends Component {
 
 	getItemChartData() {
 		const { primaryData, selectedChart } = this.props;
-		const chartData = primaryData.data.intervals.map( function( interval ) {
+		const chartData = primaryData.data.intervals.map( function (
+			interval
+		) {
 			const intervalData = {};
-			interval.subtotals.segments.forEach( function( segment ) {
+			interval.subtotals.segments.forEach( function ( segment ) {
 				if ( segment.segment_label ) {
 					const label = intervalData[ segment.segment_label ]
 						? segment.segment_label +
@@ -79,11 +78,20 @@ export class ReportChart extends Component {
 	}
 
 	getTimeChartData() {
-		const { query, primaryData, secondaryData, selectedChart } = this.props;
+		const {
+			query,
+			primaryData,
+			secondaryData,
+			selectedChart,
+			defaultDateRange,
+		} = this.props;
 		const currentInterval = getIntervalForQuery( query );
-		const { primary, secondary } = getCurrentDates( query );
+		const { primary, secondary } = getCurrentDates(
+			query,
+			defaultDateRange
+		);
 
-		const chartData = primaryData.data.intervals.map( function(
+		const chartData = primaryData.data.intervals.map( function (
 			interval,
 			index
 		) {
@@ -158,6 +166,7 @@ export class ReportChart extends Component {
 		const emptyMessage = emptySearchResults
 			? __( 'No data for the current search', 'woocommerce-admin' )
 			: __( 'No data for the selected date range', 'woocommerce-admin' );
+		const { formatAmount, getCurrencyConfig } = this.context;
 		return (
 			<Chart
 				allowedIntervals={ allowedIntervals }
@@ -183,13 +192,14 @@ export class ReportChart extends Component {
 					null
 				}
 				tooltipValueFormat={ getTooltipValueFormat(
-					selectedChart.type
+					selectedChart.type,
+					formatAmount
 				) }
 				chartType={ getChartTypeForQuery( query ) }
 				valueType={ selectedChart.type }
 				xFormat={ formats.xFormat }
 				x2Format={ formats.x2Format }
-				currency={ CURRENCY }
+				currency={ getCurrencyConfig() }
 			/>
 		);
 	}
@@ -241,6 +251,8 @@ export class ReportChart extends Component {
 		return this.renderTimeComparison();
 	}
 }
+
+ReportChart.contextType = CurrencyContext;
 
 ReportChart.propTypes = {
 	/**
@@ -329,6 +341,7 @@ ReportChart.defaultProps = {
 export default compose(
 	withSelect( ( select, props ) => {
 		const {
+			charts,
 			endpoint,
 			filters,
 			isRequesting,
@@ -343,10 +356,14 @@ export default compose(
 			props.mode ||
 			getChartMode( selectedFilter, query ) ||
 			'time-comparison';
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
 		const newProps = {
 			mode: chartMode,
 			filterParam,
+			defaultDateRange,
 		};
 
 		if ( isRequesting ) {
@@ -364,6 +381,8 @@ export default compose(
 			};
 		}
 
+		const fields = charts && charts.map( ( chart ) => chart.key );
+
 		const primaryData = getReportChartData( {
 			endpoint,
 			dataType: 'primary',
@@ -372,6 +391,8 @@ export default compose(
 			limitBy,
 			filters,
 			advancedFilters,
+			defaultDateRange,
+			fields,
 		} );
 
 		if ( chartMode === 'item-comparison' ) {
@@ -389,6 +410,8 @@ export default compose(
 			limitBy,
 			filters,
 			advancedFilters,
+			defaultDateRange,
+			fields,
 		} );
 		return {
 			...newProps,

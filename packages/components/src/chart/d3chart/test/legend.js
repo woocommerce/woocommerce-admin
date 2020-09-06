@@ -1,6 +1,5 @@
 /**
  * External dependencies
- *
  */
 import { mount } from 'enzyme';
 
@@ -28,7 +27,6 @@ describe( 'Legend', () => {
 		const legend = mount(
 			<D3Legend colorScheme={ colorScheme } data={ data } />
 		);
-
 		expect( legend.find( 'button' ).get( 0 ).props.disabled ).toBeFalsy();
 		expect( legend.find( 'button' ).get( 1 ).props.disabled ).toBeFalsy();
 	} );
@@ -39,7 +37,6 @@ describe( 'Legend', () => {
 		const legend = mount(
 			<D3Legend colorScheme={ colorScheme } data={ data } />
 		);
-
 		expect( legend.find( 'button' ).get( 0 ).props.disabled ).toBeTruthy();
 		expect( legend.find( 'button' ).get( 1 ).props.disabled ).toBeFalsy();
 	} );

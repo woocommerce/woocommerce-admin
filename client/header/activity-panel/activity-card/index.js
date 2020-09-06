@@ -6,12 +6,12 @@ import { cloneElement, Component } from '@wordpress/element';
 import Gridicon from 'gridicons';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { H, Section } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { H, Section } from '@woocommerce/components';
 
 class ActivityCard extends Component {
 	render() {
@@ -36,9 +36,14 @@ class ActivityCard extends Component {
 				{ unread && (
 					<span className="woocommerce-activity-card__unread" />
 				) }
-				<span className="woocommerce-activity-card__icon" aria-hidden>
-					{ icon }
-				</span>
+				{ icon && (
+					<span
+						className="woocommerce-activity-card__icon"
+						aria-hidden
+					>
+						{ icon }
+					</span>
+				) }
 				<header className="woocommerce-activity-card__header">
 					<H className="woocommerce-activity-card__title">
 						{ title }

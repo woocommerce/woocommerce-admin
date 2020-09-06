@@ -3,8 +3,6 @@
  * WC Admin Order Trait
  *
  * WC Admin Order Trait class that houses shared functionality across order and refund classes.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\Overrides;
@@ -31,7 +29,7 @@ trait OrderTraits {
 			return 0;
 		}
 
-		$total_shipping_amount = $this->get_shipping_total();
+		$total_shipping_amount = (float) $this->get_shipping_total();
 
 		return $total_shipping_amount / $order_items * $product_qty;
 	}

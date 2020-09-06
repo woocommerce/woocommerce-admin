@@ -4,22 +4,18 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
+import Gridicon from 'gridicons';
 import { EmptyContent, Section } from '@woocommerce/components';
+import { QUERY_DEFAULTS, ITEMS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
 import ActivityHeader from '../../activity-header';
-import Gridicon from 'gridicons';
 import ProductStockCard from './card';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
 
 class StockPanel extends Component {
 	renderEmptyCard() {
@@ -115,8 +111,8 @@ StockPanel.defaultProps = {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getItems, getItemsError, isGetItemsRequesting } = select(
-			'wc-api'
+		const { getItems, getItemsError, isResolving } = select(
+			ITEMS_STORE_NAME
 		);
 
 		const productsQuery = {
@@ -130,7 +126,10 @@ export default compose(
 			getItems( 'products', productsQuery ).values()
 		);
 		const isError = Boolean( getItemsError( 'products', productsQuery ) );
-		const isRequesting = isGetItemsRequesting( 'products', productsQuery );
+		const isRequesting = isResolving( 'getItems', [
+			'products',
+			productsQuery,
+		] );
 
 		return { products, isError, isRequesting };
 	} )

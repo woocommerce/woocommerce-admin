@@ -2,10 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-
-/**
- * @typedef {Object} Completer
- */
+import { decodeEntities } from '@wordpress/html-entities';
 
 /**
  * Parse a string suggestion, split apart by where the first matching query is.
@@ -24,13 +21,14 @@ export function computeSuggestionMatch( suggestion, query ) {
 		.indexOf( query.toLocaleLowerCase() );
 
 	return {
-		suggestionBeforeMatch: suggestion.substring( 0, indexOfMatch ),
-		suggestionMatch: suggestion.substring(
-			indexOfMatch,
-			indexOfMatch + query.length
+		suggestionBeforeMatch: decodeEntities(
+			suggestion.substring( 0, indexOfMatch )
 		),
-		suggestionAfterMatch: suggestion.substring(
-			indexOfMatch + query.length
+		suggestionMatch: decodeEntities(
+			suggestion.substring( indexOfMatch, indexOfMatch + query.length )
+		),
+		suggestionAfterMatch: decodeEntities(
+			suggestion.substring( indexOfMatch + query.length )
 		),
 	};
 }
@@ -43,11 +41,6 @@ export function getTaxCode( tax ) {
 		tax.priority,
 	]
 		.filter( Boolean )
-		.map( ( item ) =>
-			item
-				.toString()
-				.toUpperCase()
-				.trim()
-		)
+		.map( ( item ) => item.toString().toUpperCase().trim() )
 		.join( '-' );
 }

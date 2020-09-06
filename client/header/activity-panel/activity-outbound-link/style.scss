@@ -1,19 +1,16 @@
-
-
 .woocommerce-layout__activity-panel-outbound-link {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	height: 50px;
-	background: $core-grey-light-200;
-	border-bottom: 1px solid $core-grey-light-400;
+	background: $gray-200;
+	border-bottom: 1px solid $gray-100;
 	padding: $gap $fallback-gutter;
 	padding: $gap $gutter;
 	font-size: 13px;
 	font-weight: 500;
 	line-height: 18px;
 	margin: 0;
-	color: $studio-woocommerce-purple;
 	text-decoration: none;
 
 	.gridicon {
@@ -22,32 +19,28 @@
 
 	&:hover {
 		background: $studio-white;
-		color: $studio-woocommerce-purple;
 	}
 
 	&:active {
-		background: $core-grey-light-100;
-		color: $studio-woocommerce-purple-70;
+		background: $gray-100;
 	}
 
 	&:focus {
-		color: $studio-woocommerce-purple;
-		background: $core-grey-light-200;
-		box-shadow: inset 0 0 0 1px $box-shadow-blue, inset 0 0 0 2px $studio-white;
+		background: $gray-200;
+		box-shadow: inset 0 0 0 1px $box-shadow-blue,
+			inset 0 0 0 2px $studio-white;
 	}
 
 	&:hover,
 	&:focus {
 		.gridicon {
 			display: initial;
-			color: $studio-woocommerce-purple;
 		}
 	}
 
 	&:active {
 		.gridicon {
 			display: initial;
-			color: $studio-woocommerce-purple-70;
 		}
 	}
 }

@@ -105,11 +105,12 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_One {
 			'activated_formatted' => $activated_time_formatted,
 		) );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
-		// See https://automattic.github.io/gridicons/ for icon names.
-		// Don't include the gridicons- part of the name.
-		$note->set_icon( 'info' );
+		$note->set_layout('plain');
+		$note->set_image('');
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'wapi-example-plugin-one' );
+		$note->set_layout('plain');
+		$note->set_image('');
 		// This example has two actions. A note can have 0 or 1 as well.
 		$note->add_action(
 			'settings',
@@ -119,7 +120,7 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_One {
 		$note->add_action(
 			'settings',
 			__( 'Learn More', 'wapi-example-plugin-one' ),
-			'https://github.com/woocommerce/woocommerce-admin/tree/master/docs'
+			'https://github.com/woocommerce/woocommerce-admin/tree/main/docs'
 		);
 		$note->save();
 	}
@@ -202,10 +203,11 @@ class WooCommerce_Activity_Panel_Inbox_Example_Plugin_Two {
 		) );
 
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
-		// See https://automattic.github.io/gridicons/ for icon names.
-		// Don't include the gridicons- part of the name.
-		$note->set_icon( 'info' );
+		$note->set_layout('plain');
+		$note->set_image('');
 		$note->set_name( self::NOTE_NAME );
+		$note->set_layout('plain');
+		$note->set_image('');
 		$note->set_source( 'wapi-example-plugin-two' );
 		// This example has no actions. A note can have 1 or 2 as well.
 		$note->save();
@@ -241,4 +243,4 @@ A limited set of note fields can be updated over the REST API: `status` and `dat
 ## Questions?
 
 This is just the tip of the iceberg for possibilities for your own extensions to WooCommerce. Check
-out the new [sales record notes](https://github.com/woocommerce/woocommerce-admin/blob/master/includes/notes/class-wc-admin-notes-new-sales-record.php) and the [settings notes](https://github.com/woocommerce/woocommerce-admin/blob/master/includes/notes/class-wc-admin-notes-settings-notes.php) in the woocommerce-admin code itself for other examples of working with this fun new feature.
+out the new [sales record notes](https://github.com/woocommerce/woocommerce-admin/blob/main/includes/notes/class-wc-admin-notes-new-sales-record.php) and the [settings notes](https://github.com/woocommerce/woocommerce-admin/blob/main/includes/notes/class-wc-admin-notes-settings-notes.php) in the woocommerce-admin code itself for other examples of working with this fun new feature.

@@ -4,21 +4,21 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { Card, EmptyTable, TableCard } from '@woocommerce/components';
 import { getPersistedQuery } from '@woocommerce/navigation';
+import {
+	getFilterQuery,
+	getLeaderboard,
+	SETTINGS_STORE_NAME,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
-import { getLeaderboard } from 'wc-api/items/utils';
-import ReportError from 'analytics/components/report-error';
-import sanitizeHTML from 'lib/sanitize-html';
-import withSelect from 'wc-api/with-select';
+import ReportError from '../report-error';
+import sanitizeHTML from '../../../lib/sanitize-html';
 import './style.scss';
 
 export class Leaderboard extends Component {
@@ -53,7 +53,7 @@ export class Leaderboard extends Component {
 
 	render() {
 		const { isRequesting, isError, totalRows, title } = this.props;
-		const classes = 'woocommerce-leaderboard woocommerce-analytics__card';
+		const classes = 'woocommerce-leaderboard';
 
 		if ( isError ) {
 			return <ReportError className={ classes } isError />;
@@ -139,13 +139,20 @@ Leaderboard.defaultProps = {
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { id, query, totalRows } = props;
+		const { id, query, totalRows, filters } = props;
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
+		const filterQuery = getFilterQuery( { filters, query } );
+
 		const leaderboardQuery = {
 			id,
 			per_page: totalRows,
 			persisted_query: getPersistedQuery( query ),
 			query,
 			select,
+			defaultDateRange,
+			filterQuery,
 		};
 		const leaderboardData = getLeaderboard( leaderboardQuery );
 

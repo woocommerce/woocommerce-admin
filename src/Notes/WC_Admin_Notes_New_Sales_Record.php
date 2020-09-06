@@ -3,8 +3,6 @@
  * WooCommerce Admin (Dashboard) New Sales Record Note Provider.
  *
  * Adds a note to the merchant's inbox when the previous day's sales are a new record.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
@@ -15,8 +13,24 @@ defined( 'ABSPATH' ) || exit;
  * WC_Admin_Notes_New_Sales_Record
  */
 class WC_Admin_Notes_New_Sales_Record {
-	const NOTE_NAME                = 'wc-admin-new-sales-record';
-	const RECORD_DATE_OPTION_KEY   = 'woocommerce_sales_record_date'; // ISO 8601 (YYYY-MM-DD) date.
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
+	const NOTE_NAME = 'wc-admin-new-sales-record';
+
+	/**
+	 * Option name for the sales record date in ISO 8601 (YYYY-MM-DD) date.
+	 */
+	const RECORD_DATE_OPTION_KEY = 'woocommerce_sales_record_date';
+
+	/**
+	 * Option name for the sales record amount.
+	 */
 	const RECORD_AMOUNT_OPTION_KEY = 'woocommerce_sales_record_amount';
 
 	/**
@@ -40,7 +54,7 @@ class WC_Admin_Notes_New_Sales_Record {
 	/**
 	 * Possibly add a sales record note.
 	 */
-	public static function possibly_add_sales_record_note() {
+	public static function possibly_add_note() {
 		/**
 		 * Filter to allow for disabling sales record milestones.
 		 *
@@ -109,7 +123,6 @@ class WC_Admin_Notes_New_Sales_Record {
 			$note->set_content( $content );
 			$note->set_content_data( $content_data );
 			$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
-			$note->set_icon( 'trophy' );
 			$note->set_name( self::NOTE_NAME );
 			$note->set_source( 'woocommerce-admin' );
 			$note->add_action( 'view-report', __( 'View report', 'woocommerce-admin' ), $report_url );

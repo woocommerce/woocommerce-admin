@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 /**
  * A component to display summarized table data - the list of data passed in on a single line.
  *
+ * @param {Object} props
+ * @param {Array} props.data
  * @return {Object} -
  */
 const TableSummary = ( { data } ) => {

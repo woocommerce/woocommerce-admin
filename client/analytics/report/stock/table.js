@@ -3,24 +3,22 @@
  */
 import { __, _n, _x } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
-
-/**
- * WooCommerce dependencies
- */
+import { decodeEntities } from '@wordpress/html-entities';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from '../../components/report-table';
 import { isLowStock } from './utils';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 const stockStatuses = getSetting( 'stockStatuses', {} );
 
-export default class StockReportTable extends Component {
+class StockReportTable extends Component {
 	constructor() {
 		super();
 
@@ -65,13 +63,14 @@ export default class StockReportTable extends Component {
 			const {
 				id,
 				manage_stock: manageStock,
-				name,
 				parent_id: parentId,
 				sku,
 				stock_quantity: stockQuantity,
 				stock_status: stockStatus,
 				low_stock_amount: lowStockAmount,
 			} = product;
+
+			const name = decodeEntities( product.name );
 
 			const productDetailLink = getNewPath(
 				persistedQuery,
@@ -124,7 +123,11 @@ export default class StockReportTable extends Component {
 				},
 				{
 					display: manageStock
-						? formatValue( 'number', stockQuantity )
+						? formatValue(
+								this.context.getCurrencyConfig(),
+								'number',
+								stockQuantity
+						  )
 						: __( 'N/A', 'woocommerce-admin' ),
 					value: stockQuantity,
 				},
@@ -140,6 +143,7 @@ export default class StockReportTable extends Component {
 			instock = 0,
 			onbackorder = 0,
 		} = totals;
+		const currency = this.context.getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -148,23 +152,23 @@ export default class StockReportTable extends Component {
 					products,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', products ),
+				value: formatValue( currency, 'number', products ),
 			},
 			{
-				label: __( 'out of stock', outofstock, 'woocommerce-admin' ),
-				value: formatValue( 'number', outofstock ),
+				label: __( 'out of stock', 'woocommerce-admin' ),
+				value: formatValue( currency, 'number', outofstock ),
 			},
 			{
-				label: __( 'low stock', lowstock, 'woocommerce-admin' ),
-				value: formatValue( 'number', lowstock ),
+				label: __( 'low stock', 'woocommerce-admin' ),
+				value: formatValue( currency, 'number', lowstock ),
 			},
 			{
-				label: __( 'on backorder', onbackorder, 'woocommerce-admin' ),
-				value: formatValue( 'number', onbackorder ),
+				label: __( 'on backorder', 'woocommerce-admin' ),
+				value: formatValue( currency, 'number', onbackorder ),
 			},
 			{
-				label: __( 'in stock', instock, 'woocommerce-admin' ),
-				value: formatValue( 'number', instock ),
+				label: __( 'in stock', 'woocommerce-admin' ),
+				value: formatValue( currency, 'number', instock ),
 			},
 		];
 	}
@@ -178,6 +182,13 @@ export default class StockReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
+				summaryFields={ [
+					'products',
+					'outofstock',
+					'lowstock',
+					'instock',
+					'onbackorder',
+				] }
 				query={ query }
 				tableQuery={ {
 					orderby: query.orderby || 'stock_status',
@@ -191,3 +202,7 @@ export default class StockReportTable extends Component {
 		);
 	}
 }
+
+StockReportTable.contextType = CurrencyContext;
+
+export default StockReportTable;

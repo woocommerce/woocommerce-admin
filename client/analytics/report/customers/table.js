@@ -4,24 +4,20 @@
 import { __, _n } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { Tooltip } from '@wordpress/components';
-
-/**
- * WooCommerce dependencies
- */
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { Date, Link } from '@woocommerce/components';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { defaultTableDateFormat } from 'lib/date';
-
-const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
+import { defaultTableDateFormat } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 
-export default class CustomersReportTable extends Component {
+const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
+
+class CustomersReportTable extends Component {
 	constructor() {
 		super();
 
@@ -81,7 +77,7 @@ export default class CustomersReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Country', 'woocommerce-admin' ),
+				label: __( 'Country / Region', 'woocommerce-admin' ),
 				key: 'country',
 				isSortable: true,
 			},
@@ -114,6 +110,11 @@ export default class CustomersReportTable extends Component {
 
 	getRowsContent( customers ) {
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
+		const {
+			formatAmount,
+			formatDecimal: getCurrencyFormatDecimal,
+			getCurrencyConfig,
+		} = this.context;
 
 		return customers.map( ( customer ) => {
 			const {
@@ -145,19 +146,13 @@ export default class CustomersReportTable extends Component {
 			);
 
 			const dateLastActiveDisplay = dateLastActive ? (
-				<Date
-					date={ dateLastActive }
-					visibleFormat={ dateFormat }
-				/>
+				<Date date={ dateLastActive } visibleFormat={ dateFormat } />
 			) : (
 				'—'
 			);
 
 			const dateRegisteredDisplay = dateRegistered ? (
-				<Date
-					date={ dateRegistered }
-					visibleFormat={ dateFormat }
-				/>
+				<Date date={ dateRegistered } visibleFormat={ dateFormat } />
 			) : (
 				'—'
 			);
@@ -193,15 +188,19 @@ export default class CustomersReportTable extends Component {
 					value: email,
 				},
 				{
-					display: formatValue( 'number', ordersCount ),
+					display: formatValue(
+						getCurrencyConfig(),
+						'number',
+						ordersCount
+					),
 					value: ordersCount,
 				},
 				{
-					display: formatCurrency( totalSpend ),
+					display: formatAmount( totalSpend ),
 					value: getCurrencyFormatDecimal( totalSpend ),
 				},
 				{
-					display: formatCurrency( avgOrderValue ),
+					display: formatAmount( avgOrderValue ),
 					value: getCurrencyFormatDecimal( avgOrderValue ),
 				},
 				{
@@ -231,6 +230,8 @@ export default class CustomersReportTable extends Component {
 			avg_total_spend: avgTotalSpend = 0,
 			avg_avg_order_value: avgAvgOrderValue = 0,
 		} = totals;
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -239,7 +240,7 @@ export default class CustomersReportTable extends Component {
 					customersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', customersCount ),
+				value: formatValue( currency, 'number', customersCount ),
 			},
 			{
 				label: _n(
@@ -248,15 +249,15 @@ export default class CustomersReportTable extends Component {
 					avgOrdersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', avgOrdersCount ),
+				value: formatValue( currency, 'number', avgOrdersCount ),
 			},
 			{
 				label: __( 'average lifetime spend', 'woocommerce-admin' ),
-				value: formatCurrency( avgTotalSpend ),
+				value: formatAmount( avgTotalSpend ),
 			},
 			{
 				label: __( 'average order value', 'woocommerce-admin' ),
-				value: formatCurrency( avgAvgOrderValue ),
+				value: formatAmount( avgAvgOrderValue ),
 			},
 		];
 	}
@@ -270,6 +271,12 @@ export default class CustomersReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
+				summaryFields={ [
+					'customers_count',
+					'avg_orders_count',
+					'avg_total_spend',
+					'avg_avg_order_value',
+				] }
 				isRequesting={ isRequesting }
 				itemIdField="id"
 				query={ query }
@@ -288,3 +295,7 @@ export default class CustomersReportTable extends Component {
 		);
 	}
 }
+
+CustomersReportTable.contextType = CurrencyContext;
+
+export default CustomersReportTable;

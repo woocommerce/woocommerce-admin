@@ -3,8 +3,6 @@
  * WooCommerce Admin (Dashboard) Notes.
  *
  * The WooCommerce admin notes class gets admin notes data from storage and checks validity.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
@@ -17,12 +15,15 @@ defined( 'ABSPATH' ) || exit;
 class WC_Admin_Note extends \WC_Data {
 
 	// Note types.
-	const E_WC_ADMIN_NOTE_ERROR         = 'error';   // used for presenting error conditions.
-	const E_WC_ADMIN_NOTE_WARNING       = 'warning'; // used for presenting warning conditions.
-	const E_WC_ADMIN_NOTE_UPDATE        = 'update';  // i.e. used when a new version is available.
-	const E_WC_ADMIN_NOTE_INFORMATIONAL = 'info';    // used for presenting informational messages.
+	const E_WC_ADMIN_NOTE_ERROR         = 'error';     // used for presenting error conditions.
+	const E_WC_ADMIN_NOTE_WARNING       = 'warning';   // used for presenting warning conditions.
+	const E_WC_ADMIN_NOTE_UPDATE        = 'update';    // i.e. used when a new version is available.
+	const E_WC_ADMIN_NOTE_INFORMATIONAL = 'info';      // used for presenting informational messages.
+	const E_WC_ADMIN_NOTE_MARKETING     = 'marketing'; // used for adding marketing messages.
+	const E_WC_ADMIN_NOTE_SURVEY        = 'survey';    // used for adding survey messages.
 
 	// Note status codes.
+	const E_WC_ADMIN_NOTE_PENDING    = 'pending';    // the note is pending - hidden but not actioned.
 	const E_WC_ADMIN_NOTE_UNACTIONED = 'unactioned'; // the note has not yet been actioned by a user.
 	const E_WC_ADMIN_NOTE_ACTIONED   = 'actioned';   // the note has had its action completed by a user.
 	const E_WC_ADMIN_NOTE_SNOOZED    = 'snoozed';    // the note has been snoozed by a user.
@@ -54,7 +55,6 @@ class WC_Admin_Note extends \WC_Data {
 			'locale'        => 'en_US',
 			'title'         => '-',
 			'content'       => '-',
-			'icon'          => 'info',
 			'content_data'  => new \stdClass(),
 			'status'        => self::E_WC_ADMIN_NOTE_UNACTIONED,
 			'source'        => 'woocommerce',
@@ -62,6 +62,9 @@ class WC_Admin_Note extends \WC_Data {
 			'date_reminder' => '',
 			'is_snoozable'  => false,
 			'actions'       => array(),
+			'layout'        => 'plain',
+			'image'         => '',
+			'is_deleted'    => false,
 		);
 
 		parent::__construct( $data );
@@ -72,6 +75,7 @@ class WC_Admin_Note extends \WC_Data {
 			$this->set_id( $data );
 		} elseif ( is_object( $data ) && ! empty( $data->note_id ) ) {
 			$this->set_id( $data->note_id );
+			unset( $data->icon ); // Icons are deprecated.
 			$this->set_props( (array) $data );
 			$this->set_object_read( true );
 		} else {
@@ -121,6 +125,8 @@ class WC_Admin_Note extends \WC_Data {
 			self::E_WC_ADMIN_NOTE_WARNING,
 			self::E_WC_ADMIN_NOTE_UPDATE,
 			self::E_WC_ADMIN_NOTE_INFORMATIONAL,
+			self::E_WC_ADMIN_NOTE_MARKETING,
+			self::E_WC_ADMIN_NOTE_SURVEY,
 		);
 
 		return apply_filters( 'woocommerce_note_types', $allowed_types );
@@ -133,6 +139,7 @@ class WC_Admin_Note extends \WC_Data {
 	 */
 	public static function get_allowed_statuses() {
 		$allowed_statuses = array(
+			self::E_WC_ADMIN_NOTE_PENDING,
 			self::E_WC_ADMIN_NOTE_ACTIONED,
 			self::E_WC_ADMIN_NOTE_UNACTIONED,
 			self::E_WC_ADMIN_NOTE_SNOOZED,
@@ -150,6 +157,18 @@ class WC_Admin_Note extends \WC_Data {
 	| Methods for getting data from the note object.
 	|
 	*/
+
+	/**
+	 * Returns all data for this object.
+	 *
+	 * Override \WC_Data::get_data() to avoid errantly including meta data
+	 * from ID collisions with the posts table.
+	 *
+	 * @return array
+	 */
+	public function get_data() {
+		return array_merge( array( 'id' => $this->get_id() ), $this->data );
+	}
 
 	/**
 	 * Get note name.
@@ -199,16 +218,6 @@ class WC_Admin_Note extends \WC_Data {
 	 */
 	public function get_content( $context = 'view' ) {
 		return $this->get_prop( 'content', $context );
-	}
-
-	/**
-	 * Get note icon (Gridicon).
-	 *
-	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
-	 * @return string
-	 */
-	public function get_icon( $context = 'view' ) {
-		return $this->get_prop( 'icon', $context );
 	}
 
 	/**
@@ -279,6 +288,36 @@ class WC_Admin_Note extends \WC_Data {
 	 */
 	public function get_actions( $context = 'view' ) {
 		return $this->get_prop( 'actions', $context );
+	}
+
+	/**
+	 * Get note layout (the old notes won't have one).
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array
+	 */
+	public function get_layout( $context = 'view' ) {
+		return $this->get_prop( 'layout', $context );
+	}
+
+	/**
+	 * Get note image (if any).
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array
+	 */
+	public function get_image( $context = 'view' ) {
+		return $this->get_prop( 'image', $context );
+	}
+
+	/**
+	 * Get deleted status.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array
+	 */
+	public function get_is_deleted( $context = 'view' ) {
+		return $this->get_prop( 'is_deleted', $context );
 	}
 
 	/*
@@ -357,6 +396,15 @@ class WC_Admin_Note extends \WC_Data {
 	}
 
 	/**
+	 * Set note icon (Deprecated).
+	 *
+	 * @param string $icon Note icon.
+	 */
+	public function set_icon( $icon ) {
+		wc_deprecated_function( 'set_icon', '4.3' );
+	}
+
+	/**
 	 * Set note content.
 	 *
 	 * @param string $content Note content.
@@ -385,19 +433,6 @@ class WC_Admin_Note extends \WC_Data {
 		}
 
 		$this->set_prop( 'content', $content );
-	}
-
-	/**
-	 * Set note icon (Gridicon).
-	 *
-	 * @param string $icon Note icon.
-	 */
-	public function set_icon( $icon ) {
-		if ( empty( $icon ) ) {
-			$this->error( 'admin_note_invalid_data', __( 'The admin note icon prop cannot be empty.', 'woocommerce-admin' ) );
-		}
-
-		$this->set_prop( 'icon', $icon );
 	}
 
 	/**
@@ -493,20 +528,65 @@ class WC_Admin_Note extends \WC_Data {
 	}
 
 	/**
+	 * Set note layout.
+	 *
+	 * @param string $layout Note layout.
+	 */
+	public function set_layout( $layout ) {
+		// If we don't receive a layout we will set it by default as "plain".
+		if ( empty( $layout ) ) {
+			$layout = 'plain';
+		}
+		$valid_layouts = array( 'banner', 'plain', 'thumbnail' );
+		if ( in_array( $layout, $valid_layouts, true ) ) {
+			$this->set_prop( 'layout', $layout );
+		} else {
+			$this->error( 'admin_note_invalid_data', __( 'The admin note layout has a wrong prop value.', 'woocommerce-admin' ) );
+		}
+	}
+
+	/**
+	 * Set note image.
+	 *
+	 * @param string $image Note image.
+	 */
+	public function set_image( $image ) {
+		$this->set_prop( 'image', $image );
+	}
+
+	/**
+	 * Set note deleted status. NULL is not allowed
+	 *
+	 * @param bool $is_deleted Note deleted status.
+	 */
+	public function set_is_deleted( $is_deleted ) {
+		$this->set_prop( 'is_deleted', $is_deleted );
+	}
+
+	/**
 	 * Add an action to the note
 	 *
-	 * @param string  $name    Action name (not presented to user).
-	 * @param string  $label   Action label (presented as button label).
-	 * @param string  $url     Action URL, if navigation needed. Optional.
-	 * @param string  $status  Status to transition parent Note to upon click. Defaults to 'actioned'.
-	 * @param boolean $primary Whether or not this is the primary action. Defaults to false.
+	 * @param string  $name           Action name (not presented to user).
+	 * @param string  $label          Action label (presented as button label).
+	 * @param string  $url            Action URL, if navigation needed. Optional.
+	 * @param string  $status         Status to transition parent Note to upon click. Defaults to 'actioned'.
+	 * @param boolean $primary        Whether or not this is the primary action. Defaults to false.
+	 * @param string  $actioned_text The label to display after the note has been actioned but before it is dismissed in the UI.
 	 */
-	public function add_action( $name, $label, $url = '', $status = self::E_WC_ADMIN_NOTE_ACTIONED, $primary = false ) {
-		$name    = wc_clean( $name );
-		$label   = wc_clean( $label );
-		$query   = esc_url_raw( $url );
-		$status  = wc_clean( $status );
-		$primary = (bool) $primary;
+	public function add_action(
+		$name,
+		$label,
+		$url = '',
+		$status = self::E_WC_ADMIN_NOTE_ACTIONED,
+		$primary = false,
+		$actioned_text = ''
+	) {
+		$name          = wc_clean( $name );
+		$label         = wc_clean( $label );
+		$query         = esc_url_raw( $url );
+		$status        = wc_clean( $status );
+		$primary       = (bool) $primary;
+		$actioned_text = wc_clean( $actioned_text );
 
 		if ( empty( $name ) ) {
 			$this->error( 'admin_note_invalid_data', __( 'The admin note action name prop cannot be empty.', 'woocommerce-admin' ) );
@@ -517,11 +597,12 @@ class WC_Admin_Note extends \WC_Data {
 		}
 
 		$action = array(
-			'name'    => $name,
-			'label'   => $label,
-			'query'   => $query,
-			'status'  => $status,
-			'primary' => $primary,
+			'name'          => $name,
+			'label'         => $label,
+			'query'         => $query,
+			'status'        => $status,
+			'primary'       => $primary,
+			'actioned_text' => $actioned_text,
 		);
 
 		$note_actions   = $this->get_prop( 'actions', 'edit' );

@@ -1,8 +1,6 @@
 <?php
 /**
  * API\Reports\Orders\DataStore class file.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Orders;
@@ -12,6 +10,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStore as ReportsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
+use \Automattic\WooCommerce\Admin\API\Reports\Cache;
 
 /**
  * API\Reports\Orders\DataStore.
@@ -161,6 +160,20 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$where_subquery[] = "{$order_tax_lookup_table}.tax_rate_id NOT IN ({$excluded_tax_rates}) OR {$order_tax_lookup_table}.tax_rate_id IS NULL";
 		}
 
+		$attribute_subqueries = $this->get_attribute_subqueries( $query_args );
+		if ( $attribute_subqueries['join'] && $attribute_subqueries['where'] ) {
+			// JOIN on product lookup if we haven't already.
+			if ( ! $included_products && ! $excluded_products ) {
+				$this->subquery->add_sql_clause( 'join', "JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id" );
+			}
+			// Add JOINs for matching attributes.
+			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
+				$this->subquery->add_sql_clause( 'join', $attribute_join );
+			}
+			// Add WHEREs for matching attributes.
+			$where_subquery = array_merge( $where_subquery, $attribute_subqueries['where'] );
+		}
+
 		if ( 0 < count( $where_subquery ) ) {
 			$this->subquery->add_sql_clause( 'where', 'AND (' . implode( " {$operator} ", $where_subquery ) . ')' );
 		}
@@ -296,7 +309,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function include_extended_info( &$orders_data, $query_args ) {
 		$mapped_orders    = $this->map_array_by_key( $orders_data, 'order_id' );
 		$products         = $this->get_products_by_order_ids( array_keys( $mapped_orders ) );
-		$mapped_products  = $this->map_array_by_key( $products, 'product_id' );
 		$coupons          = $this->get_coupons_by_order_ids( array_keys( $mapped_orders ) );
 		$customers        = $this->get_customers_by_orders( $orders_data );
 		$mapped_customers = $this->map_array_by_key( $customers, 'customer_id' );
@@ -308,7 +320,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			}
 
 			$mapped_data[ $product['order_id'] ]['products'][] = array(
-				'id'       => $product['product_id'],
+				'id'       => '0' === $product['variation_id'] ? $product['product_id'] : $product['variation_id'],
 				'name'     => $product['product_name'],
 				'quantity' => $product['product_quantity'],
 			);
@@ -365,12 +377,24 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$included_order_ids         = implode( ',', $order_ids );
 
 		$products = $wpdb->get_results(
-			"SELECT order_id, ID as product_id, post_title as product_name, product_qty as product_quantity
-				FROM {$wpdb->posts}
-				JOIN {$order_product_lookup_table} ON {$order_product_lookup_table}.product_id = {$wpdb->posts}.ID
-				WHERE
-					order_id IN ({$included_order_ids})
-				",
+			"SELECT
+				order_id,
+				product_id,
+				variation_id,
+				post_title as product_name,
+				product_qty as product_quantity
+			FROM {$wpdb->posts}
+			JOIN
+				{$order_product_lookup_table}
+				ON {$wpdb->posts}.ID = (
+					CASE WHEN variation_id > 0
+						THEN variation_id
+						ELSE product_id
+					END
+				)
+			WHERE
+				order_id IN ({$included_order_ids})
+			",
 			ARRAY_A
 		); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
@@ -430,6 +454,29 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		); // WPCS: cache ok, DB call ok, unprepared SQL ok.
 
 		return $coupons;
+	}
+
+	/**
+	 * Get all statuses that have been synced.
+	 *
+	 * @return array Unique order statuses.
+	 */
+	public static function get_all_statuses() {
+		global $wpdb;
+
+		$cache_key = 'orders-all-statuses';
+		$statuses  = Cache::get( $cache_key );
+
+		if ( false === $statuses ) {
+			$table_name = self::get_db_table_name();
+			$statuses   = $wpdb->get_col(
+				"SELECT DISTINCT status FROM {$table_name}"
+			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+
+			Cache::set( $cache_key, $statuses );
+		}
+
+		return $statuses;
 	}
 
 	/**

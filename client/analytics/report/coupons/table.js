@@ -4,23 +4,19 @@
 import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { map } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { Date, Link } from '@woocommerce/components';
-import { defaultTableDateFormat } from 'lib/date';
-import { formatCurrency, getCurrencyFormatDecimal } from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { defaultTableDateFormat } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 
-export default class CouponsReportTable extends Component {
+class CouponsReportTable extends Component {
 	constructor() {
 		super();
 
@@ -71,9 +67,18 @@ export default class CouponsReportTable extends Component {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
+		const {
+			formatAmount,
+			formatDecimal: getCurrencyFormatDecimal,
+			getCurrencyConfig,
+		} = this.context;
 
 		return map( coupons, ( coupon ) => {
-			const { amount, coupon_id: couponId, orders_count: ordersCount } = coupon;
+			const {
+				amount,
+				coupon_id: couponId,
+				orders_count: ordersCount,
+			} = coupon;
 			const extendedInfo = coupon.extended_info || {};
 			const {
 				code,
@@ -82,29 +87,42 @@ export default class CouponsReportTable extends Component {
 				discount_type: discountType,
 			} = extendedInfo;
 
-			const couponUrl = getNewPath(
-				persistedQuery,
-				'/analytics/coupons',
-				{
-					filter: 'single_coupon',
-					coupons: couponId,
-				}
-			);
-			const couponLink = (
-				<Link href={ couponUrl } type="wc-admin">
-					{ code }
-				</Link>
-			);
+			const couponUrl =
+				couponId > 0
+					? getNewPath( persistedQuery, '/analytics/coupons', {
+							filter: 'single_coupon',
+							coupons: couponId,
+					  } )
+					: null;
 
-			const ordersUrl = getNewPath( persistedQuery, '/analytics/orders', {
-				filter: 'advanced',
-				coupon_includes: couponId,
-			} );
-			const ordersLink = (
-				<Link href={ ordersUrl } type="wc-admin">
-					{ formatValue( 'number', ordersCount ) }
-				</Link>
-			);
+			const couponLink =
+				couponUrl === null ? (
+					code
+				) : (
+					<Link href={ couponUrl } type="wc-admin">
+						{ code }
+					</Link>
+				);
+
+			const ordersUrl =
+				couponId > 0
+					? getNewPath( persistedQuery, '/analytics/orders', {
+							filter: 'advanced',
+							coupon_includes: couponId,
+					  } )
+					: null;
+			const ordersLink =
+				ordersUrl === null ? (
+					ordersCount
+				) : (
+					<Link href={ ordersUrl } type="wc-admin">
+						{ formatValue(
+							getCurrencyConfig(),
+							'number',
+							ordersCount
+						) }
+					</Link>
+				);
 
 			return [
 				{
@@ -116,15 +134,17 @@ export default class CouponsReportTable extends Component {
 					value: ordersCount,
 				},
 				{
-					display: formatCurrency( amount ),
+					display: formatAmount( amount ),
 					value: getCurrencyFormatDecimal( amount ),
 				},
 				{
-					display: (
+					display: dateCreated ? (
 						<Date
 							date={ dateCreated }
 							visibleFormat={ dateFormat }
 						/>
+					) : (
+						__( 'N/A', 'woocommerce-admin' )
 					),
 					value: dateCreated,
 				},
@@ -148,7 +168,13 @@ export default class CouponsReportTable extends Component {
 	}
 
 	getSummary( totals ) {
-		const { coupons_count: couponsCount = 0, orders_count: ordersCount = 0, amount = 0 } = totals;
+		const {
+			coupons_count: couponsCount = 0,
+			orders_count: ordersCount = 0,
+			amount = 0,
+		} = totals;
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -157,7 +183,7 @@ export default class CouponsReportTable extends Component {
 					couponsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', couponsCount ),
+				value: formatValue( currency, 'number', couponsCount ),
 			},
 			{
 				label: _n(
@@ -166,11 +192,11 @@ export default class CouponsReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 			{
 				label: __( 'amount discounted', 'woocommerce-admin' ),
-				value: formatCurrency( amount ),
+				value: formatAmount( amount ),
 			},
 		];
 	}
@@ -181,7 +207,7 @@ export default class CouponsReportTable extends Component {
 			fixed_cart: __( 'Fixed cart', 'woocommerce-admin' ),
 			fixed_product: __( 'Fixed product', 'woocommerce-admin' ),
 		};
-		return couponTypes[ discountType ];
+		return couponTypes[ discountType ] || __( 'N/A', 'woocommerce-admin' );
 	}
 
 	render() {
@@ -194,6 +220,7 @@ export default class CouponsReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
+				summaryFields={ [ 'coupons_count', 'orders_count', 'amount' ] }
 				isRequesting={ isRequesting }
 				itemIdField="coupon_id"
 				query={ query }
@@ -211,3 +238,7 @@ export default class CouponsReportTable extends Component {
 		);
 	}
 }
+
+CouponsReportTable.contextType = CurrencyContext;
+
+export default CouponsReportTable;

@@ -4,30 +4,29 @@
 import { __ } from '@wordpress/i18n';
 import moment from 'moment';
 import { SelectControl } from '@wordpress/components';
-
-/**
- * WooCommerce dependencies
- */
 import { DatePicker } from '@woocommerce/components';
-import { dateValidationMessages } from 'lib/date';
+import { dateValidationMessages } from '@woocommerce/date';
+import { IMPORT_STORE_NAME } from '@woocommerce/data';
+import { withDispatch } from '@wordpress/data';
 
 function HistoricalDataPeriodSelector( {
 	dateFormat,
 	disabled,
-	onDateChange,
-	onPeriodChange,
+	setImportPeriod,
 	value,
 } ) {
 	const onSelectChange = ( val ) => {
-		onPeriodChange( val );
+		setImportPeriod( val );
 	};
 	const onDatePickerChange = ( val ) => {
+		const dateModified = true;
 		if ( val.date && val.date.isValid ) {
-			onDateChange( val.date.format( dateFormat ) );
+			setImportPeriod( val.date.format( dateFormat ), dateModified );
 		} else {
-			onDateChange( val.text );
+			setImportPeriod( val.text, dateModified );
 		}
 	};
+
 	const getDatePickerError = ( momentDate ) => {
 		if (
 			! momentDate.isValid() ||
@@ -89,4 +88,7 @@ function HistoricalDataPeriodSelector( {
 	);
 }
 
-export default HistoricalDataPeriodSelector;
+export default withDispatch( ( dispatch ) => {
+	const { setImportPeriod } = dispatch( IMPORT_STORE_NAME );
+	return { setImportPeriod };
+} )( HistoricalDataPeriodSelector );

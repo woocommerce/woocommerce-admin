@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { setLocaleData } from '@wordpress/i18n';
+import { registerStore } from '@wordpress/data';
 
 // Set up `wp.*` aliases.  Doing this because any tests importing wp stuff will
 // likely run into this.
@@ -14,7 +15,7 @@ global.wp = {
 
 global.wc = {};
 
-const wordPressPackages = [ 'element', 'date' ];
+const wordPressPackages = [ 'element', 'date', 'data' ];
 
 const wooCommercePackages = [
 	'components',
@@ -23,6 +24,7 @@ const wooCommercePackages = [
 	'date',
 	'navigation',
 	'number',
+	'data',
 ];
 
 // aliases
@@ -60,6 +62,30 @@ global.wcSettings = {
 		woocommerce_actionable_order_statuses: [],
 		woocommerce_excluded_report_order_statuses: [],
 	},
+	dataEndpoints: {
+		performanceIndicators: [
+			{
+				chart: 'total_sales',
+				label: 'Total Sales',
+				stat: 'revenue/total_sales',
+			},
+			{
+				chart: 'net_revenue',
+				label: 'Net Sales',
+				stat: 'revenue/net_revenue',
+			},
+			{
+				chart: 'orders_count',
+				label: 'Orders',
+				stat: 'orders/orders_count',
+			},
+			{
+				chart: 'items_sold',
+				label: 'Items Sold',
+				stat: 'products/items_sold',
+			},
+		],
+	},
 };
 
 wordPressPackages.forEach( ( lib ) => {
@@ -75,9 +101,24 @@ wooCommercePackages.forEach( ( lib ) => {
 } );
 
 const config = require( '../../config/development.json' );
-window.wcAdminFeatures = config && config.features ? config.features : {};
+
+// Check if test is jsdom or node
+if ( global.window ) {
+	window.wcAdminFeatures = config && config.features ? config.features : {};
+}
 
 setLocaleData(
 	{ '': { domain: 'woocommerce-admin', lang: 'en_US' } },
 	'woocommerce-admin'
 );
+
+// Mock core/notices store for components dispatching core notices
+registerStore( 'core/notices', {
+	reducer: () => {
+		return {};
+	},
+	actions: {
+		createNotice: () => {},
+	},
+	selectors: {},
+} );

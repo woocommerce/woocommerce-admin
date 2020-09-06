@@ -3,13 +3,13 @@
  */
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { NAMESPACE } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
-import { getRequestByIdString } from 'lib/async-requests';
+import { getRequestByIdString } from '../../../lib/async-requests';
 import { getTaxCode } from './utils';
-import { NAMESPACE } from 'wc-api/constants';
 
 const TAXES_REPORT_CHARTS_FILTER = 'woocommerce_admin_taxes_report_charts';
 const TAXES_REPORT_FILTERS_FILTER = 'woocommerce_admin_taxes_report_filters';
@@ -50,7 +50,7 @@ export const charts = applyFilters( TAXES_REPORT_CHARTS_FILTER, [
 export const filters = applyFilters( TAXES_REPORT_FILTERS_FILTER, [
 	{
 		label: __( 'Show', 'woocommerce-admin' ),
-		staticParams: [ 'chart' ],
+		staticParams: [ 'chartType', 'paged', 'per_page' ],
 		param: 'filter',
 		showFilters: () => true,
 		filters: [

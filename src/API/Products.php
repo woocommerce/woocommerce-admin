@@ -3,8 +3,6 @@
  * REST API Products Controller
  *
  * Handles requests to /products/*
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -14,7 +12,6 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Products controller.
  *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Products_Controller
  */
 class Products extends \WC_REST_Products_Controller {
@@ -127,6 +124,7 @@ class Products extends \WC_REST_Products_Controller {
 		if ( $request->get_param( 'low_in_stock' ) && is_numeric( $object_data['low_stock_amount'] ) ) {
 			$data->data['low_stock_amount'] = $object_data['low_stock_amount'];
 		}
+		$data->data['name'] = wp_strip_all_tags( $data->data['name'] );
 
 		return $data;
 	}
@@ -158,10 +156,9 @@ class Products extends \WC_REST_Products_Controller {
 
 		$search = $wp_query->get( 'search' );
 		if ( $search ) {
-			$search = $wpdb->esc_like( $search );
-			$search = "'%" . $search . "%'";
-			$where .= " AND ({$wpdb->posts}.post_title LIKE {$search}";
-			$where .= wc_product_sku_enabled() ? ' OR wc_product_meta_lookup.sku LIKE ' . $search . ')' : ')';
+			$title_like = '%' . $wpdb->esc_like( $search ) . '%';
+			$where     .= $wpdb->prepare( " AND ({$wpdb->posts}.post_title LIKE %s", $title_like );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$where     .= wc_product_sku_enabled() ? $wpdb->prepare( ' OR wc_product_meta_lookup.sku LIKE %s)', $search ) : ')';
 		}
 
 		if ( $wp_query->get( 'low_in_stock' ) ) {

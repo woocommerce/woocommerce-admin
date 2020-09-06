@@ -9,13 +9,11 @@ import { getSetting, ORDER_STATUSES } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import { DEFAULT_ACTIONABLE_STATUSES } from 'wc-api/constants';
 import DefaultDate from './default-date';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
-const DEFAULT_DATE_RANGE = 'period=month&compare=previous_year';
-
-const defaultOrderStatuses = [
+export const DEFAULT_ACTIONABLE_STATUSES = [ 'processing', 'on-hold' ];
+export const DEFAULT_ORDER_STATUSES = [
 	'completed',
 	'processing',
 	'refunded',
@@ -24,30 +22,9 @@ const defaultOrderStatuses = [
 	'pending',
 	'on-hold',
 ];
+export const DEFAULT_DATE_RANGE = 'period=month&compare=previous_year';
 
-const {
-	woocommerce_actionable_order_statuses: actionableStatuses,
-	woocommerce_excluded_report_order_statuses: excludedStatuses,
-	woocommerce_default_date_range: defaultDateRange,
-} = getSetting( 'wcAdminSettings', {
-	woocommerce_actionable_order_statuses: [],
-	woocommerce_excluded_report_order_statuses: [],
-	woocommerce_default_date_range: DEFAULT_DATE_RANGE,
-} );
-
-const actionableOrderStatuses = Array.isArray(
-	actionableStatuses
-)
-	? actionableStatuses
-	: [];
-
-const excludedOrderStatuses = Array.isArray(
-	excludedStatuses
-)
-	? excludedStatuses
-	: [];
-
-const orderStatuses = Object.keys( ORDER_STATUSES )
+const filteredOrderStatuses = Object.keys( ORDER_STATUSES )
 	.filter( ( status ) => status !== 'refunded' )
 	.map( ( key ) => {
 		return {
@@ -60,27 +37,46 @@ const orderStatuses = Object.keys( ORDER_STATUSES )
 		};
 	} );
 
-export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
+const unregisteredOrderStatuses = getSetting( 'unregisteredOrderStatuses', {} );
+
+const orderStatusOptions = [
 	{
-		name: 'woocommerce_excluded_report_order_statuses',
+		key: 'defaultStatuses',
+		options: filteredOrderStatuses.filter( ( status ) =>
+			DEFAULT_ORDER_STATUSES.includes( status.value )
+		),
+	},
+	{
+		key: 'customStatuses',
+		label: __( 'Custom Statuses', 'woocommerce-admin' ),
+		options: filteredOrderStatuses.filter(
+			( status ) => ! DEFAULT_ORDER_STATUSES.includes( status.value )
+		),
+	},
+	{
+		key: 'unregisteredStatuses',
+		label: __( 'Unregistered Statuses', 'woocommerce-admin' ),
+		options: Object.keys( unregisteredOrderStatuses ).map( ( key ) => {
+			return {
+				value: key,
+				label: key,
+				description: sprintf(
+					__(
+						'Exclude the %s status from reports',
+						'woocommerce-admin'
+					),
+					key
+				),
+			};
+		} ),
+	},
+];
+
+export const config = applyFilters( SETTINGS_FILTER, {
+	woocommerce_excluded_report_order_statuses: {
 		label: __( 'Excluded Statuses:', 'woocommerce-admin' ),
 		inputType: 'checkboxGroup',
-		options: [
-			{
-				key: 'defaultStatuses',
-				options: orderStatuses.filter( ( status ) =>
-					defaultOrderStatuses.includes( status.value )
-				),
-			},
-			{
-				key: 'customStatuses',
-				label: __( 'Custom Statuses', 'woocommerce-admin' ),
-				options: orderStatuses.filter(
-					( status ) =>
-						! defaultOrderStatuses.includes( status.value )
-				),
-			},
-		],
+		options: orderStatusOptions,
 		helpText: interpolateComponents( {
 			mixedString: __(
 				'Orders with these statuses are excluded from the totals in your reports. ' +
@@ -91,38 +87,20 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 				strong: <strong />,
 			},
 		} ),
-		initialValue: [ ...excludedOrderStatuses ],
 		defaultValue: [ 'pending', 'cancelled', 'failed' ],
 	},
-	{
-		name: 'woocommerce_actionable_order_statuses',
+	woocommerce_actionable_order_statuses: {
 		label: __( 'Actionable Statuses:', 'woocommerce-admin' ),
 		inputType: 'checkboxGroup',
-		options: [
-			{
-				key: 'defaultStatuses',
-				options: orderStatuses.filter( ( status ) =>
-					defaultOrderStatuses.includes( status.value )
-				),
-			},
-			{
-				key: 'customStatuses',
-				label: __( 'Custom Statuses', 'woocommerce-admin' ),
-				options: orderStatuses.filter(
-					( status ) =>
-						! defaultOrderStatuses.includes( status.value )
-				),
-			},
-		],
+		options: orderStatusOptions,
 		helpText: __(
 			'Orders with these statuses require action on behalf of the store admin.' +
 				'These orders will show up in the Orders tab under the activity panel.',
 			'woocommerce-admin'
 		),
-		initialValue: [ ...actionableOrderStatuses ],
 		defaultValue: DEFAULT_ACTIONABLE_STATUSES,
 	},
-	{
+	woocommerce_default_date_range: {
 		name: 'woocommerce_default_date_range',
 		label: __( 'Default Date Range:', 'woocommerce-admin' ),
 		inputType: 'component',
@@ -132,7 +110,6 @@ export const analyticsSettings = applyFilters( SETTINGS_FILTER, [
 				'the default date range.',
 			'woocommerce-admin'
 		),
-		initialValue: defaultDateRange,
 		defaultValue: DEFAULT_DATE_RANGE,
 	},
-] );
+} );

@@ -3,8 +3,6 @@
  * WC Admin Order
  *
  * WC Admin Order class that adds some functionality on top of general WooCommerce WC_Order.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\Overrides;
@@ -29,6 +27,46 @@ class Order extends \WC_Order {
 	 * @var void|array
 	 */
 	protected $refunded_line_items;
+
+	/**
+	 * Get only core class data in array format.
+	 *
+	 * @return array
+	 */
+	public function get_data_without_line_items() {
+		return array_merge(
+			array(
+				'id' => $this->get_id(),
+			),
+			$this->data,
+			array(
+				'number'         => $this->get_order_number(),
+				'meta_data'      => $this->get_meta_data(),
+			)
+		);
+	}
+
+	/**
+	 * Get order line item data by type.
+	 *
+	 * @param string $type Order line item type.
+	 * @return array|bool Array of line items on success, boolean false on failure.
+	 */
+	public function get_line_item_data( $type ) {
+		$type_to_items = array(
+			'line_items'     => 'line_item',
+			'tax_lines'      => 'tax',
+			'shipping_lines' => 'shipping',
+			'fee_lines'      => 'fee',
+			'coupon_lines'   => 'coupon',
+		);
+
+		if ( isset( $type_to_items[ $type ] ) ) {
+			return $this->get_items( $type_to_items[ $type ] );
+		}
+
+		return false;
+	}
 
 	/**
 	 * Add filter(s) required to hook this class to substitute WC_Order.

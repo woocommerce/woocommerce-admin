@@ -4,32 +4,26 @@
 import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
-import {
-	formatCurrency,
-	getCurrencyFormatDecimal,
-	renderCurrency,
-} from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import CategoryBreacrumbs from './breadcrumbs';
-import ReportTable from 'analytics/components/report-table';
-import withSelect from 'wc-api/with-select';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class CategoriesReportTable extends Component {
 	constructor( props ) {
 		super( props );
 
 		this.getRowsContent = this.getRowsContent.bind( this );
+		this.getSummary = this.getSummary.bind( this );
 	}
 
 	getHeadersContent() {
@@ -71,6 +65,13 @@ class CategoriesReportTable extends Component {
 	}
 
 	getRowsContent( categoryStats ) {
+		const {
+			render: renderCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+			getCurrencyConfig,
+		} = this.context;
+		const currency = getCurrencyConfig();
+
 		return map( categoryStats, ( categoryStat ) => {
 			const {
 				category_id: categoryId,
@@ -95,7 +96,7 @@ class CategoriesReportTable extends Component {
 					value: category && category.name,
 				},
 				{
-					display: formatValue( 'number', itemsSold ),
+					display: formatValue( currency, 'number', itemsSold ),
 					value: itemsSold,
 				},
 				{
@@ -115,13 +116,13 @@ class CategoriesReportTable extends Component {
 							) }
 							type="wc-admin"
 						>
-							{ formatValue( 'number', productsCount ) }
+							{ formatValue( currency, 'number', productsCount ) }
 						</Link>
 					),
 					value: productsCount,
 				},
 				{
-					display: formatValue( 'number', ordersCount ),
+					display: formatValue( currency, 'number', ordersCount ),
 					value: ordersCount,
 				},
 			];
@@ -129,7 +130,13 @@ class CategoriesReportTable extends Component {
 	}
 
 	getSummary( totals, totalResults = 0 ) {
-		const { items_sold: itemsSold = 0, net_revenue: netRevenue = 0, orders_count: ordersCount = 0 } = totals;
+		const {
+			items_sold: itemsSold = 0,
+			net_revenue: netRevenue = 0,
+			orders_count: ordersCount = 0,
+		} = totals;
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -138,7 +145,7 @@ class CategoriesReportTable extends Component {
 					totalResults,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', totalResults ),
+				value: formatValue( currency, 'number', totalResults ),
 			},
 			{
 				label: _n(
@@ -147,11 +154,11 @@ class CategoriesReportTable extends Component {
 					itemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', itemsSold ),
+				value: formatValue( currency, 'number', itemsSold ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: formatAmount( netRevenue ),
 			},
 			{
 				label: _n(
@@ -160,7 +167,7 @@ class CategoriesReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 		];
 	}
@@ -183,6 +190,11 @@ class CategoriesReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
+				summaryFields={ [
+					'items_sold',
+					'net_revenue',
+					'orders_count',
+				] }
 				isRequesting={ isRequesting }
 				itemIdField="category_id"
 				query={ query }
@@ -202,6 +214,8 @@ class CategoriesReportTable extends Component {
 	}
 }
 
+CategoriesReportTable.contextType = CurrencyContext;
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const { isRequesting, query } = props;
@@ -213,8 +227,8 @@ export default compose(
 			return {};
 		}
 
-		const { getItems, getItemsError, isGetItemsRequesting } = select(
-			'wc-api'
+		const { getItems, getItemsError, isResolving } = select(
+			ITEMS_STORE_NAME
 		);
 		const tableQuery = {
 			per_page: -1,
@@ -224,10 +238,10 @@ export default compose(
 		const isCategoriesError = Boolean(
 			getItemsError( 'categories', tableQuery )
 		);
-		const isCategoriesRequesting = isGetItemsRequesting(
+		const isCategoriesRequesting = isResolving( 'getItems', [
 			'categories',
-			tableQuery
-		);
+			tableQuery,
+		] );
 
 		return {
 			categories,

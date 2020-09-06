@@ -3,24 +3,23 @@
  */
 import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
+import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
 import moment from 'moment';
-
-/**
- * WooCommerce dependencies
- */
-import { getCurrentDates, defaultTableDateFormat } from 'lib/date';
 import { Date, Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { getCurrentDates, defaultTableDateFormat } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 
-export default class DownloadsReportTable extends Component {
+class CouponsReportTable extends Component {
 	constructor() {
 		super();
 
@@ -55,7 +54,7 @@ export default class DownloadsReportTable extends Component {
 				key: 'order_number',
 			},
 			{
-				label: __( 'User Name', 'woocommerce-admin' ),
+				label: __( 'Username', 'woocommerce-admin' ),
 				key: 'user_id',
 			},
 			{
@@ -82,34 +81,45 @@ export default class DownloadsReportTable extends Component {
 				product_id: productId,
 				username,
 			} = download;
-			const { name: productName } = _embedded.product[ 0 ];
 
-			const productLink = getNewPath(
-				persistedQuery,
-				'/analytics/products',
-				{
-					filter: 'single_product',
-					products: productId,
-				}
-			);
+			const {
+				code: errorCode,
+				name: productName,
+			} = _embedded.product[ 0 ];
+			let productDisplay, productValue;
+
+			// Handle deleted products.
+			if ( errorCode === 'woocommerce_rest_product_invalid_id' ) {
+				productDisplay = __( '(Deleted)', 'woocommerce-admin' );
+				productValue = __( '(Deleted)', 'woocommerce-admin' );
+			} else {
+				const productURL = getNewPath(
+					persistedQuery,
+					'/analytics/products',
+					{
+						filter: 'single_product',
+						products: productId,
+					}
+				);
+
+				productDisplay = (
+					<Link href={ productURL } type="wc-admin">
+						{ productName }
+					</Link>
+				);
+				productValue = productName;
+			}
 
 			return [
 				{
 					display: (
-						<Date
-							date={ date }
-							visibleFormat={ dateFormat }
-						/>
+						<Date date={ date } visibleFormat={ dateFormat } />
 					),
 					value: date,
 				},
 				{
-					display: (
-						<Link href={ productLink } type="wc-admin">
-							{ productName }
-						</Link>
-					),
-					value: productName,
+					display: productDisplay,
+					value: productValue,
 				},
 				{
 					display: (
@@ -146,16 +156,17 @@ export default class DownloadsReportTable extends Component {
 
 	getSummary( totals ) {
 		const { download_count: downloadCount = 0 } = totals;
-		const { query } = this.props;
-		const dates = getCurrentDates( query );
+		const { query, defaultDateRange } = this.props;
+		const dates = getCurrentDates( query, defaultDateRange );
 		const after = moment( dates.primary.after );
 		const before = moment( dates.primary.before );
 		const days = before.diff( after, 'days' ) + 1;
+		const currency = this.context.getCurrencyConfig();
 
 		return [
 			{
 				label: _n( 'day', 'days', days, 'woocommerce-admin' ),
-				value: formatValue( 'number', days ),
+				value: formatValue( currency, 'number', days ),
 			},
 			{
 				label: _n(
@@ -164,7 +175,7 @@ export default class DownloadsReportTable extends Component {
 					downloadCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', downloadCount ),
+				value: formatValue( currency, 'number', downloadCount ),
 			},
 		];
 	}
@@ -178,6 +189,7 @@ export default class DownloadsReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
+				summaryFields={ [ 'download_count' ] }
 				query={ query }
 				tableQuery={ {
 					_embed: true,
@@ -190,3 +202,12 @@ export default class DownloadsReportTable extends Component {
 		);
 	}
 }
+
+CouponsReportTable.contextType = CurrencyContext;
+
+export default withSelect( ( select ) => {
+	const { woocommerce_default_date_range: defaultDateRange } = select(
+		SETTINGS_STORE_NAME
+	).getSetting( 'wc_admin', 'wcAdminSettings' );
+	return { defaultDateRange };
+} )( CouponsReportTable );

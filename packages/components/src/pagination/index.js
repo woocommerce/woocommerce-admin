@@ -3,10 +3,11 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
-import { IconButton, SelectControl } from '@wordpress/components';
+import { Button, SelectControl } from '@wordpress/components';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { noop, uniqueId } from 'lodash';
+import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
 
 const PER_PAGE_OPTIONS = [ 25, 50, 75, 100 ];
 
@@ -84,7 +85,7 @@ class Pagination extends Component {
 	}
 
 	renderPageArrows() {
-		const { page } = this.props;
+		const { page, showPageArrowsLabel } = this.props;
 
 		if ( this.pageCount <= 1 ) {
 			return null;
@@ -100,34 +101,36 @@ class Pagination extends Component {
 
 		return (
 			<div className="woocommerce-pagination__page-arrows">
-				<span
-					className="woocommerce-pagination__page-arrows-label"
-					role="status"
-					aria-live="polite"
-				>
-					{ sprintf(
-						__( 'Page %d of %d', 'woocommerce-admin' ),
-						page,
-						this.pageCount
-					) }
-				</span>
+				{ showPageArrowsLabel && (
+					<span
+						className="woocommerce-pagination__page-arrows-label"
+						role="status"
+						aria-live="polite"
+					>
+						{ sprintf(
+							__( 'Page %d of %d', 'woocommerce-admin' ),
+							page,
+							this.pageCount
+						) }
+					</span>
+				) }
 				<div className="woocommerce-pagination__page-arrows-buttons">
-					<IconButton
+					<Button
 						className={ previousLinkClass }
 						disabled={ ! ( page > 1 ) }
 						onClick={ this.previousPage }
-						icon="arrow-left-alt2"
 						label={ __( 'Previous Page', 'woocommerce-admin' ) }
-						size={ 18 }
-					/>
-					<IconButton
+					>
+						<Icon icon={ chevronLeft } />
+					</Button>
+					<Button
 						className={ nextLinkClass }
 						disabled={ ! ( page < this.pageCount ) }
 						onClick={ this.nextPage }
-						icon="arrow-right-alt2"
 						label={ __( 'Next Page', 'woocommerce-admin' ) }
-						size={ 18 }
-					/>
+					>
+						<Icon icon={ chevronRight } />
+					</Button>
 				</div>
 			</div>
 		);
@@ -188,7 +191,13 @@ class Pagination extends Component {
 	}
 
 	render() {
-		const { total, perPage, className } = this.props;
+		const {
+			total,
+			perPage,
+			className,
+			showPagePicker,
+			showPerPagePicker,
+		} = this.props;
 		this.pageCount = Math.ceil( total / perPage );
 
 		const classes = classNames( 'woocommerce-pagination', className );
@@ -207,8 +216,8 @@ class Pagination extends Component {
 		return (
 			<div className={ classes }>
 				{ this.renderPageArrows() }
-				{ this.renderPagePicker() }
-				{ this.renderPerPagePicker() }
+				{ showPagePicker && this.renderPagePicker() }
+				{ showPerPagePicker && this.renderPerPagePicker() }
 			</div>
 		);
 	}
@@ -239,11 +248,26 @@ Pagination.propTypes = {
 	 * Additional classNames.
 	 */
 	className: PropTypes.string,
+	/**
+	 * Whether the page picker should be rendered.
+	 */
+	showPagePicker: PropTypes.bool,
+	/**
+	 * Whether the perPage picker should be rendered.
+	 */
+	showPerPagePicker: PropTypes.bool,
+	/**
+	 * Whether the page arrows label should be rendered.
+	 */
+	showPageArrowsLabel: PropTypes.bool,
 };
 
 Pagination.defaultProps = {
 	onPageChange: noop,
 	onPerPageChange: noop,
+	showPagePicker: true,
+	showPerPagePicker: true,
+	showPageArrowsLabel: true,
 };
 
 export default Pagination;

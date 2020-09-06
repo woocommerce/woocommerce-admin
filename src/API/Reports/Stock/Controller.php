@@ -3,8 +3,6 @@
  * REST API Reports stock controller
  *
  * Handles requests to the /reports/stock endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Stock;
@@ -16,7 +14,6 @@ use \Automattic\WooCommerce\Admin\API\Reports\ExportableInterface;
 /**
  * REST API Reports stock controller class.
  *
- * @package WooCommerce/API
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller implements ExportableInterface {
@@ -290,7 +287,7 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 		$data = array(
 			'id'               => $product->get_id(),
 			'parent_id'        => $product->get_parent_id(),
-			'name'             => $product->get_name(),
+			'name'             => wp_strip_all_tags( $product->get_name() ),
 			'sku'              => $product->get_sku(),
 			'stock_status'     => $product->get_stock_status(),
 			'stock_quantity'   => (float) $product->get_stock_quantity(),

@@ -80,3 +80,113 @@
 		}
 	}
 }
+
+.woocommerce-onboarding {
+	/* Muriel style overrides */
+	.muriel-component {
+		margin-top: $gap;
+		margin-bottom: $gap;
+	}
+
+	.components-base-control.has-error {
+		margin-bottom: $gap * 2 !important;
+		border-color: $studio-red-50;
+
+		.components-base-control__help {
+			top: 100%;
+			left: $gap-small;
+			position: absolute;
+			margin-top: $gap-smallest;
+			font-size: 12px;
+			font-style: normal;
+			color: $studio-red-50;
+		}
+	}
+
+	.components-form-toggle {
+		display: inline-block;
+
+		label {
+			font-size: 14px;
+		}
+
+		.components-base-control {
+			display: inline-block;
+		}
+
+		.components-base-control__field {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.woocommerce-task-dashboard__container .components-button.is-button,
+.woocommerce-profile-wizard__body .components-button.is-button,
+.woocommerce-page .components-modal__frame .components-button.is-button {
+	height: 48px;
+	padding-left: 25px;
+	padding-right: 25px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 36px;
+	font-weight: 500;
+	align-items: center;
+
+	&:disabled {
+		cursor: not-allowed;
+	}
+}
+
+.components-modal__frame.woocommerce-cart-modal {
+	width: 600px;
+	max-width: 100%;
+
+	.components-modal__header {
+		border-bottom: 0;
+		margin-bottom: $gap;
+		margin-top: $gap;
+
+		button {
+			display: none;
+		}
+	}
+
+	.components-modal__header-heading {
+		font-style: normal;
+		font-weight: normal;
+		font-size: 24px;
+		line-height: 32px;
+	}
+
+	.woocommerce-list {
+		margin-top: $gap-smallest;
+	}
+
+	.woocommerce-list .woocommerce-list__item:first-child {
+		border-top: 1px solid $studio-gray-5;
+	}
+
+	.woocommerce-list__item {
+		border-bottom: 1px solid $studio-gray-5;
+	}
+
+	.woocommerce-cart-modal__help-text {
+		font-size: 16px;
+		line-height: 24px;
+	}
+
+	.woocommerce-cart-modal__actions {
+		text-align: right;
+
+		button.is-link {
+			margin-right: $gap;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 14px;
+		}
+
+		button.is-primary {
+			align-self: flex-end;
+		}
+	}
+}

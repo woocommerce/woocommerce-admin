@@ -5,14 +5,12 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
 import { keyBy, map, merge } from 'lodash';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	EmptyContent,
 	Flag,
@@ -20,9 +18,15 @@ import {
 	OrderStatus,
 	Section,
 } from '@woocommerce/components';
-import { formatCurrency } from 'lib/currency-format';
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import {
+	SETTINGS_STORE_NAME,
+	REPORTS_STORE_NAME,
+	ITEMS_STORE_NAME,
+	QUERY_DEFAULTS,
+} from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -30,10 +34,14 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { ActivityCard, ActivityCardPlaceholder } from '../activity-card';
 import ActivityHeader from '../activity-header';
 import ActivityOutboundLink from '../activity-outbound-link';
-import { DEFAULT_ACTIONABLE_STATUSES, QUERY_DEFAULTS } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
+import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class OrdersPanel extends Component {
+	recordOrderEvent( eventName ) {
+		recordEvent( `activity_panel_orders_${ eventName }`, {} );
+	}
+
 	renderEmptyCard() {
 		const { hasNonActionableOrders } = this.props;
 		if ( hasNonActionableOrders ) {
@@ -65,7 +73,8 @@ class OrdersPanel extends Component {
 				actions={
 					<Button
 						href="https://docs.woocommerce.com/document/managing-orders/"
-						isDefault
+						isSecondary
+						onClick={ () => this.recordOrderEvent( 'learn_more' ) }
 						target="_blank"
 					>
 						{ __( 'Learn more', 'woocommerce-admin' ) }
@@ -83,6 +92,7 @@ class OrdersPanel extends Component {
 
 	renderOrders() {
 		const { orders } = this.props;
+		const Currency = this.context;
 
 		if ( orders.length === 0 ) {
 			return this.renderEmptyCard();
@@ -90,7 +100,8 @@ class OrdersPanel extends Component {
 
 		const getCustomerString = ( order ) => {
 			const extendedInfo = order.extended_info || {};
-			const { first_name: firstName, last_name: lastName } = extendedInfo.customer || {};
+			const { first_name: firstName, last_name: lastName } =
+				extendedInfo.customer || {};
 
 			if ( ! firstName && ! lastName ) {
 				return '';
@@ -110,7 +121,11 @@ class OrdersPanel extends Component {
 		};
 
 		const orderCardTitle = ( order ) => {
-			const { extended_info: extendedInfo, order_id: orderId, orderNumber } = order;
+			const {
+				extended_info: extendedInfo,
+				order_id: orderId,
+				order_number: orderNumber,
+			} = order;
 			const { customer } = extendedInfo || {};
 			const customerUrl = customer.customer_id
 				? getNewPath( {}, '/analytics/customers', {
@@ -138,6 +153,9 @@ class OrdersPanel extends Component {
 									href={ getAdminLink(
 										'post.php?action=edit&post=' + orderId
 									) }
+									onClick={ () =>
+										this.recordOrderEvent( 'order_number' )
+									}
 									type="wp-admin"
 								/>
 							),
@@ -148,7 +166,13 @@ class OrdersPanel extends Component {
 								/>
 							) : null,
 							customerLink: customerUrl ? (
-								<Link href={ customerUrl } type="wc-admin" />
+								<Link
+									href={ customerUrl }
+									onClick={ () =>
+										this.recordOrderEvent( 'customer_name' )
+									}
+									type="wc-admin"
+								/>
 							) : (
 								<span />
 							),
@@ -187,15 +211,20 @@ class OrdersPanel extends Component {
 									productsCount
 								) }
 							</span>
-							<span>{ formatCurrency( total ) }</span>
+							<span>{ Currency.formatAmount( total ) }</span>
 						</div>
 					}
 					actions={
 						<Button
-							isDefault
+							isSecondary
 							href={ getAdminLink(
 								'post.php?action=edit&post=' + order.order_id
 							) }
+							onClick={ () =>
+								this.recordOrderEvent(
+									'orders_begin_fulfillment'
+								)
+							}
 						>
 							{ __( 'Begin fulfillment' ) }
 						</Button>
@@ -211,7 +240,10 @@ class OrdersPanel extends Component {
 		return (
 			<Fragment>
 				{ cards }
-				<ActivityOutboundLink href={ 'edit.php?post_type=shop_order' }>
+				<ActivityOutboundLink
+					href={ 'edit.php?post_type=shop_order' }
+					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
+				>
 					{ __( 'Manage all orders', 'woocommerce-admin' ) }
 				</ActivityOutboundLink>
 			</Fragment>
@@ -297,21 +329,21 @@ OrdersPanel.defaultProps = {
 	isRequesting: false,
 };
 
+OrdersPanel.contextType = CurrencyContext;
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const { hasActionableOrders } = props;
-		const {
-			getItems,
-			getItemsTotalCount,
-			getItemsError,
-			isGetItemsRequesting,
-			getReportItems,
-			getReportItemsError,
-			isReportItemsRequesting,
-		} = select( 'wc-api' );
+		const { getItems, getItemsError, getItemsTotalCount } = select(
+			ITEMS_STORE_NAME
+		);
+		const { getReportItems, getReportItemsError, isResolving } = select(
+			REPORTS_STORE_NAME
+		);
+		const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
 		const {
 			woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
-		} = getSetting( 'wcAdminSettings', {} );
+		} = getMutableSetting( 'wc_admin', 'wcAdminSettings', {} );
 		if ( ! orderStatuses.length ) {
 			return {
 				orders: [],
@@ -332,10 +364,10 @@ export default compose(
 			const actionableOrders = Array.from(
 				getItems( 'orders', actionableOrdersQuery ).values()
 			);
-			const isRequestingActionable = isGetItemsRequesting(
+			const isRequestingActionable = isResolving( 'getItems', [
 				'orders',
-				actionableOrdersQuery
-			);
+				actionableOrdersQuery,
+			] );
 
 			if ( isRequestingActionable ) {
 				return {
@@ -353,16 +385,25 @@ export default compose(
 				per_page: QUERY_DEFAULTS.pageSize,
 				extended_info: true,
 				order_includes: map( actionableOrders, 'id' ),
+				_fields: [
+					'order_id',
+					'order_number',
+					'status',
+					'data_created_gmt',
+					'total_sales',
+					'extended_info.customer',
+					'extended_info.products',
+				],
 			};
 
 			const reportOrders = getReportItems( 'orders', ordersQuery ).data;
 			const isError = Boolean(
 				getReportItemsError( 'orders', ordersQuery )
 			);
-			const isRequesting = isReportItemsRequesting(
+			const isRequesting = isResolving( 'getReportItems', [
 				'orders',
-				ordersQuery
-			);
+				ordersQuery,
+			] );
 			let orders = [];
 
 			if ( reportOrders && reportOrders.length ) {
@@ -394,7 +435,10 @@ export default compose(
 			allOrdersQuery
 		);
 		const isError = Boolean( getItemsError( 'orders', allOrdersQuery ) );
-		const isRequesting = isGetItemsRequesting( 'orders', allOrdersQuery );
+		const isRequesting = isResolving( 'getItems', [
+			'orders',
+			allOrdersQuery,
+		] );
 
 		return {
 			hasNonActionableOrders: totalNonActionableOrders > 0,

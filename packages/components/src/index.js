@@ -1,8 +1,8 @@
 /**
- * External Dependencies
+ * External dependencies
  */
-// Turn on react-dates classes/styles, see https://github.com/airbnb/react-dates#initialize
 import 'react-dates/initialize';
+// The above: Turn on react-dates classes/styles, see https://github.com/airbnb/react-dates#initialize
 
 export { default as AdvancedFilters } from './advanced-filters';
 export { default as AnimationSlider } from './animation-slider';
@@ -30,6 +30,8 @@ export { default as MenuItem } from './ellipsis-menu/menu-item';
 export { default as MenuTitle } from './ellipsis-menu/menu-title';
 export { default as OrderStatus } from './order-status';
 export { default as Pagination } from './pagination';
+export { default as Pill } from './pill';
+export { default as Plugins } from './plugins';
 export { default as ProductImage } from './product-image';
 export { default as ProductRating } from './rating/product';
 export { default as Rating } from './rating';
@@ -42,11 +44,11 @@ export { default as SectionHeader } from './section-header';
 export { default as SegmentedSelection } from './segmented-selection';
 export { default as SelectControl } from './select-control';
 export { default as ScrollTo } from './scroll-to';
-export { default as SplitButton } from './split-button';
 export { default as Spinner } from './spinner';
 export { default as Stepper } from './stepper';
 export { default as SummaryList } from './summary';
 export { default as SummaryListPlaceholder } from './summary/placeholder';
+export { SummaryNumberPlaceholder } from './summary/placeholder';
 export { default as SummaryNumber } from './summary/number';
 export { default as Table } from './table/table';
 export { default as TableCard } from './table';
@@ -56,6 +58,7 @@ export { default as TableSummary } from './table/summary';
 export { default as Tag } from './tag';
 export { default as TextControl } from './text-control';
 export { default as TextControlWithAffixes } from './text-control-with-affixes';
+export { default as Timeline } from './timeline';
 export { default as useFilters } from './higher-order/use-filters';
 export { default as ViewMoreList } from './view-more-list';
 export { default as WebPreview } from './web-preview';

@@ -2,16 +2,13 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, Dropdown, IconButton } from '@wordpress/components';
+import { Button, Dropdown } from '@wordpress/components';
 import { focus } from '@wordpress/dom';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { find, partial, last, get, includes } from 'lodash';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
+import { Icon, chevronLeft } from '@wordpress/icons';
 import {
 	flattenFilters,
 	getPersistedQuery,
@@ -197,11 +194,30 @@ class FilterPicker extends Component {
 		};
 
 		const selectSubFilter = partial( this.selectSubFilter, filter.value );
+		const selectedFilter = this.getFilter();
+		const buttonIsSelected =
+			selectedFilter.value === filter.value ||
+			( selectedFilter.path &&
+				includes( selectedFilter.path, filter.value ) );
+		const onClick = ( event ) => {
+			if ( buttonIsSelected ) {
+				// Don't navigate if the button is already selected.
+				onClose( event );
+				return;
+			}
+
+			if ( filter.subFilters ) {
+				selectSubFilter( event );
+				return;
+			}
+
+			selectFilter( event );
+		};
 
 		return (
 			<Button
 				className="woocommerce-filters-filter__button"
-				onClick={ filter.subFilters ? selectSubFilter : selectFilter }
+				onClick={ onClick }
 			>
 				{ filter.label }
 			</Button>
@@ -260,13 +276,13 @@ class FilterPicker extends Component {
 								<ul className="woocommerce-filters-filter__content-list">
 									{ parentFilter && (
 										<li className="woocommerce-filters-filter__content-list-item">
-											<IconButton
+											<Button
 												className="woocommerce-filters-filter__button"
 												onClick={ this.goBack }
-												icon="arrow-left-alt2"
 											>
+												<Icon icon={ chevronLeft } />
 												{ parentFilter.label }
-											</IconButton>
+											</Button>
 										</li>
 									) }
 									{ visibleFilters.map( ( filter ) => (

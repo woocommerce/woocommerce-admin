@@ -4,25 +4,23 @@
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { omitBy, isUndefined, snakeCase } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
+import { withSelect } from '@wordpress/data';
 import { ReportFilters as Filters } from '@woocommerce/components';
 import { LOCALE } from '@woocommerce/wc-admin-settings';
-
-/**
- * Internal dependencies
- */
-import { recordEvent } from 'lib/tracks';
-import { Currency } from 'lib/currency-format';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import {
 	getCurrentDates,
 	getDateParamsFromQuery,
 	isoDateFormat,
-} from 'lib/date';
+} from '@woocommerce/date';
+import { recordEvent } from '@woocommerce/tracks';
 
-export default class ReportFilters extends Component {
+/**
+ * Internal dependencies
+ */
+import { CurrencyContext } from '../../../lib/currency-context';
+
+class ReportFilters extends Component {
 	constructor() {
 		super();
 		this.trackDateSelect = this.trackDateSelect.bind( this );
@@ -74,7 +72,7 @@ export default class ReportFilters extends Component {
 				);
 				recordEvent( 'analytics_filters_filter', {
 					report,
-					snakeCaseData,
+					...snakeCaseData,
 				} );
 				break;
 			case 'clear_all':
@@ -96,14 +94,16 @@ export default class ReportFilters extends Component {
 			path,
 			query,
 			showDatePicker,
+			defaultDateRange,
 		} = this.props;
 		const { period, compare, before, after } = getDateParamsFromQuery(
-			query
+			query,
+			defaultDateRange
 		);
 		const {
 			primary: primaryDate,
 			secondary: secondaryDate,
-		} = getCurrentDates( query );
+		} = getCurrentDates( query, defaultDateRange );
 		const dateQuery = {
 			period,
 			compare,
@@ -112,11 +112,13 @@ export default class ReportFilters extends Component {
 			primaryDate,
 			secondaryDate,
 		};
+		const Currency = this.context;
+
 		return (
 			<Filters
 				query={ query }
 				siteLocale={ LOCALE.siteLocale }
-				currency={ Currency }
+				currency={ Currency.getCurrencyConfig() }
 				path={ path }
 				filters={ filters }
 				advancedFilters={ advancedFilters }
@@ -130,6 +132,15 @@ export default class ReportFilters extends Component {
 		);
 	}
 }
+
+ReportFilters.contextType = CurrencyContext;
+
+export default withSelect( ( select ) => {
+	const { woocommerce_default_date_range: defaultDateRange } = select(
+		SETTINGS_STORE_NAME
+	).getSetting( 'wc_admin', 'wcAdminSettings' );
+	return { defaultDateRange };
+} )( ReportFilters );
 
 ReportFilters.propTypes = {
 	/**

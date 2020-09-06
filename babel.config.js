@@ -1,25 +1,20 @@
+const { babelConfig: e2eBabelConfig } = require( '@woocommerce/e2e-environment' );
+
 module.exports = function( api ) {
 	api.cache( true );
 
 	return {
-		presets: [ '@wordpress/babel-preset-default' ],
-		plugins: [
-			'@babel/plugin-transform-async-to-generator',
-			'transform-class-properties',
-			[
-				'@babel/transform-react-jsx',
-				{
-					pragma: 'createElement',
-				},
-			],
-			[
-				'@wordpress/babel-plugin-import-jsx-pragma',
-				{
-					scopeVariable: 'createElement',
-					source: '@wordpress/element',
-					isDefault: false,
-				},
-			],
+        ...e2eBabelConfig,
+        presets: [
+              ...e2eBabelConfig.presets,
+              '@wordpress/babel-preset-default',
+        ],
+        plugins: [
+			/**
+			 * This allows arrow functions as class methods so that binding
+			 * methods to `this` in the constructor isn't required.
+			 */
+			'@babel/plugin-proposal-class-properties',
 		],
 		env: {
 			production: {

@@ -4,13 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { escapeRegExp } from 'lodash';
-import { Fragment } from '@wordpress/element';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-
-/**
- * Internal dependencies
- */
 import { SelectControl, TextControl } from '@woocommerce/components';
 
 const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
@@ -31,7 +26,7 @@ export function validateStoreAddress( values ) {
 	}
 	if ( ! values.countryState.length ) {
 		errors.countryState = __(
-			'Please select a country and state',
+			'Please select a country / region',
 			'woocommerce-admin'
 		);
 	}
@@ -66,7 +61,7 @@ export function getCountryStateOptions() {
 				key: country.code + ':' + state.code,
 				label:
 					decodeEntities( country.name ) +
-					' -- ' +
+					' — ' +
 					decodeEntities( state.name ),
 			};
 		} );
@@ -142,7 +137,7 @@ export function useGetCountryStateAutofill( options, countryState, setValue ) {
 		) {
 			setValue( 'countryState', filteredOptions[ 0 ].key );
 		}
-	}, [ autofillCountry, autofillState ] );
+	}, [ autofillCountry, autofillState, countryState, options, setValue ] );
 
 	return (
 		<Fragment>
@@ -203,7 +198,7 @@ export function StoreAddress( props ) {
 			/>
 
 			<SelectControl
-				label={ __( 'Country / State', 'woocommerce-admin' ) }
+				label={ __( 'Country / Region', 'woocommerce-admin' ) }
 				required
 				options={ countryStateOptions }
 				excludeSelectedOptions={ false }

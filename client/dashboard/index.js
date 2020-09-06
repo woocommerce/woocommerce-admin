@@ -1,41 +1,63 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
+import { Component, Suspense, lazy } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
+import { identity } from 'lodash';
+import { getSetting } from '@woocommerce/wc-admin-settings';
+import {
+	ONBOARDING_STORE_NAME,
+	withOnboardingHydration,
+} from '@woocommerce/data';
+import { Spinner } from '@woocommerce/components';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import CustomizableDashboard from './customizable';
-import ProfileWizard from './profile-wizard';
-import withSelect from 'wc-api/with-select';
-import { isOnboardingEnabled } from 'dashboard/utils';
+
+const CustomizableDashboard = lazy( () =>
+	import( /* webpackChunkName: "customizable-dashboard" */ './customizable' )
+);
 
 class Dashboard extends Component {
 	render() {
 		const { path, profileItems, query } = this.props;
-
-		if ( isOnboardingEnabled() && ! profileItems.completed ) {
-			return <ProfileWizard query={ query } />;
+		const { completed: profileCompleted, skipped: profileSkipped } =
+			profileItems || {};
+		if (
+			! profileCompleted &&
+			! profileSkipped &&
+			! window.wcAdminFeatures.homescreen
+		) {
+			getHistory().push( getNewPath( {}, '/setup-wizard', {} ) );
 		}
 
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {
-			return <CustomizableDashboard query={ query } path={ path } />;
+			return (
+				<Suspense fallback={ <Spinner /> }>
+					<CustomizableDashboard query={ query } path={ path } />
+				</Suspense>
+			);
 		}
 
 		return null;
 	}
 }
 
-export default compose(
-	withSelect( ( select ) => {
-		if ( ! isOnboardingEnabled() ) {
-			return;
-		}
+const onboardingData = getSetting( 'onboarding', {} );
 
-		const { getProfileItems } = select( 'wc-api' );
+export default compose(
+	onboardingData.profile || onboardingData.tasksStatus
+		? withOnboardingHydration( {
+				profileItems: onboardingData.profile,
+				tasksStatus: onboardingData.tasksStatus,
+		  } )
+		: identity,
+	withSelect( ( select ) => {
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const profileItems = getProfileItems();
 
 		return { profileItems };

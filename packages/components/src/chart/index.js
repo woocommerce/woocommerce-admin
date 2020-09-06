@@ -7,19 +7,12 @@ import { Component, createRef, Fragment } from '@wordpress/element';
 import { formatDefaultLocale as d3FormatDefaultLocale } from 'd3-format';
 import { isEqual, partial, without } from 'lodash';
 import Gridicon from 'gridicons';
-import {
-	IconButton,
-	NavigableMenu,
-	SelectControl,
-} from '@wordpress/components';
+import { Button, NavigableMenu, SelectControl } from '@wordpress/components';
 import { interpolateViridis as d3InterpolateViridis } from 'd3-scale-chromatic';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import { withViewportMatch } from '@wordpress/viewport';
 
-/**
- * WooCommerce dependencies
- */
 import { getIdsFromQuery, updateQueryString } from '@woocommerce/navigation';
 
 /**
@@ -379,7 +372,7 @@ class Chart extends Component {
 							orientation="horizontal"
 							role="menubar"
 						>
-							<IconButton
+							<Button
 								className={ classNames(
 									'woocommerce-chart__type-button',
 									{
@@ -387,7 +380,6 @@ class Chart extends Component {
 											chartType === 'line',
 									}
 								) }
-								icon={ <Gridicon icon="line-graph" /> }
 								title={ __(
 									'Line chart',
 									'woocommerce-admin'
@@ -399,8 +391,10 @@ class Chart extends Component {
 									this.handleTypeToggle,
 									'line'
 								) }
-							/>
-							<IconButton
+							>
+								<Gridicon icon="line-graph" />
+							</Button>
+							<Button
 								className={ classNames(
 									'woocommerce-chart__type-button',
 									{
@@ -408,7 +402,6 @@ class Chart extends Component {
 											chartType === 'bar',
 									}
 								) }
-								icon={ <Gridicon icon="stats-alt" /> }
 								title={ __( 'Bar chart', 'woocommerce-admin' ) }
 								aria-checked={ chartType === 'bar' }
 								role="menuitemradio"
@@ -417,7 +410,9 @@ class Chart extends Component {
 									this.handleTypeToggle,
 									'bar'
 								) }
-							/>
+							>
+								<Gridicon icon="stats-alt" />
+							</Button>
 						</NavigableMenu>
 					</div>
 				) }

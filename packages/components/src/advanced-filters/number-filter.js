@@ -8,6 +8,8 @@ import interpolateComponents from 'interpolate-components';
 import classnames from 'classnames';
 import { sprintf, __, _x } from '@wordpress/i18n';
 
+import CurrencyFactory from '@woocommerce/currency';
+
 /**
  * Internal dependencies
  */
@@ -37,8 +39,9 @@ class NumberFilter extends Component {
 		const inputType = get( config, [ 'input', 'type' ], 'number' );
 
 		if ( inputType === 'currency' ) {
-			rangeStart = currency.formatCurrency( rangeStart );
-			rangeEnd = currency.formatCurrency( rangeEnd );
+			const { formatAmount } = CurrencyFactory( currency );
+			rangeStart = formatAmount( rangeStart );
+			rangeEnd = formatAmount( rangeEnd );
 		}
 
 		let filterStr = rangeStart;
@@ -60,6 +63,7 @@ class NumberFilter extends Component {
 				components: {
 					filter: <Fragment>{ filterStr }</Fragment>,
 					rule: <Fragment>{ rule.label }</Fragment>,
+					title: <Fragment />,
 				},
 			} )
 		);
@@ -133,7 +137,7 @@ class NumberFilter extends Component {
 		if ( Boolean( rangeEnd ) ) {
 			// If there's a value for rangeEnd, we've just changed from "between"
 			// to "less than" or "more than" and need to transition the value
-			onFilterChange( filter.key, 'value', rangeStart || rangeEnd );
+			onFilterChange( 'value', rangeStart || rangeEnd );
 		}
 
 		let labelFormat = '';
@@ -162,7 +166,7 @@ class NumberFilter extends Component {
 			label: sprintf( labelFormat, {
 				field: get( config, [ 'labels', 'add' ] ),
 			} ),
-			onChange: partial( onFilterChange, filter.key, 'value' ),
+			onChange: partial( onFilterChange, 'value' ),
 			currencySymbol,
 			symbolPosition,
 		} );
@@ -177,11 +181,11 @@ class NumberFilter extends Component {
 			: [ filter.value ];
 
 		const rangeStartOnChange = ( newRangeStart ) => {
-			onFilterChange( filter.key, 'value', [ newRangeStart, rangeEnd ] );
+			onFilterChange( 'value', [ newRangeStart, rangeEnd ] );
 		};
 
 		const rangeEndOnChange = ( newRangeEnd ) => {
-			onFilterChange( filter.key, 'value', [ rangeStart, newRangeEnd ] );
+			onFilterChange( 'value', [ rangeStart, newRangeEnd ] );
 		};
 
 		return interpolateComponents( {
@@ -226,7 +230,7 @@ class NumberFilter extends Component {
 			onFilterChange,
 			isEnglish,
 		} = this.props;
-		const { key, rule } = filter;
+		const { rule } = filter;
 		const { labels, rules } = config;
 
 		const children = interpolateComponents( {
@@ -241,7 +245,7 @@ class NumberFilter extends Component {
 						) }
 						options={ rules }
 						value={ rule }
-						onChange={ partial( onFilterChange, key, 'rule' ) }
+						onChange={ partial( onFilterChange, 'rule' ) }
 						aria-label={ labels.rule }
 					/>
 				),

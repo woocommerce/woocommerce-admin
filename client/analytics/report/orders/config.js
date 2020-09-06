@@ -12,7 +12,7 @@ import {
 	getCouponLabels,
 	getProductLabels,
 	getTaxRateLabels,
-} from 'lib/async-requests';
+} from '../../../lib/async-requests';
 
 const ORDERS_REPORT_CHARTS_FILTER = 'woocommerce_admin_orders_report_charts';
 const ORDERS_REPORT_FILTERS_FILTER = 'woocommerce_admin_orders_report_filters';
@@ -49,7 +49,7 @@ export const charts = applyFilters( ORDERS_REPORT_CHARTS_FILTER, [
 export const filters = applyFilters( ORDERS_REPORT_FILTERS_FILTER, [
 	{
 		label: __( 'Show', 'woocommerce-admin' ),
-		staticParams: [ 'chart' ],
+		staticParams: [ 'chartType', 'paged', 'per_page' ],
 		param: 'filter',
 		showFilters: () => true,
 		filters: [
@@ -308,6 +308,50 @@ export const advancedFilters = applyFilters(
 					component: 'Search',
 					type: 'taxes',
 					getLabels: getTaxRateLabels,
+				},
+			},
+			attribute: {
+				allowMultiple: true,
+				labels: {
+					add: __( 'Attribute', 'woocommerce-admin' ),
+					placeholder: __( 'Search attributes', 'woocommerce-admin' ),
+					remove: __(
+						'Remove attribute filter',
+						'woocommerce-admin'
+					),
+					rule: __(
+						'Select a product attribute filter match',
+						'woocommerce-admin'
+					),
+					/* translators: A sentence describing a Product filter. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ */
+					title: __(
+						'{{title}}Attribute{{/title}} {{rule /}} {{filter /}}',
+						'woocommerce-admin'
+					),
+					filter: __( 'Select attributes', 'woocommerce-admin' ),
+				},
+				rules: [
+					{
+						value: 'is',
+						/* translators: Sentence fragment, logical, "Is" refers to searching for products matching a chosen attribute. Screenshot for context: https://cloudup.com/cSsUY9VeCVJ */
+						label: _x(
+							'Is',
+							'product attribute',
+							'woocommerce-admin'
+						),
+					},
+					{
+						value: 'is_not',
+						/* translators: Sentence fragment, logical, "Is Not" refers to searching for products that don\'t match a chosen attribute. Screenshot for context: https://cloudup.com/cSsUY9VeCVJ */
+						label: _x(
+							'Is Not',
+							'product attribute',
+							'woocommerce-admin'
+						),
+					},
+				],
+				input: {
+					component: 'ProductAttribute',
 				},
 			},
 		},

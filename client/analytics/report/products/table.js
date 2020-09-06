@@ -4,28 +4,22 @@
 import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { decodeEntities } from '@wordpress/html-entities';
+import { withSelect } from '@wordpress/data';
 import { map } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
-import {
-	formatCurrency,
-	getCurrencyFormatDecimal,
-	renderCurrency,
-} from 'lib/currency-format';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { Link, Tag } from '@woocommerce/components';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
 import CategoryBreacrumbs from '../categories/breadcrumbs';
 import { isLowStock } from './utils';
-import ReportTable from 'analytics/components/report-table';
-import withSelect from 'wc-api/with-select';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
 
 const manageStock = getSetting( 'manageStock', 'no' );
@@ -37,6 +31,7 @@ class ProductsReportTable extends Component {
 
 		this.getHeadersContent = this.getHeadersContent.bind( this );
 		this.getRowsContent = this.getRowsContent.bind( this );
+		this.getSummary = this.getSummary.bind( this );
 	}
 
 	getHeadersContent() {
@@ -104,6 +99,12 @@ class ProductsReportTable extends Component {
 	getRowsContent( data = [] ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
+		const {
+			render: renderCurrency,
+			formatDecimal: getCurrencyFormatDecimal,
+			getCurrencyConfig,
+		} = this.context;
+		const currency = getCurrencyConfig();
 
 		return map( data, ( row ) => {
 			const {
@@ -117,12 +118,13 @@ class ProductsReportTable extends Component {
 				category_ids: categoryIds,
 				low_stock_amount: lowStockAmount,
 				manage_stock: extendedInfoManageStock,
-				name,
 				sku,
 				stock_status: extendedInfoStockStatus,
 				stock_quantity: stockQuantity,
 				variations = [],
 			} = extendedInfo;
+
+			const name = decodeEntities( extendedInfo.name );
 			const ordersLink = getNewPath(
 				persistedQuery,
 				'/analytics/orders',
@@ -144,7 +146,7 @@ class ProductsReportTable extends Component {
 			const productCategories =
 				( categoryIds &&
 					categoryIds
-						.map( categoryId => categories.get( categoryId ) )
+						.map( ( categoryId ) => categories.get( categoryId ) )
 						.filter( Boolean ) ) ||
 				[];
 
@@ -183,7 +185,7 @@ class ProductsReportTable extends Component {
 					value: sku,
 				},
 				{
-					display: formatValue( 'number', itemsSold ),
+					display: formatValue( currency, 'number', itemsSold ),
 					value: itemsSold,
 				},
 				{
@@ -236,7 +238,11 @@ class ProductsReportTable extends Component {
 						.join( ', ' ),
 				},
 				{
-					display: formatValue( 'number', variations.length ),
+					display: formatValue(
+						currency,
+						'number',
+						variations.length
+					),
 					value: variations.length,
 				},
 				manageStock === 'yes'
@@ -252,7 +258,11 @@ class ProductsReportTable extends Component {
 				manageStock === 'yes'
 					? {
 							display: extendedInfoManageStock
-								? formatValue( 'number', stockQuantity )
+								? formatValue(
+										currency,
+										'number',
+										stockQuantity
+								  )
 								: __( 'N/A', 'woocommerce-admin' ),
 							value: stockQuantity,
 					  }
@@ -268,6 +278,8 @@ class ProductsReportTable extends Component {
 			net_revenue: netRevenue = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -276,7 +288,7 @@ class ProductsReportTable extends Component {
 					productsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', productsCount ),
+				value: formatValue( currency, 'number', productsCount ),
 			},
 			{
 				label: _n(
@@ -285,11 +297,11 @@ class ProductsReportTable extends Component {
 					itemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', itemsSold ),
+				value: formatValue( currency, 'number', itemsSold ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: formatAmount( netRevenue ),
 			},
 			{
 				label: _n(
@@ -298,7 +310,7 @@ class ProductsReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 		];
 	}
@@ -331,6 +343,12 @@ class ProductsReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
+				summaryFields={ [
+					'products_count',
+					'items_sold',
+					'net_revenue',
+					'orders_count',
+				] }
 				itemIdField="product_id"
 				isRequesting={ isRequesting }
 				labels={ labels }
@@ -352,6 +370,8 @@ class ProductsReportTable extends Component {
 	}
 }
 
+ProductsReportTable.contextType = CurrencyContext;
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const { query, isRequesting } = props;
@@ -362,8 +382,8 @@ export default compose(
 			return {};
 		}
 
-		const { getItems, getItemsError, isGetItemsRequesting } = select(
-			'wc-api'
+		const { getItems, getItemsError, isResolving } = select(
+			ITEMS_STORE_NAME
 		);
 		const tableQuery = {
 			per_page: -1,
@@ -371,7 +391,10 @@ export default compose(
 
 		const categories = getItems( 'categories', tableQuery );
 		const isError = Boolean( getItemsError( 'categories', tableQuery ) );
-		const isLoading = isGetItemsRequesting( 'categories', tableQuery );
+		const isLoading = isResolving( 'getItems', [
+			'categories',
+			tableQuery,
+		] );
 
 		return { categories, isError, isRequesting: isLoading };
 	} )

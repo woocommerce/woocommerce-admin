@@ -1,29 +1,35 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
-import { useFilters } from '@woocommerce/components';
+import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
+import { Component, lazy, Suspense } from '@wordpress/element';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { get, isFunction } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
+import { get, isFunction, identity } from 'lodash';
+import { parse } from 'qs';
+import { Spinner } from '@woocommerce/components';
 import { getHistory } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import {
+	PLUGINS_STORE_NAME,
+	withPluginsHydration,
+	withOptionsHydration,
+} from '@woocommerce/data';
+import { recordPageView } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { Controller, getPages, PAGES_FILTER } from './controller';
-import Header from 'header';
+import { Controller, getPages } from './controller';
+import { Header } from '../header';
 import Notices from './notices';
-import { recordPageView } from 'lib/tracks';
 import TransientNotices from './transient-notices';
-import StoreAlerts from './store-alerts';
-import { REPORTS_FILTER } from 'analytics/report';
+
+const StoreAlerts = lazy( () =>
+	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
+);
 
 export class PrimaryLayout extends Component {
 	render() {
@@ -33,7 +39,11 @@ export class PrimaryLayout extends Component {
 				className="woocommerce-layout__primary"
 				id="woocommerce-layout__primary"
 			>
-				{ window.wcAdminFeatures[ 'store-alerts' ] && <StoreAlerts /> }
+				{ window.wcAdminFeatures[ 'store-alerts' ] && (
+					<Suspense fallback={ <Spinner /> }>
+						<StoreAlerts />
+					</Suspense>
+				) }
 				<Notices />
 				{ children }
 			</div>
@@ -41,10 +51,9 @@ export class PrimaryLayout extends Component {
 	}
 }
 
-class Layout extends Component {
+class _Layout extends Component {
 	componentDidMount() {
 		this.recordPageViewTrack();
-		document.body.classList.remove( 'woocommerce-admin-is-loading' );
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -61,10 +70,16 @@ class Layout extends Component {
 	}
 
 	recordPageViewTrack() {
-		const { isEmbedded } = this.props;
+		const {
+			activePlugins,
+			installedPlugins,
+			isEmbedded,
+			isJetpackConnected,
+		} = this.props;
+
 		if ( isEmbedded ) {
 			const path = document.location.pathname + document.location.search;
-			recordPageView( path, { isEmbedded } );
+			recordPageView( path, { is_embedded: true } );
 			return;
 		}
 
@@ -78,15 +93,33 @@ class Layout extends Component {
 
 		// When pathname is `/` we are on the dashboard
 		if ( path.length === 0 ) {
-			path = 'dashboard';
+			path = window.wcAdminFeatures.homescreen
+				? 'home_screen'
+				: 'dashboard';
 		}
 
-		recordPageView( path );
+		recordPageView( path, {
+			jetpack_installed: installedPlugins.includes( 'jetpack' ),
+			jetpack_active: activePlugins.includes( 'jetpack' ),
+			jetpack_connected: isJetpackConnected,
+		} );
+	}
+
+	getQuery( searchString ) {
+		if ( ! searchString ) {
+			return {};
+		}
+
+		const search = searchString.substring( 1 );
+		return parse( search );
 	}
 
 	render() {
 		const { isEmbedded, ...restProps } = this.props;
-		const { breadcrumbs } = this.props.page;
+		const { location, page } = this.props;
+		const { breadcrumbs } = page;
+		const query = this.getQuery( location && location.search );
+
 		return (
 			<div className="woocommerce-layout">
 				<Header
@@ -96,12 +129,13 @@ class Layout extends Component {
 							: breadcrumbs
 					}
 					isEmbedded={ isEmbedded }
+					query={ query }
 				/>
 				<TransientNotices />
 				{ ! isEmbedded && (
 					<PrimaryLayout>
 						<div className="woocommerce-layout__main">
-							<Controller { ...restProps } />
+							<Controller { ...restProps } query={ query } />
 						</div>
 					</PrimaryLayout>
 				) }
@@ -110,10 +144,13 @@ class Layout extends Component {
 	}
 }
 
-Layout.propTypes = {
+_Layout.propTypes = {
 	isEmbedded: PropTypes.bool,
 	page: PropTypes.shape( {
-		container: PropTypes.func,
+		container: PropTypes.oneOfType( [
+			PropTypes.func,
+			PropTypes.object, // Support React.lazy
+		] ),
 		path: PropTypes.string,
 		breadcrumbs: PropTypes.oneOfType( [
 			PropTypes.func,
@@ -127,6 +164,34 @@ Layout.propTypes = {
 		wpOpenMenu: PropTypes.string,
 	} ).isRequired,
 };
+
+const Layout = compose(
+	withPluginsHydration( {
+		...( window.wcSettings.plugins || {} ),
+		jetpackStatus:
+			( window.wcSettings.dataEndpoints &&
+				window.wcSettings.dataEndpoints.jetpackStatus ) ||
+			false,
+	} ),
+	withSelect( ( select, { isEmbedded } ) => {
+		// Embedded pages don't send plugin info to Tracks.
+		if ( isEmbedded ) {
+			return;
+		}
+
+		const {
+			getActivePlugins,
+			getInstalledPlugins,
+			isJetpackConnected,
+		} = select( PLUGINS_STORE_NAME );
+
+		return {
+			activePlugins: getActivePlugins(),
+			isJetpackConnected: isJetpackConnected(),
+			installedPlugins: getInstalledPlugins(),
+		};
+	} )
+)( _Layout );
 
 class _PageLayout extends Component {
 	render() {
@@ -150,10 +215,14 @@ class _PageLayout extends Component {
 		);
 	}
 }
-// Use the useFilters HoC so PageLayout is re-rendered when filters are used to add new pages or reports
-export const PageLayout = useFilters( [ PAGES_FILTER, REPORTS_FILTER ] )(
-	_PageLayout
-);
+
+export const PageLayout = compose(
+	window.wcSettings.preloadOptions
+		? withOptionsHydration( {
+				...window.wcSettings.preloadOptions,
+		  } )
+		: identity
+)( _PageLayout );
 
 export class EmbedLayout extends Component {
 	render() {

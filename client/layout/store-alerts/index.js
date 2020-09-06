@@ -3,32 +3,23 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import {
-	IconButton,
-	Button,
-	Dashicon,
-	SelectControl,
-} from '@wordpress/components';
+import { Button, Dashicon, SelectControl } from '@wordpress/components';
 import classnames from 'classnames';
 import interpolateComponents from 'interpolate-components';
 import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import moment from 'moment';
-
-/**
- * WooCommerce dependencies
- */
+import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
 import { Card } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { NOTES_STORE_NAME, QUERY_DEFAULTS } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import sanitizeHTML from 'lib/sanitize-html';
+import sanitizeHTML from '../../lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
-import { recordEvent } from 'lib/tracks';
 
 import './style.scss';
 
@@ -74,8 +65,8 @@ class StoreAlerts extends Component {
 			return (
 				<Button
 					key={ action.name }
-					isDefault
 					isPrimary={ action.primary }
+					isSecondary={ ! action.primary }
 					href={ action.url || undefined }
 					onClick={ () => triggerNoteAction( alert.id, action.id ) }
 				>
@@ -87,10 +78,7 @@ class StoreAlerts extends Component {
 		// TODO: should "next X" be the start, or exactly 1X from the current date?
 		const snoozeOptions = [
 			{
-				value: moment()
-					.add( 4, 'hours' )
-					.unix()
-					.toString(),
+				value: moment().add( 4, 'hours' ).unix().toString(),
 				label: __( 'Later Today', 'woocommerce-admin' ),
 			},
 			{
@@ -219,15 +207,16 @@ class StoreAlerts extends Component {
 				action={
 					numberOfAlerts > 1 && (
 						<div className="woocommerce-store-alerts__pagination">
-							<IconButton
-								icon="arrow-left-alt2"
+							<Button
 								onClick={ this.previousAlert }
 								disabled={ currentIndex === 0 }
 								label={ __(
 									'Previous Alert',
 									'woocommerce-admin'
 								) }
-							/>
+							>
+								<Icon icon={ chevronLeft } />
+							</Button>
 							<span
 								className="woocommerce-store-alerts__pagination-label"
 								role="status"
@@ -252,15 +241,16 @@ class StoreAlerts extends Component {
 									},
 								} ) }
 							</span>
-							<IconButton
-								icon="arrow-right-alt2"
+							<Button
 								onClick={ this.nextAlert }
 								disabled={ numberOfAlerts - 1 === currentIndex }
 								label={ __(
 									'Next Alert',
 									'woocommerce-admin'
 								) }
-							/>
+							>
+								<Icon icon={ chevronRight } />
+							</Button>
 						</div>
 					)
 				}
@@ -277,7 +267,7 @@ class StoreAlerts extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getNotes, isGetNotesRequesting } = select( 'wc-api' );
+		const { getNotes, isResolving } = select( NOTES_STORE_NAME );
 		const alertsQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
@@ -288,8 +278,7 @@ export default compose(
 		// Filter out notes that may have been marked actioned or not delayed after the initial request
 		const filterNotes = ( note ) => note.status === 'unactioned';
 		const alerts = getNotes( alertsQuery ).filter( filterNotes );
-
-		const isLoading = isGetNotesRequesting( alertsQuery );
+		const isLoading = isResolving( 'getNotes', [ alertsQuery ] );
 
 		return {
 			alerts,
@@ -297,7 +286,7 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { triggerNoteAction, updateNote } = dispatch( 'wc-api' );
+		const { triggerNoteAction, updateNote } = dispatch( NOTES_STORE_NAME );
 
 		return {
 			triggerNoteAction,

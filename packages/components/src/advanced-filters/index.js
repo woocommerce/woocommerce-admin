@@ -3,21 +3,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, createRef } from '@wordpress/element';
-import {
-	SelectControl,
-	Button,
-	Dropdown,
-	IconButton,
-} from '@wordpress/components';
-import { partial, findIndex, difference, isEqual } from 'lodash';
+import { SelectControl, Button, Dropdown } from '@wordpress/components';
+import { partial, difference, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
-import classnames from 'classnames';
 
-/**
- * WooCommerce dependencies
- */
 import {
 	getActiveFiltersFromQuery,
 	getDefaultOptionValue,
@@ -31,10 +22,7 @@ import {
  */
 import Card from '../card';
 import Link from '../link';
-import SelectFilter from './select-filter';
-import SearchFilter from './search-filter';
-import NumberFilter from './number-filter';
-import DateFilter from './date-filter';
+import AdvancedFilterItem from './item';
 
 const matches = [
 	{ value: 'all', label: __( 'All', 'woocommerce-admin' ) },
@@ -47,9 +35,24 @@ const matches = [
 class AdvancedFilters extends Component {
 	constructor( { query, config } ) {
 		super( ...arguments );
+		this.instanceCounts = {};
+
+		const filtersFromQuery = getActiveFiltersFromQuery(
+			query,
+			config.filters
+		);
+		// @todo: This causes rerenders when instance numbers don't match (from adding/remove before updating query string).
+		const activeFilters = filtersFromQuery.map( ( filter ) => {
+			if ( config.filters[ filter.key ].allowMultiple ) {
+				filter.instance = this.getInstanceNumber( filter.key );
+			}
+
+			return filter;
+		} );
+
 		this.state = {
 			match: query.match || 'all',
-			activeFilters: getActiveFiltersFromQuery( query, config.filters ),
+			activeFilters,
 		};
 
 		this.filterListRef = createRef();
@@ -61,7 +64,6 @@ class AdvancedFilters extends Component {
 		this.removeFilter = this.removeFilter.bind( this );
 		this.clearFilters = this.clearFilters.bind( this );
 		this.getUpdateHref = this.getUpdateHref.bind( this );
-		this.updateFilter = this.updateFilter.bind( this );
 		this.onFilter = this.onFilter.bind( this );
 	}
 
@@ -70,15 +72,34 @@ class AdvancedFilters extends Component {
 		const { query: prevQuery } = prevProps;
 
 		if ( ! isEqual( prevQuery, query ) ) {
-			/* eslint-disable react/no-did-update-set-state */
-			this.setState( {
-				activeFilters: getActiveFiltersFromQuery(
-					query,
-					config.filters
-				),
+			const filtersFromQuery = getActiveFiltersFromQuery(
+				query,
+				config.filters
+			);
+
+			// Update all multiple instance counts.
+			this.instanceCounts = {};
+			// @todo: This causes rerenders when instance numbers don't match (from adding/remove before updating query string).
+			const activeFilters = filtersFromQuery.map( ( filter ) => {
+				if ( config.filters[ filter.key ].allowMultiple ) {
+					filter.instance = this.getInstanceNumber( filter.key );
+				}
+
+				return filter;
 			} );
+
+			/* eslint-disable react/no-did-update-set-state */
+			this.setState( { activeFilters } );
 			/* eslint-enable react/no-did-update-set-state */
 		}
+	}
+
+	getInstanceNumber( key ) {
+		if ( ! this.instanceCounts.hasOwnProperty( key ) ) {
+			this.instanceCounts[ key ] = 1;
+		}
+
+		return this.instanceCounts[ key ]++;
 	}
 
 	onMatchChange( match ) {
@@ -89,41 +110,19 @@ class AdvancedFilters extends Component {
 		onAdvancedFilterAction( 'match', { match } );
 	}
 
-	onFilterChange( key, property, value ) {
-		const activeFilters = this.state.activeFilters.map(
-			( activeFilter ) => {
-				if ( key === activeFilter.key ) {
-					return Object.assign( {}, activeFilter, {
-						[ property ]: value,
-					} );
-				}
-				return activeFilter;
-			}
-		);
+	onFilterChange( index, property, value ) {
+		const newActiveFilters = [ ...this.state.activeFilters ];
+		newActiveFilters[ index ] = {
+			...newActiveFilters[ index ],
+			[ property ]: value,
+		};
 
-		this.setState( { activeFilters } );
+		this.setState( { activeFilters: newActiveFilters } );
 	}
 
-	updateFilter( filter ) {
-		const activeFilters = this.state.activeFilters.map(
-			( activeFilter ) => {
-				if ( filter.key === activeFilter.key ) {
-					return filter;
-				}
-				return activeFilter;
-			}
-		);
-
-		this.setState( { activeFilters } );
-	}
-
-	removeFilter( key ) {
+	removeFilter( index ) {
 		const { onAdvancedFilterAction } = this.props;
 		const activeFilters = [ ...this.state.activeFilters ];
-		const index = findIndex(
-			activeFilters,
-			( filter ) => filter.key === key
-		);
 		onAdvancedFilterAction( 'remove', activeFilters[ index ] );
 		activeFilters.splice( index, 1 );
 		this.setState( { activeFilters } );
@@ -158,7 +157,17 @@ class AdvancedFilters extends Component {
 	getAvailableFilterKeys() {
 		const { config } = this.props;
 		const activeFilterKeys = this.state.activeFilters.map( ( f ) => f.key );
-		return difference( Object.keys( config.filters ), activeFilterKeys );
+		const multipleValueFilterKeys = Object.keys( config.filters ).filter(
+			( f ) => config.filters[ f ].allowMultiple || false
+		);
+		const inactiveFilterKeys = difference(
+			Object.keys( config.filters ),
+			activeFilterKeys,
+			multipleValueFilterKeys
+		);
+
+		// Ensure filters that allow multiples are alway present.
+		return [ ...inactiveFilterKeys, ...multipleValueFilterKeys ];
 	}
 
 	addFilter( key, onClose ) {
@@ -179,6 +188,9 @@ class AdvancedFilters extends Component {
 		}
 		if ( filterConfig.input && filterConfig.input.component === 'Search' ) {
 			newFilter.value = '';
+		}
+		if ( filterConfig.allowMultiple ) {
+			newFilter.instance = this.getInstanceNumber( key );
 		}
 		this.setState( ( state ) => {
 			return {
@@ -231,6 +243,18 @@ class AdvancedFilters extends Component {
 		onAdvancedFilterAction( 'filter', { ...updatedQuery, match } );
 	}
 
+	orderFilters( a, b ) {
+		const qs = window.location.search;
+		const aPos = qs.indexOf( a.key );
+		const bPos = qs.indexOf( b.key );
+		// If either isn't in the url, it means its just been added, so leave it as is.
+		if ( aPos === -1 || bPos === -1 ) {
+			return 0;
+		}
+		// Otherwise use the url to determine order in which filter was added.
+		return aPos - bPos;
+	}
+
 	render() {
 		const { config, query, currency } = this.props;
 		const { activeFilters, match } = this.state;
@@ -249,89 +273,28 @@ class AdvancedFilters extends Component {
 					className="woocommerce-filters-advanced__list"
 					ref={ this.filterListRef }
 				>
-					{ activeFilters.map( ( filter ) => {
-						const { key } = filter;
-						const { input, labels } = config.filters[ key ];
-						return (
-							<li
-								className="woocommerce-filters-advanced__list-item"
-								key={ key }
-							>
-								{ input.component === 'SelectControl' && (
-									<SelectFilter
-										className="woocommerce-filters-advanced__fieldset-item"
-										filter={ filter }
-										config={ config.filters[ key ] }
-										onFilterChange={ this.onFilterChange }
-										isEnglish={ isEnglish }
-									/>
-								) }
-								{ input.component === 'Search' && (
-									<SearchFilter
-										className="woocommerce-filters-advanced__fieldset-item"
-										filter={ filter }
-										config={ config.filters[ key ] }
-										onFilterChange={ this.onFilterChange }
-										isEnglish={ isEnglish }
-										query={ query }
-									/>
-								) }
-								{ input.component === 'Number' && (
-									<NumberFilter
-										className="woocommerce-filters-advanced__fieldset-item"
-										filter={ filter }
-										config={ config.filters[ key ] }
-										onFilterChange={ this.onFilterChange }
-										isEnglish={ isEnglish }
-										query={ query }
-										currency={ currency }
-									/>
-								) }
-								{ input.component === 'Currency' && (
-									<NumberFilter
-										className="woocommerce-filters-advanced__fieldset-item"
-										filter={ filter }
-										config={ {
-											...config.filters[ key ],
-											...{
-												input: {
-													type: 'currency',
-													component: 'Currency',
-												},
-											},
-										} }
-										onFilterChange={ this.onFilterChange }
-										isEnglish={ isEnglish }
-										query={ query }
-										currency={ currency }
-									/>
-								) }
-								{ input.component === 'Date' && (
-									<DateFilter
-										className="woocommerce-filters-advanced__fieldset-item"
-										filter={ filter }
-										config={ config.filters[ key ] }
-										onFilterChange={ this.onFilterChange }
-										isEnglish={ isEnglish }
-										query={ query }
-										updateFilter={ this.updateFilter }
-									/>
-								) }
-								<IconButton
-									className={ classnames(
-										'woocommerce-filters-advanced__line-item',
-										'woocommerce-filters-advanced__remove'
+					{ activeFilters
+						.sort( this.orderFilters )
+						.map( ( filter, idx ) => {
+							const { instance, key } = filter;
+							return (
+								<AdvancedFilterItem
+									key={ key + ( instance || '' ) }
+									config={ config }
+									currency={ currency }
+									filter={ filter }
+									isEnglish={ isEnglish }
+									onFilterChange={ partial(
+										this.onFilterChange,
+										idx
 									) }
-									label={ labels.remove }
-									onClick={ partial(
-										this.removeFilter,
-										key
-									) }
-									icon={ <Gridicon icon="cross-small" /> }
+									query={ query }
+									removeFilter={ () =>
+										this.removeFilter( idx )
+									}
 								/>
-							</li>
-						);
-					} ) }
+							);
+						} ) }
 				</ul>
 				{ availableFilterKeys.length > 0 && (
 					<div className="woocommerce-filters-advanced__add-filter">
@@ -339,17 +302,17 @@ class AdvancedFilters extends Component {
 							className="woocommerce-filters-advanced__add-filter-dropdown"
 							position="bottom center"
 							renderToggle={ ( { isOpen, onToggle } ) => (
-								<IconButton
+								<Button
 									className="woocommerce-filters-advanced__add-button"
-									icon={ <Gridicon icon="add-outline" /> }
 									onClick={ onToggle }
 									aria-expanded={ isOpen }
 								>
+									<Gridicon icon="add-outline" />
 									{ __(
 										'Add a Filter',
 										'woocommerce-admin'
 									) }
-								</IconButton>
+								</Button>
 							) }
 							renderContent={ ( { onClose } ) => (
 								<ul className="woocommerce-filters-advanced__add-dropdown">

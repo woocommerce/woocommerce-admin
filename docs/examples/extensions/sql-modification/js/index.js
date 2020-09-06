@@ -73,7 +73,6 @@ const addTableColumn = ( reportTableData ) => {
 		'revenue',
 		'products',
 		'orders',
-		'products',
 		'categories',
 		'coupons',
 		'taxes',
@@ -91,10 +90,14 @@ const addTableColumn = ( reportTableData ) => {
 	];
 	const newRows = reportTableData.rows.map( ( row, index ) => {
 		const item = reportTableData.items.data[ index ];
+		const currency =
+			reportTableData.endpoint === 'revenue'
+				? item.subtotals.currency
+				: item.currency;
 		const newRow = [
 			{
-				display: item.currency,
-				value: item.currency,
+				display: currency,
+				value: currency,
 			},
 			...row,
 		];
@@ -125,4 +128,36 @@ addFilter(
 	'woocommerce_admin_persisted_queries',
 	'plugin-domain',
 	persistQueries
+);
+
+const currencies = {
+	ZAR: {
+		code: 'ZAR',
+		symbol: 'R',
+		symbolPosition: 'left',
+		thousandSeparator: ' ',
+		decimalSeparator: ',',
+		precision: 2,
+	},
+	NZD: {
+		code: 'NZD',
+		symbol: '$NZ',
+		symbolPosition: 'left',
+		thousandSeparator: ',',
+		decimalSeparator: '.',
+		precision: 2,
+	},
+};
+
+const updateReportCurrencies = ( config, { currency } ) => {
+	if ( currency && currencies[ currency ] ) {
+		return currencies[ currency ];
+	}
+	return config;
+};
+
+addFilter(
+	'woocommerce_admin_report_currency',
+	'plugin-domain',
+	updateReportCurrencies
 );

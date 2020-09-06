@@ -4,26 +4,10 @@
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
-import moment from 'moment';
-import { find } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
-import {
-	getCurrentDates,
-	appendTimestamp,
-	getDateParamsFromQuery,
-} from 'lib/date';
-import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { calculateDelta, formatValue } from 'lib/number-format';
-import { formatCurrency } from 'lib/currency-format';
+import { getPersistedQuery } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-
-/**
- * Internal dependencies
- */
+import { withSelect } from '@wordpress/data';
+import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import {
 	EllipsisMenu,
 	MenuItem,
@@ -33,12 +17,18 @@ import {
 	SummaryListPlaceholder,
 	SummaryNumber,
 } from '@woocommerce/components';
-import withSelect from 'wc-api/with-select';
+import { getDateParamsFromQuery } from '@woocommerce/date';
+import { recordEvent } from '@woocommerce/tracks';
+
+/**
+ * Internal dependencies
+ */
 import './style.scss';
-import { recordEvent } from 'lib/tracks';
+import { CurrencyContext } from '../../lib/currency-context';
+import { getIndicatorData, getIndicatorValues } from './utils';
 
 const { performanceIndicators: indicators } = getSetting( 'dataEndpoints', {
-	performanceIndicators: '',
+	performanceIndicators: [],
 } );
 
 class StorePerformance extends Component {
@@ -119,6 +109,7 @@ class StorePerformance extends Component {
 			primaryData,
 			secondaryData,
 			userIndicators,
+			defaultDateRange,
 		} = this.props;
 		if ( primaryRequesting || secondaryRequesting ) {
 			return (
@@ -134,62 +125,37 @@ class StorePerformance extends Component {
 
 		const persistedQuery = getPersistedQuery( query );
 
-		const { compare } = getDateParamsFromQuery( query );
+		const { compare } = getDateParamsFromQuery( query, defaultDateRange );
 		const prevLabel =
 			compare === 'previous_period'
 				? __( 'Previous Period:', 'woocommerce-admin' )
 				: __( 'Previous Year:', 'woocommerce-admin' );
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return (
 			<SummaryList>
 				{ () =>
 					userIndicators.map( ( indicator, i ) => {
-						const primaryItem = find(
-							primaryData.data,
-							( data ) => data.stat === indicator.stat
-						);
-						const secondaryItem = find(
-							secondaryData.data,
-							( data ) => data.stat === indicator.stat
-						);
-
-						if ( ! primaryItem || ! secondaryItem ) {
-							return null;
-						}
-
-						const href =
-							( primaryItem._links &&
-								primaryItem._links.report[ 0 ] &&
-								primaryItem._links.report[ 0 ].href ) ||
-							'';
-						const reportUrl =
-							( href &&
-								getNewPath( persistedQuery, href, {
-									chart: primaryItem.chart,
-								} ) ) ||
-							'';
-						const isCurrency = primaryItem.format === 'currency';
-
-						const delta = calculateDelta(
-							primaryItem.value,
-							secondaryItem.value
-						);
-						const primaryValue = isCurrency
-							? formatCurrency( primaryItem.value )
-							: formatValue(
-									primaryItem.format,
-									primaryItem.value
-							  );
-						const secondaryValue = isCurrency
-							? formatCurrency( secondaryItem.value )
-							: formatValue(
-									secondaryItem.format,
-									secondaryItem.value
-							  );
+						const {
+							primaryValue,
+							secondaryValue,
+							delta,
+							reportUrl,
+							reportUrlType,
+						} = getIndicatorValues( {
+							indicator,
+							primaryData,
+							secondaryData,
+							currency,
+							formatAmount,
+							persistedQuery,
+						} );
 
 						return (
 							<SummaryNumber
 								key={ i }
 								href={ reportUrl }
+								hrefType={ reportUrlType }
 								label={ indicator.label }
 								value={ primaryValue }
 								prevLabel={ prevLabel }
@@ -227,92 +193,38 @@ class StorePerformance extends Component {
 		);
 	}
 }
+
+StorePerformance.contextType = CurrencyContext;
+
 export default compose(
 	withSelect( ( select, props ) => {
-		const { hiddenBlocks, query } = props;
-		const {
-			getReportItems,
-			getReportItemsError,
-			isReportItemsRequesting,
-		} = select( 'wc-api' );
-
-		const datesFromQuery = getCurrentDates( query );
-		const endPrimary = datesFromQuery.primary.before;
-		const endSecondary = datesFromQuery.secondary.before;
+		const { hiddenBlocks, query, filters } = props;
 		const userIndicators = indicators.filter(
 			( indicator ) => ! hiddenBlocks.includes( indicator.stat )
 		);
-		const statKeys = userIndicators
-			.map( ( indicator ) => indicator.stat )
-			.join( ',' );
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
-		if ( statKeys.length === 0 ) {
-			return {
-				hiddenBlocks,
-				userIndicators,
-				indicators,
-			};
-		}
-
-		const primaryQuery = {
-			after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
-			before: appendTimestamp(
-				endPrimary,
-				endPrimary.isSame( moment(), 'day' ) ? 'now' : 'end'
-			),
-			stats: statKeys,
-		};
-
-		const secondaryQuery = {
-			after: appendTimestamp( datesFromQuery.secondary.after, 'start' ),
-			before: appendTimestamp(
-				endSecondary,
-				endSecondary.isSame( moment(), 'day' ) ? 'now' : 'end'
-			),
-			stats: statKeys,
-		};
-
-		const primaryData = getReportItems(
-			'performance-indicators',
-			primaryQuery
-		);
-		const primaryError =
-			getReportItemsError( 'performance-indicators', primaryQuery ) ||
-			null;
-		const primaryRequesting = isReportItemsRequesting(
-			'performance-indicators',
-			primaryQuery
-		);
-
-		const secondaryData = getReportItems(
-			'performance-indicators',
-			secondaryQuery
-		);
-		const secondaryError =
-			getReportItemsError( 'performance-indicators', secondaryQuery ) ||
-			null;
-		const secondaryRequesting = isReportItemsRequesting(
-			'performance-indicators',
-			secondaryQuery
-		);
-
-		return {
+		const data = {
 			hiddenBlocks,
 			userIndicators,
 			indicators,
-			primaryData,
-			primaryError,
-			primaryRequesting,
-			secondaryData,
-			secondaryError,
-			secondaryRequesting,
+			defaultDateRange,
 		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { updateCurrentUserData } = dispatch( 'wc-api' );
+		if ( userIndicators.length === 0 ) {
+			return data;
+		}
+		const indicatorData = getIndicatorData(
+			select,
+			userIndicators,
+			query,
+			filters
+		);
 
 		return {
-			updateCurrentUserData,
+			...data,
+			...indicatorData,
 		};
 	} )
 )( StorePerformance );

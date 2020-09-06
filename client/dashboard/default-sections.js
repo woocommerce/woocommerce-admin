@@ -3,13 +3,39 @@
  */
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { lazy, Suspense } from '@wordpress/element';
+import { Spinner } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
-import DashboardCharts from './dashboard-charts';
-import Leaderboards from './leaderboards';
-import StorePerformance from './store-performance';
+const LazyDashboardCharts = lazy( () =>
+	import( /* webpackChunkName: "dashboard-charts" */ './dashboard-charts' )
+);
+const LazyLeaderboards = lazy( () =>
+	import( /* webpackChunkName: "leaderboards" */ './leaderboards' )
+);
+const LazyStorePerformance = lazy( () =>
+	import( /* webpackChunkName: "store-performance" */ './store-performance' )
+);
+
+const DashboardCharts = ( props ) => (
+	<Suspense fallback={ <Spinner /> }>
+		<LazyDashboardCharts { ...props } />
+	</Suspense>
+);
+
+const Leaderboards = ( props ) => (
+	<Suspense fallback={ <Spinner /> }>
+		<LazyLeaderboards { ...props } />
+	</Suspense>
+);
+
+const StorePerformance = ( props ) => (
+	<Suspense fallback={ <Spinner /> }>
+		<LazyStorePerformance { ...props } />
+	</Suspense>
+);
 
 const DEFAULT_SECTIONS_FILTER = 'woocommerce_dashboard_default_sections';
 
@@ -28,6 +54,9 @@ export default applyFilters( DEFAULT_SECTIONS_FILTER, [
 			'taxes/total_tax',
 			'taxes/shipping_tax',
 			'revenue/shipping',
+			'orders/avg_order_value',
+			'revenue/refunds',
+			'revenue/gross_sales',
 		],
 	},
 	{
@@ -37,19 +66,18 @@ export default applyFilters( DEFAULT_SECTIONS_FILTER, [
 		isVisible: true,
 		icon: 'chart-bar',
 		hiddenBlocks: [
-			'avg_order_value',
+			'orders_avg_order_value',
 			'avg_items_per_order',
-			'items_sold',
-			'total_sales',
-			'refunds',
-			'coupons',
-			'taxes',
-			'shipping',
-			'amount',
-			'total_tax',
-			'order_tax',
-			'shipping_tax',
-			'download_count',
+			'products_items_sold',
+			'revenue_total_sales',
+			'revenue_refunds',
+			'coupons_amount',
+			'coupons_orders_count',
+			'revenue_shipping',
+			'taxes_total_tax',
+			'taxes_order_tax',
+			'taxes_shipping_tax',
+			'downloads_download_count',
 		],
 	},
 	{

@@ -3,10 +3,6 @@
  */
 import { decodeEntities } from '@wordpress/html-entities';
 import { without } from 'lodash';
-
-/**
- * Internal dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -42,32 +38,102 @@ export function getCurrencyRegion( countryState ) {
  *
  * @param {Object} profileItems Onboarding profile.
  * @param {boolean} includeInstalledItems Include installed items in returned product IDs.
+ * @param {Array} installedPlugins Installed plugins.
  * @return {Array} Product Ids.
  */
 export function getProductIdsForCart(
 	profileItems,
-	includeInstalledItems = false
+	includeInstalledItems = false,
+	installedPlugins
 ) {
-	const productIds = [];
+	const productList = getProductList(
+		profileItems,
+		includeInstalledItems,
+		installedPlugins
+	);
+	const productIds = productList.map(
+		( product ) => product.id || product.product
+	);
+	return productIds;
+}
+
+/**
+ * Gets the labeled/categorized product names and types for items based on the product types and theme selected in the onboarding profiler.
+ *
+ * @param {Object} profileItems Onboarding profile.
+ * @param {Array} installedPlugins Installed plugins.
+ * @return {Array} Objects with labeled/categorized product names and types.
+ */
+export function getCategorizedOnboardingProducts(
+	profileItems,
+	installedPlugins
+) {
+	const productList = {};
+	productList.products = getProductList(
+		profileItems,
+		true,
+		installedPlugins
+	);
+	productList.remainingProducts = getProductList(
+		profileItems,
+		false,
+		installedPlugins
+	);
+
+	const uniqueItemsList = [
+		...new Set( [
+			...productList.products,
+			...productList.remainingProducts,
+		] ),
+	];
+
+	productList.uniqueItemsList = uniqueItemsList.map( ( product ) => {
+		let cleanedProduct;
+		if ( product.label ) {
+			cleanedProduct = { type: 'extension', name: product.label };
+		} else {
+			cleanedProduct = { type: 'theme', name: product.title };
+		}
+		return cleanedProduct;
+	} );
+
+	return productList;
+}
+
+/**
+ * Gets a product list for items based on the product types and theme selected in the onboarding profiler.
+ *
+ * @param {Object} profileItems Onboarding profile.
+ * @param {boolean} includeInstalledItems Include installed items in returned product list.
+ * @param {Array} installedPlugins Installed plugins.
+ * @return {Array} Products.
+ */
+export function getProductList(
+	profileItems,
+	includeInstalledItems = false,
+	installedPlugins
+) {
 	const onboarding = getSetting( 'onboarding', {} );
-	const productTypes = profileItems.product_types || [];
+	const productList = [];
 
 	// The population of onboarding.productTypes only happens if the task list should be shown
 	// so bail early if it isn't present.
 	if ( ! onboarding.productTypes ) {
-		return productIds;
+		return productList;
 	}
+
+	const productTypes = profileItems.product_types || [];
 
 	productTypes.forEach( ( productType ) => {
 		if (
 			onboarding.productTypes[ productType ] &&
 			onboarding.productTypes[ productType ].product &&
 			( includeInstalledItems ||
-				! onboarding.installedPlugins.includes(
+				! installedPlugins.includes(
 					onboarding.productTypes[ productType ].slug
 				) )
 		) {
-			productIds.push( onboarding.productTypes[ productType ].product );
+			productList.push( onboarding.productTypes[ productType ] );
 		}
 	} );
 
@@ -81,10 +147,10 @@ export function getProductIdsForCart(
 		getPriceValue( theme.price ) > 0 &&
 		( includeInstalledItems || ! theme.is_installed )
 	) {
-		productIds.push( theme.id );
+		productList.push( theme );
 	}
 
-	return productIds;
+	return productList;
 }
 
 /**
@@ -98,17 +164,11 @@ export function getPriceValue( string ) {
 }
 
 /**
- * Returns if the onboarding feature of WooCommerce Admin should be enabled.
+ * Determines if a URL is a WC admin url.
  *
- * While we preform an a/b test of onboarding, the feature will be enabled within the plugin build,
- * but only if the user recieved the test/opted in.
- *
- * @return {boolean} True if the onboarding is enabled.
+ * @param {*} url - the url to test
+ * @return {boolean} true if the url is a wc-admin URL
  */
-export function isOnboardingEnabled() {
-	if ( ! window.wcAdminFeatures.onboarding ) {
-		return false;
-	}
-
-	return getSetting( 'onboardingEnabled', false );
+export function isWCAdmin( url ) {
+	return /admin.php\?page=wc-admin/.test( url );
 }

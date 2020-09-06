@@ -9,12 +9,10 @@ import { compose } from '@wordpress/compose';
 import { ESCAPE } from '@wordpress/keycodes';
 import { get } from 'lodash';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
 import { Link, ProductImage } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -37,6 +35,10 @@ class ProductStockCard extends Component {
 		this.onSubmit = this.onSubmit.bind( this );
 	}
 
+	recordStockEvent( eventName, eventProps = {} ) {
+		recordEvent( `activity_panel_stock_${ eventName }`, eventProps );
+	}
+
 	beginEdit() {
 		const { product } = this.props;
 
@@ -51,6 +53,7 @@ class ProductStockCard extends Component {
 				}
 			}
 		);
+		this.recordStockEvent( 'update_stock' );
 	}
 
 	cancelEdit() {
@@ -60,6 +63,7 @@ class ProductStockCard extends Component {
 			editing: false,
 			quantity: product.stock_quantity,
 		} );
+		this.recordStockEvent( 'cancel' );
 	}
 
 	handleKeyDown( event ) {
@@ -72,13 +76,35 @@ class ProductStockCard extends Component {
 		this.setState( { quantity: event.target.value } );
 	}
 
-	onSubmit() {
-		const { product, updateProductStock } = this.props;
+	async onSubmit() {
+		const { product, updateProductStock, createNotice } = this.props;
 		const { quantity } = this.state;
 
 		this.setState( { editing: false, edited: true } );
 
-		updateProductStock( product, quantity );
+		const results = await updateProductStock( product, quantity );
+
+		if ( results.success ) {
+			createNotice(
+				'success',
+				sprintf(
+					__( '%s stock updated.', 'woocommerce-admin' ),
+					product.name
+				)
+			);
+		} else {
+			createNotice(
+				'error',
+				sprintf(
+					__( '%s stock could not be updated.', 'woocommerce-admin' ),
+					product.name
+				)
+			);
+		}
+
+		this.recordStockEvent( 'save', {
+			quantity,
+		} );
 	}
 
 	getActions() {
@@ -96,7 +122,7 @@ class ProductStockCard extends Component {
 		}
 
 		return [
-			<Button key="update" isDefault onClick={ this.beginEdit }>
+			<Button key="update" isSecondary onClick={ this.beginEdit }>
 				{ __( 'Update stock', 'woocommerce-admin' ) }
 			</Button>,
 		];
@@ -158,6 +184,7 @@ class ProductStockCard extends Component {
 					'post.php?action=edit&post=' +
 					( product.parent_id || product.id )
 				}
+				onClick={ () => this.recordStockEvent( 'product_name' ) }
 				type="wp-admin"
 			>
 				{ product.name }
@@ -219,10 +246,12 @@ class ProductStockCard extends Component {
 
 export default compose(
 	withDispatch( ( dispatch ) => {
-		const { updateProductStock } = dispatch( 'wc-api' );
+		const { createNotice } = dispatch( 'core/notices' );
+		const { updateProductStock } = dispatch( ITEMS_STORE_NAME );
 
 		return {
 			updateProductStock,
+			createNotice,
 		};
 	} )
 )( ProductStockCard );

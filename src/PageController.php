@@ -1,8 +1,6 @@
 <?php
 /**
  * PageController
- *
- * @package Woocommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin;
@@ -131,7 +129,6 @@ class PageController {
 				}
 			}
 		}
-
 		$this->current_page = false;
 	}
 
@@ -168,6 +165,11 @@ class PageController {
 			while ( $parent_id ) {
 				if ( isset( $this->pages[ $parent_id ] ) ) {
 					$parent = $this->pages[ $parent_id ];
+
+					if ( 0 === strpos( $parent['path'], self::PAGE_ROOT ) ) {
+						$parent['path'] = 'admin.php?page=' . $parent['path'];
+					}
+
 					array_unshift( $breadcrumbs, array( $parent['path'], reset( $parent['title'] ) ) );
 					$parent_id = isset( $parent['parent'] ) ? $parent['parent'] : false;
 				} else {
@@ -175,6 +177,10 @@ class PageController {
 				}
 			}
 		}
+
+		$woocommerce_breadcrumb = array( 'admin.php?page=' . self::PAGE_ROOT, __( 'WooCommerce', 'woocommerce-admin' ) );
+
+		array_unshift( $breadcrumbs, $woocommerce_breadcrumb );
 
 		/**
 		 * The navigation breadcrumbs for the current page.
@@ -431,6 +437,17 @@ class PageController {
 				$options['icon'],
 				$options['position']
 			);
+
+			if ( method_exists( '\Automattic\WooCommerce\Navigation\Menu', 'add_category' ) ) {
+				\Automattic\WooCommerce\Navigation\Menu::add_category(
+					array(
+						'id'         => $options['id'],
+						'title'      => $options['title'],
+						'capability' => $options['capability'],
+						'url'        => $options['path'],
+					)
+				);
+			}
 		} else {
 			$parent_path = $this->get_path_from_id( $options['parent'] );
 			// @todo check for null path.
@@ -442,6 +459,18 @@ class PageController {
 				$options['path'],
 				array( __CLASS__, 'page_wrapper' )
 			);
+
+			if ( method_exists( '\Automattic\WooCommerce\Navigation\Menu', 'add_item' ) ) {
+				\Automattic\WooCommerce\Navigation\Menu::add_item(
+					array(
+						'id'         => $options['id'],
+						'parent'     => $options['parent'],
+						'title'      => $options['title'],
+						'capability' => $options['capability'],
+						'url'        => $options['path'],
+					)
+				);
+			}
 		}
 
 		$this->connect_page( $options );
@@ -451,10 +480,6 @@ class PageController {
 	 * Set up a div for the app to render into.
 	 */
 	public static function page_wrapper() {
-		?>
-		<div class="wrap">
-			<div id="root"></div>
-		</div>
-		<?php
+		Loader::page_wrapper();
 	}
 }

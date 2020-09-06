@@ -1,11 +1,7 @@
 /**
- * Internal dependencies
- */
-import { AnimationSlider } from '@woocommerce/components';
-
-/**
  * External dependencies
  */
+import { AnimationSlider } from '@woocommerce/components';
 import { Component } from '@wordpress/element';
 
 export default class MyAnimationSlider extends Component {
@@ -17,7 +13,7 @@ export default class MyAnimationSlider extends Component {
 			animate: null,
 		};
 		this.forward = this.forward.bind( this );
-		this.back = this.forward.bind( this );
+		this.back = this.back.bind( this );
 	}
 
 	forward() {
@@ -53,7 +49,7 @@ export default class MyAnimationSlider extends Component {
 				</button>
 				<button
 					onClick={ this.forward }
-					disabled={ page === pages.length + 1 }
+					disabled={ page === pages.length - 1 }
 				>
 					Forward
 				</button>

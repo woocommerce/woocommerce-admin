@@ -2,9 +2,6 @@
 
 The onboarding feature is a reimagined new user setup experience for WooCommerce core. It contains two sections aimed at getting merchants started with their stores. The merchant begins with the "profile wizard", which helps with initial steps like setting a store address, making extension recommendations, and connecting to Jetpack for additional features. Once the profile wizard is complete, the merchant can purchase & install optional extensions via WooCommerce.com, before continuing to the "task list". From the task list, merchants are walked through a variety of items to help them start selling, such as adding their first product and setting up payment methods.
 
-* Master Thread: p6q8Tx-R1-p2
-* Designs: 2317a-pb
-
 ## Enabling Onboarding
 
 If you run the development version of WooCommerce Admin from GitHub directly, no further action should be needed to enable Onboarding.
@@ -13,26 +10,21 @@ Users of the published WooCommerce Admin plugin need to either opt-in to using t
 
 To enable the new onboarding experience manually, log-in to `wp-admin`, and go to `WooCommerce > Settings > Help > Setup Wizard`. Click `Enable` under the `New onboarding experience` heading.
 
-You can also set the following configuration flag in your `wp-config.php`:
-
-`define( 'WOOCOMMERCE_ADMIN_ONBOARDING_ENABLED', true );`
-
 ## New REST API endpoints
 
-To power the new onboarding flow client side, new REST API endpoints have been introduced. These are purpose built endpoints that exist under the `/wc-admin/onboarding/` namespace, and are not meant to be shipped in the core rest API package. The source is stored in `src/API/OnboardingPlugins.php`, `src/API/OnboardingProfile.php`, and `src/API/OnboardingTasks.php` respectively.
+To power the new onboarding flow client side, new REST API endpoints have been introduced. These are purpose built endpoints that exist under the `/wc-admin/onboarding/` namespace, and are not meant to be shipped in the core rest API package. The source is stored in `src/API/Plugins.php`, `src/API/OnboardingProfile.php`, and `src/API/OnboardingTasks.php` respectively.
 
-* POST `/wc-admin/onboarding/plugins/install` - Installs a requested plugin, if present in the `woocommerce_admin_onboarding_plugins_whitelist` array.
-* GET `/wc-admin/onboarding/plugins/active` - Returns a list of the currently active plugins.
-* POST `/wc-admin/onboarding/plugins/activate` - Activates the requested plugins,  if present in the `woocommerce_admin_onboarding_plugins_whitelist` array. Multiple plugins can be passed to activate at once.
-* GET `/wc-admin/onboarding/plugins/connect-jetpack` - Generates a URL for connecting to Jetpack. A `redirect_url` is accepted, which is used upon a successful connection.
-* POST `/wc-admin/onboarding/plugins/request-wccom-connect` - Generates a URL for the WooCommerce.com connection process.
-* POST `/wc-admin/onboarding/plugins/finish-wccom-connect` - Finishes the WooCommerce.com connection process by storing the received access token.
-* POST `/wc-admin/onboarding/plugins/connect-paypal` - Generates a URL for connecting to PayPal during the payments task.
-* POST `/wc-admin/onboarding/plugins/connect-square` - Generates a URL for connecting to Square during the payments task.
+* POST `/wc-admin/plugins/install` - Installs a requested plugin, if present in the `woocommerce_admin_plugins_whitelist` array.
+* GET `/wc-admin/plugins/active` - Returns a list of the currently active plugins.
+* POST `/wc-admin/plugins/activate` - Activates the requested plugins,  if present in the `woocommerce_admin_plugins_whitelist` array. Multiple plugins can be passed to activate at once.
+* GET `/wc-admin/plugins/connect-jetpack` - Generates a URL for connecting to Jetpack. A `redirect_url` is accepted, which is used upon a successful connection.
+* POST `/wc-admin/plugins/request-wccom-connect` - Generates a URL for the WooCommerce.com connection process.
+* POST `/wc-admin/plugins/finish-wccom-connect` - Finishes the WooCommerce.com connection process by storing the received access token.
+* POST `/wc-admin/plugins/connect-paypal` - Generates a URL for connecting to PayPal during the payments task.
+* POST `/wc-admin/plugins/connect-square` - Generates a URL for connecting to Square during the payments task.
 * GET `/wc-admin/onboarding/profile` - Returns the information gathered during the profile wizard. See the `woocommerce_onboarding_profile_properties` array for a list of fields.
 * POST `/wc-admin/onboarding/profile` - Sets data for the profile wizard. See the `woocommerce_onboarding_profile_properties` array for a list of fields.
 * POST `/wc-admin/onboarding/tasks/import_sample_products` - Used for importing sample products during the appearance task.
-* POST `/wc-admin/onboarding/tasks/create_store_pages` - Used for creating default store pages (like my account and checkout) during the profile wizard.
 * POST `/wc-admin/onboarding/tasks/create_homepage` - Used for creating a homepage using Gutenberg templates.
 
 ## Onboarding filters
@@ -57,7 +49,6 @@ A few new WordPress options have been introduced to store information and settin
 * `woocommerce_task_list_hidden`. This option is used to conditionally show the entire task list. The task list can be hidden by the user after they have completed all tasks. Hiding the wizard stops it from showing in both full screen mode, and the collapsed inline version that shows above the dashboard analytics cards.
 * `woocommerce_task_list_welcome_modal_dismissed`. This option is used to show a congratulations modal during the transition between the profile wizard and task list.
 * `woocommerce_task_list_prompt_shown`. This option is used to conditionally show the "Is this card useful?" snackbar notice, shown once right after a user completes all the task list tasks.
-* `woocommerce_task_list_payments`. Since the payments step requires multiple redirects to payment providers to setup accounts, we cache the current progress of the payments step in an option, so that we can quickly drop users back into the correct part of the task.
 
 We also use existing options from WooCommerce Core or extensions like WooCommerce Services or Stripe. The list below may not be complete, as new tasks are introduced, but you can generally find usage of these by searching for the [getOptions selector](https://github.com/woocommerce/woocommerce-admin/search?q=getOptions&unscoped_q=getOptions).
 
@@ -70,7 +61,7 @@ We also use existing options from WooCommerce Core or extensions like WooCommerc
 
 During the profile wizard, merchants can select paid product type extensions (like WooCommerce Memberships) or a paid theme. To make installation easier and to finish purchasing, it is necessary to make a [WooCommerce.com connection](https://docs.woocommerce.com/document/managing-woocommerce-com-subscriptions/). We also prompt users to connect on the task list if they chose extensions in the profile wizard, but did not finish connecting.
 
-To make the connection from the new onboarding experience possible, we build our own connection endpoints [/wc-admin/onboarding/plugins/request-wccom-connect](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L298-L355) and [/wc-admin/onboarding/plugins/finish-wccom-connect](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L357-L417).
+To make the connection from the new onboarding experience possible, we build our own connection endpoints [/wc-admin/plugins/request-wccom-connect](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L298-L355) and [/wc-admin/plugins/finish-wccom-connect](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L357-L417).
 
 Both of these endpoints use WooCommerce Core's `WC_Helper_API` directly. The main difference with our connection (compared to the connection on the subscriptions page) is the addition of two additional query string parameters:
 
@@ -83,7 +74,7 @@ To disconnect from WooCommerce.com, go to `WooCommerce > Extensions > WooCommerc
 
 Using Jetpack & WooCommerce Services allows us to offer additional features to new WooCommerce users as well as simplify parts of the setup process. For example, we can do automated tax calculations for certain countries, significantly simplifying the tax task. To make this work, the user needs to be connected to a WordPress.com account. This also means development and testing of these features needs to be done on a Jetpack connected site. Search the MGS & the Feld  Guide for additional resources on testing Jetpack with local setups.
 
-We have a special Jetpack connection flow designed specifically for WooCommerce onboarding, so that the user feels that they are connecting as part of a cohesive experience. To access this flow, we have a custom Jetpack connection endpoint [/wc-admin/onboarding/plugins/connect-jetpack](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L273-L296).
+We have a special Jetpack connection flow designed specifically for WooCommerce onboarding, so that the user feels that they are connecting as part of a cohesive experience. To access this flow, we have a custom Jetpack connection endpoint [/wc-admin/plugins/connect-jetpack](https://github.com/woocommerce/woocommerce-admin/blob/61b771c2643c24334ea062ab3521073beaf50019/src/API/OnboardingPlugins.php#L273-L296).
 
 We use Jetpack's `build_connect_url` function directly, but add the following two query parameters:
 
@@ -126,9 +117,9 @@ If you are running the development version of WooCommerce Admin, and have [`WP_D
 
 The `onboarding` feature flag is enabled in the main WooCommerce Admin plugin build. That means the published version of the plugin on WordPress.org contains the onboarding feature, but it is visually off by default. See the "enable onboarding" section above.
 
-Sometimes, it may be necessary to generate a separate build of the plugin between public releases for internal testing or debugging. This can be done using the [building custom plugin builds](https://github.com/woocommerce/woocommerce-admin/blob/master/docs/feature-flags.md#building-custom-plugin-builds) feature of our build system.
+Sometimes, it may be necessary to generate a separate build of the plugin between public releases for internal testing or debugging. This can be done using the [building custom plugin builds](https://github.com/woocommerce/woocommerce-admin/blob/main/docs/feature-flags.md#building-custom-plugin-builds) feature of our build system.
 
-* Switch to the latest master branch and pull down any changes
+* Switch to the latest `main` branch and pull down any changes
 * Run `npm run build:release -- --slug onboarding --features '{"onboarding":true}'`
 * A special `woocommerce-admin-onboarding.zip` release will be generated, containing the latest onboarding code
 * Make sure to follow the directions in the "enabling onboarding" section above to properly use the build

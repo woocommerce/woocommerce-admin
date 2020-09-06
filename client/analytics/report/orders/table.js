@@ -1,27 +1,23 @@
 /**
  * External dependencies
  */
-import { __, _n, _x, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { map } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
-import { formatCurrency, renderCurrency } from 'lib/currency-format';
-import { formatValue } from 'lib/number-format';
+import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { defaultTableDateFormat } from 'lib/date';
+import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import { defaultTableDateFormat } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
-import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
 
-export default class OrdersReportTable extends Component {
+class OrdersReportTable extends Component {
 	constructor() {
 		super();
 
@@ -90,26 +86,25 @@ export default class OrdersReportTable extends Component {
 		];
 	}
 
-	getCustomerType( customerType ) {
-		switch ( customerType ) {
-			case 'new':
-				return _x( 'New', 'customer type', 'woocommerce-admin' );
-			case 'returning':
-				return _x( 'Returning', 'customer type', 'woocommerce-admin' );
-			default:
-				return _x( 'N/A', 'customer type', 'woocommerce-admin' );
+	getCustomerName( customer ) {
+		const { first_name: firstName, last_name: lastName } = customer || {};
+
+		if ( ! firstName && ! lastName ) {
+			return '';
 		}
+
+		return [ firstName, lastName ].join( ' ' );
 	}
 
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
+		const { render: renderCurrency, getCurrencyConfig } = this.context;
 
 		return map( tableData, ( row ) => {
 			const {
 				currency,
-				customer_type: customerType,
 				date_created: dateCreated,
 				net_total: netTotal,
 				num_items_sold: numItemsSold,
@@ -119,7 +114,7 @@ export default class OrdersReportTable extends Component {
 				status,
 			} = row;
 			const extendedInfo = row.extended_info || {};
-			const { coupons, products } = extendedInfo;
+			const { coupons, customer, products } = extendedInfo;
 
 			const formattedProducts = products
 				.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
@@ -177,8 +172,8 @@ export default class OrdersReportTable extends Component {
 					value: status,
 				},
 				{
-					display: this.getCustomerType( customerType ),
-					value: customerType,
+					display: this.getCustomerName( customer ),
+					value: this.getCustomerName( customer ),
 				},
 				{
 					display: this.renderList(
@@ -205,7 +200,11 @@ export default class OrdersReportTable extends Component {
 						.join( ', ' ),
 				},
 				{
-					display: formatValue( 'number', numItemsSold ),
+					display: formatValue(
+						getCurrencyConfig(),
+						'number',
+						numItemsSold
+					),
 					value: numItemsSold,
 				},
 				{
@@ -230,13 +229,14 @@ export default class OrdersReportTable extends Component {
 	getSummary( totals ) {
 		const {
 			orders_count: ordersCount = 0,
-			num_new_customers: numNewCustomers = 0,
-			num_returning_customers: numReturningCustomers = 0,
+			total_customers: totalCustomers = 0,
 			products = 0,
 			num_items_sold: numItemsSold = 0,
 			coupons_count: couponsCount = 0,
 			net_revenue: netRevenue = 0,
 		} = totals;
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -245,25 +245,16 @@ export default class OrdersReportTable extends Component {
 					ordersCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', ordersCount ),
+				value: formatValue( currency, 'number', ordersCount ),
 			},
 			{
 				label: _n(
-					'new customer',
-					'new customers',
-					numNewCustomers,
+					' customer',
+					' customers',
+					totalCustomers,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', numNewCustomers ),
-			},
-			{
-				label: _n(
-					'returning customer',
-					'returning customers',
-					numReturningCustomers,
-					'woocommerce-admin'
-				),
-				value: formatValue( 'number', numReturningCustomers ),
+				value: formatValue( currency, 'number', totalCustomers ),
 			},
 			{
 				label: _n(
@@ -272,7 +263,7 @@ export default class OrdersReportTable extends Component {
 					products,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', products ),
+				value: formatValue( currency, 'number', products ),
 			},
 			{
 				label: _n(
@@ -281,7 +272,7 @@ export default class OrdersReportTable extends Component {
 					numItemsSold,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', numItemsSold ),
+				value: formatValue( currency, 'number', numItemsSold ),
 			},
 			{
 				label: _n(
@@ -290,11 +281,11 @@ export default class OrdersReportTable extends Component {
 					couponsCount,
 					'woocommerce-admin'
 				),
-				value: formatValue( 'number', couponsCount ),
+				value: formatValue( currency, 'number', couponsCount ),
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: formatAmount( netRevenue ),
 			},
 		];
 	}
@@ -327,6 +318,14 @@ export default class OrdersReportTable extends Component {
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
 				getSummary={ this.getSummary }
+				summaryFields={ [
+					'orders_count',
+					'total_customers',
+					'products',
+					'num_items_sold',
+					'coupons_count',
+					'net_revenue',
+				] }
 				query={ query }
 				tableQuery={ {
 					extended_info: true,
@@ -339,3 +338,7 @@ export default class OrdersReportTable extends Component {
 		);
 	}
 }
+
+OrdersReportTable.contextType = CurrencyContext;
+
+export default OrdersReportTable;

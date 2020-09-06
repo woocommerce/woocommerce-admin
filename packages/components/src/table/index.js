@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
-import { find, first, isEqual, noop, without } from 'lodash';
+import { find, first, isEqual, without } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -150,7 +150,11 @@ class TableCard extends Component {
 		const allHeaders = this.props.headers;
 		const headers = this.getVisibleHeaders();
 		const rows = this.getVisibleRows();
-		const classes = classnames( 'woocommerce-table', className );
+		const classes = classnames(
+			'woocommerce-table',
+			'woocommerce-analytics__card',
+			className
+		);
 
 		return (
 			<Card
@@ -333,8 +337,8 @@ TableCard.propTypes = {
 
 TableCard.defaultProps = {
 	isLoading: false,
-	onQueryChange: noop,
-	onColumnsChange: noop,
+	onQueryChange: () => () => {},
+	onColumnsChange: () => {},
 	onSort: undefined,
 	query: {},
 	rowHeader: 0,

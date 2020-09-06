@@ -5,19 +5,20 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import { advancedFilters, charts, filters } from './config';
-import getSelectedChart from 'lib/get-selected-chart';
+import getSelectedChart from '../../../lib/get-selected-chart';
 import ProductsReportTable from './table';
-import ReportChart from 'analytics/components/report-chart';
-import ReportError from 'analytics/components/report-error';
-import ReportSummary from 'analytics/components/report-summary';
+import ReportChart from '../../components/report-chart';
+import ReportError from '../../components/report-error';
+import ReportSummary from '../../components/report-summary';
 import VariationsReportTable from './table-variations';
-import withSelect from 'wc-api/with-select';
-import ReportFilters from 'analytics/components/report-filters';
+import ReportFilters from '../../components/report-filters';
 
 class ProductsReport extends Component {
 	getChartMeta() {
@@ -94,6 +95,7 @@ class ProductsReport extends Component {
 					advancedFilters={ advancedFilters }
 				/>
 				<ReportChart
+					charts={ charts }
 					mode={ mode }
 					filters={ filters }
 					advancedFilters={ advancedFilters }
@@ -150,8 +152,8 @@ export default compose(
 			};
 		}
 
-		const { getItems, isGetItemsRequesting, getItemsError } = select(
-			'wc-api'
+		const { getItems, isResolving, getItemsError } = select(
+			ITEMS_STORE_NAME
 		);
 		if ( isSingleProductView ) {
 			const productId = parseInt( query.products, 10 );
@@ -162,10 +164,10 @@ export default compose(
 				products &&
 				products.get( productId ) &&
 				products.get( productId ).type === 'variable';
-			const isProductsRequesting = isGetItemsRequesting(
+			const isProductsRequesting = isResolving( 'getItems', [
 				'products',
-				includeArgs
-			);
+				includeArgs,
+			] );
 			const isProductsError = Boolean(
 				getItemsError( 'products', includeArgs )
 			);

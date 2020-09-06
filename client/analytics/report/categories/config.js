@@ -7,7 +7,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { getCategoryLabels } from 'lib/async-requests';
+import { getCategoryLabels } from '../../../lib/async-requests';
 
 const CATEGORY_REPORT_CHARTS_FILTER =
 	'woocommerce_admin_categories_report_charts';
@@ -43,7 +43,7 @@ export const charts = applyFilters( CATEGORY_REPORT_CHARTS_FILTER, [
 export const filters = applyFilters( CATEGORY_REPORT_FILTERS_FILTER, [
 	{
 		label: __( 'Show', 'woocommerce-admin' ),
-		staticParams: [],
+		staticParams: [ 'chartType', 'paged', 'per_page' ],
 		param: 'filter',
 		showFilters: () => true,
 		filters: [
