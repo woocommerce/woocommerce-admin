@@ -79,6 +79,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Padding on finish, forward, and back buttons on the welcome modal. #5043
 - Fix: Show usage modal when skipping the OBW. #5061
 - Fix: Handle user deletion. #4977
+- Fix: Jetpack flow for automatic tax calculations. #5101
 - Dev: Added event recording to Orders, Stock, and Reviews panels. #4861
 - Dev: Added personalization to purchase extension task. #4849
 - Dev: Display modal with more info about the new homescreen. #4890
