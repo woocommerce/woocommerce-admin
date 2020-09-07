@@ -13,7 +13,7 @@ import getSelectedChart from '../../../lib/get-selected-chart';
 import ReportChart from '../../components/report-chart';
 import ReportError from '../../components/report-error';
 import ReportSummary from '../../components/report-summary';
-import VariationsReportTable from '../products/table-variations';
+import VariationsReportTable from './table';
 import ReportFilters from '../../components/report-filters';
 
 const getChartMeta = ( { query } ) => {

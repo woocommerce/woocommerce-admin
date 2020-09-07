@@ -13,7 +13,7 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import ReportTable from '../../components/report-table';
-import { isLowStock } from './utils';
+import { isLowStock } from '../products/utils';
 import { CurrencyContext } from '../../../lib/currency-context';
 
 const manageStock = getSetting( 'manageStock', 'no' );
