@@ -253,8 +253,6 @@ class VariationsReportTable extends Component {
 		return (
 			<ReportTable
 				baseSearchQuery={ baseSearchQuery }
-				compareBy={ 'variations' }
-				compareParam={ 'filter-variations' }
 				endpoint="variations"
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }
@@ -269,7 +267,6 @@ class VariationsReportTable extends Component {
 					'net_revenue',
 					'orders_count',
 				] }
-				searchBy="variations"
 				tableQuery={ {
 					orderby: query.orderby || 'items_sold',
 					order: query.order || 'desc',
