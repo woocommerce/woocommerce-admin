@@ -357,14 +357,16 @@ class BusinessDetails extends Component {
 				</p>
 			);
 		}
+
 		const accountRequiredText = this.bundleInstall
 			? __(
 					'User accounts are required to use these features.',
 					'woocommerce-admin'
 			  )
 			: '';
+
 		return (
-			<Fragment>
+			<div className="woocommerce-profile-wizard__footnote">
 				<p>
 					{ sprintf(
 						_n(
@@ -377,7 +379,28 @@ class BusinessDetails extends Component {
 						accountRequiredText
 					) }
 				</p>
-			</Fragment>
+				{ this.bundleInstall && (
+					<p>
+						{ interpolateComponents( {
+							mixedString: __(
+								'By installing Jetpack and WooCommerce Services plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
+								'woocommerce-admin'
+							),
+							components: {
+								link: (
+									// eslint-disable-next-line jsx-a11y/anchor-has-content
+									<a
+										href="https://wordpress.com/tos/"
+										target="_blank"
+										type="external"
+										rel="noreferrer"
+									/>
+								),
+							},
+						} ) }
+					</p>
+				) }
+			</div>
 		);
 	}
 
