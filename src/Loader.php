@@ -22,6 +22,11 @@ class Loader {
 	const APP_ENTRY_POINT = 'wc-admin';
 
 	/**
+	 * Option name for the homescreen enabled 1-shot option.
+	 */
+	const WOOCOMMERCE_HOMESCREEN_ENABLED_AS_DEFAULT_EXPERIENCE_OPTION_NAME = 'woocommerce_homescreen_enabled_as_default_experience';
+
+	/**
 	 * Class instance.
 	 *
 	 * @var Loader instance
@@ -94,6 +99,13 @@ class Loader {
 
 		// Combine JSON translation files (from chunks) when language packs are updated.
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
+
+		// The "as default experience" option is used to act as a one-shot to
+		// enable the homescreen as the default experience for all sites.
+		if ( false === get_option( self::WOOCOMMERCE_HOMESCREEN_ENABLED_AS_DEFAULT_EXPERIENCE_OPTION_NAME ) ) {
+			update_option( 'woocommerce_homescreen_enabled', 'yes' );
+			update_option( self::WOOCOMMERCE_HOMESCREEN_ENABLED_AS_DEFAULT_EXPERIENCE_OPTION_NAME, true );
+		}
 	}
 
 	/**
