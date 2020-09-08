@@ -583,12 +583,8 @@ export default compose(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
-		// Variations and Category charts are powered by the /reports/products/stats endpoint.
-		const chartEndpoint = [ 'variations', 'categories' ].includes(
-			endpoint
-		)
-			? 'products'
-			: endpoint;
+		// Category charts are powered by the /reports/products/stats endpoint.
+		const chartEndpoint = endpoint === 'categories' ? 'products' : endpoint;
 		const primaryData = getSummary
 			? getReportChartData( {
 					endpoint: chartEndpoint,
