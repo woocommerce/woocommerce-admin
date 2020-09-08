@@ -28,7 +28,7 @@ class WC_Admin_Notes_Performance_On_Mobile {
 	 */
 	public static function get_note() {
 		// Only add this note if this store is at least 9 months old.
-		$nine_months_in_seconds = 365 / 12 * 9 * DAY_IN_SECONDS;
+		$nine_months_in_seconds = MONTH_IN_SECONDS * 9;
 		if ( ! self::wc_admin_active_for( $nine_months_in_seconds ) ) {
 			return;
 		}
