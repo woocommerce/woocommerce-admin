@@ -119,6 +119,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function add_sql_query_params( $query_args ) {
 		global $wpdb;
 		$order_product_lookup_table = self::get_db_table_name();
+		$order_stats_lookup_table   = $wpdb->prefix . 'wc_order_stats';
+		$where_subquery             = array();
 
 		$this->add_time_period_sql_params( $query_args, $order_product_lookup_table );
 		$this->get_limit_sql_params( $query_args );
@@ -144,8 +146,27 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
 		if ( $order_status_filter ) {
-			$this->subquery->add_sql_clause( 'join', "JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id" );
+			$this->subquery->add_sql_clause( 'join', "JOIN {$order_stats_lookup_table} ON {$order_product_lookup_table}.order_id = {$order_stats_lookup_table}.order_id" );
 			$this->subquery->add_sql_clause( 'where', "AND ( {$order_status_filter} )" );
+		}
+
+		$attribute_subqueries = $this->get_attribute_subqueries( $query_args );
+		if ( $attribute_subqueries['join'] && $attribute_subqueries['where'] ) {
+			// JOIN on product lookup if we haven't already.
+			if ( ! $order_status_filter ) {
+				$this->subquery->add_sql_clause( 'join', "JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id" );
+			}
+			// Add JOINs for matching attributes.
+			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
+				$this->subquery->add_sql_clause( 'join', $attribute_join );
+			}
+			// Add WHEREs for matching attributes.
+			$where_subquery = array_merge( $where_subquery, $attribute_subqueries['where'] );
+		}
+
+		if ( 0 < count( $where_subquery ) ) {
+			$operator = $this->get_match_operator( $query_args );
+			$this->subquery->add_sql_clause( 'where', 'AND (' . implode( " {$operator} ", $where_subquery ) . ')' );
 		}
 	}
 

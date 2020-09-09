@@ -59,6 +59,7 @@ class DataStore extends VariationsDataStore implements DataStoreInterface {
 
 		$products_where_clause      = '';
 		$products_from_clause       = '';
+		$where_subquery             = array();
 		$order_product_lookup_table = self::get_db_table_name();
 
 		$included_products = $this->get_included_products( $query_args );
@@ -77,6 +78,25 @@ class DataStore extends VariationsDataStore implements DataStoreInterface {
 		if ( $order_status_filter ) {
 			$products_from_clause  .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
 			$products_where_clause .= " AND ( {$order_status_filter} )";
+		}
+
+		$attribute_subqueries = $this->get_attribute_subqueries( $query_args );
+		if ( $attribute_subqueries['join'] && $attribute_subqueries['where'] ) {
+			// JOIN on product lookup if we haven't already.
+			if ( ! $order_status_filter ) {
+				$products_from_clause .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
+			}
+			// Add JOINs for matching attributes.
+			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
+				$products_from_clause .= ' ' . $attribute_join;
+			}
+			// Add WHEREs for matching attributes.
+			$where_subquery = array_merge( $where_subquery, $attribute_subqueries['where'] );
+		}
+
+		if ( 0 < count( $where_subquery ) ) {
+			$operator               = $this->get_match_operator( $query_args );
+			$products_where_clause .= 'AND (' . implode( " {$operator} ", $where_subquery ) . ')';
 		}
 
 		$this->add_time_period_sql_params( $query_args, $order_product_lookup_table );
