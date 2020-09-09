@@ -209,6 +209,13 @@ const webpackConfig = {
 		minimizer: [ new TerserPlugin() ],
 		splitChunks: {
 			chunks: 'async',
+			cacheGroups: {
+				commons: {
+					test: /[\\/]node_modules[\\/]/,
+					name: 'vendors',
+					chunks: 'async',
+				},
+			},
 		},
 	},
 };
