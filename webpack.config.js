@@ -200,11 +200,11 @@ const webpackConfig = {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
-		WC_ADMIN_PHASE !== 'core' &&
-			new UnminifyWebpackPlugin( {
-				test: /\.js($|\?)/i,
-				mainEntry: 'app/index.min.js',
-			} ),
+		// WC_ADMIN_PHASE !== 'core' &&
+		new UnminifyWebpackPlugin( {
+			test: /\.js($|\?)/i,
+			mainEntry: 'app/index.min.js',
+		} ),
 	].filter( Boolean ),
 	optimization: {
 		minimize: true,

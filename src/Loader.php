@@ -305,12 +305,19 @@ class Loader {
 		$path        = pathinfo( $source_path );
 		$source_url  = plugins_url( 'dist/' . $source_path, WC_ADMIN_PLUGIN_FILE );
 
-		// both rtl and non-rtl files are generated but the manifest lists just one, the path can be
+		// both rtl and non-rtl css files are generated but the manifest lists just one, the path can be
 		// inferred from the manifest by just adding or removing .rtl.
 		if ( preg_match( '/rtl/', $source_url ) && ! is_rtl() ) {
 			$source_url = str_replace( '.rtl.css', '.css', $source_url );
 		} elseif ( ! preg_match( '/rtl/', $source_url ) && is_rtl() ) {
 			$source_url = str_replace( '.css', '.rtl.css', $source_url );
+		}
+
+		$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
+
+		if ( ! $script_debug && preg_match( '/.js/', $source_url ) ) {
+			// If SCRIPT_DEBUG is disabled then deliver the minified assets.
+			$source_url = str_replace( '.js', '.min.js', $source_url );
 		}
 
 		return $source_url;
