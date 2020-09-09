@@ -13,7 +13,7 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { Icon, check, chevronRight } from '@wordpress/icons';
+import { Icon, check } from '@wordpress/icons';
 import { xor } from 'lodash';
 import { List, EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
@@ -298,8 +298,8 @@ class TaskDashboard extends Component {
 				</Text>
 			);
 
-			if ( ! task.completed ) {
-				task.after = task.isDismissable ? (
+			if ( ! task.completed && task.isDismissable ) {
+				task.after = (
 					<Button
 						isTertiary
 						onClick={ ( event ) => {
@@ -309,8 +309,6 @@ class TaskDashboard extends Component {
 					>
 						{ __( 'Dismiss', 'woocommerce-admin' ) }
 					</Button>
-				) : (
-					<Icon icon={ chevronRight } />
 				);
 			}
 
