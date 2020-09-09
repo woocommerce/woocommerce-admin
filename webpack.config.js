@@ -12,6 +12,7 @@ const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
+const ManifestPlugin = require( 'webpack-manifest-plugin' );
 
 /**
  * External dependencies
@@ -164,6 +165,7 @@ const webpackConfig = {
 		},
 	},
 	plugins: [
+		new ManifestPlugin(),
 		new FixStyleOnlyEntriesPlugin(),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {
@@ -205,8 +207,11 @@ const webpackConfig = {
 			} ),
 	].filter( Boolean ),
 	optimization: {
-		minimize: NODE_ENV !== 'development',
+		minimize: true,
 		minimizer: [ new TerserPlugin() ],
+		splitChunks: {
+			chunks: 'async',
+		},
 	},
 };
 
