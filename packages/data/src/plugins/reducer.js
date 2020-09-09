@@ -101,6 +101,7 @@ const plugins = (
 				},
 			};
 	}
+
 	return state;
 };
 
