@@ -178,7 +178,7 @@ class Tax extends Component {
 			connect: false,
 			no_tax: true,
 		} );
-		
+
 		updateOptions( {
 			woocommerce_no_sales_tax: true,
 		} ).then( this.redirectToHomePage );
@@ -322,7 +322,7 @@ class Tax extends Component {
 						) }
 						onAbort={ () => this.doNotChargeSalesTax() }
 						abortText={ __(
-							'My business doesn\'t charge sales tax',
+							"My business doesn't charge sales tax",
 							'woocommerce-admin'
 						) }
 					/>
@@ -381,7 +381,7 @@ class Tax extends Component {
 
 	renderSuccessScreen() {
 		const { isPending } = this.props;
-		
+
 		return (
 			<div className="woocommerce-task-tax__success">
 				<span
@@ -411,12 +411,9 @@ class Tax extends Component {
 					isPrimary
 					isBusy={ isPending }
 					onClick={ () => {
-						recordEvent(
-							'tasklist_tax_setup_automated_proceed',
-							{
-								setup_automatically: true,
-							}
-						);
+						recordEvent( 'tasklist_tax_setup_automated_proceed', {
+							setup_automatically: true,
+						} );
 						this.updateAutomatedTax( true );
 					} }
 				>
@@ -426,12 +423,9 @@ class Tax extends Component {
 					disabled={ isPending }
 					isBusy={ isPending }
 					onClick={ () => {
-						recordEvent(
-							'tasklist_tax_setup_automated_proceed',
-							{
-								setup_automatically: false,
-							}
-						);
+						recordEvent( 'tasklist_tax_setup_automated_proceed', {
+							setup_automatically: false,
+						} );
 						this.updateAutomatedTax( false );
 					} }
 				>
@@ -446,8 +440,8 @@ class Tax extends Component {
 					onClick={ () => this.doNotChargeSalesTax() }
 				>
 					{ __(
-							'My business doesn\'t charge sales tax',
-							'woocommerce-admin'
+						"My business doesn't charge sales tax",
+						'woocommerce-admin'
 					) }
 				</Button>
 			</div>
@@ -462,7 +456,9 @@ class Tax extends Component {
 		return (
 			<div className="woocommerce-task-tax">
 				<Card className="is-narrow">
-					{ this.shouldShowSuccessScreen() ? this.renderSuccessScreen() : (
+					{ this.shouldShowSuccessScreen() ? (
+						this.renderSuccessScreen()
+					) : (
 						<Stepper
 							isPending={ isPending || isResolving }
 							isVertical={ true }
