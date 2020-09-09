@@ -12,7 +12,6 @@ const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
-const ManifestPlugin = require( 'webpack-manifest-plugin' );
 
 /**
  * External dependencies
@@ -165,7 +164,6 @@ const webpackConfig = {
 		},
 	},
 	plugins: [
-		new ManifestPlugin(),
 		new FixStyleOnlyEntriesPlugin(),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {
@@ -200,14 +198,14 @@ const webpackConfig = {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
-		// WC_ADMIN_PHASE !== 'core' &&
-		new UnminifyWebpackPlugin( {
-			test: /\.js($|\?)/i,
-			mainEntry: 'app/index.min.js',
-		} ),
+		WC_ADMIN_PHASE !== 'core' &&
+			new UnminifyWebpackPlugin( {
+				test: /\.js($|\?)/i,
+				mainEntry: 'app/index.min.js',
+			} ),
 	].filter( Boolean ),
 	optimization: {
-		minimize: true,
+		minimize: NODE_ENV !== 'development',
 		minimizer: [ new TerserPlugin() ],
 		splitChunks: {
 			chunks: 'async',

@@ -301,23 +301,16 @@ class Loader {
 	 * Get the source url for a file from the manifest
 	 */
 	public static function get_url_from_manifest( $filename ) {
-		$source_path = self::$script_manifest->$filename;
-		$path        = pathinfo( $source_path );
-		$source_url  = plugins_url( 'dist/' . $source_path, WC_ADMIN_PLUGIN_FILE );
-
-		// both rtl and non-rtl css files are generated but the manifest lists just one, the path can be
-		// inferred from the manifest by just adding or removing .rtl.
-		if ( preg_match( '/rtl/', $source_url ) && ! is_rtl() ) {
-			$source_url = str_replace( '.rtl.css', '.css', $source_url );
-		} elseif ( ! preg_match( '/rtl/', $source_url ) && is_rtl() ) {
-			$source_url = str_replace( '.css', '.rtl.css', $source_url );
-		}
-
+		$source_url   = plugins_url( 'dist/' . $filename, WC_ADMIN_PLUGIN_FILE );
 		$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
 
 		if ( ! $script_debug && preg_match( '/.js/', $source_url ) ) {
 			// If SCRIPT_DEBUG is disabled then deliver the minified assets.
 			$source_url = str_replace( '.js', '.min.js', $source_url );
+		}
+
+		if ( preg_match( '/.css/', $source_url ) && is_rtl() ) {
+			$source_url = str_replace( '.css', '.rtl.css', $source_url );
 		}
 
 		return $source_url;
@@ -461,14 +454,14 @@ class Loader {
 
 		wp_register_style(
 			WC_ADMIN_APP,
-			self::get_url_from_manifest( 'app.css' ),
+			self::get_url_from_manifest( 'app/style.css' ),
 			array( 'wc-components' ),
 			$css_file_version
 		);
 
 		wp_register_style(
 			'wc-admin-ie',
-			self::get_url_from_manifest( 'ie.css' ),
+			self::get_url_from_manifest( 'ie/style.css' ),
 			array( WC_ADMIN_APP ),
 			$css_file_version
 		);
