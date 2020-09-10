@@ -2,17 +2,16 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Fragment, Suspense, lazy } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { partial } from 'lodash';
 import { Dropdown, Button, Icon } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 import { Icon as WPIcon, plusCircleFilled } from '@wordpress/icons';
 import { withSelect } from '@wordpress/data';
-import { H, Spinner } from '@woocommerce/components';
+import { H } from '@woocommerce/components';
 import {
 	SETTINGS_STORE_NAME,
-	OPTIONS_STORE_NAME,
 	useUserPreferences,
 } from '@woocommerce/data';
 import { getQuery } from '@woocommerce/navigation';
@@ -34,10 +33,6 @@ import {
 	CurrencyContext,
 	getFilteredCurrencyInstance,
 } from '../lib/currency-context';
-
-const TaskList = lazy( () =>
-	import( /* webpackChunkName: "task-list" */ '../task-list' )
-);
 
 const DASHBOARD_FILTERS_FILTER = 'woocommerce_admin_dashboard_filters';
 const filters = applyFilters( DASHBOARD_FILTERS_FILTER, [] );
@@ -73,20 +68,12 @@ const mergeSectionsWithDefaults = ( prefSections ) => {
 
 const CustomizableDashboard = ( {
 	defaultDateRange,
-	homepageEnabled,
 	path,
 	query,
-	taskListComplete,
-	taskListHidden,
 } ) => {
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 
 	const sections = mergeSectionsWithDefaults( userPrefs.dashboard_sections );
-
-	const isTaskListEnabled = ! homepageEnabled && ! taskListHidden;
-
-	const isDashboardShown =
-		! isTaskListEnabled || ( ! query.task && taskListComplete );
 
 	const updateSections = ( newSections ) => {
 		updateUserPreferences( { dashboard_sections: newSections } );
@@ -306,19 +293,13 @@ const CustomizableDashboard = ( {
 		<CurrencyContext.Provider
 			value={ getFilteredCurrencyInstance( getQuery() ) }
 		>
-			{ isTaskListEnabled && (
-				<Suspense fallback={ <Spinner /> }>
-					<TaskList query={ query } inline={ isDashboardShown } />
-				</Suspense>
-			) }
-			{ isDashboardShown && renderDashboardReports() }
+			{ renderDashboardReports() }
 		</CurrencyContext.Provider>
 	);
 };
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
@@ -326,14 +307,6 @@ export default compose(
 		const withSelectData = {
 			defaultDateRange,
 		};
-
-		withSelectData.homepageEnabled =
-			window.wcAdminFeatures.homescreen &&
-			getOption( 'woocommerce_homescreen_enabled' ) === 'yes';
-		withSelectData.taskListHidden =
-			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
-		withSelectData.taskListComplete =
-			getOption( 'woocommerce_task_list_complete' ) === 'yes';
 
 		return withSelectData;
 	} )

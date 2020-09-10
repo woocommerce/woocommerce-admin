@@ -32,7 +32,6 @@ import Link from '../link';
  * @param {boolean} props.selected
  * @param {number|string} props.value
  * @param {Function} props.onLinkClickCallback
- * @param {boolean} props.isHomescreen
  * @return {Object} -
  */
 const SummaryNumber = ( {
@@ -47,11 +46,10 @@ const SummaryNumber = ( {
 	reverseTrend,
 	selected,
 	value,
-	onLinkClickCallback,
-	isHomescreen,
+	onLinkClickCallback
 } ) => {
 	const liClasses = classnames( 'woocommerce-summary__item-container', {
-		'is-homescreen': isHomescreen,
+		'is-homescreen': true,
 		'is-dropdown-button': onToggle,
 		'is-dropdown-expanded': isOpen,
 	} );
@@ -208,10 +206,6 @@ SummaryNumber.propTypes = {
 	 * A function to be called after a SummaryNumber, rendered as a link, is clicked.
 	 */
 	onLinkClickCallback: PropTypes.func,
-	/**
-	 * A boolean used to show if the Summary Number is on the Homescreen.
-	 */
-	isHomescreen: PropTypes.bool,
 };
 
 SummaryNumber.defaultProps = {

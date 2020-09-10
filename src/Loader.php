@@ -22,11 +22,6 @@ class Loader {
 	const APP_ENTRY_POINT = 'wc-admin';
 
 	/**
-	 * Option name for the homescreen enabled 1-shot option.
-	 */
-	const WOOCOMMERCE_HOMESCREEN_ENABLED_AS_DEFAULT_EXPERIENCE_OPTION_NAME = 'woocommerce_homescreen_enabled_as_default_experience';
-
-	/**
 	 * Class instance.
 	 *
 	 * @var Loader instance
@@ -99,13 +94,6 @@ class Loader {
 
 		// Combine JSON translation files (from chunks) when language packs are updated.
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
-
-		// The "as default experience" option is used to act as a one-shot to
-		// enable the homescreen as the default experience for all sites.
-		if ( false === get_option( self::WOOCOMMERCE_HOMESCREEN_ENABLED_AS_DEFAULT_EXPERIENCE_OPTION_NAME ) ) {
-			update_option( 'woocommerce_homescreen_enabled', 'yes' );
-			update_option( self::WOOCOMMERCE_HOMESCREEN_ENABLED_AS_DEFAULT_EXPERIENCE_OPTION_NAME, true );
-		}
 	}
 
 	/**
@@ -177,10 +165,6 @@ class Loader {
 	 * @return bool Returns true if the feature is enabled.
 	 */
 	public static function is_feature_enabled( $feature ) {
-		if ( 'homescreen' === $feature && 'yes' !== get_option( 'woocommerce_homescreen_enabled', 'no' ) ) {
-			return false;
-		}
-
 		$features = self::get_features();
 		return in_array( $feature, $features, true );
 	}
@@ -264,11 +248,9 @@ class Loader {
 	 * @todo The entry point for the embed needs moved to this class as well.
 	 */
 	public static function register_page_handler() {
-		$id = self::is_feature_enabled( 'homescreen' ) ? 'woocommerce-home' : 'woocommerce-dashboard';
-
 		wc_admin_register_page(
 			array(
-				'id'         => $id, // Expected to be overridden if dashboard is enabled.
+				'id'         => 'homescreen',
 				'parent'     => 'woocommerce',
 				'title'      => null,
 				'path'       => self::APP_ENTRY_POINT,

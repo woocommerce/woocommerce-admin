@@ -123,7 +123,6 @@ export class ActivityPanel extends Component {
 			hasUnreadStock,
 			isEmbedded,
 			requestingTaskListOptions,
-			taskListEnabledResolving,
 			taskListComplete,
 			taskListHidden,
 			query,
@@ -133,7 +132,6 @@ export class ActivityPanel extends Component {
 		const { location } = this.props.getHistory();
 		const showInbox =
 			isEmbedded ||
-			! window.wcAdminFeatures.homescreen ||
 			location.pathname !== '/';
 		const isPerformingSetupTask =
 			query.task &&
@@ -142,7 +140,7 @@ export class ActivityPanel extends Component {
 				( taskListHidden === false && taskListComplete === false ) );
 
 		// To prevent a flicker between 2 different tab groups, while this option resolves just display no tabs.
-		if ( taskListEnabledResolving ) {
+		if ( requestingTaskListOptions ) {
 			return [];
 		}
 
@@ -389,10 +387,6 @@ export default compose(
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
-		const taskListEnabledResolving = isResolving( 'getOption', [
-			'woocommerce_homescreen_enabled',
-		] );
-
 		const taskListComplete =
 			getOption( 'woocommerce_task_list_complete' ) === 'yes';
 		const taskListHidden =
@@ -407,7 +401,6 @@ export default compose(
 			hasUnreadStock,
 			hasUnapprovedReviews,
 			requestingTaskListOptions,
-			taskListEnabledResolving,
 			taskListComplete,
 			taskListHidden,
 		};
