@@ -130,19 +130,12 @@ export class ActivityPanel extends Component {
 
 		// Don't show the inbox on the Home screen.
 		const { location } = this.props.getHistory();
-		const showInbox =
-			isEmbedded ||
-			location.pathname !== '/';
+		const showInbox = isEmbedded || location.pathname !== '/';
 		const isPerformingSetupTask =
 			query.task &&
 			! query.path &&
 			( requestingTaskListOptions === true ||
 				( taskListHidden === false && taskListComplete === false ) );
-
-		// To prevent a flicker between 2 different tab groups, while this option resolves just display no tabs.
-		if ( requestingTaskListOptions ) {
-			return [];
-		}
 
 		if ( ! taskListComplete && showInbox ) {
 			return [

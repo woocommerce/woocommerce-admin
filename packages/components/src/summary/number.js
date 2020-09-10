@@ -46,7 +46,7 @@ const SummaryNumber = ( {
 	reverseTrend,
 	selected,
 	value,
-	onLinkClickCallback
+	onLinkClickCallback,
 } ) => {
 	const liClasses = classnames( 'woocommerce-summary__item-container', {
 		'is-homescreen': true,

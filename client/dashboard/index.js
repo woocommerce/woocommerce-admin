@@ -24,7 +24,7 @@ const CustomizableDashboard = lazy( () =>
 class Dashboard extends Component {
 	render() {
 		const { path, query } = this.props;
-		
+
 		if ( window.wcAdminFeatures[ 'analytics-dashboard/customizable' ] ) {
 			return (
 				<Suspense fallback={ <Spinner /> }>
@@ -41,9 +41,7 @@ const onboardingData = getSetting( 'onboarding', {} );
 
 export default compose(
 	!! onboardingData.tasksStatus
-		? withOnboardingHydration( {
-			tasksStatus: onboardingData.tasksStatus,
-		} )
+		? withOnboardingHydration( { tasksStatus: onboardingData.tasksStatus } )
 		: identity,
 	withSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );

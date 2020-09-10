@@ -10,10 +10,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { Icon as WPIcon, plusCircleFilled } from '@wordpress/icons';
 import { withSelect } from '@wordpress/data';
 import { H } from '@woocommerce/components';
-import {
-	SETTINGS_STORE_NAME,
-	useUserPreferences,
-} from '@woocommerce/data';
+import { SETTINGS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
 import { getQuery } from '@woocommerce/navigation';
 import {
 	getCurrentDates,
@@ -66,11 +63,7 @@ const mergeSectionsWithDefaults = ( prefSections ) => {
 	return sections;
 };
 
-const CustomizableDashboard = ( {
-	defaultDateRange,
-	path,
-	query,
-} ) => {
+const CustomizableDashboard = ( { defaultDateRange, path, query } ) => {
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 
 	const sections = mergeSectionsWithDefaults( userPrefs.dashboard_sections );
