@@ -131,3 +131,10 @@ function wc_admin_update_140_db_version() {
 function wc_admin_update_160_remove_facebook_note() {
 	WC_Admin_Notes::delete_notes_with_name( 'wc-admin-facebook-marketing-expert' );
 }
+
+/**
+ * Update DB Version.
+ */
+function wc_admin_update_160_db_version() {
+	Installer::update_db_version( '1.6.0' );
+}
