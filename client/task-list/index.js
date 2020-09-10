@@ -301,6 +301,7 @@ class TaskDashboard extends Component {
 			if ( ! task.completed && task.isDismissable ) {
 				task.after = (
 					<Button
+						data-testid={ `${ task.key }-dismiss-button` }
 						isTertiary
 						onClick={ ( event ) => {
 							event.stopPropagation();
