@@ -167,10 +167,6 @@ class Tax extends Component {
 		);
 	}
 
-	redirectToHomePage() {
-		window.location = getAdminLink( 'admin.php?page=wc-admin' );
-	}
-
 	doNotChargeSalesTax() {
 		const { updateOptions } = this.props;
 
@@ -181,7 +177,9 @@ class Tax extends Component {
 
 		updateOptions( {
 			woocommerce_no_sales_tax: true,
-		} ).then( this.redirectToHomePage );
+		} ).then( () => {
+			window.location = getAdminLink( 'admin.php?page=wc-admin' );
+		} );
 	}
 
 	getSteps() {
