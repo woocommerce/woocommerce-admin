@@ -262,6 +262,11 @@ class Tax extends Component {
 								'Set up tax rates manually',
 								'woocommerce-admin'
 							) }
+							onAbort={ () => this.doNotChargeSalesTax() }
+							abortText={ __(
+								"My business doesn't charge sales tax",
+								'woocommerce-admin'
+							) }
 						/>
 						{ ! tosAccepted && (
 							<Text

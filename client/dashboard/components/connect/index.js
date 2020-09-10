@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
-class Connect extends Component {
+export class Connect extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
