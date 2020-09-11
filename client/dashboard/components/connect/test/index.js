@@ -1,8 +1,7 @@
 /**
  * External dependencies
  */
-import { shallow } from 'enzyme';
-import { Button } from '@wordpress/components';
+import { render } from '@testing-library/react';
 
 /**
  * Internal dependencies
@@ -11,11 +10,11 @@ import { Connect } from '../index.js';
 
 describe( 'Rendering', () => {
 	it( 'should render an abort button when the abort handler is provided', async () => {
-		const connectWrapper = shallow( <Connect onAbort={ () => {} } /> );
+		const { container } = render( <Connect onAbort={ () => {} } /> );
 
-		const buttons = connectWrapper.find( Button );
+		const buttons = container.querySelectorAll( 'button' );
 
 		expect( buttons.length ).toBe( 2 );
-		expect( buttons.at( 1 ).text() ).toBe( 'Abort' );
+		expect( buttons[ 1 ].textContent ).toBe( 'Abort' );
 	} );
 } );
