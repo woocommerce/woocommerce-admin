@@ -177,6 +177,7 @@ class Tax extends Component {
 
 		updateOptions( {
 			woocommerce_no_sales_tax: true,
+			woocommerce_calc_taxes: 'no',
 		} ).then( () => {
 			window.location = getAdminLink( 'admin.php?page=wc-admin' );
 		} );
