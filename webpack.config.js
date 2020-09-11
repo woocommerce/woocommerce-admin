@@ -12,26 +12,23 @@ const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
-
-/**
- * External dependencies
- */
 const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-webpack-plugin' );
+const AssetsPlugin = require( 'assets-webpack-plugin' );
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'development';
 
 const externals = {
-	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
-	'@wordpress/blocks': { this: [ 'wp', 'blocks' ] },
-	'@wordpress/data': { this: [ 'wp', 'data' ] },
-	'@wordpress/editor': { this: [ 'wp', 'editor' ] },
-	'@wordpress/element': { this: [ 'wp', 'element' ] },
-	'@wordpress/hooks': { this: [ 'wp', 'hooks' ] },
-	'@wordpress/url': { this: [ 'wp', 'url' ] },
-	'@wordpress/html-entities': { this: [ 'wp', 'htmlEntities' ] },
-	'@wordpress/i18n': { this: [ 'wp', 'i18n' ] },
-	'@wordpress/data-controls': { this: [ 'wp', 'dataControls' ] },
+	'@wordpress/api-fetch': 'wp.apiFetch',
+	'@wordpress/blocks': 'wp.blocks',
+	'@wordpress/data': 'wp.data',
+	'@wordpress/editor': 'wp.editor',
+	'@wordpress/element': 'wp.element',
+	'@wordpress/hooks': 'wp.hooks',
+	'@wordpress/url': 'wp.url',
+	'@wordpress/html-entities': 'wp.htmlEntities',
+	'@wordpress/i18n': 'wp.i18n',
+	'@wordpress/data-controls': 'wp.dataControls',
 	tinymce: 'tinymce',
 	moment: 'moment',
 	react: 'React',
@@ -52,14 +49,10 @@ const wcAdminPackages = [
 
 const entryPoints = {};
 wcAdminPackages.forEach( ( name ) => {
-	externals[ `@woocommerce/${ name }` ] = {
-		this: [
-			'wc',
-			name.replace( /-([a-z])/g, ( match, letter ) =>
-				letter.toUpperCase()
-			),
-		],
-	};
+	const accessor = name.replace( /-([a-z])/g, ( match, letter ) =>
+		letter.toUpperCase()
+	);
+	externals[ `@woocommerce/${ name }` ] = `wc.${ accessor }`;
 	entryPoints[ name ] = `./packages/${ name }`;
 } );
 
@@ -164,6 +157,10 @@ const webpackConfig = {
 		},
 	},
 	plugins: [
+		new AssetsPlugin( {
+			entrypoints: true,
+			useCompilerPath: true,
+		} ),
 		new FixStyleOnlyEntriesPlugin(),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {
@@ -195,7 +192,7 @@ const webpackConfig = {
 			} ) )
 		),
 		new MomentTimezoneDataPlugin( {
-			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
+			startYear: 2011, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
 		WC_ADMIN_PHASE !== 'core' &&
@@ -208,12 +205,12 @@ const webpackConfig = {
 		minimize: NODE_ENV !== 'development',
 		minimizer: [ new TerserPlugin() ],
 		splitChunks: {
-			chunks: 'async',
+			chunks: 'all',
 			cacheGroups: {
-				commons: {
+				vendor: {
 					test: /[\\/]node_modules[\\/]/,
 					name: 'vendors',
-					chunks: 'async',
+					chunks: 'all',
 				},
 			},
 		},

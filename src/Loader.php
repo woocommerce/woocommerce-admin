@@ -43,6 +43,12 @@ class Loader {
 	protected static $required_capability = null;
 
 	/**
+	 * Manifest containing the required dependencies to load
+	 * for Webpack entry points.
+	 */
+	protected static $manifest = null;
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -94,6 +100,9 @@ class Loader {
 
 		// Combine JSON translation files (from chunks) when language packs are updated.
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
+
+		$json           = file_get_contents( WC_ADMIN_ABSPATH . 'dist/webpack-assets.json' );
+		self::$manifest = json_decode( $json );
 	}
 
 	/**
@@ -316,72 +325,22 @@ class Loader {
 			return;
 		}
 
-		$js_file_version  = self::get_file_version( 'js' );
 		$css_file_version = self::get_file_version( 'css' );
 
-		wp_register_script(
-			'wc-csv',
-			self::get_url( 'csv-export/index', 'js' ),
-			array( 'moment' ),
-			$js_file_version,
-			true
-		);
+		self::register_asset( 'csv-export' );
+		self::register_asset( 'data' );
+		self::register_asset( 'navigation' );
+		self::register_asset( 'number' );
+		self::register_asset( 'tracks' );
 
-		wp_register_script(
-			'wc-currency',
-			self::get_url( 'currency/index', 'js' ),
-			array( 'wc-number' ),
-			$js_file_version,
-			true
-		);
-
+		self::register_asset( 'currency', array( 'wc-number' ) );
 		wp_set_script_translations( 'wc-currency', 'woocommerce-admin' );
 
-		wp_register_script(
-			'wc-navigation',
-			self::get_url( 'navigation/index', 'js' ),
-			array(),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
-			'wc-number',
-			self::get_url( 'number/index', 'js' ),
-			array(),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
-			'wc-tracks',
-			self::get_url( 'tracks/index', 'js' ),
-			array(),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
-			'wc-date',
-			self::get_url( 'date/index', 'js' ),
-			array( 'moment', 'wp-date', 'wp-i18n' ),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
-			'wc-store-data',
-			self::get_url( 'data/index', 'js' ),
-			array(),
-			$js_file_version,
-			true
-		);
-
+		self::register_asset( 'date', array( 'moment', 'wp-date', 'wp-i18n' ) );
 		wp_set_script_translations( 'wc-date', 'woocommerce-admin' );
 
-		wp_register_script(
-			'wc-components',
-			self::get_url( 'components/index', 'js' ),
+		self::register_asset(
+			'components',
 			array(
 				'moment',
 				'wp-api-fetch',
@@ -398,12 +357,20 @@ class Loader {
 				'wc-navigation',
 				'wc-number',
 				'wc-store-data',
-			),
-			$js_file_version,
-			true
+			)
 		);
-
 		wp_set_script_translations( 'wc-components', 'woocommerce-admin' );
+
+		self::register_asset(
+			'app',
+			array(
+				'wp-data',
+				'wp-core-data',
+				'wc-components',
+				'wp-date',
+				'wc-tracks',
+			)
+		);
 
 		wp_register_style(
 			'wc-components',
@@ -421,33 +388,21 @@ class Loader {
 		);
 		wp_style_add_data( 'wc-components-ie', 'rtl', 'replace' );
 
-		wp_register_script(
-			WC_ADMIN_APP,
-			self::get_url( 'app/index', 'js' ),
-			array(
-				'wp-core-data',
-				'wc-components',
-				'wp-date',
-				'wc-tracks',
-			),
-			$js_file_version,
-			true
-		);
 		wp_localize_script(
-			WC_ADMIN_APP,
+			'wc-app',
 			'wcAdminAssets',
 			array(
 				'path' => plugins_url( self::get_path( 'js' ), WC_ADMIN_PLUGIN_FILE ),
 			)
 		);
 
-		wp_set_script_translations( WC_ADMIN_APP, 'woocommerce-admin' );
+		wp_set_script_translations( 'wc-app', 'woocommerce-admin' );
 
 		// The "app" RTL files are in a different format than the components.
 		$rtl = is_rtl() ? '.rtl' : '';
 
 		wp_register_style(
-			WC_ADMIN_APP,
+			'wc-app',
 			self::get_url( "app/style{$rtl}", 'css' ),
 			array( 'wc-components' ),
 			$css_file_version
@@ -456,7 +411,7 @@ class Loader {
 		wp_register_style(
 			'wc-admin-ie',
 			self::get_url( "ie/style{$rtl}", 'css' ),
-			array( WC_ADMIN_APP ),
+			array( 'wc-app' ),
 			$css_file_version
 		);
 
@@ -631,6 +586,70 @@ class Loader {
 	}
 
 	/**
+	 * Get the chunks associated with an entrypoint in Webpack.
+	 *
+	 * @param string $handle A handle associated with the entrypoint in Webpack.
+	 */
+	protected static function get_js_chunks_for_asset( $handle ) {
+		return self::$manifest->$handle->js;
+	}
+
+	/**
+	 * Enqueue an asset based on it's handle.
+	 * The handle corresponds to an entrypoint generated in the Webpack manifest.
+	 */
+	protected static function enqueue_asset( $handle ) {
+		$js_assets = self::get_js_chunks_for_asset( $handle );
+
+		// Check for chunk assets and enqueue them if they haven't been already.
+		foreach ( $js_assets as $js_asset ) {
+			wp_enqueue_script( $js_asset );
+		}
+
+		// Registering the main asset as an alias for the collection of assets that make up this bundle.
+		wp_enqueue_script( 'wc-' . $handle );
+	}
+
+	/**
+	 * Register an asset that is listed in the Webpack manifest.
+	 * A single asset may be represented by multiple chunks.
+	 */
+	protected static function register_asset( $handle, $dependency_handles = array() ) {
+		$js_file_version = self::get_file_version( 'js' );
+		$js_assets       = self::get_js_chunks_for_asset( $handle );
+
+		// Check for chunk assets and register them if they haven't been already.
+		// Add chunk assets to a dependency array for the main asset we're registering.
+		foreach ( $js_assets as $js_asset ) {
+			$dependency_handles[] = $js_asset;
+
+			// Check if the assets have been registered. Some bundles share chunks.
+			// if ( ! wp_script_is( $js_asset, 'registered' ) ) {
+			wp_register_script( $js_asset, self::get_chunk_url( $js_asset ), array(), $js_file_version, true );
+			// }
+		}
+
+		error_log( 'registering: wc-' . $handle );
+		foreach ( $dependency_handles as $d ) {
+			error_log( 'dep: ' . $d );
+		}
+		// Registering the main asset as an alias for the collection of assets that make up this bundle.
+		wp_register_script( 'wc-' . $handle, false, $dependency_handles, $js_file_version, true );
+	}
+
+	/**
+	 * Get a URL for a chunk from its chunk path as generated by the Webpack manifest.
+	 */
+	protected static function get_chunk_url( $chunk_path ) {
+		$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
+		// the unminify plugin generates corresponding non minified js files alongside normal ones, this
+		// picks the right one based on SCRIPT_DEBUG.
+		$script_path = $script_debug ? str_replace( '.min.js', '.js', $chunk_path ) : $chunk_path;
+
+		return plugins_url( WC_ADMIN_DIST_JS_FOLDER . $script_path, WC_ADMIN_PLUGIN_FILE );
+	}
+
+	/**
 	 * Loads the required scripts on the correct pages.
 	 */
 	public static function load_scripts() {
@@ -650,10 +669,19 @@ class Loader {
 		foreach ( $features as $key ) {
 			$enabled_features[ $key ] = self::is_feature_enabled( $key );
 		}
-		wp_add_inline_script( WC_ADMIN_APP, 'window.wcAdminFeatures = ' . wp_json_encode( $enabled_features ), 'before' );
+		wp_add_inline_script( 'wc-app', 'window.wcAdminFeatures = ' . wp_json_encode( $enabled_features ), 'before' );
 
-		wp_enqueue_script( WC_ADMIN_APP );
-		wp_enqueue_style( WC_ADMIN_APP );
+		self::enqueue_asset( 'components' );
+		self::enqueue_asset( 'csv-export' );
+		self::enqueue_asset( 'currency' );
+		self::enqueue_asset( 'date' );
+		self::enqueue_asset( 'navigation' );
+		self::enqueue_asset( 'number' );
+		self::enqueue_asset( 'data' );
+		self::enqueue_asset( 'tracks' );
+		self::enqueue_asset( 'app' );
+
+		wp_enqueue_style( 'wc-app' );
 		wp_enqueue_style( 'wc-material-icons' );
 
 		// Use server-side detection to prevent unneccessary stylesheet loading in other browsers.
@@ -736,12 +764,12 @@ class Loader {
 	 */
 	public static function output_header_preload_tags() {
 		$wc_admin_scripts = array(
-			WC_ADMIN_APP,
+			'wc-app',
 			'wc-components',
 		);
 
 		$wc_admin_styles = array(
-			WC_ADMIN_APP,
+			'wc-app',
 			'wc-components',
 			'wc-components-ie',
 			'wc-admin-ie',
