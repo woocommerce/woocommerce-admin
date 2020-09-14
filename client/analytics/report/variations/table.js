@@ -3,7 +3,7 @@
  */
 import { __, _n, _x } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
-import { map, get } from 'lodash';
+import { map } from 'lodash';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
@@ -15,16 +15,13 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import ReportTable from '../../components/report-table';
 import { isLowStock } from '../products/utils';
 import { CurrencyContext } from '../../../lib/currency-context';
+import { getVariationName } from '../../../lib/async-requests';
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const stockStatuses = getSetting( 'stockStatuses', {} );
 
 const getFullVariationName = ( rowData ) =>
-	get( rowData, [ 'extended_info', 'name' ], '' ) +
-	' - ' +
-	get( rowData, [ 'extended_info', 'attributes' ], [] )
-		.map( ( { option } ) => option )
-		.join( ', ' );
+	getVariationName( rowData.extended_info || {} );
 
 class VariationsReportTable extends Component {
 	constructor() {

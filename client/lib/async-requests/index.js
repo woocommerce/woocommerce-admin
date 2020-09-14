@@ -77,14 +77,36 @@ export const getTaxRateLabels = getRequestByIdString(
 	} )
 );
 
+/**
+ * Create a variation name by concatenating each of the variation's
+ * attribute option strings.
+ *
+ * @param {Object} variation - variation returned by the api
+ * @param {Array} variation.attributes - attribute objects, with option property.
+ * @param {string} variation.name - name of variation.
+ * @return {string} - formatted variation name
+ */
+export function getVariationName( { attributes, name } ) {
+	const separator =
+		window.wcSettings.variationTitleAttributesSeparator || ' - ';
+
+	if ( name.indexOf( separator ) > -1 ) {
+		return name;
+	}
+
+	const attributeList = attributes
+		.map( ( { option } ) => option )
+		.join( ', ' );
+
+	return attributeList ? name + separator + attributeList : name;
+}
+
 export const getVariationLabels = getRequestByIdString(
 	( query ) => NAMESPACE + `/products/${ query.products }/variations`,
 	( variation ) => {
 		return {
 			key: variation.id,
-			label: variation.attributes
-				.map( ( { option } ) => option )
-				.join( ', ' ),
+			label: getVariationName( variation ),
 		};
 	}
 );
