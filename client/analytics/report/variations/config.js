@@ -4,6 +4,11 @@
 import { __, _x } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
+/**
+ * Internal dependencies
+ */
+import { getVariationLabels } from '../../../lib/async-requests';
+
 const VARIATIONS_REPORT_CHARTS_FILTER =
 	'woocommerce_admin_variations_report_charts';
 const VARIATIONS_REPORT_FILTERS_FILTER =
@@ -46,6 +51,32 @@ export const filters = applyFilters( VARIATIONS_REPORT_FILTERS_FILTER, [
 				label: __( 'All Variations', 'woocommerce-admin' ),
 				chartMode: 'item-comparison',
 				value: 'all',
+			},
+			{
+				label: __( 'Single Variation', 'woocommerce-admin' ),
+				value: 'select_variation',
+				subFilters: [
+					{
+						component: 'Search',
+						value: 'single_variation',
+						path: [ 'select_variation' ],
+						settings: {
+							type: 'variations',
+							param: 'variations',
+							getLabels: getVariationLabels,
+							labels: {
+								placeholder: __(
+									'Type to search for a variation',
+									'woocommerce-admin'
+								),
+								button: __(
+									'Single Variation',
+									'woocommerce-admin'
+								),
+							},
+						},
+					},
+				],
 			},
 			{
 				label: __( 'Advanced Filters', 'woocommerce-admin' ),

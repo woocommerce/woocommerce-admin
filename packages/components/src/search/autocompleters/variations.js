@@ -136,17 +136,26 @@ export default {
 			  }
 			: {};
 		const product = getQuery().products;
-		if ( ! product || product.includes( ',' ) ) {
-			// eslint-disable-next-line no-console
-			console.warn(
-				'Invalid product id supplied to Variations autocompleter'
-			);
+
+		// Product was specified, search only its variations.
+		if ( product ) {
+			if ( product.includes( ',' ) ) {
+				// eslint-disable-next-line no-console
+				console.warn(
+					'Invalid product id supplied to Variations autocompleter'
+				);
+			}
+			return apiFetch( {
+				path: addQueryArgs(
+					`/wc-analytics/products/${ product }/variations`,
+					query
+				),
+			} );
 		}
+
+		// Product was not specified, search all variations.
 		return apiFetch( {
-			path: addQueryArgs(
-				`/wc-analytics/products/${ product }/variations`,
-				query
-			),
+			path: addQueryArgs( '/wc-analytics/variations', query ),
 		} );
 	},
 	isDebounced: true,
