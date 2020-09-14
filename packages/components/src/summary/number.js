@@ -49,7 +49,6 @@ const SummaryNumber = ( {
 	onLinkClickCallback,
 } ) => {
 	const liClasses = classnames( 'woocommerce-summary__item-container', {
-		'is-homescreen': true,
 		'is-dropdown-button': onToggle,
 		'is-dropdown-expanded': isOpen,
 	} );
