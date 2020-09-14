@@ -78,7 +78,7 @@ class AnalyticsDashboard {
 	}
 
 	/**
-	 * Registers dashboard page.
+	 * Registers home page.
 	 */
 	public function register_page() {
 		wc_admin_register_page(

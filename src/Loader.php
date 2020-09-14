@@ -243,22 +243,11 @@ class Loader {
 	}
 
 	/**
-	 * Registers a basic page handler for the app entry point.
+	 * Connects existing WooCommerce pages.
 	 *
 	 * @todo The entry point for the embed needs moved to this class as well.
 	 */
 	public static function register_page_handler() {
-		wc_admin_register_page(
-			array(
-				'id'         => 'homescreen',
-				'parent'     => 'woocommerce',
-				'title'      => null,
-				'path'       => self::APP_ENTRY_POINT,
-				'capability' => static::get_analytics_capability(),
-			)
-		);
-
-		// Connect existing WooCommerce pages.
 		require_once WC_ADMIN_ABSPATH . 'includes/connect-existing-pages.php';
 	}
 
