@@ -146,14 +146,6 @@ class DataStore extends VariationsDataStore implements DataStoreInterface {
 		$data      = $this->get_cached_data( $cache_key );
 
 		if ( false === $data ) {
-			// Ensure full variation titles are queried.
-			add_filter(
-				'woocommerce_product_variation_title_include_attributes',
-				function() {
-					return true;
-				}
-			);
-
 			$this->initialize_queries();
 
 			$selections = $this->selected_columns( $query_args );
