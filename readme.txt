@@ -197,7 +197,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Reset profiler when visiting old OBW URL #4166.
 - Fix: Dashboard flash before OBW chunk loads #4259
 - Tweak: Enable the default homepage template to be filtered #4072 🎉 @stevegrunwell
-- Tweak: Create admin note if Jetpack or WooCommerce Services plugin doesn't get installed due to an error during OBW #3888
+- Tweak: Create admin note if Jetpack or WooCommerce Shipping & Tax plugin doesn't get installed due to an error during OBW #3888
 - Tweak: Update Email Marketing note. #4167
 - Tweak: Adjust "demo products" verbiage to "Sample Products" #4184 🎉 @jobthomas
 - Tweak: Don't reschedule imports on failed imports #4263
@@ -492,7 +492,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Add single customer REST API end point. #3174 (REST API)
 - Dev: fix typos in JS docs #3248
 - Bug: Select control: fix misalignment and hide scroll bar #3215 (Components, Packages)
-- Dev: capitalize WooCommerce Services #3249
+- Dev: capitalize WooCommerce Shipping & Tax #3249
 
 = 0.22.0 2019-11-13 =
 
