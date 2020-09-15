@@ -44,7 +44,8 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @var array
 	 */
 	protected $param_mapping = array(
-		'products' => 'product_includes',
+		'products'   => 'product_includes',
+		'variations' => 'variation_includes',
 	);
 
 	/**

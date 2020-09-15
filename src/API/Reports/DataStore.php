@@ -984,11 +984,11 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_included_variations( $query_args ) {
-		if ( isset( $query_args['variations'] ) && is_array( $query_args['variations'] ) && count( $query_args['variations'] ) > 0 ) {
-			$query_args['variations'] = array_filter( array_map( 'intval', $query_args['variations'] ) );
+		if ( isset( $query_args['variation_includes'] ) && is_array( $query_args['variation_includes'] ) && count( $query_args['variation_includes'] ) > 0 ) {
+			$query_args['variation_includes'] = array_filter( array_map( 'intval', $query_args['variation_includes'] ) );
 		}
 
-		return $this->get_filtered_ids( $query_args, 'variations' );
+		return $this->get_filtered_ids( $query_args, 'variation_includes' );
 	}
 
 	/**

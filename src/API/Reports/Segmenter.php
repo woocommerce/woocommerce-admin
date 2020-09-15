@@ -360,21 +360,21 @@ class Segmenter {
 				$segment_labels[ $id ] = $segment->get_name();
 			}
 		} elseif ( 'variation' === $this->query_args['segmentby'] ) {
-			// @todo Assuming that this will only be used for one product, check assumption.
-			if ( ! isset( $this->query_args['product_includes'] ) || count( $this->query_args['product_includes'] ) !== 1 ) {
-				$this->all_segment_ids = array();
-				return;
-			}
-
 			$args = array(
 				'return' => 'objects',
 				'limit'  => -1,
 				'type'   => 'variation',
-				'parent' => $this->query_args['product_includes'][0],
 			);
 
-			if ( isset( $this->query_args['variations'] ) ) {
-				$args['include'] = $this->query_args['variations'];
+			if (
+				isset( $this->query_args['product_includes'] ) &&
+				count( $this->query_args['product_includes'] ) === 1
+			) {
+				$args['parent'] = $this->query_args['product_includes'][0];
+			}
+
+			if ( isset( $this->query_args['variation_includes'] ) ) {
+				$args['include'] = $this->query_args['variation_includes'];
 			}
 
 			$segment_objects = wc_get_products( $args );
@@ -392,8 +392,8 @@ class Segmenter {
 			// If no variations were specified, add a segment for the parent product (variation = 0).
 			// This is to catch simple products with prior sales converted into variable products.
 			// See: https://github.com/woocommerce/woocommerce-admin/issues/2719.
-			if ( empty( $this->query_args['variations'] ) ) {
-				$parent_object     = wc_get_product( $this->query_args['product_includes'][0] );
+			if ( isset( $args['parent'] ) && empty( $args['include'] ) ) {
+				$parent_object     = wc_get_product( $args['parent'] );
 				$segments[]        = 0;
 				$segment_labels[0] = $parent_object->get_name();
 			}

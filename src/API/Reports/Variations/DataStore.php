@@ -126,7 +126,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->get_limit_sql_params( $query_args );
 		$this->add_order_by_sql_params( $query_args );
 
-		if ( count( $query_args['variations'] ) > 0 ) {
+		$included_variations = $this->get_included_variations( $query_args );
+		if ( $included_variations > 0 ) {
 			$this->add_from_sql_params( $query_args, 'outer' );
 		} else {
 			$this->add_from_sql_params( $query_args, 'inner' );
@@ -137,9 +138,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
 		}
 
-		if ( count( $query_args['variations'] ) > 0 ) {
-			$allowed_variations_str = self::get_filtered_ids( $query_args, 'variations' );
-			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id IN ({$allowed_variations_str})" );
+		if ( $included_variations ) {
+			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id IN ({$included_variations})" );
 		} elseif ( ! $included_products ) {
 			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id != 0" );
 		}
