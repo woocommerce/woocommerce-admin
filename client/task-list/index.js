@@ -5,17 +5,15 @@ import { __ } from '@wordpress/i18n';
 import { Component, cloneElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { xor } from 'lodash';
-import { List, EllipsisMenu } from '@woocommerce/components';
+import {
+	List,
+	EllipsisMenu,
+	__experimentalText as Text,
+} from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import {
 	PLUGINS_STORE_NAME,

@@ -2,13 +2,20 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, __experimentalText as Text } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { Card, H, Link, Stepper, Plugins } from '@woocommerce/components';
+import {
+	Card,
+	H,
+	Link,
+	Stepper,
+	Plugins,
+	__experimentalText as Text,
+} from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {

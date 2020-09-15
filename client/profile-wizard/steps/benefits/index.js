@@ -2,13 +2,18 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { Button, __experimentalText as Text } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
-import { Card, H, Link } from '@woocommerce/components';
+import {
+	Card,
+	H,
+	Link,
+	__experimentalText as Text,
+} from '@woocommerce/components';
 import {
 	pluginNames,
 	ONBOARDING_STORE_NAME,

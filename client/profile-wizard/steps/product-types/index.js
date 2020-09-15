@@ -4,15 +4,10 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import {
-	Button,
-	CheckboxControl,
-	FormToggle,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, CheckboxControl, FormToggle } from '@wordpress/components';
 import { includes, filter, get } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { Card } from '@woocommerce/components';
+import { Card, __experimentalText as Text } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';

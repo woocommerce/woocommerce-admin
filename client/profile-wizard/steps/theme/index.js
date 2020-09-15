@@ -7,14 +7,9 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
 import Gridicon from 'gridicons';
-import {
-	Button,
-	TabPanel,
-	Tooltip,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, TabPanel, Tooltip } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { Card, H } from '@woocommerce/components';
+import { Card, H, __experimentalText as Text } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';

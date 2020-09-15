@@ -11,12 +11,11 @@ import {
 	FlexItem,
 	Icon,
 	Tooltip,
-	__experimentalText as Text,
 } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { Form } from '@woocommerce/components';
+import { Form, __experimentalText as Text } from '@woocommerce/components';
 import { getCurrencyData } from '@woocommerce/currency';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';

@@ -2,12 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	Card,
-	CardBody,
-	CardHeader,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Card, CardBody, CardHeader } from '@wordpress/components';
 import {
 	Icon,
 	megaphone,
@@ -23,7 +18,7 @@ import {
 } from '@wordpress/icons';
 import { partial } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { List } from '@woocommerce/components';
+import { List, __experimentalText as Text } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**

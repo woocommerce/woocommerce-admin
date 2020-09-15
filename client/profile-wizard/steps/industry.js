@@ -3,17 +3,17 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import {
-	Button,
-	CheckboxControl,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, CheckboxControl } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { filter, find, findIndex, get } from 'lodash';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
-import { Card, TextControl } from '@woocommerce/components';
+import {
+	Card,
+	TextControl,
+	__experimentalText as Text,
+} from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**

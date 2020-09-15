@@ -2,14 +2,17 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { __experimentalText as Text } from '@wordpress/components';
 import { withSelect } from '@wordpress/data';
 import { Fragment, useEffect } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { Icon, chevronRight, page } from '@wordpress/icons';
 import { partial } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { List, Section } from '@woocommerce/components';
+import {
+	List,
+	Section,
+	__experimentalText as Text,
+} from '@woocommerce/components';
 import {
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,

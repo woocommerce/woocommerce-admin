@@ -368,6 +368,7 @@ class Loader {
 			array(
 				'moment',
 				'wp-api-fetch',
+				'wp-components',
 				'wp-data',
 				'wp-data-controls',
 				'wp-element',

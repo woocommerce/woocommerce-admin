@@ -10,7 +10,6 @@ import {
 	CardHeader,
 	CardBody,
 	CardFooter,
-	__experimentalText as Text,
 } from '@wordpress/components';
 import { get, xor } from 'lodash';
 import {
@@ -18,6 +17,7 @@ import {
 	MenuItem,
 	MenuTitle,
 	Link,
+	__experimentalText as Text,
 } from '@woocommerce/components';
 import { useUserPreferences, PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';

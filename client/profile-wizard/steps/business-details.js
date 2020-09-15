@@ -9,7 +9,6 @@ import {
 	CheckboxControl,
 	FormToggle,
 	Popover,
-	__experimentalText as Text,
 } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -21,6 +20,7 @@ import {
 	SelectControl,
 	Form,
 	TextControl,
+	__experimentalText as Text,
 } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
