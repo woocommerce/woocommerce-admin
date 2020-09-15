@@ -99,11 +99,10 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	public function get_items( $request ) {
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-options.php';
 
-		$onboarding_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$onboarding_data             = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
 		$onboarding_data['industry'] = isset( $onboarding_data['industry'] ) ? $this->filter_industries( $onboarding_data['industry'] ) : null;
-		$item_schema     = $this->get_item_schema();
-
-		$items = array();
+		$item_schema                 = $this->get_item_schema();
+		$items                       = array();
 		foreach ( $item_schema['properties'] as $key => $property_schema ) {
 			$items[ $key ] = isset( $onboarding_data[ $key ] ) ? $onboarding_data[ $key ] : null;
 		}
