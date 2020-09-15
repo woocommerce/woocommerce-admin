@@ -250,6 +250,8 @@ class VariationsReportTable extends Component {
 		return (
 			<ReportTable
 				baseSearchQuery={ baseSearchQuery }
+				compareBy="variations"
+				compareParam="filter-variations"
 				endpoint="variations"
 				getHeadersContent={ this.getHeadersContent }
 				getRowsContent={ this.getRowsContent }

@@ -44,7 +44,7 @@ export const filters = applyFilters( VARIATIONS_REPORT_FILTERS_FILTER, [
 	{
 		label: __( 'Show', 'woocommerce-admin' ),
 		staticParams: [ 'chartType', 'paged', 'per_page' ],
-		param: 'filter',
+		param: 'filter-variations',
 		showFilters: () => true,
 		filters: [
 			{
@@ -77,6 +77,28 @@ export const filters = applyFilters( VARIATIONS_REPORT_FILTERS_FILTER, [
 						},
 					},
 				],
+			},
+			{
+				label: __( 'Comparison', 'woocommerce-admin' ),
+				chartMode: 'item-comparison',
+				value: 'compare-variations',
+				settings: {
+					type: 'variations',
+					param: 'variations',
+					getLabels: getVariationLabels,
+					labels: {
+						helpText: __(
+							'Check at least two variations below to compare',
+							'woocommerce-admin'
+						),
+						placeholder: __(
+							'Search for variations to compare',
+							'woocommerce-admin'
+						),
+						title: __( 'Compare Variations', 'woocommerce-admin' ),
+						update: __( 'Compare', 'woocommerce-admin' ),
+					},
+				},
 			},
 			{
 				label: __( 'Advanced Filters', 'woocommerce-admin' ),
