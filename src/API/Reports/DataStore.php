@@ -967,38 +967,6 @@ class DataStore extends SqlQuery {
 	}
 
 	/**
-	 * Returns an array of ids of allowed variations, based on query arguments from the user.
-	 *
-	 * @param array $query_args Parameters supplied by the user.
-	 * @return array
-	 */
-	protected function get_included_variations_array( $query_args ) {
-		$included_variations = array();
-		$operator            = $this->get_match_operator( $query_args );
-
-		// @todo - implement.
-		// if ( isset( $query_args['categories'] ) && is_array( $query_args['categories'] ) && count( $query_args['categories'] ) > 0 ) {
-		// $included_products = $this->get_products_by_cat_ids( $query_args['categories'] );
-		// $included_products = empty( $included_products ) ? array( '-1' ) : wc_list_pluck( $included_products, 'get_id' );
-		// }
-
-		if ( isset( $query_args['variation_includes'] ) && is_array( $query_args['variation_includes'] ) && count( $query_args['variation_includes'] ) > 0 ) {
-			if ( count( $included_variations ) > 0 ) {
-				if ( 'AND' === $operator ) {
-					$included_variations = array_intersect( $included_variations, $query_args['variation_includes'] );
-				} elseif ( 'OR' === $operator ) {
-					// Union of variations from selected categories and manually included variations.
-					$included_variations = array_unique( array_merge( $included_variations, $query_args['variation_includes'] ) );
-				}
-			} else {
-				$included_variations = $query_args['variation_includes'];
-			}
-		}
-
-		return $included_variations;
-	}
-
-	/**
 	 * Returns comma separated ids of allowed products, based on query arguments from the user.
 	 *
 	 * @param array $query_args Parameters supplied by the user.
@@ -1016,8 +984,17 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_included_variations( $query_args ) {
-		$included_variations = $this->get_included_variations_array( $query_args );
-		return implode( ',', $included_variations );
+		return $this->get_filtered_ids( $query_args, 'variation_includes' );
+	}
+
+	/**
+	 * Returns comma separated ids of excluded variations, based on query arguments from the user.
+	 *
+	 * @param array $query_args Parameters supplied by the user.
+	 * @return string
+	 */
+	protected function get_excluded_variations( $query_args ) {
+		return $this->get_filtered_ids( $query_args, 'variation_excludes' );
 	}
 
 	/**

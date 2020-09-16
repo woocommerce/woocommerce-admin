@@ -290,7 +290,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			);
 
 			$selections          = $this->selected_columns( $query_args );
-			$included_variations = $this->get_included_variations_array( $query_args );
+			$included_variations =
+				( isset( $query_args['variation_includes'] ) && is_array( $query_args['variation_includes'] ) )
+					? $query_args['variation_includes']
+					: array();
 			$params              = $this->get_limit_params( $query_args );
 			$this->add_sql_query_params( $query_args );
 
