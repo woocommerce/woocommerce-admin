@@ -99,6 +99,7 @@ class VariationsReportTable extends Component {
 				net_revenue: netRevenue,
 				orders_count: ordersCount,
 				product_id: productId,
+				variation_id: variationId,
 			} = row;
 			const extendedInfo = row.extended_info || {};
 			const {
@@ -113,7 +114,7 @@ class VariationsReportTable extends Component {
 				'/analytics/orders',
 				{
 					filter: 'advanced',
-					product_includes: query.products,
+					variation_includes: variationId,
 				}
 			);
 			const editPostLink = getAdminLink(
