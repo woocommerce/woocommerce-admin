@@ -289,23 +289,25 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'page_no' => 0,
 			);
 
-			$included_products = $this->get_included_products_array( $query_args );
-
+			$selections          = $this->selected_columns( $query_args );
+			$included_variations = $this->get_included_variations_array( $query_args );
+			$params              = $this->get_limit_params( $query_args );
 			$this->add_sql_query_params( $query_args );
-			$params = $this->get_limit_params( $query_args );
-			if ( count( $included_products ) > 0 && count( $query_args['variations'] ) > 0 ) {
-				$this->subquery->add_sql_clause( 'select', $this->selected_columns( $query_args ) );
+
+			if ( count( $included_variations ) > 0 ) {
+				$total_results = count( $included_variations );
+				$total_pages   = (int) ceil( $total_results / $params['per_page'] );
+
 				if ( 'date' === $query_args['orderby'] ) {
 					$this->subquery->add_sql_clause( 'select', ", {$table_name}.date_created" );
 				}
 
-				$total_results = count( $query_args['variations'] );
-				$total_pages   = (int) ceil( $total_results / $params['per_page'] );
-
 				$fields          = $this->get_fields( $query_args );
-				$join_selections = $this->format_join_selections( $fields, array( 'product_id', 'variation_id' ) );
-				$ids_table       = $this->get_ids_table( $query_args['variations'], 'variation_id', array( 'product_id' => $included_products[0] ) );
+				$join_selections = $this->format_join_selections( $fields, array( 'variation_id' ) );
+				$ids_table       = $this->get_ids_table( $included_variations, 'variation_id' );
 
+				$this->subquery->clear_sql_clause( 'select' );
+				$this->subquery->add_sql_clause( 'select', $selections );
 				$this->add_sql_clause( 'select', $join_selections );
 				$this->add_sql_clause( 'from', '(' );
 				$this->add_sql_clause( 'from', $this->subquery->get_query_statement() );
@@ -332,7 +334,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				}
 
 				$this->subquery->clear_sql_clause( 'select' );
-				$this->subquery->add_sql_clause( 'select', $this->selected_columns( $query_args ) );
+				$this->subquery->add_sql_clause( 'select', $selections );
 				$this->subquery->add_sql_clause( 'order_by', $this->get_sql_clause( 'order_by' ) );
 				$this->subquery->add_sql_clause( 'limit', $this->get_sql_clause( 'limit' ) );
 				$variations_query = $this->subquery->get_query_statement();
