@@ -16,8 +16,7 @@ use \Automattic\WooCommerce\Admin\PluginsHelper;
 /**
  * WC_Admin_Notes_Google_Ads_And_Marketing
  */
-class WC_Admin_Notes_Google_Ads_And_Marketing {
-
+class Google_Ads_And_Marketing {
 	/**
 	 * Note traits.
 	 */
@@ -59,9 +58,11 @@ class WC_Admin_Notes_Google_Ads_And_Marketing {
 
 	/**
 	 * Get the note.
+	 *
+	 * @return Note
 	 */
 	public static function get_note() {
-		$note = new WC_Admin_Note();
+		$note = new Note();
 		$note->set_title( __( 'Get your products in front of millions of shoppers on Google to grow your sales', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Google Ads & Marketing makes it easy to promote products on any budget. Run paid Smart Shopping campaigns to get your top selling products in front of buyers across the Google Network. You can also drive free traffic to your store with free listings for only $10 per month!', 'woocommerce-admin' ) );
 		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
@@ -72,7 +73,7 @@ class WC_Admin_Notes_Google_Ads_And_Marketing {
 			'get-started',
 			__( 'Get started', 'woocommerce-admin' ),
 			'https://woocommerce.com/products/google-ads-and-marketing/',
-			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
+			Note::E_WC_ADMIN_NOTE_ACTIONED,
 			true
 		);
 		return $note;
