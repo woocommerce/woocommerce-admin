@@ -9,12 +9,12 @@ exports[`ProductTypes should render product types 1`] = `
       class="woocommerce-profile-wizard__step-header"
     >
       <h2
-        class="css-1ahfdc3-Text e15wbhsk0"
+        class="css-vs1sg7"
       >
         What type of products will be listed?
       </h2>
       <p
-        class="css-1f0yw52-Text e15wbhsk0"
+        class="css-1mcmzt5"
       >
         Choose any that apply
       </p>
@@ -67,7 +67,7 @@ exports[`ProductTypes should render product types 1`] = `
                 </button>
                 
                 <span
-                  class="woocommerce-pill css-1qmnemh-Text e15wbhsk0"
+                  class="woocommerce-pill css-1y33v7p"
                 >
                   <span
                     class="screen-reader-text"
@@ -112,7 +112,7 @@ you can purchase and install it later.
               for="woocommerce-product-types__pricing-toggle"
             >
               <p
-                class="css-1f0yw52-Text e15wbhsk0"
+                class="css-1mcmzt5"
               >
                 Display monthly prices
               </p>
@@ -152,7 +152,7 @@ you can purchase and install it later.
       class="woocommerce-profile-wizard__card-help-text"
     >
       <p
-        class="css-1qmnemh-Text e15wbhsk0"
+        class="css-1y33v7p"
       >
         Billing is annual. All purchases are covered by our 30 day money back guarantee and include access to support and updates. Extensions will be added to a cart for you to purchase later.
       </p>
@@ -170,12 +170,12 @@ exports[`ProductTypes should show annual prices on toggle 1`] = `
       class="woocommerce-profile-wizard__step-header"
     >
       <h2
-        class="css-1ahfdc3-Text e15wbhsk0"
+        class="css-vs1sg7"
       >
         What type of products will be listed?
       </h2>
       <p
-        class="css-1f0yw52-Text e15wbhsk0"
+        class="css-1mcmzt5"
       >
         Choose any that apply
       </p>
@@ -228,7 +228,7 @@ exports[`ProductTypes should show annual prices on toggle 1`] = `
                 </button>
                 
                 <span
-                  class="woocommerce-pill css-1qmnemh-Text e15wbhsk0"
+                  class="woocommerce-pill css-1y33v7p"
                 >
                   <span
                     class="screen-reader-text"
@@ -273,7 +273,7 @@ you can purchase and install it later.
               for="woocommerce-product-types__pricing-toggle"
             >
               <p
-                class="css-1f0yw52-Text e15wbhsk0"
+                class="css-1mcmzt5"
               >
                 Display monthly prices
               </p>
@@ -313,7 +313,7 @@ you can purchase and install it later.
       class="woocommerce-profile-wizard__card-help-text"
     >
       <p
-        class="css-1qmnemh-Text e15wbhsk0"
+        class="css-1y33v7p"
       >
         Billing is annual. All purchases are covered by our 30 day money back guarantee and include access to support and updates. Extensions will be added to a cart for you to purchase later.
       </p>
