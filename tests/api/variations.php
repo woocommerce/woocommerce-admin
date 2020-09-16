@@ -44,7 +44,16 @@ class WC_Tests_API_Variations extends WC_REST_Unit_Test_Case {
 		$variation_1       = wc_get_product( $child_product_ids[0] );
 
 		// Create a variation, using "local" attribute key/value pairs.
-		$variation_2 = WC_Helper_Product::create_product_variation_object( $product->get_id(), '', 23, array( 'flavor' => 'banana' ) );
+		// NOTE: WC_Helper_Product::create_product_variation_object() is only available for WC 4.4+.
+		$variation_2 = new WC_Product_Variation();
+		$variation_2->set_props(
+			array(
+				'parent_id'     => $product->get_id(),
+				'regular_price' => 23,
+			)
+		);
+		$variation_2->set_attributes( array( 'flavor' => 'banana' ) );
+		$variation_2->save();
 
 		// Test searching for the "global" size attribute.
 		$request = new WP_REST_Request( 'GET', "/wc-analytics/products/{$product->get_id()}/variations" );
