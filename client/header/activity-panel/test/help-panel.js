@@ -87,7 +87,7 @@ describe( 'Activity Panels', () => {
 			);
 
 			expect(
-				taxjarPluginEnabled.queryByText( /WooCommerce Shipping & Tax/ )
+				taxjarPluginEnabled.queryByText( /WooCommerce Shipping/ )
 			).toBeNull();
 
 			const unSupportedCountry = render(
@@ -102,7 +102,7 @@ describe( 'Activity Panels', () => {
 			);
 
 			expect(
-				unSupportedCountry.queryByText( /WooCommerce Shipping & Tax/ )
+				unSupportedCountry.queryByText( /WooCommerce Shipping/ )
 			).toBeNull();
 
 			const supportedCountry = render(
@@ -117,7 +117,7 @@ describe( 'Activity Panels', () => {
 			);
 
 			expect(
-				supportedCountry.getByText( /WooCommerce Shipping & Tax/ )
+				supportedCountry.getByText( /WooCommerce Shipping/ )
 			).toBeDefined();
 		} );
 
