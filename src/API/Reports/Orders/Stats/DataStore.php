@@ -142,6 +142,24 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->get_excluded_products( $query_args )
 		);
 
+		// Variations filters.
+		$where_filters[] = $this->get_object_where_filter(
+			$orders_stats_table,
+			'order_id',
+			$product_lookup,
+			'variation_id',
+			'IN',
+			$this->get_included_variations( $query_args )
+		);
+		$where_filters[] = $this->get_object_where_filter(
+			$orders_stats_table,
+			'order_id',
+			$product_lookup,
+			'variation_id',
+			'NOT IN',
+			$this->get_excluded_variations( $query_args )
+		);
+
 		// Coupons filters.
 		$where_filters[] = $this->get_object_where_filter(
 			$orders_stats_table,
