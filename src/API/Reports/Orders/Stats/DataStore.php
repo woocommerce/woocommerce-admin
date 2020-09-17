@@ -280,7 +280,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'tax_rate_includes' => array(),
 			'tax_rate_excludes' => array(),
 			'customer'          => '',
-			'categories'        => array(),
+			'category_includes' => array(),
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );

@@ -63,7 +63,7 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 		$args['refunds']            = $request['refunds'];
 		$args['attribute_is']       = (array) $request['attribute_is'];
 		$args['attribute_is_not']   = (array) $request['attribute_is_not'];
-		$args['categories']         = (array) $request['categories'];
+		$args['category_includes']  = (array) $request['categories'];
 		$args['segmentby']          = $request['segmentby'];
 
 		return $args;

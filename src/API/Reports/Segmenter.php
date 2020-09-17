@@ -344,12 +344,12 @@ class Segmenter {
 				$args['include'] = $this->query_args['product_includes'];
 			}
 
-			if ( isset( $this->query_args['categories'] ) ) {
-				$categories       = $this->query_args['categories'];
+			if ( isset( $this->query_args['category_includes'] ) ) {
+				$categories       = $this->query_args['category_includes'];
 				$args['category'] = array();
 				foreach ( $categories as $category_id ) {
-					$terms            = get_term_by( 'id', $category_id, 'product_cat' );
-					$args['category'] = $terms->slug;
+					$terms              = get_term_by( 'id', $category_id, 'product_cat' );
+					$args['category'][] = $terms->slug;
 				}
 			}
 
@@ -402,8 +402,8 @@ class Segmenter {
 				'taxonomy' => 'product_cat',
 			);
 
-			if ( isset( $this->query_args['categories'] ) ) {
-				$args['include'] = $this->query_args['categories'];
+			if ( isset( $this->query_args['category_includes'] ) ) {
+				$args['include'] = $this->query_args['category_includes'];
 			}
 
 			// @todo: Look into `wc_get_products` or data store methods and not directly touching the database or post types.

@@ -881,27 +881,21 @@ class DataStore extends SqlQuery {
 	 * @return array|stdClass
 	 */
 	protected function get_products_by_cat_ids( $categories ) {
-		$product_categories = get_categories(
+		$terms = get_terms(
 			array(
-				'hide_empty' => 0,
-				'taxonomy'   => 'product_cat',
+				'taxonomy' => 'product_cat',
+				'include'  => $categories,
 			)
 		);
-		$cat_slugs          = array();
-		$categories         = array_flip( $categories );
-		foreach ( $product_categories as $product_cat ) {
-			if ( key_exists( $product_cat->cat_ID, $categories ) ) {
-				$cat_slugs[] = $product_cat->slug;
-			}
-		}
 
-		if ( empty( $cat_slugs ) ) {
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return array();
 		}
 
 		$args = array(
-			'category' => $cat_slugs,
+			'category' => wc_list_pluck( $terms, 'slug' ),
 			'limit'    => -1,
+			'return'   => 'ids',
 		);
 		return wc_get_products( $args );
 	}
@@ -945,9 +939,12 @@ class DataStore extends SqlQuery {
 		$included_products = array();
 		$operator          = $this->get_match_operator( $query_args );
 
-		if ( isset( $query_args['categories'] ) && is_array( $query_args['categories'] ) && count( $query_args['categories'] ) > 0 ) {
-			$included_products = $this->get_products_by_cat_ids( $query_args['categories'] );
-			$included_products = empty( $included_products ) ? array( '-1' ) : wc_list_pluck( $included_products, 'get_id' );
+		if ( isset( $query_args['category_includes'] ) && is_array( $query_args['category_includes'] ) && count( $query_args['category_includes'] ) > 0 ) {
+			$included_products = $this->get_products_by_cat_ids( $query_args['category_includes'] );
+
+			if ( empty( $included_products ) ) {
+				$included_products = array( '-1' );
+			}
 		}
 
 		if ( isset( $query_args['product_includes'] ) && is_array( $query_args['product_includes'] ) && count( $query_args['product_includes'] ) > 0 ) {
@@ -1014,7 +1011,7 @@ class DataStore extends SqlQuery {
 	 * @return string
 	 */
 	protected function get_included_categories( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'categories' );
+		return $this->get_filtered_ids( $query_args, 'category_includes' );
 	}
 
 	/**

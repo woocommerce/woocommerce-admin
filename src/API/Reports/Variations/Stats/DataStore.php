@@ -130,7 +130,7 @@ class DataStore extends VariationsDataStore implements DataStoreInterface {
 			'before'             => TimeInterval::default_before(),
 			'after'              => TimeInterval::default_after(),
 			'fields'             => '*',
-			'categories'         => array(),
+			'category_includes'  => array(),
 			'interval'           => 'week',
 			'product_includes'   => array(),
 			'variation_includes' => array(),

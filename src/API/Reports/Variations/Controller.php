@@ -254,9 +254,9 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array
 	 */
 	public function get_collection_params() {
-		$params                     = array();
-		$params['context']          = $this->get_context_param( array( 'default' => 'view' ) );
-		$params['page']             = array(
+		$params                      = array();
+		$params['context']           = $this->get_context_param( array( 'default' => 'view' ) );
+		$params['page']              = array(
 			'description'       => __( 'Current page of the collection.', 'woocommerce-admin' ),
 			'type'              => 'integer',
 			'default'           => 1,
@@ -264,7 +264,7 @@ class Controller extends ReportsController implements ExportableInterface {
 			'validate_callback' => 'rest_validate_request_arg',
 			'minimum'           => 1,
 		);
-		$params['per_page']         = array(
+		$params['per_page']          = array(
 			'description'       => __( 'Maximum number of items to be returned in result set.', 'woocommerce-admin' ),
 			'type'              => 'integer',
 			'default'           => 10,
@@ -273,19 +273,19 @@ class Controller extends ReportsController implements ExportableInterface {
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['after']            = array(
+		$params['after']             = array(
 			'description'       => __( 'Limit response to resources published after a given ISO8601 compliant date.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['before']           = array(
+		$params['before']            = array(
 			'description'       => __( 'Limit response to resources published before a given ISO8601 compliant date.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'format'            => 'date-time',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['match']            = array(
+		$params['match']             = array(
 			'description'       => __( 'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient. Match affects the following parameters: status_is, status_is_not, product_includes, product_excludes, coupon_includes, coupon_excludes, customer, categories', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'default'           => 'all',
@@ -295,14 +295,14 @@ class Controller extends ReportsController implements ExportableInterface {
 			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['order']            = array(
+		$params['order']             = array(
 			'description'       => __( 'Order sort attribute ascending or descending.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'default'           => 'desc',
 			'enum'              => array( 'asc', 'desc' ),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['orderby']          = array(
+		$params['orderby']           = array(
 			'description'       => __( 'Sort collection by object attribute.', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'default'           => 'date',
@@ -315,7 +315,7 @@ class Controller extends ReportsController implements ExportableInterface {
 			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['products']         = array(
+		$params['products']          = array(
 			'description'       => __( 'Limit result to items with specified product ids.', 'woocommerce-admin' ),
 			'type'              => 'array',
 			'sanitize_callback' => 'wp_parse_id_list',
@@ -324,7 +324,7 @@ class Controller extends ReportsController implements ExportableInterface {
 				'type' => 'integer',
 			),
 		);
-		$params['variations']       = array(
+		$params['variations']        = array(
 			'description'       => __( 'Limit result to items with specified variation ids.', 'woocommerce-admin' ),
 			'type'              => 'array',
 			'sanitize_callback' => 'wp_parse_id_list',
@@ -333,15 +333,15 @@ class Controller extends ReportsController implements ExportableInterface {
 				'type' => 'integer',
 			),
 		);
-		$params['extended_info']    = array(
-			'description'       => __( 'Add additional piece of info about each product to the report.', 'woocommerce-admin' ),
+		$params['extended_info']     = array(
+			'description'       => __( 'Add additional piece of info about each variation to the report.', 'woocommerce-admin' ),
 			'type'              => 'boolean',
 			'default'           => false,
 			'sanitize_callback' => 'wc_string_to_bool',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['attribute_is']     = array(
-			'description'       => __( 'Limit result set to orders that include products with the specified attributes.', 'woocommerce-admin' ),
+		$params['attribute_is']      = array(
+			'description'       => __( 'Limit result set to variations that include the specified attributes.', 'woocommerce-admin' ),
 			'type'              => 'array',
 			'items'             => array(
 				'type' => 'array',
@@ -349,14 +349,32 @@ class Controller extends ReportsController implements ExportableInterface {
 			'default'           => array(),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['attribute_is_not'] = array(
-			'description'       => __( 'Limit result set to orders that don\'t include products with the specified attributes.', 'woocommerce-admin' ),
+		$params['attribute_is_not']  = array(
+			'description'       => __( 'Limit result set to variations that don\'t include the specified attributes.', 'woocommerce-admin' ),
 			'type'              => 'array',
 			'items'             => array(
 				'type' => 'array',
 			),
 			'default'           => array(),
 			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['category_includes'] = array(
+			'description'       => __( 'Limit result set to variations in the specified categories.', 'woocommerce-admin' ),
+			'type'              => 'array',
+			'sanitize_callback' => 'wp_parse_id_list',
+			'validate_callback' => 'rest_validate_request_arg',
+			'items'             => array(
+				'type' => 'integer',
+			),
+		);
+		$params['category_excludes'] = array(
+			'description'       => __( 'Limit result set to variations not in the specified categories.', 'woocommerce-admin' ),
+			'type'              => 'array',
+			'sanitize_callback' => 'wp_parse_id_list',
+			'validate_callback' => 'rest_validate_request_arg',
+			'items'             => array(
+				'type' => 'integer',
+			),
 		);
 
 		return $params;
