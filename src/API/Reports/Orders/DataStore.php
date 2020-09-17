@@ -335,11 +335,24 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$mapped_data[ $product['order_id'] ]['products'] = array();
 			}
 
-			$mapped_data[ $product['order_id'] ]['products'][] = array(
-				'id'       => '0' === $product['variation_id'] ? $product['product_id'] : $product['variation_id'],
+			$is_variation = '0' !== $product['variation_id'];
+			$product_data = array(
+				'id'       => $is_variation ? $product['variation_id'] : $product['product_id'],
 				'name'     => $product['product_name'],
 				'quantity' => $product['product_quantity'],
 			);
+
+			if ( $is_variation ) {
+				$variation = wc_get_product( $product_data['id'] );
+				$separator = apply_filters( 'woocommerce_product_variation_title_attributes_separator', ' - ', $variation );
+
+				if ( false === strpos( $product_data['name'], $separator ) ) {
+					$attributes            = wc_get_formatted_variation( $variation, true, false );
+					$product_data['name'] .= $separator . $attributes;
+				}
+			}
+
+			$mapped_data[ $product['order_id'] ]['products'][] = $product_data;
 		}
 
 		foreach ( $coupons as $coupon ) {
