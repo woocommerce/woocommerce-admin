@@ -108,7 +108,7 @@ class Events {
 		Test_Checkout::possibly_add_note();
 		Edit_Products_On_The_Move::possibly_add_note();
 		Performance_On_Mobile::possibly_add_note();
-        Manage_Orders_On_The_Go::possibly_add_note();
+		Manage_Orders_On_The_Go::possibly_add_note();
 
 		if ( $this->is_remote_inbox_notifications_enabled() ) {
 			DataSourcePoller::read_specs_from_data_sources();
