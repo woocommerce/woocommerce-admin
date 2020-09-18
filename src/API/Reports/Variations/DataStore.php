@@ -138,6 +138,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.product_id IN ({$included_products})" );
 		}
 
+		$excluded_products = $this->get_excluded_products( $query_args );
+		if ( $excluded_products ) {
+			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.product_id NOT IN ({$excluded_products})" );
+		}
+
 		if ( $included_variations ) {
 			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id IN ({$included_variations})" );
 		} elseif ( ! $included_products ) {

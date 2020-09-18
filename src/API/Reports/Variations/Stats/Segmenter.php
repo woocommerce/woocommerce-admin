@@ -169,28 +169,6 @@ class Segmenter extends ReportsSegmenter {
 			}
 
 			$segments = $this->get_product_related_segments( $type, $segmenting_selections, $segmenting_from, $segmenting_where, $segmenting_groupby, $segmenting_dimension_name, $table_name, $query_params, $unique_orders_table );
-		} elseif ( 'category' === $this->query_args['segmentby'] ) {
-			$product_level_columns     = $this->get_segment_selections_product_level( $product_segmenting_table );
-			$segmenting_selections     = array(
-				'product_level' => $this->prepare_selections( $product_level_columns ),
-			);
-			$this->report_columns      = $product_level_columns;
-			$segmenting_from           = "
-			LEFT JOIN {$wpdb->term_relationships} ON {$product_segmenting_table}.product_id = {$wpdb->term_relationships}.object_id
-			JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_taxonomy}.term_taxonomy_id = {$wpdb->term_relationships}.term_taxonomy_id
-			LEFT JOIN {$wpdb->wc_category_lookup} ON {$wpdb->term_taxonomy}.term_id = {$wpdb->wc_category_lookup}.category_id
-			";
-			$segmenting_where          = " AND {$wpdb->wc_category_lookup}.category_tree_id IS NOT NULL";
-			$segmenting_groupby        = "{$wpdb->wc_category_lookup}.category_tree_id";
-			$segmenting_dimension_name = 'category_id';
-
-			// Restrict our search space for category comparisons.
-			if ( isset( $this->query_args['category_includes'] ) ) {
-				$category_ids      = implode( ',', $this->get_all_segments() );
-				$segmenting_where .= " AND {$wpdb->wc_category_lookup}.category_id IN ( $category_ids )";
-			}
-
-			$segments = $this->get_product_related_segments( $type, $segmenting_selections, $segmenting_from, $segmenting_where, $segmenting_groupby, $segmenting_dimension_name, $table_name, $query_params, $unique_orders_table );
 		}
 
 		return $segments;

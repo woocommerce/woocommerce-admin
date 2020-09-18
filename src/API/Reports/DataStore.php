@@ -942,6 +942,8 @@ class DataStore extends SqlQuery {
 		if ( isset( $query_args['category_includes'] ) && is_array( $query_args['category_includes'] ) && count( $query_args['category_includes'] ) > 0 ) {
 			$included_products = $this->get_products_by_cat_ids( $query_args['category_includes'] );
 
+			// If no products were found in the specified categories, we will force an empty set
+			// by matching a product ID of -1, unless the filters are OR/any and products are specified.
 			if ( empty( $included_products ) ) {
 				$included_products = array( '-1' );
 			}
@@ -950,10 +952,11 @@ class DataStore extends SqlQuery {
 		if ( isset( $query_args['product_includes'] ) && is_array( $query_args['product_includes'] ) && count( $query_args['product_includes'] ) > 0 ) {
 			if ( count( $included_products ) > 0 ) {
 				if ( 'AND' === $operator ) {
+					// AND results in an intersection between products from selected categories and manually included products.
 					$included_products = array_intersect( $included_products, $query_args['product_includes'] );
 				} elseif ( 'OR' === $operator ) {
-					// Union of products from selected categories and manually included products.
-					$included_products = array_unique( array_merge( $included_products, $query_args['product_includes'] ) );
+					// OR results in a union of products from selected categories and manually included products.
+					$included_products = array_merge( $included_products, $query_args['product_includes'] );
 				}
 			} else {
 				$included_products = $query_args['product_includes'];
@@ -995,13 +998,35 @@ class DataStore extends SqlQuery {
 	}
 
 	/**
+	 * Returns an array of ids of disallowed products, based on query arguments from the user.
+	 *
+	 * @param array $query_args Parameters supplied by the user.
+	 * @return array
+	 */
+	protected function get_excluded_products_array( $query_args ) {
+		$excluded_products = array();
+		$operator          = $this->get_match_operator( $query_args );
+
+		if ( isset( $query_args['category_excludes'] ) && is_array( $query_args['category_excludes'] ) && count( $query_args['category_excludes'] ) > 0 ) {
+			$excluded_products = $this->get_products_by_cat_ids( $query_args['category_excludes'] );
+		}
+
+		if ( isset( $query_args['product_excludes'] ) && is_array( $query_args['product_excludes'] ) && count( $query_args['product_excludes'] ) > 0 ) {
+			$excluded_products = array_merge( $excluded_products, $query_args['product_excludes'] );
+		}
+
+		return $excluded_products;
+	}
+
+	/**
 	 * Returns comma separated ids of excluded products, based on query arguments from the user.
 	 *
 	 * @param array $query_args Parameters supplied by the user.
 	 * @return string
 	 */
 	protected function get_excluded_products( $query_args ) {
-		return $this->get_filtered_ids( $query_args, 'product_excludes' );
+		$excluded_products = $this->get_excluded_products_array( $query_args );
+		return implode( ',', $excluded_products );
 	}
 
 	/**
