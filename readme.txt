@@ -89,7 +89,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add woocommerce/tracks pacakage #5107
 - Enhancement: Add filter to allow modification of report columns #4984
 - Enhancement: Add WooCommerce Mobile Banner #5037
-- Enhancment: Add Product Attribute advanced filter #5038
+- Enhancement: Add Product Attribute advanced filter #5038
 - Enhancement: Add support for advanced filters with multiple instances #5050
 - Enhancement: Automated taxes smart default #5076
 - Enhancement: Add product attribute filter to Orders report #5068
