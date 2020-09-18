@@ -36,6 +36,19 @@ describe( 'Activity Panel', () => {
 		expect( screen.queryByText( 'Inbox' ) ).toBeNull();
 	} );
 
+	it( 'should not render any tabs if task list options are loading and its not a setup task', async () => {
+		const { queryAllByRole } = render(
+			<ActivityPanel
+				requestingTaskListOptions
+				isPerformingSetupTask={ false }
+				query={ {} }
+			/>
+		);
+
+		// Expect no tabs to display
+		expect( queryAllByRole( 'tab' ) ).toHaveLength( 0 );
+	} );
+
 	it( 'should render help tab before options load', async () => {
 		render(
 			<ActivityPanel

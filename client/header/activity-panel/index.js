@@ -51,6 +51,7 @@ const ReviewsPanel = lazy( () =>
 
 const manageStock = getSetting( 'manageStock', 'no' );
 const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
+
 export class ActivityPanel extends Component {
 	constructor( props ) {
 		super( props );
@@ -136,6 +137,12 @@ export class ActivityPanel extends Component {
 			! query.path &&
 			( requestingTaskListOptions === true ||
 				( taskListHidden === false && taskListComplete === false ) );
+
+		// If still loading the task list options present an empty list to prevent
+		// flickering between 2 lists of options.
+		if ( requestingTaskListOptions && ! isPerformingSetupTask ) {
+			return [];
+		}
 
 		if ( ! taskListComplete && showInbox ) {
 			return [
