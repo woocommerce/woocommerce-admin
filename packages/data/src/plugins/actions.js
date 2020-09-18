@@ -146,12 +146,16 @@ export function* connectToJetpack( getAdminLink ) {
 	}
 }
 
-export function* installJetpackAndConnect( errorAction ) {
+export function* installJetpackAndConnect( errorAction, getAdminLink ) {
 	try {
 		yield dispatch( STORE_NAME, 'installPlugins', [ 'jetpack' ] );
 		yield dispatch( STORE_NAME, 'activatePlugins', [ 'jetpack' ] );
 
-		const url = yield dispatch( STORE_NAME, 'connectToJetpack' );
+		const url = yield dispatch(
+			STORE_NAME,
+			'connectToJetpack',
+			getAdminLink
+		);
 		window.location = url;
 	} catch ( error ) {
 		yield errorAction( error.message );
@@ -164,9 +168,11 @@ export function* connectToJetpackWithFailureRedirect(
 	getAdminLink
 ) {
 	try {
-		const url = yield dispatch( STORE_NAME, 'connectToJetpack', [
-			getAdminLink,
-		] );
+		const url = yield dispatch(
+			STORE_NAME,
+			'connectToJetpack',
+			getAdminLink
+		);
 		window.location = url;
 	} catch ( error ) {
 		yield errorAction( error.message );
