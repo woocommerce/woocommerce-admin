@@ -137,8 +137,6 @@ export class ActivityPanel extends Component {
 			( requestingTaskListOptions === true ||
 				( taskListHidden === false && taskListComplete === false ) );
 
-		console.log( 'hello' );
-
 		if ( ! taskListComplete && showInbox ) {
 			return [
 				{
