@@ -81,27 +81,9 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "lint-staged",
-			"pre-push": "npm run test-staged && npm run -s install-if-no-packages && node bin/pre-push-hook.js"
+			"pre-commit": "lint-staged -c lint-staged-precommit.json",
+			"pre-push": "lint-staged -c lint-staged-pre-push.json && npm run -s install-if-no-packages && node bin/pre-push-hook.js"
 		}
-	},
-	"test-staged": {
-		"*.js": [
-			"npm run test -- --bail --findRelatedTests"
-		]
-	},
-	"lint-staged": {
-		"*.scss": [
-			"npm run lint:css"
-		],
-		"*.js": [
-			"wp-scripts format-js",
-			"npm run lint:js"
-		],
-		"*.php": [
-			"php -d display_errors=1 -l",
-			"composer run-script phpcs"
-		]
 	},
 	"dependencies": {
 		"@woocommerce/e2e-environment": "0.1.5",
