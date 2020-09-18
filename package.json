@@ -81,7 +81,7 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "lint-staged -c lint-staged-precommit.json",
+			"pre-commit": "lint-staged -c lint-staged-pre-commit.json",
 			"pre-push": "lint-staged -c lint-staged-pre-push.json && npm run -s install-if-no-packages && node bin/pre-push-hook.js"
 		}
 	},
