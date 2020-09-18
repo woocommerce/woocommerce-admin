@@ -81,8 +81,15 @@
 	"husky": {
 		"hooks": {
 			"pre-commit": "lint-staged",
-			"pre-push": "npm run test -- --bail --findRelatedTests && npm run -s install-if-no-packages && node bin/pre-push-hook.js"
+			"pre-push": [
+				"test-staged",
+				"npm run -s install-if-no-packages",
+				"node bin/pre-push-hook.js"
+			]
 		}
+	},
+	"test-staged": {
+		"*.js": "npm test -- --bail --findRelatedTests"
 	},
 	"lint-staged": {
 		"*.scss": [
