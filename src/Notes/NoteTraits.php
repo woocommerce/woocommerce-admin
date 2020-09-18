@@ -49,7 +49,7 @@ trait NoteTraits {
 	public static function can_be_added() {
 		$note = self::get_note();
 
-		if ( ! $note instanceof Note ) {
+		if ( ! $note instanceof Note && ! $note instanceof WC_Admin_Note ) {
 			return;
 		}
 
