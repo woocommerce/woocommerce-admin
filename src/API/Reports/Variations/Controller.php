@@ -44,7 +44,6 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @var array
 	 */
 	protected $param_mapping = array(
-		'products'   => 'product_includes',
 		'variations' => 'variation_includes',
 	);
 
@@ -315,14 +314,25 @@ class Controller extends ReportsController implements ExportableInterface {
 			),
 			'validate_callback' => 'rest_validate_request_arg',
 		);
-		$params['products']          = array(
-			'description'       => __( 'Limit result to items with specified product ids.', 'woocommerce-admin' ),
+		$params['product_includes']  = array(
+			'description'       => __( 'Limit result set to items that have the specified parent product(s).', 'woocommerce-admin' ),
 			'type'              => 'array',
-			'sanitize_callback' => 'wp_parse_id_list',
-			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(
 				'type' => 'integer',
 			),
+			'default'           => array(),
+			'sanitize_callback' => 'wp_parse_id_list',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+		$params['product_excludes']  = array(
+			'description'       => __( 'Limit result set to items that don\'t have the specified parent product(s).', 'woocommerce-admin' ),
+			'type'              => 'array',
+			'items'             => array(
+				'type' => 'integer',
+			),
+			'default'           => array(),
+			'validate_callback' => 'rest_validate_request_arg',
+			'sanitize_callback' => 'wp_parse_id_list',
 		);
 		$params['variations']        = array(
 			'description'       => __( 'Limit result to items with specified variation ids.', 'woocommerce-admin' ),

@@ -9,6 +9,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import {
 	getCategoryLabels,
+	getProductLabels,
 	getVariationLabels,
 } from '../../../lib/async-requests';
 
@@ -207,6 +208,48 @@ export const advancedFilters = applyFilters(
 					component: 'Search',
 					type: 'categories',
 					getLabels: getCategoryLabels,
+				},
+			},
+			product: {
+				labels: {
+					add: __( 'Products', 'woocommerce-admin' ),
+					placeholder: __( 'Search products', 'woocommerce-admin' ),
+					remove: __( 'Remove products filter', 'woocommerce-admin' ),
+					rule: __(
+						'Select a product filter match',
+						'woocommerce-admin'
+					),
+					/* translators: A sentence describing a Product filter. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ */
+					title: __(
+						'{{title}}Product{{/title}} {{rule /}} {{filter /}}',
+						'woocommerce-admin'
+					),
+					filter: __( 'Select products', 'woocommerce-admin' ),
+				},
+				rules: [
+					{
+						value: 'includes',
+						/* translators: Sentence fragment, logical, "Includes" refers to orders including a given product(s). Screenshot for context: https://cloudup.com/cSsUY9VeCVJ */
+						label: _x(
+							'Includes',
+							'products',
+							'woocommerce-admin'
+						),
+					},
+					{
+						value: 'excludes',
+						/* translators: Sentence fragment, logical, "Excludes" refers to orders excluding a given product(s). Screenshot for context: https://cloudup.com/cSsUY9VeCVJ */
+						label: _x(
+							'Excludes',
+							'products',
+							'woocommerce-admin'
+						),
+					},
+				],
+				input: {
+					component: 'Search',
+					type: 'variableProducts',
+					getLabels: getProductLabels,
 				},
 			},
 		},
