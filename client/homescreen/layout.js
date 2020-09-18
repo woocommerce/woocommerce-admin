@@ -123,8 +123,7 @@ export const Layout = ( {
 				<WelcomeModal
 					onClose={ () => {
 						updateOptions( {
-							woocommerce_task_list_welcome_modal_dismissed:
-								'yes',
+							woocommerce_task_list_welcome_modal_dismissed: true,
 						} );
 					} }
 				/>
@@ -167,7 +166,7 @@ export default compose(
 
 		const welcomeModalDismissed =
 			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
-			'1';
+			'yes';
 
 		const welcomeModalDismissedIsResolving = isResolving( 'getOption', [
 			'woocommerce_task_list_welcome_modal_dismissed',
