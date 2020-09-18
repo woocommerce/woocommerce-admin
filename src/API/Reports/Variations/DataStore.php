@@ -263,16 +263,16 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		// These defaults are only partially applied when used via REST API, as that has its own defaults.
 		$defaults   = array(
-			'per_page'      => get_option( 'posts_per_page' ),
-			'page'          => 1,
-			'order'         => 'DESC',
-			'orderby'       => 'date',
-			'before'        => TimeInterval::default_before(),
-			'after'         => TimeInterval::default_after(),
-			'fields'        => '*',
-			'products'      => array(),
-			'variations'    => array(),
-			'extended_info' => false,
+			'per_page'           => get_option( 'posts_per_page' ),
+			'page'               => 1,
+			'order'              => 'DESC',
+			'orderby'            => 'date',
+			'before'             => TimeInterval::default_before(),
+			'after'              => TimeInterval::default_after(),
+			'fields'             => '*',
+			'product_includes'   => array(),
+			'variation_includes' => array(),
+			'extended_info'      => false,
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
@@ -306,6 +306,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$total_results = count( $included_variations );
 				$total_pages   = (int) ceil( $total_results / $params['per_page'] );
 
+				$this->subquery->clear_sql_clause( 'select' );
+				$this->subquery->add_sql_clause( 'select', $selections );
+
 				if ( 'date' === $query_args['orderby'] ) {
 					$this->subquery->add_sql_clause( 'select', ", {$table_name}.date_created" );
 				}
@@ -314,8 +317,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$join_selections = $this->format_join_selections( $fields, array( 'variation_id' ) );
 				$ids_table       = $this->get_ids_table( $included_variations, 'variation_id' );
 
-				$this->subquery->clear_sql_clause( 'select' );
-				$this->subquery->add_sql_clause( 'select', $selections );
 				$this->add_sql_clause( 'select', $join_selections );
 				$this->add_sql_clause( 'from', '(' );
 				$this->add_sql_clause( 'from', $this->subquery->get_query_statement() );
