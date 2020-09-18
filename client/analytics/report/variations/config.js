@@ -7,7 +7,10 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { getVariationLabels } from '../../../lib/async-requests';
+import {
+	getCategoryLabels,
+	getVariationLabels,
+} from '../../../lib/async-requests';
 
 const VARIATIONS_REPORT_CHARTS_FILTER =
 	'woocommerce_admin_variations_report_charts';
@@ -159,6 +162,51 @@ export const advancedFilters = applyFilters(
 				],
 				input: {
 					component: 'ProductAttribute',
+				},
+			},
+			category: {
+				labels: {
+					add: __( 'Categories', 'woocommerce-admin' ),
+					placeholder: __( 'Search categories', 'woocommerce-admin' ),
+					remove: __(
+						'Remove categories filter',
+						'woocommerce-admin'
+					),
+					rule: __(
+						'Select a category filter match',
+						'woocommerce-admin'
+					),
+					/* translators: A sentence describing a Category filter. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ */
+					title: __(
+						'{{title}}Category{{/title}} {{rule /}} {{filter /}}',
+						'woocommerce-admin'
+					),
+					filter: __( 'Select categories', 'woocommerce-admin' ),
+				},
+				rules: [
+					{
+						value: 'includes',
+						/* translators: Sentence fragment, logical, "Includes" refers to variations including a given category. Screenshot for context: https://cloudup.com/cSsUY9VeCVJ */
+						label: _x(
+							'Includes',
+							'categories',
+							'woocommerce-admin'
+						),
+					},
+					{
+						value: 'excludes',
+						/* translators: Sentence fragment, logical, "Excludes" refers to variations excluding a given category. Screenshot for context: https://cloudup.com/cSsUY9VeCVJ */
+						label: _x(
+							'Excludes',
+							'categories',
+							'woocommerce-admin'
+						),
+					},
+				],
+				input: {
+					component: 'Search',
+					type: 'categories',
+					getLabels: getCategoryLabels,
 				},
 			},
 		},
