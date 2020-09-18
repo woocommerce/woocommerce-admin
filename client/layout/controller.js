@@ -4,7 +4,7 @@
 import { Component, Suspense, lazy } from '@wordpress/element';
 import { parse, stringify } from 'qs';
 import { find, isEqual, last, omit } from 'lodash';
-import { applyFilters } from '@wordpress/hooks';
+import { addFilter, applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import {
 	getNewPath,
@@ -222,6 +222,27 @@ export class Controller extends Component {
 }
 
 /**
+ * Get a menu item's href with persisted queries.
+ *
+ * @param {string} url - URL of item.
+ * @param {Object} nextQuery - A query object to be added to updated hrefs.
+ * @param {Array} excludedScreens - wc-admin screens to avoid updating.
+ */
+export function getItemHref( url, nextQuery, excludedScreens ) {
+	const search = last( url.split( '?' ) );
+	const query = parse( search );
+	const path = query.path || 'homescreen';
+	const screen = path.replace( '/analytics', '' ).replace( '/', '' );
+
+	const isExcludedScreen = excludedScreens.includes( screen );
+
+	return (
+		'admin.php?' +
+		stringify( Object.assign( query, isExcludedScreen ? {} : nextQuery ) )
+	);
+}
+
+/**
  * Update an anchor's link in sidebar to include persisted queries. Leave excluded screens
  * as is.
  *
@@ -231,18 +252,7 @@ export class Controller extends Component {
  */
 export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	if ( isWCAdmin( item.href ) ) {
-		const search = last( item.href.split( '?' ) );
-		const query = parse( search );
-		const path = query.path || 'homescreen';
-		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
-
-		const isExcludedScreen = excludedScreens.includes( screen );
-
-		const href =
-			'admin.php?' +
-			stringify(
-				Object.assign( query, isExcludedScreen ? {} : nextQuery )
-			);
+		const href = getItemHref( item.href, nextQuery, excludedScreens );
 
 		// Replace the href so you can see the url on hover.
 		item.href = href;
@@ -268,7 +278,42 @@ window.wpNavMenuUrlUpdate = function ( query ) {
 	Array.from(
 		document.querySelectorAll( '#adminmenu a' )
 	).forEach( ( item ) => updateLinkHref( item, nextQuery, excludedScreens ) );
+
+	// Filter items in WooCommerce Navigation to add click handlers.
+	addFilter(
+		'woocommerce_navigation_menu_items',
+		'woocommerce-admin',
+		( items ) => {
+			return items.map( ( item ) => {
+				return isWCAdmin( item.url )
+					? getUpdatedNavigationItem(
+							item,
+							nextQuery,
+							excludedScreens
+					  )
+					: item;
+			} );
+		}
+	);
 };
+
+/**
+ * Get an updated navigation item with persited queries and click handlers.
+ *
+ * @param {HTMLElement} item - Sidebar anchor link.
+ * @param {Object} nextQuery - A query object to be added to updated hrefs.
+ * @param {Array} excludedScreens - wc-admin screens to avoid updating.
+ */
+export function getUpdatedNavigationItem( item, nextQuery, excludedScreens ) {
+	const updatedItem = { ...item };
+	const href = getItemHref( item.url, nextQuery, excludedScreens );
+	updatedItem.url = href;
+	updatedItem.onClick = ( e ) => {
+		e.preventDefault();
+		getHistory().push( href );
+	};
+	return updatedItem;
+}
 
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
 window.wpNavMenuClassChange = function ( page, url ) {
