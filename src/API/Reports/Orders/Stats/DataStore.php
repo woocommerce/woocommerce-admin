@@ -12,6 +12,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
 use \Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
 use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
+use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDataStore;
 
 /**
  * API\Reports\Orders\Stats\DataStore.
@@ -558,6 +559,15 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return;
 		}
 
+		// Delete the customer, if this is their only order.
+		$order       = new \WC_Order( $order_id );
+		$customer_id = CustomersDataStore::get_existing_customer_id_from_order( $order );
+		$order_count = CustomersDataStore::get_order_count( $customer_id );
+		if ( 1 === $order_count ) {
+			CustomersDataStore::delete_customer( $customer_id );
+		}
+
+		// Delete the order.
 		$wpdb->delete( self::get_db_table_name(), array( 'order_id' => $order_id ) );
 		/**
 		 * Fires when orders stats are deleted.
