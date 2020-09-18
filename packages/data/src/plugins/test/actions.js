@@ -2,6 +2,11 @@
  * @jest-environment node
  */
 
+/**
+ * External dependencies
+ */
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
+
 jest.mock( '@wordpress/data-controls', () => ( {
 	dispatch: jest.fn(),
 	select: jest.fn(),
@@ -84,7 +89,8 @@ describe( 'connectToJetpack', () => {
 	it( 'redirects to the failure url if there is an error', () => {
 		const connect = connectToJetpackWithFailureRedirect(
 			'https://example.com/failure',
-			() => {}
+			() => {},
+			getAdminLink
 		);
 
 		connect.next();
@@ -97,7 +103,8 @@ describe( 'connectToJetpack', () => {
 	it( 'redirects to the jetpack url if there is no error', () => {
 		const connect = connectToJetpackWithFailureRedirect(
 			'https://example.com/failure',
-			() => {}
+			() => {},
+			getAdminLink
 		);
 
 		connect.next();
@@ -110,7 +117,11 @@ describe( 'connectToJetpack', () => {
 
 	it( 'calls the passed error handler if an exception is thrown into the generator', () => {
 		const errorHandler = jest.fn();
-		const connect = connectToJetpackWithFailureRedirect( '', errorHandler );
+		const connect = connectToJetpackWithFailureRedirect(
+			'',
+			errorHandler,
+			getAdminLink
+		);
 
 		// Run to first yield
 		connect.next();
