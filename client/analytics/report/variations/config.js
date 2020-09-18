@@ -44,7 +44,7 @@ export const filters = applyFilters( VARIATIONS_REPORT_FILTERS_FILTER, [
 	{
 		label: __( 'Show', 'woocommerce-admin' ),
 		staticParams: [ 'chartType', 'paged', 'per_page' ],
-		param: 'filter',
+		param: 'filter-variations',
 		showFilters: () => true,
 		filters: [
 			{

@@ -18,7 +18,7 @@ import ReportFilters from '../../components/report-filters';
 
 const getChartMeta = ( { query } ) => {
 	const isCompareView =
-		query.filter === 'compare-variations' &&
+		query[ 'filter-variations' ] === 'compare-variations' &&
 		query.variations &&
 		query.variations.split( ',' ).length > 1;
 
