@@ -573,6 +573,34 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	}
 
 	/**
+	 * Retrieve the amount of orders made by a customer.
+	 *
+	 * @param int $customer_id Customer ID.
+	 * @return int|null Amount of orders for customer or null on failure.
+	 */
+	public static function get_order_count( $customer_id ) {
+		global $wpdb;
+		$customer_id = absint( $customer_id );
+
+		if ( 0 === $customer_id ) {
+			return null;
+		}
+
+		$result = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT( order_id ) FROM {$wpdb->prefix}wc_order_stats WHERE customer_id = %d",
+				$customer_id
+			)
+		);
+
+		if ( is_null( $result ) ) {
+			return null;
+		}
+
+		return (int) $result;
+	}
+
+	/**
 	 * Update the database with customer data.
 	 *
 	 * @param int $user_id WP User ID to update customer data for.
