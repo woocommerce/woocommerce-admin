@@ -36,7 +36,7 @@ describe( 'installJetPackAndConnect', () => {
 	} );
 
 	it( 'installs jetpack, then activates it', () => {
-		const installer = installJetpackAndConnect( () => {} );
+		const installer = installJetpackAndConnect( () => {}, getAdminLink );
 
 		// Run to first yield
 		installer.next();
@@ -60,7 +60,10 @@ describe( 'installJetPackAndConnect', () => {
 
 	it( 'calls the passed error handler if an exception is thrown into the generator', () => {
 		const errorHandler = jest.fn();
-		const installer = installJetpackAndConnect( errorHandler );
+		const installer = installJetpackAndConnect(
+			errorHandler,
+			getAdminLink
+		);
 
 		// Run to first yield
 		installer.next();
@@ -72,7 +75,7 @@ describe( 'installJetPackAndConnect', () => {
 	} );
 
 	it( 'redirects to the connect url if there are no errors', () => {
-		const installer = installJetpackAndConnect();
+		const installer = installJetpackAndConnect( undefined, getAdminLink );
 
 		// Run to yield any errors from getJetpackConnectUrl
 		installer.next();
