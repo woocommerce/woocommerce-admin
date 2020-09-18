@@ -86,7 +86,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add filters for columns in reports #5134
 - Dev: Don't include "min" suffix in build JS files for core build #5130
 - Enhancement: Add free local shipping zone on profile complete #4857
-- Enhancement: Add woocommerce/tracks pacakage #5107
+- Enhancement: Add woocommerce/tracks package #5107
 - Enhancement: Add filter to allow modification of report columns #4984
 - Enhancement: Add WooCommerce Mobile Banner #5037
 - Enhancement: Add Product Attribute advanced filter #5038
@@ -108,7 +108,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Enable homescreen for all sites #5108
 - Tweak: Enable remote inbox in all envs #5160
 - Tweak: Add opt-out for remote inbox #5162
-- Fix: Table componenbt onQueryChange default prop #4959
+- Fix: Table component onQueryChange default prop #4959
 - Fix: Dependency declarations in woocommerce/components #4972
 - Fix: Text domains in stock report #4980
 - Fix: Typo in reports store action creators #4992
