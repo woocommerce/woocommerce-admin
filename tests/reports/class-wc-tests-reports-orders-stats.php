@@ -5,6 +5,8 @@
  * @package WooCommerce\Admin\Tests\Orders
  */
 
+use \Automattic\WooCommerce\Admin\API\Reports\Customers\Stats\DataStore as CustomersStatsDataStore;
+use \Automattic\WooCommerce\Admin\API\Reports\Customers\Stats\Query as CustomersStatsQuery;
 use \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\DataStore as OrdersStatsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\Query as OrdersStatsQuery;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
@@ -3891,6 +3893,55 @@ class WC_Tests_Reports_Orders_Stats extends WC_Unit_Test_Case {
 		update_option( 'woocommerce_calc_taxes', $default_customer_address );
 		update_option( 'woocommerce_default_customer_address', $default_calc_taxes );
 		update_option( 'woocommerce_tax_based_on', $default_tax_based_on );
+	}
+
+	/**
+	 * Test customer lookup tables are cleaned after deleting an order.
+	 *
+	 * A customer record should only be deleted if the customer has no other orders.
+	 *
+	 * @covers \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\DataStore::delete_order
+	 */
+	public function test_order_deletion_removes_customer() {
+		WC_Helper_Reports::reset_stats_dbs();
+
+		// Create a customer.
+		$customer = WC_Helper_Customer::create_customer();
+
+		// Create product.
+		$product = new WC_Product_Simple();
+		$product->set_name( 'Test Product' );
+		$product->set_regular_price( 25 );
+		$product->save();
+
+		WC_Helper_Queue::run_all_pending();
+
+		// Create the first order.
+		$order1 = WC_Helper_Order::create_order( $customer->get_id(), $product );
+		$order1->save();
+
+		// Create the second order.
+		$order2 = WC_Helper_Order::create_order( $customer->get_id(), $product );
+		$order2->save();
+
+		WC_Helper_Queue::run_all_pending();
+
+		$customer_id = CustomersStatsDataStore::get_customer_id_by_user_id( $customer->get_id() ); // This is the customer ID from lookup table.
+
+		$customers_query = new CustomersStatsQuery(
+			array(
+				'customers' => array( $customer_id ),
+			)
+		);
+
+		// Customer should remain in lookup table after first order deleted.
+		$order1->delete( true );
+		$this->assertSame( 1, $customers_query->get_data()->customers_count );
+
+		// Customer should be removed in lookup table after both orders are deleted.
+		$order2->delete( true );
+		$this->assertSame( 0, $customers_query->get_data()->customers_count );
+
 	}
 
 	/**
