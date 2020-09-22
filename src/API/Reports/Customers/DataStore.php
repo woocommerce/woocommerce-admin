@@ -85,6 +85,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function init() {
 		add_action( 'edit_user_profile_update', array( __CLASS__, 'update_registered_customer' ) );
 		add_action( 'updated_user_meta', array( __CLASS__, 'update_registered_customer_via_last_active' ), 10, 3 );
+		add_action( 'woocommerce_analytics_delete_order_stats', array( __CLASS__, 'sync_on_order_delete' ), 15, 2 );
 	}
 
 	/**
@@ -98,6 +99,30 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function update_registered_customer_via_last_active( $meta_id, $user_id, $meta_key ) {
 		if ( 'wc_last_active' === $meta_key ) {
 			self::update_registered_customer( $user_id );
+		}
+	}
+
+	/**
+	 * Sync customers data after an order was deleted.
+	 *
+	 * When an order is deleted, the customer record is deleted from the
+	 * table if the customer has no other orders.
+	 *
+	 * @param int $order_id Order ID.
+	 * @param int $customer_id Customer ID.
+	 */
+	public static function sync_on_order_delete( $order_id, $customer_id ) {
+		$customer_id = absint( $customer_id );
+
+		if ( 0 === $customer_id ) {
+			return;
+		}
+
+		// Calculate the amount of orders remaining for this customer.
+		$order_count = self::get_order_count( $customer_id );
+
+		if ( 0 === $order_count ) {
+			self::delete_customer( $customer_id );
 		}
 	}
 

@@ -559,13 +559,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return;
 		}
 
-		// Delete the customer, if this is their only order.
-		$order       = new \WC_Order( $order_id );
-		$customer_id = CustomersDataStore::get_existing_customer_id_from_order( $order );
-		$order_count = CustomersDataStore::get_order_count( $customer_id );
-		if ( 1 === $order_count ) {
-			CustomersDataStore::delete_customer( $customer_id );
-		}
+		// Retrieve customer details before the order is deleted.
+		$order       = wc_get_order( $order_id );
+		$customer_id = absint( CustomersDataStore::get_existing_customer_id_from_order( $order ) );
 
 		// Delete the order.
 		$wpdb->delete( self::get_db_table_name(), array( 'order_id' => $order_id ) );
@@ -573,8 +569,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		 * Fires when orders stats are deleted.
 		 *
 		 * @param int $order_id Order ID.
+		 * @param int $customer_id Customer ID.
 		 */
-		do_action( 'woocommerce_analytics_delete_order_stats', $order_id );
+		do_action( 'woocommerce_analytics_delete_order_stats', $order_id, $customer_id );
 
 		ReportsCache::invalidate();
 	}
