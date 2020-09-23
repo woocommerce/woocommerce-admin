@@ -14,6 +14,9 @@ import * as resolvers from './resolvers';
 import { controls } from './controls';
 import reducer from './reducer';
 
+// eslint-disable-next-line no-unused-vars
+console.log( `STORE_NAME -> ${ STORE_NAME }` );
+
 registerStore( STORE_NAME, {
 	reducer,
 	actions,
