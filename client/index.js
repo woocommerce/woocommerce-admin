@@ -6,6 +6,7 @@ import { render } from '@wordpress/element';
 import {
 	withCurrentUserHydration,
 	withSettingsHydration,
+	withOptionsHydration,
 } from '@woocommerce/data';
 
 /**
@@ -21,6 +22,7 @@ __webpack_public_path__ = global.wcAdminAssets.path;
 const appRoot = document.getElementById( 'root' );
 const settingsGroup = 'wc_admin';
 const hydrateUser = window.wcSettings.currentUserData;
+const hydratedOptions = window.wcSettings.preloadOptions;
 
 if ( appRoot ) {
 	let HydratedPageLayout = withSettingsHydration(
@@ -50,6 +52,11 @@ if ( appRoot ) {
 	)( EmbedLayout );
 	if ( hydrateUser ) {
 		HydratedEmbedLayout = withCurrentUserHydration( hydrateUser )(
+			HydratedEmbedLayout
+		);
+	}
+	if ( window.wcSettings.preloadOptions ) {
+		HydratedEmbedLayout = withOptionsHydration( { ...hydratedOptions } )(
 			HydratedEmbedLayout
 		);
 	}
