@@ -12,9 +12,9 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
- * Apple_Pay_TBD
+ * Apple_Pay_Stripe
  */
-class Apple_Pay_TBD {
+class Apple_Pay_Stripe {
 	/**
 	 * Note traits.
 	 */
