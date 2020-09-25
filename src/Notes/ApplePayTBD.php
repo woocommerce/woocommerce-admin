@@ -47,8 +47,8 @@ class Apple_Pay_TBD {
 
 		$note = new Note();
 
-		$note->set_content( __( 'Content TBD', 'woocommerce-admin' ) );
 		$note->set_title( __( 'Apple Pay is now available on Stripe', 'woocommerce-admin' ) );
+		$note->set_content( __( 'Boost sales by offering a fast, simple, and secure checkout experience with Apple Pay®!', 'woocommerce-admin' ) );
 		$note->set_content_data( (object) array() );
 		$note->set_type( Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
 		$note->set_name( self::NOTE_NAME );
