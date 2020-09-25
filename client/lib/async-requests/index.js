@@ -6,6 +6,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { identity } from 'lodash';
 import { getIdsFromQuery } from '@woocommerce/navigation';
 import { NAMESPACE } from '@woocommerce/data';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -87,8 +88,7 @@ export const getTaxRateLabels = getRequestByIdString(
  * @return {string} - formatted variation name
  */
 export function getVariationName( { attributes, name } ) {
-	const separator =
-		window.wcSettings.variationTitleAttributesSeparator || ' - ';
+	const separator = getSetting( 'variationTitleAttributesSeparator', ' - ' );
 
 	if ( name.indexOf( separator ) > -1 ) {
 		return name;
