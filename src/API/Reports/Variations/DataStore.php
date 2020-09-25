@@ -102,7 +102,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 
 		$table_name = self::get_db_table_name();
-		$join       = "JOIN {$wpdb->postmeta} AS postmeta ON {$table_name}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
+		$join       = "LEFT JOIN {$wpdb->postmeta} AS postmeta ON {$table_name}.variation_id = postmeta.post_id AND postmeta.meta_key = '_sku'";
 
 		if ( 'inner' === $arg_name ) {
 			$this->subquery->add_sql_clause( 'join', $join );
