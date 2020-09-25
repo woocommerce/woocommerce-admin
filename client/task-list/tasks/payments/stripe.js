@@ -167,15 +167,21 @@ class Stripe extends Component {
 	validateManualConfig( values ) {
 		const errors = {};
 
-		if ( values.publishable_key.match( /^pk_live_/ ) === null ) {
+		if (
+			values.publishable_key.match( /^pk_(live|test)_[a-zA-Z0-9_]+/ ) ===
+			null
+		) {
 			errors.publishable_key = __(
-				'Please enter a valid publishable key. Valid keys start with "pk_live".',
+				'Please enter a valid publishable key.',
 				'woocommerce-admin'
 			);
 		}
-		if ( values.secret_key.match( /^[rs]k_live_/ ) === null ) {
+		if (
+			values.secret_key.match( /^[rs]k_(live|test)_[a-zA-Z0-9_]+/ ) ===
+			null
+		) {
 			errors.secret_key = __(
-				'Please enter a valid secret key. Valid keys start with "sk_live" or "rk_live".',
+				'Please enter a valid secret key.',
 				'woocommerce-admin'
 			);
 		}
