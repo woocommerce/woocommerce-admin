@@ -342,4 +342,17 @@ This passes when the store is on a WordPress.com site with the eCommerce plan.
 
 `value` is required.
 
+### Option
+This passes when the option value matches the value using the operation.
+
+```
+{
+	"type": "option",
+	"option_name": "woocommerce_currency",
+	"value": "USD",
+	"operation": "="
+}
+```
+
+`option_name`, `value`, and `operation` are all required.
 
