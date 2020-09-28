@@ -9,7 +9,7 @@ namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
+use Automattic\WooCommerce\Admin\Notes\Notes;
 
 /**
  * Rule processor that compares against the status of another note.
@@ -24,7 +24,7 @@ class NoteStatusRuleProcessor implements RuleProcessorInterface {
 	 * @return bool The result of the operation.
 	 */
 	public function process( $rule, $stored_state ) {
-		$status = WC_Admin_Notes::get_note_status( $rule->note_name );
+		$status = Notes::get_note_status( $rule->note_name );
 		if ( ! $status ) {
 			return false;
 		}
