@@ -65,7 +65,7 @@ class Google_Ads_And_Marketing {
 		$note = new Note();
 		$note->set_title( __( 'Get your products in front of millions of shoppers on Google to grow your sales', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Google Ads & Marketing makes it easy to promote products on any budget. Run paid Smart Shopping campaigns to get your top selling products in front of buyers across the Google Network. You can also drive free traffic to your store with free listings for only $10 per month!', 'woocommerce-admin' ) );
-		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
+		$note->set_type( Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_content_data( (object) array() );
 		$note->set_source( 'woocommerce-admin' );
