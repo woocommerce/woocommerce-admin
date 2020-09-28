@@ -342,4 +342,18 @@ This passes when the store is on a WordPress.com site with the eCommerce plan.
 
 `value` is required.
 
+### Note status
+This passes when the status of the specified note matches the specified status.
+The below example passes when the `wc-admin-mobile-app` note has not been
+actioned.
+
+```
+{
+	"type": "note_status",
+	"note_name": "wc-admin-mobile-app",
+	"status": "actioned",
+	"operation": "!="
+}
+```
+
 

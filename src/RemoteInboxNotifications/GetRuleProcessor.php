@@ -48,6 +48,8 @@ class GetRuleProcessor {
 				return new OnboardingProfileRuleProcessor();
 			case 'is_ecommerce':
 				return new IsEcommerceRuleProcessor();
+			case 'note_status':
+				return new NoteStatusRuleProcessor();
 		}
 
 		return new FailRuleProcessor();
