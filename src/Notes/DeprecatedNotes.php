@@ -16,6 +16,21 @@ use Automattic\WooCommerce\Admin\DeprecatedClassFacade;
  * WC_Admin_Note (deprecated, use Note instead).
  */
 class WC_Admin_Note extends DeprecatedClassFacade {
+	// These constants must be redeclared as to not break plugins that use them.
+	// Note types.
+	const E_WC_ADMIN_NOTE_ERROR         = 'error';     // used for presenting error conditions.
+	const E_WC_ADMIN_NOTE_WARNING       = 'warning';   // used for presenting warning conditions.
+	const E_WC_ADMIN_NOTE_UPDATE        = 'update';    // i.e. used when a new version is available.
+	const E_WC_ADMIN_NOTE_INFORMATIONAL = 'info';      // used for presenting informational messages.
+	const E_WC_ADMIN_NOTE_MARKETING     = 'marketing'; // used for adding marketing messages.
+	const E_WC_ADMIN_NOTE_SURVEY        = 'survey';    // used for adding survey messages.
+
+	// Note status codes.
+	const E_WC_ADMIN_NOTE_PENDING    = 'pending';    // the note is pending - hidden but not actioned.
+	const E_WC_ADMIN_NOTE_UNACTIONED = 'unactioned'; // the note has not yet been actioned by a user.
+	const E_WC_ADMIN_NOTE_ACTIONED   = 'actioned';   // the note has had its action completed by a user.
+	const E_WC_ADMIN_NOTE_SNOOZED    = 'snoozed';    // the note has been snoozed by a user.
+
 	/**
 	 * The name of the non-deprecated class that this facade covers.
 	 *
