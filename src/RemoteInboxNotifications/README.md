@@ -342,6 +342,32 @@ This passes when the store is on a WordPress.com site with the eCommerce plan.
 
 `value` is required.
 
+### Base location - country
+This passes when the store is located in the specified country.
+
+```
+{
+	"type": "base_location_country",
+	"value": "US",
+	"operation": "="
+}
+```
+
+`value` and `operation` are both required.
+
+### Base location - state
+This passes when the store is located in the specified state.
+
+```
+{
+	"type": "base_location_state",
+	"value": "TX",
+	"operation": "="
+}
+```
+
+`value` and `operation` are both required.
+
 ### Option
 This passes when the option value matches the value using the operation.
 
@@ -355,4 +381,3 @@ This passes when the option value matches the value using the operation.
 ```
 
 `option_name`, `value`, and `operation` are all required.
-
