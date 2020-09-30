@@ -779,13 +779,9 @@ class Loader {
 			return;
 		}
 		?>
-		<span>
-		<?php if ( is_array( $section ) ) : ?>
-			<a href="<?php echo esc_url( admin_url( $section[0] ) ); ?>"><?php echo esc_html( $section[1] ); ?></a>
-		<?php else : ?>
+		<p class="is-embed">
 			<?php echo esc_html( $section ); ?>
-		<?php endif; ?>
-		</span>
+		</p>
 		<?php
 	}
 
@@ -812,10 +808,8 @@ class Loader {
 		<div id="woocommerce-embedded-root" class="is-embed-loading">
 			<div class="woocommerce-layout">
 				<div class="woocommerce-layout__header is-embed-loading">
-					<h1 class="woocommerce-layout__header-breadcrumbs">
-						<?php foreach ( $sections as $section ) : ?>
-							<?php self::output_breadcrumbs( $section ); ?>
-						<?php endforeach; ?>
+					<h1 class="woocommerce-layout__header-heading">
+						<?php self::output_breadcrumbs( end($sections) ); ?>
 					</h1>
 				</div>
 			</div>

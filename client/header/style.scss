@@ -9,7 +9,7 @@
 	z-index: 1001; /* on top of #wp-content-editor-tools */
 
 	&.is-scrolled {
-		box-shadow: 0 8px 8px 0 rgba(85, 93, 102, 0.3);
+		box-shadow: 0 8px 8px 0 rgba( 85, 93, 102, 0.3 );
 	}
 
 	@include breakpoint( '<782px' ) {
@@ -23,7 +23,9 @@
 		flex-direction: row;
 	}
 
-	.woocommerce-layout__header-breadcrumbs {
+	.woocommerce-layout__header-heading {
+		display: flex;
+		align-items: center;
 		font-size: 13px;
 		font-weight: normal;
 		padding: 0 0 0 $fallback-gutter-large;
@@ -32,6 +34,11 @@
 		height: $header-height;
 		line-height: $header-height;
 		background: $studio-white;
+
+		> p.is-embed {
+			font-weight: 600;
+			font-size: 14px;
+		}
 
 		span + span::before {
 			content: ' / ';

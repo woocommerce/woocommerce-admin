@@ -1,4 +1,3 @@
-
 // css resets some wp-admin specific rules so that the app fits better in the extension container
 .woocommerce-page {
 	.wrap {
@@ -9,7 +8,7 @@
 	&.woocommerce_page_wc-admin #wpbody-content {
 		padding: 0;
 		overflow-x: hidden !important;
-		min-height: calc(100vh - #{$adminbar-height});
+		min-height: calc( 100vh - #{$adminbar-height} );
 	}
 
 	@include breakpoint( '>782px' ) {
@@ -28,7 +27,7 @@
 
 		#wpcontent,
 		#wpbody-content {
-			min-height: calc(100vh - #{$adminbar-height-mobile});
+			min-height: calc( 100vh - #{$adminbar-height-mobile} );
 		}
 	}
 
@@ -55,7 +54,7 @@
 		}
 	}
 
-	.components-popover:not(.is-mobile) {
+	.components-popover:not( .is-mobile ) {
 		z-index: 2; /* below of woocommerce-layout__header */
 	}
 }
@@ -75,7 +74,7 @@
 		}
 
 		// #wpwrap id added for specificity
-		#wpwrap .woocommerce-layout__header-breadcrumbs {
+		#wpwrap .woocommerce-layout__header-heading {
 			padding-left: 60px;
 		}
 
