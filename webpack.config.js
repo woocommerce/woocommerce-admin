@@ -92,7 +92,7 @@ const webpackConfig = {
 				? `wp-admin-scripts/[name]${ suffix }.js`
 				: `[name]/index${ suffix }.js`;
 		},
-		chunkFilename: `chunks/[id].[chunkhash]${ suffix }.js`,
+		chunkFilename: `chunks/[name]${ suffix }.js`,
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
@@ -209,6 +209,9 @@ const webpackConfig = {
 	optimization: {
 		minimize: NODE_ENV !== 'development',
 		minimizer: [ new TerserPlugin() ],
+		splitChunks: {
+			name: false,
+		},
 	},
 };
 
