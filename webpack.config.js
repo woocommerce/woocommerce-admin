@@ -12,7 +12,7 @@ const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
-const JsonpScriptSrcVersionParameterPlugin = require( './jsonp-script-src-version' );
+const AsyncChunkSrcVersionParameterPlugin = require( './chunk-src-version-param' );
 
 /**
  * External dependencies
@@ -201,8 +201,9 @@ const webpackConfig = {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
-		// Replace with __webpack_get_script_filename__ in app once using Webpack 5.x.
-		new JsonpScriptSrcVersionParameterPlugin(),
+		// Partially replace with __webpack_get_script_filename__ in app once using Webpack 5.x.
+		// The CSS chunk portion will need to remain, as it originates in MiniCssExtractPlugin.
+		new AsyncChunkSrcVersionParameterPlugin(),
 		WC_ADMIN_PHASE !== 'core' &&
 			new UnminifyWebpackPlugin( {
 				test: /\.js($|\?)/i,
