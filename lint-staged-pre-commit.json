@@ -1,5 +1,0 @@
-{
-	"*.scss": [ "npm run lint:css" ],
-	"*.js": [ "wp-scripts format-js", "npm run lint:js" ],
-	"*.php": [ "php -d display_errors=1 -l", "composer run-script phpcs" ]
-}
