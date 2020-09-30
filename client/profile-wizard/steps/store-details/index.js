@@ -9,8 +9,6 @@ import {
 	CardFooter,
 	CheckboxControl,
 	FlexItem,
-	Icon,
-	Tooltip,
 	__experimentalText as Text,
 	Popover,
 } from '@wordpress/components';
@@ -42,7 +40,8 @@ class StoreDetails extends Component {
 		this.state = {
 			showUsageModal: false,
 			skipping: false,
-			isPopoverVisible: false,
+			isStoreDetailsPopoverVisible: false,
+			isSkipSetupPopoverVisible: false,
 		};
 
 		// Check if a store address is set so that we don't default
@@ -167,7 +166,12 @@ class StoreDetails extends Component {
 	}
 
 	render() {
-		const { showUsageModal, skipping, isPopoverVisible } = this.state;
+		const {
+			showUsageModal,
+			skipping,
+			isStoreDetailsPopoverVisible,
+			isSkipSetupPopoverVisible,
+		} = this.state;
 		const { skipProfiler } = this.props;
 
 		/* eslint-disable @wordpress/i18n-no-collapsible-whitespace */
@@ -201,7 +205,9 @@ class StoreDetails extends Component {
 								'woocommerce-admin'
 							) }
 							onClick={ () =>
-								this.setState( { isPopoverVisible: true } )
+								this.setState( {
+									isStoreDetailsPopoverVisible: true,
+								} )
 							}
 						>
 							<i
@@ -212,12 +218,14 @@ class StoreDetails extends Component {
 							</i>
 						</Button>
 					</Text>
-					{ isPopoverVisible && (
+					{ isStoreDetailsPopoverVisible && (
 						<Popover
 							focusOnMount="container"
 							position="top center"
 							onClose={ () =>
-								this.setState( { isPopoverVisible: false } )
+								this.setState( {
+									isStoreDetailsPopoverVisible: false,
+								} )
 							}
 						>
 							{ configureCurrencyText }
@@ -312,14 +320,33 @@ class StoreDetails extends Component {
 							'woocommerce-admin'
 						) }
 					</Button>
-					<Tooltip text={ skipSetupText }>
-						<span
-							aria-label={ skipSetupText }
-							className="woocommerce-profile-wizard__tooltip-icon"
+					<Button
+						isTertiary
+						label={ skipSetupText }
+						onClick={ () =>
+							this.setState( { isSkipSetupPopoverVisible: true } )
+						}
+					>
+						<i
+							className="material-icons-outlined"
+							aria-hidden="true"
 						>
-							<Icon icon="info-outline" size={ 16 } />
-						</span>
-					</Tooltip>
+							info
+						</i>
+					</Button>
+					{ isSkipSetupPopoverVisible && (
+						<Popover
+							focusOnMount="container"
+							position="top center"
+							onClose={ () =>
+								this.setState( {
+									isSkipSetupPopoverVisible: false,
+								} )
+							}
+						>
+							{ skipSetupText }
+						</Popover>
+					) }
 				</div>
 			</div>
 		);
