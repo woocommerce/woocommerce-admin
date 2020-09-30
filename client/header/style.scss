@@ -40,6 +40,10 @@
 			font-size: 14px;
 		}
 
+		> p {
+			text-transform: capitalize;
+		}
+
 		span + span::before {
 			content: ' / ';
 			color: $gray-text;
