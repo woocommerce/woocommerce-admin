@@ -46,11 +46,7 @@ class DeprecatedClassFacade {
 	 * @param array  $arguments An array of the arguments to the function call.
 	 */
 	public function __call( $name, $arguments ) {
-		_deprecated_function(
-			static::$facade_over_classname . '::' . $name,
-			static::$deprecated_in_version
-		);
-		call_user_func_array(
+		return call_user_func_array(
 			array(
 				$this->instance,
 				$name,
@@ -66,11 +62,7 @@ class DeprecatedClassFacade {
 	 * @param array  $arguments An array of the arguments to the function call.
 	 */
 	public static function __callStatic( $name, $arguments ) {
-		_deprecated_function(
-			static::$facade_over_classname . '::' . $name,
-			static::$deprecated_in_version
-		);
-		call_user_func_array(
+		return call_user_func_array(
 			array(
 				static::$facade_over_classname,
 				$name,
