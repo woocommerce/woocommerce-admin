@@ -439,14 +439,18 @@ class PageController {
 			);
 
 			if ( method_exists( '\Automattic\WooCommerce\Navigation\Menu', 'add_category' ) ) {
-				\Automattic\WooCommerce\Navigation\Menu::add_category(
-					array(
-						'id'         => $options['id'],
-						'title'      => $options['title'],
-						'capability' => $options['capability'],
-						'url'        => $options['path'],
-					)
+				$category_options = array(
+					'id'                    => $options['id'],
+					'title'                 => $options['title'],
+					'capability'            => $options['capability'],
+					'url'                   => $options['path'],
+					'is_top_level_category' => true,
 				);
+
+				if ( 'wc-admin&path=' === $options['path'] ) {
+					unset( $category_options['url'] );
+				}
+				\Automattic\WooCommerce\Navigation\Menu::add_category( $category_options );
 			}
 		} else {
 			$parent_path = $this->get_path_from_id( $options['parent'] );
@@ -461,13 +465,15 @@ class PageController {
 			);
 
 			if ( method_exists( '\Automattic\WooCommerce\Navigation\Menu', 'add_item' ) ) {
+				$top_level_ids = array( 'woocommerce-home', 'woocommerce-analytics-customers' );
 				\Automattic\WooCommerce\Navigation\Menu::add_item(
 					array(
-						'id'         => $options['id'],
-						'parent'     => $options['parent'],
-						'title'      => $options['title'],
-						'capability' => $options['capability'],
-						'url'        => $options['path'],
+						'id'                => $options['id'],
+						'parent'            => $options['parent'],
+						'title'             => $options['title'],
+						'capability'        => $options['capability'],
+						'url'               => $options['path'],
+						'is_top_level_item' => in_array( $options['id'], $top_level_ids, true ),
 					)
 				);
 			}

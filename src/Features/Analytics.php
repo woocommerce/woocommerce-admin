@@ -116,8 +116,7 @@ class Analytics {
 			array(
 				'id'       => 'woocommerce-analytics',
 				'title'    => __( 'Analytics', 'woocommerce-admin' ),
-				'path'     => '/analytics/overview',
-				'path'     => '/analytics/overview',
+				// 'path'     => '/analytics/overview', this needs to be conditional
 				'icon'     => 'dashicons-chart-bar',
 				'position' => 56, // After WooCommerce & Product menu items.
 			),
