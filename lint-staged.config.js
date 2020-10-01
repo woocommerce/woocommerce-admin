@@ -1,5 +1,5 @@
 module.exports = {
-	'*.scss': [ 'npm run lint:css' ],
+	'*.scss': [ 'npm run lint:css-fix' ],
 	'(client|packages)/**/*.js': [
 		'wp-scripts format-js',
 		'wp-scripts lint-js',
