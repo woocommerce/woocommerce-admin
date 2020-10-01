@@ -97,7 +97,7 @@ export function getAllTasks( {
 	const tasks = [
 		{
 			key: 'store_details',
-			title: __( 'Setup wizard', 'woocommerce-admin' ),
+			title: __( 'Store details', 'woocommerce-admin' ),
 			container: null,
 			onClick: () => {
 				recordEvent( 'tasklist_click', {
@@ -191,7 +191,7 @@ export function getAllTasks( {
 				} );
 				updateQueryString( { task: 'payments' } );
 			},
-			visible: ! woocommercePaymentsInstalled,
+			visible: ! woocommercePaymentsInstalled || countryCode !== 'US',
 			time: __( '2 minutes', 'woocommerce-admin' ),
 		},
 		{

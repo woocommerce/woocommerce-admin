@@ -8,8 +8,8 @@ namespace Automattic\WooCommerce\Admin;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\API\Reports\Cache;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Historical_Data;
+use \Automattic\WooCommerce\Admin\Notes\Notes;
+use \Automattic\WooCommerce\Admin\Notes\Historical_Data;
 
 /**
  * Install Class.
@@ -471,6 +471,7 @@ class Install {
 			'wc-admin-welcome-note',
 			'wc-admin-store-notice-setting-moved',
 			'wc-admin-store-notice-giving-feedback',
+			'wc-admin-learn-more-about-product-settings',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(
@@ -485,14 +486,14 @@ class Install {
 			);
 		}
 
-		WC_Admin_Notes::delete_notes_with_name( $obsolete_notes_names );
+		Notes::delete_notes_with_name( $obsolete_notes_names );
 	}
 
 	/**
 	 * Create notes.
 	 */
 	protected static function create_notes() {
-		WC_Admin_Notes_Historical_Data::possibly_add_note();
+		Historical_Data::possibly_add_note();
 	}
 
 	/**
