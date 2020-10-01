@@ -225,7 +225,7 @@ class Stripe extends Component {
 						<Fragment>
 							<TextControl
 								label={ __(
-									'Live Publishable Key',
+									'Publishable Key',
 									'woocommerce-admin'
 								) }
 								required
@@ -233,7 +233,7 @@ class Stripe extends Component {
 							/>
 							<TextControl
 								label={ __(
-									'Live Secret Key',
+									'Secret Key',
 									'woocommerce-admin'
 								) }
 								required
