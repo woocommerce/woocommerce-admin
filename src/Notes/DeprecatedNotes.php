@@ -41,6 +41,15 @@ class WC_Admin_Note extends DeprecatedClassFacade {
 	 * @var string
 	 */
 	protected static $deprecated_in_version = '1.6.0';
+
+	/**
+	 * Note constructor. Loads note data.
+	 *
+	 * @param mixed $data Note data, object, or ID.
+	 */
+	public function __construct( $data = '' ) {
+		$this->instance = new static::$facade_over_classname( $data );
+	}
 }
 
 /**
