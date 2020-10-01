@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import { mount, shallow } from 'enzyme';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { numberFormat } from '@woocommerce/number';
 import CurrencyFactory from '@woocommerce/currency';
 import { CURRENCY } from '@woocommerce/wc-admin-settings';
@@ -58,7 +59,7 @@ const headers = [
 
 describe( 'Leaderboard', () => {
 	test( 'should render empty message when there are no rows', () => {
-		const leaderboard = shallow(
+		const { queryByText } = render(
 			<Leaderboard
 				id="products"
 				title={ '' }
@@ -68,11 +69,13 @@ describe( 'Leaderboard', () => {
 			/>
 		);
 
-		expect( leaderboard.find( 'EmptyTable' ).length ).toBe( 1 );
+		expect(
+			queryByText( 'No data recorded for the selected time period.' )
+		).not.toBeNull();
 	} );
 
 	test( 'should render correct data in the table', () => {
-		const leaderboard = mount(
+		const { container, getAllByRole } = render(
 			<Leaderboard
 				id="products"
 				title={ '' }
@@ -81,28 +84,39 @@ describe( 'Leaderboard', () => {
 				totalRows={ 5 }
 			/>
 		);
-		const table = leaderboard.find( 'TableCard' );
-		const firstRow = table.props().rows[ 0 ];
-		const tableItems = leaderboard.find( '.woocommerce-table__item' );
 
-		expect( firstRow[ 0 ].value ).toBe( mockData[ 0 ].name );
-		expect( firstRow[ 1 ].value ).toBe( mockData[ 0 ].items_sold );
-		expect( firstRow[ 2 ].value ).toBe( mockData[ 0 ].orders_count );
-		expect( firstRow[ 3 ].value ).toBe(
-			formatDecimal( mockData[ 0 ].net_revenue )
+		const leaderboard = container.querySelector(
+			'.woocommerce-leaderboard'
 		);
 
-		expect(
-			leaderboard.render().find( '.woocommerce-table__item a' ).length
-		).toBe( 5 );
-		expect( tableItems.at( 0 ).text() ).toBe( mockData[ 0 ].name );
-		expect( tableItems.at( 1 ).text() ).toBe(
+		expect( leaderboard ).not.toBeNull();
+
+		const tableRows = getAllByRole( 'row' );
+
+		expect( tableRows.length ).toBe( 5 + 1 ); // Including header row = 6.
+
+		// Check the headers.
+		const tableHeaders = getAllByRole( 'columnheader' );
+
+		expect( tableHeaders.length ).toBe( headers.length );
+		tableHeaders.forEach( ( header, idx ) =>
+			expect( header ).toHaveTextContent( headers[ idx ].label )
+		);
+
+		// Check the first data row.
+		const firstRowColumns = tableRows[ 1 ].getElementsByClassName(
+			'woocommerce-table__item'
+		);
+
+		expect( firstRowColumns.length ).toBe( 4 );
+		expect( firstRowColumns[ 0 ] ).toHaveTextContent( mockData[ 0 ].name );
+		expect( firstRowColumns[ 1 ] ).toHaveTextContent(
 			numberFormat( CURRENCY, mockData[ 0 ].items_sold )
 		);
-		expect( tableItems.at( 2 ).text() ).toBe(
+		expect( firstRowColumns[ 2 ] ).toHaveTextContent(
 			numberFormat( CURRENCY, mockData[ 0 ].orders_count )
 		);
-		expect( tableItems.at( 3 ).text() ).toBe(
+		expect( firstRowColumns[ 3 ] ).toHaveTextContent(
 			formatAmount( mockData[ 0 ].net_revenue )
 		);
 	} );
