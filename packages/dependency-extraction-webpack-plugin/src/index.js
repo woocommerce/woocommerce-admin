@@ -1,4 +1,5 @@
 const WPDependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
+const packages = require( '../assets/packages' );
 
 const WOOCOMMERCE_NAMESPACE = '@woocommerce/';
 
@@ -17,7 +18,7 @@ function camelCaseDash( string ) {
 }
 
 const wooRequestToExternal = ( request ) => {
-	if ( request.startsWith( WOOCOMMERCE_NAMESPACE ) ) {
+	if ( packages.includes( request ) ) {
 		return [
 			'wc',
 			camelCaseDash( request.substring( WOOCOMMERCE_NAMESPACE.length ) ),
@@ -26,7 +27,7 @@ const wooRequestToExternal = ( request ) => {
 };
 
 const wooRequestToHandle = ( request ) => {
-	if ( request.startsWith( WOOCOMMERCE_NAMESPACE ) ) {
+	if ( packages.includes( request ) ) {
 		return 'wc-' + request.substring( WOOCOMMERCE_NAMESPACE.length );
 	}
 };
