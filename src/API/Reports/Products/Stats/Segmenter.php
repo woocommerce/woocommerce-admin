@@ -196,7 +196,7 @@ class Segmenter extends ReportsSegmenter {
 			$segmenting_dimension_name = 'category_id';
 
 			// Restrict our search space for category comparisons.
-			if ( isset( $this->query_args['categories'] ) ) {
+			if ( isset( $this->query_args['category_includes'] ) ) {
 				$category_ids      = implode( ',', $this->get_all_segments() );
 				$segmenting_where .= " AND {$wpdb->wc_category_lookup}.category_id IN ( $category_ids )";
 			}
