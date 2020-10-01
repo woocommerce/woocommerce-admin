@@ -172,7 +172,7 @@ class Stripe extends Component {
 			null
 		) {
 			errors.publishable_key = __(
-				'Please enter a valid publishable key.',
+				'Please enter a valid publishable key. Valid keys start with "pk_live" or "pk_test".',
 				'woocommerce-admin'
 			);
 		}
@@ -181,7 +181,7 @@ class Stripe extends Component {
 			null
 		) {
 			errors.secret_key = __(
-				'Please enter a valid secret key.',
+				'Please enter a valid secret key. Valid keys start with "sk_live", "sk_test", "rk_live or "rk_test".',
 				'woocommerce-admin'
 			);
 		}

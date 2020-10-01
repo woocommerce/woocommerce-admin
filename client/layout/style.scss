@@ -1,4 +1,3 @@
-
 .woocommerce-layout {
 	margin: 0;
 	padding: 0;
@@ -48,8 +47,8 @@
 .woocommerce-admin-full-screen {
 	background: $studio-gray-0;
 	color: $studio-gray-60;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-		'Helvetica Neue', sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 
 	#wpwrap {
 		top: 0;
@@ -91,6 +90,10 @@
 	.components-base-control.has-error {
 		margin-bottom: $gap * 2 !important;
 		border-color: $studio-red-50;
+
+		@include breakpoint( '<782px' ) {
+			margin-bottom: $gap-small + $gap * 2 !important;
+		}
 
 		.components-base-control__help {
 			top: 100%;
