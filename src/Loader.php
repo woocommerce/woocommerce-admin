@@ -809,7 +809,7 @@ class Loader {
 			<div class="woocommerce-layout">
 				<div class="woocommerce-layout__header is-embed-loading">
 					<h1 class="woocommerce-layout__header-heading">
-						<?php self::output_breadcrumbs( end($sections) ); ?>
+						<?php self::output_breadcrumbs( end( $sections ) ); ?>
 					</h1>
 				</div>
 			</div>
