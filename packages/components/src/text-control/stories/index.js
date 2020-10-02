@@ -8,7 +8,7 @@ import { TextControl } from '@woocommerce/components';
  */
 import { withState } from '@wordpress/compose';
 
-export const Basic = withState( {
+const Example = withState( {
 	value: '',
 } )( ( { setState, value } ) => {
 	return (
@@ -24,6 +24,8 @@ export const Basic = withState( {
 		</div>
 	);
 } );
+
+export const Basic = () => <Example />;
 
 export default {
 	title: 'WooCommerce Admin/components/TextControl',

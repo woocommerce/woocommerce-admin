@@ -4,7 +4,7 @@
 import { withState } from '@wordpress/compose';
 import { Stepper } from '@woocommerce/components';
 
-export const Examples = withState( {
+const BasicExamples = withState( {
 	currentStep: 'first',
 	isComplete: false,
 	isPending: false,
@@ -113,6 +113,8 @@ export const Examples = withState( {
 		</div>
 	);
 } );
+
+export const Examples = () => <BasicExamples />;
 
 export default {
 	title: 'WooCommerce Admin/components/Stepper',

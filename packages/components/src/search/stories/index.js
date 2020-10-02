@@ -4,7 +4,7 @@
 import { withState } from '@wordpress/compose';
 import { H, Search, Section } from '@woocommerce/components';
 
-export const Basic = withState( {
+const SearchExample = withState( {
 	selected: [],
 	inlineSelected: [],
 } )( ( { selected, inlineSelected, setState } ) => (
@@ -30,6 +30,8 @@ export const Basic = withState( {
 		</Section>
 	</div>
 ) );
+
+export const Basic = () => <SearchExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/Search',

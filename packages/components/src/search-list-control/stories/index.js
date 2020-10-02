@@ -4,7 +4,7 @@
 import { SearchListControl } from '@woocommerce/components';
 import { withState } from '@wordpress/compose';
 
-export const Basic = withState( {
+const SearchListControlExample = withState( {
 	selected: [],
 	loading: true,
 } )( ( { selected, loading, setState } ) => {
@@ -31,6 +31,8 @@ export const Basic = withState( {
 		</div>
 	);
 } );
+
+export const Basic = () => <SearchListControlExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/SearchListControl',

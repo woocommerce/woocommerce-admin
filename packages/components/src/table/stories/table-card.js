@@ -13,7 +13,7 @@ import { withState } from '@wordpress/compose';
  */
 import { headers, rows, summary } from './index';
 
-export const Basic = withState( {
+const TableCardExample = withState( {
 	query: {
 		paged: 1,
 	},
@@ -34,6 +34,8 @@ export const Basic = withState( {
 		summary={ summary }
 	/>
 ) );
+
+export const Basic = () => <TableCardExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/TableCard',

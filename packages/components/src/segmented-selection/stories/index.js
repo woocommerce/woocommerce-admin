@@ -6,7 +6,7 @@ import { SegmentedSelection } from '@woocommerce/components';
 
 const name = 'number';
 
-export const Basic = withState( {
+const SegmentedSelectionExample = withState( {
 	selected: 'two',
 } )( ( { selected, setState } ) => (
 	<SegmentedSelection
@@ -22,6 +22,8 @@ export const Basic = withState( {
 		name={ name }
 	/>
 ) );
+
+export const Basic = () => <SegmentedSelectionExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/SegmentedSelection',

@@ -7,7 +7,7 @@ import { DatePicker, H, Section } from '@woocommerce/components';
 
 const dateFormat = 'MM/DD/YYYY';
 
-export const Basic = withState( {
+const DatePickerExample = withState( {
 	after: null,
 	afterText: '',
 	before: null,
@@ -40,6 +40,8 @@ export const Basic = withState( {
 		</div>
 	);
 } );
+
+export const Basic = () => <DatePickerExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/calendar/DatePicker',

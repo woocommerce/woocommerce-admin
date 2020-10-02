@@ -6,7 +6,7 @@ import { Fragment } from '@wordpress/element';
 import { Icon } from '@wordpress/components';
 import { EllipsisMenu, MenuItem, MenuTitle } from '@woocommerce/components';
 
-export const Basic = withState( {
+const ExampleEllipsisMenu = withState( {
 	showCustomers: true,
 	showOrders: true,
 } )( ( { setState, showCustomers, showOrders } ) => (
@@ -41,6 +41,8 @@ export const Basic = withState( {
 		) }
 	/>
 ) );
+
+export const Basic = () => <ExampleEllipsisMenu />;
 
 export default {
 	title: 'WooCommerce Admin/components/EllipsisMenu',

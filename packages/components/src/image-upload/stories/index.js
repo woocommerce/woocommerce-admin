@@ -4,7 +4,7 @@
 import { withState } from '@wordpress/compose';
 import { ImageUpload } from '@woocommerce/components';
 
-export const Basic = withState( {
+const ImageUploadExample = withState( {
 	image: null,
 } )( ( { setState, logo } ) => (
 	<ImageUpload
@@ -12,6 +12,8 @@ export const Basic = withState( {
 		onChange={ ( image ) => setState( { logo: image } ) }
 	/>
 ) );
+
+export const Basic = () => <ImageUploadExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/ImageUpload',

@@ -7,7 +7,7 @@ import { DateRange, H, Section } from '@woocommerce/components';
 
 const dateFormat = 'MM/DD/YYYY';
 
-export const DateRangeExample = withState( {
+const DateRangeExample = withState( {
 	after: null,
 	afterText: '',
 	before: null,
@@ -40,6 +40,8 @@ export const DateRangeExample = withState( {
 		</>
 	);
 } );
+
+export const Basic = () => <DateRangeExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/calendar/DateRange',

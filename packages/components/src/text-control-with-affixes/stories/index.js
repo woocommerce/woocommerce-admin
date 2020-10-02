@@ -8,7 +8,7 @@ import { TextControlWithAffixes } from '@woocommerce/components';
  */
 import { withState } from '@wordpress/compose';
 
-export const Examples = withState( {
+const Examples = withState( {
 	first: '',
 	second: '',
 	third: '',
@@ -87,6 +87,8 @@ export const Examples = withState( {
 		/>
 	</div>
 ) );
+
+export const Basic = () => <Examples />;
 
 export default {
 	title: 'WooCommerce Admin/components/TextControlWithAffixes',

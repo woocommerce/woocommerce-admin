@@ -52,7 +52,7 @@ const options = [
 	},
 ];
 
-export const Basic = withState( {
+const SelectControlExample = withState( {
 	simpleSelected: [],
 	simpleMultipleSelected: [],
 	singleSelected: [],
@@ -143,6 +143,8 @@ export const Basic = withState( {
 		</div>
 	)
 );
+
+export const Basic = () => <SelectControlExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/SelectControl',

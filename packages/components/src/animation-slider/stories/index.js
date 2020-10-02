@@ -4,7 +4,7 @@
 import { AnimationSlider } from '@woocommerce/components';
 import { Component } from '@wordpress/element';
 
-export class Basic extends Component {
+class BasicExample extends Component {
 	constructor() {
 		super( arguments );
 		this.state = {
@@ -56,8 +56,9 @@ export class Basic extends Component {
 			</div>
 		);
 	}
-	s;
 }
+
+export const Basic = () => <BasicExample />;
 
 export default {
 	title: 'WooCommerce Admin/components/AnimationSlider',
