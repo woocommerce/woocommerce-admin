@@ -8,7 +8,7 @@
 	&.woocommerce_page_wc-admin #wpbody-content {
 		padding: 0;
 		overflow-x: hidden !important;
-		min-height: calc( 100vh - #{$adminbar-height} );
+		min-height: calc(100vh - #{$adminbar-height});
 	}
 
 	@include breakpoint( '>782px' ) {
@@ -27,7 +27,7 @@
 
 		#wpcontent,
 		#wpbody-content {
-			min-height: calc( 100vh - #{$adminbar-height-mobile} );
+			min-height: calc(100vh - #{$adminbar-height-mobile});
 		}
 	}
 
@@ -54,7 +54,7 @@
 		}
 	}
 
-	.components-popover:not( .is-mobile ) {
+	.components-popover:not(.is-mobile) {
 		z-index: 2; /* below of woocommerce-layout__header */
 	}
 }

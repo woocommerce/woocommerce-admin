@@ -120,7 +120,7 @@
 	}
 
 	.woocommerce-activity-card__actions {
-		a.components-button:not( .is-primary ) {
+		a.components-button:not(.is-primary) {
 			color: $gray-text;
 		}
 	}
