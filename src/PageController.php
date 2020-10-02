@@ -447,6 +447,7 @@ class PageController {
 					'is_top_level_category' => true,
 				);
 
+				// If there is no path option, remove url because its a parent category item.
 				if ( 'wc-admin&path=' === $options['path'] ) {
 					unset( $category_options['url'] );
 				}
