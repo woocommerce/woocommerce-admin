@@ -149,7 +149,7 @@ const advancedFilters = {
 	},
 };
 
-export default () => (
+export const Basic = () => (
 	<AdvancedFilters
 		siteLocale={ siteLocale }
 		path={ path }
@@ -159,3 +159,8 @@ export default () => (
 		currency={ CURRENCY }
 	/>
 );
+
+export default {
+	title: 'WooCommerce Admin/components/AdvancedFilters',
+	component: AdvancedFilters,
+};
