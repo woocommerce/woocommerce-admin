@@ -4,7 +4,7 @@
 import { Dropdown } from '@wordpress/components';
 import { DropdownButton } from '@woocommerce/components';
 
-export const Basic () => (
+export const Basic = () => (
 	<Dropdown
 		renderToggle={ ( { isOpen, onToggle } ) => (
 			<DropdownButton
