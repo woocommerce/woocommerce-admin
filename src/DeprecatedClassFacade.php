@@ -30,7 +30,7 @@ class DeprecatedClassFacade {
 	 *
 	 * @var object
 	 */
-	private $instance;
+	protected $instance;
 
 	/**
 	 * Constructor.
