@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Card, Section, TablePlaceholder } from '@woocommerce/components';
+import { Card, TablePlaceholder } from '@woocommerce/components';
 
 /**
  * Internal dependencies

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Section, TableSummary } from '@woocommerce/components';
+import { TableSummary } from '@woocommerce/components';
 
 /**
  * Internal dependencies
