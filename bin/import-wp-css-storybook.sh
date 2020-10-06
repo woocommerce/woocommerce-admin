@@ -22,5 +22,5 @@ then
     # The directory is not empty, import css
     download_and_extract_css $STORYBOOK_WORDPRESS_DIR;
 else
-    echo "Wordpress CSS already exists at that path, pass -f to force update";
+    echo "Wordpress CSS already imported, pass -f to force an update";
 fi

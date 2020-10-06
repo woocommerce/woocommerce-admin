@@ -68,7 +68,7 @@
 		"example": "webpack --config docs/examples/extensions/examples.config.js --watch",
 		"pre-release": "./bin/pre-release.sh",
 		"create-wc-extension": "node ./bin/starter-pack/starter-pack.js",
-		"storybook": "start-storybook  -c ./storybook -p 6007 --ci",
+		"storybook": "./bin/import-wp-css-storybook.sh && start-storybook  -c ./storybook -p 6007 --ci",
 		"build-storybook": "build-storybook  -c ./storybook",
 		"changelog": "node ./bin/changelog --changelogSrcType='ZENHUB_RELEASE'",
 		"bump-version": "npm run -s install-if-deps-outdated && php ./bin/update-version.php"
