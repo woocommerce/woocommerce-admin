@@ -117,7 +117,7 @@ class Loader {
 	 * Returns true if WooCommerce Admin is currently running in a development environment.
 	 */
 	public static function is_dev() {
-		if ( self::is_feature_enabled( 'devdocs' ) && defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 			return true;
 		}
 		return false;

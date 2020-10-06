@@ -3,8 +3,7 @@
  */
 import { FilterPicker } from '@woocommerce/components';
 
-const path =
-	new URL( document.location ).searchParams.get( 'path' ) || '/devdocs';
+const path = new URL( document.location ).searchParams.get( 'path' );
 const query = {
 	meal: 'breakfast',
 };

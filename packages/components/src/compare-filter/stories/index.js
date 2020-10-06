@@ -3,8 +3,7 @@
  */
 import { CompareFilter } from '@woocommerce/components';
 
-const path =
-	new URL( document.location ).searchParams.get( 'path' ) || '/devdocs';
+const path = new URL( document.location ).searchParams.get( 'path' );
 const query = {};
 const compareFilter = {
 	type: 'products',
