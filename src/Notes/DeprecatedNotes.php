@@ -205,6 +205,25 @@ class WC_Admin_Notes_EU_VAT_Number extends DeprecatedClassFacade {
 }
 
 /**
+ * WC_Admin_Notes_Facebook_Marketing_Expert (deprecated, use Facebook_Marketing_Expert instead).
+ */
+class WC_Admin_Notes_Facebook_Marketing_Expert extends DeprecatedClassFacade {
+	/**
+	 * The name of the non-deprecated class that this facade covers.
+	 *
+	 * @var string
+	 */
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\Facebook_Marketing_Expert';
+
+	/**
+	 * The version that this class was deprecated in.
+	 *
+	 * @var string
+	 */
+	protected static $deprecated_in_version = '1.6.0';
+}
+
+/**
  * WC_Admin_Notes_First_Product (deprecated, use First_Product instead).
  */
 class WC_Admin_Notes_First_Product extends DeprecatedClassFacade {
