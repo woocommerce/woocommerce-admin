@@ -9,6 +9,7 @@ import { addDecorator } from '@storybook/react';
  * Internal dependencies
  */
 import './style.scss';
+import './wordpress/css/wp-admin.min.css';
 
 addDecorator( withA11y );
 addDecorator( withKnobs );
