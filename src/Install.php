@@ -50,6 +50,10 @@ class Install {
 			'wc_admin_update_140_change_deactivate_plugin_note_type',
 			'wc_admin_update_140_db_version',
 		),
+		'1.6.0'  => array(
+			'wc_admin_update_160_remove_facebook_note',
+			'wc_admin_update_160_db_version',
+		),
 	);
 
 	/**
@@ -467,6 +471,7 @@ class Install {
 			'wc-admin-welcome-note',
 			'wc-admin-store-notice-setting-moved',
 			'wc-admin-store-notice-giving-feedback',
+			'wc-admin-learn-more-about-product-settings',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(

@@ -176,9 +176,9 @@ class Loader {
 	 * @return boolean If js asset should use minified version.
 	 */
 	public static function should_use_minified_js_file( $script_debug ) {
-		// un-minified files are only shipped in non-core versions of wc-admin, return true if unminified files are not available.
-		if ( ! self::is_feature_enabled( 'unminified-js' ) ) {
-			return true;
+		// minified files are only shipped in non-core versions of wc-admin, return false if minified files are not available.
+		if ( ! self::is_feature_enabled( 'minified-js' ) ) {
+			return false;
 		}
 
 		// Otherwise we will serve un-minified files if SCRIPT_DEBUG is on, or if anything truthy is passed in-lieu of SCRIPT_DEBUG.
@@ -323,7 +323,7 @@ class Loader {
 		wp_register_script(
 			'wc-navigation',
 			self::get_url( 'navigation/index', 'js' ),
-			array(),
+			array( 'wp-url', 'wp-hooks' ),
 			$js_file_version,
 			true
 		);
@@ -420,7 +420,8 @@ class Loader {
 			WC_ADMIN_APP,
 			'wcAdminAssets',
 			array(
-				'path' => plugins_url( self::get_path( 'js' ), WC_ADMIN_PLUGIN_FILE ),
+				'path'    => plugins_url( self::get_path( 'js' ), WC_ADMIN_PLUGIN_FILE ),
+				'version' => $js_file_version,
 			)
 		);
 
@@ -774,19 +775,12 @@ class Loader {
 	 *
 	 * @param array $section Section to create breadcrumb from.
 	 */
-	private static function output_breadcrumbs( $section ) {
+	private static function output_heading( $section ) {
 		if ( ! static::user_can_analytics() ) {
 			return;
 		}
-		?>
-		<span>
-		<?php if ( is_array( $section ) ) : ?>
-			<a href="<?php echo esc_url( admin_url( $section[0] ) ); ?>"><?php echo esc_html( $section[1] ); ?></a>
-		<?php else : ?>
-			<?php echo esc_html( $section ); ?>
-		<?php endif; ?>
-		</span>
-		<?php
+
+		echo esc_html( $section );
 	}
 
 	/**
@@ -812,10 +806,8 @@ class Loader {
 		<div id="woocommerce-embedded-root" class="is-embed-loading">
 			<div class="woocommerce-layout">
 				<div class="woocommerce-layout__header is-embed-loading">
-					<h1 class="woocommerce-layout__header-breadcrumbs">
-						<?php foreach ( $sections as $section ) : ?>
-							<?php self::output_breadcrumbs( $section ); ?>
-						<?php endforeach; ?>
+					<h1 class="woocommerce-layout__header-heading">
+						<?php self::output_heading( end( $sections ) ); ?>
 					</h1>
 				</div>
 			</div>
@@ -1048,6 +1040,8 @@ class Loader {
 		// We may have synced orders with a now-unregistered status.
 		// E.g An extension that added statuses is now inactive or removed.
 		$settings['unregisteredOrderStatuses'] = self::get_unregistered_order_statuses();
+		// The separator used for attributes found in Variation titles.
+		$settings['variationTitleAttributesSeparator'] = apply_filters( 'woocommerce_product_variation_title_attributes_separator', ' - ', new \WC_Product() );
 
 		if ( ! empty( $preload_data_endpoints ) ) {
 			$settings['dataEndpoints'] = isset( $settings['dataEndpoints'] )

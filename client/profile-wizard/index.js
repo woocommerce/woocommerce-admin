@@ -20,6 +20,7 @@ import {
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -74,7 +75,6 @@ class ProfileWizard extends Component {
 		const { activePlugins, profileItems, updateProfileItems } = this.props;
 
 		document.body.classList.remove( 'woocommerce-admin-is-loading' );
-		document.documentElement.classList.remove( 'wp-toolbar' );
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 		document.body.classList.add( 'woocommerce-admin-full-screen' );
@@ -99,7 +99,6 @@ class ProfileWizard extends Component {
 	}
 
 	componentWillUnmount() {
-		document.documentElement.classList.add( 'wp-toolbar' );
 		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
 		document.body.classList.remove( 'woocommerce-admin-full-screen' );
@@ -346,7 +345,8 @@ export default compose(
 		const connectToJetpack = ( failureRedirect ) => {
 			connectToJetpackWithFailureRedirect(
 				failureRedirect,
-				createErrorNotice
+				createErrorNotice,
+				getAdminLink
 			);
 		};
 

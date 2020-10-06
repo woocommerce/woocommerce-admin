@@ -23,6 +23,28 @@ class ProductVariations extends \WC_REST_Product_Variations_Controller {
 	protected $namespace = 'wc-analytics';
 
 	/**
+	 * Register the routes for products.
+	 */
+	public function register_routes() {
+		parent::register_routes();
+
+		// Add a route for listing variations without specifying the parent product ID.
+		register_rest_route(
+			$this->namespace,
+			'/variations',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_items' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+	}
+
+	/**
 	 * Get the query params for collections.
 	 *
 	 * @return array
@@ -79,7 +101,7 @@ class ProductVariations extends \WC_REST_Product_Variations_Controller {
 		if ( $search ) {
 			$join .= " LEFT JOIN {$wpdb->postmeta} AS attr_search_meta
 						ON {$wpdb->posts}.ID = attr_search_meta.post_id
-						AND attr_search_meta.meta_key LIKE 'attribute_pa_%' ";
+						AND attr_search_meta.meta_key LIKE 'attribute_%' ";
 		}
 
 		if ( wc_product_sku_enabled() && ! strstr( $join, 'wc_product_meta_lookup' ) ) {
@@ -102,6 +124,11 @@ class ProductVariations extends \WC_REST_Product_Variations_Controller {
 		if ( ! empty( $request['search'] ) ) {
 			$args['search'] = $request['search'];
 			unset( $args['s'] );
+		}
+
+		// Retreive variations without specifying a parent product.
+		if ( "/{$this->namespace}/variations" === $request->get_route() ) {
+			unset( $args['post_parent'] );
 		}
 
 		return $args;

@@ -140,6 +140,7 @@ class Stripe extends Component {
 				...stripeSettings,
 				publishable_key: values.publishable_key,
 				secret_key: values.secret_key,
+				testmode: 'no',
 				enabled: 'yes',
 			},
 		} );
@@ -167,15 +168,21 @@ class Stripe extends Component {
 	validateManualConfig( values ) {
 		const errors = {};
 
-		if ( values.publishable_key.match( /^pk_live_/ ) === null ) {
+		if (
+			values.publishable_key.match( /^pk_(live|test)_[a-zA-Z0-9_]+/ ) ===
+			null
+		) {
 			errors.publishable_key = __(
-				'Please enter a valid publishable key. Valid keys start with "pk_live".',
+				'Please enter a valid publishable key. Valid keys start with "pk_live" or "pk_test".',
 				'woocommerce-admin'
 			);
 		}
-		if ( values.secret_key.match( /^[rs]k_live_/ ) === null ) {
+		if (
+			values.secret_key.match( /^[rs]k_(live|test)_[a-zA-Z0-9_]+/ ) ===
+			null
+		) {
 			errors.secret_key = __(
-				'Please enter a valid secret key. Valid keys start with "sk_live" or "rk_live".',
+				'Please enter a valid secret key. Valid keys start with "sk_live", "sk_test", "rk_live or "rk_test".',
 				'woocommerce-admin'
 			);
 		}
@@ -219,7 +226,7 @@ class Stripe extends Component {
 						<Fragment>
 							<TextControl
 								label={ __(
-									'Live Publishable Key',
+									'Publishable Key',
 									'woocommerce-admin'
 								) }
 								required
@@ -227,7 +234,7 @@ class Stripe extends Component {
 							/>
 							<TextControl
 								label={ __(
-									'Live Secret Key',
+									'Secret Key',
 									'woocommerce-admin'
 								) }
 								required

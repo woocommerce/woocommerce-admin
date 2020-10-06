@@ -93,41 +93,69 @@ import ProductImage from '../../product-image';
  * attribute option strings.
  *
  * @param {Object} variation - variation returned by the api
- * @return {string} - variation name
+ * @param {Array} variation.attributes - attribute objects, with option property.
+ * @param {string} variation.name - name of variation.
+ * @return {string} - formatted variation name
  */
-function getVariationName( variation ) {
-	return variation.attributes.map( ( { option } ) => option ).join( ', ' );
+function getVariationName( { attributes, name } ) {
+	const separator =
+		window.wcSettings.variationTitleAttributesSeparator || ' - ';
+
+	if ( name.indexOf( separator ) > -1 ) {
+		return name;
+	}
+
+	const attributeList = attributes
+		.map( ( { option } ) => option )
+		.join( ', ' );
+
+	return attributeList ? name + separator + attributeList : name;
 }
 
 /**
- * A products completer.
+ * A variations completer.
  * See https://github.com/WordPress/gutenberg/tree/master/packages/components/src/autocomplete#the-completer-interface
  *
  * @type {WPCompleter}
  */
 export default {
-	name: 'products',
+	name: 'variations',
 	className: 'woocommerce-search__product-result',
 	options( search ) {
 		const query = search
 			? {
 					search,
 					per_page: 30,
-					_fields: [ 'id', 'sku', 'description', 'attributes' ],
+					_fields: [
+						'attributes',
+						'description',
+						'id',
+						'name',
+						'sku',
+					],
 			  }
 			: {};
 		const product = getQuery().products;
-		if ( ! product || product.includes( ',' ) ) {
-			// eslint-disable-next-line no-console
-			console.warn(
-				'Invalid product id supplied to Variations autocompleter'
-			);
+
+		// Product was specified, search only its variations.
+		if ( product ) {
+			if ( product.includes( ',' ) ) {
+				// eslint-disable-next-line no-console
+				console.warn(
+					'Invalid product id supplied to Variations autocompleter'
+				);
+			}
+			return apiFetch( {
+				path: addQueryArgs(
+					`/wc-analytics/products/${ product }/variations`,
+					query
+				),
+			} );
 		}
+
+		// Product was not specified, search all variations.
 		return apiFetch( {
-			path: addQueryArgs(
-				`/wc-analytics/products/${ product }/variations`,
-				query
-			),
+			path: addQueryArgs( '/wc-analytics/variations', query ),
 		} );
 	},
 	isDebounced: true,

@@ -23,7 +23,7 @@ import StatsOverview from './stats-overview';
 import './style.scss';
 import '../dashboard/style.scss';
 import TaskListPlaceholder from '../task-list/placeholder';
-import InboxPanel from '../header/activity-panel/panels/inbox';
+import InboxPanel from '../inbox-panel';
 import { WelcomeModal } from './welcome-modal';
 
 const TaskList = lazy( () =>
@@ -123,7 +123,8 @@ export const Layout = ( {
 				<WelcomeModal
 					onClose={ () => {
 						updateOptions( {
-							woocommerce_task_list_welcome_modal_dismissed: true,
+							woocommerce_task_list_welcome_modal_dismissed:
+								'yes',
 						} );
 					} }
 				/>
@@ -166,7 +167,7 @@ export default compose(
 
 		const welcomeModalDismissed =
 			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
-			'1';
+			'yes';
 
 		const welcomeModalDismissedIsResolving = isResolving( 'getOption', [
 			'woocommerce_task_list_welcome_modal_dismissed',

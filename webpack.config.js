@@ -12,6 +12,7 @@ const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
+const AsyncChunkSrcVersionParameterPlugin = require( './chunk-src-version-param' );
 
 /**
  * External dependencies
@@ -77,6 +78,8 @@ wpAdminScripts.forEach( ( name ) => {
 
 const postcssPlugins = require( '@wordpress/postcss-plugins-preset' );
 
+const suffix = WC_ADMIN_PHASE === 'core' ? '' : '.min';
+
 const webpackConfig = {
 	mode: NODE_ENV,
 	entry: {
@@ -87,10 +90,10 @@ const webpackConfig = {
 	output: {
 		filename: ( data ) => {
 			return wpAdminScripts.includes( data.chunk.name )
-				? `wp-admin-scripts/[name].min.js`
-				: `[name]/index.min.js`;
+				? `wp-admin-scripts/[name]${ suffix }.js`
+				: `[name]/index${ suffix }.js`;
 		},
-		chunkFilename: `chunks/[id].[chunkhash].min.js`,
+		chunkFilename: `chunks/[name]${ suffix }.js`,
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
@@ -198,6 +201,9 @@ const webpackConfig = {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
 		process.env.ANALYZE && new BundleAnalyzerPlugin(),
+		// Partially replace with __webpack_get_script_filename__ in app once using Webpack 5.x.
+		// The CSS chunk portion will need to remain, as it originates in MiniCssExtractPlugin.
+		new AsyncChunkSrcVersionParameterPlugin(),
 		WC_ADMIN_PHASE !== 'core' &&
 			new UnminifyWebpackPlugin( {
 				test: /\.js($|\?)/i,
@@ -207,6 +213,9 @@ const webpackConfig = {
 	optimization: {
 		minimize: NODE_ENV !== 'development',
 		minimizer: [ new TerserPlugin() ],
+		splitChunks: {
+			name: false,
+		},
 	},
 };
 

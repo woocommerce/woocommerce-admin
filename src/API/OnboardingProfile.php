@@ -99,10 +99,10 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	public function get_items( $request ) {
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-options.php';
 
-		$onboarding_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
-		$item_schema     = $this->get_item_schema();
-
-		$items = array();
+		$onboarding_data             = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$onboarding_data['industry'] = isset( $onboarding_data['industry'] ) ? $this->filter_industries( $onboarding_data['industry'] ) : null;
+		$item_schema                 = $this->get_item_schema();
+		$items                       = array();
 		foreach ( $item_schema['properties'] as $key => $property_schema ) {
 			$items[ $key ] = isset( $onboarding_data[ $key ] ) ? $onboarding_data[ $key ] : null;
 		}
@@ -114,6 +114,19 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 		$data = $this->prepare_response_for_collection( $item );
 
 		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Filter the industries.
+	 *
+	 * @param  array $industries list of industries.
+	 * @return array
+	 */
+	public function filter_industries( $industries ) {
+		return apply_filters(
+			'woocommerce_admin_onboarding_industries',
+			$industries
+		);
 	}
 
 	/**
@@ -215,7 +228,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 			),
 			'plugins'             => array(
 				'type'              => 'string',
-				'description'       => __( 'How the Jetpack/WooCommerce Services step was handled.', 'woocommerce-admin' ),
+				'description'       => __( 'How the Jetpack/WooCommerce Shipping & Tax step was handled.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
