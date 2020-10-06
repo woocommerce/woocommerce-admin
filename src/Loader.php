@@ -778,11 +778,8 @@ class Loader {
 		if ( ! static::user_can_analytics() ) {
 			return;
 		}
-		?>
-		<p class="is-embed">
-			<?php echo esc_html( $section ); ?>
-		</p>
-		<?php
+
+		echo esc_html( $section );
 	}
 
 	/**

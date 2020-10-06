@@ -93,11 +93,14 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 					onInstall={ dismissHandler }
 				/>
 			) }
-			<h1 className="woocommerce-layout__header-heading">
-				<Text variant="subtitle.small">
-					{ decodeEntities( pageTitle ) }
-				</Text>
-			</h1>
+
+			<Text
+				className="woocommerce-layout__header-heading"
+				as="h1"
+				variant="subtitle.small"
+			>
+				{ decodeEntities( pageTitle ) }
+			</Text>
 			{ window.wcAdminFeatures[ 'activity-panels' ] && (
 				<ActivityPanel isEmbedded={ isEmbedded } query={ query } />
 			) }
