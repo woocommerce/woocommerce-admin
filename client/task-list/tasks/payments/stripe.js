@@ -258,6 +258,42 @@ class Stripe extends Component {
 		);
 	}
 
+	renderOauthConfig() {
+		const tosPrompt = interpolateComponents( {
+			mixedString: __(
+				'By clicking "Connect," you agree to the {{tosLink}}Terms of Service{{/tosLink}}. Or {{manualConfigLink}}manually enter your Stripe API details{{/manualConfigLink}} instead.',
+				'woocommerce-admin'
+			),
+			components: {
+				tosLink: (
+					<Link
+						href="https://wordpress.com/tos"
+						target="_blank"
+						type="external"
+					/>
+				),
+				manualConfigLink: (
+					<Link
+						href="#"
+						onClick={ () => {
+							this.setState( {
+								connectURL: null,
+							} );
+
+							return false;
+						} }
+					/>
+				),
+			},
+		} );
+
+		return (
+			<Fragment>
+				<p>{ this.renderConnectButton() }</p>
+				{ tosPrompt }
+			</Fragment>
+		);
+	}
 	getConnectStep() {
 		const { connectURL, isPending, oAuthConnectFailed } = this.state;
 
@@ -277,7 +313,7 @@ class Stripe extends Component {
 					'A Stripe account is required to process payments.',
 					'woocommerce-admin'
 				),
-				content: this.renderConnectButton(),
+				content: this.renderOauthConfig(),
 			};
 		}
 
