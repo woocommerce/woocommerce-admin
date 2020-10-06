@@ -774,7 +774,7 @@ class Loader {
 	 *
 	 * @param array $section Section to create breadcrumb from.
 	 */
-	private static function output_breadcrumbs( $section ) {
+	private static function output_heading( $section ) {
 		if ( ! static::user_can_analytics() ) {
 			return;
 		}
@@ -809,7 +809,7 @@ class Loader {
 			<div class="woocommerce-layout">
 				<div class="woocommerce-layout__header is-embed-loading">
 					<h1 class="woocommerce-layout__header-heading">
-						<?php self::output_breadcrumbs( end( $sections ) ); ?>
+						<?php self::output_heading( end( $sections ) ); ?>
 					</h1>
 				</div>
 			</div>
