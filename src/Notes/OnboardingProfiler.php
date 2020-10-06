@@ -60,8 +60,8 @@ class Onboarding_Profiler {
 		$note->add_action(
 			'skip-profiler',
 			__( 'Skip Setup', 'woocommerce-admin' ),
-			wc_admin_url( '&reset_profiler=0' ),
-			'actioned',
+			false,
+			Note::E_WC_ADMIN_NOTE_ACTIONED,
 			false
 		);
 		return $note;
