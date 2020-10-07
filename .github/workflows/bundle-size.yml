@@ -14,5 +14,5 @@ jobs:
               with:
                   repo-token: '${{ secrets.GITHUB_TOKEN }}'
                   pattern: '{dist/**/build/**/*.min.{js,css},packages/**/build/**/*.{js,css}}'
-                  exclude: '{*.map, **/node_modules/**}'
+                  exclude: '{*.map, node_modules}'
                   minimum-change-threshold: 100
