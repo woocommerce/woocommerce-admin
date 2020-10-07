@@ -13,6 +13,6 @@ jobs:
             - uses: preactjs/compressed-size-action@v2.0.1
               with:
                   repo-token: '${{ secrets.GITHUB_TOKEN }}'
-                  pattern: '{dist/**/build/**/*.min.{js,css},packages/**/build/**/*.{js,css}}'
+                  pattern: '{dist/**/*.min.{js,css},packages/**/build/**/*.{js,css}}'
                   exclude: '{*.map, node_modules}'
                   minimum-change-threshold: 100
