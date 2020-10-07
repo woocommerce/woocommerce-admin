@@ -102,7 +102,10 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 				{ decodeEntities( pageTitle ) }
 			</Text>
 			{ window.wcAdminFeatures[ 'activity-panels' ] && (
-				<ActivityPanel isEmbedded={ isEmbedded } query={ query } />
+				<div className="test-bundle-size">
+					<span>Testing</span>
+					<ActivityPanel isEmbedded={ isEmbedded } query={ query } />
+				</div>
 			) }
 		</div>
 	);
