@@ -8,6 +8,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks;
+use Automattic\WooCommerce\Admin\Notes\Confirm_Tax_Settings;
 
 /**
  * This contains logic for setting up shipping when the profiler completes.
