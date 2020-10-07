@@ -8,6 +8,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks;
+use Automattic\WooCommerce\Admin\Notes\Confirm_Tax_Settings;
 
 /**
  * This contains logic for setting up shipping when the profiler completes.
@@ -58,13 +59,7 @@ class OnboardingAutomateTaxes {
 		if ( $jetpack_connected && $wcs_version && $wcs_tos_accepted ) {
 			update_option( 'wc_connect_taxes_enabled', 'yes' );
 			update_option( 'woocommerce_calc_taxes', 'yes' );
+			Confirm_Tax_Settings::possibly_add_note();
 		}
-	}
-
-	/**
-	 * Check if automated taxes are supported.
-	 */
-	private static function automated_tax_is_supported() {
-		return in_array( WC()->countries->get_base_country(), \OnboardingTasks::get_automated_tax_supported_countries(), true );
 	}
 }
