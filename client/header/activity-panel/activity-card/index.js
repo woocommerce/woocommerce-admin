@@ -25,16 +25,11 @@ class ActivityCard extends Component {
 			title,
 			unread,
 		} = this.props;
-
-		const baz = [ 'foo', 'bar' ].map( ( w ) => w );
-
 		const cardClassName = classnames(
 			'woocommerce-activity-card',
 			className
 		);
-		const actionsList = Array.isArray( actions )
-			? actions
-			: [ actions, ...baz ];
+		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
 
 		return (
 			<section className={ cardClassName }>
