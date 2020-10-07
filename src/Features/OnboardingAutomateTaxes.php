@@ -66,7 +66,7 @@ class OnboardingAutomateTaxes {
 	 * Check if automated taxes are supported.
 	 */
 	private static function automated_tax_is_supported() {
-		return in_array( WC()->countries->get_base_country(), \OnboardingTasks::get_automated_tax_supported_countries(), true );
+		return in_array( WC()->countries->get_base_country(), OnboardingTasks::get_automated_tax_supported_countries(), true );
 	}
 
 	/**
