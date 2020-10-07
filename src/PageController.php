@@ -440,11 +440,11 @@ class PageController {
 
 			if ( method_exists( '\Automattic\WooCommerce\Navigation\Menu', 'add_category' ) ) {
 				$category_options = array(
-					'id'                    => $options['id'],
-					'title'                 => $options['title'],
-					'capability'            => $options['capability'],
-					'url'                   => $options['path'],
-					'is_top_level_category' => true,
+					'id'           => $options['id'],
+					'title'        => $options['title'],
+					'capability'   => $options['capability'],
+					'url'          => $options['path'],
+					'is_top_level' => true,
 				);
 
 				// If there is no path option, remove url because its a parent category item.
@@ -469,12 +469,12 @@ class PageController {
 				$top_level_ids = array( 'woocommerce-home', 'woocommerce-analytics-customers' );
 				\Automattic\WooCommerce\Navigation\Menu::add_item(
 					array(
-						'id'                => $options['id'],
-						'parent'            => $options['parent'],
-						'title'             => $options['title'],
-						'capability'        => $options['capability'],
-						'url'               => $options['path'],
-						'is_top_level_item' => in_array( $options['id'], $top_level_ids, true ),
+						'id'           => $options['id'],
+						'parent'       => $options['parent'],
+						'title'        => $options['title'],
+						'capability'   => $options['capability'],
+						'url'          => $options['path'],
+						'is_top_level' => in_array( $options['id'], $top_level_ids, true ),
 					)
 				);
 			}
