@@ -636,19 +636,13 @@ class Onboarding {
 		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
 
 		$settings['onboarding'] = array(
-			'industries' => self::get_allowed_industries(),
-			'profile'    => $profile,
+			'activeTheme'  => get_option( 'stylesheet' ),
+			'euCountries'  => WC()->countries->get_european_union_countries(),
+			'industries'   => self::get_allowed_industries(),
+			'productTypes' => self::get_allowed_product_types(),
+			'profile'      => $profile,
+			'themes'       => self::get_themes(),
 		);
-
-		// Only fetch if the onboarding wizard OR the task list is incomplete.
-		if ( self::should_show_profiler() || self::should_show_tasks() ) {
-			$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
-			$settings['onboarding']['euCountries']  = WC()->countries->get_european_union_countries();
-			$current_user                           = wp_get_current_user();
-			$settings['onboarding']['userEmail']    = esc_html( $current_user->user_email );
-			$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
-			$settings['onboarding']['themes']       = self::get_themes();
-		}
 
 		return $settings;
 	}
