@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  phpunit:
+    build: "docker/phpunit"
+    volumes:
+      - "testsuite:/tmp"
+      - ".:/plugin"
+    working_dir: "/plugin"
+    command: "-c /plugin/phpunit.xml.dist"
+    environment:
+      - WC_CORE_DIR=/tmp/wordpress/wp-content/plugins/woocommerce
+    depends_on:
+      - phpunit-db
+
+  phpunit-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: "wordpress_test"
+      MYSQL_ROOT_PASSWORD: "password"
+
+volumes:
+  testsuite: {}
