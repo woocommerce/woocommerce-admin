@@ -161,7 +161,7 @@ class Menu {
 			'parent'          => self::DEFAULT_PARENT,
 			'backButtonLabel' => __(
 				'WooCommerce Home',
-				'woocommerce-navigation'
+				'woocommerce-admin'
 			),
 			'is_top_level'    => false,
 		);
@@ -378,7 +378,7 @@ class Menu {
 			'siteUrl'      => get_site_url(),
 		);
 
-		wp_add_inline_script( 'woocommerce-navigation', 'window.wcNavigation = ' . wp_json_encode( $data ), 'before' );
+		$paul = wp_add_inline_script( WC_ADMIN_APP, 'window.wcNavigation = ' . wp_json_encode( $data ), 'before' );
 
 		return $menu;
 	}
