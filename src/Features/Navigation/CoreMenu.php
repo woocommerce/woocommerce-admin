@@ -5,10 +5,10 @@
  * @package Woocommerce Admin
  */
 
-namespace Automattic\WooCommerce\Navigation;
+namespace Automattic\WooCommerce\Admin\Features\Navigation;
 
-use Automattic\WooCommerce\Navigation\Menu;
-use Automattic\WooCommerce\Navigation\Screen;
+use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
+use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 
 
 /**
