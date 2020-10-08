@@ -165,6 +165,10 @@ class Loader {
 	 * @return bool Returns true if the feature is enabled.
 	 */
 	public static function is_feature_enabled( $feature ) {
+		if ( 'navigation' === $feature && 'yes' !== get_option( 'woocommerce_navigation_enabled', 'no' ) ) {
+			return false;
+		}
+
 		$features = self::get_features();
 		return in_array( $feature, $features, true );
 	}
