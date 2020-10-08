@@ -7,6 +7,8 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
+use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
+
 /**
  * Contains logic for the Navigation
  */
@@ -15,6 +17,7 @@ class Navigation {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
+		error_log( Screen::is_woocommerce_page() );
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_admin_features', array( $this, 'maybe_remove_nav_feature' ), 0 );
 	}
