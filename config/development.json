@@ -14,6 +14,6 @@
 		"minified-js": true,
 		"wcpay": true,
 		"mobile-app-banner": true,
-		"navigation": false
+		"navigation": true
 	}
 }
