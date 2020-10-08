@@ -29,7 +29,10 @@ class ActivityCard extends Component {
 			'woocommerce-activity-card',
 			className
 		);
-		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
+		const fakeStuff = [ 'foo', 'bar' ].filter( () => false );
+		const actionsList = Array.isArray( actions )
+			? actions
+			: [ actions, ...fakeStuff ];
 
 		return (
 			<section className={ cardClassName }>
