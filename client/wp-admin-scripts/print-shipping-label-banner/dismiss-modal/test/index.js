@@ -4,7 +4,6 @@
 import { Fragment } from '@wordpress/element';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import '@testing-library/jest-dom';
 
 /**
  * Internal dependencies

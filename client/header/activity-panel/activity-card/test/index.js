@@ -6,7 +6,6 @@ import Gridicon from 'gridicons';
 import moment from 'moment';
 import { Gravatar } from '@woocommerce/components';
 import { render } from '@testing-library/react';
-import '@testing-library/jest-dom';
 
 /**
  * Internal dependencies

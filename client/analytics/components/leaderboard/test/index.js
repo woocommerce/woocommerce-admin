@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { render } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { numberFormat } from '@woocommerce/number';
 import CurrencyFactory from '@woocommerce/currency';
 import { CURRENCY } from '@woocommerce/wc-admin-settings';
