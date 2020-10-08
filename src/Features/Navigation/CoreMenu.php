@@ -78,7 +78,7 @@ class CoreMenu {
 		// Marketing category.
 		Menu::add_category(
 			array(
-				'title'        => __( 'Marketing', 'woocommerce-navigation' ),
+				'title'        => __( 'Marketing', 'woocommerce-admin' ),
 				'capability'   => 'manage_woocommerce',
 				'id'           => 'woocommerce-marketing',
 				'order'        => 30,
@@ -90,7 +90,7 @@ class CoreMenu {
 		// Extensions category.
 		Menu::add_category(
 			array(
-				'title'        => __( 'Extensions', 'woocommerce-navigation' ),
+				'title'        => __( 'Extensions', 'woocommerce-admin' ),
 				'capability'   => 'activate_plugins',
 				'id'           => 'extensions',
 				'migrate'      => false,
@@ -102,7 +102,7 @@ class CoreMenu {
 		Menu::add_item(
 			array(
 				'parent'     => 'extensions',
-				'title'      => __( 'My extensions', 'woocommerce-navigation' ),
+				'title'      => __( 'My extensions', 'woocommerce-admin' ),
 				'capability' => 'manage_woocommerce',
 				'id'         => 'my-extensions',
 				'url'        => 'plugins.php',
@@ -113,7 +113,7 @@ class CoreMenu {
 		Menu::add_item(
 			array(
 				'parent'     => 'extensions',
-				'title'      => __( 'Marketplace', 'woocommerce-navigation' ),
+				'title'      => __( 'Marketplace', 'woocommerce-admin' ),
 				'capability' => 'manage_woocommerce',
 				'id'         => 'marketplace',
 				'url'        => 'wc-addons',
@@ -124,7 +124,7 @@ class CoreMenu {
 		// Settings category.
 		Menu::add_category(
 			array(
-				'title'        => __( 'Settings', 'woocommerce-navigation' ),
+				'title'        => __( 'Settings', 'woocommerce-admin' ),
 				'capability'   => 'manage_woocommerce',
 				'id'           => 'settings',
 				'menuId'       => 'secondary',
@@ -136,7 +136,7 @@ class CoreMenu {
 		// Tools category.
 		Menu::add_category(
 			array(
-				'title'        => __( 'Tools', 'woocommerce-navigation' ),
+				'title'        => __( 'Tools', 'woocommerce-admin' ),
 				'capability'   => 'manage_woocommerce',
 				'id'           => 'tools',
 				'menuId'       => 'secondary',
@@ -147,7 +147,7 @@ class CoreMenu {
 		Menu::add_item(
 			array(
 				'parent'     => 'tools',
-				'title'      => __( 'System status', 'woocommerce-navigation' ),
+				'title'      => __( 'System status', 'woocommerce-admin' ),
 				'capability' => 'manage_woocommerce',
 				'id'         => 'system-status',
 				'url'        => 'wc-status',
@@ -157,7 +157,7 @@ class CoreMenu {
 		Menu::add_item(
 			array(
 				'parent'     => 'tools',
-				'title'      => __( 'Import / Export', 'woocommerce-navigation' ),
+				'title'      => __( 'Import / Export', 'woocommerce-admin' ),
 				'capability' => 'import',
 				'id'         => 'import-export',
 				'url'        => 'import.php',
@@ -168,7 +168,7 @@ class CoreMenu {
 		Menu::add_item(
 			array(
 				'parent'     => 'tools',
-				'title'      => __( 'Utilities', 'woocommerce-navigation' ),
+				'title'      => __( 'Utilities', 'woocommerce-admin' ),
 				'capability' => 'manage_woocommerce',
 				'id'         => 'utilities',
 				'url'        => 'admin.php?page=wc-status&tab=tools',
