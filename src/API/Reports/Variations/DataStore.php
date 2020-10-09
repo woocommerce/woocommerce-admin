@@ -176,26 +176,32 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$extended_info = new \ArrayObject();
 			if ( $query_args['extended_info'] ) {
 				$extended_attributes = apply_filters( 'woocommerce_rest_reports_variations_extended_attributes', $this->extended_attributes, $product_data );
-				$product             = wc_get_product( $product_data['product_id'] );
-				$variations          = array();
+				$parent_product      = wc_get_product( $product_data['product_id'] );
+				$attributes          = array();
 
 				// Base extended info off the parent variable product if the variation ID is 0.
 				// This is caused by simple products with prior sales being converted into variable products.
 				// See: https://github.com/woocommerce/woocommerce-admin/issues/2719.
 				$variation_id      = (int) $product_data['variation_id'];
-				$variation_product = ( 0 === $variation_id ) ? $product : wc_get_product( $variation_id );
-				$attributes        = array();
+				$variation_product = ( 0 === $variation_id ) ? $parent_product : wc_get_product( $variation_id );
+
+				// Fall back to the parent product if the variation can't be found.
+				$extended_attributes_product = is_a( $variation_product, 'WC_Product' ) ? $variation_product : $parent_product;
 
 				foreach ( $extended_attributes as $extended_attribute ) {
 					$function = 'get_' . $extended_attribute;
-					if ( is_callable( array( $variation_product, $function ) ) ) {
-						$value                                = $variation_product->{$function}();
+					if ( is_callable( array( $extended_attributes_product, $function ) ) ) {
+						$value                                = $extended_attributes_product->{$function}();
 						$extended_info[ $extended_attribute ] = $value;
 					}
 				}
 
 				// If this is a variation, add its attributes.
-				if ( 0 < $variation_id ) {
+				// NOTE: We don't fall back to the parent product here because it will include all possible attribute options.
+				if (
+					0 < $variation_id &&
+					is_callable( array( $variation_product, 'get_variation_attributes' ) )
+				) {
 					$variation_attributes = $variation_product->get_variation_attributes();
 
 					foreach ( $variation_attributes as $attribute_name => $attribute ) {
