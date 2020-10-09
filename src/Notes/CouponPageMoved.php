@@ -55,8 +55,8 @@ class Coupon_Page_Moved {
 			return false;
 		}
 
-		// If new navigation plugin is active
-		if(PluginsHelper::is_plugin_active('navigation')) {
+		// If new navigation plugin is active.
+		if ( PluginsHelper::is_plugin_active( 'navigation' ) ) {
 			return false;
 		}
 
