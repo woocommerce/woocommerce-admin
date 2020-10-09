@@ -39,7 +39,7 @@ class Confirm_Tax_Settings {
 			'confirm-tax-settings_edit-tax-settings',
 			__( 'Edit tax settings', 'woocommerce-admin' ),
 			admin_url( 'admin.php?page=wc-settings&tab=tax' ),
-			Note::E_WC_ADMIN_NOTE_UNACTIONED,
+			WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED,
 			true
 		);
 

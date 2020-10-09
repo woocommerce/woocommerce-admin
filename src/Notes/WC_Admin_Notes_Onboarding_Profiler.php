@@ -52,14 +52,14 @@ class WC_Admin_Notes_Onboarding_Profiler {
 			'continue-profiler',
 			__( 'Continue Store Setup', 'woocommerce-admin' ),
 			wc_admin_url( '&path=/setup-wizard' ),
-			Note::E_WC_ADMIN_NOTE_UNACTIONED,
+			WC_Admin_Note::E_WC_ADMIN_NOTE_UNACTIONED,
 			true
 		);
 		$note->add_action(
 			'skip-profiler',
 			__( 'Skip Setup', 'woocommerce-admin' ),
 			wc_admin_url( '&reset_profiler=0' ),
-			Note::E_WC_ADMIN_NOTE_ACTIONED,
+			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED,
 			false
 		);
 		return $note;
