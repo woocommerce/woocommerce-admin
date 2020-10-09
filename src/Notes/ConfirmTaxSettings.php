@@ -30,7 +30,7 @@ class Confirm_Tax_Settings {
 	 * @return Note
 	 */
 	public static function get_note() {
-		$note = new Note();
+		$note = new WC_Admin_Note();
 
 		$note->set_title( __( 'Confirm tax settings', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Automated tax calculations are enabled on your store through WooCommerce Shipping & Tax. Learn more about automated taxes <a href="https://docs.woocommerce.com/document/woocommerce-services/#section-12">here</a>.', 'woocommerce-admin' ) );
