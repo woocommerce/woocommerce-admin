@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { render } from '@wordpress/element';
 import { SlotFillProvider } from '@wordpress/components';
 import { PluginArea } from '@wordpress/plugins';
 
@@ -11,16 +10,11 @@ import { PluginArea } from '@wordpress/plugins';
 import './stylesheets/index.scss';
 import Container from './components/container';
 
-const navigationRoot = document.getElementById(
-	'woocommerce-embedded-navigation'
+const Navigation = () => (
+	<SlotFillProvider>
+		<Container />
+		<PluginArea />
+	</SlotFillProvider>
 );
 
-if ( navigationRoot ) {
-	render(
-		<SlotFillProvider>
-			<Container />
-			<PluginArea />
-		</SlotFillProvider>,
-		navigationRoot
-	);
-}
+export default Navigation;
