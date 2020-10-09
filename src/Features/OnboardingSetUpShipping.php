@@ -39,6 +39,14 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
+		$country_code = WC()->countries->get_base_country();
+
+		// Corrolary to the logic in /client/task-list/tasks.js.
+		// Skip for countries we don't recommend WCS for.
+		if ( in_array( $country_code, array( 'AU', 'CA', 'GB' ), true ) ) {
+			return;
+		}
+
 		self::set_up_free_local_shipping();
 		WC_Admin_Notes_Review_Shipping_Settings::possibly_add_note();
 		wc_admin_record_tracks_event( 'shipping_automatically_set_up' );
@@ -78,18 +86,13 @@ class OnboardingSetUpShipping {
 	 * Set up free local shipping.
 	 */
 	public static function set_up_free_local_shipping() {
-		$default_country = apply_filters(
-			'woocommerce_get_base_location',
-			get_option( 'woocommerce_default_country' )
-		);
+		$country_code = WC()->countries->get_base_country();
 
-		if ( ! $default_country ) {
+		if ( ! $country_code ) {
 			return;
 		}
 
-		$country_code = explode( ':', $default_country )[0];
-		$zone         = new \WC_Shipping_Zone();
-
+		$zone = new \WC_Shipping_Zone();
 		$zone->add_location( $country_code, 'country' );
 
 		$countries_service = new \WC_Countries();
