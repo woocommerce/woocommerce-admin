@@ -98,7 +98,7 @@ export function getAllTasks( {
 		shippingZonesCount > 0 &&
 		isJetpackConnected &&
 		activePlugins.includes( 'woocommerce-services' ) &&
-		! [ 'AU', 'NZ', 'UK' ].includes( countryCode );
+		! [ 'AU', 'CA', 'UK' ].includes( countryCode );
 
 	const tasks = [
 		{
