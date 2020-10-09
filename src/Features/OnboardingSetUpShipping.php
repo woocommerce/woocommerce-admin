@@ -55,6 +55,23 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
+		if (
+			! class_exists( '\Jetpack_Data' ) ||
+			! class_exists( '\WC_Connect_Loader' ) ||
+			! class_exists( '\WC_Connect_Options' )
+		) {
+			return;
+		}
+
+		$user_token        = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
+		$jetpack_connected = isset( $user_token->external_user_id );
+		$wcs_version       = \WC_Connect_Loader::get_wcs_version();
+		$wcs_tos_accepted  = \WC_Connect_Options::get_option( 'tos_accepted' );
+
+		if ( ! $jetpack_connected || ! $wcs_version || ! $wcs_tos_accepted ) {
+			return;
+		}
+
 		self::set_up_free_local_shipping();
 		WC_Admin_Notes_Review_Shipping_Settings::possibly_add_note();
 		wc_admin_record_tracks_event( 'shipping_automatically_set_up' );
