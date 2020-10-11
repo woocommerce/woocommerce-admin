@@ -204,12 +204,6 @@ class Controller extends ReportsController implements ExportableInterface {
 					'context'     => array( 'view', 'edit' ),
 					'description' => __( 'File URL.', 'woocommerce-admin' ),
 				),
-				'product_id'   => array(
-					'type'        => 'integer',
-					'readonly'    => true,
-					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'Product ID.', 'woocommerce-admin' ),
-				),
 				'order_id'     => array(
 					'type'        => 'integer',
 					'readonly'    => true,
