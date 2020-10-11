@@ -13,12 +13,14 @@ import {
  */
 import './stylesheets/_index.scss';
 import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
+import CustomerEffortScoreTracks from './customer-effort-score-tracks';
 
 // Modify webpack pubilcPath at runtime based on location of WordPress Plugin.
 // eslint-disable-next-line no-undef,camelcase
 __webpack_public_path__ = global.wcAdminAssets.path;
 
 const appRoot = document.getElementById( 'root' );
+const embeddedRoot = document.getElementById( 'woocommerce-embedded-root' );
 const settingsGroup = 'wc_admin';
 const hydrateUser = window.wcSettings.currentUserData;
 
@@ -43,7 +45,6 @@ if ( appRoot ) {
 	}
 	render( <HydratedPageLayout />, appRoot );
 } else {
-	const embeddedRoot = document.getElementById( 'woocommerce-embedded-root' );
 	let HydratedEmbedLayout = withSettingsHydration(
 		settingsGroup,
 		window.wcSettings
@@ -72,3 +73,21 @@ if ( appRoot ) {
 		wpBody.insertBefore( noticeContainer, wrap )
 	);
 }
+
+// Set up customer effort score tracking.
+const root                           = appRoot || embeddedRoot;
+const customerEffortScoreTracksQueue = JSON.parse(
+	window.localStorage.getItem( 'customerEffortScoreTracks' ) || '[]'
+);
+customerEffortScoreTracksQueue.forEach( item => {
+	render(
+		<CustomerEffortScoreTracks
+			initiallyVisible={ true }
+			trackName={ item.trackName }
+			label={ item.label }
+			trackProps={ {} }
+		/>,
+		root.insertBefore( document.createElement( 'div', ), null )
+	);
+} );
+window.localStorage.removeItem( 'customerEffortScoreTracks' );

@@ -11,6 +11,7 @@ use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
 use Automattic\WooCommerce\Admin\API\Plugins;
 use WC_Marketplace_Suggestions;
+use Automattic\WooCommerce\Admin\Features\CustomerEffortScoreTracks;
 
 /**
  * Loader Class.
@@ -94,6 +95,8 @@ class Loader {
 
 		// Combine JSON translation files (from chunks) when language packs are updated.
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
+
+		CustomerEffortScoreTracks::get_instance();
 	}
 
 	/**
