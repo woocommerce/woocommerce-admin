@@ -438,7 +438,7 @@ class Controller extends ReportsController implements ExportableInterface {
 		 */
 		return apply_filters(
 			'woocommerce_report_downloads_prepare_export_item',
-			$export_item,
+			$export_columns,
 			$item
 		);
 	}
