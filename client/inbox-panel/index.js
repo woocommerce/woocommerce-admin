@@ -11,13 +11,14 @@ import {
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { withSelect } from '@wordpress/data';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 /**
  * Internal dependencies
  */
-import { ActivityCard } from '../../activity-card';
+import { ActivityCard } from '../header/activity-panel/activity-card';
 import InboxNotePlaceholder from './placeholder';
-import ActivityHeader from '../../activity-header';
+import ActivityHeader from '../header/activity-panel/activity-header';
 import InboxNoteCard from './card';
 import { getUnreadNotesCount, hasValidNotes } from './utils';
 
@@ -46,23 +47,29 @@ const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
 
 	const notesArray = Object.keys( notes ).map( ( key ) => notes[ key ] );
 
-	return notesArray.map( ( note ) => {
-		if ( note.isUpdating ) {
-			return (
-				<InboxNotePlaceholder
-					className="banner message-is-unread"
-					key={ note.id }
-				/>
-			);
-		}
-		return (
-			<InboxNoteCard
-				key={ note.id }
-				note={ note }
-				lastRead={ lastRead }
-			/>
-		);
-	} );
+	return (
+		<TransitionGroup role="menu">
+			{ notesArray.map( ( note ) => {
+				const { id: noteId, is_deleted: isDeleted } = note;
+				if ( isDeleted ) {
+					return null;
+				}
+				return (
+					<CSSTransition
+						key={ noteId }
+						timeout={ 500 }
+						classNames="woocommerce-inbox-message"
+					>
+						<InboxNoteCard
+							key={ noteId }
+							note={ note }
+							lastRead={ lastRead }
+						/>
+					</CSSTransition>
+				);
+			} ) }
+		</TransitionGroup>
+	);
 };
 
 const InboxPanel = ( props ) => {

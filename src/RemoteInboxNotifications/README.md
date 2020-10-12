@@ -368,6 +368,20 @@ This passes when the store is located in the specified state.
 
 `value` and `operation` are both required.
 
+### Note status
+This passes when the status of the specified note matches the specified status.
+The below example passes when the `wc-admin-mobile-app` note has not been
+actioned.
+
+```
+{
+	"type": "note_status",
+	"note_name": "wc-admin-mobile-app",
+	"status": "actioned",
+	"operation": "!="
+}
+```
+
 ### Option
 This passes when the option value matches the value using the operation.
 
