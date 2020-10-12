@@ -16,7 +16,7 @@ class Navigation {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
-		add_filter( 'woocommerce_admin_features', array( $this, 'maybe_remove_nav_feature ' ), 0 );
+		add_filter( 'woocommerce_admin_features', array( $this, 'maybe_remove_nav_feature' ), 0 );
 	}
 
 		/**
