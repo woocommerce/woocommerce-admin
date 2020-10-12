@@ -20,7 +20,8 @@ class OptionRuleProcessor implements RuleProcessorInterface {
 	 * @return bool The result of the operation.
 	 */
 	public function process( $rule, $stored_state ) {
-		$option_value = get_option( $rule->option_name );
+		$default      = isset( $rule->default ) ? $rule->default : false;
+		$option_value = get_option( $rule->option_name, $default );
 
 		return ComparisonOperation::compare(
 			$option_value,
