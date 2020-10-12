@@ -16,6 +16,19 @@ class Navigation {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
+		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ), 0 );
+	}
+
+		/**
+		 * Overwrites the allowed features array using a local `feature-config.php` file.
+		 *
+		 * @param array $features Array of feature slugs.
+		 */
+	public function replace_supported_features( $features ) {
+		if ( in_array( 'navigation', $features, true ) && 'yes' !== get_option( 'woocommerce_navigation_enabled', 'no' ) ) {
+			$features = array_diff( $features, array( 'navigation' ) );
+		}
+		return $features;
 	}
 
 	/**
