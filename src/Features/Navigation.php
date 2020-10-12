@@ -16,7 +16,7 @@ class Navigation {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
-		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ), 0 );
+		add_filter( 'woocommerce_admin_features', array( $this, 'maybe_remove_nav_feature ' ), 0 );
 	}
 
 		/**
@@ -24,7 +24,7 @@ class Navigation {
 		 *
 		 * @param array $features Array of feature slugs.
 		 */
-	public function replace_supported_features( $features ) {
+	public function maybe_remove_nav_feature( $features ) {
 		if ( in_array( 'navigation', $features, true ) && 'yes' !== get_option( 'woocommerce_navigation_enabled', 'no' ) ) {
 			$features = array_diff( $features, array( 'navigation' ) );
 		}
