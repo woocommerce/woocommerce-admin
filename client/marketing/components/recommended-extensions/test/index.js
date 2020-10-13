@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { recordEvent } from '@woocommerce/tracks';
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 /**
@@ -151,7 +151,7 @@ describe( 'No Recommendations and not loading', () => {
 } );
 
 describe( 'Click Recommendations', () => {
-	it( 'should record an event when clicked', async () => {
+	it( 'should record an event when clicked', () => {
 		const { getByRole } = render(
 			<RecommendedExtensionsItem
 				title={ 'AutomateWoo' }
@@ -165,7 +165,7 @@ describe( 'Click Recommendations', () => {
 
 		userEvent.click( getByRole( 'link' ) );
 
-		await waitFor( () => expect( recordEvent ).toHaveBeenCalledTimes( 1 ) );
+		expect( recordEvent ).toHaveBeenCalledTimes( 1 );
 		expect( recordEvent ).toHaveBeenCalledWith(
 			'marketing_recommended_extension',
 			{

@@ -14,14 +14,14 @@ jest.mock( '@woocommerce/tracks' );
 jest.mock( '@woocommerce/wc-admin-settings' );
 
 describe( 'WelcomeCard hide button', () => {
-	it( 'should record an event when clicked', async () => {
+	it( 'should record an event when clicked', () => {
 		const { getByRole } = render(
 			<WelcomeCard isHidden={ false } updateOptions={ jest.fn() } />
 		);
 
 		userEvent.click( getByRole( 'button' ) );
 
-		await waitFor( () => expect( recordEvent ).toHaveBeenCalledTimes( 1 ) );
+		expect( recordEvent ).toHaveBeenCalledTimes( 1 );
 		expect( recordEvent ).toHaveBeenCalledWith(
 			'marketing_intro_close',
 			{}

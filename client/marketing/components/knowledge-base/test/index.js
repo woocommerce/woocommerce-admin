@@ -233,7 +233,7 @@ describe( 'No posts and not loading', () => {
 describe( 'Clicking on a post', () => {
 	afterAll( () => jest.clearAllMocks() );
 
-	it( 'should record an event when clicked', async () => {
+	it( 'should record an event when clicked', () => {
 		const { getByRole } = render(
 			<KnowledgeBase
 				posts={ mockPosts }
@@ -244,7 +244,7 @@ describe( 'Clicking on a post', () => {
 
 		userEvent.click( getByRole( 'link', { name: /Post 1/ } ) );
 
-		await waitFor( () => expect( recordEvent ).toHaveBeenCalledTimes( 1 ) );
+		expect( recordEvent ).toHaveBeenCalledTimes( 1 );
 		expect( recordEvent ).toHaveBeenCalledWith(
 			'marketing_knowledge_article',
 			{
@@ -254,7 +254,7 @@ describe( 'Clicking on a post', () => {
 
 		userEvent.click( getByRole( 'link', { name: /Post 2/ } ) );
 
-		await waitFor( () => expect( recordEvent ).toHaveBeenCalledTimes( 2 ) );
+		expect( recordEvent ).toHaveBeenCalledTimes( 2 );
 		expect( recordEvent ).toHaveBeenCalledWith(
 			'marketing_knowledge_article',
 			{
