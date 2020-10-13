@@ -14,9 +14,10 @@ export function* triggerNoteAction( noteId, actionId ) {
 
 	const url = `${ NAMESPACE }/admin/notes/${ noteId }/action/${ actionId }`;
 	try {
-		const result = yield apiFetch( { path: url, method: 'POST' } );
-		yield updateNote( noteId, result );
+		const response = yield apiFetch( { path: url, method: 'POST' } );
+		yield updateNote( noteId, response );
 		yield setIsRequesting( 'triggerNoteAction', false );
+		return response;
 	} catch ( error ) {
 		yield setError( 'triggerNoteAction', error );
 		yield setIsRequesting( 'triggerNoteAction', false );

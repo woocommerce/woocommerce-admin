@@ -36,6 +36,10 @@ class InboxNoteAction extends Component {
 		const href = event.target.href || '';
 		let inAction = true;
 
+		// Conditionally suppress navigation for certain notes, obviously this isn't conditional yet so will probably
+		// break things.
+		event.preventDefault();
+
 		if ( href.length && ! href.startsWith( adminUrl ) ) {
 			event.preventDefault();
 			inAction = false; // link buttons shouldn't be "busy".
@@ -120,11 +124,15 @@ class InboxNoteAction extends Component {
 			actionCallback( true );
 		} else {
 			this.setState( { inAction }, () => {
-				triggerNoteAction( noteId, action.id );
-
-				if ( !! onClick ) {
-					onClick();
-				}
+				triggerNoteAction( noteId, action.id ).then(
+					() => {
+						if ( !! onClick ) {
+							onClick();
+						}
+						// Now that any server-side actions have been performed, navigate to the clicked link / button.
+						window.location = href;
+					}
+				);
 			} );
 		}
 	}
