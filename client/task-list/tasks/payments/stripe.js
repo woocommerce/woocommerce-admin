@@ -135,12 +135,15 @@ class Stripe extends Component {
 	async updateSettings( values ) {
 		const { updateOptions, stripeSettings, createNotice } = this.props;
 
+		const prefix = values.publishable_key.match( /^pk_live_/ )
+			? ''
+			: 'test_';
 		const update = await updateOptions( {
 			woocommerce_stripe_settings: {
 				...stripeSettings,
-				publishable_key: values.publishable_key,
-				secret_key: values.secret_key,
-				testmode: 'no',
+				[ prefix + 'publishable_key' ]: values.publishable_key,
+				[ prefix + 'secret_key' ]: values.secret_key,
+				testmode: prefix === 'test_' ? 'yes' : 'no',
 				enabled: 'yes',
 			},
 		} );
