@@ -345,9 +345,8 @@ describe( 'Create shipping label button', () => {
 		await waitFor( () => expect( subscribe ).toHaveBeenCalledTimes( 1 ) );
 
 		expect(
-			document.getElementById( 'woocommerce-admin-print-label' ).style
-				.display
-		).toBe( 'none' );
+			document.getElementById( 'woocommerce-admin-print-label' )
+		).not.toBeVisible();
 	} );
 } );
 
