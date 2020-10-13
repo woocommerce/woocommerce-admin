@@ -297,8 +297,14 @@ class Menu {
 		foreach ( $submenu as $parent_key => $parent ) {
 			foreach ( $parent as $key => $menu_item ) {
 				if (
-					isset( self::$callbacks[ $menu_item[ self::CALLBACK ] ] ) &&
-					self::$callbacks[ $menu_item[ self::CALLBACK ] ]
+					(
+						isset( self::$callbacks[ $menu_item[ self::CALLBACK ] ] ) &&
+						self::$callbacks[ $menu_item[ self::CALLBACK ] ]
+					) ||
+					(
+						isset( self::$callbacks[ self::get_callback_url( $menu_item[ self::CALLBACK ] ) ] ) &&
+						self::$callbacks[ self::get_callback_url( $menu_item[ self::CALLBACK ] ) ]
+					)
 				) {
 					// Disable phpcs since we need to override submenu classes.
 					// Note that `phpcs:ignore WordPress.Variables.GlobalVariables.OverrideProhibited` does not work to disable this check.
