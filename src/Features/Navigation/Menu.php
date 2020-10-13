@@ -161,7 +161,7 @@ class Menu {
 			'parent'          => self::DEFAULT_PARENT,
 			'backButtonLabel' => __(
 				'WooCommerce Home',
-				'woocommerce-navigation'
+				'woocommerce-admin'
 			),
 			'is_top_level'    => false,
 		);
