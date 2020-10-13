@@ -7,6 +7,7 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\Notes\Install_WooCommerce_Payments;
 use \Automattic\WooCommerce\Admin\Notes\Notes;
 use \Automattic\WooCommerce\Admin\Notes\Historical_Data;
 use \Automattic\WooCommerce\Admin\Notes\Order_Milestones;
@@ -192,6 +193,7 @@ class FeaturePlugin {
 		new Set_Up_Additional_Payment_Types();
 		new Test_Checkout();
 		new Selling_Online_Courses();
+		new Install_WooCommerce_Payments();
 
 		// Initialize RemoteInboxNotificationsEngine.
 		RemoteInboxNotificationsEngine::init();
