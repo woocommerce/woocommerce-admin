@@ -55,7 +55,7 @@ class Coupon_Page_Moved {
 			return false;
 		}
 
-		// If new navigation plugin is active.
+		// If new navigation feature is enabled.
 		if ( Loader::is_feature_enabled( 'navigation' ) ) {
 			return false;
 		}
