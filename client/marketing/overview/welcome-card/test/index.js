@@ -19,7 +19,7 @@ describe( 'WelcomeCard hide button', () => {
 			<WelcomeCard isHidden={ false } updateOptions={ jest.fn() } />
 		);
 
-		userEvent.click( getByRole( 'button' ) );
+		userEvent.click( getByRole( 'button', { name: 'Hide' } ) );
 
 		expect( recordEvent ).toHaveBeenCalledTimes( 1 );
 		expect( recordEvent ).toHaveBeenCalledWith(
