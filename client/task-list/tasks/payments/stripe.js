@@ -188,6 +188,14 @@ class Stripe extends Component {
 				'Please enter a valid secret key. Valid keys start with "sk_live", "sk_test", "rk_live or "rk_test".',
 				'woocommerce-admin'
 			);
+		} else if (
+			values.secret_key.slice( 3, 7 ) !==
+			values.publishable_key.slice( 3, 7 )
+		) {
+			errors.secret_key = __(
+				'Please enter a secret key in the same mode as the publishable key.',
+				'woocommerce-admin'
+			);
 		}
 
 		return errors;
