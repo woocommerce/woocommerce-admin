@@ -5,7 +5,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
-use Automattic\WooCommerce\Admin\PluginsHelper;
+use Automattic\WooCommerce\Admin\Loader;
 
 /**
  * CouponsMovedTrait trait.
@@ -90,7 +90,7 @@ trait CouponsMovedTrait {
 	 * @return bool
 	 */
 	protected static function should_display_legacy_menu() {
-		return ( get_option( self::$option_key, 1 ) && ! PluginsHelper::is_plugin_active( 'navigation' ) );
+		return ( get_option( self::$option_key, 1 ) && ! Loader::is_feature_enabled( 'navigation' ) );
 	}
 
 	/**

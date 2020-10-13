@@ -8,7 +8,7 @@
 namespace Automattic\WooCommerce\Admin\Notes;
 
 use Automattic\WooCommerce\Admin\Features\CouponsMovedTrait;
-use Automattic\WooCommerce\Admin\PluginsHelper;
+use Automattic\WooCommerce\Admin\Loader;
 use stdClass;
 use WC_Data_Store;
 
@@ -56,7 +56,7 @@ class Coupon_Page_Moved {
 		}
 
 		// If new navigation plugin is active.
-		if ( PluginsHelper::is_plugin_active( 'navigation' ) ) {
+		if ( Loader::is_feature_enabled( 'navigation' ) ) {
 			return false;
 		}
 
