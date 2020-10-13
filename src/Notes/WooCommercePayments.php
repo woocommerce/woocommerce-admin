@@ -38,6 +38,7 @@ class WooCommerce_Payments {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_note_action_install-now', array( $this, 'install' ) );
+		add_action( 'woocommerce_note_action_get-woocommerce-payments', array( $this, 'handle_promo' ) );
 		add_action( 'wc-admin-woocommerce-payments_add_note', array( $this, 'add_note' ) );
 	}
 
@@ -134,16 +135,52 @@ class WooCommerce_Payments {
 	 */
 	public function install( $note ) {
 		if ( self::NOTE_NAME === $note->get_name() && current_user_can( 'install_plugins' ) ) {
-			$install_request = array( 'plugins' => self::PLUGIN_SLUG );
-			$installer       = new \Automattic\WooCommerce\Admin\API\Plugins();
-			$result          = $installer->install_plugins( $install_request );
-
-			if ( is_wp_error( $result ) ) {
-				return;
-			}
-
-			$activate_request = array( 'plugins' => self::PLUGIN_SLUG );
-			$installer->activate_plugins( $activate_request );
+			$this->install_and_activate_wcpay();
 		}
+	}
+
+	/**
+	 * Install and activate WooCommerce Payments.
+	 */
+	private function install_and_activate_wcpay() {
+		$install_request = array( 'plugins' => self::PLUGIN_SLUG );
+		$installer       = new \Automattic\WooCommerce\Admin\API\Plugins();
+		$result          = $installer->install_plugins( $install_request );
+
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+
+		$activate_request = array( 'plugins' => self::PLUGIN_SLUG );
+		return $installer->activate_plugins( $activate_request );
+	}
+
+	/**
+	 * Handle WC Pay promo note action.
+	 *
+	 * @param Note $note Note being acted upon.
+	 */
+	public function handle_promo( $note ) {
+		if ( 'wcpay_2020_11_promo' !== $note->get_name() || ! current_user_can( 'install_plugins' ) ) {
+			return;
+		}
+
+		$this->install_and_activate_wcpay();
+		$actions     = $note->get_actions( 'edit' );
+		$new_actions = [];
+		foreach ( $actions as $action ) {
+			if ( 'get-woocommerce-payments' === $action->name ) {
+				$action->label = 'Set Up';
+				$params        = [
+					'page' => 'wc-admin',
+					'path' => '/payments/connect',
+				];
+				$action->query = \admin_url( \add_query_arg( $params, 'admin.php' ) );
+			}
+			$new_actions[] = clone $action;
+		}
+		$note->set_actions( $new_actions );
+
+		$note->save();
 	}
 }
