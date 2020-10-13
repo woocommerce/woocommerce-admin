@@ -72,7 +72,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Changelog ==
 
 = 1.6.1 10/13/2020 =
-- Fix: Hide Setup Checklist Activy Panel
+- Fix: Hide setup checklist shortcut when setup checklist skipped #5360
 
 = 1.6.0 10/9/2020 =
 - Dev: Reviews wp.data store #4941
