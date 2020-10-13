@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.3.0
 Tested up to: 5.4.2
 Requires PHP: 5.6.20
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -71,7 +71,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 1.6.0 TBD =
+= 1.6.1 10/13/2020 =
+- Fix: Hide Setup Checklist Activy Panel
+
+= 1.6.0 10/9/2020 =
 - Dev: Reviews wp.data store #4941
 - Dev: Notes wp.data store #4943
 - Dev: Add woocommerce_analytics_update_order_stats_data filter #4934
