@@ -53,14 +53,14 @@ describe( 'ReportSummary', () => {
 	test( 'should set the correct prop values for the SummaryNumber components', async () => {
 		renderChart( 'number', 1000.5, 500.25 );
 
-		expect( screen.getByText( '1,000.5' ) ).not.toBeEmptyDOMElement();
+		expect( screen.getByText( '1,000.5' ) ).toBeInTheDocument();
 
 		const delta = screen.getByText( '100%' );
-		expect( delta ).not.toBeEmptyDOMElement();
+		expect( delta ).toBeInTheDocument();
 
 		userEvent.hover( delta );
 		const tooltip = await screen.findByText( 'Previous Year: 500.25' );
-		expect( tooltip ).not.toBeEmptyDOMElement();
+		expect( tooltip ).toBeInTheDocument();
 
 		userEvent.unhover( delta );
 		expect( screen.queryByText( 'Previous Year: 500.25' ) ).toBeNull();
@@ -69,14 +69,14 @@ describe( 'ReportSummary', () => {
 	test( 'should format currency numbers properly', async () => {
 		renderChart( 'currency', 1000.5, 500.25 );
 
-		expect( screen.getByText( '$1,000.50' ) ).not.toBeEmptyDOMElement();
+		expect( screen.getByText( '$1,000.50' ) ).toBeInTheDocument();
 
 		const delta = screen.getByText( '100%' );
-		expect( delta ).not.toBeEmptyDOMElement();
+		expect( delta ).toBeInTheDocument();
 
 		userEvent.hover( delta );
 		const tooltip = await screen.findByText( 'Previous Year: $500.25' );
-		expect( tooltip ).not.toBeEmptyDOMElement();
+		expect( tooltip ).toBeInTheDocument();
 
 		userEvent.unhover( delta );
 		expect( screen.queryByText( 'Previous Year: $500.25' ) ).toBeNull();
@@ -85,14 +85,14 @@ describe( 'ReportSummary', () => {
 	test( 'should format average numbers properly', async () => {
 		renderChart( 'average', 1000.5, 500.25 );
 
-		expect( screen.getByText( '1001' ) ).not.toBeEmptyDOMElement();
+		expect( screen.getByText( '1001' ) ).toBeInTheDocument();
 
 		const delta = screen.getByText( '100%' );
-		expect( delta ).not.toBeEmptyDOMElement();
+		expect( delta ).toBeInTheDocument();
 
 		userEvent.hover( delta );
 		const tooltip = await screen.findByText( 'Previous Year: 500' );
-		expect( tooltip ).not.toBeEmptyDOMElement();
+		expect( tooltip ).toBeInTheDocument();
 
 		userEvent.unhover( delta );
 		expect( screen.queryByText( 'Previous Year: 500' ) ).toBeNull();
@@ -101,14 +101,14 @@ describe( 'ReportSummary', () => {
 	test( 'should not break if secondary value is 0', async () => {
 		renderChart( 'number', 1000.5, 0 );
 
-		expect( screen.getByText( '1,000.5' ) ).not.toBeEmptyDOMElement();
+		expect( screen.getByText( '1,000.5' ) ).toBeInTheDocument();
 
 		const delta = screen.getByText( '0%' );
-		expect( delta ).not.toBeEmptyDOMElement();
+		expect( delta ).toBeInTheDocument();
 
 		userEvent.hover( delta );
 		const tooltip = await screen.findByText( 'Previous Year: 0' );
-		expect( tooltip ).not.toBeEmptyDOMElement();
+		expect( tooltip ).toBeInTheDocument();
 
 		userEvent.unhover( delta );
 		expect( screen.queryByText( 'Previous Year: 0' ) ).toBeNull();
@@ -120,7 +120,7 @@ describe( 'ReportSummary', () => {
 		expect( screen.getAllByText( 'N/A' ) ).not.toBeNull();
 
 		const delta = screen.getByLabelText( 'No change from Previous Year:' );
-		expect( delta ).not.toBeEmptyDOMElement();
+		expect( delta ).toBeInTheDocument();
 	} );
 
 	test( 'should display ReportError when isError is true', () => {
@@ -130,7 +130,7 @@ describe( 'ReportSummary', () => {
 			screen.getByText(
 				'There was an error getting your stats. Please try again.'
 			)
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 
 	test( 'should display SummaryListPlaceholder when isRequesting is true', () => {
@@ -138,6 +138,6 @@ describe( 'ReportSummary', () => {
 
 		expect(
 			container.querySelector( '.woocommerce-summary.is-placeholder' )
-		).not.toBeNull();
+		).toBeInTheDocument();
 	} );
 } );

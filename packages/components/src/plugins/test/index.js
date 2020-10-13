@@ -39,7 +39,7 @@ describe( 'Rendering', () => {
 
 		expect(
 			getByRole( 'button', { name: 'Continue' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 
 	it( 'should render install and no thanks buttons', async () => {
@@ -49,10 +49,10 @@ describe( 'Rendering', () => {
 
 		expect(
 			getByRole( 'button', { name: 'Install & enable' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 		expect(
 			getByRole( 'button', { name: 'No thanks' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 
 	it( 'should render an abort button when the abort handler is provided', async () => {
@@ -61,9 +61,7 @@ describe( 'Rendering', () => {
 		);
 
 		expect( getAllByRole( 'button' ) ).toHaveLength( 3 );
-		expect(
-			getByRole( 'button', { name: 'Abort' } )
-		).not.toBeEmptyDOMElement();
+		expect( getByRole( 'button', { name: 'Abort' } ) ).toBeInTheDocument();
 	} );
 } );
 

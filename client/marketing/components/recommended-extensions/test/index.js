@@ -57,7 +57,7 @@ describe( 'Recommendations and not loading', () => {
 
 		expect(
 			getByRole( 'heading', { level: 2, name: 'Recommended extensions' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 
 		expect(
 			getByRole( 'heading', {
@@ -65,7 +65,7 @@ describe( 'Recommendations and not loading', () => {
 				name:
 					'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.',
 			} )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 
 	it( 'should display correct number of recommendations', () => {
@@ -73,14 +73,14 @@ describe( 'Recommendations and not loading', () => {
 
 		expect(
 			getByRole( 'heading', { level: 4, name: 'AutomateWoo' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 
 		expect(
 			getByRole( 'heading', {
 				level: 4,
 				name: 'Mailchimp for WooCommerce',
 			} )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 } );
 
@@ -189,13 +189,13 @@ describe( 'Custom title and description ', () => {
 
 		expect(
 			getByRole( 'heading', { level: 2, name: 'Custom Title' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 
 		expect(
 			getByRole( 'heading', {
 				level: 2,
 				name: 'Custom Description',
 			} )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 } );

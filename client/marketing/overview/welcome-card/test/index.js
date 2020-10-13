@@ -54,7 +54,7 @@ describe( 'Component visibility can be toggled', () => {
 			<WelcomeCard isHidden={ false } updateOptions={ jest.fn() } />
 		);
 
-		expect( getByRole( 'button' ) ).not.toBeEmptyDOMElement();
+		expect( getByRole( 'button' ) ).toBeInTheDocument();
 	} );
 
 	it( 'WelcomeCard should be hidden if isHidden is true', () => {

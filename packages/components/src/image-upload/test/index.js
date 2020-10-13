@@ -16,7 +16,7 @@ describe( 'ImageUpload', () => {
 			expect( queryByRole( 'img' ) ).toBeNull();
 			expect(
 				getByRole( 'button', { name: 'Add an image' } )
-			).not.toBeEmptyDOMElement();
+			).toBeInTheDocument();
 		} );
 
 		it( 'should render an image uploader prepopulated with an upload', () => {
@@ -30,7 +30,7 @@ describe( 'ImageUpload', () => {
 			expect( getByRole( 'img' ) ).toHaveAttribute( 'src', image.url );
 			expect(
 				getByRole( 'button', { name: 'Remove image' } )
-			).not.toBeEmptyDOMElement();
+			).toBeInTheDocument();
 		} );
 	} );
 } );

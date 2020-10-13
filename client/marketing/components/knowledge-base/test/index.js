@@ -64,7 +64,7 @@ describe( 'Posts and not loading', () => {
 				level: 2,
 				name: 'WooCommerce knowledge base',
 			} )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 
 		expect(
 			getByRole( 'heading', {
@@ -72,7 +72,7 @@ describe( 'Posts and not loading', () => {
 				name:
 					'Learn the ins and outs of successful marketing from the experts at WooCommerce.',
 			} )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 
 	it( 'should display posts wrapper', () => {
@@ -121,10 +121,10 @@ describe( 'Posts and not loading', () => {
 
 		expect(
 			getByLabelText( 'Previous Page', { selector: 'button' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 		expect(
 			getByLabelText( 'Next Page', { selector: 'button' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 } );
 
@@ -215,7 +215,7 @@ describe( 'No posts and not loading', () => {
 			getByText(
 				'There was an error loading knowledge base posts. Please check again later.'
 			)
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 
 	it( 'should not display the pagination', () => {
@@ -374,13 +374,13 @@ describe( 'Custom title and description ', () => {
 
 		expect(
 			getByRole( 'heading', { level: 2, name: 'Custom Title' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 
 		expect(
 			getByRole( 'heading', {
 				level: 2,
 				name: 'Custom Description',
 			} )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 } );

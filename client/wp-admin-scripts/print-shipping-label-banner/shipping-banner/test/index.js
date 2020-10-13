@@ -256,12 +256,12 @@ describe( 'Create shipping label button', () => {
 		await waitFor( () =>
 			expect(
 				getByRole( 'heading', { level: 2, name: 'Shipping Label' } )
-			).not.toBeEmptyDOMElement()
+			).toBeInTheDocument()
 		);
 
 		expect(
 			getByRole( 'heading', { level: 2, name: 'Shipment Tracking' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 
 		// Check that the script and style elements have been created.
 		expect( document.getElementsByTagName( 'script' )[ 0 ].src ).toBe(
@@ -431,7 +431,7 @@ describe( 'Setup error message', () => {
 				getByText(
 					'Unable to install the plugin. Refresh the page and try again.'
 				)
-			).not.toBeEmptyDOMElement()
+			).toBeInTheDocument()
 		);
 	} );
 
@@ -460,7 +460,7 @@ describe( 'Setup error message', () => {
 				getByText(
 					'Unable to activate the plugin. Refresh the page and try again.'
 				)
-			).not.toBeEmptyDOMElement()
+			).toBeInTheDocument()
 		);
 	} );
 } );

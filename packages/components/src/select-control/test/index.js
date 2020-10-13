@@ -24,13 +24,11 @@ describe( 'SelectControl', () => {
 
 		expect(
 			getByRole( 'option', { name: 'lorem 1' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 		expect(
 			getByRole( 'option', { name: 'lorem 2' } )
-		).not.toBeEmptyDOMElement();
-		expect(
-			getByRole( 'option', { name: 'bar' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
+		expect( getByRole( 'option', { name: 'bar' } ) ).toBeInTheDocument();
 	} );
 
 	it( 'returns matching elements', async () => {
@@ -44,12 +42,12 @@ describe( 'SelectControl', () => {
 		await waitFor( () =>
 			expect(
 				getByRole( 'option', { name: 'lorem 1' } )
-			).not.toBeEmptyDOMElement()
+			).toBeInTheDocument()
 		);
 
 		expect(
 			getByRole( 'option', { name: 'lorem 2' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 		expect( queryByRole( 'option', { name: 'bar' } ) ).toBeNull();
 	} );
 
@@ -70,7 +68,7 @@ describe( 'SelectControl', () => {
 		await waitFor( () =>
 			expect(
 				getByRole( 'option', { name: 'lorem 1' } )
-			).not.toBeEmptyDOMElement()
+			).toBeInTheDocument()
 		);
 
 		expect( queryByRole( 'option', { name: 'lorem 2' } ) ).toBeNull();
@@ -88,12 +86,12 @@ describe( 'SelectControl', () => {
 		await waitFor( () =>
 			expect(
 				getByRole( 'option', { name: 'lorem 1' } )
-			).not.toBeEmptyDOMElement()
+			).toBeInTheDocument()
 		);
 
 		expect(
 			getByRole( 'option', { name: 'lorem 2' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 		expect( queryByRole( 'option', { name: 'bar' } ) ).toBeNull();
 	} );
 
@@ -108,7 +106,7 @@ describe( 'SelectControl', () => {
 		await waitFor( () =>
 			expect(
 				getByRole( 'option', { name: 'lorem 1' } )
-			).not.toBeEmptyDOMElement()
+			).toBeInTheDocument()
 		);
 
 		expect( getAllByRole( 'option' ) ).toHaveLength( 1 );
@@ -197,7 +195,7 @@ describe( 'SelectControl', () => {
 		await waitFor( () =>
 			expect(
 				getByRole( 'option', { name: 'Test option' } )
-			).not.toBeEmptyDOMElement()
+			).toBeInTheDocument()
 		);
 
 		expect( getAllByRole( 'option' ) ).toHaveLength( 1 );

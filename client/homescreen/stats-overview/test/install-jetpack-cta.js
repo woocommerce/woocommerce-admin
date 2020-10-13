@@ -104,7 +104,7 @@ describe( 'JetpackCTA', () => {
 			/>
 		);
 
-		expect( queryByText( 'Get Jetpack' ) ).not.toBeEmptyDOMElement();
+		expect( queryByText( 'Get Jetpack' ) ).toBeInTheDocument();
 
 		rerender(
 			<JetpackCTA
@@ -115,7 +115,7 @@ describe( 'JetpackCTA', () => {
 			/>
 		);
 
-		expect( queryByText( 'Activate Jetpack' ) ).not.toBeEmptyDOMElement();
+		expect( queryByText( 'Activate Jetpack' ) ).toBeInTheDocument();
 
 		rerender(
 			<JetpackCTA
@@ -126,6 +126,6 @@ describe( 'JetpackCTA', () => {
 			/>
 		);
 
-		expect( queryByText( 'Connect Jetpack' ) ).not.toBeEmptyDOMElement();
+		expect( queryByText( 'Connect Jetpack' ) ).toBeInTheDocument();
 	} );
 } );

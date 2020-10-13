@@ -21,7 +21,7 @@ describe( 'ActivityCard', () => {
 		);
 		expect(
 			getByRole( 'heading', { name: 'Inbox message' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 	} );
 
 	test( 'should render a basic card', () => {

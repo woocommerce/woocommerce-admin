@@ -18,7 +18,7 @@ describe( 'Card', () => {
 		// should have correct title
 		expect(
 			getByRole( 'heading', { name: 'A Card Example' } )
-		).not.toBeEmptyDOMElement();
+		).toBeInTheDocument();
 
 		// should have correct class
 		expect(
