@@ -20,8 +20,30 @@ class CustomerEffortScoreTracks {
 	 */
 	protected static $instance = null;
 
+	/**
+	 * Option name for the CES Tracks queue.
+	 */
 	const CES_TRACKS_QUEUE_OPTION_NAME       = 'woocommerce_ces_tracks_queue';
+
+	/**
+	 * Option name for the clear CES Tracks queue flag.
+	 */
 	const CLEAR_CES_TRACKS_QUEUE_OPTION_NAME = 'woocommerce_clear_ces_tracks_queue';
+
+	/**
+	 * Option name for the set of actions that have been shown.
+	 */
+	const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
+
+	/**
+	 * Action name for product add/publish.
+	 */
+	const PRODUCT_ADD_PUBLISH_ACTION_NAME = 'product_add_publish';
+    
+    /**
+     * Action name for product update.
+     */
+    const PRODUCT_UPDATE_ACTION_NAME = 'product_update';
 
 	/**
 	 * Get class instance.
@@ -108,10 +130,22 @@ class CustomerEffortScoreTracks {
 	 * Enqueue the CES survey trigger for a new product.
 	 */
 	private function enqueue_ces_survey_for_new_product() {
-		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+        // Only add the JS to trigger the CES modal if
+        // this modal hasn't been dismissed or actioned yet for this action.
+        $shown_for_features = get_option( self::SHOWN_FOR_ACTIONS_OPTION_NAME, array() );
+        $has_been_shown     = in_array(
+                                       self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
+                                       $shown_for_features,
+                                       true
+                                       );
+        if ( $has_been_shown ) {
+            return;
+        }
+
+        $queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
 
 		$queue[] = array(
-			'track_name' => 'product_add_publish_effort_score',
+			'action'     => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
 			'label'      => __(
 				'How easy was it to add a product?',
 				'woocommerce-admin'
@@ -128,10 +162,22 @@ class CustomerEffortScoreTracks {
 	 * Enqueue the CES survey trigger for an existing product.
 	 */
 	private function enqueue_ces_survey_for_edited_product() {
-		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+        // Only add the JS to trigger the CES modal if
+        // this modal hasn't been dismissed or actioned yet for this action.
+        $shown_for_features = get_option( self::SHOWN_FOR_ACTIONS_OPTION_NAME, array() );
+        $has_been_shown     = in_array(
+                                       self::PRODUCT_UPDATE_ACTION_NAME,
+                                       $shown_for_features,
+                                       true
+                                       );
+        if ( $has_been_shown ) {
+            return;
+        }
+
+        $queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
 
 		$queue[] = array(
-			'track_name' => 'product_update_effort_score',
+			'action'     => self::PRODUCT_UPDATE_ACTION_NAME,
 			'label'      => __(
 				'How easy was it to edit your product?',
 				'woocommerce-admin'
