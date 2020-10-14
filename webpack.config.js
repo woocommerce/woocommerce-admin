@@ -44,6 +44,7 @@ const wcAdminPackages = [
 	'components',
 	'csv-export',
 	'currency',
+	'customer-effort-score',
 	'date',
 	'navigation',
 	'number',

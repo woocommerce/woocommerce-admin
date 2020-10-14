@@ -324,6 +324,14 @@ class Loader {
 		wp_set_script_translations( 'wc-currency', 'woocommerce-admin' );
 
 		wp_register_script(
+			'wc-customer-effort-score',
+			self::get_url( 'customer-effort-score/index', 'js' ),
+			array(),
+			$js_file_version,
+			true
+		);
+
+		wp_register_script(
 			'wc-navigation',
 			self::get_url( 'navigation/index', 'js' ),
 			array( 'wp-url', 'wp-hooks' ),
@@ -380,6 +388,7 @@ class Loader {
 				'wp-keycodes',
 				'wc-csv',
 				'wc-currency',
+				'wc-customer-effort-score',
 				'wc-date',
 				'wc-navigation',
 				'wc-number',
@@ -406,6 +415,14 @@ class Loader {
 			$css_file_version
 		);
 		wp_style_add_data( 'wc-components-ie', 'rtl', 'replace' );
+
+		wp_register_style(
+			'wc-customer-effort-score',
+			self::get_url( 'customer-effort-score/style', 'css' ),
+			array(),
+			$css_file_version
+		);
+		wp_style_add_data( 'wc-customer-effort-score', 'rtl', 'replace' );
 
 		wp_register_script(
 			WC_ADMIN_APP,
@@ -436,7 +453,7 @@ class Loader {
 		wp_register_style(
 			WC_ADMIN_APP,
 			self::get_url( "app/style{$rtl}", 'css' ),
-			array( 'wc-components' ),
+			array( 'wc-components', 'wc-customer-effort-score' ),
 			$css_file_version
 		);
 
@@ -1311,6 +1328,7 @@ class Loader {
 			$handles_for_injection = [
 				'wc-csv',
 				'wc-currency',
+				'wc-customer-effort-score',
 				'wc-navigation',
 				'wc-number',
 				'wc-date',

@@ -147,6 +147,7 @@
 		"@testing-library/user-event": "10.4.1",
 		"@woocommerce/components": "file:packages/components",
 		"@woocommerce/csv-export": "file:packages/csv-export",
+		"@woocommerce/customer-effort-score": "file:packages/customer-effort-score",
 		"@woocommerce/currency": "file:packages/currency",
 		"@woocommerce/data": "file:packages/data",
 		"@woocommerce/date": "file:packages/date",

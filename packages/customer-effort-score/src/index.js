@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import './customer-effort-score.scss';
 
 /**
  * Use `CustomerEffortScore` to gather a customer effort score.
@@ -34,14 +33,16 @@ function CustomerEffortScore( {
 	}
 
 	function close() {
-		setScore( 3 );  // TODO let this happen in the UI
+		setScore( 3 ); // TODO let this happen in the UI
 
 		toggleVisible();
 		trackCallback( score );
 	}
 
 	return (
-		<p className="customer-effort-score_modal">{ label } <button onClick={ close }>Click me</button></p>
+		<p className="customer-effort-score_modal">
+			{ label } <button onClick={ close }>Click me</button>
+		</p>
 	);
 }
 
@@ -52,9 +53,9 @@ CustomerEffortScore.propTypes = {
 	trackCallback: PropTypes.func.isRequired,
 	/**
 	 * Whether or not the tracks is visible. True is used for when
-     * this is loaded on page load (in client/index.js). False is used if the
-     * tracks modal is loaded as part of the layout and displayed
-     * programmatically.
+	 * this is loaded on page load (in client/index.js). False is used if the
+	 * tracks modal is loaded as part of the layout and displayed
+	 * programmatically.
 	 */
 	visible: PropTypes.bool.isRequired,
 	/**
