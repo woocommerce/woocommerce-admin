@@ -10,6 +10,7 @@ import { withSelect, withDispatch } from '@wordpress/data';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
+const ALLOW_TRACKING_OPTION_NAME = 'woocommerce_allow_tracking';
 
 /**
  * A CustomerEffortScore wrapper that uses tracks to track the selected
@@ -21,6 +22,7 @@ const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
  * @param {Object}   props.trackProps         Additional props sent to Tracks.
  * @param {string}   props.label              The label displayed in the modal.
  * @param {Array}    props.cesShownForActions The array of actions that the CES modal has been shown for.
+ * @param {boolean}  props.allowTracking      Whether tracking is allowed or not.
  * @param {boolean}  props.resolving          Flag to indicate if props are still resolving.
  * @param {Function} props.updateOptions      Function to update options.
  */
@@ -30,6 +32,7 @@ function CustomerEffortScoreTracks( {
 	trackProps,
 	label,
 	cesShownForActions,
+	allowTracking,
 	resolving,
 	updateOptions,
 } ) {
@@ -37,6 +40,11 @@ function CustomerEffortScoreTracks( {
 	const [ shown, setShown ] = useState( false );
 
 	if ( resolving ) {
+		return null;
+	}
+
+	// Don't show if tracking is disallowed.
+	if ( ! allowTracking ) {
 		return null;
 	}
 
@@ -99,6 +107,10 @@ CustomerEffortScoreTracks.propTypes = {
 	 */
 	cesShownForActions: PropTypes.arrayOf( PropTypes.string ).isRequired,
 	/**
+	 * Whether tracking is allowed or not.
+	 */
+	allowTracking: PropTypes.bool,
+	/**
 	 * Whether items are still resolving.
 	 */
 	resolving: PropTypes.bool,
@@ -113,12 +125,17 @@ export default compose(
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 		const cesShownForActions =
 			getOption( SHOWN_FOR_ACTIONS_OPTION_NAME ) || [];
+		const allowTrackingOption =
+			getOption( ALLOW_TRACKING_OPTION_NAME ) || 'no';
+		const allowTracking = allowTrackingOption === 'yes';
 		const resolving = isResolving( 'getOption', [
 			SHOWN_FOR_ACTIONS_OPTION_NAME,
+			ALLOW_TRACKING_OPTION_NAME,
 		] );
 
 		return {
 			cesShownForActions,
+			allowTracking,
 			resolving,
 		};
 	} ),
