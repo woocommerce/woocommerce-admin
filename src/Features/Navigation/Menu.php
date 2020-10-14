@@ -167,9 +167,7 @@ class Menu {
 		);
 		$menu_item          = wp_parse_args( $args, $defaults );
 		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
-		if ( isset( $menu_item['url'] ) ) {
-			$menu_item['url'] = self::get_callback_url( $menu_item['url'] );
-		}
+		unset( $menu_item['url'] );
 
 		if ( true === $menu_item['is_top_level'] ) {
 			$menu_item['parent'] = 'woocommerce';
