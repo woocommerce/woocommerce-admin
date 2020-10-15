@@ -80,38 +80,42 @@ const Container = ( { menuItems } ) => {
 						) }
 					></NavigationBackButton>
 				) }
-				{ categories.map( ( category ) => (
-					<NavigationMenu
-						key={ category.id }
-						title={ category.title }
-						menu={ category.id }
-						parentMenu={ category.parent }
-						backButtonLabel={ category.backButtonLabel }
-					>
-						<NavigationGroup>
-							{ menuItems
-								.filter(
-									( item ) =>
-										item.parent === category.id &&
-										item.menuId !== 'secondary'
-								)
-								.map( ( item ) => (
-									<Item key={ item.id } item={ item } />
-								) ) }
-						</NavigationGroup>
-						<NavigationGroup>
-							{ menuItems
-								.filter(
-									( item ) =>
-										item.parent === category.id &&
-										item.menuId === 'secondary'
-								)
-								.map( ( item ) => (
-									<Item key={ item.id } item={ item } />
-								) ) }
-						</NavigationGroup>
-					</NavigationMenu>
-				) ) }
+				{ categories.map( ( category ) => {
+					const primaryItems = menuItems.filter(
+						( item ) =>
+							item.parent === category.id &&
+							item.menuId !== 'secondary'
+					);
+					const secondaryItems = menuItems.filter(
+						( item ) =>
+							item.parent === category.id &&
+							item.menuId === 'secondary'
+					);
+					return (
+						<NavigationMenu
+							key={ category.id }
+							title={ category.title }
+							menu={ category.id }
+							parentMenu={ category.parent }
+							backButtonLabel={ category.backButtonLabel }
+						>
+							{ !! primaryItems.length && (
+								<NavigationGroup>
+									{ primaryItems.map( ( item ) => (
+										<Item key={ item.id } item={ item } />
+									) ) }
+								</NavigationGroup>
+							) }
+							{ !! secondaryItems.length && (
+								<NavigationGroup>
+									{ secondaryItems.map( ( item ) => (
+										<Item key={ item.id } item={ item } />
+									) ) }
+								</NavigationGroup>
+							) }
+						</NavigationMenu>
+					);
+				} ) }
 			</Navigation>
 		</div>
 	);
