@@ -135,24 +135,24 @@ class Analytics {
 				'order'  => 10,
 			),
 			array(
+				'id'     => 'woocommerce-analytics-products',
+				'title'  => __( 'Products', 'woocommerce-admin' ),
+				'parent' => 'woocommerce-analytics',
+				'path'   => '/analytics/products',
+				'order'  => 20,
+			),
+			array(
 				'id'     => 'woocommerce-analytics-revenue',
 				'title'  => __( 'Revenue', 'woocommerce-admin' ),
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/revenue',
-				'order'  => 20,
+				'order'  => 30,
 			),
 			array(
 				'id'     => 'woocommerce-analytics-orders',
 				'title'  => __( 'Orders', 'woocommerce-admin' ),
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/orders',
-				'order'  => 30,
-			),
-			array(
-				'id'     => 'woocommerce-analytics-products',
-				'title'  => __( 'Products', 'woocommerce-admin' ),
-				'parent' => 'woocommerce-analytics',
-				'path'   => '/analytics/products',
 				'order'  => 40,
 			),
 			array(
