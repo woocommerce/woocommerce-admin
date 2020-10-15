@@ -5,7 +5,6 @@
 		"analytics-dashboard": true,
 		"analytics-dashboard/customizable": true,
 		"coupons": true,
-		"devdocs": true,
 		"marketing": true,
 		"onboarding": true,
 		"remote-inbox-notifications": true,
@@ -13,6 +12,7 @@
 		"store-alerts": true,
 		"minified-js": true,
 		"wcpay": true,
-		"mobile-app-banner": true
+		"mobile-app-banner": true,
+		"navigation": true
 	}
 }

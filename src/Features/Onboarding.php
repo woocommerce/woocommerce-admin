@@ -120,6 +120,22 @@ class Onboarding {
 	}
 
 	/**
+	 * Test whether the context of execution comes from async action scheduler.
+	 * Note: this is a polyfill for wc_is_running_from_async_action_scheduler()
+	 *       which was introduced in WC 4.0.
+	 *
+	 * @return bool
+	 */
+	public static function is_running_from_async_action_scheduler() {
+		if ( function_exists( '\wc_is_running_from_async_action_scheduler' ) ) {
+			return \wc_is_running_from_async_action_scheduler();
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return isset( $_REQUEST['action'] ) && 'as_async_request_queue_runner' === $_REQUEST['action'];
+	}
+
+	/**
 	 * Handle redirects to setup/welcome page after install and updates.
 	 *
 	 * For setup wizard, transient must be present, the user must have access rights, and we must ignore the network/bulk plugin updaters.
@@ -127,15 +143,15 @@ class Onboarding {
 	public function admin_redirects() {
 		// Don't run this fn from Action Scheduler requests, as it would clear _wc_activation_redirect transient.
 		// That means OBW would never be shown.
-		if ( wc_is_running_from_async_action_scheduler() ) {
+		if ( self::is_running_from_async_action_scheduler() ) {
 			return;
 		}
 
 		// Setup wizard redirect.
 		if ( get_transient( '_wc_activation_redirect' ) && apply_filters( 'woocommerce_enable_setup_wizard', true ) ) {
-			$do_redirect                   = true;
-			$current_page                  = isset( $_GET['page'] ) ? wc_clean( wp_unslash( $_GET['page'] ) ) : false; // phpcs:ignore WordPress.Security.NonceVerification
-			$is_onboarding_path            = ! isset( $_GET['path'] ) || '/setup-wizard' === wc_clean( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+			$do_redirect        = true;
+			$current_page       = isset( $_GET['page'] ) ? wc_clean( wp_unslash( $_GET['page'] ) ) : false; // phpcs:ignore WordPress.Security.NonceVerification
+			$is_onboarding_path = ! isset( $_GET['path'] ) || '/setup-wizard' === wc_clean( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 
 			// On these pages, or during these events, postpone the redirect.
 			if ( wp_doing_ajax() || is_network_admin() || ! current_user_can( 'manage_woocommerce' ) ) {
@@ -318,6 +334,17 @@ class Onboarding {
 	 * @return bool
 	 */
 	public static function should_show_profiler() {
+		/* phpcs:disable WordPress.Security.NonceVerification */
+		$is_current_page = isset( $_GET['page'] ) &&
+			'wc-admin' === $_GET['page'] &&
+			isset( $_GET['path'] ) &&
+			'/setup-wizard' === $_GET['path'];
+		/* phpcs: enable */
+
+		if ( $is_current_page ) {
+			return true;
+		}
+
 		$onboarding_data = get_option( self::PROFILE_DATA_OPTION, array() );
 
 		$is_completed = isset( $onboarding_data['completed'] ) && true === $onboarding_data['completed'];
@@ -629,26 +656,26 @@ class Onboarding {
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
-		$profile = get_option( self::PROFILE_DATA_OPTION, array() );
+		$profile                = get_option( self::PROFILE_DATA_OPTION, array() );
+		$settings['onboarding'] = array(
+			'profile' => $profile,
+		);
+
+		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown.
+		if ( ! self::should_show_profiler() && ! self::should_show_tasks() ) {
+			return $settings;
+		}
 
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-options.php';
 		$wccom_auth                 = \WC_Helper_Options::get( 'auth' );
 		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
 
-		$settings['onboarding'] = array(
-			'industries' => self::get_allowed_industries(),
-			'profile'    => $profile,
-		);
-
-		// Only fetch if the onboarding wizard OR the task list is incomplete.
-		if ( self::should_show_profiler() || self::should_show_tasks() ) {
-			$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
-			$settings['onboarding']['euCountries']  = WC()->countries->get_european_union_countries();
-			$current_user                           = wp_get_current_user();
-			$settings['onboarding']['userEmail']    = esc_html( $current_user->user_email );
-			$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
-			$settings['onboarding']['themes']       = self::get_themes();
-		}
+		$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
+		$settings['onboarding']['euCountries']  = WC()->countries->get_european_union_countries();
+		$settings['onboarding']['industries']   = self::get_allowed_industries();
+		$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
+		$settings['onboarding']['profile']      = $profile;
+		$settings['onboarding']['themes']       = self::get_themes();
 
 		return $settings;
 	}
@@ -761,18 +788,12 @@ class Onboarding {
 	 */
 	public function is_loading( $is_loading ) {
 		$show_profiler = self::should_show_profiler();
-		$is_dashboard  = ! isset( $_GET['path'] ); // phpcs:ignore csrf ok.
-		$is_profiler   = isset( $_GET['path'] ) && '/setup-wizard' === $_GET['path']; // phpcs:ignore csrf ok.
 
-		if ( $is_profiler ) {
+		if ( $show_profiler ) {
 			return true;
 		}
 
-		if ( ! $show_profiler || ! $is_dashboard ) {
-			return $is_loading;
-		}
-
-		return true;
+		return $is_loading;
 	}
 
 	/**
@@ -916,7 +937,7 @@ class Onboarding {
 			: '<p><a href="' . wc_admin_url( '&reset_task_list=0' ) . '" class="button button-primary">' . __( 'Disable', 'woocommerce-admin' ) . '</a></p>'
 		);
 
-		if ( Loader::is_feature_enabled( 'devdocs' ) && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			$help_tab['content'] .= '<h3>' . __( 'Calypso / WordPress.com', 'woocommerce-admin' ) . '</h3>';
 			if ( class_exists( 'Jetpack' ) ) {
 				$help_tab['content'] .= '<p>' . __( 'Quickly access the Jetpack connection flow in Calypso.', 'woocommerce-admin' ) . '</p>';

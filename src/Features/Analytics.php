@@ -112,15 +112,19 @@ class Analytics {
 	 * Registers report pages.
 	 */
 	public function register_pages() {
+		$overview_page = array(
+			'id'       => 'woocommerce-analytics',
+			'title'    => __( 'Analytics', 'woocommerce-admin' ),
+			'path'     => '/analytics/overview',
+			'icon'     => 'dashicons-chart-bar',
+			'position' => 56, // After WooCommerce & Product menu items.
+		);
+		if ( Loader::is_feature_enabled( 'navigation' ) ) {
+			unset( $overview_page['path'] );
+		}
+
 		$report_pages = array(
-			array(
-				'id'       => 'woocommerce-analytics',
-				'title'    => __( 'Analytics', 'woocommerce-admin' ),
-				'path'     => '/analytics/overview',
-				'path'     => '/analytics/overview',
-				'icon'     => 'dashicons-chart-bar',
-				'position' => 56, // After WooCommerce & Product menu items.
-			),
+			$overview_page,
 			array(
 				'id'     => 'woocommerce-analytics-overview',
 				'title'  => __( 'Overview', 'woocommerce-admin' ),

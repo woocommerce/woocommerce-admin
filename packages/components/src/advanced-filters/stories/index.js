@@ -16,8 +16,7 @@ const ORDER_STATUSES = {
 
 const siteLocale = 'en_US';
 
-const path =
-	new URL( document.location ).searchParams.get( 'path' ) || '/devdocs';
+const path = new URL( document.location ).searchParams.get( 'path' );
 const query = {
 	component: 'advanced-filters',
 };
