@@ -39,8 +39,10 @@ class Performance_On_Mobile {
 		if ( Mobile_App::has_note_been_actioned() ) {
 			return;
 		}
-
 		if ( Real_Time_Order_Alerts::has_note_been_actioned() ) {
+			return;
+		}
+		if ( Manage_Orders_On_The_Go::has_note_been_actioned() ) {
 			return;
 		}
 

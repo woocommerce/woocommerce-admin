@@ -37,7 +37,9 @@ const HelpPanel = lazy( () =>
 );
 
 const InboxPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/inbox' )
+	import(
+		/* webpackChunkName: "activity-panels-inbox" */ '../../inbox-panel'
+	)
 );
 const OrdersPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-orders" */ './panels/orders' )
@@ -151,7 +153,7 @@ export class ActivityPanel extends Component {
 			: null;
 
 		const setup =
-			! taskListComplete && ! isPerformingSetupTask
+			! taskListComplete && ! isPerformingSetupTask && ! taskListHidden
 				? {
 						name: 'setup',
 						title: __( 'Store Setup', 'woocommerce-admin' ),

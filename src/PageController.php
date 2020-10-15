@@ -5,6 +5,8 @@
 
 namespace Automattic\WooCommerce\Admin;
 
+use Automattic\WooCommerce\Admin\Loader;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -427,6 +429,8 @@ class PageController {
 			$options['path'] = self::PAGE_ROOT . '&path=' . $options['path'];
 		}
 
+		$navigation_enabled = Loader::is_feature_enabled( 'navigation' );
+
 		if ( is_null( $options['parent'] ) ) {
 			add_menu_page(
 				$options['title'],
@@ -438,15 +442,20 @@ class PageController {
 				$options['position']
 			);
 
-			if ( method_exists( '\Automattic\WooCommerce\Navigation\Menu', 'add_category' ) ) {
-				\Automattic\WooCommerce\Navigation\Menu::add_category(
-					array(
-						'id'         => $options['id'],
-						'title'      => $options['title'],
-						'capability' => $options['capability'],
-						'url'        => $options['path'],
-					)
+			if ( $navigation_enabled ) {
+				$category_options = array(
+					'id'           => $options['id'],
+					'title'        => $options['title'],
+					'capability'   => $options['capability'],
+					'url'          => $options['path'],
+					'is_top_level' => true,
 				);
+
+				// If there is no path option, remove url because its a parent category item.
+				if ( 'wc-admin&path=' === $options['path'] ) {
+					unset( $category_options['url'] );
+				}
+				\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_category( $category_options );
 			}
 		} else {
 			$parent_path = $this->get_path_from_id( $options['parent'] );
@@ -460,14 +469,16 @@ class PageController {
 				array( __CLASS__, 'page_wrapper' )
 			);
 
-			if ( method_exists( '\Automattic\WooCommerce\Navigation\Menu', 'add_item' ) ) {
-				\Automattic\WooCommerce\Navigation\Menu::add_item(
+			if ( $navigation_enabled ) {
+				$top_level_ids = array( 'woocommerce-home', 'woocommerce-analytics-customers' );
+				\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_item(
 					array(
-						'id'         => $options['id'],
-						'parent'     => $options['parent'],
-						'title'      => $options['title'],
-						'capability' => $options['capability'],
-						'url'        => $options['path'],
+						'id'           => $options['id'],
+						'parent'       => $options['parent'],
+						'title'        => $options['title'],
+						'capability'   => $options['capability'],
+						'url'          => $options['path'],
+						'is_top_level' => in_array( $options['id'], $top_level_ids, true ),
 					)
 				);
 			}
