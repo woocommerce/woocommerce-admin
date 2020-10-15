@@ -16,6 +16,7 @@ const DEFAULT_STATE = {
 	activatingPlugins: [],
 	recommendedPlugins: {},
 	blogPosts: {},
+	errors: {},
 };
 
 const reducer = ( state = DEFAULT_STATE, action ) => {
@@ -61,7 +62,11 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				errors: {
-					blogPosts: action.error,
+					...state.errors,
+					blogPosts: {
+						...state.errors.blogPosts,
+						[ action.category ]: action.error,
+					},
 				},
 			};
 		default:
