@@ -5,6 +5,7 @@
 		"analytics-dashboard": true,
 		"analytics-dashboard/customizable": true,
 		"coupons": true,
+		"customer-effort-score": true,
 		"devdocs": true,
 		"marketing": true,
 		"onboarding": true,
