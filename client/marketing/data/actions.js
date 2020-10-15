@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import TYPES from './action-types';
 import { API_NAMESPACE } from './constants';
 
 export function receiveInstalledPlugins( plugins ) {
@@ -51,6 +52,14 @@ export function handleFetchError( error, message ) {
 
 	// eslint-disable-next-line no-console
 	console.log( error );
+}
+
+export function setError( category, error ) {
+	return {
+		type: TYPES.SET_ERROR,
+		category,
+		error,
+	};
 }
 
 export function* activateInstalledPlugin( pluginSlug ) {
