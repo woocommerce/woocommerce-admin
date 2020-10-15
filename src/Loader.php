@@ -313,7 +313,7 @@ class Loader {
 		wp_register_script(
 			'wc-navigation',
 			self::get_url( 'navigation/index', 'js' ),
-			array( 'wp-url', 'wp-hooks' ),
+			array( 'wp-url', 'wp-hooks', 'wp-components' ),
 			$js_file_version,
 			true
 		);
@@ -403,6 +403,7 @@ class Loader {
 				'wp-date',
 				'wp-plugins',
 				'wc-tracks',
+				'wc-navigation',
 			),
 			$js_file_version,
 			true
