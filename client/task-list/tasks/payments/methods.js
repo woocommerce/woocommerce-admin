@@ -192,10 +192,16 @@ export function getPaymentMethods( {
 				! hasCbdIndustry,
 			plugins: [ 'woocommerce-gateway-stripe' ],
 			container: <Stripe />,
+			// Whether publishable and secret keys are filled for given mode.
 			isConfigured:
 				options.woocommerce_stripe_settings &&
-				options.woocommerce_stripe_settings.publishable_key &&
-				options.woocommerce_stripe_settings.secret_key,
+				( ( options.woocommerce_stripe_settings.testmode === 'no' &&
+					options.woocommerce_stripe_settings.publishable_key &&
+					options.woocommerce_stripe_settings.secret_key ) ||
+					( options.woocommerce_stripe_settings.testmode === 'yes' &&
+						options.woocommerce_stripe_settings
+							.test_publishable_key &&
+						options.woocommerce_stripe_settings.test_secret_key ) ),
 			isEnabled:
 				options.woocommerce_stripe_settings &&
 				options.woocommerce_stripe_settings.enabled === 'yes',
