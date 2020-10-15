@@ -1,5 +1,5 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
-const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
+const WooCommerceDependencyExtractionWebpackPlugin = require( '@woocommerce/dependency-extraction-webpack-plugin' );
 
 const requestToExternal = ( request ) => {
 	const wcDepMap = {
@@ -44,10 +44,6 @@ module.exports = {
 			( plugin ) =>
 				plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'
 		),
-		new DependencyExtractionWebpackPlugin( {
-			injectPolyfill: true,
-			requestToExternal,
-			requestToHandle,
-		} ),
+		new WooCommerceDependencyExtractionWebpackPlugin(),
 	],
 };
