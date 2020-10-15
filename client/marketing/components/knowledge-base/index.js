@@ -21,6 +21,7 @@ import { STORE_KEY } from '../../data/constants';
 const KnowledgeBase = ( {
 	posts,
 	isLoading,
+	error,
 	title,
 	description,
 	category,
@@ -110,6 +111,21 @@ const KnowledgeBase = ( {
 
 	const renderEmpty = () => {
 		const emptyTitle = __(
+			'There is no knowledge base posts.',
+			'woocommerce-admin'
+		);
+
+		return (
+			<EmptyContent
+				title={ emptyTitle }
+				illustrationWidth={ 250 }
+				actionLabel=""
+			/>
+		);
+	};
+
+	const renderError = () => {
+		const emptyTitle = __(
 			'There was an error loading knowledge base posts. Please check again later.',
 			'woocommerce-admin'
 		);
@@ -146,6 +162,11 @@ const KnowledgeBase = ( {
 		if ( isLoading ) {
 			return <Spinner />;
 		}
+
+		if ( error ) {
+			return renderError();
+		}
+
 		return posts.length === 0 ? renderEmpty() : renderPosts();
 	};
 
@@ -202,11 +223,14 @@ export { KnowledgeBase };
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { getBlogPosts, isResolving } = select( STORE_KEY );
+		const { getBlogPosts, getBlogPostsError, isResolving } = select(
+			STORE_KEY
+		);
 
 		return {
 			posts: getBlogPosts( props.category ),
 			isLoading: isResolving( 'getBlogPosts', [ props.category ] ),
+			error: getBlogPostsError( props.category ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
