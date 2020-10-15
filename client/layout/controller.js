@@ -16,7 +16,6 @@ import { Spinner } from '@woocommerce/components';
 /**
  * Internal dependencies
  */
-import { getUrlParams } from '../utils';
 import getReports from '../analytics/report/get-reports';
 import { isWCAdmin } from '../dashboard/utils';
 
