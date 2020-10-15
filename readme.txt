@@ -71,6 +71,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.6.2 TBD =
+- Fix: Missing activity panels on ugraded sites #5400
+
 = 1.6.1 10/13/2020 =
 - Fix: Hide setup checklist shortcut when setup checklist skipped #5360
 - Fix: use of undefined function on WC < 4.0.0.
