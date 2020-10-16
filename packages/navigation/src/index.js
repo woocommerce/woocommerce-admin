@@ -180,3 +180,8 @@ export const WooNavigationItem = ( { children, item, ...passProps } ) => {
 	);
 };
 WooNavigationItem.Slot = ( { name } ) => <Slot name={ name } />;
+
+export const TestFill = ( { children } ) => {
+	return <Fill name="test">{ children }</Fill>;
+};
+TestFill.Slot = () => <Slot name="test" />;
