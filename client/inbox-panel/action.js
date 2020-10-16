@@ -120,19 +120,11 @@ class InboxNoteAction extends Component {
 			actionCallback( true );
 		} else {
 			this.setState( { inAction }, () => {
-				triggerNoteAction( noteId, action.id )
-					.then( () => {
-						// We can detect inAction state by monitoring note.isUpdating param data store.
-						this.setState( { inAction: false } );
-						if ( !! onClick ) {
-							onClick();
-						}
-					} )
-					.catch( ( err ) => {
-						this.setState( { inAction: false } );
-						// eslint-disable-next-line no-console
-						console.error( err );
-					} );
+				triggerNoteAction( noteId, action.id );
+
+				if ( !! onClick ) {
+					onClick();
+				}
 			} );
 		}
 	}
