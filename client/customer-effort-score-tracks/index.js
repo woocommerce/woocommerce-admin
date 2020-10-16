@@ -4,6 +4,9 @@
 import { useState } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { recordEvent } from '@woocommerce/tracks';
+import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 import CustomerEffortScore from '@woocommerce/customer-effort-score';
 
 /**
@@ -15,13 +18,16 @@ import CustomerEffortScore from '@woocommerce/customer-effort-score';
  * @param {string}   props.trackName        The name sent to Tracks.
  * @param {Object}   props.trackProps       Additional props sent to Tracks.
  * @param {string}   props.label            The label displayed in the modal.
+ * @param {Function} props.createNotice     Create a notice (snackbar)
  */
 function CustomerEffortScoreTracks( {
 	initiallyVisible,
 	trackName,
 	trackProps,
 	label,
+	createNotice,
 } ) {
+	const [ showModal, setShowModal ] = useState( false );
 	const [ visible, setVisible ] = useState( initiallyVisible );
 
 	const trackCallback = ( score ) => {
@@ -30,6 +36,23 @@ function CustomerEffortScoreTracks( {
 			...trackProps,
 		} );
 	};
+
+	if ( ! showModal ) {
+		createNotice( 'success', label, {
+			actions: [
+				{
+					label: __( 'Give feedback', 'woocommerce-admin' ),
+					onClick: () => setShowModal( true ),
+				},
+			],
+		} );
+
+		return null;
+	}
+
+	if ( ! initiallyVisible ) {
+		return null;
+	}
 
 	return (
 		<CustomerEffortScore
@@ -63,4 +86,12 @@ CustomerEffortScoreTracks.propTypes = {
 	label: PropTypes.string.isRequired,
 };
 
-export default CustomerEffortScoreTracks;
+export default compose(
+	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
+
+		return {
+			createNotice,
+		};
+	} )
+)( CustomerEffortScoreTracks );
