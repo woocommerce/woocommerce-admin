@@ -116,11 +116,7 @@ const KnowledgeBase = ( {
 		);
 
 		return (
-			<EmptyContent
-				title={ emptyTitle }
-				illustrationWidth={ 250 }
-				actionLabel=""
-			/>
+			<EmptyContent title={ emptyTitle } illustration="" actionLabel="" />
 		);
 	};
 
