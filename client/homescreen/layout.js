@@ -106,7 +106,7 @@ export const Layout = ( {
 	return (
 		<div
 			className={ classnames( 'woocommerce-homescreen', {
-				hasInbox: showInbox,
+				'two-columns': showInbox,
 			} ) }
 		>
 			{ isDashboardShown

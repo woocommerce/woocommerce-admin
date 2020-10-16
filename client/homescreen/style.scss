@@ -14,7 +14,7 @@
 		margin-bottom: $gap-large;
 	}
 
-	&.hasInbox .woocommerce-homescreen-column {
+	&.two-columns .woocommerce-homescreen-column {
 		width: calc(50% - 12px);
 		margin: 0;
 
@@ -32,7 +32,7 @@
 	}
 }
 .woocommerce-homescreen-column {
-	width: 50%;
+	width: 662px;
 	top: 130px;
 	margin: 0 auto;
 	align-self: flex-start;
