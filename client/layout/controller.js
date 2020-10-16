@@ -174,6 +174,7 @@ export const getPages = () => {
 export class Controller extends Component {
 	componentDidMount() {
 		window.document.documentElement.scrollTop = 0;
+		window.document.body.classList.remove( 'woocommerce-admin-is-loading' );
 	}
 
 	componentDidUpdate( prevProps ) {
