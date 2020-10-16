@@ -142,18 +142,24 @@ class WooCommerce_Payments {
 
 	/**
 	 * Install and activate WooCommerce Payments.
+	 *
+	 * @return boolean Whether the plugin was successfully activated.
 	 */
 	private function install_and_activate_wcpay() {
 		$install_request = array( 'plugins' => self::PLUGIN_SLUG );
 		$installer       = new \Automattic\WooCommerce\Admin\API\Plugins();
 		$result          = $installer->install_plugins( $install_request );
-
 		if ( is_wp_error( $result ) ) {
-			return;
+			return false;
 		}
 
 		$activate_request = array( 'plugins' => self::PLUGIN_SLUG );
-		return $installer->activate_plugins( $activate_request );
+		$result           = $installer->activate_plugins( $activate_request );
+		if ( is_wp_error( $result ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -201,20 +207,7 @@ class WooCommerce_Payments {
 		}
 		/* phpcs:enable */
 
-		// Install WooCommerce Payments.
-		$installer = new \Automattic\WooCommerce\Admin\API\Plugins();
-
-		$install_request = array( 'plugins' => 'woocommerce-payments' );
-		$result          = $installer->install_plugins( $install_request );
-		if ( is_wp_error( $result ) ) {
-			return;
-		}
-
-		$activate_request = array( 'plugins' => 'woocommerce-payments' );
-		$installer->activate_plugins( $activate_request );
-		if ( is_wp_error( $result ) ) {
-			return;
-		}
+		$this->install_and_activate_wcpay();
 
 		// TODO: WooCommerce Payments is installed at this point, so we could link straight into the on-boarding flow.
 		$wcpay_settings_url = admin_url( 'admin.php?page=wc-admin&path=/payments/connect' );
