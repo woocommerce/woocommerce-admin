@@ -98,16 +98,18 @@ class WooCommerce_Payments {
 	 * @return Note
 	 */
 	public static function get_note() {
-		$tos = sprintf(
-			/* translators: 1: opening link tag, 2: closing tag */
-			__( 'By clicking "Get started", you agree to our %1$sTerms of Service%2$s', 'woocommerce-admin' ),
-			'<a href="https://wordpress.com/tos/" target="_blank">',
-			'</a>'
-		);
-
 		$note = new Note();
 		$note->set_title( __( 'Try the new way to get paid', 'woocommerce-admin' ) );
-		$note->set_content( __( 'Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments.', 'woocommerce-admin' ) . '<br><br>' . $tos );
+		$note->set_content(
+			__( 'Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with <strong>WooCommerce Payments</strong>.', 'woocommerce-admin' ) .
+			'<br><br>' .
+			sprintf(
+				/* translators: 1: opening link tag, 2: closing tag */
+				__( 'By clicking "Get started", you agree to our %1$sTerms of Service%2$s', 'woocommerce-admin' ),
+				'<a href="https://wordpress.com/tos/" target="_blank">',
+				'</a>'
+			)
+		);
 		$note->set_content_data( (object) array() );
 		$note->set_type( Note::E_WC_ADMIN_NOTE_MARKETING );
 		$note->set_name( self::NOTE_NAME );
