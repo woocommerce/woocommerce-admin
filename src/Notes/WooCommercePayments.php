@@ -45,13 +45,9 @@ class WooCommerce_Payments {
 	 * Maybe add a note on WooCommerce Payments for US based sites older than a week without the plugin installed.
 	 */
 	public static function possibly_add_note() {
-		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) || 'US' !== WC()->countries->get_base_country() ) {
-			return;
-		}
-
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
-		// We already have this note? Then mark the note as actioned.
+		// We already have this note? Then mark the note as unactioned.
 		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
 		if ( ! empty( $note_ids ) ) {
 
@@ -61,34 +57,17 @@ class WooCommerce_Payments {
 				return;
 			}
 
-			// If the WooCommerce Payments plugin was installed after the note was created, make sure it's marked as actioned.
-			if ( self::is_installed() && Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
-				$note->set_status( Note::E_WC_ADMIN_NOTE_ACTIONED );
+			if ( Note::E_WC_ADMIN_NOTE_UNACTIONED !== $note->get_status() ) {
+				$note->set_status( Note::E_WC_ADMIN_NOTE_UNACTIONED );
 				$note->save();
 			}
 
 			return;
 		}
 
-		$current_date = new \DateTime();
-		$publish_date = new \DateTime( '2020-04-14' );
-
-		if ( $current_date >= $publish_date ) {
-
-			$note = self::get_note();
-			if ( self::can_be_added() ) {
-				$note->save();
-			}
-
-			return;
-
-		} else {
-
-			$hook_name = sprintf( '%s_add_note', self::NOTE_NAME );
-
-			if ( ! WC()->queue()->get_next( $hook_name ) ) {
-				WC()->queue()->schedule_single( $publish_date->getTimestamp(), $hook_name );
-			}
+		$note = self::get_note();
+		if ( self::can_be_added() ) {
+			$note->save();
 		}
 	}
 

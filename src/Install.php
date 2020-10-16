@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Admin\API\Reports\Cache;
 use \Automattic\WooCommerce\Admin\Notes\Notes;
 use \Automattic\WooCommerce\Admin\Notes\Historical_Data;
+use \Automattic\WooCommerce\Admin\Notes\WooCommerce_Payments;
 
 /**
  * Install Class.
@@ -121,6 +122,7 @@ class Install {
 		if ( defined( 'IFRAME_REQUEST' ) ) {
 			return;
 		}
+		self::create_notes();
 
 		$version_option  = get_option( self::VERSION_OPTION );
 		$requires_update = version_compare( get_option( self::VERSION_OPTION ), WC_ADMIN_VERSION_NUMBER, '<' );
@@ -494,6 +496,7 @@ class Install {
 	 */
 	protected static function create_notes() {
 		Historical_Data::possibly_add_note();
+		WooCommerce_Payments::possibly_add_note();
 	}
 
 	/**
