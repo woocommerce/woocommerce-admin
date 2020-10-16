@@ -21,12 +21,12 @@ const DEFAULT_STATE = {
 
 const reducer = ( state = DEFAULT_STATE, action ) => {
 	switch ( action.type ) {
-		case 'SET_INSTALLED_PLUGINS':
+		case TYPES.SET_INSTALLED_PLUGINS:
 			return {
 				...state,
 				installedPlugins: action.plugins,
 			};
-		case 'SET_ACTIVATING_PLUGIN':
+		case TYPES.SET_ACTIVATING_PLUGIN:
 			return {
 				...state,
 				activatingPlugins: [
@@ -34,7 +34,7 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 					action.pluginSlug,
 				],
 			};
-		case 'REMOVE_ACTIVATING_PLUGIN':
+		case TYPES.REMOVE_ACTIVATING_PLUGIN:
 			return {
 				...state,
 				activatingPlugins: without(
@@ -42,7 +42,7 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 					action.pluginSlug
 				),
 			};
-		case 'SET_RECOMMENDED_PLUGINS':
+		case TYPES.SET_RECOMMENDED_PLUGINS:
 			return {
 				...state,
 				recommendedPlugins: {
@@ -50,7 +50,7 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 					[ action.data.category ]: action.data.plugins,
 				},
 			};
-		case 'SET_BLOG_POSTS':
+		case TYPES.SET_BLOG_POSTS:
 			return {
 				...state,
 				blogPosts: {
