@@ -37,9 +37,7 @@ class WooCommerce_Payments {
 	 * Attach hooks.
 	 */
 	public function __construct() {
-		add_action( 'woocommerce_note_action_install-now', array( $this, 'install' ) );
-		add_action( 'woocommerce_note_action_get-woocommerce-payments', array( $this, 'handle_promo' ) );
-		add_action( 'init', array( $this, 'install_woocommerce_payments' ) );
+		add_action( 'init', array( $this, 'install_on_action' ) );
 		add_action( 'wc-admin-woocommerce-payments_add_note', array( $this, 'add_note' ) );
 	}
 
@@ -108,7 +106,7 @@ class WooCommerce_Payments {
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'learn-more', __( 'Learn more', 'woocommerce-admin' ), 'https://woocommerce.com/payments/', Note::E_WC_ADMIN_NOTE_UNACTIONED );
-		$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), false, Note::E_WC_ADMIN_NOTE_ACTIONED, true );
+		$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), wc_admin_url( '&action=install-woocommerce-payments' ), Note::E_WC_ADMIN_NOTE_ACTIONED, true );
 
 		// Create the note as "actioned" if the plugin is already installed.
 		if ( self::is_installed() ) {
@@ -127,17 +125,6 @@ class WooCommerce_Payments {
 		}
 		include_once ABSPATH . '/wp-admin/includes/plugin.php';
 		return 0 === validate_plugin( self::PLUGIN_FILE );
-	}
-
-	/**
-	 * Install WooCommerce Payments when note is actioned.
-	 *
-	 * @param Note $note Note being acted upon.
-	 */
-	public function install( $note ) {
-		if ( self::NOTE_NAME === $note->get_name() && current_user_can( 'install_plugins' ) ) {
-			$this->install_and_activate_wcpay();
-		}
 	}
 
 	/**
@@ -163,38 +150,9 @@ class WooCommerce_Payments {
 	}
 
 	/**
-	 * Handle WC Pay promo note action.
-	 *
-	 * @param Note $note Note being acted upon.
+	 * Install & activate WooCommerce Payments plugin, and redirect to setup.
 	 */
-	public function handle_promo( $note ) {
-		if ( 'wcpay_2020_11_promo' !== $note->get_name() || ! current_user_can( 'install_plugins' ) ) {
-			return;
-		}
-
-		$this->install_and_activate_wcpay();
-		$actions     = $note->get_actions( 'edit' );
-		$new_actions = [];
-		foreach ( $actions as $action ) {
-			if ( 'get-woocommerce-payments' === $action->name ) {
-				$action->label = 'Set Up';
-				$params        = [
-					'page' => 'wc-admin',
-					'path' => '/payments/connect',
-				];
-				$action->query = \admin_url( \add_query_arg( $params, 'admin.php' ) );
-			}
-			$new_actions[] = clone $action;
-		}
-		$note->set_actions( $new_actions );
-
-		$note->save();
-	}
-
-	/**
-	 * Install Woocommerce Payments.
-	 */
-	public function install_woocommerce_payments() {
+	public function install_on_action() {
 		// TODO: Need to validate this request more strictly since we're taking install actions directly?
 		/* phpcs:disable WordPress.Security.NonceVerification */
 		if (
@@ -206,6 +164,10 @@ class WooCommerce_Payments {
 			return;
 		}
 		/* phpcs:enable */
+
+		if ( ! current_user_can( 'install_plugins' ) ) {
+			return;
+		}
 
 		$this->install_and_activate_wcpay();
 
