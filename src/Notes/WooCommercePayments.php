@@ -98,15 +98,22 @@ class WooCommerce_Payments {
 	 * @return Note
 	 */
 	public static function get_note() {
+		$tos = sprintf(
+			/* translators: 1: opening link tag, 2: closing tag */
+			__( 'By clicking "Get started", you agree to our %1$sTerms of Service%2$s', 'woocommerce-admin' ),
+			'<a href="https://wordpress.com/tos/" target="_blank">',
+			'</a>'
+		);
+
 		$note = new Note();
 		$note->set_title( __( 'Try the new way to get paid', 'woocommerce-admin' ) );
-		$note->set_content( __( 'Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments.', 'woocommerce-admin' ) );
+		$note->set_content( __( 'Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments.', 'woocommerce-admin' ) . '<br><br>' . $tos );
 		$note->set_content_data( (object) array() );
 		$note->set_type( Note::E_WC_ADMIN_NOTE_MARKETING );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'learn-more', __( 'Learn more', 'woocommerce-admin' ), 'https://woocommerce.com/payments/', Note::E_WC_ADMIN_NOTE_UNACTIONED );
-		$note->add_action( 'install-now', __( 'Install now', 'woocommerce-admin' ), wc_admin_url( '&action=install-woocommerce-payments' ), Note::E_WC_ADMIN_NOTE_ACTIONED, true );
+		$note->add_action( 'get-started', __( 'Get started', 'woocommerce-admin' ), wc_admin_url( '&action=install-woocommerce-payments' ), Note::E_WC_ADMIN_NOTE_ACTIONED, true );
 
 		// Create the note as "actioned" if the plugin is already installed.
 		if ( self::is_installed() ) {
@@ -171,9 +178,15 @@ class WooCommerce_Payments {
 
 		$this->install_and_activate_wcpay();
 
-		// TODO: WooCommerce Payments is installed at this point, so we could link straight into the on-boarding flow.
-		$wcpay_settings_url = admin_url( 'admin.php?page=wc-admin&path=/payments/connect' );
-		wp_safe_redirect( $wcpay_settings_url );
+		// WooCommerce Payments is installed at this point, so link straight into the onboarding flow.
+		$connect_url = add_query_arg(
+			array(
+				'wcpay-connect' => '1',
+				'_wpnonce'      => wp_create_nonce( 'wcpay-connect' ),
+			),
+			admin_url()
+		);
+		wp_safe_redirect( $connect_url );
 		exit;
 	}
 }
