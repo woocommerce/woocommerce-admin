@@ -94,6 +94,7 @@ class Connect extends Component {
 					);
 
 					// @todo Show a notice for when extensions are correctly installed.
+
 					document.body.classList.remove(
 						'woocommerce-admin-is-loading'
 					);
