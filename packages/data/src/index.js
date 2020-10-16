@@ -43,6 +43,8 @@ export {
 	SECOND,
 	MINUTE,
 	HOUR,
+	DAY,
+	MONTH,
 } from './constants';
 
 export { EXPORT_STORE_NAME } from './export';

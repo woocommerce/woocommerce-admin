@@ -7,7 +7,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import CustomerEffortScore from '@woocommerce/customer-effort-score';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { OPTIONS_STORE_NAME, MONTH } from '@woocommerce/data';
 
 const ADMIN_INSTALL_TIMESTAMP_OPTION_NAME =
 	'woocommerce_admin_install_timestamp';
@@ -93,8 +93,10 @@ export default compose(
 		
 		const adminInstallTimestamp =
 			getOption( ADMIN_INSTALL_TIMESTAMP_OPTION_NAME ) || 0;
-		const storeAgeInSeconds = Date.now() / 1000 - adminInstallTimestamp;
-		const storeAge = Math.round( storeAgeInSeconds / MONTH_IN_SECONDS );
+		// Date.now() is ms since Unix epoch, adminInstallTimestamp is in
+		// seconds since Unix epoch.
+		const storeAgeInSeconds = Date.now() - adminInstallTimestamp * 1000;
+		const storeAge = Math.round( storeAgeInSeconds / MONTH );
 
 		const resolving = isResolving( 'getOption', [
 			ADMIN_INSTALL_TIMESTAMP_OPTION_NAME,
