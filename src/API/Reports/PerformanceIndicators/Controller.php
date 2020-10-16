@@ -170,7 +170,7 @@ class Controller extends \WC_REST_Reports_Controller {
 					$stat                   = $prefix . '/' . $property_key;
 					$this->allowed_stats[]  = $stat;
 					$stat_label             = empty( $schema_info['title'] ) ? $schema_info['description'] : $schema_info['title'];
-					$this->labels[ $stat ]  = trim( preg_replace( '/\.+/', ' ', $stat_label ) );
+					$this->labels[ $stat ]  = trim( $stat_label, '.' );
 					$this->formats[ $stat ] = isset( $schema_info['format'] ) ? $schema_info['format'] : 'number';
 				}
 
