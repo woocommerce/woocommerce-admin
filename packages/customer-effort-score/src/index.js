@@ -3,6 +3,9 @@
  */
 import { useState } from '@wordpress/element';
 import PropTypes from 'prop-types';
+import { __ } from '@wordpress/i18n';
+import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -16,26 +19,36 @@ import PropTypes from 'prop-types';
  *
  * @param {Object}   props               Component props.
  * @param {Function} props.trackCallback Function to call when the modal is activated.
- * @param {boolean}  props.visible       Whether or not the tracks modal is visible.
- * @param {Function} props.toggleVisible Callback to toggle the visible prop.
  * @param {string}   props.label         The label displayed in the modal.
+ * @param {Function} props.createNotice     Create a notice (snackbar)
  */
-function CustomerEffortScore( {
-	trackCallback,
-	visible,
-	toggleVisible,
-	label,
-} ) {
+function CustomerEffortScore( { trackCallback, label, createNotice } ) {
+	const [ showModal, setShowModal ] = useState( false );
 	const [ score, setScore ] = useState( 0 );
+	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
 
-	if ( ! visible ) {
+	if ( shouldCreateNotice ) {
+		createNotice( 'success', label, {
+			actions: [
+				{
+					label: __( 'Give feedback', 'woocommerce-admin' ),
+					onClick: () => setShowModal( true ),
+				},
+			],
+		} );
+
+		setShouldCreateNotice( false );
+
+		return null;
+	}
+
+	if ( ! showModal ) {
 		return null;
 	}
 
 	function close() {
 		setScore( 3 ); // TODO let this happen in the UI
-
-		toggleVisible();
+		setShowModal( false );
 		trackCallback( score );
 	}
 
@@ -52,20 +65,17 @@ CustomerEffortScore.propTypes = {
 	 */
 	trackCallback: PropTypes.func.isRequired,
 	/**
-	 * Whether or not the tracks is visible. True is used for when
-	 * this is loaded on page load (in client/index.js). False is used if the
-	 * tracks modal is loaded as part of the layout and displayed
-	 * programmatically.
-	 */
-	visible: PropTypes.bool.isRequired,
-	/**
-	 * Callback to toggle the visible prop.
-	 */
-	toggleVisible: PropTypes.func.isRequired,
-	/**
 	 * The label displayed in the modal.
 	 */
 	label: PropTypes.string.isRequired,
 };
 
-export default CustomerEffortScore;
+export default compose(
+	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
+
+		return {
+			createNotice,
+		};
+	} )
+)( CustomerEffortScore );
