@@ -212,9 +212,7 @@ describe( 'No posts and not loading', () => {
 		const { getByText } = knowledgeBaseWrapper;
 
 		expect(
-			getByText(
-				'There was an error loading knowledge base posts. Please check again later.'
-			)
+			getByText( 'There are no knowledge base posts.' )
 		).toBeInTheDocument();
 	} );
 

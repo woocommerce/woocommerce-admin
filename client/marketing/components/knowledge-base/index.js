@@ -111,7 +111,7 @@ const KnowledgeBase = ( {
 
 	const renderEmpty = () => {
 		const emptyTitle = __(
-			'There is no knowledge base posts.',
+			'There are no knowledge base posts.',
 			'woocommerce-admin'
 		);
 
