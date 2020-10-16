@@ -74,6 +74,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 = 1.6.2 TBD =
 - Fix: Missing activity panels on ugraded sites #5400
 - Fix: Casting of onboarding profile data to array #5415
+- Fix: Gutenberg 9.1.1 compatability for inbox on home screen not showing #5416
 
 = 1.6.1 10/13/2020 =
 - Fix: Hide setup checklist shortcut when setup checklist skipped #5360
