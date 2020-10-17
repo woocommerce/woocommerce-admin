@@ -22,6 +22,11 @@ jest.mock( 'inbox-panel', () => jest.fn().mockReturnValue( '[InboxPanel]' ) );
 // We aren't testing the <QuickLinks /> component here.
 jest.mock( 'quick-links', () => jest.fn().mockReturnValue( '[QuickLinks]' ) );
 
+jest.mock( '@woocommerce/data', () => ( {
+	...jest.requireActual( '@woocommerce/data' ),
+	useUserPreferences: () => ( {} ),
+} ) );
+
 describe( 'Homescreen Layout', () => {
 	it( 'should show TaskList placeholder when loading', () => {
 		const { container } = render(
