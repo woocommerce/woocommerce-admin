@@ -45,12 +45,19 @@
 		width: 18px;
 		height: 18px;
 
-		// custom progress icon, requires specific coloring
-		&.setup-progress {
+		&.woocommerce-layout__activity-panel-tab-icon {
 			fill: none;
 
-			path:last-child {
+			rect,
+			path {
 				stroke: currentColor;
+			}
+		}
+
+		// custom progress icon, requires specific coloring
+		&.setup-progress {
+			path:first-child {
+				stroke: '#DCDCDE';
 			}
 		}
 

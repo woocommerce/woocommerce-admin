@@ -31,6 +31,7 @@ import {
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
+import DisplayOptions from './display-options';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -116,14 +117,14 @@ export class ActivityPanel extends Component {
 		}
 	}
 
-	// @todo Pull in dynamic unread status/count
-	getTabs() {
+	isHomescreen() {
+		const { location } = this.props.getHistory();
+
+		return location.pathname === '/';
+	}
+
+	isPerformingSetupTask() {
 		const {
-			hasUnreadNotes,
-			hasUnreadOrders,
-			hasUnapprovedReviews,
-			hasUnreadStock,
-			isEmbedded,
 			requestingTaskListOptions,
 			taskListComplete,
 			taskListHidden,
@@ -136,12 +137,26 @@ export class ActivityPanel extends Component {
 			( requestingTaskListOptions === true ||
 				( taskListHidden === false && taskListComplete === false ) );
 
-		// Don't show the inbox on the Home screen.
-		const { location } = this.props.getHistory();
+		return isPerformingSetupTask;
+	}
 
+	// @todo Pull in dynamic unread status/count
+	getTabs() {
+		const {
+			hasUnreadNotes,
+			hasUnreadOrders,
+			hasUnapprovedReviews,
+			hasUnreadStock,
+			isEmbedded,
+			taskListComplete,
+			taskListHidden,
+		} = this.props;
+
+		const isPerformingSetupTask = this.isPerformingSetupTask();
+
+		// Don't show the inbox on the Home screen.
 		const showInbox =
-			( isEmbedded || location.pathname !== '/' ) &&
-			! isPerformingSetupTask;
+			( isEmbedded || ! this.isHomescreen() ) && ! isPerformingSetupTask;
 
 		const showOrdersStockAndReviews =
 			( taskListComplete || taskListHidden ) && ! isPerformingSetupTask;
@@ -247,6 +262,10 @@ export class ActivityPanel extends Component {
 			this.clearPanel();
 		};
 
+		if ( currentTab === 'display-options' ) {
+			return null;
+		}
+
 		if ( currentTab === 'setup' ) {
 			const currentLocation = window.location.href;
 			const homescreenLocation = getAdminLink(
@@ -309,6 +328,7 @@ export class ActivityPanel extends Component {
 
 	render() {
 		const tabs = this.getTabs();
+		const { isEmbedded } = this.props;
 		const { mobileOpen, currentTab, isPanelOpen } = this.state;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
@@ -322,6 +342,10 @@ export class ActivityPanel extends Component {
 					'woocommerce-admin'
 			  )
 			: __( 'View Activity Panel', 'woocommerce-admin' );
+
+		const isPerformingSetupTask = this.isPerformingSetupTask();
+		const showDisplayOptions =
+			! isEmbedded && this.isHomescreen() && ! isPerformingSetupTask;
 
 		return (
 			<div>
@@ -365,6 +389,7 @@ export class ActivityPanel extends Component {
 								this.togglePanel( tab, tabOpen );
 							} }
 						/>
+						{ showDisplayOptions && <DisplayOptions /> }
 						{ this.renderPanel() }
 					</div>
 				</Section>
