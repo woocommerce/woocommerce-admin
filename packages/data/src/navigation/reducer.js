@@ -7,8 +7,6 @@ const reducer = (
 	state = {
 		activeItem: null,
 		menuItems: [],
-		siteTitle: null,
-		siteUrl: null,
 	},
 	{ type, activeItem, menuItems }
 ) => {
