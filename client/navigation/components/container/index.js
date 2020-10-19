@@ -10,13 +10,13 @@ import {
 	__experimentalNavigationMenu as NavigationMenu,
 	__experimentalNavigationGroup as NavigationGroup,
 } from '@wordpress/components';
+import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
 import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import { addHistoryListener, getMatchingItem } from '../../utils';
-import { NAVIGATION_STORE_NAME } from '../../store';
 import Header from '../header';
 import Item from '../../components/Item';
 

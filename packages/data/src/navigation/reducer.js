@@ -6,18 +6,9 @@ import TYPES from './action-types';
 const reducer = (
 	state = {
 		activeItem: null,
-		menuItems:
-			window.wcNavigation && window.wcNavigation.menuItems
-				? window.wcNavigation.menuItems
-				: [],
-		siteTitle:
-			window.wcNavigation && window.wcNavigation.siteTitle
-				? window.wcNavigation.siteTitle
-				: null,
-		siteUrl:
-			window.wcNavigation && window.wcNavigation.siteUrl
-				? window.wcNavigation.siteUrl
-				: null,
+		menuItems: [],
+		siteTitle: null,
+		siteUrl: null,
 	},
 	{ type, activeItem, menuItems }
 ) => {

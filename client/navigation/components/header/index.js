@@ -4,12 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Icon, wordpress } from '@wordpress/icons';
+import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
 import { useSelect } from '@wordpress/data';
-
-/**
- * Internal dependencies
- */
-import { NAVIGATION_STORE_NAME } from '../../store';
 
 const Header = () => {
 	const toggleFolded = () => {
