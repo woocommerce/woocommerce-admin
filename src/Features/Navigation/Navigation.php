@@ -22,10 +22,10 @@ class Navigation {
 	public function __construct() {
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_admin_features', array( $this, 'maybe_remove_nav_feature' ), 0 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_enqueue_scripts' ) );
 
 		if ( Loader::is_feature_enabled( 'navigation' ) ) {
 			add_action( 'in_admin_header', array( __CLASS__, 'embed_navigation' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'maybe_enqueue_scripts' ) );
 
 			Menu::instance()->init();
 			CoreMenu::instance()->init();
