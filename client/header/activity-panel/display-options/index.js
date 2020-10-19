@@ -52,9 +52,15 @@ const DisplayOptions = () => {
 			toggleProps={ {
 				className: 'woocommerce-layout__activity-panel-tab',
 			} }
+			popoverProps={ {
+				className: 'woocommerce-layout__activity-panel-popover',
+			} }
 		>
 			{ () => (
-				<MenuGroup label={ __( 'Layout', 'woocommerce-admin' ) }>
+				<MenuGroup
+					className="woocommerce-layout__homescreen-display-options"
+					label={ __( 'Layout', 'woocommerce-admin' ) }
+				>
 					<MenuItemsChoice
 						choices={ LAYOUTS }
 						onSelect={ ( newLayout ) => {

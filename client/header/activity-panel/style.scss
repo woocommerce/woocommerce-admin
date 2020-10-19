@@ -67,6 +67,12 @@
 		}
 	}
 
+	.woocommerce-layout__homescreen-display-options {
+		svg.woocommerce-layout__activity-panel-tab-icon {
+			height: 14px;
+		}
+	}
+
 	.components-icon-button {
 		display: initial;
 		text-indent: 0;
@@ -110,7 +116,8 @@
 			right: 0;
 		}
 
-		&.is-active {
+		&.is-active,
+		&.is-opened {
 			color: $gray-900;
 			box-shadow: none;
 
@@ -161,6 +168,14 @@
 		&:focus,
 		&.components-button:not(:disabled):not([aria-disabled='true']):focus {
 			box-shadow: inset -1px -1px 0 $gray-700, inset 1px 1px 0 $gray-700;
+		}
+	}
+
+	.woocommerce-layout__activity-panel-popover {
+		margin-top: 0;
+
+		.components-menu-group {
+			padding: 12px;
 		}
 	}
 }
