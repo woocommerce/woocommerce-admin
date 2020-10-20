@@ -9,6 +9,7 @@ import {
 import { Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { useUserPreferences } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -51,6 +52,7 @@ const DisplayOptions = () => {
 			label={ __( 'Display', 'woocommerce-admin' ) }
 			toggleProps={ {
 				className: 'woocommerce-layout__activity-panel-tab',
+				onClick: () => recordEvent( 'homescreen_display_click' ),
 			} }
 			popoverProps={ {
 				className: 'woocommerce-layout__activity-panel-popover',
@@ -66,6 +68,9 @@ const DisplayOptions = () => {
 						onSelect={ ( newLayout ) => {
 							updateUserPreferences( {
 								homepage_layout: newLayout,
+							} );
+							recordEvent( 'homescreen_display_option', {
+								display_option: newLayout,
 							} );
 						} }
 						value={ layout || 'two_columns' }
