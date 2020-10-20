@@ -3,12 +3,18 @@
  */
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
-import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
+import {
+	Card,
+	CardBody,
+	CardHeader,
+	Spinner,
+	__experimentalText as Text,
+} from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import PropTypes from 'prop-types';
-import { Card, Pagination, EmptyContent } from '@woocommerce/components';
+import { Pagination, EmptyContent } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -172,14 +178,21 @@ const KnowledgeBase = ( {
 
 	return (
 		<Card
-			title={ title }
-			description={ description }
+			isElevated
 			className={ classNames(
 				'woocommerce-marketing-knowledgebase-card',
 				categoryClass
 			) }
 		>
-			{ renderCardBody() }
+			<CardHeader>
+				<div>
+					<Text variant="title.small" as="h2">
+						{ title }
+					</Text>
+					<Text variant="body">{ description }</Text>
+				</div>
+			</CardHeader>
+			<CardBody>{ renderCardBody() }</CardBody>
 		</Card>
 	);
 };
