@@ -49,7 +49,7 @@ const DisplayOptions = () => {
 			className="woocommerce-layout__activity-panel-tabs"
 			icon={ <DisplayIcon /> }
 			/* translators: button label text should, if possible, be under 16 characters. */
-			label={ __( 'Display', 'woocommerce-admin' ) }
+			label={ __( 'Display options', 'woocommerce-admin' ) }
 			toggleProps={ {
 				className: 'woocommerce-layout__activity-panel-tab',
 				onClick: () => recordEvent( 'homescreen_display_click' ),
