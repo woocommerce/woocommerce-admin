@@ -53,18 +53,16 @@ describe( 'Recommendations and not loading', () => {
 	} );
 
 	it( 'should display default title and description', () => {
-		const { getByRole } = recommendedExtensionsWrapper;
+		const { getByRole, getByText } = recommendedExtensionsWrapper;
 
 		expect(
 			getByRole( 'heading', { level: 2, name: 'Recommended extensions' } )
 		).toBeInTheDocument();
 
 		expect(
-			getByRole( 'heading', {
-				level: 2,
-				name:
-					'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.',
-			} )
+			getByText(
+				'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.'
+			)
 		).toBeInTheDocument();
 	} );
 
@@ -177,7 +175,7 @@ describe( 'Click Recommendations', () => {
 
 describe( 'Custom title and description ', () => {
 	it( 'should override defaults', () => {
-		const { getByRole } = render(
+		const { getByRole, getByText } = render(
 			<RecommendedExtensions
 				extensions={ mockExtensions }
 				isLoading={ false }
@@ -191,11 +189,6 @@ describe( 'Custom title and description ', () => {
 			getByRole( 'heading', { level: 2, name: 'Custom Title' } )
 		).toBeInTheDocument();
 
-		expect(
-			getByRole( 'heading', {
-				level: 2,
-				name: 'Custom Description',
-			} )
-		).toBeInTheDocument();
+		expect( getByText( 'Custom Description' ) ).toBeInTheDocument();
 	} );
 } );
