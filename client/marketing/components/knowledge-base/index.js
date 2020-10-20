@@ -4,13 +4,7 @@
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
-import {
-	Card,
-	CardBody,
-	CardHeader,
-	Spinner,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Spinner } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import PropTypes from 'prop-types';
@@ -23,6 +17,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import './style.scss';
 import { Slider } from '../../components';
 import { STORE_KEY } from '../../data/constants';
+import Card from '../card';
 
 const KnowledgeBase = ( {
 	posts,
@@ -178,21 +173,14 @@ const KnowledgeBase = ( {
 
 	return (
 		<Card
-			isElevated
+			title={ title }
+			description={ description }
 			className={ classNames(
 				'woocommerce-marketing-knowledgebase-card',
 				categoryClass
 			) }
 		>
-			<CardHeader>
-				<div>
-					<Text variant="title.small" as="h2">
-						{ title }
-					</Text>
-					<Text variant="body">{ description }</Text>
-				</div>
-			</CardHeader>
-			<CardBody>{ renderCardBody() }</CardBody>
+			{ renderCardBody() }
 		</Card>
 	);
 };
