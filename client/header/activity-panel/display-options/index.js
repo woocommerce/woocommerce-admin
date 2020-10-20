@@ -19,7 +19,7 @@ import TwoColumnsIcon from './icons/two-columns';
 
 const LAYOUTS = [
 	{
-		value: 'one',
+		value: 'single_column',
 		label: (
 			<Fragment>
 				<SingleColumnIcon />
@@ -28,7 +28,7 @@ const LAYOUTS = [
 		),
 	},
 	{
-		value: 'two',
+		value: 'two_columns',
 		label: (
 			<Fragment>
 				<TwoColumnsIcon />
@@ -68,7 +68,7 @@ const DisplayOptions = () => {
 								homepage_layout: newLayout,
 							} );
 						} }
-						value={ layout || 'two' }
+						value={ layout || 'two_columns' }
 					/>
 				</MenuGroup>
 			) }
