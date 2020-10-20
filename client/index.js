@@ -83,20 +83,35 @@ if ( navigationRoot ) {
 	render( <Navigation />, navigationRoot );
 }
 
-// Set up customer effort score tracking.
-const root = appRoot || embeddedRoot;
-const customerEffortScoreTracksQueue = JSON.parse(
-	window.localStorage.getItem( 'customerEffortScoreTracks' ) || '[]'
-);
-customerEffortScoreTracksQueue.forEach( ( item ) => {
-	render(
-		<CustomerEffortScoreTracks
-			initiallyVisible={ true }
-			trackName={ item.trackName }
-			label={ item.label }
-			trackProps={ {} }
-		/>,
-		root.insertBefore( document.createElement( 'div' ), null )
-	);
-} );
-window.localStorage.removeItem( 'customerEffortScoreTracks' );
+// Set up customer effort score survey.
+( function () {
+	const root = appRoot || embeddedRoot;
+
+	function getJson() {
+		try {
+			return (
+				window.localStorage.getItem( 'customerEffortScoreTracks' ) ||
+				'[]'
+			);
+		} catch {
+			return '[]';
+		}
+	}
+
+	const json = getJson();
+	const queue = JSON.parse( json );
+
+	queue.forEach( ( item ) => {
+		render(
+			<CustomerEffortScoreTracks
+				initiallyVisible={ true }
+				trackName={ item.trackName }
+				label={ item.label }
+				trackProps={ {} }
+			/>,
+			root.insertBefore( document.createElement( 'div' ), null )
+		);
+	} );
+
+	window.localStorage.removeItem( 'customerEffortScoreTracks' );
+} )();
