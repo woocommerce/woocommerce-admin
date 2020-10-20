@@ -126,6 +126,7 @@ const webpackConfig = {
 			},
 			{
 				test: /\.s?css$/,
+				exclude: /storybook\/wordpress/,
 				use: [
 					MiniCssExtractPlugin.loader,
 					'css-loader',
