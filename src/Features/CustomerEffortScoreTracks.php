@@ -9,8 +9,6 @@ namespace Automattic\WooCommerce\Admin\Features;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\Loader;
-
 /**
  * Triggers customer effort score on several different actions.
  */
@@ -37,10 +35,6 @@ class CustomerEffortScoreTracks {
 	 * Constructor. Sets up filters to hook into WooCommerce.
 	 */
 	public function __construct() {
-		if ( ! Loader::is_feature_enabled( 'customer-effort-score' ) ) {
-			return;
-		}
-
 		add_filter( 'add_meta_boxes_product', array( $this, 'add_meta_boxes_product' ) );
 	}
 
