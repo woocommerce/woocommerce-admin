@@ -6,7 +6,6 @@ import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
-import { Card } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -14,6 +13,7 @@ import { Card } from '@woocommerce/components';
 import './style.scss';
 import InstalledExtensionRow from './row';
 import { STORE_KEY } from '../../data/constants';
+import { Card } from '../../components';
 
 class InstalledExtensions extends Component {
 	activatePlugin( pluginSlug ) {
