@@ -36,6 +36,7 @@ const TaskList = lazy( () =>
 );
 
 export const Layout = ( {
+	defaultHomescreenLayout,
 	isBatchUpdating,
 	query,
 	requestingTaskList,
@@ -46,7 +47,8 @@ export const Layout = ( {
 } ) => {
 	const userPrefs = useUserPreferences();
 	const twoColumns =
-		( userPrefs.homepage_layout || 'two_columns' ) === 'two_columns';
+		( userPrefs.homepage_layout || defaultHomescreenLayout ) ===
+		'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
 	const [ isContentSticky, setIsContentSticky ] = useState( false );
 	const content = useRef( null );
@@ -177,7 +179,12 @@ export default compose(
 		const shouldShowWelcomeModal =
 			! welcomeModalDismissedIsResolving && ! welcomeModalDismissed;
 
+		const defaultHomescreenLayout =
+			getOption( 'woocommerce_default_homepage_layout' ) ||
+			'single_column';
+
 		return {
+			defaultHomescreenLayout,
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			taskListComplete:
