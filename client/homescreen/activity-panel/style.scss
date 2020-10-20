@@ -1,0 +1,44 @@
+.woocommerce-activity-panel-card {
+	.components-panel__body-title {
+		.components-button {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			padding-left: 27px;
+			font-style: normal;
+			font-weight: 400;
+			font-size: 20px;
+			line-height: 28px;
+			.woocommerce-activity-panel-header {
+				order: 1;
+				width: 50%;
+				text-align: left;
+			}
+			> span {
+				order: 2;
+				width: 50%;
+				text-align: right;
+				.components-panel__arrow {
+					width: 30px;
+					height: 30px;
+					vertical-align: text-top;
+				}
+			}
+		}
+	}
+
+	.woocommerce-activity-panel-badge {
+		background-color: $gray-100;
+		border-radius: 20px;
+		display: inline-block;
+		text-align: center;
+		font-style: normal;
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 27px;
+		align-items: center;
+		width: ( $gap-largest - $gap-smaller );
+		height: 28px;
+		margin-left: $gap;
+	}
+}
