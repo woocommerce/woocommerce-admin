@@ -106,7 +106,10 @@ const Container = ( { menuItems } ) => {
 							title={ category.title }
 							menu={ category.id }
 							parentMenu={ category.parent }
-							backButtonLabel={ category.backButtonLabel }
+							backButtonLabel={ category.backButtonLabel
+								? category.backButtonLabel
+								: null
+							}
 						>
 							{ !! primaryItems.length && (
 								<NavigationGroup>
