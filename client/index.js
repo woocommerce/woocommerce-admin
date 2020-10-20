@@ -85,6 +85,10 @@ if ( navigationRoot ) {
 
 // Set up customer effort score survey.
 ( function () {
+	if ( ! window.wcAdminFeatures[ 'customer-effort-score' ] ) {
+		return;
+	}
+
 	const root = appRoot || embeddedRoot;
 
 	function getJson() {
