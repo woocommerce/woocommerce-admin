@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
 	__experimentalNavigation as Navigation,
@@ -62,6 +62,22 @@ const Container = ( { menuItems } ) => {
 		return removeListener;
 	}, [ menuItems ] );
 
+	const getMenuItemsByCategory = ( items ) => {
+		return items.reduce( ( acc, item ) => {
+			if ( ! acc[ item.parent ] ) {
+				acc[ item.parent ] = [ [], [] ];
+			}
+			const index = item.menuId !== 'secondary' ? 0 : 1;
+			acc[ item.parent ][ index ].push( item );
+			return acc;
+		}, {} );
+	};
+
+	const categorizedItems = useMemo(
+		() => getMenuItemsByCategory( menuItems ),
+		[ menuItems ]
+	);
+
 	return (
 		<div className="woocommerce-navigation">
 			<Header />
@@ -81,16 +97,9 @@ const Container = ( { menuItems } ) => {
 					></NavigationBackButton>
 				) }
 				{ categories.map( ( category ) => {
-					const primaryItems = menuItems.filter(
-						( item ) =>
-							item.parent === category.id &&
-							item.menuId !== 'secondary'
-					);
-					const secondaryItems = menuItems.filter(
-						( item ) =>
-							item.parent === category.id &&
-							item.menuId === 'secondary'
-					);
+					const [ primaryItems, secondaryItems ] = categorizedItems[
+						category.id
+					];
 					return (
 						<NavigationMenu
 							key={ category.id }
