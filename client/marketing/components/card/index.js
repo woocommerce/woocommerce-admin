@@ -1,0 +1,49 @@
+/**
+ * External dependencies
+ */
+import {
+	Card as WPCard,
+	CardBody,
+	CardHeader,
+	__experimentalText as Text,
+} from '@wordpress/components';
+import PropTypes from 'prop-types';
+
+const Card = ( props ) => {
+	const { title, description, children, className } = props;
+
+	return (
+		<WPCard isElevated className={ className }>
+			<CardHeader>
+				<div>
+					<Text variant="title.small" as="h2">
+						{ title }
+					</Text>
+					<Text variant="body">{ description }</Text>
+				</div>
+			</CardHeader>
+			<CardBody>{ children }</CardBody>
+		</WPCard>
+	);
+};
+
+Card.propTypes = {
+	/**
+	 * Card title.
+	 */
+	title: PropTypes.string,
+	/**
+	 * Card description.
+	 */
+	description: PropTypes.string,
+	/**
+	 * Additional class name to style the component.
+	 */
+	className: PropTypes.string,
+	/**
+	 * A renderable component (or string) which will be displayed as the content of this item. Generally a `ToggleControl`.
+	 */
+	children: PropTypes.node,
+};
+
+export default Card;
