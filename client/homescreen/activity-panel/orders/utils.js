@@ -6,7 +6,7 @@ import { SETTINGS_STORE_NAME, ITEMS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { DEFAULT_ACTIONABLE_STATUSES } from '../../analytics/settings/config';
+import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
 
 export function getUnreadOrders( select ) {
 	const { getItems, getItemsTotalCount, getItemsError, isResolving } = select(
@@ -41,5 +41,5 @@ export function getUnreadOrders( select ) {
 		return null;
 	}
 
-	return totalOrders > 0;
+	return totalOrders;
 }

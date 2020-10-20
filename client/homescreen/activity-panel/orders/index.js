@@ -34,11 +34,11 @@ import { recordEvent } from '@woocommerce/tracks';
 import {
 	ActivityCard,
 	ActivityCardPlaceholder,
-} from '../../header/activity-panel/activity-card';
-import ActivityHeader from '../../header/activity-panel/activity-header';
-import ActivityOutboundLink from '../../header/activity-panel/activity-outbound-link';
-import { DEFAULT_ACTIONABLE_STATUSES } from '../../analytics/settings/config';
-import { CurrencyContext } from '../../lib/currency-context';
+} from '../../../header/activity-panel/activity-card';
+import ActivityHeader from '../../../header/activity-panel/activity-header';
+import ActivityOutboundLink from '../../../header/activity-panel/activity-outbound-link';
+import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class OrdersPanel extends Component {
 	recordOrderEvent( eventName ) {
@@ -111,9 +111,9 @@ class OrdersPanel extends Component {
 			}
 
 			const name = [ firstName, lastName ].join( ' ' );
+			/* translators: describes who placed an order, e.g. Order #123 placed by John Doe */
 			return sprintf(
 				__(
-					/* translators: describes who placed an order, e.g. Order #123 placed by John Doe */
 					'placed by {{customerLink}}%(customerName)s{{/customerLink}}',
 					'woocommerce-admin'
 				),
