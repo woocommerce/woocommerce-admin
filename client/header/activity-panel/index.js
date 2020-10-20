@@ -151,7 +151,7 @@ export class ActivityPanel extends Component {
 		const showInbox =
 			( isEmbedded || ! this.isHomescreen() ) && ! isPerformingSetupTask;
 
-		const showOrdersStockAndReviews =
+		const showstockAndReviews =
 			( taskListComplete || taskListHidden ) && ! isPerformingSetupTask;
 
 		const showStoreSetup =
@@ -174,14 +174,8 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		const stockAndReviews = showOrdersStockAndReviews
+		const stockAndReviews = showstockAndReviews
 			? [
-					{
-						name: 'orders',
-						title: __( 'Orders', 'woocommerce-admin' ),
-						icon: <PagesIcon />,
-						unread: hasUnreadOrders,
-					},
 					manageStock === 'yes' && {
 						name: 'stock',
 						title: __( 'Stock', 'woocommerce-admin' ),
