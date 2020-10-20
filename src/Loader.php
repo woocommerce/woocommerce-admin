@@ -96,7 +96,7 @@ class Loader {
 		// Combine JSON translation files (from chunks) when language packs are updated.
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
 
-		if ( ! self::is_feature_enabled( 'customer-effort-score' ) ) {
+		if ( self::is_feature_enabled( 'customer-effort-score' ) ) {
 			CustomerEffortScoreTracks::get_instance();
 		}
 	}
