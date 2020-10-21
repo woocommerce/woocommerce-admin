@@ -29,8 +29,16 @@
 			}
 		}
 
+		.your-store-today {
+			display: block;
+		}
+
 		@include breakpoint( '<782px' ) {
 			flex-direction: column;
+
+			.your-store-today {
+				display: none;
+			}
 		}
 	}
 
@@ -79,4 +87,8 @@
 	.components-card__footer.is-size-large {
 		padding: 0 $gap-smaller;
 	}
+}
+
+.woocommerce-layout__inbox-panel-header.your-store-today {
+	display: none;
 }

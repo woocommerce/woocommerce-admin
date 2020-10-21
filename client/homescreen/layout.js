@@ -17,6 +17,7 @@ import {
 	NOTES_STORE_NAME,
 	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -25,6 +26,7 @@ import StatsOverview from './stats-overview';
 import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../inbox-panel';
 import { WelcomeModal } from './welcome-modal';
+import ActivityHeader from '../header/activity-panel/activity-header';
 
 import './style.scss';
 import '../dashboard/style.scss';
@@ -87,6 +89,14 @@ export const Layout = ( {
 						position: isContentSticky ? 'sticky' : 'static',
 					} }
 				>
+					<ActivityHeader
+						className="your-store-today"
+						title={ __( 'Your store today', 'woocommerce-admin' ) }
+						subtitle={ __(
+							"To do's, tips, and insights for your business",
+							'woocommerce-admin'
+						) }
+					/>
 					{ isTaskListEnabled && renderTaskList() }
 					{ ! isTaskListEnabled && <StoreManagementLinks /> }
 				</div>
