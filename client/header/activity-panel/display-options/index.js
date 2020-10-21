@@ -6,7 +6,6 @@ import {
 	MenuGroup,
 	MenuItemsChoice,
 } from '@wordpress/components';
-import { Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { useUserPreferences } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -22,19 +21,19 @@ const LAYOUTS = [
 	{
 		value: 'single_column',
 		label: (
-			<Fragment>
+			<>
 				<SingleColumnIcon />
 				{ __( 'Single column', 'woocommerce-admin' ) }
-			</Fragment>
+			</>
 		),
 	},
 	{
 		value: 'two_columns',
 		label: (
-			<Fragment>
+			<>
 				<TwoColumnsIcon />
 				{ __( 'Two columns', 'woocommerce-admin' ) }
-			</Fragment>
+			</>
 		),
 	},
 ];

@@ -1,11 +1,10 @@
 /**
  * External dependencies
  */
-import { Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 export default () => (
-	<Fragment>
+	<>
 		<svg
 			className="woocommerce-layout__activity-panel-tab-icon"
 			width="30"
@@ -40,5 +39,5 @@ export default () => (
 			/>
 		</svg>
 		{ __( 'Display', 'woocommerce-admin' ) }
-	</Fragment>
+	</>
 );
