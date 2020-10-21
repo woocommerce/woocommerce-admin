@@ -8,12 +8,23 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+
+/**
+ * Internal dependencies
+ */
+import './style.scss';
 
 const Card = ( props ) => {
 	const { title, description, children, className } = props;
 
 	return (
-		<WPCard className={ className }>
+		<WPCard
+			className={ classnames(
+				className,
+				'woocommere-admin-marketing-card'
+			) }
+		>
 			<CardHeader>
 				<div>
 					<Text variant="title.small" as="h2">
