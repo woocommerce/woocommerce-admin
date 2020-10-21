@@ -415,7 +415,7 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array Key value pair of Column ID => Row Value.
 	 */
 	public function prepare_item_for_export( $item ) {
-		$export_columns = array(
+		$export_item = array(
 			'date'         => $item['date'],
 			'product'      => $item['_embedded']['product'][0]['name'],
 			'file_name'    => $item['file_name'],
@@ -432,7 +432,7 @@ class Controller extends ReportsController implements ExportableInterface {
 		 */
 		return apply_filters(
 			'woocommerce_report_downloads_prepare_export_item',
-			$export_columns,
+			$export_item,
 			$item
 		);
 	}
