@@ -48,7 +48,7 @@ function add_navigation_items_register_items() {
 			'title'      => 'Example Marketing Settings',
 			'capability' => 'view_woocommerce_reports',
 			'parent'     => 'settings',
-			'url'        => 'http//:www.google.com',
+			'url'        => 'https://www.google.com',
 		)
 	);
 
@@ -67,7 +67,7 @@ function add_navigation_items_register_items() {
 			'parent'     => 'example-marketing-category',
 			'title'      => 'Sub Menu Child 1',
 			'capability' => 'view_woocommerce_reports',
-			'url'        => 'https//:www.google.com',
+			'url'        => 'https://www.google.com',
 		)
 	);
 
@@ -77,7 +77,7 @@ function add_navigation_items_register_items() {
 			'parent'     => 'example-marketing-category',
 			'title'      => 'Sub Menu Child 2',
 			'capability' => 'view_woocommerce_reports',
-			'url'        => 'https//:www.google.com',
+			'url'        => 'https://www.google.com',
 		)
 	);
 }
