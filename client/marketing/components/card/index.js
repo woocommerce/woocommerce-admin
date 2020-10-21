@@ -22,7 +22,7 @@ const Card = ( props ) => {
 		<WPCard
 			className={ classnames(
 				className,
-				'woocommere-admin-marketing-card'
+				'woocommerce-admin-marketing-card'
 			) }
 		>
 			<CardHeader>
