@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Fragment, useEffect } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { EmptyContent, Section } from '@woocommerce/components';
 import {
@@ -18,9 +18,8 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
  */
 import { ActivityCard } from '../header/activity-panel/activity-card';
 import InboxNotePlaceholder from './placeholder';
-import ActivityHeader from '../header/activity-panel/activity-header';
 import InboxNoteCard from './card';
-import { getUnreadNotesCount, hasValidNotes } from './utils';
+import { hasValidNotes } from './utils';
 
 const renderEmptyCard = () => (
 	<ActivityCard
@@ -106,14 +105,12 @@ const InboxPanel = ( props ) => {
 		};
 
 		return (
-			<Fragment>
-				<EmptyContent
-					title={ title }
-					actionLabel={ actionLabel }
-					actionURL={ null }
-					actionCallback={ actionCallback }
-				/>
-			</Fragment>
+			<EmptyContent
+				title={ title }
+				actionLabel={ actionLabel }
+				actionURL={ null }
+				actionCallback={ actionCallback }
+			/>
 		);
 	}
 
@@ -124,17 +121,7 @@ const InboxPanel = ( props ) => {
 	// @todo After having a pagination implemented we should call the method "getNotes" with a different query since
 	// the current one is only getting 25 notes and the count of unread notes only will refer to this 25 and not all the existing ones.
 	return (
-		<Fragment>
-			{ isActivityHeaderVisible && (
-				<ActivityHeader
-					title={ __( 'Inbox', 'woocommerce-admin' ) }
-					subtitle={ __(
-						'Insights and growth tips for your business',
-						'woocommerce-admin'
-					) }
-					unreadMessages={ getUnreadNotesCount( notes, lastRead ) }
-				/>
-			) }
+		<>
 			<div className="woocommerce-homepage-notes-wrapper">
 				{ ( isResolving || isBatchUpdating ) && (
 					<Section>
@@ -152,7 +139,7 @@ const InboxPanel = ( props ) => {
 						} ) }
 				</Section>
 			</div>
-		</Fragment>
+		</>
 	);
 };
 
