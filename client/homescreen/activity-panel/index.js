@@ -37,7 +37,7 @@ const ActivityPanel = ( { countUnreadOrders } ) => {
 				<span className="woocommerce-activity-panel-title">
 					{ title }
 				</span>
-				{ count && (
+				{ count !== null && (
 					<span className="woocommerce-activity-panel-badge">
 						{ count }
 					</span>
