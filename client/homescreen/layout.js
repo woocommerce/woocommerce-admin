@@ -69,7 +69,7 @@ export const Layout = ( {
 		return () => {
 			window.removeEventListener( 'resize', maybeStickContent );
 		};
-	}, [] );
+	}, [ twoColumns ] );
 
 	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
