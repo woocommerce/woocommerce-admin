@@ -59,9 +59,11 @@ class ActivityCard extends Component {
 						</span>
 					) }
 				</header>
-				<Section className="woocommerce-activity-card__body">
-					{ children }
-				</Section>
+				{ children && (
+					<Section className="woocommerce-activity-card__body">
+						{ children }
+					</Section>
+				) }
 				{ actions && (
 					<footer className="woocommerce-activity-card__actions">
 						{ actionsList.map( ( item, i ) =>
@@ -80,7 +82,7 @@ ActivityCard.propTypes = {
 		PropTypes.element,
 	] ),
 	className: PropTypes.string,
-	children: PropTypes.node.isRequired,
+	children: PropTypes.node,
 	date: PropTypes.string,
 	icon: PropTypes.node,
 	subtitle: PropTypes.node,
