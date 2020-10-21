@@ -13,7 +13,7 @@ const Card = ( props ) => {
 	const { title, description, children, className } = props;
 
 	return (
-		<WPCard isElevated className={ className }>
+		<WPCard className={ className }>
 			<CardHeader>
 				<div>
 					<Text variant="title.small" as="h2">

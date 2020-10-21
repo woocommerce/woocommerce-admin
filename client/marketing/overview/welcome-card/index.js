@@ -29,10 +29,7 @@ const WelcomeCard = ( { isHidden, updateOptions } ) => {
 	}
 
 	return (
-		<Card
-			className="woocommerce-marketing-overview-welcome-card"
-			isElevated
-		>
+		<Card className="woocommerce-marketing-overview-welcome-card">
 			<CardBody>
 				<Button
 					label={ __( 'Hide', 'woocommerce-admin' ) }
