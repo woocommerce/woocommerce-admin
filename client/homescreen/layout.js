@@ -79,14 +79,14 @@ export const Layout = ( {
 	const renderColumns = () => {
 		return (
 			<Fragment>
-				{ showInbox && (
-					<div className="woocommerce-homescreen-column">
-						<ActivityPanel />
+				<div className="woocommerce-homescreen-column">
+					<ActivityPanel />
+					{ showInbox && (
 						<div className="is-inbox">
 							<InboxPanel />
 						</div>
-					</div>
-				) }
+					) }
+				</div>
 				<div
 					className="woocommerce-homescreen-column"
 					ref={ content }
