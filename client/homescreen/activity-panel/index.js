@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
 import { Card, Panel, PanelBody, PanelRow } from '@wordpress/components';
 import { more } from '@wordpress/icons';
@@ -10,27 +9,10 @@ import { more } from '@wordpress/icons';
  * Internal dependencies
  */
 import './style.scss';
-import OrdersPanel from './orders';
 import { getUnreadOrders } from './orders/utils';
+import { getAllPanels } from './panels';
 
-const ActivityPanel = ( { countUnreadOrders } ) => {
-	const getPanels = () => {
-		const panels = [
-			{
-				title: __( 'Orders', 'woocommerce-admin' ),
-				count: countUnreadOrders,
-				initialOpen: true,
-				panel: (
-					<OrdersPanel
-						hasActionableOrders={ countUnreadOrders > 0 }
-					/>
-				),
-			},
-			// Add another panel row here
-		];
-		return panels;
-	};
-
+const ActivityPanel = ( { panels } ) => {
 	const getTitleAndCount = ( title, count ) => {
 		return (
 			<span className="woocommerce-activity-panel-header">
@@ -47,9 +29,8 @@ const ActivityPanel = ( { countUnreadOrders } ) => {
 	};
 
 	const renderPanels = () => {
-		const panelsData = getPanels();
-		return panelsData.map( ( thePanel, index ) => {
-			const { count, title, initialOpen, panel } = thePanel;
+		return panels.map( ( panel, index ) => {
+			const { count, title, initialOpen, panel: panelContent } = panel;
 			return (
 				<Card
 					key={ index }
@@ -61,7 +42,7 @@ const ActivityPanel = ( { countUnreadOrders } ) => {
 						icon={ more }
 						initialOpen={ initialOpen }
 					>
-						<PanelRow> { panel } </PanelRow>
+						<PanelRow> { panelContent } </PanelRow>
 					</PanelBody>
 				</Card>
 			);
@@ -73,5 +54,6 @@ const ActivityPanel = ( { countUnreadOrders } ) => {
 
 export default withSelect( ( select ) => {
 	const countUnreadOrders = getUnreadOrders( select );
-	return { countUnreadOrders };
+	const panels = getAllPanels( { countUnreadOrders } );
+	return { panels };
 } )( ActivityPanel );
