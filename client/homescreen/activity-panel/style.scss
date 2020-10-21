@@ -1,5 +1,7 @@
 .woocommerce-activity-panel-card {
 	.components-panel__body-title {
+		margin: 0;
+		padding: 1em 0;
 		.components-button {
 			display: flex;
 			flex-direction: row;
@@ -14,7 +16,7 @@
 				width: 50%;
 				text-align: left;
 			}
-			> span {
+			& > span {
 				order: 2;
 				width: 50%;
 				text-align: right;
@@ -40,5 +42,11 @@
 		width: ( $gap-largest - $gap-smaller );
 		height: 28px;
 		margin-left: $gap;
+	}
+}
+
+.components-panel__body-title {
+	.is-opened & {
+		border-bottom: 1px solid $gray-200;
 	}
 }
