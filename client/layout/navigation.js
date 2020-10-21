@@ -15,8 +15,18 @@ import { __ } from '@wordpress/i18n';
  */
 import getReports from '../analytics/report/get-reports';
 import { getPages } from './controller';
+import { isWCAdmin } from '../dashboard/utils';
 
 const NavigationPlugin = () => {
+	/**
+	 * If the current page is embedded, stay with the default urls
+	 * provided by Navigation because the router isn't present to
+	 * respond to <Link /> component's manipulation of the url.
+	 */
+	if ( ! isWCAdmin( window.location.href ) ) {
+		return null;
+	}
+
 	const reports = getReports();
 	const pages = getPages()
 		.filter( ( page ) => page.id )
