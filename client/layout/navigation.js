@@ -19,9 +19,9 @@ import { getPages } from './controller';
 const NavigationPlugin = () => {
 	const reports = getReports();
 	const pages = getPages()
-		.filter( ( page ) => page.navigationSlug )
+		.filter( ( page ) => page.id )
 		.map( ( page ) => {
-			if ( page.navigationSlug === 'woocommerce-analytics-settings' ) {
+			if ( page.id === 'woocommerce-analytics-settings' ) {
 				return {
 					...page,
 					breadcrumbs: [ __( 'Analytics', 'woocommerce-admin' ) ],
@@ -33,10 +33,7 @@ const NavigationPlugin = () => {
 	return (
 		<>
 			{ pages.map( ( page ) => (
-				<WooNavigationItem
-					item={ page.navigationSlug }
-					key={ page.navigationSlug }
-				>
+				<WooNavigationItem item={ page.id } key={ page.id }>
 					<Link
 						className="components-button"
 						href={ getNewPath( persistedQuery, page.path, {} ) }
@@ -47,10 +44,7 @@ const NavigationPlugin = () => {
 				</WooNavigationItem>
 			) ) }
 			{ reports.map( ( item ) => (
-				<WooNavigationItem
-					item={ `woocommerce-analytics-${ item.report }` }
-					key={ item.report }
-				>
+				<WooNavigationItem item={ item.id } key={ item.report }>
 					<Link
 						className="components-button"
 						href={ getNewPath(
