@@ -6,6 +6,11 @@ import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
+import {
+	Card,
+	CardHeader,
+	__experimentalText as Text,
+} from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -13,7 +18,6 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import InstalledExtensionRow from './row';
 import { STORE_KEY } from '../../data/constants';
-import { Card } from '../../components';
 
 class InstalledExtensions extends Component {
 	activatePlugin( pluginSlug ) {
@@ -33,14 +37,18 @@ class InstalledExtensions extends Component {
 			return null;
 		}
 
+		const title = __(
+			'Installed marketing extensions',
+			'woocommerce-admin'
+		);
+
 		return (
-			<Card
-				title={ __(
-					'Installed marketing extensions',
-					'woocommerce-admin'
-				) }
-				className="woocommerce-marketing-installed-extensions-card"
-			>
+			<Card className="woocommerce-marketing-installed-extensions-card">
+				<CardHeader>
+					<Text variant="title.small" as="h2">
+						{ title }
+					</Text>
+				</CardHeader>
 				{ plugins.map( ( plugin ) => {
 					return (
 						<InstalledExtensionRow
