@@ -26,7 +26,7 @@ const ActivityPanel = ( { countUnreadOrders } ) => {
 					/>
 				),
 			},
-			// Add here other panel rows
+			// Add another panel row here
 		];
 		return panels;
 	};

@@ -11,15 +11,9 @@ import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
 import { keyBy, map, merge } from 'lodash';
 
-import {
-	EmptyContent,
-	Flag,
-	Link,
-	OrderStatus,
-	Section,
-} from '@woocommerce/components';
+import { EmptyContent, Flag, Link, Section } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	SETTINGS_STORE_NAME,
 	REPORTS_STORE_NAME,
@@ -35,7 +29,6 @@ import {
 	ActivityCard,
 	ActivityCardPlaceholder,
 } from '../../../header/activity-panel/activity-card';
-import ActivityHeader from '../../../header/activity-panel/activity-header';
 import ActivityOutboundLink from '../../../header/activity-panel/activity-outbound-link';
 import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
 import { CurrencyContext } from '../../../lib/currency-context';
@@ -111,16 +104,7 @@ class OrdersPanel extends Component {
 			}
 
 			const name = [ firstName, lastName ].join( ' ' );
-			/* translators: describes who placed an order, e.g. Order #123 placed by John Doe */
-			return sprintf(
-				__(
-					'placed by {{customerLink}}%(customerName)s{{/customerLink}}',
-					'woocommerce-admin'
-				),
-				{
-					customerName: name,
-				}
-			);
+			return `{{customerLink}}${ name }{{/customerLink}}`;
 		};
 
 		const orderCardTitle = ( order ) => {
@@ -142,7 +126,7 @@ class OrdersPanel extends Component {
 					{ interpolateComponents( {
 						mixedString: sprintf(
 							__(
-								'Order {{orderLink}}#%(orderNumber)s{{/orderLink}} %(customerString)s {{destinationFlag/}}',
+								'{{orderLink}}Order #%(orderNumber)s{{/orderLink}} %(customerString)s',
 								'woocommerce-admin'
 							),
 							{
@@ -229,15 +213,10 @@ class OrdersPanel extends Component {
 								)
 							}
 						>
-							{ __( 'Begin fulfillment' ) }
+							{ __( 'Open' ) }
 						</Button>
 					}
-				>
-					<OrderStatus
-						order={ order }
-						orderStatusMap={ getSetting( 'orderStatuses', {} ) }
-					/>
-				</ActivityCard>
+				></ActivityCard>
 			);
 		} );
 		return (
@@ -254,7 +233,7 @@ class OrdersPanel extends Component {
 	}
 
 	render() {
-		const { orders, isRequesting, isError, orderStatuses } = this.props;
+		const { isRequesting, isError, orderStatuses } = this.props;
 
 		if ( isError ) {
 			if ( ! orderStatuses.length ) {
@@ -295,14 +274,8 @@ class OrdersPanel extends Component {
 			);
 		}
 
-		const title =
-			isRequesting || orders.length
-				? __( 'Orders', 'woocommerce-admin' )
-				: __( 'No orders to fulfill', 'woocommerce-admin' );
-
 		return (
 			<Fragment>
-				<ActivityHeader title={ title } />
 				<Section>
 					{ isRequesting ? (
 						<ActivityCardPlaceholder
