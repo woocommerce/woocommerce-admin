@@ -42,8 +42,8 @@
 	}
 
 	svg {
-		width: 18px;
-		height: 18px;
+		width: 24px;
+		height: 24px;
 
 		&.woocommerce-layout__activity-panel-tab-icon {
 			fill: none;
@@ -59,11 +59,6 @@
 			path:first-child {
 				stroke: '#DCDCDE';
 			}
-		}
-
-		@include breakpoint( '>960px' ) {
-			width: 24px;
-			height: 24px;
 		}
 	}
 
@@ -169,10 +164,18 @@
 		&.components-button:not(:disabled):not([aria-disabled='true']):focus {
 			box-shadow: inset -1px -1px 0 $gray-700, inset 1px 1px 0 $gray-700;
 		}
+
+		// Hide display options if we're in single column.
+		@include breakpoint( '<782px' ) {
+			&.display-options {
+				display: none;
+			}
+		}
 	}
 
 	.woocommerce-layout__activity-panel-popover {
 		margin-top: 0;
+		z-index: 1001; // One higher than the other activity panels.
 
 		.components-menu-group {
 			padding: 12px;

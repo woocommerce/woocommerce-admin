@@ -45,12 +45,12 @@ export const DisplayOptions = () => {
 	} = useUserPreferences();
 	return (
 		<DropdownMenu
-			className="woocommerce-layout__activity-panel-tabs"
 			icon={ <DisplayIcon /> }
 			/* translators: button label text should, if possible, be under 16 characters. */
 			label={ __( 'Display options', 'woocommerce-admin' ) }
 			toggleProps={ {
-				className: 'woocommerce-layout__activity-panel-tab',
+				className:
+					'woocommerce-layout__activity-panel-tab display-options',
 				onClick: () => recordEvent( 'homescreen_display_click' ),
 			} }
 			popoverProps={ {
