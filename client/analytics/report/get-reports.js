@@ -88,11 +88,6 @@ export default () => {
 			title: __( 'Taxes', 'woocommerce-admin' ),
 			component: TaxesReport,
 		},
-		{
-			report: 'downloads',
-			title: __( 'Downloads', 'woocommerce-admin' ),
-			component: DownloadsReport,
-		},
 		manageStock === 'yes'
 			? {
 					report: 'stock',
