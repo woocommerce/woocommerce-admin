@@ -19,6 +19,7 @@ import {
 	getFilteredCurrencyInstance,
 } from '../../lib/currency-context';
 import getReports from './get-reports';
+import './navigation';
 
 /**
  * The Customers Report will not have the `report` param supplied by the router/

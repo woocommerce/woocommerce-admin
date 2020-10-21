@@ -6,9 +6,10 @@ import { parse } from 'qs';
 import { pick, uniq } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
 import {
-	__experimentalNavigationItem as NavigationItem,
 	Slot,
 	Fill,
+	SlotFillProvider,
+	__experimentalUseSlot as useSlot,
 } from '@wordpress/components';
 
 /**
@@ -170,18 +171,12 @@ export function updateQueryString(
 	getHistory().push( newPath );
 }
 
-export const WooNavigationItem = ( { children, item, ...passProps } ) => {
-	return (
-		<Fill name={ item }>
-			<NavigationItem item={ item } { ...passProps }>
-				{ children }
-			</NavigationItem>
-		</Fill>
-	);
+export const WooNavigationItem = ( { children, item } ) => {
+	return <Fill name={ item }>{ children }</Fill>;
 };
 WooNavigationItem.Slot = ( { name } ) => <Slot name={ name } />;
 
-export const TestFill = ( { children } ) => {
-	return <Fill name="test">{ children }</Fill>;
-};
-TestFill.Slot = () => <Slot name="test" />;
+export const NavSlotFillProvider = ( { children } ) => (
+	<SlotFillProvider>{ children }</SlotFillProvider>
+);
+export const useNavSlot = ( name ) => useSlot( name );
