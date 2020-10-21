@@ -5,7 +5,7 @@ import { __experimentalNavigationItem as NavigationItem } from '@wordpress/compo
 import { WooNavigationItem, useNavSlot } from '@woocommerce/navigation';
 
 const Item = ( { item } ) => {
-	const slot = useNavSlot( item.id );
+	const slot = useNavSlot( 'woocommerce_navigation_' + item.id );
 	const hasFills = Boolean( slot.fills && slot.fills.length );
 
 	// Only render a slot if a coresponding Fill exists and the item is not a category

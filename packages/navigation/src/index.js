@@ -179,9 +179,11 @@ export function updateQueryString(
  * @param {string} param0.item - Navigation item slug.
  */
 export const WooNavigationItem = ( { children, item } ) => {
-	return <Fill name={ item }>{ children }</Fill>;
+	return <Fill name={ 'woocommerce_navigation_' + item }>{ children }</Fill>;
 };
-WooNavigationItem.Slot = ( { name } ) => <Slot name={ name } />;
+WooNavigationItem.Slot = ( { name } ) => (
+	<Slot name={ 'woocommerce_navigation_' + name } />
+);
 
 /**
  * Export @wordpress/components SlotFillProvider so that Slots, Fills, and useSlot
