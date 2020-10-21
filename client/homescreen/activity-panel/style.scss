@@ -39,9 +39,20 @@
 		font-size: 14px;
 		line-height: 27px;
 		align-items: center;
-		width: ( $gap-largest - $gap-smaller );
+		width: 32px;
 		height: 28px;
 		margin-left: $gap;
+	}
+
+	.woocommerce-activity-card__actions {
+		margin: 0;
+		.components-button {
+			background: $gray-100;
+			border-radius: 12px;
+			height: 24px;
+			padding-left: $gap;
+			width: 65px;
+		}
 	}
 }
 
