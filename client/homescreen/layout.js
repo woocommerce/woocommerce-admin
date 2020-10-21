@@ -44,7 +44,8 @@ export const Layout = ( {
 	updateOptions,
 } ) => {
 	const userPrefs = useUserPreferences();
-	const twoColumns = ( userPrefs.homepage_layout || 'two_columns' ) === 'two_columns';
+	const twoColumns =
+		( userPrefs.homepage_layout || 'two_columns' ) === 'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
 	const [ isContentSticky, setIsContentSticky ] = useState( false );
 	const content = useRef( null );
