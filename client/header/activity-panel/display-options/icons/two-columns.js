@@ -1,4 +1,4 @@
-export default () => (
+export const TwoColumnsIcon = () => (
 	<svg
 		className="woocommerce-layout__activity-panel-tab-icon"
 		width="18"

@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 
-export default () => (
+export const DisplayIcon = () => (
 	<>
 		<svg
 			className="woocommerce-layout__activity-panel-tab-icon"

@@ -31,7 +31,7 @@ import {
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
-import DisplayOptions from './display-options';
+import { DisplayOptions } from './display-options';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )

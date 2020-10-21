@@ -8,7 +8,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import DisplayOptions from '../';
+import { DisplayOptions } from '../';
 
 jest.mock( '@woocommerce/tracks', () => ( { recordEvent: jest.fn() } ) );
 jest.mock( '@woocommerce/data', () => ( {

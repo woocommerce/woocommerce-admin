@@ -13,9 +13,9 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import DisplayIcon from './icons/display';
-import SingleColumnIcon from './icons/single-column';
-import TwoColumnsIcon from './icons/two-columns';
+import { DisplayIcon } from './icons/display';
+import { SingleColumnIcon } from './icons/single-column';
+import { TwoColumnsIcon } from './icons/two-columns';
 
 const LAYOUTS = [
 	{
@@ -38,7 +38,7 @@ const LAYOUTS = [
 	},
 ];
 
-const DisplayOptions = () => {
+export const DisplayOptions = () => {
 	const {
 		updateUserPreferences,
 		homepage_layout: layout,
@@ -79,5 +79,3 @@ const DisplayOptions = () => {
 		</DropdownMenu>
 	);
 };
-
-export default DisplayOptions;
