@@ -13,8 +13,11 @@
 			line-height: 28px;
 			.woocommerce-activity-panel-header {
 				order: 1;
-				width: 50%;
 				text-align: left;
+				width: 50%;
+				.woocommerce-activity-panel-title {
+					vertical-align: bottom;
+				}
 			}
 			& > span {
 				order: 2;
