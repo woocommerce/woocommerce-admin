@@ -57,6 +57,13 @@
 			width: 65px;
 		}
 	}
+
+	.woocommerce-activity-card {
+		padding: ( $fallback-gutter / 2 ) $gutter;
+		&__header {
+			margin-bottom: $gap-smaller;
+		}
+	}
 }
 
 .components-panel__body-title {
