@@ -294,9 +294,7 @@ OrdersPanel.contextType = CurrencyContext;
 export default compose(
 	withSelect( ( select, props ) => {
 		const { countUnreadOrders } = props;
-		const { getItems, getItemsError, getItemsTotalCount } = select(
-			ITEMS_STORE_NAME
-		);
+		const { getItems, getItemsError } = select( ITEMS_STORE_NAME );
 		const { getReportItems, getReportItemsError, isResolving } = select(
 			REPORTS_STORE_NAME
 		);
@@ -390,10 +388,6 @@ export default compose(
 		};
 
 		getItems( 'orders', allOrdersQuery );
-		const totalNonActionableOrders = getItemsTotalCount(
-			'orders',
-			allOrdersQuery
-		);
 		const isError = Boolean( getItemsError( 'orders', allOrdersQuery ) );
 		const isRequesting =
 			countUnreadOrders !== null
@@ -401,7 +395,6 @@ export default compose(
 				: true;
 
 		return {
-			hasNonActionableOrders: totalNonActionableOrders > 0,
 			isError,
 			isRequesting,
 			orderStatuses,
