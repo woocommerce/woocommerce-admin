@@ -15,7 +15,7 @@ export function getAllPanels( { countUnreadOrders } ) {
 			count: countUnreadOrders,
 			id: 'orders-panel',
 			initialOpen: true,
-			panel: <OrdersPanel countUnreadOrders />,
+			panel: <OrdersPanel countUnreadOrders={ countUnreadOrders } />,
 			title: __( 'Orders', 'woocommerce-admin' ),
 		},
 		// Add another panel row here
