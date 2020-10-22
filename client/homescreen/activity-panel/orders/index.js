@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
 import { keyBy, map, merge } from 'lodash';
 
-import { EmptyContent, Flag, Link, Section } from '@woocommerce/components';
+import { EmptyContent, Flag, H, Link, Section } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
@@ -32,6 +32,7 @@ import {
 import ActivityOutboundLink from '../../../header/activity-panel/activity-outbound-link';
 import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
 import { CurrencyContext } from '../../../lib/currency-context';
+import './style.scss';
 
 class OrdersPanel extends Component {
 	recordOrderEvent( eventName ) {
@@ -42,19 +43,35 @@ class OrdersPanel extends Component {
 		const { hasNonActionableOrders } = this.props;
 		if ( hasNonActionableOrders ) {
 			return (
-				<ActivityCard
-					className="woocommerce-empty-activity-card"
-					title={ __(
-						'You have no orders to fulfill',
-						'woocommerce-admin'
-					) }
-					icon={ <Gridicon icon="checkmark" size={ 48 } /> }
-				>
-					{ __(
-						"Good job, you've fulfilled all of your new orders!",
-						'woocommerce-admin'
-					) }
-				</ActivityCard>
+				<Fragment>
+					<ActivityCard
+						className="woocommerce-empty-activity-card"
+						title=""
+						icon=""
+					>
+						<span
+							className="woocommerce-order-empty__success-icon"
+							role="img"
+							aria-labelledby="woocommerce-order-empty-message"
+						>
+							🎉
+						</span>
+						<H id="woocommerce-order-empty-message">
+							{ __(
+								'You’ve fulfilled all your orders',
+								'woocommerce-admin'
+							) }
+						</H>
+					</ActivityCard>
+					<ActivityOutboundLink
+						href={ 'edit.php?post_type=shop_order' }
+						onClick={ () =>
+							this.recordOrderEvent( 'orders_manage' )
+						}
+					>
+						{ __( 'Manage all orders', 'woocommerce-admin' ) }
+					</ActivityOutboundLink>
+				</Fragment>
 			);
 		}
 
