@@ -45,9 +45,7 @@ class InstalledExtensions extends Component {
 		return (
 			<Card className="woocommerce-marketing-installed-extensions-card">
 				<CardHeader>
-					<Text variant="title.small" as="h2">
-						{ title }
-					</Text>
+					<Text variant="title.small">{ title }</Text>
 				</CardHeader>
 				{ plugins.map( ( plugin ) => {
 					return (

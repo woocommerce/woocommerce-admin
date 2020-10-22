@@ -10,18 +10,14 @@ import Card from '../index.js';
 
 describe( 'Card', () => {
 	it( 'should display title, description and children', () => {
-		const { getByRole, getByText } = render(
+		const { getByText } = render(
 			<Card title="My fancy title" description="Making you feel good">
 				<p>Hello World!</p>
 			</Card>
 		);
 
-		expect(
-			getByRole( 'heading', { level: 2, name: 'My fancy title' } )
-		).toBeInTheDocument();
-
+		expect( getByText( 'My fancy title' ) ).toBeInTheDocument();
 		expect( getByText( 'Making you feel good' ) ).toBeInTheDocument();
-
 		expect( getByText( 'Hello World!' ) ).toBeInTheDocument();
 	} );
 } );

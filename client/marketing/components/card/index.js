@@ -27,10 +27,13 @@ const Card = ( props ) => {
 		>
 			<CardHeader>
 				<div>
-					<Text variant="title.small" as="h2">
-						{ title }
+					<Text variant="title.small">{ title }</Text>
+					<Text
+						variant="subtitle.small"
+						className="woocommerce-admin-marketing-card-subtitle"
+					>
+						{ description }
 					</Text>
-					<Text variant="body">{ description }</Text>
 				</div>
 			</CardHeader>
 			<CardBody>{ children }</CardBody>

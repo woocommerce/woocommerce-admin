@@ -1,11 +1,9 @@
 .woocommerce-admin-marketing-card {
 	.components-card__header {
-		p {
-			font-size: 14px;
-			line-height: 20px;
+		.woocommerce-admin-marketing-card-subtitle {
 			font-weight: 400;
 			margin-top: 4px;
-			color: #646970;
+			color: $gray-700;
 		}
 	}
 }
