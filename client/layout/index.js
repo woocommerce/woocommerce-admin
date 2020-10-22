@@ -79,7 +79,7 @@ class _Layout extends Component {
 		} = this.props;
 
 		const navigationFlag = {
-			has_navigation: !! window.wcAdminFeatures.navigation,
+			has_navigation: !! window.wcNavigation,
 		};
 
 		if ( isEmbedded ) {
