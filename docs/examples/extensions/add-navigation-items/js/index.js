@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
 import { registerPlugin } from "@wordpress/plugins";
 import { WooNavigationItem } from "@woocommerce/navigation";
 
@@ -12,9 +13,9 @@ const MyPlugin = () => {
 
     return (
         <WooNavigationItem item="example-marketing-category-child-2">
-            <button onClick={ handleClick }>
+            <Button onClick={ handleClick }>
                 { __( 'JavaScript Example', 'plugin-domain' ) }
-            </button>
+            </Button>
         </WooNavigationItem>
     );
 };
