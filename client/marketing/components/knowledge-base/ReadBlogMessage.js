@@ -1,36 +1,26 @@
 /**
  * External dependencies
  */
-import { _x } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
+import { Link } from '@woocommerce/components';
+import interpolateComponents from 'interpolate-components';
 
 const ReadBlogMessage = () => {
-	const message1 = _x(
-		'Read ',
-		'Read <a href="https://woocommerce.com/blog/marketing/coupons/">the WooCommerce blog</a> for more tips on marketing your store',
-		'woocommerce-admin'
-	);
-
-	const message2 = _x(
-		'the WooCommerce blog',
-		'Read <a href="https://woocommerce.com/blog/marketing/coupons/">the WooCommerce blog</a> for more tips on marketing your store',
-		'woocommerce-admin'
-	);
-
-	const message3 = _x(
-		' for more tips on marketing your store',
-		'Read <a href="https://woocommerce.com/blog/marketing/coupons/">the WooCommerce blog</a> for more tips on marketing your store',
-		'woocommerce-admin'
-	);
-
-	return (
-		<>
-			{ message1 }
-			<a href="https://woocommerce.com/blog/marketing/coupons/">
-				{ message2 }
-			</a>
-			{ message3 }
-		</>
-	);
+	return interpolateComponents( {
+		mixedString: __(
+			'Read {{link}}the WooCommerce blog{{/link}} for more tips on marketing your store',
+			'woocommerce-admin'
+		),
+		components: {
+			link: (
+				<Link
+					type="external"
+					href="https://woocommerce.com/blog/marketing/coupons/"
+					target="_blank"
+				/>
+			),
+		},
+	} );
 };
 
 export default ReadBlogMessage;
