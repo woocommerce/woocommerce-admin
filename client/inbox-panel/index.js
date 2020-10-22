@@ -72,13 +72,7 @@ const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
 };
 
 const InboxPanel = ( props ) => {
-	const {
-		isError,
-		isResolving,
-		isBatchUpdating,
-		notes,
-		isUpdatingNote,
-	} = props;
+	const { isError, isResolving, isBatchUpdating, notes } = props;
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const lastRead = userPrefs.activity_panel_inbox_last_read;
 
@@ -115,8 +109,6 @@ const InboxPanel = ( props ) => {
 	}
 
 	const hasNotes = hasValidNotes( notes );
-
-	const isActivityHeaderVisible = hasNotes || isResolving || isUpdatingNote;
 
 	// @todo After having a pagination implemented we should call the method "getNotes" with a different query since
 	// the current one is only getting 25 notes and the count of unread notes only will refer to this 25 and not all the existing ones.
@@ -178,7 +170,6 @@ export default compose(
 			notes: getNotes( inboxQuery ),
 			isError: Boolean( getNotesError( 'getNotes', [ inboxQuery ] ) ),
 			isResolving: isResolving( 'getNotes', [ inboxQuery ] ),
-			isUpdatingNote: isNotesRequesting( 'updateNote' ),
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 		};
 	} )
