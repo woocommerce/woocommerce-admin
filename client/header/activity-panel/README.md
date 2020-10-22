@@ -9,5 +9,3 @@ It provides access to the notices system and actionable items like reviews and s
 ### ActivityCard
 
 See activity-card/README.md
-
-## Sections
