@@ -18,7 +18,7 @@
 	}
 
 	&__item:not(:last-child) {
-		border-bottom: 1px solid rgb(226, 228, 231);
+		border-bottom: 1px solid $gray-200;
 	}
 
 	&__item-text-and-actions {
