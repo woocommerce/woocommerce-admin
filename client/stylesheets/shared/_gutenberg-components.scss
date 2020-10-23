@@ -22,3 +22,16 @@ allows Woo themed components based on the config found in postcss.config.js
 @import 'gutenberg-components/tab-panel/style.scss';
 @import 'gutenberg-components/guide/style.scss';
 @import 'gutenberg-components/animate/style.scss';
+
+/**
+Provides colors for the default WordPress admin color scheme.
+
+This code was copied from @wordpress/base-styles, where it was previously
+consumed from until a change in https://github.com/WordPress/gutenberg/pull/24408.
+
+This is intended as a temporary measure until the above PR is investigated
+further.
+*/
+:root {
+	@include admin-scheme(#007cba);
+}
