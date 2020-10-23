@@ -38,6 +38,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'install_on_action' ) );
+		add_action( 'woocommerce_note_action_install-now', array( $this, 'install_and_activate_wcpay' ) ); // Handle <1.6.3 note action.
 		add_action( 'wc-admin-woocommerce-payments_add_note', array( $this, 'add_note' ) );
 	}
 
@@ -139,7 +140,7 @@ class WC_Admin_Notes_WooCommerce_Payments {
 	 *
 	 * @return boolean Whether the plugin was successfully activated.
 	 */
-	private function install_and_activate_wcpay() {
+	public function install_and_activate_wcpay() {
 		$install_request = array( 'plugins' => self::PLUGIN_SLUG );
 		$installer       = new \Automattic\WooCommerce\Admin\API\Plugins();
 		$result          = $installer->install_plugins( $install_request );
