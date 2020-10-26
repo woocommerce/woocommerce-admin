@@ -71,8 +71,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 1.6.3 TBD =
-- Tweak: Add BR and IN to list of stripe countries #5377 
+= 1.6.3 10/26/2020 =
+- Tweak: Add BR and IN to list of stripe countries #5377
+- Fix: Redirect instead of stalling on WCPay Inbox note action #5413
 
 = 1.6.2 10/16/2020 =
 - Fix: Missing activity panels on ugraded sites #5400
