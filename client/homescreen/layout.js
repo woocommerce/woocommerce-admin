@@ -22,13 +22,14 @@ import {
 /**
  * Internal dependencies
  */
-import QuickLinks from '../quick-links';
+import { QuickLinks } from '../quick-links';
 import StatsOverview from './stats-overview';
-import './style.scss';
-import '../dashboard/style.scss';
 import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../inbox-panel';
 import { WelcomeModal } from './welcome-modal';
+
+import './style.scss';
+import '../dashboard/style.scss';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )

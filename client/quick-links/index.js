@@ -21,7 +21,6 @@ import {
 	lifesaver,
 	external,
 } from '@wordpress/icons';
-import { partial } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
@@ -31,7 +30,7 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import './style.scss';
 
-function getItems( props ) {
+function getItems( siteUrl ) {
 	return [
 		{
 			title: __( 'Market my store', 'woocommerce-admin' ),
@@ -93,7 +92,7 @@ function getItems( props ) {
 		{
 			title: __( 'View my store', 'woocommerce-admin' ),
 			type: 'external',
-			href: props.getSetting( 'siteUrl' ),
+			href: siteUrl,
 			icon: home,
 			after: <Icon icon={ external } />,
 			listItemTag: 'view-store',
@@ -101,7 +100,7 @@ function getItems( props ) {
 	];
 }
 
-function handleOnItemClick( props, event ) {
+function handleOnItemClick( event, onItemClick ) {
 	const a = event.currentTarget;
 	const listItemTag = a.dataset.listItemTag;
 
@@ -109,68 +108,58 @@ function handleOnItemClick( props, event ) {
 		return;
 	}
 
-	props.recordEvent( 'home_quick_links_click', {
+	recordEvent( 'home_quick_links_click', {
 		task_name: listItemTag,
 	} );
 
-	if ( typeof props.onItemClick !== 'function' ) {
-		return;
-	}
-
-	if ( ! props.onItemClick( listItemTag ) ) {
+	if ( ! onItemClick( listItemTag ) ) {
 		event.preventDefault();
 		return false;
 	}
 }
 
-function getLinkTypeAndHref( item ) {
-	let linkType;
-	let href;
-
-	switch ( item.type ) {
-		case 'wc-admin':
-			linkType = 'wc-admin';
-			href = `admin.php?page=wc-admin&path=%2F${ item.path }`;
-			break;
-		case 'wp-admin':
-			linkType = 'wp-admin';
-			href = item.path;
-			break;
-		case 'wc-settings':
-			linkType = 'wp-admin';
-			href = `admin.php?page=wc-settings&tab=${ item.tab }`;
-			break;
-		default:
-			linkType = 'external';
-			href = item.href;
-			break;
-	}
-
-	return {
-		linkType,
-		href,
-	};
+export function getLinkTypeAndHref( item ) {
+	return (
+		{
+			'wc-admin': {
+				linkType: 'wc-admin',
+				href: `admin.php?page=wc-admin&path=%2F${ item.path }`,
+			},
+			'wp-admin': {
+				linkType: 'wp-admin',
+				href: item.path,
+			},
+			'wc-settings': {
+				linkType: 'wp-admin',
+				href: `admin.php?page=wc-settings&tab=${ item.tab }`,
+			},
+		}[ item.type ] || {
+			linkType: 'external',
+			href: item.href,
+		}
+	);
 }
 
-function getListItems( props ) {
-	return getItems( props ).map( ( item ) => {
-		return {
-			title: (
-				<Text as="div" variant="button">
-					{ item.title }
-				</Text>
-			),
-			before: <Icon icon={ item.icon } />,
-			after: item.after,
-			...getLinkTypeAndHref( item ),
-			listItemTag: item.listItemTag,
-			onClick: partial( handleOnItemClick, props ),
-		};
-	} );
+function getListItems( siteUrl, onItemClick ) {
+	return getItems( siteUrl ).map( ( item ) => ( {
+		title: (
+			<Text as="div" variant="button">
+				{ item.title }
+			</Text>
+		),
+		before: <Icon icon={ item.icon } />,
+		after: item.after,
+		...getLinkTypeAndHref( item ),
+		listItemTag: item.listItemTag,
+		onClick: ( event ) => {
+			handleOnItemClick( event, onItemClick );
+		},
+	} ) );
 }
 
-const QuickLinks = ( props ) => {
-	const listItems = getListItems( props );
+export const QuickLinks = ( { onItemClick = () => {} } ) => {
+	const siteUrl = getSetting( 'siteUrl' );
+	const listItems = getListItems( siteUrl, onItemClick );
 
 	return (
 		<Card size="large" className="woocommerce-quick-links">
@@ -188,10 +177,3 @@ const QuickLinks = ( props ) => {
 		</Card>
 	);
 };
-
-QuickLinks.defaultProps = {
-	getSetting,
-	recordEvent,
-};
-
-export default QuickLinks;

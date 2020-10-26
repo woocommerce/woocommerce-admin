@@ -1,20 +1,32 @@
+jest.mock( '@woocommerce/tracks', () => ( {
+	...jest.requireActual( '@woocommerce/tracks' ),
+	recordEvent: jest.fn(),
+} ) );
+
+jest.mock( '@woocommerce/wc-admin-settings', () => ( {
+	...jest.requireActual( '@woocommerce/wc-admin-settings' ),
+	getSetting: jest.fn(),
+} ) );
+
 /**
  * External dependencies
  */
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { toHaveAttribute } from '@testing-library/jest-dom/matchers';
+import { recordEvent } from '@woocommerce/tracks';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import QuickLinks from '../index';
+import { QuickLinks, getLinkTypeAndHref } from '../index';
 
 expect.extend( { toHaveAttribute } );
 
 describe( 'QuickLinks', () => {
 	it( 'should build href correctly for a `wc-admin` item', () => {
-		render( <QuickLinks getSetting={ () => {} } /> );
+		render( <QuickLinks /> );
 
 		const marketingItem = screen.getByRole( 'menuitem', {
 			name: 'Market my store',
@@ -27,7 +39,7 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should build href correctly for a `wp-admin` item', () => {
-		render( <QuickLinks getSetting={ () => {} } /> );
+		render( <QuickLinks /> );
 
 		const addProductsItem = screen.getByRole( 'menuitem', {
 			name: 'Add products',
@@ -40,7 +52,7 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should build href correctly for a `wc-settings` item', () => {
-		render( <QuickLinks getSetting={ () => {} } /> );
+		render( <QuickLinks /> );
 
 		const shippingSettingsItem = screen.getByRole( 'menuitem', {
 			name: 'Shipping settings',
@@ -53,16 +65,7 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should call `recordEvent` when a `wc-admin` item is clicked', () => {
-		const recordEvent = jest.fn();
-
-		render(
-			<QuickLinks
-				getSetting={ () => {} }
-				recordEvent={ recordEvent }
-				// Prevent jsdom "Error: Not implemented: navigation" in test output
-				onItemClick={ () => false }
-			/>
-		);
+		render( <QuickLinks /> );
 
 		userEvent.click(
 			screen.getByRole( 'menuitem', { name: 'Market my store' } )
@@ -78,16 +81,7 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should call `recordEvent` when a `wp-admin` item is clicked', () => {
-		const recordEvent = jest.fn();
-
-		render(
-			<QuickLinks
-				getSetting={ () => {} }
-				recordEvent={ recordEvent }
-				// Prevent jsdom "Error: Not implemented: navigation" in test output
-				onItemClick={ () => false }
-			/>
-		);
+		render( <QuickLinks /> );
 
 		userEvent.click(
 			screen.getByRole( 'menuitem', { name: 'Add products' } )
@@ -103,16 +97,7 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should call `recordEvent` when a `wc-settings` item is clicked', () => {
-		const recordEvent = jest.fn();
-
-		render(
-			<QuickLinks
-				getSetting={ () => {} }
-				recordEvent={ recordEvent }
-				// Prevent jsdom "Error: Not implemented: navigation" in test output
-				onItemClick={ () => false }
-			/>
-		);
+		render( <QuickLinks /> );
 
 		userEvent.click(
 			screen.getByRole( 'menuitem', { name: 'Shipping settings' } )
@@ -130,16 +115,7 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should call `recordEvent` when an `external` item is clicked', () => {
-		const recordEvent = jest.fn();
-
-		render(
-			<QuickLinks
-				getSetting={ () => {} }
-				recordEvent={ recordEvent }
-				// Prevent jsdom "Error: Not implemented: navigation" in test output
-				onItemClick={ () => false }
-			/>
-		);
+		render( <QuickLinks /> );
 
 		userEvent.click(
 			screen.getByRole( 'menuitem', { name: 'Get support' } )
@@ -155,12 +131,51 @@ describe( 'QuickLinks', () => {
 	} );
 
 	it( 'should call `getSetting` to determine the frontend url', () => {
-		const getSetting = jest.fn( () => 'https://example.com' );
-
-		render(
-			<QuickLinks getSetting={ getSetting } recordEvent={ () => {} } />
-		);
+		render( <QuickLinks /> );
 
 		expect( getSetting ).toHaveBeenCalledWith( 'siteUrl' );
+	} );
+} );
+
+describe( 'getLinkTypeAndHref', () => {
+	it( 'generates the correct link for wc-admin links', () => {
+		const result = getLinkTypeAndHref( {
+			type: 'wc-admin',
+			path: 'foo/bar',
+		} );
+
+		expect( result.linkType ).toEqual( 'wc-admin' );
+		expect( result.href ).toEqual(
+			'admin.php?page=wc-admin&path=%2Ffoo/bar'
+		);
+	} );
+
+	it( 'generates the correct link for wp-admin links', () => {
+		const result = getLinkTypeAndHref( {
+			type: 'wp-admin',
+			path: '/foo/bar',
+		} );
+
+		expect( result.linkType ).toEqual( 'wp-admin' );
+		expect( result.href ).toEqual( '/foo/bar' );
+	} );
+
+	it( 'generates the correct link for wc-settings links', () => {
+		const result = getLinkTypeAndHref( {
+			type: 'wc-settings',
+			tab: 'foo',
+		} );
+
+		expect( result.linkType ).toEqual( 'wp-admin' );
+		expect( result.href ).toEqual( 'admin.php?page=wc-settings&tab=foo' );
+	} );
+
+	it( 'generates the an external link if there is no provided type', () => {
+		const result = getLinkTypeAndHref( {
+			href: 'http://example.com',
+		} );
+
+		expect( result.linkType ).toEqual( 'external' );
+		expect( result.href ).toEqual( 'http://example.com' );
 	} );
 } );
