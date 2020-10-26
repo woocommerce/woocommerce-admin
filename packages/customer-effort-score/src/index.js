@@ -52,10 +52,9 @@ CustomerEffortScore.propTypes = {
 	 */
 	trackCallback: PropTypes.func.isRequired,
 	/**
-	 * Whether or not the tracks is visible. True is used for when
-	 * this is loaded on page load (in client/index.js). False is used if the
-	 * tracks modal is loaded as part of the layout and displayed
-	 * programmatically.
+	 * Whether or not the dialog is visible. True is used for when this is
+	 * loaded on page load (in client/index.js). False is used if the modal is
+	 * loaded as part of the layout and displayed programmatically.
 	 */
 	visible: PropTypes.bool.isRequired,
 	/**
