@@ -47,14 +47,6 @@ const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
 	const notesArray = Object.keys( notes ).map( ( key ) => notes[ key ] );
 
 	return notesArray.map( ( note ) => {
-		if ( note.isUpdating ) {
-			return (
-				<InboxNotePlaceholder
-					className="banner message-is-unread"
-					key={ note.id }
-				/>
-			);
-		}
 		return (
 			<InboxNoteCard
 				key={ note.id }
