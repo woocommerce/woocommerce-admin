@@ -99,7 +99,7 @@ const Container = ( { menuItems } ) => {
 				{ categories.map( ( category ) => {
 					const [ primaryItems, secondaryItems ] = categorizedItems[
 						category.id
-					];
+					] || [ [], [] ];
 					return (
 						<NavigationMenu
 							key={ category.id }
@@ -110,16 +110,34 @@ const Container = ( { menuItems } ) => {
 						>
 							{ !! primaryItems.length && (
 								<NavigationGroup>
-									{ primaryItems.map( ( item ) => (
-										<Item key={ item.id } item={ item } />
-									) ) }
+									{ primaryItems.map(
+										( item ) =>
+											( ! item.isCategory ||
+												categorizedItems[
+													item.id
+												] ) && (
+												<Item
+													key={ item.id }
+													item={ item }
+												/>
+											)
+									) }
 								</NavigationGroup>
 							) }
 							{ !! secondaryItems.length && (
 								<NavigationGroup>
-									{ secondaryItems.map( ( item ) => (
-										<Item key={ item.id } item={ item } />
-									) ) }
+									{ secondaryItems.map(
+										( item ) =>
+											( ! item.isCategory ||
+												categorizedItems[
+													item.id
+												] ) && (
+												<Item
+													key={ item.id }
+													item={ item }
+												/>
+											)
+									) }
 								</NavigationGroup>
 							) }
 						</NavigationMenu>
