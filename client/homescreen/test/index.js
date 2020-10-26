@@ -21,7 +21,9 @@ jest.mock( 'task-list', () => jest.fn().mockReturnValue( '[TaskList]' ) );
 jest.mock( 'inbox-panel', () => jest.fn().mockReturnValue( '[InboxPanel]' ) );
 
 // We aren't testing the <QuickLinks /> component here.
-jest.mock( 'quick-links', () => jest.fn().mockReturnValue( '[QuickLinks]' ) );
+jest.mock( 'quick-links', () => ( {
+	QuickLinks: jest.fn().mockReturnValue( '[QuickLinks]' ),
+} ) );
 
 jest.mock( '@woocommerce/data', () => ( {
 	...jest.requireActual( '@woocommerce/data' ),

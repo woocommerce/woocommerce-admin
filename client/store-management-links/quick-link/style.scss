@@ -1,0 +1,14 @@
+.woocommerce-quick-links__item {
+	width: 100%;
+	display: flex;
+
+	.woocommerce-quick-links__item-link {
+		width: 100%;
+		display: flex;
+
+		.woocommerce-quick-links__item-link__text {
+			margin-left: 16px;
+			flex: 1;
+		}
+	}
+}
