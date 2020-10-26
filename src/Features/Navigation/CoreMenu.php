@@ -72,37 +72,17 @@ class CoreMenu {
 	 */
 	public function add_core_items() {
 		// Orders category.
-		Screen::register_post_type( 'shop_order', null );
-		Menu::add_post_type_category( 'shop_order', array( 'order' => 20 ) );
+		Screen::register_post_type( 'shop_order', 'orders' );
+		// Menu::add_post_type_category( 'shop_order', array( 'order' => 20 ) );
 
 		// Products category.
-		Screen::register_post_type( 'product', null );
-		Menu::add_post_type_category( 'product', array( 'order' => 40 ) );
+		Screen::register_post_type( 'product', 'products' );
+		// Menu::add_post_type_category( 'product', array( 'order' => 40 ) );
 
 		// Marketing category.
-		Menu::add_category(
-			array(
-				'title'        => __( 'Marketing', 'woocommerce-admin' ),
-				'capability'   => 'manage_woocommerce',
-				'id'           => 'woocommerce-marketing',
-				'order'        => 30,
-				'is_top_level' => true,
-			)
-		);
-		Screen::register_post_type( 'shop_coupon', 'woocommerce-marketing' );
+		Screen::register_post_type( 'shop_coupon', 'marketing' );
 
 		// Extensions category.
-		Menu::add_category(
-			array(
-				'title'        => __( 'Extensions', 'woocommerce-admin' ),
-				'capability'   => 'activate_plugins',
-				'id'           => 'extensions',
-				'migrate'      => false,
-				'menuId'       => 'secondary',
-				'order'        => 20,
-				'is_top_level' => true,
-			)
-		);
 		Menu::add_item(
 			array(
 				'parent'     => 'extensions',
@@ -123,30 +103,7 @@ class CoreMenu {
 			)
 		);
 
-		// Settings category.
-		Menu::add_category(
-			array(
-				'title'        => __( 'Settings', 'woocommerce-admin' ),
-				'capability'   => 'manage_woocommerce',
-				'id'           => 'settings',
-				'menuId'       => 'secondary',
-				'order'        => 10,
-				'url'          => 'admin.php?page=wc-settings',
-				'is_top_level' => true,
-			)
-		);
-
 		// Tools category.
-		Menu::add_category(
-			array(
-				'title'        => __( 'Tools', 'woocommerce-admin' ),
-				'capability'   => 'manage_woocommerce',
-				'id'           => 'tools',
-				'menuId'       => 'secondary',
-				'order'        => 30,
-				'is_top_level' => true,
-			)
-		);
 		Menu::add_item(
 			array(
 				'parent'     => 'tools',

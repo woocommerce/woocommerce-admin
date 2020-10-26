@@ -83,6 +83,7 @@ class Menu {
 	 * Init.
 	 */
 	public function init() {
+		self::add_top_level_items();
 		add_filter( 'admin_enqueue_scripts', array( $this, 'enqueue_data' ), 20 );
 		add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ), 30 );
 	}
@@ -155,35 +156,116 @@ class Menu {
 			return;
 		}
 
-		$defaults           = array(
-			'id'           => '',
-			'title'        => '',
-			'capability'   => 'manage_woocommerce',
-			'order'        => 100,
-			'migrate'      => true,
-			'menuId'       => 'primary',
-			'isCategory'   => true,
-			'parent'       => self::DEFAULT_PARENT,
-			'is_top_level' => false,
+		$defaults            = array(
+			'id'         => '',
+			'title'      => '',
+			'capability' => 'manage_woocommerce',
+			'order'      => 100,
+			'migrate'    => true,
+			'menuId'     => 'primary',
+			'isCategory' => true,
+			'parent'     => self::DEFAULT_PARENT,
 		);
-		$menu_item          = wp_parse_args( $args, $defaults );
-		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
+		$menu_item           = wp_parse_args( $args, $defaults );
+		$menu_item['title']  = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
+		$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
 		unset( $menu_item['url'] );
-
-		if ( true === $menu_item['is_top_level'] ) {
-			$menu_item['parent']          = 'woocommerce';
-			$menu_item['backButtonLabel'] = __(
-				'WooCommerce Home',
-				'woocommerce-admin'
-			);
-		} else {
-			$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
-		}
 
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
 
 		if ( isset( $args['url'] ) ) {
 			self::$callbacks[ $args['url'] ] = $menu_item['migrate'];
+		}
+	}
+
+	/**
+	 * Add top level menu items.
+	 */
+	public function add_top_level_items() {
+		$items = array(
+			array(
+				'title'      => __( 'Home', 'woocommerce-admin' ),
+				'capability' => 'manage_woocommerce',
+				'id'         => 'home',
+				'order'      => 0,
+				'url'        => apply_filters( 'woocommerce_navigation_home_url', 'admin.php?page=woocommerce' ),
+			),
+			array(
+				'title'      => __( 'Analytics', 'woocommerce-admin' ),
+				'capability' => 'manage_woocommerce',
+				'id'         => 'analytics',
+				'order'      => 10,
+				'isCategory' => true,
+			),
+			array(
+				'title'      => __( 'Orders', 'woocommerce-admin' ),
+				'capability' => 'edit_shop_orders',
+				'id'         => 'orders',
+				'order'      => 20,
+				'isCategory' => true,
+			),
+			array(
+				'title'      => __( 'Marketing', 'woocommerce-admin' ),
+				'capability' => 'manage_woocommerce',
+				'id'         => 'marketing',
+				'order'      => 30,
+				'isCategory' => true,
+			),
+			array(
+				'title'      => __( 'Products', 'woocommerce-admin' ),
+				'capability' => 'edit_products',
+				'id'         => 'products',
+				'order'      => 40,
+				'isCategory' => true,
+			),
+			array(
+				'title'      => __( 'Customers', 'woocommerce-admin' ),
+				'capability' => 'list_users',
+				'id'         => 'customers',
+				'order'      => 50,
+				'isCategory' => true,
+			),
+			array(
+				'title'      => __( 'Payments', 'woocommerce-admin' ),
+				'capability' => 'manage_woocommerce',
+				'id'         => 'payments',
+				'order'      => 60,
+				'isCategory' => true,
+			),
+			array(
+				'title'      => __( 'Settings', 'woocommerce-admin' ),
+				'capability' => 'manage_woocommerce',
+				'id'         => 'settings',
+				'menuId'     => 'secondary',
+				'order'      => 10,
+				'isCategory' => true,
+			),
+			array(
+				'title'      => __( 'Extensions', 'woocommerce-admin' ),
+				'capability' => 'activate_plugins',
+				'id'         => 'extensions',
+				'menuId'     => 'secondary',
+				'order'      => 20,
+				'isCategory' => true,
+			),
+			array(
+				'title'      => __( 'Tools', 'woocommerce-admin' ),
+				'capability' => 'manage_woocommerce',
+				'id'         => 'tools',
+				'menuId'     => 'secondary',
+				'order'      => 30,
+				'isCategory' => true,
+			),
+		);
+
+		foreach ( $items as $item ) {
+			$menu_item                       = $item;
+			$menu_item['parent']             = 'woocommerce';
+			$menu_item['backButtonLabel']    = __(
+				'WooCommerce Home',
+				'woocommerce-admin'
+			);
+			self::$menu_items[ $item['id'] ] = $menu_item;
 		}
 	}
 
@@ -207,7 +289,7 @@ class Menu {
 			return;
 		}
 
-		$defaults           = array(
+		$defaults            = array(
 			'id'           => '',
 			'title'        => '',
 			'parent'       => self::DEFAULT_PARENT,
@@ -218,15 +300,10 @@ class Menu {
 			'menuId'       => 'primary',
 			'is_top_level' => false,
 		);
-		$menu_item          = wp_parse_args( $args, $defaults );
-		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
-		$menu_item['url']   = self::get_callback_url( $menu_item['url'] );
-
-		if ( true === $menu_item['is_top_level'] ) {
-			$menu_item['parent'] = 'woocommerce';
-		} else {
-			$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
-		}
+		$menu_item           = wp_parse_args( $args, $defaults );
+		$menu_item['title']  = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
+		$menu_item['url']    = self::get_callback_url( $menu_item['url'] );
+		$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
 
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
 
