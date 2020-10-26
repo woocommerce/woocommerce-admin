@@ -313,50 +313,6 @@ class Menu {
 	}
 
 	/**
-	 * Adds a post type as a menu category.
-	 *
-	 * @param string $post_type Post type.
-	 * @param array  $args Array of menu item args.
-	 */
-	public static function add_post_type_category( $post_type, $args = array() ) {
-		$post_type_object = get_post_type_object( $post_type );
-
-		if ( ! $post_type_object ) {
-			return;
-		}
-
-		self::add_category(
-			array_merge(
-				array(
-					'title'        => esc_attr( $post_type_object->labels->menu_name ),
-					'capability'   => $post_type_object->cap->edit_posts,
-					'id'           => $post_type,
-					'is_top_level' => true,
-				),
-				$args
-			)
-		);
-		self::add_item(
-			array(
-				'parent'     => $post_type,
-				'title'      => esc_attr( $post_type_object->labels->all_items ),
-				'capability' => $post_type_object->cap->edit_posts,
-				'id'         => "{$post_type}-all-items",
-				'url'        => "edit.php?post_type={$post_type}",
-			)
-		);
-		self::add_item(
-			array(
-				'parent'     => $post_type,
-				'title'      => esc_attr( $post_type_object->labels->add_new ),
-				'capability' => $post_type_object->cap->create_posts,
-				'id'         => "{$post_type}-add-new",
-				'url'        => "post-new.php?post_type={$post_type}",
-			)
-		);
-	}
-
-	/**
 	 * Hides all WP admin menus items and adds screen IDs to check for new items.
 	 *
 	 * @param array $menu Menu items.

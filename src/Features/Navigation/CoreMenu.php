@@ -72,15 +72,30 @@ class CoreMenu {
 	 */
 	public function add_core_items() {
 		// Orders category.
-		Screen::register_post_type( 'shop_order', 'orders' );
-		// Menu::add_post_type_category( 'shop_order', array( 'order' => 20 ) );
+		Screen::register_post_type(
+			'shop_order',
+			array(
+				'parent'   => 'orders',
+				'multiple' => true,
+			)
+		);
 
 		// Products category.
-		Screen::register_post_type( 'product', 'products' );
-		// Menu::add_post_type_category( 'product', array( 'order' => 40 ) );
+		Screen::register_post_type(
+			'product',
+			array(
+				'parent'   => 'products',
+				'multiple' => true,
+			)
+		);
 
 		// Marketing category.
-		Screen::register_post_type( 'shop_coupon', 'marketing' );
+		Screen::register_post_type(
+			'shop_coupon',
+			array(
+				'parent' => 'marketing',
+			)
+		);
 
 		// Extensions category.
 		Menu::add_item(

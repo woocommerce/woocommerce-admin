@@ -168,25 +168,58 @@ class Screen {
 	 * Register post type for use in WooCommerce Navigation screens.
 	 *
 	 * @param string $post_type Post type to add.
-	 * @param string $parent_id Parent menu item ID.
+	 * @param array  $args Menu item arguments.
 	 */
-	public static function register_post_type( $post_type, $parent_id ) {
+	public static function register_post_type( $post_type, $args ) {
 		self::$post_types[] = $post_type;
 
 		$post_type_object = get_post_type_object( $post_type );
 
-		if ( ! $post_type_object || ! $post_type_object->show_in_menu || ! $parent_id ) {
+		if ( ! $post_type_object || ! $post_type_object->show_in_menu ) {
 			return;
 		}
 
-		Menu::add_item(
-			array(
-				'parent'     => $parent_id,
-				'title'      => esc_attr( $post_type_object->labels->menu_name ),
-				'capability' => $post_type_object->cap->edit_posts,
-				'id'         => $post_type,
-				'url'        => "edit.php?post_type={$post_type}",
-			)
+		$defaults  = array(
+			'multiple' => false,
+			'parent'   => isset( $args['parent'] ) ? $args['parent'] : Menu::DEFAULT_PARENT,
 		);
+		$menu_args = wp_parse_args( $args, $defaults );
+
+		if ( ! $args['multiple'] ) {
+			Menu::add_item(
+				array_merge(
+					array(
+						'title'      => esc_attr( $post_type_object->labels->menu_name ),
+						'capability' => $post_type_object->cap->edit_posts,
+						'id'         => $post_type,
+						'url'        => "edit.php?post_type={$post_type}",
+					),
+					$menu_args
+				)
+			);
+		} else {
+			Menu::add_item(
+				array_merge(
+					array(
+						'title'      => esc_attr( $post_type_object->labels->all_items ),
+						'capability' => $post_type_object->cap->edit_posts,
+						'id'         => "{$post_type}-all-items",
+						'url'        => "edit.php?post_type={$post_type}",
+					),
+					$menu_args
+				)
+			);
+			Menu::add_item(
+				array_merge(
+					array(
+						'title'      => esc_attr( $post_type_object->labels->add_new ),
+						'capability' => $post_type_object->cap->create_posts,
+						'id'         => "{$post_type}-add-new",
+						'url'        => "post-new.php?post_type={$post_type}",
+					),
+					$menu_args
+				)
+			);
+		}
 	}
 }
