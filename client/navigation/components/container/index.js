@@ -78,6 +78,24 @@ const Container = ( { menuItems } ) => {
 		[ menuItems ]
 	);
 
+	const renderNavigationGroup = ( items ) => {
+		if ( ! items.length ) {
+			return null;
+		}
+
+		return (
+			<NavigationGroup>
+				{ items.map(
+					( item ) =>
+						( ! item.isCategory ||
+							categorizedItems[ item.id ] ) && (
+							<Item key={ item.id } item={ item } />
+						)
+				) }
+			</NavigationGroup>
+		);
+	};
+
 	return (
 		<div className="woocommerce-navigation">
 			<Header />
@@ -108,38 +126,8 @@ const Container = ( { menuItems } ) => {
 							parentMenu={ category.parent }
 							backButtonLabel={ category.backButtonLabel || null }
 						>
-							{ !! primaryItems.length && (
-								<NavigationGroup>
-									{ primaryItems.map(
-										( item ) =>
-											( ! item.isCategory ||
-												categorizedItems[
-													item.id
-												] ) && (
-												<Item
-													key={ item.id }
-													item={ item }
-												/>
-											)
-									) }
-								</NavigationGroup>
-							) }
-							{ !! secondaryItems.length && (
-								<NavigationGroup>
-									{ secondaryItems.map(
-										( item ) =>
-											( ! item.isCategory ||
-												categorizedItems[
-													item.id
-												] ) && (
-												<Item
-													key={ item.id }
-													item={ item }
-												/>
-											)
-									) }
-								</NavigationGroup>
-							) }
+							{ renderNavigationGroup( primaryItems ) }
+							{ renderNavigationGroup( secondaryItems ) }
 						</NavigationMenu>
 					);
 				} ) }
