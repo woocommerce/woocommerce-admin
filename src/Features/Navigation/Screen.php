@@ -185,7 +185,7 @@ class Screen {
 		);
 		$menu_args = wp_parse_args( $args, $defaults );
 
-		if ( ! $args['multiple'] ) {
+		if ( ! $menu_args['multiple'] ) {
 			Menu::add_item(
 				array_merge(
 					array(
