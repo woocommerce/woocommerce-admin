@@ -151,7 +151,7 @@ export class ActivityPanel extends Component {
 		const showInbox =
 			( isEmbedded || ! this.isHomescreen() ) && ! isPerformingSetupTask;
 
-		const showstockAndReviews =
+		const showStockAndReviews =
 			( taskListComplete || taskListHidden ) && ! isPerformingSetupTask;
 
 		const showStoreSetup =
@@ -174,7 +174,7 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		const stockAndReviews = showstockAndReviews
+		const stockAndReviews = showStockAndReviews
 			? [
 					manageStock === 'yes' && {
 						name: 'stock',
