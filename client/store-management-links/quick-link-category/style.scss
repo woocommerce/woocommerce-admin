@@ -1,9 +1,14 @@
 .woocommerce-quick-links__category {
 	display: flex;
 	flex-flow: row wrap;
+	margin-bottom: 8px;
+
+	&::last-child {
+		margin-bottom: 0;
+	}
 
 	.woocommerce-quick-links__category-header {
-		margin: 8px 0;
+		margin: 0px 24px 8px 24px;
 		text-transform: uppercase;
 		color: $gray-700;
 		line-height: 16px;

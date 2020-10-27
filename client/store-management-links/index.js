@@ -19,12 +19,6 @@ import {
 	pencil,
 } from '@wordpress/icons';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-// import { recordEvent } from '@woocommerce/tracks';
-
-/**
- * Internal dependencies
- */
-import { QuickLinks } from './quick-links';
 
 /**
  * Internal dependencies
@@ -39,7 +33,7 @@ function getItemsByCategory( siteUrl ) {
 			title: __( 'Marketing & Merchandising', 'woocommerce-admin' ),
 			items: [
 				{
-					title: __( 'Market my store', 'woocommerce-admin' ),
+					title: __( 'Marketing', 'woocommerce-admin' ),
 					link: getLinkTypeAndHref( {
 						type: 'wc-admin',
 						path: 'marketing',
@@ -80,7 +74,7 @@ function getItemsByCategory( siteUrl ) {
 			title: __( 'Settings', 'woocommerce-admin' ),
 			items: [
 				{
-					title: __( 'Edit store details', 'woocommerce-admin' ),
+					title: __( 'Store details', 'woocommerce-admin' ),
 					link: getLinkTypeAndHref( {
 						type: 'wc-settings',
 						tab: 'general',
@@ -89,7 +83,7 @@ function getItemsByCategory( siteUrl ) {
 					listItemTag: 'edit-store-details',
 				},
 				{
-					title: __( 'Payment settings', 'woocommerce-admin' ),
+					title: __( 'Payments', 'woocommerce-admin' ),
 					link: getLinkTypeAndHref( {
 						type: 'wc-settings',
 						tab: 'checkout',
@@ -98,7 +92,7 @@ function getItemsByCategory( siteUrl ) {
 					listItemTag: 'payment-settings',
 				},
 				{
-					title: __( 'Tax settings', 'woocommerce-admin' ),
+					title: __( 'Tax', 'woocommerce-admin' ),
 					link: getLinkTypeAndHref( {
 						type: 'wc-settings',
 						tab: 'tax',
@@ -107,7 +101,7 @@ function getItemsByCategory( siteUrl ) {
 					listItemTag: 'tax-settings',
 				},
 				{
-					title: __( 'Shipping settings', 'woocommerce-admin' ),
+					title: __( 'Shipping', 'woocommerce-admin' ),
 					link: getLinkTypeAndHref( {
 						type: 'wc-settings',
 						tab: 'shipping',
@@ -153,31 +147,32 @@ export const StoreManagementLinks = () => {
 					{ __( 'Store management', 'woocommerce-admin' ) }
 				</Text>
 			</CardHeader>
-			<CardBody>
-				<QuickLinks>
-					{ categories.map( ( category ) => {
-						return (
-							<QuickLinkCategory
-								key={ category.title }
-								title={ category.title }
-							>
-								{ category.items.map(
-									( { icon, listItemTag, title, link } ) => (
-										<QuickLink
-											icon={ icon }
-											key={ listItemTag }
-											title={ title }
-											isExternal={
-												link.linkType === 'external'
-											}
-											href={ link.href }
-										/>
-									)
-								) }
-							</QuickLinkCategory>
-						);
-					} ) }
-				</QuickLinks>
+			<CardBody
+				size="custom"
+				className="woocommerce-store-management-links__card-body"
+			>
+				{ categories.map( ( category ) => {
+					return (
+						<QuickLinkCategory
+							key={ category.title }
+							title={ category.title }
+						>
+							{ category.items.map(
+								( { icon, listItemTag, title, link } ) => (
+									<QuickLink
+										icon={ icon }
+										key={ listItemTag }
+										title={ title }
+										isExternal={
+											link.linkType === 'external'
+										}
+										href={ link.href }
+									/>
+								)
+							) }
+						</QuickLinkCategory>
+					);
+				} ) }
 			</CardBody>
 		</Card>
 	);

@@ -1,9 +1,5 @@
-.woocommerce-page .woocommerce-quick-links {
-	$background-color: $white;
-
-	background-color: $background-color;
-
-	.components-card__body.is-size-large {
-		padding: 0;
-	}
+// Setting a custom size that is not recognised by the <CardBody> allows us to override the card's default padding sizes.
+// We need to do this to allow item hover backgrounds to stretch the whole card body.
+.woocommerce-store-management-links__card-body.is-size-custom {
+	padding: 24px 0 8px 0;
 }
