@@ -9,7 +9,7 @@ import { __ } from '@wordpress/i18n';
 import OrdersPanel from './orders';
 
 export function getAllPanels( { countUnreadOrders } ) {
-	const panels = [
+	return [
 		{
 			className: 'woocommerce-homescreen-card',
 			count: countUnreadOrders,
@@ -21,5 +21,4 @@ export function getAllPanels( { countUnreadOrders } ) {
 		},
 		// Add another panel row here
 	];
-	return panels;
 }
