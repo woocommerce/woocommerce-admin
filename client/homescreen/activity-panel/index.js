@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { withSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { Fragment } from '@wordpress/element';
 import { Accordion, AccordionPanel } from '@woocommerce/components';
 
@@ -12,7 +12,11 @@ import './style.scss';
 import { getUnreadOrders } from './orders/utils';
 import { getAllPanels } from './panels';
 
-const ActivityPanel = ( { panels } ) => {
+export const ActivityPanel = () => {
+	const panels = useSelect( ( select ) => {
+		const countUnreadOrders = getUnreadOrders( select );
+		return getAllPanels( { countUnreadOrders } );
+	} );
 	return (
 		<Accordion>
 			<Fragment>
@@ -40,9 +44,3 @@ const ActivityPanel = ( { panels } ) => {
 		</Accordion>
 	);
 };
-
-export default withSelect( ( select ) => {
-	const countUnreadOrders = getUnreadOrders( select );
-	const panels = getAllPanels( { countUnreadOrders } );
-	return { panels };
-} )( ActivityPanel );

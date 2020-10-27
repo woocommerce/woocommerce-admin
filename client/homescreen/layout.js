@@ -29,7 +29,7 @@ import '../dashboard/style.scss';
 import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../inbox-panel';
 import { WelcomeModal } from './welcome-modal';
-import ActivityPanel from './activity-panel';
+import { ActivityPanel } from './activity-panel';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )

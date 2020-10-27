@@ -6,7 +6,7 @@ import { render, screen } from '@testing-library/react';
 /**
  * Internal dependencies
  */
-import ActivityPanel from '../';
+import { ActivityPanel } from '../';
 
 // Mock the panels.
 jest.mock( '../panels', () => {
