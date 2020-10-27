@@ -10,29 +10,21 @@ import PropTypes from 'prop-types';
 import './style.scss';
 import AccordionPanel from './panel';
 
-const Accordion = ( { panels } ) => {
+const Accordion = ( { className, children } ) => {
 	return (
 		<Panel>
-			{ panels.map( ( panelData, index ) => (
-				<AccordionPanel key={ index } { ...panelData } />
-			) ) }
+			<AccordionPanel className={ className }>
+				{ children }
+			</AccordionPanel>
 		</Panel>
 	);
 };
 
-Accordion.propTypes = {
+AccordionPanel.propTypes = {
 	/**
-	 * A list of objects with information to set the panels.
+	 * Additional CSS classes.
 	 */
-	panels: PropTypes.arrayOf(
-		PropTypes.shape( {
-			className: PropTypes.string,
-			count: PropTypes.number,
-			title: PropTypes.string,
-			initialOpen: PropTypes.bool,
-			panel: PropTypes.node.isRequired,
-		} )
-	).isRequired,
+	className: PropTypes.string,
 };
 
 export default Accordion;

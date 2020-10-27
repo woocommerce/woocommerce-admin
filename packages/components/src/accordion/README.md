@@ -1,44 +1,59 @@
 # Accordion
 
-A component designed for use in the `Home` screen. It returns an accordion with the panels it receives.
+This is an accordion that renders the children inside. It will toggle the panel's content when the title is clicked.
 
 ## Usage
 
 ```jsx
-const panels = [
-	{
-		className: 'class-name',
-		count: 15,
-		initialOpen: true,
-		panel: <div>Panel 1 content</div>,
-		title: 'Panel 1',
-	},
-	{
-		className: 'class-name',
-		count: 20,
-		initialOpen: false,
-		panel: <div>Panel 2 content</div>,
-		title: 'Panel 2',
-	},
-	];
-
-}
-
-<div>
-	<Accordion panels={ panels }/>
-</div>
+<Accordion>
+	<AccordionPanel
+		className="class-name"
+		count={ 15 }
+		title="Panel 1"
+		initialOpen={ true }
+	>
+		<span>Panel 1 content</span>
+	</AccordionPanel>
+	<AccordionPanel
+		className="class-name"
+		count={ 20 }
+		title="Panel 2"
+		initialOpen={ false }
+	>
+		<span>Panel 2 content</span>
+	</AccordionPanel>
+</Accordion>
 ```
 
 ### Props
 
-| Name     | Type  | Default | Description                                    |
-| -------- | ----- | ------- | ---------------------------------------------- |
-| `panels` | Array | `null`  | A list of objects with data to set the panels. |
+| Name        | Type   | Default | Description             |
+| ----------- | ------ | ------- | ----------------------- |
+| `className` | String | `null`  | Additional CSS classes. |
 
-Each object in the `panels` array has the following structure:
+# AccordionPanel
 
--   `className` | String | `null` | Additional CSS classes
--   `count`: Number - Number of unread elements in the panel that will be shown next to the panel's title.
--   `initialOpen`: Boolean - Whether or not the panel will start open. Default: true.
--   `panel`: ReactNode - Content displayed in the panel.
--   `title`: String - The panel title.
+A component designed for use inside of the `Accordion` component.
+`AccordionPanel` is used to give the panel content an accessible wrapper.
+
+## Usage
+
+```jsx
+<AccordionPanel
+	className="class-name"
+	count={ 15 }
+	title="Panel 1"
+	initialOpen={ true }
+>
+	<span>Panel 1 content</span>
+</AccordionPanel>
+```
+
+### Props
+
+| Name          | Type    | Default | Description                                                                          |
+| ------------- | ------- | ------- | ------------------------------------------------------------------------------------ |
+| `className`   | Array   | `null`  | A list of objects with data to set the panels.                                       |
+| `count`       | Number  | `null`  | Number of unread elements in the panel that will be shown next to the panel's title. |
+| `initialOpen` | Boolean | `true`  | Whether or not the panel will start open.                                            |
+| `title`       | String  | `null`  | The panel title.                                                                     |

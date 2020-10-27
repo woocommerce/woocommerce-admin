@@ -6,7 +6,13 @@ import { more } from '@wordpress/icons';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-const AccordionPanel = ( { className, count, title, initialOpen, panel } ) => {
+const AccordionPanel = ( {
+	className,
+	count,
+	title,
+	initialOpen,
+	children,
+} ) => {
 	const getTitleAndCount = ( titleText, countUnread ) => {
 		return (
 			<span className="woocommerce-accordion-header">
@@ -31,13 +37,17 @@ const AccordionPanel = ( { className, count, title, initialOpen, panel } ) => {
 				icon={ more }
 				initialOpen={ initialOpen }
 			>
-				<PanelRow> { panel } </PanelRow>
+				<PanelRow> { children } </PanelRow>
 			</PanelBody>
 		</Card>
 	);
 };
 
 AccordionPanel.propTypes = {
+	/**
+	 * Additional CSS classes.
+	 */
+	className: PropTypes.string,
 	/**
 	 * Number of unread elements in the panel that will be shown next to the panel's title.
 	 */
@@ -50,10 +60,6 @@ AccordionPanel.propTypes = {
 	 * Whether or not the panel will start open.
 	 */
 	initialOpen: PropTypes.bool,
-	/**
-	 * Content displayed in the panel.
-	 */
-	panel: PropTypes.node.isRequired,
 };
 
 export default AccordionPanel;
