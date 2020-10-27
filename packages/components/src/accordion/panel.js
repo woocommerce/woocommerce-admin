@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { Card, PanelBody, PanelRow } from '@wordpress/components';
-import { more } from '@wordpress/icons';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -12,6 +11,7 @@ import classnames from 'classnames';
  * @param {Object} props
  * @param {string} props.className
  * @param {string} props.count
+ * @param {string} props.children
  * @param {string} props.title
  * @param {string} props.initialOpen
  * @return {Object} -
@@ -44,7 +44,6 @@ const AccordionPanel = ( {
 		>
 			<PanelBody
 				title={ getTitleAndCount( title, count ) }
-				icon={ more }
 				initialOpen={ initialOpen }
 			>
 				<PanelRow> { children } </PanelRow>
