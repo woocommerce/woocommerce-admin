@@ -142,7 +142,7 @@ export const generateExtensionLinks = ( links ) => {
 	return links.reduce( ( acc, { icon, href, title } ) => {
 		const url = new URL( href, window.location.href );
 
-		// We do not support extension links that take users away from the host
+		// We do not support extension links that take users away from the host.
 		if ( url.origin === window.location.origin ) {
 			acc.push( {
 				icon,
