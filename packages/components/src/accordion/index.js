@@ -7,9 +7,15 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import './style.scss';
 import AccordionPanel from './panel';
 
+/**
+ * Use `Accordion` to display an accordion that renders the children inside.
+ *
+ * @param {Object} props
+ * @param {string} props.className
+ * @return {Object} -
+ */
 const Accordion = ( { className, children } ) => {
 	return (
 		<Panel>
@@ -20,7 +26,7 @@ const Accordion = ( { className, children } ) => {
 	);
 };
 
-AccordionPanel.propTypes = {
+Accordion.propTypes = {
 	/**
 	 * Additional CSS classes.
 	 */

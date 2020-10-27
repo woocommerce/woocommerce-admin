@@ -6,6 +6,16 @@ import { more } from '@wordpress/icons';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+/**
+ * `AccordionPanel` is used to give the panel content an accessible wrapper.
+ *
+ * @param {Object} props
+ * @param {string} props.className
+ * @param {string} props.count
+ * @param {string} props.title
+ * @param {string} props.initialOpen
+ * @return {Object} -
+ */
 const AccordionPanel = ( {
 	className,
 	count,
@@ -60,6 +70,10 @@ AccordionPanel.propTypes = {
 	 * Whether or not the panel will start open.
 	 */
 	initialOpen: PropTypes.bool,
+};
+
+AccordionPanel.defaultProps = {
+	initialOpen: true,
 };
 
 export default AccordionPanel;
