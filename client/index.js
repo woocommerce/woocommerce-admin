@@ -13,7 +13,7 @@ import {
  */
 import './stylesheets/_index.scss';
 import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
-import CustomerEffortScoreTracks from './customer-effort-score-tracks';
+import { CustomerEffortScoreTracksContainer } from './customer-effort-score-tracks';
 import Navigation from './navigation';
 
 // Modify webpack pubilcPath at runtime based on location of WordPress Plugin.
@@ -85,37 +85,10 @@ if ( navigationRoot ) {
 
 // Set up customer effort score survey.
 ( function () {
-	if ( ! window.wcAdminFeatures[ 'customer-effort-score' ] ) {
-		return;
-	}
-
 	const root = appRoot || embeddedRoot;
 
-	function getJson() {
-		try {
-			return (
-				window.localStorage.getItem( 'customerEffortScoreTracks' ) ||
-				'[]'
-			);
-		} catch {
-			return '[]';
-		}
-	}
-
-	const json = getJson();
-	const queue = JSON.parse( json );
-
-	queue.forEach( ( item ) => {
-		render(
-			<CustomerEffortScoreTracks
-				initiallyVisible={ true }
-				trackName={ item.trackName }
-				label={ item.label }
-				trackProps={ {} }
-			/>,
-			root.insertBefore( document.createElement( 'div' ), null )
-		);
-	} );
-
-	window.localStorage.removeItem( 'customerEffortScoreTracks' );
+	render(
+		<CustomerEffortScoreTracksContainer />,
+		root.insertBefore( document.createElement( 'div' ), null )
+	);
 } )();
