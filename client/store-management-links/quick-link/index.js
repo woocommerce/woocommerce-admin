@@ -15,7 +15,10 @@ export const QuickLink = ( { icon, title, href, isExternal } ) => {
 	return (
 		<div className="woocommerce-quick-links__item">
 			<a href={ href } className="woocommerce-quick-links__item-link">
-				<Icon icon={ icon } />
+				<Icon
+					className="woocommerce-quick-links__item-link__icon"
+					icon={ icon }
+				/>
 				<Text
 					className="woocommerce-quick-links__item-link__text"
 					as="div"
