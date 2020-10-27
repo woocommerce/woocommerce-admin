@@ -190,7 +190,7 @@ describe( 'StoreManagementLinks', () => {
 		userEvent.click( queryByText( linkDetails.title ) );
 
 		expect( recordEvent ).toHaveBeenCalledWith( 'home_quick_links_click', {
-			task_name: linkDetails.listItemTag,
+			listItemTag: linkDetails.listItemTag,
 		} );
 	} );
 } );

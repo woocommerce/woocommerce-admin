@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	Card,
 	CardBody,
@@ -119,27 +120,62 @@ export function getLinkTypeAndHref( { path, tab = null, type, href = null } ) {
 	return (
 		{
 			'wc-admin': {
-				linkType: 'wc-admin',
 				href: `admin.php?page=wc-admin&path=%2F${ path }`,
+				linkType: 'wc-admin',
 			},
 			'wp-admin': {
-				linkType: 'wp-admin',
 				href: path,
+				linkType: 'wp-admin',
 			},
 			'wc-settings': {
-				linkType: 'wp-admin',
 				href: `admin.php?page=wc-settings&tab=${ tab }`,
+				linkType: 'wp-admin',
 			},
 		}[ type ] || {
-			linkType: 'external',
 			href,
+			linkType: 'external',
 		}
 	);
 }
 
+export const generateExtensionLinks = ( links ) => {
+	return links.reduce( ( acc, { icon, href, title } ) => {
+		const url = new URL( href, window.location.href );
+
+		// We do not support extension links that take users away from the host
+		if ( url.origin === window.location.origin ) {
+			acc.push( {
+				icon,
+				link: {
+					href,
+					linkType: 'extension',
+				},
+				title,
+				listItemTag: 'quick-links-extension-link',
+			} );
+		}
+
+		return acc;
+	}, [] );
+};
+
 export const StoreManagementLinks = () => {
 	const siteUrl = getSetting( 'siteUrl' );
-	const categories = getItemsByCategory( siteUrl );
+
+	const extensionQuickLinks = generateExtensionLinks(
+		applyFilters( 'woocommerce_admin_homescreen_quicklinks', [] )
+	);
+
+	const itemCategories = getItemsByCategory( siteUrl );
+
+	const extensionCategory = {
+		title: __( 'Extensions', 'woocommerce-admin' ),
+		items: extensionQuickLinks,
+	};
+
+	const categories = extensionQuickLinks.length
+		? [ ...itemCategories, extensionCategory ]
+		: itemCategories;
 
 	return (
 		<Card size="medium">
