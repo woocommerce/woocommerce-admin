@@ -85,6 +85,26 @@ class CustomerEffortScoreTracks {
 	}
 
 	/**
+	 * Get the current published product count.
+	 *
+	 * @return integer The current published product count.
+	 */
+	private function get_product_count() {
+		$query         = new \WC_Product_Query(
+			array(
+				'limit'    => 1,
+				'paginate' => true,
+				'return'   => 'ids',
+				'status'   => array( 'publish' ),
+			)
+		);
+		$products      = $query->get_products();
+		$product_count = intval( $products->total );
+
+		return $product_count;
+	}
+
+	/**
 	 * Enqueue the CES survey trigger for a new product.
 	 */
 	private function enqueue_ces_survey_for_new_product() {
@@ -95,6 +115,9 @@ class CustomerEffortScoreTracks {
 			'label'      => __(
 				'How easy was it to add a product?',
 				'woocommerce-admin'
+			),
+			'props'      => array(
+				'product_count' => $this->get_product_count(),
 			),
 		);
 
@@ -112,6 +135,9 @@ class CustomerEffortScoreTracks {
 			'label'      => __(
 				'How easy was it to edit your product?',
 				'woocommerce-admin'
+			),
+			'props'      => array(
+				'product_count' => $this->get_product_count(),
 			),
 		);
 

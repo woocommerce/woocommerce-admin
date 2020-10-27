@@ -31,7 +31,7 @@ function CustomerEffortScoreTracksContainer( {
 		return null;
 	}
 
-	if ( !! queue.length ) {
+	if ( queue.length ) {
 		clearQueueFromOption();
 	}
 
@@ -43,7 +43,7 @@ function CustomerEffortScoreTracksContainer( {
 					initiallyVisible={ true }
 					trackName={ item.track_name }
 					label={ item.label }
-					trackProps={ {} }
+					trackProps={ item.props || {} }
 				/>
 			) ) }
 		</>
