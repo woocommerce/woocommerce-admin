@@ -11,12 +11,13 @@ import OrdersPanel from './orders';
 export function getAllPanels( { countUnreadOrders } ) {
 	const panels = [
 		{
-			title: __( 'Orders', 'woocommerce-admin' ),
+			className: 'woocommerce-homescreen-card',
 			count: countUnreadOrders,
 			initialOpen: true,
 			panel: (
 				<OrdersPanel hasActionableOrders={ countUnreadOrders > 0 } />
 			),
+			title: __( 'Orders', 'woocommerce-admin' ),
 		},
 		// Add another panel row here
 	];
