@@ -28,7 +28,7 @@ jest.mock( '../panels', () => {
 	};
 } );
 
-// Mock the panels.
+// Mock the orders.
 jest.mock( '../orders/utils', () => {
 	return {
 		getUnreadOrders: jest.fn().mockImplementation( () => 100 ),
