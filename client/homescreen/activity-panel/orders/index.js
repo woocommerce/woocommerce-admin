@@ -358,7 +358,7 @@ export default compose(
 			// Retrieve the Order stats data from our reporting table.
 			const ordersQuery = {
 				page: 1,
-				per_page: QUERY_DEFAULTS.pageSize,
+				per_page: 5,
 				extended_info: true,
 				order_includes: map( actionableOrders, 'id' ),
 				_fields: [
@@ -401,7 +401,7 @@ export default compose(
 		// @todo Add a property to settings api for this?
 		const allOrdersQuery = {
 			page: 1,
-			per_page: 5,
+			per_page: 1,
 			_fields: [ 'id' ],
 		};
 
