@@ -115,14 +115,12 @@ class Analytics {
 		$navigation_enabled = Loader::is_feature_enabled( 'navigation' );
 
 		$overview_page = array(
-			'id'           => 'woocommerce-analytics',
-			'title'        => __( 'Analytics', 'woocommerce-admin' ),
-			'path'         => '/analytics/overview',
-			'icon'         => 'dashicons-chart-bar',
-			'position'     => 56, // After WooCommerce & Product menu items.
-			'order'        => 10,
-			'is_category'  => true,
-			'is_top_level' => true,
+			'id'       => 'woocommerce-analytics',
+			'title'    => __( 'Analytics', 'woocommerce-admin' ),
+			'path'     => '/analytics/overview',
+			'icon'     => 'dashicons-chart-bar',
+			'position' => 56, // After WooCommerce & Product menu items.
+			'order'    => 10,
 		);
 
 		$report_pages = array(
@@ -133,6 +131,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/overview',
 				'order'  => 10,
+				'parent' => 'analytics',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-products',
@@ -140,6 +139,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/products',
 				'order'  => 20,
+				'parent' => 'analytics',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-revenue',
@@ -147,6 +147,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/revenue',
 				'order'  => 30,
+				'parent' => 'analytics',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-orders',
@@ -154,6 +155,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/orders',
 				'order'  => 40,
+				'parent' => 'analytics',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-variations',
@@ -161,6 +163,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/variations',
 				'order'  => 50,
+				'parent' => 'analytics',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-categories',
@@ -168,6 +171,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/categories',
 				'order'  => 60,
+				'parent' => 'analytics',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-coupons',
@@ -175,6 +179,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/coupons',
 				'order'  => 70,
+				'parent' => 'analytics',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-taxes',
@@ -182,6 +187,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/taxes',
 				'order'  => 80,
+				'parent' => 'analytics',
 			),
 			array(
 				'id'     => 'woocommerce-analytics-downloads',
@@ -189,6 +195,7 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/downloads',
 				'order'  => 90,
+				'parent' => 'analytics',
 			),
 			'yes' === get_option( 'woocommerce_manage_stock' ) ? array(
 				'id'     => 'woocommerce-analytics-stock',
@@ -196,14 +203,15 @@ class Analytics {
 				'parent' => 'woocommerce-analytics',
 				'path'   => '/analytics/stock',
 				'order'  => 100,
+				'parent' => 'analytics',
 			) : null,
 			array(
-				'id'           => 'woocommerce-analytics-customers',
-				'title'        => __( 'Customers', 'woocommerce-admin' ),
-				'parent'       => 'woocommerce',
-				'path'         => '/customers',
-				'is_top_level' => true,
-				'order'        => 50,
+				'id'     => 'woocommerce-analytics-customers',
+				'title'  => __( 'Customers', 'woocommerce-admin' ),
+				'parent' => 'woocommerce',
+				'path'   => '/customers',
+				'order'  => 50,
+				'parent' => $navigation_enabled ? 'customers' : null,
 			),
 			array(
 				'id'     => 'woocommerce-analytics-settings',

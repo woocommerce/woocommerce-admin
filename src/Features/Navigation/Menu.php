@@ -168,7 +168,7 @@ class Menu {
 		);
 		$menu_item           = wp_parse_args( $args, $defaults );
 		$menu_item['title']  = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
-		$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
+		$menu_item['parent'] = self::get_item_parent( $menu_item );
 		unset( $menu_item['url'] );
 
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
@@ -183,13 +183,6 @@ class Menu {
 	 */
 	public function add_top_level_items() {
 		$items = array(
-			array(
-				'title'      => __( 'Home', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'home',
-				'order'      => 0,
-				'url'        => apply_filters( 'woocommerce_navigation_home_url', 'admin.php?page=woocommerce' ),
-			),
 			array(
 				'title'      => __( 'Analytics', 'woocommerce-admin' ),
 				'capability' => 'manage_woocommerce',
@@ -290,26 +283,43 @@ class Menu {
 		}
 
 		$defaults            = array(
-			'id'           => '',
-			'title'        => '',
-			'parent'       => self::DEFAULT_PARENT,
-			'capability'   => 'manage_woocommerce',
-			'url'          => '',
-			'order'        => 100,
-			'migrate'      => true,
-			'menuId'       => 'primary',
-			'is_top_level' => false,
+			'id'         => '',
+			'title'      => '',
+			'parent'     => self::DEFAULT_PARENT,
+			'capability' => 'manage_woocommerce',
+			'url'        => '',
+			'order'      => 100,
+			'migrate'    => true,
+			'menuId'     => 'primary',
 		);
 		$menu_item           = wp_parse_args( $args, $defaults );
 		$menu_item['title']  = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
 		$menu_item['url']    = self::get_callback_url( $menu_item['url'] );
-		$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
+		$menu_item['parent'] = self::get_item_parent( $menu_item );
 
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
 
 		if ( isset( $args['url'] ) ) {
 			self::$callbacks[ $args['url'] ] = $menu_item['migrate'];
 		}
+	}
+
+	/**
+	 * Get the item's parent.
+	 *
+	 * @param array $menu_item Menu item args.
+	 * @return string
+	 */
+	public static function get_item_parent( $menu_item ) {
+		if ( 'home' === $menu_item['id'] ) {
+			return 'woocommerce';
+		}
+
+		if ( 'woocommerce' === $menu_item['parent'] ) {
+			return self::DEFAULT_PARENT;
+		}
+
+		return $menu_item['parent'];
 	}
 
 	/**

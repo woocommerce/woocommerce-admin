@@ -252,7 +252,7 @@ class PageController {
 			}
 
 			// Editing a product taxonomy term.
-			if ( ! empty( $_GET['tag_ID'] ) ) {
+			if ( ! empty( $_GET['tag_ID'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				$screen_pieces = array( $current_screen->taxonomy );
 			}
 		}
@@ -290,12 +290,13 @@ class PageController {
 			)
 		);
 
+		/* phpcs:disable WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized */
 		if ( ! empty( $_GET['page'] ) ) {
-			if ( in_array( $_GET['page'], array_keys( $pages_with_tabs ) ) ) { // WPCS: sanitization ok.
+			if ( in_array( $_GET['page'], array_keys( $pages_with_tabs ), true ) ) {
 				if ( ! empty( $_GET['tab'] ) ) {
 					$tab = wc_clean( wp_unslash( $_GET['tab'] ) );
 				} else {
-					$tab = $pages_with_tabs[ $_GET['page'] ]; // WPCS: sanitization ok.
+					$tab = $pages_with_tabs[ wp_unslash( $_GET['page'] ) ];
 				}
 
 				$screen_pieces[] = $tab;
@@ -303,7 +304,7 @@ class PageController {
 				if ( ! empty( $_GET['section'] ) ) {
 					if (
 						isset( $tabs_with_sections[ $tab ] ) &&
-						in_array( $_GET['section'], array_keys( $tabs_with_sections[ $tab ] ) ) // WPCS: sanitization ok.
+						in_array( $_GET['section'], array_keys( $tabs_with_sections[ $tab ] ), true )
 					) {
 						$screen_pieces[] = wc_clean( wp_unslash( $_GET['section'] ) );
 					}
@@ -315,6 +316,7 @@ class PageController {
 				}
 			}
 		}
+		/* phpcs:enable */
 
 		/**
 		 * The current screen id.
@@ -475,25 +477,20 @@ class PageController {
 	public static function add_nav_item( $options ) {
 		$navigation_enabled = Loader::is_feature_enabled( 'navigation' );
 
-		if ( ! $navigation_enabled ) {
+		if ( ! $navigation_enabled || ! $options['parent'] ) {
 			return;
 		}
 
 		$item_options = array(
-			'id'           => $options['id'],
-			'parent'       => $options['parent'],
-			'title'        => $options['title'],
-			'capability'   => $options['capability'],
-			'url'          => $options['path'],
-			'order'        => isset( $options['order'] ) ? $options['order'] : 100,
-			'is_top_level' => ( isset( $options['is_top_level'] ) && $options['is_top_level'] ) || ! $options['parent'],
+			'id'         => $options['id'],
+			'parent'     => $options['parent'],
+			'title'      => $options['title'],
+			'capability' => $options['capability'],
+			'url'        => $options['path'],
+			'order'      => isset( $options['order'] ) ? $options['order'] : 100,
 		);
 
-		if ( isset( $options['is_category'] ) && $options['is_category'] ) {
-			\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_category( $item_options );
-		} else {
-			\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_item( $item_options );
-		}
+		\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_item( $item_options );
 	}
 
 	/**

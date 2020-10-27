@@ -129,13 +129,15 @@ class Marketing {
 	protected function register_overview_page() {
 		global $submenu;
 
+		$navigation_enabled = Loader::is_feature_enabled( 'navigation' );
+
 		// First register the page.
 		PageController::get_instance()->register_page(
 			[
 				'id'     => 'woocommerce-marketing-overview',
 				'title'  => __( 'Overview', 'woocommerce-admin' ),
 				'path'   => 'wc-admin&path=/marketing',
-				'parent' => 'woocommerce-marketing',
+				'parent' => $navigation_enabled ? 'marketing' : 'woocommerce-marketing',
 			]
 		);
 
