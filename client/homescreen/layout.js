@@ -28,13 +28,17 @@ import './style.scss';
 import '../dashboard/style.scss';
 import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../inbox-panel';
+import OrdersPanel from './orders';
 import { WelcomeModal } from './welcome-modal';
+
+import { getUnreadOrders } from './orders/utils';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
 );
 
 export const Layout = ( {
+	hasUnreadOrders,
 	isBatchUpdating,
 	query,
 	requestingTaskList,
@@ -79,8 +83,11 @@ export const Layout = ( {
 		return (
 			<Fragment>
 				{ showInbox && (
-					<div className="woocommerce-homescreen-column is-inbox">
-						<InboxPanel />
+					<div className="woocommerce-homescreen-column">
+						<OrdersPanel hasActionableOrders={ hasUnreadOrders } />
+						<div className="is-inbox">
+							<InboxPanel isPanelEmpty={ isInboxPanelEmpty } />
+						</div>
 					</div>
 				) }
 				<div
@@ -165,6 +172,8 @@ export default compose(
 		const { isNotesRequesting } = select( NOTES_STORE_NAME );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
+		const hasUnreadOrders = getUnreadOrders( select );
+
 		const welcomeModalDismissed =
 			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
 			'yes';
@@ -177,6 +186,7 @@ export default compose(
 			! welcomeModalDismissedIsResolving && ! welcomeModalDismissed;
 
 		return {
+			hasUnreadOrders,
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			taskListComplete:

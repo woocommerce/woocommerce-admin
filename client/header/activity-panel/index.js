@@ -8,7 +8,6 @@ import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { uniqueId, find } from 'lodash';
-import PagesIcon from 'gridicons/dist/pages';
 import CrossIcon from 'gridicons/dist/cross-small';
 import classnames from 'classnames';
 import { Icon, lifesaver } from '@wordpress/icons';
@@ -24,7 +23,6 @@ import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
 import {
 	getUnreadNotes,
-	getUnreadOrders,
 	getUnapprovedReviews,
 	getUnreadStock,
 } from './unread-indicators';
@@ -40,9 +38,6 @@ const InboxPanel = lazy( () =>
 	import(
 		/* webpackChunkName: "activity-panels-inbox" */ '../../inbox-panel'
 	)
-);
-const OrdersPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-orders" */ './panels/orders' )
 );
 const StockPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-stock" */ './panels/stock' )
@@ -143,7 +138,6 @@ export class ActivityPanel extends Component {
 	getTabs() {
 		const {
 			hasUnreadNotes,
-			hasUnreadOrders,
 			hasUnapprovedReviews,
 			hasUnreadStock,
 			isEmbedded,
@@ -180,7 +174,7 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		const ordersStockAndReviews = showOrdersStockAndReviews
+		const stockAndReviews = showOrdersStockAndReviews
 			? [
 					{
 						name: 'orders',
@@ -217,20 +211,16 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		return [ inbox, ...ordersStockAndReviews, setup, help ].filter(
-			Boolean
-		);
+		return [ inbox, ...stockAndReviews, setup, help ].filter( Boolean );
 	}
 
 	getPanelContent( tab ) {
-		const { hasUnreadOrders, query, hasUnapprovedReviews } = this.props;
+		const { query, hasUnapprovedReviews } = this.props;
 		const { task } = query;
 
 		switch ( tab ) {
 			case 'inbox':
 				return <InboxPanel />;
-			case 'orders':
-				return <OrdersPanel hasActionableOrders={ hasUnreadOrders } />;
 			case 'stock':
 				return <StockPanel />;
 			case 'reviews':
@@ -404,7 +394,6 @@ ActivityPanel.defaultProps = {
 export default compose(
 	withSelect( ( select ) => {
 		const hasUnreadNotes = getUnreadNotes( select );
-		const hasUnreadOrders = getUnreadOrders( select );
 		const hasUnreadStock = getUnreadStock();
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
@@ -419,7 +408,6 @@ export default compose(
 
 		return {
 			hasUnreadNotes,
-			hasUnreadOrders,
 			hasUnreadStock,
 			hasUnapprovedReviews,
 			requestingTaskListOptions,
