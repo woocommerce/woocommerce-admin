@@ -19,6 +19,7 @@ import {
 	pencil,
 } from '@wordpress/icons';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -27,7 +28,7 @@ import './style.scss';
 import { QuickLinkCategory } from './quick-link-category';
 import { QuickLink } from './quick-link';
 
-function getItemsByCategory( siteUrl ) {
+export function getItemsByCategory( siteUrl ) {
 	return [
 		{
 			title: __( 'Marketing & Merchandising', 'woocommerce-admin' ),
@@ -167,6 +168,14 @@ export const StoreManagementLinks = () => {
 											link.linkType === 'external'
 										}
 										href={ link.href }
+										onClick={ () => {
+											recordEvent(
+												'home_quick_links_click',
+												{
+													task_name: listItemTag,
+												}
+											);
+										} }
 									/>
 								)
 							) }

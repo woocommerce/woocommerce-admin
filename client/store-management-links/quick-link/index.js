@@ -9,12 +9,15 @@ import { __experimentalText as Text } from '@wordpress/components';
  * Internal dependencies
  */
 import './style.scss';
-// TODO handle the clicking here
 
-export const QuickLink = ( { icon, title, href, isExternal } ) => {
+export const QuickLink = ( { icon, title, href, isExternal, onClick } ) => {
 	return (
 		<div className="woocommerce-quick-links__item">
-			<a href={ href } className="woocommerce-quick-links__item-link">
+			<a
+				onClick={ ( e ) => onClick( e ) }
+				href={ href }
+				className="woocommerce-quick-links__item-link"
+			>
 				<Icon
 					className="woocommerce-quick-links__item-link__icon"
 					icon={ icon }
