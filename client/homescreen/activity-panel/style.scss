@@ -52,7 +52,7 @@
 }
 
 .components-panel__body-title {
-	.is-opened & {
+	.woocommerce-accordion-card .is-opened & {
 		border-bottom: 1px solid $gray-200;
 	}
 }
