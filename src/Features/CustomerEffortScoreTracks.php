@@ -13,26 +13,8 @@ defined( 'ABSPATH' ) || exit;
  * Triggers customer effort score on several different actions.
  */
 class CustomerEffortScoreTracks {
-	/**
-	 * Class instance.
-	 *
-	 * @var CustomerEffortScoreTracks instance
-	 */
-	protected static $instance = null;
-
 	const CES_TRACKS_QUEUE_OPTION_NAME       = 'woocommerce_ces_tracks_queue';
 	const CLEAR_CES_TRACKS_QUEUE_OPTION_NAME = 'woocommerce_clear_ces_tracks_queue';
-
-	/**
-	 * Get class instance.
-	 */
-	public static function get_instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
 
 	/**
 	 * Constructor. Sets up filters to hook into WooCommerce.
