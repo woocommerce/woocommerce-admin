@@ -13,12 +13,14 @@ jest.mock( '../panels', () => {
 	return {
 		getAllPanels: jest.fn().mockImplementation( () => [
 			{
+				id: 'custom-panel-1',
 				title: 'custom-panel-1',
 				count: 10000,
 				initialOpen: true,
 				panel: <span>Custom panel 1</span>,
 			},
 			{
+				id: 'custom-panel-2',
 				title: 'custom-panel-2',
 				count: 20000,
 				initialOpen: false,

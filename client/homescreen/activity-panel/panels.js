@@ -13,6 +13,7 @@ export function getAllPanels( { countUnreadOrders } ) {
 		{
 			className: 'woocommerce-homescreen-card',
 			count: countUnreadOrders,
+			id: 'orders-panel',
 			initialOpen: true,
 			panel: (
 				<OrdersPanel hasActionableOrders={ countUnreadOrders > 0 } />

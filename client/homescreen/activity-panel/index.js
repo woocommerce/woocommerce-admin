@@ -20,17 +20,18 @@ export const ActivityPanel = () => {
 	return (
 		<Accordion>
 			<Fragment>
-				{ panels.map( ( panelData, index ) => {
+				{ panels.map( ( panelData ) => {
 					const {
 						className,
 						count,
+						id,
 						initialOpen,
 						panel,
 						title,
 					} = panelData;
 					return (
 						<AccordionPanel
-							key={ index }
+							key={ id }
 							className={ className }
 							count={ count }
 							initialOpen={ initialOpen }
