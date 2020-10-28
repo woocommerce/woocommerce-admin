@@ -213,7 +213,7 @@ class OrdersPanel extends Component {
 								)
 							}
 						>
-							{ __( 'Open' ) }
+							{ __( 'Open', 'woocommerce-admin' ) }
 						</Button>
 					}
 				></ActivityCard>
@@ -224,6 +224,7 @@ class OrdersPanel extends Component {
 				{ cards }
 				<ActivityOutboundLink
 					href={ 'edit.php?post_type=shop_order' }
+					icon={ false }
 					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
 				>
 					{ __( 'Manage all orders', 'woocommerce-admin' ) }

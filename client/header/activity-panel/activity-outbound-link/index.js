@@ -12,7 +12,7 @@ import { Link } from '@woocommerce/components';
 import './style.scss';
 
 const ActivityOutboundLink = ( props ) => {
-	const { href, type, className, children, ...restOfProps } = props;
+	const { href, type, className, icon, children, ...restOfProps } = props;
 	const classes = classnames(
 		'woocommerce-layout__activity-panel-outbound-link',
 		className
@@ -25,7 +25,7 @@ const ActivityOutboundLink = ( props ) => {
 			{ ...restOfProps }
 		>
 			{ children }
-			<Gridicon icon="arrow-right" />
+			{ icon && <Gridicon icon="arrow-right" /> }
 		</Link>
 	);
 };
@@ -34,9 +34,11 @@ ActivityOutboundLink.propTypes = {
 	href: PropTypes.string.isRequired,
 	type: PropTypes.oneOf( [ 'wp-admin', 'wc-admin', 'external' ] ).isRequired,
 	className: PropTypes.string,
+	icon: PropTypes.bool,
 };
 
 ActivityOutboundLink.defaultProps = {
+	icon: true,
 	type: 'wp-admin',
 };
 

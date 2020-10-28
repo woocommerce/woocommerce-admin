@@ -22,5 +22,7 @@ render: function() {
 
 ## Props
 
+* `className`: Additional class names.
 * `href` (required): The resource to link to.
+* `icon`: Whether the "arrow-right" icon is visible or not. Default: true.
 * `type` (required): Type of link. For wp-admin and wc-admin, the correct prefix is appended. Accepts: wc-admin, wp-admin, external.
