@@ -407,6 +407,7 @@ class PageController {
 	 *   @type string      id           Id to reference the page.
 	 *   @type string      title        Page title. Used in menus and breadcrumbs.
 	 *   @type string|null parent       Parent ID. Null for new top level page.
+	 *   @type string|null category     Category ID. Null to forgo adding to the WooCommerce Navigation.
 	 *   @type string      path         Path for this page, full path in app context; ex /analytics/report
 	 *   @type string      capability   Capability needed to access the page.
 	 *   @type string      icon         Icon. Dashicons helper class, base64-encoded SVG, or 'none'.
@@ -468,6 +469,7 @@ class PageController {
 	 *   @type string      id           Id to reference the page.
 	 *   @type string      title        Page title. Used in menus and breadcrumbs.
 	 *   @type string|null parent       Parent ID. Null for new top level page.
+	 *   @type string|null category     Category ID. Null to forgo adding to the WooCommerce Navigation.
 	 *   @type string      path         Path for this page, full path in app context; ex /analytics/report
 	 *   @type string      capability   Capability needed to access the page.
 	 *   @type string      icon         Icon. Dashicons helper class, base64-encoded SVG, or 'none'.
@@ -477,13 +479,13 @@ class PageController {
 	public static function add_nav_item( $options ) {
 		$navigation_enabled = Loader::is_feature_enabled( 'navigation' );
 
-		if ( ! $navigation_enabled || ! $options['parent'] ) {
+		if ( ! $navigation_enabled || ! $options['category'] ) {
 			return;
 		}
 
 		$item_options = array(
 			'id'         => $options['id'],
-			'parent'     => $options['parent'],
+			'parent'     => $options['category'],
 			'title'      => $options['title'],
 			'capability' => $options['capability'],
 			'url'        => $options['path'],

@@ -84,11 +84,12 @@ class AnalyticsDashboard {
 	public function register_page() {
 		wc_admin_register_page(
 			array(
-				'id'     => 'home',
-				'title'  => __( 'Home', 'woocommerce-admin' ),
-				'parent' => 'woocommerce',
-				'path'   => self::MENU_SLUG,
-				'order'  => 0,
+				'id'       => 'home',
+				'title'    => __( 'Home', 'woocommerce-admin' ),
+				'parent'   => 'woocommerce',
+				'category' => 'woocommerce',
+				'path'     => self::MENU_SLUG,
+				'order'    => 0,
 			)
 		);
 	}

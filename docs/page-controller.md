@@ -90,6 +90,7 @@ Register pages with `wc_admin_register_page()` using these parameters:
 
 * `id` - Identifies the page with the controller. Required.
 * `parent` - Denotes the page as a child of `parent`. Used for breadcrumbs. Optional.
+* `category` - Specifies the category the item should fall under in the new WooCommerce Navigation. Optional.
 * `title` - Page title. Used to build breadcrumbs. String or array of breadcrumb pieces. Required.
 * `path` - Page path (relative to `#wc-admin`). Used for identifying this page and for linking breadcrumb pieces when this page is a `parent`. Required.
 * `capability` - User capability needed to access this page. Optional (defaults to `manage_options`).
