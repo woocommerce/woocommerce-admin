@@ -6,6 +6,7 @@ import { Button } from '@wordpress/components';
 import { Icon, wordpress } from '@wordpress/icons';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { useSelect } from '@wordpress/data';
+import { useEffect } from 'react';
 
 const Header = () => {
 	const siteTitle = getSetting( 'siteTitle', '' );
@@ -14,6 +15,22 @@ const Header = () => {
 	const toggleFolded = () => {
 		document.body.classList.toggle( 'is-folded' );
 	};
+
+	const foldOnMobile = ( screenWidth ) => {
+		if ( screenWidth <= 960 ) {
+			document.body.classList.add( 'is-folded' );
+		}
+	};
+
+	useEffect( () => {
+		foldOnMobile( document.body.clientWidth );
+
+		window.addEventListener(
+			'orientationchange',
+			( e ) => foldOnMobile( e.target.screen.availWidth ),
+			false
+		);
+	}, [] );
 
 	let buttonIcon = <Icon size="36px" icon={ wordpress } />;
 
