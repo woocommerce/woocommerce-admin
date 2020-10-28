@@ -10,9 +10,9 @@ use Automattic\WooCommerce\Admin\Loader;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Navigation_Feedback_Follow_Up
+ * NavigationFeedbackFollowUp
  */
-class Navigation_Feedback_Follow_Up {
+class NavigationFeedbackFollowUp {
 	/**
 	 * Note traits.
 	 */
