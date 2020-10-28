@@ -121,6 +121,7 @@ class Analytics {
 			'icon'     => 'dashicons-chart-bar',
 			'position' => 56, // After WooCommerce & Product menu items.
 			'order'    => 10,
+			'category' => false,
 		);
 
 		$report_pages = array(

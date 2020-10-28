@@ -479,7 +479,7 @@ class PageController {
 	public static function add_nav_item( $options ) {
 		$navigation_enabled = Loader::is_feature_enabled( 'navigation' );
 
-		if ( ! $navigation_enabled || ! $options['category'] ) {
+		if ( ! $navigation_enabled || ! isset( $options['category'] ) ) {
 			return;
 		}
 
