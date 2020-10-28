@@ -27,7 +27,29 @@
 	&.is-folded {
 		#wpcontent,
 		#wpfooter {
-			margin-left: 60px;
+			margin-left: 0;
+		}
+
+		.woocommerce-layout__header {
+			margin-left: $header-height;
+		}
+
+		#woocommerce-embedded-navigation {
+			width: $header-height;
+			height: $header-height;
+			z-index: 10;
+
+			.woocommerce-navigation-header > * {
+				display: none;
+			}
+
+			.woocommerce-navigation-header__site-icon {
+				display: block;
+			}
+
+			.components-navigation {
+				display: none;
+			}
 		}
 	}
 
@@ -38,7 +60,6 @@
 		width: $navigation-width;
 		height: 100%;
 		box-sizing: border-box;
-		// @todo This should be updated to G2.darkGray.primary when possible.
-		background-color: #1e1e1e;
+		background-color: $gray-900;
 	}
 }
