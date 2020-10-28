@@ -94,10 +94,10 @@ CustomerEffortScoreTracks.propTypes = {
 	 * The label displayed in the modal.
 	 */
 	label: PropTypes.string.isRequired,
-    /**
-     * The array of actions that the CES modal has been shown for.
-     */
-    cesShownForActions: PropTypes.arrayOf( PropTypes.string ).isRequired,
+	/**
+	 * The array of actions that the CES modal has been shown for.
+	 */
+	cesShownForActions: PropTypes.arrayOf( PropTypes.string ).isRequired,
 	/**
 	 * Whether items are still resolving.
 	 */
@@ -111,7 +111,6 @@ CustomerEffortScoreTracks.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
-		// TODO take props and just work this out here.
 		const cesShownForActions =
 			getOption( SHOWN_FOR_ACTIONS_OPTION_NAME ) || [];
 		const resolving = isResolving( 'getOption', [
