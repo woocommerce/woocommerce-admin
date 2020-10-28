@@ -57,7 +57,7 @@ function CustomerEffortScoreTracks( {
 	}
 
 	const trackCallback = ( score ) => {
-		recordEvent( 'wcadmin_ces_feedback', {
+		recordEvent( 'ces_feedback', {
 			action,
 			score,
 			...trackProps,
