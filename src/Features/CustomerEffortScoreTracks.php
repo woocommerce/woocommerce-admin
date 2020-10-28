@@ -14,13 +14,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class CustomerEffortScoreTracks {
 	/**
-	 * Class instance.
-	 *
-	 * @var CustomerEffortScoreTracks instance
-	 */
-	protected static $instance = null;
-
-	/**
 	 * Option name for the CES Tracks queue.
 	 */
 	const CES_TRACKS_QUEUE_OPTION_NAME = 'woocommerce_ces_tracks_queue';
@@ -44,17 +37,6 @@ class CustomerEffortScoreTracks {
 	 * Action name for product update.
 	 */
 	const PRODUCT_UPDATE_ACTION_NAME = 'product_update';
-
-	/**
-	 * Get class instance.
-	 */
-	public static function get_instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
 
 	/**
 	 * Constructor. Sets up filters to hook into WooCommerce.
