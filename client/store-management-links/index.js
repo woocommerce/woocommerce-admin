@@ -121,19 +121,19 @@ export function getLinkTypeAndHref( { path, tab = null, type, href = null } ) {
 		{
 			'wc-admin': {
 				href: `admin.php?page=wc-admin&path=%2F${ path }`,
-				isExternal: false,
+				linkType: 'wc-admin',
 			},
 			'wp-admin': {
 				href: path,
-				isExternal: false,
+				linkType: 'wp-admin',
 			},
 			'wc-settings': {
 				href: `admin.php?page=wc-settings&tab=${ tab }`,
-				isExternal: false,
+				linkType: 'wp-admin',
 			},
 		}[ type ] || {
 			href,
-			isExternal: true,
+			linkType: 'external',
 		}
 	);
 }
@@ -148,7 +148,7 @@ export const generateExtensionLinks = ( links ) => {
 				icon,
 				link: {
 					href,
-					isExternal: false,
+					linkType: 'extension',
 				},
 				title,
 				listItemTag: 'quick-links-extension-link',
@@ -200,7 +200,9 @@ export const StoreManagementLinks = () => {
 										icon={ icon }
 										key={ listItemTag }
 										title={ title }
-										isExternal={ link.isExternal }
+										isExternal={
+											link.linkType === 'external'
+										}
 										href={ link.href }
 										onClick={ () => {
 											recordEvent(

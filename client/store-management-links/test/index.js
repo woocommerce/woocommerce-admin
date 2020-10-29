@@ -32,7 +32,7 @@ describe( 'getLinkTypeAndHref', () => {
 			path: 'foo/bar',
 		} );
 
-		expect( result.isExternal ).toBe( false );
+		expect( result.linkType ).toEqual( 'wc-admin' );
 		expect( result.href ).toEqual(
 			'admin.php?page=wc-admin&path=%2Ffoo/bar'
 		);
@@ -44,7 +44,7 @@ describe( 'getLinkTypeAndHref', () => {
 			path: '/foo/bar',
 		} );
 
-		expect( result.isExternal ).toBe( false );
+		expect( result.linkType ).toEqual( 'wp-admin' );
 		expect( result.href ).toEqual( '/foo/bar' );
 	} );
 
@@ -54,7 +54,7 @@ describe( 'getLinkTypeAndHref', () => {
 			tab: 'foo',
 		} );
 
-		expect( result.isExternal ).toBe( false );
+		expect( result.linkType ).toEqual( 'wp-admin' );
 		expect( result.href ).toEqual( 'admin.php?page=wc-settings&tab=foo' );
 	} );
 
@@ -63,7 +63,7 @@ describe( 'getLinkTypeAndHref', () => {
 			href: 'http://example.com',
 		} );
 
-		expect( result.isExternal ).toBe( true );
+		expect( result.linkType ).toEqual( 'external' );
 		expect( result.href ).toEqual( 'http://example.com' );
 	} );
 } );
@@ -112,7 +112,7 @@ describe( 'generateExtensionLinks', () => {
 				icon: validFullUrl.icon,
 				link: {
 					href: validFullUrl.href,
-					isExternal: false,
+					linkType: 'extension',
 				},
 				title: validFullUrl.title,
 				listItemTag: 'quick-links-extension-link',
@@ -124,7 +124,7 @@ describe( 'generateExtensionLinks', () => {
 				icon: validRelativeUrl.icon,
 				link: {
 					href: validRelativeUrl.href,
-					isExternal: false,
+					linkType: 'extension',
 				},
 				title: validRelativeUrl.title,
 				listItemTag: 'quick-links-extension-link',
