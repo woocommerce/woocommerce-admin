@@ -16,6 +16,7 @@ describe( 'QuickLinkCategory', () => {
 			</QuickLinkCategory>
 		);
 
+		expect( queryByText( 'hello world' ) ).not.toBeEmptyDOMElement();
 		expect( queryByText( 'Test' ) ).not.toBeEmptyDOMElement();
 	} );
 } );

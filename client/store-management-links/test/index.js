@@ -5,7 +5,7 @@ jest.mock( '@woocommerce/tracks', () => ( {
 
 jest.mock( '@woocommerce/wc-admin-settings', () => ( {
 	...jest.requireActual( '@woocommerce/wc-admin-settings' ),
-	getSetting: jest.fn(),
+	getSetting: jest.fn( () => 'https://fake-site-url.com' ),
 } ) );
 
 /**

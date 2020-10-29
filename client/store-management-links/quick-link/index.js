@@ -4,17 +4,20 @@
 import React from '@wordpress/element';
 import { external, Icon } from '@wordpress/icons';
 import { __experimentalText as Text } from '@wordpress/components';
+import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 
-export const QuickLink = ( { icon, title, href, isExternal, onClick } ) => {
+export const QuickLink = ( { icon, title, href, linkType, onClick } ) => {
+	const isExternal = linkType === 'external';
+
 	return (
 		<div className="woocommerce-quick-links__item">
-			<a
-				onClick={ ( e ) => onClick( e ) }
+			<Link
+				onClick={ onClick }
 				href={ href }
 				className="woocommerce-quick-links__item-link"
 			>
@@ -30,7 +33,7 @@ export const QuickLink = ( { icon, title, href, isExternal, onClick } ) => {
 					{ title }
 				</Text>
 				{ isExternal && <Icon icon={ external } /> }
-			</a>
+			</Link>
 		</div>
 	);
 };

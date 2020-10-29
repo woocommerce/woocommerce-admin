@@ -195,15 +195,18 @@ export const StoreManagementLinks = () => {
 							title={ category.title }
 						>
 							{ category.items.map(
-								( { icon, listItemTag, title, link } ) => (
+								( {
+									icon,
+									listItemTag,
+									title,
+									link: { href, linkType },
+								} ) => (
 									<QuickLink
 										icon={ icon }
 										key={ listItemTag }
 										title={ title }
-										isExternal={
-											link.linkType === 'external'
-										}
-										href={ link.href }
+										linkType={ linkType }
+										href={ href }
 										onClick={ () => {
 											recordEvent(
 												'home_quick_links_click',

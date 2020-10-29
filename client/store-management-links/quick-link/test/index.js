@@ -12,10 +12,10 @@ import userEvent from '@testing-library/user-event';
 import { QuickLink } from '../index';
 
 describe( 'QuickLink', () => {
-	it( 'renders an title, href and icon based on props passed', () => {
+	it( 'renders an title and href based on props passed', () => {
 		const { queryByText, queryByRole } = render(
 			<QuickLink
-				isExternal
+				linkType="external"
 				title="hello world"
 				icon={ brush }
 				href="https://example.com"
@@ -34,7 +34,7 @@ describe( 'QuickLink', () => {
 
 		const { queryByRole } = render(
 			<QuickLink
-				isExternal
+				linkType="external"
 				title="hello world"
 				icon={ brush }
 				href="https://example.com"
