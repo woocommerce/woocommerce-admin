@@ -26,6 +26,7 @@ import { Controller, getPages } from './controller';
 import { Header } from '../header';
 import Notices from './notices';
 import TransientNotices from './transient-notices';
+import './navigation';
 
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
@@ -77,9 +78,16 @@ class _Layout extends Component {
 			isJetpackConnected,
 		} = this.props;
 
+		const navigationFlag = {
+			has_navigation: !! window.wcNavigation,
+		};
+
 		if ( isEmbedded ) {
 			const path = document.location.pathname + document.location.search;
-			recordPageView( path, { is_embedded: true } );
+			recordPageView( path, {
+				is_embedded: true,
+				...navigationFlag,
+			} );
 			return;
 		}
 
@@ -100,6 +108,7 @@ class _Layout extends Component {
 			jetpack_installed: installedPlugins.includes( 'jetpack' ),
 			jetpack_active: activePlugins.includes( 'jetpack' ),
 			jetpack_connected: isJetpackConnected,
+			...navigationFlag,
 		} );
 	}
 
@@ -222,15 +231,19 @@ export const PageLayout = compose(
 		: identity
 )( _PageLayout );
 
-export class EmbedLayout extends Component {
-	render() {
-		return (
-			<Layout
-				page={ {
-					breadcrumbs: getSetting( 'embedBreadcrumbs', [] ),
-				} }
-				isEmbedded
-			/>
-		);
-	}
-}
+const _EmbedLayout = () => (
+	<Layout
+		page={ {
+			breadcrumbs: getSetting( 'embedBreadcrumbs', [] ),
+		} }
+		isEmbedded
+	/>
+);
+
+export const EmbedLayout = compose(
+	window.wcSettings.preloadOptions
+		? withOptionsHydration( {
+				...window.wcSettings.preloadOptions,
+		  } )
+		: identity
+)( _EmbedLayout );

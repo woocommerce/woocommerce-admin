@@ -13,54 +13,134 @@ defined( 'ABSPATH' ) || exit;
  * Triggers customer effort score on several different actions.
  */
 class CustomerEffortScoreTracks {
-	/**
-	 * Class instance.
-	 *
-	 * @var CustomerEffortScoreTracks instance
-	 */
-	protected static $instance = null;
-
-	/**
-	 * Get class instance.
-	 */
-	public static function get_instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
+	const CES_TRACKS_QUEUE_OPTION_NAME       = 'woocommerce_ces_tracks_queue';
+	const CLEAR_CES_TRACKS_QUEUE_OPTION_NAME = 'woocommerce_clear_ces_tracks_queue';
 
 	/**
 	 * Constructor. Sets up filters to hook into WooCommerce.
 	 */
 	public function __construct() {
-		add_filter( 'add_meta_boxes_product', array( $this, 'add_meta_boxes_product' ) );
+		add_action(
+			'transition_post_status',
+			array(
+				$this,
+				'run_on_transition_post_status',
+			),
+			10,
+			3
+		);
+		add_action(
+			'admin_init',
+			array(
+				$this,
+				'maybe_clear_ces_tracks_queue',
+			)
+		);
 	}
 
 	/**
-	 * Hook into the Publish button for products, to trigger the customer
-	 * effort score widget after save.
+	 * Hook into the post status lifecycle, only interested in products that
+	 * are either being added or edited.
 	 *
-	 * @param WP_Post $post The post, not used.
+	 * @param string $new_status The new status.
+	 * @param string $old_status The old status.
+	 * @param Post   $post       The post.
 	 */
-	public function add_meta_boxes_product( $post ) {
-		wc_enqueue_js(
-			"
-			(function() {
-				if ( $( 'h1.wp-heading-inline' ).text().trim() !== '" . __( 'Add new product', 'woocommerce-admin' ) . "' ) {
-					return;
-				}
+	public function run_on_transition_post_status(
+		$new_status,
+		$old_status,
+		$post
+	) {
+		if ( 'product' !== $post->post_type ) {
+			return;
+		}
 
-				$( '#publish' ).click( function() {
-					var json = JSON.stringify( [ {
-						trackName: 'product_add_publish_effort_score',
-						label: '" . __( 'Provide effort for adding a new product', 'woocommerce-admin' ) . "',					
-					} ] );
-					localStorage.setItem( 'customerEffortScoreTracks', json );
-				} );
-			})();
-			"
+		if ( 'publish' !== $new_status ) {
+			return;
+		}
+
+		if ( 'publish' !== $old_status ) {
+			$this->enqueue_ces_survey_for_new_product();
+		} else {
+			$this->enqueue_ces_survey_for_edited_product();
+		}
+	}
+
+	/**
+	 * Get the current published product count.
+	 *
+	 * @return integer The current published product count.
+	 */
+	private function get_product_count() {
+		$query         = new \WC_Product_Query(
+			array(
+				'limit'    => 1,
+				'paginate' => true,
+				'return'   => 'ids',
+				'status'   => array( 'publish' ),
+			)
 		);
+		$products      = $query->get_products();
+		$product_count = intval( $products->total );
+
+		return $product_count;
+	}
+
+	/**
+	 * Enqueue the CES survey trigger for a new product.
+	 */
+	private function enqueue_ces_survey_for_new_product() {
+		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+
+		$queue[] = array(
+			'track_name' => 'product_add_publish_effort_score',
+			'label'      => __(
+				'How easy was it to add a product?',
+				'woocommerce-admin'
+			),
+			'props'      => array(
+				'product_count' => $this->get_product_count(),
+			),
+		);
+
+		update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, $queue );
+	}
+
+	/**
+	 * Enqueue the CES survey trigger for an existing product.
+	 */
+	private function enqueue_ces_survey_for_edited_product() {
+		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+
+		$queue[] = array(
+			'track_name' => 'product_update_effort_score',
+			'label'      => __(
+				'How easy was it to edit your product?',
+				'woocommerce-admin'
+			),
+			'props'      => array(
+				'product_count' => $this->get_product_count(),
+			),
+		);
+
+		update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, $queue );
+	}
+
+	/**
+	 * Maybe clear the CES tracks queue, executed on every page load. If the
+	 * clear option is set it clears the queue. In practice, this executes a
+	 * page load after the queued CES tracks are displayed on the client, which
+	 * sets the clear option.
+	 */
+	public function maybe_clear_ces_tracks_queue() {
+		$clear_ces_tracks_queue = get_option(
+			self::CLEAR_CES_TRACKS_QUEUE_OPTION_NAME,
+			false
+		);
+
+		if ( $clear_ces_tracks_queue ) {
+			update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+			update_option( self::CLEAR_CES_TRACKS_QUEUE_OPTION_NAME, false );
+		}
 	}
 }

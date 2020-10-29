@@ -72,6 +72,7 @@ class AnalyticsDashboard {
 				'dashboard_chart_type',
 				'dashboard_chart_interval',
 				'dashboard_leaderboard_rows',
+				'homepage_layout',
 				'homepage_stats',
 			)
 		);
@@ -83,10 +84,12 @@ class AnalyticsDashboard {
 	public function register_page() {
 		wc_admin_register_page(
 			array(
-				'id'     => 'woocommerce-home',
-				'title'  => __( 'Home', 'woocommerce-admin' ),
-				'parent' => 'woocommerce',
-				'path'   => self::MENU_SLUG,
+				'id'           => 'woocommerce-home',
+				'title'        => __( 'Home', 'woocommerce-admin' ),
+				'parent'       => 'woocommerce',
+				'path'         => self::MENU_SLUG,
+				'is_top_level' => true,
+				'order'        => 0,
 			)
 		);
 	}

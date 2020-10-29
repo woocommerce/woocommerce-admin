@@ -33,6 +33,7 @@ const externals = {
 	'@wordpress/html-entities': { this: [ 'wp', 'htmlEntities' ] },
 	'@wordpress/i18n': { this: [ 'wp', 'i18n' ] },
 	'@wordpress/data-controls': { this: [ 'wp', 'dataControls' ] },
+	'@wordpress/plugins': { this: [ 'wp', 'plugins' ] },
 	tinymce: 'tinymce',
 	moment: 'moment',
 	react: 'React',
@@ -125,6 +126,7 @@ const webpackConfig = {
 			},
 			{
 				test: /\.s?css$/,
+				exclude: /storybook\/wordpress/,
 				use: [
 					MiniCssExtractPlugin.loader,
 					'css-loader',

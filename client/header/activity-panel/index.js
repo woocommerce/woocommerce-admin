@@ -116,14 +116,14 @@ export class ActivityPanel extends Component {
 		}
 	}
 
-	// @todo Pull in dynamic unread status/count
-	getTabs() {
+	isHomescreen() {
+		const { location } = this.props.getHistory();
+
+		return location.pathname === '/';
+	}
+
+	isPerformingSetupTask() {
 		const {
-			hasUnreadNotes,
-			hasUnreadOrders,
-			hasUnapprovedReviews,
-			hasUnreadStock,
-			isEmbedded,
 			requestingTaskListOptions,
 			taskListComplete,
 			taskListHidden,
@@ -136,12 +136,32 @@ export class ActivityPanel extends Component {
 			( requestingTaskListOptions === true ||
 				( taskListHidden === false && taskListComplete === false ) );
 
-		// Don't show the inbox on the Home screen.
-		const { location } = this.props.getHistory();
+		return isPerformingSetupTask;
+	}
 
+	// @todo Pull in dynamic unread status/count
+	getTabs() {
+		const {
+			hasUnreadNotes,
+			hasUnreadOrders,
+			hasUnapprovedReviews,
+			hasUnreadStock,
+			isEmbedded,
+			taskListComplete,
+			taskListHidden,
+		} = this.props;
+
+		const isPerformingSetupTask = this.isPerformingSetupTask();
+
+		// Don't show the inbox on the Home screen.
 		const showInbox =
-			( isEmbedded || location.pathname !== '/' ) &&
-			! isPerformingSetupTask;
+			( isEmbedded || ! this.isHomescreen() ) && ! isPerformingSetupTask;
+
+		const showOrdersStockAndReviews =
+			( taskListComplete || taskListHidden ) && ! isPerformingSetupTask;
+
+		const showStoreSetup =
+			! taskListComplete && ! taskListHidden && ! isPerformingSetupTask;
 
 		const inbox = showInbox
 			? {
@@ -152,46 +172,42 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		const setup =
-			! taskListComplete && ! isPerformingSetupTask
-				? {
-						name: 'setup',
-						title: __( 'Store Setup', 'woocommerce-admin' ),
-						icon: <SetupProgress />,
-				  }
-				: null;
+		const setup = showStoreSetup
+			? {
+					name: 'setup',
+					title: __( 'Store Setup', 'woocommerce-admin' ),
+					icon: <SetupProgress />,
+			  }
+			: null;
 
-		const ordersStockAndReviews =
-			taskListComplete && ! isPerformingSetupTask
-				? [
-						{
-							name: 'orders',
-							title: __( 'Orders', 'woocommerce-admin' ),
-							icon: <PagesIcon />,
-							unread: hasUnreadOrders,
-						},
-						manageStock === 'yes' && {
-							name: 'stock',
-							title: __( 'Stock', 'woocommerce-admin' ),
-							icon: (
-								<i className="material-icons-outlined">
-									widgets
-								</i>
-							),
-							unread: hasUnreadStock,
-						},
-						reviewsEnabled === 'yes' && {
-							name: 'reviews',
-							title: __( 'Reviews', 'woocommerce-admin' ),
-							icon: (
-								<i className="material-icons-outlined">
-									star_border
-								</i>
-							),
-							unread: hasUnapprovedReviews,
-						},
-				  ].filter( Boolean )
-				: [];
+		const ordersStockAndReviews = showOrdersStockAndReviews
+			? [
+					{
+						name: 'orders',
+						title: __( 'Orders', 'woocommerce-admin' ),
+						icon: <PagesIcon />,
+						unread: hasUnreadOrders,
+					},
+					manageStock === 'yes' && {
+						name: 'stock',
+						title: __( 'Stock', 'woocommerce-admin' ),
+						icon: (
+							<i className="material-icons-outlined">widgets</i>
+						),
+						unread: hasUnreadStock,
+					},
+					reviewsEnabled === 'yes' && {
+						name: 'reviews',
+						title: __( 'Reviews', 'woocommerce-admin' ),
+						icon: (
+							<i className="material-icons-outlined">
+								star_border
+							</i>
+						),
+						unread: hasUnapprovedReviews,
+					},
+			  ].filter( Boolean )
+			: [];
 
 		const help = isPerformingSetupTask
 			? {
@@ -244,6 +260,10 @@ export class ActivityPanel extends Component {
 		const clearPanel = () => {
 			this.clearPanel();
 		};
+
+		if ( currentTab === 'display-options' ) {
+			return null;
+		}
 
 		if ( currentTab === 'setup' ) {
 			const currentLocation = window.location.href;
@@ -307,6 +327,7 @@ export class ActivityPanel extends Component {
 
 	render() {
 		const tabs = this.getTabs();
+		const { isEmbedded } = this.props;
 		const { mobileOpen, currentTab, isPanelOpen } = this.state;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
@@ -320,6 +341,10 @@ export class ActivityPanel extends Component {
 					'woocommerce-admin'
 			  )
 			: __( 'View Activity Panel', 'woocommerce-admin' );
+
+		const isPerformingSetupTask = this.isPerformingSetupTask();
+		const showDisplayOptions =
+			! isEmbedded && this.isHomescreen() && ! isPerformingSetupTask;
 
 		return (
 			<div>
@@ -362,6 +387,7 @@ export class ActivityPanel extends Component {
 							onTabClick={ ( tab, tabOpen ) => {
 								this.togglePanel( tab, tabOpen );
 							} }
+							showDisplayOptions={ showDisplayOptions }
 						/>
 						{ this.renderPanel() }
 					</div>

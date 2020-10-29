@@ -3,12 +3,12 @@
  */
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
-import { Spinner } from '@wordpress/components';
 import classNames from 'classnames';
+import { Spinner } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import PropTypes from 'prop-types';
-import { Card, Pagination, EmptyContent } from '@woocommerce/components';
+import { Pagination, EmptyContent } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -17,10 +17,13 @@ import { recordEvent } from '@woocommerce/tracks';
 import './style.scss';
 import { Slider } from '../../components';
 import { STORE_KEY } from '../../data/constants';
+import Card from '../card';
+import ReadBlogMessage from './ReadBlogMessage';
 
 const KnowledgeBase = ( {
 	posts,
 	isLoading,
+	error,
 	title,
 	description,
 	category,
@@ -109,15 +112,29 @@ const KnowledgeBase = ( {
 	};
 
 	const renderEmpty = () => {
-		const emptyTitle = __(
-			'There was an error loading knowledge base posts. Please check again later.',
+		const emptyTitle = __( 'No posts yet', 'woocommerce-admin' );
+
+		return (
+			<EmptyContent
+				title={ emptyTitle }
+				message={ <ReadBlogMessage /> }
+				illustration=""
+				actionLabel=""
+			/>
+		);
+	};
+
+	const renderError = () => {
+		const errorTitle = __(
+			"Oops, our posts aren't loading right now",
 			'woocommerce-admin'
 		);
 
 		return (
 			<EmptyContent
-				title={ emptyTitle }
-				illustrationWidth={ 250 }
+				title={ errorTitle }
+				message={ <ReadBlogMessage /> }
+				illustration=""
 				actionLabel=""
 			/>
 		);
@@ -146,6 +163,11 @@ const KnowledgeBase = ( {
 		if ( isLoading ) {
 			return <Spinner />;
 		}
+
+		if ( error ) {
+			return renderError();
+		}
+
 		return posts.length === 0 ? renderEmpty() : renderPosts();
 	};
 
@@ -202,11 +224,14 @@ export { KnowledgeBase };
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { getBlogPosts, isResolving } = select( STORE_KEY );
+		const { getBlogPosts, getBlogPostsError, isResolving } = select(
+			STORE_KEY
+		);
 
 		return {
 			posts: getBlogPosts( props.category ),
 			isLoading: isResolving( 'getBlogPosts', [ props.category ] ),
+			error: getBlogPostsError( props.category ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

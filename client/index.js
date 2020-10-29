@@ -13,7 +13,8 @@ import {
  */
 import './stylesheets/_index.scss';
 import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
-import CustomerEffortScoreTracks from './customer-effort-score-tracks';
+import { CustomerEffortScoreTracksContainer } from './customer-effort-score-tracks';
+import Navigation from './navigation';
 
 // Modify webpack pubilcPath at runtime based on location of WordPress Plugin.
 // eslint-disable-next-line no-undef,camelcase
@@ -74,20 +75,20 @@ if ( appRoot ) {
 	);
 }
 
-// Set up customer effort score tracking.
-const root                           = appRoot || embeddedRoot;
-const customerEffortScoreTracksQueue = JSON.parse(
-	window.localStorage.getItem( 'customerEffortScoreTracks' ) || '[]'
+const navigationRoot = document.getElementById(
+	'woocommerce-embedded-navigation'
 );
-customerEffortScoreTracksQueue.forEach( item => {
+
+if ( navigationRoot ) {
+	render( <Navigation />, navigationRoot );
+}
+
+// Set up customer effort score survey.
+( function () {
+	const root = appRoot || embeddedRoot;
+
 	render(
-		<CustomerEffortScoreTracks
-			initiallyVisible={ true }
-			trackName={ item.trackName }
-			label={ item.label }
-			trackProps={ {} }
-		/>,
-		root.insertBefore( document.createElement( 'div', ), null )
+		<CustomerEffortScoreTracksContainer />,
+		root.insertBefore( document.createElement( 'div' ), null )
 	);
-} );
-window.localStorage.removeItem( 'customerEffortScoreTracks' );
+} )();

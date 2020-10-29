@@ -22,8 +22,12 @@ import { withDispatch } from '@wordpress/data';
  * @param {string}   props.label         The label displayed in the modal.
  * @param {Function} props.createNotice     Create a notice (snackbar)
  */
-function CustomerEffortScore( { trackCallback, label, createNotice } ) {
-	const [ showModal, setShowModal ] = useState( false );
+function CustomerEffortScore( {
+	trackCallback,
+	label,
+    createNotice,
+} ) {
+    const [ showModal, setShowModal ] = useState( false );
 	const [ score, setScore ] = useState( 0 );
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
 

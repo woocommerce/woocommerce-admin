@@ -5,6 +5,12 @@ import { addQueryArgs } from '@wordpress/url';
 import { parse } from 'qs';
 import { pick, uniq } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
+import {
+	Slot,
+	Fill,
+	SlotFillProvider,
+	__experimentalUseSlot as useSlot,
+} from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -164,3 +170,43 @@ export function updateQueryString(
 	const newPath = getNewPath( query, path, currentQuery );
 	getHistory().push( newPath );
 }
+
+/**
+ * Create a Fill for extensions to add client facing custom Navigation Items.
+ *
+ * @param {Object} param0
+ * @param {Array} param0.children - Node children.
+ * @param {string} param0.item - Navigation item slug.
+ */
+export const WooNavigationItem = ( { children, item } ) => {
+	return <Fill name={ 'woocommerce_navigation_' + item }>{ children }</Fill>;
+};
+WooNavigationItem.Slot = ( { name } ) => (
+	<Slot name={ 'woocommerce_navigation_' + name } />
+);
+
+/**
+ * Export @wordpress/components SlotFillProvider so that Slots, Fills, and useSlot
+ * have access to the same context.
+ *
+ * This is a workaround because components exported from this package do not have
+ * the same `context` as those created in the /client folder. This problem is due
+ * to WC Admin bundling @wordpress/components instead of enqueuing and using
+ * wp.components from the window.
+ *
+ * @param {Object} param0
+ * @param {Array} param0.children - Node children.
+ */
+export const NavSlotFillProvider = ( { children } ) => (
+	<SlotFillProvider>{ children }</SlotFillProvider>
+);
+
+/**
+ * Similar to NavSlotFillProvider above, this is a workaround because components
+ * exported from this package do not have the same `context` as those created
+ * in the /client folder. This problem is due to WC Admin bundling @wordpress/components
+ * instead of enqueuing and using wp.components from the window.
+ *
+ * @param {string} name - slot name.
+ */
+export const useNavSlot = ( name ) => useSlot( name );
